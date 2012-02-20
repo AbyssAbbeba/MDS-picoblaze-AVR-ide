@@ -18,7 +18,8 @@
 class AVR8RegNames {
 public:
 	enum CPURegisters {
-		// CPU register file
+		/// @name CPU register file
+		//@{
 		R0	= 0x00,		R1	= 0x01,
 		R2	= 0x02,		R3	= 0x03,
 		R4	= 0x04,		R5	= 0x05,
@@ -35,11 +36,14 @@ public:
 		R26	= 0x1A,		R27	= 0x1B,
 		R28	= 0x1C,		R29	= 0x1D,
 		R30	= 0x1E,		R31	= 0x1F,
+		//@}
 
-		// 16-bit registers X, Y, and Z
+		/// @name 16-bit registers X, Y, and Z
+		//@{
 		XL	= R26,		XH	= R27,
 		YL	= R28,		YH	= R29,
 		ZL	= R30,		ZH	= R31
+		//@}
 	};
 
 	enum SFR {
@@ -118,14 +122,14 @@ public:
 	enum SFB {
 		/// @name SREG (0x5F): The AVR Status Register
 		//@{
-		SREG_C		= 0x01, ///<
-		SREG_Z		= 0x02, ///<
-		SREG_N		= 0x04, ///<
-		SREG_V		= 0x08, ///<
-		SREG_S		= 0x10, ///<
-		SREG_H		= 0x20, ///<
-		SREG_T		= 0x40, ///<
-		SREG_I		= 0x80, ///<
+		SREG_C		= 0x01, ///< Carry Flag
+		SREG_Z		= 0x02, ///< Zero Flag
+		SREG_N		= 0x04, ///< Negative Flag
+		SREG_V		= 0x08, ///< Two's Complement Overflow Flag
+		SREG_S		= 0x10, ///< Sign Bit, S = N ⊕ V
+		SREG_H		= 0x20, ///< Half Carry Flag
+		SREG_T		= 0x40, ///< Bit Copy Storage
+		SREG_I		= 0x80, ///< Global Interrupt Enable
 		//@}
 
 		/// @name SPH (0x5E): Stack Pointer High Register
@@ -172,8 +176,8 @@ public:
 		//GICR_		= 0x08, ///<
 		//GICR_		= 0x10, ///<
 		GICR_INT2	= 0x20, ///<
-		GICR_INT0	= 0x40, ///<
-		GICR_INT1	= 0x80, ///<
+		GICR_INT0	= 0x40, ///< External Interrupt Request 0 Enable
+		GICR_INT1	= 0x80, ///< External Interrupt Request 1 Enable
 		//@}
 
 		/// @name GIFR (0x5A): General Interrupt Flag Register
@@ -183,33 +187,33 @@ public:
 		//GIFR_		= 0x04, ///<
 		//GIFR_		= 0x08, ///<
 		//GIFR_		= 0x10, ///<
-		GIFR_INTF2	= 0x20, ///<
-		GIFR_INTF0	= 0x40, ///<
-		GIFR_INTF1	= 0x80, ///<
+		GIFR_INTF2	= 0x20, ///< 
+		GIFR_INTF0	= 0x40, ///< External Interrupt Flag 0
+		GIFR_INTF1	= 0x80, ///< External Interrupt Flag 1
 		//@}
 
 		/// @name TIMSK (0x59): Timer/Counter Interrupt Mask Register
 		//@{
-		TIMSK_TOIE0	= 0x01, ///<
+		TIMSK_TOIE0	= 0x01, ///< Timer/Counter0 Overflow Interrupt Enable
 		TIMSK_OCIE0	= 0x02, ///<
-		TIMSK_TOIE1	= 0x04, ///<
-		TIMSK_OCIE1B	= 0x08, ///<
-		TIMSK_OCIE1A	= 0x10, ///<
-		TIMSK_TICIE1	= 0x20, ///<
-		TIMSK_TOIE2	= 0x40, ///<
-		TIMSK_OCIE2	= 0x80, ///<
+		TIMSK_TOIE1	= 0x04, ///< Timer/Counter1, Overflow Interrupt Enable
+		TIMSK_OCIE1B	= 0x08, ///< Timer/Counter1, Output Compare B Match Interrupt Enable
+		TIMSK_OCIE1A	= 0x10, ///< Timer/Counter1, Output Compare A Match Interrupt Enable
+		TIMSK_TICIE1	= 0x20, ///< Timer/Counter1, Input Capture Interrupt Enable
+		TIMSK_TOIE2	= 0x40, ///< Timer/Counter2 Overflow Interrupt Enable
+		TIMSK_OCIE2	= 0x80, ///< Timer/Counter2 Output Compare Match Interrupt Enable
 		//@}
 
 		/// @name TIFR (0x58): Timer/Counter Interrupt Flag Register
 		//@{
-		TIFR_TOV0	= 0x01, ///<
+		TIFR_TOV0	= 0x01, ///< Timer/Counter0 Overflow Flag
 		TIFR_OCF0	= 0x02, ///<
-		TIFR_TOV1	= 0x04, ///<
-		TIFR_OCF1B	= 0x08, ///<
-		TIFR_OCF1A	= 0x10, ///<
-		TIFR_OCF1	= 0x20, ///<
-		TIFR_TOV2	= 0x40, ///<
-		TIFR_OCF2	= 0x80, ///<
+		TIFR_TOV1	= 0x04, ///< Timer/Counter1, Overflow Flag
+		TIFR_OCF1B	= 0x08, ///< Timer/Counter1, Output Compare B Match Flag
+		TIFR_OCF1A	= 0x10, ///< Timer/Counter1, Output Compare A Match Flag
+		TIFR_ICF1	= 0x20, ///< Timer/Counter1, Input Capture Flag
+		TIFR_TOV2	= 0x40, ///< Timer/Counter2 Overflow Flag
+		TIFR_OCF2	= 0x80, ///< Output Compare Flag 2
 		//@}
 
 		/// @name SPMCR (0x57): Store Program Memory Control Register

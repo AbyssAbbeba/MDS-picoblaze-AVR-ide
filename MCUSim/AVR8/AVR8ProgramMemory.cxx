@@ -11,8 +11,17 @@
  */
 
 #include "AVR8ProgramMemory.h"
+#include "AVR8Fuses.h"
 
-AVR8ProgramMemory::AVR8ProgramMemory(MCUSim::EventLogger * eventLogger) : Memory(eventLogger, MCUSim::Memory::SP_CODE), m_memory(NULL), m_size(0) {
+#include <cstdlib>
+#include <ctime>
+
+AVR8ProgramMemory::AVR8ProgramMemory(MCUSim::EventLogger * eventLogger, AVR8Fuses & fuses)
+	: Memory(eventLogger, MCUSim::Memory::SP_CODE),
+	  m_memory(NULL),
+	  m_size(0),
+	  m_fuses(fuses)
+{
 }
 
 AVR8ProgramMemory::~AVR8ProgramMemory() {
@@ -21,14 +30,28 @@ AVR8ProgramMemory::~AVR8ProgramMemory() {
 	}
 }
 
-MCUSim::RetCode AVR8ProgramMemory::directRead(unsigned int addr, unsigned int data) const {
-	// TODO: Implement
-	return MCUSim::RC_UNKNOWN_ERROR;
+MCUSim::RetCode AVR8ProgramMemory::directRead(unsigned int addr, unsigned int & data) const {
+	if ( addr >= m_size ) {
+		return MCUSim::RC_ADDR_OUT_OF_RANGE;
+	}
+	data = m_memory[addr];
+
+	if ( MFLAG_UNDEFINED & data ) {
+		data &= 0xffff;
+		return MCUSim::RC_NONDETERMINISTIC;
+	} else {
+		data &= 0xffff;
+		return MCUSim::RC_OK;
+	}
 }
 
-MCUSim::RetCode AVR8ProgramMemory::directWrite(unsigned int addr, unsigned int & data) {
-	// TODO: Implement
-	return MCUSim::RC_UNKNOWN_ERROR;
+MCUSim::RetCode AVR8ProgramMemory::directWrite(unsigned int addr, unsigned int data) {
+	if ( addr >= m_size ) {
+		return MCUSim::RC_ADDR_OUT_OF_RANGE;
+	}
+
+	m_memory[addr] = (data & 0xffff);
+	return MCUSim::RC_OK;
 }
 
 void AVR8ProgramMemory::resize(unsigned int newSize) {
@@ -41,7 +64,7 @@ void AVR8ProgramMemory::resize(unsigned int newSize) {
 	}
 
 	for ( unsigned int i = sizeToCopy; i < newSize; i++ ) {
-		m_memory[i] = getUndefVal(16) | MFLAG_UNDEFINED;
+		m_memory[i] = (getUndefVal<16>() | MFLAG_UNDEFINED);
 	}
 
 	if ( NULL != memoryOrig ) {
@@ -51,5 +74,52 @@ void AVR8ProgramMemory::resize(unsigned int newSize) {
 }
 
 void AVR8ProgramMemory::reset(MCUSim::Subsys::SubsysResetMode mode) {
-	// TODO: Implement
+	switch ( mode ) {
+		case RSTMD_NEW_CONFIG:
+			loadConfig();
+			break;
+		case RSTMD_INITIAL_VALUES:
+			resetToInitialValues();
+			break;
+		default:
+			// Irrelevant requests are silently ignored
+			break;
+	}
+}
+
+inline void AVR8ProgramMemory::loadConfig() {
+	resize(m_config.m_size);
+}
+
+inline void AVR8ProgramMemory::resetToInitialValues() {
+	for ( unsigned int i = 0; i < m_size; i++ ) {
+		m_memory[i] = (0xff | MFLAG_UNDEFINED);
+	}
+}
+
+template<unsigned int sizeBits>
+unsigned int AVR8ProgramMemory::getUndefVal() const {
+	if ( -1 == m_config.m_undefinedValue ) {
+		// Generate random value
+		return ((unsigned int)random() & ((1 << sizeBits) - 1));
+	} else {
+		// Return predefined value
+		return ( m_config.m_undefinedValue & ((1 << sizeBits) - 1) );
+	}
+}
+
+unsigned int AVR8ProgramMemory::getBootSectionAddress() const {
+	if ( true == m_fuses[AVR8Fuses::FUSE_BOOTSZ1] ) {
+		if ( true == m_fuses[AVR8Fuses::FUSE_BOOTSZ0] ) {
+			return m_config.bootResetAddress[3]; // BOOTSZ1 = 1, BOOTSZ0 = 1
+		} else {
+			return m_config.bootResetAddress[2]; // BOOTSZ1 = 1, BOOTSZ0 = 0
+		}
+	} else {
+		if ( true == m_fuses[AVR8Fuses::FUSE_BOOTSZ0] ) {
+			return m_config.bootResetAddress[1]; // BOOTSZ1 = 0, BOOTSZ0 = 1
+		} else {
+			return m_config.bootResetAddress[0]; // BOOTSZ1 = 0, BOOTSZ0 = 0
+		}
+	}
 }

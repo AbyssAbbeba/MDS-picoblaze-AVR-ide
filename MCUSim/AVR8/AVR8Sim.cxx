@@ -12,15 +12,14 @@
 
 #include "AVR8Sim.h"
 
-#include "AVR8CPUCore.h"
+#include "AVR8InstructionSet.h"
 #include "AVR8ProgramMemory.h"
 #include "AVR8DataMemory.h"
+#include "AVR8Fuses.h"
+#include "AVR8InterruptController.h"
 
-AVR8Sim::AVR8Sim() : MCUSim()
-{
+AVR8Sim::AVR8Sim() : MCUSim() {
 }
-
-
 MCUSim::Subsys * AVR8Sim::getSubsys(Subsys::SubsysId id) {
 }
 MCUSim::RetCode AVR8Sim::setConfig(Config * newConfig) {

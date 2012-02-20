@@ -18,13 +18,6 @@
 #ifndef MCUSIM_H
 #define MCUSIM_H
 
-// #include <stdlib.h>
-// #include <stdint.h>
-
-// Only for event logger
-// #include <utility>
-// #include <vector>
-
 class MCUSim {
 public:
 	/// @brief ...
@@ -183,12 +176,18 @@ public:
 		enum SubsysId {
 			ID_INVALID = 0,
 			ID_CPU,
+			ID_FUSES,
+			ID_INTERRUPTS,
 // 			ID_SIMCONTROL,
 // 			ID_IO
 		};
 
 		enum SubsysResetMode {
-			
+			RSTMD_NEW_CONFIG,
+			RSTMD_INITIAL_VALUES,
+			RSTMD_MCU_RESET,
+
+			RSTMD__MAX__
 		};
 
 		EventLogger * const m_eventLogger;
@@ -232,9 +231,6 @@ public:
 
 			EVENT_CPU_CALL,
 
-			EVENT_CPU_SP_OVERFLOW,
-			EVENT_CPU_SP_UNDERFLOW,
-
 			EVENT_CPU__MAX__
 		};
 
@@ -275,13 +271,21 @@ public:
 			EVENT_MEM_WRN_WR_READ_ONLY,		///< Value written to read only memory cell.
 			EVENT_MEM_WRN_RD_PAR_WRITE_ONLY,	///< Value read from partially write only memory cell.
 			EVENT_MEM_WRN_WR_PAR_READ_ONLY,		///< Value written to partially read only memory cell.
+			EVENT_MEM_WRN_RD_RESERVED_READ,		///<
+			EVENT_MEM_WRN_WR_RESERVED_WRITTEN,	///<
 			//@}
 
 			/// @name Informative, something happened but nothing went wrong.
 			//@{
 			EVENT_MEM_INF_WR_VAL_CHANGED,		///< Memory cell content has been changed.
-// 			EVENT_MEM_INF_WR_VAL_WRITTEN,		///< Memory cell content was written.
-// 			EVENT_MEM_INF_WR_VAL_READ,		///< Memory cell content was read.
+			EVENT_MEM_INF_WR_VAL_WRITTEN,		///< Memory cell content was written.
+			EVENT_MEM_INF_WR_VAL_READ,		///< Memory cell content was read.
+			//@}
+
+			/// @name Other ...
+			//@{
+			EVENT_MEM_STACK_OVERFLOW,
+			EVENT_MEM_STACK_UNDERFLOW,
 			//@}
 
 			EVENT_MEM__MAX__			///< Number of elements in this enumeration.
@@ -289,29 +293,24 @@ public:
 
 		/// @brief 
 		enum MemoryFlags {
-			MFLAG_NOT_IMPLEMENTED	= 0x80000000,	///< Memory cell in NOT physically present in the memory.
-			MFLAG_PARTIAL		= 0x40000000,	///< Memory cell in ONLY PARTIALLY implemented in the memory.
+			MFLAG_NOT_IMPLEMENTED	= 0x80000000,	///< Memory cell is NOT physically present in the memory.
+ 			// MFLAG_		= 0x40000000,	///<
 			MFLAG_DEFAULT		= 0x20000000,	///< Default value contained, must be cleared by write.
 			MFLAG_UNDEFINED		= 0x10000000,	///< Uninitialized, so the value might be virtually anything.
 			MFLAG_WR_ONLY		= 0x08000000,	///< For writing only, read is an invalid operation.
 			MFLAG_RD_ONLY		= 0x04000000,	///< For reading only, write is an invalid operation.
-			MFLAG_DUAL		= 0x02000000,	///< There are two bytes mapped to this location: |3:F0|2:F1|1:V1|0:V0|
-			MFLAG_VIRTUAL		= 0x01000000,	///< This location not a physical memory cell at all.
+			MFLAG_RESERVED		= 0x02000000,	///< Memory location is reserved, i.e. it should not be used
+			MFLAG_VIRTUAL		= 0x01000000,	///< This location is mapped to more than oe memory cell, or is completely special.
 
 			MFLAG_MEM__MAX__	= 8		///< Number of elements in this enumeration.
 		};
 
 		const MemorySpace m_space;
 
-		virtual RetCode directRead(unsigned int addr, unsigned int data) const = 0;
-		virtual RetCode directWrite(unsigned int addr, unsigned int & data) = 0;
+		virtual RetCode directRead(unsigned int addr, unsigned int & data) const = 0;
+		virtual RetCode directWrite(unsigned int addr, unsigned int data) = 0;
 		virtual void resize(unsigned int newSize) = 0;
 		virtual unsigned int size() = 0;
-
-		int getUndefVal(unsigned int sizeBits = 8) const {
-			// TODO: Implement it, and do it as a non-inline function.
-			return -48 + sizeBits;
-		}
 
 	protected:
 		Memory(EventLogger * eventLogger, MemorySpace space) : Subsys(eventLogger, (Subsys::SubsysId)(0-space)), m_space(space) {};

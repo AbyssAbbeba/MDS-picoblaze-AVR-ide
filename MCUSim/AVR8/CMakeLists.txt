@@ -28,10 +28,12 @@ set(CMAKE_VERBOSE_MAKEFILE OFF)
 add_definitions(-Wall -Wextra -std=c++0x -O2 -pipe)
 
 ## Add a library to the project using the specified source files,
- # in this case it will procude static C++ library "libprogrammer.a"
-add_library(AVR8Sim SHARED
+ # in this case it will procude static C++ library.
+add_library(AVR8Sim STATIC
 	AVR8Sim.cxx
 	AVR8DataMemory.cxx
 	AVR8ProgramMemory.cxx
 	AVR8DES.cxx
-	AVR8CPUCore.cxx)
+	AVR8InstructionSet.cxx
+	AVR8Fuses.cxx
+	AVR8InterruptController.cxx)

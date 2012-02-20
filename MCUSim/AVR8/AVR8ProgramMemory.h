@@ -15,17 +15,27 @@
 
 #include "../MCUSim.h"
 
+class AVR8Fuses;
+
 #include <cstddef>
 #include <cstdint>
 
 class AVR8ProgramMemory : public MCUSim::Memory {
 
 public:
-	AVR8ProgramMemory(MCUSim::EventLogger * eventLogger);
+	AVR8ProgramMemory(MCUSim::EventLogger * eventLogger, AVR8Fuses & fuses);
 	~AVR8ProgramMemory();
 
-	MCUSim::RetCode directRead(unsigned int addr, unsigned int data) const;
-	MCUSim::RetCode directWrite(unsigned int addr, unsigned int & data);
+	struct Config {
+		int m_undefinedValue; // -1 means random
+		int bootResetAddress[4];
+		unsigned int m_size;
+	};
+
+	Config m_config;
+
+	MCUSim::RetCode directRead(unsigned int addr, unsigned int & data) const;
+	MCUSim::RetCode directWrite(unsigned int addr, unsigned int data);
 	void resize(unsigned int newSize);
 	void reset(SubsysResetMode mode);
 
@@ -33,23 +43,6 @@ public:
 		return m_size;
 	}
 
-	// This method should run as fast as possible. It has to be defined in the interface because it is mend to be inline function, and it must be usable everywhere where this header file is included.
-	unsigned int read(unsigned int addr) {
-		if ( addr >= m_size ) {
-			logEvent(EVENT_MEM_ERR_RD_NOT_IMPLEMENTED, addr);
-			return getUndefVal(16);
-		}
-
-		int result = m_memory[addr];
-		if ( result & MFLAG_UNDEFINED ) {
-			logEvent(EVENT_MEM_WRN_RD_UNDEFINED, addr);
-		}
-
-		result &= 0x0ffff;
-		return result;
-	}
-
-	// This method should run as fast as possible. It has to be defined in the interface because it is mend to be inline function, and it must be usable everywhere where this header file is included.
 	unsigned int readRaw(unsigned int addr) {
 		if ( addr >= m_size ) {
 			if ( 0 == m_size ) {
@@ -57,7 +50,7 @@ public:
 			} else {
 				logEvent(EVENT_MEM_ERR_RD_NOT_IMPLEMENTED, addr);
 			}
-			return getUndefVal(16);
+			return getUndefVal<16>();
 		}
 
 		int result = m_memory[addr];
@@ -68,7 +61,10 @@ public:
 		return result;
 	}
 
-	// This method should run as fast as possible.
+	unsigned int read(unsigned int addr) {
+		return (readRaw(addr) & 0x0ffff);
+	}
+
 	void write(unsigned int addr, unsigned int val) {
 		if ( addr >= m_size ) {
 			if ( 0 == m_size ) {
@@ -85,10 +81,17 @@ public:
 		logEvent(EVENT_MEM_INF_WR_VAL_CHANGED, addr);
 	}
 
+	template<unsigned int sizeBits> unsigned int getUndefVal() const;
+
+	unsigned int getBootSectionAddress() const;
+
 protected:
-	unsigned int * m_memory;
+	uint32_t * m_memory;
 	unsigned int m_size;
-	MCUSim::EventLogger * m_eventLogger;
+	AVR8Fuses & m_fuses;
+
+	inline void resetToInitialValues();
+	inline void loadConfig();
 
 private:
 	AVR8ProgramMemory();

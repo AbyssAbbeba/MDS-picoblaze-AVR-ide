@@ -10,96 +10,21 @@
  *
  */
 
-#ifndef AVR8CPUCORE_H
-#define AVR8CPUCORE_H
+#ifndef AVR8INSTRUCTIONSET_H
+#define AVR8INSTRUCTIONSET_H
 
 class AVR8ProgramMemory;
 class AVR8DataMemory;
 class AVR8DES;
+class AVR8Fuses;
+class AVR8InterruptController;
 
 #include "../MCUSim.h"
 
-class AVR8CPUCore : public MCUSim::CPU {
+#include "AVR8InsNames.h"
+
+class AVR8InstructionSet : public MCUSim::CPU {
 public:
-	enum SpecificInstructions {
-		SPECI_STS_K_RR_16 = 0,	///< 16b version of "STS k, Rr" and "LDS Rd, k"
-		SPECI_ADIW,		///< Add Immediate to Word
-		SPECI_CALL,		///< Long Call to a Subroutine
-		SPECI_JMP,		///< Jump
-		SPECI_BREAK,		///< Break
-		SPECI_EICALL,		///< Extended Indirect Call to Subroutine
-		SPECI_EIJMP,		///< Extended Indirect Jump
-		SPECI_ICALL,		///< Indirect Call to Subroutine
-		SPECI_IJMP,		///< Indirect Jump
-		SPECI_DES,		///< Data Encryption Standard
-		SPECI_ELPM_Rd_Zplus,	///< Extended Load Program Memory
-		SPECI_ELPM_Rd_Z,	///< Extended Load Program Memory
-		SPECI_ELPM,		///< Extended Load Program Memory
-
-		SPECI_MUL,		///< Multiply Unsigned
-		SPECI_MULS,		///< Multiply Signed
-		SPECI_MULSU,		///< Multiply Signed with Unsigned
-		SPECI_FMUL,		///< Fractional Multiply Unsigned
-		SPECI_FMULS,		///< Fractional Multiply Signed
-		SPECI_FMULSU,		///< Fractional Multiply Signed with Unsigned
-
-		SPECI_LD_Rd_X,
-		SPECI_LD_Rd_Xplus,
-		SPECI_LD_Rd_minusX,
-
-		SPECI_LDD_Rd_Y,
-		SPECI_LD_Rd_Yplus,
-		SPECI_LD_Rd_minusY,
-		SPECI_LDD_Rd_Yq,
-
-		SPECI_LDD_Rd_Z,
-		SPECI_LD_Rd_Zplus,
-		SPECI_LD_Rd_minusZ,
-		SPECI_LDD_Rd_Zq,
-
-		SPECI_ST_Rr_X,
-		SPECI_ST_Rr_Xplus,
-		SPECI_ST_Rr_minusX,
-
-		SPECI_STD_Rr_Y,
-		SPECI_ST_Rr_Yplus,
-		SPECI_ST_Rr_minusY,
-		SPECI_STD_Rr_Yq,
-
-		SPECI_STD_Rr_Z,
-		SPECI_ST_Rr_Zplus,
-		SPECI_ST_Rr_minusZ,
-		SPECI_STD_Rr_Zq,
-
-		SPECI_LAS,	///< Load And Set
-		SPECI_LAC,	///< Load And Clear
-		SPECI_LAT,	///< Load And Toggle
-
-		SPECI_POP,
-		SPECI_PUSH,
-		
-		SPECI_MOVW,		///< Copy Register Word
-		SPECI_SBIW,		///< Subtract Immediate from Word
-
-		SPECI_RCALL,		///< Relative Call to Subroutine
-		SPECI_LDS_Rd_k_16b,	///< Load Direct from Data Space (16b version)
-		SPECI_LDS_Rd_k,		///< Load Direct from Data Space (32b version)
-
-		SPECI_LPM,		///< Load Program Memory
-		SPECI_LPM_Rd_Z,		///< Load Program Memory
-		SPECI_LPM_Rd_Zplus,	///< Load Program Memory
-
-		SPECI_STS_k_Rr_16bb,	///< Store Direct to Data Space (STS k, Rr) (16b version)
-		SPECI_STS_k_Rr,		///< Store Direct to Data Space (STS k, Rr) (32b version)
-
-		SPECI__MAX__
-	};
-	enum Fuses {
-		FUSE_JTAGEN = 0,
-		FUSE_OCDEN,
-
-		FUSE__MAX__
-	};
 	enum PCWidth {
 		// .. lower values ...
 		PCWIDTH_16 = 1,
@@ -107,48 +32,65 @@ public:
 		PCWIDTH_22
 	};
 
-	AVR8CPUCore(MCUSim::EventLogger * eventLogger, AVR8ProgramMemory * programMemory, AVR8DataMemory * dataMemory, MCUSim::Mode & processorMode);
+	struct Config {
+		bool m_availableInstructions[AVR8InsNames::SPECI__MAX__];
+		MCUSim::Arch m_arch;
+		PCWidth m_pcWidth;
+		bool m_ignoreUndefinedOpCodes;
+
+		int m_pcMax;
+	};
+
+	Config m_config;
+
+	AVR8InstructionSet(
+		MCUSim::EventLogger * eventLogger,
+		AVR8ProgramMemory * programMemory,
+		AVR8DataMemory * dataMemory,
+		MCUSim::Mode & processorMode,
+		AVR8Fuses & fuses,
+		AVR8InterruptController * interruptController
+   	);
 
 	int execInstruction();
 	void reset(SubsysResetMode mode);
 
+	unsigned int getProgramCounter() {
+		return (unsigned int)m_pc;
+	}
+	void setProgramCounter(unsigned int newPc) {
+		m_pc = int(newPc);
+	}
+
 private:
-	AVR8CPUCore();
+	AVR8InstructionSet();
 
 protected:
 	int m_pc;
 	int m_actSubprogCounter;
-	int m_actInterruptCounter;
-	SpecificInstructions m_lastInst;
+	unsigned int m_instructionCounter[AVR8InsNames::INS__MAX__];
+	AVR8InsNames::Instructions m_lastInstruction;
 
 	AVR8ProgramMemory * m_programMemory;
 	AVR8DataMemory * m_dataMemory;
 	MCUSim::Mode & m_processorMode;
+	AVR8Fuses & m_fuses;
+	AVR8InterruptController * m_interruptController;
 
 	AVR8DES * m_des;
 
-	/// @name Configuration related variables.
-	//@{
-	bool m_availableInstructions[SPECI__MAX__];
-	bool m_fuses[FUSE__MAX__];
-	MCUSim::Arch m_arch;
-	PCWidth m_pcWidth;
-	unsigned int m_spWidth;
-	bool m_ignoreUndefinedOpCodes;
-	
-	int m_pcMax;
-	int m_spMax;
-	//@}
-
 	inline void incrPc(const int val = 1);
-	void pushOnStack(const unsigned int value);
-	int popFromStack();
 	inline bool isInstruction32b(const unsigned int opCode) const;
 
+	inline void mcuReset();
+	inline void resetToInitialValues();
+
+	inline void instructionEnter(AVR8InsNames::Instructions instName);
+
 public:
-	static int (AVR8CPUCore:: * const m_opCodeDispatchTable[64])(const unsigned int opCode);
-	static int (AVR8CPUCore:: * const m_opCodeDispatchTable_100100[32])(const unsigned int opCode);
-	static int (AVR8CPUCore:: * const m_opCodeDispatchTable_1001_010x_xxxx_100x[64])(const unsigned int opCode);
+	static int (AVR8InstructionSet:: * const m_opCodeDispatchTable[64])(const unsigned int opCode);
+	static int (AVR8InstructionSet:: * const m_opCodeDispatchTable_100100[32])(const unsigned int opCode);
+	static int (AVR8InstructionSet:: * const m_opCodeDispatchTable_1001_010x_xxxx_100x[64])(const unsigned int opCode);
 
 	/**
 	 * Possible instuctions:
@@ -914,4 +856,4 @@ public:
 	inline int instLoadOrStore32b(const unsigned int opCode);
 };
 
-#endif // AVR8CPUCORE_H
+#endif // AVR8INSTRUCTIONSET_H
