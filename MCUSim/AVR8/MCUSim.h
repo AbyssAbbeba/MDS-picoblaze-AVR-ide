@@ -168,8 +168,11 @@ public:
 			ID_CPU,
 			ID_FUSES,
 			ID_INTERRUPTS,
-			ID_IO
+			ID_TMR_CNT0,
+			ID_TMR_CNT1,
+			ID_TMR_CNT2,
 // 			ID_SIMCONTROL,
+// 			ID_IO
 		};
 
 		enum SubsysResetMode {

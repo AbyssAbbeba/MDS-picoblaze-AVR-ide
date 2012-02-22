@@ -17,6 +17,8 @@
 #include "AVR8DataMemory.h"
 #include "AVR8Fuses.h"
 #include "AVR8InterruptController.h"
+#include "AVR8TimerCounter0.h"
+#include "AVR8IO.h"
 
 AVR8Sim::AVR8Sim() : MCUSim() {
 }

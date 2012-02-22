@@ -18,6 +18,8 @@ class AVR8ProgramMemory;
 class AVR8DataMemory;
 class AVR8Fuses;
 class AVR8InterruptControler;
+class AVR8TimerCounter0;
+class AVR8IO;
 
 #include "../MCUSim.h"
 
@@ -33,11 +35,13 @@ public:
 	Mode mode();
 
 protected:
-	AVR8InstructionSet * m_cpuCore;
+	AVR8InstructionSet * m_instructionSet;
 	AVR8ProgramMemory * m_programMemory;
 	AVR8DataMemory * m_dataMemory;
 	AVR8Fuses * m_fuses;
 	AVR8InterruptControler * m_interrupts;
+	AVR8TimerCounter0 * m_timerCounter0;
+	AVR8IO * m_io;
 
 	EventLogger * m_eventLogger;
 	Mode m_processorMode;

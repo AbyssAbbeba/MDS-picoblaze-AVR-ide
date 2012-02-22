@@ -10,7 +10,8 @@
  *
  */
 
-
+// TABLE OF CURRENTLY SUPPORTED INTERRUPTS:
+// ----------------------------------------
 // 1	0x000	RESET		External Pin, Power-on Reset, Brown-out Reset, and Watchdog Reset
 // 2	0x001	INT0		External Interrupt Request 0
 // 3	0x002	INT1		External Interrupt Request 1
@@ -37,11 +38,20 @@
 #include "../MCUSim.h"
 
 class AVR8InstructionSet;
+class AVR8ProgramMemory;
 class AVR8DataMemory;
+class AVR8Fuses;
 
 class AVR8InterruptController : public MCUSim::Subsys {
 public:
-	AVR8InterruptController(MCUSim::EventLogger * eventLogger, AVR8InstructionSet * instructionSet, AVR8DataMemory * dataMemory);
+	AVR8InterruptController(MCUSim::EventLogger * eventLogger, AVR8InstructionSet * instructionSet, AVR8ProgramMemory * programMemory, AVR8DataMemory * dataMemory, AVR8Fuses & fuses);
+
+	enum Event {
+		EVENT_INT_ENTERING_INTERRUPT,
+		EVENT_INT_LEAVING_INTERRUPT,
+
+		EVENT_INT__MAX__
+	};
 
 	enum InterruptVector {
 		INTVEC_NONE		= -1,    ///<
@@ -69,8 +79,17 @@ public:
 		INTVEC__MAX__
 	};
 
+	enum InterruptGroup {
+		INTGRP_EXTERNAL = 0,
+		INTGRP_TIMER012,
+		INTGRP_UART,
+
+		INTGRP__MAX__
+	};
+
 	struct Config {
 		bool m_possibleInterrupts[INTVEC__MAX__];
+		bool m_interruptGroups[INTGRP__MAX__];
 	};
 
 	Config m_config;
@@ -93,16 +112,20 @@ public:
 
 protected:
 	AVR8InstructionSet * m_instructionSet;
+	AVR8ProgramMemory * m_programMemory;
 	AVR8DataMemory * m_dataMemory;
-	
+	AVR8Fuses & m_fuses;
+
 	int m_actInterruptCounter;
 	InterruptVector m_interruptToExecute;
+	int m_interruptFlagToClear[2];
 
 	inline void resetToInitialValues();
 	inline void mcuReset();
 
 	inline int executeInterrupt(InterruptVector vector);
 	inline InterruptVector detectPendingInterrupt();
+	inline bool confirmInterrupt(InterruptVector vector);
 
 private:
 	AVR8InterruptController();

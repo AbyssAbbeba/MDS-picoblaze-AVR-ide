@@ -171,7 +171,7 @@ public:
 		/// @name GICR (0x5B): General Interrupt Control Register
 		//@{
 		GICR_IVCE	= 0x01, ///<
-		GICR_IVSEL	= 0x02, ///<
+		GICR_IVSEL	= 0x02, ///< Interrupt Vector Select
 		//GICR_		= 0x04, ///<
 		//GICR_		= 0x08, ///<
 		//GICR_		= 0x10, ///<
@@ -187,7 +187,7 @@ public:
 		//GIFR_		= 0x04, ///<
 		//GIFR_		= 0x08, ///<
 		//GIFR_		= 0x10, ///<
-		GIFR_INTF2	= 0x20, ///< 
+		GIFR_INTF2	= 0x20, ///<
 		GIFR_INTF0	= 0x40, ///< External Interrupt Flag 0
 		GIFR_INTF1	= 0x80, ///< External Interrupt Flag 1
 		//@}
@@ -218,26 +218,26 @@ public:
 
 		/// @name SPMCR (0x57): Store Program Memory Control Register
 		//@{
-		SPMCR_SPMEN	= 0x01, ///<
+		SPMCR_SPMEN	= 0x01, ///< Store Program Memory Enable
 		SPMCR_PGERS	= 0x02, ///<
 		SPMCR_PGWRT	= 0x04, ///<
 		SPMCR_BLBSET	= 0x08, ///<
 		SPMCR_RWWSRE	= 0x10, ///<
 		//SPMCR_	= 0x20, ///<
 		SPMCR_RWWSB	= 0x40, ///<
-		SPMCR_SPMIE	= 0x80, ///<
+		SPMCR_SPMIE	= 0x80, ///< SPM Interrupt Enable
 		//@}
 
 		/// @name TWCR (0x56): TWI Control Register
 		//@{
-		TWCR_TWIE	= 0x01, ///<
+		TWCR_TWIE	= 0x01, ///< TWI Interrupt Enable
 		//TWCR_		= 0x02, ///<
 		TWCR_TWEN	= 0x04, ///<
 		TWCR_TWWC	= 0x08, ///<
 		TWCR_TWSTO	= 0x10, ///<
 		TWCR_TWSTA	= 0x20, ///<
 		TWCR_TWEA	= 0x40, ///<
-		TWCR_TWINT	= 0x80, ///<
+		TWCR_TWINT	= 0x80, ///< TWI Interrupt Flag
 		//@}
 
 		/// @name MCUCR (0x55): MCU Control Register
@@ -266,9 +266,9 @@ public:
 
 		/// @name TCCR0 (0x53): Timer/Counter Control Register
 		//@{
-		TCCR0_CS00	= 0x01, ///<
-		TCCR0_CS01	= 0x02, ///<
-		TCCR0_CS02	= 0x04, ///<
+		TCCR0_CS00	= 0x01, ///<  Clock Select bit 0
+		TCCR0_CS01	= 0x02, ///<  Clock Select bit 1
+		TCCR0_CS02	= 0x04, ///<  Clock Select bit 2
 		TCCR0_WGM01	= 0x08, ///<
 		TCCR0_COM00	= 0x10, ///<
 		TCCR0_COM01	= 0x20, ///<
@@ -278,7 +278,7 @@ public:
 
 		/// @name SFIOR (0x50): Special Function IO Register
 		//@{
-		SFIOR_PSR10	= 0x01, ///<
+		SFIOR_PSR10	= 0x01, ///< Prescaler Reset Timer/Counter1 and Timer/Counter0
 		SFIOR_PSR2	= 0x02, ///<
 		SFIOR_PUD	= 0x04, ///<
 		SFIOR_ACME	= 0x08, ///<
@@ -363,9 +363,9 @@ public:
 		/// @name XXYY (0x3C): EEPROM Control Register
 		//@{
 		EECR_EERE	= 0x01, ///<
-		EECR_EEWE	= 0x02, ///<
+		EECR_EEWE	= 0x02, ///< EEPROM Write Enable
 		EECR_EEMWE	= 0x04, ///<
-		EECR_EERIE	= 0x08, ///<
+		EECR_EERIE	= 0x08, ///< EEPROM Ready Interrupt Enable
 		//EECR_	= 0x10, /<
 		//EECR_	= 0x20, ///<
 		//EECR_	= 0x40, ///<
@@ -525,7 +525,7 @@ public:
 		//SPSR_		= 0x10, ///<
 		//SPSR_		= 0x20, ///<
 		SPSR_WCOL	= 0x40, ///<
-		SPSR_SPIF	= 0x80, ///<
+		SPSR_SPIF	= 0x80, ///< SPI Interrupt Flag
 		//@}
 
 		/// @name SPCR (0x2D): SPI Control Register
@@ -537,7 +537,7 @@ public:
 		SPCR_MSTR	= 0x10, ///<
 		SPCR_DORD	= 0x20, ///<
 		SPCR_SPE	= 0x40, ///<
-		SPCR_SPIE	= 0x80, ///<
+		SPCR_SPIE	= 0x80, ///< SPI Interrupt Enable
 		//@}
 
 		/// @name UCSRA (0x2B): USART Control and Status Register A
@@ -547,9 +547,9 @@ public:
 		UCSRA_PE	= 0x04, ///<
 		UCSRA_DOR	= 0x08, ///<
 		UCSRA_FE	= 0x10, ///<
-		UCSRA_UDRE	= 0x20, ///<
-		UCSRA_TXC	= 0x40, ///<
-		UCSRA_RXC	= 0x80, ///<
+		UCSRA_UDRE	= 0x20, ///< USART Data Register Empty
+		UCSRA_TXC	= 0x40, ///< USART Transmit Complete
+		UCSRA_RXC	= 0x80, ///< USART Receive Complete
 		//@}
 
 		/// @name UCSRB (0x2A): USART Control and Status Register B
@@ -559,9 +559,9 @@ public:
 		UCSRB_UCSZ2	= 0x04, ///<
 		UCSRB_TXEN	= 0x08, ///<
 		UCSRB_RXEN	= 0x10, ///<
-		UCSRB_UDRIE	= 0x20, ///<
-		UCSRB_TXCIE	= 0x40, ///<
-		UCSRB_RXCIE	= 0x80, ///<
+		UCSRB_UDRIE	= 0x20, ///< USART Data Register Empty Interrupt Enable
+		UCSRB_TXCIE	= 0x40, ///< TX Complete Interrupt Enable
+		UCSRB_RXCIE	= 0x80, ///< RX Complete Interrupt Enable
 		//@}
 
 
@@ -570,8 +570,8 @@ public:
 		ACSR_ACIS0	= 0x01, ///<
 		ACSR_ACIS1	= 0x02, ///<
 		ACSR_ACIC	= 0x04, ///<
-		ACSR_ACIE	= 0x08, ///<
-		ACSR_ACI	= 0x10, ///<
+		ACSR_ACIE	= 0x08, ///< Analog Comparator Interrupt Enable
+		ACSR_ACI	= 0x10, ///< Analog Comparator Interrupt Flag
 		ACSR_ACO	= 0x20, ///<
 		ACSR_ACBG	= 0x40, ///<
 		ACSR_ACD	= 0x80, ///<
@@ -587,6 +587,18 @@ public:
 		ADMUX_ADLAR	= 0x20, ///<
 		ADMUX_REFS0	= 0x40, ///<
 		ADMUX_REFS1	= 0x80, ///<
+		//@}
+
+		/// @name ADCSRA (0x26): ADC Control and Status Register A
+		//@{
+		ADCSRA_ADPS0	= 0x01, ///<
+		ADCSRA_ADPS1	= 0x02, ///<
+		ADCSRA_ADPS2	= 0x04, ///<
+		ADCSRA_ADIE	= 0x08, ///< ADC Interrupt Enable
+		ADCSRA_ADIF	= 0x10, ///< ADC Interrupt Flag
+		ADCSRA_ADFR	= 0x20, ///<
+		ADCSRA_ADSC	= 0x40, ///<
+		ADCSRA_ADEN	= 0x80, ///<
 		//@}
 
 		/// @name TWAR (0x22): TWI (Slave) Address Register

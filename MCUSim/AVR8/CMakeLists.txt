@@ -36,4 +36,6 @@ add_library(AVR8Sim STATIC
 	AVR8DES.cxx
 	AVR8InstructionSet.cxx
 	AVR8Fuses.cxx
-	AVR8InterruptController.cxx)
+	AVR8InterruptController.cxx
+	AVR8TimerCounter0.cxx
+	AVR8IO.cxx)

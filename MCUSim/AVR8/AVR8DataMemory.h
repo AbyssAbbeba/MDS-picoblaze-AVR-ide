@@ -53,204 +53,21 @@ public:
 	}
 	void reset(SubsysResetMode mode);
 
-	bool readBit(uint32_t regAddr, unsigned int bitMask) {
-		return (read(regAddr) & bitMask);
-	}
+	/// @warning Do not use this method unless you REALLY KNOW WHAT YOU ARE DOING!
+	inline bool readBitFast(unsigned int regAddr, unsigned int bitMask);
+	/// @warning Do not use this method unless you REALLY KNOW WHAT YOU ARE DOING!
+	inline void setBitFast(unsigned int regAddr, unsigned int bitMask);
+	/// @warning Do not use this method unless you REALLY KNOW WHAT YOU ARE DOING!
+	inline void clearBitFast(unsigned int regAddr, unsigned int bitMask);
+	/// @warning Do not use this method unless you REALLY KNOW WHAT YOU ARE DOING!
+	inline unsigned int readFast(unsigned int addr);
+	/// @warning Do not use this method unless you REALLY KNOW WHAT YOU ARE DOING!
+	inline void writeFast(unsigned int addr, unsigned int val);
 
-	void writeBit(uint32_t regAddr, unsigned int bitMask) {
-		write(regAddr, (read(regAddr) | bitMask));
-	}
-
-	unsigned int read(uint32_t addr) {
-		unsigned int addrVariant = (addr >> 24);
-		addr &= ((1 << 24) - 1);
-
-		if ( addr >= m_size ) {
-			if ( 0 == m_size ) {
-				logEvent(EVENT_MEM_ERR_RD_NONEXISTENT, addr);
-			} else {
-				logEvent(EVENT_MEM_ERR_RD_NOT_IMPLEMENTED, addr);
-			}
-			return getUndefVal<8>();
-		}
-
-		register uint32_t result = m_memory[addr];
-
-		if ( result & MFLAG_VIRTUAL ) {
-			if ( 0 == addrVariant ) {
-				// Determinate address variant, somehow ... ??
-			}
-
-			addr = (result & 0xffff);
-
-			if ( addr >= m_mem2size ) {
-				logEvent(EVENT_MEM_ERR_WR_NOT_IMPLEMENTED, addr);
-				return getUndefVal<8>();
-			}
-			if ( addrVariant >= m_mem2sizes[addr] ) {
-				logEvent(EVENT_MEM_ERR_WR_NOT_IMPLEMENTED, addr);
-				return getUndefVal<8>();
-			}
-
-			result = m_memory2[addr][addrVariant];
-		}
-
-		if ( 0 == (result & 0xffff00) ) {
-			logEvent(EVENT_MEM_ERR_RD_NOT_IMPLEMENTED, addr);
-		}
-		if ( 0 == (result & 0xff0000) ) {
-			logEvent(EVENT_MEM_WRN_RD_WRITE_ONLY, addr);
-		}
-
-		if ( result & MFLAG_RESERVED ) {
-			logEvent(EVENT_MEM_WRN_RD_RESERVED_READ, addr);
-		}
-		if ( result & MFLAG_UNDEFINED ) {
-			logEvent(EVENT_MEM_WRN_RD_UNDEFINED, addr);
-		}
-		if ( result & MFLAG_DEFAULT ) {
-			logEvent(EVENT_MEM_WRN_RD_DEFAULT, addr);
-		}
-
-		logEvent(EVENT_MEM_INF_WR_VAL_READ, addr);
-
-		if ( 0 != (result & 0xff0000) ) {
-			result ^= ((result >> 16) & 0xff) & getUndefVal<8>();
-		}
-
-		result &= 0x0ff;
-		return result;
-	}
-
-	void write(uint32_t addr, unsigned int val) {
-		unsigned int addrVariant = (addr >> 24);
-		addr &= ((1 << 24) - 1);
-
-		if ( addr >= m_size ) {
-			if ( 0 == m_size ) {
-				logEvent(EVENT_MEM_ERR_WR_NONEXISTENT, addr);
-			} else {
-				logEvent(EVENT_MEM_ERR_WR_NOT_IMPLEMENTED, addr);
-			}
-			return;
-		}
-
-		register uint32_t result = m_memory[addr];
-
-		if ( result & MFLAG_VIRTUAL ) {
-			if ( 0 == addrVariant ) {
-				// Determinate address variant, somehow ... ??
-			}
-
-			addr = (result & 0xffff);
-
-			if ( addr >= m_mem2size ) {
-				logEvent(EVENT_MEM_ERR_WR_NOT_IMPLEMENTED, addr);
-				return;
-			}
-			if ( addrVariant >= m_mem2sizes[addr] ) {
-				logEvent(EVENT_MEM_ERR_WR_NOT_IMPLEMENTED, addr);
-				return;
-			}
-			result = m_memory2[addr][addrVariant];
-		}
-
-		if ( 0 == (result & 0xffff00) ) {
-			logEvent(EVENT_MEM_ERR_WR_NOT_IMPLEMENTED, addr);
-			return;
-		}
-		if ( 0 == (result & 0xff00) ) {
-			logEvent(EVENT_MEM_WRN_WR_READ_ONLY, addr);
-			return;
-		}
-		
-		if ( result & MFLAG_RESERVED ) {
-			logEvent(EVENT_MEM_WRN_WR_RESERVED_WRITTEN, addr);
-		}
-
-		const uint32_t valueOrig = result & 0xff;
-
-		result &= (0xffffff00 ^ MFLAG_UNDEFINED ^ MFLAG_DEFAULT);
-		result |= (((result & 0xff00) >> 8) & val);
-
-		if ( 0 != addrVariant ) {
-			m_memory2[addr][addrVariant] = result;
-		} else {
-			m_memory[addr] = result;
-		}
-
-		logEvent(EVENT_MEM_INF_WR_VAL_WRITTEN, addr);
-
-		if ( valueOrig != val) {
-			logEvent(EVENT_MEM_INF_WR_VAL_CHANGED, addr);
-		}
-	}
-
-	void pushOnStack(const unsigned int value) {
-		int sp = 0;	// Stack pointer (at most 16b)
-
-		// Load stack pointer
-		if ( m_config.m_spWidth > 8 ) {
-			sp = read(AVR8RegNames::SPH);	// Stack Pointer High Register
-			sp <<= 8;
-		}
-		sp |= read(AVR8RegNames::SPL);		// Stack Pointer Low Register
-
-		// Push the value onto stack, post decrement scheme
-		write(sp--, value);
-
-		// Check stack pointer for allowed range
-		while ( sp < 0 ) {
-			sp += m_config.m_spMax;
-			logEvent(EVENT_MEM_STACK_UNDERFLOW);
-		}
-		while ( sp > m_config.m_spMax ) {
-			sp -= m_config.m_spMax;
-			logEvent(EVENT_MEM_STACK_OVERFLOW);
-		}
-
-		// Store stack pointer
-		write(AVR8RegNames::SPL, sp & 0xff);	// Stack Pointer Low Register
-		if ( m_config.m_spWidth > 8 ) {
-			sp &= 0xff00;
-			sp >>= 8;
-			write(AVR8RegNames::SPH, sp);	// Stack Pointer High Register
-		}
-	}
-
-	int popFromStack() {
-		int sp = 0;	// Stack pointer (at most 16b)
-
-		// Load stack pointer
-		if ( m_config.m_spWidth > 8 ) {
-			sp = read(AVR8RegNames::SPH);	// Stack Pointer High Register
-			sp <<= 8;
-		}
-		sp |= read(AVR8RegNames::SPL);		// Stack Pointer Low Register
-
-		// Push the value onto stack, post decrement scheme
-		unsigned int value = read(++sp);
-
-		// Check stack pointer for allowed range
-		while ( sp < 0 ) {
-			sp += m_config.m_spMax;
-			logEvent(EVENT_MEM_STACK_UNDERFLOW);
-		}
-		while ( sp > m_config.m_spMax ) {
-			sp -= m_config.m_spMax;
-			logEvent(EVENT_MEM_STACK_OVERFLOW);
-		}
-
-		// Store stack pointer
-		write(AVR8RegNames::SPL, sp & 0xff);	// Stack Pointer Low Register
-		if ( m_config.m_spWidth > 8 ) {
-			sp &= 0xff00;
-			sp >>= 8;
-			write(AVR8RegNames::SPH, sp);	// Stack Pointer High Register
-		}
-
-		return value;
-	}
+	inline unsigned int read(uint32_t addr);
+	inline void write(uint32_t addr, unsigned int val);
+	inline void pushOnStack(const unsigned int value);
+	inline int popFromStack();
 
 	template<unsigned int sizeBits> unsigned int getUndefVal() const;
 
@@ -271,5 +88,226 @@ protected:
 private:
 	AVR8DataMemory();
 };
+
+
+// -----------------------------------------------------------------------------
+// INLINE FUNCTIONS
+// -----------------------------------------------------------------------------
+
+inline bool AVR8DataMemory::readBitFast(unsigned int regAddr, unsigned int bitMask) {
+	return bool(m_memory[regAddr] & bitMask);
+}
+
+inline void AVR8DataMemory::setBitFast(unsigned int regAddr, unsigned int bitMask) {
+	m_memory[regAddr] |= bitMask;
+	logEvent(EVENT_MEM_INF_WR_VAL_CHANGED, regAddr);
+}
+
+inline void AVR8DataMemory::clearBitFast(unsigned int regAddr, unsigned int bitMask) {
+	m_memory[regAddr] &= ~bitMask;
+	logEvent(EVENT_MEM_INF_WR_VAL_CHANGED, regAddr);
+}
+
+inline unsigned int AVR8DataMemory::readFast(unsigned int addr) {
+	return (m_memory[addr] & 0xff);
+}
+
+inline void AVR8DataMemory::writeFast(unsigned int addr, unsigned int val) {
+	m_memory[addr] &= (0xffffff00 ^ (MFLAG_UNDEFINED | MFLAG_DEFAULT));
+	m_memory[addr] |= val;
+	logEvent(EVENT_MEM_INF_WR_VAL_CHANGED, addr);
+}
+
+inline void AVR8DataMemory::write(uint32_t addr, unsigned int val) {
+	unsigned int addrVariant = (addr >> 24);
+	addr &= ((1 << 24) - 1);
+
+	if ( addr >= m_size ) {
+		if ( 0 == m_size ) {
+			logEvent(EVENT_MEM_ERR_WR_NONEXISTENT, addr);
+		} else {
+			logEvent(EVENT_MEM_ERR_WR_NOT_IMPLEMENTED, addr);
+		}
+		return;
+	}
+
+	register uint32_t result = m_memory[addr];
+
+	if ( result & MFLAG_VIRTUAL ) {
+		if ( 0 == addrVariant ) {
+			// Determinate address variant, somehow ... ??
+		}
+
+		addr = (result & 0xffff);
+
+		if ( addr >= m_mem2size ) {
+			logEvent(EVENT_MEM_ERR_WR_NOT_IMPLEMENTED, addr);
+			return;
+		}
+		if ( addrVariant >= m_mem2sizes[addr] ) {
+			logEvent(EVENT_MEM_ERR_WR_NOT_IMPLEMENTED, addr);
+			return;
+		}
+		result = m_memory2[addr][addrVariant];
+	}
+
+	if ( 0 == (result & 0xffff00) ) {
+		logEvent(EVENT_MEM_ERR_WR_NOT_IMPLEMENTED, addr);
+		return;
+	}
+	if ( 0 == (result & 0xff00) ) {
+		logEvent(EVENT_MEM_WRN_WR_READ_ONLY, addr);
+		return;
+	}
+
+	if ( result & MFLAG_RESERVED ) {
+		logEvent(EVENT_MEM_WRN_WR_RESERVED_WRITTEN, addr);
+	}
+
+	const uint32_t valueOrig = (result & 0xff);
+	val &= ((result & 0xff00) >> 8);
+
+	result &= (0xffffff00 ^ (MFLAG_UNDEFINED | MFLAG_DEFAULT));
+	result |= val;
+
+	if ( 0 != addrVariant ) {
+		m_memory2[addr][addrVariant] = result;
+	} else {
+		m_memory[addr] = result;
+	}
+
+	logEvent(EVENT_MEM_INF_WR_VAL_WRITTEN, addr);
+
+	if ( valueOrig != val) {
+		logEvent(EVENT_MEM_INF_WR_VAL_CHANGED, addr);
+	}
+}
+
+inline void AVR8DataMemory::pushOnStack(const unsigned int value) {
+	int sp = 0;	// Stack pointer (at most 16b)
+
+	// Load stack pointer
+	if ( m_config.m_spWidth > 8 ) {
+		sp = read(AVR8RegNames::SPH);	// Stack Pointer High Register
+		sp <<= 8;
+	}
+	sp |= read(AVR8RegNames::SPL);		// Stack Pointer Low Register
+
+	// Push the value onto stack, post decrement scheme
+	write(sp--, value);
+
+	// Check stack pointer for allowed range
+	while ( sp < 0 ) {
+		sp += m_config.m_spMax;
+		logEvent(EVENT_MEM_STACK_UNDERFLOW);
+	}
+	while ( sp > m_config.m_spMax ) {
+		sp -= m_config.m_spMax;
+		logEvent(EVENT_MEM_STACK_OVERFLOW);
+	}
+
+	// Store stack pointer
+	write(AVR8RegNames::SPL, sp & 0xff);	// Stack Pointer Low Register
+	if ( m_config.m_spWidth > 8 ) {
+		sp &= 0xff00;
+		sp >>= 8;
+		write(AVR8RegNames::SPH, sp);	// Stack Pointer High Register
+	}
+}
+
+inline int AVR8DataMemory::popFromStack() {
+	int sp = 0;	// Stack pointer (at most 16b)
+
+	// Load stack pointer
+	if ( m_config.m_spWidth > 8 ) {
+		sp = read(AVR8RegNames::SPH);	// Stack Pointer High Register
+		sp <<= 8;
+	}
+	sp |= read(AVR8RegNames::SPL);		// Stack Pointer Low Register
+
+	// Push the value onto stack, post decrement scheme
+	unsigned int value = read(++sp);
+
+	// Check stack pointer for allowed range
+	while ( sp < 0 ) {
+		sp += m_config.m_spMax;
+		logEvent(EVENT_MEM_STACK_UNDERFLOW);
+	}
+	while ( sp > m_config.m_spMax ) {
+		sp -= m_config.m_spMax;
+		logEvent(EVENT_MEM_STACK_OVERFLOW);
+	}
+
+	// Store stack pointer
+	write(AVR8RegNames::SPL, sp & 0xff);	// Stack Pointer Low Register
+	if ( m_config.m_spWidth > 8 ) {
+		sp &= 0xff00;
+		sp >>= 8;
+		write(AVR8RegNames::SPH, sp);	// Stack Pointer High Register
+	}
+
+	return value;
+}
+
+inline unsigned int AVR8DataMemory::read(uint32_t addr) {
+	unsigned int addrVariant = (addr >> 24);
+	addr &= ((1 << 24) - 1);
+
+	if ( addr >= m_size ) {
+		if ( 0 == m_size ) {
+			logEvent(EVENT_MEM_ERR_RD_NONEXISTENT, addr);
+		} else {
+			logEvent(EVENT_MEM_ERR_RD_NOT_IMPLEMENTED, addr);
+		}
+		return getUndefVal<8>();
+	}
+
+	register uint32_t result = m_memory[addr];
+
+	if ( result & MFLAG_VIRTUAL ) {
+		if ( 0 == addrVariant ) {
+			// Determinate address variant, somehow ... ??
+		}
+
+		addr = (result & 0xffff);
+
+		if ( addr >= m_mem2size ) {
+			logEvent(EVENT_MEM_ERR_WR_NOT_IMPLEMENTED, addr);
+			return getUndefVal<8>();
+		}
+		if ( addrVariant >= m_mem2sizes[addr] ) {
+			logEvent(EVENT_MEM_ERR_WR_NOT_IMPLEMENTED, addr);
+			return getUndefVal<8>();
+		}
+
+		result = m_memory2[addr][addrVariant];
+	}
+
+	if ( 0 == (result & 0xffff00) ) {
+		logEvent(EVENT_MEM_ERR_RD_NOT_IMPLEMENTED, addr);
+	}
+	if ( 0 == (result & 0xff0000) ) {
+		logEvent(EVENT_MEM_WRN_RD_WRITE_ONLY, addr);
+	}
+
+	if ( result & MFLAG_RESERVED ) {
+		logEvent(EVENT_MEM_WRN_RD_RESERVED_READ, addr);
+	}
+	if ( result & MFLAG_UNDEFINED ) {
+		logEvent(EVENT_MEM_WRN_RD_UNDEFINED, addr);
+	}
+	if ( result & MFLAG_DEFAULT ) {
+		logEvent(EVENT_MEM_WRN_RD_DEFAULT, addr);
+	}
+
+	logEvent(EVENT_MEM_INF_WR_VAL_READ, addr);
+
+	if ( 0 != (result & 0xff0000) ) {
+		result ^= ((result >> 16) & 0xff) & getUndefVal<8>();
+	}
+
+	result &= 0x0ff;
+	return result;
+}
 
 #endif // AVR8DATAMEMORY_H

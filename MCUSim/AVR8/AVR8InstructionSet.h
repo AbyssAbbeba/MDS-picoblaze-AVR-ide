@@ -217,22 +217,22 @@ public:
 	 * CPC Rd, Rr		0000 01rd dddd rrrr - Compare with Carry
 	 */
 	int inst_CPC_Rd_Rr(const unsigned int opCode);
-	
+
 	/**
 	 * CPSE Rd, Rr		0001 00rd dddd rrrr - Compare Skip if Equal
 	 */
 	int inst_CPSE_Rd_Rr(const unsigned int opCode);
-	
+
 	/**
 	 * CP Rd, Rr		0001 01rd dddd rrrr - Compare
 	 */
 	int inst_CP_Rd_Rr(const unsigned int opCode);
-	
+
 	/**
 	 * SUB Rd, Rr		0001 10rd dddd rrrr - Subtract without Carry
 	 */
 	int inst_SUB_Rd_Rr(const unsigned int opCode);
-	
+
 	/**
 	 * ADC Rd, Rr		0001 11rd dddd rrrr - Add with Carry
 	 * ROL Rd		0001 11dd dddd dddd - Rotate Left trough Carry
@@ -370,17 +370,17 @@ public:
 	 * LPM			1001 0101 1100 1000 - Load Program Memory
 	 */
 	int inst_LPM(const unsigned int);
-	
+
 	/**
 	 * ELPM			1001 0101 1101 1000 - Extended Load Program Memory
 	 */
 	int inst_ELPM(const unsigned int);
-	
+
 	/**
 	 * SPM			1001 0101 1110 1000 - Store Program Memory
 	 */
 	int inst_SPM(const unsigned int opCode);
-	
+
 	/**
 	 * SPM Z+		1001 0101 1111 1000 - Store Program Memory
 	 */
@@ -390,12 +390,12 @@ public:
 	 * SLEEP		1001 0101 1000 1000 - SLEEP
 	 */
 	int inst_SLEEP(const unsigned int);
-	
+
 	/**
 	 * BREAK		1001 0101 1001 1000 - Break
 	 */
 	int inst_BREAK(const unsigned int);
-	
+
 	/**
 	 * WDR			1001 0101 1010 1000 - Watchdog Reset
 	 */
@@ -405,7 +405,7 @@ public:
 	 * RET			1001 0101 0000 1000 - Return from Subroutine
 	 */
 	int inst_RET(const unsigned int);
-	
+
 	/**
 	 * RETI			1001 0101 0001 1000 - Return from Interrupt
 	 */
@@ -492,27 +492,27 @@ public:
 	 * BSET s		1001 0100 0sss 1000 - Bit Set in SREG
 	 */
 	int inst_BSET_s(const unsigned int opCode);
-	
+
 	/**
 	 * SEC			1001 0100 0000 1000 - Set Carry Flag
 	 */
 	int inst_SEC(const unsigned int);
-	
+
 	/**
 	 * SEZ			1001 0100 0001 1000 - Set Zero Flag
 	 */
 	int inst_SEZ(const unsigned int);
-	
+
 	/**
 	 * SEN			1001 0100 0010 1000 - Set Negative Flag
 	 */
 	int inst_SEN(const unsigned int);
-	
+
 	/**
 	 * SEV			1001 0100 0011 1000 - Set Overflow Flag
 	 */
 	int inst_SEV(const unsigned int);
-	
+
 	/**
 	 * SES			1001 0100 0100 1000 - Set Signed Flag
 	 */
@@ -521,12 +521,12 @@ public:
 	 * SEH			1001 0100 0101 1000 - Set Half Carry Flag
 	 */
 	int inst_SEH(const unsigned int);
-	
+
 	/**
 	 * SET			1001 0100 0110 1000 - Set T Flag
 	 */
 	int inst_SET(const unsigned int);
-	
+
 	/**
 	 * SEI			1001 0100 0111 1000 - Set Global Interrupt Flag
 	 */
@@ -536,42 +536,42 @@ public:
 	 * BCLR s		1001 0100 1sss 1000 - Bit Clear in SREG
 	 */
 	int inst_BCLR_s(const unsigned int opCode);
-	
+
 	/**
 	 * CLC			1001 0100 1000 1000 - Clear Carry Flag
 	 */
 	int inst_CLC(const unsigned int);
-	
+
 	/**
 	 * CLZ			1001 0100 1001 1000 - Clear Zero Flag
 	 */
 	int inst_CLZ(const unsigned int);
-	
+
 	/**
 	 * CLN			1001 0100 1010 1000 - Clear Negative Flag
 	 */
 	int inst_CLN(const unsigned int);
-	
+
 	/**
 	 * CLV			1001 0100 1011 1000 - Clear Overflow Flag
 	 */
 	int inst_CLV(const unsigned int);
-	
+
 	/**
 	 * CLS			1001 0100 1100 1000 - Clear Signed Flag
 	 */
 	int inst_CLS(const unsigned int);
-	
+
 	/**
 	 * CLH			1001 0100 1101 1000 - Clear Half Carry Flag
 	 */
 	int inst_CLH(const unsigned int);
-	
+
 	/**
 	 * CLT			1001 0100 1110 1000 - Clear T Flag
 	 */
 	int inst_CLT(const unsigned int);
-	
+
 	/**
 	 * CLI			1001 0100 1111 1000 - Clear Global Interrupt Flag
 	 */
@@ -581,53 +581,53 @@ public:
 	 * FMULSU Rd, Rr	0000 0011 1ddd 1rrr - Fractional Multiply Signed with Unsigned
 	 */
 	inline int inst_FMULSU_Rd_Rr(const unsigned int opCode);
-	
+
 	/**
 	 * FMULS Rd, Rr		0000 0011 1ddd 0rrr - Fractional Multiply Signed
 	 */
 	inline int inst_FMULS_Rd_Rr(const unsigned int opCode);
-	
+
 	/**
 	 * FMUL Rd, Rr		0000 0011 0ddd 1rrr - Fractional Multiply Unsigned
 	 */
 	inline int inst_FMUL_Rd_Rr(const unsigned int opCode);
-	
+
 	/**
 	 * MULSU Rd, Rr		0000 0011 0ddd 0rrr - Multiply Signed with Unsigned
 	 */
 	inline int inst_MULSU_Rd_Rr(const unsigned int opCode);
-	
+
 	/**
 	 * MULS Rd, Rr		0000 0010 dddd rrrr - Multiply Signed
 	 */
 	inline int inst_MULS_Rd_Rr(const unsigned int opCode);
-	
+
 	/**
 	 * MOVW Rd+1:Rd, Rr+1	0000 0001 dddd rrrr - Copy Register Word
 	 */
 	inline int inst_MOVW_Rd_Rr(const unsigned int opCode);
-	
+
 	/**
 	 * NOP			0000 0000 0000 0000 - No Operation
 	 */
 	inline int inst_NOP(const unsigned int);
-	
+
 	/**
 	 * SBIW Rd+1:Rd, K	1001 0111 KKdd KKKK - Subtract Immediate from Word
 	 */
 	inline int inst_SBIW_Rd_1_Rd_K(const unsigned int opCode);
-	
+
 	/**
 	 * ADIW Rd+1:Rd, K	1001 0110 KKdd KKKK - Add Immediate to Word
 	 */
 	inline int inst_ADIW_Rd_1_Rd_K(const unsigned int opCode);
-	
+
 	/**
 	 * CALL k		1001 010k kkkk 111k \
 	 * 			kkkk kkkk kkkk kkkk - Long Call to a Subroutine
 	 */
 	inline int inst_CALL_k(const unsigned int opCode);
-	
+
 	/**
 	 * JMP k		1001 010k kkkk 110k \
 	 * 			kkkk kkkk kkkk kkkk - Jump
@@ -653,67 +653,67 @@ public:
 	 * LSR Rd		1001 010d dddd 0110 - Logical Shift Right
 	 */
 	inline int inst_LSR_Rd(const unsigned int opCode);
-	
+
 	/**
 	 * ASR Rd		1001 010d dddd 0101 - Arithmetic Shift Right
 	 */
 	inline int inst_ASR_Rd(const unsigned int opCode);
-	
+
 	/**
 	 * INC Rd		1001 010d dddd 0011 - Increment
 	 */
 	inline int inst_INC_Rd(const unsigned int opCode);
-	
+
 	/**
 	 * SWAP Rd		1001 010d dddd 0010 - Swap Nibbles
 	 */
 	inline int inst_SWAP_Rd(const unsigned int opCode);
-	
+
 	/**
 	 * NEG Rd		1001 010d dddd 0001 - Two’s Complement
 	 */
 	inline int inst_NEG_Rd(const unsigned int opCode);
-	
+
 	/**
 	 * COM Rd		1001 010d dddd 0000 - One’s Complement
 	 */
 	inline int inst_COM_Rd(const unsigned int opCode);
-	
+
 	/**
 	 * SBIS A, b		1001 1011 AAAA Abbb - Skip if Bit in I/O Register is Set
 	 */
 	inline int inst_SBIS_A_b(const unsigned int opCode);
-	
+
 	/**
 	 * SBI A, b		1001 1010 AAAA Abbb - Set Bit in I/O Register
 	 */
 	inline int inst_SBI_A_b(const unsigned int opCode);
-	
+
 	/**
 	 * SBIC A, b		1001 1001 AAAA Abbb - Skip if Bit in I/O Register is Cleared
 	 */
 	inline int inst_SBIC_A_b(const unsigned int opCode);
-	
+
 	/**
 	 * CBI A, b		1001 1000 AAAA Abbb - Clear Bit in I/O Register
 	 */
 	inline int inst_CBI_A_b(const unsigned int opCode);
-	
+
 	/**
 	 * BST Rd, b		1111 101d dddd 0bbb - Bit Store from Bit in Register to T Flag in SREG
 	 */
 	inline int inst_BST_Rd_b(const unsigned int opCode);
-	
+
 	/**
 	 * BLD Rd, b		1111 100d dddd 0bbb - Bit Load from the T Flag in SREG to a Bit in Register
 	 */
 	inline int inst_BLD_Rd_b(const unsigned int opCode);
-	
+
 	/**
 	 * SBRS Rr, b		1111 111r rrrr 0bbb - Skip if Bit in Register is Set
 	 */
 	inline int inst_SBRS_Rr_b(const unsigned int opCode);
-	
+
 	/**
 	 * SBRC Rr, b		1111 110r rrrr 0bbb - Skip if Bit in Register is Cleared
 	 */

@@ -23,6 +23,10 @@ public:
 		FUSE_BOOTRST,
 		FUSE_BOOTSZ0,
 		FUSE_BOOTSZ1,
+		FUSE_BLB01,
+		FUSE_BLB02,
+		FUSE_BLB11,
+		FUSE_BLB12,
 
 		FUSE__MAX__
 	};
@@ -40,6 +44,7 @@ public:
 	void reset(SubsysResetMode mode);
 
 protected:
+	// False means unprogrammed (1), true means programmed (0); it's confusing, isn't it? But that's how the manual describes it...
 	bool m_fuses[FUSE__MAX__];
 
 private:

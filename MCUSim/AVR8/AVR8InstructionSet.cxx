@@ -262,7 +262,7 @@ int AVR8InstructionSet::execInstruction() {
 	}
 
 	if ( pcOrig != m_pc ) {
-		logEventFast(EVENT_CPU_PC_CHANGED, m_pc);
+		logEvent(EVENT_CPU_PC_CHANGED, m_pc);
 	}
 
 	return (this->*(m_opCodeDispatchTable[opCode >> 10]))(opCode);
@@ -565,7 +565,7 @@ inline bool AVR8InstructionSet::isInstruction32b(const unsigned int opCode) cons
 int AVR8InstructionSet::instInvalid(const unsigned int opCode) {
 	instructionEnter(AVR8InsNames::INS_NONE);
 
-	logEventFast(EVENT_CPU_ERR_INVALID_OPCODE, m_pc, opCode);
+	logEvent(EVENT_CPU_ERR_INVALID_OPCODE, m_pc, opCode);
 	return -1;
 }
 
@@ -575,7 +575,7 @@ int AVR8InstructionSet::instInvalid(const unsigned int opCode) {
  */
 int AVR8InstructionSet::inst_PUSH_Rr(const unsigned int opCode) {
 	if ( false == m_config.m_availableInstructions[AVR8InsNames::SPECI_PUSH] ) {
-		logEventFast(EVENT_CPU_UNSUPPORTED_INST, m_pc, AVR8InsNames::SPECI_PUSH);
+		logEvent(EVENT_CPU_UNSUPPORTED_INST, m_pc, AVR8InsNames::SPECI_PUSH);
 		return -1;
 	}
 	instructionEnter(AVR8InsNames::INS_PUSH_Rr);
@@ -599,7 +599,7 @@ int AVR8InstructionSet::inst_PUSH_Rr(const unsigned int opCode) {
  */
 int AVR8InstructionSet::inst_POP_Rd(const unsigned int opCode) {
 	if ( false == m_config.m_availableInstructions[AVR8InsNames::SPECI_POP] ) {
-		logEventFast(EVENT_CPU_UNSUPPORTED_INST, m_pc, AVR8InsNames::SPECI_POP);
+		logEvent(EVENT_CPU_UNSUPPORTED_INST, m_pc, AVR8InsNames::SPECI_POP);
 		return -1;
 	}
 	instructionEnter(AVR8InsNames::INS_POP_Rd);
@@ -626,7 +626,7 @@ int AVR8InstructionSet::inst_ADD_Rd_Rr(const unsigned int opCode) {
 	const unsigned int valRr = m_dataMemory->read(addrRr);
 	const unsigned int valRd = m_dataMemory->read(addrRd);
 
-	unsigned int sreg = m_dataMemory->read(AVR8RegNames::SREG);
+	register unsigned int sreg = m_dataMemory->readFast(AVR8RegNames::SREG);
 	register unsigned int result = (valRr + valRd);
 
 	// Clear all status flags except for 'I' and 'T'.
@@ -662,7 +662,7 @@ int AVR8InstructionSet::inst_ADD_Rd_Rr(const unsigned int opCode) {
 		sreg |= AVR8RegNames::SREG_H;
 	}
 
-	m_dataMemory->write(AVR8RegNames::SREG, sreg);
+	m_dataMemory->writeFast(AVR8RegNames::SREG, sreg);
 	m_dataMemory->write(addrRd, result);
 
 	return 1;
@@ -673,7 +673,7 @@ int AVR8InstructionSet::inst_ADD_Rd_Rr(const unsigned int opCode) {
  */
 inline int AVR8InstructionSet::inst_SBIW_Rd_1_Rd_K(const unsigned int opCode) {
 	if ( false == m_config.m_availableInstructions[AVR8InsNames::SPECI_SBIW] ) {
-		logEventFast(EVENT_CPU_UNSUPPORTED_INST, m_pc, AVR8InsNames::SPECI_SBIW);
+		logEvent(EVENT_CPU_UNSUPPORTED_INST, m_pc, AVR8InsNames::SPECI_SBIW);
 		return -1;
 	}
 	instructionEnter(AVR8InsNames::INS_SBIW_Rd_1_Rd_K);
@@ -683,7 +683,7 @@ inline int AVR8InstructionSet::inst_SBIW_Rd_1_Rd_K(const unsigned int opCode) {
 	unsigned int addrRd = ((opCode & 0x0030) >> 3) | 0x19; // d ∈ {24,26,28,30}, Rd+1
 
 	// Registers
-	unsigned int sreg = m_dataMemory->read(AVR8RegNames::SREG);
+	register unsigned int sreg = m_dataMemory->readFast(AVR8RegNames::SREG);
 	unsigned int valRd = m_dataMemory->read(addrRd);	// Rd high byte
 	valRd <<= 8;
 	valRd |= m_dataMemory->read(--addrRd);			// Rd low byte
@@ -712,7 +712,7 @@ inline int AVR8InstructionSet::inst_SBIW_Rd_1_Rd_K(const unsigned int opCode) {
 	}
 
 	// Write results
-	m_dataMemory->write(AVR8RegNames::SREG, sreg);	// Rd high byte
+	m_dataMemory->writeFast(AVR8RegNames::SREG, sreg);	// Rd high byte
 	m_dataMemory->write(addrRd, (valRd));		// Rd low byte
 	m_dataMemory->write(++addrRd, (valRd));		// Rd high byte
 
@@ -723,7 +723,7 @@ inline int AVR8InstructionSet::inst_SBIW_Rd_1_Rd_K(const unsigned int opCode) {
 template <bool withCarry>
 inline unsigned int AVR8InstructionSet::instSub8b(unsigned int leftVal, unsigned int rightVal) {
 	// Status flags register
-	unsigned int sreg = m_dataMemory->read(AVR8RegNames::SREG);
+	register unsigned int sreg = m_dataMemory->readFast(AVR8RegNames::SREG);
 
 	// Perform the operation
 	register unsigned int result = ( leftVal - rightVal );
@@ -767,7 +767,7 @@ inline unsigned int AVR8InstructionSet::instSub8b(unsigned int leftVal, unsigned
 	}
 
 	// Write new status flags
-	m_dataMemory->write(AVR8RegNames::SREG, sreg);
+	m_dataMemory->writeFast(AVR8RegNames::SREG, sreg);
 
 	// Return the result of subtraction
 	return result;
@@ -1133,7 +1133,7 @@ int AVR8InstructionSet::inst_ADC_Rd_Rr(const unsigned int opCode) {
 	// Registers
 	const unsigned int valRr = m_dataMemory->read(addrRr);
 	const unsigned int valRd = m_dataMemory->read(addrRd);
-	unsigned int sreg = m_dataMemory->read(AVR8RegNames::SREG);
+	register unsigned int sreg = m_dataMemory->readFast(AVR8RegNames::SREG);
 
 	// Perform the operation
 	register unsigned int result = (valRr + valRd + ((sreg & AVR8RegNames::SREG_C) ? 1 : 0));
@@ -1172,7 +1172,7 @@ int AVR8InstructionSet::inst_ADC_Rd_Rr(const unsigned int opCode) {
 	}
 
 	// Write results
-	m_dataMemory->write(AVR8RegNames::SREG, sreg);
+	m_dataMemory->writeFast(AVR8RegNames::SREG, sreg);
 	m_dataMemory->write(addrRd, result);
 
 	return 1;
@@ -1185,7 +1185,7 @@ int AVR8InstructionSet::inst_AND_Rd_Rr(const unsigned int opCode) {
 	const unsigned int addrRr = ((opCode & 0x0200) >> 5) | (opCode & 0x000f);
 	const unsigned int addrRd = (opCode & 0x01f0) >> 4;
 
-	unsigned int sreg = m_dataMemory->read(AVR8RegNames::SREG);
+	register unsigned int sreg = m_dataMemory->readFast(AVR8RegNames::SREG);
 	unsigned int valRd = m_dataMemory->read(addrRd);
 
 	// Perform the operation
@@ -1202,7 +1202,7 @@ int AVR8InstructionSet::inst_AND_Rd_Rr(const unsigned int opCode) {
 		sreg |= ( AVR8RegNames::SREG_N | AVR8RegNames::SREG_S );
 	}
 
-	m_dataMemory->write(AVR8RegNames::SREG, sreg);
+	m_dataMemory->writeFast(AVR8RegNames::SREG, sreg);
 	m_dataMemory->write(addrRd, valRd);
 
 	return 1;
@@ -1221,7 +1221,7 @@ int AVR8InstructionSet::inst_EOR_Rd_Rr(const unsigned int opCode) {
 
 	// Registers
 	unsigned int valRd = m_dataMemory->read(addrRd);
-	unsigned int sreg  = m_dataMemory->read(AVR8RegNames::SREG);
+	register unsigned int sreg  = m_dataMemory->readFast(AVR8RegNames::SREG);
 
 	// Perform the operation
 	valRd ^= m_dataMemory->read(addrRr);
@@ -1239,7 +1239,7 @@ int AVR8InstructionSet::inst_EOR_Rd_Rr(const unsigned int opCode) {
 	}
 
 	// Write results
-	m_dataMemory->write(AVR8RegNames::SREG, sreg);
+	m_dataMemory->writeFast(AVR8RegNames::SREG, sreg);
 	m_dataMemory->write(addrRd, valRd);
 
 	// This takes one cycle to execute
@@ -1259,7 +1259,7 @@ int AVR8InstructionSet::inst_OR_Rd_Rr(const unsigned int opCode) {
 
 	// Registers
 	unsigned int valRd = m_dataMemory->read(addrRd);
-	unsigned int sreg  = m_dataMemory->read(AVR8RegNames::SREG);
+	register unsigned int sreg  = m_dataMemory->readFast(AVR8RegNames::SREG);
 
 	// Perform the operation
 	valRd |= m_dataMemory->read(addrRr);
@@ -1277,7 +1277,7 @@ int AVR8InstructionSet::inst_OR_Rd_Rr(const unsigned int opCode) {
 	}
 
 	// Write results
-	m_dataMemory->write(AVR8RegNames::SREG, sreg);
+	m_dataMemory->writeFast(AVR8RegNames::SREG, sreg);
 	m_dataMemory->write(addrRd, valRd);
 
 	// This takes one cycle to execute
@@ -1308,7 +1308,7 @@ int AVR8InstructionSet::inst_MOV_Rd_Rr(const unsigned int opCode) {
  */
 inline int AVR8InstructionSet::inst_MOVW_Rd_Rr(const unsigned int opCode) {
 	if ( false == m_config.m_availableInstructions[AVR8InsNames::SPECI_MOVW] ) {
-		logEventFast(EVENT_CPU_UNSUPPORTED_INST, m_pc, AVR8InsNames::SPECI_MOVW);
+		logEvent(EVENT_CPU_UNSUPPORTED_INST, m_pc, AVR8InsNames::SPECI_MOVW);
 		return -1;
 	}
 	instructionEnter(AVR8InsNames::INS_MOVW_Rd_Rr);
@@ -1342,7 +1342,7 @@ int AVR8InstructionSet::inst_ORI_Rd_K(const unsigned int opCode) {
 
 	// Registers
 	unsigned int valRd = m_dataMemory->read(addrRd);
-	unsigned int sreg  = m_dataMemory->read(AVR8RegNames::SREG);
+	register unsigned int sreg  = m_dataMemory->readFast(AVR8RegNames::SREG);
 
 	// Perform the operation
 	valRd |= valK;
@@ -1360,7 +1360,7 @@ int AVR8InstructionSet::inst_ORI_Rd_K(const unsigned int opCode) {
 	}
 
 	// Write results
-	m_dataMemory->write(AVR8RegNames::SREG, sreg);
+	m_dataMemory->writeFast(AVR8RegNames::SREG, sreg);
 	m_dataMemory->write(addrRd, valRd);
 
 	// This takes one cycle to execute
@@ -1379,7 +1379,7 @@ int AVR8InstructionSet::inst_ANDI_Rd_K(const unsigned int opCode) {
 	const unsigned int addrRd = ((opCode & 0x00f0) >> 4) | 0x10; // 16 ≤ d ≤ 31
 
 	// Registers
-	unsigned int sreg = m_dataMemory->read(AVR8RegNames::SREG);
+	register unsigned int sreg = m_dataMemory->readFast(AVR8RegNames::SREG);
 	const unsigned int result = m_dataMemory->read(addrRd) | valK;
 
 	// Clear all status flags except for 'I', 'T', 'H', and 'C'.
@@ -1394,7 +1394,7 @@ int AVR8InstructionSet::inst_ANDI_Rd_K(const unsigned int opCode) {
 	}
 
 	// Write results
-	m_dataMemory->write(AVR8RegNames::SREG, sreg);
+	m_dataMemory->writeFast(AVR8RegNames::SREG, sreg);
 	m_dataMemory->write(addrRd, result);
 
 	// This takes one cycle to execute
@@ -1487,7 +1487,7 @@ int AVR8InstructionSet::inst_RCALL_k(const unsigned int opCode) {
 		} else if ( PCWIDTH_22 == m_config.m_pcWidth ) {
 			cycles = 3;
 		} else {
-			logEventFast(EVENT_CPU_SYS_FATAL_ERROR, m_pc);
+			logEvent(EVENT_CPU_SYS_FATAL_ERROR, m_pc);
 			return -1;
 		}
 	} else if ( MCUSim::ARCH_TINYAVR /* Reduced code tinyAVR */ == m_config.m_arch ) {
@@ -1498,13 +1498,13 @@ int AVR8InstructionSet::inst_RCALL_k(const unsigned int opCode) {
 		} else if ( PCWIDTH_22 == m_config.m_pcWidth ) {
 			cycles = 4;
 		} else {
-			logEventFast(EVENT_CPU_SYS_FATAL_ERROR, m_pc);
+			logEvent(EVENT_CPU_SYS_FATAL_ERROR, m_pc);
 			return -1;
 		}
 	}
 
 	// Log the event
-	logEventFast(EVENT_CPU_CALL, m_pc, AVR8InsNames::SPECI_RCALL);
+	logEvent(EVENT_CPU_CALL, m_pc, AVR8InsNames::SPECI_RCALL);
 
 	// Push current PC value onto the stack
 	m_dataMemory->pushOnStack(m_pc & 0xff);
@@ -1553,7 +1553,7 @@ int AVR8InstructionSet::inst_BRBS_s_k(const unsigned int opCode) {
 	const unsigned int maskS = 0x01 << (opCode & 0x0007);
 
 	// Registers
-	const unsigned int sreg = m_dataMemory->read(AVR8RegNames::SREG);
+	const unsigned int sreg = m_dataMemory->readFast(AVR8RegNames::SREG);
 
 	if ( maskS & sreg ) {
 		/*
@@ -1587,7 +1587,7 @@ int AVR8InstructionSet::inst_BRBC_s_k(const unsigned int opCode) {
 	const unsigned int maskS = 0x01 << (opCode & 0x0007);
 
 	// Registers
-	const unsigned int sreg = m_dataMemory->read(AVR8RegNames::SREG);
+	const unsigned int sreg = m_dataMemory->readFast(AVR8RegNames::SREG);
 
 	if ( maskS & sreg ) {
 		// Bit SREG(s) is set --> continue normally
@@ -1616,7 +1616,7 @@ int AVR8InstructionSet::inst_BRBC_s_k(const unsigned int opCode) {
  */
 int AVR8InstructionSet::inst_ICALL(const unsigned int) {
 	if ( false == m_config.m_availableInstructions[AVR8InsNames::SPECI_ICALL] ) {
-		logEventFast(EVENT_CPU_UNSUPPORTED_INST, m_pc, AVR8InsNames::SPECI_ICALL);
+		logEvent(EVENT_CPU_UNSUPPORTED_INST, m_pc, AVR8InsNames::SPECI_ICALL);
 		return -1;
 	}
 	instructionEnter(AVR8InsNames::INS_ICALL);
@@ -1633,7 +1633,7 @@ int AVR8InstructionSet::inst_ICALL(const unsigned int) {
 		} else if ( PCWIDTH_22 == m_config.m_pcWidth ) {
 			cycles = 3;
 		} else {
-			logEventFast(EVENT_CPU_SYS_FATAL_ERROR, m_pc);
+			logEvent(EVENT_CPU_SYS_FATAL_ERROR, m_pc);
 			return -1;
 		}
 	} else {
@@ -1642,13 +1642,13 @@ int AVR8InstructionSet::inst_ICALL(const unsigned int) {
 		} else if ( PCWIDTH_22 == m_config.m_pcWidth ) {
 			cycles = 4;
 		} else {
-			logEventFast(EVENT_CPU_SYS_FATAL_ERROR, m_pc);
+			logEvent(EVENT_CPU_SYS_FATAL_ERROR, m_pc);
 			return -1;
 		}
 	}
 
 	// Log the event
-	logEventFast(EVENT_CPU_CALL, m_pc, AVR8InsNames::SPECI_ICALL);
+	logEvent(EVENT_CPU_CALL, m_pc, AVR8InsNames::SPECI_ICALL);
 
 	// Push current PC value onto the stack
 	m_dataMemory->pushOnStack(m_pc & 0xff);
@@ -1672,7 +1672,7 @@ int AVR8InstructionSet::inst_ICALL(const unsigned int) {
  */
 int AVR8InstructionSet::inst_EICALL(const unsigned int) {
 	if ( false == m_config.m_availableInstructions[AVR8InsNames::SPECI_EICALL] ) {
-		logEventFast(EVENT_CPU_UNSUPPORTED_INST, m_pc, AVR8InsNames::SPECI_EICALL);
+		logEvent(EVENT_CPU_UNSUPPORTED_INST, m_pc, AVR8InsNames::SPECI_EICALL);
 		return -1;
 	}
 	instructionEnter(AVR8InsNames::INS_EICALL);
@@ -1683,7 +1683,7 @@ int AVR8InstructionSet::inst_EICALL(const unsigned int) {
 	addr |= m_dataMemory->read(AVR8RegNames::ZL);			// addr(7:0)
 
 	// Log the event
-	logEventFast(EVENT_CPU_CALL, m_pc, AVR8InsNames::SPECI_EICALL);
+	logEvent(EVENT_CPU_CALL, m_pc, AVR8InsNames::SPECI_EICALL);
 
 	// Push current PC value onto the stack
 	m_dataMemory->pushOnStack(m_pc & 0xff);
@@ -1710,7 +1710,7 @@ int AVR8InstructionSet::inst_EICALL(const unsigned int) {
  */
 int AVR8InstructionSet::inst_IJMP(const unsigned int) {
 	if ( false == m_config.m_availableInstructions[AVR8InsNames::SPECI_IJMP] ) {
-		logEventFast(EVENT_CPU_UNSUPPORTED_INST, m_pc, AVR8InsNames::SPECI_IJMP);
+		logEvent(EVENT_CPU_UNSUPPORTED_INST, m_pc, AVR8InsNames::SPECI_IJMP);
 		return -1;
 	}
 	instructionEnter(AVR8InsNames::INS_IJMP);
@@ -1732,7 +1732,7 @@ int AVR8InstructionSet::inst_IJMP(const unsigned int) {
  */
 int AVR8InstructionSet::inst_EIJMP(const unsigned int) {
 	if ( false == m_config.m_availableInstructions[AVR8InsNames::SPECI_EIJMP] ) {
-		logEventFast(EVENT_CPU_UNSUPPORTED_INST, m_pc, AVR8InsNames::SPECI_EIJMP);
+		logEvent(EVENT_CPU_UNSUPPORTED_INST, m_pc, AVR8InsNames::SPECI_EIJMP);
 		return -1;
 	}
 	instructionEnter(AVR8InsNames::INS_EIJMP);
@@ -1755,7 +1755,7 @@ template<int instruction, bool destR0, bool postIncrement, bool extendedLoad>
 inline int AVR8InstructionSet::instLoadProgMemory(const unsigned int opCode) {
 
 	if ( false == m_config.m_availableInstructions[instruction] ) {
-		logEventFast(EVENT_CPU_UNSUPPORTED_INST, m_pc, instruction);
+		logEvent(EVENT_CPU_UNSUPPORTED_INST, m_pc, instruction);
 		return -1;
 	}
 
@@ -1771,7 +1771,7 @@ inline int AVR8InstructionSet::instLoadProgMemory(const unsigned int opCode) {
 	if ( true == postIncrement ) {
 		if ( (AVR8RegNames::R30 == addrRd) | (AVR8RegNames::R31 == addrRd) ) {
 			// Invalid address, generate random result
-			logEventFast(EVENT_CPU_ERR_INVALID_OPSET, m_pc, AVR8InsNames::SPECI_ELPM_Rd_Zplus);
+			logEvent(EVENT_CPU_ERR_INVALID_OPSET, m_pc, AVR8InsNames::SPECI_ELPM_Rd_Zplus);
 
 			// Write fake result
 			m_dataMemory->write(addrRd, m_programMemory->getUndefVal<8>());
@@ -1903,16 +1903,16 @@ int AVR8InstructionSet::inst_SLEEP(const unsigned int) {
  */
 int AVR8InstructionSet::inst_BREAK(const unsigned int) {
 	if ( false == m_config.m_availableInstructions[AVR8InsNames::SPECI_BREAK] ) {
-		logEventFast(EVENT_CPU_UNSUPPORTED_INST, m_pc, AVR8InsNames::SPECI_BREAK);
+		logEvent(EVENT_CPU_UNSUPPORTED_INST, m_pc, AVR8InsNames::SPECI_BREAK);
 		return -1;
 	}
 	instructionEnter(AVR8InsNames::INS_BREAK);
 
 	if ( true == m_fuses[AVR8Fuses::FUSE_JTAGEN] || true == m_fuses[AVR8Fuses::FUSE_OCDEN] ) {
 		m_processorMode = MCUSim::Mode::MD_STOPPED;
-		logEventFast(EVENT_CPU_STOPPED, m_pc, AVR8InsNames::SPECI_BREAK);
+		logEvent(EVENT_CPU_STOPPED, m_pc, AVR8InsNames::SPECI_BREAK);
 	} else {
-		logEventFast(EVENT_CPU_INST_IGNORED, m_pc, AVR8InsNames::SPECI_BREAK);
+		logEvent(EVENT_CPU_INST_IGNORED, m_pc, AVR8InsNames::SPECI_BREAK);
 	}
 	return 1;
 }
@@ -1936,8 +1936,8 @@ int AVR8InstructionSet::inst_BSET_s(const unsigned int opCode) {
 	instructionEnter(AVR8InsNames::INS_BSET_s);
 
 	const unsigned int valS = (opCode & 0x0070) >> 4;
-	const unsigned int sreg = m_dataMemory->read(AVR8RegNames::SREG) | ~(0x01 << valS);
-	m_dataMemory->write(AVR8RegNames::SREG, sreg);
+	const unsigned int sreg = m_dataMemory->readFast(AVR8RegNames::SREG) | ~(0x01 << valS);
+	m_dataMemory->writeFast(AVR8RegNames::SREG, sreg);
 	return 1;
 }
 /*
@@ -1948,24 +1948,24 @@ int AVR8InstructionSet::inst_BCLR_s(const unsigned int opCode) {
 	instructionEnter(AVR8InsNames::INS_BCLR_s);
 
 	const unsigned int valS = (opCode & 0x0070) >> 4;
-	const unsigned int sreg = m_dataMemory->read(AVR8RegNames::SREG) & ~(0x01 << valS);
-	m_dataMemory->write(AVR8RegNames::SREG, sreg);
+	const unsigned int sreg = m_dataMemory->readFast(AVR8RegNames::SREG) & ~(0x01 << valS);
+	m_dataMemory->writeFast(AVR8RegNames::SREG, sreg);
 	return 1;
 }
 
 template<int bitMask>
 inline int AVR8InstructionSet::instSregSetBit() {
-	unsigned int sreg = m_dataMemory->read(AVR8RegNames::SREG);
+	register unsigned int sreg = m_dataMemory->readFast(AVR8RegNames::SREG);
 	sreg |= bitMask;
-	m_dataMemory->write(AVR8RegNames::SREG, sreg);
+	m_dataMemory->writeFast(AVR8RegNames::SREG, sreg);
 	return 1;
 }
 
 template<int bitMask>
 inline int AVR8InstructionSet::instSregClearBit() {
-	unsigned int sreg = m_dataMemory->read(AVR8RegNames::SREG);
+	register unsigned int sreg = m_dataMemory->readFast(AVR8RegNames::SREG);
 	sreg &= ~bitMask;
-	m_dataMemory->write(AVR8RegNames::SREG, sreg);
+	m_dataMemory->writeFast(AVR8RegNames::SREG, sreg);
 	return 1;
 }
 
@@ -2128,7 +2128,7 @@ inline int AVR8InstructionSet::inst_NOP(const unsigned int) {
  */
 inline int AVR8InstructionSet::inst_ADIW_Rd_1_Rd_K(const unsigned int opCode) {
 	if ( false == m_config.m_availableInstructions[AVR8InsNames::SPECI_ADIW] ) {
-		logEventFast(EVENT_CPU_UNSUPPORTED_INST, m_pc, AVR8InsNames::SPECI_ADIW);
+		logEvent(EVENT_CPU_UNSUPPORTED_INST, m_pc, AVR8InsNames::SPECI_ADIW);
 		return -1;
 	}
 	instructionEnter(AVR8InsNames::INS_ADIW_Rd_1_Rd_K);
@@ -2140,7 +2140,7 @@ inline int AVR8InstructionSet::inst_ADIW_Rd_1_Rd_K(const unsigned int opCode) {
 	// Registers
 	const unsigned int valRd0 = m_dataMemory->read(addrRd);
 	const unsigned int valRd1 = m_dataMemory->read(++addrRd);
-	unsigned int sreg = m_dataMemory->read(AVR8RegNames::SREG);
+	register unsigned int sreg = m_dataMemory->readFast(AVR8RegNames::SREG);
 
 	// Auxiliary variables
 	register unsigned int result = ((valRd1 << 8) + valRd0 + valK);
@@ -2166,7 +2166,7 @@ inline int AVR8InstructionSet::inst_ADIW_Rd_1_Rd_K(const unsigned int opCode) {
 	}
 
 	// Write results
-	m_dataMemory->write(AVR8RegNames::SREG, sreg);
+	m_dataMemory->writeFast(AVR8RegNames::SREG, sreg);
 	m_dataMemory->write(addrRd, (result >> 8)); // Rd high
 	m_dataMemory->write(--addrRd, (result & 0xff)); // Rd low
 
@@ -2181,7 +2181,7 @@ inline int AVR8InstructionSet::inst_ADIW_Rd_1_Rd_K(const unsigned int opCode) {
  */
 inline int AVR8InstructionSet::inst_JMP_k(const unsigned int opCode) {
 	if ( false == m_config.m_availableInstructions[AVR8InsNames::SPECI_JMP] ) {
-		logEventFast(EVENT_CPU_UNSUPPORTED_INST, m_pc, AVR8InsNames::SPECI_JMP);
+		logEvent(EVENT_CPU_UNSUPPORTED_INST, m_pc, AVR8InsNames::SPECI_JMP);
 		return -1;
 	}
 	instructionEnter(AVR8InsNames::INS_JMP_k);
@@ -2193,7 +2193,7 @@ inline int AVR8InstructionSet::inst_JMP_k(const unsigned int opCode) {
 
 	// Check whether our program counter could even contain the destination address
 	if ( (m_config.m_pcWidth > PCWIDTH_16) && (valK & 0xffff0000) ) {
-		logEventFast(EVENT_CPU_ERR_INVALID_CALL, m_pc, AVR8InsNames::SPECI_CALL);
+		logEvent(EVENT_CPU_ERR_INVALID_CALL, m_pc, AVR8InsNames::SPECI_CALL);
 		valK &= 0xffff0000;
 	}
 
@@ -2220,7 +2220,7 @@ int AVR8InstructionSet::inst_RET(const unsigned int) {
 
 	// Execute return from subprogram
 	if ( 0 == m_actSubprogCounter ) {
-		logEventFast(EVENT_CPU_ERR_INVALID_RET, m_pc);
+		logEvent(EVENT_CPU_ERR_INVALID_RET, m_pc);
 	} else {
 		m_actSubprogCounter--;
 	}
@@ -2251,7 +2251,7 @@ int AVR8InstructionSet::inst_RETI(const unsigned int) {
 
 	// Execute return from subprogram
 	if ( true == m_interruptController->interrupted() ) {
-		logEventFast(EVENT_CPU_ERR_INVALID_RETI, m_pc);
+		logEvent(EVENT_CPU_ERR_INVALID_RETI, m_pc);
 	} else {
 
 		// Make interrupt controller forget about the last interrupt
@@ -2274,7 +2274,7 @@ int AVR8InstructionSet::inst_RETI(const unsigned int) {
  */
 inline int AVR8InstructionSet::inst_CALL_k(const unsigned int opCode) {
 	if ( false == m_config.m_availableInstructions[AVR8InsNames::SPECI_CALL] ) {
-		logEventFast(EVENT_CPU_UNSUPPORTED_INST, m_pc, AVR8InsNames::SPECI_CALL);
+		logEvent(EVENT_CPU_UNSUPPORTED_INST, m_pc, AVR8InsNames::SPECI_CALL);
 		return -1;
 	}
 	instructionEnter(AVR8InsNames::INS_CALL_k);
@@ -2287,7 +2287,7 @@ inline int AVR8InstructionSet::inst_CALL_k(const unsigned int opCode) {
 	int cycles; // Number of machine cycles
 
 	// Log the event and increment PC (we have read one more word)
-	logEventFast(EVENT_CPU_CALL, m_pc, AVR8InsNames::SPECI_CALL);
+	logEvent(EVENT_CPU_CALL, m_pc, AVR8InsNames::SPECI_CALL);
 	incrPc();
 
 	// Determinate how many machine cycles this takes
@@ -2297,7 +2297,7 @@ inline int AVR8InstructionSet::inst_CALL_k(const unsigned int opCode) {
 		} else if ( PCWIDTH_22 == m_config.m_pcWidth ) {
 			cycles = 4;
 		} else {
-			logEventFast(EVENT_CPU_SYS_FATAL_ERROR, m_pc);
+			logEvent(EVENT_CPU_SYS_FATAL_ERROR, m_pc);
 			return -1;
 		}
 	} else {
@@ -2306,13 +2306,13 @@ inline int AVR8InstructionSet::inst_CALL_k(const unsigned int opCode) {
 		} else if ( PCWIDTH_22 == m_config.m_pcWidth ) {
 			cycles = 5;
 		} else {
-			logEventFast(EVENT_CPU_SYS_FATAL_ERROR, m_pc);
+			logEvent(EVENT_CPU_SYS_FATAL_ERROR, m_pc);
 			return -1;
 		}
 	}
 	// Check whether our program counter could even contain the destination address
 	if ( (m_config.m_pcWidth > PCWIDTH_16) && (valK & 0xffff0000) ) {
-		logEventFast(EVENT_CPU_ERR_INVALID_CALL, m_pc, AVR8InsNames::SPECI_CALL);
+		logEvent(EVENT_CPU_ERR_INVALID_CALL, m_pc, AVR8InsNames::SPECI_CALL);
 		valK &= 0xffff0000;
 	}
 
@@ -2344,7 +2344,7 @@ inline int AVR8InstructionSet::inst_DEC_Rd(const unsigned int opCode) {
 
 	// Registers
 	unsigned int valRd = m_dataMemory->read(addrRd);
-	unsigned int sreg = m_dataMemory->read(AVR8RegNames::SREG);
+	register unsigned int sreg = m_dataMemory->readFast(AVR8RegNames::SREG);
 
 	// Perform the operation
 	valRd--;
@@ -2373,7 +2373,7 @@ inline int AVR8InstructionSet::inst_DEC_Rd(const unsigned int opCode) {
 	}
 
 	// Write results
-	m_dataMemory->write(AVR8RegNames::SREG, sreg);
+	m_dataMemory->writeFast(AVR8RegNames::SREG, sreg);
 	m_dataMemory->write(addrRd, valRd);
 
 	// This takes one cycle to execute
@@ -2392,7 +2392,7 @@ inline int AVR8InstructionSet::inst_INC_Rd(const unsigned int opCode) {
 
 	// Registers
 	unsigned int valRd = m_dataMemory->read(addrRd);
-	unsigned int sreg = m_dataMemory->read(AVR8RegNames::SREG);
+	register unsigned int sreg = m_dataMemory->readFast(AVR8RegNames::SREG);
 
 	// Perform the operation
 	valRd++;
@@ -2421,7 +2421,7 @@ inline int AVR8InstructionSet::inst_INC_Rd(const unsigned int opCode) {
 	}
 
 	// Write results
-	m_dataMemory->write(AVR8RegNames::SREG, sreg);
+	m_dataMemory->writeFast(AVR8RegNames::SREG, sreg);
 	m_dataMemory->write(addrRd, valRd);
 
 	// This takes one cycle to execute
@@ -2440,7 +2440,7 @@ inline int AVR8InstructionSet::inst_COM_Rd(const unsigned int opCode) {
 
 	// Registers
 	unsigned int valRd = m_dataMemory->read(addrRd);
-	unsigned int sreg = m_dataMemory->read(AVR8RegNames::SREG);
+	register unsigned int sreg = m_dataMemory->readFast(AVR8RegNames::SREG);
 
 	// Perform the operation
 	valRd ^= 0xff;
@@ -2459,7 +2459,7 @@ inline int AVR8InstructionSet::inst_COM_Rd(const unsigned int opCode) {
 	}
 
 	// Write results
-	m_dataMemory->write(AVR8RegNames::SREG, sreg);
+	m_dataMemory->writeFast(AVR8RegNames::SREG, sreg);
 	m_dataMemory->write(addrRd, valRd);
 
 	// This takes one cycle to execute
@@ -2472,13 +2472,13 @@ inline int AVR8InstructionSet::inst_COM_Rd(const unsigned int opCode) {
  */
 inline int AVR8InstructionSet::inst_NEG_Rd(const unsigned int opCode) {
 	instructionEnter(AVR8InsNames::INS_NEG_Rd);
-	
+
 	// Operands
 	unsigned int addrRd = (opCode & 0x01f0) >> 4;
 
 	// Registers
 	unsigned int valRd = m_dataMemory->read(addrRd);
-	unsigned int sreg = m_dataMemory->read(AVR8RegNames::SREG);
+	register unsigned int sreg = m_dataMemory->readFast(AVR8RegNames::SREG);
 
 	// Auxiliary variables
 	register unsigned int result = valRd;
@@ -2511,7 +2511,7 @@ inline int AVR8InstructionSet::inst_NEG_Rd(const unsigned int opCode) {
 
 
 	// Write results
-	m_dataMemory->write(AVR8RegNames::SREG, sreg);
+	m_dataMemory->writeFast(AVR8RegNames::SREG, sreg);
 	m_dataMemory->write(addrRd, result);
 
 	// This takes one cycle to execute
@@ -2524,7 +2524,7 @@ inline int AVR8InstructionSet::inst_NEG_Rd(const unsigned int opCode) {
  */
 inline int AVR8InstructionSet::inst_SWAP_Rd(const unsigned int opCode) {
 	instructionEnter(AVR8InsNames::INS_SWAP_Rd);
-	
+
 	// Operands
 	const unsigned int addrRd = (opCode & 0x01f0) >> 4;
 
@@ -2551,13 +2551,13 @@ inline int AVR8InstructionSet::inst_SWAP_Rd(const unsigned int opCode) {
  */
 inline int AVR8InstructionSet::inst_ASR_Rd(const unsigned int opCode) {
 	instructionEnter(AVR8InsNames::INS_ASR_Rd);
-	
+
 	// Operands
 	const unsigned int addrRd = (opCode & 0x01f0) >> 4;
 
 	// Registers
 	unsigned int valRd = m_dataMemory->read(addrRd);
-	unsigned int sreg = m_dataMemory->read(AVR8RegNames::SREG);
+	register unsigned int sreg = m_dataMemory->readFast(AVR8RegNames::SREG);
 
 	// Clear all status flags except for 'I', 'T', and 'H'.
 	sreg &= ( AVR8RegNames::SREG_I | AVR8RegNames::SREG_T | AVR8RegNames::SREG_H );
@@ -2590,7 +2590,7 @@ inline int AVR8InstructionSet::inst_ASR_Rd(const unsigned int opCode) {
 	}
 
 	// Write results
-	m_dataMemory->write(AVR8RegNames::SREG, sreg);
+	m_dataMemory->writeFast(AVR8RegNames::SREG, sreg);
 	m_dataMemory->write(addrRd, valRd);
 
 	return 1;
@@ -2605,13 +2605,13 @@ inline int AVR8InstructionSet::inst_ASR_Rd(const unsigned int opCode) {
  */
 inline int AVR8InstructionSet::inst_LSR_Rd(const unsigned int opCode) {
 	instructionEnter(AVR8InsNames::INS_LSR_Rd);
-	
+
 	// Operands
 	const unsigned int addrRd = (opCode & 0x01f0) >> 4;
 
 	// Registers
 	unsigned int valRd = m_dataMemory->read(addrRd);
-	unsigned int sreg = m_dataMemory->read(AVR8RegNames::SREG);
+	register unsigned int sreg = m_dataMemory->readFast(AVR8RegNames::SREG);
 
 	// Clear all status flags except for 'I', 'T', and 'H'.
 	sreg &= ( AVR8RegNames::SREG_I | AVR8RegNames::SREG_T | AVR8RegNames::SREG_H );
@@ -2631,7 +2631,7 @@ inline int AVR8InstructionSet::inst_LSR_Rd(const unsigned int opCode) {
 	}
 
 	// Write results
-	m_dataMemory->write(AVR8RegNames::SREG, sreg);
+	m_dataMemory->writeFast(AVR8RegNames::SREG, sreg);
 	m_dataMemory->write(addrRd, valRd);
 
 	return 1;
@@ -2646,13 +2646,13 @@ inline int AVR8InstructionSet::inst_LSR_Rd(const unsigned int opCode) {
  */
 inline int AVR8InstructionSet::inst_ROR_Rd(const unsigned int opCode) {
 	instructionEnter(AVR8InsNames::INS_ROR_Rd);
-	
+
 	// Operands
 	const unsigned int addrRd = (opCode & 0x01f0) >> 4;
 
 	// Registers
 	unsigned int valRd = m_dataMemory->read(addrRd);
-	unsigned int sreg = m_dataMemory->read(AVR8RegNames::SREG);
+	register unsigned int sreg = m_dataMemory->readFast(AVR8RegNames::SREG);
 
 	// Rd8 ← C
 	if ( AVR8RegNames::SREG_C & sreg ) {
@@ -2684,7 +2684,7 @@ inline int AVR8InstructionSet::inst_ROR_Rd(const unsigned int opCode) {
 	}
 
 	// Write results
-	m_dataMemory->write(AVR8RegNames::SREG, sreg);
+	m_dataMemory->writeFast(AVR8RegNames::SREG, sreg);
 	m_dataMemory->write(addrRd, valRd);
 
 	return 1;
@@ -2703,7 +2703,7 @@ inline int AVR8InstructionSet::inst_BLD_Rd_b(const unsigned int opCode) {
 
 	// Registers
 	unsigned int valRd = m_dataMemory->read(addrRd);
-	const unsigned int sreg = m_dataMemory->read(AVR8RegNames::SREG);
+	const unsigned int sreg = m_dataMemory->readFast(AVR8RegNames::SREG);
 
 	// Perform the operation
 	if ( sreg & AVR8RegNames::SREG_T ) {
@@ -2725,14 +2725,14 @@ inline int AVR8InstructionSet::inst_BLD_Rd_b(const unsigned int opCode) {
  */
 inline int AVR8InstructionSet::inst_BST_Rd_b(const unsigned int opCode) {
 	instructionEnter(AVR8InsNames::INS_BST_Rd_b);
-	
+
 	// Operands
 	const unsigned int maskb  = (0x01 << (opCode & 0x0007));
 	const unsigned int addrRd = ((opCode & 0x01f0) >> 4);
 
 	// Registers
 	const unsigned int valRd = m_dataMemory->read(addrRd);
-	unsigned int sreg = m_dataMemory->read(AVR8RegNames::SREG);
+	register unsigned int sreg = m_dataMemory->readFast(AVR8RegNames::SREG);
 
 	// Perform the operation
 	if ( valRd & maskb ) {
@@ -2742,7 +2742,7 @@ inline int AVR8InstructionSet::inst_BST_Rd_b(const unsigned int opCode) {
 	}
 
 	// Write result
-	m_dataMemory->write(AVR8RegNames::SREG, sreg);
+	m_dataMemory->writeFast(AVR8RegNames::SREG, sreg);
 
 	// This takes one cycle to execute
 	return 1;
@@ -2754,7 +2754,7 @@ inline int AVR8InstructionSet::inst_BST_Rd_b(const unsigned int opCode) {
  */
 inline int AVR8InstructionSet::inst_SBI_A_b(const unsigned int opCode) {
 	instructionEnter(AVR8InsNames::INS_SBI_A_b);
-	
+
 	// Operands
 	const unsigned int addrA = 0x20 + ((opCode & 0x00f8) >> 3);
 	const unsigned int maskb = (0x01 << (opCode & 0x0007));
@@ -2782,7 +2782,7 @@ inline int AVR8InstructionSet::inst_SBI_A_b(const unsigned int opCode) {
  */
 inline int AVR8InstructionSet::inst_CBI_A_b(const unsigned int opCode) {
 	instructionEnter(AVR8InsNames::INS_CBI_A_b);
-	
+
 	// Operands
 	const unsigned int addrA = 0x20 + ((opCode & 0x00f8) >> 3);
 	const unsigned int maskb = (0x01 << (opCode & 0x0007));
@@ -2810,7 +2810,7 @@ inline int AVR8InstructionSet::inst_CBI_A_b(const unsigned int opCode) {
  */
 int AVR8InstructionSet::inst_LAS_Z_Rd(const unsigned int opCode) {
 	if ( false == m_config.m_availableInstructions[AVR8InsNames::SPECI_LAS] ) {
-		logEventFast(EVENT_CPU_UNSUPPORTED_INST, m_pc, AVR8InsNames::SPECI_LAS);
+		logEvent(EVENT_CPU_UNSUPPORTED_INST, m_pc, AVR8InsNames::SPECI_LAS);
 		return -1;
 	}
 	instructionEnter(AVR8InsNames::INS_LAS_Z_Rd);
@@ -2842,7 +2842,7 @@ int AVR8InstructionSet::inst_LAS_Z_Rd(const unsigned int opCode) {
  */
 int AVR8InstructionSet::inst_LAC_Z_Rd(const unsigned int opCode) {
 	if ( false == m_config.m_availableInstructions[AVR8InsNames::SPECI_LAC] ) {
-		logEventFast(EVENT_CPU_UNSUPPORTED_INST, m_pc, AVR8InsNames::SPECI_LAC);
+		logEvent(EVENT_CPU_UNSUPPORTED_INST, m_pc, AVR8InsNames::SPECI_LAC);
 		return -1;
 	}
 	instructionEnter(AVR8InsNames::INS_LAC_Z_Rd);
@@ -2875,7 +2875,7 @@ int AVR8InstructionSet::inst_LAC_Z_Rd(const unsigned int opCode) {
  */
 int AVR8InstructionSet::inst_LAT_Z_Rd(const unsigned int opCode) {
 	if ( false == m_config.m_availableInstructions[AVR8InsNames::SPECI_LAT] ) {
-		logEventFast(EVENT_CPU_UNSUPPORTED_INST, m_pc, AVR8InsNames::SPECI_LAT);
+		logEvent(EVENT_CPU_UNSUPPORTED_INST, m_pc, AVR8InsNames::SPECI_LAT);
 		return -1;
 	}
 	instructionEnter(AVR8InsNames::INS_LAT_Z_Rd);
@@ -2904,7 +2904,7 @@ int AVR8InstructionSet::inst_LAT_Z_Rd(const unsigned int opCode) {
 template <int instruction, unsigned int pointerRegH, unsigned int pointerRegL, bool preDecrement, bool postIncrement>
 inline int AVR8InstructionSet::instLD(unsigned int addrRd, int displacement) {
 	if ( false == m_config.m_availableInstructions[instruction] ) {
-		logEventFast(EVENT_CPU_UNSUPPORTED_INST, m_pc, instruction);
+		logEvent(EVENT_CPU_UNSUPPORTED_INST, m_pc, instruction);
 		return -1;
 	}
 
@@ -2947,7 +2947,7 @@ inline int AVR8InstructionSet::instLD(unsigned int addrRd, int displacement) {
 		// Check validity of Rd address
 		if ( pointerRegH == addrRd || pointerRegL == addrRd ) {
 			// Invalid address, generate random result
-			logEventFast(EVENT_CPU_ERR_INVALID_OPSET, m_pc, instruction);
+			logEvent(EVENT_CPU_ERR_INVALID_OPSET, m_pc, instruction);
 
 			// Genereate fake results
 			pointedVal = m_programMemory->getUndefVal<8>();
@@ -3145,7 +3145,7 @@ inline int AVR8InstructionSet::inst_LDD_Rd_Zq(const unsigned int opCode) {
  */
 int AVR8InstructionSet::inst_MUL_Rd_Rr(const unsigned int opCode) {
 	if ( false == m_config.m_availableInstructions[AVR8InsNames::SPECI_MUL] ) {
-		logEventFast(EVENT_CPU_UNSUPPORTED_INST, m_pc, AVR8InsNames::SPECI_MUL);
+		logEvent(EVENT_CPU_UNSUPPORTED_INST, m_pc, AVR8InsNames::SPECI_MUL);
 		return -1;
 	}
 	instructionEnter(AVR8InsNames::INS_MUL_Rd_Rr);
@@ -3167,7 +3167,7 @@ int AVR8InstructionSet::inst_MUL_Rd_Rr(const unsigned int opCode) {
  */
 inline int AVR8InstructionSet::inst_MULS_Rd_Rr(const unsigned int opCode) {
 	if ( false == m_config.m_availableInstructions[AVR8InsNames::SPECI_MULS] ) {
-		logEventFast(EVENT_CPU_UNSUPPORTED_INST, m_pc, AVR8InsNames::SPECI_MULS);
+		logEvent(EVENT_CPU_UNSUPPORTED_INST, m_pc, AVR8InsNames::SPECI_MULS);
 		return -1;
 	}
 	instructionEnter(AVR8InsNames::INS_MULS_Rd_Rr);
@@ -3189,7 +3189,7 @@ inline int AVR8InstructionSet::inst_MULS_Rd_Rr(const unsigned int opCode) {
  */
 inline int AVR8InstructionSet::inst_MULSU_Rd_Rr(const unsigned int opCode) {
 	if ( false == m_config.m_availableInstructions[AVR8InsNames::SPECI_MULSU] ) {
-		logEventFast(EVENT_CPU_UNSUPPORTED_INST, m_pc, AVR8InsNames::SPECI_MULSU);
+		logEvent(EVENT_CPU_UNSUPPORTED_INST, m_pc, AVR8InsNames::SPECI_MULSU);
 		return -1;
 	}
 	instructionEnter(AVR8InsNames::INS_MULSU_Rd_Rr);
@@ -3215,7 +3215,7 @@ inline int AVR8InstructionSet::inst_MULSU_Rd_Rr(const unsigned int opCode) {
  */
 inline int AVR8InstructionSet::inst_FMUL_Rd_Rr(const unsigned int opCode) {
 	if ( false == m_config.m_availableInstructions[AVR8InsNames::SPECI_FMUL] ) {
-		logEventFast(EVENT_CPU_UNSUPPORTED_INST, m_pc, AVR8InsNames::SPECI_FMUL);
+		logEvent(EVENT_CPU_UNSUPPORTED_INST, m_pc, AVR8InsNames::SPECI_FMUL);
 		return -1;
 	}
 	instructionEnter(AVR8InsNames::INS_FMUL_Rd_Rr);
@@ -3242,7 +3242,7 @@ inline int AVR8InstructionSet::inst_FMUL_Rd_Rr(const unsigned int opCode) {
  */
 inline int AVR8InstructionSet::inst_FMULS_Rd_Rr(const unsigned int opCode) {
 	if ( false == m_config.m_availableInstructions[AVR8InsNames::SPECI_FMULS] ) {
-		logEventFast(EVENT_CPU_UNSUPPORTED_INST, m_pc, AVR8InsNames::SPECI_FMULS);
+		logEvent(EVENT_CPU_UNSUPPORTED_INST, m_pc, AVR8InsNames::SPECI_FMULS);
 		return -1;
 	}
 	instructionEnter(AVR8InsNames::INS_FMULS_Rd_Rr);
@@ -3269,7 +3269,7 @@ inline int AVR8InstructionSet::inst_FMULS_Rd_Rr(const unsigned int opCode) {
  */
 inline int AVR8InstructionSet::inst_FMULSU_Rd_Rr(const unsigned int opCode) {
 	if ( false == m_config.m_availableInstructions[AVR8InsNames::SPECI_FMULSU] ) {
-		logEventFast(EVENT_CPU_UNSUPPORTED_INST, m_pc, AVR8InsNames::SPECI_FMULSU);
+		logEvent(EVENT_CPU_UNSUPPORTED_INST, m_pc, AVR8InsNames::SPECI_FMULSU);
 		return -1;
 	}
 	instructionEnter(AVR8InsNames::INS_FMULSU_Rd_Rr);
@@ -3290,7 +3290,7 @@ inline void AVR8InstructionSet::instMul(const unsigned int addrRd, const unsigne
 	// Registers
 	int valRd = m_dataMemory->read(addrRd);
 	int valRr = m_dataMemory->read(addrRr);
-	unsigned int sreg = m_dataMemory->read(AVR8RegNames::SREG);
+	register unsigned int sreg = m_dataMemory->readFast(AVR8RegNames::SREG);
 
 	if ( true == rdSigned ) {
 		if ( 0x80 & valRd ) {
@@ -3335,15 +3335,15 @@ inline void AVR8InstructionSet::instMul(const unsigned int addrRd, const unsigne
 	}
 
 	// Write results
-	m_dataMemory->write(AVR8RegNames::SREG, sreg);
-	m_dataMemory->write(AVR8RegNames::R1, (result >> 8));	// The result - high byte
-	m_dataMemory->write(AVR8RegNames::R0, (result & 0xff));	// The result - low byte
+	m_dataMemory->writeFast(AVR8RegNames::SREG, sreg);
+	m_dataMemory->writeFast(AVR8RegNames::R1, (result >> 8));	// The result - high byte
+	m_dataMemory->writeFast(AVR8RegNames::R0, (result & 0xff));	// The result - low byte
 }
 
 template<int instruction, bool store>
 inline int AVR8InstructionSet::instLoadOrStore32b(const unsigned int opCode) {
 	if ( false == m_config.m_availableInstructions[instruction] ) {
-		logEventFast(EVENT_CPU_UNSUPPORTED_INST, m_pc, instruction);
+		logEvent(EVENT_CPU_UNSUPPORTED_INST, m_pc, instruction);
 		return -1;
 	}
 
@@ -3401,7 +3401,7 @@ int AVR8InstructionSet::inst_STS_k_Rr(const unsigned int opCode) {
 template<int instruction, bool store>
 inline int AVR8InstructionSet::instLoadOrStore16b(const unsigned int opCode) {
 	if ( false == m_config.m_availableInstructions[instruction] ) {
-		logEventFast(EVENT_CPU_UNSUPPORTED_INST, m_pc, instruction);
+		logEvent(EVENT_CPU_UNSUPPORTED_INST, m_pc, instruction);
 		return -1;
 	}
 
@@ -3455,7 +3455,7 @@ inline int AVR8InstructionSet::inst_STS_k_Rr_16b(const unsigned int opCode) {
 template <int instruction, unsigned int pointerRegH, unsigned int pointerRegL, bool preDecrement, bool postIncrement>
 inline int AVR8InstructionSet::instST(unsigned int addrRr, int displacement) {
 	if ( false == m_config.m_availableInstructions[instruction] ) {
-		logEventFast(EVENT_CPU_UNSUPPORTED_INST, m_pc, instruction);
+		logEvent(EVENT_CPU_UNSUPPORTED_INST, m_pc, instruction);
 		return -1;
 	}
 
@@ -3495,7 +3495,7 @@ inline int AVR8InstructionSet::instST(unsigned int addrRr, int displacement) {
 		// Check validity of Rd address
 		if ( pointerRegH == addrRr || pointerRegL == addrRr ) {
 			// Invalid address, generate random result
-			logEventFast(EVENT_CPU_ERR_INVALID_OPSET, m_pc, instruction);
+			logEvent(EVENT_CPU_ERR_INVALID_OPSET, m_pc, instruction);
 
 			// Genereate fake results
 			valRd   = m_programMemory->getUndefVal<8>();
@@ -3706,7 +3706,7 @@ int AVR8InstructionSet::inst_SPM_Zplus(const unsigned int opCode) {
  */
 inline int AVR8InstructionSet::inst_DES_K(const unsigned int opCode) {
 	if ( false == m_config.m_availableInstructions[AVR8InsNames::SPECI_DES] ) {
-		logEventFast(EVENT_CPU_UNSUPPORTED_INST, m_pc, AVR8InsNames::SPECI_DES);
+		logEvent(EVENT_CPU_UNSUPPORTED_INST, m_pc, AVR8InsNames::SPECI_DES);
 		return -1;
 	}
 	instructionEnter(AVR8InsNames::INS_DES);
@@ -3720,20 +3720,20 @@ inline int AVR8InstructionSet::inst_DES_K(const unsigned int opCode) {
 	const unsigned int round = ((opCode & 0x00f0) >> 4);	// operand 'k'
 
 	// Flag: decipher = true, encipher = false
-	bool decipherFlag = m_dataMemory->readBit(AVR8RegNames::SREG, AVR8RegNames::SREG_H);
+	bool decipherFlag = m_dataMemory->readBitFast(AVR8RegNames::SREG, AVR8RegNames::SREG_H);
 
 	// 64b data block (plaintext or ciphertext)
 	uint64_t dataBlock = 0;
 	for ( int i = AVR8RegNames::R7; i >= AVR8RegNames::R0; i-- ) {
 		dataBlock <<= 8;
-		dataBlock |= m_dataMemory->read(i);
+		dataBlock |= m_dataMemory->readFast(i);
 	}
 
 	// Full 64b key block (56b effective, 8b parity)
 	uint64_t keyBlock = 0;
 	for ( int i = AVR8RegNames::R15; i >= AVR8RegNames::R8; i-- ) {
 		keyBlock <<= 8;
-		keyBlock |= m_dataMemory->read(i);
+		keyBlock |= m_dataMemory->readFast(i);
 	}
 
 	// ---------------------------------------------------------------------
@@ -3748,13 +3748,13 @@ inline int AVR8InstructionSet::inst_DES_K(const unsigned int opCode) {
 
 	// 64b data block (plaintext or ciphertext)
 	for ( int i = AVR8RegNames::R0; i <= AVR8RegNames::R7; i++ ) {
-		m_dataMemory->write(i, dataBlock & 0xff);
+		m_dataMemory->writeFast(i, dataBlock & 0xff);
 		dataBlock >>= 8;
 	}
 
 	// Full 64b key block (56b effective, 8b parity)
 	for ( int i = AVR8RegNames::R8; i <= AVR8RegNames::R15; i++ ) {
-		m_dataMemory->write(i, keyBlock & 0xff);
+		m_dataMemory->writeFast(i, keyBlock & 0xff);
 		keyBlock >>= 8;
 	}
 
