@@ -125,8 +125,7 @@ inline AVR8InterruptController::InterruptVector AVR8InterruptController::detectP
 			 * When an event on the INT0 pin triggers an interrupt request, INTF0 becomes set (one).
 			 * If the I bit in SREG and the INT0 bit in GICR are set (one), the MCU will jump to the
 			 * corresponding Interrupt Vector. The flag is cleared when the interrupt routine is
-			 * executed. Alternatively, the flag can be cleared by writing a logical one to it. This
-			 * flag is always cleared when INT0 is configured as a level interrupt.
+			 * executed. Alternatively, the flag can be cleared by writing a logical one to it.
 			 */
 			m_interruptFlagToClear[0] = AVR8RegNames::GIFR;
 			m_interruptFlagToClear[1] = AVR8RegNames::GIFR_INTF0;

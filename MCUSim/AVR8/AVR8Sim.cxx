@@ -19,6 +19,7 @@
 #include "AVR8InterruptController.h"
 #include "AVR8TimerCounter0.h"
 #include "AVR8IO.h"
+#include "AVR8ExternalInterrupts.h"
 
 AVR8Sim::AVR8Sim() : MCUSim() {
 }

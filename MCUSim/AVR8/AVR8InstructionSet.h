@@ -18,9 +18,11 @@ class AVR8DataMemory;
 class AVR8DES;
 class AVR8Fuses;
 class AVR8InterruptController;
+class AVR8WatchdogTimer;
 
 #include "../MCUSim.h"
 
+#include "AVR8Sim.h"
 #include "AVR8InsNames.h"
 
 class AVR8InstructionSet : public MCUSim::CPU {
@@ -48,8 +50,10 @@ public:
 		AVR8ProgramMemory * programMemory,
 		AVR8DataMemory * dataMemory,
 		MCUSim::Mode & processorMode,
+		AVR8Sim::SleepMode & sleepMode,
 		AVR8Fuses & fuses,
-		AVR8InterruptController * interruptController
+		AVR8InterruptController * interruptController,
+		AVR8WatchdogTimer * watchdogTimer
    	);
 
 	int execInstruction();
@@ -74,8 +78,10 @@ protected:
 	AVR8ProgramMemory * m_programMemory;
 	AVR8DataMemory * m_dataMemory;
 	MCUSim::Mode & m_processorMode;
+	AVR8Sim::SleepMode & m_sleepMode;
 	AVR8Fuses & m_fuses;
 	AVR8InterruptController * m_interruptController;
+	AVR8WatchdogTimer * m_watchdogTimer;
 
 	AVR8DES * m_des;
 

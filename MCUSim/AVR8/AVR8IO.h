@@ -24,6 +24,8 @@ public:
 
 	enum PIN {
 		PIN_T0, // TODO: Assign some reasonable value here.
+		PIN_INT0, // TODO: Assign some reasonable value here.
+		PIN_INT1, // TODO: Assign some reasonable value here.
 
 		PIN__MAX__
 	};

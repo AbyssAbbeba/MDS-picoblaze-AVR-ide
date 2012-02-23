@@ -56,7 +56,8 @@ public:
 	enum Mode {
 		MD_POWERED_OFF,
 		MD_STOPPED,
-		MD_DEFAULT
+		MD_SLEEP,
+		MD_NORMAL
 	};
 
 	/// @brief ...
@@ -168,6 +169,8 @@ public:
 			ID_CPU,
 			ID_FUSES,
 			ID_INTERRUPTS,
+			ID_EXT_INT,
+			ID_WATCHDOG,
 			ID_IO
 // 			ID_SIMCONTROL,
 		};
@@ -210,7 +213,7 @@ public:
 			EVENT_CPU_ERR_INVALID_OPSET, // undefined result of the operation due to invalid set of operands
 			EVENT_CPU_UNSUPPORTED_INST,
 			EVENT_CPU_INST_IGNORED, // (because of settings)
-			EVENT_CPU_STOPPED,
+			EVENT_CPU_MODE_CHANGED,
 			EVENT_CPU_PC_OVERFLOW,
 			EVENT_CPU_PC_UNDERFLOW,
 			EVENT_CPU_PC_CHANGED,
@@ -328,8 +331,8 @@ public:
 // 	virtual Config * getConfig() = 0;
 	virtual RetCode setConfig(Config * newConfig) = 0;
 	virtual EventLogger * getLog() = 0;
-	virtual Arch arch() = 0;
-	virtual Mode mode() = 0;
+	virtual Arch arch() const = 0;
+	virtual Mode mode() const = 0;
 };
 
 #endif // MCUSIM_H

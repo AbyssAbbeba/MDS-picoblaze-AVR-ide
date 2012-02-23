@@ -41,7 +41,7 @@ inline void AVR8TimerCounter0::determinateClockSource() {
 	 */
 
 	m_clockSource = m_dataMemory->readFast(AVR8RegNames::TCCR0);
-	m_clockSource &= ( AVR8RegNames::TCCR0_CS00 | AVR8RegNames::TCCR0_CS01 | AVR8RegNames::TCCR0_CS02 );
+	m_clockSource &= ( AVR8RegNames::TCCR0_CS02 | AVR8RegNames::TCCR0_CS01 | AVR8RegNames::TCCR0_CS00 );
 }
 
 inline unsigned int AVR8TimerCounter0::incrementPrescaler(unsigned int number, unsigned int max) {
@@ -82,66 +82,86 @@ inline void AVR8TimerCounter0::resetPrescalerOnCond() {
 }
 
 void AVR8TimerCounter0::clockCycles(unsigned int numberOf) {
+	using namespace AVR8RegNames;
+
 	unsigned int prescalerMax;
 
 	determinateClockSource();
 
 	switch ( m_clockSource ) {
-		case 0b000:	// No clock source (Timer/Counter stopped).
+		case 0:
+			// No clock source (Timer/Counter stopped).
 			return;
-		case 0b001:	// clkI/O/(No prescaling)
+		case TCCR0_CS00:
+			// clkI/O/(No prescaling)
 			prescalerMax = 1;
 			break;
-		case 0b010:	// clkI/O/8 (From prescaler)
+		case TCCR0_CS01:
+			// clkI/O/8 (From prescaler)
 			prescalerMax = 8;
 			break;
-		case 0b011:	// clkI/O/64 (From prescaler)
+		case (TCCR0_CS01 | TCCR0_CS00):
+			// clkI/O/64 (From prescaler)
 			prescalerMax = 64;
 			break;
-		case 0b100:	// clkI/O/256 (From prescaler)
+		case TCCR0_CS02:
+			// clkI/O/256 (From prescaler)
 			prescalerMax = 256;
 			break;
-		case 0b101:	// clkI/O/1024 (From prescaler)
+		case (TCCR0_CS02 | TCCR0_CS00):
+			// clkI/O/1024 (From prescaler)
 			prescalerMax = 1024;
 			break;
-		case 0b110:	// External clock source on T0 pin. Clock on falling edge.
-		case 0b111:	// External clock source on T0 pin. Clock on rising edge.
+		case (TCCR0_CS02 | TCCR0_CS01):
+			// External clock source on T0 pin. Clock on falling edge.
+		case (TCCR0_CS02 | TCCR0_CS01 | TCCR0_CS00):
+			// External clock source on T0 pin. Clock on rising edge.
 			incrementWithDelay(numberOf);
 			return;
 	}
 
 	incrementTimer(incrementPrescaler(numberOf, prescalerMax));
-	resetPrescalerOnCond();
 
-	m_iwdIndexOut += numberOf;
-	m_iwdIndexIn += numberOf;
+	resetPrescalerOnCond();
+	clearDelayArray();
 }
 
 inline void AVR8TimerCounter0::incrementWithDelay(unsigned int number) {
-	number %= COUNTER_DELAY;
+	if ( number >= COUNTER_DELAY ) {
+		number = (COUNTER_DELAY - 1);
+	}
 
 	while ( number > 0 ) {
-		number--;
-		incrementTimer(m_incrementWithDelay[m_iwdIndexOut++ % COUNTER_DELAY]);
+		incrementTimer(m_incrementWithDelay[m_iwdIndexOut]);
+		m_incrementWithDelay[m_iwdIndexOut] = 0;
 
-		m_incrementWithDelay[m_iwdIndexOut++ % COUNTER_DELAY] = 0;
-
-		m_iwdIndexOut++;
 		m_iwdIndexIn++;
+		m_iwdIndexOut++;
+
+		m_iwdIndexIn %= COUNTER_DELAY;
+		m_iwdIndexOut %= COUNTER_DELAY;
+
+		number--;
 	}
 }
 
-void AVR8TimerCounter0::timeStep() {
+inline void AVR8TimerCounter0::sampleT0() {
 	bool prevT0Log = m_t0Log;
 	m_t0Log = m_io->getLog(AVR8IO::PIN_T0);
 
 	if ( 6 == m_clockSource ) {
 		// External clock source on T0 pin. Clock on falling edge.
-		m_incrementWithDelay[m_iwdIndexIn % COUNTER_DELAY] += ( ( (true == prevT0Log) && (false == m_t0Log) ) ? 1 : 0 );
+		m_incrementWithDelay[m_iwdIndexIn] += ( ( (true == prevT0Log) && (false == m_t0Log) ) ? 1 : 0 );
 
 	} else if ( 7 == m_clockSource ) {
 		// External clock source on T0 pin. Clock on rising edge.
-		m_incrementWithDelay[m_iwdIndexIn % COUNTER_DELAY] += ( ( (false == prevT0Log) && (true == m_t0Log) ) ? 1 : 0 );
+		m_incrementWithDelay[m_iwdIndexIn] += ( ( (false == prevT0Log) && (true == m_t0Log) ) ? 1 : 0 );
+	}
+}
+
+inline void AVR8TimerCounter0::clearDelayArray() {
+	for ( int i = 0; i < COUNTER_DELAY; i++ ) {
+		m_incrementWithDelay[i] = 0;
 	}
 }
 
@@ -162,11 +182,9 @@ void AVR8TimerCounter0::reset(MCUSim::Subsys::SubsysResetMode mode) {
 inline void AVR8TimerCounter0::resetToInitialValues() {
 	m_t0Log = m_io->getLog(AVR8IO::PIN_T0);
 
-	for ( int i = 0; i < COUNTER_DELAY; i++ ) {
-		m_incrementWithDelay[i] = 0;
-	}
-	m_iwdIndexOut = (COUNTER_DELAY - 1);
+	clearDelayArray();
 	m_iwdIndexIn = 0;
+	m_iwdIndexOut = (COUNTER_DELAY - 1);
 }
 
 inline void AVR8TimerCounter0::mcuReset() {

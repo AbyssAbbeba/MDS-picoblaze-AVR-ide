@@ -17,6 +17,7 @@
 #include "AVR8DES.h"
 #include "AVR8Fuses.h"
 #include "AVR8InterruptController.h"
+#include "AVR8WatchdogTimer.h"
 
 static int (AVR8InstructionSet:: * const m_opCodeDispatchTable[64])(const unsigned int opCode) = {
 	&AVR8InstructionSet::instOPCode_000000,// opCode = 0000 00xx xxxx xxxx
@@ -192,15 +193,19 @@ AVR8InstructionSet::AVR8InstructionSet(
 		AVR8ProgramMemory * programMemory,
 		AVR8DataMemory * dataMemory,
 		MCUSim::Mode & processorMode,
+		AVR8Sim::SleepMode & sleepMode,
 		AVR8Fuses & fuses,
-		AVR8InterruptController * interruptController
+		AVR8InterruptController * interruptController,
+		AVR8WatchdogTimer * watchdogTimer
 			) :
 		MCUSim::CPU(eventLogger),
 		m_programMemory(programMemory),
 		m_dataMemory(dataMemory),
 		m_processorMode(processorMode),
+		m_sleepMode(sleepMode),
 		m_fuses(fuses),
-		m_interruptController(interruptController)
+		m_interruptController(interruptController),
+		m_watchdogTimer(watchdogTimer)
 {
 }
 
@@ -1888,12 +1893,39 @@ int AVR8InstructionSet::inst_ELPM_Rd_Zplus(const unsigned int opCode) {
 
 /*
  * OP Code: 1001 0101 1000 1000 - SLEEP
- * Operation: Go sleep
+ * Operation: Enter a sleep mode
  */
 int AVR8InstructionSet::inst_SLEEP(const unsigned int) {
 	instructionEnter(AVR8InsNames::INS_SLEEP);
 
-	// TODO: implement it properly
+	// Available sleep modes:
+	// ----------------------
+	// SM2	SM1	SM0	Sleep Mode
+	// 0	0	0	Idle
+	// 0	0	1	ADC Noise Reduction
+	// 0	1	0	Power-down
+	// 0	1	1	Power-save
+	// 1	0	0	Reserved
+	// 1	0	1	Reserved
+	// 1	1	0	Standby
+	//
+	// Note: Standby mode is only available with external crystals or resonators.
+
+	// Determinate the sleep mode
+	const unsigned int mcucr = m_dataMemory->read(AVR8RegNames::MCUCR);
+
+	if ( AVR8RegNames::MCUCR_SE & mcucr ) {
+		// Go to the designated sleep mode
+		m_sleepMode = AVR8Sim::SleepMode ( mcucr & (AVR8RegNames::MCUCR_SM2 | AVR8RegNames::MCUCR_SM1 | AVR8RegNames::MCUCR_SM0) );
+		m_processorMode = MCUSim::MD_SLEEP;
+		logEvent(EVENT_CPU_MODE_CHANGED, m_pc, AVR8InsNames::INS_SLEEP);
+
+	} else {
+		// Sleep mode disabled
+		logEvent(EVENT_CPU_INST_IGNORED, m_pc, AVR8InsNames::INS_SLEEP);
+	}
+
+	// This takes one cycle to execute
 	return 1;
 }
 
@@ -1909,22 +1941,25 @@ int AVR8InstructionSet::inst_BREAK(const unsigned int) {
 	instructionEnter(AVR8InsNames::INS_BREAK);
 
 	if ( true == m_fuses[AVR8Fuses::FUSE_JTAGEN] || true == m_fuses[AVR8Fuses::FUSE_OCDEN] ) {
-		m_processorMode = MCUSim::Mode::MD_STOPPED;
-		logEvent(EVENT_CPU_STOPPED, m_pc, AVR8InsNames::SPECI_BREAK);
+		m_processorMode = MCUSim::MD_STOPPED;
+		logEvent(EVENT_CPU_MODE_CHANGED, m_pc, AVR8InsNames::INS_BREAK);
 	} else {
-		logEvent(EVENT_CPU_INST_IGNORED, m_pc, AVR8InsNames::SPECI_BREAK);
+		logEvent(EVENT_CPU_INST_IGNORED, m_pc, AVR8InsNames::INS_BREAK);
 	}
 	return 1;
 }
 
 /*
  * OP Code: 1001 0101 1010 1000 - Watchdog Reset
- * Operation: (WD timer restart)
+ * Operation: WD timer reset
  */
 int AVR8InstructionSet::inst_WDR(const unsigned int) {
 	instructionEnter(AVR8InsNames::INS_WDR);
 
-	// TODO: implement it properly
+	// Reset the watchdog timer
+	m_watchdogTimer->wdr();
+
+	// This takes one cycle to execute
 	return 1;
 }
 

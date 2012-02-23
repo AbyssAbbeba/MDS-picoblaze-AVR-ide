@@ -27,6 +27,7 @@ public:
 		FUSE_BLB02,
 		FUSE_BLB11,
 		FUSE_BLB12,
+		FUSE_WDTON,
 
 		FUSE__MAX__
 	};

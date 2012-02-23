@@ -15,8 +15,7 @@
 
 // ATmega8
 
-class AVR8RegNames {
-public:
+namespace AVR8RegNames {
 	enum CPURegisters {
 		/// @name CPU register file
 		//@{
@@ -242,14 +241,14 @@ public:
 
 		/// @name MCUCR (0x55): MCU Control Register
 		//@{
-		MCUCR_ISC00	= 0x01, ///<
-		MCUCR_ISC01	= 0x02, ///<
-		MCUCR_ISC10	= 0x04, ///<
-		MCUCR_ISC11	= 0x08, ///<
-		MCUCR_SM0	= 0x10, ///<
-		MCUCR_SM1	= 0x20, ///<
-		MCUCR_SE	= 0x40, ///<
-		MCUCR_SM2	= 0x80, ///<
+		MCUCR_ISC00	= 0x01, ///< Interrupt Sense Control 1 Bit 0
+		MCUCR_ISC01	= 0x02, ///< Interrupt Sense Control 1 Bit 1
+		MCUCR_ISC10	= 0x04, ///< Interrupt Sense Control 1 Bit 2
+		MCUCR_ISC11	= 0x08, ///< Interrupt Sense Control 1 Bit 3
+		MCUCR_SM0	= 0x10, ///< Sleep Mode Select Bit 0
+		MCUCR_SM1	= 0x20, ///< Sleep Mode Select Bit 1
+		MCUCR_SM2	= 0x40, ///< Sleep Mode Select Bit 2
+		MCUCR_SE	= 0x80, ///< Sleep Enable
 		//@}
 
 		/// @name MCUCSR (0x54): MCU Control and Status Register
@@ -257,7 +256,7 @@ public:
 		MCUCSR_PORF	= 0x01, ///<
 		MCUCSR_EXTRF	= 0x02, ///<
 		MCUCSR_BORF	= 0x04, ///<
-		MCUCSR_WDRF	= 0x08, ///<
+		MCUCSR_WDRF	= 0x08, ///< Watchdog Reset Flag
 		MCUCSR_JTRF	= 0x10, ///<
 		//MCUCSR_	= 0x20, ///<
 		MCUCSR_ISC2	= 0x40, ///<
@@ -269,11 +268,11 @@ public:
 		TCCR0_CS00	= 0x01, ///<  Clock Select bit 0
 		TCCR0_CS01	= 0x02, ///<  Clock Select bit 1
 		TCCR0_CS02	= 0x04, ///<  Clock Select bit 2
-		TCCR0_WGM01	= 0x08, ///<
-		TCCR0_COM00	= 0x10, ///<
-		TCCR0_COM01	= 0x20, ///<
-		TCCR0_WGM00	= 0x40, ///<
-		TCCR0_FOC0	= 0x80, ///<
+		//TCCR0_	= 0x08, ///<
+		//TCCR0_	= 0x10, ///<
+		//TCCR0_	= 0x20, ///<
+		//TCCR0_	= 0x40, ///<
+		//TCCR0_	= 0x80, ///<
 		//@}
 
 		/// @name SFIOR (0x50): Special Function IO Register
@@ -338,11 +337,11 @@ public:
 
 		/// @name WDTCR (0x41): Watchdog Timer Control Register
 		//@{
-		WDTCR_WDP0	= 0x01, ///<
-		WDTCR_WDP1	= 0x02, ///<
-		WDTCR_WDP2	= 0x04, ///<
-		WDTCR_WDE	= 0x08, ///<
-		WDTCR_WDTOE	= 0x10, ///<
+		WDTCR_WDP0	= 0x01, ///< Watchdog Timer Prescaler 0
+		WDTCR_WDP1	= 0x02, ///< Watchdog Timer Prescaler 1
+		WDTCR_WDP2	= 0x04, ///< Watchdog Timer Prescaler 2
+		WDTCR_WDE	= 0x08, ///< Watchdog Enable
+		WDTCR_WDCE	= 0x10, ///< Watchdog Change Enable
 		//WDTCR_	= 0x20, ///<
 		//WDTCR_	= 0x40, ///<
 		//WDTCR_	= 0x80, ///<

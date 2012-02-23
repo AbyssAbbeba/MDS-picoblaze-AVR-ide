@@ -30,8 +30,7 @@ public:
 
 	void reset(SubsysResetMode mode);
 
-	void timeStep();				// <-- Call this first,
-	void clockCycles(unsigned int numberOf);	// <-- then call this (always).
+	void clockCycles(unsigned int numberOf);
 
 	unsigned int getPrescalerVal() const {
 		return m_prescaler;
@@ -54,6 +53,8 @@ protected:
 	inline unsigned int incrementPrescaler(unsigned int number, unsigned int max);
 	inline void incrementTimer(unsigned int number);
 	inline void resetPrescalerOnCond();
+	inline void clearDelayArray();
+	inline void sampleT0();
 
 	inline void resetToInitialValues();
 	inline void mcuReset();
