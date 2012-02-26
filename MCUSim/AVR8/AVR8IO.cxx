@@ -17,7 +17,7 @@ AVR8IO::AVR8IO(
 		MCUSim::EventLogger * eventLogger,
 		AVR8DataMemory * dataMemory)
 		 :
-		MCUSim::Subsys(eventLogger, ID_IO),
+		MCUSim::IO(eventLogger),
 		m_dataMemory(dataMemory)
 {
 }

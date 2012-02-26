@@ -16,7 +16,7 @@
 class AVR8ProgramMemory;
 class AVR8DataMemory;
 class AVR8DES;
-class AVR8Fuses;
+class AVR8FusesAndLocks;
 class AVR8InterruptController;
 class AVR8WatchdogTimer;
 
@@ -51,10 +51,10 @@ public:
 		AVR8DataMemory * dataMemory,
 		MCUSim::Mode & processorMode,
 		AVR8Sim::SleepMode & sleepMode,
-		AVR8Fuses & fuses,
+		AVR8FusesAndLocks & fuses,
 		AVR8InterruptController * interruptController,
 		AVR8WatchdogTimer * watchdogTimer
-   	);
+	);
 
 	int execInstruction();
 	void reset(SubsysResetMode mode);
@@ -79,7 +79,7 @@ protected:
 	AVR8DataMemory * m_dataMemory;
 	MCUSim::Mode & m_processorMode;
 	AVR8Sim::SleepMode & m_sleepMode;
-	AVR8Fuses & m_fuses;
+	AVR8FusesAndLocks & m_fusesAndLocks;
 	AVR8InterruptController * m_interruptController;
 	AVR8WatchdogTimer * m_watchdogTimer;
 

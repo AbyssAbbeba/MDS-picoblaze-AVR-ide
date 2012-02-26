@@ -13,8 +13,7 @@
 #ifndef AVR8INSNAMES_H
 #define AVR8INSNAMES_H
 
-class AVR8InsNames {
-public:
+namespace AVR8InsNames {
 	enum Instructions {
 		INS_NONE = 0,
 

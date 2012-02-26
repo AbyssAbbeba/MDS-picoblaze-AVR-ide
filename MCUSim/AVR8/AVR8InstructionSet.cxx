@@ -15,12 +15,12 @@
 #include "AVR8ProgramMemory.h"
 #include "AVR8DataMemory.h"
 #include "AVR8DES.h"
-#include "AVR8Fuses.h"
+#include "AVR8FusesAndLocks.h"
 #include "AVR8InterruptController.h"
 #include "AVR8WatchdogTimer.h"
 
 static int (AVR8InstructionSet:: * const m_opCodeDispatchTable[64])(const unsigned int opCode) = {
-	&AVR8InstructionSet::instOPCode_000000,// opCode = 0000 00xx xxxx xxxx
+	&AVR8InstructionSet::instOPCode_000000,	// opCode = 0000 00xx xxxx xxxx
 	&AVR8InstructionSet::inst_CPC_Rd_Rr,	// opCode = 0000 01xx xxxx xxxx
 	&AVR8InstructionSet::inst_SBC_Rd_Rr,	// opCode = 0000 10xx xxxx xxxx
 	&AVR8InstructionSet::inst_ADD_Rd_Rr,	// opCode = 0000 11xx xxxx xxxx
@@ -87,43 +87,43 @@ static int (AVR8InstructionSet:: * const m_opCodeDispatchTable[64])(const unsign
 };
 
 static int (AVR8InstructionSet:: * const m_opCodeDispatchTable_100100[32])(const unsigned int opCode) = {
-	&AVR8InstructionSet::inst_LDS_Rd_k,		// opCode = 1001 000x xxxx 0000
-	&AVR8InstructionSet::inst_LD_Rd_Zplus,		// opCode = 1001 000x xxxx 0001
+	&AVR8InstructionSet::inst_LDS_Rd_k,	// opCode = 1001 000x xxxx 0000
+	&AVR8InstructionSet::inst_LD_Rd_Zplus,	// opCode = 1001 000x xxxx 0001
 	&AVR8InstructionSet::inst_LD_Rd_minusZ,	// opCode = 1001 000x xxxx 0010
-	&AVR8InstructionSet::instInvalid,		// opCode = 1001 000x xxxx 0011
-	&AVR8InstructionSet::inst_LPM_Rd_Z,		// opCode = 1001 000x xxxx 0100
+	&AVR8InstructionSet::instInvalid,	// opCode = 1001 000x xxxx 0011
+	&AVR8InstructionSet::inst_LPM_Rd_Z,	// opCode = 1001 000x xxxx 0100
 	&AVR8InstructionSet::inst_LPM_Rd_Zplus,	// opCode = 1001 000x xxxx 0101
-	&AVR8InstructionSet::inst_ELPM_Rd_Z,		// opCode = 1001 000x xxxx 0110
-	&AVR8InstructionSet::inst_ELPM_Rd_Zplus,	// opCode = 1001 000x xxxx 0111
-	&AVR8InstructionSet::instInvalid,		// opCode = 1001 000x xxxx 1000
-	&AVR8InstructionSet::inst_LD_Rd_Yplus,		// opCode = 1001 000x xxxx 1001
+	&AVR8InstructionSet::inst_ELPM_Rd_Z,	// opCode = 1001 000x xxxx 0110
+	&AVR8InstructionSet::inst_ELPM_Rd_Zplus,// opCode = 1001 000x xxxx 0111
+	&AVR8InstructionSet::instInvalid,	// opCode = 1001 000x xxxx 1000
+	&AVR8InstructionSet::inst_LD_Rd_Yplus,	// opCode = 1001 000x xxxx 1001
 	&AVR8InstructionSet::inst_LD_Rd_minusY,	// opCode = 1001 000x xxxx 1010
-	&AVR8InstructionSet::instInvalid,		// opCode = 1001 000x xxxx 1011
-	&AVR8InstructionSet::inst_LD_Rd_X,		// opCode = 1001 000x xxxx 1100
-	&AVR8InstructionSet::inst_LD_Rd_Xplus,		// opCode = 1001 000x xxxx 1101
+	&AVR8InstructionSet::instInvalid,	// opCode = 1001 000x xxxx 1011
+	&AVR8InstructionSet::inst_LD_Rd_X,	// opCode = 1001 000x xxxx 1100
+	&AVR8InstructionSet::inst_LD_Rd_Xplus,	// opCode = 1001 000x xxxx 1101
 	&AVR8InstructionSet::inst_LD_Rd_minusX,	// opCode = 1001 000x xxxx 1110
-	&AVR8InstructionSet::inst_POP_Rd,		// opCode = 1001 000x xxxx 1111
-	&AVR8InstructionSet::inst_STS_k_Rr,		// opCode = 1001 001x xxxx 0000
-	&AVR8InstructionSet::inst_ST_Zplus_Rr,		// opCode = 1001 001x xxxx 0001
+	&AVR8InstructionSet::inst_POP_Rd,	// opCode = 1001 000x xxxx 1111
+	&AVR8InstructionSet::inst_STS_k_Rr,	// opCode = 1001 001x xxxx 0000
+	&AVR8InstructionSet::inst_ST_Zplus_Rr,	// opCode = 1001 001x xxxx 0001
 	&AVR8InstructionSet::inst_ST_minusZ_Rr,	// opCode = 1001 001x xxxx 0010
-	&AVR8InstructionSet::instInvalid,		// opCode = 1001 001x xxxx 0011
-	&AVR8InstructionSet::inst_XCH_Z_Rd,		// opCode = 1001 001x xxxx 0100
-	&AVR8InstructionSet::inst_LAS_Z_Rd,		// opCode = 1001 001x xxxx 0101
-	&AVR8InstructionSet::inst_LAC_Z_Rd,		// opCode = 1001 001x xxxx 0110
-	&AVR8InstructionSet::inst_LAT_Z_Rd,		// opCode = 1001 001x xxxx 0111
-	&AVR8InstructionSet::instInvalid,		// opCode = 1001 001x xxxx 1000
-	&AVR8InstructionSet::inst_ST_Yplus_Rr,		// opCode = 1001 001x xxxx 1001
+	&AVR8InstructionSet::instInvalid,	// opCode = 1001 001x xxxx 0011
+	&AVR8InstructionSet::inst_XCH_Z_Rd,	// opCode = 1001 001x xxxx 0100
+	&AVR8InstructionSet::inst_LAS_Z_Rd,	// opCode = 1001 001x xxxx 0101
+	&AVR8InstructionSet::inst_LAC_Z_Rd,	// opCode = 1001 001x xxxx 0110
+	&AVR8InstructionSet::inst_LAT_Z_Rd,	// opCode = 1001 001x xxxx 0111
+	&AVR8InstructionSet::instInvalid,	// opCode = 1001 001x xxxx 1000
+	&AVR8InstructionSet::inst_ST_Yplus_Rr,	// opCode = 1001 001x xxxx 1001
 	&AVR8InstructionSet::inst_ST_minusY_Rr,	// opCode = 1001 001x xxxx 1010
-	&AVR8InstructionSet::instInvalid,		// opCode = 1001 001x xxxx 1011
-	&AVR8InstructionSet::inst_ST_X_Rr,		// opCode = 1001 001x xxxx 1100
-	&AVR8InstructionSet::inst_ST_Xplus_Rr,		// opCode = 1001 001x xxxx 1101
+	&AVR8InstructionSet::instInvalid,	// opCode = 1001 001x xxxx 1011
+	&AVR8InstructionSet::inst_ST_X_Rr,	// opCode = 1001 001x xxxx 1100
+	&AVR8InstructionSet::inst_ST_Xplus_Rr,	// opCode = 1001 001x xxxx 1101
 	&AVR8InstructionSet::inst_ST_minusX_Rr,	// opCode = 1001 001x xxxx 1110
-	&AVR8InstructionSet::inst_PUSH_Rr		// opCode = 1001 001x xxxx 1111
+	&AVR8InstructionSet::inst_PUSH_Rr	// opCode = 1001 001x xxxx 1111
 };
 
 static int (AVR8InstructionSet:: * const m_opCodeDispatchTable_1001_010x_xxxx_100x[64])(const unsigned int opCode) = {
 	&AVR8InstructionSet::inst_SEC,		// opCode = 1001 0100 0000 1000
-	&AVR8InstructionSet::inst_IJMP,	// opCode = 1001 0100 0000 1001
+	&AVR8InstructionSet::inst_IJMP,		// opCode = 1001 0100 0000 1001
 	&AVR8InstructionSet::inst_SEZ,		// opCode = 1001 0100 0001 1000
 	&AVR8InstructionSet::inst_EIJMP,	// opCode = 1001 0100 0001 1001
 	&AVR8InstructionSet::inst_SEN,		// opCode = 1001 0100 0010 1000
@@ -156,7 +156,7 @@ static int (AVR8InstructionSet:: * const m_opCodeDispatchTable_1001_010x_xxxx_10
 	&AVR8InstructionSet::instInvalid,	// opCode = 1001 0100 1111 1001
 	&AVR8InstructionSet::inst_RET,		// opCode = 1001 0101 0000 1000
 	&AVR8InstructionSet::inst_ICALL,	// opCode = 1001 0101 0000 1001
-	&AVR8InstructionSet::inst_RETI,	// opCode = 1001 0101 0001 1000
+	&AVR8InstructionSet::inst_RETI,		// opCode = 1001 0101 0001 1000
 	&AVR8InstructionSet::inst_EICALL,	// opCode = 1001 0101 0001 1001
 	&AVR8InstructionSet::instInvalid,	// opCode = 1001 0101 0010 1000
 	&AVR8InstructionSet::instInvalid,	// opCode = 1001 0101 0010 1001
@@ -180,7 +180,7 @@ static int (AVR8InstructionSet:: * const m_opCodeDispatchTable_1001_010x_xxxx_10
 	&AVR8InstructionSet::instInvalid,	// opCode = 1001 0101 1011 1001
 	&AVR8InstructionSet::inst_LPM,		// opCode = 1001 0101 1100 1000
 	&AVR8InstructionSet::instInvalid,	// opCode = 1001 0101 1100 1001
-	&AVR8InstructionSet::inst_ELPM,	// opCode = 1001 0101 1101 1000
+	&AVR8InstructionSet::inst_ELPM,		// opCode = 1001 0101 1101 1000
 	&AVR8InstructionSet::instInvalid,	// opCode = 1001 0101 1101 1001
 	&AVR8InstructionSet::inst_SPM,		// opCode = 1001 0101 1110 1000
 	&AVR8InstructionSet::instInvalid,	// opCode = 1001 0101 1110 1001
@@ -194,7 +194,7 @@ AVR8InstructionSet::AVR8InstructionSet(
 		AVR8DataMemory * dataMemory,
 		MCUSim::Mode & processorMode,
 		AVR8Sim::SleepMode & sleepMode,
-		AVR8Fuses & fuses,
+		AVR8FusesAndLocks & fuses,
 		AVR8InterruptController * interruptController,
 		AVR8WatchdogTimer * watchdogTimer
 			) :
@@ -203,7 +203,7 @@ AVR8InstructionSet::AVR8InstructionSet(
 		m_dataMemory(dataMemory),
 		m_processorMode(processorMode),
 		m_sleepMode(sleepMode),
-		m_fuses(fuses),
+		m_fusesAndLocks(fuses),
 		m_interruptController(interruptController),
 		m_watchdogTimer(watchdogTimer)
 {
@@ -224,7 +224,7 @@ void AVR8InstructionSet::reset(MCUSim::Subsys::SubsysResetMode mode) {
 }
 
 inline void AVR8InstructionSet::mcuReset() {
-	if ( false == m_fuses[AVR8Fuses::FUSE_BOOTRST] ) {
+	if ( false == m_fusesAndLocks[AVR8FusesAndLocks::FUSE_BOOTRST] ) {
 		m_pc = 0;
 	} else {
 		m_pc = m_programMemory->getBootSectionAddress();
@@ -1940,7 +1940,11 @@ int AVR8InstructionSet::inst_BREAK(const unsigned int) {
 	}
 	instructionEnter(AVR8InsNames::INS_BREAK);
 
-	if ( true == m_fuses[AVR8Fuses::FUSE_JTAGEN] || true == m_fuses[AVR8Fuses::FUSE_OCDEN] ) {
+	if (
+		( true == m_fusesAndLocks[AVR8FusesAndLocks::FUSE_JTAGEN] )
+			||
+		( true == m_fusesAndLocks[AVR8FusesAndLocks::FUSE_OCDEN] )
+	) {
 		m_processorMode = MCUSim::MD_STOPPED;
 		logEvent(EVENT_CPU_MODE_CHANGED, m_pc, AVR8InsNames::INS_BREAK);
 	} else {
@@ -3745,7 +3749,7 @@ inline int AVR8InstructionSet::inst_DES_K(const unsigned int opCode) {
 		return -1;
 	}
 	instructionEnter(AVR8InsNames::INS_DES);
-	m_lastInstruction = AVR8InsNames::AVR8InsNames::INS_DES;
+	m_lastInstruction = AVR8InsNames::INS_DES;
 
 	// ---------------------------------------------------------------------
 	// Read inputs

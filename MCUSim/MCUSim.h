@@ -171,8 +171,10 @@ public:
 			ID_INTERRUPTS,
 			ID_EXT_INT,
 			ID_WATCHDOG,
-			ID_IO
+			ID_IO,
 // 			ID_SIMCONTROL,
+
+			ID__MAX__
 		};
 
 		enum SubsysResetMode {
@@ -234,7 +236,9 @@ public:
 		enum MemorySpace {
 			SP_CODE = 1,	///< Internal program memory.
 			SP_DATA,	///< Internal data memory.
-			SP_GPR		///< General purpose register, on some architectures it might be the same as IDATA.
+			SP_EEPROM,	///< Internal data EEPROM.
+
+			SP__MAX__
 		};
 
 		/// @brief
@@ -250,6 +254,8 @@ public:
 			EVENT_MEM_ERR_WR_NONEXISTENT,		///< Attempt to write to a nonexistent memory space.
 			EVENT_MEM_ERR_RD_NOT_IMPLEMENTED,	///< Attempt to read from an unimplemented memory cell.
 			EVENT_MEM_ERR_WR_NOT_IMPLEMENTED,	///< Attempt to write to an unimplemented memory cell.
+			EVENT_MEM_ERR_RD_ACCESS_DENIED,
+			EVENT_MEM_ERR_WR_ACCESS_DENIED,
 			//@}
 
 			/// @name Warnings, the request might have involved a random chance.
@@ -269,12 +275,6 @@ public:
 			EVENT_MEM_INF_WR_VAL_CHANGED,		///< Memory cell content has been changed.
 			EVENT_MEM_INF_WR_VAL_WRITTEN,		///< Memory cell content was written.
 			EVENT_MEM_INF_WR_VAL_READ,		///< Memory cell content was read.
-			//@}
-
-			/// @name Other ...
-			//@{
-			EVENT_MEM_STACK_OVERFLOW,
-			EVENT_MEM_STACK_UNDERFLOW,
 			//@}
 
 			EVENT_MEM__MAX__			///< Number of elements in this enumeration.
@@ -299,17 +299,17 @@ public:
 		virtual RetCode directRead(unsigned int addr, unsigned int & data) const = 0;
 		virtual RetCode directWrite(unsigned int addr, unsigned int data) = 0;
 		virtual void resize(unsigned int newSize) = 0;
-		virtual unsigned int size() = 0;
+		virtual unsigned int size() const = 0;
 
 	protected:
 		Memory(EventLogger * eventLogger, MemorySpace space) : Subsys(eventLogger, (Subsys::SubsysId)(0-space)), m_space(space) {};
 	};
 
-// 	class IO : public Subsys
-// 	{
-// 	public:
-// 		IO(EventLogger * eventLogger) : Subsys(eventLogger, ID_IO) {};
-// 	};
+	class IO : public Subsys
+	{
+	public:
+		IO(EventLogger * eventLogger) : Subsys(eventLogger, ID_IO) {};
+	};
 
 // 	/**
 // 	 * @brief General interface for control of simulation

@@ -35,16 +35,17 @@
 #ifndef AVR8INTERRUPTCONTROLLER_H
 #define AVR8INTERRUPTCONTROLLER_H
 
-#include "../MCUSim.h"
-
 class AVR8InstructionSet;
 class AVR8ProgramMemory;
 class AVR8DataMemory;
-class AVR8Fuses;
+class AVR8FusesAndLocks;
+
+#include "../MCUSim.h"
+#include "AVR8Sim.h"
 
 class AVR8InterruptController : public MCUSim::Subsys {
 public:
-	AVR8InterruptController(MCUSim::EventLogger * eventLogger, AVR8InstructionSet * instructionSet, AVR8ProgramMemory * programMemory, AVR8DataMemory * dataMemory, AVR8Fuses & fuses);
+	AVR8InterruptController(MCUSim::EventLogger * eventLogger, AVR8InstructionSet * instructionSet, AVR8ProgramMemory * programMemory, AVR8DataMemory * dataMemory, AVR8FusesAndLocks & fuses, AVR8Sim::SleepMode & sleepMode);
 
 	enum Event {
 		EVENT_INT_ENTERING_INTERRUPT,
@@ -101,6 +102,7 @@ public:
 	 */
 	int autoInterrupt();
 	void reti();
+	void genIntReq(InterruptVector interrupt);
 
 	bool interrupted() {
 		if ( 0 == m_actInterruptCounter ) {
@@ -114,9 +116,12 @@ protected:
 	AVR8InstructionSet * m_instructionSet;
 	AVR8ProgramMemory * m_programMemory;
 	AVR8DataMemory * m_dataMemory;
-	AVR8Fuses & m_fuses;
+	AVR8FusesAndLocks & m_fusesAndLocks;
+	AVR8Sim::SleepMode & m_sleepMode;
 
 	int m_actInterruptCounter;
+	int m_interruptCounter[INTVEC__MAX__];
+	bool m_intReqWithoutFlag[INTVEC__MAX__];
 	InterruptVector m_interruptToExecute;
 	int m_interruptFlagToClear[2];
 

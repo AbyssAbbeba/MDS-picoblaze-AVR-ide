@@ -14,20 +14,23 @@
 #include "AVR8InstructionSet.h"
 #include "AVR8ProgramMemory.h"
 #include "AVR8DataMemory.h"
-#include "AVR8Fuses.h"
+#include "AVR8FusesAndLocks.h"
+#include "AVR8Sim.h"
 
 AVR8InterruptController::AVR8InterruptController(
 		MCUSim::EventLogger * eventLogger,
 		AVR8InstructionSet * instructionSet,
 		AVR8ProgramMemory * programMemory,
 		AVR8DataMemory * dataMemory,
-		AVR8Fuses & fuses)
+		AVR8FusesAndLocks & fuses,
+		AVR8Sim::SleepMode & sleepMode)
 		:
 		MCUSim::Subsys(eventLogger, ID_INTERRUPTS),
 		m_instructionSet(instructionSet),
 		m_programMemory(programMemory),
 		m_dataMemory(dataMemory),
-		m_fuses(fuses)
+		m_fusesAndLocks(fuses),
+		m_sleepMode(sleepMode)
 {
 }
 
@@ -58,6 +61,10 @@ int AVR8InterruptController::autoInterrupt() {
 	return 0;
 }
 
+void AVR8InterruptController::genIntReq(AVR8InterruptController::InterruptVector interrupt) {
+	m_intReqWithoutFlag[interrupt] = true;
+}
+
 inline int AVR8InterruptController::executeInterrupt(AVR8InterruptController::InterruptVector vector) {
 	m_interruptToExecute = INTVEC_NONE;
 
@@ -69,8 +76,6 @@ inline int AVR8InterruptController::executeInterrupt(AVR8InterruptController::In
 	if ( false == confirmInterrupt(vector) ) {
 		return 0;
 	}
-
-	// TODO: If an interrupt occurs when the MCU is in sleep mode, the interrupt execution response time is increased by four clock cycles. This increase comes in addition to the start-up time from the selected sleep mode.
 
 	// Clear Global Interrupt Enable Flag in SREG
 	m_dataMemory->clearBitFast(AVR8RegNames::SREG, AVR8RegNames::SREG_I);
@@ -97,7 +102,20 @@ inline int AVR8InterruptController::executeInterrupt(AVR8InterruptController::In
 	}
 	m_instructionSet->setProgramCounter(destinationAddress);
 
-	return 4; // <-- This is probably specific to AVR with 16b PC, e.g. ATmega8A
+	// Increment statistical counter
+	m_interruptCounter[vector]++;
+
+
+	if ( AVR8Sim::SLEEPMD_NONE != m_sleepMode ) {
+		/*
+		 * If an interrupt occurs when the MCU is in sleep mode, the interrupt execution response
+		 * time is increased by four clock cycles. This increase comes in addition to the start-up
+		 * time from the selected sleep mode.
+		 */
+		return 8; // <-- This is probably specific to AVR with 16b PC, e.g. ATmega8A
+	} else {
+		return 4; // <-- This is probably specific to AVR with 16b PC, e.g. ATmega8A
+	}
 }
 
 inline AVR8InterruptController::InterruptVector AVR8InterruptController::detectPendingInterrupt() {
@@ -413,7 +431,7 @@ inline AVR8InterruptController::InterruptVector AVR8InterruptController::detectP
 			( reg0 & AVR8RegNames::EECR_EERIE )
 				&&
 			// Is it requested?
-			(0 == ( reg0 & AVR8RegNames::EECR_EEWE ))
+			( true == m_intReqWithoutFlag[INTVEC_EE_RDY] )
 		) {
 			/*
 			 * The EEPROM Ready interrupt generates a constant interrupt when EEWE is cleared.
@@ -490,7 +508,11 @@ inline bool AVR8InterruptController::confirmInterrupt(AVR8InterruptController::I
 	if (
 		(true == m_dataMemory->readBitFast(AVR8RegNames::GICR, AVR8RegNames::GICR_IVSEL))
 			&&
-		( (true == m_fuses[AVR8Fuses::FUSE_BLB01]) || (true == m_fuses[AVR8Fuses::FUSE_BLB12]) )
+		(
+			(true == m_fusesAndLocks[AVR8FusesAndLocks::LB_BLB01])
+				||
+			(true == m_fusesAndLocks[AVR8FusesAndLocks::LB_BLB12])
+		)
 	) {
 		return false;
 	}
@@ -595,11 +617,14 @@ inline bool AVR8InterruptController::confirmInterrupt(AVR8InterruptController::I
 			);
 
 		case INTVEC_EE_RDY:
-			return (
+			if (
 				( true == m_dataMemory->readBitFast(AVR8RegNames::EECR, AVR8RegNames::EECR_EERIE) )
 					&&
-				( false == m_dataMemory->readBitFast(AVR8RegNames::EECR, AVR8RegNames::EECR_EEWE) )
-			);
+				( true == m_intReqWithoutFlag[INTVEC_EE_RDY] )
+			) {
+				m_intReqWithoutFlag[INTVEC_EE_RDY] = false;
+				return true;
+			}
 
 		case INTVEC_ANA_COMP:
 			return (
@@ -643,4 +668,9 @@ inline void AVR8InterruptController::mcuReset() {
 	m_interruptToExecute = INTVEC_NONE;
 	m_interruptFlagToClear[0] = -1;
 	m_interruptFlagToClear[1] = -1;
+
+	for ( int i = 0; i < INTVEC__MAX__; i++ ) {
+		m_interruptCounter[i] = 0;
+		m_intReqWithoutFlag[i] = false;
+	}
 }

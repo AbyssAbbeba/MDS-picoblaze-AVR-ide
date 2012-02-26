@@ -25,6 +25,11 @@ public:
 	AVR8DataMemory(MCUSim::EventLogger * eventLogger);
 	~AVR8DataMemory();
 
+	enum Event {
+		EVENT_DMEM_STACK_OVERFLOW = EVENT_MEM__MAX__,
+		EVENT_DMEM_STACK_UNDERFLOW,
+	};
+
 	struct Config {
 		int m_undefinedValue; // -1 means random
 		unsigned int m_regFileSize;
@@ -48,7 +53,7 @@ public:
 	MCUSim::RetCode directRead(unsigned int addr, unsigned int & data) const;
 	MCUSim::RetCode directWrite(unsigned int addr, unsigned int data);
 	void resize(unsigned int newSize);
-	unsigned int size() {
+	unsigned int size() const {
 		return m_size;
 	}
 	void reset(SubsysResetMode mode);
@@ -199,11 +204,11 @@ inline void AVR8DataMemory::pushOnStack(const unsigned int value) {
 	// Check stack pointer for allowed range
 	while ( sp < 0 ) {
 		sp += m_config.m_spMax;
-		logEvent(EVENT_MEM_STACK_UNDERFLOW);
+		logEvent(EVENT_DMEM_STACK_UNDERFLOW);
 	}
 	while ( sp > m_config.m_spMax ) {
 		sp -= m_config.m_spMax;
-		logEvent(EVENT_MEM_STACK_OVERFLOW);
+		logEvent(EVENT_DMEM_STACK_OVERFLOW);
 	}
 
 	// Store stack pointer
@@ -231,11 +236,11 @@ inline int AVR8DataMemory::popFromStack() {
 	// Check stack pointer for allowed range
 	while ( sp < 0 ) {
 		sp += m_config.m_spMax;
-		logEvent(EVENT_MEM_STACK_UNDERFLOW);
+		logEvent(EVENT_DMEM_STACK_UNDERFLOW);
 	}
 	while ( sp > m_config.m_spMax ) {
 		sp -= m_config.m_spMax;
-		logEvent(EVENT_MEM_STACK_OVERFLOW);
+		logEvent(EVENT_DMEM_STACK_OVERFLOW);
 	}
 
 	// Store stack pointer

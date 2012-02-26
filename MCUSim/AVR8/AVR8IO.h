@@ -14,11 +14,11 @@
 #ifndef AVR8IO_H
 #define AVR8IO_H
 
-#include "../MCUSim.h"
-
 class AVR8DataMemory;
 
-class AVR8IO : public MCUSim::Subsys {
+#include "../MCUSim.h"
+
+class AVR8IO : public MCUSim::IO {
 public:
 	AVR8IO(MCUSim::EventLogger * eventLogger, AVR8DataMemory * dataMemory);
 

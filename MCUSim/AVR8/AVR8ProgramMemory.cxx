@@ -11,16 +11,15 @@
  */
 
 #include "AVR8ProgramMemory.h"
-#include "AVR8Fuses.h"
 
 #include <cstdlib>
 #include <ctime>
 
-AVR8ProgramMemory::AVR8ProgramMemory(MCUSim::EventLogger * eventLogger, AVR8Fuses & fuses)
+AVR8ProgramMemory::AVR8ProgramMemory(MCUSim::EventLogger * eventLogger, AVR8FusesAndLocks & fuses)
 	: Memory(eventLogger, MCUSim::Memory::SP_CODE),
 	  m_memory(NULL),
 	  m_size(0),
-	  m_fuses(fuses)
+	  m_fusesAndLocks(fuses)
 {
 }
 
@@ -105,21 +104,5 @@ unsigned int AVR8ProgramMemory::getUndefVal() const {
 	} else {
 		// Return predefined value
 		return ( m_config.m_undefinedValue & ((1 << sizeBits) - 1) );
-	}
-}
-
-unsigned int AVR8ProgramMemory::getBootSectionAddress() const {
-	if ( true == m_fuses[AVR8Fuses::FUSE_BOOTSZ1] ) {
-		if ( true == m_fuses[AVR8Fuses::FUSE_BOOTSZ0] ) {
-			return m_config.bootResetAddress[3]; // BOOTSZ1 = 1, BOOTSZ0 = 1
-		} else {
-			return m_config.bootResetAddress[2]; // BOOTSZ1 = 1, BOOTSZ0 = 0
-		}
-	} else {
-		if ( true == m_fuses[AVR8Fuses::FUSE_BOOTSZ0] ) {
-			return m_config.bootResetAddress[1]; // BOOTSZ1 = 0, BOOTSZ0 = 1
-		} else {
-			return m_config.bootResetAddress[0]; // BOOTSZ1 = 0, BOOTSZ0 = 0
-		}
 	}
 }

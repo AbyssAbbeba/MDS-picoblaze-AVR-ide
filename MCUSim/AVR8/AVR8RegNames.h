@@ -361,11 +361,11 @@ namespace AVR8RegNames {
 
 		/// @name XXYY (0x3C): EEPROM Control Register
 		//@{
-		EECR_EERE	= 0x01, ///<
+		EECR_EERE	= 0x01, ///< EEPROM Read Enable
 		EECR_EEWE	= 0x02, ///< EEPROM Write Enable
-		EECR_EEMWE	= 0x04, ///<
+		EECR_EEMWE	= 0x04, ///< EEPROM Master Write Enable
 		EECR_EERIE	= 0x08, ///< EEPROM Ready Interrupt Enable
-		//EECR_	= 0x10, /<
+		//EECR_	= 0x10, ///<
 		//EECR_	= 0x20, ///<
 		//EECR_	= 0x40, ///<
 		//EECR_	= 0x80, ///<

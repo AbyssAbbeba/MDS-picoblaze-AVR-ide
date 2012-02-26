@@ -14,10 +14,10 @@
 #ifndef AVR8TIMERCOUNTER0_H
 #define AVR8TIMERCOUNTER0_H
 
-#include "../MCUSim.h"
-
 class AVR8DataMemory;
 class AVR8IO;
+
+#include "../MCUSim.h"
 
 class AVR8TimerCounter0 : public MCUSim::Subsys {
 public:

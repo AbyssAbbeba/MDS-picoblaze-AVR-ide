@@ -10,14 +10,14 @@
  *
  */
 
-#include "AVR8Fuses.h"
+#include "AVR8FusesAndLocks.h"
 
-AVR8Fuses::AVR8Fuses(MCUSim::EventLogger * eventLogger) :
+AVR8FusesAndLocks::AVR8FusesAndLocks(MCUSim::EventLogger * eventLogger) :
 		MCUSim::Subsys(eventLogger, ID_FUSES)
 {
 }
 
-void AVR8Fuses::reset(MCUSim::Subsys::SubsysResetMode mode) {
+void AVR8FusesAndLocks::reset(MCUSim::Subsys::SubsysResetMode mode) {
 	switch ( mode ) {
 		case RSTMD_INITIAL_VALUES:
 			resetToInitialValues();
@@ -28,7 +28,7 @@ void AVR8Fuses::reset(MCUSim::Subsys::SubsysResetMode mode) {
 	}
 }
 
-inline void AVR8Fuses::resetToInitialValues() {
+inline void AVR8FusesAndLocks::resetToInitialValues() {
 	for ( int i = 0; i < FUSE__MAX__; i++ ) {
 		m_fuses[i] = false;
 	}

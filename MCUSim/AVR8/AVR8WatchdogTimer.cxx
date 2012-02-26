@@ -10,75 +10,92 @@
  *
  */
 
-#include <math.h>
-
 #include "AVR8WatchdogTimer.h"
 #include "AVR8DataMemory.h"
-#include "AVR8Fuses.h"
+#include "AVR8FusesAndLocks.h"
+
+#include <math.h>
 
 AVR8WatchdogTimer::AVR8WatchdogTimer(
 		MCUSim::EventLogger * eventLogger,
 		AVR8DataMemory * dataMemory,
-		AVR8Fuses & fuses)
+		AVR8FusesAndLocks & fuses)
 		 :
 		MCUSim::Subsys(eventLogger, ID_WATCHDOG),
 		m_dataMemory(dataMemory),
-		m_fuses(fuses)
+		m_fusesAndLocks(fuses)
 {
+}
+
+inline unsigned int AVR8WatchdogTimer::readWdtcr(const unsigned int clockCycles) {
+	using namespace AVR8RegNames;
+
+	unsigned int wdtcr = m_dataMemory->readFast(WDTCR);
+
+	if ( m_wdtcrLast != wdtcr ) {
+		const unsigned int wdtcrOrig = wdtcr;
+
+		if ( WDTCR_WDCE & m_wdtcrLast ) {
+			// WDE stays on when FUSE_WDTON is programmed.
+			if ( true == m_fusesAndLocks[AVR8FusesAndLocks::FUSE_WDTON] ) {
+				wdtcr |= WDTCR_WDE;
+			}
+			// Accept the change (but don't change the WDCE flag, it's cleared automatically)
+			wdtcr |= WDTCR_WDCE;
+			m_wdtcrLast = wdtcr;
+		} else {
+			if ((WDTCR_WDE | WDTCR_WDCE) == (wdtcr & (WDTCR_WDE | WDTCR_WDCE))) {
+				// Allow changes to the register for the next 4 clock cycles.
+				m_wdce_timer = 4 + clockCycles;
+
+				// Set WDCE flag but dont't change anything else.
+				m_wdtcrLast |= WDTCR_WDCE;
+				wdtcr = m_wdtcrLast;
+			} else {
+				// Overwrite the change
+				wdtcr = m_wdtcrLast;
+				m_dataMemory->writeFast(WDTCR, wdtcr);
+			}
+		}
+
+		if ( wdtcrOrig != wdtcr ) {
+			logEvent(EVENT_WDT_INVALID_CR_CHAGE);
+		}
+	}
+
+	// Manage the timer which keeps the WDCE flag set for 4 clock cycles.
+	if ( 0 != m_wdce_timer ) {
+		// Decrement the timer
+		m_wdce_timer -= clockCycles;
+		if ( m_wdce_timer < 0 ) {
+			m_wdce_timer = 0;
+		}
+
+		if ( 0 == m_wdce_timer ) {
+			// Clear the WDCE flag (after 4 clock cycles)
+			wdtcr &= (0xff ^ WDTCR_WDCE);
+			m_wdtcrLast = wdtcr;
+			m_dataMemory->writeFast(WDTCR, wdtcr);
+		}
+	}
+
+	return wdtcr;
 }
 
 void AVR8WatchdogTimer::timeStep(float timeStep, unsigned int clockCycles) {
 	using namespace AVR8RegNames;
 
-	unsigned int wdtcr = m_dataMemory->readFast(WDTCR);
+	// WDTCR can be changed only on certain conditions
+	unsigned int wdtcr;
+	if ( 0 == clockCycles) {
+		wdtcr = m_wdtcrLast;
+	} else {
+		wdtcr = readWdtcr(clockCycles);
+	}
 
 	if ( 0 == (wdtcr & WDTCR_WDE) ) {
 		m_prescaler = 0;
 		return;
-	}
-
-	// WDTCR can be changed only on certain conditions
-	if ( 0 != clockCycles) {
-		if ( m_wdtcrLast != wdtcr ) {
-			if ( WDTCR_WDCE & m_wdtcrLast ) {
-				// WDE stays on when FUSE_WDTON is programmed.
-				if ( true == m_fuses[AVR8Fuses::FUSE_WDTON] ) {
-					wdtcr |= WDTCR_WDE;
-				}
-				// Accept the change (but don't change the WDCE flag, it's cleared automatically)
-				wdtcr |= WDTCR_WDCE;
-				m_wdtcrLast = wdtcr;
-			} else {
-				if ((WDTCR_WDE | WDTCR_WDCE) == (wdtcr & (WDTCR_WDE | WDTCR_WDCE))) {
-					// Allow changes to the register for the next 4 clock cycles.
-					m_wdce_timer = 4 + clockCycles;
-
-					// Set WDCE flag but dont't change anything else.
-					m_wdtcrLast |= WDTCR_WDCE;
-					wdtcr = m_wdtcrLast;
-				} else {
-					// Overwrite the change
-					wdtcr = m_wdtcrLast;
-					m_dataMemory->writeFast(WDTCR, wdtcr);
-				}
-			}
-
-		}
-
-		// Manage the timer which keeps the WDCE flag set for 4 clock cycles.
-		if ( 0 != m_wdce_timer ) {
-			// Decrement the timer
-			m_wdce_timer -= clockCycles;
-			if ( m_wdce_timer < 0 ) {
-				m_wdce_timer = 0;
-			}
-
-			if ( 0 == m_wdce_timer ) {
-				// Clear the WDCE flag (after 4 clock cycles)
-				wdtcr &= (0xff ^ WDTCR_WDCE);
-				m_wdtcrLast = wdtcr;
-			}
-		}
 	}
 
 	timeStep *= 1e6f; // s -> µs

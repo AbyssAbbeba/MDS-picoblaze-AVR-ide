@@ -14,10 +14,10 @@
 #ifndef AVR8EXTERNALINTERRUPTS_H
 #define AVR8EXTERNALINTERRUPTS_H
 
-#include "../MCUSim.h"
-
 class AVR8DataMemory;
 class AVR8IO;
+
+#include "../MCUSim.h"
 
 class AVR8ExternalInterrupts : public MCUSim::Subsys {
 public:

@@ -16,11 +16,13 @@
 class AVR8InstructionSet;
 class AVR8ProgramMemory;
 class AVR8DataMemory;
-class AVR8Fuses;
+class AVR8FusesAndLocks;
 class AVR8InterruptControler;
 class AVR8TimerCounter0;
 class AVR8IO;
 class AVR8ExternalInterrupts;
+class AVR8WatchdogTimer;
+class AVR8DataEEPROM;
 
 #include "../MCUSim.h"
 #include "AVR8RegNames.h"
@@ -73,11 +75,13 @@ protected:
 	AVR8InstructionSet * m_instructionSet;
 	AVR8ProgramMemory * m_programMemory;
 	AVR8DataMemory * m_dataMemory;
-	AVR8Fuses * m_fuses;
+	AVR8FusesAndLocks * m_fusesAndLocks;
 	AVR8InterruptControler * m_interrupts;
 	AVR8TimerCounter0 * m_timerCounter0;
 	AVR8IO * m_io;
 	AVR8ExternalInterrupts * m_externalInterrupts;
+	AVR8WatchdogTimer * m_watchdogTimer;
+	AVR8DataEEPROM * m_dataEEPROM;
 
 	EventLogger * m_eventLogger;
 
