@@ -19,9 +19,9 @@ class AVR8DES;
 class AVR8FusesAndLocks;
 class AVR8InterruptController;
 class AVR8WatchdogTimer;
+class AVR8BootLoader;
 
 #include "../MCUSim.h"
-
 #include "AVR8Sim.h"
 #include "AVR8InsNames.h"
 
@@ -53,13 +53,15 @@ public:
 		AVR8Sim::SleepMode & sleepMode,
 		AVR8FusesAndLocks & fuses,
 		AVR8InterruptController * interruptController,
-		AVR8WatchdogTimer * watchdogTimer
+		AVR8WatchdogTimer * watchdogTimer,
+		AVR8Sim::HaltMode & haltMode,
+		AVR8BootLoader * bootLoader
 	);
 
 	int execInstruction();
 	void reset(SubsysResetMode mode);
 
-	unsigned int getProgramCounter() {
+	unsigned int getProgramCounter() const {
 		return (unsigned int)m_pc;
 	}
 	void setProgramCounter(unsigned int newPc) {
@@ -82,6 +84,8 @@ protected:
 	AVR8FusesAndLocks & m_fusesAndLocks;
 	AVR8InterruptController * m_interruptController;
 	AVR8WatchdogTimer * m_watchdogTimer;
+	AVR8Sim::HaltMode & m_haltMode;
+	AVR8BootLoader * m_bootLoader;
 
 	AVR8DES * m_des;
 
@@ -385,12 +389,12 @@ public:
 	/**
 	 * SPM			1001 0101 1110 1000 - Store Program Memory
 	 */
-	int inst_SPM(const unsigned int opCode);
+	int inst_SPM(const unsigned int);
 
 	/**
 	 * SPM Z+		1001 0101 1111 1000 - Store Program Memory
 	 */
-	int inst_SPM_Zplus(const unsigned int opCode);
+	int inst_SPM_Zplus(const unsigned int);
 
 	/**
 	 * SLEEP		1001 0101 1000 1000 - SLEEP

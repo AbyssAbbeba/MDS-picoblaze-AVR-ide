@@ -218,12 +218,12 @@ namespace AVR8RegNames {
 		/// @name SPMCR (0x57): Store Program Memory Control Register
 		//@{
 		SPMCR_SPMEN	= 0x01, ///< Store Program Memory Enable
-		SPMCR_PGERS	= 0x02, ///<
-		SPMCR_PGWRT	= 0x04, ///<
-		SPMCR_BLBSET	= 0x08, ///<
-		SPMCR_RWWSRE	= 0x10, ///<
+		SPMCR_PGERS	= 0x02, ///< Page Erase
+		SPMCR_PGWRT	= 0x04, ///< Page Write
+		SPMCR_BLBSET	= 0x08, ///< Boot Lock Bit Set
+		SPMCR_RWWSRE	= 0x10, ///< Read-While-Write Section Read Enable
 		//SPMCR_	= 0x20, ///<
-		SPMCR_RWWSB	= 0x40, ///<
+		SPMCR_RWWSB	= 0x40, ///< Read-While-Write Section Busy
 		SPMCR_SPMIE	= 0x80, ///< SPM Interrupt Enable
 		//@}
 

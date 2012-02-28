@@ -16,6 +16,7 @@
 #include "AVR8DataMemory.h"
 #include "AVR8FusesAndLocks.h"
 #include "AVR8Sim.h"
+#include "AVR8BootLoader.h"
 
 AVR8InterruptController::AVR8InterruptController(
 		MCUSim::EventLogger * eventLogger,
@@ -23,14 +24,16 @@ AVR8InterruptController::AVR8InterruptController(
 		AVR8ProgramMemory * programMemory,
 		AVR8DataMemory * dataMemory,
 		AVR8FusesAndLocks & fuses,
-		AVR8Sim::SleepMode & sleepMode)
+		AVR8Sim::SleepMode & sleepMode,
+		AVR8BootLoader * bootLoader)
 		:
-		MCUSim::Subsys(eventLogger, ID_INTERRUPTS),
+		Subsys(eventLogger, ID_INTERRUPTS),
 		m_instructionSet(instructionSet),
 		m_programMemory(programMemory),
 		m_dataMemory(dataMemory),
 		m_fusesAndLocks(fuses),
-		m_sleepMode(sleepMode)
+		m_sleepMode(sleepMode),
+		m_bootLoader(bootLoader)
 {
 }
 
@@ -74,6 +77,7 @@ inline int AVR8InterruptController::executeInterrupt(AVR8InterruptController::In
 	}
 
 	if ( false == confirmInterrupt(vector) ) {
+		logEvent(EVENT_INT_INTERRUPT_CANCELED, m_instructionSet->getProgramCounter(), m_interruptToExecute);
 		return 0;
 	}
 
@@ -98,7 +102,7 @@ inline int AVR8InterruptController::executeInterrupt(AVR8InterruptController::In
 	// Jump to the destination address (interrupt vector)
 	unsigned int destinationAddress = (unsigned int)vector;
 	if ( true == m_dataMemory->readBitFast(AVR8RegNames::GICR, AVR8RegNames::GICR_IVSEL) ) {
-		destinationAddress += m_programMemory->getBootSectionAddress();
+		destinationAddress += m_bootLoader->getBootAddress();
 	}
 	m_instructionSet->setProgramCounter(destinationAddress);
 

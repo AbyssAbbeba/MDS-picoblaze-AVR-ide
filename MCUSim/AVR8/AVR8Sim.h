@@ -60,6 +60,11 @@ public:
 		/// Invalid value in SM2:SM0 bits
 		SLEEPMD_INVALID		= (AVR8RegNames::MCUCR_SM2 | AVR8RegNames::MCUCR_SM1 | AVR8RegNames::MCUCR_SM0)
 	};
+	enum HaltMode {
+		HALTM_NONE,
+		HALTM_BREAK,
+		HALTM_PROG
+	};
 
 	Subsys * getSubsys(Subsys::SubsysId id);
 	RetCode setConfig(Config * newConfig);
@@ -86,6 +91,7 @@ protected:
 	EventLogger * m_eventLogger;
 
 	Mode m_processorMode;
+	HaltMode m_haltMode;
 	SleepMode m_sleepMode;
 };
 

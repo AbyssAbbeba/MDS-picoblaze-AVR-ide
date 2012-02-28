@@ -12,9 +12,61 @@
 
 #include "AVR8FusesAndLocks.h"
 
-AVR8FusesAndLocks::AVR8FusesAndLocks(MCUSim::EventLogger * eventLogger) :
-		MCUSim::Subsys(eventLogger, ID_FUSES)
+#include <cstdlib>
+
+AVR8FusesAndLocks::AVR8FusesAndLocks(MCUSim::EventLogger * eventLogger)
+	 :
+	Subsys(eventLogger, ID_FUSES)
 {
+}
+
+
+void AVR8FusesAndLocks::setLockBits(unsigned char lb) {
+	unsigned char mask = 0x1;
+	for ( int i = 0; i < 8; i++ ) {
+		if ( lb & mask ) {
+			m_lockBits[i] = false;
+		} else {
+			m_lockBits[i] = true;
+		}
+		mask <<= 1;
+	}
+
+	logEvent(EVENT_LOCK_BITS_SET);
+}
+
+unsigned char AVR8FusesAndLocks::operator[] (Bytes byte) const {
+	unsigned char result = 0;
+	unsigned char mask = 0x01;
+	const bool * array;
+	int idx;
+
+	switch ( byte ) {
+		case BYTE_FUSES_HIGH:
+			array = m_fuses;
+			idx = 8;
+			break;
+		case BYTE_FUSES_LOW:
+			array = m_fuses;
+			idx = 0;
+			break;
+		case BYTE_LOCKS_LOW:
+			array = m_lockBits;
+			idx = 0;
+			break;
+		default:
+			// TODO: add some reasonable error handling here
+			return 0;
+	}
+
+	for ( int i = 0; i < 8; i++ ) {
+		if ( false == array[idx++] ) {
+			result |= mask;
+		}
+		mask <<= 1;
+	}
+
+	return result;
 }
 
 void AVR8FusesAndLocks::reset(MCUSim::Subsys::SubsysResetMode mode) {
@@ -31,5 +83,16 @@ void AVR8FusesAndLocks::reset(MCUSim::Subsys::SubsysResetMode mode) {
 inline void AVR8FusesAndLocks::resetToInitialValues() {
 	for ( int i = 0; i < FUSE__MAX__; i++ ) {
 		m_fuses[i] = false;
+	}
+}
+
+template<unsigned int sizeBits>
+unsigned int AVR8FusesAndLocks::getUndefVal() const {
+	if ( -1 == m_config.m_undefinedValue ) {
+		// Generate random value
+		return ( (unsigned int)random() & ((1 << sizeBits) - 1) );
+	} else {
+		// Return predefined value
+		return ( m_config.m_undefinedValue & ((1 << sizeBits) - 1) );
 	}
 }

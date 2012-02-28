@@ -14,7 +14,7 @@
 #define AVR8PROGRAMMEMORY_H
 
 #include "../MCUSim.h"
-#include "AVR8FusesAndLocks.h"
+#include "AVR8BootLoader.h"
 
 #include <cstddef>
 #include <cstdint>
@@ -22,39 +22,37 @@
 class AVR8ProgramMemory : public MCUSim::Memory {
 
 public:
-	AVR8ProgramMemory(MCUSim::EventLogger * eventLogger, AVR8FusesAndLocks & fuses);
+	AVR8ProgramMemory(MCUSim::EventLogger * eventLogger, AVR8BootLoader * bootLoader);
 	~AVR8ProgramMemory();
 
 	struct Config {
 		int m_undefinedValue; // -1 means random
 		unsigned int m_size;
-
-		unsigned int m_pageSize; // 32 WORDS on ATmega8
-		int bootResetAddress[4];
-		unsigned int rwwSectionSize; // number of PAGES
 	};
 
 	Config m_config;
+	
+	void reset(SubsysResetMode mode);
 
 	MCUSim::RetCode directRead(unsigned int addr, unsigned int & data) const;
 	MCUSim::RetCode directWrite(unsigned int addr, unsigned int data);
 	void resize(unsigned int newSize);
-	void reset(SubsysResetMode mode);
 
 	inline unsigned int size() const;
 	inline unsigned int readRaw(unsigned int addr);
 	inline unsigned int read(unsigned int addr);
 	inline void write(unsigned int addr, unsigned int val);
 	template<unsigned int sizeBits> unsigned int getUndefVal() const;
-	inline unsigned int getBootSectionAddress() const;
 
 protected:
+	AVR8BootLoader * m_bootLoader;
+
 	uint32_t * m_memory;
 	unsigned int m_size;
-	AVR8FusesAndLocks & m_fusesAndLocks;
 
 	inline void resetToInitialValues();
 	inline void loadConfig();
+	inline void mcuReset();
 
 private:
 	AVR8ProgramMemory();
@@ -76,6 +74,11 @@ inline unsigned int AVR8ProgramMemory::readRaw(unsigned int addr) {
 		} else {
 			logEvent(EVENT_MEM_ERR_RD_NOT_IMPLEMENTED, addr);
 		}
+		return getUndefVal<16>();
+	}
+
+	if ( true == m_bootLoader->inUse(addr) ) {
+		logEvent(EVENT_MEM_ERR_RD_ACCESS_DENIED, addr);
 		return getUndefVal<16>();
 	}
 
@@ -105,22 +108,6 @@ inline void AVR8ProgramMemory::write(unsigned int addr, unsigned int val) {
 	m_memory[addr] |= val;
 
 	logEvent(EVENT_MEM_INF_WR_VAL_CHANGED, addr);
-}
-
-inline unsigned int AVR8ProgramMemory::getBootSectionAddress() const {
-	if ( true == m_fusesAndLocks[AVR8FusesAndLocks::FUSE_BOOTSZ1] ) {
-		if ( true == m_fusesAndLocks[AVR8FusesAndLocks::FUSE_BOOTSZ0] ) {
-			return m_config.bootResetAddress[3]; // BOOTSZ1 = 1, BOOTSZ0 = 1
-		} else {
-			return m_config.bootResetAddress[2]; // BOOTSZ1 = 1, BOOTSZ0 = 0
-		}
-	} else {
-		if ( true == m_fusesAndLocks[AVR8FusesAndLocks::FUSE_BOOTSZ0] ) {
-			return m_config.bootResetAddress[1]; // BOOTSZ1 = 0, BOOTSZ0 = 1
-		} else {
-			return m_config.bootResetAddress[0]; // BOOTSZ1 = 0, BOOTSZ0 = 0
-		}
-	}
 }
 
 #endif // AVR8PROGRAMMEMORY_H

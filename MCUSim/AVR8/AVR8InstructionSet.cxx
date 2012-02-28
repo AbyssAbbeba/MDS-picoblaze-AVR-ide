@@ -18,6 +18,7 @@
 #include "AVR8FusesAndLocks.h"
 #include "AVR8InterruptController.h"
 #include "AVR8WatchdogTimer.h"
+#include "AVR8BootLoader.h"
 
 static int (AVR8InstructionSet:: * const m_opCodeDispatchTable[64])(const unsigned int opCode) = {
 	&AVR8InstructionSet::instOPCode_000000,	// opCode = 0000 00xx xxxx xxxx
@@ -196,7 +197,9 @@ AVR8InstructionSet::AVR8InstructionSet(
 		AVR8Sim::SleepMode & sleepMode,
 		AVR8FusesAndLocks & fuses,
 		AVR8InterruptController * interruptController,
-		AVR8WatchdogTimer * watchdogTimer
+		AVR8WatchdogTimer * watchdogTimer,
+		AVR8Sim::HaltMode & haltMode,
+		AVR8BootLoader * bootLoader
 			) :
 		MCUSim::CPU(eventLogger),
 		m_programMemory(programMemory),
@@ -205,7 +208,9 @@ AVR8InstructionSet::AVR8InstructionSet(
 		m_sleepMode(sleepMode),
 		m_fusesAndLocks(fuses),
 		m_interruptController(interruptController),
-		m_watchdogTimer(watchdogTimer)
+		m_watchdogTimer(watchdogTimer),
+		m_haltMode(haltMode),
+		m_bootLoader(bootLoader)
 {
 }
 
@@ -227,7 +232,7 @@ inline void AVR8InstructionSet::mcuReset() {
 	if ( false == m_fusesAndLocks[AVR8FusesAndLocks::FUSE_BOOTRST] ) {
 		m_pc = 0;
 	} else {
-		m_pc = m_programMemory->getBootSectionAddress();
+		m_pc = m_bootLoader->getBootAddress();
 	}
 	m_actSubprogCounter = 0;
 	m_lastInstruction = AVR8InsNames::INS_NONE;
@@ -1817,12 +1822,12 @@ inline int AVR8InstructionSet::instLoadProgMemory(const unsigned int opCode) {
 	if ( aux & 0x1) {
 		// Load high byte
 		aux >>= 1;
-		aux = m_programMemory->read(aux);
+		aux = m_bootLoader->lpmRead(aux);
 		aux >>= 8;
 	} else {
 		// Load low byte
 		aux >>= 1;
-		aux = m_programMemory->read(aux);
+		aux = m_bootLoader->lpmRead(aux);
 		aux &= 0xff;
 	}
 
@@ -1946,6 +1951,7 @@ int AVR8InstructionSet::inst_BREAK(const unsigned int) {
 		( true == m_fusesAndLocks[AVR8FusesAndLocks::FUSE_OCDEN] )
 	) {
 		m_processorMode = MCUSim::MD_STOPPED;
+		m_haltMode = AVR8Sim::HALTM_BREAK;
 		logEvent(EVENT_CPU_MODE_CHANGED, m_pc, AVR8InsNames::INS_BREAK);
 	} else {
 		logEvent(EVENT_CPU_INST_IGNORED, m_pc, AVR8InsNames::INS_BREAK);
@@ -3717,24 +3723,59 @@ int AVR8InstructionSet::inst_ST_minusX_Rr(const unsigned int opCode) {
 
 /*
  * OP Code: 1001 0101 1110 1000 - Store Program Memory (SPM)
- * Operation: (device specific)
+ * Operation: Write to program memory (device specific)
  */
-int AVR8InstructionSet::inst_SPM(const unsigned int opCode) {
+int AVR8InstructionSet::inst_SPM(const unsigned int) {
+	if ( false == m_config.m_availableInstructions[AVR8InsNames::SPECI_SPM] ) {
+		logEvent(EVENT_CPU_UNSUPPORTED_INST, m_pc, AVR8InsNames::INS_SPM);
+		return -1;
+	}
 	instructionEnter(AVR8InsNames::INS_SPM);
 
-	// NOTE: this is a device specific instruction, that's why it wasn't implemented yet
-	return 1;
+	unsigned int addr, val;
+
+	addr = m_dataMemory->read(AVR8RegNames::ZH);
+	addr <<= 8;
+	addr |= m_dataMemory->read(AVR8RegNames::ZL);
+
+	val = m_dataMemory->read(AVR8RegNames::R1);
+	val <<= 8;
+	val |= m_dataMemory->read(AVR8RegNames::R0);
+
+	return m_bootLoader->spmWrite(addr, val);
 }
 
 /*
  * OP Code: 1001 0101 1111 1000 - Store Program Memory (SPM Z+)
- * Operation: (device specific)
+ * Operation: Write to program memory (device specific)
  */
-int AVR8InstructionSet::inst_SPM_Zplus(const unsigned int opCode) {
+int AVR8InstructionSet::inst_SPM_Zplus(const unsigned int) {
+	if ( false == m_config.m_availableInstructions[AVR8InsNames::SPECI_SPM_Zplus] ) {
+		logEvent(EVENT_CPU_UNSUPPORTED_INST, m_pc, AVR8InsNames::INS_SPM_Zplus);
+		return -1;
+	}
 	instructionEnter(AVR8InsNames::INS_SPM_Zplus);
 
-	// NOTE: this is a device specific instruction, that's why it wasn't implemented yet
-	return 1;
+	int cycles;
+	unsigned int addr, val;
+
+	addr = m_dataMemory->read(AVR8RegNames::ZH);
+	addr <<= 8;
+	addr |= m_dataMemory->read(AVR8RegNames::ZL);
+
+	val = m_dataMemory->read(AVR8RegNames::R1);
+	val <<= 8;
+	val |= m_dataMemory->read(AVR8RegNames::R0);
+
+	cycles = m_bootLoader->spmWrite(addr, val);
+
+	addr++;
+	addr &= 0xffff;
+	m_dataMemory->write(AVR8RegNames::ZL, (addr & 0xff));
+	addr >>= 8;
+	m_dataMemory->write(AVR8RegNames::ZH, addr);
+
+	return cycles;
 }
 
 /*
@@ -3749,7 +3790,6 @@ inline int AVR8InstructionSet::inst_DES_K(const unsigned int opCode) {
 		return -1;
 	}
 	instructionEnter(AVR8InsNames::INS_DES);
-	m_lastInstruction = AVR8InsNames::INS_DES;
 
 	// ---------------------------------------------------------------------
 	// Read inputs

@@ -21,7 +21,7 @@ AVR8WatchdogTimer::AVR8WatchdogTimer(
 		AVR8DataMemory * dataMemory,
 		AVR8FusesAndLocks & fuses)
 		 :
-		MCUSim::Subsys(eventLogger, ID_WATCHDOG),
+		Subsys(eventLogger, ID_WATCHDOG),
 		m_dataMemory(dataMemory),
 		m_fusesAndLocks(fuses)
 {
@@ -59,7 +59,7 @@ inline unsigned int AVR8WatchdogTimer::readWdtcr(const unsigned int clockCycles)
 		}
 
 		if ( wdtcrOrig != wdtcr ) {
-			logEvent(EVENT_WDT_INVALID_CR_CHAGE);
+			logEvent(EVENT_WDT_INVALID_CR_CHAGE, WDTCR, wdtcrOrig);
 		}
 	}
 

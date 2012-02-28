@@ -41,4 +41,5 @@ add_library(AVR8Sim STATIC
 	AVR8IO.cxx
 	AVR8ExternalInterrupts.cxx
 	AVR8WatchdogTimer.cxx
-	AVR8DataEEPROM.cxx)
+	AVR8DataEEPROM.cxx
+	AVR8BootLoader.cxx)

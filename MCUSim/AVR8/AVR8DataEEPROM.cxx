@@ -15,8 +15,6 @@
 #include "AVR8InterruptController.h"
 
 #include <cstdlib>
-#include <ctime>
-#include <cstring>
 
 AVR8DataEEPROM::AVR8DataEEPROM(
 		MCUSim::EventLogger * eventLogger,

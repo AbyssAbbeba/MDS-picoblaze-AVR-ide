@@ -17,6 +17,9 @@
 
 class AVR8FusesAndLocks : public MCUSim::Subsys {
 public:
+	enum Event {
+		EVENT_LOCK_BITS_SET
+	};
 
 	// Fuse High and Low Byte:
 	// -----------------------
@@ -53,27 +56,44 @@ public:
 		LB_BLB02	= 3, ///< Boot lock bit, default: 1 (unprogrammed)
 		LB_BLB11	= 4, ///< Boot lock bit, default: 1 (unprogrammed)
 		LB_BLB12	= 5, ///< Boot lock bit, default: 1 (unprogrammed)
-		// LB_	= 6, ///< Reserved
-		// LB_	= 7, ///< Reserved
+		LB_RESERVED0	= 6, ///< Reserved
+		LB_RESERVED1	= 7, ///< Reserved
 
 		LB__MAX__
 	};
 
+	enum Bytes {
+		BYTE_FUSES_LOW,
+		BYTE_FUSES_HIGH,
+		BYTE_LOCKS_LOW
+	};
+
+	struct Config {
+		int m_undefinedValue; // -1 means random
+	};
+
+	Config m_config;
+
 	AVR8FusesAndLocks(MCUSim::EventLogger * eventLogger);
 
-	bool operator[] (Fuses fuse) {
+	bool operator[] (Fuses fuse) const {
 		return m_fuses[fuse];
 	}
 	void setFuse(Fuses fuse, bool value) {
 		m_fuses[fuse] = value;
 	}
 
-	bool operator[] (LockBits lb) {
+	bool operator[] (LockBits lb) const {
 		return m_lockBits[lb];
 	}
 	void setLockBit(LockBits lb, bool value) {
 		m_lockBits[lb] = value;
 	}
+
+	void setLockBits(unsigned char lb);
+	unsigned char operator[] (Bytes byte) const;
+
+	template<unsigned int sizeBits> unsigned int getUndefVal() const;
 
 	void reset(SubsysResetMode mode);
 

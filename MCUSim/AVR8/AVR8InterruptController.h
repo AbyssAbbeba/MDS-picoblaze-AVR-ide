@@ -39,16 +39,18 @@ class AVR8InstructionSet;
 class AVR8ProgramMemory;
 class AVR8DataMemory;
 class AVR8FusesAndLocks;
+class AVR8BootLoader;
 
 #include "../MCUSim.h"
 #include "AVR8Sim.h"
 
 class AVR8InterruptController : public MCUSim::Subsys {
 public:
-	AVR8InterruptController(MCUSim::EventLogger * eventLogger, AVR8InstructionSet * instructionSet, AVR8ProgramMemory * programMemory, AVR8DataMemory * dataMemory, AVR8FusesAndLocks & fuses, AVR8Sim::SleepMode & sleepMode);
+	AVR8InterruptController(MCUSim::EventLogger * eventLogger, AVR8InstructionSet * instructionSet, AVR8ProgramMemory * programMemory, AVR8DataMemory * dataMemory, AVR8FusesAndLocks & fuses, AVR8Sim::SleepMode & sleepMode, AVR8BootLoader * bootLoader);
 
 	enum Event {
 		EVENT_INT_ENTERING_INTERRUPT,
+		EVENT_INT_INTERRUPT_CANCELED,
 		EVENT_INT_LEAVING_INTERRUPT,
 
 		EVENT_INT__MAX__
@@ -118,6 +120,7 @@ protected:
 	AVR8DataMemory * m_dataMemory;
 	AVR8FusesAndLocks & m_fusesAndLocks;
 	AVR8Sim::SleepMode & m_sleepMode;
+	AVR8BootLoader * m_bootLoader;
 
 	int m_actInterruptCounter;
 	int m_interruptCounter[INTVEC__MAX__];

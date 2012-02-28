@@ -11,15 +11,20 @@
  */
 
 #include "AVR8ProgramMemory.h"
+#include "AVR8DataMemory.h"
+#include "AVR8DataEEPROM.h"
+#include "AVR8InstructionSet.h"
 
 #include <cstdlib>
-#include <ctime>
 
-AVR8ProgramMemory::AVR8ProgramMemory(MCUSim::EventLogger * eventLogger, AVR8FusesAndLocks & fuses)
-	: Memory(eventLogger, MCUSim::Memory::SP_CODE),
-	  m_memory(NULL),
-	  m_size(0),
-	  m_fusesAndLocks(fuses)
+AVR8ProgramMemory::AVR8ProgramMemory(
+	MCUSim::EventLogger * eventLogger,
+	AVR8BootLoader * bootLoader)
+	 :
+	Memory(eventLogger, MCUSim::Memory::SP_CODE),
+	m_bootLoader(bootLoader),
+	m_memory(NULL),
+	m_size(0)
 {
 }
 
@@ -80,6 +85,9 @@ void AVR8ProgramMemory::reset(MCUSim::Subsys::SubsysResetMode mode) {
 		case RSTMD_INITIAL_VALUES:
 			resetToInitialValues();
 			break;
+		case RSTMD_MCU_RESET:
+			mcuReset();
+			break;
 		default:
 			// Irrelevant requests are silently ignored
 			break;
@@ -88,6 +96,9 @@ void AVR8ProgramMemory::reset(MCUSim::Subsys::SubsysResetMode mode) {
 
 inline void AVR8ProgramMemory::loadConfig() {
 	resize(m_config.m_size);
+}
+
+inline void AVR8ProgramMemory::mcuReset() {
 }
 
 inline void AVR8ProgramMemory::resetToInitialValues() {

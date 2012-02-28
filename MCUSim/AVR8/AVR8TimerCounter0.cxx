@@ -20,7 +20,7 @@ AVR8TimerCounter0::AVR8TimerCounter0(
 		AVR8DataMemory * dataMemory,
 		AVR8IO * io)
 		 :
-		MCUSim::Subsys(eventLogger, subsysId),
+		Subsys(eventLogger, subsysId),
 		m_dataMemory(dataMemory),
 		m_io(io)
 {

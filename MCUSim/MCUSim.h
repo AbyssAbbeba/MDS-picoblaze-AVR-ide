@@ -172,6 +172,7 @@ public:
 			ID_EXT_INT,
 			ID_WATCHDOG,
 			ID_IO,
+			ID_BOOT_LOADER,
 // 			ID_SIMCONTROL,
 
 			ID__MAX__

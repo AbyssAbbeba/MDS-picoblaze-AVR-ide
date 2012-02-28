@@ -13,7 +13,6 @@
 #include "AVR8DataMemory.h"
 
 #include <cstdlib>
-#include <ctime>
 #include <cstring>
 
 AVR8DataMemory::AVR8DataMemory(MCUSim::EventLogger * eventLogger)

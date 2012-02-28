@@ -190,6 +190,9 @@ namespace AVR8InsNames {
 		SPECI_LAC,		///< Load And Clear
 		SPECI_LAT,		///< Load And Toggle
 
+		SPECI_SPM,		///< 1001 0101 1110 1000 - Store Program Memory (SPM)
+		SPECI_SPM_Zplus,	///< 1001 0101 1111 1000 - Store Program Memory (SPM Z+)
+
 		SPECI_POP,		///< 
 		SPECI_PUSH,		///< 
 

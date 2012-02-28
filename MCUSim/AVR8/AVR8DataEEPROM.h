@@ -48,6 +48,9 @@ public:
 	unsigned int size() const {
 		return m_config.m_size;
 	}
+	bool writeInProgress() const {
+		return m_writeInProgress;
+	}
 
 	unsigned int timeStep(float timeStep, unsigned int clockCycles = 0);	// <-- This has to be called even in a sleep mode
 

@@ -19,7 +19,7 @@ AVR8ExternalInterrupts::AVR8ExternalInterrupts(
 		AVR8DataMemory * dataMemory,
 		AVR8IO * io)
 		 :
-		MCUSim::Subsys(eventLogger, ID_EXT_INT),
+		Subsys(eventLogger, ID_EXT_INT),
 		m_dataMemory(dataMemory),
 		m_io(io)
 {
