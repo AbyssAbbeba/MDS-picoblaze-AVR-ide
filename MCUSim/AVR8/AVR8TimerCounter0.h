@@ -40,7 +40,7 @@ protected:
 	AVR8DataMemory * m_dataMemory;
 	AVR8IO * m_io;
 
-	static const int COUNTER_DELAY = 3;
+	static const unsigned int COUNTER_DELAY = 3;
 
 	unsigned int m_incrementWithDelay[COUNTER_DELAY];
 	unsigned int m_iwdIndexOut;

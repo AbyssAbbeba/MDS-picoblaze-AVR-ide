@@ -279,7 +279,7 @@ namespace AVR8RegNames {
 		//@{
 		SFIOR_PSR10	= 0x01, ///< Prescaler Reset Timer/Counter1 and Timer/Counter0
 		SFIOR_PSR2	= 0x02, ///<
-		SFIOR_PUD	= 0x04, ///<
+		SFIOR_PUD	= 0x04, ///< Pull-up Disable
 		SFIOR_ACME	= 0x08, ///<
 		//SFIOR_	= 0x10, ///<
 		SFIOR_ADTS0	= 0x20, ///<
@@ -373,146 +373,146 @@ namespace AVR8RegNames {
 
 		/// @name PORTA (0x3B): Port A Data Register
 		//@{
-		PORTA_PORTA0	= 0x01, ///<
-		PORTA_PORTA1	= 0x02, ///<
-		PORTA_PORTA2	= 0x04, ///<
-		PORTA_PORTA3	= 0x08, ///<
-		PORTA_PORTA4	= 0x10, ///<
-		PORTA_PORTA5	= 0x20, ///<
-		PORTA_PORTA6	= 0x40, ///<
-		PORTA_PORTA7	= 0x80, ///<
+		PORTA_PORTA0	= 0x01, ///< Bit 0 in port A
+		PORTA_PORTA1	= 0x02, ///<  .    .     .
+		PORTA_PORTA2	= 0x04, ///<  .    .     .
+		PORTA_PORTA3	= 0x08, ///<  .    .     .
+		PORTA_PORTA4	= 0x10, ///<  .    .     .
+		PORTA_PORTA5	= 0x20, ///<  .    .     .
+		PORTA_PORTA6	= 0x40, ///<  .    .     .
+		PORTA_PORTA7	= 0x80, ///< Bit 7 in port A
 		//@}
 
 		/// @name XXYY (0x3A): Port A Data Direction Register
 		//@{
-		DDRA_DDA0	= 0x01, ///<
-		DDRA_DDA1	= 0x02, ///<
-		DDRA_DDA2	= 0x04, ///<
-		DDRA_DDA3	= 0x08, ///<
-		DDRA_DDA4	= 0x10, ///<
-		DDRA_DDA5	= 0x20, ///<
-		DDRA_DDA6	= 0x40, ///<
-		DDRA_DDA7	= 0x80, ///<
+		DDRA_DDA0	= 0x01, ///< Data direction flag for bit 0 in port A
+		DDRA_DDA1	= 0x02, ///<          .        .         .
+		DDRA_DDA2	= 0x04, ///<          .        .         .
+		DDRA_DDA3	= 0x08, ///<          .        .         .
+		DDRA_DDA4	= 0x10, ///<          .        .         .
+		DDRA_DDA5	= 0x20, ///<          .        .         .
+		DDRA_DDA6	= 0x40, ///<          .        .         .
+		DDRA_DDA7	= 0x80, ///< Data direction flag for bit 7 in port A
 		//@}
 
-		/// @name XXYY (0x39): Port A Input Pins Address
+		/// @name XXYY (0x39): Port A Input Pins
 		//@{
-		PINA_PINA0	= 0x01, ///<
-		PINA_PINA1	= 0x02, ///<
-		PINA_PINA2	= 0x04, ///<
-		PINA_PINA3	= 0x08, ///<
-		PINA_PINA4	= 0x10, ///<
-		PINA_PINA5	= 0x20, ///<
-		PINA_PINA6	= 0x40, ///<
-		PINA_PINA7	= 0x80, ///<
+		PINA_PINA0	= 0x01, ///< Input read from bit 0 in port A
+		PINA_PINA1	= 0x02, ///<       .        .         .
+		PINA_PINA2	= 0x04, ///<       .        .         .
+		PINA_PINA3	= 0x08, ///<       .        .         .
+		PINA_PINA4	= 0x10, ///<       .        .         .
+		PINA_PINA5	= 0x20, ///<       .        .         .
+		PINA_PINA6	= 0x40, ///<       .        .         .
+		PINA_PINA7	= 0x80, ///< Input read from bit 7 in port A
 		//@}
 
 		/// @name PORTB (0x38): Port B Data Register
 		//@{
-		PORTB_PORTB0	= 0x01, ///<
-		PORTB_PORTB1	= 0x02, ///<
-		PORTB_PORTB2	= 0x04, ///<
-		PORTB_PORTB3	= 0x08, ///<
-		PORTB_PORTB4	= 0x10, ///<
-		PORTB_PORTB5	= 0x20, ///<
-		PORTB_PORTB6	= 0x40, ///<
-		PORTB_PORTB7	= 0x80, ///<
+		PORTB_PORTB0	= 0x01, ///< Bit 0 in port B
+		PORTB_PORTB1	= 0x02, ///<  .    .     .
+		PORTB_PORTB2	= 0x04, ///<  .    .     .
+		PORTB_PORTB3	= 0x08, ///<  .    .     .
+		PORTB_PORTB4	= 0x10, ///<  .    .     .
+		PORTB_PORTB5	= 0x20, ///<  .    .     .
+		PORTB_PORTB6	= 0x40, ///<  .    .     .
+		PORTB_PORTB7	= 0x80, ///< Bit 7 in port B
 		//@}
 
 		/// @name XXYY (0x37): Port B Data Direction Register
 		//@{
-		DDRB_DDB0	= 0x01, ///<
-		DDRB_DDB1	= 0x02, ///<
-		DDRB_DDB2	= 0x04, ///<
-		DDRB_DDB3	= 0x08, ///<
-		DDRB_DDB4	= 0x10, ///<
-		DDRB_DDB5	= 0x20, ///<
-		DDRB_DDB6	= 0x40, ///<
-		DDRB_DDB7	= 0x80, ///<
+		DDRB_DDB0	= 0x01, ///< Data direction flag for bit 0 in port B
+		DDRB_DDB1	= 0x02, ///<          .        .         .
+		DDRB_DDB2	= 0x04, ///<          .        .         .
+		DDRB_DDB3	= 0x08, ///<          .        .         .
+		DDRB_DDB4	= 0x10, ///<          .        .         .
+		DDRB_DDB5	= 0x20, ///<          .        .         .
+		DDRB_DDB6	= 0x40, ///<          .        .         .
+		DDRB_DDB7	= 0x80, ///< Data direction flag for bit 7 in port B
 		//@}
 
-		/// @name PINB (0x36): Port B Input Pins Address
+		/// @name PINB (0x36): Port B Input Pins
 		//@{
-		PINB_PINB0	= 0x01, ///<
-		PINB_PINB1	= 0x02, ///<
-		PINB_PINB2	= 0x04, ///<
-		PINB_PINB3	= 0x08, ///<
-		PINB_PINB4	= 0x10, ///<
-		PINB_PINB5	= 0x20, ///<
-		PINB_PINB6	= 0x40, ///<
-		PINB_PINB7	= 0x80, ///<
+		PINB_PINB0	= 0x01, ///< Input read from bit 0 in port B
+		PINB_PINB1	= 0x02, ///<       .        .         .
+		PINB_PINB2	= 0x04, ///<       .        .         .
+		PINB_PINB3	= 0x08, ///<       .        .         .
+		PINB_PINB4	= 0x10, ///<       .        .         .
+		PINB_PINB5	= 0x20, ///<       .        .         .
+		PINB_PINB6	= 0x40, ///<       .        .         .
+		PINB_PINB7	= 0x80, ///< Input read from bit 7 in port B
 		//@}
 
 		/// @name PORTC (0x35): Port C Data Register
 		//@{
-		PORTC_PORTC0	= 0x01, ///<
-		PORTC_PORTC1	= 0x02, ///<
-		PORTC_PORTC2	= 0x04, ///<
-		PORTC_PORTC3	= 0x08, ///<
-		PORTC_PORTC4	= 0x10, ///<
-		PORTC_PORTC5	= 0x20, ///<
-		PORTC_PORTC6	= 0x40, ///<
-		PORTC_PORTC7	= 0x80, ///<
+		PORTC_PORTC0	= 0x01, ///< Bit 0 in port C
+		PORTC_PORTC1	= 0x02, ///<  .    .     .
+		PORTC_PORTC2	= 0x04, ///<  .    .     .
+		PORTC_PORTC3	= 0x08, ///<  .    .     .
+		PORTC_PORTC4	= 0x10, ///<  .    .     .
+		PORTC_PORTC5	= 0x20, ///<  .    .     .
+		PORTC_PORTC6	= 0x40, ///<  .    .     .
+		PORTC_PORTC7	= 0x80, ///< Bit 7 in port C
 		//@}
 
 		/// @name DDRC (0x34): Port C Data Direction Register
 		//@{
-		DDRC_DDC0	= 0x01, ///<
-		DDRC_DDC1	= 0x02, ///<
-		DDRC_DDC2	= 0x04, ///<
-		DDRC_DDC3	= 0x08, ///<
-		DDRC_DDC4	= 0x10, ///<
-		DDRC_DDC5	= 0x20, ///<
-		DDRC_DDC6	= 0x40, ///<
-		DDRC_DDC7	= 0x80, ///<
+		DDRC_DDC0	= 0x01, ///< Data direction flag for bit 0 in port C
+		DDRC_DDC1	= 0x02, ///<          .        .         .
+		DDRC_DDC2	= 0x04, ///<          .        .         .
+		DDRC_DDC3	= 0x08, ///<          .        .         .
+		DDRC_DDC4	= 0x10, ///<          .        .         .
+		DDRC_DDC5	= 0x20, ///<          .        .         .
+		DDRC_DDC6	= 0x40, ///<          .        .         .
+		DDRC_DDC7	= 0x80, ///< Data direction flag for bit 7 in port C
 		//@}
 
-		/// @name PINC (0x33): Port C Input Pins Address
+		/// @name PINC (0x33): Port C Input Pins
 		//@{
-		PINC_PINC0	= 0x01, ///<
-		PINC_PINC1	= 0x02, ///<
-		PINC_PINC2	= 0x04, ///<
-		PINC_PINC3	= 0x08, ///<
-		PINC_PINC4	= 0x10, ///<
-		PINC_PINC5	= 0x20, ///<
-		PINC_PINC6	= 0x40, ///<
-		PINC_PINC7	= 0x80, ///<
+		PINC_PINC0	= 0x01, ///< Input read from bit 0 in port C
+		PINC_PINC1	= 0x02, ///<       .        .         .
+		PINC_PINC2	= 0x04, ///<       .        .         .
+		PINC_PINC3	= 0x08, ///<       .        .         .
+		PINC_PINC4	= 0x10, ///<       .        .         .
+		PINC_PINC5	= 0x20, ///<       .        .         .
+		PINC_PINC6	= 0x40, ///<       .        .         .
+		PINC_PINC7	= 0x80, ///< Input read from bit 7 in port C
 		//@}
 
 		/// @name PORTD (0x32): Port D Data Register
 		//@{
-		PORTD_PORTD0	= 0x01, ///<
-		PORTD_PORTD1	= 0x02, ///<
-		PORTD_PORTD2	= 0x04, ///<
-		PORTD_PORTD3	= 0x08, ///<
-		PORTD_PORTD4	= 0x10, ///<
-		PORTD_PORTD5	= 0x20, ///<
-		PORTD_PORTD6	= 0x40, ///<
-		PORTD_PORTD7	= 0x80, ///<
+		PORTD_PORTD0	= 0x01, ///< Bit 0 in port D
+		PORTD_PORTD1	= 0x02, ///<  .    .     .
+		PORTD_PORTD2	= 0x04, ///<  .    .     .
+		PORTD_PORTD3	= 0x08, ///<  .    .     .
+		PORTD_PORTD4	= 0x10, ///<  .    .     .
+		PORTD_PORTD5	= 0x20, ///<  .    .     .
+		PORTD_PORTD6	= 0x40, ///<  .    .     .
+		PORTD_PORTD7	= 0x80, ///< Bit 7 in port D
 		//@}
 
 		/// @name DDRD (0x31): Port D Data Direction Register
 		//@{
-		DDRD_DDD0	= 0x01, ///<
-		DDRD_DDD1	= 0x02, ///<
-		DDRD_DDD2	= 0x04, ///<
-		DDRD_DDD3	= 0x08, ///<
-		DDRD_DDD4	= 0x10, ///<
-		DDRD_DDD5	= 0x20, ///<
-		DDRD_DDD6	= 0x40, ///<
-		DDRD_DDD7	= 0x80, ///<
+		DDRD_DDD0	= 0x01, ///< Data direction flag for bit 0 in port D
+		DDRD_DDD1	= 0x02, ///<          .        .         .
+		DDRD_DDD2	= 0x04, ///<          .        .         .
+		DDRD_DDD3	= 0x08, ///<          .        .         .
+		DDRD_DDD4	= 0x10, ///<          .        .         .
+		DDRD_DDD5	= 0x20, ///<          .        .         .
+		DDRD_DDD6	= 0x40, ///<          .        .         .
+		DDRD_DDD7	= 0x80, ///< Data direction flag for bit 7 in port D
 		//@}
 
-		/// @name PIND (0x30): Port D Input Pins Address
+		/// @name PIND (0x30): Port D Input Pins
 		//@{
-		PIND_PIND0	= 0x01, ///<
-		PIND_PIND1	= 0x02, ///<
-		PIND_PIND2	= 0x04, ///<
-		PIND_PIND3	= 0x08, ///<
-		PIND_PIND4	= 0x10, ///<
-		PIND_PIND5	= 0x20, ///<
-		PIND_PIND6	= 0x40, ///<
-		PIND_PIND7	= 0x80, ///<
+		PIND_PIND0	= 0x01, ///< Input read from bit 0 in port D
+		PIND_PIND1	= 0x02, ///<       .        .         .
+		PIND_PIND2	= 0x04, ///<       .        .         .
+		PIND_PIND3	= 0x08, ///<       .        .         .
+		PIND_PIND4	= 0x10, ///<       .        .         .
+		PIND_PIND5	= 0x20, ///<       .        .         .
+		PIND_PIND6	= 0x40, ///<       .        .         .
+		PIND_PIND7	= 0x80, ///< Input read from bit 7 in port D
 		//@}
 
 		/// @name SPSR (0x2E): SPI Status Register

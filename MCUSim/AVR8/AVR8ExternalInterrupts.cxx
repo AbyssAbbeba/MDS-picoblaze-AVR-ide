@@ -37,8 +37,8 @@ void AVR8ExternalInterrupts::clockCycle() {
 	// 1	1	The rising edge of INT1 generates an interrupt request.
 
 	const unsigned int mcucr = m_dataMemory->readFast(MCUCR);
-	const bool int0 = m_io->getLog(AVR8IO::PIN_INT0);
-	const bool int1 = m_io->getLog(AVR8IO::PIN_INT1);
+	const bool int0 = m_io->getLog(AVR8PinNames::SPF_INT0);
+	const bool int1 = m_io->getLog(AVR8PinNames::SPF_INT1);
 
 	// External interrupt 0
 	switch ( mcucr & ( MCUCR_ISC01 | MCUCR_ISC00 ) ) {
@@ -104,6 +104,6 @@ void AVR8ExternalInterrupts::reset(MCUSim::Subsys::SubsysResetMode mode) {
 }
 
 inline void AVR8ExternalInterrupts::mcuReset() {
-	m_int0prev = m_io->getLog(AVR8IO::PIN_INT0);
-	m_int1prev = m_io->getLog(AVR8IO::PIN_INT1);
+	m_int0prev = m_io->getLog(AVR8PinNames::SPF_INT0);
+	m_int1prev = m_io->getLog(AVR8PinNames::SPF_INT1);
 }

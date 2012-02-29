@@ -147,7 +147,7 @@ inline void AVR8TimerCounter0::incrementWithDelay(unsigned int number) {
 
 inline void AVR8TimerCounter0::sampleT0() {
 	bool prevT0Log = m_t0Log;
-	m_t0Log = m_io->getLog(AVR8IO::PIN_T0);
+	m_t0Log = m_io->getLog(AVR8PinNames::SPF_T0);
 
 	if ( 6 == m_clockSource ) {
 		// External clock source on T0 pin. Clock on falling edge.
@@ -160,7 +160,7 @@ inline void AVR8TimerCounter0::sampleT0() {
 }
 
 inline void AVR8TimerCounter0::clearDelayArray() {
-	for ( int i = 0; i < COUNTER_DELAY; i++ ) {
+	for ( unsigned int i = 0; i < COUNTER_DELAY; i++ ) {
 		m_incrementWithDelay[i] = 0;
 	}
 }
@@ -180,7 +180,7 @@ void AVR8TimerCounter0::reset(MCUSim::Subsys::SubsysResetMode mode) {
 }
 
 inline void AVR8TimerCounter0::resetToInitialValues() {
-	m_t0Log = m_io->getLog(AVR8IO::PIN_T0);
+	m_t0Log = m_io->getLog(AVR8PinNames::SPF_T0);
 
 	clearDelayArray();
 	m_iwdIndexIn = 0;

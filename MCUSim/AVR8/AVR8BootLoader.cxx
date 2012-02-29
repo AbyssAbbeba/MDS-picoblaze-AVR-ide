@@ -81,61 +81,79 @@ inline AVR8BootLoader::SpmMode AVR8BootLoader::determinateSpmMode(unsigned int s
 	return mode;
 }
 
-void AVR8BootLoader::timeStep(float timeStep, unsigned int clockCycles) {
+inline void AVR8BootLoader::normalizeControlReg(const unsigned int clockCycles) {
 	using namespace AVR8RegNames;
 
 	unsigned int spmcr = m_dataMemory->readFast(SPMCR);
 	spmcr &= ( SPMCR_SPMEN | SPMCR_PGERS | SPMCR_PGWRT | SPMCR_BLBSET | SPMCR_RWWSRE );
-	
-	if ( m_spmcrLast != spmcr ) {
-		if ( (SPMCR_SPMEN & spmcr) && (false == m_writeInProgress) ) {
-			// Accept the change
-			m_cr_timer = 4 + clockCycles;
-			m_spmcrLast = spmcr;
-			m_spmMode = determinateSpmMode(spmcr);
-			if ( SPMMD_NONE == m_spmMode ) {
-				logEvent(EVENT_BOOT_INVALID_CR_CHAGE, AVR8RegNames::SPMCR, m_dataMemory->readFast(SPMCR));
-			}
-		} else {
-			// Refuse the change
-			spmcr = m_dataMemory->readFast(SPMCR);
-			logEvent(EVENT_BOOT_INVALID_CR_CHAGE, SPMCR, spmcr);
-			spmcr &= ( 0xff ^ ( SPMCR_SPMEN | SPMCR_PGERS | SPMCR_PGWRT | SPMCR_BLBSET | SPMCR_RWWSRE ) );
-			spmcr |= m_spmcrLast;
-			m_dataMemory->writeFast(SPMCR, spmcr);
-			spmcr &= ( SPMCR_SPMEN | SPMCR_PGERS | SPMCR_PGWRT | SPMCR_BLBSET | SPMCR_RWWSRE );
-		}
+
+	if ( m_spmcrLast == spmcr ) {
+		// No change means nothing to do here
+		return;
 	}
 
-	// Manage the timer which keeps the SPMEN, PGERS, PGWRT, BLBSET, and RWWSRE flag set for 4 clock cycles.
-	if ( 0 != m_cr_timer ) {
-		// Decrement the timer
-		m_cr_timer -= clockCycles;
-		if ( m_cr_timer < 0 ) {
-			m_cr_timer = 0;
+	if ( (SPMCR_SPMEN & spmcr) && (false == m_writeInProgress) ) {
+		// Accept the change
+		m_cr_timer = 4 + clockCycles;
+		m_spmcrLast = spmcr;
+		m_spmMode = determinateSpmMode(spmcr);
+		if ( SPMMD_NONE == m_spmMode ) {
+			logEvent(EVENT_BOOT_INVALID_CR_CHAGE, AVR8RegNames::SPMCR, m_dataMemory->readFast(SPMCR));
 		}
+	} else {
+		// Refuse the change
+		spmcr = m_dataMemory->readFast(SPMCR);
+		logEvent(EVENT_BOOT_INVALID_CR_CHAGE, SPMCR, spmcr);
+		spmcr &= ( 0xff ^ ( SPMCR_SPMEN | SPMCR_PGERS | SPMCR_PGWRT | SPMCR_BLBSET | SPMCR_RWWSRE ) );
+		spmcr |= m_spmcrLast;
+		m_dataMemory->writeFast(SPMCR, spmcr);
+	}
+}
+// Manage the timer which keeps the SPMEN, PGERS, PGWRT, BLBSET, and RWWSRE flag set for 4 clock cycles.
+inline void AVR8BootLoader::manageContRegTimer(const unsigned int clockCycles) {
+	using namespace AVR8RegNames;
 
-		if ( (0 == m_cr_timer) && (false == m_writeInProgress) ) {
-			// Clear the the flags (after 4 clock cycles)
-			spmcr = m_dataMemory->readFast(SPMCR);
-			spmcr &= ( 0xff ^ ( SPMCR_SPMEN | SPMCR_PGERS | SPMCR_PGWRT | SPMCR_BLBSET | SPMCR_RWWSRE ) );
-			m_dataMemory->writeFast(SPMCR, spmcr);
-			m_spmcrLast = spmcr;
-			m_spmMode = SPMMD_NONE;
-		}
+	if ( 0 == m_cr_timer ) {
+		return;
 	}
 
-	if ( true == m_writeInProgress ) {
-		m_progTimer -= timeStep;
-
-		if ( m_progTimer <= 0 ) {
-			m_writeInProgress = false;
-
-			spmcr = m_dataMemory->readFast(SPMCR);
-			spmcr &= ( 0xff ^ ( SPMCR_SPMEN | SPMCR_PGERS | SPMCR_PGWRT | SPMCR_BLBSET | SPMCR_RWWSRE ) );
-			m_dataMemory->writeFast(SPMCR, spmcr);
-		}
+	// Decrement the timer
+	m_cr_timer -= clockCycles;
+	if ( m_cr_timer < 0 ) {
+		m_cr_timer = 0;
 	}
+
+	if ( (0 == m_cr_timer) && (false == m_writeInProgress) ) {
+		// Clear the the flags (after 4 clock cycles)
+		unsigned int spmcr = m_dataMemory->readFast(SPMCR);
+		spmcr &= ( 0xff ^ ( SPMCR_SPMEN | SPMCR_PGERS | SPMCR_PGWRT | SPMCR_BLBSET | SPMCR_RWWSRE ) );
+		m_dataMemory->writeFast(SPMCR, spmcr);
+		m_spmcrLast = spmcr;
+		m_spmMode = SPMMD_NONE;
+	}
+}
+inline void AVR8BootLoader::manageProgTimer(const float timeStep) {
+	using namespace AVR8RegNames;
+
+	if ( false == m_writeInProgress ) {
+		return;
+	}
+
+	m_progTimer -= timeStep;
+
+	if ( m_progTimer <= 0 ) {
+		m_writeInProgress = false;
+
+		unsigned int spmcr = m_dataMemory->readFast(SPMCR);
+		spmcr &= ( 0xff ^ ( SPMCR_SPMEN | SPMCR_PGERS | SPMCR_PGWRT | SPMCR_BLBSET | SPMCR_RWWSRE ) );
+		m_dataMemory->writeFast(SPMCR, spmcr);
+	}
+}
+
+void AVR8BootLoader::timeStep(float timeStep, unsigned int clockCycles) {
+	normalizeControlReg(clockCycles);
+	manageContRegTimer(clockCycles);
+	manageProgTimer(timeStep);
 }
 
 inline float AVR8BootLoader::randomTimeInRange() const {
@@ -265,7 +283,7 @@ unsigned int AVR8BootLoader::spmWrite(unsigned int addr, unsigned int val) {
 
 unsigned int AVR8BootLoader::lpmRead(unsigned int addr) {
 	using namespace AVR8RegNames;
-	
+
 	if ( SPMMD_BLBSET == m_spmMode ) {
 		unsigned int spmcr = m_dataMemory->readFast(SPMCR);
 		spmcr &= ( 0xff ^ ( SPMCR_SPMEN | SPMCR_PGERS | SPMCR_PGWRT | SPMCR_BLBSET | SPMCR_RWWSRE ) );

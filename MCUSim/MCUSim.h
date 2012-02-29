@@ -111,6 +111,12 @@ public:
 		}
 	public:
 		EventLogger() : m_subsysId(new int[m_size]), m_eventId(new int[m_size]), m_location(new int[m_size]), m_detail(new int[m_size]), m_size(10), m_inPos(1), m_outPos(0) {}
+		~EventLogger() {
+			delete m_subsysId;
+			delete m_eventId;
+			delete m_location;
+			delete m_detail;
+		}
 
 		void logEvent(int subsysId, int eventId, int location, int detail) {
 			if ( m_inPos == m_outPos) {
@@ -309,7 +315,53 @@ public:
 	class IO : public Subsys
 	{
 	public:
+		#ifdef SIM_IO_QUADRUPLE_PRECISION
+			typedef long double SimFloatType;
+		#elseifdef SIM_IO_DOUBLE_PRECISION
+			typedef double SimFloatType;
+		#else
+			typedef float SimFloatType;
+		#endif
+
+		enum Event {
+			EVENT_IO_INDETERMINABLE_LOG,
+
+			EVENT_IO__MAX__
+		};
+		enum InterfaceIndex {
+			II_VOLTAGE_INT	= 0,
+			II_REAL_VOLTAGE	= 1,
+			II_CURRENT	= 2,
+			II_RESISTANCE	= 3,
+			II__MAX__
+		};
+
+		/*
+		 * NOTE:
+		 * Voltages and currents can be anything except for NaN, since NaN means that state of the pin is a "mystery",
+		 * Values of resistance:
+		 *   - equal to +INFINITY  : purely input pin
+		 *   - lower than 0        : the pin has a very special function, and therefore must be excluded from nodal analysis
+		 *   - equal to -INFINITY  : (reserved for future use)
+		 *   - not a number (NaN)  : pin is not implemented!
+		 *   - otherwise           : normal pin
+		 */
+
+		/*
+		 * NOTE:
+		 * math.h defines also these macros:
+		 *   - INFINITY
+		 *   - NAN
+		 *
+		 * And don't check whether NAN macro has been defined (it's a GNU extension)!
+		 */
+
 		IO(EventLogger * eventLogger) : Subsys(eventLogger, ID_IO) {};
+
+		virtual unsigned int getNumberOfPins() const = 0;
+		virtual void setSourceVoltage(SimFloatType voltage) = 0;
+		virtual SimFloatType getSourceVoltage() const = 0;
+		virtual SimFloatType ** getLowLevelInterface() = 0;
 	};
 
 // 	/**

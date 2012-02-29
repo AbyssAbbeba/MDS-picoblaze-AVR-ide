@@ -28,7 +28,16 @@ class AVR8InstructionSet;
 class AVR8BootLoader : public MCUSim::Subsys {
 
 public:
-	AVR8BootLoader(MCUSim::EventLogger * eventLogger, AVR8ProgramMemory * programMemory, AVR8DataMemory * dataMemory, AVR8FusesAndLocks & fusesAndLocks, AVR8DataEEPROM * dataEEPROM, AVR8InstructionSet * instructionSet, AVR8Sim::HaltMode & haltMode);
+	AVR8BootLoader(
+		MCUSim::EventLogger	* eventLogger,
+		AVR8ProgramMemory	* programMemory,
+		AVR8DataMemory		* dataMemory,
+		AVR8FusesAndLocks	& fusesAndLocks,
+		AVR8DataEEPROM		* dataEEPROM,
+		AVR8InstructionSet	* instructionSet,
+		AVR8Sim::HaltMode	& haltMode
+	);
+
 	~AVR8BootLoader();
 
 	enum Event {
@@ -77,9 +86,9 @@ protected:
 	unsigned int m_spmcrLast;
 	int m_cr_timer;
 	uint32_t * m_writeBuffer;
+	float m_progTimer;
 	bool m_writeInProgress;
 	bool m_rwwSectionBusy;
-	float m_progTimer;
 
 	AVR8ProgramMemory * m_programMemory;
 	AVR8DataMemory * m_dataMemory;
@@ -97,6 +106,10 @@ protected:
 	inline bool isInRWWSection(unsigned int addr) const;
 	inline bool isReadAllowed(unsigned int addr) const;
 	inline bool isWriteAllowed(unsigned int addr) const;
+
+	inline void manageProgTimer(const float timeStep);
+	inline void manageContRegTimer(const unsigned int clockCycles);
+	inline void normalizeControlReg(const unsigned int clockCycles);
 
 	inline void pageErase(unsigned int addr);
 	inline void setLockBits(unsigned int addr, unsigned int val);
@@ -117,11 +130,7 @@ inline bool AVR8BootLoader::inUse(unsigned int addr) const {
 }
 
 inline bool AVR8BootLoader::isInRWWSection(unsigned int addr) const {
-	if ( addr < (m_config.m_pageSize * m_config.m_rwwSectionSize) ) {
-		return true;
-	} else {
-		return false;
-	}
+	return ( addr < (m_config.m_pageSize * m_config.m_rwwSectionSize) );
 }
 
 #endif // AVR8BOOTLOADER_H
