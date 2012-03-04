@@ -1,0 +1,29 @@
+#include <QtGui>
+#include "menu.h"
+
+MenuMan::MenuMan(QMainWindow *mainWindow)
+{
+    mainWindowPtr=mainWindow;
+    menuCount=0;
+    loadDefault();
+}
+
+void MenuMan::loadDefault()
+{
+    addMenu("&File");
+    addMenu("&Edit");
+    addMenu("&View");
+    addMenu("&Project");
+    addMenu("&Tools");
+    addMenu("&Help");
+}
+
+void MenuMan::addMenu(QString name)
+{
+    QMenu *menu = mainWindowPtr->menuBar()->addMenu(name);
+    Menus.insert(menuCount, menu);
+    menuCount++;
+}
+
+
+
