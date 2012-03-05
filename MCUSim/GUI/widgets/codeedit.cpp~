@@ -1,0 +1,8 @@
+#include <QtGui>
+
+
+CodeEdit::CodeEdit(QWidget *parent)
+    : QPlainTextEdit(parent)
+{
+    //
+}
