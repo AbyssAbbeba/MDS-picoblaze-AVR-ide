@@ -1,0 +1,18 @@
+#ifndef WPROJECT_H
+#define WPROJECT_H
+
+#include <QTreeWidget>
+#include <QDockWidget>
+#include <QMainWindow>
+
+class wProject : public QDockWidget
+{
+    Q_OBJECT
+    public:
+        wProject();
+    private:
+        
+}
+
+
+#endif
