@@ -21,7 +21,10 @@ class AVR8IO;
 
 class AVR8ExternalInterrupts : public MCUSim::Subsys {
 public:
-	AVR8ExternalInterrupts(MCUSim::EventLogger * eventLogger, AVR8DataMemory * dataMemory, AVR8IO * io);
+	AVR8ExternalInterrupts(
+		MCUSim::EventLogger	* eventLogger,
+		AVR8DataMemory		* dataMemory,
+		AVR8IO			* io);
 
 	struct Config {
 	};

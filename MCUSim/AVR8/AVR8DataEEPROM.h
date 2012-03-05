@@ -24,7 +24,10 @@ class AVR8InterruptController;
 
 class AVR8DataEEPROM : public MCUSim::Memory {
 public:
-	AVR8DataEEPROM(MCUSim::EventLogger * eventLogger, AVR8DataMemory * dataMemory, AVR8InterruptController * interruptController);
+	AVR8DataEEPROM(
+		MCUSim::EventLogger	* eventLogger,
+		AVR8DataMemory		* dataMemory,
+		AVR8InterruptController	* interruptControllers);
 
 	enum Event {
 		EVENT_EEPROM_INVALID_CR_CHAGE = EVENT_MEM__MAX__, ///<

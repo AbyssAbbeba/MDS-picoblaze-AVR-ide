@@ -19,19 +19,19 @@
 #include "AVR8BootLoader.h"
 
 AVR8InterruptController::AVR8InterruptController(
-		MCUSim::EventLogger * eventLogger,
-		AVR8InstructionSet * instructionSet,
-		AVR8ProgramMemory * programMemory,
-		AVR8DataMemory * dataMemory,
-		AVR8FusesAndLocks & fuses,
-		AVR8Sim::SleepMode & sleepMode,
-		AVR8BootLoader * bootLoader)
+		MCUSim::EventLogger	* eventLogger,
+		AVR8InstructionSet	* instructionSet,
+		AVR8ProgramMemory	* programMemory,
+		AVR8DataMemory		* dataMemory,
+		AVR8FusesAndLocks	& fusesAndLocks,
+		AVR8Sim::SleepMode	& sleepMode,
+		AVR8BootLoader		* bootLoader)
 		:
 		Subsys(eventLogger, ID_INTERRUPTS),
 		m_instructionSet(instructionSet),
 		m_programMemory(programMemory),
 		m_dataMemory(dataMemory),
-		m_fusesAndLocks(fuses),
+		m_fusesAndLocks(fusesAndLocks),
 		m_sleepMode(sleepMode),
 		m_bootLoader(bootLoader)
 {
@@ -46,6 +46,17 @@ void AVR8InterruptController::reti() {
 }
 
 int AVR8InterruptController::autoInterrupt() {
+
+	// Treat RESET as a special cas
+	if (
+		( true == m_intReqWithoutFlag[INTVEC_RESET] )
+			&&
+		( true == m_config.m_possibleInterrupts[INTVEC_RESET] )
+	) {
+		m_intReqWithoutFlag[INTVEC_RESET] = false;
+		return -1;
+	}
+
 	if ( false == m_dataMemory->readBitFast(AVR8RegNames::SREG, AVR8RegNames::SREG_I) ) {
 		m_interruptToExecute = INTVEC_NONE;
 		return 0;
@@ -70,11 +81,6 @@ void AVR8InterruptController::genIntReq(AVR8InterruptController::InterruptVector
 
 inline int AVR8InterruptController::executeInterrupt(AVR8InterruptController::InterruptVector vector) {
 	m_interruptToExecute = INTVEC_NONE;
-
-	// Treat RESET as a special case
-	if ( (true == m_config.m_possibleInterrupts[INTVEC_RESET]) && (INTVEC_RESET == vector) ) {
-		return -1;
-	}
 
 	if ( false == confirmInterrupt(vector) ) {
 		logEvent(EVENT_INT_INTERRUPT_CANCELED, m_instructionSet->getProgramCounter(), m_interruptToExecute);
@@ -108,7 +114,6 @@ inline int AVR8InterruptController::executeInterrupt(AVR8InterruptController::In
 
 	// Increment statistical counter
 	m_interruptCounter[vector]++;
-
 
 	if ( AVR8Sim::SLEEPMD_NONE != m_sleepMode ) {
 		/*

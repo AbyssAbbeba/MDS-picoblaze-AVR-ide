@@ -72,7 +72,7 @@ public:
 	private:
 		int * /*__restict__*/ m_subsysId;
 		int * /*__restict__*/ m_eventId;
-		int * /*__restict__*/ m_location;
+		int * /*__restict__*/ m_location; // or reason
 		int * /*__restict__*/ m_detail;
 
 		int m_size;
@@ -110,7 +110,18 @@ public:
 			m_detail = m_detailNew;
 		}
 	public:
-		EventLogger() : m_subsysId(new int[m_size]), m_eventId(new int[m_size]), m_location(new int[m_size]), m_detail(new int[m_size]), m_size(10), m_inPos(1), m_outPos(0) {}
+		EventLogger()
+			 :
+			m_subsysId(new int[m_size]),
+			m_eventId(new int[m_size]),
+			m_location(new int[m_size]),
+			m_detail(new int[m_size]),
+			m_size(10),
+			m_inPos(1),
+			m_outPos(0)
+		{
+		}
+
 		~EventLogger() {
 			delete m_subsysId;
 			delete m_eventId;
@@ -120,7 +131,7 @@ public:
 
 		void logEvent(int subsysId, int eventId, int location, int detail) {
 			if ( m_inPos == m_outPos) {
-				// The queue is full
+				// The queue is full -> enlarge it.
 				enlargeQueue();
 
 				// OR we can simply:
@@ -171,7 +182,7 @@ public:
 	public:
 		/// @brief ...
 		enum SubsysId {
-			ID_INVALID = 0,
+			ID_THE_CORE = 0,
 			ID_CPU,
 			ID_FUSES,
 			ID_INTERRUPTS,
@@ -179,7 +190,8 @@ public:
 			ID_WATCHDOG,
 			ID_IO,
 			ID_BOOT_LOADER,
-// 			ID_SIMCONTROL,
+			ID_SYS_CONTROL,
+			ID_CLK_CONTROL,
 
 			ID__MAX__
 		};
@@ -364,19 +376,72 @@ public:
 		virtual SimFloatType ** getLowLevelInterface() = 0;
 	};
 
-// 	/**
-// 	 * @brief General interface for control of simulation
-// 	 *
-// 	 */
-// 	class SimControl
-// 	{
-// 	public:
-// 		virtual void execInstructionCycle() = 0;
-// 		virtual void clockRaise() = 0;
-// 		virtual void clockFall() = 0;
-// 		virtual void powerOn() = 0;
-// 		virtual void powerOff() = 0;
-// 	};
+	/**
+	 * @brief
+	 */
+	class Clock : public Subsys
+	{
+	public:
+		Clock(EventLogger * eventLogger) : Subsys(eventLogger, ID_CLK_CONTROL) {};
+
+		class ClockSource {
+		public:
+			enum Type {
+				TYPE_NONE,
+				TYPE_RC,
+				TYPE_CERAMIC_RES,
+				TYPE_LOW_FREQ_CRYSTAL,
+				TYPE_CRYSTAL,
+				TYPE_EXTERNAL
+			};
+
+			ClockSource() : m_type(TYPE_NONE) {};
+
+			Type  getType()		const	{ return m_type;	}
+			float getResistance()	const	{ return m_resistance;	}
+			float getCapacity()	const	{ return m_capacity;	}
+			float getFrequency()	const	{ return m_frequency;	}
+
+		protected:
+			Type m_type;
+			float m_resistance;
+			float m_capacity;
+			float m_frequency;
+		};
+
+		class ClockSourceSpec : public ClockSource {
+		private:
+			ClockSourceSpec();
+		public:
+			void setInternalClockSource() {
+				m_type = TYPE_NONE;
+			}
+			void setRcOscilator(float resistance, float capacity) {
+				m_type = TYPE_RC;
+				m_resistance = resistance;
+				m_capacity = capacity;
+			}
+			void setCeramicResonator(float resFrequency, float condCapacity = 0) {
+				m_type = TYPE_RC;
+				m_frequency = resFrequency;
+				m_capacity = condCapacity;
+			}
+			void setLowFreqCrystal(float crystFrequency, float condCapacity = 0) {
+				m_type = TYPE_LOW_FREQ_CRYSTAL;
+				m_frequency = crystFrequency;
+				m_capacity = condCapacity;
+			}
+			void setCrystal(float crystFrequency, float condCapacity = 0) {
+				m_type = TYPE_CRYSTAL;
+				m_frequency = crystFrequency;
+				m_capacity = condCapacity;
+			}
+			void setExternalClockSource(float frequency) {
+				m_type = TYPE_EXTERNAL;
+				m_frequency = frequency;
+			}
+		};
+	};
 
 // 	virtual Memory * getMemory(Memory::MemorySpace memType) = 0;
 	virtual Subsys * getSubsys(Subsys::SubsysId id) = 0;

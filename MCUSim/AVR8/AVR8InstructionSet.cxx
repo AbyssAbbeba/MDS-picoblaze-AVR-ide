@@ -17,7 +17,7 @@
 #include "AVR8DES.h"
 #include "AVR8FusesAndLocks.h"
 #include "AVR8InterruptController.h"
-#include "AVR8WatchdogTimer.h"
+#include "AVR8SystemControl.h"
 #include "AVR8BootLoader.h"
 
 static int (AVR8InstructionSet:: * const m_opCodeDispatchTable[64])(const unsigned int opCode) = {
@@ -190,17 +190,17 @@ static int (AVR8InstructionSet:: * const m_opCodeDispatchTable_1001_010x_xxxx_10
 };
 
 AVR8InstructionSet::AVR8InstructionSet(
-		MCUSim::EventLogger * eventLogger,
-		AVR8ProgramMemory * programMemory,
-		AVR8DataMemory * dataMemory,
-		MCUSim::Mode & processorMode,
-		AVR8Sim::SleepMode & sleepMode,
-		AVR8FusesAndLocks & fuses,
-		AVR8InterruptController * interruptController,
-		AVR8WatchdogTimer * watchdogTimer,
-		AVR8Sim::HaltMode & haltMode,
-		AVR8BootLoader * bootLoader
-			) :
+		MCUSim::EventLogger	* eventLogger,
+		AVR8ProgramMemory	* programMemory,
+		AVR8DataMemory		* dataMemory,
+		MCUSim::Mode		& processorMode,
+		AVR8Sim::SleepMode	& sleepMode,
+		AVR8FusesAndLocks	& fuses,
+		AVR8InterruptController	* interruptController,
+		AVR8SystemControl	* systemControl,
+		AVR8Sim::HaltMode	& haltMode,
+		AVR8BootLoader		* bootLoader)
+		 :
 		MCUSim::CPU(eventLogger),
 		m_programMemory(programMemory),
 		m_dataMemory(dataMemory),
@@ -208,7 +208,7 @@ AVR8InstructionSet::AVR8InstructionSet(
 		m_sleepMode(sleepMode),
 		m_fusesAndLocks(fuses),
 		m_interruptController(interruptController),
-		m_watchdogTimer(watchdogTimer),
+		m_systemControl(systemControl),
 		m_haltMode(haltMode),
 		m_bootLoader(bootLoader)
 {
@@ -1967,7 +1967,7 @@ int AVR8InstructionSet::inst_WDR(const unsigned int) {
 	instructionEnter(AVR8InsNames::INS_WDR);
 
 	// Reset the watchdog timer
-	m_watchdogTimer->wdr();
+	m_systemControl->watchDogReset();
 
 	// This takes one cycle to execute
 	return 1;

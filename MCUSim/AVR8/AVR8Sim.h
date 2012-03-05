@@ -21,8 +21,10 @@ class AVR8InterruptControler;
 class AVR8TimerCounter0;
 class AVR8IO;
 class AVR8ExternalInterrupts;
-class AVR8WatchdogTimer;
 class AVR8DataEEPROM;
+class AVR8BootLoader;
+class AVR8SystemControl;
+class AVR8ClockControl;
 
 #include "../MCUSim.h"
 #include "AVR8RegNames.h"
@@ -85,8 +87,10 @@ protected:
 	AVR8TimerCounter0 * m_timerCounter0;
 	AVR8IO * m_io;
 	AVR8ExternalInterrupts * m_externalInterrupts;
-	AVR8WatchdogTimer * m_watchdogTimer;
 	AVR8DataEEPROM * m_dataEEPROM;
+	AVR8BootLoader * m_bootLoader;
+	AVR8SystemControl * m_systemControl;
+	AVR8ClockControl * m_clockControl;
 
 	EventLogger * m_eventLogger;
 

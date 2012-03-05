@@ -20,13 +20,13 @@
 #include <cstdlib>
 
 AVR8BootLoader::AVR8BootLoader(
-	MCUSim::EventLogger * eventLogger,
-	AVR8ProgramMemory * programMemory,
-	AVR8DataMemory * dataMemory,
-	AVR8FusesAndLocks & fusesAndLocks,
-	AVR8DataEEPROM * dataEEPROM,
-    	AVR8InstructionSet * instructionSet,
-	AVR8Sim::HaltMode & haltMode)
+	MCUSim::EventLogger	* eventLogger,
+	AVR8ProgramMemory	* programMemory,
+	AVR8DataMemory		* dataMemory,
+	AVR8FusesAndLocks	& fusesAndLocks,
+	AVR8DataEEPROM		* dataEEPROM,
+    	AVR8InstructionSet	* instructionSet,
+	AVR8Sim::HaltMode	& haltMode)
 	 :
 	Subsys(eventLogger, ID_BOOT_LOADER),
 	m_writeBuffer(NULL),
@@ -224,7 +224,7 @@ inline void AVR8BootLoader::setLockBits(unsigned int addr, unsigned int val) {
 		logEvent(EVENT_BOOT_WRN_INVALID_ADDR, addr);
 	}
 
-	m_fusesAndLocks.setLockBits( (unsigned char)(val & 0xff));
+	m_fusesAndLocks.setLockBits( (unsigned char)(val & 0xff) );
 
 	unsigned int spmcr = m_dataMemory->readFast(SPMCR);
 	spmcr &= ( 0xff ^ ( SPMCR_SPMEN | SPMCR_PGERS | SPMCR_PGWRT | SPMCR_BLBSET | SPMCR_RWWSRE ) );

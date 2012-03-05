@@ -17,9 +17,9 @@
 #include <cstdlib>
 
 AVR8DataEEPROM::AVR8DataEEPROM(
-		MCUSim::EventLogger * eventLogger,
-		AVR8DataMemory * dataMemory,
-		AVR8InterruptController * interruptController)
+		MCUSim::EventLogger	* eventLogger,
+		AVR8DataMemory		* dataMemory,
+		AVR8InterruptController	* interruptController)
 		 :
 		MCUSim::Memory(eventLogger, MCUSim::Memory::SP_EEPROM),
 		m_dataMemory(dataMemory),

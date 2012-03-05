@@ -18,7 +18,7 @@ class AVR8DataMemory;
 class AVR8DES;
 class AVR8FusesAndLocks;
 class AVR8InterruptController;
-class AVR8WatchdogTimer;
+class AVR8SystemControl;
 class AVR8BootLoader;
 
 #include "../MCUSim.h"
@@ -46,17 +46,16 @@ public:
 	Config m_config;
 
 	AVR8InstructionSet(
-		MCUSim::EventLogger * eventLogger,
-		AVR8ProgramMemory * programMemory,
-		AVR8DataMemory * dataMemory,
-		MCUSim::Mode & processorMode,
-		AVR8Sim::SleepMode & sleepMode,
-		AVR8FusesAndLocks & fuses,
-		AVR8InterruptController * interruptController,
-		AVR8WatchdogTimer * watchdogTimer,
-		AVR8Sim::HaltMode & haltMode,
-		AVR8BootLoader * bootLoader
-	);
+		MCUSim::EventLogger	* eventLogger,
+		AVR8ProgramMemory	* programMemory,
+		AVR8DataMemory		* dataMemory,
+		MCUSim::Mode		& processorMode,
+		AVR8Sim::SleepMode	& sleepMode,
+		AVR8FusesAndLocks	& fuses,
+		AVR8InterruptController	* interruptController,
+		AVR8SystemControl	* systemControl,
+		AVR8Sim::HaltMode	& haltMode,
+		AVR8BootLoader		* bootLoader);
 
 	int execInstruction();
 	void reset(SubsysResetMode mode);
@@ -83,7 +82,7 @@ protected:
 	AVR8Sim::SleepMode & m_sleepMode;
 	AVR8FusesAndLocks & m_fusesAndLocks;
 	AVR8InterruptController * m_interruptController;
-	AVR8WatchdogTimer * m_watchdogTimer;
+	AVR8SystemControl * m_systemControl;
 	AVR8Sim::HaltMode & m_haltMode;
 	AVR8BootLoader * m_bootLoader;
 

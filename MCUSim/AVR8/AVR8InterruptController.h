@@ -46,7 +46,14 @@ class AVR8BootLoader;
 
 class AVR8InterruptController : public MCUSim::Subsys {
 public:
-	AVR8InterruptController(MCUSim::EventLogger * eventLogger, AVR8InstructionSet * instructionSet, AVR8ProgramMemory * programMemory, AVR8DataMemory * dataMemory, AVR8FusesAndLocks & fuses, AVR8Sim::SleepMode & sleepMode, AVR8BootLoader * bootLoader);
+	AVR8InterruptController(
+		MCUSim::EventLogger	* eventLogger,
+		AVR8InstructionSet	* instructionSet,
+		AVR8ProgramMemory	* programMemory,
+		AVR8DataMemory		* dataMemory,
+		AVR8FusesAndLocks	& fusesAndLocks,
+		AVR8Sim::SleepMode	& sleepMode,
+		AVR8BootLoader		* bootLoader);
 
 	enum Event {
 		EVENT_INT_ENTERING_INTERRUPT,

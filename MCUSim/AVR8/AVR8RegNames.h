@@ -253,14 +253,14 @@ namespace AVR8RegNames {
 
 		/// @name MCUCSR (0x54): MCU Control and Status Register
 		//@{
-		MCUCSR_PORF	= 0x01, ///<
-		MCUCSR_EXTRF	= 0x02, ///<
-		MCUCSR_BORF	= 0x04, ///<
+		MCUCSR_PORF	= 0x01, ///< Power-on Reset Flag
+		MCUCSR_EXTRF	= 0x02, ///< External Reset Flag
+		MCUCSR_BORF	= 0x04, ///< Brown-out Reset Flag
 		MCUCSR_WDRF	= 0x08, ///< Watchdog Reset Flag
-		MCUCSR_JTRF	= 0x10, ///<
+		//MCUCSR_JTRF	= 0x10, ///<
 		//MCUCSR_	= 0x20, ///<
-		MCUCSR_ISC2	= 0x40, ///<
-		MCUCSR_JTD	= 0x80, ///<
+		//MCUCSR_ISC2	= 0x40, ///<
+		//MCUCSR_JTD	= 0x80, ///<
 		//@}
 
 		/// @name TCCR0 (0x53): Timer/Counter Control Register

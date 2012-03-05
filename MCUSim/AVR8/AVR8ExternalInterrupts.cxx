@@ -15,9 +15,9 @@
 #include "AVR8IO.h"
 
 AVR8ExternalInterrupts::AVR8ExternalInterrupts(
-		MCUSim::EventLogger * eventLogger,
-		AVR8DataMemory * dataMemory,
-		AVR8IO * io)
+		MCUSim::EventLogger	* eventLogger,
+		AVR8DataMemory		* dataMemory,
+		AVR8IO			* io)
 		 :
 		Subsys(eventLogger, ID_EXT_INT),
 		m_dataMemory(dataMemory),
@@ -28,13 +28,13 @@ AVR8ExternalInterrupts::AVR8ExternalInterrupts(
 void AVR8ExternalInterrupts::clockCycle() {
 	using namespace AVR8RegNames;
 
-	// Interrupt 1 Sense Control:
+	// Interrupt n Sense Control:
 	// --------------------------
 	// ISCn1	ISCn0	Description
-	// 0	0	The low level of INT1 generates an interrupt request.
-	// 0	1	Any logical change on INT1 generates an interrupt request.
-	// 1	0	The falling edge of INT1 generates an interrupt request.
-	// 1	1	The rising edge of INT1 generates an interrupt request.
+	// 0	0	The low level of INTn generates an interrupt request.
+	// 0	1	Any logical change on INTn generates an interrupt request.
+	// 1	0	The falling edge of INTn generates an interrupt request.
+	// 1	1	The rising edge of INTn generates an interrupt request.
 
 	const unsigned int mcucr = m_dataMemory->readFast(MCUCR);
 	const bool int0 = m_io->getLog(AVR8PinNames::SPF_INT0);

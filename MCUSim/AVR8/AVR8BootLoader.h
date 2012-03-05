@@ -35,8 +35,7 @@ public:
 		AVR8FusesAndLocks	& fusesAndLocks,
 		AVR8DataEEPROM		* dataEEPROM,
 		AVR8InstructionSet	* instructionSet,
-		AVR8Sim::HaltMode	& haltMode
-	);
+		AVR8Sim::HaltMode	& haltMode);
 
 	~AVR8BootLoader();
 

@@ -12,17 +12,20 @@
 
 #include "AVR8WatchdogTimer.h"
 #include "AVR8DataMemory.h"
+#include "AVR8InterruptController.h"
 #include "AVR8FusesAndLocks.h"
 
 #include <math.h>
 
 AVR8WatchdogTimer::AVR8WatchdogTimer(
-		MCUSim::EventLogger * eventLogger,
-		AVR8DataMemory * dataMemory,
-		AVR8FusesAndLocks & fuses)
+		MCUSim::EventLogger	* eventLogger,
+		AVR8DataMemory		* dataMemory,
+		AVR8InterruptController	* interruptController,
+		AVR8FusesAndLocks	& fuses)
 		 :
 		Subsys(eventLogger, ID_WATCHDOG),
 		m_dataMemory(dataMemory),
+		m_interruptController(interruptController),
 		m_fusesAndLocks(fuses)
 {
 }
@@ -154,7 +157,7 @@ void AVR8WatchdogTimer::timeStep(float timeStep, unsigned int clockCycles) {
 	if ( m_prescaler & max ) {
 		logEvent(EVENT_WDT_RESET);
 		m_dataMemory->setBitFast(MCUCSR, MCUCSR_WDRF);
-		m_resetFlag = true;
+		m_interruptController->genIntReq(AVR8InterruptController::INTVEC_RESET);
 	}
 }
 

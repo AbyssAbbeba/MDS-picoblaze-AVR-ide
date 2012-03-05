@@ -15,13 +15,18 @@
 #define AVR8WATCHDOGTIMER_H
 
 class AVR8DataMemory;
+class AVR8InterruptController;
 class AVR8FusesAndLocks;
 
 #include "../MCUSim.h"
 
 class AVR8WatchdogTimer : public MCUSim::Subsys {
 public:
-	AVR8WatchdogTimer(MCUSim::EventLogger * eventLogger, AVR8DataMemory * dataMemory, AVR8FusesAndLocks & fuses);
+	AVR8WatchdogTimer(
+		MCUSim::EventLogger	* eventLogger,
+		AVR8DataMemory		* dataMemory,
+		AVR8InterruptController	* interruptController,
+		AVR8FusesAndLocks	& fuses);
 
 	enum Event {
 		EVENT_WDT_INVALID_CR_CHAGE,
@@ -42,17 +47,12 @@ public:
 	void wdr() {
 		reset(RSTMD_MCU_RESET);
 	};
-	bool resetFlagRdClr() {
-		bool result = m_resetFlag;
-		m_resetFlag = false;
-		return result;
-	}
 
 protected:
 	AVR8DataMemory * m_dataMemory;
+	AVR8InterruptController * m_interruptController;
 	AVR8FusesAndLocks & m_fusesAndLocks;
 
-	bool m_resetFlag;
 	float m_time; // in 1µs
 	unsigned int m_prescaler;
 	unsigned int m_wdtcrLast;

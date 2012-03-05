@@ -20,8 +20,10 @@
 #include "AVR8TimerCounter0.h"
 #include "AVR8IO.h"
 #include "AVR8ExternalInterrupts.h"
-#include "AVR8WatchdogTimer.h"
 #include "AVR8DataEEPROM.h"
+#include "AVR8BootLoader.h"
+#include "AVR8SystemControl.h"
+#include "AVR8ClockControl.h"
 
 AVR8Sim::AVR8Sim() : MCUSim() {
 }
