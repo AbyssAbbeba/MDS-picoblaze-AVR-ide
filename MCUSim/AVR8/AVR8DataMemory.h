@@ -22,6 +22,7 @@
 class AVR8DataMemory : public MCUSim::Memory {
 
 public:
+	AVR8DataMemory() {};
 	AVR8DataMemory(MCUSim::EventLogger * eventLogger);
 	~AVR8DataMemory();
 
@@ -89,9 +90,6 @@ protected:
 	inline void resetToInitialValues();
 	inline void loadConfig();
 	inline void mcuReset();
-
-private:
-	AVR8DataMemory();
 };
 
 

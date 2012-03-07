@@ -24,6 +24,7 @@ class AVR8InterruptController;
 
 class AVR8DataEEPROM : public MCUSim::Memory {
 public:
+	AVR8DataEEPROM() {};
 	AVR8DataEEPROM(
 		MCUSim::EventLogger	* eventLogger,
 		AVR8DataMemory		* dataMemory,
@@ -80,9 +81,6 @@ protected:
 	inline void loadConfig();
 	inline void resetToInitialValues();
 	inline void mcuReset();
-
-private:
-	AVR8DataEEPROM();
 };
 
 #endif // AVR8DATAEEPROM_H

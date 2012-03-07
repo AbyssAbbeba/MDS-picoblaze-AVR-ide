@@ -24,13 +24,14 @@ class AVR8FusesAndLocks;
 
 class AVR8SystemControl : public MCUSim::Subsys {
 public:
+	AVR8SystemControl();
 	AVR8SystemControl(
 		MCUSim::EventLogger	* eventLogger,
 		AVR8DataMemory		* dataMemory,
 		AVR8InterruptController	* interruptController,
 		AVR8WatchdogTimer	* watchdogTimer,
 		AVR8IO			* io,
-		AVR8FusesAndLocks	& fuses);
+		AVR8FusesAndLocks	* fusesAndLocks);
 
 	enum Event {
 		EVENT_EXT_RESET_INVOKED,
@@ -91,9 +92,6 @@ protected:
 	inline void handlePowerOnReset();
 	
 	inline void mcuReset();
-
-private:
-	AVR8SystemControl();
 };
 
 #endif // AVR8SYSTEMCONTROL_H

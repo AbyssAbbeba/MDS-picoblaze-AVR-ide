@@ -22,4 +22,3 @@ set(CMAKE_VERBOSE_MAKEFILE OFF)
  # Add a subdirectory "./AVR8" to the build. The subdirectory must contain
  # its own "CmakeLists.txt" file.
 add_subdirectory(AVR8)
-

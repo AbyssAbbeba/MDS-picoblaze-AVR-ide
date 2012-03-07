@@ -111,7 +111,7 @@ template<unsigned int sizeBits>
 unsigned int AVR8ProgramMemory::getUndefVal() const {
 	if ( -1 == m_config.m_undefinedValue ) {
 		// Generate random value
-		return ((unsigned int)random() & ((1 << sizeBits) - 1));
+		return ((unsigned int)rand() & ((1 << sizeBits) - 1));
 	} else {
 		// Return predefined value
 		return ( m_config.m_undefinedValue & ((1 << sizeBits) - 1) );

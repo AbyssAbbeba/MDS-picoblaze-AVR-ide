@@ -278,7 +278,7 @@ inline void AVR8DataEEPROM::mcuReset() {
 inline unsigned int AVR8DataEEPROM::getUndefVal() const {
 	if ( -1 == m_config.m_undefinedValue ) {
 		// Generate random value
-		return ( (unsigned int)random() & ((1 << 8) - 1) );
+		return ( (unsigned int)rand() & ((1 << 8) - 1) );
 	} else {
 		// Return predefined value
 		return ( m_config.m_undefinedValue & ((1 << 8) - 1) );

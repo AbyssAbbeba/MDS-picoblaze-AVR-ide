@@ -18,21 +18,28 @@
 #include "AVR8Sim.h"
 #include "AVR8BootLoader.h"
 
+AVR8InterruptController::AVR8InterruptController()
+	 :
+	m_fusesAndLocks	( *( ( AVR8FusesAndLocks * )	0 ) ),
+	m_sleepMode	( *( ( AVR8Sim::SleepMode * )	0 ) )
+{
+}
+
 AVR8InterruptController::AVR8InterruptController(
 		MCUSim::EventLogger	* eventLogger,
 		AVR8InstructionSet	* instructionSet,
 		AVR8ProgramMemory	* programMemory,
 		AVR8DataMemory		* dataMemory,
-		AVR8FusesAndLocks	& fusesAndLocks,
-		AVR8Sim::SleepMode	& sleepMode,
+		AVR8FusesAndLocks	* fusesAndLocks,
+		AVR8Sim::SleepMode	* sleepMode,
 		AVR8BootLoader		* bootLoader)
 		:
-		Subsys(eventLogger, ID_INTERRUPTS),
+		MCUSim::Subsys(eventLogger, ID_INTERRUPTS),
 		m_instructionSet(instructionSet),
 		m_programMemory(programMemory),
 		m_dataMemory(dataMemory),
-		m_fusesAndLocks(fusesAndLocks),
-		m_sleepMode(sleepMode),
+		m_fusesAndLocks(*fusesAndLocks),
+		m_sleepMode(*sleepMode),
 		m_bootLoader(bootLoader)
 {
 }

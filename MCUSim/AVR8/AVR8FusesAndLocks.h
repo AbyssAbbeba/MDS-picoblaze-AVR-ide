@@ -17,6 +17,9 @@
 
 class AVR8FusesAndLocks : public MCUSim::Subsys {
 public:
+	AVR8FusesAndLocks() {};
+	AVR8FusesAndLocks(MCUSim::EventLogger * eventLogger);
+
 	enum Event {
 		EVENT_LOCK_BITS_SET
 	};
@@ -74,8 +77,6 @@ public:
 
 	Config m_config;
 
-	AVR8FusesAndLocks(MCUSim::EventLogger * eventLogger);
-
 	bool operator[] (Fuses fuse) const {
 		return m_fuses[fuse];
 	}
@@ -103,7 +104,6 @@ protected:
 	bool m_lockBits[LB__MAX__];
 
 private:
-	AVR8FusesAndLocks();
 	inline void resetToInitialValues();
 };
 

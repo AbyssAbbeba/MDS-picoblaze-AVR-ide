@@ -21,7 +21,12 @@ class AVR8IO;
 
 class AVR8TimerCounter0 : public MCUSim::Subsys {
 public:
-	AVR8TimerCounter0(MCUSim::EventLogger * eventLogger, MCUSim::Subsys::SubsysId subsysId, AVR8DataMemory * dataMemory, AVR8IO * m_io);
+	AVR8TimerCounter0() {};
+	AVR8TimerCounter0(
+		MCUSim::EventLogger	* eventLogger,
+		MCUSim::Subsys::SubsysId  subsysId,
+		AVR8DataMemory		* dataMemory,
+		AVR8IO			* m_io);
 
 	struct Config {
 	};
@@ -60,9 +65,6 @@ protected:
 	inline void mcuReset();
 
 	inline void determinateClockSource();
-
-private:
-	AVR8TimerCounter0();
 };
 
 #endif // AVR8TIMERCOUNTER0_H

@@ -27,6 +27,19 @@ class AVR8BootLoader;
 
 class AVR8InstructionSet : public MCUSim::CPU {
 public:
+	AVR8InstructionSet();
+	AVR8InstructionSet(
+		MCUSim::EventLogger	* eventLogger,
+		AVR8ProgramMemory	* programMemory,
+		AVR8DataMemory		* dataMemory,
+		MCUSim::Mode		* processorMode,
+		AVR8Sim::SleepMode	* sleepMode,
+		AVR8FusesAndLocks	* fusesAndLocks,
+		AVR8InterruptController	* interruptController,
+		AVR8SystemControl	* systemControl,
+		AVR8Sim::HaltMode	* haltMode,
+		AVR8BootLoader		* bootLoader);
+
 	enum PCWidth {
 		// .. lower values ...
 		PCWIDTH_16 = 1,
@@ -45,18 +58,6 @@ public:
 
 	Config m_config;
 
-	AVR8InstructionSet(
-		MCUSim::EventLogger	* eventLogger,
-		AVR8ProgramMemory	* programMemory,
-		AVR8DataMemory		* dataMemory,
-		MCUSim::Mode		& processorMode,
-		AVR8Sim::SleepMode	& sleepMode,
-		AVR8FusesAndLocks	& fuses,
-		AVR8InterruptController	* interruptController,
-		AVR8SystemControl	* systemControl,
-		AVR8Sim::HaltMode	& haltMode,
-		AVR8BootLoader		* bootLoader);
-
 	int execInstruction();
 	void reset(SubsysResetMode mode);
 
@@ -66,9 +67,6 @@ public:
 	void setProgramCounter(unsigned int newPc) {
 		m_pc = int(newPc);
 	}
-
-private:
-	AVR8InstructionSet();
 
 protected:
 	int m_pc;

@@ -21,6 +21,7 @@ class AVR8IO;
 
 class AVR8ExternalInterrupts : public MCUSim::Subsys {
 public:
+	AVR8ExternalInterrupts() {};
 	AVR8ExternalInterrupts(
 		MCUSim::EventLogger	* eventLogger,
 		AVR8DataMemory		* dataMemory,
@@ -45,9 +46,6 @@ protected:
 	bool m_int1prev;
 
 	inline void mcuReset();
-
-private:
-	AVR8ExternalInterrupts();
 };
 
 #endif // AVR8EXTERNALINTERRUPTS_H

@@ -14,17 +14,16 @@
 #ifndef AVR8CLOCKCONTROL_H
 #define AVR8CLOCKCONTROL_H
 
-class AVR8DataMemory;
 class AVR8FusesAndLocks;
 
 #include "../MCUSim.h"
 
 class AVR8ClockControl : public MCUSim::Clock {
 public:
+	AVR8ClockControl();
 	AVR8ClockControl(
 		MCUSim::EventLogger	* eventLogger,
-		AVR8DataMemory		* dataMemory,
-		AVR8FusesAndLocks	& fusesAndLocks);
+		AVR8FusesAndLocks	* fusesAndLocks);
 
 	enum Event {
 		EVENT_CLK_WRN_SOURCE_NOT_USED,
@@ -61,7 +60,6 @@ public:
 	StartUpTime startUpTime();
 
 protected:
-	AVR8DataMemory * m_dataMemory;
 	AVR8FusesAndLocks & m_fusesAndLocks;
 
 	inline unsigned int getClksel() const;
@@ -78,9 +76,6 @@ protected:
 	inline StartUpTime startUpExternalRC(const unsigned int sut);
 	inline StartUpTime startUpLowFreqCrystal(const unsigned int sut);
 	inline StartUpTime startUpHighFreqCrystal(const unsigned int clksel, const unsigned int sut);
-
-private:
-	AVR8ClockControl();
 };
 
 #endif // AVR8CLOCKCONTROL_H

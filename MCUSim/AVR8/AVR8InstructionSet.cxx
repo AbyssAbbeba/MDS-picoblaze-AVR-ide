@@ -189,27 +189,36 @@ static int (AVR8InstructionSet:: * const m_opCodeDispatchTable_1001_010x_xxxx_10
 	&AVR8InstructionSet::instInvalid	// opCode = 1001 0101 1111 1001
 };
 
+AVR8InstructionSet::AVR8InstructionSet()
+	 :
+	m_processorMode	( *( ( MCUSim::Mode * )		0 ) ),
+	m_sleepMode	( *( ( AVR8Sim::SleepMode * )	0 ) ),
+	m_fusesAndLocks	( *( ( AVR8FusesAndLocks * )	0 ) ),
+	m_haltMode	( *( ( AVR8Sim::HaltMode * )	0 ) )
+{
+};
+
 AVR8InstructionSet::AVR8InstructionSet(
 		MCUSim::EventLogger	* eventLogger,
 		AVR8ProgramMemory	* programMemory,
 		AVR8DataMemory		* dataMemory,
-		MCUSim::Mode		& processorMode,
-		AVR8Sim::SleepMode	& sleepMode,
-		AVR8FusesAndLocks	& fuses,
+		MCUSim::Mode		* processorMode,
+		AVR8Sim::SleepMode	* sleepMode,
+		AVR8FusesAndLocks	* fusesAndLocks,
 		AVR8InterruptController	* interruptController,
 		AVR8SystemControl	* systemControl,
-		AVR8Sim::HaltMode	& haltMode,
+		AVR8Sim::HaltMode	* haltMode,
 		AVR8BootLoader		* bootLoader)
 		 :
 		MCUSim::CPU(eventLogger),
 		m_programMemory(programMemory),
 		m_dataMemory(dataMemory),
-		m_processorMode(processorMode),
-		m_sleepMode(sleepMode),
-		m_fusesAndLocks(fuses),
+		m_processorMode(*processorMode),
+		m_sleepMode(*sleepMode),
+		m_fusesAndLocks(*fusesAndLocks),
 		m_interruptController(interruptController),
 		m_systemControl(systemControl),
-		m_haltMode(haltMode),
+		m_haltMode(*haltMode),
 		m_bootLoader(bootLoader)
 {
 }

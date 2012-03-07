@@ -18,6 +18,8 @@
 #ifndef MCUSIM_H
 #define MCUSIM_H
 
+#include <cstddef>
+
 class MCUSim {
 public:
 	/// @brief ...
@@ -182,7 +184,12 @@ public:
 	public:
 		/// @brief ...
 		enum SubsysId {
-			ID_THE_CORE = 0,
+			ID_INVALID = 0,
+
+			ID_MEM_CODE,
+			ID_MEM_DATA,
+			ID_MEM_EEPROM,
+
 			ID_CPU,
 			ID_FUSES,
 			ID_INTERRUPTS,
@@ -192,6 +199,9 @@ public:
 			ID_BOOT_LOADER,
 			ID_SYS_CONTROL,
 			ID_CLK_CONTROL,
+			ID_COUNTER_0,
+			ID_COUNTER_1,
+			ID_COUNTER_2,
 
 			ID__MAX__
 		};
@@ -204,21 +214,32 @@ public:
 			RSTMD__MAX__
 		};
 
-		EventLogger * const m_eventLogger;
-		const SubsysId m_id;
+		EventLogger * m_eventLogger;
 
+		SubsysId getId() const {
+			return m_id;
+		}
 		virtual void reset(SubsysResetMode mode) = 0;
 		virtual ~Subsys();
 
 	protected:
-		Subsys(EventLogger * eventLogger, SubsysId id) : m_eventLogger(eventLogger), m_id(id) {};
+		Subsys() : m_id(ID_INVALID) {};
+		Subsys(
+			EventLogger * eventLogger,
+			SubsysId id)
+			 :
+			m_eventLogger(eventLogger),
+			m_id(id)
+		{
+		};
 
 		void logEvent(int eventId, int eventLocation = 0, int eventDetail = 0)
 		{
 			m_eventLogger->logEvent(m_id, eventId, eventLocation, eventDetail);
 		}
+
 	private:
-		Subsys();
+		SubsysId m_id;
 	};
 
 	class CPU : public Subsys {
@@ -244,8 +265,9 @@ public:
 			EVENT_CPU__MAX__
 		};
 
+	protected:
+		CPU() {};
 		CPU(EventLogger * eventLogger) : Subsys(eventLogger, ID_CPU) {};
-		virtual int execInstruction() = 0;
 	};
 
 	/// @brief ...
@@ -253,9 +275,10 @@ public:
 	public:
 		/// @brief Memory space, eg. program memory, data memory, etc.
 		enum MemorySpace {
-			SP_CODE = 1,	///< Internal program memory.
-			SP_DATA,	///< Internal data memory.
-			SP_EEPROM,	///< Internal data EEPROM.
+			SP_INVALID = 0,
+			SP_CODE = ID_MEM_CODE,		///< Internal program memory.
+			SP_DATA = ID_MEM_DATA,		///< Internal data memory.
+			SP_EEPROM = ID_MEM_EEPROM,	///< Internal data EEPROM.
 
 			SP__MAX__
 		};
@@ -321,7 +344,8 @@ public:
 		virtual unsigned int size() const = 0;
 
 	protected:
-		Memory(EventLogger * eventLogger, MemorySpace space) : Subsys(eventLogger, (Subsys::SubsysId)(0-space)), m_space(space) {};
+		Memory() : m_space(SP_INVALID) {};
+		Memory(EventLogger * eventLogger, MemorySpace space) : Subsys(eventLogger, (Subsys::SubsysId)(space)), m_space(space) {};
 	};
 
 	class IO : public Subsys
@@ -368,12 +392,13 @@ public:
 		 * And don't check whether NAN macro has been defined (it's a GNU extension)!
 		 */
 
-		IO(EventLogger * eventLogger) : Subsys(eventLogger, ID_IO) {};
-
 		virtual unsigned int getNumberOfPins() const = 0;
 		virtual void setSourceVoltage(SimFloatType voltage) = 0;
 		virtual SimFloatType getSourceVoltage() const = 0;
 		virtual SimFloatType ** getLowLevelInterface() = 0;
+	protected:
+		IO() {};
+		IO(EventLogger * eventLogger) : Subsys(eventLogger, ID_IO) {};
 	};
 
 	/**
@@ -382,8 +407,6 @@ public:
 	class Clock : public Subsys
 	{
 	public:
-		Clock(EventLogger * eventLogger) : Subsys(eventLogger, ID_CLK_CONTROL) {};
-
 		class ClockSource {
 		public:
 			enum Type {
@@ -441,7 +464,16 @@ public:
 				m_frequency = frequency;
 			}
 		};
+	protected:
+		Clock() {};
+		Clock(EventLogger * eventLogger) : Subsys(eventLogger, ID_CLK_CONTROL) {};
 	};
+
+	virtual ~MCUSim();
+
+	virtual float cycles2time(int numOfCycles) = 0;
+	virtual int executeInstruction() = 0;
+	virtual int timeStep(float time) = 0;
 
 // 	virtual Memory * getMemory(Memory::MemorySpace memType) = 0;
 	virtual Subsys * getSubsys(Subsys::SubsysId id) = 0;
