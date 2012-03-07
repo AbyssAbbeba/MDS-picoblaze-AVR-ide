@@ -22,11 +22,12 @@ class AVR8FusesAndLocks;
 
 class AVR8WatchdogTimer : public MCUSim::Subsys {
 public:
+	AVR8WatchdogTimer();
 	AVR8WatchdogTimer(
 		MCUSim::EventLogger	* eventLogger,
 		AVR8DataMemory		* dataMemory,
 		AVR8InterruptController	* interruptController,
-		AVR8FusesAndLocks	& fuses);
+		AVR8FusesAndLocks	* fusesAndLocks);
 
 	enum Event {
 		EVENT_WDT_INVALID_CR_CHAGE,
@@ -60,9 +61,6 @@ protected:
 
 	inline unsigned int readWdtcr(const unsigned int clockCycles);
 	inline void mcuReset();
-
-private:
-	AVR8WatchdogTimer();
 };
 
 #endif // AVR8WATCHDOGTIMER_H

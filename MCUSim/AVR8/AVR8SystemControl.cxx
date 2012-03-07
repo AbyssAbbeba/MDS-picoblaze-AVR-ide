@@ -23,20 +23,26 @@
   #error 'NAN' macro is not defined
 #endif
 
+AVR8SystemControl::AVR8SystemControl()
+	 :
+	m_fusesAndLocks ( *( ( AVR8FusesAndLocks * ) 0 ) )
+{
+}
+
 AVR8SystemControl::AVR8SystemControl(
 		MCUSim::EventLogger	* eventLogger,
 		AVR8DataMemory		* dataMemory,
 		AVR8InterruptController	* interruptController,
 		AVR8WatchdogTimer	* watchdogTimer,
 		AVR8IO			* io,
-		AVR8FusesAndLocks	& fuses)
+		AVR8FusesAndLocks	* fusesAndLocks)
 		 :
 		Subsys(eventLogger, ID_SYS_CONTROL),
 		m_dataMemory(dataMemory),
 		m_interruptController(interruptController),
 		m_watchdogTimer(watchdogTimer),
 		m_io(io),
-		m_fusesAndLocks(fuses)
+		m_fusesAndLocks(*fusesAndLocks)
 {
 }
 

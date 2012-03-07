@@ -28,14 +28,15 @@ class AVR8InstructionSet;
 class AVR8BootLoader : public MCUSim::Subsys {
 
 public:
+	AVR8BootLoader();
 	AVR8BootLoader(
 		MCUSim::EventLogger	* eventLogger,
 		AVR8ProgramMemory	* programMemory,
 		AVR8DataMemory		* dataMemory,
-		AVR8FusesAndLocks	& fusesAndLocks,
+		AVR8FusesAndLocks	* fusesAndLocks,
 		AVR8DataEEPROM		* dataEEPROM,
 		AVR8InstructionSet	* instructionSet,
-		AVR8Sim::HaltMode	& haltMode);
+		AVR8Sim::HaltMode	* haltMode);
 
 	~AVR8BootLoader();
 
@@ -114,9 +115,6 @@ protected:
 	inline void setLockBits(unsigned int addr, unsigned int val);
 	inline void pageWrite(unsigned int addr);
 	inline float randomTimeInRange() const;
-
-private:
-	AVR8BootLoader();
 };
 
 

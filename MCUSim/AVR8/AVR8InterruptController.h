@@ -46,13 +46,14 @@ class AVR8BootLoader;
 
 class AVR8InterruptController : public MCUSim::Subsys {
 public:
+	AVR8InterruptController();
 	AVR8InterruptController(
 		MCUSim::EventLogger	* eventLogger,
 		AVR8InstructionSet	* instructionSet,
 		AVR8ProgramMemory	* programMemory,
 		AVR8DataMemory		* dataMemory,
-		AVR8FusesAndLocks	& fusesAndLocks,
-		AVR8Sim::SleepMode	& sleepMode,
+		AVR8FusesAndLocks	* fusesAndLocks,
+		AVR8Sim::SleepMode	* sleepMode,
 		AVR8BootLoader		* bootLoader);
 
 	enum Event {
@@ -141,9 +142,6 @@ protected:
 	inline int executeInterrupt(InterruptVector vector);
 	inline InterruptVector detectPendingInterrupt();
 	inline bool confirmInterrupt(InterruptVector vector);
-
-private:
-	AVR8InterruptController();
 };
 
 #endif // AVR8INTERRUPTCONTROLLER_H

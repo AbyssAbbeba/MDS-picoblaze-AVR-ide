@@ -17,22 +17,26 @@ class AVR8InstructionSet;
 class AVR8ProgramMemory;
 class AVR8DataMemory;
 class AVR8FusesAndLocks;
-class AVR8InterruptControler;
+class AVR8InterruptController;
 class AVR8TimerCounter0;
 class AVR8IO;
 class AVR8ExternalInterrupts;
 class AVR8DataEEPROM;
 class AVR8BootLoader;
+class AVR8WatchdogTimer;
 class AVR8SystemControl;
 class AVR8ClockControl;
 
 #include "../MCUSim.h"
 #include "AVR8RegNames.h"
 
+#include <vector>
+
 class AVR8Sim : public MCUSim {
 
 public:
 	AVR8Sim();
+	~AVR8Sim();
 
 	enum SleepMode {
 		/// MCU is not in a sleep mode
@@ -68,6 +72,10 @@ public:
 		HALTM_PROG
 	};
 
+	float cycles2time(int numOfCycles);
+	int executeInstruction();
+	int timeStep(float time);
+
 	Subsys * getSubsys(Subsys::SubsysId id);
 	RetCode setConfig(Config * newConfig);
 	EventLogger * getLog();
@@ -83,12 +91,13 @@ protected:
 	AVR8ProgramMemory * m_programMemory;
 	AVR8DataMemory * m_dataMemory;
 	AVR8FusesAndLocks * m_fusesAndLocks;
-	AVR8InterruptControler * m_interrupts;
+	AVR8InterruptController * m_interrupts;
 	AVR8TimerCounter0 * m_timerCounter0;
 	AVR8IO * m_io;
 	AVR8ExternalInterrupts * m_externalInterrupts;
 	AVR8DataEEPROM * m_dataEEPROM;
 	AVR8BootLoader * m_bootLoader;
+	AVR8WatchdogTimer * m_watchdogTimer;
 	AVR8SystemControl * m_systemControl;
 	AVR8ClockControl * m_clockControl;
 
@@ -97,6 +106,14 @@ protected:
 	Mode m_processorMode;
 	HaltMode m_haltMode;
 	SleepMode m_sleepMode;
+	Arch m_arch;
+
+private:
+	std::vector<Subsys*> m_subSystems;
+
+	inline void deleteSubSystems();
+	inline void checkSubSystems() const;
+	inline void regSubSys(Subsys * subSystem);
 };
 
 #endif // AVR8SIM_H

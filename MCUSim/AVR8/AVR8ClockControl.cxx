@@ -11,17 +11,20 @@
  */
 
 #include "AVR8ClockControl.h"
-#include "AVR8DataMemory.h"
 #include "AVR8FusesAndLocks.h"
+
+AVR8ClockControl::AVR8ClockControl()
+	 :
+	m_fusesAndLocks ( *( ( AVR8FusesAndLocks * ) 0 ) )
+{
+}
 
 AVR8ClockControl::AVR8ClockControl(
 		MCUSim::EventLogger	* eventLogger,
-		AVR8DataMemory		* dataMemory,
-		AVR8FusesAndLocks	& fusesAndLocks)
+		AVR8FusesAndLocks	* fusesAndLocks)
 		 :
 		Clock(eventLogger),
-		m_dataMemory(dataMemory),
-		m_fusesAndLocks(fusesAndLocks)
+		m_fusesAndLocks(*fusesAndLocks)
 {
 }
 

@@ -19,23 +19,30 @@
 
 #include <cstdlib>
 
+AVR8BootLoader::AVR8BootLoader()
+	 :
+	m_fusesAndLocks	( *( (AVR8FusesAndLocks * ) 0 ) ),
+	m_haltMode	( *( (AVR8Sim::HaltMode * ) 0 ) )
+{
+};
+
 AVR8BootLoader::AVR8BootLoader(
 	MCUSim::EventLogger	* eventLogger,
 	AVR8ProgramMemory	* programMemory,
 	AVR8DataMemory		* dataMemory,
-	AVR8FusesAndLocks	& fusesAndLocks,
+	AVR8FusesAndLocks	* fusesAndLocks,
 	AVR8DataEEPROM		* dataEEPROM,
     	AVR8InstructionSet	* instructionSet,
-	AVR8Sim::HaltMode	& haltMode)
+	AVR8Sim::HaltMode	* haltMode)
 	 :
 	Subsys(eventLogger, ID_BOOT_LOADER),
 	m_writeBuffer(NULL),
 	m_programMemory(programMemory),
 	m_dataMemory(dataMemory),
-	m_fusesAndLocks(fusesAndLocks),
+	m_fusesAndLocks(*fusesAndLocks),
 	m_dataEEPROM(dataEEPROM),
 	m_instructionSet(instructionSet),
-	m_haltMode(haltMode)
+	m_haltMode(*haltMode)
 {
 }
 

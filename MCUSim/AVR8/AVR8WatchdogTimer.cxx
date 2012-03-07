@@ -16,17 +16,21 @@
 #include "AVR8FusesAndLocks.h"
 
 #include <math.h>
-
+AVR8WatchdogTimer::AVR8WatchdogTimer()
+	 :
+	m_fusesAndLocks ( *( (AVR8FusesAndLocks*) 0 ) )
+{
+}
 AVR8WatchdogTimer::AVR8WatchdogTimer(
 		MCUSim::EventLogger	* eventLogger,
 		AVR8DataMemory		* dataMemory,
 		AVR8InterruptController	* interruptController,
-		AVR8FusesAndLocks	& fuses)
+		AVR8FusesAndLocks	* fusesAndLocks)
 		 :
 		Subsys(eventLogger, ID_WATCHDOG),
 		m_dataMemory(dataMemory),
 		m_interruptController(interruptController),
-		m_fusesAndLocks(fuses)
+		m_fusesAndLocks(*fusesAndLocks)
 {
 }
 

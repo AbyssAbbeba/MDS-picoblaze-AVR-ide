@@ -25,6 +25,7 @@ class AVR8DataMemory;
 
 class AVR8IO : public MCUSim::IO {
 public:
+	AVR8IO() {};
 	AVR8IO(MCUSim::EventLogger * eventLogger, AVR8DataMemory * dataMemory);
 	~AVR8IO();
 
@@ -195,9 +196,6 @@ protected:
 	inline void loadConfig();
 	inline void resetToInitialValues();
 	inline void mcuReset();
-
-private:
-	AVR8IO();
 };
 
 #endif // AVR8IO_H

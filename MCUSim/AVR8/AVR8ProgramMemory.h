@@ -22,6 +22,7 @@
 class AVR8ProgramMemory : public MCUSim::Memory {
 
 public:
+	AVR8ProgramMemory() {};
 	AVR8ProgramMemory(MCUSim::EventLogger * eventLogger, AVR8BootLoader * bootLoader);
 	~AVR8ProgramMemory();
 
@@ -53,9 +54,6 @@ protected:
 	inline void resetToInitialValues();
 	inline void loadConfig();
 	inline void mcuReset();
-
-private:
-	AVR8ProgramMemory();
 };
 
 
