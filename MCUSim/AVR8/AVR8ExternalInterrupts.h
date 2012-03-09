@@ -10,7 +10,6 @@
  *
  */
 
-
 #ifndef AVR8EXTERNALINTERRUPTS_H
 #define AVR8EXTERNALINTERRUPTS_H
 
@@ -22,17 +21,18 @@ class AVR8IO;
 class AVR8ExternalInterrupts : public MCUSim::Subsys {
 public:
 	AVR8ExternalInterrupts() {};
-	AVR8ExternalInterrupts(
-		MCUSim::EventLogger	* eventLogger,
-		AVR8DataMemory		* dataMemory,
-		AVR8IO			* io);
 
 	struct Config {
 	};
 
 	Config m_config;
 
-	void reset(SubsysResetMode mode);
+	AVR8ExternalInterrupts * link(
+		MCUSim::EventLogger	* eventLogger,
+		AVR8DataMemory		* dataMemory,
+		AVR8IO			* io);
+
+	void reset(MCUSim::ResetMode mode);
 
 	// This has to be called even in a sleep mode (watchdog clock).
 	// This method cannot read I/O backwards, it has to be called upon any change on I/O.

@@ -14,12 +14,11 @@
 
 #include <cstdlib>
 
-AVR8FusesAndLocks::AVR8FusesAndLocks(MCUSim::EventLogger * eventLogger)
-	 :
-	Subsys(eventLogger, ID_FUSES)
-{
-}
+AVR8FusesAndLocks * AVR8FusesAndLocks::link(MCUSim::EventLogger * eventLogger) {
+	Subsys::link(eventLogger, ID_FUSES);
 
+	return this;
+}
 
 void AVR8FusesAndLocks::setLockBits(unsigned char lb) {
 	unsigned char mask = 0x1;
@@ -69,9 +68,9 @@ unsigned char AVR8FusesAndLocks::operator[] (Bytes byte) const {
 	return result;
 }
 
-void AVR8FusesAndLocks::reset(MCUSim::Subsys::SubsysResetMode mode) {
+void AVR8FusesAndLocks::reset(MCUSim::ResetMode mode) {
 	switch ( mode ) {
-		case RSTMD_INITIAL_VALUES:
+		case MCUSim::RSTMD_INITIAL_VALUES:
 			resetToInitialValues();
 			break;
 		default:

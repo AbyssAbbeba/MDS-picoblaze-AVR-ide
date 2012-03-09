@@ -19,25 +19,27 @@
 #include "AVR8IO.h"
 #include "AVR8DataMemory.h"
 
-#include <math.h>
+#include <cmath>
 
 #ifndef NAN
   #error 'NAN' macro is not defined
 #endif
 
-AVR8IO::AVR8IO(
+AVR8IO * AVR8IO::link(
 		MCUSim::EventLogger	* eventLogger,
-		AVR8DataMemory		* dataMemory)
-		 :
-		MCUSim::IO(eventLogger),
-		m_dataMemory(dataMemory)
-{
+		AVR8DataMemory		* dataMemory
+) {
+	IO::link(eventLogger);
+	m_dataMemory = dataMemory;
+
 	m_lowLevelInterface = new SimFloatType* [II__MAX__];
 	for ( int i = 0; i < II__MAX__; i++ ) {
 		m_lowLevelInterface[i] = new SimFloatType[NUMBER_OF_PINS];
 	}
 
 	m_enabled = false;
+
+	return this;
 }
 
 AVR8IO::~AVR8IO() {
@@ -130,15 +132,15 @@ inline void AVR8IO::portReadWrite(unsigned int pinIdx, const unsigned int inRegA
 	m_dataMemory->writeFast(inRegAddr, in);
 }
 
-void AVR8IO::reset(MCUSim::Subsys::SubsysResetMode mode) {
+void AVR8IO::reset(MCUSim::ResetMode mode) {
 	switch ( mode ) {
-		case RSTMD_NEW_CONFIG:
+		case MCUSim::RSTMD_NEW_CONFIG:
 			loadConfig();
 			break;
-		case RSTMD_INITIAL_VALUES:
+		case MCUSim::RSTMD_INITIAL_VALUES:
 			resetToInitialValues();
 			break;
-		case RSTMD_MCU_RESET:
+		case MCUSim::RSTMD_MCU_RESET:
 			mcuReset();
 			break;
 		default:

@@ -10,7 +10,6 @@
  *
  */
 
-
 #ifndef AVR8WATCHDOGTIMER_H
 #define AVR8WATCHDOGTIMER_H
 
@@ -23,11 +22,6 @@ class AVR8FusesAndLocks;
 class AVR8WatchdogTimer : public MCUSim::Subsys {
 public:
 	AVR8WatchdogTimer();
-	AVR8WatchdogTimer(
-		MCUSim::EventLogger	* eventLogger,
-		AVR8DataMemory		* dataMemory,
-		AVR8InterruptController	* interruptController,
-		AVR8FusesAndLocks	* fusesAndLocks);
 
 	enum Event {
 		EVENT_WDT_INVALID_CR_CHAGE,
@@ -42,11 +36,17 @@ public:
 
 	Config m_config;
 
-	void reset(SubsysResetMode mode);
+	AVR8WatchdogTimer * link(
+		MCUSim::EventLogger	* eventLogger,
+		AVR8DataMemory		* dataMemory,
+		AVR8InterruptController	* interruptController,
+		AVR8FusesAndLocks	* fusesAndLocks);
+
+	void reset(MCUSim::ResetMode mode);
 
 	void timeStep(float timeStep, unsigned int clockCycles = 0);	// <-- This has to be called even in a sleep mode
 	void wdr() {
-		reset(RSTMD_MCU_RESET);
+		reset(MCUSim::RSTMD_MCU_RESET);
 	};
 
 protected:

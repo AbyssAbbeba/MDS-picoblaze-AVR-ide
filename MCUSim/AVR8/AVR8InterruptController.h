@@ -47,14 +47,6 @@ class AVR8BootLoader;
 class AVR8InterruptController : public MCUSim::Subsys {
 public:
 	AVR8InterruptController();
-	AVR8InterruptController(
-		MCUSim::EventLogger	* eventLogger,
-		AVR8InstructionSet	* instructionSet,
-		AVR8ProgramMemory	* programMemory,
-		AVR8DataMemory		* dataMemory,
-		AVR8FusesAndLocks	* fusesAndLocks,
-		AVR8Sim::SleepMode	* sleepMode,
-		AVR8BootLoader		* bootLoader);
 
 	enum Event {
 		EVENT_INT_ENTERING_INTERRUPT,
@@ -105,7 +97,16 @@ public:
 
 	Config m_config;
 
-	void reset(SubsysResetMode mode);
+	AVR8InterruptController * link(
+		MCUSim::EventLogger	* eventLogger,
+		AVR8InstructionSet	* instructionSet,
+		AVR8ProgramMemory	* programMemory,
+		AVR8DataMemory		* dataMemory,
+		AVR8FusesAndLocks	* fusesAndLocks,
+		AVR8Sim::SleepMode	* sleepMode,
+		AVR8BootLoader		* bootLoader);
+
+	void reset(MCUSim::ResetMode mode);
 
 	/**
 	 * @return -1: system reset requested; 0: do nothing; N: interrupt executed, takes N cycles

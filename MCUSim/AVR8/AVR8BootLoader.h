@@ -29,15 +29,6 @@ class AVR8BootLoader : public MCUSim::Subsys {
 
 public:
 	AVR8BootLoader();
-	AVR8BootLoader(
-		MCUSim::EventLogger	* eventLogger,
-		AVR8ProgramMemory	* programMemory,
-		AVR8DataMemory		* dataMemory,
-		AVR8FusesAndLocks	* fusesAndLocks,
-		AVR8DataEEPROM		* dataEEPROM,
-		AVR8InstructionSet	* instructionSet,
-		AVR8Sim::HaltMode	* haltMode);
-
 	~AVR8BootLoader();
 
 	enum Event {
@@ -64,8 +55,17 @@ public:
 
 	Config m_config;
 
-	void reset(SubsysResetMode mode);
-	void timeStep(float timeStep, unsigned int clockCycles);
+	AVR8BootLoader * link(
+		MCUSim::EventLogger	* eventLogger,
+		AVR8ProgramMemory	* programMemory,
+		AVR8DataMemory		* dataMemory,
+		AVR8FusesAndLocks	* fusesAndLocks,
+		AVR8DataEEPROM		* dataEEPROM,
+		AVR8InstructionSet	* instructionSet,
+		AVR8Sim::HaltMode	* haltMode);
+
+	void reset(MCUSim::ResetMode mode);
+	void timeStep(float timeStep, unsigned int clockCycles = 0);
 
 	unsigned int spmWrite(unsigned int addr, unsigned int val);
 	unsigned int lpmRead(unsigned int addr);

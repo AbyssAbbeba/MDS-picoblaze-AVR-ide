@@ -10,7 +10,6 @@
  *
  */
 
-
 #ifndef AVR8TIMERCOUNTER0_H
 #define AVR8TIMERCOUNTER0_H
 
@@ -22,18 +21,19 @@ class AVR8IO;
 class AVR8TimerCounter0 : public MCUSim::Subsys {
 public:
 	AVR8TimerCounter0() {};
-	AVR8TimerCounter0(
-		MCUSim::EventLogger	* eventLogger,
-		MCUSim::Subsys::SubsysId  subsysId,
-		AVR8DataMemory		* dataMemory,
-		AVR8IO			* m_io);
 
 	struct Config {
 	};
 
 	Config m_config;
 
-	void reset(SubsysResetMode mode);
+	AVR8TimerCounter0 * link(
+		MCUSim::EventLogger	* eventLogger,
+		MCUSim::Subsys::SubsysId  subsysId,
+		AVR8DataMemory		* dataMemory,
+		AVR8IO			* m_io);
+
+	void reset(MCUSim::ResetMode mode);
 
 	void clockCycles(unsigned int numberOf);
 

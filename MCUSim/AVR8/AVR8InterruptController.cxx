@@ -25,23 +25,25 @@ AVR8InterruptController::AVR8InterruptController()
 {
 }
 
-AVR8InterruptController::AVR8InterruptController(
+AVR8InterruptController * AVR8InterruptController::link(
 		MCUSim::EventLogger	* eventLogger,
 		AVR8InstructionSet	* instructionSet,
 		AVR8ProgramMemory	* programMemory,
 		AVR8DataMemory		* dataMemory,
 		AVR8FusesAndLocks	* fusesAndLocks,
 		AVR8Sim::SleepMode	* sleepMode,
-		AVR8BootLoader		* bootLoader)
-		:
-		MCUSim::Subsys(eventLogger, ID_INTERRUPTS),
-		m_instructionSet(instructionSet),
-		m_programMemory(programMemory),
-		m_dataMemory(dataMemory),
-		m_fusesAndLocks(*fusesAndLocks),
-		m_sleepMode(*sleepMode),
-		m_bootLoader(bootLoader)
-{
+		AVR8BootLoader		* bootLoader
+) {
+	Subsys::link(eventLogger, ID_INTERRUPTS);
+
+	m_instructionSet	= instructionSet;
+	m_programMemory		= programMemory;
+	m_dataMemory		= dataMemory;
+	m_fusesAndLocks		= *fusesAndLocks;
+	m_sleepMode		= *sleepMode;
+	m_bootLoader		= bootLoader;
+
+	return this;
 }
 
 void AVR8InterruptController::reti() {
@@ -668,9 +670,9 @@ inline bool AVR8InterruptController::confirmInterrupt(AVR8InterruptController::I
 	}
 }
 
-void AVR8InterruptController::reset(MCUSim::Subsys::SubsysResetMode mode) {
+void AVR8InterruptController::reset(MCUSim::ResetMode mode) {
 	switch ( mode ) {
-		case RSTMD_MCU_RESET:
+		case MCUSim::RSTMD_MCU_RESET:
 			mcuReset();
 			break;
 		default:

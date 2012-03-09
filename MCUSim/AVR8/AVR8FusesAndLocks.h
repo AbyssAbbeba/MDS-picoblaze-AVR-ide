@@ -18,7 +18,6 @@
 class AVR8FusesAndLocks : public MCUSim::Subsys {
 public:
 	AVR8FusesAndLocks() {};
-	AVR8FusesAndLocks(MCUSim::EventLogger * eventLogger);
 
 	enum Event {
 		EVENT_LOCK_BITS_SET
@@ -96,7 +95,8 @@ public:
 
 	template<unsigned int sizeBits> unsigned int getUndefVal() const;
 
-	void reset(SubsysResetMode mode);
+	AVR8FusesAndLocks * link(MCUSim::EventLogger * eventLogger);
+	void reset(MCUSim::ResetMode mode);
 
 protected:
 	// False means unprogrammed (1), true means programmed (0); it's confusing, isn't it? But that's how the manual describes it...

@@ -28,7 +28,26 @@ class AVR8BootLoader;
 class AVR8InstructionSet : public MCUSim::CPU {
 public:
 	AVR8InstructionSet();
-	AVR8InstructionSet(
+
+	enum PCWidth {
+		// .. lower values ...
+		PCWIDTH_16 = 1,
+		// .. higher values ...
+		PCWIDTH_22
+	};
+
+	struct Config {
+		bool m_availableInstructions[AVR8InsNames::SPECI__MAX__];
+		MCUSim::Family m_family;
+		PCWidth m_pcWidth;
+		bool m_ignoreUndefinedOpCodes;
+
+		int m_pcMax;
+	};
+
+	Config m_config;
+
+	AVR8InstructionSet * link(
 		MCUSim::EventLogger	* eventLogger,
 		AVR8ProgramMemory	* programMemory,
 		AVR8DataMemory		* dataMemory,
@@ -40,26 +59,8 @@ public:
 		AVR8Sim::HaltMode	* haltMode,
 		AVR8BootLoader		* bootLoader);
 
-	enum PCWidth {
-		// .. lower values ...
-		PCWIDTH_16 = 1,
-		// .. higher values ...
-		PCWIDTH_22
-	};
-
-	struct Config {
-		bool m_availableInstructions[AVR8InsNames::SPECI__MAX__];
-		MCUSim::Arch m_arch;
-		PCWidth m_pcWidth;
-		bool m_ignoreUndefinedOpCodes;
-
-		int m_pcMax;
-	};
-
-	Config m_config;
-
 	int execInstruction();
-	void reset(SubsysResetMode mode);
+	void reset(MCUSim::ResetMode mode);
 
 	unsigned int getProgramCounter() const {
 		return (unsigned int)m_pc;

@@ -16,15 +16,17 @@
 
 #include <cstdlib>
 
-AVR8DataEEPROM::AVR8DataEEPROM(
+AVR8DataEEPROM * AVR8DataEEPROM::link(
 		MCUSim::EventLogger	* eventLogger,
 		AVR8DataMemory		* dataMemory,
-		AVR8InterruptController	* interruptController)
-		 :
-		MCUSim::Memory(eventLogger, MCUSim::Memory::SP_EEPROM),
-		m_dataMemory(dataMemory),
-		m_interruptController(interruptController)
-{
+		AVR8InterruptController	* interruptController
+) {
+	Memory::link(eventLogger, SP_EEPROM);
+
+	m_dataMemory = dataMemory;
+	m_interruptController = interruptController;
+
+	return this;
 }
 
 inline unsigned int AVR8DataEEPROM::readEecr(const unsigned int clockCycles) {
@@ -241,15 +243,15 @@ void AVR8DataEEPROM::resize(unsigned int newSize) {
 	m_config.m_size = newSize; // <-- This might look weird but it should make sense after all.
 }
 
-void AVR8DataEEPROM::reset(MCUSim::Subsys::SubsysResetMode mode) {
+void AVR8DataEEPROM::reset(MCUSim::ResetMode mode) {
 	switch ( mode ) {
-		case RSTMD_NEW_CONFIG:
+		case MCUSim::RSTMD_NEW_CONFIG:
 			loadConfig();
 			break;
-		case RSTMD_INITIAL_VALUES:
+		case MCUSim::RSTMD_INITIAL_VALUES:
 			resetToInitialValues();
 			break;
-		case RSTMD_MCU_RESET:
+		case MCUSim::RSTMD_MCU_RESET:
 			mcuReset();
 			break;
 		default:

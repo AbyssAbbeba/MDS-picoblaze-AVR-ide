@@ -10,7 +10,6 @@
  *
  */
 
-
 #ifndef AVR8DATAEEPROM_H
 #define AVR8DATAEEPROM_H
 
@@ -25,10 +24,6 @@ class AVR8InterruptController;
 class AVR8DataEEPROM : public MCUSim::Memory {
 public:
 	AVR8DataEEPROM() {};
-	AVR8DataEEPROM(
-		MCUSim::EventLogger	* eventLogger,
-		AVR8DataMemory		* dataMemory,
-		AVR8InterruptController	* interruptControllers);
 
 	enum Event {
 		EVENT_EEPROM_INVALID_CR_CHAGE = EVENT_MEM__MAX__, ///<
@@ -45,7 +40,12 @@ public:
 
 	Config m_config;
 
-	void reset(SubsysResetMode mode);
+	AVR8DataEEPROM * link(
+		MCUSim::EventLogger	* eventLogger,
+		AVR8DataMemory		* dataMemory,
+		AVR8InterruptController	* interruptControllers);
+
+	void reset(MCUSim::ResetMode mode);
 	MCUSim::RetCode directRead(unsigned int addr, unsigned int & data) const;
 	MCUSim::RetCode directWrite(unsigned int addr, unsigned int data);
 	void resize(unsigned int newSize);

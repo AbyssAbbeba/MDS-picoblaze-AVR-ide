@@ -15,23 +15,27 @@
 #include "AVR8InterruptController.h"
 #include "AVR8FusesAndLocks.h"
 
-#include <math.h>
+#include <cmath>
+
 AVR8WatchdogTimer::AVR8WatchdogTimer()
 	 :
 	m_fusesAndLocks ( *( (AVR8FusesAndLocks*) 0 ) )
 {
 }
-AVR8WatchdogTimer::AVR8WatchdogTimer(
+
+AVR8WatchdogTimer * AVR8WatchdogTimer::link(
 		MCUSim::EventLogger	* eventLogger,
 		AVR8DataMemory		* dataMemory,
 		AVR8InterruptController	* interruptController,
-		AVR8FusesAndLocks	* fusesAndLocks)
-		 :
-		Subsys(eventLogger, ID_WATCHDOG),
-		m_dataMemory(dataMemory),
-		m_interruptController(interruptController),
-		m_fusesAndLocks(*fusesAndLocks)
-{
+		AVR8FusesAndLocks	* fusesAndLocks
+) {
+	Subsys::link(eventLogger, ID_WATCHDOG);
+
+	m_dataMemory = dataMemory;
+	m_interruptController = interruptController;
+	m_fusesAndLocks = *fusesAndLocks;
+
+	return this;
 }
 
 inline unsigned int AVR8WatchdogTimer::readWdtcr(const unsigned int clockCycles) {
@@ -165,9 +169,9 @@ void AVR8WatchdogTimer::timeStep(float timeStep, unsigned int clockCycles) {
 	}
 }
 
-void AVR8WatchdogTimer::reset(MCUSim::Subsys::SubsysResetMode mode) {
+void AVR8WatchdogTimer::reset(MCUSim::ResetMode mode) {
 	switch ( mode ) {
-		case RSTMD_MCU_RESET:
+		case MCUSim::RSTMD_MCU_RESET:
 			mcuReset();
 			break;
 		default:

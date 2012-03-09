@@ -10,7 +10,6 @@
  *
  */
 
-
 #ifndef AVR8CLOCKCONTROL_H
 #define AVR8CLOCKCONTROL_H
 
@@ -21,9 +20,6 @@ class AVR8FusesAndLocks;
 class AVR8ClockControl : public MCUSim::Clock {
 public:
 	AVR8ClockControl();
-	AVR8ClockControl(
-		MCUSim::EventLogger	* eventLogger,
-		AVR8FusesAndLocks	* fusesAndLocks);
 
 	enum Event {
 		EVENT_CLK_WRN_SOURCE_NOT_USED,
@@ -54,7 +50,11 @@ public:
 	Config m_config;
 	ClockSource m_clockSource;
 
-	void reset(SubsysResetMode mode);
+	AVR8ClockControl * link(
+		MCUSim::EventLogger	* eventLogger,
+		AVR8FusesAndLocks	* fusesAndLocks);
+
+	void reset(MCUSim::ResetMode mode);
 
 	float getFrequency();
 	StartUpTime startUpTime();

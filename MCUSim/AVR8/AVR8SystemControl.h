@@ -10,7 +10,6 @@
  *
  */
 
-
 #ifndef AVR8SYSTEMCONTROL_H
 #define AVR8SYSTEMCONTROL_H
 
@@ -25,13 +24,6 @@ class AVR8FusesAndLocks;
 class AVR8SystemControl : public MCUSim::Subsys {
 public:
 	AVR8SystemControl();
-	AVR8SystemControl(
-		MCUSim::EventLogger	* eventLogger,
-		AVR8DataMemory		* dataMemory,
-		AVR8InterruptController	* interruptController,
-		AVR8WatchdogTimer	* watchdogTimer,
-		AVR8IO			* io,
-		AVR8FusesAndLocks	* fusesAndLocks);
 
 	enum Event {
 		EVENT_EXT_RESET_INVOKED,
@@ -68,8 +60,16 @@ public:
 
 	Config m_config;
 
-	void reset(SubsysResetMode mode);
-	void timeStep(float timeStep, unsigned int clockCycles);
+	AVR8SystemControl * link(
+		MCUSim::EventLogger	* eventLogger,
+		AVR8DataMemory		* dataMemory,
+		AVR8InterruptController	* interruptController,
+		AVR8WatchdogTimer	* watchdogTimer,
+		AVR8IO			* io,
+		AVR8FusesAndLocks	* fusesAndLocks);
+
+	void reset(MCUSim::ResetMode mode);
+	void timeStep(float timeStep, unsigned int clockCycles = 0);
 
 	void watchDogReset();
 
