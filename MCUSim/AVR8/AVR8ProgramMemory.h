@@ -23,7 +23,6 @@ class AVR8ProgramMemory : public MCUSim::Memory {
 
 public:
 	AVR8ProgramMemory() {};
-	AVR8ProgramMemory(MCUSim::EventLogger * eventLogger, AVR8BootLoader * bootLoader);
 	~AVR8ProgramMemory();
 
 	struct Config {
@@ -32,8 +31,9 @@ public:
 	};
 
 	Config m_config;
-	
-	void reset(SubsysResetMode mode);
+
+	AVR8ProgramMemory * link(MCUSim::EventLogger * eventLogger, AVR8BootLoader * bootLoader);
+	void reset(MCUSim::ResetMode mode);
 
 	MCUSim::RetCode directRead(unsigned int addr, unsigned int & data) const;
 	MCUSim::RetCode directWrite(unsigned int addr, unsigned int data);

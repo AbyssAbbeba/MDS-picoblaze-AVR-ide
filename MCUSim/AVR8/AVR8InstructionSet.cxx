@@ -198,7 +198,7 @@ AVR8InstructionSet::AVR8InstructionSet()
 {
 };
 
-AVR8InstructionSet::AVR8InstructionSet(
+AVR8InstructionSet * AVR8InstructionSet::link(
 		MCUSim::EventLogger	* eventLogger,
 		AVR8ProgramMemory	* programMemory,
 		AVR8DataMemory		* dataMemory,
@@ -208,27 +208,29 @@ AVR8InstructionSet::AVR8InstructionSet(
 		AVR8InterruptController	* interruptController,
 		AVR8SystemControl	* systemControl,
 		AVR8Sim::HaltMode	* haltMode,
-		AVR8BootLoader		* bootLoader)
-		 :
-		MCUSim::CPU(eventLogger),
-		m_programMemory(programMemory),
-		m_dataMemory(dataMemory),
-		m_processorMode(*processorMode),
-		m_sleepMode(*sleepMode),
-		m_fusesAndLocks(*fusesAndLocks),
-		m_interruptController(interruptController),
-		m_systemControl(systemControl),
-		m_haltMode(*haltMode),
-		m_bootLoader(bootLoader)
-{
+		AVR8BootLoader		* bootLoader
+) {
+	MCUSim::CPU::link(eventLogger);
+
+	m_programMemory = programMemory;
+	m_dataMemory = dataMemory;
+	m_processorMode = *processorMode;
+	m_sleepMode = *sleepMode;
+	m_fusesAndLocks = *fusesAndLocks;
+	m_interruptController = interruptController;
+	m_systemControl = systemControl;
+	m_haltMode = *haltMode;
+	m_bootLoader = bootLoader;
+
+	return this;
 }
 
-void AVR8InstructionSet::reset(MCUSim::Subsys::SubsysResetMode mode) {
+void AVR8InstructionSet::reset(MCUSim::ResetMode mode) {
 	switch ( mode ) {
-		case RSTMD_INITIAL_VALUES:
+		case MCUSim::RSTMD_INITIAL_VALUES:
 			resetToInitialValues();
 			break;
-		case RSTMD_MCU_RESET:
+		case MCUSim::RSTMD_MCU_RESET:
 			mcuReset();
 			break;
 		default:
@@ -605,7 +607,7 @@ int AVR8InstructionSet::inst_PUSH_Rr(const unsigned int opCode) {
 	// Perform the operation
 	m_dataMemory->pushOnStack(m_dataMemory->read(addrRd));
 
-	if ( MCUSim::ARCH_XMEGA == m_config.m_arch ) {
+	if ( MCUSim::FAMILY_XMEGA == m_config.m_family ) {
 		return 1;
 	} else {
 		return 2;
@@ -1075,21 +1077,21 @@ inline int AVR8InstructionSet::inst_SBIS_A_b(const unsigned int opCode) {
 		if ( true == isInstruction32b(m_pc) ) {
 			incrPc(2);
 
-			if ( MCUSim::ARCH_XMEGA == m_config.m_arch ) {
+			if ( MCUSim::FAMILY_XMEGA == m_config.m_family ) {
 				return 4;
 			} else {
 				return 3;
 			}
 		} else {
 			incrPc(1);
-			if ( MCUSim::ARCH_XMEGA == m_config.m_arch ) {
+			if ( MCUSim::FAMILY_XMEGA == m_config.m_family ) {
 				return 3;
 			} else {
 				return 2;
 			}
 		}
 	} else {
-		if ( MCUSim::ARCH_XMEGA == m_config.m_arch ) {
+		if ( MCUSim::FAMILY_XMEGA == m_config.m_family ) {
 			return 2;
 		} else {
 			return 1;
@@ -1116,21 +1118,21 @@ inline int AVR8InstructionSet::inst_SBIC_A_b(const unsigned int opCode) {
 		if ( true == isInstruction32b(m_pc) ) {
 			incrPc(2);
 
-			if ( MCUSim::ARCH_XMEGA == m_config.m_arch ) {
+			if ( MCUSim::FAMILY_XMEGA == m_config.m_family ) {
 				return 4;
 			} else {
 				return 3;
 			}
 		} else {
 			incrPc(1);
-			if ( MCUSim::ARCH_XMEGA == m_config.m_arch ) {
+			if ( MCUSim::FAMILY_XMEGA == m_config.m_family ) {
 				return 3;
 			} else {
 				return 2;
 			}
 		}
 	} else {
-		if ( MCUSim::ARCH_XMEGA == m_config.m_arch ) {
+		if ( MCUSim::FAMILY_XMEGA == m_config.m_family ) {
 			return 2;
 		} else {
 			return 1;
@@ -1500,7 +1502,7 @@ int AVR8InstructionSet::inst_RCALL_k(const unsigned int opCode) {
 
 	// Determinate how many machine cycles this takes
 	int cycles;
-	if ( MCUSim::ARCH_XMEGA == m_config.m_arch ) {
+	if ( MCUSim::FAMILY_XMEGA == m_config.m_family ) {
 		if ( PCWIDTH_16 == m_config.m_pcWidth ) {
 			cycles = 2;
 		} else if ( PCWIDTH_22 == m_config.m_pcWidth ) {
@@ -1509,7 +1511,7 @@ int AVR8InstructionSet::inst_RCALL_k(const unsigned int opCode) {
 			logEvent(EVENT_CPU_SYS_FATAL_ERROR, m_pc);
 			return -1;
 		}
-	} else if ( MCUSim::ARCH_TINYAVR /* Reduced code tinyAVR */ == m_config.m_arch ) {
+	} else if ( MCUSim::FAMILY_TINYAVR /* Reduced code tinyAVR */ == m_config.m_family ) {
 		cycles = 4;
 	} else {
 		if ( PCWIDTH_16 == m_config.m_pcWidth ) {
@@ -1646,7 +1648,7 @@ int AVR8InstructionSet::inst_ICALL(const unsigned int) {
 
 	// Determinate how many machine cycles this takes
 	int cycles;
-	if ( MCUSim::ARCH_XMEGA == m_config.m_arch ) {
+	if ( MCUSim::FAMILY_XMEGA == m_config.m_family ) {
 		if ( PCWIDTH_16 == m_config.m_pcWidth ) {
 			cycles = 2;
 		} else if ( PCWIDTH_22 == m_config.m_pcWidth ) {
@@ -1716,7 +1718,7 @@ int AVR8InstructionSet::inst_EICALL(const unsigned int) {
 	m_pc = addr;
 
 	// Determinate how many machine cycles this takes
-	if ( MCUSim::ARCH_XMEGA == m_config.m_arch ) {
+	if ( MCUSim::FAMILY_XMEGA == m_config.m_family ) {
 		return 3;
 	} else {
 		return 4;
@@ -2345,7 +2347,7 @@ inline int AVR8InstructionSet::inst_CALL_k(const unsigned int opCode) {
 	incrPc();
 
 	// Determinate how many machine cycles this takes
-	if ( MCUSim::ARCH_XMEGA == m_config.m_arch ) {
+	if ( MCUSim::FAMILY_XMEGA == m_config.m_family ) {
 		if ( PCWIDTH_16 == m_config.m_pcWidth ) {
 			cycles = 3;
 		} else if ( PCWIDTH_22 == m_config.m_pcWidth ) {
@@ -2823,7 +2825,7 @@ inline int AVR8InstructionSet::inst_SBI_A_b(const unsigned int opCode) {
 	m_dataMemory->write(addrA, valA);
 
 	// Evaluate how many cycles it takes to execute
-	if ( (MCUSim::ARCH_XMEGA == m_config.m_arch) || (MCUSim::ARCH_TINYAVR /* Reduced code tinyAVR */ == m_config.m_arch) ) {
+	if ( (MCUSim::FAMILY_XMEGA == m_config.m_family) || (MCUSim::FAMILY_TINYAVR /* Reduced code tinyAVR */ == m_config.m_family) ) {
 		return 1;
 	} else {
 		return 2;
@@ -2851,7 +2853,7 @@ inline int AVR8InstructionSet::inst_CBI_A_b(const unsigned int opCode) {
 	m_dataMemory->write(addrA, valA);
 
 	// Evaluate how many cycles it takes to execute
-	if ( (MCUSim::ARCH_XMEGA == m_config.m_arch) || (MCUSim::ARCH_TINYAVR /* Reduced code tinyAVR */ == m_config.m_arch) ) {
+	if ( (MCUSim::FAMILY_XMEGA == m_config.m_family) || (MCUSim::FAMILY_TINYAVR /* Reduced code tinyAVR */ == m_config.m_family) ) {
 		return 1;
 	} else {
 		return 2;
@@ -3018,7 +3020,7 @@ inline int AVR8InstructionSet::instLD(unsigned int addrRd, int displacement) {
 
 	// Determinate how many cycles this takes
 	int cycles;
-	if ( MCUSim::ARCH_XMEGA == m_config.m_arch ) {
+	if ( MCUSim::FAMILY_XMEGA == m_config.m_family ) {
 		if ( true == postIncrement ) {
 			cycles = 1; // (ii.)
 		} else if ( true == preDecrement ) {
@@ -3423,7 +3425,7 @@ inline int AVR8InstructionSet::instLoadOrStore32b(const unsigned int opCode) {
 		m_dataMemory->write(addrRd, m_dataMemory->read(addrK));
 
 		// Determinate how many cycles this takes to execute
-		if ( (MCUSim::ARCH_XMEGA == m_config.m_arch) && (addrK >= 0x20) ) {
+		if ( (MCUSim::FAMILY_XMEGA == m_config.m_family) && (addrK >= 0x20) ) {
 			// XMEGA: 2 If the LDS instruction is accessing internal SRAM, one extra cycle is inserted.
 			return 3;
 		} else {
@@ -3565,14 +3567,14 @@ inline int AVR8InstructionSet::instST(unsigned int addrRr, int displacement) {
 	m_dataMemory->write(pointer, valRd);
 
 	// Determinate how many cycles this takes
-	if ( MCUSim::ARCH_XMEGA == m_config.m_arch ) {
+	if ( MCUSim::FAMILY_XMEGA == m_config.m_family ) {
 		if ( (true == preDecrement) || (0 != displacement) ) {
 			return 2; // (iii.), (iv.)
 		} else {
 			return 1; // (i.), (ii.)
 		}
 
-	} else if ( MCUSim::ARCH_TINYAVR /* Reduced code tinyAVR */ == m_config.m_arch ) {
+	} else if ( MCUSim::FAMILY_TINYAVR /* Reduced code tinyAVR */ == m_config.m_family ) {
 		if ( true == preDecrement ) {
 			return 2; // (iii.), there is no (iv.) on tinyAVR
 		} else {

@@ -9,7 +9,7 @@
 project(AVR8)
 
 # Set the minimum required version of CMake
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 2.8)
 
 # Create verbose makefiles if on
 set(CMAKE_VERBOSE_MAKEFILE OFF)
@@ -31,6 +31,7 @@ add_definitions(-Wall -Wextra -std=c++0x -O2 -pipe)
  # in this case it will procude static C++ library.
 add_library(AVR8Sim STATIC
 	AVR8Sim.cxx
+	AVR8Config.cxx
 	AVR8DataMemory.cxx
 	AVR8ProgramMemory.cxx
 	AVR8DES.cxx
@@ -38,10 +39,19 @@ add_library(AVR8Sim STATIC
 	AVR8FusesAndLocks.cxx
 	AVR8InterruptController.cxx
 	AVR8TimerCounter0.cxx
+	AVR8TimerCounter1.cxx
+	AVR8TimerCounter2.cxx
 	AVR8IO.cxx
 	AVR8ExternalInterrupts.cxx
 	AVR8WatchdogTimer.cxx
 	AVR8DataEEPROM.cxx
 	AVR8BootLoader.cxx
 	AVR8SystemControl.cxx
-	AVR8ClockControl.cxx)
+	AVR8ClockControl.cxx
+	AVR8Spi.cxx
+	AVR8Usart.cxx
+	AVR8Twi.cxx
+	AVR8Adc.cxx
+	AVR8AnalogComparator.cxx
+	AVR8Isp.cxx
+	AVR8ParalelProg.cxx)

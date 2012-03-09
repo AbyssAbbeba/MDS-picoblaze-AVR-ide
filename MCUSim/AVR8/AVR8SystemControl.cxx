@@ -17,7 +17,7 @@
 #include "AVR8IO.h"
 #include "AVR8FusesAndLocks.h"
 
-#include <math.h>
+#include <cmath>
 
 #ifndef NAN
   #error 'NAN' macro is not defined
@@ -29,21 +29,23 @@ AVR8SystemControl::AVR8SystemControl()
 {
 }
 
-AVR8SystemControl::AVR8SystemControl(
+AVR8SystemControl * AVR8SystemControl::link(
 		MCUSim::EventLogger	* eventLogger,
 		AVR8DataMemory		* dataMemory,
 		AVR8InterruptController	* interruptController,
 		AVR8WatchdogTimer	* watchdogTimer,
 		AVR8IO			* io,
-		AVR8FusesAndLocks	* fusesAndLocks)
-		 :
-		Subsys(eventLogger, ID_SYS_CONTROL),
-		m_dataMemory(dataMemory),
-		m_interruptController(interruptController),
-		m_watchdogTimer(watchdogTimer),
-		m_io(io),
-		m_fusesAndLocks(*fusesAndLocks)
-{
+		AVR8FusesAndLocks	* fusesAndLocks
+) {
+	Subsys::link(eventLogger, ID_SYS_CONTROL);
+
+	m_dataMemory = dataMemory;
+	m_interruptController = interruptController;
+	m_watchdogTimer = watchdogTimer;
+	m_io = io;
+	m_fusesAndLocks = *fusesAndLocks;
+
+	return this;
 }
 
 inline void AVR8SystemControl::handleExternalReset(const float timeStep) {
@@ -158,11 +160,11 @@ void AVR8SystemControl::watchDogReset() {
 	}
 }
 
-void AVR8SystemControl::reset(MCUSim::Subsys::SubsysResetMode mode) {
+void AVR8SystemControl::reset(MCUSim::ResetMode mode) {
 	m_watchdogTimer->reset(mode);
 
 	switch ( mode ) {
-		case RSTMD_MCU_RESET:
+		case MCUSim::RSTMD_MCU_RESET:
 			mcuReset();
 			break;
 		default:

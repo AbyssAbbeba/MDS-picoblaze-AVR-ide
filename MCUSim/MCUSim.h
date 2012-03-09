@@ -10,11 +10,6 @@
  *
  */
 
-/*
- * NOTES:
- * -
- */
-
 #ifndef MCUSIM_H
 #define MCUSIM_H
 
@@ -24,14 +19,26 @@ class MCUSim {
 public:
 	/// @brief ...
 	enum Arch {
-		ARCH_UNSPEC = 0,///< Architecture haven't been specified.
+		ARCH_UNSPEC = 0,
 
-		/// @name AVR
+		ARCH_AVR8,
+		ARCH_AVR32
+	};
+
+	/// @brief ...
+	enum Family {
+		FAMILY_UNSPEC = 0,///< Architecture haven't been specified.
+
+		/// @name AVR8
 		//@{
-		ARCH_MEGAAVR,	///<
-		ARCH_TINYAVR,	///<
-		ARCH_XMEGA,	///<
-		ARCH_AVR32	///<
+		FAMILY_MEGAAVR,	///<
+		FAMILY_TINYAVR,	///<
+		FAMILY_XMEGA,	///<
+		//@}
+
+		/// @name AVR32
+		//@{
+		FAMILY_AVR32	///<
 		//@}
 	};
 
@@ -46,12 +53,21 @@ public:
 
 		/// @name Errors
 		//@{
+		RC_NOT_COMPATIBLE,	///< Different architecture, etc.
 		RC_ADDR_OUT_OF_RANGE,	///< Address out of range (memory operations only).
 		RC_VAL_OUT_OF_RANGE,	///< Address out of range (memory operations only).
 		RC_NOT_IMPLEMENTED,	///< Not implemented on the simulated micro-controller/processor.
 		RC_NOT_SUPPORTED,	///< Implemented on the simulated micro-controller/processor but not in the simulator.
 		RC_UNKNOWN_ERROR	///< This should be never used, it's provided only for convenience.
 		//@}
+	};
+
+	enum ResetMode {
+		RSTMD_NEW_CONFIG,
+		RSTMD_INITIAL_VALUES,
+		RSTMD_MCU_RESET,
+
+		RSTMD__MAX__
 	};
 
 	/// @brief ...
@@ -63,7 +79,15 @@ public:
 	};
 
 	/// @brief ...
-	struct Config {
+	class Config {
+	public:
+		Config(Arch arch) : m_arch(arch) {};
+
+		Arch getArch() const {
+			return m_arch;
+		}
+	private:
+		const Arch m_arch;
 	};
 
 	/**
@@ -202,16 +226,15 @@ public:
 			ID_COUNTER_0,
 			ID_COUNTER_1,
 			ID_COUNTER_2,
+			ID_SPI,
+			ID_USART,
+			ID_TWI,
+			ID_ADC,
+			ID_ACOMP,
+			ID_ISP,
+			ID_PPROG,
 
 			ID__MAX__
-		};
-
-		enum SubsysResetMode {
-			RSTMD_NEW_CONFIG,
-			RSTMD_INITIAL_VALUES,
-			RSTMD_MCU_RESET,
-
-			RSTMD__MAX__
 		};
 
 		EventLogger * m_eventLogger;
@@ -219,19 +242,19 @@ public:
 		SubsysId getId() const {
 			return m_id;
 		}
-		virtual void reset(SubsysResetMode mode) = 0;
+		virtual void reset(ResetMode mode) = 0;
 		virtual ~Subsys();
 
 	protected:
 		Subsys() : m_id(ID_INVALID) {};
-		Subsys(
-			EventLogger * eventLogger,
-			SubsysId id)
-			 :
-			m_eventLogger(eventLogger),
-			m_id(id)
-		{
+		Subsys(EventLogger * eventLogger, SubsysId id) {
+			link(eventLogger, id);
 		};
+		
+		void link(EventLogger * eventLogger, SubsysId id) {
+			m_eventLogger = eventLogger;
+			m_id = id;
+		}
 
 		void logEvent(int eventId, int eventLocation = 0, int eventDetail = 0)
 		{
@@ -268,6 +291,10 @@ public:
 	protected:
 		CPU() {};
 		CPU(EventLogger * eventLogger) : Subsys(eventLogger, ID_CPU) {};
+
+		void link(EventLogger * eventLogger) {
+			Subsys::link(eventLogger, ID_CPU);
+		}
 	};
 
 	/// @brief ...
@@ -336,7 +363,9 @@ public:
 			MFLAG_MEM__MAX__	= 8		///< Number of elements in this enumeration.
 		};
 
-		const MemorySpace m_space;
+		MemorySpace getSpace() const {
+			return m_space;
+		}
 
 		virtual RetCode directRead(unsigned int addr, unsigned int & data) const = 0;
 		virtual RetCode directWrite(unsigned int addr, unsigned int data) = 0;
@@ -346,6 +375,14 @@ public:
 	protected:
 		Memory() : m_space(SP_INVALID) {};
 		Memory(EventLogger * eventLogger, MemorySpace space) : Subsys(eventLogger, (Subsys::SubsysId)(space)), m_space(space) {};
+
+		void link(EventLogger * eventLogger, MemorySpace space) {
+			Subsys::link(eventLogger, (Subsys::SubsysId)(space));
+			m_space = space;
+		}
+
+	private:
+		MemorySpace m_space;
 	};
 
 	class IO : public Subsys
@@ -399,6 +436,10 @@ public:
 	protected:
 		IO() {};
 		IO(EventLogger * eventLogger) : Subsys(eventLogger, ID_IO) {};
+
+		void link(EventLogger * eventLogger) {
+			Subsys::link(eventLogger, ID_IO);
+		}
 	};
 
 	/**
@@ -467,9 +508,15 @@ public:
 	protected:
 		Clock() {};
 		Clock(EventLogger * eventLogger) : Subsys(eventLogger, ID_CLK_CONTROL) {};
+
+		void link(EventLogger * eventLogger) {
+			Subsys::link(eventLogger, ID_CLK_CONTROL);
+		}
 	};
 
 	virtual ~MCUSim();
+
+	virtual void reset(ResetMode mode) = 0;
 
 	virtual float cycles2time(int numOfCycles) = 0;
 	virtual int executeInstruction() = 0;
@@ -479,9 +526,10 @@ public:
 	virtual Subsys * getSubsys(Subsys::SubsysId id) = 0;
 
 // 	virtual Config * getConfig() = 0;
-	virtual RetCode setConfig(Config * newConfig) = 0;
+	virtual Config * getConfig() = 0;
 	virtual EventLogger * getLog() = 0;
 	virtual Arch arch() const = 0;
+	virtual Family family() const;
 	virtual Mode mode() const = 0;
 };
 

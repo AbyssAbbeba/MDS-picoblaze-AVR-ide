@@ -26,7 +26,6 @@ class AVR8DataMemory;
 class AVR8IO : public MCUSim::IO {
 public:
 	AVR8IO() {};
-	AVR8IO(MCUSim::EventLogger * eventLogger, AVR8DataMemory * dataMemory);
 	~AVR8IO();
 
 	static const unsigned int NUMBER_OF_PORTS = 4;
@@ -56,7 +55,8 @@ public:
 
 	Config m_config;
 
-	void reset(SubsysResetMode mode);
+	AVR8IO * link(MCUSim::EventLogger * eventLogger, AVR8DataMemory * dataMemory);
+	void reset(MCUSim::ResetMode mode);
 
 	void clockCycles();
 

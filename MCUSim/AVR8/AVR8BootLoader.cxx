@@ -26,24 +26,26 @@ AVR8BootLoader::AVR8BootLoader()
 {
 };
 
-AVR8BootLoader::AVR8BootLoader(
+AVR8BootLoader * AVR8BootLoader::link(
 	MCUSim::EventLogger	* eventLogger,
 	AVR8ProgramMemory	* programMemory,
 	AVR8DataMemory		* dataMemory,
 	AVR8FusesAndLocks	* fusesAndLocks,
 	AVR8DataEEPROM		* dataEEPROM,
     	AVR8InstructionSet	* instructionSet,
-	AVR8Sim::HaltMode	* haltMode)
-	 :
-	Subsys(eventLogger, ID_BOOT_LOADER),
-	m_writeBuffer(NULL),
-	m_programMemory(programMemory),
-	m_dataMemory(dataMemory),
-	m_fusesAndLocks(*fusesAndLocks),
-	m_dataEEPROM(dataEEPROM),
-	m_instructionSet(instructionSet),
-	m_haltMode(*haltMode)
-{
+	AVR8Sim::HaltMode	* haltMode
+) {
+	Subsys::link(eventLogger, ID_BOOT_LOADER);
+
+	m_writeBuffer	= NULL;
+	m_programMemory	= programMemory;
+	m_dataMemory	= dataMemory;
+	m_fusesAndLocks	= *fusesAndLocks;
+	m_dataEEPROM	= dataEEPROM;
+	m_instructionSet= instructionSet;
+	m_haltMode	= *haltMode;
+
+	return this;
 }
 
 AVR8BootLoader::~AVR8BootLoader() {
@@ -397,15 +399,15 @@ unsigned int AVR8BootLoader::getBootAddress() const {
 	}
 }
 
-void AVR8BootLoader::reset(MCUSim::Subsys::SubsysResetMode mode) {
+void AVR8BootLoader::reset(MCUSim::ResetMode mode) {
 	switch ( mode ) {
-		case RSTMD_NEW_CONFIG:
+		case MCUSim::RSTMD_NEW_CONFIG:
 			loadConfig();
 			break;
-		case RSTMD_INITIAL_VALUES:
+		case MCUSim::RSTMD_INITIAL_VALUES:
 			resetToInitialValues();
 			break;
-		case RSTMD_MCU_RESET:
+		case MCUSim::RSTMD_MCU_RESET:
 			mcuReset();
 			break;
 		default:

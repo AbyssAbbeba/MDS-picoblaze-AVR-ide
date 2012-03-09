@@ -23,7 +23,6 @@ class AVR8DataMemory : public MCUSim::Memory {
 
 public:
 	AVR8DataMemory() {};
-	AVR8DataMemory(MCUSim::EventLogger * eventLogger);
 	~AVR8DataMemory();
 
 	enum Event {
@@ -51,13 +50,15 @@ public:
 
 	Config m_config;
 
+	AVR8DataMemory * link(MCUSim::EventLogger * eventLogger);
+
 	MCUSim::RetCode directRead(unsigned int addr, unsigned int & data) const;
 	MCUSim::RetCode directWrite(unsigned int addr, unsigned int data);
 	void resize(unsigned int newSize);
 	unsigned int size() const {
 		return m_size;
 	}
-	void reset(SubsysResetMode mode);
+	void reset(MCUSim::ResetMode mode);
 
 	/// @warning Do not use this method unless you REALLY KNOW WHAT YOU ARE DOING!
 	inline bool readBitFast(unsigned int regAddr, unsigned int bitMask);

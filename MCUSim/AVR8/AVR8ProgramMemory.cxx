@@ -17,15 +17,17 @@
 
 #include <cstdlib>
 
-AVR8ProgramMemory::AVR8ProgramMemory(
+AVR8ProgramMemory * AVR8ProgramMemory::link(
 	MCUSim::EventLogger * eventLogger,
-	AVR8BootLoader * bootLoader)
-	 :
-	Memory(eventLogger, MCUSim::Memory::SP_CODE),
-	m_bootLoader(bootLoader),
-	m_memory(NULL),
-	m_size(0)
-{
+	AVR8BootLoader * bootLoader
+) {
+	Memory::link(eventLogger, SP_CODE);
+
+	m_bootLoader = bootLoader;
+	m_memory = NULL;
+	m_size = 0;
+
+	return this;
 }
 
 AVR8ProgramMemory::~AVR8ProgramMemory() {
@@ -77,15 +79,15 @@ void AVR8ProgramMemory::resize(unsigned int newSize) {
 	m_size = newSize;
 }
 
-void AVR8ProgramMemory::reset(MCUSim::Subsys::SubsysResetMode mode) {
+void AVR8ProgramMemory::reset(MCUSim::ResetMode mode) {
 	switch ( mode ) {
-		case RSTMD_NEW_CONFIG:
+		case MCUSim::RSTMD_NEW_CONFIG:
 			loadConfig();
 			break;
-		case RSTMD_INITIAL_VALUES:
+		case MCUSim::RSTMD_INITIAL_VALUES:
 			resetToInitialValues();
 			break;
-		case RSTMD_MCU_RESET:
+		case MCUSim::RSTMD_MCU_RESET:
 			mcuReset();
 			break;
 		default:

@@ -15,13 +15,15 @@
 #include <cstdlib>
 #include <cstring>
 
-AVR8DataMemory::AVR8DataMemory(MCUSim::EventLogger * eventLogger)
-	: Memory(eventLogger, MCUSim::Memory::SP_CODE),
-	  m_memory(NULL),
-	  m_size(0),
-	  m_mem2size(0),
-	  m_mem2sizes(NULL)
+AVR8DataMemory * AVR8DataMemory::link(MCUSim::EventLogger * eventLogger)
 {
+	Memory::link(eventLogger, SP_CODE);
+	m_memory = NULL;
+	m_size = 0;
+	m_mem2size = 0;
+	m_mem2sizes = NULL;
+
+	return this;
 }
 
 AVR8DataMemory::~AVR8DataMemory() {
@@ -122,15 +124,15 @@ void AVR8DataMemory::resize(unsigned int newSize) {
 	m_size = newSize;
 }
 
-void AVR8DataMemory::reset(MCUSim::Subsys::SubsysResetMode mode) {
+void AVR8DataMemory::reset(MCUSim::ResetMode mode) {
 	switch ( mode ) {
-		case RSTMD_NEW_CONFIG:
+		case MCUSim::RSTMD_NEW_CONFIG:
 			loadConfig();
 			break;
-		case RSTMD_INITIAL_VALUES:
+		case MCUSim::RSTMD_INITIAL_VALUES:
 			resetToInitialValues();
 			break;
-		case RSTMD_MCU_RESET:
+		case MCUSim::RSTMD_MCU_RESET:
 			mcuReset();
 			break;
 		default:

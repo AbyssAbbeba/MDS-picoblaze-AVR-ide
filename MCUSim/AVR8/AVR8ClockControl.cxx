@@ -19,13 +19,15 @@ AVR8ClockControl::AVR8ClockControl()
 {
 }
 
-AVR8ClockControl::AVR8ClockControl(
+AVR8ClockControl * AVR8ClockControl::link(
 		MCUSim::EventLogger	* eventLogger,
-		AVR8FusesAndLocks	* fusesAndLocks)
-		 :
-		Clock(eventLogger),
-		m_fusesAndLocks(*fusesAndLocks)
-{
+		AVR8FusesAndLocks	* fusesAndLocks
+) {
+	Clock::link(eventLogger);
+
+	m_fusesAndLocks = *fusesAndLocks;
+
+	return this;
 }
 
 float AVR8ClockControl::getFrequency() {
@@ -598,5 +600,5 @@ inline AVR8ClockControl::StartUpTime AVR8ClockControl::startUpHighFreqCrystal(co
 	return result;
 }
 
-void AVR8ClockControl::reset(MCUSim::Subsys::SubsysResetMode) {
+void AVR8ClockControl::reset(MCUSim::ResetMode) {
 }
