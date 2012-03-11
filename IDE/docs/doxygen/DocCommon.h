@@ -44,9 +44,10 @@
  *
  * @section Build Build
  *   - cmake . (on Windows: 'cmake -G "MSYS Makefiles" .')
- *   - make        # build executables and libraries
- *   - make doc    # build documentation
- *   - make test   # execute automated tests
+ *   - make          # build executables and libraries
+ *   - make doc      # build documentation
+ *   - make test     # execute automated tests
+ *   - make package  # build instalation packages
  *
  * @section Testing Testing
  * (This is not implemented yet...)

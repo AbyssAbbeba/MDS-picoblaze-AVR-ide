@@ -2,24 +2,40 @@
 
 readonly VERSION=0.1
 
-declare -A options=( [c]=0 [y]=0 [w]=0 [l]=0 )
+declare -i options_a=0
+declare -i options_c=0
+declare -i options_y=0
+declare -i options_l=0
 
 function clean() {
 	make clean 2> /dev/null
 
 	rm -rfv "docs/doxygen/html"
 	rm -fv $(find -type f -name '*~')
+	rm -fv $(find -type f -name '*.a')
+	rm -fv $(find -type f -name '*.so')
+	rm -fv $(find -type f -name '.directory')
 	rm -fv $(find -type f -name 'CMakeCache.txt')
 	rm -fv $(find -type f -name 'cmake_install.cmake')
+	rm -fv $(find -type f -name 'CTestTestfile.cmake')
+	rm -fv $(find -type f -name 'install_manifest.txt')
 	rm -rfv $(find -type d -name 'CMakeFiles')
+	rm -rfv $(find -type d -name 'Testing')
+	rm -rfv '_CPack_Packages'
+
+	rm -fv 'Doxyfile'
+	rm -fv 'DartConfiguration.tcl'
+	rm -fv 'CPackSourceConfig.cmake'
+	rm -fv 'CPackConfig.cmake'
+	rm -fv *-Linux.*
 
 	while true; do
-		if [ "${options[y]}" != "1" ]; then
+		if [ "${options_y}" != "1" ]; then
 			printf "Remove also Makefiles? [yes]: "
 			read response
 		fi
 
-		if [[ "${options[y]}" == "1" || "$response" == "yes" || "$response" == "y" || "$response" == "" ]]; then
+		if [[ "${options_y}" == "1" || "$response" == "yes" || "$response" == "y" || "$response" == "" ]]; then
 			rm -fv $(find -type f -name 'Makefile')
 			break
 		elif [[ "$response" == "no" || "$response" == "n" ]]; then
@@ -59,8 +75,16 @@ function countLines() {
 	rm "$tempFile"
 }
 
-function buildOnWindows() {
-	cmake -G "MSYS Makefiles" . && make
+function buildAll() {
+	if [ "$(uname -o)" == "Msys" ]; then
+		cmake -G "MSYS Makefiles" . || exit 1
+	else
+		cmake . || exit 1
+	fi
+	make doc
+	make all
+	make test
+	make package
 }
 
 function printVersion() {
@@ -73,8 +97,8 @@ function printHelp() {
 	printf "Version: %s\n" "$VERSION"
 	printf "\n"
 	printf "Options:\n"
+	printf "    -a    Build EVERYTHING, and run the tests.\n"
 	printf "    -c    Clean up the directories by removing all temporary files.\n"
-	printf "    -w    Build on Microsoft® Windows® OS (in MSYS environment).\n"
 	printf "    -l    Count number of lines in .cxx, .cpp, .c, and .h files.\n"
 	printf "    -y    Automatically assume a positive response to any prompt.\n"
 	printf "    -V    Print version of this script.\n"
@@ -95,32 +119,32 @@ function main() {
 	cd "$(dirname "${0}")"
 
 	# Parse CLI options using `getopts' utility
-	while getopts ":hVcywl" opt; do
+	while getopts ":hVcyla" opt; do
 		optTaken=1
 
 		case $opt in
 			h) printHelp;;
 			V) printVersion;;
-			c) options[c]=1;;
-			y) options[y]=1;;
-			w) options[w]=1;;
-			l) options[l]=1;;
+			a) options_a=1;;
+			c) options_c=1;;
+			y) options_y=1;;
+			l) options_l=1;;
 			?) unknownOption "$(basename "${0}")";;
 		esac
 	done
-	
+
 	if (( ! $optTaken )); then
 		printHelp
 	fi
 
-	if (( ${options[c]} )); then
+	if (( ${options_c} )); then
 		clean
 	fi
-	if (( ${options[l]} )); then
+	if (( ${options_l} )); then
 		countLines
 	fi
-	if (( ${options[w]} )); then
-		buildOnWindows
+	if (( ${options_a} )); then
+		buildAll
 	fi
 }
 
