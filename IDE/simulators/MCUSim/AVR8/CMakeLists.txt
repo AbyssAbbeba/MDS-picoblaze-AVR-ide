@@ -14,7 +14,6 @@ cmake_minimum_required(VERSION 2.8)
 # Create verbose makefiles if on
 set(CMAKE_VERBOSE_MAKEFILE OFF)
 
-
 # ------------------------------------------------------------------------------
 # COMPILATION OPTIONS
 # ------------------------------------------------------------------------------
@@ -28,8 +27,8 @@ set(CMAKE_VERBOSE_MAKEFILE OFF)
 add_definitions(-Wall -Wextra -std=c++0x -O2 -pipe -I../../../utilities/)
 
 ## Add a library to the project using the specified source files,
- # in this case it will procude static C++ library.
-add_library(AVR8Sim STATIC
+ # in this case it will procude dynamic C++ library.
+add_library(AVR8Sim SHARED
 	AVR8Sim.cxx
 	AVR8Config.cxx
 	AVR8DataMemory.cxx

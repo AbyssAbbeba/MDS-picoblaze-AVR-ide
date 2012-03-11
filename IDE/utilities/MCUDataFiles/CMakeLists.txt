@@ -14,7 +14,6 @@ cmake_minimum_required(VERSION 2.8)
 # Create verbose makefiles if on
 set(CMAKE_VERBOSE_MAKEFILE OFF)
 
-
 # ------------------------------------------------------------------------------
 # COMPILATION OPTIONS
 # ------------------------------------------------------------------------------
