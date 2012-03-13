@@ -45,7 +45,7 @@ endif(DOXYGEN_FOUND)
 add_subdirectory(utilities)
 
 # Build GUI
-# add_subdirectory(GUI)
+add_subdirectory(GUI)
 
 # Build simulators
 add_subdirectory(simulators)
