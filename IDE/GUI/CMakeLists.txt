@@ -5,21 +5,22 @@
   # here we define SAMPLE_SRCS variable that contains a list of all .cpp files
   # note that we don't need \ at the end of line
   SET( SAMPLE_SRCS
-       ./src/main.cpp
-       ./src/mainform/mainform.cpp
-       ./src/mainform/project.cpp
-       ./src/dialogs/projectdlg.cpp
-       ./src/dialogs/errordlg.cpp
-       ./src/widgets/codeedit.cpp
-       ./src/widgets/wdockmanager.cpp
+       ./main.cpp
+       ./mainform/mainform.cpp
+       ./mainform/project.cpp
+       ./dialogs/projectdlg.cpp
+       ./dialogs/errordlg.cpp
+       ./widgets/codeedit.cpp
+       ./widgets/wdockmanager.cpp
   )
   
   # another list, this time it includes all header files that should be treated with moc
   SET( SAMPLE_MOC_HDRS
-       ./src/mainform/mainform.h
-       ./src/mainform/project.h
-       ./src/dialogs/projectdlg.h
-       ./src/widgets/codeedit.h    
+       ./mainform/mainform.h
+       ./mainform/project.h
+       ./dialogs/projectdlg.h
+       ./widgets/codeedit.h    
+       ./widgets/wdockmanager.h   
   )
   
   # some .ui files

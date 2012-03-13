@@ -11,9 +11,8 @@
 #include "project.h"
 
 
-//class QMenu;
-//class QAction;
 class ProjectMan;
+class WDockManager;
 
 //hlavni okno programu
 class MainForm : public QMainWindow
@@ -23,15 +22,14 @@ class MainForm : public QMainWindow
         MainForm();
 
         void openFilePath(QString path);
+        void saveFile(CodeEdit *editor);
 
     private slots:
         void newFile();
         void openFile();
         void addFile();
         void saveFile();
-        void saveFile(CodeEdit *editor);
         void saveFileAs();
-        //void saveFileAs(CodeEdit *editor);
         void saveAll();
         void newProject();
         void openProject();

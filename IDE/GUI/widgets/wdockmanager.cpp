@@ -1,32 +1,35 @@
 #include <QtGui>
 #include "wdockmanager.h"
 
-WDockManager::WDockManager(QMainWindow *mainWindow)
+WDockManager::WDockManager(MainForm *mainWindow)
 {
     wMainWindow = mainWindow;
     wTab = new QTabWidget(wMainWindow);
     wTab->setTabsClosable(true);
     wTab->setMovable(true);
-    //connect(this, currentChanger(int),...)
-    //connect(this, tabCloseRequest(int),...)
+    connect(wTab, SIGNAL(tabCloseRequested(int)),this, SLOT(closeTab(int)));
     wMainWindow->setCentralWidget(wTab);
+}
+
+
+
+void WDockManager::closeTab(int index)
+{
+    wMainWindow->saveFile((CodeEdit*)wTab->widget(index));
+    wTab->removeTab(index);
 }
 
 
 
 void WDockManager::setTabChanged()
 {
-    //getCentralWidget()->setChanged();
-    ((CodeEdit*)(wTab->currentWidget()))->setChanged();
-    //wTab->setTabText(wTab->currentIndex(), "*" + ((CodeEdit*)(wTab->currentWidget()))->getName());
+    ((CodeEdit*)(wTab->currentWidget()))->setChanged();;
 }
 
 
 void WDockManager::setTabSaved()
 {
-    //getCentralWidget()->setSaved();
     ((CodeEdit*)wTab->currentWidget())->setSaved();
-    wTab->setTabText(wTab->currentIndex(), ((CodeEdit*)(wTab->currentWidget()))->getName().remove(0,1));
 }
 
 
@@ -83,7 +86,7 @@ void WDockManager::addCentralWidget(QString wName, QString wPath)
     CodeEdit *newEditor = new CodeEdit(wTab, wName, wPath);
     wTab->addTab(newEditor, wName);
     wTab->setCurrentIndex(wTab->count()-1);
-    //pridat i tooltip, kde bude path
+    //add tab tooltip with path
     openCentralWidgets.append(newEditor);
 }
 

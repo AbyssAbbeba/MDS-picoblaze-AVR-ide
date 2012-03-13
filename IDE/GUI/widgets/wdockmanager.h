@@ -11,14 +11,16 @@
 #include <QList>
 #include <QTabWidget>
 #include "codeedit.h"
+#include  "../mainform/mainform.h"
 
 class WDock;
+class MainForm;
 
-class WDockManager
+class WDockManager : public QObject
 {
-    //Q_OBJECT
+    Q_OBJECT
     public:
-        WDockManager(QMainWindow *mainWindow);
+        WDockManager(MainForm *mainWindow);
         void addDockWidget(int code);
         void removeDockWidget(int code);
         void addCentralWidget(QString wName, QString wPath);
@@ -32,9 +34,11 @@ class WDockManager
         void setTabSaved();
         int getTabCount();
 
+    private slots:
+        void closeTab(int index);
+
     private:
-        //slo by i zavolat funkci parent() misto promenne
-        QMainWindow *wMainWindow;
+        MainForm *wMainWindow;
         QList<WDock*> openDockWidgets;
         QList<CodeEdit*> openCentralWidgets;
         QTabWidget *wTab;
