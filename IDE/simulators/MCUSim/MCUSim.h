@@ -157,10 +157,10 @@ public:
 		}
 
 		~EventLogger() {
-			delete m_subsysId;
-			delete m_eventId;
-			delete m_location;
-			delete m_detail;
+			delete[] m_subsysId;
+			delete[] m_eventId;
+			delete[] m_location;
+			delete[] m_detail;
 		}
 
 		void logEvent(int subsysId, int eventId, int location, int detail) {
@@ -251,7 +251,7 @@ public:
 			return m_id;
 		}
 		virtual void reset(ResetMode mode) = 0;
-		virtual ~Subsys();
+		virtual ~Subsys() {};
 
 	protected:
 		Subsys() : m_id(ID_INVALID) {};
@@ -524,7 +524,7 @@ public:
 		}
 	};
 
-	virtual ~MCUSim();
+	virtual ~MCUSim() {};
 
 	virtual void reset(ResetMode mode) = 0;
 
@@ -539,7 +539,7 @@ public:
 	virtual Config * getConfig() = 0;
 	virtual EventLogger * getLog() = 0;
 	virtual Arch arch() const = 0;
-	virtual Family family() const;
+	virtual Family family() const = 0;
 	virtual Mode mode() const = 0;
 };
 

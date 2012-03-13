@@ -25,25 +25,31 @@
   #error 'NAN' macro is not defined
 #endif
 
-AVR8IO * AVR8IO::link(
-		MCUSim::EventLogger	* eventLogger,
-		AVR8DataMemory		* dataMemory
-) {
-	IO::link(eventLogger);
-	m_dataMemory = dataMemory;
-
+AVR8IO::AVR8IO() {
 	m_lowLevelInterface = new SimFloatType* [II__MAX__];
 	for ( int i = 0; i < II__MAX__; i++ ) {
 		m_lowLevelInterface[i] = new SimFloatType[NUMBER_OF_PINS];
 	}
 
 	m_enabled = false;
+}
+
+AVR8IO * AVR8IO::link(
+		MCUSim::EventLogger	* eventLogger,
+		AVR8DataMemory		* dataMemory
+) {
+	IO::link(eventLogger);
+
+	m_dataMemory = dataMemory;
 
 	return this;
 }
 
 AVR8IO::~AVR8IO() {
 	if ( NULL != m_lowLevelInterface ) {
+		for ( int i = 0; i < II__MAX__; i++ ) {
+			delete[] m_lowLevelInterface[i];
+		}
 		delete[] m_lowLevelInterface;
 	}
 }

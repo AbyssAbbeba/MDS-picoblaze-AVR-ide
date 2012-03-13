@@ -23,12 +23,6 @@
   #error 'NAN' macro is not defined
 #endif
 
-AVR8SystemControl::AVR8SystemControl()
-	 :
-	m_fusesAndLocks ( *( ( AVR8FusesAndLocks * ) 0 ) )
-{
-}
-
 AVR8SystemControl * AVR8SystemControl::link(
 		MCUSim::EventLogger	* eventLogger,
 		AVR8DataMemory		* dataMemory,
@@ -43,13 +37,13 @@ AVR8SystemControl * AVR8SystemControl::link(
 	m_interruptController = interruptController;
 	m_watchdogTimer = watchdogTimer;
 	m_io = io;
-	m_fusesAndLocks = *fusesAndLocks;
+	m_fusesAndLocks = fusesAndLocks;
 
 	return this;
 }
 
 inline void AVR8SystemControl::handleExternalReset(const float timeStep) {
-	if ( true == m_fusesAndLocks[AVR8FusesAndLocks::FUSE_RSTDISBL] ) {
+	if ( true == (*m_fusesAndLocks)[AVR8FusesAndLocks::FUSE_RSTDISBL] ) {
 		return;
 	}
 
@@ -86,11 +80,11 @@ inline void AVR8SystemControl::handleExternalReset(const float timeStep) {
 }
 
 inline void AVR8SystemControl::handleBrownOutReset(const float timeStep) {
-	if ( false == m_fusesAndLocks[AVR8FusesAndLocks::FUSE_BODEN] ) {
+	if ( false == (*m_fusesAndLocks)[AVR8FusesAndLocks::FUSE_BODEN] ) {
 		return;
 	}
 
-	int bodLevel = ( ( true == m_fusesAndLocks[AVR8FusesAndLocks::FUSE_BODLEVEL] ) ? 0 : 1);
+	int bodLevel = ( ( true == (*m_fusesAndLocks)[AVR8FusesAndLocks::FUSE_BODLEVEL] ) ? 0 : 1);
 	const float treshold = m_config.m_brownOutTreshold[bodLevel];
 
 	if ( true == m_brownOutReset ) {

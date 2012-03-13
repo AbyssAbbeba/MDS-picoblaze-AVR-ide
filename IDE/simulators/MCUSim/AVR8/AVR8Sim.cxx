@@ -38,7 +38,7 @@
 
 #include <cassert>
 
-AVR8Sim::AVR8Sim() : MCUSim() {
+AVR8Sim::AVR8Sim() {
 	m_eventLogger		= new EventLogger;
 	m_config		= new AVR8Config();
 
@@ -119,6 +119,7 @@ AVR8Sim::AVR8Sim() : MCUSim() {
 AVR8Sim::~AVR8Sim() {
 	deleteSubSystems();
 	delete m_config;
+	delete m_eventLogger;
 }
 
 inline void AVR8Sim::deleteSubSystems() {

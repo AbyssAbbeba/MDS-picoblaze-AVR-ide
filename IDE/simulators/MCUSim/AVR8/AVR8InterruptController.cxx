@@ -18,13 +18,6 @@
 #include "AVR8Sim.h"
 #include "AVR8BootLoader.h"
 
-AVR8InterruptController::AVR8InterruptController()
-	 :
-	m_fusesAndLocks	( *( ( AVR8FusesAndLocks * )	0 ) ),
-	m_sleepMode	( *( ( AVR8Sim::SleepMode * )	0 ) )
-{
-}
-
 AVR8InterruptController * AVR8InterruptController::link(
 		MCUSim::EventLogger	* eventLogger,
 		AVR8InstructionSet	* instructionSet,
@@ -39,8 +32,8 @@ AVR8InterruptController * AVR8InterruptController::link(
 	m_instructionSet	= instructionSet;
 	m_programMemory		= programMemory;
 	m_dataMemory		= dataMemory;
-	m_fusesAndLocks		= *fusesAndLocks;
-	m_sleepMode		= *sleepMode;
+	m_fusesAndLocks		= fusesAndLocks;
+	m_sleepMode		= sleepMode;
 	m_bootLoader		= bootLoader;
 
 	return this;
@@ -124,7 +117,7 @@ inline int AVR8InterruptController::executeInterrupt(AVR8InterruptController::In
 	// Increment statistical counter
 	m_interruptCounter[vector]++;
 
-	if ( AVR8Sim::SLEEPMD_NONE != m_sleepMode ) {
+	if ( AVR8Sim::SLEEPMD_NONE != *m_sleepMode ) {
 		/*
 		 * If an interrupt occurs when the MCU is in sleep mode, the interrupt execution response
 		 * time is increased by four clock cycles. This increase comes in addition to the start-up
@@ -527,9 +520,9 @@ inline bool AVR8InterruptController::confirmInterrupt(AVR8InterruptController::I
 		(true == m_dataMemory->readBitFast(AVR8RegNames::GICR, AVR8RegNames::GICR_IVSEL))
 			&&
 		(
-			(true == m_fusesAndLocks[AVR8FusesAndLocks::LB_BLB01])
+			(true == (*m_fusesAndLocks)[AVR8FusesAndLocks::LB_BLB01])
 				||
-			(true == m_fusesAndLocks[AVR8FusesAndLocks::LB_BLB12])
+			(true == (*m_fusesAndLocks)[AVR8FusesAndLocks::LB_BLB12])
 		)
 	) {
 		return false;

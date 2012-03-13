@@ -98,10 +98,10 @@ protected:
 
 	AVR8ProgramMemory * m_programMemory;
 	AVR8DataMemory * m_dataMemory;
-	AVR8FusesAndLocks & m_fusesAndLocks;
+	AVR8FusesAndLocks * m_fusesAndLocks;
 	AVR8DataEEPROM * m_dataEEPROM;
     	AVR8InstructionSet * m_instructionSet;
-	AVR8Sim::HaltMode & m_haltMode;
+	AVR8Sim::HaltMode * m_haltMode;
 
 	inline void resetToInitialValues();
 	inline void loadConfig();

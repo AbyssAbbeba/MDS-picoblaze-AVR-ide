@@ -17,6 +17,10 @@
 
 #include <cstdlib>
 
+AVR8DataEEPROM::AVR8DataEEPROM() {
+	m_memory = NULL;
+}
+
 AVR8DataEEPROM * AVR8DataEEPROM::link(
 		MCUSim::EventLogger	* eventLogger,
 		AVR8DataMemory		* dataMemory,
@@ -25,6 +29,7 @@ AVR8DataEEPROM * AVR8DataEEPROM::link(
 	Memory::link(eventLogger, SP_EEPROM);
 
 	m_dataMemory = dataMemory;
+
 	m_interruptController = interruptController;
 
 	return this;
@@ -32,7 +37,7 @@ AVR8DataEEPROM * AVR8DataEEPROM::link(
 
 AVR8DataEEPROM::~AVR8DataEEPROM() {
 	if ( NULL != m_memory ) {
-		delete m_memory;
+		delete[] m_memory;
 	}
 }
 
@@ -251,7 +256,7 @@ void AVR8DataEEPROM::resize(unsigned int newSize) {
 	}
 
 	if ( NULL != memoryOrig ) {
-		delete memoryOrig;
+		delete[] memoryOrig;
 	}
 	m_config.m_size = newSize; // <-- This might look weird but it should make sense after all.
 }
@@ -290,7 +295,7 @@ inline void AVR8DataEEPROM::mcuReset() {
 	m_writeInProgress = false;
 }
 
-inline unsigned int AVR8DataEEPROM::getUndefVal() const {
+unsigned int AVR8DataEEPROM::getUndefVal() const {
 	if ( -1 == m_config.m_undefinedValue ) {
 		// Generate random value
 		return ( (unsigned int)rand() & ((1 << 8) - 1) );
