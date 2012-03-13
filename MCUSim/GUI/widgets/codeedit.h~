@@ -1,7 +1,0 @@
-#ifndef CODEEDIT_H
-#define CODEEDIT_H
-
-
-#include <QPlainTextEdit>
-
-#endif

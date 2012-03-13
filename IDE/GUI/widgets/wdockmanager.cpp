@@ -1,16 +1,37 @@
 #include <QtGui>
 #include "wdockmanager.h"
 
-WDockManager::WDockManager(QMainWindow *mainWindow)
+WDockManager::WDockManager(MainForm *mainWindow)
 {
     wMainWindow = mainWindow;
     wTab = new QTabWidget(wMainWindow);
     wTab->setTabsClosable(true);
     wTab->setMovable(true);
-    //connect(this, currentChanger(int),...)
-    //connect(this, tabCloseRequest(int),...)
+    connect(wTab, SIGNAL(tabCloseRequested(int)),this, SLOT(closeTab(int)));
     wMainWindow->setCentralWidget(wTab);
 }
+
+
+
+void WDockManager::closeTab(int index)
+{
+    wMainWindow->saveFile((CodeEdit*)wTab->widget(index));
+    wTab->removeTab(index);
+}
+
+
+
+void WDockManager::setTabChanged()
+{
+    ((CodeEdit*)(wTab->currentWidget()))->setChanged();;
+}
+
+
+void WDockManager::setTabSaved()
+{
+    ((CodeEdit*)wTab->currentWidget())->setSaved();
+}
+
 
 
 CodeEdit* WDockManager::getCentralWidget()
@@ -19,14 +40,54 @@ CodeEdit* WDockManager::getCentralWidget()
 }
 
 
-void WDockManager::addCentralWidget(QString name)
+
+CodeEdit* WDockManager::getTabWidget(int index)
+{
+    return (CodeEdit*)wTab->widget(index);
+}
+
+
+
+int WDockManager::getTabCount()
+{
+    return wTab->count();
+}
+
+
+
+QString WDockManager::getCentralName()
+{
+    return ((CodeEdit*)wTab->currentWidget())->getName();
+}
+
+QString WDockManager::getCentralPath()
+{
+    return ((CodeEdit*)wTab->currentWidget())->getPath();
+}
+
+
+void WDockManager::setCentralName(QString wName)
+{
+    ((CodeEdit*)wTab->currentWidget())->setName(wName);
+    wTab->setTabText(wTab->currentIndex(), wName);
+}
+
+
+void WDockManager::setCentralPath(QString wPath)
+{
+    ((CodeEdit*)wTab->currentWidget())->setPath(wPath);
+}
+
+
+
+void WDockManager::addCentralWidget(QString wName, QString wPath)
 {
     
-    CodeEdit *newEditor = new CodeEdit(wMainWindow);
-    wTab->addTab(newEditor, name);
+    CodeEdit *newEditor = new CodeEdit(wTab, wName, wPath);
+    wTab->addTab(newEditor, wName);
     wTab->setCurrentIndex(wTab->count()-1);
+    //add tab tooltip with path
     openCentralWidgets.append(newEditor);
-	   
 }
 
 void WDockManager::addDockWidget(int code)

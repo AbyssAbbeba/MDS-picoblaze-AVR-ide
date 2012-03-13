@@ -1,8 +1,7 @@
 #include <QtGui>
 #include "project.h"
-#include <stdio.h>
 
-ProjectMan::ProjectMan(QMainWindow * qMainWindow)
+ProjectMan::ProjectMan(MainForm* qMainWindow)
 {
     //openProjects = new QList<Project*>;
     projectCount = 0;
@@ -147,6 +146,7 @@ Project::Project(QFile *file, QMainWindow * mainWindow, ProjectMan *parent)
                  treeProjFile->setData(0, Qt::ToolTipRole, filePaths.at(i));
             }
             connect(prjDockWidget, SIGNAL(visibilityChanged(bool)),this,SLOT(setActive()));  
+            connect(prjTreeWidget, SIGNAL(itemDoubleClicked (QTreeWidgetItem *,int)),this,SLOT(openItem()));  
         }
     }
 }
@@ -187,6 +187,7 @@ Project::Project(QString name, QString path, QMainWindow * mainWindow, QFile *fi
         xmlStream << domDoc.toString();
 
         connect(prjDockWidget, SIGNAL(visibilityChanged(bool)),this,SLOT(setActive()));
+        connect(prjTreeWidget, SIGNAL(itemDoubleClicked (QTreeWidgetItem *,int)),this,SLOT(openItem()));  
         
     }
 
@@ -244,4 +245,13 @@ void Project::setActive()
 {
     if (parentManager->isActiveProject(this))
         parentManager->setActive(this);
+}
+
+
+
+
+void Project::openItem()
+{
+    if (prjTreeWidget->currentItem() != NULL)
+        parentManager->mainWindow->openFilePath(prjTreeWidget->currentItem()->data(0, Qt::ToolTipRole).toString());
 }

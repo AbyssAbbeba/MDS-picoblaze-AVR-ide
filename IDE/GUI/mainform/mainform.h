@@ -6,14 +6,13 @@
 #include <QDockWidget>
 #include <QListWidget>
 #include <QTreeWidget>
-#include <QVector>
 #include "../widgets/codeedit.h"
 #include "../widgets/wdockmanager.h"
 #include "project.h"
 
 
-class QMenu;
-class QAction;
+class ProjectMan;
+class WDockManager;
 
 //hlavni okno programu
 class MainForm : public QMainWindow
@@ -22,11 +21,15 @@ class MainForm : public QMainWindow
     public:
         MainForm();
 
+        void openFilePath(QString path);
+        void saveFile(CodeEdit *editor);
+
     private slots:
         void newFile();
         void openFile();
         void addFile();
         void saveFile();
+        void saveFileAs();
         void saveAll();
         void newProject();
         void openProject();
@@ -43,7 +46,6 @@ class MainForm : public QMainWindow
         WDockManager *wDockManager;
 
 
-
         QMenu *fileMenu;
     	QMenu *editMenu;
     	QMenu *viewMenu;
@@ -58,6 +60,7 @@ class MainForm : public QMainWindow
         QAction *openAct;
         QAction *addAct;
         QAction *saveAct;
+        QAction *saveAsAct;
         QAction *saveAllAct;
         QAction *newProjAct;
         QAction *openProjAct;

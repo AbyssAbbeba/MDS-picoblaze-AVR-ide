@@ -7,10 +7,13 @@
 
 #include <QString>
 #include <QList>
-#include <QVector>
-#include <QMainWindow>
+//#include <QMainWindow>
 #include <QTreeWidget>
 #include <QtXml>
+#include "mainform.h"
+
+
+class MainForm;
 
 
 class Project;
@@ -18,7 +21,7 @@ class Project;
 class ProjectMan
 {
     public:
-        ProjectMan(QMainWindow * mainWindow);
+        ProjectMan(MainForm* mainWindow);
         void addFile(QFile *file, QString path, QString name);
         void addProject(QString name, QString path, QFile *file);
         void openProject(QFile *file);
@@ -26,17 +29,20 @@ class ProjectMan
         bool isActiveProject(Project *project);
         Project* getActive();
 
+        MainForm *mainWindow;
+
     private:
         int projectCount;
         QList<Project*> openProjects;
         Project *activeProject;
-        QMainWindow *mainWindow;
+        
     
 };
 
 
 class Project : public QObject
 {
+    Q_OBJECT
     public:
         //konstruktor pro otevirani projektu
         Project(QFile *file, QMainWindow * mainWindow, ProjectMan *parent);
@@ -51,6 +57,7 @@ class Project : public QObject
         QString prjName;
         QString prjPath;
         int fileCount;
+
         QList<QString> fileNames;
         QList<QString> filePaths;
 
@@ -58,7 +65,7 @@ class Project : public QObject
 
     private slots:
         void setActive();
-
+        void openItem();
     private:
         ProjectMan *parentManager;
        

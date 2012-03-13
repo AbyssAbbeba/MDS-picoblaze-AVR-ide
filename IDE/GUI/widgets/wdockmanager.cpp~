@@ -13,20 +13,73 @@ WDockManager::WDockManager(QMainWindow *mainWindow)
 }
 
 
+
+void WDockManager::setTabChanged()
+{
+    //getCentralWidget()->setChanged();
+    ((CodeEdit*)(wTab->currentWidget()))->setChanged();
+    //wTab->setTabText(wTab->currentIndex(), "*" + ((CodeEdit*)(wTab->currentWidget()))->getName());
+}
+
+
+void WDockManager::setTabSaved()
+{
+    //getCentralWidget()->setSaved();
+    ((CodeEdit*)wTab->currentWidget())->setSaved();
+    wTab->setTabText(wTab->currentIndex(), ((CodeEdit*)(wTab->currentWidget()))->getName().remove(0,1));
+}
+
+
+
 CodeEdit* WDockManager::getCentralWidget()
 {
     return (CodeEdit*)wTab->currentWidget();
 }
 
 
-void WDockManager::addCentralWidget(QString name)
+
+CodeEdit* WDockManager::getTabWidget(int index)
+{
+    return (CodeEdit*)wTab->widget(index);
+}
+
+
+
+
+
+QString WDockManager::getCentralName()
+{
+    return ((CodeEdit*)wTab->currentWidget())->getName();
+}
+
+QString WDockManager::getCentralPath()
+{
+    return ((CodeEdit*)wTab->currentWidget())->getPath();
+}
+
+
+void WDockManager::setCentralName(QString wName)
+{
+    ((CodeEdit*)wTab->currentWidget())->setName(wName);
+    wTab->setTabText(wTab->currentIndex(), wName);
+}
+
+
+void WDockManager::setCentralPath(QString wPath)
+{
+    ((CodeEdit*)wTab->currentWidget())->setPath(wPath);
+}
+
+
+
+void WDockManager::addCentralWidget(QString wName, QString wPath)
 {
     
-    CodeEdit *newEditor = new CodeEdit(wMainWindow);
-    wTab->addTab(newEditor, name);
-    wTab->setCurrentIndex(wTab->count());
+    CodeEdit *newEditor = new CodeEdit(wTab, wName, wPath);
+    wTab->addTab(newEditor, wName);
+    wTab->setCurrentIndex(wTab->count()-1);
+    //pridat i tooltip, kde bude path
     openCentralWidgets.append(newEditor);
-	   
 }
 
 void WDockManager::addDockWidget(int code)

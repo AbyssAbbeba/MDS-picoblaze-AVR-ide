@@ -21,8 +21,16 @@ class WDockManager
         WDockManager(QMainWindow *mainWindow);
         void addDockWidget(int code);
         void removeDockWidget(int code);
-        void addCentralWidget(QString name);
+        void addCentralWidget(QString wName, QString wPath);
         CodeEdit* getCentralWidget();
+        CodeEdit* getTabWidget(int index);
+        QString getCentralName();
+        QString getCentralPath();
+        void setCentralName(QString wName);
+        void setCentralPath(QString wPath);
+        void setTabChanged();
+        void setTabSaved();
+
     private:
         //slo by i zavolat funkci parent() misto promenne
         QMainWindow *wMainWindow;
