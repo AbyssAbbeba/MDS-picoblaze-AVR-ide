@@ -30,7 +30,7 @@ class DataFile;
 class AVR8ProgramMemory : public MCUSim::Memory {
 
 public:
-	AVR8ProgramMemory() {};
+	AVR8ProgramMemory();
 	~AVR8ProgramMemory();
 
 	struct Config {
@@ -55,7 +55,7 @@ public:
 	inline unsigned int read(unsigned int addr);
 	inline void write(unsigned int addr, unsigned int val);
 
-	template<unsigned int sizeBits> unsigned int getUndefVal() const;
+	unsigned int getUndefVal() const;
 
 protected:
 	AVR8BootLoader * m_bootLoader;
@@ -84,12 +84,12 @@ inline unsigned int AVR8ProgramMemory::readRaw(unsigned int addr) {
 		} else {
 			logEvent(EVENT_MEM_ERR_RD_NOT_IMPLEMENTED, addr);
 		}
-		return getUndefVal<16>();
+		return getUndefVal();
 	}
 
 	if ( true == m_bootLoader->inUse(addr) ) {
 		logEvent(EVENT_MEM_ERR_RD_ACCESS_DENIED, addr);
-		return getUndefVal<16>();
+		return getUndefVal();
 	}
 
 	int result = m_memory[addr];

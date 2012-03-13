@@ -33,7 +33,7 @@ class AVR8BootLoader;
  */
 class AVR8InstructionSet : public MCUSim::CPU {
 public:
-	AVR8InstructionSet();
+	AVR8InstructionSet() {};
 
 	enum PCWidth {
 		// .. lower values ...
@@ -83,12 +83,12 @@ protected:
 
 	AVR8ProgramMemory * m_programMemory;
 	AVR8DataMemory * m_dataMemory;
-	MCUSim::Mode & m_processorMode;
-	AVR8Sim::SleepMode & m_sleepMode;
-	AVR8FusesAndLocks & m_fusesAndLocks;
+	MCUSim::Mode * m_processorMode;
+	AVR8Sim::SleepMode * m_sleepMode;
+	AVR8FusesAndLocks * m_fusesAndLocks;
 	AVR8InterruptController * m_interruptController;
 	AVR8SystemControl * m_systemControl;
-	AVR8Sim::HaltMode & m_haltMode;
+	AVR8Sim::HaltMode * m_haltMode;
 	AVR8BootLoader * m_bootLoader;
 
 	AVR8DES * m_des;

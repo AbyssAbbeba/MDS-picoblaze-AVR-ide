@@ -27,7 +27,7 @@ class AVR8FusesAndLocks;
  */
 class AVR8WatchdogTimer : public MCUSim::Subsys {
 public:
-	AVR8WatchdogTimer();
+	AVR8WatchdogTimer() {};
 
 	enum Event {
 		EVENT_WDT_INVALID_CR_CHAGE,
@@ -58,7 +58,7 @@ public:
 protected:
 	AVR8DataMemory * m_dataMemory;
 	AVR8InterruptController * m_interruptController;
-	AVR8FusesAndLocks & m_fusesAndLocks;
+	AVR8FusesAndLocks * m_fusesAndLocks;
 
 	float m_time; // in 1µs
 	unsigned int m_prescaler;

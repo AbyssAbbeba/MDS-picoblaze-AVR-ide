@@ -204,7 +204,7 @@ const uint32_t AVR8DES::S_TABLE[8][4][16] = {
 //          ╭───────┴───────╮
 //          │ Output (64b)  │
 //          ╰───────────────╯
-inline void AVR8DES::cipher(uint64_t & dataBlock, uint64_t & keyBlock, unsigned int round, bool decipher) {
+void AVR8DES::cipher(uint64_t & dataBlock, uint64_t & keyBlock, unsigned int round, bool decipher) {
 	uint64_t data;
 
 	if ( true == decipher ) {

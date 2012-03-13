@@ -12,6 +12,13 @@ cmake_minimum_required(VERSION 2.8)
 # Create verbose makefiles if on
 set(CMAKE_VERBOSE_MAKEFILE OFF)
 
+# Set default build type to Debug
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE Debug CACHE STRING
+      "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel."
+      FORCE)
+endif(NOT CMAKE_BUILD_TYPE)
+
 # After this command, you can add tests in the project using ADD_TEST command.
 enable_testing()
 
@@ -52,7 +59,7 @@ add_subdirectory(tests)
 # ------------------------------------------------------------------------------
 
 # Set which packages we want to build
-SET(CPACK_GENERATOR "DEB" "STGZ")
+set(CPACK_GENERATOR "DEB" "STGZ")
 
 set(CPACK_PACKAGE_VENDOR "Moravia Microsystems")
 set(CPACK_PACKAGE_VERSION_MAJOR 0)
@@ -118,7 +125,7 @@ set(CPACK_DEBIAN_PACKAGE_RECOMMENDS "")
 set(CPACK_DEBIAN_PACKAGE_SUGGESTS "")
 
 # Include packaging driver provided by CMake.
-INCLUDE(CPack)
+include(CPack)
 
 
 # ------------------------------------------------------------------------------
@@ -126,5 +133,5 @@ INCLUDE(CPack)
 # ------------------------------------------------------------------------------
 
 # CTest is a testing tool distributed as a part of CMake.
-INCLUDE(CTest)
+include(CTest)
 
