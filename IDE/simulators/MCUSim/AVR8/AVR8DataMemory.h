@@ -21,6 +21,7 @@ class DataFile;
 
 #include <cstddef>
 #include <cstdint>
+#include <cstdlib>
 
 /**
  * @brief
@@ -30,7 +31,7 @@ class DataFile;
 class AVR8DataMemory : public MCUSim::Memory {
 
 public:
-	AVR8DataMemory() {};
+	AVR8DataMemory();
 	~AVR8DataMemory();
 
 	enum Event {
@@ -87,7 +88,7 @@ public:
 	inline void pushOnStack(const unsigned int value);
 	inline int popFromStack();
 
-	template<unsigned int sizeBits> unsigned int getUndefVal() const;
+	inline unsigned int getUndefVal() const;
 
 protected:
 	uint32_t * m_memory;
@@ -274,7 +275,7 @@ inline unsigned int AVR8DataMemory::read(uint32_t addr) {
 		} else {
 			logEvent(EVENT_MEM_ERR_RD_NOT_IMPLEMENTED, addr);
 		}
-		return getUndefVal<8>();
+		return getUndefVal();
 	}
 
 	register uint32_t result = m_memory[addr];
@@ -288,11 +289,11 @@ inline unsigned int AVR8DataMemory::read(uint32_t addr) {
 
 		if ( addr >= m_mem2size ) {
 			logEvent(EVENT_MEM_ERR_WR_NOT_IMPLEMENTED, addr);
-			return getUndefVal<8>();
+			return getUndefVal();
 		}
 		if ( addrVariant >= m_mem2sizes[addr] ) {
 			logEvent(EVENT_MEM_ERR_WR_NOT_IMPLEMENTED, addr);
-			return getUndefVal<8>();
+			return getUndefVal();
 		}
 
 		result = m_memory2[addr][addrVariant];
@@ -318,11 +319,21 @@ inline unsigned int AVR8DataMemory::read(uint32_t addr) {
 	logEvent(EVENT_MEM_INF_WR_VAL_READ, addr);
 
 	if ( 0 != (result & 0xff0000) ) {
-		result ^= ((result >> 16) & 0xff) & getUndefVal<8>();
+		result ^= ((result >> 16) & 0xff) & getUndefVal();
 	}
 
 	result &= 0x0ff;
 	return result;
+}
+
+inline unsigned int AVR8DataMemory::getUndefVal() const {
+	if ( -1 == m_config.m_undefinedValue ) {
+		// Generate random value
+		return ( (unsigned int)rand() & ((1 << 8) - 1) );
+	} else {
+		// Return predefined value
+		return ( m_config.m_undefinedValue & ((1 << 8) - 1) );
+	}
 }
 
 #endif // AVR8DATAMEMORY_H

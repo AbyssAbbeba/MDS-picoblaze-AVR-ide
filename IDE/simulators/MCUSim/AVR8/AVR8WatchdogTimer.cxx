@@ -17,12 +17,6 @@
 
 #include <cmath>
 
-AVR8WatchdogTimer::AVR8WatchdogTimer()
-	 :
-	m_fusesAndLocks ( *( (AVR8FusesAndLocks*) 0 ) )
-{
-}
-
 AVR8WatchdogTimer * AVR8WatchdogTimer::link(
 		MCUSim::EventLogger	* eventLogger,
 		AVR8DataMemory		* dataMemory,
@@ -33,7 +27,7 @@ AVR8WatchdogTimer * AVR8WatchdogTimer::link(
 
 	m_dataMemory = dataMemory;
 	m_interruptController = interruptController;
-	m_fusesAndLocks = *fusesAndLocks;
+	m_fusesAndLocks = fusesAndLocks;
 
 	return this;
 }
@@ -48,7 +42,7 @@ inline unsigned int AVR8WatchdogTimer::readWdtcr(const unsigned int clockCycles)
 
 		if ( WDTCR_WDCE & m_wdtcrLast ) {
 			// WDE stays on when FUSE_WDTON is programmed.
-			if ( true == m_fusesAndLocks[AVR8FusesAndLocks::FUSE_WDTON] ) {
+			if ( true == (*m_fusesAndLocks)[AVR8FusesAndLocks::FUSE_WDTON] ) {
 				wdtcr |= WDTCR_WDE;
 			}
 			// Accept the change (but don't change the WDCE flag, it's cleared automatically)

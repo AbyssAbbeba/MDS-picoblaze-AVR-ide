@@ -13,16 +13,19 @@
 #include "AVR8DataMemory.h"
 #include "MCUDataFiles/DataFile.h"
 
-#include <cstdlib>
 #include <cstring>
+
+AVR8DataMemory::AVR8DataMemory() {
+	m_size = 0;
+	m_mem2size = 0;
+	m_memory = NULL;
+	m_mem2sizes = NULL;
+	m_memory2 = NULL;
+}
 
 AVR8DataMemory * AVR8DataMemory::link(MCUSim::EventLogger * eventLogger)
 {
 	Memory::link(eventLogger, SP_CODE);
-	m_memory = NULL;
-	m_size = 0;
-	m_mem2size = 0;
-	m_mem2sizes = NULL;
 
 	return this;
 }
@@ -30,13 +33,16 @@ AVR8DataMemory * AVR8DataMemory::link(MCUSim::EventLogger * eventLogger)
 AVR8DataMemory::~AVR8DataMemory() {
 	if ( NULL != m_memory )
 	{
-		delete m_memory;
+		delete[] m_memory;
 	}
 	if ( NULL != m_memory2 ) {
+		for ( unsigned int i = 0; i < m_config.m_mem2size; i++ ) {
+			delete[] m_memory2[i];
+		}
 		delete[] m_memory2;
 	}
 	if ( NULL != m_mem2sizes ) {
-		delete m_mem2sizes;
+		delete[] m_mem2sizes;
 	}
 }
 
@@ -122,7 +128,7 @@ void AVR8DataMemory::resize(unsigned int newSize) {
 	}
 
 	for ( unsigned int i = sizeToCopy; i < newSize; i++ ) {
-		m_memory[i] = getUndefVal<8>();
+		m_memory[i] = getUndefVal();
 	}
 
 	if ( NULL != memoryOrig ) {
@@ -229,7 +235,7 @@ inline void AVR8DataMemory::mcuReset() {
 
 		// Generate random values according to the default value initialization mask
 		if ( 0 != m_config.m_ioRegRandomInit[i] ) {
-			m_memory[addr] ^= ( getUndefVal<8>() & m_config.m_ioRegRandomInit[i] );
+			m_memory[addr] ^= ( getUndefVal() & m_config.m_ioRegRandomInit[i] );
 		}
 	}
 
@@ -238,16 +244,5 @@ inline void AVR8DataMemory::mcuReset() {
 			m_memory2[i][j] &= 0xffffff00; // Preserve only the register configuration, not its content
 			m_memory2[i][j] |= (m_config.m_ioMem2InitValues[i][j] & 0xff);
 		}
-	}
-}
-
-template<unsigned int sizeBits>
-unsigned int AVR8DataMemory::getUndefVal() const {
-	if ( -1 == m_config.m_undefinedValue ) {
-		// Generate random value
-		return ( (unsigned int)rand() & ((1 << sizeBits) - 1) );
-	} else {
-		// Return predefined value
-		return ( m_config.m_undefinedValue & ((1 << sizeBits) - 1) );
 	}
 }

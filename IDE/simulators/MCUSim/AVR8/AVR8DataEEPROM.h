@@ -30,7 +30,7 @@ class AVR8InterruptController;
  */
 class AVR8DataEEPROM : public MCUSim::Memory {
 public:
-	AVR8DataEEPROM() {};
+	AVR8DataEEPROM();
 
 	enum Event {
 		EVENT_EEPROM_INVALID_CR_CHAGE = EVENT_MEM__MAX__, ///<
@@ -87,7 +87,7 @@ protected:
 	inline unsigned int readEecr(const unsigned int clockCycles);
 	inline void writeByte(float timeStep, unsigned int eecr);
 	inline unsigned int readByte();
-	inline unsigned int getUndefVal() const;
+	unsigned int getUndefVal() const;
 
 	inline void loadConfig();
 	inline void resetToInitialValues();

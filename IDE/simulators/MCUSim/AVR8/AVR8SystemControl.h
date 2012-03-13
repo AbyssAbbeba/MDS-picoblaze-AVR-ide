@@ -29,7 +29,7 @@ class AVR8FusesAndLocks;
  */
 class AVR8SystemControl : public MCUSim::Subsys {
 public:
-	AVR8SystemControl();
+	AVR8SystemControl() {};
 
 	enum Event {
 		EVENT_EXT_RESET_INVOKED,
@@ -84,7 +84,7 @@ protected:
 	AVR8InterruptController * m_interruptController;
 	AVR8WatchdogTimer * m_watchdogTimer;
 	AVR8IO * m_io;
-	AVR8FusesAndLocks & m_fusesAndLocks;
+	AVR8FusesAndLocks * m_fusesAndLocks;
 
 	float m_rstTime;
 	float m_brownOutTimer;

@@ -18,6 +18,11 @@
 
 #include <cstdlib>
 
+AVR8ProgramMemory::AVR8ProgramMemory() {
+	m_memory = NULL;
+	m_size = 0;
+}
+
 AVR8ProgramMemory * AVR8ProgramMemory::link(
 	MCUSim::EventLogger * eventLogger,
 	AVR8BootLoader * bootLoader
@@ -25,15 +30,13 @@ AVR8ProgramMemory * AVR8ProgramMemory::link(
 	Memory::link(eventLogger, SP_CODE);
 
 	m_bootLoader = bootLoader;
-	m_memory = NULL;
-	m_size = 0;
 
 	return this;
 }
 
 AVR8ProgramMemory::~AVR8ProgramMemory() {
 	if ( NULL != m_memory ) {
-		delete m_memory;
+		delete[] m_memory;
 	}
 }
 
@@ -77,7 +80,7 @@ void AVR8ProgramMemory::resize(unsigned int newSize) {
 	}
 
 	for ( unsigned int i = sizeToCopy; i < newSize; i++ ) {
-		m_memory[i] = (getUndefVal<16>() | MFLAG_UNDEFINED);
+		m_memory[i] = (getUndefVal() | MFLAG_UNDEFINED);
 	}
 
 	if ( NULL != memoryOrig ) {
@@ -116,13 +119,12 @@ inline void AVR8ProgramMemory::resetToInitialValues() {
 	}
 }
 
-template<unsigned int sizeBits>
 unsigned int AVR8ProgramMemory::getUndefVal() const {
 	if ( -1 == m_config.m_undefinedValue ) {
 		// Generate random value
-		return ((unsigned int)rand() & ((1 << sizeBits) - 1));
+		return ((unsigned int)rand() & ((1 << 16) - 1));
 	} else {
 		// Return predefined value
-		return ( m_config.m_undefinedValue & ((1 << sizeBits) - 1) );
+		return ( m_config.m_undefinedValue & ((1 << 16) - 1) );
 	}
 }

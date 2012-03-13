@@ -99,7 +99,7 @@ public:
 	void setLockBits(unsigned char lb);
 	unsigned char operator[] (Bytes byte) const;
 
-	template<unsigned int sizeBits> unsigned int getUndefVal() const;
+	unsigned int getUndefVal() const;
 
 	AVR8FusesAndLocks * link(MCUSim::EventLogger * eventLogger);
 	void reset(MCUSim::ResetMode mode);
