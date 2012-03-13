@@ -25,7 +25,7 @@ class AVR8FusesAndLocks;
  */
 class AVR8ClockControl : public MCUSim::Clock {
 public:
-	AVR8ClockControl();
+	AVR8ClockControl() {};
 
 	enum Event {
 		EVENT_CLK_WRN_SOURCE_NOT_USED,
@@ -66,7 +66,7 @@ public:
 	StartUpTime startUpTime();
 
 protected:
-	AVR8FusesAndLocks & m_fusesAndLocks;
+	AVR8FusesAndLocks * m_fusesAndLocks;
 
 	inline unsigned int getClksel() const;
 	inline unsigned int getSut() const;

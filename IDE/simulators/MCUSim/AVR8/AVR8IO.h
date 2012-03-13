@@ -31,7 +31,7 @@ class AVR8DataMemory;
  */
 class AVR8IO : public MCUSim::IO {
 public:
-	AVR8IO() {};
+	AVR8IO();
 	~AVR8IO();
 
 	static const unsigned int NUMBER_OF_PORTS = 4;

@@ -19,12 +19,9 @@
 
 #include <cstdlib>
 
-AVR8BootLoader::AVR8BootLoader()
-	 :
-	m_fusesAndLocks	( *( (AVR8FusesAndLocks * ) 0 ) ),
-	m_haltMode	( *( (AVR8Sim::HaltMode * ) 0 ) )
-{
-};
+AVR8BootLoader::AVR8BootLoader() {
+	m_writeBuffer = NULL;
+}
 
 AVR8BootLoader * AVR8BootLoader::link(
 	MCUSim::EventLogger	* eventLogger,
@@ -37,20 +34,19 @@ AVR8BootLoader * AVR8BootLoader::link(
 ) {
 	Subsys::link(eventLogger, ID_BOOT_LOADER);
 
-	m_writeBuffer	= NULL;
 	m_programMemory	= programMemory;
 	m_dataMemory	= dataMemory;
-	m_fusesAndLocks	= *fusesAndLocks;
+	m_fusesAndLocks	= fusesAndLocks;
 	m_dataEEPROM	= dataEEPROM;
 	m_instructionSet= instructionSet;
-	m_haltMode	= *haltMode;
+	m_haltMode	= haltMode;
 
 	return this;
 }
 
 AVR8BootLoader::~AVR8BootLoader() {
 	if ( NULL != m_writeBuffer ) {
-		delete m_writeBuffer;
+		delete[] m_writeBuffer;
 	}
 }
 
@@ -197,7 +193,7 @@ inline void AVR8BootLoader::pageErase(unsigned int addr) {
 	}
 	m_writeInProgress = true;
 	m_progTimer = randomTimeInRange();
-	m_haltMode = AVR8Sim::HALTM_PROG;
+	*m_haltMode = AVR8Sim::HALTM_PROG;
 
 	for ( unsigned int i = 0; i < m_config.m_pageSize; i++ ) {
 		m_programMemory->write(addr++, 0xffff);
@@ -219,7 +215,7 @@ inline void AVR8BootLoader::pageWrite(unsigned int addr) {
 	}
 	m_writeInProgress = true;
 	m_progTimer = randomTimeInRange();
-	m_haltMode = AVR8Sim::HALTM_PROG;
+	*m_haltMode = AVR8Sim::HALTM_PROG;
 
 	for ( unsigned int i = 0; i < m_config.m_pageSize; i++ ) {
 		m_programMemory->write(addr++, m_writeBuffer[i]);
@@ -233,7 +229,7 @@ inline void AVR8BootLoader::setLockBits(unsigned int addr, unsigned int val) {
 		logEvent(EVENT_BOOT_WRN_INVALID_ADDR, addr);
 	}
 
-	m_fusesAndLocks.setLockBits( (unsigned char)(val & 0xff) );
+	m_fusesAndLocks->setLockBits( (unsigned char)(val & 0xff) );
 
 	unsigned int spmcr = m_dataMemory->readFast(SPMCR);
 	spmcr &= ( 0xff ^ ( SPMCR_SPMEN | SPMCR_PGERS | SPMCR_PGWRT | SPMCR_BLBSET | SPMCR_RWWSRE ) );
@@ -300,14 +296,14 @@ unsigned int AVR8BootLoader::lpmRead(unsigned int addr) {
 
 		switch ( addr ) {
 			case 0x0000: // Read fuse low bits
-				return (unsigned int)(m_fusesAndLocks[AVR8FusesAndLocks::BYTE_FUSES_LOW]);
+				return (unsigned int)((*m_fusesAndLocks)[AVR8FusesAndLocks::BYTE_FUSES_LOW]);
 			case 0x0001: // Read lock bits
-				return (unsigned int)(m_fusesAndLocks[AVR8FusesAndLocks::BYTE_LOCKS_LOW]);
+				return (unsigned int)((*m_fusesAndLocks)[AVR8FusesAndLocks::BYTE_LOCKS_LOW]);
 			case 0x0003: // Read fuse high bits
-				return (unsigned int)(m_fusesAndLocks[AVR8FusesAndLocks::BYTE_FUSES_HIGH]);
+				return (unsigned int)((*m_fusesAndLocks)[AVR8FusesAndLocks::BYTE_FUSES_HIGH]);
 			default:
 				logEvent(EVENT_BOOT_ERR_INVALID_ADDR, addr, SPMMD_BLBSET);
-				return m_fusesAndLocks.getUndefVal<8>();
+				return m_fusesAndLocks->getUndefVal();
 		}
 	}
 
@@ -315,14 +311,14 @@ unsigned int AVR8BootLoader::lpmRead(unsigned int addr) {
 		return m_programMemory->read(addr);
 	} else {
 		logEvent(EVENT_BOOT_RD_ACCESS_NOT_ALLOWED, addr);
-		return m_fusesAndLocks.getUndefVal<8>();
+		return m_fusesAndLocks->getUndefVal();
 	}
 }
 
 inline bool AVR8BootLoader::isWriteAllowed(unsigned int addr) const {
 	if ( true == isInApplicationSection(addr) ) {
 		// Write to the application section section
-		if ( true == m_fusesAndLocks[AVR8FusesAndLocks::LB_BLB01] ) {
+		if ( true == (*m_fusesAndLocks)[AVR8FusesAndLocks::LB_BLB01] ) {
 			// Lock bit BLB01 programmed -> NOT ALLOWED
 			return false;
 		} else {
@@ -331,7 +327,7 @@ inline bool AVR8BootLoader::isWriteAllowed(unsigned int addr) const {
 		}
 	} else {
 		// Write to the boot loader section section
-		if ( true == m_fusesAndLocks[AVR8FusesAndLocks::LB_BLB11] ) {
+		if ( true == (*m_fusesAndLocks)[AVR8FusesAndLocks::LB_BLB11] ) {
 			// Lock bit BLB11 programmed -> NOT ALLOWED
 			return false;
 		} else {
@@ -349,7 +345,7 @@ inline bool AVR8BootLoader::isReadAllowed(unsigned int addr) const {
 			return true;
 		} else {
 			// Attempting to read from the boot loader.
-			if ( true == m_fusesAndLocks[AVR8FusesAndLocks::LB_BLB12] ) {
+			if ( true == (*m_fusesAndLocks)[AVR8FusesAndLocks::LB_BLB12] ) {
 				// Lock bit BLB12 programmed -> NOT ALLOWED
 				return false;
 			} else {
@@ -361,7 +357,7 @@ inline bool AVR8BootLoader::isReadAllowed(unsigned int addr) const {
 		// Executing from the boot loader section.
 		if ( true == isInApplicationSection(addr) ) {
 			// Attempting to read from the application section.
-			if ( true == m_fusesAndLocks[AVR8FusesAndLocks::LB_BLB02] ) {
+			if ( true == (*m_fusesAndLocks)[AVR8FusesAndLocks::LB_BLB02] ) {
 				// Lock bit BLB02 programmed -> NOT ALLOWED
 				return false;
 			} else {
@@ -384,14 +380,14 @@ inline bool AVR8BootLoader::isInApplicationSection(unsigned int addr) const {
 }
 
 unsigned int AVR8BootLoader::getBootAddress() const {
-	if ( false == m_fusesAndLocks[AVR8FusesAndLocks::FUSE_BOOTSZ1] ) {
-		if ( false == m_fusesAndLocks[AVR8FusesAndLocks::FUSE_BOOTSZ0] ) {
+	if ( false == (*m_fusesAndLocks)[AVR8FusesAndLocks::FUSE_BOOTSZ1] ) {
+		if ( false == (*m_fusesAndLocks)[AVR8FusesAndLocks::FUSE_BOOTSZ0] ) {
 			return m_config.m_bootResetAddress[3]; // BOOTSZ1 = 1, BOOTSZ0 = 1
 		} else {
 			return m_config.m_bootResetAddress[2]; // BOOTSZ1 = 1, BOOTSZ0 = 0
 		}
 	} else {
-		if ( false == m_fusesAndLocks[AVR8FusesAndLocks::FUSE_BOOTSZ0] ) {
+		if ( false == (*m_fusesAndLocks)[AVR8FusesAndLocks::FUSE_BOOTSZ0] ) {
 			return m_config.m_bootResetAddress[1]; // BOOTSZ1 = 0, BOOTSZ0 = 1
 		} else {
 			return m_config.m_bootResetAddress[0]; // BOOTSZ1 = 0, BOOTSZ0 = 0
@@ -418,7 +414,7 @@ void AVR8BootLoader::reset(MCUSim::ResetMode mode) {
 
 inline void AVR8BootLoader::loadConfig() {
 	if ( NULL != m_writeBuffer ) {
-		delete m_writeBuffer;
+		delete[] m_writeBuffer;
 	}
 	m_writeBuffer = new uint32_t[m_config.m_pageSize];
 }
@@ -434,6 +430,6 @@ inline void AVR8BootLoader::mcuReset() {
 
 inline void AVR8BootLoader::resetToInitialValues() {
 	for ( unsigned int i = 0; i < m_config.m_pageSize; i++ ) {
-		m_writeBuffer[i] = m_programMemory->getUndefVal<16>();
+		m_writeBuffer[i] = m_programMemory->getUndefVal();
 	}
 }

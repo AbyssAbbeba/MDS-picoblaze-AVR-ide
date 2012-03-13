@@ -13,19 +13,13 @@
 #include "AVR8ClockControl.h"
 #include "AVR8FusesAndLocks.h"
 
-AVR8ClockControl::AVR8ClockControl()
-	 :
-	m_fusesAndLocks ( *( ( AVR8FusesAndLocks * ) 0 ) )
-{
-}
-
 AVR8ClockControl * AVR8ClockControl::link(
 		MCUSim::EventLogger	* eventLogger,
 		AVR8FusesAndLocks	* fusesAndLocks
 ) {
 	Clock::link(eventLogger);
 
-	m_fusesAndLocks = *fusesAndLocks;
+	m_fusesAndLocks = fusesAndLocks;
 
 	return this;
 }
@@ -107,7 +101,7 @@ inline float AVR8ClockControl::freqHighFreqCrystal(const unsigned int clksel) {
 
 	bool checkCapycityRange = true;
 
-	if ( false == m_fusesAndLocks[AVR8FusesAndLocks::FUSE_CKOPT] ) {
+	if ( false == (*m_fusesAndLocks)[AVR8FusesAndLocks::FUSE_CKOPT] ) {
 		// CKOPT = 1
 
 		float freqRange[2];
@@ -185,7 +179,7 @@ inline float AVR8ClockControl::freqLowFreqCrystal() {
 	/*
 	 * By programming the CKOPT Fuse, the user can enable an internal 36 pF capacitors.
 	 */
-	if ( true == m_fusesAndLocks[AVR8FusesAndLocks::FUSE_CKOPT] ) {
+	if ( true == (*m_fusesAndLocks)[AVR8FusesAndLocks::FUSE_CKOPT] ) {
 		capacity += 36e-12;
 	}
 
@@ -240,7 +234,7 @@ inline float AVR8ClockControl::freqExternalRC(const unsigned int clksel) {
 	 * By programming the CKOPT Fuse, the user can enable an internal 36 pF capacitor
 	 * between XTAL1 and GND, thereby removing the need for an external capacitor.
 	 */
-	if ( true == m_fusesAndLocks[AVR8FusesAndLocks::FUSE_CKOPT] ) {
+	if ( true == (*m_fusesAndLocks)[AVR8FusesAndLocks::FUSE_CKOPT] ) {
 		capacity += 36e-12;
 	}
 
@@ -321,17 +315,17 @@ inline unsigned int AVR8ClockControl::getClksel() const {
 	 */
 
 	return (
-		( ( true == m_fusesAndLocks[AVR8FusesAndLocks::FUSE_CKSEL3] ) ? 0 : 0x8 ) |
-		( ( true == m_fusesAndLocks[AVR8FusesAndLocks::FUSE_CKSEL2] ) ? 0 : 0x4 ) |
-		( ( true == m_fusesAndLocks[AVR8FusesAndLocks::FUSE_CKSEL1] ) ? 0 : 0x2 ) |
-		( ( true == m_fusesAndLocks[AVR8FusesAndLocks::FUSE_CKSEL0] ) ? 0 : 0x1 )
+		( ( true == (*m_fusesAndLocks)[AVR8FusesAndLocks::FUSE_CKSEL3] ) ? 0 : 0x8 ) |
+		( ( true == (*m_fusesAndLocks)[AVR8FusesAndLocks::FUSE_CKSEL2] ) ? 0 : 0x4 ) |
+		( ( true == (*m_fusesAndLocks)[AVR8FusesAndLocks::FUSE_CKSEL1] ) ? 0 : 0x2 ) |
+		( ( true == (*m_fusesAndLocks)[AVR8FusesAndLocks::FUSE_CKSEL0] ) ? 0 : 0x1 )
 	);
 }
 
 inline unsigned int AVR8ClockControl::getSut() const {
 	return (
-		( ( true == m_fusesAndLocks[AVR8FusesAndLocks::FUSE_SUT1] ) ? 0 : 0x2 ) |
-		( ( true == m_fusesAndLocks[AVR8FusesAndLocks::FUSE_SUT0] ) ? 0 : 0x1 )
+		( ( true == (*m_fusesAndLocks)[AVR8FusesAndLocks::FUSE_SUT1] ) ? 0 : 0x2 ) |
+		( ( true == (*m_fusesAndLocks)[AVR8FusesAndLocks::FUSE_SUT0] ) ? 0 : 0x1 )
 	);
 }
 

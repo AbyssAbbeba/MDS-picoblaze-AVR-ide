@@ -20,7 +20,7 @@
 #include "AVR8SystemControl.h"
 #include "AVR8BootLoader.h"
 
-static int (AVR8InstructionSet:: * const m_opCodeDispatchTable[64])(const unsigned int opCode) = {
+int (AVR8InstructionSet:: * const AVR8InstructionSet::m_opCodeDispatchTable[64])(const unsigned int opCode) = {
 	&AVR8InstructionSet::instOPCode_000000,	// opCode = 0000 00xx xxxx xxxx
 	&AVR8InstructionSet::inst_CPC_Rd_Rr,	// opCode = 0000 01xx xxxx xxxx
 	&AVR8InstructionSet::inst_SBC_Rd_Rr,	// opCode = 0000 10xx xxxx xxxx
@@ -87,7 +87,7 @@ static int (AVR8InstructionSet:: * const m_opCodeDispatchTable[64])(const unsign
 	&AVR8InstructionSet::instOPCode_111111	// opCode = 1111 11xx xxxx xxxx
 };
 
-static int (AVR8InstructionSet:: * const m_opCodeDispatchTable_100100[32])(const unsigned int opCode) = {
+int (AVR8InstructionSet:: * const AVR8InstructionSet::m_opCodeDispatchTable_100100[32])(const unsigned int opCode) = {
 	&AVR8InstructionSet::inst_LDS_Rd_k,	// opCode = 1001 000x xxxx 0000
 	&AVR8InstructionSet::inst_LD_Rd_Zplus,	// opCode = 1001 000x xxxx 0001
 	&AVR8InstructionSet::inst_LD_Rd_minusZ,	// opCode = 1001 000x xxxx 0010
@@ -122,7 +122,7 @@ static int (AVR8InstructionSet:: * const m_opCodeDispatchTable_100100[32])(const
 	&AVR8InstructionSet::inst_PUSH_Rr	// opCode = 1001 001x xxxx 1111
 };
 
-static int (AVR8InstructionSet:: * const m_opCodeDispatchTable_1001_010x_xxxx_100x[64])(const unsigned int opCode) = {
+int (AVR8InstructionSet:: * const AVR8InstructionSet::m_opCodeDispatchTable_1001_010x_xxxx_100x[64])(const unsigned int opCode) = {
 	&AVR8InstructionSet::inst_SEC,		// opCode = 1001 0100 0000 1000
 	&AVR8InstructionSet::inst_IJMP,		// opCode = 1001 0100 0000 1001
 	&AVR8InstructionSet::inst_SEZ,		// opCode = 1001 0100 0001 1000
@@ -189,15 +189,6 @@ static int (AVR8InstructionSet:: * const m_opCodeDispatchTable_1001_010x_xxxx_10
 	&AVR8InstructionSet::instInvalid	// opCode = 1001 0101 1111 1001
 };
 
-AVR8InstructionSet::AVR8InstructionSet()
-	 :
-	m_processorMode	( *( ( MCUSim::Mode * )		0 ) ),
-	m_sleepMode	( *( ( AVR8Sim::SleepMode * )	0 ) ),
-	m_fusesAndLocks	( *( ( AVR8FusesAndLocks * )	0 ) ),
-	m_haltMode	( *( ( AVR8Sim::HaltMode * )	0 ) )
-{
-};
-
 AVR8InstructionSet * AVR8InstructionSet::link(
 		MCUSim::EventLogger	* eventLogger,
 		AVR8ProgramMemory	* programMemory,
@@ -214,12 +205,12 @@ AVR8InstructionSet * AVR8InstructionSet::link(
 
 	m_programMemory = programMemory;
 	m_dataMemory = dataMemory;
-	m_processorMode = *processorMode;
-	m_sleepMode = *sleepMode;
-	m_fusesAndLocks = *fusesAndLocks;
+	m_processorMode = processorMode;
+	m_sleepMode = sleepMode;
+	m_fusesAndLocks = fusesAndLocks;
 	m_interruptController = interruptController;
 	m_systemControl = systemControl;
-	m_haltMode = *haltMode;
+	m_haltMode = haltMode;
 	m_bootLoader = bootLoader;
 
 	return this;
@@ -240,7 +231,7 @@ void AVR8InstructionSet::reset(MCUSim::ResetMode mode) {
 }
 
 inline void AVR8InstructionSet::mcuReset() {
-	if ( false == m_fusesAndLocks[AVR8FusesAndLocks::FUSE_BOOTRST] ) {
+	if ( false == (*m_fusesAndLocks)[AVR8FusesAndLocks::FUSE_BOOTRST] ) {
 		m_pc = 0;
 	} else {
 		m_pc = m_bootLoader->getBootAddress();
@@ -1795,7 +1786,7 @@ inline int AVR8InstructionSet::instLoadProgMemory(const unsigned int opCode) {
 			logEvent(EVENT_CPU_ERR_INVALID_OPSET, m_pc, AVR8InsNames::SPECI_ELPM_Rd_Zplus);
 
 			// Write fake result
-			m_dataMemory->write(addrRd, m_programMemory->getUndefVal<8>());
+			m_dataMemory->write(addrRd, (0xff & m_programMemory->getUndefVal()));
 
 			// Abort (3 cycles taken)
 			return 3;
@@ -1932,8 +1923,8 @@ int AVR8InstructionSet::inst_SLEEP(const unsigned int) {
 
 	if ( AVR8RegNames::MCUCR_SE & mcucr ) {
 		// Go to the designated sleep mode
-		m_sleepMode = AVR8Sim::SleepMode ( mcucr & (AVR8RegNames::MCUCR_SM2 | AVR8RegNames::MCUCR_SM1 | AVR8RegNames::MCUCR_SM0) );
-		m_processorMode = MCUSim::MD_SLEEP;
+		*m_sleepMode = AVR8Sim::SleepMode ( mcucr & (AVR8RegNames::MCUCR_SM2 | AVR8RegNames::MCUCR_SM1 | AVR8RegNames::MCUCR_SM0) );
+		*m_processorMode = MCUSim::MD_SLEEP;
 		logEvent(EVENT_CPU_MODE_CHANGED, m_pc, AVR8InsNames::INS_SLEEP);
 
 	} else {
@@ -1957,12 +1948,12 @@ int AVR8InstructionSet::inst_BREAK(const unsigned int) {
 	instructionEnter(AVR8InsNames::INS_BREAK);
 
 	if (
-		( true == m_fusesAndLocks[AVR8FusesAndLocks::FUSE_JTAGEN] )
+		( true == (*m_fusesAndLocks)[AVR8FusesAndLocks::FUSE_JTAGEN] )
 			||
-		( true == m_fusesAndLocks[AVR8FusesAndLocks::FUSE_OCDEN] )
+		( true == (*m_fusesAndLocks)[AVR8FusesAndLocks::FUSE_OCDEN] )
 	) {
-		m_processorMode = MCUSim::MD_STOPPED;
-		m_haltMode = AVR8Sim::HALTM_BREAK;
+		*m_processorMode = MCUSim::MD_STOPPED;
+		*m_haltMode = AVR8Sim::HALTM_BREAK;
 		logEvent(EVENT_CPU_MODE_CHANGED, m_pc, AVR8InsNames::INS_BREAK);
 	} else {
 		logEvent(EVENT_CPU_INST_IGNORED, m_pc, AVR8InsNames::INS_BREAK);
@@ -3006,8 +2997,8 @@ inline int AVR8InstructionSet::instLD(unsigned int addrRd, int displacement) {
 			logEvent(EVENT_CPU_ERR_INVALID_OPSET, m_pc, instruction);
 
 			// Genereate fake results
-			pointedVal = m_programMemory->getUndefVal<8>();
-			pointer = m_programMemory->getUndefVal<16>();
+			pointedVal = (0xff & m_programMemory->getUndefVal());
+			pointer = m_programMemory->getUndefVal();
 		}
 
 		// Write back updated pointer
@@ -3554,8 +3545,8 @@ inline int AVR8InstructionSet::instST(unsigned int addrRr, int displacement) {
 			logEvent(EVENT_CPU_ERR_INVALID_OPSET, m_pc, instruction);
 
 			// Genereate fake results
-			valRd   = m_programMemory->getUndefVal<8>();
-			pointer = m_programMemory->getUndefVal<16>();
+			valRd   = (0xff & m_programMemory->getUndefVal());
+			pointer = m_programMemory->getUndefVal();
 		}
 
 		// Write back updated pointer
