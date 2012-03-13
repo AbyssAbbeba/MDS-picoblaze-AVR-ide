@@ -5,15 +5,22 @@
   # here we define SAMPLE_SRCS variable that contains a list of all .cpp files
   # note that we don't need \ at the end of line
   SET( SAMPLE_SRCS
-       ./main.cpp
-       ./mainform/mainform.cpp
-       ./dialogs/projectdlg.cpp
+       ./src/main.cpp
+       ./src/mainform/mainform.cpp
+       ./src/mainform/project.cpp
+       ./src/dialogs/projectdlg.cpp
+       ./src/dialogs/errordlg.cpp
+       ./src/widgets/codeedit.cpp
+       ./src/widgets/wdockmanager.cpp
   )
   
   # another list, this time it includes all header files that should be treated with moc
   SET( SAMPLE_MOC_HDRS
-       ./mainform/mainform.h
-       ./dialogs/projectdlg.h    
+       ./src/mainform/mainform.h
+       ./src/mainform/project.h
+       ./src/dialogs/projectdlg.h
+       ./src/widgets/codeedit.h    
+       ./src/widgets/wdockmanager.h   
   )
   
   # some .ui files
@@ -33,7 +40,7 @@
   # by default only QtCore and QtGui modules are enabled
   # other modules must be enabled like this:
   # SET( QT_USE_QT3SUPPORT TRUE )   
-  # SET( QT_USE_QTXML TRUE )
+   SET( QT_USE_QTXML TRUE )
   
   # this command finds Qt4 libraries and sets all required variables
   # note that it's Qt4, not QT4 or qt4
