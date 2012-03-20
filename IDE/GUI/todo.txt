@@ -1,5 +1,5 @@
 This week:
 - add Project actions (Save project, Close project)
-- add error dialogs
-- add compiler support
+- add error dialogs (done)
+- add compiler support (?)
 - fix minor bugs (file not found, moving widgets with "Open project")

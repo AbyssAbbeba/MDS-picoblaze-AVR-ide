@@ -13,6 +13,7 @@
 
 class ProjectMan;
 class WDockManager;
+class CodeEdit;
 
 //hlavni okno programu
 class MainForm : public QMainWindow
@@ -34,12 +35,14 @@ class MainForm : public QMainWindow
         void newProject();
         void openProject();
         void saveProject();
+        void compileProject();
 
     private:
         void CreateMenu();
         void CreateActions();
         void CreateToolbar();
         void CreateDockWidgets();
+        void CreateWelcome();
 
         ProjectMan *projectMan;
 
@@ -48,13 +51,14 @@ class MainForm : public QMainWindow
 
         QMenu *fileMenu;
     	QMenu *editMenu;
-    	QMenu *viewMenu;
+    	QMenu *interfaceMenu;
     	QMenu *projectMenu;
     	QMenu *toolsMenu;
     	QMenu *helpMenu;
 
 
-        QToolBar *toolBar;
+        QToolBar *fileToolBar;
+        QToolBar *projectToolBar;
 
         QAction *newAct;
         QAction *openAct;
@@ -75,6 +79,7 @@ class MainForm : public QMainWindow
 
         QAction *interfaceConfigAct;
 
+        QAction *projectCompileAct;
         QAction *projectConfigAct;
 
         QAction *aboutAction;

@@ -7,13 +7,14 @@
 
 #include <QString>
 #include <QList>
-//#include <QMainWindow>
 #include <QTreeWidget>
 #include <QtXml>
 #include "mainform.h"
+#include "../dialogs/errordlg.h"
 
 
 class MainForm;
+class CodeEdit;
 
 
 class Project;
@@ -28,6 +29,7 @@ class ProjectMan
         void setActive(Project *activePrj);
         bool isActiveProject(Project *project);
         Project* getActive();
+        void createActiveMakefile();
 
         MainForm *mainWindow;
 
@@ -54,6 +56,7 @@ class Project : public QObject
 
         QDockWidget *prjDockWidget;
         QTreeWidget *prjTreeWidget;
+
         QString prjName;
         QString prjPath;
         int fileCount;

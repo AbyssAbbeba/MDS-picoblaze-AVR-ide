@@ -82,7 +82,6 @@ void WDockManager::setCentralPath(QString wPath)
 
 void WDockManager::addCentralWidget(QString wName, QString wPath)
 {
-    
     CodeEdit *newEditor = new CodeEdit(wTab, wName, wPath);
     wTab->addTab(newEditor, wName);
     wTab->setCurrentIndex(wTab->count()-1);
@@ -94,6 +93,16 @@ void WDockManager::addDockWidget(int code)
 {
     WDock *newWDock = new WDock(code, wMainWindow);
     openDockWidgets.append(newWDock);
+}
+
+
+QDockWidget* WDockManager::getDockWidget(int code)
+{
+    QList<WDock*>::iterator i;
+    for (i = openDockWidgets.begin(); i != openDockWidgets.end(); i++)
+        if ((*i)->cmpCode(code) == true)
+            return (*i)->getQDockWidget();
+     return NULL;
 }
 
 
@@ -119,19 +128,35 @@ WDock::WDock(int code, QMainWindow *mainWindow)
             wDockWidget->setWidget(newWidget);
 	    break;
         }
-	case wListCode3:
+	case wCompileInfo:
         {
-            wDockWidget = new QDockWidget("List3", mainWindow);
+            wDockWidget = new QDockWidget("Compiler Info", mainWindow);
             wDockWidget->setAllowedAreas(Qt::BottomDockWidgetArea);
             mainWindow->addDockWidget(Qt::BottomDockWidgetArea, wDockWidget);
-            QListWidget *newWidget = new QListWidget(wDockWidget);
+            QPlainTextEdit *newWidget = new QPlainTextEdit(wDockWidget);
+            newWidget->setReadOnly(true);
             wDockWidget->setWidget(newWidget);
 	    break;
         }
     }
+    this->code=code;
 }
 
 WDock::~WDock()
 {
     delete wDockWidget;
+}
+
+
+
+QDockWidget* WDock::getQDockWidget()
+{
+    return wDockWidget;
+}
+
+
+
+bool WDock::cmpCode(int code)
+{
+    return (this->code==code);
 }
