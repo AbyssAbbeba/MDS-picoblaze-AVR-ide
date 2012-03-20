@@ -10,7 +10,22 @@ CodeEdit::CodeEdit(QTabWidget *parent, QString wName, QString wPath)
     path = wPath;
     changed = false;
     parentWidget = parent;
+    parentProject = NULL;
 }
+
+
+
+CodeEdit::CodeEdit(QTabWidget *parent, Project* parentPrj, QString wName, QString wPath)
+    : QPlainTextEdit(parent)
+{
+    name = wName;
+    path = wPath;
+    changed = false;
+    parentWidget = parent;
+    parentProject = parentPrj;
+}
+
+
 
 
 void CodeEdit::connectAct()
@@ -62,4 +77,17 @@ QString CodeEdit::getName()
 QString CodeEdit::getPath()
 {
     return path;
+}
+
+
+bool CodeEdit::isChild(Project* project)
+{
+    return (project==parentProject);
+}
+
+
+
+void CodeEdit::setParentProject(Project* project)
+{
+    parentProject=project;
 }

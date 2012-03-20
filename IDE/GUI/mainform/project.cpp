@@ -72,6 +72,13 @@ Project* ProjectMan::getActive()
 
 
 
+void ProjectMan::createActiveMakefile()
+{
+
+}
+
+
+
 
 
 Project::~Project()
@@ -92,9 +99,7 @@ Project::Project(QFile *file, QMainWindow * mainWindow, ProjectMan *parent)
     if (!domDoc.setContent(file))
     {
         errorFlag = ERR_ASSIGN;
-        QMessageBox msgBox;
-        msgBox.setText("Error: Assigning xml file");
-        msgBox.exec();
+        error(ERR_XML_ASSIGN);
     }
     else
     {
@@ -102,9 +107,7 @@ Project::Project(QFile *file, QMainWindow * mainWindow, ProjectMan *parent)
         if (xmlRoot.tagName() != "Project")
         {
             errorFlag = ERR_CONTENT;
-            QMessageBox msgBox;
-            msgBox.setText("Error: Wrong xml file");
-            msgBox.exec();
+            error(ERR_XML_CONTENT);
         }
         else
         {
@@ -154,6 +157,7 @@ Project::Project(QFile *file, QMainWindow * mainWindow, ProjectMan *parent)
 //vytvoreni prazdneho projektu
 Project::Project(QString name, QString path, QMainWindow * mainWindow, QFile *file, ProjectMan *parent)
 {
+    errorFlag = ERR_OK;
     parentManager = parent;
 
     if (name != NULL)
@@ -200,20 +204,16 @@ void Project::addFile(QFile *file, QString path, QString name)
     QDomDocument domDoc("Project");
     if (!domDoc.setContent(file))
     {
-        //errorFlag = ERR_ASSIGN;
-        QMessageBox msgBox;
-        msgBox.setText("Error: Assigning xml file");
-        msgBox.exec();
+        errorFlag = ERR_ASSIGN;
+        error(ERR_XML_ASSIGN);
     }
     else
     {
         QDomElement xmlRoot = domDoc.documentElement();
         if (xmlRoot.tagName() != "Project")
         {
-            //errorFlag = ERR_CONTENT;
-            QMessageBox msgBox;
-            msgBox.setText("Error: Wrong xml file");
-            msgBox.exec();
+            errorFlag = ERR_CONTENT;
+            error(ERR_XML_CONTENT);
         }
         else
         {

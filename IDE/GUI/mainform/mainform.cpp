@@ -2,30 +2,23 @@
 //pozdeji zamenit QtGui za mensi celky
 #include "mainform.h"
 #include "../dialogs/projectdlg.h"
+#include "../dialogs/errordlg.h"
+
+
 
 
 MainForm::MainForm()
 {
-    //nacteni nastaveni prostredi
-    //Editor = new CodeEdit(this);
     projectMan = new ProjectMan(this);
     wDockManager = new WDockManager(this);
     CreateActions();
     CreateMenu();
     CreateToolbar();
     CreateDockWidgets();
-    
-    //setCentralWidget(Editor);
-
-    //QVBoxLayout *layout = new QVBoxLayout;
-    //layout->setMargin(5);
-
-    //Editor->setLayout(layout);
-
-
-    //setWindowTitle(tr("Menus"));
-    //resize(480, 320);
+    CreateWelcome();
 }
+
+
 
 
 void MainForm::CreateMenu()
@@ -40,17 +33,22 @@ void MainForm::CreateMenu()
     fileMenu->addAction(exitAct);
 
     editMenu = menuBar()->addMenu(tr("&Edit"));
-    viewMenu = menuBar()->addMenu(tr("&View"));
+    interfaceMenu = menuBar()->addMenu(tr("&Interface"));
 
     projectMenu = menuBar()->addMenu(tr("&Project"));
     projectMenu->addAction(newProjAct);
     projectMenu->addAction(openProjAct);
+    projectMenu->addAction(saveProjAct);
+    projectMenu->addAction(projectCompileAct);
+    projectMenu->addAction(projectConfigAct);
 
     toolsMenu = menuBar()->addMenu(tr("&Tools"));
     helpMenu = menuBar()->addMenu(tr("&Help"));
 
     //MenuMan menuMan(this);
 }
+
+
 
 
 void MainForm::CreateActions()
@@ -80,12 +78,17 @@ void MainForm::CreateActions()
     openProjAct = new QAction(tr("Open P&roject"), this);
     connect(openProjAct, SIGNAL(triggered()), this, SLOT(openProject()));
 
-    //saveProjAct = new QAction(tr("&Save Project"), this);
-    //connect(saveProjAct, SIGNAL(triggered()), this, SLOT(saveProject()));
+    saveProjAct = new QAction(tr("&Save Project"), this);
+    connect(saveProjAct, SIGNAL(triggered()), this, SLOT(saveProject()));
 
     exitAct = new QAction(tr("&Exit"), this);
     connect(exitAct, SIGNAL(triggered()), this, SLOT(close()));
 
+    projectCompileAct = new QAction(tr("&Compile"), this);
+    connect(projectCompileAct, SIGNAL(triggered()), this, SLOT(compileProject()));
+
+    projectConfigAct = new QAction(tr("&Config"), this);
+    //connect(projectCompileAct, SIGNAL(triggered()), this, SLOT(compileProject()));
 }
 
 
@@ -94,16 +97,22 @@ void MainForm::CreateActions()
 
 void MainForm::CreateToolbar()
 {
-    toolBar = addToolBar(tr("Toolbar"));
+    fileToolBar = addToolBar(tr("File Toolbar"));
+    projectToolBar = addToolBar(tr("Project Toolbar"));
     //QPixmap *pm_newProj = new QPixmap("icons//newProj.bmp");
     //navazani pomoci dalsich argumentu addAction
-    toolBar->addAction(newProjAct);
-    toolBar->addAction(openProjAct);
-    toolBar->addAction(addAct);
-    toolBar->addAction(saveAct);
+    fileToolBar->addAction(addAct);
+    fileToolBar->addAction(saveAct);
 
-    toolBar->setAllowedAreas(Qt::TopToolBarArea);
-    addToolBar(Qt::TopToolBarArea, toolBar);
+    projectToolBar->addAction(newProjAct);
+    projectToolBar->addAction(openProjAct);
+    projectToolBar->addAction(saveProjAct);
+    projectToolBar->addAction(projectCompileAct);
+
+    fileToolBar->setAllowedAreas(Qt::TopToolBarArea);
+    projectToolBar->setAllowedAreas(Qt::TopToolBarArea);
+    addToolBar(Qt::TopToolBarArea, fileToolBar);
+    addToolBar(Qt::TopToolBarArea, projectToolBar);
 }
 
 
@@ -122,15 +131,19 @@ void MainForm::CreateDockWidgets()
     //mozno stejne jako u WDockManager - ulozit si ptr na okno
     projectMan->addProject(NULL, NULL, NULL);
 
-    wDockManager->addCentralWidget(NULL, NULL);
     wDockManager->addDockWidget(wListCode);
     wDockManager->addDockWidget(wListCode2);
-    wDockManager->addDockWidget(wListCode3);
+    wDockManager->addDockWidget(wCompileInfo);
     //this->tabifyDockWidget(wBottomDock2, wBottomDock);
-
 
 }
 
+
+void MainForm::CreateWelcome()
+{
+    wDockManager->addCentralWidget("Welcome", "Free tips from developers!");
+    //wDockManager->
+}
 
 
 
@@ -150,9 +163,7 @@ void MainForm::openFile()
     QFile file(path);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-        QMessageBox msgBox;
-        msgBox.setText("Error opening file");
-        msgBox.exec();
+        error(ERR_OPENFILE);
     }
     else {
         wDockManager->addCentralWidget(path.section('/', -1), path);
@@ -169,15 +180,14 @@ void MainForm::openFilePath(QString path)
     QFile file(path);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-        QMessageBox msgBox;
-        msgBox.setText("Error opening file");
-        msgBox.exec();
+        error(ERR_OPENFILE);
     }
     else {
         wDockManager->addCentralWidget(path.section('/', -1), path);
         wDockManager->getCentralWidget()->setPlainText(file.readAll());
         file.close();
         wDockManager->getCentralWidget()->connectAct();
+        wDockManager->getCentralWidget()->setParentProject(projectMan->getActive());
     }
 }
 
@@ -203,14 +213,13 @@ void MainForm::addFile()
     QFile prjFile(projectMan->getActive()->prjPath);
     if(!prjFile.open(QIODevice::ReadWrite | QIODevice::Text))
     {
-        QMessageBox msgBox;
-        msgBox.setText("Error opening file");
-        msgBox.exec();
+        error(ERR_OPENFILE);
     }
     else 
     {
         projectMan->addFile(&prjFile, path, path.section('/', -1));
-        prjFile.close();
+        prjFile.close();      
+        wDockManager->getCentralWidget()->setParentProject(projectMan->getActive());
     }
 }
 
@@ -229,9 +238,7 @@ void MainForm::saveFile()
         QFile file(path);
         if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
         {
-            QMessageBox msgBox;
-            msgBox.setText("Error opening file");
-            msgBox.exec();
+            error(ERR_OPENFILE);
         }
         else 
         {
@@ -251,9 +258,7 @@ void MainForm::saveFileAs()
     QFile file(path);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
     {
-        QMessageBox msgBox;
-        msgBox.setText("Error opening file");
-        msgBox.exec();
+        error(ERR_OPENFILE);
     }
     else {
         QTextStream fout(&file);
@@ -282,9 +287,7 @@ void MainForm::saveFile(CodeEdit *editor)
         QFile file(path);
         if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
         {
-            QMessageBox msgBox;
-            msgBox.setText("Error opening file");
-            msgBox.exec();
+            error(ERR_OPENFILE);
         }
         else 
         {
@@ -329,9 +332,7 @@ void MainForm::openProject()
         QFile file(path);
         if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
         {
-            QMessageBox msgBox;
-            msgBox.setText("Error opening file");
-            msgBox.exec();
+            error(ERR_OPENFILE);
         }
         else {
             //nacteni obsahu do widgetu
@@ -344,5 +345,26 @@ void MainForm::openProject()
 
 void MainForm::saveProject()
 {
+    for (int i = 0; i < wDockManager->getTabCount(); i++)
+        if (wDockManager->getTabWidget(i)->isChild(projectMan->getActive()) == true)
+           saveFile(wDockManager->getTabWidget(i));
+}
 
+
+void MainForm::compileProject()
+{
+    projectMan->createActiveMakefile();
+
+    ((QPlainTextEdit*)wDockManager->getDockWidget(wCompileInfo)->widget())->clear();
+
+    QStringList args;
+    args << "-C" + projectMan->getActive()->prjPath.section('/',0, -2)+"/make/";
+    QProcess compiler(this);
+
+    compiler.setProcessChannelMode(QProcess::MergedChannels);
+    compiler.start("make", args);
+    if (!compiler.waitForFinished())
+        ((QPlainTextEdit*)wDockManager->getDockWidget(wCompileInfo)->widget())->appendPlainText("Make failed:\n" + compiler.errorString());
+    else
+        ((QPlainTextEdit*)wDockManager->getDockWidget(wCompileInfo)->widget())->appendPlainText("Make succesfull:\n" + compiler.readAll());
 }

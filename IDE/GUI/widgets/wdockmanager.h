@@ -3,8 +3,9 @@
 
 #define wListCode 1000
 #define wListCode2 1001
-#define wListCode3 1002
+#define wCompileInfo 1002
 #define wCodeEditCode 1003
+
 
 #include <QDockWidget>
 #include <QMainWindow>
@@ -15,6 +16,7 @@
 
 class WDock;
 class MainForm;
+class CodeEdit;
 
 class WDockManager : public QObject
 {
@@ -22,6 +24,7 @@ class WDockManager : public QObject
     public:
         WDockManager(MainForm *mainWindow);
         void addDockWidget(int code);
+        QDockWidget* getDockWidget(int code);
         void removeDockWidget(int code);
         void addCentralWidget(QString wName, QString wPath);
         CodeEdit* getCentralWidget();
@@ -51,8 +54,11 @@ class WDock
     public:
         WDock(int code, QMainWindow *mainWindow);
         ~WDock();
+        bool cmpCode(int code);
+        QDockWidget* getQDockWidget();
     private:
         QDockWidget *wDockWidget;
+        int code;
 };
 
 
