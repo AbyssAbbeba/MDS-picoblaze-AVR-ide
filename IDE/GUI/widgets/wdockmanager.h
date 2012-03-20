@@ -1,3 +1,19 @@
+/**
+ * @brief
+ * C++ Interface: ...
+ *
+ * ...
+ *
+ * Copyright: See COPYING file that comes with this distribution.
+ *
+ * @author Erik Chalupa <xchalu10@stud.fit.vutbr.cz>, (C) 2012
+ * @ingroup GUI
+ * @file wdockmanager.h
+ */
+
+
+
+
 #ifndef WDOCKMANAGER_H
 #define WDOCKMANAGER_H
 
@@ -18,6 +34,12 @@ class WDock;
 class MainForm;
 class CodeEdit;
 
+
+/**
+ * @brief
+ * @ingroup GUI
+ * @class WDockManager
+ */
 class WDockManager : public QObject
 {
     Q_OBJECT
@@ -49,6 +71,12 @@ class WDockManager : public QObject
 };
 
 
+
+/**
+ * @brief
+ * @ingroup GUI
+ * @class WDock
+ */
 class WDock
 {
     public:

@@ -1,3 +1,18 @@
+/**
+ * @brief
+ * C++ Interface: ...
+ *
+ * ...
+ *
+ * Copyright: See COPYING file that comes with this distribution.
+ *
+ * @author Erik Chalupa <xchalu10@stud.fit.vutbr.cz>, (C) 2012
+ * @ingroup GUI
+ * @file project.h
+ */
+
+
+
 #ifndef PROJECT_H
 #define PROJECT_H
 
@@ -19,6 +34,12 @@ class CodeEdit;
 
 class Project;
 
+
+/**
+ * @brief
+ * @ingroup GUI
+ * @class ProjectMan
+ */
 class ProjectMan
 {
     public:
@@ -42,6 +63,12 @@ class ProjectMan
 };
 
 
+
+/**
+ * @brief
+ * @ingroup GUI
+ * @class Project
+ */
 class Project : public QObject
 {
     Q_OBJECT

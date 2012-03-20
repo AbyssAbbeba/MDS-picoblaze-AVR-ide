@@ -1,3 +1,18 @@
+/**
+ * @brief
+ * C++ Interface: ...
+ *
+ * ...
+ *
+ * Copyright: See COPYING file that comes with this distribution.
+ *
+ * @author Erik Chalupa <xchalu10@stud.fit.vutbr.cz>, (C) 2012
+ * @ingroup GUI
+ * @file mainform.h
+ */
+
+
+
 #ifndef MAINFORM_H
 #define MAINFORM_H
 
@@ -16,6 +31,11 @@ class WDockManager;
 class CodeEdit;
 
 //hlavni okno programu
+/**
+ * @brief
+ * @ingroup GUI
+ * @class MainForm
+ */
 class MainForm : public QMainWindow
 {
     Q_OBJECT
