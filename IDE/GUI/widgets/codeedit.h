@@ -1,3 +1,18 @@
+/**
+ * @brief
+ * C++ Interface: ...
+ *
+ * ...
+ *
+ * Copyright: See COPYING file that comes with this distribution.
+ *
+ * @author Erik Chalupa <xchalu10@stud.fit.vutbr.cz>, (C) 2012
+ * @ingroup GUI
+ * @file codeedit.h
+ */
+
+
+
 #ifndef CODEEDIT_H
 #define CODEEDIT_H
 
@@ -10,6 +25,11 @@
 class Project;
 
 //editor kodu s pouzitim QSyntaxHighlight a pocitanim radku
+/**
+ * @brief
+ * @ingroup GUI
+ * @class CodeEdit
+ */
 class CodeEdit : public QPlainTextEdit
 {
     Q_OBJECT   
