@@ -163,7 +163,7 @@ public:
 			delete[] m_detail;
 		}
 
-		void logEvent(int subsysId, int eventId, int location, int detail) {
+		void logEvent(int subsysId, int eventId, int location /* or reason */, int detail) {
 			if ( m_inPos == m_outPos) {
 				// The queue is full -> enlarge it.
 				enlargeQueue();
