@@ -33,3 +33,12 @@ add_library(MCUDataFiles SHARED
 	BinFile.cxx
 	HexFile.cxx
 	SrecFile.cxx)
+
+
+# ------------------------------------------------------------------------------
+# INSTALLATION OPTIONS
+# ------------------------------------------------------------------------------
+
+install(TARGETS MCUDataFiles
+	RUNTIME DESTINATION bin
+	LIBRARY DESTINATION lib)

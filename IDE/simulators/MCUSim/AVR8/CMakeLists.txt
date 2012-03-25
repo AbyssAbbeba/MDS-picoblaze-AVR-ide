@@ -6,7 +6,7 @@
 # ------------------------------------------------------------------------------
 
 # Set project name
-project(AVR8)
+project(AVR8Sim)
 
 # Set the minimum required version of CMake
 cmake_minimum_required(VERSION 2.8)
@@ -54,3 +54,12 @@ add_library(AVR8Sim SHARED
 	AVR8AnalogComparator.cxx
 	AVR8Isp.cxx
 	AVR8ParalelProg.cxx)
+
+
+# ------------------------------------------------------------------------------
+# INSTALLATION OPTIONS
+# ------------------------------------------------------------------------------
+
+install(TARGETS AVR8Sim
+	RUNTIME DESTINATION bin
+	LIBRARY DESTINATION lib)

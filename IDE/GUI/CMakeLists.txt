@@ -1,5 +1,5 @@
 # set project's name
-  PROJECT( sample )
+  PROJECT( GUI )
   
   # with SET() command you can change variables or define new ones
   # here we define SAMPLE_SRCS variable that contains a list of all .cpp files
@@ -31,7 +31,7 @@
   
   # and finally an resource file
    SET( SAMPLE_RCS
-  #      ./src/rc/sample.qrc
+  #      ./src/rc/mmIDE.qrc
    )
   
   # enable warnings
@@ -64,10 +64,18 @@
   # (CMAKE_BINARY_DIR holds a path to the build directory, while INCLUDE_DIRECTORIES() works just like INCLUDEPATH from qmake)
   INCLUDE_DIRECTORIES( ${CMAKE_BINARY_DIR} )
   
-  # here we instruct CMake to build "sample" executable from all of the source files
-  ADD_EXECUTABLE( sample ${SAMPLE_SRCS} ${SAMPLE_MOC_SRCS} ${SAMPLE_RC_SRCS} ${SAMPLE_UI_HDRS} )
+  # here we instruct CMake to build "mmIDE" executable from all of the source files
+  ADD_EXECUTABLE( mmIDE ${SAMPLE_SRCS} ${SAMPLE_MOC_SRCS} ${SAMPLE_RC_SRCS} ${SAMPLE_UI_HDRS} )
   
   # last thing we have to do is to tell CMake what libraries our executable needs,
   # luckily FIND_PACKAGE prepared QT_LIBRARIES variable for us:
-  TARGET_LINK_LIBRARIES( sample ${QT_LIBRARIES} )
+  TARGET_LINK_LIBRARIES( mmIDE ${QT_LIBRARIES} )
 
+
+# ------------------------------------------------------------------------------
+# INSTALLATION OPTIONS
+# ------------------------------------------------------------------------------
+
+install(TARGETS mmIDE
+	RUNTIME DESTINATION bin
+	LIBRARY DESTINATION lib)
