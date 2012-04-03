@@ -7,6 +7,9 @@ WDockManager::WDockManager(MainForm *mainWindow)
     wTab = new QTabWidget(wMainWindow);
     wTab->setTabsClosable(true);
     wTab->setMovable(true);
+    wRight = NULL;
+    wLeft = NULL;
+    wBottom = NULL;
     connect(wTab, SIGNAL(tabCloseRequested(int)),this, SLOT(closeTab(int)));
     wMainWindow->setCentralWidget(wTab);
 }
@@ -92,6 +95,8 @@ void WDockManager::addCentralWidget(QString wName, QString wPath)
 void WDockManager::addDockWidget(int code)
 {
     WDock *newWDock = new WDock(code, wMainWindow);
+    if (getDockWidgetArea(newWDock->getArea())!=NULL)
+        wMainWindow->tabifyDockWidget(getDockWidgetArea(newWDock->getArea()), newWDock->getQDockWidget());
     openDockWidgets.append(newWDock);
 }
 
@@ -101,6 +106,16 @@ QDockWidget* WDockManager::getDockWidget(int code)
     QList<WDock*>::iterator i;
     for (i = openDockWidgets.begin(); i != openDockWidgets.end(); i++)
         if ((*i)->cmpCode(code) == true)
+            return (*i)->getQDockWidget();
+     return NULL;
+}
+
+
+QDockWidget* WDockManager::getDockWidgetArea(int area)
+{
+    QList<WDock*>::iterator i;
+    for (i = openDockWidgets.begin(); i != openDockWidgets.end(); i++)
+        if ((*i)->cmpArea(area) == true)
             return (*i)->getQDockWidget();
      return NULL;
 }
@@ -116,6 +131,7 @@ WDock::WDock(int code, QMainWindow *mainWindow)
             wDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea);
             mainWindow->addDockWidget(Qt::LeftDockWidgetArea, wDockWidget);
             QListWidget *newWidget = new QListWidget(wDockWidget);
+            area = 0;
             wDockWidget->setWidget(newWidget);
 	    break;
         }
@@ -125,6 +141,7 @@ WDock::WDock(int code, QMainWindow *mainWindow)
             wDockWidget->setAllowedAreas(Qt::RightDockWidgetArea);
             mainWindow->addDockWidget(Qt::RightDockWidgetArea, wDockWidget);
             QListWidget *newWidget = new QListWidget(wDockWidget);
+            area = 1;
             wDockWidget->setWidget(newWidget);
 	    break;
         }
@@ -134,8 +151,20 @@ WDock::WDock(int code, QMainWindow *mainWindow)
             wDockWidget->setAllowedAreas(Qt::BottomDockWidgetArea);
             mainWindow->addDockWidget(Qt::BottomDockWidgetArea, wDockWidget);
             QPlainTextEdit *newWidget = new QPlainTextEdit(wDockWidget);
+            area = 2;
             newWidget->setReadOnly(true);
             wDockWidget->setWidget(newWidget);
+	    break;
+        }
+        case wHexEdit:
+        {
+            wDockWidget = new QDockWidget("Simulation Info", mainWindow);
+            wDockWidget->setAllowedAreas(Qt::BottomDockWidgetArea);
+            mainWindow->addDockWidget(Qt::BottomDockWidgetArea, wDockWidget);
+            HexEdit *newWidget = new HexEdit(wDockWidget);
+            area = 2;
+            wDockWidget->setWidget(newWidget);
+            wDockWidget->setMaximumWidth(425);
 	    break;
         }
     }
@@ -159,4 +188,16 @@ QDockWidget* WDock::getQDockWidget()
 bool WDock::cmpCode(int code)
 {
     return (this->code==code);
+}
+
+
+bool WDock::cmpArea(int area)
+{
+    return (this->area==area);
+}
+
+
+int WDock::getArea()
+{
+    return this->area;
 }

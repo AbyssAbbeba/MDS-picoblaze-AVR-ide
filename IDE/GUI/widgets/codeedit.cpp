@@ -11,6 +11,9 @@ CodeEdit::CodeEdit(QTabWidget *parent, QString wName, QString wPath)
     changed = false;
     parentWidget = parent;
     parentProject = NULL;
+    setWordWrapMode(QTextOption::NoWrap);
+    setFont(QFont ("Andale Mono", 11));
+    //setWordWrapMode(QTextOption::WordWrap);
 }
 
 
