@@ -134,6 +134,7 @@ void MainForm::CreateDockWidgets()
     wDockManager->addDockWidget(wListCode);
     wDockManager->addDockWidget(wListCode2);
     wDockManager->addDockWidget(wCompileInfo);
+    wDockManager->addDockWidget(wHexEdit);
     //this->tabifyDockWidget(wBottomDock2, wBottomDock);
 
 }
@@ -162,6 +163,7 @@ void MainForm::openFile()
     QString path = QFileDialog::getOpenFileName (this, tr("Source File"), "");
     QFile file(path);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    //if (!file.open(QIODevice::ReadOnly))
     {
         error(ERR_OPENFILE);
     }
