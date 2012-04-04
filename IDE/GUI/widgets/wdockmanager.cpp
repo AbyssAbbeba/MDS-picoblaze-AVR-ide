@@ -162,7 +162,7 @@ WDock::WDock(int code, QMainWindow *mainWindow)
             wDockWidget = new QDockWidget("Simulation Info", mainWindow);
             wDockWidget->setAllowedAreas(Qt::BottomDockWidgetArea);
             mainWindow->addDockWidget(Qt::BottomDockWidgetArea, wDockWidget);
-            HexEdit *newWidget = new HexEdit(wDockWidget, false);
+            HexEdit *newWidget = new HexEdit(wDockWidget, false, 20);
             area = 2;
             wDockWidget->setWidget(newWidget);
             wDockWidget->setMaximumWidth(450);
