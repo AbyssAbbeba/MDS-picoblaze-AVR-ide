@@ -151,6 +151,7 @@ WDock::WDock(int code, QMainWindow *mainWindow)
             wDockWidget->setAllowedAreas(Qt::BottomDockWidgetArea);
             mainWindow->addDockWidget(Qt::BottomDockWidgetArea, wDockWidget);
             QPlainTextEdit *newWidget = new QPlainTextEdit(wDockWidget);
+            newWidget->setFont(QFont("Andale Mono", 10));
             area = 2;
             newWidget->setReadOnly(true);
             wDockWidget->setWidget(newWidget);
@@ -161,10 +162,10 @@ WDock::WDock(int code, QMainWindow *mainWindow)
             wDockWidget = new QDockWidget("Simulation Info", mainWindow);
             wDockWidget->setAllowedAreas(Qt::BottomDockWidgetArea);
             mainWindow->addDockWidget(Qt::BottomDockWidgetArea, wDockWidget);
-            HexEdit *newWidget = new HexEdit(wDockWidget);
+            HexEdit *newWidget = new HexEdit(wDockWidget, false);
             area = 2;
             wDockWidget->setWidget(newWidget);
-            wDockWidget->setMaximumWidth(425);
+            wDockWidget->setMaximumWidth(450);
 	    break;
         }
     }
