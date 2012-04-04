@@ -45,22 +45,22 @@ bool HexEdit::eventFilter(QObject *target, QEvent *event)
 
 
 
-HexEdit::HexEdit(QWidget *parent, bool AsciiPanel, int countWidth)
+HexEdit::HexEdit(QWidget *parent, bool AsciiPanel, int countSize, int columns)
     :QWidget(parent)
 {
     hexLayout = new QGridLayout(this);
     hexTextEdit = new QTextEdit(this);
     if (AsciiPanel == true)
         hexAsciiEdit = new QTextEdit(this);
-    hexColumnCount = new WColumnCounter(hexTextEdit);
-    hexLineCount = new WLineCounter(hexTextEdit, false, countWidth);
+    hexColumnCount = new WColumnCounter(hexTextEdit, countSize, columns);
+    hexLineCount = new WLineCounter(hexTextEdit, false, countSize);
     hexByteArray = new QByteArray(190, 10);
     hexStatusBar = new QStatusBar(this);
     //hexTextEdit->setReadOnly(true);
     hexTextEdit->setOverwriteMode(true); 
     hexTextEdit->setWordWrapMode(QTextOption::NoWrap);
     hexTextEdit->setFont(QFont("Andale Mono", 10));
-    //hexTextEdit->setMinimumWidth(475);
+    hexTextEdit->setMinimumWidth(175);
     //hexTextEdit->setMaximumWidth(475);
     hexTextEdit->setMinimumHeight(175);
 

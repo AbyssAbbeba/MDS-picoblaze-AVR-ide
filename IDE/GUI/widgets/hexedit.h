@@ -40,7 +40,7 @@ class HexEdit : public QWidget
 {
     Q_OBJECT   
     public:
-        HexEdit(QWidget *parent, bool AsciiPanel, int countWidth);
+        HexEdit(QWidget *parent, bool AsciiPanel, int countSize, int columns);
         void setData(int pos, char value);
         QTextEdit* getTextEdit();
         //void setByteArray();
