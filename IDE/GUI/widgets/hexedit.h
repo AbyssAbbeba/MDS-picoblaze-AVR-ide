@@ -21,10 +21,13 @@
 #include <QStatusBar>
 #include <QGridLayout>
 #include <QByteArray>
+#include "wlinecounter.h"
+#include "wcolumncounter.h"
 
 
-class VerticalNumberCount;
-class HorizontalNumberCount;
+class WLineCounter;
+class WColumnCounter;
+
 
 
 //hex editor (modifikace QTextEdit) s pouzitim QStatusBar
@@ -37,7 +40,7 @@ class HexEdit : public QWidget
 {
     Q_OBJECT   
     public:
-        HexEdit(QWidget *parent);
+        HexEdit(QWidget *parent, bool AsciiPanel);
         void setData(int pos, char value);
         QTextEdit* getTextEdit();
         //void setByteArray();
@@ -50,37 +53,18 @@ class HexEdit : public QWidget
         //void clearByteArray();
         void setData(QByteArray *byteArray);
 
-        VerticalNumberCount *hexColumnCount;
-        HorizontalNumberCount *hexLineCount;
+        WColumnCounter *hexColumnCount;
+        WLineCounter *hexLineCount;
         QTextEdit *hexTextEdit;
+        QTextEdit *hexAsciiEdit;
         QByteArray *hexByteArray;
         QStatusBar *hexStatusBar;
         QGridLayout *hexLayout;
+        
+        int prevPosition;
 
     protected:
         bool eventFilter(QObject *target, QEvent *event);
-};
-
-
-class VerticalNumberCount : public QWidget
-{
-    Q_OBJECT   
-    public:
-        VerticalNumberCount(QWidget *parent);
-    protected:
-        void paintEvent(QPaintEvent *);
-};
-
-
-class HorizontalNumberCount : public QWidget
-{
-    Q_OBJECT   
-    public:
-        HorizontalNumberCount(HexEdit *parent);
-    private:
-        HexEdit *parent;
-    protected:
-        void paintEvent(QPaintEvent *);
 };
 
 

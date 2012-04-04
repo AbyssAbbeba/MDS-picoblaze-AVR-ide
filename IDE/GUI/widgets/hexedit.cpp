@@ -15,6 +15,8 @@ bool HexEdit::eventFilter(QObject *target, QEvent *event)
           && (keyEvent->key() < Qt::Key_Left ||
           keyEvent->key() > Qt::Key_Down))
             return true;
+        //else if (keyEvent->key() == Qt::Key_Right)
+        //    txtCursor.setPosition(position-2); 
         else
         {
             int position = hexTextEdit->textCursor().position();
@@ -43,20 +45,22 @@ bool HexEdit::eventFilter(QObject *target, QEvent *event)
 
 
 
-HexEdit::HexEdit(QWidget *parent)
+HexEdit::HexEdit(QWidget *parent, bool AsciiPanel)
     :QWidget(parent)
 {
     hexLayout = new QGridLayout(this);
-    hexColumnCount = new VerticalNumberCount(this);
-    hexLineCount = new HorizontalNumberCount(this);
     hexTextEdit = new QTextEdit(this);
+    if (AsciiPanel == true)
+        hexAsciiEdit = new QTextEdit(this);
+    hexColumnCount = new WColumnCounter(hexTextEdit);
+    hexLineCount = new WLineCounter(hexTextEdit, false);
     hexByteArray = new QByteArray(190, 10);
     hexStatusBar = new QStatusBar(this);
-    hexTextEdit->setReadOnly(true);
+    //hexTextEdit->setReadOnly(true);
     hexTextEdit->setOverwriteMode(true); 
     hexTextEdit->setWordWrapMode(QTextOption::NoWrap);
-    hexTextEdit->setFont (QFont ("Andale Mono", 10));
-    hexTextEdit->setMinimumWidth(475);
+    hexTextEdit->setFont(QFont("Andale Mono", 10));
+    //hexTextEdit->setMinimumWidth(475);
     //hexTextEdit->setMaximumWidth(475);
     hexTextEdit->setMinimumHeight(175);
 
@@ -72,6 +76,7 @@ HexEdit::HexEdit(QWidget *parent)
     //connect(hexTextEdit, SIGNAL(textChanged()), this, SLOT(changeText()));
     connect(hexTextEdit, SIGNAL(cursorPositionChanged()), this, SLOT(moveCursor()));
     //changable = true;
+    prevPosition = 0;
 }
 
 
@@ -90,7 +95,10 @@ void HexEdit::moveCursor()
     if (position % 3 == 2)
     {
         QTextCursor txtCursor = hexTextEdit->textCursor();
-        txtCursor.setPosition(position-2);
+        if (prevPosition == position - 1)
+           txtCursor.setPosition(position+1);
+        else
+            txtCursor.setPosition(position-2);
         hexTextEdit->setTextCursor(txtCursor);
     }
     else if (hexTextEdit->textCursor().hasSelection() == true)
@@ -100,6 +108,7 @@ void HexEdit::moveCursor()
         hexTextEdit->setTextCursor(txtCursor);
     }
     //changable = true;
+    prevPosition = position;
 }
 
 
@@ -158,80 +167,6 @@ void HexEdit::setData(QByteArray *byteArray)
         else
             hexTextEdit->insertPlainText(" ");
     }
-}
-
-
-
-VerticalNumberCount::VerticalNumberCount(QWidget *parent)
-{
-    this->setMaximumWidth(455);
-    this->setMaximumHeight(20);
-    this->setMinimumWidth(455);
-    this->setMinimumHeight(20);
-}
-
-void VerticalNumberCount::paintEvent(QPaintEvent *)
-{
-    QPainter paint;
-    paint.begin(this);
-    QRectF rect(0,0,25,20);
-    QPointF point;
-    point.setY(0);
-    QBrush brush(Qt::darkCyan);
-    paint.setBackground(brush);
-    QPen pen(Qt::darkCyan);
-    paint.setBrush(brush);
-    paint.setPen(pen);
-    for (int i = 0; i<16; i++)
-    {
-        point.setX(i*24);
-        rect.moveTopLeft(point);
-        paint.drawRect(rect);
-        pen.setColor(Qt::black);
-        paint.setPen(pen);
-        paint.drawText(rect, Qt::AlignCenter, "0" + QString::number(i, 16).toUpper());
-        pen.setColor(Qt::darkCyan);
-        paint.setPen(pen);
-    }
-    paint.end();
-}
-
-
-
-
-HorizontalNumberCount::HorizontalNumberCount(HexEdit *parent)
-{
-    this->parent = parent;
-    //this->setMaximumWidth(20);
-    this->setMaximumHeight(175);
-    this->setMinimumWidth(20);
-    this->setMinimumHeight(175);
-}
-
-void HorizontalNumberCount::paintEvent(QPaintEvent *)
-{
-    QPainter paint;
-    paint.begin(this);
-    QRectF rect(0,0,15,19);
-    QPointF point;
-    point.setX(0);
-    QBrush brush(Qt::darkCyan);
-    paint.setBackground(brush);
-    QPen pen(Qt::darkCyan);
-    paint.setBrush(brush);
-    paint.setPen(pen);
-    for (int i = 0; i<parent->getTextEdit()->document()->lineCount()-1 && i<150; i++)
-    {
-        point.setY(i*17);
-        rect.moveTopLeft(point);
-        paint.drawRect(rect);
-        pen.setColor(Qt::black);
-        paint.setPen(pen);
-        paint.drawText(rect, Qt::AlignCenter, "0" + QString::number(i, 16).toUpper());
-        pen.setColor(Qt::darkCyan);
-        paint.setPen(pen);
-    }
-    paint.end();
 }
 
 
