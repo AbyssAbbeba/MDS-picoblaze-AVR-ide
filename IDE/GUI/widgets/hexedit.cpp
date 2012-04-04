@@ -45,7 +45,7 @@ bool HexEdit::eventFilter(QObject *target, QEvent *event)
 
 
 
-HexEdit::HexEdit(QWidget *parent, bool AsciiPanel)
+HexEdit::HexEdit(QWidget *parent, bool AsciiPanel, int countWidth)
     :QWidget(parent)
 {
     hexLayout = new QGridLayout(this);
@@ -53,7 +53,7 @@ HexEdit::HexEdit(QWidget *parent, bool AsciiPanel)
     if (AsciiPanel == true)
         hexAsciiEdit = new QTextEdit(this);
     hexColumnCount = new WColumnCounter(hexTextEdit);
-    hexLineCount = new WLineCounter(hexTextEdit, false);
+    hexLineCount = new WLineCounter(hexTextEdit, false, countWidth);
     hexByteArray = new QByteArray(190, 10);
     hexStatusBar = new QStatusBar(this);
     //hexTextEdit->setReadOnly(true);
