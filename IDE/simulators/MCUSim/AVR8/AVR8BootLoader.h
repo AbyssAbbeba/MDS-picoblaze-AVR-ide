@@ -52,6 +52,7 @@ public:
 	};
 
 	struct Config {
+		bool m_enabled;
 		float m_minProgTime; // 3.7e-3
 		float m_maxProgTime; // 4.5e-3
 		unsigned int m_pageSize; // 32 WORDS on ATmega8
@@ -71,6 +72,9 @@ public:
 		AVR8Sim::HaltMode	* haltMode);
 
 	void reset(MCUSim::ResetMode mode);
+	bool enabled() {
+		return m_config.m_enabled;
+	}
 	void timeStep(float timeStep, unsigned int clockCycles = 0);
 
 	unsigned int spmWrite(unsigned int addr, unsigned int val);

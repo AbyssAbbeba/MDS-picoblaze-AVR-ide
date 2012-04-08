@@ -39,6 +39,12 @@ public:
 	};
 
 	struct Config {
+		Config() {
+			m_undefinedValue = -1;
+		}
+		
+		bool m_enabled;
+		
 		unsigned int m_addrRegWidth;
 		unsigned int m_size;
 		unsigned int m_writeTime; // 8.448 (in seconds!)
@@ -54,6 +60,9 @@ public:
 	~AVR8DataEEPROM();
 
 	void reset(MCUSim::ResetMode mode);
+	bool enabled() {
+		return m_config.m_enabled;
+	}
 	void loadDataFile(const DataFile * file);
 	void storeInDataFile(DataFile * file) const;
 

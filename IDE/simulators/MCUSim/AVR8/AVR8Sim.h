@@ -36,7 +36,7 @@ class AVR8Twi;
 class AVR8Adc;
 class AVR8AnalogComparator;
 class AVR8Isp;
-class AVR8ParalelProg;
+class AVR8ParallelProg;
 
 #include "../MCUSim.h"
 #include "AVR8RegNames.h"
@@ -89,6 +89,8 @@ public:
 		HALTM_PROG
 	};
 
+	Clock::ClockSource & getClockSource();
+
 	void reset(ResetMode mode);
 	float cycles2time(int numOfCycles) {
 		return ( numOfCycles * m_clockPeriod );
@@ -97,7 +99,7 @@ public:
 	int timeStep(float timeStep);
 
 	Subsys * getSubsys(Subsys::SubsysId id);
-	Config * getConfig();
+	Config & getConfig();
 	EventLogger * getLog() {
 		return m_eventLogger;
 	}
@@ -107,6 +109,7 @@ public:
 	Mode mode() const {
 		return m_processorMode;
 	}
+	const char * name() const;
 
 	SleepMode sleepMode() const {
 		return m_sleepMode;
@@ -136,7 +139,7 @@ protected:
 	AVR8Adc * m_adc;
 	AVR8AnalogComparator * m_acomp;
 	AVR8Isp * m_isp;
-	AVR8ParalelProg * m_pprog;
+	AVR8ParallelProg * m_pprog;
 
 	EventLogger * m_eventLogger;
 

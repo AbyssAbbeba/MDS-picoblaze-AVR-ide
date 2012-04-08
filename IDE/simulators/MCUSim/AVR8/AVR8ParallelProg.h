@@ -8,7 +8,7 @@
  *
  * @author Martin Ošmera <martin.osmera@gmail.com>, (C) 2012
  * @ingroup AVR8
- * @file AVR8ParalelProg.h
+ * @file AVR8ParallelProg.h
  */
 
 #ifndef AVR8PARALELPROG_H
@@ -21,22 +21,26 @@ class AVR8ProgramMemory;
 /**
  * @brief
  * @ingroup AVR8
- * @class AVR8ParalelProg
+ * @class AVR8ParallelProg
  */
-class AVR8ParalelProg : public MCUSim::Subsys {
+class AVR8ParallelProg : public MCUSim::Subsys {
 public:
-	AVR8ParalelProg() {};
+	AVR8ParallelProg() {};
 
 	struct Config {
+		bool m_enabled;
 	};
 
 	Config m_config;
 
-	AVR8ParalelProg * link(
+	AVR8ParallelProg * link(
 		MCUSim::EventLogger	* eventLogger,
 		AVR8ProgramMemory	* programMemory);
 
 	void reset(MCUSim::ResetMode mode);
+	bool enabled() {
+		return m_config.m_enabled;
+	}
 
 // 	void clockCycles(unsigned int numberOf);
 // 	void timeStep(float timeStep, unsigned int clockCycles = 0);
