@@ -21,6 +21,8 @@
 #define wListCode2 1001
 #define wCompileInfo 1002
 #define wCodeEditCode 1003
+#define wHexEdit 1004
+//HexEdit would be included in Simulation Status widget
 
 
 #include <QDockWidget>
@@ -28,11 +30,13 @@
 #include <QList>
 #include <QTabWidget>
 #include "codeedit.h"
+#include "hexedit.h"
 #include  "../mainform/mainform.h"
 
 class WDock;
 class MainForm;
 class CodeEdit;
+class HexEdit;
 
 
 /**
@@ -47,6 +51,7 @@ class WDockManager : public QObject
         WDockManager(MainForm *mainWindow);
         void addDockWidget(int code);
         QDockWidget* getDockWidget(int code);
+        QDockWidget* getDockWidgetArea(int area);
         void removeDockWidget(int code);
         void addCentralWidget(QString wName, QString wPath);
         CodeEdit* getCentralWidget();
@@ -65,6 +70,9 @@ class WDockManager : public QObject
     private:
         MainForm *wMainWindow;
         QList<WDock*> openDockWidgets;
+        WDock* wLeft;
+        WDock* wBottom;
+        WDock* wRight;
         QList<CodeEdit*> openCentralWidgets;
         QTabWidget *wTab;
         
@@ -83,10 +91,13 @@ class WDock
         WDock(int code, QMainWindow *mainWindow);
         ~WDock();
         bool cmpCode(int code);
+        bool cmpArea(int area);
+        int getArea();
         QDockWidget* getQDockWidget();
     private:
         QDockWidget *wDockWidget;
         int code;
+        int area;
 };
 
 

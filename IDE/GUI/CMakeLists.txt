@@ -12,6 +12,7 @@
        ./dialogs/errordlg.cpp
        ./widgets/codeedit.cpp
        ./widgets/wdockmanager.cpp
+       ./widgets/hexedit.cpp
   )
   
   # another list, this time it includes all header files that should be treated with moc
@@ -20,7 +21,8 @@
        ./mainform/project.h
        ./dialogs/projectdlg.h
        ./widgets/codeedit.h    
-       ./widgets/wdockmanager.h   
+       ./widgets/wdockmanager.h 
+       ./widgets/hexedit.h     
   )
   
   # some .ui files
