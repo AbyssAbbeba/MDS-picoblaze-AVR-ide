@@ -1,5 +1,29 @@
 This week:
-- add Project actions (Save project, Close project)
-- add error dialogs (done)
-- add compiler support (?)
-- fix minor bugs (file not found, moving widgets with "Open project")
+- add Project actions (Save project - done, Close project)
+- add compiler support (Make done, output done, generate makefile, choice between Make and simple sdcc)
+- fix minor bugs (file not found, moving widgets with "Open/New project")
+
+- hex editor (part done)
+
+Future goals:
+- plugin manager (class implementation, dialog implementation)
+- gui template based on project setting
+- interface config
+- project config
+- simulation
+- upload to HW
+- Code editor (highlight, source managment - class viewer etc.)
+
+
+plugin manager - dialog:
+
+--------------------------
+|  ---------    -------- |
+|  |install| -> |active| |
+|  |       | <- |      | |
+|  |       |    |      | |
+|  |       |    |      | |
+|  |-------|    |------| |
+|                        |
+|  find             ok   |
+|------------------------
