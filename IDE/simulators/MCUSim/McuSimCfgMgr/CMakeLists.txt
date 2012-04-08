@@ -1,12 +1,12 @@
 
-## Simulator engine module for 8-bit AVR
+## MCU simulator configuration management library.
 
 # ------------------------------------------------------------------------------
 # GENERAL OPTIONS
 # ------------------------------------------------------------------------------
 
 # Set project name
-project(AVR8Sim)
+project(McuSimCfgMgr)
 
 # Set the minimum required version of CMake
 cmake_minimum_required(VERSION 2.8)
@@ -14,13 +14,23 @@ cmake_minimum_required(VERSION 2.8)
 # Create verbose makefiles if on
 set(CMAKE_VERBOSE_MAKEFILE OFF)
 
+
 # ------------------------------------------------------------------------------
 # COMPILATION OPTIONS
 # ------------------------------------------------------------------------------
 
 # Add include directories to the build.
 include_directories(
-	"${CMAKE_CURRENT_BINARY_DIR}/../../../utilities")
+	"${CMAKE_CURRENT_BINARY_DIR}/.."
+	"${CMAKE_CURRENT_BINARY_DIR}/../AVR8"
+)
+
+# Load settings specific for the Qt4 library
+find_package(Qt4 REQUIRED)
+
+# Include Qt4's XML module
+set(QT_USE_QTXML 1)
+include(${QT_USE_FILE})
 
 ## Add switches to compiler command line
  # -Wall       : Enables all the warnings.
@@ -32,38 +42,16 @@ add_definitions(-Wall -Wextra -std=c++0x -O2 -pipe)
 
 ## Add a library to the project using the specified source files,
  # in this case it will procude dynamic C++ library.
-add_library(AVR8Sim SHARED
-	AVR8Sim.cxx
-	AVR8Config.cxx
-	AVR8DataMemory.cxx
-	AVR8ProgramMemory.cxx
-	AVR8DES.cxx
-	AVR8InstructionSet.cxx
-	AVR8FusesAndLocks.cxx
-	AVR8InterruptController.cxx
-	AVR8TimerCounter0.cxx
-	AVR8TimerCounter1.cxx
-	AVR8TimerCounter2.cxx
-	AVR8IO.cxx
-	AVR8ExternalInterrupts.cxx
-	AVR8WatchdogTimer.cxx
-	AVR8DataEEPROM.cxx
-	AVR8BootLoader.cxx
-	AVR8SystemControl.cxx
-	AVR8ClockControl.cxx
-	AVR8Spi.cxx
-	AVR8Usart.cxx
-	AVR8Twi.cxx
-	AVR8Adc.cxx
-	AVR8AnalogComparator.cxx
-	AVR8Isp.cxx
-	AVR8ParallelProg.cxx)
+add_library(McuSimCfgMgr SHARED
+	McuDeviceSpecAVR8.cxx
+	McuSimCfgMgr.cxx)
 
+target_link_libraries(McuSimCfgMgr ${QT_LIBRARIES})
 
 # ------------------------------------------------------------------------------
 # INSTALLATION OPTIONS
 # ------------------------------------------------------------------------------
 
-install(TARGETS AVR8Sim
+install(TARGETS McuSimCfgMgr
 	RUNTIME DESTINATION bin
 	LIBRARY DESTINATION lib)

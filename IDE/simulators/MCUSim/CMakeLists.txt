@@ -19,3 +19,6 @@ set(CMAKE_VERBOSE_MAKEFILE OFF)
 
 # Build the AVR8 Simulator
 add_subdirectory(AVR8)
+
+# Build the MCU simulator configuration management
+add_subdirectory(McuSimCfgMgr)

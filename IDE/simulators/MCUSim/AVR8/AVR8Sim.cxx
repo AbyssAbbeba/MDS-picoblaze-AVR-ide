@@ -34,7 +34,7 @@
 #include "AVR8Adc.h"
 #include "AVR8AnalogComparator.h"
 #include "AVR8Isp.h"
-#include "AVR8ParalelProg.h"
+#include "AVR8ParallelProg.h"
 
 #include <cassert>
 
@@ -63,7 +63,7 @@ AVR8Sim::AVR8Sim() {
 	m_adc			= new AVR8Adc();
 	m_acomp			= new AVR8AnalogComparator();
 	m_isp			= new AVR8Isp();
-	m_pprog			= new AVR8ParalelProg();
+	m_pprog			= new AVR8ParallelProg();
 
 	regSubSys(m_interrupts->link(
 		m_eventLogger,
@@ -175,6 +175,10 @@ MCUSim::Subsys * AVR8Sim::getSubsys(Subsys::SubsysId id) {
 	}
 }
 
+MCUSim::Clock::ClockSource & AVR8Sim::getClockSource() {
+	return m_clockControl->m_clockSource;
+}
+	
 void AVR8Sim::reset(ResetMode mode) {
 	for (
 		std::vector<Subsys*>::iterator i = m_subSystems.begin();
@@ -200,12 +204,16 @@ void AVR8Sim::reset(ResetMode mode) {
 	}
 }
 
-MCUSim::Config * AVR8Sim::getConfig() {
-	return m_config;
+MCUSim::Config & AVR8Sim::getConfig() {
+	return *m_config;
 }
 
 MCUSim::Family AVR8Sim::family() const {
 	return m_config->m_family;
+}
+
+const char * AVR8Sim::name() const {
+	return m_config->m_name.c_str();
 }
 
 MCUSim::Arch AVR8Sim::arch() const {
@@ -228,11 +236,18 @@ int AVR8Sim::executeInstruction() {
 	float timeStep = cycles2time(m_clockCycles);
 	
 	m_io->clockCycles();
-	m_externalInterrupts->clockCycle();
-	m_timerCounter0->clockCycles(m_clockCycles);
-	m_bootLoader->timeStep(timeStep, m_clockCycles);
-	m_dataEEPROM->timeStep(timeStep, m_clockCycles);
-	m_watchdogTimer->timeStep(timeStep, m_clockCycles);
+	if ( true == m_externalInterrupts->enabled() ) {
+		m_externalInterrupts->clockCycle();
+	}
+	if ( true == m_timerCounter0->enabled() ) {
+		m_timerCounter0->clockCycles(m_clockCycles);
+	}
+	if ( true == m_bootLoader->enabled() ) {
+		m_bootLoader->timeStep(timeStep, m_clockCycles);
+	}
+	if ( true == m_bootLoader->enabled() ) {
+		m_dataEEPROM->timeStep(timeStep, m_clockCycles);
+	}
 	m_systemControl->timeStep(timeStep, m_clockCycles);
 
 // TODO:

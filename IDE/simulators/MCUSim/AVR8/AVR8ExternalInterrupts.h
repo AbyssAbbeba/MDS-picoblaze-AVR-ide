@@ -29,6 +29,7 @@ public:
 	AVR8ExternalInterrupts() {};
 
 	struct Config {
+		bool m_enabled;
 	};
 
 	Config m_config;
@@ -39,6 +40,9 @@ public:
 		AVR8IO			* io);
 
 	void reset(MCUSim::ResetMode mode);
+	bool enabled() {
+		return m_config.m_enabled;
+	}
 
 	// This has to be called even in a sleep mode (watchdog clock).
 	// This method cannot read I/O backwards, it has to be called upon any change on I/O.

@@ -34,6 +34,9 @@ public:
 	~AVR8ProgramMemory();
 
 	struct Config {
+		Config() {
+			m_undefinedValue = -1;
+		}
 		int m_undefinedValue; // -1 means random
 		unsigned int m_size;
 	};

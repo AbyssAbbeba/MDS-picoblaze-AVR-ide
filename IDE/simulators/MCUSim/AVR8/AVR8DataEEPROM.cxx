@@ -42,9 +42,41 @@ AVR8DataEEPROM::~AVR8DataEEPROM() {
 }
 
 void AVR8DataEEPROM::loadDataFile(const DataFile * file) {
+	unsigned int size = file->maxSize();
+
+	for ( unsigned int i = 0; i < size; i++ ) {
+		if ( i >= m_config.m_size ) {
+			break;
+		}
+
+		int byte = (*file)[i];
+		if ( -1 == byte ) {
+			 byte = MFLAG_UNDEFINED;
+		}
+		m_memory[i] = byte;
+	}
+	for ( unsigned int i = size; i < m_config.m_size; i++ ) {
+		m_memory[i] = MFLAG_UNDEFINED;
+	}
 }
 
 void AVR8DataEEPROM::storeInDataFile(DataFile * file) const {
+	unsigned int size = file->maxSize();
+
+	file->clear();
+	for ( unsigned int i = 0; i < m_config.m_size; i++ ) {
+		if ( i >= size ) {
+			break;
+		}
+
+		int byte = m_memory[i];
+
+		if ( MFLAG_UNDEFINED | byte ) {
+			file->unset(i);
+		} else {
+			file->set(i, byte & 0xff);
+		}
+	}
 }
 
 inline unsigned int AVR8DataEEPROM::readEecr(const unsigned int clockCycles) {
@@ -252,7 +284,7 @@ void AVR8DataEEPROM::resize(unsigned int newSize) {
 	}
 
 	for ( unsigned int i = sizeToCopy; i < newSize; i++ ) {
-		m_memory[i] = getUndefVal();
+		m_memory[i] = ( getUndefVal() | MFLAG_UNDEFINED );
 	}
 
 	if ( NULL != memoryOrig ) {

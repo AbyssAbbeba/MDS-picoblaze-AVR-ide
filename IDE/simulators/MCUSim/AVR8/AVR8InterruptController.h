@@ -130,12 +130,12 @@ public:
 	}
 
 protected:
-	AVR8InstructionSet * m_instructionSet;
-	AVR8ProgramMemory * m_programMemory;
-	AVR8DataMemory * m_dataMemory;
-	AVR8FusesAndLocks * m_fusesAndLocks;
-	AVR8Sim::SleepMode * m_sleepMode;
-	AVR8BootLoader * m_bootLoader;
+	AVR8InstructionSet	* m_instructionSet;
+	AVR8FusesAndLocks	* m_fusesAndLocks;
+	AVR8ProgramMemory	* m_programMemory;
+	AVR8BootLoader		* m_bootLoader;
+	AVR8DataMemory		* m_dataMemory;
+	AVR8Sim::SleepMode	* m_sleepMode;
 
 	int m_actInterruptCounter;
 	int m_interruptCounter[INTVEC__MAX__];

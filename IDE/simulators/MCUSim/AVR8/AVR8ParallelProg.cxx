@@ -10,10 +10,10 @@
  *
  */
 
-#include "AVR8ParalelProg.h"
+#include "AVR8ParallelProg.h"
 #include "AVR8ProgramMemory.h"
 
-AVR8ParalelProg * AVR8ParalelProg::link(
+AVR8ParallelProg * AVR8ParallelProg::link(
 	MCUSim::EventLogger	* eventLogger,
 	AVR8ProgramMemory	* programMemory
 ) {
@@ -24,11 +24,11 @@ AVR8ParalelProg * AVR8ParalelProg::link(
 	return this;
 }
 
-void AVR8ParalelProg::reset(MCUSim::ResetMode mode) {
+void AVR8ParallelProg::reset(MCUSim::ResetMode mode) {
 }
 
-inline void AVR8ParalelProg::resetToInitialValues() {
+inline void AVR8ParallelProg::resetToInitialValues() {
 }
 
-inline void AVR8ParalelProg::mcuReset() {
+inline void AVR8ParallelProg::mcuReset() {
 }

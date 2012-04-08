@@ -28,6 +28,7 @@ public:
 	AVR8Isp() {};
 
 	struct Config {
+		bool m_enabled;
 	};
 
 	Config m_config;
@@ -37,6 +38,9 @@ public:
 		AVR8ProgramMemory	* programMemory);
 
 	void reset(MCUSim::ResetMode mode);
+	bool enabled() {
+		return m_config.m_enabled;
+	}
 
 // 	void clockCycles(unsigned int numberOf);
 // 	void timeStep(float timeStep, unsigned int clockCycles = 0);

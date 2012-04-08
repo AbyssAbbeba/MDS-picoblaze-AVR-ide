@@ -29,6 +29,7 @@ public:
 	AVR8TimerCounter0() {};
 
 	struct Config {
+		bool m_enabled;
 	};
 
 	Config m_config;
@@ -40,6 +41,9 @@ public:
 		AVR8IO			* m_io);
 
 	void reset(MCUSim::ResetMode mode);
+	bool enabled() {
+		return m_config.m_enabled;
+	}
 
 	void clockCycles(unsigned int numberOf);
 
