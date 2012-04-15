@@ -169,7 +169,7 @@ void MainForm::openFile()
     }
     else {
         wDockManager->addCentralWidget(path.section('/', -1), path);
-        wDockManager->getCentralWidget()->setPlainText(file.readAll());
+        wDockManager->getCentralTextEdit()->setPlainText(file.readAll());
         file.close();
         wDockManager->getCentralWidget()->connectAct();
     }
@@ -186,7 +186,7 @@ void MainForm::openFilePath(QString path)
     }
     else {
         wDockManager->addCentralWidget(path.section('/', -1), path);
-        wDockManager->getCentralWidget()->setPlainText(file.readAll());
+        wDockManager->getCentralTextEdit()->setPlainText(file.readAll());
         file.close();
         wDockManager->getCentralWidget()->connectAct();
         wDockManager->getCentralWidget()->setParentProject(projectMan->getActive());
@@ -245,7 +245,7 @@ void MainForm::saveFile()
         else 
         {
             QTextStream fout(&file);
-            fout << wDockManager->getCentralWidget()->toPlainText();
+            fout << wDockManager->getCentralTextEdit()->toPlainText();
             file.close();
             wDockManager->setTabSaved();
         }
@@ -264,7 +264,7 @@ void MainForm::saveFileAs()
     }
     else {
         QTextStream fout(&file);
-        fout << wDockManager->getCentralWidget()->toPlainText();
+        fout << wDockManager->getCentralTextEdit()->toPlainText();
         file.close();
         wDockManager->setCentralPath(path);
         wDockManager->setCentralName(path.section('/', -1));
@@ -294,7 +294,7 @@ void MainForm::saveFile(CodeEdit *editor)
         else 
         {
             QTextStream fout(&file);
-            fout << editor->toPlainText();
+            fout << editor->getTextEdit()->toPlainText();
             file.close();
             editor->setSaved();
         }
@@ -369,4 +369,10 @@ void MainForm::compileProject()
         ((QPlainTextEdit*)wDockManager->getDockWidget(wCompileInfo)->widget())->appendPlainText("Make failed:\n" + compiler.errorString());
     else
         ((QPlainTextEdit*)wDockManager->getDockWidget(wCompileInfo)->widget())->appendPlainText("Make succesfull:\n" + compiler.readAll());
+}
+
+
+WDockManager* MainForm::getWDockManager()
+{
+    return wDockManager;
 }

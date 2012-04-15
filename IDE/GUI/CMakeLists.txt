@@ -13,6 +13,8 @@
        ./widgets/codeedit.cpp
        ./widgets/wdockmanager.cpp
        ./widgets/hexedit.cpp
+       ./widgets/wlinecounter.cpp
+       ./widgets/wcolumncounter.cpp
   )
   
   # another list, this time it includes all header files that should be treated with moc
@@ -22,7 +24,9 @@
        ./dialogs/projectdlg.h
        ./widgets/codeedit.h    
        ./widgets/wdockmanager.h 
-       ./widgets/hexedit.h     
+       ./widgets/hexedit.h
+       ./widgets/wlinecounter.h
+       ./widgets/wcolumncounter.h 
   )
   
   # some .ui files

@@ -44,6 +44,7 @@ class MainForm : public QMainWindow
 
         void openFilePath(QString path);
         void saveFile(CodeEdit *editor);
+        WDockManager* getWDockManager();
 
     private slots:
         void newFile();

@@ -36,6 +36,19 @@ void WDockManager::setTabSaved()
 }
 
 
+QPlainTextEdit* WDockManager::getCentralTextEdit()
+{
+    return ((CodeEdit*)wTab->currentWidget())->getTextEdit();
+}
+
+
+
+QPlainTextEdit* WDockManager::getTabTextEdit(int index)
+{
+    return ((CodeEdit*)wTab->widget(index))->getTextEdit();
+}
+
+
 
 CodeEdit* WDockManager::getCentralWidget()
 {
@@ -86,7 +99,7 @@ void WDockManager::setCentralPath(QString wPath)
 void WDockManager::addCentralWidget(QString wName, QString wPath)
 {
     CodeEdit *newEditor = new CodeEdit(wTab, wName, wPath);
-    wTab->addTab(newEditor, wName);
+    wTab->addTab((QWidget*)newEditor, wName);
     wTab->setCurrentIndex(wTab->count()-1);
     //add tab tooltip with path
     openCentralWidgets.append(newEditor);
@@ -118,6 +131,22 @@ QDockWidget* WDockManager::getDockWidgetArea(int area)
         if ((*i)->cmpArea(area) == true)
             return (*i)->getQDockWidget();
      return NULL;
+}
+
+void WDockManager::hideDockWidgetArea(int area)
+{
+    QList<WDock*>::iterator i;
+    for (i = openDockWidgets.begin(); i != openDockWidgets.end(); i++)
+        if ((*i)->cmpArea(area) == true)
+            (*i)->getQDockWidget()->hide();
+}
+
+void WDockManager::showDockWidgetArea(int area)
+{
+    QList<WDock*>::iterator i;
+    for (i = openDockWidgets.begin(); i != openDockWidgets.end(); i++)
+        if ((*i)->cmpArea(area) == true)
+            (*i)->getQDockWidget()->show();
 }
 
 
@@ -164,10 +193,10 @@ WDock::WDock(int code, QMainWindow *mainWindow)
             mainWindow->addDockWidget(Qt::BottomDockWidgetArea, wDockWidget);
             //v budoucnu nahradit 20 na constCounterSize v konstruktoru
             //i 16 za promennou podle nastaveni
-            HexEdit *newWidget = new HexEdit(wDockWidget, false, 20, 16);
+            HexEdit *newWidget = new HexEdit(wDockWidget, true, 20, 16);
             area = 2;
             wDockWidget->setWidget(newWidget);
-            wDockWidget->setMaximumWidth(450);
+            wDockWidget->setMaximumWidth(610);
 	    break;
         }
     }

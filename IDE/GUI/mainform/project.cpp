@@ -1,7 +1,7 @@
 #include <QtGui>
 #include "project.h"
 
-ProjectMan::ProjectMan(MainForm* qMainWindow)
+ProjectMan::ProjectMan(MainForm *qMainWindow)
 {
     //openProjects = new QList<Project*>;
     projectCount = 0;
@@ -37,8 +37,10 @@ void ProjectMan::addFile(QFile *file, QString path, QString name)
 void ProjectMan::addProject(QString name, QString path, QFile *file)
 {
     Project *newProject = new Project(name, path, mainWindow, file, this);
+    //mainWindow->getWDockManager()->hideDockWidgetArea(0);
     mainWindow->addDockWidget(Qt::LeftDockWidgetArea, newProject->prjDockWidget);
-
+    //mainWindow->getWDockManager()->showDockWidgetArea(0);
+    
     if (projectCount == 1 && openProjects.at(0)->prjName == NULL) {
         delete openProjects.at(0);
         openProjects.removeAt(0);
@@ -136,6 +138,7 @@ Project::Project(QFile *file, QMainWindow * mainWindow, ProjectMan *parent)
             prjDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea);
             prjDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
             prjTreeWidget = new QTreeWidget(prjDockWidget);
+            prjTreeWidget->setHeaderHidden(true);
             prjDockWidget->setWidget(prjTreeWidget);
 
             QTreeWidgetItem *treeProjName = new QTreeWidgetItem(prjTreeWidget);
@@ -167,6 +170,7 @@ Project::Project(QString name, QString path, QMainWindow * mainWindow, QFile *fi
     prjDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea);
     prjDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
     prjTreeWidget = new QTreeWidget(prjDockWidget);
+    prjTreeWidget->setHeaderHidden(true);
     prjDockWidget->setWidget(prjTreeWidget);
     prjName=name;
     //pri nacteni programu neni nacteny projekt
