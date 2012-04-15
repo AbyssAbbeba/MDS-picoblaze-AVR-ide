@@ -1,0 +1,102 @@
+<mcuspecfile>
+	<avr8:device family="megaAVR" name="ATmega8A">
+		<adc enabled=""/>
+		<analogcomparator enabled=""/>
+		<bootloader
+			enabled=""
+			minProgTime=""
+			maxProgTime=""
+			pageSize=""
+			bootResetAddress0=""
+			bootResetAddress1=""
+			bootResetAddress2=""
+			bootResetAddress3=""
+			rwwSectionSize=""
+		/>
+		<clockcontrol/>
+		<dataeeprom
+			enabled=""
+			addrRegWidth=""
+			size=""
+			writeTime=""
+		/>
+		<datamemory
+			regFileSize=""
+			sramSize=""
+			ioRegSize=""
+			mem2size=""
+			spWidth=""
+		>
+			<ioreginitvalues>
+				<!-- |8-bit: FLAGS|8-bit: readable|8-bit writable|8-bit: value| -->
+			</ioreginitvalues>
+			<ioregrandominit>
+				<!-- |8-bit: bit mask, log. 1 means random value, 0 means keep initial value| -->
+			</ioregrandominit>
+			<mem2sizes>
+			</mem2sizes>
+			<iomem2initvalues>
+				<initvalues>
+				</initvalues><initvalues>
+				</initvalues>
+			</iomem2initvalues>
+		</datamemory>
+
+		<externalinterrupts enabled=""/>
+		<fusesandlocks
+			defaultFusesLow=""
+			defaultFusesHigh=""
+			defaultLocksLow=""
+		/>
+		<instructionset
+			pcWidth=""
+		>
+			<availableinstructions>
+			</availableinstructions>
+		</instructionset>
+		<interruptcontroller>
+			<possibleinterrupts>
+			</possibleinterrupts>
+		</interruptcontroller>
+		<io
+			pullUpresistance=""
+		>
+			<specfuncmap>
+				<pin name="" sfunc=""/>
+				<pin name="" sfunc=""/>
+			</specfuncmap>
+			<hasport>
+			</hasport>
+			<availablepins>
+			</availablepins>
+		</io>
+		<isp enabled=""/>
+		<parallelprog enabled=""/>
+		<programmemory
+			size=""
+		/>
+		<spi enabled=""/>
+		<systemcontrol
+			resetTresholdLow=""
+			resetTresholdHigh=""
+			minResetPulseWidth=""
+
+			powerOnResetTresholdFalling=""
+			powerOnResetTresholdRaising=""
+
+			tBOD=""
+			brownOutTreshold0=""
+			brownOutTreshold1=""
+
+			hasPowerOnReset=""
+			hasBrownOutReset=""
+			hasExternalReset=""
+			hasWatchDog=""
+		/>
+		<timercounter0 enabled=""/>
+		<timercounter1 enabled=""/>
+		<timercounter2 enabled=""/>
+		<twi enabled=""/>
+		<usart enabled=""/>
+	</avr8:device>
+</mcuspecfile>

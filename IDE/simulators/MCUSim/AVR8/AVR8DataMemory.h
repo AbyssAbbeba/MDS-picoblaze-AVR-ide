@@ -40,6 +40,9 @@ public:
 	};
 
 	struct Config {
+		Config();
+		~Config();
+
 		int m_undefinedValue; // -1 means random
 		unsigned int m_regFileSize;
 		unsigned int m_sramSize;

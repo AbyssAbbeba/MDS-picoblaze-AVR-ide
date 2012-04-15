@@ -52,6 +52,10 @@ public:
 	};
 
 	struct Config {
+		Config() {
+			m_random = RVM_RANDOM;
+		}
+
 		RandValMode m_random;
 		SimFloatType m_pullUpresistance; // 20-50k ohms
 		AVR8PinNames::PIN m_specFuncMap[AVR8PinNames::SPF__MAX__];

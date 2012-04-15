@@ -37,7 +37,9 @@
 #include "AVR8Adc.h"
 #include "AVR8AnalogComparator.h"
 #include "AVR8Isp.h"
-#include "AVR8ParalelProg.h"
+#include "AVR8ParallelProg.h"
+
+#include <string>
 
 /**
  * @brief
@@ -69,9 +71,10 @@ public:
 	AVR8Adc::Config			* m_configAdc;
 	AVR8AnalogComparator::Config	* m_configAcomp;
 	AVR8Isp::Config			* m_configIsp;
-	AVR8ParalelProg::Config		* m_configPprog;
+	AVR8ParallelProg::Config	* m_configPprog;
 
 	MCUSim::Family m_family;
+	std::string m_name;
 
 	void link(AVR8Sim * system);
 	bool linked() const {

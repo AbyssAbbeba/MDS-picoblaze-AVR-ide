@@ -89,7 +89,8 @@ public:
 	/// @brief ...
 	class Config {
 	public:
-		Config(Arch arch) : m_arch(arch) {};
+		Config(Arch arch) : m_arch(arch) {}
+		virtual ~Config() {}
 
 		Arch getArch() const {
 			return m_arch;
@@ -532,14 +533,14 @@ public:
 	virtual int executeInstruction() = 0;
 	virtual int timeStep(float time) = 0;
 
-// 	virtual Memory * getMemory(Memory::MemorySpace memType) = 0;
 	virtual Subsys * getSubsys(Subsys::SubsysId id) = 0;
 
-// 	virtual Config * getConfig() = 0;
-	virtual Config * getConfig() = 0;
+	virtual Clock::ClockSource & getClockSource() = 0;
+	virtual Config & getConfig() = 0;
 	virtual EventLogger * getLog() = 0;
 	virtual Arch arch() const = 0;
 	virtual Family family() const = 0;
+	virtual const char * name() const = 0;
 	virtual Mode mode() const = 0;
 };
 

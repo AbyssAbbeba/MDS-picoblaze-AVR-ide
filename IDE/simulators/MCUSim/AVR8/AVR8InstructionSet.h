@@ -43,6 +43,10 @@ public:
 	};
 
 	struct Config {
+		Config() {
+			m_ignoreUndefinedOpCodes = true;
+		}
+
 		bool m_availableInstructions[AVR8InsNames::SPECI__MAX__];
 		MCUSim::Family m_family;
 		PCWidth m_pcWidth;

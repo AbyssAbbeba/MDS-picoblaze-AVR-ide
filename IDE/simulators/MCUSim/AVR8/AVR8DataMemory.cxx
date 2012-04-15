@@ -47,9 +47,42 @@ AVR8DataMemory::~AVR8DataMemory() {
 }
 
 void AVR8DataMemory::loadDataFile(const DataFile * file) {
+	unsigned int size = file->maxSize();
+
+	for ( unsigned int i = 0; i < size; i++ ) {
+		if ( i >= m_size ) {
+			break;
+		}
+
+		int byte = (*file)[i];
+		if ( -1 == byte ) {
+			 byte |= MFLAG_UNDEFINED;
+		}
+		m_memory[i] &= 0xff;
+		m_memory[i] |= byte;
+	}
+	for ( unsigned int i = size; i < m_size; i++ ) {
+		m_memory[i] |= MFLAG_UNDEFINED;
+	}
 }
 
 void AVR8DataMemory::storeInDataFile(DataFile * file) const {
+	unsigned int size = file->maxSize();
+
+	file->clear();
+	for ( unsigned int i = 0; i < m_size; i++ ) {
+		if ( i >= size ) {
+			break;
+		}
+
+		int byte = m_memory[i];
+
+		if ( MFLAG_UNDEFINED | byte ) {
+			file->unset(i);
+		} else {
+			file->set(i, byte & 0xff);
+		}
+	}
 }
 
 MCUSim::RetCode AVR8DataMemory::directRead(unsigned int addr, unsigned int & data) const {
@@ -212,6 +245,7 @@ inline void AVR8DataMemory::loadConfig() {
 		memcpy(m_mem2sizes, m_config.m_mem2sizes, m_config.m_mem2size);
 	}
 }
+
 inline void AVR8DataMemory::resetToInitialValues() {
 	// Initialize CPU register file, set all registers to zero
 	for ( unsigned int i = 0; i < m_config.m_regFileSize; i++ ) {
@@ -244,5 +278,34 @@ inline void AVR8DataMemory::mcuReset() {
 			m_memory2[i][j] &= 0xffffff00; // Preserve only the register configuration, not its content
 			m_memory2[i][j] |= (m_config.m_ioMem2InitValues[i][j] & 0xff);
 		}
+	}
+}
+
+AVR8DataMemory::Config::Config() {
+	m_undefinedValue = -1;
+
+	m_ioRegInitValues = NULL;
+	m_ioRegRandomInit = NULL;
+	m_mem2sizes = NULL;
+	m_ioMem2InitValues = NULL;
+}
+
+AVR8DataMemory::Config::~Config() {
+	if ( NULL != m_ioRegInitValues ) {
+		delete m_ioRegInitValues;
+	}
+	if ( NULL != m_ioRegRandomInit ) {
+		delete m_ioRegRandomInit;
+	}
+	if ( NULL != m_mem2sizes ) {
+		delete m_mem2sizes;
+	}
+	if ( NULL != m_ioMem2InitValues ) {
+		for ( unsigned int i = 0; i < m_mem2size; i++ ) {
+			if ( NULL != m_ioMem2InitValues[i] ) {
+				delete m_ioMem2InitValues[i];
+			}
+		}
+		delete m_ioMem2InitValues;
 	}
 }
