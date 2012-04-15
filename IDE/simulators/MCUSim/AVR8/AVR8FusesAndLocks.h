@@ -77,7 +77,14 @@ public:
 	};
 
 	struct Config {
+		Config() {
+			m_undefinedValue = -1;
+		}
 		int m_undefinedValue; // -1 means random
+
+		unsigned char m_defaultFusesLow;
+		unsigned char m_defaultFusesHigh;
+		unsigned char m_defaultLocksLow;
 	};
 
 	Config m_config;
@@ -110,6 +117,7 @@ protected:
 	bool m_lockBits[LB__MAX__];
 
 private:
+	inline void loadConfig();
 	inline void resetToInitialValues();
 };
 

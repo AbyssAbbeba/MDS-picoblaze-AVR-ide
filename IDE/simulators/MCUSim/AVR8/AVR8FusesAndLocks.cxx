@@ -70,6 +70,9 @@ unsigned char AVR8FusesAndLocks::operator[] (Bytes byte) const {
 
 void AVR8FusesAndLocks::reset(MCUSim::ResetMode mode) {
 	switch ( mode ) {
+		case MCUSim::RSTMD_NEW_CONFIG:
+			loadConfig();
+			break;
 		case MCUSim::RSTMD_INITIAL_VALUES:
 			resetToInitialValues();
 			break;
@@ -79,6 +82,36 @@ void AVR8FusesAndLocks::reset(MCUSim::ResetMode mode) {
 	}
 }
 
+inline void AVR8FusesAndLocks::loadConfig() {
+	// Set to default values
+	unsigned char mask = 0x01;
+	for ( int i = 0; i < 8; i++ ) {
+		if ( mask & m_config.m_defaultFusesLow ) {
+			m_fuses[i] = true;
+		} else {
+			m_fuses[i] = false;
+		}
+		mask <<= 1;
+	}
+	for ( int i = 8; i < 16; i++ ) {
+		if ( mask & m_config.m_defaultFusesHigh ) {
+			m_fuses[i] = true;
+		} else {
+			m_fuses[i] = false;
+		}
+		mask <<= 1;
+	}
+	mask = 0x01;
+	for ( int i = 8; i < 16; i++ ) {
+		if ( mask & m_config.m_defaultLocksLow ) {
+			m_lockBits[i] = true;
+		} else {
+			m_lockBits[i] = false;
+		}
+		mask <<= 1;
+	}
+}
+	
 inline void AVR8FusesAndLocks::resetToInitialValues() {
 	for ( int i = 0; i < FUSE__MAX__; i++ ) {
 		m_fuses[i] = false;
