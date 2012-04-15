@@ -21,6 +21,7 @@
 #include <QStatusBar>
 #include <QGridLayout>
 #include <QByteArray>
+#include <QLabel>
 #include "wlinecounter.h"
 #include "wcolumncounter.h"
 
@@ -46,8 +47,14 @@ class HexEdit : public QWidget
         //void setByteArray();
 
     public slots:
-        //void changeText();
+        void changeAscii(int position);
+        void changeText(int position);
         void moveCursor();
+        void moveAsciiCursor();
+
+    signals:
+        void textChanged(int position);
+        void asciiChanged(int position);
 
     private:
         //void clearByteArray();
@@ -59,9 +66,12 @@ class HexEdit : public QWidget
         QTextEdit *hexAsciiEdit;
         QByteArray *hexByteArray;
         QStatusBar *hexStatusBar;
+        QLabel *hexStatusLabel;
         QGridLayout *hexLayout;
         
         int prevPosition;
+        int columns;
+        bool changable;
 
     protected:
         bool eventFilter(QObject *target, QEvent *event);

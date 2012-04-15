@@ -19,7 +19,10 @@
 
 #include <QPlainTextEdit>
 #include <QTabWidget>
+#include <QStatusBar>
+#include <QGridLayout>
 #include "../mainform/project.h"
+#include "wlinecounter.h"
 
 
 class Project;
@@ -30,7 +33,7 @@ class Project;
  * @ingroup GUI
  * @class CodeEdit
  */
-class CodeEdit : public QPlainTextEdit
+class CodeEdit : QWidget
 {
     Q_OBJECT   
     public:
@@ -45,6 +48,7 @@ class CodeEdit : public QPlainTextEdit
         void connectAct();
         bool isChild(Project* project);
         void setParentProject(Project* project);
+        QPlainTextEdit *getTextEdit();
 
     public slots:
         void setChanged();
@@ -55,6 +59,10 @@ class CodeEdit : public QPlainTextEdit
         bool changed;
         Project* parentProject;
         QTabWidget *parentWidget;
+        QStatusBar *statusBar;
+        QPlainTextEdit *textEdit;
+        QGridLayout *layout;
+        WLineCounter *lineCount;
 };
 
 

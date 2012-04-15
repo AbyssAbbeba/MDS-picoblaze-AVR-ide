@@ -43,7 +43,7 @@ class Project;
 class ProjectMan
 {
     public:
-        ProjectMan(MainForm* mainWindow);
+        ProjectMan(MainForm *mainWindow);
         void addFile(QFile *file, QString path, QString name);
         void addProject(QString name, QString path, QFile *file);
         void openProject(QFile *file);
