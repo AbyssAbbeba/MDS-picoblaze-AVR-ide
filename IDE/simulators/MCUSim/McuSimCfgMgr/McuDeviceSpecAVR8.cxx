@@ -15,7 +15,11 @@
 #include <QDebug>
 #include <cmath>
 
-McuDeviceSpecAVR8::McuDeviceSpecAVR8() : McuDeviceSpec(MCUSim::Arch::ARCH_AVR8) {}
+McuDeviceSpecAVR8::McuDeviceSpecAVR8() : McuDeviceSpec(MCUSim::Arch::ARCH_AVR8) {
+	for ( int i = 0; i < AVR8PinNames::SPF__MAX__; i++ ) {
+		m_io.m_specFuncMap[i] = AVR8PinNames::PIN_NC;
+	}
+}
 
 McuDeviceSpecAVR8::DataMemory::DataMemory() {
 	m_ioRegInitValues = NULL;
@@ -27,21 +31,21 @@ McuDeviceSpecAVR8::DataMemory::DataMemory() {
 
 McuDeviceSpecAVR8::DataMemory::~DataMemory() {
 	if ( NULL != m_ioRegInitValues ) {
-		delete m_ioRegInitValues;
+		delete[] m_ioRegInitValues;
 	}
 	if ( NULL != m_ioRegRandomInit ) {
-		delete m_ioRegRandomInit;
+		delete[] m_ioRegRandomInit;
 	}
 	if ( NULL != m_mem2sizes ) {
-		delete m_mem2sizes;
+		delete[] m_mem2sizes;
 	}
 	if ( NULL != m_ioMem2InitValues ) {
 		for ( unsigned int i = 0; i < m_mem2size; i++ ) {
 			if ( NULL != m_ioMem2InitValues[i] ) {
-				delete m_ioMem2InitValues[i];
+				delete[] m_ioMem2InitValues[i];
 			}
 		}
-		delete m_ioMem2InitValues;
+		delete[] m_ioMem2InitValues;
 	}
 }
 
@@ -81,7 +85,7 @@ bool McuDeviceSpecAVR8::setupSimulator(AVR8Config & mcuConfig) {
 	}
 	mcuConfig.m_configDataMemory->m_mem2size = m_dataMemory.m_mem2size;
 	mcuConfig.m_configDataMemory->m_mem2sizes = new unsigned int[m_dataMemory.m_mem2size];
-	for ( unsigned int i = 0; i < m_dataMemory.m_ioRegSize; i++ ) {
+	for ( unsigned int i = 0; i < m_dataMemory.m_mem2size; i++ ) {
 		mcuConfig.m_configDataMemory->m_mem2sizes[i] = m_dataMemory.m_mem2sizes[i];
 	}
 	mcuConfig.m_configDataMemory->m_ioMem2InitValues = new uint32_t * [m_dataMemory.m_mem2size];
@@ -96,9 +100,8 @@ bool McuDeviceSpecAVR8::setupSimulator(AVR8Config & mcuConfig) {
 	// External interrupts
 	mcuConfig.m_configExternalInterrupts->m_enabled = m_externalInterrupts.m_enabled;
 	// Fuses and lock bits
-	mcuConfig.m_configFusesAndLocks->m_defaultFusesLow = m_fusesAndLocks.m_defaultFusesLow;
-	mcuConfig.m_configFusesAndLocks->m_defaultFusesHigh = m_fusesAndLocks.m_defaultFusesHigh;
-	mcuConfig.m_configFusesAndLocks->m_defaultLocksLow = m_fusesAndLocks.m_defaultLocksLow;
+	mcuConfig.m_configFusesAndLocks->m_defaultFuses = m_fusesAndLocks.m_defaultFuses;
+	mcuConfig.m_configFusesAndLocks->m_defaultLockBits = m_fusesAndLocks.m_defaultLockBits;
 	// Instruction set
 	for ( int i = 0; i < AVR8InsNames::SPECI__MAX__; i++ ) {
 		mcuConfig.m_configInstructionSet->m_availableInstructions[i] = m_instructionSet.m_availableInstructions[i];
@@ -108,10 +111,13 @@ bool McuDeviceSpecAVR8::setupSimulator(AVR8Config & mcuConfig) {
 	switch ( m_instructionSet.m_pcWidth ) {
 		case AVR8InstructionSet::PCWIDTH_16:
 			mcuConfig.m_configInstructionSet->m_pcMax = 0x10000; // 2¹⁶
+			break;
 		case AVR8InstructionSet::PCWIDTH_22:
 			mcuConfig.m_configInstructionSet->m_pcMax = 0x400000; // 2²²
+			break;
 		default:
 			qDebug() << "m_instructionSet.m_pcWidth is invalid";
+			return false;
 	}
 	// Interrupt controller
 	for ( int i = 0; i < AVR8InterruptController::INTVEC__MAX__; i++ ) {

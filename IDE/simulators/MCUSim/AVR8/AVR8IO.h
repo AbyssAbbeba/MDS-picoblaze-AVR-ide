@@ -35,7 +35,7 @@ public:
 	~AVR8IO();
 
 	static const unsigned int NUMBER_OF_PORTS = 4;
-	static const unsigned int NUMBER_OF_PINS = 0 + ( NUMBER_OF_PORTS * 8 ); // TODO: write something better here
+	static const unsigned int NUMBER_OF_PINS = AVR8PinNames::PIN__MAX__;//0 + ( NUMBER_OF_PORTS * 8 ); // TODO: write something better here
 
 	enum PINMD {
 		PINMD_GENERAL_IO	= 0x0,
@@ -74,22 +74,22 @@ public:
 		return getLog(m_config.m_specFuncMap[pin]);
 	}
 	bool getLog(AVR8PinNames::PIN pin) {
-		assert(AVR8PinNames::PIN_NC == pin);
+		assert(AVR8PinNames::PIN_NC != pin);
 
 		if ( m_lowLevelInterface[II_REAL_VOLTAGE][pin] > m_logThreshold1 ) {
 			return true;
 		} else if ( m_lowLevelInterface[II_REAL_VOLTAGE][pin] < m_logThreshold0 ) {
 			return false;
 		} else {
-			logEvent(EVENT_IO_INDETERMINABLE_LOG, pin);
-			switch ( m_config.m_random ) {
-				case RVM_RANDOM:
-					return ( ( rand() > (RAND_MAX / 2) ) ? true : false );
-				case RVM_HIGH:
-					return true;
-				case RVM_LOW:
-					return false;
-			}
+// 			logEvent(EVENT_IO_INDETERMINABLE_LOG, pin);
+// 			switch ( m_config.m_random ) {
+// 				case RVM_RANDOM:
+// 					return ( ( rand() > (RAND_MAX / 2) ) ? true : false );
+// 				case RVM_HIGH:
+// 					return true;
+// 				case RVM_LOW:
+// 					return false;
+// 			}
 		}
 
 		assert(0);
@@ -99,7 +99,7 @@ public:
 		setLog(m_config.m_specFuncMap[pin], val);
 	}
 	void setLog(AVR8PinNames::PIN pin, bool val) {
-		assert(AVR8PinNames::PIN_NC == pin);
+		assert(AVR8PinNames::PIN_NC != pin);
 
 		if ( true == val ) {
 			m_lowLevelInterface[II_VOLTAGE_INT][pin] = m_sourceVoltage;
@@ -111,7 +111,7 @@ public:
 		return getVoltage(m_config.m_specFuncMap[pin]);
 	}
 	SimFloatType getVoltage(AVR8PinNames::PIN pin) const {
-		assert(AVR8PinNames::PIN_NC == pin);
+		assert(AVR8PinNames::PIN_NC != pin);
 
 		return m_lowLevelInterface[II_REAL_VOLTAGE][pin];
 	}
@@ -119,12 +119,12 @@ public:
 		setVoltage(m_config.m_specFuncMap[pin], volts);
 	}
 	void setVoltage(AVR8PinNames::PIN pin, SimFloatType volts) {
-		assert(AVR8PinNames::PIN_NC == pin);
+		assert(AVR8PinNames::PIN_NC != pin);
 
 		m_lowLevelInterface[II_VOLTAGE_INT][pin] = volts;
 	}
 // 	SimFloatType getResistance(PIN pin) const {
-// 		assert(AVR8PinNames::PIN_NC == pin);
+// 		assert(AVR8PinNames::PIN_NC != pin);
 //
 // 		return m_lowLevelInterface[II_RESISTANCE][pin];
 // 	}
@@ -132,17 +132,17 @@ public:
 		setResistance(m_config.m_specFuncMap[pin], ohms);
 	}
 	void setResistance(AVR8PinNames::PIN pin, SimFloatType ohms) {
-		assert(AVR8PinNames::PIN_NC == pin);
+		assert(AVR8PinNames::PIN_NC != pin);
 
 		m_lowLevelInterface[II_RESISTANCE][pin] = ohms;
 	}
 // 	void setAsOutput(PIN pin) {
-// 		assert(AVR8PinNames::PIN_NC == pin);
+// 		assert(AVR8PinNames::PIN_NC != pin);
 //
 // 		m_lowLevelInterface[II_RESISTANCE][pin] = 0;
 // 	}
 // 	void setAsInput(PIN pin) {
-// 		assert(AVR8PinNames::PIN_NC == pin);
+// 		assert(AVR8PinNames::PIN_NC != pin);
 //
 // 		m_lowLevelInterface[II_RESISTANCE][pin] = INFINITY;
 // 	}
@@ -150,7 +150,7 @@ public:
 		setPinMode(m_config.m_specFuncMap[pin], mode);
 	}
 	void setPinMode(AVR8PinNames::PIN pin, PINMD mode) {
-		assert(AVR8PinNames::PIN_NC == pin);
+		assert(AVR8PinNames::PIN_NC != pin);
 
 		// TODO: Certainly this is not complete.
 
@@ -160,7 +160,7 @@ public:
 		return getPinMode(m_config.m_specFuncMap[pin]);
 	}
 	PINMD getPinMode(AVR8PinNames::PIN pin) const {
-		assert(AVR8PinNames::PIN_NC == pin);
+		assert(AVR8PinNames::PIN_NC != pin);
 
 		return m_pinMode[pin];
 	}
@@ -168,7 +168,7 @@ public:
 	void setSourceVoltage(SimFloatType voltage) {
 		m_sourceVoltage = voltage;
 		m_logThreshold0 = m_sourceVoltage / 2;
-		m_logThreshold1 = m_logThreshold1;
+		m_logThreshold1 = m_logThreshold0;
 	}
 	SimFloatType getSourceVoltage() const {
 		return m_sourceVoltage;

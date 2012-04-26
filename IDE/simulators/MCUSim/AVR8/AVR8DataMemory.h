@@ -98,9 +98,6 @@ protected:
 	uint32_t ** m_memory2;
 	unsigned int m_size;
 
-	unsigned int m_mem2size;
-	unsigned int * m_mem2sizes;
-
 	MCUSim::EventLogger * m_eventLogger;
 
 	inline void resetToInitialValues();
@@ -159,11 +156,11 @@ inline void AVR8DataMemory::write(uint32_t addr, unsigned int val) {
 
 		addr = (result & 0xffff);
 
-		if ( addr >= m_mem2size ) {
+		if ( addr >= m_config.m_mem2size ) {
 			logEvent(EVENT_MEM_ERR_WR_NOT_IMPLEMENTED, addr);
 			return;
 		}
-		if ( addrVariant >= m_mem2sizes[addr] ) {
+		if ( addrVariant >= m_config.m_mem2sizes[addr] ) {
 			logEvent(EVENT_MEM_ERR_WR_NOT_IMPLEMENTED, addr);
 			return;
 		}
@@ -290,11 +287,11 @@ inline unsigned int AVR8DataMemory::read(uint32_t addr) {
 
 		addr = (result & 0xffff);
 
-		if ( addr >= m_mem2size ) {
+		if ( addr >= m_config.m_mem2size ) {
 			logEvent(EVENT_MEM_ERR_WR_NOT_IMPLEMENTED, addr);
 			return getUndefVal();
 		}
-		if ( addrVariant >= m_mem2sizes[addr] ) {
+		if ( addrVariant >= m_config.m_mem2sizes[addr] ) {
 			logEvent(EVENT_MEM_ERR_WR_NOT_IMPLEMENTED, addr);
 			return getUndefVal();
 		}

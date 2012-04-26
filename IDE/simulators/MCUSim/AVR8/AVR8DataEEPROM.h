@@ -47,7 +47,7 @@ public:
 		
 		unsigned int m_addrRegWidth;
 		unsigned int m_size;
-		unsigned int m_writeTime; // 8.448 (in seconds!)
+		float m_writeTime; // 8.448 (in seconds!)
 		int m_undefinedValue;
 	};
 

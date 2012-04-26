@@ -134,18 +134,19 @@ inline void AVR8SystemControl::handlePowerOnReset() {
 }
 
 void AVR8SystemControl::timeStep(float timeStep, unsigned int clockCycles) {
-	if ( true == m_config.m_hasPowerOnReset ) {
-		handlePowerOnReset();
-	}
-	if ( true == m_config.m_hasBrownOutReset ) {
-		handleBrownOutReset(timeStep);
-	}
-	if ( true == m_config.m_hasExternalReset ) {
-		handleExternalReset(timeStep);
-	}
-	if ( true == m_config.m_hasWatchDog ) {
-		m_watchdogTimer->timeStep(timeStep, clockCycles);
-	}
+// Not ready yet.
+// 	if ( true == m_config.m_hasPowerOnReset ) {
+// 		handlePowerOnReset();
+// 	}
+// 	if ( true == m_config.m_hasBrownOutReset ) {
+// 		handleBrownOutReset(timeStep);
+// 	}
+// 	if ( true == m_config.m_hasExternalReset ) {
+// 		handleExternalReset(timeStep);
+// 	}
+// 	if ( true == m_config.m_hasWatchDog ) {
+// 		m_watchdogTimer->timeStep(timeStep, clockCycles);
+// 	}
 }
 
 void AVR8SystemControl::watchDogReset() {

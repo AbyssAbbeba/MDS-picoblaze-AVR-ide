@@ -55,6 +55,7 @@ private:
 	QStringList m_expectedXMLElements;	///<
 	bool m_expectCharacters;		///<
 	int m_auxInt0;				///< An auxiliary integer variable
+	int m_auxInt1;
 
 	inline void clear();
 

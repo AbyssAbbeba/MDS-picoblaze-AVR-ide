@@ -20,6 +20,7 @@
 #include "AVR8SystemControl.h"
 #include "AVR8BootLoader.h"
 
+
 int (AVR8InstructionSet:: * const AVR8InstructionSet::m_opCodeDispatchTable[64])(const unsigned int opCode) = {
 	&AVR8InstructionSet::instOPCode_000000,	// opCode = 0000 00xx xxxx xxxx
 	&AVR8InstructionSet::inst_CPC_Rd_Rr,	// opCode = 0000 01xx xxxx xxxx
@@ -1450,25 +1451,14 @@ int AVR8InstructionSet::inst_OUT_A_Rr(const unsigned int opCode) {
 }
 
 /*
- * OP Code: 1101 kkkk kkkk kkkk - Relative Call to Subroutine
- * Operation:
- * PC ← PC + k + 1  Devices with 16 bits PC, 128K bytes Program memory maximum.
- * PC ← PC + k + 1  Devices with 22 bits PC, 8M bytes Program memory maximum.
+ * OP Code: 1100 kkkk kkkk kkkk -  Relative Jump
+ * Operation: PC ← PC + k + 1
  */
 int AVR8InstructionSet::inst_RJMP_k(const unsigned int opCode) {
 	instructionEnter(AVR8InsNames::INS_RJMP_k);
 
 	// Operands
 	int valK = unsigned(opCode & 0x0fff);
-
-	// Push current PC value onto the stack
-	m_dataMemory->pushOnStack(m_pc & 0xff);
-	m_pc >>= 8;
-	m_dataMemory->pushOnStack(m_pc & 0xff);
-	if ( m_config.m_pcWidth > PCWIDTH_16 ) {
-		m_pc >>= 8;
-		m_dataMemory->pushOnStack(m_pc & 0xff);
-	}
 
 	// Execute jump
 	if ( valK & 0x800 ) {
