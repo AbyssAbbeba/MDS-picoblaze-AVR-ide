@@ -28,7 +28,6 @@ AVR8TimerCounter0 * AVR8TimerCounter0::link(
 	return this;
 }
 
-
 inline void AVR8TimerCounter0::determinateClockSource() {
 	/*
 	 * CS02  CS01  CS00   Description

@@ -115,6 +115,10 @@ public:
 		return m_sleepMode;
 	}
 
+// 	#ifdef SWIG DEBUG
+		AVR8ProgramMemory & getProgMem();
+// 	#endif
+
 protected:
 	AVR8Config * m_config;
 

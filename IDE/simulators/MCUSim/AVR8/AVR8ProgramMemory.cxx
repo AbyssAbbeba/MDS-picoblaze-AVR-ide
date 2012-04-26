@@ -18,6 +18,7 @@
 
 #include <cstdlib>
 
+
 AVR8ProgramMemory::AVR8ProgramMemory() {
 	m_memory = NULL;
 	m_size = 0;
@@ -43,18 +44,20 @@ AVR8ProgramMemory::~AVR8ProgramMemory() {
 void AVR8ProgramMemory::loadDataFile(const DataFile * file) {
 	unsigned int size = file->maxSize();
 
-	for ( unsigned int i = 0; i < size; i++ ) {
-		if ( i >= m_size ) {
+	for ( unsigned int i = 0, j = 0; i < size; i++, j++ ) {
+		if ( j >= m_size ) {
 			break;
 		}
 
 		int byte = (*file)[i];
 		if ( -1 == byte ) {
-			 byte = ( 0xffff | MFLAG_UNDEFINED );
+			byte = ( 0xffff | MFLAG_UNDEFINED );
+		} else {
+			byte |= ( (*file)[++i] << 8 );
 		}
-		m_memory[i] = byte;
+		m_memory[j] = byte;
 	}
-	for ( unsigned int i = size; i < m_size; i++ ) {
+	for ( unsigned int i = ( size / 2 ); i < m_size; i++ ) {
 		m_memory[i] = ( 0xffff | MFLAG_UNDEFINED );
 	}
 }
@@ -63,17 +66,19 @@ void AVR8ProgramMemory::storeInDataFile(DataFile * file) const {
 	unsigned int size = file->maxSize();
 
 	file->clear();
-	for ( unsigned int i = 0; i < m_size; i++ ) {
-		if ( i >= size ) {
+	for ( unsigned int i = 0, j = 0; i < size; i++, j++ ) {
+		if ( j >= m_size ) {
 			break;
 		}
 
-		int byte = m_memory[i];
+		int byte = m_memory[j];
 
-		if ( MFLAG_UNDEFINED | byte ) {
+		if ( MFLAG_UNDEFINED & byte ) {
 			file->unset(i);
+			file->unset(++i);
 		} else {
-			file->set(i, byte & 0xffff);
+			file->set(i, byte & 0xff);
+			file->set(++i, (byte & 0xff00) >> 8);
 		}
 	}
 }
@@ -106,7 +111,7 @@ void AVR8ProgramMemory::resize(unsigned int newSize) {
 	unsigned int * memoryOrig = m_memory;
 	m_memory = new unsigned int[newSize];
 
-	unsigned int sizeToCopy = ( m_size <= newSize ) ? m_size : newSize;
+	const unsigned int sizeToCopy = ( m_size <= newSize ) ? m_size : newSize;
 	for ( unsigned int i = 0; i < sizeToCopy; i++ ) {
 		m_memory[i] = memoryOrig[i];
 	}

@@ -26,10 +26,16 @@
 #endif
 
 AVR8IO::AVR8IO() {
-	m_lowLevelInterface = new SimFloatType* [II__MAX__];
+	m_lowLevelInterface = new SimFloatType * [II__MAX__];
 	for ( int i = 0; i < II__MAX__; i++ ) {
 		m_lowLevelInterface[i] = new SimFloatType[NUMBER_OF_PINS];
+
+		for ( unsigned int j = 0; j < NUMBER_OF_PINS; j++ ) {
+			m_lowLevelInterface[i][j] = 0;
+		}
 	}
+
+	setSourceVoltage(5); // default voltage is 5V
 
 	m_enabled = false;
 }

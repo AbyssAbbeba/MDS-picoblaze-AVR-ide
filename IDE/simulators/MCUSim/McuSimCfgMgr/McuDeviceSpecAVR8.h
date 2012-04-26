@@ -59,7 +59,7 @@ public:
 		bool m_enabled;
 		unsigned int m_addrRegWidth;
 		unsigned int m_size;
-		unsigned int m_writeTime;
+		float m_writeTime;
 	} m_dataEEPROM;
 
 	struct DataMemory {
@@ -86,9 +86,8 @@ public:
 	} m_externalInterrupts;
 
 	struct FusesAndLocks {
-		unsigned char m_defaultFusesLow;
-		unsigned char m_defaultFusesHigh;
-		unsigned char m_defaultLocksLow;
+		unsigned char m_defaultFuses;
+		unsigned char m_defaultLockBits;
 	} m_fusesAndLocks;
 
 	struct InstructionSet {

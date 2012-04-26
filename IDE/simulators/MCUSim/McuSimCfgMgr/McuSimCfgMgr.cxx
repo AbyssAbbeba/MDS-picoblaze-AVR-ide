@@ -23,17 +23,20 @@
 
 #define CHECK_NO_OF_ATTRS(number) \
 	if ( number != numberOf ) { \
-		qDebug() << "Invalid number of attributes, tag: " << localName; \
+		qDebug() << "Invalid number of attributes, parser line: " << __LINE__ \
+			 << ", tag: " << localName; \
 		return false; \
 	}
 
 #define INVALID_ATTRIBUTE() \
-	qDebug() << "Invalid attribute, tag: " << localName \
+	qDebug() << "Invalid attribute, parser line: " << __LINE__ \
+		 << ", tag: " << localName \
 		 << ", attr: " << atts.localName(i); \
 	return false;
 
 #define INVALID_ATTR_VALUE() \
-	qDebug() << "Invalid value of attribute, tag: " << localName \
+	qDebug() << " Invalid attribute value, parser line: " << __LINE__ \
+		 << ", tag: " << localName \
 		 << ", attr: " << atts.localName(i) \
 		 << ", val: " << atts.value(i); \
 	return false;
@@ -87,12 +90,12 @@ bool McuSimCfgMgr::openConfigFile(const char * filename) {
 
 bool McuSimCfgMgr::characters(const QString & characters) {
 	QString ch = characters.simplified();
-	if ( (false == m_expectCharacters) && (false == ch.isEmpty()) ) {
+	if ( ( false == m_expectCharacters ) && ( false == ch.isEmpty() ) ) {
 		qDebug() << "Unexpected characters '" + ch + "'";
 		return false;
 	}
 
-	if ( true == m_currentXMLElement.isEmpty() ) {
+	if ( ( true == m_currentXMLElement.isEmpty() ) || ( false == m_expectCharacters ) ) {
 		return true;
 	}
 
@@ -113,50 +116,7 @@ inline bool McuSimCfgMgr::charactersAVR8(const QString & ch) {
 	McuDeviceSpecAVR8 * device = dynamic_cast<McuDeviceSpecAVR8*>(m_devices.last());
 	QString tag = m_currentXMLElement.top();
 
-	if( "ioreginitvalues" == tag ) {
-		QStringList list = ch.split(QRegExp("\\s+"));
-		if ( (unsigned int)(list.size()) != device->m_dataMemory.m_ioRegSize ) {
-			qDebug() << "Invalid number of elemets, "
-				 << list.size() << " given, "
-				 << device->m_dataMemory.m_ioRegSize << " expected, tag: " << tag;
-			return false;
-		}
-
-		device->m_dataMemory.m_ioRegInitValues = new uint32_t[device->m_dataMemory.m_ioRegSize];
-		for ( unsigned int i = 0; i < device->m_dataMemory.m_ioRegSize; i ++ ) {
-			bool ok = true;
-
-			device->m_dataMemory.m_ioRegInitValues[i] = (uint32_t)(list[i].toULongLong(&ok, 0));
-
-			if ( false == ok ) {
-				qDebug() << "Invalid value: " << list[i] << ", tag: " << tag;
-				return false;
-			}
-		}
-	} else if( "ioregrandominit" == tag ) {
-		QStringList list = ch.split(QRegExp("\\s+"));
-		if ( (unsigned int)(list.size()) != device->m_dataMemory.m_ioRegSize ) {
-			qDebug() << "Invalid number of elemets, "
-				 << list.size() << " given, "
-				 << device->m_dataMemory.m_ioRegSize << " expected, tag: " << tag;
-			return false;
-		}
-
-		device->m_dataMemory.m_ioRegRandomInit = new uint8_t[device->m_dataMemory.m_ioRegSize];
-		for ( unsigned int i = 0; i < device->m_dataMemory.m_ioRegSize; i ++ ) {
-			bool ok = true;
-
-			device->m_dataMemory.m_ioRegRandomInit[i] = (uint8_t)(list[i].toUInt(&ok, 0));
-
-			if ( false == ok ) {
-				qDebug() << "Invalid value: " << list[i] << ", tag: " << tag;
-				return false;
-			}
-		}
-	} else if( "mem2sizes" == tag ) {
-		
-	} else if( "initvalues" == tag ) {
-	} else if( "availableinstructions" == tag ) {
+	if( "availableinstructions" == tag ) {
 		static const QStringList specificInstructions = QStringList("STS_K_RR_16")
 			<< "ADIW"		<< "CALL"		<< "JMP"		<< "BREAK"
 			<< "EICALL"		<< "EIJMP"		<< "ICALL"		<< "IJMP"
@@ -180,7 +140,9 @@ inline bool McuSimCfgMgr::charactersAVR8(const QString & ch) {
 
 		QStringList list = ch.split(QRegExp("\\s+"));
 		foreach ( const QString & item, list ) {
-			qDebug() << "INSTR: " << item; //DEBUG!
+			if ( 0 == item.length() ) {
+				continue;
+			}
 			
 			int instruction = specificInstructions.indexOf(item);
 			if ( -1 == instruction ) {
@@ -197,7 +159,9 @@ inline bool McuSimCfgMgr::charactersAVR8(const QString & ch) {
 
 		QStringList list = ch.split(QRegExp("\\s+"));
 		foreach ( const QString & item, list ) {
-			qDebug() << "INT: " << item; //DEBUG!
+			if ( 0 == item.length() ) {
+				continue;
+			}
 			AVR8InterruptController::InterruptVector interrupt;
 
 			if ( "RESET" == item ) {
@@ -254,7 +218,9 @@ inline bool McuSimCfgMgr::charactersAVR8(const QString & ch) {
 
 		QStringList list = ch.split(QRegExp("\\s+"));
 		foreach ( const QString & item, list ) {
-			qDebug() << "hasport: " << item; //DEBUG!
+			if ( 0 == item.length() ) {
+				continue;
+			}
 
 			int port = ports.indexOf(item);
 			if ( -1 == port ) {
@@ -269,7 +235,7 @@ inline bool McuSimCfgMgr::charactersAVR8(const QString & ch) {
 			<< "PA1" << "PA2" << "PA3" << "PA4" << "PA5" << "PA6" << "PA7"
 			<< "PB0" << "PB1" << "PB2" << "PB3" << "PB4" << "PB5" << "PB6" << "PB7"
 			<< "PC0" << "PC1" << "PC2" << "PC3" << "PC4" << "PC5" << "PC6" << "PC7"
-			<< "PD0" << "PD1" << "PD2" << "PD3" << "PD4" << "PD5" << "PD6" << "PD7";			
+			<< "PD0" << "PD1" << "PD2" << "PD3" << "PD4" << "PD5" << "PD6" << "PD7";
 
 		for ( unsigned int i = 0; i < AVR8IO::NUMBER_OF_PINS; i++ ) {
 			device->m_io.m_availablePins[i] = false;
@@ -277,7 +243,9 @@ inline bool McuSimCfgMgr::charactersAVR8(const QString & ch) {
 
 		QStringList list = ch.split(QRegExp("\\s+"));
 		foreach ( const QString & item, list ) {
-			qDebug() << "availablepins: " << item; //DEBUG!
+			if ( 0 == item.length() ) {
+				continue;
+			}
 
 			int pin = pinNames.indexOf(item);
 			if ( -1 == pin ) {
@@ -287,8 +255,6 @@ inline bool McuSimCfgMgr::charactersAVR8(const QString & ch) {
 
 			device->m_io.m_availablePins[pin] = true;
 		}
-	} else {
-		qDebug() << "Unexpected tag, expected characters - this should never happen.";
 	}
 
 	return true;
@@ -314,8 +280,6 @@ bool McuSimCfgMgr::startElement(
 		return false;
 	}
 
-qDebug() << "ABC == '" << localName << "', '"<<qName<<"'"; //DEBUG!
-
 	m_expectedXMLElements.clear();
 	m_currentXMLElement.push(localName);
 	m_expectCharacters = false;
@@ -326,11 +290,11 @@ qDebug() << "ABC == '" << localName << "', '"<<qName<<"'"; //DEBUG!
 		m_expectedXMLElements << "adc";
 		if ( "avr8:device" == qName ) {
 			m_devices.append(new McuDeviceSpecAVR8());
+			return attributesAVR8(localName, atts);
 		} else {
 			qDebug() << "Unknown architecture: \"" << qName << "\"";
 		}
-	}
-	if ( false == m_devices.isEmpty() ) {
+	} else if ( false == m_devices.isEmpty() ) {
 		switch ( m_devices.last()->m_arch ) {
 			case MCUSim::Arch::ARCH_AVR8:
 				return startElementAVR8(namespaceURI, localName, qName, atts);
@@ -361,19 +325,19 @@ bool McuSimCfgMgr::startElementAVR8(
 	} else if ( "datamemory" == localName ) {
 		m_expectedXMLElements << "ioreginitvalues";
 	} else if ( "ioreginitvalues" == localName ) {
-		m_expectCharacters = true;
-		m_expectedXMLElements << "ioregrandominit";
-	} else if ( "ioregrandominit" == localName ) {
-		m_expectCharacters = true;
-		m_expectedXMLElements << "mem2sizes";
-	} else if ( "mem2sizes" == localName ) {
-		m_expectCharacters = true;
-		m_expectedXMLElements << "iomem2initvalues";
+		m_expectedXMLElements<< "ioreginitvalue" << "iomem2initvalues";
+	} else if ( "ioreginitvalue" == localName ) {
+		m_expectedXMLElements << "ioreginitvalue" << "iomem2initvalues";
 	} else if ( "iomem2initvalues" == localName ) {
+		m_auxInt0 = -1;
 		m_expectedXMLElements << "externalinterrupts" << "initvalues";
 	} else if ( "initvalues" == localName ) {
-		m_expectCharacters = true;
-		m_expectedXMLElements << "externalinterrupts" << "initvalues";
+		m_auxInt0++;
+		m_auxInt1 = -1;
+		m_expectedXMLElements << "externalinterrupts" << "initvalues" << "initvalue";
+	} else if ( "initvalue" == localName ) {
+		m_auxInt1++;
+		m_expectedXMLElements << "externalinterrupts" << "initvalues" << "initvalue";
 	} else if ( "externalinterrupts" == localName ) {
 		m_expectedXMLElements << "fusesandlocks";
 	} else if ( "fusesandlocks" == localName ) {
@@ -427,7 +391,7 @@ bool McuSimCfgMgr::startElementAVR8(
 		return false;
 	}
 
-	return attributesAVR8(localName, atts);;
+	return attributesAVR8(localName, atts);
 }
 
 inline bool McuSimCfgMgr::attributesAVR8(const QString & localName, const QXmlAttributes & atts) {
@@ -526,7 +490,7 @@ inline bool McuSimCfgMgr::attributesAVR8(const QString & localName, const QXmlAt
 			}
 		}
 	} else if ( "dataeeprom" == localName ) {
-		CHECK_NO_OF_ATTRS(4);
+		CHECK_NO_OF_ATTRS(3);
 
 		for ( int i = 0; i < numberOf; i++ ) {
 			bool ok = true;
@@ -539,12 +503,15 @@ inline bool McuSimCfgMgr::attributesAVR8(const QString & localName, const QXmlAt
 				} else {
 					ok = false;
 				}
-			} else if ( "addrRegWidth" == atts.localName(i) ) {
-				device->m_dataEEPROM.m_addrRegWidth = atts.value(i).toUInt(&ok, 0);
 			} else if ( "size" == atts.localName(i) ) {
 				device->m_dataEEPROM.m_size = atts.value(i).toUInt(&ok, 0);
+				if ( device->m_dataEEPROM.m_size <= 256) {
+					device->m_dataEEPROM.m_addrRegWidth = 8;
+				} else {
+					device->m_dataEEPROM.m_addrRegWidth = 16;
+				}
 			} else if ( "writeTime" == atts.localName(i) ) {
-				device->m_dataEEPROM.m_writeTime = atts.value(i).toUInt(&ok, 0);
+				device->m_dataEEPROM.m_writeTime = atts.value(i).toFloat(&ok);
 			} else {
 				INVALID_ATTRIBUTE();
 			}
@@ -565,8 +532,16 @@ inline bool McuSimCfgMgr::attributesAVR8(const QString & localName, const QXmlAt
 				device->m_dataMemory.m_sramSize = atts.value(i).toUInt(&ok, 0);
 			} else if ( "ioRegSize" == atts.localName(i) ) {
 				device->m_dataMemory.m_ioRegSize = atts.value(i).toUInt(&ok, 0);
+				if ( true == ok ) {
+					device->m_dataMemory.m_ioRegInitValues = new uint32_t[device->m_dataMemory.m_ioRegSize];
+					device->m_dataMemory.m_ioRegRandomInit = new uint8_t[device->m_dataMemory.m_ioRegSize];
+				}
 			} else if ( "mem2size" == atts.localName(i) ) {
 				device->m_dataMemory.m_mem2size = atts.value(i).toUInt(&ok, 0);
+				if ( true == ok ) {
+					device->m_dataMemory.m_ioMem2InitValues = new uint32_t * [device->m_dataMemory.m_mem2size];
+					device->m_dataMemory.m_mem2sizes = new unsigned int[device->m_dataMemory.m_mem2size];
+				}
 			} else if ( "spWidth" == atts.localName(i) ) {
 				device->m_dataMemory.m_spWidth = atts.value(i).toUInt(&ok, 0);
 			} else {
@@ -577,6 +552,117 @@ inline bool McuSimCfgMgr::attributesAVR8(const QString & localName, const QXmlAt
 				INVALID_ATTR_VALUE();
 			}
 		}
+	} else if ( "ioreginitvalue" == localName ) {
+		CHECK_NO_OF_ATTRS(7);
+
+		unsigned int addr = 0;
+		uint32_t initValue = 0;
+		uint8_t randMask = 0;
+
+		for ( int i = 0; i < numberOf; i++ ) {
+			bool ok = true;
+ 
+			if ( "addr" == atts.localName(i) ) {
+				addr = ( 0xff & atts.value(i).toUInt(&ok, 0) );
+			} else if ( "value" == atts.localName(i) ) {
+				initValue |= ( 0xff & atts.value(i).toUInt(&ok, 0) );
+			} else if ( "writemask" == atts.localName(i) ) {
+				initValue |= ( 0xff & atts.value(i).toUInt(&ok, 0) << 8 );
+			} else if ( "readmask" == atts.localName(i) ) {
+				initValue |= ( 0xff & atts.value(i).toUInt(&ok, 0) << 16);
+			} else if ( "randommask" == atts.localName(i) ) {
+				randMask = ( 0xff & atts.value(i).toUInt(&ok, 0) );
+			} else if ( "reserved" == atts.localName(i) ) {
+				if ( "true" == atts.value(i) ) {
+					initValue |= MCUSim::Memory::MFLAG_RESERVED;
+				} else if ( "false" != atts.value(i) ) {
+					ok = false;
+				}
+			} else if ( "virtual" == atts.localName(i) ) {
+				if ( "true" == atts.value(i) ) {
+					initValue |= MCUSim::Memory::MFLAG_VIRTUAL;
+				} else if ( "false" != atts.value(i) ) {
+					ok = false;
+				}
+			} else {
+				INVALID_ATTRIBUTE();
+			}
+			if ( false == ok ) {
+				INVALID_ATTR_VALUE();
+			}			
+			if ( addr > device->m_dataMemory.m_ioRegSize ) {
+				qDebug() << "Address is too high: " << addr << ", tag: " << localName;
+			}
+
+			device->m_dataMemory.m_ioRegInitValues[addr] = initValue;
+			device->m_dataMemory.m_ioRegRandomInit[addr] = randMask;
+		}
+	} else if ( "iomem2initvalues" == localName ) {
+		CHECK_NO_OF_ATTRS(1);
+
+		for ( int i = 0; i < numberOf; i++ ) {
+			if ( "mem2sizes" == atts.localName(i) ) {
+				QStringList list = atts.value(i).split(QRegExp("\\s+"));
+				if ( (unsigned int)(list.size()) != device->m_dataMemory.m_mem2size ) {
+					qDebug() << "Invalid number of elemets, "
+						<< list.size() << " given, "
+						<< device->m_dataMemory.m_mem2size << " expected, tag: "
+						<< localName << ", attr: " << atts.localName(i);
+					return false;
+				}
+
+				for ( unsigned int i = 0; i < device->m_dataMemory.m_mem2size; i ++ ) {
+					bool ok = true;
+
+					device->m_dataMemory.m_mem2sizes[i] = list[i].toUInt(&ok, 0);
+
+					if ( false == ok ) {
+						INVALID_ATTR_VALUE();
+					}
+				}
+			} else {
+				INVALID_ATTRIBUTE();
+			}
+		}
+	} else if ( "initvalue" == localName ) {
+		CHECK_NO_OF_ATTRS(3);
+
+		if ( 0 == device->m_dataMemory.m_mem2size ) {
+			qDebug() << "There should be no <initvalue ... />, mem2size is 0.";
+			return false;
+		}
+		if ( (unsigned int)(m_auxInt0) > device->m_dataMemory.m_mem2size ) {
+			qDebug() << "Too many <initvalues>...</initvalues>";
+			return false;
+		}
+		if ( 0 == m_auxInt0 ) {
+		} else if ( (unsigned int)(m_auxInt1) > device->m_dataMemory.m_mem2sizes[m_auxInt0] ) {
+			qDebug() << "Too many <initvalue ... />";
+			return false;
+		}
+
+		uint32_t initValue = 0;
+		for ( int i = 0; i < numberOf; i++ ) {
+			bool ok = true;
+
+			if ( "value" == atts.localName(i) ) {
+				initValue |= ( (0xff & atts.value(i).toUInt(&ok, 0)) );
+			} else if ( "writemask" == atts.localName(i) ) {
+				initValue |= ( (0xff & atts.value(i).toUInt(&ok, 0)) << 8 );
+			} else if ( "readmask" == atts.localName(i) ) {
+				initValue |= ( (0xff & atts.value(i).toUInt(&ok, 0)) << 16 );
+			} else {
+				INVALID_ATTRIBUTE();
+			}
+
+			if ( false == ok ) {
+				INVALID_ATTR_VALUE();
+			}
+		}
+		if ( 0 == m_auxInt1 ) {
+			device->m_dataMemory.m_ioMem2InitValues[m_auxInt0] = new uint32_t[device->m_dataMemory.m_mem2sizes[m_auxInt0]];
+		}
+		device->m_dataMemory.m_ioMem2InitValues[m_auxInt0][m_auxInt1] = initValue;
 	} else if ( "externalinterrupts" == localName ) {
 		CHECK_NO_OF_ATTRS(1);
 
@@ -594,17 +680,83 @@ inline bool McuSimCfgMgr::attributesAVR8(const QString & localName, const QXmlAt
 			}
 		}
 	} else if ( "fusesandlocks" == localName ) {
-		CHECK_NO_OF_ATTRS(3);
+		CHECK_NO_OF_ATTRS(2);
 
 		for ( int i = 0; i < numberOf; i++ ) {
 			bool ok = true;
 
-			if ( "defaultFusesLow" == atts.localName(i) ) {
-				device->m_fusesAndLocks.m_defaultFusesLow = (unsigned char)(atts.value(i).toUInt(&ok, 0));
-			} else if ( "defaultFusesHigh" == atts.localName(i) ) {
-				device->m_fusesAndLocks.m_defaultFusesHigh = (unsigned char)(atts.value(i).toUInt(&ok, 0));
-			} else if ( "defaultLocksLow" == atts.localName(i) ) {
-				device->m_fusesAndLocks.m_defaultLocksLow = (unsigned char)(atts.value(i).toUInt(&ok, 0));
+			if ( "defaultFuses" == atts.localName(i) ) {
+				QStringList list = atts.value(i).split(QRegExp("\\s+"));
+
+				device->m_fusesAndLocks.m_defaultFuses = 0;
+				foreach ( const QString & item, list ) {
+					if ( 0 == item.length() ) {
+						continue;
+					}
+					if ( "CKSEL0" == item ) {
+						device->m_fusesAndLocks.m_defaultFuses |= AVR8FusesAndLocks::FUSE_CKSEL0;
+					} else if ( "CKSEL1" == item ) {
+						device->m_fusesAndLocks.m_defaultFuses |= AVR8FusesAndLocks::FUSE_CKSEL1;
+					} else if ( "CKSEL2" == item ) {
+						device->m_fusesAndLocks.m_defaultFuses |= AVR8FusesAndLocks::FUSE_CKSEL2;
+					} else if ( "CKSEL3" == item ) {
+						device->m_fusesAndLocks.m_defaultFuses |= AVR8FusesAndLocks::FUSE_CKSEL3;
+					} else if ( "SUT0" == item ) {
+						device->m_fusesAndLocks.m_defaultFuses |= AVR8FusesAndLocks::FUSE_SUT0;
+					} else if ( "SUT1" == item ) {
+						device->m_fusesAndLocks.m_defaultFuses |= AVR8FusesAndLocks::FUSE_SUT1;
+					} else if ( "BODEN" == item ) {
+						device->m_fusesAndLocks.m_defaultFuses |= AVR8FusesAndLocks::FUSE_BODEN;
+					} else if ( "BODLEVEL" == item ) {
+						device->m_fusesAndLocks.m_defaultFuses |= AVR8FusesAndLocks::FUSE_BODLEVEL;
+					} else if ( "BOOTRST" == item ) {
+						device->m_fusesAndLocks.m_defaultFuses |= AVR8FusesAndLocks::FUSE_BOOTRST;
+					} else if ( "BOOTSZ0" == item ) {
+						device->m_fusesAndLocks.m_defaultFuses |= AVR8FusesAndLocks::FUSE_BOOTSZ0;
+					} else if ( "BOOTSZ1" == item ) {
+						device->m_fusesAndLocks.m_defaultFuses |= AVR8FusesAndLocks::FUSE_BOOTSZ1;
+					} else if ( "EESAVE" == item ) {
+						device->m_fusesAndLocks.m_defaultFuses |= AVR8FusesAndLocks::FUSE_EESAVE;
+					} else if ( "CKOPT" == item ) {
+						device->m_fusesAndLocks.m_defaultFuses |= AVR8FusesAndLocks::FUSE_CKOPT;
+					} else if ( "SPIEN" == item ) {
+						device->m_fusesAndLocks.m_defaultFuses |= AVR8FusesAndLocks::FUSE_SPIEN;
+					} else if ( "WDTON" == item ) {
+						device->m_fusesAndLocks.m_defaultFuses |= AVR8FusesAndLocks::FUSE_WDTON;
+					} else if ( "RSTDISBL" == item ) {
+						device->m_fusesAndLocks.m_defaultFuses |= AVR8FusesAndLocks::FUSE_RSTDISBL;
+					} else if ( "JTAGEN" == item ) {
+						device->m_fusesAndLocks.m_defaultFuses |= AVR8FusesAndLocks::FUSE_JTAGEN;
+					} else if ( "OCDEN" == item ) {
+						device->m_fusesAndLocks.m_defaultFuses |= AVR8FusesAndLocks::FUSE_OCDEN;
+					} else {
+						INVALID_ATTR_VALUE();
+					}
+				}
+			} else if ( "defaultLockBits" == atts.localName(i) ) {
+				QStringList list = atts.value(i).split(QRegExp("\\s+"));
+
+				device->m_fusesAndLocks.m_defaultLockBits = 0;
+				foreach ( const QString & item, list ) {
+					if ( 0 == item.length() ) {
+						continue;
+					}
+					if ( "LB1" == item ) {
+						device->m_fusesAndLocks.m_defaultLockBits |= AVR8FusesAndLocks::LB_LB1;
+					} else if ( "LB2" == item ) {
+						device->m_fusesAndLocks.m_defaultLockBits |= AVR8FusesAndLocks::LB_LB2;
+					} else if ( "BLB01" == item ) {
+						device->m_fusesAndLocks.m_defaultLockBits |= AVR8FusesAndLocks::LB_BLB01;
+					} else if ( "BLB02" == item ) {
+						device->m_fusesAndLocks.m_defaultLockBits |= AVR8FusesAndLocks::LB_BLB02;
+					} else if ( "BLB11" == item ) {
+						device->m_fusesAndLocks.m_defaultLockBits |= AVR8FusesAndLocks::LB_BLB11;
+					} else if ( "BLB12" == item ) {
+						device->m_fusesAndLocks.m_defaultLockBits |= AVR8FusesAndLocks::LB_BLB12;
+					} else {
+						INVALID_ATTR_VALUE();
+					}
+				}
 			} else {
 				INVALID_ATTRIBUTE();
 			}
@@ -668,16 +820,15 @@ inline bool McuSimCfgMgr::attributesAVR8(const QString & localName, const QXmlAt
 					INVALID_ATTR_VALUE();
 				}
 			} else if ( "sfunc" == atts.localName(i) ) {
-				int idx = pinSFuncs.indexOf(atts.value(i));
-				if ( -1 == idx ) {
+				m_auxInt1 = pinSFuncs.indexOf(atts.value(i));
+				if ( -1 == m_auxInt1 ) {
 					INVALID_ATTR_VALUE();
-				} else {
-					device->m_io.m_specFuncMap[(AVR8PinNames::SPF)idx] = (AVR8PinNames::PIN)m_auxInt0;
 				}
 			} else {
 				INVALID_ATTRIBUTE();
 			}
 		}
+		device->m_io.m_specFuncMap[(AVR8PinNames::SPF)m_auxInt1] = (AVR8PinNames::PIN)m_auxInt0;
 	} else if ( "isp" == localName ) {
 		CHECK_NO_OF_ATTRS(1);
 

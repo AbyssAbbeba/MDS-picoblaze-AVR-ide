@@ -105,14 +105,14 @@ public:
 	 */
 	class EventLogger {
 	private:
+		int m_size;
+		int m_inPos;
+		int m_outPos;
+
 		int * /*__restict__*/ m_subsysId;
 		int * /*__restict__*/ m_eventId;
 		int * /*__restict__*/ m_location; // or reason
 		int * /*__restict__*/ m_detail;
-
-		int m_size;
-		int m_inPos;
-		int m_outPos;
 
 		void enlargeQueue() {
 			int newSize = m_size * 2;
@@ -122,23 +122,24 @@ public:
 			int * m_detailNew = new int[newSize];
 
 			int i = 1;
-			for ( int j = m_outPos + 1; j != m_inPos; j++) {
+			for ( int j = m_outPos + 1; j != m_inPos; j = ((j + 1) % m_size) ) {
 				m_subsysIdNew[i] = m_subsysId[j];
 				m_eventIdNew[i] = m_eventId[j];
 				m_locationNew[i] = m_location[j];
 				m_detailNew[i] = m_detail[j];
 
 				i++;
+				i %= m_size;
 			}
 
 			m_outPos = 0;
 			m_inPos = i;
 			m_size = newSize;
 
-			delete m_subsysId;
-			delete m_eventId;
-			delete m_location;
-			delete m_detail;
+			delete[] m_subsysId;
+			delete[] m_eventId;
+			delete[] m_location;
+			delete[] m_detail;
 			m_subsysId = m_subsysIdNew;
 			m_eventId = m_eventIdNew;
 			m_location = m_locationNew;
@@ -147,13 +148,13 @@ public:
 	public:
 		EventLogger()
 			 :
+			m_size(10),
+			m_inPos(1),
+			m_outPos(0),
 			m_subsysId(new int[m_size]),
 			m_eventId(new int[m_size]),
 			m_location(new int[m_size]),
-			m_detail(new int[m_size]),
-			m_size(10),
-			m_inPos(1),
-			m_outPos(0)
+			m_detail(new int[m_size])
 		{
 		}
 

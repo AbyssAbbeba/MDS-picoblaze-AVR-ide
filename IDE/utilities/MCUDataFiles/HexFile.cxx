@@ -74,6 +74,11 @@ void HexFile::clearAndLoad(const std::string & filename) throw(DataFile::DataFil
 			continue;
 		}
 
+		// Remove Microsoft's sin (CR before LF)
+		if ( line[strlen(line)-1] == '\r' ) {
+			line[strlen(line)-1] = '\0';
+		}
+
 		// Check for minimum record length
 		if ( strlen(line) < 11 ) {
 			throw DataFile::EXP_BAD_RECORD_LENGTH;

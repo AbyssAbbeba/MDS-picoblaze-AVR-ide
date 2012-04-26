@@ -82,9 +82,8 @@ public:
 		}
 		int m_undefinedValue; // -1 means random
 
-		unsigned char m_defaultFusesLow;
-		unsigned char m_defaultFusesHigh;
-		unsigned char m_defaultLocksLow;
+		unsigned char m_defaultFuses;
+		unsigned char m_defaultLockBits;
 	};
 
 	Config m_config;

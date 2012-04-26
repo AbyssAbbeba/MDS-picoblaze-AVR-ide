@@ -71,7 +71,7 @@ void AVR8DataEEPROM::storeInDataFile(DataFile * file) const {
 
 		int byte = m_memory[i];
 
-		if ( MFLAG_UNDEFINED | byte ) {
+		if ( MFLAG_UNDEFINED & byte ) {
 			file->unset(i);
 		} else {
 			file->set(i, byte & 0xff);
@@ -277,6 +277,10 @@ MCUSim::RetCode AVR8DataEEPROM::directWrite(unsigned int addr, unsigned int data
 void AVR8DataEEPROM::resize(unsigned int newSize) {
 	uint32_t * memoryOrig = m_memory;
 	m_memory = new uint32_t[newSize];
+
+	if ( NULL == memoryOrig ) {
+		m_config.m_size = 0;
+	}
 
 	unsigned int sizeToCopy = ( m_config.m_size <= newSize ) ? m_config.m_size : newSize;
 	for ( unsigned int i = 0; i < sizeToCopy; i++ ) {

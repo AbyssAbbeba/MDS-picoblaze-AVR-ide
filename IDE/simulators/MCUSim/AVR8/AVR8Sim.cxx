@@ -39,7 +39,11 @@
 #include <cassert>
 
 AVR8Sim::AVR8Sim() {
-	m_eventLogger		= new EventLogger;
+	m_sleepMode = SLEEPMD_NONE;
+	m_processorMode = MD_NORMAL;
+	m_haltMode = HALTM_NONE;
+
+	m_eventLogger		= new EventLogger();
 	m_config		= new AVR8Config();
 
 	m_interrupts		= new AVR8InterruptController();
@@ -262,6 +266,7 @@ int AVR8Sim::executeInstruction() {
 // - m_pprog
 
 	m_clockCycles = m_interrupts->autoInterrupt();
+
 	if ( 0 != m_clockCycles ) {
 		if ( -1 == m_clockCycles ) {
 			m_clockCycles = 0;
@@ -344,4 +349,8 @@ int AVR8Sim::timeStep(float timeStep) {
 	}
 
 	return allocatedCycles;
+}
+
+AVR8ProgramMemory & AVR8Sim::getProgMem() {
+	return *(dynamic_cast<AVR8ProgramMemory*>(getSubsys(Subsys::ID_MEM_CODE)));
 }

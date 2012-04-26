@@ -17,9 +17,7 @@
 
 AVR8DataMemory::AVR8DataMemory() {
 	m_size = 0;
-	m_mem2size = 0;
 	m_memory = NULL;
-	m_mem2sizes = NULL;
 	m_memory2 = NULL;
 }
 
@@ -31,8 +29,7 @@ AVR8DataMemory * AVR8DataMemory::link(MCUSim::EventLogger * eventLogger)
 }
 
 AVR8DataMemory::~AVR8DataMemory() {
-	if ( NULL != m_memory )
-	{
+	if ( NULL != m_memory ) {
 		delete[] m_memory;
 	}
 	if ( NULL != m_memory2 ) {
@@ -40,9 +37,6 @@ AVR8DataMemory::~AVR8DataMemory() {
 			delete[] m_memory2[i];
 		}
 		delete[] m_memory2;
-	}
-	if ( NULL != m_mem2sizes ) {
-		delete[] m_mem2sizes;
 	}
 }
 
@@ -77,7 +71,7 @@ void AVR8DataMemory::storeInDataFile(DataFile * file) const {
 
 		int byte = m_memory[i];
 
-		if ( MFLAG_UNDEFINED | byte ) {
+		if ( MFLAG_UNDEFINED & byte ) {
 			file->unset(i);
 		} else {
 			file->set(i, byte & 0xff);
@@ -102,10 +96,10 @@ MCUSim::RetCode AVR8DataMemory::directRead(unsigned int addr, unsigned int & dat
 
 		addr = m_memory[addr] & 0xffff;
 
-		if ( addr >= m_mem2size ) {
+		if ( addr >= m_config.m_mem2size ) {
 			return MCUSim::RC_ADDR_OUT_OF_RANGE;
 		}
-		if ( addrVariant >= m_mem2sizes[addr] ) {
+		if ( addrVariant >= m_config.m_mem2sizes[addr] ) {
 			return MCUSim::RC_ADDR_OUT_OF_RANGE;
 		}
 		storedData = m_memory2[addr][addrVariant];
@@ -136,10 +130,10 @@ MCUSim::RetCode AVR8DataMemory::directWrite(unsigned int addr, unsigned int data
 
 		addr = (storedData & 0xffff);
 
-		if ( addr >= m_mem2size ) {
+		if ( addr >= m_config.m_mem2size ) {
 			return MCUSim::RC_ADDR_OUT_OF_RANGE;
 		}
-		if ( addrVariant >= m_mem2sizes[addr] ) {
+		if ( addrVariant >= m_config.m_mem2sizes[addr] ) {
 			return MCUSim::RC_ADDR_OUT_OF_RANGE;
 		}
 
@@ -155,7 +149,7 @@ void AVR8DataMemory::resize(unsigned int newSize) {
 	uint32_t * memoryOrig = m_memory;
 	m_memory = new uint32_t[newSize];
 
-	unsigned int sizeToCopy = ( m_size <= newSize ) ? m_size : newSize;
+	const unsigned int sizeToCopy = ( m_size <= newSize ) ? m_size : newSize;
 	for ( unsigned int i = 0; i < sizeToCopy; i++ ) {
 		m_memory[i] = memoryOrig[i];
 	}
@@ -202,7 +196,6 @@ inline void AVR8DataMemory::loadConfig() {
 		m_memory[addr] |= (m_config.m_ioRegInitValues[i] & 0xffffff00);
 	}
 
-
 	if ( 0 == m_config.m_mem2size ) {
 		if ( NULL != m_memory2 ) {
 			delete[] m_memory2;
@@ -214,15 +207,15 @@ inline void AVR8DataMemory::loadConfig() {
 		for ( unsigned int i = 0; i < m_config.m_mem2size; i++ ) {
 			m_memory2[i] = new uint32_t [ m_config.m_mem2sizes[i] ];
 
-			for ( unsigned int j = 0; i < m_config.m_mem2sizes[i]; j++ ) {
+			for ( unsigned int j = 0; j < m_config.m_mem2sizes[i]; j++ ) {
 				if (
 					( NULL != memory2Orig )
 						&&
-					( NULL != m_mem2sizes )
+					( NULL != m_config.m_mem2sizes )
 						&&
-					( i < m_mem2size )
+					( i < m_config.m_mem2size )
 						&&
-					( j < m_mem2sizes[i] )
+					( j < m_config.m_mem2sizes[i] )
 				   )
 				{
 					m_memory2[i][j] = memory2Orig[i][j];
@@ -236,13 +229,6 @@ inline void AVR8DataMemory::loadConfig() {
 		if ( NULL != memory2Orig ) {
 			delete[] memory2Orig;
 		}
-		if ( NULL != m_mem2sizes ) {
-			delete m_mem2sizes;
-		}
-
-		m_mem2size = m_config.m_mem2size;
-		m_mem2sizes = new unsigned int [m_config.m_mem2size];
-		memcpy(m_mem2sizes, m_config.m_mem2sizes, m_config.m_mem2size);
 	}
 }
 
@@ -273,8 +259,8 @@ inline void AVR8DataMemory::mcuReset() {
 		}
 	}
 
-	for ( unsigned int i = 0; i < m_mem2size; i++ ) {
-		for ( unsigned int j = 0; j < m_mem2sizes[i]; j++ ) {
+	for ( unsigned int i = 0; i < m_config.m_mem2size; i++ ) {
+		for ( unsigned int j = 0; j < m_config.m_mem2sizes[i]; j++ ) {
 			m_memory2[i][j] &= 0xffffff00; // Preserve only the register configuration, not its content
 			m_memory2[i][j] |= (m_config.m_ioMem2InitValues[i][j] & 0xff);
 		}
@@ -292,20 +278,20 @@ AVR8DataMemory::Config::Config() {
 
 AVR8DataMemory::Config::~Config() {
 	if ( NULL != m_ioRegInitValues ) {
-		delete m_ioRegInitValues;
+		delete[] m_ioRegInitValues;
 	}
 	if ( NULL != m_ioRegRandomInit ) {
-		delete m_ioRegRandomInit;
+		delete[] m_ioRegRandomInit;
 	}
 	if ( NULL != m_mem2sizes ) {
-		delete m_mem2sizes;
+		delete[] m_mem2sizes;
 	}
 	if ( NULL != m_ioMem2InitValues ) {
 		for ( unsigned int i = 0; i < m_mem2size; i++ ) {
 			if ( NULL != m_ioMem2InitValues[i] ) {
-				delete m_ioMem2InitValues[i];
+				delete[] m_ioMem2InitValues[i];
 			}
 		}
-		delete m_ioMem2InitValues;
+		delete[] m_ioMem2InitValues;
 	}
 }

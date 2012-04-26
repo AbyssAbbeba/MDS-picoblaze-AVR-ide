@@ -1,102 +1,413 @@
 <mcuspecfile>
 	<avr8:device family="megaAVR" name="ATmega8A">
-		<adc enabled=""/>
-		<analogcomparator enabled=""/>
+		<adc enabled="true"/>
+		<analogcomparator enabled="true"/>
 		<bootloader
-			enabled=""
-			minProgTime=""
-			maxProgTime=""
-			pageSize=""
-			bootResetAddress0=""
-			bootResetAddress1=""
-			bootResetAddress2=""
-			bootResetAddress3=""
-			rwwSectionSize=""
+			enabled="true"
+			minProgTime="3.7e-3"
+			maxProgTime="4.5e-3"
+			pageSize="32"
+			bootResetAddress0="0xF80"
+			bootResetAddress1="0xF00"
+			bootResetAddress2="0xE00"
+			bootResetAddress3="0xC00"
+			rwwSectionSize="96"
 		/>
 		<clockcontrol/>
 		<dataeeprom
-			enabled=""
-			addrRegWidth=""
-			size=""
-			writeTime=""
+			enabled="true"
+			size="512"
+			writeTime="8.448e-3"
 		/>
 		<datamemory
-			regFileSize=""
-			sramSize=""
-			ioRegSize=""
-			mem2size=""
-			spWidth=""
+			regFileSize="32"
+			sramSize="1024"
+			ioRegSize="64"
+			mem2size="2"
+			spWidth="11"
 		>
 			<ioreginitvalues>
-				<!-- |8-bit: FLAGS|8-bit: readable|8-bit writable|8-bit: value| -->
+				<!-- TWBRR - TWI Bit Rate Register --> <ioreginitvalue
+					addr="0x00" value="0x00" readmask="0xFF" writemask="0xFF"
+					randommask="0x00" reserved="false" virtual="false"
+				/>
+				<!-- TWSR - TWI Status Register --> <ioreginitvalue
+					addr="0x01" value="0xF8" readmask="0xFF" writemask="0x03"
+					randommask="0x00" reserved="false" virtual="false"
+				/>
+				<!-- TWAR - TWI (Slave) Address Register --> <ioreginitvalue
+					addr="0x02" value="0xFE" readmask="0xFF" writemask="0xFF"
+					randommask="0x00" reserved="false" virtual="false"
+				/>
+				<!-- TWDR - TWI Data Register --> <ioreginitvalue
+					addr="0x03" value="0xFF" readmask="0xFF" writemask="0xFF"
+					randommask="0x00" reserved="false" virtual="false"
+				/>
+				<!-- ADCL - The ADC Data Register --> <ioreginitvalue
+					addr="0x04" value="0x00" readmask="0xFF" writemask="0x00"
+					randommask="0x00" reserved="false" virtual="false"
+				/>
+				<!-- ADCH - The ADC Data Register --> <ioreginitvalue
+					addr="0x05" value="0x00" readmask="0xFF" writemask="0x00"
+					randommask="0x00" reserved="false" virtual="false"
+				/>
+				<!-- ADCSRA -  ADC Control and Status Register A --> <ioreginitvalue
+					addr="0x06" value="0x00" readmask="0xFF" writemask="0xFF"
+					randommask="0x00" reserved="false" virtual="false"
+				/>
+				<!-- ADMUX -  ADC Multiplexer Selection Register --> <ioreginitvalue
+					addr="0x07" value="0x00" readmask="0xFF" writemask="0xEF"
+					randommask="0x00" reserved="false" virtual="false"
+				/>
+				<!-- ACSR - Analog Comparator Control and Status Register --> <ioreginitvalue
+					addr="0x08" value="0x00" readmask="0xFF" writemask="0xDF"
+					randommask="0xDF" reserved="false" virtual="false"
+				/>
+				<!-- UBRRL - USART Baud Rate Register --> <ioreginitvalue
+					addr="0x09" value="0x00" readmask="0xFF" writemask="0xFF"
+					randommask="0x00" reserved="false" virtual="false"
+				/>
+				<!-- UCSRB - USART Control and Status Register B --> <ioreginitvalue
+					addr="0x0A" value="0x00" readmask="0xFF" writemask="0xFD"
+					randommask="0x00" reserved="false" virtual="false"
+				/>
+				<!-- UCSRA - USART Control and Status Register A --> <ioreginitvalue
+					addr="0x0B" value="0x20" readmask="0xFF" writemask="0x43"
+					randommask="0x00" reserved="false" virtual="false"
+				/>
+				<!-- UDR - USART I/O Data Register - Read/Write --> <ioreginitvalue
+					addr="0x0C" value="0x00" readmask="0x00" writemask="0x00"
+					randommask="0xFF" reserved="false" virtual="true"
+				/>
+				<!-- SPCR - SPI Control Register --> <ioreginitvalue
+					addr="0x0D" value="0x00" readmask="0xFF" writemask="0xFF"
+					randommask="0x00" reserved="false" virtual="false"
+				/>
+				<!-- SPSR - SPI Status Register --> <ioreginitvalue
+					addr="0x0E" value="0x00" readmask="0xFF" writemask="0x01"
+					randommask="0x00" reserved="false" virtual="false"
+				/>
+				<!-- SPDR - – SPI Data Register --> <ioreginitvalue
+					addr="0x0F" value="0x00" readmask="0xFF" writemask="0xFF"
+					randommask="0xFF" reserved="false" virtual="false"
+				/>
+				<!-- PIND - The Port D Input Pins Address --> <ioreginitvalue
+					addr="0x10" value="0x00" readmask="0xFF" writemask="0x00"
+					randommask="0xFF" reserved="false" virtual="false"
+				/>
+				<!-- DDRD - The Port D Data Direction Register --> <ioreginitvalue
+					addr="0x11" value="0x00" readmask="0xFF" writemask="0xFF"
+					randommask="0x00" reserved="false" virtual="false"
+				/>
+				<!-- PORTD - The Port D Data Register --> <ioreginitvalue
+					addr="0x12" value="0x00" readmask="0xFF" writemask="0xFF"
+					randommask="0x00" reserved="false" virtual="false"
+				/>
+				<!-- PINC - The Port C Input Pins Address --> <ioreginitvalue
+					addr="0x13" value="0x00" readmask="0xFF" writemask="0x00"
+					randommask="0x7F" reserved="false" virtual="false"
+				/>
+				<!-- DDRC - The Port C Data Direction Register --> <ioreginitvalue
+					addr="0x14" value="0x00" readmask="0xFF" writemask="0x7F"
+					randommask="0x00" reserved="false" virtual="false"
+				/>
+				<!-- PORTC - The Port C Data Register --> <ioreginitvalue
+					addr="0x15" value="0x00" readmask="0xFF" writemask="0x7F"
+					randommask="0x00" reserved="false" virtual="false"
+				/>
+				<!-- PINB - The Port B Input Pins Address --> <ioreginitvalue
+					addr="0x16" value="0x00" readmask="0xFF" writemask="0x00"
+					randommask="0xFF" reserved="false" virtual="false"
+				/>
+				<!-- DDRB - The Port B Data Direction Register --> <ioreginitvalue
+					addr="0x17" value="0x00" readmask="0xFF" writemask="0xFF"
+					randommask="0x00" reserved="false" virtual="false"
+				/>
+				<!-- PORTB - The Port B Data Register --> <ioreginitvalue
+					addr="0x18" value="0x00" readmask="0xFF" writemask="0xFF"
+					randommask="0x00" reserved="false" virtual="false"
+				/>
+				<!-- (Reserved) --> <ioreginitvalue
+					addr="0x19" value="0x00" readmask="0xFF" writemask="0xFF"
+					randommask="0xFF" reserved="true" virtual="false"
+				/>
+				<!-- (Reserved) --> <ioreginitvalue
+					addr="0x1A" value="0x00" readmask="0xFF" writemask="0xFF"
+					randommask="0xFF" reserved="true" virtual="false"
+				/>
+				<!-- (Reserved) --> <ioreginitvalue
+					addr="0x1B" value="0x00" readmask="0xFF" writemask="0xFF"
+					randommask="0xFF" reserved="true" virtual="false"
+				/>
+				<!-- EECR - The EEPROM Control Register --> <ioreginitvalue
+					addr="0x1C" value="0x00" readmask="0xFF" writemask="0x0F"
+					randommask="0x02" reserved="false" virtual="false"
+				/>
+				<!-- EEDR - The EEPROM Data Register --> <ioreginitvalue
+					addr="0x1D" value="0x00" readmask="0xFF" writemask="0xFF"
+					randommask="0x00" reserved="false" virtual="false"
+				/>
+				<!-- EEARL - The EEPROM Address Register --> <ioreginitvalue
+					addr="0x1E" value="0x00" readmask="0xFF" writemask="0xFF"
+					randommask="0xFF" reserved="false" virtual="false"
+				/>
+				<!-- EEARH - The EEPROM Address Register --> <ioreginitvalue
+					addr="0x1F" value="0x00" readmask="0xFF" writemask="0x01"
+					randommask="0x01" reserved="false" virtual="false"
+				/>
+				<!-- UBRRH/UCSRC --> <ioreginitvalue
+					addr="0x20" value="0x00" readmask="0x00" writemask="0x00"
+					randommask="0xFF" reserved="false" virtual="true"
+				/>
+				<!-- WDTCR - Watchdog Timer Control Register --> <ioreginitvalue
+					addr="0x21" value="0x00" readmask="0xFF" writemask="0x1F"
+					randommask="0x00" reserved="false" virtual="false"
+				/>
+				<!-- ASSR - Asynchronous Status Register --> <ioreginitvalue
+					addr="0x22" value="0x00" readmask="0xFF" writemask="0x08"
+					randommask="0x00" reserved="false" virtual="false"
+				/>
+				<!-- OCR2 - Output Compare Register --> <ioreginitvalue
+					addr="0x23" value="0x00" readmask="0xFF" writemask="0xFF"
+					randommask="0x00" reserved="false" virtual="false"
+				/>
+				<!-- TCNT2 - Timer/Counter Register --> <ioreginitvalue
+					addr="0x24" value="0x00" readmask="0xFF" writemask="0xFF"
+					randommask="0x00" reserved="false" virtual="false"
+				/>
+				<!-- TCCR2 - Timer/Counter Control Register --> <ioreginitvalue
+					addr="0x25" value="0x00" readmask="0x7F" writemask="0xFF"
+					randommask="0x00" reserved="false" virtual="false"
+				/>
+				<!-- ICR1L - Input Capture Register 1 --> <ioreginitvalue
+					addr="0x26" value="0x00" readmask="0xFF" writemask="0xFF"
+					randommask="0x00" reserved="false" virtual="false"
+				/>
+				<!-- ICR1H - Input Capture Register 1 --> <ioreginitvalue
+					addr="0x27" value="0x00" readmask="0xFF" writemask="0xFF"
+					randommask="0x00" reserved="false" virtual="false"
+				/>
+				<!-- OCR1BL - Output Compare Register 1 B --> <ioreginitvalue
+					addr="0x28" value="0x00" readmask="0xFF" writemask="0xFF"
+					randommask="0x00" reserved="false" virtual="false"
+				/>
+				<!-- OCR1BH - Output Compare Register 1 B --> <ioreginitvalue
+					addr="0x29" value="0x00" readmask="0xFF" writemask="0xFF"
+					randommask="0x00" reserved="false" virtual="false"
+				/>
+				<!-- OCR1AL - Output Compare Register 1 A --> <ioreginitvalue
+					addr="0x2A" value="0x00" readmask="0xFF" writemask="0xFF"
+					randommask="0x00" reserved="false" virtual="false"
+				/>
+				<!-- OCR1AH - Output Compare Register 1 A --> <ioreginitvalue
+					addr="0x2B" value="0x00" readmask="0xFF" writemask="0xFF"
+					randommask="0x00" reserved="false" virtual="false"
+				/>
+				<!-- TCNT1L - Timer/Counter 1 --> <ioreginitvalue
+					addr="0x2C" value="0x00" readmask="0xFF" writemask="0xFF"
+					randommask="0x00" reserved="false" virtual="false"
+				/>
+				<!-- TCNT1H - Timer/Counter 1 --> <ioreginitvalue
+					addr="0x2D" value="0x00" readmask="0xFF" writemask="0xFF"
+					randommask="0x00" reserved="false" virtual="false"
+				/>
+				<!-- TCCR1B - Timer/Counter 1 Control Register B --> <ioreginitvalue
+					addr="0x2E" value="0x00" readmask="0xFF" writemask="0xDF"
+					randommask="0x00" reserved="false" virtual="false"
+				/>
+				<!-- TCCR1A - Timer/Counter 1 Control Register A --> <ioreginitvalue
+					addr="0x2F" value="0x00" readmask="0xF3" writemask="0xFF"
+					randommask="0x00" reserved="false" virtual="false"
+				/>
+				<!-- SFIOR - Special Function IO Register --> <ioreginitvalue
+					addr="0x30" value="0x00" readmask="0xFF" writemask="0x0F"
+					randommask="0x00" reserved="false" virtual="false"
+				/>
+				<!-- OSCCAL - Oscillator Calibration Register --> <ioreginitvalue
+					addr="0x31" value="0x00" readmask="0xFF" writemask="0xFF"
+					randommask="0xFF" reserved="false" virtual="false"
+				/>
+				<!-- TCNT0 - Timer/Counter Register --> <ioreginitvalue
+					addr="0x32" value="0x00" readmask="0xFF" writemask="0xFF"
+					randommask="0x00" reserved="false" virtual="false"
+				/>
+				<!-- TCCR0 - Timer/Counter Control Register --> <ioreginitvalue
+					addr="0x33" value="0x00" readmask="0xFF" writemask="0x07"
+					randommask="0x00" reserved="false" virtual="false"
+				/>
+				<!-- MCUCSR - MCU Control and Status Register --> <ioreginitvalue
+					addr="0x34" value="0x00" readmask="0xFF" writemask="0x0F"
+					randommask="0x00" reserved="false" virtual="false"
+				/>
+				<!-- MCUCR - MCU Control Register--> <ioreginitvalue
+					addr="0x35" value="0x00" readmask="0xFF" writemask="0xFF"
+					randommask="0x00" reserved="false" virtual="false"
+				/>
+				<!-- TWCR - TWI Control Register --> <ioreginitvalue
+					addr="0x36" value="0x00" readmask="0xFF" writemask="0xF5"
+					randommask="0x00" reserved="false" virtual="false"
+				/>
+				<!-- SPMCR - Store Program Memory Control Register --> <ioreginitvalue
+					addr="0x37" value="0x00" readmask="0xFF" writemask="0x9F"
+					randommask="0x00" reserved="false" virtual="false"
+				/>
+				<!-- TIFR - Timer/Counter Interrupt Flag Register --> <ioreginitvalue
+					addr="0x38" value="0x00" readmask="0xFF" writemask="0xFF"
+					randommask="0x00" reserved="false" virtual="false"
+				/>
+				<!-- TIMSK - Timer/Counter Interrupt Mask Register --> <ioreginitvalue
+					addr="0x39" value="0x00" readmask="0xFF" writemask="0xFF"
+					randommask="0x00" reserved="false" virtual="false"
+				/>
+				<!-- GIFR - General Interrupt Flag Register --> <ioreginitvalue
+					addr="0x3A" value="0x00" readmask="0xFF" writemask="0xC0"
+					randommask="0x00" reserved="false" virtual="false"
+				/>
+				<!-- GICR - General Interrupt Control Register --> <ioreginitvalue
+					addr="0x3B" value="0x00" readmask="0xFF" writemask="0xC3"
+					randommask="0x00" reserved="false" virtual="false"
+				/>
+				<!-- (Reserved) --> <ioreginitvalue
+					addr="0x3C" value="0x00" readmask="0xFF" writemask="0xFF"
+					randommask="0xFF" reserved="true" virtual="false"
+				/>
+				<!-- SPL - Stack Pointer Low Register --> <ioreginitvalue
+					addr="0x3D" value="0x00" readmask="0xFF" writemask="0xFF"
+					randommask="0x00" reserved="false" virtual="false"
+				/>
+				<!-- SPH - Stack Pointer High Register --> <ioreginitvalue
+					addr="0x3E" value="0x00" readmask="0xFF" writemask="0xFF"
+					randommask="0x00" reserved="false" virtual="false"
+				/>
+				<!-- SREG - The AVR Status Register--> <ioreginitvalue
+					addr="0x3F" value="0x00" readmask="0xFF" writemask="0xFF"
+					randommask="0x00" reserved="false" virtual="false"
+				/>
 			</ioreginitvalues>
-			<ioregrandominit>
-				<!-- |8-bit: bit mask, log. 1 means random value, 0 means keep initial value| -->
-			</ioregrandominit>
-			<mem2sizes>
-			</mem2sizes>
-			<iomem2initvalues>
+			<iomem2initvalues mem2sizes="2 2">
+				<!-- 0x0C: UDR - USART I/O Data Register -->
 				<initvalues>
-				</initvalues><initvalues>
+					<!-- Read -->
+					<initvalue value="0x00" readmask="0xFF" writemask="0xFF"/>
+
+					<!-- Write -->
+					<initvalue value="0x00" readmask="0xFF" writemask="0xFF"/>
+				</initvalues>
+
+				<!-- 0x20 -->
+				<initvalues>
+					<!-- UBRRH - USART Baud Rate Register -->
+					<initvalue value="0x00" readmask="0xFF" writemask="0x8F"/>
+
+					<!-- UCSRC -  USART Control and Status Register C -->
+					<initvalue value="0x86" readmask="0xFF" writemask="0xFF"/>
 				</initvalues>
 			</iomem2initvalues>
 		</datamemory>
-
-		<externalinterrupts enabled=""/>
+		<externalinterrupts enabled="true"/>
 		<fusesandlocks
-			defaultFusesLow=""
-			defaultFusesHigh=""
-			defaultLocksLow=""
+			defaultFuses="CKSEL1 CKSEL2 CKSEL3 SUT0 BOOTSZ0 BOOTSZ1 SPIEN"
+			defaultLockBits=""
 		/>
 		<instructionset
-			pcWidth=""
+			pcWidth="PCWIDTH_16"
 		>
 			<availableinstructions>
+				ADIW		CALL		JMP		BREAK
+				EICALL		EIJMP		ICALL		IJMP
+				DES		ELPM_Rd_Zplus	ELPM_Rd_Z	ELPM
+				MUL		MULS		MULSU		FMUL
+				FMULS		FMULSU		LD_Rd_X		LD_Rd_Xplus
+				LD_Rd_minusX	LDD_Rd_Y	LD_Rd_Yplus	LD_Rd_minusY
+				LDD_Rd_Yq	LDD_Rd_Z	LD_Rd_Zplus	LD_Rd_minusZ
+				LDD_Rd_Zq	ST_Rr_X		ST_Rr_Xplus	ST_Rr_minusX
+				STD_Rr_Y	ST_Rr_Yplus	ST_Rr_minusY	STD_Rr_Yq
+				STD_Rr_Z	ST_Rr_Zplus	ST_Rr_minusZ	STD_Rr_Zq
+				LAS		LAC		LAT		SPM
+				SPM_Zplus	POP		PUSH		MOVW
+				SBIW		RCALL		LDS_Rd_k_16b	LDS_Rd_k
+				LPM		LPM_Rd_Z	LPM_Rd_Zplus	STS_k_Rr_16bb
+				STS_k_Rr
 			</availableinstructions>
 		</instructionset>
 		<interruptcontroller>
 			<possibleinterrupts>
+				RESET		INT0		INT1		TIMER2_COMP
+				TIMER2_OVF	TIMER1_CAPT	TIMER1_COMPA	TIMER1_COMPB
+				TIMER1_OVF	TIMER0_OVF	SPI_STC		USART_RXC
+				USART_UDRE	USART_TXC	ADC		EE_RDY
+				ANA_COMP	TWI		SPM_RDY
 			</possibleinterrupts>
 		</interruptcontroller>
 		<io
-			pullUpresistance=""
+			pullUpresistance="35e3"
 		>
 			<specfuncmap>
-				<pin name="" sfunc=""/>
-				<pin name="" sfunc=""/>
+				<pin sfunc="T0" name="PD4"/>
+				<pin sfunc="INT0" name="PD2"/>
+				<pin sfunc="INT1" name="PD3"/>
+				<pin sfunc="RESET" name="PC6"/>
+				<pin sfunc="RXD" name="PD0"/>
+				<pin sfunc="TXD" name="PD1"/>
+				<pin sfunc="XCK" name="PD4"/>
+				<pin sfunc="XTAL1" name="PB6"/>
+				<pin sfunc="TOSC1" name="PB6"/>
+				<pin sfunc="XTAL2" name="PB7"/>
+				<pin sfunc="TOSC2" name="PB7"/>
+				<pin sfunc="T1" name="PD5"/>
+				<pin sfunc="AIN0" name="PD6"/>
+				<pin sfunc="AIN1" name="PD7"/>
+				<pin sfunc="ICP1" name="PB0"/>
+				<pin sfunc="ADC5" name="PC5"/>
+				<pin sfunc="SCL" name="PC5"/>
+				<pin sfunc="ADC4" name="PC4"/>
+				<pin sfunc="SDA" name="PC4"/>
+				<pin sfunc="ADC3" name="PC3"/>
+				<pin sfunc="ADC2" name="PC2"/>
+				<pin sfunc="ADC1" name="PC1"/>
+				<pin sfunc="ADC0" name="PC0"/>
+				<pin sfunc="SCK" name="PB5"/>
+				<pin sfunc="MISO" name="PB4"/>
+				<pin sfunc="MOSI" name="PB3"/>
+				<pin sfunc="OC2" name="PB3"/>
+				<pin sfunc="SS" name="PB2"/>
+				<pin sfunc="OC1B" name="PB2"/>
+				<pin sfunc="OC1A" name="PB1"/>
 			</specfuncmap>
 			<hasport>
+				B C D
 			</hasport>
 			<availablepins>
+				PB0 PB1 PB2 PB3 PB4 PB5 PB6 PB7
+				PC0 PC1 PC2 PC3 PC4 PC5 PC6 PC7
+				PD0 PD1 PD2 PD3 PD4 PD5 PD6 PD7
 			</availablepins>
 		</io>
-		<isp enabled=""/>
-		<parallelprog enabled=""/>
+		<isp enabled="true"/>
+		<parallelprog enabled="true"/>
 		<programmemory
-			size=""
+			size="4096"
 		/>
-		<spi enabled=""/>
+		<spi enabled="true"/>
 		<systemcontrol
-			resetTresholdLow=""
-			resetTresholdHigh=""
-			minResetPulseWidth=""
-
-			powerOnResetTresholdFalling=""
-			powerOnResetTresholdRaising=""
-
-			tBOD=""
-			brownOutTreshold0=""
-			brownOutTreshold1=""
-
-			hasPowerOnReset=""
-			hasBrownOutReset=""
-			hasExternalReset=""
-			hasWatchDog=""
+			resetTresholdLow="0.2"
+			resetTresholdHigh="0.9"
+			minResetPulseWidth="1.5e-6"
+			powerOnResetTresholdFalling="1.3"
+			powerOnResetTresholdRaising="1.4"
+			tBOD="2e-6"
+			brownOutTreshold0="4.0"
+			brownOutTreshold1="2.6"
+			hasPowerOnReset="true"
+			hasBrownOutReset="true"
+			hasExternalReset="true"
+			hasWatchDog="true"
 		/>
-		<timercounter0 enabled=""/>
-		<timercounter1 enabled=""/>
-		<timercounter2 enabled=""/>
-		<twi enabled=""/>
-		<usart enabled=""/>
+		<timercounter0 enabled="true"/>
+		<timercounter1 enabled="true"/>
+		<timercounter2 enabled="true"/>
+		<watchdogtimer/>
+		<twi enabled="true"/>
+		<usart enabled="true"/>
 	</avr8:device>
 </mcuspecfile>
