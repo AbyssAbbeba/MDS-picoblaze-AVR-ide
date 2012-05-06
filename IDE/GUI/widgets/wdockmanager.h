@@ -30,6 +30,7 @@
 #include <QList>
 #include <QTabWidget>
 #include "codeedit.h"
+#include "movgridlayout.h"
 #include "hexedit.h"
 #include  "../mainform/mainform.h"
 
