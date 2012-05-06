@@ -195,7 +195,12 @@ WDock::WDock(int code, QMainWindow *mainWindow)
             //i 16 za promennou podle nastaveni
             HexEdit *newWidget = new HexEdit(wDockWidget, true, 20, 16);
             area = 2;
+            QDockWidget *aa = new QDockWidget("Simul", mainWindow);
             wDockWidget->setWidget(newWidget);
+            MovGridLayout *gridLayout = new MovGridLayout(aa);
+            aa->setWidget(gridLayout);
+            gridLayout->loadGridWidgets();
+            mainWindow->addDockWidget(Qt::BottomDockWidgetArea, aa);
             wDockWidget->setMaximumWidth(610);
 	    break;
         }
