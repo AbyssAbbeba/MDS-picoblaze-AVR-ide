@@ -15,7 +15,7 @@ MainForm::MainForm()
     CreateMenu();
     CreateToolbar();
     CreateDockWidgets();
-    CreateWelcome();
+    //CreateWelcome();
 }
 
 
@@ -129,13 +129,12 @@ void MainForm::CreateDockWidgets()
     setCorner(Qt::BottomRightCorner, Qt::RightDockWidgetArea);
 
     //mozno stejne jako u WDockManager - ulozit si ptr na okno
-    projectMan->addProject(NULL, NULL, NULL);
+    //projectMan->addProject(NULL, NULL, NULL);
 
-    wDockManager->addDockWidget(wListCode);
-    wDockManager->addDockWidget(wListCode2);
-    wDockManager->addDockWidget(wCompileInfo);
+    //wDockManager->addDockWidget(wListCode);
+    //wDockManager->addDockWidget(wListCode2);
+    //wDockManager->addDockWidget(wCompileInfo);
     wDockManager->addDockWidget(wHexEdit);
-    //this->tabifyDockWidget(wBottomDock2, wBottomDock);
 
 }
 
@@ -143,7 +142,6 @@ void MainForm::CreateDockWidgets()
 void MainForm::CreateWelcome()
 {
     wDockManager->addCentralWidget("Welcome", "Free tips from developers!");
-    //wDockManager->
 }
 
 
@@ -179,6 +177,10 @@ void MainForm::openFile()
 
 void MainForm::openFilePath(QString path)
 {
+    //QDir thisDir(".");
+    //QDir projectDir(QFileInfo(projectMan->activeProject->prjPath).dir());
+    //QString absoluteFilePath = QFileInfo(projectMan->getActive()->prjPath).dir().path() + "/" + path;
+    //qDebug() << absoluteFilePath;
     QFile file(path);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
@@ -231,7 +233,8 @@ void MainForm::saveFile()
     {
         QString path;
         if (wDockManager->getCentralPath() == NULL) {
-            path = QFileDialog::getSaveFileName (this, tr("Source File"));
+            //path = QFileDialog::getSaveFileName(this, tr("Source File");
+            path = QFileDialog::getSaveFileName (this, tr("Source File"), QString(), QString(), 0, QFileDialog::DontUseNativeDialog);
             wDockManager->setCentralPath(path);
             wDockManager->setCentralName(path.section('/', -1));
         }
@@ -256,7 +259,8 @@ void MainForm::saveFile()
 
 void MainForm::saveFileAs()
 {
-    QString path = QFileDialog::getSaveFileName (this, tr("Source File"));
+    //QString path = QFileDialog::getSaveFileName(this, tr("Source File");
+    QString path = QFileDialog::getSaveFileName(this, tr("Source File"), QString(), QString(), 0, QFileDialog::DontUseNativeDialog);
     QFile file(path);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
     {
@@ -280,7 +284,8 @@ void MainForm::saveFile(CodeEdit *editor)
     {
         QString path;
         if (editor->getPath() == NULL) {
-            path = QFileDialog::getSaveFileName (this, tr("Source File"));
+            //path = QFileDialog::getSaveFileName(this, tr("Source File");
+            path = QFileDialog::getSaveFileName(this, tr("Source File"), QString(), QString(), 0, QFileDialog::DontUseNativeDialog);
             editor->setPath(path);
             editor->setName(path.section('/', -1));
         }

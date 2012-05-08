@@ -36,14 +36,14 @@ void WDockManager::setTabSaved()
 }
 
 
-QPlainTextEdit* WDockManager::getCentralTextEdit()
+QTextEdit* WDockManager::getCentralTextEdit()
 {
     return ((CodeEdit*)wTab->currentWidget())->getTextEdit();
 }
 
 
 
-QPlainTextEdit* WDockManager::getTabTextEdit(int index)
+QTextEdit* WDockManager::getTabTextEdit(int index)
 {
     return ((CodeEdit*)wTab->widget(index))->getTextEdit();
 }

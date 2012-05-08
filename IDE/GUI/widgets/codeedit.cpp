@@ -6,8 +6,8 @@
 CodeEdit::CodeEdit(QTabWidget *parent, QString wName, QString wPath)
     : QWidget(parent)
 {
-    textEdit = new QPlainTextEdit(this);
-    lineCount = new WLineCounter((QTextEdit*)textEdit, false, this->height());
+    textEdit = new QTextEdit(this);
+    lineCount = new WLineCounter(textEdit, false, false, 20);
     layout = new QGridLayout(this);
     layout->addWidget(lineCount, 0, 0);
     layout->addWidget(textEdit, 0, 1);
@@ -27,8 +27,8 @@ CodeEdit::CodeEdit(QTabWidget *parent, QString wName, QString wPath)
 CodeEdit::CodeEdit(QTabWidget *parent, Project* parentPrj, QString wName, QString wPath)
     : QWidget(parent)
 {
-    textEdit = new QPlainTextEdit(this);
-    lineCount = new WLineCounter((QTextEdit*)textEdit, false, this->height());
+    textEdit = new QTextEdit(this);
+    lineCount = new WLineCounter(textEdit, false, false, 20);
     layout = new QGridLayout(this);
     layout->addWidget(lineCount, 0, 0);
     layout->addWidget(textEdit, 0, 1);
@@ -47,7 +47,7 @@ CodeEdit::CodeEdit(QTabWidget *parent, Project* parentPrj, QString wName, QStrin
 
 void CodeEdit::connectAct()
 {
-    connect(this, SIGNAL(textEdit->textChanged()), this, SLOT(setChanged()));
+    connect(textEdit, SIGNAL(textChanged()), this, SLOT(setChanged()));
 }
 
 
@@ -59,6 +59,7 @@ void CodeEdit::setChanged()
         changed = true;
         parentWidget->setTabText(parentWidget->indexOf(this), "*" + name);
     }
+    lineCount->getWidget()->repaint();
 }
 
 
@@ -111,7 +112,7 @@ void CodeEdit::setParentProject(Project* project)
 
 
 
-QPlainTextEdit *CodeEdit::getTextEdit()
+QTextEdit* CodeEdit::getTextEdit()
 {
     return textEdit;
 }

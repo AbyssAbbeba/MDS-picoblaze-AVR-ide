@@ -48,7 +48,7 @@ class CodeEdit : QWidget
         void connectAct();
         bool isChild(Project* project);
         void setParentProject(Project* project);
-        QPlainTextEdit *getTextEdit();
+        QTextEdit *getTextEdit();
 
     public slots:
         void setChanged();
@@ -60,7 +60,7 @@ class CodeEdit : QWidget
         Project* parentProject;
         QTabWidget *parentWidget;
         QStatusBar *statusBar;
-        QPlainTextEdit *textEdit;
+        QTextEdit *textEdit;
         QGridLayout *layout;
         WLineCounter *lineCount;
 };
