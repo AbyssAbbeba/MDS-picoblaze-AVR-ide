@@ -96,7 +96,7 @@ HexEdit::HexEdit(QWidget *parent, bool AsciiPanel, int countSize, int columns)
     }
 
     hexColumnCount = new WColumnCounter(hexTextEdit, countSize, columns);
-    hexLineCount = new WLineCounter(hexTextEdit, false, countSize);
+    hexLineCount = new WLineCounter(hexTextEdit, false, true, countSize);
     hexByteArray = new QByteArray(190, 126);
     hexStatusBar = new QStatusBar(this);
     hexStatusLabel = new QLabel(this);
