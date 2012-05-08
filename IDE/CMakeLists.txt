@@ -49,6 +49,9 @@ add_subdirectory(utilities)
 # Build GUI
 add_subdirectory(GUI)
 
+# Build HW
+add_subdirectory(HW)
+
 # Build simulators
 add_subdirectory(simulators)
 
