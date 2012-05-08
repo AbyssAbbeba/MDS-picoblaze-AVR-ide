@@ -70,6 +70,7 @@ class HexEdit : public QWidget
         QGridLayout *hexLayout;
         
         int prevPosition;
+        int asciiPrevPosition;
         int columns;
         bool changable;
 

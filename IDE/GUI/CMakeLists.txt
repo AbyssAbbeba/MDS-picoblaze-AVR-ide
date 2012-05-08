@@ -15,6 +15,7 @@
        ./widgets/hexedit.cpp
        ./widgets/wlinecounter.cpp
        ./widgets/wcolumncounter.cpp
+       ./widgets/movgridlayout.cpp
   )
   
   # another list, this time it includes all header files that should be treated with moc
@@ -27,6 +28,7 @@
        ./widgets/hexedit.h
        ./widgets/wlinecounter.h
        ./widgets/wcolumncounter.h 
+       ./widgets/movgridlayout.h
   )
   
   # some .ui files
