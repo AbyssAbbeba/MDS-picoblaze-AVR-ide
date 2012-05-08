@@ -92,6 +92,7 @@ HexEdit::HexEdit(QWidget *parent, bool AsciiPanel, int countSize, int columns)
         hexAsciiEdit->setMinimumWidth(columns*10);
         hexAsciiEdit->setOverwriteMode(true);
         hexAsciiEdit->setWordWrapMode(QTextOption::NoWrap);
+        hexAsciiEdit->verticalScrollBar()->hide();
     }
 
     hexColumnCount = new WColumnCounter(hexTextEdit, countSize, columns);
@@ -132,6 +133,7 @@ HexEdit::HexEdit(QWidget *parent, bool AsciiPanel, int countSize, int columns)
 
     changable = true;
     prevPosition = 0;
+    asciiPrevPosition = 0;
 }
 
 
@@ -174,7 +176,7 @@ void HexEdit::moveCursor()
             }
             else
             {
-               position -= 2;
+               position -= 1;
                txtCursor.setPosition(position);
             }
             
@@ -191,6 +193,37 @@ void HexEdit::moveCursor()
         format = txtCursor.charFormat();
         format.setBackground(Qt::green);
         txtCursor.setCharFormat(format);
+        
+
+        QTextCursor asciiCursor = hexAsciiEdit->textCursor();
+        asciiCursor.setPosition(position/3);
+        int prevBlock = asciiCursor.blockNumber();
+
+        int asciiPosition = prevBlock + position/3;
+        asciiCursor.setPosition(asciiPosition);
+        if (asciiCursor.positionInBlock() == columns)
+            asciiPosition += 1;
+
+        if (prevBlock != asciiCursor.blockNumber())
+            asciiPosition += 1;
+
+        asciiCursor.setPosition(asciiPosition);
+        asciiCursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor, 1);
+        format = asciiCursor.charFormat();
+        format.setBackground(Qt::green);
+        asciiCursor.setCharFormat(format);
+        if (asciiPrevPosition != asciiPosition)
+        {
+            asciiCursor.setPosition(asciiPrevPosition);
+            asciiCursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor, 1);
+            if (asciiCursor.blockNumber()%2 == 0)
+                format.setBackground(Qt::white);
+            else
+                format.setBackground(Qt::lightGray);
+            asciiCursor.setCharFormat(format);
+            asciiCursor.setPosition(asciiPosition);
+            asciiPrevPosition = asciiPosition;
+        }
         changable = true;
     }
 }
@@ -199,22 +232,59 @@ void HexEdit::moveCursor()
 
 void HexEdit::moveAsciiCursor()
 {
-    changable = false;
-    QTextCursor asciiCursor = hexAsciiEdit->textCursor();
-    if (asciiCursor.positionInBlock() == columns)
+    if (changable == true)
     {
+        changable = false;
+        QTextCursor asciiCursor = hexAsciiEdit->textCursor();
         int position = asciiCursor.position();
-        position++;
+        if (asciiCursor.positionInBlock() == columns)
+        {
+            position++;
+            asciiCursor.setPosition(position);
+            hexAsciiEdit->setTextCursor(asciiCursor);
+        }
+        else if (asciiCursor.hasSelection() == true)
+        {
+            //int position = asciiCursor.position();
+            asciiCursor.setPosition(position);
+            hexAsciiEdit->setTextCursor(asciiCursor);
+        }
+        QTextCharFormat format = asciiCursor.charFormat();
+        asciiCursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor, 1);
+        format = asciiCursor.charFormat();
+        format.setBackground(Qt::green);
+        asciiCursor.setCharFormat(format);
+        asciiCursor.setPosition(asciiPrevPosition);
+        asciiCursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor, 1);
+        if (asciiCursor.blockNumber()%2 == 0)
+            format.setBackground(Qt::white);
+        else
+            format.setBackground(Qt::lightGray);
+        asciiCursor.setCharFormat(format);
         asciiCursor.setPosition(position);
-        hexAsciiEdit->setTextCursor(asciiCursor);
+        asciiPrevPosition = position;
+
+        QTextCursor textCursor = hexTextEdit->textCursor();
+        int textPosition = (asciiCursor.position() - asciiCursor.blockNumber() )*3;
+        textCursor.setPosition(textPosition);
+        format = textCursor.charFormat();
+        textCursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor, 2);
+        format = textCursor.charFormat();
+        format.setBackground(Qt::green);
+        textCursor.setCharFormat(format);
+        textCursor.setPosition(prevPosition);
+        textCursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor, 2);
+        if (textCursor.blockNumber()%2 == 0)
+            format.setBackground(Qt::white);
+        else
+            format.setBackground(Qt::lightGray);
+        textCursor.setCharFormat(format);
+        textCursor.setPosition(textPosition);
+        prevPosition = textPosition;
+        hexTextEdit->setTextCursor(textCursor);
+
+        changable = true;
     }
-    else if (asciiCursor.hasSelection() == true)
-    {
-        int position = asciiCursor.position();
-        asciiCursor.setPosition(position);
-        hexAsciiEdit->setTextCursor(asciiCursor);
-    }
-    changable = true;
 }
 
 
@@ -264,6 +334,7 @@ void HexEdit::changeAscii(int position)
             asciiCursor.insertText(QString((unsigned char)hexByteArray->at(position)));
         else
             asciiCursor.insertText(".");
+        asciiCursor.setPosition(asciiPosition);
         hexAsciiEdit->setTextCursor(asciiCursor);
         changable = true;
     }

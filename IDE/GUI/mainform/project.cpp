@@ -76,7 +76,29 @@ Project* ProjectMan::getActive()
 
 void ProjectMan::createActiveMakefile()
 {
+    QFileInfo projectInfo(activeProject->prjPath);
+    QDir projectDir = projectInfo.dir();
+    projectDir.mkdir("make");
+    QFile makefile(projectDir.path() + "/make/Makefile");
+    if (!makefile.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+         error(ERR_OPENFILE);
+    }
+    else
+    {
+        QTextStream makeOut(&makefile);
+        makeOut << "NAME=" << activeProject->prjName << endl << endl;
+        makeOut << "CC=sdcc" << endl << endl;
+        makeOut << "CFLAGS=" << endl << endl;
+        makeOut << "FILES=";
+        for (int i = 0; i < activeProject->fileCount; i++)
+            makeOut << " " << activeProject->filePaths.at(i);
+        makeOut << endl << endl;
 
+        makeOut << "$(NAME):" << endl;
+        makeOut << "\t$(CC) $(CFLAGS) $(FILES)" << endl;
+    }
+    
 }
 
 
@@ -97,7 +119,7 @@ Project::Project(QFile *file, QMainWindow * mainWindow, ProjectMan *parent)
     parentManager = parent;
 
     //nacteni ze souboru
-    QDomDocument domDoc("Project");
+    QDomDocument domDoc("MMProject");
     if (!domDoc.setContent(file))
     {
         errorFlag = ERR_ASSIGN;
@@ -106,7 +128,7 @@ Project::Project(QFile *file, QMainWindow * mainWindow, ProjectMan *parent)
     else
     {
         QDomElement xmlRoot = domDoc.documentElement();
-        if (xmlRoot.tagName() != "Project")
+        if (xmlRoot.tagName() != "MMProject")
         {
             errorFlag = ERR_CONTENT;
             error(ERR_XML_CONTENT);
@@ -120,16 +142,39 @@ Project::Project(QFile *file, QMainWindow * mainWindow, ProjectMan *parent)
                 xmlElement = xmlNode.toElement();
                 if (!xmlElement.isNull())
                 {
-                    if (xmlElement.tagName() == "Attributes")
+                    if (xmlElement.tagName() == "General")
                     {
-                        prjName = xmlElement.attribute("name", "");
-                        prjPath = xmlElement.attribute("path", "");
+                        QDomNode xmlGeneralNode = xmlElement.firstChild();
+                        QDomElement xmlGeneralElement;
+                        while (!xmlGeneralNode.isNull())
+                        {
+                            xmlGeneralElement = xmlGeneralNode.toElement();
+                            if (xmlGeneralElement.tagName() == "Name")
+                            {
+                                prjName = xmlGeneralElement.attribute("name", "");
+                            }
+                            else if (xmlGeneralElement.tagName() == "Path")
+                            { 
+                                prjPath = xmlGeneralElement.attribute("path", "");
+                            }
+                            xmlGeneralNode = xmlGeneralNode.nextSibling();
+                        }
                     }
-                    if (xmlElement.tagName() == "File")
+                    else if (xmlElement.tagName() == "Files")
                     {
-                        fileNames.append(xmlElement.attribute("name", ""));
-                        filePaths.append(xmlElement.attribute("path", ""));
-                        fileCount++;
+                        QDomNode xmlFilesNode = xmlElement.firstChild();
+                        QDomElement xmlFilesElement;
+                        while (!xmlFilesNode.isNull())
+                        {
+                            xmlFilesElement = xmlFilesNode.toElement();
+                            if (xmlFilesElement.tagName() == "File")
+                            {
+                                fileNames.append(xmlFilesElement.attribute("name", ""));
+                                filePaths.append(xmlFilesElement.attribute("path", ""));
+                                fileCount++;
+                            }
+                            xmlFilesNode = xmlFilesNode.nextSibling();
+                        }
                     }
                 }
                 xmlNode = xmlNode.nextSibling();
@@ -182,14 +227,27 @@ Project::Project(QString name, QString path, QMainWindow * mainWindow, QFile *fi
     	fileCount=0;
         
         //a zapsani do souboru
-        QDomDocument domDoc("Project");
-        QDomElement xmlRoot = domDoc.createElement("Project");
+        QDomDocument domDoc("MMProject");
+        QDomElement xmlRoot = domDoc.createElement("MMProject");
         domDoc.appendChild(xmlRoot);
 
-        QDomElement prjAttr = domDoc.createElement("Attributes");
-        prjAttr.setAttribute("name", name);
-        prjAttr.setAttribute("path", path);
-        xmlRoot.appendChild(prjAttr);
+        QDomElement xmlGeneral = domDoc.createElement("General");
+        QDomElement xmlName = domDoc.createElement("Name");
+        xmlName.setAttribute("name", name);
+        xmlGeneral.appendChild(xmlName);
+        QDomElement xmlPath = domDoc.createElement("Path");
+        xmlPath.setAttribute("path", path);
+        xmlGeneral.appendChild(xmlPath);
+        xmlRoot.appendChild(xmlGeneral);
+
+        QDomElement xmlFiles = domDoc.createElement("Files");
+        xmlRoot.appendChild(xmlFiles);
+
+        QDomElement xmlSimulator = domDoc.createElement("Simulator");
+        xmlRoot.appendChild(xmlSimulator);
+
+        QDomElement xmlCompiler = domDoc.createElement("Compiler");
+        xmlRoot.appendChild(xmlCompiler);
 
         QTextStream xmlStream(file);
         xmlStream << domDoc.toString();
@@ -205,7 +263,7 @@ Project::Project(QString name, QString path, QMainWindow * mainWindow, QFile *fi
 
 void Project::addFile(QFile *file, QString path, QString name)
 {
-    QDomDocument domDoc("Project");
+    QDomDocument domDoc("MMProject");
     if (!domDoc.setContent(file))
     {
         errorFlag = ERR_ASSIGN;
@@ -214,18 +272,33 @@ void Project::addFile(QFile *file, QString path, QString name)
     else
     {
         QDomElement xmlRoot = domDoc.documentElement();
-        if (xmlRoot.tagName() != "Project")
+        if (xmlRoot.tagName() != "MMProject")
         {
             errorFlag = ERR_CONTENT;
             error(ERR_XML_CONTENT);
         }
         else
         {
-            QDomElement prjFile = domDoc.createElement("File");
-            prjFile.setAttribute("name", name);
-            prjFile.setAttribute("path", path);
-            xmlRoot.appendChild(prjFile);
+            QDomElement xmlFile = domDoc.createElement("File");
 
+
+            QDomNode xmlNode = xmlRoot.firstChild();
+            QDomElement xmlElement;
+            while (!xmlNode.isNull())
+            {
+                xmlElement = xmlNode.toElement();
+                if (!xmlElement.isNull())
+                {
+                    if (xmlElement.tagName() == "Files")
+                    {
+                        xmlFile.setAttribute("name", name);
+                        xmlFile.setAttribute("path", path);
+                        xmlElement.appendChild(xmlFile);
+                        break;
+                    }
+                }
+                xmlNode = xmlNode.nextSibling();
+            }
             file->close();
             file->open(QIODevice::WriteOnly);
 
