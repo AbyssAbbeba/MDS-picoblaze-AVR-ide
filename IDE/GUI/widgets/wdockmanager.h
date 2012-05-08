@@ -57,8 +57,8 @@ class WDockManager : public QObject
         void showDockWidgetArea(int area);
         void removeDockWidget(int code);
         void addCentralWidget(QString wName, QString wPath);
-        QPlainTextEdit* getCentralTextEdit();
-        QPlainTextEdit* getTabTextEdit(int index);
+        QTextEdit* getCentralTextEdit();
+        QTextEdit* getTabTextEdit(int index);
         CodeEdit* getCentralWidget();
         CodeEdit* getTabWidget(int index);
         QString getCentralName();

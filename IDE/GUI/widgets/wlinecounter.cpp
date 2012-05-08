@@ -1,18 +1,18 @@
 #include <QtGui>
 #include "wlinecounter.h"
 
-WLineCounter::WLineCounter(QTextEdit *parent, bool icons, int width)
+WLineCounter::WLineCounter(QTextEdit *parent, bool icons, bool hex, int width)
 {
     this->parent = parent;
-    widget = new WLineCounterWidget(this, icons, width);
+    //this->setMaximumHeight(parent->height());
+    this->setMinimumHeight(parent->height());
+    widget = new WLineCounterWidget(this, icons, hex, width);
     this->setWidget(widget);
     this->setMaximumWidth(width);
-    //this->setMaximumHeight(parent->height());
     this->setMinimumWidth(width);
     this->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    //this->setMinimumHeight(parent->height());
-    connect(parent->verticalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(change(int)));
+    connect(parent->verticalScrollBar(), SIGNAL(valueChanged(int)), this->verticalScrollBar(), SLOT(setValue(int)));
 }
 
 QTextEdit* WLineCounter::getTextEdit()
@@ -31,13 +31,12 @@ WLineCounterWidget* WLineCounter::getWidget()
 void WLineCounter::change(int value)
 {
     this->verticalScrollBar()->setValue(value);
-
 }
 
 
 
 
-WLineCounterWidget::WLineCounterWidget(WLineCounter *parent, bool icons, int width)
+WLineCounterWidget::WLineCounterWidget(WLineCounter *parent, bool icons, bool hex, int width)
 {
     this->parent = parent;
     this->icons = icons;
@@ -45,6 +44,7 @@ WLineCounterWidget::WLineCounterWidget(WLineCounter *parent, bool icons, int wid
     //this->setMaximumHeight(parent->height());
     this->setMinimumWidth(width);
     this->setMinimumHeight(parent->height());
+    this->hex = hex;
 
     if (icons == true)
     {
@@ -61,6 +61,8 @@ void WLineCounterWidget::paintEvent(QPaintEvent *)
 {
     QTextEdit* textEdit = parent->getTextEdit();
     int size = textEdit->currentFont().pointSize();
+    this->setMinimumHeight(textEdit->document()->lineCount()*(size+9));
+    this->setMaximumHeight(textEdit->document()->lineCount()*(size+9));
     QPainter paint;
     paint.begin(this);
     QRectF rect(0,0,15,size+9);
@@ -72,6 +74,8 @@ void WLineCounterWidget::paintEvent(QPaintEvent *)
     QPen pen(Qt::darkCyan);
     paint.setBrush(brush);
     paint.setPen(pen);
+        pen.setColor(Qt::black);
+        paint.setPen(pen);
     for (int i = 0; i<textEdit->document()->lineCount(); i++)
     {
         point.setY(i*(size+7));
@@ -81,21 +85,44 @@ void WLineCounterWidget::paintEvent(QPaintEvent *)
             pen.setColor(Qt::green);
             paint.setPen(pen);
         }
-        paint.drawRect(rect);
-        pen.setColor(Qt::black);
-        paint.setPen(pen);
-        if (i<16)
-            paint.drawText(rect, Qt::AlignCenter, "0" + QString::number(i, 16).toUpper());
+        //paint.drawRect(rect);
+        //pen.setColor(Qt::black);
+        //paint.setPen(pen);
+        if (true == hex)
+        {
+            if (i<16)
+                paint.drawText(rect, Qt::AlignCenter, "0" + QString::number(i, 16).toUpper());
+            else
+                paint.drawText(rect, Qt::AlignCenter, QString::number(i, 16).toUpper());
+        }
         else
-            paint.drawText(rect, Qt::AlignCenter, QString::number(i, 16).toUpper());
+        {
+            QString decDraw = "";
+            int doneZeros = i+1;
+            int len = textEdit->document()->lineCount();
+            int zeros = 0;
+            while (len >= 10)
+            {
+                len = len / 10;
+                zeros++;
+            }
+            while (doneZeros >= 10)
+            {
+                doneZeros = doneZeros/10;
+                zeros--;
+            }
+            for (int j = 0; j < zeros; j++)
+                decDraw = decDraw + "0";
+            paint.drawText(rect, Qt::AlignCenter, decDraw + QString::number(i+1, 10));
+        }
         if (icons == true && bookmarkList->at(i) == true)
         {
             pen.setColor(Qt::yellow);
             paint.setPen(pen);
             paint.drawRect(iconRect);
         }
-        pen.setColor(Qt::darkCyan);
-        paint.setPen(pen);
+        //pen.setColor(Qt::darkCyan);
+        //paint.setPen(pen);
     }
     paint.end();
 }

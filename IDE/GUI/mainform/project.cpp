@@ -41,12 +41,13 @@ void ProjectMan::addProject(QString name, QString path, QFile *file)
     mainWindow->addDockWidget(Qt::LeftDockWidgetArea, newProject->prjDockWidget);
     //mainWindow->getWDockManager()->showDockWidgetArea(0);
     
-    if (projectCount == 1 && openProjects.at(0)->prjName == NULL) {
-        delete openProjects.at(0);
-        openProjects.removeAt(0);
-        projectCount--;
-    }
-    else if (projectCount > 0) 
+    //if (projectCount == 1 && openProjects.at(0)->prjName == NULL) {
+    //    delete openProjects.at(0);
+    //    openProjects.removeAt(0);
+    //    projectCount--;
+    //}
+    //else
+    if (projectCount > 0) 
         mainWindow->tabifyDockWidget(openProjects.at(0)->prjDockWidget, newProject->prjDockWidget);
 
     openProjects.append(newProject);
@@ -225,6 +226,7 @@ Project::Project(QString name, QString path, QMainWindow * mainWindow, QFile *fi
     prjTreeWidget = new QTreeWidget(prjDockWidget);
     prjTreeWidget->setHeaderHidden(true);
     prjDockWidget->setWidget(prjTreeWidget);
+    //prjDockWidget->setMinimumWidth(150);
     prjName=name;
     //pri nacteni programu neni nacteny projekt
     if (name != NULL) {
