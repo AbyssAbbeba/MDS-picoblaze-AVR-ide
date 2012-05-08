@@ -79,7 +79,8 @@ void ProjectMan::createActiveMakefile()
     QFileInfo projectInfo(activeProject->prjPath);
     QDir projectDir = projectInfo.dir();
     projectDir.mkdir("make");
-    QFile makefile(projectDir.path() + "/make/Makefile");
+    QDir makefileDir(projectDir.path() + "/make");
+    QFile makefile(makefileDir.path() + "/Makefile");
     if (!makefile.open(QIODevice::WriteOnly | QIODevice::Text))
     {
          error(ERR_OPENFILE);
@@ -91,8 +92,12 @@ void ProjectMan::createActiveMakefile()
         makeOut << "CC=sdcc" << endl << endl;
         makeOut << "CFLAGS=" << endl << endl;
         makeOut << "FILES=";
+        QString relativePath;
         for (int i = 0; i < activeProject->fileCount; i++)
-            makeOut << " " << activeProject->filePaths.at(i);
+        {
+            relativePath = makefileDir.relativeFilePath(projectDir.path() + "/" + activeProject->filePaths.at(i));
+            makeOut << " " << relativePath;
+        }
         makeOut << endl << endl;
 
         makeOut << "$(NAME):" << endl;
@@ -117,7 +122,7 @@ Project::Project(QFile *file, QMainWindow * mainWindow, ProjectMan *parent)
     errorFlag = ERR_OK;
     fileCount = 0;
     parentManager = parent;
-
+    prjPath = QFileInfo(*file).filePath();
     //nacteni ze souboru
     QDomDocument domDoc("MMProject");
     if (!domDoc.setContent(file))
@@ -153,10 +158,10 @@ Project::Project(QFile *file, QMainWindow * mainWindow, ProjectMan *parent)
                             {
                                 prjName = xmlGeneralElement.attribute("name", "");
                             }
-                            else if (xmlGeneralElement.tagName() == "Path")
-                            { 
-                                prjPath = xmlGeneralElement.attribute("path", "");
-                            }
+                            //else if (xmlGeneralElement.tagName() == "Path")
+                            //{ 
+                            //    prjPath = xmlGeneralElement.attribute("path", "");
+                            //}
                             xmlGeneralNode = xmlGeneralNode.nextSibling();
                         }
                     }
@@ -190,11 +195,14 @@ Project::Project(QFile *file, QMainWindow * mainWindow, ProjectMan *parent)
             treeProjName->setText(0, prjName);
             treeProjName->setData(0, Qt::ToolTipRole, prjPath);
 
+            QDir projectDir = QFileInfo(prjPath).dir();
+            QString absolutePath = projectDir.path();
             for (int i=0; i<fileCount; ++i)
             {
                  QTreeWidgetItem *treeProjFile = new QTreeWidgetItem(treeProjName);
                  treeProjFile->setText(0, fileNames.at(i));
-                 treeProjFile->setData(0, Qt::ToolTipRole, filePaths.at(i));
+                 
+                 treeProjFile->setData(0, Qt::ToolTipRole, QDir(absolutePath + "/" + filePaths.at(i)).canonicalPath());
             }
             connect(prjDockWidget, SIGNAL(visibilityChanged(bool)),this,SLOT(setActive()));  
             connect(prjTreeWidget, SIGNAL(itemDoubleClicked (QTreeWidgetItem *,int)),this,SLOT(openItem()));  
@@ -235,9 +243,9 @@ Project::Project(QString name, QString path, QMainWindow * mainWindow, QFile *fi
         QDomElement xmlName = domDoc.createElement("Name");
         xmlName.setAttribute("name", name);
         xmlGeneral.appendChild(xmlName);
-        QDomElement xmlPath = domDoc.createElement("Path");
-        xmlPath.setAttribute("path", path);
-        xmlGeneral.appendChild(xmlPath);
+        //QDomElement xmlPath = domDoc.createElement("Path");
+        //xmlPath.setAttribute("path", path);
+        //xmlGeneral.appendChild(xmlPath);
         xmlRoot.appendChild(xmlGeneral);
 
         QDomElement xmlFiles = domDoc.createElement("Files");
@@ -263,6 +271,7 @@ Project::Project(QString name, QString path, QMainWindow * mainWindow, QFile *fi
 
 void Project::addFile(QFile *file, QString path, QString name)
 {
+    QString relativePath;
     QDomDocument domDoc("MMProject");
     if (!domDoc.setContent(file))
     {
@@ -291,9 +300,15 @@ void Project::addFile(QFile *file, QString path, QString name)
                 {
                     if (xmlElement.tagName() == "Files")
                     {
+                        QDir project(QFileInfo(this->prjPath).dir());
+                        relativePath = project.relativeFilePath(path);
                         xmlFile.setAttribute("name", name);
-                        xmlFile.setAttribute("path", path);
+                        xmlFile.setAttribute("path", relativePath);
                         xmlElement.appendChild(xmlFile);
+
+                        fileNames.append(name);
+                        fileCount++;
+                        filePaths.append(relativePath);
                         break;
                     }
                 }
@@ -305,9 +320,6 @@ void Project::addFile(QFile *file, QString path, QString name)
             QTextStream xmlStream(file);
             xmlStream << domDoc.toString();
 
-            fileNames.append(name);
-            filePaths.append(path);
-            fileCount++;
             QTreeWidgetItem *treeProjFile = new QTreeWidgetItem(prjTreeWidget->topLevelItem(0));
             treeProjFile->setText(0, name);
             treeProjFile->setData(0, Qt::ToolTipRole, path);
