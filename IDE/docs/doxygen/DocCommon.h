@@ -19,6 +19,10 @@
 /**
  * @defgroup GUI Graphical User Interface
  * This group contains components of the graphical user interface.
+ *
+ * @defgroup SimWidgets Simulator sidgets
+ * @ingroup GUI
+ * Widgets related to the MCU simulator.
  */
 
 /**
