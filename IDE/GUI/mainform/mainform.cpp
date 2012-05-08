@@ -15,7 +15,7 @@ MainForm::MainForm()
     CreateMenu();
     CreateToolbar();
     CreateDockWidgets();
-    CreateWelcome();
+    //CreateWelcome();
 }
 
 
@@ -129,13 +129,12 @@ void MainForm::CreateDockWidgets()
     setCorner(Qt::BottomRightCorner, Qt::RightDockWidgetArea);
 
     //mozno stejne jako u WDockManager - ulozit si ptr na okno
-    projectMan->addProject(NULL, NULL, NULL);
+    //projectMan->addProject(NULL, NULL, NULL);
 
-    wDockManager->addDockWidget(wListCode);
-    wDockManager->addDockWidget(wListCode2);
-    wDockManager->addDockWidget(wCompileInfo);
+    //wDockManager->addDockWidget(wListCode);
+    //wDockManager->addDockWidget(wListCode2);
+    //wDockManager->addDockWidget(wCompileInfo);
     wDockManager->addDockWidget(wHexEdit);
-    //this->tabifyDockWidget(wBottomDock2, wBottomDock);
 
 }
 
@@ -143,7 +142,6 @@ void MainForm::CreateDockWidgets()
 void MainForm::CreateWelcome()
 {
     wDockManager->addCentralWidget("Welcome", "Free tips from developers!");
-    //wDockManager->
 }
 
 
