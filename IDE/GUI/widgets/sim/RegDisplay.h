@@ -61,6 +61,7 @@ private slots:
 	void bit7ButtonClicked();
 	void hexTextEdited(const QString & text);
 	void hexTextCurChange(int , int);
+
 signals:
 	void valueChanged(uint value);
 
