@@ -24,6 +24,7 @@
 #include "AVR8Config.h"
 
 #include <cstdint>
+#include <string>
 
 /**
  * @brief
@@ -79,6 +80,17 @@ public:
 		uint32_t ** m_ioMem2InitValues;
 
 		unsigned int m_spWidth;
+
+		struct IORegDesc {
+			std::string m_name;
+			std::string m_desc;
+
+			struct Bit {
+				std::string m_name;
+				std::string m_ttip;
+				std::string m_stip;
+			} m_bit[8];
+		} * m_ioRegDesc;
 	} m_dataMemory;
 
 	struct ExternalInterrupts {

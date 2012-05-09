@@ -28,7 +28,7 @@ McuSimCfgMgr * g_McuSimCfgMgr;
 
 const char * MCUSPECFILE = "../../simulators/MCUSim/McuSimCfgMgr/mcuspecfile.xml";
 
-int init_suite1()
+int init_suite0()
 {
 	g_AVR8Sim = new AVR8Sim();
 	g_HexFile = new HexFile();
@@ -47,7 +47,7 @@ int init_suite1()
 	}
 }
 
-int clean_suite1()
+int clean_suite0()
 {
 	if ( NULL != g_AVR8Sim ) {
 		delete g_AVR8Sim;
@@ -61,24 +61,20 @@ int clean_suite1()
 	return 0;
 }
 
-void test_suite1_openConfigFile()
+void test_suite0_basicSanityTest0()
 {
-      CU_ASSERT ( true == g_McuSimCfgMgr->openConfigFile(MCUSPECFILE) );
-}
+	CU_ASSERT_FATAL ( true == g_McuSimCfgMgr->openConfigFile(MCUSPECFILE) );
 
-void test_suite1_clearAndLoad()
-{
+
 	const char * filename = "avr8_test0.hex";
 
 	try {
 	      g_HexFile->clearAndLoad(filename);
 	} catch ( DataFile::DataFileException e ) {
-		CU_FAIL("Failed to load program memory from the given IHEX file.")
+		CU_FAIL_FATAL("Failed to load program memory from the given IHEX file.")
 	}
-}
 
-void test_suite1_setupSimulator()
-{
+
 	try {
 		g_McuSimCfgMgr->setupSimulator("ATmega8A", g_AVR8Sim->getConfig());
 
@@ -86,27 +82,23 @@ void test_suite1_setupSimulator()
 		g_AVR8Sim->reset(MCUSim::RSTMD_INITIAL_VALUES);
 		g_AVR8Sim->reset(MCUSim::RSTMD_MCU_RESET);
 	} catch ( ... ) {
-		CU_FAIL("Failed to setup and reset simulator.")
+		CU_FAIL_FATAL("Failed to setup and reset simulator.")
 	}
-}
 
-void test_suite1_loadAndCopyProgramFile()
-{
-	const char * filename = "_avr8_test0.hex";
+
+	const char * filename2 = "_avr8_test0.hex";
 
 	dynamic_cast<AVR8ProgramMemory*>(g_AVR8Sim->getSubsys(MCUSim::Subsys::ID_MEM_CODE))->loadDataFile(g_HexFile);
 	dynamic_cast<AVR8ProgramMemory*>(g_AVR8Sim->getSubsys(MCUSim::Subsys::ID_MEM_CODE))->storeInDataFile(g_HexFile);
-	g_HexFile->save(filename);
+	g_HexFile->save(filename2);
 
 	#ifdef __linux__ // Code specific for Linux
 		if ( 0 != system(NULL) ) {
 			CU_ASSERT ( 0 == system("diff _avr8_test0.hex avr8_test0.hex > /dev/null") );
 		}
 	#endif // __linux__
-}
 
-void test_suite1_startSimulator()
-{
+
 	for ( int i = 0; i < 3; i++ ) {
 		CU_ASSERT ( 2 == g_AVR8Sim->executeInstruction() );
 		CU_ASSERT ( 0 == dynamic_cast<AVR8InstructionSet*>(g_AVR8Sim->getSubsys(MCUSim::Subsys::ID_CPU))->getProgramCounter() );
@@ -127,7 +119,7 @@ int main(int argc, char ** argv)
 	}
 
 	/* add a suite to the registry */
-	pSuite = CU_add_suite("Suite_1", init_suite1, clean_suite1);
+	pSuite = CU_add_suite("Suite_1", init_suite0, clean_suite0);
 	if (NULL == pSuite) {
 		CU_cleanup_registry();
 		return CU_get_error();
@@ -135,15 +127,15 @@ int main(int argc, char ** argv)
 
 	/* add the tests to the suite */
 	if (
-		(NULL == CU_add_test(pSuite, "test of openConfigFile()", test_suite1_openConfigFile))
-			||
-		(NULL == CU_add_test(pSuite, "test of clearAndLoad()", test_suite1_clearAndLoad))
-			||
-		(NULL == CU_add_test(pSuite, "test of setupSimulator()", test_suite1_setupSimulator))
-			||
-		(NULL == CU_add_test(pSuite, "test of loadAndCopyProgramFile()", test_suite1_loadAndCopyProgramFile))
-			||
-		(NULL == CU_add_test(pSuite, "test of startSimulator()", test_suite1_startSimulator))
+		(NULL == CU_add_test(pSuite, "test of basicSanityTest0()", test_suite0_basicSanityTest0))
+// 			||
+// 		(NULL == CU_add_test(pSuite, "test of clearAndLoad()", test_suite0_clearAndLoad))
+// 			||
+// 		(NULL == CU_add_test(pSuite, "test of setupSimulator()", test_suite0_setupSimulator))
+// 			||
+// 		(NULL == CU_add_test(pSuite, "test of loadAndCopyProgramFile()", test_suite0_loadAndCopyProgramFile))
+// 			||
+// 		(NULL == CU_add_test(pSuite, "test of startSimulator()", test_suite0_startSimulator))
 	) {
 		CU_cleanup_registry();
 		return CU_get_error();

@@ -27,262 +27,2501 @@
 			spWidth="11"
 		>
 			<ioreginitvalues>
-				<!-- TWBRR - TWI Bit Rate Register --> <ioreginitvalue
+				<!-- TWBRR - TWI Bit Rate Register -->
+				<ioreginitvalue
 					addr="0x00" value="0x00" readmask="0xFF" writemask="0xFF"
-					randommask="0x00" reserved="false" virtual="false"
-				/>
-				<!-- TWSR - TWI Status Register --> <ioreginitvalue
+					randommask="0x00" reserved="false" virtual="false" name=""
+					desc="">
+						<bit no="7" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="6" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="5" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="4" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="3" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="2" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="1" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="0" name=""
+							stip=""
+							ttip=""
+						/>
+				</ioreginitvalue>
+				
+				<!-- TWSR - TWI Status Register -->
+				<ioreginitvalue
 					addr="0x01" value="0xF8" readmask="0xFF" writemask="0x03"
-					randommask="0x00" reserved="false" virtual="false"
-				/>
-				<!-- TWAR - TWI (Slave) Address Register --> <ioreginitvalue
+					randommask="0x00" reserved="false" virtual="false" name=""
+					desc="">
+						<bit no="7" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="6" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="5" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="4" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="3" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="2" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="1" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="0" name=""
+							stip=""
+							ttip=""
+						/>
+				</ioreginitvalue>
+				
+				<!-- TWAR - TWI (Slave) Address Register -->
+				<ioreginitvalue
 					addr="0x02" value="0xFE" readmask="0xFF" writemask="0xFF"
-					randommask="0x00" reserved="false" virtual="false"
-				/>
-				<!-- TWDR - TWI Data Register --> <ioreginitvalue
+					randommask="0x00" reserved="false" virtual="false" name=""
+					desc="">
+						<bit no="7" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="6" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="5" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="4" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="3" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="2" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="1" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="0" name=""
+							stip=""
+							ttip=""
+						/>
+				</ioreginitvalue>
+				
+				<!-- TWDR - TWI Data Register -->
+				<ioreginitvalue
 					addr="0x03" value="0xFF" readmask="0xFF" writemask="0xFF"
-					randommask="0x00" reserved="false" virtual="false"
-				/>
-				<!-- ADCL - The ADC Data Register --> <ioreginitvalue
+					randommask="0x00" reserved="false" virtual="false" name=""
+					desc="">
+						<bit no="7" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="6" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="5" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="4" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="3" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="2" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="1" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="0" name=""
+							stip=""
+							ttip=""
+						/>
+				</ioreginitvalue>
+				
+				<!-- ADCL - The ADC Data Register -->
+				<ioreginitvalue
 					addr="0x04" value="0x00" readmask="0xFF" writemask="0x00"
-					randommask="0x00" reserved="false" virtual="false"
-				/>
-				<!-- ADCH - The ADC Data Register --> <ioreginitvalue
+					randommask="0x00" reserved="false" virtual="false" name=""
+					desc="">
+						<bit no="7" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="6" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="5" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="4" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="3" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="2" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="1" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="0" name=""
+							stip=""
+							ttip=""
+						/>
+				</ioreginitvalue>
+				
+				<!-- ADCH - The ADC Data Register -->
+				<ioreginitvalue
 					addr="0x05" value="0x00" readmask="0xFF" writemask="0x00"
-					randommask="0x00" reserved="false" virtual="false"
-				/>
-				<!-- ADCSRA -  ADC Control and Status Register A --> <ioreginitvalue
+					randommask="0x00" reserved="false" virtual="false" name=""
+					desc="">
+						<bit no="7" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="6" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="5" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="4" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="3" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="2" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="1" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="0" name=""
+							stip=""
+							ttip=""
+						/>
+				</ioreginitvalue>
+				
+				<!-- ADCSRA -  ADC Control and Status Register A -->
+				<ioreginitvalue
 					addr="0x06" value="0x00" readmask="0xFF" writemask="0xFF"
-					randommask="0x00" reserved="false" virtual="false"
-				/>
-				<!-- ADMUX -  ADC Multiplexer Selection Register --> <ioreginitvalue
+					randommask="0x00" reserved="false" virtual="false" name=""
+					desc="">
+						<bit no="7" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="6" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="5" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="4" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="3" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="2" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="1" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="0" name=""
+							stip=""
+							ttip=""
+						/>
+				</ioreginitvalue>
+				
+				<!-- ADMUX -  ADC Multiplexer Selection Register -->
+				<ioreginitvalue
 					addr="0x07" value="0x00" readmask="0xFF" writemask="0xEF"
-					randommask="0x00" reserved="false" virtual="false"
-				/>
-				<!-- ACSR - Analog Comparator Control and Status Register --> <ioreginitvalue
+					randommask="0x00" reserved="false" virtual="false" name=""
+					desc="">
+						<bit no="7" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="6" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="5" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="4" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="3" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="2" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="1" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="0" name=""
+							stip=""
+							ttip=""
+						/>
+				</ioreginitvalue>
+				
+				<!-- ACSR - Analog Comparator Control and Status Register -->
+				<ioreginitvalue
 					addr="0x08" value="0x00" readmask="0xFF" writemask="0xDF"
-					randommask="0xDF" reserved="false" virtual="false"
-				/>
-				<!-- UBRRL - USART Baud Rate Register --> <ioreginitvalue
+					randommask="0xDF" reserved="false" virtual="false" name=""
+					desc="">
+						<bit no="7" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="6" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="5" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="4" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="3" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="2" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="1" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="0" name=""
+							stip=""
+							ttip=""
+						/>
+				</ioreginitvalue>
+				
+				<!-- UBRRL - USART Baud Rate Register -->
+				<ioreginitvalue
 					addr="0x09" value="0x00" readmask="0xFF" writemask="0xFF"
-					randommask="0x00" reserved="false" virtual="false"
-				/>
-				<!-- UCSRB - USART Control and Status Register B --> <ioreginitvalue
+					randommask="0x00" reserved="false" virtual="false" name=""
+					desc="">
+						<bit no="7" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="6" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="5" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="4" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="3" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="2" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="1" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="0" name=""
+							stip=""
+							ttip=""
+						/>
+				</ioreginitvalue>
+				
+				<!-- UCSRB - USART Control and Status Register B -->
+				<ioreginitvalue
 					addr="0x0A" value="0x00" readmask="0xFF" writemask="0xFD"
-					randommask="0x00" reserved="false" virtual="false"
-				/>
-				<!-- UCSRA - USART Control and Status Register A --> <ioreginitvalue
+					randommask="0x00" reserved="false" virtual="false" name=""
+					desc="">
+						<bit no="7" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="6" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="5" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="4" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="3" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="2" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="1" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="0" name=""
+							stip=""
+							ttip=""
+						/>
+				</ioreginitvalue>
+				
+				<!-- UCSRA - USART Control and Status Register A -->
+				<ioreginitvalue
 					addr="0x0B" value="0x20" readmask="0xFF" writemask="0x43"
-					randommask="0x00" reserved="false" virtual="false"
-				/>
-				<!-- UDR - USART I/O Data Register - Read/Write --> <ioreginitvalue
+					randommask="0x00" reserved="false" virtual="false" name=""
+					desc="">
+						<bit no="7" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="6" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="5" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="4" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="3" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="2" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="1" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="0" name=""
+							stip=""
+							ttip=""
+						/>
+				</ioreginitvalue>
+				
+				<!-- UDR - USART I/O Data Register - Read/Write -->
+				<ioreginitvalue
 					addr="0x0C" value="0x00" readmask="0x00" writemask="0x00"
-					randommask="0xFF" reserved="false" virtual="true"
-				/>
-				<!-- SPCR - SPI Control Register --> <ioreginitvalue
+					randommask="0xFF" reserved="false" virtual="true" name=""
+					desc="">
+						<bit no="7" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="6" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="5" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="4" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="3" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="2" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="1" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="0" name=""
+							stip=""
+							ttip=""
+						/>
+				</ioreginitvalue>
+				
+				<!-- SPCR - SPI Control Register -->
+				<ioreginitvalue
 					addr="0x0D" value="0x00" readmask="0xFF" writemask="0xFF"
-					randommask="0x00" reserved="false" virtual="false"
-				/>
-				<!-- SPSR - SPI Status Register --> <ioreginitvalue
+					randommask="0x00" reserved="false" virtual="false" name=""
+					desc="">
+						<bit no="7" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="6" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="5" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="4" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="3" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="2" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="1" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="0" name=""
+							stip=""
+							ttip=""
+						/>
+				</ioreginitvalue>
+				
+				<!-- SPSR - SPI Status Register -->
+				<ioreginitvalue
 					addr="0x0E" value="0x00" readmask="0xFF" writemask="0x01"
-					randommask="0x00" reserved="false" virtual="false"
-				/>
-				<!-- SPDR - – SPI Data Register --> <ioreginitvalue
+					randommask="0x00" reserved="false" virtual="false" name=""
+					desc="">
+						<bit no="7" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="6" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="5" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="4" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="3" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="2" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="1" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="0" name=""
+							stip=""
+							ttip=""
+						/>
+				</ioreginitvalue>
+				
+				<!-- SPDR - – SPI Data Register -->
+				<ioreginitvalue
 					addr="0x0F" value="0x00" readmask="0xFF" writemask="0xFF"
-					randommask="0xFF" reserved="false" virtual="false"
-				/>
-				<!-- PIND - The Port D Input Pins Address --> <ioreginitvalue
+					randommask="0xFF" reserved="false" virtual="false" name=""
+					desc="">
+						<bit no="7" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="6" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="5" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="4" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="3" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="2" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="1" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="0" name=""
+							stip=""
+							ttip=""
+						/>
+				</ioreginitvalue>
+				
+				<!-- PIND - The Port D Input Pins Address -->
+				<ioreginitvalue
 					addr="0x10" value="0x00" readmask="0xFF" writemask="0x00"
-					randommask="0xFF" reserved="false" virtual="false"
-				/>
-				<!-- DDRD - The Port D Data Direction Register --> <ioreginitvalue
+					randommask="0xFF" reserved="false" virtual="false" name=""
+					desc="">
+						<bit no="7" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="6" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="5" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="4" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="3" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="2" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="1" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="0" name=""
+							stip=""
+							ttip=""
+						/>
+				</ioreginitvalue>
+				
+				<!-- DDRD - The Port D Data Direction Register -->
+				<ioreginitvalue
 					addr="0x11" value="0x00" readmask="0xFF" writemask="0xFF"
-					randommask="0x00" reserved="false" virtual="false"
-				/>
-				<!-- PORTD - The Port D Data Register --> <ioreginitvalue
+					randommask="0x00" reserved="false" virtual="false" name=""
+					desc="">
+						<bit no="7" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="6" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="5" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="4" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="3" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="2" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="1" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="0" name=""
+							stip=""
+							ttip=""
+						/>
+				</ioreginitvalue>
+				
+				<!-- PORTD - The Port D Data Register -->
+				<ioreginitvalue
 					addr="0x12" value="0x00" readmask="0xFF" writemask="0xFF"
-					randommask="0x00" reserved="false" virtual="false"
-				/>
-				<!-- PINC - The Port C Input Pins Address --> <ioreginitvalue
+					randommask="0x00" reserved="false" virtual="false" name=""
+					desc="">
+						<bit no="7" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="6" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="5" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="4" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="3" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="2" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="1" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="0" name=""
+							stip=""
+							ttip=""
+						/>
+				</ioreginitvalue>
+				
+				<!-- PINC - The Port C Input Pins Address -->
+				<ioreginitvalue
 					addr="0x13" value="0x00" readmask="0xFF" writemask="0x00"
-					randommask="0x7F" reserved="false" virtual="false"
-				/>
-				<!-- DDRC - The Port C Data Direction Register --> <ioreginitvalue
+					randommask="0x7F" reserved="false" virtual="false" name=""
+					desc="">
+						<bit no="7" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="6" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="5" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="4" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="3" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="2" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="1" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="0" name=""
+							stip=""
+							ttip=""
+						/>
+				</ioreginitvalue>
+				
+				<!-- DDRC - The Port C Data Direction Register -->
+				<ioreginitvalue
 					addr="0x14" value="0x00" readmask="0xFF" writemask="0x7F"
-					randommask="0x00" reserved="false" virtual="false"
-				/>
-				<!-- PORTC - The Port C Data Register --> <ioreginitvalue
+					randommask="0x00" reserved="false" virtual="false" name=""
+					desc="">
+						<bit no="7" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="6" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="5" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="4" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="3" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="2" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="1" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="0" name=""
+							stip=""
+							ttip=""
+						/>
+				</ioreginitvalue>
+				
+				<!-- PORTC - The Port C Data Register -->
+				<ioreginitvalue
 					addr="0x15" value="0x00" readmask="0xFF" writemask="0x7F"
-					randommask="0x00" reserved="false" virtual="false"
-				/>
-				<!-- PINB - The Port B Input Pins Address --> <ioreginitvalue
+					randommask="0x00" reserved="false" virtual="false" name=""
+					desc="">
+						<bit no="7" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="6" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="5" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="4" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="3" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="2" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="1" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="0" name=""
+							stip=""
+							ttip=""
+						/>
+				</ioreginitvalue>
+				
+				<!-- PINB - The Port B Input Pins Address -->
+				<ioreginitvalue
 					addr="0x16" value="0x00" readmask="0xFF" writemask="0x00"
-					randommask="0xFF" reserved="false" virtual="false"
-				/>
-				<!-- DDRB - The Port B Data Direction Register --> <ioreginitvalue
+					randommask="0xFF" reserved="false" virtual="false" name=""
+					desc="">
+						<bit no="7" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="6" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="5" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="4" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="3" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="2" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="1" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="0" name=""
+							stip=""
+							ttip=""
+						/>
+				</ioreginitvalue>
+				
+				<!-- DDRB - The Port B Data Direction Register -->
+				<ioreginitvalue
 					addr="0x17" value="0x00" readmask="0xFF" writemask="0xFF"
-					randommask="0x00" reserved="false" virtual="false"
-				/>
-				<!-- PORTB - The Port B Data Register --> <ioreginitvalue
+					randommask="0x00" reserved="false" virtual="false" name=""
+					desc="">
+						<bit no="7" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="6" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="5" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="4" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="3" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="2" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="1" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="0" name=""
+							stip=""
+							ttip=""
+						/>
+				</ioreginitvalue>
+				
+				<!-- PORTB - The Port B Data Register -->
+				<ioreginitvalue
 					addr="0x18" value="0x00" readmask="0xFF" writemask="0xFF"
-					randommask="0x00" reserved="false" virtual="false"
-				/>
-				<!-- (Reserved) --> <ioreginitvalue
+					randommask="0x00" reserved="false" virtual="false" name=""
+					desc="">
+						<bit no="7" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="6" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="5" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="4" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="3" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="2" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="1" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="0" name=""
+							stip=""
+							ttip=""
+						/>
+				</ioreginitvalue>
+				
+				<!-- (Reserved) -->
+				<ioreginitvalue
 					addr="0x19" value="0x00" readmask="0xFF" writemask="0xFF"
-					randommask="0xFF" reserved="true" virtual="false"
-				/>
-				<!-- (Reserved) --> <ioreginitvalue
+					randommask="0xFF" reserved="true" virtual="false" name=""
+					desc="">
+						<bit no="7" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="6" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="5" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="4" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="3" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="2" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="1" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="0" name=""
+							stip=""
+							ttip=""
+						/>
+				</ioreginitvalue>
+				
+				<!-- (Reserved) -->
+				<ioreginitvalue
 					addr="0x1A" value="0x00" readmask="0xFF" writemask="0xFF"
-					randommask="0xFF" reserved="true" virtual="false"
-				/>
-				<!-- (Reserved) --> <ioreginitvalue
+					randommask="0xFF" reserved="true" virtual="false" name=""
+					desc="">
+						<bit no="7" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="6" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="5" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="4" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="3" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="2" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="1" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="0" name=""
+							stip=""
+							ttip=""
+						/>
+				</ioreginitvalue>
+				
+				<!-- (Reserved) -->
+				<ioreginitvalue
 					addr="0x1B" value="0x00" readmask="0xFF" writemask="0xFF"
-					randommask="0xFF" reserved="true" virtual="false"
-				/>
-				<!-- EECR - The EEPROM Control Register --> <ioreginitvalue
+					randommask="0xFF" reserved="true" virtual="false" name=""
+					desc="">
+						<bit no="7" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="6" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="5" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="4" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="3" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="2" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="1" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="0" name=""
+							stip=""
+							ttip=""
+						/>
+				</ioreginitvalue>
+				
+				<!-- EECR - The EEPROM Control Register -->
+				<ioreginitvalue
 					addr="0x1C" value="0x00" readmask="0xFF" writemask="0x0F"
-					randommask="0x02" reserved="false" virtual="false"
-				/>
-				<!-- EEDR - The EEPROM Data Register --> <ioreginitvalue
+					randommask="0x02" reserved="false" virtual="false" name=""
+					desc="">
+						<bit no="7" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="6" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="5" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="4" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="3" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="2" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="1" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="0" name=""
+							stip=""
+							ttip=""
+						/>
+				</ioreginitvalue>
+				
+				<!-- EEDR - The EEPROM Data Register -->
+				<ioreginitvalue
 					addr="0x1D" value="0x00" readmask="0xFF" writemask="0xFF"
-					randommask="0x00" reserved="false" virtual="false"
-				/>
-				<!-- EEARL - The EEPROM Address Register --> <ioreginitvalue
+					randommask="0x00" reserved="false" virtual="false" name=""
+					desc="">
+						<bit no="7" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="6" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="5" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="4" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="3" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="2" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="1" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="0" name=""
+							stip=""
+							ttip=""
+						/>
+				</ioreginitvalue>
+				
+				<!-- EEARL - The EEPROM Address Register -->
+				<ioreginitvalue
 					addr="0x1E" value="0x00" readmask="0xFF" writemask="0xFF"
-					randommask="0xFF" reserved="false" virtual="false"
-				/>
-				<!-- EEARH - The EEPROM Address Register --> <ioreginitvalue
+					randommask="0xFF" reserved="false" virtual="false" name=""
+					desc="">
+						<bit no="7" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="6" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="5" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="4" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="3" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="2" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="1" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="0" name=""
+							stip=""
+							ttip=""
+						/>
+				</ioreginitvalue>
+				
+				<!-- EEARH - The EEPROM Address Register -->
+				<ioreginitvalue
 					addr="0x1F" value="0x00" readmask="0xFF" writemask="0x01"
-					randommask="0x01" reserved="false" virtual="false"
-				/>
-				<!-- UBRRH/UCSRC --> <ioreginitvalue
+					randommask="0x01" reserved="false" virtual="false" name=""
+					desc="">
+						<bit no="7" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="6" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="5" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="4" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="3" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="2" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="1" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="0" name=""
+							stip=""
+							ttip=""
+						/>
+				</ioreginitvalue>
+				
+				<!-- UBRRH/UCSRC -->
+				<ioreginitvalue
 					addr="0x20" value="0x00" readmask="0x00" writemask="0x00"
-					randommask="0xFF" reserved="false" virtual="true"
-				/>
-				<!-- WDTCR - Watchdog Timer Control Register --> <ioreginitvalue
+					randommask="0xFF" reserved="false" virtual="true" name=""
+					desc="">
+						<bit no="7" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="6" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="5" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="4" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="3" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="2" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="1" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="0" name=""
+							stip=""
+							ttip=""
+						/>
+				</ioreginitvalue>
+				
+				<!-- WDTCR - Watchdog Timer Control Register -->
+				<ioreginitvalue
 					addr="0x21" value="0x00" readmask="0xFF" writemask="0x1F"
-					randommask="0x00" reserved="false" virtual="false"
-				/>
-				<!-- ASSR - Asynchronous Status Register --> <ioreginitvalue
+					randommask="0x00" reserved="false" virtual="false" name=""
+					desc="">
+						<bit no="7" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="6" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="5" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="4" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="3" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="2" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="1" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="0" name=""
+							stip=""
+							ttip=""
+						/>
+				</ioreginitvalue>
+				
+				<!-- ASSR - Asynchronous Status Register -->
+				<ioreginitvalue
 					addr="0x22" value="0x00" readmask="0xFF" writemask="0x08"
-					randommask="0x00" reserved="false" virtual="false"
-				/>
-				<!-- OCR2 - Output Compare Register --> <ioreginitvalue
+					randommask="0x00" reserved="false" virtual="false" name=""
+					desc="">
+						<bit no="7" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="6" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="5" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="4" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="3" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="2" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="1" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="0" name=""
+							stip=""
+							ttip=""
+						/>
+				</ioreginitvalue>
+				
+				<!-- OCR2 - Output Compare Register -->
+				<ioreginitvalue
 					addr="0x23" value="0x00" readmask="0xFF" writemask="0xFF"
-					randommask="0x00" reserved="false" virtual="false"
-				/>
-				<!-- TCNT2 - Timer/Counter Register --> <ioreginitvalue
+					randommask="0x00" reserved="false" virtual="false" name=""
+					desc="">
+						<bit no="7" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="6" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="5" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="4" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="3" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="2" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="1" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="0" name=""
+							stip=""
+							ttip=""
+						/>
+				</ioreginitvalue>
+				
+				<!-- TCNT2 - Timer/Counter Register -->
+				<ioreginitvalue
 					addr="0x24" value="0x00" readmask="0xFF" writemask="0xFF"
-					randommask="0x00" reserved="false" virtual="false"
-				/>
-				<!-- TCCR2 - Timer/Counter Control Register --> <ioreginitvalue
+					randommask="0x00" reserved="false" virtual="false" name=""
+					desc="">
+						<bit no="7" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="6" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="5" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="4" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="3" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="2" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="1" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="0" name=""
+							stip=""
+							ttip=""
+						/>
+				</ioreginitvalue>
+				
+				<!-- TCCR2 - Timer/Counter Control Register -->
+				<ioreginitvalue
 					addr="0x25" value="0x00" readmask="0x7F" writemask="0xFF"
-					randommask="0x00" reserved="false" virtual="false"
-				/>
-				<!-- ICR1L - Input Capture Register 1 --> <ioreginitvalue
+					randommask="0x00" reserved="false" virtual="false" name=""
+					desc="">
+						<bit no="7" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="6" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="5" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="4" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="3" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="2" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="1" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="0" name=""
+							stip=""
+							ttip=""
+						/>
+				</ioreginitvalue>
+				
+				<!-- ICR1L - Input Capture Register 1 -->
+				<ioreginitvalue
 					addr="0x26" value="0x00" readmask="0xFF" writemask="0xFF"
-					randommask="0x00" reserved="false" virtual="false"
-				/>
-				<!-- ICR1H - Input Capture Register 1 --> <ioreginitvalue
+					randommask="0x00" reserved="false" virtual="false" name=""
+					desc="">
+						<bit no="7" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="6" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="5" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="4" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="3" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="2" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="1" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="0" name=""
+							stip=""
+							ttip=""
+						/>
+				</ioreginitvalue>
+				
+				<!-- ICR1H - Input Capture Register 1 -->
+				<ioreginitvalue
 					addr="0x27" value="0x00" readmask="0xFF" writemask="0xFF"
-					randommask="0x00" reserved="false" virtual="false"
-				/>
-				<!-- OCR1BL - Output Compare Register 1 B --> <ioreginitvalue
+					randommask="0x00" reserved="false" virtual="false" name=""
+					desc="">
+						<bit no="7" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="6" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="5" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="4" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="3" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="2" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="1" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="0" name=""
+							stip=""
+							ttip=""
+						/>
+				</ioreginitvalue>
+				
+				<!-- OCR1BL - Output Compare Register 1 B -->
+				<ioreginitvalue
 					addr="0x28" value="0x00" readmask="0xFF" writemask="0xFF"
-					randommask="0x00" reserved="false" virtual="false"
-				/>
-				<!-- OCR1BH - Output Compare Register 1 B --> <ioreginitvalue
+					randommask="0x00" reserved="false" virtual="false" name=""
+					desc="">
+						<bit no="7" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="6" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="5" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="4" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="3" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="2" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="1" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="0" name=""
+							stip=""
+							ttip=""
+						/>
+				</ioreginitvalue>
+				
+				<!-- OCR1BH - Output Compare Register 1 B -->
+				<ioreginitvalue
 					addr="0x29" value="0x00" readmask="0xFF" writemask="0xFF"
-					randommask="0x00" reserved="false" virtual="false"
-				/>
-				<!-- OCR1AL - Output Compare Register 1 A --> <ioreginitvalue
+					randommask="0x00" reserved="false" virtual="false" name=""
+					desc="">
+						<bit no="7" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="6" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="5" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="4" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="3" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="2" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="1" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="0" name=""
+							stip=""
+							ttip=""
+						/>
+				</ioreginitvalue>
+				
+				<!-- OCR1AL - Output Compare Register 1 A -->
+				<ioreginitvalue
 					addr="0x2A" value="0x00" readmask="0xFF" writemask="0xFF"
-					randommask="0x00" reserved="false" virtual="false"
-				/>
-				<!-- OCR1AH - Output Compare Register 1 A --> <ioreginitvalue
+					randommask="0x00" reserved="false" virtual="false" name=""
+					desc="">
+						<bit no="7" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="6" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="5" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="4" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="3" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="2" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="1" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="0" name=""
+							stip=""
+							ttip=""
+						/>
+				</ioreginitvalue>
+				
+				<!-- OCR1AH - Output Compare Register 1 A -->
+				<ioreginitvalue
 					addr="0x2B" value="0x00" readmask="0xFF" writemask="0xFF"
-					randommask="0x00" reserved="false" virtual="false"
-				/>
-				<!-- TCNT1L - Timer/Counter 1 --> <ioreginitvalue
+					randommask="0x00" reserved="false" virtual="false" name=""
+					desc="">
+						<bit no="7" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="6" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="5" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="4" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="3" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="2" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="1" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="0" name=""
+							stip=""
+							ttip=""
+						/>
+				</ioreginitvalue>
+				
+				<!-- TCNT1L - Timer/Counter 1 -->
+				<ioreginitvalue
 					addr="0x2C" value="0x00" readmask="0xFF" writemask="0xFF"
-					randommask="0x00" reserved="false" virtual="false"
-				/>
-				<!-- TCNT1H - Timer/Counter 1 --> <ioreginitvalue
+					randommask="0x00" reserved="false" virtual="false" name=""
+					desc="">
+						<bit no="7" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="6" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="5" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="4" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="3" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="2" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="1" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="0" name=""
+							stip=""
+							ttip=""
+						/>
+				</ioreginitvalue>
+				
+				<!-- TCNT1H - Timer/Counter 1 -->
+				<ioreginitvalue
 					addr="0x2D" value="0x00" readmask="0xFF" writemask="0xFF"
-					randommask="0x00" reserved="false" virtual="false"
-				/>
-				<!-- TCCR1B - Timer/Counter 1 Control Register B --> <ioreginitvalue
+					randommask="0x00" reserved="false" virtual="false" name=""
+					desc="">
+						<bit no="7" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="6" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="5" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="4" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="3" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="2" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="1" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="0" name=""
+							stip=""
+							ttip=""
+						/>
+				</ioreginitvalue>
+				
+				<!-- TCCR1B - Timer/Counter 1 Control Register B -->
+				<ioreginitvalue
 					addr="0x2E" value="0x00" readmask="0xFF" writemask="0xDF"
-					randommask="0x00" reserved="false" virtual="false"
-				/>
-				<!-- TCCR1A - Timer/Counter 1 Control Register A --> <ioreginitvalue
+					randommask="0x00" reserved="false" virtual="false" name=""
+					desc="">
+						<bit no="7" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="6" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="5" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="4" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="3" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="2" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="1" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="0" name=""
+							stip=""
+							ttip=""
+						/>
+				</ioreginitvalue>
+				
+				<!-- TCCR1A - Timer/Counter 1 Control Register A -->
+				<ioreginitvalue
 					addr="0x2F" value="0x00" readmask="0xF3" writemask="0xFF"
-					randommask="0x00" reserved="false" virtual="false"
-				/>
-				<!-- SFIOR - Special Function IO Register --> <ioreginitvalue
+					randommask="0x00" reserved="false" virtual="false" name=""
+					desc="">
+						<bit no="7" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="6" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="5" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="4" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="3" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="2" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="1" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="0" name=""
+							stip=""
+							ttip=""
+						/>
+				</ioreginitvalue>
+				
+				<!-- SFIOR - Special Function IO Register -->
+				<ioreginitvalue
 					addr="0x30" value="0x00" readmask="0xFF" writemask="0x0F"
-					randommask="0x00" reserved="false" virtual="false"
-				/>
-				<!-- OSCCAL - Oscillator Calibration Register --> <ioreginitvalue
+					randommask="0x00" reserved="false" virtual="false" name=""
+					desc="">
+						<bit no="7" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="6" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="5" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="4" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="3" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="2" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="1" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="0" name=""
+							stip=""
+							ttip=""
+						/>
+				</ioreginitvalue>
+				
+				<!-- OSCCAL - Oscillator Calibration Register -->
+				<ioreginitvalue
 					addr="0x31" value="0x00" readmask="0xFF" writemask="0xFF"
-					randommask="0xFF" reserved="false" virtual="false"
-				/>
-				<!-- TCNT0 - Timer/Counter Register --> <ioreginitvalue
+					randommask="0xFF" reserved="false" virtual="false" name=""
+					desc="">
+						<bit no="7" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="6" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="5" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="4" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="3" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="2" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="1" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="0" name=""
+							stip=""
+							ttip=""
+						/>
+				</ioreginitvalue>
+				
+				<!-- TCNT0 - Timer/Counter Register -->
+				<ioreginitvalue
 					addr="0x32" value="0x00" readmask="0xFF" writemask="0xFF"
-					randommask="0x00" reserved="false" virtual="false"
-				/>
-				<!-- TCCR0 - Timer/Counter Control Register --> <ioreginitvalue
+					randommask="0x00" reserved="false" virtual="false" name=""
+					desc="">
+						<bit no="7" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="6" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="5" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="4" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="3" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="2" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="1" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="0" name=""
+							stip=""
+							ttip=""
+						/>
+				</ioreginitvalue>
+				
+				<!-- TCCR0 - Timer/Counter Control Register -->
+				<ioreginitvalue
 					addr="0x33" value="0x00" readmask="0xFF" writemask="0x07"
-					randommask="0x00" reserved="false" virtual="false"
-				/>
-				<!-- MCUCSR - MCU Control and Status Register --> <ioreginitvalue
+					randommask="0x00" reserved="false" virtual="false" name=""
+					desc="">
+						<bit no="7" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="6" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="5" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="4" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="3" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="2" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="1" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="0" name=""
+							stip=""
+							ttip=""
+						/>
+				</ioreginitvalue>
+				
+				<!-- MCUCSR - MCU Control and Status Register -->
+				<ioreginitvalue
 					addr="0x34" value="0x00" readmask="0xFF" writemask="0x0F"
-					randommask="0x00" reserved="false" virtual="false"
-				/>
-				<!-- MCUCR - MCU Control Register--> <ioreginitvalue
+					randommask="0x00" reserved="false" virtual="false" name=""
+					desc="">
+						<bit no="7" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="6" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="5" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="4" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="3" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="2" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="1" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="0" name=""
+							stip=""
+							ttip=""
+						/>
+				</ioreginitvalue>
+				
+				<!-- MCUCR - MCU Control Register-->
+				<ioreginitvalue
 					addr="0x35" value="0x00" readmask="0xFF" writemask="0xFF"
-					randommask="0x00" reserved="false" virtual="false"
-				/>
-				<!-- TWCR - TWI Control Register --> <ioreginitvalue
+					randommask="0x00" reserved="false" virtual="false" name=""
+					desc="">
+						<bit no="7" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="6" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="5" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="4" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="3" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="2" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="1" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="0" name=""
+							stip=""
+							ttip=""
+						/>
+				</ioreginitvalue>
+				
+				<!-- TWCR - TWI Control Register -->
+				<ioreginitvalue
 					addr="0x36" value="0x00" readmask="0xFF" writemask="0xF5"
-					randommask="0x00" reserved="false" virtual="false"
-				/>
-				<!-- SPMCR - Store Program Memory Control Register --> <ioreginitvalue
+					randommask="0x00" reserved="false" virtual="false" name=""
+					desc="">
+						<bit no="7" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="6" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="5" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="4" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="3" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="2" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="1" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="0" name=""
+							stip=""
+							ttip=""
+						/>
+				</ioreginitvalue>
+				
+				<!-- SPMCR - Store Program Memory Control Register -->
+				<ioreginitvalue
 					addr="0x37" value="0x00" readmask="0xFF" writemask="0x9F"
-					randommask="0x00" reserved="false" virtual="false"
-				/>
-				<!-- TIFR - Timer/Counter Interrupt Flag Register --> <ioreginitvalue
+					randommask="0x00" reserved="false" virtual="false" name=""
+					desc="">
+						<bit no="7" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="6" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="5" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="4" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="3" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="2" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="1" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="0" name=""
+							stip=""
+							ttip=""
+						/>
+				</ioreginitvalue>
+				
+				<!-- TIFR - Timer/Counter Interrupt Flag Register -->
+				<ioreginitvalue
 					addr="0x38" value="0x00" readmask="0xFF" writemask="0xFF"
-					randommask="0x00" reserved="false" virtual="false"
-				/>
-				<!-- TIMSK - Timer/Counter Interrupt Mask Register --> <ioreginitvalue
+					randommask="0x00" reserved="false" virtual="false" name=""
+					desc="">
+						<bit no="7" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="6" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="5" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="4" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="3" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="2" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="1" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="0" name=""
+							stip=""
+							ttip=""
+						/>
+				</ioreginitvalue>
+				
+				<!-- TIMSK - Timer/Counter Interrupt Mask Register -->
+				<ioreginitvalue
 					addr="0x39" value="0x00" readmask="0xFF" writemask="0xFF"
-					randommask="0x00" reserved="false" virtual="false"
-				/>
-				<!-- GIFR - General Interrupt Flag Register --> <ioreginitvalue
+					randommask="0x00" reserved="false" virtual="false" name=""
+					desc="">
+						<bit no="7" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="6" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="5" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="4" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="3" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="2" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="1" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="0" name=""
+							stip=""
+							ttip=""
+						/>
+				</ioreginitvalue>
+				
+				<!-- GIFR - General Interrupt Flag Register -->
+				<ioreginitvalue
 					addr="0x3A" value="0x00" readmask="0xFF" writemask="0xC0"
-					randommask="0x00" reserved="false" virtual="false"
-				/>
-				<!-- GICR - General Interrupt Control Register --> <ioreginitvalue
+					randommask="0x00" reserved="false" virtual="false" name=""
+					desc="">
+						<bit no="7" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="6" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="5" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="4" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="3" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="2" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="1" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="0" name=""
+							stip=""
+							ttip=""
+						/>
+				</ioreginitvalue>
+				
+				<!-- GICR - General Interrupt Control Register -->
+				<ioreginitvalue
 					addr="0x3B" value="0x00" readmask="0xFF" writemask="0xC3"
-					randommask="0x00" reserved="false" virtual="false"
-				/>
-				<!-- (Reserved) --> <ioreginitvalue
+					randommask="0x00" reserved="false" virtual="false" name=""
+					desc="">
+						<bit no="7" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="6" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="5" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="4" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="3" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="2" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="1" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="0" name=""
+							stip=""
+							ttip=""
+						/>
+				</ioreginitvalue>
+				
+				<!-- (Reserved) -->
+				<ioreginitvalue
 					addr="0x3C" value="0x00" readmask="0xFF" writemask="0xFF"
-					randommask="0xFF" reserved="true" virtual="false"
-				/>
-				<!-- SPL - Stack Pointer Low Register --> <ioreginitvalue
+					randommask="0xFF" reserved="true" virtual="false" name=""
+					desc="">
+						<bit no="7" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="6" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="5" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="4" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="3" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="2" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="1" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="0" name=""
+							stip=""
+							ttip=""
+						/>
+				</ioreginitvalue>
+				
+				<!-- SPL - Stack Pointer Low Register -->
+				<ioreginitvalue
 					addr="0x3D" value="0x00" readmask="0xFF" writemask="0xFF"
-					randommask="0x00" reserved="false" virtual="false"
-				/>
-				<!-- SPH - Stack Pointer High Register --> <ioreginitvalue
+					randommask="0x00" reserved="false" virtual="false" name=""
+					desc="">
+						<bit no="7" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="6" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="5" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="4" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="3" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="2" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="1" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="0" name=""
+							stip=""
+							ttip=""
+						/>
+				</ioreginitvalue>
+				
+				<!-- SPH - Stack Pointer High Register -->
+				<ioreginitvalue
 					addr="0x3E" value="0x00" readmask="0xFF" writemask="0xFF"
-					randommask="0x00" reserved="false" virtual="false"
-				/>
-				<!-- SREG - The AVR Status Register--> <ioreginitvalue
+					randommask="0x00" reserved="false" virtual="false" name=""
+					desc="">
+						<bit no="7" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="6" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="5" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="4" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="3" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="2" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="1" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="0" name=""
+							stip=""
+							ttip=""
+						/>
+				</ioreginitvalue>
+				
+				<!-- SREG - The AVR Status Register-->
+				<ioreginitvalue
 					addr="0x3F" value="0x00" readmask="0xFF" writemask="0xFF"
-					randommask="0x00" reserved="false" virtual="false"
-				/>
+					randommask="0x00" reserved="false" virtual="false" name=""
+					desc="">
+						<bit no="7" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="6" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="5" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="4" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="3" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="2" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="1" name=""
+							stip=""
+							ttip=""
+						/>
+						<bit no="0" name=""
+							stip=""
+							ttip=""
+						/>
+				</ioreginitvalue>
 			</ioreginitvalues>
 			<iomem2initvalues mem2sizes="2 2">
 				<!-- 0x0C: UDR - USART I/O Data Register -->
