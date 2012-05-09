@@ -3,6 +3,7 @@
 
 WLineCounter::WLineCounter(QTextEdit *parent, bool icons, bool hex, int width)
 {
+    this->setFrameShape(QFrame::NoFrame);
     this->parent = parent;
     //this->setMaximumHeight(parent->height());
     this->setMinimumHeight(parent->height());
