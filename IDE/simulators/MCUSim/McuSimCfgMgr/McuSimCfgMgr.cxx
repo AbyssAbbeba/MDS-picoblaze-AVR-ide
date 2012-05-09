@@ -54,6 +54,7 @@ inline void McuSimCfgMgr::clear() {
 	foreach ( McuDeviceSpec * item, m_devices ) {
 		delete item;
 	}
+	m_devices.clear();
 }
 
 bool McuSimCfgMgr::openConfigFile(const char * filename) {
@@ -327,7 +328,9 @@ bool McuSimCfgMgr::startElementAVR8(
 	} else if ( "ioreginitvalues" == localName ) {
 		m_expectedXMLElements<< "ioreginitvalue" << "iomem2initvalues";
 	} else if ( "ioreginitvalue" == localName ) {
-		m_expectedXMLElements << "ioreginitvalue" << "iomem2initvalues";
+		m_expectedXMLElements << "ioreginitvalue" << "bit" << "iomem2initvalues";
+	} else if ( "bit" == localName ) {
+		m_expectedXMLElements << "ioreginitvalue" << "bit" << "iomem2initvalues";
 	} else if ( "iomem2initvalues" == localName ) {
 		m_auxInt0 = -1;
 		m_expectedXMLElements << "externalinterrupts" << "initvalues";
@@ -535,11 +538,15 @@ inline bool McuSimCfgMgr::attributesAVR8(const QString & localName, const QXmlAt
 				if ( true == ok ) {
 					device->m_dataMemory.m_ioRegInitValues = new uint32_t[device->m_dataMemory.m_ioRegSize];
 					device->m_dataMemory.m_ioRegRandomInit = new uint8_t[device->m_dataMemory.m_ioRegSize];
+					device->m_dataMemory.m_ioRegDesc = new McuDeviceSpecAVR8::DataMemory::IORegDesc[device->m_dataMemory.m_ioRegSize];
 				}
 			} else if ( "mem2size" == atts.localName(i) ) {
 				device->m_dataMemory.m_mem2size = atts.value(i).toUInt(&ok, 0);
 				if ( true == ok ) {
 					device->m_dataMemory.m_ioMem2InitValues = new uint32_t * [device->m_dataMemory.m_mem2size];
+					for ( unsigned int i = 0; i < device->m_dataMemory.m_mem2size; i++ ) {
+						device->m_dataMemory.m_ioMem2InitValues[i] = NULL;
+					}
 					device->m_dataMemory.m_mem2sizes = new unsigned int[device->m_dataMemory.m_mem2size];
 				}
 			} else if ( "spWidth" == atts.localName(i) ) {
@@ -553,8 +560,10 @@ inline bool McuSimCfgMgr::attributesAVR8(const QString & localName, const QXmlAt
 			}
 		}
 	} else if ( "ioreginitvalue" == localName ) {
-		CHECK_NO_OF_ATTRS(7);
+		CHECK_NO_OF_ATTRS(9);
 
+		QString regName;
+		QString regDesc;
 		unsigned int addr = 0;
 		uint32_t initValue = 0;
 		uint8_t randMask = 0;
@@ -584,19 +593,60 @@ inline bool McuSimCfgMgr::attributesAVR8(const QString & localName, const QXmlAt
 				} else if ( "false" != atts.value(i) ) {
 					ok = false;
 				}
+			} else if ( "name" == atts.localName(i) ) {
+				regName = atts.value(i);
+			} else if ( "desc" == atts.localName(i) ) {
+				regDesc = atts.value(i);
 			} else {
 				INVALID_ATTRIBUTE();
 			}
 			if ( false == ok ) {
 				INVALID_ATTR_VALUE();
-			}			
+			}
 			if ( addr > device->m_dataMemory.m_ioRegSize ) {
 				qDebug() << "Address is too high: " << addr << ", tag: " << localName;
 			}
-
-			device->m_dataMemory.m_ioRegInitValues[addr] = initValue;
-			device->m_dataMemory.m_ioRegRandomInit[addr] = randMask;
 		}
+
+		m_auxInt0 = addr;
+		device->m_dataMemory.m_ioRegInitValues[addr] = initValue;
+		device->m_dataMemory.m_ioRegRandomInit[addr] = randMask;
+		device->m_dataMemory.m_ioRegDesc[addr].m_name = regName.toStdString();
+		device->m_dataMemory.m_ioRegDesc[addr].m_desc = regDesc.toStdString();
+		
+	} else if ( "bit" == localName ) {
+		CHECK_NO_OF_ATTRS(4);
+
+		int bitNumber = -1;
+		QString name;
+		QString stip;
+		QString ttip;
+
+		for ( int i = 0; i < numberOf; i++ ) {
+			if ( "no" == atts.localName(i) ) {
+				bool ok = true;
+				bitNumber = ( atts.value(i).toInt(&ok, 0) );
+				if ( (false == ok) || (bitNumber < 0) || (bitNumber > 7) ) {
+					INVALID_ATTR_VALUE();
+				}
+			} else if ( "name" == atts.localName(i) ) {
+				name = atts.value(i);
+			} else if ( "stip" == atts.localName(i) ) {
+				stip = atts.value(i);
+			} else if ( "ttip" == atts.localName(i) ) {
+				ttip = atts.value(i);
+			} else {
+				INVALID_ATTRIBUTE();
+			}
+			if ( (bitNumber < 0) || (bitNumber > 7) ) {
+				INVALID_ATTR_VALUE();
+			}
+		}
+
+		device->m_dataMemory.m_ioRegDesc[m_auxInt0].m_bit[bitNumber].m_name = name.toStdString();
+		device->m_dataMemory.m_ioRegDesc[m_auxInt0].m_bit[bitNumber].m_ttip = stip.toStdString();
+		device->m_dataMemory.m_ioRegDesc[m_auxInt0].m_bit[bitNumber].m_stip = stip.toStdString();
+
 	} else if ( "iomem2initvalues" == localName ) {
 		CHECK_NO_OF_ATTRS(1);
 

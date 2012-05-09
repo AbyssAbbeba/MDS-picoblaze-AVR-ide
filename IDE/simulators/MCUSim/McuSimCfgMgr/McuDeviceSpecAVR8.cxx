@@ -27,6 +27,7 @@ McuDeviceSpecAVR8::DataMemory::DataMemory() {
 	m_mem2sizes = NULL;
 	m_ioMem2InitValues = NULL;
 	m_mem2size = 0;
+	m_ioRegDesc = NULL;
 }
 
 McuDeviceSpecAVR8::DataMemory::~DataMemory() {
@@ -46,6 +47,9 @@ McuDeviceSpecAVR8::DataMemory::~DataMemory() {
 			}
 		}
 		delete[] m_ioMem2InitValues;
+	}
+	if ( NULL != m_ioRegDesc ) {
+		delete[] m_ioRegDesc;
 	}
 }
 
