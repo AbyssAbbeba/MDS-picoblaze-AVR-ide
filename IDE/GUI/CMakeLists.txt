@@ -16,6 +16,7 @@
        ./widgets/wlinecounter.cpp
        ./widgets/wcolumncounter.cpp
        ./widgets/movgridlayout.cpp
+       ./widgets/wsimulationinfo.cpp
   )
   
   # another list, this time it includes all header files that should be treated with moc
@@ -29,6 +30,7 @@
        ./widgets/wlinecounter.h
        ./widgets/wcolumncounter.h 
        ./widgets/movgridlayout.h
+       ./widgets/wsimulationinfo.h
   )
   
   # some .ui files

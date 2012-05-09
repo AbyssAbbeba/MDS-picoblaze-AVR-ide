@@ -3,6 +3,7 @@
 
 WColumnCounter::WColumnCounter(QTextEdit *parent, int height, int columns)
 {
+    this->setFrameShape(QFrame::NoFrame);
     this->parent = parent;
     widget = new WColumnCounterWidget(this, height, columns);
     this->setWidget(widget);
@@ -56,7 +57,7 @@ void WColumnCounterWidget::paintEvent(QPaintEvent *)
     point.setY(0);
     QBrush brush(Qt::darkCyan);
     paint.setBackground(brush);
-    QPen pen(Qt::darkCyan);
+    QPen pen(Qt::black);
     paint.setBrush(brush);
     paint.setPen(pen);
     for (int i = 0; i<columns; i++)
@@ -64,15 +65,14 @@ void WColumnCounterWidget::paintEvent(QPaintEvent *)
         //oddelat fixni sirku, zavislost je na velikosti fontu
         point.setX(i*24);
         rect.moveTopLeft(point);
-        paint.drawRect(rect);
-        pen.setColor(Qt::black);
-        paint.setPen(pen);
+        //paint.drawRect(rect);
+        //paint.setPen(pen);
         if (i<16)
             paint.drawText(rect, Qt::AlignCenter, "0" + QString::number(i, 16).toUpper());
         else
             paint.drawText(rect, Qt::AlignCenter, QString::number(i, 16).toUpper());
-        pen.setColor(Qt::darkCyan);
-        paint.setPen(pen);
+        //pen.setColor(Qt::darkCyan);
+        //paint.setPen(pen);
     }
     paint.end();
 }

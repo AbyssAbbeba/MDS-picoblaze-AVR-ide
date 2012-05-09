@@ -186,22 +186,22 @@ WDock::WDock(int code, QMainWindow *mainWindow)
             wDockWidget->setWidget(newWidget);
 	    break;
         }
-        case wHexEdit:
+        case wSimulationInfo:
         {
             wDockWidget = new QDockWidget("Simulation Info", mainWindow);
             wDockWidget->setAllowedAreas(Qt::BottomDockWidgetArea);
             mainWindow->addDockWidget(Qt::BottomDockWidgetArea, wDockWidget);
             //v budoucnu nahradit 20 na constCounterSize v konstruktoru
             //i 16 za promennou podle nastaveni
-            HexEdit *newWidget = new HexEdit(wDockWidget, true, 20, 16);
+            WSimulationInfo *newWidget = new WSimulationInfo(wDockWidget);
             area = 2;
-            QDockWidget *aa = new QDockWidget("Simul", mainWindow);
+            //QDockWidget *aa = new QDockWidget("Simul", wDockWidget);
             wDockWidget->setWidget(newWidget);
-            MovGridLayout *gridLayout = new MovGridLayout(aa);
-            aa->setWidget(gridLayout);
-            gridLayout->loadGridWidgets();
-            mainWindow->addDockWidget(Qt::BottomDockWidgetArea, aa);
-            wDockWidget->setMaximumWidth(610);
+            //MovGridLayout *gridLayout = new MovGridLayout(aa);
+            //aa->setWidget(gridLayout);
+            //gridLayout->loadGridWidgets();
+            //mainWindow->addDockWidget(Qt::BottomDockWidgetArea, aa);
+            //wDockWidget->setMaximumWidth(610);
 	    break;
         }
     }

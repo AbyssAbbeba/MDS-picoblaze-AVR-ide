@@ -45,11 +45,13 @@ class MainForm : public QMainWindow
         void openFilePath(QString path);
         void saveFile(CodeEdit *editor);
         WDockManager* getWDockManager();
+        void CreateDockWidgets();
 
     private slots:
         void newFile();
         void openFile();
         void addFile();
+        void newAddFile();
         void saveFile();
         void saveFileAs();
         void saveAll();
@@ -62,7 +64,6 @@ class MainForm : public QMainWindow
         void CreateMenu();
         void CreateActions();
         void CreateToolbar();
-        void CreateDockWidgets();
         void CreateWelcome();
 
         ProjectMan *projectMan;
@@ -87,9 +88,6 @@ class MainForm : public QMainWindow
         QAction *saveAct;
         QAction *saveAsAct;
         QAction *saveAllAct;
-        QAction *newProjAct;
-        QAction *openProjAct;
-        QAction *saveProjAct;
         QAction *exitAct;
 
         QAction *undoAct;
@@ -100,6 +98,10 @@ class MainForm : public QMainWindow
 
         QAction *interfaceConfigAct;
 
+        QAction *newProjAct;
+        QAction *newAddAct;
+        QAction *openProjAct;
+        QAction *saveProjAct;
         QAction *projectCompileAct;
         QAction *projectConfigAct;
 
