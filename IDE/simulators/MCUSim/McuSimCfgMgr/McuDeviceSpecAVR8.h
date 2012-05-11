@@ -34,7 +34,7 @@
 class McuDeviceSpecAVR8 : public McuDeviceSpec {
 public:
 	McuDeviceSpecAVR8();
-	bool setupSimulator(AVR8Config & mcuConfig);
+	bool setupSimulator(AVR8Config & mcuConfig) const;
 
 	struct Adc {
 		bool m_enabled;

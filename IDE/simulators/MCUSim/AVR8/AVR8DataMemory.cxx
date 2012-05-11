@@ -23,7 +23,7 @@ AVR8DataMemory::AVR8DataMemory() {
 
 AVR8DataMemory * AVR8DataMemory::link(MCUSim::EventLogger * eventLogger)
 {
-	Memory::link(eventLogger, SP_CODE);
+	Memory::link(eventLogger, SP_DATA);
 
 	return this;
 }

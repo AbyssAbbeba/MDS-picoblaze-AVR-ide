@@ -68,6 +68,7 @@ signals:
 private:
 	const uint8_t m_bitEnableMask;
 	bool m_readOnly;
+	bool m_bitButtonsAvailable;
 
 	QHBoxLayout * m_primaryLayout;
 	QLabel * m_regNameLabel;
@@ -82,7 +83,7 @@ private:
 	inline void bitButtonClicked(int i);
 	inline void refreshBitButtons(uint value);
 
-	inline void setupConnections(bool bitButtonsAvailable);
+	inline void setupConnections();
 };
 
 #endif // REGDISPLAY_H

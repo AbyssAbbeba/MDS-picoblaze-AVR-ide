@@ -84,8 +84,8 @@
 # BUILD COMPONENTS IN THE SUBDIRECTORIES
 # ------------------------------------------------------------------------------
 
-# Build the simulator widgets
-add_subdirectory(widgets/sim)
+# Build the widgets
+add_subdirectory(widgets)
 
 
 # ------------------------------------------------------------------------------

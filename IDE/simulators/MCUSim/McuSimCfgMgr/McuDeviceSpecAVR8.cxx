@@ -53,7 +53,7 @@ McuDeviceSpecAVR8::DataMemory::~DataMemory() {
 	}
 }
 
-bool McuDeviceSpecAVR8::setupSimulator(AVR8Config & mcuConfig) {
+bool McuDeviceSpecAVR8::setupSimulator(AVR8Config & mcuConfig) const {
 	mcuConfig.m_family = m_family;
 	mcuConfig.m_name = m_name.toStdString();
 

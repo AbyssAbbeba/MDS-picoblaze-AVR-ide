@@ -20,6 +20,8 @@
 #include <QPushButton>
 #include <QStringList>
 
+#include <iostream> // DEBUG!
+
 const QFont RegDisplay::m_nameFont = QFont("Courier New", 10, QFont::Normal);
 const QFont RegDisplay::m_bitNormalFont = QFont("Courier New", 10, QFont::DemiBold);
 
@@ -62,7 +64,10 @@ RegDisplay::RegDisplay(
 	m_hexLineEdit->setFont(m_nameFont);
 	m_primaryLayout->addWidget(m_hexLineEdit);
 
+	m_bitButtonsAvailable = false;
 	if ( NULL != bitNames ) {
+		m_bitButtonsAvailable = true;
+
 		assert ( 8 == bitNames->size() );
 
 		for ( int i = 7; i >= 0; i-- ) {
@@ -96,22 +101,22 @@ RegDisplay::RegDisplay(
 		}
 	}
 
-	setupConnections(NULL != bitNames);
+	setupConnections();
 }
 
 RegDisplay::~RegDisplay() {
-	delete m_primaryLayout;
-	delete m_regNameLabel;
-	delete m_hexLineEdit;
-	if ( NULL != m_bitButtons[0] ) {
-		for ( int i = 0; i < 8; i++ ) {
-			delete m_bitButtons[i];
-		}
-	}
+// 	delete m_primaryLayout;
+// 	delete m_regNameLabel;
+// 	delete m_hexLineEdit;
+// 	if ( NULL != m_bitButtons[0] ) {
+// 		for ( int i = 0; i < 8; i++ ) {
+// 			delete m_bitButtons[i];
+// 		}
+// 	}
 }
 
-inline void RegDisplay::setupConnections(bool bitButtonsAvailable) {
-	if ( true == bitButtonsAvailable ) {
+inline void RegDisplay::setupConnections() {
+	if ( true == m_bitButtonsAvailable ) {
 		connect(m_bitButtons[0], SIGNAL(clicked()), this, SLOT(bit0ButtonClicked()));
 		connect(m_bitButtons[1], SIGNAL(clicked()), this, SLOT(bit1ButtonClicked()));
 		connect(m_bitButtons[2], SIGNAL(clicked()), this, SLOT(bit2ButtonClicked()));
@@ -189,11 +194,14 @@ void RegDisplay::setHighlighted(bool highlighted) {
 }
 
 void RegDisplay::setReadOnly(bool readOnly) {
-	m_readOnly = readOnly;
-	m_hexLineEdit->setReadOnly(m_readOnly);
+// 	m_readOnly = readOnly;
+// 	m_hexLineEdit->setReadOnly(m_readOnly);
 }
 
 inline void RegDisplay::refreshBitButtons(uint value) {
+	if ( false == m_bitButtonsAvailable ) {
+		return;
+	}
 
 	for ( uint i = 0, mask = 0x01; i < 8; i++, mask <<= 1 ) {
 		if ( 0 == (m_bitEnableMask & mask) ) {

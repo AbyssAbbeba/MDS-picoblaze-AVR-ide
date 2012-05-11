@@ -11,8 +11,6 @@
  */
 
 #include "McuSimCfgMgr.h"
-#include "McuDeviceSpec.h"
-#include "McuDeviceSpecAVR8.h"
 #include "AVR8Config.h"
 
 #include <QFile>
@@ -576,9 +574,9 @@ inline bool McuSimCfgMgr::attributesAVR8(const QString & localName, const QXmlAt
 			} else if ( "value" == atts.localName(i) ) {
 				initValue |= ( 0xff & atts.value(i).toUInt(&ok, 0) );
 			} else if ( "writemask" == atts.localName(i) ) {
-				initValue |= ( 0xff & atts.value(i).toUInt(&ok, 0) << 8 );
+				initValue |= ( (0xff & atts.value(i).toUInt(&ok, 0)) << 8 );
 			} else if ( "readmask" == atts.localName(i) ) {
-				initValue |= ( 0xff & atts.value(i).toUInt(&ok, 0) << 16);
+				initValue |= ( (0xff & atts.value(i).toUInt(&ok, 0)) << 16);
 			} else if ( "randommask" == atts.localName(i) ) {
 				randMask = ( 0xff & atts.value(i).toUInt(&ok, 0) );
 			} else if ( "reserved" == atts.localName(i) ) {
@@ -1092,7 +1090,7 @@ inline bool McuSimCfgMgr::attributesAVR8(const QString & localName, const QXmlAt
 	return true;
 }
 
-bool McuSimCfgMgr::setupSimulator(const char * mcuName, MCUSim::Config & mcuConfig) {
+bool McuSimCfgMgr::setupSimulator(const char * mcuName, MCUSim::Config & mcuConfig) const {
 	const QString name = mcuName;
 	const int size = m_devices.size();
 	
@@ -1119,4 +1117,22 @@ bool McuSimCfgMgr::setupSimulator(const char * mcuName, MCUSim::Config & mcuConf
 	}
 
 	return true;
+}
+
+const McuDeviceSpec * McuSimCfgMgr::getDeviceSpec(const char * mcuName) const {
+	const QString name = mcuName;
+	const int size = m_devices.size();
+
+	int idx = -1;
+	for ( int i = 0; i < size; i++ ) {
+		if ( name == m_devices[i]->m_name ) {
+			idx = i;
+			break;
+		}
+	}
+	if ( -1 == idx ) {
+		return NULL;
+	}
+
+	return m_devices[idx];
 }

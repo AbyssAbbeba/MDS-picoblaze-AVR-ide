@@ -10,13 +10,13 @@
  *
  */
 
-#include "AVR8/AVR8Sim.h"
-#include "AVR8/AVR8ProgramMemory.h"
-#include "AVR8/AVR8DataMemory.h"
-#include "AVR8/AVR8DataEEPROM.h"
-#include "AVR8/AVR8InstructionSet.h"
-#include "MCUDataFiles/HexFile.h"
-#include "McuSimCfgMgr/McuSimCfgMgr.h"
+#include "AVR8Sim.h"
+#include "AVR8ProgramMemory.h"
+#include "AVR8DataMemory.h"
+#include "AVR8DataEEPROM.h"
+#include "AVR8InstructionSet.h"
+#include "HexFile.h"
+#include "McuSimCfgMgr.h"
 
 #include <cstdlib>
 #include <iostream>
