@@ -18,7 +18,7 @@
 
 
 #include <QTextEdit>
-#include <QStatusBar>
+//#include <QStatusBar>
 #include <QGridLayout>
 #include <QByteArray>
 #include <QLabel>
@@ -65,7 +65,7 @@ class HexEdit : public QWidget
         QTextEdit *hexTextEdit;
         QTextEdit *hexAsciiEdit;
         QByteArray *hexByteArray;
-        QStatusBar *hexStatusBar;
+        //QStatusBar *hexStatusBar;
         QLabel *hexStatusLabel;
         QGridLayout *hexLayout;
         
@@ -73,6 +73,7 @@ class HexEdit : public QWidget
         int asciiPrevPosition;
         int columns;
         bool changable;
+        bool ascii;
 
     protected:
         bool eventFilter(QObject *target, QEvent *event);

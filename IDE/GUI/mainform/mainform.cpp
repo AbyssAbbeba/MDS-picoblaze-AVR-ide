@@ -14,7 +14,7 @@ MainForm::MainForm()
     CreateActions();
     CreateMenu();
     CreateToolbar();
-    CreateDockWidgets();
+    //CreateDockWidgets();
     //CreateWelcome();
 }
 
@@ -60,8 +60,20 @@ void MainForm::CreateActions()
     openAct = new QAction(tr("&Open File"), this);
     connect(openAct, SIGNAL(triggered()), this, SLOT(openFile()));
 
-    addAct = new QAction(tr("&Add to Project"), this);
+
+
+    QPixmap *pm_projAdd = new QPixmap("src//resources//icons//projAdd.png");
+    QIcon *icon_projAdd = new QIcon(*pm_projAdd);
+    addAct = new QAction(*icon_projAdd, tr("&Add to Project"), this);
     connect(addAct, SIGNAL(triggered()), this, SLOT(addFile()));
+
+
+    QPixmap *pm_projNewAdd = new QPixmap("src//resources//icons//projNewAdd.png");
+    QIcon *icon_projNewAdd = new QIcon(*pm_projNewAdd);
+    newAddAct = new QAction(*icon_projNewAdd, tr("&New project file"), this);
+    connect(newAddAct, SIGNAL(triggered()), this, SLOT(newAddFile()));
+
+
 
     saveAct = new QAction(tr("&Save File"), this);
     connect(saveAct, SIGNAL(triggered()), this, SLOT(saveFile()));
@@ -72,19 +84,30 @@ void MainForm::CreateActions()
     saveAllAct = new QAction(tr("Save &All"), this);
     connect(saveAllAct, SIGNAL(triggered()), this, SLOT(saveAll()));
 
-    newProjAct = new QAction(tr("New &Project"), this);
+
+
+    QPixmap *pm_projNew = new QPixmap("src//resources//icons//projNew.png");
+    QIcon *icon_projNew = new QIcon(*pm_projNew);
+    newProjAct = new QAction(*icon_projNew, tr("New &Project"), this);
     connect(newProjAct, SIGNAL(triggered()), this, SLOT(newProject()));
 
-    openProjAct = new QAction(tr("Open P&roject"), this);
+    QPixmap *pm_projOpen = new QPixmap("src//resources//icons//projOpen.png");
+    QIcon *icon_projOpen = new QIcon(*pm_projOpen);
+    openProjAct = new QAction(*icon_projOpen, tr("Open P&roject"), this);
     connect(openProjAct, SIGNAL(triggered()), this, SLOT(openProject()));
 
-    saveProjAct = new QAction(tr("&Save Project"), this);
+    QPixmap *pm_projSave = new QPixmap("src//resources//icons//projSave.png");
+    QIcon *icon_projSave = new QIcon(*pm_projSave);
+    saveProjAct = new QAction(*icon_projSave, tr("&Save Project"), this);
     connect(saveProjAct, SIGNAL(triggered()), this, SLOT(saveProject()));
 
     exitAct = new QAction(tr("&Exit"), this);
     connect(exitAct, SIGNAL(triggered()), this, SLOT(close()));
 
-    projectCompileAct = new QAction(tr("&Compile"), this);
+
+    QPixmap *pm_projComp = new QPixmap("src//resources//icons//compile.png");
+    QIcon *icon_projComp = new QIcon(*pm_projComp);
+    projectCompileAct = new QAction(*icon_projComp, tr("&Compile"), this);
     connect(projectCompileAct, SIGNAL(triggered()), this, SLOT(compileProject()));
 
     projectConfigAct = new QAction(tr("&Config"), this);
@@ -97,22 +120,23 @@ void MainForm::CreateActions()
 
 void MainForm::CreateToolbar()
 {
-    fileToolBar = addToolBar(tr("File Toolbar"));
+    //fileToolBar = addToolBar(tr("File Toolbar"));
     projectToolBar = addToolBar(tr("Project Toolbar"));
-    //QPixmap *pm_newProj = new QPixmap("icons//newProj.bmp");
-    //navazani pomoci dalsich argumentu addAction
-    fileToolBar->addAction(addAct);
-    fileToolBar->addAction(saveAct);
+
 
     projectToolBar->addAction(newProjAct);
     projectToolBar->addAction(openProjAct);
     projectToolBar->addAction(saveProjAct);
+    projectToolBar->addAction(newAddAct);
+    projectToolBar->addAction(addAct);
     projectToolBar->addAction(projectCompileAct);
 
-    fileToolBar->setAllowedAreas(Qt::TopToolBarArea);
+    //fileToolBar->addAction(saveAct);
+
     projectToolBar->setAllowedAreas(Qt::TopToolBarArea);
-    addToolBar(Qt::TopToolBarArea, fileToolBar);
+    //fileToolBar->setAllowedAreas(Qt::TopToolBarArea);
     addToolBar(Qt::TopToolBarArea, projectToolBar);
+    //addToolBar(Qt::TopToolBarArea, fileToolBar);
 }
 
 
@@ -133,8 +157,8 @@ void MainForm::CreateDockWidgets()
 
     //wDockManager->addDockWidget(wListCode);
     //wDockManager->addDockWidget(wListCode2);
-    //wDockManager->addDockWidget(wCompileInfo);
-    wDockManager->addDockWidget(wHexEdit);
+    wDockManager->addDockWidget(wCompileInfo);
+    wDockManager->addDockWidget(wSimulationInfo);
 
 }
 
@@ -156,9 +180,38 @@ void MainForm::newFile()
     wDockManager->getCentralWidget()->connectAct();
 }
 
+
+void MainForm::newAddFile()
+{
+    //jen se vytvori novy tab na code editoru
+    //a soubor se prida k projektu
+    QString path = QFileDialog::getSaveFileName(this, tr("Source File"), QString(), QString(), 0, QFileDialog::DontUseNativeDialog);
+    wDockManager->addCentralWidget(path.section('/', -1), path);
+    wDockManager->getCentralWidget()->setChanged();
+    wDockManager->getCentralWidget()->connectAct();
+
+    //je sice prehlednejsi zavolat saveFile(), ale
+    //vlozeni kodu pro ulozeni je rychlejsi a efektivnejsi
+    //...ale necham volani saveFile()...
+    saveFile();
+    //pridani do projektu
+    QFile prjFile(projectMan->getActive()->prjPath);
+    if(!prjFile.open(QIODevice::ReadWrite | QIODevice::Text))
+    {
+        error(ERR_OPENFILE);
+    }
+    else 
+    {
+        projectMan->addFile(&prjFile, path, path.section('/', -1));
+        prjFile.close();      
+        wDockManager->getCentralWidget()->setParentProject(projectMan->getActive());
+    }
+}
+
+
 void MainForm::openFile()
 {
-    QString path = QFileDialog::getOpenFileName (this, tr("Source File"), "");
+    QString path = QFileDialog::getOpenFileName(this, tr("Source File"), "");
     QFile file(path);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
     //if (!file.open(QIODevice::ReadOnly))
@@ -202,7 +255,7 @@ void MainForm::addFile()
 {
     QString path;
     if (wDockManager->getCentralPath() == NULL) {
-        path = QFileDialog::getSaveFileName (this, tr("Source File"));
+        path = QFileDialog::getSaveFileName(this, tr("Source File"));
         wDockManager->setCentralPath(path);
         wDockManager->setCentralName(path.section('/', -1));
     }
@@ -239,7 +292,8 @@ void MainForm::saveFile()
             wDockManager->setCentralName(path.section('/', -1));
         }
         else
-            path = wDockManager->getCentralPath();    
+            path = wDockManager->getCentralPath();
+
         QFile file(path);
         if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
         {
