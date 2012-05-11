@@ -59,6 +59,8 @@ class MainForm : public QMainWindow
         void openProject();
         void saveProject();
         void compileProject();
+        void simulationStep();
+        void simulationFlowHandle();
 
     private:
         void CreateMenu();
@@ -81,6 +83,7 @@ class MainForm : public QMainWindow
 
         QToolBar *fileToolBar;
         QToolBar *projectToolBar;
+        QToolBar *simulationToolBar;
 
         QAction *newAct;
         QAction *openAct;
@@ -105,9 +108,15 @@ class MainForm : public QMainWindow
         QAction *projectCompileAct;
         QAction *projectConfigAct;
 
+        QAction *simulationFlowAct;
+        QAction *simulationStepAct;
+
         QAction *aboutAction;
         QAction *aboutQT;        
-        QAction *helpAction;        
+        QAction *helpAction;  
+
+
+        bool simulationStatus;      
 };
 
 
