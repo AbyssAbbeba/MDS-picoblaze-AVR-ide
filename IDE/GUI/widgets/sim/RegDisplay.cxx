@@ -20,8 +20,6 @@
 #include <QPushButton>
 #include <QStringList>
 
-#include <iostream> // DEBUG!
-
 const QFont RegDisplay::m_nameFont = QFont("Courier New", 10, QFont::Normal);
 const QFont RegDisplay::m_bitNormalFont = QFont("Courier New", 10, QFont::DemiBold);
 
@@ -34,20 +32,35 @@ RegDisplay::RegDisplay(
 		const QStringList * statusTips
 	) :
 		m_bitEnableMask(mask),
-		m_readOnly(false)
+		m_readOnly(true)
 {
+	setPalettes();
+	createLayout();
+	createWidgets(regName, regNameTip, bitNames, toolsTips, statusTips);
+	setupConnections();
+}
+
+inline void RegDisplay::setPalettes() {
 	m_log0palette.setColor(QPalette::WindowText, QColor(0xFF, 0x00, 0x00));
 	m_log1palette.setColor(QPalette::WindowText, QColor(0x00, 0xCC, 0x00));
 	m_highlightedPalette.setColor(QPalette::Text, QColor(0xDD, 0x88, 0x00));
 	m_normalPalette.setColor(QPalette::Text, QColor(0x00, 0x00, 0x00));
+}
 
-	
+inline void RegDisplay::createLayout() {
 	m_primaryLayout = new QHBoxLayout(this);
 	m_primaryLayout->setSpacing(0);
 	m_primaryLayout->setContentsMargins(0, 0, 0, 0);
 	setLayout(m_primaryLayout);
+}
 
-
+inline void RegDisplay::createWidgets(
+	const QString & regName,
+	const QString & regNameTip,
+	const QStringList * bitNames,
+	const QStringList * toolsTips,
+	const QStringList * statusTips)
+{
 	m_regNameLabel = new QLabel(regName + ": ", this);
 	m_regNameLabel->setFont(m_nameFont);
 	if ( 0 != regNameTip.size() ) {
@@ -100,19 +113,17 @@ RegDisplay::RegDisplay(
 			}
 		}
 	}
-
-	setupConnections();
 }
 
 RegDisplay::~RegDisplay() {
-// 	delete m_primaryLayout;
-// 	delete m_regNameLabel;
-// 	delete m_hexLineEdit;
-// 	if ( NULL != m_bitButtons[0] ) {
-// 		for ( int i = 0; i < 8; i++ ) {
-// 			delete m_bitButtons[i];
-// 		}
-// 	}
+	delete m_primaryLayout;
+	delete m_regNameLabel;
+	delete m_hexLineEdit;
+	if ( NULL != m_bitButtons[0] ) {
+		for ( int i = 0; i < 8; i++ ) {
+			delete m_bitButtons[i];
+		}
+	}
 }
 
 inline void RegDisplay::setupConnections() {
@@ -194,8 +205,13 @@ void RegDisplay::setHighlighted(bool highlighted) {
 }
 
 void RegDisplay::setReadOnly(bool readOnly) {
-// 	m_readOnly = readOnly;
-// 	m_hexLineEdit->setReadOnly(m_readOnly);
+	m_readOnly = readOnly;
+	m_hexLineEdit->setReadOnly(m_readOnly);
+	if ( true == m_bitButtonsAvailable ) {
+		for ( int i = 0; i < 8; i++ ) {
+			m_bitButtons[i]->setDisabled(readOnly);
+		}
+	}
 }
 
 inline void RegDisplay::refreshBitButtons(uint value) {

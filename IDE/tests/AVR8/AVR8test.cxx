@@ -24,7 +24,6 @@
 
 AVR8Sim * g_AVR8Sim;
 HexFile * g_HexFile;
-McuSimCfgMgr * g_McuSimCfgMgr;
 
 const char * MCUSPECFILE = "../../simulators/MCUSim/McuSimCfgMgr/mcuspecfile.xml";
 
@@ -32,14 +31,11 @@ int init_suite0()
 {
 	g_AVR8Sim = new AVR8Sim();
 	g_HexFile = new HexFile();
-	g_McuSimCfgMgr = new McuSimCfgMgr();
 
 	if (
 		( NULL == g_AVR8Sim )
 			||
 		( NULL == g_HexFile )
-			||
-		( NULL == g_McuSimCfgMgr )
 	) {
 		return -1;
 	} else {
@@ -55,15 +51,12 @@ int clean_suite0()
 	if ( NULL != g_HexFile ) {
 		delete g_HexFile;
 	}
-	if ( NULL != g_McuSimCfgMgr ) {
-		delete g_McuSimCfgMgr;
-	}
 	return 0;
 }
 
 void test_suite0_basicSanityTest0()
 {
-	CU_ASSERT_FATAL ( true == g_McuSimCfgMgr->openConfigFile(MCUSPECFILE) );
+	CU_ASSERT_FATAL ( true == McuSimCfgMgr::getInstance()->openConfigFile(MCUSPECFILE) );
 
 
 	const char * filename = "avr8_test0.hex";
@@ -76,7 +69,7 @@ void test_suite0_basicSanityTest0()
 
 
 	try {
-		g_McuSimCfgMgr->setupSimulator("ATmega8A", g_AVR8Sim->getConfig());
+		McuSimCfgMgr::getInstance()->setupSimulator("ATmega8A", g_AVR8Sim->getConfig());
 
 		g_AVR8Sim->reset(MCUSim::RSTMD_NEW_CONFIG);
 		g_AVR8Sim->reset(MCUSim::RSTMD_INITIAL_VALUES);
