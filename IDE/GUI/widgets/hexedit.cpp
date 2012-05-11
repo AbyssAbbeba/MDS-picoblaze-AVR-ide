@@ -72,6 +72,7 @@ HexEdit::HexEdit(QWidget *parent, bool AsciiPanel, int countSize, int columns)
     :QWidget(parent)
 {
     this->columns=columns;
+    this->ascii = AsciiPanel;
     hexLayout = new QGridLayout(this);
     hexTextEdit = new QTextEdit(this);
     //hexTextEdit->setReadOnly(true);
@@ -79,8 +80,8 @@ HexEdit::HexEdit(QWidget *parent, bool AsciiPanel, int countSize, int columns)
     hexTextEdit->setWordWrapMode(QTextOption::NoWrap);
     hexTextEdit->setFont(QFont("Andale Mono", 10));
     //hexTextEdit->resize((columns*2-1)*10,5);
-    hexTextEdit->setMinimumWidth(175);
-    //hexTextEdit->setMaximumWidth(475);
+    hexTextEdit->setMinimumWidth((columns*3-7)*10);
+    hexTextEdit->setMaximumWidth((columns*3-7)*10);
     hexTextEdit->setMinimumHeight(175);
 
     if (AsciiPanel == true)
@@ -88,6 +89,7 @@ HexEdit::HexEdit(QWidget *parent, bool AsciiPanel, int countSize, int columns)
         hexAsciiEdit = new QTextEdit(this);
         hexAsciiEdit->setFont(QFont("Andale Mono", 10));
         //hexAsciiEdit->resize(columns*15,250);
+        hexAsciiEdit->setMaximumWidth(columns*10);
         hexAsciiEdit->setMinimumHeight(175);
         hexAsciiEdit->setMinimumWidth(columns*10);
         hexAsciiEdit->setOverwriteMode(true);
@@ -98,9 +100,9 @@ HexEdit::HexEdit(QWidget *parent, bool AsciiPanel, int countSize, int columns)
     hexColumnCount = new WColumnCounter(hexTextEdit, countSize, columns);
     hexLineCount = new WLineCounter(hexTextEdit, false, true, countSize);
     hexByteArray = new QByteArray(190, 126);
-    hexStatusBar = new QStatusBar(this);
+    //hexStatusBar = new QStatusBar(this);
     hexStatusLabel = new QLabel(this);
-    hexStatusBar->addPermanentWidget(hexStatusLabel);
+    //hexStatusBar->addPermanentWidget(hexStatusLabel);
     if (hexTextEdit->isReadOnly() == true)
         hexStatusLabel->setText("Read Only");
     else
@@ -110,7 +112,7 @@ HexEdit::HexEdit(QWidget *parent, bool AsciiPanel, int countSize, int columns)
     hexLayout->addWidget(hexLineCount, 1, 0);
     hexLayout->addWidget(hexColumnCount, 0, 1);
     hexLayout->addWidget(hexTextEdit, 1, 1);
-    hexLayout->addWidget(hexStatusBar, 2, 1);
+    hexLayout->addWidget(hexStatusLabel, 2, 1);
     if (AsciiPanel == true)
     {
         hexLayout->addWidget(hexAsciiEdit, 1, 2);
@@ -194,35 +196,37 @@ void HexEdit::moveCursor()
         format.setBackground(Qt::green);
         txtCursor.setCharFormat(format);
         
-
-        QTextCursor asciiCursor = hexAsciiEdit->textCursor();
-        asciiCursor.setPosition(position/3);
-        int prevBlock = asciiCursor.blockNumber();
-
-        int asciiPosition = prevBlock + position/3;
-        asciiCursor.setPosition(asciiPosition);
-        if (asciiCursor.positionInBlock() == columns)
-            asciiPosition += 1;
-
-        if (prevBlock != asciiCursor.blockNumber())
-            asciiPosition += 1;
-
-        asciiCursor.setPosition(asciiPosition);
-        asciiCursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor, 1);
-        format = asciiCursor.charFormat();
-        format.setBackground(Qt::green);
-        asciiCursor.setCharFormat(format);
-        if (asciiPrevPosition != asciiPosition)
+        if (ascii == true)
         {
-            asciiCursor.setPosition(asciiPrevPosition);
-            asciiCursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor, 1);
-            if (asciiCursor.blockNumber()%2 == 0)
-                format.setBackground(Qt::white);
-            else
-                format.setBackground(Qt::lightGray);
-            asciiCursor.setCharFormat(format);
+            QTextCursor asciiCursor = hexAsciiEdit->textCursor();
+            asciiCursor.setPosition(position/3);
+            int prevBlock = asciiCursor.blockNumber();
+
+            int asciiPosition = prevBlock + position/3;
             asciiCursor.setPosition(asciiPosition);
-            asciiPrevPosition = asciiPosition;
+            if (asciiCursor.positionInBlock() == columns)
+                asciiPosition += 1;
+
+            if (prevBlock != asciiCursor.blockNumber())
+                asciiPosition += 1;
+
+            asciiCursor.setPosition(asciiPosition);
+            asciiCursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor, 1);
+            format = asciiCursor.charFormat();
+            format.setBackground(Qt::green);
+            asciiCursor.setCharFormat(format);
+            if (asciiPrevPosition != asciiPosition)
+            {
+                asciiCursor.setPosition(asciiPrevPosition);
+                asciiCursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor, 1);
+                if (asciiCursor.blockNumber()%2 == 0)
+                    format.setBackground(Qt::white);
+                else
+                    format.setBackground(Qt::lightGray);
+                asciiCursor.setCharFormat(format);
+                asciiCursor.setPosition(asciiPosition);
+                asciiPrevPosition = asciiPosition;
+            }
         }
         changable = true;
     }
@@ -361,13 +365,15 @@ void HexEdit::setData(QByteArray *byteArray)
             if (back == true)
             {
                 hexTextEdit->setTextBackgroundColor(Qt::lightGray);
-                hexAsciiEdit->setTextBackgroundColor(Qt::lightGray);
+                if (ascii == true)
+                    hexAsciiEdit->setTextBackgroundColor(Qt::lightGray);
                 back = false;
             }
             else
             {
                 hexTextEdit->setTextBackgroundColor(Qt::white);
-                hexAsciiEdit->setTextBackgroundColor(Qt::white);
+                if (ascii == true)
+                    hexAsciiEdit->setTextBackgroundColor(Qt::white);
                 back = true;
             }
         }
@@ -375,15 +381,19 @@ void HexEdit::setData(QByteArray *byteArray)
             hexTextEdit->insertPlainText((QString::number(byteArray->at(i), 16)).toUpper());
         else
             hexTextEdit->insertPlainText("0" + (QString::number(byteArray->at(i), 16)).toUpper());
-        if (byteArray->at(i) < 127 && byteArray->at(i) >= 32)
-            hexAsciiEdit->insertPlainText(tmp.at(i));
-        else
-            hexAsciiEdit->insertPlainText(".");
+        if (ascii == true)
+        {
+            if (byteArray->at(i) < 127 && byteArray->at(i) >= 32)
+                hexAsciiEdit->insertPlainText(tmp.at(i));
+            else
+                hexAsciiEdit->insertPlainText(".");
+        }
         line++;
         if (line == 16) 
         {
             hexTextEdit->insertPlainText("\n");
-            hexAsciiEdit->insertPlainText("\n");
+            if (ascii == true)
+                hexAsciiEdit->insertPlainText("\n");
             line = 0;
         }
         else

@@ -21,7 +21,7 @@
 #define wListCode2 1001
 #define wCompileInfo 1002
 #define wCodeEditCode 1003
-#define wHexEdit 1004
+#define wSimulationInfo 1004
 //HexEdit would be included in Simulation Status widget
 
 
@@ -30,9 +30,8 @@
 #include <QList>
 #include <QTabWidget>
 #include "codeedit.h"
-#include "movgridlayout.h"
-#include "hexedit.h"
 #include  "../mainform/mainform.h"
+#include "wsimulationinfo.h"
 
 class WDock;
 class MainForm;
