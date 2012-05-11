@@ -14,9 +14,8 @@
 #ifndef MCUSIMCFGMGR_H
 #define MCUSIMCFGMGR_H
 
-class McuDeviceSpec;
-
 #include "MCUSim.h"
+#include "McuDeviceSpecAVR8.h"
 
 #include <string>
 #include <QString>
@@ -47,7 +46,13 @@ public:
 	 *
 	 * @return
 	 */
-	bool setupSimulator(const char * mcuName, MCUSim::Config & mcuConfig);
+	bool setupSimulator(const char * mcuName, MCUSim::Config & mcuConfig) const;
+
+	/**
+	 *
+	 * @return
+	 */
+	const McuDeviceSpec * getDeviceSpec(const char * mcuName) const;
 
 private:
 	QVector<McuDeviceSpec*> m_devices;	///<

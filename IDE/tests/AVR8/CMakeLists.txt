@@ -22,19 +22,18 @@ enable_testing()
 # COMPILATION OPTIONS
 # ------------------------------------------------------------------------------
 
-# A local variable which is used used later
-set(MY_IDE_ROOT_DIR "${CMAKE_CURRENT_BINARY_DIR}/../..")
-
 # Specify directories in which the linker will look for libraries.
 link_directories(
-	"${MY_IDE_ROOT_DIR}/utilities/MCUDataFiles"
-	"${MY_IDE_ROOT_DIR}/simulators/MCUSim/AVR8"
-	"${MY_IDE_ROOT_DIR}/simulators/MCUSim/McuSimCfgMgr")
+	"${CMAKE_CURRENT_BINARY_DIR}/../../utilities/MCUDataFiles"
+	"${CMAKE_CURRENT_BINARY_DIR}/../../simulators/MCUSim/AVR8"
+	"${CMAKE_CURRENT_BINARY_DIR}/../../simulators/MCUSim/McuSimCfgMgr")
 
 # Add include directories to the build.
 include_directories(
-	"${MY_IDE_ROOT_DIR}/utilities"
-	"${MY_IDE_ROOT_DIR}/simulators/MCUSim")
+	"${CMAKE_CURRENT_BINARY_DIR}/../../utilities/MCUDataFiles"
+	"${CMAKE_CURRENT_BINARY_DIR}/../../simulators/MCUSim"
+	"${CMAKE_CURRENT_BINARY_DIR}/../../simulators/MCUSim/AVR8"
+	"${CMAKE_CURRENT_BINARY_DIR}/../../simulators/MCUSim/McuSimCfgMgr")
 
 # Include Qt4's XML module
 find_package(Qt4 REQUIRED)

@@ -365,7 +365,7 @@ namespace AVR8RegNames {
 		UCSRC_URSEL	= 0x80, ///<
 		//@}
 
-		/// @name XXYY (0x3C): EEPROM Control Register
+		/// @name EECR (0x3C): EEPROM Control Register
 		//@{
 		EECR_EERE	= 0x01, ///< EEPROM Read Enable
 		EECR_EEWE	= 0x02, ///< EEPROM Write Enable
@@ -389,7 +389,7 @@ namespace AVR8RegNames {
 		PORTA_PORTA7	= 0x80, ///< Bit 7 in port A
 		//@}
 
-		/// @name XXYY (0x3A): Port A Data Direction Register
+		/// @name DDRA (0x3A): Port A Data Direction Register
 		//@{
 		DDRA_DDA0	= 0x01, ///< Data direction flag for bit 0 in port A
 		DDRA_DDA1	= 0x02, ///<          .        .         .
@@ -401,7 +401,7 @@ namespace AVR8RegNames {
 		DDRA_DDA7	= 0x80, ///< Data direction flag for bit 7 in port A
 		//@}
 
-		/// @name XXYY (0x39): Port A Input Pins
+		/// @name PINA (0x39): Port A Input Pins
 		//@{
 		PINA_PINA0	= 0x01, ///< Input read from bit 0 in port A
 		PINA_PINA1	= 0x02, ///<       .        .         .
@@ -425,7 +425,7 @@ namespace AVR8RegNames {
 		PORTB_PORTB7	= 0x80, ///< Bit 7 in port B
 		//@}
 
-		/// @name XXYY (0x37): Port B Data Direction Register
+		/// @name DDRB (0x37): Port B Data Direction Register
 		//@{
 		DDRB_DDB0	= 0x01, ///< Data direction flag for bit 0 in port B
 		DDRB_DDB1	= 0x02, ///<          .        .         .
@@ -615,7 +615,19 @@ namespace AVR8RegNames {
 		TWAR_TWA3	= 0x10, ///<
 		TWAR_TWA4	= 0x20, ///<
 		TWAR_TWA5	= 0x40, ///<
-		TWAR_TWA6	= 0x80  ///<
+		TWAR_TWA6	= 0x80,  ///<
+		//@}
+ 
+		/// @name TWSR (0x21): TWI Status Register
+		//@{
+		TWSR_TWPS0	= 0x01, ///< Prescaler Bit
+		TWSR_TWPS1	= 0x02, ///< Prescaler Bit
+		//TWSR_	= 0x04, ///<
+		TWSR_TWS3	= 0x08, ///< TWI Status
+		TWSR_TWS4	= 0x10, ///<  .   .   .
+		TWSR_TWS5	= 0x20, ///<  .   .   .
+		TWSR_TWS6	= 0x40, ///<  .   .   .
+		TWSR_TWS7	= 0x80  ///< TWI Status
 		//@}
 	};
 };
