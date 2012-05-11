@@ -39,13 +39,17 @@
 		 << ", val: " << atts.value(i); \
 	return false;
 
-McuSimCfgMgr::McuSimCfgMgr() {}
-McuSimCfgMgr::McuSimCfgMgr(const char * filename) {
-	openConfigFile(filename);
-}
+McuSimCfgMgr * McuSimCfgMgr::m_instance = NULL;
 
 McuSimCfgMgr::~McuSimCfgMgr() {
 	clear();
+}
+
+McuSimCfgMgr * McuSimCfgMgr::getInstance() {
+	if ( NULL == m_instance ) {
+		m_instance = new McuSimCfgMgr();
+	}
+	return m_instance;
 }
 
 inline void McuSimCfgMgr::clear() {

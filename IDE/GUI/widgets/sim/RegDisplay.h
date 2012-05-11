@@ -66,6 +66,8 @@ signals:
 	void valueChanged(uint value);
 
 private:
+	RegDisplay();
+
 	const uint8_t m_bitEnableMask;
 	bool m_readOnly;
 	bool m_bitButtonsAvailable;
@@ -83,6 +85,14 @@ private:
 	inline void bitButtonClicked(int i);
 	inline void refreshBitButtons(uint value);
 
+	inline void setPalettes();
+	inline void createLayout();
+	inline void createWidgets(
+		const QString & regName,
+		const QString & regNameTip,
+		const QStringList * bitNames,
+		const QStringList * toolsTips,
+		const QStringList * statusTips);
 	inline void setupConnections();
 };
 
