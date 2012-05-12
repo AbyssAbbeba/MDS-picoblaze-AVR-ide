@@ -17,5 +17,8 @@ set(CMAKE_VERBOSE_MAKEFILE OFF)
 # BUILD COMPONENTS IN THE SUBDIRECTORIES
 # ------------------------------------------------------------------------------
 
+# Build control simulator control unit
+add_subdirectory(SimControl)
+
 # Build simulators for microcontrollers
 add_subdirectory(MCUSim)

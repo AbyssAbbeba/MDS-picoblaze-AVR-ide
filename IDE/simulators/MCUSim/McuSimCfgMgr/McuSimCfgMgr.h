@@ -32,9 +32,9 @@
  */
 class McuSimCfgMgr : public QXmlDefaultHandler {
 public:
-	McuSimCfgMgr();
-	McuSimCfgMgr(const char * filename);
-	~McuSimCfgMgr();
+	virtual ~McuSimCfgMgr();
+
+	static McuSimCfgMgr * getInstance();
 
 	/**
 	 *
@@ -55,6 +55,9 @@ public:
 	const McuDeviceSpec * getDeviceSpec(const char * mcuName) const;
 
 private:
+	McuSimCfgMgr() {};
+
+	static McuSimCfgMgr * m_instance;
 	QVector<McuDeviceSpec*> m_devices;	///<
 	QStack<QString> m_currentXMLElement;	///<
 	QStringList m_expectedXMLElements;	///<
