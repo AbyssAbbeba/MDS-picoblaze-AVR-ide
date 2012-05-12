@@ -1,4 +1,6 @@
 
+#include "main.h"
+
 #include "RegDisplay.h"
 
 #include "McuSimCfgMgr.h"
@@ -8,7 +10,6 @@
 #include "AVR8InstructionSet.h"
 #include "HexFile.h"
 
-#include "main.h"
 
 #include <iostream>
 #include <cstdlib>
@@ -19,7 +20,6 @@
 
 AVR8Sim * g_AVR8Sim;
 HexFile * g_HexFile;
-McuSimCfgMgr * g_McuSimCfgMgr;
 MCUSim::EventLogger * m_log;
 RegDisplay ** regDisplays;
 const McuDeviceSpecAVR8 * devSpec;
@@ -64,7 +64,6 @@ void SimControlButtons::startStopButtonPressed() {
 		m_resetButton->setEnabled(true);
 		m_stepButton->setEnabled(true);
 
-
 		g_AVR8Sim->reset(MCUSim::RSTMD_INITIAL_VALUES);
 
 		const char * filename = "avr8_test_code.hex";
@@ -76,8 +75,7 @@ void SimControlButtons::startStopButtonPressed() {
 		}
 		dynamic_cast<AVR8ProgramMemory*>(g_AVR8Sim->getSubsys(MCUSim::Subsys::ID_MEM_CODE))->loadDataFile(g_HexFile);
 
-
-		for ( int i = (devSpec->m_dataMemory.m_ioRegSize - 1); i >= 0; i-- ) {
+		for ( int i = 0; i < devSpec->m_dataMemory.m_ioRegSize; i++ ) {
 			regDisplays[i]->setReadOnly(false);
 		}
 
@@ -87,7 +85,7 @@ void SimControlButtons::startStopButtonPressed() {
 		m_resetButton->setEnabled(false);
 		m_stepButton->setEnabled(false);
 
-		for ( int i = (devSpec->m_dataMemory.m_ioRegSize - 1); i >= 0; i-- ) {
+		for ( int i = 0; i < devSpec->m_dataMemory.m_ioRegSize; i++ ) {
 			regDisplays[i]->setReadOnly(true);
 		}
 	}
@@ -149,16 +147,15 @@ void initSim()
 {
 	g_AVR8Sim = new AVR8Sim();
 	g_HexFile = new HexFile();
-	g_McuSimCfgMgr = new McuSimCfgMgr();
 
 	const char * MCUSPECFILE = "../../../simulators/MCUSim/McuSimCfgMgr/mcuspecfile.xml";
 
-	if ( false == g_McuSimCfgMgr->openConfigFile(MCUSPECFILE) ) {
+	if ( false == McuSimCfgMgr::getInstance()->openConfigFile(MCUSPECFILE) ) {
 		std::cerr << "Unable to load MCU config file" << std::endl;
 		abort();
 	}
 
-	g_McuSimCfgMgr->setupSimulator("ATmega8A", g_AVR8Sim->getConfig());
+	McuSimCfgMgr::getInstance()->setupSimulator("ATmega8A", g_AVR8Sim->getConfig());
 	g_AVR8Sim->reset(MCUSim::RSTMD_NEW_CONFIG);
 
 	m_log = g_AVR8Sim->getLog();
@@ -169,7 +166,7 @@ int main(int argc, char ** argv) {
 
 	initSim();
 
-	const McuDeviceSpec * devSpecTmp = g_McuSimCfgMgr->getDeviceSpec("ATmega8A");
+	const McuDeviceSpec * devSpecTmp = McuSimCfgMgr::getInstance()->getDeviceSpec("ATmega8A");
 	if ( NULL == devSpecTmp ) {
 		std::cerr << "Failed to retrieve the device configuration specification." << std::endl;
 		abort();

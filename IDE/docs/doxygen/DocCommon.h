@@ -29,6 +29,10 @@
  * @defgroup Sim Simulator engine
  * Modules of the simulator engine.
  *
+ * @defgroup Sim Simulator control
+ * @ingroup SimControl
+ * Simulator control unit.
+ *
  * @defgroup MCUSim MCU simulators
  * @ingroup Sim
  * Simulators of micro-controller units.
@@ -36,7 +40,6 @@
  * @defgroup AVR8 8-bit AVR simulator
  * @ingroup MCUSim
  * Simulator of microcontrollers based on 8-bit AVR processor.
- *
  *
  * @defgroup McuSimCfgMgr MCU sim. config. manager
  * @ingroup MCUSim
