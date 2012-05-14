@@ -49,7 +49,6 @@ add_definitions(-Wall -Wextra -std=c++0x -O2 -pipe)
 qt4_wrap_cpp(QT_MOC_GENERATED_CPP_FILES
 	SimControl.h
 	MCUSimControl.h
-	MCUSimObserver.h
 )
 
 ## Add a library to the project using the specified source files,

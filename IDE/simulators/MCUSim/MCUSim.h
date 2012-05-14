@@ -27,7 +27,7 @@ class MCUSim {
 public:
 	/// @brief ...
 	enum Arch {
-		ARCH_UNSPEC = 0,
+		ARCH_INVALID = -1,
 
 		ARCH_AVR8,
 		ARCH_AVR32
@@ -35,7 +35,7 @@ public:
 
 	/// @brief ...
 	enum Family {
-		FAMILY_UNSPEC = 0,///< Architecture haven't been specified.
+		FAMILY_INVALID = -1,///< Architecture haven't been specified.
 
 		/// @name AVR8
 		//@{
@@ -163,6 +163,11 @@ public:
 			delete[] m_eventId;
 			delete[] m_location;
 			delete[] m_detail;
+		}
+
+		void clear() {
+			m_inPos = 1;
+			m_outPos = 0;
 		}
 
 		void logEvent(int subsysId, int eventId, int location /* or reason */, int detail) {
