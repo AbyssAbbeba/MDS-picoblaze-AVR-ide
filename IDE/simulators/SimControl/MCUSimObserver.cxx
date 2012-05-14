@@ -12,22 +12,16 @@
 
 #include "MCUSimObserver.h"
 
-MCUSimObserver::MCUSimObserver() {
-}
-MCUSimObserver::MCUSimObserver(MCUSimControl * managedBy) {
-}
+#include "MCUSimControl.h"
+
+MCUSimObserver::MCUSimObserver() : m_simControlUnit(NULL) {}
+
 MCUSimObserver::~MCUSimObserver() {
+	if ( NULL != m_simControlUnit ) {
+		m_simControlUnit->unregisterObserver(this);
+	}
 }
 
 void MCUSimObserver::setControlUnit(MCUSimControl * managedBy) {
-}
-
-void MCUSimObserver::handleEvent(int subsysId, int eventId, int locationOrReason, int detail) {
-}
-
-void MCUSimObserver::deviceChanged() {
-}
-void MCUSimObserver::deviceReset() {
-}
-void MCUSimObserver::setReadOnly(bool readOnly) {
+	m_simControlUnit = managedBy;
 }

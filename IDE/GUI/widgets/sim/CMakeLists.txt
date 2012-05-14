@@ -26,6 +26,13 @@ find_package(Qt4 REQUIRED)
 set(QT_USE_QTXML 1)
 include(${QT_USE_FILE})
 
+include_directories(
+	"${CMAKE_CURRENT_BINARY_DIR}/../../../simulators/MCUSim/"
+	"${CMAKE_CURRENT_BINARY_DIR}/../../../simulators/MCUSim/AVR8"
+	"${CMAKE_CURRENT_BINARY_DIR}/../../../simulators/MCUSim/McuSimCfgMgr/"
+	"${CMAKE_CURRENT_BINARY_DIR}/../../../simulators/SimControl/"
+	"${CMAKE_CURRENT_BINARY_DIR}/../../../utilities/MCUDataFiles/")
+
 ## Add switches to compiler command line
  # -Wall       : Enables all the warnings.
  # -Wextra     : Enables some extra warning flags that are not enabled by -Wall.
@@ -36,34 +43,36 @@ add_definitions(-Wall -Wextra -std=c++0x -O2 -pipe)
 
 qt4_wrap_cpp(QT_MOC_GENERATED_CPP_FILES
 	RegDisplay.h
+	RegDisplayList.h
 )
 
 ## Add a library to the project using the specified source files,
  # in this case it will procude dynamic C++ library.
 add_library(${PROJECT_NAME} SHARED
 	${QT_MOC_GENERATED_CPP_FILES}
-	RegDisplay.cxx)
+	RegDisplay.cxx
+	RegDisplayList.cxx)
 
-target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} SimControl)
 
-# <DEBUG!>
-qt4_wrap_cpp(QT_MOC_GENERATED_CPP_FILES2
-	main.h
-)
-link_directories(
-	"${CMAKE_CURRENT_BINARY_DIR}/../../../utilities/MCUDataFiles"
-	"${CMAKE_CURRENT_BINARY_DIR}/../../../simulators/MCUSim/AVR8"
-	"${CMAKE_CURRENT_BINARY_DIR}/../../../simulators/MCUSim/McuSimCfgMgr")
-include_directories(
-	"${CMAKE_CURRENT_BINARY_DIR}/../../../simulators/MCUSim/"
-	"${CMAKE_CURRENT_BINARY_DIR}/../../../simulators/MCUSim/AVR8/"
-	"${CMAKE_CURRENT_BINARY_DIR}/../../../utilities/MCUDataFiles/"
-	"${CMAKE_CURRENT_BINARY_DIR}/../../../simulators/MCUSim/McuSimCfgMgr/")
-add_executable(test
-	${QT_MOC_GENERATED_CPP_FILES2}
-	main.cxx)
-target_link_libraries(test ${PROJECT_NAME} ${QT_LIBRARIES} McuSimCfgMgr AVR8Sim MCUDataFiles)
-# </DEBUG!>
+# # <DEBUG!>
+# qt4_wrap_cpp(QT_MOC_GENERATED_CPP_FILES2
+# 	main.h
+# )
+# link_directories(
+# 	"${CMAKE_CURRENT_BINARY_DIR}/../../../utilities/MCUDataFiles"
+# 	"${CMAKE_CURRENT_BINARY_DIR}/../../../simulators/MCUSim/AVR8"
+# 	"${CMAKE_CURRENT_BINARY_DIR}/../../../simulators/MCUSim/McuSimCfgMgr")
+# include_directories(
+# 	"${CMAKE_CURRENT_BINARY_DIR}/../../../simulators/MCUSim/"
+# 	"${CMAKE_CURRENT_BINARY_DIR}/../../../simulators/MCUSim/AVR8/"
+# 	"${CMAKE_CURRENT_BINARY_DIR}/../../../utilities/MCUDataFiles/"
+# 	"${CMAKE_CURRENT_BINARY_DIR}/../../../simulators/MCUSim/McuSimCfgMgr/")
+# add_executable(test
+# 	${QT_MOC_GENERATED_CPP_FILES2}
+# 	main.cxx)
+# target_link_libraries(test ${PROJECT_NAME} ${QT_LIBRARIES} McuSimCfgMgr AVR8Sim MCUDataFiles)
+# # </DEBUG!>
 
 # ------------------------------------------------------------------------------
 # INSTALLATION OPTIONS

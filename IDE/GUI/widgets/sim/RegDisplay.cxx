@@ -24,6 +24,7 @@ const QFont RegDisplay::m_nameFont = QFont("Courier New", 10, QFont::Normal);
 const QFont RegDisplay::m_bitNormalFont = QFont("Courier New", 10, QFont::DemiBold);
 
 RegDisplay::RegDisplay(
+		uint address,
 		const QString & regName,
 		const QString & regNameTip,
 		uint8_t mask,
@@ -31,6 +32,7 @@ RegDisplay::RegDisplay(
 		const QStringList * toolsTips,
 		const QStringList * statusTips
 	) :
+		m_address(address),
 		m_bitEnableMask(mask),
 		m_readOnly(true)
 {
@@ -38,6 +40,7 @@ RegDisplay::RegDisplay(
 	createLayout();
 	createWidgets(regName, regNameTip, bitNames, toolsTips, statusTips);
 	setupConnections();
+	setReadOnly(true);
 }
 
 inline void RegDisplay::setPalettes() {
@@ -180,7 +183,7 @@ inline void RegDisplay::bitButtonClicked(int i) {
 	setValue(value);
 	setHighlighted(false);
 
-	emit(valueChanged(value));
+	emit(valueChanged(m_address, value));
 }
 
 void RegDisplay::hexTextEdited(const QString & text) {
@@ -193,7 +196,7 @@ void RegDisplay::hexTextEdited(const QString & text) {
 	refreshBitButtons(value);
 	setHighlighted(false);
 
-	emit(valueChanged(value));
+	emit(valueChanged(m_address, value));
 }
 
 void RegDisplay::setHighlighted(bool highlighted) {

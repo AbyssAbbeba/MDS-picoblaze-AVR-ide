@@ -14,6 +14,7 @@
 #ifndef REGDISPLAY_H
 #define REGDISPLAY_H
 
+// Forward declarations
 class QHBoxLayout;
 class QLineEdit;
 class QLabel;
@@ -25,18 +26,18 @@ class QStringList;
 #include <QString>
 #include <QFont>
 #include <QPalette>
-#include <QValidator>
 
 class RegDisplay : public QWidget {
 	Q_OBJECT
 public:
-	RegDisplay(
+	RegDisplay (
+		uint address,
 		const QString & regName,
 		const QString & regNameTip = "",
 		uint8_t mask = 0xFFu,
 		const QStringList * bitNames = NULL,
 		const QStringList * toolsTips = NULL,
-		const QStringList * statusTips = NULL);
+		const QStringList * statusTips = NULL );
 
 	virtual ~RegDisplay();
 
@@ -63,11 +64,12 @@ private slots:
 	void hexTextCurChange(int , int);
 
 signals:
-	void valueChanged(uint value);
+	void valueChanged(uint address, uint value);
 
 private:
 	RegDisplay();
 
+	const int m_address;
 	const uint8_t m_bitEnableMask;
 	bool m_readOnly;
 	bool m_bitButtonsAvailable;

@@ -14,26 +14,23 @@
 #ifndef MCUSIMOBSERVER_H
 #define MCUSIMOBSERVER_H
 
+// Forward declarations
 class MCUSimControl;
 
-#include "MCUSim.h"
-
-#include <QObject>
-
-class MCUSimObserver : public QObject {
-	Q_OBJECT
+class MCUSimObserver {
 public:
 	MCUSimObserver();
-	MCUSimObserver(MCUSimControl * managedBy);
 	virtual ~MCUSimObserver();
 
 	void setControlUnit(MCUSimControl * managedBy);
 
-public slots:
-	void handleEvent(int subsysId, int eventId, int locationOrReason, int detail);
-	void deviceChanged();
-	void deviceReset();
-	void setReadOnly(bool readOnly);
+	virtual void handleEvent(int subsysId, int eventId, int locationOrReason, int detail) = 0;
+	virtual void deviceChanged() = 0;
+	virtual void deviceReset() = 0;
+	virtual void setReadOnly(bool readOnly) = 0;
+
+protected:
+	MCUSimControl * m_simControlUnit;
 };
 
 #endif // MCUSIMOBSERVER_H
