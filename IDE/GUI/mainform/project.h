@@ -88,6 +88,9 @@ class Project : public QObject
         QString prjPath;
         int fileCount;
 
+
+        QString mainFileName;
+        QString mainFilePath;
         QList<QString> fileNames;
         QList<QString> filePaths;
 

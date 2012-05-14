@@ -6,6 +6,7 @@ ProjectMan::ProjectMan(MainForm *qMainWindow)
     //openProjects = new QList<Project*>;
     projectCount = 0;
     mainWindow = qMainWindow;
+    activeProject = NULL;
     
 }
 
@@ -164,10 +165,6 @@ Project::Project(QFile *file, QMainWindow * mainWindow, ProjectMan *parent)
                             {
                                 prjName = xmlGeneralElement.attribute("name", "");
                             }
-                            //else if (xmlGeneralElement.tagName() == "Path")
-                            //{ 
-                            //    prjPath = xmlGeneralElement.attribute("path", "");
-                            //}
                             xmlGeneralNode = xmlGeneralNode.nextSibling();
                         }
                     }
@@ -182,6 +179,11 @@ Project::Project(QFile *file, QMainWindow * mainWindow, ProjectMan *parent)
                             {
                                 fileNames.append(xmlFilesElement.attribute("name", ""));
                                 filePaths.append(xmlFilesElement.attribute("path", ""));
+                                if (xmlFilesElement.attribute("main", "") == "yes")
+                                {
+                                    mainFileName = fileNames.at(fileCount);
+                                    mainFilePath = filePaths.at(fileCount);
+                                }
                                 fileCount++;
                             }
                             xmlFilesNode = xmlFilesNode.nextSibling();
@@ -311,6 +313,10 @@ void Project::addFile(QFile *file, QString path, QString name)
                         relativePath = project.relativeFilePath(path);
                         xmlFile.setAttribute("name", name);
                         xmlFile.setAttribute("path", relativePath);
+                        /*if (name == mainFileName && relativePath == mainFilePath)
+                            xmlFile.setAttribute("main", "yes");
+                        else
+                            xmlFile.setAttribute("main", "no");*/
                         xmlElement.appendChild(xmlFile);
 
                         fileNames.append(name);
