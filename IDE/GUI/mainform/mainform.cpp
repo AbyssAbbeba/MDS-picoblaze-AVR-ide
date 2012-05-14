@@ -112,6 +112,19 @@ void MainForm::CreateActions()
 
     projectConfigAct = new QAction(tr("&Config"), this);
     //connect(projectCompileAct, SIGNAL(triggered()), this, SLOT(compileProject()));
+
+
+    QPixmap *pm_simFlow = new QPixmap("resources//icons//simulationStart.png");
+    QIcon *icon_simFlow = new QIcon(*pm_simFlow);
+    simulationFlowAct = new QAction(*icon_simFlow, tr("&Start simulation"), this);
+    connect(simulationFlowAct, SIGNAL(triggered()), this, SLOT(simulationFlowHandle()));
+    simulationStatus = false;
+
+    QPixmap *pm_simStep = new QPixmap("resources//icons//simulationStep.png");
+    QIcon *icon_simStep = new QIcon(*pm_simStep);
+    simulationStepAct = new QAction(*icon_simStep, tr("&Do step"), this);
+    connect(simulationStepAct, SIGNAL(triggered()), this, SLOT(simulationStep()));
+
 }
 
 
@@ -122,6 +135,7 @@ void MainForm::CreateToolbar()
 {
     //fileToolBar = addToolBar(tr("File Toolbar"));
     projectToolBar = addToolBar(tr("Project Toolbar"));
+    simulationToolBar = addToolBar(tr("Simulation Toolbar"));
 
 
     projectToolBar->addAction(newProjAct);
@@ -133,9 +147,15 @@ void MainForm::CreateToolbar()
 
     //fileToolBar->addAction(saveAct);
 
+
+    simulationToolBar->addAction(simulationFlowAct);
+    simulationToolBar->addAction(simulationStepAct);
+
     projectToolBar->setAllowedAreas(Qt::TopToolBarArea);
+    simulationToolBar->setAllowedAreas(Qt::TopToolBarArea);
     //fileToolBar->setAllowedAreas(Qt::TopToolBarArea);
     addToolBar(Qt::TopToolBarArea, projectToolBar);
+    addToolBar(Qt::TopToolBarArea, simulationToolBar);
     //addToolBar(Qt::TopToolBarArea, fileToolBar);
 }
 
@@ -435,3 +455,40 @@ WDockManager* MainForm::getWDockManager()
 {
     return wDockManager;
 }
+
+
+
+
+
+void MainForm::simulationStep()
+{
+
+}
+
+
+void MainForm::simulationFlowHandle()
+{
+    if (projectMan->getActive() != NULL)
+    {
+        if (false == simulationStatus)
+        {
+            QPixmap *pm_simFlow = new QPixmap("resources//icons//simulationStop.png");
+            QIcon *icon_simFlow = new QIcon(*pm_simFlow);
+            simulationFlowAct->setIcon(*icon_simFlow);
+            simulationFlowAct->setText(tr("Stop simulation"));
+            simulationStatus = true;
+        }
+        else
+        {
+            QPixmap *pm_simFlow = new QPixmap("resources//icons//simulationStart.png");
+            QIcon *icon_simFlow = new QIcon(*pm_simFlow);
+            simulationFlowAct->setIcon(*icon_simFlow);
+            simulationFlowAct->setText(tr("Start simulation"));
+            simulationStatus = false;
+        }
+    }
+}
+
+
+
+
