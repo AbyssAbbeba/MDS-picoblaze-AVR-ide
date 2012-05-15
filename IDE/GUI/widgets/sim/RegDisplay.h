@@ -37,7 +37,8 @@ public:
 		uint8_t mask = 0xFFu,
 		const QStringList * bitNames = NULL,
 		const QStringList * toolsTips = NULL,
-		const QStringList * statusTips = NULL );
+		const QStringList * statusTips = NULL,
+		QWidget * parent = 0);
 
 	virtual ~RegDisplay();
 

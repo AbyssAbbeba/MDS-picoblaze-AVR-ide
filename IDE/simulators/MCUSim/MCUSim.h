@@ -35,7 +35,7 @@ public:
 
 	/// @brief ...
 	enum Family {
-		FAMILY_INVALID = -1,///< Architecture haven't been specified.
+		FAMILY_INVALID = -1,///< Architecture hasn't been specified.
 
 		/// @name AVR8
 		//@{
@@ -265,7 +265,7 @@ public:
 		Subsys(EventLogger * eventLogger, SubsysId id) {
 			link(eventLogger, id);
 		};
-		
+
 		void link(EventLogger * eventLogger, SubsysId id) {
 			m_eventLogger = eventLogger;
 			m_id = id;
