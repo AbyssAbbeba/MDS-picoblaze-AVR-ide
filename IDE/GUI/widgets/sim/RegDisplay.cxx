@@ -30,8 +30,10 @@ RegDisplay::RegDisplay(
 		uint8_t mask,
 		const QStringList * bitNames,
 		const QStringList * toolsTips,
-		const QStringList * statusTips
+		const QStringList * statusTips,
+		QWidget * parent
 	) :
+		QWidget(parent),
 		m_address(address),
 		m_bitEnableMask(mask),
 		m_readOnly(true)
@@ -44,8 +46,8 @@ RegDisplay::RegDisplay(
 }
 
 inline void RegDisplay::setPalettes() {
-	m_log0palette.setColor(QPalette::WindowText, QColor(0xFF, 0x00, 0x00));
-	m_log1palette.setColor(QPalette::WindowText, QColor(0x00, 0xCC, 0x00));
+	m_log0palette.setColor(QPalette::ButtonText, QColor(0xFF, 0x00, 0x00));
+	m_log1palette.setColor(QPalette::ButtonText, QColor(0x00, 0xCC, 0x00));
 	m_highlightedPalette.setColor(QPalette::Text, QColor(0xDD, 0x88, 0x00));
 	m_normalPalette.setColor(QPalette::Text, QColor(0x00, 0x00, 0x00));
 }
@@ -131,17 +133,17 @@ RegDisplay::~RegDisplay() {
 
 inline void RegDisplay::setupConnections() {
 	if ( true == m_bitButtonsAvailable ) {
-		connect(m_bitButtons[0], SIGNAL(clicked()), this, SLOT(bit0ButtonClicked()));
-		connect(m_bitButtons[1], SIGNAL(clicked()), this, SLOT(bit1ButtonClicked()));
-		connect(m_bitButtons[2], SIGNAL(clicked()), this, SLOT(bit2ButtonClicked()));
-		connect(m_bitButtons[3], SIGNAL(clicked()), this, SLOT(bit3ButtonClicked()));
-		connect(m_bitButtons[4], SIGNAL(clicked()), this, SLOT(bit4ButtonClicked()));
-		connect(m_bitButtons[5], SIGNAL(clicked()), this, SLOT(bit5ButtonClicked()));
-		connect(m_bitButtons[6], SIGNAL(clicked()), this, SLOT(bit6ButtonClicked()));
-		connect(m_bitButtons[7], SIGNAL(clicked()), this, SLOT(bit7ButtonClicked()));
+		QObject::connect(m_bitButtons[0], SIGNAL(clicked()), this, SLOT(bit0ButtonClicked()));
+		QObject::connect(m_bitButtons[1], SIGNAL(clicked()), this, SLOT(bit1ButtonClicked()));
+		QObject::connect(m_bitButtons[2], SIGNAL(clicked()), this, SLOT(bit2ButtonClicked()));
+		QObject::connect(m_bitButtons[3], SIGNAL(clicked()), this, SLOT(bit3ButtonClicked()));
+		QObject::connect(m_bitButtons[4], SIGNAL(clicked()), this, SLOT(bit4ButtonClicked()));
+		QObject::connect(m_bitButtons[5], SIGNAL(clicked()), this, SLOT(bit5ButtonClicked()));
+		QObject::connect(m_bitButtons[6], SIGNAL(clicked()), this, SLOT(bit6ButtonClicked()));
+		QObject::connect(m_bitButtons[7], SIGNAL(clicked()), this, SLOT(bit7ButtonClicked()));
 	}
-	connect(m_hexLineEdit, SIGNAL(textEdited(const QString &)), this, SLOT(hexTextEdited(const QString &)));
-	connect(m_hexLineEdit, SIGNAL(cursorPositionChanged(int, int)), this, SLOT(hexTextCurChange(int, int)));
+	QObject::connect(m_hexLineEdit, SIGNAL(textEdited(const QString &)), this, SLOT(hexTextEdited(const QString &)));
+	QObject::connect(m_hexLineEdit, SIGNAL(cursorPositionChanged(int, int)), this, SLOT(hexTextCurChange(int, int)));
 }
 
 void RegDisplay::hexTextCurChange(int , int) {
@@ -212,7 +214,13 @@ void RegDisplay::setReadOnly(bool readOnly) {
 	m_hexLineEdit->setReadOnly(m_readOnly);
 	if ( true == m_bitButtonsAvailable ) {
 		for ( int i = 0; i < 8; i++ ) {
-			m_bitButtons[i]->setDisabled(readOnly);
+			if ( false == readOnly ) {
+				if ( m_bitEnableMask & (0x01 << i) ) {
+					m_bitButtons[i]->setDisabled(false);
+				}
+			} else {
+				m_bitButtons[i]->setDisabled(true);
+			}
 		}
 	}
 }

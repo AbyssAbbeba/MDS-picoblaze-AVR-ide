@@ -36,6 +36,11 @@ MCUSimControl::~MCUSimControl() {
 }
 
 void MCUSimControl::start(const char * hexFileName) {
+
+	// Reset the simulator
+	m_simulator->reset(MCUSim::RSTMD_INITIAL_VALUES);
+	reset();
+
 	// Load data file to the program memory
 	HexFile hexFile;
 	try {
@@ -58,10 +63,6 @@ void MCUSimControl::start(const char * hexFileName) {
 
 	m_simulatorLog->clear();
 
-	// Reset the simulator
-	m_simulator->reset(MCUSim::RSTMD_INITIAL_VALUES);
-	reset();
-
 	allObservers_setReadOnly(false);
 }
 
@@ -74,7 +75,6 @@ void MCUSimControl::step() {
 		return;
 	}
 
-	m_simulator->executeInstruction();
 	dispatchEvents();
 }
 
@@ -126,6 +126,7 @@ bool MCUSimControl::changeDevice(const char * deviceName) {
 
 	McuSimCfgMgr::getInstance()->setupSimulator(deviceName, m_simulator->getConfig());
 	m_simulator->reset(MCUSim::RSTMD_NEW_CONFIG);
+	m_simulator->reset(MCUSim::RSTMD_INITIAL_VALUES);
 
 	allObservers_deviceChanged();
 	return true;
@@ -218,8 +219,7 @@ void MCUSimControl::dispatchEvents() {
 	int subsysId, eventId, locationOrReason, detail;
 
 	while ( 0 != m_simulatorLog->getEvent(subsysId, eventId, locationOrReason, detail)) {
-
-		if ( (subsysId >= MCUSim::Subsys::ID__MAX__) || subsysId < 0 ) {
+		if ( (subsysId >= MCUSim::Subsys::ID__MAX__) || (subsysId < 0) ) {
 			qDebug("Invalid subsysId");
 			continue;
 		}
@@ -292,7 +292,7 @@ bool MCUSimControl::getListOfSFR(std::vector<SFRRegDesc> & sfr) {
 					sfr.back().m_statusTips[j] = devSpec->m_dataMemory.m_ioRegDesc[i].m_bit[j].m_stip;
 				}
 			}
-	
+
 			break;
 		}
 		default: {

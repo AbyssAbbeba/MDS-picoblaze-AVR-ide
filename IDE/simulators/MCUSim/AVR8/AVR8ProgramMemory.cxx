@@ -18,7 +18,6 @@
 
 #include <cstdlib>
 
-
 AVR8ProgramMemory::AVR8ProgramMemory() {
 	m_memory = NULL;
 	m_size = 0;

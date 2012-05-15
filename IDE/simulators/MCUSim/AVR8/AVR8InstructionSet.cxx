@@ -20,7 +20,6 @@
 #include "AVR8SystemControl.h"
 #include "AVR8BootLoader.h"
 
-
 int (AVR8InstructionSet:: * const AVR8InstructionSet::m_opCodeDispatchTable[64])(const unsigned int opCode) = {
 	&AVR8InstructionSet::instOPCode_000000,	// opCode = 0000 00xx xxxx xxxx
 	&AVR8InstructionSet::inst_CPC_Rd_Rr,	// opCode = 0000 01xx xxxx xxxx

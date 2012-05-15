@@ -182,7 +182,7 @@ MCUSim::Subsys * AVR8Sim::getSubsys(Subsys::SubsysId id) {
 MCUSim::Clock::ClockSource & AVR8Sim::getClockSource() {
 	return m_clockControl->m_clockSource;
 }
-	
+
 void AVR8Sim::reset(ResetMode mode) {
 	for (
 		std::vector<Subsys*>::iterator i = m_subSystems.begin();
@@ -238,7 +238,7 @@ inline void AVR8Sim::mcuReset() {
 
 int AVR8Sim::executeInstruction() {
 	float timeStep = cycles2time(m_clockCycles);
-	
+
 	m_io->clockCycles();
 	if ( true == m_externalInterrupts->enabled() ) {
 		m_externalInterrupts->clockCycle();

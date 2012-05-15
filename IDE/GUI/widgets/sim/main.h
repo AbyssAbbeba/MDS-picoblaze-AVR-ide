@@ -5,13 +5,21 @@
 class QPushButton;
 class QHBoxLayout;
 
+class McuMemoryView;
+class RegDisplayList;
+class MCUSimControl;
+
 #include <QWidget>
 
 class SimControlButtons : public QWidget {
 	Q_OBJECT
 public:
 	SimControlButtons();
-	virtual ~SimControlButtons();
+
+	McuMemoryView * m_mcuMemoryView;
+	RegDisplayList * m_regList;
+	MCUSimControl * m_simControlUnit;
+
 public slots:
 	void startStopButtonPressed();
 	void resetButtonPressed();
