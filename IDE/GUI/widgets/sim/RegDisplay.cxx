@@ -47,9 +47,18 @@ RegDisplay::RegDisplay(
 
 inline void RegDisplay::setPalettes() {
 	m_log0palette.setColor(QPalette::ButtonText, QColor(0xFF, 0x00, 0x00));
+	m_log0palette.setColor(QPalette::WindowText, QColor(0xFF, 0x00, 0x00));
+	m_log0palette.setColor(QPalette::Text, QColor(0xFF, 0x00, 0x00));
+
 	m_log1palette.setColor(QPalette::ButtonText, QColor(0x00, 0xCC, 0x00));
+	m_log1palette.setColor(QPalette::WindowText, QColor(0x00, 0xCC, 0x00));
+	m_log1palette.setColor(QPalette::Text, QColor(0x00, 0xCC, 0x00));
+
 	m_highlightedPalette.setColor(QPalette::Text, QColor(0xDD, 0x88, 0x00));
+	m_highlightedPalette.setColor(QPalette::WindowText, QColor(0xDD, 0x88, 0x00));
+
 	m_normalPalette.setColor(QPalette::Text, QColor(0x00, 0x00, 0x00));
+	m_normalPalette.setColor(QPalette::WindowText, QColor(0x00, 0x00, 0x00));
 }
 
 inline void RegDisplay::createLayout() {

@@ -75,6 +75,7 @@ void MCUSimControl::step() {
 		return;
 	}
 
+	m_simulator->executeInstruction();
 	dispatchEvents();
 }
 

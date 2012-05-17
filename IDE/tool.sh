@@ -8,12 +8,13 @@ declare -i options_y=0
 declare -i options_l=0
 
 function clean() {
-	make clean 2> /dev/null
+	make clean
 
 	rm -rfv "docs/doxygen/html"
 	rm -fv $(find -type f -name '*~')
 	rm -fv $(find -type f -name '*.a')
 	rm -fv $(find -type f -name '*.so')
+	rm -fv $(find -type f -name 'moc_*.cxx')
 	rm -fv $(find -type f -name '.directory')
 	rm -fv $(find -type f -name 'CMakeCache.txt')
 	rm -fv $(find -type f -name 'cmake_install.cmake')
