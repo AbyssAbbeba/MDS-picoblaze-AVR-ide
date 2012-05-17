@@ -23,6 +23,8 @@
 #include <QString>
 #include <QList>
 #include <QTreeWidget>
+#include <QMenu>
+#include <QAction>
 #include <QtXml>
 #include "mainform.h"
 #include "../dialogs/errordlg.h"
@@ -58,7 +60,6 @@ class ProjectMan
         int projectCount;
         QList<Project*> openProjects;
         Project *activeProject;
-        
     
 };
 
@@ -99,6 +100,9 @@ class Project : public QObject
     private slots:
         void setActive();
         void openItem();
+        void setMainFile();
+        void removeFile();
+
     private:
         ProjectMan *parentManager;
        

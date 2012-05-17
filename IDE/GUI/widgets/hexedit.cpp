@@ -402,3 +402,12 @@ void HexEdit::setData(QByteArray *byteArray)
 }
 
 
+void HexEdit::setVal(int pos, char val)
+{
+    (*hexByteArray)[pos] = val;
+}
+
+char HexEdit::getVal(int pos)
+{
+    return hexByteArray->at(pos);
+}

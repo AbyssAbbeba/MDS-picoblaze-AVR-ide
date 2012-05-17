@@ -52,6 +52,7 @@ class MainForm : public QMainWindow
         void openFile();
         void addFile();
         void newAddFile();
+        //void removeProjFile();
         void saveFile();
         void saveFileAs();
         void saveAll();
@@ -103,6 +104,7 @@ class MainForm : public QMainWindow
 
         QAction *newProjAct;
         QAction *newAddAct;
+        //QAction *removeFileAct;
         QAction *openProjAct;
         QAction *saveProjAct;
         QAction *projectCompileAct;
