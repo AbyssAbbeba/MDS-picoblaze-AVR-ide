@@ -74,6 +74,11 @@ void MainForm::CreateActions()
     connect(newAddAct, SIGNAL(triggered()), this, SLOT(newAddFile()));
 
 
+    /*QPixmap *pm_projRemoveFile = new QPixmap("src//resources//icons//projDelete.png");
+    QIcon *icon_projRemoveFile = new QIcon(*pm_projRemoveFile);
+    removeFileAct = new QAction(*icon_projRemoveFile, tr("&Remove file"), this);
+    connect(removeFileAct, SIGNAL(triggered()), this, SLOT(removeProjFile()));*/
+
 
     saveAct = new QAction(tr("&Save File"), this);
     connect(saveAct, SIGNAL(triggered()), this, SLOT(saveFile()));
@@ -142,6 +147,7 @@ void MainForm::CreateToolbar()
     projectToolBar->addAction(openProjAct);
     projectToolBar->addAction(saveProjAct);
     projectToolBar->addAction(newAddAct);
+    //projectToolBar->addAction(removeFileAct);
     projectToolBar->addAction(addAct);
     projectToolBar->addAction(projectCompileAct);
 
@@ -490,5 +496,8 @@ void MainForm::simulationFlowHandle()
 }
 
 
-
+/*void MainForm::removeProjFile()
+{
+    projectMan->getActive()->removeFile();
+}*/
 

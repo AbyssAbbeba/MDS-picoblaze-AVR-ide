@@ -42,9 +42,11 @@ class HexEdit : public QWidget
     Q_OBJECT   
     public:
         HexEdit(QWidget *parent, bool AsciiPanel, int countSize, int columns);
-        void setData(int pos, char value);
+        //void setData(int pos, char value);
         QTextEdit* getTextEdit();
         //void setByteArray();
+        void setVal(int pos, char val);
+        char getVal(int pos);
 
     public slots:
         void changeAscii(int position);
