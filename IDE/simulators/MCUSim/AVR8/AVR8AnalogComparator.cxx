@@ -24,7 +24,7 @@ AVR8AnalogComparator * AVR8AnalogComparator::link(
 	return this;
 }
 
-void AVR8AnalogComparator::reset(MCUSim::ResetMode mode) {
+void AVR8AnalogComparator::reset(MCUSim::ResetMode /*mode*/) {
 }
 
 inline void AVR8AnalogComparator::resetToInitialValues() {

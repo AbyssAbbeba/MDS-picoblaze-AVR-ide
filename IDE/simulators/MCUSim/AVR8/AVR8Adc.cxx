@@ -24,7 +24,7 @@ AVR8Adc * AVR8Adc::link(
 	return this;
 }
 
-void AVR8Adc::reset(MCUSim::ResetMode mode) {
+void AVR8Adc::reset(MCUSim::ResetMode /*mode*/) {
 	
 }
 

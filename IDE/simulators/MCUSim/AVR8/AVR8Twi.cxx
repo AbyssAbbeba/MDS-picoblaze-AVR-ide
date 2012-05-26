@@ -24,7 +24,7 @@ AVR8Twi * AVR8Twi::link(
 	return this;
 }
 
-void AVR8Twi::reset(MCUSim::ResetMode mode) {
+void AVR8Twi::reset(MCUSim::ResetMode /*mode*/) {
 	
 }
 

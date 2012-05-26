@@ -35,6 +35,7 @@ public:
 
 	/**
 	 * @brief
+	 * TODO: Rewrite DataFileException as class with a std::string error info text.
 	 */
 	enum DataFileException {
 		EXP_IO_ERROR,		///< Unable to work with the specified file

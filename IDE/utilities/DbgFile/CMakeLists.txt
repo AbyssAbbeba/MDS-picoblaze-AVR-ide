@@ -6,7 +6,7 @@
 # ------------------------------------------------------------------------------
 
 # Set project name
-project(MCUDataFiles)
+project(DbgFile)
 
 # Set the minimum required version of CMake
 cmake_minimum_required(VERSION 2.8)
@@ -29,10 +29,7 @@ add_definitions(-Wall -Wextra -std=c++0x -O2 -pipe)
 ## Add a library to the project using the specified source files,
  # in this case it will procude dynamic C++ library.
 add_library(${PROJECT_NAME} SHARED
-	DataFile.cxx
-	BinFile.cxx
-	HexFile.cxx
-	SrecFile.cxx)
+	DbgFileCDB.cxx)
 
 
 # ------------------------------------------------------------------------------

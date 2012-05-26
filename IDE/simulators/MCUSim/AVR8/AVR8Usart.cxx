@@ -24,7 +24,7 @@ AVR8Usart * AVR8Usart::link(
 	return this;
 }
 
-void AVR8Usart::reset(MCUSim::ResetMode mode) {
+void AVR8Usart::reset(MCUSim::ResetMode /*mode*/) {
 	
 }
 

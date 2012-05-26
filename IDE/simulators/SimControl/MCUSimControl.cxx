@@ -175,15 +175,32 @@ bool MCUSimControl::initialized() const {
 
 void MCUSimControl::registerObserver(
 	MCUSimObserver * observer,
-	const MCUSim::Subsys::SubsysId simSubsysToObserve,
-	const int subsysEventsToObserve)
+	MCUSim::Subsys::SubsysId simSubsysToObserve,
+	const std::vector<int> & subsysEventsToObserve)
 {
-	for ( int i = 0; i < MCUSim::Subsys::ID__MAX__; i++ ) {
-		if ( simSubsysToObserve & i ) {
-			unregisterSpecificObserver(MCUSim::Subsys::SubsysId(i), observer);
-			m_observers[i].push_back(std::make_pair(observer, subsysEventsToObserve));
-		}
+	uint64_t events = 0;
+	for (	std::vector<int>::const_iterator it = subsysEventsToObserve.begin();
+		it != subsysEventsToObserve.end();
+		it++ )
+	{
+		events |= ( 1 << *it );
 	}
+
+	registerObserver(observer, simSubsysToObserve, events);
+
+	unregisterSpecificObserver(MCUSim::Subsys::SubsysId(simSubsysToObserve), observer);
+	m_observers[simSubsysToObserve].push_back(std::make_pair(observer, events));
+
+	observer->setControlUnit(this);
+}
+
+inline void MCUSimControl::registerObserver(
+	MCUSimObserver * observer,
+	MCUSim::Subsys::SubsysId simSubsysToObserve,
+	uint64_t events = 0xFFFFFFFFFFFFFFFFULL )
+{
+	unregisterSpecificObserver(MCUSim::Subsys::SubsysId(simSubsysToObserve), observer);
+	m_observers[simSubsysToObserve].push_back(std::make_pair(observer, events));
 
 	observer->setControlUnit(this);
 }
@@ -225,9 +242,9 @@ void MCUSimControl::dispatchEvents() {
 			continue;
 		}
 
-		std::vector<std::pair<MCUSimObserver*, int> >::iterator it;
+		std::vector<std::pair<MCUSimObserver*, uint64_t> >::iterator it;
 		for ( it = m_observers[subsysId].begin(); it != m_observers[subsysId].end(); it++ ) {
-			if ( eventId & it->second ) {
+			if ( (1 << eventId) & it->second ) {
 				it->first->handleEvent(subsysId, eventId, locationOrReason, detail);
 			}
 		}
@@ -236,7 +253,7 @@ void MCUSimControl::dispatchEvents() {
 
 void MCUSimControl::allObservers_deviceChanged() {
 	for ( int i = 0; i < MCUSim::Subsys::ID__MAX__; i++ ) {
-		std::vector<std::pair<MCUSimObserver*, int> >::iterator it;
+		std::vector<std::pair<MCUSimObserver*, uint64_t> >::iterator it;
 		for ( it = m_observers[i].begin(); it != m_observers[i].end(); it++ ) {
 			it->first->deviceChanged();
 		}
@@ -245,7 +262,7 @@ void MCUSimControl::allObservers_deviceChanged() {
 
 void MCUSimControl::allObservers_deviceReset() {
 	for ( int i = 0; i < MCUSim::Subsys::ID__MAX__; i++ ) {
-		std::vector<std::pair<MCUSimObserver*, int> >::iterator it;
+		std::vector<std::pair<MCUSimObserver*, uint64_t> >::iterator it;
 		for ( it = m_observers[i].begin(); it != m_observers[i].end(); it++ ) {
 			it->first->deviceReset();
 		}
@@ -254,7 +271,7 @@ void MCUSimControl::allObservers_deviceReset() {
 
 void MCUSimControl::allObservers_setReadOnly(bool readOnly) {
 	for ( int i = 0; i < MCUSim::Subsys::ID__MAX__; i++ ) {
-		std::vector<std::pair<MCUSimObserver*, int> >::iterator it;
+		std::vector<std::pair<MCUSimObserver*, uint64_t> >::iterator it;
 		for ( it = m_observers[i].begin(); it != m_observers[i].end(); it++ ) {
 			it->first->setReadOnly(readOnly);
 		}

@@ -1,18 +1,35 @@
 
-## Simulator engine module for 8-bit AVR
-
 # ------------------------------------------------------------------------------
 # GENERAL OPTIONS
 # ------------------------------------------------------------------------------
 
 # Set project name
-project(MCUDataFiles)
+project(AsmParsers)
 
 # Set the minimum required version of CMake
 cmake_minimum_required(VERSION 2.8)
 
 # Create verbose makefiles if on
 set(CMAKE_VERBOSE_MAKEFILE OFF)
+
+
+# ------------------------------------------------------------------------------
+# GENERATE LEXICAL AND SYNTAX ANALYZERS
+# ------------------------------------------------------------------------------
+
+find_package(BISON)    # Syntax analyzer generator
+find_package(FLEX 2.5) # Lexical analyzer generator
+
+# For 8-bit AVR
+BISON_TARGET(avr8parser avr8parser.y avr8parser.cxx)
+FLEX_TARGET(avr8lexer avr8lexer.l avr8lexer.cxx)
+# ADD_FLEX_BISON_DEPENDENCY(avr8lexer avr8parser) # <-- It seems like this isn't working properly but it doesn't matter anyway.
+
+# For 8-bit PIC
+BISON_TARGET(pic8parser pic8parser.y pic8parser.cxx)
+FLEX_TARGET(pic8lexer pic8lexer.l pic8lexer.cxx)
+# ADD_FLEX_BISON_DEPENDENCY(pic8lexer pic8parser)
+
 
 # ------------------------------------------------------------------------------
 # COMPILATION OPTIONS
@@ -29,10 +46,13 @@ add_definitions(-Wall -Wextra -std=c++0x -O2 -pipe)
 ## Add a library to the project using the specified source files,
  # in this case it will procude dynamic C++ library.
 add_library(${PROJECT_NAME} SHARED
-	DataFile.cxx
-	BinFile.cxx
-	HexFile.cxx
-	SrecFile.cxx)
+
+	${FLEX_avr8lexer_OUTPUTS}
+	${BISON_avr8parser_OUTPUTS}
+
+# 	${FLEX_pic8lexer_OUTPUTS}
+# 	${BISON_pic8parser_OUTPUTS}
+)
 
 
 # ------------------------------------------------------------------------------
