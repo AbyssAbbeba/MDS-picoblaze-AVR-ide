@@ -42,16 +42,16 @@ add_definitions(-Wall -Wextra -std=c++0x -O2 -pipe)
 
 ## Add a library to the project using the specified source files,
  # in this case it will procude dynamic C++ library.
-add_library(McuSimCfgMgr SHARED
+add_library(${PROJECT_NAME} SHARED
 	McuDeviceSpecAVR8.cxx
 	McuSimCfgMgr.cxx)
 
-target_link_libraries(McuSimCfgMgr ${QT_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES})
 
 # ------------------------------------------------------------------------------
 # INSTALLATION OPTIONS
 # ------------------------------------------------------------------------------
 
-install(TARGETS McuSimCfgMgr
+install(TARGETS ${PROJECT_NAME}
 	RUNTIME DESTINATION bin
 	LIBRARY DESTINATION lib)

@@ -24,7 +24,7 @@ AVR8Spi * AVR8Spi::link(
 	return this;
 }
 
-void AVR8Spi::reset(MCUSim::ResetMode mode) {
+void AVR8Spi::reset(MCUSim::ResetMode /*mode*/) {
 	
 }
 

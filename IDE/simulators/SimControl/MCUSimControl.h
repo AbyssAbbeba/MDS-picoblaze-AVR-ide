@@ -22,6 +22,7 @@ class McuDeviceSpec;
 #include <vector>
 #include <string>
 #include <utility>
+#include <cstdint>
 #include <QObject>
 
 class MCUSimControl : public QObject {
@@ -40,10 +41,15 @@ public:
 	MCUSimControl(const char * deviceName);
 	virtual ~MCUSimControl();
 
+	/// This method can be called multiple times to register an observer to multiple subsystems
 	void registerObserver(
 		MCUSimObserver * observer,
-		const MCUSim::Subsys::SubsysId simSubsysToObserve,
-		const int subsysEventsToObserve);
+		MCUSim::Subsys::SubsysId simSubsysToObserve,
+		const std::vector<int> & subsysEventsToObserve);
+	void registerObserver(
+		MCUSimObserver * observer,
+		MCUSim::Subsys::SubsysId simSubsysToObserve,
+		uint64_t events);
 	bool unregisterObserver(MCUSimObserver * observer);
 
 	bool initialized() const;
@@ -75,13 +81,14 @@ private:
 	MCUSim::EventLogger * m_simulatorLog;
 	const McuDeviceSpec * m_deviceSpec;
 
-	std::vector<std::pair<MCUSimObserver*, int> > m_observers[MCUSim::Subsys::ID__MAX__];
+	std::vector<std::pair<MCUSimObserver*, uint64_t> > m_observers[MCUSim::Subsys::ID__MAX__];
 
 	void dispatchEvents();
-	inline bool unregisterSpecificObserver(MCUSim::Subsys::SubsysId subsysId, MCUSimObserver * observer);
 	void allObservers_deviceChanged();
 	void allObservers_deviceReset();
 	void allObservers_setReadOnly(bool readOnly);
+
+	inline bool unregisterSpecificObserver(MCUSim::Subsys::SubsysId subsysId, MCUSimObserver * observer);
 };
 
 #endif // MCUSIMCONTROL_H

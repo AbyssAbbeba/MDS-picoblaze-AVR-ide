@@ -283,7 +283,7 @@ public:
 	class CPU : public Subsys {
 	public:
 		enum Event {
-			EVENT_CPU_SYS_FATAL_ERROR = 0,
+			EVENT_CPU_SYS_FATAL_ERROR	= 0,
 
 			EVENT_CPU_ERR_INVALID_OPCODE,
 			EVENT_CPU_ERR_INVALID_JUMP,
@@ -366,14 +366,14 @@ public:
 
 		/// @brief
 		enum Flags {
-			// MFLAG_NOT_IMPLEMENTED= 0x80000000,	///< Memory cell is NOT physically present in the memory.
- 			// MFLAG_		= 0x40000000,	///<
-			MFLAG_DEFAULT		= 0x20000000,	///< Default value contained, must be cleared by write.
-			MFLAG_UNDEFINED		= 0x10000000,	///< Uninitialized, so the value might be virtually anything.
-			// MFLAG_WR_ONLY	= 0x08000000,	///< For writing only, read is an invalid operation.
-			// MFLAG_RD_ONLY	= 0x04000000,	///< For reading only, write is an invalid operation.
-			MFLAG_RESERVED		= 0x02000000,	///< Memory location is reserved, i.e. it should not be used
-			MFLAG_VIRTUAL		= 0x01000000,	///< This location is mapped to more than oe memory cell, or is completely special.
+			//MFLAG_		= 0x01 << 24,	///<
+			//MFLAG_		= 0x02 << 24,	///<
+ 			//MFLAG_		= 0x04 << 24,	///<
+			//MFLAG_		= 0x08 << 24,	///<
+			MFLAG_VIRTUAL		= 0x10 << 24,	///< This location is mapped to more than oe memory cell, or is completely special.
+			MFLAG_DEFAULT		= 0x20 << 24,	///< Default value contained, must be cleared by write.
+			MFLAG_RESERVED		= 0x40 << 24,	///< Memory location is reserved, i.e. it should not be used
+			MFLAG_UNDEFINED		= 0x80 << 24,	///< Uninitialized, so the value might be virtually anything.
 
 			MFLAG_MEM__MAX__	= 8		///< Number of elements in this enumeration.
 		};

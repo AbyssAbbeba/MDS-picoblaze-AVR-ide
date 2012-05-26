@@ -14,6 +14,12 @@
  * @ingroup Util
  * Library for working with Intel Hex files, Motorola® S-Record files, and
  * binary files.
+ *
+ * @defgroup DbgFile Debug meta-data files
+ * @ingroup Util
+ * Library for working with:
+ *   - SDCC's .cdb files (http://sourceforge.net/apps/trac/sdcc/wiki/CDB%20File%20Format)
+ *   - \<in future others\>
  */
 
 /**

@@ -4,7 +4,7 @@
 # ------------------------------------------------------------------------------
 
 # Set project name
-project(utilities)
+project(assembler)
 
 # Set the minimum required version of CMake
 cmake_minimum_required(VERSION 2.8)
@@ -17,8 +17,9 @@ set(CMAKE_VERBOSE_MAKEFILE OFF)
 # BUILD COMPONENTS IN THE SUBDIRECTORIES
 # ------------------------------------------------------------------------------
 
-# Build the tools for working with Intel 8 Hex, Motorola S-Records, etc.
-add_subdirectory(MCUDataFiles)
+# Build lexical and syntax analyzers
+add_subdirectory(grammar)
 
-# Build the tools for working with debug files
-add_subdirectory(DbgFile)
+# Build the assembler itself as a library
+add_subdirectory(core)
+

@@ -32,7 +32,7 @@ add_definitions(-Wall -Wextra -std=c++0x -O2 -pipe)
 
 ## Add a library to the project using the specified source files,
  # in this case it will procude dynamic C++ library.
-add_library(AVR8Sim SHARED
+add_library(${PROJECT_NAME} SHARED
 	AVR8Sim.cxx
 	AVR8Config.cxx
 	AVR8DataMemory.cxx
@@ -64,6 +64,6 @@ add_library(AVR8Sim SHARED
 # INSTALLATION OPTIONS
 # ------------------------------------------------------------------------------
 
-install(TARGETS AVR8Sim
+install(TARGETS ${PROJECT_NAME}
 	RUNTIME DESTINATION bin
 	LIBRARY DESTINATION lib)

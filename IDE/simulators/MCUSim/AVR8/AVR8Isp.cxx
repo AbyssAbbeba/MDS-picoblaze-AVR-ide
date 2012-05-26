@@ -24,7 +24,7 @@ AVR8Isp * AVR8Isp::link(
 	return this;
 }
 
-void AVR8Isp::reset(MCUSim::ResetMode mode) {
+void AVR8Isp::reset(MCUSim::ResetMode /*mode*/) {
 }
 
 inline void AVR8Isp::resetToInitialValues() {

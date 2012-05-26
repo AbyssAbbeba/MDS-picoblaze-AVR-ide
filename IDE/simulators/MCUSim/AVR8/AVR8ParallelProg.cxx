@@ -24,7 +24,7 @@ AVR8ParallelProg * AVR8ParallelProg::link(
 	return this;
 }
 
-void AVR8ParallelProg::reset(MCUSim::ResetMode mode) {
+void AVR8ParallelProg::reset(MCUSim::ResetMode /*mode*/) {
 }
 
 inline void AVR8ParallelProg::resetToInitialValues() {

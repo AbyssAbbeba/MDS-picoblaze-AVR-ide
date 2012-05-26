@@ -14,7 +14,7 @@
 
 #include <fstream>
 #include <cstdint>
-#include <cstdio>
+// #include <cstdio>
 
 void BinFile::clearAndLoad(const char * filename) throw(DataFile::DataFileException) {
 	clearAndLoad(std::string(filename));
@@ -23,7 +23,7 @@ void BinFile::clearAndLoad(const char * filename) throw(DataFile::DataFileExcept
 void BinFile::clearAndLoad(const std::string & filename) throw(DataFile::DataFileException) {
 	std::fstream file(filename, std::fstream::in | std::fstream::binary );
 
-	if ( false == file.is_open()) {
+	if ( false == file.is_open() ) {
 		throw DataFile::EXP_IO_ERROR;
 	}
 
@@ -31,7 +31,7 @@ void BinFile::clearAndLoad(const std::string & filename) throw(DataFile::DataFil
 	while ( false == file.eof() ) {
 		int charRead = file.get();
 
-		if( true == file.bad() ) {
+		if ( true == file.bad() ) {
 			throw DataFile::EXP_IO_ERROR;
 		}
 
@@ -57,7 +57,7 @@ void BinFile::save(const std::string & filename, bool makeBackup) throw(DataFile
 	}
 
 	std::fstream file(filename, (std::fstream::out | std::fstream::trunc | std::fstream::binary));
-	
+
 	if ( false == file.is_open()) {
 		throw DataFile::EXP_IO_ERROR;
 	}
