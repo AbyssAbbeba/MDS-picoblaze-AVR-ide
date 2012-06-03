@@ -53,6 +53,14 @@
  */
 
 /**
+ * @defgroup Compiler Built-in compiler collection
+ *
+ * @defgroup Assembler Assembler
+ * @ingroup Compiler
+ * This group contains components of the built-in assemblers.
+ */
+
+/**
  * @mainpage Introduction
  *
  * @section HowTo How to use this documentation

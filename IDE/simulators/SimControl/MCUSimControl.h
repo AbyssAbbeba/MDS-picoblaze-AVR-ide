@@ -49,7 +49,7 @@ public:
 	void registerObserver(
 		MCUSimObserver * observer,
 		MCUSim::Subsys::SubsysId simSubsysToObserve,
-		uint64_t events);
+		uint64_t events = 0xFFFFFFFFFFFFFFFFULL);
 	bool unregisterObserver(MCUSimObserver * observer);
 
 	bool initialized() const;
