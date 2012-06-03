@@ -197,7 +197,7 @@ void MCUSimControl::registerObserver(
 inline void MCUSimControl::registerObserver(
 	MCUSimObserver * observer,
 	MCUSim::Subsys::SubsysId simSubsysToObserve,
-	uint64_t events = 0xFFFFFFFFFFFFFFFFULL )
+	uint64_t events )
 {
 	unregisterSpecificObserver(MCUSim::Subsys::SubsysId(simSubsysToObserve), observer);
 	m_observers[simSubsysToObserve].push_back(std::make_pair(observer, events));

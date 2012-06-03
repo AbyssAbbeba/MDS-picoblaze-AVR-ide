@@ -1,12 +1,10 @@
 
-## MCU simulator configuration management library.
-
 # ------------------------------------------------------------------------------
 # GENERAL OPTIONS
 # ------------------------------------------------------------------------------
 
 # Set project name
-project(McuSimCfgMgr)
+project(CompilerCore)
 
 # Set the minimum required version of CMake
 cmake_minimum_required(VERSION 2.8)
@@ -19,18 +17,19 @@ set(CMAKE_VERBOSE_MAKEFILE OFF)
 # COMPILATION OPTIONS
 # ------------------------------------------------------------------------------
 
-# Add include directories to the build.
+# Load settings specific for the Qt4 library (we use it here for i18n)
+find_package( Qt4 REQUIRED )
+include(${QT_USE_FILE})
+
+# List of preprocessor include file search directories.
 include_directories(
-	"${CMAKE_CURRENT_BINARY_DIR}/.."
-	"${CMAKE_CURRENT_BINARY_DIR}/../AVR8"
+	"${CMAKE_CURRENT_BINARY_DIR}/../grammar"
 )
 
-# Load settings specific for the Qt4 library
-find_package(Qt4 REQUIRED)
-
-# Include Qt4's XML module
-set(QT_USE_QTXML 1)
-include(${QT_USE_FILE})
+# Specify directories in which the linker will look for libraries.
+link_directories(
+	"${CMAKE_CURRENT_BINARY_DIR}/../grammar"
+)
 
 ## Add switches to compiler command line
  # -Wall       : Enables all the warnings.
@@ -43,12 +42,13 @@ add_definitions(-Wall -Wextra -std=c++0x -O2 -pipe)
 ## Add a library to the project using the specified source files,
  # in this case it will procude dynamic C++ library.
 add_library(${PROJECT_NAME} SHARED
-	McuDeviceSpecAVR8.cxx
-	McuSimCfgMgr.cxx)
+	CompilerExpr.cxx
+	CompilerCore.cxx
+	Compiler.cxx
+)
 
 # Link a target to given libraries.
-target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES})
-
+target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} CompilerParsers)
 
 # ------------------------------------------------------------------------------
 # INSTALLATION OPTIONS

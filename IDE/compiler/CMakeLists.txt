@@ -4,7 +4,7 @@
 # ------------------------------------------------------------------------------
 
 # Set project name
-project(AsmParsers)
+project(compiler)
 
 # Set the minimum required version of CMake
 cmake_minimum_required(VERSION 2.8)
@@ -14,26 +14,25 @@ set(CMAKE_VERBOSE_MAKEFILE OFF)
 
 
 # ------------------------------------------------------------------------------
-# GENERATE LEXICAL AND SYNTAX ANALYZERS
+# BUILD COMPONENTS IN THE SUBDIRECTORIES
 # ------------------------------------------------------------------------------
 
-find_package(BISON)    # Syntax analyzer generator
-find_package(FLEX 2.5) # Lexical analyzer generator
+# Build lexical and syntax analyzers
+add_subdirectory(grammar)
 
-# For 8-bit AVR
-BISON_TARGET(avr8parser avr8parser.y avr8parser.cxx)
-FLEX_TARGET(avr8lexer avr8lexer.l avr8lexer.cxx)
-# ADD_FLEX_BISON_DEPENDENCY(avr8lexer avr8parser) # <-- It seems like this isn't working properly but it doesn't matter anyway.
-
-# For 8-bit PIC
-BISON_TARGET(pic8parser pic8parser.y pic8parser.cxx)
-FLEX_TARGET(pic8lexer pic8lexer.l pic8lexer.cxx)
-# ADD_FLEX_BISON_DEPENDENCY(pic8lexer pic8parser)
+# Build the assembler itself as a library
+add_subdirectory(core)
 
 
 # ------------------------------------------------------------------------------
 # COMPILATION OPTIONS
 # ------------------------------------------------------------------------------
+
+# List of preprocessor include file search directories.
+include_directories(
+	"${CMAKE_CURRENT_BINARY_DIR}/core"
+	"${CMAKE_CURRENT_BINARY_DIR}/grammar"
+)
 
 ## Add switches to compiler command line
  # -Wall       : Enables all the warnings.
@@ -43,16 +42,14 @@ FLEX_TARGET(pic8lexer pic8lexer.l pic8lexer.cxx)
  # -pipe       : Use pipes rather than temporary files for communication between the various stages of compilation.
 add_definitions(-Wall -Wextra -std=c++0x -O2 -pipe)
 
-## Add a library to the project using the specified source files,
- # in this case it will procude dynamic C++ library.
-add_library(${PROJECT_NAME} SHARED
 
-	${FLEX_avr8lexer_OUTPUTS}
-	${BISON_avr8parser_OUTPUTS}
-
-# 	${FLEX_pic8lexer_OUTPUTS}
-# 	${BISON_pic8parser_OUTPUTS}
+# Add an executable to the project using the specified source files.
+add_executable(${PROJECT_NAME}
+	main.cxx
 )
+
+# Link a target to given libraries
+target_link_libraries(${PROJECT_NAME} CompilerCore)
 
 
 # ------------------------------------------------------------------------------

@@ -14,7 +14,7 @@ cmake_minimum_required(VERSION 2.8)
 # Create verbose makefiles if on
 set(CMAKE_VERBOSE_MAKEFILE OFF)
 
-# # After this command, you can add tests in the project using ADD_TEST command.
+# After this command, you can add tests in the project using ADD_TEST command.
 enable_testing()
 
 
@@ -46,10 +46,12 @@ include(${QT_USE_FILE})
  # -O1         : Optimization, level 1.
 add_definitions(-pipe -std=c++0x -O1)
 
+# Add an executable to the project using the specified source files.
 add_executable(${PROJECT_NAME}
 	AVR8test.cxx
 )
 
+# Link a target to given libraries
 target_link_libraries(${PROJECT_NAME} cunit ${QT_LIBRARIES} McuSimCfgMgr AVR8Sim MCUDataFiles)
 
 

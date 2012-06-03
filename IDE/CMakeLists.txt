@@ -55,6 +55,9 @@ add_subdirectory(HW)
 # Build simulators
 add_subdirectory(simulators)
 
+# Build compiler collection
+add_subdirectory(compiler)
+
 # Add some data files to installation packages
 add_subdirectory(pkgs)
 

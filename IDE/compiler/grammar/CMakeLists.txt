@@ -1,12 +1,10 @@
 
-## MCU simulator configuration management library.
-
 # ------------------------------------------------------------------------------
 # GENERAL OPTIONS
 # ------------------------------------------------------------------------------
 
 # Set project name
-project(McuSimCfgMgr)
+project(CompilerParsers)
 
 # Set the minimum required version of CMake
 cmake_minimum_required(VERSION 2.8)
@@ -16,21 +14,37 @@ set(CMAKE_VERBOSE_MAKEFILE OFF)
 
 
 # ------------------------------------------------------------------------------
+# GENERATE LEXICAL AND SYNTAX ANALYZERS
+# ------------------------------------------------------------------------------
+
+find_package(BISON)       # Syntactic analyzer generator
+find_package(FLEX 2.5.35) # Lexical analyzer generator
+
+# For 8-bit AVR
+BISON_TARGET(avr8parser avr8parser.y avr8parser.cxx VERBOSE "avr8parser.output")
+FLEX_TARGET(avr8lexer avr8lexer.l avr8lexer.cxx)
+# ADD_FLEX_BISON_DEPENDENCY(avr8lexer avr8parser)
+
+# For 8-bit PIC
+BISON_TARGET(pic8parser pic8parser.y pic8parser.cxx VERBOSE "pic8parser.output")
+FLEX_TARGET(pic8lexer pic8lexer.l pic8lexer.cxx)
+# ADD_FLEX_BISON_DEPENDENCY(pic8lexer pic8parser)
+
+# For MCS-51
+BISON_TARGET(mcs51parser mcs51parser.y mcs51parser.cxx VERBOSE "mcs51parser.output")
+FLEX_TARGET(mcs51lexer mcs51lexer.l mcs51lexer.cxx)
+# ADD_FLEX_BISON_DEPENDENCY(mcs51lexer mcs51parser)
+
+
+# ------------------------------------------------------------------------------
 # COMPILATION OPTIONS
 # ------------------------------------------------------------------------------
 
-# Add include directories to the build.
+# List of preprocessor include file search directories.
 include_directories(
-	"${CMAKE_CURRENT_BINARY_DIR}/.."
-	"${CMAKE_CURRENT_BINARY_DIR}/../AVR8"
+	"${CMAKE_CURRENT_BINARY_DIR}"
+	"${CMAKE_CURRENT_BINARY_DIR}/../core"
 )
-
-# Load settings specific for the Qt4 library
-find_package(Qt4 REQUIRED)
-
-# Include Qt4's XML module
-set(QT_USE_QTXML 1)
-include(${QT_USE_FILE})
 
 ## Add switches to compiler command line
  # -Wall       : Enables all the warnings.
@@ -43,11 +57,20 @@ add_definitions(-Wall -Wextra -std=c++0x -O2 -pipe)
 ## Add a library to the project using the specified source files,
  # in this case it will procude dynamic C++ library.
 add_library(${PROJECT_NAME} SHARED
-	McuDeviceSpecAVR8.cxx
-	McuSimCfgMgr.cxx)
+	# For 8-bit AVR
+	${FLEX_avr8lexer_OUTPUTS}
+	${BISON_avr8parser_OUTPUTS}
+	# For 8-bit PIC
+	${FLEX_pic8lexer_OUTPUTS}
+	${BISON_pic8parser_OUTPUTS}
+	# For MCS-51
+	${FLEX_mcs51lexer_OUTPUTS}
+	${BISON_mcs51parser_OUTPUTS}
+)
 
-# Link a target to given libraries.
-target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES})
+## Set properties on a target.
+ # Targets can have properties that affect how they are built.
+set_target_properties(${PROJECT_NAME} PROPERTIES LINKER_LANGUAGE "CXX")
 
 
 # ------------------------------------------------------------------------------

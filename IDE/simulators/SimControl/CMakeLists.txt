@@ -24,12 +24,14 @@ find_package(Qt4 REQUIRED)
 set(QT_USE_QTXML 1)
 include(${QT_USE_FILE})
 
+# Specify directories in which the linker will look for libraries.
 link_directories(
 	"${CMAKE_CURRENT_BINARY_DIR}/../MCUSim/"
 	"${CMAKE_CURRENT_BINARY_DIR}/../MCUSim/AVR8"
 	"${CMAKE_CURRENT_BINARY_DIR}/../MCUSim/McuSimCfgMgr/"
 	"${CMAKE_CURRENT_BINARY_DIR}/../../utilities/MCUDataFiles/")
 
+# Add include directories to the build.
 include_directories(
 	"${CMAKE_CURRENT_BINARY_DIR}/../MCUSim/"
 	"${CMAKE_CURRENT_BINARY_DIR}/../MCUSim/AVR8"
@@ -44,6 +46,7 @@ include_directories(
  # -pipe       : Use pipes rather than temporary files for communication between the various stages of compilation.
 add_definitions(-Wall -Wextra -std=c++0x -O2 -pipe)
 
+# Produce moc files for all the listed  .h files.
 qt4_wrap_cpp(QT_MOC_GENERATED_CPP_FILES
 	SimControl.h
 	MCUSimControl.h
@@ -57,7 +60,9 @@ add_library(${PROJECT_NAME} SHARED
 	MCUSimControl.cxx
 	MCUSimObserver.cxx)
 
+# Link a target to given libraries.
 target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} MCUDataFiles McuSimCfgMgr AVR8Sim)
+
 
 # ------------------------------------------------------------------------------
 # INSTALLATION OPTIONS
