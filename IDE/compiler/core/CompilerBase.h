@@ -48,6 +48,13 @@ public:
 			m_colStart = colStart;
 			m_colEnd = colEnd;
 		}
+		SourceLocation() {
+			m_fileNumber = -1;
+			m_lineStart = -1;
+			m_lineEnd = -1;
+			m_colStart = -1;
+			m_colEnd = -1;
+		}
 
 		int m_fileNumber;
 		int m_lineStart;

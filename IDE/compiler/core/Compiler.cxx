@@ -23,5 +23,5 @@ bool Compiler::compile(const std::string & filename) {
 }
 
 void Compiler::message(const std::string & text, CompilerCore::MessageType type) {
-	std::cout << "MESSAGE: " << text << std::endl;
+	std::cout << "\033[31;1m" << text << "\033[m\n";
 }

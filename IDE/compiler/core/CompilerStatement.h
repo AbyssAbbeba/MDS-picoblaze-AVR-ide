@@ -14,9 +14,11 @@
 #ifndef COMPILERSTATEMENT_H
 #define COMPILERSTATEMENT_H
 
-#include "StatementTypes.h"
-#include "CompilerExpr.h"
 #include "CompilerBase.h"
+#include "CompilerExpr.h"
+#include "StatementTypes.h"
+
+#include <ostream>
 
 /**
  * @brief
@@ -25,22 +27,31 @@
  */
 class CompilerStatement {
 public:
-	int m_next;
-	int m_prev;
-	int m_userData;
-	int m_innerStm;
-	int m_serialNumber;
-	CompilerBase::LangId m_lang;
+	StatementTypes::StatementType m_type;
 	CompilerBase::SourceLocation m_location;
-	union StatementType {
-		StatementTypes::AsmAVR8 m_asmAVR8;
-		StatementTypes::AsmPIC8 m_asmPIC8;
-		StatementTypes::AsmMCS51 m_asmMSC51;
-	} m_type;
-	struct Args {
-		int m_argc;
-		CompilerExpr * m_argv;
-	} m_args;
+
+	int m_userData;
+	int m_serialNumber;
+
+	CompilerExpr * m_args;
+	CompilerStatement * m_prev;
+	CompilerStatement * m_next;
+	CompilerStatement * m_branch;
+
+	~CompilerStatement();
+	CompilerStatement();
+	CompilerStatement(CompilerBase::SourceLocation location, StatementTypes::StatementType type, CompilerExpr * args = NULL);
+
+	void completeDelete();
+
+	CompilerStatement * createBranch(CompilerStatement * branch);
+	CompilerStatement * first();
+	CompilerStatement * addLink(CompilerStatement * next);
+
+	std::ostream & print(std::ostream & out, int level = 0, std::string lineString = "1") const;
 };
+
+// Debugging operators
+std::ostream & operator << (std::ostream & out, const CompilerStatement * stmt);
 
 #endif // COMPILERSTATEMENT_H

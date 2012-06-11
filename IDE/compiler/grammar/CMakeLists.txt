@@ -20,17 +20,17 @@ set(CMAKE_VERBOSE_MAKEFILE OFF)
 find_package(BISON)       # Syntactic analyzer generator
 find_package(FLEX 2.5.35) # Lexical analyzer generator
 
-# For 8-bit AVR
+# Assembler for 8-bit AVR
 BISON_TARGET(avr8parser avr8parser.y avr8parser.cxx VERBOSE "avr8parser.output")
 FLEX_TARGET(avr8lexer avr8lexer.l avr8lexer.cxx)
 # ADD_FLEX_BISON_DEPENDENCY(avr8lexer avr8parser)
 
-# For 8-bit PIC
+# Assembler for 8-bit PIC
 BISON_TARGET(pic8parser pic8parser.y pic8parser.cxx VERBOSE "pic8parser.output")
 FLEX_TARGET(pic8lexer pic8lexer.l pic8lexer.cxx)
 # ADD_FLEX_BISON_DEPENDENCY(pic8lexer pic8parser)
 
-# For MCS-51
+# Assembler for MCS-51
 BISON_TARGET(mcs51parser mcs51parser.y mcs51parser.cxx VERBOSE "mcs51parser.output")
 FLEX_TARGET(mcs51lexer mcs51lexer.l mcs51lexer.cxx)
 # ADD_FLEX_BISON_DEPENDENCY(mcs51lexer mcs51parser)
@@ -39,6 +39,10 @@ FLEX_TARGET(mcs51lexer mcs51lexer.l mcs51lexer.cxx)
 # ------------------------------------------------------------------------------
 # COMPILATION OPTIONS
 # ------------------------------------------------------------------------------
+
+# Load settings specific for the Qt4 library (we use it here for i18n)
+find_package( Qt4 REQUIRED )
+include(${QT_USE_FILE})
 
 # List of preprocessor include file search directories.
 include_directories(
@@ -52,18 +56,19 @@ include_directories(
  # -std=c++0x  : Default template arguments may not be used in function templates without -std=c++0x or -std=gnu++0x.
  # -O2         : Optimization, level 2.
  # -pipe       : Use pipes rather than temporary files for communication between the various stages of compilation.
-add_definitions(-Wall -Wextra -std=c++0x -O2 -pipe)
+ # -fPIC       : Generate position-independent code (PIC) suitable for use in a shared library
+add_definitions(-Wall -Wextra -std=c++0x -O2 -pipe -fPIC)
 
 ## Add a library to the project using the specified source files,
- # in this case it will procude dynamic C++ library.
-add_library(${PROJECT_NAME} SHARED
-	# For 8-bit AVR
+ # in this case it will procude static C++ library.
+add_library(${PROJECT_NAME} STATIC
+	# Assembler for 8-bit AVR
 	${FLEX_avr8lexer_OUTPUTS}
 	${BISON_avr8parser_OUTPUTS}
-	# For 8-bit PIC
+	# Assembler for 8-bit PIC
 	${FLEX_pic8lexer_OUTPUTS}
 	${BISON_pic8parser_OUTPUTS}
-	# For MCS-51
+	# Assembler for MCS-51
 	${FLEX_mcs51lexer_OUTPUTS}
 	${BISON_mcs51parser_OUTPUTS}
 )
@@ -73,10 +78,10 @@ add_library(${PROJECT_NAME} SHARED
 set_target_properties(${PROJECT_NAME} PROPERTIES LINKER_LANGUAGE "CXX")
 
 
-# ------------------------------------------------------------------------------
-# INSTALLATION OPTIONS
-# ------------------------------------------------------------------------------
-
-install(TARGETS ${PROJECT_NAME}
-	RUNTIME DESTINATION bin
-	LIBRARY DESTINATION lib)
+# # ------------------------------------------------------------------------------
+# # INSTALLATION OPTIONS
+# # ------------------------------------------------------------------------------
+#
+# install(TARGETS ${PROJECT_NAME}
+# 	RUNTIME DESTINATION bin
+# 	LIBRARY DESTINATION lib)
