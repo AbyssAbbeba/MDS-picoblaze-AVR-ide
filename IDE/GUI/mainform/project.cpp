@@ -222,6 +222,7 @@ Project::Project(QFile *file, QMainWindow * mainWindow, ProjectMan *parent)
             connect(removeFileAct, SIGNAL(triggered()), this, SLOT(removeFile()));
             connect(prjDockWidget, SIGNAL(visibilityChanged(bool)),this,SLOT(setActive()));  
             connect(prjTreeWidget, SIGNAL(itemDoubleClicked (QTreeWidgetItem *,int)),this,SLOT(openItem()));  
+            setupSim();
         }
     }
 }
@@ -287,7 +288,7 @@ Project::Project(QString name, QString path, QMainWindow * mainWindow, QFile *fi
         connect(removeFileAct, SIGNAL(triggered()), this, SLOT(removeFile()));
         connect(prjDockWidget, SIGNAL(visibilityChanged(bool)),this,SLOT(setActive()));
         connect(prjTreeWidget, SIGNAL(itemDoubleClicked (QTreeWidgetItem *,int)),this,SLOT(openItem()));  
-        
+        setupSim();
     //}
 
 }
@@ -455,4 +456,22 @@ void Project::removeFile()
         
         
     }
+}
+
+
+
+void Project::setupSim()
+{
+        //McuSimCfgMgr::getInstance()->openConfigFile("../../simulators/MCUSim/McuSimCfgMgr/mcuspecfile.xml");
+	//m_simControlUnit = new MCUSimControl("ATmega8A");
+}
+
+void Project::start()
+{
+//	m_simControlUnit->start("AVR8_test_code.hex");
+}
+
+void Project::stop()
+{
+//	m_simControlUnit->stop();
 }

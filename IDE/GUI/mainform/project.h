@@ -33,6 +33,10 @@
 class MainForm;
 class CodeEdit;
 
+//simulation handle
+class McuMemoryView;
+class RegDisplayList;
+//class MCUSimControl;
 
 class Project;
 
@@ -81,6 +85,9 @@ class Project : public QObject
         ~Project();
 
         void addFile(QFile *file, QString path, QString name);
+        void setupSim();
+        void start();
+        void stop();
 
         QDockWidget *prjDockWidget;
         QTreeWidget *prjTreeWidget;
@@ -96,6 +103,11 @@ class Project : public QObject
         QList<QString> filePaths;
 
         int errorFlag;
+
+        //simulation handle
+        McuMemoryView *m_mcuMemoryView;
+	RegDisplayList *m_regList;
+	//MCUSimControl *m_simControlUnit;
 
     private slots:
         void setActive();

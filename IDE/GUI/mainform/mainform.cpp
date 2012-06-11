@@ -483,6 +483,7 @@ void MainForm::simulationFlowHandle()
             simulationFlowAct->setIcon(*icon_simFlow);
             simulationFlowAct->setText(tr("Stop simulation"));
             simulationStatus = true;
+            projectMan->getActive()->start();
         }
         else
         {
@@ -491,6 +492,7 @@ void MainForm::simulationFlowHandle()
             simulationFlowAct->setIcon(*icon_simFlow);
             simulationFlowAct->setText(tr("Start simulation"));
             simulationStatus = false;
+            projectMan->getActive()->stop();
         }
     }
 }
