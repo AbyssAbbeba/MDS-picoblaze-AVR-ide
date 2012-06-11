@@ -85,6 +85,6 @@ factor: NUM           { $$ = $1; }
 
 // Definition of the error reporting function used by Bison
 int pic8parser_error(YYLTYPE * yylloc, yyscan_t, CompilerParserInterface * compiler, const char * errorInfo) {
-	compiler->parserMessage(yylloc, CompilerBase::MT_ERROR, errorInfo);
+	compiler->parserMessage(compiler->toSourceLocation(yylloc), CompilerBase::MT_ERROR, errorInfo);
 	return 0;
 }

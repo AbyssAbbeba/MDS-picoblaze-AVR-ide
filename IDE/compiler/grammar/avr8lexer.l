@@ -46,7 +46,7 @@
 ";"      { return STOP; }
 <<EOF>>  { return 0; }
 [ \t\n]+ { }
-.        { yyextra->lexerMessage(yylloc, CompilerBase::MT_ERROR, "Unrecognized token!"); }
+.        { yyextra->lexerMessage(yyextra->toSourceLocation(yylloc), CompilerBase::MT_ERROR, "Unrecognized token!"); }
 
 %%
 

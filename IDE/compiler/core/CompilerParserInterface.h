@@ -14,11 +14,19 @@
 #ifndef COMPILERPARSERINTERFACE_H
 #define COMPILERPARSERINTERFACE_H
 
+// Standard headers
+#include <string>
+
 // Include basic general compiler declarations and definitions
 #include "CompilerBase.h"
 
 // Include compiler components used by parsers and/or lexers
 #include "CompilerExpr.h"
+#include "CompilerStatement.h"
+#include "StatementTypes.h"
+
+// Used for i18n only
+#include <QObject>
 
 // Make sure that the data type of locations is declared (see Bison manual for details)
 #if ! defined ( YYLTYPE ) && ! defined ( YYLTYPE_IS_DECLARED )
@@ -30,7 +38,7 @@
 	} YYLTYPE;
 	#define YYLTYPE_IS_TRIVIAL 1
 	#define YYLTYPE_IS_DECLARED 1
-#endif
+#endif // ! YYLTYPE && ! YYLTYPE_IS_DECLARED
 
 /**
  * @brief
@@ -45,7 +53,7 @@ public:
 	 * @param type: [In]
 	 * @param text: [In]
 	 */
-	virtual void parserMessage(CompilerBase::SourceLocation location, CompilerBase::MessageType type, const char * text) = 0;
+	virtual void parserMessage(CompilerBase::SourceLocation location, CompilerBase::MessageType type, const std::string & text) = 0;
 
 	/**
 	 * @brief
@@ -53,44 +61,32 @@ public:
 	 * @param type: [In]
 	 * @param text: [In]
 	 */
-	virtual void lexerMessage(CompilerBase::SourceLocation location, CompilerBase::MessageType type, const char * text) = 0;
+	virtual void lexerMessage(CompilerBase::SourceLocation location, CompilerBase::MessageType type, const std::string &  text) = 0;
 
-	/**
-	 * @brief
-	 * @param filename: [In]
-	 */
-	virtual void setFileName(const std::string & filename) = 0;
+	virtual void pushFileName(const std::string & filename) = 0;
+	virtual void popFileName() = 0;
 
-	virtual int getFileNumber() = 0;
-	virtual int getFileNumber(const std::string & filename) = 0;
+	virtual int getFileNumber() const = 0;
+	virtual int getFileNumber(const std::string & filename) const = 0;
+
+	virtual void syntaxAnalysisComplete(CompilerStatement * codeTree) = 0;
 
 
 	// ---------------------------------------------------------------------
-	// Overloaded inline methods specific for Bison and Flex
+	// Methods specific for Bison and Flex
 	// ---------------------------------------------------------------------
 
-	void parserMessage(YYLTYPE * yylloc, CompilerBase::MessageType type, const char * text) {
-		parserMessage (
-			CompilerBase::SourceLocation (
-				getFileNumber(),
-				yylloc->first_line,
-				yylloc->last_line,
-				yylloc->first_column,
-				yylloc->last_column ),
-			type,
-			text );
+	CompilerBase::SourceLocation toSourceLocation(const YYLTYPE & yylloc) const {
+		return toSourceLocation(&yylloc);
 	}
 
-	void lexerMessage(YYLTYPE * yylloc, CompilerBase::MessageType type, const char * text) {
-		lexerMessage (
-			CompilerBase::SourceLocation (
-				getFileNumber(),
-				yylloc->first_line,
-				yylloc->last_line,
-				yylloc->first_column,
-				yylloc->last_column ),
-			type,
-			text );
+	CompilerBase::SourceLocation toSourceLocation(const YYLTYPE * yylloc) const {
+		return CompilerBase::SourceLocation (
+			getFileNumber(),
+			yylloc->first_line,
+			yylloc->last_line,
+			yylloc->first_column,
+			yylloc->last_column );
 	}
 };
 

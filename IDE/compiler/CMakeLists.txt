@@ -28,6 +28,10 @@ add_subdirectory(core)
 # COMPILATION OPTIONS
 # ------------------------------------------------------------------------------
 
+# Load settings specific for the Qt4 library (we use it here for i18n)
+find_package( Qt4 REQUIRED )
+include(${QT_USE_FILE})
+
 # List of preprocessor include file search directories.
 include_directories(
 	"${CMAKE_CURRENT_BINARY_DIR}/core"

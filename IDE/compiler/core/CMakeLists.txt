@@ -43,6 +43,8 @@ add_definitions(-Wall -Wextra -std=c++0x -O2 -pipe)
  # in this case it will procude dynamic C++ library.
 add_library(${PROJECT_NAME} SHARED
 	CompilerExpr.cxx
+	CompilerStatement.cxx
+	StatementTypes.cxx
 	CompilerCore.cxx
 	Compiler.cxx
 )
