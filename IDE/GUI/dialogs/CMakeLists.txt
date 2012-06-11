@@ -5,7 +5,7 @@
 # ------------------------------------------------------------------------------
 
 # Set project name
-project(Widgets)
+project(Dialogs)
 
 # Set the minimum required version of CMake
 cmake_minimum_required(VERSION 2.8)
@@ -17,24 +17,13 @@ set(CMAKE_VERBOSE_MAKEFILE OFF)
 # here we define SAMPLE_SRCS variable that contains a list of all .cpp files 
 # note that we don't need \ at the end of line
 SET( SAMPLE_SRCS
-       ./codeedit.cpp
-       ./wdockmanager.cpp
-       ./hexedit.cpp
-       ./wlinecounter.cpp
-       ./wcolumncounter.cpp
-       ./movgridlayout.cpp
-       ./wsimulationinfo.cpp
+       ./projectdlg.cpp
+       ./errordlg.cpp
 )
   
 # another list, this time it includes all header files that should be treated with moc
 SET( SAMPLE_MOC_HDRS
-       ./codeedit.h    
-       ./wdockmanager.h 
-       ./hexedit.h
-       ./wlinecounter.h
-       ./wcolumncounter.h 
-       ./movgridlayout.h
-       ./wsimulationinfo.h
+       ./projectdlg.h
 )
 
 
@@ -78,11 +67,3 @@ add_library(${PROJECT_NAME} SHARED
 	${SAMPLE_MOC_SRCS} ${SAMPLE_SRCS})
 
 #target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} SimControl)
-
-
-# ------------------------------------------------------------------------------
-# BUILD COMPONENTS IN THE SUBDIRECTORIES
-# ------------------------------------------------------------------------------
-
-# Build the simulator widgets
-add_subdirectory(sim)
