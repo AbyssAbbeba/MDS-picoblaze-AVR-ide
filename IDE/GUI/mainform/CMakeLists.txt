@@ -19,6 +19,9 @@ set(CMAKE_VERBOSE_MAKEFILE OFF)
 SET( SAMPLE_SRCS
        ./mainform.cpp
        ./project.cpp
+#       ../dialogs/errordlg.cpp
+#       ../dialogs/projectdlg.cpp
+#       ../widgets/codeedit.cpp
 )
   
 # another list, this time it includes all header files that should be treated with moc
@@ -39,12 +42,15 @@ find_package(Qt4 REQUIRED)
 set(QT_USE_QTXML 1)
 include(${QT_USE_FILE})
 
-#include_directories(
-#	"${CMAKE_CURRENT_BINARY_DIR}/../../../simulators/MCUSim/")
+include_directories(
+	"${CMAKE_CURRENT_BINARY_DIR}/../simulators/MCUSim/McuSimCfgMgr/"
+	"${CMAKE_CURRENT_BINARY_DIR}/../simulators/SimControl/"
+	"../widgets/"
+        "../dialogs/")
 
 # <DEBUG!>
 #link_directories(
-#	"${CMAKE_CURRENT_BINARY_DIR}/../../../utilities/MCUDataFiles/")
+#	"../widgets/")
 #include_directories(
 #	"${CMAKE_CURRENT_BINARY_DIR}/.."
 #	"${CMAKE_CURRENT_BINARY_DIR}/../../../simulators/MCUSim/")
@@ -66,4 +72,4 @@ QT4_WRAP_CPP( SAMPLE_MOC_SRCS ${SAMPLE_MOC_HDRS} )
 add_library(${PROJECT_NAME} SHARED
 	${SAMPLE_MOC_SRCS} ${SAMPLE_SRCS})
 
-#target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} SimControl)
+target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} Widgets Dialogs McuSimCfgMgr SimControl)

@@ -36,7 +36,8 @@ class CodeEdit;
 //simulation handle
 class McuMemoryView;
 class RegDisplayList;
-//class MCUSimControl;
+class MCUSimControl;
+class McuSimCfgMgr;
 
 class Project;
 
@@ -107,7 +108,7 @@ class Project : public QObject
         //simulation handle
         McuMemoryView *m_mcuMemoryView;
 	RegDisplayList *m_regList;
-	//MCUSimControl *m_simControlUnit;
+	MCUSimControl *m_simControlUnit;
 
     private slots:
         void setActive();
