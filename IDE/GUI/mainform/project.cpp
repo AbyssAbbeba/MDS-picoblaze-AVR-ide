@@ -468,10 +468,11 @@ void Project::setupSim()
 
 void Project::start()
 {
-//	m_simControlUnit->start("AVR8_test_code.hex");
+        //QString path = mainFilePath + "/make/" + mainFileName + ".hex";
+	//m_simControlUnit->start("test.hex");
 }
 
 void Project::stop()
 {
-//	m_simControlUnit->stop();
+	//m_simControlUnit->stop();
 }

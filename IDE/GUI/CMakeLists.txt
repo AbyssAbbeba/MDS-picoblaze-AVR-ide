@@ -75,17 +75,13 @@
   INCLUDE_DIRECTORIES( ${CMAKE_BINARY_DIR} )
 
 link_directories(
-	"${CMAKE_CURRENT_BINARY_DIR}/../simulators/MCUSim/McuSimCfgMgr/"
-	"${CMAKE_CURRENT_BINARY_DIR}/../simulators/SimControl/"
-	"${CMAKE_CURRENT_BINARY_DIR}/widgets/"
-	"${CMAKE_CURRENT_BINARY_DIR}/dialogs/"
+#	"${CMAKE_CURRENT_BINARY_DIR}/../simulators/MCUSim/McuSimCfgMgr/"
+#	"${CMAKE_CURRENT_BINARY_DIR}/../simulators/SimControl/"
 	"${CMAKE_CURRENT_BINARY_DIR}/mainform/")
 
 include_directories(
-	"${CMAKE_CURRENT_BINARY_DIR}/../simulators/MCUSim/McuSimCfgMgr/"
-	"${CMAKE_CURRENT_BINARY_DIR}/../simulators/SimControl/"
-	"${CMAKE_CURRENT_BINARY_DIR}/widgets/"
-	"${CMAKE_CURRENT_BINARY_DIR}/dialogs/"
+#	"${CMAKE_CURRENT_BINARY_DIR}/../simulators/MCUSim/McuSimCfgMgr/"
+#	"${CMAKE_CURRENT_BINARY_DIR}/../simulators/SimControl/"
 	"${CMAKE_CURRENT_BINARY_DIR}/mainform/")
   
   # here we instruct CMake to build "mmIDE" executable from all of the source files
@@ -93,7 +89,7 @@ include_directories(
   
   # last thing we have to do is to tell CMake what libraries our executable needs,
   # luckily FIND_PACKAGE prepared QT_LIBRARIES variable for us:
-  TARGET_LINK_LIBRARIES( mmIDE ${QT_LIBRARIES} McuSimCfgMgr SimControl Widgets Dialogs Mainform)
+  TARGET_LINK_LIBRARIES( mmIDE ${QT_LIBRARIES} Mainform)
 
 
 # ------------------------------------------------------------------------------
