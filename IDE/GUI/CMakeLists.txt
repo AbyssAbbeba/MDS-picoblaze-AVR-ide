@@ -6,31 +6,31 @@
   # note that we don't need \ at the end of line
   SET( SAMPLE_SRCS
        ./main.cpp
-       ./mainform/mainform.cpp
-       ./mainform/project.cpp
-       ./dialogs/projectdlg.cpp
-       ./dialogs/errordlg.cpp
-       ./widgets/codeedit.cpp
-       ./widgets/wdockmanager.cpp
-       ./widgets/hexedit.cpp
-       ./widgets/wlinecounter.cpp
-       ./widgets/wcolumncounter.cpp
-       ./widgets/movgridlayout.cpp
-       ./widgets/wsimulationinfo.cpp
+#       ./mainform/mainform.cpp
+#       ./mainform/project.cpp
+#       ./dialogs/projectdlg.cpp
+#       ./dialogs/errordlg.cpp
+#       ./widgets/codeedit.cpp
+#       ./widgets/wdockmanager.cpp
+#       ./widgets/hexedit.cpp
+#       ./widgets/wlinecounter.cpp
+#       ./widgets/wcolumncounter.cpp
+#       ./widgets/movgridlayout.cpp
+#       ./widgets/wsimulationinfo.cpp
   )
   
   # another list, this time it includes all header files that should be treated with moc
   SET( SAMPLE_MOC_HDRS
-       ./mainform/mainform.h
-       ./mainform/project.h
-       ./dialogs/projectdlg.h
-       ./widgets/codeedit.h    
-       ./widgets/wdockmanager.h 
-       ./widgets/hexedit.h
-       ./widgets/wlinecounter.h
-       ./widgets/wcolumncounter.h 
-       ./widgets/movgridlayout.h
-       ./widgets/wsimulationinfo.h
+#       ./mainform/mainform.h
+#       ./mainform/project.h
+#       ./dialogs/projectdlg.h
+#       ./widgets/codeedit.h    
+#       ./widgets/wdockmanager.h 
+#       ./widgets/hexedit.h
+#       ./widgets/wlinecounter.h
+#       ./widgets/wcolumncounter.h 
+#       ./widgets/movgridlayout.h
+#       ./widgets/wsimulationinfo.h
   )
   
   # some .ui files
@@ -73,13 +73,23 @@
   # we need this to be able to include headers produced by uic in our code
   # (CMAKE_BINARY_DIR holds a path to the build directory, while INCLUDE_DIRECTORIES() works just like INCLUDEPATH from qmake)
   INCLUDE_DIRECTORIES( ${CMAKE_BINARY_DIR} )
+
+link_directories(
+#	"${CMAKE_CURRENT_BINARY_DIR}/../simulators/MCUSim/McuSimCfgMgr/"
+#	"${CMAKE_CURRENT_BINARY_DIR}/../simulators/SimControl/"
+	"${CMAKE_CURRENT_BINARY_DIR}/mainform/")
+
+include_directories(
+#	"${CMAKE_CURRENT_BINARY_DIR}/../simulators/MCUSim/McuSimCfgMgr/"
+#	"${CMAKE_CURRENT_BINARY_DIR}/../simulators/SimControl/"
+	"${CMAKE_CURRENT_BINARY_DIR}/mainform/")
   
   # here we instruct CMake to build "mmIDE" executable from all of the source files
   ADD_EXECUTABLE( mmIDE ${SAMPLE_SRCS} ${SAMPLE_MOC_SRCS} ${SAMPLE_RC_SRCS} ${SAMPLE_UI_HDRS} )
   
   # last thing we have to do is to tell CMake what libraries our executable needs,
   # luckily FIND_PACKAGE prepared QT_LIBRARIES variable for us:
-  TARGET_LINK_LIBRARIES( mmIDE ${QT_LIBRARIES} )
+  TARGET_LINK_LIBRARIES( mmIDE ${QT_LIBRARIES} Mainform)
 
 
 # ------------------------------------------------------------------------------
@@ -88,6 +98,8 @@
 
 # Build the widgets
 add_subdirectory(widgets)
+add_subdirectory(dialogs)
+add_subdirectory(mainform)
 
 
 # ------------------------------------------------------------------------------
