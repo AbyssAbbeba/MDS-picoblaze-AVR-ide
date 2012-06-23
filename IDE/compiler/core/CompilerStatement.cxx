@@ -43,6 +43,9 @@ CompilerStatement::CompilerStatement(CompilerBase::SourceLocation location, Stat
 }
 
 CompilerStatement * CompilerStatement::createBranch(CompilerStatement * branch) {
+	if ( NULL == this ) {
+		return NULL;
+	}
 	if ( NULL == branch ) {
 		return this;
 	}
@@ -52,6 +55,9 @@ CompilerStatement * CompilerStatement::createBranch(CompilerStatement * branch) 
 }
 
 CompilerStatement * CompilerStatement::first() {
+	if ( NULL == this ) {
+		return NULL;
+	}
 	CompilerStatement * stmt = this;
 	while ( NULL != stmt->m_prev ) {
 		stmt = stmt->m_prev;
@@ -62,6 +68,9 @@ CompilerStatement * CompilerStatement::first() {
 CompilerStatement * CompilerStatement::addLink(CompilerStatement * next) {
 	if ( NULL == next ) {
 		return this;
+	}
+	if ( NULL == this ) {
+		return next;
 	}
 
 	next = next->first();
@@ -76,7 +85,30 @@ CompilerStatement * CompilerStatement::addLink(CompilerStatement * next) {
 	return next;
 }
 
+CompilerStatement * CompilerStatement::addArgsLink(CompilerExpr * chainLink) {
+	if ( NULL == this ) {
+		return NULL;
+	}
+	if ( NULL == chainLink ) {
+		return this;
+	}
+
+	if ( NULL == m_args ) {
+		m_args = chainLink;
+	} else {
+		m_args->addLink(chainLink);
+	}
+	return this;
+}
+
+void CompilerStatement::completeDelete(CompilerStatement * stmt) {
+	stmt->completeDelete();
+}
+
 void CompilerStatement::completeDelete() {
+	if ( NULL == this ) {
+		return;
+	}
 	if ( NULL != m_args ) {
 		m_args->completeDelete();
 	}
@@ -84,12 +116,21 @@ void CompilerStatement::completeDelete() {
 		m_branch->completeDelete();
 	}
 	if ( NULL != m_next ) {
+		m_next->m_prev = NULL;
 		m_next->completeDelete();
+	}
+	if ( NULL != m_prev ) {
+		m_prev->m_next = NULL;
+		m_prev->completeDelete();
 	}
 	delete this;
 }
 
 std::ostream & CompilerStatement::print(std::ostream & out, int level, std::string lineString) const {
+	if ( NULL == this ) {
+		out << "<ERROR:NULL!>";
+		return out;
+	}
 	for ( int i = 0; i < level; i++ ) {
 		if ( '0' == lineString[i] ) {
 			out << "    ";
@@ -100,7 +141,7 @@ std::ostream & CompilerStatement::print(std::ostream & out, int level, std::stri
 	if ( NULL == m_prev ) {
 		if ( NULL == m_next ) {
 			lineString[level] = '0';
-		} 
+		}
 		out << "  █─ ";
 	} else {
 		if ( NULL == m_next ) {
@@ -132,6 +173,5 @@ std::ostream & CompilerStatement::print(std::ostream & out, int level, std::stri
 }
 
 std::ostream & operator << (std::ostream & out, const CompilerStatement * stmt) {
-// 	out << "  ▄ \n";
 	return stmt->print(out);
 }

@@ -16,6 +16,8 @@
 
 // Standard headers
 #include <string>
+#include <vector>
+#include <cstdio>
 
 // Include basic general compiler declarations and definitions
 #include "CompilerBase.h"
@@ -47,6 +49,10 @@
  */
 class CompilerParserInterface {
 public:
+	CompilerParserInterface() {
+		m_strMaxSize = 0;
+	}
+
 	/**
 	 * @brief
 	 * @param location: [In]
@@ -63,7 +69,8 @@ public:
 	 */
 	virtual void lexerMessage(CompilerBase::SourceLocation location, CompilerBase::MessageType type, const std::string &  text) = 0;
 
-	virtual void pushFileName(const std::string & filename) = 0;
+	virtual FILE * fileOpen(const std::string & filename, bool acyclic = true) = 0;
+	virtual bool pushFileName(const std::string & filename) = 0;
 	virtual void popFileName() = 0;
 
 	virtual int getFileNumber() const = 0;
@@ -71,10 +78,15 @@ public:
 
 	virtual void syntaxAnalysisComplete(CompilerStatement * codeTree) = 0;
 
+	// ---------------------------------------------------------------------
+	// Methods and attributes specific for Bison and Flex
+	// ---------------------------------------------------------------------
 
-	// ---------------------------------------------------------------------
-	// Methods specific for Bison and Flex
-	// ---------------------------------------------------------------------
+	/// Size of the string buffer, used for scanning strings and character literals.
+	int m_strMaxSize;
+
+	/// Stack to keep track of locations across multiple input buffers
+	std::vector<YYLTYPE> m_yyllocStack;
 
 	CompilerBase::SourceLocation toSourceLocation(const YYLTYPE & yylloc) const {
 		return toSourceLocation(&yylloc);
@@ -87,6 +99,18 @@ public:
 			yylloc->last_line,
 			yylloc->first_column,
 			yylloc->last_column );
+	}
+
+	void parserMessage(const YYLTYPE & yylloc, CompilerBase::MessageType type, const std::string & text) {
+		parserMessage(toSourceLocation(yylloc), type, text);
+	}
+	void lexerMessage(const YYLTYPE * yylloc, CompilerBase::MessageType type, const std::string & text) {
+		lexerMessage(toSourceLocation(yylloc), type, text);
+	}
+
+protected:
+	void resetCompilerParserInterface() {
+		m_yyllocStack.clear();
 	}
 };
 

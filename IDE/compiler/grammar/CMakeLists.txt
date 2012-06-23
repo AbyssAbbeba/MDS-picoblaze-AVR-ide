@@ -35,6 +35,12 @@ BISON_TARGET(mcs51parser mcs51parser.y mcs51parser.cxx VERBOSE "mcs51parser.outp
 FLEX_TARGET(mcs51lexer mcs51lexer.l mcs51lexer.cxx)
 # ADD_FLEX_BISON_DEPENDENCY(mcs51lexer mcs51parser)
 
+# List of additional files that will be cleaned as a part of the "make clean" stage.
+set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES "
+	mcs51lexer.cxx	mcs51lexer.h	mcs51parser.cxx	mcs51parser.h	mcs51parser.output
+	pic8lexer.cxx	pic8lexer.h	pic8parser.cxx	pic8parser.h	pic8parser.output
+	avr8lexer.cxx	avr8lexer.h	avr8parser.cxx	avr8parser.h	avr8parser.output
+")
 
 # ------------------------------------------------------------------------------
 # COMPILATION OPTIONS
@@ -52,16 +58,16 @@ include_directories(
 
 ## Add switches to compiler command line
  # -Wall       : Enables all the warnings.
- # -Wextra     : Enables some extra warning flags that are not enabled by -Wall.
  # -std=c++0x  : Default template arguments may not be used in function templates without -std=c++0x or -std=gnu++0x.
  # -O2         : Optimization, level 2.
  # -pipe       : Use pipes rather than temporary files for communication between the various stages of compilation.
  # -fPIC       : Generate position-independent code (PIC) suitable for use in a shared library
-add_definitions(-Wall -Wextra -std=c++0x -O2 -pipe -fPIC)
+add_definitions(-Wall -std=c++0x -O2 -pipe -fPIC)
 
 ## Add a library to the project using the specified source files,
  # in this case it will procude static C++ library.
 add_library(${PROJECT_NAME} STATIC
+	LexerUtils.cxx
 	# Assembler for 8-bit AVR
 	${FLEX_avr8lexer_OUTPUTS}
 	${BISON_avr8parser_OUTPUTS}

@@ -22,7 +22,6 @@
 // Standard header files
 #include <string>
 #include <vector>
-#include <stack>
 
 // Other header files
 #include "CompilerStatement.h"
@@ -38,16 +37,20 @@ public:
 	CompilerCore();
 	~CompilerCore();
 
+protected:
+	bool parseSourceFile(TargetArch arch, const std::string & filename);
+	virtual void message(const std::string & text, MessageType type = MT_GENERAL) = 0;
+
+private:
 	/// @name Interface for syntax and/or lexical analyzer
 	//@{
 	void parserMessage(SourceLocation location, MessageType type, const std::string & text);
 	void lexerMessage(SourceLocation location, MessageType type, const std::string & text);
-	void pushFileName(const std::string & filename);
+	FILE * fileOpen(const std::string & filename, bool acyclic = true);
+	bool pushFileName(const std::string & filename);
 	void popFileName();
 	int getFileNumber() const;
 	int getFileNumber(const std::string & filename) const;
-
-
 	void syntaxAnalysisComplete(CompilerStatement * codeTree);
 	//@}
 
@@ -56,23 +59,16 @@ public:
 	void setFileName(const std::string & filename);
 	//@}
 
-protected:
+	inline void resetCompilerCore();
+
 	CompilerStatement * m_rootStatement;
 
-// 	bool m_openBranch;
-// 	int m_statementSerialNum;
-// 	CompilerStatement * m_currentStatement;
-// 	std::stack<CompilerStatement*> m_stackOfBanches;
-
-	std::stack<std::string> m_fileNameStack;
+	std::vector<std::string> m_fileNameStack;
 	std::vector<std::string> m_fileNames;
 	std::string m_filename;
 	int m_fileNumber;
 
 	bool m_success;
-
-	bool parseSourceFile(TargetArch arch, const std::string & filename);
-	virtual void message(const std::string & text, MessageType type = MT_GENERAL) = 0;
 };
 
 #endif // COMPILERCORE_H

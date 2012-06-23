@@ -725,8 +725,8 @@ inline int AVR8InstructionSet::inst_SBIW_Rd_1_Rd_K(const unsigned int opCode) {
 
 	// Write results
 	m_dataMemory->writeFast(AVR8RegNames::SREG, sreg);	// Rd high byte
-	m_dataMemory->write(addrRd, (valRd));		// Rd low byte
-	m_dataMemory->write(++addrRd, (valRd));		// Rd high byte
+	m_dataMemory->write(addrRd, (valRd));			// Rd low byte
+	m_dataMemory->write(++addrRd, (valRd));			// Rd high byte
 
 	// This takes two cycles to execute
 	return 2;
