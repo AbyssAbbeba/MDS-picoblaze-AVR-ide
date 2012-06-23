@@ -23,5 +23,18 @@ bool Compiler::compile(const std::string & filename) {
 }
 
 void Compiler::message(const std::string & text, CompilerCore::MessageType type) {
-	std::cout << "\033[31;1m" << text << "\033[m\n";
+	switch ( type ) {
+		case CompilerBase::MT_GENERAL:
+			std::cout << "\033[34;1m" << text << "\033[m\n";
+			break;
+		case CompilerBase::MT_ERROR:
+			std::cout << "\033[31;1m" << text << "\033[m\n";
+			break;
+		case CompilerBase::MT_WARNING:
+			std::cout << "\033[33;1m" << text << "\033[m\n";
+			break;
+		case CompilerBase::MT_REMARK:
+			std::cout << "\033[32;1m" << text << "\033[m\n";
+			break;
+	}
 }

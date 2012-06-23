@@ -43,15 +43,17 @@ public:
 	CompilerStatement(CompilerBase::SourceLocation location, StatementTypes::StatementType type, CompilerExpr * args = NULL);
 
 	void completeDelete();
+	static void completeDelete(CompilerStatement * stmt);
 
 	CompilerStatement * createBranch(CompilerStatement * branch);
 	CompilerStatement * first();
 	CompilerStatement * addLink(CompilerStatement * next);
+	CompilerStatement * addArgsLink(CompilerExpr * chainLink);
 
 	std::ostream & print(std::ostream & out, int level = 0, std::string lineString = "1") const;
 };
 
-// Debugging operators
+// Tracing operator
 std::ostream & operator << (std::ostream & out, const CompilerStatement * stmt);
 
 #endif // COMPILERSTATEMENT_H

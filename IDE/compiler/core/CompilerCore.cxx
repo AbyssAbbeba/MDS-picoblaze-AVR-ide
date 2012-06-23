@@ -19,6 +19,8 @@
 #include <QObject> // Used for i18n only
 
 CompilerCore::CompilerCore() {
+	m_rootStatement = NULL;
+	m_fileNumber = -1;
 }
 
 CompilerCore::~CompilerCore() {
@@ -28,13 +30,10 @@ CompilerCore::~CompilerCore() {
 }
 
 bool CompilerCore::parseSourceFile(CompilerCore::TargetArch arch, const std::string & filename) {
-	m_success = true;
-	m_rootStatement = NULL;
+	resetCompilerCore();
 
-	FILE * sourceFile = fopen(filename.c_str(), "r");
+	FILE * sourceFile = fileOpen(filename.c_str());
 	yyscan_t yyscanner; // Pointer to the lexer context
-
-	setFileName(filename);
 
 	if ( NULL == sourceFile ) {
 		message(QObject::tr("Unable to open: ").toStdString() + m_filename, MT_ERROR);
@@ -69,25 +68,32 @@ bool CompilerCore::parseSourceFile(CompilerCore::TargetArch arch, const std::str
 void CompilerCore::parserMessage(SourceLocation location, MessageType type, const std::string & text) {
 	std::stringstream msgText;
 
-	msgText	<< QObject::tr("Syntax error in ").toStdString()
-		<< m_filename << ":"
-		<< location.m_lineStart << ":"
-		<< location.m_colStart << ": "
-		<< text;
+	std::string msgType;
+	switch ( type ) {
+		case MT_GENERAL: break;
+		case MT_ERROR:   msgType = QObject::tr("error: ").toStdString(); break;
+		case MT_WARNING: msgType = QObject::tr("warning: ").toStdString(); break;
+		case MT_REMARK:  msgType = QObject::tr("remark: ").toStdString(); break;
+	}
 
+	msgText << m_filename;
+	if ( location.m_lineStart > 0 ) {
+		msgText << ":" << location.m_lineStart << "." << location.m_colStart;
+		if ( location.m_lineStart == location.m_lineEnd ) {
+			if ( location.m_colStart != location.m_colEnd ) {
+				msgText << "-" << location.m_colEnd;
+			}
+		} else {
+			msgText << "-" << location.m_lineEnd << "." << location.m_colEnd;
+		}
+	}
+
+	msgText << ": " << msgType << text << ".";
 	message(msgText.str(), type);
 }
 
 void CompilerCore::lexerMessage(SourceLocation location, MessageType type, const std::string & text) {
-	std::stringstream msgText;
-
-	msgText	<< QObject::tr("Lexical error in ").toStdString()
-		<< m_filename << ":"
-		<< location.m_lineStart << ":"
-		<< location.m_colStart << ": "
-		<< text;
-
-	message(msgText.str(), type);
+	parserMessage(location, type, text);
 }
 
 void CompilerCore::setFileName(const std::string & filename) {
@@ -102,13 +108,50 @@ void CompilerCore::setFileName(const std::string & filename) {
 	}
 }
 
-void CompilerCore::pushFileName(const std::string & filename) {
+inline void CompilerCore::resetCompilerCore() {
+	m_success = true;
+	if ( NULL != m_rootStatement ) {
+		delete m_rootStatement;
+		m_rootStatement = NULL;
+	}
+
+	m_fileNameStack.clear();
+	m_fileNames.clear();
+	m_filename.clear();
+
+	resetCompilerParserInterface();
+}
+FILE * CompilerCore::fileOpen(const std::string & filename, bool acyclic) {
+	if ( true == acyclic ) {
+		for (	std::vector<std::string>::const_iterator it = m_fileNameStack.begin();
+			it != m_fileNameStack.end();
+			++it )
+		{
+			if ( filename == *it ) {
+				message(QObject::tr("File %1 is already opened! You might have an \"include\" loop in your code.").toStdString(), MT_ERROR);
+				return NULL;
+			}
+		}
+	}
+	if ( false == pushFileName(filename) ) {
+		return NULL;
+	}
+	return fopen(filename.c_str(), "r");
+}
+
+bool CompilerCore::pushFileName(const std::string & filename) {
+	if ( m_fileNameStack.size() >= 10 /* TODO: replace this with some variable */ ) {
+		return false;
+	}
+
 	setFileName(filename);
-	m_fileNameStack.push(filename);
+	m_fileNameStack.push_back(filename);
+
+	return true;
 }
 void CompilerCore::popFileName() {
-	setFileName(m_fileNameStack.top());
-	m_fileNameStack.pop();
+	setFileName(m_fileNameStack.back());
+	m_fileNameStack.pop_back();
 }
 
 int CompilerCore::getFileNumber() const {
@@ -126,10 +169,14 @@ int CompilerCore::getFileNumber(const std::string & filename) const {
 }
 
 void CompilerCore::syntaxAnalysisComplete(CompilerStatement * codeTree) {
+	std::cout << ">>> syntaxAnalysisComplete:\n";
+
+	if ( NULL != m_rootStatement ) {
+		m_rootStatement->completeDelete();
+	}
 	m_rootStatement = codeTree;
 	if ( NULL != m_rootStatement ) {
 		m_rootStatement = m_rootStatement->first();
 	}
-
 	std::cout << m_rootStatement;
 }

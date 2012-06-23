@@ -54,20 +54,40 @@ public:
 		Value(double value);
 		Value(CompilerExpr * expr);
 		Value(const char * string);
-		Value(const unsigned char * array, unsigned int size);
-		Value(unsigned char * array, unsigned int size, bool copy = false);
+		Value(const unsigned char * array, int size);
+		Value(unsigned char * array, int size, bool copy = false);
 
 		void completeDelete();
 	};
 
+	/**
+	 *
+	 */
 	enum Operator {
-		OPER_NONE = 0, ///< Makes only the m_lValue valid.
-		OPER_ADD = '+',
-		OPER_SUB = '-',
-		OPER_MULT = '*',
-		OPER_DIV = '/',
-		OPER_DOT = '.',
-		OPER_CALL = 'C'
+		OPER_NONE	= 0,	///< This makes only the m_lValue valid.
+		OPER_ADD	= L'+',	///<
+		OPER_SUB	= L'-',	///<
+		OPER_MULT	= L'*',	///<
+		OPER_DIV	= L'/',	///<
+		OPER_MOD	= L'%',	///<
+		OPER_DOT	= L'.',	///<
+		OPER_CALL	= L'C',	///<
+		OPER_BOR	= L'|',	///< Bitwise OR
+		OPER_BXOR	= L'^',	///< Bitwise XOR
+		OPER_BAND	= L'&',	///< Bitwise AND
+		OPER_LOR	= L'⋁',	///< Logical OR
+		OPER_LXOR	= L'⊕',	///< Logical XOR
+		OPER_LAND	= L'⋀',	///< Logical AND
+		OPER_LOW	= L'l',	///<
+		OPER_HIGH	= L'h',	///<
+		OPER_EQ		= L'≡',	///<
+		OPER_NE		= L'≠',	///<
+		OPER_LT		= L'<',	///<
+		OPER_LE		= L'≤',	///<
+		OPER_GE		= L'≥',	///<
+		OPER_GT		= L'>',	///<
+		OPER_SHR	= L'≫',	///<
+		OPER_SHL	= L'≪'	///<
 	} m_operator;
 
 	Value m_lValue;
@@ -78,15 +98,18 @@ public:
 
 	CompilerExpr();
 	CompilerExpr(Value value);
+	CompilerExpr(Operator oper, Value value);
 	CompilerExpr(Value lValue, Operator oper, Value rValue);
 	CompilerExpr(Value lValue, char oper, Value rValue);
 
 	CompilerExpr * first();
 	CompilerExpr * addLink(CompilerExpr * next);
+	
 	void completeDelete();
+	static void completeDelete(CompilerExpr * expr);
 };
 
-// Debugging operators
+// Tracing operators
 std::ostream & operator << (std::ostream & out, const CompilerExpr::Value & val);
 std::ostream & operator << (std::ostream & out, const CompilerExpr::Operator & opr);
 std::ostream & operator << (std::ostream & out, const CompilerExpr * expr);
