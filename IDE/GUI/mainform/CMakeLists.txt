@@ -5,7 +5,7 @@
 # ------------------------------------------------------------------------------
 
 # Set project name
-project(Widgets)
+project(Mainform)
 
 # Set the minimum required version of CMake
 cmake_minimum_required(VERSION 2.8)
@@ -17,24 +17,17 @@ set(CMAKE_VERBOSE_MAKEFILE OFF)
 # here we define SAMPLE_SRCS variable that contains a list of all .cpp files 
 # note that we don't need \ at the end of line
 SET( SAMPLE_SRCS
-       ./codeedit.cpp
-       ./wdockmanager.cpp
-       ./hexedit.cpp
-       ./wlinecounter.cpp
-       ./wcolumncounter.cpp
-       ./movgridlayout.cpp
-       ./wsimulationinfo.cpp
+       ./mainform.cpp
+       ./project.cpp
+#       ../dialogs/errordlg.cpp
+#       ../dialogs/projectdlg.cpp
+#       ../widgets/codeedit.cpp
 )
   
 # another list, this time it includes all header files that should be treated with moc
 SET( SAMPLE_MOC_HDRS
-       ./codeedit.h    
-       ./wdockmanager.h 
-       ./hexedit.h
-       ./wlinecounter.h
-       ./wcolumncounter.h 
-       ./movgridlayout.h
-       ./wsimulationinfo.h
+       ./mainform.h
+       ./project.h
 )
 
 
@@ -49,12 +42,15 @@ find_package(Qt4 REQUIRED)
 set(QT_USE_QTXML 1)
 include(${QT_USE_FILE})
 
-#include_directories(
-#	"${CMAKE_CURRENT_BINARY_DIR}/../../../simulators/MCUSim/")
+include_directories(
+	"${CMAKE_CURRENT_BINARY_DIR}/../simulators/MCUSim/McuSimCfgMgr/"
+	"${CMAKE_CURRENT_BINARY_DIR}/../simulators/SimControl/"
+	"../widgets/"
+        "../dialogs/")
 
 # <DEBUG!>
 #link_directories(
-#	"${CMAKE_CURRENT_BINARY_DIR}/../../../utilities/MCUDataFiles/")
+#	"../widgets/")
 #include_directories(
 #	"${CMAKE_CURRENT_BINARY_DIR}/.."
 #	"${CMAKE_CURRENT_BINARY_DIR}/../../../simulators/MCUSim/")
@@ -68,7 +64,6 @@ include(${QT_USE_FILE})
  # -pipe       : Use pipes rather than temporary files for communication between the various stages of compilation.
 add_definitions(-Wall -Wextra -std=c++0x -O2 -pipe)
 
-
 # and finally this will run moc:
 QT4_WRAP_CPP( SAMPLE_MOC_SRCS ${SAMPLE_MOC_HDRS} )
 
@@ -77,12 +72,4 @@ QT4_WRAP_CPP( SAMPLE_MOC_SRCS ${SAMPLE_MOC_HDRS} )
 add_library(${PROJECT_NAME} SHARED
 	${SAMPLE_MOC_SRCS} ${SAMPLE_SRCS})
 
-#target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} SimControl)
-
-
-# ------------------------------------------------------------------------------
-# BUILD COMPONENTS IN THE SUBDIRECTORIES
-# ------------------------------------------------------------------------------
-
-# Build the simulator widgets
-add_subdirectory(sim)
+target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} Widgets Dialogs McuSimCfgMgr SimControl)
