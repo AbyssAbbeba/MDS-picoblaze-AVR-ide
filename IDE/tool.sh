@@ -49,12 +49,14 @@ function clean() {
 
 function countLines() {
 	local -r tempFile=$(mktemp)
-
 	
 	find -type f -name '*.cxx' >> "$tempFile"
 	find -type f -name '*.cpp' >> "$tempFile"
 	find -type f -name '*.c' >> "$tempFile"
 	find -type f -name '*.h' >> "$tempFile"
+	find -type f -name '*.l' >> "$tempFile"
+	find -type f -name '*.y' >> "$tempFile"
+	find -type f -name 'CMakeLists.txt' >> "$tempFile"
 
 	sort "$tempFile" | while read f; do
 		wc -lc "$f"
@@ -64,7 +66,7 @@ function countLines() {
 			c=0
 		}
 		END {
-			printf("\nIn total:\n%8d lines,\n%8d bytes.\n", l, c)
+			printf("\nIn total:\n%8d lines,\n%8.2f megabytes.\n", l, c/(1024*1024))
 		}
 		{
 			l+=$1

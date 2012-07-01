@@ -12,29 +12,15 @@
 
 #include "Compiler.h"
 
-Compiler::Compiler() {
-}
+#include "CompilerCore.h"
+#include "CompilerMsgInterface.h"
+
+Compiler::Compiler(CompilerMsgInterface * msgInterface) : m_compilerCore(new CompilerCore(msgInterface)) {}
 
 Compiler::~Compiler() {
+	delete m_compilerCore;
 }
 
-bool Compiler::compile(const std::string & filename) {
-	return parseSourceFile(TA_MCS51, filename);
-}
-
-void Compiler::message(const std::string & text, CompilerCore::MessageType type) {
-	switch ( type ) {
-		case CompilerBase::MT_GENERAL:
-			std::cout << "\033[34;1m" << text << "\033[m\n";
-			break;
-		case CompilerBase::MT_ERROR:
-			std::cout << "\033[31;1m" << text << "\033[m\n";
-			break;
-		case CompilerBase::MT_WARNING:
-			std::cout << "\033[33;1m" << text << "\033[m\n";
-			break;
-		case CompilerBase::MT_REMARK:
-			std::cout << "\033[32;1m" << text << "\033[m\n";
-			break;
-	}
+bool Compiler::compile(CompilerBase::LangId lang, CompilerBase::TargetArch arch, CompilerOptions * opts, const std::string & filename) {
+	return m_compilerCore->compile(lang, arch, opts, filename);
 }

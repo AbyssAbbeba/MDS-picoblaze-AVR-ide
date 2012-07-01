@@ -13,19 +13,17 @@
 #include "MCUSimControl.h"
 
 #include "MCUSimObserver.h"
-
+#include "DbgFileCDB.h"
 #include "HexFile.h"
-
 #include "AVR8Sim.h"
 #include "AVR8ProgramMemory.h"
-
 #include "McuSimCfgMgr.h"
 #include "McuDeviceSpec.h"
 #include "McuDeviceSpecAVR8.h"
 
 #include <QDebug>
 
-MCUSimControl::MCUSimControl(const char * deviceName) : m_simulator(NULL) {
+MCUSimControl::MCUSimControl(const char * deviceName) : m_simulator(NULL), m_dbgFile(NULL) {
 	changeDevice(deviceName);
 }
 
@@ -33,37 +31,109 @@ MCUSimControl::~MCUSimControl() {
 	if ( NULL != m_simulator ) {
 		delete m_simulator;
 	}
+	if ( NULL != m_dbgFile ) {
+		delete m_dbgFile;
+	}
 }
 
-void MCUSimControl::start(const char * hexFileName) {
+bool MCUSimControl::start(std::string & fileName, CompilerID compilerId, DataFileType dataFileType) {
 
 	// Reset the simulator
 	m_simulator->reset(MCUSim::RSTMD_INITIAL_VALUES);
 	reset();
 
-	// Load data file to the program memory
-	HexFile hexFile;
+	if ( NULL != m_dbgFile ) {
+		delete m_dbgFile;
+		m_dbgFile = NULL;
+	}
+
+	DataFile * dataFile;
+	std::string dbgFileExt;
+	std::string dataFileExt;
+	switch ( compilerId ) {
+// 		case COMPILER_NATIVE:
+// 			m_dbgFile = new NOTHING_YET;
+// 			switch ( dataFileType ) {
+// 				case DATAFILETYPE_DEFAULT:
+// 					dataFile = new HexFile;
+// 					dataFileExt = ".hex"
+// 					dbgFileExt = ".adb";
+// 					break;
+// 			}
+// 			break;
+		case COMPILER_SDCC:
+			dbgFileExt = ".cdb";
+			m_dbgFile = new DbgFileCDB;
+			switch ( dataFileType ) {
+				case DATAFILETYPE_DEFAULT:
+					dataFileExt = ".ihx";
+					dataFile = new HexFile;
+					break;
+			}
+			break;
+	}
+
 	try {
-		hexFile.clearAndLoad(hexFileName);
+		m_dbgFile->openFile(filename + dbgFileExt);
+	} catch ( DbgFileException & e ) {
+		// TODO: implement a proper error handling here
+		qDebug("Failed to load the debug file.");
+		return false;
+	}
+
+	// Load data file for the program memory
+	try {
+		dataFile->clearAndLoad(fileName + dataFileExt);
 	} catch ( DataFile::DataFileException & e ) {
 		// TODO: implement a proper error handling here
-		qDebug("Failed to load program memory from the given IHEX file.");
-		return;
+		qDebug("Failed to load program memory from the given file.");
+		delete dataFile;
+		return false;
 	}
+
+	// Start simulator
 	switch ( m_architecture ) {
 		case MCUSim::ARCH_AVR8:
-			dynamic_cast<AVR8ProgramMemory*>(m_simulator->getSubsys(MCUSim::Subsys::ID_MEM_CODE))->loadDataFile(&hexFile);
+			dynamic_cast<AVR8ProgramMemory*>(m_simulator->getSubsys(MCUSim::Subsys::ID_MEM_CODE))->loadDataFile(dataFile);
 			break;
 		default:
 			// TODO: implement a proper error handling here
 			qDebug("Unknown device architecture.");
-			return;
-
+			return false;
 	}
 
+	// 
 	m_simulatorLog->clear();
-
 	allObservers_setReadOnly(false);
+
+	delete dataFile;
+	return true;
+}
+
+void MCUSimControl::getLineNumber(int * lineNumber, std::string * fileName) {
+	if ( false == initialized() ) {
+		lineNumber = -1;
+		fileName = "";
+		return;
+	}
+
+	unsigned int pc = m_simulator->getSubsys(MCUSim::Subsys::ID_CPU)->getProgramCounter();
+	int idx = m_dbgFile->getLineByAddr(pc);
+	if ( -1 == idx ) {
+		lineNumber = -1;
+		fileName = "";		
+	} else {
+		int fileNumber = getLineRecords()->at(idx).m_fileNumber;
+		*fileName = m_dbgFile->fileNumber2Name(fileNumber);
+		*lineNumber = m_dbgFile->getLineRecords()->at(idx).m_lineNumber;
+	}
+}
+
+const DbgFile * MCUSimControl::getSourceInfo() {
+	if ( false == initialized() ) {
+		return NULL
+	}
+	return m_dbgFile;
 }
 
 void MCUSimControl::stop() {

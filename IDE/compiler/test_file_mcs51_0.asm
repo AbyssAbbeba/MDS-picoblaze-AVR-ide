@@ -1,3 +1,6 @@
+A
+include "test_file_mcs51_1.asm"
+ADD syntax error
 
 xxx	MACRO	x, y, z
 lbl0:	add	A, #2 + 3		; xxx
@@ -19,6 +22,8 @@ add x, y, z	; <-- SYNTAX ERROR
 
 endm
 
+u: data 12
+
 ; endm
 ; macro
 ; if
@@ -30,7 +35,7 @@ if 0 - 4
   mov  A, A + 2
   MOV  a - 2, A	; xxx
   Mov  A, a
-elseif(4 AND 0)
+x: elseif(4 AND 0)
   moV  A, #A + 2
   mOv  A - 2, #A
   MoV  A, #A:

@@ -29,6 +29,7 @@ link_directories(
 	"${CMAKE_CURRENT_BINARY_DIR}/../MCUSim/"
 	"${CMAKE_CURRENT_BINARY_DIR}/../MCUSim/AVR8"
 	"${CMAKE_CURRENT_BINARY_DIR}/../MCUSim/McuSimCfgMgr/"
+	"${CMAKE_CURRENT_BINARY_DIR}/../../utilities/DbgFile/"
 	"${CMAKE_CURRENT_BINARY_DIR}/../../utilities/MCUDataFiles/")
 
 # Add include directories to the build.
@@ -36,6 +37,7 @@ include_directories(
 	"${CMAKE_CURRENT_BINARY_DIR}/../MCUSim/"
 	"${CMAKE_CURRENT_BINARY_DIR}/../MCUSim/AVR8"
 	"${CMAKE_CURRENT_BINARY_DIR}/../MCUSim/McuSimCfgMgr/"
+	"${CMAKE_CURRENT_BINARY_DIR}/../../utilities/DbgFile/"
 	"${CMAKE_CURRENT_BINARY_DIR}/../../utilities/MCUDataFiles/")
 
 ## Add switches to compiler command line
@@ -61,7 +63,7 @@ add_library(${PROJECT_NAME} SHARED
 	MCUSimObserver.cxx)
 
 # Link a target to given libraries.
-target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} MCUDataFiles McuSimCfgMgr AVR8Sim)
+target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} MCUDataFiles McuSimCfgMgr AVR8Sim DbgFile)
 
 
 # ------------------------------------------------------------------------------
