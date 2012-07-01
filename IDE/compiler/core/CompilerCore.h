@@ -14,7 +14,13 @@
 #ifndef COMPILERCORE_H
 #define COMPILERCORE_H
 
-// Base classes
+// Forward declarations
+class CompilerExpr;
+class CompilerStatement;
+class CompilerMsgInterface;
+class CompilerOptions;
+
+// Base class and compiler interfaces
 #include "CompilerBase.h"
 #include "CompilerParserInterface.h"
 #include "CompilerSemanticInterface.h"
@@ -23,9 +29,6 @@
 #include <string>
 #include <vector>
 
-// Other header files
-#include "CompilerStatement.h"
-#include "CompilerExpr.h"
 
 /**
  * @brief
@@ -34,12 +37,10 @@
  */
 class CompilerCore : public CompilerBase, private CompilerParserInterface, private CompilerSemanticInterface {
 public:
-	CompilerCore();
+	CompilerCore(CompilerMsgInterface * msgInterface);
 	~CompilerCore();
 
-protected:
-	bool parseSourceFile(TargetArch arch, const std::string & filename);
-	virtual void message(const std::string & text, MessageType type = MT_GENERAL) = 0;
+	bool compile(LangId lang, TargetArch arch, CompilerOptions * opts, const std::string & filename);
 
 private:
 	/// @name Interface for syntax and/or lexical analyzer
@@ -61,6 +62,7 @@ private:
 
 	inline void resetCompilerCore();
 
+	CompilerMsgInterface * const m_msgInterface;
 	CompilerStatement * m_rootStatement;
 
 	std::vector<std::string> m_fileNameStack;
@@ -69,6 +71,9 @@ private:
 	int m_fileNumber;
 
 	bool m_success;
+
+	/// Forbidden constructor
+	CompilerCore();
 };
 
 #endif // COMPILERCORE_H

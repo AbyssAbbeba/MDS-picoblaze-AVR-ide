@@ -17,6 +17,7 @@
 // Forward declarations
 class MCUSimObserver;
 class McuDeviceSpec;
+class DbgFile;
 
 #include "MCUSim.h"
 #include <vector>
@@ -28,6 +29,14 @@ class McuDeviceSpec;
 class MCUSimControl : public QObject {
 	Q_OBJECT
 public:
+	enum CompilerID {
+// 		COMPILER_NATIVE,
+		COMPILER_SDCC
+	};
+	enum DataFileType {
+		DBGFILEID_HEX
+	};
+
 	struct SFRRegDesc {
 		int m_address;
 		std::string m_regName;
@@ -52,6 +61,9 @@ public:
 		uint64_t events = 0xFFFFFFFFFFFFFFFFULL);
 	bool unregisterObserver(MCUSimObserver * observer);
 
+	void getLineNumber(int * lineNumber, std::string * fileName);
+	const DbgFile * getSourceInfo();
+
 	bool initialized() const;
 	const char * getDeviceName() const;
 	MCUSim::Arch getArch() const;
@@ -62,7 +74,7 @@ public:
 	bool getListOfSFR(std::vector<SFRRegDesc> & sfr);
 
 public slots:
-	void start(const char * hexFileName);
+	bool start(std::string & fileName, CompilerID compilerId, DataFileType dataFileType = DATAFILETYPE_DEFAULT);
 	void stop();
 
 	void step();
@@ -78,6 +90,7 @@ private:
 
 	MCUSim::Arch m_architecture;
 	MCUSim * m_simulator;
+	DbgFile * m_dbgFile;
 	MCUSim::EventLogger * m_simulatorLog;
 	const McuDeviceSpec * m_deviceSpec;
 

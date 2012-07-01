@@ -68,8 +68,6 @@
 %option noyywrap
 /* generate warning messages */
 %option warn
-/* suppress some warning messages when compiling the flex output with gcc, disables function `unput' */
-/* %option nounput */
 /* enable use of start condition stacks */
 %option stack
 
@@ -94,6 +92,8 @@ XESC	(\\[0-7]{1,3})|(\\x[0-9A-F]{1,2})|(\\[uU][0-9A-F]{1,8})
 %x STR
 /* Inside a string, or a character literal; e.g. 'my string', or 'a' */
 %x QUOTE
+/* Multi-line comment */
+%x MCOMMENT
 /* Inside an INCLUDE directive */
 %x INC
 %x INC_END
@@ -119,7 +119,22 @@ XESC	(\\[0-7]{1,3})|(\\x[0-9A-F]{1,2})|(\\[uU][0-9A-F]{1,8})
 			yylloc->last_column = 1;
 			return EOL;
 		}
-{COMMENT}	{ return COMMENT; }
+
+;{COMMENT}	{ return COMMENT; }
+{COMMENT}	{ /* ignore ordinary comment */ }
+<INITIAL,INC,INC_END,INC_LP,INC_RP>{
+	"/*"		{ yy_push_state(MCOMMENT, yyscanner); }
+}
+<MCOMMENT>{
+	"*/"		{ yy_pop_state(yyscanner); }
+	[^*\n]*		{ /* eat anything that's not a '*' */ }
+	"*"+[^*/\n]*	{ /* eat up '*'s not followed by '/'s */ }
+	{NLINE}		{
+				yylloc->last_line++;
+				yylloc->last_column = 1;
+				return EOL;
+			}
+}
 
 \.?"db"		{ return D_DB; }
 \.?"macro"	{ return D_MACRO; }
@@ -333,75 +348,30 @@ XESC	(\\[0-7]{1,3})|(\\x[0-9A-F]{1,2})|(\\[uU][0-9A-F]{1,8})
 
 \.?"include"	{
 			// Handle `include' directive
-			yy_push_state(INC, yyscanner);
 			yy_push_state(INC_END, yyscanner);
+			yy_push_state(INC, yyscanner);
 			yylval->array.size = -1;
 		}
 \$"include"|\$"ic" {
 			// Handle `$include("<filename")' assembler control
-			yy_push_state(INC_LP, yyscanner);
-			yy_push_state(INC, yyscanner);
-			yy_push_state(INC_RP, yyscanner);
 			yy_push_state(INC_END, yyscanner);
+			yy_push_state(INC_RP, yyscanner);
+			yy_push_state(INC, yyscanner);
+			yy_push_state(INC_LP, yyscanner);
 			yylval->array.size = -1;
 		}
 
-<INC_LP>"("	{ yy_pop_state(yyscanner); }
-<INC_RP>")"	{ yy_pop_state(yyscanner); }
+<INC_LP>"("		{ yy_pop_state(yyscanner); }
+<INC_RP>")"		{ yy_pop_state(yyscanner); }
 <INC,INC_END,INC_LP,INC_RP>{
 	{WSPACE}	{ /* eat up white space */ }
 	{COMMENT}	{ return COMMENT; }
 }
-<INC,INC_END>{
-	{NLINE}		{
-				// Attempt to open the specified file
-
-				// Put the EOL character sequence back onto the input stream
-				char * eol = strdup(yytext);
-				for ( int i = yyleng - 1; i >= 0; --i ) {
-					unput(eol[i]);
-				}
-				free(eol);
-
-				if ( 1 < yylval->array.size ) {
-					yyextra->lexerMessage(yylloc, CompilerBase::MT_ERROR,
-						QObject::tr("No file name specified.").toStdString());
-					return INCLUDE;
-				}
-
-				yy_pop_state(yyscanner);
-				enlargeStringBuffer(yylval, yyextra);
-				yylval->array.data[yylval->array.size] = '\0';
-
-				char * filename = (char*) yylval->array.data;
-
-				if ( strlen(filename) != (size_t) yylval->array.size ) {
-					yyextra->lexerMessage(yylloc, CompilerBase::MT_WARNING,
-						QObject::tr("File name contains a null character.").toStdString() );
-				}
-
-				FILE * file = yyextra->fileOpen(filename);
-				if ( NULL == file ) {
-					yyextra->lexerMessage(yylloc, CompilerBase::MT_ERROR,
-						QObject::tr("Unable to open the specified file: ").toStdString() + "`" + filename + "'" );
-					return INCLUDE;
-				} else {
-					yylloc->last_line = 1;
-					yylloc->last_column = 1;
-
-					yylval->string = filename;
-					yyextra->m_yyllocStack.push_back(*yylloc);
-					mcs51lexer_push_buffer_state(mcs51lexer__create_buffer(file, YY_BUF_SIZE, yyscanner), yyscanner);
-					return INCLUDE;
-				}
-			}
-	.		{
-				// Anything else results in an error, it wouldn't make sense otherwise
+<INC_LP,INC_RP>.	{
 				yyextra->lexerMessage(yylloc, CompilerBase::MT_ERROR,
-					QObject::tr("Unrecognized token: ").toStdString() + "`" + std::string(yytext) + "'");
+					QObject::tr("unrecognized token: ").toStdString() + "`" + std::string(yytext) + "'");
 				yyterminate();
 			}
-}
 <INITIAL,INC>{
 	\"		{
 				// Beginning of a string, i.e. --> "some string"
@@ -422,7 +392,7 @@ XESC	(\\[0-7]{1,3})|(\\x[0-9A-F]{1,2})|(\\[uU][0-9A-F]{1,8})
 	\"		{
 				// End of the string, i.e. "my string" <--
 				yy_pop_state(yyscanner);
-				switch ( yy_top_state(yyscanner) ) {
+				switch ( YY_START ) {
 					case INITIAL:
 						return STRING;
 					case INC:
@@ -430,7 +400,7 @@ XESC	(\\[0-7]{1,3})|(\\x[0-9A-F]{1,2})|(\\[uU][0-9A-F]{1,8})
 						break;
 					default:
 						yyextra->lexerMessage(yylloc, CompilerBase::MT_ERROR,
-							QObject::tr("Only one string is allowed here.").toStdString());
+							QObject::tr("syntax not understood").toStdString());
 						break;
 				}
 			}
@@ -449,7 +419,7 @@ XESC	(\\[0-7]{1,3})|(\\x[0-9A-F]{1,2})|(\\[uU][0-9A-F]{1,8})
 	'		{
 				// End of the string, or single character literal; i.e. 'a' <--, or 'some string' <--
 				yy_pop_state(yyscanner);
-				switch ( yy_top_state(yyscanner) ) {
+				switch ( YY_START ) {
 					case INITIAL:
 						if ( yylval->array.size == 1 ) {
 							yylval->number = int(yylval->array.data[0]);
@@ -462,7 +432,7 @@ XESC	(\\[0-7]{1,3})|(\\x[0-9A-F]{1,2})|(\\[uU][0-9A-F]{1,8})
 						break;
 					default:
 						yyextra->lexerMessage(yylloc, CompilerBase::MT_ERROR,
-							QObject::tr("Only one string is allowed here.").toStdString());
+							QObject::tr("syntax not understood").toStdString());
 						break;
 				}
 			}
@@ -482,10 +452,18 @@ XESC	(\\[0-7]{1,3})|(\\x[0-9A-F]{1,2})|(\\[uU][0-9A-F]{1,8})
 				// A string has to be terminated at the same line which it was started on
 				yy_pop_state(yyscanner);
 				yyextra->lexerMessage(yylloc, CompilerBase::MT_ERROR,
-					QObject::tr("Unterminated string.").toStdString());
-				yylloc->last_line++;
-				yylloc->last_column = 1;
-				return STRING;
+					QObject::tr("unterminated string").toStdString());
+
+				// Put the EOL character sequence back onto the input stream
+				char * eol = strdup(yytext);
+				for ( int i = yyleng - 1; i >= 0; --i ) {
+					unput(eol[i]);
+				}
+				free(eol);
+
+				if ( INITIAL == YY_START ) {
+					return STRING;
+				}
 			}
 	{XESC}		{
 				// Handle C like escape sequence, such as `\x4A', `\uABCD', `\U1234abcd', and `\177'
@@ -496,7 +474,7 @@ XESC	(\\[0-7]{1,3})|(\\x[0-9A-F]{1,2})|(\\[uU][0-9A-F]{1,8})
 				// Check whether the conversion was successful
 				if ( 0 == size ) {
 					yyextra->lexerMessage(yylloc, CompilerBase::MT_ERROR,
-						QObject::tr("Unrecognized escape sequence: ").toStdString() + "`" + yytext + "'");
+						QObject::tr("unrecognized escape sequence: ").toStdString() + "`" + yytext + "'");
 					yyterminate();
 				}
 
@@ -520,11 +498,63 @@ XESC	(\\[0-7]{1,3})|(\\x[0-9A-F]{1,2})|(\\[uU][0-9A-F]{1,8})
 				// Handle strings terminated by EOF (End Of File) as ERROR, of course.
 				yy_pop_state(yyscanner);
 				yyextra->lexerMessage(yylloc, CompilerBase::MT_ERROR,
-					QObject::tr("Unterminated string").toStdString());
+					QObject::tr("unterminated string").toStdString());
 
 				// Discard the string buffer and terminate lexical analysis (this is a fatal error)
 				free(yylval->array.data);
 				yylval->array.size = 0;
+				yyterminate();
+			}
+}
+<INC,INC_END>{
+	{NLINE}		{
+				// Attempt to open the specified file
+
+				// Put the EOL character sequence back onto the input stream
+				char * eol = strdup(yytext);
+				for ( int i = yyleng - 1; i >= 0; --i ) {
+					unput(eol[i]);
+				}
+				free(eol);
+
+				yy_pop_state(yyscanner);
+
+				if ( 1 > yylval->array.size ) {
+					yyextra->lexerMessage(yylloc, CompilerBase::MT_ERROR,
+						QObject::tr("no file name specified").toStdString());
+					return INCLUDE;
+				}
+				enlargeStringBuffer(yylval, yyextra);
+				yylval->array.data [ yylval->array.size ] = '\0';
+
+				char * filename = (char*) yylval->array.data;
+
+				if ( strlen(filename) != (size_t) yylval->array.size ) {
+					yyextra->lexerMessage(yylloc, CompilerBase::MT_WARNING,
+						QObject::tr("file name contains a null character").toStdString() );
+				}
+
+				FILE * file = yyextra->fileOpen(filename);
+				if ( NULL == file ) {
+					yyextra->lexerMessage(yylloc, CompilerBase::MT_ERROR,
+						QObject::tr("unable to open the specified file: ").toStdString() + "`" + filename + "'" );
+					return INCLUDE;
+				} else {
+					yylval->string = filename;
+
+					yyextra->m_yyllocStack.push_back(*yylloc);
+					mcs51lexer_push_buffer_state(mcs51lexer__create_buffer(file, YY_BUF_SIZE, yyscanner), yyscanner);
+					
+					yylloc->last_line = 1;
+					yylloc->last_column = 1;
+
+					return INCLUDE;
+				}
+			}
+	.		{
+				// Anything else results in an error, it wouldn't make sense otherwise
+				yyextra->lexerMessage(yylloc, CompilerBase::MT_ERROR,
+					QObject::tr("unrecognized token: ").toStdString() + "`" + std::string(yytext) + "'");
 				yyterminate();
 			}
 }
@@ -613,7 +643,7 @@ XESC	(\\[0-7]{1,3})|(\\x[0-9A-F]{1,2})|(\\[uU][0-9A-F]{1,8})
 .		{
 			// Unrecognized token => ERROR
 			yyextra->lexerMessage(yylloc, CompilerBase::MT_ERROR,
-				QObject::tr("Unrecognized token: ").toStdString() + "`" + std::string(yytext) + "'");
+				QObject::tr("unrecognized token: ").toStdString() + "`" + std::string(yytext) + "'");
 		}
 
 %%

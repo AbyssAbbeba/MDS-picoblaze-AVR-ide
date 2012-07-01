@@ -302,6 +302,8 @@ public:
 
 			EVENT_CPU__MAX__
 		};
+		virtual unsigned int getProgramCounter() const = 0;
+		virtual void setProgramCounter(unsigned int newPc) = 0;
 
 	protected:
 		CPU() {};

@@ -29,7 +29,7 @@ public:
 
 	void openFile(const std::string & filename) throw(DbgFileException);
 
-	int getLineByAddr(uint addr, std::string & filename) const;
+	int getLineByAddr(uint * addr) const;
 	int getAddrByLine(uint line, const std::string & filename) const;
 
 private:

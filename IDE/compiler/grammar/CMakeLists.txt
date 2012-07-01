@@ -36,11 +36,7 @@ FLEX_TARGET(mcs51lexer mcs51lexer.l mcs51lexer.cxx)
 # ADD_FLEX_BISON_DEPENDENCY(mcs51lexer mcs51parser)
 
 # List of additional files that will be cleaned as a part of the "make clean" stage.
-set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES "
-	mcs51lexer.cxx	mcs51lexer.h	mcs51parser.cxx	mcs51parser.h	mcs51parser.output
-	pic8lexer.cxx	pic8lexer.h	pic8parser.cxx	pic8parser.h	pic8parser.output
-	avr8lexer.cxx	avr8lexer.h	avr8parser.cxx	avr8parser.h	avr8parser.output
-")
+set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES "mcs51lexer.h;mcs51parser.h;mcs51parser.output;;pic8lexer.h;pic8parser.h;pic8parser.output;;avr8lexer.h;avr8parser.h;avr8parser.output;")
 
 # ------------------------------------------------------------------------------
 # COMPILATION OPTIONS

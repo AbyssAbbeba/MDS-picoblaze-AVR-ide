@@ -1,15 +1,32 @@
+/**
+ * @brief
+ * C++ Implementation: ...
+ *
+ * ...
+ *
+ * Copyright: See COPYING file that comes with this distribution.
+ *
+ * @author: Martin Ošmera <martin.osmera@gmail.com>, (C) 2012
+ *
+ */
 
 #include "Compiler.h"
+#include "CompilerMsgInftStdout.h"
+
+#include <iostream>
 
 int main(int argc, char ** argv) {
-	Compiler * compiler = new Compiler();
+	CompilerMsgInftStdout msgInterface;
+	CompilerOptions opts;
+	Compiler compiler(&msgInterface);
 
-	if ( true == compiler->compile("test_file_mcs51_0.asm") ) {
+	std::string filename = "test_file_mcs51_0.asm";
+
+	if ( true == compiler.compile(CompilerBase::LI_ASM, CompilerBase::TA_MCS51, &opts, filename) ) {
 		std::cout << "SUCCESS\n";
+		return 0;
 	} else {
 		std::cout << "FAILURE\n";
+		return 1;
 	}
-
-	delete compiler;
-	return 0;
 }

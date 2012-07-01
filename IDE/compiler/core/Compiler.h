@@ -14,8 +14,11 @@
 #ifndef COMPILER_H
 #define COMPILER_H
 
-#include "CompilerCore.h"
+class CompilerCore;
+class CompilerMsgInterface;
 
+#include "CompilerOptions.h"
+#include "CompilerBase.h"
 #include <iostream>
 
 /**
@@ -23,15 +26,15 @@
  * @ingroup Compiler
  * @class Compiler
  */
-class Compiler : protected CompilerCore {
+class Compiler {
 public:
-	Compiler();
-	~Compiler();
+	Compiler(CompilerMsgInterface * msgInterface);
+	virtual ~Compiler();
 
-	bool compile(const std::string & filename);
+	bool compile(CompilerBase::LangId lang, CompilerBase::TargetArch arch, CompilerOptions * opts, const std::string & filename);
 
-protected:
-	void message(const std::string & text, MessageType type = MT_GENERAL);
+private:
+	CompilerCore * const m_compilerCore;
 };
 
 #endif // COMPILER_H

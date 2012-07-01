@@ -12,13 +12,18 @@
 
 #include "CompilerCore.h"
 
+#include "CompilerExpr.h"
+#include "CompilerStatement.h"
+#include "CompilerMsgInterface.h"
+#include "CompilerOptions.h"
+
 #include <sstream>
 #include <cstdio>
 #include <iostream> // DEBUG
 
 #include <QObject> // Used for i18n only
 
-CompilerCore::CompilerCore() {
+CompilerCore::CompilerCore(CompilerMsgInterface * msgInterface) : m_msgInterface(msgInterface) {
 	m_rootStatement = NULL;
 	m_fileNumber = -1;
 }
@@ -29,14 +34,14 @@ CompilerCore::~CompilerCore() {
 	}
 }
 
-bool CompilerCore::parseSourceFile(CompilerCore::TargetArch arch, const std::string & filename) {
+bool CompilerCore::compile(LangId lang, TargetArch arch, CompilerOptions * opts, const std::string & filename) {
 	resetCompilerCore();
 
 	FILE * sourceFile = fileOpen(filename.c_str());
 	yyscan_t yyscanner; // Pointer to the lexer context
 
 	if ( NULL == sourceFile ) {
-		message(QObject::tr("Unable to open: ").toStdString() + m_filename, MT_ERROR);
+		m_msgInterface->message(QObject::tr("Unable to open: ").toStdString() + m_filename, MT_ERROR);
 		return false;
 	}
 
@@ -71,9 +76,16 @@ void CompilerCore::parserMessage(SourceLocation location, MessageType type, cons
 	std::string msgType;
 	switch ( type ) {
 		case MT_GENERAL: break;
-		case MT_ERROR:   msgType = QObject::tr("error: ").toStdString(); break;
-		case MT_WARNING: msgType = QObject::tr("warning: ").toStdString(); break;
-		case MT_REMARK:  msgType = QObject::tr("remark: ").toStdString(); break;
+		case MT_ERROR:
+			msgType = QObject::tr("error: ").toStdString();
+			m_success = false;
+			break;
+		case MT_WARNING:
+			msgType = QObject::tr("warning: ").toStdString();
+			break;
+		case MT_REMARK:
+			msgType = QObject::tr("remark: ").toStdString();
+			break;
 	}
 
 	msgText << m_filename;
@@ -89,7 +101,7 @@ void CompilerCore::parserMessage(SourceLocation location, MessageType type, cons
 	}
 
 	msgText << ": " << msgType << text << ".";
-	message(msgText.str(), type);
+	m_msgInterface->message(msgText.str(), type);
 }
 
 void CompilerCore::lexerMessage(SourceLocation location, MessageType type, const std::string & text) {
@@ -128,7 +140,7 @@ FILE * CompilerCore::fileOpen(const std::string & filename, bool acyclic) {
 			++it )
 		{
 			if ( filename == *it ) {
-				message(QObject::tr("File %1 is already opened! You might have an \"include\" loop in your code.").toStdString(), MT_ERROR);
+				m_msgInterface->message(QObject::tr("Error: file %1 is already opened, you might have an \"include\" loop in your code.").arg(filename.c_str()).toStdString(), MT_ERROR);
 				return NULL;
 			}
 		}
@@ -150,8 +162,8 @@ bool CompilerCore::pushFileName(const std::string & filename) {
 	return true;
 }
 void CompilerCore::popFileName() {
-	setFileName(m_fileNameStack.back());
 	m_fileNameStack.pop_back();
+	setFileName(m_fileNameStack.back());
 }
 
 int CompilerCore::getFileNumber() const {

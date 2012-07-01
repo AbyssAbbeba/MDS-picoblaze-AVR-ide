@@ -45,7 +45,9 @@ add_library(${PROJECT_NAME} SHARED
 	CompilerExpr.cxx
 	CompilerStatement.cxx
 	StatementTypes.cxx
+	CompilerOptions.cxx
 	CompilerCore.cxx
+	CompilerMsgInftStdout.cxx
 	Compiler.cxx
 )
 
