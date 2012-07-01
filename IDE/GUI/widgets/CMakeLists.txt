@@ -13,6 +13,8 @@ cmake_minimum_required(VERSION 2.8)
 # Create verbose makefiles if on
 set(CMAKE_VERBOSE_MAKEFILE OFF)
 
+
+
 # with SET() command you can change variables or define new ones
 # here we define SAMPLE_SRCS variable that contains a list of all .cpp files 
 # note that we don't need \ at the end of line
@@ -24,6 +26,7 @@ SET( SAMPLE_SRCS
        ./wcolumncounter.cpp
        ./movgridlayout.cpp
        ./wsimulationinfo.cpp
+       ./projecttree.cpp
 )
   
 # another list, this time it includes all header files that should be treated with moc
@@ -35,6 +38,7 @@ SET( SAMPLE_MOC_HDRS
        ./wcolumncounter.h 
        ./movgridlayout.h
        ./wsimulationinfo.h
+       ./projecttree.h
 )
 
 
@@ -49,12 +53,18 @@ find_package(Qt4 REQUIRED)
 set(QT_USE_QTXML 1)
 include(${QT_USE_FILE})
 
-#include_directories(
-#	"${CMAKE_CURRENT_BINARY_DIR}/../../../simulators/MCUSim/")
+include_directories(
+	"${CMAKE_CURRENT_BINARY_DIR}/sim/"
+        "${CMAKE_CURRENT_BINARY_DIR}/../../simulators/SimControl/"
+        "${CMAKE_CURRENT_BINARY_DIR}/../../simulators/MCUSim/"
+        "${CMAKE_CURRENT_BINARY_DIR}/../../simulators/MCUSim/McuSimCfgMgr/"
+        "${CMAKE_CURRENT_BINARY_DIR}/../../utilities/MCUDataFiles/"
+	"${CMAKE_CURRENT_BINARY_DIR}/../../simulators/MCUSim/AVR8/")
 
 # <DEBUG!>
-#link_directories(
-#	"${CMAKE_CURRENT_BINARY_DIR}/../../../utilities/MCUDataFiles/")
+link_directories(
+	"${CMAKE_CURRENT_BINARY_DIR}/../../simulators/SimControl/"
+        "${CMAKE_CURRENT_BINARY_DIR}/sim")
 #include_directories(
 #	"${CMAKE_CURRENT_BINARY_DIR}/.."
 #	"${CMAKE_CURRENT_BINARY_DIR}/../../../simulators/MCUSim/")
@@ -77,7 +87,8 @@ QT4_WRAP_CPP( SAMPLE_MOC_SRCS ${SAMPLE_MOC_HDRS} )
 add_library(${PROJECT_NAME} SHARED
 	${SAMPLE_MOC_SRCS} ${SAMPLE_SRCS})
 
-#target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} SimControl)
+
+target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} SimControl SimWidgets)
 
 
 # ------------------------------------------------------------------------------
@@ -86,3 +97,4 @@ add_library(${PROJECT_NAME} SHARED
 
 # Build the simulator widgets
 add_subdirectory(sim)
+

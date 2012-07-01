@@ -36,7 +36,6 @@
 class WDock;
 class MainForm;
 class CodeEdit;
-class HexEdit;
 
 
 /**
@@ -92,7 +91,7 @@ class WDockManager : public QObject
 class WDock
 {
     public:
-        WDock(int code, QMainWindow *mainWindow);
+        WDock(int code, MainForm *mainWindow);
         ~WDock();
         bool cmpCode(int code);
         bool cmpArea(int area);

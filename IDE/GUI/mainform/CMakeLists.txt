@@ -43,14 +43,21 @@ set(QT_USE_QTXML 1)
 include(${QT_USE_FILE})
 
 include_directories(
-	"${CMAKE_CURRENT_BINARY_DIR}/../simulators/MCUSim/McuSimCfgMgr/"
-	"${CMAKE_CURRENT_BINARY_DIR}/../simulators/SimControl/"
+	"../../simulators/MCUSim/McuSimCfgMgr/"
+	"../../simulators/MCUSim"
+	"../../simulators/SimControl/"
+        "../../utilities/MCUDataFiles/"
+	"../../simulators/MCUSim/AVR8/"
 	"../widgets/"
         "../dialogs/")
 
 # <DEBUG!>
-#link_directories(
-#	"../widgets/")
+link_directories(
+	"${CMAKE_CURRENT_BINARY_DIR}/../../simulators/MCUSim/McuSimCfgMgr/"
+	"${CMAKE_CURRENT_BINARY_DIR}/../../simulators/MCUSim"
+	"${CMAKE_CURRENT_BINARY_DIR}/../../simulators/SimControl/"
+        "${CMAKE_CURRENT_BINARY_DIR}/../../utilities/MCUDataFiles/"
+	"${CMAKE_CURRENT_BINARY_DIR}/../../simulators/MCUSim/AVR8/")
 #include_directories(
 #	"${CMAKE_CURRENT_BINARY_DIR}/.."
 #	"${CMAKE_CURRENT_BINARY_DIR}/../../../simulators/MCUSim/")
@@ -72,4 +79,4 @@ QT4_WRAP_CPP( SAMPLE_MOC_SRCS ${SAMPLE_MOC_HDRS} )
 add_library(${PROJECT_NAME} SHARED
 	${SAMPLE_MOC_SRCS} ${SAMPLE_SRCS})
 
-target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} Widgets Dialogs McuSimCfgMgr SimControl)
+target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} Widgets Dialogs McuSimCfgMgr SimControl AVR8Sim MCUDataFiles)

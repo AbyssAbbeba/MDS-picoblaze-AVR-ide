@@ -1,5 +1,10 @@
 # set project's name
   PROJECT( GUI )
+
+
+# Set the minimum required version of CMake
+cmake_minimum_required(VERSION 2.8)
+
   
   # with SET() command you can change variables or define new ones
   # here we define SAMPLE_SRCS variable that contains a list of all .cpp files
@@ -75,9 +80,12 @@
   INCLUDE_DIRECTORIES( ${CMAKE_BINARY_DIR} )
 
 link_directories(
-#	"${CMAKE_CURRENT_BINARY_DIR}/../simulators/MCUSim/McuSimCfgMgr/"
-#	"${CMAKE_CURRENT_BINARY_DIR}/../simulators/SimControl/"
-	"${CMAKE_CURRENT_BINARY_DIR}/mainform/")
+	"${CMAKE_CURRENT_BINARY_DIR}/mainform/"
+	"${CMAKE_CURRENT_BINARY_DIR}/../simulators/MCUSim/McuSimCfgMgr/"
+	"${CMAKE_CURRENT_BINARY_DIR}/../simulators/MCUSim"
+	"${CMAKE_CURRENT_BINARY_DIR}/../simulators/SimControl/"
+        "${CMAKE_CURRENT_BINARY_DIR}/../utilities/MCUDataFiles/"
+	"${CMAKE_CURRENT_BINARY_DIR}/../simulators/MCUSim/AVR8/")
 
 include_directories(
 #	"${CMAKE_CURRENT_BINARY_DIR}/../simulators/MCUSim/McuSimCfgMgr/"
@@ -92,6 +100,8 @@ include_directories(
   TARGET_LINK_LIBRARIES( mmIDE ${QT_LIBRARIES} Mainform)
 
 
+
+
 # ------------------------------------------------------------------------------
 # BUILD COMPONENTS IN THE SUBDIRECTORIES
 # ------------------------------------------------------------------------------
@@ -100,6 +110,8 @@ include_directories(
 add_subdirectory(widgets)
 add_subdirectory(dialogs)
 add_subdirectory(mainform)
+
+
 
 
 # ------------------------------------------------------------------------------
