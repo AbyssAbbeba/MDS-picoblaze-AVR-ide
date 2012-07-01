@@ -24,10 +24,12 @@ McuMemoryView::McuMemoryView(MCUSimControl * controlUnit, QWidget * parent)
 	  m_size(0),
 	  m_hexEdit(NULL)
 {
+        std::vector<int> mask;
+        mask.push_back(MCUSim::Memory::EVENT_MEM_INF_WR_VAL_CHANGED);
 	controlUnit->registerObserver(
 		this,
 		MCUSim::Subsys::ID_MEM_DATA,
-		MCUSim::Memory::EVENT_MEM_INF_WR_VAL_CHANGED);
+                mask);
 
 	m_layout = new QGridLayout(this);
 	setLayout(m_layout);
@@ -64,7 +66,7 @@ void McuMemoryView::handleEvent(int subsysId, int eventId, int locationOrReason,
 
 			m_memory->directRead(locationOrReason, value);
 
-// 			m_hexEdit->setData(idx, (char)value);
+ 			m_hexEdit->setVal(idx, (char)value);
 // 			m_hexEdit->setHighlighted(idx, true);
 
 			break;
@@ -101,7 +103,7 @@ void McuMemoryView::deviceChanged() {
 }
 
 void McuMemoryView::changeValue(int address) {
-// 	m_memory->directWrite(address, m_hexEdit->getValue(address));
+ 	m_memory->directWrite(address, m_hexEdit->getVal(address));
 }
 
 void McuMemoryView::deviceReset() {
@@ -115,7 +117,7 @@ void McuMemoryView::deviceReset() {
 		uint value;
 		m_memory->directRead(address, value);
 
-// 		m_hexEdit->setData(i, (char)value);
+ 		m_hexEdit->setVal(i, (char)value);
 	}
 }
 
@@ -124,7 +126,7 @@ void McuMemoryView::setReadOnly(bool readOnly) {
 		return;
 	}
 
-// 	m_hexEdit->setReadOnly(readOnly);
+ 	//m_hexEdit->setReadOnly(readOnly);
 // 	for ( int i = 0; i < m_size; i++ ) {
 // 		if ( false == readOnly ) {
 // 			m_hexEdit->setHighlighted(i, false);

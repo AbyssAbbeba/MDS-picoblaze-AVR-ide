@@ -468,7 +468,7 @@ WDockManager* MainForm::getWDockManager()
 
 void MainForm::simulationStep()
 {
-
+    projectMan->getActive()->step();
 }
 
 
@@ -503,3 +503,10 @@ void MainForm::simulationFlowHandle()
     projectMan->getActive()->removeFile();
 }*/
 
+
+
+
+ProjectMan* MainForm::getProjectMan()
+{
+    return this->projectMan;
+}

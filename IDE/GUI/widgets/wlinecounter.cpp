@@ -66,20 +66,21 @@ void WLineCounterWidget::paintEvent(QPaintEvent *)
     this->setMaximumHeight(textEdit->document()->lineCount()*(size+9));
     QPainter paint;
     paint.begin(this);
-    QRectF rect(0,0,15,size+9);
+    QRectF rect(0,0,17,size+9);
     QRectF iconRect(0,0,5,size+9);
     QPointF point;
     point.setX(0);
     QBrush brush(Qt::darkCyan);
     paint.setBackground(brush);
-    QPen pen(Qt::darkCyan);
+    //QPen pen(Qt::darkCyan);
+    QPen pen(Qt::black);
     paint.setBrush(brush);
     paint.setPen(pen);
-        pen.setColor(Qt::black);
-        paint.setPen(pen);
+    //pen.setColor(Qt::black);
+    //paint.setPen(pen);
     for (int i = 0; i<textEdit->document()->lineCount(); i++)
     {
-        point.setY(i*(size+7));
+        point.setY(i*(size+7)+size/3);
         rect.moveTopLeft(point);
         if (icons == true && breakpointList->at(i) == true)
         {

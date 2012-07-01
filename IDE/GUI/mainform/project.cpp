@@ -1,5 +1,8 @@
 #include <QtGui>
 #include "project.h"
+#include "McuSimCfgMgr.h"
+#include "MCUSimControl.h"
+#include "../widgets/projecttree.h"
 
 ProjectMan::ProjectMan(MainForm *qMainWindow)
 {
@@ -22,13 +25,13 @@ void ProjectMan::openProject(QFile *file)
     //    projectCount--;
     //}
     //else 
+    openProjects.append(newProject);
+    activeProject = newProject;
     if (projectCount > 0) 
         mainWindow->tabifyDockWidget(openProjects.at(0)->prjDockWidget, newProject->prjDockWidget);
     else
         mainWindow->CreateDockWidgets();
 
-    openProjects.append(newProject);
-    activeProject = newProject;
     projectCount++;
 }
 
@@ -124,7 +127,7 @@ Project::~Project()
 }
 
 //otevreni projektu
-Project::Project(QFile *file, QMainWindow * mainWindow, ProjectMan *parent)
+Project::Project(QFile *file, MainForm* mainWindow, ProjectMan *parent)
 {
     errorFlag = ERR_OK;
     fileCount = 0;
@@ -195,13 +198,11 @@ Project::Project(QFile *file, QMainWindow * mainWindow, ProjectMan *parent)
             prjDockWidget = new QDockWidget(prjName, mainWindow);
             prjDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea);
             prjDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
-            prjTreeWidget = new QTreeWidget(prjDockWidget);
-            prjTreeWidget->setHeaderHidden(true);
-            prjTreeWidget->setContextMenuPolicy(Qt::ActionsContextMenu);
-            QAction *setMainAct = new QAction("Set as main file", prjTreeWidget);
-            QAction *removeFileAct = new QAction("Remove file from project", prjTreeWidget);
-            prjTreeWidget->addAction(setMainAct);
-            prjTreeWidget->addAction(removeFileAct);
+            prjTreeWidget = new ProjectTree(prjDockWidget, this);
+            //QAction *setMainAct = new QAction("Set as main file", prjTreeWidget);
+            //QAction *removeFileAct = new QAction("Remove file from project", prjTreeWidget);
+            //prjTreeWidget->addAction(setMainAct);
+            //prjTreeWidget->addAction(removeFileAct);
             prjDockWidget->setWidget(prjTreeWidget);
 
             QTreeWidgetItem *treeProjName = new QTreeWidgetItem(prjTreeWidget);
@@ -218,8 +219,8 @@ Project::Project(QFile *file, QMainWindow * mainWindow, ProjectMan *parent)
                  treeProjFile->setData(0, Qt::ToolTipRole, QDir(absolutePath + "/" + filePaths.at(i)).canonicalPath());
             }
 
-            connect(setMainAct, SIGNAL(triggered()), this, SLOT(setMainFile()));
-            connect(removeFileAct, SIGNAL(triggered()), this, SLOT(removeFile()));
+            //connect(setMainAct, SIGNAL(triggered()), this, SLOT(setMainFile()));
+            //connect(removeFileAct, SIGNAL(triggered()), this, SLOT(removeFile()));
             connect(prjDockWidget, SIGNAL(visibilityChanged(bool)),this,SLOT(setActive()));  
             connect(prjTreeWidget, SIGNAL(itemDoubleClicked (QTreeWidgetItem *,int)),this,SLOT(openItem()));  
             setupSim();
@@ -228,7 +229,7 @@ Project::Project(QFile *file, QMainWindow * mainWindow, ProjectMan *parent)
 }
 
 //vytvoreni prazdneho projektu
-Project::Project(QString name, QString path, QMainWindow * mainWindow, QFile *file, ProjectMan *parent)
+Project::Project(QString name, QString path, MainForm* mainWindow, QFile *file, ProjectMan *parent)
 {
     errorFlag = ERR_OK;
     parentManager = parent;
@@ -239,13 +240,11 @@ Project::Project(QString name, QString path, QMainWindow * mainWindow, QFile *fi
         prjDockWidget = new QDockWidget("Projects", mainWindow);
     prjDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea);
     prjDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
-    prjTreeWidget = new QTreeWidget(prjDockWidget);
-    prjTreeWidget->setHeaderHidden(true);
-    prjTreeWidget->setContextMenuPolicy(Qt::ActionsContextMenu);
-    QAction *setMainAct = new QAction("Set as main file", prjTreeWidget);
-    QAction *removeFileAct = new QAction("Remove file from project", prjTreeWidget);
-    prjTreeWidget->addAction(setMainAct);
-    prjTreeWidget->addAction(removeFileAct);
+    prjTreeWidget = new ProjectTree(prjDockWidget, this);
+    //QAction *setMainAct = new QAction("Set as main file", prjTreeWidget);
+    //QAction *removeFileAct = new QAction("Remove file from project", prjTreeWidget);
+    //prjTreeWidget->addAction(setMainAct);
+    //prjTreeWidget->addAction(removeFileAct);
 
     prjDockWidget->setWidget(prjTreeWidget);
     //prjDockWidget->setMinimumWidth(150);
@@ -284,8 +283,8 @@ Project::Project(QString name, QString path, QMainWindow * mainWindow, QFile *fi
         QTextStream xmlStream(file);
         xmlStream << domDoc.toString();
 
-        connect(setMainAct, SIGNAL(triggered()), this, SLOT(setMainFile()));
-        connect(removeFileAct, SIGNAL(triggered()), this, SLOT(removeFile()));
+        //connect(setMainAct, SIGNAL(triggered()), this, SLOT(setMainFile()));
+        //connect(removeFileAct, SIGNAL(triggered()), this, SLOT(removeFile()));
         connect(prjDockWidget, SIGNAL(visibilityChanged(bool)),this,SLOT(setActive()));
         connect(prjTreeWidget, SIGNAL(itemDoubleClicked (QTreeWidgetItem *,int)),this,SLOT(openItem()));  
         setupSim();
@@ -362,7 +361,7 @@ void Project::addFile(QFile *file, QString path, QString name)
 
 void Project::setActive()
 {
-    if (parentManager->isActiveProject(this))
+    if (false == parentManager->isActiveProject(this))
         parentManager->setActive(this);
 }
 
@@ -377,15 +376,15 @@ void Project::openItem()
 
 
 
-void Project::setMainFile()
+void Project::setMainFile(QString path, QString name)
 {
     
 }
 
 
-void Project::removeFile()
+void Project::removeFile(QString path, QString name)
 {
-    QFile prjFile(prjPath);
+    /*QFile prjFile(prjPath);
     prjFile.open(QIODevice::ReadOnly);
     if (prjTreeWidget->currentItem() != NULL)
     {
@@ -455,24 +454,39 @@ void Project::removeFile()
 
         
         
-    }
+    }*/
 }
-
 
 
 void Project::setupSim()
 {
-        //McuSimCfgMgr::getInstance()->openConfigFile("../../simulators/MCUSim/McuSimCfgMgr/mcuspecfile.xml");
-	//m_simControlUnit = new MCUSimControl("ATmega8A");
+    McuSimCfgMgr::getInstance()->openConfigFile("../simulators/MCUSim/McuSimCfgMgr/mcuspecfile.xml");
+    m_simControlUnit = new MCUSimControl("ATmega8A");
 }
 
 void Project::start()
 {
-        //QString path = mainFilePath + "/make/" + mainFileName + ".hex";
-	//m_simControlUnit->start("test.hex");
+    QString path = mainFilePath + "/make/" + mainFileName + ".hex";
+    m_simControlUnit->start("avr8_test_code.hex");
 }
 
 void Project::stop()
 {
-	//m_simControlUnit->stop();
+    m_simControlUnit->stop();
+}
+
+void Project::reset()
+{
+    m_simControlUnit->reset();
+}
+
+void Project::step()
+{
+    m_simControlUnit->step();
+}
+
+
+MCUSimControl* Project::getSimControl()
+{
+    return this->m_simControlUnit;
 }
