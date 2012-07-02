@@ -199,10 +199,6 @@ Project::Project(QFile *file, MainForm* mainWindow, ProjectMan *parent)
             prjDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea);
             prjDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
             prjTreeWidget = new ProjectTree(prjDockWidget, this);
-            //QAction *setMainAct = new QAction("Set as main file", prjTreeWidget);
-            //QAction *removeFileAct = new QAction("Remove file from project", prjTreeWidget);
-            //prjTreeWidget->addAction(setMainAct);
-            //prjTreeWidget->addAction(removeFileAct);
             prjDockWidget->setWidget(prjTreeWidget);
 
             QTreeWidgetItem *treeProjName = new QTreeWidgetItem(prjTreeWidget);
@@ -219,8 +215,6 @@ Project::Project(QFile *file, MainForm* mainWindow, ProjectMan *parent)
                  treeProjFile->setData(0, Qt::ToolTipRole, QDir(absolutePath + "/" + filePaths.at(i)).canonicalPath());
             }
 
-            //connect(setMainAct, SIGNAL(triggered()), this, SLOT(setMainFile()));
-            //connect(removeFileAct, SIGNAL(triggered()), this, SLOT(removeFile()));
             connect(prjDockWidget, SIGNAL(visibilityChanged(bool)),this,SLOT(setActive()));  
             connect(prjTreeWidget, SIGNAL(itemDoubleClicked (QTreeWidgetItem *,int)),this,SLOT(openItem()));  
             setupSim();
@@ -241,10 +235,6 @@ Project::Project(QString name, QString path, MainForm* mainWindow, QFile *file, 
     prjDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea);
     prjDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
     prjTreeWidget = new ProjectTree(prjDockWidget, this);
-    //QAction *setMainAct = new QAction("Set as main file", prjTreeWidget);
-    //QAction *removeFileAct = new QAction("Remove file from project", prjTreeWidget);
-    //prjTreeWidget->addAction(setMainAct);
-    //prjTreeWidget->addAction(removeFileAct);
 
     prjDockWidget->setWidget(prjTreeWidget);
     //prjDockWidget->setMinimumWidth(150);
@@ -283,8 +273,6 @@ Project::Project(QString name, QString path, MainForm* mainWindow, QFile *file, 
         QTextStream xmlStream(file);
         xmlStream << domDoc.toString();
 
-        //connect(setMainAct, SIGNAL(triggered()), this, SLOT(setMainFile()));
-        //connect(removeFileAct, SIGNAL(triggered()), this, SLOT(removeFile()));
         connect(prjDockWidget, SIGNAL(visibilityChanged(bool)),this,SLOT(setActive()));
         connect(prjTreeWidget, SIGNAL(itemDoubleClicked (QTreeWidgetItem *,int)),this,SLOT(openItem()));  
         setupSim();
@@ -376,85 +364,79 @@ void Project::openItem()
 
 
 
-void Project::setMainFile(QString path, QString name)
+void Project::setMainFile(QString name, QString path)
 {
-    
+    QDir project(QFileInfo(prjPath).dir());
+    QString relativePath = project.relativeFilePath(path);
+
+    mainFileName = name;
+    mainFilePath = relativePath;
 }
 
 
-void Project::removeFile(QString path, QString name)
+void Project::removeFile(QString name, QString path)
 {
-    /*QFile prjFile(prjPath);
+    QDir project(QFileInfo(prjPath).dir());
+    QString relativePath = project.relativeFilePath(path);
+
+    QFile prjFile(prjPath);
     prjFile.open(QIODevice::ReadOnly);
-    if (prjTreeWidget->currentItem() != NULL)
+    QDomDocument domDoc("MMProject");
+    if (!domDoc.setContent(&prjFile))
     {
-        QDomDocument domDoc("MMProject");
-        if (!domDoc.setContent(&prjFile))
+        errorFlag = ERR_ASSIGN;
+        error(ERR_XML_ASSIGN);
+    }
+    else
+    {
+        //otevrit xml, upravit a ulozit
+        QDomElement xmlRoot = domDoc.documentElement();
+        if (xmlRoot.tagName() != "MMProject")
         {
-            errorFlag = ERR_ASSIGN;
-            error(ERR_XML_ASSIGN);
+            errorFlag = ERR_CONTENT;
+            error(ERR_XML_CONTENT);
         }
         else
         {
-            //otevrit xml, upravit a ulozit
-            QDomElement xmlRoot = domDoc.documentElement();
-            if (xmlRoot.tagName() != "MMProject")
+            QDomNode xmlNode = xmlRoot.firstChild();
+            QDomElement xmlElement;
+            bool done = false;
+            while (!xmlNode.isNull() && done == false)
             {
-                errorFlag = ERR_CONTENT;
-                error(ERR_XML_CONTENT);
-            }
-            else
-            {
-                QDomNode xmlNode = xmlRoot.firstChild();
-                QDomElement xmlElement;
-                bool done = false;
-                while (!xmlNode.isNull() && done == false)
+                xmlElement = xmlNode.toElement();
+                if (!xmlElement.isNull())
                 {
-                    xmlElement = xmlNode.toElement();
-                    if (!xmlElement.isNull())
+                    if (xmlElement.tagName() == "Files")
                     {
-                        if (xmlElement.tagName() == "Files")
+                        QDomNode xmlFilesNode = xmlElement.firstChild();
+                        QDomElement xmlFilesElement;
+                        while (!xmlFilesNode.isNull())
                         {
-                            QDomNode xmlFilesNode = xmlElement.firstChild();
-                            QDomElement xmlFilesElement;
-                            while (!xmlFilesNode.isNull())
-                            {
-                                xmlFilesElement = xmlFilesNode.toElement();
-                                if (xmlFilesElement.tagName() == "File"
-                                    && xmlFilesElement.attribute("name") == fileNames.at(prjTreeWidget->currentColumn())
-                                    && xmlFilesElement.attribute("path") == filePaths.at(prjTreeWidget->currentColumn()))
-                                {
-                        
-                                    xmlFilesNode.parentNode().removeChild(xmlFilesNode);
-                                    done = true;
-                                    break;
-                                }
-                                xmlFilesNode = xmlFilesNode.nextSibling();
-                            }
+                            xmlFilesElement = xmlFilesNode.toElement();
+                             if (xmlFilesElement.tagName() == "File"
+                                && xmlFilesElement.attribute("name") == name
+                                && xmlFilesElement.attribute("path") == relativePath)
+                             {
+                                 xmlFilesNode.parentNode().removeChild(xmlFilesNode);
+                                 done = true;
+                                 break;
+                             }
+                             xmlFilesNode = xmlFilesNode.nextSibling();
                         }
                     }
-                    xmlNode = xmlNode.nextSibling();
                 }
-                prjFile.close();
-                prjFile.open(QIODevice::WriteOnly);
-                QTextStream xmlStream(&prjFile);
-                xmlStream << domDoc.toString();
+                xmlNode = xmlNode.nextSibling();
             }
+            prjFile.close();
+            prjFile.open(QIODevice::WriteOnly);
+            QTextStream xmlStream(&prjFile);
+            xmlStream << domDoc.toString();
         }
-        //
-        fileNames.removeAt(prjTreeWidget->currentColumn());
-        filePaths.removeAt(prjTreeWidget->currentColumn());
-        fileCount--;
-
-        //znovu nacist treewidget
-        prjTreeWidget->clear();
-        QTreeWidgetItem *treeProjName = new QTreeWidgetItem(prjTreeWidget);
-        treeProjName->setText(0, prjName);
-        treeProjName->setData(0, Qt::ToolTipRole, prjPath);
-
-        
-        
-    }*/
+    }
+    //pozor na stejna jmena, musi se to smazat zaroven (item at index check pres iterator)
+    fileNames.removeOne(name);
+    filePaths.removeOne(path);
+    fileCount--;
 }
 
 
@@ -466,8 +448,8 @@ void Project::setupSim()
 
 void Project::start()
 {
-    QString path = mainFilePath + "/make/" + mainFileName + ".hex";
-    m_simControlUnit->start("avr8_test_code.hex");
+    QString hexPath = prjPath.section('/',0, -2)+ "/make/" + mainFileName.section('.',0,-2) + ".hex";
+    m_simControlUnit->start(hexPath.toAscii());
 }
 
 void Project::stop()

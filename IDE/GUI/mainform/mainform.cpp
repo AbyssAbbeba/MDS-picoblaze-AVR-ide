@@ -453,7 +453,26 @@ void MainForm::compileProject()
     if (!compiler.waitForFinished())
         ((QPlainTextEdit*)wDockManager->getDockWidget(wCompileInfo)->widget())->appendPlainText("Make failed:\n" + compiler.errorString());
     else
-        ((QPlainTextEdit*)wDockManager->getDockWidget(wCompileInfo)->widget())->appendPlainText("Make succesfull:\n" + compiler.readAll());
+    {
+        ((QPlainTextEdit*)wDockManager->getDockWidget(wCompileInfo)->widget())->appendPlainText("Make successful:\n" + compiler.readAll() + "\n\n");
+
+        QProcess packihx(this);
+        QStringList args2;
+        QString projectMainName = projectMan->getActive()->mainFileName.section('.',0,-2);
+        QString ihxPath = projectMan->getActive()->prjPath.section('/',0, -2)+"/make/" + projectMainName + ".ihx";
+        QString hexPath = projectMan->getActive()->prjPath.section('/',0, -2)+"/make/" + projectMainName + ".hex";
+
+        args2 << ihxPath;
+        packihx.setProcessChannelMode(QProcess::MergedChannels);
+        packihx.setStandardOutputFile(hexPath);
+        packihx.start("packihx", args2);
+
+        //vyresit chybu - oba pripady vypisuji packihx successful
+        if (!packihx.waitForFinished())
+            ((QPlainTextEdit*)wDockManager->getDockWidget(wCompileInfo)->widget())->appendPlainText("packihx failed: " + packihx.errorString());
+        else
+            ((QPlainTextEdit*)wDockManager->getDockWidget(wCompileInfo)->widget())->appendPlainText("packihx successful: " + packihx.readAll());
+    }
 }
 
 
@@ -496,12 +515,6 @@ void MainForm::simulationFlowHandle()
         }
     }
 }
-
-
-/*void MainForm::removeProjFile()
-{
-    projectMan->getActive()->removeFile();
-}*/
 
 
 

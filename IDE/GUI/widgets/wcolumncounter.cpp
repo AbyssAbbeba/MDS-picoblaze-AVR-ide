@@ -9,6 +9,7 @@ WColumnCounter::WColumnCounter(QTextEdit *parent, int height, int columns)
     this->setWidget(widget);
     this->setMaximumHeight(height);
     this->setMinimumWidth(parent->width());
+    this->setMaximumWidth(parent->width());
     this->setMinimumHeight(height);
     this->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
