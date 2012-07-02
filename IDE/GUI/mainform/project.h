@@ -93,6 +93,8 @@ class Project : public QObject
         void reset();
         void step();
         MCUSimControl* getSimControl();
+        void setMainFile(QString path, QString name);
+        void removeFile(QString path, QString name);
 
         QDockWidget *prjDockWidget;
         ProjectTree *prjTreeWidget;
@@ -117,8 +119,6 @@ class Project : public QObject
     private slots:
         void setActive();
         void openItem();
-        void setMainFile(QString path, QString name);
-        void removeFile(QString path, QString name);
 
     private:
         ProjectMan *parentManager;
