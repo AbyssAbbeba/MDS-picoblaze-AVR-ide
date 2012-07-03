@@ -41,7 +41,7 @@ bool CompilerCore::compile(LangId lang, TargetArch arch, CompilerOptions * opts,
 	yyscan_t yyscanner; // Pointer to the lexer context
 
 	if ( NULL == sourceFile ) {
-		m_msgInterface->message(QObject::tr("Unable to open: ").toStdString() + m_filename, MT_ERROR);
+		m_msgInterface->message(QObject::tr("Error: unable to open file: ").toStdString() + m_filename, MT_ERROR);
 		return false;
 	}
 

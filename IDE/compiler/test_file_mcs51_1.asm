@@ -15,8 +15,8 @@ zzz(1, 2, 3)
 
 $DATE()
 
-ADD syntax error
+/* ADD syntax error */
 
 $TITLE("test blah blah blah")
-/* end */
+end
 after_end:

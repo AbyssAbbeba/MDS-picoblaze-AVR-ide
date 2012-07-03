@@ -87,7 +87,8 @@ public:
 		OPER_GE		= L'≥',	///<
 		OPER_GT		= L'>',	///<
 		OPER_SHR	= L'≫',	///<
-		OPER_SHL	= L'≪'	///<
+		OPER_SHL	= L'≪',	///<
+		OPER_CMPL	= L'~'	///<
 	} m_operator;
 
 	Value m_lValue;
@@ -99,6 +100,7 @@ public:
 	CompilerExpr();
 	CompilerExpr(Value value);
 	CompilerExpr(Operator oper, Value value);
+	CompilerExpr(char oper, Value value);
 	CompilerExpr(Value lValue, Operator oper, Value rValue);
 	CompilerExpr(Value lValue, char oper, Value rValue);
 
