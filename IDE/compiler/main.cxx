@@ -20,7 +20,7 @@ int main(int argc, char ** argv) {
 	CompilerOptions opts;
 	Compiler compiler(&msgInterface);
 
-	std::string filename = "test_file_mcs51_0.asm";
+	std::string filename = argv[1];
 
 	if ( true == compiler.compile(CompilerBase::LI_ASM, CompilerBase::TA_MCS51, &opts, filename) ) {
 		std::cout << "SUCCESS\n";

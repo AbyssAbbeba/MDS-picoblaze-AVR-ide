@@ -150,11 +150,11 @@
 %token D_IF		D_IFN		D_IFDEF		D_IFNDEF	D_ELSEIFB
 %token D_ELSEIFNB	D_ELSE		D_ELSEIF	D_ELSEIFN	D_ELSEIFDEF
 %token D_ELSEIFNDEF	D_ENDIF		D_LOCAL		D_IFNB		D_IFB
-%token D_SKIP		D_ENDMACRO	D_ENDM		D_EXITM		D_REPT
+%token D_SKIP		D_ENDM		D_EXITM		D_REPT		D_SET
 %token D_MACRO		D_BYTE		D_CSEG		D_DB		D_DEF
 %token D_DEVICE		D_DSEG		D_DW		D_EQU		D_ESEG
 %token D_EXIT		D_INCLUDE	D_LIST		D_LISTMAC	D_NOLIST
-%token D_ORG		D_SET
+%token D_ORG
 
 /* Instructions */
 %token I_ADD	I_ADC	I_ADIW	I_SUB	I_SUBI	I_SBC	I_SBCI	I_SBIW	I_AND	I_ANDI
@@ -206,11 +206,26 @@
 %token LE		"<="
 %token GT		">"
 %token GE		">="
+%token COMPLEMET	"~"
+%token ADD_ASSIGN	"+="
+%token SUB_ASSIGN	"-="
+%token MUL_ASSIGN	"*="
+%token DIV_ASSIGN	"/="
+%token MOD_ASSIGN	"%="
+%token SHL_ASSIGN	"<<="
+%token SHR_ASSIGN	">>="
+%token AND_ASSIGN	"&="
+%token ORB_ASSIGN	"|="
+%token XOR_ASSIGN	"^="
+%token INCREMENT	"++"
+%token DECREMENT	"--"
+
 // Expression functions
 %token F_HIGH		F_LOW		F_BYTE2		F_BYTE3		F_BYTE4
 %token F_LWRD		F_HWRD		F_PAGE		F_EXP2		F_LOG2
 
 /* Operator precedence (the one declared later has the higher precedence) */
+// Left-to-right
 %left "||"
 %left "^^"
 %left "&&"
@@ -222,8 +237,14 @@
 %left "<<" ">>"
 %left "+" "-"
 %left "*" "/" "%"
-%left "."
+%left "++" "--"
+// Right-to-left
+%right "&=" "^=" "|="
+%right "<<=" ">>="
+%right "*=" "/=" "%="
+%right "+=" "−="
 %right "="
+%right "~"
 
 /* Terminal symbols with semantic value */
   // semantic value is a string
@@ -323,17 +344,17 @@ inline int avr8parser_error(YYLTYPE * yylloc, yyscan_t, CompilerParserInterface 
 			switch ( errorInfo[25] ) {
 				case 'D':
 					errStr = QObject::tr("unexpected directive ").toStdString();
-					errStr += ( errorInfo + 27 );
+					errStr += reinterpret_cast<const char *>( long(errorInfo) + 27 );
 					errorInfo = errStr.c_str();
 					break;
 				case 'I':
 					errStr = QObject::tr("unexpected instruction ").toStdString();
-					errStr += ( errorInfo + 27 );
+					errStr += reinterpret_cast<const char *>( long(errorInfo) + 27 );
 					errorInfo = errStr.c_str();
 					break;
 				case 'F':
 					errStr = QObject::tr("unexpected function ").toStdString();
-					errStr += ( errorInfo + 27 );
+					errStr += reinterpret_cast<const char *>( long(errorInfo) + 27 );
 					errorInfo = errStr.c_str();
 					break;
 				default:
@@ -342,7 +363,7 @@ inline int avr8parser_error(YYLTYPE * yylloc, yyscan_t, CompilerParserInterface 
 			}
 		} else {
 			errStr = QObject::tr("unexpected ").toStdString();
-			errStr += ( errorInfo + 25 );
+			errStr += reinterpret_cast<const char *>( long(errorInfo) + 25 );
 			errorInfo = errStr.c_str();
 		}
 	} else if ( 0 == strncmp(errorInfo , "syntax error", 12) ) {

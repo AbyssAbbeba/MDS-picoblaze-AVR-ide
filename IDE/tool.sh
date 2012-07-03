@@ -8,6 +8,7 @@ declare -i options_y=0
 declare -i options_l=0
 
 function clean() {
+	cmake .
 	make clean
 
 	rm -rfv "docs/doxygen/html"

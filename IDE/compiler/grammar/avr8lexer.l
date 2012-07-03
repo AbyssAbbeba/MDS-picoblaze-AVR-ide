@@ -70,6 +70,8 @@
 %option warn
 /* enable use of start condition stacks */
 %option stack
+/* get rid of the warning message: 'int yy_top_state(yyscan_t)’ defined but not used */
+%option noyy_top_state
 
 /*
  * Named regular expressions used in the lexer
@@ -106,6 +108,11 @@ XESC	(\\[0-7]{1,3})|(\\x[0-9A-F]{1,2})|(\\[uU][0-9A-F]{1,8})
 %%
 
 %{
+	// Terminate lexical analysis, in case all input files have been closed using the EXIT' directive.
+	if ( NULL == avr8lexer_get_in(yyscanner) ) {
+		yyterminate();
+	}
+
 	// At each yylex invocation, mark the current position as the start of the next token.
 	yylloc_param->first_line   = yylloc_param->last_line;
 	yylloc_param->first_column = yylloc_param->last_column;
@@ -150,7 +157,7 @@ XESC	(\\[0-7]{1,3})|(\\x[0-9A-F]{1,2})|(\\[uU][0-9A-F]{1,8})
 \.?"ifnb"	{ return D_IFNB; }
 \.?"ifb"	{ return D_IFB; }
 \.?"skip"	{ return D_SKIP; }
-\.?"endmacro"	{ return D_ENDMACRO; }
+\.?"endmacro"	{ return D_ENDM; }
 \.?"endm"	{ return D_ENDM; }
 \.?"exitm"	{ return D_EXITM; }
 \.?"rept"	{ return D_REPT; }
@@ -164,13 +171,24 @@ XESC	(\\[0-7]{1,3})|(\\x[0-9A-F]{1,2})|(\\[uU][0-9A-F]{1,8})
 \.?"dw"		{ return D_DW; }
 \.?"equ"	{ return D_EQU; }
 \.?"eseg"	{ return D_ESEG; }
-\.?"exit"	{ return D_EXIT; }
-\.?"include"	{ return D_INCLUDE; }
 \.?"list"	{ return D_LIST; }
 \.?"listmac"	{ return D_LISTMAC; }
 \.?"nolist"	{ return D_NOLIST; }
 \.?"org"	{ return D_ORG; }
 \."set"		{ return D_SET; }
+\.?"exit"	{
+			// Close the current file
+			avr8lexer_pop_buffer_state(yyscanner);
+			if ( YY_CURRENT_BUFFER ) {
+				yyextra->popFileName();
+				*yylloc = yyextra->m_yyllocStack.back();
+				yyextra->m_yyllocStack.pop_back();
+			} else {
+				avr8lexer_set_in(NULL, yyscanner);
+			}
+
+			return D_EXIT;
+		}
 
 "add"		{ return I_ADD; }
 "adc"		{ return I_ADC; }
@@ -339,7 +357,6 @@ XESC	(\\[0-7]{1,3})|(\\x[0-9A-F]{1,2})|(\\[uU][0-9A-F]{1,8})
 "&"		{ return BITAND; }
 "|"		{ return BITOR; }
 "^"		{ return BITXOR; }
-"="		{ return ASSIGN; }
 "=="		{ return EQ; }
 "<>"		{ return NE; }
 "!="		{ return NE; }
@@ -347,6 +364,20 @@ XESC	(\\[0-7]{1,3})|(\\x[0-9A-F]{1,2})|(\\[uU][0-9A-F]{1,8})
 "<="		{ return LE; }
 ">"		{ return GT; }
 ">="		{ return GE; }
+"="		{ return ASSIGN; }
+"~"		{ return COMPLEMET; }
+"+="		{ return ADD_ASSIGN; }
+"-="		{ return SUB_ASSIGN; }
+"*="		{ return MUL_ASSIGN; }
+"/="		{ return DIV_ASSIGN; }
+"%="		{ return MOD_ASSIGN; }
+"<<="		{ return SHL_ASSIGN; }
+">>="		{ return SHR_ASSIGN; }
+"&="		{ return AND_ASSIGN; }
+"|="		{ return ORB_ASSIGN; }
+"^="		{ return XOR_ASSIGN; }
+"++"		{ return INCREMENT; }
+"--"		{ return DECREMENT; }
 
 \.?"include"	{
 			// Handle `include' directive
@@ -358,22 +389,20 @@ XESC	(\\[0-7]{1,3})|(\\x[0-9A-F]{1,2})|(\\[uU][0-9A-F]{1,8})
 	{WSPACE}	{ /* eat up white space */ }
 	{COMMENT}	{ return COMMENT; }
 }
-<INITIAL,INC>{
-	\"		{
-				// Beginning of a string, i.e. --> "some string"
-				yy_push_state(STR, yyscanner);
-				yyextra->m_strMaxSize = 32;
-				yylval->array.size = 0;
-				yylval->array.data = (unsigned char*) malloc(yyextra->m_strMaxSize);
-			}
-	'		{
-				// Beginning of a string, or a character literal; i.e. --> 'a' (char.), or --> 'some string' (str.)
-				yy_push_state(QUOTE, yyscanner);
-				yyextra->m_strMaxSize = 8;
-				yylval->array.size = 0;
-				yylval->array.data = (unsigned char*) malloc(yyextra->m_strMaxSize);
-			}
-}
+<INITIAL,INC>\"	{
+			// Beginning of a string, i.e. --> "some string"
+			yy_push_state(STR, yyscanner);
+			yyextra->m_strMaxSize = 32;
+			yylval->array.size = 0;
+			yylval->array.data = (unsigned char*) malloc(yyextra->m_strMaxSize);
+		}
+'		{
+			// Beginning of a string, or a character literal; i.e. --> 'a' (char.), or --> 'some string' (str.)
+			yy_push_state(QUOTE, yyscanner);
+			yyextra->m_strMaxSize = 8;
+			yylval->array.size = 0;
+			yylval->array.data = (unsigned char*) malloc(yyextra->m_strMaxSize);
+		}
 <STR>{
 	\"		{
 				// End of the string, i.e. "my string" <--
@@ -405,21 +434,12 @@ XESC	(\\[0-7]{1,3})|(\\x[0-9A-F]{1,2})|(\\[uU][0-9A-F]{1,8})
 	'		{
 				// End of the string, or single character literal; i.e. 'a' <--, or 'some string' <--
 				yy_pop_state(yyscanner);
-				switch ( YY_START ) {
-					case INITIAL:
-						if ( yylval->array.size == 1 ) {
-							yylval->number = int(yylval->array.data[0]);
-							return NUMBER;
-						} else {
-							return STRING;
-						}
-					case INC:
-						yy_pop_state(yyscanner);
-						break;
-					default:
-						yyextra->lexerMessage(yylloc, CompilerBase::MT_ERROR,
-							QObject::tr("syntax not understood").toStdString());
-						break;
+				if ( yylval->array.size == 1 ) {
+					yylval->number = int(yylval->array.data[0]);
+					return NUMBER;
+				} else {
+					yyextra->lexerMessage(yylloc, CompilerBase::MT_ERROR,
+						QObject::tr("character constant is too long").toStdString());
 				}
 			}
 	[^\\'\r\n]+	{
@@ -438,7 +458,7 @@ XESC	(\\[0-7]{1,3})|(\\x[0-9A-F]{1,2})|(\\[uU][0-9A-F]{1,8})
 				// A string has to be terminated at the same line which it was started on
 				yy_pop_state(yyscanner);
 				yyextra->lexerMessage(yylloc, CompilerBase::MT_ERROR,
-					QObject::tr("unterminated string").toStdString());
+					QObject::tr("unterminated string or character constant").toStdString());
 
 				// Put the EOL character sequence back onto the input stream
 				char * eol = strdup(yytext);
@@ -484,7 +504,7 @@ XESC	(\\[0-7]{1,3})|(\\x[0-9A-F]{1,2})|(\\[uU][0-9A-F]{1,8})
 				// Handle strings terminated by EOF (End Of File) as ERROR, of course.
 				yy_pop_state(yyscanner);
 				yyextra->lexerMessage(yylloc, CompilerBase::MT_ERROR,
-					QObject::tr("unterminated string").toStdString());
+					QObject::tr("unterminated string or character constant").toStdString());
 
 				// Discard the string buffer and terminate lexical analysis (this is a fatal error)
 				free(yylval->array.data);

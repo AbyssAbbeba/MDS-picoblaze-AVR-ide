@@ -109,6 +109,14 @@ CompilerExpr::CompilerExpr(Operator oper, Value value) {
 	m_prev = NULL;
 }
 
+CompilerExpr::CompilerExpr(char oper, Value value) {
+	m_operator = Operator(oper);
+	m_rValue = value;
+
+	m_next = NULL;
+	m_prev = NULL;
+}
+
 CompilerExpr::CompilerExpr(Value lValue, Operator oper, Value rValue) {
 	m_lValue = lValue;
 	m_operator = oper;
@@ -130,6 +138,9 @@ CompilerExpr::CompilerExpr(Value lValue, char oper, Value rValue) {
 
 CompilerExpr * CompilerExpr::first() {
 	CompilerExpr * expr = this;
+	if ( NULL == this ) {
+		return NULL;
+	}
 	while ( NULL != expr->m_prev ) {
 		expr = expr->m_prev;
 	}

@@ -30,7 +30,7 @@
 // Write an extra output file containing verbose descriptions of the parser states.
 %verbose
 // Expect exactly <n> shift/reduce conflicts in this grammar
-%expect 449
+%expect 461
 // Expect exactly <n> reduce/reduce conflicts in this grammar
 %expect-rr 0
 /* Type of parser tables within the LR family, in this case we use LALR (Look-Ahead LR parser) */
@@ -231,8 +231,10 @@
 %token LE		"<="
 %token GT		">"
 %token GE		">="
+%token COMPLEMET	"~"
 
 /* Operator precedence (the one declared later has the higher precedence) */
+// Left-to-right
 %left "||"
 %left "^^"
 %left "&&"
@@ -246,6 +248,8 @@
 %left "*" "/" "%"
 %left "."
 %left LOW HIGH
+// Right-to-left
+%right "~"
 
 /* Terminal symbols with semantic value */
   // semantic value is a string
@@ -328,9 +332,7 @@
  * Basic code structure
  */
 input:
-	  statements			{ compiler->syntaxAnalysisComplete($statements); }
-	| end_of_code			{ compiler->syntaxAnalysisComplete($end_of_code); YYACCEPT; }
-	| statements EOL end_of_code	{ compiler->syntaxAnalysisComplete($statements->addLink($end_of_code)); YYACCEPT; }
+	  statements			{ compiler->syntaxAnalysisComplete($statements); YYACCEPT; }
 ;
 statements:
 	  stmt				{ $$ = $stmt; }
@@ -422,6 +424,7 @@ expr:
 	| "(" expr ")"			{ $$ = $2; }
 	| LOW expr			{ $$ = new CompilerExpr(CompilerExpr::OPER_LOW, $2); }
 	| HIGH expr			{ $$ = new CompilerExpr(CompilerExpr::OPER_HIGH, $2); }
+	| "~" expr			{ $$ = new CompilerExpr('~', $2); }
 	| expr "+" expr			{ $$ = new CompilerExpr($1, '+', $3); }
 	| expr "-" expr			{ $$ = new CompilerExpr($1, '-', $3); }
 	| expr "*" expr			{ $$ = new CompilerExpr($1, '*', $3); }
@@ -525,6 +528,7 @@ directive:
 	| dir_xdata	{ $$ = $1; }	| dir_code	{ $$ = $1; }
 	| dir_set	{ $$ = $1; }	| dir_equ	{ $$ = $1; }
 	| dir_macro	{ $$ = $1; }	| dir_db	{ $$ = $1; }
+	| end_of_code	{ $$ = $1; }
 ;
 dir_cond_asm:
 	  if_block ifelse_block else_block D_ENDIF {
@@ -1023,7 +1027,7 @@ dir_include:
 						);
 					}
 ;
-end_of_code:	// This directive requires a special handling because it stops the syntax analysis
+end_of_code:
 	  dir_end			{ $$ = new CompilerStatement(LOC(), ASM51_DIR_END); }
 	| label dir_end			{ $$ = $label->addLink(new CompilerStatement(LOC(), ASM51_DIR_END)); }
 	| dir_end EOL			{ $$ = new CompilerStatement(LOC(), ASM51_DIR_END); }
@@ -1724,17 +1728,17 @@ inline int mcs51parser_error(YYLTYPE * yylloc, yyscan_t, CompilerParserInterface
 			switch ( errorInfo[25] ) {
 				case 'D':
 					errStr = QObject::tr("unexpected directive ").toStdString();
-					errStr += ( errorInfo + 27 );
+					errStr += reinterpret_cast<const char *>( long(errorInfo) + 27 );
 					errorInfo = errStr.c_str();
 					break;
 				case 'I':
 					errStr = QObject::tr("unexpected instruction ").toStdString();
-					errStr += ( errorInfo + 27 );
+					errStr += reinterpret_cast<const char *>( long(errorInfo) + 27 );
 					errorInfo = errStr.c_str();
 					break;
 				case 'C':
 					errStr = QObject::tr("unexpected assembler control $").toStdString();
-					errStr += ( errorInfo + 27 );
+					errStr += reinterpret_cast<const char *>( long(errorInfo) + 27 );
 					errorInfo = errStr.c_str();
 					break;
 				default:
@@ -1743,7 +1747,7 @@ inline int mcs51parser_error(YYLTYPE * yylloc, yyscan_t, CompilerParserInterface
 			}
 		} else {
 			errStr = QObject::tr("unexpected ").toStdString();
-			errStr += ( errorInfo + 25 );
+			errStr += reinterpret_cast<const char *>( long(errorInfo) + 25 );
 			errorInfo = errStr.c_str();
 		}
 	} else if ( 0 == strncmp(errorInfo , "syntax error", 12) ) {

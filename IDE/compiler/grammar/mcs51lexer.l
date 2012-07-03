@@ -70,6 +70,8 @@
 %option warn
 /* enable use of start condition stacks */
 %option stack
+/* get rid of the warning message: 'int yy_top_state(yyscan_t)’ defined but not used */
+%option noyy_top_state
 
 /*
  * Named regular expressions used in the lexer
@@ -108,6 +110,11 @@ XESC	(\\[0-7]{1,3})|(\\x[0-9A-F]{1,2})|(\\[uU][0-9A-F]{1,8})
 %%
 
 %{
+	// Terminate lexical analysis, in case all input files have been closed using the `END' directive.
+	if ( NULL == mcs51lexer_get_in(yyscanner) ) {
+		yyterminate();
+	}
+
 	// At each yylex invocation, mark the current position as the start of the next token.
 	yylloc_param->first_line   = yylloc_param->last_line;
 	yylloc_param->first_column = yylloc_param->last_column;
@@ -154,7 +161,6 @@ XESC	(\\[0-7]{1,3})|(\\x[0-9A-F]{1,2})|(\\[uU][0-9A-F]{1,8})
 \.?"elseifdef"	{ return D_ELSEIFDEF; }
 \.?"elseifn"	{ return D_ELSEIFN; }
 \.?"elseifndef"	{ return D_ELSEIFNDEF; }
-\.?"end"	{ return D_END; }
 \.?"endif"	{ return D_ENDIF; }
 \.?"equ"	{ return D_EQU; }
 \.?"flag"	{ return D_FLAG; }
@@ -181,6 +187,19 @@ XESC	(\\[0-7]{1,3})|(\\x[0-9A-F]{1,2})|(\\[uU][0-9A-F]{1,8})
 \.?"ifnb"	{ return D_IFNB; }
 \.?"ifb"	{ return D_IFB; }
 \.?"ifndef"	{ return D_IFNDEF; }
+\.?"end"	{
+			// Close the current file
+			mcs51lexer_pop_buffer_state(yyscanner);
+			if ( YY_CURRENT_BUFFER ) {
+				yyextra->popFileName();
+				*yylloc = yyextra->m_yyllocStack.back();
+				yyextra->m_yyllocStack.pop_back();
+			} else {
+				mcs51lexer_set_in(NULL, yyscanner);
+			}
+
+			return D_END;
+		}
 
 \$"cond"	{ return C_COND; }
 \$"go"		{ return C_GENONLY; }
@@ -345,6 +364,7 @@ XESC	(\\[0-7]{1,3})|(\\x[0-9A-F]{1,2})|(\\[uU][0-9A-F]{1,8})
 "GT"		{ return GT; }
 ">="		{ return GE; }
 "GE"		{ return GE; }
+"~"		{ return COMPLEMET; }
 
 \.?"include"	{
 			// Handle `include' directive
