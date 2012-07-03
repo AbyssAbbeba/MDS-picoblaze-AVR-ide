@@ -26,10 +26,12 @@ RegDisplayList::RegDisplayList(MCUSimControl * controlUnit, QWidget * parent)
 	  m_numberOfDisplays(0),
 	  m_regDisplays(NULL)
 {
+        std::vector<int> mask;
+        mask.push_back(MCUSim::Memory::EVENT_MEM_INF_WR_VAL_CHANGED);
 	controlUnit->registerObserver(
 		this,
 		MCUSim::Subsys::ID_MEM_DATA,
-		MCUSim::Memory::EVENT_MEM_INF_WR_VAL_CHANGED);
+		mask);
 
 	m_layout = new QVBoxLayout(this);
 	setLayout(m_layout);

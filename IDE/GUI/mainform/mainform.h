@@ -46,6 +46,7 @@ class MainForm : public QMainWindow
         void saveFile(CodeEdit *editor);
         WDockManager* getWDockManager();
         void CreateDockWidgets();
+        ProjectMan* getProjectMan();
 
     private slots:
         void newFile();

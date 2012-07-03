@@ -97,9 +97,9 @@ HexEdit::HexEdit(QWidget *parent, bool AsciiPanel, int countSize, int columns)
         hexAsciiEdit->verticalScrollBar()->hide();
     }
 
-    hexColumnCount = new WColumnCounter(hexTextEdit, countSize, columns);
-    hexLineCount = new WLineCounter(hexTextEdit, false, true, countSize);
-    hexByteArray = new QByteArray(190, 126);
+    hexColumnCount = new WColumnCounter(hexTextEdit, 20, columns);
+    hexLineCount = new WLineCounter(hexTextEdit, false, true, 20);
+    hexByteArray = new QByteArray(countSize, 0);
     //hexStatusBar = new QStatusBar(this);
     hexStatusLabel = new QLabel(this);
     //hexStatusBar->addPermanentWidget(hexStatusLabel);
@@ -389,7 +389,7 @@ void HexEdit::setData(QByteArray *byteArray)
                 hexAsciiEdit->insertPlainText(".");
         }
         line++;
-        if (line == 16) 
+        if (line == this->columns) 
         {
             hexTextEdit->insertPlainText("\n");
             if (ascii == true)
@@ -405,6 +405,7 @@ void HexEdit::setData(QByteArray *byteArray)
 void HexEdit::setVal(int pos, char val)
 {
     (*hexByteArray)[pos] = val;
+    this->changeText(pos);
 }
 
 char HexEdit::getVal(int pos)

@@ -32,6 +32,7 @@
 
 class MainForm;
 class CodeEdit;
+class ProjectTree;
 
 //simulation handle
 class McuMemoryView;
@@ -80,18 +81,23 @@ class Project : public QObject
     Q_OBJECT
     public:
         //konstruktor pro otevirani projektu
-        Project(QFile *file, QMainWindow * mainWindow, ProjectMan *parent);
+        Project(QFile *file, MainForm* mainWindow, ProjectMan *parent);
         //konstruktor pro prazdny projekt
-        Project(QString name, QString path, QMainWindow * mainWindow, QFile *file, ProjectMan *parent);
+        Project(QString name, QString path, MainForm* mainWindow, QFile *file, ProjectMan *parent);
         ~Project();
 
         void addFile(QFile *file, QString path, QString name);
         void setupSim();
         void start();
         void stop();
+        void reset();
+        void step();
+        MCUSimControl* getSimControl();
+        void setMainFile(QString path, QString name);
+        void removeFile(QString path, QString name);
 
         QDockWidget *prjDockWidget;
-        QTreeWidget *prjTreeWidget;
+        ProjectTree *prjTreeWidget;
 
         QString prjName;
         QString prjPath;
@@ -113,8 +119,6 @@ class Project : public QObject
     private slots:
         void setActive();
         void openItem();
-        void setMainFile();
-        void removeFile();
 
     private:
         ProjectMan *parentManager;

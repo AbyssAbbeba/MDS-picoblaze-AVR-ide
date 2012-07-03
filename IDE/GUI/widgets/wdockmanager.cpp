@@ -150,7 +150,7 @@ void WDockManager::showDockWidgetArea(int area)
 }
 
 
-WDock::WDock(int code, QMainWindow *mainWindow)
+WDock::WDock(int code, MainForm *mainWindow)
 {
     switch (code)
     {
@@ -193,7 +193,7 @@ WDock::WDock(int code, QMainWindow *mainWindow)
             mainWindow->addDockWidget(Qt::BottomDockWidgetArea, wDockWidget);
             //v budoucnu nahradit 20 na constCounterSize v konstruktoru
             //i 16 za promennou podle nastaveni
-            WSimulationInfo *newWidget = new WSimulationInfo(wDockWidget);
+            WSimulationInfo *newWidget = new WSimulationInfo(mainWindow->getProjectMan()->getActive()->getSimControl(), wDockWidget);
             area = 2;
             //QDockWidget *aa = new QDockWidget("Simul", wDockWidget);
             wDockWidget->setWidget(newWidget);
