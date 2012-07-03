@@ -133,11 +133,11 @@ RegDisplay::~RegDisplay() {
 	delete m_primaryLayout;
 	delete m_regNameLabel;
 	delete m_hexLineEdit;
-	if ( NULL != m_bitButtons[0] ) {
+	/*if ( NULL != m_bitButtons[0] ) {
 		for ( int i = 0; i < 8; i++ ) {
 			delete m_bitButtons[i];
 		}
-	}
+	}*/
 }
 
 inline void RegDisplay::setupConnections() {
