@@ -118,10 +118,29 @@ std::ostream & operator << (std::ostream & out, const StatementTypes::StatementT
 		case ASMAVR8_INS_MOV:			out << "ASMAVR8_INS_MOV";		break;
 		case ASMAVR8_INS_LDI:			out << "ASMAVR8_INS_LDI";		break;
 		case ASMAVR8_INS_LDS:			out << "ASMAVR8_INS_LDS";		break;
-		case ASMAVR8_INS_LD:			out << "ASMAVR8_INS_LD";		break;
+		case ASMAVR8_INS_LD_X:			out << "ASMAVR8_INS_LD_X";		break;
+		case ASMAVR8_INS_LD_Xp:			out << "ASMAVR8_INS_LD_Xp";		break;
+		case ASMAVR8_INS_LD_mX:			out << "ASMAVR8_INS_LD_mX";		break;
+		case ASMAVR8_INS_LD_Y:			out << "ASMAVR8_INS_LD_Y";		break;
+		case ASMAVR8_INS_LD_Yp:			out << "ASMAVR8_INS_LD_Yp";		break;
+		case ASMAVR8_INS_LD_mY:			out << "ASMAVR8_INS_LD_mY";		break;
+		case ASMAVR8_INS_LD_Z:			out << "ASMAVR8_INS_LD_Z";		break;
+		case ASMAVR8_INS_LD_Zp:			out << "ASMAVR8_INS_LD_Zp";		break;
+		case ASMAVR8_INS_LD_mZ:			out << "ASMAVR8_INS_LD_mZ";		break;
+		case ASMAVR8_INS_LDD_Y:			out << "ASMAVR8_INS_LDD_Y";		break;
+		case ASMAVR8_INS_LDD_Z:			out << "ASMAVR8_INS_LDD_Z";		break;
 		case ASMAVR8_INS_STS:			out << "ASMAVR8_INS_STS";		break;
-		case ASMAVR8_INS_ST:			out << "ASMAVR8_INS_ST";		break;
-		case ASMAVR8_INS_STD:			out << "ASMAVR8_INS_STD";		break;
+		case ASMAVR8_INS_ST_X:			out << "ASMAVR8_INS_ST_X";		break;
+		case ASMAVR8_INS_ST_Xp:			out << "ASMAVR8_INS_ST_Xp";		break;
+		case ASMAVR8_INS_ST_mX:			out << "ASMAVR8_INS_ST_mX";		break;
+		case ASMAVR8_INS_ST_Y:			out << "ASMAVR8_INS_ST_Y";		break;
+		case ASMAVR8_INS_ST_Yp:			out << "ASMAVR8_INS_ST_Yp";		break;
+		case ASMAVR8_INS_ST_mY:			out << "ASMAVR8_INS_ST_mY";		break;
+		case ASMAVR8_INS_ST_Z:			out << "ASMAVR8_INS_ST_Z";		break;
+		case ASMAVR8_INS_ST_Zp:			out << "ASMAVR8_INS_ST_Zp";		break;
+		case ASMAVR8_INS_ST_mZ:			out << "ASMAVR8_INS_ST_mZ";		break;
+		case ASMAVR8_INS_STD_Y:			out << "ASMAVR8_INS_STD_Y";		break;
+		case ASMAVR8_INS_STD_Z:			out << "ASMAVR8_INS_STD_Z";		break;
 		case ASMAVR8_INS_LPM:			out << "ASMAVR8_INS_LPM";		break;
 		case ASMAVR8_INS_IN:			out << "ASMAVR8_INS_IN";		break;
 		case ASMAVR8_INS_OUT:			out << "ASMAVR8_INS_OUT";		break;
@@ -165,6 +184,9 @@ std::ostream & operator << (std::ostream & out, const StatementTypes::StatementT
 		case ASMPIC8_COND_ASM:			out << "ASMPIC8_COND_ASM";		break;
 		case ASMPIC8_DIR_DEFINE:		out << "ASMPIC8_DIR_DEFINE";		break;
 		case ASMPIC8_DIR_UNDEFINE:		out << "ASMPIC8_DIR_UNDEFINE";		break;
+		case ASMPIC8_DIR_DC_IFDEF:		out << "ASMPIC8_DIR_DC_IFDEF";		break;
+		case ASMPIC8_DIR_DC_IFNDEF:		out << "ASMPIC8_DIR_DC_IFNDEF";		break;
+		case ASMPIC8_DIR_DC_ENDIF:		out << "ASMPIC8_DIR_DC_ENDIF";		break;
 		case ASMPIC8_DIR_CONSTANT:		out << "ASMPIC8_DIR_CONSTANT";		break;
 		case ASMPIC8_DIR_PROCESSOR:		out << "ASMPIC8_DIR_PROCESSOR";		break;
 		case ASMPIC8_DIR_RADIX:			out << "ASMPIC8_DIR_RADIX";		break;
@@ -181,9 +203,9 @@ std::ostream & operator << (std::ostream & out, const StatementTypes::StatementT
 		case ASMPIC8_DIR_DA:			out << "ASMPIC8_DIR_DA";		break;
 		case ASMPIC8_DIR_DATA:			out << "ASMPIC8_DIR_DATA";		break;
 		case ASMPIC8_DIR_DE:			out << "ASMPIC8_DIR_DE";		break;
+		case ASMPIC8_DIR_DB:			out << "ASMPIC8_DIR_DB";		break;
 		case ASMPIC8_DIR_DT:			out << "ASMPIC8_DIR_DT";		break;
 		case ASMPIC8_DIR_DW:			out << "ASMPIC8_DIR_DW";		break;
-		case ASMPIC8_DIR_ENDC:			out << "ASMPIC8_DIR_ENDC";		break;
 		case ASMPIC8_DIR_FILL:			out << "ASMPIC8_DIR_FILL";		break;
 		case ASMPIC8_DIR_RES:			out << "ASMPIC8_DIR_RES";		break;
 		case ASMPIC8_DIR_ERROR:			out << "ASMPIC8_DIR_ERROR";		break;
@@ -273,8 +295,6 @@ std::ostream & operator << (std::ostream & out, const StatementTypes::StatementT
 		case ASMPIC8_INS_XORLW:			out << "ASMPIC8_INS_XORLW";		break;
 		case ASMPIC8_INS_OPTION:		out << "ASMPIC8_INS_OPTION";		break;
 		case ASMPIC8_INS_TRIS:			out << "ASMPIC8_INS_TRIS";		break;
-
-
 
 		case ASM51_LABEL:			out << "ASM51_LABEL";			break;
 		case ASM51_MACRO:			out << "ASM51_MACRO";			break;

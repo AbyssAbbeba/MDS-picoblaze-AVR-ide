@@ -45,8 +45,6 @@ public:
 			} m_array;
 		} m_data;
 
-		int m_size; // Used only for TYPE_STRING
-
 		Value();
 		Value(int value);
 		Value(long long value);
@@ -57,6 +55,7 @@ public:
 		Value(const unsigned char * array, int size);
 		Value(unsigned char * array, int size, bool copy = false);
 
+		Value & makeCopy() const;
 		void completeDelete();
 	};
 
@@ -88,7 +87,23 @@ public:
 		OPER_GT		= L'>',	///<
 		OPER_SHR	= L'≫',	///<
 		OPER_SHL	= L'≪',	///<
-		OPER_CMPL	= L'~'	///<
+		OPER_CMPL	= L'~',	///<
+		OPER_NOT	= L'!',	///<
+		OPER_ADD_ASSIGN	= 1,
+		OPER_SUB_ASSIGN	= 2,
+		OPER_MUL_ASSIGN	= 3,
+		OPER_DIV_ASSIGN	= 4,
+		OPER_MOD_ASSIGN	= 5,
+		OPER_SHL_ASSIGN	= 6,
+		OPER_SHR_ASSIGN	= 7,
+		OPER_AND_ASSIGN	= 8,
+		OPER_ORB_ASSIGN	= 9,
+		OPER_XOR_ASSIGN	= 10,
+		OPER_INC	= 11,
+		OPER_DEC	= 12,
+		OPER_INTERVALS	= 13,
+		OPER_AT		= L'@',
+		OPER_ASSIGN	= L'='
 	} m_operator;
 
 	Value m_lValue;
@@ -101,9 +116,12 @@ public:
 	CompilerExpr(Value value);
 	CompilerExpr(Operator oper, Value value);
 	CompilerExpr(char oper, Value value);
+	CompilerExpr(Value value, Operator oper);
+	CompilerExpr(Value value, char oper);
 	CompilerExpr(Value lValue, Operator oper, Value rValue);
 	CompilerExpr(Value lValue, char oper, Value rValue);
 
+	CompilerExpr * makeCopy() const;
 	CompilerExpr * first();
 	CompilerExpr * addLink(CompilerExpr * next);
 	

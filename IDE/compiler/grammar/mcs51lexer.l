@@ -384,8 +384,9 @@ XESC	(\\[0-7]{1,3})|(\\x[0-9A-F]{1,2})|(\\[uU][0-9A-F]{1,8})
 <INC_LP>"("		{ yy_pop_state(yyscanner); }
 <INC_RP>")"		{ yy_pop_state(yyscanner); }
 <INC,INC_END,INC_LP,INC_RP>{
+	;{COMMENT}	{ return COMMENT; }
+	{COMMENT}	{ /* ignore commets */ }
 	{WSPACE}	{ /* eat up white space */ }
-	{COMMENT}	{ return COMMENT; }
 }
 <INC_LP,INC_RP>.	{
 				yyextra->lexerMessage(yylloc, CompilerBase::MT_ERROR,

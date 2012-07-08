@@ -153,6 +153,7 @@ XESC	(\\[0-7]{1,3})|(\\x[0-9A-F]{1,2})|(\\[uU][0-9A-F]{1,8})
 \.?"elseifdef"	{ return D_ELSEIFDEF; }
 \.?"elseifndef"	{ return D_ELSEIFNDEF; }
 \.?"endif"	{ return D_ENDIF; }
+\.?"org"	{ return D_ORG; }
 \.?"local"	{ return D_LOCAL; }
 \.?"ifnb"	{ return D_IFNB; }
 \.?"ifb"	{ return D_IFB; }
@@ -174,7 +175,6 @@ XESC	(\\[0-7]{1,3})|(\\x[0-9A-F]{1,2})|(\\[uU][0-9A-F]{1,8})
 \.?"list"	{ return D_LIST; }
 \.?"listmac"	{ return D_LISTMAC; }
 \.?"nolist"	{ return D_NOLIST; }
-\.?"org"	{ return D_ORG; }
 \."set"		{ return D_SET; }
 \.?"exit"	{
 			// Close the current file
@@ -253,6 +253,7 @@ XESC	(\\[0-7]{1,3})|(\\x[0-9A-F]{1,2})|(\\[uU][0-9A-F]{1,8})
 "ldi"		{ return I_LDI; }
 "lds"		{ return I_LDS; }
 "ld"		{ return I_LD; }
+"ldd"		{ return I_LDD; }
 "sts"		{ return I_STS; }
 "st"		{ return I_ST; }
 "std"		{ return I_STD; }
@@ -296,38 +297,6 @@ XESC	(\\[0-7]{1,3})|(\\x[0-9A-F]{1,2})|(\\[uU][0-9A-F]{1,8})
 "x"		{ return X; }
 "y"		{ return Y; }
 "z"		{ return Z; }
-"r0"		{ return R0; }
-"r1"		{ return R1; }
-"r2"		{ return R2; }
-"r3"		{ return R3; }
-"r4"		{ return R4; }
-"r5"		{ return R5; }
-"r6"		{ return R6; }
-"r7"		{ return R7; }
-"r8"		{ return R8; }
-"r9"		{ return R9; }
-"r10"		{ return R10; }
-"r11"		{ return R11; }
-"r12"		{ return R12; }
-"r13"		{ return R13; }
-"r14"		{ return R14; }
-"r15"		{ return R15; }
-"r16"		{ return R16; }
-"r17"		{ return R17; }
-"r18"		{ return R18; }
-"r19"		{ return R19; }
-"r20"		{ return R20; }
-"r21"		{ return R21; }
-"r22"		{ return R22; }
-"r23"		{ return R23; }
-"r24"		{ return R24; }
-"r25"		{ return R25; }
-"r26"		{ return R26; }
-"r27"		{ return R27; }
-"r28"		{ return R28; }
-"r29"		{ return R29; }
-"r30"		{ return R30; }
-"r31"		{ return R31; }
 
 "high"		{ return F_HIGH; }
 "low"		{ return F_LOW; }
@@ -340,6 +309,8 @@ XESC	(\\[0-7]{1,3})|(\\x[0-9A-F]{1,2})|(\\[uU][0-9A-F]{1,8})
 "exp2"		{ return F_EXP2; }
 "log2"		{ return F_LOG2; }
 
+"at"		{ return AT; }
+"@"		{ return AT_SIGN; }
 "("		{ return LP; }
 ")"		{ return RP; }
 ","		{ return COMMA; }
@@ -386,8 +357,9 @@ XESC	(\\[0-7]{1,3})|(\\x[0-9A-F]{1,2})|(\\[uU][0-9A-F]{1,8})
 			yylval->array.size = -1;
 		}
 <INC,INC_END>{
+	;{COMMENT}	{ return COMMENT; }
+	{COMMENT}	{ /* ignore commets */ }
 	{WSPACE}	{ /* eat up white space */ }
-	{COMMENT}	{ return COMMENT; }
 }
 <INITIAL,INC>\"	{
 			// Beginning of a string, i.e. --> "some string"

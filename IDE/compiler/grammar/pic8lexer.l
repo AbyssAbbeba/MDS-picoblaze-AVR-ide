@@ -145,6 +145,9 @@ XESC	(\\[0-7]{1,3})|(\\x[0-9A-F]{1,2})|(\\[uU][0-9A-F]{1,8})
 "#define"	{ return D_DEFINE; }
 \.?"undefine"	{ return D_UNDEFINE; }
 "#undefine"	{ return D_UNDEFINE; }
+"#ifdef"	{ return D_DC_IFDEF; }
+"#ifndef"	{ return D_DC_IFNDEF; }
+"#endif"	{ return D_DC_ENDIF; }
 \.?"constant"	{ return D_CONSTANT; }
 \.?"processor"	{ return D_PROCESSOR; }
 \.?"radix"	{ return D_RADIX; }
@@ -160,6 +163,7 @@ XESC	(\\[0-7]{1,3})|(\\x[0-9A-F]{1,2})|(\\[uU][0-9A-F]{1,8})
 \.?"cblock"	{ return D_CBLOCK; }
 \.?"da"		{ return D_DA; }
 \.?"data"	{ return D_DATA; }
+\.?"db"		{ return D_DB; }
 \.?"de"		{ return D_DE; }
 \.?"dt"		{ return D_DT; }
 \.?"dw"		{ return D_DW; }
@@ -171,8 +175,8 @@ XESC	(\\[0-7]{1,3})|(\\x[0-9A-F]{1,2})|(\\[uU][0-9A-F]{1,8})
 \.?"list"	{ return D_LIST; }
 \.?"messg"	{ return D_MESSG; }
 \.?"nolist"	{ return D_NOLIST; }
-\.?"page"	{ return D_PAGE; }
-\.?"space"	{ return D_SPACE; }
+\."page"	{ return D_PAGE; }
+\.?"space"	{ return D_SKIP; }
 \.?"subtitle"	{ return D_SUBTITLE; }
 \.?"title"	{ return D_TITLE; }
 \.?"expand"	{ return D_EXPAND; }
@@ -281,6 +285,8 @@ XESC	(\\[0-7]{1,3})|(\\x[0-9A-F]{1,2})|(\\[uU][0-9A-F]{1,8})
 "log2"		{ return F_LOG2; }
 "#v"		{ return F_V; }
 
+":"		{ return COLON; }
+".."		{ return INTERVAL; }
 "("		{ return LP; }
 ")"		{ return RP; }
 ","		{ return COMMA; }
@@ -328,7 +334,8 @@ XESC	(\\[0-7]{1,3})|(\\x[0-9A-F]{1,2})|(\\[uU][0-9A-F]{1,8})
 		}
 <INC,INC_END>{
 	{WSPACE}	{ /* eat up white space */ }
-	{COMMENT}	{ return COMMENT; }
+	;{COMMENT}	{ return COMMENT; }
+	{COMMENT}	{ /* ignore commets */ }
 }
 <INITIAL,INC>\"	{
 			// Beginning of a string, i.e. --> "some string"

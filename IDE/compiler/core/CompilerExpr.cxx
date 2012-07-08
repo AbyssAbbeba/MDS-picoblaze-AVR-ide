@@ -76,6 +76,36 @@ CompilerExpr::Value::Value(unsigned char * array, int size, bool copy) {
 	}
 }
 
+CompilerExpr::Value & CompilerExpr::Value::makeCopy() const {
+	Value * result = new Value();
+	result->m_type = m_type;
+	switch ( m_type ) {
+		case TYPE_EMPTY:
+			break;
+		case TYPE_INT:
+			result->m_data.m_integer = m_data.m_integer;
+			break;
+		case TYPE_REAL:
+			result->m_data.m_real = m_data.m_real;
+			break;
+		case TYPE_EXPR:
+			result->m_data.m_expr = m_data.m_expr->makeCopy();
+			break;
+		case TYPE_SYMBOL: {
+			int length = ( 1 + strlen(m_data.m_symbol) );
+			result->m_data.m_symbol = new char[length];
+			memcpy(result->m_data.m_symbol, m_data.m_symbol, length);
+			break;
+		}
+		case TYPE_ARRAY:
+			result->m_data.m_array.m_size = m_data.m_array.m_size;
+			result->m_data.m_array.m_data = (unsigned char*) malloc(m_data.m_array.m_size);
+			memcpy(result->m_data.m_array.m_data, m_data.m_array.m_data, m_data.m_array.m_size);
+			break;
+	}
+	return * result;
+}
+
 void CompilerExpr::Value::completeDelete() {
 	if ( TYPE_SYMBOL == m_type ) {
 		delete[] m_data.m_symbol;
@@ -116,6 +146,21 @@ CompilerExpr::CompilerExpr(char oper, Value value) {
 	m_next = NULL;
 	m_prev = NULL;
 }
+CompilerExpr::CompilerExpr(Value value, Operator oper) {
+	m_operator = Operator(oper);
+	m_rValue = value;
+
+	m_next = NULL;
+	m_prev = NULL;
+}
+
+CompilerExpr::CompilerExpr(Value value, char oper) {
+	m_operator = Operator(oper);
+	m_rValue = value;
+
+	m_next = NULL;
+	m_prev = NULL;
+}
 
 CompilerExpr::CompilerExpr(Value lValue, Operator oper, Value rValue) {
 	m_lValue = lValue;
@@ -135,6 +180,17 @@ CompilerExpr::CompilerExpr(Value lValue, char oper, Value rValue) {
 	m_prev = NULL;
 }
 
+CompilerExpr * CompilerExpr::makeCopy() const {
+	if ( NULL == this ) {
+		return NULL;
+	}
+
+	CompilerExpr * result = new CompilerExpr();
+	result->m_lValue = m_lValue.makeCopy();
+	result->m_operator = m_operator;
+	result->m_rValue = m_rValue.makeCopy();
+	return result;
+}
 
 CompilerExpr * CompilerExpr::first() {
 	CompilerExpr * expr = this;
@@ -228,29 +284,46 @@ std::ostream & operator << (std::ostream & out, const CompilerExpr::Value & val)
 std::ostream & operator << (std::ostream & out, const CompilerExpr::Operator & opr) {
 	switch ( opr ) {
 		case CompilerExpr::OPER_NONE:				break;
-		case CompilerExpr::OPER_ADD:	out << "+";		break;
-		case CompilerExpr::OPER_SUB:	out << "-";		break;
-		case CompilerExpr::OPER_MULT:	out << "*";		break;
-		case CompilerExpr::OPER_DIV:	out << "/";		break;
-		case CompilerExpr::OPER_MOD:	out << "%";		break;
-		case CompilerExpr::OPER_DOT:	out << ".";		break;
-		case CompilerExpr::OPER_BOR:	out << "|";		break;
-		case CompilerExpr::OPER_BXOR:	out << "^";		break;
-		case CompilerExpr::OPER_BAND:	out << "&";		break;
-		case CompilerExpr::OPER_LOR:	out << "||";		break;
-		case CompilerExpr::OPER_LXOR:	out << "^^";		break;
-		case CompilerExpr::OPER_LAND:	out << "&&";		break;
-		case CompilerExpr::OPER_LOW:	out << "LOW ";		break;
-		case CompilerExpr::OPER_HIGH:	out << "HIGH ";		break;
-		case CompilerExpr::OPER_EQ:	out << "==";		break;
-		case CompilerExpr::OPER_NE:	out << "!=";		break;
-		case CompilerExpr::OPER_LT:	out << "<";		break;
-		case CompilerExpr::OPER_LE:	out << "<=";		break;
-		case CompilerExpr::OPER_GE:	out << ">=";		break;
-		case CompilerExpr::OPER_GT:	out << ">";		break;
-		case CompilerExpr::OPER_SHR:	out << ">>";		break;
-		case CompilerExpr::OPER_SHL:	out << "<<";		break;
-		case CompilerExpr::OPER_CALL:	out << "<CALL>";	break;
+		case CompilerExpr::OPER_ADD:		out << "+";		break;
+		case CompilerExpr::OPER_SUB:		out << "-";		break;
+		case CompilerExpr::OPER_MULT:		out << "*";		break;
+		case CompilerExpr::OPER_DIV:		out << "/";		break;
+		case CompilerExpr::OPER_MOD:		out << "%";		break;
+		case CompilerExpr::OPER_DOT:		out << ".";		break;
+		case CompilerExpr::OPER_BOR:		out << "|";		break;
+		case CompilerExpr::OPER_BXOR:		out << "^";		break;
+		case CompilerExpr::OPER_BAND:		out << "&";		break;
+		case CompilerExpr::OPER_LOR:		out << "||";		break;
+		case CompilerExpr::OPER_LXOR:		out << "^^";		break;
+		case CompilerExpr::OPER_LAND:		out << "&&";		break;
+		case CompilerExpr::OPER_LOW:		out << "LOW ";		break;
+		case CompilerExpr::OPER_HIGH:		out << "HIGH ";		break;
+		case CompilerExpr::OPER_EQ:		out << "==";		break;
+		case CompilerExpr::OPER_NE:		out << "!=";		break;
+		case CompilerExpr::OPER_LT:		out << "<";		break;
+		case CompilerExpr::OPER_LE:		out << "<=";		break;
+		case CompilerExpr::OPER_GE:		out << ">=";		break;
+		case CompilerExpr::OPER_GT:		out << ">";		break;
+		case CompilerExpr::OPER_SHR:		out << ">>";		break;
+		case CompilerExpr::OPER_SHL:		out << "<<";		break;
+		case CompilerExpr::OPER_CALL:		out << "<CALL>";	break;
+		case CompilerExpr::OPER_CMPL:		out << "~";		break;
+		case CompilerExpr::OPER_NOT:		out << "!";		break;
+		case CompilerExpr::OPER_ADD_ASSIGN:	out << "+=";		break;
+		case CompilerExpr::OPER_SUB_ASSIGN:	out << "-=";		break;
+		case CompilerExpr::OPER_MUL_ASSIGN:	out << "*=";		break;
+		case CompilerExpr::OPER_DIV_ASSIGN:	out << "/=";		break;
+		case CompilerExpr::OPER_MOD_ASSIGN:	out << "%=";		break;
+		case CompilerExpr::OPER_SHL_ASSIGN:	out << "<<=";		break;
+		case CompilerExpr::OPER_SHR_ASSIGN:	out << ">>=";		break;
+		case CompilerExpr::OPER_AND_ASSIGN:	out << "&=";		break;
+		case CompilerExpr::OPER_ORB_ASSIGN:	out << "|=";		break;
+		case CompilerExpr::OPER_XOR_ASSIGN:	out << "^=";		break;
+		case CompilerExpr::OPER_INC:		out << "++";		break;
+		case CompilerExpr::OPER_DEC:		out << "--";		break;
+		case CompilerExpr::OPER_AT:		out << "@";		break;
+		case CompilerExpr::OPER_INTERVALS:	out << "..";		break;
+		case CompilerExpr::OPER_ASSIGN:		out << "=";		break;
 	}
 	return out;
 }
