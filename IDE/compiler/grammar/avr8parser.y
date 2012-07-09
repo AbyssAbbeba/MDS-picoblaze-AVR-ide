@@ -30,7 +30,7 @@
 // Write an extra output file containing verbose descriptions of the parser states.
 %verbose
 // Expect exactly <n> shift/reduce conflicts in this grammar
-%expect 925
+%expect 1106
 // Expect exactly <n> reduce/reduce conflicts in this grammar
 %expect-rr 0
 /* Type of parser tables within the LR family, in this case we use LALR (Look-Ahead LR parser) */
@@ -78,25 +78,36 @@
 		( compiler->toSourceLocation(yylloc) )
 
 	// Error messages
-	#define NO_LABEL_EXPECTED(loc, directive, stmt) \
+	#define N_OPERANDS_EXPECTED(location, instruction, number) \
+		compiler->parserMessage ( location, CompilerBase::MT_ERROR, \
+			QObject::tr("invalid number of operands, instruction %1 takes %2 operand(s)").arg(instruction).arg(number).toStdString() );
+	#define REQ_FIRST_OPR(instruction, operand, location, expression) \
+		CompilerExpr::completeDelete(expression); \
+		compiler->parserMessage ( location, CompilerBase::MT_ERROR, \
+			QObject::tr("the first operand of %1 is required to be one of these: { %2 }").arg(instruction).arg(operand).toStdString() );
+	#define REQ_SECOND_OPR(instruction, operand, location, expression) \
+		CompilerExpr::completeDelete(expression); \
+		compiler->parserMessage ( location, CompilerBase::MT_ERROR, \
+			QObject::tr("the second operand of %1 is required to be one of these: { %2 }").arg(instruction).arg(operand).toStdString() );
+	#define NO_LABEL_EXPECTED(location, directive, stmt) \
 		CompilerStatement::completeDelete(stmt); \
-		compiler->parserMessage ( loc, CompilerBase::MT_ERROR, \
+		compiler->parserMessage ( location, CompilerBase::MT_ERROR, \
 			QObject::tr("cannot declare a label before %1 directive").arg(directive).toStdString() );
-	#define ARG_REQUIRED_D(loc, directive) \
-		compiler->parserMessage ( loc, CompilerBase::MT_ERROR, \
+	#define ARG_REQUIRED_D(location, directive) \
+		compiler->parserMessage ( location, CompilerBase::MT_ERROR, \
 			QObject::tr("directive %1 requires a single argument").arg(directive).toStdString() );
-	#define NO_ARG_EXPECTED_D(directive, args, loc) \
-		args->completeDelete(); \
-		compiler->parserMessage ( loc, CompilerBase::MT_ERROR, \
+	#define NO_ARG_EXPECTED_D(directive, arguments, location) \
+		arguments->completeDelete(); \
+		compiler->parserMessage ( location, CompilerBase::MT_ERROR, \
 			QObject::tr("directive %1 takes no arguments").arg(directive).toStdString() );
-	#define MISSING_AT_OPERATOR(loc, directive) \
-		compiler->parserMessage ( loc, CompilerBase::MT_ERROR, \
+	#define MISSING_AT_OPERATOR(location, directive) \
+		compiler->parserMessage ( location, CompilerBase::MT_ERROR, \
 			QObject::tr("segment specifier %1 requires `AT' operator before the start address").arg(directive).toStdString() );
-	#define DECL_ID_EXPECTED(loc, directive) \
-		compiler->parserMessage ( loc, CompilerBase::MT_ERROR, \
+	#define DECL_ID_EXPECTED(location, directive) \
+		compiler->parserMessage ( location, CompilerBase::MT_ERROR, \
 			QObject::tr("directive %1 requires an identifier for the symbol (or macro) which it defines").arg(directive).toStdString() );
-	#define DEPRECATED_SYNTAX(loc) \
-		compiler->parserMessage ( loc, CompilerBase::MT_WARNING, \
+	#define DEPRECATED_SYNTAX(location) \
+		compiler->parserMessage ( location, CompilerBase::MT_WARNING, \
 			QObject::tr("deprecated directive syntax").toStdString() );
 
 	// Declaration of the error reporting function used by Bison
@@ -248,6 +259,28 @@
 %type<stmt>	dir_ifndef_a	dir_ifb_a	dir_ifnb_a	dir_else	dir_elseif_a
 %type<stmt>	dir_elseifn_a	dir_elseifdef_a	dir_elseifndf_a	dir_elseifb_a	dir_elseifnb_a
 %type<stmt>	dir_endm	dir_device	dir_def
+// Statements - instructions
+%type<stmt>	ins_add		ins_adc		ins_adiw	ins_sub		ins_subi
+%type<stmt>	ins_sbc		ins_sbci	ins_sbiw	ins_and		ins_andi
+%type<stmt>	ins_or		ins_ori		ins_eor		ins_com		ins_neg
+%type<stmt>	ins_sbr		ins_cbr		ins_inc		ins_dec		ins_tst
+%type<stmt>	ins_clr		ins_ser		ins_mul		ins_rjmp	ins_ijmp
+%type<stmt>	ins_jmp		ins_rcall	ins_icall	ins_call	ins_ret
+%type<stmt>	ins_reti	ins_cpse	ins_cp		ins_cpc		ins_cpi
+%type<stmt>	ins_sbrc	ins_sbrs	ins_sbic	ins_sbis	ins_brbs
+%type<stmt>	ins_brbc	ins_breq	ins_brne	ins_brcs	ins_brcc
+%type<stmt>	ins_brsh	ins_brlo	ins_brmi	ins_brpl	ins_brge
+%type<stmt>	ins_brlt	ins_brhs	ins_brhc	ins_brts	ins_brtc
+%type<stmt>	ins_brvs	ins_brvc	ins_brie	ins_brid	ins_mov
+%type<stmt>	ins_ld		ins_ldd		ins_sts		ins_st		ins_std
+%type<stmt>	ins_lpm		ins_in		ins_out		ins_push	ins_pop
+%type<stmt>	ins_lsl		ins_lsr		ins_rol		ins_ror		ins_asr
+%type<stmt>	ins_swap	ins_bset	ins_bclr	ins_sbi		ins_cbi
+%type<stmt>	ins_bst		ins_bld		ins_sec		ins_clc		ins_sen
+%type<stmt>	ins_cln		ins_sez		ins_clz		ins_sei		ins_cli
+%type<stmt>	ins_ses		ins_cls		ins_sev		ins_clv		ins_set
+%type<stmt>	ins_clt		ins_seh		ins_clh		ins_nop		ins_sleep
+%type<stmt>	ins_ldi		ins_lds		ins_wdr
 
 // Each time the parser discards symbol with certain semantic types, their memory have to bee freed
 %destructor {
@@ -708,7 +741,7 @@ dir_nolist:
 	| label D_NOLIST args		{ /* Syntax error */ $$ = NULL; NO_ARG_EXPECTED_D("NOLIST", $args, @args); $label->completeDelete(); }
 ;
 dir_set:
-	  id D_SET expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_DIR_SET, $id->addLink($expr)); }
+	  id D_SET expr			{ $$ = new CompilerStatement(LOC(), ASMAVR8_DIR_SET, $id->addLink($expr)); }
 	| D_SET id "=" expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_DIR_SET, $id->addLink($expr)); DEPRECATED_SYNTAX(@D_SET); }
 	| label D_SET id "=" expr	{ $$ = $label->addLink(new CompilerStatement(LOC(), ASMAVR8_DIR_SET, $id->addLink($expr))); DEPRECATED_SYNTAX(@D_SET); }
 	| id D_SET			{ /* Syntax error */ $$ = NULL; ARG_REQUIRED_D(@D_SET, "SET"); $id->completeDelete(); }
@@ -833,10 +866,30 @@ dir_include:
 dir_exit:
 	  D_EXIT			{ $$ = new CompilerStatement(LOC(), ASMAVR8_DIR_EXIT); }
 	| label D_EXIT			{ $$ = $label->addLink(new CompilerStatement(LOC(), ASMAVR8_DIR_EXIT)); }
+	| D_EXIT args			{
+						/* Syntax error */
+						NO_ARG_EXPECTED_D("EXIT", $args, @args);
+						$$ = new CompilerStatement(LOC(), ASMAVR8_DIR_EXIT);
+					}
+	| label D_EXIT args		{
+						/* Syntax error */
+						NO_ARG_EXPECTED_D("EXIT", $args, @args);
+						$$ = $label->addLink(new CompilerStatement(LOC(), ASMAVR8_DIR_EXIT));
+					}
 ;
 dir_listmac:
 	  D_LISTMAC			{ $$ = new CompilerStatement(LOC(), ASMAVR8_DIR_LISTMAC); }
 	| label D_LISTMAC		{ $$ = $label->addLink(new CompilerStatement(LOC(), ASMAVR8_DIR_LISTMAC)); }
+	| D_LISTMAC args		{
+						/* Syntax error */
+						NO_ARG_EXPECTED_D("LISTMAC", $args, @args);
+						$$ = new CompilerStatement(LOC(), ASMAVR8_DIR_EXIT);
+					}
+	| label D_LISTMAC  args		{
+						/* Syntax error */
+						NO_ARG_EXPECTED_D("LISTMAC", $args, @args);
+						$$ = $label->addLink(new CompilerStatement(LOC(), ASMAVR8_DIR_EXIT));
+					}
 ;
 
 /*
@@ -844,130 +897,529 @@ dir_listmac:
  */
 instruction:
 	/* ARITHMETIC AND LOGIC INSTRUCTIONS */
-	  I_ADD		expr "," expr	{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_ADD, $2->addLink($4)); }
-	| I_ADC		expr "," expr	{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_ADC, $2->addLink($4)); }
-	| I_ADIW	expr "," expr	{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_ADIW, $2->addLink($4)); }
-	| I_SUB		expr "," expr	{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_SUB, $2->addLink($4)); }
-	| I_SUBI	expr "," expr	{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_SUBI, $2->addLink($4)); }
-	| I_SBC		expr "," expr	{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_SBC, $2->addLink($4)); }
-	| I_SBCI	expr "," expr	{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_SBCI, $2->addLink($4)); }
-	| I_SBIW	expr "," expr	{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_SBIW, $2->addLink($4)); }
-	| I_AND		expr "," expr	{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_AND, $2->addLink($4)); }
-	| I_ANDI	expr "," expr	{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_ANDI, $2->addLink($4)); }
-	| I_OR		expr "," expr	{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_OR, $2->addLink($4)); }
-	| I_ORI		expr "," expr	{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_ORI, $2->addLink($4)); }
-	| I_EOR		expr "," expr	{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_EOR, $2->addLink($4)); }
-	| I_COM		expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_COM, $2); }
-	| I_NEG		expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_NEG, $2); }
-	| I_SBR		expr "," expr	{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_SBR, $2->addLink($4)); }
-	| I_CBR		expr "," expr	{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_CBR, $2->addLink($4)); }
-	| I_INC		expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_INC, $2); }
-	| I_DEC		expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_DEC, $2); }
-	| I_TST		expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_TST, $2); }
-	| I_CLR		expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_CLR, $2); }
-	| I_SER		expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_SER, $2); }
-	| I_MUL		expr "," expr	{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_MUL, $2->addLink($4)); }
+	  ins_add	{ $$ = $1; }	| ins_adc	{ $$ = $1; }
+	| ins_adiw	{ $$ = $1; }	| ins_sub	{ $$ = $1; }
+	| ins_subi	{ $$ = $1; }	| ins_sbc	{ $$ = $1; }
+	| ins_sbci	{ $$ = $1; }	| ins_sbiw	{ $$ = $1; }
+	| ins_and	{ $$ = $1; }	| ins_andi	{ $$ = $1; }
+	| ins_or	{ $$ = $1; }	| ins_ori	{ $$ = $1; }
+	| ins_eor	{ $$ = $1; }	| ins_com	{ $$ = $1; }
+	| ins_neg	{ $$ = $1; }	| ins_sbr	{ $$ = $1; }
+	| ins_cbr	{ $$ = $1; }	| ins_inc	{ $$ = $1; }
+	| ins_dec	{ $$ = $1; }	| ins_tst	{ $$ = $1; }
+	| ins_clr	{ $$ = $1; }	| ins_ser	{ $$ = $1; }
+	| ins_mul	{ $$ = $1; }
 	/* BRANCH INSTRUCTIONS */
-	| I_RJMP	expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_RJMP, $2); }
-	| I_IJMP			{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_IJMP); }
-	| I_JMP		expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_JMP, $2); }
-	| I_RCALL	expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_RCALL, $2); }
-	| I_ICALL			{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_ICALL); }
-	| I_CALL	expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_CALL, $2); }
-	| I_RET				{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_RET); }
-	| I_RETI			{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_RETI); }
-	| I_CPSE	expr "," expr	{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_CPSE, $2->addLink($4)); }
-	| I_CP		expr "," expr	{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_CP, $2->addLink($4)); }
-	| I_CPC		expr "," expr	{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_CPC, $2->addLink($4)); }
-	| I_CPI		expr "," expr	{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_CPI, $2->addLink($4)); }
-	| I_SBRC	expr "," expr	{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_SBRC, $2->addLink($4)); }
-	| I_SBRS	expr "," expr	{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_SBRS, $2->addLink($4)); }
-	| I_SBIC	expr "," expr	{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_SBIC, $2->addLink($4)); }
-	| I_SBIS	expr "," expr	{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_SBIS, $2->addLink($4)); }
-	| I_BRBS	expr "," expr	{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_BRBS, $2->addLink($4)); }
-	| I_BRBC	expr "," expr	{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_BRBC, $2->addLink($4)); }
-	| I_BREQ	expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_BREQ, $2); }
-	| I_BRNE	expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_BRNE, $2); }
-	| I_BRCS	expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_BRCS, $2); }
-	| I_BRCC	expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_BRCC, $2); }
-	| I_BRSH	expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_BRSH, $2); }
-	| I_BRLO	expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_BRLO, $2); }
-	| I_BRMI	expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_BRMI, $2); }
-	| I_BRPL	expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_BRPL, $2); }
-	| I_BRGE	expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_BRGE, $2); }
-	| I_BRLT	expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_BRLT, $2); }
-	| I_BRHS	expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_BRHS, $2); }
-	| I_BRHC	expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_BRHC, $2); }
-	| I_BRTS	expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_BRTS, $2); }
-	| I_BRTC	expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_BRTC, $2); }
-	| I_BRVS	expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_BRVS, $2); }
-	| I_BRVC	expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_BRVC, $2); }
-	| I_BRIE	expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_BRIE, $2); }
-	| I_BRID	expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_BRID, $2); }
+	| ins_rjmp	{ $$ = $1; }	| ins_ijmp	{ $$ = $1; }
+	| ins_jmp	{ $$ = $1; }	| ins_rcall	{ $$ = $1; }
+	| ins_icall	{ $$ = $1; }	| ins_call	{ $$ = $1; }
+	| ins_ret	{ $$ = $1; }	| ins_reti	{ $$ = $1; }
+	| ins_cpse	{ $$ = $1; }	| ins_cp	{ $$ = $1; }
+	| ins_cpc	{ $$ = $1; }	| ins_cpi	{ $$ = $1; }
+	| ins_sbrc	{ $$ = $1; }	| ins_sbrs	{ $$ = $1; }
+	| ins_sbic	{ $$ = $1; }	| ins_sbis	{ $$ = $1; }
+	| ins_brbs	{ $$ = $1; }	| ins_brbc	{ $$ = $1; }
+	| ins_breq	{ $$ = $1; }	| ins_brne	{ $$ = $1; }
+	| ins_brcs	{ $$ = $1; }	| ins_brcc	{ $$ = $1; }
+	| ins_brsh	{ $$ = $1; }	| ins_brlo	{ $$ = $1; }
+	| ins_brmi	{ $$ = $1; }	| ins_brpl	{ $$ = $1; }
+	| ins_brge	{ $$ = $1; }	| ins_brlt	{ $$ = $1; }
+	| ins_brhs	{ $$ = $1; }	| ins_brhc	{ $$ = $1; }
+	| ins_brts	{ $$ = $1; }	| ins_brtc	{ $$ = $1; }
+	| ins_brvs	{ $$ = $1; }	| ins_brvc	{ $$ = $1; }
+	| ins_brie	{ $$ = $1; }	| ins_brid	{ $$ = $1; }
 	/* DATA TRANSFER INSTRUCTIONS */
-	| I_MOV		expr "," expr	{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_MOV, $2->addLink($4)); }
-	| I_LDI		expr "," expr	{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_LDI, $2->addLink($4)); }
-	| I_LDS		expr "," expr	{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_LDS, $2->addLink($4)); }
-	| I_LD		expr "," X	{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_LD_X, $2); }
-	| I_LD		expr "," X "+"	{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_LD_Xp, $2); }
-	| I_LD		expr "," "-" X	{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_LD_mX, $2); }
-	| I_LD		expr "," Y	{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_LD_Y, $2); }
-	| I_LD		expr "," Y "+"	{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_LD_Yp, $2); }
-	| I_LD		expr "," "-" Y	{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_LD_mY, $2); }
-	| I_LD		expr "," Z	{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_LD_Z, $2); }
-	| I_LD		expr "," Z "+"	{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_LD_Zp, $2); }
-	| I_LD		expr "," "-" Z	{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_LD_mZ, $2); }
-	| I_LDD		expr "," Y "+" expr	{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_LDD_Y, $2->addLink($6)); }
-	| I_LDD		expr "," Z "+" expr	{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_LDD_Z, $2->addLink($6)); }
-	| I_STS		expr "," expr	{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_STS, $2->addLink($4)); }
-	| I_ST		X "," expr	{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_ST_X, $4); }
-	| I_ST		X "+" "," expr	{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_ST_Xp, $5); }
-	| I_ST		"-" X "," expr	{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_ST_mX, $5); }
-	| I_ST		Y "," expr	{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_ST_Y, $4); }
-	| I_ST		Y "+" "," expr	{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_ST_Yp, $5); }
-	| I_ST		"-" Y "," expr	{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_ST_mY, $5); }
-	| I_ST		Z "," expr	{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_ST_Z, $4); }
-	| I_ST		Z "+" "," expr	{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_ST_Zp, $5); }
-	| I_ST		"-" Z "," expr	{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_ST_mZ, $5); }
-	| I_STD		Y "+" expr "," expr	{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_STD_Y, $4->addLink($6)); }
-	| I_STD		Z "+" expr "," expr	{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_STD_Z, $4->addLink($6)); }
-	| I_LPM				{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_LPM); }
-	| I_IN		expr "," expr	{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_IN, $2->addLink($4)); }
-	| I_OUT		expr "," expr	{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_OUT, $2->addLink($4)); }
-	| I_PUSH	expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_PUSH, $2); }
-	| I_POP		expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_POP, $2); }
+	| ins_mov	{ $$ = $1; }	| ins_ldi	{ $$ = $1; }
+	| ins_lds	{ $$ = $1; }	| ins_ld	{ $$ = $1; }
+	| ins_ldd	{ $$ = $1; }	| ins_sts	{ $$ = $1; }
+	| ins_st	{ $$ = $1; }	| ins_std	{ $$ = $1; }
+	| ins_lpm	{ $$ = $1; }	| ins_in	{ $$ = $1; }
+	| ins_out	{ $$ = $1; }	| ins_push	{ $$ = $1; }
+	| ins_pop	{ $$ = $1; }
 	/* BIT AND BIT-TEST INSTRUCTIONS */
-	| I_LSL		expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_LSL, $2); }
-	| I_LSR		expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_LSR, $2); }
-	| I_ROL		expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_ROL, $2); }
-	| I_ROR		expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_ROR, $2); }
-	| I_ASR		expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_ASR, $2); }
-	| I_SWAP	expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_SWAP, $2); }
-	| I_BSET	expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_BSET, $2); }
-	| I_BCLR	expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_BCLR, $2); }
-	| I_SBI		expr "," expr	{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_SBI, $2->addLink($4)); }
-	| I_CBI		expr "," expr	{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_CBI, $2->addLink($4)); }
-	| I_BST		expr "," expr	{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_BST, $2->addLink($4)); }
-	| I_BLD		expr "," expr	{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_BLD, $2->addLink($4)); }
-	| I_SEC				{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_SEC); }
-	| I_CLC				{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_CLC); }
-	| I_SEN				{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_SEN); }
-	| I_CLN				{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_CLN); }
-	| I_SEZ				{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_SEZ); }
-	| I_CLZ				{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_CLZ); }
-	| I_SEI				{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_SEI); }
-	| I_CLI				{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_CLI); }
-	| I_SES				{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_SES); }
-	| I_CLS				{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_CLS); }
-	| I_SEV				{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_SEV); }
-	| I_CLV				{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_CLV); }
-	| I_SET				{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_SET); }
-	| I_CLT				{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_CLT); }
-	| I_SEH				{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_SEH); }
-	| I_CLH				{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_CLH); }
-	| I_NOP				{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_NOP); }
-	| I_SLEEP			{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_SLEEP); }
-	| I_WDR				{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_WDR); }
+	| ins_lsl	{ $$ = $1; }	| ins_lsr	{ $$ = $1; }
+	| ins_rol	{ $$ = $1; }	| ins_ror	{ $$ = $1; }
+	| ins_asr	{ $$ = $1; }	| ins_swap	{ $$ = $1; }
+	| ins_bset	{ $$ = $1; }	| ins_bclr	{ $$ = $1; }
+	| ins_sbi	{ $$ = $1; }	| ins_cbi	{ $$ = $1; }
+	| ins_bst	{ $$ = $1; }	| ins_bld	{ $$ = $1; }
+	| ins_sec	{ $$ = $1; }	| ins_clc	{ $$ = $1; }
+	| ins_sen	{ $$ = $1; }	| ins_cln	{ $$ = $1; }
+	| ins_sez	{ $$ = $1; }	| ins_clz	{ $$ = $1; }
+	| ins_sei	{ $$ = $1; }	| ins_cli	{ $$ = $1; }
+	| ins_ses	{ $$ = $1; }	| ins_cls	{ $$ = $1; }
+	| ins_sev	{ $$ = $1; }	| ins_clv	{ $$ = $1; }
+	| ins_set	{ $$ = $1; }	| ins_clt	{ $$ = $1; }
+	| ins_seh	{ $$ = $1; }	| ins_clh	{ $$ = $1; }
+	| ins_nop	{ $$ = $1; }	| ins_sleep	{ $$ = $1; }
+	| ins_wdr	{ $$ = $1; }
+;
+/* ARITHMETIC AND LOGIC INSTRUCTIONS */
+ins_add:
+	  I_ADD expr "," expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_ADD, $2->addLink($4)); }
+	| I_ADD oprs_2 			{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "ADD", 2); }
+;
+ins_adc:
+	  I_ADC expr "," expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_ADC, $2->addLink($4)); }
+	| I_ADC oprs_2 			{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "ADC", 2); }
+;
+ins_adiw:
+	  I_ADIW expr "," expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_ADIW, $2->addLink($4)); }
+	| I_ADIW oprs_2 		{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "ADIW", 2); }
+;
+ins_sub:
+	  I_SUB expr "," expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_SUB, $2->addLink($4)); }
+	| I_SUB oprs_2 			{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "SUB", 2); }
+;
+ins_subi:
+	  I_SUBI expr "," expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_SUBI, $2->addLink($4)); }
+	| I_SUBI oprs_2 		{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "SUBI", 2); }
+;
+ins_sbc:
+	  I_SBC expr "," expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_SBC, $2->addLink($4)); }
+	| I_SBC oprs_2 			{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "SBC", 2); }
+;
+ins_sbci:
+	  I_SBCI expr "," expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_SBCI, $2->addLink($4)); }
+	| I_SBCI oprs_2 		{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "SBCI", 2); }
+;
+ins_sbiw:
+	  I_SBIW expr "," expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_SBIW, $2->addLink($4)); }
+	| I_SBIW oprs_2 		{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "SBIW", 2); }
+;
+ins_and:
+	  I_AND expr "," expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_AND, $2->addLink($4)); }
+	| I_AND oprs_2 			{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "AND", 2); }
+;
+ins_andi:
+	  I_ANDI expr "," expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_ANDI, $2->addLink($4)); }
+	| I_ANDI oprs_2 		{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "ANDI", 2); }
+;
+ins_or:
+	  I_OR expr "," expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_OR, $2->addLink($4)); }
+	| I_OR oprs_2 			{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "OR", 2); }
+;
+ins_ori:
+	  I_ORI expr "," expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_ORI, $2->addLink($4)); }
+	| I_ORI oprs_2 			{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "ORI", 2); }
+;
+ins_eor:
+	  I_EOR expr "," expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_EOR, $2->addLink($4)); }
+	| I_EOR oprs_2 			{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "EOR", 2); }
+;
+ins_com:
+	  I_COM expr			{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_COM, $2); }
+	| I_COM oprs_1 			{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "COM", 1); }
+;
+ins_neg:
+	  I_NEG expr			{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_NEG, $2); }
+	| I_NEG oprs_1 			{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "NEG", 1); }
+;
+ins_sbr:
+	  I_SBR expr "," expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_SBR, $2->addLink($4)); }
+	| I_SBR oprs_2 			{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "SBR", 2); }
+;
+ins_cbr:
+	  I_CBR expr "," expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_CBR, $2->addLink($4)); }
+	| I_CBR oprs_2 			{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "CBR", 2); }
+;
+ins_inc:
+	  I_INC expr			{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_INC, $2); }
+	| I_INC oprs_1 			{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "INC", 1); }
+;
+ins_dec:
+	  I_DEC expr			{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_DEC, $2); }
+	| I_DEC oprs_1 			{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "DEC", 1); }
+;
+ins_tst:
+	  I_TST expr			{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_TST, $2); }
+	| I_TST oprs_1 			{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "TST", 1); }
+;
+ins_clr:
+	  I_CLR expr			{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_CLR, $2); }
+	| I_CLR oprs_1 			{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "CLR", 1); }
+;
+ins_ser:
+	  I_SER expr			{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_SER, $2); }
+	| I_SER oprs_1 			{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "SER", 1); }
+;
+ins_mul:
+	  I_MUL expr "," expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_MUL, $2->addLink($4)); }
+	| I_MUL oprs_2 			{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "MUL", 2); }
+;
+/* BRANCH INSTRUCTIONS */
+ins_rjmp:
+	  I_RJMP expr			{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_RJMP, $2); }
+	| I_RJMP oprs_1 		{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "RJMP", 1); }
+;
+ins_ijmp:
+	  I_IJMP			{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_IJMP); }
+	| I_IJMP oprs_0 		{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "IJMP", 0); }
+;
+ins_jmp:
+	  I_JMP expr			{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_JMP, $2); }
+	| I_JMP oprs_1 			{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "JMP", 1); }
+;
+ins_rcall:
+	  I_RCALL expr			{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_RCALL, $2); }
+	| I_RCALL oprs_1 		{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "RCALL", 1); }
+;
+ins_icall:
+	  I_ICALL			{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_ICALL); }
+	| I_ICALL oprs_0 		{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "ICALL", 0); }
+;
+ins_call:
+	  I_CALL expr			{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_CALL, $2); }
+	| I_CALL oprs_1 		{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "CALL", 1); }
+;
+ins_ret:
+	  I_RET				{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_RET); }
+	| I_RET oprs_0 			{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "RET", 0); }
+;
+ins_reti:
+	  I_RETI			{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_RETI); }
+	| I_RETI oprs_0 		{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "RETI", 0); }
+;
+ins_cpse:
+	  I_CPSE expr "," expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_CPSE, $2->addLink($4)); }
+	| I_CPSE oprs_2 		{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "CPSE", 2); }
+;
+ins_cp:
+	  I_CP expr "," expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_CP, $2->addLink($4)); }
+	| I_CP oprs_2 			{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "CP", 2); }
+;
+ins_cpc:
+	  I_CPC expr "," expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_CPC, $2->addLink($4)); }
+	| I_CPC oprs_2 			{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "CPC", 2); }
+;
+ins_cpi:
+	  I_CPI expr "," expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_CPI, $2->addLink($4)); }
+	| I_CPI oprs_2 			{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "CPI", 2); }
+;
+ins_sbrc:
+	  I_SBRC expr "," expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_SBRC, $2->addLink($4)); }
+	| I_SBRC oprs_2 		{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "SBRC", 2); }
+;
+ins_sbrs:
+	  I_SBRS expr "," expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_SBRS, $2->addLink($4)); }
+	| I_SBRS oprs_2 		{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "SBRS", 2); }
+;
+ins_sbic:
+	  I_SBIC expr "," expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_SBIC, $2->addLink($4)); }
+	| I_SBIC oprs_2 		{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "SBIC", 2); }
+;
+ins_sbis:
+	  I_SBIS expr "," expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_SBIS, $2->addLink($4)); }
+	| I_SBIS oprs_2 		{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "SBIS", 2); }
+;
+ins_brbs:
+	  I_BRBS expr "," expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_BRBS, $2->addLink($4)); }
+	| I_BRBS oprs_2 		{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "BRBS", 2); }
+;
+ins_brbc:
+	  I_BRBC expr "," expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_BRBC, $2->addLink($4)); }
+	| I_BRBC oprs_2 		{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "BRBC", 2); }
+;
+ins_breq:
+	  I_BREQ expr			{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_BREQ, $2); }
+	| I_BREQ oprs_1 		{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "BREQ", 1); }
+;
+ins_brne:
+	  I_BRNE expr			{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_BRNE, $2); }
+	| I_BRNE oprs_1 		{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "BRNE", 1); }
+;
+ins_brcs:
+	  I_BRCS expr			{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_BRCS, $2); }
+	| I_BRCS oprs_1 		{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "BRCS", 1); }
+;
+ins_brcc:
+	  I_BRCC expr			{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_BRCC, $2); }
+	| I_BRCC oprs_1 		{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "BRCC", 1); }
+;
+ins_brsh:
+	  I_BRSH expr			{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_BRSH, $2); }
+	| I_BRSH oprs_1 		{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "BRSH", 1); }
+;
+ins_brlo:
+	  I_BRLO expr			{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_BRLO, $2); }
+	| I_BRLO oprs_1 		{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "BRLO", 1); }
+;
+ins_brmi:
+	  I_BRMI expr			{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_BRMI, $2); }
+	| I_BRMI oprs_1 		{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "BRMI", 1); }
+;
+ins_brpl:
+	  I_BRPL expr			{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_BRPL, $2); }
+	| I_BRPL oprs_1 		{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "BRPL", 1); }
+;
+ins_brge:
+	  I_BRGE expr			{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_BRGE, $2); }
+	| I_BRGE oprs_1 		{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "BRGE", 1); }
+;
+ins_brlt:
+	  I_BRLT expr			{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_BRLT, $2); }
+	| I_BRLT oprs_1 		{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "BRLT", 1); }
+;
+ins_brhs:
+	  I_BRHS expr			{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_BRHS, $2); }
+	| I_BRHS oprs_1 		{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "BRHS", 1); }
+;
+ins_brhc:
+	  I_BRHC expr			{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_BRHC, $2); }
+	| I_BRHC oprs_1 		{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "BRHC", 1); }
+;
+ins_brts:
+	  I_BRTS expr			{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_BRTS, $2); }
+	| I_BRTS oprs_1 		{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "BRTS", 1); }
+;
+ins_brtc:
+	  I_BRTC expr			{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_BRTC, $2); }
+	| I_BRTC oprs_1 		{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "BRTC", 1); }
+;
+ins_brvs:
+	  I_BRVS expr			{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_BRVS, $2); }
+	| I_BRVS oprs_1 		{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "BRVS", 1); }
+;
+ins_brvc:
+	  I_BRVC expr			{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_BRVC, $2); }
+	| I_BRVC oprs_1 		{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "BRVC", 1); }
+;
+ins_brie:
+	  I_BRIE expr			{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_BRIE, $2); }
+	| I_BRIE oprs_1 		{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "BRIE", 1); }
+;
+ins_brid:
+	  I_BRID expr			{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_BRID, $2); }
+	| I_BRID oprs_1 		{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "BRID", 1); }
+;
+/* DATA TRANSFER INSTRUCTIONS */
+ins_mov:
+	  I_MOV expr "," expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_MOV, $2->addLink($4)); }
+	| I_MOV oprs_2 			{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "MOV", 2); }
+;
+ins_ldi:
+	  I_LDI expr "," expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_LDI, $2->addLink($4)); }
+	| I_LDI oprs_2 			{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "LDI", 2); }
+;
+ins_lds:
+	  I_LDS expr "," expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_LDS, $2->addLink($4)); }
+	| I_LDS oprs_2 			{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "LDS", 2); }
+;
+ins_ld:
+	  I_LD expr "," X		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_LD_X, $2); }
+	| I_LD expr "," X "+"		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_LD_Xp, $2); }
+	| I_LD expr "," "-" X		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_LD_mX, $2); }
+	| I_LD expr "," Y		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_LD_Y, $2); }
+	| I_LD expr "," Y "+"		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_LD_Yp, $2); }
+	| I_LD expr "," "-" Y		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_LD_mY, $2); }
+	| I_LD expr "," Z		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_LD_Z, $2); }
+	| I_LD expr "," Z "+"		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_LD_Zp, $2); }
+	| I_LD expr "," "-" Z		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_LD_mZ, $2); }
+	| I_LD oprs_1 xyz		{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@$, "LD", 2); }
+	| I_LD expr "," expr		{ /* Syntax Error */ $$ = NULL; REQ_SECOND_OPR("LD", "X, X+, -X, Y, Y+, -Y, Z, Z+, -Z", @2, $2->addLink($4)); }
+;
+ins_ldd:
+	  I_LDD expr "," Y "+" expr	{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_LDD_Y, $2->addLink($6)); }
+	| I_LDD expr "," Z "+" expr	{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_LDD_Z, $2->addLink($6)); }
+	| I_LDD oprs_2 "," yz expr	{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "LDD", 2); $expr->completeDelete(); }
+	| I_LDD expr "," expr		{ /* Syntax Error */ $$ = NULL; REQ_SECOND_OPR("LDD", "Y+<expr>, Z+<expr>", @2, $2->addLink($4)); }
+;
+ins_sts:
+	  I_STS expr "," expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_STS, $2->addLink($4)); }
+	| I_STS oprs_2 			{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "STS", 2); }
+;
+ins_st:
+	  I_ST X "," expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_ST_X, $4); }
+	| I_ST X "+" "," expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_ST_Xp, $5); }
+	| I_ST "-" X "," expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_ST_mX, $5); }
+	| I_ST Y "," expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_ST_Y, $4); }
+	| I_ST Y "+" "," expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_ST_Yp, $5); }
+	| I_ST "-" Y "," expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_ST_mY, $5); }
+	| I_ST Z "," expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_ST_Z, $4); }
+	| I_ST Z "+" "," expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_ST_Zp, $5); }
+	| I_ST "-" Z "," expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_ST_mZ, $5); }
+	| I_ST xyz oprs_1		{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@oprs_1, "ST", 2); }
+	| I_ST expr "," expr		{ /* Syntax Error */ $$ = NULL; REQ_FIRST_OPR("ST", "X, X+, -X, Y, Y+, -Y, Z, Z+, -Z", @2, $2->addLink($4)); }
+;
+ins_std:
+	  I_STD Y "+" expr "," expr	{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_STD_Y, $4->addLink($6)); }
+	| I_STD Z "+" expr "," expr	{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_STD_Z, $4->addLink($6)); }
+	| I_STD yz oprs_2 		{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "STD", 2); }
+	| I_STD expr "," expr		{ /* Syntax Error */ $$ = NULL; REQ_FIRST_OPR("STD", "Y+<expr>, Z+<expr>", @2, $2->addLink($4)); }
+;
+ins_lpm:
+	  I_LPM				{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_LPM); }
+	| I_LPM oprs_0 			{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "LPM", 0); }
+;
+ins_in:
+	  I_IN expr "," expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_IN, $2->addLink($4)); }
+	| I_IN oprs_2 			{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "IN", 2); }
+;
+ins_out:
+	  I_OUT expr "," expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_OUT, $2->addLink($4)); }
+	| I_OUT oprs_2 			{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "OUT", 2); }
+;
+ins_push:
+	  I_PUSH expr			{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_PUSH, $2); }
+	| I_PUSH oprs_1 		{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "PUSH", 1); }
+;
+ins_pop:
+	  I_POP expr			{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_POP, $2); }
+	| I_POP oprs_1 			{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "POP", 1); }
+;
+/* BIT AND BIT-TEST INSTRUCTIONS */
+ins_lsl:
+	  I_LSL expr			{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_LSL, $2); }
+	| I_LSL oprs_1 			{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "LSL", 1); }
+;
+ins_lsr:
+	  I_LSR expr			{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_LSR, $2); }
+	| I_LSR oprs_1 			{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "LSR", 1); }
+;
+ins_rol:
+	  I_ROL expr			{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_ROL, $2); }
+	| I_ROL oprs_1 			{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "ROL", 1); }
+;
+ins_ror:
+	  I_ROR expr			{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_ROR, $2); }
+	| I_ROR oprs_1 			{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "ROR", 1); }
+;
+ins_asr:
+	  I_ASR expr			{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_ASR, $2); }
+	| I_ASR oprs_1 			{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "ASR", 1); }
+;
+ins_swap:
+	  I_SWAP expr			{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_SWAP, $2); }
+	| I_SWAP oprs_1 		{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "SWAP", 1); }
+;
+ins_bset:
+	  I_BSET expr			{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_BSET, $2); }
+	| I_BSET oprs_1 		{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "BSET", 1); }
+;
+ins_bclr:
+	  I_BCLR expr			{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_BCLR, $2); }
+	| I_BCLR oprs_1 		{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "BCLR", 1); }
+;
+ins_sbi:
+	  I_SBI expr "," expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_SBI, $2->addLink($4)); }
+	| I_SBI oprs_2 			{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "SBI", 2); }
+;
+ins_cbi:
+	  I_CBI expr "," expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_CBI, $2->addLink($4)); }
+	| I_CBI oprs_2 			{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "CBI", 2); }
+;
+ins_bst:
+	  I_BST expr "," expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_BST, $2->addLink($4)); }
+	| I_BST oprs_2 			{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "BST", 2); }
+;
+ins_bld:
+	  I_BLD expr "," expr		{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_BLD, $2->addLink($4)); }
+	| I_BLD oprs_2 			{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "BLD", 2); }
+;
+ins_sec:
+	  I_SEC				{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_SEC); }
+	| I_SEC oprs_0 			{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "SEC", 0); }
+;
+ins_clc:
+	  I_CLC				{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_CLC); }
+	| I_CLC oprs_0 			{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "CLC", 0); }
+;
+ins_sen:
+	  I_SEN				{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_SEN); }
+	| I_SEN oprs_0 			{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "SEN", 0); }
+;
+ins_cln:
+	  I_CLN				{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_CLN); }
+	| I_CLN oprs_0 			{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "CLN", 0); }
+;
+ins_sez:
+	  I_SEZ				{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_SEZ); }
+	| I_SEZ oprs_0 			{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "SEZ", 0); }
+;
+ins_clz:
+	  I_CLZ				{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_CLZ); }
+	| I_CLZ oprs_0 			{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "CLZ", 0); }
+;
+ins_sei:
+	  I_SEI				{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_SEI); }
+	| I_SEI oprs_0 			{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "SEI", 0); }
+;
+ins_cli:
+	  I_CLI				{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_CLI); }
+	| I_CLI oprs_0 			{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "CLI", 0); }
+;
+ins_ses:
+	  I_SES				{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_SES); }
+	| I_SES oprs_0 			{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "SES", 0); }
+;
+ins_cls:
+	  I_CLS				{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_CLS); }
+	| I_CLS oprs_0 			{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "CLS", 0); }
+;
+ins_sev:
+	  I_SEV				{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_SEV); }
+	| I_SEV oprs_0 			{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "SEV", 0); }
+;
+ins_clv:
+	  I_CLV				{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_CLV); }
+	| I_CLV oprs_0 			{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "CLV", 0); }
+;
+ins_set:
+	  I_SET				{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_SET); }
+	| I_SET oprs_0 			{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "SET", 0); }
+;
+ins_clt:
+	  I_CLT				{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_CLT); }
+	| I_CLT oprs_0 			{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "CLT", 0); }
+;
+ins_seh:
+	  I_SEH				{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_SEH); }
+	| I_SEH oprs_0 			{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "SEH", 0); }
+;
+ins_clh:
+	  I_CLH				{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_CLH); }
+	| I_CLH oprs_0 			{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "CLH", 0); }
+;
+ins_nop:
+	  I_NOP				{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_NOP); }
+	| I_NOP oprs_0 			{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "NOP", 0); }
+;
+ins_sleep:
+	  I_SLEEP			{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_SLEEP); }
+	| I_SLEEP oprs_0 		{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "SLEEP", 0); }
+;
+ins_wdr:
+	  I_WDR				{ $$ = new CompilerStatement(LOC(), ASMAVR8_INS_WDR); }
+	| I_WDR oprs_0 			{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "WDR", 0); }
+;
+
+/* Dummy operands for detailed error reporting. */
+oprs_0:	// Accept any number of operands except for zero.
+	  args			{ $1->completeDelete(); }
+;
+oprs_1:	// Accept any number of operands except for one.
+	  /* empty */		{ /* nothing has to be done here */ }
+	| expr "," args		{ $1->addLink($3)->completeDelete(); }
+;
+oprs_2:	// Accept any number of operands except for two.
+	  /* empty */		{ /* nothing has to be done here */ }
+	| expr			{ $1->completeDelete(); }
+	| expr "," expr "," args{ $1->addLink($3)->addLink($5)->completeDelete(); }
+;
+xyz:
+	  X
+	| X "+"
+	| "-" X
+	| Y
+	| Y "+"
+	| "-" Y
+	| Z
+	| Z "+"
+	| "-" Z
+;
+yz:
+	  Y "+"
+	| Z "+"
 ;
 
 %%

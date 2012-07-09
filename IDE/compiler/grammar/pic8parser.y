@@ -78,21 +78,21 @@
 		( compiler->toSourceLocation(yylloc) )
 
 	// Error messages
-	#define N_OPERANDS_EXPECTED(location, instruction, n) \
+	#define N_OPERANDS_EXPECTED(location, instruction, number) \
 		compiler->parserMessage ( location, CompilerBase::MT_ERROR, \
-			QObject::tr("invalid number of operands, instruction %1 takes %2 operand(s)").arg(instruction).arg(n).toStdString() );
-	#define NO_LABEL_EXPECTED(location, directive, stmt) \
-		CompilerStatement::completeDelete(stmt); \
+			QObject::tr("invalid number of operands, instruction %1 takes %2 operand(s)").arg(instruction).arg(number).toStdString() );
+	#define NO_LABEL_EXPECTED(location, directive, statement) \
+		CompilerStatement::completeDelete(statement); \
 		compiler->parserMessage ( location, CompilerBase::MT_ERROR, \
 			QObject::tr("cannot declare a label before %1 directive").arg(directive).toStdString() );
 	#define ARG_REQUIRED_D(location, directive) \
 		compiler->parserMessage ( location, CompilerBase::MT_ERROR, \
 			QObject::tr("directive %1 requires a single argument").arg(directive).toStdString() );
-	#define ARGS_REQUIRED_D(location, directive, n) \
+	#define ARGS_REQUIRED_D(location, directive, number) \
 		compiler->parserMessage ( location, CompilerBase::MT_ERROR, \
-			QObject::tr("directive %1 requires a %2 arguments").arg(directive).arg(n).toStdString() );
-	#define NO_ARG_EXPECTED_D(directive, args, location) \
-		args->completeDelete(); \
+			QObject::tr("directive %1 requires a %2 arguments").arg(directive).arg(number).toStdString() );
+	#define NO_ARG_EXPECTED_D(directive, arguments, location) \
+		arguments->completeDelete(); \
 		compiler->parserMessage ( location, CompilerBase::MT_ERROR, \
 			QObject::tr("directive %1 takes no arguments").arg(directive).toStdString() );
 	#define DECL_ID_EXPECTED(location, directive) \
@@ -1502,164 +1502,164 @@ instruction:
 /* BYTE-ORIENTED FILE REGISTER OPERATIONS */
 ins_addwf:
 	  I_ADDWF expr "," expr	{ $$ = new CompilerStatement(LOC(), ASMPIC8_INS_ADDWF, $2->addLink($4)); }
-	| I_ADDWF not2oprs	{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@I_ADDWF, "ADDWF", 2); }
+	| I_ADDWF oprs_2	{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "ADDWF", 2); }
 ;
 ins_andwf:
 	  I_ANDWF expr "," expr	{ $$ = new CompilerStatement(LOC(), ASMPIC8_INS_ANDWF, $2->addLink($4)); }
-	| I_ANDWF not2oprs	{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@I_ANDWF, "ANDWF", 2); }
+	| I_ANDWF oprs_2	{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "ANDWF", 2); }
 ;
 ins_clrf:
 	  I_CLRF expr		{ $$ = new CompilerStatement(LOC(), ASMPIC8_INS_CLRF, $2); }
-	| I_CLRF not1opr	{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@I_CLRF, "CLRF", 1); }
+	| I_CLRF oprs_1		{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "CLRF", 1); }
 ;
 ins_clrw:
 	  I_CLRW		{ $$ = new CompilerStatement(LOC(), ASMPIC8_INS_CLRW); }
-	| I_CLRW not0oprs	{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@I_CLRW, "CLRW", 0); }
+	| I_CLRW oprs_0		{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "CLRW", 0); }
 ;
 ins_comf:
 	  I_COMF expr "," expr	{ $$ = new CompilerStatement(LOC(), ASMPIC8_INS_COMF, $2->addLink($4)); }
-	| I_COMF not2oprs	{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@I_COMF, "COMF", 2); }
+	| I_COMF oprs_2		{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "COMF", 2); }
 ;
 ins_decf:
 	  I_DECF expr "," expr	{ $$ = new CompilerStatement(LOC(), ASMPIC8_INS_DECF, $2->addLink($4)); }
-	| I_DECF not2oprs	{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@I_DECF, "DECF", 2); }
+	| I_DECF oprs_2		{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "DECF", 2); }
 ;
 ins_decfsz:
 	  I_DECFSZ expr "," expr{ $$ = new CompilerStatement(LOC(), ASMPIC8_INS_DECFSZ, $2->addLink($4)); }
-	| I_DECFSZ not2oprs	{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@I_DECFSZ, "DECFSZ", 2); }
+	| I_DECFSZ oprs_2	{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "DECFSZ", 2); }
 ;
 ins_incf:
 	  I_INCF expr "," expr	{ $$ = new CompilerStatement(LOC(), ASMPIC8_INS_INCF, $2->addLink($4)); }
-	| I_INCF not2oprs	{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@I_INCF, "INCF", 2); }
+	| I_INCF oprs_2		{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "INCF", 2); }
 ;
 ins_incfsz:
 	  I_INCFSZ expr "," expr{ $$ = new CompilerStatement(LOC(), ASMPIC8_INS_INCFSZ, $2->addLink($4)); }
-	| I_INCFSZ not2oprs	{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@I_INCFSZ, "INCFSZ", 2); }
+	| I_INCFSZ oprs_2	{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "INCFSZ", 2); }
 ;
 ins_iorwf:
 	  I_IORWF expr "," expr	{ $$ = new CompilerStatement(LOC(), ASMPIC8_INS_IORWF, $2->addLink($4)); }
-	| I_IORWF not2oprs	{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@I_IORWF, "IORWF", 2); }
+	| I_IORWF oprs_2	{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "IORWF", 2); }
 ;
 ins_movf:
 	  I_MOVF expr "," expr	{ $$ = new CompilerStatement(LOC(), ASMPIC8_INS_MOVF, $2->addLink($4)); }
-	| I_MOVF not2oprs	{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@I_MOVF, "MOVF", 2); }
+	| I_MOVF oprs_2		{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "MOVF", 2); }
 ;
 ins_movwf:
 	  I_MOVWF expr		{ $$ = new CompilerStatement(LOC(), ASMPIC8_INS_MOVWF, $2); }
-	| I_MOVWF not1opr	{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@I_MOVWF, "MOVWF", 1); }
+	| I_MOVWF oprs_1	{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "MOVWF", 1); }
 ;
 ins_nop:
 	  I_NOP			{ $$ = new CompilerStatement(LOC(), ASMPIC8_INS_NOP); }
-	| I_NOP not0oprs	{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@I_NOP, "NOP", 0); }
+	| I_NOP oprs_0		{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "NOP", 0); }
 ;
 ins_rlf:
 	  I_RLF expr "," expr	{ $$ = new CompilerStatement(LOC(), ASMPIC8_INS_RLF, $2->addLink($4)); }
-	| I_RLF not2oprs	{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@I_RLF, "RLF", 2); }
+	| I_RLF oprs_2		{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "RLF", 2); }
 ;
 ins_rrf:
 	  I_RRF expr "," expr	{ $$ = new CompilerStatement(LOC(), ASMPIC8_INS_RRF, $2->addLink($4)); }
-	| I_RRF not2oprs	{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@I_RRF, "RRF", 2); }
+	| I_RRF oprs_2		{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "RRF", 2); }
 ;
 ins_subwf:
 	  I_SUBWF expr "," expr	{ $$ = new CompilerStatement(LOC(), ASMPIC8_INS_SUBWF, $2->addLink($4)); }
-	| I_SUBWF not2oprs	{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@I_SUBWF, "SUBWF", 2); }
+	| I_SUBWF oprs_2	{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "SUBWF", 2); }
 ;
 ins_swapf:
 	  I_SWAPF expr "," expr	{ $$ = new CompilerStatement(LOC(), ASMPIC8_INS_SWAPF, $2->addLink($4)); }
-	| I_SWAPF not2oprs	{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@I_SWAPF, "SWAPF", 2); }
+	| I_SWAPF oprs_2	{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "SWAPF", 2); }
 ;
 ins_xorwf:
 	  I_XORWF expr "," expr	{ $$ = new CompilerStatement(LOC(), ASMPIC8_INS_XORWF, $2->addLink($4)); }
-	| I_XORWF not2oprs	{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@I_XORWF, "XORWF", 2); }
+	| I_XORWF oprs_2	{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "XORWF", 2); }
 ;
 /* BIT-ORIENTED FILE REGISTER OPERATIONS */
 ins_bcf:
 	  I_BCF expr "," expr	{ $$ = new CompilerStatement(LOC(), ASMPIC8_INS_BCF, $2->addLink($4)); }
-	| I_BCF not2oprs	{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@I_BCF, "BCF", 2); }
+	| I_BCF oprs_2		{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "BCF", 2); }
 ;
 ins_bsf:
 	  I_BSF expr "," expr	{ $$ = new CompilerStatement(LOC(), ASMPIC8_INS_BSF, $2->addLink($4)); }
-	| I_BSF not2oprs	{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@I_BSF, "BSF", 2); }
+	| I_BSF oprs_2		{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "BSF", 2); }
 ;
 ins_btfsc:
 	  I_BTFSC expr "," expr	{ $$ = new CompilerStatement(LOC(), ASMPIC8_INS_BTFSC, $2->addLink($4)); }
-	| I_BTFSC not2oprs	{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@I_BTFSC, "BTFSC", 2); }
+	| I_BTFSC oprs_2	{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "BTFSC", 2); }
 ;
 ins_btfss:
 	  I_BTFSS expr "," expr	{ $$ = new CompilerStatement(LOC(), ASMPIC8_INS_BTFSS, $2->addLink($4)); }
-	| I_BTFSS not2oprs	{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@I_BTFSS, "BTFSS", 2); }
+	| I_BTFSS oprs_2	{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "BTFSS", 2); }
 ;
 	/* LITERAL AND CONTROL OPERATIONS */
 ins_addlw:
 	  I_ADDLW expr		{ $$ = new CompilerStatement(LOC(), ASMPIC8_INS_ADDLW, $2); }
-	| I_ADDLW not1opr	{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@I_ADDLW, "ADDLW", 1); }
+	| I_ADDLW oprs_1	{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "ADDLW", 1); }
 ;
 ins_andlw:
 	  I_ANDLW expr		{ $$ = new CompilerStatement(LOC(), ASMPIC8_INS_ANDLW, $2); }
-	| I_ANDLW not1opr	{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@I_ANDLW, "ANDLW", 1); }
+	| I_ANDLW oprs_1	{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "ANDLW", 1); }
 ;
 ins_call:
 	  I_CALL expr		{ $$ = new CompilerStatement(LOC(), ASMPIC8_INS_CALL, $2); }
-	| I_CALL not1opr	{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@I_CALL, "CALL", 1); }
+	| I_CALL oprs_1		{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "CALL", 1); }
 ;
 ins_clrwdt:
 	  I_CLRWDT		{ $$ = new CompilerStatement(LOC(), ASMPIC8_INS_CLRWDT); }
-	| I_CLRWDT not0oprs	{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@I_CLRWDT, "CLRWDT", 0); }
+	| I_CLRWDT oprs_0	{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "CLRWDT", 0); }
 ;
 ins_goto:
 	  I_GOTO expr		{ $$ = new CompilerStatement(LOC(), ASMPIC8_INS_GOTO, $2); }
-	| I_GOTO not1opr	{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@I_GOTO, "GOTO", 1); }
+	| I_GOTO oprs_1		{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "GOTO", 1); }
 ;
 ins_iorlw:
 	  I_IORLW expr		{ $$ = new CompilerStatement(LOC(), ASMPIC8_INS_IORLW, $2); }
-	| I_IORLW not1opr	{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@I_IORLW, "IORLW", 1); }
+	| I_IORLW oprs_1	{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "IORLW", 1); }
 ;
 ins_movlw:
 	  I_MOVLW expr		{ $$ = new CompilerStatement(LOC(), ASMPIC8_INS_MOVLW, $2); }
-	| I_MOVLW not1opr	{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@I_MOVLW, "MOVLW", 1); }
+	| I_MOVLW oprs_1	{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "MOVLW", 1); }
 ;
 ins_retfie:
 	  I_RETFIE		{ $$ = new CompilerStatement(LOC(), ASMPIC8_INS_RETFIE); }
-	| I_RETFIE not0oprs	{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@I_RETFIE, "RETFIE", 0); }
+	| I_RETFIE oprs_0	{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "RETFIE", 0); }
 ;
 ins_retlw:
 	  I_RETLW expr		{ $$ = new CompilerStatement(LOC(), ASMPIC8_INS_RETLW, $2); }
-	| I_RETLW not1opr	{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@I_RETLW, "RETLW", 1); }
+	| I_RETLW oprs_1	{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "RETLW", 1); }
 ;
 ins_return:
 	  I_RETURN		{ $$ = new CompilerStatement(LOC(), ASMPIC8_INS_RETURN); }
-	| I_RETURN not0oprs	{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@I_RETURN, "RETURN", 0); }
+	| I_RETURN oprs_0	{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "RETURN", 0); }
 ;
 ins_sleep:
 	  I_SLEEP		{ $$ = new CompilerStatement(LOC(), ASMPIC8_INS_SLEEP); }
-	| I_SLEEP not0oprs	{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@I_SLEEP, "SLEEP", 0); }
+	| I_SLEEP oprs_0	{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "SLEEP", 0); }
 ;
 ins_sublw:
 	  I_SUBLW expr		{ $$ = new CompilerStatement(LOC(), ASMPIC8_INS_SUBLW, $2); }
-	| I_SUBLW not1opr	{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@I_SUBLW, "SUBLW", 1); }
+	| I_SUBLW oprs_1	{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "SUBLW", 1); }
 ;
 ins_xorlw:
 	  I_XORLW expr		{ $$ = new CompilerStatement(LOC(), ASMPIC8_INS_XORLW, $2); }
-	| I_XORLW not1opr	{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@I_XORLW, "XORLW", 1); }
+	| I_XORLW oprs_1	{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "XORLW", 1); }
 ;
 ins_option:
 	  I_OPTION expr		{ $$ = new CompilerStatement(LOC(), ASMPIC8_INS_OPTION, $2); }
-	| I_OPTION not1opr	{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@I_OPTION, "OPTION", 1); }
+	| I_OPTION oprs_1	{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "OPTION", 1); }
 ;
 ins_tris:
 	  I_TRIS expr		{ $$ = new CompilerStatement(LOC(), ASMPIC8_INS_TRIS, $2); }
-	| I_TRIS not1opr	{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@I_TRIS, "TRIS", 1); }
+	| I_TRIS oprs_1		{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "TRIS", 1); }
 ;
 
 /* Dummy operands for detailed error reporting. */
-not0oprs:	// Accept any number of operands except for zero.
+oprs_0:	// Accept any number of operands except for zero.
 	  args			{ $1->completeDelete(); }
 ;
-not1opr:	// Accept any number of operands except for one.
+oprs_1:	// Accept any number of operands except for one.
 	  /* empty */		{ /* nothing has to be done here */ }
 	| expr "," args		{ $1->addLink($3)->completeDelete(); }
 ;
-not2oprs:	// Accept any number of operands except for two.
+oprs_2:	// Accept any number of operands except for two.
 	  /* empty */		{ /* nothing has to be done here */ }
 	| expr			{ $1->completeDelete(); }
 	| expr "," expr "," args{ $1->addLink($3)->addLink($5)->completeDelete(); }
