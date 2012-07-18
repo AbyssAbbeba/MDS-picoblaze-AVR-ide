@@ -30,7 +30,7 @@ class MCUSimControl : public QObject {
 	Q_OBJECT
 public:
 	enum CompilerID {
-// 		COMPILER_NATIVE,
+		COMPILER_NATIVE,
 		COMPILER_SDCC
 	};
 	enum DataFileType {
@@ -61,7 +61,7 @@ public:
 		uint64_t events = 0xFFFFFFFFFFFFFFFFULL);
 	bool unregisterObserver(MCUSimObserver * observer);
 
-	void getLineNumber(int * lineNumber, std::string * fileName);
+	void getLineNumber(int * lineNumber, std::string * filename);
 	const DbgFile * getSourceInfo();
 
 	bool initialized() const;
@@ -74,7 +74,7 @@ public:
 	bool getListOfSFR(std::vector<SFRRegDesc> & sfr);
 
 public slots:
-	bool start(std::string & fileName, CompilerID compilerId, DataFileType dataFileType = DATAFILETYPE_DEFAULT);
+	bool start(std::string & fileName, CompilerID compilerId, DataFileType dataFileType = DBGFILEID_HEX);
 	void stop();
 
 	void step();
@@ -91,6 +91,7 @@ private:
 	MCUSim::Arch m_architecture;
 	MCUSim * m_simulator;
 	DbgFile * m_dbgFile;
+	MCUSim::CPU * m_simCpu;
 	MCUSim::EventLogger * m_simulatorLog;
 	const McuDeviceSpec * m_deviceSpec;
 

@@ -708,8 +708,8 @@ inline void DbgFileCDB::clear() {
 	m_moduleRecords.clear();
 }
 
-int DbgFileCDB::getLineByAddr(uint * addr) const {
-	if ( (int)(*addr) > m_lastAddress ) {
+int DbgFileCDB::getLineByAddr(uint addr) const {
+	if ( (int)(addr) > m_lastAddress ) {
 		return -1;
 	}
 
