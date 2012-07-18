@@ -180,7 +180,7 @@ public:
 
 	virtual void openFile(const std::string & filename) throw(DbgFileException) = 0;
 
-	virtual int getLineByAddr(uint * addr) const = 0;
+	virtual int getLineByAddr(uint addr) const = 0;
 	virtual int getAddrByLine(uint line, const std::string & filename) const = 0;
 
 	const std::vector<LineRecord> & getLineRecords() const {
@@ -202,8 +202,9 @@ public:
 		return m_fileNames;
 	}
 	const std::string & fileNumber2Name(int fileNumber) const {
+		static const std::string emptyString = "";
 		if ( -1 == fileNumber ) {
-			return "";
+			return emptyString;
 		}
 		return m_fileNames[fileNumber];
 	}

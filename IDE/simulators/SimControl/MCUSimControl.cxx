@@ -36,7 +36,7 @@ MCUSimControl::~MCUSimControl() {
 	}
 }
 
-bool MCUSimControl::start(std::string & fileName, CompilerID compilerId, DataFileType dataFileType) {
+bool MCUSimControl::start(std::string & filename, CompilerID compilerId, DataFileType dataFileType) {
 
 	// Reset the simulator
 	m_simulator->reset(MCUSim::RSTMD_INITIAL_VALUES);
@@ -47,25 +47,25 @@ bool MCUSimControl::start(std::string & fileName, CompilerID compilerId, DataFil
 		m_dbgFile = NULL;
 	}
 
-	DataFile * dataFile;
+	DataFile * dataFile = NULL;
 	std::string dbgFileExt;
 	std::string dataFileExt;
 	switch ( compilerId ) {
-// 		case COMPILER_NATIVE:
-// 			m_dbgFile = new NOTHING_YET;
-// 			switch ( dataFileType ) {
-// 				case DATAFILETYPE_DEFAULT:
-// 					dataFile = new HexFile;
-// 					dataFileExt = ".hex"
-// 					dbgFileExt = ".adb";
-// 					break;
-// 			}
-// 			break;
+		case COMPILER_NATIVE:
+			m_dbgFile = NULL; // TODO: This is nonsense, write something better here when that something is implemented!
+			switch ( dataFileType ) {
+				case DBGFILEID_HEX:
+					dataFile = new HexFile();
+					dataFileExt = ".hex";
+					dbgFileExt = ".adb";
+					break;
+			}
+			break;
 		case COMPILER_SDCC:
 			dbgFileExt = ".cdb";
-			m_dbgFile = new DbgFileCDB;
+			m_dbgFile = new DbgFileCDB();
 			switch ( dataFileType ) {
-				case DATAFILETYPE_DEFAULT:
+				case DBGFILEID_HEX:
 					dataFileExt = ".ihx";
 					dataFile = new HexFile;
 					break;
@@ -73,9 +73,15 @@ bool MCUSimControl::start(std::string & fileName, CompilerID compilerId, DataFil
 			break;
 	}
 
+	if ( ( NULL == dataFile ) || ( NULL == m_dbgFile) ) {
+		// TODO: implement a proper error handling here
+		qDebug("error: ( NULL == dataFile ) || ( NULL == m_dbgFile)");
+		return false;
+	}
+
 	try {
 		m_dbgFile->openFile(filename + dbgFileExt);
-	} catch ( DbgFileException & e ) {
+	} catch ( DbgFile::DbgFileException & e ) {
 		// TODO: implement a proper error handling here
 		qDebug("Failed to load the debug file.");
 		return false;
@@ -83,7 +89,7 @@ bool MCUSimControl::start(std::string & fileName, CompilerID compilerId, DataFil
 
 	// Load data file for the program memory
 	try {
-		dataFile->clearAndLoad(fileName + dataFileExt);
+		dataFile->clearAndLoad(filename + dataFileExt);
 	} catch ( DataFile::DataFileException & e ) {
 		// TODO: implement a proper error handling here
 		qDebug("Failed to load program memory from the given file.");
@@ -112,26 +118,26 @@ bool MCUSimControl::start(std::string & fileName, CompilerID compilerId, DataFil
 
 void MCUSimControl::getLineNumber(int * lineNumber, std::string * fileName) {
 	if ( false == initialized() ) {
-		lineNumber = -1;
-		fileName = "";
+		*lineNumber = -1;
+		*fileName = "";
 		return;
 	}
 
-	unsigned int pc = m_simulator->getSubsys(MCUSim::Subsys::ID_CPU)->getProgramCounter();
+	unsigned int pc = m_simCpu->getProgramCounter();
 	int idx = m_dbgFile->getLineByAddr(pc);
 	if ( -1 == idx ) {
-		lineNumber = -1;
-		fileName = "";		
+		*lineNumber = -1;
+		*fileName = "";		
 	} else {
-		int fileNumber = getLineRecords()->at(idx).m_fileNumber;
+		int fileNumber = m_dbgFile->getLineRecords().at(idx).m_fileNumber;
 		*fileName = m_dbgFile->fileNumber2Name(fileNumber);
-		*lineNumber = m_dbgFile->getLineRecords()->at(idx).m_lineNumber;
+		*lineNumber = m_dbgFile->getLineRecords().at(idx).m_lineNumber;
 	}
 }
 
 const DbgFile * MCUSimControl::getSourceInfo() {
 	if ( false == initialized() ) {
-		return NULL
+		return NULL;
 	}
 	return m_dbgFile;
 }
@@ -194,6 +200,7 @@ bool MCUSimControl::changeDevice(const char * deviceName) {
 	}
 
 	m_simulatorLog = m_simulator->getLog();
+	m_simCpu = static_cast<MCUSim::CPU*>(m_simulator->getSubsys(MCUSim::Subsys::ID_CPU));
 
 	McuSimCfgMgr::getInstance()->setupSimulator(deviceName, m_simulator->getConfig());
 	m_simulator->reset(MCUSim::RSTMD_NEW_CONFIG);
