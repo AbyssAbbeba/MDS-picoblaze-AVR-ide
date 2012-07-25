@@ -1,10 +1,12 @@
 #include <QtGui>
 #include "projecttree.h"
 #include "../mainform/project.h"
+#include "../dialogs/projectcfgdlg_core.h"
 
 ProjectTree::ProjectTree(QWidget *parent, Project *parentProject)
 {
     this->parentProject = parentProject;
+    this->parent = parent;
     setHeaderHidden(true);
     projectPopup = new QMenu(this);
     QAction *projectConfigAct = new QAction("Configuration", projectPopup);
@@ -16,7 +18,7 @@ ProjectTree::ProjectTree(QWidget *parent, Project *parentProject)
     filePopup->addAction(setMainFileAct);
     connect(setMainFileAct, SIGNAL(triggered()), this, SLOT(setMainFile()));
     connect(removeFileAct, SIGNAL(triggered()), this, SLOT(removeFile()));
-    //connect(projectConfigAct, SIGNAL(triggered()), this, SLOT(setMainFile()));
+    connect(projectConfigAct, SIGNAL(triggered()), this, SLOT(config()));
 }
 
 ProjectTree::~ProjectTree()
@@ -50,4 +52,11 @@ void ProjectTree::removeFile()
 {
     delete lastItem;
     parentProject->removeFile(lastName, lastPath);
+}
+
+
+void ProjectTree::config()
+{
+    ProjectConfigDialog_Core *cfgdlg = new ProjectConfigDialog_Core(this, parentProject);
+    cfgdlg->show();
 }

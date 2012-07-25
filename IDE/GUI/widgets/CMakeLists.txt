@@ -27,6 +27,7 @@ SET( SAMPLE_SRCS
        ./movgridlayout.cpp
        ./wsimulationinfo.cpp
        ./projecttree.cpp
+       ./movgridlayoutitem.cpp
 )
   
 # another list, this time it includes all header files that should be treated with moc
@@ -39,6 +40,7 @@ SET( SAMPLE_MOC_HDRS
        ./movgridlayout.h
        ./wsimulationinfo.h
        ./projecttree.h
+       ./movgridlayout.h
 )
 
 
