@@ -7,6 +7,7 @@
 //#include <QString>
 
 class Project;
+class ProjectConfigDialog_Core;
 
 class ProjectTree: public QTreeWidget
 {
@@ -17,6 +18,7 @@ class ProjectTree: public QTreeWidget
 
     private:
         Project *parentProject;
+        QWidget *parent;
         QMenu *projectPopup;
         QMenu *filePopup;
         QString lastName;
@@ -26,6 +28,7 @@ class ProjectTree: public QTreeWidget
     private slots:
         void setMainFile();
         void removeFile();
+        void config();
 
     protected:
         void contextMenuEvent(QContextMenuEvent *event);

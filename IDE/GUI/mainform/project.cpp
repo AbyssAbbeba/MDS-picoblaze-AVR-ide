@@ -449,7 +449,8 @@ void Project::setupSim()
 void Project::start()
 {
     QString hexPath = prjPath.section('/',0, -2)+ "/make/" + mainFileName.section('.',0,-2) + ".hex";
-    m_simControlUnit->start(hexPath.toAscii());
+    std::string stdPath = hexPath.toUtf8().constData();
+    m_simControlUnit->start(stdPath, m_simControlUnit->COMPILER_SDCC, m_simControlUnit->DBGFILEID_HEX);
 }
 
 void Project::stop()
