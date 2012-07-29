@@ -17,6 +17,7 @@ class ProjectTree: public QTreeWidget
         ~ProjectTree();
 
     private:
+
         Project *parentProject;
         QWidget *parent;
         QMenu *projectPopup;
@@ -29,6 +30,7 @@ class ProjectTree: public QTreeWidget
         void setMainFile();
         void removeFile();
         void config();
+        void reloadFiles();
 
     protected:
         void contextMenuEvent(QContextMenuEvent *event);

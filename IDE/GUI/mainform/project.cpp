@@ -36,9 +36,9 @@ void ProjectMan::openProject(QFile *file)
 }
 
 
-void ProjectMan::addFile(QFile *file, QString path, QString name)
+void ProjectMan::addFile(QString path, QString name)
 {
-    getActive()->addFile(file, path, name);
+    getActive()->addFile(path, name);
 }
 
 void ProjectMan::addProject(QString name, QString path, QFile *file)
@@ -282,10 +282,16 @@ Project::Project(QString name, QString path, MainForm* mainWindow, QFile *file, 
 
 
 
-void Project::addFile(QFile *file, QString path, QString name)
+void Project::addFile(QString path, QString name)
 {
     QString relativePath;
     QDomDocument domDoc("MMProject");
+    QFile *file = new QFile(prjPath);
+    if(!file->open(QIODevice::ReadWrite | QIODevice::Text))
+    {
+        error(ERR_OPENFILE);
+        return;
+    }
     if (!domDoc.setContent(file))
     {
         errorFlag = ERR_ASSIGN;
@@ -343,6 +349,7 @@ void Project::addFile(QFile *file, QString path, QString name)
             
         }
     }
+    file->close();
 }
 
 
@@ -364,7 +371,7 @@ void Project::openItem()
 
 
 
-void Project::setMainFile(QString name, QString path)
+void Project::setMainFile(QString path, QString name)
 {
     QDir project(QFileInfo(prjPath).dir());
     QString relativePath = project.relativeFilePath(path);
@@ -374,7 +381,7 @@ void Project::setMainFile(QString name, QString path)
 }
 
 
-void Project::removeFile(QString name, QString path)
+void Project::removeFile(QString path, QString name)
 {
     QDir project(QFileInfo(prjPath).dir());
     QString relativePath = project.relativeFilePath(path);
