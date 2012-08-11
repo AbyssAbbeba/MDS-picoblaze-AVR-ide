@@ -18,10 +18,19 @@ ProjectConfigDialog_Core::ProjectConfigDialog_Core(QWidget *dialogParent, Projec
     this->setFixedWidth(this->tabs->width());
     this->setFixedHeight(this->tabs->height());
     this->setModal(true);
+
+    connect(fileMgr, SIGNAL(reloadTree()), this, SLOT(reload()));
 }
 
 
 void ProjectConfigDialog_Core::closeEvent(QCloseEvent * e)
 {
-    emit reloadTree();
+    if (reloadFiles == true)
+        emit reloadTree();
+}
+
+
+void ProjectConfigDialog_Core::reload()
+{
+    reloadFiles = true;
 }

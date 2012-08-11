@@ -3,7 +3,7 @@
 #include <QFileDialog>
 #include "errordlg.h"
 
-FileMgr::FileMgr(ProjectConfigDialog_Core *parentWidget, Project *currProject)
+FileMgr::FileMgr(QWidget *parentWidget, Project *currProject)
 {
     //prepare widget
     this->parent = parentWidget;
@@ -54,7 +54,11 @@ void FileMgr::deleteFile()
     {
         project->removeFile(fileList->currentItem()->toolTip(), fileList->currentItem()->text());
         delete fileList->currentItem();
-        reloadFiles = true;
+        if (reloadFiles == false)
+        {
+            emit reloadTree();
+            reloadFiles = true;
+        }
     }
 }
 
@@ -77,7 +81,11 @@ void FileMgr::newFile()
             QListWidgetItem *newItem = new QListWidgetItem(path.section('/', -1), fileList);
             newItem->setToolTip(path);
             fileList->addItem(newItem);
-            reloadFiles = true;
+            if (reloadFiles == false)
+            {
+                emit reloadTree();
+                reloadFiles = true;
+            }
         }
     }
 }
@@ -93,7 +101,11 @@ void FileMgr::addFile()
         QListWidgetItem *newItem = new QListWidgetItem(path.section('/', -1), fileList);
         newItem->setToolTip(path);
         fileList->addItem(newItem);
-        parent->reloadFiles = true;
+        /*if (reloadFiles == false)
+        {
+            emit reloadTree();
+            reloadFiles = true;
+        }*/
     }
 }
 
@@ -103,6 +115,10 @@ void FileMgr::setMainFile()
     if (fileList->currentItem() != NULL)
     {
         project->setMainFile(fileList->currentItem()->toolTip(), fileList->currentItem()->text()); 
-        //reloadFiles = true;
+        /*if (reloadFiles == false)
+        {
+            emit reloadTree();
+            reloadFiles = true;
+        }*/
     }
 } 
