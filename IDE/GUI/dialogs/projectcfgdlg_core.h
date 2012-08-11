@@ -9,7 +9,7 @@
 
 
 class Project;
-class FileMgr;
+//class FileMgr;
 
 /**
  * @brief
@@ -35,6 +35,9 @@ class ProjectConfigDialog_Core : public QDialog
         Project *project;
         ProjectCfg_General *generalCfg;
         FileMgr *fileMgr;
+
+    private slots:
+        void reload();
 
     protected:
         virtual void closeEvent(QCloseEvent *e);

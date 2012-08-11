@@ -67,3 +67,10 @@ void ProjectTree::reloadFiles()
 {
     qDebug() << "reloading\n";
 }
+
+
+/*void ProjectTree::addFile()
+{
+    delete lastItem;
+    parentProject->removeFile(lastPath, lastName);
+}*/

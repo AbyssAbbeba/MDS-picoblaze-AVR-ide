@@ -47,7 +47,6 @@ public:
 			m_ignoreUndefinedOpCodes = true;
 		}
 
-		bool m_availableInstructions[PIC8InsNames::SPECI__MAX__];
 		MCUSim::Family m_family;
 		PCWidth m_pcWidth;
 		bool m_ignoreUndefinedOpCodes;

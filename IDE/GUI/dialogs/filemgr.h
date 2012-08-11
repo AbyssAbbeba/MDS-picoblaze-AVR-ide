@@ -6,10 +6,8 @@
 #include <QPushButton>
 #include <QGridLayout>
 #include <QVBoxLayout>
-#include "projectcfgdlg_core.h"
 
 class Project;
-class ProjectConfigDialog_Core;
 
 
 /**
@@ -21,9 +19,8 @@ class FileMgr : public QWidget
 {
     Q_OBJECT
     public:
-        FileMgr(ProjectConfigDialog_Core *parentWidget, Project *currProject);
+        FileMgr(QWidget *parentWidget, Project *currProject);
 
-        bool reloadFiles;
 
     private slots:
         void deleteFile();
@@ -31,9 +28,12 @@ class FileMgr : public QWidget
         void addFile();
         void setMainFile();
 
+    signals:
+        void reloadTree();
+
     private:
         Project *project;
-        ProjectConfigDialog_Core *parent;
+        QWidget *parent;
         QPushButton *deleteBtn;
         QPushButton *addBtn;
         QPushButton *newBtn;
@@ -42,6 +42,8 @@ class FileMgr : public QWidget
         QGridLayout *layout;
         QVBoxLayout *btnLayout;
 	QWidget *btnWidget;
+
+        bool reloadFiles;
 };
 
 
