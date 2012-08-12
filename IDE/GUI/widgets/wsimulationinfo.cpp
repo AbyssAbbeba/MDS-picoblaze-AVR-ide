@@ -3,6 +3,7 @@
 #include "sim/McuMemoryView.h"
 #include "sim/RegDisplayList.h"
 #include "MCUSimControl.h"
+#include "movgridlayout.h"
 
 
 WSimulationInfo::WSimulationInfo(MCUSimControl *controlUnit, QWidget *parent)
@@ -13,12 +14,17 @@ WSimulationInfo::WSimulationInfo(MCUSimControl *controlUnit, QWidget *parent)
     m_regList = new RegDisplayList(controlUnit);
     m_regListScroll = new QScrollArea(this);
     m_regListScroll->setWidget(m_regList);
-    //gridLayout = new MovGridLayout(this);
-    //gridLayout->loadGridWidgets();
-    //gridLayout->setMinimumWidth(500);
+    gridLayout = new MovGridLayout(this);
+    m_regListScroll->setMinimumWidth(700);
+    m_regListScroll->setMinimumHeight(500);
+    //gridLayout->addWidget(m_hexEdit);
+    //gridLayout->addWidget(m_regListScroll);
+    QLabel a("this");
+    QLabel b("that");
+    gridLayout->addWidget(&a);
+    gridLayout->addWidget(&b);
     layout->addWidget(m_hexEdit);
     layout->addWidget(m_regListScroll);
-    m_regListScroll->setMinimumWidth(700);
     //layout->addWidget(gridLayout);
     this->setLayout(layout);
 }

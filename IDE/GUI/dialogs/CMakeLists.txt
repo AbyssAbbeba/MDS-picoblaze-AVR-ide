@@ -28,8 +28,8 @@ SET( SAMPLE_SRCS
 SET( SAMPLE_MOC_HDRS
        ./projectdlg.h
        ./projectcfgdlg_core.h
-       ./filemgr.h
        ./projectcfg_general.h
+       ./filemgr.h
 )
 
 

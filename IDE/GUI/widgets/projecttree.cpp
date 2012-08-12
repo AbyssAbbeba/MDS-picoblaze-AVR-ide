@@ -44,14 +44,14 @@ void ProjectTree::contextMenuEvent(QContextMenuEvent *event)
 
 void ProjectTree::setMainFile()
 {
-    parentProject->setMainFile(lastName, lastPath);
+    parentProject->setMainFile(lastPath, lastName);
 }
 
 
 void ProjectTree::removeFile()
 {
     delete lastItem;
-    parentProject->removeFile(lastName, lastPath);
+    parentProject->removeFile(lastPath, lastName);
 }
 
 
@@ -59,4 +59,18 @@ void ProjectTree::config()
 {
     ProjectConfigDialog_Core *cfgdlg = new ProjectConfigDialog_Core(this, parentProject);
     cfgdlg->show();
+    connect(cfgdlg, SIGNAL(reloadTree()), this, SLOT(reloadFiles()));
 }
+
+
+void ProjectTree::reloadFiles()
+{
+    qDebug() << "reloading\n";
+}
+
+
+/*void ProjectTree::addFile()
+{
+    delete lastItem;
+    parentProject->removeFile(lastPath, lastName);
+}*/

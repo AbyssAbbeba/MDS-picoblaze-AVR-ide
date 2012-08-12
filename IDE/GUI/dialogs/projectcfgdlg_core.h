@@ -9,6 +9,7 @@
 
 
 class Project;
+//class FileMgr;
 
 /**
  * @brief
@@ -21,17 +22,25 @@ class ProjectConfigDialog_Core : public QDialog
     public:
         ProjectConfigDialog_Core(QWidget *dialogParent, Project *currProject);
 
-    //private slots:
-    //    void bCreate();
-    //    void bReject();
+        bool reloadFiles;
+
+    signals:
+        void reloadTree();
 
     private:
         void freeDialog();
+
         QTabWidget *tabs;
         QWidget *parent;
         Project *project;
         ProjectCfg_General *generalCfg;
         FileMgr *fileMgr;
+
+    private slots:
+        void reload();
+
+    protected:
+        virtual void closeEvent(QCloseEvent *e);
 };
 
 #endif

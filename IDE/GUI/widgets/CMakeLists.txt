@@ -93,6 +93,11 @@ add_library(${PROJECT_NAME} SHARED
 target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} SimControl SimWidgets)
 
 
+
+ADD_EXECUTABLE( testGrid ./testgrid.cpp)
+TARGET_LINK_LIBRARIES( testGrid ${QT_LIBRARIES} Widgets Mainform Dialogs)
+
+
 # ------------------------------------------------------------------------------
 # BUILD COMPONENTS IN THE SUBDIRECTORIES
 # ------------------------------------------------------------------------------

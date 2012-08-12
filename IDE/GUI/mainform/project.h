@@ -52,7 +52,7 @@ class ProjectMan
 {
     public:
         ProjectMan(MainForm *mainWindow);
-        void addFile(QFile *file, QString path, QString name);
+        void addFile(QString path, QString name);
         void addProject(QString name, QString path, QFile *file);
         void openProject(QFile *file);
         void setActive(Project *activePrj);
@@ -86,7 +86,7 @@ class Project : public QObject
         Project(QString name, QString path, MainForm* mainWindow, QFile *file, ProjectMan *parent);
         ~Project();
 
-        void addFile(QFile *file, QString path, QString name);
+        void addFile(QString path, QString name);
         void setupSim();
         void start();
         void stop();

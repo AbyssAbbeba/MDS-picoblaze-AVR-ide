@@ -11,6 +11,7 @@
 class McuMemoryView;
 class MCUSimControl;
 class RegDisplayList;
+class MovGridLayout;
 
 class WSimulationInfo : public QWidget
 {
