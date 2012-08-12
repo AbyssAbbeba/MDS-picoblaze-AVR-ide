@@ -92,27 +92,17 @@ int (PIC8InstructionSet:: * const PIC8InstructionSet::m_opCodeDispatchTable[64])
 
 PIC8InstructionSet * PIC8InstructionSet::link(
 		MCUSim::EventLogger	* eventLogger,
+		MCUSim::Mode		* processorMode,
 		PIC8ProgramMemory	* programMemory,
 		PIC8DataMemory		* dataMemory,
-		MCUSim::Mode		* processorMode,
-		PIC8Sim::SleepMode	* sleepMode,
-		PIC8FusesAndLocks	* fusesAndLocks,
-		PIC8InterruptController	* interruptController,
-		PIC8SystemControl	* systemControl,
-		PIC8Sim::HaltMode	* haltMode,
-		PIC8BootLoader		* bootLoader
+		PIC8ConfigWord		* configWord
 ) {
 	MCUSim::CPU::link(eventLogger);
 
 	m_programMemory = programMemory;
 	m_dataMemory = dataMemory;
 	m_processorMode = processorMode;
-	m_sleepMode = sleepMode;
-	m_fusesAndLocks = fusesAndLocks;
-	m_interruptController = interruptController;
-	m_systemControl = systemControl;
-	m_haltMode = haltMode;
-	m_bootLoader = bootLoader;
+	m_configWord = configWord;
 
 	return this;
 }

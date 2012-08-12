@@ -89,7 +89,7 @@ public:
 	inline unsigned int read(uint32_t addr);
 	inline void write(uint32_t addr, unsigned int val);
 	inline void pushOnStack(const unsigned int value);
-	inline int popFromStack();
+	inline unsigned int popFromStack();
 
 	inline unsigned int getUndefVal() const;
 
@@ -98,13 +98,10 @@ protected:
 	uint32_t ** m_memory2;
 	unsigned int m_size;
 
-	MCUSim::EventLogger * m_eventLogger;
-
 	inline void resetToInitialValues();
 	inline void loadConfig();
 	inline void mcuReset();
 };
-
 
 // -----------------------------------------------------------------------------
 // INLINE FUNCTIONS
@@ -231,7 +228,7 @@ inline void AVR8DataMemory::pushOnStack(const unsigned int value) {
 	}
 }
 
-inline int AVR8DataMemory::popFromStack() {
+inline unsigned int AVR8DataMemory::popFromStack() {
 	int sp = 0;	// Stack pointer (at most 16b)
 
 	// Load stack pointer

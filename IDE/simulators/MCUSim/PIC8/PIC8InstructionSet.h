@@ -47,7 +47,7 @@ public:
 			m_ignoreUndefinedOpCodes = true;
 		}
 
-		bool m_availableInstructions[PIC8InsNames::SPECI__MAX__];
+		bool m_availableInstructions[PIC8InsNames::INS__MAX__];
 		MCUSim::Family m_family;
 		PCWidth m_pcWidth;
 		bool m_ignoreUndefinedOpCodes;
@@ -59,15 +59,10 @@ public:
 
 	PIC8InstructionSet * link(
 		MCUSim::EventLogger	* eventLogger,
+		MCUSim::Mode		* processorMode,
 		PIC8ProgramMemory	* programMemory,
 		PIC8DataMemory		* dataMemory,
-		MCUSim::Mode		* processorMode,
-		PIC8Sim::SleepMode	* sleepMode,
-		PIC8FusesAndLocks	* fusesAndLocks,
-		PIC8InterruptController	* interruptController,
-		PIC8SystemControl	* systemControl,
-		PIC8Sim::HaltMode	* haltMode,
-		PIC8BootLoader		* bootLoader);
+		PIC8ConfigWord		* configWord);
 
 	int execInstruction();
 	void reset(MCUSim::ResetMode mode);
@@ -83,17 +78,11 @@ protected:
 	int m_pc;
 	int m_actSubprogCounter;
 	unsigned int m_instructionCounter[PIC8InsNames::INS__MAX__];
-	AVR8InsNames::Instructions m_lastInstruction;
 
+	MCUSim::Mode * m_processorMode;
 	PIC8ProgramMemory * m_programMemory;
 	PIC8DataMemory * m_dataMemory;
-	MCUSim::Mode * m_processorMode;
-	PIC8Sim::SleepMode * m_sleepMode;
-	PIC8FusesAndLocks * m_fusesAndLocks;
-	PIC8InterruptController * m_interruptController;
-	PIC8SystemControl * m_systemControl;
-	PIC8Sim::HaltMode * m_haltMode;
-	PIC8BootLoader * m_bootLoader;
+	PIC8ConfigWord * m_configWord;
 
 	inline void incrPc(const int val = 1);
 	inline bool isInstruction32b(const unsigned int opCode) const;
@@ -101,7 +90,7 @@ protected:
 	inline void mcuReset();
 	inline void resetToInitialValues();
 
-	inline void instructionEnter(AVR8InsNames::Instructions instName);
+	inline void instructionEnter(PIC8InsNames::Instructions instName);
 
 public:
 	static int (PIC8InstructionSet:: * const m_opCodeDispatchTable[64])(const unsigned int opCode);

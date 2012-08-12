@@ -47,6 +47,10 @@
  * @ingroup MCUSim
  * Simulator of microcontrollers based on 8-bit AVR processor.
  *
+ * @defgroup PIC8 8-bit PIC simulator
+ * @ingroup MCUSim
+ * Simulator of microcontrollers based on 8-bit PIC processor.
+ *
  * @defgroup McuSimCfgMgr MCU sim. config. manager
  * @ingroup MCUSim
  * MCU simulator configuration management.
