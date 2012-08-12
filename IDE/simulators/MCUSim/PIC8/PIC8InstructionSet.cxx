@@ -19,6 +19,7 @@
 #include "PIC8InterruptController.h"
 #include "PIC8SystemControl.h"
 #include "PIC8BootLoader.h"
+#include "PIC8RegNames.h"
 
 int (PIC8InstructionSet:: * const PIC8InstructionSet::m_opCodeDispatchTable[64])(const unsigned int opCode) = {
 	&PIC8InstructionSet::instOPCode_000000,	// opCode = 00 0000 xxxx xxxx
@@ -318,21 +319,21 @@ int PIC8InstructionSet::instInvalid(const unsigned int opCode) {
 // MOVF
 // MOVWF
 // NOP
-// RLF - missing
-// RRF - missing
+// RLF
+// RRF
 // SUBWF
 // SWAPF
 // XORWF
 //
 //
-// Operations not missing are done without status register tracking, all-commented
+// Operations are done without Digit Carry, all-commented
 
 
 /*
  * Instruction: ADDWF
  * OP Code: 00 0111 dfff ffff - Add W and f
  * Operation: (W) + (f) -> destination
- * Status affected: C, DZ, Z
+ * Status affected: C, DC, Z
  */
 int PIC8InstructionSet::inst_ADDWF(const unsigned int opCode) {
 
@@ -346,14 +347,33 @@ int PIC8InstructionSet::inst_ADDWF(const unsigned int opCode) {
         //unsigned int valW = m_dataMemory->readFast(PIC8RegNames::WREG);
 
 	// Perform the operation
+	// Add operation
         //valF += valW;
 
-        if (opCode & 0x080)
-            //d is 1, stored in f
-            //m_dataMemory->write(f, valF);
-        else
-            //d is 0, stored in W
-            //m_dataMemory->writeFast(PIC8RegNames::WREG, valF);
+	// Set/Clear Zero bit in Status Register
+        //unsigned int valSReg = m_dataMemory->readFast(PIC8RegNames::SREG);
+	//if (valF == 0)
+	//	valSReg |= PIC8RegNames::SREG_Z;
+	//else
+	//	valSReg &= ~(PIC8RegNames::SREG_Z);
+
+	// Set/Clear Carry bit in Status Register
+	//if (valF > 255)
+	//	valSReg |= PIC8RegNames::SREG_C;
+	//else
+	//	valSReg &= ~(PIC8RegNames::SREG_C);
+
+	// Set/Clear Digit carry/borrow bit in Status Register
+
+	// Write changes to Status Register
+	//m_dataMemory->writeFast(PIC8RegNames::SREG, valSReg);
+
+        //if (opCode & 0x080)
+        	//d is 1, stored in f
+        //	m_dataMemory->write(f, valF);
+        //else
+        	//d is 0, stored in W
+        //	m_dataMemory->writeFast(PIC8RegNames::WREG, valF);
 
 	return 1;
 }
@@ -379,12 +399,22 @@ int PIC8InstructionSet::inst_ANDWF(const unsigned int opCode) {
 	// Perform the operation
         //valW &= valF;
 
-        if (opCode & 0x080)
-            //d is 1, stored in f
-            //m_dataMemory->write(f, valW);
-        else
-            //d is 0, stored in W
-            //m_dataMemory->writeFast(PIC8RegNames::WREG, valW);
+	// Set/Clear Zero bit in Status Register
+        //unsigned int valSReg = m_dataMemory->readFast(PIC8RegNames::SREG);
+	//if (valW == 0)
+	//	valSReg |= PIC8RegNames::SREG_Z;
+	//else
+	//	valSReg &= ~(PIC8RegNames::SREG_Z);
+
+	// Write changes to Status Register
+	//m_dataMemory->writeFast(PIC8RegNames::SREG, valSReg);
+
+        //if (opCode & 0x080)
+        	//d is 1, stored in f
+        //	m_dataMemory->write(f, valW);
+        //else
+        	//d is 0, stored in W
+        //	m_dataMemory->writeFast(PIC8RegNames::WREG, valW);
 
 	return 1;
 }
@@ -405,7 +435,11 @@ int PIC8InstructionSet::inst_CLRF(const unsigned int opCode) {
 
 	// Perform the operation
         //m_dataMemory->write(f, 0x00);
-        //m_dataMemory->writeFast(PIC8RegNames::SREG_Z, 0x01);
+
+	// Set Zero bit in Status Register
+	//unsigned int valSReg = m_dataMemory->readFast(PIC8Names::SREG);
+	//valSReg |= PIC8RegNames::SREG_Z;
+        //m_dataMemory->writeFast(PIC8RegNames::SREG, valSReg);
 
 	return 1;
 }
@@ -423,10 +457,15 @@ int PIC8InstructionSet::inst_CLRW(const unsigned int opCode) {
 
 	// Perform the operation
         //m_dataMemory->writeFast(PIC8RegNames::WREG, 0x00);
-        //m_dataMemory->writeFast(PIC8RegNames::SREG_Z, 0x01);
+
+	// Set Zero bit in Status Register
+	//unsigned int valSReg = m_dataMemory->readFast(PIC8Names::SREG);
+	//valSReg |= PIC8RegNames::SREG_Z;
+        //m_dataMemory->writeFast(PIC8RegNames::SREG, valSReg);
 
 	return 1;
 }
+
 
 /*
  * Instruction: COMF
@@ -447,12 +486,22 @@ int PIC8InstructionSet::inst_COMF(const unsigned int opCode) {
 	// Perform the operation
         //valF = ~valF;
 
-        if (opCode & 0x080)
-            //d is 1, stored in f
-            //m_dataMemory->write(f, valF);
-        else
-            //d is 0, stored in W
-            //m_dataMemory->writeFast(PIC8RegNames::WREG, valF);
+	// Set/Clear Zero bit in Status Register
+        //unsigned int valSReg = m_dataMemory->readFast(PIC8RegNames::SREG);
+	//if (valF == 0)
+	//	valSReg |= PIC8RegNames::SREG_Z;
+	//else
+	//	valSReg &= ~(PIC8RegNames::SREG_Z);
+
+	// Write changes to Status Register
+	//m_dataMemory->writeFast(PIC8RegNames::SREG, valSReg);
+
+        //if (opCode & 0x080)
+        	//d is 1, stored in f
+        //	m_dataMemory->write(f, valF);
+        //else
+        	//d is 0, stored in W
+        //	m_dataMemory->writeFast(PIC8RegNames::WREG, valF);
 
 	return 1;
 }
@@ -477,12 +526,22 @@ int PIC8InstructionSet::inst_DECF(const unsigned int opCode) {
 	// Perform the operation
         //valF--;
 
-        if (opCode & 0x080)
-            //d is 1, stored in f
-            //m_dataMemory->write(f, valF);
-        else
-            //d is 0, stored in W
-            //m_dataMemory->writeFast(PIC8RegNames::WREG, valF);
+	// Set/Clear Zero bit in Status Register
+        //unsigned int valSReg = m_dataMemory->readFast(PIC8RegNames::SREG);
+	//if (valF == 0)
+	//	valSReg |= PIC8RegNames::SREG_Z;
+	//else
+	//	valSReg &= ~(PIC8RegNames::SREG_Z);
+
+	// Write changes to Status Register
+	//m_dataMemory->writeFast(PIC8RegNames::SREG, valSReg);
+
+        //if (opCode & 0x080)
+        	//d is 1, stored in f
+        //	m_dataMemory->write(f, valF);
+        //else
+        	//d is 0, stored in W
+        //	m_dataMemory->writeFast(PIC8RegNames::WREG, valF);
 
 	return 1;
 }
@@ -506,12 +565,12 @@ int PIC8InstructionSet::inst_DECFSZ(const unsigned int opCode) {
 	// Perform the operation
         //valF--;
 
-        if (opCode & 0x080)
-            //d is 1, stored in f
-            //m_dataMemory->write(f, valF);
-        else
-            //d is 0, stored in W
-            //m_dataMemory->writeFast(PIC8RegNames::WREG, valF);
+        //if (opCode & 0x080)
+        	//d is 1, stored in f
+        //	m_dataMemory->write(f, valF);
+        //else
+        	//d is 0, stored in W
+        //	m_dataMemory->writeFast(PIC8RegNames::WREG, valF);
 
 	//if (valF == 0)
         //    return 2;
@@ -539,12 +598,22 @@ int PIC8InstructionSet::inst_INCF(const unsigned int opCode) {
 	// Perform the operation
         //valF++;
 
-        if (opCode & 0x080)
-            //d is 1, stored in f
-            //m_dataMemory->write(f, valF);
-        else
-            //d is 0, stored in W
-            //m_dataMemory->writeFast(PIC8RegNames::WREG, valF);
+	// Set/Clear Zero bit in Status Register
+        //unsigned int valSReg = m_dataMemory->readFast(PIC8RegNames::SREG);
+	//if (valF == 0)
+	//	valSReg |= PIC8RegNames::SREG_Z;
+	//else
+	//	valSReg &= ~(PIC8RegNames::SREG_Z);
+
+	// Write changes to Status Register
+	//m_dataMemory->writeFast(PIC8RegNames::SREG, valSReg);
+
+        //if (opCode & 0x080)
+        	//d is 1, stored in f
+        //	m_dataMemory->write(f, valF);
+        //else
+        	//d is 0, stored in W
+        //	m_dataMemory->writeFast(PIC8RegNames::WREG, valF);
 
 	return 1;
 }
@@ -568,12 +637,12 @@ int PIC8InstructionSet::inst_INCFSZ(const unsigned int opCode) {
 	// Perform the operation
         //valF++;
 
-        if (opCode & 0x080)
-            //d is 1, stored in f
-            //m_dataMemory->write(f, valF);
-        else
-            //d is 0, stored in W
-            //m_dataMemory->writeFast(PIC8RegNames::WREG, valF);
+        //if (opCode & 0x080)
+        	//d is 1, stored in f
+        //	m_dataMemory->write(f, valF);
+        //else
+        	//d is 0, stored in W
+        //	m_dataMemory->writeFast(PIC8RegNames::WREG, valF);
 
 	//if (valF == 0)
         //    return 2;
@@ -602,12 +671,22 @@ int PIC8InstructionSet::inst_IORWF(const unsigned int opCode) {
 	// Perform the operation
         //valW |= valF;
 
-        if (opCode & 0x080)
-            //d is 1, stored in f
-            //m_dataMemory->write(f, valW);
-        else
-            //d is 0, stored in W
-            //m_dataMemory->writeFast(PIC8RegNames::WREG, valW);
+	// Set/Clear Zero bit in Status Register
+        //unsigned int valSReg = m_dataMemory->readFast(PIC8RegNames::SREG);
+	//if (valF == 0)
+	//	valSReg |= PIC8RegNames::SREG_Z;
+	//else
+	//	valSReg &= ~(PIC8RegNames::SREG_Z);
+
+	// Write changes to Status Register
+	//m_dataMemory->writeFast(PIC8RegNames::SREG, valSReg);
+
+        //if (opCode & 0x080)
+        	//d is 1, stored in f
+        //	m_dataMemory->write(f, valW);
+        //else
+        	//d is 0, stored in W
+        //	m_dataMemory->writeFast(PIC8RegNames::WREG, valW);
 
 	return 1;
 }
@@ -629,13 +708,23 @@ int PIC8InstructionSet::inst_MOVF(const unsigned int opCode) {
         // Registers
         //unsigned int valF = m_dataMemory->read(f);
 
+	// Set/Clear Zero bit in Status Register
+        //unsigned int valSReg = m_dataMemory->readFast(PIC8RegNames::SREG);
+	//if (valF == 0)
+	//	valSReg |= PIC8RegNames::SREG_Z;
+	//else
+	//	valSReg &= ~(PIC8RegNames::SREG_Z);
+
+	// Write changes to Status Register
+	//m_dataMemory->writeFast(PIC8RegNames::SREG, valSReg);
+
 	// Perform the operation
-        if (opCode & 0x080)
-            //d is 1, stored in f
-            //m_dataMemory->write(f, valF);
-        else
-            //d is 0, stored in W
-            //m_dataMemory->writeFast(PIC8RegNames::WREG, valF);
+        //if (opCode & 0x080)
+        	//d is 1, stored in f
+        //	m_dataMemory->write(f, valF);
+        //else
+        	//d is 0, stored in W
+        //	m_dataMemory->writeFast(PIC8RegNames::WREG, valF);
 
 	return 1;
 }
@@ -680,7 +769,7 @@ int PIC8InstructionSet::inst_NOP(const unsigned int opCode) {
 
 /*
  * Instruction: RLF
- * OP Code: 00 1101 dfff ffff - Rotate fLeft f through Carry
+ * OP Code: 00 1101 dfff ffff - Rotate Left f through Carry
  * Operation: Content of register 'f' are rotated 1 bit to the left through Carry Flag.
  *            If 'd' is 0 the result is placed in the W register.
  *            If 'd' is 1 the result is stored back in the register 'f'.
@@ -695,15 +784,35 @@ int PIC8InstructionSet::inst_RLF(const unsigned int opCode) {
 
         // Registers
         //unsigned int valF = m_dataMemory->read(f);
+	//unsigned int valSReg = m_dataMemory->readFast(PIC8RegNames::SREG);
 
 	// Perform the operation
+	// If Status Register change is necessary
+	//bool valCarry = valSReg & PIC8RegNames::SREG_C;
+	//bool valNewCarry = valF & 0x080;
+	//if ( (valCarry || valNewCarry) && (!(valCarry && valNewCarry)) )
+	//{
+		// Set Carry
+	//	if (valNewCarry)
+	//		valSReg |= PIC8RegNames::SREG_C;
+		// Clear Carry
+	//	else	
+	//		valSReg &= ~(PIC8RegNames::SREG_C);
+	//	m_dataMemory->writeFast(PIC8RegNames::SREG, valSReg);
+	//}
 
-        if (opCode & 0x080)
-            //d is 1, stored in f
-            //m_dataMemory->write(f, valF);
-        else
-            //d is 0, stored in W
-            //m_dataMemory->writeFast(PIC8RegNames::WREG, valF);
+	// Shift left
+	//valF = valF << 1;
+	//if (valCarry)
+	//	valF |= 0x01;
+
+
+        //if (opCode & 0x080)
+        	//d is 1, stored in f
+        //	m_dataMemory->write(f, valF);
+        //else
+        	//d is 0, stored in W
+        //	m_dataMemory->writeFast(PIC8RegNames::WREG, valF);
 
 	return 1;
 }
@@ -726,15 +835,35 @@ int PIC8InstructionSet::inst_RRF(const unsigned int opCode) {
 
         // Registers
         //unsigned int valF = m_dataMemory->read(f);
+	//unsigned int valSReg = m_dataMemory->readFast(PIC8RegNames::SREG);
 
 	// Perform the operation
+	// If Status Register change is necessary
+	//bool valCarry = valSReg & PIC8RegNames::SREG_C;
+	//bool valNewCarry = valF & 0x01;
+	//if ( (valCarry || valNewCarry) && (!(valCarry && valNewCarry)) )
+	//{
+		// Set Carry
+	//	if (valNewCarry)
+	//		valSReg |= PIC8RegNames::SREG_C;
+		// Clear Carry
+	//	else	
+	//		valSReg &= ~(PIC8RegNames::SREG_C);
+	//	m_dataMemory->writeFast(PIC8RegNames::SREG, valSReg);
+	//}
 
-        if (opCode & 0x080)
-            //d is 1, stored in f
-            //m_dataMemory->write(f, valF);
-        else
-            //d is 0, stored in W
-            //m_dataMemory->writeFast(PIC8RegNames::WREG, valF);
+	// Shift left
+	//valF = valF >> 1;
+	//if (valCarry)
+	//	valF |= 0x080;
+
+
+        //if (opCode & 0x080)
+        	//d is 1, stored in f
+        //	m_dataMemory->write(f, valF);
+        //else
+        	//d is 0, stored in W
+        //	m_dataMemory->writeFast(PIC8RegNames::WREG, valF);
 
 	return 1;
 }
@@ -759,6 +888,24 @@ int PIC8InstructionSet::inst_SUBWF(const unsigned int opCode) {
 
 	// Perform the operation
         // valF -= valW;
+
+	// Set/Clear Zero bit in Status Register
+        //unsigned int valSReg = m_dataMemory->readFast(PIC8RegNames::SREG);
+	//if (valF == 0)
+	//	valSReg |= PIC8RegNames::SREG_Z;
+	//else
+	//	valSReg &= ~(PIC8RegNames::SREG_Z);
+
+	// Set/Clear Carry bit in Status Register
+	//if (valF < 0)
+	//	valSReg &= ~(PIC8RegNames::SREG_C);
+	//else
+	//	valSReg |= PIC8RegNames::SREG_C;
+
+	// Set/Clear Digit carry/borrow bit in Status Register
+
+	// Write changes to Status Register
+	//m_dataMemory->writeFast(PIC8RegNames::SREG, valSReg);
 
         if (opCode & 0x080)
             //d is 1, stored in f
@@ -792,12 +939,14 @@ int PIC8InstructionSet::inst_SWAPF(const unsigned int opCode) {
         // Swaps nibbles, example:
         // valF = 1111 1101
         // valH = 1111 1111 >> 4 = 0000 1111
-        // valF << 4 = 1101 0000
+        // valF << 4 = 1111 1101 0000
+	// valF &= ~(0x0F00) = 1101 0000
         // valF | valH = 1101 1111
         // end of example
 
         // unsigned int valH = valF >> 4;
         // valF = valF << 4;
+	// valF &= ~(0x0F00);
         // valF |= valH;
 
         if (opCode & 0x080)
@@ -831,12 +980,22 @@ int PIC8InstructionSet::inst_XORWF(const unsigned int opCode) {
 	// Perform the operation
         //valW ^= valF;
 
-        if (opCode & 0x080)
-            //d is 1, stored in f
-            //m_dataMemory->write(f, valW);
-        else
-            //d is 0, stored in W
-            //m_dataMemory->writeFast(PIC8RegNames::WREG, valW);
+	// Set/Clear Zero bit in Status Register
+        //unsigned int valSReg = m_dataMemory->readFast(PIC8RegNames::SREG);
+	//if (valF == 0)
+	//	valSReg |= PIC8RegNames::SREG_Z;
+	//else
+	//	valSReg &= ~(PIC8RegNames::SREG_Z);
+
+	// Write changes to Status Register
+	//m_dataMemory->writeFast(PIC8RegNames::SREG, valSReg);
+
+        //if (opCode & 0x080)
+        	//d is 1, stored in f
+        //	m_dataMemory->write(f, valW);
+        //else
+        	//d is 0, stored in W
+        //	m_dataMemory->writeFast(PIC8RegNames::WREG, valW);
 
 	return 1;
 }
@@ -952,7 +1111,7 @@ int PIC8InstructionSet::inst_BTFSS(const unsigned int opCode) {
 	// Perform the operation
 
 	//if (valF & (1 << b))
-	//return 2;
+	//	return 2;
 	//else
 	return 1;
 }
@@ -964,20 +1123,20 @@ int PIC8InstructionSet::inst_BTFSS(const unsigned int opCode) {
 // Includes:
 // ADDLW
 // ANDLW
-// CALL - missing
-// CLRWDT - missing
-// GOTO - missing
+// CALL
+// CLRWDT
+// GOTO
 // IORLW
-// MOVLW - missing
-// RETFIE - missing
-// RETLW - missing
-// RETURN - missing
-// SLEEP - missing
+// MOVLW
+// RETFIE
+// RETLW
+// RETURN
+// SLEEP
 // SUBLW
 // XORLW
 //
 //
-// Operations not missing are done without status register tracking, all-commented
+// Operations are done without Digital Carry, all-commented
 
 
 /*
@@ -997,8 +1156,27 @@ int PIC8InstructionSet::inst_ADDLW(const unsigned int opCode) {
         //unsigned int valW = m_dataMemory->readFast(PIC8RegNames::WREG);
 
 	// Perform the operation
+	// ADD operation
         //valW += k;
 	//m_dataMemory->writeFast(PIC8RegNames::WREG, valW);
+
+	// Set/Clear Zero bit in Status Register
+        //unsigned int valSReg = m_dataMemory->readFast(PIC8RegNames::SREG);
+	//if (valW == 0)
+	//	valSReg |= PIC8RegNames::SREG_Z;
+	//else
+	//	valSReg &= ~(PIC8RegNames::SREG_Z);
+
+	// Set/Clear Carry bit in Status Register
+	//if (valF > 255)
+	//	valSReg |= PIC8RegNames::SREG_C;
+	//else
+	//	valSReg &= ~(PIC8RegNames::SREG_C);
+
+	// Set/Clear Digit carry/borrow bit in Status Register
+
+	// Write changes to Status Register
+	//m_dataMemory->writeFast(PIC8RegNames::SREG, valSReg);
 
 	return 1;
 }
@@ -1021,8 +1199,19 @@ int PIC8InstructionSet::inst_ANDLW(const unsigned int opCode) {
         //unsigned int valW = m_dataMemory->readFast(PIC8RegNames::WREG);
 
 	// Perform the operation
+	// AND operation
         //valW &= k;
 	//m_dataMemory->writeFast(PIC8RegNames::WREG, valW);
+
+	// Set/Clear Zero bit in Status Register
+        //unsigned int valSReg = m_dataMemory->readFast(PIC8RegNames::SREG);
+	//if (valW == 0)
+	//	valSReg |= PIC8RegNames::SREG_Z;
+	//else
+	//	valSReg &= ~(PIC8RegNames::SREG_Z);
+
+	// Write changes to Status Register
+	//m_dataMemory->writeFast(PIC8RegNames::SREG, valSReg);
 
 	return 1;
 }
@@ -1042,6 +1231,12 @@ int PIC8InstructionSet::inst_CALL(const unsigned int opCode) {
         const unsigned int k = opCode & 0x07FF;
 
 	// Perform the operation
+	// Write PC+1 in TOS
+	//m_dataMemory->pushOnStack(m_pc+1);
+
+	// Write k in PC<10:0>
+	//m_pc &= ~(0x7FF);
+	//m_pc |= k;
 
 	return 2;
 }
@@ -1058,6 +1253,13 @@ int PIC8InstructionSet::inst_CLRWDT(const unsigned int opCode) {
 	instructionEnter(PIC8InsNames::INS_CLRWDT);
 
 	// Perform the operation
+	// Set TO and PD in Status Register
+	//unsigned int valSReg = m_dataMemory->readFast(PIC8RegNames::SREG);
+	//valSReg |= (PIC8RegNames::SREG_TO | PIC8RegNames::SREG_PD);
+	//m_dataMemory->writeFast(PIC8RegNames::SREG, valSReg);
+
+	// Clear WDT
+	//m_systemControl->watchDogReset();
 
 	return 1;
 }
@@ -1077,6 +1279,16 @@ int PIC8InstructionSet::inst_GOTO(const unsigned int opCode) {
         const unsigned int k = opCode & 0x07FF;
 
 	// Perform the operation
+	// Null PC - not necessary if m_pc = pcUp (below, nullify)
+	//m_pc ^= m_pc;
+
+	// Set upper bits of PC
+	//unsigned int pcUp = m_dataMemory->readFast(PIC8RegNames::PCLATH);
+	//pcUp = ((pcUp >> 3) << 12);
+	//m_pc = pcUp;
+
+	// Set lower bits of PC
+	//m_pc |= k;
 
 	return 2;
 }
@@ -1099,8 +1311,19 @@ int PIC8InstructionSet::inst_IORLW(const unsigned int opCode) {
         //unsigned int valW = m_dataMemory->readFast(PIC8RegNames::WREG);
 
 	// Perform the operation
+	// OR operation
         //valW |= k;
 	//m_dataMemory->writeFast(PIC8RegNames::WREG, valW);
+
+	// Set/Clear Zero bit in Status Register
+        //unsigned int valSReg = m_dataMemory->readFast(PIC8RegNames::SREG);
+	//if (valW == 0)
+	//	valSReg |= PIC8RegNames::SREG_Z;
+	//else
+	//	valSReg &= ~(PIC8RegNames::SREG_Z);
+
+	// Write changes to Status Register
+	//m_dataMemory->writeFast(PIC8RegNames::SREG, valSReg);
 
 	return 1;
 }
@@ -1120,6 +1343,7 @@ int PIC8InstructionSet::inst_MOVLW(const unsigned int opCode) {
         const unsigned int k = opCode & 0x0FF;
 
 	// Perform the operation
+	// Write k in W
 	//m_dataMemory->writeFast(PIC8RegNames::WREG, k);
 
 	return 1;
@@ -1139,6 +1363,13 @@ int PIC8InstructionSet::inst_RETFIE(const unsigned int opCode) {
 	// Operands
 
 	// Perform the operation
+	// Set GIE bit in INTCON
+	//unsigned int valIntCon = m_dataMemory->readFast(PIC8RegNames::INTCON);
+	//valIntCon |= PIC8RegNames::INTCON_GIE;
+	//m_dataMemory->writeFast(PIC8RegNames::INTCON, valIntCon);
+
+	// Write Top of Stack in Program Counter
+	//m_pc = m_dataMemory->popFromStack();
 
 	return 2;
 }
@@ -1158,6 +1389,11 @@ int PIC8InstructionSet::inst_RETLW(const unsigned int opCode) {
         const unsigned int k = opCode & 0x0FF;
 
 	// Perform the operation
+	// Write literal to W
+	//m_dataMemory->writeFast(PIC8RegNames::WREG, k);
+
+	// Write TOS in PC
+	//m_pc = m_dataMemory->popFromStack();
 
 	return 2;
 }
@@ -1174,6 +1410,8 @@ int PIC8InstructionSet::inst_RETURN(const unsigned int opCode) {
 	instructionEnter(PIC8InsNames::INS_RETURN);
 
 	// Perform the operation
+	// Write TOS in PC
+	//m_pc = m_dataMemory->popFromStack();
 
 	return 2;
 }
@@ -1190,6 +1428,13 @@ int PIC8InstructionSet::inst_SLEEP(const unsigned int opCode) {
 	instructionEnter(PIC8InsNames::INS_SLEEP);
 
 	// Perform the operation
+	// Set TO and PD bit in Status Register
+	//unsigned int valSReg = m_dataMemory->readFast(PIC8RegNames::SREG);
+	//valSReg |= (PIC8RegNames::SREG_TO | PIC8RegNames::SREG_PD);
+	//m_dataMemory->writeFast(PIC8RegNames::SREG, valSReg);
+
+	// Clear WDT
+	//m_systemControl->watchDogReset();
 
 	return 1;
 }
@@ -1212,8 +1457,27 @@ int PIC8InstructionSet::inst_SUBLW(const unsigned int opCode) {
         //unsigned int valW = m_dataMemory->readFast(PIC8RegNames::WREG);
 
 	// Perform the operation
+	// Substract operation
         //valW = k - valW;
 	//m_dataMemory->writeFast(PIC8RegNames::WREG, valW);
+
+	// Set/Clear Zero bit in Status Register
+        //unsigned int valSReg = m_dataMemory->readFast(PIC8RegNames::SREG);
+	//if (valW == 0)
+	//	valSReg |= PIC8RegNames::SREG_Z;
+	//else
+	//	valSReg &= ~(PIC8RegNames::SREG_Z);
+
+	// Set/Clear Carry bit in Status Register
+	//if (valW < 0)
+	//	valSReg &= ~(PIC8RegNames::SREG_C);
+	//else
+	//	valSReg |= PIC8RegNames::SREG_C;
+
+	// Set/Clear Digit carry/borrow bit in Status Register
+
+	// Write changes to Status Register
+	//m_dataMemory->writeFast(PIC8RegNames::SREG, valSReg);
 
 	return 1;
 }
@@ -1236,8 +1500,20 @@ int PIC8InstructionSet::inst_XORLW(const unsigned int opCode) {
         //unsigned int valW = m_dataMemory->readFast(PIC8RegNames::WREG);
 
 	// Perform the operation
+	// XOR operation
         //valW ^= k;
 	//m_dataMemory->writeFast(PIC8RegNames::WREG, valW);
+
+
+	// Set/Clear Zero bit in Status Register
+        //unsigned int valSReg = m_dataMemory->readFast(PIC8RegNames::SREG);
+	//if (valW == 0)
+	//	valSReg |= PIC8RegNames::SREG_Z;
+	//else
+	//	valSReg &= ~(PIC8RegNames::SREG_Z);
+
+	// Write changes to Status Register
+	//m_dataMemory->writeFast(PIC8RegNames::SREG, valSReg);
 
 	return 1;
 }

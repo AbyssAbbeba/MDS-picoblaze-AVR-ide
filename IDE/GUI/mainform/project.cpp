@@ -100,7 +100,7 @@ void ProjectMan::createActiveMakefile()
         QTextStream makeOut(&makefile);
         makeOut << "NAME=" << activeProject->prjName << endl << endl;
         makeOut << "CC=sdcc" << endl << endl;
-        makeOut << "CFLAGS=" << endl << endl;
+        makeOut << "CFLAGS= -mavr" << endl << endl;
         makeOut << "FILES=";
         QString relativePath;
         for (int i = 0; i < activeProject->fileCount; i++)

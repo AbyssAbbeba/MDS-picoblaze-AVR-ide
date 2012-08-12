@@ -87,7 +87,15 @@ namespace PIC8RegNames {
 
 		// PCLATH (0x0A/0x08A)
 
-		// INCON (0x0B, 0x08B)
+		// INTCON (0x0B, 0x08B)
+		INTCON_RBIF	= 0x01,
+		INTCON_INTF	= 0x02,
+		INTCON_T0IF	= 0x04,
+		INTCON_RBIE	= 0x08,
+		INTCON_INTE	= 0x010,
+		INTCON_T0IE	= 0x020,
+		INTCON_EEIE	= 0x040,
+		INTCON_GIE	= 0x080,
 
 		// OPTREG (0x081)
 
