@@ -212,24 +212,18 @@ void MainForm::newAddFile()
     //jen se vytvori novy tab na code editoru
     //a soubor se prida k projektu
     QString path = QFileDialog::getSaveFileName(this, tr("Source File"), QString(), QString(), 0, QFileDialog::DontUseNativeDialog);
-    wDockManager->addCentralWidget(path.section('/', -1), path);
-    wDockManager->getCentralWidget()->setChanged();
-    wDockManager->getCentralWidget()->connectAct();
+    if (path != NULL)
+    {
+        wDockManager->addCentralWidget(path.section('/', -1), path);
+        wDockManager->getCentralWidget()->setChanged();
+        wDockManager->getCentralWidget()->connectAct();
 
-    //je sice prehlednejsi zavolat saveFile(), ale
-    //vlozeni kodu pro ulozeni je rychlejsi a efektivnejsi
-    //...ale necham volani saveFile()...
-    saveFile();
-    //pridani do projektu
-    QFile prjFile(projectMan->getActive()->prjPath);
-    if(!prjFile.open(QIODevice::ReadWrite | QIODevice::Text))
-    {
-        error(ERR_OPENFILE);
-    }
-    else 
-    {
-        projectMan->addFile(&prjFile, path, path.section('/', -1));
-        prjFile.close();      
+        //je sice prehlednejsi zavolat saveFile(), ale
+        //vlozeni kodu pro ulozeni je rychlejsi a efektivnejsi
+        //...ale necham volani saveFile()...
+        saveFile();
+        //pridani do projektu
+        projectMan->addFile(path, path.section('/', -1));
         wDockManager->getCentralWidget()->setParentProject(projectMan->getActive());
     }
 }
@@ -238,17 +232,20 @@ void MainForm::newAddFile()
 void MainForm::openFile()
 {
     QString path = QFileDialog::getOpenFileName(this, tr("Source File"), "");
-    QFile file(path);
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
-    //if (!file.open(QIODevice::ReadOnly))
+    if (path != NULL)
     {
-        error(ERR_OPENFILE);
-    }
-    else {
-        wDockManager->addCentralWidget(path.section('/', -1), path);
-        wDockManager->getCentralTextEdit()->setPlainText(file.readAll());
-        file.close();
-        wDockManager->getCentralWidget()->connectAct();
+        QFile file(path);
+        if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+        //if (!file.open(QIODevice::ReadOnly))
+        {
+            error(ERR_OPENFILE);
+        }
+        else {
+            wDockManager->addCentralWidget(path.section('/', -1), path);
+            wDockManager->getCentralTextEdit()->setPlainText(file.readAll());
+            file.close();
+            wDockManager->getCentralWidget()->connectAct();
+        }
     }
 }
 
@@ -293,17 +290,9 @@ void MainForm::addFile()
     //...ale necham volani saveFile()...
     saveFile();
     //pridani do projektu
-    QFile prjFile(projectMan->getActive()->prjPath);
-    if(!prjFile.open(QIODevice::ReadWrite | QIODevice::Text))
-    {
-        error(ERR_OPENFILE);
-    }
-    else 
-    {
-        projectMan->addFile(&prjFile, path, path.section('/', -1));
-        prjFile.close();      
-        wDockManager->getCentralWidget()->setParentProject(projectMan->getActive());
-    }
+
+    projectMan->addFile(path, path.section('/', -1));
+    wDockManager->getCentralWidget()->setParentProject(projectMan->getActive());
 }
 
 void MainForm::saveFile()

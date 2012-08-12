@@ -17,19 +17,33 @@ class Project;
  */
 class FileMgr : public QWidget
 {
-    //Q_OBJECT
+    Q_OBJECT
     public:
         FileMgr(QWidget *parentWidget, Project *currProject);
+
+
+    private slots:
+        void deleteFile();
+        void newFile();
+        void addFile();
+        void setMainFile();
+
+    signals:
+        void reloadTree();
+
     private:
         Project *project;
         QWidget *parent;
-        QPushButton *deleteBut;
-        QPushButton *addBut;
-        QPushButton *newBut;
-        QPushButton *setMainBut;
+        QPushButton *deleteBtn;
+        QPushButton *addBtn;
+        QPushButton *newBtn;
+        QPushButton *setMainBtn;
         QListWidget *fileList;
         QGridLayout *layout;
         QVBoxLayout *btnLayout;
+	QWidget *btnWidget;
+
+        bool reloadFiles;
 };
 
 
