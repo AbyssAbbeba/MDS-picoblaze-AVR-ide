@@ -350,7 +350,3 @@ int AVR8Sim::timeStep(float timeStep) {
 
 	return allocatedCycles;
 }
-
-AVR8ProgramMemory & AVR8Sim::getProgMem() {
-	return *(dynamic_cast<AVR8ProgramMemory*>(getSubsys(Subsys::ID_MEM_CODE)));
-}

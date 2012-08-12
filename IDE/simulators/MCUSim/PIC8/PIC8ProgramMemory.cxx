@@ -10,37 +10,26 @@
  *
  */
 
-#include "AVR8ProgramMemory.h"
-#include "AVR8DataMemory.h"
-#include "AVR8DataEEPROM.h"
-#include "AVR8InstructionSet.h"
+#include "PIC8ProgramMemory.h"
 #include "MCUDataFiles/DataFile.h"
 
-#include <cstdlib>
-
-AVR8ProgramMemory::AVR8ProgramMemory() {
+PIC8ProgramMemory::PIC8ProgramMemory() {
 	m_memory = NULL;
 	m_size = 0;
 }
 
-AVR8ProgramMemory * AVR8ProgramMemory::link(
-	MCUSim::EventLogger * eventLogger,
-	AVR8BootLoader * bootLoader
-) {
+PIC8ProgramMemory * PIC8ProgramMemory::link(MCUSim::EventLogger * eventLogger) {
 	Memory::link(eventLogger, SP_CODE);
-
-	m_bootLoader = bootLoader;
-
 	return this;
 }
 
-AVR8ProgramMemory::~AVR8ProgramMemory() {
+PIC8ProgramMemory::~PIC8ProgramMemory() {
 	if ( NULL != m_memory ) {
 		delete[] m_memory;
 	}
 }
 
-void AVR8ProgramMemory::loadDataFile(const DataFile * file) {
+void PIC8ProgramMemory::loadDataFile(const DataFile * file) {
 	unsigned int size = file->maxSize();
 
 	for ( unsigned int i = 0, j = 0; i < size; i++, j++ ) {
@@ -61,7 +50,7 @@ void AVR8ProgramMemory::loadDataFile(const DataFile * file) {
 	}
 }
 
-void AVR8ProgramMemory::storeInDataFile(DataFile * file) const {
+void PIC8ProgramMemory::storeInDataFile(DataFile * file) const {
 	unsigned int size = file->maxSize();
 
 	file->clear();
@@ -82,7 +71,7 @@ void AVR8ProgramMemory::storeInDataFile(DataFile * file) const {
 	}
 }
 
-MCUSim::RetCode AVR8ProgramMemory::directRead(unsigned int addr, unsigned int & data) const {
+MCUSim::RetCode PIC8ProgramMemory::directRead(unsigned int addr, unsigned int & data) const {
 	if ( addr >= m_size ) {
 		return MCUSim::RC_ADDR_OUT_OF_RANGE;
 	}
@@ -97,7 +86,7 @@ MCUSim::RetCode AVR8ProgramMemory::directRead(unsigned int addr, unsigned int & 
 	}
 }
 
-MCUSim::RetCode AVR8ProgramMemory::directWrite(unsigned int addr, unsigned int data) {
+MCUSim::RetCode PIC8ProgramMemory::directWrite(unsigned int addr, unsigned int data) {
 	if ( addr >= m_size ) {
 		return MCUSim::RC_ADDR_OUT_OF_RANGE;
 	}
@@ -106,7 +95,7 @@ MCUSim::RetCode AVR8ProgramMemory::directWrite(unsigned int addr, unsigned int d
 	return MCUSim::RC_OK;
 }
 
-void AVR8ProgramMemory::resize(unsigned int newSize) {
+void PIC8ProgramMemory::resize(unsigned int newSize) {
 	unsigned int * memoryOrig = m_memory;
 	m_memory = new unsigned int[newSize];
 
@@ -125,7 +114,7 @@ void AVR8ProgramMemory::resize(unsigned int newSize) {
 	m_size = newSize;
 }
 
-void AVR8ProgramMemory::reset(MCUSim::ResetMode mode) {
+void PIC8ProgramMemory::reset(MCUSim::ResetMode mode) {
 	switch ( mode ) {
 		case MCUSim::RSTMD_NEW_CONFIG:
 			loadConfig();
@@ -142,20 +131,20 @@ void AVR8ProgramMemory::reset(MCUSim::ResetMode mode) {
 	}
 }
 
-inline void AVR8ProgramMemory::loadConfig() {
+inline void PIC8ProgramMemory::loadConfig() {
 	resize(m_config.m_size);
 }
 
-inline void AVR8ProgramMemory::mcuReset() {
+inline void PIC8ProgramMemory::mcuReset() {
 }
 
-inline void AVR8ProgramMemory::resetToInitialValues() {
+inline void PIC8ProgramMemory::resetToInitialValues() {
 	for ( unsigned int i = 0; i < m_size; i++ ) {
 		m_memory[i] = (0xffff | MFLAG_UNDEFINED);
 	}
 }
 
-unsigned int AVR8ProgramMemory::getUndefVal() const {
+unsigned int PIC8ProgramMemory::getUndefVal() const {
 	if ( -1 == m_config.m_undefinedValue ) {
 		// Generate random value
 		return ((unsigned int)rand() & ((1 << 16) - 1));
