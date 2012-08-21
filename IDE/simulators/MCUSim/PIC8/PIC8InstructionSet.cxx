@@ -20,6 +20,7 @@
 #include "PIC8SystemControl.h"
 #include "PIC8BootLoader.h"
 #include "PIC8RegNames.h"
+#include "PIC8Stack.h"
 
 int (PIC8InstructionSet:: * const PIC8InstructionSet::m_opCodeDispatchTable[64])(const unsigned int opCode) = {
 	&PIC8InstructionSet::instOPCode_000000,	// opCode = 00 0000 xxxx xxxx
@@ -97,6 +98,7 @@ PIC8InstructionSet * PIC8InstructionSet::link(
 		PIC8ProgramMemory	* programMemory,
 		PIC8DataMemory		* dataMemory,
 		PIC8ConfigWord		* configWord
+		PIC8Stack		* stack;
 ) {
 	MCUSim::CPU::link(eventLogger);
 
@@ -104,6 +106,7 @@ PIC8InstructionSet * PIC8InstructionSet::link(
 	m_dataMemory = dataMemory;
 	m_processorMode = processorMode;
 	m_configWord = configWord;
+	m_stack = stack;
 
 	return this;
 }
@@ -1222,7 +1225,7 @@ int PIC8InstructionSet::inst_CALL(const unsigned int opCode) {
 
 	// Perform the operation
 	// Write PC+1 in TOS
-	//m_dataMemory->pushOnStack(m_pc+1);
+	//m_stack->pushOnStack(m_pc+1);
 
 	// Write k in PC<10:0>
 	//m_pc &= ~(0x7FF);
@@ -1359,7 +1362,7 @@ int PIC8InstructionSet::inst_RETFIE(const unsigned int opCode) {
 	//m_dataMemory->writeFast(PIC8RegNames::INTCON, valIntCon);
 
 	// Write Top of Stack in Program Counter
-	//m_pc = m_dataMemory->popFromStack();
+	//m_pc = m_stack->popFromStack();
 
 	return 2;
 }
@@ -1383,7 +1386,7 @@ int PIC8InstructionSet::inst_RETLW(const unsigned int opCode) {
 	//m_dataMemory->writeFast(PIC8RegNames::WREG, k);
 
 	// Write TOS in PC
-	//m_pc = m_dataMemory->popFromStack();
+	//m_pc = m_stack->popFromStack();
 
 	return 2;
 }
@@ -1401,7 +1404,7 @@ int PIC8InstructionSet::inst_RETURN(const unsigned int opCode) {
 
 	// Perform the operation
 	// Write TOS in PC
-	//m_pc = m_dataMemory->popFromStack();
+	//m_pc = m_stack->popFromStack();
 
 	return 2;
 }

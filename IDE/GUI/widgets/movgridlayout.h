@@ -4,8 +4,8 @@
 #include <QWidget>
 #include <QList>
 
-#define SIZEX 100
-#define SIZEY 100
+#define SIZEX 2
+#define SIZEY 2
 
 class MovGridLayoutItem;
 
@@ -25,6 +25,13 @@ typedef struct WH
     int h;
 } WH;
 
+//blank widget (for checking position on mouse move)
+typedef struct BLANK
+{
+    XY pos;
+    WH geom;
+} BLANK;
+
 
 class MovGridLayout : public QWidget
 {
@@ -43,23 +50,29 @@ class MovGridLayout : public QWidget
 
     private:
         //check availability of position and geometry of given widget
-        bool checkPosition(XY position, WH geometry);
+        bool checkPosition(XY position, WH geometry, int index = -1);
         //calculate valid position for widget
         XY calcXY(QWidget *widget);
 
-         QWidget *parent;
+        QWidget *parent;
         //if mousebtn is down
         bool grab;
-        //moving widget
+        //index of grabbed widget
         int movingIndex;
         //list of widgets
         QList<MovGridLayoutItem*> gridWidgets;
-        //static, for now
-        int grid[SIZEX][SIZEY];
+        //index grid
+        int **grid;
+        //grid width
+        int gridWidth;
+        //grid heigth
+        int gridHeight;
         //size of row in pixels
         int sizeRow;
         //size of column in pixels
         int sizeCol;
+	//params of grabbed widget
+	BLANK movingWidget;
 
     protected:
         virtual bool eventFilter(QObject *target, QEvent *event);
