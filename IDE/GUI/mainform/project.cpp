@@ -2,7 +2,7 @@
 #include "project.h"
 #include "McuSimCfgMgr.h"
 #include "MCUSimControl.h"
-#include "../widgets/projecttree.h"
+#include "../widgets/ProjectTree/projecttree.h"
 
 ProjectMan::ProjectMan(MainForm *qMainWindow)
 {

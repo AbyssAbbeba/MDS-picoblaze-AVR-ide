@@ -276,23 +276,26 @@ void MainForm::openFilePath(QString path)
 
 void MainForm::addFile()
 {
-    QString path;
-    if (wDockManager->getCentralPath() == NULL) {
-        path = QFileDialog::getSaveFileName(this, tr("Source File"));
-        wDockManager->setCentralPath(path);
-        wDockManager->setCentralName(path.section('/', -1));
+    if (wDockManager->isEmpty() == false)
+    {
+        QString path;
+        if (wDockManager->getCentralPath() == NULL) {
+            path = QFileDialog::getSaveFileName(this, tr("Source File"));
+            wDockManager->setCentralPath(path);
+            wDockManager->setCentralName(path.section('/', -1));
+        }
+        else
+            path = wDockManager->getCentralPath();
+
+        //je sice prehlednejsi zavolat saveFile(), ale
+        //vlozeni kodu pro ulozeni je rychlejsi a efektivnejsi
+        //...ale necham volani saveFile()...
+        saveFile();
+        //pridani do projektu
+
+        projectMan->addFile(path, path.section('/', -1));
+        wDockManager->getCentralWidget()->setParentProject(projectMan->getActive());
     }
-    else
-        path = wDockManager->getCentralPath();
-
-    //je sice prehlednejsi zavolat saveFile(), ale
-    //vlozeni kodu pro ulozeni je rychlejsi a efektivnejsi
-    //...ale necham volani saveFile()...
-    saveFile();
-    //pridani do projektu
-
-    projectMan->addFile(path, path.section('/', -1));
-    wDockManager->getCentralWidget()->setParentProject(projectMan->getActive());
 }
 
 void MainForm::saveFile()

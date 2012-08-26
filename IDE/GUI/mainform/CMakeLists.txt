@@ -47,9 +47,7 @@ include_directories(
 	"../../simulators/MCUSim"
 	"../../simulators/SimControl/"
         "../../utilities/MCUDataFiles/"
-	"../../simulators/MCUSim/AVR8/"
-	"../widgets/"
-        "../dialogs/")
+	"../../simulators/MCUSim/AVR8/")
 
 # <DEBUG!>
 link_directories(
@@ -57,7 +55,15 @@ link_directories(
 	"${CMAKE_CURRENT_BINARY_DIR}/../../simulators/MCUSim"
 	"${CMAKE_CURRENT_BINARY_DIR}/../../simulators/SimControl/"
         "${CMAKE_CURRENT_BINARY_DIR}/../../utilities/MCUDataFiles/"
-	"${CMAKE_CURRENT_BINARY_DIR}/../../simulators/MCUSim/AVR8/")
+	"${CMAKE_CURRENT_BINARY_DIR}/../../simulators/MCUSim/AVR8/"
+	"${CMAKE_CURRENT_BINARY_DIR}/../widgets/MovGridLayout/"
+	"${CMAKE_CURRENT_BINARY_DIR}/../widgets/ProjectTree/"
+	"${CMAKE_CURRENT_BINARY_DIR}/../widgets/Counters/"
+	"${CMAKE_CURRENT_BINARY_DIR}/../widgets/HexEdit/"
+	"${CMAKE_CURRENT_BINARY_DIR}/../widgets/DockManager/"
+	"${CMAKE_CURRENT_BINARY_DIR}/../widgets/SimulationInfo/"
+	"${CMAKE_CURRENT_BINARY_DIR}/../widgets/Editor/"
+        "${CMAKE_CURRENT_BINARY_DIR}/../dialogs/")
 #include_directories(
 #	"${CMAKE_CURRENT_BINARY_DIR}/.."
 #	"${CMAKE_CURRENT_BINARY_DIR}/../../../simulators/MCUSim/")

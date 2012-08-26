@@ -19,28 +19,30 @@ set(CMAKE_VERBOSE_MAKEFILE OFF)
 # here we define SAMPLE_SRCS variable that contains a list of all .cpp files 
 # note that we don't need \ at the end of line
 SET( SAMPLE_SRCS
-       ./codeedit.cpp
-       ./wdockmanager.cpp
-       ./hexedit.cpp
-       ./wlinecounter.cpp
-       ./wcolumncounter.cpp
-       ./movgridlayout.cpp
-       ./wsimulationinfo.cpp
-       ./projecttree.cpp
-       ./movgridlayoutitem.cpp
+       ./Editor/codeedit.cpp
+       ./Editor/baseeditor.cpp
+       ./DockManager/wdockmanager.cpp
+       ./HexEdit/hexedit.cpp
+       ./Counters/wlinecounter.cpp
+       ./Counters/wcolumncounter.cpp
+       ./MovGridLayout/movgridlayout.cpp
+       ./MovGridLayout/movgridlayoutitem.cpp
+       ./SimulationInfo/wsimulationinfo.cpp
+       ./ProjectTree/projecttree.cpp
 )
   
 # another list, this time it includes all header files that should be treated with moc
 SET( SAMPLE_MOC_HDRS
-       ./codeedit.h    
-       ./wdockmanager.h 
-       ./hexedit.h
-       ./wlinecounter.h
-       ./wcolumncounter.h 
-       ./movgridlayout.h
-       ./wsimulationinfo.h
-       ./projecttree.h
-       ./movgridlayout.h
+       ./Editor/codeedit.h    
+       ./Editor/baseeditor.h
+       ./DockManager/wdockmanager.h 
+       ./HexEdit/hexedit.h
+       ./Counters/wlinecounter.h
+       ./Counters/wcolumncounter.h 
+       ./MovGridLayout/movgridlayout.h
+       ./MovGridLayout/movgridlayoutitem.h
+       ./SimulationInfo/wsimulationinfo.h
+       ./ProjectTree/projecttree.h
 )
 
 
@@ -67,9 +69,17 @@ include_directories(
 link_directories(
 	"${CMAKE_CURRENT_BINARY_DIR}/../../simulators/SimControl/"
         "${CMAKE_CURRENT_BINARY_DIR}/sim")
-#include_directories(
-#	"${CMAKE_CURRENT_BINARY_DIR}/.."
-#	"${CMAKE_CURRENT_BINARY_DIR}/../../../simulators/MCUSim/")
+
+include_directories(
+	"${CMAKE_CURRENT_BINARY_DIR}/MovGridLayout/"
+	"${CMAKE_CURRENT_BINARY_DIR}/ProjectTree/"
+	"${CMAKE_CURRENT_BINARY_DIR}/Counters/"
+	"${CMAKE_CURRENT_BINARY_DIR}/HexEdit/"
+	"${CMAKE_CURRENT_BINARY_DIR}/DockManager/"
+	"${CMAKE_CURRENT_BINARY_DIR}/SimulationInfo/"
+	"${CMAKE_CURRENT_BINARY_DIR}/Editor/"
+	"${CMAKE_CURRENT_BINARY_DIR}/../mainform/"
+	"${CMAKE_CURRENT_BINARY_DIR}/../dialogs/")
 # </DEBUG!>
 
 ## Add switches to compiler command line
@@ -93,15 +103,11 @@ add_library(${PROJECT_NAME} SHARED
 target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} SimControl SimWidgets)
 
 
-
-ADD_EXECUTABLE( testGrid ./testgrid.cpp)
-TARGET_LINK_LIBRARIES( testGrid ${QT_LIBRARIES} Widgets Mainform Dialogs)
-
-
 # ------------------------------------------------------------------------------
 # BUILD COMPONENTS IN THE SUBDIRECTORIES
 # ------------------------------------------------------------------------------
 
 # Build the simulator widgets
 add_subdirectory(sim)
+add_subdirectory(Tests)
 

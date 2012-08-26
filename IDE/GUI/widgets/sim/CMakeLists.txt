@@ -61,9 +61,9 @@ qt4_wrap_cpp(QT_MOC_GENERATED_CPP_FILES
 	RegDisplayList.h
 	McuMemoryView.h
 
-	${CMAKE_CURRENT_BINARY_DIR}/../hexedit.h
-	${CMAKE_CURRENT_BINARY_DIR}/../wlinecounter.h
-	${CMAKE_CURRENT_BINARY_DIR}/../wcolumncounter.h
+	${CMAKE_CURRENT_BINARY_DIR}/../HexEdit/hexedit.h
+	${CMAKE_CURRENT_BINARY_DIR}/../Counters/wlinecounter.h
+	${CMAKE_CURRENT_BINARY_DIR}/../Counters/wcolumncounter.h
 )
 
 ## Add a library to the project using the specified source files,
@@ -74,9 +74,9 @@ add_library(${PROJECT_NAME} SHARED
 	RegDisplayList.cxx
 	McuMemoryView.cxx
 
-	${CMAKE_CURRENT_BINARY_DIR}/../hexedit.cpp
-	${CMAKE_CURRENT_BINARY_DIR}/../wlinecounter.cpp
-	${CMAKE_CURRENT_BINARY_DIR}/../wcolumncounter.cpp)
+	${CMAKE_CURRENT_BINARY_DIR}/../HexEdit/hexedit.cpp
+	${CMAKE_CURRENT_BINARY_DIR}/../Counters/wlinecounter.cpp
+	${CMAKE_CURRENT_BINARY_DIR}/../Counters/wcolumncounter.cpp)
 
 target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} SimControl McuSimCfgMgr AVR8Sim MCUDataFiles)
 

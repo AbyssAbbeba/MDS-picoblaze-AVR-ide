@@ -3,10 +3,11 @@
 #include "wdockmanager.h"
 
 
-CodeEdit::CodeEdit(QTabWidget *parent, QString wName, QString wPath)
+CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath)
     : QWidget(parent)
 {
     textEdit = new QTextEdit(this);
+    textEdit->setContextMenuPolicy(Qt::NoContextMenu);
     lineCount = new WLineCounter(textEdit, false, false, 20);
     layout = new QGridLayout(this);
     layout->addWidget(lineCount, 0, 0);
@@ -16,18 +17,22 @@ CodeEdit::CodeEdit(QTabWidget *parent, QString wName, QString wPath)
     path = wPath;
     changed = false;
     parentWidget = parent;
+    this->tabs = tabs;
     parentProject = NULL;
     textEdit->setWordWrapMode(QTextOption::NoWrap);
-    textEdit->setFont(QFont ("Andale Mono", 11));
     //setWordWrapMode(QTextOption::WordWrap);
+    textEdit->setFont(QFont ("Andale Mono", 11));
+    this->makeMenu();
+    this->connectAct();
 }
 
 
 
-CodeEdit::CodeEdit(QTabWidget *parent, Project* parentPrj, QString wName, QString wPath)
+CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName, QString wPath)
     : QWidget(parent)
 {
     textEdit = new QTextEdit(this);
+    textEdit->setContextMenuPolicy(Qt::NoContextMenu);
     lineCount = new WLineCounter(textEdit, false, false, 20);
     layout = new QGridLayout(this);
     layout->addWidget(lineCount, 0, 0);
@@ -37,9 +42,24 @@ CodeEdit::CodeEdit(QTabWidget *parent, Project* parentPrj, QString wName, QStrin
     path = wPath;
     changed = false;
     parentWidget = parent;
+    this->tabs = tabs;
     parentProject = parentPrj;
     textEdit->setWordWrapMode(QTextOption::NoWrap);
     textEdit->setFont(QFont ("Andale Mono", 11));
+    this->makeMenu();
+    this->connectAct();
+}
+
+
+void CodeEdit::makeMenu()
+{
+    editorPopup = new QMenu(this);
+    QAction *splitHorizontalAct = new QAction("Split horizontal", editorPopup);
+    QAction *splitVerticalAct = new QAction("Split vertical", editorPopup);
+    editorPopup->addAction(splitHorizontalAct);
+    editorPopup->addAction(splitVerticalAct);
+    connect(splitHorizontalAct, SIGNAL(triggered()), this, SLOT(splitHorizontal()));
+    connect(splitVerticalAct, SIGNAL(triggered()), this, SLOT(splitVertical()));
 }
 
 
@@ -57,9 +77,14 @@ void CodeEdit::setChanged()
     if (changed == false)
     {
         changed = true;
-        parentWidget->setTabText(parentWidget->indexOf(this), "*" + name);
+        if (tabs == true)
+        {
+            QString newName("*" + name);
+            emit changedTabName(this, newName);
+            //((QTabWidget*)parentWidget)->setTabText(((QTabWidget*)parentWidget)->indexOf(this), "*" + name);
+        }
     }
-    lineCount->getWidget()->repaint();
+    lineCount->getWidget()->update();
 }
 
 
@@ -67,7 +92,9 @@ void CodeEdit::setSaved()
 {
     //if (changed == true)
     changed = false;
-    parentWidget->setTabText(parentWidget->indexOf(this), name);
+    if (tabs == true)
+        emit changedTabName(this, name);
+        //((QTabWidget*)parentWidget)->setTabText(((QTabWidget*)parentWidget)->indexOf(this), name);
 }
 
 
@@ -115,4 +142,22 @@ void CodeEdit::setParentProject(Project* project)
 QTextEdit* CodeEdit::getTextEdit()
 {
     return textEdit;
+}
+
+
+void CodeEdit::splitHorizontal()
+{
+    emit splitSignal(Qt::Horizontal, 0);
+}
+
+void CodeEdit::splitVertical()
+{
+    emit splitSignal(Qt::Vertical, 0);
+}
+
+
+void CodeEdit::contextMenuEvent(QContextMenuEvent *event)
+{
+    //if (target == textEdit)
+        editorPopup->popup(event->globalPos());
 }

@@ -21,8 +21,8 @@
 #include <QTabWidget>
 #include <QStatusBar>
 #include <QGridLayout>
-#include "../mainform/project.h"
-#include "wlinecounter.h"
+#include "../../mainform/project.h"
+#include "../Counters/wlinecounter.h"
 
 
 class Project;
@@ -33,12 +33,12 @@ class Project;
  * @ingroup GUI
  * @class CodeEdit
  */
-class CodeEdit : QWidget
+class CodeEdit : public QWidget
 {
     Q_OBJECT   
     public:
-        CodeEdit(QTabWidget *parent, QString wName, QString wPath);
-        CodeEdit(QTabWidget *parent, Project* parentPrj, QString wName, QString wPath);
+        CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath);
+        CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName, QString wPath);
         QString getName();
         QString getPath();
         void setName(QString wName);
@@ -52,17 +52,31 @@ class CodeEdit : QWidget
 
     public slots:
         void setChanged();
+        void splitHorizontal();
+        void splitVertical();
+
+    signals:
+        void splitSignal(Qt::Orientation orient, int line);
+        void changedTabName(CodeEdit *editor, QString name);
+        //void splitHorizontal(int line);
 
     private:
+        void makeMenu();
+
         QString name;
         QString path;
         bool changed;
+        bool tabs;
         Project* parentProject;
-        QTabWidget *parentWidget;
+        QWidget *parentWidget;
         QStatusBar *statusBar;
         QTextEdit *textEdit;
         QGridLayout *layout;
         WLineCounter *lineCount;
+        QMenu *editorPopup;
+
+    protected:
+        void contextMenuEvent(QContextMenuEvent *event);
 };
 
 

@@ -15,6 +15,11 @@ WDockManager::WDockManager(MainForm *mainWindow)
 }
 
 
+void WDockManager::changeTabName(CodeEdit *editor, QString name)
+{
+    wTab->setTabText(wTab->indexOf(editor), name);
+}
+
 
 void WDockManager::closeTab(int index)
 {
@@ -98,11 +103,12 @@ void WDockManager::setCentralPath(QString wPath)
 
 void WDockManager::addCentralWidget(QString wName, QString wPath)
 {
-    CodeEdit *newEditor = new CodeEdit(wTab, wName, wPath);
+    CodeEdit *newEditor = new CodeEdit(wTab, true, wName, wPath);
     wTab->addTab((QWidget*)newEditor, wName);
     wTab->setCurrentIndex(wTab->count()-1);
     //add tab tooltip with path
     openCentralWidgets.append(newEditor);
+    connect(newEditor, SIGNAL(changedTabName(CodeEdit*, QString)), this, SLOT(changeTabName(CodeEdit*, QString)));
 }
 
 void WDockManager::addDockWidget(int code)
@@ -147,6 +153,12 @@ void WDockManager::showDockWidgetArea(int area)
     for (i = openDockWidgets.begin(); i != openDockWidgets.end(); i++)
         if ((*i)->cmpArea(area) == true)
             (*i)->getQDockWidget()->show();
+}
+
+
+bool WDockManager::isEmpty()
+{
+    return openCentralWidgets.empty();
 }
 
 

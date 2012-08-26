@@ -22,8 +22,8 @@
 #include <QGridLayout>
 #include <QByteArray>
 #include <QLabel>
-#include "wlinecounter.h"
-#include "wcolumncounter.h"
+#include "../Counters/wlinecounter.h"
+#include "../Counters/wcolumncounter.h"
 
 
 class WLineCounter;

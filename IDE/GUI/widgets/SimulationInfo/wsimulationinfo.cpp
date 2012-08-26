@@ -1,9 +1,8 @@
 #include <QtGui>
 #include "wsimulationinfo.h"
-#include "sim/McuMemoryView.h"
-#include "sim/RegDisplayList.h"
+#include "../sim/McuMemoryView.h"
+#include "../sim/RegDisplayList.h"
 #include "MCUSimControl.h"
-#include "movgridlayout.h"
 
 
 WSimulationInfo::WSimulationInfo(MCUSimControl *controlUnit, QWidget *parent)
