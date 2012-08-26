@@ -29,9 +29,9 @@
 #include <QMainWindow>
 #include <QList>
 #include <QTabWidget>
-#include "codeedit.h"
-#include  "../mainform/mainform.h"
-#include "wsimulationinfo.h"
+#include "../Editor/codeedit.h"
+#include "../../mainform/mainform.h"
+#include "../SimulationInfo/wsimulationinfo.h"
 
 class WDock;
 class MainForm;
@@ -66,9 +66,11 @@ class WDockManager : public QObject
         void setTabChanged();
         void setTabSaved();
         int getTabCount();
+        bool isEmpty();
 
     private slots:
         void closeTab(int index);
+        void changeTabName(CodeEdit* editor, QString name);
 
     private:
         MainForm *wMainWindow;

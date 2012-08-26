@@ -21,8 +21,8 @@
 #include <QDockWidget>
 #include <QListWidget>
 #include <QTreeWidget>
-#include "../widgets/codeedit.h"
-#include "../widgets/wdockmanager.h"
+#include "../widgets/Editor/codeedit.h"
+#include "../widgets/DockManager/wdockmanager.h"
 #include "project.h"
 
 

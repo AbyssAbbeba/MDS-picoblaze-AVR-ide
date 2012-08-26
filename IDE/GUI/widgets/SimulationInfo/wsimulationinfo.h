@@ -2,8 +2,8 @@
 #define WSIMULATIONINFO_H
 
 
-#include "movgridlayout.h"
-#include "hexedit.h"
+#include "../MovGridLayout/movgridlayout.h"
+#include "../HexEdit/hexedit.h"
 #include <QHBoxLayout>
 #include <QScrollArea>
 
