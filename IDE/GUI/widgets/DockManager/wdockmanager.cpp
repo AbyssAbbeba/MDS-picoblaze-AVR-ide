@@ -1,17 +1,38 @@
 #include <QtGui>
 #include "wdockmanager.h"
 
+
 WDockManager::WDockManager(MainForm *mainWindow)
 {
     wMainWindow = mainWindow;
-    wTab = new QTabWidget(wMainWindow);
+    QWidget *centralWidget = new QWidget(wMainWindow);
+    QVBoxLayout *layout = new QVBoxLayout(centralWidget);
+    wTab = new QTabWidget(centralWidget);
+    splitter = new QSplitter(centralWidget);
+    splitter->show();
     wTab->setTabsClosable(true);
     wTab->setMovable(true);
     wRight = NULL;
     wLeft = NULL;
     wBottom = NULL;
     connect(wTab, SIGNAL(tabCloseRequested(int)),this, SLOT(closeTab(int)));
-    wMainWindow->setCentralWidget(wTab);
+    connect(wTab, SIGNAL(currentChanged(int)), this, SLOT(changeBaseEditor(int)));
+
+    layout->addWidget(wTab);
+    layout->addWidget(splitter);
+    centralWidget->setLayout(layout);
+    wMainWindow->setCentralWidget(centralWidget);
+}
+
+
+void WDockManager::changeBaseEditor(int index)
+{
+    if (openCentralWidgets.count() == wTab->count())
+    {
+        shownBaseEditor->hide();
+        shownBaseEditor = openCentralWidgets.at(index);
+        shownBaseEditor->show();
+    }
 }
 
 
@@ -23,7 +44,8 @@ void WDockManager::changeTabName(CodeEdit *editor, QString name)
 
 void WDockManager::closeTab(int index)
 {
-    wMainWindow->saveFile((CodeEdit*)wTab->widget(index));
+    wMainWindow->saveFile(openCentralWidgets.at(index)->getCodeEdit());
+    openCentralWidgets.removeAt(index);
     wTab->removeTab(index);
 }
 
@@ -31,40 +53,40 @@ void WDockManager::closeTab(int index)
 
 void WDockManager::setTabChanged()
 {
-    ((CodeEdit*)(wTab->currentWidget()))->setChanged();;
+    openCentralWidgets.at(wTab->currentIndex())->getCodeEdit()->setChanged();;
 }
 
 
 void WDockManager::setTabSaved()
 {
-    ((CodeEdit*)wTab->currentWidget())->setSaved();
+    openCentralWidgets.at(wTab->currentIndex())->getCodeEdit()->setSaved();
 }
 
 
 QTextEdit* WDockManager::getCentralTextEdit()
 {
-    return ((CodeEdit*)wTab->currentWidget())->getTextEdit();
+    return openCentralWidgets.at(wTab->currentIndex())->getCodeEdit()->getTextEdit();
 }
 
 
 
 QTextEdit* WDockManager::getTabTextEdit(int index)
 {
-    return ((CodeEdit*)wTab->widget(index))->getTextEdit();
+    return openCentralWidgets.at(index)->getCodeEdit()->getTextEdit();
 }
 
 
 
 CodeEdit* WDockManager::getCentralWidget()
 {
-    return (CodeEdit*)wTab->currentWidget();
+    return openCentralWidgets.at(wTab->currentIndex())->getCodeEdit();
 }
 
 
 
 CodeEdit* WDockManager::getTabWidget(int index)
 {
-    return (CodeEdit*)wTab->widget(index);
+    return openCentralWidgets.at(index)->getCodeEdit();
 }
 
 
@@ -78,37 +100,48 @@ int WDockManager::getTabCount()
 
 QString WDockManager::getCentralName()
 {
-    return ((CodeEdit*)wTab->currentWidget())->getName();
+    return openCentralWidgets.at(wTab->currentIndex())->getCodeEdit()->getName();
 }
 
 QString WDockManager::getCentralPath()
 {
-    return ((CodeEdit*)wTab->currentWidget())->getPath();
+    return openCentralWidgets.at(wTab->currentIndex())->getCodeEdit()->getPath();
 }
 
 
 void WDockManager::setCentralName(QString wName)
 {
-    ((CodeEdit*)wTab->currentWidget())->setName(wName);
+    openCentralWidgets.at(wTab->currentIndex())->getCodeEdit()->setName(wName);
     wTab->setTabText(wTab->currentIndex(), wName);
 }
 
 
 void WDockManager::setCentralPath(QString wPath)
 {
-    ((CodeEdit*)wTab->currentWidget())->setPath(wPath);
+    openCentralWidgets.at(wTab->currentIndex())->getCodeEdit()->setPath(wPath);
 }
 
 
 
 void WDockManager::addCentralWidget(QString wName, QString wPath)
 {
-    CodeEdit *newEditor = new CodeEdit(wTab, true, wName, wPath);
-    wTab->addTab((QWidget*)newEditor, wName);
+    CodeEdit *newEditor = new CodeEdit(0, true, wName, wPath);
+    BaseEditor *newBaseEditor = new BaseEditor(splitter, newEditor, true);
+    QWidget *empty = new QWidget(wTab);
+    empty->setMaximumWidth(0);
+    empty->setMaximumHeight(0);
+    splitter->addWidget(newBaseEditor);
+    shownBaseEditor = newBaseEditor;
+    wTab->addTab(empty, wName);
     wTab->setCurrentIndex(wTab->count()-1);
+    openCentralWidgets.append(newBaseEditor);
+    if (wTab->count() > 1)
+    {
+        qDebug() << "hiding";
+        openCentralWidgets.at(wTab->count()-2)->hide();
+    }
     //add tab tooltip with path
-    openCentralWidgets.append(newEditor);
-    connect(newEditor, SIGNAL(changedTabName(CodeEdit*, QString)), this, SLOT(changeTabName(CodeEdit*, QString)));
+    connect(newBaseEditor->getCodeEdit(), SIGNAL(changedTabName(CodeEdit*, QString)), this, SLOT(changeTabName(CodeEdit*, QString)));
 }
 
 void WDockManager::addDockWidget(int code)

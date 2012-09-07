@@ -26,6 +26,7 @@ RegDisplayList::RegDisplayList(MCUSimControl * controlUnit, QWidget * parent)
 	  m_numberOfDisplays(0),
 	  m_regDisplays(NULL)
 {
+	parentWidget = parent;
         std::vector<int> mask;
         mask.push_back(MCUSim::Memory::EVENT_MEM_INF_WR_VAL_CHANGED);
 	controlUnit->registerObserver(
@@ -33,15 +34,12 @@ RegDisplayList::RegDisplayList(MCUSimControl * controlUnit, QWidget * parent)
 		MCUSim::Subsys::ID_MEM_DATA,
 		mask);
 
-	m_layout = new QVBoxLayout(this);
-	setLayout(m_layout);
 
 	deviceChanged();
 }
 
 RegDisplayList::~RegDisplayList() {
 	deleteDisplays();
-	delete m_layout;
 }
 
 inline void RegDisplayList::deleteDisplays() {
@@ -131,7 +129,11 @@ void RegDisplayList::deviceChanged() {
 				it->m_address,
 				QString::fromStdString(it->m_regName),
 				QString::fromStdString(it->m_regNameTip),
-				it->m_mask);
+				it->m_mask,
+				NULL,
+				NULL,
+				NULL,
+				parentWidget);
 		} else {
 			QStringList bitNames, toolsTips, statusTips;
 
@@ -148,12 +150,12 @@ void RegDisplayList::deviceChanged() {
 				it->m_mask,
 				&bitNames,
 				&toolsTips,
-				&statusTips);
+				&statusTips,
+                                parentWidget);
 		}
 
 		connect(m_regDisplays[idx], SIGNAL(valueChanged(uint, uint)), this, SLOT(changeValue(uint, uint)));
 
-		m_layout->addWidget(m_regDisplays[idx]);
 	}
 
 	deviceReset();

@@ -36,16 +36,17 @@ public:
 	void deviceReset();
 	void setReadOnly(bool readOnly);
 
+	int m_numberOfDisplays;
+	RegDisplay ** m_regDisplays;
+
 public slots:
 	void changeValue(uint address, uint value);
 
 private:
+	QWidget *parentWidget;
 	int m_startingAddress;
-	int m_numberOfDisplays;
-	RegDisplay ** m_regDisplays;
 	MCUSim::Memory * m_memory;
 
-	QVBoxLayout * m_layout;
 
 	inline void deleteDisplays();
 };
