@@ -17,7 +17,7 @@
 #define CODEEDIT_H
 
 
-#include <QPlainTextEdit>
+#include <QTextEdit>
 #include <QTabWidget>
 #include <QStatusBar>
 #include <QGridLayout>
@@ -54,11 +54,13 @@ class CodeEdit : public QWidget
         void setChanged();
         void splitHorizontal();
         void splitVertical();
+        void updateTextSlotOut();
+        void updateTextSlotIn(const QString& textIn);
 
     signals:
         void splitSignal(Qt::Orientation orient, int line);
         void changedTabName(CodeEdit *editor, QString name);
-        //void splitHorizontal(int line);
+        void updateText(const QString & text);
 
     private:
         void makeMenu();

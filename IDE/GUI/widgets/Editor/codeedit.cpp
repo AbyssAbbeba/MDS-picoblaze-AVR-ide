@@ -23,7 +23,7 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath)
     //setWordWrapMode(QTextOption::WordWrap);
     textEdit->setFont(QFont ("Andale Mono", 11));
     this->makeMenu();
-    this->connectAct();
+    //this->connectAct();
 }
 
 
@@ -47,7 +47,7 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName
     textEdit->setWordWrapMode(QTextOption::NoWrap);
     textEdit->setFont(QFont ("Andale Mono", 11));
     this->makeMenu();
-    this->connectAct();
+    //this->connectAct();
 }
 
 
@@ -160,4 +160,16 @@ void CodeEdit::contextMenuEvent(QContextMenuEvent *event)
 {
     //if (target == textEdit)
         editorPopup->popup(event->globalPos());
+}
+
+
+void CodeEdit::updateTextSlotOut()
+{
+    emit updateText(this->textEdit->toPlainText());
+}
+
+void CodeEdit::updateTextSlotIn(const QString& textIn)
+{
+    if (textIn.compare(this->textEdit->toPlainText()) != 0)
+       this->textEdit->setText(textIn);
 }

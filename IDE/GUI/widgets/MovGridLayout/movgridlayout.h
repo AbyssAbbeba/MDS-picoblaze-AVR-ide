@@ -73,6 +73,9 @@ class MovGridLayout : public QWidget
         int sizeCol;
 	//params of grabbed widget
 	BLANK movingWidget;
+        //old geometry on resize
+        int oldWidth;
+        int oldHeight;
 
     protected:
         virtual bool eventFilter(QObject *target, QEvent *event);
