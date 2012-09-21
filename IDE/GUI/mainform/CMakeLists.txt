@@ -85,4 +85,4 @@ QT4_WRAP_CPP( SAMPLE_MOC_SRCS ${SAMPLE_MOC_HDRS} )
 add_library(${PROJECT_NAME} SHARED
 	${SAMPLE_MOC_SRCS} ${SAMPLE_SRCS})
 
-target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} Widgets Dialogs McuSimCfgMgr SimControl AVR8Sim MCUDataFiles)
+target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} ProjectTree Editor Dialogs WDockManager McuSimCfgMgr SimControl AVR8Sim MCUDataFiles)

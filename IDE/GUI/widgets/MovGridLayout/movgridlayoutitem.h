@@ -1,9 +1,28 @@
+/**
+ * @brief
+ * C++ Interface: ...
+ *
+ * ...
+ *
+ * Copyright: See COPYING file that comes with this distribution.
+ *
+ * @author Erik Chalupa <xchalu10@stud.fit.vutbr.cz>, (C) 2012
+ * @ingroup GUI
+ * @file movgridlayoutitem.h
+ */
+
+
 #ifndef MOVGRIDLAYOUTITEM_H
 #define MOVGRIDLAYOUTITEM_H
 
 #include <QWidget>
 
 
+/**
+ * @brief
+ * @ingroup GUI
+ * @class MovGridLayoutItem
+ */
 class MovGridLayoutItem
 {
     public:

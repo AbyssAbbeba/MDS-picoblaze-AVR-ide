@@ -1,3 +1,17 @@
+/**
+ * @brief
+ * C++ Implementation: ...
+ *
+ * ...
+ *
+ * Copyright: See COPYING file that comes with this distribution.
+ *
+ * @author: Erik Chalupa <xchalu10@stud.fit.vutbr.cz>, (C) 2012
+ *
+ */
+
+
+
 #include <QtGui>
 #include "wdockmanager.h"
 
@@ -29,9 +43,9 @@ void WDockManager::changeBaseEditor(int index)
 {
     if (openCentralWidgets.count() == wTab->count())
     {
-        shownBaseEditor->hide();
-        shownBaseEditor = openCentralWidgets.at(index);
-        shownBaseEditor->show();
+        activeBaseEditor->hide();
+        activeBaseEditor = openCentralWidgets.at(index);
+        activeBaseEditor->show();
     }
 }
 
@@ -126,12 +140,12 @@ void WDockManager::setCentralPath(QString wPath)
 void WDockManager::addCentralWidget(QString wName, QString wPath)
 {
     CodeEdit *newEditor = new CodeEdit(0, true, wName, wPath);
-    BaseEditor *newBaseEditor = new BaseEditor(splitter, newEditor, true);
+    BaseEditor *newBaseEditor = new BaseEditor(splitter, this, newEditor, true);
     QWidget *empty = new QWidget(wTab);
     empty->setMaximumWidth(0);
     empty->setMaximumHeight(0);
     splitter->addWidget(newBaseEditor);
-    shownBaseEditor = newBaseEditor;
+    activeBaseEditor = newBaseEditor;
     wTab->addTab(empty, wName);
     wTab->setCurrentIndex(wTab->count()-1);
     openCentralWidgets.append(newBaseEditor);

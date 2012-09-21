@@ -1,10 +1,25 @@
+/**
+ * @brief
+ * C++ Implementation: ...
+ *
+ * ...
+ *
+ * Copyright: See COPYING file that comes with this distribution.
+ *
+ * @author: Erik Chalupa <xchalu10@stud.fit.vutbr.cz>, (C) 2012
+ *
+ */
+
+
+
 #include <QtGui>
 #include "baseeditor.h"
 
 
-BaseEditor::BaseEditor(QWidget *parent, CodeEdit *edit, bool delCodeEdit)
+BaseEditor::BaseEditor(QWidget *parent, WDockManager *dockParent, CodeEdit *edit, bool delCodeEdit)
     : QSplitter(parent)
 {
+    this->dockMan = dockParent;
     //this->codeEdit = edit;
     this->codeEdit = new CodeEdit(this, false, edit->getName(), edit->getPath());
     this->codeEdit->getTextEdit()->setPlainText(edit->getTextEdit()->toPlainText());
@@ -20,8 +35,8 @@ void BaseEditor::split(Qt::Orientation orient, int line)
 {
     isSplit = true;
     this->setOrientation(orient);
-    next = new BaseEditor(this, codeEdit, false);
-    next2 = new BaseEditor(this, codeEdit, true);
+    next = new BaseEditor(this, dockMan, codeEdit, false);
+    next2 = new BaseEditor(this, dockMan, codeEdit, true);
     connectCodeEdits(next->getCodeEdit(), next2->getCodeEdit());
     for (int i=0; i<connectedCodeEdits.count(); i++)
     {

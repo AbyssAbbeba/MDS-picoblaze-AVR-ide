@@ -85,7 +85,7 @@ class WDockManager : public QObject
         QList<BaseEditor*> openCentralWidgets;
         QTabWidget *wTab;
         QSplitter *splitter;
-        BaseEditor *shownBaseEditor;
+        BaseEditor *activeBaseEditor;
 };
 
 
