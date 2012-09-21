@@ -1,3 +1,17 @@
+/**
+ * @brief
+ * C++ Interface: ...
+ *
+ * ...
+ *
+ * Copyright: See COPYING file that comes with this distribution.
+ *
+ * @author Erik Chalupa <xchalu10@stud.fit.vutbr.cz>, (C) 2012
+ * @ingroup GUI
+ * @file wlinecounter.h
+ */
+
+
 #ifndef WLINECOUNTER_H
 #define WLINECOUNTER_H
 
@@ -7,6 +21,11 @@
 class WLineCounterWidget;
 
 
+/**
+ * @brief
+ * @ingroup GUI
+ * @class WLineCounter
+ */
 class WLineCounter : public QScrollArea
 {
     Q_OBJECT   

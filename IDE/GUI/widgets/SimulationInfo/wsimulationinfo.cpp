@@ -1,3 +1,17 @@
+/**
+ * @brief
+ * C++ Implementation: ...
+ *
+ * ...
+ *
+ * Copyright: See COPYING file that comes with this distribution.
+ *
+ * @author: Erik Chalupa <xchalu10@stud.fit.vutbr.cz>, (C) 2012
+ *
+ */
+
+
+
 #include <QtGui>
 #include "wsimulationinfo.h"
 #include "../sim/McuMemoryView.h"
@@ -23,9 +37,13 @@ WSimulationInfo::WSimulationInfo(MCUSimControl *controlUnit, QWidget *parent)
     }
     qDebug() << "done";
     m_regListScroll->setWidget(gridLayout);
+    qDebug() << "done2";
     layout->addWidget(m_hexEdit);
+    qDebug() << "done2";
     layout->addWidget(m_regListScroll);
+    qDebug() << "done3";
     this->setLayout(layout);
+    qDebug() << "done done";
 }
 
 WSimulationInfo::~WSimulationInfo()
