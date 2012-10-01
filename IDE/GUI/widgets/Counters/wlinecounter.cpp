@@ -81,7 +81,7 @@ void WLineCounterWidget::paintEvent(QPaintEvent *)
     QPainter paint;
     paint.begin(this);
     QRectF rect(0,0,17,size+9);
-    QRectF iconRect(0,0,5,size+9);
+    QRectF iconRect(0,0,8,size+9);
     QPointF point;
     point.setX(0);
     QBrush brush(Qt::darkCyan);
@@ -100,10 +100,19 @@ void WLineCounterWidget::paintEvent(QPaintEvent *)
         {
             pen.setColor(Qt::green);
             paint.setPen(pen);
+            paint.drawRect(iconRect);
+        }
+        if (icons == true && bookmarkList->at(i) == true)
+        {
+            point.setX(8);
+            pen.setColor(Qt::yellow);
+            paint.setPen(pen);
+            paint.drawRect(iconRect);
         }
         //paint.drawRect(rect);
         //pen.setColor(Qt::black);
         //paint.setPen(pen);
+        point.setX(0);
         if (true == hex)
         {
             if (i<16)
@@ -130,12 +139,6 @@ void WLineCounterWidget::paintEvent(QPaintEvent *)
             for (int j = 0; j < zeros; j++)
                 decDraw = decDraw + "0";
             paint.drawText(rect, Qt::AlignCenter, decDraw + QString::number(i+1, 10));
-        }
-        if (icons == true && bookmarkList->at(i) == true)
-        {
-            pen.setColor(Qt::yellow);
-            paint.setPen(pen);
-            paint.drawRect(iconRect);
         }
         //pen.setColor(Qt::darkCyan);
         //paint.setPen(pen);

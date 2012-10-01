@@ -250,13 +250,12 @@ void MainForm::openFile()
     {
         QFile file(path);
         if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
-        //if (!file.open(QIODevice::ReadOnly))
         {
             error(ERR_OPENFILE);
         }
         else {
             wDockManager->addCentralWidget(path.section('/', -1), path);
-            wDockManager->getCentralTextEdit()->setPlainText(file.readAll());
+            //wDockManager->getCentralTextEdit()->setPlainText(file.readAll());
             file.close();
             wDockManager->getCentralWidget()->connectAct();
         }
@@ -278,7 +277,7 @@ void MainForm::openFilePath(QString path)
     }
     else {
         wDockManager->addCentralWidget(path.section('/', -1), path);
-        wDockManager->getCentralTextEdit()->setPlainText(file.readAll());
+        //wDockManager->getCentralTextEdit()->setPlainText(file.readAll());
         file.close();
         wDockManager->getCentralWidget()->connectAct();
         wDockManager->getCentralWidget()->setParentProject(projectMan->getActive());

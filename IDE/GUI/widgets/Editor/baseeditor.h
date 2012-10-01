@@ -36,22 +36,32 @@ class BaseEditor : public QSplitter
     public:
         BaseEditor(QWidget *parent, WDockManager *dockParent, CodeEdit *edit, bool delCodeEdit);
         CodeEdit* getCodeEdit();
+        void focusIn();
 
     private slots:
         void split(Qt::Orientation orient, int line);
         void unsplit();
+        void reconnect(CodeEdit *editor);
+
+    signals:
+        void focusIn(CodeEdit* codeEdit);
         
     private:
         void connectCodeEdits(CodeEdit* editor1, CodeEdit* editor2);
         void connectBaseEditors(BaseEditor* editor1, BaseEditor* editor2);
 
         bool isSplit;
+        bool mouseDown;
         BaseEditor *next; 
         BaseEditor *next2;
         CodeEdit *codeEdit;
         QList<CodeEdit*> connectedCodeEdits;
         QMenu *basePopup;
         WDockManager *dockMan;
+
+    protected:
+        //bool eventFilter(QObject *target, QEvent *event);
+        
      
 };
 
