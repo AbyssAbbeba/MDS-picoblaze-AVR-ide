@@ -47,6 +47,7 @@ MovGridLayout::MovGridLayout(QWidget *parentWidget)
 }
 
 
+//add widget to layout, automatic position
 bool MovGridLayout::addWidget(QWidget *widget)
 {
     //position - x, y, see typedef struct XY in movgridlayout.h
@@ -67,6 +68,7 @@ bool MovGridLayout::addWidget(QWidget *widget)
 }
 
 
+//add widget to layout on exact position
 void MovGridLayout::addWidget(QWidget *widget, int x, int y)
 {
     MovGridLayoutItem *item = new MovGridLayoutItem(this, widget, widget->width()/sizeRow, widget->height()/sizeCol, gridWidgets.size());
@@ -78,6 +80,7 @@ void MovGridLayout::addWidget(QWidget *widget, int x, int y)
 }
 
 
+//load order of widgets from project xml
 void MovGridLayout::loadGridWidgets()
 {
     //load from xml, here or where project-loading takes place
@@ -86,9 +89,10 @@ void MovGridLayout::loadGridWidgets()
 }
 
 
+
+//calculate position of widget (= find first free position)
 XY MovGridLayout::calcXY(QWidget *widget)
 {
-    //calculate position of widget (= find first free position)
     int w = (widget->width()+2)/sizeRow;
     int h = (widget->height()+2)/sizeCol;
     //qDebug() << "width: " << w << " height: " << h;
@@ -124,7 +128,7 @@ XY MovGridLayout::calcXY(QWidget *widget)
         }
     delete grid;
     grid = newGrid;
-    qDebug() << "reallocating";
+    //qDebug() << "reallocating";
     oldWidth = this->width();
     oldHeight = this->height();
     for (int i = 0; i+w<gridWidth; i++)

@@ -27,9 +27,8 @@
 
 class Project;
 
-//editor kodu s pouzitim QSyntaxHighlight a pocitanim radku
 /**
- * @brief
+ * @brief Code Editor, include splitter and line counter
  * @ingroup GUI
  * @class CodeEdit
  */
@@ -49,6 +48,8 @@ class CodeEdit : public QWidget
         bool isChild(Project* project);
         void setParentProject(Project* project);
         QTextEdit *getTextEdit();
+        QWidget* getParent();
+        void loadCodeEdit(CodeEdit* editor);
 
     public slots:
         void setChanged();
@@ -61,6 +62,7 @@ class CodeEdit : public QWidget
         void splitSignal(Qt::Orientation orient, int line);
         void changedTabName(CodeEdit *editor, QString name);
         void updateText(const QString & text);
+        void CodeEditChanged(CodeEdit* editor);
 
     private:
         void makeMenu();
@@ -79,6 +81,7 @@ class CodeEdit : public QWidget
 
     protected:
         void contextMenuEvent(QContextMenuEvent *event);
+        bool eventFilter(QObject *target, QEvent *event);
 };
 
 

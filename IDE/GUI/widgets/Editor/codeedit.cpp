@@ -37,6 +37,15 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath)
     //setWordWrapMode(QTextOption::WordWrap);
     textEdit->setFont(QFont ("Andale Mono", 11));
     this->makeMenu();
+    this->setFocusPolicy(Qt::StrongFocus);
+    this->textEdit->setFocusPolicy(Qt::NoFocus);
+    this->installEventFilter(this);
+    QFile file(path);
+    if (file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        this->textEdit->setPlainText(file.readAll());
+        file.close();
+    }
     //this->connectAct();
 }
 
@@ -61,6 +70,14 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName
     textEdit->setWordWrapMode(QTextOption::NoWrap);
     textEdit->setFont(QFont ("Andale Mono", 11));
     this->makeMenu();
+    this->setFocusPolicy(Qt::StrongFocus);
+    this->installEventFilter(this);
+    QFile file(path);
+    if (file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        this->textEdit->setPlainText(file.readAll());
+        file.close();
+    }
     //this->connectAct();
 }
 
@@ -161,11 +178,13 @@ QTextEdit* CodeEdit::getTextEdit()
 
 void CodeEdit::splitHorizontal()
 {
+    qDebug() << "Code Edit: split signal - horizontal";
     emit splitSignal(Qt::Horizontal, 0);
 }
 
 void CodeEdit::splitVertical()
 {
+    qDebug() << "Code Edit: split signal - vertical";
     emit splitSignal(Qt::Vertical, 0);
 }
 
@@ -184,6 +203,38 @@ void CodeEdit::updateTextSlotOut()
 
 void CodeEdit::updateTextSlotIn(const QString& textIn)
 {
+    qDebug() << "Code Edit: update";
     if (textIn.compare(this->textEdit->toPlainText()) != 0)
        this->textEdit->setText(textIn);
+}
+
+
+void CodeEdit::loadCodeEdit(CodeEdit* editor)
+{
+    qDebug() << "Code Edit: load Code Editor" << editor->getTextEdit()->toPlainText();
+    disconnect(this, SIGNAL(textChanged()), 0, 0);
+    disconnect(this, SIGNAL(updateText(const QString&)), 0, 0);
+    this->textEdit->setText(editor->getTextEdit()->toPlainText());
+    emit CodeEditChanged(editor);
+}
+
+
+QWidget* CodeEdit::getParent()
+{
+    return parentWidget;
+}
+
+
+bool CodeEdit::eventFilter(QObject *target, QEvent *event)
+{
+    if (event->type() == QEvent::FocusIn)
+    {
+        if (target == this || target == textEdit)
+        {
+            ((BaseEditor*)parentWidget)->focusIn();
+            textEdit->setFocus(Qt::MouseFocusReason);
+            return true;
+        }
+    }
+    return QWidget::eventFilter(target, event);
 }

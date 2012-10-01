@@ -74,18 +74,20 @@ class WDockManager : public QObject
     private slots:
         void closeTab(int index);
         void changeTabName(CodeEdit* editor, QString name);
-        void changeBaseEditor(int index);
+        void changeCodeEditor(int index);
+        void changeActiveCodeEdit(CodeEdit* editor);
 
     private:
         MainForm *wMainWindow;
         QList<WDock*> openDockWidgets;
-        WDock* wLeft;
-        WDock* wBottom;
-        WDock* wRight;
+        WDock *wLeft;
+        WDock *wBottom;
+        WDock *wRight;
         QList<BaseEditor*> openCentralWidgets;
+        BaseEditor *centralBase;
         QTabWidget *wTab;
         QSplitter *splitter;
-        BaseEditor *activeBaseEditor;
+        CodeEdit *activeCodeEdit;
 };
 
 
