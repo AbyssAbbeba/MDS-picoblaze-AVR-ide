@@ -1,5 +1,5 @@
 /**
- * @brief
+ * @brief Modif. QTextEdit
  * C++ Interface: ...
  *
  * ...
@@ -30,6 +30,9 @@ class WTextEdit : public QTextEdit
     Q_OBJECT   
     public:
         WTextEdit(QWidget *parent);
+
+    signals:
+        void focusIn();
 
     protected:
         bool eventFilter(QObject *target, QEvent *event);

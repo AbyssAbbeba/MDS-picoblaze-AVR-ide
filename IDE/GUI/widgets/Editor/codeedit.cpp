@@ -20,7 +20,7 @@
 CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath)
     : QWidget(parent)
 {
-    textEdit = new QTextEdit(this);
+    textEdit = new WTextEdit(this);
     textEdit->setContextMenuPolicy(Qt::NoContextMenu);
     lineCount = new WLineCounter(textEdit, false, false, 20);
     layout = new QGridLayout(this);
@@ -37,15 +37,16 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath)
     //setWordWrapMode(QTextOption::WordWrap);
     textEdit->setFont(QFont ("Andale Mono", 11));
     this->makeMenu();
-    this->setFocusPolicy(Qt::StrongFocus);
-    this->textEdit->setFocusPolicy(Qt::NoFocus);
-    this->installEventFilter(this);
+    //this->setFocusPolicy(Qt::StrongFocus);
+    //this->textEdit->setFocusPolicy(Qt::NoFocus);
+    //this->installEventFilter(this);
     QFile file(path);
     if (file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
         this->textEdit->setPlainText(file.readAll());
         file.close();
     }
+    connect(textEdit, SIGNAL(focusIn()), this, SLOT(getFocus()));
     //this->connectAct();
 }
 
@@ -54,7 +55,7 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath)
 CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName, QString wPath)
     : QWidget(parent)
 {
-    textEdit = new QTextEdit(this);
+    textEdit = new WTextEdit(this);
     textEdit->setContextMenuPolicy(Qt::NoContextMenu);
     lineCount = new WLineCounter(textEdit, false, false, 20);
     layout = new QGridLayout(this);
@@ -71,7 +72,7 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName
     textEdit->setFont(QFont ("Andale Mono", 11));
     this->makeMenu();
     this->setFocusPolicy(Qt::StrongFocus);
-    this->installEventFilter(this);
+    //this->installEventFilter(this);
     QFile file(path);
     if (file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
@@ -172,7 +173,7 @@ void CodeEdit::setParentProject(Project* project)
 
 QTextEdit* CodeEdit::getTextEdit()
 {
-    return textEdit;
+    return (QTextEdit*)textEdit;
 }
 
 
@@ -212,7 +213,7 @@ void CodeEdit::updateTextSlotIn(const QString& textIn)
 void CodeEdit::loadCodeEdit(CodeEdit* editor)
 {
     qDebug() << "Code Edit: load Code Editor" << editor->getTextEdit()->toPlainText();
-    disconnect(this, SIGNAL(textChanged()), 0, 0);
+    //disconnect(textEdit, SIGNAL(textChanged()), 0, 0);
     disconnect(this, SIGNAL(updateText(const QString&)), 0, 0);
     this->textEdit->setText(editor->getTextEdit()->toPlainText());
     emit CodeEditChanged(editor);
@@ -225,7 +226,13 @@ QWidget* CodeEdit::getParent()
 }
 
 
-bool CodeEdit::eventFilter(QObject *target, QEvent *event)
+
+void CodeEdit::getFocus()
+{
+    ((BaseEditor*)parentWidget)->focusIn();
+}
+
+/*bool CodeEdit::eventFilter(QObject *target, QEvent *event)
 {
     if (event->type() == QEvent::FocusIn)
     {
@@ -237,4 +244,4 @@ bool CodeEdit::eventFilter(QObject *target, QEvent *event)
         }
     }
     return QWidget::eventFilter(target, event);
-}
+}*/
