@@ -1,5 +1,5 @@
 /**
- * @brief
+ * @brief Modif. QTextEdit
  * C++ Implementation: ...
  *
  * ...
@@ -18,16 +18,19 @@
 WTextEdit::WTextEdit(QWidget *parent)
     : QTextEdit(parent)
 {
-    installEventFilter(this);
+    this->installEventFilter(this);
+    //this->setFocusPolicy(Qt::ClickFocus);
 }
 
-WTextEdit::eventFilter(QObject *target, QEvent *event)
+bool WTextEdit::eventFilter(QObject *target, QEvent *event)
 {
+    //track focus event
     if (event->type() == QEvent::FocusIn)
     {
         if (target == this)
         {
-            return true;
+            //emit signal for CodeEdit parent
+            emit focusIn();
         }
     }
     return QWidget::eventFilter(target, event);

@@ -17,18 +17,18 @@
 #define CODEEDIT_H
 
 
-#include <QTextEdit>
 #include <QTabWidget>
 #include <QStatusBar>
 #include <QGridLayout>
 #include "../../mainform/project.h"
 #include "../Counters/wlinecounter.h"
+#include "wtextedit.h"
 
 
 class Project;
 
 /**
- * @brief Code Editor, include splitter and line counter
+ * @brief Code Editor, include splitter, wtextedit and line counter
  * @ingroup GUI
  * @class CodeEdit
  */
@@ -57,6 +57,7 @@ class CodeEdit : public QWidget
         void splitVertical();
         void updateTextSlotOut();
         void updateTextSlotIn(const QString& textIn);
+        void getFocus();
 
     signals:
         void splitSignal(Qt::Orientation orient, int line);
@@ -74,14 +75,14 @@ class CodeEdit : public QWidget
         Project* parentProject;
         QWidget *parentWidget;
         QStatusBar *statusBar;
-        QTextEdit *textEdit;
+        WTextEdit *textEdit;
         QGridLayout *layout;
         WLineCounter *lineCount;
         QMenu *editorPopup;
 
     protected:
         void contextMenuEvent(QContextMenuEvent *event);
-        bool eventFilter(QObject *target, QEvent *event);
+        //bool eventFilter(QObject *target, QEvent *event);
 };
 
 
