@@ -61,14 +61,14 @@ WLineCounterWidget::WLineCounterWidget(WLineCounter *parent, bool icons, bool he
     this->setMinimumHeight(parent->height());
     this->hex = hex;
 
-    if (icons == true)
-    {
+    //if (icons == true)
+    //{
         //inicializace poli a pripojeni na signal texteditu content changed
         //nebo zrejme reimplementace handlovani eventu pro qkey::return
         //v texteditu a emitnuti signalu pro novy radek a pote zmena pole
         //+ pripojeni na mouseclick (na cislo je breakpoint, na mezeru
         //vedle je bookmark ci naopak)...
-    }
+    //}
 }
 
 
@@ -76,12 +76,14 @@ void WLineCounterWidget::paintEvent(QPaintEvent *)
 {
     QTextEdit* textEdit = parent->getTextEdit();
     int size = textEdit->currentFont().pointSize();
-    this->setMinimumHeight(textEdit->document()->lineCount()*(size+9));
-    this->setMaximumHeight(textEdit->document()->lineCount()*(size+9));
+    QTextCursor lastBlockCursor(textEdit->document()->lastBlock());
+    QRect lastBlockRect = textEdit->cursorRect(lastBlockCursor);
+    this->setMinimumHeight(lastBlockRect.top()+2*size);
+    this->setMaximumHeight(lastBlockRect.top()+2*size);
     QPainter paint;
     paint.begin(this);
-    QRectF rect(0,0,17,size+9);
-    QRectF iconRect(0,0,8,size+9);
+    QRectF rect(0,0,17,2*size);
+    QRectF iconRect(0,0,8,2*size);
     QPointF point;
     point.setX(0);
     QBrush brush(Qt::darkCyan);
@@ -92,11 +94,19 @@ void WLineCounterWidget::paintEvent(QPaintEvent *)
     paint.setPen(pen);
     //pen.setColor(Qt::black);
     //paint.setPen(pen);
-    for (int i = 0; i<textEdit->document()->lineCount(); i++)
+    QTextBlock lineBlock;
+    QRect cursorRect;
+    for (int i = 0; i<textEdit->document()->blockCount(); i++)
     {
-        point.setY(i*(size+7)+size/3);
+        lineBlock = textEdit->document()->findBlockByNumber(i);
+        QTextCursor cursor(lineBlock);
+        cursorRect = textEdit->cursorRect(cursor);
+        point.setY(cursorRect.top());
+        qDebug() << "cursor: " << cursorRect.top();
+        //point.setY(i*(size+7)+size/3);
+        point.setX(0);
         rect.moveTopLeft(point);
-        if (icons == true && breakpointList->at(i) == true)
+        /*if (icons == true && breakpointList->at(i) == true)
         {
             pen.setColor(Qt::green);
             paint.setPen(pen);
@@ -108,11 +118,10 @@ void WLineCounterWidget::paintEvent(QPaintEvent *)
             pen.setColor(Qt::yellow);
             paint.setPen(pen);
             paint.drawRect(iconRect);
-        }
+        }*/
         //paint.drawRect(rect);
         //pen.setColor(Qt::black);
         //paint.setPen(pen);
-        point.setX(0);
         if (true == hex)
         {
             if (i<16)

@@ -5,7 +5,7 @@
 # ------------------------------------------------------------------------------
 
 # Set project name
-project(Editor)
+project(Highlighter)
 
 # Set the minimum required version of CMake
 cmake_minimum_required(VERSION 2.8)
@@ -19,16 +19,12 @@ set(CMAKE_VERBOSE_MAKEFILE OFF)
 # here we define SAMPLE_SRCS variable that contains a list of all .cpp files 
 # note that we don't need \ at the end of line
 SET( SAMPLE_SRCS
-	./baseeditor.cpp
-	./codeedit.cpp
-        ./wtextedit.cpp
+	./highlighter.cpp
 )
   
 # another list, this time it includes all header files that should be treated with moc
 SET( SAMPLE_MOC_HDRS
-	./baseeditor.h
-	./codeedit.h
-        ./wtextedit.h
+	./highlighter.h
 )
 
 
@@ -44,7 +40,7 @@ find_package(Qt4 REQUIRED)
 #include(${QT_USE_FILE})
 
 include_directories(
-	"${CMAKE_CURRENT_BINARY_DIR}/../DockManager/"
+#	"${CMAKE_CURRENT_BINARY_DIR}/../DockManager/"
 #	"${CMAKE_CURRENT_BINARY_DIR}/sim/"
 #	"${CMAKE_CURRENT_BINARY_DIR}/../../simulators/SimControl/"
 #	"${CMAKE_CURRENT_BINARY_DIR}/../../simulators/MCUSim/"
@@ -55,8 +51,7 @@ include_directories(
 
 # <DEBUG!>
 link_directories(
-	"${CMAKE_CURRENT_BINARY_DIR}/../Counters"
-	"${CMAKE_CURRENT_BINARY_DIR}/../Highlighter"
+	"${CMAKE_CURRENT_BINARY_DIR}/../Editor"
 	)
 
 #include_directories(
@@ -90,7 +85,7 @@ add_library(${PROJECT_NAME} SHARED
 	${SAMPLE_MOC_SRCS} ${SAMPLE_SRCS})
 
 
-target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} Counters Highlighter)
+target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES})
 
 
 # ------------------------------------------------------------------------------

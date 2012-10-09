@@ -18,7 +18,9 @@
 
 
 #include <QTextEdit>
+#include "../Highlighter/highlighter.h"
 
+class Highlighter;
 
 /**
  * @brief QTextEdit with reimplemented eventFilter
@@ -30,9 +32,15 @@ class WTextEdit : public QTextEdit
     Q_OBJECT   
     public:
         WTextEdit(QWidget *parent);
+        void highlightCurrentLine();
+        void highlightLine(int line);
 
     signals:
         void focusIn();
+        void breakpoint(int line);
+
+    private:
+        Highlighter *highlighter;
 
     protected:
         bool eventFilter(QObject *target, QEvent *event);
