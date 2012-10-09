@@ -79,6 +79,8 @@ void BaseEditor::connectCodeEdits(CodeEdit* editor1, CodeEdit* editor2)
         connect(editor2->getTextEdit(), SIGNAL(textChanged()), editor2, SLOT(updateTextSlotOut()));
         connect(editor1, SIGNAL(updateText(const QString&)), editor2, SLOT(updateTextSlotIn(const QString&)));
         connect(editor2, SIGNAL(updateText(const QString&)), editor1, SLOT(updateTextSlotIn(const QString&)));
+        connect(editor1->getTextEdit(), SIGNAL(breakpoint(int)), editor2, SLOT(manageBreakpointEmit(int)));
+        connect(editor2->getTextEdit(), SIGNAL(breakpoint(int)), editor1, SLOT(manageBreakpointEmit(int)));
     }
 }
 

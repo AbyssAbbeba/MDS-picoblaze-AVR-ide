@@ -59,9 +59,9 @@ class WLineCounterWidget : public QWidget
         WLineCounter *parent;
         bool icons;
         bool hex;
-        QList<bool> *breakpointList;
-        QList<bool> *errorList;
-        QList<bool> *bookmarkList;
+        //QList<bool> *breakpointList;
+        //QList<bool> *errorList;
+        //QList<bool> *bookmarkList;
 
     protected:
         void paintEvent(QPaintEvent *);

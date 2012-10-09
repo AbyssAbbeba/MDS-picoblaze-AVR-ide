@@ -20,6 +20,7 @@
 #include <QTabWidget>
 #include <QStatusBar>
 #include <QGridLayout>
+#include <QList>
 #include "../../mainform/project.h"
 #include "../Counters/wlinecounter.h"
 #include "wtextedit.h"
@@ -58,6 +59,7 @@ class CodeEdit : public QWidget
         void updateTextSlotOut();
         void updateTextSlotIn(const QString& textIn);
         void getFocus();
+        void manageBreakpointEmit(int line);
 
     signals:
         void splitSignal(Qt::Orientation orient, int line);
@@ -79,6 +81,7 @@ class CodeEdit : public QWidget
         QGridLayout *layout;
         WLineCounter *lineCount;
         QMenu *editorPopup;
+        QList<int> breakpointList;
 
     protected:
         void contextMenuEvent(QContextMenuEvent *event);

@@ -33,8 +33,9 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath)
     parentWidget = parent;
     this->tabs = tabs;
     parentProject = NULL;
-    textEdit->setWordWrapMode(QTextOption::NoWrap);
-    //setWordWrapMode(QTextOption::WordWrap);
+    //textEdit->setWordWrapMode(QTextOption::NoWrap);
+    textEdit->setWordWrapMode(QTextOption::WordWrap);
+    textEdit->setLineWrapMode(QTextEdit::WidgetWidth);
     textEdit->setFont(QFont ("Andale Mono", 11));
     this->makeMenu();
     //this->setFocusPolicy(Qt::StrongFocus);
@@ -47,6 +48,7 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath)
         file.close();
     }
     connect(textEdit, SIGNAL(focusIn()), this, SLOT(getFocus()));
+    connect(textEdit, SIGNAL(breakpoint(int)), this, SLOT(manageBreakpointEmit(int)));
     //this->connectAct();
 }
 
@@ -204,7 +206,7 @@ void CodeEdit::updateTextSlotOut()
 
 void CodeEdit::updateTextSlotIn(const QString& textIn)
 {
-    qDebug() << "Code Edit: update";
+    //qDebug() << "Code Edit: update";
     if (textIn.compare(this->textEdit->toPlainText()) != 0)
        this->textEdit->setText(textIn);
 }
@@ -212,9 +214,10 @@ void CodeEdit::updateTextSlotIn(const QString& textIn)
 
 void CodeEdit::loadCodeEdit(CodeEdit* editor)
 {
-    qDebug() << "Code Edit: load Code Editor" << editor->getTextEdit()->toPlainText();
+    qDebug() << "Code Edit: load Code Editor";
     //disconnect(textEdit, SIGNAL(textChanged()), 0, 0);
     disconnect(this, SIGNAL(updateText(const QString&)), 0, 0);
+    this->breakpointList.clear();
     this->textEdit->setText(editor->getTextEdit()->toPlainText());
     emit CodeEditChanged(editor);
 }
@@ -232,16 +235,17 @@ void CodeEdit::getFocus()
     ((BaseEditor*)parentWidget)->focusIn();
 }
 
-/*bool CodeEdit::eventFilter(QObject *target, QEvent *event)
+void CodeEdit::manageBreakpointEmit(int line)
 {
-    if (event->type() == QEvent::FocusIn)
+    int index;
+    index = breakpointList.indexOf(line);
+    textEdit->highlightLine(line);
+    if (index == -1)
     {
-        if (target == this || target == textEdit)
-        {
-            ((BaseEditor*)parentWidget)->focusIn();
-            textEdit->setFocus(Qt::MouseFocusReason);
-            return true;
-        }
+        breakpointList.append(line);
     }
-    return QWidget::eventFilter(target, event);
-}*/
+    else
+    {
+        breakpointList.removeAt(index);
+    }
+}
