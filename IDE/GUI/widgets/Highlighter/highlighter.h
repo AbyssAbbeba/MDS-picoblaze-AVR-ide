@@ -19,6 +19,7 @@ class Highlighter : public QSyntaxHighlighter
      {
          QRegExp pattern;
          QTextCharFormat format;
+         QString tag;
      };
      QVector<HighlightingRule> highlightingRules;
 
@@ -26,7 +27,7 @@ class Highlighter : public QSyntaxHighlighter
      QRegExp commentEndExpression;
 
      QTextCharFormat keywordFormat;
-     QTextCharFormat classFormat;
+     //QTextCharFormat classFormat;
      QTextCharFormat singleLineCommentFormat;
      QTextCharFormat multiLineCommentFormat;
      QTextCharFormat quotationFormat;
