@@ -39,6 +39,7 @@ class CodeEdit : public QWidget
     public:
         CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath);
         CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName, QString wPath);
+        ~CodeEdit();
         QString getName();
         QString getPath();
         void setName(QString wName);
@@ -60,6 +61,7 @@ class CodeEdit : public QWidget
         void updateTextSlotIn(const QString& textIn);
         void getFocus();
         void manageBreakpointEmit(int line);
+        void manageBookmarkEmit(int line);
 
     signals:
         void splitSignal(Qt::Orientation orient, int line);
@@ -82,6 +84,7 @@ class CodeEdit : public QWidget
         WLineCounter *lineCount;
         QMenu *editorPopup;
         QList<int> breakpointList;
+        QList<int> bookmarkList;
 
     protected:
         void contextMenuEvent(QContextMenuEvent *event);
