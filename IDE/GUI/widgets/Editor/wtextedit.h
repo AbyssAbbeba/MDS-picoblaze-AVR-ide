@@ -38,6 +38,7 @@ class WTextEdit : public QTextEdit
     signals:
         void focusIn();
         void breakpoint(int line);
+        void bookmark(int line);
 
     private:
         Highlighter *highlighter;

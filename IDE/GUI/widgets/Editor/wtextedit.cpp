@@ -39,15 +39,17 @@ bool WTextEdit::eventFilter(QObject *target, QEvent *event)
         if ((keyEvent->modifiers() & (Qt::ShiftModifier | Qt::ControlModifier))
           && keyEvent->key() == Qt::Key_B)
         {
-            qDebug() << "Breakpoint";
             QTextCursor cursor(this->textCursor());
             emit breakpoint(cursor.blockNumber());
+            qDebug() << "Breakpoint on line:" << cursor.blockNumber();
             return true;
         }
         else if ((keyEvent->modifiers() & (Qt::ShiftModifier | Qt::ControlModifier))
           && keyEvent->key() == Qt::Key_M)
         {
-            qDebug() << "bookMark";
+            QTextCursor cursor(this->textCursor());
+            emit bookmark(cursor.blockNumber());
+            qDebug() << "Bookmark on line:" << cursor.blockNumber();
             return true;
         }
     }
@@ -80,6 +82,6 @@ void WTextEdit::highlightLine(int line)
     else
         lineFormat.setBackground(Qt::green);
     QTextCursor cursor(lineBlock);
-    qDebug() << "position: " << cursor.position();
+    //qDebug() << "position: " << cursor.position();
     cursor.setBlockFormat(lineFormat);
 }

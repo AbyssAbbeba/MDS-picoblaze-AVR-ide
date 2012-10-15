@@ -49,6 +49,7 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath)
     }
     connect(textEdit, SIGNAL(focusIn()), this, SLOT(getFocus()));
     connect(textEdit, SIGNAL(breakpoint(int)), this, SLOT(manageBreakpointEmit(int)));
+    connect(textEdit, SIGNAL(bookmark(int)), this, SLOT(manageBookmarkEmit(int)));
     //this->connectAct();
 }
 
@@ -70,7 +71,8 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName
     parentWidget = parent;
     this->tabs = tabs;
     parentProject = parentPrj;
-    textEdit->setWordWrapMode(QTextOption::NoWrap);
+    textEdit->setWordWrapMode(QTextOption::WordWrap);
+    textEdit->setLineWrapMode(QTextEdit::WidgetWidth);
     textEdit->setFont(QFont ("Andale Mono", 11));
     this->makeMenu();
     this->setFocusPolicy(Qt::StrongFocus);
@@ -81,7 +83,15 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName
         this->textEdit->setPlainText(file.readAll());
         file.close();
     }
+    connect(textEdit, SIGNAL(focusIn()), this, SLOT(getFocus()));
+    connect(textEdit, SIGNAL(breakpoint(int)), this, SLOT(manageBreakpointEmit(int)));
+    connect(textEdit, SIGNAL(bookmark(int)), this, SLOT(manageBookmarkEmit(int)));
     //this->connectAct();
+}
+
+
+CodeEdit::~CodeEdit()
+{
 }
 
 
@@ -247,5 +257,20 @@ void CodeEdit::manageBreakpointEmit(int line)
     else
     {
         breakpointList.removeAt(index);
+    }
+}
+
+void CodeEdit::manageBookmarkEmit(int line)
+{
+    int index;
+    index = bookmarkList.indexOf(line);
+    textEdit->highlightLine(line);
+    if (index == -1)
+    {
+        bookmarkList.append(line);
+    }
+    else
+    {
+        bookmarkList.removeAt(index);
     }
 }
