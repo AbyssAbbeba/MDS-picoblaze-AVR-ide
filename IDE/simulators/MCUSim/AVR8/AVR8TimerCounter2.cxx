@@ -1,36 +1,38 @@
+// =============================================================================
 /**
  * @brief
  * C++ Implementation: ...
  *
  * ...
  *
- * Copyright: See COPYING file that comes with this distribution.
+ * (C) copyright 2012 Moravia Microsystems, s.r.o.
  *
- * @author: Martin Ošmera <martin.osmera@gmail.com>, (C) 2012
- *
+ * @authors Martin Ošmera <martin.osmera@gmail.com>
+ * @ingroup AVR8
+ * @file AVR8TimerCounter2.cxx
  */
+// =============================================================================
 
 #include "AVR8TimerCounter2.h"
 #include "AVR8DataMemory.h"
 
-AVR8TimerCounter2 * AVR8TimerCounter2::link(
-	MCUSim::EventLogger	* eventLogger,
-	MCUSim::Subsys::SubsysId  subsysId,
-	AVR8DataMemory		* dataMemory
-) {
-	Subsys::link(eventLogger, subsysId);
-
-	m_dataMemory = dataMemory;
-
-	return this;
+AVR8TimerCounter2 * AVR8TimerCounter2::link ( MCUSim::EventLogger     * eventLogger,
+                                              MCUSim::Subsys::SubsysId  subsysId,
+                                              AVR8DataMemory          * dataMemory )
+{
+    Subsys::link(eventLogger, subsysId);
+    m_dataMemory = dataMemory;
+    return this;
 }
 
-void AVR8TimerCounter2::reset(MCUSim::ResetMode mode) {
-
+void AVR8TimerCounter2::reset ( MCUSim::ResetMode mode )
+{
 }
 
-inline void AVR8TimerCounter2::resetToInitialValues() {
+inline void AVR8TimerCounter2::resetToInitialValues()
+{
 }
 
-inline void AVR8TimerCounter2::mcuReset() {
+inline void AVR8TimerCounter2::mcuReset()
+{
 }

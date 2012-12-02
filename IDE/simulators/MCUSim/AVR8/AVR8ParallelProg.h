@@ -1,19 +1,22 @@
+// =============================================================================
 /**
  * @brief
  * C++ Interface: ...
  *
  * ...
  *
- * Copyright: See COPYING file that comes with this distribution.
+ * (C) copyright 2012 Moravia Microsystems, s.r.o.
  *
- * @author Martin Ošmera <martin.osmera@gmail.com>, (C) 2012
+ * @authors Martin Ošmera <martin.osmera@gmail.com>
  * @ingroup AVR8
  * @file AVR8ParallelProg.h
  */
+// =============================================================================
 
 #ifndef AVR8PARALELPROG_H
 #define AVR8PARALELPROG_H
 
+// Forward declarations
 class AVR8ProgramMemory;
 
 #include "../MCUSim.h"
@@ -23,33 +26,93 @@ class AVR8ProgramMemory;
  * @ingroup AVR8
  * @class AVR8ParallelProg
  */
-class AVR8ParallelProg : public MCUSim::Subsys {
-public:
-	AVR8ParallelProg() {};
+class AVR8ParallelProg : public MCUSim::Subsys
+{
+    ////    Public Datatypes    ////
+    public:
+        /**
+         * @brief
+         */
+        struct Config
+        {
+            bool m_enabled; ///<
+        };
 
-	struct Config {
-		bool m_enabled;
-	};
+    ////    Constructors and Destructors    ////
+    public:
+        /**
+         * @brief
+         */
+        AVR8ParallelProg() {};
 
-	Config m_config;
+    ////    Public Operations    ////
+    public:
+        /**
+         * @brief
+         * @param[in,out] eventLogger
+         * @param[in,out] programMemory
+         * @return
+         */
+        AVR8ParallelProg * link ( MCUSim::EventLogger * eventLogger,
+                                  AVR8ProgramMemory   * programMemory );
 
-	AVR8ParallelProg * link(
-		MCUSim::EventLogger	* eventLogger,
-		AVR8ProgramMemory	* programMemory);
+        /**
+         * @brief
+         * @param[in] mode
+         */
+        void reset ( MCUSim::ResetMode mode );
 
-	void reset(MCUSim::ResetMode mode);
-	bool enabled() {
-		return m_config.m_enabled;
-	}
+//         /**
+//          * @brief
+//          * @param[in] numberOf
+//          */
+//         void clockCycles ( unsigned int numberOf );
+//
+//         /**
+//          * @brief
+//          * @param[in] timeStep
+//          * @param[in] clockCycles
+//          */
+//         void timeStep ( float timeStep,
+//                         unsigned int clockCycles = 0 );
 
-// 	void clockCycles(unsigned int numberOf);
-// 	void timeStep(float timeStep, unsigned int clockCycles = 0);
+    ////    Inline Public Operations    ////
+    public:
+        /**
+         * @brief
+         * @return
+         */
+        bool enabled()
+        {
+            return m_config.m_enabled;
+        }
 
-protected:
-	AVR8ProgramMemory * m_programMemory;
+    ////    Inline Private Operations    ////
+    private:
+        /**
+         * @brief
+         */
+        inline void resetToInitialValues();
 
-	inline void resetToInitialValues();
-	inline void mcuReset();
+        /**
+         * @brief
+         */
+        inline void mcuReset();
+
+    ////    Public Attributes    ////
+    public:
+        /**
+         * @brief
+         */
+        Config m_config;
+
+    ////    Protected Attributes    ////
+    protected:
+        /// @name AVR8 simulator subsystems
+        //@{
+            ///
+            AVR8ProgramMemory * m_programMemory;
+        //@}
 };
 
 #endif // AVR8PARALELPROG_H
