@@ -1,3 +1,17 @@
+/**
+ * @brief
+ * C++ Implementation: ...
+ *
+ * ...
+ *
+ * Copyright: See COPYING file that comes with this distribution.
+ *
+ * @author: Erik Chalupa <xchalu10@stud.fit.vutbr.cz>, (C) 2012
+ *
+ */
+
+
+
 #include <QtGui>
 //pozdeji zamenit QtGui za mensi celky
 #include "mainform.h"
@@ -236,13 +250,12 @@ void MainForm::openFile()
     {
         QFile file(path);
         if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
-        //if (!file.open(QIODevice::ReadOnly))
         {
             error(ERR_OPENFILE);
         }
         else {
             wDockManager->addCentralWidget(path.section('/', -1), path);
-            wDockManager->getCentralTextEdit()->setPlainText(file.readAll());
+            //wDockManager->getCentralTextEdit()->setPlainText(file.readAll());
             file.close();
             wDockManager->getCentralWidget()->connectAct();
         }
@@ -264,7 +277,7 @@ void MainForm::openFilePath(QString path)
     }
     else {
         wDockManager->addCentralWidget(path.section('/', -1), path);
-        wDockManager->getCentralTextEdit()->setPlainText(file.readAll());
+        //wDockManager->getCentralTextEdit()->setPlainText(file.readAll());
         file.close();
         wDockManager->getCentralWidget()->connectAct();
         wDockManager->getCentralWidget()->setParentProject(projectMan->getActive());

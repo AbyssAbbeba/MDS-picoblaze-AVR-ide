@@ -1,3 +1,17 @@
+/**
+ * @brief
+ * C++ Interface: ...
+ *
+ * ...
+ *
+ * Copyright: See COPYING file that comes with this distribution.
+ *
+ * @author Erik Chalupa <xchalu10@stud.fit.vutbr.cz>, (C) 2012
+ * @ingroup GUI
+ * @file wlinecounter.h
+ */
+
+
 #ifndef WLINECOUNTER_H
 #define WLINECOUNTER_H
 
@@ -7,6 +21,11 @@
 class WLineCounterWidget;
 
 
+/**
+ * @brief Line Counter base
+ * @ingroup GUI
+ * @class WLineCounter
+ */
 class WLineCounter : public QScrollArea
 {
     Q_OBJECT   
@@ -14,14 +33,20 @@ class WLineCounter : public QScrollArea
         WLineCounter(QTextEdit *parent, bool icons, bool hex, int width);
         QTextEdit* getTextEdit();
         WLineCounterWidget* getWidget();
+
     private slots:
         void change(int value);
+
     private:
         QTextEdit *parent;
         WLineCounterWidget *widget;
 };
 
-
+/**
+ * @brief Line Counter (hex/dec) with bookmarks, breakpoints and error highlight
+ * @ingroup GUI
+ * @class WLineCounterWidget
+ */
 class WLineCounterWidget : public QWidget
 {   
     Q_OBJECT   
@@ -29,13 +54,15 @@ class WLineCounterWidget : public QWidget
         WLineCounterWidget(WLineCounter *parent, bool icons, bool hex, int width);
     //private slots:
     //    void change();
+
     private:
         WLineCounter *parent;
         bool icons;
         bool hex;
-        QList<bool> *breakpointList;
-        QList<bool> *errorList;
-        QList<bool> *bookmarkList;
+        //QList<bool> *breakpointList;
+        //QList<bool> *errorList;
+        //QList<bool> *bookmarkList;
+
     protected:
         void paintEvent(QPaintEvent *);
 };

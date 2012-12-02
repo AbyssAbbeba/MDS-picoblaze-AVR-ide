@@ -5,7 +5,7 @@
 # ------------------------------------------------------------------------------
 
 # Set project name
-project(Mainform)
+project(WSimulationInfo)
 
 # Set the minimum required version of CMake
 cmake_minimum_required(VERSION 2.8)
@@ -13,21 +13,18 @@ cmake_minimum_required(VERSION 2.8)
 # Create verbose makefiles if on
 set(CMAKE_VERBOSE_MAKEFILE OFF)
 
+
+
 # with SET() command you can change variables or define new ones
 # here we define SAMPLE_SRCS variable that contains a list of all .cpp files 
 # note that we don't need \ at the end of line
 SET( SAMPLE_SRCS
-       ./mainform.cpp
-       ./project.cpp
-#       ../dialogs/errordlg.cpp
-#       ../dialogs/projectdlg.cpp
-#       ../widgets/codeedit.cpp
+	./wsimulationinfo.cpp
 )
   
 # another list, this time it includes all header files that should be treated with moc
 SET( SAMPLE_MOC_HDRS
-       ./mainform.h
-       ./project.h
+	./wsimulationinfo.h
 )
 
 
@@ -39,34 +36,38 @@ SET( SAMPLE_MOC_HDRS
 find_package(Qt4 REQUIRED)
 
 # Include Qt4's XML module
-set(QT_USE_QTXML 1)
-include(${QT_USE_FILE})
+#set(QT_USE_QTXML 1)
+#include(${QT_USE_FILE})
 
 include_directories(
-	"../../simulators/MCUSim/McuSimCfgMgr/"
-	"../../simulators/MCUSim"
-	"../../simulators/SimControl/"
-        "../../utilities/MCUDataFiles/"
-	"../../simulators/MCUSim/AVR8/")
+	"${CMAKE_CURRENT_BINARY_DIR}/sim/"
+	"${CMAKE_CURRENT_BINARY_DIR}/../../../simulators/MCUSim/"
+	"${CMAKE_CURRENT_BINARY_DIR}/../../../simulators/SimControl/"
+	"${CMAKE_CURRENT_BINARY_DIR}/../../simulators/SimControl/"
+	"${CMAKE_CURRENT_BINARY_DIR}/../../simulators/MCUSim/"
+	"${CMAKE_CURRENT_BINARY_DIR}/../../simulators/MCUSim/McuSimCfgMgr/"
+	"${CMAKE_CURRENT_BINARY_DIR}/../../utilities/MCUDataFiles/"
+	"${CMAKE_CURRENT_BINARY_DIR}/../../simulators/MCUSim/AVR8/"
+	)
 
 # <DEBUG!>
 link_directories(
-	"${CMAKE_CURRENT_BINARY_DIR}/../../simulators/MCUSim/McuSimCfgMgr/"
-	"${CMAKE_CURRENT_BINARY_DIR}/../../simulators/MCUSim"
 	"${CMAKE_CURRENT_BINARY_DIR}/../../simulators/SimControl/"
-        "${CMAKE_CURRENT_BINARY_DIR}/../../utilities/MCUDataFiles/"
-	"${CMAKE_CURRENT_BINARY_DIR}/../../simulators/MCUSim/AVR8/"
-	"${CMAKE_CURRENT_BINARY_DIR}/../widgets/MovGridLayout/"
-	"${CMAKE_CURRENT_BINARY_DIR}/../widgets/ProjectTree/"
-	"${CMAKE_CURRENT_BINARY_DIR}/../widgets/Counters/"
-	"${CMAKE_CURRENT_BINARY_DIR}/../widgets/HexEdit/"
-	"${CMAKE_CURRENT_BINARY_DIR}/../widgets/DockManager/"
-	"${CMAKE_CURRENT_BINARY_DIR}/../widgets/SimulationInfo/"
-	"${CMAKE_CURRENT_BINARY_DIR}/../widgets/Editor/"
-        "${CMAKE_CURRENT_BINARY_DIR}/../dialogs/")
+        "${CMAKE_CURRENT_BINARY_DIR}/sim"
+	"${CMAKE_CURRENT_BINARY_DIR}/../MovGridLayout/"
+	)
+
 #include_directories(
-#	"${CMAKE_CURRENT_BINARY_DIR}/.."
-#	"${CMAKE_CURRENT_BINARY_DIR}/../../../simulators/MCUSim/")
+#	"${CMAKE_CURRENT_BINARY_DIR}/MovGridLayout/"
+#	"${CMAKE_CURRENT_BINARY_DIR}/ProjectTree/"
+#	"${CMAKE_CURRENT_BINARY_DIR}/Counters/"
+#	"${CMAKE_CURRENT_BINARY_DIR}/HexEdit/"
+#	"${CMAKE_CURRENT_BINARY_DIR}/DockManager/"
+#	"${CMAKE_CURRENT_BINARY_DIR}/SimulationInfo/"
+#	"${CMAKE_CURRENT_BINARY_DIR}/Editor/"
+#	"${CMAKE_CURRENT_BINARY_DIR}/../mainform/"
+#	"${CMAKE_CURRENT_BINARY_DIR}/../dialogs/"
+#	)
 # </DEBUG!>
 
 ## Add switches to compiler command line
@@ -77,6 +78,7 @@ link_directories(
  # -pipe       : Use pipes rather than temporary files for communication between the various stages of compilation.
 add_definitions(-Wall -Wextra -std=c++0x -O2 -pipe)
 
+
 # and finally this will run moc:
 QT4_WRAP_CPP( SAMPLE_MOC_SRCS ${SAMPLE_MOC_HDRS} )
 
@@ -85,4 +87,11 @@ QT4_WRAP_CPP( SAMPLE_MOC_SRCS ${SAMPLE_MOC_HDRS} )
 add_library(${PROJECT_NAME} SHARED
 	${SAMPLE_MOC_SRCS} ${SAMPLE_SRCS})
 
-target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} ProjectTree Editor Dialogs WDockManager McuSimCfgMgr SimControl AVR8Sim MCUDataFiles)
+
+target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} SimWidgets MovGridLayout)
+
+
+# ------------------------------------------------------------------------------
+# BUILD COMPONENTS IN THE SUBDIRECTORIES
+# ------------------------------------------------------------------------------
+

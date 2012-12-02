@@ -45,7 +45,8 @@ include_directories(
 	"${CMAKE_CURRENT_BINARY_DIR}/../../../simulators/MCUSim/AVR8/"
 	"${CMAKE_CURRENT_BINARY_DIR}/../../../simulators/SimControl/"
 	"${CMAKE_CURRENT_BINARY_DIR}/../../../simulators/MCUSim/McuSimCfgMgr/"
-	"${CMAKE_CURRENT_BINARY_DIR}/../../../utilities/MCUDataFiles/")
+	"${CMAKE_CURRENT_BINARY_DIR}/../../../utilities/MCUDataFiles/"
+	"${CMAKE_CURRENT_BINARY_DIR}/../HexEdit/")
 # </DEBUG!>
 
 ## Add switches to compiler command line

@@ -1,29 +1,76 @@
+/**
+ * @brief
+ * C++ Implementation: ...
+ *
+ * ...
+ *
+ * Copyright: See COPYING file that comes with this distribution.
+ *
+ * @author: Erik Chalupa <xchalu10@stud.fit.vutbr.cz>, (C) 2012
+ *
+ */
+
+
+
 #include <QtGui>
 #include "wdockmanager.h"
+
 
 WDockManager::WDockManager(MainForm *mainWindow)
 {
     wMainWindow = mainWindow;
-    wTab = new QTabWidget(wMainWindow);
+    QWidget *centralWidget = new QWidget(wMainWindow);
+    QVBoxLayout *layout = new QVBoxLayout(centralWidget);
+    wTab = new QTabWidget(centralWidget);
+    splitter = new QSplitter(centralWidget);
+    splitter->show();
     wTab->setTabsClosable(true);
     wTab->setMovable(true);
     wRight = NULL;
     wLeft = NULL;
     wBottom = NULL;
+    activeCodeEdit = NULL;
+    centralBase = NULL;
     connect(wTab, SIGNAL(tabCloseRequested(int)),this, SLOT(closeTab(int)));
-    wMainWindow->setCentralWidget(wTab);
+    connect(wTab, SIGNAL(currentChanged(int)), this, SLOT(changeCodeEditor(int)));
+
+    layout->addWidget(wTab);
+    layout->addWidget(splitter);
+    centralWidget->setLayout(layout);
+    wMainWindow->setCentralWidget(centralWidget);
+}
+
+
+
+void WDockManager::changeActiveCodeEdit(CodeEdit *editor)
+{
+    qDebug() << "wdockmanager - change active Code Editor";
+    this->activeCodeEdit = editor;
+}
+
+
+void WDockManager::changeCodeEditor(int index)
+{
+    if (activeCodeEdit != NULL)
+    {
+        qDebug() << "wdockmanager - change Code Editor";
+        qDebug() << "index: " << index;
+        qDebug() << "size: " << openCentralWidgets.count();
+        activeCodeEdit->loadCodeEdit(openCentralWidgets.at(index)->getCodeEdit());
+    }
 }
 
 
 void WDockManager::changeTabName(CodeEdit *editor, QString name)
 {
-    wTab->setTabText(wTab->indexOf(editor), name);
+    //wTab->setTabText(wTab->indexOf(editor), name);
 }
 
 
 void WDockManager::closeTab(int index)
 {
-    wMainWindow->saveFile((CodeEdit*)wTab->widget(index));
+    wMainWindow->saveFile(openCentralWidgets.at(index)->getCodeEdit());
+    openCentralWidgets.removeAt(index);
     wTab->removeTab(index);
 }
 
@@ -31,40 +78,40 @@ void WDockManager::closeTab(int index)
 
 void WDockManager::setTabChanged()
 {
-    ((CodeEdit*)(wTab->currentWidget()))->setChanged();;
+    openCentralWidgets.at(wTab->currentIndex())->getCodeEdit()->setChanged();;
 }
 
 
 void WDockManager::setTabSaved()
 {
-    ((CodeEdit*)wTab->currentWidget())->setSaved();
+    openCentralWidgets.at(wTab->currentIndex())->getCodeEdit()->setSaved();
 }
 
 
 QTextEdit* WDockManager::getCentralTextEdit()
 {
-    return ((CodeEdit*)wTab->currentWidget())->getTextEdit();
+    return activeCodeEdit->getTextEdit();
 }
 
 
 
 QTextEdit* WDockManager::getTabTextEdit(int index)
 {
-    return ((CodeEdit*)wTab->widget(index))->getTextEdit();
+    return openCentralWidgets.at(index)->getCodeEdit()->getTextEdit();
 }
 
 
 
 CodeEdit* WDockManager::getCentralWidget()
 {
-    return (CodeEdit*)wTab->currentWidget();
+    return activeCodeEdit;
 }
 
 
 
 CodeEdit* WDockManager::getTabWidget(int index)
 {
-    return (CodeEdit*)wTab->widget(index);
+    return openCentralWidgets.at(index)->getCodeEdit();
 }
 
 
@@ -78,37 +125,59 @@ int WDockManager::getTabCount()
 
 QString WDockManager::getCentralName()
 {
-    return ((CodeEdit*)wTab->currentWidget())->getName();
+    return openCentralWidgets.at(wTab->currentIndex())->getCodeEdit()->getName();
 }
 
 QString WDockManager::getCentralPath()
 {
-    return ((CodeEdit*)wTab->currentWidget())->getPath();
+    return openCentralWidgets.at(wTab->currentIndex())->getCodeEdit()->getPath();
 }
 
 
 void WDockManager::setCentralName(QString wName)
 {
-    ((CodeEdit*)wTab->currentWidget())->setName(wName);
+    openCentralWidgets.at(wTab->currentIndex())->getCodeEdit()->setName(wName);
     wTab->setTabText(wTab->currentIndex(), wName);
 }
 
 
 void WDockManager::setCentralPath(QString wPath)
 {
-    ((CodeEdit*)wTab->currentWidget())->setPath(wPath);
+    openCentralWidgets.at(wTab->currentIndex())->getCodeEdit()->setPath(wPath);
 }
 
 
 
 void WDockManager::addCentralWidget(QString wName, QString wPath)
 {
-    CodeEdit *newEditor = new CodeEdit(wTab, true, wName, wPath);
-    wTab->addTab((QWidget*)newEditor, wName);
+    CodeEdit *newEditor = new CodeEdit(0, true, wName, wPath);
+    BaseEditor *newBaseEditor;
+    if (centralBase == NULL)
+    {
+        newBaseEditor = new BaseEditor(NULL, this, newEditor, false); 
+        centralBase = new BaseEditor(splitter, this, newEditor, true);
+        activeCodeEdit = centralBase->getCodeEdit();
+        splitter->addWidget(centralBase);
+    }
+    else
+    {
+        newBaseEditor = new BaseEditor(NULL, this, newEditor, true);
+        activeCodeEdit->loadCodeEdit(newBaseEditor->getCodeEdit());
+    }
+    QWidget *empty = new QWidget(wTab);
+    empty->setMaximumWidth(0);
+    empty->setMaximumHeight(0);
+    openCentralWidgets.append(newBaseEditor);
+    wTab->addTab(empty, wName);
     wTab->setCurrentIndex(wTab->count()-1);
+    //if (wTab->count() > 1)
+    //{
+        //qDebug() << "hiding";
+    //    openCentralWidgets.at(wTab->count()-2)->hide();
+    //}
     //add tab tooltip with path
-    openCentralWidgets.append(newEditor);
-    connect(newEditor, SIGNAL(changedTabName(CodeEdit*, QString)), this, SLOT(changeTabName(CodeEdit*, QString)));
+    connect(newBaseEditor->getCodeEdit(), SIGNAL(changedTabName(CodeEdit*, QString)), this, SLOT(changeTabName(CodeEdit*, QString)));
+    //connect(centralBase->getCodeEdit(), SIGNAL(changedTabName(CodeEdit*, QString)), this, SLOT(changeTabName(CodeEdit*, QString)));
 }
 
 void WDockManager::addDockWidget(int code)
@@ -162,6 +231,10 @@ bool WDockManager::isEmpty()
 }
 
 
+
+
+
+
 WDock::WDock(int code, MainForm *mainWindow)
 {
     switch (code)
@@ -203,17 +276,9 @@ WDock::WDock(int code, MainForm *mainWindow)
             wDockWidget = new QDockWidget("Simulation Info", mainWindow);
             wDockWidget->setAllowedAreas(Qt::BottomDockWidgetArea);
             mainWindow->addDockWidget(Qt::BottomDockWidgetArea, wDockWidget);
-            //v budoucnu nahradit 20 na constCounterSize v konstruktoru
-            //i 16 za promennou podle nastaveni
             WSimulationInfo *newWidget = new WSimulationInfo(mainWindow->getProjectMan()->getActive()->getSimControl(), wDockWidget);
             area = 2;
-            //QDockWidget *aa = new QDockWidget("Simul", wDockWidget);
             wDockWidget->setWidget(newWidget);
-            //MovGridLayout *gridLayout = new MovGridLayout(aa);
-            //aa->setWidget(gridLayout);
-            //gridLayout->loadGridWidgets();
-            //mainWindow->addDockWidget(Qt::BottomDockWidgetArea, aa);
-            //wDockWidget->setMaximumWidth(610);
 	    break;
         }
     }
