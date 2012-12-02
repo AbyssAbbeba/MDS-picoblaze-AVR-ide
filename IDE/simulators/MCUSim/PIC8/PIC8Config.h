@@ -33,26 +33,26 @@
  */
 class PIC8Config : public MCUSim::Config {
 public:
-	PIC8Config();
+    PIC8Config();
 
-	PIC8InstructionSet::Config	* m_configInstructionSet;
-	PIC8ProgramMemory::Config	* m_configProgramMemory;
-	PIC8DataMemory::Config		* m_configDataMemory;
-	PIC8ConfigWord::Config		* m_configConfigWord;
-	PIC8IO::Config			* m_configIO;
-	PIC8ClockControl::Config	* m_configClockControl;
-	PIC8Stack::Config		* m_configStack;
+    PIC8InstructionSet::Config      * m_configInstructionSet;
+    PIC8ProgramMemory::Config       * m_configProgramMemory;
+    PIC8DataMemory::Config          * m_configDataMemory;
+    PIC8ConfigWord::Config          * m_configConfigWord;
+    PIC8IO::Config                  * m_configIO;
+    PIC8ClockControl::Config        * m_configClockControl;
+    PIC8Stack::Config               * m_configStack;
 
-	MCUSim::Family m_family;
-	std::string m_name;
+    MCUSim::Family m_family;
+    std::string m_name;
 
-	void link(PIC8Sim * system);
-	bool linked() const {
-		return isLinked;
-	}
+    void link(PIC8Sim * system);
+    bool linked() const {
+        return isLinked;
+    }
 
 private:
-	bool isLinked;
+    bool isLinked;
 };
 
 #endif // PIC8CONFIG_H

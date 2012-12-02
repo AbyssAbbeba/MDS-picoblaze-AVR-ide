@@ -1,15 +1,17 @@
+// =============================================================================
 /**
  * @brief
  * C++ Interface: ...
  *
  * ...
  *
- * Copyright: See COPYING file that comes with this distribution.
+ * (C) copyright 2012 Moravia Microsystems, s.r.o.
  *
- * @author Martin Ošmera <martin.osmera@gmail.com>, (C) 2012
+ * @authors Martin Ošmera <martin.osmera@gmail.com>
  * @ingroup McuSimCfgMgr
  * @file McuDeviceSpec.h
  */
+// =============================================================================
 
 #ifndef MCUDEVICESPEC_H
 #define MCUDEVICESPEC_H
@@ -22,17 +24,45 @@
  * @ingroup McuSimCfgMgr
  * @class McuDeviceSpec
  */
-class McuDeviceSpec {
-public:
-	McuDeviceSpec() {}
-	McuDeviceSpec(MCUSim::Arch arch) {
-		m_arch = arch;
-	}
-	virtual ~McuDeviceSpec() {}
+class McuDeviceSpec
+{
+    ////    Constructors and Destructors    ////
+    public:
+        /**
+         * @brief Constructor
+         */
+        McuDeviceSpec() {}
 
-	MCUSim::Arch m_arch;
-	MCUSim::Family m_family;
-	QString m_name;
+        /**
+         * @brief Constructor
+         * @param[in] arch
+         */
+        McuDeviceSpec ( MCUSim::Arch arch )
+        {
+            m_arch = arch;
+        }
+
+        /**
+         * @brief Destructor
+         */
+        virtual ~McuDeviceSpec() {}
+
+    ////    Public Attributes    ////
+    public:
+        /**
+         * @brief
+         */
+        MCUSim::Arch m_arch;
+
+        /**
+         * @brief
+         */
+        MCUSim::Family m_family;
+
+        /**
+         * @brief
+         */
+        QString m_name;
 };
 
 #endif // MCUDEVICESPEC_H

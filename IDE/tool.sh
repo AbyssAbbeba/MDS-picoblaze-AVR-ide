@@ -50,7 +50,7 @@ function clean() {
 
 function countLines() {
 	local -r tempFile=$(mktemp)
-	
+
 	find -type f -name '*.cxx' >> "$tempFile"
 	find -type f -name '*.cpp' >> "$tempFile"
 	find -type f -name '*.c' >> "$tempFile"
@@ -67,7 +67,7 @@ function countLines() {
 			c=0
 		}
 		END {
-			printf("\nIn total:\n%8d lines,\n%8.2f megabytes.\n", l, c/(1024*1024))
+			printf("\nIn total:\n%8d lines,\n%8.2f megabytes,\n%8.2f bytes per line (average).\n", l, c/(1024*1024), c/l)
 		}
 		{
 			l+=$1

@@ -1,15 +1,17 @@
+// =============================================================================
 /**
  * @brief
  * C++ Interface: ...
  *
  * ...
  *
- * Copyright: See COPYING file that comes with this distribution.
+ * (C) copyright 2012 Moravia Microsystems, s.r.o.
  *
- * @author Martin Ošmera <martin.osmera@gmail.com>, (C) 2012
+ * @authors Martin Ošmera <martin.osmera@gmail.com>
  * @ingroup SimControl
  * @file MCUSimObserver.h
  */
+// =============================================================================
 
 #ifndef MCUSIMOBSERVER_H
 #define MCUSIMOBSERVER_H
@@ -17,20 +19,65 @@
 // Forward declarations
 class MCUSimControl;
 
-class MCUSimObserver {
-public:
-	MCUSimObserver();
-	virtual ~MCUSimObserver();
+/**
+ * @class MCUSimObserver
+ * @ingroup SimControl
+ * @brief
+ */
+class MCUSimObserver
+{
+    ////    Constructors and Destructors    ////
+    public:
+        /**
+         * @brief
+         */
+        MCUSimObserver();
 
-	void setControlUnit(MCUSimControl * managedBy);
+        /**
+         * @brief
+         */
+        virtual ~MCUSimObserver();
 
-	virtual void handleEvent(int subsysId, int eventId, int locationOrReason, int detail) = 0;
-	virtual void deviceChanged() = 0;
-	virtual void deviceReset() = 0;
-	virtual void setReadOnly(bool readOnly) = 0;
+    ////    Public Operations    ////
+    public:
+        /**
+         * @brief
+         * @param[in,out] managedBy
+         */
+        void setControlUnit ( MCUSimControl * managedBy );
 
-protected:
-	MCUSimControl * m_simControlUnit;
+        /**
+         * @brief
+         * @param[in] subsysId
+         * @param[in] eventId
+         * @param[in] locationOrReason
+         * @param[in] detail
+         */
+        virtual void handleEvent ( int subsysId,
+                                   int eventId,
+                                   int locationOrReason,
+                                   int detail ) = 0;
+
+        /**
+         * @brief
+         */
+        virtual void deviceChanged() = 0;
+
+        /**
+         * @brief
+         */
+        virtual void deviceReset() = 0;
+
+        /**
+         * @brief
+         * @param[in] readOnly
+         */
+        virtual void setReadOnly ( bool readOnly ) = 0;
+
+    ////    Protected Attributes    ////
+    protected:
+        ///
+        MCUSimControl * m_simControlUnit;
 };
 
 #endif // MCUSIMOBSERVER_H

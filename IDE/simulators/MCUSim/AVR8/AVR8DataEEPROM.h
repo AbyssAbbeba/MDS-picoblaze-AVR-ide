@@ -1,19 +1,22 @@
+// =============================================================================
 /**
  * @brief
  * C++ Interface: ...
  *
  * ...
  *
- * Copyright: See COPYING file that comes with this distribution.
+ * (C) copyright 2012 Moravia Microsystems, s.r.o.
  *
- * @author Martin Ošmera <martin.osmera@gmail.com>, (C) 2012
+ * @authors Martin Ošmera <martin.osmera@gmail.com>
  * @ingroup AVR8
  * @file AVR8DataEEPROM.h
  */
+// =============================================================================
 
 #ifndef AVR8DATAEEPROM_H
 #define AVR8DATAEEPROM_H
 
+// Forward declarations
 class DataFile;
 class AVR8DataMemory;
 class AVR8InterruptController;
@@ -28,79 +31,245 @@ class AVR8InterruptController;
  * @ingroup AVR8
  * @class AVR8DataEEPROM
  */
-class AVR8DataEEPROM : public MCUSim::Memory {
-public:
-	AVR8DataEEPROM();
+class AVR8DataEEPROM : public MCUSim::Memory
+{
+    ////    Private Constants    ////
+    private:
+        static const int WB_ADDR = 0;   ///<
+        static const int WB_DATA = 1;   ///<
 
-	enum Event {
-		EVENT_EEPROM_INVALID_CR_CHAGE = EVENT_MEM__MAX__, ///<
+    ////    Public Datatypes    ////
+    public:
+        enum Event
+        {
+            ///
+            EVENT_EEPROM_INVALID_CR_CHAGE = EVENT_MEM__MAX__,
 
-		EVENT_EEPROM__MAX__
-	};
+            ///
+            EVENT_EEPROM__MAX__
+        };
 
-	struct Config {
-		Config() {
-			m_undefinedValue = -1;
-		}
-		
-		bool m_enabled;
-		
-		unsigned int m_addrRegWidth;
-		unsigned int m_size;
-		float m_writeTime; // 8.448 (in seconds!)
-		int m_undefinedValue;
-	};
+        struct Config
+        {
+            Config()
+            {
+                m_undefinedValue = -1;
+            }
 
-	Config m_config;
+            bool m_enabled;              ///<
+            unsigned int m_addrRegWidth; ///<
+            unsigned int m_size;         ///<
+            float m_writeTime;           ///< // 8.448 (in seconds!)
+            int m_undefinedValue;        ///<
+        };
 
-	AVR8DataEEPROM * link(
-		MCUSim::EventLogger	* eventLogger,
-		AVR8DataMemory		* dataMemory,
-		AVR8InterruptController	* interruptControllers);
-	~AVR8DataEEPROM();
+    ////    Constructors and Destructors    ////
+    public:
+        /**
+         * @brief
+         */
+        AVR8DataEEPROM();
 
-	void reset(MCUSim::ResetMode mode);
-	bool enabled() {
-		return m_config.m_enabled;
-	}
-	void loadDataFile(const DataFile * file);
-	void storeInDataFile(DataFile * file) const;
+        /**
+         * @brief
+         */
+        ~AVR8DataEEPROM();
 
-	MCUSim::RetCode directRead(unsigned int addr, unsigned int & data) const;
-	MCUSim::RetCode directWrite(unsigned int addr, unsigned int data);
-	void resize(unsigned int newSize);
-	unsigned int size() const {
-		return m_config.m_size;
-	}
-	bool writeInProgress() const {
-		return m_writeInProgress;
-	}
+    ////    Public Operations    ////
+    public:
+        /**
+         * @brief
+         * @param[in,out] eventLogger
+         * @param[in,out] dataMemory
+         * @param[in,out] interruptControllers
+         * @return
+         */
+        AVR8DataEEPROM * link ( MCUSim::EventLogger     * eventLogger,
+                                AVR8DataMemory          * dataMemory,
+                                AVR8InterruptController * interruptControllers );
 
-	unsigned int timeStep(float timeStep, unsigned int clockCycles = 0);	// <-- This has to be called even in a sleep mode
+        /**
+         * @brief
+         * @param[in] mode
+         */
+        void reset ( MCUSim::ResetMode mode );
 
-protected:
-	AVR8DataMemory * m_dataMemory;
-	AVR8InterruptController * m_interruptController;
+        /**
+         * @brief
+         * @param[in] file
+         */
+        void loadDataFile ( const DataFile * file );
 
-	uint32_t * m_memory;
-	unsigned int m_eearLast;
-	unsigned int m_eecrLast;
-	bool m_writeInProgress;
-	int m_eecr_timer;
+        /**
+         * @brief
+         * @param[in] file
+         */
+        void storeInDataFile ( DataFile * file ) const;
 
-	static const int WB_ADDR = 0;
-	static const int WB_DATA = 1;
-	unsigned int m_writeBuffer[2];
-	float m_writeTimer;
+        /**
+         * @brief
+         * @param[in] addr
+         * @param[out] data
+         * @return
+         */
+        MCUSim::RetCode directRead ( unsigned int addr,
+                                     unsigned int & data ) const;
 
-	inline unsigned int readEecr(const unsigned int clockCycles);
-	inline void writeByte(float timeStep, unsigned int eecr);
-	inline unsigned int readByte();
-	unsigned int getUndefVal() const;
+        /**
+         * @brief
+         * @param[in] addr
+         * @param[in] data
+         * @return
+         */
+        MCUSim::RetCode directWrite ( unsigned int addr,
+                                      unsigned int data );
 
-	inline void loadConfig();
-	inline void resetToInitialValues();
-	inline void mcuReset();
+        /**
+         * @brief
+         * @param[in] newSize
+         */
+        void resize ( unsigned int newSize );
+
+        /**
+         * @brief
+         * @param[in] timeStep
+         * @param[in] clockCycles
+         * @return
+         */
+        unsigned int timeStep ( float timeStep,
+                                unsigned int clockCycles = 0 );    // <-- This has to be called even in a sleep mode
+
+    ////    Inline Public Operations    ////
+    public:
+        /**
+         * @brief
+         * @return
+         */
+        unsigned int size() const
+        {
+            return m_config.m_size;
+        }
+
+        /**
+         * @brief
+         * @return
+         */
+        bool writeInProgress() const
+        {
+            return m_writeInProgress;
+        }
+
+        /**
+         * @brief
+         * @return
+         */
+        bool enabled()
+        {
+            return m_config.m_enabled;
+        }
+
+    ////    Protected Operations    ////
+    protected:
+        /**
+         * @brief
+         * @return
+         */
+        unsigned int getUndefVal() const;
+
+    ////    Inline Private Operations    ////
+    private:
+        /**
+         * @brief
+         * @param[in] clockCycles
+         * @return
+         */
+        inline unsigned int readEecr ( const unsigned int clockCycles );
+
+        /**
+         * @brief
+         * @param[in] timeStep
+         * @param[in] eecr
+         * @return
+         */
+        inline void writeByte ( float timeStep,
+                                unsigned int eecr );
+
+        /**
+         * @brief
+         * @return
+         */
+        inline unsigned int readByte();
+
+        /**
+         * @brief
+         * @return
+         */
+        inline void loadConfig();
+
+        /**
+         * @brief
+         * @return
+         */
+        inline void resetToInitialValues();
+
+        /**
+         * @brief
+         * @return
+         */
+        inline void mcuReset();
+
+    ////    Public Attributes    ////
+    public:
+        /**
+         * @brief
+         */
+        Config m_config;
+
+    ////    Protected Attributes    ////
+    protected:
+        /// @name AVR8 simulator subsystems
+        //@{
+            /// @brief
+            AVR8DataMemory * m_dataMemory;
+
+            /// @brief
+            AVR8InterruptController * m_interruptController;
+        //@}
+
+        /**
+         * @brief
+         */
+        uint32_t * m_memory;
+
+        /**
+         * @brief
+         */
+        unsigned int m_eearLast;
+
+        /**
+         * @brief
+         */
+        unsigned int m_eecrLast;
+
+        /**
+         * @brief
+         */
+        bool m_writeInProgress;
+
+        /**
+         * @brief
+         */
+        int m_eecr_timer;
+
+        /**
+         * @brief
+         */
+        unsigned int m_writeBuffer[2];
+
+        /**
+         * @brief
+         */
+        float m_writeTimer;
 };
 
 #endif // AVR8DATAEEPROM_H

@@ -1,15 +1,17 @@
+// =============================================================================
 /**
  * @brief
  * C++ Interface: ...
  *
  * ...
  *
- * Copyright: See COPYING file that comes with this distribution.
+ * (C) copyright 2012 Moravia Microsystems, s.r.o.
  *
- * @author Martin Ošmera <martin.osmera@gmail.com>, (C) 2012
+ * @authors Martin Ošmera <martin.osmera@gmail.com>
  * @ingroup McuSimCfgMgr
  * @file McuSimCfgMgr.h
  */
+// =============================================================================
 
 #ifndef MCUSIMCFGMGR_H
 #define MCUSIMCFGMGR_H
@@ -30,104 +32,131 @@
  * @ingroup McuSimCfgMgr
  * @class McuSimCfgMgr
  */
-class McuSimCfgMgr : public QXmlDefaultHandler {
-public:
-	virtual ~McuSimCfgMgr();
+class McuSimCfgMgr : public QXmlDefaultHandler
+{
+    ////    Constructors and Destructors    ////
+    private:
+        /**
+         * @brief
+         */
+        McuSimCfgMgr() {};
 
-	static McuSimCfgMgr * getInstance();
+        /**
+         * @brief
+         */
+        virtual ~McuSimCfgMgr();
 
-	/**
-	 *
-	 * @return
-	 */
-	bool openConfigFile(const char * filename);
+    ////    Static Public Operations    ////
+    public:
+        /**
+         * @brief
+         * @return
+         */
+        static McuSimCfgMgr * getInstance();
 
-	/**
-	 *
-	 * @return
-	 */
-	bool setupSimulator(const char * mcuName, MCUSim::Config & mcuConfig) const;
+    ////    Public Operations    ////
+    public:
+        /**
+         * @brief
+         * @param[in] filename
+         * @return
+         */
+        bool openConfigFile ( const char * filename );
 
-	/**
-	 *
-	 * @return
-	 */
-	const McuDeviceSpec * getDeviceSpec(const char * mcuName) const;
+        /**
+         * @brief
+         * @param[in] mcuName
+         * @param[out] mcuConfig
+         * @return
+         */
+        bool setupSimulator ( const char * mcuName,
+                              MCUSim::Config & mcuConfig ) const;
 
-private:
-	McuSimCfgMgr() {};
+        /**
+         * @brief
+         * @param[in] mcuName
+         * @return
+         */
+        const McuDeviceSpec * getDeviceSpec ( const char * mcuName ) const;
 
-	static McuSimCfgMgr * m_instance;
-	QVector<McuDeviceSpec*> m_devices;	///<
-	QStack<QString> m_currentXMLElement;	///<
-	QStringList m_expectedXMLElements;	///<
-	bool m_expectCharacters;		///<
-	int m_auxInt0;				///< An auxiliary integer variable
-	int m_auxInt1;
+    ////    Private Operations    ////
+    private:
+        /**
+         * @brief
+         * @param[in] ch
+         * @return
+         */
+        bool characters ( const QString & ch );
 
-	inline void clear();
+        /**
+         * @brief
+         * @param[in] namespaceURI
+         * @param[in] localName
+         * @param[in] qName
+         * @return
+         */
+        bool endElement ( const QString & namespaceURI,
+                          const QString & localName,
+                          const QString & qName );
 
-	/**
-	 *
-	 * @param localName
-	 * @param atts
-	 * @return
-	 */
-	inline bool attributesAVR8(const QString & localName, const QXmlAttributes & atts);
+        /**
+         * @brief
+         * @param[in] namespaceURI
+         * @param[in] localName
+         * @param[in] qName
+         * @param[in] atts
+         * @return
+         */
+        bool startElement ( const QString & namespaceURI,
+                            const QString & localName,
+                            const QString & qName,
+                            const QXmlAttributes & atts );
 
-	/**
-	 *
-	 * @param ch
-	 * @return
-	 */
-	bool characters(const QString & ch);
+        /**
+         * @brief
+         * @param[in] namespaceURI
+         * @param[in] localName
+         * @param[in] qName
+         * @param[in] atts
+         * @return
+         */
+        bool startElementAVR8 ( const QString & namespaceURI,
+                                const QString & localName,
+                                const QString & qName,
+                                const QXmlAttributes & atts );
 
-	/**
-	 *
-	 * @param ch
-	 * @return
-	 */
-	inline bool charactersAVR8(const QString & ch);
+    ////    Inline Private Operations    ////
+    private:
+        /**
+         * @brief
+         */
+        inline void clear();
 
-	/**
-	 *
-	 * @param namespaceURI
-	 * @param localName
-	 * @param qName
-	 * @return
-	 */
-	bool endElement(
-		const QString & namespaceURI,
-		const QString & localName,
-		const QString & qName);
+        /**
+         * @brief
+         * @param[in] localName
+         * @param[in] atts
+         * @return
+         */
+        inline bool attributesAVR8 ( const QString & localName,
+                                     const QXmlAttributes & atts );
 
-	/**
-	 *
-	 * @param namespaceURI
-	 * @param localName
-	 * @param qName
-	 * @param atts
-	 * @return
-	 */
-	bool startElement(
-		const QString & namespaceURI,
-		const QString & localName,
-		const QString & qName,
-		const QXmlAttributes & atts);
+        /**
+         * @brief
+         * @param[in] ch
+         * @return
+         */
+        inline bool charactersAVR8 ( const QString & ch );
 
-	/**
-	 *
-	 * @param namespaceURI
-	 * @param localName
-	 * @param qName
-	 * @param atts
-	 * @return
-	 */
-	bool startElementAVR8(
-		const QString & namespaceURI,
-		const QString & localName,
-		const QString & qName,
-		const QXmlAttributes & atts);
+    ////    Private Attributes    ////
+    private:
+        static McuSimCfgMgr * m_instance;       ///<
+        QVector<McuDeviceSpec*> m_devices;      ///<
+        QStack<QString> m_currentXMLElement;    ///<
+        QStringList m_expectedXMLElements;      ///<
+        bool m_expectCharacters;                ///<
+        int m_auxInt0;                          ///< Auxiliary integer variable #1
+        int m_auxInt1;                          ///< Auxiliary integer variable #2
 };
 
 #endif // MCUSIMCFGMGR_H

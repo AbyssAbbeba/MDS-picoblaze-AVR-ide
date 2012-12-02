@@ -1,15 +1,17 @@
+// =============================================================================
 /**
  * @brief
  * C++ Interface: ...
  *
  * ...
  *
- * Copyright: See COPYING file that comes with this distribution.
+ * (C) copyright 2012 Moravia Microsystems, s.r.o.
  *
- * @author Martin Ošmera <martin.osmera@gmail.com>, (C) 2012
+ * @authors Martin Ošmera <martin.osmera@gmail.com>
  * @ingroup AVR8
  * @file AVR8Config.h
  */
+// =============================================================================
 
 #ifndef AVR8CONFIG_H
 #define AVR8CONFIG_H
@@ -46,43 +48,73 @@
  * @ingroup AVR8
  * @class AVR8Config
  */
-class AVR8Config : public MCUSim::Config {
-public:
-	AVR8Config();
+class AVR8Config : public MCUSim::Config
+{
+    ////    Constructors and Destructors    ////
+    public:
+        /**
+         * @brief
+         */
+        AVR8Config();
 
-	AVR8BootLoader::Config		* m_configBootLoader;
-	AVR8InstructionSet::Config	* m_configInstructionSet;
-	AVR8ProgramMemory::Config	* m_configProgramMemory;
-	AVR8DataMemory::Config		* m_configDataMemory;
-	AVR8FusesAndLocks::Config	* m_configFusesAndLocks;
-	AVR8InterruptController::Config	* m_configInterruptController;
-	AVR8TimerCounter0::Config	* m_configTimerCounter0;
-	AVR8TimerCounter1::Config	* m_configTimerCounter1;
-	AVR8TimerCounter2::Config	* m_configTimerCounter2;
-	AVR8IO::Config			* m_configIO;
-	AVR8ExternalInterrupts::Config	* m_configExternalInterrupts;
-	AVR8DataEEPROM::Config		* m_configDataEEPROM;
-	AVR8WatchdogTimer::Config	* m_configWatchdogTimer;
-	AVR8SystemControl::Config	* m_configSystemControl;
-	AVR8ClockControl::Config	* m_configClockControl;
-	AVR8Spi::Config			* m_configSpi;
-	AVR8Usart::Config		* m_configUsart;
-	AVR8Twi::Config			* m_configTwi;
-	AVR8Adc::Config			* m_configAdc;
-	AVR8AnalogComparator::Config	* m_configAcomp;
-	AVR8Isp::Config			* m_configIsp;
-	AVR8ParallelProg::Config	* m_configPprog;
+    ////    Public Operations    ////
+    public:
+        /**
+         * @brief
+         * @param[in,out] system
+         */
+        void link ( AVR8Sim * system );
 
-	MCUSim::Family m_family;
-	std::string m_name;
+        /**
+         * @brief
+         * @return
+         */
+        bool linked() const
+        {
+            return isLinked;
+        }
 
-	void link(AVR8Sim * system);
-	bool linked() const {
-		return isLinked;
-	}
+    ////    Public Attributes    ////
+    public:
+        AVR8BootLoader::Config          * m_configBootLoader;
+        AVR8InstructionSet::Config      * m_configInstructionSet;
+        AVR8ProgramMemory::Config       * m_configProgramMemory;
+        AVR8DataMemory::Config          * m_configDataMemory;
+        AVR8FusesAndLocks::Config       * m_configFusesAndLocks;
+        AVR8InterruptController::Config * m_configInterruptController;
+        AVR8TimerCounter0::Config       * m_configTimerCounter0;
+        AVR8TimerCounter1::Config       * m_configTimerCounter1;
+        AVR8TimerCounter2::Config       * m_configTimerCounter2;
+        AVR8IO::Config                  * m_configIO;
+        AVR8ExternalInterrupts::Config  * m_configExternalInterrupts;
+        AVR8DataEEPROM::Config          * m_configDataEEPROM;
+        AVR8WatchdogTimer::Config       * m_configWatchdogTimer;
+        AVR8SystemControl::Config       * m_configSystemControl;
+        AVR8ClockControl::Config        * m_configClockControl;
+        AVR8Spi::Config                 * m_configSpi;
+        AVR8Usart::Config               * m_configUsart;
+        AVR8Twi::Config                 * m_configTwi;
+        AVR8Adc::Config                 * m_configAdc;
+        AVR8AnalogComparator::Config    * m_configAcomp;
+        AVR8Isp::Config                 * m_configIsp;
+        AVR8ParallelProg::Config        * m_configPprog;
 
-private:
-	bool isLinked;
+        /**
+         * @brief
+         */
+        MCUSim::Family m_family;
+
+        /**
+         * @brief
+         */
+        std::string m_name;
+
+    ////    Private Attributes    ////
+    private:
+        /**
+         * @brief
+         */
+        bool isLinked;
 };
 
 #endif // AVR8CONFIG_H

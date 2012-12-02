@@ -1,15 +1,17 @@
+// =============================================================================
 /**
  * @brief
  * C++ Interface: ...
  *
  * ...
  *
- * Copyright: See COPYING file that comes with this distribution.
+ * (C) copyright 2012 Moravia Microsystems, s.r.o.
  *
- * @author Martin Ošmera <martin.osmera@gmail.com>, (C) 2012
+ * @authors Martin Ošmera <martin.osmera@gmail.com>
  * @ingroup McuSimCfgMgr
  * @file McuDeviceSpecAVR8.h
  */
+// =============================================================================
 
 #ifndef MCUDEVICESPECAVR8_H
 #define MCUDEVICESPECAVR8_H
@@ -31,149 +33,267 @@
  * @ingroup McuSimCfgMgr
  * @class McuDeviceSpecAVR8
  */
-class McuDeviceSpecAVR8 : public McuDeviceSpec {
-public:
-	McuDeviceSpecAVR8();
-	bool setupSimulator(AVR8Config & mcuConfig) const;
+class McuDeviceSpecAVR8 : public McuDeviceSpec
+{
+    ////    Constructors and Destructors    ////
+    public:
+        /**
+         * @brief
+         */
+        McuDeviceSpecAVR8();
 
-	struct Adc {
-		bool m_enabled;
-	} m_adc;
+    ////    Public Operations    ////
+    public:
+        /**
+         * @brief
+         * @param[out] mcuConfig
+         * @return
+         */
+        bool setupSimulator ( AVR8Config & mcuConfig ) const;
 
-	struct AnalogComparator {
-		bool m_enabled;
-	} m_analogComparator;
+    ////    Public Datatypes & Public Attributes    ////
+    public:
+        /**
+         * @brief
+         */
+        struct Adc
+        {
+            bool m_enabled; ///<
+        } m_adc;
 
-	struct BootLoader {
-		bool m_enabled;
-		float m_minProgTime;
-		float m_maxProgTime;
-		unsigned int m_pageSize;
-		int m_bootResetAddress[4];
-		unsigned int m_rwwSectionSize;
-	} m_bootLoader;
+        /**
+         * @brief
+         */
+        struct AnalogComparator
+        {
+            bool m_enabled; ///<
+        } m_analogComparator;
 
-	struct ClockControl {
-	} m_clockControl;
+        /**
+         * @brief
+         */
+        struct BootLoader
+        {
+            bool m_enabled;                ///<
+            float m_minProgTime;           ///<
+            float m_maxProgTime;           ///<
+            unsigned int m_pageSize;       ///<
+            int m_bootResetAddress [ 4 ];  ///<
+            unsigned int m_rwwSectionSize; ///<
+        } m_bootLoader;
 
-	struct DataEEPROM {
-		bool m_enabled;
-		unsigned int m_addrRegWidth;
-		unsigned int m_size;
-		float m_writeTime;
-	} m_dataEEPROM;
+        /**
+         * @brief
+         */
+        struct ClockControl
+        {
+        } m_clockControl; ///<
 
-	struct DataMemory {
-		DataMemory();
-		~DataMemory();
+        /**
+         * @brief
+         */
+        struct DataEEPROM
+        {
+            bool m_enabled;              ///<
+            unsigned int m_addrRegWidth; ///<
+            unsigned int m_size;         ///<
+            float m_writeTime;           ///<
+        } m_dataEEPROM;
 
-		unsigned int m_regFileSize;
-		unsigned int m_sramSize;
-		unsigned int m_ioRegSize;
+        /**
+         * @brief
+         */
+        struct DataMemory
+        {
 
-		uint32_t * m_ioRegInitValues;
-		uint8_t * m_ioRegRandomInit;
+            /**
+             * @brief
+             */
+            DataMemory();
 
-		unsigned int m_mem2size;
-		unsigned int * m_mem2sizes;
+            /**
+             * @brief
+             */
+            ~DataMemory();
 
-		uint32_t ** m_ioMem2InitValues;
+            unsigned int m_regFileSize;     ///<
+            unsigned int m_sramSize;        ///<
+            unsigned int m_ioRegSize;       ///<
 
-		unsigned int m_spWidth;
+            uint32_t * m_ioRegInitValues;   ///<
+            uint8_t * m_ioRegRandomInit;    ///<
 
-		struct IORegDesc {
-			std::string m_name;
-			std::string m_desc;
+            unsigned int m_mem2size;        ///<
+            unsigned int * m_mem2sizes;     ///<
 
-			struct Bit {
-				std::string m_name;
-				std::string m_ttip;
-				std::string m_stip;
-			} m_bit[8];
-		} * m_ioRegDesc;
-	} m_dataMemory;
+            uint32_t ** m_ioMem2InitValues; ///<
 
-	struct ExternalInterrupts {
-		bool m_enabled;
-	} m_externalInterrupts;
+            unsigned int m_spWidth;         ///<
 
-	struct FusesAndLocks {
-		unsigned char m_defaultFuses;
-		unsigned char m_defaultLockBits;
-	} m_fusesAndLocks;
+            /**
+             * @brief
+             */
+            struct IORegDesc
+            {
+                std::string m_name;  ///<
+                std::string m_desc;  ///<
 
-	struct InstructionSet {
-		bool m_availableInstructions[AVR8InsNames::SPECI__MAX__];
-		AVR8InstructionSet::PCWidth m_pcWidth;
-	} m_instructionSet;
+                /**
+                 * @brief
+                 */
+                struct Bit
+                {
+                    std::string m_name;  ///<
+                    std::string m_ttip;  ///<
+                    std::string m_stip;  ///<
+                } m_bit[8];
+            } * m_ioRegDesc;
+        } m_dataMemory;
 
-	struct InterruptController {
-		bool m_possibleInterrupts[AVR8InterruptController::INTVEC__MAX__];
-	} m_interruptController;
+        /**
+         * @brief
+         */
+        struct ExternalInterrupts
+        {
+            bool m_enabled;  ///<
+        } m_externalInterrupts;
 
-	struct IO {
-		AVR8IO::RandValMode m_random;
-		AVR8IO::SimFloatType m_pullUpresistance;
-		AVR8PinNames::PIN m_specFuncMap[AVR8PinNames::SPF__MAX__];
-		bool m_hasPort[AVR8IO::NUMBER_OF_PORTS];
-		bool m_availablePins[AVR8IO::NUMBER_OF_PINS];
-	} m_io;
+        /**
+         * @brief
+         */
+        struct FusesAndLocks
+        {
+            unsigned char m_defaultFuses;    ///<
+            unsigned char m_defaultLockBits; ///<
+        } m_fusesAndLocks;
 
-	struct Isp {
-		bool m_enabled;
-	} m_isp;
+        /**
+         * @brief
+         */
+        struct InstructionSet
+        {
+            bool m_availableInstructions [ AVR8InsNames::SPECI__MAX__ ]; ///<
+            AVR8InstructionSet::PCWidth m_pcWidth;                       ///<
+        } m_instructionSet;
 
-	struct ParallelProg {
-		bool m_enabled;
-	} m_parallelProg;
+        /**
+         * @brief
+         */
+        struct InterruptController
+        {
+            bool m_possibleInterrupts [ AVR8InterruptController::INTVEC__MAX__ ]; ///<
+        } m_interruptController;
 
-	struct AVR8ProgramMemory {
-		unsigned int m_size;
-	} m_programMemory;
+        /**
+         * @brief
+         */
+        struct IO
+        {
+            AVR8IO::RandValMode m_random;                                 ///<
+            AVR8IO::SimFloatType m_pullUpresistance;                      ///<
+            AVR8PinNames::PIN m_specFuncMap [ AVR8PinNames::SPF__MAX__ ]; ///<
+            bool m_hasPort [ AVR8IO::NUMBER_OF_PORTS ];                   ///<
+            bool m_availablePins [ AVR8IO::NUMBER_OF_PINS ];              ///<
+        } m_io;
 
-	struct Spi {
-		bool m_enabled;
-	} m_spi;
+        /**
+         * @brief
+         */
+        struct Isp
+        {
+            bool m_enabled; ///<
+        } m_isp;
 
-	struct SystemControl {
-		float m_resetTresholdLow;
-		float m_resetTresholdHigh;
-		float m_minResetPulseWidth;
+        /**
+         * @brief
+         */
+        struct ParallelProg
+        {
+            bool m_enabled; ///<
+        } m_parallelProg;
 
-		float m_powerOnResetTresholdFalling;
-		float m_powerOnResetTresholdRaising;
+        /**
+         * @brief
+         */
+        struct AVR8ProgramMemory
+        {
+            unsigned int m_size; ///<
+        } m_programMemory;
 
-		float m_tBOD;
-		float m_brownOutTreshold[2];
+        /**
+         * @brief
+         */
+        struct Spi {
+            bool m_enabled; ///<
+        } m_spi;
 
-		bool m_hasPowerOnReset;
-		bool m_hasBrownOutReset;
-		bool m_hasExternalReset;
-		bool m_hasWatchDog;
-	} m_systemControl;
+        /**
+         * @brief
+         */
+        struct SystemControl
+        {
+            float m_resetTresholdLow;            ///<
+            float m_resetTresholdHigh;           ///<
+            float m_minResetPulseWidth;          ///<
 
-	struct TimerCounter0 {
-		bool m_enabled;
-	} m_timerCounter0;
+            float m_powerOnResetTresholdFalling; ///<
+            float m_powerOnResetTresholdRaising; ///<
 
-	struct TimerCounter1 {
-		bool m_enabled;
-	} m_timerCounter1;
+            float m_tBOD;                        ///<
+            float m_brownOutTreshold[2];         ///<
 
-	struct TimerCounter2 {
-		bool m_enabled;
-	} m_timerCounter2;
+            bool m_hasPowerOnReset;              ///<
+            bool m_hasBrownOutReset;             ///<
+            bool m_hasExternalReset;             ///<
+            bool m_hasWatchDog;                  ///<
+        } m_systemControl;
 
-	struct Twi {
-		bool m_enabled;
-	} m_twi;
+        /**
+         * @brief
+         */
+        struct TimerCounter0
+        {
+            bool m_enabled; ///<
+        } m_timerCounter0;
 
-	struct Usart {
-		bool m_enabled;
-	} m_usart;
+        /**
+         * @brief
+         */
+        struct TimerCounter1
+        {
+            bool m_enabled; ///<
+        } m_timerCounter1;
 
-	struct WatchdogTimer {
-	} m_watchdogTimer;
+        /**
+         * @brief
+         */
+        struct TimerCounter2
+        {
+            bool m_enabled; ///<
+        } m_timerCounter2;
+
+        /**
+         * @brief
+         */
+        struct Twi
+        {
+            bool m_enabled; ///<
+        } m_twi;
+
+        /**
+         * @brief
+         */
+        struct Usart
+        {
+            bool m_enabled; ///<
+        } m_usart;
+
+        /**
+         * @brief
+         */
+        struct WatchdogTimer
+        {
+        } m_watchdogTimer;
 };
 
 #endif // MCUDEVICESPECAVR8_H

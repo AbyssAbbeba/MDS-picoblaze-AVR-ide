@@ -1,23 +1,31 @@
+// =============================================================================
 /**
  * @brief
  * C++ Interface: ...
  *
  * ...
  *
- * Copyright: See COPYING file that comes with this distribution.
+ * (C) copyright 2012 Moravia Microsystems, s.r.o.
  *
- * @author Martin Ošmera <martin.osmera@gmail.com>, (C) 2012
+ * @authors Martin Ošmera <martin.osmera@gmail.com>
  * @ingroup SimControl
  * @file SimControl.h
  */
+// =============================================================================
 
 #ifndef SIMCONTROL_H
 #define SIMCONTROL_H
 
 #include <QObject>
 
-class SimControl : public QObject {
-	Q_OBJECT
+/**
+ * @class SimControl
+ * @ingroup SimControl
+ * @brief
+ */
+class SimControl : public QObject
+{
+    Q_OBJECT
 };
 
 #endif // SIMCONTROL_H

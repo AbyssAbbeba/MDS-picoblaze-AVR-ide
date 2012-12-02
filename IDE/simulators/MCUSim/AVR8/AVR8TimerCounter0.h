@@ -1,19 +1,22 @@
+// =============================================================================
 /**
  * @brief
  * C++ Interface: ...
  *
  * ...
  *
- * Copyright: See COPYING file that comes with this distribution.
+ * (C) copyright 2012 Moravia Microsystems, s.r.o.
  *
- * @author Martin Ošmera <martin.osmera@gmail.com>, (C) 2012
+ * @authors Martin Ošmera <martin.osmera@gmail.com>
  * @ingroup AVR8
  * @file AVR8TimerCounter0.h
  */
+// =============================================================================
 
 #ifndef AVR8TIMERCOUNTER0_H
 #define AVR8TIMERCOUNTER0_H
 
+// Forward declarations
 class AVR8DataMemory;
 class AVR8IO;
 
@@ -24,57 +27,177 @@ class AVR8IO;
  * @ingroup AVR8
  * @class AVR8TimerCounter0
  */
-class AVR8TimerCounter0 : public MCUSim::Subsys {
-public:
-	AVR8TimerCounter0() {};
+class AVR8TimerCounter0 : public MCUSim::Subsys
+{
+    ////    Public Datatypes    ////
+    public:
+        /**
+         * @brief
+         */
+        struct Config
+        {
+            bool m_enabled; ///<
+        };
 
-	struct Config {
-		bool m_enabled;
-	};
+    ////    Constructors and Destructors    ////
+    public:
+        /**
+         * @brief
+         */
+        AVR8TimerCounter0() {};
 
-	Config m_config;
+    ////    Public Operations    ////
+    public:
+        /**
+         * @brief
+         * @param[in,out] eventLogger
+         * @param[in,out] subsysId
+         * @param[in,out] dataMemory
+         * @param[in,out] m_io
+         * @return
+         */
+        AVR8TimerCounter0 * link ( MCUSim::EventLogger     * eventLogger,
+                                   MCUSim::Subsys::SubsysId  subsysId,
+                                   AVR8DataMemory          * dataMemory,
+                                   AVR8IO                  * m_io );
 
-	AVR8TimerCounter0 * link(
-		MCUSim::EventLogger	* eventLogger,
-		MCUSim::Subsys::SubsysId  subsysId,
-		AVR8DataMemory		* dataMemory,
-		AVR8IO			* m_io);
+        /**
+         * @brief
+         * @param[in] mode
+         */
+        void reset ( MCUSim::ResetMode mode );
 
-	void reset(MCUSim::ResetMode mode);
-	bool enabled() {
-		return m_config.m_enabled;
-	}
+        /**
+         * @brief
+         * @param[in] numberOf
+         */
+        void clockCycles ( unsigned int numberOf );
 
-	void clockCycles(unsigned int numberOf);
+    ////    Inline Public Operations    ////
+    public:
+        /**
+         * @brief
+         * @return
+         */
+        bool enabled()
+        {
+            return m_config.m_enabled;
+        }
 
-	unsigned int getPrescalerVal() const {
-		return m_prescaler;
-	}
+        /**
+         * @brief
+         * @return
+         */
+        unsigned int getPrescalerVal() const
+        {
+            return m_prescaler;
+        }
 
-protected:
-	AVR8DataMemory * m_dataMemory;
-	AVR8IO * m_io;
+    ////    Inline Private Operations    ////
+    private:
+        /**
+         * @brief
+         * @param[in] number
+         */
+        inline void incrementWithDelay ( unsigned int number );
 
-	static const unsigned int COUNTER_DELAY = 3;
+        /**
+         * @brief
+         * @param[in] number
+         * @param[in] max
+         * @return
+         */
+        inline unsigned int incrementPrescaler ( unsigned int number,
+                                                 unsigned int max );
 
-	unsigned int m_incrementWithDelay[COUNTER_DELAY];
-	unsigned int m_iwdIndexOut;
-	unsigned int m_iwdIndexIn;
-	unsigned int m_clockSource;
-	unsigned int m_prescaler;
-	bool m_t0Log;
+        /**
+         * @brief
+         * @param[in] number
+         */
+        inline void incrementTimer ( unsigned int number );
 
-	inline void incrementWithDelay(unsigned int number);
-	inline unsigned int incrementPrescaler(unsigned int number, unsigned int max);
-	inline void incrementTimer(unsigned int number);
-	inline void resetPrescalerOnCond();
-	inline void clearDelayArray();
-	inline void sampleT0();
+        /**
+         * @brief
+         */
+        inline void resetPrescalerOnCond();
 
-	inline void resetToInitialValues();
-	inline void mcuReset();
+        /**
+         * @brief
+         */
+        inline void clearDelayArray();
 
-	inline void determinateClockSource();
+        /**
+         * @brief
+         */
+        inline void sampleT0();
+
+        /**
+         * @brief
+         */
+        inline void resetToInitialValues();
+
+        /**
+         * @brief
+         */
+        inline void mcuReset();
+
+        /**
+         * @brief
+         */
+        inline void determinateClockSource();
+
+    ////    Public Attributes    ////
+    public:
+        /**
+         * @brief
+         */
+        Config m_config;
+
+    ////    Protected Attributes    ////
+    protected:
+        /// @name AVR8 simulator subsystems
+        //@{
+            ///
+            AVR8DataMemory * m_dataMemory;
+
+            ///
+            AVR8IO * m_io;
+        //@}
+
+        /**
+         * @brief
+         */
+        static const unsigned int COUNTER_DELAY = 3;
+
+        /**
+         * @brief
+         */
+        unsigned int m_incrementWithDelay [ COUNTER_DELAY ];
+
+        /**
+         * @brief
+         */
+        unsigned int m_iwdIndexOut;
+
+        /**
+         * @brief
+         */
+        unsigned int m_iwdIndexIn;
+
+        /**
+         * @brief
+         */
+        unsigned int m_clockSource;
+
+        /**
+         * @brief
+         */
+        unsigned int m_prescaler;
+
+        /**
+         * @brief
+         */
+        bool m_t0Log;
 };
 
 #endif // AVR8TIMERCOUNTER0_H
