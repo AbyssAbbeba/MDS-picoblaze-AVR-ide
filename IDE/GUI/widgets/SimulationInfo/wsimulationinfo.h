@@ -1,3 +1,17 @@
+/**
+ * @brief
+ * C++ Interface: ...
+ *
+ * ...
+ *
+ * Copyright: See COPYING file that comes with this distribution.
+ *
+ * @author Erik Chalupa <xchalu10@stud.fit.vutbr.cz>, (C) 2012
+ * @ingroup GUI
+ * @file wsimulationinfo.h
+ */
+
+
 #ifndef WSIMULATIONINFO_H
 #define WSIMULATIONINFO_H
 
@@ -13,6 +27,11 @@ class MCUSimControl;
 class RegDisplayList;
 class MovGridLayout;
 
+/**
+ * @brief
+ * @ingroup GUI
+ * @class WSimulationInfo
+ */
 class WSimulationInfo : public QWidget
 {
     Q_OBJECT

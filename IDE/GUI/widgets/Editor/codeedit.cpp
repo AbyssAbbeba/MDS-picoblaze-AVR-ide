@@ -1,3 +1,17 @@
+/**
+ * @brief
+ * C++ Implementation: ...
+ *
+ * ...
+ *
+ * Copyright: See COPYING file that comes with this distribution.
+ *
+ * @author: Erik Chalupa <xchalu10@stud.fit.vutbr.cz>, (C) 2012
+ *
+ */
+
+
+
 #include <QtGui>
 #include "codeedit.h"
 #include "wdockmanager.h"
@@ -6,7 +20,7 @@
 CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath)
     : QWidget(parent)
 {
-    textEdit = new QTextEdit(this);
+    textEdit = new WTextEdit(this);
     textEdit->setContextMenuPolicy(Qt::NoContextMenu);
     lineCount = new WLineCounter(textEdit, false, false, 20);
     layout = new QGridLayout(this);
@@ -19,11 +33,24 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath)
     parentWidget = parent;
     this->tabs = tabs;
     parentProject = NULL;
-    textEdit->setWordWrapMode(QTextOption::NoWrap);
-    //setWordWrapMode(QTextOption::WordWrap);
+    //textEdit->setWordWrapMode(QTextOption::NoWrap);
+    textEdit->setWordWrapMode(QTextOption::WordWrap);
+    textEdit->setLineWrapMode(QTextEdit::WidgetWidth);
     textEdit->setFont(QFont ("Andale Mono", 11));
     this->makeMenu();
-    this->connectAct();
+    //this->setFocusPolicy(Qt::StrongFocus);
+    //this->textEdit->setFocusPolicy(Qt::NoFocus);
+    //this->installEventFilter(this);
+    QFile file(path);
+    if (file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        this->textEdit->setPlainText(file.readAll());
+        file.close();
+    }
+    connect(textEdit, SIGNAL(focusIn()), this, SLOT(getFocus()));
+    connect(textEdit, SIGNAL(breakpoint(int)), this, SLOT(manageBreakpointEmit(int)));
+    connect(textEdit, SIGNAL(bookmark(int)), this, SLOT(manageBookmarkEmit(int)));
+    //this->connectAct();
 }
 
 
@@ -31,7 +58,7 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath)
 CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName, QString wPath)
     : QWidget(parent)
 {
-    textEdit = new QTextEdit(this);
+    textEdit = new WTextEdit(this);
     textEdit->setContextMenuPolicy(Qt::NoContextMenu);
     lineCount = new WLineCounter(textEdit, false, false, 20);
     layout = new QGridLayout(this);
@@ -44,10 +71,27 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName
     parentWidget = parent;
     this->tabs = tabs;
     parentProject = parentPrj;
-    textEdit->setWordWrapMode(QTextOption::NoWrap);
+    textEdit->setWordWrapMode(QTextOption::WordWrap);
+    textEdit->setLineWrapMode(QTextEdit::WidgetWidth);
     textEdit->setFont(QFont ("Andale Mono", 11));
     this->makeMenu();
-    this->connectAct();
+    this->setFocusPolicy(Qt::StrongFocus);
+    //this->installEventFilter(this);
+    QFile file(path);
+    if (file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        this->textEdit->setPlainText(file.readAll());
+        file.close();
+    }
+    connect(textEdit, SIGNAL(focusIn()), this, SLOT(getFocus()));
+    connect(textEdit, SIGNAL(breakpoint(int)), this, SLOT(manageBreakpointEmit(int)));
+    connect(textEdit, SIGNAL(bookmark(int)), this, SLOT(manageBookmarkEmit(int)));
+    //this->connectAct();
+}
+
+
+CodeEdit::~CodeEdit()
+{
 }
 
 
@@ -141,17 +185,19 @@ void CodeEdit::setParentProject(Project* project)
 
 QTextEdit* CodeEdit::getTextEdit()
 {
-    return textEdit;
+    return (QTextEdit*)textEdit;
 }
 
 
 void CodeEdit::splitHorizontal()
 {
+    qDebug() << "Code Edit: split signal - horizontal";
     emit splitSignal(Qt::Horizontal, 0);
 }
 
 void CodeEdit::splitVertical()
 {
+    qDebug() << "Code Edit: split signal - vertical";
     emit splitSignal(Qt::Vertical, 0);
 }
 
@@ -160,4 +206,71 @@ void CodeEdit::contextMenuEvent(QContextMenuEvent *event)
 {
     //if (target == textEdit)
         editorPopup->popup(event->globalPos());
+}
+
+
+void CodeEdit::updateTextSlotOut()
+{
+    emit updateText(this->textEdit->toPlainText());
+}
+
+void CodeEdit::updateTextSlotIn(const QString& textIn)
+{
+    //qDebug() << "Code Edit: update";
+    if (textIn.compare(this->textEdit->toPlainText()) != 0)
+       this->textEdit->setText(textIn);
+}
+
+
+void CodeEdit::loadCodeEdit(CodeEdit* editor)
+{
+    qDebug() << "Code Edit: load Code Editor";
+    //disconnect(textEdit, SIGNAL(textChanged()), 0, 0);
+    disconnect(this, SIGNAL(updateText(const QString&)), 0, 0);
+    this->breakpointList.clear();
+    this->textEdit->setText(editor->getTextEdit()->toPlainText());
+    emit CodeEditChanged(editor);
+}
+
+
+QWidget* CodeEdit::getParent()
+{
+    return parentWidget;
+}
+
+
+
+void CodeEdit::getFocus()
+{
+    ((BaseEditor*)parentWidget)->focusIn();
+}
+
+void CodeEdit::manageBreakpointEmit(int line)
+{
+    int index;
+    index = breakpointList.indexOf(line);
+    textEdit->highlightLine(line);
+    if (index == -1)
+    {
+        breakpointList.append(line);
+    }
+    else
+    {
+        breakpointList.removeAt(index);
+    }
+}
+
+void CodeEdit::manageBookmarkEmit(int line)
+{
+    int index;
+    index = bookmarkList.indexOf(line);
+    textEdit->highlightLine(line);
+    if (index == -1)
+    {
+        bookmarkList.append(line);
+    }
+    else
+    {
+        bookmarkList.removeAt(index);
+    }
 }

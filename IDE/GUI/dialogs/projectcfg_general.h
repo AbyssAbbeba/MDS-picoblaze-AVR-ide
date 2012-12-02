@@ -1,3 +1,17 @@
+/**
+ * @brief
+ * C++ Interface: ...
+ *
+ * ...
+ *
+ * Copyright: See COPYING file that comes with this distribution.
+ *
+ * @author Erik Chalupa <xchalu10@stud.fit.vutbr.cz>, (C) 2012
+ * @ingroup GUI
+ * @file projectcfg_general.h
+ */
+
+
 #ifndef PROJECTCFG_GENERAL_H
 #define PROJECTCFG_GENERAL_H
 

@@ -1,13 +1,30 @@
+/**
+ * @brief
+ * C++ Interface: ...
+ *
+ * ...
+ *
+ * Copyright: See COPYING file that comes with this distribution.
+ *
+ * @author Erik Chalupa <xchalu10@stud.fit.vutbr.cz>, (C) 2012
+ * @ingroup GUI
+ * @file movgridlayout.h
+ */
+
+
 #ifndef MOVGRIDLAYOUT_H
 #define MOVGRIDLAYOUT_H
 
 #include <QWidget>
 #include <QList>
+#include <vector>
 
 #define SIZEX 2
 #define SIZEY 2
 
 class MovGridLayoutItem;
+
+//using namespace std;
 
 
 //position - x, y
@@ -33,6 +50,11 @@ typedef struct BLANK
 } BLANK;
 
 
+/**
+ * @brief
+ * @ingroup GUI
+ * @class MovGridLayout
+ */
 class MovGridLayout : public QWidget
 {
     Q_OBJECT
@@ -62,7 +84,8 @@ class MovGridLayout : public QWidget
         //list of widgets
         QList<MovGridLayoutItem*> gridWidgets;
         //index grid
-        int **grid;
+        //vector< vector<int> >grid;
+        int** grid;
         //grid width
         int gridWidth;
         //grid heigth
@@ -73,6 +96,9 @@ class MovGridLayout : public QWidget
         int sizeCol;
 	//params of grabbed widget
 	BLANK movingWidget;
+        //old geometry on resize
+        int oldWidth;
+        int oldHeight;
 
     protected:
         virtual bool eventFilter(QObject *target, QEvent *event);

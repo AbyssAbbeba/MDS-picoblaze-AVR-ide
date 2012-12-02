@@ -29,13 +29,16 @@
 #include <QMainWindow>
 #include <QList>
 #include <QTabWidget>
+#include <QSplitter>
 #include "../Editor/codeedit.h"
+#include "../Editor/baseeditor.h"
 #include "../../mainform/mainform.h"
 #include "../SimulationInfo/wsimulationinfo.h"
 
 class WDock;
 class MainForm;
 class CodeEdit;
+class BaseEditor;
 
 
 /**
@@ -71,16 +74,20 @@ class WDockManager : public QObject
     private slots:
         void closeTab(int index);
         void changeTabName(CodeEdit* editor, QString name);
+        void changeCodeEditor(int index);
+        void changeActiveCodeEdit(CodeEdit* editor);
 
     private:
         MainForm *wMainWindow;
         QList<WDock*> openDockWidgets;
-        WDock* wLeft;
-        WDock* wBottom;
-        WDock* wRight;
-        QList<CodeEdit*> openCentralWidgets;
+        WDock *wLeft;
+        WDock *wBottom;
+        WDock *wRight;
+        QList<BaseEditor*> openCentralWidgets;
+        BaseEditor *centralBase;
         QTabWidget *wTab;
-        
+        QSplitter *splitter;
+        CodeEdit *activeCodeEdit;
 };
 
 

@@ -69,6 +69,8 @@ signals:
 
 private:
 	RegDisplay();
+ 
+        QWidget *parentWidget;
 
 	const int m_address;
 	const uint8_t m_bitEnableMask;

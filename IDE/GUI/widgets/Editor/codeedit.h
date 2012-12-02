@@ -17,19 +17,19 @@
 #define CODEEDIT_H
 
 
-#include <QPlainTextEdit>
 #include <QTabWidget>
 #include <QStatusBar>
 #include <QGridLayout>
+#include <QList>
 #include "../../mainform/project.h"
 #include "../Counters/wlinecounter.h"
+#include "wtextedit.h"
 
 
 class Project;
 
-//editor kodu s pouzitim QSyntaxHighlight a pocitanim radku
 /**
- * @brief
+ * @brief Code Editor, include splitter, wtextedit and line counter
  * @ingroup GUI
  * @class CodeEdit
  */
@@ -39,6 +39,7 @@ class CodeEdit : public QWidget
     public:
         CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath);
         CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName, QString wPath);
+        ~CodeEdit();
         QString getName();
         QString getPath();
         void setName(QString wName);
@@ -49,16 +50,24 @@ class CodeEdit : public QWidget
         bool isChild(Project* project);
         void setParentProject(Project* project);
         QTextEdit *getTextEdit();
+        QWidget* getParent();
+        void loadCodeEdit(CodeEdit* editor);
 
     public slots:
         void setChanged();
         void splitHorizontal();
         void splitVertical();
+        void updateTextSlotOut();
+        void updateTextSlotIn(const QString& textIn);
+        void getFocus();
+        void manageBreakpointEmit(int line);
+        void manageBookmarkEmit(int line);
 
     signals:
         void splitSignal(Qt::Orientation orient, int line);
         void changedTabName(CodeEdit *editor, QString name);
-        //void splitHorizontal(int line);
+        void updateText(const QString & text);
+        void CodeEditChanged(CodeEdit* editor);
 
     private:
         void makeMenu();
@@ -70,13 +79,16 @@ class CodeEdit : public QWidget
         Project* parentProject;
         QWidget *parentWidget;
         QStatusBar *statusBar;
-        QTextEdit *textEdit;
+        WTextEdit *textEdit;
         QGridLayout *layout;
         WLineCounter *lineCount;
         QMenu *editorPopup;
+        QList<int> breakpointList;
+        QList<int> bookmarkList;
 
     protected:
         void contextMenuEvent(QContextMenuEvent *event);
+        //bool eventFilter(QObject *target, QEvent *event);
 };
 
 

@@ -20,8 +20,8 @@
 #include <QPushButton>
 #include <QStringList>
 
-const QFont RegDisplay::m_nameFont = QFont("Courier New", 10, QFont::Normal);
-const QFont RegDisplay::m_bitNormalFont = QFont("Courier New", 10, QFont::DemiBold);
+const QFont RegDisplay::m_nameFont = QFont("Courier New", 8, QFont::Normal);
+const QFont RegDisplay::m_bitNormalFont = QFont("Courier New", 8, QFont::DemiBold);
 
 RegDisplay::RegDisplay(
 		uint address,
@@ -38,11 +38,15 @@ RegDisplay::RegDisplay(
 		m_bitEnableMask(mask),
 		m_readOnly(true)
 {
+        parentWidget = parent;
 	setPalettes();
 	createLayout();
 	createWidgets(regName, regNameTip, bitNames, toolsTips, statusTips);
 	setupConnections();
 	setReadOnly(true);
+        this->setMaximumWidth(500);
+        this->setMaximumHeight(30);
+        this->show();
 }
 
 inline void RegDisplay::setPalettes() {
@@ -62,7 +66,7 @@ inline void RegDisplay::setPalettes() {
 }
 
 inline void RegDisplay::createLayout() {
-	m_primaryLayout = new QHBoxLayout(this);
+	m_primaryLayout = new QHBoxLayout(parentWidget);
 	m_primaryLayout->setSpacing(0);
 	m_primaryLayout->setContentsMargins(0, 0, 0, 0);
 	setLayout(m_primaryLayout);
@@ -86,7 +90,7 @@ inline void RegDisplay::createWidgets(
 	m_hexLineEdit = new QLineEdit(this);
 	m_hexLineEdit->setInputMask(">HH;");
 	m_hexLineEdit->setText("00");
-	m_hexLineEdit->setMinimumWidth(30);
+	//m_hexLineEdit->setMinimumWidth(30);
 	m_hexLineEdit->setMaximumWidth(30);
 	m_hexLineEdit->setFont(m_nameFont);
 	m_primaryLayout->addWidget(m_hexLineEdit);
@@ -101,8 +105,8 @@ inline void RegDisplay::createWidgets(
 			m_bitButtons[i] = new QPushButton(bitNames->at(i), this);
 			m_bitButtons[i]->setFlat(true);
 			m_bitButtons[i]->setFont(m_bitNormalFont);
-			m_bitButtons[i]->setMinimumWidth(25);
-			m_bitButtons[i]->setMinimumHeight(15);
+			m_bitButtons[i]->setMaximumWidth(30);
+			//m_bitButtons[i]->setMinimumHeight(15);
 			m_bitButtons[i]->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Maximum);
 
 			if ( m_bitEnableMask & (0x01 << i) ) {
