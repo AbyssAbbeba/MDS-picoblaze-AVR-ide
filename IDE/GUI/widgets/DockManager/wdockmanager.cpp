@@ -44,8 +44,19 @@ WDockManager::WDockManager(MainForm *mainWindow)
 
 void WDockManager::changeActiveCodeEdit(CodeEdit *editor)
 {
-    qDebug() << "wdockmanager - change active Code Editor";
-    this->activeCodeEdit = editor;
+    if (this->activeCodeEdit != editor)
+    {
+        qDebug() << "wdockmanager - change active Code Editor";
+        this->activeCodeEdit = editor;
+        breakpointList->disconnect();
+        bookmarkList->disconnect();
+        breakpointList->reload(activeCodeEdit->getBreakpointList());
+        bookmarkList->reload(activeCodeEdit->getBookmarkList());
+        connect(this->activeCodeEdit, SIGNAL(bookmarkListAdd(int)), bookmarkList, SLOT(bookmarkListAddSlot(int)));
+        connect(this->activeCodeEdit, SIGNAL(bookmarkListRemove(int)), bookmarkList, SLOT(bookmarkListRemoveSlot(int)));
+        connect(this->activeCodeEdit, SIGNAL(breakpointListAdd(int)), breakpointList, SLOT(breakpointListAddSlot(int)));
+        connect(this->activeCodeEdit, SIGNAL(breakpointListRemove(int)), breakpointList, SLOT(breakpointListRemoveSlot(int)));
+    }
 }
 
 
@@ -56,7 +67,16 @@ void WDockManager::changeCodeEditor(int index)
         qDebug() << "wdockmanager - change Code Editor";
         qDebug() << "index: " << index;
         qDebug() << "size: " << openCentralWidgets.count();
-        activeCodeEdit->loadCodeEdit(openCentralWidgets.at(index)->getCodeEdit());
+        CodeEdit *editor = openCentralWidgets.at(index)->getCodeEdit();
+        activeCodeEdit->loadCodeEdit(editor);
+        breakpointList->disconnect();
+        bookmarkList->disconnect();
+        breakpointList->reload(editor->getBreakpointList());
+        bookmarkList->reload(editor->getBookmarkList());
+        connect(this->activeCodeEdit, SIGNAL(bookmarkListAdd(int)), bookmarkList, SLOT(bookmarkListAddSlot(int)));
+        connect(this->activeCodeEdit, SIGNAL(bookmarkListRemove(int)), bookmarkList, SLOT(bookmarkListRemoveSlot(int)));
+        connect(this->activeCodeEdit, SIGNAL(breakpointListAdd(int)), breakpointList, SLOT(breakpointListAddSlot(int)));
+        connect(this->activeCodeEdit, SIGNAL(breakpointListRemove(int)), breakpointList, SLOT(breakpointListRemoveSlot(int)));
     }
 }
 
@@ -182,7 +202,7 @@ void WDockManager::addCentralWidget(QString wName, QString wPath)
 
 void WDockManager::addDockWidget(int code)
 {
-    WDock *newWDock = new WDock(code, wMainWindow);
+    WDock *newWDock = new WDock(this, code, wMainWindow);
     if (getDockWidgetArea(newWDock->getArea())!=NULL)
         wMainWindow->tabifyDockWidget(getDockWidgetArea(newWDock->getArea()), newWDock->getQDockWidget());
     openDockWidgets.append(newWDock);
@@ -231,32 +251,53 @@ bool WDockManager::isEmpty()
 }
 
 
+BookmarkList* WDockManager::getBookmarkList()
+{
+    return bookmarkList;
+}
+
+BreakpointList* WDockManager::getBreakpointList()
+{
+    return breakpointList;
+}
 
 
+void WDockManager::createBreakpointList(QDockWidget *wDockWidget)
+{
+    breakpointList = new BreakpointList(wDockWidget);
+}
 
+void WDockManager::createBookmarkList(QDockWidget *wDockWidget)
+{
+    bookmarkList = new BookmarkList(wDockWidget);
+}
 
-WDock::WDock(int code, MainForm *mainWindow)
+/////
+///// WDock
+/////
+
+WDock::WDock(WDockManager *parent, int code, MainForm *mainWindow)
 {
     switch (code)
     {
-        case wListCode:
+        case wBookmarkList:
         {
-            wDockWidget = new QDockWidget("List", mainWindow);
-            wDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea);
-            mainWindow->addDockWidget(Qt::LeftDockWidgetArea, wDockWidget);
-            QListWidget *newWidget = new QListWidget(wDockWidget);
-            area = 0;
-            wDockWidget->setWidget(newWidget);
-	    break;
-        }
-        case wListCode2:
-        {
-            wDockWidget = new QDockWidget("List2", mainWindow);
+            wDockWidget = new QDockWidget("Bookmarks", mainWindow);
             wDockWidget->setAllowedAreas(Qt::RightDockWidgetArea);
             mainWindow->addDockWidget(Qt::RightDockWidgetArea, wDockWidget);
-            QListWidget *newWidget = new QListWidget(wDockWidget);
+            parent->createBookmarkList(wDockWidget);
             area = 1;
-            wDockWidget->setWidget(newWidget);
+            wDockWidget->setWidget(parent->getBookmarkList());
+	    break;
+        }
+        case wBreakpointList:
+        {
+            wDockWidget = new QDockWidget("Breakpoints", mainWindow);
+            wDockWidget->setAllowedAreas(Qt::RightDockWidgetArea);
+            mainWindow->addDockWidget(Qt::RightDockWidgetArea, wDockWidget);
+            parent->createBreakpointList(wDockWidget);
+            area = 1;
+            wDockWidget->setWidget(parent->getBreakpointList());
 	    break;
         }
 	case wCompileInfo:

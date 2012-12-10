@@ -52,6 +52,8 @@ class CodeEdit : public QWidget
         QTextEdit *getTextEdit();
         QWidget* getParent();
         void loadCodeEdit(CodeEdit* editor);
+        QList<int> getBookmarkList();
+        QList<int> getBreakpointList();
 
     public slots:
         void setChanged();
@@ -68,6 +70,10 @@ class CodeEdit : public QWidget
         void changedTabName(CodeEdit *editor, QString name);
         void updateText(const QString & text);
         void CodeEditChanged(CodeEdit* editor);
+        void bookmarkListAdd(int line);
+        void bookmarkListRemove(int line);
+        void breakpointListAdd(int line);
+        void breakpointListRemove(int line);
 
     private:
         void makeMenu();

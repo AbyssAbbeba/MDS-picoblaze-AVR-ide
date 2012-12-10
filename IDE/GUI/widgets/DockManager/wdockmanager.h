@@ -17,12 +17,11 @@
 #ifndef WDOCKMANAGER_H
 #define WDOCKMANAGER_H
 
-#define wListCode 1000
-#define wListCode2 1001
+#define wBookmarkList 1000
+#define wBreakpointList 1001
 #define wCompileInfo 1002
 #define wCodeEditCode 1003
 #define wSimulationInfo 1004
-//HexEdit would be included in Simulation Status widget
 
 
 #include <QDockWidget>
@@ -34,11 +33,15 @@
 #include "../Editor/baseeditor.h"
 #include "../../mainform/mainform.h"
 #include "../SimulationInfo/wsimulationinfo.h"
+#include "../BreakpointList/breakpointlist.h"
+#include "../BookmarkList/bookmarklist.h"
 
 class WDock;
 class MainForm;
 class CodeEdit;
 class BaseEditor;
+class BookmarkList;
+class BreakpointList;
 
 
 /**
@@ -70,6 +73,10 @@ class WDockManager : public QObject
         void setTabSaved();
         int getTabCount();
         bool isEmpty();
+        BookmarkList* getBookmarkList();
+        BreakpointList* getBreakpointList();
+        void createBookmarkList(QDockWidget *wDockWidget);
+        void createBreakpointList(QDockWidget *wDockWidget);
 
     private slots:
         void closeTab(int index);
@@ -88,6 +95,10 @@ class WDockManager : public QObject
         QTabWidget *wTab;
         QSplitter *splitter;
         CodeEdit *activeCodeEdit;
+        
+        //widgets
+        BookmarkList *bookmarkList;
+        BreakpointList *breakpointList;
 };
 
 
@@ -100,7 +111,7 @@ class WDockManager : public QObject
 class WDock
 {
     public:
-        WDock(int code, MainForm *mainWindow);
+        WDock(WDockManager *parent, int code, MainForm *mainWindow);
         ~WDock();
         bool cmpCode(int code);
         bool cmpArea(int area);

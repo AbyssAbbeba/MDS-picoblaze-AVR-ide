@@ -76,11 +76,11 @@ class MainForm : public QMainWindow
 
 
         QMenu *fileMenu;
-    	QMenu *editMenu;
-    	QMenu *interfaceMenu;
-    	QMenu *projectMenu;
-    	QMenu *toolsMenu;
-    	QMenu *helpMenu;
+        QMenu *editMenu;
+        QMenu *interfaceMenu;
+        QMenu *projectMenu;
+        QMenu *toolsMenu;
+        QMenu *helpMenu;
 
 
         QToolBar *fileToolBar;
