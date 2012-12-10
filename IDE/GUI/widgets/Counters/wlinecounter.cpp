@@ -102,7 +102,7 @@ void WLineCounterWidget::paintEvent(QPaintEvent *)
         QTextCursor cursor(lineBlock);
         cursorRect = textEdit->cursorRect(cursor);
         point.setY(cursorRect.top());
-        qDebug() << "cursor: " << cursorRect.top();
+        //qDebug() << "cursor: " << cursorRect.top();
         //point.setY(i*(size+7)+size/3);
         point.setX(0);
         rect.moveTopLeft(point);

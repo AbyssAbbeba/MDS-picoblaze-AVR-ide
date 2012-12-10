@@ -29,10 +29,14 @@ link_directories(
 	"${CMAKE_CURRENT_BINARY_DIR}/../Editor/"
 	"${CMAKE_CURRENT_BINARY_DIR}/../HexEdit"
 	"${CMAKE_CURRENT_BINARY_DIR}/../../mainform/"
-	"${CMAKE_CURRENT_BINARY_DIR}/../../dialogs/")
+	"${CMAKE_CURRENT_BINARY_DIR}/../../dialogs/"
+	"${CMAKE_CURRENT_BINARY_DIR}/../Tools/Convertor/"
+	"${CMAKE_CURRENT_BINARY_DIR}/../Tools/Display/")
 
 include_directories(
-	"${CMAKE_CURRENT_BINARY_DIR}/../MovGridLayout/")
+	"${CMAKE_CURRENT_BINARY_DIR}/../MovGridLayout/"
+	"${CMAKE_CURRENT_BINARY_DIR}/../Tools/Convertor/"
+	"${CMAKE_CURRENT_BINARY_DIR}/../Tools/Display/")
 
 
 # and finally this will run moc:
@@ -44,3 +48,9 @@ TARGET_LINK_LIBRARIES( testGrid ${QT_LIBRARIES} Editor MovGridLayout Mainform Di
 
 ADD_EXECUTABLE( testSplit ./testsplit.cpp)
 TARGET_LINK_LIBRARIES( testSplit ${QT_LIBRARIES} HexEdit Mainform Dialogs)
+
+ADD_EXECUTABLE( testToolConv ./testtool_conv.cpp)
+TARGET_LINK_LIBRARIES( testToolConv ${QT_LIBRARIES} ConvertorTool)
+
+ADD_EXECUTABLE( testToolDisplay ./testtool_display.cpp)
+TARGET_LINK_LIBRARIES( testToolDisplay ${QT_LIBRARIES} DisplayTool)

@@ -22,3 +22,6 @@ add_subdirectory(MCUDataFiles)
 
 # Build the tools for working with debug files
 add_subdirectory(DbgFile)
+
+# Build the tools for working with mcu spec file (xml)
+add_subdirectory(McuSpecFileDesigner)
