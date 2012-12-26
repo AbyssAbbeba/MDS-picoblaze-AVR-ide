@@ -227,7 +227,12 @@ void CodeEdit::loadCodeEdit(CodeEdit* editor)
     qDebug() << "Code Edit: load Code Editor";
     //disconnect(textEdit, SIGNAL(textChanged()), 0, 0);
     disconnect(this, SIGNAL(updateText(const QString&)), 0, 0);
+    disconnect(this, SIGNAL(bookmarkListAdd(int)), 0, 0);
+    disconnect(this, SIGNAL(bookmarkListRemove(int)), 0, 0);
+    disconnect(this, SIGNAL(breakpointListAdd(int)), 0, 0);
+    disconnect(this, SIGNAL(breakpointListRemove(int)), 0, 0);
     this->breakpointList.clear();
+    this->bookmarkList.clear();
     this->textEdit->setText(editor->getTextEdit()->toPlainText());
     emit CodeEditChanged(editor);
 }
@@ -253,10 +258,12 @@ void CodeEdit::manageBreakpointEmit(int line)
     if (index == -1)
     {
         breakpointList.append(line);
+        emit breakpointListAdd(line);
     }
     else
     {
         breakpointList.removeAt(index);
+        emit breakpointListRemove(line);
     }
 }
 
@@ -264,13 +271,24 @@ void CodeEdit::manageBookmarkEmit(int line)
 {
     int index;
     index = bookmarkList.indexOf(line);
-    textEdit->highlightLine(line);
     if (index == -1)
     {
         bookmarkList.append(line);
+        emit bookmarkListAdd(line);
     }
     else
     {
         bookmarkList.removeAt(index);
+        emit bookmarkListRemove(line);
     }
+}
+
+QList<int> CodeEdit::getBreakpointList()
+{
+    return breakpointList;
+}
+
+QList<int> CodeEdit::getBookmarkList()
+{
+    return bookmarkList;
 }
