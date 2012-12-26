@@ -9,21 +9,21 @@
  *
  * @authors Martin Ošmera <martin.osmera@gmail.com>
  * @ingroup PIC8
- * @file AVR8ConfigWord.cxx
+ * @file PIC8ConfigWord.cxx
  */
 // =============================================================================
 
-#include "AVR8ConfigWord.h"
+#include "PIC8ConfigWord.h"
 
 #include <cstdlib>
 
-AVR8ConfigWord * AVR8ConfigWord::link ( MCUSim::EventLogger * eventLogger )
+PIC8ConfigWord * PIC8ConfigWord::link ( MCUSim::EventLogger * eventLogger )
 {
     Subsys::link(eventLogger, ID_FUSES);
     return this;
 }
 
-void AVR8ConfigWord::reset ( MCUSim::ResetMode mode )
+void PIC8ConfigWord::reset ( MCUSim::ResetMode mode )
 {
     switch ( mode )
     {
@@ -39,7 +39,7 @@ void AVR8ConfigWord::reset ( MCUSim::ResetMode mode )
     }
 }
 
-inline void AVR8ConfigWord::loadConfig()
+inline void PIC8ConfigWord::loadConfig()
 {
     // Set to default values
     unsigned char mask = 0x01;
@@ -57,7 +57,7 @@ inline void AVR8ConfigWord::loadConfig()
     }
 }
 
-inline void AVR8ConfigWord::resetToInitialValues()
+inline void PIC8ConfigWord::resetToInitialValues()
 {
     for ( int i = 0; i < CFGW__MAX__; i++ )
     {

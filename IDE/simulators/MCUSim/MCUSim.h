@@ -37,7 +37,11 @@ class MCUSim
             ARCH_INVALID = -1,  ///<
 
             ARCH_AVR8,          ///<
-            ARCH_AVR32          ///<
+            ARCH_AVR32,         ///<
+
+            ARCH_PIC8,          ///<
+
+            ARCH__MAX__         ///<
         };
 
         /**
@@ -442,6 +446,8 @@ class MCUSim
 
                     EVENT_CPU_CALL,                 ///<
 
+                    EVENT_ACCUMULATOR_WRITE,        ///< Content of the processor accumultor register has been modified.
+
                     EVENT_CPU__MAX__                ///<
                 };
 
@@ -531,7 +537,9 @@ class MCUSim
                     //@{
                     EVENT_MEM_INF_WR_VAL_CHANGED,           ///< Memory cell content has been changed.
                     EVENT_MEM_INF_WR_VAL_WRITTEN,           ///< Memory cell content was written.
-                    EVENT_MEM_INF_WR_VAL_READ,              ///< Memory cell content was read.
+                    EVENT_MEM_INF_RD_VAL_READ,              ///< Memory cell content was read.
+                    EVENT_MEM_INF_RD_ADDR_OVERFLOW,         ///< "address = ( address % size )" happened during read
+                    EVENT_MEM_INF_WR_ADDR_OVERFLOW,         ///< "address = ( address % size )" happened during write
                     //@}
 
                     EVENT_MEM__MAX__                        ///< Number of elements in this enumeration.
@@ -745,6 +753,18 @@ class MCUSim
                 {
                     Subsys::link(eventLogger, ID_IO);
                 }
+
+                /**
+                 * @brief
+                 */
+                SimFloatType m_sourceVoltage;
+
+                // idx =  |n       ... |23  16|15   8|7    0|
+                //        |special ... |PORT_C|PORT_B|PORT_A|
+                /**
+                 * @brief
+                 */
+                SimFloatType ** m_lowLevelInterface;
         };
 
         /**

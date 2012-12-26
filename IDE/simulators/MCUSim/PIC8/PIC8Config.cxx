@@ -26,9 +26,13 @@ PIC8Config::PIC8Config() : MCUSim::Config(MCUSim::ARCH_PIC8)
     m_configProgramMemory   = NULL;
     m_configWord            = NULL;
     m_configStack           = NULL;
+    m_configInterruptCtrl   = NULL;
+    m_configDataEEPROM      = NULL;
+    m_configWatchDogTimer   = NULL;
+    m_configTimer0          = NULL;
 }
 
-void PIC8Config::link(PIC8Sim * system)
+void PIC8Config::link ( PIC8Sim * system )
 {
     m_configIO             = & ( system -> m_io             -> m_config );
     m_configDataMemory     = & ( system -> m_dataMemory     -> m_config );
@@ -37,4 +41,8 @@ void PIC8Config::link(PIC8Sim * system)
     m_configProgramMemory  = & ( system -> m_programMemory  -> m_config );
     m_configConfigWord     = & ( system -> m_configWord     -> m_config );
     m_configStack          = & ( system -> m_stack          -> m_config );
+    m_configInterruptCtrl  = & ( system -> m_interruptCtrl  -> m_config );
+    m_configDataEEPROM     = & ( system -> m_dataEEPROM     -> m_config );
+    m_configWatchDogTimer  = & ( system -> m_watchDogTimer  -> m_config );
+    m_configTimer0         = & ( system -> m_timer0         -> m_config );
 }

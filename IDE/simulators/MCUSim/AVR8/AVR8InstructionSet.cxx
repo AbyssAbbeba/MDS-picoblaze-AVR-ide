@@ -277,7 +277,8 @@ inline void AVR8InstructionSet::incrPc ( const int val )
 
 int AVR8InstructionSet::execInstruction()
 {
-    const int pcOrig = m_pc;
+    int result = -1;
+    int pcOrig = m_pc;
     unsigned int opCode = m_programMemory->readRaw(m_pc);
     incrPc();
 
@@ -293,12 +294,14 @@ int AVR8InstructionSet::execInstruction()
         }
     }
 
+    result = ( this->*(m_opCodeDispatchTable[opCode >> 10]) ) ( opCode );
+
     if ( pcOrig != m_pc )
     {
         logEvent(EVENT_CPU_PC_CHANGED, m_pc);
     }
 
-    return ( this->*(m_opCodeDispatchTable[opCode >> 10]) ) ( opCode );
+    return result;
 }
 
 int AVR8InstructionSet::instOPCode_000000 ( const unsigned int opCode )
@@ -1464,8 +1467,8 @@ int AVR8InstructionSet::inst_EOR_Rd_Rr ( const unsigned int opCode )
     instructionEnter(AVR8InsNames::INS_EOR_Rd_Rr);
 
     // Operands
-    const unsigned int addrRr = ((opCode & 0x0200) >> 5) | (opCode & 0x000f);
-    const unsigned int addrRd = (opCode & 0x01f0) >> 4;
+    const unsigned int addrRr = ( ( opCode & 0x0200 ) >> 5 ) | ( opCode & 0x000f );
+    const unsigned int addrRd = ( ( opCode & 0x01f0 ) >> 4 );
 
     // Registers
     unsigned int valRd = m_dataMemory->read(addrRd);
@@ -1781,7 +1784,8 @@ int AVR8InstructionSet::inst_RCALL_k ( const unsigned int opCode )
     m_dataMemory->pushOnStack(m_pc & 0xff);
     m_pc >>= 8;
     m_dataMemory->pushOnStack(m_pc & 0xff);
-    if ( m_config.m_pcWidth > PCWIDTH_16 ) {
+    if ( m_config.m_pcWidth > PCWIDTH_16 )
+    {
         m_pc >>= 8;
         m_dataMemory->pushOnStack(m_pc & 0xff);
     }

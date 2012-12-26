@@ -27,6 +27,9 @@ namespace AVR8RegNames
 {
     ////    Datatypes    ////
 
+    /**
+     * @brief
+     */
     enum CPURegisters
     {
         /// @name CPU register file
@@ -57,6 +60,9 @@ namespace AVR8RegNames
         //@}
     };
 
+    /**
+     * @brief
+     */
     enum SFR
     {
          // TODO: find it, and fill it in here

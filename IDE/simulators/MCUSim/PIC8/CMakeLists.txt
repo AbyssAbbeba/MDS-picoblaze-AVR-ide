@@ -38,15 +38,19 @@ add_definitions ( -Wall -Wextra -std=c++0x -O2 -pipe )
 ## Add a library to the project using the specified source files,
  # in this case it will procude dynamic C++ library.
 add_library ( ${PROJECT_NAME} SHARED
-#               PIC8Sim.cxx
-#              PIC8InstructionSet.cxx
-#               PIC8Stack.cxx
-#               PIC8Config.cxx
-#              PIC8ClockControl.cxx
+              PIC8Sim.cxx
+              PIC8InstructionSet.cxx
+              PIC8Stack.cxx
+              PIC8InterruptCtrl.cxx
+              PIC8Config.cxx
+              PIC8ClockControl.cxx
               PIC8DataMemory.cxx
-#              PIC8ProgramMemory.cxx
-              PIC8ConfigWord.cxx)
-
+              PIC8ProgramMemory.cxx
+              PIC8DataEEPROM.cxx
+              PIC8ConfigWord.cxx
+              PIC8WatchDogTimer.cxx
+              PIC8IO.cxx
+              PIC8Timer0.cxx )
 
 # ------------------------------------------------------------------------------
 # INSTALLATION OPTIONS

@@ -20,8 +20,12 @@
 #include "PIC8ProgramMemory.h"
 #include "PIC8DataMemory.h"
 #include "PIC8ConfigWord.h"
+#include "PIC8DataEEPROM.h"
+#include "PIC8InterruptCtrl.h"
 #include "PIC8IO.h"
 #include "PIC8Stack.h"
+#include "PIC8WatchDogTimer.h"
+#include "PIC8Timer0.h"
 
 #include <cassert>
 
@@ -39,6 +43,10 @@ PIC8Sim::PIC8Sim()
     m_io                    = new PIC8IO();
     m_clockControl          = new PIC8ClockControl();
     m_stack                 = new PIC8Stack();
+    m_interruptCtrl         = new PIC8InterruptCtrl();
+    m_dataEEPROM            = new PIC8DataEEPROM();
+    m_watchDogTimer         = new PIC8WatchDogTimer();
+    m_timer0                = new PIC8Timer0();
 
     regSubSys(m_configWord->link(m_eventLogger));
 
@@ -52,13 +60,21 @@ PIC8Sim::PIC8Sim()
                                        &m_processorMode,
                                        m_programMemory,
                                        m_dataMemory,
-                                       m_configWord ));
+                                       m_configWord,
+                                       m_stack,
+                                       m_interruptCtrl,
+                                       m_watchDogTimer ));
+
     regSubSys(m_clockControl->link(m_eventLogger, m_configWord));
 
     regSubSys(m_stack->link(m_eventLogger));
 
-    checkSubSystems();
+    regSubSys(m_interruptCtrl->link(m_eventLogger));
+    regSubSys(m_dataEEPROM->link(m_eventLogger));
+    regSubSys(m_watchDogTimer->link(m_eventLogger));
+    regSubSys(m_timer0->link(m_eventLogger, m_dataMemory, m_io));
 
+    checkSubSystems();
     m_config->link(this);
 }
 
@@ -94,7 +110,7 @@ inline void PIC8Sim::regSubSys ( Subsys * subSystem )
     m_subSystems.push_back(subSystem);
 }
 
-MCUSim::Subsys * PIC8Sim::getSubsys(Subsys::SubsysId id)
+MCUSim::Subsys * PIC8Sim::getSubsys ( Subsys::SubsysId id )
 {
     switch ( id )
     {
@@ -206,7 +222,7 @@ int PIC8Sim::timeStep ( float timeStep )
     }
 
     m_io->clockCycles();
-    cycles = m_instructionSet->execInstruction();
+    int cycles = m_instructionSet->execInstruction();
 
     if ( cycles > allocatedCycles )
     {

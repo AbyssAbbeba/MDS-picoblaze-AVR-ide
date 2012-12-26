@@ -23,45 +23,101 @@
  * @ingroup PIC8
  * @class PIC8ConfigWord
  */
-class PIC8ConfigWord : public MCUSim::Subsys {
-public:
-    PIC8ConfigWord() {};
+class PIC8ConfigWord : public MCUSim::Subsys
+{
+    ////    Public Datatypes    ////
+    public:
+        /**
+         * @brief Bits of the configuration word
+         */
+        enum CfgWordBit
+        {
+            // Bit          Bit #
+            CFGW_CP,        ///< Code Protection bit
+            CFGW_PWRTE,     ///< Power-up Timer Enable bit
+            CFGW_WDTE,      ///< Watchdog Timer Enable bit
+            CFGW_F0SC1,     ///< Oscillator Selection bit (1: RC|HS, 0: XT|LP)
+            CFGW_F0SC0,     ///< Oscillator Selection bit (1: RC|XT, 0: HS|LP)
 
-    // Bits of the configuration word
-    // -----------------------
-    enum CfgWordBit {
-        // Bit          Bit #
-        CFGW_CP,        ///< Code Protection bit
-        CFGW_PWRTE,     ///< Power-up Timer Enable bit
-        CFGW_WDTE,      ///< Watchdog Timer Enable bit
-        CFGW_F0SC1,     ///< Oscillator Selection bit (1: RC|HS, 0: XT|LP)
-        CFGW_F0SC0,     ///< Oscillator Selection bit (1: RC|XT, 0: HS|LP)
+            CFGW__MAX__     ///<
+        };
 
-        CFGW__MAX__
-    };
+        /**
+         * @brief
+         */
+        struct Config
+        {
+            ///
+            unsigned char m_defaultCfgWord;
+        };
 
-    struct Config {
-        unsigned char m_defaultCfgWord;
-    };
+    ////    Constructors and Destructors    ////
+    public:
+        PIC8ConfigWord() {};
 
-    bool operator[] (CfgWordBit bit) const {
-        return m_cfgWord[bit];
-    }
-    void setFuse(CfgWordBit bit, bool value) {
-        m_cfgWord[bit] = value;
-    }
+    ////    Public Operations    ////
+    public:
+        /**
+         * @brief
+         * @param[in,out] eventLogger
+         * @return
+         */
+        PIC8ConfigWord * link ( MCUSim::EventLogger * eventLogger );
 
-    Config m_config;
+        /**
+         * @brief
+         * @param[in] mode
+         */
+        void reset ( MCUSim::ResetMode mode );
 
-    PIC8ConfigWord * link(MCUSim::EventLogger * eventLogger);
-    void reset(MCUSim::ResetMode mode);
+    ////    Inline Public Operations    ////
+    public:
+        /**
+         * @brief
+         * @param[in] bit
+         * @return
+         */
+        bool operator[] ( CfgWordBit bit ) const
+        {
+            return m_cfgWord[bit];
+        }
 
-protected:
-    bool m_cfgWord[CFGW__MAX__];
+        /**
+         * @brief
+         * @param[in] bit
+         * @param[in] value
+         */
+        void setFuse ( CfgWordBit bit,
+                       bool value )
+        {
+            m_cfgWord[bit] = value;
+        }
 
-private:
-    inline void loadConfig();
-    inline void resetToInitialValues();
+    ////    Inline Private Operations    ////
+    private:
+        /**
+         * @brief
+         */
+        inline void loadConfig();
+
+        /**
+         * @brief
+         */
+        inline void resetToInitialValues();
+
+    ////    Public Attributes    ////
+    public:
+        /**
+         * @brief
+         */
+        Config m_config;
+
+    ////    Protected Attributes    ////
+    protected:
+        /**
+         * @brief
+         */
+        bool m_cfgWord [ CFGW__MAX__ ];
 };
 
 #endif // PIC8FUSESANDLOCKS_H

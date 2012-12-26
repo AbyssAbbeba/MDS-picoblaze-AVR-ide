@@ -274,7 +274,7 @@ inline unsigned int AVR8DataEEPROM::readByte()
         }
         else
         {
-            logEvent(EVENT_MEM_INF_WR_VAL_READ, addr);
+            logEvent(EVENT_MEM_INF_RD_VAL_READ, addr);
         }
 
         data &= 0xff;

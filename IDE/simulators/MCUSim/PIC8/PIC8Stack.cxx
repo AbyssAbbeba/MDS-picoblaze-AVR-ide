@@ -75,4 +75,3 @@ inline void PIC8Stack::mcuReset()
 {
     m_position = 0;
 }
-

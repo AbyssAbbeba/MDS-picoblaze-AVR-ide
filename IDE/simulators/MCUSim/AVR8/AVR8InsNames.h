@@ -25,6 +25,9 @@ namespace AVR8InsNames
 {
     ////    Datatypes    ////
 
+    /**
+     * @brief
+     */
     enum Instructions
     {
         INS_NONE = 0,           ///<

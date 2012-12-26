@@ -34,7 +34,7 @@ class AVR8DataMemory;
  */
 class AVR8IO : public MCUSim::IO
 {
-    ////    Public Constants    ////
+    ////    Public Static Constants    ////
     public:
         /// @brief
         static const unsigned int NUMBER_OF_PORTS = 4;
@@ -127,52 +127,19 @@ class AVR8IO : public MCUSim::IO
          */
         void clockCycles();
 
-    ////    Inline Public Operations    ////
-    public:
         /**
          * @brief
          * @param[in] pin
          * @return
          */
-        bool getLog ( AVR8PinNames::SPF pin )
-        {
-            return getLog(m_config.m_specFuncMap[pin]);
-        }
+        bool getLog ( AVR8PinNames::SPF pin );
 
         /**
          * @brief
          * @param[in] pin
          * @return
          */
-        bool getLog ( AVR8PinNames::PIN pin )
-        {
-            assert(AVR8PinNames::PIN_NC != pin);
-
-            if ( m_lowLevelInterface[II_REAL_VOLTAGE][pin] > m_logThreshold1 )
-            {
-                return true;
-            }
-            else if ( m_lowLevelInterface[II_REAL_VOLTAGE][pin] < m_logThreshold0 )
-            {
-                return false;
-            }
-            else
-            {
-//                 logEvent(EVENT_IO_INDETERMINABLE_LOG, pin);
-//                 switch ( m_config.m_random )
-//                 {
-//                         case RVM_RANDOM:
-//                                 return ( ( rand() > (RAND_MAX / 2) ) ? true : false );
-//                         case RVM_HIGH:
-//                                 return true;
-//                         case RVM_LOW:
-//                                 return false;
-//                 }
-            }
-
-            assert(0);
-            return false; // <-- Program flow control MUST NEVER reach this.
-        }
+        bool getLog ( AVR8PinNames::PIN pin );
 
         /**
          * @brief
@@ -180,10 +147,7 @@ class AVR8IO : public MCUSim::IO
          * @param[in] val
          */
         void setLog ( AVR8PinNames::SPF pin,
-                      bool val )
-        {
-            setLog(m_config.m_specFuncMap[pin], val);
-        }
+                      bool val );
 
         /**
          * @brief
@@ -191,20 +155,10 @@ class AVR8IO : public MCUSim::IO
          * @param[in] val
          */
         void setLog ( AVR8PinNames::PIN pin,
-                      bool val )
-        {
-            assert(AVR8PinNames::PIN_NC != pin);
+                      bool val );
 
-            if ( true == val )
-            {
-                m_lowLevelInterface[II_VOLTAGE_INT][pin] = m_sourceVoltage;
-            }
-            else
-            {
-                m_lowLevelInterface[II_VOLTAGE_INT][pin] = 0;
-            }
-        }
-
+    ////    Inline Public Operations    ////
+    public:
         /**
          * @brief
          * @param[in] pin
@@ -435,7 +389,6 @@ class AVR8IO : public MCUSim::IO
 
     ////    Public Attributes    ////
     public:
-
         /**
          * @brief
          */
@@ -449,12 +402,6 @@ class AVR8IO : public MCUSim::IO
             AVR8DataMemory * m_dataMemory;
         //@}
 
-        // TODO: Move it to the base class.
-        /**
-         * @brief
-         */
-        SimFloatType m_sourceVoltage;
-
         /**
          * @brief
          */
@@ -464,13 +411,6 @@ class AVR8IO : public MCUSim::IO
          * @brief
          */
         SimFloatType m_logThreshold1;
-
-        // idx =  |n       ... |23  16|15   8|7    0|
-        //        |special ... |PORT_C|PORT_B|PORT_A|
-        /**
-         * @brief
-         */
-        SimFloatType ** m_lowLevelInterface;
 
         /**
          * @brief
