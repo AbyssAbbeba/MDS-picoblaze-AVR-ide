@@ -36,7 +36,7 @@ MainForm::MainForm()
 
 
 void MainForm::CreateMenu()
-{ 
+{
     fileMenu = menuBar()->addMenu(tr("&File"));
     fileMenu->addAction(newAct);
     fileMenu->addAction(openAct);
@@ -58,8 +58,6 @@ void MainForm::CreateMenu()
 
     toolsMenu = menuBar()->addMenu(tr("&Tools"));
     helpMenu = menuBar()->addMenu(tr("&Help"));
-
-    //MenuMan menuMan(this);
 }
 
 
@@ -199,7 +197,8 @@ void MainForm::CreateDockWidgets()
     //wDockManager->addDockWidget(wListCode2);
     wDockManager->addDockWidget(wCompileInfo);
     wDockManager->addDockWidget(wSimulationInfo);
-
+    wDockManager->addDockWidget(wBookmarkList);
+    wDockManager->addDockWidget(wBreakpointList);
 }
 
 

@@ -11,42 +11,18 @@ cmake_minimum_required(VERSION 2.8)
   # note that we don't need \ at the end of line
   SET( SAMPLE_SRCS
        ./main.cpp
-#       ./mainform/mainform.cpp
-#       ./mainform/project.cpp
-#       ./dialogs/projectdlg.cpp
-#       ./dialogs/errordlg.cpp
-#       ./widgets/codeedit.cpp
-#       ./widgets/wdockmanager.cpp
-#       ./widgets/hexedit.cpp
-#       ./widgets/wlinecounter.cpp
-#       ./widgets/wcolumncounter.cpp
-#       ./widgets/movgridlayout.cpp
-#       ./widgets/wsimulationinfo.cpp
   )
   
   # another list, this time it includes all header files that should be treated with moc
   SET( SAMPLE_MOC_HDRS
-#       ./mainform/mainform.h
-#       ./mainform/project.h
-#       ./dialogs/projectdlg.h
-#       ./widgets/codeedit.h    
-#       ./widgets/wdockmanager.h 
-#       ./widgets/hexedit.h
-#       ./widgets/wlinecounter.h
-#       ./widgets/wcolumncounter.h 
-#       ./widgets/movgridlayout.h
-#       ./widgets/wsimulationinfo.h
   )
   
   # some .ui files
    SET( SAMPLE_UIS
-  #      ./src/ui/Dialog1.ui
-  #      ./src/ui/Dialog2.ui
    )
   
   # and finally an resource file
    SET( SAMPLE_RCS
-  #      ./src/rc/mmIDE.qrc
    )
   
   # enable warnings
@@ -88,16 +64,14 @@ link_directories(
 	"${CMAKE_CURRENT_BINARY_DIR}/../simulators/MCUSim/AVR8/")
 
 include_directories(
-#	"${CMAKE_CURRENT_BINARY_DIR}/../simulators/MCUSim/McuSimCfgMgr/"
-#	"${CMAKE_CURRENT_BINARY_DIR}/../simulators/SimControl/"
 	"${CMAKE_CURRENT_BINARY_DIR}/mainform/")
   
   # here we instruct CMake to build "mmIDE" executable from all of the source files
-  ADD_EXECUTABLE( mmIDE ${SAMPLE_SRCS} ${SAMPLE_MOC_SRCS} ${SAMPLE_RC_SRCS} ${SAMPLE_UI_HDRS} )
+  ADD_EXECUTABLE( MDS ${SAMPLE_SRCS} ${SAMPLE_MOC_SRCS} ${SAMPLE_RC_SRCS} ${SAMPLE_UI_HDRS} )
   
   # last thing we have to do is to tell CMake what libraries our executable needs,
   # luckily FIND_PACKAGE prepared QT_LIBRARIES variable for us:
-  TARGET_LINK_LIBRARIES( mmIDE ${QT_LIBRARIES} Mainform)
+  TARGET_LINK_LIBRARIES( MDS ${QT_LIBRARIES} Mainform)
 
 
 
@@ -118,6 +92,6 @@ add_subdirectory(mainform)
 # INSTALLATION OPTIONS
 # ------------------------------------------------------------------------------
 
-install(TARGETS mmIDE
+install(TARGETS MDS
 	RUNTIME DESTINATION bin
 	LIBRARY DESTINATION lib)

@@ -21,7 +21,7 @@
 MovGridLayout::MovGridLayout(QWidget *parentWidget)
     :QWidget(parentWidget)
 {
-    this->setMinimumWidth(500);
+    this->setMinimumWidth(650);
     this->setMinimumHeight(100);
     sizeRow = SIZEX;
     sizeCol = SIZEY;
@@ -97,8 +97,8 @@ XY MovGridLayout::calcXY(QWidget *widget)
     int h = (widget->height()+2)/sizeCol;
     //qDebug() << "width: " << w << " height: " << h;
     XY xysucc;
-    for (int i = 0; i+w<gridWidth; i++)
-        for (int j = 0; j+h<gridHeight; j++)
+    for (int i = 1; i+w<gridWidth; i++)
+        for (int j = 1; j+h<gridHeight; j++)
             if (grid[i][j] == -1 &&
                 grid [i][j+h] == -1)
             {
@@ -176,7 +176,7 @@ bool MovGridLayout::eventFilter(QObject *target, QEvent *event)
         //on resize recalculate size of row and col
         /*if (event->type() == QEvent::Resize)
         {
-            /*FOR STATIC ALLOCATION
+            //FOR STATIC ALLOCATION
             //calculate new sizeRow, sizeCol
             sizeRow = this->width()/SIZEX;
             sizeCol = this->height()/SIZEY;

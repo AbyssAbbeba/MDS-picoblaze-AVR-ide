@@ -5,7 +5,7 @@
 # ------------------------------------------------------------------------------
 
 # Set project name
-project(WDockManager)
+project(ConvertorTool)
 
 # Set the minimum required version of CMake
 cmake_minimum_required(VERSION 2.8)
@@ -13,20 +13,19 @@ cmake_minimum_required(VERSION 2.8)
 # Create verbose makefiles if on
 set(CMAKE_VERBOSE_MAKEFILE OFF)
 
-
-
 # with SET() command you can change variables or define new ones
 # here we define SAMPLE_SRCS variable that contains a list of all .cpp files 
 # note that we don't need \ at the end of line
 SET( SAMPLE_SRCS
-       ./wdockmanager.cpp
+    "./lineeditconvert.cpp"
+    "./convertortool.cpp"
 )
   
 # another list, this time it includes all header files that should be treated with moc
 SET( SAMPLE_MOC_HDRS
-       ./wdockmanager.h
+    "./lineeditconvert.h"
+    "./convertortool.h"
 )
-
 
 # ------------------------------------------------------------------------------
 # COMPILATION OPTIONS
@@ -35,15 +34,8 @@ SET( SAMPLE_MOC_HDRS
 # Load settings specific for the Qt4 library
 find_package(Qt4 REQUIRED)
 
+INCLUDE( ${QT_USE_FILE} )
 
-# <DEBUG!>
-link_directories(
-	"${CMAKE_CURRENT_BINARY_DIR}/../SimulationInfo/"
-	"${CMAKE_CURRENT_BINARY_DIR}/../BookmarkList/"
-	"${CMAKE_CURRENT_BINARY_DIR}/../BreakpointList/"
-	)
-
-# </DEBUG!>
 
 ## Add switches to compiler command line
  # -Wall       : Enables all the warnings.
@@ -57,10 +49,13 @@ add_definitions(-Wall -Wextra -std=c++0x -O2 -pipe)
 # and finally this will run moc:
 QT4_WRAP_CPP( SAMPLE_MOC_SRCS ${SAMPLE_MOC_HDRS} )
 
+
 ## Add a library to the project using the specified source files,
  # in this case it will procude dynamic C++ library.
 add_library(${PROJECT_NAME} SHARED
 	${SAMPLE_MOC_SRCS} ${SAMPLE_SRCS})
 
 
-target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} WSimulationInfo BreakpointList BookmarkList)
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${QT_LIBRARIES})
+
+
