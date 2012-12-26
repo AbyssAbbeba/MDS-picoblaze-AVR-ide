@@ -1,0 +1,111 @@
+\documentclass[a4paper,twoside,15pt]{book}
+\usepackage[utf8]{inputenc}
+\oddsidemargin=1cm
+\evensidemargin=1cm
+\addtolength{\textwidth}{1in}
+\addtolength{\voffset}{-5pt}
+
+\title{Moravia Microsystems - Corporate Coding Convention}
+\author{Martin Ošmera <martin.osmera@gmail.com>}
+
+\newcommand{\mysubject}{Moravia Microsystems, the Corporate Coding Convention.}
+\newcommand{\mykeywords}{Moravia Microsystems}
+
+\usepackage[T1]{fontenc}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{longtable}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{pifont}
+\usepackage{wrapfig}
+\usepackage[footnotesize,bf]{caption}
+\usepackage[pdftex,colorlinks=true,linkcolor=blue,urlcolor=blue,pdftitle={\title{}},pdfauthor={\author{}},pdfsubject={\mysubject{}},pdfkeywords={\mykeywords{}},bookmarksopen=false,pdfpagemode=None]{hyperref}
+\usepackage{eurosans}
+\usepackage{colortbl}
+
+\floatstyle{ruled}
+\newfloat{code}{thp}{lop}
+\floatname{code}{Code}
+
+\renewcommand{\chaptermark}[1]{\markboth{\thechapter.\ \MakeUppercase{#1}}{}}
+\renewcommand{\sectionmark}[1]{\markright{\thesection\ #1}}
+
+\newcommand{\menuitem}[1]{\texttt{#1}}
+\newcommand{\fileextension}[1]{\texttt{#1}}
+\newcommand{\mysmallfont}{\fontsize{8pt}{10pt} \selectfont{}}
+\newcommand{\uC}{$\mu$C }
+
+\pdfadjustspacing=1
+\raggedbottom
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[EL,OR]{\bfseries\thepage}
+\fancyhead[LO]{\bfseries\rightmark}
+\fancyhead[RE]{\bfseries\leftmark}
+
+\fancypagestyle{plain}{
+        \fancyhead{}
+        \fancyhead[EL,OR]{\bfseries\thepage}
+        \renewcommand{\headrulewidth}{0pt}
+}
+
+% define colors for syntax highlight
+\definecolor{highlight_c_comment}{rgb}{0.533, 0.533, 0.533}
+\definecolor{highlight_c_dox_comment}{rgb}{0.266, 0.266, 1.0}
+\definecolor{highlight_c_dox_tag}{rgb}{0.666, 0.0, 0.866}
+\definecolor{highlight_c_dox_word}{rgb}{0.0, 0.533, 1.0}
+\definecolor{highlight_c_dox_name}{rgb}{1.0, 0.0, 0.0}
+
+\begin{document}
+
+\begin{titlepage}
+        \begin{figure}[ht!]
+                \centering{}
+                \includegraphics[width=.9\textwidth]{Moravia_Microsystems.png}
+                \caption{\textit{Moravia Microsystems, s.r.o.}}
+        \end{figure}
+        \begin{center}
+                \fontsize{35.83pt}{60pt} \selectfont{}
+                \textbf{Coding Convention}
+                \\[2cm]
+                \fontsize{25pt}{30pt} \selectfont{}
+                Corporate coding convention\\
+                guildelines for C++ and C.
+                \\[1cm]
+                \fontsize{14.4pt}{20pt} \selectfont{}
+                \textit{Martin Ošmera\\Brno, 2012}
+        \end{center}
+\end{titlepage}
+
+\tableofcontents
+
+\chapter{Importance of a coding convention}
+	First of all it is important to keep in mind that this convention is not supposed to create a set of unnecessary and unproductive rules to poison your work; instead in case you are sure that your work goes better with another coding style, go ahead but please at least read this paragraph till end. Coding convention is something you probably get used to, sooner or later, and it contributes in creating unified working environment where you always know what to expect. Also it helps to write code which is relatively very easily readable for a man who is familiar with the applied convention, and it helps in creating a code that is not merely a piece of an ``abstract machinery'' but is a sort art... Don't you think that creating a state of the art equipment for microcomputer controlled hardware development is a little more that ordinary programming and circuitry design? Please lets make it a masterpiece.
+
+\chapter{Detailed specification}
+	\section{Header files}
+		\subsection{Indentation}
+		\subsection{Sections}
+		\subsection{In-line documentation}
+			{\color{highlight_c_comment}\verb'// ============================================================================='}\\
+			{\color{highlight_c_dox_comment}\verb'/**'}\\
+			\verb' '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_tag}\verb'@brief'}\\
+			\verb' '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_comment}\verb'C++'}\verb' '{\color{highlight_c_dox_comment}\verb'Interface:'}\verb' '{\color{highlight_c_dox_comment}\verb'Base'}\verb' '{\color{highlight_c_dox_comment}\verb'class'}\verb' '{\color{highlight_c_dox_comment}\verb'for'}\verb' '{\color{highlight_c_dox_comment}\verb'ANS.1'}\verb' '{\color{highlight_c_dox_comment}\verb'BER'}\verb' '{\color{highlight_c_dox_comment}\verb'encoder.'}\\
+			\verb' '{\color{highlight_c_dox_comment}\verb'*'}\\
+			\verb' '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_comment}\verb'This'}\verb' '{\color{highlight_c_dox_comment}\verb'class'}\verb' '{\color{highlight_c_dox_comment}\verb'implements'}\verb' '{\color{highlight_c_dox_comment}\verb'...'}\\
+			\verb' '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_comment}\verb'...'}\verb' '{\color{highlight_c_dox_comment}\verb'...'}\verb' '{\color{highlight_c_dox_comment}\verb'...'}\\
+			\verb' '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_comment}\verb'...'}\verb' '{\color{highlight_c_dox_comment}\verb'...'}\verb' '{\color{highlight_c_dox_comment}\verb'...'}\\
+			\verb' '{\color{highlight_c_dox_comment}\verb'*'}\\
+			\verb' '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_comment}\verb'(C)'}\verb' '{\color{highlight_c_dox_comment}\verb'copyright'}\verb' '{\color{highlight_c_dox_comment}\verb'2012'}\verb' '{\color{highlight_c_dox_comment}\verb'Moravia'}\verb' '{\color{highlight_c_dox_comment}\verb'Microsystems,'}\verb' '{\color{highlight_c_dox_comment}\verb's.r.o.'}\\
+			\verb' '{\color{highlight_c_dox_comment}\verb'*'}\\
+			\verb' '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_tag}\verb'@author'}{\color{highlight_c_dox_name}\verb' Your Name <your.name@email.xx>'}\\
+			\verb' '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_tag}\verb'@ingroup'}{\color{highlight_c_dox_name}\verb' SomeGroup'}\\
+			\verb' '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_tag}\verb'@file'}\verb' '{\color{highlight_c_dox_word}\verb'FileName.h'}\\
+			\verb' '{\color{highlight_c_dox_comment}\verb'*/'}\\
+			{\color{highlight_c_comment}\verb'// ============================================================================='}\\
+
+\chapter{Examples}
+
+\end{document}

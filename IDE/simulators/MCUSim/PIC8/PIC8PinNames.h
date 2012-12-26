@@ -1,22 +1,35 @@
+// =============================================================================
 /**
  * @brief
  * C++ Interface: ...
  *
  * ...
  *
- * Copyright: See COPYING file that comes with this distribution.
+ * (C) copyright 2012 Moravia Microsystems, s.r.o.
  *
  * @author Martin Ošmera <martin.osmera@gmail.com>, (C) 2012
  * @ingroup PIC8
  * @file PIC8PinNames.h
  */
+// =============================================================================
 
-#ifdef PIC8PINNAMES_H
+#ifndef PIC8PINNAMES_H
 #define PIC8PINNAMES_H
 
-namespace PIC8PinNames {
-    /// @brief Real port pins
-    enum PIN {
+/**
+ * @brief
+ * @ingroup PIC8
+ * @namespace PIC8PinNames
+ */
+namespace PIC8PinNames
+{
+    ////    Datatypes    ////
+
+    /**
+     * @brief Real port pins
+     */
+    enum PIN
+    {
         PIN_NC = -1,    ///< Not connected
 
         PIN_RA0,        ///<
@@ -43,18 +56,25 @@ namespace PIC8PinNames {
         PIN_VSS,        ///<
         PIN_VDD,        ///<
 
-        PIN__MAX__
-    }
+        // Added only for compatibility with more advanced device
+        PIN_RC0,
+        PIN_RD0,
 
-    /// @brief Special Pin Functions
-    enum SPF {
+        PIN__MAX__      ///<
+    };
+
+    /**
+     * @brief Special Pin Functions
+     */
+    enum SPF
+    {
         SPF_CLKIN,      ///<
         SPF_CLKOUT,     ///<
         SPF_T0CKI,      ///<
         SPF_INT,        ///<
 
-        SPF__MAX__
-    }
+        SPF__MAX__      ///<
+    };
 };
 
 #endif // PIC8PINNAMES_H

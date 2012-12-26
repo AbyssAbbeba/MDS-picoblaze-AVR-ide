@@ -40,7 +40,9 @@ void PIC8ProgramMemory::loadDataFile ( const DataFile * file )
 {
     unsigned int size = file->maxSize();
 
-    for ( unsigned int i = 0, j = 0; i < size; i++, j++ )
+    for ( unsigned int i = 0, j = 0;
+          i < size;
+          i++, j++ )
     {
         if ( j >= m_size )
         {
@@ -48,6 +50,7 @@ void PIC8ProgramMemory::loadDataFile ( const DataFile * file )
         }
 
         int byte = (*file)[i];
+
         if ( -1 == byte )
         {
             byte = ( 0xffff | MFLAG_UNDEFINED );
@@ -56,6 +59,7 @@ void PIC8ProgramMemory::loadDataFile ( const DataFile * file )
         {
             byte |= ( (*file)[++i] << 8 );
         }
+
         m_memory[j] = byte;
     }
 
@@ -70,7 +74,10 @@ void PIC8ProgramMemory::storeInDataFile ( DataFile * file ) const
     unsigned int size = file->maxSize();
 
     file->clear();
-    for ( unsigned int i = 0, j = 0; i < size; i++, j++ )
+
+    for ( unsigned int i = 0, j = 0;
+          i < size;
+          i++, j++ )
     {
         if ( j >= m_size )
         {
@@ -99,6 +106,7 @@ MCUSim::RetCode PIC8ProgramMemory::directRead ( unsigned int addr,
     {
         return MCUSim::RC_ADDR_OUT_OF_RANGE;
     }
+
     data = m_memory[addr];
 
     if ( MFLAG_UNDEFINED & data )
@@ -138,7 +146,7 @@ void PIC8ProgramMemory::resize ( unsigned int newSize )
 
     for ( unsigned int i = sizeToCopy; i < newSize; i++ )
     {
-        m_memory[i] = (getUndefVal() | MFLAG_UNDEFINED);
+        m_memory[i] = ( getUndefVal() | MFLAG_UNDEFINED );
     }
 
     if ( NULL != memoryOrig )
@@ -179,7 +187,7 @@ inline void PIC8ProgramMemory::resetToInitialValues()
 {
     for ( unsigned int i = 0; i < m_size; i++ )
     {
-        m_memory[i] = (0xffff | MFLAG_UNDEFINED);
+        m_memory[i] = ( 0xffff | MFLAG_UNDEFINED );
     }
 }
 
@@ -188,11 +196,11 @@ unsigned int PIC8ProgramMemory::getUndefVal() const
     if ( -1 == m_config.m_undefinedValue )
     {
         // Generate random value
-        return ((unsigned int)rand() & ((1 << 16) - 1));
+        return ( (unsigned int)rand() & 0xffff );
     }
     else
     {
         // Return predefined value
-        return ( m_config.m_undefinedValue & ((1 << 16) - 1) );
+        return ( m_config.m_undefinedValue & 0xffff );
     }
 }

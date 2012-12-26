@@ -555,7 +555,7 @@ inline unsigned int AVR8DataMemory::read ( uint32_t addr )
         logEvent(EVENT_MEM_WRN_RD_DEFAULT, addr);
     }
 
-    logEvent(EVENT_MEM_INF_WR_VAL_READ, addr);
+    logEvent(EVENT_MEM_INF_RD_VAL_READ, addr);
 
     if ( 0 != (result & 0xff0000) )
     {
