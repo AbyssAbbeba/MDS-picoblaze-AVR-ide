@@ -44,7 +44,7 @@ namespace PIC8RegNames
             EEDATA       = -0x08, ///<
             EEADR        = -0x09, ///<
             PCLATH       = -0x0A, ///<
-            INTCON       = -0x0B, ///<
+            INTCON       = -0x0B, ///< Interrupt control register
         //@}
 
         /// @name Bank 1
@@ -54,8 +54,8 @@ namespace PIC8RegNames
             // (PCL)     = -0x82, ///<
             // (STATUS)  = -0x83, ///<
             // (FSR)     = -0x84, ///<
-            TRISA        = -0x85, ///<
-            TRISB        = -0x86, ///<
+            TRISA        = -0x85, ///< PORTA Data Direction Register
+            TRISB        = -0x86, ///< PORTB Data Direction Register
             // ---       = -0x87, ///<
             EECON1       = -0x88, ///<
             EECON2       = -0x89, ///<
@@ -79,61 +79,79 @@ namespace PIC8RegNames
     {
         /// @name Bank 0
         //@{
-            STATUS_IRP         = 7, ///<
-            STATUS_RP1         = 6, ///<
-            STATUS_RP0         = 5, ///<
-            STATUS_TO          = 4, ///<
-            STATUS_PD          = 3, ///<
-            STATUS_Z           = 2, ///<
-            STATUS_DC          = 1, ///<
-            STATUS_C           = 1, ///<
+            /// @name Status register
+            //@{
+                STATUS_IRP         = 0x80, ///< TODO: write description here
+                STATUS_RP1         = 0x40, ///< RP1: Register Bank Select bits (used for direct addressing)
+                STATUS_RP0         = 0x20, ///< RP0: Register Bank Select bits (used for direct addressing)
+                STATUS_TO          = 0x10, ///< Time-out bit
+                STATUS_PD          = 0x08, ///< Power-down bit
+                STATUS_Z           = 0x04, ///< Zero bit
+                STATUS_DC          = 0x02, ///< Digit carry/borrow bit
+                STATUS_C           = 0x01, ///< Carry/borrow bit
+            //@}
 
-            PORTA_RA4          = 4, ///<
-            PORTA_T0CKI        = 4, ///<
-            PORTA_RA3          = 3, ///<
-            PORTA_RA2          = 2, ///<
-            PORTA_RA1          = 1, ///<
-            PORTA_RA0          = 0,
+            /// @name Port A register
+            //@{
+                PORTA_RA4          = 0x10, ///<
+                PORTA_T0CKI        = 0x10, ///<
+                PORTA_RA3          = 0x08, ///<
+                PORTA_RA2          = 0x04, ///<
+                PORTA_RA1          = 0x02, ///<
+                PORTA_RA0          = 0x01, ///<
+            //@}
 
-            PORTB_RB7          = 7, ///<
-            PORTB_RB6          = 6, ///<
-            PORTB_RB5          = 5, ///<
-            PORTB_RB4          = 4, ///<
-            PORTB_RB3          = 3, ///<
-            PORTB_RB2          = 2, ///<
-            PORTB_RB1          = 1, ///<
-            PORTB_RB0          = 0, ///<
-            PORTB_INT          = 0, ///<
+            /// @name Port B register
+            //@{
+                PORTB_RB7          = 0x80, ///<
+                PORTB_RB6          = 0x40, ///<
+                PORTB_RB5          = 0x20, ///<
+                PORTB_RB4          = 0x10, ///<
+                PORTB_RB3          = 0x08, ///<
+                PORTB_RB2          = 0x04, ///<
+                PORTB_RB1          = 0x02, ///<
+                PORTB_RB0          = 0x01, ///<
+                PORTB_INT          = 0x01, ///<
+            //@}
 
-            INTCON_GIE         = 7, ///<
-            INTCON_EEIE        = 6, ///<
-            INTCON_T0IE        = 5, ///<
-            INTCON_INTE        = 4, ///<
-            INTCON_RBIE        = 3, ///<
-            INTCON_T0IF        = 2, ///<
-            INTCON_INTF        = 1, ///<
-            INTCON_RBIF        = 0, ///<
+            /// @name Interrupt control register
+            //@{
+                INTCON_GIE         = 0x80, ///< Global Interrupt Enable bit
+                INTCON_EEIE        = 0x40, ///< EE Write Complete Interrupt Enable bit
+                INTCON_T0IE        = 0x20, ///< TMR0 Overflow Interrupt Enable bit
+                INTCON_INTE        = 0x10, ///< RB0/INT External Interrupt Enable bit
+                INTCON_RBIE        = 0x08, ///< RB Port Change Interrupt Enable bit
+                INTCON_T0IF        = 0x04, ///< TMR0 Overflow Interrupt Flag bit
+                INTCON_INTF        = 0x02, ///< RB0/INT External Interrupt Flag bit
+                INTCON_RBIF        = 0x01, ///< RB Port Change Interrupt Flag bit
+            //@}
         //@}
 
         /// @name Bank 1
         //@{
-            OPTION_REG_RBPU    = 7, ///<
-            OPTION_REG_INTEDG  = 6, ///<
-            OPTION_REG_T0CS    = 5, ///<
-            OPTION_REG_T0SE    = 4, ///<
-            OPTION_REG_PSA     = 3, ///<
-            OPTION_REG_PS2     = 2, ///<
-            OPTION_REG_PS1     = 1, ///<
-            OPTION_REG_PS0     = 0, ///<
+            /// @name
+            //@{
+                OPTION_REG_RBPU    = 0x80, ///<
+                OPTION_REG_INTEDG  = 0x40, ///<
+                OPTION_REG_T0CS    = 0x20, ///<
+                OPTION_REG_T0SE    = 0x10, ///<
+                OPTION_REG_PSA     = 0x08, ///<
+                OPTION_REG_PS2     = 0x04, ///<
+                OPTION_REG_PS1     = 0x02, ///<
+                OPTION_REG_PS0     = 0x01, ///<
+            //@}
 
-            EECON1_EEIF        = 4,
-            EECON1_WRERR       = 3, ///<
-            EECON1_WREN        = 2, ///<
-            EECON1_WR          = 1, ///<
-            EECON1_RD          = 0, ///<
+            /// @name Data eeprom memory control register
+            //@{
+                EECON1_EEIF        = 0x10, ///< EEPROM Write Operation Interrupt Flag bit
+                EECON1_WRERR       = 0x08, ///< EEPROM Error Flag bit
+                EECON1_WREN        = 0x04, ///< EEPROM Write Enable bit
+                EECON1_WR          = 0x02, ///< Write Control bit
+                EECON1_RD          = 0x01, ///< Read Control bit
+            //@}
         //@}
 
-        SFB__MAX__                  ///<
+        SFB__MAX__                         ///<
     };
 };
 

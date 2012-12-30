@@ -18,7 +18,7 @@
 #include "PIC8ProgramMemory.h"
 #include "PIC8DataMemory.h"
 #include "PIC8ConfigWord.h"
-#include "PIC8InterruptCtrl.h"
+#include "PIC8InterruptController.h"
 #include "PIC8RegNames.h"
 #include "PIC8Stack.h"
 #include "PIC8WatchDogTimer.h"
@@ -97,7 +97,7 @@ PIC8InstructionSet * PIC8InstructionSet::link ( MCUSim::EventLogger     * eventL
                                                 PIC8DataMemory          * dataMemory,
                                                 PIC8ConfigWord          * configWord,
                                                 PIC8Stack               * stack,
-                                                PIC8InterruptCtrl       * interruptCtrl,
+                                                PIC8InterruptController       * interruptCtrl,
                                                 PIC8WatchDogTimer       * watchDogTimer )
 {
     MCUSim::CPU::link(eventLogger);
@@ -144,6 +144,12 @@ inline void PIC8InstructionSet::resetToInitialValues()
     {
         m_instructionCounter[i] = 0;
     }
+}
+
+void PIC8InstructionSet::wakeFromSleep()
+{
+    *m_processorMode = MCUSim::MD_NORMAL;
+    logEvent(EVENT_CPU_MODE_CHANGED, m_pc, MCUSim::MD_NORMAL);
 }
 
 inline int PIC8InstructionSet::incrPc ( const int val )
@@ -366,22 +372,22 @@ int PIC8InstructionSet::inst_ADDWF ( const unsigned int opCode )
     // Set/Clear Carry bit in Status Register
     if ( result & 0x100 )
     {
-         result &= 0xff;
-         valSReg |= PIC8RegNames::STATUS_C;
+        result &= 0xff;
+        valSReg |= PIC8RegNames::STATUS_C;
     }
     else
     {
-         valSReg &= ~(PIC8RegNames::STATUS_C);
+        valSReg &= ~(PIC8RegNames::STATUS_C);
     }
 
     // Set/Clear Zero bit in Status Register
     if ( 0 == result)
     {
-         valSReg |= PIC8RegNames::STATUS_Z;
+        valSReg |= PIC8RegNames::STATUS_Z;
     }
     else
     {
-         valSReg &= ~( PIC8RegNames::STATUS_Z );
+        valSReg &= ~( PIC8RegNames::STATUS_Z );
     }
 
     // Write changes to Status Register
@@ -1351,7 +1357,7 @@ int PIC8InstructionSet::inst_CLRWDT ( const unsigned int )
 {
     instructionEnter(PIC8InsNames::INS_CLRWDT);
 
-    // Perform the operation
+    // Set TO and PD bit in Status Register
     unsigned int valSReg = m_dataMemory->readFast(PIC8RegNames::STATUS);
     valSReg |= (PIC8RegNames::STATUS_TO | PIC8RegNames::STATUS_PD);
     m_dataMemory->writeFast(PIC8RegNames::STATUS, valSReg);
@@ -1521,10 +1527,12 @@ int PIC8InstructionSet::inst_SLEEP ( const unsigned int )
 
     // Perform the operation
     *m_processorMode = MCUSim::MD_SLEEP;
+    logEvent(EVENT_CPU_MODE_CHANGED, m_pc, MCUSim::MD_SLEEP);
 
-    // Set TO and PD bit in Status Register
+    // Set TO and clear PD bit in Status Register
     unsigned int valSReg = m_dataMemory->readFast(PIC8RegNames::STATUS);
-    valSReg |= (PIC8RegNames::STATUS_TO | PIC8RegNames::STATUS_PD);
+    valSReg |= PIC8RegNames::STATUS_TO;
+    valSReg &= ~PIC8RegNames::STATUS_PD;
     m_dataMemory->writeFast(PIC8RegNames::STATUS, valSReg);
 
     // Clear WDT

@@ -326,7 +326,8 @@ class MCUSim
                     ID_INTERRUPTS,   ///<
                     ID_EXT_INT,      ///<
                     ID_WATCHDOG,     ///<
-                    ID_IO,
+                    ID_PRESCALLER,   ///<
+                    ID_IO,           ///<
                     ID_BOOT_LOADER,  ///<
                     ID_SYS_CONTROL,  ///<
                     ID_CLK_CONTROL,  ///<
