@@ -17,9 +17,12 @@
 #include "wdockmanager.h"
 
 
-CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath)
+CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, CodeEdit *parentCodeEdit)
     : QWidget(parent)
 {
+    this->parentCodeEdit = parentCodeEdit;
+    if (this->parentCodeEdit == NULL && parentCodeEdit == NULL)
+        qDebug() << "PARENT CODE EDIT: NULL";
     textEdit = new WTextEdit(this);
     textEdit->setContextMenuPolicy(Qt::NoContextMenu);
     lineCount = new WLineCounter(textEdit, false, false, 20);
@@ -41,23 +44,30 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath)
     //this->setFocusPolicy(Qt::StrongFocus);
     //this->textEdit->setFocusPolicy(Qt::NoFocus);
     //this->installEventFilter(this);
-    QFile file(path);
-    if (file.open(QIODevice::ReadOnly | QIODevice::Text))
+    if (wPath != NULL)
     {
-        this->textEdit->setPlainText(file.readAll());
-        file.close();
+        QFile file(path);
+        if (file.open(QIODevice::ReadOnly | QIODevice::Text))
+        {
+            this->textEdit->setPlainText(file.readAll());
+            file.close();
+        }
     }
     connect(textEdit, SIGNAL(focusIn()), this, SLOT(getFocus()));
     connect(textEdit, SIGNAL(breakpoint(int)), this, SLOT(manageBreakpointEmit(int)));
     connect(textEdit, SIGNAL(bookmark(int)), this, SLOT(manageBookmarkEmit(int)));
-    //this->connectAct();
+    connect(textEdit, SIGNAL(textChanged()), this, SLOT(updateTextSlotOut()));
+    this->connectAct();
 }
 
 
 
-CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName, QString wPath)
+CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName, QString wPath, CodeEdit *parentCodeEdit)
     : QWidget(parent)
 {
+    this->parentCodeEdit = parentCodeEdit;
+    if (this->parentCodeEdit == NULL && parentCodeEdit == NULL)
+        qDebug() << "PARENT CODE EDIT: NULL";
     textEdit = new WTextEdit(this);
     textEdit->setContextMenuPolicy(Qt::NoContextMenu);
     lineCount = new WLineCounter(textEdit, false, false, 20);
@@ -77,21 +87,27 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName
     this->makeMenu();
     this->setFocusPolicy(Qt::StrongFocus);
     //this->installEventFilter(this);
-    QFile file(path);
-    if (file.open(QIODevice::ReadOnly | QIODevice::Text))
+    if (wPath != NULL)
     {
-        this->textEdit->setPlainText(file.readAll());
-        file.close();
+        QFile file(path);
+        if (file.open(QIODevice::ReadOnly | QIODevice::Text))
+        {
+            this->textEdit->setPlainText(file.readAll());
+            file.close();
+        }
     }
     connect(textEdit, SIGNAL(focusIn()), this, SLOT(getFocus()));
     connect(textEdit, SIGNAL(breakpoint(int)), this, SLOT(manageBreakpointEmit(int)));
     connect(textEdit, SIGNAL(bookmark(int)), this, SLOT(manageBookmarkEmit(int)));
-    //this->connectAct();
+    connect(textEdit, SIGNAL(textChanged()), this, SLOT(updateTextSlotOut()));
+    this->connectAct();
 }
 
 
 CodeEdit::~CodeEdit()
 {
+    if (parentCodeEdit == NULL)
+        qDebug() << "DELETING PARENT CODE EDIT!";
 }
 
 
@@ -212,6 +228,7 @@ void CodeEdit::contextMenuEvent(QContextMenuEvent *event)
 void CodeEdit::updateTextSlotOut()
 {
     emit updateText(this->textEdit->toPlainText());
+    emit updateAnalysers(this);
 }
 
 void CodeEdit::updateTextSlotIn(const QString& textIn)
@@ -291,4 +308,19 @@ QList<int> CodeEdit::getBreakpointList()
 QList<int> CodeEdit::getBookmarkList()
 {
     return bookmarkList;
+}
+
+
+CodeEdit* CodeEdit::getParentCodeEdit()
+{
+    if (this->parentCodeEdit == NULL)
+        return this;
+    else
+        return this->parentCodeEdit;
+}
+
+
+void CodeEdit::setParentCodeEdit(CodeEdit *parentCodeEdit)
+{
+    this->parentCodeEdit = parentCodeEdit;
 }

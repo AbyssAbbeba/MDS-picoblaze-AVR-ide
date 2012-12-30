@@ -17,7 +17,7 @@
 
 
 #include <QSplitter>
-#include <QMenu>
+//#include <QMenu>
 #include "codeedit.h"
 #include "../DockManager/wdockmanager.h"
 
@@ -48,15 +48,15 @@ class BaseEditor : public QSplitter
         
     private:
         void connectCodeEdits(CodeEdit* editor1, CodeEdit* editor2);
-        void connectBaseEditors(BaseEditor* editor1, BaseEditor* editor2);
+        //void connectBaseEditors(BaseEditor* editor1, BaseEditor* editor2);
 
         bool isSplit;
         bool mouseDown;
         BaseEditor *next; 
         BaseEditor *next2;
         CodeEdit *codeEdit;
-        QList<CodeEdit*> connectedCodeEdits;
-        QMenu *basePopup;
+        //QList<CodeEdit*> connectedCodeEdits;
+        //QMenu *basePopup;
         WDockManager *dockMan;
 
     protected:
