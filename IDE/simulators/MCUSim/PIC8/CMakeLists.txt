@@ -41,7 +41,7 @@ add_library ( ${PROJECT_NAME} SHARED
               PIC8Sim.cxx
               PIC8InstructionSet.cxx
               PIC8Stack.cxx
-              PIC8InterruptCtrl.cxx
+              PIC8InterruptController.cxx
               PIC8Config.cxx
               PIC8ClockControl.cxx
               PIC8DataMemory.cxx
@@ -50,7 +50,10 @@ add_library ( ${PROJECT_NAME} SHARED
               PIC8ConfigWord.cxx
               PIC8WatchDogTimer.cxx
               PIC8IO.cxx
-              PIC8Timer0.cxx )
+              PIC8Timer0WdtPrescaller.cxx
+              PIC8TimerCounter0.cxx
+              PIC8ISP.cxx
+              PIC8ExternalInterrupts.cxx )
 
 # ------------------------------------------------------------------------------
 # INSTALLATION OPTIONS

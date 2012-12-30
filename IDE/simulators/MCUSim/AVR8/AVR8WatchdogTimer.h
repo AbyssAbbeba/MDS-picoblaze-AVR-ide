@@ -44,6 +44,9 @@ class AVR8WatchdogTimer : public MCUSim::Subsys
             EVENT_WDT__MAX__             ///<
         };
 
+        /**
+         * @brief
+         */
         struct Config
         {
         };

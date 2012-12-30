@@ -25,10 +25,10 @@
 #include "PIC8IO.h"
 #include "PIC8Stack.h"
 #include "PIC8ClockControl.h"
-#include "PIC8InterruptCtrl.h"
+#include "PIC8InterruptController.h"
 #include "PIC8DataEEPROM.h"
 #include "PIC8WatchDogTimer.h"
-#include "PIC8Timer0.h"
+#include "PIC8TimerCounter0.h"
 
 #include <string>
 
@@ -104,7 +104,7 @@ class PIC8Config : public MCUSim::Config
             PIC8ConfigWord::Config          * m_configWord;
 
             ///
-            PIC8InterruptCtrl::Config       * m_configInterruptCtrl;
+            PIC8InterruptController::Config       * m_configInterruptCtrl;
 
             ///
             PIC8DataEEPROM::Config          * m_configDataEEPROM;
@@ -113,7 +113,7 @@ class PIC8Config : public MCUSim::Config
             PIC8WatchDogTimer::Config       * m_configWatchDogTimer;
 
             ///
-            PIC8Timer0::Config              * m_configTimer0;
+            PIC8TimerCounter0::Config              * m_configTimer0;
         //@}
 
     ////    Private Attributes    ////
