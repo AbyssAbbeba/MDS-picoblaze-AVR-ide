@@ -116,7 +116,7 @@ class PIC8IO : public MCUSim::IO
          * @return
          */
         PIC8IO * link ( MCUSim::EventLogger * eventLogger,
-                        PIC8DataMemory * dataMemory );
+                        PIC8DataMemory      * dataMemory );
 
         /**
          * @brief

@@ -197,11 +197,6 @@ class AVR8InterruptController : public MCUSim::Subsys
         /**
          * @brief
          */
-        inline void resetToInitialValues();
-
-        /**
-         * @brief
-         */
         inline void mcuReset();
 
         /**

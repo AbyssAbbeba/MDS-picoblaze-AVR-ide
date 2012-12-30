@@ -21,11 +21,14 @@
 #include "PIC8DataMemory.h"
 #include "PIC8ConfigWord.h"
 #include "PIC8DataEEPROM.h"
-#include "PIC8InterruptCtrl.h"
+#include "PIC8InterruptController.h"
 #include "PIC8IO.h"
 #include "PIC8Stack.h"
 #include "PIC8WatchDogTimer.h"
-#include "PIC8Timer0.h"
+#include "PIC8TimerCounter0.h"
+#include "PIC8Timer0WdtPrescaller.h"
+#include "PIC8ISP.h"
+#include "PIC8ExternalInterrupts.h"
 
 #include <cassert>
 
@@ -43,10 +46,13 @@ PIC8Sim::PIC8Sim()
     m_io                    = new PIC8IO();
     m_clockControl          = new PIC8ClockControl();
     m_stack                 = new PIC8Stack();
-    m_interruptCtrl         = new PIC8InterruptCtrl();
+    m_interruptCtrl         = new PIC8InterruptController();
     m_dataEEPROM            = new PIC8DataEEPROM();
     m_watchDogTimer         = new PIC8WatchDogTimer();
-    m_timer0                = new PIC8Timer0();
+    m_timer0                = new PIC8TimerCounter0();
+    m_timer0WdtPrescaller   = new PIC8Timer0WdtPrescaller();
+    m_isp                   = new PIC8ISP();
+    m_externalInterrupts    = new PIC8ExternalInterrupts();
 
     regSubSys(m_configWord->link(m_eventLogger));
 
@@ -69,10 +75,23 @@ PIC8Sim::PIC8Sim()
 
     regSubSys(m_stack->link(m_eventLogger));
 
-    regSubSys(m_interruptCtrl->link(m_eventLogger));
+    regSubSys(m_interruptCtrl->link ( m_eventLogger,
+                                      &m_processorMode,
+                                      m_dataMemory,
+                                      m_instructionSet,
+                                      m_stack ));
+
     regSubSys(m_dataEEPROM->link(m_eventLogger));
-    regSubSys(m_watchDogTimer->link(m_eventLogger));
-    regSubSys(m_timer0->link(m_eventLogger, m_dataMemory, m_io));
+    regSubSys(m_watchDogTimer->link ( m_eventLogger,
+                                      m_timer0WdtPrescaller,
+                                      m_dataMemory,
+                                      m_configWord,
+                                      m_interruptCtrl ));
+
+    regSubSys(m_timer0->link(m_eventLogger, m_dataMemory, m_io, m_timer0WdtPrescaller));
+    regSubSys(m_timer0WdtPrescaller->link(m_eventLogger, m_dataMemory));
+    regSubSys(m_isp->link(m_eventLogger, m_programMemory, m_io, m_configWord));
+    regSubSys(m_externalInterrupts->link(m_eventLogger, m_dataMemory, m_io));
 
     checkSubSystems();
     m_config->link(this);
@@ -193,8 +212,51 @@ inline void PIC8Sim::mcuReset()
 
 int PIC8Sim::executeInstruction()
 {
+    int cycles;
+
     m_io->clockCycles();
-    return m_instructionSet->execInstruction();
+
+    if ( MD_SLEEP == m_processorMode )
+    {
+        cycles = m_interruptCtrl->autoInterrupt();
+
+        if ( -1 == cycles )
+        {
+            reset(MCUSim::RSTMD_MCU_RESET);
+        }
+        else if ( 1 == cycles )
+        {
+            m_instructionSet->wakeFromSleep();
+        }
+        else
+        {
+            return 1;
+        }
+
+        if ( m_clockControl->m_clockSource.getType() != Clock::ClockSource::TYPE_RC )
+        {
+            return ( 1024 / 2 + 1 );
+        }
+        else
+        {
+            return 1;
+        }
+    }
+    else
+    {
+        cycles = m_interruptCtrl->autoInterrupt();
+        if ( -1 == cycles )
+        {
+            reset(MCUSim::RSTMD_MCU_RESET);
+            return 1;
+        }
+        else if ( 0 == cycles )
+        {
+            cycles += m_instructionSet->execInstruction();
+        }
+    }
+
+    return cycles;
 }
 
 int PIC8Sim::timeStep ( float timeStep )

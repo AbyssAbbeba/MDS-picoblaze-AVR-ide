@@ -84,7 +84,7 @@ class PIC8Stack : public MCUSim::Subsys
          * @brief
          * @param value
          */
-        inline void pushOnStack(unsigned int value);
+        inline void pushOnStack ( unsigned int value );
 
         /**
          * @brief

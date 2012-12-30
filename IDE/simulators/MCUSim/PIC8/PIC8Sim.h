@@ -25,10 +25,13 @@ class PIC8ConfigWord;
 class PIC8IO;
 class PIC8ClockControl;
 class PIC8Stack;
-class PIC8InterruptCtrl;
+class PIC8InterruptController;
 class PIC8DataEEPROM;
 class PIC8WatchDogTimer;
-class PIC8Timer0;
+class PIC8TimerCounter0;
+class PIC8Timer0WdtPrescaller;
+class PIC8ISP;
+class PIC8ExternalInterrupts;
 
 #include "../MCUSim.h"
 
@@ -186,17 +189,46 @@ class PIC8Sim : public MCUSim
 
         /// @name PIC8 simulator subsystems
         //@{
-            PIC8InstructionSet * m_instructionSet; ///<
-            PIC8ProgramMemory * m_programMemory;   ///<
-            PIC8DataMemory * m_dataMemory;         ///<
-            PIC8ConfigWord * m_configWord;         ///<
-            PIC8IO * m_io;                         ///<
-            PIC8ClockControl * m_clockControl;     ///<
-            PIC8WatchDogTimer * m_watchDogTimer;   ///<
-            PIC8Stack * m_stack;                   ///<
-            PIC8InterruptCtrl * m_interruptCtrl;   ///<
-            PIC8DataEEPROM * m_dataEEPROM;         ///<
-            PIC8Timer0 * m_timer0;                 ///<
+            ///
+            PIC8IO * m_io;
+
+            ///
+            PIC8Stack * m_stack;
+
+            ///
+            PIC8TimerCounter0 * m_timer0;
+
+            ///
+            PIC8DataEEPROM * m_dataEEPROM;
+
+            ///
+            PIC8DataMemory * m_dataMemory;
+
+            ///
+            PIC8ConfigWord * m_configWord;
+
+            ///
+            PIC8ClockControl * m_clockControl;
+
+            ///
+            PIC8ProgramMemory * m_programMemory;
+
+            ///
+            PIC8WatchDogTimer * m_watchDogTimer;
+
+            ///
+            PIC8InterruptController * m_interruptCtrl;
+
+            ///
+            PIC8InstructionSet * m_instructionSet;
+
+            ///
+            PIC8Timer0WdtPrescaller * m_timer0WdtPrescaller;
+
+            ///
+            PIC8ISP * m_isp;
+
+            PIC8ExternalInterrupts * m_externalInterrupts;
         //@}
 
         /**

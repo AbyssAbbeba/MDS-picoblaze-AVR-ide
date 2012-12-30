@@ -52,7 +52,7 @@ void AVR8InterruptController::reti()
 
 int AVR8InterruptController::autoInterrupt()
 {
-    // Treat RESET as a special cas
+    // Treat RESET as a special case
     if ( ( true == m_intReqWithoutFlag[INTVEC_RESET] )
              &&
          ( true == m_config.m_possibleInterrupts[INTVEC_RESET] ) )
