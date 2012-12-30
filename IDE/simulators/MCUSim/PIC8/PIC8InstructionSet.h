@@ -21,7 +21,7 @@
 class PIC8ProgramMemory;
 class PIC8DataMemory;
 class PIC8ConfigWord;
-class PIC8InterruptCtrl;
+class PIC8InterruptController;
 class PIC8WatchDogTimer;
 
 #include "../MCUSim.h"
@@ -93,7 +93,7 @@ class PIC8InstructionSet : public MCUSim::CPU
                                     PIC8DataMemory          * dataMemory,
                                     PIC8ConfigWord          * configWord,
                                     PIC8Stack               * stack,
-                                    PIC8InterruptCtrl       * interruptCtrl,
+                                    PIC8InterruptController       * interruptCtrl,
                                     PIC8WatchDogTimer       * watchDogTimer );
 
         /**
@@ -107,6 +107,11 @@ class PIC8InstructionSet : public MCUSim::CPU
          * @param[in] mode
          */
         void reset ( MCUSim::ResetMode mode );
+
+        /**
+         * @brief
+         */
+        void wakeFromSleep();
 
     ////    Inline Public Operations    ////
     public:
@@ -479,7 +484,7 @@ class PIC8InstructionSet : public MCUSim::CPU
             PIC8ConfigWord * m_configWord;
 
             ///
-            PIC8InterruptCtrl * m_interruptCtrl;
+            PIC8InterruptController * m_interruptCtrl;
 
             ///
             PIC8Stack * m_stack;

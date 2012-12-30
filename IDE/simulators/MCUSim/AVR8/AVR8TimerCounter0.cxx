@@ -105,29 +105,29 @@ void AVR8TimerCounter0::clockCycles ( unsigned int numberOf )
         case 0:
             // No clock source (Timer/Counter stopped).
             return;
-        case TCCR0_CS00:
+        case ( TCCR0_CS00 ):
             // clkI/O/(No prescaling)
             prescalerMax = 1;
             break;
-        case TCCR0_CS01:
+        case ( TCCR0_CS01 ):
             // clkI/O/8 (From prescaler)
             prescalerMax = 8;
             break;
-        case (TCCR0_CS01 | TCCR0_CS00):
+        case ( TCCR0_CS01 | TCCR0_CS00 ):
             // clkI/O/64 (From prescaler)
             prescalerMax = 64;
             break;
-        case TCCR0_CS02:
+        case ( TCCR0_CS02 ):
             // clkI/O/256 (From prescaler)
             prescalerMax = 256;
             break;
-        case (TCCR0_CS02 | TCCR0_CS00):
+        case ( TCCR0_CS02 | TCCR0_CS00 ):
             // clkI/O/1024 (From prescaler)
             prescalerMax = 1024;
             break;
-        case (TCCR0_CS02 | TCCR0_CS01):
+        case ( TCCR0_CS02 | TCCR0_CS01 ):
             // External clock source on T0 pin. Clock on falling edge.
-        case (TCCR0_CS02 | TCCR0_CS01 | TCCR0_CS00):
+        case ( TCCR0_CS02 | TCCR0_CS01 | TCCR0_CS00 ):
             // External clock source on T0 pin. Clock on rising edge.
             incrementWithDelay(numberOf);
             return;
@@ -187,7 +187,7 @@ inline void AVR8TimerCounter0::clearDelayArray()
     }
 }
 
-void AVR8TimerCounter0::reset(MCUSim::ResetMode mode)
+void AVR8TimerCounter0::reset ( MCUSim::ResetMode mode )
 {
     switch ( mode )
     {

@@ -9,32 +9,25 @@
  *
  * @authors Martin Ošmera <martin.osmera@gmail.com>
  * @ingroup PIC8
- * @file PIC8WatchDogTimer.h
+ * @file PIC8Timer0WdtPrescaller.h
  */
 // =============================================================================
 
-#ifndef PIC8WATCHDOGTIMER_H
-#define PIC8WATCHDOGTIMER_H
+#ifndef PIC8TIMER0WDTPRESCALLER_H
+#define PIC8TIMER0WDTPRESCALLER_H
 
-class PIC8Timer0WdtPrescaller;
+// Forward declarations
 class PIC8DataMemory;
-class PIC8ConfigWord;
-class PIC8InterruptController;
 
 #include "../MCUSim.h"
 
 /**
  * @brief
  * @ingroup PIC8
- * @class PIC8WatchDogTimer
+ * @class PIC8Timer0WdtPrescaller
  */
-class PIC8WatchDogTimer : public MCUSim::Subsys
+class PIC8Timer0WdtPrescaller : public MCUSim::Subsys
 {
-    ////    Public Static Constants    ////
-    public:
-        /// @brief
-        constexpr static float NOMINAL_TIME_OUT = 18e3;
-
     ////    Public Datatypes    ////
     public:
         /**
@@ -42,9 +35,9 @@ class PIC8WatchDogTimer : public MCUSim::Subsys
          */
         enum Event
         {
-            EVENT_WDT_RESET,             ///<
+            EVENT_PSC_PRESCALER_CHANGED, ///<
 
-            EVENT_WDT__MAX__             ///<
+            EVENT_PSC__MAX__             ///<
         };
 
         /**
@@ -52,8 +45,6 @@ class PIC8WatchDogTimer : public MCUSim::Subsys
          */
         struct Config
         {
-            ///
-            bool m_enabled;
         };
 
     ////    Constructors and Destructors    ////
@@ -61,25 +52,23 @@ class PIC8WatchDogTimer : public MCUSim::Subsys
         /**
          * @brief
          */
-        PIC8WatchDogTimer();
+        PIC8Timer0WdtPrescaller();
 
         /**
          * @brief
          */
-        ~PIC8WatchDogTimer();
+        ~PIC8Timer0WdtPrescaller();
 
     ////    Public Operations    ////
     public:
         /**
          * @brief
          * @param[in,out] eventLogger
+         * @param[in,out] dataMemory
          * @return
          */
-        PIC8WatchDogTimer * link ( MCUSim::EventLogger     * eventLogger,
-                                   PIC8Timer0WdtPrescaller * timer0WdtPrescaller,
-                                   PIC8DataMemory          * dataMemory,
-                                   PIC8ConfigWord          * configWord,
-                                   PIC8InterruptController       * interruptCtrl );
+        PIC8Timer0WdtPrescaller * link ( MCUSim::EventLogger * eventLogger,
+                                         PIC8DataMemory      * dataMemory );
 
         /**
          * @brief
@@ -90,20 +79,40 @@ class PIC8WatchDogTimer : public MCUSim::Subsys
         /**
          * @brief
          */
-        void watchDogReset();
+        void clockCycles();
 
         /**
          * @brief
          */
-        void watchDogPrescalerReset();
+        unsigned int getPrescalerValue() const;
 
         /**
          * @brief
-         * @param[in] timeStep
-         * @param[in] clockCycles
+         * @param[in] by
          */
-        void timeStep ( float timeStep,
-                        unsigned int clockCycles );
+        void increment ( unsigned int by = 1 );
+
+        /**
+         * @brief
+         */
+        void prescalerReset();
+
+        /**
+         * @brief
+         * @return
+         */
+        unsigned int flagReadAndClear();
+
+    ////    Inline Public Operations    ////
+    public:
+        /**
+         * @brief
+         * @return
+         */
+        bool isAssignedToTimer0() const
+        {
+            return m_assignedToTimer0;
+        }
 
     ////    Inline Private Operations    ////
     private:
@@ -120,24 +129,32 @@ class PIC8WatchDogTimer : public MCUSim::Subsys
         Config m_config;
 
     ////    Private Attributes    ////
-    private:
+    public:
         /// @name PIC8 simulator subsystems
         //@{
-            ///
-            PIC8Timer0WdtPrescaller * m_timer0WdtPrescaller;
-
-            ///
+            /// @brief
             PIC8DataMemory * m_dataMemory;
-
-            ///
-            PIC8ConfigWord * m_configWord;
-
-            ///
-            PIC8InterruptController * m_interruptCtrl;
         //@}
 
-        ///
-        float m_time;
+        /**
+         * @brief
+         */
+        bool m_assignedToTimer0;
+
+        /**
+         * @brief
+         */
+        unsigned int m_flag;
+
+        /**
+         * @brief
+         */
+        unsigned int m_value;
+
+        /**
+         * @brief
+         */
+        unsigned int m_ps;
 };
 
-#endif // PIC8WATCHDOGTIMER_H
+#endif // PIC8TIMER0WDTPRESCALLER_H

@@ -9,21 +9,26 @@
  *
  * @authors Martin Ošmera <martin.osmera@gmail.com>
  * @ingroup PIC8
- * @file PIC8InterruptCtrl.h
+ * @file PIC8ISP.h
  */
 // =============================================================================
 
-#ifndef PIC8INTERRUPTCTRL_H
-#define PIC8INTERRUPTCTRL_H
+#ifndef PIC8ISP_H
+#define PIC8ISP_H
+
+// Forward declarations
+class PIC8ProgramMemory;
+class PIC8IO;
+class PIC8ConfigWord;
 
 #include "../MCUSim.h"
 
 /**
  * @brief
  * @ingroup PIC8
- * @class PIC8InterruptCtrl
+ * @class PIC8ISP
  */
-class PIC8InterruptCtrl : public MCUSim::Subsys
+class PIC8ISP : public MCUSim::Subsys
 {
     ////    Public Datatypes    ////
     public:
@@ -32,6 +37,8 @@ class PIC8InterruptCtrl : public MCUSim::Subsys
          */
         struct Config
         {
+            ///
+            bool m_enabled;
         };
 
     ////    Constructors and Destructors    ////
@@ -39,21 +46,27 @@ class PIC8InterruptCtrl : public MCUSim::Subsys
         /**
          * @brief
          */
-        PIC8InterruptCtrl();
+        PIC8ISP();
 
         /**
          * @brief
          */
-        ~PIC8InterruptCtrl();
+        ~PIC8ISP();
 
     ////    Public Operations    ////
     public:
         /**
          * @brief
          * @param[in,out] eventLogger
+         * @param[in,out] programMemory
+         * @param[in,out] io
+         * @param[in,out] configWord
          * @return
          */
-        PIC8InterruptCtrl * link ( MCUSim::EventLogger * eventLogger );
+        PIC8ISP * link ( MCUSim::EventLogger * eventLogger,
+                         PIC8ProgramMemory   * programMemory,
+                         PIC8IO              * io,
+                         PIC8ConfigWord      * configWord );
 
         /**
          * @brief
@@ -61,11 +74,8 @@ class PIC8InterruptCtrl : public MCUSim::Subsys
          */
         void reset ( MCUSim::ResetMode mode );
 
-        /**
-         * @brief
-         * @return (false in case of an invalid return, i.e. there was no interrupt to return from)
-         */
-        bool retfie();
+    ////    Inline Private Operations    ////
+    private:
 
     ////    Public Attributes    ////
     public:
@@ -73,6 +83,20 @@ class PIC8InterruptCtrl : public MCUSim::Subsys
          * @brief
          */
         Config m_config;
+
+    ////    Private Attributes    ////
+    private:
+        /// @name PIC8 simulator subsystems
+        //@{
+            ///
+            PIC8ProgramMemory * m_programMemory;
+
+            ///
+            PIC8IO * m_io;
+
+            ///
+            PIC8ConfigWord * m_configWord;
+        //@}
 };
 
-#endif // PIC8INTERRUPTCTRL_H
+#endif // PIC8ISP_H
