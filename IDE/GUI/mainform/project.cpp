@@ -43,8 +43,8 @@ void ProjectMan::openProject(QFile *file)
     activeProject = newProject;
     if (projectCount > 0) 
         mainWindow->tabifyDockWidget(openProjects.at(0)->prjDockWidget, newProject->prjDockWidget);
-    else
-        mainWindow->CreateDockWidgets();
+    //else
+    //    mainWindow->CreateDockWidgets();
 
     projectCount++;
 }

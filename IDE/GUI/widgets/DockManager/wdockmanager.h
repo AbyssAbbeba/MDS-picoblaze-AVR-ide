@@ -22,12 +22,13 @@
 #define wCompileInfo 1002
 #define wCodeEditCode 1003
 #define wSimulationInfo 1004
+#define wAnalysVar 1005
+#define wAnalysFunc 1006
 
 
 #include <QDockWidget>
 #include <QMainWindow>
 #include <QList>
-#include <QTabWidget>
 #include <QSplitter>
 #include "../Editor/codeedit.h"
 #include "../Editor/baseeditor.h"
@@ -35,6 +36,9 @@
 #include "../SimulationInfo/wsimulationinfo.h"
 #include "../BreakpointList/breakpointlist.h"
 #include "../BookmarkList/bookmarklist.h"
+#include "../TabBar/tabbar.h"
+#include "../AnalyserWidget/analyserwidget.h"
+#include "../Analyser/analys.h"
 
 class WDock;
 class MainForm;
@@ -83,6 +87,10 @@ class WDockManager : public QObject
         void changeTabName(CodeEdit* editor, QString name);
         void changeCodeEditor(int index);
         void changeActiveCodeEdit(CodeEdit* editor);
+        void updateAnalysersSlot(CodeEdit *editor);
+
+    signals:
+        void saveCodeEdit(CodeEdit *editor);
 
     private:
         MainForm *wMainWindow;
@@ -92,9 +100,10 @@ class WDockManager : public QObject
         WDock *wRight;
         QList<BaseEditor*> openCentralWidgets;
         BaseEditor *centralBase;
-        QTabWidget *wTab;
+        TabBar *wTab;
         QSplitter *splitter;
         CodeEdit *activeCodeEdit;
+        QList<CodeEdit*> codeEditList;
         
         //widgets
         BookmarkList *bookmarkList;

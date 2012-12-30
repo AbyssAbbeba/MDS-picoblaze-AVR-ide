@@ -21,7 +21,7 @@ WDockManager::WDockManager(MainForm *mainWindow)
     wMainWindow = mainWindow;
     QWidget *centralWidget = new QWidget(wMainWindow);
     QVBoxLayout *layout = new QVBoxLayout(centralWidget);
-    wTab = new QTabWidget(centralWidget);
+    wTab = new TabBar(centralWidget);
     splitter = new QSplitter(centralWidget);
     splitter->show();
     wTab->setTabsClosable(true);
@@ -52,17 +52,19 @@ void WDockManager::changeActiveCodeEdit(CodeEdit *editor)
         bookmarkList->disconnect();
         breakpointList->reload(activeCodeEdit->getBreakpointList());
         bookmarkList->reload(activeCodeEdit->getBookmarkList());
+        updateAnalysersSlot(this->activeCodeEdit);
         connect(this->activeCodeEdit, SIGNAL(bookmarkListAdd(int)), bookmarkList, SLOT(bookmarkListAddSlot(int)));
         connect(this->activeCodeEdit, SIGNAL(bookmarkListRemove(int)), bookmarkList, SLOT(bookmarkListRemoveSlot(int)));
         connect(this->activeCodeEdit, SIGNAL(breakpointListAdd(int)), breakpointList, SLOT(breakpointListAddSlot(int)));
         connect(this->activeCodeEdit, SIGNAL(breakpointListRemove(int)), breakpointList, SLOT(breakpointListRemoveSlot(int)));
+        wTab->setCurrentIndex(codeEditList.indexOf(this->activeCodeEdit->getParentCodeEdit()));
     }
 }
 
 
 void WDockManager::changeCodeEditor(int index)
 {
-    if (activeCodeEdit != NULL)
+    if (activeCodeEdit != NULL && index >= 0)
     {
         qDebug() << "wdockmanager - change Code Editor";
         qDebug() << "index: " << index;
@@ -73,6 +75,7 @@ void WDockManager::changeCodeEditor(int index)
         bookmarkList->disconnect();
         breakpointList->reload(editor->getBreakpointList());
         bookmarkList->reload(editor->getBookmarkList());
+        updateAnalysersSlot(this->activeCodeEdit);
         connect(this->activeCodeEdit, SIGNAL(bookmarkListAdd(int)), bookmarkList, SLOT(bookmarkListAddSlot(int)));
         connect(this->activeCodeEdit, SIGNAL(bookmarkListRemove(int)), bookmarkList, SLOT(bookmarkListRemoveSlot(int)));
         connect(this->activeCodeEdit, SIGNAL(breakpointListAdd(int)), breakpointList, SLOT(breakpointListAddSlot(int)));
@@ -89,9 +92,16 @@ void WDockManager::changeTabName(CodeEdit *editor, QString name)
 
 void WDockManager::closeTab(int index)
 {
-    wMainWindow->saveFile(openCentralWidgets.at(index)->getCodeEdit());
+    emit saveCodeEdit(openCentralWidgets.at(index)->getCodeEdit());
     openCentralWidgets.removeAt(index);
     wTab->removeTab(index);
+    if (wTab->currentIndex() < 0)
+    {
+        delete centralBase;
+        centralBase = NULL;
+        this->hideDockWidgetArea(1);
+        this->hideDockWidgetArea(2);
+    }
 }
 
 
@@ -170,34 +180,38 @@ void WDockManager::setCentralPath(QString wPath)
 
 void WDockManager::addCentralWidget(QString wName, QString wPath)
 {
-    CodeEdit *newEditor = new CodeEdit(0, true, wName, wPath);
+    CodeEdit *newEditor = new CodeEdit(wMainWindow, true, wName, wPath, NULL);
+    this->codeEditList.append(newEditor);
     BaseEditor *newBaseEditor;
     if (centralBase == NULL)
     {
-        newBaseEditor = new BaseEditor(NULL, this, newEditor, false); 
-        centralBase = new BaseEditor(splitter, this, newEditor, true);
+        newBaseEditor = new BaseEditor(NULL, this, newEditor, false);
+        centralBase = new BaseEditor(splitter, this, newEditor, false);
         activeCodeEdit = centralBase->getCodeEdit();
         splitter->addWidget(centralBase);
+        if (wMainWindow->dockWidgets == false)
+        {
+            wMainWindow->CreateDockWidgets();
+        }
+        else
+        {
+            this->showDockWidgetArea(1);
+            this->showDockWidgetArea(2);
+        }
     }
     else
     {
-        newBaseEditor = new BaseEditor(NULL, this, newEditor, true);
+        newBaseEditor = new BaseEditor(NULL, this, newEditor, false);
         activeCodeEdit->loadCodeEdit(newBaseEditor->getCodeEdit());
     }
-    QWidget *empty = new QWidget(wTab);
-    empty->setMaximumWidth(0);
-    empty->setMaximumHeight(0);
     openCentralWidgets.append(newBaseEditor);
-    wTab->addTab(empty, wName);
+    wTab->addTab(wName);
     wTab->setCurrentIndex(wTab->count()-1);
-    //if (wTab->count() > 1)
-    //{
-        //qDebug() << "hiding";
-    //    openCentralWidgets.at(wTab->count()-2)->hide();
-    //}
+    //testovaci nazev
+    //wTab->setTabText(wTab->currentIndex(), "aa.asm");
     //add tab tooltip with path
-    connect(newBaseEditor->getCodeEdit(), SIGNAL(changedTabName(CodeEdit*, QString)), this, SLOT(changeTabName(CodeEdit*, QString)));
-    //connect(centralBase->getCodeEdit(), SIGNAL(changedTabName(CodeEdit*, QString)), this, SLOT(changeTabName(CodeEdit*, QString)));
+    connect(newEditor, SIGNAL(changedTabName(CodeEdit*, QString)), this, SLOT(changeTabName(CodeEdit*, QString)));
+    connect(newEditor, SIGNAL(updateAnalysers(CodeEdit*)), this, SLOT(updateAnalysersSlot(CodeEdit*)));
 }
 
 void WDockManager::addDockWidget(int code)
@@ -272,6 +286,15 @@ void WDockManager::createBookmarkList(QDockWidget *wDockWidget)
     bookmarkList = new BookmarkList(wDockWidget);
 }
 
+
+void WDockManager::updateAnalysersSlot(CodeEdit *editor)
+{
+    Analys *analyser = new Analys(*(editor->getTextEdit()->document()));
+    ((AnalyserWidget*)(this->getDockWidget(wAnalysVar)->widget()))->fill(analyser->getVar());
+    ((AnalyserWidget*)(this->getDockWidget(wAnalysFunc)->widget()))->fill(analyser->getFunc());
+}
+
+
 /////
 ///// WDock
 /////
@@ -288,7 +311,7 @@ WDock::WDock(WDockManager *parent, int code, MainForm *mainWindow)
             parent->createBookmarkList(wDockWidget);
             area = 1;
             wDockWidget->setWidget(parent->getBookmarkList());
-	    break;
+	        break;
         }
         case wBreakpointList:
         {
@@ -298,7 +321,7 @@ WDock::WDock(WDockManager *parent, int code, MainForm *mainWindow)
             parent->createBreakpointList(wDockWidget);
             area = 1;
             wDockWidget->setWidget(parent->getBreakpointList());
-	    break;
+	        break;
         }
 	case wCompileInfo:
         {
@@ -310,7 +333,7 @@ WDock::WDock(WDockManager *parent, int code, MainForm *mainWindow)
             area = 2;
             newWidget->setReadOnly(true);
             wDockWidget->setWidget(newWidget);
-	    break;
+	        break;
         }
         case wSimulationInfo:
         {
@@ -320,7 +343,27 @@ WDock::WDock(WDockManager *parent, int code, MainForm *mainWindow)
             WSimulationInfo *newWidget = new WSimulationInfo(mainWindow->getProjectMan()->getActive()->getSimControl(), wDockWidget);
             area = 2;
             wDockWidget->setWidget(newWidget);
-	    break;
+	        break;
+        }
+        case wAnalysVar:
+        {
+            wDockWidget = new QDockWidget("Variables", mainWindow);
+            wDockWidget->setAllowedAreas(Qt::RightDockWidgetArea);
+            mainWindow->addDockWidget(Qt::RightDockWidgetArea, wDockWidget);
+            AnalyserWidget *newDock = new AnalyserWidget(wDockWidget);
+            area = 1;
+            wDockWidget->setWidget(newDock);
+            break;
+        }
+        case wAnalysFunc:
+        {
+            wDockWidget = new QDockWidget("Functions", mainWindow);
+            wDockWidget->setAllowedAreas(Qt::RightDockWidgetArea);
+            mainWindow->addDockWidget(Qt::RightDockWidgetArea, wDockWidget);
+            AnalyserWidget *newDock = new AnalyserWidget(wDockWidget);
+            area = 1;
+            wDockWidget->setWidget(newDock);
+            break;
         }
     }
     this->code=code;

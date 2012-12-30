@@ -19,6 +19,7 @@
 #include <QVBoxLayout>
 #include <QGridLayout>
 #include <QLabel>
+#include "combobox.h"
 #include "displaysegment.h"
 
 /**
@@ -36,11 +37,14 @@ class DisplayTool : public QWidget
     private:
         DisplaySegment *display;
         QGridLayout *gridLayout;
-        QVBoxLayout *vBoxLayout;
-        QLabel *labels[7];
-
-    private slots:
+        QGridLayout *gridLayoutLeft;
+        QLabel *labels[8];
+        ComboBox *comboBoxes[8];
+        bool config[8];
+        
+    public slots:
         void segmentPressed(int index);
+        void updateComboBoxes(ComboBox *box, int index);
 };
 
 

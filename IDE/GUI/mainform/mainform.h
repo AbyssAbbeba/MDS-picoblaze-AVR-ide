@@ -47,6 +47,7 @@ class MainForm : public QMainWindow
         WDockManager* getWDockManager();
         void CreateDockWidgets();
         ProjectMan* getProjectMan();
+        bool dockWidgets;
 
     private slots:
         void newFile();

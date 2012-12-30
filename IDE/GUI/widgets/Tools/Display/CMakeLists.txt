@@ -17,16 +17,18 @@ set(CMAKE_VERBOSE_MAKEFILE OFF)
 # here we define SAMPLE_SRCS variable that contains a list of all .cpp files 
 # note that we don't need \ at the end of line
 SET( SAMPLE_SRCS
-	./displaywidget.cpp
-        ./displaytool.cpp
-        ./displaysegment.cpp
+    ./displaywidget.cpp
+    ./displaytool.cpp
+    ./displaysegment.cpp
+    ./combobox.cpp
 )
   
 # another list, this time it includes all header files that should be treated with moc
 SET( SAMPLE_MOC_HDRS
-	./displaywidget.h
-        ./displaytool.h
-        ./displaysegment.h
+    ./displaywidget.h
+    ./displaytool.h
+    ./displaysegment.h
+    ./combobox.h
 )
 
 # ------------------------------------------------------------------------------

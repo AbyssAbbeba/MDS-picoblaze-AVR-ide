@@ -150,6 +150,15 @@ HexEdit::HexEdit(QWidget *parent, bool AsciiPanel, int countSize, int columns)
     changable = true;
     prevPosition = 0;
     asciiPrevPosition = 0;
+
+    if (AsciiPanel == false)
+    {
+        this->setMaximumWidth(hexTextEdit->width()+hexLineCount->width());
+    }
+    else
+    {
+        this->setMaximumWidth(hexTextEdit->width()+hexAsciiEdit->width()+hexLineCount->width());
+    }
 }
 
 
