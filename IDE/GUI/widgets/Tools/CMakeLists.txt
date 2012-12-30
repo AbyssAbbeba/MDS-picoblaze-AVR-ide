@@ -5,7 +5,7 @@
 # ------------------------------------------------------------------------------
 
 # Set project name
-project(Widgets)
+project(Tools)
 
 # Set the minimum required version of CMake
 cmake_minimum_required(VERSION 2.8)
@@ -18,19 +18,5 @@ set(CMAKE_VERBOSE_MAKEFILE OFF)
 # ------------------------------------------------------------------------------
 
 # Build the simulator widgets
-add_subdirectory(sim)
-add_subdirectory(Tests)
-add_subdirectory(Counters)
-add_subdirectory(DockManager)
-add_subdirectory(Editor)
-add_subdirectory(HexEdit)
-add_subdirectory(MovGridLayout)
-add_subdirectory(ProjectTree)
-add_subdirectory(SimulationInfo)
-add_subdirectory(Highlighter)
-add_subdirectory(BookmarkList)
-add_subdirectory(BreakpointList)
-add_subdirectory(Tools)
-add_subdirectory(TabBar)
-add_subdirectory(Analyser)
-add_subdirectory(AnalyserWidget)
+add_subdirectory(Display)
+add_subdirectory(Convertor)

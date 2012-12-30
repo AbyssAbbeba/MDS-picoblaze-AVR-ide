@@ -13,17 +13,13 @@
 
 
 #include <QtGui>
-#include "../Editor/baseeditor.h"
-#include "../Editor/codeedit.h"
+#include "convertortool.h"
 
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 
-    CodeEdit *editor = new CodeEdit(0, false, NULL, NULL, NULL);
-
-    BaseEditor *a = new BaseEditor(0, NULL, editor, true);
-    a->show();
+    ConvertorTool *a = new ConvertorTool(0);
 
     return app.exec();
     

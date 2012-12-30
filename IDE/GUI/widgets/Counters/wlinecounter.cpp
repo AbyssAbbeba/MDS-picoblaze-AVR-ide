@@ -82,7 +82,7 @@ void WLineCounterWidget::paintEvent(QPaintEvent *)
     this->setMaximumHeight(lastBlockRect.top()+2*size);
     QPainter paint;
     paint.begin(this);
-    QRectF rect(0,0,17,2*size);
+    QRectF rect(0,0,this->width(),2*size);
     QRectF iconRect(0,0,8,2*size);
     QPointF point;
     point.setX(0);
