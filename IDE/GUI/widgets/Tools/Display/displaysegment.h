@@ -10,9 +10,16 @@ class DisplaySegment : public QWidget
     public:
         DisplaySegment(QWidget *parent);
         DisplayWidget* getWidget(int index);
+        void setChar(int number, bool comma);
     
     private:
-        DisplayWidget *displayWidgets[7];
+        DisplayWidget *displayWidgets[8];
+
+    public slots:
+        void emitPressed(int index);
+
+    signals:
+        void pressed(int index);
 };
 
 

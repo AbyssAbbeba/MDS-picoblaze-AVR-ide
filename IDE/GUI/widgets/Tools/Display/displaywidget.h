@@ -28,7 +28,7 @@ class DisplayWidget : public QWidget
 {
     Q_OBJECT
     public:
-        DisplayWidget(QWidget *parent, int index, bool align);
+        DisplayWidget(QWidget *parent, int index, bool align, bool comma);
         //~DisplayWidget();
 
     protected:
@@ -37,6 +37,7 @@ class DisplayWidget : public QWidget
 
     private:
         int index;
+        bool activated;
 
     signals:
         void pressed(int index);

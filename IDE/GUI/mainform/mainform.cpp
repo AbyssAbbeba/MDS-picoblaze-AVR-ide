@@ -25,6 +25,7 @@ MainForm::MainForm()
 {
     projectMan = new ProjectMan(this);
     wDockManager = new WDockManager(this);
+    this->dockWidgets = false;
     CreateActions();
     CreateMenu();
     CreateToolbar();
@@ -187,7 +188,8 @@ void MainForm::CreateToolbar()
 //pojmenovani widgetu zacinat s "wid", popr. "w"
 void MainForm::CreateDockWidgets()
 {
-    setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
+    //setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
+    setCorner(Qt::BottomLeftCorner, Qt::BottomDockWidgetArea);
     setCorner(Qt::BottomRightCorner, Qt::RightDockWidgetArea);
 
     //mozno stejne jako u WDockManager - ulozit si ptr na okno
@@ -199,6 +201,9 @@ void MainForm::CreateDockWidgets()
     wDockManager->addDockWidget(wSimulationInfo);
     wDockManager->addDockWidget(wBookmarkList);
     wDockManager->addDockWidget(wBreakpointList);
+    wDockManager->addDockWidget(wAnalysVar);
+    wDockManager->addDockWidget(wAnalysFunc);
+    this->dockWidgets = true;
 }
 
 

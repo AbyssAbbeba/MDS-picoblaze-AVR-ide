@@ -37,8 +37,8 @@ class CodeEdit : public QWidget
 {
     Q_OBJECT   
     public:
-        CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath);
-        CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName, QString wPath);
+        CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, CodeEdit *parentCodeEdit);
+        CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName, QString wPath, CodeEdit *parentCodeEdit);
         ~CodeEdit();
         QString getName();
         QString getPath();
@@ -54,6 +54,8 @@ class CodeEdit : public QWidget
         void loadCodeEdit(CodeEdit* editor);
         QList<int> getBookmarkList();
         QList<int> getBreakpointList();
+        CodeEdit* getParentCodeEdit();
+        void setParentCodeEdit(CodeEdit *parentCodeEdit);
 
     public slots:
         void setChanged();
@@ -74,6 +76,7 @@ class CodeEdit : public QWidget
         void bookmarkListRemove(int line);
         void breakpointListAdd(int line);
         void breakpointListRemove(int line);
+        void updateAnalysers(CodeEdit *editor);
 
     private:
         void makeMenu();
@@ -91,6 +94,7 @@ class CodeEdit : public QWidget
         QMenu *editorPopup;
         QList<int> breakpointList;
         QList<int> bookmarkList;
+        CodeEdit *parentCodeEdit;
 
     protected:
         void contextMenuEvent(QContextMenuEvent *event);

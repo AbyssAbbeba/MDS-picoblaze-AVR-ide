@@ -27,7 +27,7 @@ BaseEditor::BaseEditor(QWidget *parent, WDockManager *dockParent, CodeEdit *edit
     }
     else
         this->dockMan = NULL;
-    this->codeEdit = new CodeEdit(this, false, edit->getName(), edit->getPath());
+    this->codeEdit = new CodeEdit(this, false, edit->getName(), edit->getPath(), edit->getParentCodeEdit());
     this->codeEdit->getTextEdit()->setPlainText(edit->getTextEdit()->toPlainText());
     if (delCodeEdit == true)
     {
@@ -37,6 +37,7 @@ BaseEditor::BaseEditor(QWidget *parent, WDockManager *dockParent, CodeEdit *edit
     this->isSplit = false;
     connect(codeEdit, SIGNAL(splitSignal(Qt::Orientation, int)), this, SLOT(split(Qt::Orientation, int)));
     connect(codeEdit, SIGNAL(CodeEditChanged(CodeEdit*)), this, SLOT(reconnect(CodeEdit*)));
+    connectCodeEdits(this->codeEdit, this->codeEdit->getParentCodeEdit());
 }
 
 
@@ -47,15 +48,8 @@ void BaseEditor::split(Qt::Orientation orient, int line)
     this->setOrientation(orient);
     next = new BaseEditor(this, dockMan, codeEdit, false);
     next2 = new BaseEditor(this, dockMan, codeEdit, true);
-    connectCodeEdits(next->getCodeEdit(), next2->getCodeEdit());
-    qDebug() << "BaseEditor: connecting code edits";
-    for (int i=0; i<connectedCodeEdits.count(); i++)
-    {
-        connectCodeEdits(next->getCodeEdit(), connectedCodeEdits.at(i));
-        connectCodeEdits(next2->getCodeEdit(), connectedCodeEdits.at(i));
-    }
-    qDebug() << "BaseEditor: codeEdits connected";
-    connectBaseEditors(next, next2);
+    connectCodeEdits(next->getCodeEdit(), next->getCodeEdit()->getParentCodeEdit());
+    connectCodeEdits(next2->getCodeEdit(), next2->getCodeEdit()->getParentCodeEdit());
     this->addWidget(next);
     this->addWidget(next2);
 }
@@ -75,39 +69,40 @@ void BaseEditor::connectCodeEdits(CodeEdit* editor1, CodeEdit* editor2)
 {
     if (editor1 != NULL && editor2 != NULL)
     {
-        connect(editor1->getTextEdit(), SIGNAL(textChanged()), editor1, SLOT(updateTextSlotOut()));
-        connect(editor2->getTextEdit(), SIGNAL(textChanged()), editor2, SLOT(updateTextSlotOut()));
+
+        if (editor1->getParentCodeEdit() != editor2)
+        {
+            disconnect(editor1->getTextEdit(), SIGNAL(bookmark(int)), editor1->getParentCodeEdit(), SLOT(manageBookmarkEmit(int)));
+            disconnect(editor1->getParentCodeEdit()->getTextEdit(), SIGNAL(bookmark(int)), editor1, SLOT(manageBookmarkEmit(int)));
+            disconnect(editor1->getParentCodeEdit(), SIGNAL(updateText(const QString&)), editor1, SLOT(updateTextSlotIn(const QString&)));
+            disconnect(editor1, SIGNAL(updateText(const QString&)), editor1->getParentCodeEdit(), SLOT(updateTextSlotIn(const QString&)));
+
+            editor1->setParentCodeEdit(editor2);
+        }
+
+        //connect(editor1->getTextEdit(), SIGNAL(textChanged()), editor1, SLOT(updateTextSlotOut()));
+        //connect(editor2->getTextEdit(), SIGNAL(textChanged()), editor2, SLOT(updateTextSlotOut()));
         connect(editor1, SIGNAL(updateText(const QString&)), editor2, SLOT(updateTextSlotIn(const QString&)));
         connect(editor2, SIGNAL(updateText(const QString&)), editor1, SLOT(updateTextSlotIn(const QString&)));
-        connect(editor1->getTextEdit(), SIGNAL(breakpoint(int)), editor2, SLOT(manageBreakpointEmit(int)));
-        connect(editor2->getTextEdit(), SIGNAL(breakpoint(int)), editor1, SLOT(manageBreakpointEmit(int)));
         connect(editor1->getTextEdit(), SIGNAL(bookmark(int)), editor2, SLOT(manageBookmarkEmit(int)));
         connect(editor2->getTextEdit(), SIGNAL(bookmark(int)), editor1, SLOT(manageBookmarkEmit(int)));
+        connect(editor1->getTextEdit(), SIGNAL(breakpoint(int)), editor2, SLOT(manageBreakpointEmit(int)));
+        connect(editor2->getTextEdit(), SIGNAL(breakpoint(int)), editor1, SLOT(manageBreakpointEmit(int)));
+
     }
 }
 
-void BaseEditor::connectBaseEditors(BaseEditor* editor1, BaseEditor* editor2)
+/*void BaseEditor::connectBaseEditors(BaseEditor* editor1, BaseEditor* editor2)
 {
     editor1->connectedCodeEdits.append(editor2->getCodeEdit());
     editor2->connectedCodeEdits.append(editor1->getCodeEdit());
-}
+}*/
 
 
 
 void BaseEditor::reconnect(CodeEdit* editor)
 {
-    qDebug() << "BaseEditor: reconnect";
-    connectedCodeEdits.clear();
-    BaseEditor* parentBase = (BaseEditor*)editor->getParent();
-    connectCodeEdits(this->codeEdit, editor);
-    for (int i=0; i<parentBase->connectedCodeEdits.count(); i++)
-    {
-        this->connectedCodeEdits.append(parentBase->connectedCodeEdits.at(i));
-        connectCodeEdits(this->codeEdit, parentBase->connectedCodeEdits.at(i));
-    }
-    this->connectedCodeEdits.append(editor);
-    //parentBase->connectedCodeEdits.append(this->codeEdit);
-    qDebug() << "BaseEditor: reconnect done";
+    connectCodeEdits(this->codeEdit, editor->getParentCodeEdit());
 }
 
 
