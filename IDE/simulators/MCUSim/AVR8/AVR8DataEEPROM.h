@@ -40,6 +40,9 @@ class AVR8DataEEPROM : public MCUSim::Memory
 
     ////    Public Datatypes    ////
     public:
+        /**
+         * @brief
+         */
         enum Event
         {
             ///
@@ -49,8 +52,12 @@ class AVR8DataEEPROM : public MCUSim::Memory
             EVENT_EEPROM__MAX__
         };
 
+        /**
+         * @brief
+         */
         struct Config
         {
+            ///
             Config()
             {
                 m_undefinedValue = -1;

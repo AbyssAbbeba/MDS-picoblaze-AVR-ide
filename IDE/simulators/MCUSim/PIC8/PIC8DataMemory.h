@@ -18,6 +18,7 @@
 
 // Forward declarations
 class DataFile;
+class PIC8ExternalInterrupts;
 
 #include "PIC8RegNames.h"
 #include "../MCUSim.h"
@@ -77,7 +78,8 @@ class PIC8DataMemory : public MCUSim::Memory
          * @param[in,out] eventLogger
          * @return
          */
-        PIC8DataMemory * link ( MCUSim::EventLogger * eventLogger );
+        PIC8DataMemory * link ( MCUSim::EventLogger    * eventLogger,
+                                PIC8ExternalInterrupts * externalInterrupts );
 
         /**
          * @brief
@@ -268,6 +270,11 @@ class PIC8DataMemory : public MCUSim::Memory
 
     ////    Protected Attributes    ////
     protected:
+        /// @name PIC8 simulator subsystems
+        //@{
+            PIC8ExternalInterrupts * m_externalInterrupts;
+        //@}
+
         /**
          * @brief
          */

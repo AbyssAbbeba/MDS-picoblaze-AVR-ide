@@ -29,6 +29,11 @@ class PIC8IO;
  */
 class PIC8ExternalInterrupts : public MCUSim::Subsys
 {
+    ////    Public Static Constants    ////
+    public:
+        /// @brief
+        //static const unsigned int NOMINAL_T_CY = ???;
+
     ////    Public Datatypes    ////
     public:
         /**
@@ -71,8 +76,24 @@ class PIC8ExternalInterrupts : public MCUSim::Subsys
          */
         void reset ( MCUSim::ResetMode mode );
 
+        /**
+         * @brief
+         * @param[in] portB
+         */
+        void portBRead ( unsigned int portB );
+
+        /**
+         * @brief
+         */
+        void clockCycles();
+
     ////    Inline Private Operations    ////
     private:
+        /**
+         * @brief
+         * @return
+         */
+        inline void mcuReset();
 
     ////    Public Attributes    ////
     public:
@@ -91,6 +112,16 @@ class PIC8ExternalInterrupts : public MCUSim::Subsys
             ///
             PIC8IO * m_io;
         //@}
+
+        /**
+         * @brief
+         */
+        bool m_int0;
+
+        /**
+         * @brief
+         */
+        unsigned int m_portB;
 };
 
 #endif // PIC8EXTERNALINTERRUPTS_H

@@ -196,7 +196,7 @@ class PIC8Sim : public MCUSim
             PIC8Stack * m_stack;
 
             ///
-            PIC8TimerCounter0 * m_timer0;
+            PIC8TimerCounter0 * m_timerCounter0;
 
             ///
             PIC8DataEEPROM * m_dataEEPROM;
@@ -217,7 +217,7 @@ class PIC8Sim : public MCUSim
             PIC8WatchDogTimer * m_watchDogTimer;
 
             ///
-            PIC8InterruptController * m_interruptCtrl;
+            PIC8InterruptController * m_interruptController;
 
             ///
             PIC8InstructionSet * m_instructionSet;

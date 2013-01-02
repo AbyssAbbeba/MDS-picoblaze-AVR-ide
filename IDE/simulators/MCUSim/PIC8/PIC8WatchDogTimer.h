@@ -79,7 +79,7 @@ class PIC8WatchDogTimer : public MCUSim::Subsys
                                    PIC8Timer0WdtPrescaller * timer0WdtPrescaller,
                                    PIC8DataMemory          * dataMemory,
                                    PIC8ConfigWord          * configWord,
-                                   PIC8InterruptController       * interruptCtrl );
+                                   PIC8InterruptController * interruptCtrl );
 
         /**
          * @brief
@@ -133,7 +133,7 @@ class PIC8WatchDogTimer : public MCUSim::Subsys
             PIC8ConfigWord * m_configWord;
 
             ///
-            PIC8InterruptController * m_interruptCtrl;
+            PIC8InterruptController * m_interruptController;
         //@}
 
         ///

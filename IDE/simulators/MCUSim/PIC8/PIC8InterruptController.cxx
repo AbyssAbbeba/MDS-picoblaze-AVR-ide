@@ -28,10 +28,10 @@ PIC8InterruptController::~PIC8InterruptController()
 }
 
 PIC8InterruptController * PIC8InterruptController::link ( MCUSim::EventLogger * eventLogger,
-                                              MCUSim::Mode        * processorMode,
-                                              PIC8DataMemory      * dataMemory,
-                                              PIC8InstructionSet  * instructionSet,
-                                              PIC8Stack           * stack )
+                                                          MCUSim::Mode        * processorMode,
+                                                          PIC8DataMemory      * dataMemory,
+                                                          PIC8InstructionSet  * instructionSet,
+                                                          PIC8Stack           * stack )
 {
     Subsys::link(eventLogger, ID_INTERRUPTS);
     m_processorMode = processorMode;
@@ -128,6 +128,11 @@ int PIC8InterruptController::autoInterrupt()
 void PIC8InterruptController::genIntReq ( InterruptVector interrupt )
 {
     m_intReqWithoutFlag[interrupt] = true;
+}
+
+bool PIC8InterruptController::isInterruptPending() const
+{
+    return ( INTVEC_NONE != m_interruptToExecute );
 }
 
 inline PIC8InterruptController::InterruptVector PIC8InterruptController::detectPendingInterrupt()

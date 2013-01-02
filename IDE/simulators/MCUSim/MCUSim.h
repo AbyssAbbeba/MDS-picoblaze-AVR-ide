@@ -441,6 +441,7 @@ class MCUSim
                     EVENT_CPU_UNSUPPORTED_INST,     ///<
                     EVENT_CPU_INST_IGNORED,         ///< (because of settings)
                     EVENT_CPU_MODE_CHANGED,         ///<
+                    EVENT_CPU_MODE_CHANGE_CANCELED, ///< (e.g. SLEEP right after interrupt request)
                     EVENT_CPU_PC_OVERFLOW,          ///<
                     EVENT_CPU_PC_UNDERFLOW,         ///<
                     EVENT_CPU_PC_CHANGED,           ///<
@@ -509,38 +510,38 @@ class MCUSim
                 {
                     /// @name System condition, not directly related to the simulated memory.
                     //@{
-                    EVENT_MEM_SYS_FATAL_ERROR = 0,          ///< Severe failure occurred during the subsystem operations.
+                        EVENT_MEM_SYS_FATAL_ERROR = 0,          ///< Severe failure occurred during the subsystem operations.
                     //@}
 
                     /// @name Errors, the request couldn't have been executed correctly.
                     //@{
-                    EVENT_MEM_ERR_RD_NONEXISTENT,           ///< Attempt to read from a nonexistent memory space.
-                    EVENT_MEM_ERR_WR_NONEXISTENT,           ///< Attempt to write to a nonexistent memory space.
-                    EVENT_MEM_ERR_RD_NOT_IMPLEMENTED,       ///< Attempt to read from an unimplemented memory cell.
-                    EVENT_MEM_ERR_WR_NOT_IMPLEMENTED,       ///< Attempt to write to an unimplemented memory cell.
-                    EVENT_MEM_ERR_RD_ACCESS_DENIED,
-                    EVENT_MEM_ERR_WR_ACCESS_DENIED,
+                        EVENT_MEM_ERR_RD_NONEXISTENT,      ///< Attempt to read from a nonexistent memory space.
+                        EVENT_MEM_ERR_WR_NONEXISTENT,      ///< Attempt to write to a nonexistent memory space.
+                        EVENT_MEM_ERR_RD_NOT_IMPLEMENTED,  ///< Attempt to read from an unimplemented memory cell.
+                        EVENT_MEM_ERR_WR_NOT_IMPLEMENTED,  ///< Attempt to write to an unimplemented memory cell.
+                        EVENT_MEM_ERR_RD_ACCESS_DENIED,
+                        EVENT_MEM_ERR_WR_ACCESS_DENIED,
                     //@}
 
                     /// @name Warnings, the request might have involved a random chance.
                     //@{
-                    EVENT_MEM_WRN_RD_UNDEFINED,             ///< Undefined (uninitialized) value read.
-                    EVENT_MEM_WRN_RD_DEFAULT,               ///< Value defined by default condition was read.
-                    EVENT_MEM_WRN_RD_WRITE_ONLY,            ///< Value read from write only (pseudo-)memory cell.
-                    EVENT_MEM_WRN_WR_READ_ONLY,             ///< Value written to read only memory cell.
-                    EVENT_MEM_WRN_RD_PAR_WRITE_ONLY,        ///< Value read from partially write only memory cell.
-                    EVENT_MEM_WRN_WR_PAR_READ_ONLY,         ///< Value written to partially read only memory cell.
-                    EVENT_MEM_WRN_RD_RESERVED_READ,         ///<
-                    EVENT_MEM_WRN_WR_RESERVED_WRITTEN,      ///<
+                        EVENT_MEM_WRN_RD_UNDEFINED,        ///< Undefined (uninitialized) value read.
+                        EVENT_MEM_WRN_RD_DEFAULT,          ///< Value defined by default condition was read.
+                        EVENT_MEM_WRN_RD_WRITE_ONLY,       ///< Value read from write only (pseudo-)memory cell.
+                        EVENT_MEM_WRN_WR_READ_ONLY,        ///< Value written to read only memory cell.
+                        EVENT_MEM_WRN_RD_PAR_WRITE_ONLY,   ///< Value read from partially write only memory cell.
+                        EVENT_MEM_WRN_WR_PAR_READ_ONLY,    ///< Value written to partially read only memory cell.
+                        EVENT_MEM_WRN_RD_RESERVED_READ,    ///<
+                        EVENT_MEM_WRN_WR_RESERVED_WRITTEN, ///<
                     //@}
 
                     /// @name Informative, something happened but nothing went wrong.
                     //@{
-                    EVENT_MEM_INF_WR_VAL_CHANGED,           ///< Memory cell content has been changed.
-                    EVENT_MEM_INF_WR_VAL_WRITTEN,           ///< Memory cell content was written.
-                    EVENT_MEM_INF_RD_VAL_READ,              ///< Memory cell content was read.
-                    EVENT_MEM_INF_RD_ADDR_OVERFLOW,         ///< "address = ( address % size )" happened during read
-                    EVENT_MEM_INF_WR_ADDR_OVERFLOW,         ///< "address = ( address % size )" happened during write
+                        EVENT_MEM_INF_WR_VAL_CHANGED,      ///< Memory cell content has been changed.
+                        EVENT_MEM_INF_WR_VAL_WRITTEN,      ///< Memory cell content was written.
+                        EVENT_MEM_INF_RD_VAL_READ,         ///< Memory cell content was read.
+                        EVENT_MEM_INF_RD_ADDR_OVERFLOW,    ///< "address = ( address % size )" happened during read
+                        EVENT_MEM_INF_WR_ADDR_OVERFLOW,    ///< "address = ( address % size )" happened during write
                     //@}
 
                     EVENT_MEM__MAX__                        ///< Number of elements in this enumeration.
