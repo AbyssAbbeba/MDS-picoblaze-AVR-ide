@@ -32,13 +32,13 @@ PIC8WatchDogTimer * PIC8WatchDogTimer::link ( MCUSim::EventLogger     * eventLog
                                               PIC8Timer0WdtPrescaller * timer0WdtPrescaller,
                                               PIC8DataMemory          * dataMemory,
                                               PIC8ConfigWord          * configWord,
-                                              PIC8InterruptController       * interruptCtrl )
+                                              PIC8InterruptController * interruptCtrl )
 {
     Subsys::link(eventLogger, ID_WATCHDOG);
     m_timer0WdtPrescaller = timer0WdtPrescaller;
     m_dataMemory = dataMemory;
     m_configWord = configWord;
-    m_interruptCtrl = interruptCtrl;
+    m_interruptController = interruptCtrl;
     return this;
 }
 
@@ -97,14 +97,14 @@ void PIC8WatchDogTimer::timeStep ( float timeStep,
             {
                 logEvent(EVENT_WDT_RESET);
                 m_dataMemory->clearBitFast(PIC8RegNames::STATUS, PIC8RegNames::STATUS_TO);
-                m_interruptCtrl->genIntReq(PIC8InterruptController::INTVEC_RESET);
+                m_interruptController->genIntReq(PIC8InterruptController::INTVEC_RESET);
             }
         }
         else
         {
             logEvent(EVENT_WDT_RESET);
             m_dataMemory->clearBitFast(PIC8RegNames::STATUS, PIC8RegNames::STATUS_TO);
-            m_interruptCtrl->genIntReq(PIC8InterruptController::INTVEC_RESET);
+            m_interruptController->genIntReq(PIC8InterruptController::INTVEC_RESET);
         }
     }
 }

@@ -29,6 +29,8 @@
 #include "PIC8DataEEPROM.h"
 #include "PIC8WatchDogTimer.h"
 #include "PIC8TimerCounter0.h"
+#include "PIC8Timer0WdtPrescaller.h"
+#include "PIC8ExternalInterrupts.h"
 
 #include <string>
 
@@ -104,7 +106,7 @@ class PIC8Config : public MCUSim::Config
             PIC8ConfigWord::Config          * m_configWord;
 
             ///
-            PIC8InterruptController::Config       * m_configInterruptCtrl;
+            PIC8InterruptController::Config * m_configInterruptController;
 
             ///
             PIC8DataEEPROM::Config          * m_configDataEEPROM;
@@ -113,7 +115,13 @@ class PIC8Config : public MCUSim::Config
             PIC8WatchDogTimer::Config       * m_configWatchDogTimer;
 
             ///
-            PIC8TimerCounter0::Config              * m_configTimer0;
+            PIC8TimerCounter0::Config       * m_configTimerCounter0;
+
+            ///
+            PIC8Timer0WdtPrescaller::Config * m_configTimer0WdtPrescaller;
+
+            ///
+            PIC8ExternalInterrupts::Config  * m_configExternalInterrupts;
         //@}
 
     ////    Private Attributes    ////

@@ -324,7 +324,6 @@ MCUSim::RetCode AVR8DataEEPROM::directRead ( unsigned int addr,
 
     data = m_memory[addr] & 0xff;
     return MCUSim::RC_OK;
-
 }
 
 MCUSim::RetCode AVR8DataEEPROM::directWrite ( unsigned int addr,

@@ -97,7 +97,7 @@ PIC8InstructionSet * PIC8InstructionSet::link ( MCUSim::EventLogger     * eventL
                                                 PIC8DataMemory          * dataMemory,
                                                 PIC8ConfigWord          * configWord,
                                                 PIC8Stack               * stack,
-                                                PIC8InterruptController       * interruptCtrl,
+                                                PIC8InterruptController * interruptCtrl,
                                                 PIC8WatchDogTimer       * watchDogTimer )
 {
     MCUSim::CPU::link(eventLogger);
@@ -107,7 +107,7 @@ PIC8InstructionSet * PIC8InstructionSet::link ( MCUSim::EventLogger     * eventL
     m_processorMode = processorMode;
     m_configWord = configWord;
     m_stack = stack;
-    m_interruptCtrl = interruptCtrl;
+    m_interruptController = interruptCtrl;
     m_watchDogTimer = watchDogTimer;
 
     return this;
@@ -1339,7 +1339,7 @@ int PIC8InstructionSet::inst_CALL ( const unsigned int opCode )
     // Write PC+1 in TOS
     m_stack->pushOnStack( incrPc() );
 
-    logEvent(EVENT_CPU_CALL, k, m_pc);
+    logEvent(EVENT_CPU_CALL, m_pc, k);
 
     // Write k in PC<10:0>
     m_pc = k;
@@ -1468,7 +1468,7 @@ int PIC8InstructionSet::inst_RETFIE ( const unsigned int )
     m_pc = m_stack->popFromStack();
 
     // Inform the interrupt subsystem about the return
-    if ( false == m_interruptCtrl->retfie() )
+    if ( false == m_interruptController->retfie() )
     {
         logEvent(EVENT_CPU_ERR_INVALID_RETI);
     }
@@ -1521,9 +1521,19 @@ int PIC8InstructionSet::inst_RETURN ( const unsigned int )
  * Operation: 00h → WDT; 0 → WDT (prescaler count); 1 -> TO; 0 -> PD
  * Status affected: TO, PD
  */
-int PIC8InstructionSet::inst_SLEEP ( const unsigned int )
+int PIC8InstructionSet::inst_SLEEP ( const unsigned int opCode )
 {
     instructionEnter(PIC8InsNames::INS_SLEEP);
+
+    /*
+     * If an interrupt occurs before the execution of a SLEEP instruction,
+     * the SLEEP instruction will complete as a NOP.
+     */
+    if ( true == m_interruptController->isInterruptPending() )
+    {
+        logEvent(EVENT_CPU_MODE_CHANGE_CANCELED, m_pc);
+        return inst_NOP(opCode);
+    }
 
     // Perform the operation
     *m_processorMode = MCUSim::MD_SLEEP;

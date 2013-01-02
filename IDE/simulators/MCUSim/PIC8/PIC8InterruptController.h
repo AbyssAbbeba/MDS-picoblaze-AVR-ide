@@ -95,10 +95,10 @@ class PIC8InterruptController : public MCUSim::Subsys
          * @return
          */
         PIC8InterruptController * link ( MCUSim::EventLogger * eventLogger,
-                                   MCUSim::Mode        * processorMode,
-                                   PIC8DataMemory      * dataMemory,
-                                   PIC8InstructionSet  * instructionSet,
-                                   PIC8Stack           * stack );
+                                         MCUSim::Mode        * processorMode,
+                                         PIC8DataMemory      * dataMemory,
+                                         PIC8InstructionSet  * instructionSet,
+                                         PIC8Stack           * stack );
 
         /**
          * @brief
@@ -123,6 +123,12 @@ class PIC8InterruptController : public MCUSim::Subsys
          * @param[in] interrupt
          */
         void genIntReq ( InterruptVector interrupt );
+
+        /**
+         * @brief
+         * @return
+         */
+        bool isInterruptPending() const;
 
     ////    Inline Private Operations    ////
     private:

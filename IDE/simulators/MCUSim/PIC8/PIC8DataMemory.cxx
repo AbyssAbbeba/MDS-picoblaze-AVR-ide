@@ -14,6 +14,8 @@
 // =============================================================================
 
 #include "PIC8DataMemory.h"
+
+#include "PIC8ExternalInterrupts.h"
 #include "MCUDataFiles/DataFile.h"
 
 #include <cstring>
@@ -24,10 +26,11 @@ PIC8DataMemory::PIC8DataMemory()
     m_memory = NULL;
 }
 
-PIC8DataMemory * PIC8DataMemory::link ( MCUSim::EventLogger * eventLogger )
+PIC8DataMemory * PIC8DataMemory::link ( MCUSim::EventLogger * eventLogger,
+                                        PIC8ExternalInterrupts * externalInterrupts )
 {
     Memory::link(eventLogger, SP_DATA);
-
+    m_externalInterrupts = externalInterrupts;
     return this;
 }
 
@@ -422,5 +425,11 @@ unsigned int PIC8DataMemory::read ( int addr )
     }
 
     result &= 0x0ff;
+
+    if ( -PIC8RegNames::PORTB == absoluteAddr )
+    {
+        m_externalInterrupts->portBRead(result);
+    }
+
     return result;
 }
