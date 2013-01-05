@@ -5,9 +5,9 @@
  *
  * ...
  *
- * (C) copyright 2012 Moravia Microsystems, s.r.o.
+ * (C) copyright 2013 Moravia Microsystems, s.r.o.
  *
- * @authors Martin Ošmera <martin.osmera@gmail.com>
+ * @author Martin Ošmera <martin.osmera@gmail.com>
  * @ingroup PIC8
  * @file PIC8DataMemory.h
  */
@@ -19,6 +19,7 @@
 // Forward declarations
 class DataFile;
 class PIC8ExternalInterrupts;
+class PIC8InstructionSet;
 
 #include "PIC8RegNames.h"
 #include "../MCUSim.h"
@@ -79,7 +80,8 @@ class PIC8DataMemory : public MCUSim::Memory
          * @return
          */
         PIC8DataMemory * link ( MCUSim::EventLogger    * eventLogger,
-                                PIC8ExternalInterrupts * externalInterrupts );
+                                PIC8ExternalInterrupts * externalInterrupts,
+                                PIC8InstructionSet     * instructionSet );
 
         /**
          * @brief
@@ -272,7 +274,10 @@ class PIC8DataMemory : public MCUSim::Memory
     protected:
         /// @name PIC8 simulator subsystems
         //@{
+            ///
             PIC8ExternalInterrupts * m_externalInterrupts;
+
+            PIC8InstructionSet * m_instructionSet;
         //@}
 
         /**

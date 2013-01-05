@@ -5,7 +5,7 @@
  *
  * ...
  *
- * (C) copyright 2012 Moravia Microsystems, s.r.o.
+ * (C) copyright 2013 Moravia Microsystems, s.r.o.
  *
  * @author Erik Chalupa <xchalu10@stud.fit.vutbr.cz>, (C) 2012
  * @author Martin Ošmera <martin.osmera@gmail.com>, (C) 2012
@@ -131,6 +131,7 @@ class PIC8InstructionSet : public MCUSim::CPU
         void setProgramCounter ( unsigned int newPc )
         {
             m_pc = int ( newPc );
+            logEvent(EVENT_CPU_PC_CHANGED, m_pc);
         }
 
         /**

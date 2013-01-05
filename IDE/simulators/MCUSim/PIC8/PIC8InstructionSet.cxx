@@ -5,10 +5,10 @@
  *
  * ...
  *
- * (C) copyright 2012 Moravia Microsystems, s.r.o.
+ * (C) copyright 2013 Moravia Microsystems, s.r.o.
  *
- * @authors Erik Chalupa <xchalu10@stud.fit.vutbr.cz>
- * @authors Martin Ošmera <martin.osmera@gmail.com>
+ * @author Erik Chalupa <xchalu10@stud.fit.vutbr.cz>
+ * @author Martin Ošmera <martin.osmera@gmail.com>
  * @ingroup PIC8
  * @file PIC8InstructionSet.cxx
  */
@@ -134,6 +134,7 @@ inline void PIC8InstructionSet::mcuReset()
     m_pc = 0;
     m_actSubprogCounter = 0;
     m_lastInstruction = PIC8InsNames::INS_NONE;
+    logEvent(EVENT_CPU_PC_CHANGED, m_pc);
 }
 
 inline void PIC8InstructionSet::resetToInitialValues()
@@ -165,6 +166,8 @@ inline int PIC8InstructionSet::incrPc ( const int val )
         m_pc += m_config.m_pcMax;
         logEvent(EVENT_CPU_PC_UNDERFLOW);
     }
+    logEvent(EVENT_CPU_PC_CHANGED, m_pc);
+    m_dataMemory->writeFast(-PIC8RegNames::PCL, ( 0xff & m_pc ) );
     return m_pc;
 }
 
@@ -192,6 +195,7 @@ int PIC8InstructionSet::execInstruction()
     if ( pcOrig != m_pc )
     {
         logEvent(EVENT_CPU_PC_CHANGED, m_pc);
+        m_dataMemory->writeFast(-PIC8RegNames::PCL, ( 0xff & m_pc ) );
     }
 
     return result;
@@ -1342,7 +1346,9 @@ int PIC8InstructionSet::inst_CALL ( const unsigned int opCode )
     logEvent(EVENT_CPU_CALL, m_pc, k);
 
     // Write k in PC<10:0>
-    m_pc = k;
+    m_pc = k | ( m_dataMemory->readFast(-PIC8RegNames::PCLATH) << 8 );
+    logEvent(EVENT_CPU_PC_CHANGED, m_pc);
+    m_dataMemory->writeFast(-PIC8RegNames::PCL, ( 0xff & m_pc ) );
 
     return 2;
 }
@@ -1386,11 +1392,14 @@ int PIC8InstructionSet::inst_GOTO ( const unsigned int opCode )
      * Perform the operation
      */
     // Set upper bits of PC
-    unsigned int pcUp = m_dataMemory->readFast(PIC8RegNames::PCLATH);
+    unsigned int pcUp = m_dataMemory->readFast(-PIC8RegNames::PCLATH);
     pcUp = ((pcUp >> 3) << 12);
     m_pc = pcUp;
+
     // Set lower bits of PC
     m_pc |= k;
+    logEvent(EVENT_CPU_PC_CHANGED, m_pc);
+    m_dataMemory->writeFast(-PIC8RegNames::PCL, ( 0xff & m_pc ) );
 
     return 2;
 }
@@ -1465,7 +1474,9 @@ int PIC8InstructionSet::inst_RETFIE ( const unsigned int )
     m_dataMemory->writeFast(PIC8RegNames::INTCON, valIntCon);
 
     // Write Top of Stack in Program Counter
-    m_pc = m_stack->popFromStack();
+    m_pc = m_stack->popFromStack() | ( m_dataMemory->readFast(-PIC8RegNames::PCLATH) << 8 );
+    logEvent(EVENT_CPU_PC_CHANGED, m_pc);
+    m_dataMemory->writeFast(-PIC8RegNames::PCL, ( 0xff & m_pc ) );
 
     // Inform the interrupt subsystem about the return
     if ( false == m_interruptController->retfie() )
@@ -1494,7 +1505,9 @@ int PIC8InstructionSet::inst_RETLW ( const unsigned int opCode )
     logEvent(EVENT_ACCUMULATOR_WRITE, m_W);
 
     // Write TOS in PC
-    m_pc = m_stack->popFromStack();
+    m_pc = m_stack->popFromStack() | ( m_dataMemory->readFast(-PIC8RegNames::PCLATH) << 8 );
+    logEvent(EVENT_CPU_PC_CHANGED, m_pc);
+    m_dataMemory->writeFast(-PIC8RegNames::PCL, ( 0xff & m_pc ) );
 
     return 2;
 }
@@ -1510,7 +1523,9 @@ int PIC8InstructionSet::inst_RETURN ( const unsigned int )
     instructionEnter(PIC8InsNames::INS_RETURN);
 
     // Perform the operation
-    m_pc = m_stack->popFromStack();
+    m_pc = m_stack->popFromStack() | ( m_dataMemory->readFast(-PIC8RegNames::PCLATH) << 8 );
+    logEvent(EVENT_CPU_PC_CHANGED, m_pc);
+    m_dataMemory->writeFast(-PIC8RegNames::PCL, ( 0xff & m_pc ) );
 
     return 2;
 }

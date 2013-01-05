@@ -5,9 +5,9 @@
  *
  * ...
  *
- * (C) copyright 2012 Moravia Microsystems, s.r.o.
+ * (C) copyright 2013 Moravia Microsystems, s.r.o.
  *
- * @authors Martin Ošmera <martin.osmera@gmail.com>
+ * @author Martin Ošmera <martin.osmera@gmail.com>
  * @ingroup PIC8
  * @file PIC8ConfigWord.cxx
  */
@@ -63,4 +63,25 @@ inline void PIC8ConfigWord::resetToInitialValues()
     {
         m_cfgWord[i] = false;
     }
+}
+
+void PIC8ConfigWord::setWord ( unsigned int configWord )
+{
+    for ( int i = 0; i < 14; i++ )
+    {
+        m_cfgWord[i] = ( configWord & ( 1 << i ) ) ? true : false;
+    }
+}
+
+unsigned int PIC8ConfigWord::getWord()
+{
+    unsigned int result = 0;
+    for ( int i = 0; i < 14; i++ )
+    {
+        if ( true == m_cfgWord[i] )
+        {
+            result |= ( 1 << i );
+        }
+    }
+    return result;
 }

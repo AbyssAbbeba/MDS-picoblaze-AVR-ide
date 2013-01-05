@@ -5,7 +5,7 @@
  *
  * ...
  *
- * (C) copyright 2012 Moravia Microsystems, s.r.o.
+ * (C) copyright 2013 Moravia Microsystems, s.r.o.
  *
  * @author Martin Ošmera <martin.osmera@gmail.com>, (C) 2012
  * @ingroup PIC8
@@ -228,6 +228,7 @@ class PIC8Sim : public MCUSim
             ///
             PIC8ISP * m_isp;
 
+            ///
             PIC8ExternalInterrupts * m_externalInterrupts;
         //@}
 

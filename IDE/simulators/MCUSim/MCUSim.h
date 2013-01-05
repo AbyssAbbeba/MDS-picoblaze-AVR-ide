@@ -5,9 +5,9 @@
  *
  * ...
  *
- * (C) copyright 2012 Moravia Microsystems, s.r.o.
+ * (C) copyright 2013 Moravia Microsystems, s.r.o.
  *
- * @authors Martin Ošmera <martin.osmera@gmail.com>
+ * @author Martin Ošmera <martin.osmera@gmail.com>
  * @ingroup MCUSim
  * @file MCUSim.h
  */
@@ -341,6 +341,7 @@ class MCUSim
                     ID_ACOMP,        ///<
                     ID_ISP,          ///<
                     ID_PPROG,        ///<
+                    ID_STACK,        ///<
 
                     ID__MAX__        ///<
                 };
@@ -510,7 +511,7 @@ class MCUSim
                 {
                     /// @name System condition, not directly related to the simulated memory.
                     //@{
-                        EVENT_MEM_SYS_FATAL_ERROR = 0,          ///< Severe failure occurred during the subsystem operations.
+                        EVENT_MEM_SYS_FATAL_ERROR = 0,    ///< Severe failure occurred during the subsystem operations.
                     //@}
 
                     /// @name Errors, the request couldn't have been executed correctly.
