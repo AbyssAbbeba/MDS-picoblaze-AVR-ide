@@ -5,7 +5,7 @@
  *
  * ...
  *
- * (C) copyright 2012 Moravia Microsystems, s.r.o.
+ * (C) copyright 2013 Moravia Microsystems, s.r.o.
  *
  * @author Martin Ošmera <martin.osmera@gmail.com>, (C) 2012
  * @ingroup PIC8
@@ -72,6 +72,9 @@ namespace PIC8PinNames
         SPF_CLKOUT,     ///<
         SPF_T0CKI,      ///<
         SPF_INT,        ///<
+
+        SPF_CLOCK,      ///<
+        SPF_DATA,       ///<
 
         SPF__MAX__      ///<
     };

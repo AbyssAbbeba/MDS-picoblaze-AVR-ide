@@ -5,7 +5,7 @@
  *
  * ...
  *
- * (C) copyright 2012 Moravia Microsystems, s.r.o.
+ * (C) copyright 2013 Moravia Microsystems, s.r.o.
  *
  * @author Martin Ošmera <martin.osmera@gmail.com>
  * @ingroup PIC8
@@ -218,6 +218,7 @@ inline int PIC8InterruptController::executeInterrupt ( InterruptVector vector )
 
     // Jump to the destination address (interrupt vector)
     m_instructionSet->setProgramCounter(INTERRUPT_VECTOR);
+    m_dataMemory->writeFast(-PIC8RegNames::PCL, INTERRUPT_VECTOR );
 
     // Increment statistical counter
     m_interruptCounter[vector]++;

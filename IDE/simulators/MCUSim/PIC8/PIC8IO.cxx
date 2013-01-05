@@ -5,9 +5,9 @@
  *
  * ...
  *
- * (C) copyright 2012 Moravia Microsystems, s.r.o.
+ * (C) copyright 2013 Moravia Microsystems, s.r.o.
  *
- * @authors Martin Ošmera <martin.osmera@gmail.com>
+ * @author Martin Ošmera <martin.osmera@gmail.com>
  * @ingroup PIC8
  * @file PIC8IO.cxx
  */
@@ -36,7 +36,6 @@ PIC8IO::PIC8IO()
     }
 
     setSourceVoltage(5); // default voltage is 5V
-
     m_enabled = false;
 }
 
@@ -97,6 +96,7 @@ inline void PIC8IO::portSetDirection ( unsigned int pinIdx,
                                        unsigned int trisRegAddr )
 {
     const unsigned int tris = m_dataMemory->readFast(trisRegAddr);
+    const bool rbpu = m_dataMemory->readBitFast(PIC8RegNames::OPTION_REG, PIC8RegNames::OPTION_REG_RBPU);
 
     for ( int i = 0x1; i < 0x100; i <<= 1, pinIdx++ )
     {
@@ -109,7 +109,15 @@ inline void PIC8IO::portSetDirection ( unsigned int pinIdx,
         if ( tris & i )
         {
             // ( TRISx[i] = 1 ) => Input
-            resistance = INFINITY;
+            if ( false == rbpu )
+            {
+                resistance = m_config.m_pullUpresistance;
+                setLog ( ( PIC8PinNames::PIN ) pinIdx, true );
+            }
+            else
+            {
+                resistance = INFINITY;
+            }
         }
         else
         {

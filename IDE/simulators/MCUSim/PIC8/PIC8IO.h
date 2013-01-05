@@ -5,7 +5,7 @@
  *
  * ...
  *
- * (C) copyright 2012 Moravia Microsystems, s.r.o.
+ * (C) copyright 2013 Moravia Microsystems, s.r.o.
  *
  * @author Martin Ošmera <martin.osmera@gmail.com>, (C) 2012
  * @ingroup PIC8
@@ -93,6 +93,9 @@ class PIC8IO : public MCUSim::IO
 
             ///
             bool m_availablePins [ NUMBER_OF_PINS ];
+
+            ///
+            SimFloatType m_pullUpresistance;
         };
 
     ////    Constructors and Destructors    ////
@@ -161,23 +164,43 @@ class PIC8IO : public MCUSim::IO
 
     ////    Inline Public Operations    ////
     public:
+        /**
+         * @brief
+         * @param[in] pin
+         * @return
+         */
         SimFloatType getVoltage ( PIC8PinNames::SPF pin ) const
         {
             return getVoltage(m_config.m_specFuncMap[pin]);
         }
 
+        /**
+         * @brief
+         * @param[in] pin
+         * @return
+         */
         SimFloatType getVoltage ( PIC8PinNames::PIN pin ) const
         {
             assert(PIC8PinNames::PIN_NC != pin);
             return m_lowLevelInterface[II_REAL_VOLTAGE][pin];
         }
 
+        /**
+         * @brief
+         * @param[in] pin
+         * @param[in] volts
+         */
         void setVoltage ( PIC8PinNames::SPF pin,
                           SimFloatType volts )
         {
             setVoltage(m_config.m_specFuncMap[pin], volts);
         }
 
+        /**
+         * @brief
+         * @param[in] pin
+         * @param[in] volts
+         */
         void setVoltage ( PIC8PinNames::PIN pin,
                           SimFloatType volts )
         {
@@ -185,18 +208,33 @@ class PIC8IO : public MCUSim::IO
             m_lowLevelInterface[II_VOLTAGE_INT][pin] = volts;
         }
 
+        /**
+         * @brief
+         * @param[in] pin
+         * @return
+         */
         SimFloatType getResistance ( PIC8PinNames::PIN pin ) const
         {
             assert(PIC8PinNames::PIN_NC != pin);
             return m_lowLevelInterface[II_RESISTANCE][pin];
         }
 
+        /**
+         * @brief
+         * @param[in] pin
+         * @param[in] ohms
+         */
         void setResistance ( PIC8PinNames::SPF pin,
                              SimFloatType ohms )
         {
             setResistance(m_config.m_specFuncMap[pin], ohms);
         }
 
+        /**
+         * @brief
+         * @param[in] pin
+         * @param[in] ohms
+         */
         void setResistance ( PIC8PinNames::PIN pin,
                              SimFloatType ohms )
         {
@@ -204,24 +242,42 @@ class PIC8IO : public MCUSim::IO
             m_lowLevelInterface[II_RESISTANCE][pin] = ohms;
         }
 
+        /**
+         * @brief
+         * @param[in] pin
+         */
         void setAsOutput ( PIC8PinNames::PIN pin )
         {
             assert(PIC8PinNames::PIN_NC != pin);
             m_lowLevelInterface[II_RESISTANCE][pin] = 0;
         }
 
+        /**
+         * @brief
+         * @param[in] pin
+         */
         void setAsInput ( PIC8PinNames::PIN pin )
         {
             assert(PIC8PinNames::PIN_NC != pin);
             m_lowLevelInterface[II_RESISTANCE][pin] = INFINITY;
         }
 
+        /**
+         * @brief
+         * @param[in] pin
+         * @param[in] mode
+         */
         void setPinMode ( PIC8PinNames::SPF pin,
                           PINMD mode )
         {
             setPinMode(m_config.m_specFuncMap[pin], mode);
         }
 
+        /**
+         * @brief
+         * @param[in] pin
+         * @param[in] mode
+         */
         void setPinMode ( PIC8PinNames::PIN pin,
                           PINMD mode )
         {
@@ -231,17 +287,31 @@ class PIC8IO : public MCUSim::IO
             m_pinMode[pin] = mode;
         }
 
+        /**
+         * @brief
+         * @param[in] pin
+         * @return
+         */
         PINMD getPinMode ( PIC8PinNames::SPF pin ) const
         {
             return getPinMode(m_config.m_specFuncMap[pin]);
         }
 
+        /**
+         * @brief
+         * @param[in] pin
+         * @return
+         */
         PINMD getPinMode ( PIC8PinNames::PIN pin ) const
         {
             assert(PIC8PinNames::PIN_NC != pin);
             return m_pinMode[pin];
         }
 
+        /**
+         * @brief
+         * @param[in] voltage
+         */
         void setSourceVoltage ( SimFloatType voltage )
         {
             m_sourceVoltage = voltage;
@@ -249,21 +319,37 @@ class PIC8IO : public MCUSim::IO
             m_logThreshold1 = m_logThreshold0;
         }
 
+        /**
+         * @brief
+         * @return
+         */
         SimFloatType getSourceVoltage() const
         {
                 return m_sourceVoltage;
         }
 
+        /**
+         * @brief
+         * @return
+         */
         unsigned int getNumberOfPins() const
         {
                 return NUMBER_OF_PINS;
         }
 
+        /**
+         * @brief
+         * @return
+         */
         SimFloatType ** getLowLevelInterface()
         {
                 return m_lowLevelInterface;
         }
 
+        /**
+         * @brief
+         * @param[in] flag
+         */
         void setEnabled ( bool flag )
         {
             m_enabled = flag;
@@ -315,15 +401,30 @@ class PIC8IO : public MCUSim::IO
     protected:
         /// @name PIC8 simulator subsystems
         //@{
+            ///
             PIC8DataMemory * m_dataMemory;
         //@}
 
+        /**
+         * @brief
+         */
         SimFloatType m_logThreshold0;
+
+        /**
+         * @brief
+         */
         SimFloatType m_logThreshold1;
 
         // idx =  |n       ... |23  16|15   8|7    0|
         //        |special ... |PORT_C|PORT_B|PORT_A|
+        /**
+         * @brief
+         */
         PINMD m_pinMode [ NUMBER_OF_PINS ];
+
+        /**
+         * @brief
+         */
         bool m_enabled; // by default this is disabled
 };
 

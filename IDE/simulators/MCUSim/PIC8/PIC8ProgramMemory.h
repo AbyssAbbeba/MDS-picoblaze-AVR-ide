@@ -5,9 +5,9 @@
  *
  * ...
  *
- * (C) copyright 2012 Moravia Microsystems, s.r.o.
+ * (C) copyright 2013 Moravia Microsystems, s.r.o.
  *
- * @authors Martin Ošmera <martin.osmera@gmail.com>
+ * @author Martin Ošmera <martin.osmera@gmail.com>
  * @ingroup PIC8
  * @file PIC8ProgramMemory.h
  */
@@ -20,6 +20,7 @@
 class DataFile;
 
 #include "../MCUSim.h"
+#include "PIC8ConfigWord.h"
 
 #include <cstddef>
 #include <cstdint>
@@ -46,6 +47,9 @@ class PIC8ProgramMemory : public MCUSim::Memory
 
             int m_undefinedValue; ///< -1 means random
             unsigned int m_size;  ///<
+
+            unsigned int m_configWordAddress;
+            unsigned int m_idLocationsRange[2];
         };
 
     ////    Constructors and Destructors    ////
@@ -67,7 +71,8 @@ class PIC8ProgramMemory : public MCUSim::Memory
          * @param[in,out] eventLogger
          * @return
          */
-        PIC8ProgramMemory * link ( MCUSim::EventLogger * eventLogger );
+        PIC8ProgramMemory * link ( MCUSim::EventLogger * eventLogger,
+                                   PIC8ConfigWord * configWord );
 
         /**
          * @brief
@@ -165,6 +170,24 @@ class PIC8ProgramMemory : public MCUSim::Memory
          */
         inline void mcuReset();
 
+        /**
+         * @brief
+         * @param[in] addr
+         * @param[in] val
+         * @return
+         */
+        inline bool handleSpecialAddressWR ( unsigned int addr,
+                                             unsigned int val );
+
+        /**
+         * @brief
+         * @param[in] addr
+         * @param[out] result
+         * @return
+         */
+        inline bool handleSpecialAddressRD ( unsigned int addr,
+                                             unsigned int * result ) const;
+
     ////    Public Attributes    ////
     public:
         /**
@@ -175,6 +198,11 @@ class PIC8ProgramMemory : public MCUSim::Memory
 
     ////    Protected Attributes    ////
     protected:
+        /// @name PIC8 simulator subsystems
+        //@{
+            PIC8ConfigWord * m_configWord;
+        //@}
+
         /**
          * @brief
          */
@@ -184,6 +212,11 @@ class PIC8ProgramMemory : public MCUSim::Memory
          * @brief
          */
         unsigned int m_size;
+
+        /**
+         * @brief
+         */
+        unsigned int * m_idLocations;
 };
 
 // -----------------------------------------------------------------------------
@@ -222,12 +255,22 @@ inline unsigned int PIC8ProgramMemory::readRaw ( unsigned int addr )
 
 inline unsigned int PIC8ProgramMemory::read ( unsigned int addr )
 {
-    return (readRaw(addr) & 0x0ffff);
+    unsigned int result;
+    if ( false == handleSpecialAddressRD(addr, &result) )
+    {
+        result = readRaw(addr);
+    }
+    return ( 0x3fff & result );
 }
 
 inline void PIC8ProgramMemory::write ( unsigned int addr,
                                        unsigned int val )
 {
+    if ( true == handleSpecialAddressWR(addr, val) )
+    {
+        return;
+    }
+
     if ( addr >= m_size )
     {
         if ( 0 == m_size )
@@ -246,6 +289,46 @@ inline void PIC8ProgramMemory::write ( unsigned int addr,
     m_memory[addr] |= val;
 
     logEvent(EVENT_MEM_INF_WR_VAL_CHANGED, addr);
+}
+
+inline bool PIC8ProgramMemory::handleSpecialAddressRD ( unsigned int addr,
+                                                        unsigned int * result ) const
+{
+    if ( m_config.m_configWordAddress == addr )
+    {
+        *result = m_configWord->getWord();
+        return true;
+    }
+    else if ( m_config.m_idLocationsRange[0] <= addr && addr >= m_config.m_idLocationsRange[1] )
+    {
+        *result = m_idLocations [ addr - m_config.m_idLocationsRange[0] ];
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+inline bool PIC8ProgramMemory::handleSpecialAddressWR ( unsigned int addr,
+                                                        unsigned int val )
+{
+    if ( m_config.m_configWordAddress == addr )
+    {
+        m_configWord->setWord(val);
+        logEvent(EVENT_MEM_INF_WR_VAL_CHANGED, addr);
+        return true;
+    }
+    else if ( m_config.m_idLocationsRange[0] <= addr && addr >= m_config.m_idLocationsRange[1] )
+    {
+        m_idLocations [ addr - m_config.m_idLocationsRange[0] ] = val;
+        logEvent(EVENT_MEM_INF_WR_VAL_CHANGED, addr);
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 #endif // PIC8PROGRAMMEMORY_H

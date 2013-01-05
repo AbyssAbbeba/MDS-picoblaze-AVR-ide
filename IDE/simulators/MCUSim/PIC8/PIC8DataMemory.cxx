@@ -5,9 +5,9 @@
  *
  * ...
  *
- * (C) copyright 2012 Moravia Microsystems, s.r.o.
+ * (C) copyright 2013 Moravia Microsystems, s.r.o.
  *
- * @authors Martin Ošmera <martin.osmera@gmail.com>
+ * @author Martin Ošmera <martin.osmera@gmail.com>
  * @ingroup PIC8
  * @file PIC8DataMemory.cxx
  */
@@ -15,8 +15,9 @@
 
 #include "PIC8DataMemory.h"
 
-#include "PIC8ExternalInterrupts.h"
 #include "MCUDataFiles/DataFile.h"
+#include "PIC8InstructionSet.h"
+#include "PIC8ExternalInterrupts.h"
 
 #include <cstring>
 
@@ -26,11 +27,13 @@ PIC8DataMemory::PIC8DataMemory()
     m_memory = NULL;
 }
 
-PIC8DataMemory * PIC8DataMemory::link ( MCUSim::EventLogger * eventLogger,
-                                        PIC8ExternalInterrupts * externalInterrupts )
+PIC8DataMemory * PIC8DataMemory::link ( MCUSim::EventLogger    * eventLogger,
+                                        PIC8ExternalInterrupts * externalInterrupts,
+                                        PIC8InstructionSet     * instructionSet )
 {
     Memory::link(eventLogger, SP_DATA);
     m_externalInterrupts = externalInterrupts;
+    m_instructionSet = instructionSet;
     return this;
 }
 
@@ -129,7 +132,11 @@ inline int PIC8DataMemory::addrTrans ( int addr,
             }
             else
             {
-                return -1;
+                /*
+                 * Reading the INDF register itself indirectly (FSR = '0') will read 00h.
+                 * Writing to the INDF register indirectly results in a no-operation.
+                 */
+                return -2;
             }
         }
 
@@ -344,6 +351,11 @@ void PIC8DataMemory::write ( int addr,
         logEvent(EVENT_MEM_ERR_WR_NOT_IMPLEMENTED, addr);
         return;
     }
+    else if ( -2 == absoluteAddr )
+    {
+        logEvent(EVENT_MEM_ERR_WR_ACCESS_DENIED, -PIC8RegNames::INDF);
+        return;
+    }
 
     uint32_t result = m_memory[absoluteAddr];
 
@@ -369,6 +381,14 @@ void PIC8DataMemory::write ( int addr,
     result &= ( 0xffffff00 ^ ( MFLAG_UNDEFINED | MFLAG_DEFAULT ) );
     result |= val;
 
+    m_memory[absoluteAddr] = result;
+    if ( -PIC8RegNames::PCL == absoluteAddr )
+    {
+        unsigned int newPc = ( m_memory[-PIC8RegNames::PCLATH] << 8 ) | val;
+        m_instructionSet->setProgramCounter(newPc);
+    }
+    else
+
     logEvent(EVENT_MEM_INF_WR_VAL_WRITTEN, addr);
 
     if ( valueOrig != val)
@@ -392,6 +412,11 @@ unsigned int PIC8DataMemory::read ( int addr )
     {
         logEvent(EVENT_MEM_ERR_RD_NOT_IMPLEMENTED, addr);
         return getUndefVal();
+    }
+    else if ( -2 == absoluteAddr )
+    {
+        logEvent(EVENT_MEM_ERR_RD_ACCESS_DENIED, -PIC8RegNames::INDF);
+        return 0;
     }
 
     uint32_t result = m_memory[absoluteAddr];

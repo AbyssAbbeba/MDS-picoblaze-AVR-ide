@@ -5,26 +5,30 @@
  *
  * ...
  *
- * (C) copyright 2012 Moravia Microsystems, s.r.o.
+ * (C) copyright 2013 Moravia Microsystems, s.r.o.
  *
- * @authors Martin Ošmera <martin.osmera@gmail.com>
+ * @author Martin Ošmera <martin.osmera@gmail.com>
  * @ingroup PIC8
  * @file PIC8ProgramMemory.cxx
  */
 // =============================================================================
 
 #include "PIC8ProgramMemory.h"
+
 #include "MCUDataFiles/DataFile.h"
 
 PIC8ProgramMemory::PIC8ProgramMemory()
 {
     m_memory = NULL;
+    m_idLocations = NULL;
     m_size = 0;
 }
 
-PIC8ProgramMemory * PIC8ProgramMemory::link ( MCUSim::EventLogger * eventLogger )
+PIC8ProgramMemory * PIC8ProgramMemory::link ( MCUSim::EventLogger * eventLogger,
+                                              PIC8ConfigWord * configWord )
 {
     Memory::link(eventLogger, SP_CODE);
+    m_configWord = configWord;
     return this;
 }
 
@@ -33,6 +37,10 @@ PIC8ProgramMemory::~PIC8ProgramMemory()
     if ( NULL != m_memory )
     {
         delete[] m_memory;
+    }
+    if ( NULL != m_idLocations )
+    {
+        delete[] m_idLocations;
     }
 }
 
@@ -53,19 +61,22 @@ void PIC8ProgramMemory::loadDataFile ( const DataFile * file )
 
         if ( -1 == byte )
         {
-            byte = ( 0xffff | MFLAG_UNDEFINED );
+            byte = ( 0x3fff | MFLAG_UNDEFINED );
         }
         else
         {
             byte |= ( (*file)[++i] << 8 );
         }
 
-        m_memory[j] = byte;
+        if ( false == handleSpecialAddressWR(j, byte) )
+        {
+            m_memory[j] = byte;
+        }
     }
 
     for ( unsigned int i = ( size / 2 ); i < m_size; i++ )
     {
-        m_memory[i] = ( 0xffff | MFLAG_UNDEFINED );
+        m_memory[i] = ( 0x3fff | MFLAG_UNDEFINED );
     }
 }
 
@@ -84,7 +95,11 @@ void PIC8ProgramMemory::storeInDataFile ( DataFile * file ) const
             break;
         }
 
-        int byte = m_memory[j];
+        unsigned int byte;
+        if ( false == handleSpecialAddressRD(j, &byte) )
+        {
+            byte = m_memory[j];
+        }
 
         if ( MFLAG_UNDEFINED & byte )
         {
@@ -102,21 +117,26 @@ void PIC8ProgramMemory::storeInDataFile ( DataFile * file ) const
 MCUSim::RetCode PIC8ProgramMemory::directRead ( unsigned int addr,
                                                 unsigned int & data ) const
 {
+    if ( true == handleSpecialAddressRD(addr, &data) )
+    {
+        return MCUSim::RC_OK;
+    }
+
+    data = m_memory[addr];
+
     if ( addr >= m_size )
     {
         return MCUSim::RC_ADDR_OUT_OF_RANGE;
     }
 
-    data = m_memory[addr];
-
     if ( MFLAG_UNDEFINED & data )
     {
-        data &= 0xffff;
+        data &= 0x3fff;
         return MCUSim::RC_NONDETERMINISTIC;
     }
     else
     {
-        data &= 0xffff;
+        data &= 0x3fff;
         return MCUSim::RC_OK;
     }
 }
@@ -124,12 +144,18 @@ MCUSim::RetCode PIC8ProgramMemory::directRead ( unsigned int addr,
 MCUSim::RetCode PIC8ProgramMemory::directWrite ( unsigned int addr,
                                                  unsigned int data )
 {
+
+    if ( true == handleSpecialAddressWR(addr, data) )
+    {
+        return MCUSim::RC_OK;
+    }
+
     if ( addr >= m_size )
     {
         return MCUSim::RC_ADDR_OUT_OF_RANGE;
     }
 
-    m_memory[addr] = (data & 0xffff);
+    m_memory[addr] = (data & 0x3fff);
     return MCUSim::RC_OK;
 }
 
@@ -177,6 +203,17 @@ void PIC8ProgramMemory::reset ( MCUSim::ResetMode mode )
 inline void PIC8ProgramMemory::loadConfig()
 {
     resize(m_config.m_size);
+
+    if ( NULL != m_idLocations )
+    {
+        delete[] m_idLocations;
+    }
+
+    int n = 1 + m_config.m_idLocationsRange[1] - m_config.m_idLocationsRange[0];
+    if ( n > 0 )
+    {
+        m_idLocations = new unsigned int [ n ];
+    }
 }
 
 inline void PIC8ProgramMemory::mcuReset()
@@ -187,7 +224,13 @@ inline void PIC8ProgramMemory::resetToInitialValues()
 {
     for ( unsigned int i = 0; i < m_size; i++ )
     {
-        m_memory[i] = ( 0xffff | MFLAG_UNDEFINED );
+        m_memory[i] = ( 0x3fff | MFLAG_UNDEFINED );
+    }
+
+    int n = 1 + m_config.m_idLocationsRange[1] - m_config.m_idLocationsRange[0];
+    for ( int i = 0; i < n; i++ )
+    {
+        m_idLocations[i] = ( 0x3ff | MFLAG_UNDEFINED );
     }
 }
 
@@ -196,11 +239,11 @@ unsigned int PIC8ProgramMemory::getUndefVal() const
     if ( -1 == m_config.m_undefinedValue )
     {
         // Generate random value
-        return ( (unsigned int)rand() & 0xffff );
+        return ( (unsigned int)rand() & 0x3fff );
     }
     else
     {
         // Return predefined value
-        return ( m_config.m_undefinedValue & 0xffff );
+        return ( m_config.m_undefinedValue & 0x3fff );
     }
 }

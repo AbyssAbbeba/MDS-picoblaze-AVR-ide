@@ -5,9 +5,9 @@
  *
  * ...
  *
- * (C) copyright 2012 Moravia Microsystems, s.r.o.
+ * (C) copyright 2013 Moravia Microsystems, s.r.o.
  *
- * @authors Martin Ošmera <martin.osmera@gmail.com>
+ * @author Martin Ošmera <martin.osmera@gmail.com>
  * @ingroup PIC8
  * @file PIC8DataEEPROM.cxx
  */
@@ -377,4 +377,53 @@ void PIC8DataEEPROM::timeStep ( float timeStep,
         readEecon2();
         readEecon1();
     }
+}
+
+unsigned int PIC8DataEEPROM::read ( unsigned int addr )
+{
+    if ( addr >= m_size )
+    {
+        if ( 0 == m_size )
+        {
+            logEvent(EVENT_MEM_ERR_RD_NONEXISTENT, addr);
+            return getUndefVal();
+        }
+        else
+        {
+            logEvent(EVENT_MEM_ERR_WR_NOT_IMPLEMENTED, addr);
+            return getUndefVal();
+        }
+    }
+
+    int result = m_memory[addr];
+    if ( result & MFLAG_UNDEFINED )
+    {
+        logEvent(EVENT_MEM_WRN_RD_UNDEFINED, addr);
+    }
+
+    result &= 0xff;
+    return result;
+}
+
+void PIC8DataEEPROM::write ( unsigned int addr,
+                             unsigned int val )
+{
+    if ( addr >= m_size )
+    {
+        if ( 0 == m_size )
+        {
+            logEvent(EVENT_MEM_ERR_WR_NONEXISTENT, addr);
+            return;
+        }
+        else
+        {
+            logEvent(EVENT_MEM_ERR_WR_NOT_IMPLEMENTED, addr);
+            return;
+        }
+    }
+
+    m_memory[addr] &= ( 0xff000000 ^ MFLAG_UNDEFINED );
+    m_memory[addr] |= val;
+
+    logEvent(EVENT_MEM_INF_WR_VAL_CHANGED, addr);
 }

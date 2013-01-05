@@ -5,9 +5,9 @@
  *
  * ...
  *
- * (C) copyright 2012 Moravia Microsystems, s.r.o.
+ * (C) copyright 2013 Moravia Microsystems, s.r.o.
  *
- * @authors Martin Ošmera <martin.osmera@gmail.com>
+ * @author Martin Ošmera <martin.osmera@gmail.com>
  * @ingroup PIC8
  * @file PIC8ConfigWord.h
  */
@@ -69,6 +69,18 @@ class PIC8ConfigWord : public MCUSim::Subsys
          * @param[in] mode
          */
         void reset ( MCUSim::ResetMode mode );
+
+        /**
+         * @brief
+         * @param[in] configWord
+         */
+        void setWord ( unsigned int configWord );
+
+        /**
+         * @brief
+         * @return
+         */
+        unsigned int getWord();
 
     ////    Inline Public Operations    ////
     public:

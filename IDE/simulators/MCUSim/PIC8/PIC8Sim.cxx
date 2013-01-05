@@ -5,9 +5,9 @@
  *
  * ...
  *
- * (C) copyright 2012 Moravia Microsystems, s.r.o.
+ * (C) copyright 2013 Moravia Microsystems, s.r.o.
  *
- * @authors Martin Ošmera <martin.osmera@gmail.com>
+ * @author Martin Ošmera <martin.osmera@gmail.com>
  * @ingroup PIC8
  * @file PIC8Sim.cxx
  */
@@ -56,11 +56,14 @@ PIC8Sim::PIC8Sim()
 
     regSubSys(m_configWord->link(m_eventLogger));
 
-    regSubSys(m_programMemory->link(m_eventLogger));
+    regSubSys(m_programMemory->link(m_eventLogger, m_configWord));
 
-    regSubSys(m_dataMemory->link(m_eventLogger, m_externalInterrupts));
+    regSubSys(m_dataMemory->link ( m_eventLogger,
+                                   m_externalInterrupts,
+                                   m_instructionSet ) );
 
-    regSubSys(m_io->link(m_eventLogger, m_dataMemory));
+    regSubSys(m_io->link ( m_eventLogger,
+                           m_dataMemory ) );
 
     regSubSys(m_instructionSet->link ( m_eventLogger,
                                        &m_processorMode,
@@ -71,7 +74,8 @@ PIC8Sim::PIC8Sim()
                                        m_interruptController,
                                        m_watchDogTimer ));
 
-    regSubSys(m_clockControl->link(m_eventLogger, m_configWord));
+    regSubSys(m_clockControl->link ( m_eventLogger,
+                                     m_configWord ) );
 
     regSubSys(m_stack->link(m_eventLogger));
 
@@ -81,17 +85,32 @@ PIC8Sim::PIC8Sim()
                                             m_instructionSet,
                                             m_stack ));
 
-    regSubSys(m_dataEEPROM->link(m_eventLogger, m_dataMemory));
+    regSubSys(m_dataEEPROM->link ( m_eventLogger,
+                                   m_dataMemory ) );
+
     regSubSys(m_watchDogTimer->link ( m_eventLogger,
                                       m_timer0WdtPrescaller,
                                       m_dataMemory,
                                       m_configWord,
                                       m_interruptController ));
 
-    regSubSys(m_timerCounter0->link(m_eventLogger, m_dataMemory, m_io, m_timer0WdtPrescaller));
-    regSubSys(m_timer0WdtPrescaller->link(m_eventLogger, m_dataMemory));
-    regSubSys(m_isp->link(m_eventLogger, m_programMemory, m_io, m_configWord));
-    regSubSys(m_externalInterrupts->link(m_eventLogger, m_dataMemory, m_io));
+    regSubSys(m_timerCounter0->link ( m_eventLogger,
+                                      m_dataMemory,
+                                      m_io,
+                                      m_timer0WdtPrescaller ) );
+
+    regSubSys(m_timer0WdtPrescaller->link ( m_eventLogger,
+                                            m_dataMemory ) );
+
+    regSubSys(m_isp->link ( m_eventLogger,
+                            m_programMemory,
+                            m_dataEEPROM,
+                            m_io,
+                            m_configWord ) );
+
+    regSubSys(m_externalInterrupts->link ( m_eventLogger,
+                                           m_dataMemory,
+                                           m_io ) );
 
     checkSubSystems();
     m_config->link(this);
@@ -135,12 +154,20 @@ MCUSim::Subsys * PIC8Sim::getSubsys ( Subsys::SubsysId id )
     {
         case Subsys::ID_MEM_CODE:       return m_programMemory;
         case Subsys::ID_MEM_DATA:       return m_dataMemory;
-
         case Subsys::ID_CPU:            return m_instructionSet;
         case Subsys::ID_FUSES:          return m_configWord;
+        case Subsys::ID_IO:             return m_io;
+        case Subsys::ID_MEM_EEPROM:     return m_dataEEPROM;
+        case Subsys::ID_STACK:          return m_stack;
+        case Subsys::ID_COUNTER_0:      return m_timerCounter0;
+        case Subsys::ID_CLK_CONTROL:    return m_clockControl;
+        case Subsys::ID_WATCHDOG:       return m_watchDogTimer;
+        case Subsys::ID_INTERRUPTS:     return m_interruptController;
+        case Subsys::ID_PRESCALLER:     return m_timer0WdtPrescaller;
+        case Subsys::ID_ISP:            return m_isp;
+        case Subsys::ID_EXT_INT:        return m_externalInterrupts;
 
-        default:
-            return NULL;
+        default:                        return NULL;
     }
 }
 
@@ -213,6 +240,7 @@ inline void PIC8Sim::mcuReset()
 int PIC8Sim::executeInstruction()
 {
     int cycles;
+//     float timeStep = cycles2time(m_clockCycles);
 
     m_io->clockCycles();
 
@@ -254,10 +282,23 @@ int PIC8Sim::executeInstruction()
         {
             cycles += m_instructionSet->execInstruction();
         }
+
+        m_io->clockCycles();
+        m_timerCounter0->clockCycles(cycles);
+
+//         m_watchDogTimer->timeStep(timeStep, cycles);
     }
 
     return cycles;
 }
+/*
+    PIC8WatchDogTimer * m_watchDogTimer;
+    PIC8InterruptController * m_interruptController;
+    PIC8InstructionSet * m_instructionSet;
+    PIC8Timer0WdtPrescaller * m_timer0WdtPrescaller;
+    PIC8ISP * m_isp;
+    PIC8ExternalInterrupts * m_externalInterrupts;
+*/
 
 int PIC8Sim::timeStep ( float timeStep )
 {

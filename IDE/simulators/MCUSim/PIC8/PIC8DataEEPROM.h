@@ -5,9 +5,9 @@
  *
  * ...
  *
- * (C) copyright 2012 Moravia Microsystems, s.r.o.
+ * (C) copyright 2013 Moravia Microsystems, s.r.o.
  *
- * @authors Martin Ošmera <martin.osmera@gmail.com>
+ * @author Martin Ošmera <martin.osmera@gmail.com>
  * @ingroup PIC8
  * @file PIC8DataEEPROM.h
  */
@@ -172,6 +172,21 @@ class PIC8DataEEPROM : public MCUSim::Memory
          * @return
          */
         unsigned int getUndefVal() const;
+
+        /**
+         * @brief
+         * @param[in] addr
+         * @return
+         */
+        unsigned int read ( unsigned int addr );
+
+        /**
+         * @brief
+         * @param[in] addr
+         * @param[in] val
+         */
+        void write ( unsigned int addr,
+                     unsigned int val );
 
     ////    Inline Public Operations    ////
     public:

@@ -5,9 +5,9 @@
  *
  * ...
  *
- * (C) copyright 2012 Moravia Microsystems, s.r.o.
+ * (C) copyright 2013 Moravia Microsystems, s.r.o.
  *
- * @authors Martin Ošmera <martin.osmera@gmail.com>
+ * @author Martin Ošmera <martin.osmera@gmail.com>
  * @ingroup PIC8
  * @file PIC8Stack.cxx
  */
@@ -31,7 +31,7 @@ PIC8Stack::~PIC8Stack()
 
 PIC8Stack * PIC8Stack::link ( MCUSim::EventLogger * eventLogger )
 {
-    Subsys::link(eventLogger, ID_FUSES);
+    Subsys::link(eventLogger, ID_STACK);
     return this;
 }
 
