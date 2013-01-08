@@ -72,6 +72,7 @@ namespace PIC8PinNames
         SPF_CLKOUT,     ///<
         SPF_T0CKI,      ///<
         SPF_INT,        ///<
+        SPF_MCLR,       ///<
 
         SPF_CLOCK,      ///<
         SPF_DATA,       ///<
