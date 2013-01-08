@@ -96,6 +96,9 @@ class PIC8IO : public MCUSim::IO
 
             ///
             SimFloatType m_pullUpresistance;
+
+            ///
+            bool m_enabled;
         };
 
     ////    Constructors and Destructors    ////

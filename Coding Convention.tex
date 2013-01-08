@@ -82,29 +82,34 @@
 \tableofcontents
 
 \chapter{Importance of a coding convention}
-	First of all it is important to keep in mind that this convention is not supposed to create a set of unnecessary and unproductive rules to poison your work; instead in case you are sure that your work goes better with another coding style, go ahead but please at least read this paragraph till end. Coding convention is something you probably get used to, sooner or later, and it contributes in creating unified working environment where you always know what to expect. Also it helps to write code which is relatively very easily readable for a man who is familiar with the applied convention, and it helps in creating a code that is not merely a piece of an ``abstract machinery'' but is a sort art... Don't you think that creating a state of the art equipment for microcomputer controlled hardware development is a little more that ordinary programming and circuitry design? Please lets make it a masterpiece.
+    First of all it is important to keep in mind that this convention is not supposed to create a set of unnecessary and unproductive rules to poison your work; instead in case you are sure that your work goes better with another coding style, go ahead but please at least read this paragraph till end. Coding convention is something you probably get used to, sooner or later, and it contributes in creating unified working environment where you always know what to expect. Also it helps to write code which is relatively very easily readable for a man who is familiar with the applied convention, and it helps in creating a code that is not merely a piece of an ``abstract machinery'' but is a sort art... Don't you think that creating a state of the art equipment for microcomputer controlled hardware development is a little more that ordinary programming and circuitry design? Please lets make it a masterpiece.
 
 \chapter{Detailed specification}
-	\section{Header files}
-		\subsection{Indentation}
-		\subsection{Sections}
-		\subsection{In-line documentation}
-			{\color{highlight_c_comment}\verb'// ============================================================================='}\\
-			{\color{highlight_c_dox_comment}\verb'/**'}\\
-			\verb' '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_tag}\verb'@brief'}\\
-			\verb' '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_comment}\verb'C++'}\verb' '{\color{highlight_c_dox_comment}\verb'Interface:'}\verb' '{\color{highlight_c_dox_comment}\verb'Base'}\verb' '{\color{highlight_c_dox_comment}\verb'class'}\verb' '{\color{highlight_c_dox_comment}\verb'for'}\verb' '{\color{highlight_c_dox_comment}\verb'ANS.1'}\verb' '{\color{highlight_c_dox_comment}\verb'BER'}\verb' '{\color{highlight_c_dox_comment}\verb'encoder.'}\\
-			\verb' '{\color{highlight_c_dox_comment}\verb'*'}\\
-			\verb' '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_comment}\verb'This'}\verb' '{\color{highlight_c_dox_comment}\verb'class'}\verb' '{\color{highlight_c_dox_comment}\verb'implements'}\verb' '{\color{highlight_c_dox_comment}\verb'...'}\\
-			\verb' '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_comment}\verb'...'}\verb' '{\color{highlight_c_dox_comment}\verb'...'}\verb' '{\color{highlight_c_dox_comment}\verb'...'}\\
-			\verb' '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_comment}\verb'...'}\verb' '{\color{highlight_c_dox_comment}\verb'...'}\verb' '{\color{highlight_c_dox_comment}\verb'...'}\\
-			\verb' '{\color{highlight_c_dox_comment}\verb'*'}\\
-			\verb' '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_comment}\verb'(C)'}\verb' '{\color{highlight_c_dox_comment}\verb'copyright'}\verb' '{\color{highlight_c_dox_comment}\verb'2012'}\verb' '{\color{highlight_c_dox_comment}\verb'Moravia'}\verb' '{\color{highlight_c_dox_comment}\verb'Microsystems,'}\verb' '{\color{highlight_c_dox_comment}\verb's.r.o.'}\\
-			\verb' '{\color{highlight_c_dox_comment}\verb'*'}\\
-			\verb' '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_tag}\verb'@author'}{\color{highlight_c_dox_name}\verb' Your Name <your.name@email.xx>'}\\
-			\verb' '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_tag}\verb'@ingroup'}{\color{highlight_c_dox_name}\verb' SomeGroup'}\\
-			\verb' '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_tag}\verb'@file'}\verb' '{\color{highlight_c_dox_word}\verb'FileName.h'}\\
-			\verb' '{\color{highlight_c_dox_comment}\verb'*/'}\\
-			{\color{highlight_c_comment}\verb'// ============================================================================='}\\
+    \section{Header files}
+        \subsection{Indentation}
+            \begin{itemize}
+                \item Indent with spaces, use 4 spaces for a level.
+                \item 
+            \end{itemize}
+
+        \subsection{Sections}
+        \subsection{In-line documentation}
+            {\color{highlight_c_comment}\verb'// ============================================================================='}\\
+            {\color{highlight_c_dox_comment}\verb'/**'}\\
+            \verb' '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_tag}\verb'@brief'}\\
+            \verb' '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_comment}\verb'C++'}\verb' '{\color{highlight_c_dox_comment}\verb'Interface:'}\verb' '{\color{highlight_c_dox_comment}\verb'Base'}\verb' '{\color{highlight_c_dox_comment}\verb'class'}\verb' '{\color{highlight_c_dox_comment}\verb'for'}\verb' '{\color{highlight_c_dox_comment}\verb'ANS.1'}\verb' '{\color{highlight_c_dox_comment}\verb'BER'}\verb' '{\color{highlight_c_dox_comment}\verb'encoder.'}\\
+            \verb' '{\color{highlight_c_dox_comment}\verb'*'}\\
+            \verb' '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_comment}\verb'This'}\verb' '{\color{highlight_c_dox_comment}\verb'class'}\verb' '{\color{highlight_c_dox_comment}\verb'implements'}\verb' '{\color{highlight_c_dox_comment}\verb'...'}\\
+            \verb' '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_comment}\verb'...'}\verb' '{\color{highlight_c_dox_comment}\verb'...'}\verb' '{\color{highlight_c_dox_comment}\verb'...'}\\
+            \verb' '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_comment}\verb'...'}\verb' '{\color{highlight_c_dox_comment}\verb'...'}\verb' '{\color{highlight_c_dox_comment}\verb'...'}\\
+            \verb' '{\color{highlight_c_dox_comment}\verb'*'}\\
+            \verb' '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_comment}\verb'(C)'}\verb' '{\color{highlight_c_dox_comment}\verb'copyright'}\verb' '{\color{highlight_c_dox_comment}\verb'2013'}\verb' '{\color{highlight_c_dox_comment}\verb'Moravia'}\verb' '{\color{highlight_c_dox_comment}\verb'Microsystems,'}\verb' '{\color{highlight_c_dox_comment}\verb's.r.o.'}\\
+            \verb' '{\color{highlight_c_dox_comment}\verb'*'}\\
+            \verb' '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_tag}\verb'@author'}{\color{highlight_c_dox_name}\verb' Your Name <your.name@email.xx>'}\\
+            \verb' '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_tag}\verb'@ingroup'}{\color{highlight_c_dox_name}\verb' SomeGroup'}\\
+            \verb' '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_tag}\verb'@file'}\verb' '{\color{highlight_c_dox_word}\verb'FileName.h'}\\
+            \verb' '{\color{highlight_c_dox_comment}\verb'*/'}\\
+            {\color{highlight_c_comment}\verb'// ============================================================================='}\\
 
 \chapter{Examples}
 
