@@ -24,7 +24,7 @@ PIC8Config::PIC8Config() : MCUSim::Config(MCUSim::ARCH_PIC8)
     m_configClockControl        = NULL;
     m_configInstructionSet      = NULL;
     m_configProgramMemory       = NULL;
-    m_configWord                = NULL;
+    m_configConfigWord          = NULL;
     m_configStack               = NULL;
     m_configInterruptController = NULL;
     m_configDataEEPROM          = NULL;
@@ -32,6 +32,7 @@ PIC8Config::PIC8Config() : MCUSim::Config(MCUSim::ARCH_PIC8)
     m_configTimerCounter0       = NULL;
     m_configTimer0WdtPrescaller = NULL;
     m_configExternalInterrupts  = NULL;
+    m_configISP                 = NULL;
 }
 
 void PIC8Config::link ( PIC8Sim * system )
@@ -49,4 +50,5 @@ void PIC8Config::link ( PIC8Sim * system )
     m_configTimerCounter0       = & ( system -> m_timerCounter0         -> m_config );
     m_configTimer0WdtPrescaller = & ( system -> m_timer0WdtPrescaller   -> m_config );
     m_configExternalInterrupts  = & ( system -> m_externalInterrupts    -> m_config );
+    m_configISP                 = & ( system -> m_isp                   -> m_config );
 }

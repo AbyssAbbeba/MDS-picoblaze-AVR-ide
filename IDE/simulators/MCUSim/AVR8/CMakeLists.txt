@@ -2,7 +2,7 @@
 #
 # Simulator engine module for 8-bit AVR.
 #
-# (C) copyright 2012 Moravia Microsystems, s.r.o.
+# (C) copyright 2013 Moravia Microsystems, s.r.o.
 #
 # ==============================================================================
 

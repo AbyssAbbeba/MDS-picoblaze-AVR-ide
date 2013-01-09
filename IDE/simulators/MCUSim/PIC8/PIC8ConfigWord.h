@@ -48,7 +48,7 @@ class PIC8ConfigWord : public MCUSim::Subsys
         struct Config
         {
             ///
-            unsigned char m_defaultCfgWord;
+            uint8_t m_defaultCfgWord;
         };
 
     ////    Constructors and Destructors    ////

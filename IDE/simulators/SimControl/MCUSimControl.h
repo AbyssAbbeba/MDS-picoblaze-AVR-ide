@@ -123,7 +123,7 @@ class MCUSimControl : public QObject
          * @param[out] filename
          * @return
          */
-        int getLineNumber(std::string * filename);
+        int getLineNumber ( std::string * filename );
 
         /**
          * @brief
@@ -210,7 +210,7 @@ class MCUSimControl : public QObject
         /**
          * @brief
          */
-        std::vector<std::pair<MCUSimObserver*, uint64_t> > m_observers[MCUSim::Subsys::ID__MAX__];
+        std::vector<std::pair<MCUSimObserver*, uint64_t> > m_observers [ MCUSim::Subsys::ID__MAX__ ];
 
     ////    Private Operations    ////
     private:
