@@ -45,6 +45,8 @@ class PIC8Timer0WdtPrescaller : public MCUSim::Subsys
          */
         struct Config
         {
+            ///
+            bool m_enabled;
         };
 
     ////    Constructors and Destructors    ////

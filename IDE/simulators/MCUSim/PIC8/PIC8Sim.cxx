@@ -110,7 +110,8 @@ PIC8Sim::PIC8Sim()
 
     regSubSys(m_externalInterrupts->link ( m_eventLogger,
                                            m_dataMemory,
-                                           m_io ) );
+                                           m_io,
+                                           m_interruptController ) );
 
     checkSubSystems();
     m_config->link(this);
@@ -239,20 +240,35 @@ inline void PIC8Sim::mcuReset()
 
 int PIC8Sim::executeInstruction()
 {
-    int cycles;
-//     float timeStep = cycles2time(m_clockCycles);
+    if ( true == m_io->m_config.m_enabled )
+    {
+        m_io->clockCycles();
+        if ( false == m_io->getLog(PIC8PinNames::SPF_MCLR) )
+        {
+            if ( true == m_isp->m_config.m_enabled )
+            {
+                m_isp->timeStep(cycles2time(1));
+            }
+            return 1;
+        }
+    }
 
-    m_io->clockCycles();
+    float timeStep = cycles2time(m_clockCycles);
 
     if ( MD_SLEEP == m_processorMode )
     {
-        cycles = m_interruptController->autoInterrupt();
+        if ( true == m_externalInterrupts->m_config.m_enabled )
+        {
+            m_externalInterrupts->clockCycles();
+        }
 
-        if ( -1 == cycles )
+        m_clockCycles = m_interruptController->autoInterrupt();
+
+        if ( -1 == m_clockCycles )
         {
             reset(MCUSim::RSTMD_MCU_RESET);
         }
-        else if ( 1 == cycles )
+        else if ( 1 == m_clockCycles )
         {
             m_instructionSet->wakeFromSleep();
         }
@@ -272,42 +288,87 @@ int PIC8Sim::executeInstruction()
     }
     else
     {
-        cycles = m_interruptController->autoInterrupt();
-        if ( -1 == cycles )
+        if ( true == m_timerCounter0->m_config.m_enabled )
+        {
+            m_timerCounter0->clockCycles(m_clockCycles);
+        }
+        if ( true == m_watchDogTimer->m_config.m_enabled )
+        {
+            m_watchDogTimer->timeStep(timeStep, m_clockCycles);
+        }
+        if ( true == m_timer0WdtPrescaller->m_config.m_enabled )
+        {
+            m_timer0WdtPrescaller->clockCycles();
+        }
+        if ( true == m_externalInterrupts->m_config.m_enabled )
+        {
+            m_externalInterrupts->clockCycles();
+        }
+
+        m_clockCycles = m_interruptController->autoInterrupt();
+        if ( -1 == m_clockCycles )
         {
             reset(MCUSim::RSTMD_MCU_RESET);
             return 1;
         }
-        else if ( 0 == cycles )
+        else if ( 0 == m_clockCycles )
         {
-            cycles += m_instructionSet->execInstruction();
+            m_clockCycles += m_instructionSet->execInstruction();
         }
-
-        m_io->clockCycles();
-        m_timerCounter0->clockCycles(cycles);
-
-//         m_watchDogTimer->timeStep(timeStep, cycles);
     }
 
-    return cycles;
+    return m_clockCycles;
 }
-/*
-    PIC8WatchDogTimer * m_watchDogTimer;
-    PIC8InterruptController * m_interruptController;
-    PIC8InstructionSet * m_instructionSet;
-    PIC8Timer0WdtPrescaller * m_timer0WdtPrescaller;
-    PIC8ISP * m_isp;
-    PIC8ExternalInterrupts * m_externalInterrupts;
-*/
 
 int PIC8Sim::timeStep ( float timeStep )
 {
     m_time += timeStep;
 
+    if ( true == m_io->m_config.m_enabled )
+    {
+        if ( false == m_io->getLog(PIC8PinNames::SPF_MCLR) )
+        {
+            if ( true == m_isp->m_config.m_enabled )
+            {
+                m_isp->timeStep(m_time);
+            }
+            return 1;
+        }
+    }
+
+    if ( m_time < m_clockPeriod )
+    {
+        if ( true == m_watchDogTimer->m_config.m_enabled )
+        {
+            m_watchDogTimer->timeStep(timeStep, m_clockCycles);
+        }
+        return 0;
+    }
+
     int allocatedCycles = int(m_time / m_clockPeriod);
     while ( m_time >= m_clockPeriod )
     {
         m_time -= m_clockPeriod;
+    }
+
+    if ( MD_NORMAL == m_processorMode )
+    {
+        if ( true == m_timerCounter0->m_config.m_enabled )
+        {
+            m_timerCounter0->clockCycles(allocatedCycles);
+        }
+        if ( true == m_watchDogTimer->m_config.m_enabled )
+        {
+            m_watchDogTimer->timeStep(timeStep, allocatedCycles);
+        }
+        if ( true == m_timer0WdtPrescaller->m_config.m_enabled )
+        {
+            m_timer0WdtPrescaller->clockCycles();
+        }
+        if ( true == m_externalInterrupts->m_config.m_enabled )
+        {
+            m_externalInterrupts->clockCycles();
+        }
     }
 
     if ( m_clockCycles > 0 )
@@ -324,12 +385,48 @@ int PIC8Sim::timeStep ( float timeStep )
         }
     }
 
-    m_io->clockCycles();
-    int cycles = m_instructionSet->execInstruction();
-
-    if ( cycles > allocatedCycles )
+    int cycles = m_interruptController->autoInterrupt();
+    if ( 0 != cycles )
     {
-        m_clockCycles += ( cycles - allocatedCycles );
+        if ( -1 == cycles )
+        {
+            reset(MCUSim::RSTMD_MCU_RESET);
+            return 0;
+        }
+        else if ( m_processorMode == MD_SLEEP )
+        {
+            // Wake from sleep
+            m_processorMode = MD_NORMAL;
+        }
+ 
+        if ( cycles > allocatedCycles )
+        {
+            m_clockCycles += ( cycles - allocatedCycles );
+        }
+
+        if ( m_clockControl->m_clockSource.getType() != Clock::ClockSource::TYPE_RC )
+        {
+            m_clockCycles += ( 1024 / 2 + 1 );
+        }
+        else
+        {
+            m_clockCycles++;
+        }
+
+        if ( m_clockCycles > 0 )
+        {
+            return allocatedCycles;
+        }
+    }
+
+    if ( MD_NORMAL == m_processorMode )
+    {
+        cycles = m_instructionSet->execInstruction();
+
+        if ( cycles > allocatedCycles )
+        {
+            m_clockCycles += ( cycles - allocatedCycles );
+        }
     }
 
     return allocatedCycles;
