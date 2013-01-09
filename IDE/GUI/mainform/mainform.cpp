@@ -453,14 +453,14 @@ void MainForm::compileProject()
     QString mainFileName = projectMan->getActive()->mainFileName.section('.',0,-2);
     compileWidget->clear();
     
-    QStringList args;
-    args << " -g -Os -mmcu=atmega8 -c ../" + projectMan->getActive()->mainFileName;
+    //QStringList args;
+    //args << " -g -Os -mmcu=atmega8 -c ../" + projectMan->getActive()->mainFileName;
     QProcess compiler(this);
     compiler.setWorkingDirectory(projectMan->getActive()->prjPath.section('/',0, -2) + "/build/");
     qDebug() << compiler.workingDirectory();
 
     compiler.setProcessChannelMode(QProcess::MergedChannels);
-    compiler.start("avr-gcc", args);
+    compiler.start("avr-gcc -g -Os -mmcu=atmega8 -c ../" + projectMan->getActive()->mainFileName);
     if (!compiler.waitForFinished())
     {
         compileWidget->appendPlainText(compiler.errorString());
@@ -471,11 +471,9 @@ void MainForm::compileProject()
         compileWidget->appendPlainText(compiler.readAll() + "\n\n");
     }
 
-    args.clear();
-    args << " -g -mmcu=atmega8 -o " + mainFileName + ".elf " + mainFileName + ".o";
 
     compiler.setProcessChannelMode(QProcess::MergedChannels);
-    compiler.start("avr-gcc", args);
+    compiler.start("avr-gcc -g -mmcu=atmega8 -o " + mainFileName + ".elf " + mainFileName + ".o");
     if (!compiler.waitForFinished())
     {
         compileWidget->appendPlainText(compiler.errorString());
@@ -486,11 +484,9 @@ void MainForm::compileProject()
         compileWidget->appendPlainText(compiler.readAll() + "\n\n");
     }
 
-    args.clear();
-    args << " -j .text -j .data -O ihex " + mainFileName + ".elf " + mainFileName + ".hex";
 
     compiler.setProcessChannelMode(QProcess::MergedChannels);
-    compiler.start("avr-objcopy", args);
+    compiler.start("avr-objcopy -j .text -j .data -O ihex " + mainFileName + ".elf " + mainFileName + ".hex");
     if (!compiler.waitForFinished())
     {
         compileWidget->appendPlainText(compiler.errorString());
