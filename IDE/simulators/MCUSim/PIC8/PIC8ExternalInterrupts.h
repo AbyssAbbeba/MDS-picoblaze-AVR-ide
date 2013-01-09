@@ -19,6 +19,7 @@
 // Forward declarations
 class PIC8DataMemory;
 class PIC8IO;
+class PIC8InterruptController;
 
 #include "../MCUSim.h"
 
@@ -66,9 +67,10 @@ class PIC8ExternalInterrupts : public MCUSim::Subsys
          * @param[in,out] io
          * @return
          */
-        PIC8ExternalInterrupts * link ( MCUSim::EventLogger * eventLogger,
-                                        PIC8DataMemory      * dataMemory,
-                                        PIC8IO              * io);
+        PIC8ExternalInterrupts * link ( MCUSim::EventLogger     * eventLogger,
+                                        PIC8DataMemory          * dataMemory,
+                                        PIC8IO                  * io,
+                                        PIC8InterruptController * interruptController );
 
         /**
          * @brief
@@ -111,6 +113,9 @@ class PIC8ExternalInterrupts : public MCUSim::Subsys
 
             ///
             PIC8IO * m_io;
+
+            ///
+            PIC8InterruptController * m_interruptController;
         //@}
 
         /**
