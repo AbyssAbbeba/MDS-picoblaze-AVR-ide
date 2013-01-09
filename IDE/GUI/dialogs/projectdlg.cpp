@@ -20,6 +20,9 @@ ProjectDialog::ProjectDialog(QMainWindow *dialogParent, ProjectMan *dialogProjec
     : QDialog(dialogParent)
 {
     layout = new QGridLayout(this);
+    architecture = new QComboBox(this);
+    architecture->addItem("ATmega8A");
+    //architecture->addItem();
     projName = new QLineEdit(this);
     projDir = new QLineEdit(this);
     labelName = new QLabel(this);
@@ -39,6 +42,7 @@ ProjectDialog::ProjectDialog(QMainWindow *dialogParent, ProjectMan *dialogProjec
     layout->addWidget(labelDir);
     layout->addWidget(projDir);
     layout->addWidget(chooseName);
+    layout->addWidget(architecture);
     layout->addWidget(buttonBox);
     parent = dialogParent;
     projectMan = dialogProjectMan;
@@ -65,7 +69,7 @@ void ProjectDialog::bCreate()
      }
      else {
          //nacteni projektu do manageru otevrenych projektu
-         projectMan->addProject(projName->text(), projDir->text() + "/" + projName->text()+ ".mmp", &file);
+         projectMan->addProject(projName->text(), projDir->text() + "/" + projName->text()+ ".mmp", architecture->currentText(), &file);
          file.close();
 
          freeDialog();

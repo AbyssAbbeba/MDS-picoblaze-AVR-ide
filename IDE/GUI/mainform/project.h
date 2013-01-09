@@ -53,7 +53,7 @@ class ProjectMan
     public:
         ProjectMan(MainForm *mainWindow);
         void addFile(QString path, QString name);
-        void addProject(QString name, QString path, QFile *file);
+        void addProject(QString name, QString path, QString architecture, QFile *file);
         void openProject(QFile *file);
         void setActive(Project *activePrj);
         bool isActiveProject(Project *project);
@@ -83,7 +83,7 @@ class Project : public QObject
         //konstruktor pro otevirani projektu
         Project(QFile *file, MainForm* mainWindow, ProjectMan *parent);
         //konstruktor pro prazdny projekt
-        Project(QString name, QString path, MainForm* mainWindow, QFile *file, ProjectMan *parent);
+        Project(QString name, QString path, QString arch, MainForm* mainWindow, QFile *file, ProjectMan *parent);
         ~Project();
 
         void addFile(QString path, QString name);
@@ -103,7 +103,7 @@ class Project : public QObject
         QString prjPath;
         int fileCount;
 
-
+        QString architecture;
         QString mainFileName;
         QString mainFilePath;
         QList<QString> fileNames;
@@ -113,8 +113,8 @@ class Project : public QObject
 
         //simulation handle
         McuMemoryView *m_mcuMemoryView;
-	RegDisplayList *m_regList;
-	MCUSimControl *m_simControlUnit;
+        RegDisplayList *m_regList;
+        MCUSimControl *m_simControlUnit;
 
     private slots:
         void setActive();

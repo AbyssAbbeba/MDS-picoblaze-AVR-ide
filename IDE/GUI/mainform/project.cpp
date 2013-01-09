@@ -55,9 +55,9 @@ void ProjectMan::addFile(QString path, QString name)
     getActive()->addFile(path, name);
 }
 
-void ProjectMan::addProject(QString name, QString path, QFile *file)
+void ProjectMan::addProject(QString name, QString path, QString architecture, QFile *file)
 {
-    Project *newProject = new Project(name, path, mainWindow, file, this);
+    Project *newProject = new Project(name, path, architecture, mainWindow, file, this);
     //mainWindow->getWDockManager()->hideDockWidgetArea(0);
     mainWindow->addDockWidget(Qt::LeftDockWidgetArea, newProject->prjDockWidget);
     //mainWindow->getWDockManager()->showDockWidgetArea(0);
@@ -117,11 +117,12 @@ void ProjectMan::createActiveMakefile()
         makeOut << "CFLAGS= -mavr" << endl << endl;
         makeOut << "FILES=";
         QString relativePath;
-        for (int i = 0; i < activeProject->fileCount; i++)
-        {
-            relativePath = makefileDir.relativeFilePath(projectDir.path() + "/" + activeProject->filePaths.at(i));
+        //for (int i = 0; i < activeProject->fileCount; i++)
+        //{
+            //relativePath = makefileDir.relativeFilePath(projectDir.path() + "/" + activeProject->filePaths.at(i));
+        relativePath = makefileDir.relativeFilePath(projectDir.path() + "/" + activeProject->mainFilePath);
             makeOut << " " << relativePath;
-        }
+        //}
         makeOut << endl << endl;
 
         makeOut << "$(NAME):" << endl;
@@ -143,6 +144,9 @@ Project::~Project()
 //otevreni projektu
 Project::Project(QFile *file, MainForm* mainWindow, ProjectMan *parent)
 {
+    mainFileName = "";
+    mainFilePath = "";
+    
     errorFlag = ERR_OK;
     fileCount = 0;
     parentManager = parent;
@@ -182,6 +186,10 @@ Project::Project(QFile *file, MainForm* mainWindow, ProjectMan *parent)
                             {
                                 prjName = xmlGeneralElement.attribute("name", "");
                             }
+                            else if (xmlGeneralElement.tagName() == "Architecture")
+                            {
+                                architecture = xmlGeneralElement.attribute("architecture", "");
+                            }
                             xmlGeneralNode = xmlGeneralNode.nextSibling();
                         }
                     }
@@ -196,14 +204,18 @@ Project::Project(QFile *file, MainForm* mainWindow, ProjectMan *parent)
                             {
                                 fileNames.append(xmlFilesElement.attribute("name", ""));
                                 filePaths.append(xmlFilesElement.attribute("path", ""));
-                                if (xmlFilesElement.attribute("main", "") == "yes")
-                                {
-                                    mainFileName = fileNames.at(fileCount);
-                                    mainFilePath = filePaths.at(fileCount);
-                                }
                                 fileCount++;
                             }
                             xmlFilesNode = xmlFilesNode.nextSibling();
+                        }
+                    }
+                    else if (xmlElement.tagName() == "Mainfile")
+                    {
+                        if (xmlElement.attribute("name", "") != ""
+                            && xmlElement.attribute("path", "") != "")
+                        {
+                            mainFileName = xmlElement.attribute("name", "");
+                            mainFilePath = xmlElement.attribute("path", "");
                         }
                     }
                 }
@@ -228,6 +240,10 @@ Project::Project(QFile *file, MainForm* mainWindow, ProjectMan *parent)
                  
                  treeProjFile->setData(0, Qt::ToolTipRole, QDir(absolutePath + "/" + filePaths.at(i)).canonicalPath());
             }
+            if (mainFileName != "" && mainFilePath != "")
+            {
+                prjTreeWidget->setMainFileManual(mainFileName, mainFilePath);
+            }
 
             connect(prjDockWidget, SIGNAL(visibilityChanged(bool)),this,SLOT(setActive()));  
             connect(prjTreeWidget, SIGNAL(itemDoubleClicked (QTreeWidgetItem *,int)),this,SLOT(openItem()));  
@@ -237,7 +253,7 @@ Project::Project(QFile *file, MainForm* mainWindow, ProjectMan *parent)
 }
 
 //vytvoreni prazdneho projektu
-Project::Project(QString name, QString path, MainForm* mainWindow, QFile *file, ProjectMan *parent)
+Project::Project(QString name, QString path, QString arch, MainForm* mainWindow, QFile *file, ProjectMan *parent)
 {
     errorFlag = ERR_OK;
     parentManager = parent;
@@ -253,45 +269,48 @@ Project::Project(QString name, QString path, MainForm* mainWindow, QFile *file, 
     prjDockWidget->setWidget(prjTreeWidget);
     //prjDockWidget->setMinimumWidth(150);
     prjName=name;
-    //pri nacteni programu neni nacteny projekt
-    //if (name != NULL) {
-        prjPath=path;
-        QTreeWidgetItem *treeProjName = new QTreeWidgetItem(prjTreeWidget);
-    	treeProjName->setText(0, name);
-        treeProjName->setData(0, Qt::ToolTipRole, path);
-    	fileCount=0;
-        
-        //a zapsani do souboru
-        QDomDocument domDoc("MMProject");
-        QDomElement xmlRoot = domDoc.createElement("MMProject");
-        domDoc.appendChild(xmlRoot);
+    prjPath=path;
+    QTreeWidgetItem *treeProjName = new QTreeWidgetItem(prjTreeWidget);
+    treeProjName->setText(0, name);
+    treeProjName->setData(0, Qt::ToolTipRole, path);
+    fileCount=0;
 
-        QDomElement xmlGeneral = domDoc.createElement("General");
-        QDomElement xmlName = domDoc.createElement("Name");
-        xmlName.setAttribute("name", name);
-        xmlGeneral.appendChild(xmlName);
-        //QDomElement xmlPath = domDoc.createElement("Path");
-        //xmlPath.setAttribute("path", path);
-        //xmlGeneral.appendChild(xmlPath);
-        xmlRoot.appendChild(xmlGeneral);
+    architecture = arch;
+    
+    //a zapsani do souboru
+    QDomDocument domDoc("MMProject");
+    QDomElement xmlRoot = domDoc.createElement("MMProject");
+    domDoc.appendChild(xmlRoot);
 
-        QDomElement xmlFiles = domDoc.createElement("Files");
-        xmlRoot.appendChild(xmlFiles);
+    QDomElement xmlGeneral = domDoc.createElement("General");
+    QDomElement xmlName = domDoc.createElement("Name");
+    xmlName.setAttribute("name", name);
+    xmlGeneral.appendChild(xmlName);
+    QDomElement xmlArch = domDoc.createElement("Architecture");
+    xmlArch.setAttribute("architecture", arch);
+    xmlGeneral.appendChild(xmlArch);
+    xmlRoot.appendChild(xmlGeneral);
 
-        QDomElement xmlSimulator = domDoc.createElement("Simulator");
-        xmlRoot.appendChild(xmlSimulator);
+    QDomElement xmlFiles = domDoc.createElement("Files");
+    xmlRoot.appendChild(xmlFiles);
 
-        QDomElement xmlCompiler = domDoc.createElement("Compiler");
-        xmlRoot.appendChild(xmlCompiler);
+    QDomElement xmlMainFile = domDoc.createElement("Mainfile");
+    xmlMainFile.setAttribute("name", "");
+    xmlMainFile.setAttribute("path", "");
+    xmlRoot.appendChild(xmlMainFile);
 
-        QTextStream xmlStream(file);
-        xmlStream << domDoc.toString();
+    QDomElement xmlSimulator = domDoc.createElement("Simulator");
+    xmlRoot.appendChild(xmlSimulator);
 
-        connect(prjDockWidget, SIGNAL(visibilityChanged(bool)),this,SLOT(setActive()));
-        connect(prjTreeWidget, SIGNAL(itemDoubleClicked (QTreeWidgetItem *,int)),this,SLOT(openItem()));  
-        setupSim();
-    //}
+    QDomElement xmlCompiler = domDoc.createElement("Compiler");
+    xmlRoot.appendChild(xmlCompiler);
 
+    QTextStream xmlStream(file);
+    xmlStream << domDoc.toString();
+
+    connect(prjDockWidget, SIGNAL(visibilityChanged(bool)),this,SLOT(setActive()));
+    connect(prjTreeWidget, SIGNAL(itemDoubleClicked (QTreeWidgetItem *,int)),this,SLOT(openItem()));
+    setupSim();
 }
 
 
@@ -313,6 +332,8 @@ void Project::addFile(QString path, QString name)
     }
     else
     {
+        QDir project(QFileInfo(this->prjPath).dir());
+        relativePath = project.relativeFilePath(path);
         QDomElement xmlRoot = domDoc.documentElement();
         if (xmlRoot.tagName() != "MMProject")
         {
@@ -333,8 +354,6 @@ void Project::addFile(QString path, QString name)
                 {
                     if (xmlElement.tagName() == "Files")
                     {
-                        QDir project(QFileInfo(this->prjPath).dir());
-                        relativePath = project.relativeFilePath(path);
                         xmlFile.setAttribute("name", name);
                         xmlFile.setAttribute("path", relativePath);
                         /*if (name == mainFileName && relativePath == mainFilePath)
@@ -346,7 +365,17 @@ void Project::addFile(QString path, QString name)
                         fileNames.append(name);
                         fileCount++;
                         filePaths.append(relativePath);
-                        break;
+                    }
+                    else if (xmlElement.tagName() == "Mainfile")
+                    {
+                        if (mainFileName == ""
+                            && mainFilePath == "")
+                        {
+                            mainFileName = name;
+                            mainFilePath = relativePath;
+                            xmlElement.setAttribute("name", mainFileName);
+                            xmlElement.setAttribute("path", mainFilePath);
+                        }
                     }
                 }
                 xmlNode = xmlNode.nextSibling();
@@ -392,6 +421,52 @@ void Project::setMainFile(QString path, QString name)
 
     mainFileName = name;
     mainFilePath = relativePath;
+
+    //QDir project(QFileInfo(prjPath).dir());
+    //QString relativePath = project.relativeFilePath(path);
+
+    QFile prjFile(prjPath);
+    prjFile.open(QIODevice::ReadOnly);
+    QDomDocument domDoc("MMProject");
+    if (!domDoc.setContent(&prjFile))
+    {
+        errorFlag = ERR_ASSIGN;
+        error(ERR_XML_ASSIGN);
+    }
+    else
+    {
+        //otevrit xml, upravit a ulozit
+        QDomElement xmlRoot = domDoc.documentElement();
+        if (xmlRoot.tagName() != "MMProject")
+        {
+            errorFlag = ERR_CONTENT;
+            error(ERR_XML_CONTENT);
+        }
+        else
+        {
+            QDomNode xmlNode = xmlRoot.firstChild();
+            QDomElement xmlElement;
+            bool done = false;
+            while (!xmlNode.isNull() && done == false)
+            {
+                xmlElement = xmlNode.toElement();
+                if (!xmlElement.isNull())
+                {
+                    if (xmlElement.tagName() == "Mainfile")
+                    {
+                        xmlElement.setAttribute("name", mainFileName);
+                        xmlElement.setAttribute("path", mainFilePath);
+                        done = true;
+                    }
+                }
+                xmlNode = xmlNode.nextSibling();
+            }
+            prjFile.close();
+            prjFile.open(QIODevice::WriteOnly);
+            QTextStream xmlStream(&prjFile);
+            xmlStream << domDoc.toString();
+        }
+    }
 }
 
 
@@ -464,13 +539,18 @@ void Project::removeFile(QString path, QString name)
 void Project::setupSim()
 {
     McuSimCfgMgr::getInstance()->openConfigFile("../simulators/MCUSim/McuSimCfgMgr/mcuspecfile.xml");
-    m_simControlUnit = new MCUSimControl("ATmega8A");
+    //"ATmega8A"
+    this->m_simControlUnit = new MCUSimControl(architecture.toUtf8().constData());
+    
 }
 
 void Project::start()
 {
-    QString hexPath = prjPath.section('/',0, -2)+ "/make/" + mainFileName.section('.',0,-2) + ".hex";
+    
+    QString hexPath = prjPath.section('/',0, -2)+ "/build/" + mainFileName.section('.',0,-2) + ".hex";
+    qDebug() << hexPath;
     std::string stdPath = hexPath.toUtf8().constData();
+    //qDebug() << stdPath;
     m_simControlUnit->start(stdPath, m_simControlUnit->COMPILER_SDCC, m_simControlUnit->DBGFILEID_HEX);
 }
 
@@ -492,5 +572,9 @@ void Project::step()
 
 MCUSimControl* Project::getSimControl()
 {
+    if (this->m_simControlUnit == NULL)
+    {
+        qDebug() << "losdaskdfdsjfdsfsdfs";
+    }
     return this->m_simControlUnit;
 }

@@ -26,8 +26,11 @@ WSimulationInfo::WSimulationInfo(MCUSimControl *controlUnit, QWidget *parent)
     layout = new QHBoxLayout(this);
     m_regListScroll = new QScrollArea(this);
     gridLayout = new MovGridLayout(m_regListScroll);
+    m_regListScroll->setMinimumWidth(gridLayout->width());
     m_hexEdit = new McuMemoryView(controlUnit, this);
+    m_hexEdit->show();
     m_hexEdit->move(0,0);
+    m_regListScroll->move(m_hexEdit->width()+5,0);
     m_regList = new RegDisplayList(controlUnit, gridLayout);
     //load MovGridLayout items
     for (int i = 0; i < m_regList->m_numberOfDisplays; i++)

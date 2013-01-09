@@ -1,4 +1,5 @@
 #include <QtGui>
+#include <QtXml>
 #include "mcuspecfiledesigner.h"
 #include "ioregswidget.h"
 
@@ -16,7 +17,7 @@ McuSpecFileDesigner::McuSpecFileDesigner(QWidget *parent)
     QWidget *emptyWidget = new QWidget(this);
     
     QWidget *dataMemIOMem2Widget = new QWidget(this);
-    QWidget *finalizeWidget = new QWidget(this);
+    QWidget *finaliseWidget = new QWidget(this);
 
 
     //GENERAL
@@ -293,7 +294,21 @@ McuSpecFileDesigner::McuSpecFileDesigner(QWidget *parent)
     dataMemLayout->addWidget(dataMemLESPWidth, 4,1);
 
     dataMemLayout->addWidget(dataMemBtnChange, 2,2);
+
+    //FINALISE
+    finaliseLayout = new QGridLayout(finaliseWidget);
+    finalisePTE = new QPlainTextEdit(finaliseWidget);
+    finaliseBtnMake = new QPushButton("Preview", finaliseWidget);
+    connect(finaliseBtnMake, SIGNAL(clicked()), this, SLOT(finaliseXML()));
+    finaliseBtnSave = new QPushButton("Save", finaliseWidget);
+    connect(finaliseBtnSave, SIGNAL(clicked()), this, SLOT(saveXML()));
     
+    QHBoxLayout *finaliseLayoutBtn = new QHBoxLayout;
+    finaliseLayoutBtn->addWidget(finaliseBtnMake);
+    finaliseLayoutBtn->addWidget(finaliseBtnSave);
+
+    finaliseLayout->addWidget(finalisePTE, 0, 0);
+    finaliseLayout->addLayout(finaliseLayoutBtn, 1, 0);
     
     //setting layouts and adding tabs
     generalWidget->setLayout(generalLayout);
@@ -301,13 +316,14 @@ McuSpecFileDesigner::McuSpecFileDesigner(QWidget *parent)
     ioWidget->setLayout(ioLayout);
     systemControlWidget->setLayout(systemLayout);
     dataMemIORegsGenWidget->setLayout(dataMemLayout);
+    finaliseWidget->setLayout(finaliseLayout);
     mainTabs->addTab(generalWidget, "General");
     mainTabs->addTab(dataMemIORegsTabs, "Data Memory IORegs");
     mainTabs->addTab(dataMemIOMem2Widget, "Data Memory IOMem2");
     mainTabs->addTab(instructionWidget, "Instructions and Interrupts");
     mainTabs->addTab(ioWidget, "IO");
     mainTabs->addTab(systemControlWidget, "System Control");
-    mainTabs->addTab(finalizeWidget, "Finalize");
+    mainTabs->addTab(finaliseWidget, "Finalise");
 
     dataMemIORegsTabs->addTab(dataMemIORegsGenWidget, "General");
     dataMemIORegsTabs->addTab(emptyWidget, "IO Regs Init and Bits");
@@ -315,8 +331,298 @@ McuSpecFileDesigner::McuSpecFileDesigner(QWidget *parent)
     this->showMaximized();
 }
 
+
+//from xml file to config
 void McuSpecFileDesigner::getConfig()
 {
+}
+
+
+//config to xml
+void McuSpecFileDesigner::finaliseXML()
+{
+    QDomDocument domDoc("");
+    //root element
+    QDomElement xmlRoot = domDoc.createElement(generalLETag->text() + ":device");
+    xmlRoot.setAttribute("family", generalLEFamily->text());
+    xmlRoot.setAttribute("name", generalLEName->text());
+    domDoc.appendChild(xmlRoot);
+    //adc
+    QDomElement xmlAdc = domDoc.createElement("adc");
+    if (generalChckAdc->isChecked())
+    {
+        xmlAdc.setAttribute("enabled", "true");
+    }
+    xmlRoot.appendChild(xmlAdc);
+    //analog comparator
+    QDomElement xmlAnalogComp = domDoc.createElement("analogcomparator");
+    if (generalChckAnalogComp->isChecked())
+    {
+        xmlAnalogComp.setAttribute("enabled", "true");
+    }
+    xmlRoot.appendChild(xmlAnalogComp);
+    //bootloader
+    QDomElement xmlBootloader = domDoc.createElement("bootloader");
+    if (generalChckBootloader->isChecked())
+    {
+        xmlBootloader.setAttribute("enabled", "true");
+        xmlBootloader.setAttribute("minProgTime", generalLEBootMinProgTime->text());
+        xmlBootloader.setAttribute("maxProgTime", generalLEBootMaxProgTime->text());
+        xmlBootloader.setAttribute("pageSize", generalLEBootPageSize->text());
+        xmlBootloader.setAttribute("bootResetAddress0", generalLEBootResetAddress0->text());
+        xmlBootloader.setAttribute("bootResetAddress1", generalLEBootResetAddress1->text());
+        xmlBootloader.setAttribute("bootResetAddress2", generalLEBootResetAddress2->text());
+        xmlBootloader.setAttribute("bootResetAddress3", generalLEBootResetAddress3->text());
+        xmlBootloader.setAttribute("rwwSectionSize", generalLEBootRWWSectionSize->text());
+    }
+    xmlRoot.appendChild(xmlBootloader);
+    //clock control
+    QDomElement xmlClockControl = domDoc.createElement("clockcontrol");
+    if (generalChckClockControl->isChecked())
+    {
+        xmlClockControl.setAttribute("enabled", "true");
+    }
+    xmlRoot.appendChild(xmlClockControl);
+    //data eeprom
+    QDomElement xmlDataEEProm = domDoc.createElement("dataeeprom");
+    if (generalChckDataEEProm->isChecked())
+    {
+        xmlDataEEProm.setAttribute("enabled", "true");
+        xmlDataEEProm.setAttribute("size", generalLEEEPromSize->text());
+        xmlDataEEProm.setAttribute("writeTime", generalLEEEPromWTime->text());
+    }
+    xmlRoot.appendChild(xmlDataEEProm);
+    //data memory
+    QDomElement xmlDataMem = domDoc.createElement("datamemory");
+    xmlDataMem.setAttribute("regFileSize", dataMemLERegFileSize->text());
+    xmlDataMem.setAttribute("sramSize", dataMemLESRamSize->text());
+    xmlDataMem.setAttribute("ioRegSize", dataMemLEIORegSize->text());
+    xmlDataMem.setAttribute("mem2Size", dataMemLEMem2Size->text());
+    xmlDataMem.setAttribute("spWidth", dataMemLESPWidth->text());
+    xmlRoot.appendChild(xmlDataMem);
+    //io regs
+    QDomElement xmlIORegInitValues = domDoc.createElement("ioreginitvalues");
+    int ioRegsCount = this->dataMemLEIORegSize->text().toInt();
+    for (int i = 0; i < ioRegsCount; i++)
+    {
+        IORegsWidget* regsWidget = ioRegs.at(i);
+        QDomElement xmlIORegInitValue = domDoc.createElement("ioreginitvalue");
+        xmlIORegInitValue.setAttribute("addr", regsWidget->ioRegsLEAddr->text());
+        xmlIORegInitValue.setAttribute("value", regsWidget->ioRegsLEValue->text());
+        xmlIORegInitValue.setAttribute("readmask", regsWidget->ioRegsLEReadMask->text());
+        xmlIORegInitValue.setAttribute("writemask", regsWidget->ioRegsLEWriteMask->text());
+        xmlIORegInitValue.setAttribute("randommask", regsWidget->ioRegsLERandomMask->text());
+        if (regsWidget->ioRegsChckReserved->isChecked())
+        {
+            xmlIORegInitValue.setAttribute("reserved", "true");
+        }
+        else
+        {
+            xmlIORegInitValue.setAttribute("reserved", "false");
+        }
+        if (regsWidget->ioRegsChckVirtual->isChecked())
+        {
+            xmlIORegInitValue.setAttribute("virtual", "true");
+        }
+        else
+        {
+            xmlIORegInitValue.setAttribute("virtual", "false");
+        }
+        xmlIORegInitValue.setAttribute("name", regsWidget->ioRegsLEName->text());
+        xmlIORegInitValue.setAttribute("desc", regsWidget->ioRegsLEDesc->text());
+        if (regsWidget->bitChckEnable->isChecked())
+        {
+        }
+        xmlIORegInitValues.appendChild(xmlIORegInitValue);
+    }
+    xmlRoot.appendChild(xmlIORegInitValues);
+    //io mem2
+    QDomElement xmlIOMem2InitValues = domDoc.createElement("iomem2initvalues");
+    xmlRoot.appendChild(xmlIOMem2InitValues);
+    //external interrupts
+    QDomElement xmlExtInterr = domDoc.createElement("externalinterrupts");
+    if (generalChckExtInterr->isChecked())
+    {
+        xmlExtInterr.setAttribute("enabled", "true");
+    }
+    xmlRoot.appendChild(xmlExtInterr);
+    //fuses and locks
+    QDomElement xmlFusesLocks = domDoc.createElement("fusesandlocks");
+    xmlFusesLocks.setAttribute("defaultFuses", generalLEFuses->text());
+    xmlFusesLocks.setAttribute("defaultLockBits", generalLELocks->text());
+    xmlRoot.appendChild(xmlFusesLocks);
+    //instruction set
+    QDomElement xmlInstructionSet = domDoc.createElement("instructionset");
+    xmlInstructionSet.setAttribute("pcWidth", instructionLEPcWidth->text());
+    xmlRoot.appendChild(xmlInstructionSet);
+    QDomElement xmlAvailableInstructions = domDoc.createElement("availableinstructions");
+    xmlInstructionSet.appendChild(xmlAvailableInstructions);
+    //interrupt controller
+    QDomElement xmlInterruptController = domDoc.createElement("interruptcontroller");
+    xmlRoot.appendChild(xmlInterruptController);
+    QDomElement xmlPossibleInterrupts = domDoc.createElement("possibleinterrupts");
+    xmlInterruptController.appendChild(xmlPossibleInterrupts);
+    //io
+    QDomElement xmlIO = domDoc.createElement("io");
+    xmlIO.setAttribute("pullUpresistance", ioLEPullUpRes->text());
+    xmlRoot.appendChild(xmlIO);
+    QDomElement xmlSpecFuncMap = domDoc.createElement("specfuncmap");
+    QDomText textSpecFuncMap = domDoc.createTextNode(ioPTESpecFuncMap->toPlainText());
+    xmlSpecFuncMap.appendChild(textSpecFuncMap);
+    xmlIO.appendChild(xmlSpecFuncMap);
+    QDomElement xmlHasPort = domDoc.createElement("hasport");
+    QDomText textHasPort = domDoc.createTextNode(ioLEHasPorts->text());
+    xmlHasPort.appendChild(textHasPort);
+    xmlIO.appendChild(xmlHasPort);
+    QDomElement xmlAvailablePins = domDoc.createElement("availablepins");
+    QDomText textAvailablePins = domDoc.createTextNode(ioPTEPins->toPlainText());
+    xmlAvailablePins.appendChild(textAvailablePins);
+    xmlIO.appendChild(xmlAvailablePins);
+    //isp
+    QDomElement xmlISP = domDoc.createElement("isp");
+    if (generalChckIsp->isChecked())
+    {
+        xmlISP.setAttribute("enabled", "true");
+    }
+    xmlRoot.appendChild(xmlISP);
+    //parallel prog
+    QDomElement xmlParalProg = domDoc.createElement("parallelprog");
+    if (generalChckParalProg->isChecked())
+    {
+        xmlParalProg.setAttribute("enabled", "true");
+    }
+    xmlRoot.appendChild(xmlParalProg);
+    //program memory
+    QDomElement xmlProgMem = domDoc.createElement("programmemory");
+    xmlProgMem.setAttribute("size", generalLEProgMem->text());
+    xmlRoot.appendChild(xmlProgMem);
+    //spi
+    QDomElement xmlSpi = domDoc.createElement("spi");
+    if (generalChckSpi->isChecked())
+    {
+        xmlSpi.setAttribute("enabled", "true");
+    }
+    xmlRoot.appendChild(xmlSpi);
+    //system control
+    QDomElement xmlSysCtrl = domDoc.createElement("systemcontrol");
+    xmlSysCtrl.setAttribute("resetTresholdLow", systemLERstTresLow->text());
+    xmlSysCtrl.setAttribute("resetTresholdHigh", systemLERstTresHigh->text());
+    xmlSysCtrl.setAttribute("minResetPulseWidth", systemLEMinRstPulse->text());
+    xmlSysCtrl.setAttribute("powerOnResetTresholdFalling", systemLEPORTresFall->text());
+    xmlSysCtrl.setAttribute("powerOnResetTresholdRaising", systemLEPORTresRaise->text());
+    xmlSysCtrl.setAttribute("tBOD", systemLETBOD->text());
+    xmlSysCtrl.setAttribute("brownOutTreshold0", systemLEBrownOutTres0->text());
+    xmlSysCtrl.setAttribute("brownOutTreshold1", systemLEBrownOutTres1->text());
+    if (systemChckHasPOR->isChecked())
+    {
+        xmlSysCtrl.setAttribute("hasPowerOnReset", "true");
+    }
+    else
+    {
+        xmlSysCtrl.setAttribute("hasPowerOnReset", "false");
+    }
+    if (systemChckHasBrownOut->isChecked())
+    {
+        xmlSysCtrl.setAttribute("hasBrownOutReset", "true");
+    }
+    else
+    {
+        xmlSysCtrl.setAttribute("hasBrownOutReset", "false");
+    }
+    if (systemChckHasExtRst->isChecked())
+    {
+        xmlSysCtrl.setAttribute("hasExternalReset", "true");
+    }
+    else
+    {
+        xmlSysCtrl.setAttribute("hasExternalReset", "false");
+    }
+    if (systemChckHasWatchdog->isChecked())
+    {
+        xmlSysCtrl.setAttribute("hasWatchDog", "true");
+    }
+    else
+    {
+        xmlSysCtrl.setAttribute("hasWatchDog", "false");
+    }
+    xmlRoot.appendChild(xmlSysCtrl);
+    //timer counter 0
+    QDomElement xmlTimer0 = domDoc.createElement("timercounter0");
+    if (generalChckTimer0->isChecked())
+    {
+        xmlTimer0.setAttribute("enabled", "true");
+    }
+    xmlRoot.appendChild(xmlTimer0);
+    //timer counter 1
+    QDomElement xmlTimer1 = domDoc.createElement("timercounter1");
+    if (generalChckTimer1->isChecked())
+    {
+        xmlTimer1.setAttribute("enabled", "true");
+    }
+    xmlRoot.appendChild(xmlTimer1);
+    //timer counter 2
+    QDomElement xmlTimer2 = domDoc.createElement("timercounter2");
+    if (generalChckTimer2->isChecked())
+    {
+        xmlTimer2.setAttribute("enabled", "true");
+    }
+    xmlRoot.appendChild(xmlTimer2);
+    //watchdog timer
+    QDomElement xmlWatchdog = domDoc.createElement("watchdogtimer");
+    if (generalChckWatchdog->isChecked())
+    {
+        xmlWatchdog.setAttribute("enabled", "true");
+    }
+    xmlRoot.appendChild(xmlWatchdog);
+    //twi
+    QDomElement xmlTwi = domDoc.createElement("twi");
+    if (generalChckTwi->isChecked())
+    {
+        xmlTwi.setAttribute("enabled", "true");
+    }
+    xmlRoot.appendChild(xmlTwi);
+    //usart
+    QDomElement xmlUsart = domDoc.createElement("usart");
+    if (generalChckUsart->isChecked())
+    {
+        xmlUsart.setAttribute("enabled", "true");
+    }
+    xmlRoot.appendChild(xmlUsart);
+
+    
+    //show xml to QPlainTextEdit
+    finalisePTE->setPlainText(domDoc.toString());
+
+    //formatting output
+    //intend-spaces to tabs
+    QTextBlock block = finalisePTE->document()->begin();
+    while (block != finalisePTE->document()->lastBlock())
+    {
+        QString text = block.text();
+        int nonWhitePos = text.indexOf(QRegExp("\\S"), 0);
+        QTextCursor cur(block);
+        for (int i = 0; i < nonWhitePos; i++)
+        {
+            cur.deleteChar();
+        }
+        for (int i = 0; i < nonWhitePos; i++)
+        {
+            cur.insertText("\t");
+        }
+        block = block.next();
+    }
+    //one tag per line
+    
+    //one attribute per line
+    
+    finalisePTE->setReadOnly(true);
+}
+
+
+//save generated xml to xml file
+void McuSpecFileDesigner::saveXML()
+{
+    this->finaliseXML();
 }
 
 

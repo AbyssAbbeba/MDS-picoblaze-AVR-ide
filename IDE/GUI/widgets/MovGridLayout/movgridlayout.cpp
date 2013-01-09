@@ -22,7 +22,7 @@ MovGridLayout::MovGridLayout(QWidget *parentWidget)
     :QWidget(parentWidget)
 {
     this->setMinimumWidth(650);
-    this->setMinimumHeight(100);
+    this->setMinimumHeight(600);
     sizeRow = SIZEX;
     sizeCol = SIZEY;
     gridWidth = this->width()/sizeRow;
@@ -98,9 +98,9 @@ XY MovGridLayout::calcXY(QWidget *widget)
     //qDebug() << "width: " << w << " height: " << h;
     XY xysucc;
     //bool succ = true;
-    for (int i = 1; i+w<gridWidth; i++)
+    for (int j = 1; j+h<gridHeight; j++)
     {
-        for (int j = 1; j+h<gridHeight; j++)
+        for (int i = 1; i+w<gridWidth; i++)
         {
             if (grid[i+w][j] == -1 &&
                 grid[i][j+h] == -1 &&
@@ -320,7 +320,7 @@ void MovGridLayout::paintEvent(QPaintEvent *)
     for (int i=0; i<gridWidgets.size(); i++)
     {
         //gridWidgets.at(i)->widget->show();
-        paint.drawRect(gridWidgets.at(i)->x*sizeRow, gridWidgets.at(i)->y*sizeCol, gridWidgets.at(i)->w*sizeRow, gridWidgets.at(i)->h*sizeCol);
+        //paint.drawRect(gridWidgets.at(i)->x*sizeRow, gridWidgets.at(i)->y*sizeCol, gridWidgets.at(i)->w*sizeRow, gridWidgets.at(i)->h*sizeCol);
         //paint.drawRect(gridWidgets.at(i)->x*sizeRow -1, gridWidgets.at(i)->y*sizeCol -1, gridWidgets.at(i)->w*sizeRow +2, gridWidgets.at(i)->h*sizeCol +2);
     }
     if (grab == true)
