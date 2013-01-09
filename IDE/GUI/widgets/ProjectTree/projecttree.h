@@ -34,6 +34,7 @@ class ProjectTree: public QTreeWidget
     public:
         ProjectTree(QWidget *parent, Project *parentProject);
         ~ProjectTree();
+        void setMainFileManual(QString name, QString path);
 
     private:
 
@@ -43,6 +44,8 @@ class ProjectTree: public QTreeWidget
         QMenu *filePopup;
         QString lastName;
         QString lastPath;
+        QString mainFileName;
+        QString mainFilePath;
         QTreeWidgetItem *lastItem;
 
     private slots:

@@ -17,8 +17,6 @@ class IORegsWidget : public QWidget
 
         QPushButton *nextBtn;
         QPushButton *previousBtn;
-        
-    private:
 
         QGridLayout *ioRegsLayout;
 
@@ -74,30 +72,9 @@ class IORegsWidget : public QWidget
         
         QCheckBox *bitChckEnable;
 
-        QLineEdit *bitLE7Name;
-        QLineEdit *bitLE6Name;
-        QLineEdit *bitLE5Name;
-        QLineEdit *bitLE4Name;
-        QLineEdit *bitLE3Name;
-        QLineEdit *bitLE2Name;
-        QLineEdit *bitLE1Name;
-        QLineEdit *bitLE0Name;
-        QLineEdit *bitLE7STip;
-        QLineEdit *bitLE6STip;
-        QLineEdit *bitLE5STip;
-        QLineEdit *bitLE4STip;
-        QLineEdit *bitLE3STip;
-        QLineEdit *bitLE2STip;
-        QLineEdit *bitLE1STip;
-        QLineEdit *bitLE0STip;
-        QLineEdit *bitLE7TTip;
-        QLineEdit *bitLE6TTip;
-        QLineEdit *bitLE5TTip;
-        QLineEdit *bitLE4TTip;
-        QLineEdit *bitLE3TTip;
-        QLineEdit *bitLE2TTip;
-        QLineEdit *bitLE1TTip;
-        QLineEdit *bitLE0TTip;
+        QList<QLineEdit*> bitLEName;
+        QList<QLineEdit*> bitLESTip;
+        QList<QLineEdit*> bitLETTip;
 
         //general stuff
         QLabel *indexLbl;

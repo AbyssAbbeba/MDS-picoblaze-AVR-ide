@@ -1,0 +1,13 @@
+<!DOCTYPE MMProject>
+<MMProject>
+ <General>
+  <Name name="Example"/>
+  <Architecture architecture="ATmega8A"/>
+ </General>
+ <Files>
+  <File path="a.c" name="a.c"/>
+ </Files>
+ <Mainfile path="a.c" name="a.c"/>
+ <Simulator/>
+ <Compiler/>
+</MMProject>

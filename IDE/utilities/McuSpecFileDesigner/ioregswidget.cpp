@@ -63,30 +63,15 @@ IORegsWidget::IORegsWidget(QWidget *parent, int index)
 
     bitChckEnable = new QCheckBox(this);
 
-    bitLE7Name = new QLineEdit(this);
-    bitLE6Name = new QLineEdit(this);
-    bitLE5Name = new QLineEdit(this);
-    bitLE4Name = new QLineEdit(this);
-    bitLE3Name = new QLineEdit(this);
-    bitLE2Name = new QLineEdit(this);
-    bitLE1Name = new QLineEdit(this);
-    bitLE0Name = new QLineEdit(this);
-    bitLE7STip = new QLineEdit(this);
-    bitLE6STip = new QLineEdit(this);
-    bitLE5STip = new QLineEdit(this);
-    bitLE4STip = new QLineEdit(this);
-    bitLE3STip = new QLineEdit(this);
-    bitLE2STip = new QLineEdit(this);
-    bitLE1STip = new QLineEdit(this);
-    bitLE0STip = new QLineEdit(this);
-    bitLE7TTip = new QLineEdit(this);
-    bitLE6TTip = new QLineEdit(this);
-    bitLE5TTip = new QLineEdit(this);
-    bitLE4TTip = new QLineEdit(this);
-    bitLE3TTip = new QLineEdit(this);
-    bitLE2TTip = new QLineEdit(this);
-    bitLE1TTip = new QLineEdit(this);
-    bitLE0TTip = new QLineEdit(this);
+    for (int i = 0; i < 8; i++)
+    {
+        QLineEdit *preBitLEName = new QLineEdit(this);
+        bitLEName.append(preBitLEName);
+        QLineEdit *preBitLESTip = new QLineEdit(this);
+        bitLESTip.append(preBitLESTip);
+        QLineEdit *preBitLETTip = new QLineEdit(this);
+        bitLETTip.append(preBitLETTip);
+    }
     
     ioRegsLayout->addWidget(ioRegsLblAddr, 0,0);
     ioRegsLayout->addWidget(ioRegsLblValue, 1,0);
@@ -137,30 +122,30 @@ IORegsWidget::IORegsWidget(QWidget *parent, int index)
 
     ioRegsLayout->addWidget(bitChckEnable, 0,3);
 
-    ioRegsLayout->addWidget(bitLE7Name, 1,3);
-    ioRegsLayout->addWidget(bitLE7STip, 2,3);
-    ioRegsLayout->addWidget(bitLE7TTip, 3,3);
-    ioRegsLayout->addWidget(bitLE6Name, 4,3);
-    ioRegsLayout->addWidget(bitLE6STip, 5,3);
-    ioRegsLayout->addWidget(bitLE6TTip, 6,3);
-    ioRegsLayout->addWidget(bitLE5Name, 7,3);
-    ioRegsLayout->addWidget(bitLE5STip, 8,3);
-    ioRegsLayout->addWidget(bitLE5TTip, 9,3);
-    ioRegsLayout->addWidget(bitLE4Name, 10,3);
-    ioRegsLayout->addWidget(bitLE4STip, 11,3);
-    ioRegsLayout->addWidget(bitLE4TTip, 12,3);
-    ioRegsLayout->addWidget(bitLE3Name, 13,3);
-    ioRegsLayout->addWidget(bitLE3STip, 14,3);
-    ioRegsLayout->addWidget(bitLE3TTip, 15,3);
-    ioRegsLayout->addWidget(bitLE2Name, 1,5);
-    ioRegsLayout->addWidget(bitLE2STip, 2,5);
-    ioRegsLayout->addWidget(bitLE2TTip, 3,5);
-    ioRegsLayout->addWidget(bitLE1Name, 4,5);
-    ioRegsLayout->addWidget(bitLE1STip, 5,5);
-    ioRegsLayout->addWidget(bitLE1TTip, 6,5);
-    ioRegsLayout->addWidget(bitLE0Name, 7,5);
-    ioRegsLayout->addWidget(bitLE0STip, 8,5);
-    ioRegsLayout->addWidget(bitLE0TTip, 9,5);
+    ioRegsLayout->addWidget(bitLEName.at(0), 1,3);
+    ioRegsLayout->addWidget(bitLESTip.at(0), 2,3);
+    ioRegsLayout->addWidget(bitLETTip.at(0), 3,3);
+    ioRegsLayout->addWidget(bitLEName.at(1), 4,3);
+    ioRegsLayout->addWidget(bitLESTip.at(1), 5,3);
+    ioRegsLayout->addWidget(bitLETTip.at(1), 6,3);
+    ioRegsLayout->addWidget(bitLEName.at(2), 7,3);
+    ioRegsLayout->addWidget(bitLESTip.at(2), 8,3);
+    ioRegsLayout->addWidget(bitLETTip.at(2), 9,3);
+    ioRegsLayout->addWidget(bitLEName.at(3), 10,3);
+    ioRegsLayout->addWidget(bitLESTip.at(3), 11,3);
+    ioRegsLayout->addWidget(bitLETTip.at(3), 12,3);
+    ioRegsLayout->addWidget(bitLEName.at(4), 13,3);
+    ioRegsLayout->addWidget(bitLESTip.at(4), 14,3);
+    ioRegsLayout->addWidget(bitLETTip.at(4), 15,3);
+    ioRegsLayout->addWidget(bitLEName.at(5), 1,5);
+    ioRegsLayout->addWidget(bitLESTip.at(5), 2,5);
+    ioRegsLayout->addWidget(bitLETTip.at(5), 3,5);
+    ioRegsLayout->addWidget(bitLEName.at(6), 4,5);
+    ioRegsLayout->addWidget(bitLESTip.at(6), 5,5);
+    ioRegsLayout->addWidget(bitLETTip.at(6), 6,5);
+    ioRegsLayout->addWidget(bitLEName.at(7), 7,5);
+    ioRegsLayout->addWidget(bitLESTip.at(7), 8,5);
+    ioRegsLayout->addWidget(bitLETTip.at(7), 9,5);
 
     ioRegsLayout->addWidget(indexLbl, 13,5);
     ioRegsLayout->addWidget(nextBtn, 14,5);
