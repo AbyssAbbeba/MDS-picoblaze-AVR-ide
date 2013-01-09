@@ -18,6 +18,7 @@
 
 #include "MCUSim.h"
 #include "McuDeviceSpecAVR8.h"
+#include "McuDeviceSpecPIC8.h"
 
 #include <string>
 #include <QString>
@@ -125,6 +126,19 @@ class McuSimCfgMgr : public QXmlDefaultHandler
                                 const QString & qName,
                                 const QXmlAttributes & atts );
 
+        /**
+         * @brief
+         * @param[in] namespaceURI
+         * @param[in] localName
+         * @param[in] qName
+         * @param[in] atts
+         * @return
+         */
+        bool startElementPIC8 ( const QString & namespaceURI,
+                                const QString & localName,
+                                const QString & qName,
+                                const QXmlAttributes & atts );
+
     ////    Inline Private Operations    ////
     private:
         /**
@@ -147,6 +161,22 @@ class McuSimCfgMgr : public QXmlDefaultHandler
          * @return
          */
         inline bool charactersAVR8 ( const QString & ch );
+
+        /**
+         * @brief
+         * @param[in] localName
+         * @param[in] atts
+         * @return
+         */
+        inline bool attributesPIC8 ( const QString & localName,
+                                     const QXmlAttributes & atts );
+
+        /**
+         * @brief
+         * @param[in] ch
+         * @return
+         */
+        inline bool charactersPIC8 ( const QString & ch );
 
     ////    Private Attributes    ////
     private:

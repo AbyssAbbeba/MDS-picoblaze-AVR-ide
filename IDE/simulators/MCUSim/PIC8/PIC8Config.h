@@ -31,6 +31,7 @@
 #include "PIC8TimerCounter0.h"
 #include "PIC8Timer0WdtPrescaller.h"
 #include "PIC8ExternalInterrupts.h"
+#include "PIC8ISP.h"
 
 #include <string>
 
@@ -103,9 +104,6 @@ class PIC8Config : public MCUSim::Config
             PIC8Stack::Config               * m_configStack;
 
             ///
-            PIC8ConfigWord::Config          * m_configWord;
-
-            ///
             PIC8InterruptController::Config * m_configInterruptController;
 
             ///
@@ -122,6 +120,9 @@ class PIC8Config : public MCUSim::Config
 
             ///
             PIC8ExternalInterrupts::Config  * m_configExternalInterrupts;
+
+            ///
+            PIC8ISP::Config                 * m_configISP;
         //@}
 
     ////    Private Attributes    ////

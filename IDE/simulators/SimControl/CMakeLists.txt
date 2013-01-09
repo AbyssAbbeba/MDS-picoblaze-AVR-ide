@@ -2,7 +2,7 @@
 #
 # Simulator control unit.
 #
-# (C) copyright 2012 Moravia Microsystems, s.r.o.
+# (C) copyright 2013 Moravia Microsystems, s.r.o.
 #
 # ==============================================================================
 

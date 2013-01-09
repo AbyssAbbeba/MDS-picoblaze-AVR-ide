@@ -98,6 +98,29 @@ bool McuDeviceSpecAVR8::setupSimulator ( AVR8Config & mcuConfig ) const
     mcuConfig.m_configDataEEPROM->m_size = m_dataEEPROM.m_size;
     mcuConfig.m_configDataEEPROM->m_writeTime = m_dataEEPROM.m_writeTime;
     // Data memory
+    if ( NULL != mcuConfig.m_configDataMemory->m_ioRegInitValues )
+    {
+        delete [] mcuConfig.m_configDataMemory->m_ioRegInitValues;
+    }
+    if ( NULL != mcuConfig.m_configDataMemory->m_ioRegRandomInit )
+    {
+        delete [] mcuConfig.m_configDataMemory->m_ioRegRandomInit;
+    }
+    if ( NULL != mcuConfig.m_configDataMemory->m_mem2sizes )
+    {
+        delete [] mcuConfig.m_configDataMemory->m_mem2sizes;
+    }
+    if ( NULL != mcuConfig.m_configDataMemory->m_ioMem2InitValues )
+    {
+        for ( unsigned int i = 0; i < mcuConfig.m_configDataMemory->m_mem2size; i++ )
+        {
+            if ( NULL != mcuConfig.m_configDataMemory->m_ioMem2InitValues[i] )
+            {
+                delete [] mcuConfig.m_configDataMemory->m_ioMem2InitValues[i];
+            }
+        }
+        delete [] mcuConfig.m_configDataMemory->m_ioMem2InitValues;
+    }
     mcuConfig.m_configDataMemory->m_regFileSize = m_dataMemory.m_regFileSize;
     mcuConfig.m_configDataMemory->m_sramSize = m_dataMemory.m_sramSize;
     mcuConfig.m_configDataMemory->m_ioRegSize = m_dataMemory.m_ioRegSize;
