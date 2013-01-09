@@ -449,7 +449,54 @@ void MainForm::saveProject()
 
 void MainForm::compileProject()
 {
-    projectMan->createActiveMakefile();
+    QPlainTextEdit *compileWidget = (QPlainTextEdit*)(wDockManager->getDockWidget(wCompileInfo)->widget());
+    QString mainFileName = projectMan->getActive()->mainFileName.section('.',0,-2);
+    compileWidget->clear();
+    
+    //QStringList args;
+    //args << " -g -Os -mmcu=atmega8 -c ../" + projectMan->getActive()->mainFileName;
+    QProcess compiler(this);
+    compiler.setWorkingDirectory(projectMan->getActive()->prjPath.section('/',0, -2) + "/build/");
+    qDebug() << compiler.workingDirectory();
+
+    compiler.setProcessChannelMode(QProcess::MergedChannels);
+    compiler.start("avr-gcc -g -Os -mmcu=atmega8 -c ../" + projectMan->getActive()->mainFileName);
+    if (!compiler.waitForFinished())
+    {
+        compileWidget->appendPlainText(compiler.errorString());
+        return;
+    }
+    else
+    {
+        compileWidget->appendPlainText(compiler.readAll() + "\n\n");
+    }
+
+
+    compiler.setProcessChannelMode(QProcess::MergedChannels);
+    compiler.start("avr-gcc -g -mmcu=atmega8 -o " + mainFileName + ".elf " + mainFileName + ".o");
+    if (!compiler.waitForFinished())
+    {
+        compileWidget->appendPlainText(compiler.errorString());
+        return;
+    }
+    else
+    {
+        compileWidget->appendPlainText(compiler.readAll() + "\n\n");
+    }
+
+
+    compiler.setProcessChannelMode(QProcess::MergedChannels);
+    compiler.start("avr-objcopy -j .text -j .data -O ihex " + mainFileName + ".elf " + mainFileName + ".hex");
+    if (!compiler.waitForFinished())
+    {
+        compileWidget->appendPlainText(compiler.errorString());
+    }
+    else
+    {
+        compileWidget->appendPlainText(compiler.readAll() + "\n\n");
+    }
+    
+    /*projectMan->createActiveMakefile();
 
     ((QPlainTextEdit*)wDockManager->getDockWidget(wCompileInfo)->widget())->clear();
 
@@ -481,7 +528,7 @@ void MainForm::compileProject()
             ((QPlainTextEdit*)wDockManager->getDockWidget(wCompileInfo)->widget())->appendPlainText("packihx failed: " + packihx.errorString());
         else
             ((QPlainTextEdit*)wDockManager->getDockWidget(wCompileInfo)->widget())->appendPlainText("packihx successful: " + packihx.readAll());
-    }
+    }*/
 }
 
 
