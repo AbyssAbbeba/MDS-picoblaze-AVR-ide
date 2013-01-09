@@ -22,7 +22,10 @@ set(CMAKE_VERBOSE_MAKEFILE OFF)
 # Load settings specific for the Qt4 library
 find_package(Qt4 REQUIRED)
 
-INCLUDE( ${QT_USE_FILE} )
+# Include Qt4's XML module
+set(QT_USE_QTXML 1)
+include(${QT_USE_FILE})
+
 
 SET( SAMPLE_SRCS
     "./mcuspecfiledesigner.cpp"

@@ -23,6 +23,7 @@
 #include <QMainWindow>
 #include <QGridLayout>
 #include <QLineEdit>
+#include <QComboBox>
 #include "../mainform/project.h"
 
 
@@ -46,6 +47,7 @@ class ProjectDialog : public QDialog
     private:
         void freeDialog();
         QGridLayout *layout;
+        QComboBox *architecture;
         QLineEdit *projName, *projDir;
         QLabel *labelName, *labelDir;
         QPushButton *chooseName;

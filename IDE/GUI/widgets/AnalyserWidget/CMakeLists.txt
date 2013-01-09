@@ -42,8 +42,8 @@ include(${QT_USE_FILE})
 
 # <DEBUG!>
 link_directories( 
-../Analyser/
-	)
+    "${CMAKE_CURRENT_BINARY_DIR}/../Analyser/"
+)
 # </DEBUG!>
 
 ## Add switches to compiler command line

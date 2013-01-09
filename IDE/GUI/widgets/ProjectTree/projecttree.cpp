@@ -18,9 +18,12 @@
 #include "../dialogs/projectcfgdlg_core.h"
 
 ProjectTree::ProjectTree(QWidget *parent, Project *parentProject)
+    : QTreeWidget(parent)
 {
     this->parentProject = parentProject;
     this->parent = parent;
+    mainFileName = "";
+    mainFilePath = "";
     setHeaderHidden(true);
     projectPopup = new QMenu(this);
     QAction *projectConfigAct = new QAction("Configuration", projectPopup);
@@ -59,6 +62,48 @@ void ProjectTree::contextMenuEvent(QContextMenuEvent *event)
 void ProjectTree::setMainFile()
 {
     parentProject->setMainFile(lastPath, lastName);
+    //clear previous mainfile's background
+    if (mainFileName != "" && mainFilePath != "")
+    {
+        QList<QTreeWidgetItem*> items = this->findItems(mainFileName, Qt::MatchExactly);
+        for (int i = 0; i < items.count(); i++)
+        {
+            if (items.at(i)->toolTip(i) == mainFilePath)
+            {
+                items.at(i)->setBackground(0, QBrush(this->palette().base().color()));
+                break;
+            }
+        }
+    }
+    //set new mainfile and its background
+    QList<QTreeWidgetItem*> items = this->findItems(lastName, Qt::MatchExactly);
+    for (int i = 0; i < items.count(); i++)
+    {
+        if (items.at(i)->toolTip(i) == lastPath)
+        {
+            items.at(i)->setBackground(0, QBrush(QColor(0,0,255,100)));
+            mainFileName = lastName;
+            mainFilePath = lastPath;
+            break;
+        }
+    }
+}
+
+
+void ProjectTree::setMainFileManual(QString name, QString path)
+{
+    //set new mainfile and its background
+    QList<QTreeWidgetItem*> items = this->findItems(name, Qt::MatchExactly);
+    for (int i = 0; i < items.count(); i++)
+    {
+        if (items.at(i)->toolTip(i) == path)
+        {
+            items.at(i)->setBackground(0, QBrush(QColor(0,0,255,100)));
+            mainFileName = name;
+            mainFilePath = path;
+            break;
+        }
+    }
 }
 
 

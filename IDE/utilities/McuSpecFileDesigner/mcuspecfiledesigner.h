@@ -18,12 +18,14 @@ class McuSpecFileDesigner : public QWidget
     Q_OBJECT
     public:
         McuSpecFileDesigner(QWidget *parent);
-        void getConfig();
 
     private slots:
         void reallocateIORegs();
         void setNextIOReg();
         void setPreviousIOReg();
+        void getConfig();
+        void finaliseXML();
+        void saveXML();
         
     private:
         QTabWidget *mainTabs;
@@ -151,14 +153,20 @@ class McuSpecFileDesigner : public QWidget
         //IO tab plaintextedits
         QPlainTextEdit *ioPTESpecFuncMap;
         QPlainTextEdit *ioPTEPins;
+        //finalise tab plaintextedits
+        QPlainTextEdit *finalisePTE;
         //data memory general tab buttons
         QPushButton *dataMemBtnChange;
+        //finalise tab buttons
+        QPushButton *finaliseBtnMake;
+        QPushButton *finaliseBtnSave;
         //grid layouts
         QGridLayout *generalLayout;
         QGridLayout *instructionLayout;
         QGridLayout *ioLayout;
         QGridLayout *systemLayout;
         QGridLayout *dataMemLayout;
+        QGridLayout *finaliseLayout;
 };
 
 
