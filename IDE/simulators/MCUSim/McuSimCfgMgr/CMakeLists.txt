@@ -2,7 +2,7 @@
 #
 # MCU simulator configuration management library.
 #
-# (C) copyright 2012 Moravia Microsystems, s.r.o.
+# (C) copyright 2013 Moravia Microsystems, s.r.o.
 #
 # ==============================================================================
 
@@ -26,7 +26,8 @@ set ( CMAKE_VERBOSE_MAKEFILE OFF )
 
 # Add include directories to the build.
 include_directories ( "${CMAKE_CURRENT_BINARY_DIR}/.."
-                      "${CMAKE_CURRENT_BINARY_DIR}/../AVR8" )
+                      "${CMAKE_CURRENT_BINARY_DIR}/../AVR8"
+                      "${CMAKE_CURRENT_BINARY_DIR}/../PIC8" )
 
 # Load settings specific for the Qt4 library
 find_package ( Qt4 REQUIRED )
@@ -47,6 +48,7 @@ add_definitions ( -Wall -Wextra -std=c++0x -O2 -pipe )
  # in this case it will procude dynamic C++ library.
 add_library ( ${PROJECT_NAME} SHARED
               McuDeviceSpecAVR8.cxx
+              McuDeviceSpecPIC8.cxx
               McuSimCfgMgr.cxx )
 
 # Link a target to given libraries.

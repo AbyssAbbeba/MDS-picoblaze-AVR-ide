@@ -89,7 +89,6 @@ class PIC8DataEEPROM : public MCUSim::Memory
                 m_undefinedValue = -1;
             }
 
-            bool m_enabled;              ///<
             unsigned int m_size;         ///<
             float m_writeTime;           ///< (in seconds)
             int m_undefinedValue;        ///< -1 means random

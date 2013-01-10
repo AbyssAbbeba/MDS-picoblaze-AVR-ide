@@ -15,6 +15,7 @@
 
 #include "McuSimCfgMgr.h"
 #include "AVR8Config.h"
+#include "PIC8Config.h"
 
 #include <QFile>
 #include <QXmlInputSource>
@@ -104,7 +105,7 @@ bool McuSimCfgMgr::openConfigFile ( const char * filename )
     return result;
 }
 
-bool McuSimCfgMgr::characters(const QString & characters)
+bool McuSimCfgMgr::characters ( const QString & characters )
 {
     QString ch = characters.simplified();
     if ( ( false == m_expectCharacters ) && ( false == ch.isEmpty() ) )
@@ -124,6 +125,8 @@ bool McuSimCfgMgr::characters(const QString & characters)
         {
             case MCUSim::Arch::ARCH_AVR8:
                 return charactersAVR8(ch);
+            case MCUSim::Arch::ARCH_PIC8:
+                return charactersPIC8(ch);
             default:
                 qDebug() << "Unknown architecture";
                 return false;
@@ -380,6 +383,11 @@ bool McuSimCfgMgr::startElement ( const QString & namespaceURI,
             m_devices.append(new McuDeviceSpecAVR8());
             return attributesAVR8(localName, atts);
         }
+        else if ( "pic8:device" == qName )
+        {
+            m_devices.append(new McuDeviceSpecPIC8());
+            return attributesPIC8(localName, atts);
+        }
         else
         {
             qDebug() << "Unknown architecture: \"" << qName << "\"";
@@ -391,6 +399,8 @@ bool McuSimCfgMgr::startElement ( const QString & namespaceURI,
         {
             case MCUSim::Arch::ARCH_AVR8:
                 return startElementAVR8(namespaceURI, localName, qName, atts);
+            case MCUSim::Arch::ARCH_PIC8:
+                return startElementPIC8(namespaceURI, localName, qName, atts);
             default:
                 qDebug() << "Unknown architecture";
                 return false;
@@ -1681,6 +1691,25 @@ inline bool McuSimCfgMgr::attributesAVR8 ( const QString & localName,
     return true;
 }
 
+bool McuSimCfgMgr::startElementPIC8 ( const QString & namespaceURI,
+                                      const QString & localName,
+                                      const QString & qName,
+                                      const QXmlAttributes & atts )
+{
+    
+}
+
+inline bool McuSimCfgMgr::attributesPIC8 ( const QString & localName,
+                                           const QXmlAttributes & atts )
+{
+    
+}
+
+inline bool McuSimCfgMgr::charactersPIC8 ( const QString & ch )
+{
+    
+}
+
 bool McuSimCfgMgr::setupSimulator ( const char * mcuName,
                                     MCUSim::Config & mcuConfig ) const
 {
@@ -1711,6 +1740,8 @@ bool McuSimCfgMgr::setupSimulator ( const char * mcuName,
     {
         case MCUSim::Arch::ARCH_AVR8:
             return dynamic_cast<McuDeviceSpecAVR8*>(m_devices[idx])->setupSimulator(dynamic_cast<AVR8Config&>(mcuConfig));
+        case MCUSim::Arch::ARCH_PIC8:
+            return dynamic_cast<McuDeviceSpecPIC8*>(m_devices[idx])->setupSimulator(dynamic_cast<PIC8Config&>(mcuConfig));
         default:
             qDebug() << "Unknown architecture";
             return false;
