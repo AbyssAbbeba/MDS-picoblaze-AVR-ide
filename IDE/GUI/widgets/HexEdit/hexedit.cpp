@@ -94,8 +94,8 @@ HexEdit::HexEdit(QWidget *parent, bool AsciiPanel, int countSize, int columns)
     hexTextEdit->setWordWrapMode(QTextOption::NoWrap);
     hexTextEdit->setFont(QFont("Andale Mono", 10));
     //hexTextEdit->resize((columns*2-1)*10,5);
-    hexTextEdit->setMinimumWidth((columns*3-7)*10);
-    hexTextEdit->setMaximumWidth((columns*3-7)*10);
+    hexTextEdit->setMinimumWidth((columns*3-4)*10);
+    hexTextEdit->setMaximumWidth((columns*3-4)*10);
     hexTextEdit->setMinimumHeight(175);
 
     if (AsciiPanel == true)
