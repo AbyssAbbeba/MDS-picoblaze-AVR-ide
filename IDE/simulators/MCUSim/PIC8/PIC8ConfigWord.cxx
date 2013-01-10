@@ -42,7 +42,7 @@ void PIC8ConfigWord::reset ( MCUSim::ResetMode mode )
 inline void PIC8ConfigWord::loadConfig()
 {
     // Set to default values
-    unsigned char mask = 0x01;
+    uint8_t mask = 0x01;
     for ( int i = 0; i < CFGW__MAX__; i++ )
     {
         if ( mask & m_config.m_defaultCfgWord )
