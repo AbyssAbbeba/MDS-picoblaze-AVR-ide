@@ -112,7 +112,7 @@ XY MovGridLayout::calcXY(QWidget *widget)
                 grid[i+w][(j+j+h)/2] == -1 &&
                 grid[(i+i+w)/2][j+h] == -1)
             {
-                qDebug() << "return";
+                //qDebug() << "return";
                 xysucc.x = i;
                 xysucc.y = j;
                 return xysucc;
