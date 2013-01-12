@@ -20,9 +20,14 @@
 #include "HexFile.h"
 #include "AVR8Sim.h"
 #include "AVR8ProgramMemory.h"
+#include "PIC8Sim.h"
+#include "PIC8ProgramMemory.h"
 #include "McuSimCfgMgr.h"
 #include "McuDeviceSpec.h"
 #include "McuDeviceSpecAVR8.h"
+#include "McuDeviceSpecPIC8.h"
+
+#include <QDebug>
 
 MCUSimControl::MCUSimControl ( const char * deviceName )
                              : m_simulator(NULL),
@@ -48,10 +53,6 @@ bool MCUSimControl::start ( const std::string & filename,
                             CompilerID compilerId,
                             DataFileType dataFileType )
 {
-    // Reset the simulator
-    m_simulator->reset(MCUSim::RSTMD_INITIAL_VALUES);
-    reset();
-
     if ( NULL != m_dbgFile )
     {
         delete m_dbgFile;
@@ -118,11 +119,17 @@ bool MCUSimControl::start ( const std::string & filename,
         return false;
     }
 
+    // Reset the simulator
+    m_simulator->reset(MCUSim::RSTMD_INITIAL_VALUES);
+    reset();
+
     // Start simulator
     switch ( m_architecture )
     {
         case MCUSim::ARCH_AVR8:
             dynamic_cast<AVR8ProgramMemory*>(m_simulator->getSubsys(MCUSim::Subsys::ID_MEM_CODE))->loadDataFile(dataFile);
+        case MCUSim::ARCH_PIC8:
+            dynamic_cast<PIC8ProgramMemory*>(m_simulator->getSubsys(MCUSim::Subsys::ID_MEM_CODE))->loadDataFile(dataFile);
             break;
         default:
             // TODO: implement a proper error handling here
@@ -142,7 +149,10 @@ int MCUSimControl::getLineNumber ( std::string * fileName )
 {
     if ( false == initialized() )
     {
-        *fileName = "";
+        if ( NULL != fileName )
+        {
+            *fileName = "";
+        }
         return -1;
     }
 
@@ -150,13 +160,19 @@ int MCUSimControl::getLineNumber ( std::string * fileName )
     int idx = m_dbgFile->getLineByAddr(pc);
     if ( -1 == idx )
     {
-        *fileName = "";
+        if ( NULL != fileName )
+        {
+            *fileName = "";
+        }
         return -1;
     }
     else
     {
         int fileNumber = m_dbgFile->getLineRecords().at(idx).m_fileNumber;
-        *fileName = m_dbgFile->fileNumber2Name(fileNumber);
+        if ( NULL != fileName )
+        {
+            *fileName = m_dbgFile->fileNumber2Name(fileNumber);
+        }
         return m_dbgFile->getLineRecords().at(idx).m_lineNumber;
     }
 }
@@ -240,6 +256,9 @@ bool MCUSimControl::changeDevice(const char * deviceName)
     {
         case MCUSim::ARCH_AVR8:
             m_simulator = new AVR8Sim();
+            break;
+        case MCUSim::ARCH_PIC8:
+            m_simulator = new PIC8Sim();
             break;
         default:
             qDebug("Unknown device architecture.");
@@ -449,7 +468,7 @@ bool MCUSimControl::getListOfSFR ( std::vector<SFRRegDesc> & sfr )
         {
             const McuDeviceSpecAVR8 * devSpec = dynamic_cast<const McuDeviceSpecAVR8*>(m_deviceSpec);
 
-            for ( uint i = 0; i < devSpec->m_dataMemory.m_ioRegSize; i++ )
+            for ( unsigned int i = 0; i < devSpec->m_dataMemory.m_ioRegSize; i++ )
             {
                 if ( 0 == devSpec->m_dataMemory.m_ioRegDesc[i].m_name.size() )
                 {
@@ -470,6 +489,36 @@ bool MCUSimControl::getListOfSFR ( std::vector<SFRRegDesc> & sfr )
                     sfr.back().m_bitNames[j] = devSpec->m_dataMemory.m_ioRegDesc[i].m_bit[j].m_name;
                     sfr.back().m_toolsTips[j] = devSpec->m_dataMemory.m_ioRegDesc[i].m_bit[j].m_ttip;
                     sfr.back().m_statusTips[j] = devSpec->m_dataMemory.m_ioRegDesc[i].m_bit[j].m_stip;
+                }
+            }
+
+            break;
+        }
+        case MCUSim::ARCH_PIC8:
+        {
+            const McuDeviceSpecPIC8 * devSpec = dynamic_cast<const McuDeviceSpecPIC8*>(m_deviceSpec);
+
+            for ( unsigned int i = 0; i < devSpec->m_dataMemory.m_size; i++ )
+            {
+                if ( 0 == devSpec->m_dataMemory.m_regDescription[i].m_name.size() )
+                {
+                    continue;
+                }
+
+                sfr.push_back(SFRRegDesc());
+
+                sfr.back().m_address = devSpec->m_dataMemory.m_regDescription[i].m_addresses[0];
+                sfr.back().m_regName = devSpec->m_dataMemory.m_regDescription[i].m_name;
+                std::string m_regNameTip = devSpec->m_dataMemory.m_regDescription[i].m_desc;
+                sfr.back().m_mask = uint8_t ( ( ( devSpec->m_dataMemory.m_initValues[i] & 0xff00 ) >> 8 )
+                                                |
+                                              ( ( devSpec->m_dataMemory.m_initValues[i] & 0xff0000 ) >> 16 ) );
+
+                for ( int j = 0; j < 8; j++ )
+                {
+                    sfr.back().m_bitNames[j] = devSpec->m_dataMemory.m_regDescription[i].m_bit[j].m_name;
+                    sfr.back().m_toolsTips[j] = devSpec->m_dataMemory.m_regDescription[i].m_bit[j].m_ttip;
+                    sfr.back().m_statusTips[j] = devSpec->m_dataMemory.m_regDescription[i].m_bit[j].m_stip;
                 }
             }
 

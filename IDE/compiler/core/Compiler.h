@@ -1,15 +1,17 @@
+// =============================================================================
 /**
  * @brief
  * C++ Interface: ...
  *
  * ...
  *
- * Copyright: See COPYING file that comes with this distribution.
+ * (C) copyright 2013 Moravia Microsystems, s.r.o.
  *
- * @author Martin Ošmera <martin.osmera@gmail.com>, (C) 2012
+ * @author Martin Ošmera <martin.osmera@gmail.com>
  * @ingroup Compiler
  * @file Compiler.h
  */
+// =============================================================================
 
 #ifndef COMPILER_H
 #define COMPILER_H
@@ -26,15 +28,42 @@ class CompilerMsgInterface;
  * @ingroup Compiler
  * @class Compiler
  */
-class Compiler {
-public:
-	Compiler(CompilerMsgInterface * msgInterface);
-	virtual ~Compiler();
+class Compiler
+{
+    ////    Constructors and Destructors    ////
+    public:
+        /**
+         * @brief
+         * @param[in,out] msgInterface
+         */
+        Compiler ( CompilerMsgInterface * msgInterface );
 
-	bool compile(CompilerBase::LangId lang, CompilerBase::TargetArch arch, CompilerOptions * opts, const std::string & filename);
+        /**
+         * @brief
+         */
+        virtual ~Compiler();
 
-private:
-	CompilerCore * const m_compilerCore;
+    ////    Public Operations    ////
+    public:
+        /**
+         * @brief
+         * @param[in] lang
+         * @param[in] arch
+         * @param[in] opts
+         * @param[in] filename
+         * @return
+         */
+        bool compile ( CompilerBase::LangId lang,
+                       CompilerBase::TargetArch arch,
+                       CompilerOptions * const opts,
+                       const std::string & filename );
+
+    ////    Private Attributes    ////
+    private:
+        /**
+         * @brief
+         */
+        CompilerCore * const m_compilerCore;
 };
 
 #endif // COMPILER_H

@@ -51,12 +51,12 @@ class PIC8ExternalInterrupts : public MCUSim::Subsys
         /**
          * @brief
          */
-        PIC8ExternalInterrupts();
+        PIC8ExternalInterrupts() {};
 
         /**
          * @brief
          */
-        ~PIC8ExternalInterrupts();
+        ~PIC8ExternalInterrupts() {};
 
     ////    Public Operations    ////
     public:

@@ -159,7 +159,7 @@ inline bool PIC8DataMemory::isAddrGenerallyValid ( const unsigned int addr ) con
 {
     if ( ( addr >= m_size )
            ||
-         ( addr != m_config.m_addrTransTab[addr] )
+         ( (int)addr != m_config.m_addrTransTab[addr] )
            ||
          ( -PIC8RegNames::INDF == addr ) )
     {

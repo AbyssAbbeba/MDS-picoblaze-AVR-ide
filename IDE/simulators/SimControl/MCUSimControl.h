@@ -39,7 +39,6 @@ class MCUSimControl : public QObject
 
     ////    Public Datatypes    ////
     public:
-
         /**
           * @brief
           */
@@ -123,7 +122,7 @@ class MCUSimControl : public QObject
          * @param[out] filename
          * @return
          */
-        int getLineNumber ( std::string * filename );
+        int getLineNumber ( std::string * filename = NULL );
 
         /**
          * @brief

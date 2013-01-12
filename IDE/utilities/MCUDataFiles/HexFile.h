@@ -1,15 +1,17 @@
+// =============================================================================
 /**
  * @brief
  * C++ Interface: ...
  *
  * ...
  *
- * Copyright: See COPYING file that comes with this distribution.
+ * (C) copyright 2013 Moravia Microsystems, s.r.o.
  *
- * @author Martin Ošmera <martin.osmera@gmail.com>, (C) 2012
+ * @author Martin Ošmera <martin.osmera@gmail.com>
  * @ingroup MCUDataFiles
  * @file HexFile.h
  */
+// =============================================================================
 
 #ifndef HEXFILE_H
 #define HEXFILE_H
@@ -26,42 +28,44 @@
  */
 class HexFile : public DataFile
 {
-public:
-	/**
-	 * @param size Maximum data size
-	 */
-	HexFile(unsigned int arrsize = 0x10000) : DataFile(arrsize) {};
+    ////    Constructors and Destructors    ////
+    public:
+        /**
+         * @param[in] size Maximum data size
+         */
+        HexFile ( unsigned int arrsize = 0x10000 ) : DataFile(arrsize) {};
 
-	/**
-	 * @brief Load I16HEX file into the memory array
-	 * @param filename
-	 */
-	void clearAndLoad(const char * filename)
-		throw(DataFile::DataFileException);
-	
-	/// @overload
-	void clearAndLoad(const std::string & filename)
-		throw(DataFile::DataFileException);
+    ////    Public Operations    ////
+    public:
+        /**
+         * @brief Load I16HEX file into the memory array
+         * @param[in] filename
+         */
+        void clearAndLoad ( const char * filename ) throw ( DataFile::DataFileException );
 
-	/**
-	 * @brief Save memory array in I16HEX file
-	 * @param filename	Target file
-	 * @param makeBackup	Make backup file
-	 */
-	void save(const char * filename, bool makeBackup = true)
-		throw(DataFile::DataFileException);
+        /// @overload
+        void clearAndLoad ( const std::string & filename ) throw ( DataFile::DataFileException );
 
-	/// @overload
-	void save(const std::string & filename, bool makeBackup = true)
-		throw(DataFile::DataFileException);
+        /**
+         * @brief Save memory array in I16HEX file
+         * @param[in] filename Target file
+         * @param[in] makeBackup Make backup file
+         */
+        void save ( const char * filename,
+                    bool makeBackup = true ) throw(DataFile::DataFileException);
 
-private:
-	/**
-	 * @brief Compute I16HEX CRC from the given string
-	 * @param data Source string (e.g. "FA5568BA98")
-	 * @return CRC (0..255)
-	 */
-	inline int computeCRC(const char * data) const;
+        /// @overload
+        void save ( const std::string & filename,
+                    bool makeBackup = true ) throw(DataFile::DataFileException);
+
+    ////    Private Operations    ////
+    private:
+        /**
+         * @brief Compute I16HEX CRC from the given string
+         * @param[in] data Source string (e.g. "FA5568BA98")
+         * @return CRC (0..255)
+         */
+        inline int computeCRC ( const char * data ) const;
 };
 
 #endif // HEXFILE_H

@@ -1,15 +1,17 @@
+// =============================================================================
 /**
  * @brief
  * C++ Interface: ...
  *
  * ...
  *
- * Copyright: See COPYING file that comes with this distribution.
+ * (C) copyright 2013 Moravia Microsystems, s.r.o.
  *
- * @author Martin Ošmera <martin.osmera@gmail.com>, (C) 2012
+ * @author Martin Ošmera <martin.osmera@gmail.com>
  * @ingroup Compiler
  * @file CompilerSemanticInterface.h
  */
+// =============================================================================
 
 #ifndef COMPILERSEMANTICINTERFACE_H
 #define COMPILERSEMANTICINTERFACE_H
@@ -22,8 +24,9 @@
  * @ingroup Compiler
  * @class CompilerSemanticInterface
  */
-class CompilerSemanticInterface {
-public:
+class CompilerSemanticInterface
+{
+    public:
 };
 
 #endif // COMPILERSEMANTICINTERFACE_H
