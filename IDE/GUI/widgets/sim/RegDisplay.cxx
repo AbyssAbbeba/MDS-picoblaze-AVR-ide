@@ -19,6 +19,7 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QStringList>
+//#include <QDebug>
 
 const QFont RegDisplay::m_nameFont = QFont("Courier New", 8, QFont::Normal);
 const QFont RegDisplay::m_bitNormalFont = QFont("Courier New", 8, QFont::DemiBold);
@@ -44,8 +45,8 @@ RegDisplay::RegDisplay(
 	createWidgets(regName, regNameTip, bitNames, toolsTips, statusTips);
 	setupConnections();
 	setReadOnly(true);
-        this->setMaximumWidth(500);
-        this->setMaximumHeight(30);
+        //this->setMaximumWidth(500);
+        //this->setMaximumHeight(30);
         this->show();
 }
 
@@ -91,7 +92,9 @@ inline void RegDisplay::createWidgets(
 	m_hexLineEdit->setInputMask(">HH;");
 	m_hexLineEdit->setText("00");
 	//m_hexLineEdit->setMinimumWidth(30);
-	m_hexLineEdit->setMaximumWidth(30);
+	m_hexLineEdit->setMaximumWidth(20);
+    m_hexLineEdit->setMaximumHeight(20);
+    m_hexLineEdit->show();
 	m_hexLineEdit->setFont(m_nameFont);
 	m_primaryLayout->addWidget(m_hexLineEdit);
 
@@ -101,13 +104,16 @@ inline void RegDisplay::createWidgets(
 
 		assert ( 8 == bitNames->size() );
 
+        QFontMetrics fontMetrics(m_bitNormalFont);
+        
 		for ( int i = 7; i >= 0; i-- ) {
 			m_bitButtons[i] = new QPushButton(bitNames->at(i), this);
 			m_bitButtons[i]->setFlat(true);
 			m_bitButtons[i]->setFont(m_bitNormalFont);
-			m_bitButtons[i]->setMaximumWidth(30);
+            m_bitButtons[i]->setMaximumWidth(fontMetrics.width(bitNames->at(i))+10);
 			//m_bitButtons[i]->setMinimumHeight(15);
-			m_bitButtons[i]->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Maximum);
+            m_bitButtons[i]->show();
+            m_bitButtons[i]->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Maximum);
 
 			if ( m_bitEnableMask & (0x01 << i) ) {
 				m_bitButtons[i]->setPalette(m_log0palette);
