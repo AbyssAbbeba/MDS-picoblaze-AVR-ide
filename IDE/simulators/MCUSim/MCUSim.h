@@ -38,7 +38,6 @@ class MCUSim
 
             ARCH_AVR8,          ///<
             ARCH_AVR32,         ///<
-
             ARCH_PIC8,          ///<
 
             ARCH__MAX__         ///<
@@ -53,15 +52,22 @@ class MCUSim
 
             /// @name AVR8
             //@{
-            FAMILY_MEGAAVR,      ///<
-            FAMILY_TINYAVR,      ///<
-            FAMILY_XMEGA,        ///<
+                FAMILY_MEGAAVR,      ///<
+                FAMILY_TINYAVR,      ///<
+                FAMILY_XMEGA,        ///<
             //@}
 
             /// @name AVR32
             //@{
-            FAMILY_AVR32         ///<
+                FAMILY_AVR32,        ///<
             //@}
+
+            /// @name PIC8
+            //@{
+                FAMILY_PIC16F,       ///<
+            //@}
+
+            FAMILY__MAX__            ///<
         };
 
         /**

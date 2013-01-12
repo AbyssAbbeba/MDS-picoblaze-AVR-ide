@@ -1,177 +1,241 @@
+// =============================================================================
 /**
  * @brief
  * C++ Implementation: ...
  *
  * ...
  *
- * Copyright: See COPYING file that comes with this distribution.
+ * (C) copyright 2013 Moravia Microsystems, s.r.o.
  *
- * @author: Martin Ošmera <martin.osmera@gmail.com>, (C) 2012
- *
+ * @author Martin Ošmera <martin.osmera@gmail.com>
+ * @ingroup Compiler
+ * @file CompilerStatement.cxx
  */
+// =============================================================================
 
 #include "CompilerStatement.h"
 
-CompilerStatement::~CompilerStatement() {
+CompilerStatement::~CompilerStatement()
+{
 }
 
-CompilerStatement::CompilerStatement() {
-	m_type = StatementTypes::EMPTY_STATEMENT;
-	m_userData = 0;
-	m_serialNumber = -1;
-	m_prev = NULL;
-	m_next = NULL;
-	m_branch = NULL;
-	m_args = NULL;
+CompilerStatement::CompilerStatement()
+{
+    m_type = StatementTypes::EMPTY_STATEMENT;
+    m_userData = 0;
+    m_serialNumber = -1;
+    m_prev = NULL;
+    m_next = NULL;
+    m_branch = NULL;
+    m_args = NULL;
 }
 
-CompilerStatement::CompilerStatement(CompilerBase::SourceLocation location, StatementTypes::StatementType type, CompilerExpr * args) {
-	m_type = type;
-	m_location = location;
+CompilerStatement::CompilerStatement ( CompilerBase::SourceLocation location,
+                                       StatementTypes::StatementType type,
+                                       CompilerExpr * args )
+{
+    m_type = type;
+    m_location = location;
 
-	m_userData = 0;
-	m_serialNumber = -1;
+    m_userData = 0;
+    m_serialNumber = -1;
 
-	m_prev = NULL;
-	m_next = NULL;
-	m_branch = NULL;
-	if ( NULL != args ) {
-		m_args = args->first();
-	} else {
-		m_args = NULL;
-	}
+    m_prev = NULL;
+    m_next = NULL;
+    m_branch = NULL;
+    if ( NULL != args )
+    {
+        m_args = args->first();
+    }
+    else
+    {
+        m_args = NULL;
+    }
 }
 
-CompilerStatement * CompilerStatement::createBranch(CompilerStatement * branch) {
-	if ( NULL == this ) {
-		return NULL;
-	}
-	if ( NULL == branch ) {
-		return this;
-	}
+CompilerStatement * CompilerStatement::createBranch ( CompilerStatement * branch )
+{
+    if ( NULL == this )
+    {
+        return NULL;
+    }
+    if ( NULL == branch )
+    {
+        return this;
+    }
 
-	m_branch = branch->first();
-	return this;
+    m_branch = branch->first();
+    return this;
 }
 
-CompilerStatement * CompilerStatement::first() {
-	if ( NULL == this ) {
-		return NULL;
-	}
-	CompilerStatement * stmt = this;
-	while ( NULL != stmt->m_prev ) {
-		stmt = stmt->m_prev;
-	}
-	return stmt;
+CompilerStatement * CompilerStatement::first()
+{
+    if ( NULL == this )
+    {
+        return NULL;
+    }
+
+    CompilerStatement * stmt = this;
+
+    while ( NULL != stmt->m_prev )
+    {
+        stmt = stmt->m_prev;
+    }
+
+    return stmt;
 }
 
-CompilerStatement * CompilerStatement::addLink(CompilerStatement * next) {
-	if ( NULL == next ) {
-		return this;
-	}
-	if ( NULL == this ) {
-		return next;
-	}
+CompilerStatement * CompilerStatement::addLink ( CompilerStatement * next )
+{
+    if ( NULL == next )
+    {
+        return this;
+    }
+    if ( NULL == this )
+    {
+        return next;
+    }
 
-	next = next->first();
+    next = next->first();
 
-	CompilerStatement * stmt = this;
-	while ( NULL != stmt->m_next ) {
-		stmt = stmt->m_next;
-	}
-	stmt->m_next = next;
-	next->m_prev = stmt;
+    CompilerStatement * stmt = this;
+    while ( NULL != stmt->m_next )
+    {
+        stmt = stmt->m_next;
+    }
+    stmt->m_next = next;
+    next->m_prev = stmt;
 
-	return next;
+    return next;
 }
 
-CompilerStatement * CompilerStatement::addArgsLink(CompilerExpr * chainLink) {
-	if ( NULL == this ) {
-		return NULL;
-	}
-	if ( NULL == chainLink ) {
-		return this;
-	}
+CompilerStatement * CompilerStatement::addArgsLink ( CompilerExpr * chainLink )
+{
+    if ( NULL == this )
+    {
+        return NULL;
+    }
+    if ( NULL == chainLink )
+    {
+        return this;
+    }
 
-	if ( NULL == m_args ) {
-		m_args = chainLink;
-	} else {
-		m_args->addLink(chainLink);
-	}
-	return this;
+    if ( NULL == m_args )
+    {
+        m_args = chainLink;
+    }
+    else
+    {
+        m_args->addLink(chainLink);
+    }
+    return this;
 }
 
-void CompilerStatement::completeDelete(CompilerStatement * stmt) {
-	stmt->completeDelete();
+void CompilerStatement::completeDelete ( CompilerStatement * stmt )
+{
+    stmt->completeDelete();
 }
 
-void CompilerStatement::completeDelete() {
-	if ( NULL == this ) {
-		return;
-	}
-	if ( NULL != m_args ) {
-		m_args->completeDelete();
-	}
-	if ( NULL != m_branch ) {
-		m_branch->completeDelete();
-	}
-	if ( NULL != m_next ) {
-		m_next->m_prev = NULL;
-		m_next->completeDelete();
-	}
-	if ( NULL != m_prev ) {
-		m_prev->m_next = NULL;
-		m_prev->completeDelete();
-	}
-	delete this;
+void CompilerStatement::completeDelete()
+{
+    if ( NULL == this )
+    {
+        return;
+    }
+
+    if ( NULL != m_args )
+    {
+        m_args->completeDelete();
+    }
+
+    if ( NULL != m_branch )
+    {
+        m_branch->completeDelete();
+    }
+
+    if ( NULL != m_next )
+    {
+        m_next->m_prev = NULL;
+        m_next->completeDelete();
+    }
+
+    if ( NULL != m_prev )
+    {
+        m_prev->m_next = NULL;
+        m_prev->completeDelete();
+    }
+
+    delete this;
 }
 
-std::ostream & CompilerStatement::print(std::ostream & out, int level, std::string lineString) const {
-	if ( NULL == this ) {
-		out << "<ERROR:NULL!>";
-		return out;
-	}
-	for ( int i = 0; i < level; i++ ) {
-		if ( '0' == lineString[i] ) {
-			out << "    ";
-		} else {
-			out << "  │ ";
-		}
-	}
-	if ( NULL == m_prev ) {
-		if ( NULL == m_next ) {
-			lineString[level] = '0';
-		}
-		out << "  █─ ";
-	} else {
-		if ( NULL == m_next ) {
-			out << "  └─ ";
-			lineString[level] = '0';
-		} else {
-			out << "  ├─ ";
-		}
-	}
+std::ostream & CompilerStatement::print ( std::ostream & out,
+                                          int level,
+                                          std::string lineString ) const
+{
+    if ( NULL == this )
+    {
+        out << "<ERROR:NULL!>";
+        return out;
+    }
 
-	out << m_type;
-	if ( NULL != m_args ) {
-		out << " [ ";
-		out << m_args;
-		out << " ]";
-	}
-	out << "\n";
+    for ( int i = 0; i < level; i++ )
+    {
+        if ( '0' == lineString[i] )
+        {
+            out << "    ";
+        }
+        else
+        {
+            out << "  │ ";
+        }
+    }
 
-	if ( NULL != m_branch ) {
-		lineString += "1";
-		m_branch->print(out, level + 1, lineString);
-	}
+    if ( NULL == m_prev )
+    {
+        if ( NULL == m_next )
+        {
+            lineString[level] = '0';
+        }
+        out << "  █─ ";
+    }
+    else
+    {
+        if ( NULL == m_next )
+        {
+            out << "  └─ ";
+            lineString[level] = '0';
+        }
+        else
+        {
+            out << "  ├─ ";
+        }
+    }
 
-	if ( NULL != m_next ) {
-		m_next->print(out, level, lineString);
-	}
+    out << m_type;
+    if ( NULL != m_args )
+    {
+        out << " [ ";
+        out << m_args;
+        out << " ]";
+    }
+    out << "\n";
 
-	return out;
+    if ( NULL != m_branch )
+    {
+        lineString += "1";
+        m_branch->print(out, level + 1, lineString);
+    }
+
+    if ( NULL != m_next )
+    {
+        m_next->print(out, level, lineString);
+    }
+
+    return out;
 }
 
-std::ostream & operator << (std::ostream & out, const CompilerStatement * stmt) {
-	return stmt->print(out);
+std::ostream & operator << ( std::ostream & out,
+                             const CompilerStatement * stmt )
+{
+    return stmt->print(out);
 }

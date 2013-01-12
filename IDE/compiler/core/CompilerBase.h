@@ -1,15 +1,17 @@
+// =============================================================================
 /**
  * @brief
  * C++ Interface: ...
  *
  * ...
  *
- * Copyright: See COPYING file that comes with this distribution.
+ * (C) copyright 2013 Moravia Microsystems, s.r.o.
  *
- * @author Martin Ošmera <martin.osmera@gmail.com>, (C) 2012
+ * @author Martin Ošmera <martin.osmera@gmail.com>
  * @ingroup Compiler
  * @file CompilerBase.h
  */
+// =============================================================================
 
 #ifndef COMPILERBASE_H
 #define COMPILERBASE_H
@@ -19,52 +21,91 @@
  * @ingroup Compiler
  * @class CompilerBase
  */
-class CompilerBase {
-public:
-	virtual ~CompilerBase() {};
+class CompilerBase
+{
+    ////    Public Datatypes    ////
+    public:
+        /**
+         * @brief
+         */
+        enum MessageType
+        {
+            MT_GENERAL, ///<
+            MT_ERROR,   ///<
+            MT_WARNING, ///<
+            MT_REMARK   ///<
+        };
 
-	enum MessageType {
-		MT_GENERAL,
-		MT_ERROR,
-		MT_WARNING,
-		MT_REMARK
-	};
+        /**
+         * @brief
+         */
+        enum TargetArch
+        {
+            TA_AVR8,    ///<
+            TA_PIC8,    ///<
+            TA_MCS51    ///<
+        };
 
-	enum TargetArch {
-		TA_AVR8,
-		TA_PIC8,
-		TA_MCS51
-	};
+        /**
+         * @brief
+         */
+        enum LangId
+        {
+            LI_ASM      ///<
+        };
 
-	enum LangId {
-		LI_ASM
-	};
+        /**
+         * @brief
+         */
+        struct SourceLocation
+        {
+            /**
+             * @brief
+             */
+            SourceLocation();
 
-	struct SourceLocation {
-		SourceLocation(int fileNumber, int lineStart, int lineEnd, int colStart, int colEnd) {
-			m_fileNumber = fileNumber;
-			m_lineStart = lineStart;
-			m_lineEnd = lineEnd;
-			m_colStart = colStart;
-			m_colEnd = colEnd;
-		}
-		SourceLocation() {
-			m_fileNumber = -1;
-			m_lineStart = -1;
-			m_lineEnd = -1;
-			m_colStart = -1;
-			m_colEnd = -1;
-		}
+            /**
+             * @brief
+             * @param[in] fileNumber
+             * @param[in] lineStart
+             * @param[in] lineEnd
+             * @param[in] colStart
+             * @param[in] colEnd
+             */
+            SourceLocation ( int fileNumber,
+                             int lineStart,
+                             int lineEnd,
+                             int colStart,
+                             int colEnd );
 
-		int m_fileNumber;
-		int m_lineStart;
-		int m_lineEnd;
-		int m_colStart;
-		int m_colEnd;
-	};
+            ///
+            int m_fileNumber;
 
-protected:
-	CompilerBase() {};
+            ///
+            int m_lineStart;
+
+            ///
+            int m_lineEnd;
+
+            ///
+            int m_colStart;
+
+            ///
+            int m_colEnd;
+        };
+
+    ////    Constructors and Destructors    ////
+    public:
+        /**
+         * @brief
+         */
+        virtual ~CompilerBase() {};
+
+    protected:
+        /**
+         * @brief Forbidden constructor
+         */
+        CompilerBase() {};
 };
 
 #endif // COMPILERBASE_H

@@ -1,16 +1,24 @@
+# ==============================================================================
+#
+# Utility libraries and tools ...
+#
+# (C) copyright 2013 Moravia Microsystems, s.r.o.
+#
+# ==============================================================================
+
 
 # ------------------------------------------------------------------------------
 # GENERAL OPTIONS
 # ------------------------------------------------------------------------------
 
 # Set project name
-project(utilities)
+project ( utilities )
 
 # Set the minimum required version of CMake
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required ( VERSION 2.8 )
 
 # Create verbose makefiles if on
-set(CMAKE_VERBOSE_MAKEFILE OFF)
+set ( CMAKE_VERBOSE_MAKEFILE OFF )
 
 
 # ------------------------------------------------------------------------------
@@ -18,10 +26,10 @@ set(CMAKE_VERBOSE_MAKEFILE OFF)
 # ------------------------------------------------------------------------------
 
 # Build the tools for working with Intel 8 Hex, Motorola S-Records, etc.
-add_subdirectory(MCUDataFiles)
+add_subdirectory ( MCUDataFiles )
 
 # Build the tools for working with debug files
-add_subdirectory(DbgFile)
+add_subdirectory ( DbgFile )
 
 # Build the tools for working with mcu spec file (xml)
-add_subdirectory(McuSpecFileDesigner)
+add_subdirectory ( McuSpecFileDesigner )

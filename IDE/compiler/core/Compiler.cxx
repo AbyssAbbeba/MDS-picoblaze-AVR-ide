@@ -1,26 +1,37 @@
+// =============================================================================
 /**
  * @brief
  * C++ Implementation: ...
  *
  * ...
  *
- * Copyright: See COPYING file that comes with this distribution.
+ * (C) copyright 2013 Moravia Microsystems, s.r.o.
  *
- * @author: Martin Ošmera <martin.osmera@gmail.com>, (C) 2012
- *
+ * @author Martin Ošmera <martin.osmera@gmail.com>
+ * @ingroup Compiler
+ * @file Compiler.cxx
  */
+// =============================================================================
 
 #include "Compiler.h"
 
 #include "CompilerCore.h"
 #include "CompilerMsgInterface.h"
 
-Compiler::Compiler(CompilerMsgInterface * msgInterface) : m_compilerCore(new CompilerCore(msgInterface)) {}
-
-Compiler::~Compiler() {
-	delete m_compilerCore;
+Compiler::Compiler ( CompilerMsgInterface * msgInterface )
+                   : m_compilerCore ( new CompilerCore(msgInterface) )
+{
 }
 
-bool Compiler::compile(CompilerBase::LangId lang, CompilerBase::TargetArch arch, CompilerOptions * opts, const std::string & filename) {
-	return m_compilerCore->compile(lang, arch, opts, filename);
+Compiler::~Compiler()
+{
+    delete m_compilerCore;
+}
+
+bool Compiler::compile ( CompilerBase::LangId lang,
+                         CompilerBase::TargetArch arch,
+                         CompilerOptions * const opts,
+                         const std::string & filename )
+{
+    return m_compilerCore->compile(lang, arch, opts, filename);
 }

@@ -25,9 +25,7 @@ set ( CMAKE_VERBOSE_MAKEFILE OFF )
 # ------------------------------------------------------------------------------
 
 # Add include directories to the build.
-include_directories ( "${CMAKE_CURRENT_BINARY_DIR}/.."
-                      "${CMAKE_CURRENT_BINARY_DIR}/../AVR8"
-                      "${CMAKE_CURRENT_BINARY_DIR}/../PIC8" )
+include_directories ( "${CMAKE_CURRENT_BINARY_DIR}/.." )
 
 # Load settings specific for the Qt4 library
 find_package ( Qt4 REQUIRED )
@@ -40,7 +38,7 @@ include ( ${QT_USE_FILE} )
  # -Wall       : Enables all the warnings.
  # -Wextra     : Enables some extra warning flags that are not enabled by -Wall.
  # -std=c++0x  : Default template arguments may not be used in function templates without -std=c++0x or -std=gnu++0x.
- # -O2   : Optimization, level 2.
+ # -O2         : Optimization, level 2.
  # -pipe       : Use pipes rather than temporary files for communication between the various stages of compilation.
 add_definitions ( -Wall -Wextra -std=c++0x -O2 -pipe )
 
@@ -49,6 +47,8 @@ add_definitions ( -Wall -Wextra -std=c++0x -O2 -pipe )
 add_library ( ${PROJECT_NAME} SHARED
               McuDeviceSpecAVR8.cxx
               McuDeviceSpecPIC8.cxx
+              McuSimCfgMgrAVR8.cxx
+              McuSimCfgMgrPIC8.cxx
               McuSimCfgMgr.cxx )
 
 # Link a target to given libraries.

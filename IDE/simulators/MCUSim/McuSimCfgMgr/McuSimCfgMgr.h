@@ -16,9 +16,12 @@
 #ifndef MCUSIMCFGMGR_H
 #define MCUSIMCFGMGR_H
 
+// Forward declarations
+class McuDeviceSpec;
+class McuSimCfgMgrAVR8;
+class McuSimCfgMgrPIC8;
+
 #include "MCUSim.h"
-#include "McuDeviceSpecAVR8.h"
-#include "McuDeviceSpecPIC8.h"
 
 #include <string>
 #include <QString>
@@ -40,7 +43,7 @@ class McuSimCfgMgr : public QXmlDefaultHandler
         /**
          * @brief
          */
-        McuSimCfgMgr() {};
+        McuSimCfgMgr();
 
         /**
          * @brief
@@ -126,19 +129,6 @@ class McuSimCfgMgr : public QXmlDefaultHandler
                                 const QString & qName,
                                 const QXmlAttributes & atts );
 
-        /**
-         * @brief
-         * @param[in] namespaceURI
-         * @param[in] localName
-         * @param[in] qName
-         * @param[in] atts
-         * @return
-         */
-        bool startElementPIC8 ( const QString & namespaceURI,
-                                const QString & localName,
-                                const QString & qName,
-                                const QXmlAttributes & atts );
-
     ////    Inline Private Operations    ////
     private:
         /**
@@ -162,26 +152,14 @@ class McuSimCfgMgr : public QXmlDefaultHandler
          */
         inline bool charactersAVR8 ( const QString & ch );
 
-        /**
-         * @brief
-         * @param[in] localName
-         * @param[in] atts
-         * @return
-         */
-        inline bool attributesPIC8 ( const QString & localName,
-                                     const QXmlAttributes & atts );
-
-        /**
-         * @brief
-         * @param[in] ch
-         * @return
-         */
-        inline bool charactersPIC8 ( const QString & ch );
-
     ////    Private Attributes    ////
     private:
         static McuSimCfgMgr * m_instance;       ///<
         QVector<McuDeviceSpec*> m_devices;      ///<
+
+        McuSimCfgMgrAVR8 * m_mcuSimCfgMgrAVR8;  ///<
+        McuSimCfgMgrPIC8 * m_mcuSimCfgMgrPIC8;  ///<
+
         QStack<QString> m_currentXMLElement;    ///<
         QStringList m_expectedXMLElements;      ///<
         bool m_expectCharacters;                ///<

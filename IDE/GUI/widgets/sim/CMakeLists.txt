@@ -79,7 +79,7 @@ add_library(${PROJECT_NAME} SHARED
 	${CMAKE_CURRENT_BINARY_DIR}/../Counters/wlinecounter.cpp
 	${CMAKE_CURRENT_BINARY_DIR}/../Counters/wcolumncounter.cpp)
 
-target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} SimControl McuSimCfgMgr AVR8Sim MCUDataFiles)
+target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} SimControl McuSimCfgMgr AVR8Sim PIC8Sim MCUDataFiles)
 
 # <DEBUG!>
 #qt4_wrap_cpp(QT_MOC_GENERATED_CPP_FILES2

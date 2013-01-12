@@ -18,6 +18,8 @@
 
 #include "../MCUSim.h"
 
+#include <cstdint>
+
 /**
  * @brief
  * @ingroup PIC8

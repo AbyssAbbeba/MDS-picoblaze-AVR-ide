@@ -1,15 +1,17 @@
+// =============================================================================
 /**
  * @brief
  * C++ Interface: ...
  *
  * ...
  *
- * Copyright: See COPYING file that comes with this distribution.
+ * (C) copyright 2013 Moravia Microsystems, s.r.o.
  *
- * @author Martin Ošmera <martin.osmera@gmail.com>, (C) 2012
+ * @author Martin Ošmera <martin.osmera@gmail.com>
  * @ingroup Compiler
  * @file CompilerCore.h
  */
+// =============================================================================
 
 #ifndef COMPILERCORE_H
 #define COMPILERCORE_H
@@ -35,45 +37,161 @@ class CompilerOptions;
  * @ingroup Compiler
  * @class CompilerCore
  */
-class CompilerCore : public CompilerBase, private CompilerParserInterface, private CompilerSemanticInterface {
-public:
-	CompilerCore(CompilerMsgInterface * msgInterface);
-	~CompilerCore();
+class CompilerCore : public CompilerBase,
+                     private CompilerParserInterface,
+                     private CompilerSemanticInterface
+{
+    ////    Constructors and Destructors    ////
+    public:
+        /**
+         * @brief
+         * @param[in,out] msgInterface
+         */
+        CompilerCore ( CompilerMsgInterface * msgInterface );
 
-	bool compile(LangId lang, TargetArch arch, CompilerOptions * opts, const std::string & filename);
+        /**
+         * @brief
+         */
+        ~CompilerCore();
 
-private:
-	/// @name Interface for syntax and/or lexical analyzer
-	//@{
-	void parserMessage(SourceLocation location, MessageType type, const std::string & text);
-	void lexerMessage(SourceLocation location, MessageType type, const std::string & text);
-	FILE * fileOpen(const std::string & filename, bool acyclic = true);
-	bool pushFileName(const std::string & filename);
-	void popFileName();
-	int getFileNumber() const;
-	int getFileNumber(const std::string & filename) const;
-	void syntaxAnalysisComplete(CompilerStatement * codeTree);
-	//@}
+    private:
+        /**
+         * @brief Forbidden constructor
+         */
+        CompilerCore();
 
-	/// @name Interface for semantic analyzer
-	//@{
-	void setFileName(const std::string & filename);
-	//@}
+    ////    Public Operations    ////
+    public:
+        /**
+         * @brief
+         * @param[in] lang
+         * @param[in] arch
+         * @param[in] opts
+         * @param[in] filename
+         * @return
+         */
+        bool compile ( LangId lang,
+                       TargetArch arch,
+                       CompilerOptions * const opts,
+                       const std::string & filename );
 
-	inline void resetCompilerCore();
+    ////    Private Operations    ////
+    private:
+        /// @name Interface for syntax and/or lexical analyzer
+        //@{
+            /**
+             * @brief
+             * @param[in] location
+             * @param[in] type
+             * @param[in] text
+             */
+            void parserMessage ( SourceLocation location,
+                                 MessageType type,
+                                 const std::string & text );
 
-	CompilerMsgInterface * const m_msgInterface;
-	CompilerStatement * m_rootStatement;
+            /**
+             * @brief
+             * @param[in] location
+             * @param[in] type
+             * @param[in] text
+             */
+            void lexerMessage ( SourceLocation location,
+                                MessageType type,
+                                const std::string & text );
 
-	std::vector<std::string> m_fileNameStack;
-	std::vector<std::string> m_fileNames;
-	std::string m_filename;
-	int m_fileNumber;
+            /**
+             * @brief
+             * @param[in] filename
+             * @param[in] acyclic
+             * @return
+             */
+            FILE * fileOpen ( const std::string & filename,
+                              bool acyclic = true );
 
-	bool m_success;
+            /**
+             * @brief
+             * @param[in] filename
+             */
+            bool pushFileName ( const std::string & filename );
 
-	/// Forbidden constructor
-	CompilerCore();
+            /**
+             * @brief
+             */
+            void popFileName();
+
+            /**
+             * @brief
+             * @return
+             */
+            int getFileNumber() const;
+
+            /**
+             * @brief
+             * @param[in] filename
+             * @return
+             */
+            int getFileNumber ( const std::string & filename ) const;
+
+            /**
+             * @brief
+             * @param[in,out] codeTree
+             * @return
+             */
+            void syntaxAnalysisComplete ( CompilerStatement * codeTree );
+        //@}
+
+        /// @name Interface for semantic analyzer
+        //@{
+            /**
+             * @brief
+             * @param[in] filename
+             */
+            void setFileName ( const std::string & filename );
+        //@}
+
+    ////    Inline Private Operations    ////
+    private:
+        /**
+         * @brief
+         */
+        inline void resetCompilerCore();
+
+    ////    Private Attributes    ////
+    private:
+        /**
+         * @brief
+         */
+        CompilerMsgInterface * const m_msgInterface;
+
+        /**
+         * @brief
+         */
+        CompilerStatement * m_rootStatement;
+
+        /**
+         * @brief
+         */
+        std::vector<std::string> m_fileNameStack;
+
+        /**
+         * @brief
+         */
+        std::vector<std::string> m_fileNames;
+
+        /**
+         * @brief
+         */
+        std::string m_filename;
+
+        /**
+         * @brief
+         */
+        int m_fileNumber;
+
+        /**
+         * @brief
+         */
+        bool m_success;
 };
 
 #endif // COMPILERCORE_H

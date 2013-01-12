@@ -18,12 +18,12 @@
 
 #include "McuDeviceSpec.h"
 #include "MCUSim.h"
-#include "AVR8PinNames.h"
-#include "AVR8InsNames.h"
-#include "AVR8InstructionSet.h"
-#include "AVR8InterruptController.h"
-#include "AVR8IO.h"
-#include "AVR8Config.h"
+#include "AVR8/AVR8PinNames.h"
+#include "AVR8/AVR8InsNames.h"
+#include "AVR8/AVR8InstructionSet.h"
+#include "AVR8/AVR8InterruptController.h"
+#include "AVR8/AVR8IO.h"
+#include "AVR8/AVR8Config.h"
 
 #include <cstdint>
 #include <string>

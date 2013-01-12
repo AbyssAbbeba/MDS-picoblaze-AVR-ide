@@ -55,9 +55,9 @@ class PIC8DataMemory : public MCUSim::Memory
 
             int m_undefinedValue;           ///< -1 means random
             unsigned int m_size;            ///<
-            unsigned int * m_addrTransTab;  ///<
             unsigned int * m_randomInit;    ///<
-            unsigned int * m_initValues;    ///<
+            int * m_addrTransTab;           ///<
+            uint32_t * m_initValues;        ///<
         };
 
     ////    Constructors and Destructors    ////
