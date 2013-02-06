@@ -194,6 +194,22 @@ class DbgFile
                 m_address    = -1;
             }
 
+            /**
+             * @brief
+             */
+            LineRecord ( int fileNumber,
+                         int lineNumber,
+                         int level,
+                         int block,
+                         int address )
+            {
+                m_fileNumber = fileNumber;
+                m_lineNumber = lineNumber;
+                m_level      = level;
+                m_block      = block;
+                m_address    = address;
+            }
+
             ///
             int m_fileNumber;
 

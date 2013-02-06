@@ -69,13 +69,13 @@ inline void DbgFileCDB::loadFile ( const std::string & filename )
         throw DbgFileException(DbgFileException::IO_ERROR, "Unable to open " + filename);
     }
 
-    char line[4096];
+    char line [ MAX_LINE_LENGTH + 1 ];
     while ( false == file.eof() )
     {
-        file.getline(line, 4095);
+        file.getline(line, MAX_LINE_LENGTH);
         if ( true == file.bad() )
         {
-                throw DbgFileException(DbgFileException::IO_ERROR, "Read failed, file: " + filename);
+            throw DbgFileException(DbgFileException::IO_ERROR, "Read failed, file: " + filename);
         }
 
         if ( '\0' == line[0] )
@@ -433,7 +433,7 @@ inline void DbgFileCDB::handleSymbolRecord ( char * line,
     symbolRecord.m_block = atoi(checkNumber(extractToken(line, '(')));
 
     char * typeChain = extractToken(line, ',');
-        // Get rid of the trailing ')'
+    // Get rid of the trailing ')'
     typeChain [ strlen(typeChain) - 1 ] = '\0';
 
     symbolRecord.m_typeChain = parseTypeChain(typeChain);
@@ -725,7 +725,7 @@ inline const char * DbgFileCDB::checkHexNumber ( const char * str ) const
     {
         if ( 0 == isxdigit(str[i]) )
         {
-            throw DbgFileException(DbgFileException::PARSE_ERROR, "Decimal digit character expected.");
+            throw DbgFileException(DbgFileException::PARSE_ERROR, "Hexadecimal digit character expected.");
         }
     }
 

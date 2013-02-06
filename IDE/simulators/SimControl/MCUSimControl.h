@@ -44,8 +44,10 @@ class MCUSimControl : public QObject
           */
         enum CompilerID
         {
-            COMPILER_NATIVE,    ///<
-            COMPILER_SDCC       ///<
+            COMPILER_NATIVE,    ///< Native compiler, i.e. our own compiler - Moravia Microsystems Compiler
+            COMPILER_SDCC,      ///< Small Device C Compiler - open-source C compiler for microcontrollers
+            COMPILER_GCC,       ///< GNU Compiler Collection - open-source set of various compilers
+            COMPILER_AVRA       ///< AVRA assembler - open-source assembler for AVR
         };
 
         /**
@@ -53,7 +55,9 @@ class MCUSimControl : public QObject
          */
         enum DataFileType
         {
-            DBGFILEID_HEX       ///<
+            DBGFILEID_HEX,      ///< Intel HEX
+            DBGFILEID_COFF,     ///< Common Object File Format - an archaic format, today widely replaced with ELF, etc.
+            DBGFILEID_SREC      // TODO: Not fully supported yet!
         };
 
         /**

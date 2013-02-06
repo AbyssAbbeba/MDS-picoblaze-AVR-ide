@@ -16,12 +16,22 @@
 #include "MCUSimControl.h"
 
 #include "MCUSimObserver.h"
+
 #include "DbgFileCDB.h"
+#include "DbgFileAvraLst.h"
+#include "DbgFileAvrCoff.h"
+
 #include "HexFile.h"
+#include "BinFile.h"
+#include "SrecFile.h"
+#include "ObjectDataFile.h"
+
 #include "AVR8Sim.h"
 #include "AVR8ProgramMemory.h"
+
 #include "PIC8Sim.h"
 #include "PIC8ProgramMemory.h"
+
 #include "McuSimCfgMgr.h"
 #include "McuDeviceSpec.h"
 #include "McuDeviceSpecAVR8.h"
@@ -62,30 +72,95 @@ bool MCUSimControl::start ( const std::string & filename,
     DataFile * dataFile = NULL;
     std::string dbgFileExt;
     std::string dataFileExt;
+
     switch ( compilerId )
     {
         case COMPILER_NATIVE:
+        {
             m_dbgFile = NULL; // TODO: This is nonsense, write something better here when that something is implemented!
             switch ( dataFileType )
             {
                 case DBGFILEID_HEX:
+                {
                     dataFile = new HexFile();
                     dataFileExt = ".hex";
                     dbgFileExt = ".adb";
                     break;
+                }
+                default:
+                {
+                    qDebug("File format not supported.");
+                    return false;
+                }
             }
             break;
+        }
+
         case COMPILER_SDCC:
+        {
             dbgFileExt = ".cdb";
             m_dbgFile = new DbgFileCDB();
             switch ( dataFileType )
             {
                 case DBGFILEID_HEX:
+                {
                     dataFileExt = ".ihx";
-                    dataFile = new HexFile;
+                    dataFile = new HexFile();
                     break;
+                }
+                default:
+                {
+                    qDebug("File format not supported.");
+                    return false;
+                }
             }
             break;
+        }
+
+        case COMPILER_GCC: // TODO: Not implemeted yet!
+        {
+            qDebug("Not implemeted yet!");
+            return false;
+            break;
+        }
+
+        case COMPILER_AVRA: // TODO: Not implemeted yet!
+        {
+            switch ( dataFileType )
+            {
+                case DBGFILEID_HEX:
+                {
+                    dataFileExt = ".hex";
+                    dbgFileExt = ".lst";
+                    dataFile = new HexFile();
+                    m_dbgFile = new DbgFileAvraLst();
+                    break;
+                }
+                case DBGFILEID_COFF:
+                {
+                    dataFileExt = ".cof";
+                    dbgFileExt = ".cof";
+                    ObjectDataFile * objectDataFile = new ObjectDataFile();
+                    DbgFileAvrCoff * dbgFileAvrCoff = new DbgFileAvrCoff();
+                    dbgFileAvrCoff->assignCodeMemDataContainer(objectDataFile);
+                    dataFile = objectDataFile;
+                    m_dbgFile = dbgFileAvrCoff;
+                    break;
+                }
+                default:
+                {
+                    qDebug("File format not supported.");
+                    return false;
+                }
+            }
+            break;
+        }
+
+        default:
+        {
+            qDebug("Compiler not supported.");
+            return false;
+        }
     }
 
     if ( ( NULL == dataFile ) || ( NULL == m_dbgFile) )

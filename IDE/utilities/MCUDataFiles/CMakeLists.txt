@@ -37,7 +37,8 @@ add_library ( ${PROJECT_NAME} SHARED
               DataFile.cxx
               BinFile.cxx
               HexFile.cxx
-              SrecFile.cxx )
+              SrecFile.cxx
+              ObjectDataFile.cxx )
 
 
 # ------------------------------------------------------------------------------
