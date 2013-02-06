@@ -73,20 +73,44 @@
                 \fontsize{25pt}{30pt} \selectfont{}
                 Corporate coding convention\\
                 guildelines for C++ and C.
-                \\[1cm]
-                \fontsize{14.4pt}{20pt} \selectfont{}
-                \textit{Martin Ošmera\\Brno, 2012}
         \end{center}
 \end{titlepage}
 
+Copyright Information:
+\\
+\copyright{} 2013, Moravia Microsystems, s.r.o. All rights reserved.\\
+Brno, Czech Republic, European Union.
+\\
+This document is protected by copyright. No part of this document may be reproduced in any form by any means
+without prior written authorization of Moravia Microsystems, s.r.o, if any.
+
 \tableofcontents
 
-\chapter{Importance of a coding convention}
+\chapter{Importance of a code convention}
     First of all it is important to keep in mind that this convention is not supposed to create a set of unnecessary and unproductive rules to poison your work; instead in case you are sure that your work goes better with another coding style, go ahead but please at least read this paragraph till end. Coding convention is something you probably get used to, sooner or later, and it contributes in creating unified working environment where you always know what to expect. Also it helps to write code which is relatively very easily readable for a man who is familiar with the applied convention, and it helps in creating a code that is not merely a piece of an ``abstract machinery'' but is a sort art... Don't you think that creating a state of the art equipment for microcomputer controlled hardware development is a little more that ordinary programming and circuitry design? Please lets make it a masterpiece.
 
+    \paragraph{}
+    Code conventions are important to programmers for a number of reasons:
+    \begin{itemize}
+        \item About 80\% of the lifetime cost of a piece of software goes to maintenance.
+        \item Hardly any software is maintained for its whole life by the original author.
+        \item Code conventions improve the readability of the software, allowing engineers to understand new code more quickly and thoroughly.
+        \item If you ship your source code as a product, you need to make sure it is as well packaged and clean as any other product you create.
+    \end{itemize}
+
 \chapter{Detailed specification}
+    \section{File names}
+        Use the following file suffixes:\\
+        \begin{table}[h!]
+            \begin{tabular}{l|l}
+                \textbf{File Type}  & \textbf{Suffix} \\\hline
+                C++ header file     & .h              \\
+                C++ source file     & .cxx
+            \end{tabular}
+        \end{table}
+
     \section{Header files}
-        \subsection{Indentation}
+        \subsection{Indentationx}
             \begin{itemize}
                 \item Indent with spaces, use 4 spaces for a level.
                 \item 

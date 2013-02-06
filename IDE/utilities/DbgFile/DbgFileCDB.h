@@ -25,6 +25,11 @@
  */
 class DbgFileCDB : public DbgFile
 {
+    ////    Public Static Constants    ////
+    public:
+        /// @brief
+        static const unsigned int MAX_LINE_LENGTH = 4095;
+
     ////    Constructors and Destructors    ////
     public:
         /**

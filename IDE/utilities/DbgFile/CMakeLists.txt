@@ -23,6 +23,9 @@ set ( CMAKE_VERBOSE_MAKEFILE OFF )
 # COMPILATION OPTIONS
 # ------------------------------------------------------------------------------
 
+# Add include directories to the build.
+include_directories ( "${CMAKE_CURRENT_BINARY_DIR}/.." )
+
 ## Add switches to compiler command line
  # -Wall       : Enables all the warnings.
  # -Wextra     : Enables some extra warning flags that are not enabled by -Wall.
@@ -34,7 +37,9 @@ add_definitions ( -Wall -Wextra -std=c++0x -O2 -pipe )
 ## Add a library to the project using the specified source files,
  # in this case it will procude dynamic C++ library.
 add_library ( ${PROJECT_NAME} SHARED
-              DbgFileCDB.cxx )
+              DbgFileCDB.cxx
+              DbgFileAvraLst.cxx
+              DbgFileAvrCoff.cxx )
 
 
 # ------------------------------------------------------------------------------
