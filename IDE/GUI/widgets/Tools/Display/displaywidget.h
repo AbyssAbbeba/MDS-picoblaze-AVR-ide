@@ -38,6 +38,7 @@ class DisplayWidget : public QWidget
     private:
         int index;
         bool activated;
+        QPolygonF *widgetPolygon;
 
     signals:
         void pressed(int index);
