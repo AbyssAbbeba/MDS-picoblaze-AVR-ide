@@ -97,6 +97,7 @@ HexEdit::HexEdit(QWidget *parent, bool AsciiPanel, int countSize, int columns)
     hexTextEdit->setMinimumWidth((columns*3-4)*10);
     hexTextEdit->setMaximumWidth((columns*3-4)*10);
     hexTextEdit->setMinimumHeight(175);
+    //hexTextEdit->setMaximumHeight(175);
 
     if (AsciiPanel == true)
     {
@@ -123,6 +124,25 @@ HexEdit::HexEdit(QWidget *parent, bool AsciiPanel, int countSize, int columns)
         hexStatusLabel->setText("Read/Write");
 
     hexLayout->setSpacing(0);
+    //QWidget* nullWidget = new QWidget(this);
+    //nullWidget->setMaximumWidth(hexLineCount->width());
+    //nullWidget->setMaximumHeight(hexColumnCount->height());
+    //nullWidget->setMinimumHeight(hexColumnCount->height());
+    //nullWidget->setMinimumWidth(hexLineCount->width());
+    /*QVBoxLayout *vboxLayout = new QVBoxLayout(this);
+    QHBoxLayout *hboxLayout = new QHBoxLayout();
+    QHBoxLayout *hboxLayout2 = new QHBoxLayout();
+    //hboxLayout->addWidget(nullWidget);
+    hboxLayout->addWidget(hexColumnCount);
+    hboxLayout2->addWidget(hexLineCount);
+    hboxLayout2->addWidget(hexTextEdit);
+    vboxLayout->addLayout(hboxLayout);
+    vboxLayout->addLayout(hboxLayout2);
+    vboxLayout->addWidget(hexStatusLabel);
+    this->setLayout(vboxLayout);*/
+    
+    
+    //hexLayout->addWidget(nullWidget, 0, 0);
     hexLayout->addWidget(hexLineCount, 1, 0);
     hexLayout->addWidget(hexColumnCount, 0, 1);
     hexLayout->addWidget(hexTextEdit, 1, 1);
@@ -422,6 +442,7 @@ void HexEdit::setData(QByteArray *byteArray)
         else
             hexTextEdit->insertPlainText(" ");
     }
+    this->hexByteArray = byteArray;
 }
 
 

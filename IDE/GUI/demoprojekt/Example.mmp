@@ -6,6 +6,7 @@
  </General>
  <Files>
   <File path="a.c" name="a.c"/>
+  <File path="a.asm" name="a.asm"/>
  </Files>
  <Mainfile path="a.c" name="a.c"/>
  <Simulator/>

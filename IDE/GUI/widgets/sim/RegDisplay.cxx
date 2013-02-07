@@ -80,7 +80,7 @@ inline void RegDisplay::createWidgets(
 	const QStringList * toolsTips,
 	const QStringList * statusTips)
 {
-	m_regNameLabel = new QLabel(regName + ": ", this);
+	m_regNameLabel = new QLabel(regName + ":", this);
 	m_regNameLabel->setFont(m_nameFont);
 	if ( 0 != regNameTip.size() ) {
 		m_regNameLabel->setToolTip(regNameTip);
@@ -89,6 +89,7 @@ inline void RegDisplay::createWidgets(
 	m_primaryLayout->addWidget(m_regNameLabel);
 
 	m_hexLineEdit = new QLineEdit(this);
+    m_hexLineEdit->setFrame(false);
 	m_hexLineEdit->setInputMask(">HH;");
 	m_hexLineEdit->setText("00");
 	//m_hexLineEdit->setMinimumWidth(30);

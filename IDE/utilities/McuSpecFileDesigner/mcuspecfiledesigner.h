@@ -10,8 +10,18 @@
 #include <QCheckBox>
 #include <QPlainTextEdit>
 #include <QPushButton>
+#include <QMenu>
+#include <QAction>
+#include <QList>
 
 #include "ioregswidget.h"
+
+
+typedef struct ArchStruct
+{
+    QString name;
+    QString family;
+} ArchStruct;
 
 class McuSpecFileDesigner : public QWidget
 {
@@ -23,11 +33,15 @@ class McuSpecFileDesigner : public QWidget
         void reallocateIORegs();
         void setNextIOReg();
         void setPreviousIOReg();
-        void getConfig();
+        void getDevices();
+        void getConfig(QString architecture);
         void finaliseXML();
         void saveXML();
         
     private:
+        QString xmlPath;
+        QList<ArchStruct> archs;
+
         QTabWidget *mainTabs;
         QTabWidget *ioRegTabs;
         QTabWidget *dataMemIORegsTabs;

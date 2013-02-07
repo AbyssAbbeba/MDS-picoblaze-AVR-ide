@@ -37,14 +37,37 @@ class WSimulationInfo : public QWidget
     Q_OBJECT
     public:
         WSimulationInfo(MCUSimControl *controlUnit, QWidget *parent);
+        WSimulationInfo(MCUSimControl *controlUnit, WSimulationInfo *copySimInfo);
+        WSimulationInfo(MCUSimControl *controlUnit);
         ~WSimulationInfo();
+        MovGridLayout* getGridLayout();
+        
     private:
+        MCUSimControl *controlUnit;
         McuMemoryView *m_hexEdit;
         RegDisplayList *m_regList;
         QScrollArea *m_regListScroll;
         MovGridLayout *gridLayout;
         QHBoxLayout *layout;
         QWidget *parent;
+        QMenu *popupMenu;
+        MovGridLayoutItem *dragItem;
+        bool focusTracking;
+
+    private slots:
+        void rearangeLayoutSlot();
+        void catchDragSlot(MovGridLayoutItem *item);
+        void saveLayoutSlot();
+        void setFocusSlot();
+
+    signals:
+        void closeSignal();
+        void focusOutSignal();
+        
+    protected:
+        void contextMenuEvent(QContextMenuEvent *event);
+        virtual void closeEvent(QCloseEvent *event);
+        virtual void enterEvent(QEvent *event);
 };
 
 

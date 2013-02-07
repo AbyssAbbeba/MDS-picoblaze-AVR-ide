@@ -23,7 +23,43 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
     this->parentCodeEdit = parentCodeEdit;
     if (this->parentCodeEdit == NULL && parentCodeEdit == NULL)
         qDebug() << "PARENT CODE EDIT: NULL";
-    textEdit = new WTextEdit(this);
+    if (wName == NULL || wPath == NULL)
+    {
+        textEdit = new WTextEdit(this, PLAIN);
+    }
+    else
+    {
+        int index = wName.lastIndexOf(".");
+        if (index > 0)
+        {
+            QString text(wName.right(wName.size() - index));
+            if (text == ".h")
+            {
+                textEdit = new WTextEdit(this, C);
+            }
+            else if (text == ".cpp" || text == ".cxx" || text == ".cc")
+            {
+                textEdit = new WTextEdit(this, CPP);
+            }
+            else if (text == ".c")
+            {
+                textEdit = new WTextEdit(this, C);
+            }
+            else if (text == ".asm")
+            {
+                //!!!DO NOT FORGET TO CHECK IF ASM IS AVR OR PIC TYPE!!!
+                textEdit = new WTextEdit(this, AVRASM);
+            }
+            else
+            {
+                textEdit = new WTextEdit(this, PLAIN);
+            }
+        }
+        else
+        {
+            textEdit = new WTextEdit(this, PLAIN);
+        }
+    }
     textEdit->setContextMenuPolicy(Qt::NoContextMenu);
     lineCount = new WLineCounter(textEdit, false, false, 20);
     layout = new QGridLayout(this);
@@ -68,7 +104,37 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName
     this->parentCodeEdit = parentCodeEdit;
     if (this->parentCodeEdit == NULL && parentCodeEdit == NULL)
         qDebug() << "PARENT CODE EDIT: NULL";
-    textEdit = new WTextEdit(this);
+    
+    int index = wName.lastIndexOf(".");
+    if (index > 0)
+    {
+        QString text(wName.right(wName.size() - index));
+        if (text == ".h")
+        {
+            textEdit = new WTextEdit(this, C);
+        }
+        else if (text == ".cpp" || text == ".cxx" || text == ".cc")
+        {
+            textEdit = new WTextEdit(this, CPP);
+        }
+        else if (text == ".c")
+        {
+            textEdit = new WTextEdit(this, C);
+        }
+        else if (text == ".asm")
+        {
+            //!!!DO NOT FORGET TO CHECK IF ASM IS AVR OR PIC TYPE!!!
+            textEdit = new WTextEdit(this, AVRASM);
+        }
+        else
+        {
+            textEdit = new WTextEdit(this, PLAIN);
+        }
+    }
+    else
+    {
+        textEdit = new WTextEdit(this, PLAIN);
+    }
     textEdit->setContextMenuPolicy(Qt::NoContextMenu);
     lineCount = new WLineCounter(textEdit, false, false, 20);
     layout = new QGridLayout(this);
@@ -139,8 +205,9 @@ void CodeEdit::setChanged()
         changed = true;
         if (tabs == true)
         {
-            QString newName("*" + name);
-            emit changedTabName(this, newName);
+            //QString newName("*" + name);
+            qDebug() << "codeedit: emit changed tab status: changed";
+            emit changedTabStatus(this->name, this->path, true);
             //((QTabWidget*)parentWidget)->setTabText(((QTabWidget*)parentWidget)->indexOf(this), "*" + name);
         }
     }
@@ -150,11 +217,25 @@ void CodeEdit::setChanged()
 
 void CodeEdit::setSaved()
 {
-    //if (changed == true)
-    changed = false;
-    if (tabs == true)
-        emit changedTabName(this, name);
-        //((QTabWidget*)parentWidget)->setTabText(((QTabWidget*)parentWidget)->indexOf(this), name);
+    if (changed == true)
+    {
+        changed = false;
+        if (tabs == true)
+        {
+            qDebug() << "codeedit: emit changed tab status: saved";
+            emit changedTabStatus(this->name, this->path, false);
+            //((QTabWidget*)parentWidget)->setTabText(((QTabWidget*)parentWidget)->indexOf(this), name);
+        }
+        else
+        {
+            qDebug() << "codeedit: emit changed tab status: saved without tabs";
+            emit changedTabStatus(this->name, this->path, false);
+        }
+    }
+    else
+    {
+        qDebug() << "codeedit: not changed";
+    }
 }
 
 
@@ -199,9 +280,9 @@ void CodeEdit::setParentProject(Project* project)
 
 
 
-QTextEdit* CodeEdit::getTextEdit()
+WTextEdit* CodeEdit::getTextEdit()
 {
-    return (QTextEdit*)textEdit;
+    return textEdit;
 }
 
 
@@ -251,6 +332,41 @@ void CodeEdit::loadCodeEdit(CodeEdit* editor)
     this->breakpointList.clear();
     this->bookmarkList.clear();
     this->textEdit->setText(editor->getTextEdit()->toPlainText());
+    this->setName(editor->getName());
+    this->setPath(editor->getPath());
+    if (name != NULL)
+    {
+        int index = this->name.lastIndexOf(".");
+        if (index > 0)
+        {
+            QString text(this->name.right(this->name.size() - index));
+            if (text == ".h")
+            {
+                this->textEdit->reloadHighlighter(C);
+            }
+            else if (text == ".cpp" || text == ".cxx" || text == ".cc")
+            {
+                this->textEdit->reloadHighlighter(CPP);
+            }
+            else if (text == ".c")
+            {
+                this->textEdit->reloadHighlighter(C);
+            }
+            else if (text == ".asm")
+            {
+                //!!!DO NOT FORGET TO CHECK IF ASM IS AVR OR PIC TYPE!!!
+                this->textEdit->reloadHighlighter(AVRASM);
+            }
+            else
+            {
+                this->textEdit->reloadHighlighter(PLAIN);
+            }
+        }
+        else
+        {
+                this->textEdit->reloadHighlighter(PLAIN);
+        }
+    }
     emit CodeEditChanged(editor);
 }
 

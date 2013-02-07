@@ -13,12 +13,20 @@
 #include <QtGui>
 #include "wtextedit.h"
 
-WTextEdit::WTextEdit(QWidget *parent)
+WTextEdit::WTextEdit(QWidget *parent, SourceType type)
     : QTextEdit(parent)
 {
     this->installEventFilter(this);
-    highlighter = new Highlighter(this->document());
+    highlighter = new Highlighter(this->document(), type);
+    //this->sourceType = type;
     //this->setFocusPolicy(Qt::ClickFocus);
+}
+
+void WTextEdit::reloadHighlighter(SourceType type)
+{
+    delete highlighter;
+    highlighter = new Highlighter(this->document(), type);
+    //this->sourceType = type;
 }
 
 
@@ -98,8 +106,9 @@ void WTextEdit::highlightCurrentLine()
     QTextBlockFormat lineFormat = cursor.blockFormat();
     if (lineFormat.background() == Qt::green)
     {
-        QPalette palette = this->palette();
-        lineFormat.setBackground(palette.color(QPalette::Base));
+        //QPalette palette = this->palette();
+        //lineFormat.setBackground(palette.color(QPalette::Base));
+        lineFormat.clearBackground();
     }
     else
         lineFormat.setBackground(Qt::green);
@@ -112,7 +121,8 @@ void WTextEdit::highlightLine(int line)
     QTextBlockFormat lineFormat = lineBlock.blockFormat();
     if (lineFormat.background() == Qt::green)
     {
-        QPalette palette = this->palette();
+        //QPalette palette = this->palette();
+        //lineFormat.setBackground(palette.color(QPalette::Base));
         lineFormat.clearBackground();
     }
     else
@@ -120,4 +130,18 @@ void WTextEdit::highlightLine(int line)
     QTextCursor cursor(lineBlock);
     //qDebug() << "position: " << cursor.position();
     cursor.setBlockFormat(lineFormat);
+}
+
+
+void WTextEdit::setPosition(int pos)
+{
+    QTextCursor cursor(this->textCursor());
+    cursor.setPosition(pos);
+    this->setTextCursor(cursor);
+    this->verticalScrollBar()->setValue(this->verticalScrollBar()->value());
+}
+
+int WTextEdit::getPosition()
+{
+    return this->textCursor().position();
 }

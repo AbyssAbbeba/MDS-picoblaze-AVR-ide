@@ -37,7 +37,6 @@ class ProjectTree: public QTreeWidget
         void setMainFileManual(QString name, QString path);
 
     private:
-
         Project *parentProject;
         QWidget *parent;
         QMenu *projectPopup;

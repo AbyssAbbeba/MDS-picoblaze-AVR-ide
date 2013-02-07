@@ -6,7 +6,39 @@ TabBar::TabBar(QWidget *parent)
     : QTabBar(parent)
 {
     //this->setDrawBase(false);
+    connect(this, SIGNAL(tabMoved(int, int)), this, SLOT(tabStatsMoved(int, int)));
 }
+
+
+void TabBar::tabRemoved(int index)
+{
+    qDebug() << "tabbar: tab removed";
+    tabStats.removeAt(index);
+}
+
+
+void TabBar::tabAdded()
+{
+    qDebug() << "tabbar: tab added";
+    tabStats.append(false);
+}
+
+
+void TabBar::tabChanged(int index, bool changed)
+{
+    if (tabStats.at(index) != changed)
+    {
+        qDebug() << "tabbar: tab status changed";
+        tabStats.replace(index, changed);
+    }
+}
+
+
+void TabBar::tabStatsMoved(int from, int to)
+{
+    tabStats.swap(from, to);
+}
+
 
 void TabBar::paintEvent(QPaintEvent *)
 {
@@ -20,6 +52,8 @@ void TabBar::paintEvent(QPaintEvent *)
     QStylePainter p(this);
     QPainter paint;
     QPen pen;
+    QPen pen2(QColor::fromRgbF(0.5, 0.2, 0.2, 1));
+    pen2.setStyle(Qt::SolidLine);
     QStyleOptionTab tab;
     /*int selected = -1;
 
@@ -153,11 +187,29 @@ void TabBar::paintEvent(QPaintEvent *)
         {
             QRect rect(tab.rect);
             rect.setY(rect.y()+2);
-            paint.drawText(rect, Qt::AlignCenter, tab.text);
+            if (tabStats.at(i) == true)
+            {
+                paint.setPen(pen2);
+                paint.drawText(rect, Qt::AlignCenter, tab.text);
+                paint.setPen(pen);
+            }
+            else
+            {
+                paint.drawText(rect, Qt::AlignCenter, tab.text);
+            }
         }
         else
         {
-            paint.drawText(tab.rect, Qt::AlignCenter, tab.text);
+            if (tabStats.at(i) == true)
+            {
+                paint.setPen(pen2);
+                paint.drawText(tab.rect, Qt::AlignCenter, tab.text);
+                paint.setPen(pen);
+            }
+            else
+            {
+                paint.drawText(tab.rect, Qt::AlignCenter, tab.text);
+            }
         }
         paint.end();
         

@@ -20,6 +20,8 @@
 #include <QTextEdit>
 #include "../Highlighter/highlighter.h"
 
+
+
 class Highlighter;
 
 /**
@@ -31,9 +33,12 @@ class WTextEdit : public QTextEdit
 {
     Q_OBJECT   
     public:
-        WTextEdit(QWidget *parent);
+        WTextEdit(QWidget *parent, SourceType type);
         void highlightCurrentLine();
         void highlightLine(int line);
+        void reloadHighlighter(SourceType type);
+        void setPosition(int pos);
+        int getPosition();
 
     signals:
         void focusIn();
@@ -42,6 +47,8 @@ class WTextEdit : public QTextEdit
 
     private:
         Highlighter *highlighter;
+        //SourceType sourceType;
+
 
     protected:
         bool eventFilter(QObject *target, QEvent *event);

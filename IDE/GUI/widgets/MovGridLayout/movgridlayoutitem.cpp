@@ -10,16 +10,15 @@
  *
  */
 
-
-
+#include <QtGui>
 #include "movgridlayoutitem.h"
 
 MovGridLayoutItem::MovGridLayoutItem(QWidget *parent, QWidget *widget, int w, int h, int index)
 {
     this->parent = parent;
     this->widget = widget;
-    this->x = x;
-    this->y = y;
+    this->x = 0;
+    this->y = 0;
     this->w = w;
     this->h = h;
     this->index = index;

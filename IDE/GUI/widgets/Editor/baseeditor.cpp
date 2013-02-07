@@ -47,7 +47,9 @@ void BaseEditor::split(Qt::Orientation orient, int line)
     isSplit = true;
     this->setOrientation(orient);
     next = new BaseEditor(this, dockMan, codeEdit, false);
+    next->getCodeEdit()->getTextEdit()->setPosition(codeEdit->getTextEdit()->getPosition());
     next2 = new BaseEditor(this, dockMan, codeEdit, true);
+    next2->getCodeEdit()->getTextEdit()->setPosition(next->getCodeEdit()->getTextEdit()->getPosition());
     connectCodeEdits(next->getCodeEdit(), next->getCodeEdit()->getParentCodeEdit());
     connectCodeEdits(next2->getCodeEdit(), next2->getCodeEdit()->getParentCodeEdit());
     this->addWidget(next);

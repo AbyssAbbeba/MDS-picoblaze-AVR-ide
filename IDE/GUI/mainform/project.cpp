@@ -237,7 +237,6 @@ Project::Project(QFile *file, MainForm* mainWindow, ProjectMan *parent)
             {
                  QTreeWidgetItem *treeProjFile = new QTreeWidgetItem(treeProjName);
                  treeProjFile->setText(0, fileNames.at(i));
-                 
                  treeProjFile->setData(0, Qt::ToolTipRole, QDir(absolutePath + "/" + filePaths.at(i)).canonicalPath());
             }
             if (mainFileName != "" && mainFilePath != "")
@@ -308,8 +307,8 @@ Project::Project(QString name, QString path, QString arch, MainForm* mainWindow,
     QTextStream xmlStream(file);
     xmlStream << domDoc.toString();
 
-    connect(prjDockWidget, SIGNAL(visibilityChanged(bool)),this,SLOT(setActive()));
-    connect(prjTreeWidget, SIGNAL(itemDoubleClicked (QTreeWidgetItem *,int)),this,SLOT(openItem()));
+    connect(prjDockWidget, SIGNAL(visibilityChanged(bool)), this, SLOT(setActive()));
+    connect(prjTreeWidget, SIGNAL(itemDoubleClicked (QTreeWidgetItem *,int)), this, SLOT(openItem()));
     setupSim();
 }
 
@@ -554,6 +553,11 @@ void Project::start()
     m_simControlUnit->start(stdPath, m_simControlUnit->COMPILER_SDCC, m_simControlUnit->DBGFILEID_HEX);
 }
 
+//void Project::run()
+//{
+//
+//}
+
 void Project::stop()
 {
     m_simControlUnit->stop();
@@ -567,6 +571,11 @@ void Project::reset()
 void Project::step()
 {
     m_simControlUnit->step();
+}
+
+void Project::run()
+{
+    m_simControlUnit->run();
 }
 
 
