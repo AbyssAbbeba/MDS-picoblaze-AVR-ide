@@ -21,8 +21,9 @@
 MovGridLayout::MovGridLayout(QWidget *parentWidget)
     :QWidget(parentWidget)
 {
-    this->setMinimumWidth(650);
+    this->setMinimumWidth(900);
     this->setMinimumHeight(600);
+    this->show();
     sizeRow = SIZEX;
     sizeCol = SIZEY;
     gridWidth = this->width()/sizeRow;
@@ -258,6 +259,7 @@ bool MovGridLayout::eventFilter(QObject *target, QEvent *event)
                 movingWidget.pos.y = mouseEvent->y();
                 grab = true;
                 qDebug() << "start grab index: " << movingIndex;
+                emit dragSignal(gridWidgets.at(movingIndex));
             }
             return true;
         }
@@ -267,29 +269,30 @@ bool MovGridLayout::eventFilter(QObject *target, QEvent *event)
             if (grab == true)
             {
                 QMouseEvent *mouseEvent = static_cast<QMouseEvent *>(event);
-	        grab = false;
+                grab = false;
                 qDebug() << "stop grab";
-	        XY position;
-	        position.x = mouseEvent->x()/sizeRow;
-	        position.y = mouseEvent->y()/sizeCol;
-	        WH geometry;
-	        geometry.w = gridWidgets.at(movingIndex)->w;
-	        geometry.h = gridWidgets.at(movingIndex)->h;
-	        if (checkPosition(position, geometry, movingIndex) == true)
-	        {
-	            //null previous position
+                emit dragSignal(NULL);
+                XY position;
+                position.x = mouseEvent->x()/sizeRow;
+                position.y = mouseEvent->y()/sizeCol;
+                WH geometry;
+                geometry.w = gridWidgets.at(movingIndex)->w;
+                geometry.h = gridWidgets.at(movingIndex)->h;
+                if (checkPosition(position, geometry, movingIndex) == true)
+                {
+                    //null previous position
                     //change to gridWidgets.at(movingIndex)->x and y
                     //faster
-	            for (int i = 0; i<gridWidth; i++)
-	                for (int j = 0; j<gridHeight; j++)
-	                    if (grid[i][j] == movingIndex)
-	                        grid[i][j] = -1;
-	            //add new position
-                    for (int i = position.x; i<position.x+geometry.w; i++)
-                        for (int j = position.y; j<position.y+geometry.h; j++)
-                            grid[i][j] = movingIndex;
-                    gridWidgets.at(movingIndex)->move(position.x, position.y, position.x*sizeRow, position.y*sizeCol);
-	        }
+                    for (int i = 0; i<gridWidth; i++)
+                        for (int j = 0; j<gridHeight; j++)
+                            if (grid[i][j] == movingIndex)
+                                grid[i][j] = -1;
+                    //add new position
+                        for (int i = position.x; i<position.x+geometry.w; i++)
+                            for (int j = position.y; j<position.y+geometry.h; j++)
+                                grid[i][j] = movingIndex;
+                        gridWidgets.at(movingIndex)->move(position.x, position.y, position.x*sizeRow, position.y*sizeCol);
+                }
                 this->update();
             }
             return true;
@@ -317,12 +320,12 @@ void MovGridLayout::paintEvent(QPaintEvent *)
     paint.begin(this);
     paint.fillRect(0, 0, this->width(), this->height(), paint.background());
     paint.setOpacity(0.4);
-    for (int i=0; i<gridWidgets.size(); i++)
-    {
+    //for (int i=0; i<gridWidgets.size(); i++)
+    //{
         //gridWidgets.at(i)->widget->show();
         //paint.drawRect(gridWidgets.at(i)->x*sizeRow, gridWidgets.at(i)->y*sizeCol, gridWidgets.at(i)->w*sizeRow, gridWidgets.at(i)->h*sizeCol);
         //paint.drawRect(gridWidgets.at(i)->x*sizeRow -1, gridWidgets.at(i)->y*sizeCol -1, gridWidgets.at(i)->w*sizeRow +2, gridWidgets.at(i)->h*sizeCol +2);
-    }
+    //}
     if (grab == true)
     {
         //fill current mouse position (= new position)
@@ -332,7 +335,54 @@ void MovGridLayout::paintEvent(QPaintEvent *)
         paint.fillRect(movingWidget.pos.x*sizeRow -1, movingWidget.pos.y*sizeCol -1, movingWidget.geom.w*sizeRow +2, movingWidget.geom.h*sizeCol +2, brush);
         //fill grabbed widget (= old position)
         brush.setColor(Qt::darkCyan);
-        paint.fillRect(gridWidgets.at(movingIndex)->x*sizeRow -1, gridWidgets.at(movingIndex)->y*sizeCol -1, gridWidgets.at(movingIndex)->w*sizeRow +2, gridWidgets.at(movingIndex)->h*sizeCol +2, brush);
+        paint.fillRect(gridWidgets.at(this->movingIndex)->x*sizeRow -1, gridWidgets.at(movingIndex)->y*sizeCol -1, gridWidgets.at(movingIndex)->w*sizeRow +2, gridWidgets.at(movingIndex)->h*sizeCol +2, brush);
     }
     paint.end();
+}
+
+
+int MovGridLayout::actualIndex()
+{
+    return gridWidgets.size();
+}
+
+
+int MovGridLayout::findIndex(int index)
+{
+    for (int i = 0; i < gridWidgets.size(); i++)
+    {
+        qDebug() << "find index: " << gridWidgets.at(i)->index;
+        if (gridWidgets.at(i)->index == index)
+        {
+            return i;
+        }
+    }
+    qDebug() << "movgridlayout: index not found";
+    qDebug() << "index is: " << index;
+    return -1;
+}
+
+int MovGridLayout::getX(int index)
+{
+    return gridWidgets.at(index)->x;
+}
+
+
+int MovGridLayout::getY(int index)
+{
+    return gridWidgets.at(index)->y;
+}
+
+
+void MovGridLayout::addTempWidget(QWidget *widget)
+{
+    MovGridLayoutItem *item = new MovGridLayoutItem(this, widget, widget->width()/sizeRow, widget->height()/sizeCol, gridWidgets.size());
+    widget->hide();
+    tempGridWidgets.append(item);
+}
+
+
+MovGridLayoutItem* MovGridLayout::getTempGridWidget(int index)
+{
+    return tempGridWidgets.at(index);
 }

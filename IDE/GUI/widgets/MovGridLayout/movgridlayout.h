@@ -63,12 +63,26 @@ class MovGridLayout : public QWidget
         MovGridLayout(QWidget *parentWidget);
         //add widget, automatic position
         bool addWidget(QWidget *widget);
+        //add temporary widget, not shown
+        void addTempWidget(QWidget *widget);
         //add widget, specific position
         void addWidget(QWidget *widget, int x, int y);
         //load layout from project xml file
         void loadGridWidgets();
         //save layout to project xml file
         void saveGridWidgets();
+        //returns actual (most recently given) index
+        int actualIndex();
+        //returns actual index in gridWidgets qlist
+        int findIndex(int index);
+        //returns Y coord of widget on index
+        int getY(int index);
+        //returns X coord of widget on index
+        int getX(int index);
+        //used for drag-and-drop add
+        MovGridLayoutItem* getTempGridWidget(int index);
+        //if mousebtn is down
+        bool grab;
 
     private:
         //check availability of position and geometry of given widget
@@ -77,8 +91,6 @@ class MovGridLayout : public QWidget
         XY calcXY(QWidget *widget);
 
         QWidget *parent;
-        //if mousebtn is down
-        bool grab;
         //index of grabbed widget
         int movingIndex;
         //list of widgets
@@ -94,11 +106,16 @@ class MovGridLayout : public QWidget
         int sizeRow;
         //size of column in pixels
         int sizeCol;
-	//params of grabbed widget
-	BLANK movingWidget;
+        //list of temporary widgets
+        QList<MovGridLayoutItem*> tempGridWidgets;
+        //params of grabbed widget
+        BLANK movingWidget;
         //old geometry on resize
         int oldWidth;
         int oldHeight;
+
+    signals:
+        void dragSignal(MovGridLayoutItem *item);
 
     protected:
         virtual bool eventFilter(QObject *target, QEvent *event);

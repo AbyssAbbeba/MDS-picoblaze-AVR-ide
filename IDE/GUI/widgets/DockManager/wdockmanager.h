@@ -84,10 +84,14 @@ class WDockManager : public QObject
 
     private slots:
         void closeTab(int index);
-        void changeTabName(CodeEdit* editor, QString name);
+        void changeTabStatusSlot(QString name, QString path, bool changed);
         void changeCodeEditor(int index);
         void changeActiveCodeEdit(CodeEdit* editor);
         void updateAnalysersSlot(CodeEdit *editor);
+        void moveEditorsSlot(int from, int to);
+
+    public slots:
+        void changeLine(QListWidgetItem *item);
 
     signals:
         void saveCodeEdit(CodeEdit *editor);
@@ -126,6 +130,7 @@ class WDock
         bool cmpArea(int area);
         int getArea();
         QDockWidget* getQDockWidget();
+        
     private:
         QDockWidget *wDockWidget;
         int code;

@@ -23,6 +23,8 @@
 #include <QTreeWidget>
 #include "../widgets/Editor/codeedit.h"
 #include "../widgets/DockManager/wdockmanager.h"
+#include "../widgets/Tools/Display/displaytool.h"
+#include "../widgets/Tools/Convertor/convertortool.h"
 #include "project.h"
 
 
@@ -48,6 +50,7 @@ class MainForm : public QMainWindow
         void CreateDockWidgets();
         ProjectMan* getProjectMan();
         bool dockWidgets;
+        void openProject(QString path);
 
     private slots:
         void newFile();
@@ -63,7 +66,12 @@ class MainForm : public QMainWindow
         void saveProject();
         void compileProject();
         void simulationStep();
+        void simulationRunHandle();
         void simulationFlowHandle();
+        void simulationReset();
+        void toolConvertor();
+        void toolDisplay();
+        void exampleOpen();
 
     private:
         void CreateMenu();
@@ -114,10 +122,16 @@ class MainForm : public QMainWindow
 
         QAction *simulationFlowAct;
         QAction *simulationStepAct;
+        QAction *simulationRunAct;
+        QAction *simulationResetAct;
 
-        QAction *aboutAction;
-        QAction *aboutQT;        
-        QAction *helpAction;  
+        QAction *toolConvertorAct;
+        QAction *toolDisplayAct;
+
+        QAction *aboutAct;
+        QAction *aboutQTAct;        
+        QAction *helpActionAct;
+        QAction *example1Act;
 
 
         bool simulationStatus;      

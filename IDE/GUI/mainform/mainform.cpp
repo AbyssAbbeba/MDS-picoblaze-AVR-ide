@@ -58,7 +58,14 @@ void MainForm::CreateMenu()
     projectMenu->addAction(projectConfigAct);
 
     toolsMenu = menuBar()->addMenu(tr("&Tools"));
+    toolsMenu->addAction(toolConvertorAct);
+    toolsMenu->addAction(toolDisplayAct);
+    
     helpMenu = menuBar()->addMenu(tr("&Help"));
+    helpMenu->addAction(aboutAct);
+    helpMenu->addAction(aboutQTAct);
+    helpMenu->addAction(helpActionAct);
+    helpMenu->addAction(example1Act);
 }
 
 
@@ -77,13 +84,13 @@ void MainForm::CreateActions()
 
     QPixmap *pm_projAdd = new QPixmap("resources//icons//projAdd.png");
     QIcon *icon_projAdd = new QIcon(*pm_projAdd);
-    addAct = new QAction(*icon_projAdd, tr("&Add to Project"), this);
+    addAct = new QAction(*icon_projAdd, tr("Add to Project"), this);
     connect(addAct, SIGNAL(triggered()), this, SLOT(addFile()));
 
 
     QPixmap *pm_projNewAdd = new QPixmap("resources//icons//projNewAdd.png");
     QIcon *icon_projNewAdd = new QIcon(*pm_projNewAdd);
-    newAddAct = new QAction(*icon_projNewAdd, tr("&New project file"), this);
+    newAddAct = new QAction(*icon_projNewAdd, tr("New project file"), this);
     connect(newAddAct, SIGNAL(triggered()), this, SLOT(newAddFile()));
 
 
@@ -96,53 +103,71 @@ void MainForm::CreateActions()
     saveAct = new QAction(tr("&Save File"), this);
     connect(saveAct, SIGNAL(triggered()), this, SLOT(saveFile()));
 
-    saveAsAct = new QAction(tr("Sa&ve As"), this);
+    saveAsAct = new QAction(tr("Save As"), this);
     connect(saveAsAct, SIGNAL(triggered()), this, SLOT(saveFileAs()));
 
-    saveAllAct = new QAction(tr("Save &All"), this);
+    saveAllAct = new QAction(tr("Save All"), this);
     connect(saveAllAct, SIGNAL(triggered()), this, SLOT(saveAll()));
 
 
 
     QPixmap *pm_projNew = new QPixmap("resources//icons//projNew.png");
     QIcon *icon_projNew = new QIcon(*pm_projNew);
-    newProjAct = new QAction(*icon_projNew, tr("New &Project"), this);
+    newProjAct = new QAction(*icon_projNew, tr("New Project"), this);
     connect(newProjAct, SIGNAL(triggered()), this, SLOT(newProject()));
 
     QPixmap *pm_projOpen = new QPixmap("resources//icons//projOpen.png");
     QIcon *icon_projOpen = new QIcon(*pm_projOpen);
-    openProjAct = new QAction(*icon_projOpen, tr("Open P&roject"), this);
+    openProjAct = new QAction(*icon_projOpen, tr("Open Project"), this);
     connect(openProjAct, SIGNAL(triggered()), this, SLOT(openProject()));
 
     QPixmap *pm_projSave = new QPixmap("resources//icons//projSave.png");
     QIcon *icon_projSave = new QIcon(*pm_projSave);
-    saveProjAct = new QAction(*icon_projSave, tr("&Save Project"), this);
+    saveProjAct = new QAction(*icon_projSave, tr("Save Project"), this);
     connect(saveProjAct, SIGNAL(triggered()), this, SLOT(saveProject()));
 
-    exitAct = new QAction(tr("&Exit"), this);
+    exitAct = new QAction(tr("Exit"), this);
     connect(exitAct, SIGNAL(triggered()), this, SLOT(close()));
 
 
     QPixmap *pm_projComp = new QPixmap("resources//icons//compile.png");
     QIcon *icon_projComp = new QIcon(*pm_projComp);
-    projectCompileAct = new QAction(*icon_projComp, tr("&Compile"), this);
+    projectCompileAct = new QAction(*icon_projComp, tr("Compile"), this);
     connect(projectCompileAct, SIGNAL(triggered()), this, SLOT(compileProject()));
 
-    projectConfigAct = new QAction(tr("&Config"), this);
+    projectConfigAct = new QAction(tr("Config"), this);
     //connect(projectCompileAct, SIGNAL(triggered()), this, SLOT(compileProject()));
 
 
     QPixmap *pm_simFlow = new QPixmap("resources//icons//simulationStart.png");
     QIcon *icon_simFlow = new QIcon(*pm_simFlow);
-    simulationFlowAct = new QAction(*icon_simFlow, tr("&Start simulation"), this);
+    simulationFlowAct = new QAction(*icon_simFlow, tr("Start simulation"), this);
     connect(simulationFlowAct, SIGNAL(triggered()), this, SLOT(simulationFlowHandle()));
     simulationStatus = false;
 
+    simulationRunAct = new QAction(tr("Run"), this);
+    connect(simulationRunAct, SIGNAL(triggered()), this, SLOT(simulationRunHandle()));
+
     QPixmap *pm_simStep = new QPixmap("resources//icons//simulationStep.png");
     QIcon *icon_simStep = new QIcon(*pm_simStep);
-    simulationStepAct = new QAction(*icon_simStep, tr("&Do step"), this);
+    simulationStepAct = new QAction(*icon_simStep, tr("Do step"), this);
     connect(simulationStepAct, SIGNAL(triggered()), this, SLOT(simulationStep()));
 
+    simulationResetAct = new QAction(tr("Reset"), this);
+    connect(simulationResetAct, SIGNAL(triggered()), this, SLOT(simulationReset()));
+
+
+    toolConvertorAct = new QAction(tr("Convertor"), this);
+    connect(toolConvertorAct, SIGNAL(triggered()), this, SLOT(toolConvertor()));
+
+    toolDisplayAct = new QAction(tr("Segment Display"), this);
+    connect(toolDisplayAct, SIGNAL(triggered()), this, SLOT(toolDisplay()));
+
+    aboutAct = new QAction(tr("About"), this);
+    aboutQTAct = new QAction(tr("About QT"), this);
+    helpActionAct = new QAction(tr("Help"), this);
+    example1Act = new QAction(tr("Example 1"), this);
+    connect(example1Act, SIGNAL(triggered()), this, SLOT(exampleOpen()));
 }
 
 
@@ -168,7 +193,9 @@ void MainForm::CreateToolbar()
 
 
     simulationToolBar->addAction(simulationFlowAct);
+    simulationToolBar->addAction(simulationRunAct);
     simulationToolBar->addAction(simulationStepAct);
+    simulationToolBar->addAction(simulationResetAct);
 
     projectToolBar->setAllowedAreas(Qt::TopToolBarArea);
     simulationToolBar->setAllowedAreas(Qt::TopToolBarArea);
@@ -340,6 +367,7 @@ void MainForm::saveFile()
             fout << wDockManager->getCentralTextEdit()->toPlainText();
             file.close();
             wDockManager->setTabSaved();
+            qDebug() << "mainform: file saved";
         }
     }
 }
@@ -379,7 +407,9 @@ void MainForm::saveFile(CodeEdit *editor)
             editor->setName(path.section('/', -1));
         }
         else
-            path = editor->getPath();  
+        {
+            path = editor->getPath();
+        }
         QFile file(path);
         if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
         {
@@ -391,6 +421,7 @@ void MainForm::saveFile(CodeEdit *editor)
             fout << editor->getTextEdit()->toPlainText();
             file.close();
             editor->setSaved();
+            qDebug() << "mainform: editor saved";
         }
     }
 }
@@ -411,11 +442,13 @@ void MainForm::saveAll()
         
 }
 
+
 void MainForm::newProject()
 { 
     ProjectDialog *projectEdit = new ProjectDialog(this, projectMan);
     projectEdit->show();
 }
+
 
 void MainForm::openProject()
 {
@@ -425,6 +458,7 @@ void MainForm::openProject()
     
     if (path.isEmpty()==false) {
     //nacteni projektu
+        qDebug() << path;
         QFile file(path);
         if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
         {
@@ -438,6 +472,23 @@ void MainForm::openProject()
         }
     }
 }
+
+
+void MainForm::openProject(QString path)
+{
+    QFile file(path);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        error(ERR_OPENFILE);
+    }
+    else
+    {
+        //nacteni obsahu do widgetu
+        projectMan->openProject(&file);
+        file.close();
+    }
+}
+
 
 void MainForm::saveProject()
 {
@@ -543,7 +594,27 @@ WDockManager* MainForm::getWDockManager()
 
 void MainForm::simulationStep()
 {
-    projectMan->getActive()->step();
+    if (true == simulationStatus)
+    {
+        projectMan->getActive()->step();
+    }
+}
+
+void MainForm::simulationRunHandle()
+{
+    if (true == simulationStatus)
+    {
+        projectMan->getActive()->run();
+    }
+}
+
+
+void MainForm::simulationReset()
+{
+    if (true == simulationStatus)
+    {
+        projectMan->getActive()->reset();
+    }
 }
 
 
@@ -574,8 +645,26 @@ void MainForm::simulationFlowHandle()
 
 
 
+void MainForm::toolConvertor()
+{
+    ConvertorTool *a = new ConvertorTool(0);
+}
+
+
+void MainForm::toolDisplay()
+{
+    DisplayTool *a = new DisplayTool(0);
+}
+
+
 
 ProjectMan* MainForm::getProjectMan()
 {
     return this->projectMan;
+}
+
+
+void MainForm::exampleOpen()
+{
+    this->openProject("./demoprojekt/Example.mmp");
 }

@@ -6,6 +6,8 @@
 McuSpecFileDesigner::McuSpecFileDesigner(QWidget *parent)
     : QWidget(parent)
 {
+    xmlPath = "../../simulators/MCUSim/McuSimCfgMgr/mcuspecfile.xml";
+    
     mainTabs = new QTabWidget(this);
     dataMemIORegsTabs = new QTabWidget(this);
 
@@ -332,9 +334,98 @@ McuSpecFileDesigner::McuSpecFileDesigner(QWidget *parent)
 }
 
 
-//from xml file to config
-void McuSpecFileDesigner::getConfig()
+
+void McuSpecFileDesigner::getDevices()
 {
+    QFile xmlFile(xmlPath);
+    xmlFile.open(QIODevice::ReadOnly);
+
+    QDomDocument domDoc("mcuspecfile");
+    if (!domDoc.setContent(&xmlFile))
+    {
+        qDebug() << "error: xml assign";
+        //error(ERR_XML_ASSIGN);
+    }
+    else
+    {
+        //otevrit xml, upravit a ulozit
+        QDomElement xmlRoot = domDoc.documentElement();
+        if (xmlRoot.tagName() != "mcuspecfile")
+        {
+            qDebug() << "error: wrong root tag name";
+        }
+        else
+        {
+            QDomNode xmlNode = xmlRoot.firstChild();
+            QDomElement xmlElement;
+            while (!xmlNode.isNull())
+            {
+                xmlElement = xmlNode.toElement();
+                if (!xmlElement.isNull())
+                {
+                    qDebug() << xmlElement.attribute("family");
+                    qDebug() << xmlElement.attribute("name");
+                    ArchStruct arch;
+                    arch.name = xmlElement.attribute("name");
+                    arch.family = xmlElement.attribute("family");
+                    archs.append(arch);
+                }
+                xmlNode = xmlNode.nextSibling();
+            }
+        }
+    }
+    xmlFile.close();
+}
+
+
+//from xml file to config
+void McuSpecFileDesigner::getConfig(QString archFamily, QString archName)
+{
+    QFile xmlFile(xmlPath);
+    xmlFile.open(QIODevice::ReadOnly);
+
+    QDomDocument domDoc("mcuspecfile");
+    if (!domDoc.setContent(&xmlFile))
+    {
+        qDebug() << "error: xml assign";
+        //error(ERR_XML_ASSIGN);
+    }
+    else
+    {
+        //otevrit xml, upravit a ulozit
+        QDomElement xmlRoot = domDoc.documentElement();
+        if (xmlRoot.tagName() != "mcuspecfile")
+        {
+            qDebug() << "error: wrong root tag name";
+        }
+        else
+        {
+            QDomNode xmlNode = xmlRoot.firstChild();
+            QDomElement xmlElement;
+            while (!xmlNode.isNull())
+            {
+                xmlElement = xmlNode.toElement();
+                if (!xmlElement.isNull())
+                {
+                    if (xmlElement.attribute("family") == archFamily
+                        && xmlElement.attribute("name") == archName)
+                    {
+
+                        //fill widgets
+
+                        
+                        qDebug () << "done";
+                        xmlFile.close();
+                        return;
+                    }
+                }
+                xmlNode = xmlNode.nextSibling();
+            }
+        }
+    }
+
+    xmlFile.close();
+    
 }
 
 

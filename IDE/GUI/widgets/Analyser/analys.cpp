@@ -27,25 +27,25 @@ QList<AnalysStruct *> *Analys::getVar() {
   reg.setPattern("([a-zA-Z][^* =;,{}()]*)[\\s]+(([^=();]+(=[^=;]+)?,?)+)[\\s]*;");
 
    while (block.isValid()) { 
-      pos = 0;
-      while ((pos = reg.indexIn(block.text(), pos)) != -1) {
-	type = reg.cap(1);
-	names = QString(reg.cap(2)).remove(" ");
-	strList = QString(names).split(",", QString::SkipEmptyParts);
+        pos = 0;
+        while ((pos = reg.indexIn(block.text(), pos)) != -1) {
+            type = reg.cap(1);
+            names = QString(reg.cap(2)).remove(" ");
+            strList = QString(names).split(",", QString::SkipEmptyParts);
 	
-	itList = strList.begin();
-	while (itList != strList.end()) {
-	  if (separeteEqual.indexIn(*itList) != -1) {
-	    name = separeteEqual.cap(1);
-	    AnalysStruct *tmp = new AnalysStruct(block.blockNumber(), name, type);
-	    retList->append(tmp);
-	  }
-	  ++itList;  
-	}
-	pos += reg.matchedLength();
-      }
-      block = block.next();
-  } 
+            itList = strList.begin();
+            while (itList != strList.end()) {
+                if (separeteEqual.indexIn(*itList) != -1) {
+                    name = separeteEqual.cap(1);
+                    AnalysStruct *tmp = new AnalysStruct(block.blockNumber(), name, type);
+                    retList->append(tmp);
+                }
+                ++itList;  
+            }
+        pos += reg.matchedLength();
+        }
+        block = block.next();
+    } 
   
   return retList; 
 }

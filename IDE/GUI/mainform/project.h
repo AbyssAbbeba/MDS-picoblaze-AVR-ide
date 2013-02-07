@@ -92,6 +92,7 @@ class Project : public QObject
         void stop();
         void reset();
         void step();
+        void run();
         MCUSimControl* getSimControl();
         void setMainFile(QString path, QString name);
         void removeFile(QString path, QString name);

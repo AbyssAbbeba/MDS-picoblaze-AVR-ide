@@ -63,7 +63,9 @@ link_directories(
 	"${CMAKE_CURRENT_BINARY_DIR}/../widgets/DockManager/"
 	"${CMAKE_CURRENT_BINARY_DIR}/../widgets/SimulationInfo/"
 	"${CMAKE_CURRENT_BINARY_DIR}/../widgets/Editor/"
-        "${CMAKE_CURRENT_BINARY_DIR}/../dialogs/")
+    "${CMAKE_CURRENT_BINARY_DIR}/../widgets/Tools/Convertor"
+    "${CMAKE_CURRENT_BINARY_DIR}/../widgets/Tools/Display"
+    "${CMAKE_CURRENT_BINARY_DIR}/../dialogs/")
 #include_directories(
 #	"${CMAKE_CURRENT_BINARY_DIR}/.."
 #	"${CMAKE_CURRENT_BINARY_DIR}/../../../simulators/MCUSim/")
@@ -85,4 +87,4 @@ QT4_WRAP_CPP( SAMPLE_MOC_SRCS ${SAMPLE_MOC_HDRS} )
 add_library(${PROJECT_NAME} SHARED
 	${SAMPLE_MOC_SRCS} ${SAMPLE_SRCS})
 
-target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} ProjectTree Editor Dialogs WDockManager McuSimCfgMgr SimControl AVR8Sim PIC8Sim MCUDataFiles)
+target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} ProjectTree Editor Dialogs WDockManager McuSimCfgMgr SimControl AVR8Sim PIC8Sim MCUDataFiles ConvertorTool DisplayTool)

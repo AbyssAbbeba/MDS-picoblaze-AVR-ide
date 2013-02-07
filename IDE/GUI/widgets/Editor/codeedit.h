@@ -49,7 +49,7 @@ class CodeEdit : public QWidget
         void connectAct();
         bool isChild(Project* project);
         void setParentProject(Project* project);
-        QTextEdit *getTextEdit();
+        WTextEdit* getTextEdit();
         QWidget* getParent();
         void loadCodeEdit(CodeEdit* editor);
         QList<int> getBookmarkList();
@@ -69,7 +69,8 @@ class CodeEdit : public QWidget
 
     signals:
         void splitSignal(Qt::Orientation orient, int line);
-        void changedTabName(CodeEdit *editor, QString name);
+        void changedTabName(QString name, QString path, bool changed);
+        void changedTabStatus(QString name, QString path, bool changed);
         void updateText(const QString & text);
         void CodeEditChanged(CodeEdit* editor);
         void bookmarkListAdd(int line);

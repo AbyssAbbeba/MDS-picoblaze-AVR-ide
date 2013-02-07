@@ -4,12 +4,17 @@
 #include <QTextDocument>
 #include <QSyntaxHighlighter>
 
+
+typedef enum SourceType
+{PLAIN = 0, C, CPP, AVRASM, PICASM} SourceType;
+
+
 class Highlighter : public QSyntaxHighlighter
  {
      Q_OBJECT
 
  public:
-     Highlighter(QTextDocument *parent = 0);
+     Highlighter(QTextDocument *parent, SourceType type);
 
  protected:
      void highlightBlock(const QString &text);

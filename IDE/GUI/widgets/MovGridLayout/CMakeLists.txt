@@ -75,7 +75,7 @@ find_package(Qt4 REQUIRED)
  # -std=c++0x  : Default template arguments may not be used in function templates without -std=c++0x or -std=gnu++0x.
  # -O2         : Optimization, level 2.
  # -pipe       : Use pipes rather than temporary files for communication between the various stages of compilation.
-add_definitions(-Wall -Wextra -std=c++0x -O2 -pipe)
+add_definitions(-Wall -Wextra -std=c++0x -O2 -pipe -g)
 
 
 # and finally this will run moc:

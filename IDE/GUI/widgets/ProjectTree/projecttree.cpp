@@ -27,7 +27,9 @@ ProjectTree::ProjectTree(QWidget *parent, Project *parentProject)
     setHeaderHidden(true);
     projectPopup = new QMenu(this);
     QAction *projectConfigAct = new QAction("Configuration", projectPopup);
+    QAction *projectHWCanvasAct = new QAction("Hardware Canvas", projectPopup);
     projectPopup->addAction(projectConfigAct);
+    projectPopup->addAction(projectHWCanvasAct);
     filePopup = new QMenu(this);
     QAction *removeFileAct = new QAction("Remove file", filePopup);
     QAction *setMainFileAct = new QAction("Set as main file", filePopup);
@@ -65,23 +67,29 @@ void ProjectTree::setMainFile()
     //clear previous mainfile's background
     if (mainFileName != "" && mainFilePath != "")
     {
-        QList<QTreeWidgetItem*> items = this->findItems(mainFileName, Qt::MatchExactly);
+        QList<QTreeWidgetItem*> items = this->findItems(mainFileName, Qt::MatchExactly | Qt::MatchRecursive);
+        qDebug() << "Project Tree: previous name: " << lastName;
+        qDebug() << "Project Tree: items found " << items.count();
         for (int i = 0; i < items.count(); i++)
         {
-            if (items.at(i)->toolTip(i) == mainFilePath)
+            if (items.at(i)->toolTip(0) == mainFilePath)
             {
+                qDebug() << "Project Tree: color cleared";
                 items.at(i)->setBackground(0, QBrush(this->palette().base().color()));
                 break;
             }
         }
     }
     //set new mainfile and its background
-    QList<QTreeWidgetItem*> items = this->findItems(lastName, Qt::MatchExactly);
+    QList<QTreeWidgetItem*> items = this->findItems(lastName, Qt::MatchExactly | Qt::MatchRecursive);
+    qDebug() << "Project Tree: last name: " << lastName;
+    qDebug() << "Project Tree: items found " << items.count();
     for (int i = 0; i < items.count(); i++)
     {
-        if (items.at(i)->toolTip(i) == lastPath)
+        if (items.at(i)->toolTip(0) == lastPath)
         {
-            items.at(i)->setBackground(0, QBrush(QColor(0,0,255,100)));
+            qDebug() << "Project Tree: mainfile found and colored";
+            items.at(i)->setBackground(0, QBrush(QColor(25,25,25,20)));
             mainFileName = lastName;
             mainFilePath = lastPath;
             break;
@@ -93,14 +101,23 @@ void ProjectTree::setMainFile()
 void ProjectTree::setMainFileManual(QString name, QString path)
 {
     //set new mainfile and its background
-    QList<QTreeWidgetItem*> items = this->findItems(name, Qt::MatchExactly);
+    QDir projectDir = QFileInfo(this->topLevelItem(0)->toolTip(0)).dir();
+    QString absolutePath = projectDir.path();
+    absolutePath = QDir(absolutePath + "/" + path).canonicalPath();
+    QList<QTreeWidgetItem*> items = this->findItems(name, Qt::MatchExactly | Qt::MatchRecursive);
+    qDebug() << "Project Tree: name: " << name;
+    qDebug() << "Project Tree: path: " << path;
+    qDebug() << "Project Tree: absolute path" << absolutePath;
+    qDebug() << "Project Tree: items found " << items.count();
     for (int i = 0; i < items.count(); i++)
     {
-        if (items.at(i)->toolTip(i) == path)
+        qDebug() << "Project Tree: path of" << i << "item is" << items.at(i)->toolTip(0);
+        if (items.at(i)->toolTip(0) == absolutePath)
         {
-            items.at(i)->setBackground(0, QBrush(QColor(0,0,255,100)));
+            qDebug() << "Project Tree: manual color set";
+            items.at(i)->setBackground(0, QBrush(QColor(25,25,25,20)));
             mainFileName = name;
-            mainFilePath = path;
+            mainFilePath = absolutePath;
             break;
         }
     }

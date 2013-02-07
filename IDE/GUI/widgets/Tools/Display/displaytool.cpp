@@ -63,7 +63,7 @@ void DisplayTool::segmentPressed(int index)
 
 void DisplayTool::updateComboBoxes(ComboBox *box, int index)
 {
-    qDebug() << "testing";
+    qDebug() << "Combo Box: testing";
     bool changed = false;
     for (int i = 0; i < 8; i++)
     {
@@ -71,9 +71,13 @@ void DisplayTool::updateComboBoxes(ComboBox *box, int index)
         {
             if (comboBoxes[i]->currentIndex() == index)
             {
-                qDebug() << "color changing to red";
+                qDebug() << "Combo Box: color changing to red";
                 changed = true;
-                box->setPalette(QPalette(Qt::red));
+                //box->setPalette(QPalette(Qt::red));
+                box->setStyleSheet("QComboBox {background-color: red;"
+                         "selection-color: red;"
+                         "selection-background-color: red;}"
+                         "QComboBox::drop-down{background-color: white;}");
                 box->update();
                 comboBoxes[i]->setPalette(QPalette(Qt::red));
                 comboBoxes[i]->update();
@@ -86,7 +90,7 @@ void DisplayTool::updateComboBoxes(ComboBox *box, int index)
     }
     if (changed == false)
     {
-        qDebug() << "color changing to red";
+        qDebug() << "Combo Box: color changing to normal";
         this->setPalette(QPalette(this->palette().base().color()));
     }
 }

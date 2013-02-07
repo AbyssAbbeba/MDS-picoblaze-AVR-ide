@@ -20,14 +20,14 @@ WLineCounter::WLineCounter(QTextEdit *parent, bool icons, bool hex, int width)
     this->setFrameShape(QFrame::NoFrame);
     this->parent = parent;
     //this->setMaximumHeight(parent->height());
-    this->setMinimumHeight(parent->height());
+    this->setMinimumHeight(this->parent->height());
     widget = new WLineCounterWidget(this, icons, hex, width);
     this->setWidget(widget);
     this->setMaximumWidth(width);
     this->setMinimumWidth(width);
     this->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    connect(parent->verticalScrollBar(), SIGNAL(valueChanged(int)), this->verticalScrollBar(), SLOT(setValue(int)));
+    connect(this->parent->verticalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(change(int)));
 }
 
 QTextEdit* WLineCounter::getTextEdit()
@@ -45,7 +45,14 @@ WLineCounterWidget* WLineCounter::getWidget()
 
 void WLineCounter::change(int value)
 {
-    this->verticalScrollBar()->setValue(value);
+    qDebug() << "Line Counter: value" << value;
+    qDebug() << "Line Counter: max value" << this->verticalScrollBar()->maximum();
+    qDebug() << "Line Counter: min value" << this->verticalScrollBar()->minimum();
+    qDebug() << "Line Counter: texedit max value" << this->parent->verticalScrollBar()->maximum();
+    qDebug() << "Line Counter: textedit min value" << this->parent->verticalScrollBar()->minimum();
+    qDebug() << "Line Counter: set value" << value*this->verticalScrollBar()->maximum()/this->parent->verticalScrollBar()->maximum();
+    this->verticalScrollBar()->setValue(value*this->verticalScrollBar()->maximum()/this->parent->verticalScrollBar()->maximum());
+    this->widget->update();
 }
 
 
