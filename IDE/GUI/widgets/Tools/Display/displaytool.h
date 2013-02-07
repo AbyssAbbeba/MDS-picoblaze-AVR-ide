@@ -37,7 +37,9 @@ class DisplayTool : public QWidget
     private:
         DisplaySegment *display;
         QGridLayout *gridLayout;
-        QGridLayout *gridLayoutLeft;
+        QGridLayout *gridLayoutRight;
+        QLabel *labelsUp[3];
+        QLabel *labelsLED[8];
         QLabel *labels[8];
         ComboBox *comboBoxes[8];
         bool config[8];
