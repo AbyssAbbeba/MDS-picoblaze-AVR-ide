@@ -36,8 +36,10 @@ class DisplayTool : public QWidget
 
     private:
         DisplaySegment *display;
-        QGridLayout *gridLayout;
-        QGridLayout *gridLayoutRight;
+        QLineEdit *cathodeLE[3];
+        QLineEdit *anodeLE[3];
+        QLabel *cathodeLabels[4];
+        QLabel *anodeLabels[4];
         QLabel *labelsUp[3];
         QLabel *labelsLED[8];
         QLabel *labels[8];

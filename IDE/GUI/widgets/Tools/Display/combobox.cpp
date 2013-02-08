@@ -5,8 +5,12 @@ ComboBox::ComboBox(QWidget *parent)
     : QComboBox(parent)
 {
     for (int i = 0; i < 8; i++)
+    {
         this->addItem(QString::number(i));
+    }
     connect(this, SIGNAL(currentIndexChanged(int)), this, SLOT(changedEmit(int)));
+    //this->setAutoFillBackground(true);
+    this->setMaximumHeight(20);
 }
 
 
