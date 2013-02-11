@@ -1,9 +1,12 @@
 #include <QtGui>
 #include "combobox.h"
 
-ComboBox::ComboBox(QWidget *parent)
+ComboBox::ComboBox(QWidget *parent, int index)
     : QComboBox(parent)
 {
+    this->cbIndex = index;
+    this->conflict = false;
+    this->previousPin = index;
     for (int i = 0; i < 8; i++)
     {
         this->addItem(QString::number(i));

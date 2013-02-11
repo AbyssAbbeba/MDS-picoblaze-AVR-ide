@@ -8,7 +8,10 @@ class ComboBox : public QComboBox
 {
     Q_OBJECT
     public:
-        ComboBox(QWidget *parent);
+        ComboBox(QWidget *parent, int index);
+        int cbIndex;
+        bool conflict;
+        int previousPin;
         
     signals:
         void changed(ComboBox *box, int index);

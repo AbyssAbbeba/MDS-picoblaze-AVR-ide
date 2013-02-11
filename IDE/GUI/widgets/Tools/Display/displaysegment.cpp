@@ -35,24 +35,24 @@ DisplaySegment::DisplaySegment(QWidget *parent)
     displayWidgets[0] = new DisplayWidget(this, 0, true, false);
     connect(displayWidgets[0], SIGNAL(pressed(int)), this, SLOT(emitPressed(int)));
     displayWidgets[0]->move(35, 25);
-    displayWidgets[1] = new DisplayWidget(this, 5, false, false);
+    displayWidgets[5] = new DisplayWidget(this, 5, false, false);
+    connect(displayWidgets[5], SIGNAL(pressed(int)), this, SLOT(emitPressed(int)));
+    displayWidgets[5]->move(13, 40);
+    displayWidgets[1] = new DisplayWidget(this, 1, false, false);
     connect(displayWidgets[1], SIGNAL(pressed(int)), this, SLOT(emitPressed(int)));
-    displayWidgets[1]->move(13, 40);
-    displayWidgets[2] = new DisplayWidget(this, 1, false, false);
-    connect(displayWidgets[2], SIGNAL(pressed(int)), this, SLOT(emitPressed(int)));
-    displayWidgets[2]->move(90, 40);
-    displayWidgets[3] = new DisplayWidget(this, 6, true, false);
-    connect(displayWidgets[3], SIGNAL(pressed(int)), this, SLOT(emitPressed(int)));
-    displayWidgets[3]->move(23, 102);
+    displayWidgets[1]->move(90, 40);
+    displayWidgets[6] = new DisplayWidget(this, 6, true, false);
+    connect(displayWidgets[6], SIGNAL(pressed(int)), this, SLOT(emitPressed(int)));
+    displayWidgets[6]->move(23, 102);
     displayWidgets[4] = new DisplayWidget(this, 4, false, false);
     connect(displayWidgets[4], SIGNAL(pressed(int)), this, SLOT(emitPressed(int)));
     displayWidgets[4]->move(0, 115);
-    displayWidgets[5] = new DisplayWidget(this, 2, false, false);
-    connect(displayWidgets[5], SIGNAL(pressed(int)), this, SLOT(emitPressed(int)));
-    displayWidgets[5]->move(80, 115);
-    displayWidgets[6] = new DisplayWidget(this, 3, true, false);
-    connect(displayWidgets[6], SIGNAL(pressed(int)), this, SLOT(emitPressed(int)));
-    displayWidgets[6]->move(14, 173);
+    displayWidgets[2] = new DisplayWidget(this, 2, false, false);
+    connect(displayWidgets[2], SIGNAL(pressed(int)), this, SLOT(emitPressed(int)));
+    displayWidgets[2]->move(80, 115);
+    displayWidgets[3] = new DisplayWidget(this, 3, true, false);
+    connect(displayWidgets[3], SIGNAL(pressed(int)), this, SLOT(emitPressed(int)));
+    displayWidgets[3]->move(14, 173);
     displayWidgets[7] = new DisplayWidget(this, 7, true, true);
     connect(displayWidgets[7], SIGNAL(pressed(int)), this, SLOT(emitPressed(int)));
     displayWidgets[7]->move(95, 175);
@@ -71,4 +71,28 @@ void DisplaySegment::emitPressed(int index)
 void DisplaySegment::setChar(int number, bool comma)
 {
 
+}
+
+void DisplaySegment::setSegment(unsigned char mask)
+{
+    qDebug() << "DisplaySegment: setting mask:" << mask;
+    qDebug() << "DisplaySegment: binary mask:" << QString::number(mask, 2);
+    unsigned char maskCpy = mask;
+    for (int i = 0; i < 8; i++)
+    {
+        if (maskCpy & 0x01)
+        {
+            emit numberChanged(i, true);
+        }
+        else
+        {
+            emit numberChanged(i, false);
+        }
+        maskCpy = maskCpy >> 1;
+    }
+}
+
+void DisplaySegment::activateSegment(int index, bool active)
+{
+    displayWidgets[index]->activate(active);
 }

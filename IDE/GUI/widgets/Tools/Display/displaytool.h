@@ -48,7 +48,14 @@ class DisplayTool : public QWidget
         
     public slots:
         void segmentPressed(int index);
+        void pinEdited(int pin, bool active);
         void updateComboBoxes(ComboBox *box, int index);
+        void updateLEHexCat(const QString &text);
+        void updateLEDecCat(const QString &text);
+        void updateLEBinCat(const QString &text);
+        void updateLEHexAn(const QString &text);
+        void updateLEDecAn(const QString &text);
+        void updateLEBinAn(const QString &text);
 };
 
 
