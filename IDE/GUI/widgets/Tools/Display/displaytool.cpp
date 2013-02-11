@@ -19,6 +19,7 @@ DisplayTool::DisplayTool(QWidget *parent)
     //center
     display = new DisplaySegment(this);
     connect(display, SIGNAL(pressed(int)), this, SLOT(segmentPressed(int)));
+    connect(display, SIGNAL(numberChanged(int, bool)), SLOT(pinEdited(int, bool)));
     display->move(130, 0);
 
     //left
@@ -74,6 +75,13 @@ DisplayTool::DisplayTool(QWidget *parent)
     anodeLE[0]->move(50, 100);
     anodeLE[1]->move(50, 120);
     anodeLE[2]->move(50, 140);
+
+    connect(cathodeLE[0], SIGNAL(textEdited(const QString &)), this, SLOT(updateLEHexCat(const QString &)));
+    connect(cathodeLE[1], SIGNAL(textEdited(const QString &)), this, SLOT(updateLEDecCat(const QString &)));
+    connect(cathodeLE[2], SIGNAL(textEdited(const QString &)), this, SLOT(updateLEBinCat(const QString &)));
+    connect(anodeLE[0], SIGNAL(textEdited(const QString &)), this, SLOT(updateLEHexAn(const QString &)));
+    connect(anodeLE[1], SIGNAL(textEdited(const QString &)), this, SLOT(updateLEDecAn(const QString &)));
+    connect(anodeLE[2], SIGNAL(textEdited(const QString &)), this, SLOT(updateLEBinAn(const QString &)));
     
     
     //right
@@ -123,7 +131,7 @@ DisplayTool::DisplayTool(QWidget *parent)
     
     for (int i = 0; i < 8; i++)
     {
-        comboBoxes[i] = new ComboBox(rightWidget);
+        comboBoxes[i] = new ComboBox(rightWidget, i);
         comboBoxes[i]->move(80, i*25+20);
         comboBoxes[i]->setCurrentIndex(i);
         connect(comboBoxes[i], SIGNAL(changed(ComboBox*, int)), this, SLOT(updateComboBoxes(ComboBox*, int)));
@@ -139,10 +147,9 @@ DisplayTool::DisplayTool(QWidget *parent)
 
 DisplayTool::~DisplayTool()
 {
-    delete gridLayoutRight;
-    delete gridLayout;
     delete this;
 }
+
 
 void DisplayTool::segmentPressed(int index)
 {
@@ -150,19 +157,63 @@ void DisplayTool::segmentPressed(int index)
     {
         config[index] = false;
         labels[index]->setText("0");
+        qDebug() << "Display Tool: pin" << comboBoxes[index]->currentIndex();
+        int currPin = comboBoxes[index]->currentIndex();
+        for (int i = 0; i < 8; i++)
+        {
+            if (i != index && currPin == comboBoxes[i]->currentIndex())
+            {
+                display->activateSegment(i, false);
+                labels[i]->setText("0");
+                config[i] = false;
+            }
+        }
     }
     else
     {
         labels[index]->setText("1");
         config[index] = true;
+        qDebug() << "Display Tool: pin" << comboBoxes[index]->currentIndex();
+        int currPin = comboBoxes[index]->currentIndex();
+        for (int i = 0; i < 8; i++)
+        {
+            if (i != index && currPin == comboBoxes[i]->currentIndex())
+            {
+                display->activateSegment(i, true);
+                labels[i]->setText("1");
+                config[i] = true;
+            }
+        }
     }
 }
 
 
+void DisplayTool::pinEdited(int pin, bool active)
+{
+    for (int i = 0; i < 8; i++)
+    {
+        if (comboBoxes[i]->currentIndex() == pin)
+        {
+            display->activateSegment(i, active);
+            config[i] = active;
+            if (active == true)
+            {
+                labels[i]->setText("1");
+            }
+            else
+            {
+                labels[i]->setText("0");
+            }
+        }
+    }
+}
+
+
+//index is pin
 void DisplayTool::updateComboBoxes(ComboBox *box, int index)
 {
     qDebug() << "Combo Box: testing";
-    bool changed = false;
+    bool conflict = false;
     for (int i = 0; i < 8; i++)
     {
         if (comboBoxes[i] != box)
@@ -170,14 +221,24 @@ void DisplayTool::updateComboBoxes(ComboBox *box, int index)
             if (comboBoxes[i]->currentIndex() == index)
             {
                 qDebug() << "Combo Box: color changing to red";
-                changed = true;
+                conflict = true;
+                if (box->conflict == true)
+                {
+                    //insert global pin conflict handling for previousPin
+                }
                 comboBoxes[i]->setItemData(index, Qt::red, Qt::BackgroundRole);
                 box->setItemData(index, Qt::red, Qt::BackgroundRole);
-                QPalette p = box->palette();
+                labels[box->cbIndex]->setText(labels[i]->text());
+                config[box->cbIndex] = config[i];
+                box->conflict = true;
+                box->previousPin = index;
+                comboBoxes[i]->conflict = true;
+                comboBoxes[i]->previousPin = index;
+                //QPalette p = box->palette();
 
                 // Outline around the menu
                 //p.setColor(QPalette::Window, Qt::red);
-                p.setColor(QPalette::WindowText, Qt::red);
+                //p.setColor(QPalette::WindowText, Qt::red);
 
                 // combo button
                 //p.setColor(QPalette::Button, Qt::red);
@@ -185,7 +246,7 @@ void DisplayTool::updateComboBoxes(ComboBox *box, int index)
 
                 // combo menu
                 //p.setColor(QPalette::Base, Qt::red);
-                p.setColor(QPalette::Text, Qt::red);
+                //p.setColor(QPalette::Text, Qt::red);
 
                 // highlight button & menu
                 //p.setColor(QPalette::Highlight, Qt::red);
@@ -195,13 +256,13 @@ void DisplayTool::updateComboBoxes(ComboBox *box, int index)
                 //p.setColor(QPalette::Disabled, QPalette::Button, Qt::red);
                 //p.setColor(QPalette::Disabled, QPalette::ButtonText, Qt::red);
 
-                box->setPalette(p);
+                //box->setPalette(p);
                 //box->setPalette(QPalette(Qt::red));
                 //box->setStyleSheet("QComboBox {selection-color: red;"
                 //         "selection-background-color: red;}");
                 //box->update();
                 //comboBoxes[i]->setPalette(QPalette(Qt::red));
-                comboBoxes[i]->update();//*/
+                //comboBoxes[i]->update();//*/
             }
             /*else
             {
@@ -209,12 +270,348 @@ void DisplayTool::updateComboBoxes(ComboBox *box, int index)
             }*/
         }
     }
-    if (changed == false)
+    if (conflict == false && box->conflict == true)
     {
-        qDebug() << "Combo Box: color changing to normal";
+        qDebug() << "Combo Box: color changing to normal for pin" << index;
+        box->setItemData(box->previousPin, box->palette().base().color(), Qt::BackgroundRole);
+        char globalPinConflict = 0;
+        int lastPinConflict = 0;
         for (int i = 0; i < 8; i++)
         {
-            box->setItemData(i, box->palette().base().color(), Qt::BackgroundRole);
+            if (comboBoxes[i] != box)
+            {
+                if (box->previousPin == comboBoxes[i]->previousPin)
+                {
+                    globalPinConflict++;
+                    lastPinConflict = i;
+                }
+            }
         }
+        if (globalPinConflict == 1)
+        {
+            comboBoxes[lastPinConflict]->conflict = false;
+            comboBoxes[lastPinConflict]->previousPin = comboBoxes[lastPinConflict]->cbIndex;
+            comboBoxes[lastPinConflict]->setItemData(comboBoxes[lastPinConflict]->previousPin, comboBoxes[lastPinConflict]->palette().base().color(), Qt::BackgroundRole);
+            //change color of combo box
+        }
+        //else nothing, conflict still remains
+        box->conflict = false;
+        box->previousPin = box->cbIndex;
     }
+}
+
+
+void DisplayTool::updateLEHexCat(const QString &text)
+{
+    unsigned char hex = text.toInt(NULL, 16);
+    unsigned char hexInv = ~hex&0xFF;
+    QString number;
+    int length;
+    //dec
+    number = QString::number(hex, 10);
+    length = 3 - number.length();
+    while (length > 0)
+    {
+        number.prepend('0');
+        length--;
+    }
+    cathodeLE[1]->setText(number);
+    //bin
+    number = QString::number(hex, 2);
+    length = 8 - number.length();
+    while (length > 0)
+    {
+        number.prepend('0');
+        length--;
+    }
+    cathodeLE[2]->setText(number);
+    //hex
+    number = QString::number(hexInv, 16);
+    if (number.length() < 2)
+    {
+        number.prepend('0');
+    }
+    anodeLE[0]->setText(number);
+    //dec
+    number = QString::number(hexInv, 10);
+    length = 3 - number.length();
+    while (length > 0)
+    {
+        number.prepend('0');
+        length--;
+    }
+    anodeLE[1]->setText(number);
+    //bin
+    number = QString::number(hexInv, 2);
+    length = 8 - number.length();
+    while (length > 0)
+    {
+        number.prepend('0');
+        length--;
+    }
+    anodeLE[2]->setText(number);
+
+    display->setSegment(hex);
+}
+
+
+void DisplayTool::updateLEDecCat(const QString &text)
+{
+    unsigned char dec = text.toInt(NULL, 10);
+    unsigned char decInv = ~dec&0xFF;
+    QString number;
+    int length;
+    //hex
+    number = QString::number(dec, 16);
+    if (number.length() < 2)
+    {
+        number.prepend('0');
+    }
+    cathodeLE[0]->setText(number);
+    //bin
+    number = QString::number(dec, 2);
+    length = 8 - number.length();
+    while (length > 0)
+    {
+        number.prepend('0');
+        length--;
+    }
+    cathodeLE[2]->setText(number);
+    //hex
+    number = QString::number(decInv, 16);
+    if (number.length() < 2)
+    {
+        number.prepend('0');
+    }
+    anodeLE[0]->setText(number);
+    //dec
+    number = QString::number(decInv, 10);
+    length = 3 - number.length();
+    while (length > 0)
+    {
+        number.prepend('0');
+        length--;
+    }
+    anodeLE[1]->setText(number);
+    //bin
+    number = QString::number(decInv, 2);
+    length = 8 - number.length();
+    while (length > 0)
+    {
+        number.prepend('0');
+        length--;
+    }
+    anodeLE[2]->setText(number);
+
+    display->setSegment(dec);
+}
+
+
+void DisplayTool::updateLEBinCat(const QString &text)
+{
+    unsigned char bin = text.toInt(NULL, 2);
+    unsigned char binInv = ~bin&0xFF;
+    QString number;
+    int length;
+    //hex
+    number = QString::number(bin, 16);
+    if (number.length() < 2)
+    {
+        number.prepend('0');
+    }
+    cathodeLE[0]->setText(number);
+    //dec
+    number = QString::number(bin, 10);
+    length = 3 - number.length();
+    while (length > 0)
+    {
+        number.prepend('0');
+        length--;
+    }
+    cathodeLE[1]->setText(number);
+    //hex
+    number = QString::number(binInv, 16);
+    if (number.length() < 2)
+    {
+        number.prepend('0');
+    }
+    anodeLE[0]->setText(number);
+    //dec
+    number = QString::number(binInv, 10);
+    length = 3 - number.length();
+    while (length > 0)
+    {
+        number.prepend('0');
+        length--;
+    }
+    anodeLE[1]->setText(number);
+    //bin
+    number = QString::number(binInv, 2);
+    length = 8 - number.length();
+    while (length > 0)
+    {
+        number.prepend('0');
+        length--;
+    }
+    anodeLE[2]->setText(number);
+    
+    display->setSegment(bin);
+}
+
+
+void DisplayTool::updateLEHexAn(const QString &text)
+{
+    unsigned char hex = text.toInt(NULL, 16);
+    unsigned char hexInv = ~hex&0xFF;
+    QString number;
+    int length;
+    //hex
+    number = QString::number(hexInv, 16);
+    if (number.length() < 2)
+    {
+        number.prepend('0');
+    }
+    cathodeLE[0]->setText(number);
+    //dec
+    number = QString::number(hexInv, 10);
+    length = 3 - number.length();
+    while (length > 0)
+    {
+        number.prepend('0');
+        length--;
+    }
+    cathodeLE[1]->setText(number);
+    //bin
+    number = QString::number(hexInv, 2);
+    length = 8 - number.length();
+    while (length > 0)
+    {
+        number.prepend('0');
+        length--;
+    }
+    cathodeLE[2]->setText(number);
+    //dec
+    number = QString::number(hex, 10);
+    length = 3 - number.length();
+    while (length > 0)
+    {
+        number.prepend('0');
+        length--;
+    }
+    anodeLE[1]->setText(number);
+    //bin
+    number = QString::number(hex, 2);
+    length = 8 - number.length();
+    while (length > 0)
+    {
+        number.prepend('0');
+        length--;
+    }
+    anodeLE[2]->setText(number);
+
+    display->setSegment(hexInv);
+}
+
+
+void DisplayTool::updateLEDecAn(const QString &text)
+{
+    unsigned char dec = text.toInt(NULL, 10);
+    unsigned char decInv = ~dec&0xFF;
+    QString number;
+    int length;
+    //hex
+    number = QString::number(decInv, 16);
+    if (number.length() < 2)
+    {
+        number.prepend('0');
+    }
+    cathodeLE[0]->setText(number);
+    //dec
+    number = QString::number(decInv, 10);
+    length = 3 - number.length();
+    while (length > 0)
+    {
+        number.prepend('0');
+        length--;
+    }
+    cathodeLE[1]->setText(number);
+    //bin
+    number = QString::number(decInv, 2);
+    length = 8 - number.length();
+    while (length > 0)
+    {
+        number.prepend('0');
+        length--;
+    }
+    cathodeLE[2]->setText(number);
+    //hex
+    number = QString::number(dec, 16);
+    if (number.length() < 2)
+    {
+        number.prepend('0');
+    }
+    anodeLE[0]->setText(number);
+    //bin
+    number = QString::number(dec, 2);
+    length = 8 - number.length();
+    while (length > 0)
+    {
+        number.prepend('0');
+        length--;
+    }
+    anodeLE[2]->setText(number);
+
+    display->setSegment(decInv);
+}
+
+
+void DisplayTool::updateLEBinAn(const QString &text)
+{
+    unsigned char bin = text.toInt(NULL, 2);
+    unsigned char binInv = ~bin&0xFF;
+    QString number;
+    int length;
+    //hex
+    number = QString::number(binInv, 16);
+    if (number.length() < 2)
+    {
+        number.prepend('0');
+    }
+    cathodeLE[0]->setText(number);
+    //dec
+    number = QString::number(binInv, 10);
+    length = 3 - number.length();
+    while (length > 0)
+    {
+        number.prepend('0');
+        length--;
+    }
+    cathodeLE[1]->setText(number);
+    //bin
+    number = QString::number(binInv, 2);
+    length = 8 - number.length();
+    while (length > 0)
+    {
+        number.prepend('0');
+        length--;
+    }
+    cathodeLE[2]->setText(number);
+    //hex
+    number = QString::number(bin, 16);
+    if (number.length() < 2)
+    {
+        number.prepend('0');
+    }
+    anodeLE[0]->setText(number);
+    //dec
+    number = QString::number(bin, 10);
+    length = 3 - number.length();
+    while (length > 0)
+    {
+        number.prepend('0');
+        length--;
+    }
+    anodeLE[1]->setText(number);
+
+    display->setSegment(binInv);
 }

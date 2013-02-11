@@ -29,6 +29,7 @@ class DisplayWidget : public QWidget
     Q_OBJECT
     public:
         DisplayWidget(QWidget *parent, int index, bool align, bool comma);
+        void activate(bool active);
         //~DisplayWidget();
 
     protected:

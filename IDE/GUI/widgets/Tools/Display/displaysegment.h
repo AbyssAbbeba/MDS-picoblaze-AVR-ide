@@ -11,6 +11,8 @@ class DisplaySegment : public QWidget
         DisplaySegment(QWidget *parent);
         DisplayWidget* getWidget(int index);
         void setChar(int number, bool comma);
+        void activateSegment(int index, bool active);
+        void setSegment(unsigned char mask);
     
     private:
         DisplayWidget *displayWidgets[8];
@@ -20,6 +22,7 @@ class DisplaySegment : public QWidget
 
     signals:
         void pressed(int index);
+        void numberChanged(int pin, bool active);
 };
 
 

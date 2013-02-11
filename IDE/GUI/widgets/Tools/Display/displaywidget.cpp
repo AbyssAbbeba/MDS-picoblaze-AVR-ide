@@ -127,12 +127,25 @@ void DisplayWidget::mousePressEvent(QMouseEvent *event)
 {
     emit pressed(this->index);
     if (activated)
+    {
         activated = false;
+    }
     else
+    {
         activated = true;
-    qDebug() << "pressed: " << this->index;
-    this->repaint();
+    }
+    qDebug() << "DisplayWidget: pressed: " << this->index;
+    this->update();
 }
+
+
+void DisplayWidget::activate(bool active)
+{
+    activated = active;
+    qDebug() << "DisplayWidget: auto pressed: " << this->index;
+    this->update();
+}
+
 
 void DisplayWidget::paintEvent(QPaintEvent *event)
 {
