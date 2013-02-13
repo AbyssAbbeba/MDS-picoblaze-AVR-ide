@@ -35,6 +35,8 @@ class DisplayTool : public QWidget
         ~DisplayTool();
 
     private:
+        void updateLEGlobal(int pin, bool active);
+        
         DisplaySegment *display;
         QLineEdit *cathodeLE[3];
         QLineEdit *anodeLE[3];
