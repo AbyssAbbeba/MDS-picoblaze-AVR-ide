@@ -10,7 +10,6 @@ class DisplaySegment : public QWidget
     public:
         DisplaySegment(QWidget *parent);
         DisplayWidget* getWidget(int index);
-        void setChar(int number, bool comma);
         void activateSegment(int index, bool active);
         void setSegment(unsigned char mask);
     

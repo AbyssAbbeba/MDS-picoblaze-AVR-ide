@@ -64,12 +64,14 @@ bool HexEdit::eventFilter(QObject *target, QEvent *event)
         QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
         //overit, jestli je vse v poradku (0-9, A-F, sipky)
         if ((keyEvent->key() < 0x20 ||
-          keyEvent->key() > 0x7e)
+            keyEvent->key() > 0x7e)
           && (keyEvent->key() < Qt::Key_Left ||
-          keyEvent->key() > Qt::Key_Down))
+            keyEvent->key() > Qt::Key_Down))
+        {
             return true;
+        }
         else if (keyEvent->key() >= 0x20 &&
-          keyEvent->key() <= 0x7e)
+            keyEvent->key() <= 0x7e)
         {
             int position = hexAsciiEdit->textCursor().position() - hexAsciiEdit->textCursor().blockNumber();
             (*hexByteArray)[position] = keyEvent->text().at(0).toAscii();

@@ -168,6 +168,7 @@ void DisplayTool::segmentPressed(int index)
                 config[i] = false;
             }
         }
+        updateLEGlobal(comboBoxes[index]->currentIndex(), false);
     }
     else
     {
@@ -184,6 +185,7 @@ void DisplayTool::segmentPressed(int index)
                 config[i] = true;
             }
         }
+        updateLEGlobal(comboBoxes[index]->currentIndex(), true);
     }
 }
 
@@ -224,7 +226,32 @@ void DisplayTool::updateComboBoxes(ComboBox *box, int index)
                 conflict = true;
                 if (box->conflict == true)
                 {
-                    //insert global pin conflict handling for previousPin
+                    qDebug() << "DisplayTool: combobox color changing to normal for pin" << index;
+                    box->setItemData(box->previousPin, box->palette().base().color(), Qt::BackgroundRole);
+                    char globalPinConflict = 0;
+                    int lastPinConflict = 0;
+                    for (int i = 0; i < 8; i++)
+                    {
+                        if (comboBoxes[i] != box)
+                        {
+                            if (box->previousPin == comboBoxes[i]->previousPin)
+                            {
+                                globalPinConflict++;
+                                lastPinConflict = i;
+                            }
+                        }
+                    }
+                    if (globalPinConflict == 1)
+                    {
+                        comboBoxes[lastPinConflict]->conflict = false;
+                        comboBoxes[lastPinConflict]->previousPin = comboBoxes[lastPinConflict]->cbIndex;
+                        comboBoxes[lastPinConflict]->setItemData(comboBoxes[lastPinConflict]->previousPin, comboBoxes[lastPinConflict]->palette().base().color(), Qt::BackgroundRole);
+                        //change color of combo box
+                    }
+                }
+                else
+                {
+                    updateLEGlobal(box->previousPin, false);
                 }
                 comboBoxes[i]->setItemData(index, Qt::red, Qt::BackgroundRole);
                 box->setItemData(index, Qt::red, Qt::BackgroundRole);
@@ -234,6 +261,7 @@ void DisplayTool::updateComboBoxes(ComboBox *box, int index)
                 box->previousPin = index;
                 comboBoxes[i]->conflict = true;
                 comboBoxes[i]->previousPin = index;
+                display->activateSegment(box->cbIndex, config[box->cbIndex]);
                 //QPalette p = box->palette();
 
                 // Outline around the menu
@@ -264,39 +292,42 @@ void DisplayTool::updateComboBoxes(ComboBox *box, int index)
                 //comboBoxes[i]->setPalette(QPalette(Qt::red));
                 //comboBoxes[i]->update();//*/
             }
-            /*else
-            {
-                comboBoxes[i]->setItemData(index, comboBoxes[i]->palette().base().color(), Qt::BackgroundRole);
-            }*/
         }
     }
-    if (conflict == false && box->conflict == true)
+    if (conflict == false)
     {
-        qDebug() << "Combo Box: color changing to normal for pin" << index;
-        box->setItemData(box->previousPin, box->palette().base().color(), Qt::BackgroundRole);
-        char globalPinConflict = 0;
-        int lastPinConflict = 0;
-        for (int i = 0; i < 8; i++)
+        if (box->conflict == true)
         {
-            if (comboBoxes[i] != box)
+            qDebug() << "DisplayTool: combobox color changing to normal for pin" << index;
+            box->setItemData(box->previousPin, box->palette().base().color(), Qt::BackgroundRole);
+            char globalPinConflict = 0;
+            int lastPinConflict = 0;
+            for (int i = 0; i < 8; i++)
             {
-                if (box->previousPin == comboBoxes[i]->previousPin)
+                if (comboBoxes[i] != box)
                 {
-                    globalPinConflict++;
-                    lastPinConflict = i;
+                    if (box->previousPin == comboBoxes[i]->previousPin)
+                    {
+                        globalPinConflict++;
+                        lastPinConflict = i;
+                    }
                 }
             }
+            if (globalPinConflict == 1)
+            {
+                comboBoxes[lastPinConflict]->conflict = false;
+                comboBoxes[lastPinConflict]->previousPin = comboBoxes[lastPinConflict]->cbIndex;
+                comboBoxes[lastPinConflict]->setItemData(comboBoxes[lastPinConflict]->previousPin, comboBoxes[lastPinConflict]->palette().base().color(), Qt::BackgroundRole);
+                //change color of combo box
+            }
+            //else nothing, conflict still remains
         }
-        if (globalPinConflict == 1)
-        {
-            comboBoxes[lastPinConflict]->conflict = false;
-            comboBoxes[lastPinConflict]->previousPin = comboBoxes[lastPinConflict]->cbIndex;
-            comboBoxes[lastPinConflict]->setItemData(comboBoxes[lastPinConflict]->previousPin, comboBoxes[lastPinConflict]->palette().base().color(), Qt::BackgroundRole);
-            //change color of combo box
-        }
-        //else nothing, conflict still remains
         box->conflict = false;
         box->previousPin = box->cbIndex;
+        config[box->cbIndex] = false;
+        display->activateSegment(box->cbIndex, false);
+        labels[box->cbIndex]->setText("0");
+        updateLEGlobal(index, false);
     }
 }
 
@@ -614,4 +645,76 @@ void DisplayTool::updateLEBinAn(const QString &text)
     anodeLE[1]->setText(number);
 
     display->setSegment(binInv);
+}
+
+
+void DisplayTool::updateLEGlobal(int pin, bool active)
+{
+    char dec = cathodeLE[1]->text().toInt(NULL, 10);
+    unsigned char decInv;
+    QString number;
+    int length;
+    qDebug() << "DisplayTool: old dec number:" << (int)dec;
+    if (active == true)
+    {
+        qDebug() << "DisplayTool: active == true";
+        dec |= 1 << pin;
+    }
+    else
+    {
+        qDebug() << "DisplayTool: active == false";
+        dec &= ~(1 << pin);
+    }
+    qDebug() << "DisplayTool: new dec number:" << (int)dec;
+    decInv = ~dec&0xFF;
+    //hex
+    number = QString::number(dec, 16);
+    if (number.length() < 2)
+    {
+        number.prepend('0');
+    }
+    cathodeLE[0]->setText(number);
+    //dec
+    number = QString::number(dec, 10);
+    length = 3 - number.length();
+    while (length > 0)
+    {
+        number.prepend('0');
+        length--;
+    }
+    cathodeLE[1]->setText(number);
+    //bin
+    number = QString::number(dec, 2);
+    length = 8 - number.length();
+    while (length > 0)
+    {
+        number.prepend('0');
+        length--;
+    }
+    cathodeLE[2]->setText(number);
+    //hex
+    number = QString::number(decInv, 16);
+    if (number.length() < 2)
+    {
+        number.prepend('0');
+    }
+    anodeLE[0]->setText(number);
+    //dec
+    number = QString::number(decInv, 10);
+    length = 3 - number.length();
+    while (length > 0)
+    {
+        number.prepend('0');
+        length--;
+    }
+    anodeLE[1]->setText(number);
+    //bin
+    number = QString::number(decInv, 2);
+    length = 8 - number.length();
+    while (length > 0)
+    {
+        number.prepend('0');
+        length--;
+    }
+    anodeLE[2]->setText(number);
 }

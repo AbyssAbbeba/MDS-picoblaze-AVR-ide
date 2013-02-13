@@ -68,10 +68,6 @@ void DisplaySegment::emitPressed(int index)
     emit pressed(index);
 }
 
-void DisplaySegment::setChar(int number, bool comma)
-{
-
-}
 
 void DisplaySegment::setSegment(unsigned char mask)
 {
