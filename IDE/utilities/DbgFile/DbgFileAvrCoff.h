@@ -20,6 +20,7 @@
 class ObjectDataFile;
 
 #include "DbgFile.h"
+#include <fstream>
 
 /**
  * @brief
@@ -31,7 +32,31 @@ class DbgFileAvrCoff : public DbgFile
     ////    Public Static Constants    ////
     public:
         /// @brief
-        static const unsigned int MAX_LINE_LENGTH = 4095;
+        static const unsigned int IN_BFR_SIZE = 4095;
+
+    ////    Public Datatypes    ////
+    public:
+        /**
+         * @brief
+         */
+        enum ObjFileType
+        {
+            OFT_NORELOC   = 0x0001, ///< Relocation information stripped from the file
+            OFT_NOUNRES   = 0x0002, ///< The file has no unresolved external references
+            OFT_NOLINES   = 0x0004, ///< Line numbers stripped from the file
+            OFT_NOSYMBOLS = 0x0008  ///< Local symbols stripped from the file
+        };
+
+        /**
+         * @brief
+         */
+        enum SectionFlag
+        {
+            SF_TEXT    = 0x0020, ///< Section contains executable text (.text)
+            SF_DATA    = 0x0040, ///< Section contains initialised data (.data)
+            SF_BSS     = 0x0080, ///< Section contains uninitialised data (.bss)
+            SF_COMMENT = 0x0200  ///< Comment section
+        };
 
     ////    Constructors and Destructors    ////
     public:
@@ -106,6 +131,11 @@ class DbgFileAvrCoff : public DbgFile
          * @brief
          */
         inline void generateLineAddressMaps();
+
+        /**
+         * @brief
+         */
+        inline void checkBadAndEof ( const std::fstream & file, char * buffer = NULL );
 
     ////    Private Attributes    ////
     private:
