@@ -1,5 +1,5 @@
 /**
- * @brief
+ * @brief C++ file for file manager class
  * C++ Implementation: ...
  *
  * ...
@@ -17,6 +17,12 @@
 #include <QFileDialog>
 #include "errordlg.h"
 
+
+/**
+ * @brief
+ * @param
+ * @param
+ */
 FileMgr::FileMgr(QWidget *parentWidget, Project *currProject)
 {
     //prepare widget
@@ -62,6 +68,9 @@ FileMgr::FileMgr(QWidget *parentWidget, Project *currProject)
 
 
 
+/**
+ * @brief
+ */
 void FileMgr::deleteFile()
 {
     if (fileList->currentItem() != NULL)
@@ -77,6 +86,9 @@ void FileMgr::deleteFile()
 }
 
 
+/**
+ * @brief
+ */
 void FileMgr::newFile()
 {
     //modal dialog window
@@ -105,6 +117,9 @@ void FileMgr::newFile()
 }
 
 
+/**
+ * @brief
+ */
 void FileMgr::addFile()
 {
     //dialog window (file search)
@@ -124,6 +139,9 @@ void FileMgr::addFile()
 }
 
 
+/**
+ * @brief
+ */
 void FileMgr::setMainFile()
 {
     if (fileList->currentItem() != NULL)

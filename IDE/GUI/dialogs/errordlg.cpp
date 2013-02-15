@@ -1,5 +1,5 @@
 /**
- * @brief
+ * @brief C++ file for error dialogs
  * C++ Implementation: ...
  *
  * ...
@@ -14,6 +14,10 @@
 
 #include "errordlg.h"
 
+/**
+ * @brief Shows error according to given code
+ * @param errCode Error code
+ */
 void error(int errCode)
 {
     QMessageBox msgBox;

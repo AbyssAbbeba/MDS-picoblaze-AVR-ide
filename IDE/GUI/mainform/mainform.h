@@ -1,5 +1,5 @@
 /**
- * @brief
+ * @brief Header for MainForm class
  * C++ Interface: ...
  *
  * ...
@@ -32,9 +32,9 @@ class ProjectMan;
 class WDockManager;
 class CodeEdit;
 
-//hlavni okno programu
+
 /**
- * @brief
+ * @brief MainForm uses QMainWindow and adds functions for file streams, tools/simulation executing and other basic stuff
  * @ingroup GUI
  * @class MainForm
  */
@@ -53,6 +53,7 @@ class MainForm : public QMainWindow
         void openProject(QString path);
 
     private slots:
+        //slots connected to menu actions
         void newFile();
         void openFile();
         void addFile();
@@ -74,16 +75,17 @@ class MainForm : public QMainWindow
         void exampleOpen();
 
     private:
+        //init functions
         void CreateMenu();
         void CreateActions();
         void CreateToolbar();
         void CreateWelcome();
-
+        //project manager
         ProjectMan *projectMan;
-
+        //dock widgets manager
         WDockManager *wDockManager;
 
-
+        //menus in main menu
         QMenu *fileMenu;
         QMenu *editMenu;
         QMenu *interfaceMenu;
@@ -91,11 +93,12 @@ class MainForm : public QMainWindow
         QMenu *toolsMenu;
         QMenu *helpMenu;
 
-
+        //toolbars
         QToolBar *fileToolBar;
         QToolBar *projectToolBar;
         QToolBar *simulationToolBar;
 
+        //actions
         QAction *newAct;
         QAction *openAct;
         QAction *addAct;
@@ -133,7 +136,7 @@ class MainForm : public QMainWindow
         QAction *helpActionAct;
         QAction *example1Act;
 
-
+        //simulation status - start/stop
         bool simulationStatus;      
 };
 

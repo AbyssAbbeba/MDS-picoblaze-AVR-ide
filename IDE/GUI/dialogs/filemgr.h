@@ -1,5 +1,5 @@
 /**
- * @brief
+ * @brief Header for file manager class
  * C++ Interface: ...
  *
  * ...

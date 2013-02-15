@@ -1,5 +1,5 @@
 /**
- * @brief
+ * @brief Header for BreakpointList class
  * C++ Interface: ...
  *
  * ...
@@ -20,7 +20,7 @@
 
 
 /**
- * @brief
+ * @brief QListWidget of breakpoints added in CodeEdit
  * @ingroup GUI
  * @class BreakpointList
  */

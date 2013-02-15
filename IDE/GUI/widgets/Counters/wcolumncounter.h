@@ -1,5 +1,5 @@
 /**
- * @brief
+ * @brief Header for WColumnCounter class
  * C++ Interface: ...
  *
  * ...
@@ -22,7 +22,7 @@ class WColumnCounterWidget;
 
 
 /**
- * @brief
+ * @brief Counts columns and paints the numbers. Horizontal.
  * @ingroup GUI
  * @class WColumnCounter
  */

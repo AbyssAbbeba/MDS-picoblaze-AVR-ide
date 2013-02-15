@@ -34,7 +34,7 @@ class McuSpecFileDesigner : public QWidget
         void setNextIOReg();
         void setPreviousIOReg();
         void getDevices();
-        void getConfig(QString architecture);
+        void getConfig(QString archFamily, QString archName);
         void finaliseXML();
         void saveXML();
         
