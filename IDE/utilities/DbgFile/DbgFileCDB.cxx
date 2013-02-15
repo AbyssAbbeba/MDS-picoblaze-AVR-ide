@@ -15,6 +15,7 @@
 
 #include "DbgFileCDB.h"
 
+#include <cstdlib>
 #include <fstream>
 #include <cstring>
 #include <cctype>

@@ -15,6 +15,7 @@
 
 #include "DbgFileAvraLst.h"
 
+#include <cstdlib>
 #include <fstream>
 #include <cstring>
 #include <cctype>
