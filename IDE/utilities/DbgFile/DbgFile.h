@@ -40,8 +40,9 @@ class DbgFile
                  */
                 enum Type
                 {
-                    IO_ERROR,   ///<
-                    PARSE_ERROR ///<
+                    IO_ERROR,           ///<
+                    PARSE_ERROR,        ///<
+                    COMPATIBILITY_ERROR ///<
                 };
 
             ////    Constructors and Destructors    ////
@@ -391,6 +392,15 @@ class DbgFile
          * @return
          */
         virtual int getLineByAddr ( unsigned int addr ) const = 0;
+
+        /**
+         * @brief
+         * @param[in] addr
+         * @param[out] fileName
+         * @return
+         */
+        int getLineByAddr ( unsigned int addr,
+                            std::string & fileName ) const;
 
         /**
          * @brief

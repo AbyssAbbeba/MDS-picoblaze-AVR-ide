@@ -37,6 +37,7 @@ add_definitions ( -Wall -Wextra -std=c++0x -O2 -pipe )
 ## Add a library to the project using the specified source files,
  # in this case it will procude dynamic C++ library.
 add_library ( ${PROJECT_NAME} SHARED
+              DbgFile.cxx
               DbgFileCDB.cxx
               DbgFileAvraLst.cxx
               DbgFileAvrCoff.cxx )
