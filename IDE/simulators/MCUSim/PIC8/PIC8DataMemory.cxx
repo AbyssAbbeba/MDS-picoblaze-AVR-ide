@@ -19,6 +19,7 @@
 #include "PIC8InstructionSet.h"
 #include "PIC8ExternalInterrupts.h"
 
+#include <cstdlib>
 #include <cstring>
 
 PIC8DataMemory::PIC8DataMemory()
