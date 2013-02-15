@@ -26,9 +26,10 @@ class Project;
 //class FileMgr;
 
 /**
- * @brief
+ * @brief Project Dialog Config
  * @ingroup GUI
  * @class ProjectConfigDialog_Core
+ * @details Used in opened project configuration
  */
 class ProjectConfigDialog_Core : public QDialog
 {

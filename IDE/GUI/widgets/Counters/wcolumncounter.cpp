@@ -1,5 +1,5 @@
 /**
- * @brief
+ * @brief C++ file for WColumnCounter class
  * C++ Implementation: ...
  *
  * ...
@@ -15,6 +15,11 @@
 #include <QtGui>
 #include "wcolumncounter.h"
 
+
+
+/**
+ * @brief Constructor. 
+ */
 WColumnCounter::WColumnCounter(QTextEdit *parent, int height, int columns)
 {
     this->setFrameShape(QFrame::NoFrame);

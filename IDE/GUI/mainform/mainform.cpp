@@ -1,5 +1,5 @@
 /**
- * @brief
+ * @brief C++ file for MainForm class
  * C++ Implementation: ...
  *
  * ...
@@ -20,7 +20,9 @@
 
 
 
-
+/**
+ * @brief Constructor, inits project and dock widget manager and create menus/toolbars
+ */
 MainForm::MainForm()
 {
     projectMan = new ProjectMan(this);
@@ -35,7 +37,9 @@ MainForm::MainForm()
 
 
 
-
+/**
+ * @brief Creates menus in main menu
+ */
 void MainForm::CreateMenu()
 {
     fileMenu = menuBar()->addMenu(tr("&File"));
@@ -70,7 +74,10 @@ void MainForm::CreateMenu()
 
 
 
-
+/**
+ * @brief Creates actions used in menus and toolbars and connects them to appropriate slots
+ *
+ */
 void MainForm::CreateActions()
 {
     newAct = new QAction(tr("&New File"), this);
@@ -129,7 +136,6 @@ void MainForm::CreateActions()
     exitAct = new QAction(tr("Exit"), this);
     connect(exitAct, SIGNAL(triggered()), this, SLOT(close()));
 
-
     QPixmap *pm_projComp = new QPixmap("resources//icons//compile.png");
     QIcon *icon_projComp = new QIcon(*pm_projComp);
     projectCompileAct = new QAction(*icon_projComp, tr("Compile"), this);
@@ -173,7 +179,9 @@ void MainForm::CreateActions()
 
 
 
-
+/**
+ * @brief Creates toolbars used in main window
+ */
 void MainForm::CreateToolbar()
 {
     //fileToolBar = addToolBar(tr("File Toolbar"));
@@ -213,6 +221,10 @@ void MainForm::CreateToolbar()
 //v tuto chvili jen informacni defaultni layout
 //s kazdym novym widgetem se zavola prislusna funkce s telem podobnym teto funkci
 //pojmenovani widgetu zacinat s "wid", popr. "w"
+/**
+ * @brief Inits default or user-saved layout of basic dock widgets
+ * @bug Only default layout
+ */
 void MainForm::CreateDockWidgets()
 {
     //setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
@@ -234,6 +246,10 @@ void MainForm::CreateDockWidgets()
 }
 
 
+/**
+ * @brief Creates welcome screen with tips and basic functions (create project etc.)
+ * @details Still not implemented
+ */
 void MainForm::CreateWelcome()
 {
     wDockManager->addCentralWidget("Welcome", "Free tips from developers!");
@@ -241,7 +257,9 @@ void MainForm::CreateWelcome()
 
 
 
-
+/**
+ * @brief Slot. Opens new blank file.
+ */
 void MainForm::newFile()
 {
     //jen se vytvori novy tab na code editoru
@@ -252,6 +270,9 @@ void MainForm::newFile()
 }
 
 
+/**
+ * @brief Slot. Opens new blank file and adds it to the active project.
+ */
 void MainForm::newAddFile()
 {
     //jen se vytvori novy tab na code editoru
@@ -274,6 +295,9 @@ void MainForm::newAddFile()
 }
 
 
+/**
+ * @brief Slot. Opens file selected by user in dialog.
+ */
 void MainForm::openFile()
 {
     QString path = QFileDialog::getOpenFileName(this, tr("Source File"), "");
@@ -294,7 +318,10 @@ void MainForm::openFile()
 }
 
 
-
+/**
+ * @brief Opens file selected by programmer.
+ * @param path Path to the file.
+ */
 void MainForm::openFilePath(QString path)
 {
     //QDir thisDir(".");
@@ -316,8 +343,9 @@ void MainForm::openFilePath(QString path)
 }
 
 
-
-
+/**
+ * @brief Slot. Adds opened file to the active project.
+ */
 void MainForm::addFile()
 {
     if (wDockManager->isEmpty() == false)
@@ -342,6 +370,9 @@ void MainForm::addFile()
     }
 }
 
+/**
+ * @brief Slot. Saves the active file.
+ */
 void MainForm::saveFile()
 {
     if (wDockManager->getCentralWidget()->isChanged() == true)
@@ -373,7 +404,9 @@ void MainForm::saveFile()
 }
 
 
-
+/**
+ * @brief Slot. Saves the active file by the name selected by user.
+ */
 void MainForm::saveFileAs()
 {
     //QString path = QFileDialog::getSaveFileName(this, tr("Source File");
@@ -394,7 +427,9 @@ void MainForm::saveFileAs()
 }
 
 
-
+/**
+ * @brief Saves file from selected CodeEditor.
+ */
 void MainForm::saveFile(CodeEdit *editor)
 {
     if (editor->isChanged() == true)
@@ -428,9 +463,9 @@ void MainForm::saveFile(CodeEdit *editor)
 
 
 
-
-
-
+/**
+ * @brief Slot. Saves all opened files which are changed (or unnamed).
+ */
 void MainForm::saveAll()
 {
     //ulozi vsechny zmenene a nepojmenovane
@@ -442,7 +477,9 @@ void MainForm::saveAll()
         
 }
 
-
+/**
+ * @brief Slot. Creates a new project.
+ */
 void MainForm::newProject()
 { 
     ProjectDialog *projectEdit = new ProjectDialog(this, projectMan);
@@ -450,6 +487,9 @@ void MainForm::newProject()
 }
 
 
+/**
+ * @brief Slot. Opens project selected by user in dialog.
+ */
 void MainForm::openProject()
 {
     //nalezeni projektu
@@ -474,6 +514,10 @@ void MainForm::openProject()
 }
 
 
+/**
+ * @brief Opens project selected by programmer.
+ * @param path Path to the project.
+ */
 void MainForm::openProject(QString path)
 {
     QFile file(path);
@@ -490,6 +534,9 @@ void MainForm::openProject(QString path)
 }
 
 
+/**
+ * @brief Slot. Saves all changed files in active project.
+ */
 void MainForm::saveProject()
 {
     for (int i = 0; i < wDockManager->getTabCount(); i++)
@@ -498,6 +545,11 @@ void MainForm::saveProject()
 }
 
 
+/**
+ * @brief Slot. Compiles active project.
+ * @bug Segfault if no project is active (opened).
+ * @details Still not finished. Add functionality for PIC/ASM...
+ */
 void MainForm::compileProject()
 {
     QPlainTextEdit *compileWidget = (QPlainTextEdit*)(wDockManager->getDockWidget(wCompileInfo)->widget());
@@ -583,6 +635,10 @@ void MainForm::compileProject()
 }
 
 
+/**
+ * @brief Returns pointer to dock widgets manager.
+ * @return Returns pointer to dock widgets manager
+ */
 WDockManager* MainForm::getWDockManager()
 {
     return wDockManager;
@@ -591,7 +647,9 @@ WDockManager* MainForm::getWDockManager()
 
 
 
-
+/**
+ * @brief Slot. Makes step in active simulation.
+ */
 void MainForm::simulationStep()
 {
     if (true == simulationStatus)
@@ -600,6 +658,10 @@ void MainForm::simulationStep()
     }
 }
 
+
+/**
+ * @brief Slot. Run simulation with shown changes.
+ */
 void MainForm::simulationRunHandle()
 {
     if (true == simulationStatus)
@@ -609,6 +671,9 @@ void MainForm::simulationRunHandle()
 }
 
 
+/**
+ * @brief Slot. Resets active simulation.
+ */
 void MainForm::simulationReset()
 {
     if (true == simulationStatus)
@@ -618,6 +683,9 @@ void MainForm::simulationReset()
 }
 
 
+/**
+ * @brief Slot. Starts/stops simulation.
+ */
 void MainForm::simulationFlowHandle()
 {
     if (projectMan->getActive() != NULL)
@@ -644,26 +712,37 @@ void MainForm::simulationFlowHandle()
 }
 
 
-
+/**
+ * @brief Slot. Shows tool - convertor.
+ */
 void MainForm::toolConvertor()
 {
     ConvertorTool *a = new ConvertorTool(0);
 }
 
 
+/**
+ * @brief Slot. Shown tool - 8 Segment Editor.
+ */
 void MainForm::toolDisplay()
 {
     DisplayTool *a = new DisplayTool(0);
 }
 
 
-
+/**
+ * @brief Returns pointer to project manager.
+ * @return Returns pointer to project manager.
+ */
 ProjectMan* MainForm::getProjectMan()
 {
     return this->projectMan;
 }
 
 
+/**
+ * @brief Slot. Opens example project.
+ */
 void MainForm::exampleOpen()
 {
     this->openProject("./demoprojekt/Example.mmp");

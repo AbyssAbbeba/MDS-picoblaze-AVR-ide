@@ -29,9 +29,10 @@
 
 
 /**
- * @brief
+ * @brief Project Dialog
  * @ingroup GUI
  * @class ProjectDialog
+ * @details Used in creating new project
  */
 class ProjectDialog : public QDialog
 {

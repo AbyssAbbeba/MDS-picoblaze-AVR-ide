@@ -1,5 +1,5 @@
 /**
- * @brief
+ * @brief Header for ProjectMan class and Project class
  * C++ Interface: ...
  *
  * ...
@@ -44,7 +44,7 @@ class Project;
 
 
 /**
- * @brief
+ * @brief Manager of Projects.
  * @ingroup GUI
  * @class ProjectMan
  */
@@ -72,7 +72,7 @@ class ProjectMan
 
 
 /**
- * @brief
+ * @brief Project class. Manages files and simulation.
  * @ingroup GUI
  * @class Project
  */

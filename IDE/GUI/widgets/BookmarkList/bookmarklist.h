@@ -1,5 +1,5 @@
 /**
- * @brief
+ * @brief Header for BookmarkList class
  * C++ Interface: ...
  *
  * ...
@@ -20,7 +20,7 @@
 
 
 /**
- * @brief
+ * @brief QListWidget of bookmarks added to CodeEdit
  * @ingroup GUI
  * @class BookmarkList
  */

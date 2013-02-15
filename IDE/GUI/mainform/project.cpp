@@ -1,5 +1,5 @@
 /**
- * @brief
+ * @brief C++ file for ProjectMan class and Project class
  * C++ Implementation: ...
  *
  * ...
@@ -18,16 +18,26 @@
 #include "MCUSimControl.h"
 #include "../widgets/ProjectTree/projecttree.h"
 
+
+
+
+/**
+ * @brief Constructor of project manager. Inits basic variables.
+ * @param qMainWindow Pointer to MainForm instance.
+ */
 ProjectMan::ProjectMan(MainForm *qMainWindow)
 {
     //openProjects = new QList<Project*>;
     projectCount = 0;
     mainWindow = qMainWindow;
     activeProject = NULL;
-    
 }
 
 
+/**
+ * @brief Opens and loads project according to opened xml (.mmp) file.
+ * @param file Opened xml (.mmp) file.
+ */
 void ProjectMan::openProject(QFile *file)
 {
     Project *newProject = new Project(file, mainWindow, this);
@@ -41,8 +51,10 @@ void ProjectMan::openProject(QFile *file)
     //else 
     openProjects.append(newProject);
     activeProject = newProject;
-    if (projectCount > 0) 
+    if (projectCount > 0)
+    {
         mainWindow->tabifyDockWidget(openProjects.at(0)->prjDockWidget, newProject->prjDockWidget);
+    }
     //else
     //    mainWindow->CreateDockWidgets();
 
@@ -50,11 +62,24 @@ void ProjectMan::openProject(QFile *file)
 }
 
 
+/**
+ * @brief Adds file to active project.
+ * @param path Path to the file
+ * @param name Name of the file
+ */
 void ProjectMan::addFile(QString path, QString name)
 {
     getActive()->addFile(path, name);
 }
 
+
+/**
+ * @brief Creates new project.
+ * @param name name of the new project
+ * @param path path to the new project xml (.mmp) file
+ * @param architecture target architecture of the new project
+ * @param file xml (.mmp) file of the new project
+ */
 void ProjectMan::addProject(QString name, QString path, QString architecture, QFile *file)
 {
     Project *newProject = new Project(name, path, architecture, mainWindow, file, this);
@@ -68,10 +93,14 @@ void ProjectMan::addProject(QString name, QString path, QString architecture, QF
     //    projectCount--;
     //}
     //else
-    if (projectCount > 0) 
+    if (projectCount > 0)
+    {
         mainWindow->tabifyDockWidget(openProjects.at(0)->prjDockWidget, newProject->prjDockWidget);
+    }
     else
+    {
         mainWindow->CreateDockWidgets();
+    }
 
     openProjects.append(newProject);
     activeProject = newProject;
@@ -79,25 +108,41 @@ void ProjectMan::addProject(QString name, QString path, QString architecture, QF
 }
 
 
+/**
+ * @brief Sets project selected by programmer as active
+ * @param activePrj Pointer to the soon-to-be active project
+ */
 void ProjectMan::setActive(Project *activePrj)
 {
     activeProject = activePrj;
 }
 
 
+/**
+ * @brief Checks if project selected by programmer is active.
+ * @param project Pointer to the checked project
+ * @return True if project is active, otherwise false.
+ */
 bool ProjectMan::isActiveProject(Project *project)
 {
     return (project==activeProject);
 }
 
 
+/**
+ * @brief Returns pointer to the active project.
+ * @return Pointer to the active project.
+ */
 Project* ProjectMan::getActive()
 {
     return activeProject;
 }
 
 
-
+/**
+ * @brief Creates makefile for active project. Used for compilation.
+ * @details Not used at the moment.
+ */
 void ProjectMan::createActiveMakefile()
 {
     QFileInfo projectInfo(activeProject->prjPath);
@@ -128,13 +173,22 @@ void ProjectMan::createActiveMakefile()
         makeOut << "$(NAME):" << endl;
         makeOut << "\t$(CC) $(CFLAGS) $(FILES)" << endl;
     }
-    
 }
 
 
 
 
 
+//-----------------------------------------------------------
+//-----------------------------------------------------------
+//-----------------------------------------------------------
+//-----------------------------------------------------------
+//-----------------------------------------------------------
+
+
+/**
+ * @brief Project destructor. Deletes project's tree widget
+ */
 Project::~Project()
 {
     delete this->prjDockWidget;
@@ -142,6 +196,12 @@ Project::~Project()
 }
 
 //otevreni projektu
+/**
+ * @brief Opens project from opened xml (.mmp) file.
+ * @param file Opened xml (.mmp) file.
+ * @param mainWindow 
+ * @param parent Project parent project manager.
+ */
 Project::Project(QFile *file, MainForm* mainWindow, ProjectMan *parent)
 {
     mainFileName = "";
@@ -251,16 +311,30 @@ Project::Project(QFile *file, MainForm* mainWindow, ProjectMan *parent)
     }
 }
 
+
 //vytvoreni prazdneho projektu
+/**
+ * @brief Constructor. Creates a blank new project
+ * @param name The name of the project
+ * @param path The path to xml (.mmp) file
+ * @param arch Architecture of the project
+ * @param mainWindow Pointer to parent main window
+ * @param file Opened file for xml (.mmp) stream
+ * @param parent Pointer to parent (project manager)
+ */
 Project::Project(QString name, QString path, QString arch, MainForm* mainWindow, QFile *file, ProjectMan *parent)
 {
     errorFlag = ERR_OK;
     parentManager = parent;
 
     if (name != NULL)
+    {
         prjDockWidget = new QDockWidget(name, mainWindow);
+    }
     else
+    {
         prjDockWidget = new QDockWidget("Projects", mainWindow);
+    }
     prjDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea);
     prjDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
     prjTreeWidget = new ProjectTree(prjDockWidget, this);
@@ -314,6 +388,11 @@ Project::Project(QString name, QString path, QString arch, MainForm* mainWindow,
 
 
 
+/**
+ * @brief Adds file to the active project
+ * @param path The path to the file
+ * @param name The name of the file
+ */
 void Project::addFile(QString path, QString name)
 {
     QString relativePath;
@@ -396,23 +475,37 @@ void Project::addFile(QString path, QString name)
 
 
 
+/**
+ * @brief Slot. Sets current project as active
+ */
 void Project::setActive()
 {
     if (false == parentManager->isActiveProject(this))
+    {
         parentManager->setActive(this);
+    }
 }
 
 
 
-
+/**
+ * @brief Slot. Opens selected item from project's tree widget
+ */
 void Project::openItem()
 {
     if (prjTreeWidget->currentItem() != NULL)
+    {
         parentManager->mainWindow->openFilePath(prjTreeWidget->currentItem()->data(0, Qt::ToolTipRole).toString());
+    }
 }
 
 
 
+/**
+ * @brief Sets selected name and path by programmer as main file
+ * @param path The path to the selected file
+ * @param name The name of the selected file
+ */
 void Project::setMainFile(QString path, QString name)
 {
     QDir project(QFileInfo(prjPath).dir());
@@ -469,6 +562,11 @@ void Project::setMainFile(QString path, QString name)
 }
 
 
+/**
+ * @brief Removes selected file by programmer from project
+ * @param path The path to the file
+ * @param name The name of the file
+ */
 void Project::removeFile(QString path, QString name)
 {
     QDir project(QFileInfo(prjPath).dir());
@@ -535,14 +633,21 @@ void Project::removeFile(QString path, QString name)
 }
 
 
+
+/**
+ * @brief Inits simulation control unit
+ */
 void Project::setupSim()
 {
     McuSimCfgMgr::getInstance()->openConfigFile("../simulators/MCUSim/McuSimCfgMgr/mcuspecfile.xml");
     //"ATmega8A"
     this->m_simControlUnit = new MCUSimControl(architecture.toUtf8().constData());
-    
 }
 
+
+/**
+ * @brief Starts simulation
+ */
 void Project::start()
 {
     
@@ -553,32 +658,48 @@ void Project::start()
     m_simControlUnit->start(stdPath, m_simControlUnit->COMPILER_SDCC, m_simControlUnit->DBGFILEID_HEX);
 }
 
-//void Project::run()
-//{
-//
-//}
 
+
+/**
+ * @brief Stops simulation
+ */
 void Project::stop()
 {
     m_simControlUnit->stop();
 }
 
+
+/**
+ * @brief Resets simulation
+ */
 void Project::reset()
 {
     m_simControlUnit->reset();
 }
 
+
+/**
+ * @brief Makes step in simulation
+ */
 void Project::step()
 {
     m_simControlUnit->step();
 }
 
+
+/**
+ * @brief Runs simulation
+ */
 void Project::run()
 {
     m_simControlUnit->run();
 }
 
 
+/**
+ * @brief Returns simulation control unit
+ * @return Returns simulation control unit
+ */
 MCUSimControl* Project::getSimControl()
 {
     if (this->m_simControlUnit == NULL)

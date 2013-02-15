@@ -1,5 +1,5 @@
 /**
- * @brief
+ * @brief Header for ProjectCfg_General class
  * C++ Interface: ...
  *
  * ...
@@ -25,7 +25,7 @@ class Project;
 
 
 /**
- * @brief
+ * @brief Project Dialog Config general tab
  * @ingroup GUI
  * @class ProjectCfg_General
  */

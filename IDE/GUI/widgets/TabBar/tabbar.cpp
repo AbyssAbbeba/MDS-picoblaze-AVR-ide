@@ -1,7 +1,24 @@
+/**
+ * @brief C++ file for TabBar class
+ * C++ Implementation: ...
+ *
+ * ...
+ *
+ * Copyright: See COPYING file that comes with this distribution.
+ *
+ * @author: Erik Chalupa <xchalu10@stud.fit.vutbr.cz>, (C) 2012
+ *
+ */
+
+
 #include <QtGui>
 #include "tabbar.h"
 
 
+
+/**
+ * @brief Constructor. Connects signal/slot for file handling.
+ */
 TabBar::TabBar(QWidget *parent)
     : QTabBar(parent)
 {
@@ -10,6 +27,9 @@ TabBar::TabBar(QWidget *parent)
 }
 
 
+/**
+ * @brief Removes tab at given index.
+ */
 void TabBar::tabRemoved(int index)
 {
     qDebug() << "tabbar: tab removed";
@@ -17,6 +37,9 @@ void TabBar::tabRemoved(int index)
 }
 
 
+/**
+ * @brief Handles tab adding.
+ */
 void TabBar::tabAdded()
 {
     qDebug() << "tabbar: tab added";
@@ -24,6 +47,9 @@ void TabBar::tabAdded()
 }
 
 
+/**
+ * @brief Handles tab moving.
+ */
 void TabBar::tabChanged(int index, bool changed)
 {
     if (tabStats.at(index) != changed)
@@ -34,12 +60,19 @@ void TabBar::tabChanged(int index, bool changed)
 }
 
 
+/**
+ * @brief Swaps indexes in tab activity array.
+ */
 void TabBar::tabStatsMoved(int from, int to)
 {
     tabStats.swap(from, to);
 }
 
 
+/**
+ * @brief Reimplemented paint event.
+ * @details Not completed.
+ */
 void TabBar::paintEvent(QPaintEvent *)
 {
 

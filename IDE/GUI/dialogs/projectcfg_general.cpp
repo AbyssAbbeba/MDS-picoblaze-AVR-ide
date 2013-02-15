@@ -1,5 +1,5 @@
 /**
- * @brief
+ * @brief C++ file for projectcfg_general class
  * C++ Implementation: ...
  *
  * ...
