@@ -16,6 +16,7 @@
 #include "PIC8ProgramMemory.h"
 
 #include "MCUDataFiles/DataFile.h"
+#include <cstdlib>
 
 PIC8ProgramMemory::PIC8ProgramMemory()
 {

@@ -18,6 +18,7 @@
 #include "PIC8DataMemory.h"
 #include "MCUDataFiles/DataFile.h"
 
+#include <cstdlib>
 #include <cstring>
 
 PIC8DataEEPROM::PIC8DataEEPROM()
