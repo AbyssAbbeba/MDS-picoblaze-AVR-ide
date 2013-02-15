@@ -17,6 +17,7 @@
 
 #include "MCUDataFiles/ObjectDataFile.h"
 
+#include <cstdlib>
 #include <cstring>
 #include <cctype>
 #include <cstdint>

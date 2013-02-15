@@ -55,6 +55,9 @@ add_library ( ${PROJECT_NAME} SHARED
               PIC8ISP.cxx
               PIC8ExternalInterrupts.cxx )
 
+# Link a target to given libraries.
+target_link_libraries ( ${PROJECT_NAME} DbgFile )
+
 # ------------------------------------------------------------------------------
 # INSTALLATION OPTIONS
 # ------------------------------------------------------------------------------
