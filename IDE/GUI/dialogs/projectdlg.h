@@ -47,8 +47,9 @@ class ProjectDialog : public QDialog
 
     private:
         void freeDialog();
-        QGridLayout *layout;
+        //QGridLayout *layout;
         QComboBox *architecture;
+        QComboBox *language;
         QLineEdit *projName, *projDir;
         QLabel *labelName, *labelDir;
         QPushButton *chooseName;

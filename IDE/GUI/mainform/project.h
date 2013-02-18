@@ -43,6 +43,11 @@ class McuSimCfgMgr;
 class Project;
 
 
+typedef enum LangType {
+    LANG_ASM = 0, LANG_C
+} LangType;
+
+
 /**
  * @brief Manager of Projects.
  * @ingroup GUI
@@ -53,7 +58,7 @@ class ProjectMan
     public:
         ProjectMan(MainForm *mainWindow);
         void addFile(QString path, QString name);
-        void addProject(QString name, QString path, QString architecture, QFile *file);
+        void addProject(QString name, QString path, QString architecture, LangType langType, QFile *file);
         void openProject(QFile *file);
         void setActive(Project *activePrj);
         bool isActiveProject(Project *project);
@@ -61,6 +66,7 @@ class ProjectMan
         void createActiveMakefile();
 
         MainForm *mainWindow;
+
 
     private:
         int projectCount;
@@ -79,11 +85,12 @@ class ProjectMan
 class Project : public QObject
 {
     Q_OBJECT
+    
     public:
         //konstruktor pro otevirani projektu
         Project(QFile *file, MainForm* mainWindow, ProjectMan *parent);
         //konstruktor pro prazdny projekt
-        Project(QString name, QString path, QString arch, MainForm* mainWindow, QFile *file, ProjectMan *parent);
+        Project(QString name, QString path, QString arch, LangType langType, MainForm* mainWindow, QFile *file, ProjectMan *parent);
         ~Project();
 
         void addFile(QString path, QString name);
@@ -104,6 +111,7 @@ class Project : public QObject
         QString prjPath;
         int fileCount;
 
+        LangType langType;
         QString architecture;
         QString mainFileName;
         QString mainFilePath;
@@ -124,6 +132,7 @@ class Project : public QObject
     private:
         ProjectMan *parentManager;
         MainForm *parentWindow;
+        
        
 };
 
