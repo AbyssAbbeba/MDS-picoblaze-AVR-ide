@@ -1,5 +1,5 @@
 /**
- * @brief C++ file for WColumnCounter class
+ * @brief C++ file for WColumnCounter and WColumnCounterWidget classes
  * C++ Implementation: ...
  *
  * ...
@@ -18,7 +18,10 @@
 
 
 /**
- * @brief Constructor. 
+ * @brief Constructor. Sets properties of the base widget.
+ * @param parent Parent QTextEdit
+ * @param height Height of widget.
+ * @param columns Number of shown columns.
  */
 WColumnCounter::WColumnCounter(QTextEdit *parent, int height, int columns)
 {
@@ -35,19 +38,31 @@ WColumnCounter::WColumnCounter(QTextEdit *parent, int height, int columns)
     connect(parent->horizontalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(change(int)));
 }
 
+
+/**
+ * @brief Returns pointer to the parent QTextEdit
+ * @return Returns pointer to the parent QTextEdit
+ */
 QTextEdit* WColumnCounter::getTextEdit()
 {
     return parent;
 }
 
+
+/**
+ * @brief Returns shown WColumnCounterWidget.
+ * @return Returns shown WColumnCounterWidget.
+ */
 WColumnCounterWidget* WColumnCounter::getWidget()
 {
     return widget;
 }
 
 
-
-
+/**
+ * @brief Set scrollbar to the given value. (synchronisation)
+ * @param value ScrollBar value.
+ */
 void WColumnCounter::change(int value)
 {
     this->horizontalScrollBar()->setValue(value);
@@ -55,7 +70,12 @@ void WColumnCounter::change(int value)
 }
 
 
-
+/**
+ * @brief Constructor. Sets properties of shown widget.
+ * @param parent Parent WColumnCounter (base).
+ * @param height Height of the widget.
+ * @param columns Number of shown columns.
+ */
 WColumnCounterWidget::WColumnCounterWidget(WColumnCounter *parent, int height, int columns)
 {
     this->parent = parent;
@@ -66,7 +86,9 @@ WColumnCounterWidget::WColumnCounterWidget(WColumnCounter *parent, int height, i
 }
 
 
-
+/**
+ * @brief Reimplemented paintEvent
+ */
 void WColumnCounterWidget::paintEvent(QPaintEvent *)
 {
     int size = parent->getTextEdit()->currentFont().pointSize();
@@ -96,6 +118,3 @@ void WColumnCounterWidget::paintEvent(QPaintEvent *)
     }
     paint.end();
 }
-
-
-

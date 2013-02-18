@@ -32,6 +32,7 @@
 #include <QSplitter>
 #include "../Editor/codeedit.h"
 #include "../Editor/baseeditor.h"
+#include "../Editor/wtextedit.h"
 #include "../../mainform/mainform.h"
 #include "../SimulationInfo/wsimulationinfo.h"
 #include "../BreakpointList/breakpointlist.h"
@@ -46,6 +47,7 @@ class CodeEdit;
 class BaseEditor;
 class BookmarkList;
 class BreakpointList;
+class WTextEdit;
 
 
 /**
@@ -65,8 +67,8 @@ class WDockManager : public QObject
         void showDockWidgetArea(int area);
         void removeDockWidget(int code);
         void addCentralWidget(QString wName, QString wPath);
-        QTextEdit* getCentralTextEdit();
-        QTextEdit* getTabTextEdit(int index);
+        WTextEdit* getCentralTextEdit();
+        WTextEdit* getTabTextEdit(int index);
         CodeEdit* getCentralWidget();
         CodeEdit* getTabWidget(int index);
         QString getCentralName();
@@ -81,6 +83,7 @@ class WDockManager : public QObject
         BreakpointList* getBreakpointList();
         void createBookmarkList(QDockWidget *wDockWidget);
         void createBreakpointList(QDockWidget *wDockWidget);
+        void setCentralByName(QString fileName);
 
     private slots:
         void closeTab(int index);
