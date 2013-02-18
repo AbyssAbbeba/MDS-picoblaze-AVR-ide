@@ -559,44 +559,67 @@ void MainForm::compileProject()
     //QStringList args;
     //args << " -g -Os -mmcu=atmega8 -c ../" + projectMan->getActive()->mainFileName;
     QProcess compiler(this);
+    compiler.setProcessChannelMode(QProcess::MergedChannels);
+    
+    compiler.setWorkingDirectory(projectMan->getActive()->prjPath.section('/',0, -2));
+    compiler.start("mkdir build");
+    compiler.waitForFinished();
+    
     compiler.setWorkingDirectory(projectMan->getActive()->prjPath.section('/',0, -2) + "/build/");
     qDebug() << compiler.workingDirectory();
 
-    compiler.setProcessChannelMode(QProcess::MergedChannels);
-    compiler.start("avr-gcc -g -Os -mmcu=atmega8 -c ../" + projectMan->getActive()->mainFileName);
-    if (!compiler.waitForFinished())
+    compiler.start("cp ../" + projectMan->getActive()->mainFileName + " " + projectMan->getActive()->mainFileName);
+    compiler.waitForFinished();
+
+    if (projectMan->getActive()->langType == LangType::LANG_ASM)
     {
-        compileWidget->appendPlainText(compiler.errorString());
-        return;
+        compiler.start("avra -l " + projectMan->getActive()->mainFileName.section('.',0,-2) + ".lst " + projectMan->getActive()->mainFileName);
+        if (!compiler.waitForFinished())
+        {
+            compileWidget->appendPlainText(compiler.errorString());
+        }
+        else
+        {
+            compileWidget->appendPlainText(compiler.readAll() + "\n\n");
+        }
     }
-    else
+    else if (projectMan->getActive()->langType == LangType::LANG_C)
     {
-        compileWidget->appendPlainText(compiler.readAll() + "\n\n");
-    }
+        compiler.start("avr-gcc -g -Os -mmcu=atmega8 -c " + projectMan->getActive()->mainFileName);
+        if (!compiler.waitForFinished())
+        {
+            compileWidget->appendPlainText(compiler.errorString());
+            return;
+        }
+        else
+        {
+            compileWidget->appendPlainText(compiler.readAll() + "\n\n");
+        }
 
 
-    compiler.setProcessChannelMode(QProcess::MergedChannels);
-    compiler.start("avr-gcc -g -mmcu=atmega8 -o " + mainFileName + ".elf " + mainFileName + ".o");
-    if (!compiler.waitForFinished())
-    {
-        compileWidget->appendPlainText(compiler.errorString());
-        return;
-    }
-    else
-    {
-        compileWidget->appendPlainText(compiler.readAll() + "\n\n");
-    }
+        compiler.setProcessChannelMode(QProcess::MergedChannels);
+        compiler.start("avr-gcc -g -mmcu=atmega8 -o " + mainFileName + ".elf " + mainFileName + ".o");
+        if (!compiler.waitForFinished())
+        {
+            compileWidget->appendPlainText(compiler.errorString());
+            return;
+        }
+        else
+        {
+            compileWidget->appendPlainText(compiler.readAll() + "\n\n");
+        }
 
 
-    compiler.setProcessChannelMode(QProcess::MergedChannels);
-    compiler.start("avr-objcopy -j .text -j .data -O ihex " + mainFileName + ".elf " + mainFileName + ".hex");
-    if (!compiler.waitForFinished())
-    {
-        compileWidget->appendPlainText(compiler.errorString());
-    }
-    else
-    {
-        compileWidget->appendPlainText(compiler.readAll() + "\n\n");
+        compiler.setProcessChannelMode(QProcess::MergedChannels);
+        compiler.start("avr-objcopy -j .text -j .data -O ihex " + mainFileName + ".elf " + mainFileName + ".hex");
+        if (!compiler.waitForFinished())
+        {
+            compileWidget->appendPlainText(compiler.errorString());
+        }
+        else
+        {
+            compileWidget->appendPlainText(compiler.readAll() + "\n\n");
+        }
     }
     
     /*projectMan->createActiveMakefile();
