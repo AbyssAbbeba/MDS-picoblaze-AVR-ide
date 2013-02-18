@@ -1,5 +1,5 @@
 /**
- * @brief
+ * @brief C++ file for WLineCounter and WLineCounterWidget classes.
  * C++ Implementation: ...
  *
  * ...
@@ -15,6 +15,15 @@
 #include <QtGui>
 #include "wlinecounter.h"
 
+
+
+/**
+ * @brief Constructor. Sets widget (base) rect.
+ * @param parent Parent QTextEdit.
+ * @param icons If icons are available.
+ * @param hex If shown numbers will be hexadecimal (or decimal).
+ * @param width Width of the widget.
+ */
 WLineCounter::WLineCounter(QTextEdit *parent, bool icons, bool hex, int width)
 {
     this->setFrameShape(QFrame::NoFrame);
@@ -30,19 +39,31 @@ WLineCounter::WLineCounter(QTextEdit *parent, bool icons, bool hex, int width)
     connect(this->parent->verticalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(change(int)));
 }
 
+
+/**
+ * @brief Returns pointer to the parent QTextEdit.
+ * @return Returns pointer to the parent QTextEdit.
+ */
 QTextEdit* WLineCounter::getTextEdit()
 {
     return parent;
 }
 
+
+/**
+ * @brief Returns pointer to the shown widget.
+ * @return Returns pointer to the shown widget.
+ */
 WLineCounterWidget* WLineCounter::getWidget()
 {
     return widget;
 }
 
 
-
-
+/**
+ * @brief Sets scrollbar value to given value. (synchronisation with qtextedit)
+ * @param value New ScrollBar value.
+ */
 void WLineCounter::change(int value)
 {
     qDebug() << "Line Counter: value" << value;
@@ -56,8 +77,13 @@ void WLineCounter::change(int value)
 }
 
 
-
-
+/**
+ * @brief Constructor. Inits shown widget.
+ * @param parent Parent WLineCounter (base).
+ * @param icons If icons are available
+ * @param hex If line numbers will be in hexadecimal (or decimal)
+ * @param width Width of the shown widget
+ */
 WLineCounterWidget::WLineCounterWidget(WLineCounter *parent, bool icons, bool hex, int width)
 {
     this->parent = parent;
@@ -79,6 +105,9 @@ WLineCounterWidget::WLineCounterWidget(WLineCounter *parent, bool icons, bool he
 }
 
 
+/**
+ * @brief Reimplemented paintEvent
+ */
 void WLineCounterWidget::paintEvent(QPaintEvent *)
 {
     QTextEdit* textEdit = parent->getTextEdit();
@@ -161,5 +190,3 @@ void WLineCounterWidget::paintEvent(QPaintEvent *)
     }
     paint.end();
 }
-
-

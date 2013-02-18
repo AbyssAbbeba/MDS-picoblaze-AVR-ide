@@ -44,6 +44,7 @@ link_directories(
     "${CMAKE_CURRENT_BINARY_DIR}/../TabBar/"
     "${CMAKE_CURRENT_BINARY_DIR}/../Analyser/"
     "${CMAKE_CURRENT_BINARY_DIR}/../AnalyserWidget/"
+    "${CMAKE_CURRENT_BINARY_DIR}/../Editor/"
 	)
 
 # </DEBUG!>
@@ -66,4 +67,4 @@ add_library(${PROJECT_NAME} SHARED
 	${SAMPLE_MOC_SRCS} ${SAMPLE_SRCS})
 
 
-target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} WSimulationInfo BreakpointList BookmarkList TabBar Analyser AnalyserWidget)
+target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} WSimulationInfo BreakpointList BookmarkList TabBar Analyser AnalyserWidget Editor)

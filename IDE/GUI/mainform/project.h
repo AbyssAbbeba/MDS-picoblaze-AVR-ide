@@ -123,6 +123,7 @@ class Project : public QObject
 
     private:
         ProjectMan *parentManager;
+        MainForm *parentWindow;
        
 };
 
