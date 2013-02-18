@@ -65,6 +65,10 @@
  */
 
 /**
+ * @defgroup tests Automated tests
+ */
+
+/**
  * @mainpage Introduction
  *
  * @section HowTo How to use this documentation
