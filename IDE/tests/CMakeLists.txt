@@ -30,3 +30,7 @@ enable_testing()
 
 # Tests for AVR8 simulator
 add_subdirectory ( AVR8 )
+
+# Tests for simulator debug files
+add_subdirectory ( DbgFile )
+

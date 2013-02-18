@@ -98,9 +98,9 @@ inline void DbgFileAvrCoff::loadFile ( const std::string & filename )
     checkBadAndEof(file, rawHdr);
     absolutePosition += 20;
     // Magic number (0xA12 for AVR COFF)
-    uint8_t magicNumber    = ( rawHdr[ 1] <<  8 ) | ( rawHdr[ 0] );
+    uint16_t magicNumber   = ( rawHdr[ 1] <<  8 ) | ( rawHdr[ 0] );
     // Number of sections
-    uint8_t noOfSections   = ( rawHdr[ 3] <<  8 ) | ( rawHdr[ 2] );
+    uint16_t noOfSections  = ( rawHdr[ 3] <<  8 ) | ( rawHdr[ 2] );
     // Time and date stamp indicating when the file was created, expressed as the number of elapsed seconds since 
     //+ 00:00:00 GMT, January 1, 1970
     uint32_t timeStamp     = ( rawHdr[ 7] << 24 ) | ( rawHdr[ 6] << 16 ) | ( rawHdr[ 5] << 8 ) | rawHdr[ 4];
@@ -109,9 +109,9 @@ inline void DbgFileAvrCoff::loadFile ( const std::string & filename )
     // Number of entries in the symbol table
     uint32_t symbolTblNo   = ( rawHdr[15] << 24 ) | ( rawHdr[14] << 16 ) | ( rawHdr[13] << 8 ) | rawHdr[12];
     // Number of bytes in the optional header
-    uint8_t optHeaderSize  = ( rawHdr[17] <<  8 ) | ( rawHdr[16] );
+    uint16_t optHeaderSize = ( rawHdr[17] <<  8 ) | ( rawHdr[16] );
     // Flags
-    uint8_t flags          = ( rawHdr[19] <<  8 ) | ( rawHdr[18] );
+    uint16_t flags         = ( rawHdr[19] <<  8 ) | ( rawHdr[18] );
 
     delete[] rawHdr;
 
@@ -195,10 +195,10 @@ inline void DbgFileAvrCoff::loadFile ( const std::string & filename )
                                 ( rawSecHdr[29] <<  8 ) | ( rawSecHdr[28] );
 
         // Number of relocation entries
-        uint8_t noOfRelocEnt  = ( rawSecHdr[33] <<  8 ) | ( rawSecHdr[32] );
+        uint16_t noOfRelocEnt = ( rawSecHdr[33] <<  8 ) | ( rawSecHdr[32] );
 
         // Number of line number entries
-        uint8_t noOfLnNoEnt   = ( rawSecHdr[35] <<  8 ) | ( rawSecHdr[34] );
+        uint16_t noOfLnNoEnt  = ( rawSecHdr[35] <<  8 ) | ( rawSecHdr[34] );
 
         // Flags
         uint32_t flags        = ( rawSecHdr[39] << 24 ) | ( rawSecHdr[38] << 16 ) |
@@ -242,7 +242,7 @@ inline void DbgFileAvrCoff::loadFile ( const std::string & filename )
         {
             char relocInfo[10];
             file.read(relocInfo, 10);
-            checkBadAndEof(file, relocInfo);
+            checkBadAndEof(file);
             absolutePosition += 10;
 
             // Virtual address of reference
@@ -252,7 +252,7 @@ inline void DbgFileAvrCoff::loadFile ( const std::string & filename )
             uint32_t symbolTblIndex = ( relocInfo[7] << 24 ) | ( relocInfo[6] << 16 ) |
                                       ( relocInfo[5] <<  8 ) | ( relocInfo[4] );
             // Relocation type
-            uint8_t relocationType  = ( relocInfo[9] <<  8 ) | ( relocInfo[8] );
+            uint16_t relocationType = ( relocInfo[9] <<  8 ) | ( relocInfo[8] );
         }
 
         /*
@@ -262,14 +262,14 @@ inline void DbgFileAvrCoff::loadFile ( const std::string & filename )
         {
             char lineNumberRaw[6];
             file.read(lineNumberRaw, 6);
-            checkBadAndEof(file, lineNumberRaw);
+            checkBadAndEof(file);
             absolutePosition += 6;
 
             // Physical address OR symbol index
-            uint32_t address   = ( lineNumberRaw[3] << 24 ) | ( lineNumberRaw[2] << 16 ) |
-                                 ( lineNumberRaw[1] <<  8 ) | ( lineNumberRaw[0] );
+            uint32_t address    = ( lineNumberRaw[3] << 24 ) | ( lineNumberRaw[2] << 16 ) |
+                                  ( lineNumberRaw[1] <<  8 ) | ( lineNumberRaw[0] );
             // Line number
-            uint8_t lineNumber = ( lineNumberRaw[5] <<  8 ) | ( lineNumberRaw[4] );
+            uint16_t lineNumber = ( lineNumberRaw[5] <<  8 ) | ( lineNumberRaw[4] );
         }
     }
 
@@ -280,7 +280,7 @@ inline void DbgFileAvrCoff::loadFile ( const std::string & filename )
     {
         char symbolEntryRaw[18];
         file.read(symbolEntryRaw, 18);
-        checkBadAndEof(file, symbolEntryRaw);
+        checkBadAndEof(file);
         absolutePosition += 18;
 
         // These 8 bytes have a symbol name or an index to a symbol in the string table.
@@ -315,7 +315,7 @@ inline void DbgFileAvrCoff::loadFile ( const std::string & filename )
      */
     char stringTblSize[4];
     file.read(stringTblSize, 4);
-    checkBadAndEof(file, stringTblSize);
+    checkBadAndEof(file);
     absolutePosition += 4;
     // Convert to 32-bit unsigned integer
     uint32_t stringTableSize = ( stringTblSize[3] << 24 ) | ( stringTblSize[2] << 16 ) |
@@ -339,7 +339,7 @@ inline void DbgFileAvrCoff::checkBadAndEof ( const std::fstream & file, char * b
         {
             delete[] buffer;
         }
-        throw DbgFileException(DbgFileException::IO_ERROR, "Read failed, file: " + m_sourceFile);
+        throw DbgFileException ( DbgFileException::IO_ERROR, "Read failed, file: " + m_sourceFile );
     }
 }
 
