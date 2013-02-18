@@ -48,14 +48,14 @@ class DbgFileAvraLst : public DbgFile
          * @brief
          * @param[in] filename
          */
-        virtual void openFile ( const std::string & filename ) throw ( DbgFileException );
+        void openFile ( const std::string & filename ) throw ( DbgFileException );
 
         /**
          * @brief
          * @param[in] addr
          * @return
          */
-        virtual int getLineByAddr ( unsigned int addr ) const;
+        int getLineByAddr ( unsigned int addr ) const;
 
         /**
          * @brief
@@ -63,8 +63,8 @@ class DbgFileAvraLst : public DbgFile
          * @param[in] filename
          * @return
          */
-        virtual int getAddrByLine ( unsigned int line,
-                                    const std::string & filename ) const;
+        int getAddrByLine ( unsigned int line,
+                            const std::string & filename ) const;
 
     ////    Inline Private Operations    ////
     private:
