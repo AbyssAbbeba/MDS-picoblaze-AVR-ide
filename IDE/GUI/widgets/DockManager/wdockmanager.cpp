@@ -1,5 +1,5 @@
 /**
- * @brief
+ * @brief C++ file of WDockManager class
  * C++ Implementation: ...
  *
  * ...
@@ -16,6 +16,11 @@
 #include "wdockmanager.h"
 
 
+
+/**
+ * @brief Constructor. Inits docking and tabbar.
+ * @param mainWindow Parent window.
+ */
 WDockManager::WDockManager(MainForm *mainWindow)
 {
     wMainWindow = mainWindow;
@@ -43,6 +48,10 @@ WDockManager::WDockManager(MainForm *mainWindow)
 
 
 
+/**
+ * @brief Handles change of active CodeEdit (another CodeEdit recieves focus)
+ * @param editor New active editor
+ */
 void WDockManager::changeActiveCodeEdit(CodeEdit *editor)
 {
     if (this->activeCodeEdit != editor)
@@ -63,6 +72,10 @@ void WDockManager::changeActiveCodeEdit(CodeEdit *editor)
 }
 
 
+/**
+ * @brief Handles tab change of CodeEdit
+ * @param index Position of base CodeEdit in QList
+ */
 void WDockManager::changeCodeEditor(int index)
 {
     if (activeCodeEdit != NULL && index >= 0)
@@ -85,6 +98,12 @@ void WDockManager::changeCodeEditor(int index)
 }
 
 
+/**
+ * @brief
+ * @param
+ * @param
+ * @param
+ */
 void WDockManager::changeTabStatusSlot(QString name, QString path, bool changed)
 {
     //wTab->setTabText(wTab->indexOf(editor), name);
@@ -132,14 +151,14 @@ void WDockManager::setTabSaved()
 }
 
 
-QTextEdit* WDockManager::getCentralTextEdit()
+WTextEdit* WDockManager::getCentralTextEdit()
 {
     return activeCodeEdit->getTextEdit();
 }
 
 
 
-QTextEdit* WDockManager::getTabTextEdit(int index)
+WTextEdit* WDockManager::getTabTextEdit(int index)
 {
     return openCentralWidgets.at(index)->getCodeEdit()->getTextEdit();
 }
@@ -247,7 +266,9 @@ void WDockManager::addDockWidget(int code)
 {
     WDock *newWDock = new WDock(this, code, wMainWindow);
     if (getDockWidgetArea(newWDock->getArea())!=NULL)
+    {
         wMainWindow->tabifyDockWidget(getDockWidgetArea(newWDock->getArea()), newWDock->getQDockWidget());
+    }
     openDockWidgets.append(newWDock);
 }
 
@@ -340,6 +361,18 @@ void WDockManager::moveEditorsSlot(int from, int to)
     openCentralWidgets.swap(from, to);
 }
 
+
+void WDockManager::setCentralByName(QString fileName)
+{
+    for (int i = 0; i < this->getTabCount(); i++)
+    {
+        if (wTab->tabText(i) == fileName)
+        {
+            this->changeActiveCodeEdit(openCentralWidgets.at(i)->getCodeEdit());
+            wTab->setCurrentIndex(i);
+        }
+    }
+}
 
 
 /////

@@ -210,6 +210,7 @@ Project::Project(QFile *file, MainForm* mainWindow, ProjectMan *parent)
     errorFlag = ERR_OK;
     fileCount = 0;
     parentManager = parent;
+    parentWindow = mainWindow;
     prjPath = QFileInfo(*file).filePath();
     //nacteni ze souboru
     QDomDocument domDoc("MMProject");
@@ -326,6 +327,7 @@ Project::Project(QString name, QString path, QString arch, MainForm* mainWindow,
 {
     errorFlag = ERR_OK;
     parentManager = parent;
+    parentWindow = mainWindow;
 
     if (name != NULL)
     {
@@ -655,7 +657,7 @@ void Project::start()
     qDebug() << hexPath;
     std::string stdPath = hexPath.toUtf8().constData();
     //qDebug() << stdPath;
-    m_simControlUnit->start(stdPath, m_simControlUnit->COMPILER_SDCC, m_simControlUnit->DBGFILEID_HEX);
+    m_simControlUnit->start(stdPath, m_simControlUnit->COMPILER_GCC, m_simControlUnit->DBGFILEID_HEX);
 }
 
 
@@ -684,6 +686,10 @@ void Project::reset()
 void Project::step()
 {
     m_simControlUnit->step();
+    std::string *fileName;
+    int line = m_simControlUnit->getLineNumber(fileName);
+    parentWindow->getWDockManager()->setCentralByName(QString::fromStdString(*fileName));
+    parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(line);
 }
 
 

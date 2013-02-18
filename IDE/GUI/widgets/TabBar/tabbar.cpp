@@ -48,7 +48,7 @@ void TabBar::tabAdded()
 
 
 /**
- * @brief Handles tab moving.
+ * @brief Handles tab changing.
  */
 void TabBar::tabChanged(int index, bool changed)
 {
@@ -61,7 +61,7 @@ void TabBar::tabChanged(int index, bool changed)
 
 
 /**
- * @brief Swaps indexes in tab activity array.
+ * @brief Swaps indexes in tab status array (if textedit in tab was updated) when tab is moved.
  */
 void TabBar::tabStatsMoved(int from, int to)
 {
