@@ -80,9 +80,9 @@ void ProjectMan::addFile(QString path, QString name)
  * @param architecture target architecture of the new project
  * @param file xml (.mmp) file of the new project
  */
-void ProjectMan::addProject(QString name, QString path, QString architecture, QFile *file)
+void ProjectMan::addProject(QString name, QString path, QString architecture, LangType langType, QFile *file)
 {
-    Project *newProject = new Project(name, path, architecture, mainWindow, file, this);
+    Project *newProject = new Project(name, path, architecture, langType, mainWindow, file, this);
     //mainWindow->getWDockManager()->hideDockWidgetArea(0);
     mainWindow->addDockWidget(Qt::LeftDockWidgetArea, newProject->prjDockWidget);
     //mainWindow->getWDockManager()->showDockWidgetArea(0);
@@ -251,6 +251,10 @@ Project::Project(QFile *file, MainForm* mainWindow, ProjectMan *parent)
                             {
                                 architecture = xmlGeneralElement.attribute("architecture", "");
                             }
+                            else if (xmlGeneralElement.tagName() == "Language")
+                            {
+                                langType = (LangType)(xmlGeneralElement.attribute("language", "").toInt(NULL));
+                            }
                             xmlGeneralNode = xmlGeneralNode.nextSibling();
                         }
                     }
@@ -318,12 +322,13 @@ Project::Project(QFile *file, MainForm* mainWindow, ProjectMan *parent)
  * @brief Constructor. Creates a blank new project
  * @param name The name of the project
  * @param path The path to xml (.mmp) file
- * @param arch Architecture of the project
+ * @param arch Compiler option, architecture
+ * @param langType Compiler option, language
  * @param mainWindow Pointer to parent main window
  * @param file Opened file for xml (.mmp) stream
  * @param parent Pointer to parent (project manager)
  */
-Project::Project(QString name, QString path, QString arch, MainForm* mainWindow, QFile *file, ProjectMan *parent)
+Project::Project(QString name, QString path, QString arch, LangType lang, MainForm* mainWindow, QFile *file, ProjectMan *parent)
 {
     errorFlag = ERR_OK;
     parentManager = parent;
@@ -351,6 +356,7 @@ Project::Project(QString name, QString path, QString arch, MainForm* mainWindow,
     fileCount=0;
 
     architecture = arch;
+    this->langType = lang;
     
     //a zapsani do souboru
     QDomDocument domDoc("MMProject");
@@ -364,6 +370,9 @@ Project::Project(QString name, QString path, QString arch, MainForm* mainWindow,
     QDomElement xmlArch = domDoc.createElement("Architecture");
     xmlArch.setAttribute("architecture", arch);
     xmlGeneral.appendChild(xmlArch);
+    QDomElement xmlLang = domDoc.createElement("Language");
+    xmlLang.setAttribute("language", lang);
+    xmlGeneral.appendChild(xmlLang);
     xmlRoot.appendChild(xmlGeneral);
 
     QDomElement xmlFiles = domDoc.createElement("Files");
@@ -652,12 +661,20 @@ void Project::setupSim()
  */
 void Project::start()
 {
-    
-    QString hexPath = prjPath.section('/',0, -2)+ "/build/" + mainFileName.section('.',0,-2) + ".hex";
-    qDebug() << hexPath;
-    std::string stdPath = hexPath.toUtf8().constData();
-    //qDebug() << stdPath;
-    m_simControlUnit->start(stdPath, m_simControlUnit->COMPILER_GCC, m_simControlUnit->DBGFILEID_HEX);
+    if (langType == LANG_ASM)
+    {
+        QString hexPath = prjPath.section('/',0, -2) + "/build/" + mainFileName.section('.',0,-2);
+        qDebug() << "ASM:" << hexPath;
+        std::string stdPath = hexPath.toUtf8().constData();
+        m_simControlUnit->start(stdPath, m_simControlUnit->COMPILER_AVRA, m_simControlUnit->DBGFILEID_HEX);
+    }
+    else if (langType == LANG_C)
+    {
+        QString hexPath = prjPath.section('/',0, -2) + "/build/" + mainFileName.section('.',0,-2);
+        qDebug() << "C:" << hexPath;
+        std::string stdPath = hexPath.toUtf8().constData();
+        m_simControlUnit->start(stdPath, m_simControlUnit->COMPILER_GCC, m_simControlUnit->DBGFILEID_HEX);
+    }
 }
 
 
