@@ -13,7 +13,7 @@
  */
 // =============================================================================
 
-#include "DbgFile/DbgFileAvrCoff.h"
+#include "DbgFile/DbgFileAvraLst.h"
 
 #include <cstdlib>
 #include <iostream>
@@ -48,10 +48,10 @@ int clean_suite0()
 
 void test_0()
 {
-    DbgFileAvrCoff coff;
+    DbgFileAvraLst avraLst;
     try
     {
-        coff.openFile("coff_test0.cof");
+        avraLst.openFile("avra_lst_test0.lst");
     }
     catch ( DbgFile::DbgFileException & e )
     {
