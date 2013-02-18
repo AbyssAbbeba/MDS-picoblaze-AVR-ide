@@ -1,0 +1,25 @@
+
+AVRA   Ver. 1.3.0 avr8_test0.asm Wed Feb  6 15:54:35 2013
+
+
+          .device atmega8
+          .cseg
+         
+          lbl0:
+         
+C:000000 cfff          rjmp    $
+C:000001 9baf          sbis    0x15, 0x7
+         
+          .include "inc.asm"
+         
+C:000002 cffd      	rjmp	$
+         
+C:000003 0000      	nop
+
+
+Segment usage:
+   Code      :         4 words (8 bytes)
+   Data      :         0 bytes
+   EEPROM    :         0 bytes
+
+Assembly completed with no errors.

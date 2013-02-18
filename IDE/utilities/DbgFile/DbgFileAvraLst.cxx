@@ -140,6 +140,7 @@ inline void DbgFileAvraLst::loadFile ( const std::string & filename )
             m_lineRecords.push_back(LineRecord(0, lineNumber, 0, 0, address));
         }
     }
+    m_numberOfLines.push_back(lineNumber);
 
     file.close();
     generateLineAddressMaps();
