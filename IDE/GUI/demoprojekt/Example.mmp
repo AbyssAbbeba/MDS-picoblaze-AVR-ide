@@ -3,12 +3,13 @@
  <General>
   <Name name="Example"/>
   <Architecture architecture="ATmega8A"/>
+  <Language language="0"/>
  </General>
  <Files>
   <File path="a.c" name="a.c"/>
   <File path="a.asm" name="a.asm"/>
  </Files>
- <Mainfile path="a.c" name="a.c"/>
+ <Mainfile path="a.asm" name="a.asm"/>
  <Simulator/>
  <Compiler/>
 </MMProject>
