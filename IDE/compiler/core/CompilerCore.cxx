@@ -53,6 +53,31 @@ bool CompilerCore::compile ( LangId lang,
 {
     resetCompilerCore();
 
+    if ( true == setupSemanticAnalyser(lang, arch, opts, filename) )
+    {
+        return startLexerAndParser(lang, arch, opts, filename);
+    }
+
+    return false;
+}
+
+inline bool CompilerCore::setupSemanticAnalyser ( LangId lang,
+                                                  TargetArch arch,
+                                                  CompilerOptions * const opts,
+                                                  const std::string & filename )
+{
+    m_semanticAnalyser = new AsmAvr8SemanticAnalyser(opts, filename);
+    m_semanticAnalyser = new AsmPic8SemanticAnalyser(opts, filename);
+    m_semanticAnalyser = new AsmMcs51SemanticAnalyser(opts, filename);
+    return m_success;
+}
+
+inline bool CompilerCore::startLexerAndParser ( LangId lang,
+                                                TargetArch arch,
+                                                CompilerOptions * const opts,
+                                                const std::string & filename )
+{
+
     FILE * sourceFile = fileOpen(filename.c_str());
     yyscan_t yyscanner; // Pointer to the lexer context
 
@@ -87,24 +112,6 @@ bool CompilerCore::compile ( LangId lang,
 
     fclose(sourceFile);
     return m_success;
-}
-
-inline bool CompilerCore::setupSemanticAnalyser ( LangId lang,
-                                                  TargetArch arch,
-                                                  CompilerOptions * const opts,
-                                                  const std::string & filename )
-{
-    m_semanticAnalyser = new AsmAvr8SemanticAnalyser(opts, filename);
-    m_semanticAnalyser = new AsmPic8SemanticAnalyser(opts, filename);
-    m_semanticAnalyser = new AsmMcs51SemanticAnalyser(opts, filename);
-}
-
-inline bool CompilerCore::startLexerAndParser ( LangId lang,
-                                                TargetArch arch,
-                                                CompilerOptions * const opts,
-                                                const std::string & filename )
-{
-    
 }
 
 void CompilerCore::parserMessage ( SourceLocation location,
