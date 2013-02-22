@@ -140,7 +140,7 @@ std::cout << "\t>>> HEADER = '" << line << "'\n";
         {
             line[8] = '\0'; // trim to 8 characters
             int address = int(strtol(checkHexNumber ( line + 2 ), NULL, 16));
-std::cout << "\t>>> LINE REC. = '" << lineNumber << ":address'\n";
+std::cout << "\t>>> LINE REC. = '" << lineNumber << ":"<< address << "'\n";
             m_lineRecords.push_back(LineRecord(0, lineNumber, 0, 0, address));
         }
     }
