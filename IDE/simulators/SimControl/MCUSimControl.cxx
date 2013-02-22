@@ -225,6 +225,7 @@ int MCUSimControl::getLineNumber ( std::string * fileName )
 {
     if ( false == initialized() )
     {
+qDebug("Mega-xXx: not initialized!");
         if ( NULL != fileName )
         {
             *fileName = "";
@@ -236,6 +237,7 @@ int MCUSimControl::getLineNumber ( std::string * fileName )
     int idx = m_dbgFile->getLineByAddr(pc);
     if ( -1 == idx )
     {
+qDebug("Mega-xXx: idx = -1!");
         if ( NULL != fileName )
         {
             *fileName = "";
@@ -244,6 +246,7 @@ int MCUSimControl::getLineNumber ( std::string * fileName )
     }
     else
     {
+qDebug("Mega-xXx: GooD!");
         int fileNumber = m_dbgFile->getLineRecords().at(idx).m_fileNumber;
         if ( NULL != fileName )
         {

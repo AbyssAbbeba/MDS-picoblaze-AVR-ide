@@ -63,10 +63,6 @@ bool CompilerCore::compile ( LangId lang,
         return false;
     }
 
-    m_semanticAnalyser = new AsmAvr8SemanticAnalyser(opts, filename);
-    m_semanticAnalyser = new AsmPic8SemanticAnalyser(opts, filename);
-    m_semanticAnalyser = new AsmMcs51SemanticAnalyser(opts, filename);
-
     switch ( arch )
     {
         case TA_AVR8:
@@ -98,7 +94,9 @@ inline bool CompilerCore::setupSemanticAnalyser ( LangId lang,
                                                   CompilerOptions * const opts,
                                                   const std::string & filename )
 {
-
+    m_semanticAnalyser = new AsmAvr8SemanticAnalyser(opts, filename);
+    m_semanticAnalyser = new AsmPic8SemanticAnalyser(opts, filename);
+    m_semanticAnalyser = new AsmMcs51SemanticAnalyser(opts, filename);
 }
 
 inline bool CompilerCore::startLexerAndParser ( LangId lang,
