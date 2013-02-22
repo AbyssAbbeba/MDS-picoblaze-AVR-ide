@@ -156,6 +156,32 @@ class CompilerCore : public CompilerBase,
          */
         inline void resetCompilerCore();
 
+        /**
+         * @brief
+         * @param[in] lang
+         * @param[in] arch
+         * @param[in] opts
+         * @param[in] filename
+         * @return
+         */
+        inline bool CompilerCore::setupSemanticAnalyser ( LangId lang,
+                                                          TargetArch arch,
+                                                          CompilerOptions * const opts,
+                                                          const std::string & filename );
+
+        /**
+         * @brief
+         * @param[in] lang
+         * @param[in] arch
+         * @param[in] opts
+         * @param[in] filename
+         * @return
+         */
+        inline bool CompilerCore::startLexerAndParser ( LangId lang,
+                                                        TargetArch arch,
+                                                        CompilerOptions * const opts,
+                                                        const std::string & filename );
+
     ////    Private Attributes    ////
     private:
         /**

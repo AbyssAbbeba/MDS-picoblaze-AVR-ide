@@ -246,7 +246,7 @@ inline void DbgFileAvraLst::generateLineAddressMaps()
     }
 
 
-    for ( unsigned int i = m_lineRecords.size(); i < m_lineRecords.size(); i++ )
+    for ( unsigned int i = 0; i < m_lineRecords.size(); i++ )
     {
 std::cout << "\t\t>>> m_addrToLineMap [ "<<m_lineRecords[i].m_address <<" ] = "<<i<<";\n";
         m_addrToLineMap [ m_lineRecords[i].m_address ] = i;
