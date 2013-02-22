@@ -203,6 +203,7 @@ bool MCUSimControl::start ( const std::string & filename,
     {
         case MCUSim::ARCH_AVR8:
             dynamic_cast<AVR8ProgramMemory*>(m_simulator->getSubsys(MCUSim::Subsys::ID_MEM_CODE))->loadDataFile(dataFile);
+            break;
         case MCUSim::ARCH_PIC8:
             dynamic_cast<PIC8ProgramMemory*>(m_simulator->getSubsys(MCUSim::Subsys::ID_MEM_CODE))->loadDataFile(dataFile);
             break;

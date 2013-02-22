@@ -1,33 +1,33 @@
+# ==============================================================================
+#
+# Utility for working with USB devices.
+#
+# (C) copyright 2013 Moravia Microsystems, s.r.o.
+#
+# ==============================================================================
+
 
 # ------------------------------------------------------------------------------
 # GENERAL OPTIONS
 # ------------------------------------------------------------------------------
 
 # Set project name
-project(usb_util)
+project ( usb_util )
 
 # Set the minimum required version of CMake
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required ( VERSION 2.8 )
 
 # Create verbose makefiles if on
-set(CMAKE_VERBOSE_MAKEFILE OFF)
-
-# Set default build type to Debug
-if ( NOT CMAKE_BUILD_TYPE )
-  set ( CMAKE_BUILD_TYPE Debug CACHE STRING
-        "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel."
-        FORCE )
-endif ( NOT CMAKE_BUILD_TYPE )
+set ( CMAKE_VERBOSE_MAKEFILE OFF )
 
 
 # ------------------------------------------------------------------------------
 # COMPILATION OPTIONS
 # ------------------------------------------------------------------------------
 
-# Include Qt4's XML module
-find_package(Qt4 REQUIRED)
-set(QT_USE_QTXML 1)
-include(${QT_USE_FILE})
+# Added for compatibility with Microsoft Windows OS
+link_directories ( "${CMAKE_CURRENT_BINARY_DIR}" )
+include_directories ( "${CMAKE_CURRENT_BINARY_DIR}" )
 
 ## Add switches to compiler command line
  # -pipe       : Use pipes rather than temporary files for communication between the various stages of compilation.
@@ -35,8 +35,7 @@ include(${QT_USE_FILE})
  # -O1         : Optimization, level 1.
 add_definitions(-pipe -std=c++0x -O1)
 
-add_executable(${PROJECT_NAME}
-	main.cxx
-)
+add_executable ( ${PROJECT_NAME}
+                 main.cxx )
 
-target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} usb-1.0)
+target_link_libraries ( ${PROJECT_NAME} ${QT_LIBRARIES} usb-1.0 )

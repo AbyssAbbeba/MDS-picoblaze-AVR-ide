@@ -2,7 +2,15 @@
 #include <libusb-1.0/libusb.h>
 #include <cstring>
 
-int main() {
+int main ( int argc, char ** argv )
+{
+    if ( 2 != argc )
+    {
+        std::cerr << "Usage:" << std::endl;
+        std::cerr << "  " << argv[0] << " \"string_to_send_to_the_device\"" << std::endl;
+        return 1;
+    }
+
     std::cout << "libusb-1.0" << std::endl;
 
     // Structure representing a libusb session
@@ -141,7 +149,7 @@ int main() {
 
                 for ( int epIndex = 0; epIndex < interface_descriptor.bNumEndpoints; epIndex++ )
                 {
-                    std::cout << "\t\t\t\t\tEnpoint #" << epIndex << ":" << std::endl;
+                    std::cout << "\t\t\t\t\tEnpoint #" << (epIndex+1) << ":" << std::endl;
                     // Size of this descriptor (in bytes)
                     std::cout << "\t\t\t\t\t\tbLength = " << (int)interface_descriptor.endpoint[epIndex].bLength << std::endl;
                     // Descriptor type.
@@ -172,9 +180,9 @@ int main() {
         // Open the device and obtain a device handle.
         std::cout << "\tOpening the device:" << std::endl;
 
-        int length = 60;
+        int length = strlen(argv[1]);
         unsigned char * data = new unsigned char [ length ];
-        memcpy(data, "0123456789001234567890123456789012345678901234567890123456789", length);
+        memcpy(data, argv[1], length);
         int transferred = -1;
         const int interface = 0;
         const unsigned char endpoint = 2;
@@ -249,7 +257,7 @@ int main() {
                 {
                     case 0: // success
                     {
-                        int maxPacketSize = libusb_get_max_packet_size(dev, endpoint);
+                        int maxPacketSize = libusb_get_max_packet_size(dev, 129);
                         switch ( maxPacketSize )
                         {
                             case LIBUSB_ERROR_NOT_FOUND: // if the endpoint does not exist
@@ -259,12 +267,35 @@ int main() {
                                 std::cout << "\t\tFAILURE: other failure." << std::endl;
                                 break;
                             default:
-                                std::cout << "\t\t\tmaxPacketSize = " << maxPacketSize << std::endl;
+                                std::cout << "\t\t\tmaxPacketSize (for endpoint 1) = " << maxPacketSize << std::endl;
                         }
-                        switch ( libusb_interrupt_transfer (handle, endpoint, data, length, &transferred, 100) )
+                        maxPacketSize = libusb_get_max_packet_size(dev, 2);
+                        switch ( maxPacketSize )
+                        {
+                            case LIBUSB_ERROR_NOT_FOUND: // if the endpoint does not exist
+                                std::cout << "\t\tFAILURE: the endpoint does not exist." << std::endl;
+                                break;
+                            case LIBUSB_ERROR_OTHER: // on other failure
+                                std::cout << "\t\tFAILURE: other failure." << std::endl;
+                                break;
+                            default:
+                                std::cout << "\t\t\tmaxPacketSize (for endpoint 2) = " << maxPacketSize << std::endl;
+                        }
+                        std::cout << std::endl;
+                        std::cout << "\t>>> Opening pipe on endpoint 2 in attempt to send the given data." << std::endl;
+                        switch ( libusb_interrupt_transfer (handle, 2, data, length, &transferred, 100) )
                         {
                             case 0: // on success (and populates transferred)
-                                std::cout << ">>> SUCCESS <<<" << std::endl;
+                                std::cout << "\t\t>>> SUCCESS <<<" << std::endl;
+                                std::cout << "\t\t\tSent data:" << std::endl;
+                                std::cout << "\t\t\t  ADDR\tHEX\tDEC\tASCII" << std::endl;
+                                for ( int x = 0; x < transferred; x++ )
+                                {
+                                    std::cout << "\t\t\t  [" << x << "]:\t"
+                                              << "\t" << std::hex << (int)data[x]
+                                              << "\t" << std::dec << (int)data[x]
+                                              << "\t'" << data[x] << "'" << std::endl;
+                                }
                                 break;
                             case LIBUSB_ERROR_TIMEOUT: // the transfer timed out
                                 std::cout << "\t\tFAILURE: transfer timed out." << std::endl;
@@ -285,10 +316,21 @@ int main() {
                                 std::cout << "\t\tFAILURE: other failure." << std::endl;
                                 break;
                         }
+                        std::cout << std::endl;
+                        std::cout << "\t>>> Opening pipe on endpoint 1 in attempt to receive data of the same size from the device." << std::endl;
                         switch ( libusb_interrupt_transfer (handle, 129, data, length, &transferred, 100) )
                         {
                             case 0: // on success (and populates transferred)
-                                std::cout << ">>> SUCCESS <<<" << std::endl;
+                                std::cout << "\t\t>>> SUCCESS <<<" << std::endl;
+                                std::cout << "\t\t\tReceived data:" << std::endl;
+                                std::cout << "\t\t\t  ADDR\tHEX\tDEC\tASCII" << std::endl;
+                                for ( int x = 0; x < transferred; x++ )
+                                {
+                                    std::cout << "\t\t\t  [" << x << "]:\t"
+                                              << "\t" << std::hex << (int)data[x]
+                                              << "\t" << std::dec << (int)data[x]
+                                              << "\t'" << data[x] << "'" << std::endl;
+                                }
                                 break;
                             case LIBUSB_ERROR_TIMEOUT: // the transfer timed out
                                 std::cout << "\t\tFAILURE: transfer timed out." << std::endl;
@@ -310,7 +352,7 @@ int main() {
                                 break;
                         }
 
-                        std::cout << "\t\tlibusb_release_interface(handle, interface)" << std::endl;
+                        std::cout << "( INFO: libusb_release_interface(handle, interface) )" << std::endl;
                         libusb_release_interface(handle, interface);
                         break;
                     }
@@ -349,7 +391,7 @@ int main() {
                 break;
         }
 
-        std::cout << "\tlibusb_unref_device(dev)" << std::endl;
+        std::cout << "( INFO: libusb_unref_device(dev) )" << std::endl;
         libusb_unref_device(dev);
     }
 
