@@ -63,10 +63,6 @@ bool CompilerCore::compile ( LangId lang,
         return false;
     }
 
-    if ( NULL != m_semanticAnalyser )
-    {
-        delete m_semanticAnalyser;
-    }
     m_semanticAnalyser = new AsmAvr8SemanticAnalyser(opts, filename);
     m_semanticAnalyser = new AsmPic8SemanticAnalyser(opts, filename);
     m_semanticAnalyser = new AsmMcs51SemanticAnalyser(opts, filename);
@@ -97,7 +93,21 @@ bool CompilerCore::compile ( LangId lang,
     return m_success;
 }
 
-inline bool CompilerCore::parserMessage
+inline bool CompilerCore::setupSemanticAnalyser ( LangId lang,
+                                                  TargetArch arch,
+                                                  CompilerOptions * const opts,
+                                                  const std::string & filename )
+{
+
+}
+
+inline bool CompilerCore::startLexerAndParser ( LangId lang,
+                                                TargetArch arch,
+                                                CompilerOptions * const opts,
+                                                const std::string & filename )
+{
+    
+}
 
 void CompilerCore::parserMessage ( SourceLocation location,
                                    MessageType type,
@@ -173,6 +183,10 @@ inline void CompilerCore::resetCompilerCore()
     {
         delete m_rootStatement;
         m_rootStatement = NULL;
+    }
+    if ( NULL != m_semanticAnalyser )
+    {
+        delete m_semanticAnalyser;
     }
 
     m_fileNameStack.clear();
