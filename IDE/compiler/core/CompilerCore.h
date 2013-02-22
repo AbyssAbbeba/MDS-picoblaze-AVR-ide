@@ -166,6 +166,11 @@ class CompilerCore : public CompilerBase,
         /**
          * @brief
          */
+        CompilerSemanticInterface * m_semanticAnalyser;
+
+        /**
+         * @brief
+         */
         CompilerStatement * m_rootStatement;
 
         /**
