@@ -142,6 +142,11 @@ std::cout << "\t>>> HEADER = '" << line << "'\n";
             int address = int(strtol(checkHexNumber ( line + 2 ), NULL, 16));
 std::cout << "\t>>> LINE REC. = '" << lineNumber << ":"<< address << "'\n";
             m_lineRecords.push_back(LineRecord(0, lineNumber, 0, 0, address));
+
+            if ( address > m_lastAddress )
+            {
+                m_lastAddress = address;
+            }
         }
     }
     m_numberOfLines.push_back(lineNumber);
