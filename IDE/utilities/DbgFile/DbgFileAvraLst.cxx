@@ -20,6 +20,8 @@
 #include <cstring>
 #include <cctype>
 
+#include <iostream>
+
 DbgFileAvraLst::DbgFileAvraLst()
 {
     m_addrToLineMap = NULL;
@@ -98,6 +100,8 @@ inline void DbgFileAvraLst::loadFile ( const std::string & filename )
             throw DbgFileException(DbgFileException::IO_ERROR, "Read failed, file: " + filename);
         }
 
+std::cout << "lineNumber = " << lineNumber << ", line = '" << line << "'\n";
+
         // Skip empty lines
         if ( '\0' == line[0] )
         {
@@ -111,7 +115,7 @@ inline void DbgFileAvraLst::loadFile ( const std::string & filename )
             size_t verStrPos = header.find("Ver. ");
             size_t fileNamePosStart = std::string::npos;
             size_t fileNamePosEnd = std::string::npos;
-
+std::cout << "\t>>> HEADER = '" << line << "'\n";
             // Check whether there is "AVRA" string and "Ver. " string present in the LST file header
             if ( ( 0 != header.find("AVRA") ) || ( std::string::npos == verStrPos ) )
             {
@@ -136,7 +140,7 @@ inline void DbgFileAvraLst::loadFile ( const std::string & filename )
         {
             line[8] = '\0'; // trim to 8 characters
             int address = int(strtol(checkHexNumber ( line + 2 ), NULL, 16));
-
+std::cout << "\t>>> LINE REC. = '" << lineNumber << ":address'\n";
             m_lineRecords.push_back(LineRecord(0, lineNumber, 0, 0, address));
         }
     }

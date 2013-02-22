@@ -29,12 +29,17 @@
 CompilerCore::CompilerCore ( CompilerMsgInterface * msgInterface )
                            : m_msgInterface(msgInterface)
 {
+    m_semanticAnalyser = NULL;
     m_rootStatement = NULL;
     m_fileNumber = -1;
 }
 
 CompilerCore::~CompilerCore()
 {
+    if ( NULL != m_semanticAnalyser )
+    {
+        delete m_semanticAnalyser;
+    }
     if ( NULL != m_rootStatement )
     {
         m_rootStatement->completeDelete();
@@ -57,6 +62,14 @@ bool CompilerCore::compile ( LangId lang,
                                   MT_ERROR );
         return false;
     }
+
+    if ( NULL != m_semanticAnalyser )
+    {
+        delete m_semanticAnalyser;
+    }
+    m_semanticAnalyser = new AsmAvr8SemanticAnalyser(opts, filename);
+    m_semanticAnalyser = new AsmPic8SemanticAnalyser(opts, filename);
+    m_semanticAnalyser = new AsmMcs51SemanticAnalyser(opts, filename);
 
     switch ( arch )
     {
@@ -84,6 +97,8 @@ bool CompilerCore::compile ( LangId lang,
     return m_success;
 }
 
+inline bool CompilerCore::parserMessage
+
 void CompilerCore::parserMessage ( SourceLocation location,
                                    MessageType type,
                                    const std::string & text )
@@ -93,7 +108,8 @@ void CompilerCore::parserMessage ( SourceLocation location,
     std::string msgType;
     switch ( type )
     {
-        case MT_GENERAL: break;
+        case MT_GENERAL:
+            break;
         case MT_ERROR:
             msgType = QObject::tr("error: ").toStdString();
             m_success = false;
@@ -245,4 +261,14 @@ void CompilerCore::syntaxAnalysisComplete ( CompilerStatement * codeTree )
         m_rootStatement = m_rootStatement->first();
     }
     std::cout << m_rootStatement;
+
+    if ( NULL == m_semanticAnalyser )
+    {
+        m_msgInterface->message ( QObject::tr ( "Semantic analyser missing!" ), MT_ERROR );
+        return;
+    }
+    else
+    {
+        m_semanticAnalyser->process(codeTree);
+    }
 }
