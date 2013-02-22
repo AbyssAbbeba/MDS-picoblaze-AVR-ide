@@ -152,6 +152,7 @@ std::cout << "\t>>> LINE REC. = '" << lineNumber << ":"<< address << "'\n";
 
 int DbgFileAvraLst::getLineByAddr ( unsigned int addr ) const
 {
+std::cout << "DbgFileAvraLst::getLineByAddr("<<addr<<"); // m_lastAddress = " << m_lastAddress << "\n";
     if ( (int)(addr) > m_lastAddress )
     {
         return -1;
