@@ -1,0 +1,37 @@
+digraph G
+{
+  edge [fontname="FreeSans.ttf",fontsize=10,labelfontname="FreeSans.ttf",labelfontsize=10];
+  node [fontname="FreeSans.ttf",fontsize=10,shape=record];
+  rankdir=LR;
+  Node1 [label="usb_process_request",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled" fontcolor="black"];
+  Node1 -> Node2 [color="midnightblue",fontsize=10,style="solid",fontname="FreeSans.ttf"];
+  Node2 [label="usb_clear_feature",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$a00044.html#1cd960f972d60e99b6f9c052018c4d85",tooltip="This function manages the SET FEATURE request."];
+  Node1 -> Node3 [color="midnightblue",fontsize=10,style="solid",fontname="FreeSans.ttf"];
+  Node3 [label="usb_get_configuration",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$a00044.html#e92ef962c797a8ef223beaa22f3f020a",tooltip="This function manages the GET CONFIGURATION request."];
+  Node1 -> Node4 [color="midnightblue",fontsize=10,style="solid",fontname="FreeSans.ttf"];
+  Node4 [label="usb_get_descriptor",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$a00044.html#2370f7b0fe3f3ddb58c7750725849e7a",tooltip="This function manages the GET DESCRIPTOR request."];
+  Node4 -> Node5 [color="midnightblue",fontsize=10,style="solid",fontname="FreeSans.ttf"];
+  Node5 [label="bin_to_ascii",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$a00044.html#f8f098ba46fe43ac9b2e5ff35799ed9e",tooltip="This function is used to convert a 4 bit number into an ascii character 5 =&gt; &#39;5&#39;..."];
+  Node4 -> Node6 [color="midnightblue",fontsize=10,style="solid",fontname="FreeSans.ttf"];
+  Node6 [label="usb_user_get_descriptor",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$a00042.html#4c69acf3759419bc80ee97e520bc2a1e",tooltip="This function fills the global descriptor."];
+  Node1 -> Node7 [color="midnightblue",fontsize=10,style="solid",fontname="FreeSans.ttf"];
+  Node7 [label="usb_get_interface",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$a00044.html#fff6d8ee7bf9db2927816093ebf38065",tooltip="This function manages the SETUP_GET_INTERFACE request."];
+  Node7 -> Node8 [color="midnightblue",fontsize=10,style="solid",fontname="FreeSans.ttf"];
+  Node8 [label="usb_user_interface_get",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$a00042.html#1f33268cc6f235cb19f318f2ad43ed70"];
+  Node1 -> Node9 [color="midnightblue",fontsize=10,style="solid",fontname="FreeSans.ttf"];
+  Node9 [label="usb_get_status",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$a00044.html#d73e65ef060caa9facf305d36134c222",tooltip="This function manages the GET STATUS request."];
+  Node1 -> Node10 [color="midnightblue",fontsize=10,style="solid",fontname="FreeSans.ttf"];
+  Node10 [label="usb_set_address",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$a00044.html#679a1cae6c591cd1083ca444b0c0bd4f",tooltip="This function manages the SET ADDRESS request."];
+  Node1 -> Node11 [color="midnightblue",fontsize=10,style="solid",fontname="FreeSans.ttf"];
+  Node11 [label="usb_set_configuration",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$a00044.html#f047a4b40a02a7d914285ccf4427d5e5",tooltip="This function manages the SET CONFIGURATION request."];
+  Node11 -> Node12 [color="midnightblue",fontsize=10,style="solid",fontname="FreeSans.ttf"];
+  Node12 [label="usb_user_endpoint_init",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$a00042.html#b5961b9c9678ef0040178b3ae648868b"];
+  Node1 -> Node13 [color="midnightblue",fontsize=10,style="solid",fontname="FreeSans.ttf"];
+  Node13 [label="usb_set_feature",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$a00044.html#b917bc6f4e78c0b9cf2ce83c31b56900",tooltip="This function manages the SET FEATURE request."];
+  Node1 -> Node14 [color="midnightblue",fontsize=10,style="solid",fontname="FreeSans.ttf"];
+  Node14 [label="usb_set_interface",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$a00044.html#297a20012be192881328104df398c6bb",tooltip="This function manages the SETUP_SET_INTERFACE request."];
+  Node14 -> Node15 [color="midnightblue",fontsize=10,style="solid",fontname="FreeSans.ttf"];
+  Node15 [label="usb_user_interface_reset",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$a00042.html#c6b899e8943048691c79b78c48d53951"];
+  Node1 -> Node16 [color="midnightblue",fontsize=10,style="solid",fontname="FreeSans.ttf"];
+  Node16 [label="usb_user_read_request",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$a00042.html#d561daf187c11aa8679aa559ac13e322",tooltip="This function checks the specific request and if known then processes it"];
+}
