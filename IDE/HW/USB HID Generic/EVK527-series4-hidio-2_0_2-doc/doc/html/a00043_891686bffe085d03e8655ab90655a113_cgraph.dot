@@ -1,0 +1,19 @@
+digraph G
+{
+  edge [fontname="FreeSans.ttf",fontsize=10,labelfontname="FreeSans.ttf",labelfontsize=10];
+  node [fontname="FreeSans.ttf",fontsize=10,shape=record];
+  rankdir=LR;
+  Node1 [label="usb_user_read_request",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled" fontcolor="black"];
+  Node1 -> Node2 [color="midnightblue",fontsize=10,style="solid",fontname="FreeSans.ttf"];
+  Node2 [label="hid_get_hid_descriptor",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$a00042.html#9f66cead40475ddc3eb6fdf632635f15"];
+  Node1 -> Node3 [color="midnightblue",fontsize=10,style="solid",fontname="FreeSans.ttf"];
+  Node3 [label="hid_get_report_descriptor",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$a00042.html#b57bd4b7c38c1813d985e5a3fd5fc967"];
+  Node1 -> Node4 [color="midnightblue",fontsize=10,style="solid",fontname="FreeSans.ttf"];
+  Node4 [label="usb_hid_get_idle",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$a00042.html#7eba6a0b4963b898f3ce4de4abccc84b"];
+  Node1 -> Node5 [color="midnightblue",fontsize=10,style="solid",fontname="FreeSans.ttf"];
+  Node5 [label="usb_hid_set_idle",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$a00042.html#54fd7c9be9ba5d20673828ba395053a6"];
+  Node1 -> Node6 [color="midnightblue",fontsize=10,style="solid",fontname="FreeSans.ttf"];
+  Node6 [label="usb_hid_set_report_feature",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$a00042.html#c32ec3f6eea0988a35c1bee0dd9e2721"];
+  Node1 -> Node7 [color="midnightblue",fontsize=10,style="solid",fontname="FreeSans.ttf"];
+  Node7 [label="usb_hid_set_report_ouput",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$a00042.html#534260345508b4b448f44c65680640b0"];
+}

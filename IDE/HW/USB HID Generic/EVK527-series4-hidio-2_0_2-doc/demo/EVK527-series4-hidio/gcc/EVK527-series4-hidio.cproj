@@ -1,0 +1,101 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectVersion>5.1</ProjectVersion>
+    <ToolchainName>com.Atmel.AVRGCC8</ToolchainName>
+    <ProjectGuid>978a6666-3271-44b7-aa49-75ec74ddf851</ProjectGuid>
+    <avrdevice>atmega32u4</avrdevice>
+    <avrdeviceseries>none</avrdeviceseries>
+    <AvrProjectType>Importer</AvrProjectType>
+    <OutputType>Executable</OutputType>
+    <Language>C</Language>
+    <OutputFileName>EVK527-series4-hidio</OutputFileName>
+    <OutputFileExtension>.elf</OutputFileExtension>
+    <OutputDirectory>$(MSBuildProjectDirectory)\$(Configuration)</OutputDirectory>
+    <ToolchainFlavour>Native</ToolchainFlavour>
+    <avrtool />
+    <AsfVersion>2.11.1</AsfVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'default' ">
+    <OutputPath>bin\default\</OutputPath>
+    <ToolchainSettings>
+      <AvrGcc xmlns="">
+        <avrgcc.compiler.directories.IncludePaths>
+          <ListValues>
+            <Value>..\..\conf</Value>
+            <Value>..\..\..\..</Value>
+            <Value>..\..\..\..\..\common</Value>
+            <Value>..\..</Value>
+          </ListValues>
+        </avrgcc.compiler.directories.IncludePaths>
+        <avrgcc.compiler.optimization.level>Optimize for size (-Os)</avrgcc.compiler.optimization.level>
+        <avrgcc.compiler.warnings.AllWarnings>true</avrgcc.compiler.warnings.AllWarnings>
+        <avrgcc.compiler.miscellaneous.OtherFlags>-gdwarf-2 -fsigned-char </avrgcc.compiler.miscellaneous.OtherFlags>
+        <avrgcc.linker.memorysettings.InitialStack />
+        <avrgcc.assembler.general.AssemblerFlags>-Wall -gdwarf-2 -Os -fsigned-char</avrgcc.assembler.general.AssemblerFlags>
+        <avrgcc.assembler.general.IncludePaths>
+          <ListValues>
+            <Value>..\..\conf</Value>
+            <Value>..\..\..\..</Value>
+            <Value>..\..\..\..\..\common</Value>
+            <Value>..\..</Value>
+          </ListValues>
+        </avrgcc.assembler.general.IncludePaths>
+      </AvrGcc>
+    </ToolchainSettings>
+    <UsesExternalMakeFile>False</UsesExternalMakeFile>
+    <ExternalMakeFilePath>C:\Users\Uživatel\Desktop\MMsystems\GENERIC HID\USB HID Generic\EVK527-series4-hidio-2_0_2-doc\demo\EVK527-series4-hidio\gcc\Makefile</ExternalMakeFilePath>
+  </PropertyGroup>
+  <Import Project="$(AVRSTUDIO_EXE_PATH)\\Vs\\Compiler.targets" />
+  <ItemGroup>
+    <Compile Include="..\main.c">
+      <SubType>compile</SubType>
+      <Link>main.c</Link>
+    </Compile>
+    <Compile Include="..\..\..\modules\usb\device_chap9\usb_standard_request.c">
+      <SubType>compile</SubType>
+      <Link>usb_standard_request.c</Link>
+    </Compile>
+    <Compile Include="..\..\..\modules\usb\usb_task.c">
+      <SubType>compile</SubType>
+      <Link>usb_task.c</Link>
+    </Compile>
+    <Compile Include="..\..\..\modules\scheduler\scheduler.c">
+      <SubType>compile</SubType>
+      <Link>scheduler.c</Link>
+    </Compile>
+    <Compile Include="..\..\..\lib_mcu\util\start_boot.c">
+      <SubType>compile</SubType>
+      <Link>start_boot.c</Link>
+    </Compile>
+    <Compile Include="..\usb_descriptors.c">
+      <SubType>compile</SubType>
+      <Link>usb_descriptors.c</Link>
+    </Compile>
+    <Compile Include="..\..\..\modules\usb\device_chap9\usb_device_task.c">
+      <SubType>compile</SubType>
+      <Link>usb_device_task.c</Link>
+    </Compile>
+    <Compile Include="..\..\..\lib_mcu\usb\usb_drv.c">
+      <SubType>compile</SubType>
+      <Link>usb_drv.c</Link>
+    </Compile>
+    <Compile Include="..\usb_specific_request.c">
+      <SubType>compile</SubType>
+      <Link>usb_specific_request.c</Link>
+    </Compile>
+    <Compile Include="..\..\..\lib_mcu\power\power_drv.c">
+      <SubType>compile</SubType>
+      <Link>power_drv.c</Link>
+    </Compile>
+    <Compile Include="..\hid_task.c">
+      <SubType>compile</SubType>
+      <Link>hid_task.c</Link>
+    </Compile>
+    <Compile Include="..\..\..\lib_mcu\flash\flash_drv.s">
+      <SubType>compile</SubType>
+      <Link>flash_drv.s</Link>
+    </Compile>
+  </ItemGroup>
+</Project>
