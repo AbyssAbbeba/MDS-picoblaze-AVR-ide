@@ -84,6 +84,7 @@ class WDockManager : public QObject
         void createBookmarkList(QDockWidget *wDockWidget);
         void createBreakpointList(QDockWidget *wDockWidget);
         void setCentralByName(QString fileName);
+        void setEditorsReadOnly(bool readonly);
 
     private slots:
         void closeTab(int index);

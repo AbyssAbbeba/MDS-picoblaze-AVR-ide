@@ -134,7 +134,7 @@ void WLineCounterWidget::paintEvent(QPaintEvent *)
 {
     QTextEdit* textEdit = parent->getTextEdit();
     int size = textEdit->currentFont().pointSize();
-    int normalize = 0;
+    //int normalize = 0;
     //QTextCursor lastBlockCursor(textEdit->document()->lastBlock());
     //QRect lastBlockRect = textEdit->cursorRect(lastBlockCursor);
     //this->setMinimumHeight(lastBlockRect.bottom());
@@ -160,13 +160,13 @@ void WLineCounterWidget::paintEvent(QPaintEvent *)
         lineBlock = textEdit->document()->findBlockByNumber(i);
         QTextCursor cursor(lineBlock);
         cursorRect = textEdit->cursorRect(cursor);
-        qDebug() << i << "WLineCounterWidget: block top" << cursorRect.top();
+        //qDebug() << i << "WLineCounterWidget: block top" << cursorRect.top();
         /*if (i == 0 && cursorRect.top() < 0)
         {
             normalize = cursorRect.top() - 2;
         }*/
-        point.setY(cursorRect.top()-normalize);
-        qDebug() << "cursor normalized: " << cursorRect.top()-normalize;
+        point.setY(cursorRect.top());
+        //qDebug() << "cursor normalized: " << cursorRect.top()-normalize;
         //point.setY(i*(size+7)+size/3);
         point.setX(0);
         rect.moveTopLeft(point);

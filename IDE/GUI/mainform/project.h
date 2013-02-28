@@ -138,6 +138,9 @@ class Project : public QObject
         QColor *currLineColor;
         QColor *prevLineColor;
         QColor *prevLine2Color;
+        QColor *origPrevLineCol;
+        QColor *origPrevLine2Col;
+        QColor *origCurrLineCol;
         
        
 };
