@@ -249,6 +249,7 @@ void WDockManager::addCentralWidget(QString wName, QString wPath)
             newBaseEditor = new BaseEditor(NULL, this, newEditor, false);
             activeCodeEdit->loadCodeEdit(newBaseEditor->getCodeEdit());
         }
+        activeCodeEdit->changeHeight();
         openCentralWidgets.append(newBaseEditor);
         wTab->addTab(wName);
         wTab->tabAdded();
@@ -368,7 +369,7 @@ void WDockManager::setCentralByName(QString fileName)
     {
         if (wTab->tabText(i) == fileName)
         {
-            this->changeActiveCodeEdit(openCentralWidgets.at(i)->getCodeEdit());
+            this->changeCodeEditor(i);
             wTab->setCurrentIndex(i);
         }
     }

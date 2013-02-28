@@ -132,6 +132,12 @@ class Project : public QObject
     private:
         ProjectMan *parentManager;
         MainForm *parentWindow;
+        int prevLine;
+        int prevLine2;
+        int prevLine3;
+        QColor *currLineColor;
+        QColor *prevLineColor;
+        QColor *prevLine2Color;
         
        
 };

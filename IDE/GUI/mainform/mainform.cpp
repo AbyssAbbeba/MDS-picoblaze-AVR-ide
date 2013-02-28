@@ -573,7 +573,7 @@ void MainForm::compileProject()
 
     if (projectMan->getActive()->langType == LangType::LANG_ASM)
     {
-        compiler.start("avra -l " + projectMan->getActive()->mainFileName.section('.',0,-2) + ".lst " + projectMan->getActive()->mainFileName);
+        compiler.start("avra -I /usr/share/avra -l " + projectMan->getActive()->mainFileName.section('.',0,-2) + ".lst " + projectMan->getActive()->mainFileName);
         if (!compiler.waitForFinished())
         {
             compileWidget->appendPlainText(compiler.errorString());

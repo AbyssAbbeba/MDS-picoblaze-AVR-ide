@@ -212,6 +212,9 @@ Project::Project(QFile *file, MainForm* mainWindow, ProjectMan *parent)
     parentManager = parent;
     parentWindow = mainWindow;
     prjPath = QFileInfo(*file).filePath();
+    currLineColor = new QColor(102,204,255,255);
+    prevLineColor = new QColor(102,204,255,125);
+    prevLine2Color = new QColor(102,204,255,50);
     //nacteni ze souboru
     QDomDocument domDoc("MMProject");
     if (!domDoc.setContent(file))
@@ -333,6 +336,9 @@ Project::Project(QString name, QString path, QString arch, LangType lang, MainFo
     errorFlag = ERR_OK;
     parentManager = parent;
     parentWindow = mainWindow;
+    currLineColor = new QColor(102,204,255,255);
+    prevLineColor = new QColor(102,204,255,125);
+    prevLine2Color = new QColor(102,204,255,50);
 
     if (name != NULL)
     {
@@ -675,6 +681,16 @@ void Project::start()
         std::string stdPath = hexPath.toUtf8().constData();
         m_simControlUnit->start(stdPath, m_simControlUnit->COMPILER_GCC, m_simControlUnit->DBGFILEID_HEX);
     }
+    std::string fileName; //= new std::string;
+    int line = m_simControlUnit->getLineNumber(&fileName) - 1;
+    QString fileNameQStr = QString::fromStdString(fileName);
+    qDebug() << "Project: current line number:" << line << "in file" << fileNameQStr;
+    qDebug() << "Project: program counter value:" << dynamic_cast<MCUSim::CPU*>(m_simControlUnit->getSimSubsys(MCUSim::Subsys::ID_CPU))->getProgramCounter();
+    parentWindow->getWDockManager()->setCentralByName(fileNameQStr);
+    parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(line, currLineColor);
+    prevLine = line;
+    prevLine2 = -1;
+    prevLine3 = -1;
 }
 
 
@@ -703,10 +719,19 @@ void Project::reset()
 void Project::step()
 {
     m_simControlUnit->step();
-    std::string *fileName;
-    int line = m_simControlUnit->getLineNumber(fileName);
-    parentWindow->getWDockManager()->setCentralByName(QString::fromStdString(*fileName));
-    parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(line);
+    std::string fileName; //= new std::string();
+    int line = m_simControlUnit->getLineNumber(&fileName) - 1;
+    QString fileNameQStr = QString::fromStdString(fileName);
+    qDebug() << "Project: current line number:" << line << "in file" << fileNameQStr;
+    qDebug() << "Project: program counter value:" << dynamic_cast<MCUSim::CPU*>(m_simControlUnit->getSimSubsys(MCUSim::Subsys::ID_CPU))->getProgramCounter();
+    parentWindow->getWDockManager()->setCentralByName(fileNameQStr);
+    parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(line, currLineColor);
+    parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(prevLine, prevLineColor);
+    parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(prevLine2, prevLine2Color);
+    parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(prevLine3, NULL);
+    prevLine3 = prevLine2;
+    prevLine2 = prevLine;
+    prevLine = line;
 }
 
 

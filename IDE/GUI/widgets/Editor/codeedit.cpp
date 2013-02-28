@@ -21,8 +21,10 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
     : QWidget(parent)
 {
     this->parentCodeEdit = parentCodeEdit;
-    if (this->parentCodeEdit == NULL && parentCodeEdit == NULL)
+    if (this->parentCodeEdit == NULL)// && parentCodeEdit == NULL)
+    {
         qDebug() << "PARENT CODE EDIT: NULL";
+    }
     if (wName == NULL || wPath == NULL)
     {
         textEdit = new WTextEdit(this, PLAIN);
@@ -72,6 +74,7 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
     parentWidget = parent;
     this->tabs = tabs;
     parentProject = NULL;
+    breakpointColor = new QColor(0,255,0);
     //textEdit->setWordWrapMode(QTextOption::NoWrap);
     textEdit->setWordWrapMode(QTextOption::WordWrap);
     textEdit->setLineWrapMode(QTextEdit::WidgetWidth);
@@ -94,6 +97,7 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
     connect(textEdit, SIGNAL(bookmark(int)), this, SLOT(manageBookmarkEmit(int)));
     connect(textEdit, SIGNAL(textChanged()), this, SLOT(updateTextSlotOut()));
     this->connectAct();
+    prevBlockCount = this->textEdit->document()->blockCount();
 }
 
 
@@ -102,8 +106,10 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName
     : QWidget(parent)
 {
     this->parentCodeEdit = parentCodeEdit;
-    if (this->parentCodeEdit == NULL && parentCodeEdit == NULL)
+    if (this->parentCodeEdit == NULL) //&& parentCodeEdit == NULL)
+    {
         qDebug() << "PARENT CODE EDIT: NULL";
+    }
     
     int index = wName.lastIndexOf(".");
     if (index > 0)
@@ -147,6 +153,7 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName
     parentWidget = parent;
     this->tabs = tabs;
     parentProject = parentPrj;
+    breakpointColor = new QColor(0,255,0);
     textEdit->setWordWrapMode(QTextOption::WordWrap);
     textEdit->setLineWrapMode(QTextEdit::WidgetWidth);
     textEdit->setFont(QFont ("Andale Mono", 11));
@@ -167,13 +174,16 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName
     connect(textEdit, SIGNAL(bookmark(int)), this, SLOT(manageBookmarkEmit(int)));
     connect(textEdit, SIGNAL(textChanged()), this, SLOT(updateTextSlotOut()));
     this->connectAct();
+    prevBlockCount = this->textEdit->document()->blockCount();
 }
 
 
 CodeEdit::~CodeEdit()
 {
     if (parentCodeEdit == NULL)
+    {
         qDebug() << "DELETING PARENT CODE EDIT!";
+    }
 }
 
 
@@ -206,12 +216,11 @@ void CodeEdit::setChanged()
         if (tabs == true)
         {
             //QString newName("*" + name);
-            qDebug() << "codeedit: emit changed tab status: changed";
+            //qDebug() << "codeedit: emit changed tab status: changed";
             emit changedTabStatus(this->name, this->path, true);
             //((QTabWidget*)parentWidget)->setTabText(((QTabWidget*)parentWidget)->indexOf(this), "*" + name);
         }
     }
-    lineCount->getWidget()->update();
 }
 
 
@@ -222,20 +231,20 @@ void CodeEdit::setSaved()
         changed = false;
         if (tabs == true)
         {
-            qDebug() << "codeedit: emit changed tab status: saved";
+            //qDebug() << "codeedit: emit changed tab status: saved";
             emit changedTabStatus(this->name, this->path, false);
             //((QTabWidget*)parentWidget)->setTabText(((QTabWidget*)parentWidget)->indexOf(this), name);
         }
         else
         {
-            qDebug() << "codeedit: emit changed tab status: saved without tabs";
+            //qDebug() << "codeedit: emit changed tab status: saved without tabs";
             emit changedTabStatus(this->name, this->path, false);
         }
     }
-    else
+    /*else
     {
         qDebug() << "codeedit: not changed";
-    }
+    }*/
 }
 
 
@@ -288,13 +297,13 @@ WTextEdit* CodeEdit::getTextEdit()
 
 void CodeEdit::splitHorizontal()
 {
-    qDebug() << "Code Edit: split signal - horizontal";
+    //qDebug() << "Code Edit: split signal - horizontal";
     emit splitSignal(Qt::Horizontal, 0);
 }
 
 void CodeEdit::splitVertical()
 {
-    qDebug() << "Code Edit: split signal - vertical";
+    //qDebug() << "Code Edit: split signal - vertical";
     emit splitSignal(Qt::Vertical, 0);
 }
 
@@ -310,13 +319,21 @@ void CodeEdit::updateTextSlotOut()
 {
     emit updateText(this->textEdit->toPlainText());
     emit updateAnalysers(this);
+    if (prevBlockCount != this->textEdit->document()->blockCount())
+    {
+        this->changeHeight();
+        prevBlockCount = this->textEdit->document()->blockCount();
+    }
 }
 
 void CodeEdit::updateTextSlotIn(const QString& textIn)
 {
     //qDebug() << "Code Edit: update";
     if (textIn.compare(this->textEdit->toPlainText()) != 0)
-       this->textEdit->setText(textIn);
+    {
+        this->textEdit->setText(textIn);
+        prevBlockCount = this->textEdit->document()->blockCount();
+    }
 }
 
 
@@ -368,6 +385,7 @@ void CodeEdit::loadCodeEdit(CodeEdit* editor)
         }
     }
     emit CodeEditChanged(editor);
+    //this->changeHeight();
 }
 
 
@@ -387,14 +405,15 @@ void CodeEdit::manageBreakpointEmit(int line)
 {
     int index;
     index = breakpointList.indexOf(line);
-    textEdit->highlightLine(line);
     if (index == -1)
     {
+        textEdit->highlightLine(line, breakpointColor);
         breakpointList.append(line);
         emit breakpointListAdd(line);
     }
     else
     {
+        textEdit->highlightLine(line, NULL);
         breakpointList.removeAt(index);
         emit breakpointListRemove(line);
     }
@@ -430,13 +449,25 @@ QList<int> CodeEdit::getBookmarkList()
 CodeEdit* CodeEdit::getParentCodeEdit()
 {
     if (this->parentCodeEdit == NULL)
+    {
         return this;
+    }
     else
+    {
         return this->parentCodeEdit;
+    }
 }
 
 
 void CodeEdit::setParentCodeEdit(CodeEdit *parentCodeEdit)
 {
     this->parentCodeEdit = parentCodeEdit;
+}
+
+
+void CodeEdit::changeHeight()
+{
+    qDebug() << "CodeEdit: height" << this->textEdit->height();
+    this->lineCount->getWidget()->changeHeight();
+    //this->lineCount->getWidget()->update();
 }
