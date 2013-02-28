@@ -667,6 +667,7 @@ void Project::setupSim()
  */
 void Project::start()
 {
+    parentWindow->getWDockManager()->setEditorsReadOnly(true);
     if (langType == LANG_ASM)
     {
         QString hexPath = prjPath.section('/',0, -2) + "/build/" + mainFileName.section('.',0,-2);
@@ -687,7 +688,7 @@ void Project::start()
     qDebug() << "Project: current line number:" << line << "in file" << fileNameQStr;
     qDebug() << "Project: program counter value:" << dynamic_cast<MCUSim::CPU*>(m_simControlUnit->getSimSubsys(MCUSim::Subsys::ID_CPU))->getProgramCounter();
     parentWindow->getWDockManager()->setCentralByName(fileNameQStr);
-    parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(line, currLineColor);
+    parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(line, currLineColor, origCurrLineCol);
     prevLine = line;
     prevLine2 = -1;
     prevLine3 = -1;
@@ -701,6 +702,10 @@ void Project::start()
 void Project::stop()
 {
     m_simControlUnit->stop();
+    parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(prevLine, NULL, NULL);
+    parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(prevLine2, NULL, NULL);
+    parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(prevLine3, NULL, NULL);
+    parentWindow->getWDockManager()->setEditorsReadOnly(false);
 }
 
 
@@ -725,13 +730,16 @@ void Project::step()
     qDebug() << "Project: current line number:" << line << "in file" << fileNameQStr;
     qDebug() << "Project: program counter value:" << dynamic_cast<MCUSim::CPU*>(m_simControlUnit->getSimSubsys(MCUSim::Subsys::ID_CPU))->getProgramCounter();
     parentWindow->getWDockManager()->setCentralByName(fileNameQStr);
-    parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(line, currLineColor);
-    parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(prevLine, prevLineColor);
-    parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(prevLine2, prevLine2Color);
-    parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(prevLine3, NULL);
+    parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(line, currLineColor, origCurrLineCol);
+    parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(prevLine, prevLineColor, origPrevLineCol);
+    parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(prevLine2, prevLine2Color, origPrevLine2Col);
+    parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(prevLine3, NULL, NULL);
     prevLine3 = prevLine2;
     prevLine2 = prevLine;
     prevLine = line;
+    /*origPrevLine3Col = origPrevLine2Col;
+    origPrevLine2Col = origPrevLineCol;
+    origPrevLineCol = origCurrLineCol;*/
 }
 
 

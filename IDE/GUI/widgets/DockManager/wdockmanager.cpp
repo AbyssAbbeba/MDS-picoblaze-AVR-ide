@@ -376,6 +376,15 @@ void WDockManager::setCentralByName(QString fileName)
 }
 
 
+void WDockManager::setEditorsReadOnly(bool readonly)
+{
+    for (int i = 0; i < codeEditList.count(); i++)
+    {
+        activeCodeEdit->getTextEdit()->setReadOnly(readonly);
+    }
+}
+
+
 /////
 ///// WDock
 /////
