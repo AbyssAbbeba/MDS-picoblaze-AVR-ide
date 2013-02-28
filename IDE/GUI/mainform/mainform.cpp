@@ -17,6 +17,7 @@
 #include "mainform.h"
 #include "../dialogs/projectdlg.h"
 #include "../dialogs/errordlg.h"
+#include "pluginman_gui.h"
 
 
 
@@ -53,6 +54,8 @@ void MainForm::CreateMenu()
 
     editMenu = menuBar()->addMenu(tr("&Edit"));
     interfaceMenu = menuBar()->addMenu(tr("&Interface"));
+    interfaceMenu->addAction(interfaceConfigAct);
+    interfaceMenu->addAction(pluginAct);
 
     projectMenu = menuBar()->addMenu(tr("&Project"));
     projectMenu->addAction(newProjAct);
@@ -118,6 +121,15 @@ void MainForm::CreateActions()
 
 
 
+
+    //INTERFACE
+    interfaceConfigAct = new QAction(tr("Config"), this);
+    pluginAct = new QAction(tr("Plugins"), this);
+    connect(pluginAct, SIGNAL(triggered()), this, SLOT(showPlugins()));
+
+
+
+    
     QPixmap *pm_projNew = new QPixmap("resources//icons//projNew.png");
     QIcon *icon_projNew = new QIcon(*pm_projNew);
     newProjAct = new QAction(*icon_projNew, tr("New Project"), this);
@@ -769,4 +781,13 @@ ProjectMan* MainForm::getProjectMan()
 void MainForm::exampleOpen()
 {
     this->openProject("./demoprojekt/Example.mmp");
+}
+
+
+/**
+ * @brief Slot. Show plugin manager gui.
+ */
+void MainForm::showPlugins()
+{
+    PluginMan_GUI *a = new PluginMan_GUI(0);
 }
