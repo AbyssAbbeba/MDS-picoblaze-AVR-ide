@@ -56,6 +56,7 @@ class CodeEdit : public QWidget
         QList<int> getBreakpointList();
         CodeEdit* getParentCodeEdit();
         void setParentCodeEdit(CodeEdit *parentCodeEdit);
+        void changeHeight();
 
     public slots:
         void setChanged();
@@ -96,6 +97,8 @@ class CodeEdit : public QWidget
         QList<int> breakpointList;
         QList<int> bookmarkList;
         CodeEdit *parentCodeEdit;
+        QColor *breakpointColor;
+        int prevBlockCount;
 
     protected:
         void contextMenuEvent(QContextMenuEvent *event);

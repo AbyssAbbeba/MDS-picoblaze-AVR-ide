@@ -111,25 +111,38 @@ void WTextEdit::highlightCurrentLine()
         lineFormat.clearBackground();
     }
     else
+    {
         lineFormat.setBackground(Qt::green);
-    cursor.setBlockFormat(lineFormat);    
+    }
+    cursor.setBlockFormat(lineFormat);
 }
 
-void WTextEdit::highlightLine(int line)
+
+void WTextEdit::highlightLine(int line, QColor *color)
 {
-    QTextBlock lineBlock = this->document()->findBlockByNumber(line);
-    QTextBlockFormat lineFormat = lineBlock.blockFormat();
-    if (lineFormat.background() == Qt::green)
+    qDebug() << "WTextEdit: highlighted line is" << line;
+    if (line >= 0 && line <= this->document()->lineCount())
     {
-        //QPalette palette = this->palette();
-        //lineFormat.setBackground(palette.color(QPalette::Base));
-        lineFormat.clearBackground();
+        QTextBlock lineBlock = this->document()->findBlockByNumber(line);
+        QTextBlockFormat lineFormat = lineBlock.blockFormat();
+        if (color == NULL)
+        {
+            //QPalette palette = this->palette();
+            //lineFormat.setBackground(palette.color(QPalette::Base));
+            lineFormat.clearBackground();
+        }
+        else
+        {
+            lineFormat.setBackground(*color);
+        }
+        QTextCursor cursor(lineBlock);
+        //qDebug() << "position: " << cursor.position();
+        cursor.setBlockFormat(lineFormat);
     }
     else
-        lineFormat.setBackground(Qt::green);
-    QTextCursor cursor(lineBlock);
-    //qDebug() << "position: " << cursor.position();
-    cursor.setBlockFormat(lineFormat);
+    {
+        qDebug() << "fail--------------------------------";
+    }
 }
 
 

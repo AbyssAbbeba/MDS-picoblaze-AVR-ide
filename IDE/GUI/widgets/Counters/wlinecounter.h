@@ -52,6 +52,7 @@ class WLineCounterWidget : public QWidget
     Q_OBJECT   
     public:
         WLineCounterWidget(WLineCounter *parent, bool icons, bool hex, int width);
+        void changeHeight();
     //private slots:
     //    void change();
 
