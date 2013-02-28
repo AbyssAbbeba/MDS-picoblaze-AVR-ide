@@ -73,6 +73,7 @@ class MainForm : public QMainWindow
         void toolConvertor();
         void toolDisplay();
         void exampleOpen();
+        void showPlugins();
 
     private:
         //init functions
@@ -114,6 +115,7 @@ class MainForm : public QMainWindow
         QAction *pasteAct;        
 
         QAction *interfaceConfigAct;
+        QAction *pluginAct;
 
         QAction *newProjAct;
         QAction *newAddAct;

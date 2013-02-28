@@ -17,8 +17,9 @@ set(CMAKE_VERBOSE_MAKEFILE OFF)
 # here we define SAMPLE_SRCS variable that contains a list of all .cpp files 
 # note that we don't need \ at the end of line
 SET( SAMPLE_SRCS
-       ./mainform.cpp
-       ./project.cpp
+        ./mainform.cpp
+        ./project.cpp
+        ./pluginman_gui.cpp
 #       ../dialogs/errordlg.cpp
 #       ../dialogs/projectdlg.cpp
 #       ../widgets/codeedit.cpp
@@ -26,8 +27,9 @@ SET( SAMPLE_SRCS
   
 # another list, this time it includes all header files that should be treated with moc
 SET( SAMPLE_MOC_HDRS
-       ./mainform.h
-       ./project.h
+        ./mainform.h
+        ./project.h
+        ./pluginman_gui.h
 )
 
 
@@ -87,4 +89,4 @@ QT4_WRAP_CPP( SAMPLE_MOC_SRCS ${SAMPLE_MOC_HDRS} )
 add_library(${PROJECT_NAME} SHARED
 	${SAMPLE_MOC_SRCS} ${SAMPLE_SRCS})
 
-target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} ProjectTree Editor Dialogs WDockManager McuSimCfgMgr SimControl AVR8Sim PIC8Sim MCUDataFiles ConvertorTool DisplayTool)
+target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} QtNetwork ProjectTree Editor Dialogs WDockManager McuSimCfgMgr SimControl AVR8Sim PIC8Sim MCUDataFiles ConvertorTool DisplayTool)
