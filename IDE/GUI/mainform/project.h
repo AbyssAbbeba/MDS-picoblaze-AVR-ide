@@ -58,7 +58,9 @@ class ProjectMan
     public:
         ProjectMan(MainForm *mainWindow);
         void addFile(QString path, QString name);
+        void addUntrackedFile(QString path, QString name);
         void addProject(QString name, QString path, QString architecture, LangType langType, QFile *file);
+        void addUntrackedProject();
         void openProject(QFile *file);
         void setActive(Project *activePrj);
         bool isActiveProject(Project *project);
@@ -72,6 +74,7 @@ class ProjectMan
         int projectCount;
         QList<Project*> openProjects;
         Project *activeProject;
+        Project *untrackedProject;
     
 };
 
@@ -89,6 +92,7 @@ class Project : public QObject
     public:
         //konstruktor pro otevirani projektu
         Project(QFile *file, MainForm* mainWindow, ProjectMan *parent);
+        Project(MainForm *mainWindow, ProjectMan *parent);
         //konstruktor pro prazdny projekt
         Project(QString name, QString path, QString arch, LangType langType, MainForm* mainWindow, QFile *file, ProjectMan *parent);
         ~Project();
@@ -128,6 +132,7 @@ class Project : public QObject
     private slots:
         void setActive();
         void openItem();
+        void openUntrackedItem();
 
     private:
         ProjectMan *parentManager;

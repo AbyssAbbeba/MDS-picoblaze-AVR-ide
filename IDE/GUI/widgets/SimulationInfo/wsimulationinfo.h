@@ -17,9 +17,12 @@
 
 
 #include "../MovGridLayout/movgridlayout.h"
-#include "../HexEdit/hexedit.h"
+//#include "../HexEdit/hexedit.h"
 #include <QHBoxLayout>
 #include <QScrollArea>
+#include <QMenu>
+//#include "MCUSimControl.h"
+#include "../MovGridLayout/movgridlayoutitem.h"
 
 
 class McuMemoryView;
@@ -37,10 +40,13 @@ class WSimulationInfo : public QWidget
     Q_OBJECT
     public:
         WSimulationInfo(MCUSimControl *controlUnit, QWidget *parent);
-        WSimulationInfo(MCUSimControl *controlUnit, WSimulationInfo *copySimInfo);
-        WSimulationInfo(MCUSimControl *controlUnit);
+        WSimulationInfo(MCUSimControl *controlUnit, WSimulationInfo *copySimInfo, QWidget *parent);
+        WSimulationInfo(QWidget *parent, MCUSimControl *controlUnit);
         ~WSimulationInfo();
         MovGridLayout* getGridLayout();
+        McuMemoryView* getHexEdit();
+        QWidget* getParent();
+        void fixHeight();
         
     private:
         MCUSimControl *controlUnit;
@@ -61,13 +67,14 @@ class WSimulationInfo : public QWidget
         void setFocusSlot();
 
     signals:
-        void closeSignal();
-        void focusOutSignal();
+        void widgetAdded();
+        //void closeSignal();
+        //void focusOutSignal();
         
     protected:
         void contextMenuEvent(QContextMenuEvent *event);
-        virtual void closeEvent(QCloseEvent *event);
-        virtual void enterEvent(QEvent *event);
+        //virtual void closeEvent(QCloseEvent *event);
+        //virtual void enterEvent(QEvent *event);
 };
 
 

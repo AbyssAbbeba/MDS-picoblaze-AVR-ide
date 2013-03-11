@@ -22,8 +22,10 @@
 TabBar::TabBar(QWidget *parent)
     : QTabBar(parent)
 {
+    qDebug() << "TabBar: TabBar()";
     //this->setDrawBase(false);
     connect(this, SIGNAL(tabMoved(int, int)), this, SLOT(tabStatsMoved(int, int)));
+    qDebug() << "TabBar: return TabBar()";
 }
 
 
@@ -32,8 +34,9 @@ TabBar::TabBar(QWidget *parent)
  */
 void TabBar::tabRemoved(int index)
 {
-    qDebug() << "tabbar: tab removed";
+    qDebug() << "TabBar: tabRemoved()";
     tabStats.removeAt(index);
+    qDebug() << "TabBar: return tabRemoved()";
 }
 
 
@@ -42,8 +45,9 @@ void TabBar::tabRemoved(int index)
  */
 void TabBar::tabAdded()
 {
-    qDebug() << "tabbar: tab added";
+    qDebug() << "TabBar: tabAdded()";
     tabStats.append(false);
+    qDebug() << "TabBar: return tabAdded()";
 }
 
 
@@ -52,11 +56,12 @@ void TabBar::tabAdded()
  */
 void TabBar::tabChanged(int index, bool changed)
 {
+    qDebug() << "TabBar: tabChanged()";
     if (tabStats.at(index) != changed)
     {
-        qDebug() << "tabbar: tab status changed";
         tabStats.replace(index, changed);
     }
+    qDebug() << "TabBar: return tabChanged()";
 }
 
 
@@ -65,7 +70,9 @@ void TabBar::tabChanged(int index, bool changed)
  */
 void TabBar::tabStatsMoved(int from, int to)
 {
+    qDebug() << "TabBar: tabStatsMoved()";
     tabStats.swap(from, to);
+    qDebug() << "TabBar: return tabStatsMoved()";
 }
 
 
@@ -75,6 +82,7 @@ void TabBar::tabStatsMoved(int from, int to)
  */
 void TabBar::paintEvent(QPaintEvent *)
 {
+    qDebug() << "TabBar: paintEvent()";
 
     //Q_D(QTabBar);
 
@@ -296,4 +304,5 @@ void TabBar::paintEvent(QPaintEvent *)
     //}
     
 
+    qDebug() << "TabBar:return paintEvent()";
 }

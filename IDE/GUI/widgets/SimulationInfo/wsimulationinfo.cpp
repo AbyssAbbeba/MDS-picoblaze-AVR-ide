@@ -16,8 +16,6 @@
 #include "wsimulationinfo.h"
 #include "../sim/McuMemoryView.h"
 #include "../sim/RegDisplayList.h"
-#include "MCUSimControl.h"
-#include "../MovGridLayout/movgridlayoutitem.h"
 
 
 //constructor, create layout with HexEdit and MovGridLayout
@@ -66,8 +64,8 @@ WSimulationInfo::WSimulationInfo(MCUSimControl *controlUnit, QWidget *parent)
 
 
 //copyconstructor for rearanging
-WSimulationInfo::WSimulationInfo(MCUSimControl *controlUnit, WSimulationInfo *copySimInfo)
-    : QWidget(0)
+WSimulationInfo::WSimulationInfo(MCUSimControl *controlUnit, WSimulationInfo *copySimInfo, QWidget *parent)
+    : QWidget(parent)
 {
     this->focusTracking = true;
     this->dragItem = NULL;
@@ -109,8 +107,8 @@ WSimulationInfo::WSimulationInfo(MCUSimControl *controlUnit, WSimulationInfo *co
 }
 
 //constructor for blank info for rearanging
-WSimulationInfo::WSimulationInfo(MCUSimControl *controlUnit)
-    : QWidget(0)
+WSimulationInfo::WSimulationInfo(QWidget *parent, MCUSimControl *controlUnit)
+    : QWidget(parent)
 {
     this->focusTracking = true;
     this->dragItem = NULL;
@@ -172,21 +170,28 @@ void WSimulationInfo::contextMenuEvent(QContextMenuEvent *event)
 void WSimulationInfo::rearangeLayoutSlot()
 {
     qDebug() << "simulation info: rearange layout slot";
-    WSimulationInfo *info1 = new WSimulationInfo(controlUnit, this);
+    QWidget *infoWidget = new QWidget(0);
+    QVBoxLayout *layout = new QVBoxLayout(infoWidget);
+    WSimulationInfo *info1 = new WSimulationInfo(controlUnit, this, infoWidget);
     info1->show();
-    WSimulationInfo *info2 = new WSimulationInfo(controlUnit);
+    WSimulationInfo *info2 = new WSimulationInfo(infoWidget, controlUnit);
     info2->show();
-    info2->setFocusPolicy(Qt::StrongFocus);
-    connect(info1, SIGNAL(closeSignal()), info2, SLOT(close()));
-    connect(info2, SIGNAL(closeSignal()), info1, SLOT(close()));
+    layout->addWidget(info1);
+    layout->addWidget(info2);
+    infoWidget->setLayout(layout);
+    //info2->setFocusPolicy(Qt::StrongFocus);
+    infoWidget->show();
+    //connect(info1, SIGNAL(closeSignal()), info2, SLOT(close()));
+    //connect(info2, SIGNAL(closeSignal()), info1, SLOT(close()));
     connect(info1->getGridLayout(), SIGNAL(dragSignal(MovGridLayoutItem*)), info2, SLOT(catchDragSlot(MovGridLayoutItem*)));
-    connect(info1, SIGNAL(focusOutSignal()), info2, SLOT(setFocusSlot()));
+    connect(info2, SIGNAL(widgetAdded()), info1->getGridLayout(), SLOT(cancelDrag()));
 }
 
 
 void WSimulationInfo::saveLayoutSlot()
 {
     qDebug() << "simulation info: save layout slot";
+    this->getGridLayout()->saveGridWidgets();
 }
 
 
@@ -194,7 +199,7 @@ void WSimulationInfo::setFocusSlot()
 {
     qDebug() << "simulation info: focus in";
     this->setFocus(Qt::OtherFocusReason);
-    this->activateWindow();
+    //this->activateWindow();
 }
 
 MovGridLayout* WSimulationInfo::getGridLayout()
@@ -203,43 +208,66 @@ MovGridLayout* WSimulationInfo::getGridLayout()
 }
 
 
-void WSimulationInfo::closeEvent(QCloseEvent *event)
+/*void WSimulationInfo::closeEvent(QCloseEvent *event)
 {
     emit closeSignal();
     this->close();
-}
+}*/
 
 
 void WSimulationInfo::catchDragSlot(MovGridLayoutItem *item)
 {
+    qDebug() << "WSimulationInfo: catchDragSlot";
     this->dragItem = item;
     if (item != NULL)
     {
-        this->gridLayout->grab = true;
+       // this->gridLayout->grab = true;
+        MovGridLayoutItem *temp = this->gridLayout->getTempGridWidget(dragItem->index);
+        qDebug() << "WSimulationInfo: index" << temp->index;
+        this->gridLayout->addItem(temp);
+        temp->widget->show();
     }
-    else
+    /*else
     {
         this->gridLayout->grab = false;
-    }
+    }*/
 }
 
 
-void WSimulationInfo::enterEvent(QEvent *event)
+/*void WSimulationInfo::enterEvent(QEvent *event)
 {
     if (focusTracking == true)
     {
-        qDebug() << "simulation info: focus out";
-        this->activateWindow();
+        qDebug() << "simulation info: enter";
     }
+    //setFocusSlot();
     //this->clearFocus();
-    /*emit focusOutSignal();
+    emit focusOutSignal();
     this->gridLayout->grab = false;
     QMouseEvent mouseClick(QEvent::MouseButtonRelease, QPoint(-1, -1), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
-    QApplication::sendEvent(this->gridLayout, &mouseClick);*/
-    /*if (this->dragItem != NULL)
+    QApplication::sendEvent(this->gridLayout, &mouseClick);
+    if (this->dragItem != NULL)
     {
         MovGridLayoutItem *temp = this->gridLayout->getTempGridWidget(dragItem->index);
-        this->gridLayout->addWidget(temp->widget, event->pos().x(), event->pos().y());
+        this->gridLayout->addWidget(temp->widget);
         temp->widget->show();
-    }*/
+    }
+}*/
+
+
+McuMemoryView* WSimulationInfo::getHexEdit()
+{
+    return m_hexEdit;
+}
+
+
+QWidget* WSimulationInfo::getParent()
+{
+    return this->parent;
+}
+
+
+void WSimulationInfo::fixHeight()
+{
+    this->m_hexEdit->fixHeight();
 }

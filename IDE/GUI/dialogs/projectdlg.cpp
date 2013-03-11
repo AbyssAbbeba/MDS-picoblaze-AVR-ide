@@ -31,7 +31,7 @@ ProjectDialog::ProjectDialog(QMainWindow *dialogParent, ProjectMan *dialogProjec
     labelName->setText("Project name");
     labelDir = new QLabel(this);
     labelDir->setText("Project Directory");
-    chooseName = new QPushButton("Browse", this);
+    chooseName = new QPushButton("Dir", this);
     connect(chooseName, SIGNAL(pressed()), this, SLOT(bSetPath()));
     
     buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, this);
@@ -49,14 +49,18 @@ ProjectDialog::ProjectDialog(QMainWindow *dialogParent, ProjectMan *dialogProjec
     //EDIT THIS!
     labelName->move(0, 0);
     projName->move(0, 20);
+    projName->setMinimumWidth(200);
     labelDir->move(0, 50);
     projDir->move(0, 70);
-    chooseName->move(140, 70);
-    chooseName->setMaximumWidth(55);
+    projDir->setMinimumWidth(168);
+    chooseName->move(170, 70);
+    chooseName->setMaximumWidth(30);
     architecture->move(0, 100);
-    language->move(120, 100);
-    buttonBox->move(0, 130);
+    language->move(140, 100);
+    buttonBox->move(100, 130);
+    buttonBox->setMaximumWidth(100);
     this->show();
+    this->setMaximumWidth(205);
     
     parent = dialogParent;
     projectMan = dialogProjectMan;

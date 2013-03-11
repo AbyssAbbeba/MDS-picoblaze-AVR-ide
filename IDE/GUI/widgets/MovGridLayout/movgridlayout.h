@@ -63,6 +63,8 @@ class MovGridLayout : public QWidget
         MovGridLayout(QWidget *parentWidget);
         //add widget, automatic position
         bool addWidget(QWidget *widget);
+        //add item, automatic position
+        bool addItem(MovGridLayoutItem *item);
         //add temporary widget, not shown
         void addTempWidget(QWidget *widget);
         //add widget, specific position
@@ -116,6 +118,9 @@ class MovGridLayout : public QWidget
 
     signals:
         void dragSignal(MovGridLayoutItem *item);
+
+    public slots:
+        void cancelDrag();
 
     protected:
         virtual bool eventFilter(QObject *target, QEvent *event);

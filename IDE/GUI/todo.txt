@@ -1,21 +1,2 @@
-Future goals:
-- plugin manager (class implementation, dialog implementation)
-- interface config
-- project config
-- simulation
-- upload to HW
-- Code editor (highlight, source managment - class viewer etc.)
-
-
-plugin manager - dialog:
-
---------------------------
-| -------  ---------    -------- |
-| |demo	|  |install| -> |active| |
-| |	|  |       | <- |      | |
-| |	|  |       |    |      | |
-| |	|  |       |    |      | |
-| |-----|  |-------|    |------| |
-| 	                         |
-|	   find             ok   |
-|--------------------------------
+To do list:
+- fix linecounter in hex editor

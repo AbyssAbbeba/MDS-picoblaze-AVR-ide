@@ -5,6 +5,7 @@
 Highlighter::Highlighter(QTextDocument *parent, SourceType type)
      : QSyntaxHighlighter(parent)
 {
+    qDebug() << "Highlighter: Highlighter()";
     HighlightingRule rule;
     if (type == C)
     {
@@ -36,7 +37,7 @@ Highlighter::Highlighter(QTextDocument *parent, SourceType type)
         rule.tag = "quotation";
         highlightingRules.append(rule);
 
-        functionFormat.setFontItalic(true);
+        //functionFormat.setFontItalic(true);
         functionFormat.setForeground(Qt::blue);
         rule.pattern = QRegExp("\\b[A-Za-z0-9_]+(?=\\()");
         rule.format = functionFormat;
@@ -71,7 +72,8 @@ Highlighter::Highlighter(QTextDocument *parent, SourceType type)
         keywordFormat.setForeground(Qt::darkBlue);
         keywordFormat.setFontWeight(QFont::Bold);
 
-        foreach (const QString &pattern, keywordPatterns) {
+        foreach (const QString &pattern, keywordPatterns)
+        {
             rule.pattern = QRegExp(pattern);
             rule.format = keywordFormat;
             highlightingRules.append(rule);
@@ -83,7 +85,7 @@ Highlighter::Highlighter(QTextDocument *parent, SourceType type)
         rule.tag = "quotation";
         highlightingRules.append(rule);
 
-        functionFormat.setFontItalic(true);
+        //functionFormat.setFontItalic(true);
         functionFormat.setForeground(Qt::blue);
         rule.pattern = QRegExp("\\b[A-Za-z0-9_]+(?=\\()");
         rule.format = functionFormat;
@@ -120,7 +122,8 @@ Highlighter::Highlighter(QTextDocument *parent, SourceType type)
         keywordFormat.setForeground(Qt::darkBlue);
         keywordFormat.setFontWeight(QFont::Bold);
             
-        foreach (const QString &pattern, keywordPatterns) {
+        foreach (const QString &pattern, keywordPatterns)
+        {
             rule.pattern = QRegExp(pattern);
             rule.format = keywordFormat;
             rule.tag = "keyword";
@@ -170,10 +173,11 @@ Highlighter::Highlighter(QTextDocument *parent, SourceType type)
             << "\\bsubi\\b" << "\\bswap\\b" << "\\btst\\b"
             << "\\bwdr\\b";
         
-        functionFormat.setFontItalic(true);
+        //functionFormat.setFontItalic(true);
         functionFormat.setForeground(Qt::blue);
         
-        foreach (const QString &pattern, functionPatterns) {
+        foreach (const QString &pattern, functionPatterns)
+        {
             rule.pattern = QRegExp(pattern);
             rule.format = functionFormat;
             rule.tag = "function";
@@ -249,7 +253,7 @@ Highlighter::Highlighter(QTextDocument *parent, SourceType type)
             << "\\bswapf\\b" << "\\btris\\b" << "\\bxorlw\\b"
             << "\\bxorwf\\b";
 
-        functionFormat.setFontItalic(true);
+        //functionFormat.setFontItalic(true);
         functionFormat.setForeground(Qt::blue);
 
         foreach (const QString &pattern, functionPatterns) {
@@ -281,45 +285,57 @@ Highlighter::Highlighter(QTextDocument *parent, SourceType type)
     rule.format = classFormat;
     highlightingRules.append(rule);*/
 
+    qDebug() << "Highlighter: return Highlighter()";
 
 }
 
 
 void Highlighter::highlightBlock(const QString &text)
 {
-    setCurrentBlockState(0);
-
-    int startIndex = 0;
-    if (previousBlockState() != 1)
-        startIndex = commentStartExpression.indexIn(text);
-
-    while (startIndex >= 0)
+    //qDebug() << "Highlighter: highlightBlock()";
+    if (text != "")
     {
-        int endIndex = commentEndExpression.indexIn(text, startIndex);
-        int commentLength;
-        if (endIndex == -1) {
-            setCurrentBlockState(1);
-            commentLength = text.length() - startIndex;
-        } else {
-            commentLength = endIndex - startIndex
-                            + commentEndExpression.matchedLength();
-        }
-        setFormat(startIndex, commentLength, multiLineCommentFormat);
-        startIndex = commentStartExpression.indexIn(text, startIndex + commentLength);
-    }
+        setCurrentBlockState(0);
 
-    if (currentBlockState() == 0)
-    {
-        foreach (const HighlightingRule &rule, highlightingRules)
+        int startIndex = 0;
+        if (previousBlockState() != 1)
         {
-            QRegExp expression(rule.pattern);
-            int index = expression.indexIn(text);
-            while (index >= 0) {
-                int length = expression.matchedLength();
-                setFormat(index, length, rule.format);
-                index = expression.indexIn(text, index + length);
+            startIndex = commentStartExpression.indexIn(text);
+        }
+
+        //qDebug() << "Highlighter: start" << startIndex << text;
+        while (startIndex >= 0)
+        {
+            int endIndex = commentEndExpression.indexIn(text, startIndex);
+            int commentLength;
+            if (endIndex == -1)
+            {
+                setCurrentBlockState(1);
+                commentLength = text.length() - startIndex;
+            }
+            else
+            {
+                commentLength = endIndex - startIndex + commentEndExpression.matchedLength();
+            }
+            setFormat(startIndex, commentLength, multiLineCommentFormat);
+            startIndex = commentStartExpression.indexIn(text, startIndex + commentLength);
+        }
+
+        //qDebug() << "Highlighter: while1";
+        if (currentBlockState() == 0)
+        {
+            foreach (const HighlightingRule &rule, highlightingRules)
+            {
+                QRegExp expression(rule.pattern);
+                int index = expression.indexIn(text);
+                while (index >= 0)
+                {
+                    int length = expression.matchedLength();
+                    setFormat(index, length, rule.format);
+                    index = expression.indexIn(text, index + length);
+                }
             }
         }
     }
-
+    //qDebug() << "Highlighter: return highlightBlock()";
 }

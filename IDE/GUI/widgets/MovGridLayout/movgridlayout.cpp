@@ -16,6 +16,7 @@
 #include "movgridlayout.h"
 #include "movgridlayoutitem.h"
 #include <QtGui>
+#include <QtXml>
 
 
 MovGridLayout::MovGridLayout(QWidget *parentWidget)
@@ -31,11 +32,17 @@ MovGridLayout::MovGridLayout(QWidget *parentWidget)
     //grid.resize(gridWidth, vector<int>(gridHeight, -1));
     grid = new int*[gridWidth];
     for (int i = 0; i < gridWidth; i++)
+    {
         grid[i] = new int[gridHeight];
+    }
     //free whole grid
     for (int i = 0; i<gridWidth; i++)
+    {
         for (int j = 0; j<gridHeight; j++)
+        {
             grid[i][j]=-1;
+        }
+    }
     //FOR STATIC ALLOCATION
     //calculate size of row and column
     //sizeRow = this->width()/SIZEX;
@@ -56,14 +63,47 @@ bool MovGridLayout::addWidget(QWidget *widget)
     XY xy = calcXY(widget);
     //if grid is full
     if (xy.x == -1 || xy.y == -1)
+    {
         return false;
+    }
     MovGridLayoutItem *item = new MovGridLayoutItem(this, widget, widget->width()/sizeRow, widget->height()/sizeCol, gridWidgets.size());
     //qDebug() << "add";
     gridWidgets.append(item);
     item->move(xy.x, xy.y, xy.x*sizeRow, xy.y*sizeCol);
     for (int i = item->x; i<item->x+item->w; i++)
+    {
         for (int j = item->y; j<item->y+item->h; j++)
+        {
             grid[i][j] = item->index;
+        }
+    }
+    //qDebug() << "add done";
+    return true;
+}
+
+
+//add widget to layout with given index, automatic position
+bool MovGridLayout::addItem(MovGridLayoutItem *item)
+{
+    //position - x, y, see typedef struct XY in movgridlayout.h
+    //qDebug() << "calc start";
+    XY xy = calcXY(item->widget);
+    //if grid is full
+    if (xy.x == -1 || xy.y == -1)
+    {
+        return false;
+    }
+    MovGridLayoutItem *newItem = new MovGridLayoutItem(this, item->widget, item->w, item->h, item->index);
+    //qDebug() << "add";
+    gridWidgets.append(newItem);
+    newItem->move(xy.x, xy.y, xy.x*sizeRow, xy.y*sizeCol);
+    for (int i = newItem->x; i<newItem->x+newItem->w; i++)
+    {
+        for (int j = newItem->y; j<newItem->y+newItem->h; j++)
+        {
+            grid[i][j] = newItem->index;
+        }
+    }
     //qDebug() << "add done";
     return true;
 }
@@ -76,8 +116,12 @@ void MovGridLayout::addWidget(QWidget *widget, int x, int y)
     gridWidgets.append(item);
     item->move(x, y, x*sizeRow, y*sizeCol);
     for (int i = item->x; i<item->x+item->w; i++)
+    {
         for (int j = item->y; j<item->y+item->h; j++)
+        {
             grid[i][j] = item->index;
+        }
+    }
 }
 
 
@@ -146,11 +190,18 @@ XY MovGridLayout::calcXY(QWidget *widget)
     //grid.resize(gridWidth, vector<int>(gridHeight));
     int **newGrid = (int**) new int*[gridWidth];
     for (int i = 0; i < gridWidth; i++)
+    {
         newGrid[i] = (int*) new int[gridHeight];
+    }
     for (int i = 0; i<oldWidth/sizeRow; i++)
+    {
         for (int j = 0; j<oldHeight/sizeCol; j++)
+        {
             newGrid[i][j] = grid[i][j];
+        }
+    }
     for (int i = 0; i < gridWidth; i++)
+    {
         for (int j = 0; j < gridHeight; j++)
         {
             //qDebug() << oldWidth/sizeRow << " new: " << gridWidth;
@@ -159,13 +210,16 @@ XY MovGridLayout::calcXY(QWidget *widget)
             if (i >= oldWidth/sizeRow || j >= oldHeight/sizeCol)
                 newGrid[i][j] = -1;
         }
+    }
     delete grid;
     grid = newGrid;
     //qDebug() << "reallocating";
     oldWidth = this->width();
     oldHeight = this->height();
     for (int i = 0; i+w<gridWidth; i++)
+    {
         for (int j = 0; j+h<gridHeight; j++)
+        {
             if (grid[i][j] == -1 &&
                 grid [i][j+h] == -1)
             {
@@ -174,6 +228,8 @@ XY MovGridLayout::calcXY(QWidget *widget)
                 xysucc.y = j;
                 return xysucc;
             }
+        }
+    }
     qDebug() << "false";
     XY xyfalse;
     xyfalse.x = -1;
@@ -186,19 +242,48 @@ bool MovGridLayout::checkPosition(XY position, WH geometry, int index)
 {
     //check grid range
     if (position.x + geometry.w > gridWidth || position.y + geometry.h > gridHeight || position.x < 0 || position.y < 0)
+    {
         return false;
+    }
     //check grid
     for (int i = position.x; i<position.x+geometry.w; i++)
+    {
         for (int j = position.y; j<position.y+geometry.h; j++)
+        {
             if (grid[i][j] != -1 && grid[i][j] != index)
-                return false;     
+            {
+                return false;
+            }
+        }
+    }
     return true;
 }
 
 //use pointer to project file or its path
 void MovGridLayout::saveGridWidgets()
 {
+    QDomDocument domDoc("GridLayout");
+    QDomElement xmlRoot = domDoc.createElement("GridLayout");
+    domDoc.appendChild(xmlRoot);
 
+    for (int i = 0; i < gridWidgets.count(); i++)
+    {
+        QDomElement xmlWidget = domDoc.createElement("MovGridLayoutItem");
+        MovGridLayoutItem * actItem = gridWidgets.at(i);
+        xmlWidget.setAttribute("index", actItem->index);
+        xmlWidget.setAttribute("x", actItem->x);
+        xmlWidget.setAttribute("y", actItem->y);
+        xmlWidget.setAttribute("w", actItem->w);
+        xmlWidget.setAttribute("h", actItem->h);
+        xmlRoot.appendChild(xmlWidget);
+    }
+ 
+
+    QFile file("gridlayout.xml");
+    file.open(QIODevice::WriteOnly | QIODevice::Text);
+    QTextStream xmlStream(&file);
+    xmlStream << domDoc.toString();
+    file.close();
 }
 
 
@@ -264,14 +349,14 @@ bool MovGridLayout::eventFilter(QObject *target, QEvent *event)
             return true;
         }
         //mouse up
-        if (event->type() == QEvent::MouseButtonRelease)
+        if (event->type() == QEvent::MouseButtonRelease && movingIndex != -1)
         {
             if (grab == true)
             {
                 QMouseEvent *mouseEvent = static_cast<QMouseEvent *>(event);
                 grab = false;
                 qDebug() << "stop grab";
-                emit dragSignal(NULL);
+                //emit dragSignal(NULL);
                 XY position;
                 position.x = mouseEvent->x()/sizeRow;
                 position.y = mouseEvent->y()/sizeCol;
@@ -331,7 +416,9 @@ void MovGridLayout::paintEvent(QPaintEvent *)
         //fill current mouse position (= new position)
         QBrush brush(Qt::red);
         if (checkPosition(movingWidget.pos, movingWidget.geom, movingIndex) == true)
+        {
             brush.setColor(Qt::green);
+        }
         paint.fillRect(movingWidget.pos.x*sizeRow -1, movingWidget.pos.y*sizeCol -1, movingWidget.geom.w*sizeRow +2, movingWidget.geom.h*sizeCol +2, brush);
         //fill grabbed widget (= old position)
         brush.setColor(Qt::darkCyan);
@@ -376,7 +463,7 @@ int MovGridLayout::getY(int index)
 
 void MovGridLayout::addTempWidget(QWidget *widget)
 {
-    MovGridLayoutItem *item = new MovGridLayoutItem(this, widget, widget->width()/sizeRow, widget->height()/sizeCol, gridWidgets.size());
+    MovGridLayoutItem *item = new MovGridLayoutItem(this, widget, widget->width()/sizeRow, widget->height()/sizeCol, tempGridWidgets.size());
     widget->hide();
     tempGridWidgets.append(item);
 }
@@ -385,4 +472,12 @@ void MovGridLayout::addTempWidget(QWidget *widget)
 MovGridLayoutItem* MovGridLayout::getTempGridWidget(int index)
 {
     return tempGridWidgets.at(index);
+}
+
+
+void MovGridLayout::cancelDrag()
+{
+    this->grab = false;
+    movingIndex = -1;
+    
 }
