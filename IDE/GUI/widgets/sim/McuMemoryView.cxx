@@ -13,6 +13,7 @@
 #include "McuMemoryView.h"
 
 #include <QGridLayout>
+#include <QDebug>
 
 #include "hexedit.h"
 #include "MCUSimControl.h"
@@ -107,6 +108,7 @@ void McuMemoryView::changeValue(int address) {
 }
 
 void McuMemoryView::deviceReset() {
+    qDebug() << "McuMemoryView: deviceReset()"; 
 	if ( NULL == m_hexEdit ) {
 		return;
 	}
@@ -119,6 +121,8 @@ void McuMemoryView::deviceReset() {
 
  		m_hexEdit->setVal(i, (char)value);
 	}
+    m_hexEdit->fixHeight();
+    qDebug() << "McuMemoryView: return deviceReset()"; 
 }
 
 void McuMemoryView::setReadOnly(bool readOnly) {
@@ -126,10 +130,16 @@ void McuMemoryView::setReadOnly(bool readOnly) {
 		return;
 	}
 
- 	//m_hexEdit->setReadOnly(readOnly);
+ 	m_hexEdit->setReadOnly(readOnly);
 // 	for ( int i = 0; i < m_size; i++ ) {
 // 		if ( false == readOnly ) {
 // 			m_hexEdit->setHighlighted(i, false);
 // 		}
 // 	}
+}
+
+
+void McuMemoryView::fixHeight()
+{
+    m_hexEdit->fixHeight();
 }

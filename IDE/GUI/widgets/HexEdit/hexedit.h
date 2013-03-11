@@ -47,6 +47,8 @@ class HexEdit : public QWidget
         //void setByteArray();
         void setVal(int pos, char val);
         char getVal(int pos);
+        void setReadOnly(bool readonly);
+        void fixHeight();
 
     public slots:
         void changeAscii(int position);
