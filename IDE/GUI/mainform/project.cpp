@@ -154,13 +154,13 @@ void ProjectMan::addProject(QString name, QString path, QString architecture, La
     {
         mainWindow->tabifyDockWidget(openProjects.at(0)->prjDockWidget, newProject->prjDockWidget);
     }
-    else
-    {
-        mainWindow->CreateDockWidgets();
-    }
+    //else
+    //{
+    //    mainWindow->CreateDockWidgets();
+    //}
 
-    openProjects.append(newProject);
     activeProject = newProject;
+    openProjects.append(newProject);
     projectCount++;
     qDebug() << "ProjectMan: return addProject()";
 }
@@ -428,7 +428,7 @@ Project::Project(MainForm *mainWindow, ProjectMan *parent)
  */
 Project::Project(QString name, QString path, QString arch, LangType lang, MainForm* mainWindow, QFile *file, ProjectMan *parent)
 {
-    qDebug() << "Project: Project()";
+    qDebug() << "Project: Project() blank";
     errorFlag = ERR_OK;
     parentManager = parent;
     parentWindow = mainWindow;
@@ -498,7 +498,7 @@ Project::Project(QString name, QString path, QString arch, LangType lang, MainFo
     connect(prjDockWidget, SIGNAL(visibilityChanged(bool)), this, SLOT(setActive()));
     connect(prjTreeWidget, SIGNAL(itemDoubleClicked (QTreeWidgetItem *,int)), this, SLOT(openItem()));
     setupSim();
-    qDebug() << "Project: return Project()";
+    qDebug() << "Project: return Project() blank";
 }
 
 

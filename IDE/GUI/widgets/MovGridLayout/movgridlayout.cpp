@@ -131,6 +131,7 @@ void MovGridLayout::loadGridWidgets()
     //load from xml, here or where project-loading takes place
     //xml format:
     //  WIDGET_ID, x, y
+    
 }
 
 
