@@ -358,7 +358,7 @@ void WDockManager::addDockWidget(int code)
 {
     qDebug() << "WDockManager: addDockWidget()";
     WDock *newWDock = new WDock(this, code, wMainWindow);
-    if (getDockWidgetArea(newWDock->getArea())!=NULL)
+    if (getDockWidgetArea(newWDock->getArea()) != NULL)
     {
         wMainWindow->tabifyDockWidget(getDockWidgetArea(newWDock->getArea()), newWDock->getQDockWidget());
     }
