@@ -16,8 +16,11 @@
 #ifndef COMPILERMSGINTERFACE_H
 #define COMPILERMSGINTERFACE_H
 
+// Compiler header files
 #include "CompilerBase.h"
-#include <iostream>
+
+// Standard header files
+#include <string>
 
 class CompilerMsgInterface
 {
@@ -29,7 +32,7 @@ class CompilerMsgInterface
          * @param[in] type
          */
         virtual void message ( const std::string & text,
-                            CompilerBase::MessageType type = CompilerBase::MT_GENERAL ) = 0;
+                               CompilerBase::MessageType type = CompilerBase::MT_GENERAL ) = 0;
 };
 
 #endif // COMPILERMSGINTERFACE_H

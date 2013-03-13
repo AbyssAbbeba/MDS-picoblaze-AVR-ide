@@ -281,20 +281,34 @@ class CompilerExpr
          * @brief
          * @return
          */
-        CompilerExpr * makeCopy() const;
-
-        /**
-         * @brief
-         * @return
-         */
         CompilerExpr * first();
 
         /**
          * @brief
+         * @return
+         */
+        CompilerExpr * last();
+
+        /**
+         * @brief Insert link to the chain right after the link represented by this object.
          * @param[in,out] next
          * @return
          */
-        CompilerExpr * addLink ( CompilerExpr * next );
+        CompilerExpr * insertLink ( CompilerExpr * chainLink );
+
+        /**
+         * @brief Append link at the end of the chain.
+         * @param[in,out] chainLink
+         * @return
+         */
+        CompilerExpr * appendLink ( CompilerExpr * chainLink );
+
+        /**
+         * @brief Insert link before the first link in the chain.
+         * @param[in,out] chainLink
+         * @return
+         */
+        CompilerExpr * prependLink ( CompilerExpr * chainLink );
 
         /**
          * @brief
@@ -306,6 +320,39 @@ class CompilerExpr
          * @param[in,out] expr
          */
         static void completeDelete ( CompilerExpr * expr );
+
+        /**
+         * @brief
+         * @return this
+         */
+        CompilerExpr * unlink();
+
+        /**
+         * @brief
+         */
+        CompilerExpr * copyEntireChain() const;
+
+        /**
+         * @brief
+         */
+        CompilerExpr * copyChainLink() const;
+
+        /**
+         * @brief
+         * @param[in] index
+         */
+        CompilerExpr * operator [] ( int index );
+
+    ////    Inline Public Operations    ////
+    public:
+        /**
+         * @brief
+         * @param[in] index
+         */
+        inline CompilerExpr * at ( int index )
+        {
+            return (*this)[index];
+        }
 
     ////    Public Attributes    ////
     public:
@@ -362,7 +409,7 @@ class CompilerExpr
      * @return
      */
     std::ostream & operator << ( std::ostream & out,
-                                 const CompilerExpr * expr );
+                                 const CompilerExpr * const expr );
 //@}
 
 #endif // COMPILEREXPR_H

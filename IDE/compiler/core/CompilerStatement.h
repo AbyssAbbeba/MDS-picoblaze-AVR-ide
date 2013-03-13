@@ -83,14 +83,14 @@ class CompilerStatement
          * @param[in,out] next
          * @return
          */
-        CompilerStatement * addLink ( CompilerStatement * next );
+        CompilerStatement * appendLink ( CompilerStatement * next );
 
         /**
          * @brief
          * @param[in,out] chainLink
          * @return
          */
-        CompilerStatement * addArgsLink ( CompilerExpr * chainLink );
+        CompilerStatement * appendArgsLink ( CompilerExpr * chainLink );
 
         /**
          * @brief
@@ -102,6 +102,53 @@ class CompilerStatement
         std::ostream & print ( std::ostream & out,
                                int level = 0,
                                std::string lineString = "1" ) const;
+
+    ////    Inline Public Operations    ////
+    public:
+        /**
+         * @brief
+         * @return
+         */
+        CompilerStatement * prev()
+        {
+            return m_prev;
+        }
+
+        /**
+         * @brief
+         * @return
+         */
+        CompilerStatement * next()
+        {
+            return m_next;
+        }
+
+        /**
+         * @brief
+         * @return
+         */
+        CompilerStatement * branch()
+        {
+            return m_branch;
+        }
+
+        /**
+         * @brief
+         * @return
+         */
+        StatementTypes::StatementType type() const
+        {
+            return m_type;
+        }
+
+        /**
+         * @brief
+         * @return
+         */
+        CompilerExpr * args()
+        {
+            return m_args;
+        }
 
     ////    Public Attributes    ////
     public:
@@ -148,6 +195,6 @@ class CompilerStatement
 
 // Tracing operator
 std::ostream & operator << ( std::ostream & out,
-                             const CompilerStatement * stmt );
+                             const CompilerStatement * const stmt );
 
 #endif // COMPILERSTATEMENT_H

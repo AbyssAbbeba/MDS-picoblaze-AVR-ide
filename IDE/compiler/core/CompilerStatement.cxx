@@ -85,7 +85,7 @@ CompilerStatement * CompilerStatement::first()
     return stmt;
 }
 
-CompilerStatement * CompilerStatement::addLink ( CompilerStatement * next )
+CompilerStatement * CompilerStatement::appendLink ( CompilerStatement * next )
 {
     if ( NULL == next )
     {
@@ -109,7 +109,7 @@ CompilerStatement * CompilerStatement::addLink ( CompilerStatement * next )
     return next;
 }
 
-CompilerStatement * CompilerStatement::addArgsLink ( CompilerExpr * chainLink )
+CompilerStatement * CompilerStatement::appendArgsLink ( CompilerExpr * chainLink )
 {
     if ( NULL == this )
     {
@@ -126,7 +126,7 @@ CompilerStatement * CompilerStatement::addArgsLink ( CompilerExpr * chainLink )
     }
     else
     {
-        m_args->addLink(chainLink);
+        m_args->appendLink(chainLink);
     }
     return this;
 }
@@ -235,7 +235,7 @@ std::ostream & CompilerStatement::print ( std::ostream & out,
 }
 
 std::ostream & operator << ( std::ostream & out,
-                             const CompilerStatement * stmt )
+                             const CompilerStatement * const stmt )
 {
     return stmt->print(out);
 }

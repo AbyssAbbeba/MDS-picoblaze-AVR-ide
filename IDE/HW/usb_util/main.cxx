@@ -181,7 +181,7 @@ int main ( int argc, char ** argv )
         std::cout << "\tOpening the device:" << std::endl;
 
         int length = strlen(argv[1]);
-        unsigned char * data = new unsigned char [ length ];
+        unsigned char * data = new unsigned char [ length + 100 ];
         memcpy(data, argv[1], length);
         int transferred = -1;
         const int interface = 0;
@@ -288,7 +288,7 @@ int main ( int argc, char ** argv )
                             case 0: // on success (and populates transferred)
                                 std::cout << "\t\t>>> SUCCESS <<<" << std::endl;
                                 std::cout << "\t\t\tSent data:" << std::endl;
-                                std::cout << "\t\t\t  ADDR\tHEX\tDEC\tASCII" << std::endl;
+                                std::cout << "\t\t\t  ADDR\t\tHEX\tDEC\tASCII" << std::endl;
                                 for ( int x = 0; x < transferred; x++ )
                                 {
                                     std::cout << "\t\t\t  [" << x << "]:\t"
@@ -317,13 +317,13 @@ int main ( int argc, char ** argv )
                                 break;
                         }
                         std::cout << std::endl;
-                        std::cout << "\t>>> Opening pipe on endpoint 1 in attempt to receive data of the same size from the device." << std::endl;
-                        switch ( libusb_interrupt_transfer (handle, 129, data, length, &transferred, 100) )
+                        std::cout << "\t>>> Opening pipe on endpoint 1 in attempt to receive data of the same size (max. +100) from the device." << std::endl;
+                        switch ( libusb_interrupt_transfer (handle, 129, data, length + 100, &transferred, 100) )
                         {
                             case 0: // on success (and populates transferred)
                                 std::cout << "\t\t>>> SUCCESS <<<" << std::endl;
                                 std::cout << "\t\t\tReceived data:" << std::endl;
-                                std::cout << "\t\t\t  ADDR\tHEX\tDEC\tASCII" << std::endl;
+                                std::cout << "\t\t\t  ADDR\t\tHEX\tDEC\tASCII" << std::endl;
                                 for ( int x = 0; x < transferred; x++ )
                                 {
                                     std::cout << "\t\t\t  [" << x << "]:\t"

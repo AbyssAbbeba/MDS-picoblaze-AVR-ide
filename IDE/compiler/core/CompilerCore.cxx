@@ -13,32 +13,33 @@
  */
 // =============================================================================
 
+// Compiler header files
 #include "CompilerCore.h"
-
 #include "CompilerExpr.h"
 #include "CompilerStatement.h"
 #include "CompilerMsgInterface.h"
 #include "CompilerOptions.h"
+#include "SemanticAnalyzers.h"
 
+// Standard header files
 #include <sstream>
 #include <cstdio>
-#include <iostream> // DEBUG
 
 #include <QObject> // Used for i18n only
 
 CompilerCore::CompilerCore ( CompilerMsgInterface * msgInterface )
                            : m_msgInterface(msgInterface)
 {
-    m_semanticAnalyser = NULL;
+    m_semanticAnalyzer = NULL;
     m_rootStatement = NULL;
     m_fileNumber = -1;
 }
 
 CompilerCore::~CompilerCore()
 {
-    if ( NULL != m_semanticAnalyser )
+    if ( NULL != m_semanticAnalyzer )
     {
-        delete m_semanticAnalyser;
+        delete m_semanticAnalyzer;
     }
     if ( NULL != m_rootStatement )
     {
@@ -53,7 +54,7 @@ bool CompilerCore::compile ( LangId lang,
 {
     resetCompilerCore();
 
-    if ( true == setupSemanticAnalyser(lang, arch, opts, filename) )
+    if ( true == setupSemanticAnalyzer(lang, arch, opts, filename) )
     {
         return startLexerAndParser(lang, arch, opts, filename);
     }
@@ -61,14 +62,37 @@ bool CompilerCore::compile ( LangId lang,
     return false;
 }
 
-inline bool CompilerCore::setupSemanticAnalyser ( LangId lang,
+inline bool CompilerCore::setupSemanticAnalyzer ( LangId lang,
                                                   TargetArch arch,
                                                   CompilerOptions * const opts,
                                                   const std::string & filename )
 {
-    m_semanticAnalyser = new AsmAvr8SemanticAnalyser(opts, filename);
-    m_semanticAnalyser = new AsmPic8SemanticAnalyser(opts, filename);
-    m_semanticAnalyser = new AsmMcs51SemanticAnalyser(opts, filename);
+    switch ( lang )
+    {
+        case LI_ASM:
+            switch ( arch )
+            {
+                case TA_AVR8:
+                    m_semanticAnalyzer = new AsmAvr8SemanticAnalyzer(this, opts, filename);
+                    break;
+                case TA_PIC8:
+                    m_semanticAnalyzer = new AsmPic8SemanticAnalyzer(this, opts, filename);
+                    break;
+                case TA_MCS51:
+                    m_semanticAnalyzer = new AsmMcs51SemanticAnalyzer(this, opts, filename);
+                    break;
+                default:
+                    m_msgInterface->message ( QObject::tr("Architecture not supported for the selected language.").toStdString(),
+                                              MT_ERROR );
+                    return false;
+            }
+            break;
+        default:
+            m_msgInterface->message ( QObject::tr("Programming language not supported.").toStdString(),
+                                      MT_ERROR );
+            return false;
+    }
+
     return m_success;
 }
 
@@ -88,26 +112,39 @@ inline bool CompilerCore::startLexerAndParser ( LangId lang,
         return false;
     }
 
-    switch ( arch )
+    switch ( lang )
     {
-        case TA_AVR8:
-            avr8lexer_lex_init_extra ( this, &yyscanner );
-            avr8lexer_set_in ( sourceFile, yyscanner );
-            avr8parser_parse ( yyscanner, this );
-            avr8lexer_lex_destroy ( yyscanner );
+        case LI_ASM:
+            switch ( arch )
+            {
+                case TA_AVR8:
+                    avr8lexer_lex_init_extra ( this, &yyscanner );
+                    avr8lexer_set_in ( sourceFile, yyscanner );
+                    avr8parser_parse ( yyscanner, this );
+                    avr8lexer_lex_destroy ( yyscanner );
+                    break;
+                case TA_PIC8:
+                    pic8lexer_lex_init_extra ( this, &yyscanner );
+                    pic8lexer_set_in ( sourceFile, yyscanner );
+                    pic8parser_parse ( yyscanner, this );
+                    pic8lexer_lex_destroy ( yyscanner );
+                    break;
+                case TA_MCS51:
+                    mcs51lexer_lex_init_extra ( this, &yyscanner );
+                    mcs51lexer_set_in ( sourceFile, yyscanner );
+                    mcs51parser_parse ( yyscanner, this );
+                    mcs51lexer_lex_destroy ( yyscanner );
+                    break;
+                default:
+                    m_msgInterface->message ( QObject::tr("Architecture not supported for the selected language.").toStdString(),
+                                              MT_ERROR );
+                    return false;
+            }
             break;
-        case TA_PIC8:
-            pic8lexer_lex_init_extra ( this, &yyscanner );
-            pic8lexer_set_in ( sourceFile, yyscanner );
-            pic8parser_parse ( yyscanner, this );
-            pic8lexer_lex_destroy ( yyscanner );
-            break;
-        case TA_MCS51:
-            mcs51lexer_lex_init_extra ( this, &yyscanner );
-            mcs51lexer_set_in ( sourceFile, yyscanner );
-            mcs51parser_parse ( yyscanner, this );
-            mcs51lexer_lex_destroy ( yyscanner );
-            break;
+        default:
+            m_msgInterface->message ( QObject::tr("Programming language not supported.").toStdString(),
+                                      MT_ERROR );
+            return false;
     }
 
     fclose(sourceFile);
@@ -186,12 +223,12 @@ inline void CompilerCore::resetCompilerCore()
     m_success = true;
     if ( NULL != m_rootStatement )
     {
-        delete m_rootStatement;
+        m_rootStatement->completeDelete();
         m_rootStatement = NULL;
     }
-    if ( NULL != m_semanticAnalyser )
+    if ( NULL != m_semanticAnalyzer )
     {
-        delete m_semanticAnalyser;
+        delete m_semanticAnalyzer;
     }
 
     m_fileNameStack.clear();
@@ -268,8 +305,6 @@ int CompilerCore::getFileNumber ( const std::string & filename ) const
 
 void CompilerCore::syntaxAnalysisComplete ( CompilerStatement * codeTree )
 {
-    std::cout << ">>> syntaxAnalysisComplete:\n";
-
     if ( NULL != m_rootStatement )
     {
         m_rootStatement->completeDelete();
@@ -279,15 +314,13 @@ void CompilerCore::syntaxAnalysisComplete ( CompilerStatement * codeTree )
     {
         m_rootStatement = m_rootStatement->first();
     }
-    std::cout << m_rootStatement;
-
-    if ( NULL == m_semanticAnalyser )
+    if ( NULL == m_semanticAnalyzer )
     {
-        m_msgInterface->message ( QObject::tr ( "Semantic analyser missing!" ), MT_ERROR );
+        m_msgInterface->message ( QObject::tr ( "Semantic analyzer missing!" ).toStdString(), MT_ERROR );
         return;
     }
     else
     {
-        m_semanticAnalyser->process(codeTree);
+        m_semanticAnalyzer->process(m_rootStatement);
     }
 }

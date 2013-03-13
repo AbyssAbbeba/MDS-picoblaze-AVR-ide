@@ -60,6 +60,9 @@ function countLines() {
 	find -type f -name 'CMakeLists.txt' >> "$tempFile"
 
 	sort "$tempFile" | while read f; do
+		if [[ "$f" =~ '/HW/' ]]; then
+			continue
+		fi
 		wc -lc "$f"
 	done | gawk '
 		BEGIN {

@@ -21,11 +21,11 @@ class CompilerExpr;
 class CompilerStatement;
 class CompilerMsgInterface;
 class CompilerOptions;
+class CompilerSemanticInterface;
 
 // Base class and compiler interfaces
 #include "CompilerBase.h"
 #include "CompilerParserInterface.h"
-#include "CompilerSemanticInterface.h"
 
 // Standard header files
 #include <string>
@@ -38,8 +38,7 @@ class CompilerOptions;
  * @class CompilerCore
  */
 class CompilerCore : public CompilerBase,
-                     private CompilerParserInterface,
-                     private CompilerSemanticInterface
+                     private CompilerParserInterface
 {
     ////    Constructors and Destructors    ////
     public:
@@ -164,10 +163,10 @@ class CompilerCore : public CompilerBase,
          * @param[in] filename
          * @return
          */
-        inline bool CompilerCore::setupSemanticAnalyser ( LangId lang,
-                                                          TargetArch arch,
-                                                          CompilerOptions * const opts,
-                                                          const std::string & filename );
+        inline bool setupSemanticAnalyzer ( LangId lang,
+                                            TargetArch arch,
+                                            CompilerOptions * const opts,
+                                            const std::string & filename );
 
         /**
          * @brief
@@ -177,10 +176,10 @@ class CompilerCore : public CompilerBase,
          * @param[in] filename
          * @return
          */
-        inline bool CompilerCore::startLexerAndParser ( LangId lang,
-                                                        TargetArch arch,
-                                                        CompilerOptions * const opts,
-                                                        const std::string & filename );
+        inline bool startLexerAndParser ( LangId lang,
+                                          TargetArch arch,
+                                          CompilerOptions * const opts,
+                                          const std::string & filename );
 
     ////    Private Attributes    ////
     private:
@@ -192,7 +191,7 @@ class CompilerCore : public CompilerBase,
         /**
          * @brief
          */
-        CompilerSemanticInterface * m_semanticAnalyser;
+        CompilerSemanticInterface * m_semanticAnalyzer;
 
         /**
          * @brief

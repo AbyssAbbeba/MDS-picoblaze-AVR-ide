@@ -622,6 +622,9 @@ std::ostream & operator << ( std::ostream & out,
         case ASM51_INS_XRL__A_R5:               out << "ASM51_INS_XRL__A_R5";           break;
         case ASM51_INS_XRL__A_R6:               out << "ASM51_INS_XRL__A_R6";           break;
         case ASM51_INS_XRL__A_R7:               out << "ASM51_INS_XRL__A_R7";           break;
+
+
+        case STATEMENTTYPE__MAX__:              out << "(STATEMENTTYPE__MAX__)";        break;
     }
 
     return out;
