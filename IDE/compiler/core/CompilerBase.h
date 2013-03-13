@@ -28,17 +28,6 @@ class CompilerBase
         /**
          * @brief
          */
-        enum MessageType
-        {
-            MT_GENERAL, ///<
-            MT_ERROR,   ///<
-            MT_WARNING, ///<
-            MT_REMARK   ///<
-        };
-
-        /**
-         * @brief
-         */
         enum TargetArch
         {
             TA_AVR8,    ///<
@@ -52,6 +41,17 @@ class CompilerBase
         enum LangId
         {
             LI_ASM      ///<
+        };
+
+        /**
+         * @brief
+         */
+        enum MessageType
+        {
+            MT_GENERAL, ///<
+            MT_ERROR,   ///<
+            MT_WARNING, ///<
+            MT_REMARK   ///<
         };
 
         /**

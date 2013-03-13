@@ -111,7 +111,7 @@ CompilerExpr::Value & CompilerExpr::Value::makeCopy() const
             result->m_data.m_real = m_data.m_real;
             break;
         case TYPE_EXPR:
-            result->m_data.m_expr = m_data.m_expr->makeCopy();
+            result->m_data.m_expr = m_data.m_expr->copyEntireChain();
             break;
         case TYPE_SYMBOL:
         {
@@ -226,20 +226,6 @@ CompilerExpr::CompilerExpr ( Value lValue,
     m_prev = NULL;
 }
 
-CompilerExpr * CompilerExpr::makeCopy() const
-{
-    if ( NULL == this )
-    {
-        return NULL;
-    }
-
-    CompilerExpr * result = new CompilerExpr();
-    result->m_lValue = m_lValue.makeCopy();
-    result->m_operator = m_operator;
-    result->m_rValue = m_rValue.makeCopy();
-    return result;
-}
-
 CompilerExpr * CompilerExpr::first()
 {
     CompilerExpr * expr = this;
@@ -257,28 +243,82 @@ CompilerExpr * CompilerExpr::first()
     return expr;
 }
 
-CompilerExpr * CompilerExpr::addLink ( CompilerExpr * next )
+CompilerExpr * CompilerExpr::last()
 {
-    if ( NULL == next )
+    CompilerExpr * result = this;
+    while ( NULL != result->m_next )
+    {
+        result = result->m_next;
+    }
+    return result;
+}
+
+CompilerExpr * CompilerExpr::insertLink ( CompilerExpr * chainLink )
+{
+    if ( NULL == chainLink )
     {
         return this;
     }
     if ( NULL == this )
     {
-        return next;
+        return chainLink;
     }
 
-    next = next->first();
+    CompilerExpr * chainLinkOrig = chainLink;
+    CompilerExpr * chainLinkLast = chainLink->last();
+    CompilerExpr * nextOrig = m_next;
 
-    CompilerExpr * expr = this;
-    while ( NULL != expr->m_next )
+    chainLink = chainLink->first();
+
+    m_next = chainLink;
+    chainLink->m_prev = this;
+
+    chainLinkLast->m_next = nextOrig;
+    nextOrig->m_prev = chainLinkLast;
+
+    return chainLinkOrig;
+}
+
+CompilerExpr * CompilerExpr::appendLink ( CompilerExpr * chainLink )
+{
+    if ( NULL == chainLink )
     {
-        expr = expr->m_next;
+        return this;
     }
-    expr->m_next = next;
-    next->m_prev = expr;
+    if ( NULL == this )
+    {
+        return chainLink;
+    }
 
-    return next;
+    CompilerExpr * chainLinkOrig = chainLink;
+    CompilerExpr * lastLink = last();
+
+    chainLink = chainLink->first();
+    lastLink->m_next = chainLink;
+    chainLink->m_prev = lastLink;
+
+    return chainLinkOrig;
+}
+
+CompilerExpr * CompilerExpr::prependLink ( CompilerExpr * chainLink )
+{
+    if ( NULL == chainLink )
+    {
+        return this;
+    }
+    if ( NULL == this )
+    {
+        return chainLink;
+    }
+
+    CompilerExpr * chainLinkOrig = chainLink;
+    CompilerExpr * firstLink = first();
+
+    chainLink = chainLink->last();
+    chainLink->m_next = firstLink;
+    firstLink->m_prev = chainLink;
+
+    return chainLinkOrig;
 }
 
 void CompilerExpr::completeDelete ( CompilerExpr * expr )
@@ -309,6 +349,65 @@ void CompilerExpr::completeDelete()
     }
 
     delete this;
+}
+
+CompilerExpr * CompilerExpr::operator [] ( int index )
+{
+    CompilerExpr * result = this;
+    for ( int i = 0; i < index; i++ )
+    {
+        result = result->m_next;
+        if ( NULL == result )
+        {
+            return NULL;
+        }
+    }
+    return result;
+}
+
+CompilerExpr * CompilerExpr::copyEntireChain() const
+{
+    if ( NULL == this )
+    {
+        return NULL;
+    }
+
+    CompilerExpr * result = copyChainLink();
+
+    const CompilerExpr * next = this;
+    while ( NULL != ( next = next->m_next ) )
+    {
+        result->appendLink(next->copyChainLink());
+    }
+
+    const CompilerExpr * prev = this;
+    while ( NULL != ( prev = prev->m_prev ) )
+    {
+        result->prependLink(prev->copyChainLink());
+    }
+
+    return result;
+}
+
+CompilerExpr * CompilerExpr::copyChainLink() const
+{
+    if ( NULL == this )
+    {
+        return NULL;
+    }
+
+    CompilerExpr * result = new CompilerExpr();
+    result->m_lValue = m_lValue.makeCopy();
+    result->m_operator = m_operator;
+    result->m_rValue = m_rValue.makeCopy();
+    return result;
+}
+
+CompilerExpr * CompilerExpr::unlink()
+{
+    m_next->m_prev = NULL;
+    m_next = NULL;
+    return this;
 }
 
 std::ostream & operator << ( std::ostream & out,
@@ -409,7 +508,7 @@ std::ostream & operator << ( std::ostream & out,
 }
 
 std::ostream & operator << ( std::ostream & out,
-                             const CompilerExpr * expr )
+                             const CompilerExpr * const expr )
 {
     if ( NULL == expr )
     {
