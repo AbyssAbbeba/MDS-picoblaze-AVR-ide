@@ -563,6 +563,7 @@ WDock::WDock(WDockManager *parent, int code, MainForm *mainWindow)
             wDockWidget->setAllowedAreas(Qt::BottomDockWidgetArea);
             mainWindow->addDockWidget(Qt::BottomDockWidgetArea, wDockWidget);
             WSimulationInfo *newWidget = new WSimulationInfo(mainWindow->getProjectMan()->getActive()->getSimControl(), wDockWidget);
+            newWidget->setProjectPath(mainWindow->getProjectMan()->getActive()->prjPath);
             area = 2;
             wDockWidget->setWidget(newWidget);
             newWidget->fixHeight();

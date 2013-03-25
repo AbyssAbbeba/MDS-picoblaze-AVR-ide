@@ -500,6 +500,7 @@ void HexEdit::setVal(int pos, char val)
 {
     qDebug() << "-----------------HexEdit: setVal()";
     (*hexByteArray)[pos] = val;
+    qDebug() << "HexEdit: val" << (int)val;
     this->changeText(pos);
     qDebug() << "-----------------HexEdit: return setVal()";
 }
