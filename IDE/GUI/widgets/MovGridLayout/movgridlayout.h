@@ -65,18 +65,22 @@ class MovGridLayout : public QWidget
         bool addWidget(QWidget *widget);
         //add item, automatic position
         bool addItem(MovGridLayoutItem *item);
+        //add item, given position
+        void addItem(MovGridLayoutItem *item, int x, int y);
         //add temporary widget, not shown
         void addTempWidget(QWidget *widget);
         //add widget, specific position
         void addWidget(QWidget *widget, int x, int y);
         //load layout from project xml file
-        void loadGridWidgets();
+        void loadGridWidgets(QString path);
         //save layout to project xml file
-        void saveGridWidgets();
+        void saveGridWidgets(QString path);
         //returns actual (most recently given) index
         int actualIndex();
-        //returns actual index in gridWidgets qlist
+        //returns position of widget with index in gridWidgets qlist
         int findIndex(int index);
+        //returns position of widget with index in tempGridWidgets qlist
+        int findTempIndex(int index);
         //returns Y coord of widget on index
         int getY(int index);
         //returns X coord of widget on index
@@ -91,7 +95,7 @@ class MovGridLayout : public QWidget
         bool checkPosition(XY position, WH geometry, int index = -1);
         //calculate valid position for widget
         XY calcXY(QWidget *widget);
-
+        //parent widget
         QWidget *parent;
         //index of grabbed widget
         int movingIndex;

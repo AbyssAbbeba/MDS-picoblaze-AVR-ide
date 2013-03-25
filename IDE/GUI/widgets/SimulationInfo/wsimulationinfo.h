@@ -47,6 +47,7 @@ class WSimulationInfo : public QWidget
         McuMemoryView* getHexEdit();
         QWidget* getParent();
         void fixHeight();
+        void setProjectPath(QString prjPath);
         
     private:
         MCUSimControl *controlUnit;
@@ -59,6 +60,7 @@ class WSimulationInfo : public QWidget
         QMenu *popupMenu;
         MovGridLayoutItem *dragItem;
         bool focusTracking;
+        QString projectPath;
 
     private slots:
         void rearangeLayoutSlot();

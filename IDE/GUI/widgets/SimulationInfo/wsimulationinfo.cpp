@@ -173,8 +173,11 @@ void WSimulationInfo::rearangeLayoutSlot()
     QWidget *infoWidget = new QWidget(0);
     QVBoxLayout *layout = new QVBoxLayout(infoWidget);
     WSimulationInfo *info1 = new WSimulationInfo(controlUnit, this, infoWidget);
+    info1->setProjectPath(projectPath);
     info1->show();
     WSimulationInfo *info2 = new WSimulationInfo(infoWidget, controlUnit);
+    info2->setProjectPath(projectPath);
+    info2->getGridLayout()->loadGridWidgets(projectPath);
     info2->show();
     layout->addWidget(info1);
     layout->addWidget(info2);
@@ -191,7 +194,7 @@ void WSimulationInfo::rearangeLayoutSlot()
 void WSimulationInfo::saveLayoutSlot()
 {
     qDebug() << "simulation info: save layout slot";
-    this->getGridLayout()->saveGridWidgets();
+    this->getGridLayout()->saveGridWidgets(projectPath);
 }
 
 
@@ -270,4 +273,11 @@ QWidget* WSimulationInfo::getParent()
 void WSimulationInfo::fixHeight()
 {
     this->m_hexEdit->fixHeight();
+}
+
+
+
+void WSimulationInfo::setProjectPath(QString prjPath)
+{
+    projectPath = prjPath;
 }
