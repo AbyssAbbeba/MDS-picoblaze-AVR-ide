@@ -19,11 +19,12 @@ class HexEdit;
 class MCUSimControl;
 class QGridLayout;
 
-#include "MCUSim.h"
-#include "MCUSimObserver.h"
 
 #include <cstdint>
 #include <QWidget>
+
+#include "MCUSim.h"
+#include "MCUSimObserver.h"
 
 class McuMemoryView : public QWidget, public MCUSimObserver  {
 	Q_OBJECT
@@ -35,6 +36,7 @@ public:
 	void deviceChanged();
 	void deviceReset();
 	void setReadOnly(bool readOnly);
+    void fixHeight();
 
 public slots:
 	void changeValue(int address);

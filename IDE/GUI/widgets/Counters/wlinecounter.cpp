@@ -27,6 +27,7 @@
 WLineCounter::WLineCounter(QTextEdit *parent, bool icons, bool hex, int width)
     : QScrollArea(parent)
 {
+    qDebug() << "WLineCounter: WLineCounter()";
     this->setFrameShape(QFrame::NoFrame);
     //parent->show();
     this->parent = parent;
@@ -39,6 +40,7 @@ WLineCounter::WLineCounter(QTextEdit *parent, bool icons, bool hex, int width)
     this->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     connect(this->parent->verticalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(change(int)));
+    qDebug() << "WLineCounter: return WLineCounter()";
 }
 
 
@@ -68,23 +70,9 @@ WLineCounterWidget* WLineCounter::getWidget()
  */
 void WLineCounter::change(int value)
 {
-    /*if (this->verticalScrollBar()->maximum() != this->parent->verticalScrollBar()->maximum())
-    {
-        this->widget->changeHeight();
-    }*/
-    //if (this->verticalScrollBar()->maximum() != 0 && this->parent->verticalScrollBar()->maximum() != 0)
-    //{
-        /*qDebug() << "WLineCounter: parent verticalScrollBar value" << value;
-        qDebug() << "WLineCounter: texedit max value" << this->parent->verticalScrollBar()->maximum();
-        qDebug() << "WLineCounter: parent div:" << (double)value/(double)this->parent->verticalScrollBar()->maximum();
-        qDebug() << "WLineCounter: max value" << this->verticalScrollBar()->maximum();*/
-        //double newValue = (double)value*(double)this->verticalScrollBar()->maximum()/(double)this->parent->verticalScrollBar()->maximum();
-        //qDebug() << "WLineCounter: set value" << newValue;
-        //this->verticalScrollBar()->setValue((int)newValue);
-        //qDebug() << "WLineCounter: this div:" << (double)this->verticalScrollBar()->value()/(double)this->verticalScrollBar()->maximum(); 
-        //this->verticalScrollBar()->setValue(value);
-        this->widget->update();
-    //}
+    qDebug() << "WLineCounter: change()";
+    this->widget->update();
+    qDebug() << "WLineCounter: return change()";
 }
 
 
@@ -99,6 +87,7 @@ void WLineCounter::change(int value)
 WLineCounterWidget::WLineCounterWidget(WLineCounter *parent, bool icons, bool hex, int width)
     : QWidget(parent)
 {
+    qDebug() << "WLineCounterWidget: WLineCounterWidget()";
     this->parent = parent;
     this->icons = icons;
     this->setMaximumWidth(width);
@@ -118,12 +107,8 @@ WLineCounterWidget::WLineCounterWidget(WLineCounter *parent, bool icons, bool he
 
     //if (icons == true)
     //{
-        //inicializace poli a pripojeni na signal texteditu content changed
-        //nebo zrejme reimplementace handlovani eventu pro qkey::return
-        //v texteditu a emitnuti signalu pro novy radek a pote zmena pole
-        //+ pripojeni na mouseclick (na cislo je breakpoint, na mezeru
-        //vedle je bookmark ci naopak)...
     //}
+    qDebug() << "WLineCounterWidget: return WLineCounterWidget()";
 }
 
 
@@ -231,22 +216,12 @@ void WLineCounterWidget::paintEvent(QPaintEvent *)
  */
 void WLineCounterWidget::changeHeight()
 {
-    //qDebug() << "WLineCounterWidget: change height()";
-    //qDebug() << "WLineCounterWidget: parent textEdit scrollbar max" << parent->getTextEdit()->verticalScrollBar()->maximum();
+    qDebug() << "WLineCounterWidget: changeHeight()";
     QTextEdit* textEdit = parent->getTextEdit();
-    //int size = textEdit->currentFont().pointSize();
-    //QTextCursor lastBlockCursor(textEdit->document()->lastBlock());
-    //QRect lastBlockRect = textEdit->cursorRect(lastBlockCursor);
-    //this->setMinimumHeight(lastBlockRect.bottom());
-    //this->setMaximumHeight(lastBlockRect.bottom());
     this->setMinimumHeight(textEdit->document()->size().height());
     this->setMaximumHeight(textEdit->document()->size().height());
-    //this->setMinimumHeight(textEdit->document()->size().height()-textEdit->document()->blockCount()*2-size);
-    //this->setMaximumHeight(textEdit->document()->size().height()-textEdit->document()->blockCount()*2-size);
-    //this->setMinimumHeight(textEdit->height());
-    qDebug() << "WLineCounterWidget: new height" << this->height();
-    //this->parent->verticalScrollBar()->setMaximum(parent->getTextEdit()->verticalScrollBar()->maximum());
-    //qDebug() << "WLineCounterWidget: parent scrollbar max" << parent->verticalScrollBar()->maximum();
-    //qDebug() << "WLineCounterWidget: parent scrollbar max" << textEdit->verticalScrollBar()->maximum();
+    qDebug() << "WLineCounterWidget: height" << this->height();
+    qDebug() << "WLineCounterWidget: parent height:" << textEdit->document()->size().height();
     this->update();
+    qDebug() << "WLineCounterWidget: return changeHeight()";
 }
