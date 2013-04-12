@@ -25,18 +25,20 @@ bool HexEdit::eventFilter(QObject *target, QEvent *event)
         QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
         //overit, jestli je vse v poradku (0-9, A-F, sipky)
         if ((keyEvent->key() < Qt::Key_0 ||
-          keyEvent->key() > Qt::Key_9)
-          && (keyEvent->key() < Qt::Key_A ||
-          keyEvent->key() > Qt::Key_F)
-          && (keyEvent->key() < Qt::Key_Left ||
-          keyEvent->key() > Qt::Key_Down))
+            keyEvent->key() > Qt::Key_9)
+            && (keyEvent->key() < Qt::Key_A ||
+            keyEvent->key() > Qt::Key_F)
+            && (keyEvent->key() < Qt::Key_Left ||
+            keyEvent->key() > Qt::Key_Down))
+        {
             return true;
+        }
         //else if (keyEvent->key() == Qt::Key_Right)
         //    txtCursor.setPosition(position-2); 
         else if ((keyEvent->key() >= Qt::Key_0 &&
-          keyEvent->key() <= Qt::Key_9)
-          || (keyEvent->key() >= Qt::Key_A &&
-          keyEvent->key() <= Qt::Key_F))
+            keyEvent->key() <= Qt::Key_9)
+            || (keyEvent->key() >= Qt::Key_A &&
+            keyEvent->key() <= Qt::Key_F))
         {
             int position = hexTextEdit->textCursor().position();
             QChar data;
@@ -121,9 +123,13 @@ HexEdit::HexEdit(QWidget *parent, bool AsciiPanel, int countSize, int columns)
     hexStatusLabel = new QLabel(this);
     //hexStatusBar->addPermanentWidget(hexStatusLabel);
     if (hexTextEdit->isReadOnly() == true)
+    {
         hexStatusLabel->setText("Read Only");
+    }
     else
+    {
         hexStatusLabel->setText("Read/Write");
+    }
 
     hexLayout->setSpacing(0);
     //QWidget* nullWidget = new QWidget(this);
@@ -181,6 +187,8 @@ HexEdit::HexEdit(QWidget *parent, bool AsciiPanel, int countSize, int columns)
     {
         this->setMaximumWidth(hexTextEdit->width()+hexAsciiEdit->width()+hexLineCount->width());
     }
+    //this->show();
+    //this->hexLineCount->getWidget()->changeHeight();
 }
 
 
@@ -208,9 +216,13 @@ void HexEdit::moveCursor()
         txtCursor.select(QTextCursor::WordUnderCursor);
         QTextCharFormat format = txtCursor.charFormat();
         if (txtCursor.blockNumber() % 2 == 0)
+        {
             format.setBackground(Qt::white);
+        }
         else
+        {
             format.setBackground(Qt::lightGray);
+        }
         txtCursor.setCharFormat(format);
         txtCursor.setPosition(position);
 
@@ -250,10 +262,14 @@ void HexEdit::moveCursor()
             int asciiPosition = prevBlock + position/3;
             asciiCursor.setPosition(asciiPosition);
             if (asciiCursor.positionInBlock() == columns)
+            {
                 asciiPosition += 1;
+            }
 
             if (prevBlock != asciiCursor.blockNumber())
+            {
                 asciiPosition += 1;
+            }
 
             asciiCursor.setPosition(asciiPosition);
             asciiCursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor, 1);
@@ -265,9 +281,13 @@ void HexEdit::moveCursor()
                 asciiCursor.setPosition(asciiPrevPosition);
                 asciiCursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor, 1);
                 if (asciiCursor.blockNumber()%2 == 0)
+                {
                     format.setBackground(Qt::white);
+                }
                 else
+                {
                     format.setBackground(Qt::lightGray);
+                }
                 asciiCursor.setCharFormat(format);
                 asciiCursor.setPosition(asciiPosition);
                 asciiPrevPosition = asciiPosition;
@@ -306,9 +326,13 @@ void HexEdit::moveAsciiCursor()
         asciiCursor.setPosition(asciiPrevPosition);
         asciiCursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor, 1);
         if (asciiCursor.blockNumber()%2 == 0)
+        {
             format.setBackground(Qt::white);
+        }
         else
+        {
             format.setBackground(Qt::lightGray);
+        }
         asciiCursor.setCharFormat(format);
         asciiCursor.setPosition(position);
         asciiPrevPosition = position;
@@ -324,9 +348,13 @@ void HexEdit::moveAsciiCursor()
         textCursor.setPosition(prevPosition);
         textCursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor, 2);
         if (textCursor.blockNumber()%2 == 0)
+        {
             format.setBackground(Qt::white);
+        }
         else
+        {
             format.setBackground(Qt::lightGray);
+        }
         textCursor.setCharFormat(format);
         textCursor.setPosition(textPosition);
         prevPosition = textPosition;
@@ -349,9 +377,13 @@ void HexEdit::changeText(int position)
         textCursor.deleteChar();
         textCursor.deleteChar();
         if (hexByteArray->at(position) > 10)
+        {
             textCursor.insertText((QString::number(hexByteArray->at(position), 16)).toUpper());
+        }
         else
+        {
             textCursor.insertText("0" + (QString::number(hexByteArray->at(position), 16)).toUpper());
+        }
         hexTextEdit->setTextCursor(textCursor);
         changable = true;
     }
@@ -372,17 +404,25 @@ void HexEdit::changeAscii(int position)
         int asciiPosition = prevBlock + position;
         asciiCursor.setPosition(asciiPosition);
         if (asciiCursor.positionInBlock() == columns)
+        {
             asciiPosition += 1;
+        }
 
         if (prevBlock != asciiCursor.blockNumber())
+        {
             asciiPosition += 1;
-                 
+        }
+        
         asciiCursor.setPosition(asciiPosition);
         asciiCursor.deleteChar();
         if ((unsigned char)hexByteArray->at(position) >= 32 && (unsigned char)hexByteArray->at(position) < 127)
+        {
             asciiCursor.insertText(QString((unsigned char)hexByteArray->at(position)));
+        }
         else
+        {
             asciiCursor.insertText(".");
+        }
         asciiCursor.setPosition(asciiPosition);
         hexAsciiEdit->setTextCursor(asciiCursor);
         changable = true;
@@ -399,9 +439,13 @@ void HexEdit::setData(QByteArray *byteArray)
     //int line is for counting rows (bad naming, heh...)
     int line = 0;
     if (hexTextEdit->isReadOnly())
+    {
         hexTextEdit->setTextColor(Qt::darkGray);
+    }
     else
+    {
         hexTextEdit->setTextColor(Qt::black);
+    }
     QString tmp(*byteArray);
     for (int i=0; i<byteArray->size(); i++)
     {
@@ -423,9 +467,13 @@ void HexEdit::setData(QByteArray *byteArray)
             }
         }
         if (byteArray->at(i) > 10)
+        {
             hexTextEdit->insertPlainText((QString::number(byteArray->at(i), 16)).toUpper());
+        }
         else
+        {
             hexTextEdit->insertPlainText("0" + (QString::number(byteArray->at(i), 16)).toUpper());
+        }
         if (ascii == true)
         {
             if (byteArray->at(i) < 127 && byteArray->at(i) >= 32)
@@ -450,11 +498,27 @@ void HexEdit::setData(QByteArray *byteArray)
 
 void HexEdit::setVal(int pos, char val)
 {
+    qDebug() << "-----------------HexEdit: setVal()";
     (*hexByteArray)[pos] = val;
+    qDebug() << "HexEdit: val" << (int)val;
     this->changeText(pos);
+    qDebug() << "-----------------HexEdit: return setVal()";
 }
+
 
 char HexEdit::getVal(int pos)
 {
     return hexByteArray->at(pos);
+}
+
+
+void HexEdit::setReadOnly(bool readonly)
+{
+    this->hexTextEdit->setReadOnly(readonly);
+}
+
+
+void HexEdit::fixHeight()
+{
+    this->hexLineCount->getWidget()->changeHeight();
 }

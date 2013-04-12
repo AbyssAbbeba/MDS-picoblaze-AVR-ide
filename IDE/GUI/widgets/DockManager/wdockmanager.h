@@ -40,7 +40,6 @@
 #include "../TabBar/tabbar.h"
 #include "../AnalyserWidget/analyserwidget.h"
 #include "../Analyser/analys.h"
-
 class WDock;
 class MainForm;
 class CodeEdit;
@@ -66,6 +65,7 @@ class WDockManager : public QObject
         void hideDockWidgetArea(int area);
         void showDockWidgetArea(int area);
         void removeDockWidget(int code);
+        void addUntrackedCentralWidget(QString wName, QString wPath);
         void addCentralWidget(QString wName, QString wPath);
         WTextEdit* getCentralTextEdit();
         WTextEdit* getTabTextEdit(int index);

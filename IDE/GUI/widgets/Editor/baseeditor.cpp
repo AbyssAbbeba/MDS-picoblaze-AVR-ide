@@ -19,16 +19,25 @@
 BaseEditor::BaseEditor(QWidget *parent, WDockManager *dockParent, CodeEdit *edit, bool delCodeEdit)
     : QSplitter(parent)
 {
+    qDebug() << "BaseEditor: BaseEditor()";
     if (dockParent != NULL)
     {
         this->dockMan = dockParent;
         connect(this, SIGNAL(focusIn(CodeEdit*)), this->dockMan, SLOT(changeActiveCodeEdit(CodeEdit*)));
-        qDebug() << "BaseEditor: created and connected";
+        //qDebug() << "BaseEditor: created and connected";
     }
     else
+    {
         this->dockMan = NULL;
+    }
+    //qDebug() << "BaseEditor: creating codeEdit";
     this->codeEdit = new CodeEdit(this, false, edit->getName(), edit->getPath(), edit->getParentCodeEdit());
-    this->codeEdit->getTextEdit()->setPlainText(edit->getTextEdit()->toPlainText());
+    //qDebug() << "BaseEditor: codeEdit created";
+    if (edit->getTextEdit()->toPlainText() != "")
+    {
+        this->codeEdit->getTextEdit()->setPlainText(edit->getTextEdit()->toPlainText());
+    }
+    //qDebug() << "BaseEditor: text set";
     if (delCodeEdit == true)
     {
         delete edit;
@@ -38,12 +47,15 @@ BaseEditor::BaseEditor(QWidget *parent, WDockManager *dockParent, CodeEdit *edit
     connect(codeEdit, SIGNAL(splitSignal(Qt::Orientation, int)), this, SLOT(split(Qt::Orientation, int)));
     connect(codeEdit, SIGNAL(CodeEditChanged(CodeEdit*)), this, SLOT(reconnect(CodeEdit*)));
     connectCodeEdits(this->codeEdit, this->codeEdit->getParentCodeEdit());
+    //qDebug() << "BaseEditor: codeedit connected";
+    qDebug() << "BaseEditor: return BaseEditor()";
 }
 
 
 void BaseEditor::split(Qt::Orientation orient, int line)
 {
-    qDebug() << "BaseEditor: split signal recieved";
+    qDebug() << "BaseEditor: split()";
+    //qDebug() << "BaseEditor: split signal recieved";
     isSplit = true;
     this->setOrientation(orient);
     next = new BaseEditor(this, dockMan, codeEdit, false);
@@ -54,6 +66,7 @@ void BaseEditor::split(Qt::Orientation orient, int line)
     connectCodeEdits(next2->getCodeEdit(), next2->getCodeEdit()->getParentCodeEdit());
     this->addWidget(next);
     this->addWidget(next2);
+    qDebug() << "BaseEditor: return split()";
 }
 
 void BaseEditor::unsplit()
@@ -69,6 +82,7 @@ CodeEdit* BaseEditor::getCodeEdit()
 
 void BaseEditor::connectCodeEdits(CodeEdit* editor1, CodeEdit* editor2)
 {
+    qDebug() << "BaseEditor: connectCodeEdits()";
     if (editor1 != NULL && editor2 != NULL)
     {
 
@@ -92,6 +106,7 @@ void BaseEditor::connectCodeEdits(CodeEdit* editor1, CodeEdit* editor2)
         connect(editor2->getTextEdit(), SIGNAL(breakpoint(int)), editor1, SLOT(manageBreakpointEmit(int)));
 
     }
+    qDebug() << "BaseEditor: return connectCodeEdits()";
 }
 
 /*void BaseEditor::connectBaseEditors(BaseEditor* editor1, BaseEditor* editor2)
@@ -111,6 +126,6 @@ void BaseEditor::reconnect(CodeEdit* editor)
 
 void BaseEditor::focusIn()
 {
-        emit focusIn(codeEdit);
-        qDebug() << "BaseEditor: emit focus in";
+    emit focusIn(codeEdit);
+    //qDebug() << "BaseEditor: emit focus in";
 }

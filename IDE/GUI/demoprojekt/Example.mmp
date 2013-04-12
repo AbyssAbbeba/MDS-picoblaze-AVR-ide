@@ -6,10 +6,14 @@
   <Language language="0"/>
  </General>
  <Files>
-  <File path="a.c" name="a.c"/>
   <File path="a.asm" name="a.asm"/>
  </Files>
  <Mainfile path="a.asm" name="a.asm"/>
  <Simulator/>
  <Compiler/>
+ <GridLayout>
+  <MovGridLayoutItem x="1" y="1" index="0"/>
+  <MovGridLayoutItem x="120" y="1" index="11"/>
+  <MovGridLayoutItem x="121" y="14" index="8"/>
+ </GridLayout>
 </MMProject>

@@ -16,22 +16,37 @@
 WTextEdit::WTextEdit(QWidget *parent, SourceType type)
     : QTextEdit(parent)
 {
+    this->sourceType = type;
+    qDebug() << "WTextEdit: WTextEdit()";
     this->installEventFilter(this);
-    highlighter = new Highlighter(this->document(), type);
+    if (this->sourceType != PLAIN)
+    {
+        highlighter = new Highlighter(this->document(), this->sourceType);
+    }
     //this->sourceType = type;
     //this->setFocusPolicy(Qt::ClickFocus);
+    qDebug() << "WTextEdit: return WTextEdit()";
 }
 
 void WTextEdit::reloadHighlighter(SourceType type)
 {
-    delete highlighter;
-    highlighter = new Highlighter(this->document(), type);
-    //this->sourceType = type;
+    qDebug() << "WTextEdit: reloadHighlighter()";
+    if (this->sourceType != PLAIN)
+    {
+        delete highlighter;
+    }
+    if (type != PLAIN)
+    {
+        highlighter = new Highlighter(this->document(), type);
+    }
+    this->sourceType = type;
+    qDebug() << "WTextEdit: return reloadHighlighter()";
 }
 
 
 bool WTextEdit::eventFilter(QObject *target, QEvent *event)
 {
+    //qDebug() << "WTextEdit: eventFilter()";
     //track focus event
     if (event->type() == QEvent::FocusIn)
     {
@@ -50,6 +65,7 @@ bool WTextEdit::eventFilter(QObject *target, QEvent *event)
             QTextCursor cursor(this->textCursor());
             emit breakpoint(cursor.blockNumber());
             qDebug() << "Breakpoint on line:" << cursor.blockNumber()+1;
+            //qDebug() << "WTextEdit: return eventFilter()";
             return true;
         }
         else if ((keyEvent->modifiers() & Qt::ShiftModifier) && (keyEvent->modifiers() & Qt::ControlModifier)
@@ -58,6 +74,7 @@ bool WTextEdit::eventFilter(QObject *target, QEvent *event)
             QTextCursor cursor(this->textCursor());
             emit bookmark(cursor.blockNumber());
             qDebug() << "Bookmark on line:" << cursor.blockNumber()+1;
+            //qDebug() << "WTextEdit: return eventFilter()";
             return true;
         }
         else if ((keyEvent->modifiers() & Qt::ShiftModifier) && (keyEvent->modifiers() & Qt::ControlModifier)
@@ -73,11 +90,17 @@ bool WTextEdit::eventFilter(QObject *target, QEvent *event)
                     a.remove(a.size() - 2, 2);
                 }
                 else if (a.startsWith("/*"))
+                {
                     a = a + "*/";
+                }
                 else if (a.endsWith("*/"))
+                {
                     a = "/*" + a;
+                }
                 else
+                {
                     a = "/*" + a + "*/";
+                }
                 cursor.removeSelectedText();
                 cursor.insertText(a); 
             }
@@ -91,17 +114,22 @@ bool WTextEdit::eventFilter(QObject *target, QEvent *event)
                     cursor.deleteChar();
                 }
                 else
+                {
                     cursor.insertText("//");
+                }
                 cursor.setPosition(cursor.position() + linePos);
             }
+            //qDebug() << "WTextEdit: return eventFilter()";
             return true;
         }
     }
+    //qDebug() << "WTextEdit: return eventFilter()";
     return QWidget::eventFilter(target, event);
 }
 
 void WTextEdit::highlightCurrentLine()
 {
+    qDebug() << "WTextEdit: highlightCurrentLine()";
     QTextCursor cursor(this->textCursor());
     QTextBlockFormat lineFormat = cursor.blockFormat();
     if (lineFormat.background() == Qt::green)
@@ -115,11 +143,13 @@ void WTextEdit::highlightCurrentLine()
         lineFormat.setBackground(Qt::green);
     }
     cursor.setBlockFormat(lineFormat);
+    qDebug() << "WTextEdit: return highlightCurrentLine()";
 }
 
 
 void WTextEdit::highlightLine(int line, QColor *color, QColor *origColor)
 {
+    qDebug() << "WTextEdit: highlightLine()";
     qDebug() << "WTextEdit: highlighted line is" << line;
     //origColor = NULL;
     if (line >= 0 && line <= this->document()->lineCount())
@@ -144,17 +174,20 @@ void WTextEdit::highlightLine(int line, QColor *color, QColor *origColor)
     }
     else
     {
-        qDebug() << "fail--------------------------------";
+        qDebug() << "WTextEdit: highlight failed----";
     }
+    qDebug() << "WTextEdit: return highlightLine()";
 }
 
 
 void WTextEdit::setPosition(int pos)
 {
+    qDebug() << "WTextEdit: setPosition()";
     QTextCursor cursor(this->textCursor());
     cursor.setPosition(pos);
     this->setTextCursor(cursor);
     this->verticalScrollBar()->setValue(this->verticalScrollBar()->value());
+    qDebug() << "WTextEdit: return setPosition()";
 }
 
 int WTextEdit::getPosition()

@@ -47,7 +47,7 @@ class WTextEdit : public QTextEdit
 
     private:
         Highlighter *highlighter;
-        //SourceType sourceType;
+        SourceType sourceType;
 
 
     protected:

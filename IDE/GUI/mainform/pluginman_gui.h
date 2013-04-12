@@ -7,6 +7,19 @@
 #include <QTextEdit>
 #include <QPushButton>
 #include <QtNetwork/QNetworkReply>
+#include <QList>
+#include <QtXml>
+#include "../dialogs/errordlg.h"
+
+typedef struct {
+    QString name;
+    int uid;
+    double version;
+    QString description;
+    bool active;
+    bool bought;
+    bool downloaded;
+} PluginStruct;
 
 class PluginMan_GUI : public QWidget
 {
@@ -17,8 +30,11 @@ class PluginMan_GUI : public QWidget
     private slots:
         void reloadPlugins();
         void downloadFinished(QNetworkReply *reply);
+        void currentChanged(const QString &text);
         
     private:
+        void loadPlugins();
+        
         QLabel *availableLbl;
         QLabel *usingLbl;
         QLabel *descLbl;
@@ -27,6 +43,10 @@ class PluginMan_GUI : public QWidget
         QTextEdit *descTE;
         QPushButton *activateBtn;
         QPushButton *reloadBtn;
+        QList<PluginStruct*> pluginStructs;
+        int currRevision;
+        bool changing;
+        PluginStruct *currPlugin;
 };
 
 #endif
