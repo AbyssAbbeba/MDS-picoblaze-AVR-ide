@@ -15,9 +15,9 @@
 
 #include "PIC8Config.h"
 
-PIC8Config::PIC8Config() : MCUSim::Config(MCUSim::ARCH_PIC8)
+PIC8Config::PIC8Config() : MCUSim::Config ( MCUSim::ARCH_PIC8 )
 {
-    isLinked = false;
+    m_isLinked = false;
 
     m_configIO                  = NULL;
     m_configDataMemory          = NULL;
@@ -37,6 +37,8 @@ PIC8Config::PIC8Config() : MCUSim::Config(MCUSim::ARCH_PIC8)
 
 void PIC8Config::link ( PIC8Sim * system )
 {
+    m_isLinked = true;
+
     m_configIO                  = & ( system -> m_io                    -> m_config );
     m_configDataMemory          = & ( system -> m_dataMemory            -> m_config );
     m_configClockControl        = & ( system -> m_clockControl          -> m_config );

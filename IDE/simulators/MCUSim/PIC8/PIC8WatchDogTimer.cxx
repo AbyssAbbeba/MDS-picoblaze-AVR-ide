@@ -20,6 +20,9 @@
 #include "PIC8ConfigWord.h"
 #include "PIC8InterruptController.h"
 
+// NOTE: see declaration of "constexpr static float NOMINAL_TIME_OUT = 18e3;" in the header file.
+#define NOMINAL_TIME_OUT 18e3
+
 PIC8WatchDogTimer::PIC8WatchDogTimer()
 {
 }

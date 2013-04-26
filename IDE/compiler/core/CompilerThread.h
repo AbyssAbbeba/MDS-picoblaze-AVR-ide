@@ -37,7 +37,7 @@ class CompilerCore;
  * @class CompilerThread
  */
 class CompilerThread : public QThread,
-                       private CompilerMsgInterface
+                       protected CompilerMsgInterface
 {
     Q_OBJECT
 

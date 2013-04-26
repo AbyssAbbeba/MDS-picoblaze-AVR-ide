@@ -32,6 +32,9 @@
 #include "PIC8Sim.h"
 #include "PIC8ProgramMemory.h"
 
+#include "PicoBlazeSim.h"
+#include "PicoBlazeProgramMemory.h"
+
 #include "McuSimCfgMgr.h"
 #include "McuDeviceSpec.h"
 #include "McuDeviceSpecAVR8.h"
@@ -207,6 +210,9 @@ bool MCUSimControl::start ( const std::string & filename,
         case MCUSim::ARCH_PIC8:
             dynamic_cast<PIC8ProgramMemory*>(m_simulator->getSubsys(MCUSim::Subsys::ID_MEM_CODE))->loadDataFile(dataFile);
             break;
+        case MCUSim::ARCH_PICOBLAZE:
+            dynamic_cast<PicoBlazeProgramMemory*>(m_simulator->getSubsys(MCUSim::Subsys::ID_MEM_CODE))->loadDataFile(dataFile);
+            break;
         default:
             // TODO: implement a proper error handling here
             qDebug("Unknown device architecture.");
@@ -225,7 +231,6 @@ int MCUSimControl::getLineNumber ( std::string * fileName )
 {
     if ( false == initialized() )
     {
-qDebug("Mega-xXx: not initialized!");
         if ( NULL != fileName )
         {
             *fileName = "";
@@ -237,7 +242,6 @@ qDebug("Mega-xXx: not initialized!");
     int idx = m_dbgFile->getLineByAddr(pc);
     if ( -1 == idx )
     {
-qDebug("Mega-xXx: idx = -1!");
         if ( NULL != fileName )
         {
             *fileName = "";
@@ -246,7 +250,6 @@ qDebug("Mega-xXx: idx = -1!");
     }
     else
     {
-qDebug("Mega-xXx: GooD!");
         int fileNumber = m_dbgFile->getLineRecords().at(idx).m_fileNumber;
         if ( NULL != fileName )
         {
@@ -338,6 +341,9 @@ bool MCUSimControl::changeDevice(const char * deviceName)
             break;
         case MCUSim::ARCH_PIC8:
             m_simulator = new PIC8Sim();
+            break;
+        case MCUSim::ARCH_PICOBLAZE:
+            m_simulator = new PicoBlazeSim();
             break;
         default:
             qDebug("Unknown device architecture.");
@@ -601,6 +607,11 @@ bool MCUSimControl::getListOfSFR ( std::vector<SFRRegDesc> & sfr )
                 }
             }
 
+            break;
+        }
+        case MCUSim::ARCH_PICOBLAZE:
+        {
+            // There are no SFR (Special Function Registers) on KCPSM3 (PicoBlaze)
             break;
         }
         default:

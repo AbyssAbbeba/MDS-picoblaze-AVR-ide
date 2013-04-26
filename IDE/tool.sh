@@ -85,17 +85,18 @@ function countLines() {
 function buildAll() {
 	if [ "$(uname -o)" == "Msys" ]; then
 		# Build on Windows
-		export PATH="/c/QtSDK/Desktop/Qt/4.8.0/mingw/bin:/c/MinGW/swigwin-2.0.4:${PATH}"
+		QT_PATH="$(for i in /c/QtSDK/Desktop/Qt/*/mingw/bin; do echo $i; break; done)"
+		export PATH="${QT_PATH}:${PATH}"
 		cmake -G "MSYS Makefiles" . || exit 1
 	else
 		# Build on a POSIX system
 		cmake . || exit 1
 	fi
 
-	make doc
 	make all
-	make test
-	make package
+# 	make doc
+# 	make test
+# 	make package
 }
 
 function printVersion() {

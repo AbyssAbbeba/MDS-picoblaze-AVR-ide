@@ -17,7 +17,7 @@
 
 AVR8Config::AVR8Config() : MCUSim::Config ( MCUSim::ARCH_AVR8 )
 {
-    isLinked = false;
+    m_isLinked = false;
 
     m_configIO                      = NULL;
     m_configBootLoader              = NULL;
@@ -45,6 +45,8 @@ AVR8Config::AVR8Config() : MCUSim::Config ( MCUSim::ARCH_AVR8 )
 
 void AVR8Config::link ( AVR8Sim * system )
 {
+    m_isLinked = true;
+
     m_configIO                      = & ( system -> m_io                    -> m_config );
     m_configBootLoader              = & ( system -> m_bootLoader            -> m_config );
     m_configDataMemory              = & ( system -> m_dataMemory            -> m_config );

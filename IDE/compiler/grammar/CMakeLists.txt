@@ -43,9 +43,14 @@ BISON_TARGET ( mcs51parser mcs51parser.y mcs51parser.cxx VERBOSE "mcs51parser.ou
 FLEX_TARGET ( mcs51lexer mcs51lexer.l mcs51lexer.cxx)
 # ADD_FLEX_BISON_DEPENDENCY ( mcs51lexer mcs51parser )
 
+# Assembler for KCPSM3
+BISON_TARGET ( kcpsm3parser kcpsm3parser.y kcpsm3parser.cxx VERBOSE "kcpsm3parser.output" )
+FLEX_TARGET ( kcpsm3lexer kcpsm3lexer.l kcpsm3lexer.cxx)
+# ADD_FLEX_BISON_DEPENDENCY ( kcpsm3lexer kcpsm3parser )
+
 # List of additional files that will be cleaned as a part of the "make clean" stage.
 set_directory_properties ( PROPERTIES
-                           ADDITIONAL_MAKE_CLEAN_FILES "mcs51lexer.h;mcs51parser.h;mcs51parser.output;;pic8lexer.h;pic8parser.h;pic8parser.output;;avr8lexer.h;avr8parser.h;avr8parser.output;")
+                           ADDITIONAL_MAKE_CLEAN_FILES "mcs51lexer.h;mcs51parser.h;mcs51parser.output;pic8lexer.h;pic8parser.h;pic8parser.output;;avr8lexer.h;avr8parser.h;avr8parser.output;kcpsm3lexer.h;kcpsm3parser.h;kcpsm3parser.output")
 
 # ------------------------------------------------------------------------------
 # COMPILATION OPTIONS
@@ -82,7 +87,12 @@ add_library ( ${PROJECT_NAME} STATIC
 
               # Assembler for MCS-51
               ${FLEX_mcs51lexer_OUTPUTS}
-              ${BISON_mcs51parser_OUTPUTS} )
+              ${BISON_mcs51parser_OUTPUTS}
+
+              # Assembler for KCPSM3
+              ${FLEX_kcpsm3lexer_OUTPUTS}
+              ${BISON_kcpsm3parser_OUTPUTS}
+              )
 
 ## Set properties on a target.
  # Targets can have properties that affect how they are built.

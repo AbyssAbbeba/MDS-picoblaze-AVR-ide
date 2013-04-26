@@ -65,7 +65,7 @@ class PIC8Config : public MCUSim::Config
          */
         bool linked() const
         {
-            return isLinked;
+            return m_isLinked;
         }
 
     ////    Public Attributes    ////
@@ -130,7 +130,7 @@ class PIC8Config : public MCUSim::Config
         /**
          * @brief
          */
-        bool isLinked;
+        bool m_isLinked;
 };
 
 #endif // PIC8CONFIG_H

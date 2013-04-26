@@ -116,7 +116,6 @@ class PIC8ProgramMemory : public MCUSim::Memory
          */
         void storeInDataFile ( DataFile * file ) const;
 
-
         /**
          * @brief
          * @return

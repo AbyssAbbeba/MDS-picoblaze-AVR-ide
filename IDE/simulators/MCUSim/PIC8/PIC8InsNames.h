@@ -7,7 +7,7 @@
  *
  * (C) copyright 2013 Moravia Microsystems, s.r.o.
  *
- * @author Erik Chalupa <xchalu10@stud.fit.vutbr.cz>, (C) 2012
+ * @author Erik Chalupa <xchalu10@stud.fit.vutbr.cz>, (C) 2013
  * @ingroup PIC8
  * @file PIC8InsNames.h
  */

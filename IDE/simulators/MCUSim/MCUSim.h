@@ -34,11 +34,31 @@ class MCUSim
          */
         enum Arch
         {
-            ARCH_INVALID = -1,  ///<
+            ARCH_INVALID = -1,  ///< Architecture is not specified, in such a case this thing will hardly work at all...
 
-            ARCH_AVR8,          ///<
-            ARCH_AVR32,         ///<
-            ARCH_PIC8,          ///<
+            /**
+             * Advanced Virtual Risc (8-bit variant).
+             * Modified Harvard architecture microcontroller, original design by Atmel Corporation.
+             */
+            ARCH_AVR8,
+
+            /**
+             * Advanced Virtual Risc (32-bit variant).
+             * Modified Harvard architecture microcontroller, original design by Atmel Corporation.
+             */
+            ARCH_AVR32,
+
+            /**
+             * Peripheral Interface Controller (8-bit variant).
+             * Modified Harvard architecture microcontroller, original design by Microchip Technology.
+             */
+            ARCH_PIC8,
+
+            /**
+             * PicoBlaze - (K)Constant Coded Programmable State Machine.
+             * Harvard architecture soft processor core, original design by Xilinx, Inc.
+             */
+            ARCH_PICOBLAZE,
 
             ARCH__MAX__         ///<
         };
@@ -65,6 +85,11 @@ class MCUSim
             /// @name PIC8
             //@{
                 FAMILY_PIC16F,       ///<
+            //@}
+
+            /// @name PicoBlaze
+            //@{
+                FAMILY_KCPSM3,       ///<
             //@}
 
             FAMILY__MAX__            ///<
@@ -326,6 +351,8 @@ class MCUSim
                     ID_MEM_CODE,     ///<
                     ID_MEM_DATA,     ///<
                     ID_MEM_EEPROM,   ///<
+                    ID_MEM_REGISTERS,///< 
+                    ID_STACK,        ///<
 
                     ID_CPU,          ///<
                     ID_FUSES,        ///<
@@ -334,6 +361,7 @@ class MCUSim
                     ID_WATCHDOG,     ///<
                     ID_PRESCALLER,   ///<
                     ID_IO,           ///<
+                    ID_PLIO,         ///< Pure Logic Input/Output
                     ID_BOOT_LOADER,  ///<
                     ID_SYS_CONTROL,  ///<
                     ID_CLK_CONTROL,  ///<
@@ -347,7 +375,6 @@ class MCUSim
                     ID_ACOMP,        ///<
                     ID_ISP,          ///<
                     ID_PPROG,        ///<
-                    ID_STACK,        ///<
 
                     ID__MAX__        ///<
                 };
@@ -442,6 +469,7 @@ class MCUSim
                     EVENT_CPU_ERR_INVALID_OPCODE,   ///<
                     EVENT_CPU_ERR_INVALID_JUMP,     ///<
                     EVENT_CPU_ERR_INVALID_CALL,     ///<
+                    EVENT_CPU_WRN_INVALID_IRQ,      ///< Invalid interrupt, i.e. nonsense IRQ (Interrupt ReQuest).
                     EVENT_CPU_ERR_INVALID_RET,      ///< There is no active subprogram to return from
                     EVENT_CPU_ERR_INVALID_RETI,     ///< There is no active interrupt to return from
                     EVENT_CPU_ERR_INVALID_OPSET,    ///< undefined result of the operation due to invalid set of operands
@@ -454,6 +482,9 @@ class MCUSim
                     EVENT_CPU_PC_CHANGED,           ///<
 
                     EVENT_CPU_CALL,                 ///<
+                    EVENT_CPU_RETURN,               ///<
+                    EVENT_CPU_IRQ,                  ///<
+                    EVENT_CPU_RETURN_FROM_ISR,      ///<
 
                     EVENT_ACCUMULATOR_WRITE,        ///< Content of the processor accumultor register has been modified.
 
@@ -479,7 +510,7 @@ class MCUSim
                  * @brief
                  * @param[in,out] eventLogger
                  */
-                CPU ( EventLogger * eventLogger ) : Subsys(eventLogger, ID_CPU) {};
+                CPU ( EventLogger * eventLogger ) : Subsys ( eventLogger, ID_CPU ) {};
 
                 /**
                  * @brief
@@ -502,12 +533,14 @@ class MCUSim
                  */
                 enum MemorySpace
                 {
-                    SP_INVALID = 0,              ///<
-                    SP_CODE = ID_MEM_CODE,       ///< Internal program memory.
-                    SP_DATA = ID_MEM_DATA,       ///< Internal data memory.
-                    SP_EEPROM = ID_MEM_EEPROM,   ///< Internal data EEPROM.
+                    SP_INVALID = 0,                 ///<
+                    SP_DATA    = ID_MEM_DATA,       ///< Internal data memory.
+                    SP_CODE    = ID_MEM_CODE,       ///< Internal program memory.
+                    SP_STACK   = ID_STACK,          ///< Internal separate stack.
+                    SP_EEPROM  = ID_MEM_EEPROM,     ///< Internal data EEPROM.
+                    SP_REGS    = ID_MEM_REGISTERS,  ///< Internal processor registers.
 
-                    SP__MAX__                    ///<
+                    SP__MAX__                       ///<
                 };
 
                 /**
@@ -657,6 +690,105 @@ class MCUSim
                 MemorySpace m_space;
         };
 
+        /**
+         * @brief
+         */
+        class PureLogicIO : public Subsys
+        {
+            ////    Public Datatypes    ////
+            public:
+                /**
+                 * @brief
+                 */
+                enum Event
+                {
+                    EVENT_PLIO_READ,   ///<
+                    EVENT_PLIO_WRITE,  ///<
+                    EVENT_PLIO__MAX__  ///<
+                };
+
+            ////    Public Operations    ////
+            public:
+                /**
+                 * @brief
+                 * @return
+                 */
+                virtual unsigned int getNumberOfPorts() = 0;
+
+                /**
+                 * @brief
+                 * @return
+                 */
+                virtual unsigned int getNumberOfBitsPerPort() = 0;
+
+                /**
+                 * @brief
+                 * @return
+                 */
+                virtual unsigned int getNumberOfBitsTotal() = 0;
+
+                /**
+                 * @brief
+                 * @param[in] port
+                 * @param[in] bit
+                 * @return
+                 */
+                virtual bool read ( unsigned int port,
+                                    unsigned int bit ) = 0;
+
+                /**
+                 * @brief
+                 * @param[in] port
+                 * @return
+                 */
+                virtual unsigned int read ( unsigned int port ) = 0;
+
+                /**
+                 * @brief
+                 * @param[in] port
+                 * @param[in] bit
+                 * @param[in] value
+                 */
+                virtual void write ( unsigned int port,
+                                     unsigned int bit,
+                                     bool value ) = 0;
+
+                /**
+                 * @brief
+                 * @param[in] port
+                 * @param[in] value
+                 */
+                virtual void write ( unsigned int port,
+                                     unsigned int value ) = 0;
+
+            ////    Protected Operations    ////
+            protected:
+                PureLogicIO() {};
+
+                /**
+                 * @brief
+                 * @param[in,out] eventLogger
+                 */
+                PureLogicIO ( EventLogger * eventLogger ) : Subsys ( eventLogger, ID_PLIO ) {};
+
+                /**
+                 * @brief
+                 * @param[in,out] eventLogger
+                 */
+                void link ( EventLogger * eventLogger )
+                {
+                    Subsys::link ( eventLogger, ID_PLIO );
+                }
+
+            ////    Protected Attributes    ////
+            protected:
+                ///
+                unsigned int m_numberOfBits;
+                /// @brief When port is read by the MCU, this array is used as source of the read value.
+                char * m_inputBitArray;
+                /// @brief When port value is changed by the MCU, this array is used to store the new port value.
+                char * m_outputBitArray;
+        };
 
         /**
          * @brief
