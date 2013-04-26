@@ -41,7 +41,6 @@ PIC8InterruptController * PIC8InterruptController::link ( MCUSim::EventLogger * 
     return this;
 }
 
-
 void PIC8InterruptController::reset ( MCUSim::ResetMode mode )
 {
     switch ( mode )

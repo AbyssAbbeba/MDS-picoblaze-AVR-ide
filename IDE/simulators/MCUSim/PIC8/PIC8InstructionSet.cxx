@@ -1339,11 +1339,12 @@ int PIC8InstructionSet::inst_CALL ( const unsigned int opCode )
     // Operands
     const unsigned int k = ( opCode & 0x07FF );
 
+    logEvent(EVENT_CPU_CALL, m_pc, PIC8InsNames::INS_CALL);
+
     // Perform the operation
     // Write PC+1 in TOS
     m_stack->pushOnStack( incrPc() );
-
-    logEvent(EVENT_CPU_CALL, m_pc, k);
+    m_actSubprogCounter++;
 
     // Write k in PC<10:0>
     m_pc = k | ( m_dataMemory->readFast(-PIC8RegNames::PCLATH) << 8 );
@@ -1473,16 +1474,20 @@ int PIC8InstructionSet::inst_RETFIE ( const unsigned int )
     valIntCon |= PIC8RegNames::INTCON_GIE;
     m_dataMemory->writeFast(PIC8RegNames::INTCON, valIntCon);
 
+    // Inform the interrupt subsystem about the return
+    if ( false == m_interruptController->retfie() )
+    {
+        logEvent(EVENT_CPU_ERR_INVALID_RETI, m_pc);
+    }
+    else
+    {
+        logEvent(EVENT_CPU_RETURN_FROM_ISR, m_pc);
+    }
+
     // Write Top of Stack in Program Counter
     m_pc = m_stack->popFromStack() | ( m_dataMemory->readFast(-PIC8RegNames::PCLATH) << 8 );
     logEvent(EVENT_CPU_PC_CHANGED, m_pc);
     m_dataMemory->writeFast(-PIC8RegNames::PCL, ( 0xff & m_pc ) );
-
-    // Inform the interrupt subsystem about the return
-    if ( false == m_interruptController->retfie() )
-    {
-        logEvent(EVENT_CPU_ERR_INVALID_RETI);
-    }
 
     return 2;
 }
@@ -1503,6 +1508,7 @@ int PIC8InstructionSet::inst_RETLW ( const unsigned int opCode )
     // Perform the operation
     m_W = k;
     logEvent(EVENT_ACCUMULATOR_WRITE, m_W);
+    logEvent(EVENT_CPU_RETURN, m_pc);
 
     // Write TOS in PC
     m_pc = m_stack->popFromStack() | ( m_dataMemory->readFast(-PIC8RegNames::PCLATH) << 8 );
@@ -1521,6 +1527,16 @@ int PIC8InstructionSet::inst_RETLW ( const unsigned int opCode )
 int PIC8InstructionSet::inst_RETURN ( const unsigned int )
 {
     instructionEnter(PIC8InsNames::INS_RETURN);
+
+    if ( 0 == m_actSubprogCounter )
+    {
+        logEvent(EVENT_CPU_ERR_INVALID_RET, m_pc);
+    }
+    else
+    {
+        logEvent(EVENT_CPU_RETURN, m_pc);
+        m_actSubprogCounter--;
+    }
 
     // Perform the operation
     m_pc = m_stack->popFromStack() | ( m_dataMemory->readFast(-PIC8RegNames::PCLATH) << 8 );

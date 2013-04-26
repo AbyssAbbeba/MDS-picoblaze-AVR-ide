@@ -623,6 +623,36 @@ std::ostream & operator << ( std::ostream & out,
         case ASM51_INS_XRL__A_R6:               out << "ASM51_INS_XRL__A_R6";           break;
         case ASM51_INS_XRL__A_R7:               out << "ASM51_INS_XRL__A_R7";           break;
 
+        case ASMKCPSM3_INS_JUMP:                out << "ASMKCPSM3_INS_JUMP";            break;
+        case ASMKCPSM3_INS_CALL:                out << "ASMKCPSM3_INS_CALL";            break;
+        case ASMKCPSM3_INS_RETURN:              out << "ASMKCPSM3_INS_RETURN";          break;
+        case ASMKCPSM3_INS_ADD:                 out << "ASMKCPSM3_INS_ADD";             break;
+        case ASMKCPSM3_INS_ADDCY:               out << "ASMKCPSM3_INS_ADDCY";           break;
+        case ASMKCPSM3_INS_SUB:                 out << "ASMKCPSM3_INS_SUB";             break;
+        case ASMKCPSM3_INS_SUBCY:               out << "ASMKCPSM3_INS_SUBCY";           break;
+        case ASMKCPSM3_INS_COMPARE:             out << "ASMKCPSM3_INS_COMPARE";         break;
+        case ASMKCPSM3_INS_RETURNI:             out << "ASMKCPSM3_INS_RETURNI";         break;
+        case ASMKCPSM3_INS_ENABLE_INT:          out << "ASMKCPSM3_INS_ENABLE_INT";      break;
+        case ASMKCPSM3_INS_DISABLE_INT:         out << "ASMKCPSM3_INS_DISABLE_INT";     break;
+        case ASMKCPSM3_INS_LOAD:                out << "ASMKCPSM3_INS_LOAD";            break;
+        case ASMKCPSM3_INS_AND:                 out << "ASMKCPSM3_INS_AND";             break;
+        case ASMKCPSM3_INS_OR:                  out << "ASMKCPSM3_INS_OR";              break;
+        case ASMKCPSM3_INS_XOR:                 out << "ASMKCPSM3_INS_XOR";             break;
+        case ASMKCPSM3_INS_TEST:                out << "ASMKCPSM3_INS_TEST";            break;
+        case ASMKCPSM3_INS_STORE:               out << "ASMKCPSM3_INS_STORE";           break;
+        case ASMKCPSM3_INS_FETCH:               out << "ASMKCPSM3_INS_FETCH";           break;
+        case ASMKCPSM3_INS_SR0:                 out << "ASMKCPSM3_INS_SR0";             break;
+        case ASMKCPSM3_INS_SR1:                 out << "ASMKCPSM3_INS_SR1";             break;
+        case ASMKCPSM3_INS_SRX:                 out << "ASMKCPSM3_INS_SRX";             break;
+        case ASMKCPSM3_INS_SRA:                 out << "ASMKCPSM3_INS_SRA";             break;
+        case ASMKCPSM3_INS_RR:                  out << "ASMKCPSM3_INS_RR";              break;
+        case ASMKCPSM3_INS_SL0:                 out << "ASMKCPSM3_INS_SL0";             break;
+        case ASMKCPSM3_INS_SL1:                 out << "ASMKCPSM3_INS_SL1";             break;
+        case ASMKCPSM3_INS_SLX:                 out << "ASMKCPSM3_INS_SLX";             break;
+        case ASMKCPSM3_INS_SLA:                 out << "ASMKCPSM3_INS_SLA";             break;
+        case ASMKCPSM3_INS_RL:                  out << "ASMKCPSM3_INS_RL";              break;
+        case ASMKCPSM3_INS_INPUT:               out << "ASMKCPSM3_INS_INPUT";           break;
+        case ASMKCPSM3_INS_OUTPUT:              out << "ASMKCPSM3_INS_OUTPUT";          break;
 
         case STATEMENTTYPE__MAX__:              out << "(STATEMENTTYPE__MAX__)";        break;
     }

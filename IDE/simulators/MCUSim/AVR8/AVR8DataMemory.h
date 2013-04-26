@@ -521,12 +521,12 @@ inline unsigned int AVR8DataMemory::read ( uint32_t addr )
 
         if ( addr >= m_config.m_mem2size )
         {
-            logEvent(EVENT_MEM_ERR_WR_NOT_IMPLEMENTED, addr);
+            logEvent(EVENT_MEM_ERR_RD_NOT_IMPLEMENTED, addr);
             return getUndefVal();
         }
         if ( addrVariant >= m_config.m_mem2sizes[addr] )
         {
-            logEvent(EVENT_MEM_ERR_WR_NOT_IMPLEMENTED, addr);
+            logEvent(EVENT_MEM_ERR_RD_NOT_IMPLEMENTED, addr);
             return getUndefVal();
         }
 

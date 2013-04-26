@@ -51,6 +51,10 @@
  * @ingroup MCUSim
  * Simulator of microcontrollers based on 8-bit PIC processor.
  *
+ * @defgroup PicoBlaze soft-processors simulator
+ * @ingroup MCUSim
+ * Simulator of PicoBlaze soft-processors.
+ *
  * @defgroup McuSimCfgMgr MCU sim. config. manager
  * @ingroup MCUSim
  * MCU simulator configuration management.

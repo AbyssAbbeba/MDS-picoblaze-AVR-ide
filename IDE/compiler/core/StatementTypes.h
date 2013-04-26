@@ -692,6 +692,40 @@ namespace StatementTypes
             ASM51_INS_XRL__A_R7,            ///<
         //@}
 
+        /// @name KCPSM3
+        //@{
+            ASMKCPSM3_INS_JUMP,             ///<
+            ASMKCPSM3_INS_CALL,             ///<
+            ASMKCPSM3_INS_RETURN,           ///<
+            ASMKCPSM3_INS_ADD,              ///<
+            ASMKCPSM3_INS_ADDCY,            ///<
+            ASMKCPSM3_INS_SUB,              ///<
+            ASMKCPSM3_INS_SUBCY,            ///<
+            ASMKCPSM3_INS_COMPARE,          ///<
+            ASMKCPSM3_INS_RETURNI,          ///<
+            ASMKCPSM3_INS_ENABLE_INT,       ///<
+            ASMKCPSM3_INS_DISABLE_INT,      ///<
+            ASMKCPSM3_INS_LOAD,             ///<
+            ASMKCPSM3_INS_AND,              ///<
+            ASMKCPSM3_INS_OR,               ///<
+            ASMKCPSM3_INS_XOR,              ///<
+            ASMKCPSM3_INS_TEST,             ///<
+            ASMKCPSM3_INS_STORE,            ///<
+            ASMKCPSM3_INS_FETCH,            ///<
+            ASMKCPSM3_INS_SR0,              ///<
+            ASMKCPSM3_INS_SR1,              ///<
+            ASMKCPSM3_INS_SRX,              ///<
+            ASMKCPSM3_INS_SRA,              ///<
+            ASMKCPSM3_INS_RR,               ///<
+            ASMKCPSM3_INS_SL0,              ///<
+            ASMKCPSM3_INS_SL1,              ///<
+            ASMKCPSM3_INS_SLX,              ///<
+            ASMKCPSM3_INS_SLA,              ///<
+            ASMKCPSM3_INS_RL,               ///<
+            ASMKCPSM3_INS_INPUT,            ///<
+            ASMKCPSM3_INS_OUTPUT,           ///<
+        //@}
+
         STATEMENTTYPE__MAX__                ///<
     };
 };

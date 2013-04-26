@@ -2633,6 +2633,7 @@ int AVR8InstructionSet::inst_RET ( const unsigned int )
     }
     else
     {
+        logEvent(EVENT_CPU_RETURN, m_pc);
         m_actSubprogCounter--;
     }
     m_pc = returnAddress;
@@ -2673,6 +2674,7 @@ int AVR8InstructionSet::inst_RETI ( const unsigned int )
     else
     {
         // Make interrupt controller forget about the last interrupt
+        logEvent(EVENT_CPU_RETURN_FROM_ISR, m_pc);
         m_interruptController->reti();
     }
     m_pc = returnAddress;

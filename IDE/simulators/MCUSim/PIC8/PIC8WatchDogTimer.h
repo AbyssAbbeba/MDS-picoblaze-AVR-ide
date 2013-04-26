@@ -16,6 +16,7 @@
 #ifndef PIC8WATCHDOGTIMER_H
 #define PIC8WATCHDOGTIMER_H
 
+// Forward declarations
 class PIC8Timer0WdtPrescaller;
 class PIC8DataMemory;
 class PIC8ConfigWord;
@@ -32,8 +33,10 @@ class PIC8WatchDogTimer : public MCUSim::Subsys
 {
     ////    Public Static Constants    ////
     public:
+/* NOTE: Commented in order to make the code compilable with GCC-4.4 an lower.
         /// @brief
         constexpr static float NOMINAL_TIME_OUT = 18e3;
+*/
 
     ////    Public Datatypes    ////
     public:

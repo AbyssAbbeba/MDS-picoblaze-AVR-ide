@@ -19,5 +19,6 @@
 #include "AsmAvr8SemanticAnalyzer.h"
 #include "AsmPic8SemanticAnalyzer.h"
 #include "AsmMcs51SemanticAnalyzer.h"
+#include "AsmKcpsm3SemanticAnalyzer.h"
 
 #endif // SEMANTICANALYSERS_H

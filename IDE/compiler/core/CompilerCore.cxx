@@ -81,6 +81,9 @@ inline bool CompilerCore::setupSemanticAnalyzer ( LangId lang,
                 case TA_MCS51:
                     m_semanticAnalyzer = new AsmMcs51SemanticAnalyzer(this, opts, filename);
                     break;
+                case TA_KCPSM3:
+                    m_semanticAnalyzer = new AsmKcpsm3SemanticAnalyzer(this, opts, filename);
+                    break;
                 default:
                     m_msgInterface->message ( QObject::tr("Architecture not supported for the selected language.").toStdString(),
                                               MT_ERROR );
@@ -134,6 +137,12 @@ inline bool CompilerCore::startLexerAndParser ( LangId lang,
                     mcs51lexer_set_in ( sourceFile, yyscanner );
                     mcs51parser_parse ( yyscanner, this );
                     mcs51lexer_lex_destroy ( yyscanner );
+                    break;
+                case TA_KCPSM3:
+                    kcpsm3lexer_lex_init_extra ( this, &yyscanner );
+                    kcpsm3lexer_set_in ( sourceFile, yyscanner );
+                    kcpsm3parser_parse ( yyscanner, this );
+                    kcpsm3lexer_lex_destroy ( yyscanner );
                     break;
                 default:
                     m_msgInterface->message ( QObject::tr("Architecture not supported for the selected language.").toStdString(),
