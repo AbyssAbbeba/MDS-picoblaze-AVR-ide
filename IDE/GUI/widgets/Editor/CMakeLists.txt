@@ -21,14 +21,14 @@ set(CMAKE_VERBOSE_MAKEFILE OFF)
 SET( SAMPLE_SRCS
 	./baseeditor.cpp
 	./codeedit.cpp
-        ./wtextedit.cpp
+    ./wtextedit.cpp
 )
   
 # another list, this time it includes all header files that should be treated with moc
 SET( SAMPLE_MOC_HDRS
 	./baseeditor.h
 	./codeedit.h
-        ./wtextedit.h
+    ./wtextedit.h
 )
 
 

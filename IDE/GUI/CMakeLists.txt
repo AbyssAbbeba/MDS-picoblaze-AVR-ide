@@ -23,10 +23,13 @@ cmake_minimum_required(VERSION 2.8)
   
   # and finally an resource file
    SET( SAMPLE_RCS
+        ./icons.qrc
    )
-  
+
+  SET( CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++ -s")
+
   # enable warnings
-  ADD_DEFINITIONS( -Wall )
+  ADD_DEFINITIONS( -Wall)
   
   # by default only QtCore and QtGui modules are enabled
   # other modules must be enabled like this:
@@ -40,10 +43,10 @@ cmake_minimum_required(VERSION 2.8)
   # add some useful macros and variables
   # (QT_USE_FILE is a variable defined by FIND_PACKAGE( Qt4 ) that contains a path to CMake script)
   INCLUDE( ${QT_USE_FILE} )
-  
+
   # this command will generate rules that will run rcc on all files from SAMPLE_RCS
   # in result SAMPLE_RC_SRCS variable will contain paths to files produced by rcc
-  # QT4_ADD_RESOURCES( SAMPLE_RC_SRCS ${SAMPLE_RCS} )
+  QT4_ADD_RESOURCES( SAMPLE_RC_SRCS ${SAMPLE_RCS} )
   
   # this will run uic on .ui files:
   # QT4_WRAP_UI( SAMPLE_UI_HDRS ${SAMPLE_UIS} )
@@ -84,7 +87,8 @@ include_directories(
 add_subdirectory(widgets)
 add_subdirectory(dialogs)
 add_subdirectory(mainform)
-
+add_subdirectory(project)
+add_subdirectory(errordialog)
 
 
 

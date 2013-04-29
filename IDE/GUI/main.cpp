@@ -18,11 +18,11 @@
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
-
+    Q_INIT_RESOURCE(icons);
+    //QResource::registerResource("icons.rcc");
     MainForm MainGUI;
     MainGUI.showMaximized();
     
     return app.exec();
-    
     
 }

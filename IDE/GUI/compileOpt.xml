@@ -1,0 +1,8 @@
+<avr8:device family="megaAVR" name="ATmega8A">
+    <asm>
+        <compiler name="" params=""/>
+    </asm>
+    <c>
+        <compiler name="" params=""/>
+    </c>
+</avr8:device>
