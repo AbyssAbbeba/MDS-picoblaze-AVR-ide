@@ -8,7 +8,7 @@
  * (C) copyright 2013 Moravia Microsystems, s.r.o.
  *
  * @author Martin Ošmera <martin.osmera@gmail.com>
- * @ingroup Compiler
+ * @ingroup Kcpsm3Asm
  * @file AsmKcpsm3SemanticAnalyzer.h
  */
 // =============================================================================
@@ -17,10 +17,18 @@
 #define ASMKCPSM3SEMANTICANALYSER_H
 
 #include "../../CompilerSemanticInterface.h"
+#include "../../CompilerStatement.h"
+#include "../../CompilerExpr.h"
+
+#include "../AsmMachineCodeGen.h"
+
+#include "AsmKcpsm3SymbolTable.h"
+#include "AsmKcpsm3CodeListing.h"
+#include "AsmKcpsm3InstructionSet.h"
 
 /**
  * @brief
- * @ingroup Compiler
+ * @ingroup Kcpsm3Asm
  * @class AsmKcpsm3SemanticAnalyzer
  */
 class AsmKcpsm3SemanticAnalyzer : public CompilerSemanticInterface
@@ -29,14 +37,23 @@ class AsmKcpsm3SemanticAnalyzer : public CompilerSemanticInterface
     public:
         /**
          * @brief
+         * @param[in,out] compilerCore
          * @param[in] opts
-         * @param[in] filename
          * @return
          */
         AsmKcpsm3SemanticAnalyzer ( CompilerCore * compilerCore,
-                                  CompilerOptions * const opts,
-                                  const std::string & filename )
-                                : CompilerSemanticInterface ( compilerCore, opts, filename ) {};
+                                    CompilerOptions * opts );
+
+        /**
+         * @brief
+         */
+        virtual ~AsmKcpsm3SemanticAnalyzer();
+
+    protected:
+        /**
+         * @brief Forbidden constructor
+         */
+        AsmKcpsm3SemanticAnalyzer() {};
 
     ////    Public Operations    ////
     public:
@@ -44,7 +61,7 @@ class AsmKcpsm3SemanticAnalyzer : public CompilerSemanticInterface
          * @brief
          * @param[in,out] codeTree
          */
-        void process ( CompilerStatement * & codeTree );
+        void process ( CompilerStatement * codeTree );
 
     ////    Inline Private Operations    ////
     private:
@@ -52,15 +69,27 @@ class AsmKcpsm3SemanticAnalyzer : public CompilerSemanticInterface
          * @brief
          * @param[in,out] codeTree
          */
-        inline void processDeclarations ( CompilerStatement * & node );
+        inline void phase1 ( CompilerStatement * codeTree );
 
         /**
          * @brief
-         * @param[in] name
-         * @param[in] value
+         * @param[in,out] codeTree
          */
-        inline void addToSymbolTable ( CompilerExpr * const name,
-                                       CompilerExpr * const value );
+        inline void phase2 ( CompilerStatement * codeTree );
+
+    ////    Protected Attributes    ////
+    protected:
+        ///
+        AsmKcpsm3SymbolTable * m_symbolTable;
+
+        ///
+        AsmMachineCodeGen * m_machineCode;
+
+        ///
+        AsmKcpsm3CodeListing * m_codeListing;
+
+        ///
+        AsmKcpsm3InstructionSet * m_instructionSet;
 };
 
 #endif // ASMKCPSM3SEMANTICANALYSER_H

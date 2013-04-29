@@ -29,7 +29,7 @@
 class CompilerSemanticInterface
 {
     ////    Constructors and Destructors    ////
-    protected:
+    public:
         /**
          * @brief
          * @param[in] opts
@@ -37,16 +37,19 @@ class CompilerSemanticInterface
          * @return
          */
         CompilerSemanticInterface ( CompilerCore * compilerCore,
-                                    CompilerOptions * const opts,
-                                    const std::string & filename )
-                                  : m_compilerCore(compilerCore),
-                                    m_opts(opts),
-                                    m_sourceFile(filename) {};
-    public:
+                                    CompilerOptions * opts )
+                                  : m_compilerCore ( compilerCore ),
+                                    m_opts(opts) {};
         /**
          * @brief
          */
         virtual ~CompilerSemanticInterface() {};
+
+    protected:
+        /**
+         * @brief
+         */
+        CompilerSemanticInterface() : m_compilerCore ( NULL ), m_opts ( NULL ) {};
 
     ////    Public Operations    ////
     public:
@@ -54,24 +57,19 @@ class CompilerSemanticInterface
          * @brief
          * @param[in,out] codeTree
          */
-        virtual void process ( CompilerStatement * & codeTree ) = 0;
+        virtual void process ( CompilerStatement * codeTree ) = 0;
 
     ////    Protected Attributes    ////
     protected:
         /**
          * @brief
          */
-        const CompilerCore * m_compilerCore;
+        CompilerCore * const m_compilerCore;
 
         /**
          * @brief
          */
-        const CompilerOptions * const m_opts;
-
-        /**
-         * @brief
-         */
-        const std::string m_sourceFile;
+        CompilerOptions * const m_opts;
 };
 
 #endif // COMPILERSEMANTICINTERFACE_H

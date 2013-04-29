@@ -80,10 +80,29 @@ class CompilerStatement
 
         /**
          * @brief
+         * @return
+         */
+        CompilerStatement * last();
+
+        /**
+         * @brief
+         * @return this
+         */
+        CompilerStatement * unlink();
+
+        /**
+         * @brief
          * @param[in,out] next
          * @return
          */
         CompilerStatement * appendLink ( CompilerStatement * next );
+
+        /**
+         * @brief Insert link before the first link in the chain.
+         * @param[in,out] chainLink
+         * @return
+         */
+        CompilerStatement * prependLink ( CompilerStatement * chainLink );
 
         /**
          * @brief
@@ -130,6 +149,15 @@ class CompilerStatement
         CompilerStatement * branch()
         {
             return m_branch;
+        }
+
+        /**
+         * @brief
+         * @return
+         */
+        CompilerBase::SourceLocation location() const
+        {
+            return m_location;
         }
 
         /**

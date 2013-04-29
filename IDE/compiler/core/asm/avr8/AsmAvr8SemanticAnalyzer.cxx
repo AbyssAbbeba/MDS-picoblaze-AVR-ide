@@ -8,7 +8,7 @@
  * (C) copyright 2013 Moravia Microsystems, s.r.o.
  *
  * @author Martin Ošmera <martin.osmera@gmail.com>
- * @ingroup Compiler
+ * @ingroup Avr8Asm
  * @file AsmAvr8SemanticAnalyzer.cxx
  */
 // =============================================================================
@@ -18,7 +18,7 @@
 
 #include <iostream> // DEBUG
 
-void AsmAvr8SemanticAnalyzer::process ( CompilerStatement * & codeTree )
+void AsmAvr8SemanticAnalyzer::process ( CompilerStatement * codeTree )
 {
     std::cout << "AsmAvr8SemanticAnalyzer::process:\n" << codeTree;
 
@@ -63,7 +63,7 @@ void AsmAvr8SemanticAnalyzer::process ( CompilerStatement * & codeTree )
             ASMAVR8_DIR_SET,                ///<
 */
 
-inline void AsmAvr8SemanticAnalyzer::processDeclarations ( CompilerStatement * & node )
+inline void AsmAvr8SemanticAnalyzer::processDeclarations ( CompilerStatement * node )
 {
     using namespace StatementTypes;
 

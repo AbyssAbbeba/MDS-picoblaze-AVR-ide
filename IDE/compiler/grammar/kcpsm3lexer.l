@@ -89,10 +89,14 @@ ID      [_A-Z][_A-Z0-9]*
 COMMENT (;[^\r\n]*)
 /* C like escape sequence, such as `\x4A', `\uABCD', `\U1234abcd', and `\177' */
 XESC    (\\[0-7]{1,3})|(\\x[0-9A-F]{1,2})|(\\[uU][0-9A-F]{1,8})
+/* Instruction "RETURNI ENABLE" */
+RETURNI_ENABLE_INST    "returni"{WSPACE}"enable"
+/* Instruction "RETURNI DISABLE" */
+RETURNI_DISABLE_INST    "returni"{WSPACE}"disable"
 /* Instruction "ENABLE INTERRUPT" */
-ENA_INT_INST    "enable"{WSPACE}"interrupt"
+ENA_INT_INST            "enable"{WSPACE}"interrupt"
 /* Instruction "DISABLE INTERRUPT" */
-DIS_INT_INST    "disable"{WSPACE}"interrupt"
+DIS_INT_INST            "disable"{WSPACE}"interrupt"
 
 /*
  * Exclusive start conditions
@@ -115,6 +119,11 @@ DIS_INT_INST    "disable"{WSPACE}"interrupt"
 %%
 
 %{
+    if ( true == yyextra->getInsertEOL() )
+    {
+        return EOL;
+    }
+
     // Terminate lexical analysis, in case all input files have been closed using the EXIT' directive.
     if ( NULL == kcpsm3lexer_get_in(yyscanner) )
     {
@@ -151,12 +160,18 @@ DIS_INT_INST    "disable"{WSPACE}"interrupt"
                         }
 }
 
-\.?"namereg"            { return D_DEFINE; }
-\.?"address"            { return D_DEFINE; }
+\.?"namereg"            { return D_NAMEREG; }
+\.?"address"            { return D_ORG; }
 \.?"constant"           { return D_CONSTANT; }
 \.?"radix"              { return D_RADIX; }
+\.?"fill"               { return D_FILL; }
+\.?"set"                { return D_SET; }
+\.?"variable"           { return D_VARIABLE; }
 \.?"while"              { return D_WHILE; }
+\.?"endw"               { return D_ENDW; }
 \.?"data"               { return D_DATA; }
+\.?"code"               { return D_CODE; }
+\.?"register"           { return D_REGISTER; }
 \.?"db"                 { return D_DB; }
 \.?"endc"               { return D_ENDC; }
 \.?"error"              { return D_ERROR; }
@@ -165,7 +180,7 @@ DIS_INT_INST    "disable"{WSPACE}"interrupt"
 \.?"messg"              { return D_MESSG; }
 \.?"nolist"             { return D_NOLIST; }
 \."page"                { return D_PAGE; }
-\.?"space"              { return D_SKIP; }
+\.?"skip"               { return D_SKIP; }
 \.?"subtitle"           { return D_SUBTITLE; }
 \.?"title"              { return D_TITLE; }
 \.?"expand"             { return D_EXPAND; }
@@ -217,7 +232,8 @@ DIS_INT_INST    "disable"{WSPACE}"interrupt"
 "sub"                   { return I_SUB; }
 "subcy"                 { return I_SUBCY; }
 "compare"               { return I_COMPARE; }
-"returni"               { return I_RETURNI; }
+{RETURNI_ENABLE_INST}   { return I_RETURNI_ENA; }
+{RETURNI_DISABLE_INST}  { return I_RETURNI_DIS; }
 {ENA_INT_INST}          { return I_ENABLE_INT; }
 {DIS_INT_INST}          { return I_DISABLE_INT; }
 "load"                  { return I_LOAD; }
@@ -378,6 +394,9 @@ DIS_INT_INST    "disable"{WSPACE}"interrupt"
 <STR,QUOTE>
 {
     {NLINE}             {
+                            yylloc->last_line++;
+                            yylloc->last_column = 1;
+
                             // A string has to be terminated at the same line which it was started on
                             yy_pop_state(yyscanner);
                             yyextra->lexerMessage ( yylloc,
@@ -444,6 +463,8 @@ DIS_INT_INST    "disable"{WSPACE}"interrupt"
 <INC,INC_END>
 {
     {NLINE}             {
+                            yyextra->setInsertEOL();
+
                             // Attempt to open the specified file
 
                             // Put the EOL character sequence back onto the input stream
@@ -484,6 +505,9 @@ DIS_INT_INST    "disable"{WSPACE}"interrupt"
                             {
                                 yylval->string = filename;
 
+                                yylloc->last_line++;
+                                yylloc->last_column = 1;
+
                                 yyextra->m_yyllocStack.push_back(*yylloc);
                                 kcpsm3lexer_push_buffer_state(kcpsm3lexer__create_buffer(file, YY_BUF_SIZE, yyscanner), yyscanner);
 
@@ -495,8 +519,9 @@ DIS_INT_INST    "disable"{WSPACE}"interrupt"
                         }
     .                   {
                             // Anything else results in an error, it wouldn't make sense otherwise
-                            yyextra->lexerMessage(yylloc, CompilerBase::MT_ERROR,
-                                QObject::tr("unrecognized token: ").toStdString() + "`" + std::string(yytext) + "'");
+                            yyextra->lexerMessage ( yylloc,
+                                                    CompilerBase::MT_ERROR,
+                                                    QObject::tr("unrecognized token: ").toStdString() + "`" + std::string(yytext) + "'" );
                             yyterminate();
                         }
 }
@@ -620,8 +645,8 @@ d'[0-9]+'               {
 .                       {
                             // Unrecognized token => ERROR
                             yyextra -> lexerMessage ( yylloc,
-                                                    CompilerBase::MT_ERROR,
-                                                    QObject::tr("unrecognized token: ").toStdString() + "`" + std::string(yytext) + "'" );
+                                                      CompilerBase::MT_ERROR,
+                                                      QObject::tr("unrecognized token: ").toStdString() + "`" + std::string(yytext) + "'" );
                         }
 
 %%

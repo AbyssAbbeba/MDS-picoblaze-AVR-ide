@@ -91,8 +91,7 @@ add_library ( ${PROJECT_NAME} STATIC
 
               # Assembler for KCPSM3
               ${FLEX_kcpsm3lexer_OUTPUTS}
-              ${BISON_kcpsm3parser_OUTPUTS}
-              )
+              ${BISON_kcpsm3parser_OUTPUTS} )
 
 ## Set properties on a target.
  # Targets can have properties that affect how they are built.

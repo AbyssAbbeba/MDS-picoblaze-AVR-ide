@@ -31,6 +31,12 @@ enable_testing()
 # Tests for AVR8 simulator
 add_subdirectory ( AVR8 )
 
+# Tests for PIC8 simulator
+# add_subdirectory ( PIC8 )
+
+# Tests for PicoBlaze simulator
+# add_subdirectory ( PicoBlaze )
+
 # Tests for simulator debug files
 add_subdirectory ( DbgFile )
 

@@ -60,6 +60,7 @@ class CompilerParserInterface
         CompilerParserInterface()
         {
             m_strMaxSize = 0;
+            m_insertEol = false;
         }
 
     ////    Public Operations    ////
@@ -177,6 +178,30 @@ class CompilerParserInterface
             }
         //@}
 
+    ////    Inline Public Operations    ////
+    public:
+        /**
+         * @brief
+         * @return
+         */
+        bool getInsertEOL()
+        {
+            if ( true == m_insertEol )
+            {
+                m_insertEol = false;
+                return true;
+            }
+            return false;
+        }
+
+        /**
+         * @brief
+         */
+        void setInsertEOL()
+        {
+            m_insertEol = true;
+        }
+
     ////    Protected Operations    ////
     protected:
         /**
@@ -184,6 +209,7 @@ class CompilerParserInterface
          */
         void resetCompilerParserInterface()
         {
+            m_insertEol = false;
             m_yyllocStack.clear();
         }
 
@@ -194,6 +220,11 @@ class CompilerParserInterface
 
         /// Stack to keep track of locations across multiple input buffers
         std::vector<YYLTYPE> m_yyllocStack;
+
+    ////    Protected Attributes    ////
+    private:
+        ///
+        bool m_insertEol;
 };
 
     /*

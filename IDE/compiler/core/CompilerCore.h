@@ -66,16 +66,20 @@ class CompilerCore : public CompilerBase,
          * @param[in] lang
          * @param[in] arch
          * @param[in] opts
-         * @param[in] filename
          * @return
          */
         bool compile ( LangId lang,
                        TargetArch arch,
-                       CompilerOptions * const opts,
-                       const std::string & filename );
+                       CompilerOptions * const opts );
 
     ////    Private Operations    ////
     private:
+        /**
+            * @brief
+            * @param[in] filename
+            */
+        inline void setFileName ( const std::string & filename );
+
         /// @name Interface for syntax and/or lexical analyzer
         //@{
             /**
@@ -139,13 +143,32 @@ class CompilerCore : public CompilerBase,
             void syntaxAnalysisComplete ( CompilerStatement * codeTree );
         //@}
 
+    public:
         /// @name Interface for semantic analyzer
         //@{
             /**
              * @brief
-             * @param[in] filename
+             * @return
              */
-            void setFileName ( const std::string & filename );
+            const std::vector<std::string> & listSourceFiles() const;
+
+            /**
+             * @brief
+             * @param[in] location
+             * @param[in] type
+             * @param[in] text
+             */
+            void compilerMessage ( SourceLocation location,
+                                   MessageType type,
+                                   const std::string & text );
+
+            /**
+             * @brief
+             * @param[in] type
+             * @param[in] text
+             */
+            void compilerMessage ( MessageType type,
+                                   const std::string & text );
         //@}
 
     ////    Inline Private Operations    ////
@@ -165,8 +188,7 @@ class CompilerCore : public CompilerBase,
          */
         inline bool setupSemanticAnalyzer ( LangId lang,
                                             TargetArch arch,
-                                            CompilerOptions * const opts,
-                                            const std::string & filename );
+                                            CompilerOptions * const opts );
 
         /**
          * @brief
@@ -178,8 +200,7 @@ class CompilerCore : public CompilerBase,
          */
         inline bool startLexerAndParser ( LangId lang,
                                           TargetArch arch,
-                                          CompilerOptions * const opts,
-                                          const std::string & filename );
+                                          CompilerOptions * const opts );
 
     ////    Private Attributes    ////
     private:

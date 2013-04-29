@@ -24,13 +24,16 @@ class CompilerOptions
     ////    Public Attributes    ////
     public:
         ///
+        std::string m_sourceFile;
+
+        ///
+        std::string m_lstFile;
+
+        ///
         std::string m_hexFile;
 
         ///
         std::string m_binFile;
-
-        ///
-        std::string m_lstFile;
 
         ///
         std::string m_srecFile;

@@ -8,7 +8,7 @@
  * (C) copyright 2013 Moravia Microsystems, s.r.o.
  *
  * @author Martin Ošmera <martin.osmera@gmail.com>
- * @ingroup Compiler
+ * @ingroup Pic8Asm
  * @file AsmPic8SemanticAnalyzer.h
  */
 // =============================================================================
@@ -20,7 +20,7 @@
 
 /**
  * @brief
- * @ingroup Compiler
+ * @ingroup Pic8Asm
  * @class AsmPic8SemanticAnalyzer
  */
 class AsmPic8SemanticAnalyzer : public CompilerSemanticInterface
@@ -34,9 +34,8 @@ class AsmPic8SemanticAnalyzer : public CompilerSemanticInterface
          * @return
          */
         AsmPic8SemanticAnalyzer ( CompilerCore * compilerCore,
-                                  CompilerOptions * const opts,
-                                  const std::string & filename )
-                                : CompilerSemanticInterface ( compilerCore, opts, filename ) {};
+                                  CompilerOptions * const opts )
+                                : CompilerSemanticInterface ( compilerCore, opts ) {};
 
     ////    Public Operations    ////
     public:
@@ -44,7 +43,7 @@ class AsmPic8SemanticAnalyzer : public CompilerSemanticInterface
          * @brief
          * @param[in,out] codeTree
          */
-        void process ( CompilerStatement * & codeTree );
+        void process ( CompilerStatement * codeTree );
 };
 
 #endif // ASMPIC8SEMANTICANALYSER_H

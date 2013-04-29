@@ -17,6 +17,22 @@
 
 CompilerStatement::~CompilerStatement()
 {
+    if ( NULL != m_args )
+    {
+        m_args->completeDelete();
+    }
+    if ( NULL != m_branch )
+    {
+        m_branch->completeDelete();
+    }
+    if ( NULL != m_prev )
+    {
+        m_prev->m_next = m_next;
+    }
+    if ( NULL != m_next )
+    {
+        m_next->m_prev = m_prev;
+    }
 }
 
 CompilerStatement::CompilerStatement()
@@ -85,6 +101,16 @@ CompilerStatement * CompilerStatement::first()
     return stmt;
 }
 
+CompilerStatement * CompilerStatement::last()
+{
+    CompilerStatement * result = this;
+    while ( NULL != result->m_next )
+    {
+        result = result->m_next;
+    }
+    return result;
+}
+
 CompilerStatement * CompilerStatement::appendLink ( CompilerStatement * next )
 {
     if ( NULL == next )
@@ -107,6 +133,34 @@ CompilerStatement * CompilerStatement::appendLink ( CompilerStatement * next )
     next->m_prev = stmt;
 
     return next;
+}
+
+CompilerStatement * CompilerStatement::prependLink ( CompilerStatement * chainLink )
+{
+    if ( NULL == chainLink )
+    {
+        return this;
+    }
+    if ( NULL == this )
+    {
+        return chainLink;
+    }
+
+    CompilerStatement * chainLinkOrig = chainLink;
+    CompilerStatement * firstLink = first();
+
+    chainLink = chainLink->last();
+    chainLink->m_next = firstLink;
+    firstLink->m_prev = chainLink;
+
+    return chainLinkOrig;
+}
+
+CompilerStatement * CompilerStatement::unlink()
+{
+    m_next->m_prev = NULL;
+    m_next = NULL;
+    return this;
 }
 
 CompilerStatement * CompilerStatement::appendArgsLink ( CompilerExpr * chainLink )
@@ -141,16 +195,6 @@ void CompilerStatement::completeDelete()
     if ( NULL == this )
     {
         return;
-    }
-
-    if ( NULL != m_args )
-    {
-        m_args->completeDelete();
-    }
-
-    if ( NULL != m_branch )
-    {
-        m_branch->completeDelete();
     }
 
     if ( NULL != m_next )

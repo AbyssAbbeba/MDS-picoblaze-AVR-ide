@@ -54,13 +54,11 @@ class Compiler
          * @param[in] lang
          * @param[in] arch
          * @param[in] opts
-         * @param[in] filename
          * @return
          */
         bool compile ( CompilerBase::LangId lang,
                        CompilerBase::TargetArch arch,
-                       CompilerOptions * const opts,
-                       const std::string & filename );
+                       CompilerOptions * const opts );
 
     ////    Private Attributes    ////
     private:
