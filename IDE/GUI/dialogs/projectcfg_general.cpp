@@ -13,7 +13,7 @@
 
 
 #include "projectcfg_general.h"
-#include "../mainform/project.h"
+#include "../project/project.h"
 
 ProjectCfg_General::ProjectCfg_General(QWidget *parentWidget, Project *currProject)
 {

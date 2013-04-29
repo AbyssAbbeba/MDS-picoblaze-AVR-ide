@@ -6,7 +6,7 @@
 
 
 typedef enum SourceType
-{PLAIN = 0, C, CPP, AVRASM, PICASM} SourceType;
+{PLAIN = 0, C, CPP, AVRASM, PICASM, PICOBLAZEASM} SourceType;
 
 
 class Highlighter : public QSyntaxHighlighter

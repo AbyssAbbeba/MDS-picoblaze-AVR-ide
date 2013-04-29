@@ -24,7 +24,7 @@
 #include <QGridLayout>
 #include <QLineEdit>
 #include <QComboBox>
-#include "../mainform/project.h"
+#include "../project/project.h"
 
 
 

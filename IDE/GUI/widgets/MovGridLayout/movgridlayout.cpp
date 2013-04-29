@@ -15,7 +15,7 @@
 
 #include "movgridlayout.h"
 #include "movgridlayoutitem.h"
-#include "../../dialogs/errordlg.h"
+#include "../../errordialog/errordlg.h"
 #include <QtGui>
 #include <QtXml>
 
