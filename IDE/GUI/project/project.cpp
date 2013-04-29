@@ -25,13 +25,13 @@
  * @brief Constructor of project manager. Inits basic variables.
  * @param qMainWindow Pointer to MainForm instance.
  */
-ProjectMan::ProjectMan(MainForm *qMainWindow)
+ProjectMan::ProjectMan(QWidget *parent)
+    : QObject(parent)
 {
     qDebug() << "ProjectMan: ProjectMan()";
     //openProjects = new QList<Project*>;
     this->untrackedProject = NULL;
     projectCount = 0;
-    mainWindow = qMainWindow;
     activeProject = NULL;
     qDebug() << "ProjectMan: return ProjectMan()";
 }
@@ -44,8 +44,9 @@ ProjectMan::ProjectMan(MainForm *qMainWindow)
 void ProjectMan::openProject(QFile *file)
 {
     qDebug() << "ProjectMan: openProject()";
-    Project *newProject = new Project(file, mainWindow, this);
-    mainWindow->addDockWidget(Qt::LeftDockWidgetArea, newProject->prjDockWidget);
+    Project *newProject = new Project(file, this);
+    emit addDockWidget(Qt::LeftDockWidgetArea, newProject->prjDockWidget);
+    //mainWindow->addDockWidget(Qt::LeftDockWidgetArea, newProject->prjDockWidget);
     //if (projectCount == 1 && openProjects.at(0)->prjName == NULL)
     //{
     //    delete openProjects.at(0);
@@ -57,7 +58,8 @@ void ProjectMan::openProject(QFile *file)
     activeProject = newProject;
     if (projectCount > 0)
     {
-        mainWindow->tabifyDockWidget(openProjects.at(0)->prjDockWidget, newProject->prjDockWidget);
+        emit tabifyDockWidget(openProjects.at(0)->prjDockWidget, newProject->prjDockWidget);
+        //mainWindow->tabifyDockWidget(openProjects.at(0)->prjDockWidget, newProject->prjDockWidget);
     }
     //else
     //    mainWindow->CreateDockWidgets();
@@ -103,10 +105,11 @@ void ProjectMan::addUntrackedFile(QString path, QString name)
 void ProjectMan::addUntrackedProject()
 {
     qDebug() << "ProjectMan: addUntrackedProject()";
-    Project *newProject = new Project(mainWindow, this);
+    Project *newProject = new Project(this);
 
     //mainWindow->getWDockManager()->hideDockWidgetArea(0);
-    mainWindow->addDockWidget(Qt::LeftDockWidgetArea, newProject->prjDockWidget);
+    emit addDockWidget(Qt::LeftDockWidgetArea, newProject->prjDockWidget);
+    //mainWindow->addDockWidget(Qt::LeftDockWidgetArea, newProject->prjDockWidget);
     //mainWindow->getWDockManager()->showDockWidgetArea(0);
 
     //if (projectCount == 1 && openProjects.at(0)->prjName == NULL) {
@@ -117,7 +120,8 @@ void ProjectMan::addUntrackedProject()
     //else
     if (projectCount > 0)
     {
-        mainWindow->tabifyDockWidget(openProjects.at(0)->prjDockWidget, newProject->prjDockWidget);
+        emit tabifyDockWidget(openProjects.at(0)->prjDockWidget, newProject->prjDockWidget);
+        //mainWindow->tabifyDockWidget(openProjects.at(0)->prjDockWidget, newProject->prjDockWidget);
     }
 
     openProjects.append(newProject);
@@ -138,10 +142,11 @@ void ProjectMan::addUntrackedProject()
 void ProjectMan::addProject(QString name, QString path, QString architecture, LangType langType, QFile *file)
 {
     qDebug() << "ProjectMan: addProject()";
-    Project *newProject = new Project(name, path, architecture, langType, mainWindow, file, this);
+    Project *newProject = new Project(name, path, architecture, langType, file, this);
 
     //mainWindow->getWDockManager()->hideDockWidgetArea(0);
-    mainWindow->addDockWidget(Qt::LeftDockWidgetArea, newProject->prjDockWidget);
+    emit addDockWidget(Qt::LeftDockWidgetArea, newProject->prjDockWidget);
+    //mainWindow->addDockWidget(Qt::LeftDockWidgetArea, newProject->prjDockWidget);
     //mainWindow->getWDockManager()->showDockWidgetArea(0);
     
     //if (projectCount == 1 && openProjects.at(0)->prjName == NULL) {
@@ -152,7 +157,8 @@ void ProjectMan::addProject(QString name, QString path, QString architecture, La
     //else
     if (projectCount > 0)
     {
-        mainWindow->tabifyDockWidget(openProjects.at(0)->prjDockWidget, newProject->prjDockWidget);
+        emit tabifyDockWidget(openProjects.at(0)->prjDockWidget, newProject->prjDockWidget);
+        //mainWindow->tabifyDockWidget(openProjects.at(0)->prjDockWidget, newProject->prjDockWidget);
     }
     //else
     //{
@@ -263,10 +269,10 @@ Project::~Project()
 /**
  * @brief Opens project from opened xml (.mmp) file.
  * @param file Opened xml (.mmp) file.
- * @param mainWindow 
  * @param parent Project parent project manager.
  */
-Project::Project(QFile *file, MainForm* mainWindow, ProjectMan *parent)
+Project::Project(QFile *file, ProjectMan *parent)
+    : QObject(parent)
 {
     qDebug() << "Project: Project()";
     mainFileName = "";
@@ -275,7 +281,6 @@ Project::Project(QFile *file, MainForm* mainWindow, ProjectMan *parent)
     errorFlag = ERR_OK;
     fileCount = 0;
     parentManager = parent;
-    parentWindow = mainWindow;
     this->m_simControlUnit = NULL;
     prjPath = QFileInfo(*file).filePath();
     currLineColor = new QColor(102,204,255,255);
@@ -355,10 +360,11 @@ Project::Project(QFile *file, MainForm* mainWindow, ProjectMan *parent)
                 }
                 xmlNode = xmlNode.nextSibling();
             }
-            prjDockWidget = new QDockWidget(prjName, mainWindow);
+            prjDockWidget = new QDockWidget(prjName, (QWidget *)(parent->parent()));
             prjDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea);
             prjDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
-            prjTreeWidget = new ProjectTree(prjDockWidget, this);
+            prjTreeWidget = new ProjectTree(prjDockWidget);
+            /*connect signals!!!*/
             prjDockWidget->setWidget(prjTreeWidget);
 
             QTreeWidgetItem *treeProjName = new QTreeWidgetItem(prjTreeWidget);
@@ -388,18 +394,19 @@ Project::Project(QFile *file, MainForm* mainWindow, ProjectMan *parent)
 
 
 
-Project::Project(MainForm *mainWindow, ProjectMan *parent)
+Project::Project(ProjectMan *parent)
+    : QObject(parent)
 {
     qDebug() << "Project: Project()";
     parentManager = parent;
-    parentWindow = mainWindow;
     this->m_simControlUnit = NULL;
     prjName = "untracked";
     prjPath = "untracked";
-    prjDockWidget = new QDockWidget(prjName, mainWindow);
+    prjDockWidget = new QDockWidget(prjName, (QWidget *)(parent->parent()));
     prjDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea);
     prjDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
-    prjTreeWidget = new ProjectTree(prjDockWidget, this);
+    prjTreeWidget = new ProjectTree(prjDockWidget);
+            /*connect signals!!!*/
 
     prjDockWidget->setWidget(prjTreeWidget);
 
@@ -422,16 +429,14 @@ Project::Project(MainForm *mainWindow, ProjectMan *parent)
  * @param path The path to xml (.mmp) file
  * @param arch Compiler option, architecture
  * @param langType Compiler option, language
- * @param mainWindow Pointer to parent main window
  * @param file Opened file for xml (.mmp) stream
  * @param parent Pointer to parent (project manager)
  */
-Project::Project(QString name, QString path, QString arch, LangType lang, MainForm* mainWindow, QFile *file, ProjectMan *parent)
+Project::Project(QString name, QString path, QString arch, LangType lang, QFile *file, ProjectMan *parent)
 {
     qDebug() << "Project: Project() blank";
     errorFlag = ERR_OK;
     parentManager = parent;
-    parentWindow = mainWindow;
     this->m_simControlUnit = NULL;
     currLineColor = new QColor(102,204,255,255);
     prevLineColor = new QColor(102,204,255,125);
@@ -439,15 +444,16 @@ Project::Project(QString name, QString path, QString arch, LangType lang, MainFo
 
     if (name != NULL)
     {
-        prjDockWidget = new QDockWidget(name, mainWindow);
+        prjDockWidget = new QDockWidget(name, (QWidget *)(parent->parent()));
     }
     else
     {
-        prjDockWidget = new QDockWidget("Projects", mainWindow);
+        prjDockWidget = new QDockWidget("Projects", (QWidget *)(parent->parent()));
     }
     prjDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea);
     prjDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
-    prjTreeWidget = new ProjectTree(prjDockWidget, this);
+    prjTreeWidget = new ProjectTree(prjDockWidget);
+            /*connect signals!!!*/
 
     prjDockWidget->setWidget(prjTreeWidget);
     //prjDockWidget->setMinimumWidth(150);
@@ -624,8 +630,9 @@ void Project::openUntrackedItem()
     qDebug() << "Project: openUntrackedItem()";
     if (prjTreeWidget->currentItem() != NULL)
     {
-        parentWindow->getWDockManager()->addUntrackedCentralWidget(prjTreeWidget->currentItem()->text(0), prjTreeWidget->currentItem()->data(0, Qt::ToolTipRole).toString());
-        parentWindow->getWDockManager()->getCentralWidget()->setChanged();
+        emit addUntrackedFile(prjTreeWidget->currentItem()->text(0), prjTreeWidget->currentItem()->data(0, Qt::ToolTipRole).toString());
+        //parentWindow->getWDockManager()->addUntrackedCentralWidget(prjTreeWidget->currentItem()->text(0), prjTreeWidget->currentItem()->data(0, Qt::ToolTipRole).toString());
+        //parentWindow->getWDockManager()->getCentralWidget()->setChanged();
         //wDockManager->getCentralWidget()->connectAct();
     }
     qDebug() << "Project: return openUntrackedItem()";
@@ -640,7 +647,8 @@ void Project::openItem()
     qDebug() << "Project: openFile()";
     if (prjTreeWidget->currentItem() != NULL)
     {
-        parentManager->mainWindow->openFilePath(prjTreeWidget->currentItem()->data(0, Qt::ToolTipRole).toString());
+        emit openFilePath(prjTreeWidget->currentItem()->data(0, Qt::ToolTipRole).toString());
+        //parentManager->mainWindow->openFilePath(prjTreeWidget->currentItem()->data(0, Qt::ToolTipRole).toString());
     }
     qDebug() << "Project: return openFile()";
 }
@@ -803,7 +811,8 @@ void Project::setupSim()
 void Project::start()
 {
     qDebug() << "Project: start()";
-    parentWindow->getWDockManager()->setEditorsReadOnly(true);
+    emit setEditorReadOnly(true);
+    //parentWindow->getWDockManager()->setEditorsReadOnly(true);
     if (langType == LANG_ASM)
     {
         QString hexPath = prjPath.section('/',0, -2) + "/build/" + mainFileName.section('.',0,-2);
@@ -823,8 +832,9 @@ void Project::start()
     QString fileNameQStr = QString::fromStdString(fileName);
     qDebug() << "Project: current line number:" << line << "in file" << fileNameQStr;
     qDebug() << "Project: program counter value:" << dynamic_cast<MCUSim::CPU*>(m_simControlUnit->getSimSubsys(MCUSim::Subsys::ID_CPU))->getProgramCounter();
-    parentWindow->getWDockManager()->setCentralByName(fileNameQStr);
-    parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(line, currLineColor, origCurrLineCol);
+    emit highlightLine(fileNameQStr, line, currLineColor, origCurrLineCol);
+    //parentWindow->getWDockManager()->setCentralByName(fileNameQStr);
+    //parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(line, currLineColor, origCurrLineCol);
     prevLine = line;
     prevLine2 = -1;
     prevLine3 = -1;
@@ -839,11 +849,18 @@ void Project::start()
 void Project::stop()
 {
     qDebug() << "Project: stop()";
+    std::string fileName; //= new std::string;
+    int line = m_simControlUnit->getLineNumber(&fileName) - 1;
+    QString fileNameQStr = QString::fromStdString(fileName);
     m_simControlUnit->stop();
-    parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(prevLine, NULL, NULL);
-    parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(prevLine2, NULL, NULL);
-    parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(prevLine3, NULL, NULL);
-    parentWindow->getWDockManager()->setEditorsReadOnly(false);
+    emit highlightLine(fileNameQStr, prevLine, NULL, NULL);
+    emit highlightLine(fileNameQStr, prevLine2, NULL, NULL);
+    emit highlightLine(fileNameQStr, prevLine3, NULL, NULL);
+    //parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(prevLine, NULL, NULL);
+    //parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(prevLine2, NULL, NULL);
+    //parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(prevLine3, NULL, NULL);
+    emit setEditorReadOnly(false);
+    //parentWindow->getWDockManager()->setEditorsReadOnly(false);
     qDebug() << "Project: return stop()";
 }
 
@@ -868,11 +885,15 @@ void Project::step()
     QString fileNameQStr = QString::fromStdString(fileName);
     qDebug() << "Project: current line number:" << line << "in file" << fileNameQStr;
     qDebug() << "Project: program counter value:" << dynamic_cast<MCUSim::CPU*>(m_simControlUnit->getSimSubsys(MCUSim::Subsys::ID_CPU))->getProgramCounter();
-    parentWindow->getWDockManager()->setCentralByName(fileNameQStr);
-    parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(line, currLineColor, origCurrLineCol);
-    parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(prevLine, prevLineColor, origPrevLineCol);
-    parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(prevLine2, prevLine2Color, origPrevLine2Col);
-    parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(prevLine3, NULL, NULL);
+    //parentWindow->getWDockManager()->setCentralByName(fileNameQStr);
+    emit highlightLine(fileNameQStr, line, currLineColor, origCurrLineCol);
+    emit highlightLine(fileNameQStr, prevLine, prevLineColor, origPrevLineCol);
+    emit highlightLine(fileNameQStr, prevLine2, prevLine2Color, origPrevLine2Col);
+    emit highlightLine(fileNameQStr, prevLine3, NULL, NULL);
+    //parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(line, currLineColor, origCurrLineCol);
+    //parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(prevLine, prevLineColor, origPrevLineCol);
+    //parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(prevLine2, prevLine2Color, origPrevLine2Col);
+    //parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(prevLine3, NULL, NULL);
     prevLine3 = prevLine2;
     prevLine2 = prevLine;
     prevLine = line;

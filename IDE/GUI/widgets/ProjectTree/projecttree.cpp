@@ -14,13 +14,13 @@
 
 #include <QtGui>
 #include "projecttree.h"
-#include "../mainform/project.h"
+//#include "../project/project.h"
 #include "../dialogs/projectcfgdlg_core.h"
 
-ProjectTree::ProjectTree(QWidget *parent, Project *parentProject)
+ProjectTree::ProjectTree(QWidget *parent)
     : QTreeWidget(parent)
 {
-    this->parentProject = parentProject;
+    //this->parentProject = parentProject;
     this->parent = parent;
     mainFileName = "";
     mainFilePath = "";
@@ -49,21 +49,42 @@ void ProjectTree::contextMenuEvent(QContextMenuEvent *event)
 {
     if (this->itemAt(event->pos()) != NULL)
     {
-        if (parentProject->fileCount == 0 || this->itemAt(event->pos())->childCount() > 0)
+        lastEvent = event;
+        emit requestFileCount();
+        /*if (parentProject->fileCount == 0 || this->itemAt(event->pos())->childCount() > 0)
+        {
             projectPopup->popup(event->globalPos());
+        }
         else
         {
             lastName = this->itemAt(event->pos())->text(0);
             lastPath = this->itemAt(event->pos())->toolTip(0);
             lastItem = this->itemAt(event->pos());
             filePopup->popup(event->globalPos());
-        }
+        }*/
+    }
+}
+
+
+void ProjectTree::contextP2(int fileCount)
+{
+    if (fileCount == 0 || this->itemAt(lastEvent->pos())->childCount() > 0)
+    {
+        projectPopup->popup(lastEvent->globalPos());
+    }
+    else
+    {
+        lastName = this->itemAt(lastEvent->pos())->text(0);
+        lastPath = this->itemAt(lastEvent->pos())->toolTip(0);
+        lastItem = this->itemAt(lastEvent->pos());
+        filePopup->popup(lastEvent->globalPos());
     }
 }
 
 void ProjectTree::setMainFile()
 {
-    parentProject->setMainFile(lastPath, lastName);
+    emit setMainFile(lastPath, lastName);
+    //parentProject->setMainFile(lastPath, lastName);
     //clear previous mainfile's background
     if (mainFileName != "" && mainFilePath != "")
     {
@@ -127,15 +148,17 @@ void ProjectTree::setMainFileManual(QString name, QString path)
 void ProjectTree::removeFile()
 {
     delete lastItem;
-    parentProject->removeFile(lastPath, lastName);
+    emit removeFile(lastPath, lastName);
+    //parentProject->removeFile(lastPath, lastName);
 }
 
 
 void ProjectTree::config()
 {
-    ProjectConfigDialog_Core *cfgdlg = new ProjectConfigDialog_Core(this, parentProject);
-    cfgdlg->show();
-    connect(cfgdlg, SIGNAL(reloadTree()), this, SLOT(reloadFiles()));
+    emit startProjectCfgDlgCore(this);
+    //ProjectConfigDialog_Core *cfgdlg = new ProjectConfigDialog_Core(this, parentProject);
+    //cfgdlg->show();
+    //connect(cfgdlg, SIGNAL(reloadTree()), this, SLOT(reloadFiles()));
 }
 
 

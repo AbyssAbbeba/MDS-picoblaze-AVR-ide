@@ -27,10 +27,11 @@
 #include <QAction>
 #include <QtXml>
 #include "mainform.h"
-#include "../dialogs/errordlg.h"
+#include "../errordialog/errordlg.h"
+#include "../enums/enums.h"
 
 
-class MainForm;
+//class MainForm;
 class CodeEdit;
 class ProjectTree;
 
@@ -43,9 +44,9 @@ class McuSimCfgMgr;
 class Project;
 
 
-typedef enum LangType {
+/*typedef enum LangType {
     LANG_ASM = 0, LANG_C
-} LangType;
+} LangType;*/
 
 
 /**
@@ -53,10 +54,11 @@ typedef enum LangType {
  * @ingroup GUI
  * @class ProjectMan
  */
-class ProjectMan
+class ProjectMan : public QObject
 {
+    Q_OBJECT
     public:
-        ProjectMan(MainForm *mainWindow);
+        ProjectMan(QWidget *parent);
         void addFile(QString path, QString name);
         void addUntrackedFile(QString path, QString name);
         void addProject(QString name, QString path, QString architecture, LangType langType, QFile *file);
@@ -67,8 +69,10 @@ class ProjectMan
         Project* getActive();
         void createActiveMakefile();
 
-        MainForm *mainWindow;
-
+    signals:
+        void connectProject(Project *project);
+        void addDockWidget(Qt::DockWidgetArea area, QDockWidget* dockWidget);
+        void tabifyDockWidget(QWidget *first, QWidget *second);
 
     private:
         int projectCount;
@@ -91,10 +95,10 @@ class Project : public QObject
     
     public:
         //konstruktor pro otevirani projektu
-        Project(QFile *file, MainForm* mainWindow, ProjectMan *parent);
-        Project(MainForm *mainWindow, ProjectMan *parent);
+        Project(QFile *file, ProjectMan *parent);
+        Project(ProjectMan *parent);
         //konstruktor pro prazdny projekt
-        Project(QString name, QString path, QString arch, LangType langType, MainForm* mainWindow, QFile *file, ProjectMan *parent);
+        Project(QString name, QString path, QString arch, LangType langType, QFile *file, ProjectMan *parent);
         ~Project();
 
         void addFile(QString path, QString name);
@@ -134,9 +138,16 @@ class Project : public QObject
         void openItem();
         void openUntrackedItem();
 
+    signals:
+        void highlightLine(QString file, int line, QColor *color, QColor *origColor);
+        void addUntrackedFile(QString name, QString path);
+        //void addDockWidget(Qt::DockWidgetArea area, QDockWidget* dockWidget);
+        void openFilePath(QString path);
+        void setEditorReadOnly(bool readOnly);
+        //void setCentralChanged();
+        
     private:
         ProjectMan *parentManager;
-        MainForm *parentWindow;
         int prevLine;
         int prevLine2;
         int prevLine3;

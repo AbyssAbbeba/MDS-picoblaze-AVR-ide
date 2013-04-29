@@ -49,10 +49,12 @@ find_package(Qt4 REQUIRED)
 #	)
 
 # <DEBUG!>
-#link_directories(
+link_directories(
 #	"${CMAKE_CURRENT_BINARY_DIR}/../../simulators/SimControl/"
 #        "${CMAKE_CURRENT_BINARY_DIR}/sim"
-#	)
+#    "${CMAKE_CURRENT_BINARY_DIR}/../../dialogs/"
+#    "${CMAKE_CURRENT_BINARY_DIR}/../../project/"
+	)
 
 #include_directories(
 #	"${CMAKE_CURRENT_BINARY_DIR}/MovGridLayout/"
@@ -77,7 +79,7 @@ add_definitions(-Wall -Wextra -std=c++0x -O2 -pipe)
 
 
 # and finally this will run moc:
-QT4_WRAP_CPP( SAMPLE_MOC_SRCS ${SAMPLE_MOC_HDRS} )
+QT4_WRAP_CPP( SAMPLE_MOC_SRCS ${SAMPLE_MOC_HDRS})
 
 ## Add a library to the project using the specified source files,
  # in this case it will procude dynamic C++ library.
@@ -85,7 +87,7 @@ add_library(${PROJECT_NAME} SHARED
 	${SAMPLE_MOC_SRCS} ${SAMPLE_SRCS})
 
 
-target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} McuSimCfgMgr SimControl)
 
 
 # ------------------------------------------------------------------------------

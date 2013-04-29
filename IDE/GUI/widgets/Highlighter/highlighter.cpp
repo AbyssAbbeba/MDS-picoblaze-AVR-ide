@@ -273,6 +273,61 @@ Highlighter::Highlighter(QTextDocument *parent, SourceType type)
         commentStartExpression = QRegExp("/\\*");
         commentEndExpression = QRegExp("\\*/");
     }
+    else if (type == PICOBLAZEASM)
+    {
+        QStringList keywordPatterns;
+        keywordPatterns << "\\bequ\\b";
+
+        keywordFormat.setForeground(Qt::darkBlue);
+        keywordFormat.setFontWeight(QFont::Bold);
+
+        foreach (const QString &pattern, keywordPatterns) {
+            rule.pattern = QRegExp(pattern);
+            rule.format = keywordFormat;
+            highlightingRules.append(rule);
+        }
+
+        quotationFormat.setForeground(Qt::darkRed);
+        rule.pattern = QRegExp("\".*\"");
+        rule.format = quotationFormat;
+        rule.tag = "quotation";
+        highlightingRules.append(rule);
+
+        QStringList functionPatterns;
+        functionPatterns << "\\badd\\b" << "\\baddcy\\b" << "\\band\\b"
+            << "\\bcall\\b" << "\\bcompare\\b" << "\\bcomparecy\\b"
+            << "\\bdisable interrupt\\b" << "\\benable interrupt\\b" << "\\bfetch\\b"
+            << "\\bhwbuild\\b" << "\\binput\\b" << "\\bjump\\b"
+            << "\\bload\\b" << "\\bload&return\\b" << "\\bor\\b"
+            << "\\boutput\\b" << "\\bregbank a\\b" << "\\bregbank b\\b"
+            << "\\breturn\\b" << "\\breturni disable\\b" << "\\breturni enable\\b"
+            << "\\brl\\b" << "\\brr\\b" << "\\bsla\\b"
+            << "\\bslx\\b" << "\\bsl0\\b" << "\\bsl1\\b"
+            << "\\bsra\\b" << "\\bsrx\\b" << "\\bsr0\\b"
+            << "\\bsr1\\b" << "\\bstar\\b" << "\\bstore\\b"
+            << "\\bsub\\b" << "\\bsubcy\\b" << "\\btest\\b"
+            << "\\btestcy\\b" << "\\bxor\\b";
+
+        //functionFormat.setFontItalic(true);
+        functionFormat.setForeground(Qt::blue);
+
+        foreach (const QString &pattern, functionPatterns) {
+            rule.pattern = QRegExp(pattern);
+            rule.format = functionFormat;
+            rule.tag = "function";
+            highlightingRules.append(rule);
+        }
+
+        singleLineCommentFormat.setForeground(Qt::gray);
+        rule.pattern = QRegExp(";[^\n]*");
+        rule.format = singleLineCommentFormat;
+        rule.tag = "lineComment";
+        highlightingRules.append(rule);
+
+        multiLineCommentFormat.setForeground(Qt::gray);
+        commentStartExpression = QRegExp("/\\*");
+        commentEndExpression = QRegExp("\\*/");
+    }
     else
     {
         //NOTHING

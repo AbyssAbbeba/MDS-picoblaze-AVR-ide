@@ -13,9 +13,9 @@
 
 
 #include "filemgr.h"
-#include "../mainform/project.h"
+#include "../project/project.h"
 #include <QFileDialog>
-#include "errordlg.h"
+#include "../errordialog/errordlg.h"
 
 
 /**

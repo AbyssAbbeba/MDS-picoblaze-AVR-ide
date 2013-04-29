@@ -9,7 +9,7 @@
 #include <QtNetwork/QNetworkReply>
 #include <QList>
 #include <QtXml>
-#include "../dialogs/errordlg.h"
+#include "../errordialog/errordlg.h"
 
 typedef struct {
     QString name;
