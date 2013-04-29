@@ -13,7 +13,7 @@
 
 
 #include "projectcfgdlg_core.h"
-#include "../mainform/project.h"
+#include "../project/project.h"
 
 ProjectConfigDialog_Core::ProjectConfigDialog_Core(QWidget *dialogParent, Project *currProject)
 {

@@ -27,13 +27,13 @@
 
 
 #include <QDockWidget>
-#include <QMainWindow>
+//#include <QMainWindow>
 #include <QList>
 #include <QSplitter>
 #include "../Editor/codeedit.h"
 #include "../Editor/baseeditor.h"
 #include "../Editor/wtextedit.h"
-#include "../../mainform/mainform.h"
+//#include "../../mainform/mainform.h"
 #include "../SimulationInfo/wsimulationinfo.h"
 #include "../BreakpointList/breakpointlist.h"
 #include "../BookmarkList/bookmarklist.h"
@@ -41,7 +41,6 @@
 #include "../AnalyserWidget/analyserwidget.h"
 #include "../Analyser/analys.h"
 class WDock;
-class MainForm;
 class CodeEdit;
 class BaseEditor;
 class BookmarkList;
@@ -58,8 +57,10 @@ class WDockManager : public QObject
 {
     Q_OBJECT
     public:
-        WDockManager(MainForm *mainWindow);
+        WDockManager(QWidget *parent, QWidget *centralWidget);
         void addDockWidget(int code);
+        void addSimDockWidgetP1();
+        void addSimDockWidgetP2(QString path, MCUSimControl* simControl);
         QDockWidget* getDockWidget(int code);
         QDockWidget* getDockWidgetArea(int area);
         void hideDockWidgetArea(int area);
@@ -85,6 +86,8 @@ class WDockManager : public QObject
         void createBreakpointList(QDockWidget *wDockWidget);
         void setCentralByName(QString fileName);
         void setEditorsReadOnly(bool readonly);
+        bool dockWidgets;
+        
 
     private slots:
         void closeTab(int index);
@@ -96,12 +99,18 @@ class WDockManager : public QObject
 
     public slots:
         void changeLine(QListWidgetItem *item);
+        void addDockW(Qt::DockWidgetArea area, QDockWidget* dockWidget);
+        //void dockWidgetsCreated();
 
     signals:
         void saveCodeEdit(CodeEdit *editor);
+        void createDockWidgets();
+        void tabifyDockWidget(QDockWidget *widget1, QDockWidget* widget2);
+        void addDockWidget(Qt::DockWidgetArea area, QDockWidget* dockWidget);
+        void getSimProjectData();
 
     private:
-        MainForm *wMainWindow;
+        //MainForm *wMainWindow;
         QList<WDock*> openDockWidgets;
         WDock *wLeft;
         WDock *wBottom;
@@ -112,6 +121,8 @@ class WDockManager : public QObject
         QSplitter *splitter;
         CodeEdit *activeCodeEdit;
         QList<CodeEdit*> codeEditList;
+        QString tmpPrjPath;
+        MCUSimControl* tmpSimControl;
         
         //widgets
         BookmarkList *bookmarkList;
@@ -128,7 +139,8 @@ class WDockManager : public QObject
 class WDock
 {
     public:
-        WDock(WDockManager *parent, int code, MainForm *mainWindow);
+        WDock(WDockManager *parent, int code, QWidget *parentWindow);
+        WDock(WDockManager *parent, int code, QWidget *parentWindow, QString path, MCUSimControl* simControl);
         ~WDock();
         bool cmpCode(int code);
         bool cmpArea(int area);

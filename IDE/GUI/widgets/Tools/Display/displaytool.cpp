@@ -650,22 +650,23 @@ void DisplayTool::updateLEBinAn(const QString &text)
 
 void DisplayTool::updateLEGlobal(int pin, bool active)
 {
-    char dec = cathodeLE[1]->text().toInt(NULL, 10);
+    unsigned char dec = cathodeLE[1]->text().toInt(NULL, 10);
     unsigned char decInv;
     QString number;
     int length;
-    qDebug() << "DisplayTool: old dec number:" << (int)dec;
+    qDebug() << "DisplayTool: old dec number:" << (unsigned int)dec;
     if (active == true)
     {
         qDebug() << "DisplayTool: active == true";
         dec |= 1 << pin;
+        //dec = dec&0xFF;
     }
     else
     {
         qDebug() << "DisplayTool: active == false";
         dec &= ~(1 << pin);
     }
-    qDebug() << "DisplayTool: new dec number:" << (int)dec;
+    qDebug() << "DisplayTool: new dec number:" << (unsigned int)dec;
     decInv = ~dec&0xFF;
     //hex
     number = QString::number(dec, 16);

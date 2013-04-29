@@ -20,11 +20,13 @@ ProjectDialog::ProjectDialog(QMainWindow *dialogParent, ProjectMan *dialogProjec
     : QDialog(dialogParent)
 {
     //layout = new QGridLayout(this);
+#ifndef PICOBLAZE
     architecture = new QComboBox(this);
     architecture->addItem("ATmega8A");
     language = new QComboBox(this);
     language->addItem("ASM");
     language->addItem("C");
+#endif
     projName = new QLineEdit(this);
     projDir = new QLineEdit(this);
     labelName = new QLabel(this);
@@ -55,8 +57,10 @@ ProjectDialog::ProjectDialog(QMainWindow *dialogParent, ProjectMan *dialogProjec
     projDir->setMinimumWidth(168);
     chooseName->move(170, 70);
     chooseName->setMaximumWidth(30);
+#ifndef PICOBLAZE
     architecture->move(0, 100);
     language->move(140, 100);
+#endif
     buttonBox->move(100, 130);
     buttonBox->setMaximumWidth(100);
     this->show();
@@ -87,7 +91,11 @@ void ProjectDialog::bCreate()
      }
      else {
          //nacteni projektu do manageru otevrenych projektu
+#ifndef PICOBLAZE
          projectMan->addProject(projName->text(), projDir->text() + "/" + projName->text()+ ".mmp", architecture->currentText(), (LangType)language->currentIndex(), &file);
+#else
+         projectMan->addProject(projName->text(), projDir->text() + "/" + projName->text()+ ".mmp", "PICOBLAZE", LANG_ASM, &file);
+#endif
          file.close();
 
          freeDialog();
@@ -110,8 +118,10 @@ void ProjectDialog::freeDialog()
     delete labelName;
     delete labelDir;
     delete chooseName;
+#ifndef PICOBLAZE
     delete architecture;
     delete language;
+#endif
     delete buttonBox;
     accept();
 }

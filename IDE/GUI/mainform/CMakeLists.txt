@@ -18,8 +18,7 @@ set(CMAKE_VERBOSE_MAKEFILE OFF)
 # note that we don't need \ at the end of line
 SET( SAMPLE_SRCS
         ./mainform.cpp
-        ./project.cpp
-        ./pluginman_gui.cpp
+#        ./pluginman_gui.cpp
 #       ../dialogs/errordlg.cpp
 #       ../dialogs/projectdlg.cpp
 #       ../widgets/codeedit.cpp
@@ -28,8 +27,7 @@ SET( SAMPLE_SRCS
 # another list, this time it includes all header files that should be treated with moc
 SET( SAMPLE_MOC_HDRS
         ./mainform.h
-        ./project.h
-        ./pluginman_gui.h
+#        ./pluginman_gui.h
 )
 
 
@@ -67,7 +65,10 @@ link_directories(
 	"${CMAKE_CURRENT_BINARY_DIR}/../widgets/Editor/"
     "${CMAKE_CURRENT_BINARY_DIR}/../widgets/Tools/Convertor"
     "${CMAKE_CURRENT_BINARY_DIR}/../widgets/Tools/Display"
-    "${CMAKE_CURRENT_BINARY_DIR}/../dialogs/")
+    "${CMAKE_CURRENT_BINARY_DIR}/../widgets/CompileWidget"
+    "${CMAKE_CURRENT_BINARY_DIR}/../dialogs/"
+    "${CMAKE_CURRENT_BINARY_DIR}/../errordialog/"
+    "${CMAKE_CURRENT_BINARY_DIR}/../project/")
 #include_directories(
 #	"${CMAKE_CURRENT_BINARY_DIR}/.."
 #	"${CMAKE_CURRENT_BINARY_DIR}/../../../simulators/MCUSim/")
@@ -89,4 +90,5 @@ QT4_WRAP_CPP( SAMPLE_MOC_SRCS ${SAMPLE_MOC_HDRS} )
 add_library(${PROJECT_NAME} SHARED
 	${SAMPLE_MOC_SRCS} ${SAMPLE_SRCS})
 
-target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} QtNetwork ProjectTree Editor Dialogs WDockManager McuSimCfgMgr SimControl AVR8Sim PIC8Sim MCUDataFiles ConvertorTool DisplayTool)
+#QtNetwork !!
+target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} ErrorDialog Project ProjectTree Editor Dialogs WDockManager McuSimCfgMgr SimControl AVR8Sim PIC8Sim MCUDataFiles ConvertorTool DisplayTool CompileWidget)

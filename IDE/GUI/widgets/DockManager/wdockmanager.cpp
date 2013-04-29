@@ -21,11 +21,11 @@
  * @brief Constructor. Inits docking and tabbar.
  * @param mainWindow Parent window.
  */
-WDockManager::WDockManager(MainForm *mainWindow)
+WDockManager::WDockManager(QWidget *parent, QWidget *centralWidget)
+    : QObject(parent)
 {
     qDebug() << "WDockManager: WDockManager()";
-    wMainWindow = mainWindow;
-    QWidget *centralWidget = new QWidget(wMainWindow);
+    //wMainWindow = mainWindow;
     QVBoxLayout *layout = new QVBoxLayout(centralWidget);
     wTab = new TabBar(centralWidget);
     splitter = new QSplitter(centralWidget);
@@ -39,6 +39,7 @@ WDockManager::WDockManager(MainForm *mainWindow)
     breakpointList = NULL;
     activeCodeEdit = NULL;
     centralBase = NULL;
+    this->dockWidgets = false;
     connect(wTab, SIGNAL(tabCloseRequested(int)),this, SLOT(closeTab(int)));
     connect(wTab, SIGNAL(currentChanged(int)), this, SLOT(changeCodeEditor(int)));
     connect(wTab, SIGNAL(tabMoved(int, int)), this, SLOT(moveEditorsSlot(int, int)));
@@ -46,7 +47,6 @@ WDockManager::WDockManager(MainForm *mainWindow)
     layout->addWidget(wTab);
     layout->addWidget(splitter);
     centralWidget->setLayout(layout);
-    wMainWindow->setCentralWidget(centralWidget);
     qDebug() << "WDockManager: return WDockManager()";
 }
 
@@ -252,7 +252,7 @@ void WDockManager::addUntrackedCentralWidget(QString wName, QString wPath)
     }
     if (found != true)
     {
-        CodeEdit *newEditor = new CodeEdit(wMainWindow, true, wName, wPath, NULL);
+        CodeEdit *newEditor = new CodeEdit((QWidget *)(this->parent()), true, wName, wPath, NULL);
         this->codeEditList.append(newEditor);
         BaseEditor *newBaseEditor;
         if (centralBase == NULL)
@@ -303,7 +303,7 @@ void WDockManager::addCentralWidget(QString wName, QString wPath)
     //qDebug() << "WDockManager: Found test";
     if (found != true)
     {
-        CodeEdit *newEditor = new CodeEdit(wMainWindow, true, wName, wPath, NULL);
+        CodeEdit *newEditor = new CodeEdit((QWidget *)(this->parent()), true, wName, wPath, NULL);
         this->codeEditList.append(newEditor);
         BaseEditor *newBaseEditor;
         if (centralBase == NULL)
@@ -322,9 +322,10 @@ void WDockManager::addCentralWidget(QString wName, QString wPath)
             //qDebug() << "WDockManager: Create splitter";
             if (wName != NULL && wPath != NULL)
             {
-                if (wMainWindow->dockWidgets == false)
+                if (this->dockWidgets == false)
                 {
-                    wMainWindow->CreateDockWidgets();
+                    emit createDockWidgets();
+                    //wMainWindow->CreateDockWidgets();
                 }
                 else
                 {
@@ -357,13 +358,47 @@ void WDockManager::addCentralWidget(QString wName, QString wPath)
 void WDockManager::addDockWidget(int code)
 {
     qDebug() << "WDockManager: addDockWidget()";
-    WDock *newWDock = new WDock(this, code, wMainWindow);
+    WDock *newWDock;
+    if (code == wSimulationInfo)
+    {
+        this->addSimDockWidgetP1();
+        qDebug() << "WDockManager: return addDockWidget()";
+        return;
+        //newWDock = new WDock(this, code, (QWidget *)(this->parent()));
+    }
+    else
+    {
+        newWDock = new WDock(this, code, (QWidget *)(this->parent()));
+    }
     if (getDockWidgetArea(newWDock->getArea()) != NULL)
     {
-        wMainWindow->tabifyDockWidget(getDockWidgetArea(newWDock->getArea()), newWDock->getQDockWidget());
+        emit tabifyDockWidget(getDockWidgetArea(newWDock->getArea()), newWDock->getQDockWidget());
+        //wMainWindow->tabifyDockWidget(getDockWidgetArea(newWDock->getArea()), newWDock->getQDockWidget());
     }
     openDockWidgets.append(newWDock);
     qDebug() << "WDockManager: return addDockWidget()";
+}
+
+
+void WDockManager::addSimDockWidgetP1()
+{
+    qDebug() << "WDockManager: addSimDockWidgetP1()";
+    emit getSimProjectData();
+    qDebug() << "WDockManager: return addSimDockWidgetP1()";
+}
+
+
+void WDockManager::addSimDockWidgetP2(QString path, MCUSimControl* simControl)
+{
+    qDebug() << "WDockManager: addSimDockWidgetP2()";
+    WDock *newWDock = new WDock(this, wSimulationInfo, (QWidget *)(this->parent()), path, simControl);
+    if (getDockWidgetArea(newWDock->getArea()) != NULL)
+    {
+        emit tabifyDockWidget(getDockWidgetArea(newWDock->getArea()), newWDock->getQDockWidget());
+        //wMainWindow->tabifyDockWidget(getDockWidgetArea(newWDock->getArea()), newWDock->getQDockWidget());
+    }
+    openDockWidgets.append(newWDock);
+    qDebug() << "WDockManager: return addSimDockWidgetP2()";
 }
 
 
@@ -465,9 +500,12 @@ void WDockManager::createBookmarkList(QDockWidget *wDockWidget)
 void WDockManager::updateAnalysersSlot(CodeEdit *editor)
 {
     qDebug() << "WDockManager: updateAnalysersSlot()";
-    Analys *analyser = new Analys(*(editor->getTextEdit()->document()));
-    ((AnalyserWidget*)(this->getDockWidget(wAnalysVar)->widget()))->fill(analyser->getVar());
-    ((AnalyserWidget*)(this->getDockWidget(wAnalysFunc)->widget()))->fill(analyser->getFunc());
+    if (this->getDockWidget(wAnalysVar) != NULL && this->getDockWidget(wAnalysFunc) != NULL)
+    {
+        Analys *analyser = new Analys(*(editor->getTextEdit()->document()));
+        ((AnalyserWidget*)(this->getDockWidget(wAnalysVar)->widget()))->fill(analyser->getVar());
+        ((AnalyserWidget*)(this->getDockWidget(wAnalysFunc)->widget()))->fill(analyser->getFunc());
+    }
     qDebug() << "WDockManager: return updateAnalysersSlot()";
 }
 
@@ -516,20 +554,35 @@ void WDockManager::setEditorsReadOnly(bool readonly)
 }
 
 
+void WDockManager::addDockW(Qt::DockWidgetArea area, QDockWidget* dockWidget)
+{
+    emit addDockWidget(area, dockWidget);
+}
+
+
+/*void WDockManager::dockWidgetsCreated()
+{
+    this->dockWidgets = true;
+}*/
+
+
+
+
 /////
 ///// WDock
 /////
 
-WDock::WDock(WDockManager *parent, int code, MainForm *mainWindow)
+WDock::WDock(WDockManager *parent, int code, QWidget *parentWindow)
 {
     qDebug() << "WDock: WDock()";
     switch (code)
     {
         case wBookmarkList:
         {
-            wDockWidget = new QDockWidget("Bookmarks", mainWindow);
+            wDockWidget = new QDockWidget("Bookmarks", parentWindow);
             wDockWidget->setAllowedAreas(Qt::RightDockWidgetArea);
-            mainWindow->addDockWidget(Qt::RightDockWidgetArea, wDockWidget);
+            parent->addDockW(Qt::RightDockWidgetArea, wDockWidget);
+            //mainWindow->addDockWidget(Qt::RightDockWidgetArea, wDockWidget);
             parent->createBookmarkList(wDockWidget);
             area = 1;
             wDockWidget->setWidget(parent->getBookmarkList());
@@ -537,9 +590,10 @@ WDock::WDock(WDockManager *parent, int code, MainForm *mainWindow)
         }
         case wBreakpointList:
         {
-            wDockWidget = new QDockWidget("Breakpoints", mainWindow);
+            wDockWidget = new QDockWidget("Breakpoints", parentWindow);
             wDockWidget->setAllowedAreas(Qt::RightDockWidgetArea);
-            mainWindow->addDockWidget(Qt::RightDockWidgetArea, wDockWidget);
+            parent->addDockW(Qt::RightDockWidgetArea, wDockWidget);
+            //mainWindow->addDockWidget(Qt::RightDockWidgetArea, wDockWidget);
             parent->createBreakpointList(wDockWidget);
             area = 1;
             wDockWidget->setWidget(parent->getBreakpointList());
@@ -547,9 +601,10 @@ WDock::WDock(WDockManager *parent, int code, MainForm *mainWindow)
         }
         case wCompileInfo:
         {
-            wDockWidget = new QDockWidget("Compiler Info", mainWindow);
+            wDockWidget = new QDockWidget("Compiler Info", parentWindow);
             wDockWidget->setAllowedAreas(Qt::BottomDockWidgetArea);
-            mainWindow->addDockWidget(Qt::BottomDockWidgetArea, wDockWidget);
+            parent->addDockW(Qt::BottomDockWidgetArea, wDockWidget);
+            //mainWindow->addDockWidget(Qt::BottomDockWidgetArea, wDockWidget);
             QPlainTextEdit *newWidget = new QPlainTextEdit(wDockWidget);
             newWidget->setFont(QFont("Andale Mono", 10));
             area = 2;
@@ -559,22 +614,25 @@ WDock::WDock(WDockManager *parent, int code, MainForm *mainWindow)
         }
         case wSimulationInfo:
         {
-            wDockWidget = new QDockWidget("Simulation Info", mainWindow);
+            qDebug() << "WDock: invalid usage of constructor";
+            /*wDockWidget = new QDockWidget("Simulation Info", parentWindow);
             wDockWidget->setAllowedAreas(Qt::BottomDockWidgetArea);
-            mainWindow->addDockWidget(Qt::BottomDockWidgetArea, wDockWidget);
+            emit addDockWidget(Qt::BottomDockWidgetArea, wDockWidget);
+            //mainWindow->addDockWidget(Qt::BottomDockWidgetArea, wDockWidget);
             WSimulationInfo *newWidget = new WSimulationInfo(mainWindow->getProjectMan()->getActive()->getSimControl(), wDockWidget);
             newWidget->setProjectPath(mainWindow->getProjectMan()->getActive()->prjPath);
             area = 2;
             wDockWidget->setWidget(newWidget);
             newWidget->fixHeight();
-            qDebug() << "WSimulationInfo: height fixed";
+            qDebug() << "WSimulationInfo: height fixed";*/
 	        break;
         }
         case wAnalysVar:
         {
-            wDockWidget = new QDockWidget("Variables", mainWindow);
+            wDockWidget = new QDockWidget("Variables", parentWindow);
             wDockWidget->setAllowedAreas(Qt::RightDockWidgetArea);
-            mainWindow->addDockWidget(Qt::RightDockWidgetArea, wDockWidget);
+            parent->addDockW(Qt::RightDockWidgetArea, wDockWidget);
+            //mainWindow->addDockWidget(Qt::RightDockWidgetArea, wDockWidget);
             AnalyserWidget *newDock = new AnalyserWidget(wDockWidget);
             area = 1;
             wDockWidget->setWidget(newDock);
@@ -583,9 +641,10 @@ WDock::WDock(WDockManager *parent, int code, MainForm *mainWindow)
         }
         case wAnalysFunc:
         {
-            wDockWidget = new QDockWidget("Functions", mainWindow);
+            wDockWidget = new QDockWidget("Functions", parentWindow);
             wDockWidget->setAllowedAreas(Qt::RightDockWidgetArea);
-            mainWindow->addDockWidget(Qt::RightDockWidgetArea, wDockWidget);
+            parent->addDockW(Qt::RightDockWidgetArea, wDockWidget);
+            //mainWindow->addDockWidget(Qt::RightDockWidgetArea, wDockWidget);
             AnalyserWidget *newDock = new AnalyserWidget(wDockWidget);
             area = 1;
             wDockWidget->setWidget(newDock);
@@ -595,6 +654,31 @@ WDock::WDock(WDockManager *parent, int code, MainForm *mainWindow)
     this->code=code;
     qDebug() << "WDock: return WDock()";
 }
+
+
+
+WDock::WDock(WDockManager *parent, int code, QWidget *parentWindow, QString path, MCUSimControl* simControl)
+{
+    switch (code)
+    {
+        case wSimulationInfo:
+        {
+            wDockWidget = new QDockWidget("Simulation Info", parentWindow);
+            wDockWidget->setAllowedAreas(Qt::BottomDockWidgetArea);
+            parent->addDockW(Qt::BottomDockWidgetArea, wDockWidget);
+            //mainWindow->addDockWidget(Qt::BottomDockWidgetArea, wDockWidget);
+            WSimulationInfo *newWidget = new WSimulationInfo(simControl, wDockWidget);
+            newWidget->setProjectPath(path);
+            area = 2;
+            wDockWidget->setWidget(newWidget);
+            newWidget->fixHeight();
+            qDebug() << "WSimulationInfo: height fixed";
+            break;
+        }
+    }
+}
+
+
 
 WDock::~WDock()
 {

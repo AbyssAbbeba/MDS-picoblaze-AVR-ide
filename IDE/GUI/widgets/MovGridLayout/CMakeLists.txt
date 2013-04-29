@@ -52,7 +52,7 @@ find_package(Qt4 REQUIRED)
 
 # <DEBUG!>
 link_directories(
-	"${CMAKE_CURRENT_BINARY_DIR}/../../dialogs/"
+	"${CMAKE_CURRENT_BINARY_DIR}/../../errordialog/"
 )
 
 #include_directories(
@@ -86,7 +86,7 @@ add_library(${PROJECT_NAME} SHARED
 	${SAMPLE_MOC_SRCS} ${SAMPLE_SRCS})
 
 
-target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} Dialogs)
+target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} ErrorDialog)
 
 
 # ------------------------------------------------------------------------------

@@ -49,10 +49,11 @@ find_package(Qt4 REQUIRED)
 #	)
 
 # <DEBUG!>
-#link_directories(
+link_directories(
 #	"${CMAKE_CURRENT_BINARY_DIR}/../../simulators/SimControl/"
 #        "${CMAKE_CURRENT_BINARY_DIR}/sim"
-#	)
+    "${CMAKE_CURRENT_BINARY_DIR}/../Counters/"
+	)
 
 #include_directories(
 #	"${CMAKE_CURRENT_BINARY_DIR}/MovGridLayout/"
@@ -85,7 +86,7 @@ add_library(${PROJECT_NAME} SHARED
 	${SAMPLE_MOC_SRCS} ${SAMPLE_SRCS})
 
 
-target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} Counters)
 
 
 # ------------------------------------------------------------------------------

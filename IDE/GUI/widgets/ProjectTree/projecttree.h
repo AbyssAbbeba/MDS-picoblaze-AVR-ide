@@ -21,7 +21,7 @@
 //#include <QString>
 
 class Project;
-class ProjectConfigDialog_Core;
+//class ProjectConfigDialog_Core;
 
 /**
  * @brief
@@ -32,7 +32,7 @@ class ProjectTree: public QTreeWidget
 {
     Q_OBJECT
     public:
-        ProjectTree(QWidget *parent, Project *parentProject);
+        ProjectTree(QWidget *parent);
         ~ProjectTree();
         void setMainFileManual(QString name, QString path);
 
@@ -46,12 +46,20 @@ class ProjectTree: public QTreeWidget
         QString mainFileName;
         QString mainFilePath;
         QTreeWidgetItem *lastItem;
+        QContextMenuEvent *lastEvent;
 
     private slots:
         void setMainFile();
         void removeFile();
         void config();
         void reloadFiles();
+        void contextP2(int fileCount);
+
+    signals:
+        void requestFileCount();
+        void startProjectCfgDlgCore(QWidget *widget);
+        void setMainFile(QString path, QString name);
+        void removeFile(QString path, QString name);
 
     protected:
         void contextMenuEvent(QContextMenuEvent *event);

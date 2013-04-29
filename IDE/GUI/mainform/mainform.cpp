@@ -16,9 +16,9 @@
 //pozdeji zamenit QtGui za mensi celky
 #include "mainform.h"
 #include "../dialogs/projectdlg.h"
-#include "../dialogs/errordlg.h"
+#include "../errordialog/errordlg.h"
 #include "pluginman_gui.h"
-
+#include "../widgets/CompileWidget/compilewidget.h"
 
 
 /**
@@ -28,11 +28,18 @@ MainForm::MainForm()
 {
     qDebug() << "MainForm: MainForm()";
     projectMan = new ProjectMan(this);
-    wDockManager = new WDockManager(this);
-    this->dockWidgets = false;
-    CreateActions();
-    CreateMenu();
-    CreateToolbar();
+    QWidget *centralWidget = new QWidget(this);
+    wDockManager = new WDockManager(this, centralWidget);
+    this->setCentralWidget(centralWidget);
+    //connect(this, SIGNAL(dockWidgetsCreated()), wDockManager, SLOT(dockWidgetsCreated()));
+    connect(wDockManager, SIGNAL(createDockWidgets()), this, SLOT(createDockWidgets()));
+    connect(wDockManager, SIGNAL(tabifyDockWidget(QDockWidget*, QDockWidget*)), this, SLOT(tabifyDockWidgetSlot(QDockWidget*, QDockWidget*)));
+    connect(wDockManager, SIGNAL(addDockWidget(Qt::DockWidgetArea, QDockWidget*)), this, SLOT(addDockWidgetSlot(Qt::DockWidgetArea, QDockWidget*)));
+    connect(wDockManager, SIGNAL(getSimProjectData()), this, SLOT(simProjectData()));
+    //this->dockWidgets = false;
+    createActions();
+    createMenu();
+    createToolbar();
     //CreateDockWidgets();
     //CreateWelcome();
     qDebug() << "MainForm: return MainForm()";
@@ -43,7 +50,7 @@ MainForm::MainForm()
 /**
  * @brief Creates menus in main menu
  */
-void MainForm::CreateMenu()
+void MainForm::createMenu()
 {
     qDebug() << "MainForm: createMenu()";
     fileMenu = menuBar()->addMenu(tr("&File"));
@@ -85,7 +92,7 @@ void MainForm::CreateMenu()
  * @brief Creates actions used in menus and toolbars and connects them to appropriate slots
  *
  */
-void MainForm::CreateActions()
+void MainForm::createActions()
 {
     qDebug() << "MainForm: CreateActions()";
     newAct = new QAction(tr("&New File"), this);
@@ -97,13 +104,13 @@ void MainForm::CreateActions()
 
 
 
-    QPixmap *pm_projAdd = new QPixmap("resources//icons//projAdd.png");
+    QPixmap *pm_projAdd = new QPixmap(":/resources//icons//projAdd.png");
     QIcon *icon_projAdd = new QIcon(*pm_projAdd);
     addAct = new QAction(*icon_projAdd, tr("Add to Project"), this);
     connect(addAct, SIGNAL(triggered()), this, SLOT(addFile()));
 
 
-    QPixmap *pm_projNewAdd = new QPixmap("resources//icons//projNewAdd.png");
+    QPixmap *pm_projNewAdd = new QPixmap(":/resources//icons//projNewAdd.png");
     QIcon *icon_projNewAdd = new QIcon(*pm_projNewAdd);
     newAddAct = new QAction(*icon_projNewAdd, tr("New project file"), this);
     connect(newAddAct, SIGNAL(triggered()), this, SLOT(newAddFile()));
@@ -135,17 +142,17 @@ void MainForm::CreateActions()
 
 
     
-    QPixmap *pm_projNew = new QPixmap("resources//icons//projNew.png");
+    QPixmap *pm_projNew = new QPixmap(":/resources//icons//projNew.png");
     QIcon *icon_projNew = new QIcon(*pm_projNew);
     newProjAct = new QAction(*icon_projNew, tr("New Project"), this);
     connect(newProjAct, SIGNAL(triggered()), this, SLOT(newProject()));
 
-    QPixmap *pm_projOpen = new QPixmap("resources//icons//projOpen.png");
+    QPixmap *pm_projOpen = new QPixmap(":/resources//icons//projOpen.png");
     QIcon *icon_projOpen = new QIcon(*pm_projOpen);
     openProjAct = new QAction(*icon_projOpen, tr("Open Project"), this);
     connect(openProjAct, SIGNAL(triggered()), this, SLOT(openProject()));
 
-    QPixmap *pm_projSave = new QPixmap("resources//icons//projSave.png");
+    QPixmap *pm_projSave = new QPixmap(":/resources//icons//projSave.png");
     QIcon *icon_projSave = new QIcon(*pm_projSave);
     saveProjAct = new QAction(*icon_projSave, tr("Save Project"), this);
     connect(saveProjAct, SIGNAL(triggered()), this, SLOT(saveProject()));
@@ -153,7 +160,7 @@ void MainForm::CreateActions()
     exitAct = new QAction(tr("Exit"), this);
     connect(exitAct, SIGNAL(triggered()), this, SLOT(close()));
 
-    QPixmap *pm_projComp = new QPixmap("resources//icons//compile.png");
+    QPixmap *pm_projComp = new QPixmap(":/resources//icons//compile.png");
     QIcon *icon_projComp = new QIcon(*pm_projComp);
     projectCompileAct = new QAction(*icon_projComp, tr("Compile"), this);
     connect(projectCompileAct, SIGNAL(triggered()), this, SLOT(compileProject()));
@@ -162,21 +169,25 @@ void MainForm::CreateActions()
     //connect(projectCompileAct, SIGNAL(triggered()), this, SLOT(compileProject()));
 
 
-    QPixmap *pm_simFlow = new QPixmap("resources//icons//simulationStart.png");
+    QPixmap *pm_simFlow = new QPixmap(":/resources//icons//simulationStart.png");
     QIcon *icon_simFlow = new QIcon(*pm_simFlow);
     simulationFlowAct = new QAction(*icon_simFlow, tr("Start simulation"), this);
     connect(simulationFlowAct, SIGNAL(triggered()), this, SLOT(simulationFlowHandle()));
     simulationStatus = false;
 
-    simulationRunAct = new QAction(tr("Run"), this);
+    QPixmap *pm_simRun = new QPixmap(":/resources//icons//simulationRun.png");
+    QIcon *icon_simRun = new QIcon(*pm_simRun);
+    simulationRunAct = new QAction(*icon_simRun, tr("Run"), this);
     connect(simulationRunAct, SIGNAL(triggered()), this, SLOT(simulationRunHandle()));
 
-    QPixmap *pm_simStep = new QPixmap("resources//icons//simulationStep.png");
+    QPixmap *pm_simStep = new QPixmap(":/resources//icons//simulationStep.png");
     QIcon *icon_simStep = new QIcon(*pm_simStep);
     simulationStepAct = new QAction(*icon_simStep, tr("Do step"), this);
     connect(simulationStepAct, SIGNAL(triggered()), this, SLOT(simulationStep()));
 
-    simulationResetAct = new QAction(tr("Reset"), this);
+    QPixmap *pm_simReset = new QPixmap(":/resources//icons//simulationReset.png");
+    QIcon *icon_simReset = new QIcon(*pm_simReset);
+    simulationResetAct = new QAction(*icon_simReset, tr("Reset"), this);
     connect(simulationResetAct, SIGNAL(triggered()), this, SLOT(simulationReset()));
 
 
@@ -200,7 +211,7 @@ void MainForm::CreateActions()
 /**
  * @brief Creates toolbars used in main window
  */
-void MainForm::CreateToolbar()
+void MainForm::createToolbar()
 {
     qDebug() << "MainForm: CreateToolbar()";
     //fileToolBar = addToolBar(tr("File Toolbar"));
@@ -214,11 +225,11 @@ void MainForm::CreateToolbar()
     projectToolBar->addAction(newAddAct);
     //projectToolBar->addAction(removeFileAct);
     projectToolBar->addAction(addAct);
-    projectToolBar->addAction(projectCompileAct);
 
     //fileToolBar->addAction(saveAct);
 
 
+    simulationToolBar->addAction(projectCompileAct);
     simulationToolBar->addAction(simulationFlowAct);
     simulationToolBar->addAction(simulationRunAct);
     simulationToolBar->addAction(simulationStepAct);
@@ -245,7 +256,7 @@ void MainForm::CreateToolbar()
  * @brief Inits default or user-saved layout of basic dock widgets
  * @bug Only default layout
  */
-void MainForm::CreateDockWidgets()
+void MainForm::createDockWidgets()
 {
     qDebug() << "MainForm: CreateDockWidgets()";
     //setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
@@ -261,9 +272,10 @@ void MainForm::CreateDockWidgets()
     wDockManager->addDockWidget(wSimulationInfo);
     wDockManager->addDockWidget(wBookmarkList);
     wDockManager->addDockWidget(wBreakpointList);
-    wDockManager->addDockWidget(wAnalysVar);
-    wDockManager->addDockWidget(wAnalysFunc);
-    this->dockWidgets = true;
+    //wDockManager->addDockWidget(wAnalysVar);
+    //wDockManager->addDockWidget(wAnalysFunc);
+    wDockManager->dockWidgets = true;
+    //emit dockWidgetsCreated;
     qDebug() << "MainForm: return CreateDockWidgets()";
 }
 
@@ -272,7 +284,7 @@ void MainForm::CreateDockWidgets()
  * @brief Creates welcome screen with tips and basic functions (create project etc.)
  * @details Still not implemented
  */
-void MainForm::CreateWelcome()
+void MainForm::createWelcome()
 {
     wDockManager->addCentralWidget("Welcome", "Free tips from developers!");
 }
@@ -604,75 +616,22 @@ void MainForm::saveProject()
  */
 void MainForm::compileProject()
 {
-    QPlainTextEdit *compileWidget = (QPlainTextEdit*)(wDockManager->getDockWidget(wCompileInfo)->widget());
-    QString mainFileName = projectMan->getActive()->mainFileName.section('.',0,-2);
-    compileWidget->clear();
-    
-    //QStringList args;
-    //args << " -g -Os -mmcu=atmega8 -c ../" + projectMan->getActive()->mainFileName;
-    QProcess compiler(this);
-    compiler.setProcessChannelMode(QProcess::MergedChannels);
-    
-    compiler.setWorkingDirectory(projectMan->getActive()->prjPath.section('/',0, -2));
-    compiler.start("mkdir build");
-    compiler.waitForFinished();
-    
-    compiler.setWorkingDirectory(projectMan->getActive()->prjPath.section('/',0, -2) + "/build/");
-    qDebug() << compiler.workingDirectory();
-
-    compiler.start("cp ../" + projectMan->getActive()->mainFileName + " " + projectMan->getActive()->mainFileName);
-    compiler.waitForFinished();
-
-    if (projectMan->getActive()->langType == LangType::LANG_ASM)
+    if (projectMan->getActive() == NULL)
     {
-        compiler.start("avra -I /usr/share/avra -l " + projectMan->getActive()->mainFileName.section('.',0,-2) + ".lst " + projectMan->getActive()->mainFileName);
-        if (!compiler.waitForFinished())
-        {
-            compileWidget->appendPlainText(compiler.errorString());
-        }
-        else
-        {
-            compileWidget->appendPlainText(compiler.readAll() + "\n\n");
-        }
+        return;
     }
-    else if (projectMan->getActive()->langType == LangType::LANG_C)
-    {
-        compiler.start("avr-gcc -g -Os -mmcu=atmega8 -c " + projectMan->getActive()->mainFileName);
-        if (!compiler.waitForFinished())
-        {
-            compileWidget->appendPlainText(compiler.errorString());
-            return;
-        }
-        else
-        {
-            compileWidget->appendPlainText(compiler.readAll() + "\n\n");
-        }
+    ((QPlainTextEdit*)(wDockManager->getDockWidget(wCompileInfo)->widget()))->clear();
 
+    QThread *thread = new QThread;
+    CompileWidget *compiler = new CompileWidget(projectMan->getActive()->mainFileName, projectMan->getActive()->prjPath, projectMan->getActive()->langType);
+    compiler->moveToThread(thread);
+    connect(thread, SIGNAL(started()), compiler, SLOT(compile()));
+    connect(compiler, SIGNAL(finished()), thread, SLOT(quit()));
+    connect(compiler, SIGNAL(finished()), compiler, SLOT(deleteLater()));
+    connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
+    connect(compiler, SIGNAL(write(QString)), this, SLOT(writeToWCompileInfo(QString)));
+    thread->start();
 
-        compiler.setProcessChannelMode(QProcess::MergedChannels);
-        compiler.start("avr-gcc -g -mmcu=atmega8 -o " + mainFileName + ".elf " + mainFileName + ".o");
-        if (!compiler.waitForFinished())
-        {
-            compileWidget->appendPlainText(compiler.errorString());
-            return;
-        }
-        else
-        {
-            compileWidget->appendPlainText(compiler.readAll() + "\n\n");
-        }
-
-
-        compiler.setProcessChannelMode(QProcess::MergedChannels);
-        compiler.start("avr-objcopy -j .text -j .data -O ihex " + mainFileName + ".elf " + mainFileName + ".hex");
-        if (!compiler.waitForFinished())
-        {
-            compileWidget->appendPlainText(compiler.errorString());
-        }
-        else
-        {
-            compileWidget->appendPlainText(compiler.readAll() + "\n\n");
-        }
-    }
     
     /*projectMan->createActiveMakefile();
 
@@ -707,6 +666,16 @@ void MainForm::compileProject()
         else
             ((QPlainTextEdit*)wDockManager->getDockWidget(wCompileInfo)->widget())->appendPlainText("packihx successful: " + packihx.readAll());
     }*/
+}
+
+
+/**
+ * @brief Write text to wCompileInfo dock widget, used in compilation
+ * @param text String value that will be written to widget
+ */
+void MainForm::writeToWCompileInfo(QString text)
+{
+    ((QPlainTextEdit*)(wDockManager->getDockWidget(wCompileInfo)->widget()))->appendPlainText(text);
 }
 
 
@@ -829,5 +798,25 @@ void MainForm::exampleOpen()
  */
 void MainForm::showPlugins()
 {
-    PluginMan_GUI *a = new PluginMan_GUI(0);
+    //PluginMan_GUI *a = new PluginMan_GUI(0);
+}
+
+
+/**
+ * @brief Slot. Access sim project data to wdockmanager.
+ */
+void MainForm::simProjectData()
+{
+    wDockManager->addSimDockWidgetP2(this->getProjectMan()->getActive()->prjPath, this->getProjectMan()->getActive()->getSimControl());
+}
+
+
+void MainForm::tabifyDockWidgetSlot(QDockWidget *widget1, QDockWidget *widget2)
+{
+    this->tabifyDockWidget(widget1, widget2);
+}
+
+void MainForm::addDockWidgetSlot(Qt::DockWidgetArea area, QDockWidget *widget)
+{
+    this->addDockWidget(area, widget);
 }

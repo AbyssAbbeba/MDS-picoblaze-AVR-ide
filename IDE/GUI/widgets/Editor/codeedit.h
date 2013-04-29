@@ -21,7 +21,7 @@
 #include <QStatusBar>
 #include <QGridLayout>
 #include <QList>
-#include "../../mainform/project.h"
+#include "../../project/project.h"
 #include "../Counters/wlinecounter.h"
 #include "wtextedit.h"
 

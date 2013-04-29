@@ -25,7 +25,7 @@
 #include "../widgets/DockManager/wdockmanager.h"
 #include "../widgets/Tools/Display/displaytool.h"
 #include "../widgets/Tools/Convertor/convertortool.h"
-#include "project.h"
+#include "../project/project.h"
 
 
 class ProjectMan;
@@ -47,9 +47,8 @@ class MainForm : public QMainWindow
         void openFilePath(QString path);
         void saveFile(CodeEdit *editor);
         WDockManager* getWDockManager();
-        void CreateDockWidgets();
         ProjectMan* getProjectMan();
-        bool dockWidgets;
+        //bool dockWidgets;
         void openProject(QString path);
 
     private slots:
@@ -74,13 +73,21 @@ class MainForm : public QMainWindow
         void toolDisplay();
         void exampleOpen();
         void showPlugins();
+        void writeToWCompileInfo(QString text);
+        void createDockWidgets();
+        void simProjectData();
+        void tabifyDockWidgetSlot(QDockWidget *widget1, QDockWidget *widget2);
+        void addDockWidgetSlot(Qt::DockWidgetArea area, QDockWidget *widget);
+
+    //signals:
+    //    void dockWidgetsCreated;
 
     private:
         //init functions
-        void CreateMenu();
-        void CreateActions();
-        void CreateToolbar();
-        void CreateWelcome();
+        void createMenu();
+        void createActions();
+        void createToolbar();
+        void createWelcome();
         //project manager
         ProjectMan *projectMan;
         //dock widgets manager
