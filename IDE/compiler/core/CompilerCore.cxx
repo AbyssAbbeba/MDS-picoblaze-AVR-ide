@@ -27,6 +27,8 @@
 
 #include <QObject> // Used for i18n only
 
+#include <iostream>
+
 CompilerCore::CompilerCore ( CompilerMsgInterface * msgInterface )
                            : m_msgInterface(msgInterface)
 {
@@ -49,14 +51,13 @@ CompilerCore::~CompilerCore()
 
 bool CompilerCore::compile ( LangId lang,
                              TargetArch arch,
-                             CompilerOptions * const opts,
-                             const std::string & filename )
+                             CompilerOptions * const opts )
 {
     resetCompilerCore();
 
-    if ( true == setupSemanticAnalyzer(lang, arch, opts, filename) )
+    if ( true == setupSemanticAnalyzer(lang, arch, opts) )
     {
-        return startLexerAndParser(lang, arch, opts, filename);
+        return startLexerAndParser(lang, arch, opts);
     }
 
     return false;
@@ -64,8 +65,7 @@ bool CompilerCore::compile ( LangId lang,
 
 inline bool CompilerCore::setupSemanticAnalyzer ( LangId lang,
                                                   TargetArch arch,
-                                                  CompilerOptions * const opts,
-                                                  const std::string & filename )
+                                                  CompilerOptions * const opts )
 {
     switch ( lang )
     {
@@ -73,16 +73,16 @@ inline bool CompilerCore::setupSemanticAnalyzer ( LangId lang,
             switch ( arch )
             {
                 case TA_AVR8:
-                    m_semanticAnalyzer = new AsmAvr8SemanticAnalyzer(this, opts, filename);
+                    m_semanticAnalyzer = new AsmAvr8SemanticAnalyzer ( this, opts );
                     break;
                 case TA_PIC8:
-                    m_semanticAnalyzer = new AsmPic8SemanticAnalyzer(this, opts, filename);
+                    m_semanticAnalyzer = new AsmPic8SemanticAnalyzer ( this, opts );
                     break;
                 case TA_MCS51:
-                    m_semanticAnalyzer = new AsmMcs51SemanticAnalyzer(this, opts, filename);
+                    m_semanticAnalyzer = new AsmMcs51SemanticAnalyzer ( this, opts );
                     break;
                 case TA_KCPSM3:
-                    m_semanticAnalyzer = new AsmKcpsm3SemanticAnalyzer(this, opts, filename);
+                    m_semanticAnalyzer = new AsmKcpsm3SemanticAnalyzer ( this, opts );
                     break;
                 default:
                     m_msgInterface->message ( QObject::tr("Architecture not supported for the selected language.").toStdString(),
@@ -101,16 +101,15 @@ inline bool CompilerCore::setupSemanticAnalyzer ( LangId lang,
 
 inline bool CompilerCore::startLexerAndParser ( LangId lang,
                                                 TargetArch arch,
-                                                CompilerOptions * const opts,
-                                                const std::string & filename )
+                                                CompilerOptions * const opts )
 {
 
-    FILE * sourceFile = fileOpen(filename.c_str());
+    FILE * sourceFile = fileOpen ( opts->m_sourceFile.c_str() );
     yyscan_t yyscanner; // Pointer to the lexer context
 
     if ( NULL == sourceFile )
     {
-        m_msgInterface->message ( QObject::tr("Error: unable to open file: ").toStdString() + m_filename,
+        m_msgInterface->message ( QObject::tr("Error: unable to open file: ").toStdString() + opts->m_sourceFile,
                                   MT_ERROR );
         return false;
     }
@@ -211,7 +210,39 @@ void CompilerCore::lexerMessage ( SourceLocation location,
     parserMessage(location, type, text);
 }
 
-void CompilerCore::setFileName ( const std::string & filename )
+void CompilerCore::compilerMessage ( SourceLocation location,
+                                     MessageType type,
+                                     const std::string & text )
+{
+    parserMessage(location, type, text);
+}
+
+void CompilerCore::compilerMessage ( MessageType type,
+                                     const std::string & text )
+{
+    std::stringstream msgText;
+
+    switch ( type )
+    {
+        case MT_GENERAL:
+            break;
+        case MT_ERROR:
+            msgText << QObject::tr("error: ").toStdString();
+            m_success = false;
+            break;
+        case MT_WARNING:
+            msgText << QObject::tr("warning: ").toStdString();
+            break;
+        case MT_REMARK:
+            msgText << QObject::tr("remark: ").toStdString();
+            break;
+    }
+
+    msgText << text << ".";
+    m_msgInterface -> message ( msgText.str(), type );
+}
+
+inline void CompilerCore::setFileName ( const std::string & filename )
 {
     int idx = getFileNumber(filename);
 
@@ -314,14 +345,19 @@ int CompilerCore::getFileNumber ( const std::string & filename ) const
 
 void CompilerCore::syntaxAnalysisComplete ( CompilerStatement * codeTree )
 {
+    for ( unsigned int i = 0; i < m_fileNames.size(); i++ )
+    {
+        std::cout << "X = " << m_fileNames[i] << "\n";
+    }
+
     if ( NULL != m_rootStatement )
     {
         m_rootStatement->completeDelete();
     }
-    m_rootStatement = codeTree;
-    if ( NULL != m_rootStatement )
+    m_rootStatement = new CompilerStatement();
+    if ( NULL != codeTree )
     {
-        m_rootStatement = m_rootStatement->first();
+        m_rootStatement -> appendLink ( codeTree -> first() );
     }
     if ( NULL == m_semanticAnalyzer )
     {
@@ -332,4 +368,9 @@ void CompilerCore::syntaxAnalysisComplete ( CompilerStatement * codeTree )
     {
         m_semanticAnalyzer->process(m_rootStatement);
     }
+}
+
+const std::vector<std::string> & CompilerCore::listSourceFiles() const
+{
+    return m_fileNames;
 }

@@ -8,7 +8,7 @@
  * (C) copyright 2013 Moravia Microsystems, s.r.o.
  *
  * @author Martin Ošmera <martin.osmera@gmail.com>
- * @ingroup Compiler
+ * @ingroup Avr8Asm
  * @file AsmAvr8SemanticAnalyzer.h
  */
 // =============================================================================
@@ -20,7 +20,7 @@
 
 /**
  * @brief
- * @ingroup Compiler
+ * @ingroup Avr8Asm
  * @class AsmAvr8SemanticAnalyzer
  */
 class AsmAvr8SemanticAnalyzer : public CompilerSemanticInterface
@@ -34,9 +34,8 @@ class AsmAvr8SemanticAnalyzer : public CompilerSemanticInterface
          * @return
          */
         AsmAvr8SemanticAnalyzer ( CompilerCore * compilerCore,
-                                  CompilerOptions * const opts,
-                                  const std::string & filename )
-                                : CompilerSemanticInterface ( compilerCore, opts, filename ) {};
+                                  CompilerOptions * const opts )
+                                : CompilerSemanticInterface ( compilerCore, opts ) {};
 
     ////    Public Operations    ////
     public:
@@ -44,7 +43,7 @@ class AsmAvr8SemanticAnalyzer : public CompilerSemanticInterface
          * @brief
          * @param[in,out] codeTree
          */
-        void process ( CompilerStatement * & codeTree );
+        void process ( CompilerStatement * codeTree );
 
     ////    Inline Private Operations    ////
     private:
@@ -52,7 +51,7 @@ class AsmAvr8SemanticAnalyzer : public CompilerSemanticInterface
          * @brief
          * @param[in,out] codeTree
          */
-        inline void processDeclarations ( CompilerStatement * & node );
+        inline void processDeclarations ( CompilerStatement * node );
 
         /**
          * @brief

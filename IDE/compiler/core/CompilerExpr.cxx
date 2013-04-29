@@ -532,3 +532,10 @@ std::ostream & operator << ( std::ostream & out,
 
     return out;
 }
+
+std::ostream & operator << ( std::ostream & out,
+                             const CompilerExpr & expr )
+{
+    out << &expr;
+    return out;
+}

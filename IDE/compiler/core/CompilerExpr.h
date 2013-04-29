@@ -410,6 +410,15 @@ class CompilerExpr
      */
     std::ostream & operator << ( std::ostream & out,
                                  const CompilerExpr * const expr );
+
+    /**
+     * @brief
+     * @param[in,out] out
+     * @param[in] val
+     * @return
+     */
+    std::ostream & operator << ( std::ostream & out,
+                                 const CompilerExpr & expr );
 //@}
 
 #endif // COMPILEREXPR_H

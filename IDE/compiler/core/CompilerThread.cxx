@@ -32,21 +32,18 @@ void CompilerThread::run()
 {
     bool success = m_compilerCore->compile ( m_jobSpec.m_lang,
                                              m_jobSpec.m_arch,
-                                             m_jobSpec.m_opts,
-                                             m_jobSpec.m_filename );
+                                             m_jobSpec.m_opts );
 
     emit(compilationFinished(success));
 }
 
 void CompilerThread::compile ( CompilerBase::LangId lang,
                                CompilerBase::TargetArch arch,
-                               CompilerOptions * const opts,
-                               const std::string & filename )
+                               CompilerOptions * const opts )
 {
     m_jobSpec.m_lang = lang;
     m_jobSpec.m_arch = arch;
     m_jobSpec.m_opts = opts;
-    m_jobSpec.m_filename = filename;
 
     start();
 }

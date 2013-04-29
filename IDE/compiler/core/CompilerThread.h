@@ -56,9 +56,6 @@ class CompilerThread : public QThread,
 
             ///
             CompilerOptions * m_opts;
-
-            ///
-            std::string m_filename;
         };
 
     ////    Constructors and Destructors    ////
@@ -84,8 +81,7 @@ class CompilerThread : public QThread,
          */
         void compile ( CompilerBase::LangId lang,
                        CompilerBase::TargetArch arch,
-                       CompilerOptions * const opts,
-                       const std::string & filename );
+                       CompilerOptions * const opts );
 
     ////    Qt signals    ////
     signals:

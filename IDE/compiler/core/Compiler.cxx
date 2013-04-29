@@ -30,8 +30,7 @@ Compiler::~Compiler()
 
 bool Compiler::compile ( CompilerBase::LangId lang,
                          CompilerBase::TargetArch arch,
-                         CompilerOptions * const opts,
-                         const std::string & filename )
+                         CompilerOptions * const opts )
 {
-    return m_compilerCore->compile(lang, arch, opts, filename);
+    return m_compilerCore -> compile ( lang, arch, opts );
 }

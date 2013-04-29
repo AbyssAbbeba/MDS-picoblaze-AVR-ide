@@ -694,36 +694,67 @@ namespace StatementTypes
 
         /// @name KCPSM3
         //@{
-            ASMKCPSM3_INS_JUMP,             ///<
-            ASMKCPSM3_INS_CALL,             ///<
+            ASMKCPSM3_LABEL,                ///<
+            ASMKCPSM3_DIR_EQU,              ///<
+            ASMKCPSM3_DIR_END,              ///<
+
+            ASMKCPSM3_INS_JUMP_AAA,         ///<
+            ASMKCPSM3_INS_JUMP_Z_AAA,       ///<
+            ASMKCPSM3_INS_JUMP_NZ_AAA,      ///<
+            ASMKCPSM3_INS_JUMP_C_AAA,       ///<
+            ASMKCPSM3_INS_JUMP_NC_AAA,      ///<
+            ASMKCPSM3_INS_CALL_AAA,         ///<
+            ASMKCPSM3_INS_CALL_Z_AAA,       ///<
+            ASMKCPSM3_INS_CALL_NZ_AAA,      ///<
+            ASMKCPSM3_INS_CALL_C_AAA,       ///<
+            ASMKCPSM3_INS_CALL_NC_AAA,      ///<
             ASMKCPSM3_INS_RETURN,           ///<
-            ASMKCPSM3_INS_ADD,              ///<
-            ASMKCPSM3_INS_ADDCY,            ///<
-            ASMKCPSM3_INS_SUB,              ///<
-            ASMKCPSM3_INS_SUBCY,            ///<
-            ASMKCPSM3_INS_COMPARE,          ///<
-            ASMKCPSM3_INS_RETURNI,          ///<
+            ASMKCPSM3_INS_RETURN_Z,         ///<
+            ASMKCPSM3_INS_RETURN_NZ,        ///<
+            ASMKCPSM3_INS_RETURN_C,         ///<
+            ASMKCPSM3_INS_RETURN_NC,        ///<
+            ASMKCPSM3_INS_ADD_SX_KK,        ///<
+            ASMKCPSM3_INS_ADD_SX_SY,        ///<
+            ASMKCPSM3_INS_ADDCY_SX_KK,      ///<
+            ASMKCPSM3_INS_ADDCY_SX_SY,      ///<
+            ASMKCPSM3_INS_SUB_SX_KK,        ///<
+            ASMKCPSM3_INS_SUB_SX_SY,        ///<
+            ASMKCPSM3_INS_SUBCY_SX_KK,      ///<
+            ASMKCPSM3_INS_SUBCY_SX_SY,      ///<
+            ASMKCPSM3_INS_COMPARE_SX_KK,    ///<
+            ASMKCPSM3_INS_COMPARE_SX_SY,    ///<
+            ASMKCPSM3_INS_RETURNI_ENA,      ///<
+            ASMKCPSM3_INS_RETURNI_DIS,      ///<
             ASMKCPSM3_INS_ENABLE_INT,       ///<
             ASMKCPSM3_INS_DISABLE_INT,      ///<
-            ASMKCPSM3_INS_LOAD,             ///<
-            ASMKCPSM3_INS_AND,              ///<
-            ASMKCPSM3_INS_OR,               ///<
-            ASMKCPSM3_INS_XOR,              ///<
-            ASMKCPSM3_INS_TEST,             ///<
-            ASMKCPSM3_INS_STORE,            ///<
-            ASMKCPSM3_INS_FETCH,            ///<
-            ASMKCPSM3_INS_SR0,              ///<
-            ASMKCPSM3_INS_SR1,              ///<
-            ASMKCPSM3_INS_SRX,              ///<
-            ASMKCPSM3_INS_SRA,              ///<
-            ASMKCPSM3_INS_RR,               ///<
-            ASMKCPSM3_INS_SL0,              ///<
-            ASMKCPSM3_INS_SL1,              ///<
-            ASMKCPSM3_INS_SLX,              ///<
-            ASMKCPSM3_INS_SLA,              ///<
-            ASMKCPSM3_INS_RL,               ///<
-            ASMKCPSM3_INS_INPUT,            ///<
-            ASMKCPSM3_INS_OUTPUT,           ///<
+            ASMKCPSM3_INS_LOAD_SX_KK,       ///<
+            ASMKCPSM3_INS_LOAD_SX_SY,       ///<
+            ASMKCPSM3_INS_AND_SX_KK,        ///<
+            ASMKCPSM3_INS_AND_SX_SY,        ///<
+            ASMKCPSM3_INS_OR_SX_KK,         ///<
+            ASMKCPSM3_INS_OR_SX_SY,         ///<
+            ASMKCPSM3_INS_XOR_SX_KK,        ///<
+            ASMKCPSM3_INS_XOR_SX_SY,        ///<
+            ASMKCPSM3_INS_TEST_SX_KK,       ///<
+            ASMKCPSM3_INS_TEST_SX_SY,       ///<
+            ASMKCPSM3_INS_STORE_SX_SS,      ///<
+            ASMKCPSM3_INS_STORE_SX_SY,      ///<
+            ASMKCPSM3_INS_FETCH_SX_SS,      ///<
+            ASMKCPSM3_INS_FETCH_SX_SY,      ///<
+            ASMKCPSM3_INS_SR0_SX,           ///<
+            ASMKCPSM3_INS_SR1_SX,           ///<
+            ASMKCPSM3_INS_SRX_SX,           ///<
+            ASMKCPSM3_INS_SRA_SX,           ///<
+            ASMKCPSM3_INS_RR_SX,            ///<
+            ASMKCPSM3_INS_SL0_SX,           ///<
+            ASMKCPSM3_INS_SL1_SX,           ///<
+            ASMKCPSM3_INS_SLX_SX,           ///<
+            ASMKCPSM3_INS_SLA_SX,           ///<
+            ASMKCPSM3_INS_RL_SX,            ///<
+            ASMKCPSM3_INS_INPUT_SX_PP,      ///<
+            ASMKCPSM3_INS_INPUT_SX_SY,      ///<
+            ASMKCPSM3_INS_OUTPUT_SX_PP,     ///<
+            ASMKCPSM3_INS_OUTPUT_SX_SY,     ///<
         //@}
 
         STATEMENTTYPE__MAX__                ///<

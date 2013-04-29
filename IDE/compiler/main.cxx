@@ -24,9 +24,9 @@ int main ( int argc, char ** argv )
     CompilerOptions opts;
     Compiler compiler(&msgInterface);
 
-    std::string filename = argv[1];
+    opts.m_sourceFile = argv[1];
 
-    if ( true == compiler.compile ( CompilerBase::LI_ASM, CompilerBase::TA_AVR8, &opts, filename ) )
+    if ( true == compiler.compile ( CompilerBase::LI_ASM, CompilerBase::TA_KCPSM3, &opts ) )
     {
         std::cout << "SUCCESS\n";
         return 0;

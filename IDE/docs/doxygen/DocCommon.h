@@ -51,11 +51,11 @@
  * @ingroup MCUSim
  * Simulator of microcontrollers based on 8-bit PIC processor.
  *
- * @defgroup PicoBlaze soft-processors simulator
+ * @defgroup PicoBlaze PicoBlaze soft-processors simulator
  * @ingroup MCUSim
  * Simulator of PicoBlaze soft-processors.
  *
- * @defgroup McuSimCfgMgr MCU sim. config. manager
+ * @defgroup McuSimCfgMgr MCU simulator configuration manager
  * @ingroup MCUSim
  * MCU simulator configuration management.
  */
@@ -66,6 +66,22 @@
  * @defgroup Assembler Assembler
  * @ingroup Compiler
  * This group contains components of the built-in assemblers.
+ *
+ * @defgroup Avr8Asm 8-bit AVR assembler
+ * @ingroup Assembler
+ * This group contains components of the 8-bit AVR assembler.
+ *
+ * @defgroup Pic8Asm 8-bit PIC assembler
+ * @ingroup Assembler
+ * This group contains components of the 8-bit PIC assemble.
+ *
+ * @defgroup Mcs51Asm MCS-51 assembler
+ * @ingroup Assembler
+ * This group contains components of the MCS-51 assemble.
+ *
+ * @defgroup Kcpsm3Asm KCPSM3 assembler
+ * @ingroup Assembler
+ * This group contains components of the KCPSM3 assembler.
  */
 
 /**

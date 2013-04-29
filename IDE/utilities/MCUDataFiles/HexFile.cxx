@@ -35,7 +35,7 @@ inline int HexFile::computeCRC ( const char * data ) const
 
         if ( result < 0 )
         {
-                result += 0x100;
+            result += 0x100;
         }
     }
 
