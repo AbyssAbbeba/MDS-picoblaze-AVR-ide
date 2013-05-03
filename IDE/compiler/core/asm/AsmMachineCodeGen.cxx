@@ -15,10 +15,22 @@
 
 #include "AsmMachineCodeGen.h"
 
-AsmMachineCodeGen::AsmMachineCodeGen()
+// Common compiler header files.
+#include "../CompilerSemanticInterface.h"
+#include "../CompilerOptions.h"
+
+// Header files of libMCUDataFiles.
+#include "DataFile.h"
+#include "BinFile.h"
+#include "HexFile.h"
+#include "SrecFile.h"
+
+AsmMachineCodeGen::AsmMachineCodeGen ( WordSize wordSize )
+                                     : m_wordSize ( wordSize )
 {
     m_address = 0;
     m_maxSize = 0;
+    m_size = 0;
     reserve ( INITIAL_MAX_SIZE );
 }
 
@@ -26,45 +38,157 @@ AsmMachineCodeGen::~AsmMachineCodeGen()
 {
 }
 
-void AsmMachineCodeGen::setOrigin ( uint32_t address )
+void AsmMachineCodeGen::setOrigin ( unsigned int address )
 {
     m_address = address;
 }
 
-uint32_t AsmMachineCodeGen::setCode ( uint32_t code )
+unsigned int AsmMachineCodeGen::setCode ( uint32_t code )
 {
-    reserve ( m_address );
+    if ( true == reserve ( m_address ) )
+    {
+        m_code [ m_address ] = code;
+        m_used [ m_address ] = 1;
 
-    m_code [ m_address ] = code;
-    m_used [ m_address ] = 1;
+        if ( m_address >= m_size )
+        {
+            m_size = ( 1 + m_address );
+        }
+    }
 
     m_address++;
 
     return ( m_address - 1 );
 }
 
-void AsmMachineCodeGen::setCode ( uint32_t address,
+void AsmMachineCodeGen::setCode ( unsigned int address,
                                   uint32_t code )
 {
-    reserve ( address );
+    if ( true == reserve ( address ) )
+    {
+        m_code[address] = code;
+        m_used[address] = 1;
 
-    m_code[address] = code;
-    m_used[address] = 1;
+        if ( address >= m_size )
+        {
+            m_size = ( 1 + address );
+        }
+    }
 }
 
-inline void AsmMachineCodeGen::reserve ( uint32_t maxAddr )
+inline bool AsmMachineCodeGen::reserve ( unsigned int maxAddr )
 {
+    if ( m_maxSize > maxAddr )
+    {
+        return true;
+    }
+
+    if ( maxAddr >= SIZE_HINT )
+    {
+        return false;
+    }
+
     maxAddr++;
 
     m_used.reserve ( maxAddr );
     m_code.reserve ( maxAddr );
 
-    if ( m_maxSize < maxAddr )
+    for ( unsigned int i = m_maxSize; i < maxAddr; i++ )
     {
-        for ( uint32_t i = m_maxSize; i < maxAddr; i++ )
+        m_used[i] = 0;
+    }
+    m_maxSize = maxAddr;
+
+    return true;
+}
+
+void AsmMachineCodeGen::output ( Endianness byteOrder,
+                                 DataFile * target ) const
+{
+    int addrIncrement;
+
+    if ( E_LITTLE_ENDIAN == byteOrder )
+    {
+        addrIncrement = 1;
+    }
+    else
+    {
+        addrIncrement = -1;
+    }
+
+    for ( unsigned int i = 0; i < m_maxSize; i++ )
+    {
+        if ( 0 == m_used[i] )
         {
-            m_used[i] = 0;
+            continue;
         }
-        m_maxSize = maxAddr;
+
+        unsigned int addr = i * (int)m_wordSize;
+        unsigned int shift = 0;
+        uint32_t mask = 0xff;
+
+        if ( E_BIG_ENDIAN == byteOrder )
+        {
+            addr += ( (int)m_wordSize - 1 );
+        }
+
+        for ( int j = 0; j < (int)m_wordSize; j++ )
+        {
+            target->set(addr, (uint8_t) ( ( m_code[i] & mask ) >> shift ));
+
+            addr += addrIncrement;
+            shift += 8;
+            mask <<= 8;
+        }
+    }
+}
+
+void AsmMachineCodeGen::output ( Endianness byteOrder,
+                                 CompilerSemanticInterface * compilerCore,
+                                 const CompilerOptions * opts )
+{
+    if ( size() > 65536 )
+    {
+        compilerCore -> compilerMessage ( CompilerBase::MT_ERROR,
+                                          QObject::tr("The resulting machine code is too big to be stored in file.").toStdString() );
+        return;
+    }
+
+    if ( false == opts->m_hexFile.empty() )
+    {
+        HexFile dataFile(sizeB(), opts->m_hexMaxRecLength);
+        saveMachineCode(byteOrder, &dataFile, opts->m_hexFile, compilerCore, opts);
+    }
+
+    if ( false == opts->m_binFile.empty() )
+    {
+        BinFile dataFile(sizeB());
+        saveMachineCode(byteOrder, &dataFile, opts->m_hexFile, compilerCore, opts);
+    }
+
+    if ( false == opts->m_srecFile.empty() )
+    {
+        SrecFile dataFile(sizeB());
+        saveMachineCode(byteOrder, &dataFile, opts->m_hexFile, compilerCore, opts);
+    }
+}
+
+
+inline void AsmMachineCodeGen::saveMachineCode ( Endianness byteOrder,
+                                                 DataFile * dataFile,
+                                                 const std::string & fileName,
+                                                 CompilerSemanticInterface * compilerCore,
+                                                 const CompilerOptions * opts )
+{
+    try
+    {
+        output(byteOrder, dataFile);
+        dataFile->save(fileName, opts->m_makeBackupFiles);
+    }
+    catch ( DataFile::DataFileException & )
+    {
+        // TODO: implement more descriptive error report here.
+        compilerCore -> compilerMessage ( CompilerBase::MT_ERROR,
+                                          QObject::tr("unable to save file ").toStdString() + "\"" + fileName  + "\"" );
     }
 }

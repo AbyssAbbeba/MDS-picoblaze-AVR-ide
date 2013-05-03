@@ -13,17 +13,23 @@
  */
 // =============================================================================
 
-// Compiler header files
+// Compiler header files.
 #include "CompilerCore.h"
 #include "CompilerExpr.h"
 #include "CompilerStatement.h"
 #include "CompilerMsgInterface.h"
 #include "CompilerOptions.h"
-#include "SemanticAnalyzers.h"
+#include "SemanticAnalyzer.h"
 
-// Standard header files
+// Standard header files.
 #include <sstream>
 #include <cstdio>
+
+// Include all implemented semantic analyzers we have in this compiler collection.
+#include "asm/avr8/AsmAvr8SemanticAnalyzer.h"
+#include "asm/pic8/AsmPic8SemanticAnalyzer.h"
+#include "asm/mcs51/AsmMcs51SemanticAnalyzer.h"
+#include "asm/kcpsm3/AsmKcpsm3SemanticAnalyzer.h"
 
 #include <QObject> // Used for i18n only
 
@@ -51,21 +57,21 @@ CompilerCore::~CompilerCore()
 
 bool CompilerCore::compile ( LangId lang,
                              TargetArch arch,
-                             CompilerOptions * const opts )
+                             CompilerOptions * opts )
 {
     resetCompilerCore();
+    m_opts = opts;
 
-    if ( true == setupSemanticAnalyzer(lang, arch, opts) )
+    if ( true == setupSemanticAnalyzer(lang, arch) )
     {
-        return startLexerAndParser(lang, arch, opts);
+        return startLexerAndParser(lang, arch);
     }
 
     return false;
 }
 
 inline bool CompilerCore::setupSemanticAnalyzer ( LangId lang,
-                                                  TargetArch arch,
-                                                  CompilerOptions * const opts )
+                                                  TargetArch arch )
 {
     switch ( lang )
     {
@@ -73,16 +79,16 @@ inline bool CompilerCore::setupSemanticAnalyzer ( LangId lang,
             switch ( arch )
             {
                 case TA_AVR8:
-                    m_semanticAnalyzer = new AsmAvr8SemanticAnalyzer ( this, opts );
+                    m_semanticAnalyzer = new AsmAvr8SemanticAnalyzer ( this, m_opts );
                     break;
                 case TA_PIC8:
-                    m_semanticAnalyzer = new AsmPic8SemanticAnalyzer ( this, opts );
+                    m_semanticAnalyzer = new AsmPic8SemanticAnalyzer ( this, m_opts );
                     break;
                 case TA_MCS51:
-                    m_semanticAnalyzer = new AsmMcs51SemanticAnalyzer ( this, opts );
+                    m_semanticAnalyzer = new AsmMcs51SemanticAnalyzer ( this, m_opts );
                     break;
                 case TA_KCPSM3:
-                    m_semanticAnalyzer = new AsmKcpsm3SemanticAnalyzer ( this, opts );
+                    m_semanticAnalyzer = new AsmKcpsm3SemanticAnalyzer ( this, m_opts );
                     break;
                 default:
                     m_msgInterface->message ( QObject::tr("Architecture not supported for the selected language.").toStdString(),
@@ -100,16 +106,15 @@ inline bool CompilerCore::setupSemanticAnalyzer ( LangId lang,
 }
 
 inline bool CompilerCore::startLexerAndParser ( LangId lang,
-                                                TargetArch arch,
-                                                CompilerOptions * const opts )
+                                                TargetArch arch )
 {
 
-    FILE * sourceFile = fileOpen ( opts->m_sourceFile.c_str() );
+    FILE * sourceFile = fileOpen ( m_opts->m_sourceFile.c_str() );
     yyscan_t yyscanner; // Pointer to the lexer context
 
     if ( NULL == sourceFile )
     {
-        m_msgInterface->message ( QObject::tr("Error: unable to open file: ").toStdString() + opts->m_sourceFile,
+        m_msgInterface->message ( QObject::tr("Error: unable to open file: ").toStdString() + m_opts->m_sourceFile,
                                   MT_ERROR );
         return false;
     }
@@ -217,6 +222,11 @@ void CompilerCore::compilerMessage ( SourceLocation location,
     parserMessage(location, type, text);
 }
 
+bool CompilerCore::successful() const
+{
+    return m_success;
+}
+
 void CompilerCore::compilerMessage ( MessageType type,
                                      const std::string & text )
 {
@@ -308,8 +318,13 @@ FILE * CompilerCore::fileOpen ( const std::string & filename,
 
 bool CompilerCore::pushFileName ( const std::string & filename )
 {
-    if ( m_fileNameStack.size() >= 10 /* TODO: replace this with some variable */ )
+    if ( ( -1 != m_opts->m_maxInclusion )
+           &&
+         ( m_fileNameStack.size() >= (size_t)(m_opts->m_maxInclusion) ) )
     {
+        m_msgInterface->message ( QObject::tr ( "Error: maximum include level (%1) reached." )
+                                              .arg(m_opts->m_maxInclusion).toStdString(),
+                                  MT_ERROR );
         return false;
     }
 
@@ -330,6 +345,25 @@ int CompilerCore::getFileNumber() const
     return m_fileNumber;
 }
 
+int CompilerCore::getFileNumber ( unsigned int uplevel ) const
+{
+    if ( 0 == uplevel )
+    {
+        return m_fileNumber;
+    }
+    else
+    {
+        if ( m_fileNameStack.size() <= uplevel )
+        {
+            return -1;
+        }
+        else
+        {
+            return getFileNumber ( m_fileNameStack [ m_fileNameStack.size() - uplevel - 1 ] );
+        }
+    }
+}
+
 int CompilerCore::getFileNumber ( const std::string & filename ) const
 {
     int result = -1;
@@ -345,11 +379,6 @@ int CompilerCore::getFileNumber ( const std::string & filename ) const
 
 void CompilerCore::syntaxAnalysisComplete ( CompilerStatement * codeTree )
 {
-    for ( unsigned int i = 0; i < m_fileNames.size(); i++ )
-    {
-        std::cout << "X = " << m_fileNames[i] << "\n";
-    }
-
     if ( NULL != m_rootStatement )
     {
         m_rootStatement->completeDelete();
@@ -361,7 +390,7 @@ void CompilerCore::syntaxAnalysisComplete ( CompilerStatement * codeTree )
     }
     if ( NULL == m_semanticAnalyzer )
     {
-        m_msgInterface->message ( QObject::tr ( "Semantic analyzer missing!" ).toStdString(), MT_ERROR );
+        m_msgInterface->message ( QObject::tr ( "Semantic analyzer is missing!" ).toStdString(), MT_ERROR );
         return;
     }
     else
@@ -373,4 +402,25 @@ void CompilerCore::syntaxAnalysisComplete ( CompilerStatement * codeTree )
 const std::vector<std::string> & CompilerCore::listSourceFiles() const
 {
     return m_fileNames;
+}
+
+const std::string & CompilerCore::getFileName ( int fileNumber ) const
+{
+    return m_fileNames.at(fileNumber);
+}
+
+std::string CompilerCore::locationToStr ( const CompilerBase::SourceLocation & location ) const
+{
+    std::string result = getFileName(location.m_fileNumber);
+
+    char tmp[100];
+    sprintf ( tmp,
+              ":%d.%d-%d.%d", 
+              location.m_lineStart,
+              location.m_colStart,
+              location.m_lineEnd,
+              location.m_colEnd );
+
+    result.append(tmp);
+    return result;
 }

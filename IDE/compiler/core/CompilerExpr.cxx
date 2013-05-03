@@ -57,10 +57,28 @@ CompilerExpr::Value::Value ( CompilerExpr * expr )
 
 CompilerExpr::Value::Value ( const char * string )
 {
+//     if ( ( TYPE_SYMBOL == m_type ) && ( NULL != m_data.m_symbol ) )
+//     {
+//         delete [] m_data.m_symbol;
+//     }
+
     m_type = TYPE_SYMBOL;
     int length = ( 1 + strlen(string) );
-    m_data.m_symbol = new char[length];
+    m_data.m_symbol = new char [ length ];
     memcpy(m_data.m_symbol, string, length);
+}
+
+CompilerExpr::Value::Value ( const std::string & string )
+{
+//     if ( ( TYPE_SYMBOL == m_type ) && ( NULL != m_data.m_symbol ) )
+//     {
+//         delete [] m_data.m_symbol;
+//     }
+
+    m_type = TYPE_SYMBOL;
+    int length = ( 1 + string.size() );
+    m_data.m_symbol = new char [ length ];
+    memcpy(m_data.m_symbol, string.c_str(), length);
 }
 
 CompilerExpr::Value::Value ( const unsigned char * array,
@@ -153,50 +171,60 @@ CompilerExpr::CompilerExpr()
     m_prev = NULL;
 }
 
-CompilerExpr::CompilerExpr ( Value value )
+CompilerExpr::CompilerExpr ( Value value,
+                             CompilerBase::SourceLocation location )
 {
     m_lValue = value;
     m_operator = OPER_NONE;
+    m_location = location;
 
     m_next = NULL;
     m_prev = NULL;
 }
 
 CompilerExpr::CompilerExpr ( Operator oper,
-                             Value value )
+                             Value value,
+                             CompilerBase::SourceLocation location )
 {
     m_operator = oper;
     m_rValue = value;
+    m_location = location;
 
     m_next = NULL;
     m_prev = NULL;
 }
 
 CompilerExpr::CompilerExpr ( char oper,
-                             Value value )
+                             Value value,
+                             CompilerBase::SourceLocation location )
 {
     m_operator = Operator(oper);
     m_rValue = value;
+    m_location = location;
 
     m_next = NULL;
     m_prev = NULL;
 }
 
 CompilerExpr::CompilerExpr ( Value value,
-                             Operator oper )
+                             Operator oper,
+                             CompilerBase::SourceLocation location )
 {
     m_operator = Operator(oper);
     m_rValue = value;
+    m_location = location;
 
     m_next = NULL;
     m_prev = NULL;
 }
 
 CompilerExpr::CompilerExpr ( Value value,
-                             char oper )
+                             char oper,
+                             CompilerBase::SourceLocation location )
 {
     m_operator = Operator(oper);
     m_rValue = value;
+    m_location = location;
 
     m_next = NULL;
     m_prev = NULL;
@@ -204,11 +232,13 @@ CompilerExpr::CompilerExpr ( Value value,
 
 CompilerExpr::CompilerExpr ( Value lValue,
                              Operator oper,
-                             Value rValue )
+                             Value rValue,
+                             CompilerBase::SourceLocation location )
 {
     m_lValue = lValue;
     m_operator = oper;
     m_rValue = rValue;
+    m_location = location;
 
     m_next = NULL;
     m_prev = NULL;
@@ -216,11 +246,13 @@ CompilerExpr::CompilerExpr ( Value lValue,
 
 CompilerExpr::CompilerExpr ( Value lValue,
                              char oper,
-                             Value rValue )
+                             Value rValue,
+                             CompilerBase::SourceLocation location )
 {
     m_lValue = lValue;
     m_operator = Operator(oper);
     m_rValue = rValue;
+    m_location = location;
 
     m_next = NULL;
     m_prev = NULL;
@@ -400,6 +432,7 @@ CompilerExpr * CompilerExpr::copyChainLink() const
     result->m_lValue = m_lValue.makeCopy();
     result->m_operator = m_operator;
     result->m_rValue = m_rValue.makeCopy();
+    result->m_location = m_location;
     return result;
 }
 
@@ -522,8 +555,12 @@ std::ostream & operator << ( std::ostream & out,
     }
     else
     {
-        out << "(" << expr->m_lValue << expr->m_operator << expr->m_rValue << std::string(")");
+        out << "(" << expr->m_lValue << " " << expr->m_operator << " " << expr->m_rValue << std::string(")");
     }
+
+    out << " {";
+    out << expr->m_location;
+    out << "}";
 
     if ( NULL != expr->m_next )
     {

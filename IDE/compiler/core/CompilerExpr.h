@@ -16,6 +16,9 @@
 #ifndef COMPILEREXPR_H
 #define COMPILEREXPR_H
 
+#include "CompilerBase.h"
+
+#include <string>
 #include <ostream>
 
 /**
@@ -120,6 +123,12 @@ class CompilerExpr
 
                 /**
                  * @brief
+                 * @param[in] string
+                 */
+                Value ( const std::string & string );
+
+                /**
+                 * @brief
                  * @param[in] array
                  * @param[in] size
                  */
@@ -220,60 +229,74 @@ class CompilerExpr
         /**
          * @brief
          * @param[in] value
+         * @param[in] location
          */
-        CompilerExpr ( Value value );
+        CompilerExpr ( Value value,
+                       CompilerBase::SourceLocation location = CompilerBase::SourceLocation() );
 
         /**
          * @brief
          * @param[in] oper
          * @param[in] value
+         * @param[in] location
          */
         CompilerExpr ( Operator oper,
-                       Value value );
+                       Value value,
+                       CompilerBase::SourceLocation location = CompilerBase::SourceLocation() );
 
         /**
          * @brief
          * @param[in] oper
          * @param[in] value
+         * @param[in] location
          */
         CompilerExpr ( char oper,
-                       Value value );
+                       Value value,
+                       CompilerBase::SourceLocation location = CompilerBase::SourceLocation() );
 
         /**
          * @brief
          * @param[in] value
          * @param[in] oper
+         * @param[in] location
          */
         CompilerExpr ( Value value,
-                       Operator oper );
+                       Operator oper,
+                       CompilerBase::SourceLocation location = CompilerBase::SourceLocation() );
 
         /**
          * @brief
          * @param[in] value
          * @param[in] oper
+         * @param[in] location
          */
         CompilerExpr ( Value value,
-                       char oper );
+                       char oper,
+                       CompilerBase::SourceLocation location = CompilerBase::SourceLocation() );
 
         /**
          * @brief
          * @param[in] lValue
          * @param[in] oper
          * @param[in] rValue
+         * @param[in] location
          */
         CompilerExpr ( Value lValue,
                        Operator oper,
-                       Value rValue );
+                       Value rValue,
+                       CompilerBase::SourceLocation location = CompilerBase::SourceLocation() );
 
         /**
          * @brief
          * @param[in] lValue
          * @param[in] oper
          * @param[in] rValue
+         * @param[in] location
          */
         CompilerExpr ( Value lValue,
                        char oper,
-                       Value rValue );
+                       Value rValue,
+                       CompilerBase::SourceLocation location = CompilerBase::SourceLocation() );
 
     ////    Public Operations    ////
     public:
@@ -354,6 +377,60 @@ class CompilerExpr
             return (*this)[index];
         }
 
+        /**
+         * @brief
+         * @return
+         */
+        CompilerExpr * prev() const
+        {
+            return m_prev;
+        }
+
+        /**
+         * @brief
+         * @return
+         */
+        CompilerExpr * next() const
+        {
+            return m_next;
+        }
+
+        /**
+         * @brief
+         * @return
+         */
+        CompilerBase::SourceLocation location() const
+        {
+            return m_location;
+        }
+
+        /**
+         * @brief
+         * @return
+         */
+        Operator oper() const
+        {
+            return m_operator;
+        }
+
+        /**
+         * @brief
+         * @return
+         */
+        const Value & lVal() const
+        {
+            return m_lValue;
+        }
+
+        /**
+         * @brief
+         * @return
+         */
+        const Value & rVal() const
+        {
+            return m_rValue;
+        }
+
     ////    Public Attributes    ////
     public:
         /**
@@ -370,6 +447,11 @@ class CompilerExpr
          * @brief
          */
         Operator m_operator;
+
+        /**
+         * @brief
+         */
+        CompilerBase::SourceLocation m_location;
 
         /**
          * @brief

@@ -16,14 +16,14 @@
 #ifndef ASMMCS51SEMANTICANALYSER_H
 #define ASMMCS51SEMANTICANALYSER_H
 
-#include "../../CompilerSemanticInterface.h"
+#include "../../SemanticAnalyzer.h"
 
 /**
  * @brief
  * @ingroup Mcs51Asm
  * @class AsmMcs51SemanticAnalyzer
  */
-class AsmMcs51SemanticAnalyzer : public CompilerSemanticInterface
+class AsmMcs51SemanticAnalyzer : public SemanticAnalyzer
 {
     ////    Constructors and Destructors    ////
     public:
@@ -33,9 +33,9 @@ class AsmMcs51SemanticAnalyzer : public CompilerSemanticInterface
          * @param[in] filename
          * @return
          */
-        AsmMcs51SemanticAnalyzer ( CompilerCore * compilerCore,
+        AsmMcs51SemanticAnalyzer ( CompilerSemanticInterface * compilerCore,
                                    CompilerOptions * const opts )
-                                 : CompilerSemanticInterface ( compilerCore, opts ) {};
+                                 : SemanticAnalyzer ( compilerCore, opts ) {};
 
     ////    Public Operations    ////
     public:

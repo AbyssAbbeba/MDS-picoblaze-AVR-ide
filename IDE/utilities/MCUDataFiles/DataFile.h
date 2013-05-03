@@ -33,16 +33,19 @@ class DataFile
          * @brief
          * TODO: Rewrite DataFileException as class with a std::string error info text.
          */
+//         class DataFileException
+//         {
+//         };
         enum DataFileException
         {
-            EXP_IO_ERROR,          ///< Unable to work with the specified file
-            EXP_BAD_RECORD_LENGTH, ///< Bad record length
-            EXP_BAD_CRC,           ///< Bad CRC
-            EXP_BAD_RECORD_TYPE,   ///< Bad record type
-            EXP_MEMORY_OVERFLOW,   ///< Object cannot contain such large amount of data
-            EXP_OUT_OF_RANGE,      ///< Requested byte address is out or range
+            EXP_IO_ERROR,          ///< Unable to work with the specified file.
+            EXP_BAD_RECORD_LENGTH, ///< Bad record length.
+            EXP_BAD_CRC,           ///< Bad CRC.
+            EXP_BAD_RECORD_TYPE,   ///< Bad record type.
+            EXP_MEMORY_OVERFLOW,   ///< Object cannot contain such large amount of data.
+            EXP_OUT_OF_RANGE,      ///< Requested byte address is out of range.
             EXP_BAD_RECORD_FORMAT, ///<
-            EXP_BAD_RECORD_COUT    ///<
+            EXP_BAD_RECORD_COUNT   ///<
         };
 
     ////    Constructors and Destructors    ////
@@ -159,6 +162,7 @@ class DataFile
          */
         void setData ( int16_t * data );
 
+    ////    Protected Attributes    ////
     protected:
         const unsigned int m_arrsize;   ///< Size of the memory array
         int16_t * m_memory;             ///< Memory array

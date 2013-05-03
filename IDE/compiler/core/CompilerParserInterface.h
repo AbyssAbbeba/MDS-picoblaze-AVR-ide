@@ -114,6 +114,13 @@ class CompilerParserInterface
 
         /**
          * @brief
+         * @param[in] uplevel
+         * @return
+         */
+        virtual int getFileNumber ( unsigned int uplevel ) const = 0;
+
+        /**
+         * @brief
          * @param[in] filename
          * @return
          */
@@ -249,9 +256,9 @@ class CompilerParserInterface
         #include "kcpsm3lexer.h"
 
         // Parser prototypes (the core uses them to initiate syntactical analysis)
-        int avr8parser_parse  ( yyscan_t yyscanner, CompilerParserInterface * asmCore );
-        int pic8parser_parse  ( yyscan_t yyscanner, CompilerParserInterface * asmCore );
-        int mcs51parser_parse ( yyscan_t yyscanner, CompilerParserInterface * asmCore );
+        int avr8parser_parse   ( yyscan_t yyscanner, CompilerParserInterface * asmCore );
+        int pic8parser_parse   ( yyscan_t yyscanner, CompilerParserInterface * asmCore );
+        int mcs51parser_parse  ( yyscan_t yyscanner, CompilerParserInterface * asmCore );
         int kcpsm3parser_parse ( yyscan_t yyscanner, CompilerParserInterface * asmCore );
     #endif // COMPILERCORE_H
 

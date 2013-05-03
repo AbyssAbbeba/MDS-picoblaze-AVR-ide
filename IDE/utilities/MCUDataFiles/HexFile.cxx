@@ -229,7 +229,7 @@ void HexFile::save ( const std::string & filename,
     for ( unsigned int i = 0; i < m_arrsize; i++ )
     {
         // Write record if data field is full or if te current cell is undefined
-        if ( ( -1 == m_memory[i] ) || ( 255 == hexLen ) )
+        if ( ( -1 == m_memory[i] ) || ( m_maxRecLength == hexLen ) )
         {
             // HEX record must not be ampty
             if ( 0 == hexLen )

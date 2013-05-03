@@ -36,3 +36,60 @@ CompilerBase::SourceLocation::SourceLocation()
     m_colStart   = -1;
     m_colEnd     = -1;
 }
+
+bool CompilerBase::SourceLocation::isSet() const
+{
+    if ( -1 == m_fileNumber )
+    {
+        return false;
+    }
+    if ( -1 == m_lineStart )
+    {
+        return false;
+    }
+    if ( -1 == m_lineEnd )
+    {
+        return false;
+    }
+    if ( -1 == m_colStart )
+    {
+        return false;
+    }
+    if ( -1 == m_colEnd )
+    {
+        return false;
+    }
+
+    return true;
+}
+
+std::ostream & operator << ( std::ostream & out,
+                             const CompilerBase::SourceLocation & location )
+{
+    if ( -1 != location.m_fileNumber )
+    {
+        out << location.m_fileNumber;
+    }
+    out << ":";
+    if ( -1 != location.m_lineStart )
+    {
+        out << location.m_lineStart;
+    }
+    out << ".";
+    if ( -1 != location.m_colStart )
+    {
+        out << location.m_colStart;
+    }
+    out << "-";
+    if ( -1 != location.m_lineEnd )
+    {
+        out << location.m_lineEnd;
+    }
+    out << ".";
+    if ( -1 != location.m_colEnd )
+    {
+        out << location.m_colEnd;
+    }
+
+    return out;
+}

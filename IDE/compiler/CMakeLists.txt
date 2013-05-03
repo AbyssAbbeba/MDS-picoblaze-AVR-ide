@@ -58,7 +58,6 @@ include_directories ( "${CMAKE_CURRENT_BINARY_DIR}/core"
  # -pipe       : Use pipes rather than temporary files for communication between the various stages of compilation.
 add_definitions ( -Wall -Wextra -std=c++0x -O2 -pipe )
 
-
 # Add an executable to the project using the specified source files.
 add_executable ( ${PROJECT_NAME}
                  main.cxx )

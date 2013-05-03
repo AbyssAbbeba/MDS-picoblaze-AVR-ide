@@ -175,7 +175,6 @@ DIS_INT_INST            "disable"{WSPACE}"interrupt"
 \.?"db"                 { return D_DB; }
 \.?"endc"               { return D_ENDC; }
 \.?"error"              { return D_ERROR; }
-\.?"errorlevel"         { return D_ERRORLEVEL; }
 \.?"list"               { return D_LIST; }
 \.?"messg"              { return D_MESSG; }
 \.?"nolist"             { return D_NOLIST; }
@@ -348,8 +347,9 @@ DIS_INT_INST            "disable"{WSPACE}"interrupt"
                                     yy_pop_state(yyscanner);
                                     break;
                                 default:
-                                    yyextra->lexerMessage(yylloc, CompilerBase::MT_ERROR,
-                                        QObject::tr("syntax not understood").toStdString());
+                                    yyextra->lexerMessage ( yylloc,
+                                                            CompilerBase::MT_ERROR,
+                                                            QObject::tr("syntax not understood").toStdString() );
                                     break;
                             }
                         }
@@ -376,8 +376,9 @@ DIS_INT_INST            "disable"{WSPACE}"interrupt"
                             }
                             else
                             {
-                                yyextra->lexerMessage(yylloc, CompilerBase::MT_ERROR,
-                                    QObject::tr("character constant is too long").toStdString());
+                                yyextra->lexerMessage ( yylloc,
+                                                        CompilerBase::MT_ERROR,
+                                                        QObject::tr("character constant is too long").toStdString() );
                             }
                         }
     [^\\'\r\n]+         {
@@ -451,8 +452,9 @@ DIS_INT_INST            "disable"{WSPACE}"interrupt"
     <<EOF>>             {
                             // Handle strings terminated by EOF (End Of File) as ERROR, of course.
                             yy_pop_state(yyscanner);
-                            yyextra->lexerMessage(yylloc, CompilerBase::MT_ERROR,
-                                QObject::tr("unterminated string or character constant").toStdString());
+                            yyextra->lexerMessage ( yylloc,
+                                                    CompilerBase::MT_ERROR,
+                                                    QObject::tr("unterminated string or character constant").toStdString() );
 
                             // Discard the string buffer and terminate lexical analysis (this is a fatal error)
                             free(yylval->array.data);
@@ -479,8 +481,9 @@ DIS_INT_INST            "disable"{WSPACE}"interrupt"
 
                             if ( 1 > yylval->array.size )
                             {
-                                yyextra->lexerMessage(yylloc, CompilerBase::MT_ERROR,
-                                    QObject::tr("no file name specified").toStdString());
+                                yyextra->lexerMessage ( yylloc,
+                                                        CompilerBase::MT_ERROR,
+                                                        QObject::tr("no file name specified").toStdString() );
                                 return INCLUDE;
                             }
                             enlargeStringBuffer(yylval, yyextra);
@@ -490,23 +493,22 @@ DIS_INT_INST            "disable"{WSPACE}"interrupt"
 
                             if ( strlen(filename) != (size_t) yylval->array.size )
                             {
-                                yyextra->lexerMessage(yylloc, CompilerBase::MT_WARNING,
-                                    QObject::tr("file name contains a null character").toStdString() );
+                                yyextra->lexerMessage ( yylloc,
+                                                        CompilerBase::MT_WARNING,
+                                                        QObject::tr("file name contains a null character").toStdString() );
                             }
 
                             FILE * file = yyextra->fileOpen(filename);
                             if ( NULL == file )
                             {
-                                yyextra->lexerMessage(yylloc, CompilerBase::MT_ERROR,
-                                    QObject::tr("unable to open the specified file: ").toStdString() + "`" + filename + "'" );
+                                yyextra->lexerMessage ( yylloc,
+                                                        CompilerBase::MT_ERROR,
+                                                        QObject::tr("unable to open the specified file: ").toStdString() + "`" + filename + "'" );
                                 return INCLUDE;
                             }
                             else
                             {
                                 yylval->string = filename;
-
-                                yylloc->last_line++;
-                                yylloc->last_column = 1;
 
                                 yyextra->m_yyllocStack.push_back(*yylloc);
                                 kcpsm3lexer_push_buffer_state(kcpsm3lexer__create_buffer(file, YY_BUF_SIZE, yyscanner), yyscanner);

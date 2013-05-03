@@ -19,6 +19,11 @@
 // Forward declarations
 class CompilerStatement;
 
+// Common compiler header files.
+#include "../../CompilerSemanticInterface.h"
+#include "../../CompilerOptions.h"
+
+// KCPSM3 assembler semantic analyzer header files.
 #include "AsmKcpsm3SymbolTable.h"
 
 /**
@@ -50,7 +55,7 @@ class AsmKcpsm3InstructionSet
          * @param[in] opts
          * @return
          */
-        AsmKcpsm3InstructionSet ( CompilerCore * compilerCore,
+        AsmKcpsm3InstructionSet ( CompilerSemanticInterface * compilerCore,
                                   CompilerOptions * opts )
                                 : m_compilerCore ( compilerCore ),
                                   m_opts ( opts ) {};
@@ -76,7 +81,7 @@ class AsmKcpsm3InstructionSet
     ////    Private Attributes    ////
     private:
         ///
-        CompilerCore * const m_compilerCore;
+        CompilerSemanticInterface * const m_compilerCore;
 
         ///
         CompilerOptions * const m_opts;

@@ -14,7 +14,6 @@
 // =============================================================================
 
 #include "AsmAvr8SemanticAnalyzer.h"
-#include "StatementTypes.h"
 
 #include <iostream> // DEBUG
 

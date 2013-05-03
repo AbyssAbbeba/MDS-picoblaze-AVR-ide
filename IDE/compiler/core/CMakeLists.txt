@@ -69,7 +69,6 @@ add_library ( ${PROJECT_NAME} SHARED
               CompilerStatement.cxx
               CompilerBase.cxx
               StatementTypes.cxx
-              CompilerOptions.cxx
               CompilerCore.cxx
               CompilerMsgInftStdout.cxx
               Compiler.cxx
