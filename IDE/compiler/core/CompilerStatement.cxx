@@ -111,28 +111,54 @@ CompilerStatement * CompilerStatement::last()
     return result;
 }
 
-CompilerStatement * CompilerStatement::appendLink ( CompilerStatement * next )
+CompilerStatement * CompilerStatement::insertLink ( CompilerStatement * chainLink )
 {
-    if ( NULL == next )
+    if ( NULL == chainLink )
     {
         return this;
     }
     if ( NULL == this )
     {
-        return next;
+        return chainLink;
     }
 
-    next = next->first();
+    CompilerStatement * chainLinkOrig = chainLink;
+    CompilerStatement * chainLinkLast = chainLink->last();
+    CompilerStatement * nextOrig = m_next;
+
+    chainLink = chainLink->first();
+
+    m_next = chainLink;
+    chainLink->m_prev = this;
+
+    chainLinkLast->m_next = nextOrig;
+    nextOrig->m_prev = chainLinkLast;
+
+    return chainLinkOrig;
+}
+
+CompilerStatement * CompilerStatement::appendLink ( CompilerStatement * chainLink )
+{
+    if ( NULL == chainLink )
+    {
+        return this;
+    }
+    if ( NULL == this )
+    {
+        return chainLink;
+    }
+
+    chainLink = chainLink->first();
 
     CompilerStatement * stmt = this;
-    while ( NULL != stmt->m_next )
+    while ( NULL != stmt->next() )
     {
-        stmt = stmt->m_next;
+        stmt = stmt->next();
     }
-    stmt->m_next = next;
-    next->m_prev = stmt;
+    stmt->m_next = chainLink;
+    chainLink->m_prev = stmt;
 
-    return next;
+    return chainLink;
 }
 
 CompilerStatement * CompilerStatement::prependLink ( CompilerStatement * chainLink )
@@ -161,6 +187,45 @@ CompilerStatement * CompilerStatement::unlink()
     m_next->m_prev = NULL;
     m_next = NULL;
     return this;
+}
+
+CompilerStatement * CompilerStatement::copyEntireChain() const
+{
+    if ( NULL == this )
+    {
+        return NULL;
+    }
+
+    CompilerStatement * result = copyChainLink();
+
+    const CompilerStatement * next = this;
+    while ( NULL != ( next = next->m_next ) )
+    {
+        result->appendLink(next->copyChainLink());
+    }
+
+    const CompilerStatement * prev = this;
+    while ( NULL != ( prev = prev->m_prev ) )
+    {
+        result->prependLink(prev->copyChainLink());
+    }
+
+    return result;
+}
+
+CompilerStatement * CompilerStatement::copyChainLink() const
+{
+    if ( NULL == this )
+    {
+        return NULL;
+    }
+
+    CompilerStatement * result = new CompilerStatement(m_location, m_type, m_args->copyEntireChain());
+    result->m_branch = m_branch->copyEntireChain();
+    result->m_userData = m_userData;
+    result->m_serialNumber = m_serialNumber;
+
+    return result;
 }
 
 CompilerStatement * CompilerStatement::appendArgsLink ( CompilerExpr * chainLink )
@@ -256,6 +321,15 @@ std::ostream & CompilerStatement::print ( std::ostream & out,
     }
 
     out << m_type;
+
+    out << " {";
+    out << m_location;
+    out << "} <";
+    out << m_userData;
+    out << "/";
+    out << m_serialNumber;
+    out << ">";
+
     if ( NULL != m_args )
     {
         out << " [ ";
@@ -279,7 +353,7 @@ std::ostream & CompilerStatement::print ( std::ostream & out,
 }
 
 std::ostream & operator << ( std::ostream & out,
-                             const CompilerStatement * const stmt )
+                             const CompilerStatement * stmt )
 {
     return stmt->print(out);
 }

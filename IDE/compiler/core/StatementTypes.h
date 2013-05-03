@@ -694,9 +694,28 @@ namespace StatementTypes
 
         /// @name KCPSM3
         //@{
+            ASMKCPSM3_DIR_MACRO,            ///<
+            ASMKCPSM3_MACRO,                ///<
             ASMKCPSM3_LABEL,                ///<
             ASMKCPSM3_DIR_EQU,              ///<
             ASMKCPSM3_DIR_END,              ///<
+            ASMKCPSM3_INCLUDE,              ///<
+            ASMKCPSM3_DIR_ORG,              ///<
+
+            ASMKCPSM3_COND_ASM,             ///<
+            ASMKCPSM3_DIR_IF,               ///<
+            ASMKCPSM3_DIR_IFN,              ///<
+            ASMKCPSM3_DIR_IFDEF,            ///<
+            ASMKCPSM3_DIR_IFNDEF,           ///<
+            ASMKCPSM3_DIR_ELSEIFB,          ///<
+            ASMKCPSM3_DIR_ELSEIFNB,         ///<
+            ASMKCPSM3_DIR_ELSE,             ///<
+            ASMKCPSM3_DIR_ELSEIF,           ///<
+            ASMKCPSM3_DIR_ELSEIFN,          ///<
+            ASMKCPSM3_DIR_ELSEIFDEF,        ///<
+            ASMKCPSM3_DIR_ELSEIFNDEF,       ///<
+            ASMKCPSM3_DIR_IFB,              ///<
+            ASMKCPSM3_DIR_IFNB,             ///<
 
             ASMKCPSM3_INS_JUMP_AAA,         ///<
             ASMKCPSM3_INS_JUMP_Z_AAA,       ///<
@@ -761,7 +780,7 @@ namespace StatementTypes
     };
 };
 
-// Debugging operators
+// Trace oprator.
 std::ostream & operator << ( std::ostream & out,
                              const StatementTypes::StatementType type );
 

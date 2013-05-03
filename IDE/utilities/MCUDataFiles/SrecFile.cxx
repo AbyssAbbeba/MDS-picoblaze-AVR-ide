@@ -208,7 +208,7 @@ void SrecFile::clearAndLoad ( const std::string & filename ) throw ( DataFile::D
                 #if STRICTNESS_LEVEL > 0
                     if ( address != localRecordCount )
                     {
-                        throw EXP_BAD_RECORD_COUT;
+                        throw EXP_BAD_RECORD_COUNT;
                     }
                 #endif // STRICTNESS_LEVEL > 0
 

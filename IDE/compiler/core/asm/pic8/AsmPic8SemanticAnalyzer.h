@@ -16,14 +16,14 @@
 #ifndef ASMPIC8SEMANTICANALYSER_H
 #define ASMPIC8SEMANTICANALYSER_H
 
-#include "../../CompilerSemanticInterface.h"
+#include "../../SemanticAnalyzer.h"
 
 /**
  * @brief
  * @ingroup Pic8Asm
  * @class AsmPic8SemanticAnalyzer
  */
-class AsmPic8SemanticAnalyzer : public CompilerSemanticInterface
+class AsmPic8SemanticAnalyzer : public SemanticAnalyzer
 {
     ////    Constructors and Destructors    ////
     public:
@@ -33,9 +33,9 @@ class AsmPic8SemanticAnalyzer : public CompilerSemanticInterface
          * @param[in] filename
          * @return
          */
-        AsmPic8SemanticAnalyzer ( CompilerCore * compilerCore,
+        AsmPic8SemanticAnalyzer ( CompilerSemanticInterface * compilerCore,
                                   CompilerOptions * const opts )
-                                : CompilerSemanticInterface ( compilerCore, opts ) {};
+                                : SemanticAnalyzer ( compilerCore, opts ) {};
 
     ////    Public Operations    ////
     public:

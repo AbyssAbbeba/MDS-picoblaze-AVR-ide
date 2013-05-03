@@ -16,6 +16,9 @@
 #ifndef COMPILERBASE_H
 #define COMPILERBASE_H
 
+#include <ostream>
+#include <string>
+
 /**
  * @brief
  * @ingroup Compiler
@@ -79,6 +82,8 @@ class CompilerBase
                              int colStart,
                              int colEnd );
 
+            bool isSet() const;
+
             ///
             int m_fileNumber;
 
@@ -108,5 +113,14 @@ class CompilerBase
          */
         CompilerBase() {};
 };
+
+/**
+ * @brief Tracing operator for SourceLocation.
+ * @param[in,out] out
+ * @param[in] location
+ * @return
+ */
+std::ostream & operator << ( std::ostream & out,
+                             const CompilerBase::SourceLocation & location );
 
 #endif // COMPILERBASE_H

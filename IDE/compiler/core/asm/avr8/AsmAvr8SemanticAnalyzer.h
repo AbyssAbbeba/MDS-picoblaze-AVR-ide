@@ -16,14 +16,14 @@
 #ifndef ASMAVR8SEMANTICANALYSER_H
 #define ASMAVR8SEMANTICANALYSER_H
 
-#include "../../CompilerSemanticInterface.h"
+#include "../../SemanticAnalyzer.h"
 
 /**
  * @brief
  * @ingroup Avr8Asm
  * @class AsmAvr8SemanticAnalyzer
  */
-class AsmAvr8SemanticAnalyzer : public CompilerSemanticInterface
+class AsmAvr8SemanticAnalyzer : public SemanticAnalyzer
 {
     ////    Constructors and Destructors    ////
     public:
@@ -33,9 +33,9 @@ class AsmAvr8SemanticAnalyzer : public CompilerSemanticInterface
          * @param[in] filename
          * @return
          */
-        AsmAvr8SemanticAnalyzer ( CompilerCore * compilerCore,
+        AsmAvr8SemanticAnalyzer ( CompilerSemanticInterface * compilerCore,
                                   CompilerOptions * const opts )
-                                : CompilerSemanticInterface ( compilerCore, opts ) {};
+                                : SemanticAnalyzer ( compilerCore, opts ) {};
 
     ////    Public Operations    ////
     public:

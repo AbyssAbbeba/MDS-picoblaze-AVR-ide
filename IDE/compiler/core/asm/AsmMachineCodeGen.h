@@ -16,6 +16,13 @@
 #ifndef ASMMACHINECODEGEN_H
 #define ASMMACHINECODEGEN_H
 
+// Forward declarations.
+class DataFile;
+class CompilerSemanticInterface;
+class CompilerOptions;
+
+// Standard headers.
+#include <string>
 #include <vector>
 #include <cstdint>
 
@@ -29,14 +36,39 @@ class AsmMachineCodeGen
     ////    Public Static Constants    ////
     public:
         /// @brief
-        static const unsigned int INITIAL_MAX_SIZE = 4;
+        static const unsigned int INITIAL_MAX_SIZE = 128;
+
+        /// @brief
+        static const unsigned int SIZE_HINT = ( 1024 * 1024 ); // Limit maximum size to 1MB.
+
+    ////    Public Datatypes    ////
+    public:
+        /**
+         * @brief
+         */
+        enum Endianness
+        {
+            E_BIG_ENDIAN,
+            E_LITTLE_ENDIAN
+        };
+
+        /**
+         * @brief
+         */
+        enum WordSize
+        {
+            WORD_1B = 1,
+            WORD_2B = 2,
+            WORD_3B = 3,
+            WORD_4B = 4
+        };
 
     ////    Constructors and Destructors    ////
     public:
         /**
          * @brief
          */
-        AsmMachineCodeGen();
+        AsmMachineCodeGen ( WordSize wordSize );
 
         /**
          * @brief
@@ -49,37 +81,98 @@ class AsmMachineCodeGen
          * @brief
          * @param[in] address
          */
-        void setOrigin ( uint32_t address );
+        void setOrigin ( unsigned int address );
 
         /**
          * @brief
          * @param[in] code
          */
-        uint32_t setCode ( uint32_t code );
+        unsigned int setCode ( uint32_t code );
 
         /**
          * @brief
          * @param[in] address
          * @param[in] code
          */
-        void setCode ( uint32_t address,
+        void setCode ( unsigned int address,
                        uint32_t code );
+
+        /**
+         * @brief
+         * @param[in] byteOrder
+         * @param[in,out] target
+         * @throw DataFile::DataFileException
+         */
+        void output ( Endianness byteOrder,
+                      DataFile * target ) const;
+
+        /**
+         * @brief
+         * @param[in] byteOrder
+         * @param[in,out] compilerCore
+         * @param[in] opts
+         */
+        void output ( Endianness byteOrder,
+                      CompilerSemanticInterface * compilerCore,
+                      const CompilerOptions * opts );
+
+
+    ////    Inline Public Operations    ////
+    public:
+        /**
+         * @brief
+         * @return
+         */
+        unsigned int size() const
+        {
+            return m_size;
+        }
+
+        /**
+         * @brief
+         * @return
+         */
+        unsigned int sizeB() const
+        {
+            return ( m_size * (unsigned int)m_wordSize );
+        }
 
     ////    Inline Private Operations    ////
     private:
         /**
          * @brief
          * @param[in] maxAddr
+         * @return
          */
-        inline void reserve ( uint32_t maxAddr );
+        inline bool reserve ( unsigned int maxAddr );
+
+        /**
+         * @brief
+         * @param[in] byteOrder
+         * @param[in,out] dataFile
+         * @param[in] fileName
+         * @param[in,out] compilerCore
+         * @param[in] opts
+         */
+        inline void saveMachineCode ( Endianness byteOrder,
+                                      DataFile * dataFile,
+                                      const std::string & fileName,
+                                      CompilerSemanticInterface * compilerCore,
+                                      const CompilerOptions * opts );
 
     ////    Private Attributes    ////
     private:
         ///
-        uint32_t m_maxSize;
+        const WordSize m_wordSize;
 
         ///
-        uint32_t m_address;
+        unsigned int m_address;
+
+        ///
+        unsigned int m_maxSize;
+
+        ///
+        unsigned int m_size;
 
         ///
         std::vector<uint32_t> m_code;

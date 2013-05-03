@@ -46,6 +46,7 @@ add_definitions ( -Wall -Wextra -std=c++0x -O2 -pipe -fPIC )
 add_library ( ${PROJECT_NAME} STATIC
               AsmKcpsm3SemanticAnalyzer.cxx
               AsmKcpsm3CodeListing.cxx
+              AsmKcpsm3Macros.cxx
               AsmKcpsm3InstructionSet.cxx
               AsmKcpsm3SymbolTable.cxx )
 

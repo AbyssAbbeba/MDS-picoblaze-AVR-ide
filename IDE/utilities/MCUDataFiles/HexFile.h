@@ -33,7 +33,10 @@ class HexFile : public DataFile
         /**
          * @param[in] size Maximum data size
          */
-        HexFile ( unsigned int arrsize = 0x10000 ) : DataFile(arrsize) {};
+        HexFile ( unsigned int arrsize = 0x10000,
+                  unsigned char maxRecLength = 255 )
+                : DataFile ( arrsize ),
+                  m_maxRecLength ( maxRecLength ) {};
 
     ////    Public Operations    ////
     public:
@@ -52,11 +55,11 @@ class HexFile : public DataFile
          * @param[in] makeBackup Make backup file
          */
         void save ( const char * filename,
-                    bool makeBackup = true ) throw(DataFile::DataFileException);
+                    bool makeBackup = true ) throw ( DataFile::DataFileException );
 
         /// @overload
         void save ( const std::string & filename,
-                    bool makeBackup = true ) throw(DataFile::DataFileException);
+                    bool makeBackup = true ) throw ( DataFile::DataFileException );
 
     ////    Private Operations    ////
     private:
@@ -66,6 +69,11 @@ class HexFile : public DataFile
          * @return CRC (0..255)
          */
         inline int computeCRC ( const char * data ) const;
+
+    ////    Private Attributes    ////
+    private:
+        /// Maximum allowed size of HEX record, in bytes of data field (1-255).
+        const unsigned char m_maxRecLength;
 };
 
 #endif // HEXFILE_H

@@ -624,9 +624,28 @@ std::ostream & operator << ( std::ostream & out,
         case ASM51_INS_XRL__A_R7:               out << "ASM51_INS_XRL__A_R7";           break;
 
 
+        case ASMKCPSM3_DIR_MACRO:               out << "ASMKCPSM3_DIR_MACRO";           break;
+        case ASMKCPSM3_MACRO:                   out << "ASMKCPSM3_MACRO";               break;
         case ASMKCPSM3_LABEL:                   out << "ASMKCPSM3_LABEL";               break;
         case ASMKCPSM3_DIR_EQU:                 out << "ASMKCPSM3_DIR_EQU";             break;
         case ASMKCPSM3_DIR_END:                 out << "ASMKCPSM3_DIR_END";             break;
+        case ASMKCPSM3_INCLUDE:                 out << "ASMKCPSM3_INCLUDE";             break;
+        case ASMKCPSM3_DIR_ORG:                 out << "ASMKCPSM3_DIR_ORG";             break;
+
+        case ASMKCPSM3_COND_ASM:                out << "ASMKCPSM3_COND_ASM";            break;
+        case ASMKCPSM3_DIR_IF:                  out << "ASMKCPSM3_DIR_IF";              break;
+        case ASMKCPSM3_DIR_IFN:                 out << "ASMKCPSM3_DIR_IFN";             break;
+        case ASMKCPSM3_DIR_IFDEF:               out << "ASMKCPSM3_DIR_IFDEF";           break;
+        case ASMKCPSM3_DIR_IFNDEF:              out << "ASMKCPSM3_DIR_IFNDEF";          break;
+        case ASMKCPSM3_DIR_ELSEIFB:             out << "ASMKCPSM3_DIR_ELSEIFB";         break;
+        case ASMKCPSM3_DIR_ELSEIFNB:            out << "ASMKCPSM3_DIR_ELSEIFNB";        break;
+        case ASMKCPSM3_DIR_ELSE:                out << "ASMKCPSM3_DIR_ELSE";            break;
+        case ASMKCPSM3_DIR_ELSEIF:              out << "ASMKCPSM3_DIR_ELSEIF";          break;
+        case ASMKCPSM3_DIR_ELSEIFN:             out << "ASMKCPSM3_DIR_ELSEIFN";         break;
+        case ASMKCPSM3_DIR_ELSEIFDEF:           out << "ASMKCPSM3_DIR_ELSEIFDEF";       break;
+        case ASMKCPSM3_DIR_ELSEIFNDEF:          out << "ASMKCPSM3_DIR_ELSEIFNDEF";      break;
+        case ASMKCPSM3_DIR_IFB:                 out << "ASMKCPSM3_DIR_IFB";             break;
+        case ASMKCPSM3_DIR_IFNB:                out << "ASMKCPSM3_DIR_IFNB";            break;
 
         case ASMKCPSM3_INS_JUMP_AAA:            out << "ASMKCPSM3_INS_JUMP_AAA";        break;
         case ASMKCPSM3_INS_JUMP_Z_AAA:          out << "ASMKCPSM3_INS_JUMP_Z_AAA";      break;

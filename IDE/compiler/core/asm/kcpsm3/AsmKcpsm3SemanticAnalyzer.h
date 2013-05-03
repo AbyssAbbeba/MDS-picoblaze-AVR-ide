@@ -16,22 +16,22 @@
 #ifndef ASMKCPSM3SEMANTICANALYSER_H
 #define ASMKCPSM3SEMANTICANALYSER_H
 
-#include "../../CompilerSemanticInterface.h"
-#include "../../CompilerStatement.h"
-#include "../../CompilerExpr.h"
-
+// Common compiler header files.
+#include "../../SemanticAnalyzer.h"
 #include "../AsmMachineCodeGen.h"
 
+// KCPSM3 assembler semantic analyzer header files.
 #include "AsmKcpsm3SymbolTable.h"
 #include "AsmKcpsm3CodeListing.h"
 #include "AsmKcpsm3InstructionSet.h"
+#include "AsmKcpsm3Macros.h"
 
 /**
  * @brief
  * @ingroup Kcpsm3Asm
  * @class AsmKcpsm3SemanticAnalyzer
  */
-class AsmKcpsm3SemanticAnalyzer : public CompilerSemanticInterface
+class AsmKcpsm3SemanticAnalyzer : public SemanticAnalyzer
 {
     ////    Constructors and Destructors    ////
     public:
@@ -39,9 +39,8 @@ class AsmKcpsm3SemanticAnalyzer : public CompilerSemanticInterface
          * @brief
          * @param[in,out] compilerCore
          * @param[in] opts
-         * @return
          */
-        AsmKcpsm3SemanticAnalyzer ( CompilerCore * compilerCore,
+        AsmKcpsm3SemanticAnalyzer ( CompilerSemanticInterface * compilerCore,
                                     CompilerOptions * opts );
 
         /**
@@ -63,6 +62,15 @@ class AsmKcpsm3SemanticAnalyzer : public CompilerSemanticInterface
          */
         void process ( CompilerStatement * codeTree );
 
+
+    ////    Private Operations    ////
+    private:
+        /**
+         * @brief
+         * @param[in] codeTree
+         */
+        void printCodeTree ( const CompilerStatement * codeTree );
+
     ////    Inline Private Operations    ////
     private:
         /**
@@ -77,6 +85,13 @@ class AsmKcpsm3SemanticAnalyzer : public CompilerSemanticInterface
          */
         inline void phase2 ( CompilerStatement * codeTree );
 
+        /**
+         * @brief
+         * @param[in,out] ifTree
+         * @return
+         */
+        inline CompilerStatement * conditionalCompilation ( CompilerStatement * ifTree );
+
     ////    Protected Attributes    ////
     protected:
         ///
@@ -90,6 +105,9 @@ class AsmKcpsm3SemanticAnalyzer : public CompilerSemanticInterface
 
         ///
         AsmKcpsm3InstructionSet * m_instructionSet;
+
+        ///
+        AsmKcpsm3Macros * m_macros;
 };
 
 #endif // ASMKCPSM3SEMANTICANALYSER_H

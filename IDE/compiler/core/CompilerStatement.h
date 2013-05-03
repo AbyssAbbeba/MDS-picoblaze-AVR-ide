@@ -30,6 +30,10 @@
  */
 class CompilerStatement
 {
+    ////    Friends    ////
+    friend std::ostream & operator << ( std::ostream & out,
+                                        const CompilerStatement * stmt );
+
     ////    Constructors and Destructors    ////
     public:
         /**
@@ -92,10 +96,27 @@ class CompilerStatement
 
         /**
          * @brief
+         */
+        CompilerStatement * copyEntireChain() const;
+
+        /**
+         * @brief
+         */
+        CompilerStatement * copyChainLink() const;
+
+        /**
+         * @brief Insert link to the chain right after the link represented by this object.
          * @param[in,out] next
          * @return
          */
-        CompilerStatement * appendLink ( CompilerStatement * next );
+        CompilerStatement * insertLink ( CompilerStatement * chainLink );
+
+        /**
+         * @brief
+         * @param[in,out] chainLink
+         * @return
+         */
+        CompilerStatement * appendLink ( CompilerStatement * chainLink );
 
         /**
          * @brief Insert link before the first link in the chain.
@@ -128,7 +149,7 @@ class CompilerStatement
          * @brief
          * @return
          */
-        CompilerStatement * prev()
+        CompilerStatement * prev() const
         {
             return m_prev;
         }
@@ -137,7 +158,7 @@ class CompilerStatement
          * @brief
          * @return
          */
-        CompilerStatement * next()
+        CompilerStatement * next() const
         {
             return m_next;
         }
@@ -146,7 +167,7 @@ class CompilerStatement
          * @brief
          * @return
          */
-        CompilerStatement * branch()
+        CompilerStatement * branch() const
         {
             return m_branch;
         }
@@ -155,7 +176,7 @@ class CompilerStatement
          * @brief
          * @return
          */
-        CompilerBase::SourceLocation location() const
+        const CompilerBase::SourceLocation & location() const
         {
             return m_location;
         }
@@ -173,7 +194,7 @@ class CompilerStatement
          * @brief
          * @return
          */
-        CompilerExpr * args()
+        CompilerExpr * args() const
         {
             return m_args;
         }
@@ -221,8 +242,13 @@ class CompilerStatement
         CompilerStatement * m_branch;
 };
 
-// Tracing operator
+/**
+ * @brief Tracing operator
+ * @param[in,out] out
+ * @param[in] stmt
+ * @return
+ */
 std::ostream & operator << ( std::ostream & out,
-                             const CompilerStatement * const stmt );
+                             const CompilerStatement * stmt );
 
 #endif // COMPILERSTATEMENT_H

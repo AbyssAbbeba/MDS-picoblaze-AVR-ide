@@ -16,12 +16,12 @@
 #ifndef ASMKCPSM3SYMBOLTABLE_H
 #define ASMKCPSM3SYMBOLTABLE_H
 
-#include "../../CompilerCore.h"
+// Common compiler header files.
+#include "../../CompilerSemanticInterface.h"
 #include "../../CompilerOptions.h"
-#include "../../CompilerExpr.h"
-#include "../../StatementTypes.h"
 
-#include <vector>
+// Standard headers.
+#include <map>
 #include <string>
 #include <ostream>
 
@@ -41,12 +41,21 @@ class AsmKcpsm3SymbolTable
         /**
          * @brief
          */
+        enum ExprValSide
+        {
+            LEFT,  ///<
+            RIGHT  ///<
+        };
+
+        /**
+         * @brief
+         */
         enum SymbolType
         {
-            STYPE_INVALID = -1, ///<
+            STYPE_UNSPECIFIED = -1, ///<
 
-            STYPE_NUMBER,       ///<
-            STYPE_LABEL         ///<
+            STYPE_NUMBER,           ///<
+            STYPE_LABEL             ///<
         };
 
         /**
@@ -54,21 +63,38 @@ class AsmKcpsm3SymbolTable
          */
         struct Symbol
         {
-            Symbol ( const char * name,
-                     SymbolType type,
-                     const CompilerExpr * value = NULL )
-            {
-                m_name.assign ( name );
-                m_type = type;
-                if ( NULL != value )
-                {
-                    m_value = *value;
-                }
-            }
+            /**
+             * @brief
+             * @param[in] value
+             * @param[in] type
+             */
+            Symbol ( const CompilerExpr * value = NULL,
+                     const CompilerBase::SourceLocation * location = NULL,
+                     SymbolType type = STYPE_UNSPECIFIED,
+                     int finalValue = -1 );
 
-            std::string m_name;
-            CompilerExpr m_value;
+            /**
+             * @brief
+             */
+            ~Symbol();
+
+            ///
+            CompilerExpr * m_value;
+
+            ///
+            CompilerBase::SourceLocation m_location;
+
+            ///
             SymbolType m_type;
+
+            ///
+            int m_finalValue;
+
+            ///
+            bool m_used;
+
+            ///
+            bool m_constant;
         };
 
     ////    Constructors and Destructors    ////
@@ -79,7 +105,7 @@ class AsmKcpsm3SymbolTable
          * @param[in] opts
          * @return
          */
-        AsmKcpsm3SymbolTable ( CompilerCore * compilerCore,
+        AsmKcpsm3SymbolTable ( CompilerSemanticInterface * compilerCore,
                                CompilerOptions * opts )
                              : m_compilerCore ( compilerCore ),
                                m_opts ( opts ) {};
@@ -90,26 +116,120 @@ class AsmKcpsm3SymbolTable
          * @brief
          * @param[in] name
          * @param[in] value
+         * @param[in] location
+         * @param[in] type
+         * @param[in] resolve
+         * @return
          */
-        void addSymbol ( CompilerExpr * const name,
-                         StatementTypes::StatementType type,
-                         CompilerExpr * const value = NULL );
+        int addSymbol ( const std::string & name,
+                        const CompilerExpr * value = NULL,
+                        const CompilerBase::SourceLocation * location = NULL,
+                        const SymbolType type = STYPE_UNSPECIFIED,
+                        bool resolve = false );
 
         /**
          * @brief
-         * @param[in,out] expr
-         * @param[in] bitsMax
+         * @param[in] name
+         * @param[in] location
+         * @param[in] type
          */
-        unsigned int resolveExpr ( CompilerExpr * expr,
+        void removeSymbol ( const std::string & name,
+                            const CompilerBase::SourceLocation & location,
+                            const SymbolType type = STYPE_UNSPECIFIED );
+
+        /**
+         * @brief
+         * @param[in] name
+         * @param[in] type
+         * @return
+         */
+        bool isDefined ( const std::string & name,
+                         const SymbolType type = STYPE_UNSPECIFIED ) const;
+
+        /**
+         * @brief
+         * @param[in] name
+         * @param[in] value
+         * @param[in] type
+         * @param[in] resolve
+         */
+        void assignValue ( const std::string & name,
+                           const CompilerExpr * value,
+                           const SymbolType type = STYPE_UNSPECIFIED,
+                           bool resolve = false );
+
+        /**
+         * @brief
+         * @param[in] name
+         * @param[in] type
+         * @return
+         */
+        const CompilerExpr * getValue ( const std::string & name,
+                                        const SymbolType type = STYPE_UNSPECIFIED );
+
+        /**
+         * @brief
+         * @param[in] expr
+         * @param[in] bitsMax
+         * @return
+         */
+        unsigned int resolveExpr ( const CompilerExpr * expr,
                                    int bitsMax = -1 );
+
+        /**
+         * @brief
+         * @param[in] origSymbol
+         * @param[in] newSymbol
+         * @param[in,out] expr
+         * @return
+         */
+        unsigned int substitute ( const std::string & origSymbol,
+                                  const CompilerExpr * newSymbol,
+                                  CompilerExpr * expr );
+
+        /**
+         * @brief
+         */
+        void output();
+
+        /**
+         * @brief
+         */
+        void clear();
+
+        /**
+         * @brief
+         * @param[in,out] out
+         * @param[in] location
+         */
+        void printSymLocation ( std::ostream & out,
+                                const CompilerBase::SourceLocation & location ) const;
+
+    ////    Private Operations    ////
+    private:
+        /**
+         * @brief
+         * @param[in] side
+         * @param[in] expr
+         * @return
+         */
+        int getExprValue ( ExprValSide side,
+                           const CompilerExpr * expr );
+
+        /**
+         * @brief
+         * @param[in] expr
+         * @return
+         */
+        int computeExpr ( const CompilerExpr * expr );
 
     ////    Private Attributes    ////
     private:
         ///
-        std::vector<Symbol> m_table;
+        std::multimap<std::string,Symbol> m_table;
 
         ///
-        CompilerCore * const m_compilerCore;
+        CompilerSemanticInterface * const m_compilerCore;
 
         ///
         CompilerOptions * const m_opts;

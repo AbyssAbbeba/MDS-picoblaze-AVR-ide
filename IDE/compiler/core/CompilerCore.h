@@ -21,11 +21,12 @@ class CompilerExpr;
 class CompilerStatement;
 class CompilerMsgInterface;
 class CompilerOptions;
-class CompilerSemanticInterface;
+class SemanticAnalyzer;
 
 // Base class and compiler interfaces
 #include "CompilerBase.h"
 #include "CompilerParserInterface.h"
+#include "CompilerSemanticInterface.h"
 
 // Standard header files
 #include <string>
@@ -38,7 +39,8 @@ class CompilerSemanticInterface;
  * @class CompilerCore
  */
 class CompilerCore : public CompilerBase,
-                     private CompilerParserInterface
+                     private CompilerParserInterface,
+                     private CompilerSemanticInterface
 {
     ////    Constructors and Destructors    ////
     public:
@@ -70,16 +72,10 @@ class CompilerCore : public CompilerBase,
          */
         bool compile ( LangId lang,
                        TargetArch arch,
-                       CompilerOptions * const opts );
+                       CompilerOptions * opts );
 
     ////    Private Operations    ////
     private:
-        /**
-            * @brief
-            * @param[in] filename
-            */
-        inline void setFileName ( const std::string & filename );
-
         /// @name Interface for syntax and/or lexical analyzer
         //@{
             /**
@@ -130,6 +126,13 @@ class CompilerCore : public CompilerBase,
 
             /**
              * @brief
+             * @param[in] uplevel
+             * @return
+             */
+            int getFileNumber ( unsigned int uplevel ) const;
+
+            /**
+             * @brief
              * @param[in] filename
              * @return
              */
@@ -143,7 +146,6 @@ class CompilerCore : public CompilerBase,
             void syntaxAnalysisComplete ( CompilerStatement * codeTree );
         //@}
 
-    public:
         /// @name Interface for semantic analyzer
         //@{
             /**
@@ -151,6 +153,20 @@ class CompilerCore : public CompilerBase,
              * @return
              */
             const std::vector<std::string> & listSourceFiles() const;
+
+            /**
+             * @brief
+             * @param[in] fileNumber
+             * @return
+             */
+            const std::string & getFileName ( int fileNumber ) const;
+
+            /**
+             * @brief
+             * @param[in] location
+             * @return
+             */
+            std::string locationToStr ( const CompilerBase::SourceLocation & location ) const;
 
             /**
              * @brief
@@ -169,10 +185,22 @@ class CompilerCore : public CompilerBase,
              */
             void compilerMessage ( MessageType type,
                                    const std::string & text );
+
+            /**
+             * @brief
+             * @return
+             */
+            bool successful() const;
         //@}
 
     ////    Inline Private Operations    ////
     private:
+        /**
+         * @brief
+         * @param[in] filename
+         */
+        inline void setFileName ( const std::string & filename );
+
         /**
          * @brief
          */
@@ -182,25 +210,19 @@ class CompilerCore : public CompilerBase,
          * @brief
          * @param[in] lang
          * @param[in] arch
-         * @param[in] opts
-         * @param[in] filename
          * @return
          */
         inline bool setupSemanticAnalyzer ( LangId lang,
-                                            TargetArch arch,
-                                            CompilerOptions * const opts );
+                                            TargetArch arch );
 
         /**
          * @brief
          * @param[in] lang
          * @param[in] arch
-         * @param[in] opts
-         * @param[in] filename
          * @return
          */
         inline bool startLexerAndParser ( LangId lang,
-                                          TargetArch arch,
-                                          CompilerOptions * const opts );
+                                          TargetArch arch );
 
     ////    Private Attributes    ////
     private:
@@ -212,7 +234,7 @@ class CompilerCore : public CompilerBase,
         /**
          * @brief
          */
-        CompilerSemanticInterface * m_semanticAnalyzer;
+        SemanticAnalyzer * m_semanticAnalyzer;
 
         /**
          * @brief
@@ -243,6 +265,11 @@ class CompilerCore : public CompilerBase,
          * @brief
          */
         bool m_success;
+
+        /**
+         * @brief
+         */
+        CompilerOptions * m_opts;
 };
 
 #endif // COMPILERCORE_H

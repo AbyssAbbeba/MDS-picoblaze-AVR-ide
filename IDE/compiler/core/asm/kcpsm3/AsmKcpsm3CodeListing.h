@@ -16,11 +16,14 @@
 #ifndef ASMKCPSM3CODELISTING_H
 #define ASMKCPSM3CODELISTING_H
 
-#include "../../CompilerCore.h"
+// Common compiler header files.
+#include "../../CompilerSemanticInterface.h"
 #include "../../CompilerOptions.h"
 
+// Standard headers.
 #include <string>
 #include <vector>
+#include <ostream>
 
 /**
  * @brief
@@ -29,6 +32,10 @@
  */
 class AsmKcpsm3CodeListing
 {
+    ////    Friends    ////
+    friend std::ostream & operator << ( std::ostream & out,
+                                        const AsmKcpsm3CodeListing * codeListing );
+
     ////    Public Static Constants    ////
     public:
         /// @brief
@@ -42,10 +49,13 @@ class AsmKcpsm3CodeListing
          * @param[in] opts
          * @return
          */
-        AsmKcpsm3CodeListing ( CompilerCore * compilerCore,
-                               CompilerOptions * opts )
-                             : m_compilerCore ( compilerCore ),
-                               m_opts ( opts ) {};
+        AsmKcpsm3CodeListing ( CompilerSemanticInterface * compilerCore,
+                               CompilerOptions * opts );
+
+        /**
+         * @brief
+         */
+        ~AsmKcpsm3CodeListing();
 
     ////    Public Datatypes    ////
     public:
@@ -55,17 +65,13 @@ class AsmKcpsm3CodeListing
         struct LstLine
         {
             LstLine ( );
-            LstLine ( const char * line,
-                      int lineNumber,
-                      int fileNumber );
+            LstLine ( const char * line );
 
             int m_address;
             int m_code;
             int m_macro;
             int m_inclusion;
             int m_value;
-            int m_fileNumber;
-            int m_lineNumber;
             std::string m_line;
         };
 
@@ -78,29 +84,112 @@ class AsmKcpsm3CodeListing
 
         /**
          * @brief
-         * @param[in] filename
          */
-        void output ( const std::string & filename );
+        void output();
 
         /**
          * @brief
-         * @param[in] opCode
          * @param[in] location
+         * @param[in] fileNumber
          */
-        void setOPcode ( int opCode,
-                         CompilerBase::SourceLocation location,
-                         unsigned int address );
+        void setInclusion ( CompilerBase::SourceLocation location,
+                            int fileNumber );
+
+        /**
+         * @brief
+         * @param[in] location
+         * @param[in] code
+         * @param[in] address
+         */
+        void setCode ( CompilerBase::SourceLocation location,
+                       int code,
+                       int address );
+
+        /**
+         * @brief
+         * @param[in] location
+         * @param[in] value
+         */
+        void setValue ( CompilerBase::SourceLocation location,
+                        int value );
+
+        /**
+         * @brief
+         * @param[in] location
+         * @param[in] definition
+         * @param[in,out] expansion
+         */
+        void expandMacro ( CompilerBase::SourceLocation location,
+                           const CompilerStatement * definition,
+                           CompilerStatement * expansion );
+
+    ////    Private Operations    ////
+    private:
+        /**
+         * @brief
+         * @param[in,out] out
+         * @param[in,out] lineNumber
+         * @param[in] fileNumber
+         * @param[in] inclusionLevel
+         * @param[in] macroLevel
+         */
+        void printCodeListing ( std::ostream & out,
+                                unsigned int & lineNumber,
+                                unsigned int fileNumber = 0,
+                                unsigned int inclusionLevel = 0,
+                                unsigned int macroLevel = 0 ) const;
+
+        /**
+         * @brief
+         * @param[in] definition
+         */
+        void copyMacroBody ( const CompilerStatement * definition );
+
+        /**
+         * @brief
+         * @param[in,out] lineNumber
+         * @param[in,out] macro
+         */
+        void rewriteMacroLoc ( unsigned int & lineNumber,
+                               CompilerStatement * macro );
+
+    ////    Inline Private Operations    ////
+    private:
+        /**
+         * @brief
+         * @param[in] location
+         * @return
+         */
+        inline bool checkLocation ( CompilerBase::SourceLocation location );
 
     ////    Private Attributes    ////
     private:
         ///
-        std::vector<LstLine> m_listing;
+        unsigned int m_numberOfFiles;
 
         ///
-        CompilerCore * const m_compilerCore;
+        unsigned int m_numberOfMacros;
+
+        ///
+        std::vector<std::vector<LstLine>> m_listing;
+
+        ///
+        CompilerSemanticInterface * const m_compilerCore;
 
         ///
         CompilerOptions * const m_opts;
 };
+
+/// @name Tracing operators
+//@{
+    /**
+     * @brief
+     * @param[in,out] out
+     * @param[in] codeListing
+     * @return
+     */
+    std::ostream & operator << ( std::ostream & out,
+                                 const AsmKcpsm3CodeListing * codeListing );
+//@}
 
 #endif // ASMKCPSM3CODELISTING_H
