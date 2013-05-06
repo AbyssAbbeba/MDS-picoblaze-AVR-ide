@@ -81,17 +81,15 @@ void AsmKcpsm3SemanticAnalyzer::process ( CompilerStatement * codeTree )
 
     printCodeTree(codeTree);
 
-    std::cout << "Entering phase 1\n" << codeTree;
+    std::cout << "Entering phase 1, codeTree:\n" << codeTree;
 
     phase1 ( codeTree );
 
-    std::cout << "Phase 1 complete, symbol table defined as follows:\n" << m_symbolTable;
-    std::cout << "Entering phase 2\n" << codeTree;
+    std::cout << "Entering phase 2, codeTree:\n" << codeTree;
 
     phase2 ( codeTree );
 
     std::cout << "Phase 2 complete, codeTree:\n" << codeTree;
-    std::cout << "Final symbol table defined as follows:\n" << m_symbolTable;
 
     m_codeListing->output();
 

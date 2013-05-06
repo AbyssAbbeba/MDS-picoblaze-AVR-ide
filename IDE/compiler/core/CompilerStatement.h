@@ -13,14 +13,15 @@
  */
 // =============================================================================
 
-
 #ifndef COMPILERSTATEMENT_H
 #define COMPILERSTATEMENT_H
 
+// Common compiler header files.
 #include "CompilerBase.h"
 #include "CompilerExpr.h"
 #include "StatementTypes.h"
 
+// Standard header files
 #include <ostream>
 
 /**

@@ -72,6 +72,7 @@ add_library ( ${PROJECT_NAME} SHARED
               CompilerCore.cxx
               CompilerMsgInftStdout.cxx
               Compiler.cxx
+              CompilerOptions.cxx
               CompilerThread.cxx )
 
 # Link a target to given libraries.
