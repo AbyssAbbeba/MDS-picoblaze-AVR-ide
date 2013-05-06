@@ -62,12 +62,44 @@ bool CompilerCore::compile ( LangId lang,
     resetCompilerCore();
     m_opts = opts;
 
+    if ( false == checkOptions(lang, arch) )
+    {
+        return false;
+    }
+
     if ( true == setupSemanticAnalyzer(lang, arch) )
     {
         return startLexerAndParser(lang, arch);
     }
 
     return false;
+}
+
+inline bool CompilerCore::checkOptions ( LangId lang,
+                                         TargetArch arch )
+{
+    if ( CompilerBase::LI_INVALID == lang )
+    {
+        m_msgInterface->message ( QObject::tr("Programming language not specified.").toStdString(),
+                                  MT_ERROR );
+        return false;
+    }
+
+    if ( CompilerBase::TA_INVALID == arch )
+    {
+        m_msgInterface->message ( QObject::tr("Target architecture not specified.").toStdString(),
+                                  MT_ERROR );
+        return false;
+    }
+
+    if ( true == m_opts->m_sourceFile.empty() )
+    {
+        m_msgInterface->message ( QObject::tr("Source code file not specified.").toStdString(),
+                                  MT_ERROR );
+        return false;
+    }
+
+    return true;
 }
 
 inline bool CompilerCore::setupSemanticAnalyzer ( LangId lang,

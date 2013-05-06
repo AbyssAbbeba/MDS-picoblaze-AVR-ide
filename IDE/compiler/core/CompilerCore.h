@@ -23,12 +23,12 @@ class CompilerMsgInterface;
 class CompilerOptions;
 class SemanticAnalyzer;
 
-// Base class and compiler interfaces
+// Base class and compiler interfaces.
 #include "CompilerBase.h"
 #include "CompilerParserInterface.h"
 #include "CompilerSemanticInterface.h"
 
-// Standard header files
+// Standard header files.
 #include <string>
 #include <vector>
 
@@ -223,6 +223,15 @@ class CompilerCore : public CompilerBase,
          */
         inline bool startLexerAndParser ( LangId lang,
                                           TargetArch arch );
+
+        /**
+         * @brief
+         * @param[in] lang
+         * @param[in] arch
+         * @return
+         */
+        inline bool checkOptions ( LangId lang,
+                                   TargetArch arch );
 
     ////    Private Attributes    ////
     private:

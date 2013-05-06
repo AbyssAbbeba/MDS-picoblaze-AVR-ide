@@ -33,6 +33,7 @@ class CompilerBase
          */
         enum TargetArch
         {
+            TA_INVALID, ///<
             TA_AVR8,    ///<
             TA_PIC8,    ///<
             TA_MCS51,   ///<
@@ -44,6 +45,7 @@ class CompilerBase
          */
         enum LangId
         {
+            LI_INVALID, ///<
             LI_ASM      ///<
         };
 

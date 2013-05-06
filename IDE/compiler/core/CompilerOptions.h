@@ -19,6 +19,7 @@
 // Standard header files
 #include <string>
 #include <vector>
+#include <ostream>
 
 class CompilerOptions
 {
@@ -37,16 +38,7 @@ class CompilerOptions
              * unlimited size of program memory, infinite number of registers, all instructions of its architecture are
              * implemented in hardware, etc.
              */
-            ProcessorLimits()
-            {
-                m_iCodeMemSize  = -1;
-                m_xCodeMemSize  = -1;
-                m_iDataMemSize  = -1;
-                m_eDataMemSize  = -1;
-                m_xDataMemSize  = -1;
-                m_regFileSize   = -1;
-                m_nvDataMemSize = -1;
-            }
+            ProcessorLimits();
 
             /// Size of internal program memory in architecture specific words (not octets or bytes).
             int m_iCodeMemSize;
@@ -78,13 +70,7 @@ class CompilerOptions
         /**
          * @brief
          */
-        CompilerOptions()
-        {
-            m_maxMacroExp = -1;
-            m_maxInclusion = -1;
-            m_hexMaxRecLength = 255;
-            m_syntaxCheckOnly = false;
-        }
+        CompilerOptions();
 
     ////    Public Attributes    ////
     public:
@@ -149,5 +135,31 @@ class CompilerOptions
             bool m_makeBackupFiles;
         //@}
 };
+
+/// @name Tracing operators.
+//@{
+    /**
+     * @brief Tracing operator for ProcessorLimits.
+     * @param[in,out] out
+     * @param[in] limits
+     * @return
+     */
+    std::ostream & operator << ( std::ostream & out,
+                                 const CompilerOptions::ProcessorLimits & limits );
+
+    /**
+     * @brief Tracing operator for CompilerOptions.
+     * @param[in,out] out
+     * @param[in] opts
+     * @return
+     */
+    std::ostream & operator << ( std::ostream & out,
+                                 const CompilerOptions * opts );
+
+
+    /// @overload
+    std::ostream & operator << ( std::ostream & out,
+                                 const CompilerOptions & opts );
+//@}
 
 #endif // COMPILEROPTIONS_H
