@@ -47,9 +47,11 @@ ProjectTree::~ProjectTree()
 
 void ProjectTree::contextMenuEvent(QContextMenuEvent *event)
 {
+    qDebug() << "ProjectTree: contextMenuEvent()";
     if (this->itemAt(event->pos()) != NULL)
     {
         lastEvent = event;
+        qDebug() << "ProjectTree: emit requestFileCount()";
         emit requestFileCount();
         /*if (parentProject->fileCount == 0 || this->itemAt(event->pos())->childCount() > 0)
         {
@@ -63,11 +65,14 @@ void ProjectTree::contextMenuEvent(QContextMenuEvent *event)
             filePopup->popup(event->globalPos());
         }*/
     }
+    qDebug() << "ProjectTree: return contextMenuEvent()";
 }
 
 
+//mozno dat do jedne funkce, signaly jsou sekvencne
 void ProjectTree::contextP2(int fileCount)
 {
+    qDebug() << "ProjectTree: contextP2()";
     if (fileCount == 0 || this->itemAt(lastEvent->pos())->childCount() > 0)
     {
         projectPopup->popup(lastEvent->globalPos());
@@ -79,7 +84,9 @@ void ProjectTree::contextP2(int fileCount)
         lastItem = this->itemAt(lastEvent->pos());
         filePopup->popup(lastEvent->globalPos());
     }
+    qDebug() << "ProjectTree: return contextP2()";
 }
+
 
 void ProjectTree::setMainFile()
 {
