@@ -31,6 +31,7 @@
 class ProjectMan;
 class WDockManager;
 class CodeEdit;
+class Project;
 
 
 /**
@@ -44,7 +45,6 @@ class MainForm : public QMainWindow
     public:
         MainForm();
 
-        void openFilePath(QString path);
         void saveFile(CodeEdit *editor);
         WDockManager* getWDockManager();
         ProjectMan* getProjectMan();
@@ -78,6 +78,11 @@ class MainForm : public QMainWindow
         void simProjectData();
         void tabifyDockWidgetSlot(QDockWidget *widget1, QDockWidget *widget2);
         void addDockWidgetSlot(Qt::DockWidgetArea area, QDockWidget *widget);
+        void connectProjectSlot(Project *project);
+        void highlightLine(QString file, int line, QColor *color, QColor *origColor);
+        void setEditorReadOnly(bool readOnly);
+        void addUntrackedFile(QString name, QString path);
+        void openFilePath(QString path);
 
     //signals:
     //    void dockWidgetsCreated;
