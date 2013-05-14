@@ -81,7 +81,7 @@ bool McuSimCfgMgr::openConfigFile ( const char * filename )
     if ( false == file.open(QIODevice::ReadOnly) )
     {
         qDebug() << "McuSimCfgMgr IO error";
-        result = false;
+        return false;
     }
 
     QXmlSimpleReader reader;

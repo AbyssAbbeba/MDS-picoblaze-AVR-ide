@@ -173,7 +173,6 @@ void AsmMachineCodeGen::output ( Endianness byteOrder,
     }
 }
 
-
 inline void AsmMachineCodeGen::saveMachineCode ( Endianness byteOrder,
                                                  DataFile * dataFile,
                                                  const std::string & fileName,
