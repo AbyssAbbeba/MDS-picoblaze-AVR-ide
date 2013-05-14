@@ -28,6 +28,9 @@ MainForm::MainForm()
 {
     qDebug() << "MainForm: MainForm()";
     projectMan = new ProjectMan(this);
+    connect(projectMan, SIGNAL(addDockWidget(Qt::DockWidgetArea, QDockWidget*)), this, SLOT(addDockWidgetSlot(Qt::DockWidgetArea, QDockWidget*)));
+    connect(projectMan, SIGNAL(tabifyDockWidget(QWidget*, QWidget*)), this, SLOT(tabifyDockWidgetSlot(QDockWidget*, QDockWidget*)));
+    connect(projectMan, SIGNAL(connectProject(Project*)), this, SLOT(connectProjectSlot(Project*)));
     QWidget *centralWidget = new QWidget(this);
     wDockManager = new WDockManager(this, centralWidget);
     this->setCentralWidget(centralWidget);
@@ -816,7 +819,45 @@ void MainForm::tabifyDockWidgetSlot(QDockWidget *widget1, QDockWidget *widget2)
     this->tabifyDockWidget(widget1, widget2);
 }
 
+
 void MainForm::addDockWidgetSlot(Qt::DockWidgetArea area, QDockWidget *widget)
 {
     this->addDockWidget(area, widget);
+}
+
+
+void MainForm::connectProjectSlot(Project *project)
+{
+    connect(project, SIGNAL(highlightLine(QString, int, QColor*, QColor*)), this, SLOT(highlightLine(QString, int, QColor*,
+        QColor*)));
+    connect(project, SIGNAL(addUntrackedFile(QString, QString)), this, SLOT(addUntrackedFile(QString, QString)));
+    connect(project, SIGNAL(openFilePath(QString)), this, SLOT(openFilePath(QString)));
+    connect(project, SIGNAL(setEditorReadOnly(bool)), this, SLOT(setEditorReadOnly(bool)));
+}
+
+
+void MainForm::highlightLine(QString file, int line, QColor *color, QColor *origColor)
+{
+    qDebug() << "MainForm: highlightLine";
+    getWDockManager()->setCentralByName(file);
+    getWDockManager()->getCentralTextEdit()->highlightLine(line, color, origColor);
+    qDebug() << "MainForm: return highlightLine";
+}
+
+
+void MainForm::setEditorReadOnly(bool readOnly)
+{
+    qDebug() << "MainForm: setEditorReadOnly";
+    getWDockManager()->setEditorsReadOnly(readOnly);
+    qDebug() << "MainForm: return setEditorReadOnly";
+}
+
+
+void MainForm::addUntrackedFile(QString name, QString path)
+{
+    qDebug() << "MainForm: addUntrackedFile";
+    getWDockManager()->addUntrackedCentralWidget(name, path);
+    getWDockManager()->getCentralWidget()->setChanged();
+    getWDockManager()->getCentralWidget()->connectAct();
+    qDebug() << "MainForm: return addUntrackedFile";
 }
