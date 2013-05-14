@@ -52,7 +52,17 @@
 }
 
 % define colors for syntax highlight
+\definecolor{highlight_c_keyword}{rgb}{0.0, 0.0, 0.866}
+\definecolor{highlight_c_data_type}{rgb}{0.0, 0.8, 0.0}
+\definecolor{highlight_c_dec}{rgb}{0.0, 0.0, 1.0}
+\definecolor{highlight_c_hex}{rgb}{0.533, 0.0, 1.0}
 \definecolor{highlight_c_comment}{rgb}{0.533, 0.533, 0.533}
+\definecolor{highlight_c_symbol}{rgb}{1.0, 0.0, 0.0}
+\definecolor{highlight_c_bracket}{rgb}{0.933, 0.4, 0.0}
+\definecolor{highlight_c_preprocessor}{rgb}{0.0, 0.533, 0.0}
+\definecolor{highlight_c_directive}{rgb}{0.333, 0.533, 0.0}
+\definecolor{highlight_c_prep_lib}{rgb}{0.533, 0.333, 0.0}
+\definecolor{highlight_normal}{rgb}{0.0, 0.0, 0.0}
 \definecolor{highlight_c_dox_comment}{rgb}{0.266, 0.266, 1.0}
 \definecolor{highlight_c_dox_tag}{rgb}{0.666, 0.0, 0.866}
 \definecolor{highlight_c_dox_word}{rgb}{0.0, 0.533, 1.0}
@@ -87,7 +97,7 @@ without prior written authorization of Moravia Microsystems, s.r.o, if any.
 \tableofcontents
 
 \chapter{Importance of a code convention}
-    First of all it is important to keep in mind that this convention is not supposed to create a set of unnecessary and unproductive rules to poison your work; instead in case you are sure that your work goes better with another coding style, go ahead but please at least read this paragraph till end. Coding convention is something you probably get used to, sooner or later, and it contributes in creating unified working environment where you always know what to expect. Also it helps to write code which is relatively very easily readable for a man who is familiar with the applied convention, and it helps in creating a code that is not merely a piece of an ``abstract machinery'' but is a sort art... Don't you think that creating a state of the art equipment for microcomputer controlled hardware development is a little more that ordinary programming and circuitry design? Please lets make it a masterpiece.
+    First of all it is important to keep in mind that this convention is not supposed to create a set of unnecessary and unproductive rules to poison your work; instead in case you are sure that your work goes better with another coding style, go ahead but please at least read this paragraph till end. Coding convention is something you probably get used to, sooner or later, and it contributes in creating unified working environment where you always know what to expect. Also it helps to write code which is relatively easily readable for someone who is familiar with the applied convention.
 
     \paragraph{}
     Code conventions are important to programmers for a number of reasons:
@@ -99,25 +109,54 @@ without prior written authorization of Moravia Microsystems, s.r.o, if any.
     \end{itemize}
 
 \chapter{Detailed specification}
-    \section{File names}
-        Use the following file suffixes:\\
-        \begin{table}[h!]
-            \begin{tabular}{l|l}
-                \textbf{File Type}  & \textbf{Suffix} \\\hline
-                C++ header file     & .h              \\
-                C++ source file     & .cxx
-            \end{tabular}
-        \end{table}
+    \section{General}
+        \subsection{File names}
+            Use the following file suffixes:\\
+            \begin{table}[h!]
+                \begin{tabular}{l|l}
+                    \textbf{File Type}  & \textbf{Suffix} \\\hline
+                    C/C++ header file   & .h              \\
+                    C++ source file     & .cxx            \\
+                    C++ source file     & .c
+                \end{tabular}
+            \end{table}
+
+            \subsection{Maximum line length}
+                \begin{itemize}
+                    \item Normally, do not write lines longer than \textbf{120 characters}.
+                    \item Try to use the horizontal space (120c), do not break lines unnecessarily.
+                    \item In certain specific cases when you consider it to be prudent, make lines even longer but generally try to avoid it.
+                \end{itemize}
+
+            \subsection{Indentation}
+                \begin{itemize}
+                    \item Indent with spaces, use \textbf{4 spaces} for a level.
+                    \item Do not use tabs.
+                \end{itemize}
 
     \section{Header files}
-        \subsection{Indentationx}
+        \subsection{Sections}
             \begin{itemize}
-                \item Indent with spaces, use 4 spaces for a level.
-                \item 
+                \item {\color{highlight_c_comment}\verb'////    Public Constants    ////'}
+                \item {\color{highlight_c_comment}\verb'////    Public Datatypes    ////'}
+                \item {\color{highlight_c_comment}\verb'////    Protected Datatypes    ////'}
+                \item {\color{highlight_c_comment}\verb'////    Private Datatypes    ////'}
+                \item {\color{highlight_c_comment}\verb'////    Constructors and Destructors    ////'}
+                \item {\color{highlight_c_comment}\verb'////    Public Operations    ////'}
+                \item {\color{highlight_c_comment}\verb'////    Inline Public Operations    ////'}
+                \item {\color{highlight_c_comment}\verb'////    Static Public Operations    ////'}
+                \item {\color{highlight_c_comment}\verb'////    Inline Private Operations    ////'}
+                \item {\color{highlight_c_comment}\verb'////    Static Inline Private Operations    ////'}
+                \item {\color{highlight_c_comment}\verb'////    Protected Operations    ////'}
+                \item {\color{highlight_c_comment}\verb'////    Public Attributes    ////'}
+                \item {\color{highlight_c_comment}\verb'////    Protected Attributes    ////'}
+                \item {\color{highlight_c_comment}\verb'////    Private Attributes    ////'}
+                \item {\color{highlight_c_comment}\verb'////    Static Public Attributes    ////'}
+                \item {\color{highlight_c_comment}\verb'////    Static Private Attributes    ////'}
             \end{itemize}
 
-        \subsection{Sections}
-        \subsection{In-line documentation}
+        \subsection{In-file documentation}
+            Each header file should start with the following lines, of course exact content of the text has to be correspondent to what the file is for:\\\\
             {\color{highlight_c_comment}\verb'// ============================================================================='}\\
             {\color{highlight_c_dox_comment}\verb'/**'}\\
             \verb' '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_tag}\verb'@brief'}\\
@@ -135,6 +174,233 @@ without prior written authorization of Moravia Microsystems, s.r.o, if any.
             \verb' '{\color{highlight_c_dox_comment}\verb'*/'}\\
             {\color{highlight_c_comment}\verb'// ============================================================================='}\\
 
-\chapter{Examples}
+        \clearpage
+        \subsection{Example header file}
+            {\fontsize{7pt}{8pt} \selectfont{}
+            {\color{highlight_c_comment}\verb'// ====================================================================================================================='}\\
+            {\color{highlight_c_dox_comment}\verb'/**'}\\
+            \verb' '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_tag}\verb'@brief'}\\
+            \verb' '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_comment}\verb'C++'}\verb' '{\color{highlight_c_dox_comment}\verb'Interface:'}\verb' '{\color{highlight_c_dox_comment}\verb'PicoBlaze'}\verb' '{\color{highlight_c_dox_comment}\verb'simulator'}\verb' '{\color{highlight_c_dox_comment}\verb'subsystem'}\verb' '{\color{highlight_c_dox_comment}\verb'for'}\verb' '{\color{highlight_c_dox_comment}\verb'stack.'}\\
+            \verb' '{\color{highlight_c_dox_comment}\verb'*'}\\
+            \verb' '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_comment}\verb'Implements'}\verb' '{\color{highlight_c_dox_comment}\verb'processor'}\verb' '{\color{highlight_c_dox_comment}\verb'stack,'}\verb' '{\color{highlight_c_dox_comment}\verb'requires'}\verb' '{\color{highlight_c_dox_comment}\verb'no'}\verb' '{\color{highlight_c_dox_comment}\verb'configuration,'}\verb' '{\color{highlight_c_dox_comment}\verb'default'}\verb' '{\color{highlight_c_dox_comment}\verb'stack'}\verb' '{\color{highlight_c_dox_comment}\verb'size'}\verb' '{\color{highlight_c_dox_comment}\verb'is'}\verb' '{\color{highlight_c_dox_comment}\verb'31,'}\verb' '{\color{highlight_c_dox_comment}\verb'the'}\verb' '{\color{highlight_c_dox_comment}\verb'stack'}\verb' '{\color{highlight_c_dox_comment}\verb'in'}\verb' '{\color{highlight_c_dox_comment}\verb'initialized'}\verb' '{\color{highlight_c_dox_comment}\verb'to'}\verb' '{\color{highlight_c_dox_comment}\verb'contain'}\\
+            \verb' '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_comment}\verb'only'}\verb' '{\color{highlight_c_dox_comment}\verb'zeros'}\verb' '{\color{highlight_c_dox_comment}\verb'after'}\verb' '{\color{highlight_c_dox_comment}\verb'MCU'}\verb' '{\color{highlight_c_dox_comment}\verb'reset.'}\verb' '{\color{highlight_c_dox_comment}\verb'Fast'}\verb' '{\color{highlight_c_dox_comment}\verb'operation'}\verb' '{\color{highlight_c_dox_comment}\verb'of'}\verb' '{\color{highlight_c_dox_comment}\verb'the'}\verb' '{\color{highlight_c_dox_comment}\verb'subsystem'}\verb' '{\color{highlight_c_dox_comment}\verb'was'}\verb' '{\color{highlight_c_dox_comment}\verb'a'}\verb' '{\color{highlight_c_dox_comment}\verb'priority.'}\verb' '{\color{highlight_c_dox_comment}\verb'The'}\verb' '{\color{highlight_c_dox_comment}\verb'stack'}\verb' '{\color{highlight_c_dox_comment}\verb'subsystem'}\verb' '{\color{highlight_c_dox_comment}\verb'simulator'}\verb' '{\color{highlight_c_dox_comment}\verb'shares'}\verb' '{\color{highlight_c_dox_comment}\verb'the'}\\
+            \verb' '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_comment}\verb'common'}\verb' '{\color{highlight_c_dox_comment}\verb'memory'}\verb' '{\color{highlight_c_dox_comment}\verb'interface,'}\verb' '{\color{highlight_c_dox_comment}\verb'like'}\verb' '{\color{highlight_c_dox_comment}\verb'register'}\verb' '{\color{highlight_c_dox_comment}\verb'file,'}\verb' '{\color{highlight_c_dox_comment}\verb'scratch'}\verb' '{\color{highlight_c_dox_comment}\verb'pad'}\verb' '{\color{highlight_c_dox_comment}\verb'RAM,'}\verb' '{\color{highlight_c_dox_comment}\verb'program'}\verb' '{\color{highlight_c_dox_comment}\verb'memory,'}\verb' '{\color{highlight_c_dox_comment}\verb'etc.'}\\
+            \verb' '{\color{highlight_c_dox_comment}\verb'*'}\\
+            \verb' '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_comment}\verb'(C)'}\verb' '{\color{highlight_c_dox_comment}\verb'copyright'}\verb' '{\color{highlight_c_dox_comment}\verb'2013'}\verb' '{\color{highlight_c_dox_comment}\verb'Moravia'}\verb' '{\color{highlight_c_dox_comment}\verb'Microsystems,'}\verb' '{\color{highlight_c_dox_comment}\verb's.r.o.'}\\
+            \verb' '{\color{highlight_c_dox_comment}\verb'*'}\\
+            \verb' '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_tag}\verb'@author'}{\color{highlight_c_dox_name}\verb' Martin Ošmera <martin.osmera@gmail.com>, (C) 2013'}\\
+            \verb' '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_tag}\verb'@ingroup'}{\color{highlight_c_dox_name}\verb' PicoBlaze'}\\
+            \verb' '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_tag}\verb'@file'}\verb' '{\color{highlight_c_dox_word}\verb'PicoBlazeStack.h'}\\
+            \verb' '{\color{highlight_c_dox_comment}\verb'*/'}\\
+            {\color{highlight_c_comment}\verb'// ====================================================================================================================='}\\
+            \verb''\\
+            {\color{highlight_c_directive}\verb'#ifndef'}{\color{highlight_c_preprocessor}\verb' PICOBLAZESTACK_H'}\\
+            {\color{highlight_c_directive}\verb'#define'}{\color{highlight_c_preprocessor}\verb' PICOBLAZESTACK_H'}\\
+            \verb''\\
+            {\color{highlight_c_comment}\verb'// Forward declarations'}\\
+            {\color{highlight_normal}\verb'class DataFile'{\color{highlight_c_symbol}\verb';'}}\\
+            \verb''\\
+            {\color{highlight_c_directive}\verb'#include'}{\color{highlight_c_prep_lib}\verb' "../MCUSim.h"'}\\
+            \verb''\\
+            {\color{highlight_c_dox_comment}\verb'/**'}\\
+            \verb' '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_tag}\verb'@brief'}\\
+            \verb' '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_tag}\verb'@ingroup'}{\color{highlight_c_dox_name}\verb' PicoBlaze'}\\
+            \verb' '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_tag}\verb'@class'}\verb' '{\color{highlight_c_dox_comment}\verb'PicoBlazeStack'}\\
+            \verb' '{\color{highlight_c_dox_comment}\verb'*/'}\\
+            {\color{highlight_normal}\verb'class PicoBlazeStack '{\color{highlight_c_symbol}\verb':'}\verb' public MCUSim'{\color{highlight_c_symbol}\verb'::'}\verb'Memory'}\\
+            {\color{highlight_normal}{\color{highlight_c_bracket}\verb'{'}}\\
+            {\color{highlight_normal}\verb'    '}{\color{highlight_c_dox_comment}\verb'////'}\verb'    '{\color{highlight_c_dox_comment}\verb'Public'}\verb' '{\color{highlight_c_dox_comment}\verb'Datatypes'}\verb'    '{\color{highlight_c_dox_comment}\verb'////'}\\
+            {\color{highlight_normal}\verb'    public'{\color{highlight_c_symbol}\verb':'}}\\
+            {\color{highlight_normal}\verb'        '}{\color{highlight_c_dox_comment}\verb'/**'}\\
+            \verb'         '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_tag}\verb'@brief'}{\color{highlight_c_dox_name}\verb' Events generated by the subsystem.'}\\
+            \verb'         '{\color{highlight_c_dox_comment}\verb'*/'}\\
+            {\color{highlight_normal}\verb'        '{\color{highlight_c_keyword}\verb'enum'}\verb' Event'}\\
+            {\color{highlight_normal}\verb'        '{\color{highlight_c_bracket}\verb'{'}}\\
+            {\color{highlight_normal}\verb'            EVENT_STACK_OVERFLOW'{\color{highlight_c_symbol}\verb','}\verb'  '}{\color{highlight_c_dox_comment}\verb'///<'}\verb' '{\color{highlight_c_dox_comment}\verb'Stack'}\verb' '{\color{highlight_c_dox_comment}\verb'capacity'}\verb' '{\color{highlight_c_dox_comment}\verb'was'}\verb' '{\color{highlight_c_dox_comment}\verb'already'}\verb' '{\color{highlight_c_dox_comment}\verb'exhausted'}\verb' '{\color{highlight_c_dox_comment}\verb'by'}\verb' '{\color{highlight_c_dox_comment}\verb'the'}\verb' '{\color{highlight_c_dox_comment}\verb'previous'}\verb' '{\color{highlight_c_dox_comment}\verb'push.'}\\
+            {\color{highlight_normal}\verb'            EVENT_STACK_UNDERFLOW  '}{\color{highlight_c_dox_comment}\verb'///<'}\verb' '{\color{highlight_c_dox_comment}\verb'A'}\verb' '{\color{highlight_c_dox_comment}\verb'value'}\verb' '{\color{highlight_c_dox_comment}\verb'was'}\verb' '{\color{highlight_c_dox_comment}\verb'been'}\verb' '{\color{highlight_c_dox_comment}\verb'popped'}\verb' '{\color{highlight_c_dox_comment}\verb'from'}\verb' '{\color{highlight_c_dox_comment}\verb'the'}\verb' '{\color{highlight_c_dox_comment}\verb'stack'}\verb' '{\color{highlight_c_dox_comment}\verb'while'}\verb' '{\color{highlight_c_dox_comment}\verb'the'}\verb' '{\color{highlight_c_dox_comment}\verb'stack'}\verb' '{\color{highlight_c_dox_comment}\verb'was'}\verb' '{\color{highlight_c_dox_comment}\verb'already'}\verb' '{\color{highlight_c_dox_comment}\verb'empty.'}\\
+            {\color{highlight_normal}\verb'        '{\color{highlight_c_bracket}\verb'}'}{\color{highlight_c_symbol}\verb';'}}\\
+            \verb''\\
+            {\color{highlight_normal}\verb'        '}{\color{highlight_c_dox_comment}\verb'/**'}\\
+            \verb'         '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_tag}\verb'@brief'}{\color{highlight_c_dox_name}\verb' Subsystem configuration.'}\\
+            \verb'         '{\color{highlight_c_dox_comment}\verb'*/'}\\
+            {\color{highlight_normal}\verb'        '{\color{highlight_c_keyword}\verb'struct'}\verb' Config'}\\
+            {\color{highlight_normal}\verb'        '{\color{highlight_c_bracket}\verb'{'}}\\
+            {\color{highlight_normal}\verb'            '}{\color{highlight_c_dox_comment}\verb'///'}\verb' '{\color{highlight_c_dox_comment}\verb'Sets'}\verb' '{\color{highlight_c_dox_comment}\verb'configuration'}\verb' '{\color{highlight_c_dox_comment}\verb'to'}\verb' '{\color{highlight_c_dox_comment}\verb'default'}\verb' '{\color{highlight_c_dox_comment}\verb'setting,'}\verb' '{\color{highlight_c_dox_comment}\verb'i.e.'}\verb' '{\color{highlight_c_dox_comment}\verb'for'}\verb' '{\color{highlight_c_dox_comment}\verb'KCPSM3.'}\\
+            {\color{highlight_normal}\verb'            Config'{\color{highlight_c_bracket}\verb'()'}}\\
+            {\color{highlight_normal}\verb'            '{\color{highlight_c_bracket}\verb'{'}}\\
+            {\color{highlight_normal}\verb'                m_size '{\color{highlight_c_symbol}\verb'='}\verb' '{\color{highlight_c_dec}\verb'31'}{\color{highlight_c_symbol}\verb';'}}\\
+            {\color{highlight_normal}\verb'            '{\color{highlight_c_bracket}\verb'}'}}\\
+            \verb''\\
+            {\color{highlight_normal}\verb'            '}{\color{highlight_c_dox_comment}\verb'///'}\verb' '{\color{highlight_c_dox_comment}\verb'Stack'}\verb' '{\color{highlight_c_dox_comment}\verb'capacity.'}\\
+            {\color{highlight_normal}\verb'            '{\color{highlight_c_data_type}\verb'unsigned'}\verb' '{\color{highlight_c_data_type}\verb'int'}\verb' m_size'{\color{highlight_c_symbol}\verb';'}}\\
+            {\color{highlight_normal}\verb'        '{\color{highlight_c_bracket}\verb'}'}{\color{highlight_c_symbol}\verb';'}}\\
+            \verb''\\
+            {\color{highlight_normal}\verb'    '}{\color{highlight_c_dox_comment}\verb'////'}\verb'    '{\color{highlight_c_dox_comment}\verb'Constructors'}\verb' '{\color{highlight_c_dox_comment}\verb'and'}\verb' '{\color{highlight_c_dox_comment}\verb'Destructors'}\verb'    '{\color{highlight_c_dox_comment}\verb'////'}\\
+            {\color{highlight_normal}\verb'    public'{\color{highlight_c_symbol}\verb':'}}\\
+            {\color{highlight_normal}\verb'        '}{\color{highlight_c_dox_comment}\verb'/**'}\\
+            \verb'         '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_tag}\verb'@brief'}{\color{highlight_c_dox_name}\verb' Initializes memory used by the stack.'}\\
+            \verb'         '{\color{highlight_c_dox_comment}\verb'*/'}\\
+            {\color{highlight_normal}\verb'        PicoBlazeStack'{\color{highlight_c_bracket}\verb'()'}{\color{highlight_c_symbol}\verb';'}}\\
+            \verb''\\
+            {\color{highlight_normal}\verb'        '}{\color{highlight_c_dox_comment}\verb'/**'}\\
+            \verb'         '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_tag}\verb'@brief'}{\color{highlight_c_dox_name}\verb' Cleans up memory dynamically allocated for the stack.'}\\
+            \verb'         '{\color{highlight_c_dox_comment}\verb'*/'}\\
+            {\color{highlight_normal}\verb'        ~PicoBlazeStack'{\color{highlight_c_bracket}\verb'()'}{\color{highlight_c_symbol}\verb';'}}\\
+            \verb''\\
+            {\color{highlight_normal}\verb'    '}{\color{highlight_c_dox_comment}\verb'////'}\verb'    '{\color{highlight_c_dox_comment}\verb'Public'}\verb' '{\color{highlight_c_dox_comment}\verb'Operations'}\verb'    '{\color{highlight_c_dox_comment}\verb'////'}\\
+            {\color{highlight_normal}\verb'    public'{\color{highlight_c_symbol}\verb':'}}\\
+            {\color{highlight_normal}\verb'        '}{\color{highlight_c_dox_comment}\verb'/**'}\\
+            \verb'         '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_tag}\verb'@brief'}{\color{highlight_c_dox_name}\verb' Link the subsystem with other simulator subsystems which this subsystem necessarily needs to function.'}\\
+            \verb'         '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_tag}\verb'@param[in,out]'}\verb' '{\color{highlight_c_dox_comment}\verb'eventLogger'}\verb' '{\color{highlight_c_dox_comment}\verb'Simulator'}\verb' '{\color{highlight_c_dox_comment}\verb'event'}\verb' '{\color{highlight_c_dox_comment}\verb'observer.'}\\
+            \verb'         '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_tag}\verb'@return'}\verb' '{\color{highlight_c_dox_comment}\verb'This'}\verb' '{\color{highlight_c_dox_comment}\verb'object.'}\\
+            \verb'         '{\color{highlight_c_dox_comment}\verb'*/'}\\
+            {\color{highlight_normal}\verb'        PicoBlazeStack '{\color{highlight_c_symbol}\verb'*'}\verb' link '{\color{highlight_c_bracket}\verb'('}\verb' MCUSim'{\color{highlight_c_symbol}\verb'::'}\verb'EventLogger '{\color{highlight_c_symbol}\verb'*'}\verb' eventLogger '{\color{highlight_c_bracket}\verb')'}{\color{highlight_c_symbol}\verb';'}}\\
+            \verb''\\
+            {\color{highlight_normal}\verb'        '}{\color{highlight_c_dox_comment}\verb'/**'}\\
+            \verb'         '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_tag}\verb'@brief'}{\color{highlight_c_dox_name}\verb' Reset the subsystem in the specified mode.'}\\
+            \verb'         '{\color{highlight_c_dox_comment}\verb'*'}\\
+            \verb'         '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_comment}\verb'It'}\verb' '{\color{highlight_c_dox_comment}\verb'is'}\verb' '{\color{highlight_c_dox_comment}\verb'supposed'}\verb' '{\color{highlight_c_dox_comment}\verb'to'}\verb' '{\color{highlight_c_dox_comment}\verb'be'}\verb' '{\color{highlight_c_dox_comment}\verb'called'}\verb' '{\color{highlight_c_dox_comment}\verb'by'}\verb' '{\color{highlight_c_dox_comment}\verb'mainly'}\verb' '{\color{highlight_c_dox_comment}\verb'when'}\verb' '{\color{highlight_c_dox_comment}\verb'the'}\verb' '{\color{highlight_c_dox_comment}\verb'entire'}\verb' '{\color{highlight_c_dox_comment}\verb'processor'}\verb' '{\color{highlight_c_dox_comment}\verb'simulator'}\verb' '{\color{highlight_c_dox_comment}\verb'is'}\verb' '{\color{highlight_c_dox_comment}\verb'reseted.'}\\
+            \verb'         '{\color{highlight_c_dox_comment}\verb'*'}\\
+            \verb'         '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_tag}\verb'@param[in]'}\verb' '{\color{highlight_c_dox_comment}\verb'mode'}\verb' '{\color{highlight_c_dox_comment}\verb'There'}\verb' '{\color{highlight_c_dox_comment}\verb'are'}\verb' '{\color{highlight_c_dox_comment}\verb'various'}\verb' '{\color{highlight_c_dox_comment}\verb'modes'}\verb' '{\color{highlight_c_dox_comment}\verb'of'}\verb' '{\color{highlight_c_dox_comment}\verb'reset,'}\verb' '{\color{highlight_c_dox_comment}\verb'e.g.'}\verb' '{\color{highlight_c_dox_comment}\verb'accept'}\verb' '{\color{highlight_c_dox_comment}\verb'new'}\verb' '{\color{highlight_c_dox_comment}\verb'configuration,'}\verb' '{\color{highlight_c_dox_comment}\verb'processor'}\verb' '{\color{highlight_c_dox_comment}\verb'master'}\verb' '{\color{highlight_c_dox_comment}\verb'reset,'}\verb' '{\color{highlight_c_dox_comment}\verb'etc.'}\\
+            \verb'         '{\color{highlight_c_dox_comment}\verb'*/'}\\
+            {\color{highlight_normal}\verb'        '{\color{highlight_c_data_type}\verb'void'}\verb' reset '{\color{highlight_c_bracket}\verb'('}\verb' MCUSim'{\color{highlight_c_symbol}\verb'::'}\verb'ResetMode mode '{\color{highlight_c_bracket}\verb')'}{\color{highlight_c_symbol}\verb';'}}\\
+            \verb''\\
+            {\color{highlight_normal}\verb'        '}{\color{highlight_c_dox_comment}\verb'/**'}\\
+            \verb'         '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_tag}\verb'@brief'}{\color{highlight_c_dox_name}\verb' Read data directly from the stack bypassing its normal mode of operation.'}\\
+            \verb'         '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_tag}\verb'@param[in]'}\verb' '{\color{highlight_c_dox_comment}\verb'addr'}\verb' '{\color{highlight_c_dox_comment}\verb'Source'}\verb' '{\color{highlight_c_dox_comment}\verb'address,'}\verb' '{\color{highlight_c_dox_comment}\verb'starts'}\verb' '{\color{highlight_c_dox_comment}\verb'with'}\verb' '{\color{highlight_c_dox_comment}\verb'0;'}\verb' '{\color{highlight_c_dox_comment}\verb'push'}\verb' '{\color{highlight_c_dox_comment}\verb'increments,'}\verb' '{\color{highlight_c_dox_comment}\verb'pop'}\verb' '{\color{highlight_c_dox_comment}\verb'decrements.'}\\
+            \verb'         '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_tag}\verb'@param[out]'}\verb' '{\color{highlight_c_dox_comment}\verb'data'}\verb' '{\color{highlight_c_dox_comment}\verb'Address'}\verb' '{\color{highlight_c_dox_comment}\verb'to'}\verb' '{\color{highlight_c_dox_comment}\verb'the'}\verb' '{\color{highlight_c_dox_comment}\verb'program'}\verb' '{\color{highlight_c_dox_comment}\verb'memory'}\verb' '{\color{highlight_c_dox_comment}\verb'read'}\verb' '{\color{highlight_c_dox_comment}\verb'from'}\verb' '{\color{highlight_c_dox_comment}\verb'the'}\verb' '{\color{highlight_c_dox_comment}\verb'specified'}\verb' '{\color{highlight_c_dox_comment}\verb'address.'}\\
+            \verb'         '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_tag}\verb'@return'}\verb' '{\color{highlight_c_dox_comment}\verb'This'}\verb' '{\color{highlight_c_dox_comment}\verb'method'}\verb' '{\color{highlight_c_dox_comment}\verb'doesn'\verb"'"\verb't'}\verb' '{\color{highlight_c_dox_comment}\verb'generate'}\verb' '{\color{highlight_c_dox_comment}\verb'simulator'}\verb' '{\color{highlight_c_dox_comment}\verb'events'}\verb' '{\color{highlight_c_dox_comment}\verb'that'\verb"'"\verb's'}\verb' '{\color{highlight_c_dox_comment}\verb'why'}\verb' '{\color{highlight_c_dox_comment}\verb'it'}\verb' '{\color{highlight_c_dox_comment}\verb'uses'}\verb' '{\color{highlight_c_dox_comment}\verb'return'}\verb' '{\color{highlight_c_dox_comment}\verb'code'}\verb' '{\color{highlight_c_dox_comment}\verb'to'}\verb' '{\color{highlight_c_dox_comment}\verb'report'}\verb' '{\color{highlight_c_dox_comment}\verb'final'}\verb' '{\color{highlight_c_dox_comment}\verb'status.'}\\
+            \verb'         '{\color{highlight_c_dox_comment}\verb'*/'}\\
+            {\color{highlight_normal}\verb'        MCUSim'{\color{highlight_c_symbol}\verb'::'}\verb'RetCode directRead '{\color{highlight_c_bracket}\verb'('}\verb' '{\color{highlight_c_data_type}\verb'unsigned'}\verb' '{\color{highlight_c_data_type}\verb'int'}\verb' addr'{\color{highlight_c_symbol}\verb','}}\\
+            {\color{highlight_normal}\verb'                                     '{\color{highlight_c_data_type}\verb'unsigned'}\verb' '{\color{highlight_c_data_type}\verb'int'}\verb' '{\color{highlight_c_symbol}\verb'&'}\verb' data '{\color{highlight_c_bracket}\verb')'}\verb' '{\color{highlight_c_data_type}\verb'const'}{\color{highlight_c_symbol}\verb';'}}\\
+            \verb''\\
+            {\color{highlight_normal}\verb'        '}{\color{highlight_c_dox_comment}\verb'/**'}\\
+            \verb'         '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_tag}\verb'@brief'}{\color{highlight_c_dox_name}\verb' Write data directly to the stack bypassing its normal mode of operation.'}\\
+            \verb'         '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_tag}\verb'@param[in]'}\verb' '{\color{highlight_c_dox_comment}\verb'addr'}\verb' '{\color{highlight_c_dox_comment}\verb'Target'}\verb' '{\color{highlight_c_dox_comment}\verb'address,'}\verb' '{\color{highlight_c_dox_comment}\verb'starts'}\verb' '{\color{highlight_c_dox_comment}\verb'with'}\verb' '{\color{highlight_c_dox_comment}\verb'0;'}\verb' '{\color{highlight_c_dox_comment}\verb'push'}\verb' '{\color{highlight_c_dox_comment}\verb'increments,'}\verb' '{\color{highlight_c_dox_comment}\verb'pop'}\verb' '{\color{highlight_c_dox_comment}\verb'decrements.'}\\
+            \verb'         '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_tag}\verb'@param[in]'}\verb' '{\color{highlight_c_dox_comment}\verb'data'}\verb' '{\color{highlight_c_dox_comment}\verb'Address'}\verb' '{\color{highlight_c_dox_comment}\verb'to'}\verb' '{\color{highlight_c_dox_comment}\verb'the'}\verb' '{\color{highlight_c_dox_comment}\verb'program'}\verb' '{\color{highlight_c_dox_comment}\verb'memory'}\verb' '{\color{highlight_c_dox_comment}\verb'to'}\verb' '{\color{highlight_c_dox_comment}\verb'store'}\verb' '{\color{highlight_c_dox_comment}\verb'at'}\verb' '{\color{highlight_c_dox_comment}\verb'the'}\verb' '{\color{highlight_c_dox_comment}\verb'specified'}\verb' '{\color{highlight_c_dox_comment}\verb'address.'}\\
+            \verb'         '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_tag}\verb'@return'}\verb' '{\color{highlight_c_dox_comment}\verb'This'}\verb' '{\color{highlight_c_dox_comment}\verb'method'}\verb' '{\color{highlight_c_dox_comment}\verb'doesn'\verb"'"\verb't'}\verb' '{\color{highlight_c_dox_comment}\verb'generate'}\verb' '{\color{highlight_c_dox_comment}\verb'simulator'}\verb' '{\color{highlight_c_dox_comment}\verb'events'}\verb' '{\color{highlight_c_dox_comment}\verb'that'\verb"'"\verb's'}\verb' '{\color{highlight_c_dox_comment}\verb'why'}\verb' '{\color{highlight_c_dox_comment}\verb'it'}\verb' '{\color{highlight_c_dox_comment}\verb'uses'}\verb' '{\color{highlight_c_dox_comment}\verb'return'}\verb' '{\color{highlight_c_dox_comment}\verb'code'}\verb' '{\color{highlight_c_dox_comment}\verb'to'}\verb' '{\color{highlight_c_dox_comment}\verb'report'}\verb' '{\color{highlight_c_dox_comment}\verb'final'}\verb' '{\color{highlight_c_dox_comment}\verb'status.'}\\
+            \verb'         '{\color{highlight_c_dox_comment}\verb'*/'}\\
+            {\color{highlight_normal}\verb'        MCUSim'{\color{highlight_c_symbol}\verb'::'}\verb'RetCode directWrite '{\color{highlight_c_bracket}\verb'('}\verb' '{\color{highlight_c_data_type}\verb'unsigned'}\verb' '{\color{highlight_c_data_type}\verb'int'}\verb' addr'{\color{highlight_c_symbol}\verb','}}\\
+            {\color{highlight_normal}\verb'                                      '{\color{highlight_c_data_type}\verb'unsigned'}\verb' '{\color{highlight_c_data_type}\verb'int'}\verb' data '{\color{highlight_c_bracket}\verb')'}{\color{highlight_c_symbol}\verb';'}}\\
+            \verb''\\
+            {\color{highlight_normal}\verb'        '}{\color{highlight_c_dox_comment}\verb'/**'}\\
+            \verb'         '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_tag}\verb'@brief'}{\color{highlight_c_dox_name}\verb' Change stack capacity.'}\\
+            \verb'         '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_tag}\verb'@warning'}\verb' '{\color{highlight_c_dox_comment}\verb'This'}\verb' '{\color{highlight_c_dox_comment}\verb'operation'}\verb' '{\color{highlight_c_dox_comment}\verb'does'}\verb' '{\color{highlight_c_dox_comment}\verb'NOT'}\verb' '{\color{highlight_c_dox_comment}\verb'preserve'}\verb' '{\color{highlight_c_dox_comment}\verb'the'}\verb' '{\color{highlight_c_dox_comment}\verb'memory'}\verb' '{\color{highlight_c_dox_comment}\verb'contents,'}\verb' '{\color{highlight_c_dox_comment}\verb'i.e.'}\verb' '{\color{highlight_c_dox_comment}\verb'the'}\verb' '{\color{highlight_c_dox_comment}\verb'stack'}\verb' '{\color{highlight_c_dox_comment}\verb'is'}\verb' '{\color{highlight_c_dox_comment}\verb'(re-)initialize'}\verb' '{\color{highlight_c_dox_comment}\verb'to'}\verb' '{\color{highlight_c_dox_comment}\verb'zeros.'}\\
+            \verb'         '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_tag}\verb'@param[in]'}\verb' '{\color{highlight_c_dox_comment}\verb'newSize'}\verb' '{\color{highlight_c_dox_comment}\verb'New'}\verb' '{\color{highlight_c_dox_comment}\verb'size'}\verb' '{\color{highlight_c_dox_comment}\verb'of'}\verb' '{\color{highlight_c_dox_comment}\verb'the'}\verb' '{\color{highlight_c_dox_comment}\verb'stack'}\verb' '{\color{highlight_c_dox_comment}\verb'in'}\verb' '{\color{highlight_c_dox_comment}\verb'number'}\verb' '{\color{highlight_c_dox_comment}\verb'of'}\verb' '{\color{highlight_c_dox_comment}\verb'values'}\verb' '{\color{highlight_c_dox_comment}\verb'which'}\verb' '{\color{highlight_c_dox_comment}\verb'can'}\verb' '{\color{highlight_c_dox_comment}\verb'be'}\verb' '{\color{highlight_c_dox_comment}\verb'stored'}\verb' '{\color{highlight_c_dox_comment}\verb'in'}\verb' '{\color{highlight_c_dox_comment}\verb'the'}\verb' '{\color{highlight_c_dox_comment}\verb'stack'}\verb' '{\color{highlight_c_dox_comment}\verb'at'}\verb' '{\color{highlight_c_dox_comment}\verb'once.'}\\
+            \verb'         '{\color{highlight_c_dox_comment}\verb'*/'}\\
+            {\color{highlight_normal}\verb'        '{\color{highlight_c_data_type}\verb'void'}\verb' resize '{\color{highlight_c_bracket}\verb'('}\verb' '{\color{highlight_c_data_type}\verb'unsigned'}\verb' '{\color{highlight_c_data_type}\verb'int'}\verb' newSize '{\color{highlight_c_bracket}\verb')'}{\color{highlight_c_symbol}\verb';'}}\\
+            \verb''\\
+            {\color{highlight_normal}\verb'        '}{\color{highlight_c_dox_comment}\verb'/**'}\\
+            \verb'         '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_tag}\verb'@brief'}{\color{highlight_c_dox_name}\verb' Load contents of the stack from a file, like Intel 8 HEX file or something of that sort.'}\\
+            \verb'         '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_tag}\verb'@param[in]'}\verb' '{\color{highlight_c_dox_comment}\verb'file'}\verb' '{\color{highlight_c_dox_comment}\verb'File'}\verb' '{\color{highlight_c_dox_comment}\verb'data'}\verb' '{\color{highlight_c_dox_comment}\verb'container.'}\\
+            \verb'         '{\color{highlight_c_dox_comment}\verb'*/'}\\
+            {\color{highlight_normal}\verb'        '{\color{highlight_c_data_type}\verb'void'}\verb' loadDataFile '{\color{highlight_c_bracket}\verb'('}\verb' '{\color{highlight_c_data_type}\verb'const'}\verb' DataFile '{\color{highlight_c_symbol}\verb'*'}\verb' file '{\color{highlight_c_bracket}\verb')'}{\color{highlight_c_symbol}\verb';'}}\\
+            \verb''\\
+            {\color{highlight_normal}\verb'        '}{\color{highlight_c_dox_comment}\verb'/**'}\\
+            \verb'         '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_tag}\verb'@brief'}{\color{highlight_c_dox_name}\verb' Store contents of the stack to a file, like Intel 8 HEX file or something of that sort.'}\\
+            \verb'         '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_tag}\verb'@param[in,out]'}\verb' '{\color{highlight_c_dox_comment}\verb'file'}\verb' '{\color{highlight_c_dox_comment}\verb'File'}\verb' '{\color{highlight_c_dox_comment}\verb'data'}\verb' '{\color{highlight_c_dox_comment}\verb'container.'}\\
+            \verb'         '{\color{highlight_c_dox_comment}\verb'*/'}\\
+            {\color{highlight_normal}\verb'        '{\color{highlight_c_data_type}\verb'void'}\verb' storeInDataFile '{\color{highlight_c_bracket}\verb'('}\verb' DataFile '{\color{highlight_c_symbol}\verb'*'}\verb' file '{\color{highlight_c_bracket}\verb')'}\verb' '{\color{highlight_c_data_type}\verb'const'}{\color{highlight_c_symbol}\verb';'}}\\
+            \verb''\\
+            {\color{highlight_normal}\verb'    '}{\color{highlight_c_dox_comment}\verb'////'}\verb'    '{\color{highlight_c_dox_comment}\verb'Inline'}\verb' '{\color{highlight_c_dox_comment}\verb'Public'}\verb' '{\color{highlight_c_dox_comment}\verb'Operations'}\verb'    '{\color{highlight_c_dox_comment}\verb'////'}\\
+            {\color{highlight_normal}\verb'    public'{\color{highlight_c_symbol}\verb':'}}\\
+            {\color{highlight_normal}\verb'        '}{\color{highlight_c_dox_comment}\verb'/**'}\\
+            \verb'         '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_tag}\verb'@brief'}{\color{highlight_c_dox_name}\verb' Get stack capacity.'}\\
+            \verb'         '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_tag}\verb'@return'}\verb' '{\color{highlight_c_dox_comment}\verb'Stack'}\verb' '{\color{highlight_c_dox_comment}\verb'in'}\verb' '{\color{highlight_c_dox_comment}\verb'number'}\verb' '{\color{highlight_c_dox_comment}\verb'of'}\verb' '{\color{highlight_c_dox_comment}\verb'values'}\verb' '{\color{highlight_c_dox_comment}\verb'which'}\verb' '{\color{highlight_c_dox_comment}\verb'can'}\verb' '{\color{highlight_c_dox_comment}\verb'be'}\verb' '{\color{highlight_c_dox_comment}\verb'stored'}\verb' '{\color{highlight_c_dox_comment}\verb'in'}\verb' '{\color{highlight_c_dox_comment}\verb'the'}\verb' '{\color{highlight_c_dox_comment}\verb'stack'}\verb' '{\color{highlight_c_dox_comment}\verb'at'}\verb' '{\color{highlight_c_dox_comment}\verb'the'}\verb' '{\color{highlight_c_dox_comment}\verb'same'}\verb' '{\color{highlight_c_dox_comment}\verb'time,'}\verb' '{\color{highlight_c_dox_comment}\verb'not'}\verb' '{\color{highlight_c_dox_comment}\verb'bytes.'}\\
+            \verb'         '{\color{highlight_c_dox_comment}\verb'*/'}\\
+            {\color{highlight_normal}\verb'        '{\color{highlight_c_data_type}\verb'unsigned'}\verb' '{\color{highlight_c_data_type}\verb'int'}\verb' size'{\color{highlight_c_bracket}\verb'()'}\verb' '{\color{highlight_c_data_type}\verb'const'}}\\
+            {\color{highlight_normal}\verb'        '{\color{highlight_c_bracket}\verb'{'}}\\
+            {\color{highlight_normal}\verb'            '{\color{highlight_c_keyword}\verb'return'}\verb' m_config.m_size'{\color{highlight_c_symbol}\verb';'}}\\
+            {\color{highlight_normal}\verb'        '{\color{highlight_c_bracket}\verb'}'}}\\
+            \verb''\\
+            {\color{highlight_normal}\verb'        '}{\color{highlight_c_dox_comment}\verb'/**'}\\
+            \verb'         '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_tag}\verb'@brief'}{\color{highlight_c_dox_name}\verb' Push value onto stack.'}\\
+            \verb'         '{\color{highlight_c_dox_comment}\verb'*'}\\
+            \verb'         '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_comment}\verb'This'}\verb' '{\color{highlight_c_dox_comment}\verb'method'}\verb' '{\color{highlight_c_dox_comment}\verb'is'}\verb' '{\color{highlight_c_dox_comment}\verb'NOT'}\verb' '{\color{highlight_c_dox_comment}\verb'supposed'}\verb' '{\color{highlight_c_dox_comment}\verb'to'}\verb' '{\color{highlight_c_dox_comment}\verb'be'}\verb' '{\color{highlight_c_dox_comment}\verb'used'}\verb' '{\color{highlight_c_dox_comment}\verb'outside'}\verb' '{\color{highlight_c_dox_comment}\verb'the'}\verb' '{\color{highlight_c_dox_comment}\verb'simulator'\verb"'"\verb's'}\verb' '{\color{highlight_c_dox_comment}\verb'own'}\verb' '{\color{highlight_c_dox_comment}\verb'subsystems,'}\verb' '{\color{highlight_c_dox_comment}\verb'like'}\verb' '{\color{highlight_c_dox_comment}\verb'from'}\verb' '{\color{highlight_c_dox_comment}\verb'GUI.'}\\
+            \verb'         '{\color{highlight_c_dox_comment}\verb'*'}\\
+            \verb'         '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_tag}\verb'@param'}\verb' '{\color{highlight_c_dox_word}\verb'value'}\verb' '{\color{highlight_c_dox_comment}\verb'Address'}\verb' '{\color{highlight_c_dox_comment}\verb'to'}\verb' '{\color{highlight_c_dox_comment}\verb'the'}\verb' '{\color{highlight_c_dox_comment}\verb'program'}\verb' '{\color{highlight_c_dox_comment}\verb'memory'}\verb' '{\color{highlight_c_dox_comment}\verb'to'}\verb' '{\color{highlight_c_dox_comment}\verb'be'}\verb' '{\color{highlight_c_dox_comment}\verb'stored'}\verb' '{\color{highlight_c_dox_comment}\verb'in'}\verb' '{\color{highlight_c_dox_comment}\verb'stack.'}\\
+            \verb'         '{\color{highlight_c_dox_comment}\verb'*/'}\\
+            {\color{highlight_normal}\verb'        inline '{\color{highlight_c_data_type}\verb'void'}\verb' pushOnStack '{\color{highlight_c_bracket}\verb'('}\verb' '{\color{highlight_c_data_type}\verb'unsigned'}\verb' '{\color{highlight_c_data_type}\verb'int'}\verb' value '{\color{highlight_c_bracket}\verb')'}{\color{highlight_c_symbol}\verb';'}}\\
+            \verb''\\
+            {\color{highlight_normal}\verb'        '}{\color{highlight_c_dox_comment}\verb'/**'}\\
+            \verb'         '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_tag}\verb'@brief'}{\color{highlight_c_dox_name}\verb' Pop value from the stack.'}\\
+            \verb'         '{\color{highlight_c_dox_comment}\verb'*'}\\
+            \verb'         '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_comment}\verb'This'}\verb' '{\color{highlight_c_dox_comment}\verb'method'}\verb' '{\color{highlight_c_dox_comment}\verb'is'}\verb' '{\color{highlight_c_dox_comment}\verb'NOT'}\verb' '{\color{highlight_c_dox_comment}\verb'supposed'}\verb' '{\color{highlight_c_dox_comment}\verb'to'}\verb' '{\color{highlight_c_dox_comment}\verb'be'}\verb' '{\color{highlight_c_dox_comment}\verb'used'}\verb' '{\color{highlight_c_dox_comment}\verb'outside'}\verb' '{\color{highlight_c_dox_comment}\verb'the'}\verb' '{\color{highlight_c_dox_comment}\verb'simulator'\verb"'"\verb's'}\verb' '{\color{highlight_c_dox_comment}\verb'own'}\verb' '{\color{highlight_c_dox_comment}\verb'subsystems,'}\verb' '{\color{highlight_c_dox_comment}\verb'like'}\verb' '{\color{highlight_c_dox_comment}\verb'from'}\verb' '{\color{highlight_c_dox_comment}\verb'GUI.'}\\
+            \verb'         '{\color{highlight_c_dox_comment}\verb'*'}\\
+            \verb'         '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_tag}\verb'@return'}\verb' '{\color{highlight_c_dox_comment}\verb'Address'}\verb' '{\color{highlight_c_dox_comment}\verb'to'}\verb' '{\color{highlight_c_dox_comment}\verb'the'}\verb' '{\color{highlight_c_dox_comment}\verb'program'}\verb' '{\color{highlight_c_dox_comment}\verb'memory'}\verb' '{\color{highlight_c_dox_comment}\verb'retrieved'}\verb' '{\color{highlight_c_dox_comment}\verb'from'}\verb' '{\color{highlight_c_dox_comment}\verb'the'}\verb' '{\color{highlight_c_dox_comment}\verb'stack.'}\\
+            \verb'         '{\color{highlight_c_dox_comment}\verb'*/'}\\
+            {\color{highlight_normal}\verb'        inline '{\color{highlight_c_data_type}\verb'unsigned'}\verb' '{\color{highlight_c_data_type}\verb'int'}\verb' popFromStack'{\color{highlight_c_bracket}\verb'()'}{\color{highlight_c_symbol}\verb';'}}\\
+            \verb''\\
+            {\color{highlight_normal}\verb'    '}{\color{highlight_c_dox_comment}\verb'////'}\verb'    '{\color{highlight_c_dox_comment}\verb'Inline'}\verb' '{\color{highlight_c_dox_comment}\verb'Private'}\verb' '{\color{highlight_c_dox_comment}\verb'Operations'}\verb'    '{\color{highlight_c_dox_comment}\verb'////'}\\
+            {\color{highlight_normal}\verb'    private'{\color{highlight_c_symbol}\verb':'}}\\
+            {\color{highlight_normal}\verb'        '}{\color{highlight_c_dox_comment}\verb'/**'}\\
+            \verb'         '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_tag}\verb'@brief'}{\color{highlight_c_dox_name}\verb' Reset the subsystem to a state in which real hardware would be after power-up.'}\\
+            \verb'         '{\color{highlight_c_dox_comment}\verb'*/'}\\
+            {\color{highlight_normal}\verb'        inline '{\color{highlight_c_data_type}\verb'void'}\verb' resetToInitialValues'{\color{highlight_c_bracket}\verb'()'}{\color{highlight_c_symbol}\verb';'}}\\
+            \verb''\\
+            {\color{highlight_normal}\verb'        '}{\color{highlight_c_dox_comment}\verb'/**'}\\
+            \verb'         '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_tag}\verb'@brief'}{\color{highlight_c_dox_name}\verb' Instruct the subsystem to accept new configuration.'}\\
+            \verb'         '{\color{highlight_c_dox_comment}\verb'*/'}\\
+            {\color{highlight_normal}\verb'        inline '{\color{highlight_c_data_type}\verb'void'}\verb' loadConfig'{\color{highlight_c_bracket}\verb'()'}{\color{highlight_c_symbol}\verb';'}}\\
+            \verb''\\
+            {\color{highlight_normal}\verb'        '}{\color{highlight_c_dox_comment}\verb'/**'}\\
+            \verb'         '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_tag}\verb'@brief'}{\color{highlight_c_dox_name}\verb' Reset the subsystem to a state in which real hardware would be after master reset.'}\\
+            \verb'         '{\color{highlight_c_dox_comment}\verb'*/'}\\
+            {\color{highlight_normal}\verb'        inline '{\color{highlight_c_data_type}\verb'void'}\verb' mcuReset'{\color{highlight_c_bracket}\verb'()'}{\color{highlight_c_symbol}\verb';'}}\\
+            \verb''\\
+            {\color{highlight_normal}\verb'    '}{\color{highlight_c_dox_comment}\verb'////'}\verb'    '{\color{highlight_c_dox_comment}\verb'Public'}\verb' '{\color{highlight_c_dox_comment}\verb'Attributes'}\verb'    '{\color{highlight_c_dox_comment}\verb'////'}\\
+            {\color{highlight_normal}\verb'    public'{\color{highlight_c_symbol}\verb':'}}\\
+            {\color{highlight_normal}\verb'        '}{\color{highlight_c_dox_comment}\verb'///'}\verb' '{\color{highlight_c_dox_comment}\verb'Subsystem'}\verb' '{\color{highlight_c_dox_comment}\verb'configuration.'}\\
+            {\color{highlight_normal}\verb'        Config m_config'{\color{highlight_c_symbol}\verb';'}}\\
+            \verb''\\
+            {\color{highlight_normal}\verb'    '}{\color{highlight_c_dox_comment}\verb'////'}\verb'    '{\color{highlight_c_dox_comment}\verb'Private'}\verb' '{\color{highlight_c_dox_comment}\verb'Attributes'}\verb'    '{\color{highlight_c_dox_comment}\verb'////'}\\
+            {\color{highlight_normal}\verb'    private'{\color{highlight_c_symbol}\verb':'}}\\
+            {\color{highlight_normal}\verb'        '}{\color{highlight_c_dox_comment}\verb'///'}\verb' '{\color{highlight_c_dox_comment}\verb'Array'}\verb' '{\color{highlight_c_dox_comment}\verb'holding'}\verb' '{\color{highlight_c_dox_comment}\verb'the'}\verb' '{\color{highlight_c_dox_comment}\verb'values'}\verb' '{\color{highlight_c_dox_comment}\verb'pushed'}\verb' '{\color{highlight_c_dox_comment}\verb'onto'}\verb' '{\color{highlight_c_dox_comment}\verb'the'}\verb' '{\color{highlight_c_dox_comment}\verb'stack.'}\\
+            {\color{highlight_normal}\verb'        '{\color{highlight_c_data_type}\verb'unsigned'}\verb' '{\color{highlight_c_data_type}\verb'int'}\verb' '{\color{highlight_c_symbol}\verb'*'}\verb' m_data'{\color{highlight_c_symbol}\verb';'}}\\
+            \verb''\\
+            {\color{highlight_normal}\verb'        '}{\color{highlight_c_dox_comment}\verb'///'}\verb' '{\color{highlight_c_dox_comment}\verb'Stack'}\verb' '{\color{highlight_c_dox_comment}\verb'pointer,'}\verb' '{\color{highlight_c_dox_comment}\verb'starts'}\verb' '{\color{highlight_c_dox_comment}\verb'with'}\verb' '{\color{highlight_c_dox_comment}\verb'0;'}\verb' '{\color{highlight_c_dox_comment}\verb'push'}\verb' '{\color{highlight_c_dox_comment}\verb'increments,'}\verb' '{\color{highlight_c_dox_comment}\verb'pop'}\verb' '{\color{highlight_c_dox_comment}\verb'decrements.'}\\
+            {\color{highlight_normal}\verb'        '{\color{highlight_c_data_type}\verb'unsigned'}\verb' '{\color{highlight_c_data_type}\verb'int'}\verb' m_position'{\color{highlight_c_symbol}\verb';'}}\\
+            {\color{highlight_normal}{\color{highlight_c_bracket}\verb'}'}{\color{highlight_c_symbol}\verb';'}}\\
+            \verb''\\
+            {\color{highlight_c_comment}\verb'// -----------------------------------------------------------------------------'}\\
+            {\color{highlight_c_comment}\verb'// Inline Function Definitions'}\\
+            {\color{highlight_c_comment}\verb'// -----------------------------------------------------------------------------'}\\
+            \verb''\\
+            {\color{highlight_normal}\verb'inline '{\color{highlight_c_data_type}\verb'void'}\verb' PicoBlazeStack'{\color{highlight_c_symbol}\verb'::'}\verb'pushOnStack '{\color{highlight_c_bracket}\verb'('}\verb' '{\color{highlight_c_data_type}\verb'unsigned'}\verb' '{\color{highlight_c_data_type}\verb'int'}\verb' value '{\color{highlight_c_bracket}\verb')'}}\\
+            {\color{highlight_normal}{\color{highlight_c_bracket}\verb'{'}}\\
+            {\color{highlight_normal}\verb'    '{\color{highlight_c_keyword}\verb'if'}\verb' '{\color{highlight_c_bracket}\verb'('}\verb' m_config.m_size '{\color{highlight_c_symbol}\verb'=='}\verb' m_position '{\color{highlight_c_bracket}\verb')'}}\\
+            {\color{highlight_normal}\verb'    '{\color{highlight_c_bracket}\verb'{'}}\\
+            {\color{highlight_normal}\verb'        logEvent'{\color{highlight_c_bracket}\verb'('}\verb'EVENT_STACK_OVERFLOW'{\color{highlight_c_symbol}\verb','}\verb' m_position'{\color{highlight_c_symbol}\verb','}\verb' value'{\color{highlight_c_bracket}\verb')'}{\color{highlight_c_symbol}\verb';'}}\\
+            {\color{highlight_normal}\verb'        m_position '{\color{highlight_c_symbol}\verb'='}\verb' '{\color{highlight_c_dec}\verb'0'}{\color{highlight_c_symbol}\verb';'}}\\
+            {\color{highlight_normal}\verb'    '{\color{highlight_c_bracket}\verb'}'}}\\
+            {\color{highlight_normal}\verb'    m_data'{\color{highlight_c_bracket}\verb'['}\verb'm_position'{\color{highlight_c_symbol}\verb'++'}{\color{highlight_c_bracket}\verb']'}\verb' '{\color{highlight_c_symbol}\verb'='}\verb' value'{\color{highlight_c_symbol}\verb';'}}\\
+            {\color{highlight_normal}{\color{highlight_c_bracket}\verb'}'}}\\
+            \verb''\\
+            {\color{highlight_normal}\verb'inline '{\color{highlight_c_data_type}\verb'unsigned'}\verb' '{\color{highlight_c_data_type}\verb'int'}\verb' PicoBlazeStack'{\color{highlight_c_symbol}\verb'::'}\verb'popFromStack'{\color{highlight_c_bracket}\verb'()'}}\\
+            {\color{highlight_normal}{\color{highlight_c_bracket}\verb'{'}}\\
+            {\color{highlight_normal}\verb'    '{\color{highlight_c_keyword}\verb'if'}\verb' '{\color{highlight_c_bracket}\verb'('}\verb' '{\color{highlight_c_dec}\verb'0'}\verb' '{\color{highlight_c_symbol}\verb'=='}\verb' m_position '{\color{highlight_c_bracket}\verb')'}}\\
+            {\color{highlight_normal}\verb'    '{\color{highlight_c_bracket}\verb'{'}}\\
+            {\color{highlight_normal}\verb'        logEvent'{\color{highlight_c_bracket}\verb'('}\verb'EVENT_STACK_UNDERFLOW'{\color{highlight_c_symbol}\verb','}\verb' m_position'{\color{highlight_c_symbol}\verb','}\verb' '{\color{highlight_c_symbol}\verb'-'}{\color{highlight_c_dec}\verb'1'}{\color{highlight_c_bracket}\verb')'}{\color{highlight_c_symbol}\verb';'}}\\
+            {\color{highlight_normal}\verb'        m_position '{\color{highlight_c_symbol}\verb'='}\verb' m_config.m_size'{\color{highlight_c_symbol}\verb';'}}\\
+            {\color{highlight_normal}\verb'    '{\color{highlight_c_bracket}\verb'}'}}\\
+            {\color{highlight_normal}\verb'    '{\color{highlight_c_keyword}\verb'return'}\verb' '{\color{highlight_c_bracket}\verb'('}\verb' '{\color{highlight_c_hex}\verb'0x3ff'}\verb' '{\color{highlight_c_symbol}\verb'&'}\verb' m_data'{\color{highlight_c_bracket}\verb'['}{\color{highlight_c_symbol}\verb'--'}\verb'm_position'{\color{highlight_c_bracket}\verb']'}\verb' '{\color{highlight_c_bracket}\verb')'}{\color{highlight_c_symbol}\verb';'}}\\
+            {\color{highlight_normal}{\color{highlight_c_bracket}\verb'}'}}\\
+            \verb''\\
+            {\color{highlight_c_directive}\verb'#endif'}\verb' '{\color{highlight_c_comment}\verb'// PICOBLAZESTACK_H'}\\
+            }
+
+    \section{C/CXX files}
+        It should look like this:\\\\
+        {\color{highlight_normal}\verb'MCUSim'{\color{highlight_c_symbol}\verb'::'}\verb'RetCode PicoBlazeStack'{\color{highlight_c_symbol}\verb'::'}\verb'directRead '{\color{highlight_c_bracket}\verb'('}\verb' '{\color{highlight_c_data_type}\verb'unsigned'}\verb' '{\color{highlight_c_data_type}\verb'int'}\verb' addr'{\color{highlight_c_symbol}\verb','}}\\
+        {\color{highlight_normal}\verb'                                             '{\color{highlight_c_data_type}\verb'unsigned'}\verb' '{\color{highlight_c_data_type}\verb'int'}\verb' '{\color{highlight_c_symbol}\verb'&'}\verb' data '{\color{highlight_c_bracket}\verb')'}\verb' '{\color{highlight_c_data_type}\verb'const'}}\\
+        {\color{highlight_normal}{\color{highlight_c_bracket}\verb'{'}}\\
+        {\color{highlight_normal}\verb'    '{\color{highlight_c_keyword}\verb'if'}\verb' '{\color{highlight_c_bracket}\verb'('}\verb' addr '{\color{highlight_c_symbol}\verb'>='}\verb' m_config.m_size '{\color{highlight_c_bracket}\verb')'}}\\
+        {\color{highlight_normal}\verb'    '{\color{highlight_c_bracket}\verb'{'}}\\
+        {\color{highlight_normal}\verb'        '{\color{highlight_c_keyword}\verb'return'}\verb' MCUSim'{\color{highlight_c_symbol}\verb'::'}\verb'RC_ADDR_OUT_OF_RANGE'{\color{highlight_c_symbol}\verb';'}}\\
+        {\color{highlight_normal}\verb'    '{\color{highlight_c_bracket}\verb'}'}}\\
+        \verb''\\
+        {\color{highlight_normal}\verb'    data '{\color{highlight_c_symbol}\verb'='}\verb' '{\color{highlight_c_bracket}\verb'('}\verb' '{\color{highlight_c_hex}\verb'0x3ff'}\verb' '{\color{highlight_c_symbol}\verb'&'}\verb' m_data'{\color{highlight_c_bracket}\verb'['}\verb'addr'{\color{highlight_c_bracket}\verb']'}\verb' '{\color{highlight_c_bracket}\verb')'}{\color{highlight_c_symbol}\verb';'}}\\
+        {\color{highlight_normal}\verb'    '{\color{highlight_c_keyword}\verb'return'}\verb' MCUSim'{\color{highlight_c_symbol}\verb'::'}\verb'RC_OK'{\color{highlight_c_symbol}\verb';'}}\\
+        {\color{highlight_normal}{\color{highlight_c_bracket}\verb'}'}}\\
 
 \end{document}

@@ -62,7 +62,8 @@ add_definitions ( -Wall -std=c++0x -O2 -pipe )
 ## Add a library to the project using the specified source files,
  # in this case it will procude dynamic C++ library.
 add_library ( ${PROJECT_NAME} SHARED
-              AsmMachineCodeGen.cxx )
+              AsmMachineCodeGen.cxx
+              AsmDgbFileGen.cxx )
 
 # Link a target to given libraries
 target_link_libraries ( ${PROJECT_NAME}
