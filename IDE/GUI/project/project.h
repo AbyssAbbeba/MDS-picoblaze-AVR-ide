@@ -137,6 +137,7 @@ class Project : public QObject
         void setActive();
         void openItem();
         void openUntrackedItem();
+        void emitFileCount();
 
     signals:
         void highlightLine(QString file, int line, QColor *color, QColor *origColor);
@@ -145,6 +146,7 @@ class Project : public QObject
         void openFilePath(QString path);
         void setEditorReadOnly(bool readOnly);
         //void setCentralChanged();
+        void fileCountSignal(int fileCount);
         
     private:
         ProjectMan *parentManager;

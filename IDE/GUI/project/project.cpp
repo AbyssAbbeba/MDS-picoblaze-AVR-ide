@@ -65,6 +65,7 @@ void ProjectMan::openProject(QFile *file)
     //    mainWindow->CreateDockWidgets();
 
     projectCount++;
+    emit connectProject(newProject);
     qDebug() << "ProjectMan: return openProject()";
 }
 
@@ -128,6 +129,7 @@ void ProjectMan::addUntrackedProject()
     activeProject = newProject;
     untrackedProject = newProject;
     projectCount++;
+    emit connectProject(newProject);
     qDebug() << "ProjectMan: return addUntrackedProject()";
 }
 
@@ -168,6 +170,7 @@ void ProjectMan::addProject(QString name, QString path, QString architecture, La
     activeProject = newProject;
     openProjects.append(newProject);
     projectCount++;
+    emit connectProject(newProject);
     qDebug() << "ProjectMan: return addProject()";
 }
 
@@ -385,7 +388,9 @@ Project::Project(QFile *file, ProjectMan *parent)
             }
 
             connect(prjDockWidget, SIGNAL(visibilityChanged(bool)),this,SLOT(setActive()));  
-            connect(prjTreeWidget, SIGNAL(itemDoubleClicked (QTreeWidgetItem *,int)),this,SLOT(openItem()));  
+            connect(prjTreeWidget, SIGNAL(itemDoubleClicked (QTreeWidgetItem *,int)),this,SLOT(openItem()));
+            connect(prjTreeWidget, SIGNAL(requestFileCount()), this, SLOT(emitFileCount()));
+            connect(this, SIGNAL(fileCountSignal(int)), prjTreeWidget, SLOT(contextP2(int)));
             setupSim();
         }
     }
@@ -417,6 +422,8 @@ Project::Project(ProjectMan *parent)
     fileCount=0;
     connect(prjDockWidget, SIGNAL(visibilityChanged(bool)), this, SLOT(setActive()));
     connect(prjTreeWidget, SIGNAL(itemDoubleClicked (QTreeWidgetItem *,int)), this, SLOT(openUntrackedItem()));
+    connect(prjTreeWidget, SIGNAL(requestFileCount()), this, SLOT(emitFileCount()));
+    connect(this, SIGNAL(fileCountSignal(int)), prjTreeWidget, SLOT(contextP2(int)));
     qDebug() << "Project: return Project()";
 }
 
@@ -502,7 +509,9 @@ Project::Project(QString name, QString path, QString arch, LangType lang, QFile 
     xmlStream << domDoc.toString();
 
     connect(prjDockWidget, SIGNAL(visibilityChanged(bool)), this, SLOT(setActive()));
-    connect(prjTreeWidget, SIGNAL(itemDoubleClicked (QTreeWidgetItem *,int)), this, SLOT(openItem()));
+    connect(prjTreeWidget, SIGNAL(itemDoubleClicked (QTreeWidgetItem*,int)), this, SLOT(openItem()));
+    connect(prjTreeWidget, SIGNAL(requestFileCount()), this, SLOT(emitFileCount()));
+    connect(this, SIGNAL(fileCountSignal(int)), prjTreeWidget, SLOT(contextP2(int)));
     setupSim();
     qDebug() << "Project: return Project() blank";
 }
@@ -647,6 +656,7 @@ void Project::openItem()
     qDebug() << "Project: openFile()";
     if (prjTreeWidget->currentItem() != NULL)
     {
+        qDebug() << "Project: emit OpenFilePath";
         emit openFilePath(prjTreeWidget->currentItem()->data(0, Qt::ToolTipRole).toString());
         //parentManager->mainWindow->openFilePath(prjTreeWidget->currentItem()->data(0, Qt::ToolTipRole).toString());
     }
@@ -921,8 +931,16 @@ MCUSimControl* Project::getSimControl()
     qDebug() << "Project: getSimControl()";
     if (this->m_simControlUnit == NULL)
     {
-        qDebug() << "losdaskdfdsjfdsfsdfs";
+        qDebug() << "Project: simcontrolunit is NULL";
     }
     qDebug() << "Project: return getSimControl()";
     return this->m_simControlUnit;
+}
+
+
+void Project::emitFileCount()
+{
+    qDebug() << "Project: emitFileCount()";
+    emit fileCountSignal(fileCount);
+    qDebug() << "Project: return emitFileCount()";
 }
