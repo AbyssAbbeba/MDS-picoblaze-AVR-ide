@@ -80,9 +80,9 @@ void TabBar::tabStatsMoved(int from, int to)
  * @brief Reimplemented paint event.
  * @details Not completed.
  */
-void TabBar::paintEvent(QPaintEvent *)
+/*draw;;;void TabBar::paintEvent(QPaintEvent *)
 {
-    qDebug() << "TabBar: paintEvent()";
+    qDebug() << "TabBar: paintEvent()";drawend*/
 
     //Q_D(QTabBar);
 
@@ -90,12 +90,12 @@ void TabBar::paintEvent(QPaintEvent *)
 
     //this->d_func()->initStyleBaseOption(&optTabBase, this, size());
 
-    QStylePainter p(this);
+    /*draw;;;QStylePainter p(this);
     QPainter paint;
     QPen pen;
     QPen pen2(QColor::fromRgbF(0.5, 0.2, 0.2, 1));
     pen2.setStyle(Qt::SolidLine);
-    QStyleOptionTab tab;
+    QStyleOptionTab tab;drawend*/
     /*int selected = -1;
 
     int cut = -1;
@@ -122,12 +122,12 @@ void TabBar::paintEvent(QPaintEvent *)
 
         p.drawPrimitive(QStyle::PE_FrameTabBarBase, optTabBase);*/
 
-    for (int i = 0; i < this->count(); ++i) {
+    /*draw;;;for (int i = 0; i < this->count(); ++i) {
 
 
         initStyleOption(&tab, i);
 
-        QLinearGradient gradient(tab.rect.width()/2, tab.rect.bottom(), tab.rect.width()/2, tab.rect.top());
+        QLinearGradient gradient(tab.rect.width()/2, tab.rect.bottom(), tab.rect.width()/2, tab.rect.top());drawend*/
         /*if (d->paintWithOffsets && d->tabList[i].dragOffset != 0) {
 
             if (vertical) {
@@ -188,7 +188,7 @@ void TabBar::paintEvent(QPaintEvent *)
         //tab.palette.setColor(QPalette::WindowText, Qt::black);
         //tab.palette.setColor(QPalette::Base, Qt::blue);
         //tab.palette.setColor(QPalette::Window, Qt::blue);
-        p.drawControl(QStyle::CE_TabBarTab, tab);
+        /*draw;;;p.drawControl(QStyle::CE_TabBarTab, tab);
         paint.begin(this);
         gradient.setColorAt(0, QColor::fromRgbF(1, 1, 1, 0));
         gradient.setColorAt(1, QColor::fromRgbF(1, 1, 1, 0));
@@ -255,7 +255,7 @@ void TabBar::paintEvent(QPaintEvent *)
         paint.end();
         
 
-    }
+    }draw end*/
 
     // Draw the selected tab last to get it "on top"
 
@@ -303,6 +303,6 @@ void TabBar::paintEvent(QPaintEvent *)
 
     //}
     
-
+/*draw;;;
     qDebug() << "TabBar:return paintEvent()";
-}
+}drawend*/

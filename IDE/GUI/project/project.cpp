@@ -411,7 +411,7 @@ Project::Project(ProjectMan *parent)
     prjDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea);
     prjDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
     prjTreeWidget = new ProjectTree(prjDockWidget);
-            /*connect signals!!!*/
+            /*connect signals!!! ...done*/
 
     prjDockWidget->setWidget(prjTreeWidget);
 
@@ -808,7 +808,7 @@ void Project::removeFile(QString path, QString name)
 void Project::setupSim()
 {
     qDebug() << "Project: setupSim()";
-    McuSimCfgMgr::getInstance()->openConfigFile("../simulators/MCUSim/McuSimCfgMgr/mcuspecfile.xml");
+    McuSimCfgMgr::getInstance()->openConfigFile(":/resources//xml//mcuspecfile.xml");
     //"ATmega8A"
     this->m_simControlUnit = new MCUSimControl(architecture.toUtf8().constData());
     qDebug() << "Project: return setupSim()";
@@ -828,7 +828,7 @@ void Project::start()
         QString hexPath = prjPath.section('/',0, -2) + "/build/" + mainFileName.section('.',0,-2);
         qDebug() << "ASM:" << hexPath;
         std::string stdPath = hexPath.toUtf8().constData();
-        m_simControlUnit->start(stdPath, m_simControlUnit->COMPILER_AVRA, m_simControlUnit->DBGFILEID_HEX);
+        m_simControlUnit->start(stdPath, m_simControlUnit->COMPILER_NATIVE, m_simControlUnit->DBGFILEID_HEX);
     }
     else if (langType == LANG_C)
     {
