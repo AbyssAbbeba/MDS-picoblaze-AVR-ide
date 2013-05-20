@@ -20,6 +20,7 @@
 #define ERR_OPENFILE 2000
 #define ERR_XML_CONTENT 2001
 #define ERR_XML_ASSIGN 2002
+#define ERR_NO_PROJECT 2003
 
 #include <QMessageBox>
 

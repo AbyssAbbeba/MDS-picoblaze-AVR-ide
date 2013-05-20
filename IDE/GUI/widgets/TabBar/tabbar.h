@@ -37,8 +37,8 @@ class TabBar : public QTabBar
         void tabStatsMoved(int from, int to);
     private:
         QList<bool> tabStats;
-    protected:
-        void paintEvent(QPaintEvent *);
+    //protected:
+    //    void paintEvent(QPaintEvent *);
 };
 
 

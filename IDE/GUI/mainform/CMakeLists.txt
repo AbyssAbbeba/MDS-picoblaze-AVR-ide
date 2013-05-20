@@ -56,6 +56,7 @@ link_directories(
 	"${CMAKE_CURRENT_BINARY_DIR}/../../simulators/SimControl/"
         "${CMAKE_CURRENT_BINARY_DIR}/../../utilities/MCUDataFiles/"
 	"${CMAKE_CURRENT_BINARY_DIR}/../../simulators/MCUSim/AVR8/"
+    "${CMAKE_CURRENT_BINARY_DIR}/../../compiler/core/"
 	"${CMAKE_CURRENT_BINARY_DIR}/../widgets/MovGridLayout/"
 	"${CMAKE_CURRENT_BINARY_DIR}/../widgets/ProjectTree/"
 	"${CMAKE_CURRENT_BINARY_DIR}/../widgets/Counters/"
@@ -91,4 +92,4 @@ add_library(${PROJECT_NAME} SHARED
 	${SAMPLE_MOC_SRCS} ${SAMPLE_SRCS})
 
 #QtNetwork !!
-target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} ErrorDialog Project ProjectTree Editor Dialogs WDockManager McuSimCfgMgr SimControl AVR8Sim PIC8Sim MCUDataFiles ConvertorTool DisplayTool CompileWidget)
+target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} ErrorDialog Project ProjectTree Editor Dialogs WDockManager McuSimCfgMgr SimControl AVR8Sim PIC8Sim MCUDataFiles ConvertorTool DisplayTool CompileWidget CompilerCore)
