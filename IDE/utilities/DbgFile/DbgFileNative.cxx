@@ -131,9 +131,9 @@ inline void DbgFileNative::loadFile ( const std::string & filename )
                 }
             }
 
-            int address    = ASSEMBLE_INT32(binArray, 0);
-            int fileNumber = ASSEMBLE_INT32(binArray, 1);
-            int lineNumber = ASSEMBLE_INT32(binArray, 2);
+            unsigned int address    = ASSEMBLE_INT32(binArray, 0);
+            unsigned int fileNumber = ASSEMBLE_INT32(binArray, 1);
+            unsigned int lineNumber = ASSEMBLE_INT32(binArray, 2);
 
             m_lineRecords.push_back(LineRecord(fileNumber, lineNumber, 0, 0, address));
 
@@ -141,7 +141,7 @@ inline void DbgFileNative::loadFile ( const std::string & filename )
             {
                 m_numberOfLines[fileNumber] = lineNumber;
             }
-            if ( address > m_lastAddress )
+            if ( (int)address > m_lastAddress )
             {
                 m_lastAddress = address;
             }

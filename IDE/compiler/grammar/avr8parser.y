@@ -40,14 +40,6 @@
 /* Enable LAC (Lookahead Correction) to improve syntax error handling. */
 %define parse.lac full
 
-/*
- * Compiler interface for the syntax analyzer; we need to have some things declared
- * before we can declare other things, and this interface is quite essential here.
- */
-%code requires {
-    #include "CompilerParserInterface.h"
-}
-
 // Symbol semantic value
 %union {
     int number;                     //
@@ -59,6 +51,14 @@
         int size;               //
     } array;                        //
 };
+
+/*
+ * Compiler interface for the syntax analyzer; we need to have some things declared
+ * before we can declare other things, and this interface is quite essential here.
+ */
+%code requires {
+    #include "CompilerParserInterface.h"
+}
 
 %{
     #include <QObject>              // For i18n, nothing else.
