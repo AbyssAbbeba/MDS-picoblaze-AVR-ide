@@ -69,7 +69,7 @@ class CompilerExpr
                     char * m_symbol;
 
                     ///
-                    struct
+                    struct CharArray
                     {
                         ///
                         unsigned char * m_data;
@@ -224,8 +224,9 @@ class CompilerExpr
     public:
         /**
          * @brief
+         * @param[in] location
          */
-        CompilerExpr();
+        CompilerExpr ( CompilerBase::SourceLocation location = CompilerBase::SourceLocation() );
 
         /**
          * @brief
@@ -400,7 +401,7 @@ class CompilerExpr
          * @brief
          * @return
          */
-        CompilerBase::SourceLocation location() const
+        const CompilerBase::SourceLocation & location() const
         {
             return m_location;
         }
@@ -409,7 +410,7 @@ class CompilerExpr
          * @brief
          * @return
          */
-        Operator oper() const
+        const Operator & oper() const
         {
             return m_operator;
         }

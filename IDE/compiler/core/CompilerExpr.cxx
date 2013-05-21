@@ -164,9 +164,10 @@ void CompilerExpr::Value::completeDelete()
     }
 }
 
-CompilerExpr::CompilerExpr()
+CompilerExpr::CompilerExpr ( CompilerBase::SourceLocation location )
 {
     m_operator = OPER_NONE;
+    m_location = location;
 
     m_next = NULL;
     m_prev = NULL;

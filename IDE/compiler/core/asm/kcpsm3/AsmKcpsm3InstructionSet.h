@@ -40,11 +40,11 @@ class AsmKcpsm3InstructionSet
          */
         enum OPER_BIT_SIZE
         {
-            OBS_AAA = 10,
-            OBS_SXY =  4,
-            OBS_KK  =  8,
-            OBS_PP  =  8,
-            OBS_SS  =  6
+            OBS_AAA = 10, ///< Address
+            OBS_SXY =  4, ///< Register
+            OBS_KK  =  8, ///< Constant
+            OBS_PP  =  8, ///< Port ID
+            OBS_SS  =  6  ///< Scratch Pad RAM
         };
 
     ////    Constructors and Destructors    ////

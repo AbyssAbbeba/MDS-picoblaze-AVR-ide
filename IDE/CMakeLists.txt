@@ -57,11 +57,14 @@ add_subdirectory ( utilities )
 # Build GUI
 add_subdirectory ( GUI )
 
-# Build HW
-add_subdirectory ( HW )
+# Build HW (not for now due to "absence" of libUSB on MS Windows OS)
+# add_subdirectory ( HW )
 
 # Build simulators
 add_subdirectory ( simulators )
+
+# Build Moravia Script language support
+# add_subdirectory ( moraviascript )
 
 # Build compiler collection
 add_subdirectory ( compiler )

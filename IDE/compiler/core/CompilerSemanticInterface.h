@@ -16,6 +16,9 @@
 #ifndef COMPILERSEMANTICINTERFACE_H
 #define COMPILERSEMANTICINTERFACE_H
 
+// Forward declarations.
+class CompilerMsgObserver;
+
 // Standard headers.
 #include <string>
 #include <vector>
@@ -91,6 +94,13 @@ class CompilerSemanticInterface
          * @return
          */
         virtual bool successful() const = 0;
+
+        /**
+         * @brief
+         * @param[in,out] observer
+         * @return
+         */
+        virtual void registerMsgObserver ( CompilerMsgObserver * observer ) = 0;
 };
 
 #endif // COMPILERSEMANTICINTERFACE_H

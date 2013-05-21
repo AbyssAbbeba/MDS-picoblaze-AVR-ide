@@ -20,6 +20,14 @@
 
 #include <cstdint>
 
+
+/*
+ * Code specific for other operating systems that GNU/Linux.
+ */
+#ifndef __linux__
+    char * strdup ( const char * s );
+#endif // __linux__
+
 /**
  * @brief
  * @namespace LexerUtils

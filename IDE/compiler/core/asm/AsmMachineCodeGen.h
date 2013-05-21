@@ -99,6 +99,12 @@ class AsmMachineCodeGen
 
         /**
          * @brief
+         * @param[in] increment
+         */
+        void incrementAddr ( unsigned int increment = 1 );
+
+        /**
+         * @brief
          * @param[in] byteOrder
          * @param[in,out] target
          * @throw DataFile::DataFileException
@@ -116,6 +122,10 @@ class AsmMachineCodeGen
                       CompilerSemanticInterface * compilerCore,
                       const CompilerOptions * opts );
 
+        /**
+         * @brief
+         */
+        void clear();
 
     ////    Inline Public Operations    ////
     public:

@@ -28,9 +28,7 @@
 AsmMachineCodeGen::AsmMachineCodeGen ( WordSize wordSize )
                                      : m_wordSize ( wordSize )
 {
-    m_address = 0;
-    m_maxSize = 0;
-    m_size = 0;
+    clear();
     reserve ( INITIAL_MAX_SIZE );
 }
 
@@ -38,9 +36,23 @@ AsmMachineCodeGen::~AsmMachineCodeGen()
 {
 }
 
+void AsmMachineCodeGen::clear()
+{
+    m_address = 0;
+    m_maxSize = 0;
+    m_size = 0;
+    m_code.clear();
+    m_used.clear();
+}
+
 void AsmMachineCodeGen::setOrigin ( unsigned int address )
 {
     m_address = address;
+}
+
+void AsmMachineCodeGen::incrementAddr ( unsigned int increment )
+{
+    m_address += increment;
 }
 
 unsigned int AsmMachineCodeGen::setCode ( uint32_t code )

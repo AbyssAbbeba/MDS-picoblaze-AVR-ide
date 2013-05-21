@@ -21,20 +21,34 @@
 AsmKcpsm3CodeListing::LstLine::LstLine()
 {
     m_address    = -1;
-    m_code       = -1;
     m_macro      = -1;
     m_inclusion  = -1;
     m_value      = -1;
+    m_message    = -1;
+    m_noList     = 0;
 }
 
 AsmKcpsm3CodeListing::LstLine::LstLine ( const char * line )
 {
     m_address    = -1;
-    m_code       = -1;
     m_macro      = -1;
     m_inclusion  = -1;
     m_value      = -1;
+    m_message    = -1;
+    m_noList     = 0;
     m_line       = line;
+}
+
+AsmKcpsm3CodeListing::Message::Message()
+{
+    m_type = CompilerBase::MT_INVALID;
+}
+
+AsmKcpsm3CodeListing::Message::Message ( CompilerBase::MessageType type,
+                                         const std::string & text )
+{
+    m_type = type;
+    m_text = text;
 }
 
 AsmKcpsm3CodeListing::AsmKcpsm3CodeListing ( CompilerSemanticInterface * compilerCore,
@@ -42,9 +56,19 @@ AsmKcpsm3CodeListing::AsmKcpsm3CodeListing ( CompilerSemanticInterface * compile
                                            : m_compilerCore ( compilerCore ),
                                              m_opts ( opts )
 {
+    m_compilerCore->registerMsgObserver(this);
+    clear();
+}
+
+void AsmKcpsm3CodeListing::clear()
+{
     m_numberOfFiles = 0;
     m_numberOfMacros = 0;
-};
+    m_listing.clear();
+    m_messages.clear();
+    m_messageQueue.clear();
+    m_title.clear();
+}
 
 AsmKcpsm3CodeListing::~AsmKcpsm3CodeListing()
 {
@@ -82,15 +106,19 @@ void AsmKcpsm3CodeListing::loadSourceFiles()
 
         file.close();
     }
+
+    processMsgQueue();
 }
 
 void AsmKcpsm3CodeListing::printCodeListing ( std::ostream & out,
+                                              bool & outputEnabled,
                                               unsigned int & lineNumber,
                                               unsigned int fileNumber,
                                               unsigned int inclusionLevel,
                                               unsigned int macroLevel ) const
 {
     char line [ 16 ];
+    std::string output;
 
     for ( std::vector<LstLine>::const_iterator i = m_listing[fileNumber].cbegin();
           i != m_listing[fileNumber].cend();
@@ -98,74 +126,139 @@ void AsmKcpsm3CodeListing::printCodeListing ( std::ostream & out,
     {
         lineNumber++;
 
-        if ( -1 != i->m_value )
+        if ( 1 == i->m_noList )
         {
-            sprintf ( line, "  %04X     ", i->m_value );
-            out << line;
+            outputEnabled = true;
         }
-        else
+
+        if ( true == outputEnabled )
         {
-            if ( -1 != i->m_address )
+            output.clear();
+
+            if ( -1 != i->m_value )
             {
-                sprintf ( line, "%04X ", i->m_address );
-                out << line;
+                sprintf ( line, "  %04X     ", i->m_value );
+                output += line;
             }
             else
             {
-                out << "     ";
+                if ( -1 != i->m_address )
+                {
+                    sprintf ( line, "%04X ", i->m_address );
+                    output += line;
+                }
+                else
+                {
+                    output += "     ";
+                }
+
+                if ( 0 != i->m_code.size() )
+                {
+                    sprintf ( line, "%05X ", i->m_code[0] );
+                    output += line;
+                }
+                else
+                {
+                    output += "      ";
+                }
             }
 
-            if ( -1 != i->m_code )
+            if ( 0 != inclusionLevel )
             {
-                sprintf ( line, "%05X ", i->m_code );
-                out << line;
+                sprintf ( line, "=%d ", inclusionLevel );
+                output += line;
+                if ( inclusionLevel < 10 )
+                {
+                    output += " ";
+                }
             }
             else
             {
-                out << "      ";
+                output += "    ";
             }
-        }
 
-        if ( 0 != inclusionLevel )
-        {
-            sprintf ( line, "=%d ", inclusionLevel );
-            out << line;
-            if ( inclusionLevel < 10 )
+            sprintf ( line, "%6d ", lineNumber);
+            output += line;
+
+            if ( 0 != macroLevel )
             {
-                out << " ";
+                sprintf ( line, "+%d ", macroLevel );
+                output += line;
+                if ( macroLevel < 10 )
+                {
+                    output += " ";
+                }
             }
-        }
-        else
-        {
-            out << "    ";
-        }
-
-        sprintf ( line, "%6d ", lineNumber);
-        out << line;
-
-        if ( 0 != macroLevel )
-        {
-            sprintf ( line, "+%d ", macroLevel );
-            out << line;
-            if ( macroLevel < 10 )
+            else
             {
-                out << " ";
+                output += "    ";
+            }
+
+            output += i->m_line;
+            int newSize;
+            for ( newSize = (int)output.size() - 1; newSize >= 0; newSize-- )
+            {
+                if ( ' ' != output[newSize] )
+                {
+                    break;
+                }
+            }
+            output.resize( newSize + 1 );
+            out << output << std::endl;
+
+            int addr = i->m_address + 1;
+            for ( size_t j = 1; j < i->m_code.size(); j++ )
+            {
+                sprintf ( line, "%04X %05X ", addr, i->m_code[j] );
+                addr++;
+            }
+
+            if ( -1 != i->m_message )
+            {
+                for ( std::vector<Message>::const_iterator msg = m_messages[i->m_message].cbegin();
+                    msg != m_messages[i->m_message].cend();
+                    msg++ )
+                {
+                    if ( true == msg->m_text.empty() || CompilerBase::MT_INVALID == msg->m_type )
+                    {
+                        continue;
+                    }
+
+                    switch ( msg->m_type )
+                    {
+                        case CompilerBase::MT_INVALID:
+                            break;
+                        case CompilerBase::MT_GENERAL:
+                            out << "G: ";
+                            break;
+                        case CompilerBase::MT_ERROR:
+                            out << "E: ";
+                            break;
+                        case CompilerBase::MT_WARNING:
+                            out << "W: ";
+                            break;
+                        case CompilerBase::MT_REMARK:
+                            out << "R: ";
+                            break;
+                    }
+
+                    out << msg->m_text << std::endl;;
+                }
             }
         }
-        else
-        {
-            out << "    ";
-        }
 
-        out << i->m_line << std::endl;
+        if ( -1 == i->m_noList )
+        {
+            outputEnabled = false;
+        }
 
         if ( -1 != i->m_macro )
         {
-            printCodeListing ( out, lineNumber, i->m_macro, inclusionLevel, ( 1 + macroLevel ) );
+            printCodeListing ( out, outputEnabled, lineNumber, i->m_macro, inclusionLevel, ( 1 + macroLevel ) );
         }
         if ( -1 != i->m_inclusion )
         {
-            printCodeListing ( out, lineNumber, i->m_inclusion, ( 1 + inclusionLevel ), macroLevel );
+            printCodeListing ( out, outputEnabled, lineNumber, i->m_inclusion, ( 1 + inclusionLevel ), macroLevel );
         }
     }
 }
@@ -187,7 +280,8 @@ void AsmKcpsm3CodeListing::output()
     if ( false == file.is_open() )
     {
         m_compilerCore -> compilerMessage ( CompilerBase::MT_ERROR,
-                                            QObject::tr("unable to open ").toStdString() + "\"" + m_opts -> m_lstFile  + "\"" );
+                                            QObject::tr("unable to open ").toStdString() + "\""
+                                            + m_opts -> m_lstFile  + "\"" );
         return;
     }
 
@@ -196,12 +290,14 @@ void AsmKcpsm3CodeListing::output()
     if ( true == file.bad() )
     {
         m_compilerCore -> compilerMessage ( CompilerBase::MT_ERROR,
-                                            QObject::tr("unable to write to ").toStdString() + "\"" + m_opts -> m_lstFile  + "\"" );
+                                            QObject::tr("unable to write to ").toStdString() + "\""
+                                            + m_opts -> m_lstFile  + "\"" );
         return;
     }
 }
 
-inline bool AsmKcpsm3CodeListing::checkLocation ( CompilerBase::SourceLocation location )
+inline bool AsmKcpsm3CodeListing::checkLocation ( const CompilerBase::SourceLocation & location,
+                                                  bool silent )
 {
     if ( -1 != location.m_fileNumber && (size_t)location.m_fileNumber < (m_numberOfFiles + m_numberOfMacros) )
     {
@@ -213,9 +309,28 @@ inline bool AsmKcpsm3CodeListing::checkLocation ( CompilerBase::SourceLocation l
     }
 
     // Location is NOT valid.
-    m_compilerCore -> compilerMessage ( CompilerBase::MT_ERROR,
-                                        QObject::tr("some of the source code files were aparently changed during compilation").toStdString() );
+    if ( false == silent )
+    {
+        m_compilerCore -> compilerMessage ( CompilerBase::MT_ERROR,
+                                            QObject::tr ( "some of the source code files were aparently changed"
+                                                          " during compilation" ).toStdString() );
+    }
     return false;
+}
+
+void AsmKcpsm3CodeListing::setTitle ( const std::string & title )
+{
+    m_title = title;
+}
+
+void AsmKcpsm3CodeListing::setNoList ( CompilerBase::SourceLocation location,
+                                       bool flag )
+{
+    if ( true == checkLocation ( location ) )
+    {
+        location.m_lineStart--;
+        m_listing[location.m_fileNumber][location.m_lineStart].m_noList = ( ( true == flag ) ? -1 : 1 );
+    }
 }
 
 void AsmKcpsm3CodeListing::setInclusion ( CompilerBase::SourceLocation location,
@@ -235,8 +350,12 @@ void AsmKcpsm3CodeListing::setCode ( CompilerBase::SourceLocation location,
     if ( true == checkLocation ( location ) )
     {
         location.m_lineStart--;
-        m_listing[location.m_fileNumber][location.m_lineStart].m_code = code;
-        m_listing[location.m_fileNumber][location.m_lineStart].m_address = address;
+        std::vector<int> & codeVector = m_listing[location.m_fileNumber][location.m_lineStart].m_code;
+        codeVector.push_back(code);
+        if ( 0 == codeVector.size() )
+        {
+            m_listing[location.m_fileNumber][location.m_lineStart].m_address = address;
+        }
     }
 }
 
@@ -264,27 +383,42 @@ void AsmKcpsm3CodeListing::expandMacro ( CompilerBase::SourceLocation location,
     location.m_lineStart--;
     m_listing[location.m_fileNumber][location.m_lineStart].m_macro = (m_numberOfFiles + m_numberOfMacros - 1);
 
-    unsigned int lineNumber = 0;
-    rewriteMacroLoc(lineNumber, expansion);
+    unsigned int lineCounter = 0;
     m_listing.resize(m_numberOfFiles + m_numberOfMacros);
-    copyMacroBody(definition);
+    copyMacroBody(&lineCounter, definition);
+    lineCounter = 0;
+    rewriteMacroLoc(&lineCounter, expansion);
 }
 
-void AsmKcpsm3CodeListing::copyMacroBody ( const CompilerStatement * macro )
+void AsmKcpsm3CodeListing::copyMacroBody ( unsigned int * lastLine,
+                                           const CompilerStatement * macro )
 {
     if ( NULL == macro )
     {
         return;
     }
 
-    LstLine line = m_listing[macro->location().m_fileNumber][macro->location().m_lineStart - 1];
-    m_listing[m_numberOfFiles + m_numberOfMacros - 1].push_back(line);
+    if ( true == macro->location().isSet() )
+    {
+        // Copy empty lines between the last LstLine and the one which is about to be inserted now.
+        if ( 0 != *lastLine )
+        {
+            for ( int i = ( macro->location().m_lineStart - *lastLine ); i > 1 ; i-- )
+            {
+                m_listing[m_numberOfFiles + m_numberOfMacros - 1].push_back(LstLine());
+            }
+        }
+        *lastLine = macro->location().m_lineStart;
 
-    copyMacroBody(macro->m_branch);
-    copyMacroBody(macro->m_next);
+        LstLine line = m_listing[macro->location().m_fileNumber][macro->location().m_lineStart - 1];
+        m_listing[m_numberOfFiles + m_numberOfMacros - 1].push_back(line);
+    }
+
+    copyMacroBody(lastLine, macro->m_branch);
+    copyMacroBody(lastLine, macro->m_next);
 }
 
-void AsmKcpsm3CodeListing::rewriteMacroLoc ( unsigned int & lineNumber,
+void AsmKcpsm3CodeListing::rewriteMacroLoc ( unsigned int * lineDiff,
                                              CompilerStatement * macro )
 {
     if ( NULL == macro )
@@ -292,21 +426,71 @@ void AsmKcpsm3CodeListing::rewriteMacroLoc ( unsigned int & lineNumber,
         return;
     }
 
-    lineNumber++;
+    if ( true == macro->location().isSet() )
+    {
+        if ( 0 == *lineDiff )
+        {
+            *lineDiff = macro->m_location.m_lineStart - 1;
+        }
+        macro->m_location.m_fileNumber = ( m_numberOfFiles + m_numberOfMacros - 1 );
+        macro->m_location.m_lineStart -= *lineDiff;
+        macro->m_location.m_lineEnd   -= *lineDiff;
+    }
 
-    macro->m_userData++;
-    macro->m_location.m_fileNumber = ( m_numberOfFiles + m_numberOfMacros - 1 );
-    macro->m_location.m_lineStart = lineNumber;
-    macro->m_location.m_lineEnd = lineNumber;
+    rewriteMacroLoc(lineDiff, macro->m_branch);
+    rewriteMacroLoc(lineDiff, macro->m_next);
+}
 
-    rewriteMacroLoc(lineNumber, macro->m_branch);
-    rewriteMacroLoc(lineNumber, macro->m_next);
+inline void AsmKcpsm3CodeListing::processMsgQueue()
+{
+    for ( std::vector<std::pair<CompilerBase::SourceLocation,Message>>::const_iterator i = m_messageQueue.cbegin();
+          i != m_messageQueue.cend();
+          i++ )
+    {
+        message(i->first, i->second.m_type, i->second.m_text);
+    }
+
+    m_messageQueue.clear();
+}
+
+void AsmKcpsm3CodeListing::message ( const CompilerBase::SourceLocation & location,
+                                     CompilerBase::MessageType type,
+                                     const std::string & text )
+{
+    if ( 0 == m_numberOfFiles )
+    {
+        m_messageQueue.push_back ( std::pair<CompilerBase::SourceLocation,Message>(location, Message(type, text)) );
+        return;
+    }
+
+    if ( false == checkLocation(location, true) )
+    {
+        return;
+    }
+
+    LstLine & lstLine = m_listing[location.m_fileNumber][location.m_lineStart - 1];
+
+    int msgIdx = lstLine.m_message;
+    if ( -1 == msgIdx )
+    {
+        msgIdx = m_messages.size();
+        lstLine.m_message = msgIdx;
+        m_messages.push_back(std::vector<Message>());
+    }
+    m_messages[msgIdx].push_back(Message(type, text));
 }
 
 std::ostream & operator << ( std::ostream & out,
                              const AsmKcpsm3CodeListing * codeListing )
 {
+    if (  false == codeListing->m_title.empty() )
+    {
+        out << codeListing->m_title << std::endl << std::endl;
+    }
+
+    bool outputEnabled = true;
     unsigned int lineNumber = 0;
-    codeListing->printCodeListing(out, lineNumber);
+    codeListing->printCodeListing(out, outputEnabled, lineNumber);
+
     return out;
 }

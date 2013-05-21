@@ -14,6 +14,7 @@
 // =============================================================================
 
 #include "AsmKcpsm3SymbolTable.h"
+#include "AsmKcpsm3Macros.h"
 
 // Standard headers.
 #include <cstdio>
@@ -22,11 +23,12 @@
 AsmKcpsm3SymbolTable::Symbol::Symbol ( const CompilerExpr * value,
                                        const CompilerBase::SourceLocation * location,
                                        SymbolType type,
-                                       int finalValue )
+                                       int finalValue,
+                                       bool redefinable )
 {
     m_type = type;
     m_used = false;
-    m_constant = true;
+    m_constant = !redefinable;
     m_finalValue = finalValue;
 
     if ( NULL != location )
@@ -58,7 +60,8 @@ int AsmKcpsm3SymbolTable::addSymbol ( const std::string & name,
                                       const CompilerExpr * value,
                                       const CompilerBase::SourceLocation * location,
                                       const SymbolType type,
-                                      bool resolve )
+                                      bool resolve,
+                                      bool redefinable )
 {
     int finalValue = -1;
 
@@ -69,20 +72,22 @@ int AsmKcpsm3SymbolTable::addSymbol ( const std::string & name,
             finalValue = (int) resolveExpr(value);
         }
 
-        m_table.insert ( std::pair<std::string,Symbol>(name, Symbol(value, location, type, finalValue)) );
+        m_table.insert ( std::pair<std::string,Symbol>(name, Symbol(value, location, type, finalValue, redefinable)) );
     }
     else
     {
         if ( NULL == location )
         {
             m_compilerCore -> compilerMessage ( CompilerBase::MT_ERROR,
-                                                QObject::tr("symbol already defined: ").toStdString() + "\"" + name + "\"");
+                                                QObject::tr ( "symbol already defined: " ).toStdString()
+                                                            + "\"" + name + "\"" );
         }
         else
         {
             m_compilerCore -> compilerMessage ( *location,
                                                 CompilerBase::MT_ERROR,
-                                                QObject::tr("symbol already defined: ").toStdString() + "\"" + name + "\"");
+                                                QObject::tr ( "symbol already defined: " ).toStdString()
+                                                            + "\"" + name + "\"" );
         }
     }
 
@@ -125,11 +130,14 @@ bool AsmKcpsm3SymbolTable::isDefined ( const std::string & name,
     return false;
 }
 
-void AsmKcpsm3SymbolTable::assignValue ( const std::string & name,
-                                         const CompilerExpr * value,
-                                         const SymbolType type,
-                                         bool resolve )
+int AsmKcpsm3SymbolTable::assignValue ( const std::string & name,
+                                        const CompilerExpr * value,
+                                        const CompilerBase::SourceLocation * location,
+                                        const SymbolType type,
+                                        bool resolve )
 {
+    int finalValue = -1;
+
     for ( std::multimap<std::string,Symbol>::iterator it = m_table.find(name);
           it != m_table.end();
           it++ )
@@ -146,12 +154,15 @@ void AsmKcpsm3SymbolTable::assignValue ( const std::string & name,
 
             if ( true == resolve )
             {
-                it->second.m_finalValue = (int) resolveExpr(value);
+                finalValue = (int) resolveExpr(value, -1, location);
+                it->second.m_finalValue = finalValue;
             }
 
             break;
         }
     }
+
+    return finalValue;
 }
 
 const CompilerExpr * AsmKcpsm3SymbolTable::getValue ( const std::string & name,
@@ -192,6 +203,7 @@ int AsmKcpsm3SymbolTable::getExprValue ( ExprValSide side,
             m_compilerCore -> compilerMessage ( expr->m_location,
                                                 CompilerBase::MT_ERROR,
                                                 QObject::tr("undefined value").toStdString());
+            break;
         }
         case CompilerExpr::Value::TYPE_INT:
         {
@@ -202,6 +214,7 @@ int AsmKcpsm3SymbolTable::getExprValue ( ExprValSide side,
             m_compilerCore -> compilerMessage ( expr->m_location,
                                                 CompilerBase::MT_ERROR,
                                                 QObject::tr("real numbers are not supported in assembler").toStdString());
+            break;
         }
         case CompilerExpr::Value::TYPE_EXPR:
         {
@@ -215,6 +228,7 @@ int AsmKcpsm3SymbolTable::getExprValue ( ExprValSide side,
                 m_compilerCore -> compilerMessage ( expr->m_location,
                                                     CompilerBase::MT_ERROR,
                                                     QObject::tr("undefined symbol: ").toStdString() + "\"" + value->m_data.m_symbol + "\"");
+                break;
             }
             else
             {
@@ -257,6 +271,52 @@ int AsmKcpsm3SymbolTable::computeExpr ( const CompilerExpr * expr )
             }
             return getExprValue(LEFT, expr) / right;
         }
+        case CompilerExpr::OPER_LOW:
+            return ( 0xff & getExprValue(LEFT, expr) );
+        case CompilerExpr::OPER_HIGH:
+            return ( ( 0xff00 & getExprValue(LEFT, expr) ) >> 8 );
+        case CompilerExpr::OPER_CMPL:
+            return ~getExprValue(LEFT, expr);
+        case CompilerExpr::OPER_NOT:
+            return ( 0 == getExprValue(LEFT, expr) ) ? 1 : 0;
+        case CompilerExpr::OPER_MOD:
+        {
+            int right = getExprValue(RIGHT, expr);
+            if ( 0 == right )
+            {
+                m_compilerCore -> compilerMessage ( expr->m_location,
+                                                    CompilerBase::MT_ERROR,
+                                                    QObject::tr("division by zero").toStdString());
+                return 1;
+            }
+            return getExprValue(LEFT, expr) % right;
+        }
+        case CompilerExpr::OPER_LOR:
+            return ( getExprValue(LEFT, expr) || getExprValue(RIGHT, expr) ) ? 1 : 0;
+        case CompilerExpr::OPER_LAND:
+            return ( getExprValue(LEFT, expr) && getExprValue(RIGHT, expr) ) ? 1 : 0;
+        case CompilerExpr::OPER_BOR:
+            return getExprValue(LEFT, expr) | getExprValue(RIGHT, expr);
+        case CompilerExpr::OPER_BXOR:
+            return getExprValue(LEFT, expr) ^ getExprValue(RIGHT, expr);
+        case CompilerExpr::OPER_BAND:
+            return getExprValue(LEFT, expr) & getExprValue(RIGHT, expr);
+        case CompilerExpr::OPER_EQ:
+            return ( getExprValue(LEFT, expr) == getExprValue(RIGHT, expr) ) ? 1 : 0;
+        case CompilerExpr::OPER_NE:
+            return ( getExprValue(LEFT, expr) != getExprValue(RIGHT, expr) ) ? 1 : 0;
+        case CompilerExpr::OPER_LT:
+            return ( getExprValue(LEFT, expr) < getExprValue(RIGHT, expr) ) ? 1 : 0;
+        case CompilerExpr::OPER_LE:
+            return ( getExprValue(LEFT, expr) <= getExprValue(RIGHT, expr) ) ? 1 : 0;
+        case CompilerExpr::OPER_GE:
+            return ( getExprValue(LEFT, expr) >= getExprValue(RIGHT, expr) ) ? 1 : 0;
+        case CompilerExpr::OPER_GT:
+            return ( getExprValue(LEFT, expr) > getExprValue(RIGHT, expr) ) ? 1 : 0;
+        case CompilerExpr::OPER_SHR:
+            return getExprValue(LEFT, expr) >> getExprValue(RIGHT, expr);
+        case CompilerExpr::OPER_SHL:
+            return getExprValue(LEFT, expr) << getExprValue(RIGHT, expr);
         default:
             // Unsupported operator.
             break;
@@ -269,10 +329,17 @@ int AsmKcpsm3SymbolTable::computeExpr ( const CompilerExpr * expr )
 }
 
 unsigned int AsmKcpsm3SymbolTable::resolveExpr ( const CompilerExpr * expr,
-                                                 int bitsMax )
+                                                 int bitsMax,
+                                                 const CompilerBase::SourceLocation * origLocation )
 {
     int resultOrig = computeExpr(expr);
     unsigned int result = (unsigned int) resultOrig;
+    const CompilerBase::SourceLocation * location = origLocation;
+
+    if ( NULL == location )
+    {
+        location = &(expr->location());
+    }
 
     if ( -1 != bitsMax )
     {
@@ -289,20 +356,20 @@ unsigned int AsmKcpsm3SymbolTable::resolveExpr ( const CompilerExpr * expr,
             // Check whether it's still a negative number.
             if ( 0 == (result & ( 1 << (bitsMax-1))) )
             {
-                m_compilerCore -> compilerMessage ( expr->m_location,
+                m_compilerCore -> compilerMessage ( *location,
                                                     CompilerBase::MT_WARNING,
                                                     QObject::tr("sign overflow. Result is negative number lower that the lowest negative number representable in two's complement arithmetic by the given number of bits (%1 bits in this case) ").arg(bitsMax).toStdString());
             }
             else
             {
-                m_compilerCore -> compilerMessage ( expr->m_location,
+                m_compilerCore -> compilerMessage ( *location,
                                                     CompilerBase::MT_REMARK,
                                                     QObject::tr("result is negative number: %1, this will represented as %2-bit number in two's complement arithmetic which makes it: %3").arg(resultOrig).arg(bitsMax).arg(result).toStdString());
             }
         }
         else if ( ( result & mask ) != result )
         {
-            m_compilerCore -> compilerMessage ( expr->m_location,
+            m_compilerCore -> compilerMessage ( *location,
                                                 CompilerBase::MT_WARNING,
                                                 QObject::tr("value out of range: %1, allowed range is [0,%2] (trimmed to %3 bits) which makes it %4").arg(result).arg(mask).arg(bitsMax).arg(result&mask).toStdString());
             result &= mask;
@@ -335,7 +402,14 @@ unsigned int AsmKcpsm3SymbolTable::substitute ( const std::string & origSymbol,
             {
                 if ( origSymbol == expr->m_lValue.m_data.m_symbol )
                 {
-                    expr->m_lValue = CompilerExpr::Value(newSymbol->copyChainLink());
+                    if ( CompilerExpr::OPER_NONE == newSymbol->oper() )
+                    {
+                        expr->m_lValue = newSymbol->lVal().makeCopy();
+                    }
+                    else
+                    {
+                        expr->m_lValue = CompilerExpr::Value(newSymbol->copyChainLink());
+                    }
                     result++;
                 }
             }
@@ -352,7 +426,14 @@ unsigned int AsmKcpsm3SymbolTable::substitute ( const std::string & origSymbol,
             {
                 if ( origSymbol == expr->m_rValue.m_data.m_symbol )
                 {
-                    expr->m_rValue = CompilerExpr::Value(newSymbol->copyChainLink());
+                    if ( CompilerExpr::OPER_NONE == newSymbol->oper() )
+                    {
+                        expr->m_rValue = newSymbol->lVal().makeCopy();
+                    }
+                    else
+                    {
+                        expr->m_rValue = CompilerExpr::Value(newSymbol->copyChainLink());
+                    }
                     result++;
                 }
             }
@@ -436,7 +517,10 @@ std::ostream & operator << ( std::ostream & out,
         {
             case AsmKcpsm3SymbolTable::STYPE_UNSPECIFIED: out << "        "; break;
             case AsmKcpsm3SymbolTable::STYPE_NUMBER:      out << " NUMBER "; break;
+            case AsmKcpsm3SymbolTable::STYPE_REGISTER:    out << " REG.   "; break;
             case AsmKcpsm3SymbolTable::STYPE_LABEL:       out << " LABEL  "; break;
+            case AsmKcpsm3SymbolTable::STYPE_PORT:        out << " PORT   "; break;
+            case AsmKcpsm3SymbolTable::STYPE_EXPRESSION:  out << " EXPR.  "; break;
         }
 
         if ( -1 == symbol->second.m_finalValue )
@@ -468,7 +552,14 @@ std::ostream & operator << ( std::ostream & out,
             out << "REDEFINABLE ";
         }
 
-        symbolTable->printSymLocation(out, symbol->second.m_location);
+        if ( AsmKcpsm3Macros::MANGLE_PREFIX == symbol->first[0] )
+        {
+            out << "LOCAL";
+        }
+        else
+        {
+            symbolTable->printSymLocation(out, symbol->second.m_location);
+        }
 
         out << std::endl;
     }
@@ -483,7 +574,10 @@ std::ostream & operator << ( std::ostream & out,
     {
         case AsmKcpsm3SymbolTable::STYPE_UNSPECIFIED: out << "STYPE_UNSPECIFIED"; break;
         case AsmKcpsm3SymbolTable::STYPE_NUMBER:      out << "STYPE_NUMBER";      break;
+        case AsmKcpsm3SymbolTable::STYPE_REGISTER:    out << "STYPE_REGISTER";    break;
         case AsmKcpsm3SymbolTable::STYPE_LABEL:       out << "STYPE_LABEL";       break;
+        case AsmKcpsm3SymbolTable::STYPE_PORT:        out << "STYPE_PORT";        break;
+        case AsmKcpsm3SymbolTable::STYPE_EXPRESSION:  out << "STYPE_EXPRESSION";  break;
     }
 
     return out;

@@ -160,27 +160,27 @@ DIS_INT_INST            "disable"{WSPACE}"interrupt"
                         }
 }
 
+\.?"reg"                { return D_REG; }
 \.?"namereg"            { return D_NAMEREG; }
 \.?"address"            { return D_ORG; }
+\.?"org"                { return D_ORG; }
+\.?"define"             { return D_DEFINE; }
+\.?"undefine"           { return D_UNDEFINE; }
+\.?"equ"                { return D_EQU; }
 \.?"constant"           { return D_CONSTANT; }
-\.?"radix"              { return D_RADIX; }
-\.?"fill"               { return D_FILL; }
 \.?"set"                { return D_SET; }
 \.?"variable"           { return D_VARIABLE; }
 \.?"while"              { return D_WHILE; }
 \.?"endw"               { return D_ENDW; }
-\.?"data"               { return D_DATA; }
+\.?"port"               { return D_PORT; }
 \.?"code"               { return D_CODE; }
-\.?"register"           { return D_REGISTER; }
 \.?"db"                 { return D_DB; }
-\.?"endc"               { return D_ENDC; }
 \.?"error"              { return D_ERROR; }
+\.?"warning"            { return D_WARNING; }
 \.?"list"               { return D_LIST; }
 \.?"messg"              { return D_MESSG; }
 \.?"nolist"             { return D_NOLIST; }
-\."page"                { return D_PAGE; }
 \.?"skip"               { return D_SKIP; }
-\.?"subtitle"           { return D_SUBTITLE; }
 \.?"title"              { return D_TITLE; }
 \.?"expand"             { return D_EXPAND; }
 \.?"noexpand"           { return D_NOEXPAND; }
@@ -203,9 +203,10 @@ DIS_INT_INST            "disable"{WSPACE}"interrupt"
 \.?"endm"               { return D_ENDM; }
 \.?"exitm"              { return D_EXITM; }
 \.?"rept"               { return D_REPT; }
+\.?"endr"               { return D_ENDR; }
+\.?"regauto"            { return D_REGAUTO; }
+\.?"sprauto"            { return D_SPRAUTO; }
 \.?"macro"              { return D_MACRO; }
-\.?"equ"                { return D_EQU; }
-\.?"org"                { return D_ORG; }
 \.?"end"                {
                             // Close the current file
                             kcpsm3lexer_pop_buffer_state(yyscanner);
@@ -257,19 +258,11 @@ DIS_INT_INST            "disable"{WSPACE}"interrupt"
 
 "high"                  { return F_HIGH; }
 "low"                   { return F_LOW; }
-"byte2"                 { return F_BYTE2; }
-"byte3"                 { return F_BYTE3; }
-"byte4"                 { return F_BYTE4; }
-"lwrd"                  { return F_LWRD; }
-"hwrd"                  { return F_HWRD; }
-"page"                  { return F_PAGE; }
-"exp2"                  { return F_EXP2; }
-"log2"                  { return F_LOG2; }
 
-":"                     { return COLON; }
-".."                    { return INTERVAL; }
+"at"                    { return AT; }
 "("                     { return LP; }
 ")"                     { return RP; }
+"#"                     { return IMMEDIATE; }
 ","                     { return COMMA; }
 "/"                     { return SLASH; }
 "+"                     { return PLUS; }
@@ -281,7 +274,6 @@ DIS_INT_INST            "disable"{WSPACE}"interrupt"
 ">>"                    { return SHR; }
 "&&"                    { return AND; }
 "||"                    { return OR; }
-"^^"                    { return XOR; }
 "&"                     { return BITAND; }
 "|"                     { return BITOR; }
 "^"                     { return BITXOR; }
@@ -292,20 +284,6 @@ DIS_INT_INST            "disable"{WSPACE}"interrupt"
 "<="                    { return LE; }
 ">"                     { return GT; }
 ">="                    { return GE; }
-"="                     { return ASSIGN; }
-"~"                     { return COMPLEMET; }
-"+="                    { return ADD_ASSIGN; }
-"-="                    { return SUB_ASSIGN; }
-"*="                    { return MUL_ASSIGN; }
-"/="                    { return DIV_ASSIGN; }
-"%="                    { return MOD_ASSIGN; }
-"<<="                   { return SHL_ASSIGN; }
-">>="                   { return SHR_ASSIGN; }
-"&="                    { return AND_ASSIGN; }
-"|="                    { return ORB_ASSIGN; }
-"^="                    { return XOR_ASSIGN; }
-"++"                    { return INCREMENT; }
-"--"                    { return DECREMENT; }
 
 \.?"include"            {
                             // Handle `include' directive

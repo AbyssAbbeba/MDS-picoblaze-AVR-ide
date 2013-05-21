@@ -54,10 +54,11 @@ class CompilerBase
          */
         enum MessageType
         {
-            MT_GENERAL, ///<
-            MT_ERROR,   ///<
-            MT_WARNING, ///<
-            MT_REMARK   ///<
+            MT_INVALID = 0, ///<
+            MT_GENERAL,     ///<
+            MT_ERROR,       ///<
+            MT_WARNING,     ///<
+            MT_REMARK       ///<
         };
 
         /**
@@ -84,6 +85,10 @@ class CompilerBase
                              int colStart,
                              int colEnd );
 
+            /**
+             * @brief
+             * @return
+             */
             bool isSet() const;
 
             ///

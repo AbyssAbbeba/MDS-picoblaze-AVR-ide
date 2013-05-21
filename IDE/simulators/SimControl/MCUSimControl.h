@@ -56,7 +56,7 @@ class MCUSimControl : public QObject
         enum DataFileType
         {
             DBGFILEID_HEX,      ///< Intel HEX
-            DBGFILEID_COFF,     ///< Common Object File Format - an archaic format, today widely replaced with ELF, etc.
+            DBGFILEID_COFF,     ///< Common Object File Format (an archaic format, today widely replaced with ELF, etc.)
             DBGFILEID_SREC      // TODO: Not fully supported yet!
         };
 

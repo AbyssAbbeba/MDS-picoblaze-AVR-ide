@@ -695,12 +695,37 @@ namespace StatementTypes
         /// @name KCPSM3
         //@{
             ASMKCPSM3_DIR_MACRO,            ///<
+            ASMKCPSM3_DIR_ENDM,             ///<
+            ASMKCPSM3_DIR_EXITM,            ///<
             ASMKCPSM3_MACRO,                ///<
             ASMKCPSM3_LABEL,                ///<
             ASMKCPSM3_DIR_EQU,              ///<
             ASMKCPSM3_DIR_END,              ///<
             ASMKCPSM3_INCLUDE,              ///<
             ASMKCPSM3_DIR_ORG,              ///<
+            ASMKCPSM3_DIR_SKIP,             ///<
+            ASMKCPSM3_LOCAL,                ///<
+            ASMKCPSM3_DIR_SET,              ///<
+            ASMKCPSM3_DIR_DEFINE,           ///<
+            ASMKCPSM3_DIR_UNDEFINE,         ///<
+            ASMKCPSM3_DIR_CODE,             ///<
+            ASMKCPSM3_DIR_REG,              ///<
+            ASMKCPSM3_DIR_PORT,             ///<
+            ASMKCPSM3_DIR_REPT,             ///<
+            ASMKCPSM3_DIR_ENDR,             ///<
+            ASMKCPSM3_DIR_WHILE,            ///<
+            ASMKCPSM3_DIR_ENDW,             ///<
+            ASMKCPSM3_DIR_LIST,             ///<
+            ASMKCPSM3_DIR_NOLIST,           ///<
+            ASMKCPSM3_DIR_EXPAND,           ///<
+            ASMKCPSM3_DIR_NOEXPAND,         ///<
+            ASMKCPSM3_DIR_TITLE,            ///<
+            ASMKCPSM3_DIR_MESSG,            ///<
+            ASMKCPSM3_DIR_ERROR,            ///<
+            ASMKCPSM3_DIR_WARNING,          ///<
+            ASMKCPSM3_DIR_DB,               ///<
+            ASMKCPSM3_DIR_REGAUTO,          ///<
+            ASMKCPSM3_DIR_SPRAUTO,          ///<
 
             ASMKCPSM3_COND_ASM,             ///<
             ASMKCPSM3_DIR_IF,               ///<
@@ -716,6 +741,7 @@ namespace StatementTypes
             ASMKCPSM3_DIR_ELSEIFNDEF,       ///<
             ASMKCPSM3_DIR_IFB,              ///<
             ASMKCPSM3_DIR_IFNB,             ///<
+            ASMKCPSM3_DIR_ENDIF,            ///<
 
             ASMKCPSM3_INS_JUMP_AAA,         ///<
             ASMKCPSM3_INS_JUMP_Z_AAA,       ///<

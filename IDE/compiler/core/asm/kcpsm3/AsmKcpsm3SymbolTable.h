@@ -55,7 +55,10 @@ class AsmKcpsm3SymbolTable
             STYPE_UNSPECIFIED = -1, ///<
 
             STYPE_NUMBER,           ///<
-            STYPE_LABEL             ///<
+            STYPE_REGISTER,         ///<
+            STYPE_LABEL,            ///<
+            STYPE_PORT,             ///<
+            STYPE_EXPRESSION,       ///<
         };
 
         /**
@@ -71,7 +74,8 @@ class AsmKcpsm3SymbolTable
             Symbol ( const CompilerExpr * value = NULL,
                      const CompilerBase::SourceLocation * location = NULL,
                      SymbolType type = STYPE_UNSPECIFIED,
-                     int finalValue = -1 );
+                     int finalValue = -1,
+                     bool redefinable = false );
 
             /**
              * @brief
@@ -119,13 +123,30 @@ class AsmKcpsm3SymbolTable
          * @param[in] location
          * @param[in] type
          * @param[in] resolve
+         * @param[in] redefinable
          * @return
          */
         int addSymbol ( const std::string & name,
                         const CompilerExpr * value = NULL,
                         const CompilerBase::SourceLocation * location = NULL,
                         const SymbolType type = STYPE_UNSPECIFIED,
-                        bool resolve = false );
+                        bool resolve = false,
+                        bool redefinable = false );
+
+        /**
+         * @brief
+         * @param[in] name
+         * @param[in] value
+         * @param[in] location
+         * @param[in] type
+         * @param[in] resolve
+         * @return
+         */
+        int assignValue ( const std::string & name,
+                          const CompilerExpr * value,
+                          const CompilerBase::SourceLocation * location = NULL,
+                          const SymbolType type = STYPE_UNSPECIFIED,
+                          bool resolve = false );
 
         /**
          * @brief
@@ -149,18 +170,6 @@ class AsmKcpsm3SymbolTable
         /**
          * @brief
          * @param[in] name
-         * @param[in] value
-         * @param[in] type
-         * @param[in] resolve
-         */
-        void assignValue ( const std::string & name,
-                           const CompilerExpr * value,
-                           const SymbolType type = STYPE_UNSPECIFIED,
-                           bool resolve = false );
-
-        /**
-         * @brief
-         * @param[in] name
          * @param[in] type
          * @return
          */
@@ -171,10 +180,12 @@ class AsmKcpsm3SymbolTable
          * @brief
          * @param[in] expr
          * @param[in] bitsMax
+         * @param[in] origLocation
          * @return
          */
         unsigned int resolveExpr ( const CompilerExpr * expr,
-                                   int bitsMax = -1 );
+                                   int bitsMax = -1,
+                                   const CompilerBase::SourceLocation * origLocation = NULL );
 
         /**
          * @brief

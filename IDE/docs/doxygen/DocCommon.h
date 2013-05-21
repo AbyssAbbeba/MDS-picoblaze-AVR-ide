@@ -86,6 +86,17 @@
 
 /**
  * @defgroup tests Automated tests
+ * This group contains automated unit test for various components of the MDS.
+ *
+ * @defgroup testsCompiler Compiler
+ * @ingroup tests
+ * This group contains components of the KCPSM3 assembler.
+ *
+ * @defgroup testsAssembler Assembler
+ * @ingroup testsCompiler
+ *
+ * @defgroup testsAssemblerPicoBlaze PicoBlaze assembler
+ * @ingroup testsAssembler
  */
 
 /**

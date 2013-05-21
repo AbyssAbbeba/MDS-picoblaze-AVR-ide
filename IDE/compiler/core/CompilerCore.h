@@ -22,6 +22,7 @@ class CompilerStatement;
 class CompilerMsgInterface;
 class CompilerOptions;
 class SemanticAnalyzer;
+class CompilerMsgObserver;
 
 // Base class and compiler interfaces.
 #include "CompilerBase.h"
@@ -191,7 +192,25 @@ class CompilerCore : public CompilerBase,
              * @return
              */
             bool successful() const;
+
+            /**
+             * @brief
+             * @param[in,out] observer
+             * @return
+             */
+            void registerMsgObserver ( CompilerMsgObserver * observer );
         //@}
+
+    ////    Inline Public Operations    ////
+    public:
+        /**
+         * @brief
+         * @return
+         */
+        CompilerOptions * getCompilationOptions() const
+        {
+            return m_opts;
+        }
 
     ////    Inline Private Operations    ////
     private:
@@ -239,6 +258,11 @@ class CompilerCore : public CompilerBase,
          * @brief
          */
         CompilerMsgInterface * const m_msgInterface;
+
+        /**
+         * @brief
+         */
+        CompilerMsgObserver * m_msgObserver;
 
         /**
          * @brief

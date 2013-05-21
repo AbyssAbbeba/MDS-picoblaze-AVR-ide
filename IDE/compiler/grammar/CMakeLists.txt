@@ -25,8 +25,8 @@ set ( CMAKE_VERBOSE_MAKEFILE OFF )
 # GENERATE LEXICAL AND SYNTAX ANALYZERS
 # ------------------------------------------------------------------------------
 
-find_package ( BISON )       # Syntactic analyzer generator
-find_package ( FLEX 2.5.35 ) # Lexical analyzer generator
+find_package ( BISON ) # Syntactic analyzer generator
+find_package ( FLEX )  # Lexical analyzer generator
 
 # Assembler for 8-bit AVR
 BISON_TARGET ( avr8parser avr8parser.y avr8parser.cxx VERBOSE "avr8parser.output" )
@@ -50,7 +50,7 @@ FLEX_TARGET ( kcpsm3lexer kcpsm3lexer.l kcpsm3lexer.cxx)
 
 # List of additional files that will be cleaned as a part of the "make clean" stage.
 set_directory_properties ( PROPERTIES
-                           ADDITIONAL_MAKE_CLEAN_FILES "mcs51lexer.h;mcs51parser.h;mcs51parser.output;pic8lexer.h;pic8parser.h;pic8parser.output;;avr8lexer.h;avr8parser.h;avr8parser.output;kcpsm3lexer.h;kcpsm3parser.h;kcpsm3parser.output")
+                           ADDITIONAL_MAKE_CLEAN_FILES "mcs51lexer.h;mcs51parser.h;mcs51parser.output;pic8lexer.h;pic8parser.h;pic8parser.output;avr8lexer.h;avr8parser.h;avr8parser.output;kcpsm3lexer.h;kcpsm3parser.h;kcpsm3parser.output")
 
 # ------------------------------------------------------------------------------
 # COMPILATION OPTIONS

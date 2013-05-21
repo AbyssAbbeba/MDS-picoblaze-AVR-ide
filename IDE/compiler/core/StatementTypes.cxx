@@ -626,11 +626,37 @@ std::ostream & operator << ( std::ostream & out,
 
         case ASMKCPSM3_DIR_MACRO:               out << "ASMKCPSM3_DIR_MACRO";           break;
         case ASMKCPSM3_MACRO:                   out << "ASMKCPSM3_MACRO";               break;
+        case ASMKCPSM3_DIR_ENDM:                out << "ASMKCPSM3_DIR_ENDM";            break;
+        case ASMKCPSM3_DIR_EXITM:               out << "ASMKCPSM3_DIR_EXITM";           break;
         case ASMKCPSM3_LABEL:                   out << "ASMKCPSM3_LABEL";               break;
         case ASMKCPSM3_DIR_EQU:                 out << "ASMKCPSM3_DIR_EQU";             break;
         case ASMKCPSM3_DIR_END:                 out << "ASMKCPSM3_DIR_END";             break;
         case ASMKCPSM3_INCLUDE:                 out << "ASMKCPSM3_INCLUDE";             break;
         case ASMKCPSM3_DIR_ORG:                 out << "ASMKCPSM3_DIR_ORG";             break;
+        case ASMKCPSM3_DIR_SKIP:                out << "ASMKCPSM3_DIR_SKIP";            break;
+        case ASMKCPSM3_LOCAL:                   out << "ASMKCPSM3_LOCAL";               break;
+        case ASMKCPSM3_DIR_SET:                 out << "ASMKCPSM3_DIR_SET";             break;
+        case ASMKCPSM3_DIR_DEFINE:              out << "ASMKCPSM3_DIR_DEFINE";          break;
+        case ASMKCPSM3_DIR_UNDEFINE:            out << "ASMKCPSM3_DIR_UNDEFINE";        break;
+        case ASMKCPSM3_DIR_CODE:                out << "ASMKCPSM3_DIR_CODE";            break;
+        case ASMKCPSM3_DIR_REG:                 out << "ASMKCPSM3_DIR_REG";             break;
+        case ASMKCPSM3_DIR_PORT:                out << "ASMKCPSM3_DIR_PORT";            break;
+        case ASMKCPSM3_DIR_REPT:                out << "ASMKCPSM3_DIR_REPT";            break;
+        case ASMKCPSM3_DIR_ENDR:                out << "ASMKCPSM3_DIR_ENDR";            break;
+        case ASMKCPSM3_DIR_WHILE:               out << "ASMKCPSM3_DIR_WHILE";           break;
+        case ASMKCPSM3_DIR_ENDW:                out << "ASMKCPSM3_DIR_ENDW";            break;
+        case ASMKCPSM3_DIR_LIST:                out << "ASMKCPSM3_DIR_LIST";            break;
+        case ASMKCPSM3_DIR_NOLIST:              out << "ASMKCPSM3_DIR_NOLIST";          break;
+        case ASMKCPSM3_DIR_EXPAND:              out << "ASMKCPSM3_DIR_EXPAND";          break;
+        case ASMKCPSM3_DIR_NOEXPAND:            out << "ASMKCPSM3_DIR_NOEXPAND";        break;
+        case ASMKCPSM3_DIR_TITLE:               out << "ASMKCPSM3_DIR_TITLE";           break;
+        case ASMKCPSM3_DIR_MESSG:               out << "ASMKCPSM3_DIR_MESSG";           break;
+        case ASMKCPSM3_DIR_ERROR:               out << "ASMKCPSM3_DIR_ERROR";           break;
+        case ASMKCPSM3_DIR_WARNING:             out << "ASMKCPSM3_DIR_WARNING";         break;
+        case ASMKCPSM3_DIR_DB:                  out << "ASMKCPSM3_DIR_DB";              break;
+        case ASMKCPSM3_DIR_REGAUTO:             out << "ASMKCPSM3_DIR_REGAUTO";         break;
+        case ASMKCPSM3_DIR_SPRAUTO:             out << "ASMKCPSM3_DIR_SPRAUTO";         break;
+
 
         case ASMKCPSM3_COND_ASM:                out << "ASMKCPSM3_COND_ASM";            break;
         case ASMKCPSM3_DIR_IF:                  out << "ASMKCPSM3_DIR_IF";              break;
@@ -646,6 +672,7 @@ std::ostream & operator << ( std::ostream & out,
         case ASMKCPSM3_DIR_ELSEIFNDEF:          out << "ASMKCPSM3_DIR_ELSEIFNDEF";      break;
         case ASMKCPSM3_DIR_IFB:                 out << "ASMKCPSM3_DIR_IFB";             break;
         case ASMKCPSM3_DIR_IFNB:                out << "ASMKCPSM3_DIR_IFNB";            break;
+        case ASMKCPSM3_DIR_ENDIF:               out << "ASMKCPSM3_DIR_ENDIF";           break;
 
         case ASMKCPSM3_INS_JUMP_AAA:            out << "ASMKCPSM3_INS_JUMP_AAA";        break;
         case ASMKCPSM3_INS_JUMP_Z_AAA:          out << "ASMKCPSM3_INS_JUMP_Z_AAA";      break;

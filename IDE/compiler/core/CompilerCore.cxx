@@ -20,6 +20,8 @@
 #include "CompilerMsgInterface.h"
 #include "CompilerOptions.h"
 #include "SemanticAnalyzer.h"
+#include "CompilerMsgObserver.h"
+#include "CompilerMsgFilter.h"
 
 // Standard header files.
 #include <sstream>
@@ -33,11 +35,11 @@
 
 #include <QObject> // Used for i18n only
 
-#include <iostream>
-
 CompilerCore::CompilerCore ( CompilerMsgInterface * msgInterface )
-                           : m_msgInterface(msgInterface)
+                           : m_msgInterface ( new CompilerMsgFilter(this, msgInterface) )
 {
+    m_opts = NULL;
+    m_msgObserver = NULL;
     m_semanticAnalyzer = NULL;
     m_rootStatement = NULL;
     m_fileNumber = -1;
@@ -123,7 +125,8 @@ inline bool CompilerCore::setupSemanticAnalyzer ( LangId lang,
                     m_semanticAnalyzer = new AsmKcpsm3SemanticAnalyzer ( this, m_opts );
                     break;
                 default:
-                    m_msgInterface->message ( QObject::tr("Architecture not supported for the selected language.").toStdString(),
+                    m_msgInterface->message ( QObject::tr ( "Architecture not supported for the selected language." )
+                                                          . toStdString(),
                                               MT_ERROR );
                     return false;
             }
@@ -181,7 +184,8 @@ inline bool CompilerCore::startLexerAndParser ( LangId lang,
                     kcpsm3lexer_lex_destroy ( yyscanner );
                     break;
                 default:
-                    m_msgInterface->message ( QObject::tr("Architecture not supported for the selected language.").toStdString(),
+                    m_msgInterface->message ( QObject::tr ( "Architecture not supported for the selected language." )
+                                                          . toStdString(),
                                               MT_ERROR );
                     return false;
             }
@@ -200,11 +204,19 @@ void CompilerCore::parserMessage ( SourceLocation location,
                                    MessageType type,
                                    const std::string & text )
 {
+    if ( NULL != m_msgObserver )
+    {
+        m_msgObserver->message(location, type, text);
+    }
+
     std::stringstream msgText;
 
     std::string msgType;
     switch ( type )
     {
+        case MT_INVALID:
+            // This should never happen; when the control flow reaches this point, there is bug in the compiler!
+            return;
         case MT_GENERAL:
             break;
         case MT_ERROR:
@@ -266,6 +278,9 @@ void CompilerCore::compilerMessage ( MessageType type,
 
     switch ( type )
     {
+        case MT_INVALID:
+            // This should never happen; when the control flow reaches this point, there is bug in the compiler!
+            return;
         case MT_GENERAL:
             break;
         case MT_ERROR:
@@ -300,8 +315,15 @@ inline void CompilerCore::setFileName ( const std::string & filename )
     }
 }
 
+void CompilerCore::registerMsgObserver ( CompilerMsgObserver * observer )
+{
+    m_msgObserver = observer;
+}
+
 inline void CompilerCore::resetCompilerCore()
 {
+    m_opts = NULL;
+    m_msgObserver = NULL;
     m_success = true;
     if ( NULL != m_rootStatement )
     {
@@ -311,6 +333,7 @@ inline void CompilerCore::resetCompilerCore()
     if ( NULL != m_semanticAnalyzer )
     {
         delete m_semanticAnalyzer;
+        m_semanticAnalyzer = NULL;
     }
 
     m_fileNameStack.clear();
@@ -414,7 +437,15 @@ void CompilerCore::syntaxAnalysisComplete ( CompilerStatement * codeTree )
     if ( NULL != m_rootStatement )
     {
         m_rootStatement->completeDelete();
+        m_rootStatement = NULL;
     }
+
+    if ( true == m_opts->m_syntaxCheckOnly )
+    {
+        codeTree->completeDelete();
+        return;
+    }
+
     m_rootStatement = new CompilerStatement();
     if ( NULL != codeTree )
     {
@@ -443,7 +474,12 @@ const std::string & CompilerCore::getFileName ( int fileNumber ) const
 
 std::string CompilerCore::locationToStr ( const CompilerBase::SourceLocation & location ) const
 {
-    std::string result = getFileName(location.m_fileNumber);
+    if ( -1 == location.m_fileNumber || location.m_fileNumber >= (int)m_fileNames.size() )
+    {
+        return "";
+    }
+
+    std::string result = getFileName(location.m_fileNumber);;
 
     char tmp[100];
     sprintf ( tmp,
