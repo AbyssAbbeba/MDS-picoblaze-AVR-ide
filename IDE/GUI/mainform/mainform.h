@@ -26,6 +26,8 @@
 #include "../widgets/Tools/Display/displaytool.h"
 #include "../widgets/Tools/Convertor/convertortool.h"
 #include "../project/project.h"
+#include "../../compiler/core/CompilerThread.h"
+#include "../../compiler/core/CompilerOptions.h"
 
 
 class ProjectMan;
@@ -83,6 +85,7 @@ class MainForm : public QMainWindow
         void setEditorReadOnly(bool readOnly);
         void addUntrackedFile(QString name, QString path);
         void openFilePath(QString path);
+        void reloadCompileInfo(const std::string &text, CompilerBase::MessageType type);
 
     //signals:
     //    void dockWidgetsCreated;

@@ -3,8 +3,18 @@
 
 
 typedef enum LangType {
-    LANG_ASM = 0, LANG_C
+    LANG_ASM = 0,
+    LANG_C
 } LangType;
+
+
+typedef enum ErrorCode {
+    //remove d
+    dERR_OPENFILE = 2000,
+    dERR_XML_CONTENT,
+    dERR_XML_ASSIGN,
+    dERR_NO_PROJECT
+} ErrorCode;
 
 
 #endif
