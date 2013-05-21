@@ -32,6 +32,8 @@ CompilerOptions::CompilerOptions()
     m_maxInclusion = -1;
     m_hexMaxRecLength = 255;
     m_syntaxCheckOnly = false;
+
+    m_verbosity = (Verbosity)( V_GENERAL | V_ERRORS | V_WARNINGS | V_REMARKS );
 }
 
 std::ostream & operator << ( std::ostream & out,

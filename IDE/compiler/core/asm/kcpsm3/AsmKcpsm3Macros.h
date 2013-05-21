@@ -41,6 +41,11 @@ class AsmKcpsm3Macros
     friend std::ostream & operator << ( std::ostream & out,
                                         const AsmKcpsm3Macros * macros );
 
+    ////    Public Static Constants    ////
+    public:
+        /// @brief
+        static const char MANGLE_PREFIX = ':';
+
     ////    Public Datatypes    ////
     public:
         /**
@@ -113,13 +118,15 @@ class AsmKcpsm3Macros
                       CompilerStatement * macroDef );
 
         /**
-         * @brief
+         * @brief 
+         * @param[in] msgLocation
          * @param[in] location
          * @param[in] name
          * @param[in] arguments
          * @return
          */
-        CompilerStatement * expand ( CompilerBase::SourceLocation location,
+        CompilerStatement * expand ( const CompilerBase::SourceLocation & msgLocation,
+                                     const CompilerBase::SourceLocation & location,
                                      const std::string & name,
                                      const CompilerExpr * arguments );
 
@@ -135,11 +142,39 @@ class AsmKcpsm3Macros
 
         /**
          * @brief
+         * @param[in] enabled
+         */
+        void setExpEnabled ( bool enabled );
+
+        /**
+         * @brief
          * @param[in,out] out
          * @param[in] location
          */
         void printSymLocation ( std::ostream & out,
                                 const CompilerBase::SourceLocation & location ) const;
+
+        /**
+         * @brief
+         * @param[in] node
+         * @return
+         */
+        bool isFromMacro ( const CompilerStatement * node ) const;
+
+        /**
+         * @brief
+         * @param[in] location
+         * @param[in,out] localSymbols
+         * @param[in] local
+         * @param[in] macroName
+         * @param[in,out] node
+         * @return
+         */
+        bool mangleName ( const CompilerBase::SourceLocation & location,
+                          std::vector<std::string> * localSymbols,
+                          const std::string & local,
+                          const std::string & macroName,
+                          CompilerStatement * node );
 
     ////    Private Operations    ////
     private:
@@ -147,11 +182,18 @@ class AsmKcpsm3Macros
          * @brief
          * @param[in] parameter
          * @param[in] argument
-         * @param[in] target
+         * @param[in,out] target
+         * @return
          */
-        void paramSubst ( const std::string & parameter,
-                          const CompilerExpr * argument,
-                          CompilerStatement * target );
+        bool symbolSubst ( const std::string & parameter,
+                           const CompilerExpr * argument,
+                           CompilerStatement * target );
+
+        /**
+         * @brief
+         * @param[in,out] macro
+         */
+        void incrMacroCounter ( CompilerStatement * macro ) const;
 
     ////    Private Attributes    ////
     private:
@@ -175,6 +217,9 @@ class AsmKcpsm3Macros
 
         ///
         AsmKcpsm3CodeListing * const m_codeListing;
+
+        ///
+        bool m_expEnabled;
 };
 
 /// @name Tracing operators

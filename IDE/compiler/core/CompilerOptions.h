@@ -65,6 +65,17 @@ class CompilerOptions
             std::vector<char> m_disabledInstructions;
         };
 
+        /**
+         * @brief
+         */
+        enum Verbosity
+        {
+            V_GENERAL  = 0x1, ///<
+            V_ERRORS   = 0x2, ///<
+            V_WARNINGS = 0x4, ///<
+            V_REMARKS  = 0x8  ///<
+        };
+
     ////    Constructors and Destructors    ////
     public:
         /**
@@ -133,6 +144,9 @@ class CompilerOptions
 
             /// Make backup copy of every file which would be overwritten by direct output from the compiler.
             bool m_makeBackupFiles;
+
+            /// 
+            Verbosity m_verbosity;
         //@}
 };
 

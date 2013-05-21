@@ -18,6 +18,9 @@
 #include "AsmKcpsm3SymbolTable.h"
 #include "AsmKcpsm3CodeListing.h"
 
+// Common compiler header files.
+#include "../../StatementTypes.h"
+
 // Standard headers.
 #include <cstdio>
 #include <fstream>
@@ -36,12 +39,16 @@ AsmKcpsm3Macros::AsmKcpsm3Macros ( CompilerSemanticInterface * compilerCore,
                                    m_symbolTable ( symbolTable ),
                                    m_codeListing ( codeListing )
 {
-    m_idCounter = 0;
-    m_expCounter = 0;
+    clear();
 }
 
 AsmKcpsm3Macros::~AsmKcpsm3Macros()
 {
+}
+
+void AsmKcpsm3Macros::setExpEnabled ( bool enabled )
+{
+    m_expEnabled = enabled;
 }
 
 void AsmKcpsm3Macros::define ( CompilerBase::SourceLocation location,
@@ -61,6 +68,10 @@ void AsmKcpsm3Macros::define ( CompilerBase::SourceLocation location,
                                             QObject::tr("redefinition of macro ").toStdString() + "\"" + name + "\"" + QObject::tr("original definition is at ").toStdString() + m_compilerCore->locationToStr(m_table[name].m_location) );
     }
 
+    // Remove `ENDM' statement.
+    delete macroDef->last();
+
+    incrMacroCounter(macroDef);
     m_table[name] = Macro(location, m_idCounter++);
     m_table[name].m_definition = macroDef;
 
@@ -72,13 +83,39 @@ void AsmKcpsm3Macros::define ( CompilerBase::SourceLocation location,
     }
 }
 
-CompilerStatement * AsmKcpsm3Macros::expand ( CompilerBase::SourceLocation location,
+bool AsmKcpsm3Macros::isFromMacro ( const CompilerStatement * node ) const
+{
+    return ( 0 != node->m_userData );
+}
+
+void AsmKcpsm3Macros::incrMacroCounter ( CompilerStatement * macro ) const
+{
+    if ( NULL == macro )
+    {
+        return;
+    }
+
+    macro->m_userData++;
+    incrMacroCounter(macro->m_branch);
+    incrMacroCounter(macro->m_next);
+}
+
+CompilerStatement * AsmKcpsm3Macros::expand ( const CompilerBase::SourceLocation & msgLocation,
+                                              const CompilerBase::SourceLocation & location,
                                               const std::string & name,
                                               const CompilerExpr * arguments )
 {
+    if ( false == m_expEnabled )
+    {
+        m_compilerCore -> compilerMessage ( msgLocation,
+                                            CompilerBase::MT_REMARK,
+                                            QObject::tr("macro `%1' will not be expanded because macro expansion has been disabled: ").arg(name.c_str()).toStdString() );
+        return NULL;
+    }
+
     if ( m_table.end() == m_table.find(name) )
     {
-        m_compilerCore -> compilerMessage ( location,
+        m_compilerCore -> compilerMessage ( msgLocation,
                                             CompilerBase::MT_ERROR,
                                             QObject::tr("macro not defined: ").toStdString() + "\"" + name + "\"" );
         return new CompilerStatement();
@@ -89,6 +126,12 @@ CompilerStatement * AsmKcpsm3Macros::expand ( CompilerBase::SourceLocation locat
 
     macro.m_usageCounter++;
 
+    m_expCounter++;
+    m_codeListing->expandMacro ( location,
+                                 macro.m_definition,
+                                 result );
+
+    // Substitute macro parameters with expansion arguments.
     int numberOfParams = (int) macro.m_parameters.size();
     int argNo = -1;
     for ( const CompilerExpr * arg = arguments;
@@ -105,39 +148,86 @@ CompilerStatement * AsmKcpsm3Macros::expand ( CompilerBase::SourceLocation locat
             break;
         }
 
-        paramSubst ( macro.m_parameters[argNo],
+        symbolSubst ( macro.m_parameters[argNo],
                      arg,
                      result );
     }
 
     // Substitute remaining parameters with "blank values".
-    const CompilerExpr blankExpr;
-    for ( int i = argNo; i < numberOfParams; i++ )
+    static const CompilerExpr blankExpr;
+    for ( int i = argNo + 1; i < numberOfParams; i++ )
     {
-        paramSubst ( macro.m_parameters[i], &blankExpr, result );
+        const std::string & param = macro.m_parameters[i];
+        symbolSubst ( param, &blankExpr, result );
+        m_compilerCore -> compilerMessage ( location,
+                                            CompilerBase::MT_REMARK,
+                                            QObject::tr("parameter `%1' substituted for blank value").arg(param.c_str()).toStdString() );
     }
-
-    m_expCounter++;
-    m_codeListing->expandMacro ( location,
-                                 macro.m_definition,
-                                 result );
 
     return result;
 }
 
-void AsmKcpsm3Macros::paramSubst ( const std::string & parameter,
-                                   const CompilerExpr * argument,
-                                   CompilerStatement * target )
+bool AsmKcpsm3Macros::mangleName ( const CompilerBase::SourceLocation & location,
+                                   std::vector<std::string> * localSymbols,
+                                   const std::string & local,
+                                   const std::string & macroName,
+                                   CompilerStatement * node )
+{
+    if ( NULL == node )
+    {
+        return false;
+    }
+
+    bool result = false;
+    bool found = false;
+
+    for ( std::vector<std::string>::const_iterator i = localSymbols->cbegin();
+            i != localSymbols->cend();
+            i++ )
+    {
+        if ( *i == local )
+        {
+            found = true;
+            m_compilerCore -> compilerMessage ( location,
+                                                CompilerBase::MT_WARNING,
+                                                QObject::tr ( "symbol `%1' already declared as local" )
+                                                            . arg(i->c_str()).toStdString() );
+        }
+    }
+
+    if ( false == found )
+    {
+        char usageCounter[10];
+        sprintf(usageCounter, "%d", m_table[macroName].m_usageCounter);
+        const CompilerExpr mangledName(MANGLE_PREFIX + macroName + "." + local + "." + usageCounter);
+
+        result |= symbolSubst ( local, &mangledName, node );
+        localSymbols->push_back(local);
+    }
+
+    return result;
+}
+
+bool AsmKcpsm3Macros::symbolSubst ( const std::string & parameter,
+                                    const CompilerExpr * argument,
+                                    CompilerStatement * target )
 {
     if ( NULL == target )
     {
-        return;
+        return false;;
     }
 
-    paramSubst ( parameter, argument, target->next() );
-    paramSubst ( parameter, argument, target->branch() );
+    bool result = false;
 
-    m_symbolTable->substitute ( parameter, argument, target->args() );
+    result |= symbolSubst ( parameter, argument, target->next() );
+    result |= symbolSubst ( parameter, argument, target->branch() );
+
+    if ( 0 != m_symbolTable->substitute ( parameter, argument, target->args() ) )
+    {
+        result = true;
+    }
+
+    return result;
 }
 
 
@@ -174,6 +264,9 @@ void AsmKcpsm3Macros::output()
 
 void AsmKcpsm3Macros::clear()
 {
+    m_idCounter = 0;
+    m_expCounter = 0;
+    m_expEnabled = true;
     m_table.clear();
 }
 

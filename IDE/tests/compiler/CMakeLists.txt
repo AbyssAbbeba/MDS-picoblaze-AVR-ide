@@ -1,6 +1,6 @@
 # ==============================================================================
 #
-# Unit tests.
+# Unit tests for compiler.
 #
 # (C) copyright 2013 Moravia Microsystems, s.r.o.
 #
@@ -12,7 +12,7 @@
 # ------------------------------------------------------------------------------
 
 # Set project name
-project ( tests )
+project ( testsCompiler )
 
 # Set the minimum required version of CMake
 cmake_minimum_required ( VERSION 2.8 )
@@ -28,12 +28,5 @@ enable_testing()
 # BUILD COMPONENTS IN THE SUBDIRECTORIES
 # ------------------------------------------------------------------------------
 
-# Tests for AVR8 simulator
-add_subdirectory ( AVR8 )
-
-# Tests for compiler
-add_subdirectory ( compiler )
-
-# Tests for simulator debug files
-add_subdirectory ( DbgFile )
-
+# Tests for assembler.
+add_subdirectory ( assembler )

@@ -20,6 +20,22 @@
 #include <cctype>
 #include <cstdlib>
 #include <cstdio>
+#include <cstring>
+
+/*
+ * Code specific for other operating systems that GNU/Linux.
+ */
+#ifndef __linux__
+    char * strdup ( const char * s )
+    {
+        char * d = malloc ( 1+ strlen ( s ) );
+        if ( NULL == d )
+        {
+            return NULL;
+        }
+        return strcpy ( d, s);
+    }
+#endif // __linux__
 
 uint32_t LexerUtils::escapeSequence ( CompilerParserInterface * compiler,
                                       const YYLTYPE * location,

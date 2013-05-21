@@ -88,6 +88,14 @@ void printHelp ( const char * executable )
               << QObject::tr("    -c, --check").toStdString() << std::endl
               << QObject::tr("        Do not perform the actual compilation, do only lexical and syntax analysis of the").toStdString() << std::endl
               << QObject::tr("        the provided source code and exit.").toStdString() << std::endl
+              << QObject::tr("    --no-warnings").toStdString() << std::endl
+              << QObject::tr("        Do not print any warnings.").toStdString() << std::endl
+              << QObject::tr("    --no-errors").toStdString() << std::endl
+              << QObject::tr("        Do not print any errors.").toStdString() << std::endl
+              << QObject::tr("    --no-remarks").toStdString() << std::endl
+              << QObject::tr("        Do not print any remarks.").toStdString() << std::endl
+              << QObject::tr("    --silent").toStdString() << std::endl
+              << QObject::tr("        Do not print any warnings, errors, or any other messages, stay completely silent.").toStdString() << std::endl
               << std::endl;
 
     std::cout << QObject::tr("Examples:").toStdString() << std::endl
@@ -192,21 +200,25 @@ int main ( int argc, char ** argv )
 
     static const struct option longopts[] =
     {
-        {"help",     no_argument,       0, 'h'   },
-        {"version",  no_argument,       0, 'V'   },
-        {"check",    no_argument,       0, 'c'   },
-        {"arch",     required_argument, 0, 'a'   },
-        {"plang",    required_argument, 0, 'p'   },
-        {"file",     required_argument, 0, 'f'   },
-        {"mtable",   required_argument, 0, 'm'   },
-        {"stable",   required_argument, 0, 's'   },
-        {"lst",      required_argument, 0, 'l'   },
-        {"hex",      required_argument, 0, 'x'   },
-        {"dbg",      required_argument, 0, 'd'   },
-        {"codetree", required_argument, 0, 0x100 },
-        {"srec",     required_argument, 0, 0x101 },
-        {"binary",   required_argument, 0, 0x102 },
-        {0,          0,                 0, 0     }
+        { "help",        no_argument,       0,   'h' },
+        { "version",     no_argument,       0,   'V' },
+        { "check",       no_argument,       0,   'c' },
+        { "arch",        required_argument, 0,   'a' },
+        { "plang",       required_argument, 0,   'p' },
+        { "file",        required_argument, 0,   'f' },
+        { "mtable",      required_argument, 0,   'm' },
+        { "stable",      required_argument, 0,   's' },
+        { "lst",         required_argument, 0,   'l' },
+        { "hex",         required_argument, 0,   'x' },
+        { "dbg",         required_argument, 0,   'd' },
+        { "codetree",    required_argument, 0, 0x100 },
+        { "srec",        required_argument, 0, 0x101 },
+        { "binary",      required_argument, 0, 0x102 },
+        { "no-warnings", no_argument,       0, 0x103 },
+        { "no-errors",   no_argument,       0, 0x104 },
+        { "no-remarks",  no_argument,       0, 0x105 },
+        { "silent",      no_argument,       0, 0x106 },
+        { 0,             0,                 0, 0     }
     };
 
     int opt;
@@ -256,28 +268,41 @@ int main ( int argc, char ** argv )
             case 'l':
                 opts.m_lstFile = optarg;
                 break;
-            case 0x100:
-                opts.m_codeTree = optarg;
-                break;
             case 'x':
                 opts.m_hexFile = optarg;
-                break;
-            case 0x101:
-                opts.m_srecFile = optarg;
-                break;
-            case 0x102:
-                opts.m_binFile = optarg;
                 break;
             case 'd':
                 opts.m_mdsDebugFile = optarg;
                 break;
+            case 0x100: // --codetree
+                opts.m_codeTree = optarg;
+                break;
+            case 0x101: // --srec
+                opts.m_srecFile = optarg;
+                break;
+            case 0x102: // --binary
+                opts.m_binFile = optarg;
+                break;
+            case 0x103: // --no-warnings
+                opts.m_verbosity = CompilerOptions::Verbosity ( opts.m_verbosity & ~(CompilerOptions::V_WARNINGS) );
+                break;
+            case 0x104: // --no-errors
+                opts.m_verbosity = CompilerOptions::Verbosity ( opts.m_verbosity & ~(CompilerOptions::V_ERRORS) );
+                break;
+            case 0x105: // --no-remarks
+                opts.m_verbosity = CompilerOptions::Verbosity ( opts.m_verbosity & ~(CompilerOptions::V_REMARKS) );
+                break;
+            case 0x106: // --silent
+                opts.m_verbosity = CompilerOptions::Verbosity(0);
+                break;
 
+            /* Error states */
             case ':':
                 std::cerr << QObject::tr("Error: option `%1' requires argument.").arg(longopts[idx].name).toStdString()
                           << std::endl;
                 return EXIT_ERROR_CLI;
             case '?':
-                std::cerr << QObject::tr("Error: option `%1' not understood.").arg(longopts[idx].name).toStdString()
+                std::cerr << QObject::tr("Error: option `%1' not understood.").arg(argv[optind-1]).toStdString()
                           << std::endl;
                 return EXIT_ERROR_CLI;
             default:

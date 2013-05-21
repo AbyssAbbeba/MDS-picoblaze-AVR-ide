@@ -20,6 +20,7 @@
 #include "DbgFileCDB.h"
 #include "DbgFileAvraLst.h"
 #include "DbgFileAvrCoff.h"
+#include "DbgFileNative.h"
 
 #include "HexFile.h"
 #include "BinFile.h"
@@ -80,14 +81,14 @@ bool MCUSimControl::start ( const std::string & filename,
     {
         case COMPILER_NATIVE:
         {
-            m_dbgFile = NULL; // TODO: This is nonsense, write something better here when that something is implemented!
+            dbgFileExt = ".dbg";
+            m_dbgFile = new DbgFileNative();
             switch ( dataFileType )
             {
                 case DBGFILEID_HEX:
                 {
                     dataFile = new HexFile();
                     dataFileExt = ".hex";
-                    dbgFileExt = ".adb";
                     break;
                 }
                 default:

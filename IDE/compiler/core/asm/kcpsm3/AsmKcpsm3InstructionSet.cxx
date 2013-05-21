@@ -20,7 +20,7 @@ int AsmKcpsm3InstructionSet::resolveOPcode ( CompilerStatement    * stmt,
                                              AsmKcpsm3SymbolTable * symbolTable )
 {
     using namespace StatementTypes;
-
+// AsmKcpsm3SymbolTable::STYPE_LABEL
     switch ( (int) stmt->type() )
     {
         /* Instruction: JUMP */

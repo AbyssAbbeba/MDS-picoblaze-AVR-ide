@@ -83,6 +83,10 @@
                 \fontsize{25pt}{30pt} \selectfont{}
                 Corporate coding convention\\
                 guildelines for C++ and C.
+                \\[1cm]
+                \fontsize{15pt}{19pt} \selectfont{}
+                Martin Ošmera\\
+                Brno, 2013
         \end{center}
 \end{titlepage}
 
@@ -111,6 +115,10 @@ without prior written authorization of Moravia Microsystems, s.r.o, if any.
 \chapter{Detailed specification}
     \section{General}
         \subsection{File names}
+            \paragraph{}
+            All header files should contain exactly one class, or struct, or namespace in the root namespace; name of this data type or namespace has to be the same as name of the file itself; this convention has already been already adopted by the Java programming language. Other classes, structs, and namespaces should be declared/defined only withing this one ``main'' class, struct, or namespace. Unless it is necessary, the header file should not contain any declarations outside the class, struct, or namespace.
+
+            \paragraph{}
             Use the following file suffixes:\\
             \begin{table}[h!]
                 \begin{tabular}{l|l}
@@ -176,6 +184,7 @@ without prior written authorization of Moravia Microsystems, s.r.o, if any.
 
         \clearpage
         \subsection{Example header file}
+            Name of header file is ``PicoBlazeStack\textbf{.h}'', name of implemetation file is ``PicoBlazeStack\textbf{.cxx}''.
             {\fontsize{7pt}{8pt} \selectfont{}
             {\color{highlight_c_comment}\verb'// ====================================================================================================================='}\\
             {\color{highlight_c_dox_comment}\verb'/**'}\\
@@ -390,6 +399,7 @@ without prior written authorization of Moravia Microsystems, s.r.o, if any.
             }
 
     \section{C/CXX files}
+        \paragraph{}
         It should look like this:\\\\
         {\color{highlight_normal}\verb'MCUSim'{\color{highlight_c_symbol}\verb'::'}\verb'RetCode PicoBlazeStack'{\color{highlight_c_symbol}\verb'::'}\verb'directRead '{\color{highlight_c_bracket}\verb'('}\verb' '{\color{highlight_c_data_type}\verb'unsigned'}\verb' '{\color{highlight_c_data_type}\verb'int'}\verb' addr'{\color{highlight_c_symbol}\verb','}}\\
         {\color{highlight_normal}\verb'                                             '{\color{highlight_c_data_type}\verb'unsigned'}\verb' '{\color{highlight_c_data_type}\verb'int'}\verb' '{\color{highlight_c_symbol}\verb'&'}\verb' data '{\color{highlight_c_bracket}\verb')'}\verb' '{\color{highlight_c_data_type}\verb'const'}}\\
@@ -403,4 +413,42 @@ without prior written authorization of Moravia Microsystems, s.r.o, if any.
         {\color{highlight_normal}\verb'    '{\color{highlight_c_keyword}\verb'return'}\verb' MCUSim'{\color{highlight_c_symbol}\verb'::'}\verb'RC_OK'{\color{highlight_c_symbol}\verb';'}}\\
         {\color{highlight_normal}{\color{highlight_c_bracket}\verb'}'}}\\
 
+        \paragraph{}
+        Some basic rules/recommendations:
+        \begin{itemize}
+            \item
+                Use ``CamelCase'' for symbol names comprising of more that one word, i.e. practice of writing compound words where the first letter of an identifier is lowercase and the first letter of each subsequent concatenated word is capitalized. The only exceptions are constants, macros, and cases where usage of a different convention is inevitable. Example: use this: ``\verb'matrixEquationComputationModule''' instead of this ``\verb'matrix_equation_computation_module'''.
+            \item
+                Local variables and class attributes should be distinguished from each other by their name in order to prevent unintentional use of the wrong variable. Use prefix ``\verb'm_''' for class, or struct, attributes.
+            \item
+                Names of data types and namespaces should begin with capital letter in all cases possible. Example: ``\verb'class BooleanLattice { ... };'''.
+            \item
+                Names of all constants and macros should comprise of capital letter only, and should not use CamelCase.\\\\
+                Examples:
+                \begin{itemize}
+                    \item ``\verb'static const int MAX_CAPACITY = 100;''',
+                    \item ``\verb'#define GET_SECOND_BYTE(arg) ( ( arg & 0xff00 ) >> 8 )'''.
+                \end{itemize}
+            \item
+                When you use ``=='' operator (equal to) and you compare a variable with a constant, then \textbf{put the constant on the left side} of the comparison; it prevents very unpleasant bugs when you instead of comparing two values you assign the variable a new value, in that case compiler won't complain about anything, it won't even display a warning message but the code is likely to fail to function properly, and this bug is usually very hard to find. Example: ``\verb'if ( -1 == abc ) { ... }'''.
+            \item
+                When you use a condition such that you only check whether something is zero or not (e.g. ``\verb'if ( abc ) {...}''' ), be more explicit about what ``kind of zero'' you expect: it might be zero as boolean value i.e. false, or NULL pointer, or integer zero, etc. It makes the code more readable when it's clear with which kind of value, possible function/method return value, are you dealing with.\\\\
+                Examples:
+                \begin{itemize}
+                    \item use this: ``\verb'if ( NULL == abc() /* returns pointer */ ) { ... }''' instead of this: ``\verb'if ( !abc() ) { ... }''',
+                    \item use this: ``\verb'if ( false == abc /* declared as bool */ ) { ... }''' instead of this: ``\verb'if ( !abc ) { ... }''',
+                    \item use this: ``\verb'while ( 0 != abc /* declared as integer */ ) { ... }''' instead of this: ``\verb'if ( abc ) { ... }'''.
+                \end{itemize}
+            \item
+                When you use nested expressions or you use operators with different precedence in an expression, make it absolutely clear how the expression is supposed to be evaluated. For example suppose we have an expression like this: ``\verb'return a / ( b - c ) >> d;''', white it instead like this: ``\verb'return ( ( a / ( b  - c ) ) >> d );'''.
+            \item
+                \textbf{Never use the comma operator} (``,'') unless it is absolutely necessary, or it is a declaration/initialization of variables. For example never use something like this: ``\verb'if ( a > b, c ) { ... }''' but you might use something like this: ``\verb'for ( int i = 0, j = 1; i < 10; i++, j++ ) { ... }'''.
+            \item
+                Do not try to save space at any cost, there is a plenty of space for source code on your computer, use spaces and empty lines to make the code more readable but don't use too much of white space, like sequences of several empty lines or spaces.\\\\
+                Examples:
+                \begin{itemize}
+                    \item use this: ``\verb'if ( NULL == abc() ) { ... }''' instead of this: ``\verb'if(NULL==abc()) {...}''',
+                    \item use this: ``\verb'for ( int i = 0; i < 10 ; i++ ) { ... }''' instead of this:\\``\verb'for(int i=0; i<10; i++) { ... }'''.
+                \end{itemize}
+        \end{itemize}
 \end{document}

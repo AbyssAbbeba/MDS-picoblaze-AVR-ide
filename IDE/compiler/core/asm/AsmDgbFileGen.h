@@ -19,10 +19,12 @@
 // Common compiler header files.
 #include "../CompilerSemanticInterface.h"
 #include "../CompilerOptions.h"
+#include "../FileHeaders.h"
 
 // Standard headers.
 #include <string>
 #include <vector>
+#include <ostream>
 
 /**
  * @brief
@@ -31,6 +33,41 @@
  */
 class AsmDgbFileGen
 {
+    ////    Public Datatypes    ////
+    public:
+        /**
+         * @brief
+         */
+        struct DbgRecord
+        {
+            /**
+             * @brief
+             */
+            DbgRecord() : m_code ( -1 ), m_address ( -1 ) {};
+
+            /**
+             * @brief
+             * @param[in] location
+             * @param[in] code
+             * @param[in] address
+             */
+            DbgRecord ( const CompilerBase::SourceLocation & location,
+                        int code,
+                        int address )
+                      : m_location ( location ),
+                        m_code ( code ),
+                        m_address ( address ) {};
+
+            /// 
+            CompilerBase::SourceLocation m_location;
+
+            /// 
+            int m_code;
+
+            /// 
+            int m_address;
+        };
+
     ////    Constructors and Destructors    ////
     public:
         /**
@@ -57,17 +94,21 @@ class AsmDgbFileGen
 
         /**
          * @brief
-         * @param[in] filename
-         */
-        void output ( const std::string & filename ) const;
-
-        /**
-         * @brief
          * @param[in,out] compilerCore
          * @param[in] opts
          */
         void output ( CompilerSemanticInterface * compilerCore,
                       const CompilerOptions * opts );
+
+        /**
+         * @brief
+         */
+        void clear();
+
+    ////    Private Attributes    ////
+    private:
+        ///
+        std::vector<DbgRecord> m_data;
 };
 
 #endif // ASMDGBFILEGEN_H

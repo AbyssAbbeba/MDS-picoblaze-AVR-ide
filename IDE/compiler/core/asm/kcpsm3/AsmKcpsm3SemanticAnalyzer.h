@@ -16,15 +16,16 @@
 #ifndef ASMKCPSM3SEMANTICANALYSER_H
 #define ASMKCPSM3SEMANTICANALYSER_H
 
+// Forward declarations.
+class AsmMachineCodeGen;
+class AsmDgbFileGen;
+class AsmKcpsm3SymbolTable;
+class AsmKcpsm3CodeListing;
+class AsmKcpsm3InstructionSet;
+class AsmKcpsm3Macros;
+
 // Common compiler header files.
 #include "../../SemanticAnalyzer.h"
-#include "../AsmMachineCodeGen.h"
-
-// KCPSM3 assembler semantic analyzer header files.
-#include "AsmKcpsm3SymbolTable.h"
-#include "AsmKcpsm3CodeListing.h"
-#include "AsmKcpsm3InstructionSet.h"
-#include "AsmKcpsm3Macros.h"
 
 /**
  * @brief
@@ -33,6 +34,26 @@
  */
 class AsmKcpsm3SemanticAnalyzer : public SemanticAnalyzer
 {
+    ////    Public Static Constants    ////
+    public:
+        /// @brief
+        static const unsigned int MAX_WHILE_ITERATIONS = 10000;
+
+    ////    Public Datatypes    ////
+    public:
+        /**
+         * @brief
+         */
+        struct MemoryPtr
+        {
+            /// @brief Sets all pointers to zero.
+            void clear();
+
+            int m_code; ///< Program memory (CODE).
+            int m_reg;  ///< Processor registers (REG).
+            int m_data; /// Scratch Pad RAM (DATA).
+        };
+
     ////    Constructors and Destructors    ////
     public:
         /**
@@ -71,14 +92,18 @@ class AsmKcpsm3SemanticAnalyzer : public SemanticAnalyzer
          */
         void printCodeTree ( const CompilerStatement * codeTree );
 
-    ////    Inline Private Operations    ////
-    private:
         /**
          * @brief
          * @param[in,out] codeTree
+         * @param[in] origLocation
+         * @param[in] macroName
          */
-        inline void phase1 ( CompilerStatement * codeTree );
+        void phase1 ( CompilerStatement * codeTree,
+                      const CompilerBase::SourceLocation * origLocation = NULL,
+                      const std::string * macroName = NULL );
 
+    ////    Inline Private Operations    ////
+    private:
         /**
          * @brief
          * @param[in,out] codeTree
@@ -95,10 +120,13 @@ class AsmKcpsm3SemanticAnalyzer : public SemanticAnalyzer
     ////    Protected Attributes    ////
     protected:
         ///
-        AsmKcpsm3SymbolTable * m_symbolTable;
+        AsmMachineCodeGen * m_machineCode;
 
         ///
-        AsmMachineCodeGen * m_machineCode;
+        AsmDgbFileGen * m_dgbFile;
+
+        ///
+        AsmKcpsm3SymbolTable * m_symbolTable;
 
         ///
         AsmKcpsm3CodeListing * m_codeListing;
@@ -108,6 +136,9 @@ class AsmKcpsm3SemanticAnalyzer : public SemanticAnalyzer
 
         ///
         AsmKcpsm3Macros * m_macros;
+
+        ///
+        MemoryPtr m_memoryPtr;
 };
 
 #endif // ASMKCPSM3SEMANTICANALYSER_H

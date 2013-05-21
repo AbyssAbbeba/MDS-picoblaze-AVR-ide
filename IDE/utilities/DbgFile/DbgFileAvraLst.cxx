@@ -145,6 +145,12 @@ inline void DbgFileAvraLst::loadFile ( const std::string & filename )
             }
         }
     }
+
+    if ( true == file.bad() )
+    {
+        throw DbgFileException(DbgFileException::IO_ERROR, "Unable to read " + filename);
+    }
+
     m_numberOfLines.push_back(lineNumber);
 
     file.close();
@@ -191,7 +197,7 @@ inline const char * DbgFileAvraLst::checkHexNumber ( const char * str ) const
     {
         if ( 0 == isxdigit(str[i]) )
         {
-            throw DbgFileException(DbgFileException::PARSE_ERROR, "Hexadecimal digit character expected.");
+            throw DbgFileException(DbgFileException::PARSE_ERROR, "Hexadecimal digit expected.");
         }
     }
 
@@ -245,7 +251,6 @@ inline void DbgFileAvraLst::generateLineAddressMaps()
             m_lineToAddrMap[i][j] = -1;
         }
     }
-
 
     for ( unsigned int i = 0; i < m_lineRecords.size(); i++ )
     {
