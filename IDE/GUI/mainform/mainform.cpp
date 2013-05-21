@@ -18,9 +18,12 @@
 #include "../dialogs/projectdlg.h"
 #include "../errordialog/errordlg.h"
 #include "pluginman_gui.h"
-#include "../widgets/CompileWidget/compilewidget.h"
+//#include "../widgets/CompileWidget/compilewidget.h"
 
 
+
+    Q_DECLARE_METATYPE (std::string);
+    Q_DECLARE_METATYPE (CompilerBase::MessageType);
 /**
  * @brief Constructor, inits project and dock widget manager and create menus/toolbars
  */
@@ -621,11 +624,30 @@ void MainForm::compileProject()
 {
     if (projectMan->getActive() == NULL)
     {
+        error(ERR_NO_PROJECT);
         return;
     }
+
+    
     ((QPlainTextEdit*)(wDockManager->getDockWidget(wCompileInfo)->widget()))->clear();
 
-    QThread *thread = new QThread;
+    CompilerOptions *options = new CompilerOptions();
+    options->m_sourceFile = "./a.asm";
+    options->m_symbolTable = "./deletesmbl";
+    options->m_macroTable = "./deletemacro";
+    options->m_mdsDebugFile = "./deletedbg";
+    options->m_codeTree = "./deletectree";
+    options->m_lstFile = "./deletelst";
+    options->m_hexFile = "./deletehex";
+    options->m_binFile = "./deletebin";
+    options->m_srecFile = "./deletsrec";
+    CompilerThread *compiler = new CompilerThread();
+    qRegisterMetaType<std::string>("std::string");
+    qRegisterMetaType<CompilerBase::MessageType>("CompilerBase::MessageType");
+    connect(compiler, SIGNAL(compilationMessage(const std::string&, CompilerBase::MessageType)), this, SLOT(reloadCompileInfo(const std::string&, CompilerBase::MessageType)));
+    compiler->compile(CompilerBase::LI_ASM, CompilerBase::TA_KCPSM3, options);
+    //delete options;
+    /*QThread *thread = new QThread;
     CompileWidget *compiler = new CompileWidget(projectMan->getActive()->mainFileName, projectMan->getActive()->prjPath, projectMan->getActive()->langType);
     compiler->moveToThread(thread);
     connect(thread, SIGNAL(started()), compiler, SLOT(compile()));
@@ -633,7 +655,7 @@ void MainForm::compileProject()
     connect(compiler, SIGNAL(finished()), compiler, SLOT(deleteLater()));
     connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
     connect(compiler, SIGNAL(write(QString)), this, SLOT(writeToWCompileInfo(QString)));
-    thread->start();
+    thread->start();*/
 
     
     /*projectMan->createActiveMakefile();
@@ -669,6 +691,13 @@ void MainForm::compileProject()
         else
             ((QPlainTextEdit*)wDockManager->getDockWidget(wCompileInfo)->widget())->appendPlainText("packihx successful: " + packihx.readAll());
     }*/
+}
+
+
+
+void MainForm::reloadCompileInfo(const std::string &text, CompilerBase::MessageType type)
+{
+    qDebug() << QString::fromStdString(text);
 }
 
 

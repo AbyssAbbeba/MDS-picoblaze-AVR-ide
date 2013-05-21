@@ -32,6 +32,9 @@ void error(int errCode)
         case ERR_XML_ASSIGN:
             msgBox.setText("Error: Wrong xml file");
             break;
+        case ERR_NO_PROJECT:
+            msgBox.setText("Error: No active project");
+            break;
     }
     msgBox.exec();
 }
