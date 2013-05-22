@@ -20,7 +20,7 @@ int AsmKcpsm3InstructionSet::resolveOPcode ( CompilerStatement    * stmt,
                                              AsmKcpsm3SymbolTable * symbolTable )
 {
     using namespace StatementTypes;
-// AsmKcpsm3SymbolTable::STYPE_LABEL
+
     switch ( (int) stmt->type() )
     {
         /* Instruction: JUMP */
@@ -236,6 +236,18 @@ int AsmKcpsm3InstructionSet::resolveOPcode ( CompilerStatement    * stmt,
                      | ( symbolTable->resolveExpr ( stmt->args()->at(1), OBS_SXY ) << 4 ) );
         default:
             return -1;
+    }
+}
+
+void AsmKcpsm3InstructionSet::encapsulate ( CompilerStatement * stmt,
+                                            AsmKcpsm3SymbolTable * symbolTable,
+                                            int codePointer )
+{
+    for ( CompilerExpr * arg = stmt->args();
+          NULL != arg;
+          arg = arg->next() )
+    {
+        symbolTable->resolveSymbols(arg, codePointer);
     }
 }
 

@@ -73,6 +73,16 @@ class AsmKcpsm3InstructionSet
 
         /**
          * @brief
+         * @param[in,out] stmt
+         * @param[in,out] symbolTable
+         * @param[in] codePointer
+         */
+        void encapsulate ( CompilerStatement * stmt,
+                           AsmKcpsm3SymbolTable * symbolTable,
+                           int codePointer );
+
+        /**
+         * @brief
          * @param[in] stmt
          * @return
          */

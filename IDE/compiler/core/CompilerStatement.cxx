@@ -132,7 +132,10 @@ CompilerStatement * CompilerStatement::insertLink ( CompilerStatement * chainLin
     chainLink->m_prev = this;
 
     chainLinkLast->m_next = nextOrig;
-    nextOrig->m_prev = chainLinkLast;
+    if ( NULL != nextOrig )
+    {
+        nextOrig->m_prev = chainLinkLast;
+    }
 
     return chainLinkOrig;
 }

@@ -166,6 +166,7 @@ DIS_INT_INST            "disable"{WSPACE}"interrupt"
 \.?"org"                { return D_ORG; }
 \.?"define"             { return D_DEFINE; }
 \.?"undefine"           { return D_UNDEFINE; }
+\.?"undef"              { return D_UNDEFINE; }
 \.?"equ"                { return D_EQU; }
 \.?"constant"           { return D_CONSTANT; }
 \.?"set"                { return D_SET; }
@@ -173,6 +174,7 @@ DIS_INT_INST            "disable"{WSPACE}"interrupt"
 \.?"while"              { return D_WHILE; }
 \.?"endw"               { return D_ENDW; }
 \.?"port"               { return D_PORT; }
+\.?"data"               { return D_DATA; }
 \.?"code"               { return D_CODE; }
 \.?"db"                 { return D_DB; }
 \.?"error"              { return D_ERROR; }

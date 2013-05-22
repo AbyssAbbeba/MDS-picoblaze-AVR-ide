@@ -94,6 +94,36 @@ int AsmKcpsm3SymbolTable::addSymbol ( const std::string & name,
     return finalValue;
 }
 
+void AsmKcpsm3SymbolTable::resolveSymbols ( CompilerExpr * expr,
+                                            int codePointer )
+{
+    CompilerExpr::Value * value = &(expr->m_lValue);
+    for ( int i = 0; i < 2; i++ )
+    {
+        if ( CompilerExpr::Value::TYPE_SYMBOL == value->m_type )
+        {
+            const std::string symbolName = value->m_data.m_symbol;
+            if ( "$" == symbolName )
+            {
+                value->m_type = CompilerExpr::Value::TYPE_INT;
+                value->m_data.m_integer = codePointer;
+            }
+            else
+            {
+                CompilerExpr * subExpr = getValue(symbolName)->copyChainLink();
+                if ( NULL != subExpr )
+                {
+                    resolveSymbols(subExpr, codePointer);
+                    value->m_type = CompilerExpr::Value::TYPE_EXPR;
+                    value->m_data.m_expr = subExpr;
+                }
+            }
+        }
+
+        value = &(expr->m_rValue);
+    }
+}
+
 void AsmKcpsm3SymbolTable::removeSymbol ( const std::string & name,
                                           const CompilerBase::SourceLocation & location,
                                           const SymbolType type )
@@ -104,6 +134,7 @@ void AsmKcpsm3SymbolTable::removeSymbol ( const std::string & name,
     {
         if ( STYPE_UNSPECIFIED == type || type == it->second.m_type )
         {
+            m_deletedSymbols.insert(*it);
             m_table.erase(it);
             return;
         }
@@ -392,53 +423,32 @@ unsigned int AsmKcpsm3SymbolTable::substitute ( const std::string & origSymbol,
 
     for ( ; NULL != expr; expr = expr->m_next )
     {
-        switch ( expr->m_lValue.m_type )
+        CompilerExpr::Value * value = &(expr->m_lValue);
+        for ( int i = 0; i < 2; i++ )
         {
-            case CompilerExpr::Value::TYPE_EXPR:
+            switch ( value->m_type )
             {
-                result += substitute(origSymbol, newSymbol, expr->m_lValue.m_data.m_expr);
-            }
-            case CompilerExpr::Value::TYPE_SYMBOL:
-            {
-                if ( origSymbol == expr->m_lValue.m_data.m_symbol )
-                {
-                    if ( CompilerExpr::OPER_NONE == newSymbol->oper() )
+                case CompilerExpr::Value::TYPE_EXPR:
+                    result += substitute(origSymbol, newSymbol, value->m_data.m_expr);
+                    break;
+                case CompilerExpr::Value::TYPE_SYMBOL:
+                    if ( origSymbol == value->m_data.m_symbol )
                     {
-                        expr->m_lValue = newSymbol->lVal().makeCopy();
+                        if ( CompilerExpr::OPER_NONE == newSymbol->oper() )
+                        {
+                            *value = newSymbol->lVal().makeCopy();
+                        }
+                        else
+                        {
+                            *value = CompilerExpr::Value(newSymbol->copyChainLink());
+                        }
+                        result++;
                     }
-                    else
-                    {
-                        expr->m_lValue = CompilerExpr::Value(newSymbol->copyChainLink());
-                    }
-                    result++;
-                }
+                    break;
+                default:
+                    break;
             }
-            default:
-                break;
-        }
-        switch ( expr->m_rValue.m_type )
-        {
-            case CompilerExpr::Value::TYPE_EXPR:
-            {
-                result += substitute(origSymbol, newSymbol, expr->m_rValue.m_data.m_expr);
-            }
-            case CompilerExpr::Value::TYPE_SYMBOL:
-            {
-                if ( origSymbol == expr->m_rValue.m_data.m_symbol )
-                {
-                    if ( CompilerExpr::OPER_NONE == newSymbol->oper() )
-                    {
-                        expr->m_rValue = newSymbol->lVal().makeCopy();
-                    }
-                    else
-                    {
-                        expr->m_rValue = CompilerExpr::Value(newSymbol->copyChainLink());
-                    }
-                    result++;
-                }
-            }
-            default:
-                break;
+            value = &(expr->m_rValue);
         }
     }
 
@@ -479,6 +489,7 @@ void AsmKcpsm3SymbolTable::output()
 void AsmKcpsm3SymbolTable::clear()
 {
     m_table.clear();
+    m_deletedSymbols.clear();
 }
 
 void AsmKcpsm3SymbolTable::printSymLocation ( std::ostream & out,
@@ -495,73 +506,82 @@ void AsmKcpsm3SymbolTable::printSymLocation ( std::ostream & out,
 std::ostream & operator << ( std::ostream & out,
                              const AsmKcpsm3SymbolTable * symbolTable )
 {
-    for ( std::multimap<std::string,AsmKcpsm3SymbolTable::Symbol>::const_iterator symbol = symbolTable->m_table.cbegin();
-          symbol != symbolTable->m_table.cend();
-          symbol++ )
+    const std::multimap<std::string,AsmKcpsm3SymbolTable::Symbol> * table = &(symbolTable->m_table);
+
+    for ( int i = 0; i < 2; i++ )
     {
-        out << symbol->first;
-        out << " ";
-        for ( unsigned int i = symbol->first.size(); i < 35; i++ )
+        for ( std::multimap<std::string,AsmKcpsm3SymbolTable::Symbol>::const_iterator symbol = table->cbegin();
+              symbol != table->cend();
+              symbol++ )
         {
-            if ( i % 2 )
+            out << symbol->first;
+            out << " ";
+            for ( unsigned int i = symbol->first.size(); i < 35; i++ )
             {
-                out << " ";
+                if ( i % 2 )
+                {
+                    out << " ";
+                }
+                else
+                {
+                    out << ".";
+                }
+            }
+
+            switch ( symbol->second.m_type )
+            {
+                case AsmKcpsm3SymbolTable::STYPE_UNSPECIFIED: out << "        "; break;
+                case AsmKcpsm3SymbolTable::STYPE_NUMBER:      out << " NUMBER "; break;
+                case AsmKcpsm3SymbolTable::STYPE_REGISTER:    out << " REG.   "; break;
+                case AsmKcpsm3SymbolTable::STYPE_LABEL:       out << " LABEL  "; break;
+                case AsmKcpsm3SymbolTable::STYPE_PORT:        out << " PORT   "; break;
+                case AsmKcpsm3SymbolTable::STYPE_EXPRESSION:  out << " EXPR.  "; break;
+                case AsmKcpsm3SymbolTable::STYPE_DATA:        out << " DATA   "; break;
+            }
+
+            if ( -1 == symbol->second.m_finalValue )
+            {
+                out << "       ";
             }
             else
             {
-                out << ".";
+                char finalValue[8];
+                sprintf(finalValue, "0x%04X ", symbol->second.m_finalValue);
+                out << finalValue;
             }
+
+            if ( true == symbol->second.m_used )
+            {
+                out << "USED     ";
+            }
+            else
+            {
+                out << "NOT USED ";
+            }
+
+            if ( true == symbol->second.m_constant )
+            {
+                out << "CONSTANT    ";
+            }
+            else
+            {
+                out << "REDEFINABLE ";
+            }
+
+            if ( AsmKcpsm3Macros::MANGLE_PREFIX == symbol->first[0] )
+            {
+                out << "LOCAL";
+            }
+            else
+            {
+                symbolTable->printSymLocation(out, symbol->second.m_location);
+            }
+
+            out << std::endl;
         }
 
-        switch ( symbol->second.m_type )
-        {
-            case AsmKcpsm3SymbolTable::STYPE_UNSPECIFIED: out << "        "; break;
-            case AsmKcpsm3SymbolTable::STYPE_NUMBER:      out << " NUMBER "; break;
-            case AsmKcpsm3SymbolTable::STYPE_REGISTER:    out << " REG.   "; break;
-            case AsmKcpsm3SymbolTable::STYPE_LABEL:       out << " LABEL  "; break;
-            case AsmKcpsm3SymbolTable::STYPE_PORT:        out << " PORT   "; break;
-            case AsmKcpsm3SymbolTable::STYPE_EXPRESSION:  out << " EXPR.  "; break;
-        }
-
-        if ( -1 == symbol->second.m_finalValue )
-        {
-            out << "       ";
-        }
-        else
-        {
-            char finalValue[8];
-            sprintf(finalValue, "0x%04X ", symbol->second.m_finalValue);
-            out << finalValue;
-        }
-
-        if ( true == symbol->second.m_used )
-        {
-            out << "USED     ";
-        }
-        else
-        {
-            out << "NOT USED ";
-        }
-
-        if ( true == symbol->second.m_constant )
-        {
-            out << "CONSTANT    ";
-        }
-        else
-        {
-            out << "REDEFINABLE ";
-        }
-
-        if ( AsmKcpsm3Macros::MANGLE_PREFIX == symbol->first[0] )
-        {
-            out << "LOCAL";
-        }
-        else
-        {
-            symbolTable->printSymLocation(out, symbol->second.m_location);
-        }
-
-        out << std::endl;
+        out << std::endl << std::endl << "REMOVED SYMBOLS:" << std::endl;
+        table = &(symbolTable->m_deletedSymbols);
     }
 
     return out;
@@ -578,6 +598,7 @@ std::ostream & operator << ( std::ostream & out,
         case AsmKcpsm3SymbolTable::STYPE_LABEL:       out << "STYPE_LABEL";       break;
         case AsmKcpsm3SymbolTable::STYPE_PORT:        out << "STYPE_PORT";        break;
         case AsmKcpsm3SymbolTable::STYPE_EXPRESSION:  out << "STYPE_EXPRESSION";  break;
+        case AsmKcpsm3SymbolTable::STYPE_DATA:        out << "STYPE_DATA";        break;
     }
 
     return out;

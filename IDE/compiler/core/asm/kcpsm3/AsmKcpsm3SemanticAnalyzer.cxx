@@ -137,6 +137,7 @@ void AsmKcpsm3SemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
     {
         if ( true == m_instructionSet->isInstruction ( node ) )
         {
+            m_instructionSet->encapsulate(node, m_symbolTable, m_memoryPtr.m_code);
             m_memoryPtr.m_code++;
             continue;
         }
@@ -151,6 +152,7 @@ void AsmKcpsm3SemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
         {
             case ASMKCPSM3_DIR_CODE:
             case ASMKCPSM3_DIR_PORT:
+            case ASMKCPSM3_DIR_DATA:
             case ASMKCPSM3_DIR_REG:
             case ASMKCPSM3_DIR_EQU:
             {
@@ -159,6 +161,9 @@ void AsmKcpsm3SemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
                 {
                     case ASMKCPSM3_DIR_CODE:
                         symbolType = AsmKcpsm3SymbolTable::STYPE_LABEL;
+                        break;
+                    case ASMKCPSM3_DIR_DATA:
+                        symbolType = AsmKcpsm3SymbolTable::STYPE_DATA;
                         break;
                     case ASMKCPSM3_DIR_PORT:
                         symbolType = AsmKcpsm3SymbolTable::STYPE_PORT;
@@ -229,7 +234,8 @@ void AsmKcpsm3SemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
                 m_symbolTable -> addSymbol ( node->args()->lVal().m_data.m_symbol,
                                              &e,
                                              location,
-                                             AsmKcpsm3SymbolTable::STYPE_LABEL );
+                                             AsmKcpsm3SymbolTable::STYPE_LABEL,
+                                             true );
                 break;
             }
             case ASMKCPSM3_DIR_ORG:
@@ -243,7 +249,6 @@ void AsmKcpsm3SemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
                 if ( true == m_macros->isFromMacro(node) )
                 {
                     const std::string local = node->args()->lVal().m_data.m_symbol;
-
                     if ( false == m_macros -> mangleName ( *location,
                                                            &localSymbols,
                                                            local,
@@ -309,6 +314,11 @@ void AsmKcpsm3SemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
                                                                      node->location(),
                                                                      nameOfMacro,
                                                                      node->args()->next() );
+
+                    if ( StatementTypes::EMPTY_STATEMENT == macro->type() )
+                    {
+                        break;
+                    }
 
                     //
                     node = node->prev();
@@ -430,7 +440,7 @@ void AsmKcpsm3SemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
             }
             case ASMKCPSM3_DIR_DB:
             {
-                std::vector<unsigned int> dbData;
+                std::vector<unsigned char> dbData;
 
                 for ( CompilerExpr * arg = node->args();
                       NULL != arg;
@@ -438,10 +448,10 @@ void AsmKcpsm3SemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
                 {
                     if ( CompilerExpr::Value::TYPE_ARRAY == arg->lVal().m_type )
                     {
-                        const CompilerExpr::Value::Data::CharArray & charArray = node->args()->lVal().m_data.m_array;
+                        const CompilerExpr::Value::Data::CharArray & charArray = arg->lVal().m_data.m_array;
                         for ( int i = 0; i < charArray.m_size; i++ )
                         {
-                            dbData.push_back ( (unsigned int) charArray.m_data[i] );
+                            dbData.push_back ( charArray.m_data[i] );
                         }
                     }
                     else
@@ -450,29 +460,68 @@ void AsmKcpsm3SemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
                     }
                 }
 
-                for ( std::vector<unsigned int>::const_iterator it = dbData.cbegin();
-                      it != dbData.cbegin();
-                      it++ )
-                {
-                    int address = m_machineCode->setCode ( (uint32_t) *it );
-                    m_codeListing->setCode(node->location(), (int) *it, address);
-                    m_dgbFile->setCode(node->location(), (int) *it, address);
-                }
-
+                m_memoryPtr.m_code += ( dbData.size() / 2 ) + ( dbData.size() % 2 );
                 node->args()->completeDelete();
-                node->m_args = new CompilerExpr( (long long) dbData.size() );
-                m_memoryPtr.m_code += dbData.size();
+                node->m_args = NULL;
+
+                for ( size_t i = 0; i < dbData.size(); i++ )
+                {
+                    int code = ( dbData[i] << 8 );
+
+                    i++;
+                    if ( i < dbData.size() )
+                    {
+                        code |= dbData[i];
+                    }
+
+                    if ( NULL == node->m_args )
+                    {
+                        node->m_args = new CompilerExpr(code);
+                    }
+                    else
+                    {
+                        node->m_args->appendLink(new CompilerExpr(code));
+                    }
+                }
 
                 // This directive must stay in the code tree until phase 2.
                 continue;
             }
+            case ASMKCPSM3_DIR_SPRAUTO:
             case ASMKCPSM3_DIR_REGAUTO:
             {
+                int addr;
+                AsmKcpsm3SymbolTable::SymbolType symbolType;
 
-                break;
-            }
-            case ASMKCPSM3_DIR_SPRAUTO:
-            {
+                if ( ASMKCPSM3_DIR_SPRAUTO == node->type() )
+                {
+                    if ( NULL != node->args()->next() )
+                    {
+                        m_memoryPtr.m_data = m_symbolTable->resolveExpr(node->args()->next());
+                    }
+
+                    addr = m_memoryPtr.m_data;
+                    m_memoryPtr.m_data++;
+                    symbolType = AsmKcpsm3SymbolTable::STYPE_DATA;
+                }
+                else
+                {
+                    if ( NULL != node->args()->next() )
+                    {
+                        m_memoryPtr.m_reg = m_symbolTable->resolveExpr(node->args()->next());
+                    }
+
+                    addr = m_memoryPtr.m_reg;
+                    m_memoryPtr.m_reg++;
+                    symbolType = AsmKcpsm3SymbolTable::STYPE_REGISTER;
+                }
+
+                CompilerExpr value(addr);
+                m_symbolTable -> addSymbol ( node->args()->lVal().m_data.m_symbol,
+                                             &value,
+                                             location,
+                                             symbolType );
+                m_codeListing->setValue(node->location(), addr);
                 break;
             }
             case ASMKCPSM3_COND_ASM:
@@ -510,18 +559,27 @@ inline void AsmKcpsm3SemanticAnalyzer::phase2 ( CompilerStatement * codeTree )
                 break;
 
             case ASMKCPSM3_DIR_DB:
-                m_machineCode->incrementAddr(node->args()->lVal().m_data.m_integer);
+                for ( CompilerExpr * arg = node->args();
+                      NULL != arg;
+                      arg = arg->next() )
+                {
+                    long long code = arg->lVal().m_data.m_integer;
+                    int address = m_machineCode->setCode ( (uint32_t) code );
+                    m_codeListing->setCode(node->location(), (int) code, address);
+                    m_dgbFile->setCode(node->location(), (int) code, address);
+                }
                 break;
 
             default: // Only instructions are expected here.
             {
-                int opcode = m_instructionSet->resolveOPcode ( node, m_symbolTable );
+                int opcode = m_instructionSet->resolveOPcode(node, m_symbolTable);
                 if ( -1 != opcode )
                 {
                     int address = m_machineCode -> setCode ( opcode );
                     m_codeListing -> setCode ( node->location(), opcode, address );
                     m_dgbFile -> setCode ( node->location(), opcode, address );
                 }
+                break;
             }
         }
 
