@@ -88,6 +88,29 @@ class AsmKcpsm3InstructionSet
          */
         bool isInstruction ( const CompilerStatement * const stmt ) const;
 
+    ////    Inline Private Operations    ////
+    private:
+        /**
+         * @brief
+         * @param[in,out] stmt
+         * @return
+         */
+        inline AsmKcpsm3SymbolTable::SymbolType * detAccSymTypes ( const CompilerStatement * stmt ) const;
+
+        /**
+         * @brief
+         * @param[in,out] stmt
+         * @return
+         */
+        inline std::string getInstructionName ( const CompilerStatement * stmt ) const;
+
+        /**
+         * @brief
+         * @param[in,out] stmt
+         * @return
+         */
+        inline std::string getSymbolTypes ( const AsmKcpsm3SymbolTable::SymbolType * types ) const;
+
     ////    Private Attributes    ////
     private:
         ///
