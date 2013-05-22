@@ -20,6 +20,7 @@ set(CMAKE_VERBOSE_MAKEFILE OFF)
 # Build the simulator widgets
 add_subdirectory(sim)
 #add_subdirectory(Tests)
+add_subdirectory(GraphWidget)
 add_subdirectory(Counters)
 add_subdirectory(DockManager)
 add_subdirectory(Editor)

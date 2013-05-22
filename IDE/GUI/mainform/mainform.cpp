@@ -632,7 +632,8 @@ void MainForm::compileProject()
     ((QPlainTextEdit*)(wDockManager->getDockWidget(wCompileInfo)->widget()))->clear();
 
     CompilerOptions *options = new CompilerOptions();
-    options->m_sourceFile = "./a.asm";
+    options->m_sourceFile = (projectMan->getActive()->prjPath.section('/',0, -2) + "/" +  this->projectMan->getActive()->mainFilePath).toStdString();
+    qDebug() << QString::fromStdString(options->m_sourceFile);
     options->m_symbolTable = "./deletesmbl";
     options->m_macroTable = "./deletemacro";
     options->m_mdsDebugFile = "./deletedbg";
