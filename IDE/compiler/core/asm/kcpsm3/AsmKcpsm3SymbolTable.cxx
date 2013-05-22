@@ -94,6 +94,20 @@ int AsmKcpsm3SymbolTable::addSymbol ( const std::string & name,
     return finalValue;
 }
 
+AsmKcpsm3SymbolTable::SymbolType AsmKcpsm3SymbolTable::getType ( const CompilerExpr * expr )
+{
+    SymbolType result = STYPE_UNSPECIFIED;
+    return result;
+//             STYPE_UNSPECIFIED = -1, ///<
+// 
+//             STYPE_NUMBER,           ///<
+//             STYPE_REGISTER,         ///<
+//             STYPE_LABEL,            ///<
+//             STYPE_PORT,             ///<
+//             STYPE_DATA,             ///<
+//             STYPE_EXPRESSION        ///<
+}
+
 void AsmKcpsm3SymbolTable::resolveSymbols ( CompilerExpr * expr,
                                             int codePointer )
 {
