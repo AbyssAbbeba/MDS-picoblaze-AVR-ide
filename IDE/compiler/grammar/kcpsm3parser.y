@@ -147,7 +147,7 @@
 %token D_ENDM           D_EXITM         D_REPT          D_MACRO         D_EQU
 %token D_END            D_REG           D_CODE          D_ENDW          D_WARNING
 %token D_VARIABLE       D_SET           D_DEFINE        D_UNDEFINE      D_ENDR
-%token D_REGAUTO        D_SPRAUTO
+%token D_REGAUTO        D_SPRAUTO       D_DATA
 
 /* Instructions */
 %token I_JUMP           I_CALL          I_RETURN        I_ADD           I_ADDCY
@@ -209,7 +209,7 @@
 %left "+" "-"
 %left "*" "/" "%"
 // Right-to-left
-%right "~"
+%right "~" "!"
 
 /* Terminal symbols with semantic value */
   // semantic value is a string
@@ -244,6 +244,7 @@
 %type<stmt>     dir_elseifdef_a dir_elseifndf_a dir_elseifb_a   dir_elseifnb_a  dir_rept
 %type<stmt>     dir_endm        dir_macro_d     dir_macro_a     dir_endr        dir_endr_a
 %type<stmt>     dir_db_a        dir_endm_a      dir_expand_a    dir_noexpand_a  dir_sprauto_a
+%type<stmt>     dir_data
 // Statements - instructions
 %type<stmt>     inst_jump       inst_call       inst_return     inst_add        inst_addcy
 %type<stmt>     inst_sub        inst_subcy      inst_compare    inst_returni    inst_enable_int
@@ -439,7 +440,7 @@ directive:
     | dir_expand    { $$ = $1; }    | dir_noexpand  { $$ = $1; }
     | dir_sprauto   { $$ = $1; }    | dir_regauto   { $$ = $1; }
     | dir_code      { $$ = $1; }    | dir_error     { $$ = $1; }
-    | dir_warning   { $$ = $1; }
+    | dir_warning   { $$ = $1; }    | dir_data      { $$ = $1; }
 ;
 dir_cond_asm:
       if_block ifelse_block else_block dir_endif
@@ -873,35 +874,22 @@ dir_reg:
                                     }
 ;
 dir_undefine:
-      id D_UNDEFINE expr            { $$ = new CompilerStatement(LOC(@$),ASMKCPSM3_DIR_UNDEFINE,$id->appendLink($expr)); }
-    | id D_UNDEFINE                 {
-                                        /* Syntax error */
-                                        $$ = NULL;
-                                        ARG_REQUIRED_D(@D_UNDEFINE, "UNDEFINE");
-                                        $id->completeDelete();
-                                    }
+      D_UNDEFINE id                 { $$ = new CompilerStatement(LOC(@$),ASMKCPSM3_DIR_UNDEFINE,$id); }
     | D_UNDEFINE                    {
                                         /* Syntax error */
                                         $$ = NULL;
-                                        DECL_ID_EXPECTED(@D_UNDEFINE, "UNDEFINE");
                                         ARG_REQUIRED_D(@D_UNDEFINE, "UNDEFINE");
                                     }
-    | D_UNDEFINE expr               {
+    | label D_UNDEFINE              {
                                         /* Syntax error */
                                         $$ = NULL;
-                                        DECL_ID_EXPECTED(@D_UNDEFINE, "UNDEFINE");
-                                        $expr->completeDelete();
+                                        ARG_REQUIRED_D(@D_UNDEFINE, "UNDEFINE");
+                                        NO_LABEL_EXPECTED(@label, "UNDEFINE", $label)
                                     }
-    | label D_UNDEFINE expr         {
+    | label D_UNDEFINE id           {
                                         /* Syntax error */
                                         $$ = NULL;
-                                        DECL_ID_EXPECTED(@D_UNDEFINE, "UNDEFINE");
-                                        NO_LABEL_EXPECTED(@label, "UNDEFINE", $label->appendArgsLink($expr))
-                                    }
-    | label id D_UNDEFINE expr      {
-                                        /* Syntax error */
-                                        $$ = NULL;
-                                        NO_LABEL_EXPECTED(@label, "UNDEFINE", $label->appendArgsLink($id->appendLink($expr)));
+                                        NO_LABEL_EXPECTED(@label, "UNDEFINE", $label->appendArgsLink($id));
                                     }
 ;
 dir_define:
@@ -1115,12 +1103,46 @@ dir_endw_a:
       D_ENDW                        { }
     | D_ENDW args                   { /* Syntax error */ NO_ARG_EXPECTED_D("ENDM", $args, @args); }
 ;
+dir_data:
+      id D_DATA expr                { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_DATA, $id->appendLink($expr)); }
+    | id D_DATA                     {
+                                        /* Syntax error */
+                                        $$ = NULL;
+                                        ARG_REQUIRED_D(@D_DATA, "DATA");
+                                        $id->completeDelete();
+                                    }
+    | D_DATA                        {
+                                        /* Syntax error */
+                                        $$ = NULL;
+                                        DECL_ID_EXPECTED(@D_DATA, "DATA");
+                                        ARG_REQUIRED_D(@D_DATA, "DATA");
+                                    }
+    | D_DATA expr                   {
+                                        /* Syntax error */
+                                        $$ = NULL;
+                                        DECL_ID_EXPECTED(@D_DATA, "DATA");
+                                        $expr->completeDelete();
+                                    }
+    | label D_DATA expr             {
+                                        /* Syntax error */
+                                        $$ = NULL;
+                                        DECL_ID_EXPECTED(@D_DATA, "DATA");
+                                        NO_LABEL_EXPECTED(@label, "DATA", $label->appendArgsLink($expr));
+                                    }
+    | label id D_DATA expr          {
+                                        /* Syntax error */
+                                        $$ = NULL;
+                                        NO_LABEL_EXPECTED(@label,
+                                                          "DATA",
+                                                          $label->appendArgsLink ( $id->appendLink($expr) ) );
+                                    }
+;
 dir_port:
       id D_PORT expr                { $$ = new CompilerStatement(LOC(@$),ASMKCPSM3_DIR_PORT,$id->appendLink($expr)); }
     | id D_PORT                     {
                                         /* Syntax error */
                                         $$ = NULL;
-                                        ARG_REQUIRED_D(@D_PORT, "DATA");
+                                        ARG_REQUIRED_D(@D_PORT, "PORT");
                                         $id->completeDelete();
                                     }
     | D_PORT                        {

@@ -209,7 +209,10 @@ void AsmKcpsm3CodeListing::printCodeListing ( std::ostream & out,
             int addr = i->m_address + 1;
             for ( size_t j = 1; j < i->m_code.size(); j++ )
             {
-                sprintf ( line, "%04X %05X ", addr, i->m_code[j] );
+                char tmp[11];
+                sprintf ( tmp, "%04X %05X", addr, i->m_code[j] );
+                out << tmp << std::endl;
+
                 addr++;
             }
 
@@ -351,11 +354,11 @@ void AsmKcpsm3CodeListing::setCode ( CompilerBase::SourceLocation location,
     {
         location.m_lineStart--;
         std::vector<int> & codeVector = m_listing[location.m_fileNumber][location.m_lineStart].m_code;
-        codeVector.push_back(code);
         if ( 0 == codeVector.size() )
         {
             m_listing[location.m_fileNumber][location.m_lineStart].m_address = address;
         }
+        codeVector.push_back(code);
     }
 }
 

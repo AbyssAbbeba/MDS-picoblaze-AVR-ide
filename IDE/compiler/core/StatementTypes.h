@@ -726,6 +726,7 @@ namespace StatementTypes
             ASMKCPSM3_DIR_DB,               ///<
             ASMKCPSM3_DIR_REGAUTO,          ///<
             ASMKCPSM3_DIR_SPRAUTO,          ///<
+            ASMKCPSM3_DIR_DATA,             ///<
 
             ASMKCPSM3_COND_ASM,             ///<
             ASMKCPSM3_DIR_IF,               ///<

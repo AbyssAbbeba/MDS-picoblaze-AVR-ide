@@ -58,7 +58,8 @@ class AsmKcpsm3SymbolTable
             STYPE_REGISTER,         ///<
             STYPE_LABEL,            ///<
             STYPE_PORT,             ///<
-            STYPE_EXPRESSION,       ///<
+            STYPE_DATA,             ///<
+            STYPE_EXPRESSION        ///<
         };
 
         /**
@@ -132,6 +133,13 @@ class AsmKcpsm3SymbolTable
                         const SymbolType type = STYPE_UNSPECIFIED,
                         bool resolve = false,
                         bool redefinable = false );
+        /**
+         * @brief
+         * @param[in,out] expr
+         * @param[in] codePointer
+         */
+        void resolveSymbols ( CompilerExpr * expr,
+                              int codePointer );
 
         /**
          * @brief
@@ -238,6 +246,9 @@ class AsmKcpsm3SymbolTable
     private:
         ///
         std::multimap<std::string,Symbol> m_table;
+
+        ///
+        std::multimap<std::string,Symbol> m_deletedSymbols;
 
         ///
         CompilerSemanticInterface * const m_compilerCore;
