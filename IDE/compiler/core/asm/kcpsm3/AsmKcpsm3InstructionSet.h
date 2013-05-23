@@ -18,13 +18,11 @@
 
 // Forward declarations
 class CompilerStatement;
+class CompilerOptions;
+class AsmKcpsm3SymbolTable;
 
 // Common compiler header files.
 #include "../../CompilerSemanticInterface.h"
-#include "../../CompilerOptions.h"
-
-// KCPSM3 assembler semantic analyzer header files.
-#include "AsmKcpsm3SymbolTable.h"
 
 /**
  * @brief
@@ -47,6 +45,16 @@ class AsmKcpsm3InstructionSet
             OBS_SS  =  6  ///< Scratch Pad RAM
         };
 
+        /**
+         * @brief
+         */
+        enum LimitType
+        {
+            LIM_C, ///<
+            LIM_R, ///<
+            LIM_D  ///<
+        };
+
     ////    Constructors and Destructors    ////
     public:
         /**
@@ -56,9 +64,11 @@ class AsmKcpsm3InstructionSet
          * @return
          */
         AsmKcpsm3InstructionSet ( CompilerSemanticInterface * compilerCore,
-                                  CompilerOptions * opts )
+                                  CompilerOptions * opts,
+                                  AsmKcpsm3SymbolTable * symbolTable )
                                 : m_compilerCore ( compilerCore ),
-                                  m_opts ( opts ) {};
+                                  m_opts ( opts ),
+                                  m_symbolTable ( symbolTable ) {};
 
     ////    Public Operations    ////
     public:
@@ -68,18 +78,15 @@ class AsmKcpsm3InstructionSet
          * @param[in,out] symbolTable
          * @return
          */
-        int resolveOPcode ( CompilerStatement * stmt,
-                            AsmKcpsm3SymbolTable * symbolTable );
+        int resolveOPcode ( CompilerStatement * stmt ) const;
 
         /**
          * @brief
          * @param[in,out] stmt
-         * @param[in,out] symbolTable
          * @param[in] codePointer
          */
         void encapsulate ( CompilerStatement * stmt,
-                           AsmKcpsm3SymbolTable * symbolTable,
-                           int codePointer );
+                           int codePointer ) const;
 
         /**
          * @brief
@@ -88,28 +95,87 @@ class AsmKcpsm3InstructionSet
          */
         bool isInstruction ( const CompilerStatement * const stmt ) const;
 
+    ////    Private Operations    ////
+    private:
+        /**
+         * @brief
+         * @param[in] type
+         * @param[in] location
+         * @param[in] value
+         * @return
+         */
+        unsigned int checkLimit ( LimitType type,
+                                  const CompilerBase::SourceLocation & location,
+                                  unsigned int value ) const;
+
+        /**
+         * @brief
+         * @param[in] stmt
+         * @param[in] index
+         * @return
+         */
+        unsigned int getAAA ( const CompilerStatement * stmt,
+                              int index ) const;
+
+        /**
+         * @brief
+         * @param[in] stmt
+         * @param[in] index
+         * @return
+         */
+        unsigned int getSXY ( const CompilerStatement * stmt,
+                              int index ) const;
+
+        /**
+         * @brief
+         * @param[in] stmt
+         * @param[in] index
+         * @return
+         */
+        unsigned int getKK ( const CompilerStatement * stmt,
+                             int index ) const;
+
+        /**
+         * @brief
+         * @param[in] stmt
+         * @param[in] index
+         * @return
+         */
+        unsigned int getPP ( const CompilerStatement * stmt,
+                             int index ) const;
+
+        /**
+         * @brief
+         * @param[in] stmt
+         * @param[in] index
+         * @return
+         */
+        unsigned int getSS ( const CompilerStatement * stmt,
+                             int index ) const;
+
     ////    Inline Private Operations    ////
     private:
         /**
          * @brief
-         * @param[in,out] stmt
-         * @return
+         * @param[in] stmt
+         * @param[out] acceptableTypes
          */
-        inline AsmKcpsm3SymbolTable::SymbolType * detAccSymTypes ( const CompilerStatement * stmt ) const;
+        inline void detAccSymTypes ( const CompilerStatement * stmt,
+                                     int * acceptableTypes ) const;
 
         /**
          * @brief
-         * @param[in,out] stmt
+         * @param[in] stmt
          * @return
          */
         inline std::string getInstructionName ( const CompilerStatement * stmt ) const;
 
         /**
          * @brief
-         * @param[in,out] stmt
+         * @param[in] types
          * @return
          */
-        inline std::string getSymbolTypes ( const AsmKcpsm3SymbolTable::SymbolType * types ) const;
+        inline std::string getSymbolTypes ( int types ) const;
 
     ////    Private Attributes    ////
     private:
@@ -118,6 +184,9 @@ class AsmKcpsm3InstructionSet
 
         ///
         CompilerOptions * const m_opts;
+
+        ///
+        AsmKcpsm3SymbolTable * const m_symbolTable;
 };
 
 #endif // ASMKCPSM3INSTRUCTIONSET_H

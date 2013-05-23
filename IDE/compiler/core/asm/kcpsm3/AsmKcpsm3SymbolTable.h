@@ -100,6 +100,9 @@ class AsmKcpsm3SymbolTable
 
             ///
             bool m_constant;
+
+            ///
+            bool m_masked;
         };
 
     ////    Constructors and Destructors    ////
@@ -144,10 +147,22 @@ class AsmKcpsm3SymbolTable
 
         /**
          * @brief
-         * @param[in] name
+         * @param[in] expr
          * @return
          */
         SymbolType getType ( const CompilerExpr * expr );
+
+        /**
+         * @brief
+         * @param[in] name
+         * @return
+         */
+        SymbolType getType ( const std::string & name );
+
+        /**
+         * @brief
+         */
+        void maskNonLabels();
 
         /**
          * @brief
