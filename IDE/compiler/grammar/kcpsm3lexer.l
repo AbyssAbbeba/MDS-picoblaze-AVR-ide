@@ -172,6 +172,7 @@ DIS_INT_INST            "disable"{WSPACE}"interrupt"
 \.?"set"                { return D_SET; }
 \.?"variable"           { return D_VARIABLE; }
 \.?"while"              { return D_WHILE; }
+\.?"endwhile"           { return D_ENDW; }
 \.?"endw"               { return D_ENDW; }
 \.?"port"               { return D_PORT; }
 \.?"data"               { return D_DATA; }
@@ -201,10 +202,12 @@ DIS_INT_INST            "disable"{WSPACE}"interrupt"
 \.?"local"              { return D_LOCAL; }
 \.?"ifnb"               { return D_IFNB; }
 \.?"ifb"                { return D_IFB; }
-\.?"endmacro"           { return D_ENDMACRO; }
+\.?"endmacro"           { return D_ENDM; }
 \.?"endm"               { return D_ENDM; }
 \.?"exitm"              { return D_EXITM; }
+\.?"repeat"             { return D_REPT; }
 \.?"rept"               { return D_REPT; }
+\.?"endrepeat"          { return D_ENDR; }
 \.?"endr"               { return D_ENDR; }
 \.?"regauto"            { return D_REGAUTO; }
 \.?"sprauto"            { return D_SPRAUTO; }

@@ -30,7 +30,7 @@
 // Write an extra output file containing verbose descriptions of the parser states.
 %verbose
 // Expect exactly <n> shift/reduce conflicts in this grammar
-%expect 1063
+%expect 796
 // Expect exactly <n> reduce/reduce conflicts in this grammar
 %expect-rr 0
 /* Type of parser tables within the LR family, in this case we use LALR (Look-Ahead LR parser) */
@@ -416,7 +416,6 @@ expr:
     | "--" expr                     { $$ = new CompilerExpr(CompilerExpr::OPER_DEC, $2); }
     | expr "++"                     { $$ = new CompilerExpr($1, CompilerExpr::OPER_INC); }
     | expr "--"                     { $$ = new CompilerExpr($1, CompilerExpr::OPER_DEC); }
-    | error                         { $$ = NULL; }
     | expr expr                     {
                         /* Syntax error */
                         $$ = $1->appendLink($2);

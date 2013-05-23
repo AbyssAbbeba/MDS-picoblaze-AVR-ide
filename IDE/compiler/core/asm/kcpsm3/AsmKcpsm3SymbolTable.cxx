@@ -27,6 +27,7 @@ AsmKcpsm3SymbolTable::Symbol::Symbol ( const CompilerExpr * value,
                                        bool redefinable )
 {
     m_type = type;
+    m_masked = false;
     m_used = false;
     m_constant = !redefinable;
     m_finalValue = finalValue;
@@ -92,6 +93,66 @@ int AsmKcpsm3SymbolTable::addSymbol ( const std::string & name,
     }
 
     return finalValue;
+}
+
+AsmKcpsm3SymbolTable::SymbolType AsmKcpsm3SymbolTable::getType ( const std::string & name )
+{
+    for ( std::multimap<std::string,Symbol>::iterator it = m_table.find(name);
+          it != m_table.end();
+          it++ )
+    {
+        return it->second.m_type;
+    }
+
+    return STYPE_UNSPECIFIED;
+}
+
+void AsmKcpsm3SymbolTable::maskNonLabels()
+{
+    for ( std::multimap<std::string,Symbol>::iterator it = m_table.begin();
+          it != m_table.end();
+          it++ )
+    {
+        if ( STYPE_LABEL != it->second.m_type )
+        {
+            it->second.m_masked = true;
+        }
+    }
+}
+
+AsmKcpsm3SymbolTable::SymbolType AsmKcpsm3SymbolTable::getType ( const CompilerExpr * expr )
+{
+    if ( CompilerExpr::OPER_NONE != expr->oper() )
+    {
+        // If there is an operator, it's clear that we are not dealing with a single value thus it's an expression.
+        return STYPE_EXPRESSION;
+    }
+    else
+    {
+        switch ( expr->lVal().m_type )
+        {
+            case CompilerExpr::Value::TYPE_EMPTY:    return STYPE_UNSPECIFIED;
+            case CompilerExpr::Value::TYPE_INT:      return STYPE_NUMBER;
+            case CompilerExpr::Value::TYPE_REAL:     return STYPE_NUMBER;
+            case CompilerExpr::Value::TYPE_EXPR:     return STYPE_EXPRESSION;
+            case CompilerExpr::Value::TYPE_ARRAY:    return STYPE_UNSPECIFIED;
+            case CompilerExpr::Value::TYPE_SYMBOL:
+            {
+                SymbolType type = getType(expr->lVal().m_data.m_symbol);
+                if ( STYPE_UNSPECIFIED == type )
+                {
+                    return STYPE_NUMBER;
+                }
+                else
+                {
+                    return type;
+                }
+            }
+        }
+    }
+
+    // Control flow should never reach this line; if it does, there is an error in the implementation!
+    return STYPE_UNSPECIFIED;
 }
 
 void AsmKcpsm3SymbolTable::resolveSymbols ( CompilerExpr * expr,
@@ -205,8 +266,11 @@ const CompilerExpr * AsmKcpsm3SymbolTable::getValue ( const std::string & name,
     {
         if ( STYPE_UNSPECIFIED == type || type == it->second.m_type )
         {
-            it->second.m_used = true;
-            return it->second.m_value;
+            if ( false == it->second.m_masked )
+            {
+                it->second.m_used = true;
+                return it->second.m_value;
+            }
         }
     }
 
