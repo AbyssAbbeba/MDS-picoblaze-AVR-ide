@@ -52,14 +52,14 @@ class AsmKcpsm3SymbolTable
          */
         enum SymbolType
         {
-            STYPE_UNSPECIFIED = -1, ///<
+            STYPE_UNSPECIFIED = 0x00, ///<
 
-            STYPE_NUMBER,           ///<
-            STYPE_REGISTER,         ///<
-            STYPE_LABEL,            ///<
-            STYPE_PORT,             ///<
-            STYPE_DATA,             ///<
-            STYPE_EXPRESSION        ///<
+            STYPE_NUMBER      = 0x01, ///<
+            STYPE_REGISTER    = 0x02, ///<
+            STYPE_LABEL       = 0x04, ///<
+            STYPE_PORT        = 0x08, ///<
+            STYPE_DATA        = 0x10, ///<
+            STYPE_EXPRESSION  = 0x20  ///<
         };
 
         /**
@@ -100,6 +100,9 @@ class AsmKcpsm3SymbolTable
 
             ///
             bool m_constant;
+
+            ///
+            bool m_masked;
         };
 
     ////    Constructors and Destructors    ////
@@ -133,6 +136,7 @@ class AsmKcpsm3SymbolTable
                         const SymbolType type = STYPE_UNSPECIFIED,
                         bool resolve = false,
                         bool redefinable = false );
+
         /**
          * @brief
          * @param[in,out] expr
@@ -140,6 +144,25 @@ class AsmKcpsm3SymbolTable
          */
         void resolveSymbols ( CompilerExpr * expr,
                               int codePointer );
+
+        /**
+         * @brief
+         * @param[in] expr
+         * @return
+         */
+        SymbolType getType ( const CompilerExpr * expr );
+
+        /**
+         * @brief
+         * @param[in] name
+         * @return
+         */
+        SymbolType getType ( const std::string & name );
+
+        /**
+         * @brief
+         */
+        void maskNonLabels();
 
         /**
          * @brief
