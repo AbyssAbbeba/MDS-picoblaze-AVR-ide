@@ -30,9 +30,9 @@
 // Write an extra output file containing verbose descriptions of the parser states.
 %verbose
 // Expect exactly <n> shift/reduce conflicts in this grammar
-/* %expect 1063 */
+%expect 336
 // Expect exactly <n> reduce/reduce conflicts in this grammar
-/* %expect-rr 0 */
+%expect-rr 0
 /* Type of parser tables within the LR family, in this case we use LALR (Look-Ahead LR parser) */
 %define lr.type lalr
 /* Bison declaration to request verbose, specific error message strings when yyerror is called */
@@ -143,7 +143,7 @@
 %token D_TITLE          D_EXPAND        D_NOEXPAND      D_IF            D_PORT
 %token D_IFN            D_IFDEF         D_IFNDEF        D_ELSEIFB       D_ELSEIFNB
 %token D_ELSE           D_ELSEIF        D_ELSEIFN       D_ELSEIFDEF     D_ELSEIFNDEF
-%token D_ENDIF          D_LOCAL         D_IFNB          D_IFB           D_ENDMACRO
+%token D_ENDIF          D_LOCAL         D_IFNB          D_IFB
 %token D_ENDM           D_EXITM         D_REPT          D_MACRO         D_EQU
 %token D_END            D_REG           D_CODE          D_ENDW          D_WARNING
 %token D_VARIABLE       D_SET           D_DEFINE        D_UNDEFINE      D_ENDR
@@ -204,7 +204,7 @@
 %left "^"
 %left "&"
 %left "==" "!="
-%left "<" "<=" "=>" ">"
+%left "<" "<=" ">=" ">"
 %left "<<" ">>"
 %left "+" "-"
 %left "*" "/" "%"
@@ -222,9 +222,8 @@
  * DECLARATION OF NON-TERMINAL SYMBOLS
  */
 // Expressions
-%type<expr>     expr            "expression"
-%type<expr>     number          params          args
-%type<expr>     id              string          args_str
+%type<expr>     expr            number          params          args            args_str
+%type<expr>     id              string
 // Statements - general
 %type<stmt>     statements      stmt            inst_stmt       dir_stmt        macro_stmt
 %type<stmt>     instruction     directive       macro           label
@@ -344,35 +343,34 @@ string:
       STRING                        { $$ = new CompilerExpr(CompilerExpr::Value($1.data, $1.size), LOC(@$)); }
 ;
 label:
-      LABEL                         { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_LABEL, new CompilerExpr($1, LOC(@$))); }
+      LABEL                         {$$=new CompilerStatement(LOC(@$), ASMKCPSM3_LABEL, new CompilerExpr($1, LOC(@$)));}
 ;
 expr:
       id                            { $$ = $id; }
     | number                        { $$ = $number; }
     | "(" expr ")"                  { $$ = $2; }
-    | F_LOW "(" expr ")"            { $$ = new CompilerExpr(CompilerExpr::OPER_LOW, $3, LOC(@$)); }
+    | F_LOW  "(" expr ")"           { $$ = new CompilerExpr(CompilerExpr::OPER_LOW, $3, LOC(@$)); }
     | F_HIGH "(" expr ")"           { $$ = new CompilerExpr(CompilerExpr::OPER_HIGH, $3, LOC(@$)); }
     | "~" expr                      { $$ = new CompilerExpr('~', $2, LOC(@$)); }
     | "!" expr                      { $$ = new CompilerExpr('!', $2, LOC(@$)); }
-    | expr "+" expr                 { $$ = new CompilerExpr($1, '+', $3, LOC(@$)); }
-    | expr "-" expr                 { $$ = new CompilerExpr($1, '-', $3, LOC(@$)); }
-    | expr "*" expr                 { $$ = new CompilerExpr($1, '*', $3, LOC(@$)); }
-    | expr "/" expr                 { $$ = new CompilerExpr($1, '/', $3, LOC(@$)); }
-    | expr "%" expr                 { $$ = new CompilerExpr($1, '%', $3, LOC(@$)); }
+    | expr "+"  expr                { $$ = new CompilerExpr($1, '+', $3, LOC(@$)); }
+    | expr "-"  expr                { $$ = new CompilerExpr($1, '-', $3, LOC(@$)); }
+    | expr "*"  expr                { $$ = new CompilerExpr($1, '*', $3, LOC(@$)); }
+    | expr "/"  expr                { $$ = new CompilerExpr($1, '/', $3, LOC(@$)); }
+    | expr "%"  expr                { $$ = new CompilerExpr($1, '%', $3, LOC(@$)); }
     | expr "||" expr                { $$ = new CompilerExpr($1, CompilerExpr::OPER_LOR, $3, LOC(@$)); }
     | expr "&&" expr                { $$ = new CompilerExpr($1, CompilerExpr::OPER_LAND, $3, LOC(@$)); }
-    | expr "|" expr                 { $$ = new CompilerExpr($1, '|', $3, LOC(@$)); }
-    | expr "^" expr                 { $$ = new CompilerExpr($1, '^', $3, LOC(@$)); }
-    | expr "&" expr                 { $$ = new CompilerExpr($1, '&', $3, LOC(@$)); }
+    | expr "|"  expr                { $$ = new CompilerExpr($1, '|', $3, LOC(@$)); }
+    | expr "^"  expr                { $$ = new CompilerExpr($1, '^', $3, LOC(@$)); }
+    | expr "&"  expr                { $$ = new CompilerExpr($1, '&', $3, LOC(@$)); }
     | expr "==" expr                { $$ = new CompilerExpr($1, CompilerExpr::OPER_EQ, $3, LOC(@$)); }
     | expr "!=" expr                { $$ = new CompilerExpr($1, CompilerExpr::OPER_NE, $3, LOC(@$)); }
-    | expr "<" expr                 { $$ = new CompilerExpr($1, '<', $3, LOC(@$)); }
+    | expr "<"  expr                { $$ = new CompilerExpr($1, '<', $3, LOC(@$)); }
     | expr "<=" expr                { $$ = new CompilerExpr($1, CompilerExpr::OPER_LE, $3, LOC(@$)); }
     | expr ">=" expr                { $$ = new CompilerExpr($1, CompilerExpr::OPER_GE, $3, LOC(@$)); }
-    | expr ">" expr                 { $$ = new CompilerExpr($1, '>', $3, LOC(@$)); }
+    | expr ">"  expr                { $$ = new CompilerExpr($1, '>', $3, LOC(@$)); }
     | expr ">>" expr                { $$ = new CompilerExpr($1, CompilerExpr::OPER_SHR, $3, LOC(@$)); }
     | expr "<<" expr                { $$ = new CompilerExpr($1, CompilerExpr::OPER_SHL, $3, LOC(@$)); }
-    | error                         { $$ = NULL; }
     | expr expr                     {
                                         /* Syntax error */
                                         $$ = $1->appendLink($2);
@@ -764,18 +762,35 @@ dir_exitm:
                                         $label->completeDelete();
                                     }
 ;
-
 dir_list:
       D_LIST                        { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_LIST); }
     | label D_LIST                  { $$ = $label->appendLink(new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_LIST)); }
-    | D_LIST args                   { /* Syntax error */ $$ = NULL; NO_ARG_EXPECTED_D("LIST", $args, @args); }
-    | label D_LIST args             { /* Syntax error */ $$ = NULL; NO_ARG_EXPECTED_D("LIST", $args, @args); $label->completeDelete(); }
+    | D_LIST args                   {
+                                        /* Syntax error */
+                                        $$ = NULL;
+                                        NO_ARG_EXPECTED_D("LIST", $args, @args);
+                                    }
+    | label D_LIST args             {
+                                        /* Syntax error */
+                                        $$ = NULL;
+                                        NO_ARG_EXPECTED_D("LIST", $args, @args);
+                                        $label->completeDelete();
+                                    }
 ;
 dir_nolist:
       D_NOLIST                      { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_NOLIST); }
     | label D_NOLIST                { $$ = $label->appendLink(new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_NOLIST)); }
-    | D_NOLIST args                 { /* Syntax error */ $$ = NULL; NO_ARG_EXPECTED_D("NOLIST", $args, @args); }
-    | label D_NOLIST args           { /* Syntax error */ $$ = NULL; NO_ARG_EXPECTED_D("NOLIST", $args, @args); $label->completeDelete(); }
+    | D_NOLIST args                 {
+                                        /* Syntax error */
+                                        $$ = NULL;
+                                        NO_ARG_EXPECTED_D("NOLIST", $args, @args);
+                                    }
+    | label D_NOLIST args           {
+                                        /* Syntax error */
+                                        $$ = NULL;
+                                        NO_ARG_EXPECTED_D("NOLIST", $args, @args);
+                                        $label->completeDelete();
+                                    }
 ;
 dir_set:
       id D_SET expr                 { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_SET, $id->appendLink($expr)); }
@@ -1013,7 +1028,7 @@ dir_variable:
       D_VARIABLE id "," expr        { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_SET, $id->appendLink($expr)); }
     | label D_VARIABLE id "," expr  {
                                         $$ = $label -> appendLink ( new CompilerStatement ( LOC(@$),
-                                                                                            ASMPIC8_DIR_VARIABLE, $id -> appendLink ( $expr ) ) );
+                                                                                            ASMKCPSM3_DIR_SET, $id -> appendLink ( $expr ) ) );
                                     }
     | D_VARIABLE expr               {
                                         /* Syntax error */

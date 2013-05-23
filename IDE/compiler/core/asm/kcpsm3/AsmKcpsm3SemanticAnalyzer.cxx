@@ -47,7 +47,7 @@ AsmKcpsm3SemanticAnalyzer::AsmKcpsm3SemanticAnalyzer ( CompilerSemanticInterface
     m_symbolTable = new AsmKcpsm3SymbolTable ( compilerCore, opts );
     m_machineCode = new AsmMachineCodeGen ( AsmMachineCodeGen::WORD_3B );
     m_codeListing = new AsmKcpsm3CodeListing ( compilerCore, opts );
-    m_instructionSet = new AsmKcpsm3InstructionSet ( compilerCore, opts );
+    m_instructionSet = new AsmKcpsm3InstructionSet ( compilerCore, opts, m_symbolTable );
     m_macros = new AsmKcpsm3Macros ( compilerCore, opts, m_symbolTable, m_codeListing );
     m_dgbFile = new AsmDgbFileGen();
 
@@ -137,7 +137,7 @@ void AsmKcpsm3SemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
     {
         if ( true == m_instructionSet->isInstruction ( node ) )
         {
-            m_instructionSet->encapsulate(node, m_symbolTable, m_memoryPtr.m_code);
+            m_instructionSet->encapsulate(node, m_memoryPtr.m_code);
             m_memoryPtr.m_code++;
             continue;
         }
@@ -241,10 +241,17 @@ void AsmKcpsm3SemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
             case ASMKCPSM3_DIR_ORG:
                 m_memoryPtr.m_code = m_symbolTable->resolveExpr(node->args());
                 m_codeListing->setValue(node->location(), m_memoryPtr.m_code);
+                node->args()->completeDelete();
+                node->m_args = new CompilerExpr(m_memoryPtr.m_code);
                 continue; // This directive must stay in the code tree until phase 2.
             case ASMKCPSM3_DIR_SKIP:
-                m_memoryPtr.m_code++;
+            {
+                int skip = m_symbolTable->resolveExpr(node->args());
+                m_memoryPtr.m_code += skip;
+                node->args()->completeDelete();
+                node->m_args = new CompilerExpr(skip);
                 continue; // This directive must stay in the code tree until phase 2.
+            }
             case ASMKCPSM3_LOCAL:
                 if ( true == m_macros->isFromMacro(node) )
                 {
@@ -544,6 +551,8 @@ inline void AsmKcpsm3SemanticAnalyzer::phase2 ( CompilerStatement * codeTree )
 {
     using namespace StatementTypes;
 
+    m_symbolTable->maskNonLabels();
+
     for ( CompilerStatement * node = codeTree->next();
           NULL != node;
           node = node->next() )
@@ -555,7 +564,7 @@ inline void AsmKcpsm3SemanticAnalyzer::phase2 ( CompilerStatement * codeTree )
                 break;
 
             case ASMKCPSM3_DIR_SKIP:
-                m_machineCode->incrementAddr();
+                m_machineCode->incrementAddr((unsigned int)m_symbolTable->resolveExpr(node->args()));
                 break;
 
             case ASMKCPSM3_DIR_DB:
@@ -572,7 +581,7 @@ inline void AsmKcpsm3SemanticAnalyzer::phase2 ( CompilerStatement * codeTree )
 
             default: // Only instructions are expected here.
             {
-                int opcode = m_instructionSet->resolveOPcode(node, m_symbolTable);
+                int opcode = m_instructionSet->resolveOPcode(node);
                 if ( -1 != opcode )
                 {
                     int address = m_machineCode -> setCode ( opcode );

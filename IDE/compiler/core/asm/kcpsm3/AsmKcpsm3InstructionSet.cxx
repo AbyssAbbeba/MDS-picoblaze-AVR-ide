@@ -14,10 +14,97 @@
 // =============================================================================
 
 #include "AsmKcpsm3InstructionSet.h"
-#include "../../CompilerStatement.h"
+#include "AsmKcpsm3SymbolTable.h"
 
-int AsmKcpsm3InstructionSet::resolveOPcode ( CompilerStatement    * stmt,
-                                             AsmKcpsm3SymbolTable * symbolTable )
+#include "../../CompilerStatement.h"
+#include "../../CompilerOptions.h"
+
+unsigned int AsmKcpsm3InstructionSet::checkLimit ( LimitType type,
+                                                   const CompilerBase::SourceLocation & location,
+                                                   unsigned int value ) const
+{
+    int limit = -1;
+    switch ( type )
+    {
+        case LIM_C:
+            limit = m_opts->m_processorlimits.m_iCodeMemSize;
+            break;
+        case LIM_R:
+            limit = m_opts->m_processorlimits.m_regFileSize;
+            break;
+        case LIM_D:
+            limit = m_opts->m_processorlimits.m_iDataMemSize;
+            break;
+    }
+
+    if ( -1 == limit )
+    {
+        // There is no limit set.
+        return value;
+    }
+
+    if ( int(value) < limit )
+    {
+        // Limit is not exceeded.
+        return value;
+    }
+
+    // Limit exceeded, print error message.
+    std::string msg;
+    switch ( type )
+    {
+        case LIM_C:
+            msg = QObject::tr("user defined memory limit for program memory exceeded").toStdString();
+            break;
+        case LIM_R:
+            msg = QObject::tr("user defined memory limit for register file exceeded").toStdString();
+            break;
+        case LIM_D:
+            msg = QObject::tr("user defined memory limit for Scratch Pad RAM exceeded").toStdString();
+            break;
+    }
+    m_compilerCore -> compilerMessage ( location, CompilerBase::MT_ERROR, msg );
+
+    return 0;
+}
+
+unsigned int AsmKcpsm3InstructionSet::getAAA ( const CompilerStatement * stmt,
+                                               int index ) const
+{
+    return checkLimit ( LIM_C,
+                        stmt->args()->at(index)->location(),
+                        m_symbolTable->resolveExpr(stmt->args()->at(index), OBS_AAA) );
+}
+
+unsigned int AsmKcpsm3InstructionSet::getSXY ( const CompilerStatement * stmt,
+                                               int index ) const
+{
+    return checkLimit ( LIM_R,
+                        stmt->args()->at(index)->location(),
+                        m_symbolTable->resolveExpr(stmt->args()->at(index), OBS_SXY) );
+}
+
+unsigned int AsmKcpsm3InstructionSet::getKK ( const CompilerStatement * stmt,
+                                              int index ) const
+{
+    return m_symbolTable->resolveExpr(stmt->args()->at(index), OBS_KK);
+}
+
+unsigned int AsmKcpsm3InstructionSet::getPP ( const CompilerStatement * stmt,
+                                              int index ) const
+{
+    return m_symbolTable->resolveExpr(stmt->args()->at(index), OBS_KK);
+}
+
+unsigned int AsmKcpsm3InstructionSet::getSS ( const CompilerStatement * stmt,
+                                              int index ) const
+{
+    return checkLimit ( LIM_D,
+                        stmt->args()->at(index)->location(),
+                        m_symbolTable->resolveExpr(stmt->args()->at(index), OBS_SS) );
+}
+
+int AsmKcpsm3InstructionSet::resolveOPcode ( CompilerStatement * stmt ) const
 {
     using namespace StatementTypes;
 
@@ -25,89 +112,89 @@ int AsmKcpsm3InstructionSet::resolveOPcode ( CompilerStatement    * stmt,
     {
         /* Instruction: JUMP */
         case ASMKCPSM3_INS_JUMP_AAA:
-            return ( 0b110100000000000000 | symbolTable->resolveExpr ( stmt->args()->at(0), OBS_AAA ) );
+            return ( 0b110100000000000000 | getAAA(stmt, 0) );
         case ASMKCPSM3_INS_JUMP_Z_AAA:
-            return ( 0b110101000000000000 | symbolTable->resolveExpr ( stmt->args()->at(0), OBS_AAA ) );
+            return ( 0b110101000000000000 | getAAA(stmt, 0) );
         case ASMKCPSM3_INS_JUMP_NZ_AAA:
-            return ( 0b110101010000000000 | symbolTable->resolveExpr ( stmt->args()->at(0), OBS_AAA ) );
+            return ( 0b110101010000000000 | getAAA(stmt, 0) );
         case ASMKCPSM3_INS_JUMP_C_AAA:
-            return ( 0b110101100000000000 | symbolTable->resolveExpr ( stmt->args()->at(0), OBS_AAA ) );
+            return ( 0b110101100000000000 | getAAA(stmt, 0) );
         case ASMKCPSM3_INS_JUMP_NC_AAA:
-            return ( 0b110101110000000000 | symbolTable->resolveExpr ( stmt->args()->at(0), OBS_AAA ) );
+            return ( 0b110101110000000000 | getAAA(stmt, 0) );
 
         /* Instruction: CALL */
         case ASMKCPSM3_INS_CALL_AAA:
-            return ( 0b110000000000000000 | symbolTable->resolveExpr ( stmt->args()->at(0), OBS_AAA ) );
+            return ( 0b110000000000000000 | getAAA(stmt, 0) );
         case ASMKCPSM3_INS_CALL_Z_AAA:
-            return ( 0b110001000000000000 | symbolTable->resolveExpr ( stmt->args()->at(0), OBS_AAA ) );
+            return ( 0b110001000000000000 | getAAA(stmt, 0) );
         case ASMKCPSM3_INS_CALL_NZ_AAA:
-            return ( 0b110001010000000000 | symbolTable->resolveExpr ( stmt->args()->at(0), OBS_AAA ) );
+            return ( 0b110001010000000000 | getAAA(stmt, 0) );
         case ASMKCPSM3_INS_CALL_C_AAA:
-            return ( 0b110001100000000000 | symbolTable->resolveExpr ( stmt->args()->at(0), OBS_AAA ) );
+            return ( 0b110001100000000000 | getAAA(stmt, 0) );
         case ASMKCPSM3_INS_CALL_NC_AAA:
-            return ( 0b110001110000000000 | symbolTable->resolveExpr ( stmt->args()->at(0), OBS_AAA ) );
+            return ( 0b110001110000000000 | getAAA(stmt, 0) );
 
         /* Instruction: RETURN */
         case ASMKCPSM3_INS_RETURN:
-            return ( 0b101010000000000000 | symbolTable->resolveExpr ( stmt->args()->at(0), OBS_AAA ) );
+            return 0b101010000000000000;
         case ASMKCPSM3_INS_RETURN_Z:
-            return ( 0b101011000000000000 | symbolTable->resolveExpr ( stmt->args()->at(0), OBS_AAA ) );
+            return 0b101011000000000000;
         case ASMKCPSM3_INS_RETURN_NZ:
-            return ( 0b101011010000000000 | symbolTable->resolveExpr ( stmt->args()->at(0), OBS_AAA ) );
+            return 0b101011010000000000;
         case ASMKCPSM3_INS_RETURN_C:
-            return ( 0b101011100000000000 | symbolTable->resolveExpr ( stmt->args()->at(0), OBS_AAA ) );
+            return 0b101011100000000000;
         case ASMKCPSM3_INS_RETURN_NC:
-            return ( 0b101011110000000000 | symbolTable->resolveExpr ( stmt->args()->at(0), OBS_AAA ) );
+            return 0b101011110000000000;
 
         /* Instruction: ADD */
         case ASMKCPSM3_INS_ADD_SX_KK:
             return ( 0b011000000000000000
-                     | ( symbolTable->resolveExpr ( stmt->args()->at(0), OBS_SXY ) << 8 )
-                     | ( symbolTable->resolveExpr ( stmt->args()->at(1), OBS_KK  ) ) );
+                     | ( getSXY(stmt, 0) << 8 )
+                     | getKK(stmt, 1) );
         case ASMKCPSM3_INS_ADD_SX_SY:
             return ( 0b011001000000000000
-                     | ( symbolTable->resolveExpr ( stmt->args()->at(0), OBS_SXY ) << 8 )
-                     | ( symbolTable->resolveExpr ( stmt->args()->at(1), OBS_SXY ) << 4 ) );
+                     | ( getSXY(stmt, 0) << 8 )
+                     | ( getSXY(stmt, 1) << 4 ) );
 
         /* Instruction: ADDCY */
         case ASMKCPSM3_INS_ADDCY_SX_KK:
             return ( 0b011010000000000000
-                     | ( symbolTable->resolveExpr ( stmt->args()->at(0), OBS_SXY ) << 8 )
-                     | ( symbolTable->resolveExpr ( stmt->args()->at(1), OBS_KK  ) ) );
+                     | ( getSXY(stmt, 0) << 8 )
+                     | getKK(stmt, 1) );
         case ASMKCPSM3_INS_ADDCY_SX_SY:
             return ( 0b011011000000000000
-                     | ( symbolTable->resolveExpr ( stmt->args()->at(0), OBS_SXY ) << 8 )
-                     | ( symbolTable->resolveExpr ( stmt->args()->at(1), OBS_SXY ) << 4 ) );
+                     | ( getSXY(stmt, 0) << 8 )
+                     | ( getSXY(stmt, 1) << 4 ) );
 
         /* Instruction: SUB */
         case ASMKCPSM3_INS_SUB_SX_KK:
             return ( 0b011100000000000000
-                     | ( symbolTable->resolveExpr ( stmt->args()->at(0), OBS_SXY ) << 8 )
-                     | ( symbolTable->resolveExpr ( stmt->args()->at(1), OBS_KK  ) ) );
+                     | ( getSXY(stmt, 0) << 8 )
+                     | getKK(stmt, 1) );
         case ASMKCPSM3_INS_SUB_SX_SY:
             return ( 0b011101000000000000
-                     | ( symbolTable->resolveExpr ( stmt->args()->at(0), OBS_SXY ) << 8 )
-                     | ( symbolTable->resolveExpr ( stmt->args()->at(1), OBS_SXY ) << 4 ) );
+                     | ( getSXY(stmt, 0) << 8 )
+                     | ( getSXY(stmt, 1) << 4 ) );
 
         /* Instruction: SUBCY */
         case ASMKCPSM3_INS_SUBCY_SX_KK:
             return ( 0b011110000000000000
-                     | ( symbolTable->resolveExpr ( stmt->args()->at(0), OBS_SXY ) << 8 )
-                     | ( symbolTable->resolveExpr ( stmt->args()->at(1), OBS_KK  ) ) );
+                     | ( getSXY(stmt, 0) << 8 )
+                     | getKK(stmt, 1) );
         case ASMKCPSM3_INS_SUBCY_SX_SY:
             return ( 0b011111000000000000
-                     | ( symbolTable->resolveExpr ( stmt->args()->at(0), OBS_SXY ) << 8 )
-                     | ( symbolTable->resolveExpr ( stmt->args()->at(1), OBS_SXY ) << 4 ) );
+                     | ( getSXY(stmt, 0) << 8 )
+                     | ( getSXY(stmt, 1) << 4 ) );
 
         /* Instruction: COMPARE */
         case ASMKCPSM3_INS_COMPARE_SX_KK:
             return ( 0b010100000000000000
-                     | ( symbolTable->resolveExpr ( stmt->args()->at(0), OBS_SXY ) << 8 )
-                     | ( symbolTable->resolveExpr ( stmt->args()->at(1), OBS_KK  ) ) );
+                     | ( getSXY(stmt, 0) << 8 )
+                     | getKK(stmt, 1) );
         case ASMKCPSM3_INS_COMPARE_SX_SY:
             return ( 0b010101000000000000
-                     | ( symbolTable->resolveExpr ( stmt->args()->at(0), OBS_SXY ) << 8 )
-                     | ( symbolTable->resolveExpr ( stmt->args()->at(1), OBS_SXY ) << 4 ) );
+                     | ( getSXY(stmt, 0) << 8 )
+                     | ( getSXY(stmt, 1) << 4 ) );
 
         /* Instruction: RETURNI ENABLE/DISABLE */
         case ASMKCPSM3_INS_RETURNI_ENA:
@@ -124,127 +211,219 @@ int AsmKcpsm3InstructionSet::resolveOPcode ( CompilerStatement    * stmt,
         /* Instruction: LOAD */
         case ASMKCPSM3_INS_LOAD_SX_KK:
             return ( 0b000000000000000000
-                     | ( symbolTable->resolveExpr ( stmt->args()->at(0), OBS_SXY ) << 8 )
-                     | ( symbolTable->resolveExpr ( stmt->args()->at(1), OBS_KK  ) ) );
+                     | ( getSXY(stmt, 0) << 8 )
+                     | getKK(stmt, 1) );
         case ASMKCPSM3_INS_LOAD_SX_SY:
             return ( 0b000001000000000000
-                     | ( symbolTable->resolveExpr ( stmt->args()->at(0), OBS_SXY ) << 8 )
-                     | ( symbolTable->resolveExpr ( stmt->args()->at(1), OBS_SXY ) << 4 ) );
+                     | ( getSXY(stmt, 0) << 8 )
+                     | ( getSXY(stmt, 1) << 4 ) );
 
         /* Instruction: AND */
         case ASMKCPSM3_INS_AND_SX_KK:
             return ( 0b001010000000000000
-                     | ( symbolTable->resolveExpr ( stmt->args()->at(0), OBS_SXY ) << 8 )
-                     | ( symbolTable->resolveExpr ( stmt->args()->at(1), OBS_KK  ) ) );
+                     | ( getSXY(stmt, 0) << 8 )
+                     | getKK(stmt, 1) );
         case ASMKCPSM3_INS_AND_SX_SY:
             return ( 0b001011000000000000
-                     | ( symbolTable->resolveExpr ( stmt->args()->at(0), OBS_SXY ) << 8 )
-                     | ( symbolTable->resolveExpr ( stmt->args()->at(1), OBS_SXY ) << 4 ) );
+                     | ( getSXY(stmt, 0) << 8 )
+                     | ( getSXY(stmt, 1) << 4 ) );
 
         /* Instruction: OR */
         case ASMKCPSM3_INS_OR_SX_KK:
             return ( 0b001100000000000000
-                     | ( symbolTable->resolveExpr ( stmt->args()->at(0), OBS_SXY ) << 8 )
-                     | ( symbolTable->resolveExpr ( stmt->args()->at(1), OBS_KK  ) ) );
+                     | ( getSXY(stmt, 0) << 8 )
+                     | getKK(stmt, 1) );
         case ASMKCPSM3_INS_OR_SX_SY:
             return ( 0b001101000000000000
-                     | ( symbolTable->resolveExpr ( stmt->args()->at(0), OBS_SXY ) << 8 )
-                     | ( symbolTable->resolveExpr ( stmt->args()->at(1), OBS_SXY ) << 4 ) );
+                     | ( getSXY(stmt, 0) << 8 )
+                     | ( getSXY(stmt, 1) << 4 ) );
 
         /* Instruction: XOR */
         case ASMKCPSM3_INS_XOR_SX_KK:
             return ( 0b001110000000000000
-                     | ( symbolTable->resolveExpr ( stmt->args()->at(0), OBS_SXY ) << 8 )
-                     | ( symbolTable->resolveExpr ( stmt->args()->at(1), OBS_KK  ) ) );
+                     | ( getSXY(stmt, 0) << 8 )
+                     | getKK(stmt, 1) );
         case ASMKCPSM3_INS_XOR_SX_SY:
             return ( 0b001111000000000000
-                     | ( symbolTable->resolveExpr ( stmt->args()->at(0), OBS_SXY ) << 8 )
-                     | ( symbolTable->resolveExpr ( stmt->args()->at(1), OBS_SXY ) << 4 ) );
+                     | ( getSXY(stmt, 0) << 8 )
+                     | ( getSXY(stmt, 1) << 4 ) );
 
         /* Instruction: TEST */
         case ASMKCPSM3_INS_TEST_SX_KK:
             return ( 0b010010000000000000
-                     | ( symbolTable->resolveExpr ( stmt->args()->at(0), OBS_SXY ) << 8 )
-                     | ( symbolTable->resolveExpr ( stmt->args()->at(1), OBS_KK  ) ) );
+                     | ( getSXY(stmt, 0) << 8 )
+                     | getKK(stmt, 1) );
         case ASMKCPSM3_INS_TEST_SX_SY:
             return ( 0b010011000000000000
-                     | ( symbolTable->resolveExpr ( stmt->args()->at(0), OBS_SXY ) << 8 )
-                     | ( symbolTable->resolveExpr ( stmt->args()->at(1), OBS_SXY ) << 4 ) );
+                     | ( getSXY(stmt, 0) << 8 )
+                     | ( getSXY(stmt, 1) << 4 ) );
 
         /* Instruction: STORE */
         case ASMKCPSM3_INS_STORE_SX_SS:
             return ( 0b101110000000000000
-                     | ( symbolTable->resolveExpr ( stmt->args()->at(0), OBS_SXY ) << 8 )
-                     | ( symbolTable->resolveExpr ( stmt->args()->at(1), OBS_SS  ) ) );
+                     | ( getSXY(stmt, 0) << 8 )
+                     | getSS(stmt, 1) );
         case ASMKCPSM3_INS_STORE_SX_SY:
             return ( 0b101111000000000000
-                     | ( symbolTable->resolveExpr ( stmt->args()->at(0), OBS_SXY ) << 8 )
-                     | ( symbolTable->resolveExpr ( stmt->args()->at(1), OBS_SXY ) << 4 ) );
+                     | ( getSXY(stmt, 0) << 8 )
+                     | ( getSXY(stmt, 1) << 4 ) );
 
         /* Instruction: FETCH */
         case ASMKCPSM3_INS_FETCH_SX_SS:
             return ( 0b000110000000000000
-                     | ( symbolTable->resolveExpr ( stmt->args()->at(0), OBS_SXY ) << 8 )
-                     | ( symbolTable->resolveExpr ( stmt->args()->at(1), OBS_SS  ) ) );
+                     | ( getSXY(stmt, 0) << 8 )
+                     | getSS(stmt, 1) );
         case ASMKCPSM3_INS_FETCH_SX_SY:
             return ( 0b000111000000000000
-                     | ( symbolTable->resolveExpr ( stmt->args()->at(0), OBS_SXY ) << 8 )
-                     | ( symbolTable->resolveExpr ( stmt->args()->at(1), OBS_SXY ) << 4 ) );
+                     | ( getSXY(stmt, 0) << 8 )
+                     | ( getSXY(stmt, 1) << 4 ) );
 
         /* Instruction: SR0, SR1, SRX, SRA, RR */
         case ASMKCPSM3_INS_SR0_SX:
-            return ( 0b100000000000001110 | ( symbolTable->resolveExpr ( stmt->args()->at(0), OBS_SXY ) << 8 ) );
+            return ( 0b100000000000001110 | ( getSXY(stmt, 0) << 8 ) );
         case ASMKCPSM3_INS_SR1_SX:
-            return ( 0b100000000000001111 | ( symbolTable->resolveExpr ( stmt->args()->at(0), OBS_SXY ) << 8 ) );
+            return ( 0b100000000000001111 | ( getSXY(stmt, 0) << 8 ) );
         case ASMKCPSM3_INS_SRX_SX:
-            return ( 0b100000000000001010 | ( symbolTable->resolveExpr ( stmt->args()->at(0), OBS_SXY ) << 8 ) );
+            return ( 0b100000000000001010 | ( getSXY(stmt, 0) << 8 ) );
         case ASMKCPSM3_INS_SRA_SX:
-            return ( 0b100000000000001000 | ( symbolTable->resolveExpr ( stmt->args()->at(0), OBS_SXY ) << 8 ) );
+            return ( 0b100000000000001000 | ( getSXY(stmt, 0) << 8 ) );
         case ASMKCPSM3_INS_RR_SX:
-            return ( 0b100000000000001100 | ( symbolTable->resolveExpr ( stmt->args()->at(0), OBS_SXY ) << 8 ) );
+            return ( 0b100000000000001100 | ( getSXY(stmt, 0) << 8 ) );
 
         /* Instruction: SL0, SL1, SLX, SLA, RL */
         case ASMKCPSM3_INS_SL0_SX:
-            return ( 0b100000000000000110 | ( symbolTable->resolveExpr ( stmt->args()->at(0), OBS_SXY ) << 8 ) );
+            return ( 0b100000000000000110 | ( getSXY(stmt, 0) << 8 ) );
         case ASMKCPSM3_INS_SL1_SX:
-            return ( 0b100000000000000111 | ( symbolTable->resolveExpr ( stmt->args()->at(0), OBS_SXY ) << 8 ) );
+            return ( 0b100000000000000111 | ( getSXY(stmt, 0) << 8 ) );
         case ASMKCPSM3_INS_SLX_SX:
-            return ( 0b100000000000000100 | ( symbolTable->resolveExpr ( stmt->args()->at(0), OBS_SXY ) << 8 ) );
+            return ( 0b100000000000000100 | ( getSXY(stmt, 0) << 8 ) );
         case ASMKCPSM3_INS_SLA_SX:
-            return ( 0b100000000000000000 | ( symbolTable->resolveExpr ( stmt->args()->at(0), OBS_SXY ) << 8 ) );
+            return ( 0b100000000000000000 | ( getSXY(stmt, 0) << 8 ) );
         case ASMKCPSM3_INS_RL_SX:
-            return ( 0b100000000000000010 | ( symbolTable->resolveExpr ( stmt->args()->at(0), OBS_SXY ) << 8 ) );
+            return ( 0b100000000000000010 | ( getSXY(stmt, 0) << 8 ) );
 
         /* Instruction: INPUT */
         case ASMKCPSM3_INS_INPUT_SX_PP:
             return ( 0b000100000000000000
-                     | ( symbolTable->resolveExpr ( stmt->args()->at(0), OBS_SXY ) << 8 )
-                     | ( symbolTable->resolveExpr ( stmt->args()->at(1), OBS_PP  ) ) );
+                     | ( getSXY(stmt, 0) << 8 )
+                     | getPP(stmt, 1) );
         case ASMKCPSM3_INS_INPUT_SX_SY:
             return ( 0b000101000000000000
-                     | ( symbolTable->resolveExpr ( stmt->args()->at(0), OBS_SXY ) << 8 )
-                     | ( symbolTable->resolveExpr ( stmt->args()->at(1), OBS_SXY ) << 4 ) );
+                     | ( getSXY(stmt, 0) << 8 )
+                     | ( getSXY(stmt, 1) << 4 ) );
 
         /* Instruction: OUTPUT */
         case ASMKCPSM3_INS_OUTPUT_SX_PP:
             return ( 0b101100000000000000
-                     | ( symbolTable->resolveExpr ( stmt->args()->at(0), OBS_SXY ) << 8 )
-                     | ( symbolTable->resolveExpr ( stmt->args()->at(1), OBS_PP  ) ) );
+                     | ( getSXY(stmt, 0) << 8 )
+                     | getPP(stmt, 1) );
         case ASMKCPSM3_INS_OUTPUT_SX_SY:
             return ( 0b101101000000000000
-                     | ( symbolTable->resolveExpr ( stmt->args()->at(0), OBS_SXY ) << 8 )
-                     | ( symbolTable->resolveExpr ( stmt->args()->at(1), OBS_SXY ) << 4 ) );
+                     | ( getSXY(stmt, 0) << 8 )
+                     | ( getSXY(stmt, 1) << 4 ) );
         default:
             return -1;
     }
 }
-inline AsmKcpsm3SymbolTable::SymbolType * AsmKcpsm3InstructionSet::detAccSymTypes ( const CompilerStatement * stmt ) const
+inline void AsmKcpsm3InstructionSet::detAccSymTypes ( const CompilerStatement * stmt,
+                                                      int * acceptableTypes ) const
 {
-    
+    using namespace StatementTypes;
+
+    acceptableTypes[0] = (int) ( AsmKcpsm3SymbolTable::STYPE_NUMBER | AsmKcpsm3SymbolTable::STYPE_EXPRESSION );
+    acceptableTypes[1] = (int) ( AsmKcpsm3SymbolTable::STYPE_NUMBER | AsmKcpsm3SymbolTable::STYPE_EXPRESSION );
+
+    switch ( (int) stmt->type() )
+    {
+        case ASMKCPSM3_INS_JUMP_AAA:
+        case ASMKCPSM3_INS_JUMP_Z_AAA:
+        case ASMKCPSM3_INS_JUMP_NZ_AAA:
+        case ASMKCPSM3_INS_JUMP_C_AAA:
+        case ASMKCPSM3_INS_JUMP_NC_AAA:
+        case ASMKCPSM3_INS_CALL_AAA:
+        case ASMKCPSM3_INS_CALL_Z_AAA:
+        case ASMKCPSM3_INS_CALL_NZ_AAA:
+        case ASMKCPSM3_INS_CALL_C_AAA:
+        case ASMKCPSM3_INS_CALL_NC_AAA:
+            acceptableTypes[0] |= AsmKcpsm3SymbolTable::STYPE_LABEL;
+            break;
+
+        case ASMKCPSM3_INS_RETURN:
+        case ASMKCPSM3_INS_RETURN_Z:
+        case ASMKCPSM3_INS_RETURN_NZ:
+        case ASMKCPSM3_INS_RETURN_C:
+        case ASMKCPSM3_INS_RETURN_NC:
+        case ASMKCPSM3_INS_RETURNI_ENA:
+        case ASMKCPSM3_INS_RETURNI_DIS:
+        case ASMKCPSM3_INS_ENABLE_INT:
+        case ASMKCPSM3_INS_DISABLE_INT:
+            break;
+
+        case ASMKCPSM3_INS_TEST_SX_KK:
+        case ASMKCPSM3_INS_ADD_SX_KK:
+        case ASMKCPSM3_INS_ADDCY_SX_KK:
+        case ASMKCPSM3_INS_SUB_SX_KK:
+        case ASMKCPSM3_INS_SUBCY_SX_KK:
+        case ASMKCPSM3_INS_COMPARE_SX_KK:
+        case ASMKCPSM3_INS_LOAD_SX_KK:
+        case ASMKCPSM3_INS_AND_SX_KK:
+        case ASMKCPSM3_INS_OR_SX_KK:
+        case ASMKCPSM3_INS_XOR_SX_KK:
+            acceptableTypes[0] |= AsmKcpsm3SymbolTable::STYPE_REGISTER;
+            break;
+
+        case ASMKCPSM3_INS_ADD_SX_SY:
+        case ASMKCPSM3_INS_ADDCY_SX_SY:
+        case ASMKCPSM3_INS_SUB_SX_SY:
+        case ASMKCPSM3_INS_SUBCY_SX_SY:
+        case ASMKCPSM3_INS_COMPARE_SX_SY:
+        case ASMKCPSM3_INS_LOAD_SX_SY:
+        case ASMKCPSM3_INS_AND_SX_SY:
+        case ASMKCPSM3_INS_OR_SX_SY:
+        case ASMKCPSM3_INS_XOR_SX_SY:
+        case ASMKCPSM3_INS_TEST_SX_SY:
+        case ASMKCPSM3_INS_STORE_SX_SY:
+        case ASMKCPSM3_INS_FETCH_SX_SY:
+        case ASMKCPSM3_INS_OUTPUT_SX_SY:
+        case ASMKCPSM3_INS_INPUT_SX_SY:
+            acceptableTypes[0] |= AsmKcpsm3SymbolTable::STYPE_REGISTER;
+            acceptableTypes[1] |= AsmKcpsm3SymbolTable::STYPE_REGISTER;
+            break;
+
+        case ASMKCPSM3_INS_SR0_SX:
+        case ASMKCPSM3_INS_SR1_SX:
+        case ASMKCPSM3_INS_SRX_SX:
+        case ASMKCPSM3_INS_SRA_SX:
+        case ASMKCPSM3_INS_RR_SX:
+        case ASMKCPSM3_INS_SL0_SX:
+        case ASMKCPSM3_INS_SL1_SX:
+        case ASMKCPSM3_INS_SLA_SX:
+        case ASMKCPSM3_INS_SLX_SX:
+        case ASMKCPSM3_INS_RL_SX:
+            acceptableTypes[0] |= AsmKcpsm3SymbolTable::STYPE_REGISTER;
+            break;
+
+        case ASMKCPSM3_INS_STORE_SX_SS:
+        case ASMKCPSM3_INS_FETCH_SX_SS:
+            acceptableTypes[0] |= AsmKcpsm3SymbolTable::STYPE_REGISTER;
+            acceptableTypes[1] |= AsmKcpsm3SymbolTable::STYPE_DATA;
+            break;
+
+        case ASMKCPSM3_INS_OUTPUT_SX_PP:
+        case ASMKCPSM3_INS_INPUT_SX_PP:
+            acceptableTypes[0] |= AsmKcpsm3SymbolTable::STYPE_REGISTER;
+            acceptableTypes[1] |= AsmKcpsm3SymbolTable::STYPE_PORT;
+            break;
+
+        default:
+            break;
+    }
 }
 
 inline std::string AsmKcpsm3InstructionSet::getInstructionName ( const CompilerStatement * stmt ) const
 {
+    using namespace StatementTypes;
+
     switch ( (int) stmt->type() )
     {
         case ASMKCPSM3_INS_JUMP_AAA:      return "JUMP aaa";
@@ -308,16 +487,12 @@ inline std::string AsmKcpsm3InstructionSet::getInstructionName ( const CompilerS
     }
 }
 
-inline std::string AsmKcpsm3InstructionSet::getSymbolTypes ( const AsmKcpsm3SymbolTable::SymbolType * types ) const
+inline std::string AsmKcpsm3InstructionSet::getSymbolTypes ( int types ) const
 {
     std::string result;
 
     if ( types & AsmKcpsm3SymbolTable::STYPE_NUMBER )
     {
-        if ( false == result.empty() )
-        {
-            result += ", ";
-        }
         result += "number";
     }
 
@@ -325,7 +500,7 @@ inline std::string AsmKcpsm3InstructionSet::getSymbolTypes ( const AsmKcpsm3Symb
     {
         if ( false == result.empty() )
         {
-            result += ", ";
+            result += ", or ";
         }
         result += "register";
     }
@@ -334,7 +509,7 @@ inline std::string AsmKcpsm3InstructionSet::getSymbolTypes ( const AsmKcpsm3Symb
     {
         if ( false == result.empty() )
         {
-            result += ", ";
+            result += ", or ";
         }
         result += "label";
     }
@@ -343,7 +518,7 @@ inline std::string AsmKcpsm3InstructionSet::getSymbolTypes ( const AsmKcpsm3Symb
     {
         if ( false == result.empty() )
         {
-            result += ", ";
+            result += ", or ";
         }
         result += "port";
     }
@@ -352,7 +527,7 @@ inline std::string AsmKcpsm3InstructionSet::getSymbolTypes ( const AsmKcpsm3Symb
     {
         if ( false == result.empty() )
         {
-            result += ", ";
+            result += ", or ";
         }
         result += "data";
     }
@@ -361,36 +536,42 @@ inline std::string AsmKcpsm3InstructionSet::getSymbolTypes ( const AsmKcpsm3Symb
     {
         if ( false == result.empty() )
         {
-            result += ", ";
+            result += ", or ";
         }
         result += "expression";
+    }
+
+    if ( true == result.empty() )
+    {
+        result = "<no type allowed>";
     }
 
     return result;
 }
 
 void AsmKcpsm3InstructionSet::encapsulate ( CompilerStatement * stmt,
-                                            AsmKcpsm3SymbolTable * symbolTable,
-                                            int codePointer )
+                                            int codePointer ) const
 {
-    AsmKcpsm3SymbolTable::SymbolType * acceptableTypes = detAccSymTypes(stmt);
+    int acceptableTypes[2];
+    detAccSymTypes(stmt, acceptableTypes);
 
     int i = 0;
     for ( CompilerExpr * arg = stmt->args();
           NULL != arg;
           arg = arg->next() )
     {
-        if ( 0 == ( acceptableTypes[i] & symbolTable->getType(arg) ) )
+        if ( 0 == ( acceptableTypes[i] & m_symbolTable->getType(arg) ) )
         {
-            m_compilerCore -> compilerMessage ( CompilerBase::MT_ERROR,
-                                                QObject::tr ( "instruction `%1' requires operand #%2 to be of type %3" )
-                                                            . arg ( getInstructionName(stmt).c_str() )
-                                                            . arg ( i + 1 )
-                                                            . arg ( getSymbolTypes(acceptableTypes).c_str() )
-                                                            . toStdString() );
+            m_compilerCore->compilerMessage(arg->location(),
+                                            CompilerBase::MT_ERROR,
+                                            QObject::tr ( "instruction `%1' requires operand #%2 to be of type(s): %3" )
+                                                        . arg ( getInstructionName(stmt).c_str() )
+                                                        . arg ( i + 1 )
+                                                        . arg ( getSymbolTypes(acceptableTypes[i]).c_str() )
+                                                        . toStdString() );
         }
 
-        symbolTable->resolveSymbols(arg, codePointer);
+        m_symbolTable->resolveSymbols(arg, codePointer);
         i++;
     }
 }
