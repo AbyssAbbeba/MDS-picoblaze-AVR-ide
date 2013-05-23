@@ -21,6 +21,11 @@
 #include <vector>
 #include <ostream>
 
+/**
+ * @brief
+ * @ingroup Compiler
+ * @class CompilerOptions
+ */
 class CompilerOptions
 {
     ////    Public Datatypes    ////
