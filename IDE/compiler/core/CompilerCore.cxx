@@ -162,25 +162,37 @@ inline bool CompilerCore::startLexerAndParser ( LangId lang,
                 case TA_AVR8:
                     avr8lexer_lex_init_extra ( this, &yyscanner );
                     avr8lexer_set_in ( sourceFile, yyscanner );
-                    avr8parser_parse ( yyscanner, this );
+                    if ( true == m_success )
+                    {
+                        avr8parser_parse ( yyscanner, this );
+                    }
                     avr8lexer_lex_destroy ( yyscanner );
                     break;
                 case TA_PIC8:
                     pic8lexer_lex_init_extra ( this, &yyscanner );
                     pic8lexer_set_in ( sourceFile, yyscanner );
-                    pic8parser_parse ( yyscanner, this );
+                    if ( true == m_success )
+                    {
+                        pic8parser_parse ( yyscanner, this );
+                    }
                     pic8lexer_lex_destroy ( yyscanner );
                     break;
                 case TA_MCS51:
                     mcs51lexer_lex_init_extra ( this, &yyscanner );
                     mcs51lexer_set_in ( sourceFile, yyscanner );
-                    mcs51parser_parse ( yyscanner, this );
+                    if ( true == m_success )
+                    {
+                        mcs51parser_parse ( yyscanner, this );
+                    }
                     mcs51lexer_lex_destroy ( yyscanner );
                     break;
                 case TA_KCPSM3:
                     kcpsm3lexer_lex_init_extra ( this, &yyscanner );
                     kcpsm3lexer_set_in ( sourceFile, yyscanner );
-                    kcpsm3parser_parse ( yyscanner, this );
+                    if ( true == m_success )
+                    {
+                        kcpsm3parser_parse ( yyscanner, this );
+                    }
                     kcpsm3lexer_lex_destroy ( yyscanner );
                     break;
                 default:
@@ -440,7 +452,7 @@ void CompilerCore::syntaxAnalysisComplete ( CompilerStatement * codeTree )
         m_rootStatement = NULL;
     }
 
-    if ( true == m_opts->m_syntaxCheckOnly )
+    if ( false == m_success || true == m_opts->m_syntaxCheckOnly )
     {
         codeTree->completeDelete();
         return;

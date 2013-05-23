@@ -109,7 +109,7 @@ CompilerStatement * AsmKcpsm3Macros::expand ( const CompilerBase::SourceLocation
     {
         m_compilerCore -> compilerMessage ( msgLocation,
                                             CompilerBase::MT_REMARK,
-                                            QObject::tr("macro `%1' will not be expanded because macro expansion has been disabled: ").arg(name.c_str()).toStdString() );
+                                            QObject::tr("macro `%1' will not be expanded because macro expansion has been disabled ").arg(name.c_str()).toStdString() );
         return NULL;
     }
 

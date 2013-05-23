@@ -487,7 +487,7 @@ DIS_INT_INST            "disable"{WSPACE}"interrupt"
                                 yyextra->lexerMessage ( yylloc,
                                                         CompilerBase::MT_ERROR,
                                                         QObject::tr("unable to open the specified file: ").toStdString() + "`" + filename + "'" );
-                                return INCLUDE;
+                                return EOL;
                             }
                             else
                             {

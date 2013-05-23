@@ -517,7 +517,7 @@ XESC    (\\[0-7]{1,3})|(\\x[0-9A-F]{1,2})|(\\[uU][0-9A-F]{1,8})
                 if ( NULL == file ) {
                     yyextra->lexerMessage(yylloc, CompilerBase::MT_ERROR,
                         QObject::tr("unable to open the specified file: ").toStdString() + "`" + filename + "'" );
-                    return INCLUDE;
+                    return EOL;
                 } else {
                     yylval->string = filename;
 
