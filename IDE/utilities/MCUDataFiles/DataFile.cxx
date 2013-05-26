@@ -17,6 +17,20 @@
 
 DataFile::DataFile ( unsigned int arrsize ) : m_arrsize ( arrsize )
 {
+    allocateMemory();
+}
+
+DataFile::~DataFile()
+{
+    // Deallocate the memory array
+    if ( NULL != m_memory )
+    {
+        delete[] m_memory;
+    }
+}
+
+inline void DataFile::allocateMemory()
+{
     // Allocate the memory array
     if ( 0 != m_arrsize )
     {
@@ -33,67 +47,37 @@ DataFile::DataFile ( unsigned int arrsize ) : m_arrsize ( arrsize )
     }
 }
 
-DataFile::~DataFile()
-{
-    // Deallocate the memory array
-    if ( NULL != m_memory )
-    {
-        delete[] m_memory;
-    }
-}
-
-int DataFile::at ( int idx ) const throw ( DataFileException )
+int DataFile::at ( int idx ) const throw ( Exception )
 {
     if ( idx >= int(m_arrsize) || idx < 0 )
     {
-        throw EXP_OUT_OF_RANGE;
+        throw Exception(Exception::EXP_OUT_OF_RANGE);
     }
 
     return int(m_memory[idx]);
 }
 
-int DataFile::operator [] ( int idx ) const
-{
-    return int(m_memory[idx]);
-}
-
-unsigned int DataFile::maxSize() const
-{
-    return m_arrsize;
-}
-
 void DataFile::set ( unsigned int address,
-                     uint8_t value ) throw ( DataFileException )
+                     uint8_t value ) throw ( Exception )
 {
     // Check for valid address
     if ( address >= m_arrsize )
     {
-        throw EXP_OUT_OF_RANGE;
+        throw Exception(Exception::EXP_OUT_OF_RANGE);
     }
 
     m_memory[address] = value;
 }
 
-void DataFile::unset ( unsigned int address ) throw ( DataFileException )
+void DataFile::unset ( unsigned int address ) throw ( Exception )
 {
     // Check for valid address
     if ( address >= m_arrsize )
     {
-        throw EXP_OUT_OF_RANGE;
+        throw Exception(Exception::EXP_OUT_OF_RANGE);
     }
 
     m_memory[address] = -1;
-}
-
-int DataFile::get ( unsigned int address ) const
-{
-    // Check for valid address
-    if ( address >= m_arrsize )
-    {
-        return -1;
-    }
-
-    return int(m_memory[address]);
 }
 
 void DataFile::clear()
@@ -167,4 +151,25 @@ void DataFile::setData ( int16_t * data )
     }
 
     m_memory = data;
+}
+
+bool DataFile::operator == ( const DataFile & obj ) const
+{
+    // Assume that both objects are equivalent, and try to prove otherwise.
+    unsigned int i = 0;
+    for ( ; i < maxSize(); i++ )
+    {
+        if ( get(i) != obj.get(i) )
+        {
+            return false;
+        }
+    }
+    for ( ; i < obj.maxSize(); i++ )
+    {
+        if ( get(i) != obj.get(i) )
+        {
+            return false;
+        }
+    }
+    return true;
 }

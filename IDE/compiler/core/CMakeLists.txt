@@ -70,7 +70,8 @@ add_library ( ${PROJECT_NAME} SHARED
               CompilerBase.cxx
               StatementTypes.cxx
               CompilerCore.cxx
-              CompilerMsgInftStdout.cxx
+              CompilerMsgIntfStdout.cxx
+              CompilerMsgIntfFile.cxx
               CompilerMsgFilter.cxx
               Compiler.cxx
               CompilerOptions.cxx

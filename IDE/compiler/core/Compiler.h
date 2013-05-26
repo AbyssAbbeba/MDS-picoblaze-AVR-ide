@@ -40,7 +40,7 @@ class Compiler
          * @brief
          * @param[in,out] msgInterface
          */
-        Compiler ( CompilerMsgInterface * msgInterface );
+        Compiler ( CompilerMsgInterface * msgInterface = NULL );
 
         /**
          * @brief

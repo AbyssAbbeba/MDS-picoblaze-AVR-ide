@@ -19,7 +19,6 @@
 #include <cstring>
 #include <cctype>
 #include <cstdlib>
-#include <iostream> // DEBUG
 
 CompilerExpr::Value::Value()
 {

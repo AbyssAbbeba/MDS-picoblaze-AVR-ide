@@ -238,17 +238,13 @@ void AsmKcpsm3Macros::output()
         return;
     }
 
-    if ( true == m_opts->m_makeBackupFiles )
-    {
-        rename(m_opts->m_macroTable.c_str(), (m_opts->m_macroTable + "~").c_str());
-    }
-
     std::ofstream file ( m_opts->m_macroTable, ( std::fstream::out | std::fstream::trunc ) );
 
     if ( false == file.is_open() )
     {
         m_compilerCore -> compilerMessage ( CompilerBase::MT_ERROR,
-                                            QObject::tr("Unable to open ").toStdString() + "\"" + m_opts -> m_macroTable  + "\"" );
+                                            QObject::tr ( "Unable to open " ).toStdString()
+                                                        + "\"" + m_opts -> m_macroTable  + "\"" );
         return;
     }
 
@@ -257,7 +253,8 @@ void AsmKcpsm3Macros::output()
     if ( true == file.bad() )
     {
         m_compilerCore -> compilerMessage ( CompilerBase::MT_ERROR,
-                                            QObject::tr("Unable to write to ").toStdString() + "\"" + m_opts -> m_macroTable  + "\"" );
+                                            QObject::tr ( "Unable to write to " ).toStdString()
+                                                        + "\"" + m_opts -> m_macroTable  + "\"" );
         return;
     }
 }

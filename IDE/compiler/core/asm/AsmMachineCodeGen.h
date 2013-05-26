@@ -107,7 +107,7 @@ class AsmMachineCodeGen
          * @brief
          * @param[in] byteOrder
          * @param[in,out] target
-         * @throw DataFile::DataFileException
+         * @throw DataFile::Exception
          */
         void output ( Endianness byteOrder,
                       DataFile * target ) const;

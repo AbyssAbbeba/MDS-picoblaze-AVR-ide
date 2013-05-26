@@ -88,6 +88,13 @@ class CompilerOptions
          */
         CompilerOptions();
 
+    ////    Public Operations    ////
+    public:
+        /**
+         * @brief
+         */
+        void clearOutputFiles();
+
     ////    Public Attributes    ////
     public:
         /**
@@ -126,6 +133,12 @@ class CompilerOptions
 
             /// Absolute machine code of the compiled code will be stored here as Motorola S-record file.
             std::string m_srecFile;
+
+            /// The compiled code as file in Verilog hardware definition language.
+            std::string m_verilogFile;
+
+            /// The compiled code as file in VHDL hardware definition language.
+            std::string m_vhdlFile;
         //@}
 
         /**

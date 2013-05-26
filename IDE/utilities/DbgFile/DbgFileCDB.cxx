@@ -46,13 +46,13 @@ DbgFileCDB::~DbgFileCDB()
     }
 }
 
-void DbgFileCDB::openFile ( const std::string & filename ) throw ( DbgFileException )
+void DbgFileCDB::openFile ( const std::string & filename ) throw ( Exception )
 {
     try
     {
         loadFile(filename);
     }
-    catch ( DbgFileException & e )
+    catch ( Exception & e )
     {
         clear();
         throw(e);
@@ -67,7 +67,7 @@ inline void DbgFileCDB::loadFile ( const std::string & filename )
     std::fstream file(filename, std::fstream::in );
     if ( false == file.is_open())
     {
-        throw DbgFileException(DbgFileException::IO_ERROR, "Unable to open " + filename);
+        throw Exception(Exception::IO_ERROR, "Unable to open " + filename);
     }
 
     char line [ MAX_LINE_LENGTH + 1 ];
@@ -76,7 +76,7 @@ inline void DbgFileCDB::loadFile ( const std::string & filename )
         file.getline(line, MAX_LINE_LENGTH);
         if ( true == file.bad() )
         {
-            throw DbgFileException(DbgFileException::IO_ERROR, "Read failed, file: " + filename);
+            throw Exception(Exception::IO_ERROR, "Read failed, file: " + filename);
         }
 
         if ( '\0' == line[0] )
@@ -85,11 +85,11 @@ inline void DbgFileCDB::loadFile ( const std::string & filename )
         }
         else if ( '\0' == line[1] )
         {
-            throw DbgFileException(DbgFileException::PARSE_ERROR, "Record ends prematurely.");
+            throw Exception(Exception::PARSE_ERROR, "Record ends prematurely.");
         }
         else if ( ':' == line[1] )
         {
-            throw DbgFileException(DbgFileException::PARSE_ERROR, "Colon (':') expected.");
+            throw Exception(Exception::PARSE_ERROR, "Colon (':') expected.");
         }
 
         switch ( line[0] )
@@ -115,7 +115,7 @@ inline void DbgFileCDB::loadFile ( const std::string & filename )
                 break;
 
             default:
-                throw DbgFileException ( DbgFileException::PARSE_ERROR,
+                throw Exception ( Exception::PARSE_ERROR,
                                          "Unknown record type: '" + std::string(1, line[0]) + "', file: " + m_sourceFile );
         }
     }
@@ -163,7 +163,7 @@ inline void DbgFileCDB::handleFunctionRecord ( char * line )
     }
     else
     {
-        throw DbgFileException(DbgFileException::PARSE_ERROR, "Invalid <On Stack> token.");
+        throw Exception(Exception::PARSE_ERROR, "Invalid <On Stack> token.");
     }
 
     functionRecord.m_stackOffset = atoi(checkNumber(extractToken(line, ',')));
@@ -179,7 +179,7 @@ inline void DbgFileCDB::handleFunctionRecord ( char * line )
     }
     else
     {
-        throw DbgFileException(DbgFileException::PARSE_ERROR, "Invalid <Is Interrupt> token.");
+        throw Exception(Exception::PARSE_ERROR, "Invalid <Is Interrupt> token.");
     }
 
     functionRecord.m_interruptNum = atoi(checkNumber(extractToken(line, ',')));
@@ -197,7 +197,7 @@ inline DbgFileCDB::Scope DbgFileCDB::parseScope ( char * & line,
         {
             if ( '$' == line[1] )
             {
-                throw DbgFileException(DbgFileException::PARSE_ERROR, "Dolar ('$') expected.");
+                throw Exception(Exception::PARSE_ERROR, "Dolar ('$') expected.");
             }
             line += 2; // Remove 'G$'
             return SCOPE_GLOBAL;
@@ -227,13 +227,13 @@ inline DbgFileCDB::Scope DbgFileCDB::parseScope ( char * & line,
         {
             if ( '$' == line[1] )
             {
-                throw DbgFileException(DbgFileException::PARSE_ERROR, "Dolar ('$') expected.");
+                throw Exception(Exception::PARSE_ERROR, "Dolar ('$') expected.");
             }
             line += 2; // Remove 'S$'
             return SCOPE_NONE;
         }
         default:
-            throw DbgFileException ( DbgFileException::PARSE_ERROR,
+            throw Exception ( Exception::PARSE_ERROR,
                                      "Unknown function scope specifier: '" + std::string(1, line[0]) + "', file: " + m_sourceFile );
     }
 }
@@ -273,7 +273,7 @@ inline DbgFileCDB::TypeChain::DCLType DbgFileCDB::parseDCLType ( const char * dc
                     result.m_type = TypeChain::DCLType::TYPE_DI;
                     break;
                 default:
-                    throw DbgFileException(DbgFileException::PARSE_ERROR, "Invalid <DCLType> specifier");
+                    throw Exception(Exception::PARSE_ERROR, "Invalid <DCLType> specifier");
             }
         case 'S':
             switch ( dclType[1] )
@@ -301,7 +301,7 @@ inline DbgFileCDB::TypeChain::DCLType DbgFileCDB::parseDCLType ( const char * dc
                     result.m_name = std::string(dclType + 2);
                     if ( 0 == result.m_name.size() )
                     {
-                            throw DbgFileException(DbgFileException::PARSE_ERROR, "Record ends prematurely.");
+                            throw Exception(Exception::PARSE_ERROR, "Record ends prematurely.");
                     }
                     break;
                 case 'X': // sbit
@@ -312,10 +312,10 @@ inline DbgFileCDB::TypeChain::DCLType DbgFileCDB::parseDCLType ( const char * dc
                     result.m_n = atoi(checkNumber(dclType + 2));
                     break;
                 default:
-                    throw DbgFileException(DbgFileException::PARSE_ERROR, "Invalid <DCLType> specifier");
+                    throw Exception(Exception::PARSE_ERROR, "Invalid <DCLType> specifier");
             }
         default:
-            throw DbgFileException(DbgFileException::PARSE_ERROR, "Invalid <DCLType> specifier");
+            throw Exception(Exception::PARSE_ERROR, "Invalid <DCLType> specifier");
     }
 
     return result;
@@ -356,7 +356,7 @@ inline DbgFileCDB::TypeChain DbgFileCDB::parseTypeChain ( char * typeChain ) con
     }
     else
     {
-        throw DbgFileException(DbgFileException::PARSE_ERROR, "Invalid <Sign> specifier in a Type Chain Record.");
+        throw Exception(Exception::PARSE_ERROR, "Invalid <Sign> specifier in a Type Chain Record.");
     }
 
     return result;
@@ -416,7 +416,7 @@ inline DbgFileCDB::AddressSpace DbgFileCDB::parseAddressSpace ( const char * add
     }
     else
     {
-        throw DbgFileException(DbgFileException::PARSE_ERROR, "Invalid <Address Space> token.");
+        throw Exception(Exception::PARSE_ERROR, "Invalid <Address Space> token.");
     }
 
     return result;
@@ -453,7 +453,7 @@ inline void DbgFileCDB::handleSymbolRecord ( char * line,
     }
     else
     {
-        throw DbgFileException(DbgFileException::PARSE_ERROR, "Invalid <On Stack> token.");
+        throw Exception(Exception::PARSE_ERROR, "Invalid <On Stack> token.");
     }
 
     if ( ']' == line [ strlen(line) - 1 ] )
@@ -463,7 +463,7 @@ inline void DbgFileCDB::handleSymbolRecord ( char * line,
         int length = strlen(line);
         if ( ('[' != line[0]) || (length < 3) )
         {
-            throw DbgFileException(DbgFileException::PARSE_ERROR, "Invalid register list specification.");
+            throw Exception(Exception::PARSE_ERROR, "Invalid register list specification.");
         }
 
         // Remove trainling ']'
@@ -508,7 +508,7 @@ inline void DbgFileCDB::handleTypeRecord ( char * line )
 
     if ( 'F' != line[0] )
     {
-        throw DbgFileException(DbgFileException::PARSE_ERROR, "'F' expected.");
+        throw Exception(Exception::PARSE_ERROR, "'F' expected.");
     }
 
     line++;
@@ -518,7 +518,7 @@ inline void DbgFileCDB::handleTypeRecord ( char * line )
     int length = strlen(line) - 1;
     if ( '\0' == line[length] )
     {
-        throw DbgFileException(DbgFileException::PARSE_ERROR, "Record ends prematurely.");
+        throw Exception(Exception::PARSE_ERROR, "Record ends prematurely.");
     }
     line[length] = '\0'; // Remove trailing ']'
 
@@ -529,7 +529,7 @@ inline void DbgFileCDB::handleTypeRecord ( char * line )
     }
     else if ( '(' != line[0] )
     {
-        throw DbgFileException(DbgFileException::PARSE_ERROR, "'(' expected.");
+        throw Exception(Exception::PARSE_ERROR, "'(' expected.");
     }
 
     line++; // Remove leading '('
@@ -554,13 +554,13 @@ inline void DbgFileCDB::parseMemberSymbol ( char * typeMemberDef,
     char * par = strchr(typeMemberDef, int(')'));
     if ( NULL == par )
     {
-        throw DbgFileException(DbgFileException::PARSE_ERROR, "')' expected.");
+        throw Exception(Exception::PARSE_ERROR, "')' expected.");
     }
     par[0] = '\0'; // Remove the trailing ')'
 
     if ( '{' != typeMemberDef[0] )
     {
-        throw DbgFileException(DbgFileException::PARSE_ERROR, "'{' expected.");
+        throw Exception(Exception::PARSE_ERROR, "'{' expected.");
     }
     typeMemberDef++; // Remove the leading '{'
 
@@ -570,7 +570,7 @@ inline void DbgFileCDB::parseMemberSymbol ( char * typeMemberDef,
     // Ensure there is 'S:' in front
     if ( ( 'S' != typeMemberDef[0] ) || ( ':' != typeMemberDef[1] ) )
     {
-        throw DbgFileException(DbgFileException::PARSE_ERROR, "'S:' expected.");
+        throw Exception(Exception::PARSE_ERROR, "'S:' expected.");
     }
     // ... and remove the 'S:' from the front
     typeMemberDef += 2;
@@ -583,11 +583,11 @@ inline void DbgFileCDB::handleLinkerRecord ( char * line )
 {
     if ( '\0' == line[1] )
     {
-        throw DbgFileException(DbgFileException::PARSE_ERROR, "Record ends prematurely.");
+        throw Exception(Exception::PARSE_ERROR, "Record ends prematurely.");
     }
     else if ( '$' == line[1] )
     {
-        throw DbgFileException(DbgFileException::PARSE_ERROR, "Dolar ('$') expected.");
+        throw Exception(Exception::PARSE_ERROR, "Dolar ('$') expected.");
     }
 
     switch ( line[0] )
@@ -611,7 +611,7 @@ inline void DbgFileCDB::handleLinkerRecord ( char * line )
             break;
 
         default:
-            throw DbgFileException ( DbgFileException::PARSE_ERROR,
+            throw Exception ( Exception::PARSE_ERROR,
                                      "Unknown record type: '" + std::string(1, line[0]) + "', file: " + m_sourceFile );
     }
 }
@@ -719,14 +719,14 @@ inline const char * DbgFileCDB::checkHexNumber ( const char * str ) const
 
     if ( 0 == length )
     {
-        throw DbgFileException(DbgFileException::PARSE_ERROR, "Record ends prematurely.");
+        throw Exception(Exception::PARSE_ERROR, "Record ends prematurely.");
     }
 
     for ( int i = 0; i < length; i++ )
     {
         if ( 0 == isxdigit(str[i]) )
         {
-            throw DbgFileException(DbgFileException::PARSE_ERROR, "Hexadecimal digit character expected.");
+            throw Exception(Exception::PARSE_ERROR, "Hexadecimal digit character expected.");
         }
     }
 
@@ -739,14 +739,14 @@ inline const char * DbgFileCDB::checkNumber ( const char * str ) const
 
     if ( 0 == length )
     {
-        throw DbgFileException(DbgFileException::PARSE_ERROR, "Record ends prematurely.");
+        throw Exception(Exception::PARSE_ERROR, "Record ends prematurely.");
     }
 
     for ( int i = 0; i < length; i++ )
     {
         if ( 0 == isdigit(str[i]) )
         {
-            throw DbgFileException(DbgFileException::PARSE_ERROR, "Decimal digit character expected.");
+            throw Exception(Exception::PARSE_ERROR, "Decimal digit character expected.");
         }
     }
 
@@ -766,7 +766,7 @@ inline char * DbgFileCDB::extractToken ( char * & line,
         {
             if ( true == empty )
             {
-                throw DbgFileException(DbgFileException::PARSE_ERROR, "Empty record field.");
+                throw Exception(Exception::PARSE_ERROR, "Empty record field.");
             }
 
             line[idx] = '\0';
@@ -781,7 +781,7 @@ inline char * DbgFileCDB::extractToken ( char * & line,
 
     if ( '\0' == line[idx] )
     {
-        throw DbgFileException(DbgFileException::PARSE_ERROR, "Record ends prematurely.");
+        throw Exception(Exception::PARSE_ERROR, "Record ends prematurely.");
     }
 
     return result;

@@ -47,6 +47,7 @@ CompilerCore::CompilerCore ( CompilerMsgInterface * msgInterface )
 
 CompilerCore::~CompilerCore()
 {
+    delete m_msgInterface;
     if ( NULL != m_semanticAnalyzer )
     {
         delete m_semanticAnalyzer;
@@ -68,6 +69,8 @@ bool CompilerCore::compile ( LangId lang,
     {
         return false;
     }
+
+    m_opts->clearOutputFiles();
 
     if ( true == setupSemanticAnalyzer(lang, arch) )
     {
@@ -452,7 +455,7 @@ void CompilerCore::syntaxAnalysisComplete ( CompilerStatement * codeTree )
         m_rootStatement = NULL;
     }
 
-    if ( false == m_success || true == m_opts->m_syntaxCheckOnly )
+    if ( /*false == m_success ||*/ true == m_opts->m_syntaxCheckOnly )
     {
         codeTree->completeDelete();
         return;

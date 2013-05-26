@@ -15,6 +15,10 @@
 
 #include "CompilerOptions.h"
 
+// Standard headers.
+#include <fstream>
+#include <cstdio>
+
 CompilerOptions::ProcessorLimits::ProcessorLimits()
 {
     m_iCodeMemSize  = -1;
@@ -34,6 +38,32 @@ CompilerOptions::CompilerOptions()
     m_syntaxCheckOnly = false;
 
     m_verbosity = (Verbosity)( V_GENERAL | V_ERRORS | V_WARNINGS | V_REMARKS );
+}
+
+void CompilerOptions::clearOutputFiles()
+{
+    const std::string * const files[] =
+    {
+        &m_symbolTable, &m_macroTable,  &m_mdsDebugFile,
+        &m_codeTree,    &m_lstFile,     &m_hexFile,
+        &m_binFile,     &m_srecFile,    &m_verilogFile,
+        &m_vhdlFile,    NULL
+    };
+
+    for ( int i = 0; NULL != files[i]; i++ )
+    {
+        if ( true == files[i]->empty() )
+        {
+            continue;
+        }
+
+        if ( true == m_makeBackupFiles )
+        {
+            rename(files[i]->c_str(), (*files[i] + "~").c_str());
+        }
+
+        std::ofstream file(*(files[i]), std::fstream::trunc );
+    }
 }
 
 std::ostream & operator << ( std::ostream & out,
@@ -83,6 +113,8 @@ std::ostream & operator << ( std::ostream & out,
     out << "    m_hexFile = \"" << opts.m_hexFile << "\"" << std::endl;
     out << "    m_binFile = \"" << opts.m_binFile << "\"" << std::endl;
     out << "    m_srecFile = \"" << opts.m_srecFile << "\"" << std::endl;
+    out << "    m_verilogFile = \"" << opts.m_verilogFile << "\"" << std::endl;
+    out << "    m_vhdlFile = \"" << opts.m_vhdlFile << "\"" << std::endl;
 
     out << "  === Other compilation and code generation options ===" << std::endl;
     out << "    m_maxMacroExp = " << opts.m_maxMacroExp << std::endl;

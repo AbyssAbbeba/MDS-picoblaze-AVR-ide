@@ -15,6 +15,9 @@
 
 #include "AsmMachineCodeGen.h"
 
+// Standard headers.
+#include <iostream>
+
 // Common compiler header files.
 #include "../CompilerSemanticInterface.h"
 #include "../CompilerOptions.h"
@@ -175,13 +178,13 @@ void AsmMachineCodeGen::output ( Endianness byteOrder,
     if ( false == opts->m_binFile.empty() )
     {
         BinFile dataFile(sizeB());
-        saveMachineCode(byteOrder, &dataFile, opts->m_hexFile, compilerCore, opts);
+        saveMachineCode(byteOrder, &dataFile, opts->m_binFile, compilerCore, opts);
     }
 
     if ( false == opts->m_srecFile.empty() )
     {
         SrecFile dataFile(sizeB());
-        saveMachineCode(byteOrder, &dataFile, opts->m_hexFile, compilerCore, opts);
+        saveMachineCode(byteOrder, &dataFile, opts->m_srecFile, compilerCore, opts);
     }
 }
 
@@ -194,11 +197,11 @@ inline void AsmMachineCodeGen::saveMachineCode ( Endianness byteOrder,
     try
     {
         output(byteOrder, dataFile);
-        dataFile->save(fileName, opts->m_makeBackupFiles);
+        dataFile->save(fileName, false);
     }
-    catch ( DataFile::DataFileException & )
+    catch ( const DataFile::Exception & e )
     {
-        // TODO: implement more descriptive error report here.
+        std::cerr << e.toString() << std::endl;
         compilerCore -> compilerMessage ( CompilerBase::MT_ERROR,
                                           QObject::tr("unable to save file ").toStdString() + "\"" + fileName  + "\"" );
     }

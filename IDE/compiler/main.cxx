@@ -15,7 +15,7 @@
 
 // Common compiler header files.
 #include "Compiler.h"
-#include "CompilerMsgInftStdout.h"
+#include "CompilerMsgIntfStdout.h"
 
 // getopt_long() function
 #include <getopt.h>
@@ -178,7 +178,7 @@ CompilerBase::LangId whichLang ( const char * optarg )
 int main ( int argc, char ** argv )
 {
     CompilerOptions opts;
-    CompilerMsgInftStdout msgInterface;
+    CompilerMsgIntfStdout msgInterface;
     Compiler compiler(&msgInterface);
     CompilerBase::TargetArch targetArchitecture = CompilerBase::TA_INVALID;
     CompilerBase::LangId targetLanguage = CompilerBase::LI_INVALID;
@@ -312,12 +312,12 @@ int main ( int argc, char ** argv )
 
     if ( true == compiler.compile ( targetLanguage, targetArchitecture, &opts ) )
     {
-        std::cout << QObject::tr("Compilation SUCCESSFUL!").toStdString() << std::endl;
+        std::cout << QObject::tr("Compilation successful.").toStdString() << std::endl;
         return EXIT_CODE_SUCCESS;
     }
     else
     {
-        std::cerr << QObject::tr("COMPILATION FAILED!").toStdString() << std::endl;
+        std::cerr << QObject::tr("Compilation FAILED!").toStdString() << std::endl;
         return EXIT_ERROR_COMPILER;
     }
 }

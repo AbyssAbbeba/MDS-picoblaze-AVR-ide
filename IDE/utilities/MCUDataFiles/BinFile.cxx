@@ -18,18 +18,18 @@
 #include <fstream>
 #include <cstdint>
 
-void BinFile::clearAndLoad ( const char * filename ) throw ( DataFile::DataFileException )
+void BinFile::clearAndLoad ( const char * filename ) throw ( DataFile::Exception )
 {
     clearAndLoad(std::string(filename));
 }
 
-void BinFile::clearAndLoad ( const std::string & filename ) throw ( DataFile::DataFileException )
+void BinFile::clearAndLoad ( const std::string & filename ) throw ( DataFile::Exception )
 {
     std::fstream file ( filename, std::fstream::in | std::fstream::binary );
 
     if ( false == file.is_open() )
     {
-        throw DataFile::EXP_IO_ERROR;
+        throw Exception(Exception::EXP_IO_ERROR, "Unable to open file: " + filename);
     }
 
     unsigned int address = 0;
@@ -40,7 +40,7 @@ void BinFile::clearAndLoad ( const std::string & filename ) throw ( DataFile::Da
 
         if ( true == file.bad() )
         {
-            throw DataFile::EXP_IO_ERROR;
+            throw Exception(Exception::EXP_IO_ERROR);
         }
 
         m_memory[address] = uint16_t(charRead);
@@ -56,13 +56,13 @@ void BinFile::clearAndLoad ( const std::string & filename ) throw ( DataFile::Da
 }
 
 void BinFile::save ( const char * filename,
-                     bool makeBackup ) throw ( DataFile::DataFileException )
+                     bool makeBackup ) throw ( DataFile::Exception )
 {
     save(std::string(filename), makeBackup);
 }
 
 void BinFile::save ( const std::string & filename,
-                     bool makeBackup ) throw ( DataFile::DataFileException )
+                     bool makeBackup ) throw ( DataFile::Exception )
 {
     // Create backup file
     if ( true == makeBackup )
@@ -74,7 +74,7 @@ void BinFile::save ( const std::string & filename,
 
     if ( false == file.is_open())
     {
-        throw DataFile::EXP_IO_ERROR;
+        throw Exception(Exception::EXP_IO_ERROR);
     }
 
     for ( unsigned int i = 0; i < m_arrsize; i++ )
@@ -95,8 +95,8 @@ void BinFile::save ( const std::string & filename,
 
     file.close();
 
-    if ( true == file. bad() )
+    if ( true == file.bad() )
     {
-        throw DataFile::EXP_IO_ERROR;
+        throw Exception(Exception::EXP_IO_ERROR);
     }
 }

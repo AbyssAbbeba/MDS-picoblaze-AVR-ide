@@ -9,14 +9,14 @@
  *
  * @author Martin Ošmera <martin.osmera@gmail.com>
  * @ingroup Compiler
- * @file CompilerMsgInftStdout.cxx
+ * @file CompilerMsgIntfStdout.cxx
  */
 // =============================================================================
 
-#include "CompilerMsgInftStdout.h"
+#include "CompilerMsgIntfStdout.h"
 #include <iostream>
 
-void CompilerMsgInftStdout::message ( const std::string & text,
+void CompilerMsgIntfStdout::message ( const std::string & text,
                                       CompilerBase::MessageType /*type*/ )
 {
 // NOTE: For colorful output, color codes compatible with vt100 terminal.

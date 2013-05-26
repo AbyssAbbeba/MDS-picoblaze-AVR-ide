@@ -42,12 +42,12 @@ inline int HexFile::computeCRC ( const char * data ) const
     return result;
 }
 
-void HexFile::clearAndLoad ( const char * filename ) throw ( DataFile::DataFileException )
+void HexFile::clearAndLoad ( const char * filename ) throw ( DataFile::Exception )
 {
     clearAndLoad(std::string(filename));
 }
 
-void HexFile::clearAndLoad ( const std::string & filename ) throw ( DataFile::DataFileException )
+void HexFile::clearAndLoad ( const std::string & filename ) throw ( DataFile::Exception )
 {
     // Local variables
     int segmentAddress = 0; // Address specified by Extended Segment Address Record (I16HEX)
@@ -68,7 +68,7 @@ void HexFile::clearAndLoad ( const std::string & filename ) throw ( DataFile::Da
     file.open(filename, std::fstream::in);
     if ( false == file.is_open())
     {
-        throw DataFile::EXP_IO_ERROR;
+        throw Exception(Exception::EXP_IO_ERROR, "Unable to open file: " + filename);
     }
 
     // Iterate over lines in the file
@@ -77,7 +77,7 @@ void HexFile::clearAndLoad ( const std::string & filename ) throw ( DataFile::Da
         // Check if the file is still readable
         if ( true == file.bad() )
         {
-            throw DataFile::EXP_IO_ERROR;
+            throw Exception(Exception::EXP_IO_ERROR);
         }
 
         // Load IHEX record from the file
@@ -96,7 +96,7 @@ void HexFile::clearAndLoad ( const std::string & filename ) throw ( DataFile::Da
         // Check for minimum record length
         if ( strlen(line) < 11 )
         {
-            throw DataFile::EXP_BAD_RECORD_LENGTH;
+            throw Exception(Exception::EXP_BAD_RECORD_LENGTH);
         }
 
         // Extract field "length"
@@ -115,7 +115,7 @@ void HexFile::clearAndLoad ( const std::string & filename ) throw ( DataFile::Da
         sscanf(tmp, "%X", &hexType);
         if ( strlen(line) != ( hexLength * 2 + 11 ) )
         {
-            throw DataFile::EXP_BAD_RECORD_LENGTH;
+            throw Exception(Exception::EXP_BAD_RECORD_LENGTH);
         }
 
         // Extract field "data"
@@ -130,7 +130,7 @@ void HexFile::clearAndLoad ( const std::string & filename ) throw ( DataFile::Da
         line [ strlen(line) - 2 ] = '\0';
         if ( computeCRC ( line + 1 ) != hexCrc )
         {
-            throw DataFile::EXP_BAD_CRC;
+            throw Exception(Exception::EXP_BAD_CRC);
         }
 
         if ( 1 == hexType)
@@ -144,7 +144,7 @@ void HexFile::clearAndLoad ( const std::string & filename ) throw ( DataFile::Da
 
             if ( 0 != hexAddress )
             {
-                throw DataFile::EXP_BAD_RECORD_FORMAT;
+                throw Exception(Exception::EXP_BAD_RECORD_FORMAT);
             }
 
             strncpy(tmp, hexData, 2);
@@ -161,7 +161,7 @@ void HexFile::clearAndLoad ( const std::string & filename ) throw ( DataFile::Da
         else if ( 0 != hexType )
         {
             // Invalid record type
-            throw DataFile::EXP_BAD_RECORD_TYPE;
+            throw Exception(Exception::EXP_BAD_RECORD_TYPE);
         }
 
         // Load record data into the memory array
@@ -186,18 +186,18 @@ void HexFile::clearAndLoad ( const std::string & filename ) throw ( DataFile::Da
     file.close();
     if ( true == overflow )
     {
-        throw DataFile::EXP_MEMORY_OVERFLOW;
+        throw Exception(Exception::EXP_MEMORY_OVERFLOW);
     }
 }
 
 void HexFile::save ( const char * filename,
-                     bool makeBackup ) throw ( DataFile::DataFileException )
+                     bool makeBackup ) throw ( DataFile::Exception )
 {
     save(std::string(filename), makeBackup);
 }
 
 void HexFile::save ( const std::string & filename,
-                     bool makeBackup ) throw ( DataFile::DataFileException )
+                     bool makeBackup ) throw ( DataFile::Exception )
 {
     // Local variables
     int segmentAddress = 0; // Segment address (for I16HEX only)
@@ -218,7 +218,7 @@ void HexFile::save ( const std::string & filename,
 
     if ( false == file.is_open())
     {
-        throw DataFile::EXP_IO_ERROR;
+        throw Exception(Exception::EXP_IO_ERROR);
     }
 
     // Allocate memory for string variables
@@ -338,6 +338,6 @@ void HexFile::save ( const std::string & filename,
     file.close();
     if ( true == file.bad() )
     {
-        throw DataFile::EXP_IO_ERROR;
+        throw Exception(Exception::EXP_IO_ERROR);
     }
 }
