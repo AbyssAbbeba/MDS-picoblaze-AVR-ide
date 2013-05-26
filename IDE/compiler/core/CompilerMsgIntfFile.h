@@ -9,17 +9,38 @@
  *
  * @author Martin Ošmera <martin.osmera@gmail.com>
  * @ingroup Compiler
- * @file CompilerMsgInftStdout.h
+ * @file CompilerMsgIntfFile.h
  */
 // =============================================================================
 
-#ifndef COMPILERMSGINFTSTDOUT_H
-#define COMPILERMSGINFTSTDOUT_H
+#ifndef COMPILERMSGINTFFILE_H
+#define COMPILERMSGINTFFILE_H
 
 #include "CompilerMsgInterface.h"
 
-class CompilerMsgInftStdout : public CompilerMsgInterface
+// Standard header files.
+#include <fstream>
+
+class CompilerMsgIntfFile : public CompilerMsgInterface
 {
+    ////    Public Operations    ////
+    public:
+        /**
+         * @brief
+         * @param[in] filename
+         */
+        void openFile ( const std::string & filename );
+
+        /**
+         * @brief
+         */
+        void closeFile();
+
+        /**
+         * @brief
+         */
+        bool isFileOpened();
+
     ////    Private Operations    ////
     private:
         /**
@@ -29,6 +50,11 @@ class CompilerMsgInftStdout : public CompilerMsgInterface
          */
         void message ( const std::string & text,
                        CompilerBase::MessageType type = CompilerBase::MT_GENERAL );
+
+    ////    Private Attributes    ////
+    private:
+        /// @brief
+        std::ofstream m_ofstream;
 };
 
-#endif // COMPILERMSGINFTSTDOUT_H
+#endif // COMPILERMSGINTFFILE_H

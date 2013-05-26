@@ -49,7 +49,7 @@ class CompilerCore : public CompilerBase,
          * @brief
          * @param[in,out] msgInterface
          */
-        CompilerCore ( CompilerMsgInterface * msgInterface );
+        CompilerCore ( CompilerMsgInterface * msgInterface = NULL );
 
         /**
          * @brief

@@ -24,6 +24,13 @@
 
 class CompilerMsgInterface
 {
+    ////    Constructors and Destructors    ////
+    public:
+        /**
+         * @brief
+         */
+        ~CompilerMsgInterface() {};
+
     ////    Public Operations    ////
     public:
         /**

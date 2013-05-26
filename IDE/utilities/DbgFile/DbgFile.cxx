@@ -35,3 +35,67 @@ int DbgFile::getLineByAddr ( unsigned int addr,
     }
     return m_lineRecords[lineRecordIdx].m_lineNumber;
 }
+
+std::string DbgFile::Exception::toString() const
+{
+    std::string result;
+    switch ( m_errorType )
+    {
+        case IO_ERROR:            result = "IO_ERROR";            break;
+        case PARSE_ERROR:         result = "PARSE_ERROR";         break;
+        case COMPATIBILITY_ERROR: result = "COMPATIBILITY_ERROR"; break;
+    }
+    return result + ": " + m_errorInfo;
+}
+
+bool DbgFile::operator == ( const DbgFile & obj )
+{
+    if ( obj.m_lastAddress != m_lastAddress )
+    {
+        return false;
+    }
+    if ( obj.m_numberOfLines.size() != m_numberOfLines.size() )
+    {
+        return false;
+    }
+    if ( obj.m_lineRecords.size() != m_lineRecords.size() )
+    {
+        return false;
+    }
+    if ( obj.m_symbolRecords.size() != m_symbolRecords.size() )
+    {
+        return false;
+    }
+    if ( obj.m_functionRecords.size() != m_functionRecords.size() )
+    {
+        return false;
+    }
+    if ( obj.m_moduleRecords.size() != m_moduleRecords.size() )
+    {
+        return false;
+    }
+    if ( obj.m_typeRecords.size() != m_typeRecords.size() )
+    {
+        return false;
+    }
+    if ( obj.m_fileNames.size() != m_fileNames.size() )
+    {
+        return false;
+    }
+
+    for ( int i = 0; i < m_lastAddress; i++ )
+    {
+        std::string fileNames[2];
+
+        if ( getLineByAddr(i, fileNames[0]) != obj.getLineByAddr(i, fileNames[1]) )
+        {
+            return false;
+        }
+        if ( fileNames[0] != fileNames[1] )
+        {
+            return false;
+        }
+    }
+
+    return true;
+}

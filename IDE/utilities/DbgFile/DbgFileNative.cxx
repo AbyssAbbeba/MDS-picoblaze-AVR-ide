@@ -15,8 +15,10 @@
 
 #include "DbgFileNative.h"
 
+// Compiler header files.
 #include "../../compiler/core/FileHeaders.h"
 
+// Standard header files.
 #include <fstream>
 #include <string>
 
@@ -26,16 +28,23 @@
  * @param[in] idx
  */
 #define ASSEMBLE_INT32(array, idx)   \
-    binArray [ 3 + 4 * idx ] << 24 | \
-    binArray [ 2 + 4 * idx ] << 16 | \
-    binArray [ 1 + 4 * idx ] <<  8 | \
-    binArray [ 4 * idx ]
+    binArray [ 0 + 4 * idx ] << 24 | \
+    binArray [ 1 + 4 * idx ] << 16 | \
+    binArray [ 2 + 4 * idx ] <<  8 | \
+    binArray [ 3 + 4 * idx ]
 
 
 DbgFileNative::DbgFileNative()
 {
     m_addrToLineMap = NULL;
     m_lineToAddrMap = NULL;
+}
+
+DbgFileNative::DbgFileNative ( const std::string & file)
+{
+    m_addrToLineMap = NULL;
+    m_lineToAddrMap = NULL;
+    openFile(file);
 }
 
 DbgFileNative::~DbgFileNative()
@@ -58,13 +67,13 @@ DbgFileNative::~DbgFileNative()
     }
 }
 
-void DbgFileNative::openFile ( const std::string & filename ) throw ( DbgFileException )
+void DbgFileNative::openFile ( const std::string & filename ) throw ( Exception )
 {
     try
     {
         loadFile(filename);
     }
-    catch ( DbgFileException & e )
+    catch ( Exception & e )
     {
         clear();
         throw(e);
@@ -106,7 +115,7 @@ inline void DbgFileNative::loadFile ( const std::string & filename )
     std::fstream file(filename, std::fstream::in | std::fstream::binary );
     if ( false == file.is_open())
     {
-        throw DbgFileException(DbgFileException::IO_ERROR, "Unable to open " + filename);
+        throw Exception(Exception::IO_ERROR, "Unable to open " + filename);
     }
 
     int charRead;
@@ -123,7 +132,11 @@ inline void DbgFileNative::loadFile ( const std::string & filename )
                 charRead = file.get();
                 if ( EOF == charRead )
                 {
-                    throw DbgFileException(DbgFileException::IO_ERROR, "Binary section ends unexpectedly, file: " + filename);
+                    if ( 0 == i )
+                    {
+                        break;
+                    }
+                    throw Exception(Exception::IO_ERROR, "Binary section ends unexpectedly, file: " + filename);
                 }
                 else
                 {
@@ -133,13 +146,13 @@ inline void DbgFileNative::loadFile ( const std::string & filename )
 
             unsigned int address    = ASSEMBLE_INT32(binArray, 0);
             unsigned int fileNumber = ASSEMBLE_INT32(binArray, 1);
-            unsigned int lineNumber = ASSEMBLE_INT32(binArray, 2);
+            unsigned int lineNo     = ASSEMBLE_INT32(binArray, 2);
 
-            m_lineRecords.push_back(LineRecord(fileNumber, lineNumber, 0, 0, address));
+            m_lineRecords.push_back(LineRecord(fileNumber, lineNo, 0, 0, address));
 
-            if ( lineNumber > m_numberOfLines[fileNumber] )
+            if ( lineNo > m_numberOfLines[fileNumber] )
             {
-                m_numberOfLines[fileNumber] = lineNumber;
+                m_numberOfLines[fileNumber] = lineNo;
             }
             if ( (int)address > m_lastAddress )
             {
@@ -159,7 +172,7 @@ inline void DbgFileNative::loadFile ( const std::string & filename )
             // Check whether the read file header is supported.
             if ( FileHeaders::AsmNativeDgbFile != header )
             {
-                throw DbgFileException(DbgFileException::IO_ERROR, "Unsupported file format, file: " + filename);
+                throw Exception(Exception::IO_ERROR, "Unsupported file format, file: " + filename);
             }
         }
         else
@@ -171,7 +184,7 @@ inline void DbgFileNative::loadFile ( const std::string & filename )
                 filename.push_back((char)charRead);
             }
 
-            if ( true == filename.empty() )
+            if ( false == filename.empty() )
             {
                 // Add the read file name to the list of source files.
                 m_fileNames.push_back(filename);
@@ -188,7 +201,7 @@ inline void DbgFileNative::loadFile ( const std::string & filename )
 
     if ( true == file.bad() )
     {
-        throw DbgFileException(DbgFileException::IO_ERROR, "Unable to read " + filename);
+        throw Exception(Exception::IO_ERROR, "Unable to read " + filename);
     }
 
     file.close();

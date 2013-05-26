@@ -178,7 +178,7 @@ bool MCUSimControl::start ( const std::string & filename,
     {
         m_dbgFile->openFile(filename + dbgFileExt);
     }
-    catch ( DbgFile::DbgFileException & e )
+    catch ( DbgFile::Exception & e )
     {
         // TODO: implement a proper error handling here
         qDebug("Failed to load the debug file.");
@@ -190,7 +190,7 @@ bool MCUSimControl::start ( const std::string & filename,
     {
         dataFile->clearAndLoad(filename + dataFileExt);
     }
-    catch ( DataFile::DataFileException & e )
+    catch ( DataFile::Exception & e )
     {
         // TODO: implement a proper error handling here
         qDebug("Failed to load program memory from the given file.");

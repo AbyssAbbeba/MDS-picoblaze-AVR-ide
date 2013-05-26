@@ -64,13 +64,13 @@ inline void DbgFileAvrCoff::clear()
     m_moduleRecords.clear();
 }
 
-void DbgFileAvrCoff::openFile ( const std::string & filename ) throw ( DbgFileException )
+void DbgFileAvrCoff::openFile ( const std::string & filename ) throw ( Exception )
 {
     try
     {
         loadFile(filename);
     }
-    catch ( DbgFileException & e )
+    catch ( Exception & e )
     {
         clear();
         throw(e);
@@ -85,7 +85,7 @@ inline void DbgFileAvrCoff::loadFile ( const std::string & filename )
     std::fstream file(filename, std::fstream::in | std::fstream::binary );
     if ( false == file.is_open())
     {
-        throw DbgFileException(DbgFileException::IO_ERROR, "Unable to open " + filename);
+        throw Exception(Exception::IO_ERROR, "Unable to open " + filename);
     }
 
     unsigned int absolutePosition = 0;
@@ -118,7 +118,7 @@ inline void DbgFileAvrCoff::loadFile ( const std::string & filename )
     // 0xA12 identifies AVR COFF
     if ( 0xA12 != magicNumber )
     {
-        throw DbgFileException ( DbgFileException::COMPATIBILITY_ERROR,
+        throw Exception ( Exception::COMPATIBILITY_ERROR,
                                  "The 'Magic Number' has to be 0xA12 (AVR COFF)." );
     }
 
@@ -339,7 +339,7 @@ inline void DbgFileAvrCoff::checkBadAndEof ( const std::fstream & file, char * b
         {
             delete[] buffer;
         }
-        throw DbgFileException ( DbgFileException::IO_ERROR, "Read failed, file: " + m_sourceFile );
+        throw Exception ( Exception::IO_ERROR, "Read failed, file: " + m_sourceFile );
     }
 }
 
@@ -376,14 +376,14 @@ inline const char * DbgFileAvrCoff::checkHexNumber ( const char * str ) const
 
     if ( 0 == length )
     {
-        throw DbgFileException(DbgFileException::PARSE_ERROR, "Record ends prematurely.");
+        throw Exception(Exception::PARSE_ERROR, "Record ends prematurely.");
     }
 
     for ( int i = 0; i < length; i++ )
     {
         if ( 0 == isxdigit(str[i]) )
         {
-            throw DbgFileException(DbgFileException::PARSE_ERROR, "Hexadecimal digit character expected.");
+            throw Exception(Exception::PARSE_ERROR, "Hexadecimal digit character expected.");
         }
     }
 

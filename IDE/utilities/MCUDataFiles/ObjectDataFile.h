@@ -37,16 +37,25 @@ class ObjectDataFile : public DataFile
          */
         ObjectDataFile ( unsigned int arrsize = 0x10000 );
 
+        /**
+         * @brief
+         * @param[in] file
+         */
+        ObjectDataFile ( const std::string & file )
+        {
+            clearAndLoad(file);
+        }
+
     ////    Public Operations    ////
     public:
         /**
          * @brief Load data file into the memory array
          * @param[in] filename
          */
-        virtual void clearAndLoad ( const char * filename ) throw ( DataFile::DataFileException );
+        virtual void clearAndLoad ( const char * filename ) throw ( DataFile::Exception );
 
         /// @overload
-        virtual void clearAndLoad ( const std::string & filename ) throw ( DataFile::DataFileException );
+        virtual void clearAndLoad ( const std::string & filename ) throw ( DataFile::Exception );
 
         /**
          * @brief Save memory array in data file
@@ -54,11 +63,11 @@ class ObjectDataFile : public DataFile
          * @param[in] makeBackup Make backup file
          */
         virtual void save ( const char * filename,
-                            bool makeBackup = true ) throw ( DataFile::DataFileException );
+                            bool makeBackup = true ) throw ( DataFile::Exception );
 
         /// @overload
         virtual void save ( const std::string & filename,
-                            bool makeBackup = true ) throw ( DataFile::DataFileException );
+                            bool makeBackup = true ) throw ( DataFile::Exception );
 };
 
 #endif // OBJECTDATAFILE_H

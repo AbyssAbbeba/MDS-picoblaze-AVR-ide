@@ -31,7 +31,6 @@
 #include <string>
 #include <vector>
 #include <fstream>
-#include <iostream> // DEBUG
 
 void AsmKcpsm3SemanticAnalyzer::MemoryPtr::clear()
 {
@@ -71,11 +70,6 @@ void AsmKcpsm3SemanticAnalyzer::printCodeTree ( const CompilerStatement * codeTr
         return;
     }
 
-    if ( true == m_opts->m_makeBackupFiles )
-    {
-        rename(m_opts->m_codeTree.c_str(), (m_opts->m_codeTree + "~").c_str());
-    }
-
     std::ofstream file ( m_opts->m_codeTree, ( std::fstream::out | std::fstream::trunc ) );
 
     if ( false == file.is_open() )
@@ -98,26 +92,19 @@ void AsmKcpsm3SemanticAnalyzer::printCodeTree ( const CompilerStatement * codeTr
 void AsmKcpsm3SemanticAnalyzer::process ( CompilerStatement * codeTree )
 {
     m_memoryPtr.clear();
-    m_codeListing->loadSourceFiles();
 
+    m_codeListing->loadSourceFiles();
     printCodeTree(codeTree);
 
-    std::cout << "Entering phase 1, codeTree:\n" << codeTree;
-
-    phase1 ( codeTree->next() );
-
-    std::cout << "Entering phase 2, codeTree:\n" << codeTree;
-
-    phase2 ( codeTree );
-
-    std::cout << "Phase 2 complete, codeTree:\n" << codeTree;
+    phase1(codeTree->next());
+    phase2(codeTree);
 
     m_codeListing->output();
+    m_macros->output();
+    m_symbolTable->output();
 
     if ( true == m_compilerCore->successful() )
     {
-        m_macros->output();
-        m_symbolTable->output();
         m_dgbFile->output(m_compilerCore, m_opts);
         m_machineCode->output(AsmMachineCodeGen::E_BIG_ENDIAN, m_compilerCore, m_opts);
     }

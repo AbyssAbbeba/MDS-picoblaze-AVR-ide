@@ -121,13 +121,25 @@ class CompilerBase
         CompilerBase() {};
 };
 
-/**
- * @brief Tracing operator for SourceLocation.
- * @param[in,out] out
- * @param[in] location
- * @return
- */
-std::ostream & operator << ( std::ostream & out,
-                             const CompilerBase::SourceLocation & location );
+/// @name Tracing operators
+//@{
+    /**
+     * @brief Tracing operator for SourceLocation.
+     * @param[in,out] out
+     * @param[in] location
+     * @return
+     */
+    std::ostream & operator << ( std::ostream & out,
+                                 const CompilerBase::SourceLocation & location );
+
+    /**
+     * @brief Tracing operator for MessageType.
+     * @param[in,out] out
+     * @param[in] location
+     * @return
+     */
+    std::ostream & operator << ( std::ostream & out,
+                                 CompilerBase::MessageType type );
+//@}
 
 #endif // COMPILERBASE_H

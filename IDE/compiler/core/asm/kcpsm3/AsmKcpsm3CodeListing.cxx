@@ -273,11 +273,6 @@ void AsmKcpsm3CodeListing::output()
         return;
     }
 
-    if ( true == m_opts->m_makeBackupFiles )
-    {
-        rename(m_opts->m_lstFile.c_str(), (m_opts->m_lstFile + "~").c_str());
-    }
-
     std::ofstream file ( m_opts->m_lstFile, ( std::fstream::out | std::fstream::trunc ) );
 
     if ( false == file.is_open() )

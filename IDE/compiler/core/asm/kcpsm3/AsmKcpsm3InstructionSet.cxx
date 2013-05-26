@@ -560,14 +560,17 @@ void AsmKcpsm3InstructionSet::encapsulate ( CompilerStatement * stmt,
           NULL != arg;
           arg = arg->next() )
     {
-        if ( 0 == ( acceptableTypes[i] & m_symbolTable->getType(arg) ) )
+        int symbolType = (int) m_symbolTable->getType(arg);
+        if ( 0 == ( acceptableTypes[i] & symbolType ) )
         {
             m_compilerCore->compilerMessage(arg->location(),
                                             CompilerBase::MT_ERROR,
-                                            QObject::tr ( "instruction `%1' requires operand #%2 to be of type(s): %3" )
+                                            QObject::tr ( "instruction `%1' requires operand #%2 to be of type(s): %3"
+                                                          "; while the given operand is of type: %4" )
                                                         . arg ( getInstructionName(stmt).c_str() )
                                                         . arg ( i + 1 )
                                                         . arg ( getSymbolTypes(acceptableTypes[i]).c_str() )
+                                                        . arg ( getSymbolTypes(symbolType).c_str() )
                                                         . toStdString() );
         }
 

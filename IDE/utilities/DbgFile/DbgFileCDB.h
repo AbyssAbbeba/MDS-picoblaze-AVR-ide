@@ -48,7 +48,7 @@ class DbgFileCDB : public DbgFile
          * @brief
          * @param[in] filename
          */
-        void openFile ( const std::string & filename ) throw ( DbgFileException );
+        void openFile ( const std::string & filename ) throw ( Exception );
 
         /**
          * @brief

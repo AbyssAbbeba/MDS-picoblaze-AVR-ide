@@ -28,6 +28,11 @@ CompilerMsgFilter::CompilerMsgFilter ( const CompilerCore * compilerCore,
 void CompilerMsgFilter::message ( const std::string & text,
                                   CompilerBase::MessageType type )
 {
+    if ( NULL == m_msgInterface )
+    {
+        return;
+    }
+
     CompilerOptions::Verbosity verbosity = m_compilerCore->getCompilationOptions()->m_verbosity;
 
     switch ( type )

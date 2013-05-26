@@ -3,6 +3,7 @@
 readonly VERSION=0.1
 
 declare -i options_a=0
+declare -i options_b=0
 declare -i options_c=0
 declare -i options_y=0
 declare -i options_l=0
@@ -97,20 +98,25 @@ function countLines() {
 }
 
 function buildAll() {
+    build
+    make doc
+    make test
+    make package
+}
+
+function build() {
     if [ "$(uname -o)" == "Msys" ]; then
         # Build on Windows
         QT_PATH="$(for i in /c/QtSDK/Desktop/Qt/*/mingw/bin; do echo $i; break; done)"
         export PATH="${QT_PATH}:${PATH}"
-        cmake -G "MSYS Makefiles" . || exit 1
+        cmake -DCMAKE_BUILD_TYPE=Debug -G "MSYS Makefiles" . || exit 1
     else
         # Build on a POSIX system
-        cmake . || exit 1
+        cmake -DCMAKE_BUILD_TYPE=Debug . || exit 1
     fi
 
-    make all
-#       make doc
-#       make test
-#       make package
+    # Build in n separate processes where n is the number of CPU cores plus one.
+    which lscpu > /dev/null && make -j$(lscpu | gawk '/^CPU\(s\)/ {printf("%d", ($2+1))}') || make
 }
 
 function printVersion() {
@@ -123,6 +129,7 @@ function printHelp() {
     printf "Version: %s\n" "$VERSION"
     printf "\n"
     printf "Options:\n"
+    printf "    -b    Build.\n"
     printf "    -a    Build EVERYTHING, and run the tests.\n"
     printf "    -c    Clean up the directories by removing all temporary files.\n"
     printf "    -l    Count number of lines in .cxx, .cpp, .c, and .h files.\n"
@@ -145,12 +152,13 @@ function main() {
     cd "$(dirname "${0}")"
 
     # Parse CLI options using `getopts' utility
-    while getopts ":hVcyla" opt; do
+    while getopts ":hVcylab" opt; do
         optTaken=1
 
         case $opt in
             h) printHelp;;
             V) printVersion;;
+            b) options_b=1;;
             a) options_a=1;;
             c) options_c=1;;
             y) options_y=1;;
@@ -171,6 +179,9 @@ function main() {
     fi
     if (( ${options_a} )); then
         buildAll
+    fi
+    if (( ${options_b} && !${options_a} )); then
+        build
     fi
 }
 

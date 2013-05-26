@@ -20,15 +20,15 @@
 // Forward declarations
 class CompilerCore;
 
-// Compiler header files
+// Compiler header files.
 #include "CompilerBase.h"
 #include "CompilerMsgInterface.h"
 #include "CompilerOptions.h"
 
-// Standard header files
+// Standard header files.
 #include <string>
 
-// Qt header files
+// Qt header files.
 #include <QThread>
 
 /**

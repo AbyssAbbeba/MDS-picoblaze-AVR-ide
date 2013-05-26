@@ -24,15 +24,31 @@ set ( CMAKE_VERBOSE_MAKEFILE OFF )
 enable_testing()
 
 
-# # ------------------------------------------------------------------------------
-# # COMPILATION OPTIONS
-# # ------------------------------------------------------------------------------
-# 
-# Specify directories in which the linker will look for libraries.
-link_directories ( "${CMAKE_CURRENT_BINARY_DIR}/../../../compiler" )
+# ------------------------------------------------------------------------------
+# BUILD COMPONENTS IN THE SUBDIRECTORIES
+# ------------------------------------------------------------------------------
+
+# Test suite: Successful compilation & file generation.
+add_subdirectory ( TestSuiteSuc )
+
+# Test suite: Error cases.
+add_subdirectory ( TestSuiteErr )
+
+
+# ------------------------------------------------------------------------------
+# COMPILATION OPTIONS
+# ------------------------------------------------------------------------------
+
+# Find Boost include dirs and libraries.
+find_package ( Boost 1.46
+               REQUIRED
+               COMPONENTS filesystem system )
 
 # Add include directories to the build.
-include_directories ( "${CMAKE_CURRENT_BINARY_DIR}/../../../compiler" )
+include_directories ( ${Boost_INCLUDE_DIRS} )
+
+# Specify directories in which the linker will look for libraries.
+link_directories ( ${Boost_LIBRARY_DIRS} )
 
 ## Add switches to compiler command line
  # -pipe       : Use pipes rather than temporary files for communication between the various stages of compilation.
@@ -42,11 +58,13 @@ add_definitions ( -pipe -std=c++0x -O1 )
 
 # Add an executable to the project using the specified source files.
 add_executable ( ${PROJECT_NAME}
-                 TestSuiteLst.cxx
                  main.cxx )
 
 # Link a target to given libraries
 target_link_libraries ( ${PROJECT_NAME}
+                        ${Boost_LIBRARIES}
+                        TAP_TestSuiteSuc
+                        TAP_TestSuiteErr
                         cunit )
 
 

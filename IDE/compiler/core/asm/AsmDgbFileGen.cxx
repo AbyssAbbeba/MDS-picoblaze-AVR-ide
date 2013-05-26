@@ -52,11 +52,6 @@ void AsmDgbFileGen::output ( CompilerSemanticInterface * compilerCore,
         return;
     }
 
-    if ( true == opts->m_makeBackupFiles )
-    {
-        rename(opts->m_mdsDebugFile.c_str(), (opts->m_mdsDebugFile + "~").c_str());
-    }
-
     std::ofstream file ( opts->m_mdsDebugFile, ( std::fstream::out | std::fstream::trunc ) );
 
     if ( false == file.is_open() )

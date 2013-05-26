@@ -526,17 +526,13 @@ void AsmKcpsm3SymbolTable::output()
         return;
     }
 
-    if ( true == m_opts->m_makeBackupFiles )
-    {
-        rename(m_opts->m_symbolTable.c_str(), (m_opts->m_symbolTable + "~").c_str());
-    }
-
     std::ofstream file ( m_opts->m_symbolTable, ( std::fstream::out | std::fstream::trunc ) );
 
     if ( false == file.is_open() )
     {
         m_compilerCore -> compilerMessage ( CompilerBase::MT_ERROR,
-                                            QObject::tr("Unable to open ").toStdString() + "\"" + m_opts->m_symbolTable  + "\"" );
+                                            QObject::tr ( "Unable to open " ).toStdString()
+                                                        + "\"" + m_opts->m_symbolTable  + "\"" );
         return;
     }
 
@@ -545,7 +541,8 @@ void AsmKcpsm3SymbolTable::output()
     if ( true == file.bad() )
     {
         m_compilerCore -> compilerMessage ( CompilerBase::MT_ERROR,
-                                            QObject::tr("Unable to write to ").toStdString() + "\"" + m_opts->m_symbolTable  + "\"" );
+                                            QObject::tr ( "Unable to write to " ).toStdString()
+                                                        + "\"" + m_opts->m_symbolTable  + "\"" );
         return;
     }
 }
@@ -644,8 +641,15 @@ std::ostream & operator << ( std::ostream & out,
             out << std::endl;
         }
 
-        out << std::endl << std::endl << "REMOVED SYMBOLS:" << std::endl;
-        table = &(symbolTable->m_deletedSymbols);
+        if ( 0 == i )
+        {
+            if ( true == symbolTable->m_deletedSymbols.empty() )
+            {
+                break;
+            }
+            out << std::endl << std::endl << "REMOVED SYMBOLS:" << std::endl;
+            table = &(symbolTable->m_deletedSymbols);
+        }
     }
 
     return out;

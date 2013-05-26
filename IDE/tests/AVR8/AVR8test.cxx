@@ -70,7 +70,7 @@ void test_suite0_basicSanityTest0()
     {
         g_HexFile->clearAndLoad(filename);
     }
-    catch ( DataFile::DataFileException & e )
+    catch ( DataFile::Exception & e )
     {
         CU_FAIL_FATAL("Failed to load program memory from the given IHEX file.")
     }

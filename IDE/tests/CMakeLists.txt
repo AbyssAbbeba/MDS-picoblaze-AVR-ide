@@ -35,5 +35,5 @@ add_subdirectory ( AVR8 )
 add_subdirectory ( compiler )
 
 # Tests for simulator debug files
-add_subdirectory ( DbgFile )
+# add_subdirectory ( DbgFile )
 

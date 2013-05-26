@@ -38,16 +38,26 @@ class HexFile : public DataFile
                 : DataFile ( arrsize ),
                   m_maxRecLength ( maxRecLength ) {};
 
+        /**
+         * @brief
+         * @param[in] file
+         */
+        HexFile ( const std::string & file )
+                : m_maxRecLength ( 255 )
+        {
+            clearAndLoad(file);
+        }
+
     ////    Public Operations    ////
     public:
         /**
          * @brief Load I16HEX file into the memory array
          * @param[in] filename
          */
-        void clearAndLoad ( const char * filename ) throw ( DataFile::DataFileException );
+        void clearAndLoad ( const char * filename ) throw ( DataFile::Exception );
 
         /// @overload
-        void clearAndLoad ( const std::string & filename ) throw ( DataFile::DataFileException );
+        void clearAndLoad ( const std::string & filename ) throw ( DataFile::Exception );
 
         /**
          * @brief Save memory array in I16HEX file
@@ -55,11 +65,11 @@ class HexFile : public DataFile
          * @param[in] makeBackup Make backup file
          */
         void save ( const char * filename,
-                    bool makeBackup = true ) throw ( DataFile::DataFileException );
+                    bool makeBackup = true ) throw ( DataFile::Exception );
 
         /// @overload
         void save ( const std::string & filename,
-                    bool makeBackup = true ) throw ( DataFile::DataFileException );
+                    bool makeBackup = true ) throw ( DataFile::Exception );
 
     ////    Private Operations    ////
     private:

@@ -36,7 +36,7 @@ class CompilerMsgFilter : public CompilerMsgInterface
          * @param[in,out] msgInterface
          */
         CompilerMsgFilter ( const CompilerCore * compilerCore,
-                            CompilerMsgInterface * msgInterface );
+                            CompilerMsgInterface * msgInterface = NULL );
 
     ////    Public Operations    ////
     public:

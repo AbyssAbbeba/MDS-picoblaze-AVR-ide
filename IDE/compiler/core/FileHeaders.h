@@ -20,7 +20,7 @@
 namespace FileHeaders
 {
     ////    Public Static Constants    ////
-    constexpr const char * AsmNativeDgbFile = "Moravia Microsystems, s.r.o. Debuger File Av1.0";
+    constexpr const char * AsmNativeDgbFile = "Moravia Microsystems, s.r.o. Debugger File Av1.0";
 }
 
 #endif // FILEHEADERS_H

@@ -31,7 +31,7 @@ class DbgFile
         /**
          * @brief
          */
-        class DbgFileException
+        class Exception
         {
             ////    Public Datatypes    ////
             public:
@@ -52,10 +52,10 @@ class DbgFile
                  * @param[in] errorType
                  * @param[in] errorInfo
                  */
-                DbgFileException ( Type errorType,
-                                   const std::string & errorInfo )
-                                 : m_errorType(errorType),
-                                   m_errorInfo(errorInfo)
+                Exception ( Type errorType,
+                            const std::string & errorInfo )
+                          : m_errorType ( errorType ),
+                            m_errorInfo ( errorInfo )
                 {
                 }
 
@@ -63,7 +63,15 @@ class DbgFile
                 /**
                  * @brief Forbidden constructor.
                  */
-                DbgFileException();
+                Exception();
+
+            ////    Public Operations    ////
+            public:
+                /**
+                 * @brief
+                 * @return
+                 */
+                std::string toString() const;
 
             ////    Public Attributes    ////
             public:
@@ -382,9 +390,16 @@ class DbgFile
     public:
         /**
          * @brief
+         * @param[in] obj
+         * @return
+         */
+        bool operator == ( const DbgFile & obj );
+
+        /**
+         * @brief
          * @param[in] filename
          */
-        virtual void openFile ( const std::string & filename ) throw ( DbgFileException ) = 0;
+        virtual void openFile ( const std::string & filename ) throw ( Exception ) = 0;
 
         /**
          * @brief

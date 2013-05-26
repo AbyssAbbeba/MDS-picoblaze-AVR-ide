@@ -19,18 +19,18 @@
 #include <iostream>
 #include <CUnit/Basic.h>
 
-void printDbgFileExceptionType ( const DbgFile::DbgFileException & e )
+void printExceptionType ( const DbgFile::Exception & e )
 {
     switch ( e.m_errorType )
     {
-        case DbgFile::DbgFileException::IO_ERROR:
-            std::cerr << "DbgFileException: IO_ERROR" << std::endl;
+        case DbgFile::Exception::IO_ERROR:
+            std::cerr << "Exception: IO_ERROR" << std::endl;
             break;
-        case DbgFile::DbgFileException::PARSE_ERROR:
-            std::cerr << "DbgFileException: PARSE_ERROR" << std::endl;
+        case DbgFile::Exception::PARSE_ERROR:
+            std::cerr << "Exception: PARSE_ERROR" << std::endl;
             break;
-        case DbgFile::DbgFileException::COMPATIBILITY_ERROR:
-            std::cerr << "DbgFileException: COMPATIBILITY_ERROR" << std::endl;
+        case DbgFile::Exception::COMPATIBILITY_ERROR:
+            std::cerr << "Exception: COMPATIBILITY_ERROR" << std::endl;
             break;
     }
     std::cerr << e.m_errorInfo << std::endl;
@@ -53,9 +53,9 @@ void test_0()
     {
         avraLst.openFile("avra_lst_test0.lst");
     }
-    catch ( DbgFile::DbgFileException & e )
+    catch ( DbgFile::Exception & e )
     {
-        printDbgFileExceptionType(e);
+        printExceptionType(e);
         CU_FAIL_FATAL("Exception raised.");
     }
     CU_PASS("File successfully loaded.")
