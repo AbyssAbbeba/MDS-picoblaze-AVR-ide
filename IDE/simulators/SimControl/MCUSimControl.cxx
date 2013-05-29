@@ -41,6 +41,8 @@
 #include "McuDeviceSpecAVR8.h"
 #include "McuDeviceSpecPIC8.h"
 
+#include <cstring>
+
 #include <QDebug>
 
 MCUSimControl::MCUSimControl ( const char * deviceName )
@@ -326,14 +328,21 @@ bool MCUSimControl::changeDevice ( const char * deviceName )
         delete m_simulator;
     }
 
-    m_deviceSpec = McuSimCfgMgr::getInstance()->getDeviceSpec(deviceName);
-    if ( NULL == m_deviceSpec )
+    if ( 0 == strcmp("kcpsm3", deviceName) )
     {
-        qDebug("Failed to retrieve the device configuration specification.");
-        return false;
+        m_architecture = MCUSim::ARCH_PICOBLAZE;;
     }
+    else
+    {
+        m_deviceSpec = McuSimCfgMgr::getInstance()->getDeviceSpec(deviceName);
+        if ( NULL == m_deviceSpec )
+        {
+            qDebug("Failed to retrieve the device configuration specification.");
+            return false;
+        }
 
-    m_architecture = m_deviceSpec->m_arch;
+        m_architecture = m_deviceSpec->m_arch;
+    }
 
     switch ( m_architecture )
     {

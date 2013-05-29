@@ -237,6 +237,7 @@ bool McuSimCfgMgr::setupSimulator ( const char * mcuName,
         case MCUSim::Arch::ARCH_PIC8:
             return dynamic_cast<McuDeviceSpecPIC8*>(m_devices[idx])->setupSimulator(dynamic_cast<PIC8Config&>(mcuConfig));
         case MCUSim::Arch::ARCH_PICOBLAZE:
+//             return dynamic_cast<McuDeviceSpecPicoBlaze*>(m_devices[idx])->setupSimulator(dynamic_cast<PicoBlazeConfig&>(mcuConfig));
             return true; // In this simulator implemetation, PicoBlaze requires no configuration.
         default:
             qDebug() << "Unknown architecture";
