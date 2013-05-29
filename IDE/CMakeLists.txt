@@ -64,7 +64,7 @@ add_subdirectory ( GUI )
 add_subdirectory ( simulators )
 
 # Build Moravia Script language support
-# add_subdirectory ( moraviascript )
+add_subdirectory ( moraviascript )
 
 # Build compiler collection
 add_subdirectory ( compiler )

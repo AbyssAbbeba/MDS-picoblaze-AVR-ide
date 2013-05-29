@@ -131,6 +131,18 @@ class MScriptStatement
          */
         MScriptStatement * appendArgsLink ( MScriptExpr * chainLink );
 
+        /**
+         * @brief
+         * @return
+         */
+        MScriptStatement * prev() const;
+
+        /**
+         * @brief
+         * @return
+         */
+        MScriptStatement * next() const;
+
     ////    Private Operations    ////
     public:
         /**
@@ -141,8 +153,8 @@ class MScriptStatement
          * @return
          */
         std::ostream & print ( std::ostream & out,
-                               int level,
-                               std::string lineString ) const;
+                               int level = 0,
+                               std::string lineString = "1" ) const;
 
     ////    Public Attributes    ////
     public:
