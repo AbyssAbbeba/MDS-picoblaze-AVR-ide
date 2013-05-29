@@ -319,7 +319,7 @@ void MCUSimControl::reset()
     emit(lineNumberChanged(lineNumber, fileName));
 }
 
-bool MCUSimControl::changeDevice(const char * deviceName)
+bool MCUSimControl::changeDevice ( const char * deviceName )
 {
     if ( NULL != m_simulator )
     {

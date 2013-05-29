@@ -36,9 +36,13 @@
 
     /**
      * @brief
-     * @param yylval: [InOut]
+     * @param[in,out] yylval
+     * @param[in,out] compiler
+     * @param[in] byMin
      */
-    inline void enlargeStringBuffer(YYSTYPE * yylval, CompilerParserInterface * compiler, int byMin = 1);
+    inline void enlargeStringBuffer ( YYSTYPE * yylval,
+                                      CompilerParserInterface * compiler,
+                                      int byMin = 1 );
 %}
 
 /* data type of the user-specific data to be stored in compiler */
@@ -110,7 +114,8 @@ XESC    (\\[0-7]{1,3})|(\\x[0-9A-F]{1,2})|(\\[uU][0-9A-F]{1,8})
 
 %{
     // Terminate lexical analysis, in case all input files have been closed using the EXIT' directive.
-    if ( NULL == avr8lexer_get_in(yyscanner) ) {
+    if ( NULL == avr8lexer_get_in(yyscanner) )
+    {
         yyterminate();
     }
 
@@ -121,25 +126,27 @@ XESC    (\\[0-7]{1,3})|(\\x[0-9A-F]{1,2})|(\\[uU][0-9A-F]{1,8})
 
 {WSPACE}        { /* eat up white space */ }
 {NLINE}         {
-            yylloc->last_line++;
-            yylloc->last_column = 1;
-            return EOL;
-        }
+                    yylloc->last_line++;
+                    yylloc->last_column = 1;
+                    return EOL;
+                }
 
-;{COMMENT}      { return COMMENT; }
-{COMMENT}       { /* ignore ordinary comment */ }
-<INITIAL,INC,INC_END>{
+;{COMMENT}          { return COMMENT; }
+{COMMENT}           { /* ignore ordinary comment */ }
+<INITIAL,INC,INC_END>
+{
     "/*"            { yy_push_state(MCOMMENT, yyscanner); }
 }
-<MCOMMENT>{
+<MCOMMENT>
+{
     "*/"            { yy_pop_state(yyscanner); }
     [^*\n]*         { /* eat anything that's not a '*' */ }
     "*"+[^*/\n]*    { /* eat up '*'s not followed by '/'s */ }
     {NLINE}         {
-                yylloc->last_line++;
-                yylloc->last_column = 1;
-                return EOL;
-            }
+                        yylloc->last_line++;
+                        yylloc->last_column = 1;
+                        return EOL;
+                    }
 }
 
 \.?"if"         { return D_IF; }
@@ -178,18 +185,21 @@ XESC    (\\[0-7]{1,3})|(\\x[0-9A-F]{1,2})|(\\[uU][0-9A-F]{1,8})
 \.?"nolist"     { return D_NOLIST; }
 \."set"         { return D_SET; }
 \.?"exit"       {
-            // Close the current file
-            avr8lexer_pop_buffer_state(yyscanner);
-            if ( YY_CURRENT_BUFFER ) {
-                yyextra->popFileName();
-                *yylloc = yyextra->m_yyllocStack.back();
-                yyextra->m_yyllocStack.pop_back();
-            } else {
-                avr8lexer_set_in(NULL, yyscanner);
-            }
+                    // Close the current file
+                    avr8lexer_pop_buffer_state(yyscanner);
+                    if ( YY_CURRENT_BUFFER )
+                    {
+                        yyextra->popFileName();
+                        *yylloc = yyextra->m_yyllocStack.back();
+                        yyextra->m_yyllocStack.pop_back();
+                    }
+                    else
+                    {
+                        avr8lexer_set_in(NULL, yyscanner);
+                    }
 
-            return D_EXIT;
-        }
+                    return D_EXIT;
+                }
 
 "add"           { return I_ADD; }
 "adc"           { return I_ADC; }
@@ -352,278 +362,317 @@ XESC    (\\[0-7]{1,3})|(\\x[0-9A-F]{1,2})|(\\[uU][0-9A-F]{1,8})
 "--"            { return DECREMENT; }
 
 \.?"include"    {
-            // Handle `include' directive
-            yy_push_state(INC_END, yyscanner);
-            yy_push_state(INC, yyscanner);
-            yylval->array.size = -1;
-        }
+                    // Handle `include' directive
+                    yy_push_state(INC_END, yyscanner);
+                    yy_push_state(INC, yyscanner);
+                    yylval->array.size = -1;
+                }
 <INC,INC_END>{
     ;{COMMENT}      { return COMMENT; }
     {COMMENT}       { /* ignore commets */ }
     {WSPACE}        { /* eat up white space */ }
 }
 <INITIAL,INC>\" {
-            // Beginning of a string, i.e. --> "some string"
-            yy_push_state(STR, yyscanner);
-            yyextra->m_strMaxSize = 32;
-            yylval->array.size = 0;
-            yylval->array.data = (unsigned char*) malloc(yyextra->m_strMaxSize);
-        }
+                    // Beginning of a string, i.e. --> "some string"
+                    yy_push_state(STR, yyscanner);
+                    yyextra->m_strMaxSize = 32;
+                    yylval->array.size = 0;
+                    yylval->array.data = (unsigned char*) malloc(yyextra->m_strMaxSize);
+                }
 '               {
-            // Beginning of a string, or a character literal; i.e. --> 'a' (char.), or --> 'some string' (str.)
-            yy_push_state(QUOTE, yyscanner);
-            yyextra->m_strMaxSize = 8;
-            yylval->array.size = 0;
-            yylval->array.data = (unsigned char*) malloc(yyextra->m_strMaxSize);
-        }
+                    // Beginning of a string, or a character literal; i.e. --> 'a' (char.), or --> 'some string' (str.)
+                    yy_push_state(QUOTE, yyscanner);
+                    yyextra->m_strMaxSize = 8;
+                    yylval->array.size = 0;
+                    yylval->array.data = (unsigned char*) malloc(yyextra->m_strMaxSize);
+                }
 <STR>{
     \"              {
-                // End of the string, i.e. "my string" <--
-                yy_pop_state(yyscanner);
-                switch ( YY_START ) {
-                    case INITIAL:
-                        return STRING;
-                    case INC:
+                        // End of the string, i.e. "my string" <--
                         yy_pop_state(yyscanner);
-                        break;
-                    default:
-                        yyextra->lexerMessage(yylloc, CompilerBase::MT_ERROR,
-                            QObject::tr("syntax not understood").toStdString());
-                        break;
-                }
-            }
+                        switch ( YY_START )
+                        {
+                            case INITIAL:
+                                return STRING;
+                            case INC:
+                                yy_pop_state(yyscanner);
+                                break;
+                            default:
+                                yyextra->lexerMessage ( yylloc,
+                                                        CompilerBase::MT_ERROR,
+                                                        QObject::tr("syntax not understood").toStdString() );
+                                break;
+                        }
+                    }
     [^\\"\r\n]+     {
-                // Any string content except for escape sequences, EOL (end of line) is also not allowed
+                        // Any string content except for escape sequences, EOL (end of line) is also not allowed
 
-                // Increase the string size
-                yylval->array.size += yyleng;
-                // Enlarge the string buffer, if necessary
-                enlargeStringBuffer(yylval, yyextra);
-                // Copy matched characters into our string buffer
-                memcpy(yylval->array.data + yylval->array.size - yyleng, yytext, yyleng);
-            }
+                        // Increase the string size
+                        yylval->array.size += yyleng;
+                        // Enlarge the string buffer, if necessary
+                        enlargeStringBuffer(yylval, yyextra);
+                        // Copy matched characters into our string buffer
+                        memcpy(yylval->array.data + yylval->array.size - yyleng, yytext, yyleng);
+                    }
 }
 <QUOTE>{
     '               {
-                // End of the string, or single character literal; i.e. 'a' <--, or 'some string' <--
-                yy_pop_state(yyscanner);
-                if ( yylval->array.size == 1 ) {
-                    yylval->number = int(yylval->array.data[0]);
-                    return NUMBER;
-                } else {
-                    yyextra->lexerMessage(yylloc, CompilerBase::MT_ERROR,
-                        QObject::tr("character constant is too long").toStdString());
-                }
-            }
+                        // End of the string, or single character literal; i.e. 'a' <--, or 'some string' <--
+                        yy_pop_state(yyscanner);
+                        if ( yylval->array.size == 1 )
+                        {
+                            yylval->number = int(yylval->array.data[0]);
+                            return NUMBER;
+                        }
+                        else
+                        {
+                            yyextra->lexerMessage ( yylloc,
+                                                    CompilerBase::MT_ERROR,
+                                                    QObject::tr("character constant is too long").toStdString() );
+                        }
+                    }
     [^\\'\r\n]+     {
-                // Any string, content except for escape sequences, EOL (end of line) is also not allowed
+                        // Any string, content except for escape sequences, EOL (end of line) is also not allowed
 
-                // Increase the string size
-                yylval->array.size += yyleng;
-                // Enlarge the string buffer, if necessary
-                enlargeStringBuffer(yylval, yyextra);
-                // Copy matched characters into our string buffer
-                memcpy(yylval->array.data + yylval->array.size - yyleng, yytext, yyleng);
-            }
+                        // Increase the string size
+                        yylval->array.size += yyleng;
+                        // Enlarge the string buffer, if necessary
+                        enlargeStringBuffer(yylval, yyextra);
+                        // Copy matched characters into our string buffer
+                        memcpy(yylval->array.data + yylval->array.size - yyleng, yytext, yyleng);
+                    }
 }
 <STR,QUOTE>{
     {NLINE}         {
-                // A string has to be terminated at the same line which it was started on
-                yy_pop_state(yyscanner);
-                yyextra->lexerMessage(yylloc, CompilerBase::MT_ERROR,
-                    QObject::tr("unterminated string or character constant").toStdString());
+                        // A string has to be terminated at the same line which it was started on
+                        yy_pop_state(yyscanner);
+                        yyextra->lexerMessage ( yylloc,
+                                                CompilerBase::MT_ERROR,
+                                                QObject::tr("unterminated string or character constant").toStdString());
 
-                // Put the EOL character sequence back onto the input stream
-                char * eol = strdup(yytext);
-                for ( int i = yyleng - 1; i >= 0; --i ) {
-                    unput(eol[i]);
-                }
-                free(eol);
+                        // Put the EOL character sequence back onto the input stream
+                        char * eol = strdup(yytext);
+                        for ( int i = yyleng - 1; i >= 0; --i )
+                        {
+                            unput(eol[i]);
+                        }
+                        free(eol);
 
-                if ( INITIAL == YY_START ) {
-                    return STRING;
-                }
-            }
+                        if ( INITIAL == YY_START )
+                        {
+                            return STRING;
+                        }
+                    }
     {XESC}          {
-                // Handle C like escape sequence, such as `\x4A', `\uABCD', `\U1234abcd', and `\177'
+                        // Handle C like escape sequence, such as `\x4A', `\uABCD', `\U1234abcd', and `\177'
 
-                int size; // Size of the binary value in bytes
-                uint32_t value = escapeSequence(yyextra, yylloc, yytext, &size);
+                        int size; // Size of the binary value in bytes
+                        uint32_t value = escapeSequence(yyextra, yylloc, yytext, &size);
 
-                // Check whether the conversion was successful
-                if ( 0 == size ) {
-                    yyextra->lexerMessage(yylloc, CompilerBase::MT_ERROR,
-                        QObject::tr("unrecognized escape sequence: ").toStdString() + "`" + yytext + "'");
-                    yyterminate();
-                }
+                        // Check whether the conversion was successful
+                        if ( 0 == size ) {
+                            yyextra->lexerMessage ( yylloc,
+                                                    CompilerBase::MT_ERROR,
+                                                    QObject::tr ( "unrecognized escape sequence: " )
+                                                                . toStdString()
+                                                                + "`" + yytext + "'" );
+                            yyterminate();
+                        }
 
-                // Copy converted escape sequence to the string buffer
-                enlargeStringBuffer(yylval, yyextra, size);
-                for ( int i = 0; i < size; i++ ) {
-                    yylval->array.data [ yylval->array.size++ ] = (unsigned char) (value & 0xFF);
-                    value >>= 8;
-                }
-            }
+                        // Copy converted escape sequence to the string buffer
+                        enlargeStringBuffer(yylval, yyextra, size);
+                        for ( int i = 0; i < size; i++ )
+                        {
+                            yylval->array.data [ yylval->array.size++ ] = (unsigned char) (value & 0xFF);
+                            value >>= 8;
+                        }
+                    }
     \\.             {
-                // Handle escape sequences inside strings and character literals, and convert the to binary values
+                        // Handle escape sequences inside strings and character literals, and convert the to binary values
 
-                // Enlarge the string buffer, if necessary
-                enlargeStringBuffer(yylval, yyextra);
-                // Copy converted escape sequence to the string buffer
-                int size;
-                yylval->array.data [ yylval->array.size++ ] = (unsigned char) escapeSequence(yyextra, yylloc, yytext, &size);
-            }
+                        // Enlarge the string buffer, if necessary
+                        enlargeStringBuffer(yylval, yyextra);
+                        // Copy converted escape sequence to the string buffer
+                        int size;
+                        yylval->array.data [ yylval->array.size++ ] = (unsigned char) escapeSequence ( yyextra,
+                                                                                                       yylloc,
+                                                                                                       yytext,
+                                                                                                       &size );
+                    }
     <<EOF>>         {
-                // Handle strings terminated by EOF (End Of File) as ERROR, of course.
-                yy_pop_state(yyscanner);
-                yyextra->lexerMessage(yylloc, CompilerBase::MT_ERROR,
-                    QObject::tr("unterminated string or character constant").toStdString());
+                        // Handle strings terminated by EOF (End Of File) as ERROR, of course.
+                        yy_pop_state(yyscanner);
+                        yyextra->lexerMessage ( yylloc,
+                                                CompilerBase::MT_ERROR,
+                                                QObject::tr ( "unterminated string or character constant" )
+                                                            . toStdString() );
 
-                // Discard the string buffer and terminate lexical analysis (this is a fatal error)
-                free(yylval->array.data);
-                yylval->array.size = 0;
-                yyterminate();
-            }
+                        // Discard the string buffer and terminate lexical analysis (this is a fatal error)
+                        free(yylval->array.data);
+                        yylval->array.size = 0;
+                        yyterminate();
+                    }
 }
 <INC,INC_END>{
     {NLINE}         {
-                // Attempt to open the specified file
+                        // Attempt to open the specified file
 
-                // Put the EOL character sequence back onto the input stream
-                char * eol = strdup(yytext);
-                for ( int i = yyleng - 1; i >= 0; --i ) {
-                    unput(eol[i]);
-                }
-                free(eol);
+                        // Put the EOL character sequence back onto the input stream
+                        char * eol = strdup(yytext);
+                        for ( int i = yyleng - 1; i >= 0; --i )
+                        {
+                            unput(eol[i]);
+                        }
+                        free(eol);
 
-                yy_pop_state(yyscanner);
+                        yy_pop_state(yyscanner);
 
-                if ( 1 > yylval->array.size ) {
-                    yyextra->lexerMessage(yylloc, CompilerBase::MT_ERROR,
-                        QObject::tr("no file name specified").toStdString());
-                    return INCLUDE;
-                }
-                enlargeStringBuffer(yylval, yyextra);
-                yylval->array.data [ yylval->array.size ] = '\0';
+                        if ( 1 > yylval->array.size )
+                        {
+                            yyextra->lexerMessage(yylloc, CompilerBase::MT_ERROR,
+                                QObject::tr("no file name specified").toStdString());
+                            return INCLUDE;
+                        }
+                        enlargeStringBuffer(yylval, yyextra);
+                        yylval->array.data [ yylval->array.size ] = '\0';
 
-                char * filename = (char*) yylval->array.data;
+                        char * filename = (char*) yylval->array.data;
 
-                if ( strlen(filename) != (size_t) yylval->array.size ) {
-                    yyextra->lexerMessage(yylloc, CompilerBase::MT_WARNING,
-                        QObject::tr("file name contains a null character").toStdString() );
-                }
+                        if ( strlen(filename) != (size_t) yylval->array.size )
+                        {
+                            yyextra->lexerMessage(yylloc, CompilerBase::MT_WARNING,
+                                QObject::tr("file name contains a null character").toStdString() );
+                        }
 
-                FILE * file = yyextra->fileOpen(filename);
-                if ( NULL == file ) {
-                    yyextra->lexerMessage(yylloc, CompilerBase::MT_ERROR,
-                        QObject::tr("unable to open the specified file: ").toStdString() + "`" + filename + "'" );
-                    return EOL;
-                } else {
-                    yylval->string = filename;
+                        FILE * file = yyextra->fileOpen(filename);
+                        if ( NULL == file )
+                        {
+                            yyextra->lexerMessage ( yylloc,
+                                                    CompilerBase::MT_ERROR,
+                                                    QObject::tr ( "unable to open the specified file: " )
+                                                                . toStdString()
+                                                                + "`" + filename + "'" );
+                            return EOL;
+                        }
+                        else
+                        {
+                            yylval->string = filename;
 
-                    yyextra->m_yyllocStack.push_back(*yylloc);
-                    avr8lexer_push_buffer_state(avr8lexer__create_buffer(file, YY_BUF_SIZE, yyscanner), yyscanner);
+                            yyextra->m_yyllocStack.push_back(*yylloc);
+                            avr8lexer_push_buffer_state ( avr8lexer__create_buffer ( file, YY_BUF_SIZE, yyscanner ),
+                                                          yyscanner );
 
-                    yylloc->last_line = 1;
-                    yylloc->last_column = 1;
+                            yylloc->last_line = 1;
+                            yylloc->last_column = 1;
 
-                    return INCLUDE;
-                }
-            }
+                            return INCLUDE;
+                        }
+                    }
     .               {
-                // Anything else results in an error, it wouldn't make sense otherwise
-                yyextra->lexerMessage(yylloc, CompilerBase::MT_ERROR,
-                    QObject::tr("unrecognized token: ").toStdString() + "`" + std::string(yytext) + "'");
-                yyterminate();
-            }
+                        // Anything else results in an error, it wouldn't make sense otherwise
+                        yyextra->lexerMessage ( yylloc,
+                                                CompilerBase::MT_ERROR,
+                                                QObject::tr ( "unrecognized token: " )
+                                                            . toStdString()
+                                                            + "`" + std::string(yytext) + "'" );
+                        yyterminate();
+                    }
 }
 [01]+b          {
-            // Binary number (max. 64 digits, max. 32 bits)
-            yytext [ yyleng - 1 ] = '\0'; // Remove the trailing `b'
-            yylval->number = convertStrToNumber(yyextra, yylloc, yytext, 64, 2);
-            return NUMBER;
-        }
+                    // Binary number (max. 64 digits, max. 32 bits)
+                    yytext [ yyleng - 1 ] = '\0'; // Remove the trailing `b'
+                    yylval->number = convertStrToNumber(yyextra, yylloc, yytext, 64, 2);
+                    return NUMBER;
+                }
 [0-9A-F]+h      {
-            // Hexadecimal number (max. 16 digits, max. 32 bits)
-            yytext [ yyleng - 1 ] = '\0'; // Remove the trailing `h'
-            yylval->number = convertStrToNumber(yyextra, yylloc, yytext, 16, 16);
-            return NUMBER;
-        }
+                    // Hexadecimal number (max. 16 digits, max. 32 bits)
+                    yytext [ yyleng - 1 ] = '\0'; // Remove the trailing `h'
+                    yylval->number = convertStrToNumber(yyextra, yylloc, yytext, 16, 16);
+                    return NUMBER;
+                }
 [0-7]+[oq]      {
-            // Octal number (max. 21 digits, max. 32 bits)
-            yytext [ yyleng - 1 ] = '\0'; // Remove the trailing `o' or `q'
-            yylval->number = convertStrToNumber(yyextra, yylloc, yytext, 21, 8);
-            return NUMBER;
-        }
+                    // Octal number (max. 21 digits, max. 32 bits)
+                    yytext [ yyleng - 1 ] = '\0'; // Remove the trailing `o' or `q'
+                    yylval->number = convertStrToNumber(yyextra, yylloc, yytext, 21, 8);
+                    return NUMBER;
+                }
 [0-9]+d         {
-            // Decimal number (max. 10 digits, max. 32 bits)
-            yytext [ yyleng - 1 ] = '\0'; // Remove the trailing `d'
-            yylval->number = convertStrToNumber(yyextra, yylloc, yytext, 10, 10);
-            return NUMBER;
-        }
+                    // Decimal number (max. 10 digits, max. 32 bits)
+                    yytext [ yyleng - 1 ] = '\0'; // Remove the trailing `d'
+                    yylval->number = convertStrToNumber(yyextra, yylloc, yytext, 10, 10);
+                    return NUMBER;
+                }
 0b[01]+         {
-            // Binary number (max. 64 digits, max. 32 bits)
-            yylval->number = convertStrToNumber(yyextra, yylloc, (yytext + 2), 64, 2);
-            return NUMBER;
-        }
+                    // Binary number (max. 64 digits, max. 32 bits)
+                    yylval->number = convertStrToNumber(yyextra, yylloc, (yytext + 2), 64, 2);
+                    return NUMBER;
+                }
 0x[0-9A-F]+     {
-            // Hexadecimal number (max. 16 digits, max. 32 bits)
-            yylval->number = convertStrToNumber(yyextra, yylloc, (yytext + 2), 16, 16);
-            return NUMBER;
-        }
+                    // Hexadecimal number (max. 16 digits, max. 32 bits)
+                    yylval->number = convertStrToNumber(yyextra, yylloc, (yytext + 2), 16, 16);
+                    return NUMBER;
+                }
 0[0-7]+         {
-            // Octal number (max. 21 digits, max. 32 bits)
-            yylval->number = convertStrToNumber(yyextra, yylloc, (yytext + 1), 21, 8);
-            return NUMBER;
-        }
+                    // Octal number (max. 21 digits, max. 32 bits)
+                    yylval->number = convertStrToNumber(yyextra, yylloc, (yytext + 1), 21, 8);
+                    return NUMBER;
+                }
 [0-9]+          {
-            // Decimal number (max. 10 digits, max. 32 bits)
-            yylval->number = convertStrToNumber(yyextra, yylloc, yytext, 10, 10);
-            return NUMBER;
-        }
+                    // Decimal number (max. 10 digits, max. 32 bits)
+                    yylval->number = convertStrToNumber(yyextra, yylloc, yytext, 10, 10);
+                    return NUMBER;
+                }
 {ID}:           {
-            // Label, e.g. `main:'
+                    // Label, e.g. `main:'
 
-            // Remove the trailing `:'
-            yytext [ yyleng - 1 ] = '\0';
+                    // Remove the trailing `:'
+                    yytext [ yyleng - 1 ] = '\0';
 
-            // Convert the string to upper case characters
-            for ( int i = 0; i < yyleng; i++ ) {
-                yytext[i] = toupper(yytext[i]);
-            }
+                    // Convert the string to upper case characters
+                    for ( int i = 0; i < yyleng; i++ )
+                    {
+                        yytext[i] = toupper(yytext[i]);
+                    }
 
-            // Return as label
-            yylval->string = yytext;
-            return LABEL;
-        }
+                    // Return as label
+                    yylval->string = yytext;
+                    return LABEL;
+                }
 {ID}|"$"        {
-            // Arbitrary identifier, e.g. `MYREG_U1'
+                    // Arbitrary identifier, e.g. `MYREG_U1'
 
-            // Convert the string to upper case characters
-            for ( int i = 0; i < yyleng; i++ ) {
-                yytext[i] = toupper(yytext[i]);
-            }
+                    // Convert the string to upper case characters
+                    for ( int i = 0; i < yyleng; i++ )
+                    {
+                        yytext[i] = toupper(yytext[i]);
+                    }
 
-            // Return as general identifier
-            yylval->string = yytext;
-            return IDENFIFIER;
-        }
+                    // Return as general identifier
+                    yylval->string = yytext;
+                    return IDENFIFIER;
+                }
 <<EOF>>         {
-            // Handle end of file; possibly switch back to previous file, in case "include" was used
-            avr8lexer_pop_buffer_state(yyscanner);
-            if ( !YY_CURRENT_BUFFER ) {
-                yyterminate();
-            } else {
-                yyextra->popFileName();
-                *yylloc = yyextra->m_yyllocStack.back();
-                yyextra->m_yyllocStack.pop_back();
-            }
-        }
+                    // Handle end of file; possibly switch back to previous file, in case "include" was used
+                    avr8lexer_pop_buffer_state(yyscanner);
+                    if ( !YY_CURRENT_BUFFER )
+                    {
+                        yyterminate();
+                    }
+                    else
+                    {
+                        yyextra->popFileName();
+                        *yylloc = yyextra->m_yyllocStack.back();
+                        yyextra->m_yyllocStack.pop_back();
+                    }
+                }
 .               {
-            // Unrecognized token => ERROR
-            yyextra->lexerMessage(yylloc, CompilerBase::MT_ERROR,
-                QObject::tr("unrecognized token: ").toStdString() + "`" + std::string(yytext) + "'");
-        }
+                    // Unrecognized token => ERROR
+                    yyextra->lexerMessage ( yylloc,
+                                            CompilerBase::MT_ERROR,
+                                            QObject::tr ( "unrecognized token: " )
+                                                        . toStdString()
+                                                        + "`" + std::string(yytext) + "'" );
+                }
 
 %%
 
@@ -631,8 +680,12 @@ XESC    (\\[0-7]{1,3})|(\\x[0-9A-F]{1,2})|(\\[uU][0-9A-F]{1,8})
 /* EPILOGUE - USER CODE - FUNCTION DEFINITIONS                                 */
 /* --------------------------------------------------------------------------- */
 
-inline void enlargeStringBuffer(YYSTYPE * semval, CompilerParserInterface * compiler, int byMin) {
-    if ( ( byMin + semval->array.size ) >= compiler->m_strMaxSize ) {
+inline void enlargeStringBuffer ( YYSTYPE * semval,
+                                  CompilerParserInterface * compiler,
+                                  int byMin )
+{
+    if ( ( byMin + semval->array.size ) >= compiler->m_strMaxSize )
+    {
         compiler->m_strMaxSize = 2 * semval->array.size;
         semval->array.data = (unsigned char*) realloc(semval->array.data, compiler->m_strMaxSize);
     }

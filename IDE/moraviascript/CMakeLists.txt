@@ -55,9 +55,14 @@ add_definitions ( -Wall -std=c++0x -O2 -pipe )
 ## Add a library to the project using the specified source files,
  # in this case it will procude dynamic C++ library.
 add_library ( ${PROJECT_NAME} SHARED
-              # Assembler for 8-bit AVR
               ${FLEX_moraviaScriptLexer_OUTPUTS}
-              ${BISON_moraviaScriptParser_OUTPUTS} )
+              ${BISON_moraviaScriptParser_OUTPUTS}
+              MScriptCore.cxx
+              MScriptExpr.cxx
+              MScriptParserInterface.cxx
+              MScriptStmtTypes.cxx
+              MScriptSrcLocation.cxx
+              MScriptStatement.cxx )
 
 ## Set properties on a target.
  # Targets can have properties that affect how they are built.

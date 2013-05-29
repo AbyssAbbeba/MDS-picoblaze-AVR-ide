@@ -16,15 +16,15 @@
 #ifndef COMPILER_H
 #define COMPILER_H
 
-// Forward declarations
+// Forward declarations.
 class CompilerCore;
 class CompilerMsgInterface;
 
-// Compiler header files
+// Compiler header files.
 #include "CompilerOptions.h"
 #include "CompilerBase.h"
 
-// Compiler header files
+// Standard header files.
 #include <iostream>
 
 /**
