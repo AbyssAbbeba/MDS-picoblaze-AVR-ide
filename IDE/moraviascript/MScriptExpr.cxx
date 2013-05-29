@@ -496,85 +496,43 @@ std::ostream & operator << ( std::ostream & out,
 {
     switch ( opr )
     {
-        OPER_NONE = 0,   ///< a
-        OPER_ADD,        ///< a + b
-        OPER_SUB,        ///< a - b
-        OPER_MULT,       ///< a * b
-        OPER_DIV,        ///< a / b
-        OPER_MOD,        ///< a % b
-        OPER_CALL,       ///< a ( b[] )
-        OPER_BOR,        ///< a | b
-        OPER_BXOR,       ///< a ^ b
-        OPER_BAND,       ///< a & b
-        OPER_LOR,        ///< a || b
-        OPER_LAND,       ///< a && b
-        OPER_EQ,         ///< a == b
-        OPER_NE,         ///< a != b
-        OPER_LT,         ///< a < b
-        OPER_LE,         ///< a <= b
-        OPER_GE,         ///< a >= b
-        OPER_GT,         ///< a > b
-        OPER_SHR,        ///< a >> b
-        OPER_SHL,        ///< a << b
-        OPER_CMPL,       ///< ~ a
-        OPER_NOT,        ///< ! a
-        OPER_ADD_ASSIGN, ///< a += b
-        OPER_SUB_ASSIGN, ///< a -= b
-        OPER_MUL_ASSIGN, ///< a *= b
-        OPER_DIV_ASSIGN, ///< a /= b
-        OPER_MOD_ASSIGN, ///< a %= b
-        OPER_SHL_ASSIGN, ///< a <<= b
-        OPER_SHR_ASSIGN, ///< a >>= b
-        OPER_AND_ASSIGN, ///< a &= b
-        OPER_ORB_ASSIGN, ///< a |= b
-        OPER_XOR_ASSIGN, ///< a ^= b
-        OPER_PRE_INC,    ///< ++ a
-        OPER_PRE_DEC,    ///< -- a
-        OPER_POST_INC,   ///< a ++
-        OPER_POST_DEC,   ///< a --
-        OPER_ASSIGN      ///< a = b
-
-        case MScriptExpr::OPER_NONE:                           break;
-        case MScriptExpr::OPER_ADD:         out << "+";        break;
-        case MScriptExpr::OPER_SUB:         out << "-";        break;
-        case MScriptExpr::OPER_MULT:        out << "*";        break;
-        case MScriptExpr::OPER_DIV:         out << "/";        break;
-        case MScriptExpr::OPER_MOD:         out << "%";        break;
-        case MScriptExpr::OPER_DOT:         out << ".";        break;
-        case MScriptExpr::OPER_BOR:         out << "|";        break;
-        case MScriptExpr::OPER_BXOR:        out << "^";        break;
-        case MScriptExpr::OPER_BAND:        out << "&";        break;
-        case MScriptExpr::OPER_LOR:         out << "||";       break;
-        case MScriptExpr::OPER_LXOR:        out << "^^";       break;
-        case MScriptExpr::OPER_LAND:        out << "&&";       break;
-        case MScriptExpr::OPER_LOW:         out << "LOW ";     break;
-        case MScriptExpr::OPER_HIGH:        out << "HIGH ";    break;
-        case MScriptExpr::OPER_EQ:          out << "==";       break;
-        case MScriptExpr::OPER_NE:          out << "!=";       break;
-        case MScriptExpr::OPER_LT:          out << "<";        break;
-        case MScriptExpr::OPER_LE:          out << "<=";       break;
-        case MScriptExpr::OPER_GE:          out << ">=";       break;
-        case MScriptExpr::OPER_GT:          out << ">";        break;
-        case MScriptExpr::OPER_SHR:         out << ">>";       break;
-        case MScriptExpr::OPER_SHL:         out << "<<";       break;
-        case MScriptExpr::OPER_CALL:        out << "<CALL>";   break;
-        case MScriptExpr::OPER_CMPL:        out << "~";        break;
-        case MScriptExpr::OPER_NOT:         out << "!";        break;
-        case MScriptExpr::OPER_ADD_ASSIGN:  out << "+=";       break;
-        case MScriptExpr::OPER_SUB_ASSIGN:  out << "-=";       break;
-        case MScriptExpr::OPER_MUL_ASSIGN:  out << "*=";       break;
-        case MScriptExpr::OPER_DIV_ASSIGN:  out << "/=";       break;
-        case MScriptExpr::OPER_MOD_ASSIGN:  out << "%=";       break;
-        case MScriptExpr::OPER_SHL_ASSIGN:  out << "<<=";      break;
-        case MScriptExpr::OPER_SHR_ASSIGN:  out << ">>=";      break;
-        case MScriptExpr::OPER_AND_ASSIGN:  out << "&=";       break;
-        case MScriptExpr::OPER_ORB_ASSIGN:  out << "|=";       break;
-        case MScriptExpr::OPER_XOR_ASSIGN:  out << "^=";       break;
-        case MScriptExpr::OPER_INC:         out << "++";       break;
-        case MScriptExpr::OPER_DEC:         out << "--";       break;
-        case MScriptExpr::OPER_AT:          out << "@";        break;
-        case MScriptExpr::OPER_INTERVALS:   out << "..";       break;
-        case MScriptExpr::OPER_ASSIGN:      out << "=";        break;
+        case MScriptExpr::OPER_NONE:                            break;
+        case MScriptExpr::OPER_ADD:             out << "+";     break;
+        case MScriptExpr::OPER_SUB:             out << "-";     break;
+        case MScriptExpr::OPER_MULT:            out << "*";     break;
+        case MScriptExpr::OPER_DIV:             out << "/";     break;
+        case MScriptExpr::OPER_MOD:             out << "%";     break;
+        case MScriptExpr::OPER_CALL:            out << "<CALL>";break;
+        case MScriptExpr::OPER_BOR:             out << "|";     break;
+        case MScriptExpr::OPER_BXOR:            out << "^";     break;
+        case MScriptExpr::OPER_BAND:            out << "&";     break;
+        case MScriptExpr::OPER_LOR:             out << "||";    break;
+        case MScriptExpr::OPER_LAND:            out << "&&";    break;
+        case MScriptExpr::OPER_EQ:              out << "==";    break;
+        case MScriptExpr::OPER_NE:              out << "!=";    break;
+        case MScriptExpr::OPER_LT:              out << "<";     break;
+        case MScriptExpr::OPER_LE:              out << "<=";    break;
+        case MScriptExpr::OPER_GE:              out << ">=";    break;
+        case MScriptExpr::OPER_GT:              out << ">";     break;
+        case MScriptExpr::OPER_SHR:             out << ">>";    break;
+        case MScriptExpr::OPER_SHL:             out << "<<";    break;
+        case MScriptExpr::OPER_CMPL:            out << "~";     break;
+        case MScriptExpr::OPER_NOT:             out << "!";     break;
+        case MScriptExpr::OPER_ADD_ASSIGN:      out << "+=";    break;
+        case MScriptExpr::OPER_SUB_ASSIGN:      out << "-=";    break;
+        case MScriptExpr::OPER_MUL_ASSIGN:      out << "*=";    break;
+        case MScriptExpr::OPER_DIV_ASSIGN:      out << "/=";    break;
+        case MScriptExpr::OPER_MOD_ASSIGN:      out << "%=";    break;
+        case MScriptExpr::OPER_SHL_ASSIGN:      out << "<<=";   break;
+        case MScriptExpr::OPER_SHR_ASSIGN:      out << ">>=";   break;
+        case MScriptExpr::OPER_AND_ASSIGN:      out << "&=";    break;
+        case MScriptExpr::OPER_ORB_ASSIGN:      out << "|=";    break;
+        case MScriptExpr::OPER_XOR_ASSIGN:      out << "^=";    break;
+        case MScriptExpr::OPER_PRE_INC:         out << "pre++"; break;
+        case MScriptExpr::OPER_PRE_DEC:         out << "pre--"; break;
+        case MScriptExpr::OPER_POST_INC:        out << "post++";break;
+        case MScriptExpr::OPER_POST_DEC:        out << "post--";break;
+        case MScriptExpr::OPER_ASSIGN:          out << "=";     break;
     }
     return out;
 }

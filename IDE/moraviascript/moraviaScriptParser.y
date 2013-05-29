@@ -47,7 +47,7 @@
     float real;                 //
     char * string;              //
     MScriptExpr * expr;        //
-    CompilerStatement * stmt;   //
+    MScriptStatement * stmt;    //
     struct
     {
         unsigned char * data;   //
@@ -138,7 +138,6 @@
 %token O_BITOR          "|"
 %token O_BITXOR         "^"
 %token O_EQ             "=="
-%token O_NE             "<>"
 %token O_NE             "!="
 %token O_LT             "<"
 %token O_LE             "<="
@@ -250,31 +249,31 @@ stmt:
 cnd_exec:
       if_block else_block           {
                                         $$ = new MScriptStatement(@$, STMT_CONDITIONAL_EXEC);
-                                        $$->createBranch($if_block->appendLink($else_block);
+                                        $$->createBranch($if_block->appendLink($else_block));
                                     }
 ;
 
 if_block:
       KW_IF "(" expr ")"
-      "{" statements "}"            { $$ = new MScriptStatement(@$, STMT_IF, $expr)->createBranch($statements); }
-    | KW_IF "(" expr ")" stmt       { $$ = new MScriptStatement(@$, STMT_IF, $expr)->createBranch($statements); }
+      "{" statements "}"            { $$ = (new MScriptStatement(@$, STMT_IF, $expr))->createBranch($statements); }
+    | KW_IF "(" expr ")" stmt       { $$ = (new MScriptStatement(@$, STMT_IF, $expr))->createBranch($stmt); }
 ;
 
 else_block:
       /* empty */                   { $$ = NULL; }
-    | KW_ELSE "{" statements "}"    { $$ = new MScriptStatement(@$, STMT_ELSE, $expr)->createBranch($statements); }
-    | KW_ELSE stmt                  { $$ = new MScriptStatement(@$, STMT_ELSE, $expr)->createBranch($statements); }
+    | KW_ELSE "{" statements "}"    { $$ = (new MScriptStatement(@$, STMT_ELSE))->createBranch($statements); }
+    | KW_ELSE stmt                  { $$ = (new MScriptStatement(@$, STMT_ELSE))->createBranch($stmt); }
 ;
 
 
+id:
+      IDENFIFIER                    { $$ = new MScriptExpr($IDENFIFIER); }
+;
 integer:
       INTEGER                       { $$ = new MScriptExpr($INTEGER); }
 ;
 real:
       REAL                          { $$ = new MScriptExpr($REAL); }
-;
-id:
-      IDENFIFIER                    { $$ = new MScriptExpr($IDENFIFIER); }
 ;
 string:
       STRING                        { $$ = new MScriptExpr(MScriptExpr::Value($STRING.data, $STRING.size)); }
@@ -283,5 +282,22 @@ expr:
       id                            { $$ = $id; }
     | integer                       { $$ = $integer; }
     | real                          { $$ = $real; }
-    | "(" expr ")"                  { $$ = $expr; }
+    | string                        { $$ = $string; }
+    | "(" expr ")"                  { $$ = $2; }
 ;
+
+
+%%
+
+// -----------------------------------------------------------------------------
+// EPILOGUE - FUNCTION DEFINITIONS
+// -----------------------------------------------------------------------------
+
+// Definition of the error reporting function used by Bison
+inline int moraviaScriptParser_error ( YYLTYPE * yylloc,
+                                       yyscan_t,
+                                       MScriptParserInterface * compiler,
+                                       const char * errorInfo )
+{
+    return 0;
+}

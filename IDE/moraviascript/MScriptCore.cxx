@@ -15,8 +15,10 @@
 
 #include "MScriptCore.h"
 
+#include <iostream>
+
 MScriptCore::MScriptCore ( MScriptStrategy * strategy,
-                           const std::string & script = "" )
+                           const std::string & script )
                          : m_strategy ( strategy )
 {
     m_codeTree = NULL;
@@ -73,4 +75,5 @@ void MScriptCore::syntaxAnalysisComplete ( MScriptStatement * codeTree )
         m_codeTree->completeDelete();
     }
     m_codeTree = codeTree;
+    std::cout << m_codeTree;
 }

@@ -59,6 +59,8 @@
 %option stack
 /* get rid of the warning message: 'int yy_top_state(yyscan_t)’ defined but not used */
 %option noyy_top_state
+/* To suppress the warning message "yyunput defined but not used". */
+%option nounput
 
 
 /*
@@ -71,7 +73,7 @@ NLINE   (\r?\n)|(\n?\r)
 /* An identifier in the language */
 ID      [_a-zA-Z][_a-zA-Z0-9]*
 /* Comment, in this case it starts with a semicolon (`;') */
-COMMENT (;[^\r\n]*)
+COMMENT (\/\/\/*[^\r\n]*)
 /* C like escape sequence, such as `\x4A', `\uABCD', `\U1234abcd', and `\177' */
 XESC    (\\[0-7]{1,3})|(\\x[0-9A-F]{1,2})|(\\[uU][0-9A-F]{1,8})
 
@@ -105,9 +107,8 @@ XESC    (\\[0-7]{1,3})|(\\x[0-9A-F]{1,2})|(\\[uU][0-9A-F]{1,8})
 /*                             return EOL; */
                         }
 
-;{COMMENT}              { return COMMENT; }
 {COMMENT}               { /* ignore ordinary comment */ }
-<INITIAL,INC,INC_END>
+<INITIAL>
 {
     "/*"                { yy_push_state(MCOMMENT, yyscanner); }
 }

@@ -16,8 +16,10 @@
 #include "MScriptStmtTypes.h"
 
 std::ostream & operator << ( std::ostream & out,
-                             const MScriptStmtTypes::Type * type )
+                             MScriptStmtTypes::Type type )
 {
+    using namespace MScriptStmtTypes;
+
     switch ( type )
     {
         case EMPTY_STATEMENT:           out << "EMPTY_STATEMENT";               break;

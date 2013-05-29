@@ -42,6 +42,6 @@ MScriptSrcLocation::MScriptSrcLocation ( const YYLTYPE & yylloc )
 std::ostream & operator << ( std::ostream & out,
                              const MScriptSrcLocation & location )
 {
-    out << "{" << m_line[0] << "." << m_column[0] << "-" << m_line[1] << "." << m_column[1] << "}";
+    out << "{" << location.m_line[0] << "." << location.m_column[0] << "-" << location.m_line[1] << "." << location.m_column[1] << "}";
     return out;
 }
