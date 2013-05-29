@@ -44,6 +44,6 @@ namespace MScriptStmtTypes
  * @return
  */
 std::ostream & operator << ( std::ostream & out,
-                             const MScriptStmtTypes::Type * type );
+                             MScriptStmtTypes::Type type );
 
 #endif // MSCRIPTSTMTTYPES_H

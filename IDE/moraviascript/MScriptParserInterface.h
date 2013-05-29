@@ -18,6 +18,7 @@
 
 #include "MScriptStmtTypes.h"
 #include "MScriptStatement.h"
+#include "MScriptExpr.h"
 #include "MScriptSrcLocation.h"
 
 /**

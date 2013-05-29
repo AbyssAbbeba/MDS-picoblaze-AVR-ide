@@ -220,6 +220,138 @@ void *moraviaScriptLexer_alloc (yy_size_t ,yyscan_t yyscanner );
 void *moraviaScriptLexer_realloc (void *,yy_size_t ,yyscan_t yyscanner );
 void moraviaScriptLexer_free (void * ,yyscan_t yyscanner );
 
-#line 224 "moraviaScriptLexer.h"
+#define moraviaScriptLexer_wrap(n) 1
+#define YY_SKIP_YYWRAP
+
+#define yytext_ptr yytext_r
+
+#ifdef YY_HEADER_EXPORT_START_CONDITIONS
+#define INITIAL 0
+#define STR 1
+#define QUOTE 2
+#define MCOMMENT 3
+
+#endif
+
+#ifndef YY_NO_UNISTD_H
+/* Special case for "unistd.h", since it is non-ANSI. We include it way
+ * down here because we want the user's section 1 to have been scanned first.
+ * The user has a chance to override it with an option.
+ */
+#include <unistd.h>
+#endif
+
+#define YY_EXTRA_TYPE MScriptParserInterface *
+
+int moraviaScriptLexer_lex_init (yyscan_t* scanner);
+
+int moraviaScriptLexer_lex_init_extra (YY_EXTRA_TYPE user_defined,yyscan_t* scanner);
+
+/* Accessor methods to globals.
+   These are made visible to non-reentrant scanners for convenience. */
+
+int moraviaScriptLexer_lex_destroy (yyscan_t yyscanner );
+
+int moraviaScriptLexer_get_debug (yyscan_t yyscanner );
+
+void moraviaScriptLexer_set_debug (int debug_flag ,yyscan_t yyscanner );
+
+YY_EXTRA_TYPE moraviaScriptLexer_get_extra (yyscan_t yyscanner );
+
+void moraviaScriptLexer_set_extra (YY_EXTRA_TYPE user_defined ,yyscan_t yyscanner );
+
+FILE *moraviaScriptLexer_get_in (yyscan_t yyscanner );
+
+void moraviaScriptLexer_set_in  (FILE * in_str ,yyscan_t yyscanner );
+
+FILE *moraviaScriptLexer_get_out (yyscan_t yyscanner );
+
+void moraviaScriptLexer_set_out  (FILE * out_str ,yyscan_t yyscanner );
+
+int moraviaScriptLexer_get_leng (yyscan_t yyscanner );
+
+char *moraviaScriptLexer_get_text (yyscan_t yyscanner );
+
+int moraviaScriptLexer_get_lineno (yyscan_t yyscanner );
+
+void moraviaScriptLexer_set_lineno (int line_number ,yyscan_t yyscanner );
+
+YYSTYPE * moraviaScriptLexer_get_lval (yyscan_t yyscanner );
+
+void moraviaScriptLexer_set_lval (YYSTYPE * yylval_param ,yyscan_t yyscanner );
+
+       YYLTYPE *moraviaScriptLexer_get_lloc (yyscan_t yyscanner );
+    
+        void moraviaScriptLexer_set_lloc (YYLTYPE * yylloc_param ,yyscan_t yyscanner );
+    
+/* Macros after this point can all be overridden by user definitions in
+ * section 1.
+ */
+
+#ifndef YY_SKIP_YYWRAP
+#ifdef __cplusplus
+extern "C" int moraviaScriptLexer_wrap (yyscan_t yyscanner );
+#else
+extern int moraviaScriptLexer_wrap (yyscan_t yyscanner );
+#endif
+#endif
+
+#ifndef yytext_ptr
+static void yy_flex_strncpy (char *,yyconst char *,int ,yyscan_t yyscanner);
+#endif
+
+#ifdef YY_NEED_STRLEN
+static int yy_flex_strlen (yyconst char * ,yyscan_t yyscanner);
+#endif
+
+#ifndef YY_NO_INPUT
+
+#endif
+
+/* Amount of stuff to slurp up with each read. */
+#ifndef YY_READ_BUF_SIZE
+#ifdef __ia64__
+/* On IA-64, the buffer size is 16k, not 8k */
+#define YY_READ_BUF_SIZE 16384
+#else
+#define YY_READ_BUF_SIZE 8192
+#endif /* __ia64__ */
+#endif
+
+/* Number of entries by which start-condition stack grows. */
+#ifndef YY_START_STACK_INCR
+#define YY_START_STACK_INCR 25
+#endif
+
+/* Default declaration of generated scanner - a define so the user can
+ * easily add parameters.
+ */
+#ifndef YY_DECL
+#define YY_DECL_IS_OURS 1
+
+extern int moraviaScriptLexer_lex \
+               (YYSTYPE * yylval_param,YYLTYPE * yylloc_param ,yyscan_t yyscanner);
+
+#define YY_DECL int moraviaScriptLexer_lex \
+               (YYSTYPE * yylval_param, YYLTYPE * yylloc_param , yyscan_t yyscanner)
+#endif /* !YY_DECL */
+
+/* yy_get_previous_state - get the state just before the EOB char was reached */
+
+#undef YY_NEW_FILE
+#undef YY_FLUSH_BUFFER
+#undef yy_set_bol
+#undef yy_new_buffer
+#undef yy_set_interactive
+#undef YY_DO_BEFORE_ACTION
+
+#ifdef YY_DECL_IS_OURS
+#undef YY_DECL_IS_OURS
+#undef YY_DECL
+#endif
+
+#line 177 "moraviaScriptLexer.l"
+
+#line 356 "moraviaScriptLexer.h"
 #undef moraviaScriptLexer_IN_HEADER
 #endif /* moraviaScriptLexer_HEADER_H */
