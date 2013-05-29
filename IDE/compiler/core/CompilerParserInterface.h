@@ -151,7 +151,6 @@ class CompilerParserInterface
              */
             CompilerBase::SourceLocation toSourceLocation ( const YYLTYPE * yylloc ) const
             {
-//                 if ( NULL == yylloc )
                 return CompilerBase::SourceLocation ( getFileNumber(),
                                                       yylloc->first_line,
                                                       yylloc->last_line,

@@ -41,22 +41,25 @@
 %define parse.lac full
 
 // Symbol semantic value
-%union {
-    int number;                     //
-    char * string;                  //
-    CompilerExpr * expr;            //
-    CompilerStatement * stmt;       //
-    struct {
+%union
+{
+    int number;                 //
+    char * string;              //
+    CompilerExpr * expr;        //
+    CompilerStatement * stmt;   //
+    struct
+    {
         unsigned char * data;   //
         int size;               //
-    } array;                        //
+    } array;                    //
 };
 
 /*
  * Compiler interface for the syntax analyzer; we need to have some things declared
  * before we can declare other things, and this interface is quite essential here.
  */
-%code requires {
+%code requires
+{
     #include "CompilerParserInterface.h"
 }
 
@@ -120,22 +123,22 @@
             QObject::tr("%1 is a deprecated directive, consider usage of directive %2 instead").arg(directive).arg(substitute).toStdString() );
 
     // Declaration of the error reporting function used by Bison
-    inline int mcs51parser_error (
-        YYLTYPE * yylloc,
-        yyscan_t yyscanner,
-        CompilerParserInterface * compiler,
-        const char * errorInfo );
+    inline int mcs51parser_error ( YYLTYPE * yylloc,
+                                   yyscan_t yyscanner,
+                                   CompilerParserInterface * compiler,
+                                   const char * errorInfo );
 %}
 
 // Declare an additional yyparse parameters
-%parse-param {yyscan_t yyscanner}
-%parse-param {CompilerParserInterface * compiler}
+%parse-param { yyscan_t yyscanner }
+%parse-param { CompilerParserInterface * compiler }
 
 // Declare an additional yylex parameters
-%lex-param   {yyscan_t yyscanner}
+%lex-param   { yyscan_t yyscanner }
 
 // Declare that the code which must be invoked before parsing actually begins
-%initial-action {
+%initial-action
+{
     @$.first_column = @$.last_column = 1;
     @$.first_line   = @$.last_line   = 1;
 };
@@ -303,17 +306,24 @@
 
 
 // Each time the parser discards symbol with certain semantic types, their memory have to bee freed
-%destructor {
-    if ( NULL != $$ ) {
+%destructor
+{
+    if ( NULL != $$ )
+    {
         $$->completeDelete();
     }
 } <expr>
-%destructor {
-    if ( NULL != $$ ) {
+
+%destructor
+{
+    if ( NULL != $$ )
+    {
         $$->completeDelete();
     }
 } <stmt>
-%destructor {
+
+%destructor
+{
     free($$.data);
 } <array>
 
@@ -356,15 +366,19 @@ asm_ctrl_stmt:
       asm_ctrl                      { $$ = $asm_ctrl; }
     | asm_ctrl COMMENT              { $$ = $asm_ctrl; }
     | label asm_ctrl                {
-                        /* Syntax error */
-                        $$ = NULL;
-                        NO_LABEL_EXPECTED(@label, "an assembler control", $label->appendLink($asm_ctrl));
-                    }
+                                        /* Syntax error */
+                                        $$ = NULL;
+                                        NO_LABEL_EXPECTED(@label,
+                                                          "an assembler control",
+                                                          $label->appendLink($asm_ctrl));
+                                    }
     | label asm_ctrl COMMENT        {
-                        /* Syntax error */
-                        $$ = NULL;
-                        NO_LABEL_EXPECTED(@label, "an assembler control", $label->appendLink($asm_ctrl));
-                    }
+                                        /* Syntax error */
+                                        $$ = NULL;
+                                        NO_LABEL_EXPECTED(@label,
+                                                          "an assembler control",
+                                                          $label->appendLink($asm_ctrl));
+                                    }
 ;
 inst_stmt:
       instruction                   { $$ = $instruction; }
@@ -401,20 +415,20 @@ label:
       LABEL                         { $$ = new CompilerStatement(LOC(@$), ASM51_LABEL, new CompilerExpr($1)); }
 ;
 const_a:
-      REG_A {
-        $$ = new CompilerExpr("A");
-        compiler->parserMessage (
-            @1, CompilerBase::MT_REMARK,
-            QObject::tr("treating keyword `A' as a constant (equals to 0xE0)").toStdString() );
-    }
+      REG_A                         {
+                                        $$ = new CompilerExpr("A");
+                                        compiler->parserMessage ( @1,
+                                                                  CompilerBase::MT_REMARK,
+                                                                  QObject::tr("treating keyword `A' as a constant (equals to 0xE0)").toStdString() );
+                                    }
 ;
 const_c:
-      BIT_C {
-        $$ = new CompilerExpr("C");
-        compiler->parserMessage (
-            @1, CompilerBase::MT_REMARK,
-            QObject::tr("treating keyword `C' as a constant (equals to 0xD7)").toStdString() );
-    }
+      BIT_C                         {
+                                        $$ = new CompilerExpr("C");
+                                        compiler->parserMessage(@1,
+                                                                CompilerBase::MT_REMARK,
+                                                                QObject::tr("treating keyword `C' as a constant (equals to 0xD7)").toStdString() );
+                                    }
 ;
 expr:
       id                            { $$ = $id; }
@@ -444,17 +458,18 @@ expr:
     | expr ">>" expr                { $$ = new CompilerExpr($1, CompilerExpr::OPER_SHR, $3); }
     | expr "<<" expr                { $$ = new CompilerExpr($1, CompilerExpr::OPER_SHL, $3); }
     | expr expr                     {
-                        /* Syntax error */
-                        $$ = $1->appendLink($2);
-                        if ( 0 == YYRECOVERING() ) {
-                            @1.first_line = @1.last_line; \
-                            @1.first_column = @1.last_column; \
-                            @1.last_column++; \
-                            compiler->parserMessage (
-                                @1, CompilerBase::MT_ERROR,
-                                QObject::tr("missing operator").toStdString() );
-                        }
-                    }
+                                        /* Syntax error */
+                                        $$ = $1->appendLink($2);
+                                        if ( 0 == YYRECOVERING() )
+                                        {
+                                            @1.first_line = @1.last_line;
+                                            @1.first_column = @1.last_column;
+                                            @1.last_column++;
+                                            compiler->parserMessage ( @1,
+                                                                      CompilerBase::MT_ERROR,
+                                                                      QObject::tr("missing operator").toStdString() );
+                                        }
+                                    }
 
     /* Allow `A' to be used as a constant for +/- */
     | const_a "+" expr              { $$ = new CompilerExpr($1, '+', $3); }
@@ -510,7 +525,7 @@ params:         // List of identifiers, e.g. `target, source, offset, size, mode
  */
 directive:
       dir_idata     { $$ = $1; }    | dir_byte      { $$ = $1; DEPRECATED_DIR(@1, "BYTE", "DATA"); }
-    | dir_bit       { $$ = $1; }    | dir_flag      { $$ = $1; DEPRECATED_DIR(@1, "FLAG", "BIT"); }
+    | dir_bit       { $$ = $1; }    | dir_flag      { $$ = $1; DEPRECATED_DIR(@1, "FLAG", "BIT");  }
     | dir_cond_asm  { $$ = $1; }    | dir_dbit      { $$ = $1; }
     | dir_ds        { $$ = $1; }    | dir_dw        { $$ = $1; }
     | dir_skip      { $$ = $1; }    | dir_name      { $$ = $1; }
@@ -573,21 +588,21 @@ else_block:
 dir_else:
       D_ELSE                        { $$ = new CompilerStatement(LOC(@$), ASM51_DIR_ELSE); }
     | label D_ELSE                  {
-                        /* Syntax error */
-                        NO_LABEL_EXPECTED(@label, "ELSE", $label);
-                        $$ = new CompilerStatement(LOC(@$), ASM51_DIR_ELSE);
-                    }
+                                        /* Syntax error */
+                                        NO_LABEL_EXPECTED(@label, "ELSE", $label);
+                                        $$ = new CompilerStatement(LOC(@$), ASM51_DIR_ELSE);
+                                    }
     | label D_ELSE args             {
-                        /* Syntax error */
-                        NO_ARG_EXPECTED_D("ELSE", $args, @args);
-                        NO_LABEL_EXPECTED(@label, "ELSE", $label);
-                        $$ = new CompilerStatement(LOC(@$), ASM51_DIR_ELSE);
-                    }
+                                        /* Syntax error */
+                                        NO_ARG_EXPECTED_D("ELSE", $args, @args);
+                                        NO_LABEL_EXPECTED(@label, "ELSE", $label);
+                                        $$ = new CompilerStatement(LOC(@$), ASM51_DIR_ELSE);
+                                    }
     | D_ELSE args                   {
-                        /* Syntax error */
-                        NO_ARG_EXPECTED_D("ELSE", $args, @args);
-                        $$ = new CompilerStatement(LOC(@$), ASM51_DIR_ELSE);
-                    }
+                                        /* Syntax error */
+                                        NO_ARG_EXPECTED_D("ELSE", $args, @args);
+                                        $$ = new CompilerStatement(LOC(@$), ASM51_DIR_ELSE);
+                                    }
 ;
 dir_if:
       dir_if_a EOL                  { $$ = $dir_if_a; }
@@ -646,11 +661,11 @@ dir_elseif_a:
     | D_ELSEIF                      { /* Syntax Error */ $$ = NULL; ARG_REQUIRED_D(@D_ELSEIF, "ELSEIF"); }
     | label D_ELSEIF e_expr         { /* Syntax Error */ $$ = NULL; NO_LABEL_EXPECTED(@label, "ELSEIF", $label); $e_expr->completeDelete(); }
     | label D_ELSEIF                {
-                        /* Syntax Error */
-                        $$ = NULL;
-                        ARG_REQUIRED_D(@D_ELSEIF, "ELSEIF");
-                        NO_LABEL_EXPECTED(@label, "ELSEIF", $label);
-                    }
+                                        /* Syntax Error */
+                                        $$ = NULL;
+                                        ARG_REQUIRED_D(@D_ELSEIF, "ELSEIF");
+                                        NO_LABEL_EXPECTED(@label, "ELSEIF", $label);
+                                    }
 ;
 dir_elseifn:
       dir_elseifn_a EOL             { $$ = $dir_elseifn_a; }
@@ -661,11 +676,11 @@ dir_elseifn_a:
     | D_ELSEIFN                     { /* Syntax Error */ $$ = NULL; ARG_REQUIRED_D(@D_ELSEIFN, "ELSEIFN"); }
     | label D_ELSEIFN e_expr        { /* Syntax Error */ $$ = NULL; NO_LABEL_EXPECTED(@label, "ELSEIFN", $label); $e_expr->completeDelete(); }
     | label D_ELSEIFN               {
-                        /* Syntax Error */
-                        $$ = NULL;
-                        ARG_REQUIRED_D(@D_ELSEIFN, "ELSEIFN");
-                        NO_LABEL_EXPECTED(@label, "ELSEIFN", $label);
-                    }
+                                        /* Syntax Error */
+                                        $$ = NULL;
+                                        ARG_REQUIRED_D(@D_ELSEIFN, "ELSEIFN");
+                                        NO_LABEL_EXPECTED(@label, "ELSEIFN", $label);
+                                    }
 ;
 dir_elseifdef:
       dir_elseifdef_a EOL           { $$ = $dir_elseifdef_a; }
@@ -676,11 +691,11 @@ dir_elseifdef_a:
     | D_ELSEIFDEF                   { /* Syntax Error */ $$ = NULL; ARG_REQUIRED_D(@D_ELSEIFDEF, "ELSEIFDEF"); }
     | label D_ELSEIFDEF e_expr      { /* Syntax Error */ $$ = NULL; NO_LABEL_EXPECTED(@label, "ELSEIFDEF", $label); $e_expr->completeDelete(); }
     | label D_ELSEIFDEF             {
-                        /* Syntax Error */
-                        $$ = NULL;
-                        ARG_REQUIRED_D(@D_ELSEIFDEF, "ELSEIFDEF");
-                        NO_LABEL_EXPECTED(@label, "ELSEIFDEF", $label);
-                    }
+                                        /* Syntax Error */
+                                        $$ = NULL;
+                                        ARG_REQUIRED_D(@D_ELSEIFDEF, "ELSEIFDEF");
+                                        NO_LABEL_EXPECTED(@label, "ELSEIFDEF", $label);
+                                    }
 ;
 dir_elseifndf:
       dir_elseifndf_a EOL           { $$ = $dir_elseifndf_a; }
@@ -691,11 +706,11 @@ dir_elseifndf_a:
     | D_ELSEIFNDEF                  { /* Syntax Error */ $$ = NULL; ARG_REQUIRED_D(@D_ELSEIFNDEF, "ELSEIFNDEF"); }
     | label D_ELSEIFNDEF e_expr     { /* Syntax Error */ $$ = NULL; NO_LABEL_EXPECTED(@label, "ELSEIFNDEF", $label); $e_expr->completeDelete(); }
     | label D_ELSEIFNDEF            {
-                        /* Syntax Error */
-                        $$ = NULL;
-                        ARG_REQUIRED_D(@D_ELSEIFNDEF, "ELSEIFNDEF");
-                        NO_LABEL_EXPECTED(@label, "ELSEIFNDEF", $label);
-                    }
+                                        /* Syntax Error */
+                                        $$ = NULL;
+                                        ARG_REQUIRED_D(@D_ELSEIFNDEF, "ELSEIFNDEF");
+                                        NO_LABEL_EXPECTED(@label, "ELSEIFNDEF", $label);
+                                    }
 ;
 dir_elseifb:
       dir_elseifb_a EOL             { $$ = $dir_elseifb_a; }
@@ -706,11 +721,11 @@ dir_elseifb_a:
     | D_ELSEIFB                     { /* Syntax Error */ $$ = NULL; ARG_REQUIRED_D(@D_ELSEIFB, "ELSEIFB"); }
     | label D_ELSEIFB e_expr        { /* Syntax Error */ $$ = NULL; NO_LABEL_EXPECTED(@label, "ELSEIFB", $label); $e_expr->completeDelete(); }
     | label D_ELSEIFB               {
-                        /* Syntax Error */
-                        $$ = NULL;
-                        ARG_REQUIRED_D(@D_ELSEIFB, "ELSEIFB");
-                        NO_LABEL_EXPECTED(@label, "ELSEIFB", $label);
-                    }
+                                        /* Syntax Error */
+                                        $$ = NULL;
+                                        ARG_REQUIRED_D(@D_ELSEIFB, "ELSEIFB");
+                                        NO_LABEL_EXPECTED(@label, "ELSEIFB", $label);
+                                    }
 ;
 dir_elseifnb:
       dir_elseifnb_a EOL            { $$ = $dir_elseifnb_a; }
@@ -721,11 +736,11 @@ dir_elseifnb_a:
     | D_ELSEIFNB                    { /* Syntax Error */ $$ = NULL; ARG_REQUIRED_D(@D_ELSEIFNB, "ELSEIFNB"); }
     | label D_ELSEIFNB e_expr       { /* Syntax Error */ $$ = NULL; NO_LABEL_EXPECTED(@label, "ELSEIFNB", $label); $e_expr->completeDelete(); }
     | label D_ELSEIFNB              {
-                        /* Syntax Error */
-                        $$ = NULL;
-                        ARG_REQUIRED_D(@D_ELSEIFNB, "ELSEIFNB");
-                        NO_LABEL_EXPECTED(@label, "ELSEIFNB", $label);
-                    }
+                                        /* Syntax Error */
+                                        $$ = NULL;
+                                        ARG_REQUIRED_D(@D_ELSEIFNB, "ELSEIFNB");
+                                        NO_LABEL_EXPECTED(@label, "ELSEIFNB", $label);
+                                    }
 ;
 dir_org:
       D_ORG e_expr                  { $$ = new CompilerStatement(LOC(@$), ASM51_DIR_ORG, $e_expr); }
@@ -741,9 +756,9 @@ dir_bseg_a:
       D_BSEG                        { $$ = new CompilerStatement(LOC(@$), ASM51_DIR_BSEG); }
     | D_BSEG AT e_expr              { $$ = new CompilerStatement(LOC(@$), ASM51_DIR_BSEG, $e_expr); }
     | D_BSEG e_expr                 {
-                        /* Syntax error */ MISSING_AT_OPERATOR(@D_BSEG, "D_BSEG");
-                        $$ = new CompilerStatement(LOC(@$), ASM51_DIR_BSEG, $e_expr);
-                    }
+                                        /* Syntax error */ MISSING_AT_OPERATOR(@D_BSEG, "D_BSEG");
+                                        $$ = new CompilerStatement(LOC(@$), ASM51_DIR_BSEG, $e_expr);
+                                    }
 ;
 dir_cseg:
       dir_cseg_a                    { $$ = $dir_cseg_a; }
@@ -753,9 +768,9 @@ dir_cseg_a:
       D_CSEG                        { $$ = new CompilerStatement(LOC(@$), ASM51_DIR_CSEG); }
     | D_CSEG AT e_expr              { $$ = new CompilerStatement(LOC(@$), ASM51_DIR_CSEG, $e_expr); }
     | D_CSEG e_expr                 {
-                        /* Syntax error */ MISSING_AT_OPERATOR(@D_CSEG, "D_CSEG");
-                        $$ = new CompilerStatement(LOC(@$), ASM51_DIR_CSEG, $e_expr);
-                    }
+                                        /* Syntax error */ MISSING_AT_OPERATOR(@D_CSEG, "D_CSEG");
+                                        $$ = new CompilerStatement(LOC(@$), ASM51_DIR_CSEG, $e_expr);
+                                    }
 ;
 dir_dseg:
       dir_dseg_a                    { $$ = $dir_dseg_a; }
@@ -765,9 +780,9 @@ dir_dseg_a:
       D_DSEG                        { $$ = new CompilerStatement(LOC(@$), ASM51_DIR_DSEG); }
     | D_DSEG AT e_expr              { $$ = new CompilerStatement(LOC(@$), ASM51_DIR_DSEG, $e_expr); }
     | D_DSEG e_expr                 {
-                        /* Syntax error */ MISSING_AT_OPERATOR(@D_DSEG, "D_DSEG");
-                        $$ = new CompilerStatement(LOC(@$), ASM51_DIR_DSEG, $e_expr);
-                    }
+                                        /* Syntax error */ MISSING_AT_OPERATOR(@D_DSEG, "D_DSEG");
+                                        $$ = new CompilerStatement(LOC(@$), ASM51_DIR_DSEG, $e_expr);
+                                    }
 ;
 dir_iseg:
       dir_iseg_a                    { $$ = $dir_iseg_a; }
@@ -777,9 +792,9 @@ dir_iseg_a:
       D_ISEG                        { $$ = new CompilerStatement(LOC(@$), ASM51_DIR_ISEG); }
     | D_ISEG AT e_expr              { $$ = new CompilerStatement(LOC(@$), ASM51_DIR_ISEG, $e_expr); }
     | D_ISEG e_expr                 {
-                        /* Syntax error */ MISSING_AT_OPERATOR(@D_ISEG, "D_ISEG");
-                        $$ = new CompilerStatement(LOC(@$), ASM51_DIR_ISEG, $e_expr);
-                    }
+                                        /* Syntax error */ MISSING_AT_OPERATOR(@D_ISEG, "D_ISEG");
+                                        $$ = new CompilerStatement(LOC(@$), ASM51_DIR_ISEG, $e_expr);
+                                    }
 ;
 dir_xseg:
       dir_xseg_a                    { $$ = $dir_xseg_a; }
@@ -789,9 +804,9 @@ dir_xseg_a:
       D_XSEG                        { $$ = new CompilerStatement(LOC(@$), ASM51_DIR_XSEG); }
     | D_XSEG AT e_expr              { $$ = new CompilerStatement(LOC(@$), ASM51_DIR_XSEG, $e_expr); }
     | D_XSEG e_expr                 {
-                        /* Syntax error */ MISSING_AT_OPERATOR(@D_XSEG, "D_XSEG");
-                        $$ = new CompilerStatement(LOC(@$), ASM51_DIR_XSEG, $e_expr);
-                    }
+                                        /* Syntax error */ MISSING_AT_OPERATOR(@D_XSEG, "D_XSEG");
+                                        $$ = new CompilerStatement(LOC(@$), ASM51_DIR_XSEG, $e_expr);
+                                    }
 ;
 dir_dbit:
       D_DBIT e_expr                 { $$ = new CompilerStatement(LOC(@$), ASM51_DIR_DBIT, $e_expr); }

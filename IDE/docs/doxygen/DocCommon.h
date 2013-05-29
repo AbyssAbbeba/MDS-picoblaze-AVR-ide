@@ -100,6 +100,11 @@
  */
 
 /**
+ * @defgroup MoraviaScript Moravia Script
+ * Moravia Script language implementation: lexical analyzer, syntax analyzer, etc.
+ */
+
+/**
  * @mainpage Introduction
  *
  * @section HowTo How to use this documentation

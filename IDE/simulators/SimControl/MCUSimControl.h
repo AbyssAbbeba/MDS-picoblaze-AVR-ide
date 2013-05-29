@@ -21,7 +21,7 @@ class MCUSimObserver;
 class McuDeviceSpec;
 class DbgFile;
 
-#include "MCUSim.h"
+#include "../MCUSim.h"
 #include <vector>
 #include <string>
 #include <utility>
