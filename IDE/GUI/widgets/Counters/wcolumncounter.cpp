@@ -20,14 +20,17 @@
 /**
  * @brief Constructor. Sets properties of the base widget.
  * @param parent Parent QTextEdit
- * @param height Height of widget.
+ * @param font Used font.
  * @param columns Number of shown columns.
  */
-WColumnCounter::WColumnCounter(QTextEdit *parent, int height, int columns)
+WColumnCounter::WColumnCounter(QTextEdit *parent, QFont font, int columns)
+    : QScrollArea(parent)
 {
     this->setFrameShape(QFrame::NoFrame);
     this->parent = parent;
-    widget = new WColumnCounterWidget(this, height, columns);
+    QFontMetrics fontMetrics(font);
+    int height = fontMetrics.height();
+    widget = new WColumnCounterWidget(this, font, columns);
     this->setWidget(widget);
     this->setMaximumHeight(height);
     this->setMinimumWidth(parent->width());
@@ -73,16 +76,26 @@ void WColumnCounter::change(int value)
 /**
  * @brief Constructor. Sets properties of shown widget.
  * @param parent Parent WColumnCounter (base).
- * @param height Height of the widget.
+ * @param font Used font.
  * @param columns Number of shown columns.
  */
-WColumnCounterWidget::WColumnCounterWidget(WColumnCounter *parent, int height, int columns)
+WColumnCounterWidget::WColumnCounterWidget(WColumnCounter *parent, QFont font, int columns)
+    : QWidget(parent)
 {
     this->parent = parent;
     this->columns = columns;
-    this->setMaximumHeight(height);
+    qDebug() << font.pixelSize();
+    font.setPixelSize(font.pixelSize()-5);
+    font.setStyleHint(QFont::Monospace);
+    QFontMetrics fontMetrics(font);
+    this->setFont(font);
+    qDebug() << this->fontInfo().pixelSize();
+    qDebug() << font.pixelSize();
+    this->fontHeight = fontMetrics.height();
+    this->fontWidth = fontMetrics.width("0 0");
+    this->setMaximumHeight(this->fontHeight);
     this->setMinimumWidth(parent->width());
-    this->setMinimumHeight(height);
+    this->setMinimumHeight(this->fontHeight);
 }
 
 
@@ -91,10 +104,10 @@ WColumnCounterWidget::WColumnCounterWidget(WColumnCounter *parent, int height, i
  */
 void WColumnCounterWidget::paintEvent(QPaintEvent *)
 {
-    int size = parent->getTextEdit()->currentFont().pointSize();
+    //int size = parent->getTextEdit()->currentFont().pointSize();
     QPainter paint;
     paint.begin(this);
-    QRectF rect(0,0,25,size+9);
+    QRectF rect(0,0,this->fontWidth,this->fontHeight+9);
     QPointF point;
     point.setY(0);
     QBrush brush(Qt::darkCyan);
@@ -104,15 +117,18 @@ void WColumnCounterWidget::paintEvent(QPaintEvent *)
     paint.setPen(pen);
     for (int i = 0; i<columns; i++)
     {
-        //oddelat fixni sirku, zavislost je na velikosti fontu
-        point.setX(i*24);
+        point.setX(i*this->fontWidth+1);
         rect.moveTopLeft(point);
         //paint.drawRect(rect);
         //paint.setPen(pen);
         if (i<16)
-            paint.drawText(rect, Qt::AlignCenter, "0" + QString::number(i, 16).toUpper());
+        {
+            paint.drawText(rect, Qt::AlignLeft, "0" + QString::number(i, 16).toUpper());
+        }
         else
+        {
             paint.drawText(rect, Qt::AlignCenter, QString::number(i, 16).toUpper());
+        }
         //pen.setColor(Qt::darkCyan);
         //paint.setPen(pen);
     }

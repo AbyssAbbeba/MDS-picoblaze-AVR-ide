@@ -64,7 +64,8 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
         }
     }
     textEdit->setContextMenuPolicy(Qt::NoContextMenu);
-    lineCount = new WLineCounter(textEdit, false, false, 20);
+    textEdit->setFont(QFont ("Andale Mono", 11));
+    lineCount = new WLineCounter(textEdit, false, false, textEdit->font());
     layout = new QGridLayout(this);
     layout->addWidget(lineCount, 0, 0);
     layout->addWidget(textEdit, 0, 1);
@@ -79,7 +80,6 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
     //textEdit->setWordWrapMode(QTextOption::NoWrap);
     textEdit->setWordWrapMode(QTextOption::WordWrap);
     textEdit->setLineWrapMode(QTextEdit::WidgetWidth);
-    textEdit->setFont(QFont ("Andale Mono", 11));
     this->makeMenu();
     //this->setFocusPolicy(Qt::StrongFocus);
     //this->textEdit->setFocusPolicy(Qt::NoFocus);
@@ -145,7 +145,8 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName
         textEdit = new WTextEdit(this, PLAIN);
     }
     textEdit->setContextMenuPolicy(Qt::NoContextMenu);
-    lineCount = new WLineCounter(textEdit, false, false, 20);
+    textEdit->setFont(QFont ("Andale Mono", 11));
+    lineCount = new WLineCounter(textEdit, false, false, textEdit->font());
     layout = new QGridLayout(this);
     layout->addWidget(lineCount, 0, 0);
     layout->addWidget(textEdit, 0, 1);
@@ -159,7 +160,6 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName
     breakpointColor = new QColor(0,255,0);
     textEdit->setWordWrapMode(QTextOption::WordWrap);
     textEdit->setLineWrapMode(QTextEdit::WidgetWidth);
-    textEdit->setFont(QFont ("Andale Mono", 11));
     this->makeMenu();
     this->setFocusPolicy(Qt::StrongFocus);
     //this->installEventFilter(this);

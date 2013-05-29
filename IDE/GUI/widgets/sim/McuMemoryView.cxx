@@ -15,57 +15,65 @@
 #include <QGridLayout>
 #include <QDebug>
 
-#include "hexedit.h"
-#include "MCUSimControl.h"
-#include "McuDeviceSpecAVR8.h"
+#include "../HexEdit/hexedit.h"
+#include "../../../simulators/SimControl/MCUSimControl.h"
+//#include "McuDeviceSpecAVR8.h"
 
-McuMemoryView::McuMemoryView(MCUSimControl * controlUnit, QWidget * parent)
+McuMemoryView::McuMemoryView(QWidget * parent, MCUSimControl * controlUnit, MCUSim::Subsys::SubsysId subsys)
 	: QWidget(parent),
 	  m_startingAddress(0),
 	  m_size(0),
 	  m_hexEdit(NULL)
 {
-        std::vector<int> mask;
-        mask.push_back(MCUSim::Memory::EVENT_MEM_INF_WR_VAL_CHANGED);
+    std::vector<int> mask;
+    this->subsys = subsys;
+    mask.push_back(MCUSim::Memory::EVENT_MEM_INF_WR_VAL_CHANGED);
 	controlUnit->registerObserver(
 		this,
-		MCUSim::Subsys::ID_MEM_DATA,
-                mask);
+		subsys,
+        mask);
 
-	m_layout = new QGridLayout(this);
+	m_layout = new QHBoxLayout(this);
 	setLayout(m_layout);
 
 	deviceChanged();
 }
 
-McuMemoryView::~McuMemoryView() {
+McuMemoryView::~McuMemoryView()
+{
 	deleteHexEdit();
 	delete m_layout;
 }
 
-inline void McuMemoryView::deleteHexEdit() {
+inline void McuMemoryView::deleteHexEdit()
+{
 	if ( NULL != m_hexEdit ) {
 		delete m_hexEdit;
 	}
 }
 
-void McuMemoryView::handleEvent(int subsysId, int eventId, int locationOrReason, int /*detail*/) {
-	if ( MCUSim::Subsys::ID_MEM_DATA != subsysId ) {
+void McuMemoryView::handleEvent(int subsysId, int eventId, int locationOrReason, int /*detail*/)
+{
+	if ( this->subsys != subsysId )
+    {
 		qDebug("Invalid event received, event ignored.");
 		return;
-	}
+ 	}
 
 	int idx = locationOrReason - m_startingAddress;
-	if ( (idx < 0) || (idx > m_size) ) {
+	if ( (idx < 0) || (idx > m_size) )
+    {
 		qDebug("Invalid address, event ignored.");
 		return;
 	}
 
-	switch ( eventId ) {
-		case MCUSim::Memory::EVENT_MEM_INF_WR_VAL_CHANGED: {
+	switch ( eventId )
+    {
+		case MCUSim::Memory::EVENT_MEM_INF_WR_VAL_CHANGED:
+        {
 			uint value;
-
 			m_memory->directRead(locationOrReason, value);
+            qDebug() << "McuMemoryView: event: mem cell changed to" << value;
 
  			m_hexEdit->setVal(idx, (char)value);
 // 			m_hexEdit->setHighlighted(idx, true);
@@ -78,11 +86,19 @@ void McuMemoryView::handleEvent(int subsysId, int eventId, int locationOrReason,
 	}
 }
 
-void McuMemoryView::deviceChanged() {
-	m_memory = dynamic_cast<MCUSim::Memory*>(m_simControlUnit->getSimSubsys(MCUSim::Subsys::ID_MEM_DATA));
 
-	switch ( m_simControlUnit->getArch() ) {
-		case MCUSim::ARCH_AVR8: {
+void McuMemoryView::deviceChanged()
+{
+	m_memory = dynamic_cast<MCUSim::Memory*>(m_simControlUnit->getSimSubsys(this->subsys));
+    qDebug() << this->subsys;
+    if ( NULL == m_memory )
+    {
+        qDebug() << "NULL";
+    }
+	/*switch ( m_simControlUnit->getArch() )
+    {
+		case MCUSim::ARCH_AVR8:
+        {
 			const McuDeviceSpecAVR8 * avr8devSpec = dynamic_cast<const McuDeviceSpecAVR8*>(m_simControlUnit->getDeviceSpec());
 
 			m_startingAddress = 0;
@@ -93,27 +109,32 @@ void McuMemoryView::deviceChanged() {
 		default:
 			qDebug("Unknown device architecture.");
 			return;
-	}
-
+	}*/
+    m_size = m_memory->size();
 	deleteHexEdit();
 	m_hexEdit = new HexEdit(this, false, m_size, 8);
 	connect(m_hexEdit, SIGNAL(textChanged(int)), this, SLOT(changeValue(int)));
-	m_layout->addWidget(m_hexEdit, 0, 0);
+	m_layout->addWidget(m_hexEdit);
 
 	deviceReset();
 }
 
-void McuMemoryView::changeValue(int address) {
+
+void McuMemoryView::changeValue(int address)
+{
  	m_memory->directWrite(address, m_hexEdit->getVal(address));
 }
 
-void McuMemoryView::deviceReset() {
+
+void McuMemoryView::deviceReset()
+{
     qDebug() << "McuMemoryView: deviceReset()"; 
 	if ( NULL == m_hexEdit ) {
 		return;
 	}
 
-	for ( int i = 0; i < m_size; i++ ) {
+	for ( int i = 0; i < m_size; i++ )
+    {
 
 		uint address = i + m_startingAddress;
 		uint value;
@@ -125,7 +146,9 @@ void McuMemoryView::deviceReset() {
     qDebug() << "McuMemoryView: return deviceReset()"; 
 }
 
-void McuMemoryView::setReadOnly(bool readOnly) {
+
+void McuMemoryView::setReadOnly(bool readOnly)
+{
 	if ( NULL == m_hexEdit ) {
 		return;
 	}

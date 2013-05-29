@@ -89,6 +89,7 @@ bool HexEdit::eventFilter(QObject *target, QEvent *event)
 HexEdit::HexEdit(QWidget *parent, bool AsciiPanel, int countSize, int columns)
     :QWidget(parent)
 {
+    this->fontSize = 8;
     this->columns=columns;
     this->ascii = AsciiPanel;
     hexLayout = new QGridLayout(this);
@@ -96,28 +97,29 @@ HexEdit::HexEdit(QWidget *parent, bool AsciiPanel, int countSize, int columns)
     //hexTextEdit->setReadOnly(true);
     hexTextEdit->setOverwriteMode(true);
     hexTextEdit->setWordWrapMode(QTextOption::NoWrap);
-    hexTextEdit->setFont(QFont("Andale Mono", 10));
+    hexTextEdit->setFont(QFont("Andale Mono", fontSize));
+    qDebug() << "HexEdit: font size" << this->font().pixelSize();
     //hexTextEdit->resize((columns*2-1)*10,5);
-    hexTextEdit->setMinimumWidth((columns*3-4)*10);
-    hexTextEdit->setMaximumWidth((columns*3-4)*10);
+    hexTextEdit->setMinimumWidth((columns*3-4)*fontSize);
+    hexTextEdit->setMaximumWidth((columns*3-4)*fontSize);
     hexTextEdit->setMinimumHeight(175);
     //hexTextEdit->setMaximumHeight(175);
 
     if (AsciiPanel == true)
     {
         hexAsciiEdit = new QTextEdit(this);
-        hexAsciiEdit->setFont(QFont("Andale Mono", 10));
+        hexAsciiEdit->setFont(QFont("Andale Mono", fontSize));
         //hexAsciiEdit->resize(columns*15,250);
-        hexAsciiEdit->setMaximumWidth(columns*10);
+        hexAsciiEdit->setMaximumWidth(columns*fontSize);
         hexAsciiEdit->setMinimumHeight(175);
-        hexAsciiEdit->setMinimumWidth(columns*10);
+        hexAsciiEdit->setMinimumWidth(columns*fontSize);
         hexAsciiEdit->setOverwriteMode(true);
         hexAsciiEdit->setWordWrapMode(QTextOption::NoWrap);
         hexAsciiEdit->verticalScrollBar()->hide();
     }
 
-    hexColumnCount = new WColumnCounter(hexTextEdit, 20, columns);
-    hexLineCount = new WLineCounter(hexTextEdit, false, true, 20);
+    hexColumnCount = new WColumnCounter(hexTextEdit, this->font(), columns);
+    hexLineCount = new WLineCounter(hexTextEdit, false, true, this->font());
     hexByteArray = new QByteArray(countSize, 0);
     //hexStatusBar = new QStatusBar(this);
     hexStatusLabel = new QLabel(this);
@@ -498,11 +500,11 @@ void HexEdit::setData(QByteArray *byteArray)
 
 void HexEdit::setVal(int pos, char val)
 {
-    qDebug() << "-----------------HexEdit: setVal()";
+    //qDebug() << "-----------------HexEdit: setVal()";
     (*hexByteArray)[pos] = val;
-    qDebug() << "HexEdit: val" << (int)val;
+    //qDebug() << "HexEdit: val" << (int)val;
     this->changeText(pos);
-    qDebug() << "-----------------HexEdit: return setVal()";
+    //qDebug() << "-----------------HexEdit: return setVal()";
 }
 
 

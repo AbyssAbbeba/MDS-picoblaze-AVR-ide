@@ -114,12 +114,14 @@ void MainForm::createActions()
     QIcon *icon_projAdd = new QIcon(*pm_projAdd);
     addAct = new QAction(*icon_projAdd, tr("Add to Project"), this);
     connect(addAct, SIGNAL(triggered()), this, SLOT(addFile()));
+    addAct->setDisabled(true);
 
 
     QPixmap *pm_projNewAdd = new QPixmap(":/resources//icons//projNewAdd.png");
     QIcon *icon_projNewAdd = new QIcon(*pm_projNewAdd);
     newAddAct = new QAction(*icon_projNewAdd, tr("New project file"), this);
     connect(newAddAct, SIGNAL(triggered()), this, SLOT(newAddFile()));
+    newAddAct->setDisabled(true);
 
 
     /*QPixmap *pm_projRemoveFile = new QPixmap("src//resources//icons//projDelete.png");
@@ -130,12 +132,15 @@ void MainForm::createActions()
 
     saveAct = new QAction(tr("&Save File"), this);
     connect(saveAct, SIGNAL(triggered()), this, SLOT(saveFile()));
+    saveAct->setDisabled(true);
 
     saveAsAct = new QAction(tr("Save As"), this);
     connect(saveAsAct, SIGNAL(triggered()), this, SLOT(saveFileAs()));
+    saveAsAct->setDisabled(true);
 
     saveAllAct = new QAction(tr("Save All"), this);
     connect(saveAllAct, SIGNAL(triggered()), this, SLOT(saveAll()));
+    saveAllAct->setDisabled(true);
 
 
 
@@ -162,6 +167,7 @@ void MainForm::createActions()
     QIcon *icon_projSave = new QIcon(*pm_projSave);
     saveProjAct = new QAction(*icon_projSave, tr("Save Project"), this);
     connect(saveProjAct, SIGNAL(triggered()), this, SLOT(saveProject()));
+    saveProjAct->setDisabled(true);
 
     exitAct = new QAction(tr("Exit"), this);
     connect(exitAct, SIGNAL(triggered()), this, SLOT(close()));
@@ -170,8 +176,10 @@ void MainForm::createActions()
     QIcon *icon_projComp = new QIcon(*pm_projComp);
     projectCompileAct = new QAction(*icon_projComp, tr("Compile"), this);
     connect(projectCompileAct, SIGNAL(triggered()), this, SLOT(compileProject()));
+    projectCompileAct->setDisabled(true);
 
     projectConfigAct = new QAction(tr("Config"), this);
+    projectConfigAct->setDisabled(true);
     //connect(projectCompileAct, SIGNAL(triggered()), this, SLOT(compileProject()));
 
 
@@ -180,21 +188,25 @@ void MainForm::createActions()
     simulationFlowAct = new QAction(*icon_simFlow, tr("Start simulation"), this);
     connect(simulationFlowAct, SIGNAL(triggered()), this, SLOT(simulationFlowHandle()));
     simulationStatus = false;
+    simulationFlowAct->setDisabled(true);
 
     QPixmap *pm_simRun = new QPixmap(":/resources//icons//simulationRun.png");
     QIcon *icon_simRun = new QIcon(*pm_simRun);
     simulationRunAct = new QAction(*icon_simRun, tr("Run"), this);
     connect(simulationRunAct, SIGNAL(triggered()), this, SLOT(simulationRunHandle()));
+    simulationRunAct->setDisabled(true);
 
     QPixmap *pm_simStep = new QPixmap(":/resources//icons//simulationStep.png");
     QIcon *icon_simStep = new QIcon(*pm_simStep);
     simulationStepAct = new QAction(*icon_simStep, tr("Do step"), this);
     connect(simulationStepAct, SIGNAL(triggered()), this, SLOT(simulationStep()));
+    simulationStepAct->setDisabled(true);
 
     QPixmap *pm_simReset = new QPixmap(":/resources//icons//simulationReset.png");
     QIcon *icon_simReset = new QIcon(*pm_simReset);
     simulationResetAct = new QAction(*icon_simReset, tr("Reset"), this);
     connect(simulationResetAct, SIGNAL(triggered()), this, SLOT(simulationReset()));
+    simulationResetAct->setDisabled(true);
 
 
     toolConvertorAct = new QAction(tr("Convertor"), this);
@@ -205,6 +217,7 @@ void MainForm::createActions()
 
     aboutAct = new QAction(tr("About"), this);
     aboutQTAct = new QAction(tr("About QT"), this);
+    connect(aboutQTAct, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
     helpActionAct = new QAction(tr("Help"), this);
     example1Act = new QAction(tr("Example 1"), this);
     connect(example1Act, SIGNAL(triggered()), this, SLOT(exampleOpen()));
@@ -280,6 +293,13 @@ void MainForm::createDockWidgets()
     wDockManager->addDockWidget(wBreakpointList);
     //wDockManager->addDockWidget(wAnalysVar);
     //wDockManager->addDockWidget(wAnalysFunc);
+    addAct->setEnabled(true);
+    newAddAct->setEnabled(true);
+    saveProjAct->setEnabled(true);
+    projectCompileAct->setEnabled(true);
+    simulationFlowAct->setEnabled(true);
+    projectConfigAct->setEnabled(true);
+    saveAct->setEnabled(true);
     wDockManager->dockWidgets = true;
     //emit dockWidgetsCreated;
     qDebug() << "MainForm: return CreateDockWidgets()";
@@ -632,16 +652,18 @@ void MainForm::compileProject()
     ((QPlainTextEdit*)(wDockManager->getDockWidget(wCompileInfo)->widget()))->clear();
 
     CompilerOptions *options = new CompilerOptions();
+    QString mainFile = projectMan->getActive()->prjPath.section('/',0, -2) + "/" +  this->projectMan->getActive()->mainFilePath.section('.',0,-2);
     options->m_sourceFile = (projectMan->getActive()->prjPath.section('/',0, -2) + "/" +  this->projectMan->getActive()->mainFilePath).toStdString();
     qDebug() << QString::fromStdString(options->m_sourceFile);
-    options->m_symbolTable = "./deletesmbl";
-    options->m_macroTable = "./deletemacro";
-    options->m_mdsDebugFile = "./deletedbg";
-    options->m_codeTree = "./deletectree";
-    options->m_lstFile = "./deletelst";
-    options->m_hexFile = "./deletehex";
-    options->m_binFile = "./deletebin";
-    options->m_srecFile = "./deletsrec";
+    qDebug() << mainFile;
+    options->m_symbolTable = (mainFile + ".stbl").toStdString();
+    options->m_macroTable = (mainFile + ".mtbl").toStdString();
+    options->m_mdsDebugFile = (mainFile + ".dbg").toStdString();
+    options->m_codeTree = (mainFile + ".ctr").toStdString();
+    options->m_lstFile = (mainFile + ".lst").toStdString();
+    options->m_hexFile = (mainFile + ".hex").toStdString();
+    options->m_binFile = (mainFile + ".bin").toStdString();
+    options->m_srecFile = (mainFile + ".srec").toStdString();
     CompilerThread *compiler = new CompilerThread();
     qRegisterMetaType<std::string>("std::string");
     qRegisterMetaType<CompilerBase::MessageType>("CompilerBase::MessageType");
@@ -774,6 +796,9 @@ void MainForm::simulationFlowHandle()
             simulationFlowAct->setIcon(*icon_simFlow);
             simulationFlowAct->setText(tr("Stop simulation"));
             simulationStatus = true;
+            simulationStepAct->setEnabled(true);
+            simulationRunAct->setEnabled(true);
+            simulationResetAct->setEnabled(true);
             projectMan->getActive()->start();
         }
         else
@@ -783,6 +808,9 @@ void MainForm::simulationFlowHandle()
             simulationFlowAct->setIcon(*icon_simFlow);
             simulationFlowAct->setText(tr("Start simulation"));
             simulationStatus = false;
+            simulationStepAct->setDisabled(true);
+            simulationRunAct->setDisabled(true);
+            simulationResetAct->setDisabled(true);
             projectMan->getActive()->stop();
         }
     }
@@ -843,19 +871,27 @@ void MainForm::simProjectData()
     wDockManager->addSimDockWidgetP2(this->getProjectMan()->getActive()->prjPath, this->getProjectMan()->getActive()->getSimControl());
 }
 
-
+/**
+ * @brief Slot. Tabify two ProjectTree Widgets.
+ */
 void MainForm::tabifyDockWidgetSlot(QDockWidget *widget1, QDockWidget *widget2)
 {
     this->tabifyDockWidget(widget1, widget2);
 }
 
 
+/**
+ * @brief Slot. Adds dockwidget to dockwidgetarea.
+ */
 void MainForm::addDockWidgetSlot(Qt::DockWidgetArea area, QDockWidget *widget)
 {
     this->addDockWidget(area, widget);
 }
 
 
+/**
+ * @brief Slot. Connects project signals to mainform slots.
+ */
 void MainForm::connectProjectSlot(Project *project)
 {
     connect(project, SIGNAL(highlightLine(QString, int, QColor*, QColor*)), this, SLOT(highlightLine(QString, int, QColor*,

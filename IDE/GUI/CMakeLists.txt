@@ -29,7 +29,7 @@ cmake_minimum_required(VERSION 2.8)
   SET( CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++ -s")
 
   # enable warnings
-  ADD_DEFINITIONS( -Wall)
+  ADD_DEFINITIONS( -Wall -std=c++0x )
   
   # by default only QtCore and QtGui modules are enabled
   # other modules must be enabled like this:

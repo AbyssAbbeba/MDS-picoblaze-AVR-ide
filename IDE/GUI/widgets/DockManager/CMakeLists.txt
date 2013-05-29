@@ -38,7 +38,8 @@ find_package(Qt4 REQUIRED)
 
 # <DEBUG!>
 link_directories(
-	"${CMAKE_CURRENT_BINARY_DIR}/../SimulationInfo/"
+	#"${CMAKE_CURRENT_BINARY_DIR}/../SimulationInfo/"
+    "${CMAKE_CURRENT_BINARY_DIR}/../PicoBlazeGrid/"
 	"${CMAKE_CURRENT_BINARY_DIR}/../BookmarkList/"
 	"${CMAKE_CURRENT_BINARY_DIR}/../BreakpointList/"
     "${CMAKE_CURRENT_BINARY_DIR}/../TabBar/"
@@ -46,6 +47,12 @@ link_directories(
     "${CMAKE_CURRENT_BINARY_DIR}/../AnalyserWidget/"
     "${CMAKE_CURRENT_BINARY_DIR}/../Editor/"
 	)
+
+include_directories(
+    "${CMAKE_SOURCE_DIR}/GUI/widgets/PicoBlazeInfo/"
+    "${CMAKE_SOURCE_DIR}/GUI/widgets/sim/"
+    "${CMAKE_SOURCE_DIR}/simulators/MCUSim/"
+)
 
 # </DEBUG!>
 
@@ -67,4 +74,4 @@ add_library(${PROJECT_NAME} SHARED
 	${SAMPLE_MOC_SRCS} ${SAMPLE_SRCS})
 
 
-target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} WSimulationInfo BreakpointList BookmarkList TabBar Analyser AnalyserWidget Editor)
+target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} PicoBlazeGrid BreakpointList BookmarkList TabBar Analyser AnalyserWidget Editor)
