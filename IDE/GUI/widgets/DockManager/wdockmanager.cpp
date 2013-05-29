@@ -617,9 +617,9 @@ WDock::WDock(WDockManager *parent, int code, QWidget *parentWindow)
             qDebug() << "WDock: invalid usage of constructor";
             /*wDockWidget = new QDockWidget("Simulation Info", parentWindow);
             wDockWidget->setAllowedAreas(Qt::BottomDockWidgetArea);
-            emit addDockWidget(Qt::BottomDockWidgetArea, wDockWidget);
+            parent->addDockW(Qt::BottomDockWidgetArea, wDockWidget);
             //mainWindow->addDockWidget(Qt::BottomDockWidgetArea, wDockWidget);
-            WSimulationInfo *newWidget = new WSimulationInfo(mainWindow->getProjectMan()->getActive()->getSimControl(), wDockWidget);
+            PicoBlazeGrid *newWidget = new PicoBlazeGrid(wDockWidget, mainWindow->getProjectMan()->getActive()->getSimControl());
             newWidget->setProjectPath(mainWindow->getProjectMan()->getActive()->prjPath);
             area = 2;
             wDockWidget->setWidget(newWidget);
@@ -667,12 +667,12 @@ WDock::WDock(WDockManager *parent, int code, QWidget *parentWindow, QString path
             wDockWidget->setAllowedAreas(Qt::BottomDockWidgetArea);
             parent->addDockW(Qt::BottomDockWidgetArea, wDockWidget);
             //mainWindow->addDockWidget(Qt::BottomDockWidgetArea, wDockWidget);
-            WSimulationInfo *newWidget = new WSimulationInfo(simControl, wDockWidget);
+            PicoBlazeGrid *newWidget = new PicoBlazeGrid(wDockWidget, simControl);
             newWidget->setProjectPath(path);
             area = 2;
             wDockWidget->setWidget(newWidget);
-            newWidget->fixHeight();
-            qDebug() << "WSimulationInfo: height fixed";
+            //newWidget->fixHeight();
+            //qDebug() << "WSimulationInfo: height fixed";
             break;
         }
     }

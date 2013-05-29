@@ -95,3 +95,4 @@ target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} SimWidgets MovGridLayout)
 # BUILD COMPONENTS IN THE SUBDIRECTORIES
 # ------------------------------------------------------------------------------
 
+add_subdirectory(PicoBlaze)

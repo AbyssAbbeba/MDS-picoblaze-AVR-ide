@@ -17,6 +17,7 @@
 
 #include <QTextEdit>
 #include <QScrollArea>
+#include <QFont>
 
 class WColumnCounterWidget;
 
@@ -30,7 +31,7 @@ class WColumnCounter : public QScrollArea
 {
     Q_OBJECT   
     public:
-        WColumnCounter(QTextEdit *parent, int height, int columns);
+        WColumnCounter(QTextEdit *parent, QFont font, int columns);
         QTextEdit* getTextEdit();
         WColumnCounterWidget* getWidget();
     private slots:
@@ -45,10 +46,12 @@ class WColumnCounterWidget : public QWidget
 {   
     Q_OBJECT   
     public:
-        WColumnCounterWidget(WColumnCounter *parent, int height, int columns);
+        WColumnCounterWidget(WColumnCounter *parent, QFont font, int columns);
     private:
         WColumnCounter *parent;
         int columns;
+        int fontHeight;
+        int fontWidth;
     protected:
         void paintEvent(QPaintEvent *);
 };

@@ -76,6 +76,7 @@ class HexEdit : public QWidget
         int prevPosition;
         int asciiPrevPosition;
         int columns;
+        int fontSize;
         bool changable;
         bool ascii;
 

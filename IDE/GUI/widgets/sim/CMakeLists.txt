@@ -26,27 +26,30 @@ find_package(Qt4 REQUIRED)
 set(QT_USE_QTXML 1)
 include(${QT_USE_FILE})
 
-include_directories(
-	"${CMAKE_CURRENT_BINARY_DIR}/../../../simulators/MCUSim/"
-	"${CMAKE_CURRENT_BINARY_DIR}/../../../simulators/MCUSim/AVR8"
-	"${CMAKE_CURRENT_BINARY_DIR}/../../../simulators/MCUSim/McuSimCfgMgr/"
-	"${CMAKE_CURRENT_BINARY_DIR}/../../../simulators/SimControl/"
-	"${CMAKE_CURRENT_BINARY_DIR}/../../../utilities/MCUDataFiles/")
+#include_directories(
+#	"${CMAKE_CURRENT_BINARY_DIR}/../../../simulators/MCUSim/"
+#	"${CMAKE_CURRENT_BINARY_DIR}/../../../simulators/MCUSim/AVR8"
+#	"${CMAKE_CURRENT_BINARY_DIR}/../../../simulators/MCUSim/McuSimCfgMgr/"
+#	"${CMAKE_CURRENT_BINARY_DIR}/../../../simulators/SimControl/"
+#	"${CMAKE_CURRENT_BINARY_DIR}/../../../utilities/MCUDataFiles/"
+#    "${CMAKE_CURRENT_BINARY_DIR}/../HexEdit/"
+#)
 
 # <DEBUG!>
 link_directories(
 	"${CMAKE_CURRENT_BINARY_DIR}/../../../utilities/MCUDataFiles/"
 	"${CMAKE_CURRENT_BINARY_DIR}/../../../simulators/MCUSim/AVR8/"
 	"${CMAKE_CURRENT_BINARY_DIR}/../../../simulators/SimControl/"
-	"${CMAKE_CURRENT_BINARY_DIR}/../../../simulators/MCUSim/McuSimCfgMgr/")
-include_directories(
-	"${CMAKE_CURRENT_BINARY_DIR}/.."
-	"${CMAKE_CURRENT_BINARY_DIR}/../../../simulators/MCUSim/"
-	"${CMAKE_CURRENT_BINARY_DIR}/../../../simulators/MCUSim/AVR8/"
-	"${CMAKE_CURRENT_BINARY_DIR}/../../../simulators/SimControl/"
 	"${CMAKE_CURRENT_BINARY_DIR}/../../../simulators/MCUSim/McuSimCfgMgr/"
-	"${CMAKE_CURRENT_BINARY_DIR}/../../../utilities/MCUDataFiles/"
-	"${CMAKE_CURRENT_BINARY_DIR}/../HexEdit/")
+)
+#include_directories(
+#	"${CMAKE_CURRENT_BINARY_DIR}/.."
+#	"${CMAKE_CURRENT_BINARY_DIR}/../../../simulators/MCUSim/"
+#	"${CMAKE_CURRENT_BINARY_DIR}/../../../simulators/MCUSim/AVR8/"
+#	"${CMAKE_CURRENT_BINARY_DIR}/../../../simulators/SimControl/"
+#	"${CMAKE_CURRENT_BINARY_DIR}/../../../simulators/MCUSim/McuSimCfgMgr/"
+#	"${CMAKE_CURRENT_BINARY_DIR}/../../../utilities/MCUDataFiles/"
+#	"${CMAKE_CURRENT_BINARY_DIR}/../HexEdit/")
 # </DEBUG!>
 
 ## Add switches to compiler command line
@@ -58,8 +61,8 @@ include_directories(
 add_definitions(-Wall -Wextra -std=c++0x -O2 -pipe)
 
 qt4_wrap_cpp(QT_MOC_GENERATED_CPP_FILES
-	RegDisplay.h
-	RegDisplayList.h
+#	RegDisplay.h
+#	RegDisplayList.h
 	McuMemoryView.h
 
 	${CMAKE_CURRENT_BINARY_DIR}/../HexEdit/hexedit.h
@@ -71,15 +74,16 @@ qt4_wrap_cpp(QT_MOC_GENERATED_CPP_FILES
  # in this case it will procude dynamic C++ library.
 add_library(${PROJECT_NAME} SHARED
 	${QT_MOC_GENERATED_CPP_FILES}
-	RegDisplay.cxx
-	RegDisplayList.cxx
+#	RegDisplay.cxx
+#	RegDisplayList.cxx
 	McuMemoryView.cxx
 
 	${CMAKE_CURRENT_BINARY_DIR}/../HexEdit/hexedit.cpp
 	${CMAKE_CURRENT_BINARY_DIR}/../Counters/wlinecounter.cpp
 	${CMAKE_CURRENT_BINARY_DIR}/../Counters/wcolumncounter.cpp)
 
-target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} SimControl McuSimCfgMgr AVR8Sim PIC8Sim MCUDataFiles)
+target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} SimControl McuSimCfgMgr PicoBlazeSim MCUDataFiles)
+#target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} SimControl McuSimCfgMgr AVR8Sim PIC8Sim MCUDataFiles)
 
 # <DEBUG!>
 #qt4_wrap_cpp(QT_MOC_GENERATED_CPP_FILES2

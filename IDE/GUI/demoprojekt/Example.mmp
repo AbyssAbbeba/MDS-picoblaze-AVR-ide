@@ -2,7 +2,7 @@
 <MMProject>
  <General>
   <Name name="Example"/>
-  <Architecture architecture="ATmega8A"/>
+  <Architecture architecture="kcpsm3"/>
   <Language language="0"/>
  </General>
  <Files>

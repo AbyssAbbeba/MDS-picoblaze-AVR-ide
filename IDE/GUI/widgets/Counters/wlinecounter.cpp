@@ -22,9 +22,9 @@
  * @param parent Parent QTextEdit.
  * @param icons If icons are available.
  * @param hex If shown numbers will be hexadecimal (or decimal).
- * @param width Width of the widget.
+ * @param font Used font.
  */
-WLineCounter::WLineCounter(QTextEdit *parent, bool icons, bool hex, int width)
+WLineCounter::WLineCounter(QTextEdit *parent, bool icons, bool hex, QFont font)
     : QScrollArea(parent)
 {
     qDebug() << "WLineCounter: WLineCounter()";
@@ -33,9 +33,11 @@ WLineCounter::WLineCounter(QTextEdit *parent, bool icons, bool hex, int width)
     this->parent = parent;
     //this->setMaximumHeight(parent->height());
     //this->setMinimumHeight(this->parent->height());
-    this->setMaximumWidth(width);
-    this->setMinimumWidth(width);
-    widget = new WLineCounterWidget(this, icons, hex, width);
+    QFontMetrics fontMetrics(font);
+    int fontWidth = fontMetrics.width("000");
+    this->setMaximumWidth(fontWidth);
+    this->setMinimumWidth(fontWidth);
+    widget = new WLineCounterWidget(this, icons, hex, font);
     this->setWidget(widget);
     this->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -82,17 +84,22 @@ void WLineCounter::change(int value)
  * @param parent Parent WLineCounter (base).
  * @param icons If icons are available
  * @param hex If line numbers will be in hexadecimal (or decimal)
- * @param width Width of the shown widget
+ * @param font Used font.
  */
-WLineCounterWidget::WLineCounterWidget(WLineCounter *parent, bool icons, bool hex, int width)
+WLineCounterWidget::WLineCounterWidget(WLineCounter *parent, bool icons, bool hex, QFont font)
     : QWidget(parent)
 {
     qDebug() << "WLineCounterWidget: WLineCounterWidget()";
     this->parent = parent;
     this->icons = icons;
-    this->setMaximumWidth(width);
+    font.setPixelSize(font.pixelSize()-2);
+    this->setFont(font);
+    QFontMetrics fontMetrics(font);
+    this->fontWidth = fontMetrics.width("000");
+    this->fontHeight = fontMetrics.height();
+    this->setMaximumWidth(fontWidth*2);
     //this->setMaximumHeight(parent->height());
-    this->setMinimumWidth(width);
+    this->setMinimumWidth(fontWidth*2);
     //this->setMinimumHeight(parent->parent->height());
     this->hex = hex;
     //this->show();
@@ -118,7 +125,7 @@ WLineCounterWidget::WLineCounterWidget(WLineCounter *parent, bool icons, bool he
 void WLineCounterWidget::paintEvent(QPaintEvent *)
 {
     QTextEdit* textEdit = parent->getTextEdit();
-    int size = textEdit->currentFont().pointSize();
+    //int size = textEdit->currentFont().pointSize();
     //int normalize = 0;
     //QTextCursor lastBlockCursor(textEdit->document()->lastBlock());
     //QRect lastBlockRect = textEdit->cursorRect(lastBlockCursor);
@@ -126,8 +133,8 @@ void WLineCounterWidget::paintEvent(QPaintEvent *)
     //this->setMaximumHeight(lastBlockRect.bottom());
     QPainter paint;
     paint.begin(this);
-    QRectF rect(0,0,this->width(),2*size);
-    QRectF iconRect(0,0,8,2*size);
+    QRectF rect(0,0,this->fontWidth,this->fontHeight);
+    QRectF iconRect(0,0,8,this->fontHeight);
     QPointF point;
     point.setX(0);
     QBrush brush(Qt::darkCyan);
