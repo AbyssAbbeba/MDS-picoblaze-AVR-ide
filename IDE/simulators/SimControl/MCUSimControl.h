@@ -253,8 +253,8 @@ class MCUSimControl : public QObject
     signals:
         /**
          * @brief
-         * @param lineNumber:
-         * @param fileName:
+         * @param[out] lineNumber
+         * @param[out] fileName
          */
         void lineNumberChanged ( int lineNumber,
                                  const std::string & fileName );
@@ -263,12 +263,25 @@ class MCUSimControl : public QObject
     public slots:
         /**
          * @brief
-         * @param[out] fileName
-         * @param[out] compilerId
-         * @param[out] dataFileType
+         * @param[in] fileName
+         * @param[in] compilerId
+         * @param[in] dataFileType
          * @return
          */
         bool start ( const std::string & fileName,
+                     CompilerID compilerId,
+                     DataFileType dataFileType = DBGFILEID_HEX );
+
+        /**
+         * @brief
+         * @param[in] dbgFile
+         * @param[in] dataFile
+         * @param[in] compilerId
+         * @param[in] dataFileType
+         * @return
+         */
+        bool start ( const std::string & dbgFileName,
+                     const std::string & dataFileName,
                      CompilerID compilerId,
                      DataFileType dataFileType = DBGFILEID_HEX );
 
@@ -308,6 +321,11 @@ class MCUSimControl : public QObject
          * @return
          */
         bool changeDevice ( const char * deviceName );
+
+    ////    Private Attributes    ////
+    private:
+        /// @brief
+        std::string m_fileName;
 };
 
 #endif // MCUSIMCONTROL_H

@@ -223,8 +223,6 @@ MScriptStatement * MScriptStatement::copyChainLink() const
 
     MScriptStatement * result = new MScriptStatement(m_location, m_type, m_args->copyEntireChain());
     result->m_branch = m_branch->copyEntireChain();
-    result->m_userData = m_userData;
-    result->m_serialNumber = m_serialNumber;
 
     return result;
 }
@@ -249,6 +247,16 @@ MScriptStatement * MScriptStatement::appendArgsLink ( MScriptExpr * chainLink )
         m_args->appendLink(chainLink);
     }
     return this;
+}
+
+MScriptStatement * MScriptStatement::prev() const
+{
+    return m_prev;
+}
+
+MScriptStatement * MScriptStatement::next() const
+{
+    return m_next;
 }
 
 void MScriptStatement::completeDelete ( MScriptStatement * stmt )

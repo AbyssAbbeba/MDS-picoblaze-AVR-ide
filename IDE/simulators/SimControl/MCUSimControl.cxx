@@ -229,6 +229,161 @@ bool MCUSimControl::start ( const std::string & filename,
     return true;
 }
 
+bool MCUSimControl::start ( const std::string & dbgFileName,
+                            const std::string & dataFileName,
+                            MCUSimControl::CompilerID compilerId,
+                            MCUSimControl::DataFileType dataFileType )
+{
+    if ( NULL != m_dbgFile )
+    {
+        delete m_dbgFile;
+        m_dbgFile = NULL;
+    }
+
+    DataFile * dataFile = NULL;
+
+    switch ( compilerId )
+    {
+        case COMPILER_NATIVE:
+        {
+            m_dbgFile = new DbgFileNative();
+            switch ( dataFileType )
+            {
+                case DBGFILEID_HEX:
+                {
+                    dataFile = new HexFile();
+                    break;
+                }
+                default:
+                {
+                    qDebug("File format not supported.");
+                    return false;
+                }
+            }
+            break;
+        }
+
+        case COMPILER_SDCC:
+        {
+            m_dbgFile = new DbgFileCDB();
+            switch ( dataFileType )
+            {
+                case DBGFILEID_HEX:
+                {
+                    dataFile = new HexFile();
+                    break;
+                }
+                default:
+                {
+                    qDebug("File format not supported.");
+                    return false;
+                }
+            }
+            break;
+        }
+
+        case COMPILER_GCC: // TODO: Not implemeted yet!
+        {
+            qDebug("Not implemeted yet!");
+            return false;
+            break;
+        }
+
+        case COMPILER_AVRA: // TODO: Not implemeted yet!
+        {
+            switch ( dataFileType )
+            {
+                case DBGFILEID_HEX:
+                {
+                    dataFile = new HexFile();
+                    m_dbgFile = new DbgFileAvraLst();
+                    break;
+                }
+                case DBGFILEID_COFF:
+                {
+                    ObjectDataFile * objectDataFile = new ObjectDataFile();
+                    DbgFileAvrCoff * dbgFileAvrCoff = new DbgFileAvrCoff();
+                    dbgFileAvrCoff->assignCodeMemDataContainer(objectDataFile);
+                    dataFile = objectDataFile;
+                    m_dbgFile = dbgFileAvrCoff;
+                    break;
+                }
+                default:
+                {
+                    qDebug("File format not supported.");
+                    return false;
+                }
+            }
+            break;
+        }
+
+        default:
+        {
+            qDebug("Compiler not supported.");
+            return false;
+        }
+    }
+
+    if ( ( NULL == dataFile ) || ( NULL == m_dbgFile) )
+    {
+        // TODO: implement a proper error handling here
+        qDebug("error: ( NULL == dataFile ) || ( NULL == m_dbgFile)");
+        return false;
+    }
+
+    try
+    {
+        m_dbgFile->openFile(dbgFileName);
+    }
+    catch ( DbgFile::Exception & e )
+    {
+        qDebug ( "Failed to load the debug file: %s", e.toString().c_str() );
+        return false;
+    }
+
+    // Load data file for the program memory
+    try
+    {
+        dataFile->clearAndLoad(dataFileName);
+    }
+    catch ( DataFile::Exception & e )
+    {
+        // TODO: implement a proper error handling here
+        qDebug("Failed to load program memory from the given file.");
+        delete dataFile;
+        return false;
+    }
+
+    // Reset the simulator
+    m_simulator->reset(MCUSim::RSTMD_INITIAL_VALUES);
+    reset();
+
+    // Start simulator
+    switch ( m_architecture )
+    {
+        case MCUSim::ARCH_AVR8:
+            dynamic_cast<AVR8ProgramMemory*>(m_simulator->getSubsys(MCUSim::Subsys::ID_MEM_CODE))->loadDataFile(dataFile);
+            break;
+        case MCUSim::ARCH_PIC8:
+            dynamic_cast<PIC8ProgramMemory*>(m_simulator->getSubsys(MCUSim::Subsys::ID_MEM_CODE))->loadDataFile(dataFile);
+            break;
+        case MCUSim::ARCH_PICOBLAZE:
+            dynamic_cast<PicoBlazeProgramMemory*>(m_simulator->getSubsys(MCUSim::Subsys::ID_MEM_CODE))->loadDataFile(dataFile);
+            break;
+        default:
+            // TODO: implement a proper error handling here
+            qDebug("Unknown device architecture.");
+            return false;
+    }
+
+    //
+    m_simulatorLog->clear();
+    allObservers_setReadOnly(false);
+
+    delete dataFile;
+    return true;
+}
+
 int MCUSimControl::getLineNumber ( std::string * fileName )
 {
     if ( false == initialized() )
@@ -285,9 +440,9 @@ void MCUSimControl::step()
     m_simulator->executeInstruction();
     dispatchEvents();
 
-    std::string fileName;
-    int lineNumber = getLineNumber(&fileName);
-    emit(lineNumberChanged(lineNumber, fileName));
+    m_fileName.clear();
+    int lineNumber = getLineNumber(&m_fileName);
+    emit(lineNumberChanged(lineNumber, m_fileName));
 }
 
 void MCUSimControl::stepOver()
