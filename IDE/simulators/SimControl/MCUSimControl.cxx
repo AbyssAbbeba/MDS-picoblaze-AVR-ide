@@ -182,8 +182,7 @@ bool MCUSimControl::start ( const std::string & filename,
     }
     catch ( DbgFile::Exception & e )
     {
-        // TODO: implement a proper error handling here
-        qDebug("Failed to load the debug file.");
+        qDebug ( "Failed to load the debug file: %s", e.toString().c_str() );
         return false;
     }
 
