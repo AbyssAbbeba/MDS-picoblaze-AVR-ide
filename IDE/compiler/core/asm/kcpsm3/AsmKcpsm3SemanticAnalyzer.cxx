@@ -481,13 +481,13 @@ void AsmKcpsm3SemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
                 // This directive must stay in the code tree until phase 2.
                 continue;
             }
-            case ASMKCPSM3_DIR_SPRAUTO:
-            case ASMKCPSM3_DIR_REGAUTO:
+            case ASMKCPSM3_DIR_AUTOSPR:
+            case ASMKCPSM3_DIR_AUTOREG:
             {
                 int addr;
                 AsmKcpsm3SymbolTable::SymbolType symbolType;
 
-                if ( ASMKCPSM3_DIR_SPRAUTO == node->type() )
+                if ( ASMKCPSM3_DIR_AUTOSPR == node->type() )
                 {
                     if ( NULL != node->args()->next() )
                     {
@@ -514,7 +514,8 @@ void AsmKcpsm3SemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
                 m_symbolTable -> addSymbol ( node->args()->lVal().m_data.m_symbol,
                                              &value,
                                              location,
-                                             symbolType );
+                                             symbolType,
+                                             true );
                 m_codeListing->setValue(node->location(), addr);
                 break;
             }

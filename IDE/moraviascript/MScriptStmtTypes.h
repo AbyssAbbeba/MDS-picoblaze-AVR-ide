@@ -30,10 +30,22 @@ namespace MScriptStmtTypes
     {
         EMPTY_STATEMENT = 0,
 
+        STMT_SCOPE,
         STMT_CONDITIONAL_EXEC,
         STMT_IF,
         STMT_ELSE,
-        STMT_EXPR
+        STMT_EXPR,
+        STMT_TRIGGER,
+        STMT_FUNCTION,
+        STMT_FOR,
+        STMT_WHILE,
+        STMT_DO_WHILE,
+        STMT_RETURN,
+        STMT_CONTINUE,
+        STMT_BREAK,
+        STMT_SWITCH,
+        STMT_CASE,
+        STMT_DELETE
     };
 };
 

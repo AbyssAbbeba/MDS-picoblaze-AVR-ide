@@ -102,6 +102,9 @@ class MScriptCore : private MScriptParserInterface
 
         /// @brief
         std::vector<std::string> m_messages;
+
+        /// @brief
+        bool m_success;
 };
 
 #endif // MSCRIPTCORE_H
