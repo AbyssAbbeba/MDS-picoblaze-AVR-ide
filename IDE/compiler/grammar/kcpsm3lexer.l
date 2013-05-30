@@ -209,8 +209,8 @@ DIS_INT_INST            "disable"{WSPACE}"interrupt"
 \.?"rept"               { return D_REPT; }
 \.?"endrepeat"          { return D_ENDR; }
 \.?"endr"               { return D_ENDR; }
-\.?"regauto"            { return D_REGAUTO; }
-\.?"sprauto"            { return D_SPRAUTO; }
+\.?"autoreg"            { return D_AUTOREG; }
+\.?"autospr"            { return D_AUTOSPR; }
 \.?"macro"              { return D_MACRO; }
 \.?"end"                {
                             // Close the current file

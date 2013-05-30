@@ -15,7 +15,17 @@
 
 #include "MScriptCore.h"
 
+// Include lexer prototypes (they are used by the core to initialize and destroy a lexer)
+#include "moraviaScriptParser.h"
+#include "moraviaScriptLexer.h"
+
+// Standard header files
 #include <iostream>
+
+// Parser prototype (the core uses it to initiate syntactical analysis).
+int moraviaScriptParser_parse ( yyscan_t yyscanner,
+                                MScriptParserInterface * core );
+
 
 MScriptCore::MScriptCore ( MScriptStrategy * strategy,
                            const std::string & script )
@@ -36,6 +46,21 @@ MScriptCore::~MScriptCore()
 bool MScriptCore::loadScript ( const std::string & script )
 {
     unloadScript();
+
+    /*
+     * Initiate lexical and syntax analysis of the source code.
+     */
+    yyscan_t yyscanner; // Pointer to the lexer context
+    moraviaScriptLexer_lex_init_extra ( this, &yyscanner );
+    YY_BUFFER_STATE bufferState = moraviaScriptLexer__scan_string ( script.c_str(), yyscanner );
+    if ( true == m_success )
+    {
+        moraviaScriptParser_parse ( yyscanner, this );
+    }
+    moraviaScriptLexer__delete_buffer ( bufferState, yyscanner );
+    moraviaScriptLexer_lex_destroy ( yyscanner );
+
+    return m_success;
 }
 
 void MScriptCore::unloadScript()
@@ -46,6 +71,7 @@ void MScriptCore::unloadScript()
         m_codeTree = NULL;
     }
     m_messages.clear();
+    m_success = true;
 }
 
 bool MScriptCore::executeStep()
@@ -74,6 +100,7 @@ void MScriptCore::syntaxAnalysisComplete ( MScriptStatement * codeTree )
     {
         m_codeTree->completeDelete();
     }
-    m_codeTree = codeTree;
+
+    m_codeTree = ( new MScriptStatement() ) -> appendLink ( codeTree );
     std::cout << m_codeTree;
 }
