@@ -19,5 +19,6 @@ mylbl:
         LOAD 4,#6
         ADD 5,4
 
+        JUMP  main
 
         END                     ; End of assembly.

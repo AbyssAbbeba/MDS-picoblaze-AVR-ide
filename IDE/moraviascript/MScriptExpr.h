@@ -214,7 +214,13 @@ class MScriptExpr
             OPER_PRE_DEC,    ///< -- a
             OPER_POST_INC,   ///< a ++
             OPER_POST_DEC,   ///< a --
-            OPER_ASSIGN      ///< a = b
+            OPER_ASSIGN,     ///< a = b
+            OPER_INDEX,      ///< a [ b ]
+            OPER_TERNARY,    ///< a ? `e', where `e' is supposed to stand for ( a : b ).
+            OPER_COLON,      ///< a : b, this is supposed to be used with the ternary operator.
+            OPER_SEMICOLON,  ///< a ; b, this is supposed to be used in statements like `for ( i = 0 ; i < 9 ; i++ )'
+            OPER_INT_PROM,   ///< Integer promotion: ( + a )
+            OPER_ADD_INV     ///< Additive inverse: ( - a )
         };
 
     ////    Constructors and Destructors    ////

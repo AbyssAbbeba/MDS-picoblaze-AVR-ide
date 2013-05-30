@@ -654,8 +654,8 @@ std::ostream & operator << ( std::ostream & out,
         case ASMKCPSM3_DIR_ERROR:               out << "ASMKCPSM3_DIR_ERROR";           break;
         case ASMKCPSM3_DIR_WARNING:             out << "ASMKCPSM3_DIR_WARNING";         break;
         case ASMKCPSM3_DIR_DB:                  out << "ASMKCPSM3_DIR_DB";              break;
-        case ASMKCPSM3_DIR_REGAUTO:             out << "ASMKCPSM3_DIR_REGAUTO";         break;
-        case ASMKCPSM3_DIR_SPRAUTO:             out << "ASMKCPSM3_DIR_SPRAUTO";         break;
+        case ASMKCPSM3_DIR_AUTOREG:             out << "ASMKCPSM3_DIR_AUTOREG";         break;
+        case ASMKCPSM3_DIR_AUTOSPR:             out << "ASMKCPSM3_DIR_AUTOSPR";         break;
         case ASMKCPSM3_DIR_DATA:                out << "ASMKCPSM3_DIR_DATA";            break;
 
         case ASMKCPSM3_COND_ASM:                out << "ASMKCPSM3_COND_ASM";            break;

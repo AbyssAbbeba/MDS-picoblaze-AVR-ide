@@ -147,7 +147,7 @@
 %token D_ENDM           D_EXITM         D_REPT          D_MACRO         D_EQU
 %token D_END            D_REG           D_CODE          D_ENDW          D_WARNING
 %token D_VARIABLE       D_SET           D_DEFINE        D_UNDEFINE      D_ENDR
-%token D_REGAUTO        D_SPRAUTO       D_DATA
+%token D_AUTOREG        D_AUTOSPR       D_DATA
 
 /* Instructions */
 %token I_JUMP           I_CALL          I_RETURN        I_ADD           I_ADDCY
@@ -235,14 +235,14 @@
 %type<stmt>     dir_elseif      dir_elseifn     dir_elseifdef   dir_elseifndf   dir_elseifb
 %type<stmt>     dir_constant    dir_variable    dir_while       dir_namereg     dir_port
 %type<stmt>     dir_while_a     dir_endw        dir_error       dir_undefine    dir_define
-%type<stmt>     dir_title       dir_nolist      dir_regauto     dir_regauto_a   dir_sprauto
+%type<stmt>     dir_title       dir_nolist      dir_autoreg     dir_autoreg_a   dir_autospr
 %type<stmt>     dir_expand      dir_noexpand    dir_code        dir_db          dir_messg
 %type<stmt>     dir_code_a      if_block        ifelse_block    dir_endif       dir_warning
 %type<stmt>     else_block      dir_else        dir_if_a        dir_ifn_a       dir_ifdef_a
 %type<stmt>     dir_ifndef_a    dir_ifb_a       dir_ifnb_a      dir_elseif_a    dir_elseifn_a
 %type<stmt>     dir_elseifdef_a dir_elseifndf_a dir_elseifb_a   dir_elseifnb_a  dir_rept
 %type<stmt>     dir_endm        dir_macro_d     dir_macro_a     dir_endr        dir_endr_a
-%type<stmt>     dir_db_a        dir_endm_a      dir_expand_a    dir_noexpand_a  dir_sprauto_a
+%type<stmt>     dir_db_a        dir_endm_a      dir_expand_a    dir_noexpand_a  dir_autospr_a
 %type<stmt>     dir_data
 // Statements - instructions
 %type<stmt>     inst_jump       inst_call       inst_return     inst_add        inst_addcy
@@ -436,7 +436,7 @@ directive:
     | dir_port      { $$ = $1; }    | dir_undefine  { $$ = $1; }
     | dir_messg     { $$ = $1; }    | dir_title     { $$ = $1; }
     | dir_expand    { $$ = $1; }    | dir_noexpand  { $$ = $1; }
-    | dir_sprauto   { $$ = $1; }    | dir_regauto   { $$ = $1; }
+    | dir_autospr   { $$ = $1; }    | dir_autoreg   { $$ = $1; }
     | dir_code      { $$ = $1; }    | dir_error     { $$ = $1; }
     | dir_warning   { $$ = $1; }    | dir_data      { $$ = $1; }
 ;
@@ -1186,75 +1186,75 @@ dir_port:
                                                           $label->appendArgsLink ( $id->appendLink($expr) ) );
                                     }
 ;
-dir_regauto:
-      dir_regauto_a                 { $$ = $dir_regauto_a; }
-    | label dir_regauto_a           {
+dir_autoreg:
+      dir_autoreg_a                 { $$ = $dir_autoreg_a; }
+    | label dir_autoreg_a           {
                                         /* Syntax error */
                                         $$ = NULL;
-                                        NO_LABEL_EXPECTED(@label, "REGAUTO", $label->appendLink($dir_regauto_a));
+                                        NO_LABEL_EXPECTED(@label, "AUTOREG", $label->appendLink($dir_autoreg_a));
                                     }
 ;
-dir_regauto_a:
-      id D_REGAUTO                  { $$ = new CompilerStatement(LOC(@$),ASMKCPSM3_DIR_REGAUTO,$id); }
-    | id D_REGAUTO AT expr          { $$ = new CompilerStatement(LOC(@$),ASMKCPSM3_DIR_REGAUTO,$id->appendLink($expr));}
-    | id D_REGAUTO expr             {
+dir_autoreg_a:
+      id D_AUTOREG                  { $$ = new CompilerStatement(LOC(@$),ASMKCPSM3_DIR_AUTOREG,$id); }
+    | id D_AUTOREG AT expr          { $$ = new CompilerStatement(LOC(@$),ASMKCPSM3_DIR_AUTOREG,$id->appendLink($expr));}
+    | id D_AUTOREG expr             {
                                         /* Syntax error */
-                                        MISSING_AT_OPERATOR(@D_REGAUTO, "REGAUTO");
+                                        MISSING_AT_OPERATOR(@D_AUTOREG, "AUTOREG");
                                         $$ = new CompilerStatement ( LOC(@$),
-                                                                     ASMKCPSM3_DIR_REGAUTO,
+                                                                     ASMKCPSM3_DIR_AUTOREG,
                                                                      $id->appendLink($expr) );
                                     }
-    | D_REGAUTO                     {
+    | D_AUTOREG                     {
                                         /* Syntax error */
                                         $$ = NULL;
-                                        DECL_ID_EXPECTED(@D_REGAUTO, "REGAUTO");
+                                        DECL_ID_EXPECTED(@D_AUTOREG, "AUTOREG");
                                     }
-    | D_REGAUTO AT expr             {
+    | D_AUTOREG AT expr             {
                                         /* Syntax error */
                                         $$ = NULL;
-                                        DECL_ID_EXPECTED(@D_REGAUTO, "REGAUTO");
+                                        DECL_ID_EXPECTED(@D_AUTOREG, "AUTOREG");
                                         $expr->completeDelete();
                                     }
-    | D_REGAUTO expr                {
+    | D_AUTOREG expr                {
                                         /* Syntax error */
                                         $$ = NULL;
-                                        DECL_ID_EXPECTED(@D_REGAUTO, "REGAUTO");
-                                        MISSING_AT_OPERATOR(@D_REGAUTO, "D_REGAUTO");
+                                        DECL_ID_EXPECTED(@D_AUTOREG, "AUTOREG");
+                                        MISSING_AT_OPERATOR(@D_AUTOREG, "D_AUTOREG");
                                         $expr->completeDelete();
                                     }
 ;
-dir_sprauto:
-      dir_sprauto_a                 { $$ = $dir_sprauto_a; }
-    | label dir_sprauto_a           {
+dir_autospr:
+      dir_autospr_a                 { $$ = $dir_autospr_a; }
+    | label dir_autospr_a           {
                                         /* Syntax error */
                                         $$ = NULL;
-                                        NO_LABEL_EXPECTED(@label, "SPRAUTO", $label->appendLink($dir_sprauto_a));
+                                        NO_LABEL_EXPECTED(@label, "AUTOSPR", $label->appendLink($dir_autospr_a));
                                     }
 ;
-dir_sprauto_a:
-      id D_SPRAUTO                  { $$ = new CompilerStatement(LOC(@$),ASMKCPSM3_DIR_SPRAUTO,$id); }
-    | id D_SPRAUTO AT expr          { $$ = new CompilerStatement(LOC(@$),ASMKCPSM3_DIR_SPRAUTO,$id->appendLink($expr));}
-    | id D_SPRAUTO expr             {
+dir_autospr_a:
+      id D_AUTOSPR                  { $$ = new CompilerStatement(LOC(@$),ASMKCPSM3_DIR_AUTOSPR,$id); }
+    | id D_AUTOSPR AT expr          { $$ = new CompilerStatement(LOC(@$),ASMKCPSM3_DIR_AUTOSPR,$id->appendLink($expr));}
+    | id D_AUTOSPR expr             {
                                         /* Syntax error */
-                                        MISSING_AT_OPERATOR(@D_SPRAUTO, "SPRAUTO");
-                                        $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_SPRAUTO, $id->appendLink($expr));
+                                        MISSING_AT_OPERATOR(@D_AUTOSPR, "AUTOSPR");
+                                        $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_AUTOSPR, $id->appendLink($expr));
                                     }
-    | D_SPRAUTO                     {
+    | D_AUTOSPR                     {
                                         /* Syntax error */
                                         $$ = NULL;
-                                        DECL_ID_EXPECTED(@D_SPRAUTO, "SPRAUTO");
+                                        DECL_ID_EXPECTED(@D_AUTOSPR, "AUTOSPR");
                                     }
-    | D_SPRAUTO AT expr             {
+    | D_AUTOSPR AT expr             {
                                         /* Syntax error */
                                         $$ = NULL;
-                                        DECL_ID_EXPECTED(@D_SPRAUTO, "SPRAUTO");
+                                        DECL_ID_EXPECTED(@D_AUTOSPR, "AUTOSPR");
                                         $expr->completeDelete();
                                     }
-    | D_SPRAUTO expr                {
+    | D_AUTOSPR expr                {
                                         /* Syntax error */
                                         $$ = NULL;
-                                        DECL_ID_EXPECTED(@D_SPRAUTO, "SPRAUTO");
-                                        MISSING_AT_OPERATOR(@D_SPRAUTO, "D_SPRAUTO");
+                                        DECL_ID_EXPECTED(@D_AUTOSPR, "AUTOSPR");
+                                        MISSING_AT_OPERATOR(@D_AUTOSPR, "D_AUTOSPR");
                                         $expr->completeDelete();
                                     }
 ;

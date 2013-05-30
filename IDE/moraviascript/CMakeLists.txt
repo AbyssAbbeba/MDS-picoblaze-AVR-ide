@@ -62,12 +62,15 @@ add_library ( ${PROJECT_NAME} SHARED
               MScriptParserInterface.cxx
               MScriptStmtTypes.cxx
               MScriptSrcLocation.cxx
-              MScriptStatement.cxx )
+              MScriptStatement.cxx
+              MScriptLexerAuxFunc.cxx )
 
 ## Set properties on a target.
  # Targets can have properties that affect how they are built.
 set_target_properties ( ${PROJECT_NAME} PROPERTIES LINKER_LANGUAGE "CXX" )
 
+add_executable ( main main.cxx )
+target_link_libraries ( main ${PROJECT_NAME} )
 
 # ------------------------------------------------------------------------------
 # INSTALLATION OPTIONS
