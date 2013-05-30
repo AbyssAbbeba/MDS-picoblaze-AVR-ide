@@ -18,6 +18,16 @@ main:
 mylbl:  
         LOAD 4,#6
         ADD 5,4
+        LOAD 4,#7
+        LOAD 4,#8
+        LOAD 4,#9
+        LOAD 4,#10
+        LOAD 4,#11
+        LOAD 4,#12
+        LOAD 4,#13
+        LOAD 4,5
+        LOAD 4,#6
+        LOAD 4,#7
 
 
         END                     ; End of assembly.
