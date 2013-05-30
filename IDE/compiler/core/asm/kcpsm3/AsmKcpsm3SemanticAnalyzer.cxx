@@ -514,7 +514,8 @@ void AsmKcpsm3SemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
                 m_symbolTable -> addSymbol ( node->args()->lVal().m_data.m_symbol,
                                              &value,
                                              location,
-                                             symbolType );
+                                             symbolType,
+                                             true );
                 m_codeListing->setValue(node->location(), addr);
                 break;
             }
