@@ -122,7 +122,7 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
     this->memPorts = new McuMemoryView(this, controlUnit, MCUSim::Subsys::SubsysId::ID_MEM_DATA);
     this->memPorts->move(440,5);
     this->memStack = new QListWidget(this);
-    this->memStack->move(680, 40);
+    this->memStack->move(680, 37);
     this->memStack->setMaximumWidth(100);
     this->memRegs->show();
     this->memScratch->show();
@@ -130,18 +130,33 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
     this->memStack->show();
 
     this->lblRegs = new QLabel("Registers", this);
-    this->lblRegs->move(20,0);
+    this->lblRegs->move(40,0);
     this->lblScratch = new QLabel("Scratch", this);
-    this->lblScratch->move(240,0);
+    this->lblScratch->move(260,0);
     this->lblPorts = new QLabel("Ports", this);
-    this->lblPorts->move(460,0);
+    this->lblPorts->move(480,0);
+    this->lblRD = new QLabel("RD", this);
+    this->lblRD->move(540, 0);
+    this->lblRW = new QLabel("RW", this);
+    this->lblRW->move(600, 0);
     this->lblStack = new QLabel("Stack", this);
     this->lblStack->move(680,0);
-    //this->lblORD = new QLabel("ORD", this);
-    //this->lblORW = new QLabel("ORW", this);
     this->lblPC = new QLabel("PC", this);
+    this->lblPC->move(800,0);
     this->lblTime = new QLabel("Time", this);
+    this->lblTime->move(800,20);
     this->lblClock = new QLabel("Clock", this);
+    this->lblClock->move(800,40);
+
+    this->leSP = new QLineEdit(this);
+    this->leSP->setMaximumWidth(25);
+    this->leSP->setMaximumHeight(17);
+    this->leSP->setFont(QFont("Andale Mono", 9));
+    this->leSP->move(730, 0);
+    this->lePC = new QLineEdit(this);
+    this->lePC->setMaximumWidth(50);
+    this->lePC->setMaximumHeight(17);
+    this->lePC->move(830, 0);
 }
 
 
