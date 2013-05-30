@@ -56,13 +56,13 @@ DbgFileNative::~DbgFileNative()
 
     if ( NULL != m_lineToAddrMap )
     {
-        for ( unsigned int i = 0; i < m_fileNames.size(); i++ )
-        {
-            if ( NULL != m_lineToAddrMap[i] )
-            {
-                delete[] m_lineToAddrMap[i];
-            }
-        }
+//         for ( unsigned int i = 0; i < m_fileNames.size(); i++ )
+//         {
+//             if ( NULL != m_lineToAddrMap[i] )
+//             {
+//                 delete[] m_lineToAddrMap[i];
+//             }
+//         }
         delete[] m_lineToAddrMap;
     }
 }

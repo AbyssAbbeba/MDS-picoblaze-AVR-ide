@@ -18,6 +18,9 @@
 // MScript language interpreter header files.
 #include "MScriptExpr.h"
 
+// Standard header files
+#include <cstdio>
+
 MScriptStatement::MScriptStatement()
 {
     m_type = MScriptStmtTypes::EMPTY_STATEMENT;
@@ -290,9 +293,16 @@ std::ostream & MScriptStatement::print ( std::ostream & out,
                                          int level,
                                          std::string lineString ) const
 {
+    char addr[19];
+    sprintf ( addr,
+              "0x%08x%08x",
+              (unsigned int) (( 0xffffffff00000000 & reinterpret_cast<long long unsigned int>(this) ) >> 32),
+              (unsigned int) (0x00000000ffffffff & reinterpret_cast<long long unsigned int>(this)) );
+    out << addr << " ";
+
     if ( NULL == this )
     {
-        out << "<ERROR:NULL!>";
+        out << "<ERROR:NULL!>" << std::endl;
         return out;
     }
 
@@ -341,7 +351,7 @@ std::ostream & MScriptStatement::print ( std::ostream & out,
         out << m_args;
         out << " ]";
     }
-    out << "\n";
+    out << std::endl;
 
     if ( NULL != m_branch )
     {

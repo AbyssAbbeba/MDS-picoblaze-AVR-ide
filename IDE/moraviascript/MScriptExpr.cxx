@@ -533,6 +533,13 @@ std::ostream & operator << ( std::ostream & out,
         case MScriptExpr::OPER_POST_INC:        out << "post++";break;
         case MScriptExpr::OPER_POST_DEC:        out << "post--";break;
         case MScriptExpr::OPER_ASSIGN:          out << "=";     break;
+        case MScriptExpr::OPER_INDEX:           out << "[]";    break;
+        case MScriptExpr::OPER_TERNARY:         out << "?";     break;
+        case MScriptExpr::OPER_COLON:           out << ":";     break;
+        case MScriptExpr::OPER_SEMICOLON:       out << ";";     break;
+
+        case MScriptExpr::OPER_INT_PROM:       out << "<+POS>"; break;
+        case MScriptExpr::OPER_ADD_INV:        out << "<-NEG>"; break;
     }
     return out;
 }
