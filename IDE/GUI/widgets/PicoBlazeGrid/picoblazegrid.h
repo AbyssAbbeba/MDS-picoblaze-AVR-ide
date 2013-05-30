@@ -24,6 +24,7 @@
 #include <QWidget>
 #include <QString>
 #include <QListWidget>
+#include <QLineEdit>
 #include "../../../simulators/MCUSim/MCUSim.h"
 #include "../../../simulators/SimControl/MCUSimControl.h"
 
@@ -61,11 +62,16 @@ class PicoBlazeGrid : public QWidget
         QLabel *lblScratch;
         QLabel *lblPorts;
         QLabel *lblStack;
-        QLabel *lblORD;
-        QLabel *lblORW;
+        QLabel *lblRD;
+        QLabel *lblRW;
         QLabel *lblPC;
         QLabel *lblTime;
         QLabel *lblClock;
+
+        QLineEdit *leSP;
+        QLineEdit *lePC;
+        QLineEdit *leTime;
+        QLineEdit *leClock;
         
 
     //signals:
