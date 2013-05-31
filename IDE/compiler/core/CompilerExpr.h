@@ -203,6 +203,8 @@ class CompilerExpr
             OPER_SHL            = L'≪', ///<
             OPER_CMPL           = L'~', ///<
             OPER_NOT            = L'!', ///<
+            OPER_AT             = L'@', ///<
+            OPER_ASSIGN         = L'=', ///<
             OPER_ADD_ASSIGN     = 1,    ///<
             OPER_SUB_ASSIGN     = 2,    ///<
             OPER_MUL_ASSIGN     = 3,    ///<
@@ -216,8 +218,8 @@ class CompilerExpr
             OPER_INC            = 11,   ///<
             OPER_DEC            = 12,   ///<
             OPER_INTERVALS      = 13,   ///<
-            OPER_AT             = L'@', ///<
-            OPER_ASSIGN         = L'='  ///<
+            OPER_ADD_INV        = 14,   ///<
+            OPER_INT_PROM       = 15    ///<
         };
 
     ////    Constructors and Destructors    ////

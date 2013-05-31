@@ -22,18 +22,31 @@ class MScriptStatement;
 
 // MScript language interpreter header files.
 #include "MScriptParserInterface.h"
+#include "MScriptBase.h"
 
 // Standard header files.
 #include <vector>
 #include <string>
+#include <stack>
 
 /**
  * @brief
  * @class MScriptCore
  * @ingroup MoraviaScript
  */
-class MScriptCore : private MScriptParserInterface
+class MScriptCore : private MScriptBase,
+                    private MScriptParserInterface
 {
+    ////    Public Datatypes    ////
+    public:
+        /**
+         * @brief
+         */
+        struct ExecutionContext
+        {
+            std::stack<MScriptStatement*> m_programPointer;
+        };
+
     ////    Constructors and Destructors    ////
     public:
         /**
@@ -92,6 +105,33 @@ class MScriptCore : private MScriptParserInterface
          */
         virtual void syntaxAnalysisComplete ( MScriptStatement * codeTree );
 
+        /**
+         * @brief
+         * @param[in] location
+         * @param[in] type
+         * @param[in] text
+         */
+        virtual void parserMessage ( MScriptSrcLocation location,
+                                     MScriptBase::MessageType type,
+                                     const std::string & text );
+
+        /**
+         * @brief
+         * @param[in] location
+         * @param[in] type
+         * @param[in] text
+         */
+        virtual void lexerMessage ( MScriptSrcLocation location,
+                                    MScriptBase::MessageType type,
+                                    const std::string & text );
+
+    ////    Inline Private Operations    ////
+    private:
+        /**
+         * @brief
+         */
+        inline void checkCode();
+
     ////    Private Attributes    ////
     private:
         /// @brief
@@ -102,6 +142,9 @@ class MScriptCore : private MScriptParserInterface
 
         /// @brief
         std::vector<std::string> m_messages;
+
+        /// @brief
+        ExecutionContext m_context;
 
         /// @brief
         bool m_success;

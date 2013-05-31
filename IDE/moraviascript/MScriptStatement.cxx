@@ -23,7 +23,7 @@
 
 MScriptStatement::MScriptStatement()
 {
-    m_type = MScriptStmtTypes::EMPTY_STATEMENT;
+    m_type = MScriptStmtTypes::STMT_EMPTY;
     m_args = NULL;
     m_next = NULL;
     m_prev = NULL;
@@ -250,16 +250,6 @@ MScriptStatement * MScriptStatement::appendArgsLink ( MScriptExpr * chainLink )
         m_args->appendLink(chainLink);
     }
     return this;
-}
-
-MScriptStatement * MScriptStatement::prev() const
-{
-    return m_prev;
-}
-
-MScriptStatement * MScriptStatement::next() const
-{
-    return m_next;
 }
 
 void MScriptStatement::completeDelete ( MScriptStatement * stmt )
