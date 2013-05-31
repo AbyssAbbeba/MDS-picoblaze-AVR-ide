@@ -16,8 +16,8 @@
 WTextEdit::WTextEdit(QWidget *parent, SourceType type)
     : QTextEdit(parent)
 {
-    this->sourceType = type;
     qDebug() << "WTextEdit: WTextEdit()";
+    this->sourceType = type;
     this->installEventFilter(this);
     if (this->sourceType != PLAIN)
     {
@@ -121,6 +121,7 @@ bool WTextEdit::eventFilter(QObject *target, QEvent *event)
             //qDebug() << "WTextEdit: return eventFilter()";
             return true;
         }
+        emit textChangedSignal(keyEvent->text(), this->textCursor().position());
     }
     //qDebug() << "WTextEdit: return eventFilter()";
     return QWidget::eventFilter(target, event);
