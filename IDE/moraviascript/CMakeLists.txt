@@ -62,6 +62,7 @@ add_library ( ${PROJECT_NAME} SHARED
               MScriptParserInterface.cxx
               MScriptStmtTypes.cxx
               MScriptSrcLocation.cxx
+              MScriptBase.cxx
               MScriptStatement.cxx
               MScriptLexerAuxFunc.cxx )
 
@@ -69,6 +70,10 @@ add_library ( ${PROJECT_NAME} SHARED
  # Targets can have properties that affect how they are built.
 set_target_properties ( ${PROJECT_NAME} PROPERTIES LINKER_LANGUAGE "CXX" )
 
+# Link a target to given libraries.
+target_link_libraries ( ${PROJECT_NAME} ${QT_LIBRARIES} )
+
+# DEBUG: testing executable
 add_executable ( main main.cxx )
 target_link_libraries ( main ${PROJECT_NAME} )
 

@@ -39,6 +39,13 @@ MScriptSrcLocation::MScriptSrcLocation ( const YYLTYPE & yylloc )
     m_column[1] = yylloc.last_column;
 }
 
+std::string MScriptSrcLocation::toString() const
+{
+    char result[50];
+    sprintf(result, "%d.%d-%d.%d", m_line[0], m_column[0], m_line[1], m_column[1]);
+    return result;
+}
+
 std::ostream & operator << ( std::ostream & out,
                              const MScriptSrcLocation & location )
 {
