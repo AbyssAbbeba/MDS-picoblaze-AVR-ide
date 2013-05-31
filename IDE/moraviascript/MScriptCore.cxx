@@ -28,11 +28,19 @@ int moraviaScriptParser_parse ( yyscan_t yyscanner,
 
 
 MScriptCore::MScriptCore ( MScriptStrategy * strategy,
-                           const std::string & script )
+                           const std::string & scriptCode )
                          : m_strategy ( strategy )
 {
     m_codeTree = NULL;
-    loadScript(script);
+    loadScript(scriptCode);
+}
+
+MScriptCore::MScriptCore ( MScriptStrategy * strategy,
+                           FILE * sourceFile )
+                         : m_strategy ( strategy )
+{
+    m_codeTree = NULL;
+    loadScript(sourceFile);
 }
 
 MScriptCore::~MScriptCore()
@@ -43,7 +51,7 @@ MScriptCore::~MScriptCore()
     }
 }
 
-bool MScriptCore::loadScript ( const std::string & script )
+bool MScriptCore::loadScript ( const std::string & scriptCode )
 {
     unloadScript();
 
@@ -52,12 +60,31 @@ bool MScriptCore::loadScript ( const std::string & script )
      */
     yyscan_t yyscanner; // Pointer to the lexer context
     moraviaScriptLexer_lex_init_extra ( this, &yyscanner );
-    YY_BUFFER_STATE bufferState = moraviaScriptLexer__scan_string ( script.c_str(), yyscanner );
+    YY_BUFFER_STATE bufferState = moraviaScriptLexer__scan_string ( scriptCode.c_str(), yyscanner );
     if ( true == m_success )
     {
         moraviaScriptParser_parse ( yyscanner, this );
     }
     moraviaScriptLexer__delete_buffer ( bufferState, yyscanner );
+    moraviaScriptLexer_lex_destroy ( yyscanner );
+
+    return m_success;
+}
+
+bool MScriptCore::loadScript ( FILE * sourceFile )
+{
+    unloadScript();
+
+    /*
+     * Initiate lexical and syntax analysis of the source code.
+     */
+    yyscan_t yyscanner; // Pointer to the lexer context
+    moraviaScriptLexer_lex_init_extra ( this, &yyscanner );
+    moraviaScriptLexer_set_in ( sourceFile, yyscanner );
+    if ( true == m_success )
+    {
+        moraviaScriptParser_parse ( yyscanner, this );
+    }
     moraviaScriptLexer_lex_destroy ( yyscanner );
 
     return m_success;

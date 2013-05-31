@@ -45,7 +45,8 @@ include_directories ( "${CMAKE_CURRENT_BINARY_DIR}/../grammar"
                       "${CMAKE_CURRENT_BINARY_DIR}/asm/kcpsm3" )
 
 # Specify directories in which the linker will look for libraries.
-link_directories ( "${CMAKE_CURRENT_BINARY_DIR}/../grammar" )
+link_directories ( "${CMAKE_CURRENT_BINARY_DIR}/../grammar"
+                   "${CMAKE_CURRENT_BINARY_DIR}/../../utilities/os" )
 
 ## Add switches to compiler command line
  # -Wall       : Enables all the warnings.
@@ -78,7 +79,7 @@ add_library ( ${PROJECT_NAME} SHARED
               CompilerThread.cxx )
 
 # Link a target to given libraries.
-target_link_libraries ( ${PROJECT_NAME} ${QT_LIBRARIES} CompilerParsers AsmSemanticAnalyzers )
+target_link_libraries ( ${PROJECT_NAME} ${QT_LIBRARIES} os CompilerParsers AsmSemanticAnalyzers )
 
 
 # ------------------------------------------------------------------------------

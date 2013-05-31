@@ -15,27 +15,14 @@
 
 #include "LexerUtils.h"
 
+// Common compiler header files.
 #include "CompilerBase.h"
 
+// Standard header files.
 #include <cctype>
 #include <cstdlib>
 #include <cstdio>
 #include <cstring>
-
-/*
- * Code specific for other operating systems than GNU/Linux.
- */
-#ifndef __linux__
-    char * strdup ( const char * s )
-    {
-        char * d = malloc ( 1 + strlen ( s ) );
-        if ( NULL == d )
-        {
-            return NULL;
-        }
-        return strcpy ( d, s);
-    }
-#endif // __linux__
 
 uint32_t LexerUtils::escapeSequence ( CompilerParserInterface * compiler,
                                       const YYLTYPE * location,
@@ -67,7 +54,7 @@ uint32_t LexerUtils::escapeSequence ( CompilerParserInterface * compiler,
             *size = 1;
             if ( 0 == sscanf(seq + 1, "%o", &value) )
             {
-                    *size = 0;
+                *size = 0;
             }
             break;
         // Hexadecimal, max. 2 digits
@@ -75,7 +62,7 @@ uint32_t LexerUtils::escapeSequence ( CompilerParserInterface * compiler,
             *size = 1;
             if ( 0 == sscanf(seq + 2, "%x", &value) )
             {
-                    *size = 0;
+                *size = 0;
             }
             break;
         // Hexadecimal, max. 4 digits
@@ -84,7 +71,7 @@ uint32_t LexerUtils::escapeSequence ( CompilerParserInterface * compiler,
             unicode = true;
             if ( 0 == sscanf(seq + 2, "%x", &value) )
             {
-                    *size = 0;
+                *size = 0;
             }
             break;
         // Hexadecimal, max. 8 digits
@@ -93,12 +80,13 @@ uint32_t LexerUtils::escapeSequence ( CompilerParserInterface * compiler,
             unicode = true;
             if ( 0 == sscanf(seq + 2, "%x", &value) )
             {
-                    *size = 0;
+                *size = 0;
             }
             break;
         default:
-            compiler->lexerMessage ( location, CompilerBase::MT_ERROR,
-                    QObject::tr("Unrecognized escape sequence: ").toStdString() + "`" + seq + "'" );
+            compiler->lexerMessage ( location,
+                                     CompilerBase::MT_ERROR,
+                                     QObject::tr("unrecognized escape sequence: ").toStdString() + "`" + seq + "'" );
             *size = 0;
             return 0; // Some "neutral" dummy value
     }
@@ -110,41 +98,41 @@ uint32_t LexerUtils::escapeSequence ( CompilerParserInterface * compiler,
 
         for ( int i = 0; i < 4; i++ )
         {
-                result[i] = 0;
+            result[i] = 0;
         }
 
         if ( value < 0x80)
         {
-                result[0] = value;
-                *size = 1;
+            result[0] = value;
+            *size = 1;
         }
         else if ( value < 0x800 )
         {
-                result[0] = ( ( value >> 6    ) | 0xC0 );
-                result[1] = ( ( value  & 0x3F ) | 0x80 );
-                *size = 2;
+            result[0] = ( ( value >> 6    ) | 0xC0 );
+            result[1] = ( ( value  & 0x3F ) | 0x80 );
+            *size = 2;
         }
         else if ( value < 0x10000 )
         {
-                result[0] =   ( ( value >> 12   ) | 0xE0 );
-                result[1] = ( ( ( value >> 6    ) & 0x3F ) | 0x80 );
-                result[2] =   ( ( value  & 0x3F ) | 0x80 );
-                *size = 3;
+            result[0] =   ( ( value >> 12   ) | 0xE0 );
+            result[1] = ( ( ( value >> 6    ) & 0x3F ) | 0x80 );
+            result[2] =   ( ( value  & 0x3F ) | 0x80 );
+            *size = 3;
         }
         else if ( value < 0x110000 )
         {
-                result[0] =   ( ( value >> 18   ) | 0xF0 );
-                result[1] = ( ( ( value >> 12   ) & 0x3F ) | 0x80 );
-                result[2] = ( ( ( value >> 6    ) & 0x3F ) | 0x80 );
-                result[3] =   ( ( value  & 0x3F ) | 0x80 );
-                *size = 4;
+            result[0] =   ( ( value >> 18   ) | 0xF0 );
+            result[1] = ( ( ( value >> 12   ) & 0x3F ) | 0x80 );
+            result[2] = ( ( ( value >> 6    ) & 0x3F ) | 0x80 );
+            result[3] =   ( ( value  & 0x3F ) | 0x80 );
+            *size = 4;
         }
         else
         {
-                compiler->lexerMessage ( location,
-                                         CompilerBase::MT_ERROR,
-                                         QObject::tr("Invalid unicode character: ").toStdString() + "`" + seq + "'" );
-                *size = 1;
+            compiler->lexerMessage ( location,
+                                     CompilerBase::MT_ERROR,
+                                     QObject::tr("invalid unicode character: ").toStdString() + "`" + seq + "'" );
+            *size = 1;
         }
 
         value = ( ( result[3] << 24 ) | ( result[2] << 16 ) | ( result[1] << 8 ) | result[0] );
@@ -166,7 +154,7 @@ int LexerUtils::convertStrToNumber ( CompilerParserInterface * compiler,
     {
         compiler->lexerMessage ( location,
                                  CompilerBase::MT_ERROR,
-                                 QObject::tr("Too big number: ").toStdString() + "`" + std::string(str) + "'" );
+                                 QObject::tr("too big number: ").toStdString() + "`" + std::string(str) + "'" );
 
         return 1; // Some "neutral dummy value"
     }

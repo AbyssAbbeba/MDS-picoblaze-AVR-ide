@@ -1,6 +1,6 @@
 # ==============================================================================
 #
-# Multi-target multi-language cross compiler.
+# OS compatibility
 #
 # (C) copyright 2013 Moravia Microsystems, s.r.o.
 #
@@ -12,7 +12,7 @@
 # ------------------------------------------------------------------------------
 
 # Set project name
-project ( compiler )
+project ( os )
 
 # Set the minimum required version of CMake
 cmake_minimum_required ( VERSION 2.8 )
@@ -21,45 +21,20 @@ cmake_minimum_required ( VERSION 2.8 )
 set ( CMAKE_VERBOSE_MAKEFILE OFF )
 
 # ------------------------------------------------------------------------------
-# BUILD COMPONENTS IN THE SUBDIRECTORIES
-# ------------------------------------------------------------------------------
-
-# Build lexical and syntax analyzers
-add_subdirectory ( grammar )
-
-# Build the assembler itself as a library
-add_subdirectory ( core )
-
-
-# ------------------------------------------------------------------------------
 # COMPILATION OPTIONS
 # ------------------------------------------------------------------------------
 
-# Load settings specific for the Qt4 library (we use it here for i18n)
-find_package ( Qt4 REQUIRED )
-include ( ${QT_USE_FILE} )
-
-# List of preprocessor include file search directories.
-include_directories ( "${CMAKE_CURRENT_BINARY_DIR}/core"
-                      "${CMAKE_CURRENT_BINARY_DIR}/grammar" )
-
-# Specify directories in which the linker will look for libraries.
-link_directories ( "${CMAKE_CURRENT_BINARY_DIR}/../utilities/os" )
-
 ## Add switches to compiler command line
  # -Wall       : Enables all the warnings.
- # -Wextra     : Enables some extra warning flags that are not enabled by -Wall.
  # -std=c++0x  : Default template arguments may not be used in function templates without -std=c++0x or -std=gnu++0x.
  # -O2         : Optimization, level 2.
  # -pipe       : Use pipes rather than temporary files for communication between the various stages of compilation.
-add_definitions ( -Wall -Wextra -std=c++0x -O2 -pipe )
+add_definitions ( -Wall -std=c++0x -O2 -pipe )
 
-# Add an executable to the project using the specified source files.
-add_executable ( ${PROJECT_NAME}
-                 main.cxx )
-
-# Link a target to given libraries
-target_link_libraries ( ${PROJECT_NAME} CompilerCore )
+## Add a library to the project using the specified source files,
+ # in this case it will procude dynamic C++ library.
+add_library ( ${PROJECT_NAME} SHARED
+              os.cxx )
 
 
 # ------------------------------------------------------------------------------

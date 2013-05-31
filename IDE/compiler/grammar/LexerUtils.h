@@ -21,12 +21,8 @@
 // Standard header files.
 #include <cstdint>
 
-/*
- * Code specific for other operating systems than GNU/Linux.
- */
-#ifndef __linux__
-    char * strdup ( const char * s );
-#endif // __linux__
+// OS compatibility.
+#include "../../utilities/os/os.h"
 
 /**
  * @brief
@@ -38,11 +34,11 @@ namespace LexerUtils
     ////    Operations    ////
 
     /**
-     * @brief Convert a two-character escape sequence to its binary form
+     * @brief Convert a C like escape sequence to its binary form.
      * @param[in,out] compiler
      * @param[in] location
-     * @param[in] ch The escape sequence to convert, e.g. for `\n' it's `n'
-     * @return Binary value represented by the escape sequence, e.g. for `\n' it's 0x0A
+     * @param[in] ch The escape sequence to convert.
+     * @return Binary value represented by the escape sequence, e.g. for `\n' it's 0x0A.
      */
     uint32_t escapeSequence ( CompilerParserInterface * compiler,
                               const YYLTYPE * location,

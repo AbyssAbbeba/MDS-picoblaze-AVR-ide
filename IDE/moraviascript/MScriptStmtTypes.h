@@ -26,28 +26,31 @@
  */
 namespace MScriptStmtTypes
 {
+    /**
+     * @brief
+     */
     enum Type
     {
-        STMT_EMPTY = -1,
-        STMT_ROOT = 0,
+        STMT_EMPTY      = -1, ///<
+        STMT_ROOT       = 0,  ///<
 
-        STMT_SCOPE,
-        STMT_CONDITION,
-        STMT_IF,
-        STMT_ELSE,
-        STMT_EXPR,
-        STMT_TRIGGER,
-        STMT_FUNCTION,
-        STMT_FOR,
-        STMT_WHILE,
-        STMT_DO_WHILE,
-        STMT_RETURN,
-        STMT_CONTINUE,
-        STMT_BREAK,
-        STMT_SWITCH,
-        STMT_CASE,
-        STMT_DEFAULT,
-        STMT_DELETE
+        STMT_SCOPE,           ///<
+        STMT_CONDITION,       ///<
+        STMT_IF,              ///<
+        STMT_ELSE,            ///<
+        STMT_EXPR,            ///<
+        STMT_TRIGGER,         ///<
+        STMT_FUNCTION,        ///<
+        STMT_FOR,             ///<
+        STMT_WHILE,           ///<
+        STMT_DO_WHILE,        ///<
+        STMT_RETURN,          ///<
+        STMT_CONTINUE,        ///<
+        STMT_BREAK,           ///<
+        STMT_SWITCH,          ///<
+        STMT_CASE,            ///<
+        STMT_DEFAULT,         ///<
+        STMT_DELETE           ///<
     };
 };
 
