@@ -348,7 +348,7 @@ Highlighter::Highlighter(QTextDocument *parent, SourceType type)
     }
     else
     {
-        qDebug() << "Highlighter: NOTHING------------------------------------";
+        qDebug() << "Highlighter: failed in given source type";
         qDebug() << "Highlighter: source type: " << type;
         //NOTHING
     }
@@ -367,12 +367,12 @@ Highlighter::Highlighter(QTextDocument *parent, SourceType type)
 
 void Highlighter::highlightBlock(const QString &text)
 {
-    qDebug() << "Highlighter: highlightBlock() : " << text;
+    //qDebug() << "Highlighter: highlightBlock() : " << text;
     if (text != "")
     {
         setCurrentBlockState(0);
 
-        int startIndex = -1;
+        int startIndex = 0;
         if (previousBlockState() != 1)
         {
             startIndex = commentStartExpression.indexIn(text);
@@ -413,5 +413,5 @@ void Highlighter::highlightBlock(const QString &text)
             }
         }
     }
-    qDebug() << "Highlighter: return highlightBlock()";
+    //qDebug() << "Highlighter: return highlightBlock()";
 }

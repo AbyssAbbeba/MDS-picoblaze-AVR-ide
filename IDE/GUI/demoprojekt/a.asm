@@ -15,7 +15,7 @@ main:
 	LOAD 5,#6
 	ADD  4,#5
 
-mylbl:  
+mylbl:
 	LOAD 4,#6
 	ADD  5,4
 	LOAD 4,#7
