@@ -136,9 +136,9 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
     this->lblPorts = new QLabel("Ports", this);
     this->lblPorts->move(480,0);
     this->lblRD = new QLabel("RD", this);
-    this->lblRD->move(540, 0);
+    this->lblRD->move(590, 0);
     this->lblRW = new QLabel("RW", this);
-    this->lblRW->move(600, 0);
+    this->lblRW->move(625, 0);
     this->lblStack = new QLabel("Stack", this);
     this->lblStack->move(680,0);
     this->lblPC = new QLabel("PC", this);

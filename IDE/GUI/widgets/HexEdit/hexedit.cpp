@@ -378,7 +378,7 @@ void HexEdit::changeText(int position)
         textCursor.setPosition(position*3);
         textCursor.deleteChar();
         textCursor.deleteChar();
-        if (hexByteArray->at(position) > 10)
+        if (hexByteArray->at(position) > 16)
         {
             textCursor.insertText((QString::number(hexByteArray->at(position), 16)).toUpper());
         }
