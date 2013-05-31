@@ -89,7 +89,7 @@ bool HexEdit::eventFilter(QObject *target, QEvent *event)
 HexEdit::HexEdit(QWidget *parent, bool AsciiPanel, int countSize, int columns)
     :QWidget(parent)
 {
-    this->fontSize = 8;
+    this->fontSize = 9;
     this->columns=columns;
     this->ascii = AsciiPanel;
     hexLayout = new QGridLayout(this);
@@ -98,7 +98,7 @@ HexEdit::HexEdit(QWidget *parent, bool AsciiPanel, int countSize, int columns)
     hexTextEdit->setOverwriteMode(true);
     hexTextEdit->setWordWrapMode(QTextOption::NoWrap);
     hexTextEdit->setFont(QFont("Andale Mono", fontSize));
-    qDebug() << "HexEdit: font size" << this->font().pixelSize();
+    qDebug() << "HexEdit: font size" << this->hexTextEdit->font().pixelSize();
     //hexTextEdit->resize((columns*2-1)*10,5);
     hexTextEdit->setMinimumWidth((columns*3-4)*fontSize);
     hexTextEdit->setMaximumWidth((columns*3-4)*fontSize);
@@ -118,8 +118,8 @@ HexEdit::HexEdit(QWidget *parent, bool AsciiPanel, int countSize, int columns)
         hexAsciiEdit->verticalScrollBar()->hide();
     }
 
-    hexColumnCount = new WColumnCounter(hexTextEdit, this->font(), columns);
-    hexLineCount = new WLineCounter(hexTextEdit, false, true, this->font());
+    hexColumnCount = new WColumnCounter(hexTextEdit, this->hexTextEdit->font(), columns);
+    hexLineCount = new WLineCounter(hexTextEdit, false, true, this->hexTextEdit->font());
     hexByteArray = new QByteArray(countSize, 0);
     //hexStatusBar = new QStatusBar(this);
     hexStatusLabel = new QLabel(this);

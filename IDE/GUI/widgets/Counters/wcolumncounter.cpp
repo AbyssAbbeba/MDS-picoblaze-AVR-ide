@@ -30,12 +30,14 @@ WColumnCounter::WColumnCounter(QTextEdit *parent, QFont font, int columns)
     this->parent = parent;
     QFontMetrics fontMetrics(font);
     int height = fontMetrics.height();
+    this->setMaximumHeight(height);
+    this->setMinimumHeight(height);
+    this->setMinimumWidth(columns*((int)fontMetrics.width("0 0")));
+    this->setMaximumWidth(columns*((int)fontMetrics.width("0 0")));
+    //this->setMinimumWidth(parent->width());
+    //this->setMaximumWidth(parent->width());
     widget = new WColumnCounterWidget(this, font, columns);
     this->setWidget(widget);
-    this->setMaximumHeight(height);
-    this->setMinimumWidth(parent->width());
-    this->setMaximumWidth(parent->width());
-    this->setMinimumHeight(height);
     this->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     connect(parent->horizontalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(change(int)));
@@ -85,8 +87,8 @@ WColumnCounterWidget::WColumnCounterWidget(WColumnCounter *parent, QFont font, i
     this->parent = parent;
     this->columns = columns;
     qDebug() << font.pixelSize();
-    font.setPixelSize(font.pixelSize()-5);
-    font.setStyleHint(QFont::Monospace);
+    //font.setPixelSize(font.pixelSize());
+    //font.setStyleHint(QFont::Monospace);
     QFontMetrics fontMetrics(font);
     this->setFont(font);
     qDebug() << this->fontInfo().pixelSize();
@@ -117,7 +119,7 @@ void WColumnCounterWidget::paintEvent(QPaintEvent *)
     paint.setPen(pen);
     for (int i = 0; i<columns; i++)
     {
-        point.setX(i*this->fontWidth+1);
+        point.setX(i*this->fontWidth+5-i*0.5);
         rect.moveTopLeft(point);
         //paint.drawRect(rect);
         //paint.setPen(pen);
@@ -127,7 +129,7 @@ void WColumnCounterWidget::paintEvent(QPaintEvent *)
         }
         else
         {
-            paint.drawText(rect, Qt::AlignCenter, QString::number(i, 16).toUpper());
+            paint.drawText(rect, Qt::AlignLeft, QString::number(i, 16).toUpper());
         }
         //pen.setColor(Qt::darkCyan);
         //paint.setPen(pen);
