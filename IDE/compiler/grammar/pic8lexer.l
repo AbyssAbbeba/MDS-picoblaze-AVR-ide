@@ -668,9 +668,11 @@ d'[0-9]+'       {
                     }
                 }
 .               {
-                    // Unrecognized token => ERROR
-                    yyextra->lexerMessage(yylloc, CompilerBase::MT_ERROR,
-                        QObject::tr("unrecognized token: ").toStdString() + "`" + std::string(yytext) + "'");
+                    // Unrecognized token -> ERROR.
+                    yyextra->lexerMessage ( yylloc,
+                                            CompilerBase::MT_ERROR,
+                                            QObject::tr ( "unrecognized token: " ).toStdString()
+                                                        + "`" + std::string(yytext) + "'" );
                 }
 
 %%

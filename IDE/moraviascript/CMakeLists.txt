@@ -45,6 +45,9 @@ set_directory_properties ( PROPERTIES
 find_package( Qt4 REQUIRED )
 include ( ${QT_USE_FILE} )
 
+# Specify directories in which the linker will look for libraries.
+link_directories ( "${CMAKE_CURRENT_BINARY_DIR}/../utilities/os" )
+
 ## Add switches to compiler command line
  # -Wall       : Enables all the warnings.
  # -std=c++0x  : Default template arguments may not be used in function templates without -std=c++0x or -std=gnu++0x.
@@ -59,7 +62,6 @@ add_library ( ${PROJECT_NAME} SHARED
               ${BISON_moraviaScriptParser_OUTPUTS}
               MScriptCore.cxx
               MScriptExpr.cxx
-              MScriptParserInterface.cxx
               MScriptStmtTypes.cxx
               MScriptSrcLocation.cxx
               MScriptBase.cxx
@@ -71,7 +73,7 @@ add_library ( ${PROJECT_NAME} SHARED
 set_target_properties ( ${PROJECT_NAME} PROPERTIES LINKER_LANGUAGE "CXX" )
 
 # Link a target to given libraries.
-target_link_libraries ( ${PROJECT_NAME} ${QT_LIBRARIES} )
+target_link_libraries ( ${PROJECT_NAME} ${QT_LIBRARIES} os )
 
 # DEBUG: testing executable
 add_executable ( main main.cxx )

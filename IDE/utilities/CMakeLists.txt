@@ -11,13 +11,13 @@
 # GENERAL OPTIONS
 # ------------------------------------------------------------------------------
 
-# Set project name
+# Set project name.
 project ( utilities )
 
-# Set the minimum required version of CMake
+# Set the minimum required version of CMake.
 cmake_minimum_required ( VERSION 2.8 )
 
-# Create verbose makefiles if on
+# Create verbose makefiles if on.
 set ( CMAKE_VERBOSE_MAKEFILE OFF )
 
 
@@ -28,8 +28,11 @@ set ( CMAKE_VERBOSE_MAKEFILE OFF )
 # Build the tools for working with Intel 8 Hex, Motorola S-Records, etc.
 add_subdirectory ( MCUDataFiles )
 
-# Build the tools for working with debug files
+# Build the tools for working with debug files.
 add_subdirectory ( DbgFile )
 
-# Build the tools for working with mcu spec file (xml)
+# Build the tools for working with mcu spec file (xml).
 add_subdirectory ( McuSpecFileDesigner )
+
+# OS compatibility.
+add_subdirectory ( os )

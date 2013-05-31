@@ -105,6 +105,11 @@
  */
 
 /**
+ * @defgroup oscomp OS Compatibility.
+ * Operating system compatibility library.
+ */
+
+/**
  * @mainpage Introduction
  *
  * @section HowTo How to use this documentation

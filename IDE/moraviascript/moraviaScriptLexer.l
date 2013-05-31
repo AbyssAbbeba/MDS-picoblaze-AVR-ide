@@ -28,10 +28,21 @@
 
     // MScript language interpreter header files.
     #include "MScriptLexerAuxFunc.h"
+    #include "MScriptParserInterface.h"
 
     // Each time lexer matches a string, move the end cursor to its end.
     #define YY_USER_ACTION \
         yylloc->last_column += yyleng;
+
+    /**
+     * @brief
+     * @param[in,out] semval
+     * @param[in,out] core
+     * @param[in] byMin
+     */
+    inline void enlargeStringBuffer ( YYSTYPE * semval,
+                                      MScriptParserInterface * core,
+                                      int byMin = 1 );
 %}
 
 /* data type of the user-specific data to be stored in compiler */
@@ -89,8 +100,6 @@ XESC    (\\[0-7]{1,3})|(\\x[0-9A-F]{1,2})|(\\[uU][0-9A-F]{1,8})
  */
 /* Inside a string, e.g. "my string" */
 %x STR
-/* Inside a character literal; e.g. 'm', or '\x45' */
-%x QUOTE
 /* Multi-line comment */
 %x MCOMMENT
 
@@ -108,126 +117,249 @@ XESC    (\\[0-7]{1,3})|(\\x[0-9A-F]{1,2})|(\\[uU][0-9A-F]{1,8})
 %}
 
  /* White space: */
-{WSPACE}                { /* eat up white space */ }
-{NLINE}                 {
-                            yylloc->last_line++;
-                            yylloc->last_column = 1;
-                        }
+{WSPACE}        { /* eat up white space */ }
+{NLINE}         {
+                    yylloc->last_line++;
+                    yylloc->last_column = 1;
+                }
  /* Comments: */
-{COMMENT}               { /* ignore ordinary comment */ }
+{COMMENT}       { /* ignore ordinary comment */ }
 <INITIAL>
 {
-    "/*"                { yy_push_state(MCOMMENT, yyscanner); }
+    "/*"        { yy_push_state(MCOMMENT, yyscanner); }
 }
 <MCOMMENT>
 {
-    "*/"                { yy_pop_state(yyscanner); }
-    [^*\n]*             { /* eat anything that's not a '*' */ }
-    "*"+[^*/\n]*        { /* eat up '*'s not followed by '/'s */ }
-    {NLINE}             {
-                            yylloc->last_line++;
-                            yylloc->last_column = 1;
-                        }
+   "*/"         { yy_pop_state(yyscanner); }
+   [^*\n]*      { /* eat anything that's not a '*' */ }
+   "*"+[^*/\n]* { /* eat up '*'s not followed by '/'s */ }
+   {NLINE}      {
+                    yylloc->last_line++;
+                    yylloc->last_column = 1;
+                }
 }
  /* Special tokens: */
-";"                     { return EOS; }
+";"             { return EOS; }
  /* Key Words: */
-"if"                    { return KW_IF; }
-"else"                  { return KW_ELSE; }
-"for"                   { return KW_FOR; }
-"while"                 { return KW_WHILE; }
-"func"                  { return KW_FUNC; }
-"do"                    { return KW_DO; }
-"return"                { return KW_RETURN; }
-"break"                 { return KW_BREAK; }
-"continue"              { return KW_CONTINUE; }
-"switch"                { return KW_SWITCH; }
-"case"                  { return KW_CASE; }
-"delete"                { return KW_DELETE; }
+"if"            { return KW_IF; }
+"else"          { return KW_ELSE; }
+"for"           { return KW_FOR; }
+"while"         { return KW_WHILE; }
+"func"          { return KW_FUNC; }
+"do"            { return KW_DO; }
+"return"        { return KW_RETURN; }
+"break"         { return KW_BREAK; }
+"continue"      { return KW_CONTINUE; }
+"switch"        { return KW_SWITCH; }
+"case"          { return KW_CASE; }
+"delete"        { return KW_DELETE; }
  /* Brackets: */
-"("                     { return B_RND_LEFT; }
-")"                     { return B_RND_RIGHT; }
-"["                     { return B_SQR_LEFT; }
-"]"                     { return B_SQR_RIGHT; }
-"{"                     { return B_CRL_LEFT; }
-"}"                     { return B_CRL_RIGHT; }
+"("             { return B_RND_LEFT; }
+")"             { return B_RND_RIGHT; }
+"["             { return B_SQR_LEFT; }
+"]"             { return B_SQR_RIGHT; }
+"{"             { return B_CRL_LEFT; }
+"}"             { return B_CRL_RIGHT; }
  /* Operators: */
-":"                     { return O_COLON; }
-"?"                     { return O_QUESTION_MARK; }
-","                     { return O_COMMA; }
-"/"                     { return O_SLASH; }
-"+"                     { return O_PLUS; }
-"-"                     { return O_MINUS; }
-"*"                     { return O_ASTERISK; }
-"!"                     { return O_NOT; }
-"%"                     { return O_MOD; }
-"<<"                    { return O_SHL; }
-">>"                    { return O_SHR; }
-"&&"                    { return O_AND; }
-"||"                    { return O_OR; }
-"&"                     { return O_BITAND; }
-"|"                     { return O_BITOR; }
-"^"                     { return O_BITXOR; }
-"=="                    { return O_EQ; }
-"<>"                    { return O_NE; }
-"!="                    { return O_NE; }
-"<"                     { return O_LT; }
-"<="                    { return O_LE; }
-">"                     { return O_GT; }
-">="                    { return O_GE; }
-"="                     { return O_ASSIGN; }
-"~"                     { return O_COMPLEMET; }
-"+="                    { return O_ADD_ASSIGN; }
-"-="                    { return O_SUB_ASSIGN; }
-"*="                    { return O_MUL_ASSIGN; }
-"/="                    { return O_DIV_ASSIGN; }
-"%="                    { return O_MOD_ASSIGN; }
-"<<="                   { return O_SHL_ASSIGN; }
-">>="                   { return O_SHR_ASSIGN; }
-"&="                    { return O_AND_ASSIGN; }
-"|="                    { return O_ORB_ASSIGN; }
-"^="                    { return O_XOR_ASSIGN; }
-"++"                    { return O_INCREMENT; }
-"--"                    { return O_DECREMENT; }
+":"             { return O_COLON; }
+"?"             { return O_QUESTION_MARK; }
+","             { return O_COMMA; }
+"/"             { return O_SLASH; }
+"+"             { return O_PLUS; }
+"-"             { return O_MINUS; }
+"*"             { return O_ASTERISK; }
+"!"             { return O_NOT; }
+"%"             { return O_MOD; }
+"<<"            { return O_SHL; }
+">>"            { return O_SHR; }
+"&&"            { return O_AND; }
+"||"            { return O_OR; }
+"&"             { return O_BITAND; }
+"|"             { return O_BITOR; }
+"^"             { return O_BITXOR; }
+"=="            { return O_EQ; }
+"<>"            { return O_NE; }
+"!="            { return O_NE; }
+"<"             { return O_LT; }
+"<="            { return O_LE; }
+">"             { return O_GT; }
+">="            { return O_GE; }
+"="             { return O_ASSIGN; }
+"~"             { return O_COMPLEMET; }
+"+="            { return O_ADD_ASSIGN; }
+"-="            { return O_SUB_ASSIGN; }
+"*="            { return O_MUL_ASSIGN; }
+"/="            { return O_DIV_ASSIGN; }
+"%="            { return O_MOD_ASSIGN; }
+"<<="           { return O_SHL_ASSIGN; }
+">>="           { return O_SHR_ASSIGN; }
+"&="            { return O_AND_ASSIGN; }
+"|="            { return O_ORB_ASSIGN; }
+"^="            { return O_XOR_ASSIGN; }
+"++"            { return O_INCREMENT; }
+"--"            { return O_DECREMENT; }
  /* Numbers: */
-0b[01]+                 {
-                            // Binary number (max. 64 digits, max. 32 bits).
-                            yylval->integer = MScriptLexerAuxFunc::str2int(yyextra, yylloc, (yytext + 2), 64, 2);
-                            return INTEGER;
-                        }
-0x[0-9A-F]+             {
-                            // Hexadecimal number (max. 16 digits, max. 32 bits).
-                            yylval->integer = MScriptLexerAuxFunc::str2int(yyextra, yylloc, (yytext + 2), 16, 16);
-                            return INTEGER;
-                        }
-0[0-7]+                 {
-                            // Octal number (max. 21 digits, max. 32 bits).
-                            yylval->integer = MScriptLexerAuxFunc::str2int(yyextra, yylloc, (yytext + 1), 21, 8);
-                            return INTEGER;
-                        }
-[0-9]+                  {
-                            // Decimal number (max. 10 digits, max. 32 bits).
-                            yylval->integer = MScriptLexerAuxFunc::str2int(yyextra, yylloc, yytext, 10, 10);
-                            return INTEGER;
-                        }
-[0-9]+\.[0-9]+          {
-                            // Floating point number.
-                            yylval->real = MScriptLexerAuxFunc::str2float(yyextra, yylloc, yytext);
-                            return REAL;
-                        }
+0b[01]+         {
+                    // Binary number (max. 64 digits, max. 32 bits).
+                    yylval->integer = MScriptLexerAuxFunc::str2int(yyextra, yylloc, (yytext + 2), 64, 2);
+                    return INTEGER;
+                }
+0x[0-9A-F]+     {
+                    // Hexadecimal number (max. 16 digits, max. 32 bits).
+                    yylval->integer = MScriptLexerAuxFunc::str2int(yyextra, yylloc, (yytext + 2), 16, 16);
+                    return INTEGER;
+                }
+0[0-7]+         {
+                    // Octal number (max. 21 digits, max. 32 bits).
+                    yylval->integer = MScriptLexerAuxFunc::str2int(yyextra, yylloc, (yytext + 1), 21, 8);
+                    return INTEGER;
+                }
+[0-9]+          {
+                    // Decimal number (max. 10 digits, max. 32 bits).
+                    yylval->integer = MScriptLexerAuxFunc::str2int(yyextra, yylloc, yytext, 10, 10);
+                    return INTEGER;
+                }
+[0-9]+\.[0-9]+  {
+                    // Floating point number.
+                    yylval->real = MScriptLexerAuxFunc::str2float(yyextra, yylloc, yytext);
+                    return REAL;
+                }
+ /* Character literals: */
+'{XESC}'        {
+                    // Handle C like escape sequence, such as `\x4A', `\uABCD', `\U1234abcd', and `\177'
+
+                    int size; // Size of the binary value in bytes
+                    yylval->integer = (int) MScriptLexerAuxFunc::escapeSequence(yyextra, yylloc, yytext, &size);
+
+                    // Check whether the conversion was successful
+                    if ( 0 == size )
+                    {
+                        yyextra->lexerMessage ( yylloc,
+                                                MScriptBase::MT_ERROR,
+                                                QObject::tr ( "unrecognized escape sequence: " ).toStdString()
+                                                            + "`" + yytext + "'" );
+                        yyterminate();
+                    }
+
+                    return INTEGER;
+                }
+'\\''           {
+                    yylval->integer = '\'';
+                    return INTEGER;
+                }
+'[^']'          {
+                    yylval->integer = (int) yytext[1];
+                    return INTEGER;
+                }
  /* Identifiers: */
-\$?{ID}                 {
-                            // Arbitrary identifier, e.g. `MYREG_U1'.
+\$?{ID}         {
+                    // Arbitrary identifier, e.g. `MYREG_U1'.
 
-                            // Convert the string to upper case characters.
-                            for ( int i = 0; i < yyleng; i++ )
-                            {
-                                yytext[i] = toupper(yytext[i]);
-                            }
+                    // Convert the string to upper case characters.
+                    for ( int i = 0; i < yyleng; i++ )
+                    {
+                        yytext[i] = toupper(yytext[i]);
+                    }
 
-                            // Return as general identifier.
-                            yylval->string = yytext;
-                            return IDENFIFIER;
-                        }
- /* Strings & character literals: */
- 
+                    // Return as general identifier.
+                    yylval->string = yytext;
+                    return IDENFIFIER;
+                }
+ /* Strings: */
+<INITIAL>\"     {
+                    // Beginning of a string, i.e. --> "some string"
+                    yy_push_state(STR, yyscanner);
+                    yyextra->m_strMaxSize = 32;
+                    yylval->array.size = 0;
+                    yylval->array.data = (unsigned char*) malloc(yyextra->m_strMaxSize);
+                }
+<STR>
+{
+    \"          {
+                    // End of the string, i.e. "my string" <--
+                    yy_pop_state(yyscanner);
+                    switch ( YY_START )
+                    {
+                        case INITIAL:
+                            return STRING;
+                        default:
+                            yyextra->lexerMessage ( yylloc,
+                                                    MScriptBase::MT_ERROR,
+                                                    QObject::tr("syntax not understood").toStdString() );
+                            break;
+                    }
+                }
+    [^\\"]+     {
+                    // Any string content except for escape sequences.
+
+                    // Increase the string size
+                    yylval->array.size += yyleng;
+                    // Enlarge the string buffer, if necessary
+                    enlargeStringBuffer(yylval, yyextra);
+                    // Copy matched characters into our string buffer
+                    memcpy(yylval->array.data + yylval->array.size - yyleng, yytext, yyleng);
+                }
+    {XESC}      {
+                    // Handle C like escape sequence, such as `\x4A', `\uABCD', `\U1234abcd', and `\177'
+
+                    int size; // Size of the binary value in bytes
+                    uint32_t value = MScriptLexerAuxFunc::escapeSequence(yyextra, yylloc, yytext, &size);
+
+                    // Check whether the conversion was successful
+                    if ( 0 == size )
+                    {
+                        yyextra->lexerMessage ( yylloc,
+                                                MScriptBase::MT_ERROR,
+                                                QObject::tr ( "unrecognized escape sequence: " ).toStdString()
+                                                            + "`" + yytext + "'" );
+                        yyterminate();
+                    }
+
+                    // Copy converted escape sequence to the string buffer.
+                    enlargeStringBuffer(yylval, yyextra, size);
+                    for ( int i = 0; i < size; i++ )
+                    {
+                        yylval->array.data [ yylval->array.size++ ] = (unsigned char) (value & 0xFF);
+                        value >>= 8;
+                    }
+                }
+    \\.         {
+                    // Handle escape sequences inside strings, and convert the to binary values.
+
+                    // Enlarge the string buffer, if necessary
+                    enlargeStringBuffer(yylval, yyextra);
+                    // Copy converted escape sequence to the string buffer
+                    int size;
+                    yylval->array.data [ yylval->array.size++ ]
+                        = (unsigned char) MScriptLexerAuxFunc::escapeSequence(yyextra, yylloc, yytext, &size);
+                }
+    <<EOF>>     {
+                    // Handle strings terminated by EOF (End Of File) as ERROR.
+                    yy_pop_state(yyscanner);
+                    yyextra->lexerMessage ( yylloc,
+                                            MScriptBase::MT_ERROR,
+                                            QObject::tr("unterminated string or character constant").toStdString() );
+
+                    // Discard the string buffer and terminate lexical analysis (this is a fatal error)
+                    free(yylval->array.data);
+                    yylval->array.size = 0;
+                    yyterminate();
+                }
+}
+
+%%
+
+/* --------------------------------------------------------------------------- */
+/* EPILOGUE - USER CODE - FUNCTION DEFINITIONS                                 */
+/* --------------------------------------------------------------------------- */
+
+inline void enlargeStringBuffer ( YYSTYPE * semval,
+                                  MScriptParserInterface * core,
+                                  int byMin )
+{
+    if ( ( byMin + semval->array.size ) >= core->m_strMaxSize )
+    {
+        core->m_strMaxSize = 2 * semval->array.size;
+        semval->array.data = (unsigned char*) realloc(semval->array.data, core->m_strMaxSize);
+    }
+}

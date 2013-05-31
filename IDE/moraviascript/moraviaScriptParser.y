@@ -232,7 +232,7 @@
     free($$.data);
 } <array>
 
-// The start symbol
+// The start symbol.
 %start input
 
 // -----------------------------------------------------------------------------
@@ -245,7 +245,7 @@
  * Basic code structure
  */
 
-// The entire program code.
+// The start symbol, i.e. the entire program code.
 input:
       statements                    {
                                         core->syntaxAnalysisComplete($statements);
@@ -350,10 +350,13 @@ stmt:
                                     }
 ;
 
+// `switch' statement body.
 switch_body:
       cases stmt                    { $$ = $cases->createBranch($stmt);                 }
     | switch_body cases stmt        { $$ = $1->appendLink($cases->createBranch($stmt)); }
 ;
+
+// Sequence of `case:' and/or `default:' statements, used inside `switch' statement.
 cases:
       "case" expr ":"               { $$ = new MScriptStatement(@$, STMT_CASE, $expr); }
     | "default" ":"                 { $$ = new MScriptStatement(@$, STMT_DEFAULT);     }
@@ -364,9 +367,12 @@ cases:
                                     }
 ;
 
+// Arbitrary identifier.
 id:
       IDENFIFIER                    { $$ = new MScriptExpr($IDENFIFIER, @$); }
 ;
+
+// List of function parameters.
 param_list:
       /* empty */                   { $$ = NULL;                                                         }
     | id                            { $$ = $id;                                                          }
@@ -375,15 +381,18 @@ param_list:
     | param_list "," "&" id         { $$ = $1->appendLink($id); $id->m_operator = MScriptExpr::OPER_REF; }
 ;
 
+// Expression, possibly empty.
 e_expr:
       /* empty */                   { $$ = NULL;  }
     | expr                          { $$ = $expr; }
 ;
+
+// Expression.
 expr:
     // Single value expressions.
-      id                            { $$ = $id;      }
-    | INTEGER                       { $$ = new MScriptExpr($INTEGER, @$); }
-    | REAL                          { $$ = new MScriptExpr($REAL, @$); }
+      id                            { $$ = $id;                                                                 }
+    | INTEGER                       { $$ = new MScriptExpr($INTEGER, @$);                                       }
+    | REAL                          { $$ = new MScriptExpr($REAL, @$);                                          }
     | STRING                        { $$ = new MScriptExpr(MScriptExpr::Value($STRING.data, $STRING.size), @$); }
 
     // Parentheses.

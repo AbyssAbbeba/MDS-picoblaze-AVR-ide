@@ -28,6 +28,7 @@ class MScriptStatement;
 #include <vector>
 #include <string>
 #include <stack>
+#include <cstdio>
 
 /**
  * @brief
@@ -51,9 +52,19 @@ class MScriptCore : private MScriptBase,
     public:
         /**
          * @brief
+         * @param[in,out] strategy
+         * @param[in] scriptCode
          */
         MScriptCore ( MScriptStrategy * strategy,
-                      const std::string & script = "" );
+                      const std::string & scriptCode = "" );
+
+        /**
+         * @brief
+         * @param[in,out] strategy
+         * @param[in,out] sourceFile
+         */
+        MScriptCore ( MScriptStrategy * strategy,
+                      FILE * sourceFile );
 
         /**
          * @brief
@@ -64,10 +75,17 @@ class MScriptCore : private MScriptBase,
     public:
         /**
          * @brief
-         * @param[in] script
+         * @param[in] scriptCode
          * @return
          */
-        bool loadScript ( const std::string & script );
+        bool loadScript ( const std::string & scriptCode );
+
+        /**
+         * @brief
+         * @param[in,out] sourceFile
+         * @return
+         */
+        bool loadScript ( FILE * sourceFile );
 
         /**
          * @brief

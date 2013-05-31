@@ -20,12 +20,11 @@
 #include "MScriptParserInterface.h"
 #include "MScriptSrcLocation.h"
 
-/*
- * Code specific for other operating systems than GNU/Linux.
- */
-#ifndef __linux__
-    char * strdup ( const char * s );
-#endif // __linux__
+// Standard header files.
+#include <cstdint>
+
+// OS compatibility.
+#include "../utilities/os/os.h"
 
 /**
  * @brief
@@ -34,6 +33,20 @@
  */
 namespace MScriptLexerAuxFunc
 {
+    ////    Operations    ////
+
+    /**
+     * @brief Convert a C like escape sequence to its binary form.
+     * @param[in,out] core
+     * @param[in] location
+     * @param[in] ch The escape sequence to convert.
+     * @return Binary value represented by the escape sequence, e.g. for `\n' it's 0x0A.
+     */
+    uint32_t escapeSequence ( MScriptParserInterface * core,
+                              const MScriptSrcLocation location,
+                              const char * seq,
+                              int * size );
+
     /**
      * @brief Convert a string to integer and check its size.
      * @param[in,out] core
@@ -56,9 +69,9 @@ namespace MScriptLexerAuxFunc
      * @param[in] str
      * @return
      */
-    int str2float ( MScriptParserInterface * core,
-                    const MScriptSrcLocation location,
-                    const char * str );
+    float str2float ( MScriptParserInterface * core,
+                      const MScriptSrcLocation location,
+                      const char * str );
 };
 
 #endif // MSCRIPTLEXERAUXFUNC_H

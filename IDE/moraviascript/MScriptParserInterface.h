@@ -63,6 +63,11 @@ class MScriptParserInterface
         virtual void lexerMessage ( MScriptSrcLocation location,
                                     MScriptBase::MessageType type,
                                     const std::string & text ) = 0;
+
+    ////    Public Attributes    ////
+    public:
+        /// Size of the string buffer, used for scanning strings and character literals.
+        int m_strMaxSize;
 };
 
 #endif // MSCRIPTPARSERINTERFACE_H
