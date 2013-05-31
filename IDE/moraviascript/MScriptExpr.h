@@ -218,7 +218,8 @@ class MScriptExpr
             OPER_INDEX,      ///< a [ b ]
             OPER_TERNARY,    ///< a ? `e', where `e' is supposed to stand for ( a : b ).
             OPER_COLON,      ///< a : b, this is supposed to be used with the ternary operator.
-            OPER_SEMICOLON,  ///< a ; b, this is supposed to be used in statements like `for ( i = 0 ; i < 9 ; i++ )'
+            OPER_COMMA,      ///< a , b
+            OPER_REF,        ///< & a
             OPER_INT_PROM,   ///< Integer promotion: ( + a )
             OPER_ADD_INV     ///< Additive inverse: ( - a )
         };
