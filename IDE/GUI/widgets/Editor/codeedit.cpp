@@ -51,7 +51,7 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
             else if (text == ".asm")
             {
                 //!!!DO NOT FORGET TO CHECK IF ASM IS AVR OR PIC TYPE!!!
-                textEdit = new WTextEdit(this, AVRASM);
+                textEdit = new WTextEdit(this, PICOBLAZEASM);
             }
             else
             {
@@ -65,6 +65,8 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
     }
     textEdit->setContextMenuPolicy(Qt::NoContextMenu);
     textEdit->setFont(QFont ("Andale Mono", 11));
+    QFontMetrics fontMetrics(textEdit->font());
+    textEdit->setTabStopWidth(4*fontMetrics.width(' '));
     lineCount = new WLineCounter(textEdit, false, false, textEdit->font());
     layout = new QGridLayout(this);
     layout->addWidget(lineCount, 0, 0);
@@ -133,7 +135,7 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName
         else if (text == ".asm")
         {
             //!!!DO NOT FORGET TO CHECK IF ASM IS AVR OR PIC TYPE!!!
-            textEdit = new WTextEdit(this, AVRASM);
+            textEdit = new WTextEdit(this, PICOBLAZEASM);
         }
         else
         {
@@ -403,7 +405,7 @@ void CodeEdit::loadCodeEdit(CodeEdit* editor)
             else if (text == ".asm")
             {
                 //!!!DO NOT FORGET TO CHECK IF ASM IS AVR OR PIC TYPE!!!
-                this->textEdit->reloadHighlighter(AVRASM);
+                this->textEdit->reloadHighlighter(PICOBLAZEASM);
             }
             else
             {

@@ -819,7 +819,7 @@ void Project::setupSim()
 /**
  * @brief Starts simulation
  */
-void Project::start()
+bool Project::start()
 {
     qDebug() << "Project: start()";
     emit setEditorReadOnly(true);
@@ -830,14 +830,20 @@ void Project::start()
         QString hexPath = prjPath.section('/',0, -2) + "/" + mainFileName.section('.',0,-2);
         qDebug() << "ASM:" << hexPath;
         std::string stdPath = hexPath.toUtf8().constData();
-        m_simControlUnit->start(stdPath, m_simControlUnit->COMPILER_NATIVE, m_simControlUnit->DBGFILEID_HEX);
+        if ( false == m_simControlUnit->start(stdPath, m_simControlUnit->COMPILER_NATIVE, m_simControlUnit->DBGFILEID_HEX) )
+        {
+            return false;
+        }
     }
     else if (langType == LANG_C)
     {
         QString hexPath = prjPath.section('/',0, -2) + "/build/" + mainFileName.section('.',0,-2);
         qDebug() << "C:" << hexPath;
         std::string stdPath = hexPath.toUtf8().constData();
-        m_simControlUnit->start(stdPath, m_simControlUnit->COMPILER_GCC, m_simControlUnit->DBGFILEID_HEX);
+        if ( false == m_simControlUnit->start(stdPath, m_simControlUnit->COMPILER_GCC, m_simControlUnit->DBGFILEID_HEX) )
+        {
+            return false;
+        }
     }
     std::string fileName; //= new std::string;
     int line = m_simControlUnit->getLineNumber(&fileName) - 1;
@@ -850,6 +856,7 @@ void Project::start()
     prevLine = line;
     prevLine2 = -1;
     prevLine3 = -1;
+    return true;
     qDebug() << "Project: return start()";
 }
 
