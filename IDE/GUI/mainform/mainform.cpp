@@ -668,6 +668,7 @@ void MainForm::compileProject()
     qRegisterMetaType<std::string>("std::string");
     qRegisterMetaType<CompilerBase::MessageType>("CompilerBase::MessageType");
     connect(compiler, SIGNAL(compilationMessage(const std::string&, CompilerBase::MessageType)), this, SLOT(reloadCompileInfo(const std::string&, CompilerBase::MessageType)));
+    connect(compiler, SIGNAL(compilationFinished (bool)), this, SLOT(compilationFinished(bool)));
     compiler->compile(CompilerBase::LI_ASM, CompilerBase::TA_KCPSM3, options);
     //delete options;
     /*QThread *thread = new QThread;
@@ -717,10 +718,33 @@ void MainForm::compileProject()
 }
 
 
+/**
+ * @brief Slot. Writes compilation exit status to CompileInfo
+ * @param success Compiper exit status
+ *
+ */
+void MainForm::compilationFinished(bool success)
+{
+    if ( true == success )
+    {
+        this->writeToWCompileInfo("Compilation finished");
+    }
+    else
+    {
+        this->writeToWCompileInfo("Compilation failed");
+    }
+}
 
+
+/**
+ * @brief Slot. Writes compilation message to CompileInfo
+ * @param text Compilation message
+ * @param type Type of message
+ */
 void MainForm::reloadCompileInfo(const std::string &text, CompilerBase::MessageType type)
 {
-    qDebug() << QString::fromStdString(text);
+    //qDebug() << QString::fromStdString(text);
+    this->writeToWCompileInfo(QString::fromStdString(text));
 }
 
 
@@ -791,15 +815,17 @@ void MainForm::simulationFlowHandle()
     {
         if (false == simulationStatus)
         {
-            QPixmap *pm_simFlow = new QPixmap("resources//icons//simulationStop.png");
-            QIcon *icon_simFlow = new QIcon(*pm_simFlow);
-            simulationFlowAct->setIcon(*icon_simFlow);
-            simulationFlowAct->setText(tr("Stop simulation"));
-            simulationStatus = true;
-            simulationStepAct->setEnabled(true);
-            simulationRunAct->setEnabled(true);
-            simulationResetAct->setEnabled(true);
-            projectMan->getActive()->start();
+            if ( true == projectMan->getActive()->start() )
+            {
+                QPixmap *pm_simFlow = new QPixmap("resources//icons//simulationStop.png");
+                QIcon *icon_simFlow = new QIcon(*pm_simFlow);
+                simulationFlowAct->setIcon(*icon_simFlow);
+                simulationFlowAct->setText(tr("Stop simulation"));
+                simulationStatus = true;
+                simulationStepAct->setEnabled(true);
+                simulationRunAct->setEnabled(true);
+                simulationResetAct->setEnabled(true);
+            }
         }
         else
         {

@@ -86,6 +86,7 @@ class MainForm : public QMainWindow
         void addUntrackedFile(QString name, QString path);
         void openFilePath(QString path);
         void reloadCompileInfo(const std::string &text, CompilerBase::MessageType type);
+        void compilationFinished(bool success);
 
     //signals:
     //    void dockWidgetsCreated;

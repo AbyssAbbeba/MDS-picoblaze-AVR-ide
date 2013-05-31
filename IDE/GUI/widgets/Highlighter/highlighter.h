@@ -22,9 +22,9 @@ class Highlighter : public QSyntaxHighlighter
  private:
      struct HighlightingRule
      {
-         QRegExp pattern;
-         QTextCharFormat format;
-         QString tag;
+        QRegExp pattern;
+        QTextCharFormat format;
+        QString tag;
      };
      QVector<HighlightingRule> highlightingRules;
 
