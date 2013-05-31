@@ -30,9 +30,9 @@
 // Write an extra output file containing verbose descriptions of the parser states.
 %verbose
 // Expect exactly <n> shift/reduce conflicts in this grammar
-/* %expect 290 */
+%expect 0
 // Expect exactly <n> reduce/reduce conflicts in this grammar
-/* %expect-rr 0 */
+%expect-rr 0
 /* Type of parser tables within the LR family, in this case we use LALR (Look-Ahead LR parser) */
 %define lr.type lalr
 /* Bison declaration to request verbose, specific error message strings when yyerror is called */
@@ -74,10 +74,10 @@
     // Declaration of the lexer prototypes and other things required by Bison
     #include "moraviaScriptLexer.h"
 
-    // Name of the lexer function required by Bison
+    // Name of the lexer func required by Bison
     #define moraviaScriptParser_lex moraviaScriptLexer_lex
 
-    // Declaration of the error reporting function used by Bison
+    // Declaration of the error reporting function used by Bison.
     inline int moraviaScriptParser_error ( YYLTYPE * yylloc,
                                            yyscan_t yyscanner,
                                            MScriptParserInterface * core,
@@ -130,7 +130,6 @@
 %token B_CRL_LEFT       "{"
 %token B_CRL_RIGHT      "}"
 // Operators.
-%token O_AT             "@"
 %token O_COMMA          ","
 %token O_SLASH          "/"
 %token O_PLUS           "+"
@@ -167,22 +166,34 @@
 %token O_DECREMENT      "--"
 
 /* Operator precedence (the one declared later has the higher precedence) */
-// Left-to-right
+%left ","
+%right "&=" "^=" "|="
+%right "<<=" ">>="
+%right "*=" "/=" "%="
+%right "+=" "-="
+%right "="
+%right "?" ":"
 %left "||"
-%left "^^"
 %left "&&"
 %left "|"
 %left "^"
 %left "&"
 %left "==" "!="
-%left "<" "<=" "=>" ">"
+%left ">=" ">"
+%left "<" "<="
 %left "<<" ">>"
 %left "+" "-"
 %left "*" "/" "%"
-%left ","
-// Right-to-left
-%right "~"
-%right "="
+%right "~" "!"
+%right UPLUS UMINUS
+%right "++" "--"
+%left "[" "]"
+%left FCALL
+%left POST_INC POST_DEC
+%left "(" ")"
+
+/* Precedence for non operators, placed here to solve certain shift/reduce conflicts. */
+%nonassoc "else"
 
 /* Terminal symbols with semantic value */
 %token<string>  IDENFIFIER
@@ -194,12 +205,9 @@
  * DECLARATION OF NON-TERMINAL SYMBOLS
  */
 // Expressions
-%type<expr>     expr            id              real            integer         string          e_expr
-%type<expr>     id_list
+%type<expr>     expr            e_expr          id              param_list
 // Statements - general
-%type<stmt>     statements      stmt            cnd_exec        if_block        else_block      return
-%type<stmt>     switch          cases           case            delete          continue        break
-%type<stmt>     trigger         function        for_loop        while_loop      do_while_loop
+%type<stmt>     statements      stmt            cases           switch_body
 
 // Each time the parser discards symbol with certain semantic types, their memory have to bee freed
 %destructor
@@ -242,166 +250,130 @@ input:
                                         core->syntaxAnalysisComplete($statements);
                                         YYACCEPT;
                                     }
+    | /* empty */                   {
+                                        core->syntaxAnalysisComplete(NULL);
+                                        YYACCEPT;
+                                    }
 ;
 
 // Sequence of statements.
 statements:
-      stmt                          { $$ = $stmt; }
-    | error                         { $$ = NULL; }
-    | statements ";" stmt           { $$ = $1->appendLink($stmt); }
-    | statements error ";" stmt     { $$ = $1->appendLink($stmt); }
-    | "{" statements "}"            {
-                                        $$ = new MScriptStatement(@$, STMT_SCOPE);
-                                        $$->createBranch($2);
-                                    }
+      stmt                          { $$ = $stmt;                 }
+    | statements stmt               { $$ = $1->appendLink($stmt); }
 ;
 
 // Single statement.
 stmt:
-      /* empty */                   { $$ = NULL;                                       }
-    | trigger                       { $$ = $trigger;                                   }
-    | function                      { $$ = $function;                                  }
-    | return                        { $$ = $return;                                    }
-    | cnd_exec                      { $$ = $cnd_exec;                                  }
-    | for_loop                      { $$ = $for_loop;                                  }
-    | while_loop                    { $$ = $while_loop;                                }
-    | do_while_loop                 { $$ = $do_while_loop;                             }
-    | continue                      { $$ = $continue;                                  }
-    | break                         { $$ = $break;                                     }
-    | switch                        { $$ = $switch;                                    }
-    | delete                        { $$ = $delete;                                    }
-    | expr                          { $$ = new MScriptStatement(@$, STMT_EXPR, $expr); }
-;
-
-// Conditional execution, i.e. if ( ... ) { ... } [ else { ... } ].
-cnd_exec:
-      if_block else_block           {
-                                        $$ = new MScriptStatement(@$, STMT_CONDITIONAL_EXEC);
-                                        $$->createBranch($if_block->appendLink($else_block));
+      ";"                           {
+                                        $$ = NULL;
                                     }
-;
-
-if_block:
-      KW_IF "(" expr ")"
-      "{" statements "}"            { $$ = (new MScriptStatement(@$, STMT_IF, $expr))->createBranch($statements); }
-    | KW_IF "(" expr ")" stmt       { $$ = (new MScriptStatement(@$, STMT_IF, $expr))->createBranch($stmt); }
-;
-
-else_block:
-      /* empty */                   { $$ = NULL; }
-    | KW_ELSE "{" statements "}"    { $$ = (new MScriptStatement(@$, STMT_ELSE))->createBranch($statements); }
-    | KW_ELSE stmt                  { $$ = (new MScriptStatement(@$, STMT_ELSE))->createBranch($stmt); }
-;
-
-trigger:
-      "/" expr "/"
-      "{" statements "}"            { $$ = (new MScriptStatement(@$, STMT_TRIGGER, $expr))->createBranch($statements); }
-    | "/" expr "/" stmt             { $$ = (new MScriptStatement(@$, STMT_TRIGGER, $expr))->createBranch($stmt); }
-;
-
-function:
-      KW_FUNC id "(" id_list ")"
-      "{" statements "}"            {
-                                        $$ = new MScriptStatement(@$, STMT_FUNCTION, $id->appendLink($id_list));
+    | error                         {
+                                        $$ = NULL;
+                                    }
+    | expr ";"                      {
+                                        $$ = new MScriptStatement(@$, STMT_EXPR, $expr);
+                                    }
+    | "return" e_expr ";"           {
+                                        $$ = new MScriptStatement(@$, STMT_RETURN, $e_expr);
+                                    }
+    | "continue" e_expr ";"         {
+                                        $$ = new MScriptStatement(@$, STMT_CONTINUE, $e_expr);
+                                    }
+    | "break" e_expr ";"            {
+                                        $$ = new MScriptStatement(@$, STMT_BREAK, $e_expr);
+                                    }
+    | "delete" id ";"               {
+                                        $$ = new MScriptStatement(@$, STMT_DELETE, $id);
+                                    }
+    | "/" expr "/" stmt             {
+                                        $$ = (new MScriptStatement(@$, STMT_TRIGGER, $expr))->createBranch($4);
+                                    }
+    | "func" id "(" param_list ")" stmt
+                                    {
+                                        $$ =new MScriptStatement(@$, STMT_FUNCTION, $id->appendLink($param_list));
+                                        $$->createBranch($6);
+                                    }
+    | "{" statements "}"            {
+                                        $$ = new MScriptStatement(@$, STMT_SCOPE);
                                         $$->createBranch($statements);
                                     }
-    | KW_FUNC id "(" id_list ")"
-      stmt                          {
-                                        $$ =new MScriptStatement(@$, STMT_FUNCTION, $id->appendLink($id_list));
-                                        $$->createBranch($stmt);
+    | "{" /* empty */ "}"           {
+                                        // Empty scope -> optimize by deleting it.
+                                        $$ = NULL;
+                                        core->parserMessage ( @$,
+                                                              MScriptBase::MT_WARNING,
+                                                              QObject::tr("empty scope").toStdString() );
                                     }
-;
+    | "if" "(" expr ")" stmt        {
+                                        MScriptStatement * ifBlock = new MScriptStatement(@$, STMT_IF, $expr);
+                                        ifBlock->createBranch($5);
 
-for_loop:
-      KW_FOR
-      "(" e_expr ";" e_expr ";" e_expr ")"
-      "{" statements "}"            {
-                                        MScriptExpr * b = new MScriptExpr($5, MScriptExpr::OPER_SEMICOLON, $7, @KW_FOR);
-                                        MScriptExpr * a = new MScriptExpr($3, MScriptExpr::OPER_SEMICOLON, b,  @KW_FOR);
-                                        $$ = new MScriptStatement(@$, STMT_FOR, a);
-                                        $$->createBranch($statements);
+                                        $$ = new MScriptStatement(@$, STMT_CONDITION);
+                                        $$->createBranch(ifBlock);
                                     }
-    | KW_FOR
-      "(" e_expr ";" e_expr ";" e_expr ")"
-      stmt                          {
-                                        MScriptExpr * b = new MScriptExpr($5, MScriptExpr::OPER_SEMICOLON, $7, @KW_FOR);
-                                        MScriptExpr * a = new MScriptExpr($3, MScriptExpr::OPER_SEMICOLON, b,  @KW_FOR);
-                                        $$ = new MScriptStatement(@$, STMT_FOR, a);
-                                        $$->createBranch($stmt);
+    | "if" "(" expr ")" stmt "else" stmt
+                                    {
+                                        MScriptStatement * ifBlock = new MScriptStatement(@$, STMT_IF, $3);
+                                        ifBlock->createBranch($5);
+
+                                        MScriptStatement * elseBlock = new MScriptStatement(@$, STMT_ELSE);
+                                        elseBlock->createBranch($7);
+
+                                        $$ = new MScriptStatement(@$, STMT_CONDITION);
+                                        $$->createBranch(ifBlock->appendLink(elseBlock));
                                     }
-;
-
-while_loop:
-      KW_WHILE "(" expr ")"
-      "{" statements "}"            { $$ = (new MScriptStatement(@$, STMT_WHILE, $expr))->createBranch($statements); }
-    | KW_WHILE "(" expr ")" stmt    { $$ = (new MScriptStatement(@$, STMT_WHILE, $expr))->createBranch($stmt); }
-;
-
-do_while_loop:
-      KW_DO "{" statements "}"
-      KW_WHILE "(" expr ")"         { $$ =(new MScriptStatement(@$, STMT_DO_WHILE, $expr))->createBranch($statements); }
-    | KW_DO stmt
-      KW_WHILE "(" expr ")"         { $$ =(new MScriptStatement(@$, STMT_DO_WHILE, $expr))->createBranch($stmt); }
-;
-
-return:
-      KW_RETURN                     { $$ = new MScriptStatement(@$, STMT_RETURN); }
-    | KW_RETURN expr                { $$ = new MScriptStatement(@$, STMT_RETURN, $expr); }
-;
-
-continue:
-      KW_CONTINUE                   { $$ = new MScriptStatement(@$, STMT_CONTINUE); }
-    | KW_CONTINUE expr              { $$ = new MScriptStatement(@$, STMT_CONTINUE, $expr); }
-;
-
-break:
-      KW_BREAK                      { $$ = new MScriptStatement(@$, STMT_BREAK); }
-    | KW_BREAK expr                 { $$ = new MScriptStatement(@$, STMT_BREAK, $expr); }
-;
-
-switch:
-      KW_SWITCH "(" expr ")"
-      "{" cases "}"                 {
+    | "for" "(" e_expr ";" e_expr ";" e_expr ")" stmt
+                                    {
+                                        $$ = new MScriptStatement(@$, STMT_FOR, $3->appendLink($5)->appendLink($7));
+                                        $$->createBranch($9);
+                                    }
+    | "while" "(" expr ")" stmt     {
+                                        $$ = (new MScriptStatement(@$, STMT_WHILE, $expr))->createBranch($5);
+                                    }
+    | "do" stmt "while" "(" expr ")"
+                                    {
+                                        $$ =(new MScriptStatement(@$, STMT_DO_WHILE, $expr))->createBranch($2);
+                                    }
+    | "switch" "(" expr ")" "{" switch_body "}"
+                                    {
                                         $$ = new MScriptStatement(@$, STMT_SWITCH, $expr);
-                                        $$->createBranch($cases);
+                                        $$->createBranch($switch_body);
+                                    }
+    | "switch" "(" expr ")" "{" /* empty */ "}"
+                                    {
+                                        // Empty scope -> optimize by rewriting it to expression statement.
+                                        $$ = new MScriptStatement(@$, STMT_EXPR, $expr);
+                                        core->parserMessage ( @$,
+                                                              MScriptBase::MT_WARNING,
+                                                              QObject::tr("empty switch body").toStdString() );
                                     }
 ;
 
+switch_body:
+      cases stmt                    { $$ = $cases->createBranch($stmt);                 }
+    | switch_body cases stmt        { $$ = $1->appendLink($cases->createBranch($stmt)); }
+;
 cases:
-      /* empty */                   { $$ = NULL;                  }
-    | case                          { $$ = $case;                 }
-    | cases case                    { $$ = $1->appendLink($case); }
-;
-
-case:
-      KW_CASE expr ":" statements   {
-                                        $$ = new MScriptStatement(@$, STMT_CASE, $expr);
-                                        $$->createBranch($statements);
+      "case" expr ":"               { $$ = new MScriptStatement(@$, STMT_CASE, $expr); }
+    | "default" ":"                 { $$ = new MScriptStatement(@$, STMT_DEFAULT);     }
+    | cases "case" expr ":"         { $$ = $1->appendArgsLink($expr);                  }
+    | cases "default" ":"           {
+                                        $1->completeDelete();
+                                        $$ = new MScriptStatement(@$, STMT_DEFAULT);
                                     }
-;
-
-delete:
-      KW_DELETE id                  { $$ = new MScriptStatement(@$, STMT_DELETE, $id); }
-;
-
-id_list:
-      /* empty */                   { $$ = NULL;                }
-    | id                            { $$ = $id;                 }
-    | id_list "," id                { $$ = $1->appendLink($id); }
 ;
 
 id:
       IDENFIFIER                    { $$ = new MScriptExpr($IDENFIFIER, @$); }
 ;
-integer:
-      INTEGER                       { $$ = new MScriptExpr($INTEGER, @$); }
+param_list:
+      /* empty */                   { $$ = NULL;                                                         }
+    | id                            { $$ = $id;                                                          }
+    | param_list "," id             { $$ = $1->appendLink($id);                                          }
+    | "&" id                        { $$ = $id; $id->m_operator = MScriptExpr::OPER_REF;                 }
+    | param_list "," "&" id         { $$ = $1->appendLink($id); $id->m_operator = MScriptExpr::OPER_REF; }
 ;
-real:
-      REAL                          { $$ = new MScriptExpr($REAL, @$); }
-;
-string:
-      STRING                        { $$ = new MScriptExpr(MScriptExpr::Value($STRING.data, $STRING.size), @$); }
-;
+
 e_expr:
       /* empty */                   { $$ = NULL;  }
     | expr                          { $$ = $expr; }
@@ -409,9 +381,9 @@ e_expr:
 expr:
     // Single value expressions.
       id                            { $$ = $id;      }
-    | integer                       { $$ = $integer; }
-    | real                          { $$ = $real;    }
-    | string                        { $$ = $string;  }
+    | INTEGER                       { $$ = new MScriptExpr($INTEGER, @$); }
+    | REAL                          { $$ = new MScriptExpr($REAL, @$); }
+    | STRING                        { $$ = new MScriptExpr(MScriptExpr::Value($STRING.data, $STRING.size), @$); }
 
     // Parentheses.
     | "(" expr ")"                  { $$ = $2; }
@@ -448,14 +420,14 @@ expr:
     | expr "=" expr                 { $$ = new MScriptExpr($1, MScriptExpr::OPER_ASSIGN, $3,     @$); }
 
     // Unary opeators.
-    | "+" expr                      { $$ = new MScriptExpr($2, MScriptExpr::OPER_INT_PROM, @$); }
-    | "-" expr                      { $$ = new MScriptExpr($2, MScriptExpr::OPER_ADD_INV,  @$); }
     | "~" expr                      { $$ = new MScriptExpr($2, MScriptExpr::OPER_CMPL,     @$); }
     | "!" expr                      { $$ = new MScriptExpr($2, MScriptExpr::OPER_NOT,      @$); }
+    | "+" expr  %prec UPLUS         { $$ = new MScriptExpr($2, MScriptExpr::OPER_INT_PROM, @$); }
+    | "-" expr  %prec UMINUS        { $$ = new MScriptExpr($2, MScriptExpr::OPER_ADD_INV,  @$); }
     | "++" expr                     { $$ = new MScriptExpr($2, MScriptExpr::OPER_PRE_INC,  @$); }
     | "--" expr                     { $$ = new MScriptExpr($2, MScriptExpr::OPER_PRE_DEC,  @$); }
-    | expr "++"                     { $$ = new MScriptExpr($1, MScriptExpr::OPER_POST_INC, @$); }
-    | expr "--"                     { $$ = new MScriptExpr($1, MScriptExpr::OPER_POST_DEC, @$); }
+    | expr "++" %prec POST_INC      { $$ = new MScriptExpr($1, MScriptExpr::OPER_POST_INC, @$); }
+    | expr "--" %prec POST_DEC      { $$ = new MScriptExpr($1, MScriptExpr::OPER_POST_DEC, @$); }
 
     // Ternary operator.
     | expr "?" expr ":" expr        {
@@ -464,14 +436,14 @@ expr:
                                     }
 
     // Comma "operator".
-    | expr "," expr                 { $$ = $1->appendLink($3); }
+    | expr "," expr                 { $$ = new MScriptExpr($1, MScriptExpr::OPER_COMMA, $3, @$); }
 
     // Array element access.
     | id "[" expr "]"               { $$ = new MScriptExpr($id, MScriptExpr::OPER_INDEX, $3, @$); }
 
     // Function call.
-    | id "(" ")"                    { $$ = new MScriptExpr($id, MScriptExpr::OPER_CALL, @$);     }
-    | id "(" expr ")"               { $$ = new MScriptExpr($id, MScriptExpr::OPER_CALL, $3, @$); }
+    | id "(" ")" %prec FCALL        { $$ = new MScriptExpr($id, MScriptExpr::OPER_CALL, @$);     }
+    | id "(" expr ")" %prec FCALL   { $$ = new MScriptExpr($id, MScriptExpr::OPER_CALL, $3, @$); }
 ;
 
 %%
@@ -480,12 +452,14 @@ expr:
 // EPILOGUE - FUNCTION DEFINITIONS
 // -----------------------------------------------------------------------------
 
-// Definition of the error reporting function used by Bison
+// Definition of the error reporting function used by Bison.
 inline int moraviaScriptParser_error ( YYLTYPE * yylloc,
                                        yyscan_t,
                                        MScriptParserInterface * core,
                                        const char * errorInfo )
 {
-    std::cout << MScriptSrcLocation(yylloc) << "errorInfo = '" << errorInfo << "'\n";
+    core->parserMessage ( yylloc,
+                          MScriptBase::MT_WARNING,
+                          errorInfo );
     return 0;
 }

@@ -103,7 +103,7 @@ class Project : public QObject
 
         void addFile(QString path, QString name);
         void setupSim();
-        void start();
+        bool start();
         void stop();
         void reset();
         void step();

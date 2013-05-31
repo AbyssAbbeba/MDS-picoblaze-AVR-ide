@@ -265,6 +265,7 @@ DIS_INT_INST            "disable"{WSPACE}"interrupt"
 "low"                   { return F_LOW; }
 
 "at"                    { return AT; }
+"@"                     { return AT_MARK; }
 "("                     { return LP; }
 ")"                     { return RP; }
 "#"                     { return IMMEDIATE; }

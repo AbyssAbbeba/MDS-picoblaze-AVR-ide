@@ -520,6 +520,8 @@ std::ostream & operator << ( std::ostream & out,
         case CompilerExpr::OPER_SHR:         out << ">>";       break;
         case CompilerExpr::OPER_SHL:         out << "<<";       break;
         case CompilerExpr::OPER_CALL:        out << "<CALL>";   break;
+        case CompilerExpr::OPER_INT_PROM:    out << "<+pos>";   break;
+        case CompilerExpr::OPER_ADD_INV:     out << "<-neg>";   break;
         case CompilerExpr::OPER_CMPL:        out << "~";        break;
         case CompilerExpr::OPER_NOT:         out << "!";        break;
         case CompilerExpr::OPER_ADD_ASSIGN:  out << "+=";       break;

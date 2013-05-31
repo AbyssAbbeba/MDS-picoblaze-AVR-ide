@@ -76,7 +76,47 @@ void MScriptCore::unloadScript()
 
 bool MScriptCore::executeStep()
 {
+    using namespace MScriptStmtTypes;
 
+    MScriptStatement * current = m_context.m_programPointer.top();
+    if ( NULL == current );
+    {
+        // Program finished.
+        return true;
+    }
+
+    m_context.m_programPointer.pop();
+    m_context.m_programPointer.push(current->next());
+
+    switch ( current->type() )
+    {
+        case STMT_ROOT:
+        case STMT_EMPTY:
+            break;
+
+        case STMT_SCOPE: break;
+        case STMT_CONDITION: break;
+        case STMT_IF: break;
+        case STMT_ELSE: break;
+        case STMT_EXPR:
+//             current->args()
+            break;
+        case STMT_FOR: break;
+        case STMT_WHILE: break;
+        case STMT_DO_WHILE: break;
+        case STMT_RETURN: break;
+        case STMT_CONTINUE: break;
+        case STMT_BREAK: break;
+        case STMT_SWITCH: break;
+        case STMT_CASE: break;
+        case STMT_DEFAULT: break;
+        case STMT_DELETE: break;
+
+        // These statements should have been already processed in a previous phase of script analysis.
+        case STMT_TRIGGER:
+        case STMT_FUNCTION:
+            break;
+    }
 }
 
 bool MScriptCore::executeRun()
@@ -94,6 +134,20 @@ void MScriptCore::clearMessages()
     m_messages.clear();
 }
 
+void MScriptCore::parserMessage ( MScriptSrcLocation location,
+                                  MScriptBase::MessageType type,
+                                  const std::string & text )
+{
+    m_messages.push_back(location.toString() + " " + msgTypeTostr(type) + ": " + text );
+}
+
+void MScriptCore::lexerMessage ( MScriptSrcLocation location,
+                                 MScriptBase::MessageType type,
+                                 const std::string & text )
+{
+    m_messages.push_back(location.toString() + " " + msgTypeTostr(type) + ": " + text );
+}
+
 void MScriptCore::syntaxAnalysisComplete ( MScriptStatement * codeTree )
 {
     if ( NULL != m_codeTree )
@@ -101,6 +155,19 @@ void MScriptCore::syntaxAnalysisComplete ( MScriptStatement * codeTree )
         m_codeTree->completeDelete();
     }
 
-    m_codeTree = ( new MScriptStatement() ) -> appendLink ( codeTree );
+    m_codeTree = ( new MScriptStatement(MScriptSrcLocation(), MScriptStmtTypes::STMT_ROOT) ) -> appendLink ( codeTree );
     std::cout << m_codeTree;
+
+    checkCode();
+    m_context.m_programPointer.push(m_codeTree);
+}
+
+inline void MScriptCore::checkCode()
+{
+//     for ( MScriptStatement * node = m_codeTree->next();
+//           NULL != node;
+//           node = node->next() )
+//     {
+//         
+//     }
 }

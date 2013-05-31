@@ -107,13 +107,13 @@ XESC    (\\[0-7]{1,3})|(\\x[0-9A-F]{1,2})|(\\[uU][0-9A-F]{1,8})
     yylloc_param->first_column = yylloc_param->last_column;
 %}
 
+ /* White space: */
 {WSPACE}                { /* eat up white space */ }
 {NLINE}                 {
                             yylloc->last_line++;
                             yylloc->last_column = 1;
-/*                             return EOL; */
                         }
-
+ /* Comments: */
 {COMMENT}               { /* ignore ordinary comment */ }
 <INITIAL>
 {
@@ -127,71 +127,69 @@ XESC    (\\[0-7]{1,3})|(\\x[0-9A-F]{1,2})|(\\[uU][0-9A-F]{1,8})
     {NLINE}             {
                             yylloc->last_line++;
                             yylloc->last_column = 1;
-/*                             return EOL; */
                         }
 }
-
-"if"            { return KW_IF; }
-"else"          { return KW_ELSE; }
-"for"           { return KW_FOR; }
-"while"         { return KW_WHILE; }
-"func"          { return KW_FUNC; }
-"do"            { return KW_DO; }
-"return"        { return KW_RETURN; }
-"break"         { return KW_BREAK; }
-"continue"      { return KW_CONTINUE; }
-"switch"        { return KW_SWITCH; }
-"case"          { return KW_CASE; }
-"delete"        { return KW_DELETE; }
-
-";"             { return EOS; }
-
-"("             { return B_RND_LEFT; }
-")"             { return B_RND_RIGHT; }
-"["             { return B_SQR_LEFT; }
-"]"             { return B_SQR_RIGHT; }
-"{"             { return B_CRL_LEFT; }
-"}"             { return B_CRL_RIGHT; }
-
-":"             { return O_COLON; }
-"?"             { return O_QUESTION_MARK; }
-
-","             { return O_COMMA; }
-"/"             { return O_SLASH; }
-"+"             { return O_PLUS; }
-"-"             { return O_MINUS; }
-"*"             { return O_ASTERISK; }
-"!"             { return O_NOT; }
-"%"             { return O_MOD; }
-"<<"            { return O_SHL; }
-">>"            { return O_SHR; }
-"&&"            { return O_AND; }
-"||"            { return O_OR; }
-"&"             { return O_BITAND; }
-"|"             { return O_BITOR; }
-"^"             { return O_BITXOR; }
-"=="            { return O_EQ; }
-"<>"            { return O_NE; }
-"!="            { return O_NE; }
-"<"             { return O_LT; }
-"<="            { return O_LE; }
-">"             { return O_GT; }
-">="            { return O_GE; }
-"="             { return O_ASSIGN; }
-"~"             { return O_COMPLEMET; }
-"+="            { return O_ADD_ASSIGN; }
-"-="            { return O_SUB_ASSIGN; }
-"*="            { return O_MUL_ASSIGN; }
-"/="            { return O_DIV_ASSIGN; }
-"%="            { return O_MOD_ASSIGN; }
-"<<="           { return O_SHL_ASSIGN; }
-">>="           { return O_SHR_ASSIGN; }
-"&="            { return O_AND_ASSIGN; }
-"|="            { return O_ORB_ASSIGN; }
-"^="            { return O_XOR_ASSIGN; }
-"++"            { return O_INCREMENT; }
-"--"            { return O_DECREMENT; }
-
+ /* Special tokens: */
+";"                     { return EOS; }
+ /* Key Words: */
+"if"                    { return KW_IF; }
+"else"                  { return KW_ELSE; }
+"for"                   { return KW_FOR; }
+"while"                 { return KW_WHILE; }
+"func"                  { return KW_FUNC; }
+"do"                    { return KW_DO; }
+"return"                { return KW_RETURN; }
+"break"                 { return KW_BREAK; }
+"continue"              { return KW_CONTINUE; }
+"switch"                { return KW_SWITCH; }
+"case"                  { return KW_CASE; }
+"delete"                { return KW_DELETE; }
+ /* Brackets: */
+"("                     { return B_RND_LEFT; }
+")"                     { return B_RND_RIGHT; }
+"["                     { return B_SQR_LEFT; }
+"]"                     { return B_SQR_RIGHT; }
+"{"                     { return B_CRL_LEFT; }
+"}"                     { return B_CRL_RIGHT; }
+ /* Operators: */
+":"                     { return O_COLON; }
+"?"                     { return O_QUESTION_MARK; }
+","                     { return O_COMMA; }
+"/"                     { return O_SLASH; }
+"+"                     { return O_PLUS; }
+"-"                     { return O_MINUS; }
+"*"                     { return O_ASTERISK; }
+"!"                     { return O_NOT; }
+"%"                     { return O_MOD; }
+"<<"                    { return O_SHL; }
+">>"                    { return O_SHR; }
+"&&"                    { return O_AND; }
+"||"                    { return O_OR; }
+"&"                     { return O_BITAND; }
+"|"                     { return O_BITOR; }
+"^"                     { return O_BITXOR; }
+"=="                    { return O_EQ; }
+"<>"                    { return O_NE; }
+"!="                    { return O_NE; }
+"<"                     { return O_LT; }
+"<="                    { return O_LE; }
+">"                     { return O_GT; }
+">="                    { return O_GE; }
+"="                     { return O_ASSIGN; }
+"~"                     { return O_COMPLEMET; }
+"+="                    { return O_ADD_ASSIGN; }
+"-="                    { return O_SUB_ASSIGN; }
+"*="                    { return O_MUL_ASSIGN; }
+"/="                    { return O_DIV_ASSIGN; }
+"%="                    { return O_MOD_ASSIGN; }
+"<<="                   { return O_SHL_ASSIGN; }
+">>="                   { return O_SHR_ASSIGN; }
+"&="                    { return O_AND_ASSIGN; }
+"|="                    { return O_ORB_ASSIGN; }
+"^="                    { return O_XOR_ASSIGN; }
+"++"                    { return O_INCREMENT; }
+"--"                    { return O_DECREMENT; }
+ /* Numbers: */
 0b[01]+                 {
                             // Binary number (max. 64 digits, max. 32 bits).
                             yylval->integer = MScriptLexerAuxFunc::str2int(yyextra, yylloc, (yytext + 2), 64, 2);
@@ -217,7 +215,7 @@ XESC    (\\[0-7]{1,3})|(\\x[0-9A-F]{1,2})|(\\[uU][0-9A-F]{1,8})
                             yylval->real = MScriptLexerAuxFunc::str2float(yyextra, yylloc, yytext);
                             return REAL;
                         }
-
+ /* Identifiers: */
 \$?{ID}                 {
                             // Arbitrary identifier, e.g. `MYREG_U1'.
 
@@ -231,3 +229,5 @@ XESC    (\\[0-7]{1,3})|(\\x[0-9A-F]{1,2})|(\\[uU][0-9A-F]{1,8})
                             yylval->string = yytext;
                             return IDENFIFIER;
                         }
+ /* Strings & character literals: */
+ 
