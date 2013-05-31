@@ -98,7 +98,7 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
     connect(textEdit, SIGNAL(focusIn()), this, SLOT(getFocus()));
     connect(textEdit, SIGNAL(breakpoint(int)), this, SLOT(manageBreakpointEmit(int)));
     connect(textEdit, SIGNAL(bookmark(int)), this, SLOT(manageBookmarkEmit(int)));
-    connect(textEdit, SIGNAL(textChanged()), this, SLOT(updateTextSlotOut()));
+    connect(textEdit, SIGNAL(textChangedSignal(const QString&, int)), this, SLOT(updateTextSlotOut(const QString&, int)));
     this->connectAct();
     prevBlockCount = this->textEdit->document()->blockCount();
     qDebug() << "CodeEdit: return CodeEdit()";
@@ -177,7 +177,7 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName
     connect(textEdit, SIGNAL(focusIn()), this, SLOT(getFocus()));
     connect(textEdit, SIGNAL(breakpoint(int)), this, SLOT(manageBreakpointEmit(int)));
     connect(textEdit, SIGNAL(bookmark(int)), this, SLOT(manageBookmarkEmit(int)));
-    connect(textEdit, SIGNAL(textChanged()), this, SLOT(updateTextSlotOut()));
+    connect(textEdit, SIGNAL(textChangedSignal(const QString&, int)), this, SLOT(updateTextSlotOut(const QString&, int)));
     this->connectAct();
     prevBlockCount = this->textEdit->document()->blockCount();
     qDebug() << "CodeEdit: return CodeEdit()";
@@ -341,10 +341,10 @@ void CodeEdit::contextMenuEvent(QContextMenuEvent *event)
 }
 
 
-void CodeEdit::updateTextSlotOut()
+void CodeEdit::updateTextSlotOut(const QString& text, int pos)
 {
     qDebug() << "CodeEdit: updateTextSlotOut()";
-    emit updateText(this->textEdit->toPlainText());
+    emit updateText(text, pos, this);
     emit updateAnalysers(this);
     if (prevBlockCount != this->textEdit->document()->blockCount())
     {
@@ -354,13 +354,27 @@ void CodeEdit::updateTextSlotOut()
     qDebug() << "CodeEdit: return updateTextSlotOut()";
 }
 
-void CodeEdit::updateTextSlotIn(const QString& textIn)
+void CodeEdit::updateTextSlotIn(const QString& textIn, int pos, CodeEdit *editor)
 {
     qDebug() << "CodeEdit: updateTextSlotIn()";
     //qDebug() << "Code Edit: update";
-    if (textIn.compare(this->textEdit->toPlainText()) != 0)
+    if ( this != editor )
     {
-        this->textEdit->setText(textIn);
+        QTextCursor textCursor = this->textEdit->textCursor();
+        int prevPos = textCursor.position();
+        textCursor.setPosition(pos);
+        textCursor.insertText(textIn);
+        textCursor.setPosition(prevPos);
+        if ( NULL == parentCodeEdit )
+        {
+            qDebug() << "CodeEdit: updateTextSlotIn parent";
+            emit updateText(textIn, pos, editor);
+        }
+        else if ( this->textEdit->document()->blockCount() != prevBlockCount )
+        {
+            this->changeHeight();
+            prevBlockCount = this->textEdit->document()->blockCount();
+        }
         prevBlockCount = this->textEdit->document()->blockCount();
     }
     qDebug() << "CodeEdit: return updateTextSlotIn()";
@@ -371,7 +385,8 @@ void CodeEdit::loadCodeEdit(CodeEdit* editor)
 {
     qDebug() << "CodeEdit: loadCodeEditor()";
     //disconnect(textEdit, SIGNAL(textChanged()), 0, 0);
-    disconnect(this, SIGNAL(updateText(const QString&)), 0, 0);
+    disconnect(this, SIGNAL(updateText(const QString&, int, CodeEdit*)), 0, 0);
+    //disconnect(this, SIGNAL(), 0, 0);
     disconnect(this, SIGNAL(bookmarkListAdd(int)), 0, 0);
     disconnect(this, SIGNAL(bookmarkListRemove(int)), 0, 0);
     disconnect(this, SIGNAL(breakpointListAdd(int)), 0, 0);

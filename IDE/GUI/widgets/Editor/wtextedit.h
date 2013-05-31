@@ -40,10 +40,12 @@ class WTextEdit : public QTextEdit
         void setPosition(int pos);
         int getPosition();
 
+
     signals:
         void focusIn();
         void breakpoint(int line);
         void bookmark(int line);
+        void textChangedSignal(const QString& text, int pos);
 
     private:
         Highlighter *highlighter;

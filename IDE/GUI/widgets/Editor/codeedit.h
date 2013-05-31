@@ -62,8 +62,8 @@ class CodeEdit : public QWidget
         void setChanged();
         void splitHorizontal();
         void splitVertical();
-        void updateTextSlotOut();
-        void updateTextSlotIn(const QString& textIn);
+        void updateTextSlotOut(const QString& text, int pos);
+        void updateTextSlotIn(const QString& textIn, int pos, CodeEdit *editor);
         void getFocus();
         void manageBreakpointEmit(int line);
         void manageBookmarkEmit(int line);
@@ -72,7 +72,7 @@ class CodeEdit : public QWidget
         void splitSignal(Qt::Orientation orient, int line);
         void changedTabName(QString name, QString path, bool changed);
         void changedTabStatus(QString name, QString path, bool changed);
-        void updateText(const QString & text);
+        void updateText(const QString& text, int pos, CodeEdit *editor);
         void CodeEditChanged(CodeEdit* editor);
         void bookmarkListAdd(int line);
         void bookmarkListRemove(int line);
