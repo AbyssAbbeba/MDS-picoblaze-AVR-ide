@@ -18,6 +18,7 @@
 
 // Standard header files
 #include <ostream>
+#include <string>
 
 // Make sure that the data type of locations is declared (see Bison manual for details)
 #if ! defined ( YYLTYPE ) && ! defined ( YYLTYPE_IS_DECLARED )
@@ -57,6 +58,14 @@ class MScriptSrcLocation
          * @param[in] yylloc
          */
         MScriptSrcLocation ( const YYLTYPE & yylloc );
+
+    ////    Public Operations    ////
+    public:
+        /**
+         * @brief
+         * @return
+         */
+        std::string toString() const;
 
     ////    Public Attributes    ////
     public:

@@ -347,7 +347,10 @@ int AsmKcpsm3SymbolTable::computeExpr ( const CompilerExpr * expr )
     switch ( expr->m_operator )
     {
         case CompilerExpr::OPER_NONE:
+        case CompilerExpr::OPER_INT_PROM:
             return getExprValue(LEFT, expr);
+        case CompilerExpr::OPER_ADD_INV:
+            return -getExprValue(LEFT, expr);
         case CompilerExpr::OPER_ADD:
             return getExprValue(LEFT, expr) + getExprValue(RIGHT, expr);
         case CompilerExpr::OPER_SUB:

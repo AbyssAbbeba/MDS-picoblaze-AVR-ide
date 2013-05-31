@@ -16,6 +16,7 @@
 #ifndef COMPILERBASE_H
 #define COMPILERBASE_H
 
+// Standard header files.
 #include <ostream>
 #include <string>
 

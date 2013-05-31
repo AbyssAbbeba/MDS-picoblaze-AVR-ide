@@ -30,7 +30,7 @@
 // Write an extra output file containing verbose descriptions of the parser states.
 %verbose
 // Expect exactly <n> shift/reduce conflicts in this grammar
-%expect 336
+%expect 105
 // Expect exactly <n> reduce/reduce conflicts in this grammar
 %expect-rr 0
 /* Type of parser tables within the LR family, in this case we use LALR (Look-Ahead LR parser) */
@@ -164,6 +164,7 @@
 /* Other terminal symbols */
 %token COMMENT
 %token AT
+%token AT_MARK          "@"
 %token EOL              "end of line"
 %token END      0       "end of file"
 // Named tokens (to make the grammar rules more readable)
@@ -197,19 +198,33 @@
 %token F_HIGH           F_LOW
 
 /* Operator precedence (the one declared later has the higher precedence) */
-// Left-to-right
 %left "||"
 %left "&&"
 %left "|"
 %left "^"
 %left "&"
 %left "==" "!="
-%left "<" "<=" ">=" ">"
+%left ">=" ">"
+%left "<" "<="
 %left "<<" ">>"
 %left "+" "-"
 %left "*" "/" "%"
-// Right-to-left
 %right "~" "!"
+%right UPLUS UMINUS
+%left "(" ")"
+
+/*
+
+%token D_NAMEREG        D_ORG           D_CONSTANT      D_WHILE         D_DB
+%token D_LIST           D_MESSG         D_NOLIST        D_SKIP          D_ERROR
+%token D_TITLE          D_EXPAND        D_NOEXPAND      D_IF            D_PORT
+%token D_IFN            D_IFDEF         D_IFNDEF
+%token D_ENDIF          D_LOCAL         D_IFNB          D_IFB
+%token D_ENDM           D_EXITM         D_REPT          D_MACRO         D_EQU
+%token D_END            D_REG           D_CODE          D_ENDW          D_WARNING
+%token D_VARIABLE       D_SET           D_DEFINE        D_UNDEFINE      D_ENDR
+%token D_AUTOREG        D_AUTOSPR       D_DATA
+*/
 
 /* Terminal symbols with semantic value */
   // semantic value is a string
@@ -294,12 +309,11 @@ input:
 ;
 statements:
       stmt                          { $$ = $stmt; }
-    | error                         { $$ = NULL; }
     | statements EOL stmt           { $$ = $1->appendLink($stmt); }
-    | statements error EOL stmt     { $$ = $1->appendLink($stmt); }
 ;
 stmt:
       /* empty */                   { $$ = NULL; }
+    | error                         { $$ = NULL; }
     | COMMENT                       { $$ = NULL; }
     | label                         { $$ = $1; }
     | label COMMENT                 { $$ = $1; }
@@ -351,39 +365,28 @@ expr:
     | "(" expr ")"                  { $$ = $2; }
     | F_LOW  "(" expr ")"           { $$ = new CompilerExpr(CompilerExpr::OPER_LOW, $3, LOC(@$)); }
     | F_HIGH "(" expr ")"           { $$ = new CompilerExpr(CompilerExpr::OPER_HIGH, $3, LOC(@$)); }
-    | "~" expr                      { $$ = new CompilerExpr('~', $2, LOC(@$)); }
-    | "!" expr                      { $$ = new CompilerExpr('!', $2, LOC(@$)); }
+    | "-" expr %prec UMINUS         { $$ = new CompilerExpr($2, CompilerExpr::OPER_ADD_INV, LOC(@$)); }
+    | "+" expr %prec UPLUS          { $$ = new CompilerExpr($2, CompilerExpr::OPER_INT_PROM, LOC(@$)); }
+    | "~" expr                      { $$ = new CompilerExpr($2, '~', LOC(@$)); }
+    | "!" expr                      { $$ = new CompilerExpr($2, '!', LOC(@$)); }
     | expr "+"  expr                { $$ = new CompilerExpr($1, '+', $3, LOC(@$)); }
     | expr "-"  expr                { $$ = new CompilerExpr($1, '-', $3, LOC(@$)); }
     | expr "*"  expr                { $$ = new CompilerExpr($1, '*', $3, LOC(@$)); }
     | expr "/"  expr                { $$ = new CompilerExpr($1, '/', $3, LOC(@$)); }
     | expr "%"  expr                { $$ = new CompilerExpr($1, '%', $3, LOC(@$)); }
-    | expr "||" expr                { $$ = new CompilerExpr($1, CompilerExpr::OPER_LOR, $3, LOC(@$)); }
-    | expr "&&" expr                { $$ = new CompilerExpr($1, CompilerExpr::OPER_LAND, $3, LOC(@$)); }
     | expr "|"  expr                { $$ = new CompilerExpr($1, '|', $3, LOC(@$)); }
     | expr "^"  expr                { $$ = new CompilerExpr($1, '^', $3, LOC(@$)); }
     | expr "&"  expr                { $$ = new CompilerExpr($1, '&', $3, LOC(@$)); }
+    | expr "<"  expr                { $$ = new CompilerExpr($1, '<', $3, LOC(@$)); }
+    | expr ">"  expr                { $$ = new CompilerExpr($1, '>', $3, LOC(@$)); }
+    | expr "||" expr                { $$ = new CompilerExpr($1, CompilerExpr::OPER_LOR, $3, LOC(@$)); }
+    | expr "&&" expr                { $$ = new CompilerExpr($1, CompilerExpr::OPER_LAND, $3, LOC(@$)); }
     | expr "==" expr                { $$ = new CompilerExpr($1, CompilerExpr::OPER_EQ, $3, LOC(@$)); }
     | expr "!=" expr                { $$ = new CompilerExpr($1, CompilerExpr::OPER_NE, $3, LOC(@$)); }
-    | expr "<"  expr                { $$ = new CompilerExpr($1, '<', $3, LOC(@$)); }
     | expr "<=" expr                { $$ = new CompilerExpr($1, CompilerExpr::OPER_LE, $3, LOC(@$)); }
     | expr ">=" expr                { $$ = new CompilerExpr($1, CompilerExpr::OPER_GE, $3, LOC(@$)); }
-    | expr ">"  expr                { $$ = new CompilerExpr($1, '>', $3, LOC(@$)); }
     | expr ">>" expr                { $$ = new CompilerExpr($1, CompilerExpr::OPER_SHR, $3, LOC(@$)); }
     | expr "<<" expr                { $$ = new CompilerExpr($1, CompilerExpr::OPER_SHL, $3, LOC(@$)); }
-    | expr expr                     {
-                                        /* Syntax error */
-                                        $$ = $1->appendLink($2);
-                                        if ( 0 == YYRECOVERING() )
-                                        {
-                                            @1.first_line = @1.last_line; \
-                                            @1.first_column = @1.last_column; \
-                                            @1.last_column++; \
-                                            compiler->parserMessage ( @1,
-                                                                      CompilerBase::MT_ERROR,
-                                                                      QObject::tr("missing operator").toStdString() );
-                                        }
-                                    }
 ;
 args:           // List of arguments without strings, e.g. `(1+3), XYZ, 0x4b'
       args "," expr                 { $$ = $1->appendLink($expr); }
@@ -413,6 +416,7 @@ oprs:           // Matches any set of operands, intended for error recovery only
 eopr:           // Matches any operand, intended for error recovery only
       expr                          { $expr->completeDelete(); }
     | "#" expr                      { $expr->completeDelete(); }
+    | "@" expr                      { $expr->completeDelete(); }
 ;
 eoprs:          // Matches any set of operands, intended for error recovery only
       eoprs "," eopr                { }
@@ -1525,16 +1529,16 @@ inst_test:
 ;
 /* Storage Group */
 inst_store:
-      I_STORE expr "," "#" expr     { $$ = new CompilerStatement(LOC(@$),ASMKCPSM3_INS_STORE_SX_SS,$2->appendLink($5));}
-    | I_STORE expr "," expr         { $$ = new CompilerStatement(LOC(@$),ASMKCPSM3_INS_STORE_SX_SY,$2->appendLink($4));}
+      I_STORE expr "," expr         { $$ = new CompilerStatement(LOC(@$),ASMKCPSM3_INS_STORE_SX_SS,$2->appendLink($4));}
+    | I_STORE expr "," "@" expr     { $$ = new CompilerStatement(LOC(@$),ASMKCPSM3_INS_STORE_SX_SY,$2->appendLink($5));}
     | I_STORE eopr "," eopr "," eoprs { /* Syntax Error */ $$=NULL; N_OPERANDS_EXPECTED(@1, "STORE", 2);               }
     | I_STORE eopr                  { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "STORE", 2);               }
     | I_STORE                       { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "STORE", 2);               }
     | I_STORE eopr eoprs            { /* Syntax Error */ $$ = NULL; MISSIGN_COMMA(@2, NULL);                           }
 ;
 inst_fetch:
-      I_FETCH expr "," "#" expr     { $$ = new CompilerStatement(LOC(@$),ASMKCPSM3_INS_FETCH_SX_SS,$2->appendLink($5));}
-    | I_FETCH expr "," expr         { $$ = new CompilerStatement(LOC(@$),ASMKCPSM3_INS_FETCH_SX_SY,$2->appendLink($4));}
+      I_FETCH expr "," expr         { $$ = new CompilerStatement(LOC(@$),ASMKCPSM3_INS_FETCH_SX_SS,$2->appendLink($4));}
+    | I_FETCH expr "," "@" expr     { $$ = new CompilerStatement(LOC(@$),ASMKCPSM3_INS_FETCH_SX_SY,$2->appendLink($5));}
     | I_FETCH eopr "," eopr "," eoprs { /* Syntax Error */$$= NULL; N_OPERANDS_EXPECTED(@1, "FETCH", 2);               }
     | I_FETCH eopr                  { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "FETCH", 2);               }
     | I_FETCH                       { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "FETCH", 2);               }
@@ -1593,16 +1597,16 @@ inst_rl:
 ;
 /* Input/Output Group */
 inst_input:
-      I_INPUT expr "," "#" expr     { $$ = new CompilerStatement(LOC(@$),ASMKCPSM3_INS_INPUT_SX_PP,$2->appendLink($5));}
-    | I_INPUT expr "," expr         { $$ = new CompilerStatement(LOC(@$),ASMKCPSM3_INS_INPUT_SX_SY,$2->appendLink($4));}
+      I_INPUT expr "," expr         { $$ = new CompilerStatement(LOC(@$),ASMKCPSM3_INS_INPUT_SX_PP,$2->appendLink($4));}
+    | I_INPUT expr "," "@" expr     { $$ = new CompilerStatement(LOC(@$),ASMKCPSM3_INS_INPUT_SX_SY,$2->appendLink($5));}
     | I_INPUT eopr "," eopr "," eoprs {/* Syntax Error */$$ = NULL; N_OPERANDS_EXPECTED(@1, "INPUT", 2);               }
     | I_INPUT eopr                  { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "INPUT", 2);               }
     | I_INPUT                       { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "INPUT", 2);               }
     | I_INPUT eopr eoprs            { /* Syntax Error */ $$ = NULL; MISSIGN_COMMA(@2, NULL);                           }
 ;
 inst_output:
-      I_OUTPUT expr "," "#" expr    { $$=new CompilerStatement(LOC(@$),ASMKCPSM3_INS_OUTPUT_SX_PP,$2->appendLink($5)); }
-    | I_OUTPUT expr "," expr        { $$=new CompilerStatement(LOC(@$),ASMKCPSM3_INS_OUTPUT_SX_SY,$2->appendLink($4)); }
+      I_OUTPUT expr "," expr        { $$=new CompilerStatement(LOC(@$),ASMKCPSM3_INS_OUTPUT_SX_PP,$2->appendLink($4)); }
+    | I_OUTPUT expr "," "@" expr    { $$=new CompilerStatement(LOC(@$),ASMKCPSM3_INS_OUTPUT_SX_SY,$2->appendLink($5)); }
     | I_OUTPUT eopr "," eopr "," eoprs {/* Syntax Error */$$= NULL; N_OPERANDS_EXPECTED(@1, "OUTPUT", 2);              }
     | I_OUTPUT eopr                 { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "OUTPUT", 2);              }
     | I_OUTPUT                      { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "OUTPUT", 2);              }

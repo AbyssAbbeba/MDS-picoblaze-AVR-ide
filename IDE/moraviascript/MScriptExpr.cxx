@@ -502,7 +502,6 @@ std::ostream & operator << ( std::ostream & out,
         case MScriptExpr::OPER_MULT:            out << "*";     break;
         case MScriptExpr::OPER_DIV:             out << "/";     break;
         case MScriptExpr::OPER_MOD:             out << "%";     break;
-        case MScriptExpr::OPER_CALL:            out << "<CALL>";break;
         case MScriptExpr::OPER_BOR:             out << "|";     break;
         case MScriptExpr::OPER_BXOR:            out << "^";     break;
         case MScriptExpr::OPER_BAND:            out << "&";     break;
@@ -528,18 +527,20 @@ std::ostream & operator << ( std::ostream & out,
         case MScriptExpr::OPER_AND_ASSIGN:      out << "&=";    break;
         case MScriptExpr::OPER_ORB_ASSIGN:      out << "|=";    break;
         case MScriptExpr::OPER_XOR_ASSIGN:      out << "^=";    break;
-        case MScriptExpr::OPER_PRE_INC:         out << "pre++"; break;
-        case MScriptExpr::OPER_PRE_DEC:         out << "pre--"; break;
-        case MScriptExpr::OPER_POST_INC:        out << "post++";break;
-        case MScriptExpr::OPER_POST_DEC:        out << "post--";break;
         case MScriptExpr::OPER_ASSIGN:          out << "=";     break;
-        case MScriptExpr::OPER_INDEX:           out << "[]";    break;
         case MScriptExpr::OPER_TERNARY:         out << "?";     break;
         case MScriptExpr::OPER_COLON:           out << ":";     break;
-        case MScriptExpr::OPER_SEMICOLON:       out << ";";     break;
+        case MScriptExpr::OPER_COMMA:           out << ",";     break;
 
-        case MScriptExpr::OPER_INT_PROM:       out << "<+POS>"; break;
-        case MScriptExpr::OPER_ADD_INV:        out << "<-NEG>"; break;
+        case MScriptExpr::OPER_INDEX:           out << "idx[]"; break;
+        case MScriptExpr::OPER_PRE_INC:         out << "++pre"; break;
+        case MScriptExpr::OPER_PRE_DEC:         out << "--pre"; break;
+        case MScriptExpr::OPER_POST_INC:        out << "post++";break;
+        case MScriptExpr::OPER_POST_DEC:        out << "post--";break;
+        case MScriptExpr::OPER_CALL:            out << "<call>";break;
+        case MScriptExpr::OPER_REF:             out << "<&ref>";break;
+        case MScriptExpr::OPER_INT_PROM:        out << "<+pos>";break;
+        case MScriptExpr::OPER_ADD_INV:         out << "<-neg>";break;
     }
     return out;
 }
