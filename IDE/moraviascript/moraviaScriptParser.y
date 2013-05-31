@@ -40,13 +40,13 @@
 /* Enable LAC (Lookahead Correction) to improve syntax error handling. */
 %define parse.lac full
 
-// Symbol semantic value
+// Symbol semantic value.
 %union
 {
     int integer;                //
     float real;                 //
     char * string;              //
-    MScriptExpr * expr;        //
+    MScriptExpr * expr;         //
     MScriptStatement * stmt;    //
     struct
     {
@@ -67,14 +67,15 @@
 %{
     #include <QObject>                // For i18n, nothing else.
     #include <cstdlib>                // We need free() here.
+    #include <cstring>                // We need strncmp() here.
     #include <iostream>               // This is required by Bison.
     using namespace std;              // This is required by Bison as well.
     using namespace MScriptStmtTypes; // This NS is heavily used here.
 
-    // Declaration of the lexer prototypes and other things required by Bison
+    // Declaration of the lexer prototypes and other things required by Bison.
     #include "moraviaScriptLexer.h"
 
-    // Name of the lexer func required by Bison
+    // Name of the lexer func required by Bison.
     #define moraviaScriptParser_lex moraviaScriptLexer_lex
 
     // Declaration of the error reporting function used by Bison.
@@ -84,14 +85,14 @@
                                            const char * errorInfo );
 %}
 
-// Declare an additional yyparse parameters
+// Declare an additional yyparse parameters.
 %parse-param { yyscan_t yyscanner }
 %parse-param { MScriptParserInterface * core }
 
-// Declare an additional yylex parameters
+// Declare an additional yylex parameters.
 %lex-param   { yyscan_t yyscanner }
 
-// Declare that the code which must be invoked before parsing actually begins
+// Declare code which has to be invoked before parsing actually begins.
 %initial-action
 {
     @$.first_column = @$.last_column = 1;
@@ -196,10 +197,10 @@
 %nonassoc "else"
 
 /* Terminal symbols with semantic value */
-%token<string>  IDENFIFIER
-%token<array>   STRING
-%token<integer> INTEGER
-%token<real>    REAL
+%token<string>  IDENFIFIER      "idenfifier"
+%token<array>   STRING          "string"
+%token<integer> INTEGER         "integer"
+%token<real>    REAL            "real number"
 
 /*
  * DECLARATION OF NON-TERMINAL SYMBOLS
