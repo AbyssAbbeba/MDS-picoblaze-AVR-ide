@@ -7,7 +7,7 @@ Highlighter::Highlighter(QTextDocument *parent, SourceType type)
 {
     qDebug() << "Highlighter: Highlighter()";
     HighlightingRule rule;
-    if (type == C)
+/*    if (type == C)
     {
         QStringList keywordPatterns;
         keywordPatterns << "\\bauto\\b" << "\\bbreak\\b" << "\\bchar\\b"
@@ -51,9 +51,9 @@ Highlighter::Highlighter(QTextDocument *parent, SourceType type)
         highlightingRules.append(rule);
 
         multiLineCommentFormat.setForeground(Qt::gray);
-        commentStartExpression = QRegExp("/\\*");
-        commentEndExpression = QRegExp("\\*/");
-    }
+        commentStartExpression = QRegExp("/\\*");*/
+//        commentEndExpression = QRegExp("\\*/");
+/*    }
     else if (type == CPP)
     {
         QStringList keywordPatterns;
@@ -99,9 +99,9 @@ Highlighter::Highlighter(QTextDocument *parent, SourceType type)
         highlightingRules.append(rule);
 
         multiLineCommentFormat.setForeground(Qt::gray);
-        commentStartExpression = QRegExp("/\\*");
-        commentEndExpression = QRegExp("\\*/");
-    }
+        commentStartExpression = QRegExp("/\\*");*/
+//        commentEndExpression = QRegExp("\\*/");
+/*    }
     else if (type == AVRASM)
     {
         QStringList keywordPatterns;
@@ -191,9 +191,9 @@ Highlighter::Highlighter(QTextDocument *parent, SourceType type)
         highlightingRules.append(rule);
 
         multiLineCommentFormat.setForeground(Qt::gray);
-        commentStartExpression = QRegExp("/\\*");
-        commentEndExpression = QRegExp("\\*/");
-    }
+        commentStartExpression = QRegExp("/\\*");*/
+//        commentEndExpression = QRegExp("\\*/");
+/*    }
     else if (type == PICASM)
     {
         QStringList keywordPatterns;
@@ -270,31 +270,15 @@ Highlighter::Highlighter(QTextDocument *parent, SourceType type)
         highlightingRules.append(rule);
 
         multiLineCommentFormat.setForeground(Qt::gray);
-        commentStartExpression = QRegExp("/\\*");
-        commentEndExpression = QRegExp("\\*/");
-    }
-    else if (type == PICOBLAZEASM)
+        commentStartExpression = QRegExp("/\\*");*/
+//        commentEndExpression = QRegExp("\\*/");
+/*    }
+    else */if (type == PICOBLAZEASM)
     {
+        qDebug() << "PICOBLAZEASM-----------------------------";
         QStringList keywordPatterns;
-        keywordPatterns << "\\bequ\\b";
-
-        keywordFormat.setForeground(Qt::darkBlue);
-        keywordFormat.setFontWeight(QFont::Bold);
-
-        foreach (const QString &pattern, keywordPatterns) {
-            rule.pattern = QRegExp(pattern);
-            rule.format = keywordFormat;
-            highlightingRules.append(rule);
-        }
-
-        quotationFormat.setForeground(Qt::darkRed);
-        rule.pattern = QRegExp("\".*\"");
-        rule.format = quotationFormat;
-        rule.tag = "quotation";
-        highlightingRules.append(rule);
-
-        QStringList functionPatterns;
-        functionPatterns << "\\badd\\b" << "\\baddcy\\b" << "\\band\\b"
+        keywordPatterns << "\\bequ\\b" << "\\bEQU\\b"
+            << "\\badd\\b" << "\\baddcy\\b" << "\\band\\b"
             << "\\bcall\\b" << "\\bcompare\\b" << "\\bcomparecy\\b"
             << "\\bdisable interrupt\\b" << "\\benable interrupt\\b" << "\\bfetch\\b"
             << "\\bhwbuild\\b" << "\\binput\\b" << "\\bjump\\b"
@@ -306,17 +290,51 @@ Highlighter::Highlighter(QTextDocument *parent, SourceType type)
             << "\\bsra\\b" << "\\bsrx\\b" << "\\bsr0\\b"
             << "\\bsr1\\b" << "\\bstar\\b" << "\\bstore\\b"
             << "\\bsub\\b" << "\\bsubcy\\b" << "\\btest\\b"
+            << "\\btestcy\\b" << "\\bxor\\b"
+            << "\\bADD\\b" << "\\bADDCY\\b" << "\\bAND\\b"
+            << "\\bCALL\\b" << "\\bCOMPARE\\b" << "\\bCOMPARECY\\b"
+            << "\\bDISABLE INTERRUPT\\b" << "\\bENABLE INTERRUPT\\b" << "\\bFETCH\\b"
+            << "\\bHWBUILD\\b" << "\\bINPUT\\b" << "\\bJUMP\\b"
+            << "\\bLOAD\\b" << "\\bLOAD&RETURN\\b" << "\\bOR\\b"
+            << "\\boutput\\b" << "\\bregbank a\\b" << "\\bregbank b\\b"
+            << "\\breturn\\b" << "\\breturni disable\\b" << "\\breturni enable\\b"
+            << "\\brl\\b" << "\\brr\\b" << "\\bsla\\b"
+            << "\\bslx\\b" << "\\bsl0\\b" << "\\bsl1\\b"
+            << "\\bsra\\b" << "\\bsrx\\b" << "\\bsr0\\b"
+            << "\\bsr1\\b" << "\\bstar\\b" << "\\bstore\\b"
+            << "\\bsub\\b" << "\\bsubcy\\b" << "\\btest\\b"
             << "\\btestcy\\b" << "\\bxor\\b";
 
-        //functionFormat.setFontItalic(true);
-        functionFormat.setForeground(Qt::blue);
+        keywordFormat.setForeground(Qt::darkBlue);
+        keywordFormat.setFontWeight(QFont::Bold);
 
-        foreach (const QString &pattern, functionPatterns) {
+        foreach (const QString &pattern, keywordPatterns)
+        {
+            rule.pattern = QRegExp(pattern);
+            rule.format = keywordFormat;
+            highlightingRules.append(rule);
+            //qDebug() << "Added " << pattern;
+        }
+
+        quotationFormat.setForeground(Qt::darkRed);
+        rule.pattern = QRegExp("\".*\"");
+        rule.format = quotationFormat;
+        rule.tag = "quotation";
+        highlightingRules.append(rule);
+
+        //QStringList functionPatterns;
+        //functionPatterns
+
+        //functionFormat.setFontItalic(true);
+        //functionFormat.setForeground(Qt::gray);
+
+        /*foreach (const QString &pattern, functionPatterns)
+        {
             rule.pattern = QRegExp(pattern);
             rule.format = functionFormat;
             rule.tag = "function";
             highlightingRules.append(rule);
-        }
+        }*/
 
         singleLineCommentFormat.setForeground(Qt::gray);
         rule.pattern = QRegExp(";[^\n]*");
@@ -330,6 +348,8 @@ Highlighter::Highlighter(QTextDocument *parent, SourceType type)
     }
     else
     {
+        qDebug() << "Highlighter: NOTHING------------------------------------";
+        qDebug() << "Highlighter: source type: " << type;
         //NOTHING
     }
 
@@ -347,12 +367,12 @@ Highlighter::Highlighter(QTextDocument *parent, SourceType type)
 
 void Highlighter::highlightBlock(const QString &text)
 {
-    //qDebug() << "Highlighter: highlightBlock()";
+    qDebug() << "Highlighter: highlightBlock() : " << text;
     if (text != "")
     {
         setCurrentBlockState(0);
 
-        int startIndex = 0;
+        int startIndex = -1;
         if (previousBlockState() != 1)
         {
             startIndex = commentStartExpression.indexIn(text);
@@ -374,6 +394,7 @@ void Highlighter::highlightBlock(const QString &text)
             }
             setFormat(startIndex, commentLength, multiLineCommentFormat);
             startIndex = commentStartExpression.indexIn(text, startIndex + commentLength);
+            //qDebug() << "Startindex:" << startIndex;
         }
 
         //qDebug() << "Highlighter: while1";
@@ -392,5 +413,5 @@ void Highlighter::highlightBlock(const QString &text)
             }
         }
     }
-    //qDebug() << "Highlighter: return highlightBlock()";
+    qDebug() << "Highlighter: return highlightBlock()";
 }
