@@ -28,10 +28,11 @@ namespace MScriptStmtTypes
 {
     enum Type
     {
-        EMPTY_STATEMENT = 0,
+        STMT_EMPTY = -1,
+        STMT_ROOT = 0,
 
         STMT_SCOPE,
-        STMT_CONDITIONAL_EXEC,
+        STMT_CONDITION,
         STMT_IF,
         STMT_ELSE,
         STMT_EXPR,
@@ -45,6 +46,7 @@ namespace MScriptStmtTypes
         STMT_BREAK,
         STMT_SWITCH,
         STMT_CASE,
+        STMT_DEFAULT,
         STMT_DELETE
     };
 };

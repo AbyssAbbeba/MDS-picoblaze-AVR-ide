@@ -131,17 +131,61 @@ class MScriptStatement
          */
         MScriptStatement * appendArgsLink ( MScriptExpr * chainLink );
 
+    ////    Inline Public Operations    ////
+    public:
         /**
          * @brief
          * @return
          */
-        MScriptStatement * prev() const;
+        MScriptStatement * prev() const
+        {
+            return m_prev;
+        }
 
         /**
          * @brief
          * @return
          */
-        MScriptStatement * next() const;
+        MScriptStatement * next() const
+        {
+            return m_next;
+        }
+
+        /**
+         * @brief
+         * @return
+         */
+        MScriptStatement * branch() const
+        {
+            return m_branch;
+        }
+
+        /**
+         * @brief
+         * @return
+         */
+        const MScriptSrcLocation & location() const
+        {
+            return m_location;
+        }
+
+        /**
+         * @brief
+         * @return
+         */
+        MScriptStmtTypes::Type type() const
+        {
+            return m_type;
+        }
+
+        /**
+         * @brief
+         * @return
+         */
+        MScriptExpr * args() const
+        {
+            return m_args;
+        }
 
     ////    Private Operations    ////
     public:

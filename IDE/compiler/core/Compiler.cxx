@@ -15,6 +15,7 @@
 
 #include "Compiler.h"
 
+// Compiler header files.
 #include "CompilerCore.h"
 #include "CompilerMsgInterface.h"
 

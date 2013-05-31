@@ -20,6 +20,13 @@
 #include "MScriptParserInterface.h"
 #include "MScriptSrcLocation.h"
 
+/*
+ * Code specific for other operating systems than GNU/Linux.
+ */
+#ifndef __linux__
+    char * strdup ( const char * s );
+#endif // __linux__
+
 /**
  * @brief
  * @ingroup MoraviaScript

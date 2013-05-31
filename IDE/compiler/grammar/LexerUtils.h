@@ -18,11 +18,11 @@
 
 #include "CompilerParserInterface.h"
 
+// Standard header files.
 #include <cstdint>
 
-
 /*
- * Code specific for other operating systems that GNU/Linux.
+ * Code specific for other operating systems than GNU/Linux.
  */
 #ifndef __linux__
     char * strdup ( const char * s );
