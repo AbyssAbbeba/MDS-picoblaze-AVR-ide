@@ -197,7 +197,7 @@
 %nonassoc "else"
 
 /* Terminal symbols with semantic value */
-%token<string>  IDENFIFIER      "idenfifier"
+%token<string>  IDENTIFIER      "idenfifier"
 %token<array>   STRING          "string"
 %token<integer> INTEGER         "integer"
 %token<real>    REAL            "real number"
@@ -369,7 +369,7 @@ cases:
 
 // Arbitrary identifier.
 id:
-      IDENFIFIER                    { $$ = new MScriptExpr($IDENFIFIER, @$); }
+      IDENTIFIER                    { $$ = new MScriptExpr($IDENTIFIER, @$); }
 ;
 
 // List of function parameters.

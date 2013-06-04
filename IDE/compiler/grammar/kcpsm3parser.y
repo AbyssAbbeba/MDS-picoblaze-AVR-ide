@@ -228,7 +228,7 @@
 
 /* Terminal symbols with semantic value */
   // semantic value is a string
-%token<string>  IDENFIFIER      LABEL
+%token<string>  IDENTIFIER      LABEL
 %token<array>   STRING          INCLUDE
   // semantic value is a number
 %token<number>  NUMBER
@@ -351,7 +351,7 @@ number:
       NUMBER                        { $$ = new CompilerExpr($1, LOC(@$)); }
 ;
 id:
-      IDENFIFIER                    { $$ = new CompilerExpr($1, LOC(@$)); }
+      IDENTIFIER                    { $$ = new CompilerExpr($1, LOC(@$)); }
 ;
 string:
       STRING                        { $$ = new CompilerExpr(CompilerExpr::Value($1.data, $1.size), LOC(@$)); }
