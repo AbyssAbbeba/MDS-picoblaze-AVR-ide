@@ -104,11 +104,13 @@ void MScriptCore::unloadScript()
 bool MScriptCore::executeStep()
 {
     step();
+    return true;
 }
 
 bool MScriptCore::executeRun()
 {
-
+    while ( true == step() );
+    return true;
 }
 
 std::vector<std::string> & MScriptCore::getMessages()
