@@ -71,9 +71,13 @@ int AsmKcpsm3SymbolTable::addSymbol ( const std::string & name,
         if ( true == resolve )
         {
             finalValue = (int) resolveExpr(value);
+            CompilerExpr finalValueExpr(finalValue, *location);
+            m_table.insert ( std::pair<std::string,Symbol>(name, Symbol(&finalValueExpr, location, type, finalValue, redefinable)) );
         }
-
-        m_table.insert ( std::pair<std::string,Symbol>(name, Symbol(value, location, type, finalValue, redefinable)) );
+        else
+        {
+            m_table.insert ( std::pair<std::string,Symbol>(name, Symbol(value, location, type, finalValue, redefinable)) );
+        }
     }
     else
     {

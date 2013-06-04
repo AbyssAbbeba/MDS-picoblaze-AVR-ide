@@ -306,7 +306,7 @@ stmt:
                                                               QObject::tr("empty scope").toStdString() );
                                     }
     | "if" "(" expr ")" stmt        {
-                                        MScriptStatement * ifBlock = new MScriptStatement(@$, STMT_IF, $expr);
+                                        MScriptStatement * ifBlock = new MScriptStatement(@1, STMT_IF, $expr);
                                         ifBlock->createBranch($5);
 
                                         $$ = new MScriptStatement(@$, STMT_CONDITION);
@@ -314,10 +314,10 @@ stmt:
                                     }
     | "if" "(" expr ")" stmt "else" stmt
                                     {
-                                        MScriptStatement * ifBlock = new MScriptStatement(@$, STMT_IF, $3);
+                                        MScriptStatement * ifBlock = new MScriptStatement(@1, STMT_IF, $3);
                                         ifBlock->createBranch($5);
 
-                                        MScriptStatement * elseBlock = new MScriptStatement(@$, STMT_ELSE);
+                                        MScriptStatement * elseBlock = new MScriptStatement(@6, STMT_ELSE);
                                         elseBlock->createBranch($7);
 
                                         $$ = new MScriptStatement(@$, STMT_CONDITION);
