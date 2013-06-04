@@ -261,6 +261,11 @@ DIS_INT_INST            "disable"{WSPACE}"interrupt"
 "input"                 { return I_INPUT; }
 "output"                { return I_OUTPUT; }
 
+"z"                     { return Z; }
+"nz"                    { return NZ; }
+"c"                     { return C; }
+"nc"                    { return NC; }
+
 "high"                  { return F_HIGH; }
 "low"                   { return F_LOW; }
 

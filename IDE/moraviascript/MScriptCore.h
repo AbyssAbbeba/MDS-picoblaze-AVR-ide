@@ -21,13 +21,13 @@ class MScriptStrategy;
 class MScriptStatement;
 
 // MScript language interpreter header files.
-#include "MScriptParserInterface.h"
 #include "MScriptBase.h"
+#include "MScriptParserInterface.h"
+#include "MScriptInterpret.h"
 
 // Standard header files.
 #include <vector>
 #include <string>
-#include <stack>
 #include <cstdio>
 
 /**
@@ -35,19 +35,10 @@ class MScriptStatement;
  * @class MScriptCore
  * @ingroup MoraviaScript
  */
-class MScriptCore : private MScriptBase,
-                    private MScriptParserInterface
+class MScriptCore : protected MScriptBase,
+                    protected MScriptParserInterface,
+                    protected MScriptInterpret
 {
-    ////    Public Datatypes    ////
-    public:
-        /**
-         * @brief
-         */
-        struct ExecutionContext
-        {
-            std::stack<MScriptStatement*> m_programPointer;
-        };
-
     ////    Constructors and Destructors    ////
     public:
         /**
@@ -143,12 +134,15 @@ class MScriptCore : private MScriptBase,
                                     MScriptBase::MessageType type,
                                     const std::string & text );
 
-    ////    Inline Private Operations    ////
-    private:
         /**
          * @brief
+         * @param[in] location
+         * @param[in] type
+         * @param[in] text
          */
-        inline void checkCode();
+        virtual void interpretMessage ( MScriptSrcLocation location,
+                                        MScriptBase::MessageType type,
+                                        const std::string & text );
 
     ////    Private Attributes    ////
     private:
@@ -160,9 +154,6 @@ class MScriptCore : private MScriptBase,
 
         /// @brief
         std::vector<std::string> m_messages;
-
-        /// @brief
-        ExecutionContext m_context;
 
         /// @brief
         bool m_success;

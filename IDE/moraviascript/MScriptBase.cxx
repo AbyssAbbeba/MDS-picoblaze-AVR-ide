@@ -18,7 +18,7 @@
 // Used for i18n only.
 #include <QObject>
 
-std::string MScriptBase::msgTypeTostr ( MessageType type ) const
+std::string MScriptBase::msgTypeToStr ( MessageType type ) const
 {
     switch ( type )
     {
