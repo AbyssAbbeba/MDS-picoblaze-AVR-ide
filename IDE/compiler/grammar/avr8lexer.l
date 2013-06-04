@@ -649,7 +649,7 @@ XESC    (\\[0-7]{1,3})|(\\x[0-9A-F]{1,2})|(\\[uU][0-9A-F]{1,8})
 
                     // Return as general identifier
                     yylval->string = yytext;
-                    return IDENFIFIER;
+                    return IDENTIFIER;
                 }
 <<EOF>>         {
                     // Handle end of file; possibly switch back to previous file, in case "include" was used

@@ -651,7 +651,7 @@ d'[0-9]+'       {
 
                     // Return as general identifier
                     yylval->string = yytext;
-                    return IDENFIFIER;
+                    return IDENTIFIER;
                 }
 <<EOF>>         {
                     // Handle end of file; possibly switch back to previous file, in case "include" was used

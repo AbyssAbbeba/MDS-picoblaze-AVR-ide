@@ -606,6 +606,12 @@ d'[0-9]+'               {
                             yylval->string = yytext;
                             return LABEL;
                         }
+[0-9]{ID}:              {
+                            // Unrecognized token => ERROR
+                            yyextra -> lexerMessage ( yylloc,
+                                                      CompilerBase::MT_ERROR,
+                                                      QObject::tr("label cannot start with a digit: ").toStdString() + "`" + std::string(yytext) + "'" );
+                        }
 {ID}|"$"                {
                             // Arbitrary identifier, e.g. `MYREG_U1'
 
@@ -617,7 +623,13 @@ d'[0-9]+'               {
 
                             // Return as general identifier
                             yylval->string = yytext;
-                            return IDENFIFIER;
+                            return IDENTIFIER;
+                        }
+[0-9]{ID}               {
+                            // Unrecognized token => ERROR
+                            yyextra -> lexerMessage ( yylloc,
+                                                      CompilerBase::MT_ERROR,
+                                                      QObject::tr("identifier cannot start with a digit: ").toStdString() + "`" + std::string(yytext) + "'" );
                         }
 <<EOF>>                 {
                             // Handle end of file; possibly switch back to previous file, in case "include" was used
