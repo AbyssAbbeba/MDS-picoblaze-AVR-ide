@@ -2,99 +2,96 @@
 ; instruction opcodes
 
 
-TESTsymb1	SET		10h
-TESTsymb2	SET		0x11    
-TESTsymb3	SET		12
-TESTsymb4	SET		d13
-TESTsymb5	EQU		14h
-TESTsymb6	EQU		0x15    
-TESTsymb7	EQU		16
-TESTsymb8	EQU		d17
-TESTsymb9	REG		18h
-TESTsymb10	REG		19h
-TESTsymb11	REG		1Ah
-TESTsymb12	REG		1Bh
-TESTsymb13	DATA		1Ch
-TESTsymb14	DATA		0x1D
-TESTsymb15	DATA		12
-TESTsymb16	DATA		d13
-TESTsymb17	CODE		10h + 20h
-TESTsymb18	CODE		20h 
-TESTsymb19	CODE		21h
-TESTsymb20	CODE		22h
-TESTsymb21	DEFINE		23h
-TESTsymb22	DEFINE		24h
-TESTsymb23	DEFINE		25h
-TESTsymb24	DEFINE		TESTsymb1 + TESTsymb11
+TESTsymb1    SET        1h
+TESTsymb2    SET        0x11
+TESTsymb3    SET        1
+TESTsymb4    SET        3d
+TESTsymb5    EQU        4h
+TESTsymb6    EQU        0x05
+TESTsymb7    EQU        6
+TESTsymb8    EQU        7
+TESTsymb9    REG        8h
+TESTsymb10    REG        9h
+TESTsymb11    REG        Ah
+TESTsymb12    REG        Bh
+TESTsymb13    DATA        Ch
+TESTsymb14    DATA        0x05
+TESTsymb15    DATA        2
+TESTsymb16    DATA        3d
+TESTsymb17    CODE        0h + 2h
+TESTsymb18    CODE        2h
+TESTsymb19    CODE        2h
+TESTsymb20    CODE        2h
+TESTsymb21    DEFINE        3h
+TESTsymb22    DEFINE        4h
+TESTsymb23    DEFINE        5h
+TESTsymb24    DEFINE        TESTsymb1 + TESTsymb11
 
 
-	      ORG		0x000
-	      JUMP		Start:
-	      ADDRESS		0x3FF
-	      JUMP		Interrupt:
-	      
-	      JUMP		0x000			
-Start:    							
-	      JUMP		Z, 0x000
-	      JUMP		NZ,0x000
-	      JUMP		C, 0x000
-	      JUMP		NC,0x000
-	      
-	 ; Arithmetics
-	      ADD 		testsymb9,#12 
-	      ADDCY 		testsymb9,#20
-	      SUB 		testsymb9,#ffh 
-	      SUBCY 		testsymb9,#0xff 
-	      COMPARE 		testsymb9,#0 
-	      
-	      ADD 		testsymn9,testsymb9 
-	      ADDCY 		testsymb9,testsymb9 
-	      SUB 		testsymb9,testsymb9
-	      SUBCY 		testsymb9,testsymb10 
-	      COMPARE 		testsymb9,testsymb11
+          ORG        0x000
+          JUMP        Start
+          JUMP        0x000
+Start:        
+        JUMP        Z, 0x000
+        JUMP        NZ,0x000
+        JUMP        C, 0x000
+        JUMP        NC,0x000
+    
+     ; Arithmetics
+        ADD         testsymb9,#12
+        ADDCY       testsymb9,#20
+        SUB         testsymb9,#ffh
+        SUBCY       testsymb9,#0xff
+        COMPARE     testsymb9,#0
 
-	; Logical
-	      LOAD 		testsymb9,#01h 
-	      AND		testsymb9,#0 
-	      OR 		testsymb9,#1 
-	      XOR 		testsymb9,#2 
-	      TEST 		testsymb9,#3 
+        ADD         testsymb9,testsymb9
+        ADDCY       testsymb9,testsymb9
+        SUB         testsymb9,testsymb9
+        SUBCY       testsymb9,testsymb10
+        COMPARE     testsymb9,testsymb11
 
-	      LOAD 		testsymb9,testsymb9 
-	      AND 		testsymb9,testsymb9 
-	      OR 		testsymb9,testsymb9
-	      XOR 		testsymb9,testsymb9 
-	      TEST 		testsymb9,testsymb9 
-	; Shift and rotate      
-	      SR0 		TESTsymb10
-	      SR1 		TESTsymb10
-	      SRX 		TESTsymb10
-	      SRA 		TESTsymb10
-	      RR  		TESTsymb10
-	      
-	      SL0 		TESTsymb10
-	      SL1 		TESTsymb10
-	      SLX 		TESTsymb10
-	      SLA 		TESTsymb10
-	      RL 		TESTsymb10
-       ; Others
-	      CALL		Podprog: 		 
-	      CALL 		Z,Podprog: 
-	      CALL 		NZ,Podprog: 
-	      CALL 		C,Podprog: 
-	      CALL 		NC,Podprog: 
-	      
-	      STORE		TESTsymb11,TESTsymb17 
-	      STORE		TESTsymb14,@50
-	      FETCH		TESTsymb13,TESTsymb17
-	      FETCH		TESTsymb12,@32
+; Logical
+        LOAD      testsymb9,#01h
+        AND       testsymb9,#0
+        OR        testsymb9,#1
+        XOR       testsymb9,#2
+        TEST      testsymb9,#3
 
-Podprog:	      
-	      RETURN
-	      RETURN		Z
-	      RETURN		NZ
-	      RETURN		C
-	      RETURN		NC
+        LOAD      testsymb9,testsymb9
+        AND       testsymb9,testsymb9
+        OR        testsymb9,testsymb9
+        XOR       testsymb9,testsymb9
+        TEST      testsymb9,testsymb9
+; Shift and rotate
+        SR0       TESTsymb10
+        SR1       TESTsymb10
+        SRX        TESTsymb10
+        SRA        TESTsymb10
+        RR         TESTsymb10
+
+        SL0       TESTsymb10
+        SL1       TESTsymb10
+        SLX       TESTsymb10
+        SLA       TESTsymb10
+        RL        TESTsymb10
+    ; Others
+        CALl      Podprog
+        CALL      Z,Podprog
+        CALL      NZ,Podprog
+        CALL      C,Podprog
+        CALL      NC,Podprog
+
+        STORE     TESTsymb9,TESTsymb13
+        STORE     TESTsymb10,@10
+        FETCH     TESTsymb11,TESTsymb13
+        FETCH     TESTsymb12,@5
+
+Podprog:
+        RETURN
+        RETURN    Z
+        RETURN    NZ
+        RETURN    C
+        RETURN    NC
 
 
   ;  JUMP aaa ADD sX,kk LOAD sX,kk SR0 sX
