@@ -33,9 +33,9 @@ class MScriptBase
          */
         enum MessageType
         {
-            MT_ERROR,
-            MT_WARNING,
-            MT_GENERAL
+            MT_ERROR,   ///<
+            MT_WARNING, ///<
+            MT_GENERAL  ///<
         };
 
     ////    Protected Operations    ////
@@ -45,7 +45,7 @@ class MScriptBase
          * @param[in] type
          * @return
          */
-        std::string msgTypeTostr ( MessageType type ) const;
+        std::string msgTypeToStr ( MessageType type ) const;
 };
 
 #endif // MSCRIPTBASE_H
