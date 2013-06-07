@@ -7,7 +7,7 @@
  *
  * (C) copyright 2013 Moravia Microsystems, s.r.o.
  *
- * @author Martin Ošmera <martin.osmera@gmail.com>
+ * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup Kcpsm3Asm
  * @file AsmKcpsm3InstructionSet.cxx
  */
@@ -106,7 +106,7 @@ unsigned int AsmKcpsm3InstructionSet::getSS ( const CompilerStatement * stmt,
 
 int AsmKcpsm3InstructionSet::resolveOPcode ( CompilerStatement * stmt ) const
 {
-    using namespace StatementTypes;
+    using namespace CompilerStatementTypes;
 
     switch ( (int) stmt->type() )
     {
@@ -328,7 +328,7 @@ int AsmKcpsm3InstructionSet::resolveOPcode ( CompilerStatement * stmt ) const
 inline void AsmKcpsm3InstructionSet::detAccSymTypes ( const CompilerStatement * stmt,
                                                       int * acceptableTypes ) const
 {
-    using namespace StatementTypes;
+    using namespace CompilerStatementTypes;
 
     acceptableTypes[0] = (int) ( AsmKcpsm3SymbolTable::STYPE_NUMBER | AsmKcpsm3SymbolTable::STYPE_EXPRESSION );
     acceptableTypes[1] = (int) ( AsmKcpsm3SymbolTable::STYPE_NUMBER | AsmKcpsm3SymbolTable::STYPE_EXPRESSION );
@@ -422,7 +422,7 @@ inline void AsmKcpsm3InstructionSet::detAccSymTypes ( const CompilerStatement * 
 
 inline std::string AsmKcpsm3InstructionSet::getInstructionName ( const CompilerStatement * stmt ) const
 {
-    using namespace StatementTypes;
+    using namespace CompilerStatementTypes;
 
     switch ( (int) stmt->type() )
     {
@@ -581,7 +581,7 @@ void AsmKcpsm3InstructionSet::encapsulate ( CompilerStatement * stmt,
 
 bool AsmKcpsm3InstructionSet::isInstruction ( const CompilerStatement * const stmt ) const
 {
-    using namespace StatementTypes;
+    using namespace CompilerStatementTypes;
 
     switch ( (int) stmt->type() )
     {

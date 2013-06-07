@@ -7,7 +7,7 @@
  *
  * (C) copyright 2013 Moravia Microsystems, s.r.o.
  *
- * @author Martin Ošmera <martin.osmera@gmail.com>
+ * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup Kcpsm3Asm
  * @file AsmKcpsm3SemanticAnalyzer.cxx
  */
@@ -16,7 +16,7 @@
 #include "AsmKcpsm3SemanticAnalyzer.h"
 
 // Common compiler header files.
-#include "StatementTypes.h"
+#include "CompilerStatementTypes.h"
 #include "../AsmMachineCodeGen.h"
 #include "../AsmDgbFileGen.h"
 
@@ -28,6 +28,7 @@
 
 // Standard headers.
 #include <cstdint>
+#include <cstring>
 #include <string>
 #include <vector>
 #include <fstream>
@@ -41,7 +42,7 @@ void AsmKcpsm3SemanticAnalyzer::MemoryPtr::clear()
 
 AsmKcpsm3SemanticAnalyzer::AsmKcpsm3SemanticAnalyzer ( CompilerSemanticInterface * compilerCore,
                                                        CompilerOptions * opts )
-                                                     : SemanticAnalyzer ( compilerCore, opts )
+                                                     : CompilerSemanticAnalyzer ( compilerCore, opts )
 {
     m_symbolTable = new AsmKcpsm3SymbolTable ( compilerCore, opts );
     m_machineCode = new AsmMachineCodeGen ( AsmMachineCodeGen::WORD_3B );
@@ -114,7 +115,7 @@ void AsmKcpsm3SemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
                                          const CompilerBase::SourceLocation * origLocation,
                                          const std::string * macroName )
 {
-    using namespace StatementTypes;
+    using namespace CompilerStatementTypes;
 
     std::vector<std::string> localSymbols;
 
@@ -137,6 +138,26 @@ void AsmKcpsm3SemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
 
         switch ( (int) node->type() )
         {
+            case ASMKCPSM3_DIR_LIMIT:
+            {
+                const char * limSel = node->args()->lVal().m_data.m_symbol;
+                int limVal = m_symbolTable->resolveExpr ( node->args()->next() );
+
+                if ( 0 != strcmp("R", limSel) )
+                {
+                    m_opts->m_processorlimits.m_regFileSize = limVal;
+                }
+                else if ( 0 != strcmp("D", limSel) )
+                {
+                    m_opts->m_processorlimits.m_iDataMemSize = limVal;
+                }
+                else if ( 0 != strcmp("C", limSel) )
+                {
+                    m_opts->m_processorlimits.m_iCodeMemSize = limVal;
+                }
+
+                break;
+            }
             case ASMKCPSM3_DIR_CODE:
             case ASMKCPSM3_DIR_PORT:
             case ASMKCPSM3_DIR_DATA:
@@ -309,7 +330,7 @@ void AsmKcpsm3SemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
                                                                      nameOfMacro,
                                                                      node->args()->next() );
 
-                    if ( StatementTypes::EMPTY_STATEMENT == macro->type() )
+                    if ( CompilerStatementTypes::EMPTY_STATEMENT == macro->type() )
                     {
                         break;
                     }
@@ -406,28 +427,28 @@ void AsmKcpsm3SemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
                 break;
             case ASMKCPSM3_DIR_TITLE:
             {
-                const CompilerExpr::Value::Data::CharArray & argCharArray = node->args()->lVal().m_data.m_array;
+                const CompilerValue::Data::CharArray & argCharArray = node->args()->lVal().m_data.m_array;
                 std::string arg ( (char*) argCharArray.m_data, argCharArray.m_size );
                 m_codeListing->setTitle(arg);
                 break;
             }
             case ASMKCPSM3_DIR_MESSG:
             {
-                const CompilerExpr::Value::Data::CharArray & argCharArray = node->args()->lVal().m_data.m_array;
+                const CompilerValue::Data::CharArray & argCharArray = node->args()->lVal().m_data.m_array;
                 std::string arg ( (char*) argCharArray.m_data, argCharArray.m_size );
                 m_compilerCore->compilerMessage(*location, CompilerBase::MT_REMARK, arg);
                 break;
             }
             case ASMKCPSM3_DIR_WARNING:
             {
-                const CompilerExpr::Value::Data::CharArray & argCharArray = node->args()->lVal().m_data.m_array;
+                const CompilerValue::Data::CharArray & argCharArray = node->args()->lVal().m_data.m_array;
                 std::string arg ( (char*) argCharArray.m_data, argCharArray.m_size );
                 m_compilerCore->compilerMessage(*location, CompilerBase::MT_WARNING, arg);
                 break;
             }
             case ASMKCPSM3_DIR_ERROR:
             {
-                const CompilerExpr::Value::Data::CharArray & argCharArray = node->args()->lVal().m_data.m_array;
+                const CompilerValue::Data::CharArray & argCharArray = node->args()->lVal().m_data.m_array;
                 std::string arg ( (char*) argCharArray.m_data, argCharArray.m_size );
                 m_compilerCore->compilerMessage(*location, CompilerBase::MT_ERROR, arg);
                 break;
@@ -440,9 +461,9 @@ void AsmKcpsm3SemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
                       NULL != arg;
                       arg = arg->next() )
                 {
-                    if ( CompilerExpr::Value::TYPE_ARRAY == arg->lVal().m_type )
+                    if ( CompilerValue::TYPE_ARRAY == arg->lVal().m_type )
                     {
-                        const CompilerExpr::Value::Data::CharArray & charArray = arg->lVal().m_data.m_array;
+                        const CompilerValue::Data::CharArray & charArray = arg->lVal().m_data.m_array;
                         for ( int i = 0; i < charArray.m_size; i++ )
                         {
                             dbData.push_back ( charArray.m_data[i] );
@@ -537,7 +558,7 @@ void AsmKcpsm3SemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
 
 inline void AsmKcpsm3SemanticAnalyzer::phase2 ( CompilerStatement * codeTree )
 {
-    using namespace StatementTypes;
+    using namespace CompilerStatementTypes;
 
     m_symbolTable->maskNonLabels();
 
@@ -588,7 +609,7 @@ inline void AsmKcpsm3SemanticAnalyzer::phase2 ( CompilerStatement * codeTree )
 
 CompilerStatement * AsmKcpsm3SemanticAnalyzer::conditionalCompilation ( CompilerStatement * ifTree )
 {
-    using namespace StatementTypes;
+    using namespace CompilerStatementTypes;
 
     CompilerStatement * result = NULL;
 
@@ -627,12 +648,12 @@ CompilerStatement * AsmKcpsm3SemanticAnalyzer::conditionalCompilation ( Compiler
 
             case ASMKCPSM3_DIR_IFB:
             case ASMKCPSM3_DIR_ELSEIFB:
-                conditionVal = ( ( CompilerExpr::Value::TYPE_EMPTY == node->args()->lVal().m_type ) ? 1 : 0 );
+                conditionVal = ( ( CompilerValue::TYPE_EMPTY == node->args()->lVal().m_type ) ? 1 : 0 );
                 break;
 
             case ASMKCPSM3_DIR_IFNB:
             case ASMKCPSM3_DIR_ELSEIFNB:
-                conditionVal = ( ( CompilerExpr::Value::TYPE_EMPTY == node->args()->lVal().m_type ) ? 0 : 1 );
+                conditionVal = ( ( CompilerValue::TYPE_EMPTY == node->args()->lVal().m_type ) ? 0 : 1 );
                 break;
 
             case ASMKCPSM3_DIR_ELSE:

@@ -7,7 +7,7 @@
  *
  * (C) copyright 2013 Moravia Microsystems, s.r.o.
  *
- * @author Martin Ošmera <martin.osmera@gmail.com>
+ * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup Kcpsm3Asm
  * @file AsmKcpsm3SemanticAnalyzer.h
  */
@@ -25,14 +25,14 @@ class AsmKcpsm3InstructionSet;
 class AsmKcpsm3Macros;
 
 // Common compiler header files.
-#include "../../SemanticAnalyzer.h"
+#include "../../CompilerSemanticAnalyzer.h"
 
 /**
  * @brief
  * @ingroup Kcpsm3Asm
  * @class AsmKcpsm3SemanticAnalyzer
  */
-class AsmKcpsm3SemanticAnalyzer : public SemanticAnalyzer
+class AsmKcpsm3SemanticAnalyzer : public CompilerSemanticAnalyzer
 {
     ////    Public Static Constants    ////
     public:

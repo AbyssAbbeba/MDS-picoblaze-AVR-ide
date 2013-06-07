@@ -6,7 +6,7 @@
  *
  * (C) copyright 2013 Moravia Microsystems, s.r.o.
  *
- * @author Martin Ošmera <martin.osmera@gmail.com>
+ * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  */
 // =============================================================================
 
@@ -331,7 +331,7 @@ stmt:
     | "while" "(" expr ")" stmt     {
                                         $$ = (new MScriptStatement(@$, STMT_WHILE, $expr))->createBranch($5);
                                     }
-    | "do" stmt "while" "(" expr ")"
+    | "do" stmt "while" "(" expr ")" ";"
                                     {
                                         $$ =(new MScriptStatement(@$, STMT_DO_WHILE, $expr))->createBranch($2);
                                     }

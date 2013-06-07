@@ -66,6 +66,7 @@ add_library ( ${PROJECT_NAME} SHARED
               MScriptSrcLocation.cxx
               MScriptBase.cxx
               MScriptInterpret.cxx
+              MScriptExecContext.cxx
               MScriptStatement.cxx
               MScriptLexerAuxFunc.cxx )
 

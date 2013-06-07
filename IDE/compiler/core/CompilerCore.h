@@ -7,7 +7,7 @@
  *
  * (C) copyright 2013 Moravia Microsystems, s.r.o.
  *
- * @author Martin Ošmera <martin.osmera@gmail.com>
+ * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup Compiler
  * @file CompilerCore.h
  */
@@ -21,7 +21,7 @@ class CompilerExpr;
 class CompilerStatement;
 class CompilerMsgInterface;
 class CompilerOptions;
-class SemanticAnalyzer;
+class CompilerSemanticAnalyzer;
 class CompilerMsgObserver;
 
 // Base class and compiler interfaces.
@@ -32,7 +32,6 @@ class CompilerMsgObserver;
 // Standard header files.
 #include <string>
 #include <vector>
-
 
 /**
  * @brief
@@ -267,7 +266,7 @@ class CompilerCore : public CompilerBase,
         /**
          * @brief
          */
-        SemanticAnalyzer * m_semanticAnalyzer;
+        CompilerSemanticAnalyzer * m_semanticAnalyzer;
 
         /**
          * @brief

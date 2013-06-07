@@ -7,7 +7,7 @@
  *
  * (C) copyright 2013 Moravia Microsystems, s.r.o.
  *
- * @author Martin Ošmera <martin.osmera@gmail.com>
+ * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup MoraviaScript
  * @file MScriptCore.h
  */
@@ -140,9 +140,9 @@ class MScriptCore : protected MScriptBase,
          * @param[in] type
          * @param[in] text
          */
-        virtual void interpretMessage ( MScriptSrcLocation location,
-                                        MScriptBase::MessageType type,
-                                        const std::string & text );
+        virtual void interpreterMessage ( MScriptSrcLocation location,
+                                          MScriptBase::MessageType type,
+                                          const std::string & text );
 
     ////    Private Attributes    ////
     private:

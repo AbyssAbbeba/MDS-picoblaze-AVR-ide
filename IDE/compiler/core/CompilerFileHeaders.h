@@ -7,20 +7,20 @@
  *
  * (C) copyright 2013 Moravia Microsystems, s.r.o.
  *
- * @author Martin Ošmera <martin.osmera@gmail.com>
+ * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup Compiler
- * @file FileHeaders.h
+ * @file CompilerFileHeaders.h
  */
 // =============================================================================
 
 
-#ifndef FILEHEADERS_H
-#define FILEHEADERS_H
+#ifndef COMPILERFILEHEADERS_H
+#define COMPILERFILEHEADERS_H
 
-namespace FileHeaders
+namespace CompilerFileHeaders
 {
     ////    Public Static Constants    ////
     constexpr const char * AsmNativeDgbFile = "Moravia Microsystems, s.r.o. Debugger File Av1.0";
 }
 
-#endif // FILEHEADERS_H
+#endif // COMPILERFILEHEADERS_H

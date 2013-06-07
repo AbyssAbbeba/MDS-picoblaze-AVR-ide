@@ -7,7 +7,7 @@
  *
  * (C) copyright 2013 Moravia Microsystems, s.r.o.
  *
- * @author Martin Ošmera <martin.osmera@gmail.com>
+ * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup Pic8Asm
  * @file AsmPic8SemanticAnalyzer.h
  */
@@ -16,14 +16,14 @@
 #ifndef ASMPIC8SEMANTICANALYSER_H
 #define ASMPIC8SEMANTICANALYSER_H
 
-#include "../../SemanticAnalyzer.h"
+#include "../../CompilerSemanticAnalyzer.h"
 
 /**
  * @brief
  * @ingroup Pic8Asm
  * @class AsmPic8SemanticAnalyzer
  */
-class AsmPic8SemanticAnalyzer : public SemanticAnalyzer
+class AsmPic8SemanticAnalyzer : public CompilerSemanticAnalyzer
 {
     ////    Constructors and Destructors    ////
     public:
@@ -35,7 +35,7 @@ class AsmPic8SemanticAnalyzer : public SemanticAnalyzer
          */
         AsmPic8SemanticAnalyzer ( CompilerSemanticInterface * compilerCore,
                                   CompilerOptions * const opts )
-                                : SemanticAnalyzer ( compilerCore, opts ) {};
+                                : CompilerSemanticAnalyzer ( compilerCore, opts ) {};
 
     ////    Public Operations    ////
     public:

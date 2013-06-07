@@ -7,7 +7,7 @@
  *
  * (C) copyright 2013 Moravia Microsystems, s.r.o.
  *
- * @author Martin Ošmera <martin.osmera@gmail.com>
+ * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup Kcpsm3Asm
  * @file AsmKcpsm3SymbolTable.cxx
  */
@@ -135,12 +135,12 @@ AsmKcpsm3SymbolTable::SymbolType AsmKcpsm3SymbolTable::getType ( const CompilerE
     {
         switch ( expr->lVal().m_type )
         {
-            case CompilerExpr::Value::TYPE_EMPTY:    return STYPE_UNSPECIFIED;
-            case CompilerExpr::Value::TYPE_INT:      return STYPE_NUMBER;
-            case CompilerExpr::Value::TYPE_REAL:     return STYPE_NUMBER;
-            case CompilerExpr::Value::TYPE_EXPR:     return STYPE_EXPRESSION;
-            case CompilerExpr::Value::TYPE_ARRAY:    return STYPE_UNSPECIFIED;
-            case CompilerExpr::Value::TYPE_SYMBOL:
+            case CompilerValue::TYPE_EMPTY:    return STYPE_UNSPECIFIED;
+            case CompilerValue::TYPE_INT:      return STYPE_NUMBER;
+            case CompilerValue::TYPE_REAL:     return STYPE_NUMBER;
+            case CompilerValue::TYPE_EXPR:     return STYPE_EXPRESSION;
+            case CompilerValue::TYPE_ARRAY:    return STYPE_UNSPECIFIED;
+            case CompilerValue::TYPE_SYMBOL:
             {
                 SymbolType type = getType(expr->lVal().m_data.m_symbol);
                 if ( STYPE_UNSPECIFIED == type )
@@ -162,15 +162,15 @@ AsmKcpsm3SymbolTable::SymbolType AsmKcpsm3SymbolTable::getType ( const CompilerE
 void AsmKcpsm3SymbolTable::resolveSymbols ( CompilerExpr * expr,
                                             int codePointer )
 {
-    CompilerExpr::Value * value = &(expr->m_lValue);
+    CompilerValue * value = &(expr->m_lValue);
     for ( int i = 0; i < 2; i++ )
     {
-        if ( CompilerExpr::Value::TYPE_SYMBOL == value->m_type )
+        if ( CompilerValue::TYPE_SYMBOL == value->m_type )
         {
             const std::string symbolName = value->m_data.m_symbol;
             if ( "$" == symbolName )
             {
-                value->m_type = CompilerExpr::Value::TYPE_INT;
+                value->m_type = CompilerValue::TYPE_INT;
                 value->m_data.m_integer = codePointer;
             }
             else
@@ -179,7 +179,7 @@ void AsmKcpsm3SymbolTable::resolveSymbols ( CompilerExpr * expr,
                 if ( NULL != subExpr )
                 {
                     resolveSymbols(subExpr, codePointer);
-                    value->m_type = CompilerExpr::Value::TYPE_EXPR;
+                    value->m_type = CompilerValue::TYPE_EXPR;
                     value->m_data.m_expr = subExpr;
                 }
             }
@@ -284,7 +284,7 @@ const CompilerExpr * AsmKcpsm3SymbolTable::getValue ( const std::string & name,
 int AsmKcpsm3SymbolTable::getExprValue ( ExprValSide side,
                                          const CompilerExpr * expr )
 {
-    const CompilerExpr::Value * value;
+    const CompilerValue * value;
 
     if ( LEFT == side )
     {
@@ -297,29 +297,29 @@ int AsmKcpsm3SymbolTable::getExprValue ( ExprValSide side,
 
     switch ( value->m_type )
     {
-        case CompilerExpr::Value::TYPE_EMPTY:
+        case CompilerValue::TYPE_EMPTY:
         {
             m_compilerCore -> compilerMessage ( expr->m_location,
                                                 CompilerBase::MT_ERROR,
                                                 QObject::tr("undefined value").toStdString());
             break;
         }
-        case CompilerExpr::Value::TYPE_INT:
+        case CompilerValue::TYPE_INT:
         {
             return value->m_data.m_integer;
         }
-        case CompilerExpr::Value::TYPE_REAL:
+        case CompilerValue::TYPE_REAL:
         {
             m_compilerCore -> compilerMessage ( expr->m_location,
                                                 CompilerBase::MT_ERROR,
                                                 QObject::tr("real numbers are not supported in assembler").toStdString());
             break;
         }
-        case CompilerExpr::Value::TYPE_EXPR:
+        case CompilerValue::TYPE_EXPR:
         {
             return computeExpr(value->m_data.m_expr);
         }
-        case CompilerExpr::Value::TYPE_SYMBOL:
+        case CompilerValue::TYPE_SYMBOL:
         {
             const CompilerExpr * symbolValue = getValue(value->m_data.m_symbol);
             if ( NULL == symbolValue )
@@ -334,7 +334,7 @@ int AsmKcpsm3SymbolTable::getExprValue ( ExprValSide side,
                 return computeExpr(symbolValue);
             }
         }
-        case CompilerExpr::Value::TYPE_ARRAY:
+        case CompilerValue::TYPE_ARRAY:
         {
             m_compilerCore -> compilerMessage ( expr->m_location,
                                                 CompilerBase::MT_ERROR,
@@ -494,15 +494,15 @@ unsigned int AsmKcpsm3SymbolTable::substitute ( const std::string & origSymbol,
 
     for ( ; NULL != expr; expr = expr->m_next )
     {
-        CompilerExpr::Value * value = &(expr->m_lValue);
+        CompilerValue * value = &(expr->m_lValue);
         for ( int i = 0; i < 2; i++ )
         {
             switch ( value->m_type )
             {
-                case CompilerExpr::Value::TYPE_EXPR:
+                case CompilerValue::TYPE_EXPR:
                     result += substitute(origSymbol, newSymbol, value->m_data.m_expr);
                     break;
-                case CompilerExpr::Value::TYPE_SYMBOL:
+                case CompilerValue::TYPE_SYMBOL:
                     if ( origSymbol == value->m_data.m_symbol )
                     {
                         if ( CompilerExpr::OPER_NONE == newSymbol->oper() )
@@ -511,7 +511,7 @@ unsigned int AsmKcpsm3SymbolTable::substitute ( const std::string & origSymbol,
                         }
                         else
                         {
-                            *value = CompilerExpr::Value(newSymbol->copyChainLink());
+                            *value = CompilerValue(newSymbol->copyChainLink());
                         }
                         result++;
                     }

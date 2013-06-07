@@ -6,7 +6,7 @@
  *
  * (C) copyright 2013 Moravia Microsystems, s.r.o.
  *
- * @author Martin Ošmera <martin.osmera@gmail.com>
+ * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  */
 // =============================================================================
 
@@ -66,9 +66,10 @@
 %{
     #include <QObject>              // For i18n, nothing else.
     #include <cstdlib>              // We need free() here.
+    #include <cstring>              // We need strcmp() here.
     #include <iostream>             // This is required by Bison.
     using namespace std;            // This is required by Bison as well.
-    using namespace StatementTypes; // This NS is heavily used here.
+    using namespace CompilerStatementTypes; // This NS is heavily used here.
 
     // Declaration of the lexer prototypes and other things required by Bison
     #include "kcpsm3lexer.h"
@@ -143,7 +144,7 @@
 %token D_TITLE          D_EXPAND        D_NOEXPAND      D_IF            D_PORT
 %token D_IFN            D_IFDEF         D_IFNDEF        D_ELSEIFB       D_ELSEIFNB
 %token D_ELSE           D_ELSEIF        D_ELSEIFN       D_ELSEIFDEF     D_ELSEIFNDEF
-%token D_ENDIF          D_LOCAL         D_IFNB          D_IFB
+%token D_ENDIF          D_LOCAL         D_IFNB          D_IFB           D_LIMIT
 %token D_ENDM           D_EXITM         D_REPT          D_MACRO         D_EQU
 %token D_END            D_REG           D_CODE          D_ENDW          D_WARNING
 %token D_VARIABLE       D_SET           D_DEFINE        D_UNDEFINE      D_ENDR
@@ -213,19 +214,6 @@
 %right UPLUS UMINUS
 %left "(" ")"
 
-/*
-
-%token D_NAMEREG        D_ORG           D_CONSTANT      D_WHILE         D_DB
-%token D_LIST           D_MESSG         D_NOLIST        D_SKIP          D_ERROR
-%token D_TITLE          D_EXPAND        D_NOEXPAND      D_IF            D_PORT
-%token D_IFN            D_IFDEF         D_IFNDEF
-%token D_ENDIF          D_LOCAL         D_IFNB          D_IFB
-%token D_ENDM           D_EXITM         D_REPT          D_MACRO         D_EQU
-%token D_END            D_REG           D_CODE          D_ENDW          D_WARNING
-%token D_VARIABLE       D_SET           D_DEFINE        D_UNDEFINE      D_ENDR
-%token D_AUTOREG        D_AUTOSPR       D_DATA
-*/
-
 /* Terminal symbols with semantic value */
   // semantic value is a string
 %token<string>  IDENTIFIER      LABEL
@@ -258,7 +246,7 @@
 %type<stmt>     dir_elseifdef_a dir_elseifndf_a dir_elseifb_a   dir_elseifnb_a  dir_rept
 %type<stmt>     dir_endm        dir_macro_d     dir_macro_a     dir_endr        dir_endr_a
 %type<stmt>     dir_db_a        dir_endm_a      dir_expand_a    dir_noexpand_a  dir_autospr_a
-%type<stmt>     dir_data
+%type<stmt>     dir_data        dir_limit
 // Statements - instructions
 %type<stmt>     inst_jump       inst_call       inst_return     inst_add        inst_addcy
 %type<stmt>     inst_sub        inst_subcy      inst_compare    inst_returni    inst_enable_int
@@ -354,7 +342,7 @@ id:
       IDENTIFIER                    { $$ = new CompilerExpr($1, LOC(@$)); }
 ;
 string:
-      STRING                        { $$ = new CompilerExpr(CompilerExpr::Value($1.data, $1.size), LOC(@$)); }
+      STRING                        { $$ = new CompilerExpr(CompilerValue($1.data, $1.size), LOC(@$)); }
 ;
 label:
       LABEL                         {$$=new CompilerStatement(LOC(@$), ASMKCPSM3_LABEL, new CompilerExpr($1, LOC(@$)));}
@@ -443,6 +431,7 @@ directive:
     | dir_autospr   { $$ = $1; }    | dir_autoreg   { $$ = $1; }
     | dir_code      { $$ = $1; }    | dir_error     { $$ = $1; }
     | dir_warning   { $$ = $1; }    | dir_data      { $$ = $1; }
+    | dir_limit     { $$ = $1; }
 ;
 dir_cond_asm:
       if_block ifelse_block else_block dir_endif
@@ -1121,6 +1110,36 @@ dir_endw:
 dir_endw_a:
       D_ENDW                        { }
     | D_ENDW args                   { /* Syntax error */ NO_ARG_EXPECTED_D("ENDM", $args, @args); }
+;
+dir_limit:
+      D_LIMIT id "," expr           {
+                                        const char * limSel = $id->lVal().m_data.m_symbol;
+                                        if ( ( 0 != strcmp("R", limSel) )
+                                                 &&
+                                             ( 0 != strcmp("D", limSel) )
+                                                 &&
+                                             ( 0 != strcmp("C", limSel) ) )
+                                        {
+                                            $$ = NULL;
+                                            compiler->parserMessage ( compiler->toSourceLocation(@id),
+                                                                      CompilerBase::MT_ERROR,
+                                                                      QObject::tr("limit selector `%1' not understood")
+                                                                                 .arg(limSel).toStdString() );
+                                        }
+                                        else
+                                        {
+                                            $$ = new CompilerStatement ( LOC(@$),
+                                                                         ASMKCPSM3_DIR_LIMIT,
+                                                                         $id->appendLink($expr) );
+                                        }
+                                    }
+    | label D_LIMIT id "," expr     {
+                                        /* Syntax error */
+                                        $$ = NULL;
+                                        NO_LABEL_EXPECTED(@label,
+                                                          "LIMIT",
+                                                          $label->appendArgsLink ( $id->appendLink($expr) ) );
+                                    }
 ;
 dir_data:
       id D_DATA expr                { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_DATA, $id->appendLink($expr)); }

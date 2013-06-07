@@ -6,7 +6,7 @@
  *
  * (C) copyright 2013 Moravia Microsystems, s.r.o.
  *
- * @author Martin Ošmera <martin.osmera@gmail.com>
+ * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  */
 /* ========================================================================== */
 
@@ -160,6 +160,7 @@ DIS_INT_INST            "disable"{WSPACE}"interrupt"
                         }
 }
 
+\.?"limit"              { return D_LIMIT; }
 \.?"reg"                { return D_REG; }
 \.?"namereg"            { return D_NAMEREG; }
 \.?"address"            { return D_ORG; }

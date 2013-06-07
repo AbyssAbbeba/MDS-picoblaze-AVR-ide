@@ -7,7 +7,7 @@
  *
  * (C) copyright 2013 Moravia Microsystems, s.r.o.
  *
- * @author Martin Ošmera <martin.osmera@gmail.com>
+ * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup Kcpsm3Asm
  * @file AsmKcpsm3Macros.cxx
  */
@@ -19,7 +19,7 @@
 #include "AsmKcpsm3CodeListing.h"
 
 // Common compiler header files.
-#include "../../StatementTypes.h"
+#include "../../CompilerStatementTypes.h"
 
 // Standard headers.
 #include <cstdio>

@@ -7,7 +7,7 @@
  *
  * (C) copyright 2013 Moravia Microsystems, s.r.o.
  *
- * @author Martin Ošmera <martin.osmera@gmail.com>
+ * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup testsAssemblerPicoBlaze
  * @file TestSuiteErr.cxx
  */
@@ -143,7 +143,7 @@ void TestSuiteErr::compareErr ( const std::string & expected,
         std::string errFileLine;
         std::getline(errFile, errFileLine);
 
-        CU_ASSERT(errLineNumber < expFileNoOfLines);
+        CU_ASSERT_FATAL(errLineNumber < expFileNoOfLines);
 
         if ( errFileLine != errExpFileVec[errLineNumber] )
         {
@@ -195,7 +195,7 @@ void TestSuiteErr::compareLst ( const std::string & expected,
             continue;
         }
 
-        CU_ASSERT(lstLineNumber < expFileNoOfLines);
+        CU_ASSERT_FATAL(lstLineNumber < expFileNoOfLines);
 
         if ( lstFileLine != lstExpFileVec[lstLineNumber] )
         {

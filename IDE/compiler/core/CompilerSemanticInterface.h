@@ -7,7 +7,7 @@
  *
  * (C) copyright 2013 Moravia Microsystems, s.r.o.
  *
- * @author Martin Ošmera <martin.osmera@gmail.com>
+ * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup Compiler
  * @file CompilerSemanticInterface.h
  */
@@ -30,7 +30,7 @@ class CompilerMsgObserver;
 // Include compiler components used by parsers and/or lexers.
 #include "CompilerExpr.h"
 #include "CompilerStatement.h"
-#include "StatementTypes.h"
+#include "CompilerStatementTypes.h"
 
 // Used for i18n only.
 #include <QObject>

@@ -6,7 +6,7 @@
  *
  * Copyright: See COPYING file that comes with this distribution.
  *
- * @author Martin Ošmera <martin.osmera@gmail.com>, (C) 2012
+ * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>, (C) 2012
  * @ingroup SimWidgets
  * @file RegDisplay.h
  */

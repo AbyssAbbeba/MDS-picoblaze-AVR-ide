@@ -56,6 +56,7 @@ function countLines() {
     find -type f -name '*.cpp' >> "$tempFile"
     find -type f -name '*.c' >> "$tempFile"
     find -type f -name '*.h' >> "$tempFile"
+    find -type f -name '*.asm' >> "$tempFile"
     find -type f -name '*.l' >> "$tempFile"
     find -type f -name '*.y' >> "$tempFile"
     find -type f -name 'CMakeLists.txt' >> "$tempFile"

@@ -7,7 +7,7 @@
  *
  * (C) copyright 2013 Moravia Microsystems, s.r.o.
  *
- * @author Martin Ošmera <martin.osmera@gmail.com>
+ * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup MoraviaScript
  * @file MScriptExpr.cxx
  */
@@ -442,6 +442,11 @@ MScriptExpr * MScriptExpr::unlink()
     m_next->m_prev = NULL;
     m_next = NULL;
     return this;
+}
+
+int MScriptExpr::eval() const
+{
+    return 0;
 }
 
 std::ostream & operator << ( std::ostream & out,

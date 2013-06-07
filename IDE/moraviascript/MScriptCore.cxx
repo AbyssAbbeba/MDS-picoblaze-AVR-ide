@@ -7,7 +7,7 @@
  *
  * (C) copyright 2013 Moravia Microsystems, s.r.o.
  *
- * @author Martin Ošmera <martin.osmera@gmail.com>
+ * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup MoraviaScript
  * @file MScriptCore.cxx
  */
@@ -137,9 +137,9 @@ void MScriptCore::lexerMessage ( MScriptSrcLocation location,
     m_messages.push_back(location.toString() + " " + msgTypeToStr(type) + ": " + text );
 }
 
-void MScriptCore::interpretMessage ( MScriptSrcLocation location,
-                                     MScriptBase::MessageType type,
-                                     const std::string & text )
+void MScriptCore::interpreterMessage ( MScriptSrcLocation location,
+                                       MScriptBase::MessageType type,
+                                       const std::string & text )
 {
     m_messages.push_back(location.toString() + " " + msgTypeToStr(type) + ": " + text );
 }
