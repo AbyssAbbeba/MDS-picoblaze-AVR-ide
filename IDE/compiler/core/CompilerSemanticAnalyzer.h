@@ -7,14 +7,14 @@
  *
  * (C) copyright 2013 Moravia Microsystems, s.r.o.
  *
- * @author Martin Ošmera <martin.osmera@gmail.com>
+ * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup Compiler
- * @file SemanticAnalyzer.h
+ * @file CompilerSemanticAnalyzer.h
  */
 // =============================================================================
 
-#ifndef SEMANTICANALYSER_H
-#define SEMANTICANALYSER_H
+#ifndef COMPILERSEMANTICANALYSER_H
+#define COMPILERSEMANTICANALYSER_H
 
 // Common compiler header files.
 #include "CompilerSemanticInterface.h"
@@ -24,9 +24,9 @@
 /**
  * @brief
  * @ingroup Compiler
- * @class SemanticAnalyzer
+ * @class CompilerSemanticAnalyzer
  */
-class SemanticAnalyzer
+class CompilerSemanticAnalyzer
 {
     ////    Constructors and Destructors    ////
     public:
@@ -36,20 +36,20 @@ class SemanticAnalyzer
          * @param[in] filename
          * @return
          */
-        SemanticAnalyzer ( CompilerSemanticInterface * compilerCore,
-                           CompilerOptions * opts )
-                         : m_compilerCore ( compilerCore ),
-                           m_opts(opts) {};
+        CompilerSemanticAnalyzer ( CompilerSemanticInterface * compilerCore,
+                                   CompilerOptions * opts )
+                                 : m_compilerCore ( compilerCore ),
+                                   m_opts(opts) {};
         /**
          * @brief
          */
-        virtual ~SemanticAnalyzer() {};
+        virtual ~CompilerSemanticAnalyzer() {};
 
     protected:
         /**
          * @brief
          */
-        SemanticAnalyzer() : m_compilerCore ( NULL ), m_opts ( NULL ) {};
+        CompilerSemanticAnalyzer() : m_compilerCore ( NULL ), m_opts ( NULL ) {};
 
     ////    Public Operations    ////
     public:
@@ -72,4 +72,4 @@ class SemanticAnalyzer
         CompilerOptions * const m_opts;
 };
 
-#endif // SEMANTICANALYSER_H
+#endif // COMPILERSEMANTICANALYSER_H

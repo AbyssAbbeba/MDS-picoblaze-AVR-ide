@@ -7,7 +7,7 @@
  *
  * (C) copyright 2013 Moravia Microsystems, s.r.o.
  *
- * @author Martin Ošmera <martin.osmera@gmail.com>
+ * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup Mcs51Asm
  * @file AsmMcs51SemanticAnalyzer.h
  */
@@ -16,14 +16,14 @@
 #ifndef ASMMCS51SEMANTICANALYSER_H
 #define ASMMCS51SEMANTICANALYSER_H
 
-#include "../../SemanticAnalyzer.h"
+#include "../../CompilerSemanticAnalyzer.h"
 
 /**
  * @brief
  * @ingroup Mcs51Asm
  * @class AsmMcs51SemanticAnalyzer
  */
-class AsmMcs51SemanticAnalyzer : public SemanticAnalyzer
+class AsmMcs51SemanticAnalyzer : public CompilerSemanticAnalyzer
 {
     ////    Constructors and Destructors    ////
     public:
@@ -35,7 +35,7 @@ class AsmMcs51SemanticAnalyzer : public SemanticAnalyzer
          */
         AsmMcs51SemanticAnalyzer ( CompilerSemanticInterface * compilerCore,
                                    CompilerOptions * const opts )
-                                 : SemanticAnalyzer ( compilerCore, opts ) {};
+                                 : CompilerSemanticAnalyzer ( compilerCore, opts ) {};
 
     ////    Public Operations    ////
     public:

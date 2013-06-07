@@ -7,7 +7,7 @@
  *
  * (C) copyright 2013 Moravia Microsystems, s.r.o.
  *
- * @author Martin Ošmera <martin.osmera@gmail.com>
+ * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup Compiler
  * @file CompilerStatement.cxx
  */
@@ -37,7 +37,7 @@ CompilerStatement::~CompilerStatement()
 
 CompilerStatement::CompilerStatement()
 {
-    m_type = StatementTypes::EMPTY_STATEMENT;
+    m_type = CompilerStatementTypes::EMPTY_STATEMENT;
     m_userData = 0;
     m_serialNumber = -1;
     m_prev = NULL;
@@ -47,7 +47,7 @@ CompilerStatement::CompilerStatement()
 }
 
 CompilerStatement::CompilerStatement ( CompilerBase::SourceLocation location,
-                                       StatementTypes::StatementType type,
+                                       CompilerStatementTypes::StatementType type,
                                        CompilerExpr * args )
 {
     m_type = type;

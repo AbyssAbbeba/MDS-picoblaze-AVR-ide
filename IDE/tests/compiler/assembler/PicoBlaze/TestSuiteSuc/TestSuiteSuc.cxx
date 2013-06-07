@@ -7,7 +7,7 @@
  *
  * (C) copyright 2013 Moravia Microsystems, s.r.o.
  *
- * @author Martin Ošmera <martin.osmera@gmail.com>
+ * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup testsAssemblerPicoBlaze
  * @file TestSuiteSuc.cxx
  */
@@ -343,7 +343,7 @@ void TestSuiteSuc::compareLst ( const std::string & expected,
             continue;
         }
 
-        CU_ASSERT(lstLineNumber < expFileNoOfLines);
+        CU_ASSERT_FATAL(lstLineNumber < expFileNoOfLines);
 
         if ( lstFileLine != lstExpFileVec[lstLineNumber] )
         {

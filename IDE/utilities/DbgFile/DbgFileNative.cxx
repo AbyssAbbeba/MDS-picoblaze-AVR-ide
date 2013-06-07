@@ -7,7 +7,7 @@
  *
  * (C) copyright 2013 Moravia Microsystems, s.r.o.
  *
- * @author Martin Ošmera <martin.osmera@gmail.com>
+ * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup DbgFile
  * @file DbgFileNative.cxx
  */
@@ -16,7 +16,7 @@
 #include "DbgFileNative.h"
 
 // Compiler header files.
-#include "../../compiler/core/FileHeaders.h"
+#include "../../compiler/core/CompilerFileHeaders.h"
 
 // Standard header files.
 #include <fstream>
@@ -170,7 +170,7 @@ inline void DbgFileNative::loadFile ( const std::string & filename )
             lineNumber++;
 
             // Check whether the read file header is supported.
-            if ( FileHeaders::AsmNativeDgbFile != header )
+            if ( CompilerFileHeaders::AsmNativeDgbFile != header )
             {
                 throw Exception(Exception::IO_ERROR, "Unsupported file format, file: " + filename);
             }

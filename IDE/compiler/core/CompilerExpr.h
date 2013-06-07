@@ -7,7 +7,7 @@
  *
  * (C) copyright 2013 Moravia Microsystems, s.r.o.
  *
- * @author Martin Ošmera <martin.osmera@gmail.com>
+ * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup Compiler
  * @file CompilerExpr.h
  */
@@ -16,7 +16,9 @@
 #ifndef COMPILEREXPR_H
 #define COMPILEREXPR_H
 
+// Compiler compiler header files.
 #include "CompilerBase.h"
+#include "CompilerValue.h"
 
 // Standard header files.
 #include <string>
@@ -31,147 +33,6 @@ class CompilerExpr
 {
     ////    Public Datatypes    ////
     public:
-        /**
-         * @brief
-         */
-        class Value
-        {
-            ////    Public Datatypes    ////
-            public:
-                /**
-                 * @brief
-                 */
-                enum Type
-                {
-                    TYPE_EMPTY = 0, ///<
-                    TYPE_INT,       ///<
-                    TYPE_REAL,      ///<
-                    TYPE_EXPR,      ///<
-                    TYPE_SYMBOL,    ///<
-                    TYPE_ARRAY      ///<
-                };
-
-                /**
-                 * @brief
-                 */
-                union Data
-                {
-                    ///
-                    long long m_integer;
-
-                    ///
-                    double m_real;
-
-                    ///
-                    CompilerExpr * m_expr;
-
-                    ///
-                    char * m_symbol;
-
-                    ///
-                    struct CharArray
-                    {
-                        ///
-                        unsigned char * m_data;
-
-                        ///
-                        int m_size;
-                    } m_array;
-                };
-
-            ////    Constructors and Destructors    ////
-            public:
-                /**
-                 * @brief
-                 */
-                Value();
-
-                /**
-                 * @brief
-                 * @param[in] value
-                 */
-                Value ( int value );
-
-                /**
-                 * @brief
-                 * @param[in] value
-                 */
-                Value ( long long value );
-
-                /**
-                 * @brief
-                 * @param[in] value
-                 */
-                Value ( float value );
-
-                /**
-                 * @brief
-                 * @param[in] value
-                 */
-                Value ( double value );
-
-                /**
-                 * @brief
-                 * @param[in,out] expr
-                 */
-                Value ( CompilerExpr * expr );
-
-                /**
-                 * @brief
-                 * @param[in] string
-                 */
-                Value ( const char * string );
-
-                /**
-                 * @brief
-                 * @param[in] string
-                 */
-                Value ( const std::string & string );
-
-                /**
-                 * @brief
-                 * @param[in] array
-                 * @param[in] size
-                 */
-                Value ( const unsigned char * array,
-                        int size );
-
-                /**
-                 * @brief
-                 * @param[in,out] array
-                 * @param[in] size
-                 * @param[in] copy
-                 */
-                Value ( unsigned char * array,
-                        int size,
-                        bool copy = false );
-
-            ////    Public Operations    ////
-            public:
-                /**
-                 * @brief
-                 * @return
-                 */
-                Value & makeCopy() const;
-
-                /**
-                 * @brief
-                 */
-                void completeDelete();
-
-            ////    Public Attributes    ////
-            public:
-                /**
-                 * @brief
-                 */
-                Data m_data;
-
-                /**
-                 * @brief
-                 */
-                Type m_type;
-        };
-
         /**
          * @brief
          */
@@ -235,7 +96,7 @@ class CompilerExpr
          * @param[in] value
          * @param[in] location
          */
-        CompilerExpr ( Value value,
+        CompilerExpr ( CompilerValue value,
                        CompilerBase::SourceLocation location = CompilerBase::SourceLocation() );
 
         /**
@@ -245,7 +106,7 @@ class CompilerExpr
          * @param[in] location
          */
         CompilerExpr ( Operator oper,
-                       Value value,
+                       CompilerValue value,
                        CompilerBase::SourceLocation location = CompilerBase::SourceLocation() );
 
         /**
@@ -255,7 +116,7 @@ class CompilerExpr
          * @param[in] location
          */
         CompilerExpr ( char oper,
-                       Value value,
+                       CompilerValue value,
                        CompilerBase::SourceLocation location = CompilerBase::SourceLocation() );
 
         /**
@@ -264,7 +125,7 @@ class CompilerExpr
          * @param[in] oper
          * @param[in] location
          */
-        CompilerExpr ( Value value,
+        CompilerExpr ( CompilerValue value,
                        Operator oper,
                        CompilerBase::SourceLocation location = CompilerBase::SourceLocation() );
 
@@ -274,7 +135,7 @@ class CompilerExpr
          * @param[in] oper
          * @param[in] location
          */
-        CompilerExpr ( Value value,
+        CompilerExpr ( CompilerValue value,
                        char oper,
                        CompilerBase::SourceLocation location = CompilerBase::SourceLocation() );
 
@@ -285,9 +146,9 @@ class CompilerExpr
          * @param[in] rValue
          * @param[in] location
          */
-        CompilerExpr ( Value lValue,
+        CompilerExpr ( CompilerValue lValue,
                        Operator oper,
-                       Value rValue,
+                       CompilerValue rValue,
                        CompilerBase::SourceLocation location = CompilerBase::SourceLocation() );
 
         /**
@@ -297,9 +158,9 @@ class CompilerExpr
          * @param[in] rValue
          * @param[in] location
          */
-        CompilerExpr ( Value lValue,
+        CompilerExpr ( CompilerValue lValue,
                        char oper,
-                       Value rValue,
+                       CompilerValue rValue,
                        CompilerBase::SourceLocation location = CompilerBase::SourceLocation() );
 
     ////    Public Operations    ////
@@ -421,7 +282,7 @@ class CompilerExpr
          * @brief
          * @return
          */
-        const Value & lVal() const
+        const CompilerValue & lVal() const
         {
             return m_lValue;
         }
@@ -430,7 +291,7 @@ class CompilerExpr
          * @brief
          * @return
          */
-        const Value & rVal() const
+        const CompilerValue & rVal() const
         {
             return m_rValue;
         }
@@ -440,12 +301,12 @@ class CompilerExpr
         /**
          * @brief
          */
-        Value m_lValue;
+        CompilerValue m_lValue;
 
         /**
          * @brief
          */
-        Value m_rValue;
+        CompilerValue m_rValue;
 
         /**
          * @brief
@@ -470,15 +331,6 @@ class CompilerExpr
 
 /// @name Tracing operators
 //@{
-    /**
-     * @brief
-     * @param[in,out] out
-     * @param[in] val
-     * @return
-     */
-    std::ostream & operator << ( std::ostream & out,
-                                 const CompilerExpr::Value & val );
-
     /**
      * @brief
      * @param[in,out] out

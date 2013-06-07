@@ -7,7 +7,7 @@
  *
  * (C) copyright 2013 Moravia Microsystems, s.r.o.
  *
- * @author Martin Ošmera <martin.osmera@gmail.com>, (C) 2013
+ * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>, (C) 2013
  * @ingroup PicoBlaze
  * @file PicoBlazeProgramMemory.h
  */

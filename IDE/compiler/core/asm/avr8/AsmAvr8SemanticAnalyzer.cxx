@@ -7,7 +7,7 @@
  *
  * (C) copyright 2013 Moravia Microsystems, s.r.o.
  *
- * @author Martin Ošmera <martin.osmera@gmail.com>
+ * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup Avr8Asm
  * @file AsmAvr8SemanticAnalyzer.cxx
  */
@@ -64,7 +64,7 @@ void AsmAvr8SemanticAnalyzer::process ( CompilerStatement * codeTree )
 
 inline void AsmAvr8SemanticAnalyzer::processDeclarations ( CompilerStatement * node )
 {
-    using namespace StatementTypes;
+    using namespace CompilerStatementTypes;
 
     node = node->first();
     while ( NULL != node->next() )

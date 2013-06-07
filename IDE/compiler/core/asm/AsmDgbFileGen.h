@@ -7,7 +7,7 @@
  *
  * (C) copyright 2013 Moravia Microsystems, s.r.o.
  *
- * @author Martin Ošmera <martin.osmera@gmail.com>
+ * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup Assembler
  * @file AsmDgbFileGen.h
  */
@@ -19,7 +19,7 @@
 // Common compiler header files.
 #include "../CompilerSemanticInterface.h"
 #include "../CompilerOptions.h"
-#include "../FileHeaders.h"
+#include "../CompilerFileHeaders.h"
 
 // Standard headers.
 #include <string>

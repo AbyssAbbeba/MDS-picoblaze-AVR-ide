@@ -7,23 +7,23 @@
  *
  * (C) copyright 2013 Moravia Microsystems, s.r.o.
  *
- * @author Martin Ošmera <martin.osmera@gmail.com>
+ * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup Compiler
- * @file StatementTypes.h
+ * @file CompilerStatementTypes.h
  */
 // =============================================================================
 
-#ifndef STATEMENTTYPES_H
-#define STATEMENTTYPES_H
+#ifndef COMPILERSTATEMENTTYPES_H
+#define COMPILERSTATEMENTTYPES_H
 
 #include <ostream>
 
 /**
  * @brief
  * @ingroup Assembler
- * @namespace StatementTypes
+ * @namespace CompilerStatementTypes
  */
-namespace StatementTypes
+namespace CompilerStatementTypes
 {
     ////    Datatypes    ////
 
@@ -727,6 +727,7 @@ namespace StatementTypes
             ASMKCPSM3_DIR_AUTOREG,          ///<
             ASMKCPSM3_DIR_AUTOSPR,          ///<
             ASMKCPSM3_DIR_DATA,             ///<
+            ASMKCPSM3_DIR_LIMIT,            ///<
 
             ASMKCPSM3_COND_ASM,             ///<
             ASMKCPSM3_DIR_IF,               ///<
@@ -809,6 +810,6 @@ namespace StatementTypes
 
 // Trace oprator.
 std::ostream & operator << ( std::ostream & out,
-                             const StatementTypes::StatementType type );
+                             const CompilerStatementTypes::StatementType type );
 
-#endif // STATEMENTTYPES_H
+#endif // COMPILERSTATEMENTTYPES_H

@@ -6,7 +6,7 @@
  *
  * (C) copyright 2013 Moravia Microsystems, s.r.o.
  *
- * @author Martin Ošmera <martin.osmera@gmail.com>
+ * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  */
 // =============================================================================
 
@@ -68,7 +68,7 @@
     #include <cstdlib>              // We need free() here.
     #include <iostream>             // This is required by Bison.
     using namespace std;            // This is required by Bison as well.
-    using namespace StatementTypes; // This NS is heavily used here.
+    using namespace CompilerStatementTypes; // This NS is heavily used here.
 
     // Declaration of the lexer prototypes and other things required by Bison
     #include "mcs51lexer.h"
@@ -409,7 +409,7 @@ id:
       IDENTIFIER                    { $$ = new CompilerExpr($1); }
 ;
 string:
-      STRING                        { $$ = new CompilerExpr(CompilerExpr::Value($1.data, $1.size)); }
+      STRING                        { $$ = new CompilerExpr(CompilerValue($1.data, $1.size)); }
 ;
 label:
       LABEL                         { $$ = new CompilerStatement(LOC(@$), ASM51_LABEL, new CompilerExpr($1)); }
@@ -1002,7 +1002,7 @@ dir_include:
                             LOC(@$),
                             ASM51_INCLUDE,
                             new CompilerExpr (
-                                CompilerExpr::Value($INCLUDE.data, $INCLUDE.size)
+                                CompilerValue($INCLUDE.data, $INCLUDE.size)
                             )
                         );
                     }
@@ -1012,7 +1012,7 @@ dir_include:
                                 LOC(@$),
                                 ASM51_INCLUDE,
                                 new CompilerExpr (
-                                    CompilerExpr::Value ( $INCLUDE.data, $INCLUDE.size )
+                                    CompilerValue ( $INCLUDE.data, $INCLUDE.size )
                                 )
                             )
                         );

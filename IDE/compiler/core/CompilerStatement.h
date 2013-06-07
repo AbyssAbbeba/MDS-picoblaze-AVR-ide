@@ -7,7 +7,7 @@
  *
  * (C) copyright 2013 Moravia Microsystems, s.r.o.
  *
- * @author Martin Ošmera <martin.osmera@gmail.com>
+ * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup Compiler
  * @file CompilerStatement.h
  */
@@ -19,7 +19,7 @@
 // Common compiler header files.
 #include "CompilerBase.h"
 #include "CompilerExpr.h"
-#include "StatementTypes.h"
+#include "CompilerStatementTypes.h"
 
 // Standard header files
 #include <ostream>
@@ -54,7 +54,7 @@ class CompilerStatement
          * @param[in] args
          */
         CompilerStatement ( CompilerBase::SourceLocation location,
-                            StatementTypes::StatementType type,
+                            CompilerStatementTypes::StatementType type,
                             CompilerExpr * args = NULL );
 
     ////    Public Operations    ////
@@ -186,7 +186,7 @@ class CompilerStatement
          * @brief
          * @return
          */
-        StatementTypes::StatementType type() const
+        CompilerStatementTypes::StatementType type() const
         {
             return m_type;
         }
@@ -205,7 +205,7 @@ class CompilerStatement
         /**
          * @brief
          */
-        StatementTypes::StatementType m_type;
+        CompilerStatementTypes::StatementType m_type;
 
         /**
          * @brief

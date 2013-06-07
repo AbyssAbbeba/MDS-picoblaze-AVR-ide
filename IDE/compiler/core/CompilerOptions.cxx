@@ -7,7 +7,7 @@
  *
  * (C) copyright 2013 Moravia Microsystems, s.r.o.
  *
- * @author Martin Ošmera <martin.osmera@gmail.com>
+ * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup Compiler
  * @file CompilerOptions.cxx
  */
@@ -34,7 +34,7 @@ CompilerOptions::CompilerOptions()
 {
     m_maxMacroExp = -1;
     m_maxInclusion = -1;
-    m_hexMaxRecLength = 255;
+    m_hexMaxRecLength = 16;
     m_syntaxCheckOnly = false;
 
     m_verbosity = (Verbosity)( V_GENERAL | V_ERRORS | V_WARNINGS | V_REMARKS );

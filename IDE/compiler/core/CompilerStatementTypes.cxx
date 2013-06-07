@@ -7,18 +7,18 @@
  *
  * (C) copyright 2013 Moravia Microsystems, s.r.o.
  *
- * @author Martin Ošmera <martin.osmera@gmail.com>
+ * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup Compiler
- * @file StatementTypes.cxx
+ * @file CompilerStatementTypes.cxx
  */
 // =============================================================================
 
-#include "StatementTypes.h"
+#include "CompilerStatementTypes.h"
 
 std::ostream & operator << ( std::ostream & out,
-                             const StatementTypes::StatementType type )
+                             const CompilerStatementTypes::StatementType type )
 {
-    using namespace StatementTypes;
+    using namespace CompilerStatementTypes;
 
     switch ( type )
     {
@@ -657,6 +657,7 @@ std::ostream & operator << ( std::ostream & out,
         case ASMKCPSM3_DIR_AUTOREG:             out << "ASMKCPSM3_DIR_AUTOREG";         break;
         case ASMKCPSM3_DIR_AUTOSPR:             out << "ASMKCPSM3_DIR_AUTOSPR";         break;
         case ASMKCPSM3_DIR_DATA:                out << "ASMKCPSM3_DIR_DATA";            break;
+        case ASMKCPSM3_DIR_LIMIT:               out << "ASMKCPSM3_DIR_LIMIT";           break;
 
         case ASMKCPSM3_COND_ASM:                out << "ASMKCPSM3_COND_ASM";            break;
         case ASMKCPSM3_DIR_IF:                  out << "ASMKCPSM3_DIR_IF";              break;
