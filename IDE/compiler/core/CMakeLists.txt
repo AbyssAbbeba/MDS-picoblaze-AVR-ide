@@ -37,6 +37,11 @@ add_subdirectory ( asm )
 find_package ( Qt4 REQUIRED )
 include ( ${QT_USE_FILE} )
 
+# Find Boost include directories and libraries.
+find_package ( Boost 1.46
+               REQUIRED
+               COMPONENTS filesystem system )
+
 # List of preprocessor include file search directories.
 include_directories ( "${CMAKE_CURRENT_BINARY_DIR}/../grammar"
                       "${CMAKE_CURRENT_BINARY_DIR}/asm/avr8"
@@ -66,21 +71,29 @@ QT4_WRAP_CPP ( QT_MOC_SRCS
  # in this case it will procude dynamic C++ library.
 add_library ( ${PROJECT_NAME} SHARED
               ${QT_MOC_SRCS}
-              CompilerExpr.cxx
-              CompilerStatement.cxx
-              CompilerBase.cxx
-              CompilerValue.cxx
-              CompilerStatementTypes.cxx
-              CompilerCore.cxx
-              CompilerMsgIntfStdout.cxx
-              CompilerMsgIntfFile.cxx
-              CompilerMsgFilter.cxx
               Compiler.cxx
+              CompilerBase.cxx
+              CompilerCore.cxx
+              CompilerExpr.cxx
+              CompilerValue.cxx
+              CompilerThread.cxx
               CompilerOptions.cxx
-              CompilerThread.cxx )
+              CompilerStatement.cxx
+              CompilerMsgFilter.cxx
+              CompilerSerializer.cxx
+              CompilerMsgIntfFile.cxx
+              CompilerSerializable.cxx
+              CompilerMsgIntfStdout.cxx
+              CompilerSourceLocation.cxx
+              CompilerStatementTypes.cxx )
 
 # Link a target to given libraries.
-target_link_libraries ( ${PROJECT_NAME} ${QT_LIBRARIES} os CompilerParsers AsmSemanticAnalyzers )
+target_link_libraries ( ${PROJECT_NAME}
+                        ${QT_LIBRARIES}
+                        ${Boost_LIBRARIES}
+                        os
+                        CompilerParsers
+                        AsmSemanticAnalyzers )
 
 
 # ------------------------------------------------------------------------------

@@ -20,8 +20,9 @@
 #include "CompilerBase.h"
 #include "CompilerExpr.h"
 #include "CompilerStatementTypes.h"
+#include "CompilerSerializable.h"
 
-// Standard header files
+// Standard header files.
 #include <ostream>
 
 /**
@@ -29,7 +30,7 @@
  * @ingroup Compiler
  * @class CompilerStatement
  */
-class CompilerStatement
+class CompilerStatement : public CompilerSerializable
 {
     ////    Friends    ////
     friend std::ostream & operator << ( std::ostream & out,
@@ -49,11 +50,17 @@ class CompilerStatement
 
         /**
          * @brief
+         * @param[in,out] input
+         */
+        CompilerStatement ( CompilerSerializer & input );
+
+        /**
+         * @brief
          * @param[in] location
          * @param[in] type
          * @param[in] args
          */
-        CompilerStatement ( CompilerBase::SourceLocation location,
+        CompilerStatement ( CompilerSourceLocation location,
                             CompilerStatementTypes::StatementType type,
                             CompilerExpr * args = NULL );
 
@@ -144,6 +151,24 @@ class CompilerStatement
                                int level = 0,
                                std::string lineString = "1" ) const;
 
+        /**
+         * @brief
+         * @param[in,out]
+         */
+        void serializeTree ( CompilerSerializer & output ) const;
+
+        /**
+         * @brief
+         * @param[in,out]
+         */
+        virtual void serialize ( CompilerSerializer & output ) const;
+
+        /**
+         * @brief
+         * @param[in,out]
+         */
+        virtual void deserialize ( CompilerSerializer & input );
+
     ////    Inline Public Operations    ////
     public:
         /**
@@ -177,7 +202,7 @@ class CompilerStatement
          * @brief
          * @return
          */
-        const CompilerBase::SourceLocation & location() const
+        const CompilerSourceLocation & location() const
         {
             return m_location;
         }
@@ -210,15 +235,17 @@ class CompilerStatement
         /**
          * @brief
          */
-        CompilerBase::SourceLocation m_location;
+        CompilerSourceLocation m_location;
 
         /**
          * @brief
+         * @warning This attribute is not a subject for serialization, set to 0 when deserialized.
          */
         int m_userData;
 
         /**
          * @brief
+         * @warning This attribute is not a subject for serialization, set to -1 when deserialized.
          */
         int m_serialNumber;
 

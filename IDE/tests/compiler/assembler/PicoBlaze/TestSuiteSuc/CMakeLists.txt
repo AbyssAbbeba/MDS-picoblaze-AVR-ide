@@ -31,7 +31,7 @@ set_directory_properties ( PROPERTIES
 # COMPILATION OPTIONS
 # ------------------------------------------------------------------------------
 
-# Find Boost include dirs and libraries.
+# Find Boost include directories and libraries.
 find_package ( Boost 1.46
                REQUIRED
                COMPONENTS filesystem system )

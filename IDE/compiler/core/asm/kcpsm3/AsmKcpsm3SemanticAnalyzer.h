@@ -23,6 +23,7 @@ class AsmKcpsm3SymbolTable;
 class AsmKcpsm3CodeListing;
 class AsmKcpsm3InstructionSet;
 class AsmKcpsm3Macros;
+class AsmKcpsm3MemoryPtr;
 
 // Common compiler header files.
 #include "../../CompilerSemanticAnalyzer.h"
@@ -36,23 +37,8 @@ class AsmKcpsm3SemanticAnalyzer : public CompilerSemanticAnalyzer
 {
     ////    Public Static Constants    ////
     public:
-        /// @brief
+        /// @brief Maximum allowed number of iterations in a WHILE loop.
         static const unsigned int MAX_WHILE_ITERATIONS = 10000;
-
-    ////    Public Datatypes    ////
-    public:
-        /**
-         * @brief
-         */
-        struct MemoryPtr
-        {
-            /// @brief Sets all pointers to zero.
-            void clear();
-
-            int m_code; ///< Program memory (CODE).
-            int m_reg;  ///< Processor registers (REG).
-            int m_data; /// Scratch Pad RAM (DATA).
-        };
 
     ////    Constructors and Destructors    ////
     public:
@@ -99,7 +85,7 @@ class AsmKcpsm3SemanticAnalyzer : public CompilerSemanticAnalyzer
          * @param[in] macroName
          */
         void phase1 ( CompilerStatement * codeTree,
-                      const CompilerBase::SourceLocation * origLocation = NULL,
+                      const CompilerSourceLocation * origLocation = NULL,
                       const std::string * macroName = NULL );
 
     ////    Inline Private Operations    ////
@@ -138,7 +124,7 @@ class AsmKcpsm3SemanticAnalyzer : public CompilerSemanticAnalyzer
         AsmKcpsm3Macros * m_macros;
 
         ///
-        MemoryPtr m_memoryPtr;
+        AsmKcpsm3MemoryPtr * m_memoryPtr;
 };
 
 #endif // ASMKCPSM3SEMANTICANALYSER_H

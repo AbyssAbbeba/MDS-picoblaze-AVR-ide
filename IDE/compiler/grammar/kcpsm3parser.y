@@ -436,7 +436,7 @@ directive:
 dir_cond_asm:
       if_block ifelse_block else_block dir_endif
                                     {
-                                        $$ = new CompilerStatement ( CompilerBase::SourceLocation(),
+                                        $$ = new CompilerStatement ( CompilerSourceLocation(),
                                                                      ASMKCPSM3_COND_ASM );
                                         $$->createBranch ( $if_block -> appendLink($ifelse_block)
                                                                      -> appendLink($else_block)
@@ -444,7 +444,7 @@ dir_cond_asm:
                                     }
     | label if_block ifelse_block else_block dir_endif
                                     {
-                                        $$ = $label->appendLink(new CompilerStatement(CompilerBase::SourceLocation(),
+                                        $$ = $label->appendLink(new CompilerStatement(CompilerSourceLocation(),
                                                                                       ASMKCPSM3_COND_ASM));
                                         $$->createBranch ( $if_block -> appendLink($ifelse_block)
                                                                      -> appendLink($else_block)
@@ -967,7 +967,7 @@ dir_endm_a:
 ;
 dir_include:
       INCLUDE                       {
-                                        CompilerBase::SourceLocation location = compiler -> toSourceLocation ( compiler -> m_yyllocStack.back() );
+                                        CompilerSourceLocation location = compiler -> toSourceLocation ( compiler -> m_yyllocStack.back() );
                                         location.m_fileNumber = compiler -> getFileNumber(1);
 
                                         $$ = new CompilerStatement ( location,
@@ -975,7 +975,7 @@ dir_include:
                                                                      new CompilerExpr ( compiler->getFileNumber ( (const char*)$INCLUDE.data ) ) );
                                     }
     | label INCLUDE                 {
-                                        CompilerBase::SourceLocation location = compiler -> toSourceLocation ( compiler -> m_yyllocStack.back() );
+                                        CompilerSourceLocation location = compiler -> toSourceLocation ( compiler -> m_yyllocStack.back() );
                                         location.m_fileNumber = compiler -> getFileNumber(1);
 
                                         $$ = $label->appendLink ( new CompilerStatement ( location,

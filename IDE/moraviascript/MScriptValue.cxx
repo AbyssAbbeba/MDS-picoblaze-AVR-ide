@@ -8,61 +8,57 @@
  * (C) copyright 2013 Moravia Microsystems, s.r.o.
  *
  * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
- * @ingroup Compiler
- * @file CompilerValue.cxx
+ * @ingroup MoraviaScript
+ * @file MScriptValue.cxx
  */
 // =============================================================================
 
-#include "CompilerValue.h"
+#include "MScriptValue.h"
 
-// Compiler compiler header files.
-#include "CompilerExpr.h"
+// MScript language interpreter header files.
+#include "MScriptExpr.h"
 
-// Standard header files.
+// Standard header files
 #include <cstring>
+#include <cctype>
 #include <cstdlib>
 
-CompilerValue::CompilerValue()
+MScriptValue::MScriptValue()
 {
     m_type = TYPE_EMPTY;
 }
 
-CompilerValue::CompilerValue ( CompilerSerializer & input )
-{
-    deserialize(input);
-}
-
-CompilerValue::CompilerValue ( int value )
+MScriptValue::MScriptValue ( int value )
 {
     m_type = TYPE_INT;
     m_data.m_integer = (long long) value;
 }
 
-CompilerValue::CompilerValue ( long long value )
+MScriptValue::MScriptValue ( long long value )
 {
     m_type = TYPE_INT;
     m_data.m_integer = value;
 }
 
-CompilerValue::CompilerValue ( float value )
+MScriptValue::MScriptValue ( float value )
 {
     m_type = TYPE_REAL;
     m_data.m_real = (double) value;
 }
 
-CompilerValue::CompilerValue ( double value )
+MScriptValue::MScriptValue ( double value )
 {
     m_type = TYPE_REAL;
     m_data.m_real = value;
 }
 
-CompilerValue::CompilerValue ( CompilerExpr * expr )
+MScriptValue::MScriptValue ( MScriptExpr * expr )
 {
     m_type = TYPE_EXPR;
     m_data.m_expr = expr->first();
 }
 
-CompilerValue::CompilerValue ( const char * string )
+MScriptValue::MScriptValue ( const char * string )
 {
 //     if ( ( TYPE_SYMBOL == m_type ) && ( NULL != m_data.m_symbol ) )
 //     {
@@ -75,7 +71,7 @@ CompilerValue::CompilerValue ( const char * string )
     memcpy(m_data.m_symbol, string, length);
 }
 
-CompilerValue::CompilerValue ( const std::string & string )
+MScriptValue::MScriptValue ( const std::string & string )
 {
 //     if ( ( TYPE_SYMBOL == m_type ) && ( NULL != m_data.m_symbol ) )
 //     {
@@ -88,8 +84,8 @@ CompilerValue::CompilerValue ( const std::string & string )
     memcpy(m_data.m_symbol, string.c_str(), length);
 }
 
-CompilerValue::CompilerValue ( const unsigned char * array,
-                               int size )
+MScriptValue::MScriptValue ( const unsigned char * array,
+                             int size )
 {
     m_type = TYPE_ARRAY;
     m_data.m_array.m_size = size;
@@ -100,9 +96,9 @@ CompilerValue::CompilerValue ( const unsigned char * array,
     }
 }
 
-CompilerValue::CompilerValue ( unsigned char * array,
-                               int size,
-                               bool copy )
+MScriptValue::MScriptValue ( unsigned char * array,
+                             int size,
+                             bool copy )
 {
     m_type = TYPE_ARRAY;
     m_data.m_array.m_size = size;
@@ -121,9 +117,9 @@ CompilerValue::CompilerValue ( unsigned char * array,
     }
 }
 
-CompilerValue & CompilerValue::makeCopy() const
+MScriptValue & MScriptValue::makeCopy() const
 {
-    CompilerValue * result = new CompilerValue();
+    MScriptValue * result = new MScriptValue();
     result->m_type = m_type;
     switch ( m_type )
     {
@@ -154,7 +150,7 @@ CompilerValue & CompilerValue::makeCopy() const
     return * result;
 }
 
-void CompilerValue::completeDelete()
+void MScriptValue::completeDelete()
 {
     if ( TYPE_SYMBOL == m_type )
     {
@@ -170,89 +166,27 @@ void CompilerValue::completeDelete()
     }
 }
 
-void CompilerValue::serialize ( CompilerSerializer & output ) const
-{
-    if ( NULL == this )
-    {
-        output.write ( (uint8_t) TYPE_EMPTY );
-        return;
-    }
-    else
-    {
-        output.write ( (uint8_t) m_type );
-    }
-
-    switch ( m_type )
-    {
-        case TYPE_EMPTY:
-            break;
-        case TYPE_INT:
-            output.write ( (uint64_t) m_data.m_integer );
-            break;
-        case TYPE_REAL:
-            output.write(m_data.m_real);
-            break;
-        case TYPE_EXPR:
-            output << m_data.m_expr;
-        case TYPE_SYMBOL:
-            output.write(m_data.m_symbol);
-            break;
-        case TYPE_ARRAY:
-            output.write ( std::string ( ( char* ) m_data.m_array.m_data,
-                                          m_data.m_array.m_size ) );
-            break;
-    }
-}
-void CompilerValue::deserialize ( CompilerSerializer & input )
-{
-    m_type = (Type) input.read_ui8();
-    switch ( m_type )
-    {
-        case TYPE_EMPTY:
-            break;
-        case TYPE_INT:
-            m_data.m_integer = (long long) input.read_ui64();
-            break;
-        case TYPE_REAL:
-            m_data.m_real = (double) input.read_double();
-            break;
-        case TYPE_EXPR:
-            m_data.m_expr = new CompilerExpr(input);
-        case TYPE_SYMBOL:
-            m_data.m_symbol = input.read_c_str_copy();
-            break;
-        case TYPE_ARRAY:
-        {
-            std::string buffer;
-            input.read_std_str(buffer);
-            m_data.m_array.m_size = buffer.size();
-            memcpy(m_data.m_array.m_data, buffer.c_str(), buffer.size());
-            break;
-        }
-    }
-}
-
 std::ostream & operator << ( std::ostream & out,
-                             const CompilerValue & val )
+                             const MScriptValue & val )
 {
     switch ( val.m_type )
     {
-        case CompilerValue::TYPE_EMPTY:
+        case MScriptValue::TYPE_EMPTY:
             out << "<EMPTY>";
             break;
-        case CompilerValue::TYPE_INT:
+        case MScriptValue::TYPE_INT:
             out << "0x" << std::hex << val.m_data.m_integer << std::dec;
             break;
-        case CompilerValue::TYPE_REAL:
+        case MScriptValue::TYPE_REAL:
             out << std::scientific << val.m_data.m_real;
             break;
-        case CompilerValue::TYPE_EXPR:
+        case MScriptValue::TYPE_EXPR:
             out << val.m_data.m_expr;
             break;
-        case CompilerValue::TYPE_SYMBOL:
+        case MScriptValue::TYPE_SYMBOL:
             out << "'" << val.m_data.m_symbol << "'";
             break;
-        case CompilerValue::TYPE_ARRAY:
+        case MScriptValue::TYPE_ARRAY:
             out << "{" << std::dec << val.m_data.m_array.m_size << "}:\"";
             for ( int i = 0; i < val.m_data.m_array.m_size; i++ )
             {
@@ -276,5 +210,6 @@ std::ostream & operator << ( std::ostream & out,
             out << "\"";
             break;
     }
+
     return out;
 }

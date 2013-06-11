@@ -16,10 +16,10 @@
 #ifndef COMPILERMSGOBSERVER_H
 #define COMPILERMSGOBSERVER_H
 
-// Compiler header files
+// Compiler header files.
 #include "CompilerBase.h"
 
-// Standard header files
+// Standard header files.
 #include <string>
 
 class CompilerMsgObserver
@@ -32,7 +32,7 @@ class CompilerMsgObserver
          * @param[in] type
          * @param[in] text
          */
-        virtual void message ( const CompilerBase::SourceLocation & location,
+        virtual void message ( const CompilerSourceLocation & location,
                                CompilerBase::MessageType type,
                                const std::string & text ) = 0;
 };

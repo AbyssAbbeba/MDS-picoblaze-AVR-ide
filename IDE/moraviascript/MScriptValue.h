@@ -8,20 +8,16 @@
  * (C) copyright 2013 Moravia Microsystems, s.r.o.
  *
  * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
- * @ingroup Compiler
- * @file CompilerValue.h
+ * @ingroup MoraviaScript
+ * @file MScriptValue.h
  */
 // =============================================================================
 
-#ifndef COMPILERVALUE_H
-#define COMPILERVALUE_H
+#ifndef MSCRIPTVALUE_H
+#define MSCRIPTVALUE_H
 
 // Forward declarations.
-class CompilerExpr;
-
-// Compiler compiler header files.
-#include "CompilerBase.h"
-#include "CompilerSerializable.h"
+class MScriptExpr;
 
 // Standard header files.
 #include <string>
@@ -29,10 +25,10 @@ class CompilerExpr;
 
 /**
  * @brief
- * @ingroup Compiler
- * @class CompilerValue
+ * @ingroup MoraviaScript
+ * @class MScriptValue
  */
-class CompilerValue : public CompilerSerializable
+class MScriptValue
 {
     ////    Public Datatypes    ////
     public:
@@ -61,7 +57,7 @@ class CompilerValue : public CompilerSerializable
             double m_real;
 
             ///
-            CompilerExpr * m_expr;
+            MScriptExpr * m_expr;
 
             ///
             char * m_symbol;
@@ -82,63 +78,57 @@ class CompilerValue : public CompilerSerializable
         /**
          * @brief
          */
-        CompilerValue();
-
-        /**
-         * @brief
-         * @param[in,out] input
-         */
-        CompilerValue ( CompilerSerializer & input );
+        MScriptValue();
 
         /**
          * @brief
          * @param[in] value
          */
-        CompilerValue ( int value );
+        MScriptValue ( int value );
 
         /**
          * @brief
          * @param[in] value
          */
-        CompilerValue ( long long value );
+        MScriptValue ( long long value );
 
         /**
          * @brief
          * @param[in] value
          */
-        CompilerValue ( float value );
+        MScriptValue ( float value );
 
         /**
          * @brief
          * @param[in] value
          */
-        CompilerValue ( double value );
+        MScriptValue ( double value );
 
         /**
          * @brief
          * @param[in,out] expr
          */
-        CompilerValue ( CompilerExpr * expr );
+        MScriptValue ( MScriptExpr * expr );
 
         /**
          * @brief
          * @param[in] string
          */
-        CompilerValue ( const char * string );
+        MScriptValue ( const char * string );
 
         /**
          * @brief
          * @param[in] string
          */
-        CompilerValue ( const std::string & string );
+        MScriptValue ( const std::string & string );
 
         /**
          * @brief
          * @param[in] array
          * @param[in] size
          */
-        CompilerValue ( const unsigned char * array,
-                        int size );
+        MScriptValue ( const unsigned char * array,
+                       int size );
 
         /**
          * @brief
@@ -146,9 +136,9 @@ class CompilerValue : public CompilerSerializable
          * @param[in] size
          * @param[in] copy
          */
-        CompilerValue ( unsigned char * array,
-                        int size,
-                        bool copy = false );
+        MScriptValue ( unsigned char * array,
+                       int size,
+                       bool copy = false );
 
     ////    Public Operations    ////
     public:
@@ -156,24 +146,12 @@ class CompilerValue : public CompilerSerializable
          * @brief
          * @return
          */
-        CompilerValue & makeCopy() const;
+        MScriptValue & makeCopy() const;
 
         /**
          * @brief
          */
         void completeDelete();
-
-        /**
-         * @brief
-         * @param[in,out]
-         */
-        virtual void serialize ( CompilerSerializer & output ) const;
-
-        /**
-         * @brief
-         * @param[in,out]
-         */
-        virtual void deserialize ( CompilerSerializer & input );
 
     ////    Public Attributes    ////
     public:
@@ -197,7 +175,7 @@ class CompilerValue : public CompilerSerializable
      * @return
      */
     std::ostream & operator << ( std::ostream & out,
-                                 const CompilerValue & val );
+                                 const MScriptValue & val );
 //@}
 
-#endif // COMPILERVALUE_H
+#endif // MSCRIPTVALUE_H

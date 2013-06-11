@@ -37,7 +37,7 @@ AsmDgbFileGen::~AsmDgbFileGen()
 {
 }
 
-void AsmDgbFileGen::setCode ( const CompilerBase::SourceLocation & location,
+void AsmDgbFileGen::setCode ( const CompilerSourceLocation & location,
                               int code,
                               int address )
 {

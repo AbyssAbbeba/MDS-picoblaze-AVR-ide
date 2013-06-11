@@ -105,7 +105,7 @@ class AsmKcpsm3InstructionSet
          * @return
          */
         unsigned int checkLimit ( LimitType type,
-                                  const CompilerBase::SourceLocation & location,
+                                  const CompilerSourceLocation & location,
                                   unsigned int value ) const;
 
         /**

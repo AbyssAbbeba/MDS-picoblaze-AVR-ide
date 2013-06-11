@@ -73,7 +73,7 @@ class AsmKcpsm3SymbolTable
              * @param[in] type
              */
             Symbol ( const CompilerExpr * value = NULL,
-                     const CompilerBase::SourceLocation * location = NULL,
+                     const CompilerSourceLocation * location = NULL,
                      SymbolType type = STYPE_UNSPECIFIED,
                      int finalValue = -1,
                      bool redefinable = false );
@@ -87,7 +87,7 @@ class AsmKcpsm3SymbolTable
             CompilerExpr * m_value;
 
             ///
-            CompilerBase::SourceLocation m_location;
+            CompilerSourceLocation m_location;
 
             ///
             SymbolType m_type;
@@ -132,7 +132,7 @@ class AsmKcpsm3SymbolTable
          */
         int addSymbol ( const std::string & name,
                         const CompilerExpr * value = NULL,
-                        const CompilerBase::SourceLocation * location = NULL,
+                        const CompilerSourceLocation * location = NULL,
                         const SymbolType type = STYPE_UNSPECIFIED,
                         bool resolve = false,
                         bool redefinable = false );
@@ -175,7 +175,7 @@ class AsmKcpsm3SymbolTable
          */
         int assignValue ( const std::string & name,
                           const CompilerExpr * value,
-                          const CompilerBase::SourceLocation * location = NULL,
+                          const CompilerSourceLocation * location = NULL,
                           const SymbolType type = STYPE_UNSPECIFIED,
                           bool resolve = false );
 
@@ -186,7 +186,7 @@ class AsmKcpsm3SymbolTable
          * @param[in] type
          */
         void removeSymbol ( const std::string & name,
-                            const CompilerBase::SourceLocation & location,
+                            const CompilerSourceLocation & location,
                             const SymbolType type = STYPE_UNSPECIFIED );
 
         /**
@@ -216,7 +216,7 @@ class AsmKcpsm3SymbolTable
          */
         unsigned int resolveExpr ( const CompilerExpr * expr,
                                    int bitsMax = -1,
-                                   const CompilerBase::SourceLocation * origLocation = NULL );
+                                   const CompilerSourceLocation * origLocation = NULL );
 
         /**
          * @brief
@@ -245,7 +245,7 @@ class AsmKcpsm3SymbolTable
          * @param[in] location
          */
         void printSymLocation ( std::ostream & out,
-                                const CompilerBase::SourceLocation & location ) const;
+                                const CompilerSourceLocation & location ) const;
 
     ////    Private Operations    ////
     private:

@@ -21,11 +21,11 @@ cmake_minimum_required ( VERSION 2.8 )
 set ( CMAKE_VERBOSE_MAKEFILE OFF )
 
 # Set default build type to Debug
-if ( NOT CMAKE_BUILD_TYPE )
-  set ( CMAKE_BUILD_TYPE Debug CACHE STRING
-        "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel."
-        FORCE )
-endif ( NOT CMAKE_BUILD_TYPE )
+# if ( NOT CMAKE_BUILD_TYPE )
+#   set ( CMAKE_BUILD_TYPE Debug CACHE STRING
+#         "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel."
+#         FORCE )
+# endif ( NOT CMAKE_BUILD_TYPE )
 
 # set ( CMAKE_INSTALL_PREFIX "/some/path" )
 

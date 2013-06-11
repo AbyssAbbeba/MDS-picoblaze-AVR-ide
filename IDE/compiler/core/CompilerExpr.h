@@ -19,6 +19,7 @@
 // Compiler compiler header files.
 #include "CompilerBase.h"
 #include "CompilerValue.h"
+#include "CompilerSerializable.h"
 
 // Standard header files.
 #include <string>
@@ -29,7 +30,7 @@
  * @ingroup Compiler
  * @class CompilerExpr
  */
-class CompilerExpr
+class CompilerExpr : public CompilerSerializable
 {
     ////    Public Datatypes    ////
     public:
@@ -87,9 +88,15 @@ class CompilerExpr
     public:
         /**
          * @brief
+         * @param[in,out] input
+         */
+        CompilerExpr ( CompilerSerializer & input );
+
+        /**
+         * @brief
          * @param[in] location
          */
-        CompilerExpr ( CompilerBase::SourceLocation location = CompilerBase::SourceLocation() );
+        CompilerExpr ( CompilerSourceLocation location = CompilerSourceLocation() );
 
         /**
          * @brief
@@ -97,7 +104,7 @@ class CompilerExpr
          * @param[in] location
          */
         CompilerExpr ( CompilerValue value,
-                       CompilerBase::SourceLocation location = CompilerBase::SourceLocation() );
+                       CompilerSourceLocation location = CompilerSourceLocation() );
 
         /**
          * @brief
@@ -107,7 +114,7 @@ class CompilerExpr
          */
         CompilerExpr ( Operator oper,
                        CompilerValue value,
-                       CompilerBase::SourceLocation location = CompilerBase::SourceLocation() );
+                       CompilerSourceLocation location = CompilerSourceLocation() );
 
         /**
          * @brief
@@ -117,7 +124,7 @@ class CompilerExpr
          */
         CompilerExpr ( char oper,
                        CompilerValue value,
-                       CompilerBase::SourceLocation location = CompilerBase::SourceLocation() );
+                       CompilerSourceLocation location = CompilerSourceLocation() );
 
         /**
          * @brief
@@ -127,7 +134,7 @@ class CompilerExpr
          */
         CompilerExpr ( CompilerValue value,
                        Operator oper,
-                       CompilerBase::SourceLocation location = CompilerBase::SourceLocation() );
+                       CompilerSourceLocation location = CompilerSourceLocation() );
 
         /**
          * @brief
@@ -137,7 +144,7 @@ class CompilerExpr
          */
         CompilerExpr ( CompilerValue value,
                        char oper,
-                       CompilerBase::SourceLocation location = CompilerBase::SourceLocation() );
+                       CompilerSourceLocation location = CompilerSourceLocation() );
 
         /**
          * @brief
@@ -149,7 +156,7 @@ class CompilerExpr
         CompilerExpr ( CompilerValue lValue,
                        Operator oper,
                        CompilerValue rValue,
-                       CompilerBase::SourceLocation location = CompilerBase::SourceLocation() );
+                       CompilerSourceLocation location = CompilerSourceLocation() );
 
         /**
          * @brief
@@ -161,7 +168,7 @@ class CompilerExpr
         CompilerExpr ( CompilerValue lValue,
                        char oper,
                        CompilerValue rValue,
-                       CompilerBase::SourceLocation location = CompilerBase::SourceLocation() );
+                       CompilerSourceLocation location = CompilerSourceLocation() );
 
     ////    Public Operations    ////
     public:
@@ -231,6 +238,18 @@ class CompilerExpr
          */
         CompilerExpr * operator [] ( int index );
 
+        /**
+         * @brief
+         * @param[in,out]
+         */
+        virtual void serialize ( CompilerSerializer & output ) const;
+
+        /**
+         * @brief
+         * @param[in,out]
+         */
+        virtual void deserialize ( CompilerSerializer & input );
+
     ////    Inline Public Operations    ////
     public:
         /**
@@ -264,7 +283,7 @@ class CompilerExpr
          * @brief
          * @return
          */
-        const CompilerBase::SourceLocation & location() const
+        const CompilerSourceLocation & location() const
         {
             return m_location;
         }
@@ -316,7 +335,7 @@ class CompilerExpr
         /**
          * @brief
          */
-        CompilerBase::SourceLocation m_location;
+        CompilerSourceLocation m_location;
 
         /**
          * @brief

@@ -54,39 +54,49 @@ void printHelp ( const char * executable )
 
     std::cout << QObject::tr("Available program options:").toStdString() << std::endl
               << QObject::tr("    -a, --arch <architecture>").toStdString() << std::endl
-              << QObject::tr("        Specify target architecture, supported architectures are:").toStdString() << std::endl
+              << QObject::tr("        Specify target architecture, supported architectures are:")
+                            .toStdString() << std::endl
               << QObject::tr("            - avr8   : 8-bit AVR,").toStdString() << std::endl
               << QObject::tr("            - pic8   : 8-bit PIC,").toStdString() << std::endl
               << QObject::tr("            - mcs51  : MCS-51,").toStdString() << std::endl
-              << QObject::tr("            - kcpsm3 : (K)constant Coded Programmable State Machine 3.").toStdString() << std::endl
+              << QObject::tr("            - kcpsm3 : (K)constant Coded Programmable State Machine 3.")
+                            .toStdString() << std::endl
               << QObject::tr("    -p, --plang <programming language>").toStdString() << std::endl
-              << QObject::tr("        Specify programming language, supported languages are:").toStdString() << std::endl
+              << QObject::tr("        Specify programming language, supported languages are:").toStdString()<<std::endl
               << QObject::tr("            - asm : assembly language.").toStdString() << std::endl
               << QObject::tr("    -f, --file <source file>").toStdString() << std::endl
               << QObject::tr("        Specify input file containing source code to compile.").toStdString() << std::endl
               << QObject::tr("    -x, --hex <Intel HEX file>").toStdString() << std::endl
-              << QObject::tr("        Specify output file with machine code generated as a result of compilation,").toStdString() << std::endl
+              << QObject::tr("        Specify output file with machine code generated as a result of compilation,")
+                            .toStdString() << std::endl
               << QObject::tr("        data will be stored in Intel 8 Hex format.").toStdString() << std::endl
               << QObject::tr("    -d, --dbg <MDS native debug file>").toStdString() << std::endl
-              << QObject::tr("        Specify output file with code for MCU simulator and other debugging tools.").toStdString() << std::endl
+              << QObject::tr("        Specify output file with code for MCU simulator and other debugging tools.")
+                            .toStdString() << std::endl
               << QObject::tr("    --srec <Motorola S-REC file>").toStdString() << std::endl
-              << QObject::tr("        Specify output file with machine code generated as a result of compilation,").toStdString() << std::endl
+              << QObject::tr("        Specify output file with machine code generated as a result of compilation,")
+                            .toStdString() << std::endl
               << QObject::tr("        data will be stored in Motorola S-record format.").toStdString() << std::endl
               << QObject::tr("    --binary <binary file>").toStdString() << std::endl
-              << QObject::tr("        Specify output file with machine code generated as a result of compilation,").toStdString() << std::endl
+              << QObject::tr("        Specify output file with machine code generated as a result of compilation,")
+                            .toStdString() << std::endl
               << QObject::tr("        data will be stored in raw binary format.").toStdString() << std::endl
               << QObject::tr("    -l, --lst <code listing>").toStdString() << std::endl
-              << QObject::tr("        Specify output file where code listing generated during compilation will be stored.").toStdString() << std::endl
+              << QObject::tr("        Specify output file where code listing generated during compilation will be stored.")
+                            .toStdString() << std::endl
               << QObject::tr("    -m, --mtable <table of macros>").toStdString() << std::endl
-              << QObject::tr("        Specify file in which the compiler will put table of macros defined in your code.").toStdString() << std::endl
+              << QObject::tr("        Specify file in which the compiler will put table of macros defined in your code.")
+                            .toStdString() << std::endl
               << QObject::tr("    -s, --stable <table of symbols>").toStdString() << std::endl
-              << QObject::tr("        Specify file in which the compiler will put table of symbols defined in your code.").toStdString() << std::endl
+              << QObject::tr("        Specify file in which the compiler will put table of symbols defined in your code.")
+                            .toStdString() << std::endl
               << QObject::tr("    -h, --help").toStdString() << std::endl
               << QObject::tr("        (Print this message.)").toStdString() << std::endl
               << QObject::tr("    -V, --version").toStdString() << std::endl
               << QObject::tr("        Print compiler version and exit").toStdString() << std::endl
               << QObject::tr("    -c, --check").toStdString() << std::endl
-              << QObject::tr("        Do not perform the actual compilation, do only lexical and syntax analysis of the").toStdString() << std::endl
+              << QObject::tr("        Do not perform the actual compilation, do only lexical and syntax analysis of the")
+                            .toStdString() << std::endl
               << QObject::tr("        the provided source code and exit.").toStdString() << std::endl
               << QObject::tr("    --no-warnings").toStdString() << std::endl
               << QObject::tr("        Do not print any warnings.").toStdString() << std::endl
@@ -95,19 +105,27 @@ void printHelp ( const char * executable )
               << QObject::tr("    --no-remarks").toStdString() << std::endl
               << QObject::tr("        Do not print any remarks.").toStdString() << std::endl
               << QObject::tr("    --silent").toStdString() << std::endl
-              << QObject::tr("        Do not print any warnings, errors, or any other messages, stay completely silent.").toStdString() << std::endl
+              << QObject::tr("        Do not print any warnings, errors, or any other messages, stay completely silent.")
+                            .toStdString() << std::endl
               << std::endl;
 
     std::cout << QObject::tr("Examples:").toStdString() << std::endl
-              << QObject::tr("  %1 --file=abc.asm --arch=mcs51 --plang=asm --hex=abc.hex").arg(executable).toStdString() << std::endl
-              << QObject::tr("      Compile source code file `abc.asm' (--file=abc.asm) for architecture MCS-51").toStdString() << std::endl
-              << QObject::tr("      (--arch=mcs51) written in assembly language (--plang=asm), and create file").toStdString() << std::endl
-              << QObject::tr("      `abc.hex' containing machine code generated generated by the compiler.").toStdString() << std::endl
-              << QObject::tr("  %1 --file abc.asm --plang asm --arch mcs51 --hex abc.hex").arg(executable).toStdString() << std::endl
-              << QObject::tr("      Do the same at the above, only in this case we have used another variant").toStdString() << std::endl
+              << QObject::tr("  %1 --file=abc.asm --arch=mcs51 --plang=asm --hex=abc.hex")
+                            .arg(executable).toStdString() << std::endl
+              << QObject::tr("      Compile source code file `abc.asm' (--file=abc.asm) for architecture MCS-51")
+                            .toStdString() << std::endl
+              << QObject::tr("      (--arch=mcs51) written in assembly language (--plang=asm), and create file")
+                            .toStdString() << std::endl
+              << QObject::tr("      `abc.hex' containing machine code generated generated by the compiler.")
+                            .toStdString() << std::endl
+              << QObject::tr("  %1 --file abc.asm --plang asm --arch mcs51 --hex abc.hex")
+                            .arg(executable).toStdString() << std::endl
+              << QObject::tr("      Do the same at the above, only in this case we have used another variant")
+                            .toStdString() << std::endl
               << QObject::tr("      of usage of switches with argument.").toStdString() << std::endl
               << QObject::tr("  %1 -f abc.asm -p asm -a mcs51 -x abc.hex").arg(executable).toStdString() << std::endl
-              << QObject::tr("      Do the same at the above, only in this case we have used short version of").toStdString() << std::endl
+              << QObject::tr("      Do the same at the above, only in this case we have used short version of")
+                            .toStdString() << std::endl
               << QObject::tr("      the switches.").toStdString() << std::endl
               << std::endl;
 }
@@ -146,7 +164,8 @@ CompilerBase::TargetArch whichArch ( const char * optarg )
     }
     else
     {
-        std::cerr << QObject::tr("Error: invalid architecture specification `%1'.").arg(optarg).toStdString() << std::endl;
+        std::cerr << QObject::tr("Error: invalid architecture specification `%1'.").arg(optarg).toStdString()
+                  << std::endl;
         return CompilerBase::TA_INVALID;
     }
 }
@@ -184,7 +203,8 @@ int main ( int argc, char ** argv )
     CompilerBase::LangId targetLanguage = CompilerBase::LI_INVALID;
 
     std::cout << QObject::tr("MDS mutitarget macro-assembler v%1").arg(VERSION).toStdString() << std::endl
-              << QObject::tr("(C) copyright 2013 Moravia Microsystems, s.r.o., Brno, CZ, European Union.").toStdString() << std::endl
+              << QObject::tr("(C) copyright 2013 Moravia Microsystems, s.r.o., Brno, CZ, European Union.")
+                            .toStdString() << std::endl
               << "All rights reserved." << std::endl
               << std::endl;
 

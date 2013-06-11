@@ -47,6 +47,7 @@ add_library ( ${PROJECT_NAME} STATIC
               AsmKcpsm3SemanticAnalyzer.cxx
               AsmKcpsm3CodeListing.cxx
               AsmKcpsm3Macros.cxx
+              AsmKcpsm3MemoryPtr.cxx
               AsmKcpsm3InstructionSet.cxx
               AsmKcpsm3SymbolTable.cxx )
 

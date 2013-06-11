@@ -61,13 +61,14 @@ add_library ( ${PROJECT_NAME} SHARED
               ${FLEX_moraviaScriptLexer_OUTPUTS}
               ${BISON_moraviaScriptParser_OUTPUTS}
               MScriptCore.cxx
-              MScriptExpr.cxx
-              MScriptStmtTypes.cxx
-              MScriptSrcLocation.cxx
               MScriptBase.cxx
+              MScriptExpr.cxx
+              MScriptValue.cxx
               MScriptInterpret.cxx
-              MScriptExecContext.cxx
+              MScriptStmtTypes.cxx
               MScriptStatement.cxx
+              MScriptSrcLocation.cxx
+              MScriptExecContext.cxx
               MScriptLexerAuxFunc.cxx )
 
 ## Set properties on a target.

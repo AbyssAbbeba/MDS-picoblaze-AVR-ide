@@ -21,7 +21,7 @@
 #include <fstream>
 
 AsmKcpsm3SymbolTable::Symbol::Symbol ( const CompilerExpr * value,
-                                       const CompilerBase::SourceLocation * location,
+                                       const CompilerSourceLocation * location,
                                        SymbolType type,
                                        int finalValue,
                                        bool redefinable )
@@ -59,7 +59,7 @@ AsmKcpsm3SymbolTable::Symbol::~Symbol()
 
 int AsmKcpsm3SymbolTable::addSymbol ( const std::string & name,
                                       const CompilerExpr * value,
-                                      const CompilerBase::SourceLocation * location,
+                                      const CompilerSourceLocation * location,
                                       const SymbolType type,
                                       bool resolve,
                                       bool redefinable )
@@ -190,7 +190,7 @@ void AsmKcpsm3SymbolTable::resolveSymbols ( CompilerExpr * expr,
 }
 
 void AsmKcpsm3SymbolTable::removeSymbol ( const std::string & name,
-                                          const CompilerBase::SourceLocation & location,
+                                          const CompilerSourceLocation & location,
                                           const SymbolType type )
 {
     for ( std::multimap<std::string,Symbol>::iterator it = m_table.find(name);
@@ -228,7 +228,7 @@ bool AsmKcpsm3SymbolTable::isDefined ( const std::string & name,
 
 int AsmKcpsm3SymbolTable::assignValue ( const std::string & name,
                                         const CompilerExpr * value,
-                                        const CompilerBase::SourceLocation * location,
+                                        const CompilerSourceLocation * location,
                                         const SymbolType type,
                                         bool resolve )
 {
@@ -432,11 +432,11 @@ int AsmKcpsm3SymbolTable::computeExpr ( const CompilerExpr * expr )
 
 unsigned int AsmKcpsm3SymbolTable::resolveExpr ( const CompilerExpr * expr,
                                                  int bitsMax,
-                                                 const CompilerBase::SourceLocation * origLocation )
+                                                 const CompilerSourceLocation * origLocation )
 {
     int resultOrig = computeExpr(expr);
     unsigned int result = (unsigned int) resultOrig;
-    const CompilerBase::SourceLocation * location = origLocation;
+    const CompilerSourceLocation * location = origLocation;
 
     if ( NULL == location )
     {
@@ -456,24 +456,41 @@ unsigned int AsmKcpsm3SymbolTable::resolveExpr ( const CompilerExpr * expr,
             result &= mask;
 
             // Check whether it's still a negative number.
-            if ( 0 == (result & ( 1 << (bitsMax-1))) )
+            if ( 0 == ( result & ( 1 << ( bitsMax - 1 ) ) ) )
             {
                 m_compilerCore -> compilerMessage ( *location,
                                                     CompilerBase::MT_WARNING,
-                                                    QObject::tr("sign overflow. Result is negative number lower that the lowest negative number representable in two's complement arithmetic by the given number of bits (%1 bits in this case) ").arg(bitsMax).toStdString());
+                                                    QObject::tr ( "sign overflow. Result is negative number lower that "
+                                                                  "the lowest negative number representable in two's "
+                                                                  "complement arithmetic by the given number of bits "
+                                                                  "(%1 bits in this case) " )
+                                                                . arg ( bitsMax )
+                                                                . toStdString() );
             }
             else
             {
                 m_compilerCore -> compilerMessage ( *location,
                                                     CompilerBase::MT_REMARK,
-                                                    QObject::tr("result is negative number: %1, this will represented as %2-bit number in two's complement arithmetic which makes it: %3").arg(resultOrig).arg(bitsMax).arg(result).toStdString());
+                                                    QObject::tr ( "result is negative number: %1, this will "
+                                                                  "represented as %2-bit number in two's complement "
+                                                                  "arithmetic which makes it: %3" )
+                                                                . arg ( resultOrig )
+                                                                . arg ( bitsMax )
+                                                                . arg ( result )
+                                                                . toStdString() );
             }
         }
         else if ( ( result & mask ) != result )
         {
             m_compilerCore -> compilerMessage ( *location,
                                                 CompilerBase::MT_WARNING,
-                                                QObject::tr("value out of range: %1, allowed range is [0,%2] (trimmed to %3 bits) which makes it %4").arg(result).arg(mask).arg(bitsMax).arg(result&mask).toStdString());
+                                                QObject::tr ( "value out of range: %1, allowed range is [0,%2] "
+                                                              "(trimmed to %3 bits) which makes it %4" )
+                                                            . arg ( result )
+                                                            . arg ( mask )
+                                                            . arg ( bitsMax )
+                                                            . arg ( result & mask )
+                                                            . toStdString() );
             result &= mask;
         }
     }
@@ -561,7 +578,7 @@ void AsmKcpsm3SymbolTable::clear()
 }
 
 void AsmKcpsm3SymbolTable::printSymLocation ( std::ostream & out,
-                                              const CompilerBase::SourceLocation & location ) const
+                                              const CompilerSourceLocation & location ) const
 {
     if ( false == location.isSet() )
     {

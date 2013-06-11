@@ -23,6 +23,8 @@ class CompilerMsgInterface;
 class CompilerOptions;
 class CompilerSemanticAnalyzer;
 class CompilerMsgObserver;
+class DbgFile;
+class DataFile;
 
 // Base class and compiler interfaces.
 #include "CompilerBase.h"
@@ -68,11 +70,25 @@ class CompilerCore : public CompilerBase,
          * @param[in] lang
          * @param[in] arch
          * @param[in] opts
+         * @param[in] genSimData
          * @return
          */
         bool compile ( LangId lang,
                        TargetArch arch,
-                       CompilerOptions * opts );
+                       CompilerOptions * opts,
+                       bool genSimData = false );
+
+        /**
+         * @brief
+         * @return
+         */
+        DbgFile * getSimDbg();
+
+        /**
+         * @brief
+         * @return
+         */
+        DataFile * getSimData();
 
     ////    Private Operations    ////
     private:
@@ -84,7 +100,7 @@ class CompilerCore : public CompilerBase,
              * @param[in] type
              * @param[in] text
              */
-            void parserMessage ( SourceLocation location,
+            void parserMessage ( CompilerSourceLocation location,
                                  MessageType type,
                                  const std::string & text );
 
@@ -94,7 +110,7 @@ class CompilerCore : public CompilerBase,
              * @param[in] type
              * @param[in] text
              */
-            void lexerMessage ( SourceLocation location,
+            void lexerMessage ( CompilerSourceLocation location,
                                 MessageType type,
                                 const std::string & text );
 
@@ -166,7 +182,7 @@ class CompilerCore : public CompilerBase,
              * @param[in] location
              * @return
              */
-            std::string locationToStr ( const CompilerBase::SourceLocation & location ) const;
+            std::string locationToStr ( const CompilerSourceLocation & location ) const;
 
             /**
              * @brief
@@ -174,7 +190,7 @@ class CompilerCore : public CompilerBase,
              * @param[in] type
              * @param[in] text
              */
-            void compilerMessage ( SourceLocation location,
+            void compilerMessage ( CompilerSourceLocation location,
                                    MessageType type,
                                    const std::string & text );
 

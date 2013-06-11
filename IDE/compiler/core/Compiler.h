@@ -54,11 +54,13 @@ class Compiler
          * @param[in] lang
          * @param[in] arch
          * @param[in] opts
+         * @param[in] genSimData
          * @return
          */
         bool compile ( CompilerBase::LangId lang,
                        CompilerBase::TargetArch arch,
-                       CompilerOptions * const opts );
+                       CompilerOptions * const opts,
+                       bool genSimData = false );
 
     ////    Private Attributes    ////
     private:
