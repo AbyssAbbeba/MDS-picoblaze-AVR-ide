@@ -10,33 +10,36 @@ typedef enum SourceType
 
 
 class Highlighter : public QSyntaxHighlighter
- {
-     Q_OBJECT
+{
+    Q_OBJECT
 
- public:
-     Highlighter(QTextDocument *parent, SourceType type);
+    public:
+        Highlighter(QTextDocument *parent, SourceType type);
 
- protected:
-     void highlightBlock(const QString &text);
+    protected:
+        void highlightBlock(const QString &text);
 
- private:
-     struct HighlightingRule
-     {
-        QRegExp pattern;
-        QTextCharFormat format;
-        QString tag;
-     };
-     QVector<HighlightingRule> highlightingRules;
+    private:
+        struct HighlightingRule
+        {
+            QRegExp pattern;
+            QTextCharFormat format;
+            QString tag;
+        };
+        QVector<HighlightingRule> highlightingRules;
 
-     QRegExp commentStartExpression;
-     QRegExp commentEndExpression;
+        QRegExp commentStartExpression;
+        QRegExp commentEndExpression;
 
-     QTextCharFormat keywordFormat;
-     //QTextCharFormat classFormat;
-     QTextCharFormat singleLineCommentFormat;
-     QTextCharFormat multiLineCommentFormat;
-     QTextCharFormat quotationFormat;
-     QTextCharFormat functionFormat;
+        QTextCharFormat keywordFormat;
+        QTextCharFormat labelFormat;
+        //QTextCharFormat classFormat;
+        QTextCharFormat singleLineCommentFormat;
+        QTextCharFormat multiLineCommentFormat;
+        QTextCharFormat quotationFormat;
+        QTextCharFormat functionFormat;
+
+        SourceType type;
  };
 
 #endif
