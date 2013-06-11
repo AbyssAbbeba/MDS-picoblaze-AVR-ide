@@ -7,6 +7,7 @@ Highlighter::Highlighter(QTextDocument *parent, SourceType type)
 {
     qDebug() << "Highlighter: Highlighter()";
     HighlightingRule rule;
+    this->type = type;
 /*    if (type == C)
     {
         QStringList keywordPatterns;
@@ -283,7 +284,7 @@ Highlighter::Highlighter(QTextDocument *parent, SourceType type)
             << "\\bdisable interrupt\\b" << "\\benable interrupt\\b" << "\\bfetch\\b"
             << "\\bhwbuild\\b" << "\\binput\\b" << "\\bjump\\b"
             << "\\bload\\b" << "\\bload&return\\b" << "\\bor\\b"
-            << "\\boutput\\b" << "\\bregbank a\\b" << "\\bregbank b\\b"
+            << "\\boutput\\b" << "\\bregbank\\b"
             << "\\breturn\\b" << "\\breturni disable\\b" << "\\breturni enable\\b"
             << "\\brl\\b" << "\\brr\\b" << "\\bsla\\b"
             << "\\bslx\\b" << "\\bsl0\\b" << "\\bsl1\\b"
@@ -296,14 +297,15 @@ Highlighter::Highlighter(QTextDocument *parent, SourceType type)
             << "\\bDISABLE INTERRUPT\\b" << "\\bENABLE INTERRUPT\\b" << "\\bFETCH\\b"
             << "\\bHWBUILD\\b" << "\\bINPUT\\b" << "\\bJUMP\\b"
             << "\\bLOAD\\b" << "\\bLOAD&RETURN\\b" << "\\bOR\\b"
-            << "\\boutput\\b" << "\\bregbank a\\b" << "\\bregbank b\\b"
-            << "\\breturn\\b" << "\\breturni disable\\b" << "\\breturni enable\\b"
-            << "\\brl\\b" << "\\brr\\b" << "\\bsla\\b"
-            << "\\bslx\\b" << "\\bsl0\\b" << "\\bsl1\\b"
-            << "\\bsra\\b" << "\\bsrx\\b" << "\\bsr0\\b"
-            << "\\bsr1\\b" << "\\bstar\\b" << "\\bstore\\b"
-            << "\\bsub\\b" << "\\bsubcy\\b" << "\\btest\\b"
-            << "\\btestcy\\b" << "\\bxor\\b";
+            << "\\bOUTPUT\\b" << "\\bREGBANK\\b"
+            << "\\bRETURN\\b" << "\\bRETURNI DISABLE\\b" << "\\bRETURNI ENABLE\\b"
+            << "\\bRL\\b" << "\\bRR\\b" << "\\bSLA\\b"
+            << "\\bSLX\\b" << "\\bSL0\\b" << "\\bSL1\\b"
+            << "\\bSRA\\b" << "\\bSRX\\b" << "\\bSR0\\b"
+            << "\\bSR1\\b" << "\\bSTAR\\b" << "\\bSTORE\\b"
+            << "\\bSUB\\b" << "\\bSUBCY\\b" << "\\bTEST\\b"
+            << "\\bTESTCY\\b" << "\\bXOR\\b"
+            << "\\bend\\b" << "\\bEND\\b";
 
         keywordFormat.setForeground(Qt::darkBlue);
         keywordFormat.setFontWeight(QFont::Bold);
@@ -312,6 +314,7 @@ Highlighter::Highlighter(QTextDocument *parent, SourceType type)
         {
             rule.pattern = QRegExp(pattern);
             rule.format = keywordFormat;
+            rule.tag = "keyword";
             highlightingRules.append(rule);
             //qDebug() << "Added " << pattern;
         }
@@ -336,6 +339,12 @@ Highlighter::Highlighter(QTextDocument *parent, SourceType type)
             highlightingRules.append(rule);
         }*/
 
+        labelFormat.setFontItalic(true);
+        rule.pattern = QRegExp("[a-zA-Z][0-9a-zA-Z]*:");
+        rule.format = labelFormat;
+        rule.tag = "label";
+        highlightingRules.append(rule);
+        
         singleLineCommentFormat.setForeground(Qt::gray);
         rule.pattern = QRegExp(";[^\n]*");
         rule.format = singleLineCommentFormat;
