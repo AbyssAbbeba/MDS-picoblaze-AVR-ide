@@ -27,6 +27,10 @@
 #include <sstream>
 #include <cstdio>
 
+// Boost Filesystem library.
+#define BOOST_FILESYSTEM_NO_DEPRECATED
+#include <boost/filesystem.hpp>
+
 // Include all implemented semantic analyzers we have in this compiler collection.
 #include "asm/avr8/AsmAvr8SemanticAnalyzer.h"
 #include "asm/pic8/AsmPic8SemanticAnalyzer.h"
@@ -60,7 +64,8 @@ CompilerCore::~CompilerCore()
 
 bool CompilerCore::compile ( LangId lang,
                              TargetArch arch,
-                             CompilerOptions * opts )
+                             CompilerOptions * opts,
+                             bool genSimData )
 {
     resetCompilerCore();
     m_opts = opts;
@@ -78,6 +83,14 @@ bool CompilerCore::compile ( LangId lang,
     }
 
     return false;
+}
+
+DbgFile * CompilerCore::getSimDbg()
+{
+}
+
+DataFile * CompilerCore::getSimData()
+{
 }
 
 inline bool CompilerCore::checkOptions ( LangId lang,
@@ -215,7 +228,7 @@ inline bool CompilerCore::startLexerAndParser ( LangId lang,
     return m_success;
 }
 
-void CompilerCore::parserMessage ( SourceLocation location,
+void CompilerCore::parserMessage ( CompilerSourceLocation location,
                                    MessageType type,
                                    const std::string & text )
 {
@@ -267,14 +280,14 @@ void CompilerCore::parserMessage ( SourceLocation location,
     m_msgInterface->message(msgText.str(), type);
 }
 
-void CompilerCore::lexerMessage ( SourceLocation location,
+void CompilerCore::lexerMessage ( CompilerSourceLocation location,
                                   MessageType type,
                                   const std::string & text )
 {
     parserMessage(location, type, text);
 }
 
-void CompilerCore::compilerMessage ( SourceLocation location,
+void CompilerCore::compilerMessage ( CompilerSourceLocation location,
                                      MessageType type,
                                      const std::string & text )
 {
@@ -487,7 +500,7 @@ const std::string & CompilerCore::getFileName ( int fileNumber ) const
     return m_fileNames.at(fileNumber);
 }
 
-std::string CompilerCore::locationToStr ( const CompilerBase::SourceLocation & location ) const
+std::string CompilerCore::locationToStr ( const CompilerSourceLocation & location ) const
 {
     if ( -1 == location.m_fileNumber || location.m_fileNumber >= (int)m_fileNames.size() )
     {

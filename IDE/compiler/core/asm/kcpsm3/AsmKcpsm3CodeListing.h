@@ -17,9 +17,9 @@
 #define ASMKCPSM3CODELISTING_H
 
 // Common compiler header files.
-#include "../../CompilerSemanticInterface.h"
 #include "../../CompilerOptions.h"
 #include "../../CompilerMsgObserver.h"
+#include "../../CompilerSemanticInterface.h"
 
 // Standard headers.
 #include <string>
@@ -149,7 +149,7 @@ class AsmKcpsm3CodeListing : public CompilerMsgObserver
          * @param[in] location
          * @param[in] flag
          */
-        void setNoList ( CompilerBase::SourceLocation location,
+        void setNoList ( CompilerSourceLocation location,
                          bool flag );
 
         /**
@@ -163,7 +163,7 @@ class AsmKcpsm3CodeListing : public CompilerMsgObserver
          * @param[in] location
          * @param[in] fileNumber
          */
-        void setInclusion ( CompilerBase::SourceLocation location,
+        void setInclusion ( CompilerSourceLocation location,
                             int fileNumber );
 
         /**
@@ -172,7 +172,7 @@ class AsmKcpsm3CodeListing : public CompilerMsgObserver
          * @param[in] code
          * @param[in] address
          */
-        void setCode ( CompilerBase::SourceLocation location,
+        void setCode ( CompilerSourceLocation location,
                        int code,
                        int address );
 
@@ -181,7 +181,7 @@ class AsmKcpsm3CodeListing : public CompilerMsgObserver
          * @param[in] location
          * @param[in] value
          */
-        void setValue ( CompilerBase::SourceLocation location,
+        void setValue ( CompilerSourceLocation location,
                         int value );
 
         /**
@@ -190,7 +190,7 @@ class AsmKcpsm3CodeListing : public CompilerMsgObserver
          * @param[in] definition
          * @param[in,out] expansion
          */
-        void expandMacro ( CompilerBase::SourceLocation location,
+        void expandMacro ( CompilerSourceLocation location,
                            const CompilerStatement * definition,
                            CompilerStatement * expansion );
 
@@ -200,7 +200,7 @@ class AsmKcpsm3CodeListing : public CompilerMsgObserver
          * @param[in] type
          * @param[in] text
          */
-        virtual void message ( const CompilerBase::SourceLocation & location,
+        virtual void message ( const CompilerSourceLocation & location,
                                CompilerBase::MessageType type,
                                const std::string & text );
 
@@ -246,7 +246,7 @@ class AsmKcpsm3CodeListing : public CompilerMsgObserver
          * @param[in] silent
          * @return
          */
-        inline bool checkLocation ( const CompilerBase::SourceLocation & location,
+        inline bool checkLocation ( const CompilerSourceLocation & location,
                                     bool silent = false );
 
         /**
@@ -279,7 +279,7 @@ class AsmKcpsm3CodeListing : public CompilerMsgObserver
         std::vector<std::vector<Message>> m_messages;
 
         ///
-        std::vector<std::pair<CompilerBase::SourceLocation,Message>> m_messageQueue;
+        std::vector<std::pair<CompilerSourceLocation,Message>> m_messageQueue;
 };
 
 /// @name Tracing operators

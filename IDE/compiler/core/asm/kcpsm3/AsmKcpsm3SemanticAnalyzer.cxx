@@ -25,6 +25,7 @@
 #include "AsmKcpsm3CodeListing.h"
 #include "AsmKcpsm3InstructionSet.h"
 #include "AsmKcpsm3Macros.h"
+#include "AsmKcpsm3MemoryPtr.h"
 
 // Standard headers.
 #include <cstdint>
@@ -32,13 +33,6 @@
 #include <string>
 #include <vector>
 #include <fstream>
-
-void AsmKcpsm3SemanticAnalyzer::MemoryPtr::clear()
-{
-    m_code = 0;
-    m_reg = 0;
-    m_data = 0;
-}
 
 AsmKcpsm3SemanticAnalyzer::AsmKcpsm3SemanticAnalyzer ( CompilerSemanticInterface * compilerCore,
                                                        CompilerOptions * opts )
@@ -50,8 +44,9 @@ AsmKcpsm3SemanticAnalyzer::AsmKcpsm3SemanticAnalyzer ( CompilerSemanticInterface
     m_instructionSet = new AsmKcpsm3InstructionSet ( compilerCore, opts, m_symbolTable );
     m_macros = new AsmKcpsm3Macros ( compilerCore, opts, m_symbolTable, m_codeListing );
     m_dgbFile = new AsmDgbFileGen();
+    m_memoryPtr = new AsmKcpsm3MemoryPtr ( compilerCore );
 
-    m_memoryPtr.clear();
+    m_memoryPtr->clear();
 }
 
 AsmKcpsm3SemanticAnalyzer::~AsmKcpsm3SemanticAnalyzer()
@@ -62,6 +57,7 @@ AsmKcpsm3SemanticAnalyzer::~AsmKcpsm3SemanticAnalyzer()
     delete m_instructionSet;
     delete m_macros;
     delete m_dgbFile;
+    delete m_memoryPtr;
 }
 
 void AsmKcpsm3SemanticAnalyzer::printCodeTree ( const CompilerStatement * codeTree )
@@ -76,7 +72,9 @@ void AsmKcpsm3SemanticAnalyzer::printCodeTree ( const CompilerStatement * codeTr
     if ( false == file.is_open() )
     {
         m_compilerCore -> compilerMessage ( CompilerBase::MT_ERROR,
-                                            QObject::tr("Unable to open ").toStdString() + "\"" + m_opts->m_codeTree  + "\"" );
+                                            QObject::tr ( "Unable to open " )
+                                                        . toStdString()
+                                                        + "\"" + m_opts->m_codeTree  + "\"" );
         return;
     }
 
@@ -92,7 +90,7 @@ void AsmKcpsm3SemanticAnalyzer::printCodeTree ( const CompilerStatement * codeTr
 
 void AsmKcpsm3SemanticAnalyzer::process ( CompilerStatement * codeTree )
 {
-    m_memoryPtr.clear();
+    m_memoryPtr->clear();
 
     m_codeListing->loadSourceFiles();
     printCodeTree(codeTree);
@@ -112,7 +110,7 @@ void AsmKcpsm3SemanticAnalyzer::process ( CompilerStatement * codeTree )
 }
 
 void AsmKcpsm3SemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
-                                         const CompilerBase::SourceLocation * origLocation,
+                                         const CompilerSourceLocation * origLocation,
                                          const std::string * macroName )
 {
     using namespace CompilerStatementTypes;
@@ -125,12 +123,12 @@ void AsmKcpsm3SemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
     {
         if ( true == m_instructionSet->isInstruction ( node ) )
         {
-            m_instructionSet->encapsulate(node, m_memoryPtr.m_code);
-            m_memoryPtr.m_code++;
+            m_instructionSet->encapsulate(node, m_memoryPtr->m_code);
+            m_memoryPtr->m_code++;
             continue;
         }
 
-        const CompilerBase::SourceLocation * location = origLocation;
+        const CompilerSourceLocation * location = origLocation;
         if ( NULL == location )
         {
             location = &(node->location());
@@ -142,6 +140,20 @@ void AsmKcpsm3SemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
             {
                 const char * limSel = node->args()->lVal().m_data.m_symbol;
                 int limVal = m_symbolTable->resolveExpr ( node->args()->next() );
+
+                if ( -1 == limVal )
+                {
+                    m_compilerCore->compilerMessage ( *location,
+                                                      CompilerBase::MT_REMARK,
+                                                      QObject::tr("limit value -1 means unlimited").toStdString() );
+                }
+                else if ( -1 > limVal )
+                {
+                    m_compilerCore->compilerMessage ( *location,
+                                                      CompilerBase::MT_ERROR,
+                                                      QObject::tr("limit value %1 is not valid").toStdString() );
+                    break;
+                }
 
                 if ( 0 != strcmp("R", limSel) )
                 {
@@ -191,7 +203,20 @@ void AsmKcpsm3SemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
                                                          location,
                                                          symbolType,
                                                          true );
+
                 m_codeListing->setValue(node->location(), value);
+
+                if ( value >= 0)
+                {
+                    if ( node->type() == ASMKCPSM3_DIR_REG )
+                    {
+                        m_memoryPtr -> tryReserve ( *location, AsmKcpsm3MemoryPtr::MS_REG, (unsigned int) value );
+                    }
+                    else if ( node->type() == ASMKCPSM3_DIR_DATA )
+                    {
+                        m_memoryPtr -> tryReserve ( *location, AsmKcpsm3MemoryPtr::MS_DATA, (unsigned int) value );
+                    }
+                }
                 break;
             }
             case ASMKCPSM3_DIR_SET:
@@ -238,7 +263,7 @@ void AsmKcpsm3SemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
                 break;
             case ASMKCPSM3_LABEL:
             {
-                CompilerExpr e(m_memoryPtr.m_code);
+                CompilerExpr e(m_memoryPtr->m_code);
                 m_symbolTable -> addSymbol ( node->args()->lVal().m_data.m_symbol,
                                              &e,
                                              location,
@@ -247,15 +272,15 @@ void AsmKcpsm3SemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
                 break;
             }
             case ASMKCPSM3_DIR_ORG:
-                m_memoryPtr.m_code = m_symbolTable->resolveExpr(node->args());
-                m_codeListing->setValue(node->location(), m_memoryPtr.m_code);
+                m_memoryPtr->m_code = m_symbolTable->resolveExpr(node->args());
+                m_codeListing->setValue(node->location(), m_memoryPtr->m_code);
                 node->args()->completeDelete();
-                node->m_args = new CompilerExpr(m_memoryPtr.m_code);
+                node->m_args = new CompilerExpr(m_memoryPtr->m_code);
                 continue; // This directive must stay in the code tree until phase 2.
             case ASMKCPSM3_DIR_SKIP:
             {
                 int skip = m_symbolTable->resolveExpr(node->args());
-                m_memoryPtr.m_code += skip;
+                m_memoryPtr->m_code += skip;
                 node->args()->completeDelete();
                 node->m_args = new CompilerExpr(skip);
                 continue; // This directive must stay in the code tree until phase 2.
@@ -347,7 +372,7 @@ void AsmKcpsm3SemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
             }
             case ASMKCPSM3_DIR_WHILE:
             {
-                CompilerBase::SourceLocation endwLoc = node->branch()->last()->location();
+                CompilerSourceLocation endwLoc = node->branch()->last()->location();
                 delete node->branch()->last(); // remove `ENDW' directive
 
                 unsigned int i;
@@ -399,7 +424,7 @@ void AsmKcpsm3SemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
                 unsigned int times = m_symbolTable->resolveExpr(node->args());
                 if ( 0 != times )
                 {
-                    CompilerBase::SourceLocation endrLoc = node->branch()->last()->location();
+                    CompilerSourceLocation endrLoc = node->branch()->last()->location();
                     delete node->branch()->last(); // remove `ENDR' directive
                     CompilerStatement * body = node->branch()->copyEntireChain();
                     for ( unsigned int i = 1; i < times; i++ )
@@ -471,17 +496,34 @@ void AsmKcpsm3SemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
                     }
                     else
                     {
-                        dbData.push_back(m_symbolTable->resolveExpr(arg));
+                        int value = m_symbolTable->resolveExpr(arg);
+                        if ( value & 0xff0000 )
+                        {
+                            dbData.push_back ( ( value >> 16 ) & 0xff );
+                        }
+                        if ( value & 0xff00 )
+                        {
+                            dbData.push_back ( ( value >> 8 ) & 0xff );
+                        }
+                        dbData.push_back ( value & 0xff );
                     }
                 }
 
-                m_memoryPtr.m_code += ( dbData.size() / 2 ) + ( dbData.size() % 2 );
                 node->args()->completeDelete();
                 node->m_args = NULL;
 
+                m_memoryPtr->m_code += ( dbData.size() / 3 );
+                m_memoryPtr->m_code += ( 0 == ( dbData.size() % 3 ) ? 0 : 1);
+
                 for ( size_t i = 0; i < dbData.size(); i++ )
                 {
-                    int code = ( dbData[i] << 8 );
+                    unsigned int code = ( dbData[i] << 16 );
+
+                    i++;
+                    if ( i < dbData.size() )
+                    {
+                        code |= ( dbData[i] << 8 );
+                    }
 
                     i++;
                     if ( i < dbData.size() )
@@ -489,13 +531,25 @@ void AsmKcpsm3SemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
                         code |= dbData[i];
                     }
 
+                    if ( 0 != ( code & ~0x3ffff ) )
+                    {
+                        m_compilerCore -> compilerMessage ( *location,
+                                                            CompilerBase::MT_WARNING,
+                                                            QObject::tr ( "instruction word is only 18 bits wide, value"
+                                                                          " `%1' trimmed to `%2'" )
+                                                                        . arg ( code )
+                                                                        . arg ( code & 0x3ffff )
+                                                                        . toStdString() );
+                        code &= 0x3ffff;
+                    }
+
                     if ( NULL == node->m_args )
                     {
-                        node->m_args = new CompilerExpr(code);
+                        node->m_args = new CompilerExpr((int)code);
                     }
                     else
                     {
-                        node->m_args->appendLink(new CompilerExpr(code));
+                        node->m_args->appendLink(new CompilerExpr((int)code));
                     }
                 }
 
@@ -512,23 +566,27 @@ void AsmKcpsm3SemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
                 {
                     if ( NULL != node->args()->next() )
                     {
-                        m_memoryPtr.m_data = m_symbolTable->resolveExpr(node->args()->next());
+                        m_memoryPtr->m_data = m_symbolTable->resolveExpr(node->args()->next());
                     }
 
-                    addr = m_memoryPtr.m_data;
-                    m_memoryPtr.m_data++;
+                    addr = m_memoryPtr->m_data;
+                    m_memoryPtr->m_data++;
                     symbolType = AsmKcpsm3SymbolTable::STYPE_DATA;
+
+                    m_memoryPtr -> tryReserve ( *location, AsmKcpsm3MemoryPtr::MS_DATA, addr );
                 }
                 else
                 {
                     if ( NULL != node->args()->next() )
                     {
-                        m_memoryPtr.m_reg = m_symbolTable->resolveExpr(node->args()->next());
+                        m_memoryPtr->m_reg = m_symbolTable->resolveExpr(node->args()->next());
                     }
 
-                    addr = m_memoryPtr.m_reg;
-                    m_memoryPtr.m_reg++;
+                    addr = m_memoryPtr->m_reg;
+                    m_memoryPtr->m_reg++;
                     symbolType = AsmKcpsm3SymbolTable::STYPE_REGISTER;
+
+                    m_memoryPtr -> tryReserve ( *location, AsmKcpsm3MemoryPtr::MS_REG, addr );
                 }
 
                 CompilerExpr value(addr);
@@ -583,12 +641,13 @@ inline void AsmKcpsm3SemanticAnalyzer::phase2 ( CompilerStatement * codeTree )
                 {
                     long long code = arg->lVal().m_data.m_integer;
                     int address = m_machineCode->setCode ( (uint32_t) code );
-                    m_codeListing->setCode(node->location(), (int) code, address);
-                    m_dgbFile->setCode(node->location(), (int) code, address);
+                    m_codeListing -> setCode ( node->location(), (int) code, address );
+                    m_dgbFile -> setCode ( node->location(), (int) code, address );
+                    m_memoryPtr -> tryReserve ( node->location(), AsmKcpsm3MemoryPtr::MS_CODE, address );
                 }
                 break;
 
-            default: // Only instructions are expected here.
+            default: // Only instructions are expected here, anything else will be ignored.
             {
                 int opcode = m_instructionSet->resolveOPcode(node);
                 if ( -1 != opcode )
@@ -596,6 +655,7 @@ inline void AsmKcpsm3SemanticAnalyzer::phase2 ( CompilerStatement * codeTree )
                     int address = m_machineCode -> setCode ( opcode );
                     m_codeListing -> setCode ( node->location(), opcode, address );
                     m_dgbFile -> setCode ( node->location(), opcode, address );
+                    m_memoryPtr->tryReserve ( node->location(), AsmKcpsm3MemoryPtr::MS_CODE, address );
                 }
                 break;
             }

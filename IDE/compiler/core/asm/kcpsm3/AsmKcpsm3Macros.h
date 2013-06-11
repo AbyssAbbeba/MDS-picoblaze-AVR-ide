@@ -63,7 +63,7 @@ class AsmKcpsm3Macros
              * @param[in] location
              * @param[in] id
              */
-            Macro ( const CompilerBase::SourceLocation location,
+            Macro ( const CompilerSourceLocation location,
                     int id )
                   : m_location ( location ),
                     m_id ( id ),
@@ -76,7 +76,7 @@ class AsmKcpsm3Macros
             CompilerStatement * m_definition;
 
             ///
-            CompilerBase::SourceLocation m_location;
+            CompilerSourceLocation m_location;
 
             /// Macro identifier.
             int m_id;
@@ -112,7 +112,7 @@ class AsmKcpsm3Macros
          * @param[in] parameters
          * @param[in,out] macroDef
          */
-        void define ( CompilerBase::SourceLocation location,
+        void define ( CompilerSourceLocation location,
                       const std::string & name,
                       const CompilerExpr * parameters,
                       CompilerStatement * macroDef );
@@ -125,8 +125,8 @@ class AsmKcpsm3Macros
          * @param[in] arguments
          * @return
          */
-        CompilerStatement * expand ( const CompilerBase::SourceLocation & msgLocation,
-                                     const CompilerBase::SourceLocation & location,
+        CompilerStatement * expand ( const CompilerSourceLocation & msgLocation,
+                                     const CompilerSourceLocation & location,
                                      const std::string & name,
                                      const CompilerExpr * arguments );
 
@@ -152,7 +152,7 @@ class AsmKcpsm3Macros
          * @param[in] location
          */
         void printSymLocation ( std::ostream & out,
-                                const CompilerBase::SourceLocation & location ) const;
+                                const CompilerSourceLocation & location ) const;
 
         /**
          * @brief
@@ -170,7 +170,7 @@ class AsmKcpsm3Macros
          * @param[in,out] node
          * @return
          */
-        bool mangleName ( const CompilerBase::SourceLocation & location,
+        bool mangleName ( const CompilerSourceLocation & location,
                           std::vector<std::string> * localSymbols,
                           const std::string & local,
                           const std::string & macroName,

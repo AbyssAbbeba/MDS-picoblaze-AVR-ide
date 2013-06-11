@@ -19,6 +19,8 @@
 
 // Forward declarations
 class CompilerCore;
+class DbgFile;
+class DataFile;
 
 // Compiler header files.
 #include "CompilerBase.h"
@@ -56,6 +58,9 @@ class CompilerThread : public QThread,
 
             ///
             CompilerOptions * m_opts;
+
+            ///
+            bool m_genSimData;
         };
 
     ////    Constructors and Destructors    ////
@@ -77,24 +82,33 @@ class CompilerThread : public QThread,
          * @param[in] lang
          * @param[in] arch
          * @param[in] opts
-         * @param[in] filename
+         * @param[in] genSimData
          */
         void compile ( CompilerBase::LangId lang,
                        CompilerBase::TargetArch arch,
-                       CompilerOptions * const opts );
+                       CompilerOptions * const opts,
+                       bool genSimData = false );
 
     ////    Qt signals    ////
     signals:
         /**
          * @brief
-         * @param[in] success
+         * @param[out] success
          */
         void compilationFinished ( bool success );
 
         /**
          * @brief
-         * @param[in] text
-         * @param[in] type
+         * @param[out] dbgFile
+         * @param[out] dataFile
+         */
+        void simDataGenerated ( DbgFile * dbgFile,
+                                DataFile * dataFile );
+
+        /**
+         * @brief
+         * @param[out] text
+         * @param[out] type
          */
         void compilationMessage ( const std::string & text,
                                   CompilerBase::MessageType type );

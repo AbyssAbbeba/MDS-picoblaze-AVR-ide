@@ -16,11 +16,11 @@
 #include "TestSuiteSuc.h"
 
 // Standard header files.
-#include <iostream>
+#include <vector>
+#include <string>
 #include <cstring>
 #include <fstream>
-#include <string>
-#include <vector>
+#include <iostream>
 #include <algorithm>
 
 // MCUDataFiles

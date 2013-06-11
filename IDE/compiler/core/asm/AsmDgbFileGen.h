@@ -17,9 +17,10 @@
 #define ASMDGBFILEGEN_H
 
 // Common compiler header files.
-#include "../CompilerSemanticInterface.h"
 #include "../CompilerOptions.h"
 #include "../CompilerFileHeaders.h"
+#include "../CompilerSourceLocation.h"
+#include "../CompilerSemanticInterface.h"
 
 // Standard headers.
 #include <string>
@@ -51,7 +52,7 @@ class AsmDgbFileGen
              * @param[in] code
              * @param[in] address
              */
-            DbgRecord ( const CompilerBase::SourceLocation & location,
+            DbgRecord ( const CompilerSourceLocation & location,
                         int code,
                         int address )
                       : m_location ( location ),
@@ -59,7 +60,7 @@ class AsmDgbFileGen
                         m_address ( address ) {};
 
             /// 
-            CompilerBase::SourceLocation m_location;
+            CompilerSourceLocation m_location;
 
             /// 
             int m_code;
@@ -88,7 +89,7 @@ class AsmDgbFileGen
          * @param[in] code
          * @param[in] address
          */
-        void setCode ( const CompilerBase::SourceLocation & location,
+        void setCode ( const CompilerSourceLocation & location,
                        int code,
                        int address );
 

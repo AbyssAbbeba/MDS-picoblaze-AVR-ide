@@ -71,7 +71,7 @@ class CompilerParserInterface
          * @param[in] type
          * @param[in] text
          */
-        virtual void parserMessage ( CompilerBase::SourceLocation location,
+        virtual void parserMessage ( CompilerSourceLocation location,
                                      CompilerBase::MessageType type,
                                      const std::string & text ) = 0;
 
@@ -81,7 +81,7 @@ class CompilerParserInterface
          * @param[in] type
          * @param[in] text
          */
-        virtual void lexerMessage ( CompilerBase::SourceLocation location,
+        virtual void lexerMessage ( CompilerSourceLocation location,
                                     CompilerBase::MessageType type,
                                     const std::string & text ) = 0;
 
@@ -139,7 +139,7 @@ class CompilerParserInterface
              * @param[in] yylloc
              * @return
              */
-            CompilerBase::SourceLocation toSourceLocation ( const YYLTYPE & yylloc ) const
+            CompilerSourceLocation toSourceLocation ( const YYLTYPE & yylloc ) const
             {
                     return toSourceLocation(&yylloc);
             }
@@ -149,9 +149,9 @@ class CompilerParserInterface
              * @param[in] yylloc
              * @return
              */
-            CompilerBase::SourceLocation toSourceLocation ( const YYLTYPE * yylloc ) const
+            CompilerSourceLocation toSourceLocation ( const YYLTYPE * yylloc ) const
             {
-                return CompilerBase::SourceLocation ( getFileNumber(),
+                return CompilerSourceLocation ( getFileNumber(),
                                                       yylloc->first_line,
                                                       yylloc->last_line,
                                                       yylloc->first_column,

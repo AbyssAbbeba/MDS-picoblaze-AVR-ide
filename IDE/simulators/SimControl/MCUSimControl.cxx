@@ -229,6 +229,13 @@ bool MCUSimControl::start ( const std::string & filename,
     return true;
 }
 
+
+bool MCUSimControl::start ( DbgFile * dbgFile,
+                            DataFile * dataFile )
+{
+    
+}
+
 bool MCUSimControl::start ( const std::string & dbgFileName,
                             const std::string & dataFileName,
                             MCUSimControl::CompilerID compilerId,
@@ -428,6 +435,10 @@ const DbgFile * MCUSimControl::getSourceInfo()
 void MCUSimControl::stop()
 {
     allObservers_setReadOnly(true);
+}
+
+bool MCUSimControl::isStarted() const
+{
 }
 
 void MCUSimControl::step()
@@ -700,6 +711,21 @@ void MCUSimControl::allObservers_setReadOnly ( bool readOnly )
             it->first->setReadOnly(readOnly);
         }
     }
+}
+
+
+void MCUSimControl::setBreakPoints ( const std::vector<std::string> & fileNames,
+                                     const std::vector<std::vector<unsigned int>> & lineNumbers )
+{
+    
+}
+
+void MCUSimControl::enableBreakPoints ( bool enabled )
+{
+}
+
+bool MCUSimControl::breakPointsEnabled() const
+{
 }
 
 bool MCUSimControl::getListOfSFR ( std::vector<SFRRegDesc> & sfr )

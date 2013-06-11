@@ -20,6 +20,7 @@
 class MCUSimObserver;
 class McuDeviceSpec;
 class DbgFile;
+class DataFile;
 
 #include "../MCUSim/MCUSim.h"
 #include <vector>
@@ -178,6 +179,26 @@ class MCUSimControl : public QObject
          */
         bool getListOfSFR ( std::vector<SFRRegDesc> & sfr );
 
+        /**
+         * @brief
+         * @param[in] fileNames
+         * @param[in] lineNumbers
+         */
+        void setBreakPoints ( const std::vector<std::string> & fileNames,
+                              const std::vector<std::vector<unsigned int>> & lineNumbers );
+
+        /**
+         * @brief
+         * @param[in] fileNames
+         */
+        void enableBreakPoints ( bool enabled );
+
+        /**
+         * @brief
+         * @return
+         */
+        bool breakPointsEnabled() const;
+
     ////    Private Attributes    ////
     private:
         /**
@@ -276,6 +297,16 @@ class MCUSimControl : public QObject
          * @brief
          * @param[in] dbgFile
          * @param[in] dataFile
+         * @warning dbgFile and dataFile are automatically deleted by this class when it does no longer need them.
+         * @return
+         */
+        bool start ( DbgFile * dbgFile,
+                     DataFile * dataFile );
+
+        /**
+         * @brief
+         * @param[in] dbgFile
+         * @param[in] dataFile
          * @param[in] compilerId
          * @param[in] dataFileType
          * @return
@@ -289,6 +320,12 @@ class MCUSimControl : public QObject
          * @brief
          */
         void stop();
+
+        /**
+         * @brief
+         * @return
+         */
+        bool isStarted() const;
 
         /**
          * @brief

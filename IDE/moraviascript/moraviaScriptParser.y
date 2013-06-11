@@ -390,10 +390,10 @@ e_expr:
 // Expression.
 expr:
     // Single value expressions.
-      id                            { $$ = $id;                                                                 }
-    | INTEGER                       { $$ = new MScriptExpr($INTEGER, @$);                                       }
-    | REAL                          { $$ = new MScriptExpr($REAL, @$);                                          }
-    | STRING                        { $$ = new MScriptExpr(MScriptExpr::Value($STRING.data, $STRING.size), @$); }
+      id                            { $$ = $id;                                                           }
+    | INTEGER                       { $$ = new MScriptExpr($INTEGER, @$);                                 }
+    | REAL                          { $$ = new MScriptExpr($REAL, @$);                                    }
+    | STRING                        { $$ = new MScriptExpr(MScriptValue($STRING.data, $STRING.size), @$); }
 
     // Parentheses.
     | "(" expr ")"                  { $$ = $2; }

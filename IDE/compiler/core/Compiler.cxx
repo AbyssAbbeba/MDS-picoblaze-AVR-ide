@@ -31,7 +31,8 @@ Compiler::~Compiler()
 
 bool Compiler::compile ( CompilerBase::LangId lang,
                          CompilerBase::TargetArch arch,
-                         CompilerOptions * const opts )
+                         CompilerOptions * const opts,
+                         bool genSimData )
 {
-    return m_compilerCore -> compile ( lang, arch, opts );
+    return m_compilerCore -> compile ( lang, arch, opts, genSimData );
 }

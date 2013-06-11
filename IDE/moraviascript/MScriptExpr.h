@@ -18,6 +18,7 @@
 
 // MScript language interpreter header files.
 #include "MScriptSrcLocation.h"
+#include "MScriptValue.h"
 
 // Standard header files.
 #include <string>
@@ -32,147 +33,6 @@ class MScriptExpr
 {
     ////    Public Datatypes    ////
     public:
-        /**
-         * @brief
-         */
-        class Value
-        {
-            ////    Public Datatypes    ////
-            public:
-                /**
-                 * @brief
-                 */
-                enum Type
-                {
-                    TYPE_EMPTY = 0, ///<
-                    TYPE_INT,       ///<
-                    TYPE_REAL,      ///<
-                    TYPE_EXPR,      ///<
-                    TYPE_SYMBOL,    ///<
-                    TYPE_ARRAY      ///<
-                };
-
-                /**
-                 * @brief
-                 */
-                union Data
-                {
-                    ///
-                    long long m_integer;
-
-                    ///
-                    double m_real;
-
-                    ///
-                    MScriptExpr * m_expr;
-
-                    ///
-                    char * m_symbol;
-
-                    ///
-                    struct CharArray
-                    {
-                        ///
-                        unsigned char * m_data;
-
-                        ///
-                        int m_size;
-                    } m_array;
-                };
-
-            ////    Constructors and Destructors    ////
-            public:
-                /**
-                 * @brief
-                 */
-                Value();
-
-                /**
-                 * @brief
-                 * @param[in] value
-                 */
-                Value ( int value );
-
-                /**
-                 * @brief
-                 * @param[in] value
-                 */
-                Value ( long long value );
-
-                /**
-                 * @brief
-                 * @param[in] value
-                 */
-                Value ( float value );
-
-                /**
-                 * @brief
-                 * @param[in] value
-                 */
-                Value ( double value );
-
-                /**
-                 * @brief
-                 * @param[in,out] expr
-                 */
-                Value ( MScriptExpr * expr );
-
-                /**
-                 * @brief
-                 * @param[in] string
-                 */
-                Value ( const char * string );
-
-                /**
-                 * @brief
-                 * @param[in] string
-                 */
-                Value ( const std::string & string );
-
-                /**
-                 * @brief
-                 * @param[in] array
-                 * @param[in] size
-                 */
-                Value ( const unsigned char * array,
-                        int size );
-
-                /**
-                 * @brief
-                 * @param[in,out] array
-                 * @param[in] size
-                 * @param[in] copy
-                 */
-                Value ( unsigned char * array,
-                        int size,
-                        bool copy = false );
-
-            ////    Public Operations    ////
-            public:
-                /**
-                 * @brief
-                 * @return
-                 */
-                Value & makeCopy() const;
-
-                /**
-                 * @brief
-                 */
-                void completeDelete();
-
-            ////    Public Attributes    ////
-            public:
-                /**
-                 * @brief
-                 */
-                Data m_data;
-
-                /**
-                 * @brief
-                 */
-                Type m_type;
-        };
-
         /**
          * @brief
          */
@@ -237,8 +97,8 @@ class MScriptExpr
          * @param[in] value
          * @param[in] location
          */
-        MScriptExpr ( Value value,
-                       MScriptSrcLocation location = MScriptSrcLocation() );
+        MScriptExpr ( MScriptValue value,
+                      MScriptSrcLocation location = MScriptSrcLocation() );
 
         /**
          * @brief
@@ -247,18 +107,8 @@ class MScriptExpr
          * @param[in] location
          */
         MScriptExpr ( Operator oper,
-                       Value value,
-                       MScriptSrcLocation location = MScriptSrcLocation() );
-
-        /**
-         * @brief
-         * @param[in] oper
-         * @param[in] value
-         * @param[in] location
-         */
-        MScriptExpr ( char oper,
-                       Value value,
-                       MScriptSrcLocation location = MScriptSrcLocation() );
+                      MScriptValue value,
+                      MScriptSrcLocation location = MScriptSrcLocation() );
 
         /**
          * @brief
@@ -266,19 +116,9 @@ class MScriptExpr
          * @param[in] oper
          * @param[in] location
          */
-        MScriptExpr ( Value value,
-                       Operator oper,
-                       MScriptSrcLocation location = MScriptSrcLocation() );
-
-        /**
-         * @brief
-         * @param[in] value
-         * @param[in] oper
-         * @param[in] location
-         */
-        MScriptExpr ( Value value,
-                       char oper,
-                       MScriptSrcLocation location = MScriptSrcLocation() );
+        MScriptExpr ( MScriptValue value,
+                      Operator oper,
+                      MScriptSrcLocation location = MScriptSrcLocation() );
 
         /**
          * @brief
@@ -287,22 +127,10 @@ class MScriptExpr
          * @param[in] rValue
          * @param[in] location
          */
-        MScriptExpr ( Value lValue,
-                       Operator oper,
-                       Value rValue,
-                       MScriptSrcLocation location = MScriptSrcLocation() );
-
-        /**
-         * @brief
-         * @param[in] lValue
-         * @param[in] oper
-         * @param[in] rValue
-         * @param[in] location
-         */
-        MScriptExpr ( Value lValue,
-                       char oper,
-                       Value rValue,
-                       MScriptSrcLocation location = MScriptSrcLocation() );
+        MScriptExpr ( MScriptValue lValue,
+                      Operator oper,
+                      MScriptValue rValue,
+                      MScriptSrcLocation location = MScriptSrcLocation() );
 
     ////    Public Operations    ////
     public:
@@ -429,7 +257,7 @@ class MScriptExpr
          * @brief
          * @return
          */
-        const Value & lVal() const
+        const MScriptValue & lVal() const
         {
             return m_lValue;
         }
@@ -438,7 +266,7 @@ class MScriptExpr
          * @brief
          * @return
          */
-        const Value & rVal() const
+        const MScriptValue & rVal() const
         {
             return m_rValue;
         }
@@ -448,12 +276,12 @@ class MScriptExpr
         /**
          * @brief
          */
-        Value m_lValue;
+        MScriptValue m_lValue;
 
         /**
          * @brief
          */
-        Value m_rValue;
+        MScriptValue m_rValue;
 
         /**
          * @brief
@@ -478,15 +306,6 @@ class MScriptExpr
 
 /// @name Tracing operators
 //@{
-    /**
-     * @brief
-     * @param[in,out] out
-     * @param[in] val
-     * @return
-     */
-    std::ostream & operator << ( std::ostream & out,
-                                 const MScriptExpr::Value & val );
-
     /**
      * @brief
      * @param[in,out] out

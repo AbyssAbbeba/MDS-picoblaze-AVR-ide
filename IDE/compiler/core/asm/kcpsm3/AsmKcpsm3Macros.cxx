@@ -51,7 +51,7 @@ void AsmKcpsm3Macros::setExpEnabled ( bool enabled )
     m_expEnabled = enabled;
 }
 
-void AsmKcpsm3Macros::define ( CompilerBase::SourceLocation location,
+void AsmKcpsm3Macros::define ( CompilerSourceLocation location,
                                const std::string & name,
                                const CompilerExpr * parameters,
                                CompilerStatement * macroDef )
@@ -100,8 +100,8 @@ void AsmKcpsm3Macros::incrMacroCounter ( CompilerStatement * macro ) const
     incrMacroCounter(macro->m_next);
 }
 
-CompilerStatement * AsmKcpsm3Macros::expand ( const CompilerBase::SourceLocation & msgLocation,
-                                              const CompilerBase::SourceLocation & location,
+CompilerStatement * AsmKcpsm3Macros::expand ( const CompilerSourceLocation & msgLocation,
+                                              const CompilerSourceLocation & location,
                                               const std::string & name,
                                               const CompilerExpr * arguments )
 {
@@ -167,7 +167,7 @@ CompilerStatement * AsmKcpsm3Macros::expand ( const CompilerBase::SourceLocation
     return result;
 }
 
-bool AsmKcpsm3Macros::mangleName ( const CompilerBase::SourceLocation & location,
+bool AsmKcpsm3Macros::mangleName ( const CompilerSourceLocation & location,
                                    std::vector<std::string> * localSymbols,
                                    const std::string & local,
                                    const std::string & macroName,
@@ -268,7 +268,7 @@ void AsmKcpsm3Macros::clear()
 }
 
 void AsmKcpsm3Macros::printSymLocation ( std::ostream & out,
-                                        const CompilerBase::SourceLocation & location ) const
+                                        const CompilerSourceLocation & location ) const
 {
     if ( false == location.isSet() )
     {

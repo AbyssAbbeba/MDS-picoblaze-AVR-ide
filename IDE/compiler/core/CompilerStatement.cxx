@@ -46,7 +46,29 @@ CompilerStatement::CompilerStatement()
     m_args = NULL;
 }
 
-CompilerStatement::CompilerStatement ( CompilerBase::SourceLocation location,
+CompilerStatement::CompilerStatement ( CompilerSerializer & input )
+{
+    deserialize(input);
+
+    CompilerStatement * currentNode = this;
+    CompilerStatement * newNode;
+    SerializationMark mark;
+
+    input >> mark;
+    while ( MARK_NEXT == mark )
+    {
+        input >> mark;
+
+        newNode = new CompilerStatement();
+        input >> newNode;
+
+        currentNode->m_next = newNode;
+        newNode->m_prev = currentNode;
+        currentNode = newNode;
+    }
+}
+
+CompilerStatement::CompilerStatement ( CompilerSourceLocation location,
                                        CompilerStatementTypes::StatementType type,
                                        CompilerExpr * args )
 {
@@ -353,6 +375,78 @@ std::ostream & CompilerStatement::print ( std::ostream & out,
     }
 
     return out;
+}
+
+void CompilerStatement::serializeTree ( CompilerSerializer & output ) const
+{
+    for ( const CompilerStatement * node = this;
+          NULL != node;
+          node = node->next() )
+    {
+        output << node;
+    }
+}
+
+void CompilerStatement::serialize ( CompilerSerializer & output ) const
+{
+    output.write ( (uint32_t) m_type );
+    output << m_location;
+
+    if ( NULL == m_args )
+    {
+        output << MARK_TERMINAL;
+    }
+    else
+    {
+        output << MARK_NEXT;
+        output << m_args;
+    }
+
+    if ( NULL == m_branch )
+    {
+        output << MARK_TERMINAL;
+    }
+    else
+    {
+        output << MARK_NEXT;
+        m_branch->serializeTree(output);
+    }
+
+    if ( NULL == m_next )
+    {
+        output << MARK_TERMINAL;
+    }
+    else
+    {
+        output << MARK_NEXT;
+    }
+}
+
+void CompilerStatement::deserialize ( CompilerSerializer & input )
+{
+    m_userData = 0;
+    m_serialNumber = -1;
+    m_prev = NULL;
+    m_next = NULL;
+    m_branch = NULL;
+    m_args = NULL;
+
+    m_type = CompilerStatementTypes::StatementType ( input.read_ui32() );
+    input >> m_location;
+
+    SerializationMark mark;
+
+    input >> mark;
+    if ( MARK_NEXT == mark )
+    {
+        m_args = new CompilerExpr(input);
+    }
+
+    input >> mark;
+    if ( MARK_NEXT == mark )
+    {
+        m_branch = new CompilerStatement(input);
+    }
 }
 
 std::ostream & operator << ( std::ostream & out,

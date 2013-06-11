@@ -294,7 +294,7 @@ void AsmKcpsm3CodeListing::output()
     }
 }
 
-inline bool AsmKcpsm3CodeListing::checkLocation ( const CompilerBase::SourceLocation & location,
+inline bool AsmKcpsm3CodeListing::checkLocation ( const CompilerSourceLocation & location,
                                                   bool silent )
 {
     if ( -1 != location.m_fileNumber && (size_t)location.m_fileNumber < (m_numberOfFiles + m_numberOfMacros) )
@@ -321,7 +321,7 @@ void AsmKcpsm3CodeListing::setTitle ( const std::string & title )
     m_title = title;
 }
 
-void AsmKcpsm3CodeListing::setNoList ( CompilerBase::SourceLocation location,
+void AsmKcpsm3CodeListing::setNoList ( CompilerSourceLocation location,
                                        bool flag )
 {
     if ( true == checkLocation ( location ) )
@@ -331,7 +331,7 @@ void AsmKcpsm3CodeListing::setNoList ( CompilerBase::SourceLocation location,
     }
 }
 
-void AsmKcpsm3CodeListing::setInclusion ( CompilerBase::SourceLocation location,
+void AsmKcpsm3CodeListing::setInclusion ( CompilerSourceLocation location,
                                           int fileNumber )
 {
     if ( ( true == checkLocation ( location ) ) && ( -1 != fileNumber ) )
@@ -341,7 +341,7 @@ void AsmKcpsm3CodeListing::setInclusion ( CompilerBase::SourceLocation location,
     }
 }
 
-void AsmKcpsm3CodeListing::setCode ( CompilerBase::SourceLocation location,
+void AsmKcpsm3CodeListing::setCode ( CompilerSourceLocation location,
                                      int code,
                                      int address )
 {
@@ -357,7 +357,7 @@ void AsmKcpsm3CodeListing::setCode ( CompilerBase::SourceLocation location,
     }
 }
 
-void AsmKcpsm3CodeListing::setValue ( CompilerBase::SourceLocation location,
+void AsmKcpsm3CodeListing::setValue ( CompilerSourceLocation location,
                                       int value )
 {
     if ( true == checkLocation ( location ) )
@@ -367,7 +367,7 @@ void AsmKcpsm3CodeListing::setValue ( CompilerBase::SourceLocation location,
     }
 }
 
-void AsmKcpsm3CodeListing::expandMacro ( CompilerBase::SourceLocation location,
+void AsmKcpsm3CodeListing::expandMacro ( CompilerSourceLocation location,
                                          const CompilerStatement * definition,
                                          CompilerStatement * expansion )
 {
@@ -441,7 +441,7 @@ void AsmKcpsm3CodeListing::rewriteMacroLoc ( unsigned int * lineDiff,
 
 inline void AsmKcpsm3CodeListing::processMsgQueue()
 {
-    for ( std::vector<std::pair<CompilerBase::SourceLocation,Message>>::const_iterator i = m_messageQueue.cbegin();
+    for ( std::vector<std::pair<CompilerSourceLocation,Message>>::const_iterator i = m_messageQueue.cbegin();
           i != m_messageQueue.cend();
           i++ )
     {
@@ -451,13 +451,13 @@ inline void AsmKcpsm3CodeListing::processMsgQueue()
     m_messageQueue.clear();
 }
 
-void AsmKcpsm3CodeListing::message ( const CompilerBase::SourceLocation & location,
+void AsmKcpsm3CodeListing::message ( const CompilerSourceLocation & location,
                                      CompilerBase::MessageType type,
                                      const std::string & text )
 {
     if ( 0 == m_numberOfFiles )
     {
-        m_messageQueue.push_back ( std::pair<CompilerBase::SourceLocation,Message>(location, Message(type, text)) );
+        m_messageQueue.push_back ( std::pair<CompilerSourceLocation,Message>(location, Message(type, text)) );
         return;
     }
 
@@ -481,7 +481,7 @@ void AsmKcpsm3CodeListing::message ( const CompilerBase::SourceLocation & locati
 std::ostream & operator << ( std::ostream & out,
                              const AsmKcpsm3CodeListing * codeListing )
 {
-    if (  false == codeListing->m_title.empty() )
+    if ( false == codeListing->m_title.empty() )
     {
         out << codeListing->m_title << std::endl << std::endl;
     }

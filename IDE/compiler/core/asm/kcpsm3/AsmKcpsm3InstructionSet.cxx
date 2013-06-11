@@ -20,7 +20,7 @@
 #include "../../CompilerOptions.h"
 
 unsigned int AsmKcpsm3InstructionSet::checkLimit ( LimitType type,
-                                                   const CompilerBase::SourceLocation & location,
+                                                   const CompilerSourceLocation & location,
                                                    unsigned int value ) const
 {
     int limit = -1;

@@ -20,7 +20,12 @@
 #include <cctype>
 #include <cstdlib>
 
-CompilerExpr::CompilerExpr ( CompilerBase::SourceLocation location )
+CompilerExpr::CompilerExpr ( CompilerSerializer & input )
+{
+    deserialize(input);
+}
+
+CompilerExpr::CompilerExpr ( CompilerSourceLocation location )
 {
     m_operator = OPER_NONE;
     m_location = location;
@@ -30,7 +35,7 @@ CompilerExpr::CompilerExpr ( CompilerBase::SourceLocation location )
 }
 
 CompilerExpr::CompilerExpr ( CompilerValue value,
-                             CompilerBase::SourceLocation location )
+                             CompilerSourceLocation location )
 {
     m_lValue = value;
     m_operator = OPER_NONE;
@@ -42,7 +47,7 @@ CompilerExpr::CompilerExpr ( CompilerValue value,
 
 CompilerExpr::CompilerExpr ( Operator oper,
                              CompilerValue value,
-                             CompilerBase::SourceLocation location )
+                             CompilerSourceLocation location )
 {
     m_operator = oper;
     m_rValue = value;
@@ -54,7 +59,7 @@ CompilerExpr::CompilerExpr ( Operator oper,
 
 CompilerExpr::CompilerExpr ( char oper,
                              CompilerValue value,
-                             CompilerBase::SourceLocation location )
+                             CompilerSourceLocation location )
 {
     m_operator = Operator(oper);
     m_rValue = value;
@@ -66,7 +71,7 @@ CompilerExpr::CompilerExpr ( char oper,
 
 CompilerExpr::CompilerExpr ( CompilerValue value,
                              Operator oper,
-                             CompilerBase::SourceLocation location )
+                             CompilerSourceLocation location )
 {
     m_operator = Operator(oper);
     m_rValue = value;
@@ -78,7 +83,7 @@ CompilerExpr::CompilerExpr ( CompilerValue value,
 
 CompilerExpr::CompilerExpr ( CompilerValue value,
                              char oper,
-                             CompilerBase::SourceLocation location )
+                             CompilerSourceLocation location )
 {
     m_operator = Operator(oper);
     m_rValue = value;
@@ -91,7 +96,7 @@ CompilerExpr::CompilerExpr ( CompilerValue value,
 CompilerExpr::CompilerExpr ( CompilerValue lValue,
                              Operator oper,
                              CompilerValue rValue,
-                             CompilerBase::SourceLocation location )
+                             CompilerSourceLocation location )
 {
     m_lValue = lValue;
     m_operator = oper;
@@ -105,7 +110,7 @@ CompilerExpr::CompilerExpr ( CompilerValue lValue,
 CompilerExpr::CompilerExpr ( CompilerValue lValue,
                              char oper,
                              CompilerValue rValue,
-                             CompilerBase::SourceLocation location )
+                             CompilerSourceLocation location )
 {
     m_lValue = lValue;
     m_operator = Operator(oper);
@@ -388,4 +393,37 @@ std::ostream & operator << ( std::ostream & out,
 {
     out << &expr;
     return out;
+}
+
+void CompilerExpr::serialize ( CompilerSerializer & output ) const
+{
+    output.write ( (uint16_t) m_operator );
+    output << m_lValue << m_rValue << m_location;
+
+    if ( NULL == m_next )
+    {
+        output << MARK_TERMINAL;
+    }
+    else
+    {
+        output << MARK_NEXT;
+        output << m_next;
+    }
+}
+
+void CompilerExpr::deserialize ( CompilerSerializer & input )
+{
+    m_next = NULL;
+    m_prev = NULL;
+
+    m_operator =  Operator(input.read_ui16());
+    input >> m_lValue >> m_rValue >> m_location;
+
+    SerializationMark mark;
+    input >> mark;
+    if ( MARK_NEXT == mark )
+    {
+        m_next = new CompilerExpr(input);
+        m_next->m_prev = this;
+    }
 }

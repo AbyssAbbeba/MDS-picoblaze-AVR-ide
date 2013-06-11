@@ -69,7 +69,7 @@ class CompilerSemanticInterface
          * @param[in] location
          * @return
          */
-        virtual std::string locationToStr ( const CompilerBase::SourceLocation & location ) const = 0;
+        virtual std::string locationToStr ( const CompilerSourceLocation & location ) const = 0;
 
         /**
          * @brief
@@ -77,7 +77,7 @@ class CompilerSemanticInterface
          * @param[in] type
          * @param[in] text
          */
-        virtual void compilerMessage ( CompilerBase::SourceLocation location,
+        virtual void compilerMessage ( CompilerSourceLocation location,
                                        CompilerBase::MessageType type,
                                        const std::string & text ) = 0;
 

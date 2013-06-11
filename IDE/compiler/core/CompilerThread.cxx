@@ -32,18 +32,25 @@ void CompilerThread::run()
 {
     bool success = m_compilerCore->compile ( m_jobSpec.m_lang,
                                              m_jobSpec.m_arch,
-                                             m_jobSpec.m_opts );
+                                             m_jobSpec.m_opts,
+                                             m_jobSpec.m_genSimData );
 
+    if ( true == m_jobSpec.m_genSimData )
+    {
+        emit(simDataGenerated(m_compilerCore->getSimDbg(), m_compilerCore->getSimData()));
+    }
     emit(compilationFinished(success));
 }
 
 void CompilerThread::compile ( CompilerBase::LangId lang,
                                CompilerBase::TargetArch arch,
-                               CompilerOptions * const opts )
+                               CompilerOptions * const opts,
+                               bool genSimData )
 {
     m_jobSpec.m_lang = lang;
     m_jobSpec.m_arch = arch;
     m_jobSpec.m_opts = opts;
+    m_jobSpec.m_genSimData = genSimData;
 
     start();
 }
