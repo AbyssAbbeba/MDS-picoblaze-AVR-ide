@@ -7,6 +7,7 @@ Highlighter::Highlighter(QTextDocument *parent, SourceType type)
 {
     qDebug() << "Highlighter: Highlighter()";
     HighlightingRule rule;
+    this->type = type;
 /*    if (type == C)
     {
         QStringList keywordPatterns;

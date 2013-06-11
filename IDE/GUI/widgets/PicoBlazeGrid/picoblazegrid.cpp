@@ -149,14 +149,22 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
     this->lblClock->move(800,40);
 
     this->leSP = new QLineEdit(this);
-    this->leSP->setMaximumWidth(25);
+    this->leSP->setMaximumWidth(50);
     this->leSP->setMaximumHeight(17);
     this->leSP->setFont(QFont("Andale Mono", 9));
     this->leSP->move(730, 0);
     this->lePC = new QLineEdit(this);
     this->lePC->setMaximumWidth(50);
     this->lePC->setMaximumHeight(17);
-    this->lePC->move(830, 0);
+    this->lePC->move(840, 0);
+    this->leTime = new QLineEdit(this);
+    this->leTime->setMaximumWidth(50);
+    this->leTime->setMaximumHeight(17);
+    this->leTime->move(840, 20);
+    this->leClock = new QLineEdit(this);
+    this->leClock->setMaximumWidth(50);
+    this->leClock->setMaximumHeight(17);
+    this->leClock->move(840, 40);
 }
 
 
