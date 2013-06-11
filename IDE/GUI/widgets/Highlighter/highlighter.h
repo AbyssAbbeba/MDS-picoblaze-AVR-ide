@@ -32,6 +32,7 @@ class Highlighter : public QSyntaxHighlighter
         QRegExp commentEndExpression;
 
         QTextCharFormat keywordFormat;
+        QTextCharFormat labelFormat;
         //QTextCharFormat classFormat;
         QTextCharFormat singleLineCommentFormat;
         QTextCharFormat multiLineCommentFormat;
