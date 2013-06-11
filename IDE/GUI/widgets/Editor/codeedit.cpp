@@ -363,7 +363,28 @@ void CodeEdit::updateTextSlotIn(const QString& textIn, int pos, CodeEdit *editor
         QTextCursor textCursor = this->textEdit->textCursor();
         int prevPos = textCursor.position();
         textCursor.setPosition(pos);
-        textCursor.insertText(textIn);
+        if (textIn.length() == 1)
+        {
+            //printable 32 - 126 ASCII or space or tab
+            if ( textIn[0].isPrint() || textIn[0].isSpace() )
+            {
+                textCursor.insertText(textIn);
+            }
+            //backspace
+            else if ( textIn[0].toAscii() == 8 )
+            {
+                textCursor.deletePreviousChar();
+            }
+            //delete
+            else if ( textIn[0].toAscii() == 127 )
+            {
+                textCursor.deleteChar();
+            }
+        }
+        else
+        {
+            textCursor.insertText(textIn);
+        }
         textCursor.setPosition(prevPos);
         if ( NULL == parentCodeEdit )
         {
