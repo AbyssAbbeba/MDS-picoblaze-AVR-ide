@@ -390,6 +390,7 @@ Project::Project(QFile *file, ProjectMan *parent)
             connect(prjDockWidget, SIGNAL(visibilityChanged(bool)),this,SLOT(setActive()));  
             connect(prjTreeWidget, SIGNAL(itemDoubleClicked (QTreeWidgetItem *,int)),this,SLOT(openItem()));
             connect(prjTreeWidget, SIGNAL(requestFileCount()), this, SLOT(emitFileCount()));
+            connect(prjTreeWidget, SIGNAL(startProjectCfgDlgCore()), this, SLOT(startCfgDlgCore()));
             connect(this, SIGNAL(fileCountSignal(int)), prjTreeWidget, SLOT(contextP2(int)));
             setupSim();
         }
@@ -423,6 +424,7 @@ Project::Project(ProjectMan *parent)
     connect(prjDockWidget, SIGNAL(visibilityChanged(bool)), this, SLOT(setActive()));
     connect(prjTreeWidget, SIGNAL(itemDoubleClicked (QTreeWidgetItem *,int)), this, SLOT(openUntrackedItem()));
     connect(prjTreeWidget, SIGNAL(requestFileCount()), this, SLOT(emitFileCount()));
+    connect(prjTreeWidget, SIGNAL(startProjectCfgDlgCore()), this, SLOT(startCfgDlgCore()));
     connect(this, SIGNAL(fileCountSignal(int)), prjTreeWidget, SLOT(contextP2(int)));
     qDebug() << "Project: return Project()";
 }
@@ -511,6 +513,7 @@ Project::Project(QString name, QString path, QString arch, LangType lang, QFile 
     connect(prjDockWidget, SIGNAL(visibilityChanged(bool)), this, SLOT(setActive()));
     connect(prjTreeWidget, SIGNAL(itemDoubleClicked (QTreeWidgetItem*,int)), this, SLOT(openItem()));
     connect(prjTreeWidget, SIGNAL(requestFileCount()), this, SLOT(emitFileCount()));
+    connect(prjTreeWidget, SIGNAL(startProjectCfgDlgCore()), this, SLOT(startCfgDlgCore()));
     connect(this, SIGNAL(fileCountSignal(int)), prjTreeWidget, SLOT(contextP2(int)));
     setupSim();
     qDebug() << "Project: return Project() blank";
@@ -952,4 +955,10 @@ void Project::emitFileCount()
     qDebug() << "Project: emitFileCount()";
     emit fileCountSignal(fileCount);
     qDebug() << "Project: return emitFileCount()";
+}
+
+
+void Project::startCfgDlgCore()
+{
+    emit startConfig(this);
 }

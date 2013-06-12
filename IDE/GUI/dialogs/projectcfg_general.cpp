@@ -19,14 +19,19 @@ ProjectCfg_General::ProjectCfg_General(QWidget *parentWidget, Project *currProje
 {
     this->parent = parentWidget;
     this->project = currProject;
-    layout = new QVBoxLayout(this);
-    projName = new QLineEdit(this);
+    //layout = new QVBoxLayout(this);
     labelName = new QLabel(this);
+    projName = new QLineEdit(this);
     buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, this);
     labelName->setText("Project name");
-    layout->addWidget(labelName);
-    layout->addWidget(projName);
-    layout->addWidget(buttonBox);
-    this->setLayout(layout);
-    this->adjustSize();
+    this->show();
+    
+    labelName->move(105, 10);
+    projName->move(105, 30);
+    projName->move(this->width() - buttonBox->width()-5, this->height() - buttonBox->height()-5);
+    //layout->addWidget(labelName);
+    //layout->addWidget(projName);
+    //layout->addWidget(buttonBox);
+    //this->setLayout(layout);
+    //this->adjustSize();
 }

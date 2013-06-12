@@ -16,9 +16,11 @@
 #define PROJECTCFGDLG_CORE_H
 
 #include <QDialog>
-#include <QTabWidget>
+#include <QStackedWidget>
+#include <QListWidget>
 #include "projectcfg_general.h"
-#include "filemgr.h"
+#include "projectcfg_filemgr.h"
+#include "projectcfg_compiler.h"
 
 
 
@@ -45,14 +47,17 @@ class ProjectConfigDialog_Core : public QDialog
     private:
         void freeDialog();
 
-        QTabWidget *tabs;
+        QListWidget *menuList;
+        QStackedWidget *tabs;
         QWidget *parent;
         Project *project;
         ProjectCfg_General *generalCfg;
-        FileMgr *fileMgr;
+        ProjectCfg_FileMgr *fileMgr;
+        ProjectCfg_Compiler *compilerCfg;
 
     private slots:
         void reload();
+        void changeWidget(int row);
 
     protected:
         virtual void closeEvent(QCloseEvent *e);

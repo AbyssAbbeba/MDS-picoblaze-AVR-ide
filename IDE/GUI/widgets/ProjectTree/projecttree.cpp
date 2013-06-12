@@ -15,7 +15,7 @@
 #include <QtGui>
 #include "projecttree.h"
 //#include "../project/project.h"
-#include "../dialogs/projectcfgdlg_core.h"
+//#include "../dialogs/projectcfgdlg_core.h"
 
 ProjectTree::ProjectTree(QWidget *parent)
     : QTreeWidget(parent)
@@ -162,17 +162,17 @@ void ProjectTree::removeFile()
 
 void ProjectTree::config()
 {
-    emit startProjectCfgDlgCore(this);
+    emit startProjectCfgDlgCore();
     //ProjectConfigDialog_Core *cfgdlg = new ProjectConfigDialog_Core(this, parentProject);
     //cfgdlg->show();
     //connect(cfgdlg, SIGNAL(reloadTree()), this, SLOT(reloadFiles()));
 }
 
 
-void ProjectTree::reloadFiles()
+/*void ProjectTree::reloadFiles()
 {
     qDebug() << "reloading\n";
-}
+}*/
 
 
 /*void ProjectTree::addFile()

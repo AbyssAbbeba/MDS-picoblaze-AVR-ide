@@ -15,10 +15,11 @@
 #ifndef PROJECTCFG_GENERAL_H
 #define PROJECTCFG_GENERAL_H
 
-#include <QVBoxLayout>
+//#include <QVBoxLayout>
 #include <QDialogButtonBox>
 #include <QLineEdit>
 #include <QLabel>
+#include "../project/project.h"
 
 
 class Project;
@@ -37,7 +38,7 @@ class ProjectCfg_General : public QWidget
     private:
         Project *project;
         QWidget *parent;
-        QVBoxLayout *layout;
+        //QVBoxLayout *layout;
         QDialogButtonBox *buttonBox;
         QLineEdit *projName;
         QLabel *labelName;
