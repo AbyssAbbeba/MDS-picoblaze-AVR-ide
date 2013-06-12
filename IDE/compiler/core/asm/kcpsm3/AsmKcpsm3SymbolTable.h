@@ -177,7 +177,7 @@ class AsmKcpsm3SymbolTable
                           const CompilerExpr * value,
                           const CompilerSourceLocation * location = NULL,
                           const SymbolType type = STYPE_UNSPECIFIED,
-                          bool resolve = false );
+                          bool resolve = true );
 
         /**
          * @brief

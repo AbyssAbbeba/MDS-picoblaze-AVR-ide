@@ -33,18 +33,18 @@
 #include <string>
 #include <vector>
 #include <fstream>
-
+#include <iostream>
 AsmKcpsm3SemanticAnalyzer::AsmKcpsm3SemanticAnalyzer ( CompilerSemanticInterface * compilerCore,
                                                        CompilerOptions * opts )
                                                      : CompilerSemanticAnalyzer ( compilerCore, opts )
 {
-    m_symbolTable = new AsmKcpsm3SymbolTable ( compilerCore, opts );
-    m_machineCode = new AsmMachineCodeGen ( AsmMachineCodeGen::WORD_3B );
-    m_codeListing = new AsmKcpsm3CodeListing ( compilerCore, opts );
+    m_symbolTable    = new AsmKcpsm3SymbolTable ( compilerCore, opts );
+    m_machineCode    = new AsmMachineCodeGen ( AsmMachineCodeGen::WORD_3B );
+    m_codeListing    = new AsmKcpsm3CodeListing ( compilerCore, opts );
     m_instructionSet = new AsmKcpsm3InstructionSet ( compilerCore, opts, m_symbolTable );
-    m_macros = new AsmKcpsm3Macros ( compilerCore, opts, m_symbolTable, m_codeListing );
-    m_dgbFile = new AsmDgbFileGen();
-    m_memoryPtr = new AsmKcpsm3MemoryPtr ( compilerCore );
+    m_macros         = new AsmKcpsm3Macros ( compilerCore, opts, m_symbolTable, m_codeListing );
+    m_dgbFile        = new AsmDgbFileGen();
+    m_memoryPtr      = new AsmKcpsm3MemoryPtr ( compilerCore );
 
     m_memoryPtr->clear();
 }
@@ -223,10 +223,11 @@ void AsmKcpsm3SemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
             {
                 int value;
                 std::string name = node->args()->lVal().m_data.m_symbol;
+
                 if ( true == m_symbolTable->isDefined(name) )
                 {
                     value = m_symbolTable -> assignValue ( name,
-                                                           node->args()->m_next,
+                                                           node->args()->next(),
                                                            location,
                                                            AsmKcpsm3SymbolTable::STYPE_NUMBER,
                                                            true );
@@ -238,7 +239,7 @@ void AsmKcpsm3SemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
                 else
                 {
                     value = m_symbolTable -> addSymbol ( name,
-                                                         node->args()->m_next,
+                                                         node->args()->next(),
                                                          location,
                                                          AsmKcpsm3SymbolTable::STYPE_NUMBER,
                                                          true,
@@ -250,7 +251,7 @@ void AsmKcpsm3SemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
             case ASMKCPSM3_DIR_DEFINE:
             {
                 int value = m_symbolTable -> addSymbol ( node->args()->lVal().m_data.m_symbol,
-                                                         node->args()->m_next,
+                                                         node->args()->next(),
                                                          location,
                                                          AsmKcpsm3SymbolTable::STYPE_EXPRESSION,
                                                          false );
@@ -404,7 +405,6 @@ void AsmKcpsm3SemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
                                                         CompilerBase::MT_ERROR,
                                                         QObject::tr("maximum number of WHILE directive iterations (%1) reached").arg(MAX_WHILE_ITERATIONS).toStdString() );
                 }
-
                 if ( NULL != body)
                 {
                     node = node->prev();
@@ -432,6 +432,8 @@ void AsmKcpsm3SemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
                         CompilerStatement * exp = node->branch()->copyEntireChain();
                         m_codeListing->expandMacro ( endrLoc, exp, exp );
                         body->appendLink(exp);
+
+std::cout << "body = " << body << "\n";
                     }
 
                     node->insertLink(body);

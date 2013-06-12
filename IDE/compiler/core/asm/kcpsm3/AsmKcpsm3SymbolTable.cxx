@@ -240,18 +240,18 @@ int AsmKcpsm3SymbolTable::assignValue ( const std::string & name,
     {
         if ( STYPE_UNSPECIFIED == type || type == it->second.m_type )
         {
-            if ( NULL != it->second.m_value )
-            {
-                delete it->second.m_value;
-            }
-
-            it->second.m_finalValue = -1;
-            it->second.m_value = value->copyChainLink();
-
             if ( true == resolve )
             {
                 finalValue = (int) resolveExpr(value, -1, location);
                 it->second.m_finalValue = finalValue;
+                delete it->second.m_value;
+                it->second.m_value = new CompilerExpr(finalValue);
+            }
+            else
+            {
+                it->second.m_finalValue = -1;
+                delete it->second.m_value;
+                it->second.m_value = value->copyChainLink();
             }
 
             break;
