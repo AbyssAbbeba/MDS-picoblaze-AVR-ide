@@ -52,12 +52,12 @@ class ProjectTree: public QTreeWidget
         void setMainFile();
         void removeFile();
         void config();
-        void reloadFiles();
+        //void reloadFiles();
         void contextP2(int fileCount);
 
     signals:
         void requestFileCount();
-        void startProjectCfgDlgCore(QWidget *widget);
+        void startProjectCfgDlgCore();
         void setMainFile(QString path, QString name);
         void removeFile(QString path, QString name);
 
