@@ -504,8 +504,32 @@ Project::Project(QString name, QString path, QString arch, LangType lang, QFile 
     QDomElement xmlSimulator = domDoc.createElement("Simulator");
     xmlRoot.appendChild(xmlSimulator);
 
-    QDomElement xmlCompiler = domDoc.createElement("Compiler");
-    xmlRoot.appendChild(xmlCompiler);
+    QDomElement xmlCompilerOpt = domDoc.createElement("Compiler Options");
+    QDomElement xmlSymbolTbl = domDoc.createElement("Symbol Table");
+    xmlSymbolTbl.setAttribute("enable", "true");
+    xmlCompilerOpt.appendChild(xmlSymbolTbl);
+    QDomElement xmlMacroTbl = domDoc.createElement("Macro Table");
+    xmlMacroTbl.setAttribute("enable", "true");
+    xmlCompilerOpt.appendChild(xmlMacroTbl);
+    QDomElement xmlDbgFile = domDoc.createElement("Debug File");
+    xmlDbgFile.setAttribute("enable", "true");
+    xmlCompilerOpt.appendChild(xmlDbgFile);
+    QDomElement xmlCodeTree = domDoc.createElement("Code Tree");
+    xmlCodeTree.setAttribute("enable", "true");
+    xmlCompilerOpt.appendChild(xmlCodeTree);
+    QDomElement xmlLstFile = domDoc.createElement("List File");
+    xmlLstFile.setAttribute("enable", "true");
+    xmlCompilerOpt.appendChild(xmlLstFile);
+    QDomElement xmlHexFile = domDoc.createElement("Hex File");
+    xmlHexFile.setAttribute("enable", "true");
+    xmlCompilerOpt.appendChild(xmlHexFile);
+    QDomElement xmlBinFile = domDoc.createElement("Bin File");
+    xmlBinFile.setAttribute("enable", "true");
+    xmlCompilerOpt.appendChild(xmlBinFile);
+    QDomElement xmlSRecFile = domDoc.createElement("SRec File");
+    xmlSRecFile.setAttribute("enable", "true");
+    xmlCompilerOpt.appendChild(xmlSRecFile);
+    xmlRoot.appendChild(xmlCompilerOpt);
 
     QTextStream xmlStream(file);
     xmlStream << domDoc.toString();

@@ -22,13 +22,16 @@ ProjectCfg_General::ProjectCfg_General(QWidget *parentWidget, Project *currProje
     //layout = new QVBoxLayout(this);
     labelName = new QLabel(this);
     projName = new QLineEdit(this);
-    buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, this);
+    //buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, this);
     labelName->setText("Project name");
+    projName->setText(this->project->prjName);
+    projName->setReadOnly(true);
+    projName->setFrame(false);
     this->show();
     
-    labelName->move(105, 10);
-    projName->move(105, 30);
-    projName->move(this->width() - buttonBox->width()-5, this->height() - buttonBox->height()-5);
+    labelName->move(5, 10);
+    projName->move(5, 30);
+    //projName->move(this->width() - buttonBox->width()-5, this->height() - buttonBox->height()-5);
     //layout->addWidget(labelName);
     //layout->addWidget(projName);
     //layout->addWidget(buttonBox);
