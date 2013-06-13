@@ -125,6 +125,7 @@ class Project : public QObject
         QString mainFilePath;
         QList<QString> fileNames;
         QList<QString> filePaths;
+        //
         QList<bool> compileOpt;
 
         int errorFlag;
