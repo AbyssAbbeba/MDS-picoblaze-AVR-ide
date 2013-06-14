@@ -125,6 +125,8 @@ class Project : public QObject
         QString mainFilePath;
         QList<QString> fileNames;
         QList<QString> filePaths;
+        //
+        QList<bool> compileOpt;
 
         int errorFlag;
 
@@ -138,6 +140,7 @@ class Project : public QObject
         void openItem();
         void openUntrackedItem();
         void emitFileCount();
+        void startCfgDlgCore();
 
     signals:
         void highlightLine(QString file, int line, QColor *color, QColor *origColor);
@@ -147,6 +150,7 @@ class Project : public QObject
         void setEditorReadOnly(bool readOnly);
         //void setCentralChanged();
         void fileCountSignal(int fileCount);
+        void startConfig(Project *project);
         
     private:
         ProjectMan *parentManager;

@@ -1,0 +1,25 @@
+1) vytvoris si formular v qt 4 designeru (qt4 assistant je referencni manual)
+
+2) vytvoris zdrojovy (.cpp) a hlavickovy soubor (.h)
+
+3) do hlavickoveho naincludujes vsechny potrebne knihovny a ui hlavickovy soubor (nazev je ui_jaksistoulozil.h - ten se ti pak vytvori)
+
+4) do zdrojoveho naincludujes <QtGui> a vytvoreny hlavickovy soubor
+
+5) v hlavickovem udelas definici tridy a ve zdrojovem deklaraci
+
+6) otevres si CMakeLists.txt
+
+7) pozmenis radky s:
+PROJECT( jmeno_projektu ) - jmeno je jmeno projektu
+SAMPLE_SRCS      - definujes zdrojove soubory
+SAMPLE_MOC_HDRS  - definujes hlavickove soubory
+SAMPLE_UIS       - definujes formulare
+ADD_EXECUTABLE( jmeno_binarky   ...
+TARGET_LINK_LIBRARIES( jmeno_binarky   ...
+
+8) ve slozce v terminalu napises "cmake ." a "make"
+
+9) ???
+
+10) profit

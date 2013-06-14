@@ -29,11 +29,11 @@ class Project;
  * @ingroup GUI
  * @class FileMgr
  */
-class FileMgr : public QWidget
+class ProjectCfg_FileMgr : public QWidget
 {
     Q_OBJECT
     public:
-        FileMgr(QWidget *parentWidget, Project *currProject);
+        ProjectCfg_FileMgr(QWidget *parentWidget, Project *currProject);
 
 
     private slots:
@@ -55,7 +55,7 @@ class FileMgr : public QWidget
         QListWidget *fileList;
         QGridLayout *layout;
         QVBoxLayout *btnLayout;
-	QWidget *btnWidget;
+        QWidget *btnWidget;
 
         bool reloadFiles;
 };

@@ -19,8 +19,9 @@ set(CMAKE_VERBOSE_MAKEFILE OFF)
 SET( SAMPLE_SRCS
        ./projectdlg.cpp
        ./projectcfgdlg_core.cpp
-       ./filemgr.cpp
+       ./projectcfg_filemgr.cpp
        ./projectcfg_general.cpp
+       ./projectcfg_compiler.cpp
 )
   
 # another list, this time it includes all header files that should be treated with moc
@@ -28,7 +29,8 @@ SET( SAMPLE_MOC_HDRS
        ./projectdlg.h
        ./projectcfgdlg_core.h
        ./projectcfg_general.h
-       ./filemgr.h
+       ./projectcfg_filemgr.h
+       ./projectcfg_compiler.h
 )
 
 
