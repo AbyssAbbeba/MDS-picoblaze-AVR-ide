@@ -80,6 +80,12 @@ class AsmKcpsm3SymbolTable
 
             /**
              * @brief
+             * @param[in] obj
+             */
+            Symbol ( const Symbol & obj );
+
+            /**
+             * @brief
              */
             ~Symbol();
 
@@ -215,7 +221,7 @@ class AsmKcpsm3SymbolTable
          * @return
          */
         unsigned int resolveExpr ( const CompilerExpr * expr,
-                                   int bitsMax = -1,
+                                   int bitsMax = 18,
                                    const CompilerSourceLocation * origLocation = NULL );
 
         /**
@@ -246,6 +252,15 @@ class AsmKcpsm3SymbolTable
          */
         void printSymLocation ( std::ostream & out,
                                 const CompilerSourceLocation & location ) const;
+
+        /**
+         * @brief
+         * @param[in] symbolType
+         * @param[in] constLength
+         * @return
+         */
+         static const char * symType2Str ( const SymbolType symbolType,
+                                           bool constLength = false );
 
     ////    Private Operations    ////
     private:

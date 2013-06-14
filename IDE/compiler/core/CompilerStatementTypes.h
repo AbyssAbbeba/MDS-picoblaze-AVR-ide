@@ -728,6 +728,7 @@ namespace CompilerStatementTypes
             ASMKCPSM3_DIR_AUTOSPR,          ///<
             ASMKCPSM3_DIR_DATA,             ///<
             ASMKCPSM3_DIR_LIMIT,            ///<
+            ASMKCPSM3_DIR_DEVICE,           ///<
 
             ASMKCPSM3_COND_ASM,             ///<
             ASMKCPSM3_DIR_IF,               ///<

@@ -115,9 +115,9 @@ CompilerStatement * CompilerStatement::first()
 
     CompilerStatement * stmt = this;
 
-    while ( NULL != stmt->m_prev )
+    while ( NULL != stmt->prev() )
     {
-        stmt = stmt->m_prev;
+        stmt = stmt->prev();
     }
 
     return stmt;
@@ -126,10 +126,30 @@ CompilerStatement * CompilerStatement::first()
 CompilerStatement * CompilerStatement::last()
 {
     CompilerStatement * result = this;
-    while ( NULL != result->m_next )
+    while ( NULL != result->next() )
     {
-        result = result->m_next;
+        result = result->next();
     }
+    return result;
+}
+
+CompilerStatement * CompilerStatement::lastLeaf()
+{
+    CompilerStatement * result = this;
+
+    while ( NULL != result->next() )
+    {
+        while ( NULL != result->next() )
+        {
+            result = result->next();
+        }
+
+        while ( NULL != result->branch() )
+        {
+            result = result->branch();
+        }
+    }
+
     return result;
 }
 
@@ -209,8 +229,16 @@ CompilerStatement * CompilerStatement::prependLink ( CompilerStatement * chainLi
 
 CompilerStatement * CompilerStatement::unlink()
 {
-    m_next->m_prev = NULL;
-    m_next = NULL;
+    if ( NULL != m_next )
+    {
+        m_next->m_prev = m_prev;
+        m_next = NULL;
+    }
+    if ( NULL != m_prev )
+    {
+        m_prev->m_next = m_next;
+        m_prev = NULL;
+    }
     return this;
 }
 
@@ -224,13 +252,13 @@ CompilerStatement * CompilerStatement::copyEntireChain() const
     CompilerStatement * result = copyChainLink();
 
     const CompilerStatement * next = this;
-    while ( NULL != ( next = next->m_next ) )
+    while ( NULL != ( next = next->next() ) )
     {
         result->appendLink(next->copyChainLink());
     }
 
     const CompilerStatement * prev = this;
-    while ( NULL != ( prev = prev->m_prev ) )
+    while ( NULL != ( prev = prev->prev() ) )
     {
         result->prependLink(prev->copyChainLink());
     }
@@ -291,12 +319,14 @@ void CompilerStatement::completeDelete()
     {
         m_next->m_prev = NULL;
         m_next->completeDelete();
+        m_next = NULL;
     }
 
     if ( NULL != m_prev )
     {
         m_prev->m_next = NULL;
         m_prev->completeDelete();
+        m_prev = NULL;
     }
 
     delete this;

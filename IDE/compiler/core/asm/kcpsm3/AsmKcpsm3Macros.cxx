@@ -68,8 +68,16 @@ void AsmKcpsm3Macros::define ( CompilerSourceLocation location,
                                             QObject::tr("redefinition of macro ").toStdString() + "\"" + name + "\"" + QObject::tr("original definition is at ").toStdString() + m_compilerCore->locationToStr(m_table[name].m_location) );
     }
 
-    // Remove `ENDM' statement.
-    delete macroDef->last();
+    if ( macroDef->last() == macroDef )
+    {
+        macroDef->completeDelete();
+        macroDef = new CompilerStatement();
+    }
+    else
+    {
+        // Remove `ENDM' statement.
+        delete macroDef->last();
+    }
 
     incrMacroCounter(macroDef);
     m_table[name] = Macro(location, m_idCounter++);

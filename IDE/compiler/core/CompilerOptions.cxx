@@ -15,6 +15,10 @@
 
 #include "CompilerOptions.h"
 
+// Boost Filesystem library.
+#define BOOST_FILESYSTEM_NO_DEPRECATED
+#include <boost/filesystem.hpp>
+
 // Standard headers.
 #include <fstream>
 #include <cstdio>
@@ -36,6 +40,7 @@ CompilerOptions::CompilerOptions()
     m_maxInclusion = -1;
     m_hexMaxRecLength = 16;
     m_syntaxCheckOnly = false;
+    m_makeBackupFiles = true;
 
     m_verbosity = (Verbosity)( V_GENERAL | V_ERRORS | V_WARNINGS | V_REMARKS );
 }
@@ -63,6 +68,36 @@ void CompilerOptions::clearOutputFiles()
         }
 
         std::ofstream file(*(files[i]), std::fstream::trunc );
+    }
+}
+
+void CompilerOptions::normalizeFilePaths()
+{
+    using namespace boost::filesystem;
+
+    std::string * const files[] =
+    {
+        &m_symbolTable, &m_macroTable,  &m_mdsDebugFile,
+        &m_codeTree,    &m_lstFile,     &m_hexFile,
+        &m_binFile,     &m_srecFile,    &m_verilogFile,
+        &m_vhdlFile,    NULL
+    };
+
+    path basePath = system_complete(path(m_sourceFile).parent_path().make_preferred());
+
+    for ( int i = 0; NULL != files[i]; i++ )
+    {
+        if ( true == files[i]->empty() )
+        {
+            continue;
+        }
+
+        *files[i] = path(*files[i]).make_preferred().string();
+
+        if ( false == path(*files[i]).is_absolute() )
+        {
+            *files[i] = system_complete(basePath / path(*files[i]).make_preferred()).string();
+        }
     }
 }
 
@@ -103,25 +138,33 @@ std::ostream & operator << ( std::ostream & out,
 {
     out << "== CompilerOptions ==" << std::endl;
 
-    out << "  === File names ===" << std::endl;
-    out << "    m_sourceFile = \"" << opts.m_sourceFile << "\"" << std::endl;
-    out << "    m_symbolTable = \"" << opts.m_symbolTable << "\"" << std::endl;
-    out << "    m_macroTable = \"" << opts.m_macroTable << "\"" << std::endl;
-    out << "    m_mdsDebugFile = \"" << opts.m_mdsDebugFile << "\"" << std::endl;
-    out << "    m_codeTree = \"" << opts.m_codeTree << "\"" << std::endl;
-    out << "    m_lstFile = \"" << opts.m_lstFile << "\"" << std::endl;
-    out << "    m_hexFile = \"" << opts.m_hexFile << "\"" << std::endl;
-    out << "    m_binFile = \"" << opts.m_binFile << "\"" << std::endl;
-    out << "    m_srecFile = \"" << opts.m_srecFile << "\"" << std::endl;
-    out << "    m_verilogFile = \"" << opts.m_verilogFile << "\"" << std::endl;
-    out << "    m_vhdlFile = \"" << opts.m_vhdlFile << "\"" << std::endl;
+    out << "  === File names ==="       << std::endl;
+    out << "    m_sourceFile = \""      << opts.m_sourceFile    << "\"" << std::endl;
+    out << "    m_symbolTable = \""     << opts.m_symbolTable   << "\"" << std::endl;
+    out << "    m_macroTable = \""      << opts.m_macroTable    << "\"" << std::endl;
+    out << "    m_mdsDebugFile = \""    << opts.m_mdsDebugFile  << "\"" << std::endl;
+    out << "    m_codeTree = \""        << opts.m_codeTree      << "\"" << std::endl;
+    out << "    m_lstFile = \""         << opts.m_lstFile       << "\"" << std::endl;
+    out << "    m_hexFile = \""         << opts.m_hexFile       << "\"" << std::endl;
+    out << "    m_binFile = \""         << opts.m_binFile       << "\"" << std::endl;
+    out << "    m_srecFile = \""        << opts.m_srecFile      << "\"" << std::endl;
+    out << "    m_verilogFile = \""     << opts.m_verilogFile   << "\"" << std::endl;
+    out << "    m_vhdlFile = \""        << opts.m_vhdlFile      << "\"" << std::endl;
 
     out << "  === Other compilation and code generation options ===" << std::endl;
-    out << "    m_maxMacroExp = " << opts.m_maxMacroExp << std::endl;
-    out << "    m_maxInclusion = " << opts.m_maxInclusion << std::endl;
-    out << "    m_hexMaxRecLength = " << opts.m_hexMaxRecLength << std::endl;
-    out << "    m_syntaxCheckOnly = " << ( true == opts.m_syntaxCheckOnly ? "true" : "false" ) << std::endl;
-    out << "    m_makeBackupFiles = " << ( true == opts.m_makeBackupFiles ? "true" : "false" ) << std::endl;
+    out << "    m_maxMacroExp = "       << opts.m_maxMacroExp << std::endl;
+    out << "    m_maxInclusion = "      << opts.m_maxInclusion << std::endl;
+    out << "    m_hexMaxRecLength = "   << opts.m_hexMaxRecLength << std::endl;
+    out << "    m_syntaxCheckOnly = "   << ( true == opts.m_syntaxCheckOnly ? "true" : "false" ) << std::endl;
+    out << "    m_makeBackupFiles = "   << ( true == opts.m_makeBackupFiles ? "true" : "false" ) << std::endl;
+    out << "    m_device = " << opts.m_device << std::endl;
+    out << "    m_includePath: " << std::endl;
+    for ( std::vector<std::string>::const_iterator it = opts.m_includePath.cbegin();
+          it != opts.m_includePath.cend();
+          it++ )
+    {
+        out << "      - \"" << *it << "\"" << std::endl;
+    }
     out << opts.m_processorlimits;
 
     return out;

@@ -95,6 +95,11 @@ class CompilerOptions
          */
         void clearOutputFiles();
 
+        /**
+         * @brief
+         */
+        void normalizeFilePaths();
+
     ////    Public Attributes    ////
     public:
         /**
@@ -146,6 +151,12 @@ class CompilerOptions
          */
         //@{
             ///
+            std::string m_device;
+
+            ///
+            std::vector<std::string> m_includePath;
+
+            ///
             ProcessorLimits m_processorlimits;
 
             /// Maximum allowed macro expansion level, -1 means unlimited.
@@ -157,14 +168,14 @@ class CompilerOptions
             /// Maximum allowed size of Intel HEX record, in bytes of data field (1-255).
             int m_hexMaxRecLength;
 
+            /// 
+            Verbosity m_verbosity;
+
             /// Do not compile the code, only check whether it's syntactically correct.
             bool m_syntaxCheckOnly;
 
             /// Make backup copy of every file which would be overwritten by direct output from the compiler.
             bool m_makeBackupFiles;
-
-            /// 
-            Verbosity m_verbosity;
         //@}
 };
 

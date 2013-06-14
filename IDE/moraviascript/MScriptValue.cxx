@@ -60,11 +60,6 @@ MScriptValue::MScriptValue ( MScriptExpr * expr )
 
 MScriptValue::MScriptValue ( const char * string )
 {
-//     if ( ( TYPE_SYMBOL == m_type ) && ( NULL != m_data.m_symbol ) )
-//     {
-//         delete [] m_data.m_symbol;
-//     }
-
     m_type = TYPE_SYMBOL;
     int length = ( 1 + strlen(string) );
     m_data.m_symbol = new char [ length ];
@@ -73,11 +68,6 @@ MScriptValue::MScriptValue ( const char * string )
 
 MScriptValue::MScriptValue ( const std::string & string )
 {
-//     if ( ( TYPE_SYMBOL == m_type ) && ( NULL != m_data.m_symbol ) )
-//     {
-//         delete [] m_data.m_symbol;
-//     }
-
     m_type = TYPE_SYMBOL;
     int length = ( 1 + string.size() );
     m_data.m_symbol = new char [ length ];

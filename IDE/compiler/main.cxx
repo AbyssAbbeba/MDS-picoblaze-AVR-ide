@@ -56,10 +56,10 @@ void printHelp ( const char * executable )
               << QObject::tr("    -a, --arch <architecture>").toStdString() << std::endl
               << QObject::tr("        Specify target architecture, supported architectures are:")
                             .toStdString() << std::endl
-              << QObject::tr("            - avr8   : 8-bit AVR,").toStdString() << std::endl
-              << QObject::tr("            - pic8   : 8-bit PIC,").toStdString() << std::endl
-              << QObject::tr("            - mcs51  : MCS-51,").toStdString() << std::endl
-              << QObject::tr("            - kcpsm3 : (K)constant Coded Programmable State Machine 3.")
+              << QObject::tr("            - avr8      : 8-bit AVR,").toStdString() << std::endl
+              << QObject::tr("            - pic8      : 8-bit PIC,").toStdString() << std::endl
+              << QObject::tr("            - mcs51     : MCS-51,").toStdString() << std::endl
+              << QObject::tr("            - PicoBlaze : (K)constant Coded Programmable State Machine.")
                             .toStdString() << std::endl
               << QObject::tr("    -p, --plang <programming language>").toStdString() << std::endl
               << QObject::tr("        Specify programming language, supported languages are:").toStdString()<<std::endl
@@ -158,7 +158,7 @@ CompilerBase::TargetArch whichArch ( const char * optarg )
     {
         return CompilerBase::TA_MCS51;
     }
-    else if ( 0 == strcmp(optarg, "kcpsm3") )
+    else if ( 0 == strcmp(optarg, "PicoBlaze") )
     {
         return CompilerBase::TA_KCPSM3;
     }
@@ -218,6 +218,7 @@ int main ( int argc, char ** argv )
     // Disable error messages from getopt_long().
     opterr = 0;
 
+    const char * shortopts = ":hVca:p:f:m:s:l:x:d:D:b:S:t:WERNI:";
     static const struct option longopts[] =
     {
         { "help",        no_argument,       0,   'h' },
@@ -231,19 +232,21 @@ int main ( int argc, char ** argv )
         { "lst",         required_argument, 0,   'l' },
         { "hex",         required_argument, 0,   'x' },
         { "dbg",         required_argument, 0,   'd' },
-        { "codetree",    required_argument, 0, 0x100 },
-        { "srec",        required_argument, 0, 0x101 },
-        { "binary",      required_argument, 0, 0x102 },
-        { "no-warnings", no_argument,       0, 0x103 },
-        { "no-errors",   no_argument,       0, 0x104 },
-        { "no-remarks",  no_argument,       0, 0x105 },
-        { "silent",      no_argument,       0, 0x106 },
+        { "dev",         required_argument, 0,   'D' },
+        { "binary",      required_argument, 0,   'b' },
+        { "codetree",    required_argument, 0,   't' },
+        { "srec",        required_argument, 0,   'S' },
+        { "include",     required_argument, 0,   'I' },
+        { "no-warnings", no_argument,       0,   'W' },
+        { "no-errors",   no_argument,       0,   'E' },
+        { "no-remarks",  no_argument,       0,   'R' },
+        { "silent",      no_argument,       0,   'N' },
         { 0,             0,                 0, 0     }
     };
 
     int opt;
-    int idx;
-    while ( -1 != ( opt = getopt_long(argc, argv, ":hVca:p:f:m:s:l:x:d:", longopts, &idx) ) )
+    int idx = 0;
+    while ( -1 != ( opt = getopt_long(argc, argv, shortopts, longopts, &idx) ) )
     {
         switch ( opt )
         {
@@ -294,31 +297,37 @@ int main ( int argc, char ** argv )
             case 'd':
                 opts.m_mdsDebugFile = optarg;
                 break;
-            case 0x100: // --codetree
-                opts.m_codeTree = optarg;
+            case 'D': // --dev=<device_name>
+                opts.m_device = optarg;
                 break;
-            case 0x101: // --srec
-                opts.m_srecFile = optarg;
-                break;
-            case 0x102: // --binary
+            case 'b': // --binary=<file_name>
                 opts.m_binFile = optarg;
                 break;
-            case 0x103: // --no-warnings
+            case 'S': // --srec=<file_name>
+                opts.m_srecFile = optarg;
+                break;
+            case 't': // --codetree=<file_name>
+                opts.m_codeTree = optarg;
+                break;
+            case 'W': // --no-warnings
                 opts.m_verbosity = CompilerOptions::Verbosity ( opts.m_verbosity & ~(CompilerOptions::V_WARNINGS) );
                 break;
-            case 0x104: // --no-errors
+            case 'E': // --no-errors
                 opts.m_verbosity = CompilerOptions::Verbosity ( opts.m_verbosity & ~(CompilerOptions::V_ERRORS) );
                 break;
-            case 0x105: // --no-remarks
+            case 'R': // --no-remarks
                 opts.m_verbosity = CompilerOptions::Verbosity ( opts.m_verbosity & ~(CompilerOptions::V_REMARKS) );
                 break;
-            case 0x106: // --silent
+            case 'N': // --silent
                 opts.m_verbosity = CompilerOptions::Verbosity(0);
+                break;
+            case 'I': // --include=<dir>
+                opts.m_includePath.push_back(optarg);
                 break;
 
             /* Error states */
             case ':':
-                std::cerr << QObject::tr("Error: option `%1' requires argument.").arg(longopts[idx].name).toStdString()
+                std::cerr << QObject::tr("Error: option `%1' requires argument.").arg(argv[optind-1]).toStdString()
                           << std::endl;
                 return EXIT_ERROR_CLI;
             case '?':

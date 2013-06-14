@@ -33,7 +33,7 @@
 #include <string>
 #include <vector>
 #include <fstream>
-#include <iostream>
+
 AsmKcpsm3SemanticAnalyzer::AsmKcpsm3SemanticAnalyzer ( CompilerSemanticInterface * compilerCore,
                                                        CompilerOptions * opts )
                                                      : CompilerSemanticAnalyzer ( compilerCore, opts )
@@ -95,7 +95,7 @@ void AsmKcpsm3SemanticAnalyzer::process ( CompilerStatement * codeTree )
     m_codeListing->loadSourceFiles();
     printCodeTree(codeTree);
 
-    phase1(codeTree->next());
+    phase1(codeTree);
     phase2(codeTree);
 
     m_codeListing->output();
@@ -117,7 +117,7 @@ void AsmKcpsm3SemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
 
     std::vector<std::string> localSymbols;
 
-    for ( CompilerStatement * node = codeTree;
+    for ( CompilerStatement * node = codeTree->next();
           NULL != node;
           node = node->next() )
     {
@@ -231,10 +231,6 @@ void AsmKcpsm3SemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
                                                            location,
                                                            AsmKcpsm3SymbolTable::STYPE_NUMBER,
                                                            true );
-
-                    m_compilerCore -> compilerMessage ( CompilerBase::MT_REMARK,
-                                                        QObject::tr ( "redefining symbol value: " ).toStdString()
-                                                                    + "\"" + name + "\"" );
                 }
                 else
                 {
@@ -345,7 +341,9 @@ void AsmKcpsm3SemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
                 {
                     m_compilerCore -> compilerMessage ( node->location(),
                                                         CompilerBase::MT_ERROR,
-                                                        QObject::tr("maximum macro expansion level (%1) reached ").arg(m_opts->m_maxMacroExp).toStdString() );
+                                                        QObject::tr ( "maximum macro expansion level (%1) reached " )
+                                                                    . arg ( m_opts->m_maxMacroExp )
+                                                                    . toStdString() );
                 }
                 else
                 {
@@ -373,7 +371,12 @@ void AsmKcpsm3SemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
             }
             case ASMKCPSM3_DIR_WHILE:
             {
-                CompilerSourceLocation endwLoc = node->branch()->last()->location();
+                if ( node->branch()->last() == node->branch() )
+                {
+                    break;
+                }
+
+                CompilerSourceLocation lastLocation = node->branch()->last()->location();
                 delete node->branch()->last(); // remove `ENDW' directive
 
                 unsigned int i;
@@ -387,23 +390,30 @@ void AsmKcpsm3SemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
 
                     if ( NULL == body )
                     {
-                        body = node->branch()->copyEntireChain();
-                        m_codeListing->expandMacro ( endwLoc, body, body );
+                        body = new CompilerStatement();
+                        body->appendLink(node->branch()->copyEntireChain());
+                        m_codeListing->repeatCode(lastLocation, body, true);
+                        lastLocation = body->lastLeaf()->location();
                         phase1(body, location);
                     }
                     else
                     {
-                        CompilerStatement * exp = node->branch()->copyEntireChain();
-                        m_codeListing->expandMacro ( body->last()->location(), exp, exp );
+                        CompilerStatement * exp = new CompilerStatement();
+                        exp->appendLink(node->branch()->copyEntireChain());
+                        m_codeListing->repeatCode(lastLocation, exp, false);
+                        lastLocation = exp->lastLeaf()->location();
                         phase1(exp, location);
                         body->appendLink(exp);
                     }
                 }
+
                 if ( MAX_WHILE_ITERATIONS == i )
                 {
                     m_compilerCore -> compilerMessage ( *location,
                                                         CompilerBase::MT_ERROR,
-                                                        QObject::tr("maximum number of WHILE directive iterations (%1) reached").arg(MAX_WHILE_ITERATIONS).toStdString() );
+                                                        QObject::tr("maximum number of WHILE directive iterations (%1) "
+                                                                    "reached")
+                                                                   .arg(MAX_WHILE_ITERATIONS).toStdString() );
                 }
                 if ( NULL != body)
                 {
@@ -421,24 +431,50 @@ void AsmKcpsm3SemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
             }
             case ASMKCPSM3_DIR_REPT:
             {
-                unsigned int times = m_symbolTable->resolveExpr(node->args());
-                if ( 0 != times )
+                if ( node->branch()->last() == node->branch() )
                 {
-                    CompilerSourceLocation endrLoc = node->branch()->last()->location();
-                    delete node->branch()->last(); // remove `ENDR' directive
-                    CompilerStatement * body = node->branch()->copyEntireChain();
-                    for ( unsigned int i = 1; i < times; i++ )
-                    {
-                        CompilerStatement * exp = node->branch()->copyEntireChain();
-                        m_codeListing->expandMacro ( endrLoc, exp, exp );
-                        body->appendLink(exp);
-
-std::cout << "body = " << body << "\n";
-                    }
-
-                    node->insertLink(body);
+                    break;
                 }
-                break;
+
+                unsigned int times = m_symbolTable->resolveExpr(node->args());
+                if ( 0 == times )
+                {
+                    break;
+                }
+                if ( times >= MAX_REPEAT_ITERATIONS )
+                {
+                    m_compilerCore -> compilerMessage ( *location,
+                                                        CompilerBase::MT_ERROR,
+                                                        QObject::tr("maximum number of REPEAT directive iterations (%1)"
+                                                                    " reached")
+                                                                   .arg(MAX_REPEAT_ITERATIONS).toStdString() );
+                }
+
+                CompilerSourceLocation lastLocation = node->branch()->last()->location();
+                delete node->branch()->last(); // remove `ENDR' directive
+
+                CompilerStatement * body = new CompilerStatement();
+                body->appendLink(node->branch()->copyEntireChain());
+                m_codeListing->repeatCode(lastLocation, body, true);
+                lastLocation = body->lastLeaf()->location();
+                phase1(body, location);
+
+                for ( unsigned int i = 1; i < times; i++ )
+                {
+                    CompilerStatement * exp = new CompilerStatement();
+                    exp->appendLink(node->branch()->copyEntireChain());
+                    m_codeListing->repeatCode(lastLocation, exp, false);
+                    lastLocation = exp->lastLeaf()->location();
+                    phase1(exp, location);
+                    body->appendLink(exp);
+                }
+
+                node = node->prev();
+                delete node->next();
+                CompilerStatement * nodeNext = body->last();
+                node->insertLink(body);
+                node = nodeNext;
+                continue;
             }
             case ASMKCPSM3_DIR_LIST:
                 m_codeListing->setNoList(node->location(), false);
@@ -628,6 +664,10 @@ inline void AsmKcpsm3SemanticAnalyzer::phase2 ( CompilerStatement * codeTree )
     {
         switch ( node->type() )
         {
+            case EMPTY_STATEMENT:
+                // Do not interpret empty statements and let them be deleted (later in this method).
+                break;
+
             case ASMKCPSM3_DIR_ORG:
                 m_machineCode->setOrigin((uint32_t)m_symbolTable->resolveExpr(node->args()));
                 break;
@@ -649,7 +689,7 @@ inline void AsmKcpsm3SemanticAnalyzer::phase2 ( CompilerStatement * codeTree )
                 }
                 break;
 
-            default: // Only instructions are expected here, anything else will be ignored.
+            default: // Only instructions are expected here, anything else will be ignored and deleted.
             {
                 int opcode = m_instructionSet->resolveOPcode(node);
                 if ( -1 != opcode )

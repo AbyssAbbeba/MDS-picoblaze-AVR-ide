@@ -78,10 +78,16 @@ class AsmKcpsm3CodeListing : public CompilerMsgObserver
             LstLine ( const char * line );
 
             ///
-            int m_address;
+            std::string m_line;
 
             ///
-            int m_macro;
+            std::vector<int> m_code;
+
+            ///
+            std::vector<int> m_macro;
+
+            ///
+            int m_address;
 
             ///
             int m_inclusion;
@@ -94,12 +100,6 @@ class AsmKcpsm3CodeListing : public CompilerMsgObserver
 
             /// -1 == disable listing; 0 == neutral; 1 == (re)enable listing
             int m_noList;
-
-            ///
-            std::string m_line;
-
-            ///
-            std::vector<int> m_code;
         };
 
         /**
@@ -197,12 +197,33 @@ class AsmKcpsm3CodeListing : public CompilerMsgObserver
         /**
          * @brief
          * @param[in] location
+         * @param[in,out] code
+         * @param[in] first
+         */
+        void repeatCode ( CompilerSourceLocation location,
+                          CompilerStatement * code,
+                          bool first );
+
+        /**
+         * @brief
+         * @param[in] location
          * @param[in] type
          * @param[in] text
          */
         virtual void message ( const CompilerSourceLocation & location,
                                CompilerBase::MessageType type,
                                const std::string & text );
+
+        /**
+         * @brief
+         * @param[in] limit
+         */
+        virtual void setMaxNumberOfMessages ( unsigned int limit );
+
+        /**
+         * @brief
+         */
+        virtual void reset();
 
     ////    Private Operations    ////
     private:
@@ -237,6 +258,13 @@ class AsmKcpsm3CodeListing : public CompilerMsgObserver
          */
         void rewriteMacroLoc ( unsigned int * lineDiff,
                                CompilerStatement * macro );
+        /**
+         * @brief
+         * @param[in,out] lineCounter
+         * @param[in,out] code
+         */
+        void rewriteRepeatLoc ( unsigned int * lineCounter,
+                                CompilerStatement * code );
 
     ////    Inline Private Operations    ////
     private:
@@ -262,6 +290,12 @@ class AsmKcpsm3CodeListing : public CompilerMsgObserver
 
         ///
         unsigned int m_numberOfMacros;
+
+        /// @brief
+        unsigned int m_messageLimit;
+
+        /// @brief
+        unsigned int m_msgCounter;
 
         ///
         CompilerSemanticInterface * const m_compilerCore;

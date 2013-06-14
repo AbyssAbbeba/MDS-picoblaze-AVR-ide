@@ -160,6 +160,7 @@ DIS_INT_INST            "disable"{WSPACE}"interrupt"
                         }
 }
 
+\.?"device"             { return D_DEVICE; }
 \.?"limit"              { return D_LIMIT; }
 \.?"reg"                { return D_REG; }
 \.?"namereg"            { return D_NAMEREG; }
@@ -561,36 +562,6 @@ DIS_INT_INST            "disable"{WSPACE}"interrupt"
                             yylval->number = convertStrToNumber(yyextra, yylloc, yytext, 10, 10);
                             return NUMBER;
                         }
-b'[01]+'                {
-                            // Binary number (max. 64 digits, max. 32 bits)
-                            yytext [ yyleng - 1 ] = '\0'; // Remove the trailing '
-                            yylval->number = convertStrToNumber(yyextra, yylloc, (yytext + 2), 64, 2);
-                            return NUMBER;
-                        }
-h'[0-9A-F]+'            {
-                            // Hexadecimal number (max. 16 digits, max. 32 bits)
-                            yytext [ yyleng - 1 ] = '\0'; // Remove the trailing '
-                            yylval->number = convertStrToNumber(yyextra, yylloc, (yytext + 2), 16, 16);
-                            return NUMBER;
-                        }
-o'[0-7]+'               {
-                            // Octal number (max. 21 digits, max. 32 bits)
-                            yytext [ yyleng - 1 ] = '\0'; // Remove the trailing '
-                            yylval->number = convertStrToNumber(yyextra, yylloc, (yytext + 2), 21, 8);
-                            return NUMBER;
-                        }
-d'[0-9]+'               {
-                            // Decimal number (max. 10 digits, max. 32 bits)
-                            yytext [ yyleng - 1 ] = '\0'; // Remove the trailing '
-                            yylval->number = convertStrToNumber(yyextra, yylloc, (yytext + 2), 10, 10);
-                            return NUMBER;
-                        }
-\.[0-9]+                {
-                            // Decimal number (max. 10 digits, max. 32 bits)
-                            yylval->number = convertStrToNumber(yyextra, yylloc, (yytext + 1), 10, 10);
-                            return NUMBER;
-                        }
-
 {ID}:                   {
                             // Label, e.g. `main:'
 

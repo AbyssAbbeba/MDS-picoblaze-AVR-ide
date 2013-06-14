@@ -111,11 +111,10 @@
             QObject::tr("deprecated directive syntax").toStdString() );
 
     // Declaration of the error reporting function used by Bison
-    inline int avr8parser_error (
-        YYLTYPE * yylloc,
-        yyscan_t yyscanner,
-        CompilerParserInterface * compiler,
-        const char * errorInfo );
+    inline int avr8parser_error ( YYLTYPE * yylloc,
+                                  yyscan_t yyscanner,
+                                  CompilerParserInterface * compiler,
+                                  const char * errorInfo );
 %}
 
 // Declare an additional yyparse parameters
@@ -1428,11 +1427,18 @@ yz:
 // -----------------------------------------------------------------------------
 
 // Definition of the error reporting function used by Bison
-inline int avr8parser_error(YYLTYPE * yylloc, yyscan_t, CompilerParserInterface * compiler, const char * errorInfo) {
-    if ( 0 == strncmp(errorInfo , "syntax error, unexpected ", 25) ) {
-        std::string errStr;
-        if ( (strlen(errorInfo) > 27) && ('_' == errorInfo[26]) ) {
-            switch ( errorInfo[25] ) {
+inline int avr8parser_error ( YYLTYPE * yylloc,
+                              yyscan_t,
+                              CompilerParserInterface * compiler,
+                              const char * errorInfo )
+{
+    std::string errStr;
+    if ( 0 == strncmp(errorInfo , "syntax error, unexpected ", 25) )
+    {
+        if ( (strlen(errorInfo) > 27) && ('_' == errorInfo[26]) )
+        {
+            switch ( errorInfo[25] )
+            {
                 case 'D':
                     errStr = QObject::tr("unexpected directive ").toStdString();
                     errStr += reinterpret_cast<const char *>( long(errorInfo) + 27 );
@@ -1452,12 +1458,16 @@ inline int avr8parser_error(YYLTYPE * yylloc, yyscan_t, CompilerParserInterface 
                     errorInfo += 14;
                     break;
             }
-        } else {
+        }
+        else
+        {
             errStr = QObject::tr("unexpected ").toStdString();
             errStr += reinterpret_cast<const char *>( long(errorInfo) + 25 );
             errorInfo = errStr.c_str();
         }
-    } else if ( 0 == strncmp(errorInfo , "syntax error", 12) ) {
+    }
+    else if ( 0 == strncmp(errorInfo , "syntax error", 12) )
+    {
         errorInfo = QObject::tr("syntax not understood").toStdString().c_str();
     }
 

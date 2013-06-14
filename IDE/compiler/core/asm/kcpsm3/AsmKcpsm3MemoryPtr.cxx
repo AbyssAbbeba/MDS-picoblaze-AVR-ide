@@ -87,7 +87,7 @@ bool AsmKcpsm3MemoryPtr::tryReserve ( const CompilerSourceLocation & location,
     if ( true == isReserved(where, address) )
     {
         m_compilerCore->compilerMessage ( location,
-                                          CompilerBase::MT_ERROR,
+                                          CompilerBase::MT_WARNING,
                                           QObject::tr ( "reusing already reserved space in %1 memory at address: %2" )
                                                       .arg(memName)
                                                       .arg(address)

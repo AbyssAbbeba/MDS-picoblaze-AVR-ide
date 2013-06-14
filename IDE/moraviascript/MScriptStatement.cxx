@@ -188,8 +188,16 @@ MScriptStatement * MScriptStatement::prependLink ( MScriptStatement * chainLink 
 
 MScriptStatement * MScriptStatement::unlink()
 {
-    m_next->m_prev = NULL;
-    m_next = NULL;
+    if ( NULL != m_next )
+    {
+        m_next->m_prev = m_prev;
+        m_next = NULL;
+    }
+    if ( NULL != m_prev )
+    {
+        m_prev->m_next = m_next;
+        m_prev = NULL;
+    }
     return this;
 }
 
@@ -268,12 +276,14 @@ void MScriptStatement::completeDelete()
     {
         m_next->m_prev = NULL;
         m_next->completeDelete();
+        m_next = NULL;
     }
 
     if ( NULL != m_prev )
     {
         m_prev->m_next = NULL;
         m_prev->completeDelete();
+        m_prev = NULL;
     }
 
     delete this;

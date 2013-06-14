@@ -35,6 +35,17 @@ class CompilerMsgObserver
         virtual void message ( const CompilerSourceLocation & location,
                                CompilerBase::MessageType type,
                                const std::string & text ) = 0;
+
+        /**
+         * @brief
+         * @param[in] limit
+         */
+        virtual void setMaxNumberOfMessages ( unsigned int limit ) = 0;
+
+        /**
+         * @brief
+         */
+        virtual void reset() {};
 };
 
 #endif // COMPILERMSGOBSERVER_H

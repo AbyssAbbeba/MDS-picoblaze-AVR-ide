@@ -40,6 +40,11 @@ class CompilerMsgInterface
          */
         virtual void message ( const std::string & text,
                                CompilerBase::MessageType type = CompilerBase::MT_GENERAL ) = 0;
+
+        /**
+         * @brief
+         */
+        virtual void reset() {};
 };
 
 #endif // COMPILERMSGINTERFACE_H

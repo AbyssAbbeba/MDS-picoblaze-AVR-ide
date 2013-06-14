@@ -64,11 +64,6 @@ CompilerValue::CompilerValue ( CompilerExpr * expr )
 
 CompilerValue::CompilerValue ( const char * string )
 {
-//     if ( ( TYPE_SYMBOL == m_type ) && ( NULL != m_data.m_symbol ) )
-//     {
-//         delete [] m_data.m_symbol;
-//     }
-
     m_type = TYPE_SYMBOL;
     int length = ( 1 + strlen(string) );
     m_data.m_symbol = new char [ length ];
@@ -77,11 +72,6 @@ CompilerValue::CompilerValue ( const char * string )
 
 CompilerValue::CompilerValue ( const std::string & string )
 {
-//     if ( ( TYPE_SYMBOL == m_type ) && ( NULL != m_data.m_symbol ) )
-//     {
-//         delete [] m_data.m_symbol;
-//     }
-
     m_type = TYPE_SYMBOL;
     int length = ( 1 + string.size() );
     m_data.m_symbol = new char [ length ];

@@ -47,13 +47,23 @@ AsmKcpsm3SymbolTable::Symbol::Symbol ( const CompilerExpr * value,
     }
 }
 
+AsmKcpsm3SymbolTable::Symbol::Symbol ( const AsmKcpsm3SymbolTable::Symbol & obj )
+{
+
+    m_type       = obj.m_type;
+    m_masked     = obj.m_masked;
+    m_used       = obj.m_used;
+    m_value      = obj.m_value->copyChainLink();
+    m_constant   = obj.m_constant;
+    m_location   = obj.m_location;
+    m_finalValue = obj.m_finalValue;
+}
+
 AsmKcpsm3SymbolTable::Symbol::~Symbol()
 {
     if ( NULL != m_value )
     {
-// TODO: for some reason this line has to be commented, otherwise the program crashes; but anyway having this line 
-// commented has to cause a memory leak so it has to be resolved somehow...
-//         delete m_value;
+        delete m_value;
     }
 }
 
@@ -233,6 +243,20 @@ int AsmKcpsm3SymbolTable::assignValue ( const std::string & name,
                                         bool resolve )
 {
     int finalValue = -1;
+
+    for ( std::multimap<std::string,Symbol>::iterator it = m_table.find(name);
+          it != m_table.end();
+          it++ )
+    {
+        if ( STYPE_UNSPECIFIED != type && type != it->second.m_type )
+        {
+            m_compilerCore -> compilerMessage ( CompilerBase::MT_ERROR,
+                                                QObject::tr ( "symbol `%1' already defined with type: " )
+                                                            . arg ( name.c_str() )
+                                                            . toStdString()
+                                                            + symType2Str(it->second.m_type) );
+        }
+    }
 
     for ( std::multimap<std::string,Symbol>::iterator it = m_table.find(name);
           it != m_table.end();
@@ -588,6 +612,40 @@ void AsmKcpsm3SymbolTable::printSymLocation ( std::ostream & out,
     out << m_compilerCore->locationToStr(location);
 }
 
+const char * AsmKcpsm3SymbolTable::symType2Str ( const AsmKcpsm3SymbolTable::SymbolType symbolType,
+                                                 bool constLength )
+{
+    if ( true == constLength )
+    {
+        switch ( symbolType )
+        {
+            case AsmKcpsm3SymbolTable::STYPE_UNSPECIFIED: return "       ";
+            case AsmKcpsm3SymbolTable::STYPE_NUMBER:      return "NUMBER ";
+            case AsmKcpsm3SymbolTable::STYPE_REGISTER:    return "REG.   ";
+            case AsmKcpsm3SymbolTable::STYPE_LABEL:       return "LABEL  ";
+            case AsmKcpsm3SymbolTable::STYPE_PORT:        return "PORT   ";
+            case AsmKcpsm3SymbolTable::STYPE_EXPRESSION:  return "EXPR.  ";
+            case AsmKcpsm3SymbolTable::STYPE_DATA:        return "DATA   ";
+        }
+    }
+    else
+    {
+        switch ( symbolType )
+        {
+            default:
+            case AsmKcpsm3SymbolTable::STYPE_UNSPECIFIED: return "";
+            case AsmKcpsm3SymbolTable::STYPE_NUMBER:      return "NUMBER";
+            case AsmKcpsm3SymbolTable::STYPE_REGISTER:    return "REG.";
+            case AsmKcpsm3SymbolTable::STYPE_LABEL:       return "LABEL";
+            case AsmKcpsm3SymbolTable::STYPE_PORT:        return "PORT";
+            case AsmKcpsm3SymbolTable::STYPE_EXPRESSION:  return "EXPR.";
+            case AsmKcpsm3SymbolTable::STYPE_DATA:        return "DATA";
+        }
+    }
+
+    return "";
+}
+
 std::ostream & operator << ( std::ostream & out,
                              const AsmKcpsm3SymbolTable * symbolTable )
 {
@@ -613,25 +671,16 @@ std::ostream & operator << ( std::ostream & out,
                 }
             }
 
-            switch ( symbol->second.m_type )
-            {
-                case AsmKcpsm3SymbolTable::STYPE_UNSPECIFIED: out << "        "; break;
-                case AsmKcpsm3SymbolTable::STYPE_NUMBER:      out << " NUMBER "; break;
-                case AsmKcpsm3SymbolTable::STYPE_REGISTER:    out << " REG.   "; break;
-                case AsmKcpsm3SymbolTable::STYPE_LABEL:       out << " LABEL  "; break;
-                case AsmKcpsm3SymbolTable::STYPE_PORT:        out << " PORT   "; break;
-                case AsmKcpsm3SymbolTable::STYPE_EXPRESSION:  out << " EXPR.  "; break;
-                case AsmKcpsm3SymbolTable::STYPE_DATA:        out << " DATA   "; break;
-            }
+            out << " " << AsmKcpsm3SymbolTable::symType2Str(symbol->second.m_type, true);
 
             if ( -1 == symbol->second.m_finalValue )
             {
-                out << "       ";
+                out << "        ";
             }
             else
             {
-                char finalValue[8];
-                sprintf(finalValue, "0x%04X ", symbol->second.m_finalValue);
+                char finalValue[9];
+                sprintf(finalValue, "0x%05X ", symbol->second.m_finalValue);
                 out << finalValue;
             }
 

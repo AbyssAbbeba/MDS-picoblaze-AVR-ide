@@ -31,6 +31,10 @@ class DataFile;
 #include "CompilerParserInterface.h"
 #include "CompilerSemanticInterface.h"
 
+// Boost Filesystem library.
+#define BOOST_FILESYSTEM_NO_DEPRECATED
+#include <boost/filesystem.hpp>
+
 // Standard header files.
 #include <string>
 #include <vector>
@@ -44,6 +48,11 @@ class CompilerCore : public CompilerBase,
                      private CompilerParserInterface,
                      private CompilerSemanticInterface
 {
+    ////    Public Static Constants    ////
+    public:
+        /// @brief Maximum allowed number of messages.
+        static const unsigned int MAX_MESSAGES = 1024;
+
     ////    Constructors and Destructors    ////
     public:
         /**
@@ -292,6 +301,11 @@ class CompilerCore : public CompilerBase,
         /**
          * @brief
          */
+        CompilerOptions * m_opts;
+
+        /**
+         * @brief
+         */
         std::vector<std::string> m_fileNameStack;
 
         /**
@@ -307,17 +321,17 @@ class CompilerCore : public CompilerBase,
         /**
          * @brief
          */
+        boost::filesystem::path m_basePath;
+
+        /**
+         * @brief
+         */
         int m_fileNumber;
 
         /**
          * @brief
          */
         bool m_success;
-
-        /**
-         * @brief
-         */
-        CompilerOptions * m_opts;
 };
 
 #endif // COMPILERCORE_H

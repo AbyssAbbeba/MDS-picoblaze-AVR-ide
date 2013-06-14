@@ -18,11 +18,17 @@
 #include "CompilerOptions.h"
 #include "CompilerCore.h"
 
+// Used for i18n only
+#include <QObject>
+
 CompilerMsgFilter::CompilerMsgFilter ( const CompilerCore * compilerCore,
-                                       CompilerMsgInterface * msgInterface )
+                                       CompilerMsgInterface * msgInterface,
+                                       unsigned int messageLimit )
                                      : m_compilerCore ( compilerCore ),
-                                       m_msgInterface ( msgInterface )
+                                       m_msgInterface ( msgInterface ),
+                                       m_messageLimit ( messageLimit )
 {
+    reset();
 }
 
 void CompilerMsgFilter::message ( const std::string & text,
@@ -65,5 +71,27 @@ void CompilerMsgFilter::message ( const std::string & text,
             return;
     }
 
+    if ( 0 != m_messageLimit )
+    {
+        if ( m_messageLimit == m_msgCounter )
+        {
+            m_msgInterface->message ( QObject::tr ( "maximum number of messages reached, suppressing compiler message "
+                                                    "generation" )
+                                                  . toStdString(),
+                                      CompilerBase::MT_WARNING );
+            m_msgCounter++;
+            return;
+        }
+        else if ( m_messageLimit < m_msgCounter )
+        {
+            return;
+        }
+        m_msgCounter++;
+    }
     m_msgInterface->message(text, type);
+}
+
+void CompilerMsgFilter::reset()
+{
+    m_msgCounter = 0;
 }
