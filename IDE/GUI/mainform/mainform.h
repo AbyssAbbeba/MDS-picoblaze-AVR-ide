@@ -87,6 +87,7 @@ class MainForm : public QMainWindow
         void openFilePath(QString path);
         void reloadCompileInfo(const std::string &text, CompilerBase::MessageType type);
         void compilationFinished(bool success);
+        void startProjectConfig(Project *project);
 
     //signals:
     //    void dockWidgetsCreated;

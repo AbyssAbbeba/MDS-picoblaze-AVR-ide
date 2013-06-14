@@ -18,6 +18,7 @@
 #include "../dialogs/projectdlg.h"
 #include "../errordialog/errordlg.h"
 #include "pluginman_gui.h"
+#include "../dialogs/projectcfgdlg_core.h"
 //#include "../widgets/CompileWidget/compilewidget.h"
 
 
@@ -925,7 +926,9 @@ void MainForm::connectProjectSlot(Project *project)
     connect(project, SIGNAL(addUntrackedFile(QString, QString)), this, SLOT(addUntrackedFile(QString, QString)));
     connect(project, SIGNAL(openFilePath(QString)), this, SLOT(openFilePath(QString)));
     connect(project, SIGNAL(setEditorReadOnly(bool)), this, SLOT(setEditorReadOnly(bool)));
+    connect(project, SIGNAL(startConfig(Project*)), this, SLOT(startProjectConfig(Project*)));
 }
+
 
 
 void MainForm::highlightLine(QString file, int line, QColor *color, QColor *origColor)
@@ -952,4 +955,11 @@ void MainForm::addUntrackedFile(QString name, QString path)
     getWDockManager()->getCentralWidget()->setChanged();
     getWDockManager()->getCentralWidget()->connectAct();
     qDebug() << "MainForm: return addUntrackedFile";
+}
+
+
+void MainForm::startProjectConfig(Project *project)
+{
+    ProjectConfigDialog_Core *cfgdlg = new ProjectConfigDialog_Core(this, project);
+    cfgdlg->show();
 }

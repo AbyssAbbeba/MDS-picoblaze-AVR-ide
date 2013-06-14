@@ -12,7 +12,7 @@
 
 
 
-#include "filemgr.h"
+#include "projectcfg_filemgr.h"
 #include "../project/project.h"
 #include <QFileDialog>
 #include "../errordialog/errordlg.h"
@@ -23,7 +23,7 @@
  * @param
  * @param
  */
-FileMgr::FileMgr(QWidget *parentWidget, Project *currProject)
+ProjectCfg_FileMgr::ProjectCfg_FileMgr(QWidget *parentWidget, Project *currProject)
 {
     //prepare widget
     this->parent = parentWidget;
@@ -71,7 +71,7 @@ FileMgr::FileMgr(QWidget *parentWidget, Project *currProject)
 /**
  * @brief
  */
-void FileMgr::deleteFile()
+void ProjectCfg_FileMgr::deleteFile()
 {
     if (fileList->currentItem() != NULL)
     {
@@ -89,7 +89,7 @@ void FileMgr::deleteFile()
 /**
  * @brief
  */
-void FileMgr::newFile()
+void ProjectCfg_FileMgr::newFile()
 {
     //modal dialog window
     QString path = QFileDialog::getSaveFileName(this, tr("Source File"), QString(), QString(), 0, QFileDialog::DontUseNativeDialog);
@@ -120,7 +120,7 @@ void FileMgr::newFile()
 /**
  * @brief
  */
-void FileMgr::addFile()
+void ProjectCfg_FileMgr::addFile()
 {
     //dialog window (file search)
     QString path = QFileDialog::getOpenFileName(this, tr("Source File"), "");
@@ -142,7 +142,7 @@ void FileMgr::addFile()
 /**
  * @brief
  */
-void FileMgr::setMainFile()
+void ProjectCfg_FileMgr::setMainFile()
 {
     if (fileList->currentItem() != NULL)
     {
