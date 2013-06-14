@@ -34,9 +34,11 @@ class CompilerMsgFilter : public CompilerMsgInterface
          * @brief
          * @param[in] compilerCore
          * @param[in,out] msgInterface
+         * @param[in] messageLimit
          */
         CompilerMsgFilter ( const CompilerCore * compilerCore,
-                            CompilerMsgInterface * msgInterface = NULL );
+                            CompilerMsgInterface * msgInterface = NULL,
+                            unsigned int messageLimit = 0 );
 
     ////    Public Operations    ////
     public:
@@ -48,6 +50,11 @@ class CompilerMsgFilter : public CompilerMsgInterface
         virtual void message ( const std::string & text,
                                CompilerBase::MessageType type = CompilerBase::MT_GENERAL );
 
+        /**
+         * @brief
+         */
+        virtual void reset();
+
     ////    Private Attributes    ////
     private:
         /// @brief
@@ -55,6 +62,12 @@ class CompilerMsgFilter : public CompilerMsgInterface
 
         /// @brief
         CompilerMsgInterface * const m_msgInterface;
+
+        /// @brief
+        const unsigned int m_messageLimit;
+
+        /// @brief
+        unsigned int m_msgCounter;
 };
 
 #endif // COMPILERMSGFILTER_H

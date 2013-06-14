@@ -148,7 +148,7 @@
 %token D_ENDM           D_EXITM         D_REPT          D_MACRO         D_EQU
 %token D_END            D_REG           D_CODE          D_ENDW          D_WARNING
 %token D_VARIABLE       D_SET           D_DEFINE        D_UNDEFINE      D_ENDR
-%token D_AUTOREG        D_AUTOSPR       D_DATA
+%token D_AUTOREG        D_AUTOSPR       D_DATA          D_DEVICE
 
 /* Instructions */
 %token I_JUMP           I_CALL          I_RETURN        I_ADD           I_ADDCY
@@ -246,7 +246,7 @@
 %type<stmt>     dir_elseifdef_a dir_elseifndf_a dir_elseifb_a   dir_elseifnb_a  dir_rept
 %type<stmt>     dir_endm        dir_macro_d     dir_macro_a     dir_endr        dir_endr_a
 %type<stmt>     dir_db_a        dir_endm_a      dir_expand_a    dir_noexpand_a  dir_autospr_a
-%type<stmt>     dir_data        dir_limit
+%type<stmt>     dir_data        dir_limit       dir_device
 // Statements - instructions
 %type<stmt>     inst_jump       inst_call       inst_return     inst_add        inst_addcy
 %type<stmt>     inst_sub        inst_subcy      inst_compare    inst_returni    inst_enable_int
@@ -431,7 +431,7 @@ directive:
     | dir_autospr   { $$ = $1; }    | dir_autoreg   { $$ = $1; }
     | dir_code      { $$ = $1; }    | dir_error     { $$ = $1; }
     | dir_warning   { $$ = $1; }    | dir_data      { $$ = $1; }
-    | dir_limit     { $$ = $1; }
+    | dir_limit     { $$ = $1; }    | dir_device    { $$ = $1; }
 ;
 dir_cond_asm:
       if_block ifelse_block else_block dir_endif
@@ -1141,6 +1141,38 @@ dir_limit:
                                                           $label->appendArgsLink ( $id->appendLink($expr) ) );
                                     }
 ;
+dir_device:
+      D_DEVICE id                   { $$ = new CompilerStatement ( LOC(@$), ASMKCPSM3_DIR_DEVICE, $id ); }
+    | D_DEVICE string               {
+                                        std::string procType ( (const char *) $string->lVal().m_data.m_array.m_data,
+                                                                $string->lVal().m_data.m_array.m_size );
+                                        $$ = new CompilerStatement ( LOC(@$),
+                                                                     ASMKCPSM3_DIR_DEVICE,
+                                                                     new CompilerExpr ( procType, LOC(@string) ) );
+                                        compiler->parserMessage ( compiler->toSourceLocation(@string),
+                                                                  CompilerBase::MT_WARNING,
+                                                                  QObject::tr ( "processor type (`%1') should be "
+                                                                                "specified without double quotes "
+                                                                                "(`\"')" )
+                                                                              . arg ( procType.c_str() )
+                                                                              . toStdString() );
+                                        $string->completeDelete();
+                                    }
+    | label D_DEVICE id             {
+                                        /* Syntax error */
+                                        $$ = NULL;
+                                        NO_LABEL_EXPECTED ( @label,
+                                                            "DEVICE",
+                                                            $label->appendArgsLink($id) );
+                                    }
+    | label D_DEVICE string         {
+                                        /* Syntax error */
+                                        $$ = NULL;
+                                        NO_LABEL_EXPECTED ( @label,
+                                                            "DEVICE",
+                                                            $label->appendArgsLink($string) );
+                                    }
+;
 dir_data:
       id D_DATA expr                { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_DATA, $id->appendLink($expr)); }
     | id D_DATA                     {
@@ -1287,9 +1319,7 @@ dir_db:
 ;
 dir_db_a:
       D_DB args_str                 { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_DB, $args_str); }
-    | id D_DB args_str              { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_DB, $id->appendLink($args_str)); }
     | D_DB                          { /* Syntax error */ $$ = NULL; ARG_REQUIRED_D(@D_DB, "DB"); }
-    | id D_DB                       { /* Syntax error */ $$ = NULL; ARG_REQUIRED_D(@D_DB, "DB"); $id->completeDelete(); }
 ;
 dir_error:
       D_ERROR string                { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_ERROR, $string); }
@@ -1644,9 +1674,10 @@ inline int kcpsm3parser_error ( YYLTYPE * yylloc,
                                 CompilerParserInterface * compiler, 
                                 const char * errorInfo )
 {
+    std::string errStr;
+
     if ( 0 == strncmp(errorInfo , "syntax error, unexpected ", 25) )
     {
-        std::string errStr;
         if ( (strlen(errorInfo) > 27) && ('_' == errorInfo[26]) )
         {
             switch ( errorInfo[25] )

@@ -23,13 +23,12 @@
 #include "CompilerMsgObserver.h"
 #include "CompilerMsgFilter.h"
 
+// OS compatibility.
+#include "../../utilities/os/os.h"
+
 // Standard header files.
 #include <sstream>
 #include <cstdio>
-
-// Boost Filesystem library.
-#define BOOST_FILESYSTEM_NO_DEPRECATED
-#include <boost/filesystem.hpp>
 
 // Include all implemented semantic analyzers we have in this compiler collection.
 #include "asm/avr8/AsmAvr8SemanticAnalyzer.h"
@@ -37,10 +36,11 @@
 #include "asm/mcs51/AsmMcs51SemanticAnalyzer.h"
 #include "asm/kcpsm3/AsmKcpsm3SemanticAnalyzer.h"
 
-#include <QObject> // Used for i18n only
+// Used for i18n only.
+#include <QObject>
 
 CompilerCore::CompilerCore ( CompilerMsgInterface * msgInterface )
-                           : m_msgInterface ( new CompilerMsgFilter(this, msgInterface) )
+                           : m_msgInterface ( new CompilerMsgFilter(this, msgInterface, MAX_MESSAGES) )
 {
     m_opts = NULL;
     m_msgObserver = NULL;
@@ -67,30 +67,48 @@ bool CompilerCore::compile ( LangId lang,
                              CompilerOptions * opts,
                              bool genSimData )
 {
-    resetCompilerCore();
-    m_opts = opts;
-
-    if ( false == checkOptions(lang, arch) )
+    try
     {
+        resetCompilerCore();
+        m_opts = opts;
+        m_simulatorData.m_genSimData = genSimData;
+
+        if ( false == checkOptions(lang, arch) )
+        {
+            return false;
+        }
+
+        m_opts->normalizeFilePaths();
+        m_opts->clearOutputFiles();
+
+        {
+            using namespace boost::filesystem;
+            m_basePath = system_complete(path(m_opts->m_sourceFile).parent_path().make_preferred());
+        }
+
+        if ( true == setupSemanticAnalyzer(lang, arch) )
+        {
+            return startLexerAndParser(lang, arch);
+        }
+
         return false;
     }
-
-    m_opts->clearOutputFiles();
-
-    if ( true == setupSemanticAnalyzer(lang, arch) )
+    catch ( boost::system::error_code & e )
     {
-        return startLexerAndParser(lang, arch);
+        m_msgInterface->message ( QObject::tr("Failure: %1.").arg(e.message().c_str()).toStdString(),
+                                  MT_ERROR );
+        return false;
     }
-
-    return false;
 }
 
 DbgFile * CompilerCore::getSimDbg()
 {
+    return m_simulatorData.m_simDbg;
 }
 
 DataFile * CompilerCore::getSimData()
 {
+    return m_simulatorData.m_simData;
 }
 
 inline bool CompilerCore::checkOptions ( LangId lang,
@@ -160,7 +178,7 @@ inline bool CompilerCore::startLexerAndParser ( LangId lang,
                                                 TargetArch arch )
 {
 
-    FILE * sourceFile = fileOpen ( m_opts->m_sourceFile.c_str() );
+    FILE * sourceFile = fileOpen ( m_opts->m_sourceFile );
     yyscan_t yyscanner; // Pointer to the lexer context
 
     if ( NULL == sourceFile )
@@ -346,13 +364,20 @@ inline void CompilerCore::setFileName ( const std::string & filename )
 void CompilerCore::registerMsgObserver ( CompilerMsgObserver * observer )
 {
     m_msgObserver = observer;
+    m_msgObserver->setMaxNumberOfMessages(MAX_MESSAGES);
 }
 
 inline void CompilerCore::resetCompilerCore()
 {
-    m_opts = NULL;
+    if ( NULL != m_msgObserver )
+    {
+        m_msgObserver->reset();
+    }
+    m_basePath.clear();
     m_msgObserver = NULL;
+    m_opts = NULL;
     m_success = true;
+    m_msgInterface->reset();
     if ( NULL != m_rootStatement )
     {
         m_rootStatement->completeDelete();
@@ -374,29 +399,61 @@ inline void CompilerCore::resetCompilerCore()
 FILE * CompilerCore::fileOpen ( const std::string & filename,
                                 bool acyclic )
 {
+    using namespace boost::filesystem;
+
+    std::string absoluteFileName;
+    path filenamePath = path(filename).make_preferred();
+    path basePath = system_complete(path(m_filename).parent_path().make_preferred());
+
+    if ( true == filenamePath.is_absolute() )
+    {
+        absoluteFileName = filenamePath.string();
+    }
+    else
+    {
+        if ( true == is_regular_file(basePath / filenamePath) )
+        {
+            absoluteFileName = (basePath / filenamePath).string();
+        }
+        else
+        {
+            for ( std::vector<std::string>::const_iterator it = m_opts->m_includePath.cbegin();
+                  it != m_opts->m_includePath.cend();
+                  it++ )
+            {
+                if ( true == is_regular_file(path(*it) / filenamePath) )
+                {
+                    absoluteFileName = (path(*it).make_preferred() / filenamePath).string();
+                    break;
+                }
+            }
+            return NULL;
+        }
+    }
+
     if ( true == acyclic )
     {
         for ( std::vector<std::string>::const_iterator it = m_fileNameStack.begin();
               it != m_fileNameStack.end();
               ++it )
         {
-            if ( filename == *it )
+            if ( absoluteFileName == *it )
             {
                 m_msgInterface->message ( QObject::tr ( "Error: file %1 is already opened, you might have an "
                                                         "\"include\" loop in your code." )
-                                                      .arg(filename.c_str()).toStdString(),
+                                                      .arg(absoluteFileName.c_str()).toStdString(),
                                           MT_ERROR );
                 return NULL;
             }
         }
     }
 
-    if ( false == pushFileName(filename) )
+    if ( false == pushFileName(absoluteFileName) )
     {
         return NULL;
     }
 
-    return fopen(filename.c_str(), "r");
+    return fopen(absoluteFileName.c_str(), "r");
 }
 
 bool CompilerCore::pushFileName ( const std::string & filename )
@@ -507,7 +564,7 @@ std::string CompilerCore::locationToStr ( const CompilerSourceLocation & locatio
         return "";
     }
 
-    std::string result = getFileName(location.m_fileNumber);;
+    std::string result = boost::filesystem::make_relative ( m_basePath, getFileName(location.m_fileNumber) ).string();
 
     char tmp[100];
     sprintf ( tmp,

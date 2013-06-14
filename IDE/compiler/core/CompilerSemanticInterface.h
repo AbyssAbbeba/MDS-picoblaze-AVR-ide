@@ -18,6 +18,8 @@
 
 // Forward declarations.
 class CompilerMsgObserver;
+class DbgFile;
+class DataFile;
 
 // Standard headers.
 #include <string>
@@ -42,6 +44,23 @@ class CompilerMsgObserver;
  */
 class CompilerSemanticInterface
 {
+    ////    Public Datatypes    ////
+    public:
+        /**
+         * @brief
+         */
+        struct SimulatorData
+        {
+            ///
+            bool m_genSimData;
+
+            ///
+            DbgFile * m_simDbg;
+
+            ///
+            DataFile * m_simData;
+        };
+
     ////    Constructors and Destructors    ////
     public:
         /**
@@ -101,6 +120,11 @@ class CompilerSemanticInterface
          * @return
          */
         virtual void registerMsgObserver ( CompilerMsgObserver * observer ) = 0;
+
+    ////    Public Attributes    ////
+    public:
+        ///
+        SimulatorData m_simulatorData;
 };
 
 #endif // COMPILERSEMANTICINTERFACE_H

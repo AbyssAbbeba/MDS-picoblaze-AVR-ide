@@ -1717,9 +1717,9 @@ inline int mcs51parser_error ( YYLTYPE * yylloc,
                                CompilerParserInterface * compiler,
                                const char * errorInfo )
 {
+    std::string errStr;
     if ( 0 == strncmp(errorInfo , "syntax error, unexpected ", 25) )
     {
-        std::string errStr;
         if ( (strlen(errorInfo) > 27) && ('_' == errorInfo[26]) )
         {
             switch ( errorInfo[25] )

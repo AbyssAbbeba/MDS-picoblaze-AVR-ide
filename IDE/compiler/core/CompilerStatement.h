@@ -98,6 +98,12 @@ class CompilerStatement : public CompilerSerializable
 
         /**
          * @brief
+         * @return
+         */
+        CompilerStatement * lastLeaf();
+
+        /**
+         * @brief
          * @return this
          */
         CompilerStatement * unlink();

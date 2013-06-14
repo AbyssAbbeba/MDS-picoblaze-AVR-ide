@@ -235,12 +235,14 @@ void CompilerExpr::completeDelete()
     {
         m_next->m_prev = NULL;
         m_next->completeDelete();
+        m_next = NULL;
     }
 
     if ( NULL != m_prev )
     {
         m_prev->m_next = NULL;
         m_prev->completeDelete();
+        m_prev = NULL;
     }
 
     delete this;
@@ -301,8 +303,16 @@ CompilerExpr * CompilerExpr::copyChainLink() const
 
 CompilerExpr * CompilerExpr::unlink()
 {
-    m_next->m_prev = NULL;
-    m_next = NULL;
+    if ( NULL != m_next )
+    {
+        m_next->m_prev = m_prev;
+        m_next = NULL;
+    }
+    if ( NULL != m_prev )
+    {
+        m_prev->m_next = m_next;
+        m_prev = NULL;
+    }
     return this;
 }
 
@@ -369,20 +379,20 @@ std::ostream & operator << ( std::ostream & out,
 
     if ( CompilerExpr::OPER_NONE == expr->m_operator )
     {
-        out << "(" << expr->m_lValue << ")";
+        out << "(" << expr->lVal() << ")";
     }
     else
     {
-        out << "(" << expr->m_lValue << " " << expr->m_operator << " " << expr->m_rValue << std::string(")");
+        out << "(" << expr->lVal() << " " << expr->m_operator << " " << expr->rVal() << std::string(")");
     }
 
     out << " {";
-    out << expr->m_location;
+    out << expr->location();
     out << "}";
 
-    if ( NULL != expr->m_next )
+    if ( NULL != expr->next() )
     {
-        out << " | " << expr->m_next;
+        out << " | " << expr->next();
     }
 
     return out;

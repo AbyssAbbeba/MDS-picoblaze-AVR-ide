@@ -16,14 +16,37 @@
 #ifndef OS_H
 #define OS_H
 
-    // Code specific for other operating systems than GNU/Linux.
-    #ifndef __linux__
+// Boost Filesystem library.
+#define BOOST_FILESYSTEM_NO_DEPRECATED
+#include <boost/filesystem.hpp>
 
-        #ifndef STRDUP_DECLARED
-        #define STRDUP_DECLARED
-            char * strdup ( const char * s );
-        #endif // STRDUP_DECLARED
+namespace boost
+{
+    namespace filesystem
+    {
+        /**
+         * @brief
+         * @param[in] a
+         * @param[in] b
+         * @return
+         */
+        path make_relative ( path a, path b );
+    }
+}
 
-    #endif // __linux__
+// Code specific for other operating systems than GNU/Linux.
+#ifndef __linux__
+
+    #ifndef STRDUP_DECLARED
+    #define STRDUP_DECLARED
+        /**
+         * @brief
+         * @param[in] s
+         * @return
+         */
+        char * strdup ( const char * s );
+    #endif // STRDUP_DECLARED
+
+#endif // __linux__
 
 #endif // OS_H

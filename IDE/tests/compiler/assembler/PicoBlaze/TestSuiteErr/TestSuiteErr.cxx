@@ -57,7 +57,7 @@ bool TestSuiteErr::addTests ( CU_pSuite suite )
 
     std::vector<std::string> testCaseFiles;
 
-    for ( directory_iterator dir ( path("TestSuiteErr") /= path("testcases") );
+    for ( directory_iterator dir ( path("TestSuiteErr") / "testcases" );
           directory_iterator() != dir;
           dir++ )
     {
@@ -82,7 +82,7 @@ bool TestSuiteErr::addTests ( CU_pSuite suite )
           it != testCaseFiles.cend();
           it++ )
     {
-        char * testCaseName = new char [ it->size() ];
+        char * testCaseName = new char [ it->size() + 1 ];
         strcpy(testCaseName, it->c_str());
 
         if ( NULL == CU_add_test(suite, testCaseName, &testFunction) )
@@ -99,9 +99,9 @@ void TestSuiteErr::testFunction()
     using namespace boost::filesystem;
 
     std::string testName = CU_get_current_test()->pName;
-    m_options->m_sourceFile = ( path("TestSuiteErr") /= path("testcases") /= path(testName + ".asm") ).generic_string();
+    m_options->m_sourceFile = ( path("TestSuiteErr") / "testcases" / (testName + ".asm") ).string();
 
-    std::string resultsCommonPath = ( path("TestSuiteErr") /= path("results") /= path(testName) ).generic_string();
+    std::string resultsCommonPath = ( path("TestSuiteErr") / "results" / testName ).string();
     m_options->m_symbolTable  = resultsCommonPath + ".sym";
     m_options->m_macroTable   = resultsCommonPath + ".mac";
     m_options->m_codeTree     = resultsCommonPath + ".crt";;
@@ -111,7 +111,7 @@ void TestSuiteErr::testFunction()
     CU_ASSERT_FATAL ( false == m_compiler->compile(CompilerBase::LI_ASM, CompilerBase::TA_KCPSM3, m_options) );
     dynamic_cast<CompilerMsgIntfFile*>(m_msgInt)->closeFile();
 
-    std::string expectedCommonPath = ( path("TestSuiteErr") /= path("expected") /= path(testName) ).generic_string();
+    std::string expectedCommonPath = ( path("TestSuiteErr") / "expected" / testName ).string();
     compareLst ( expectedCommonPath + ".lst.exp", m_options->m_lstFile );
     compareErr ( expectedCommonPath + ".err.exp", resultsCommonPath + ".err" );
 }

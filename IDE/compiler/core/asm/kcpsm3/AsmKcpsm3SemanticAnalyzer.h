@@ -38,7 +38,10 @@ class AsmKcpsm3SemanticAnalyzer : public CompilerSemanticAnalyzer
     ////    Public Static Constants    ////
     public:
         /// @brief Maximum allowed number of iterations in a WHILE loop.
-        static const unsigned int MAX_WHILE_ITERATIONS = 10000;
+        static const unsigned int MAX_WHILE_ITERATIONS = 1024;
+
+        /// @brief Maximum allowed number of iterations in a REPEAT loop.
+        static const unsigned int MAX_REPEAT_ITERATIONS = 1024;
 
     ////    Constructors and Destructors    ////
     public:

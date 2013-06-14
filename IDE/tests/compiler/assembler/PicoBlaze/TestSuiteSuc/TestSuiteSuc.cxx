@@ -65,7 +65,7 @@ bool TestSuiteSuc::addTests ( CU_pSuite suite )
 
     std::vector<std::string> testCaseFiles;
 
-    for ( directory_iterator dir ( path("TestSuiteSuc") /= path("testcases") );
+    for ( directory_iterator dir ( path("TestSuiteSuc") / "testcases" );
           directory_iterator() != dir;
           dir++ )
     {
@@ -90,7 +90,7 @@ bool TestSuiteSuc::addTests ( CU_pSuite suite )
           it != testCaseFiles.cend();
           it++ )
     {
-        char * testCaseName = new char [ it->size() ];
+        char * testCaseName = new char [ it->size() + 1 ];
         strcpy(testCaseName, it->c_str());
 
         if ( NULL == CU_add_test(suite, testCaseName, &testFunction) )
@@ -108,9 +108,9 @@ void TestSuiteSuc::testFunction()
 
     std::string testName = CU_get_current_test()->pName;
 
-    m_options->m_sourceFile = ( path("TestSuiteSuc") /= path("testcases") /= path(testName + ".asm") ).generic_string();
+    m_options->m_sourceFile = ( path("TestSuiteSuc") / "testcases" / (testName + ".asm") ).string();
 
-    std::string resultsCommonPath = ( path("TestSuiteSuc") /= path("results") /= path(testName) ).generic_string();
+    std::string resultsCommonPath = ( path("TestSuiteSuc") / "results" / testName ).string();
     m_options->m_symbolTable  = resultsCommonPath + ".sym";
     m_options->m_macroTable   = resultsCommonPath + ".mac";
     m_options->m_mdsDebugFile = resultsCommonPath + ".dbg";
@@ -124,7 +124,7 @@ void TestSuiteSuc::testFunction()
 
     CU_ASSERT_FATAL ( true == m_compiler->compile(CompilerBase::LI_ASM, CompilerBase::TA_KCPSM3, m_options) );
 
-    std::string expectedCommonPath = ( path("TestSuiteSuc") /= path("expected") /= path(testName) ).generic_string();
+    std::string expectedCommonPath = ( path("TestSuiteSuc") / "expected" / testName ).string();
     compareLst ( expectedCommonPath + ".lst.exp", m_options->m_lstFile     );
     compareSym ( expectedCommonPath + ".sym.exp", m_options->m_symbolTable );
     compareMac ( expectedCommonPath + ".mac.exp", m_options->m_macroTable  );
