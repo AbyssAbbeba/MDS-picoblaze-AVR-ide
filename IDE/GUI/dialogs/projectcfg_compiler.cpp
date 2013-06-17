@@ -22,6 +22,7 @@ ProjectCfg_Compiler::ProjectCfg_Compiler(QWidget *parentWidget, Project *currPro
     this->leMain->setText(this->project->mainFileName);
     this->leMain->setMaximumWidth(70);
     this->leMain->setReadOnly(true);
+    this->leMain->setFrame(false);
     
     this->chckSymbolTbl = new QCheckBox(this);
     this->chckMacroTbl = new QCheckBox(this);
