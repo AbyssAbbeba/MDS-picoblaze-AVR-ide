@@ -12,7 +12,7 @@
 \usepackage{wrapfig}
 \usepackage[footnotesize,bf]{caption}
 \usepackage[pdftex,colorlinks=true,linkcolor=blue,urlcolor=blue,pdftitle=MDS manual,pdfsubject=yyy,pdfkeywords=zzz,pdfauthor=Martin Madron,bookmarksopen=false,pdfpagemode=None]{hyperref}
-\setcounter{chapter}{0} 
+\setcounter{chapter}{0} 0x0xxxxx
 %\setcounter{chapter}{-1} 
 \floatstyle{ruled}
 \newfloat{code}{thp}{lop}
@@ -228,8 +228,50 @@ the following:
                 \subsection{Bottom panel}
                 \subsection{Right panel}
                 \subsection{Left panel}
-         \section{Other tools}        
-        
+                \subsection{Project configuration}
+                In project configuration window, you can edit project and compiler settings. 
+                You can open project configuration window by right clicking to project name in the left panel. See the pictures below.
+                    \begin{figure}
+                        \centering{}
+                        \includegraphics [width=300pt]{img/mensi_obrazek.png}
+                        \caption{Opening project configuration window from main screen}
+                    \end{figure}
+                This will open main configuration window with multiple tabs on the left side.
+                        \begin{figure}
+                            \centering{}
+                            \includegraphics [width=300pt]{img/mensi_obrazek.png}
+                            \caption{Project window layout}
+                        \end{figure}
+                    
+                    \begin{itemize}
+                        \item Undo: will undo all edit actions on the open document in reverse order
+                        \item Redo: will redo all undo actions
+                        \item Cut: cuts all selected parts of the open doecument and puts it on the clipboard
+                        \item Copy: copies all selected parts of the open document to the clipboard
+                        \item Paste: pastes the text contents of the clipboard in the open document
+                        \item Select: All selects all text in the open document
+                        \item Find: find a to be given string through the open document
+                        \item Replace: replace a given string in the open document by a new string
+                    \end{itemize}
+                    
+                        \begin{figure}
+                            \centering{}
+                            \includegraphics [width=300pt]{img/mensi_obrazek.png}
+                            \caption{Project window layout}
+                        \end{figure}
+
+                    \begin{itemize}
+                        \item Undo: will undo all edit actions on the open document in reverse order
+                        \item Redo: will redo all undo actions
+                        \item Cut: cuts all selected parts of the open doecument and puts it on the clipboard
+                        \item Copy: copies all selected parts of the open document to the clipboard
+                        \item Paste: pastes the text contents of the clipboard in the open document
+                        \item Select: All selects all text in the open document
+                        \item Find: find a to be given string through the open document
+                        \item Replace: replace a given string in the open document by a new string
+                    \end{itemize}
+
+         \section{Other tools}
                 \subsection{Code Completion list}
                 The Code Completion List shows program symbols that contain
                 the characters you are currently typing.
@@ -323,37 +365,18 @@ the following:
             \end{itemize}
             
 \chapter{Built-in Macro assembler}
-In this chapter, we will be concerned with MDS build-in assembler.
+In this chapter, we will be concerned with build-in macro assembler.
 With syntax of its statements, directives and PicoBlaze assembler instructions.
-It is assumed, that the reader is familiar with general concepts of assembly 
-language programming and PicoBlaze architecture.
+It is assumed, that the reader is familiar with general concepts of assembly
+language programming and PicoBlaze architecture.\\\\
+MDS has the most advanced macro assembler on the market. Its suports a lot of various
+types of macros and advanced directives, like for example REPT and WHILE, which can create for and while loops or  macros with unlimited number of
+input parameters.\\
 
-        \section{Predefined Symbols}
-        There are symbols which are defined by default by assembler. The aim is to
-        make it a little easier to write code in assembly language for 8051,
-        because user don not have to define all these symbols in his or her code.
-        This feature can be turned of by ``\texttt{\$NOMOD}'' control sequence.
-		\begin{table}[h!]
-			\centering{}
-			\mysmallfont{}
-			\caption{Code addresses}
-			\begin{tabular}{|ll|ll|ll|ll|}
-				\hline
-				\textbf{Symbol}	& \textbf{Value}
-					& \textbf{Symbol} & \textbf{Value}
-					& \textbf{Symbol} & \textbf{Value}
-					& \textbf{Symbol} & \textbf{Value} \\
-				\hline
-				RESET	& 000h	& EXTI0	& 003h	& TIMER0& 00Bh	& EXTI1	& 013h \\
-				TIMER1	& 01Bh	& SINT	& 023h	& TIMER2& 02Bh	& CFINT	& 033h \\
-				\hline
-			\end{tabular}
-		\end{table}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
  	\section{Statements}
         Source code files for this assembler must be text files where lines are formed like these:\\
-		\\ {
-                \mysmallfont{}
+		\\ {           
                 \texttt{}
                 \begin{tabular}[h!]{llll}
                         \verb'[' { \color{highlight_label} label: } \verb']' &
@@ -370,6 +393,10 @@ language programming and PicoBlaze architecture.
                         { \color{highlight_directive} directive } &
                         { \color{highlight_symbol} argument } &
                         \verb'[' { \color{highlight_comment} ;comment } \verb']' \\
+                        
+                        { \color{highlight_directive} directive } &
+                        { \color{highlight_constant} symbol,argument } &
+                         \verb'[' { \color{highlight_comment} ;comment } \verb']' \\
                 \end{tabular}
                     }
                 \bigskip
@@ -380,7 +407,6 @@ language programming and PicoBlaze architecture.
         characters and tabs. Statements are case insensitive and their length is not
         limited, overall line length is also not limited.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
     	\section{Symbols}
         Symbol names for numbers, macros or addresses defined by user in the code using
         appropriate directive. Like with ``\texttt{equ}'' directive you can define a new
@@ -390,8 +416,7 @@ language programming and PicoBlaze architecture.
         that there cannot coexists two or more symbols in the same memory segment which differs
         only by letter casing, in other words symbols ``\texttt{abc}'' and ``\texttt{ABC}''
         are completely the same thing.
-                \begin{code}[h!]
-                        \mysmallfont{}
+                \begin{code}[h!]                        
                         {\color{highlight_comment}\verb'; Example of symbol definition'}\\
                         {\color{highlight_constant}\verb'First_symb'}\verb'    '{\color{highlight_directive}\verb'EQU'}\verb' '{\color{highlight_bin}\verb'0b100111'}\verb'   '{\color{highlight_comment}\verb'; Number in binary'}\\
                         {\color{highlight_constant}\verb'Second_symb'}\verb'   '{\color{highlight_directive}\verb'SET'}\verb' '{\color{highlight_oct}\verb'47q'}\verb'       '{\color{highlight_comment}\verb'; Octal'}\\
@@ -406,8 +431,7 @@ language programming and PicoBlaze architecture.
 
 	\section{Constants} 
         MDS supports both prefix and sufix definition. 
-                \begin{code}[h!]
-                    \mysmallfont{}
+                \begin{code}[h!]                    
                             {\color{highlight_comment}\verb'; Example of constants syntax'}\\
                             {\color{highlight_constant}\verb'10'}\verb' '\verb'   '{\color{highlight_comment}\verb'; Decimal'}\\
                             {\color{highlight_constant}\verb'10D'}\verb' '\verb'   '{\color{highlight_comment}\verb'; Decimal'}\\
@@ -419,23 +443,13 @@ language programming and PicoBlaze architecture.
                             {\color{highlight_constant}\verb'0b00100001'}\verb' '\verb'   '{\color{highlight_comment}\verb'; Binary'}\\
                             {\color{highlight_constant}\verb'0b01'}\verb' '\verb'   '{\color{highlight_comment}\verb'; Binary, considers left side of byte zeroes'}\\
                             {\color{highlight_constant}\verb'01b'}\verb' '\verb'   '{\color{highlight_comment}\verb'; Binary, considers right side of byte zeroes'}\\
-            % 	        {\color{highlight_constant}\verb'\'s\''}\verb' '\verb'   '{\color{highlight_comment}\verb'; Character'}\\
-            % 	        {\color{highlight_constant}\verb'\'\n\''}\verb' '\verb'   '{\color{highlight_comment}\verb'; Character'}\\
+            	            {\color{highlight_constant}\verb'\'\s\''}\verb' '\verb'   '{\color{highlight_comment}\verb'; Character'}\\
+            	            {\color{highlight_constant}\verb'\'\n\''}\verb' '\verb'   '{\color{highlight_comment}\verb'; Character'}\\
                                     % Caption
-                    \caption{Constants syntax}
+                    \caption{Syntax of various constant bases}
                 \end{code}
+                When you want to say to compiler, that you are using constant, you must add "\#" before.
     
-                \subsection{Using constants in code}
-                When you want to load constant directly to register, or use it as a label, you need to tell the compiler, that you are using
-                constant. It is done bz adding "\#" before constant. See examples below.
-                        \begin{code}[h!]
-                            \mysmallfont{}
-                            {\color{highlight_comment}\verb'; Example of direct constant load into register'}\\
-                            {\color{highlight_constant}\verb'10'}\verb' '\verb'   '{\color{highlight_comment}\verb'; Decimal'}\\
-                            {\color{highlight_constant}\verb'10D'}\verb' '\verb'   '{\color{highlight_comment}\verb'; Decimal'}\\
-                            % Caption
-                            \caption{Constants in code}
-                            \end{code}
 		
         \section{Expressions}
         Arithmetical expressions are evaluated at compilation time and replaced by assembler
@@ -450,74 +464,77 @@ language programming and PicoBlaze architecture.
                 \end{itemize}
 	
         When multiple operators occur in an expression, the expression is evaluated in a specific order depending upon the operators in the expression.
-        All LOGICAL operators have priorities lower than
-        arithmetic and relational operators. Therefore, if an expression involving arithmetic, relational and logical operators, the arithmetic
-        operators are evaluated first, followed by the relational operators, followed by the logical operators.
+        All LOGICAL operators have priorities lower than arithmetic and relational operators. Therefore, if an expression involving arithmetic, relational
+        and logical operators, the arithmetic operators are evaluated first, followed by the relational operators, followed by the logical operators.
         The following table shows the priority of all the operators used in expressions.
 		\begin{table}[h!]
 			\mysmallfont{}
 			\centering{}
-			\begin{tabular}{|l|l|l|}
+			\begin{tabular}{|l|l|l|l|}
 				\hline
-				Operator	& Description			& Example		\\\hline
-				\multicolumn{3}{|l|}{\textbf{Unary Operators}} \\\hline
-				NOT		& one's complement		& NOT 0a55ah		\\\hline
-				HIGH		& high order byte		& HIGH 0a55ah		\\\hline
-				LOW		& low order byte		& LOW 0a55ah		\\\hline
-				\multicolumn{3}{|l|}{\textbf{Binary Operators}} \\\hline
-				+		& unsigned addition		& 11 + 12		\\\hline
-				-		& unsigned subtraction		& 13 + 11		\\\hline
-				*		& unsigned multiplication	& 3 * 5			\\\hline
-				/		& unsigned division		& 20 / 4		\\\hline
-				MOD		& unsigned remainder		& 21 MOD 4		\\\hline
-				SHL		& logical shift left		& 32 SHL 2		\\\hline
-				SHR		& logical shift right		& 32 SHR 2		\\\hline
-				AND		& logical and			& 48 AND 16		\\\hline
-				OR		& logical or			& 370q OR 7		\\\hline
-				XOR		& exclusive or			& 00fh XOR 005h		\\\hline
-				.		& bit operator			& P1.4			\\\hline
-				EQ, = 		& equal to			& 11 EQ 11		\\\hline
-				NE, <>		& not equal to			& 11 NE 11		\\\hline
-				LT, < 		& less than			& 11 LT 12		\\\hline
-				LE, <=		& less or equal than		& 11 LT 11		\\\hline
-				GT, > 		& greater than			& 12 GT 11		\\\hline
-				GE, >=		& greater or equal than		& 12 GT 11		\\\hline
+                        Priority       &          Operator      & Description                   & Example               \\\hline
+				
+                        1              &          +           & unary plus sign              & +12                  \\\hline
+                        1              &          -           & unary minus sign             & -5                   \\\hline
+                        2              &           \~         & bitwise NOT		 	& ~0a55ah		\\\hline
+                        2              &           !         & logical NOT		        & !0a55ah		\\\hline
+                        3              &           *		& unsigned multiplication	& 11 * 12		\\\hline
+                        3              &           /		& unsigned divisiono		& 11 / 12		\\\hline
+                        3              &           \%		& unsigned remainder		& 13 \% 11		\\\hline
+                        4              &           +		& unsigned addition	        & 3 + 5			\\\hline
+                        4              &           -		& unsigned substraction		& 20 - 4		\\\hline
+                        5              &           <<		& binary shift left		& 21 << 4		\\\hline
+                        5              &           >>		& binary shift right		& 32 >> 2		\\\hline
+                        6              &           <          & less than                    & 11 < 12              \\\hline
+                        6              &           <=         & less or equal than           & 11 <= 11             \\\hline
+                        6              &            >         & greater than                 & 12 > 11              \\\hline
+                        6              &           >=         & greater or equal than        & 12 >= 11             \\\hline
+                        7              &           ==         & equal to                     & 11 == 11             \\\hline
+                        7              &           !=         & not equal to                 &  A != B              \\\hline
+                        8              &           \&         & bitwise and                  & 48 \& 16              \\\hline
+                        8              &           \|         & bitwise or                   & 370q | 7             \\\hline
+                        9              &           \&\&       & logical and                  & 48 \&\& 16           \\\hline
+                        9              &           ||         & logical or                   & 370q || 7            \\\hline
+                        9              &           \^		& exclusive or			& 00fh ^ 005h		\\\hline
 			\end{tabular}
-			\caption{Expression operators}
+			\caption{Expression operators priority}
 		\end{table}
-		
-% 				{%
-% 		\newcommand{\mc}[3]{\multicolumn{#1}{#2}{#3}}
-% 		\begin{center}
-% 		  \begin{longtable}[t]{llll}\hline
-% 			  \mc{1}{|l|}{Priority} & \mc{1}{l|}{Name} & \mc{1}{l|}{Operator} & \mc{1}{l|}{Example}\\\hline
-% 			  1		& 		Bitwise NOT		 & 		~ & 		~0xFF\\
-% 			  × 		& Logical NOT & 		! &		 !A\\
-% 			  2 		& nasobeni 		&		 * &		 A * B\\
-% 			  × & deleni & / & A / B\\
-% 			  × & modulo & % & A % B\\
-% 			  3 & scitani & + & A + B\\
-% 			  × & Odcitani & - & A - B\\
-% 			  4 & Binary shift left & << & A << 4\\
-% 			  × & Binary shift right & >> & A >> 4\\
-% 			  5 & mensinez & < & A < B\\
-% 			  × & vetsinez & > & A > B\\
-% 			  × & mensineborovno & <= & A <= B\\
-% 			  × & vetsineborovno & >= & A >= B\\
-% 			  6 & Equal to & == & A == B\\
-% 			  × & ruzneod & != & A != B\\
-% 			  7 & Bitwise AND & & & A & B\\
-% 			  8 & Bitwise OR & | & A | B\\
-% 			  9 & Bitwise XOR & ^ & A ^ B\\
-% 			  10 \& Logical AND & && & A && B\\
-% 			  11 \& Logical OR & || & A || B
-% 		  \end{longtable}
-% 		\end{center}
-% }%		
-        A priority of 1 is the highest priority a priority of 7 is the lowest priority.
+        A priority of 1 is the highest priority a priority of 9 is the lowest priority.
         When operators with different priority levels appear in an expression, operations are performed
         according to priorities. When operators of the same priority appear in an expression, operations are performed from left to right within
         the expression.
+        
+                \section{Predefined Symbols}
+        There are symbols which are defined by default by assembler. The aim is to
+        make it a little easier to write code in assembly language for Picoblaze,
+        because user do not have to define all these symbols in his or her code.
+                \begin{table}[h!]
+                        \centering{}
+                        \mysmallfont{}
+                        \caption{Code addresses}
+                        \begin{tabular}{|ll|}
+                                \hline
+                            \textbf{Symbol} & \textbf{Value} \\
+                                \hline
+                                s0      & 000h \\
+                                s1      & 001h  \\
+                               s2      & 002h \\
+                               s3      & 003h  \\
+                               s4      & 004h \\
+                               s5      & 005h  \\
+                               s6      & 006h \\
+                               s7      & 007h  \\
+                               s8      & 008h \\
+                               s9      & 009h  \\
+                               sA      & 00Ah \\
+                               sB      & 00Bh  \\
+                               sC      & 00Ch \\
+                               sD      & 00Dh  \\
+                               sE      & 00Eh \\
+                               sF      & 00Fh  \\
+                                \hline
+                        \end{tabular}
+                \end{table}
 
         \section{Assembler directives}
         Assembly directives are instructions
@@ -538,7 +555,7 @@ language programming and PicoBlaze architecture.
       		 }
                  \\
         This syntax is valid for directives EQU, SET, REG, DATA, CODE, PORT, DEFINE.
-        MDS also supports some special PicoBlaze directives, with diferent syntax format, which is:  
+        MDS also supports some other directives, with diferent syntax format, which is:
          \\      {		
                 \texttt{}
                 \begin{tabular}[h!]{llll}
@@ -564,7 +581,7 @@ language programming and PicoBlaze architecture.
                     \begin{code}[h!]
                         {\color{highlight_directive}\verb'INCLUDE'} & \verb'    ' & {\color{highlight_symbol}\verb' "LCD_characters"'}\\
                         {\color{highlight_directive}\verb'INCLUDE'} & \verb'    ' & {\color{highlight_symbol}\verb' "LCD_print_routine"'}\\
-                        \verb'    '{\color{highlight_comment}\verb' ; this will replace Includes with content of "LCD_characters" and "LCD_print_routine"'}\\
+                        \verb'    '{\color{highlight_comment}\verb' ; this will replace includes with content of "LCD_characters" and "LCD_print_routine"'}\\
                         \caption{INCLUDE directive}
                     \end{code}
                         
@@ -932,6 +949,8 @@ language programming and PicoBlaze architecture.
                     }\\    
                 \textbf{DESCRIPTION:}\\
                 When the ORG or ADDRESS statement is encountered, the assembler calculates the value of the expression and changes the address counter.
+                The MDS assembler maintains a location counter for each segment. The location counter contains the offset of the instruction or data
+                being assembled and is incremented after each line by the number of bytes of data or code in that line.
                 \textbf{EXAMPLE:}\\
                         \begin{code}[h!]
                                 \verb'    '{\color{highlight_directive}\verb'ORG'}\verb'   '{\color{highlight_constant}\verb'0x3FF'}\verb'                  '{\color{highlight_comment}\verb'; Number'}\\
@@ -1064,6 +1083,118 @@ language programming and PicoBlaze architecture.
                             \caption{UNDEFINE directive}
                         \end{code}
 
+                \subsection{DB}
+                \textbf{SYNTAX:}\\
+                \\ {
+                        \texttt{}
+                        \begin{tabular}[h!]{llll}
+                                { \color{highlight_comment} ; Expresion syntax}\\
+                                { \color{highlight_directive} DB }
+                                { \color{highlight_symbol}   <expresion1>  [,<expresion2>,..]}\\
+                                { \color{highlight_comment} ; String syntax}\\
+                                { \color{highlight_directive} DB }
+                                { \color{highlight_symbol}   <"string">}\\
+                                { \color{highlight_comment} ; Combination of string and expresions}\\
+                                { \color{highlight_directive} DB }
+                                { \color{highlight_symbol}   <"string"> [,<expresion1>,..]}\\
+                                { \color{highlight_comment} ; parameter can be unlimited number of string characters, or expresions divided by comma}\\
+                        \end{tabular}
+                    }\\
+                    \\
+                \textbf{DESCRIPTION:}\\
+                The DB directive initializes code memory with 18-bit values. The assembler accepts size up to 24-bit, but trimes 6 MSB bits making it 18-bit value,
+                so it can fit into program memory. You can insert infinite number of string characters and MDS assembler seperates them into triplets of bytes replaced
+                with their ASCII value. The assembler then trimes upper 6 bits making it 18-bit value.
+                See the examples for better understanding of DB directive.
+%                 
+                \textbf{EXAMPLE:}\\
+                        \begin{code}[h!]
+                                { \color{highlight_directive} DB }
+                                { \color{highlight_symbol}   24828 }\\
+                                { \color{highlight_comment} ; hexadecimal 0060FC}\\
+                                { \color{highlight_comment} ; String syntax}\\
+                                { \color{highlight_directive} DB }
+                                { \color{highlight_symbol}   <"string">}\\
+                                { \color{highlight_comment} ; Combination of string and expresions}\\
+                                { \color{highlight_directive} DB }
+                                { \color{highlight_symbol}   <"string"> [,<expresion1>,..]}\\
+                                { \color{highlight_comment} ; parameter can be unlimited number of string characters, or expresions divided by comma}\\
+                            \caption{DB directive}
+                        \end{code}
+
+                \subsection{LIMIT}
+                \textbf{SYNTAX:}\\
+                \\ {
+                        \texttt{}
+                        \begin{tabular}[h!]{llll}
+                                { \color{highlight_directive} LIMIT }   \verb`     ` 
+                                { \color{highlight_symbol} R,<number> }  \verb`     `   { \color{highlight_comment} ; Number of registers }\\
+                                { \color{highlight_directive} LIMIT }   \verb`     `
+                                { \color{highlight_symbol} D,<number> }  \verb`     `   { \color{highlight_comment} ; Size of scratchpad ram }\\
+                                { \color{highlight_directive} LIMIT }  \verb`     ` 
+                                { \color{highlight_symbol} C,<number> }  \verb`     `   { \color{highlight_comment} ; Size of program memory }\\
+                                \caption{All three types of LIMIT directive. First number of registers, second size of scratch pad ram and third size
+                                of program memory}
+                        \end{tabular}
+                    }\\
+                    \\
+                \textbf{DESCRIPTION:}\\
+                Usefull when you want to change max. number of registers or size of  data and program memory. It is information for compiler.\\
+                
+                \textbf{EXAMPLE:}\\
+                                \begin{code}[h!]
+                                { \color{highlight_directive} LIMIT }   \verb`     `
+                                { \color{highlight_symbol}\verb' R,16' }  \verb`          `   { \color{highlight_comment} ; Number of registers 16 }\\
+                                { \color{highlight_directive} LIMIT }   \verb`     ` 
+                                { \color{highlight_symbol}\verb' D,07' }  \verb`          `   { \color{highlight_comment} ; Size of scratchpad ram 7B }\\
+                                { \color{highlight_directive} LIMIT }   \verb`          ` 
+                                { \color{highlight_symbol}\verb' C,0b100000000' }  \verb`     `   { \color{highlight_comment} ; Size of program memory 512}\\
+                                \caption{Example of DEFINE directive}
+                                \end{code}
+                In this example, when you want to use 17 registers or JUMP to address bigger than 512, compiler gives you an error.
+
+                \subsection{DEVICE}
+                \textbf{SYNTAX:}\\
+                \\ {
+                    \texttt{}
+                    \begin{tabular}[h!]{llll}
+                            { \color{highlight_directive} DEVICE } { \color{highlight_symbol} <device name> }
+                            { \color{highlight_comment}  }\\
+                    \end{tabular}
+                    }\\
+                    \\
+                \textbf{DESCRIPTION:}\\
+                Normaly, you choose the target architecture, when you are creating a project. But you can also specific architecture with directive DEVICE.\\
+                
+                \textbf{EXAMPLE:}\\
+                        \begin{code}[h!]
+                            {\color{highlight_directive}\verb'DEVICE'}\verb`    `{\color{highlight_symbol}\verb'KCPSM3'}\\
+                            {\color{highlight_directive}\verb'DEVICE'}\verb`    `{\color{highlight_symbol}\verb'KCPSM2'}\\
+                            {\color{highlight_directive}\verb'DEVICE'}\verb`    `{\color{highlight_symbol}\verb'KCPSM6'}\\
+                            \caption{DEVICE directive}
+                        \end{code}
+
+                \subsection{LIST, NOLIST}
+                \textbf{SYNTAX:}\\
+                \\ {
+                    \texttt{}
+                    \begin{tabular}[h!]{llll}
+                            { \color{highlight_directive} LIST }
+                            { \color{highlight_comment} ; Printing to code listing turned on (turned on by default)  }\\
+                    \end{tabular}
+                    }\\
+         
+                \\ {
+                    \texttt{}
+                    \begin{tabular}[h!]{llll}
+                            { \color{highlight_directive} NOLIST }
+                            { \color{highlight_comment} ; Printing to code listing turned off  }\\
+                    \end{tabular}
+                    }\\
+                    \\
+                \textbf{DESCRIPTION:}\\
+                You can turn on/off printing to code listing in some parts of your code.\\
+
                 \subsection{END}
                 \textbf{SYNTAX:}\\
                 \\ {
@@ -1075,7 +1206,9 @@ language programming and PicoBlaze architecture.
                     }\\
                     \\
                 \textbf{DESCRIPTION:}\\
-                The END directive informs the assembler, that it has reached the end of a source file.
+                The END directive informs the assembler, that it has reached the end of a source file. Compiler ignores following code, so it doesnt have to be
+                syntactically right.
+                
                 \textbf{EXAMPLE:}\\
                     \begin{code}[h!]
                         \verb'    '{\color{highlight_directive}\verb'END'}
@@ -1094,20 +1227,30 @@ language programming and PicoBlaze architecture.
                     \texttt{}
                         \begin{tabular}[h!]{llll}
                             { \color{highlight_directive} MACRO } & \verb'     ' &
-                            { \color{highlight_constant} <expresion> }\\
+                            { \color{highlight_constant} [<parameter1>]  [,<parameter2>..]\\
                             { \color{highlight_symbol} <macro source code> }\\
                             { \color{highlight_directive} ENDM } &  \verb'     ' { \color{highlight_comment} ; end of macro declaration  }
                         \end{tabular}
                     }\\
+                \\ {
+                    \texttt{}
+                        \begin{tabular}[h!]{llll}
+                            { \color{highlight_directive} EXPAND } &  \verb'     ' { \color{highlight_comment} ; Expanding of macros allowed  }\\
+                            { \color{highlight_directive} NOEXPAND } &  \verb'     ' { \color{highlight_comment} ; Expanding of macros forbidden  }
+                        \end{tabular}
+                    }\\
+                    
                 \begin{table}[h!]
                     \begin{tabular}{|ll|}
                             \hline
-                            MACRO   & Define a new macro \\
-                            EXITM   & Exit macro  \\
-                            ENDM    & End of macro definition \\
+                            MACRO      & Define a new macro \\
+                            EXITM      & Exit macro  \\
+                            ENDM       & End of macro definition \\
+                            EXPAND     & After usage of this directive, expanding of macros is allowed.(turned on by default)\\
+                            NOEXPAND   & After usage of this directive, no expanding of macros is allowed.\\
                             \hline
                     \end{tabular}
-                    \caption{Macro syntax}
+                    \caption{Macro comands}
                 \end{table}
                 \textbf{DESCRIPTION:}\\
                 Standard macro, consiting of name, code and optional exit command. Macro can be expanded only after his declaration. You can use macro
@@ -1293,7 +1436,7 @@ language programming and PicoBlaze architecture.
                 \begin{code}[h]
                         \mysmallfont{}
                         \verb'demo0                                                                                                                   '{\color{highlight_macro}\verb'PAGE'}\verb' '{\color{highlight_unknown_base}\verb'1'}\\
-                        {\color{highlight_lst_line}\verb'                         1'}\verb'     '{\color{highlight_comment}\verb'; MCU 8051 IDE - Demostration code'}\\
+                        {\color{highlight_lst_line}\verb'                         1'}\verb'     '{\color{highlight_comment}\verb'; MDS Picoblaze - Demostration code'}\\
                         {\color{highlight_lst_line}\verb'                         2'}\verb'     '{\color{highlight_comment}\verb'; Very simple code'}\\
                         {\color{highlight_lst_line}\verb'                         3'}\\
                         {\color{highlight_lst_line}\verb'                         4'}\verb'     '{\color{highlight_comment}\verb'; Press F2 and F6 to run the program (start simulator and animate)'}\\
@@ -1357,24 +1500,6 @@ language programming and PicoBlaze architecture.
                         \caption{A more complicated example of code listing}
                 \end{code}
 
-                Control sequences affecting format of the generated code listing.
-                \begin{table}[h!]
-                        \centering{}
-                        \mysmallfont{}
-                        \caption{Control sequences affecting code listing}
-                        \begin{tabular}{|llll|}
-                                \hline
-                                \$eject         & \$ej          & \$nolist      & \$noli        \\
-                                \$list          & \$li          & \$paging      & \$pi          \\
-                                \$nopaging      & \$nopi        & \$pagewidth   & \$pw          \\
-                                \$pagelength    & \$pl          & \$title       & \$tt          \\
-                                \$date          & \$da          & \$nosb        & \$nosymbols   \\
-                                \$noprint       & \$symbols     & \$sb          & \$print       \\
-                                \hline
-                        \end{tabular}
-                \end{table}
-
-  
     	\section{Specification of Intel\textregistered 8 HEX Format}
     		Intel\textregistered 8 HEX is a popular object file format capable of containing up to
        64kB of data. Hex files have usually extension .hex or .ihx. These files are text files
@@ -1445,5 +1570,7 @@ language programming and PicoBlaze architecture.
                             \caption{VHDL Component Instantiation of Program ROM}
                         \end{figure}
 
-\end{document} 
+\end{document}
+
+
 
