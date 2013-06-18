@@ -9,8 +9,9 @@
   <File path="a.asm" name="a.asm"/>
   <File path="kcpsm3_mac.inc" name="kcpsm3_mac.inc"/>
   <File path="../../tests/compiler/assembler/PicoBlaze/TestSuiteSuc/testcases/001_logical.asm" name="001_logical.asm"/>
+  <File path="../compileOpt.xml" name="compileOpt.xml"/>
  </Files>
- <Mainfile path="a.asm" name="a.asm"/>
+ <Mainfile path="kcpsm3_mac.inc" name="kcpsm3_mac.inc"/>
  <Simulator/>
  <Compiler/>
  <GridLayout>

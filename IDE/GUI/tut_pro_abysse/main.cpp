@@ -6,6 +6,7 @@ Xxx::Xxx()
 {
     ui.setupUi(this);
     connect(ui.pushButton, SIGNAL(clicked()), this, SLOT(proved()));
+    
 }
 
 Xxx::~Xxx()
@@ -16,6 +17,12 @@ Xxx::~Xxx()
 void Xxx::proved()
 {
     ui.lineEdit->setText("aaaaa");
+}
+
+void Xxx::funkce()
+{
+
+    
 }
 
 

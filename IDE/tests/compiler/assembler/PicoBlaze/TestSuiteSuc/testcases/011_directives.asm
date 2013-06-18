@@ -137,7 +137,24 @@ i8      PORT     3
 i9      PORT     1h
 i10     PORT     11h
 i11     PORT     AAh
-i12     PORT     0x04
+i12     PORT     0x04 | 0x11
+
+; expresions test
+ss1     EQU     +5
+ss2     EQU     -5
+ss3     EQU     +5h
+ss4     EQU     -0x5
+ss5     EQU     -5++5
+ss6     EQU     +5+-5++45-66
+ss7     EQU     ~0xFF
+ss8     EQU     (0xFF & 0x00) & 0x0F * 5 / 5 % 2 | 0x01
+ss9     EQU     (12 * 3) + (112 / 10)
+ss10    EQU     (25 + 36) - (18)
+ss11    EQU     -5 * +5
+ss12    EQU     0x01 << 1
+ss13    EQU     0x02 >> 1
+ss14    EQU     0xff ^ 0x0f
+
 
 ;--- CODE ------------- CODE -----------------CODE -----------------
         ORG     0x000
