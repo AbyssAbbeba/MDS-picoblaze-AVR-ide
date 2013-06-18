@@ -161,8 +161,8 @@ XESC    (\\[0-7]{1,3})|(\\x[0-9A-F]{1,2})|(\\[uU][0-9A-F]{1,8})
 \.?"radix"      { return D_RADIX; }
 \.?"variable"   { return D_VARIABLE; }
 \.?"while"      { return D_WHILE; }
-\.?"__badram"   { return D___BADRAM; }
-\.?"__badrom"   { return D___BADROM; }
+\.?"_.fail()ram"   { return D___BADRAM; }
+\.?"_.fail()rom"   { return D___BADROM; }
 \.?"__config"   { return D___CONFIG; }
 \.?"config"     { return D_CONFIG; }
 \.?"__idlocs"   { return D___IDLOCS; }

@@ -16,9 +16,6 @@
 #ifndef COMPILERBASE_H
 #define COMPILERBASE_H
 
-// Compiler header files.
-#include "CompilerSourceLocation.h"
-
 // Standard header files.
 #include <ostream>
 #include <string>
@@ -30,6 +27,11 @@
  */
 class CompilerBase
 {
+    ////    Public Static Constants    ////
+    public:
+        /// @brief
+        static const char * const PRECOMPILED_CODE_EXTENSION;
+
     ////    Public Datatypes    ////
     public:
         /**
@@ -65,6 +67,17 @@ class CompilerBase
             MT_REMARK       ///<
         };
 
+        /**
+         * @brief
+         */
+        enum DevSpecLoaderFlag
+        {
+            DSLF_OK,             ///<
+            DSLF_UNABLE_TO_READ, ///<
+            DSLF_DOES_NOT_EXIST, ///<
+            DSLF_ALREADY_LOADED  ///<
+        };
+
     ////    Constructors and Destructors    ////
     public:
         /**
@@ -74,9 +87,21 @@ class CompilerBase
 
     protected:
         /**
-         * @brief Forbidden constructor
+         * @brief Forbidden constructor.
          */
         CompilerBase() {};
+
+    ////    Protected Attributes    ////
+    protected:
+        /**
+         * @brief
+         */
+        LangId m_lang;
+
+        /**
+         * @brief
+         */
+        TargetArch m_arch;
 };
 
 /// @name Tracing operators

@@ -156,7 +156,7 @@ class CompilerValue : public CompilerSerializable
          * @brief
          * @return
          */
-        CompilerValue & makeCopy() const;
+        CompilerValue * makeCopy() const;
 
         /**
          * @brief

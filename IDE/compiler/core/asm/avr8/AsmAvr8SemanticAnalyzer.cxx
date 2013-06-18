@@ -15,8 +15,6 @@
 
 #include "AsmAvr8SemanticAnalyzer.h"
 
-#include <iostream> // DEBUG
-
 void AsmAvr8SemanticAnalyzer::process ( CompilerStatement * codeTree )
 {
     std::cout << "AsmAvr8SemanticAnalyzer::process:\n" << codeTree;

@@ -80,7 +80,7 @@ void AsmKcpsm3SemanticAnalyzer::printCodeTree ( const CompilerStatement * codeTr
 
     file << codeTree;
 
-    if ( true == file.bad() )
+    if ( true == file.fail() )
     {
         m_compilerCore -> compilerMessage ( CompilerBase::MT_ERROR,
                                             QObject::tr("Unable to write to ").toStdString() + "\"" + m_opts->m_codeTree  + "\"" );
@@ -95,7 +95,13 @@ void AsmKcpsm3SemanticAnalyzer::process ( CompilerStatement * codeTree )
     m_codeListing->loadSourceFiles();
     printCodeTree(codeTree);
 
-    phase1(codeTree);
+    if ( false == phase1(codeTree) )
+    {
+        m_compilerCore->compilerMessage(CompilerBase::MT_ERROR,
+                                        QObject::tr("the last error was critical, compilation aborted").toStdString());
+        return;
+    }
+
     phase2(codeTree);
 
     m_codeListing->output();
@@ -109,7 +115,7 @@ void AsmKcpsm3SemanticAnalyzer::process ( CompilerStatement * codeTree )
     }
 }
 
-void AsmKcpsm3SemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
+bool AsmKcpsm3SemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
                                          const CompilerSourceLocation * origLocation,
                                          const std::string * macroName )
 {
@@ -136,6 +142,34 @@ void AsmKcpsm3SemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
 
         switch ( (int) node->type() )
         {
+            case ASMKCPSM3_DIR_DEVICE:
+            {
+                std::string deviceName = node->args()->lVal().m_data.m_symbol;
+                CompilerBase::DevSpecLoaderFlag loaderFlag;
+                CompilerStatement * devSpecCode = m_compilerCore->loadDevSpecCode(deviceName, &loaderFlag);
+
+                if ( NULL == devSpecCode )
+                {
+                    if ( CompilerBase::DSLF_DOES_NOT_EXIST == loaderFlag )
+                    {
+                            m_compilerCore->compilerMessage ( *location,
+                                                              CompilerBase::MT_ERROR,
+                                                              QObject::tr("Device not supported: ").toStdString()
+                                                              + "\"" + deviceName + "\"" );
+                    }
+                    else if ( CompilerBase::DSLF_ALREADY_LOADED == loaderFlag )
+                    {
+                        m_compilerCore->compilerMessage ( *location,
+                                                          CompilerBase::MT_ERROR,
+                                                          QObject::tr ( "Device specification code is already "
+                                                                        "loaded" ).toStdString() );
+                    }
+                    return false;
+                }
+
+                node->insertLink(devSpecCode);
+                break;
+            }
             case ASMKCPSM3_DIR_LIMIT:
             {
                 const char * limSel = node->args()->lVal().m_data.m_symbol;
@@ -292,17 +326,21 @@ void AsmKcpsm3SemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
                                                            *macroName,
                                                            node->next() ) )
                     {
-                        m_compilerCore->compilerMessage(*origLocation,
-                                                        CompilerBase::MT_WARNING,
-                                                        QObject::tr("symbol `%1' declared as local but never used, declaration ignored").arg(local.c_str()).toStdString());
+                        m_compilerCore->compilerMessage ( *location,
+                                                          CompilerBase::MT_WARNING,
+                                                          QObject::tr ( "symbol `%1' declared as local but never used, "
+                                                                        "declaration ignored"  )
+                                                                       . arg ( local.c_str() )
+                                                                       . toStdString() );
                     }
                 }
                 else
                 {
-                    m_compilerCore->compilerMessage(node->location(),
-                                                    CompilerBase::MT_ERROR,
-                                                    QObject::tr("directive `LOCAL' cannot apper outside macro definition")
-                                                               .toStdString());
+                    m_compilerCore->compilerMessage ( node->location(),
+                                                      CompilerBase::MT_ERROR,
+                                                      QObject::tr ( "directive `LOCAL' cannot apper outside macro "
+                                                                    "definition" )
+                                                                  . toStdString() );
                 }
                 break;
             case ASMKCPSM3_DIR_EXITM:
@@ -310,7 +348,7 @@ void AsmKcpsm3SemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
                 {
                     node->m_prev = NULL;
                     node->completeDelete();
-                    return;
+                    return true;
                 }
                 else
                 {
@@ -360,9 +398,14 @@ void AsmKcpsm3SemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
                     }
 
                     //
+                    if ( false == phase1(macro, location, &nameOfMacro) )
+                    {
+                        return false;
+                    }
+
                     node = node->prev();
                     delete node->next();
-                    phase1(macro, location, &nameOfMacro);
+
                     CompilerStatement * nodeNext = macro->last();
                     node->insertLink(macro);
                     node = nodeNext;
@@ -394,7 +437,10 @@ void AsmKcpsm3SemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
                         body->appendLink(node->branch()->copyEntireChain());
                         m_codeListing->repeatCode(lastLocation, body, true);
                         lastLocation = body->lastLeaf()->location();
-                        phase1(body, location);
+                        if ( false == phase1(body, location) )
+                        {
+                            return false;
+                        }
                     }
                     else
                     {
@@ -402,7 +448,10 @@ void AsmKcpsm3SemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
                         exp->appendLink(node->branch()->copyEntireChain());
                         m_codeListing->repeatCode(lastLocation, exp, false);
                         lastLocation = exp->lastLeaf()->location();
-                        phase1(exp, location);
+                        if ( false == phase1(exp, location) )
+                        {
+                            return false;
+                        }
                         body->appendLink(exp);
                     }
                 }
@@ -411,9 +460,10 @@ void AsmKcpsm3SemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
                 {
                     m_compilerCore -> compilerMessage ( *location,
                                                         CompilerBase::MT_ERROR,
-                                                        QObject::tr("maximum number of WHILE directive iterations (%1) "
-                                                                    "reached")
-                                                                   .arg(MAX_WHILE_ITERATIONS).toStdString() );
+                                                        QObject::tr ( "maximum number of WHILE directive iterations "
+                                                                      "(%1) reached" )
+                                                                    . arg ( MAX_WHILE_ITERATIONS )
+                                                                    . toStdString() );
                 }
                 if ( NULL != body)
                 {
@@ -457,7 +507,10 @@ void AsmKcpsm3SemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
                 body->appendLink(node->branch()->copyEntireChain());
                 m_codeListing->repeatCode(lastLocation, body, true);
                 lastLocation = body->lastLeaf()->location();
-                phase1(body, location);
+                if ( false == phase1(body, location) )
+                {
+                    return false;
+                }
 
                 for ( unsigned int i = 1; i < times; i++ )
                 {
@@ -465,7 +518,10 @@ void AsmKcpsm3SemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
                     exp->appendLink(node->branch()->copyEntireChain());
                     m_codeListing->repeatCode(lastLocation, exp, false);
                     lastLocation = exp->lastLeaf()->location();
-                    phase1(exp, location);
+                    if ( false == phase1(exp, location) )
+                    {
+                        return false;
+                    }
                     body->appendLink(exp);
                 }
 
@@ -650,6 +706,8 @@ void AsmKcpsm3SemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
         node = node->prev();
         delete node->next();
     }
+
+    return true;
 }
 
 inline void AsmKcpsm3SemanticAnalyzer::phase2 ( CompilerStatement * codeTree )
@@ -740,12 +798,34 @@ CompilerStatement * AsmKcpsm3SemanticAnalyzer::conditionalCompilation ( Compiler
 
             case ASMKCPSM3_DIR_IFDEF:
             case ASMKCPSM3_DIR_ELSEIFDEF:
-                conditionVal = ( ( true == m_symbolTable->isDefined(node->args()->lVal().m_data.m_symbol) ) ? 1 : 0 );
+                if ( CompilerValue::TYPE_EMPTY == node->args()->lVal().m_type )
+                {
+                    conditionVal = 0;
+                }
+                else if ( true == m_symbolTable->isDefined(node->args()->lVal().m_data.m_symbol) )
+                {
+                    conditionVal = 1;
+                }
+                else
+                {
+                    conditionVal = 0;
+                }
                 break;
 
             case ASMKCPSM3_DIR_IFNDEF:
             case ASMKCPSM3_DIR_ELSEIFNDEF:
-                conditionVal = ( ( true == m_symbolTable->isDefined(node->args()->lVal().m_data.m_symbol) ) ? 0 : 1 );
+                if ( CompilerValue::TYPE_EMPTY == node->args()->lVal().m_type )
+                {
+                    conditionVal = 1;
+                }
+                else if ( true == m_symbolTable->isDefined(node->args()->lVal().m_data.m_symbol) )
+                {
+                    conditionVal = 0;
+                }
+                else
+                {
+                    conditionVal = 1;
+                }
                 break;
 
             case ASMKCPSM3_DIR_IFB:
