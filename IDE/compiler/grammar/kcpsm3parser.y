@@ -216,8 +216,8 @@
 
 /* Terminal symbols with semantic value */
   // semantic value is a string
-%token<string>  IDENTIFIER      LABEL
-%token<array>   STRING          INCLUDE
+%token<string>  IDENTIFIER      LABEL           INCLUDE
+%token<array>   STRING
   // semantic value is a number
 %token<number>  NUMBER
 
@@ -970,17 +970,22 @@ dir_include:
                                         CompilerSourceLocation location = compiler -> toSourceLocation ( compiler -> m_yyllocStack.back() );
                                         location.m_fileNumber = compiler -> getFileNumber(1);
 
+                                        CompilerExpr * arg = new CompilerExpr(compiler->getFileNumber($INCLUDE));
+                                        delete [] $INCLUDE;
                                         $$ = new CompilerStatement ( location,
                                                                      ASMKCPSM3_INCLUDE,
-                                                                     new CompilerExpr ( compiler->getFileNumber ( (const char*)$INCLUDE.data ) ) );
+                                                                     arg );
                                     }
     | label INCLUDE                 {
                                         CompilerSourceLocation location = compiler -> toSourceLocation ( compiler -> m_yyllocStack.back() );
                                         location.m_fileNumber = compiler -> getFileNumber(1);
 
+
+                                        CompilerExpr * arg = new CompilerExpr(compiler->getFileNumber($INCLUDE));
+                                        delete [] $INCLUDE;
                                         $$ = $label->appendLink ( new CompilerStatement ( location,
                                                                                           ASMKCPSM3_INCLUDE,
-                                                                                          new CompilerExpr ( compiler->getFileNumber ( (const char*)$INCLUDE.data ) ) ) );
+                                                                                          arg ) );
                                     }
 ;
 dir_end:

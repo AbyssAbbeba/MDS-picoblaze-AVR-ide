@@ -333,11 +333,11 @@ inline void DbgFileAvrCoff::loadFile ( const std::string & filename )
 
 inline void DbgFileAvrCoff::checkBadAndEof ( const std::fstream & file, char * buffer )
 {
-    if ( true == file.bad() || true == file.eof() )
+    if ( false == file.good() )
     {
         if ( NULL != buffer )
         {
-            delete[] buffer;
+            delete [] buffer;
         }
         throw Exception ( Exception::IO_ERROR, "Read failed, file: " + m_sourceFile );
     }

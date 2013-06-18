@@ -15,6 +15,9 @@
 
 #include "CompilerBase.h"
 
+// Initialize static constants.
+const char * const CompilerBase::PRECOMPILED_CODE_EXTENSION = ".prc";
+
 std::ostream & operator << ( std::ostream & out,
                              CompilerBase::MessageType type )
 {

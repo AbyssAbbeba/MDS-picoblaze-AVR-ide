@@ -16,6 +16,9 @@
 #ifndef ASMDGBFILEGEN_H
 #define ASMDGBFILEGEN_H
 
+// Forward declarations.
+class DbgFileNative;
+
 // Common compiler header files.
 #include "../CompilerOptions.h"
 #include "../CompilerFileHeaders.h"
@@ -105,6 +108,24 @@ class AsmDgbFileGen
          * @brief
          */
         void clear();
+
+    ////    Inline Private Operations    ////
+    private:
+        /**
+         * @brief
+         * @param[in,out] compilerCore
+         * @param[in] filename
+         */
+        inline void outputToFile ( CompilerSemanticInterface * compilerCore,
+                                   const std::string & filename );
+
+        /**
+         * @brief
+         * @param[in,out] compilerCore
+         * @param[in,out] target
+         */
+        inline void outputToContainer ( CompilerSemanticInterface * compilerCore,
+                                        DbgFileNative * target );
 
     ////    Private Attributes    ////
     private:

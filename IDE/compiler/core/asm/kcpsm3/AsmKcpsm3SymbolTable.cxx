@@ -53,18 +53,15 @@ AsmKcpsm3SymbolTable::Symbol::Symbol ( const AsmKcpsm3SymbolTable::Symbol & obj 
     m_type       = obj.m_type;
     m_masked     = obj.m_masked;
     m_used       = obj.m_used;
-    m_value      = obj.m_value->copyChainLink();
+    m_value      = obj.m_value;
     m_constant   = obj.m_constant;
     m_location   = obj.m_location;
     m_finalValue = obj.m_finalValue;
 }
 
-AsmKcpsm3SymbolTable::Symbol::~Symbol()
+AsmKcpsm3SymbolTable::~AsmKcpsm3SymbolTable()
 {
-    if ( NULL != m_value )
-    {
-        delete m_value;
-    }
+    clear();
 }
 
 int AsmKcpsm3SymbolTable::addSymbol ( const std::string & name,
@@ -180,6 +177,7 @@ void AsmKcpsm3SymbolTable::resolveSymbols ( CompilerExpr * expr,
             const std::string symbolName = value->m_data.m_symbol;
             if ( "$" == symbolName )
             {
+                delete [] value->m_data.m_symbol;
                 value->m_type = CompilerValue::TYPE_INT;
                 value->m_data.m_integer = codePointer;
             }
@@ -189,6 +187,7 @@ void AsmKcpsm3SymbolTable::resolveSymbols ( CompilerExpr * expr,
                 if ( NULL != subExpr )
                 {
                     resolveSymbols(subExpr, codePointer);
+                    delete [] value->m_data.m_symbol;
                     value->m_type = CompilerValue::TYPE_EXPR;
                     value->m_data.m_expr = subExpr;
                 }
@@ -268,13 +267,13 @@ int AsmKcpsm3SymbolTable::assignValue ( const std::string & name,
             {
                 finalValue = (int) resolveExpr(value, -1, location);
                 it->second.m_finalValue = finalValue;
-                delete it->second.m_value;
+                it->second.m_value->completeDelete();
                 it->second.m_value = new CompilerExpr(finalValue);
             }
             else
             {
                 it->second.m_finalValue = -1;
-                delete it->second.m_value;
+                it->second.m_value->completeDelete();
                 it->second.m_value = value->copyChainLink();
             }
 
@@ -336,7 +335,8 @@ int AsmKcpsm3SymbolTable::getExprValue ( ExprValSide side,
         {
             m_compilerCore -> compilerMessage ( expr->m_location,
                                                 CompilerBase::MT_ERROR,
-                                                QObject::tr("real numbers are not supported in assembler").toStdString());
+                                                QObject::tr("real numbers are not supported in assembler")
+                                                           .toStdString());
             break;
         }
         case CompilerValue::TYPE_EXPR:
@@ -350,7 +350,8 @@ int AsmKcpsm3SymbolTable::getExprValue ( ExprValSide side,
             {
                 m_compilerCore -> compilerMessage ( expr->m_location,
                                                     CompilerBase::MT_ERROR,
-                                                    QObject::tr("undefined symbol: ").toStdString() + "\"" + value->m_data.m_symbol + "\"");
+                                                    QObject::tr("undefined symbol: ").toStdString()
+                                                    + "\"" + value->m_data.m_symbol + "\"");
                 break;
             }
             else
@@ -546,9 +547,12 @@ unsigned int AsmKcpsm3SymbolTable::substitute ( const std::string & origSymbol,
                 case CompilerValue::TYPE_SYMBOL:
                     if ( origSymbol == value->m_data.m_symbol )
                     {
+                        delete [] value->m_data.m_symbol;
                         if ( CompilerExpr::OPER_NONE == newSymbol->oper() )
                         {
-                            *value = newSymbol->lVal().makeCopy();
+                            CompilerValue * val = newSymbol->lVal().makeCopy();
+                            *value = *val;
+                            delete val;
                         }
                         else
                         {
@@ -586,7 +590,7 @@ void AsmKcpsm3SymbolTable::output()
 
     file << this;
 
-    if ( true == file.bad() )
+    if ( true == file.fail() )
     {
         m_compilerCore -> compilerMessage ( CompilerBase::MT_ERROR,
                                             QObject::tr ( "Unable to write to " ).toStdString()
@@ -597,7 +601,20 @@ void AsmKcpsm3SymbolTable::output()
 
 void AsmKcpsm3SymbolTable::clear()
 {
+    for ( std::multimap<std::string,AsmKcpsm3SymbolTable::Symbol>::const_iterator symbol = m_table.cbegin();
+          symbol != m_table.cend();
+          symbol++ )
+    {
+        symbol->second.m_value->completeDelete();
+    }
     m_table.clear();
+
+    for ( std::multimap<std::string,AsmKcpsm3SymbolTable::Symbol>::const_iterator symbol = m_deletedSymbols.cbegin();
+          symbol != m_deletedSymbols.cend();
+          symbol++ )
+    {
+        symbol->second.m_value->completeDelete();
+    }
     m_deletedSymbols.clear();
 }
 

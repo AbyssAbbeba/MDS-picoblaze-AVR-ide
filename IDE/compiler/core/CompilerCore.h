@@ -30,6 +30,7 @@ class DataFile;
 #include "CompilerBase.h"
 #include "CompilerParserInterface.h"
 #include "CompilerSemanticInterface.h"
+#include "CompilerSourceLocation.h"
 
 // Boost Filesystem library.
 #define BOOST_FILESYSTEM_NO_DEPRECATED
@@ -98,6 +99,24 @@ class CompilerCore : public CompilerBase,
          * @return
          */
         DataFile * getSimData();
+
+        /**
+         * @brief
+         * @param[in] fileName
+         * @param[in] hide
+         * @return
+         */
+        CompilerStatement * loadPrecompiledCode ( const std::string & fileName,
+                                                  bool hide = false );
+
+        /**
+         * @brief
+         * @param[in] fileName
+         * @param[in] code
+         * @return
+         */
+        bool savePrecompiledCode ( const std::string & fileName,
+                                   const CompilerStatement * code );
 
     ////    Private Operations    ////
     private:
@@ -223,6 +242,15 @@ class CompilerCore : public CompilerBase,
              * @return
              */
             void registerMsgObserver ( CompilerMsgObserver * observer );
+
+            /**
+             * @brief
+             * @param[in] deviceName
+             * @param[in] flag
+             * @return
+             */
+            CompilerStatement * loadDevSpecCode ( const std::string & deviceName,
+                                                  CompilerBase::DevSpecLoaderFlag * flag = NULL );
         //@}
 
     ////    Inline Public Operations    ////
@@ -234,6 +262,15 @@ class CompilerCore : public CompilerBase,
         CompilerOptions * getCompilationOptions() const
         {
             return m_opts;
+        }
+
+        /**
+         * @brief
+         * @param[in] directory
+         */
+        void setBaseIncludeDir ( const std::string & directory )
+        {
+            m_baseIncludeDir = directory;
         }
 
     ////    Inline Private Operations    ////
@@ -255,8 +292,7 @@ class CompilerCore : public CompilerBase,
          * @param[in] arch
          * @return
          */
-        inline bool setupSemanticAnalyzer ( LangId lang,
-                                            TargetArch arch );
+        inline bool setupSemanticAnalyzer();
 
         /**
          * @brief
@@ -264,8 +300,7 @@ class CompilerCore : public CompilerBase,
          * @param[in] arch
          * @return
          */
-        inline bool startLexerAndParser ( LangId lang,
-                                          TargetArch arch );
+        inline bool startLexerAndParser();
 
         /**
          * @brief
@@ -273,8 +308,13 @@ class CompilerCore : public CompilerBase,
          * @param[in] arch
          * @return
          */
-        inline bool checkOptions ( LangId lang,
-                                   TargetArch arch );
+        inline bool checkOptions();
+
+        /**
+         * @brief
+         * @return
+         */
+        inline bool startCompilation();
 
     ////    Private Attributes    ////
     private:
@@ -321,6 +361,11 @@ class CompilerCore : public CompilerBase,
         /**
          * @brief
          */
+        std::string m_baseIncludeDir;
+
+        /**
+         * @brief
+         */
         boost::filesystem::path m_basePath;
 
         /**
@@ -332,6 +377,11 @@ class CompilerCore : public CompilerBase,
          * @brief
          */
         bool m_success;
+
+        /**
+         * @brief
+         */
+        bool m_devSpecCodeLoaded;
 };
 
 #endif // COMPILERCORE_H

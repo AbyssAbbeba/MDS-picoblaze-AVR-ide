@@ -18,6 +18,8 @@
 // Standard header files.
 #include <cstring>
 
+#include <iostream> // DEBUG
+
 /**
  * @brief
  * @param[in] a
@@ -27,18 +29,95 @@
 #define BYTE_N(a, n) \
     ( char ) ( ( a & ( 0xffULL << ( 8ULL * n ) ) ) >> ( 8ULL * n ) )
 
-CompilerSerializer::CompilerSerializer ( std::istream & input )
+
+// Initialize static constants.
+const char * const CompilerSerializer::COMMON_FILE_HEADER = "Moravia Microsystems, s.r.o. precompiled code";
+
+CompilerSerializer::CompilerSerializer ( std::istream & input,
+                                         std::vector<std::string> & files,
+                                         CompilerBase::LangId lang,
+                                         CompilerBase::TargetArch arch,
+                                         bool hide )
                                        : m_input  ( &input ),
                                          m_output ( NULL ),
                                          m_role   ( DESERIALIZER )
 {
+    size_t headerLength = strlen(COMMON_FILE_HEADER);
+    char header [ headerLength ];
+    read_c_str ( header, headerLength );
+
+    if (
+            ( 0 != strncmp(COMMON_FILE_HEADER, header, headerLength) )
+                ||
+            ( INTERFACE_VERSION != (int) read_ui16() )
+                ||
+            ( lang != CompilerBase::LangId(read_ui16()) )
+                ||
+            ( arch != CompilerBase::TargetArch(read_ui16()) )
+       )
+    {
+        input.setstate(std::ios_base::failbit);
+        return;
+    }
+
+    const unsigned int numberOfFiles = (unsigned int) read_ui32();
+    for ( unsigned int i = 0; i < numberOfFiles; i++ )
+    {
+        std::string filename;
+        int fileNumber = -1;
+        bool found = false;
+
+        read_std_str(filename);
+
+        if ( true == hide )
+        {
+            m_fileNumberMap.push_back(-1);
+        }
+        else
+        {
+            for ( std::vector<std::string>::const_iterator it = files.cbegin();
+                it != files.cend();
+                it++ )
+            {
+                fileNumber++;
+                if ( *it == filename )
+                {
+                    found = true;
+                    break;
+                }
+            }
+
+            if ( false == found )
+            {
+                fileNumber++;
+                files.push_back(filename);
+            }
+
+            m_fileNumberMap.push_back(fileNumber);
+        }
+    }
 }
 
-CompilerSerializer::CompilerSerializer ( std::ostream & output )
+CompilerSerializer::CompilerSerializer ( std::ostream & output,
+                                         const std::vector<std::string> & files,
+                                         CompilerBase::LangId lang,
+                                         CompilerBase::TargetArch arch )
                                        : m_input  ( NULL ),
                                          m_output ( &output ),
                                          m_role   ( SERIALIZER )
 {
+    write ( COMMON_FILE_HEADER );
+    write ( (uint16_t) INTERFACE_VERSION );
+    write ( (uint16_t) lang );
+    write ( (uint16_t) arch );
+
+    write ( (uint32_t) files.size() );
+    for ( std::vector<std::string>::const_iterator it = files.cbegin();
+          it != files.cend();
+          it++ )
+    {
+        write ( *it );
+    }
 }
 
 void CompilerSerializer::write ( uint8_t val )
@@ -165,20 +244,22 @@ double CompilerSerializer::read_double()
 char * CompilerSerializer::read_c_str_copy()
 {
     uint32_t len = read_ui32();
-    char * result = new char [ len ];
+    char * result = new char [ len + 1 ];
     m_input->read(result, len);
+    result[len] = '\0';
     return result;
 }
 
 char * CompilerSerializer::read_c_str ( char * buffer,
-                                     size_t n )
+                                        size_t n )
 {
     uint32_t len = read_ui32();
-    if ( len > n )
+    if ( len >= n )
     {
         throw Exception ( Exception::BUFFER_OVERFLOW );
     }
-    m_input->read(buffer, len);
+    m_input->read(buffer, ( len - 1) );
+    buffer[len] = '\0';
     return buffer;
 }
 
@@ -217,5 +298,17 @@ inline void CompilerSerializer::deserial()
     if ( true == m_input->eof() )
     {
         throw Exception ( Exception::BUFFER_UNDERFLOW );
+    }
+}
+
+int CompilerSerializer::translateFileNumber ( int number ) const
+{
+    if ( m_fileNumberMap.size() <= (size_t) number )
+    {
+        return -1;
+    }
+    else
+    {
+        return m_fileNumberMap[number];
     }
 }

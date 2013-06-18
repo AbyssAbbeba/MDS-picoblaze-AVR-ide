@@ -294,10 +294,20 @@ CompilerExpr * CompilerExpr::copyChainLink() const
     }
 
     CompilerExpr * result = new CompilerExpr();
-    result->m_lValue = m_lValue.makeCopy();
+
+    CompilerValue * val;
+
+    val = m_lValue.makeCopy();
+    result->m_lValue = *val;
+    delete val;
+
+    val = m_rValue.makeCopy();
+    result->m_rValue = *val;
+    delete val;
+
     result->m_operator = m_operator;
-    result->m_rValue = m_rValue.makeCopy();
     result->m_location = m_location;
+
     return result;
 }
 
