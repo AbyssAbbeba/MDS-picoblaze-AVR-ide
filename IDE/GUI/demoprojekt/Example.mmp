@@ -11,7 +11,7 @@
   <File path="../../tests/compiler/assembler/PicoBlaze/TestSuiteSuc/testcases/001_logical.asm" name="001_logical.asm"/>
   <File path="../compileOpt.xml" name="compileOpt.xml"/>
  </Files>
- <Mainfile path="kcpsm3_mac.inc" name="kcpsm3_mac.inc"/>
+ <Mainfile path="a.asm" name="a.asm"/>
  <Simulator/>
  <Compiler/>
  <GridLayout>

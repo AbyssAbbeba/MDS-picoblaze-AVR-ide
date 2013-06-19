@@ -17,20 +17,24 @@ set(CMAKE_VERBOSE_MAKEFILE OFF)
 # here we define SAMPLE_SRCS variable that contains a list of all .cpp files 
 # note that we don't need \ at the end of line
 SET( SAMPLE_SRCS
-       ./projectdlg.cpp
-       ./projectcfgdlg_core.cpp
-       ./projectcfg_filemgr.cpp
-       ./projectcfg_general.cpp
-       ./projectcfg_compiler.cpp
+        ./projectdlg.cpp
+        ./projectcfgdlg_core.cpp
+        ./projectcfg_filemgr.cpp
+        ./projectcfg_general.cpp
+        ./projectcfg_compiler.cpp
+        ./projectcfg_comppaths.cpp
+        ./cfginterface.cpp
 )
   
 # another list, this time it includes all header files that should be treated with moc
 SET( SAMPLE_MOC_HDRS
-       ./projectdlg.h
-       ./projectcfgdlg_core.h
-       ./projectcfg_general.h
-       ./projectcfg_filemgr.h
-       ./projectcfg_compiler.h
+        ./projectdlg.h
+        ./projectcfgdlg_core.h
+        ./projectcfg_general.h
+        ./projectcfg_filemgr.h
+        ./projectcfg_compiler.h
+        ./projectcfg_comppaths.h
+        ./cfginterface.h
 )
 
 
