@@ -15,37 +15,34 @@
 #include "projectcfgdlg_core.h"
 #include "../project/project.h"
 
-ProjectConfigDialog_Core::ProjectConfigDialog_Core(QWidget *dialogParent, Project *currProject)
+ProjectConfigDialog_Core::ProjectConfigDialog_Core(QWidget *parent, Project *currProject)
+    : QDialog(parent)
 {
-    this->parent = dialogParent;
+    qDebug() << "ProjectConfigDialog_Core: ProjectConfigDialog_Core()";
     this->project = currProject;
     this->reloadFiles = false;
-    
-    this->tabs = new QStackedWidget(this);
-    this->generalCfg = new ProjectCfg_General(this, this->project);
-    this->compilerCfg = new ProjectCfg_Compiler(this, this->project);
-    this->fileMgr = new ProjectCfg_FileMgr(this, this->project);
-    this->tabs->addWidget(this->generalCfg);
-    this->tabs->addWidget(this->compilerCfg);
-    this->tabs->addWidget(this->fileMgr);
-    
-    this->menuList = new QListWidget(this);
-    this->menuList->addItem("General");
-    this->menuList->addItem("Compiler");
-    this->menuList->addItem("Files");
-    
-    this->show();
-    this->menuList->move(5,10);
-    this->menuList->setMaximumHeight(this->tabs->height());
-    this->menuList->setMaximumWidth(100);
-    this->tabs->move(105,0);
-    //this->resize(tabs->width(), tabs->height());
-    this->setFixedWidth(this->tabs->width()+this->menuList->width()+10);
-    this->setFixedHeight(this->tabs->height());
-    this->setModal(true);
+    //this->setModal(true);
 
+    this->cfgInterface = new CfgInterface(this);
+    this->generalCfg = new ProjectCfg_General(cfgInterface, this->project);
+    this->compilerCfg = new ProjectCfg_Compiler(cfgInterface, this->project);
+    this->pathsCfg = new ProjectCfg_CompPaths(cfgInterface, this->project);
+    this->fileMgr = new ProjectCfg_FileMgr(cfgInterface, this->project);
+    
+    this->cfgInterface->addWidget(this->generalCfg, "General");
+    this->cfgInterface->addWidget(this->compilerCfg, "Compiler");
+    this->cfgInterface->addWidget(this->pathsCfg, "Include Paths", true);
+    this->cfgInterface->addWidget(this->fileMgr, "Files");
+    
+
+    this->cfgInterface->show();
+    this->show();
+    this->cfgInterface->fixSize();
+    this->setFixedWidth(this->cfgInterface->width());
+    this->setFixedHeight(this->cfgInterface->height());
+    
     connect(this->fileMgr, SIGNAL(reloadTree()), this, SLOT(reload()));
-    connect(this->menuList, SIGNAL(currentRowChanged(int)), this, SLOT(changeWidget(int)));
+    qDebug() << "ProjectConfigDialog_Core: return ProjectConfigDialog_Core()";
 }
 
 
@@ -64,7 +61,7 @@ void ProjectConfigDialog_Core::reload()
 }
 
 
-void ProjectConfigDialog_Core::changeWidget(int row)
+/*void ProjectConfigDialog_Core::changeWidget(QTreeWidgetItem *curr, QTreeWidgetItem *prev)
 {
-    this->tabs->setCurrentIndex(row);
-}
+    this->tabs->setCurrentIndex(curr->type());
+}*/

@@ -27,9 +27,9 @@ ProjectTree::ProjectTree(QWidget *parent)
     setHeaderHidden(true);
     projectPopup = new QMenu(this);
     QAction *projectConfigAct = new QAction("Configuration", projectPopup);
-    QAction *projectHWCanvasAct = new QAction("Hardware Canvas", projectPopup);
+    //QAction *projectHWCanvasAct = new QAction("Hardware Canvas", projectPopup);
     projectPopup->addAction(projectConfigAct);
-    projectPopup->addAction(projectHWCanvasAct);
+    //projectPopup->addAction(projectHWCanvasAct);
     filePopup = new QMenu(this);
     QAction *removeFileAct = new QAction("Remove file", filePopup);
     QAction *setMainFileAct = new QAction("Set as main file", filePopup);

@@ -961,5 +961,5 @@ void MainForm::addUntrackedFile(QString name, QString path)
 void MainForm::startProjectConfig(Project *project)
 {
     ProjectConfigDialog_Core *cfgdlg = new ProjectConfigDialog_Core(this, project);
-    cfgdlg->show();
+    cfgdlg->exec();
 }
