@@ -69,14 +69,15 @@ bool CfgInterface::addWidget(QWidget *widget, QString text, bool child)
         if (NULL == lastItem)
         {
             item = new QTreeWidgetItem(this->menuList, this->count);
+            this->lastItem = item;
         }
         else
         {
             item = new QTreeWidgetItem(this->menuList, this->lastItem, this->count);
+            this->lastItem = item;
         }
     }
     item->setText(0, text);
-    this->lastItem = item;
     this->count++;
     return true;
     qDebug() << "CfgInterface: return addWidget()";

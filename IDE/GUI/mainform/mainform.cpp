@@ -653,7 +653,8 @@ void MainForm::compileProject()
     ((QPlainTextEdit*)(wDockManager->getDockWidget(wCompileInfo)->widget()))->clear();
 
     CompilerOptions *options = new CompilerOptions();
-    QString mainFile = projectMan->getActive()->prjPath.section('/',0, -2) + "/" +  this->projectMan->getActive()->mainFilePath.section('.',0,-2);
+    //QString mainFile = projectMan->getActive()->prjPath.section('/',0, -2) + "/" +  this->projectMan->getActive()->mainFilePath.section('.',0,-2);
+    QString mainFile = this->projectMan->getActive()->mainFilePath.section('.',0,-2);
     options->m_sourceFile = (projectMan->getActive()->prjPath.section('/',0, -2) + "/" +  this->projectMan->getActive()->mainFilePath).toStdString();
     qDebug() << QString::fromStdString(options->m_sourceFile);
     qDebug() << mainFile;
