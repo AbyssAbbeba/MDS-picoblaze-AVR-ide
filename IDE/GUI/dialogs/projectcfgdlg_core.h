@@ -15,12 +15,13 @@
 #ifndef PROJECTCFGDLG_CORE_H
 #define PROJECTCFGDLG_CORE_H
 
+
 #include <QDialog>
-#include <QStackedWidget>
-#include <QListWidget>
 #include "projectcfg_general.h"
 #include "projectcfg_filemgr.h"
 #include "projectcfg_compiler.h"
+#include "projectcfg_comppaths.h"
+#include "cfginterface.h"
 
 
 
@@ -36,8 +37,9 @@ class Project;
 class ProjectConfigDialog_Core : public QDialog
 {
     Q_OBJECT
+    //Q_INTERFACES(CfgInterface)
     public:
-        ProjectConfigDialog_Core(QWidget *dialogParent, Project *currProject);
+        ProjectConfigDialog_Core(QWidget *parent, Project *currProject);
 
         bool reloadFiles;
 
@@ -47,17 +49,17 @@ class ProjectConfigDialog_Core : public QDialog
     private:
         void freeDialog();
 
-        QListWidget *menuList;
-        QStackedWidget *tabs;
-        QWidget *parent;
+        //QWidget *parent;
         Project *project;
+        CfgInterface *cfgInterface;
         ProjectCfg_General *generalCfg;
         ProjectCfg_FileMgr *fileMgr;
         ProjectCfg_Compiler *compilerCfg;
+        ProjectCfg_CompPaths *pathsCfg;
 
     private slots:
         void reload();
-        void changeWidget(int row);
+        //void changeWidget(QTreeWidgetItem *curr, QTreeWidgetItem *prev);
 
     protected:
         virtual void closeEvent(QCloseEvent *e);
