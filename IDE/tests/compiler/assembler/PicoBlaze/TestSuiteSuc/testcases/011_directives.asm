@@ -168,6 +168,14 @@ Start:
         LOAD    s1,s2
         LOAD    s1,s2
         LOAD    s1,s2
+
+        INPUT   s0,#0x01
+        OUTput
+
+
+
+
+
         
         END
 
