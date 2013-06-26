@@ -33,7 +33,7 @@
 #include <string>
 #include <vector>
 #include <fstream>
-#include <iostream> // DEBUG
+
 AsmKcpsm3SemanticAnalyzer::AsmKcpsm3SemanticAnalyzer ( CompilerSemanticInterface * compilerCore,
                                                        CompilerOptions * opts )
                                                      : CompilerSemanticAnalyzer ( compilerCore, opts )
@@ -380,7 +380,6 @@ bool AsmKcpsm3SemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
             }
             case ASMKCPSM3_MACRO:
             {
-std::cout << "case ASMKCPSM3_MACRO:\n";
                 if ( -1 != m_opts->m_maxMacroExp && node->m_userData >= m_opts->m_maxMacroExp )
                 {
                     m_compilerCore -> compilerMessage ( node->location(),
@@ -392,7 +391,7 @@ std::cout << "case ASMKCPSM3_MACRO:\n";
                 else
                 {
                     const std::string nameOfMacro = node->args()->lVal().m_data.m_symbol;
-std::cout << "case ASMKCPSM3_MACRO: nameOfMacro = '"<<nameOfMacro<<"'\n";
+
                     CompilerStatement * macro = m_macros -> expand ( *location,
                                                                      node->location(),
                                                                      nameOfMacro,
@@ -400,7 +399,6 @@ std::cout << "case ASMKCPSM3_MACRO: nameOfMacro = '"<<nameOfMacro<<"'\n";
 
                     if ( CompilerStatementTypes::EMPTY_STATEMENT == macro->type() )
                     {
-std::cout << "case ASMKCPSM3_MACRO: ( CompilerStatementTypes::EMPTY_STATEMENT == macro->type() )\n";
                         macro->completeDelete();
                         break;
                     }

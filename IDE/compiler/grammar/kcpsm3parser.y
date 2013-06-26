@@ -30,7 +30,7 @@
 // Write an extra output file containing verbose descriptions of the parser states.
 %verbose
 // Expect exactly <n> shift/reduce conflicts in this grammar
-%expect 105
+%expect 108
 // Expect exactly <n> reduce/reduce conflicts in this grammar
 %expect-rr 0
 /* Type of parser tables within the LR family, in this case we use LALR (Look-Ahead LR parser) */
@@ -1652,7 +1652,7 @@ inst_rl:
 /* Input/Output Group */
 inst_input:
       I_INPUT expr "," expr         { $$ = new CompilerStatement(LOC(@$),ASMKCPSM3_INS_INPUT_SX_PP,$2->appendLink($4));}
-    | I_INPUT expr "," "@" expr     { $$ = new CompilerStatement(LOC(@$),ASMKCPSM3_INS_INPUT_SX_SY,$2->appendLink($5));}
+    | I_INPUT "@" expr "," expr     { $$ = new CompilerStatement(LOC(@$),ASMKCPSM3_INS_INPUT_SX_SY,$3->appendLink($5));}
     | I_INPUT eopr "," eopr "," eoprs {/* Syntax Error */$$ = NULL; N_OPERANDS_EXPECTED(@1, "INPUT", 2);               }
     | I_INPUT eopr                  { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "INPUT", 2);               }
     | I_INPUT                       { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "INPUT", 2);               }
@@ -1660,7 +1660,7 @@ inst_input:
 ;
 inst_output:
       I_OUTPUT expr "," expr        { $$=new CompilerStatement(LOC(@$),ASMKCPSM3_INS_OUTPUT_SX_PP,$2->appendLink($4)); }
-    | I_OUTPUT expr "," "@" expr    { $$=new CompilerStatement(LOC(@$),ASMKCPSM3_INS_OUTPUT_SX_SY,$2->appendLink($5)); }
+/*     | I_OUTPUT "@" expr "," expr    { $$=new CompilerStatement(LOC(@$),ASMKCPSM3_INS_OUTPUT_SX_SY,$3->appendLink($5)); } */
     | I_OUTPUT eopr "," eopr "," eoprs {/* Syntax Error */$$= NULL; N_OPERANDS_EXPECTED(@1, "OUTPUT", 2);              }
     | I_OUTPUT eopr                 { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "OUTPUT", 2);              }
     | I_OUTPUT                      { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "OUTPUT", 2);              }
