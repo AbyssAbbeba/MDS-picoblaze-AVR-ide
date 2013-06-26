@@ -111,7 +111,7 @@ CompilerValue::CompilerValue ( unsigned char * array,
     }
 }
 
-CompilerValue & CompilerValue::makeCopy() const
+CompilerValue * CompilerValue::makeCopy() const
 {
     CompilerValue * result = new CompilerValue();
     result->m_type = m_type;
@@ -141,7 +141,7 @@ CompilerValue & CompilerValue::makeCopy() const
             memcpy(result->m_data.m_array.m_data, m_data.m_array.m_data, m_data.m_array.m_size);
             break;
     }
-    return * result;
+    return result;
 }
 
 void CompilerValue::completeDelete()
@@ -195,7 +195,7 @@ void CompilerValue::serialize ( CompilerSerializer & output ) const
 }
 void CompilerValue::deserialize ( CompilerSerializer & input )
 {
-    m_type = (Type) input.read_ui8();
+    m_type = Type(input.read_ui8());
     switch ( m_type )
     {
         case TYPE_EMPTY:

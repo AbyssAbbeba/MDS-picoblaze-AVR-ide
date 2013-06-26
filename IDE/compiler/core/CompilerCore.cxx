@@ -22,6 +22,7 @@
 #include "CompilerSemanticAnalyzer.h"
 #include "CompilerMsgObserver.h"
 #include "CompilerMsgFilter.h"
+#include "CompilerSerializer.h"
 
 // OS compatibility.
 #include "../../utilities/os/os.h"
@@ -29,6 +30,7 @@
 // Standard header files.
 #include <sstream>
 #include <cstdio>
+#include <fstream>
 
 // Include all implemented semantic analyzers we have in this compiler collection.
 #include "asm/avr8/AsmAvr8SemanticAnalyzer.h"
@@ -67,13 +69,23 @@ bool CompilerCore::compile ( LangId lang,
                              CompilerOptions * opts,
                              bool genSimData )
 {
+    m_lang = lang;
+    m_arch = arch;
+    m_opts = opts;
+    m_simulatorData.m_genSimData = genSimData;
+
+    bool result = startCompilation();
+    resetCompilerCore();
+    return result;
+}
+
+inline bool CompilerCore::startCompilation()
+{
     try
     {
         resetCompilerCore();
-        m_opts = opts;
-        m_simulatorData.m_genSimData = genSimData;
 
-        if ( false == checkOptions(lang, arch) )
+        if ( false == checkOptions() )
         {
             return false;
         }
@@ -86,9 +98,9 @@ bool CompilerCore::compile ( LangId lang,
             m_basePath = system_complete(path(m_opts->m_sourceFile).parent_path().make_preferred());
         }
 
-        if ( true == setupSemanticAnalyzer(lang, arch) )
+        if ( true == setupSemanticAnalyzer() )
         {
-            return startLexerAndParser(lang, arch);
+            return startLexerAndParser();
         }
 
         return false;
@@ -111,17 +123,16 @@ DataFile * CompilerCore::getSimData()
     return m_simulatorData.m_simData;
 }
 
-inline bool CompilerCore::checkOptions ( LangId lang,
-                                         TargetArch arch )
+inline bool CompilerCore::checkOptions()
 {
-    if ( CompilerBase::LI_INVALID == lang )
+    if ( CompilerBase::LI_INVALID == m_lang )
     {
         m_msgInterface->message ( QObject::tr("Programming language not specified.").toStdString(),
                                   MT_ERROR );
         return false;
     }
 
-    if ( CompilerBase::TA_INVALID == arch )
+    if ( CompilerBase::TA_INVALID == m_arch )
     {
         m_msgInterface->message ( QObject::tr("Target architecture not specified.").toStdString(),
                                   MT_ERROR );
@@ -138,13 +149,12 @@ inline bool CompilerCore::checkOptions ( LangId lang,
     return true;
 }
 
-inline bool CompilerCore::setupSemanticAnalyzer ( LangId lang,
-                                                  TargetArch arch )
+inline bool CompilerCore::setupSemanticAnalyzer()
 {
-    switch ( lang )
+    switch ( m_lang )
     {
         case LI_ASM:
-            switch ( arch )
+            switch ( m_arch )
             {
                 case TA_AVR8:
                     m_semanticAnalyzer = new AsmAvr8SemanticAnalyzer ( this, m_opts );
@@ -171,11 +181,10 @@ inline bool CompilerCore::setupSemanticAnalyzer ( LangId lang,
             return false;
     }
 
-    return m_success;
+    return true;
 }
 
-inline bool CompilerCore::startLexerAndParser ( LangId lang,
-                                                TargetArch arch )
+inline bool CompilerCore::startLexerAndParser()
 {
 
     FILE * sourceFile = fileOpen ( m_opts->m_sourceFile );
@@ -188,10 +197,10 @@ inline bool CompilerCore::startLexerAndParser ( LangId lang,
         return false;
     }
 
-    switch ( lang )
+    switch ( m_lang )
     {
         case LI_ASM:
-            switch ( arch )
+            switch ( m_arch )
             {
                 case TA_AVR8:
                     avr8lexer_lex_init_extra ( this, &yyscanner );
@@ -367,17 +376,129 @@ void CompilerCore::registerMsgObserver ( CompilerMsgObserver * observer )
     m_msgObserver->setMaxNumberOfMessages(MAX_MESSAGES);
 }
 
+CompilerStatement * CompilerCore::loadDevSpecCode ( const std::string & deviceName,
+                                                    CompilerBase::DevSpecLoaderFlag * flag )
+{
+    if ( true == m_devSpecCodeLoaded )
+    {
+        m_msgInterface->message ( QObject::tr ( "Error: device specification code is already loaded." )
+                                                . arg ( deviceName.c_str() )
+                                                . toStdString(),
+                                  MT_ERROR );
+        if ( NULL != flag )
+        {
+            *flag = DSLF_ALREADY_LOADED;
+        }
+        return NULL;
+    }
+    m_devSpecCodeLoaded = true;
+
+    boost::filesystem::path fileName = m_baseIncludeDir;
+    fileName = system_complete(fileName.make_preferred());
+
+    switch ( m_lang )
+    {
+        case LI_INVALID:
+            return NULL;
+        case LI_ASM:
+            fileName /= "assembler";
+            break;
+    }
+    switch ( m_arch )
+    {
+        case TA_INVALID:
+            return NULL;
+        case TA_AVR8:
+            fileName /= "avr8";
+            break;
+        case TA_PIC8:
+            fileName /= "pic8";
+            break;
+        case TA_MCS51:
+            fileName /= "mcs51";
+            break;
+        case TA_KCPSM3:
+            fileName /= "PicoBlaze";
+            break;
+    }
+    fileName /= deviceName + PRECOMPILED_CODE_EXTENSION;
+
+    if ( false == boost::filesystem::is_regular_file(fileName) )
+    {
+        if ( NULL != flag )
+        {
+            *flag = DSLF_DOES_NOT_EXIST;
+        }
+        return NULL;
+    }
+
+    CompilerStatement * result = loadPrecompiledCode(fileName.string(), true);
+    if ( NULL == result )
+    {
+        if ( NULL != flag )
+        {
+            *flag = DSLF_UNABLE_TO_READ;
+        }
+        m_msgInterface->message ( QObject::tr ( "Error: unable to read file `%1'." )
+                                                . arg ( fileName.c_str() )
+                                                . toStdString(),
+                                  MT_ERROR );
+    }
+
+    if ( NULL != flag )
+    {
+        *flag = DSLF_OK;
+    }
+
+    return result;
+}
+
+CompilerStatement * CompilerCore::loadPrecompiledCode ( const std::string & fileName,
+                                                        bool hide )
+{
+    try
+    {
+        std::ifstream file ( fileName, (std::ios_base::in | std::ios_base::binary) );
+        CompilerSerializer deserializer(file, m_fileNames, m_lang, m_arch, hide);
+        CompilerStatement * result = new CompilerStatement(deserializer);
+
+        if ( true == file.bad() )
+        {
+            result->completeDelete();
+            result = NULL;
+        }
+
+        return result;
+    }
+    catch ( CompilerSerializer::Exception & e )
+    {
+        return NULL;
+    }
+}
+
+bool CompilerCore::savePrecompiledCode ( const std::string & fileName,
+                                         const CompilerStatement * code )
+{
+    try
+    {
+        std::ofstream file ( fileName, (std::ios_base::out | std::ios_base::binary) );
+        CompilerSerializer serializer(file, m_fileNames, m_lang, m_arch);
+        code->serializeTree(serializer);
+        return ( !file.fail() );
+    }
+    catch ( CompilerSerializer::Exception & )
+    {
+        return false;
+    }
+}
+
 inline void CompilerCore::resetCompilerCore()
 {
     if ( NULL != m_msgObserver )
     {
         m_msgObserver->reset();
+        m_msgObserver = NULL;
     }
-    m_basePath.clear();
-    m_msgObserver = NULL;
-    m_opts = NULL;
-    m_success = true;
-    m_msgInterface->reset();
     if ( NULL != m_rootStatement )
     {
         m_rootStatement->completeDelete();
@@ -388,6 +509,12 @@ inline void CompilerCore::resetCompilerCore()
         delete m_semanticAnalyzer;
         m_semanticAnalyzer = NULL;
     }
+
+    m_success = true;
+    m_devSpecCodeLoaded = false;
+
+    m_msgInterface->reset();
+    m_basePath.clear();
 
     m_fileNameStack.clear();
     m_fileNames.clear();
@@ -525,7 +652,7 @@ void CompilerCore::syntaxAnalysisComplete ( CompilerStatement * codeTree )
         m_rootStatement = NULL;
     }
 
-    if ( /*false == m_success ||*/ true == m_opts->m_syntaxCheckOnly )
+    if ( true == m_opts->m_syntaxCheckOnly )
     {
         codeTree->completeDelete();
         return;
@@ -536,15 +663,49 @@ void CompilerCore::syntaxAnalysisComplete ( CompilerStatement * codeTree )
     {
         m_rootStatement -> appendLink ( codeTree -> first() );
     }
+
     if ( NULL == m_semanticAnalyzer )
     {
-        m_msgInterface->message ( QObject::tr ( "Semantic analyzer is missing!" ).toStdString(), MT_ERROR );
+        m_msgInterface->message ( QObject::tr ( "semantic analyzer is missing" ).toStdString(), MT_ERROR );
         return;
     }
-    else
+
+    if ( false == m_opts->m_prcTarget.empty() )
     {
-        m_semanticAnalyzer->process(m_rootStatement);
+        if ( false == savePrecompiledCode ( m_opts->m_prcTarget, m_rootStatement ) )
+        {
+            m_msgInterface->message ( QObject::tr ( "unable to save precompiled code" ).toStdString(), MT_ERROR );
+        }
     }
+
+    if ( false == m_opts->m_device.empty() )
+    {
+        DevSpecLoaderFlag loaderFlag;
+        CompilerStatement * devSpecCode = loadDevSpecCode(m_opts->m_device, &loaderFlag);
+        if ( NULL == devSpecCode )
+        {
+            if ( DSLF_DOES_NOT_EXIST == loaderFlag )
+            {
+                m_msgInterface->message ( QObject::tr ( "Device not supported: `%1'" )
+                                                      . arg ( m_opts->m_device.c_str() )
+                                                      . toStdString(),
+                                          MT_ERROR );
+            }
+            else if ( DSLF_ALREADY_LOADED == loaderFlag )
+            {
+                m_msgInterface->message ( QObject::tr ( "Device specification code is already "
+                                                        "loaded" ).toStdString(),
+                                          MT_ERROR );
+            }
+            return;
+        }
+        else
+        {
+            m_rootStatement->first()->insertLink(devSpecCode);
+        }
+    }
+
+    m_semanticAnalyzer->process(m_rootStatement);
 }
 
 const std::vector<std::string> & CompilerCore::listSourceFiles() const

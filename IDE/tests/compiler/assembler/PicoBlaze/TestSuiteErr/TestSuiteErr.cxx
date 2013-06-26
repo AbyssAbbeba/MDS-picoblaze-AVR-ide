@@ -101,7 +101,7 @@ void TestSuiteErr::testFunction()
     std::string testName = CU_get_current_test()->pName;
     m_options->m_sourceFile = ( path("TestSuiteErr") / "testcases" / (testName + ".asm") ).string();
 
-    std::string resultsCommonPath = ( path("TestSuiteErr") / "results" / testName ).string();
+    std::string resultsCommonPath = ( path("..") / "results" / testName ).string();
     m_options->m_symbolTable  = resultsCommonPath + ".sym";
     m_options->m_macroTable   = resultsCommonPath + ".mac";
     m_options->m_codeTree     = resultsCommonPath + ".crt";;
@@ -111,7 +111,7 @@ void TestSuiteErr::testFunction()
     CU_ASSERT_FATAL ( false == m_compiler->compile(CompilerBase::LI_ASM, CompilerBase::TA_KCPSM3, m_options) );
     dynamic_cast<CompilerMsgIntfFile*>(m_msgInt)->closeFile();
 
-    std::string expectedCommonPath = ( path("TestSuiteErr") / "expected" / testName ).string();
+    std::string expectedCommonPath = ( path("..") / "expected" / testName ).string();
     compareLst ( expectedCommonPath + ".lst.exp", m_options->m_lstFile );
     compareErr ( expectedCommonPath + ".err.exp", resultsCommonPath + ".err" );
 }

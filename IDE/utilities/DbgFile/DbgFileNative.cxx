@@ -199,12 +199,50 @@ inline void DbgFileNative::loadFile ( const std::string & filename )
         }
     }
 
-    if ( true == file.bad() )
+    if ( true == file.fail() )
     {
         throw Exception(Exception::IO_ERROR, "Unable to read " + filename);
     }
 
     file.close();
+    generateLineAddressMaps();
+}
+
+void DbgFileNative::directSetupPrepare()
+{
+    clear();
+}
+
+void DbgFileNative::directSetupFiles ( const std::vector<std::string> & files )
+{
+    for ( std::vector<std::string>::const_iterator it = files.cbegin();
+          it != files.cend();
+          it++ )
+    {
+        m_fileNames.push_back(*it);
+        m_numberOfLines.push_back(0);
+    }
+}
+
+void DbgFileNative::directSetupRelation ( unsigned int addr,
+                                          unsigned int file,
+                                          unsigned int line )
+{
+    m_lineRecords.push_back(LineRecord(file, line, 0, 0, addr));
+
+    if ( line > m_numberOfLines[file] )
+    {
+        m_numberOfLines[file] = line;
+    }
+
+    if ( (int)addr > m_lastAddress )
+    {
+        m_lastAddress = addr;
+    }
+}
+
+void DbgFileNative::directSetupFinalize()
+{
     generateLineAddressMaps();
 }
 

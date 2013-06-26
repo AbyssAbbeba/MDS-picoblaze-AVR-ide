@@ -53,18 +53,15 @@ AsmKcpsm3SymbolTable::Symbol::Symbol ( const AsmKcpsm3SymbolTable::Symbol & obj 
     m_type       = obj.m_type;
     m_masked     = obj.m_masked;
     m_used       = obj.m_used;
-    m_value      = obj.m_value->copyChainLink();
+    m_value      = obj.m_value;
     m_constant   = obj.m_constant;
     m_location   = obj.m_location;
     m_finalValue = obj.m_finalValue;
 }
 
-AsmKcpsm3SymbolTable::Symbol::~Symbol()
+AsmKcpsm3SymbolTable::~AsmKcpsm3SymbolTable()
 {
-    if ( NULL != m_value )
-    {
-        delete m_value;
-    }
+    clear();
 }
 
 int AsmKcpsm3SymbolTable::addSymbol ( const std::string & name,
@@ -82,11 +79,21 @@ int AsmKcpsm3SymbolTable::addSymbol ( const std::string & name,
         {
             finalValue = (int) resolveExpr(value);
             CompilerExpr finalValueExpr(finalValue, *location);
-            m_table.insert ( std::pair<std::string,Symbol>(name, Symbol(&finalValueExpr, location, type, finalValue, redefinable)) );
+            m_table.insert ( std::pair<std::string,Symbol> ( name,
+                                                             Symbol ( &finalValueExpr,
+                                                                      location,
+                                                                      type,
+                                                                      finalValue,
+                                                                      redefinable ) ) );
         }
         else
         {
-            m_table.insert ( std::pair<std::string,Symbol>(name, Symbol(value, location, type, finalValue, redefinable)) );
+            m_table.insert ( std::pair<std::string,Symbol> ( name,
+                                                             Symbol ( value,
+                                                                      location,
+                                                                      type,
+                                                                      finalValue,
+                                                                      redefinable ) ) );
         }
     }
     else
@@ -111,19 +118,20 @@ int AsmKcpsm3SymbolTable::addSymbol ( const std::string & name,
 
 AsmKcpsm3SymbolTable::SymbolType AsmKcpsm3SymbolTable::getType ( const std::string & name )
 {
-    for ( std::multimap<std::string,Symbol>::iterator it = m_table.find(name);
-          it != m_table.end();
-          it++ )
+    std::map<std::string,Symbol>::const_iterator it = m_table.find(name);
+    if ( it != m_table.end() )
     {
         return it->second.m_type;
     }
-
-    return STYPE_UNSPECIFIED;
+    else
+    {
+        return STYPE_UNSPECIFIED;
+    }
 }
 
 void AsmKcpsm3SymbolTable::maskNonLabels()
 {
-    for ( std::multimap<std::string,Symbol>::iterator it = m_table.begin();
+    for ( std::map<std::string,Symbol>::iterator it = m_table.begin();
           it != m_table.end();
           it++ )
     {
@@ -180,6 +188,7 @@ void AsmKcpsm3SymbolTable::resolveSymbols ( CompilerExpr * expr,
             const std::string symbolName = value->m_data.m_symbol;
             if ( "$" == symbolName )
             {
+                delete [] value->m_data.m_symbol;
                 value->m_type = CompilerValue::TYPE_INT;
                 value->m_data.m_integer = codePointer;
             }
@@ -189,6 +198,7 @@ void AsmKcpsm3SymbolTable::resolveSymbols ( CompilerExpr * expr,
                 if ( NULL != subExpr )
                 {
                     resolveSymbols(subExpr, codePointer);
+                    delete [] value->m_data.m_symbol;
                     value->m_type = CompilerValue::TYPE_EXPR;
                     value->m_data.m_expr = subExpr;
                 }
@@ -203,34 +213,27 @@ void AsmKcpsm3SymbolTable::removeSymbol ( const std::string & name,
                                           const CompilerSourceLocation & location,
                                           const SymbolType type )
 {
-    for ( std::multimap<std::string,Symbol>::iterator it = m_table.find(name);
-          it != m_table.end();
-          it++ )
+    std::map<std::string,Symbol>::iterator it = m_table.find(name);
+    if ( it == m_table.end() )
     {
-        if ( STYPE_UNSPECIFIED == type || type == it->second.m_type )
-        {
-            m_deletedSymbols.insert(*it);
-            m_table.erase(it);
-            return;
-        }
+        m_compilerCore -> compilerMessage ( location,
+                                            CompilerBase::MT_ERROR,
+                                            QObject::tr("symbol not defined: ").toStdString() + "\"" + name + "\"");
     }
-
-    m_compilerCore -> compilerMessage ( location,
-                                        CompilerBase::MT_ERROR,
-                                        QObject::tr("symbol not defined: ").toStdString() + "\"" + name + "\"");
+    else if ( STYPE_UNSPECIFIED == type || type == it->second.m_type )
+    {
+        m_deletedSymbols.insert(*it);
+        m_table.erase(it);
+    }
 }
 
 bool AsmKcpsm3SymbolTable::isDefined ( const std::string & name,
                                        const SymbolType type ) const
 {
-    for ( std::multimap<std::string,Symbol>::const_iterator it = m_table.find(name);
-          it != m_table.cend();
-          it++ )
+    std::map<std::string,Symbol>::const_iterator it = m_table.find(name);
+    if ( ( it != m_table.cend() ) && ( STYPE_UNSPECIFIED == type || type == it->second.m_type ) )
     {
-        if ( STYPE_UNSPECIFIED == type || type == it->second.m_type )
-        {
-            return true;
-        }
+        return true;
     }
 
     return false;
@@ -244,42 +247,36 @@ int AsmKcpsm3SymbolTable::assignValue ( const std::string & name,
 {
     int finalValue = -1;
 
-    for ( std::multimap<std::string,Symbol>::iterator it = m_table.find(name);
-          it != m_table.end();
-          it++ )
+    std::map<std::string,Symbol>::iterator it = m_table.find(name);
+    if ( it == m_table.end() )
     {
-        if ( STYPE_UNSPECIFIED != type && type != it->second.m_type )
-        {
-            m_compilerCore -> compilerMessage ( CompilerBase::MT_ERROR,
-                                                QObject::tr ( "symbol `%1' already defined with type: " )
-                                                            . arg ( name.c_str() )
-                                                            . toStdString()
-                                                            + symType2Str(it->second.m_type) );
-        }
+        return finalValue;
     }
 
-    for ( std::multimap<std::string,Symbol>::iterator it = m_table.find(name);
-          it != m_table.end();
-          it++ )
+    if ( STYPE_UNSPECIFIED == type || type == it->second.m_type )
     {
-        if ( STYPE_UNSPECIFIED == type || type == it->second.m_type )
+        if ( true == resolve )
         {
-            if ( true == resolve )
-            {
-                finalValue = (int) resolveExpr(value, -1, location);
-                it->second.m_finalValue = finalValue;
-                delete it->second.m_value;
-                it->second.m_value = new CompilerExpr(finalValue);
-            }
-            else
-            {
-                it->second.m_finalValue = -1;
-                delete it->second.m_value;
-                it->second.m_value = value->copyChainLink();
-            }
-
-            break;
+            finalValue = (int) resolveExpr(value, -1, location);
+            it->second.m_finalValue = finalValue;
+            it->second.m_value->completeDelete();
+            it->second.m_value = new CompilerExpr(finalValue);
         }
+        else
+        {
+            it->second.m_finalValue = -1;
+            it->second.m_value->completeDelete();
+            it->second.m_value = value->copyChainLink();
+        }
+    }
+    else
+    {
+        m_compilerCore -> compilerMessage ( *location,
+                                            CompilerBase::MT_ERROR,
+                                            QObject::tr ( "symbol `%1' already defined with type: " )
+                                                        . arg ( name.c_str() )
+                                                        . toStdString()
+                                                        + "`" + symType2Str(it->second.m_type) +"'" );
     }
 
     return finalValue;
@@ -288,18 +285,17 @@ int AsmKcpsm3SymbolTable::assignValue ( const std::string & name,
 const CompilerExpr * AsmKcpsm3SymbolTable::getValue ( const std::string & name,
                                                       const SymbolType type )
 {
-    for ( std::multimap<std::string,Symbol>::iterator it = m_table.find(name);
-          it != m_table.end();
-          it++ )
+    std::map<std::string,Symbol>::iterator it = m_table.find(name);
+    if (
+           ( it != m_table.end() )
+               &&
+           ( STYPE_UNSPECIFIED == type || type == it->second.m_type )
+               &&
+           ( false == it->second.m_masked )
+       )
     {
-        if ( STYPE_UNSPECIFIED == type || type == it->second.m_type )
-        {
-            if ( false == it->second.m_masked )
-            {
-                it->second.m_used = true;
-                return it->second.m_value;
-            }
-        }
+        it->second.m_used = true;
+        return it->second.m_value;
     }
 
     return NULL;
@@ -336,7 +332,8 @@ int AsmKcpsm3SymbolTable::getExprValue ( ExprValSide side,
         {
             m_compilerCore -> compilerMessage ( expr->m_location,
                                                 CompilerBase::MT_ERROR,
-                                                QObject::tr("real numbers are not supported in assembler").toStdString());
+                                                QObject::tr("real numbers are not supported in assembler")
+                                                           .toStdString());
             break;
         }
         case CompilerValue::TYPE_EXPR:
@@ -350,7 +347,8 @@ int AsmKcpsm3SymbolTable::getExprValue ( ExprValSide side,
             {
                 m_compilerCore -> compilerMessage ( expr->m_location,
                                                     CompilerBase::MT_ERROR,
-                                                    QObject::tr("undefined symbol: ").toStdString() + "\"" + value->m_data.m_symbol + "\"");
+                                                    QObject::tr("undefined symbol: ").toStdString()
+                                                    + "\"" + value->m_data.m_symbol + "\"");
                 break;
             }
             else
@@ -546,9 +544,12 @@ unsigned int AsmKcpsm3SymbolTable::substitute ( const std::string & origSymbol,
                 case CompilerValue::TYPE_SYMBOL:
                     if ( origSymbol == value->m_data.m_symbol )
                     {
+                        delete [] value->m_data.m_symbol;
                         if ( CompilerExpr::OPER_NONE == newSymbol->oper() )
                         {
-                            *value = newSymbol->lVal().makeCopy();
+                            CompilerValue * val = newSymbol->lVal().makeCopy();
+                            *value = *val;
+                            delete val;
                         }
                         else
                         {
@@ -586,7 +587,7 @@ void AsmKcpsm3SymbolTable::output()
 
     file << this;
 
-    if ( true == file.bad() )
+    if ( true == file.fail() )
     {
         m_compilerCore -> compilerMessage ( CompilerBase::MT_ERROR,
                                             QObject::tr ( "Unable to write to " ).toStdString()
@@ -597,7 +598,20 @@ void AsmKcpsm3SymbolTable::output()
 
 void AsmKcpsm3SymbolTable::clear()
 {
+    for ( std::map<std::string,AsmKcpsm3SymbolTable::Symbol>::const_iterator symbol = m_table.cbegin();
+          symbol != m_table.cend();
+          symbol++ )
+    {
+        symbol->second.m_value->completeDelete();
+    }
     m_table.clear();
+
+    for ( std::map<std::string,AsmKcpsm3SymbolTable::Symbol>::const_iterator symbol = m_deletedSymbols.cbegin();
+          symbol != m_deletedSymbols.cend();
+          symbol++ )
+    {
+        symbol->second.m_value->completeDelete();
+    }
     m_deletedSymbols.clear();
 }
 
@@ -649,11 +663,11 @@ const char * AsmKcpsm3SymbolTable::symType2Str ( const AsmKcpsm3SymbolTable::Sym
 std::ostream & operator << ( std::ostream & out,
                              const AsmKcpsm3SymbolTable * symbolTable )
 {
-    const std::multimap<std::string,AsmKcpsm3SymbolTable::Symbol> * table = &(symbolTable->m_table);
+    const std::map<std::string,AsmKcpsm3SymbolTable::Symbol> * table = &(symbolTable->m_table);
 
     for ( int i = 0; i < 2; i++ )
     {
-        for ( std::multimap<std::string,AsmKcpsm3SymbolTable::Symbol>::const_iterator symbol = table->cbegin();
+        for ( std::map<std::string,AsmKcpsm3SymbolTable::Symbol>::const_iterator symbol = table->cbegin();
               symbol != table->cend();
               symbol++ )
         {
@@ -708,7 +722,14 @@ std::ostream & operator << ( std::ostream & out,
             }
             else
             {
-                symbolTable->printSymLocation(out, symbol->second.m_location);
+                if ( -1 == symbol->second.m_location.m_fileNumber )
+                {
+                    out << "IMPLICIT";
+                }
+                else
+                {
+                    symbolTable->printSymLocation(out, symbol->second.m_location);
+                }
             }
 
             out << std::endl;
@@ -720,7 +741,7 @@ std::ostream & operator << ( std::ostream & out,
             {
                 break;
             }
-            out << std::endl << std::endl << "REMOVED SYMBOLS:" << std::endl;
+            out << std::endl << "REMOVED SYMBOLS:" << std::endl;
             table = &(symbolTable->m_deletedSymbols);
         }
     }

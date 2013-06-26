@@ -33,6 +33,7 @@ class DataFile;
 #include "CompilerExpr.h"
 #include "CompilerStatement.h"
 #include "CompilerStatementTypes.h"
+#include "CompilerSourceLocation.h"
 
 // Used for i18n only.
 #include <QObject>
@@ -120,6 +121,15 @@ class CompilerSemanticInterface
          * @return
          */
         virtual void registerMsgObserver ( CompilerMsgObserver * observer ) = 0;
+
+        /**
+         * @brief
+         * @param[in] deviceName
+         * @param[in] flag
+         * @return
+         */
+        virtual CompilerStatement * loadDevSpecCode ( const std::string & deviceName,
+                                                      CompilerBase::DevSpecLoaderFlag * flag = NULL ) = 0;
 
     ////    Public Attributes    ////
     public:

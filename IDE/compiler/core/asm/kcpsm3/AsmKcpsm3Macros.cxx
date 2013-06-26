@@ -27,6 +27,7 @@
 
 AsmKcpsm3Macros::Macro::Macro()
 {
+    m_definition = NULL;
     m_id = -1;
 }
 
@@ -44,6 +45,7 @@ AsmKcpsm3Macros::AsmKcpsm3Macros ( CompilerSemanticInterface * compilerCore,
 
 AsmKcpsm3Macros::~AsmKcpsm3Macros()
 {
+    clear();
 }
 
 void AsmKcpsm3Macros::setExpEnabled ( bool enabled )
@@ -60,7 +62,7 @@ void AsmKcpsm3Macros::define ( CompilerSourceLocation location,
     {
         if ( NULL != m_table[name].m_definition )
         {
-            delete m_table[name].m_definition;
+            m_table[name].m_definition->completeDelete();
         }
 
         m_compilerCore -> compilerMessage ( location,
@@ -80,8 +82,7 @@ void AsmKcpsm3Macros::define ( CompilerSourceLocation location,
     }
 
     incrMacroCounter(macroDef);
-    m_table[name] = Macro(location, m_idCounter++);
-    m_table[name].m_definition = macroDef;
+    m_table[name] = Macro(location, m_idCounter++, macroDef);
 
     for ( const CompilerExpr * param = parameters;
           param != NULL;
@@ -157,8 +158,8 @@ CompilerStatement * AsmKcpsm3Macros::expand ( const CompilerSourceLocation & msg
         }
 
         symbolSubst ( macro.m_parameters[argNo],
-                     arg,
-                     result );
+                      arg,
+                      result );
     }
 
     // Substitute remaining parameters with "blank values".
@@ -211,6 +212,8 @@ bool AsmKcpsm3Macros::mangleName ( const CompilerSourceLocation & location,
 
         result |= symbolSubst ( local, &mangledName, node );
         localSymbols->push_back(local);
+
+        delete [] mangledName.lVal().m_data.m_symbol;
     }
 
     return result;
@@ -258,7 +261,7 @@ void AsmKcpsm3Macros::output()
 
     file << this;
 
-    if ( true == file.bad() )
+    if ( true == file.fail() )
     {
         m_compilerCore -> compilerMessage ( CompilerBase::MT_ERROR,
                                             QObject::tr ( "Unable to write to " ).toStdString()
@@ -272,6 +275,13 @@ void AsmKcpsm3Macros::clear()
     m_idCounter = 0;
     m_expCounter = 0;
     m_expEnabled = true;
+
+    for ( std::map<std::string,AsmKcpsm3Macros::Macro>::const_iterator mac = m_table.cbegin();
+          mac != m_table.cend();
+          mac++ )
+    {
+        mac->second.m_definition->completeDelete();
+    }
     m_table.clear();
 }
 
