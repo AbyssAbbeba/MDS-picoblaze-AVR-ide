@@ -47,6 +47,18 @@ class AsmKcpsm3MemoryPtr
             MS__MAX__    ///<
         };
 
+    ////    Private Datatypes    ////
+    private:
+        /**
+         * @brief
+         */
+        enum HardLimits
+        {
+            HARD_LIM_REG  = 31,
+            HARD_LIM_DATA = 63,
+            HARD_LIM_CODE = 1023
+        };
+
     ////    Constructors and Destructors    ////
     public:
         /**
