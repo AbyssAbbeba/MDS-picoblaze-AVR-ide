@@ -67,8 +67,9 @@ class CompilerThread : public QThread,
     public:
         /**
          * @brief
+         * @param[in] baseIncludeDir
          */
-        CompilerThread();
+        CompilerThread ( const std::string & baseIncludeDir );
 
         /**
          * @brief

@@ -17,8 +17,10 @@
 #include "CompilerThread.h"
 #include "CompilerCore.h"
 
-CompilerThread::CompilerThread() : m_compilerCore ( new CompilerCore(this) )
+CompilerThread::CompilerThread ( const std::string & baseIncludeDir )
+                               : m_compilerCore ( new CompilerCore ( this ) )
 {
+    m_compilerCore->setBaseIncludeDir(baseIncludeDir);
 }
 
 CompilerThread::~CompilerThread()
