@@ -110,7 +110,7 @@ void TestSuiteSuc::testFunction()
 
     m_options->m_sourceFile = ( path("TestSuiteSuc") / "testcases" / (testName + ".asm") ).string();
 
-    std::string resultsCommonPath = ( path("TestSuiteSuc") / "results" / testName ).string();
+    std::string resultsCommonPath = ( path("..") / "results" / testName ).string();
     m_options->m_symbolTable  = resultsCommonPath + ".sym";
     m_options->m_macroTable   = resultsCommonPath + ".mac";
     m_options->m_mdsDebugFile = resultsCommonPath + ".dbg";
@@ -124,7 +124,7 @@ void TestSuiteSuc::testFunction()
 
     CU_ASSERT_FATAL ( true == m_compiler->compile(CompilerBase::LI_ASM, CompilerBase::TA_KCPSM3, m_options) );
 
-    std::string expectedCommonPath = ( path("TestSuiteSuc") / "expected" / testName ).string();
+    std::string expectedCommonPath = ( path("..") / "expected" / testName ).string();
     compareLst ( expectedCommonPath + ".lst.exp", m_options->m_lstFile     );
     compareSym ( expectedCommonPath + ".sym.exp", m_options->m_symbolTable );
     compareMac ( expectedCommonPath + ".mac.exp", m_options->m_macroTable  );

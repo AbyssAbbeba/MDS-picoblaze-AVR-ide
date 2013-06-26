@@ -1,6 +1,8 @@
 # ==============================================================================
 #
-# Unit tests for PicoBlaze Simulator.
+# Unit tests for PicoBlaze Simulator, test suite for single instructions.
+
+# TSP_TestSingleInst: T = Test, S = Simulator, P = PicoBlaze, _<nameOfTheTestSuite>
 #
 # (C) copyright 2013 Moravia Microsystems, s.r.o.
 #
@@ -12,7 +14,7 @@
 # ------------------------------------------------------------------------------
 
 # Set project name
-project ( testsMCUSimPicoBlaze )
+project ( TSP_TestSingleInst )
 
 # Set the minimum required version of CMake
 cmake_minimum_required ( VERSION 2.8 )
@@ -25,22 +27,25 @@ enable_testing()
 
 
 # ------------------------------------------------------------------------------
-# BUILD COMPONENTS IN THE SUBDIRECTORIES
-# ------------------------------------------------------------------------------
-
-# Test suite: Single instructions.
-add_subdirectory ( TestSingleInst )
-
-
-# ------------------------------------------------------------------------------
 # COMPILATION OPTIONS
 # ------------------------------------------------------------------------------
 
-# # Add include directories to the build.
-include_directories ( "${CMAKE_CURRENT_BINARY_DIR}/../../../../simulators/MCUSim/PicoBlaze" )
+# Find Boost include directories and libraries.
+find_package ( Boost 1.46
+               REQUIRED
+               COMPONENTS filesystem system )
 
-# # Specify directories in which the linker will look for libraries.
-link_directories ( "${CMAKE_CURRENT_BINARY_DIR}/../../../../simulators/MCUSim/PicoBlaze" )
+# Add include directories to the build.
+include_directories ( ${Boost_INCLUDE_DIRS}
+                      "${CMAKE_CURRENT_BINARY_DIR}/../../../../../compiler"
+                      "${CMAKE_CURRENT_BINARY_DIR}/../../../../../utilities/MCUDataFiles"
+                      "${CMAKE_CURRENT_BINARY_DIR}/../../../../../utilities/DbgFile" )
+
+# Specify directories in which the linker will look for libraries.
+link_directories ( ${Boost_LIBRARY_DIRS}
+                   "${CMAKE_CURRENT_BINARY_DIR}/../../../../../compiler/core"
+                   "${CMAKE_CURRENT_BINARY_DIR}/../../../../../utilities/MCUDataFiles"
+                   "${CMAKE_CURRENT_BINARY_DIR}/../../../../../utilities/DbgFile" )
 
 ## Add switches to compiler command line
  # -pipe       : Use pipes rather than temporary files for communication between the various stages of compilation.
@@ -48,19 +53,12 @@ link_directories ( "${CMAKE_CURRENT_BINARY_DIR}/../../../../simulators/MCUSim/Pi
  # -O1         : Optimization, level 1.
 add_definitions ( -pipe -std=c++0x -O1 )
 
-# Add an executable to the project using the specified source files.
-add_executable ( ${PROJECT_NAME}
-                 main.cxx )
+## Add a library to the project using the specified source files,
+ # in this case it will procude dynamic C++ library.
+add_library ( ${PROJECT_NAME} SHARED
+              TestSingleInst.cxx )
 
 # Link a target to given libraries
 target_link_libraries ( ${PROJECT_NAME}
-                        TSP_TestSingleInst
+                        ${Boost_LIBRARIES}
                         cunit )
-
-
-# ------------------------------------------------------------------------------
-# TESTS
-# ------------------------------------------------------------------------------
-
-add_test ( NAME ${PROJECT_NAME}
-           COMMAND ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME} )
