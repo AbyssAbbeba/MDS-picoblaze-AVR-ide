@@ -280,6 +280,10 @@ Project::Project(QFile *file, ProjectMan *parent)
     qDebug() << "Project: Project()";
     mainFileName = "";
     mainFilePath = "";
+    for (int i = 0; i < 7; i++)
+    {
+        compileOpt.append(false);
+    }
     
     errorFlag = ERR_OK;
     fileCount = 0;
@@ -360,6 +364,98 @@ Project::Project(QFile *file, ProjectMan *parent)
                             mainFilePath = xmlElement.attribute("path", "");
                         }
                     }
+                    else if (xmlElement.tagName() == "Compiler")
+                    {
+                        QDomNode xmlCompilerNode = xmlElement.firstChild();
+                        QDomElement xmlCompilerElement;
+                        while (!xmlCompilerNode.isNull())
+                        {
+                            xmlCompilerElement = xmlCompilerNode.toElement();
+                            if (xmlCompilerElement.tagName() == "Options")
+                            {
+                                QDomNode xmlCompileOptNode = xmlCompilerElement.firstChild();
+                                QDomElement xmlCompileOptElem;
+                                while (!xmlCompileOptNode.isNull())
+                                {
+                                    xmlCompileOptElem = xmlCompileOptNode.toElement();
+                                    if (xmlCompileOptElem.tagName() == "Symbol Table")
+                                    {
+                                        if (xmlCompileOptElem.attribute("enable") == "true")
+                                        {
+                                            compileOpt[0] = true;
+                                        }
+                                    }
+                                    else if (xmlCompileOptElem.tagName() == "Macro Table")
+                                    {
+                                        if (xmlCompileOptElem.attribute("enable") == "true")
+                                        {
+                                            compileOpt[1] = true;
+                                        }
+                                    }
+                                    else if (xmlCompileOptElem.tagName() == "Debug File")
+                                    {
+                                        if (xmlCompileOptElem.attribute("enable") == "true")
+                                        {
+                                            compileOpt[2] = true;
+                                        }
+                                    }
+                                    else if (xmlCompileOptElem.tagName() == "Code Tree")
+                                    {
+                                        if (xmlCompileOptElem.attribute("enable") == "true")
+                                        {
+                                            compileOpt[3] = true;
+                                        }
+                                    }
+                                    else if (xmlCompileOptElem.tagName() == "List File")
+                                    {
+                                        if (xmlCompileOptElem.attribute("enable") == "true")
+                                        {
+                                            compileOpt[4] = true;
+                                        }
+                                    }
+                                    else if (xmlCompileOptElem.tagName() == "Hex File")
+                                    {
+                                        if (xmlCompileOptElem.attribute("enable") == "true")
+                                        {
+                                            compileOpt[5] = true;
+                                        }
+                                    }
+                                    else if (xmlCompileOptElem.tagName() == "Bin File")
+                                    {
+                                        if (xmlCompileOptElem.attribute("enable") == "true")
+                                        {
+                                            compileOpt[6] = true;
+                                        }
+                                    }
+                                    else if (xmlCompileOptElem.tagName() == "SRec File")
+                                    {
+                                        if (xmlCompileOptElem.attribute("enable") == "true")
+                                        {
+                                            compileOpt[7] = true;
+                                        }
+                                    }
+                                    xmlCompileOptNode = xmlCompileOptNode.nextSibling();
+                                    qDebug() << "Opt";
+                                }
+                            }
+                            else if (xmlCompilerElement.tagName() == "Include Paths")
+                            {
+                                QDomNode xmlIncludeNode = xmlElement.firstChild();
+                                QDomElement xmlIncludeElement;
+                                while (!xmlIncludeNode.isNull())
+                                {
+                                    xmlIncludeElement = xmlIncludeNode.toElement();
+                                    if (xmlIncludeElement.tagName() == "Path")
+                                    {
+                                        compileIncPaths << xmlIncludeElement.attribute("path");
+                                        qDebug() << "Include";
+                                    }
+                                    xmlIncludeNode = xmlIncludeNode.nextSibling();
+                                }
+                            }
+                            xmlCompilerNode = xmlCompilerNode.nextSibling();
+                        }
+                    }
                 }
                 xmlNode = xmlNode.nextSibling();
             }
@@ -408,6 +504,7 @@ Project::Project(ProjectMan *parent)
     this->m_simControlUnit = NULL;
     prjName = "untracked";
     prjPath = "untracked";
+
     prjDockWidget = new QDockWidget(prjName, (QWidget *)(parent->parent()));
     prjDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea);
     prjDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
@@ -504,7 +601,8 @@ Project::Project(QString name, QString path, QString arch, LangType lang, QFile 
     QDomElement xmlSimulator = domDoc.createElement("Simulator");
     xmlRoot.appendChild(xmlSimulator);
 
-    QDomElement xmlCompilerOpt = domDoc.createElement("Compiler Options");
+    QDomElement xmlCompiler = domDoc.createElement("Compiler");
+    QDomElement xmlCompilerOpt = domDoc.createElement("Options");
     QDomElement xmlSymbolTbl = domDoc.createElement("Symbol Table");
     xmlSymbolTbl.setAttribute("enable", "true");
     xmlCompilerOpt.appendChild(xmlSymbolTbl);
@@ -524,12 +622,15 @@ Project::Project(QString name, QString path, QString arch, LangType lang, QFile 
     xmlHexFile.setAttribute("enable", "true");
     xmlCompilerOpt.appendChild(xmlHexFile);
     QDomElement xmlBinFile = domDoc.createElement("Bin File");
-    xmlBinFile.setAttribute("enable", "true");
+    xmlBinFile.setAttribute("enable", "false");
     xmlCompilerOpt.appendChild(xmlBinFile);
     QDomElement xmlSRecFile = domDoc.createElement("SRec File");
-    xmlSRecFile.setAttribute("enable", "true");
+    xmlSRecFile.setAttribute("enable", "false");
     xmlCompilerOpt.appendChild(xmlSRecFile);
-    xmlRoot.appendChild(xmlCompilerOpt);
+    xmlCompiler.appendChild(xmlCompilerOpt);
+    QDomElement xmlCompilerInclude = domDoc.createElement("Include Paths");
+    xmlCompiler.appendChild(xmlCompilerInclude);
+    xmlRoot.appendChild(xmlCompiler);
 
     QTextStream xmlStream(file);
     xmlStream << domDoc.toString();
