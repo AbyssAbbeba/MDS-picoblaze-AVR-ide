@@ -400,6 +400,7 @@ std::cout << "case ASMKCPSM3_MACRO: nameOfMacro = '"<<nameOfMacro<<"'\n";
 
                     if ( CompilerStatementTypes::EMPTY_STATEMENT == macro->type() )
                     {
+std::cout << "case ASMKCPSM3_MACRO: ( CompilerStatementTypes::EMPTY_STATEMENT == macro->type() )\n";
                         macro->completeDelete();
                         break;
                     }

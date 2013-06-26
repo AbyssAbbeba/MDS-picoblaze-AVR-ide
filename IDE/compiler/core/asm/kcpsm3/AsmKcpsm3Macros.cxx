@@ -24,7 +24,7 @@
 // Standard headers.
 #include <cstdio>
 #include <fstream>
-
+#include <iostream> // DEBUG
 AsmKcpsm3Macros::Macro::Macro()
 {
     m_definition = NULL;
@@ -124,12 +124,13 @@ CompilerStatement * AsmKcpsm3Macros::expand ( const CompilerSourceLocation & msg
 
     if ( m_table.end() == m_table.find(name) )
     {
+std::cout << "NOT FOUND " << location << "\n";
         m_compilerCore -> compilerMessage ( msgLocation,
                                             CompilerBase::MT_ERROR,
                                             QObject::tr("macro not defined: ").toStdString() + "\"" + name + "\"" );
         return new CompilerStatement();
     }
-
+std::cout << "FOUND " << location << "\n";
     Macro & macro = m_table[name];
     CompilerStatement * result = macro.m_definition->copyEntireChain();
 
