@@ -318,8 +318,9 @@ void CompilerStatement::completeDelete()
     }
 
     CompilerStatement * tmp;
-    CompilerStatement * node = m_next;
+    CompilerStatement * node;
 
+    node = m_next;
     while ( NULL != node )
     {
         tmp = node;
