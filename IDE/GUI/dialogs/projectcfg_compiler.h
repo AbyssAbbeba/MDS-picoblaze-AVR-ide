@@ -3,6 +3,7 @@
 
 
 #include <QWidget>
+//#include <QDialogButtonBox>
 #include <QCheckBox>
 #include <QLabel>
 #include <QLineEdit>
@@ -24,6 +25,7 @@ class ProjectCfg_Compiler : public QWidget
 
     private:
         Project *project;
+        //QDialogButtonBox *buttonBox;
         QLabel *lblMain;
         QLabel *lblSymbolTbl;
         QLabel *lblMacroTbl;

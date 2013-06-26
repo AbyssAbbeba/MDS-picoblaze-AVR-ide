@@ -21,7 +21,7 @@ ProjectConfigDialog_Core::ProjectConfigDialog_Core(QWidget *parent, Project *cur
     qDebug() << "ProjectConfigDialog_Core: ProjectConfigDialog_Core()";
     this->project = currProject;
     this->reloadFiles = false;
-    //this->setModal(true);
+    this->setModal(true);
 
     this->cfgInterface = new CfgInterface(this);
     this->generalCfg = new ProjectCfg_General(cfgInterface, this->project);
@@ -29,10 +29,10 @@ ProjectConfigDialog_Core::ProjectConfigDialog_Core(QWidget *parent, Project *cur
     this->pathsCfg = new ProjectCfg_CompPaths(cfgInterface, this->project);
     this->fileMgr = new ProjectCfg_FileMgr(cfgInterface, this->project);
     
-    this->cfgInterface->addWidget(this->generalCfg, "General");
-    this->cfgInterface->addWidget(this->compilerCfg, "Compiler");
-    this->cfgInterface->addWidget(this->pathsCfg, "Include Paths", true);
-    this->cfgInterface->addWidget(this->fileMgr, "Files");
+    this->cfgInterface->addWidget(this->generalCfg, "General", "General Options");
+    this->cfgInterface->addWidget(this->compilerCfg, "Compiler", "Compiler Options");
+    this->cfgInterface->addWidget(this->pathsCfg, "Include Paths", "Compiler Include Paths", true);
+    this->cfgInterface->addWidget(this->fileMgr, "Files", "Project Files");
     
 
     this->cfgInterface->show();
@@ -40,6 +40,7 @@ ProjectConfigDialog_Core::ProjectConfigDialog_Core(QWidget *parent, Project *cur
     this->cfgInterface->fixSize();
     this->setFixedWidth(this->cfgInterface->width());
     this->setFixedHeight(this->cfgInterface->height());
+    //this->generalCfg->fixButtonBox();
     
     connect(this->fileMgr, SIGNAL(reloadTree()), this, SLOT(reload()));
     qDebug() << "ProjectConfigDialog_Core: return ProjectConfigDialog_Core()";

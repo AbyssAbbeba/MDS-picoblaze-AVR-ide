@@ -3,6 +3,7 @@
 
 
 #include <QWidget>
+#include <QDialogButtonBox>
 #include <QListWidget>
 #include <QPushButton>
 #include <QGridLayout>

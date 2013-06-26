@@ -27,7 +27,7 @@ ProjectCfg_FileMgr::ProjectCfg_FileMgr(QWidget *parentWidget, Project *currProje
     : QWidget(parentWidget)
 {
     //prepare widget
-    this->parent = parentWidget;
+    //this->parent = parentWidget;
     this->project = currProject;
     this->reloadFiles = false;
     fileList = new QListWidget(this);

@@ -7,6 +7,9 @@ ProjectCfg_Compiler::ProjectCfg_Compiler(QWidget *parentWidget, Project *currPro
     : QWidget(parentWidget)
 {
     this->project = currProject;
+
+
+    //this-> buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, this);
     
     this->lblMain = new QLabel("Main File", this);
     this->lblSymbolTbl = new QLabel("Symbol Table", this);
