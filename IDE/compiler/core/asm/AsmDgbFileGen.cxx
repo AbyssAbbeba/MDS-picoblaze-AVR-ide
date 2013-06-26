@@ -15,6 +15,9 @@
 
 #include "AsmDgbFileGen.h"
 
+// Support for debug files.
+#include "DbgFileNative.h"
+
 // Standard headers.
 #include <fstream>
 #include <cstdint>
@@ -44,20 +47,15 @@ void AsmDgbFileGen::setCode ( const CompilerSourceLocation & location,
     m_data.push_back(DbgRecord(location, code, address));
 }
 
-void AsmDgbFileGen::output ( CompilerSemanticInterface * compilerCore,
-                             const CompilerOptions * opts )
+inline void AsmDgbFileGen::outputToFile ( CompilerSemanticInterface * compilerCore,
+                                          const std::string & filename )
 {
-    if ( opts->m_mdsDebugFile.empty() )
-    {
-        return;
-    }
-
-    std::ofstream file ( opts->m_mdsDebugFile, ( std::fstream::out | std::fstream::trunc ) );
+    std::ofstream file ( filename, ( std::fstream::out | std::fstream::trunc ) );
 
     if ( false == file.is_open() )
     {
         compilerCore -> compilerMessage ( CompilerBase::MT_ERROR,
-                                            QObject::tr("unable to open ").toStdString() + "\"" + opts->m_mdsDebugFile  + "\"" );
+                                            QObject::tr("unable to open ").toStdString() + "\"" + filename  + "\"" );
         return;
     }
 
@@ -82,11 +80,50 @@ void AsmDgbFileGen::output ( CompilerSemanticInterface * compilerCore,
         }
     }
 
-    if ( true == file.bad() )
+    if ( true == file.fail() )
     {
         compilerCore -> compilerMessage ( CompilerBase::MT_ERROR,
-                                            QObject::tr("unable to write to ").toStdString() + "\"" + opts->m_mdsDebugFile  + "\"" );
+                                            QObject::tr("unable to write to ").toStdString() + "\"" + filename + "\"" );
         return;
+    }
+}
+
+inline void AsmDgbFileGen::outputToContainer ( CompilerSemanticInterface * compilerCore,
+                                               DbgFileNative * target )
+{
+    size_t numberOfFiles = compilerCore->listSourceFiles().size();
+
+    target->directSetupPrepare();
+    target->directSetupFiles ( compilerCore->listSourceFiles() );
+
+    for ( std::vector<DbgRecord>::const_iterator i = m_data.cbegin();
+          i != m_data.cend();
+          i ++ )
+    {
+        if ( (size_t)(i->m_location.m_fileNumber) < numberOfFiles )
+        {
+            target->directSetupRelation ( (unsigned int) i->m_address,
+                                          (unsigned int) i->m_location.m_fileNumber,
+                                          (unsigned int) i->m_location.m_lineStart );
+        }
+    }
+
+    target->directSetupFinalize();
+}
+
+void AsmDgbFileGen::output ( CompilerSemanticInterface * compilerCore,
+                             const CompilerOptions * opts )
+{
+    if ( true == compilerCore->m_simulatorData.m_genSimData )
+    {
+        DbgFileNative * dbgFile = new DbgFileNative();
+        outputToContainer(compilerCore, dbgFile);
+        compilerCore->m_simulatorData.m_simDbg = dbgFile;
+    }
+
+    if ( false == opts->m_mdsDebugFile.empty() )
+    {
+        outputToFile(compilerCore, opts->m_mdsDebugFile);
     }
 }
 

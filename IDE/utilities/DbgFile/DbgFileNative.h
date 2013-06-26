@@ -18,6 +18,10 @@
 
 #include "DbgFile.h"
 
+// Standard header files.
+#include <vector>
+#include <string>
+
 /**
  * @brief
  * @ingroup DbgFile
@@ -66,6 +70,35 @@ class DbgFileNative : public DbgFile
          */
         int getAddrByLine ( unsigned int line,
                             const std::string & filename ) const;
+
+        /// @name Methods for direct set-up of the debug data container, i.e. without loading a debug file.
+        //@{
+            /**
+             * @brief
+             */
+            void directSetupPrepare();
+
+            /**
+             * @brief
+             * @param[in] files
+             */
+            void directSetupFiles ( const std::vector<std::string> & files );
+
+            /**
+             * @brief
+             * @param[in] addr
+             * @param[in] file
+             * @param[in] line
+             */
+            void directSetupRelation ( unsigned int addr,
+                                       unsigned int file,
+                                       unsigned int line );
+
+            /**
+             * @brief
+             */
+            void directSetupFinalize();
+        //@}
 
     ////    Inline Private Operations    ////
     private:

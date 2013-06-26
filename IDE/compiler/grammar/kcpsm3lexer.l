@@ -360,17 +360,20 @@ DIS_INT_INST            "disable"{WSPACE}"interrupt"
     '                   {
                             // End of the string, or single character literal; i.e. 'a' <--, or 'some string' <--
                             yy_pop_state(yyscanner);
-                            if ( yylval->array.size == 1 )
-                            {
-                                yylval->number = int(yylval->array.data[0]);
-                                return NUMBER;
-                            }
-                            else
+
+                            int result = int(yylval->array.data[0]);
+                            free(yylval->array.data);
+
+                            if ( yylval->array.size != 1 )
                             {
                                 yyextra->lexerMessage ( yylloc,
                                                         CompilerBase::MT_ERROR,
-                                                        QObject::tr("character constant is too long").toStdString() );
+                                                        QObject::tr("character constant has to have 8 bits")
+                                                                   .toStdString() );
                             }
+
+                            yylval->number = result;
+                            return NUMBER;
                         }
     [^\\'\r\n]+         {
                             // Any string, content except for escape sequences, EOL (end of line) is also not allowed
@@ -393,7 +396,8 @@ DIS_INT_INST            "disable"{WSPACE}"interrupt"
                             yy_pop_state(yyscanner);
                             yyextra->lexerMessage ( yylloc,
                                                     CompilerBase::MT_ERROR,
-                                                    QObject::tr("unterminated string or character constant").toStdString() );
+                                                    QObject::tr("unterminated string or character constant")
+                                                               .toStdString() );
 
                             // Put the EOL character sequence back onto the input stream
                             char * eol = strdup(yytext);
@@ -438,14 +442,19 @@ DIS_INT_INST            "disable"{WSPACE}"interrupt"
                             enlargeStringBuffer(yylval, yyextra);
                             // Copy converted escape sequence to the string buffer
                             int size;
-                            yylval->array.data [ yylval->array.size++ ] = (unsigned char) escapeSequence(yyextra, yylloc, yytext, &size);
+                            yylval->array.data [ yylval->array.size++ ] = ( unsigned char )
+                                                                          escapeSequence ( yyextra,
+                                                                                           yylloc,
+                                                                                           yytext,
+                                                                                           &size );
                         }
     <<EOF>>             {
                             // Handle strings terminated by EOF (End Of File) as ERROR, of course.
                             yy_pop_state(yyscanner);
                             yyextra->lexerMessage ( yylloc,
                                                     CompilerBase::MT_ERROR,
-                                                    QObject::tr("unterminated string or character constant").toStdString() );
+                                                    QObject::tr("unterminated string or character constant")
+                                                               .toStdString() );
 
                             // Discard the string buffer and terminate lexical analysis (this is a fatal error)
                             free(yylval->array.data);
@@ -480,13 +489,16 @@ DIS_INT_INST            "disable"{WSPACE}"interrupt"
                             enlargeStringBuffer(yylval, yyextra);
                             yylval->array.data [ yylval->array.size ] = '\0';
 
-                            char * filename = (char*) yylval->array.data;
+                            char * filename = new char [ yylval->array.size + 1 ];
+                            strcpy(filename, (char*) yylval->array.data);
+                            free(yylval->array.data);
 
                             if ( strlen(filename) != (size_t) yylval->array.size )
                             {
                                 yyextra->lexerMessage ( yylloc,
                                                         CompilerBase::MT_WARNING,
-                                                        QObject::tr("file name contains a null character").toStdString() );
+                                                        QObject::tr("file name contains a null character")
+                                                                   .toStdString() );
                             }
 
                             FILE * file = yyextra->fileOpen(filename);
@@ -494,7 +506,8 @@ DIS_INT_INST            "disable"{WSPACE}"interrupt"
                             {
                                 yyextra->lexerMessage ( yylloc,
                                                         CompilerBase::MT_ERROR,
-                                                        QObject::tr("unable to open the specified file: ").toStdString() + "`" + filename + "'" );
+                                                        QObject::tr("unable to open the specified file: ")
+                                                                   .toStdString() + "`" + filename + "'" );
                                 return EOL;
                             }
                             else

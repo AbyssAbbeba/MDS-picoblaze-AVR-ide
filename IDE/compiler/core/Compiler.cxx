@@ -19,9 +19,11 @@
 #include "CompilerCore.h"
 #include "CompilerMsgInterface.h"
 
-Compiler::Compiler ( CompilerMsgInterface * msgInterface )
+Compiler::Compiler ( CompilerMsgInterface * msgInterface,
+                     std::string baseIncludeDir )
                    : m_compilerCore ( new CompilerCore(msgInterface) )
 {
+    setBaseIncludeDir(baseIncludeDir);
 }
 
 Compiler::~Compiler()
@@ -35,4 +37,9 @@ bool Compiler::compile ( CompilerBase::LangId lang,
                          bool genSimData )
 {
     return m_compilerCore -> compile ( lang, arch, opts, genSimData );
+}
+
+void Compiler::setBaseIncludeDir ( const std::string & directory )
+{
+    m_compilerCore->setBaseIncludeDir(directory);
 }

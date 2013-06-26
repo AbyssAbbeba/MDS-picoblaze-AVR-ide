@@ -20,7 +20,8 @@
 class CompilerSemanticInterface;
 
 // Common compiler header files.
-#include "CompilerBase.h"
+#include "../../CompilerBase.h"
+#include "../../CompilerSourceLocation.h"
 
 // Standard header files.
 #include <vector>
