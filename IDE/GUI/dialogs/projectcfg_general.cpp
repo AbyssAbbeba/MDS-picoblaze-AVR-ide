@@ -16,8 +16,9 @@
 #include "../project/project.h"
 
 ProjectCfg_General::ProjectCfg_General(QWidget *parentWidget, Project *currProject)
+    : QWidget(parentWidget)
 {
-    this->parent = parentWidget;
+    //this->parent = parentWidget;
     this->project = currProject;
     //layout = new QVBoxLayout(this);
     labelName = new QLabel(this);
@@ -38,3 +39,9 @@ ProjectCfg_General::ProjectCfg_General(QWidget *parentWidget, Project *currProje
     //this->setLayout(layout);
     //this->adjustSize();
 }
+
+
+/*void ProjectCfg_General::fixButtonBox()
+{
+    this->buttonBox->move(this->width() - buttonBox->width()-5, this->height() - buttonBox->height()-5);
+}*/

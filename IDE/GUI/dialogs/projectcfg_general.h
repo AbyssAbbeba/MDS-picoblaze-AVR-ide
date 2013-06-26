@@ -16,7 +16,7 @@
 #define PROJECTCFG_GENERAL_H
 
 //#include <QVBoxLayout>
-#include <QDialogButtonBox>
+//#include <QDialogButtonBox>
 #include <QLineEdit>
 #include <QLabel>
 #include "../project/project.h"
@@ -35,11 +35,11 @@ class ProjectCfg_General : public QWidget
     Q_OBJECT
     public:
         ProjectCfg_General(QWidget *parentWidget, Project *currProject);
+        void fixButtonBox();
     private:
         Project *project;
-        QWidget *parent;
         //QVBoxLayout *layout;
-        QDialogButtonBox *buttonBox;
+        //QDialogButtonBox *buttonBox;
         QLineEdit *projName;
         QLabel *labelName;
 };

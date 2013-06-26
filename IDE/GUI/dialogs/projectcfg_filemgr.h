@@ -47,7 +47,6 @@ class ProjectCfg_FileMgr : public QWidget
 
     private:
         Project *project;
-        QWidget *parent;
         QPushButton *deleteBtn;
         QPushButton *addBtn;
         QPushButton *newBtn;
