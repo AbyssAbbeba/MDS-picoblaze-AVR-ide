@@ -20,6 +20,8 @@
 namespace CompilerFileHeaders
 {
     ////    Public Static Constants    ////
+
+    /// @brief
     constexpr const char * AsmNativeDgbFile = "Moravia Microsystems, s.r.o. Debugger File Av1.0";
 }
 

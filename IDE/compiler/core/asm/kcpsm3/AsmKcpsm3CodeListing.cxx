@@ -94,7 +94,7 @@ void AsmKcpsm3CodeListing::loadSourceFiles()
         fileNumber++;
         file.open ( *it, std::fstream::in );
 
-        if ( false == file.is_open())
+        if ( true == file.fail())
         {
             m_compilerCore -> compilerMessage ( CompilerBase::MT_ERROR,
                                                 QObject::tr("unable to open ").toStdString() + "\"" + *it  + "\"" );
@@ -102,7 +102,7 @@ void AsmKcpsm3CodeListing::loadSourceFiles()
         }
 
         // Iterate over lines in the file
-        while ( false == file.eof() )
+        while ( true == file.good() )
         {
             file.getline ( line, MAX_LINE_LENGTH );
             m_listing[fileNumber].push_back ( LstLine ( line ) );
@@ -299,7 +299,7 @@ void AsmKcpsm3CodeListing::output()
 
     file << this;
 
-    if ( true == file.bad() )
+    if ( true == file.fail() )
     {
         m_compilerCore -> compilerMessage ( CompilerBase::MT_ERROR,
                                             QObject::tr("unable to write to ").toStdString() + "\""
@@ -321,7 +321,7 @@ inline bool AsmKcpsm3CodeListing::checkLocation ( const CompilerSourceLocation &
     }
 
     // Location is NOT valid.
-    if ( false == silent )
+    if ( ( false == silent ) && ( -1 != location.m_fileNumber ) )
     {
         m_compilerCore -> compilerMessage ( CompilerBase::MT_ERROR,
                                             QObject::tr ( "some of the source code files were aparently changed"

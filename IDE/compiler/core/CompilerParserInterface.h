@@ -28,6 +28,7 @@
 #include "CompilerExpr.h"
 #include "CompilerStatement.h"
 #include "CompilerStatementTypes.h"
+#include "CompilerSourceLocation.h"
 
 // Used for i18n only
 #include <QObject>

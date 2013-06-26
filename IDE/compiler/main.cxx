@@ -82,21 +82,21 @@ void printHelp ( const char * executable )
                             .toStdString() << std::endl
               << QObject::tr("        data will be stored in raw binary format.").toStdString() << std::endl
               << QObject::tr("    -l, --lst <code listing>").toStdString() << std::endl
-              << QObject::tr("        Specify output file where code listing generated during compilation will be stored.")
-                            .toStdString() << std::endl
+              << QObject::tr("        Specify output file where code listing generated during compilation will be "
+                             "stored.").toStdString() << std::endl
               << QObject::tr("    -m, --mtable <table of macros>").toStdString() << std::endl
-              << QObject::tr("        Specify file in which the compiler will put table of macros defined in your code.")
-                            .toStdString() << std::endl
+              << QObject::tr("        Specify file in which the compiler will put table of macros defined in your "
+                             "code.").toStdString() << std::endl
               << QObject::tr("    -s, --stable <table of symbols>").toStdString() << std::endl
-              << QObject::tr("        Specify file in which the compiler will put table of symbols defined in your code.")
-                            .toStdString() << std::endl
+              << QObject::tr("        Specify file in which the compiler will put table of symbols defined in your "
+                             "code.").toStdString() << std::endl
               << QObject::tr("    -h, --help").toStdString() << std::endl
               << QObject::tr("        (Print this message.)").toStdString() << std::endl
               << QObject::tr("    -V, --version").toStdString() << std::endl
-              << QObject::tr("        Print compiler version and exit").toStdString() << std::endl
+              << QObject::tr("        Print compiler version and exit.").toStdString() << std::endl
               << QObject::tr("    -c, --check").toStdString() << std::endl
-              << QObject::tr("        Do not perform the actual compilation, do only lexical and syntax analysis of the")
-                            .toStdString() << std::endl
+              << QObject::tr("        Do not perform the actual compilation, do only lexical and syntax analysis of"
+                             " the").toStdString() << std::endl
               << QObject::tr("        the provided source code and exit.").toStdString() << std::endl
               << QObject::tr("    --no-warnings").toStdString() << std::endl
               << QObject::tr("        Do not print any warnings.").toStdString() << std::endl
@@ -105,7 +105,15 @@ void printHelp ( const char * executable )
               << QObject::tr("    --no-remarks").toStdString() << std::endl
               << QObject::tr("        Do not print any remarks.").toStdString() << std::endl
               << QObject::tr("    --silent").toStdString() << std::endl
-              << QObject::tr("        Do not print any warnings, errors, or any other messages, stay completely silent.")
+              << QObject::tr("        Do not print any warnings, errors, or any other messages, stay completely "
+                             "silent.").toStdString() << std::endl
+              << QObject::tr("    -I, --include <directory>").toStdString() << std::endl
+              << QObject::tr("        Add directory where the compiler will search for include files.")
+                            .toStdString() << std::endl
+              << QObject::tr("    -D, --dev <device>").toStdString() << std::endl
+              << QObject::tr("        Specify exact target device.").toStdString() << std::endl
+              << QObject::tr("    -P, --precompile <.prc file>").toStdString() << std::endl
+              << QObject::tr("        Specify target file for generation of precompiled code.")
                             .toStdString() << std::endl
               << std::endl;
 
@@ -198,7 +206,7 @@ int main ( int argc, char ** argv )
 {
     CompilerOptions opts;
     CompilerMsgIntfStdout msgInterface;
-    Compiler compiler(&msgInterface);
+    Compiler compiler(&msgInterface, "include");
     CompilerBase::TargetArch targetArchitecture = CompilerBase::TA_INVALID;
     CompilerBase::LangId targetLanguage = CompilerBase::LI_INVALID;
 
@@ -218,12 +226,17 @@ int main ( int argc, char ** argv )
     // Disable error messages from getopt_long().
     opterr = 0;
 
-    const char * shortopts = ":hVca:p:f:m:s:l:x:d:D:b:S:t:WERNI:";
+    const char * shortopts = ":hVca:p:f:m:s:l:x:d:D:b:S:t:WERNI:P:";
     static const struct option longopts[] =
     {
         { "help",        no_argument,       0,   'h' },
         { "version",     no_argument,       0,   'V' },
         { "check",       no_argument,       0,   'c' },
+        { "no-warnings", no_argument,       0,   'W' },
+        { "no-errors",   no_argument,       0,   'E' },
+        { "no-remarks",  no_argument,       0,   'R' },
+        { "silent",      no_argument,       0,   'N' },
+
         { "arch",        required_argument, 0,   'a' },
         { "plang",       required_argument, 0,   'p' },
         { "file",        required_argument, 0,   'f' },
@@ -237,10 +250,8 @@ int main ( int argc, char ** argv )
         { "codetree",    required_argument, 0,   't' },
         { "srec",        required_argument, 0,   'S' },
         { "include",     required_argument, 0,   'I' },
-        { "no-warnings", no_argument,       0,   'W' },
-        { "no-errors",   no_argument,       0,   'E' },
-        { "no-remarks",  no_argument,       0,   'R' },
-        { "silent",      no_argument,       0,   'N' },
+        { "precompile",  required_argument, 0,   'P' },
+
         { 0,             0,                 0, 0     }
     };
 
@@ -323,6 +334,9 @@ int main ( int argc, char ** argv )
                 break;
             case 'I': // --include=<dir>
                 opts.m_includePath.push_back(optarg);
+                break;
+            case 'P': // --precompile=<file>
+                opts.m_prcTarget = optarg;
                 break;
 
             /* Error states */

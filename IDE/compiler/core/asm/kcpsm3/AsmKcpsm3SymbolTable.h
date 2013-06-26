@@ -84,11 +84,6 @@ class AsmKcpsm3SymbolTable
              */
             Symbol ( const Symbol & obj );
 
-            /**
-             * @brief
-             */
-            ~Symbol();
-
             ///
             CompilerExpr * m_value;
 
@@ -123,6 +118,11 @@ class AsmKcpsm3SymbolTable
                                CompilerOptions * opts )
                              : m_compilerCore ( compilerCore ),
                                m_opts ( opts ) {};
+
+        /**
+         * @brief
+         */
+        ~AsmKcpsm3SymbolTable();
 
     ////    Public Operations    ////
     public:
@@ -283,10 +283,10 @@ class AsmKcpsm3SymbolTable
     ////    Private Attributes    ////
     private:
         ///
-        std::multimap<std::string,Symbol> m_table;
+        std::map<std::string,Symbol> m_table;
 
         ///
-        std::multimap<std::string,Symbol> m_deletedSymbols;
+        std::map<std::string,Symbol> m_deletedSymbols;
 
         ///
         CompilerSemanticInterface * const m_compilerCore;

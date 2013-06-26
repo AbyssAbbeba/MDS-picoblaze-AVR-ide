@@ -40,7 +40,8 @@ class Compiler
          * @brief
          * @param[in,out] msgInterface
          */
-        Compiler ( CompilerMsgInterface * msgInterface = NULL );
+        Compiler ( CompilerMsgInterface * msgInterface = NULL,
+                   std::string baseIncludeDir = "" );
 
         /**
          * @brief
@@ -61,6 +62,12 @@ class Compiler
                        CompilerBase::TargetArch arch,
                        CompilerOptions * const opts,
                        bool genSimData = false );
+
+        /**
+         * @brief
+         * @param[in] directory
+         */
+        void setBaseIncludeDir ( const std::string & directory );
 
     ////    Private Attributes    ////
     private:

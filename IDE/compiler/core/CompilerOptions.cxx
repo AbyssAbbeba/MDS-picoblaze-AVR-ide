@@ -52,7 +52,7 @@ void CompilerOptions::clearOutputFiles()
         &m_symbolTable, &m_macroTable,  &m_mdsDebugFile,
         &m_codeTree,    &m_lstFile,     &m_hexFile,
         &m_binFile,     &m_srecFile,    &m_verilogFile,
-        &m_vhdlFile,    NULL
+        &m_vhdlFile,    &m_prcTarget,   NULL
     };
 
     for ( int i = 0; NULL != files[i]; i++ )
@@ -80,7 +80,7 @@ void CompilerOptions::normalizeFilePaths()
         &m_symbolTable, &m_macroTable,  &m_mdsDebugFile,
         &m_codeTree,    &m_lstFile,     &m_hexFile,
         &m_binFile,     &m_srecFile,    &m_verilogFile,
-        &m_vhdlFile,    NULL
+        &m_vhdlFile,    &m_prcTarget,   NULL
     };
 
     path basePath = system_complete(path(m_sourceFile).parent_path().make_preferred());
