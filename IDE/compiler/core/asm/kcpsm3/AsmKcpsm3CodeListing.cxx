@@ -321,7 +321,7 @@ inline bool AsmKcpsm3CodeListing::checkLocation ( const CompilerSourceLocation &
     }
 
     // Location is NOT valid.
-    if ( false == silent )
+    if ( ( false == silent ) && ( -1 != location.m_fileNumber ) )
     {
         m_compilerCore -> compilerMessage ( CompilerBase::MT_ERROR,
                                             QObject::tr ( "some of the source code files were aparently changed"

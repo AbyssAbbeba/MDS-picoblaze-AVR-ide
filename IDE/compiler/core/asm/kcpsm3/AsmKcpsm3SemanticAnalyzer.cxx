@@ -394,12 +394,16 @@ bool AsmKcpsm3SemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
 
                     if ( CompilerStatementTypes::EMPTY_STATEMENT == macro->type() )
                     {
+                        macro->completeDelete();
                         break;
                     }
 
                     //
+                    macro->prependLink(new CompilerStatement());
+                    macro = macro->first();
                     if ( false == phase1(macro, location, &nameOfMacro) )
                     {
+                        macro->completeDelete();
                         return false;
                     }
 
@@ -439,6 +443,7 @@ bool AsmKcpsm3SemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
                         lastLocation = body->lastLeaf()->location();
                         if ( false == phase1(body, location) )
                         {
+                            body->completeDelete();
                             return false;
                         }
                     }
@@ -450,6 +455,8 @@ bool AsmKcpsm3SemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
                         lastLocation = exp->lastLeaf()->location();
                         if ( false == phase1(exp, location) )
                         {
+                            body->completeDelete();
+                            exp->completeDelete();
                             return false;
                         }
                         body->appendLink(exp);
@@ -509,6 +516,7 @@ bool AsmKcpsm3SemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
                 lastLocation = body->lastLeaf()->location();
                 if ( false == phase1(body, location) )
                 {
+                    body->completeDelete();
                     return false;
                 }
 
@@ -520,6 +528,8 @@ bool AsmKcpsm3SemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
                     lastLocation = exp->lastLeaf()->location();
                     if ( false == phase1(exp, location) )
                     {
+                        body->completeDelete();
+                        exp->completeDelete();
                         return false;
                     }
                     body->appendLink(exp);

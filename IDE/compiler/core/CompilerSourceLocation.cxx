@@ -77,8 +77,8 @@ void CompilerSourceLocation::deserialize ( CompilerSerializer & input )
     m_fileNumber = input.translateFileNumber ( (int) input.read_ui16() );
     m_lineStart  = (int) input.read_ui32();
     m_lineEnd    = (int) input.read_ui32();
-    m_colStart   = (int) input.read_ui16();
-    m_colEnd     = (int) input.read_ui16();
+    m_colStart   = (int16_t) input.read_ui16();
+    m_colEnd     = (int16_t) input.read_ui16();
 }
 
 std::ostream & operator << ( std::ostream & out,

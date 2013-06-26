@@ -195,7 +195,7 @@ void CompilerValue::serialize ( CompilerSerializer & output ) const
 }
 void CompilerValue::deserialize ( CompilerSerializer & input )
 {
-    m_type = (Type) input.read_ui8();
+    m_type = Type(input.read_ui8());
     switch ( m_type )
     {
         case TYPE_EMPTY:
