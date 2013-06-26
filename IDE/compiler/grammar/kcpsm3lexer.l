@@ -234,6 +234,7 @@ DIS_INT_INST            "disable"{WSPACE}"interrupt"
 "jump"                  { return I_JUMP; }
 "call"                  { return I_CALL; }
 "return"                { return I_RETURN; }
+"ret"                   { return I_RETURN; }
 "add"                   { return I_ADD; }
 "addcy"                 { return I_ADDCY; }
 "sub"                   { return I_SUB; }
@@ -261,7 +262,9 @@ DIS_INT_INST            "disable"{WSPACE}"interrupt"
 "sla"                   { return I_SLA; }
 "rl"                    { return I_RL; }
 "input"                 { return I_INPUT; }
+"in"                    { return I_INPUT; }
 "output"                { return I_OUTPUT; }
+"out"                   { return I_OUTPUT; }
 
 "z"                     { return Z; }
 "nz"                    { return NZ; }
@@ -596,6 +599,12 @@ DIS_INT_INST            "disable"{WSPACE}"interrupt"
                             yyextra -> lexerMessage ( yylloc,
                                                       CompilerBase::MT_ERROR,
                                                       QObject::tr("label cannot start with a digit: ").toStdString() + "`" + std::string(yytext) + "'" );
+                        }
+\$[_A-Z0-9]+            {
+                            // Unrecognized token => ERROR
+                            yyextra -> lexerMessage ( yylloc,
+                                                      CompilerBase::MT_ERROR,
+                                                      QObject::tr("invalid token: ").toStdString() + "`" + std::string(yytext) + "'" );
                         }
 {ID}|"$"                {
                             // Arbitrary identifier, e.g. `MYREG_U1'
