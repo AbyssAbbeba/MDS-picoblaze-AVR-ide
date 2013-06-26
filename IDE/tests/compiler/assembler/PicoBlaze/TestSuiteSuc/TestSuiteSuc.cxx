@@ -42,9 +42,12 @@
 
 int TestSuiteSuc::init()
 {
+    using namespace boost::filesystem;
+
     m_msgInt = new CompilerMsgIntfStdout();
-    m_compiler = new Compiler(m_msgInt);
     m_options = new CompilerOptions();
+    m_compiler = new Compiler ( m_msgInt,
+                                system_complete( path("..") / ".." / ".." / ".." / "compiler" / "include" ).string() );
 
     m_options->m_verbosity = CompilerOptions::V_GENERAL;
 
