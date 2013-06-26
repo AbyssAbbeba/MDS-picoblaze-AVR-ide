@@ -79,7 +79,6 @@ int initTestEnv()
     return 0;
 }
 
-
 /**
  * @brief Print help message, a short introduction how to use this program.
  * @param[in] executable Name of executable binary from which this program was launched.
