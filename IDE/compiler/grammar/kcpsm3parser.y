@@ -193,7 +193,7 @@
 %token LE               "<="
 %token GT               ">"
 %token GE               ">="
-%token COMPLEMET        "~"
+%token COMPLEMENT       "~"
 
 // Expression functions
 %token F_HIGH           F_LOW
