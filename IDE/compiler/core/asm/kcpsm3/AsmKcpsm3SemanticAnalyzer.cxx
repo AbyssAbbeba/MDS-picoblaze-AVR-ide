@@ -99,6 +99,11 @@ void AsmKcpsm3SemanticAnalyzer::process ( CompilerStatement * codeTree )
     {
         m_compilerCore->compilerMessage(CompilerBase::MT_ERROR,
                                         QObject::tr("the last error was critical, compilation aborted").toStdString());
+
+        m_codeListing->output();
+        m_macros->output();
+        m_symbolTable->output();
+
         return;
     }
 
