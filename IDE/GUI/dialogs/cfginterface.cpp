@@ -19,10 +19,13 @@ CfgInterface::CfgInterface(QWidget *parent)
     : QWidget(parent)
 {
     qDebug() << "CfgInterface: CfgInterface()";
-    this->setWindowTitle("Config");
+    //this->setWindowTitle("Config");
     this->count = 0;
     this->tabs = new QStackedWidget(this);
     this->menuList = new QTreeWidget(this);
+    this->buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, this);
+    this->widgetLabel = new QLabel(this);
+    this->widgetLabel->setAlignment(Qt::AlignCenter);
     this->lastItem = NULL;
     
     this->menuList->setHeaderHidden(true);
@@ -30,7 +33,8 @@ CfgInterface::CfgInterface(QWidget *parent)
     this->menuList->move(5,10);
     //this->menuList->setMaximumHeight(this->tabs->height());
     this->menuList->setMaximumWidth(160);
-    this->tabs->move(165,0);
+    this->widgetLabel->move(165,5);
+    this->tabs->move(165,35);
     //this->setFixedWidth(300);
     //this->setFixedHeight(300);
     //this->setFixedWidth(this->tabs->width()+this->menuList->width()+10);
@@ -47,18 +51,24 @@ void CfgInterface::fixSize()
 {
     qDebug() << "CfgInterface: fixSize()";
 
-    this->menuList->setMaximumHeight(this->tabs->height());
-    this->menuList->setMinimumHeight(this->tabs->height());
+    this->menuList->setMaximumHeight(this->tabs->height()+this->widgetLabel->height());
+    this->menuList->setMinimumHeight(this->tabs->height()+this->widgetLabel->height());
     this->setFixedWidth(this->tabs->width()+this->menuList->width()+10);
-    this->setFixedHeight(this->tabs->height());
+    this->setFixedHeight(this->menuList->height()+this->buttonBox->height()+15);
+    this->buttonBox->move(this->width() - buttonBox->width()-5, this->height() - buttonBox->height()-5);
+    this->widgetLabel->setMaximumWidth(this->tabs->width());
+    this->widgetLabel->setMinimumWidth(this->tabs->width());
+    this->widgetLabel->setMaximumHeight(25);
+    this->widgetLabel->setMinimumHeight(25);
     qDebug() << "CfgInterface: return fixSize()";
 }
 
 
-bool CfgInterface::addWidget(QWidget *widget, QString text, bool child)
+bool CfgInterface::addWidget(QWidget *widget, QString text, QString tabText, bool child)
 {
     qDebug() << "CfgInterface: addWidget()";
     this->tabs->addWidget(widget);
+    this->labelTexts.append(tabText);
     QTreeWidgetItem *item;
     if (true == child)
     {
@@ -88,6 +98,7 @@ bool CfgInterface::addWidget(QWidget *widget, QString text, bool child)
 void CfgInterface::changeWidget(QTreeWidgetItem *curr, QTreeWidgetItem *prev)
 {
     this->tabs->setCurrentIndex(curr->type());
+    this->widgetLabel->setText(labelTexts[curr->type()]);
 }
 
 /*void CfgInterface::paintEvent(QPaintEvent *event)

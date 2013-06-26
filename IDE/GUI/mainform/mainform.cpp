@@ -666,7 +666,7 @@ void MainForm::compileProject()
     options->m_hexFile = (mainFile + ".hex").toStdString();
     options->m_binFile = (mainFile + ".bin").toStdString();
     options->m_srecFile = (mainFile + ".srec").toStdString();
-    CompilerThread *compiler = new CompilerThread();
+    CompilerThread *compiler = new CompilerThread("../compiler/include/assembler/PicoBlaze/");
     qRegisterMetaType<std::string>("std::string");
     qRegisterMetaType<CompilerBase::MessageType>("CompilerBase::MessageType");
     connect(compiler, SIGNAL(compilationMessage(const std::string&, CompilerBase::MessageType)), this, SLOT(reloadCompileInfo(const std::string&, CompilerBase::MessageType)));
