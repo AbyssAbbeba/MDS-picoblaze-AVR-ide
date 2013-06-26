@@ -283,10 +283,10 @@ class AsmKcpsm3SymbolTable
     ////    Private Attributes    ////
     private:
         ///
-        std::multimap<std::string,Symbol> m_table;
+        std::map<std::string,Symbol> m_table;
 
         ///
-        std::multimap<std::string,Symbol> m_deletedSymbols;
+        std::map<std::string,Symbol> m_deletedSymbols;
 
         ///
         CompilerSemanticInterface * const m_compilerCore;

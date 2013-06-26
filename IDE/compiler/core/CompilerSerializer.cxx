@@ -18,8 +18,6 @@
 // Standard header files.
 #include <cstring>
 
-#include <iostream> // DEBUG
-
 /**
  * @brief
  * @param[in] a
@@ -42,14 +40,14 @@ CompilerSerializer::CompilerSerializer ( std::istream & input,
                                          m_output ( NULL ),
                                          m_role   ( DESERIALIZER )
 {
-    size_t headerLength = strlen(COMMON_FILE_HEADER);
+    size_t headerLength = ( 1 + strlen(COMMON_FILE_HEADER) );
     char header [ headerLength ];
     read_c_str ( header, headerLength );
 
     if (
             ( 0 != strncmp(COMMON_FILE_HEADER, header, headerLength) )
                 ||
-            ( INTERFACE_VERSION != (int) read_ui16() )
+            ( INTERFACE_VERSION != (int16_t) read_ui16() )
                 ||
             ( lang != CompilerBase::LangId(read_ui16()) )
                 ||
@@ -188,7 +186,8 @@ void CompilerSerializer::write ( const std::string & val )
 uint8_t CompilerSerializer::read_ui8()
 {
     deserial();
-    return (uint8_t) m_input->get();
+    uint8_t result = (uint8_t) m_input->get();
+    return result;
 }
 
 uint16_t CompilerSerializer::read_ui16()
@@ -196,6 +195,7 @@ uint16_t CompilerSerializer::read_ui16()
     deserial();
     unsigned char buf[2];
     m_input->read ( (char*)buf, 2 );
+
     return (uint16_t) ( ( buf[1] << 8 ) | buf[0] );
 }
 
@@ -206,11 +206,13 @@ uint32_t CompilerSerializer::read_ui32()
     m_input->read ( (char*)buf, 4 );
 
     uint32_t result = 0;
-    for ( int i = 3; i >= 0; i-- )
+    for ( int i = 3; i > 0; i-- )
     {
         result |= buf[i];
         result <<= 8;
     }
+    result |= buf[0];
+
     return result;
 }
 
@@ -221,11 +223,13 @@ uint64_t CompilerSerializer::read_ui64()
     m_input->read ( (char*)buf, 8 );
 
     uint64_t result = 0;
-    for ( int i = 7; i >= 0; i-- )
+    for ( int i = 7; i > 0; i-- )
     {
         result |= buf[i];
         result <<= 8;
     }
+    result |= buf[0];
+
     return result;
 }
 
@@ -247,6 +251,7 @@ char * CompilerSerializer::read_c_str_copy()
     char * result = new char [ len + 1 ];
     m_input->read(result, len);
     result[len] = '\0';
+
     return result;
 }
 
@@ -258,8 +263,9 @@ char * CompilerSerializer::read_c_str ( char * buffer,
     {
         throw Exception ( Exception::BUFFER_OVERFLOW );
     }
-    m_input->read(buffer, ( len - 1) );
+    m_input->read(buffer, len);
     buffer[len] = '\0';
+
     return buffer;
 }
 

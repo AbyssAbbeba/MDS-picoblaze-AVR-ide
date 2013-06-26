@@ -158,8 +158,8 @@ CompilerStatement * AsmKcpsm3Macros::expand ( const CompilerSourceLocation & msg
         }
 
         symbolSubst ( macro.m_parameters[argNo],
-                     arg,
-                     result );
+                      arg,
+                      result );
     }
 
     // Substitute remaining parameters with "blank values".
