@@ -86,8 +86,9 @@ class AsmKcpsm3SemanticAnalyzer : public CompilerSemanticAnalyzer
          * @param[in,out] codeTree
          * @param[in] origLocation
          * @param[in] macroName
+         * @return False, if critical error occured; true otherwise.
          */
-        void phase1 ( CompilerStatement * codeTree,
+        bool phase1 ( CompilerStatement * codeTree,
                       const CompilerSourceLocation * origLocation = NULL,
                       const std::string * macroName = NULL );
 

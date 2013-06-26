@@ -35,7 +35,7 @@ void CompilerThread::run()
                                              m_jobSpec.m_opts,
                                              m_jobSpec.m_genSimData );
 
-    if ( true == m_jobSpec.m_genSimData )
+    if ( true == m_jobSpec.m_genSimData && true == success )
     {
         emit(simDataGenerated(m_compilerCore->getSimDbg(), m_compilerCore->getSimData()));
     }

@@ -38,12 +38,14 @@ CompilerStatement::~CompilerStatement()
 CompilerStatement::CompilerStatement()
 {
     m_type = CompilerStatementTypes::EMPTY_STATEMENT;
-    m_userData = 0;
+
+    m_userData     =  0;
     m_serialNumber = -1;
-    m_prev = NULL;
-    m_next = NULL;
-    m_branch = NULL;
-    m_args = NULL;
+
+    m_prev      = NULL;
+    m_next      = NULL;
+    m_branch    = NULL;
+    m_args      = NULL;
 }
 
 CompilerStatement::CompilerStatement ( CompilerSerializer & input )
@@ -57,14 +59,14 @@ CompilerStatement::CompilerStatement ( CompilerSerializer & input )
     input >> mark;
     while ( MARK_NEXT == mark )
     {
-        input >> mark;
-
         newNode = new CompilerStatement();
         input >> newNode;
 
         currentNode->m_next = newNode;
         newNode->m_prev = currentNode;
         currentNode = newNode;
+
+        input >> mark;
     }
 }
 
@@ -315,18 +317,22 @@ void CompilerStatement::completeDelete()
         return;
     }
 
-    if ( NULL != m_next )
+    CompilerStatement * tmp;
+    CompilerStatement * node = m_next;
+
+    while ( NULL != node )
     {
-        m_next->m_prev = NULL;
-        m_next->completeDelete();
-        m_next = NULL;
+        tmp = node;
+        node = node->next();
+        delete tmp;
     }
 
-    if ( NULL != m_prev )
+    node = m_prev;
+    while ( NULL != node )
     {
-        m_prev->m_next = NULL;
-        m_prev->completeDelete();
-        m_prev = NULL;
+        tmp = node;
+        node = node->prev();
+        delete tmp;
     }
 
     delete this;

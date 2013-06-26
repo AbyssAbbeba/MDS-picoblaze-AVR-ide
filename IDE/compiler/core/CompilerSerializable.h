@@ -20,9 +20,6 @@
 
 class CompilerSerializable
 {
-    ////    Public Static Constants    ////
-    static const int INTERFACE_VERSION = 1;
-
     ////    Public Datatypes    ////
     public:
         /**

@@ -16,12 +16,16 @@
 #ifndef COMPILERSERIALIZER_H
 #define COMPILERSERIALIZER_H
 
+// Compiler compiler header files.
+#include "CompilerBase.h"
+
 // Standard header files.
 #include <istream>
 #include <ostream>
 #include <cstdint>
 #include <cstddef>
 #include <string>
+#include <vector>
 
 /**
  * @brief
@@ -30,6 +34,14 @@
  */
 class CompilerSerializer
 {
+    ////    Public Static Constants    ////
+    public:
+        /// @brief
+        static const int INTERFACE_VERSION = 1;
+
+        /// @brief
+        static const char * const COMMON_FILE_HEADER;
+
     ////    Public Datatypes    ////
     public:
         /**
@@ -127,21 +139,37 @@ class CompilerSerializer
          */
         enum Role
         {
-            SERIALIZER,   ///<
-            DESERIALIZER, ///<
+            SERIALIZER,  ///<
+            DESERIALIZER ///<
         };
 
     ////    Constructors and Destructors    ////
     public:
         /**
          * @brief
+         * @param[in,out] input
+         * @param[in,out] files
+         * @param[in] lang
+         * @param[in] arch
+         * @param[in] hide
          */
-        CompilerSerializer ( std::istream & input );
+        CompilerSerializer ( std::istream & input,
+                             std::vector<std::string> & files,
+                             CompilerBase::LangId lang,
+                             CompilerBase::TargetArch arch,
+                             bool hide = false );
 
         /**
          * @brief
+         * @param[in,out] input
+         * @param[in,out] files
+         * @param[in] lang
+         * @param[in] arch
          */
-        CompilerSerializer ( std::ostream & output );
+        CompilerSerializer ( std::ostream & output,
+                             const std::vector<std::string> & files,
+                             CompilerBase::LangId lang,
+                             CompilerBase::TargetArch arch );
 
     ////    Public Operations    ////
     public:
@@ -255,10 +283,18 @@ class CompilerSerializer
 
             /**
              * @brief Read a string of arbitrary length.
+             * @param[out] buffer Target storage.
              * @return C++ STL string read from the serialized object.
              */
             void read_std_str ( std::string & buffer );
         //@}
+
+        /**
+         * @brief
+         * @param[in] number
+         * @return
+         */
+        int translateFileNumber ( int number ) const;
 
     ////    Inline Private Operations    ////
     private:
@@ -282,6 +318,9 @@ class CompilerSerializer
 
         /// @brief
         const Role m_role;
+
+        /// @brief
+        std::vector<int> m_fileNumberMap;
 };
 
 #endif // COMPILERSERIALIZER_H

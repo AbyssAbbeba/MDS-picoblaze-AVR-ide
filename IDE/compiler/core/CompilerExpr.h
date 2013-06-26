@@ -20,6 +20,7 @@
 #include "CompilerBase.h"
 #include "CompilerValue.h"
 #include "CompilerSerializable.h"
+#include "CompilerSourceLocation.h"
 
 // Standard header files.
 #include <string>

@@ -64,16 +64,12 @@ class AsmKcpsm3Macros
              * @param[in] id
              */
             Macro ( const CompilerSourceLocation location,
-                    int id )
+                    int id,
+                    CompilerStatement * definition )
                   : m_location ( location ),
                     m_id ( id ),
+                    m_definition ( definition ),
                     m_usageCounter ( 0 ) {}
-
-            ///
-            std::vector<std::string> m_parameters;
-
-            ///
-            CompilerStatement * m_definition;
 
             ///
             CompilerSourceLocation m_location;
@@ -82,7 +78,13 @@ class AsmKcpsm3Macros
             int m_id;
 
             ///
+            CompilerStatement * m_definition;
+
+            ///
             unsigned int m_usageCounter;
+
+            ///
+            std::vector<std::string> m_parameters;
         };
 
     ////    Constructors and Destructors    ////

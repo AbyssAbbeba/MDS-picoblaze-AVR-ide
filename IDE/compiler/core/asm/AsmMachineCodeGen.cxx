@@ -162,11 +162,19 @@ void AsmMachineCodeGen::output ( Endianness byteOrder,
                                  CompilerSemanticInterface * compilerCore,
                                  const CompilerOptions * opts )
 {
-    if ( size() > 65536 )
+    if ( size() > 0x10000 )
     {
         compilerCore -> compilerMessage ( CompilerBase::MT_ERROR,
-                                          QObject::tr("The resulting machine code is too big to be stored in file.").toStdString() );
+                                          QObject::tr("The resulting machine code is too big to be stored in a "
+                                                      "file.").toStdString() );
         return;
+    }
+
+    if ( true == compilerCore->m_simulatorData.m_genSimData )
+    {
+        BinFile * dataFile = new BinFile(sizeB());
+        saveMachineCode(byteOrder, dataFile, opts->m_binFile, compilerCore, opts);
+        compilerCore->m_simulatorData.m_simData = dataFile;
     }
 
     if ( false == opts->m_hexFile.empty() )

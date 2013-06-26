@@ -47,10 +47,12 @@ find_package ( Qt4 REQUIRED )
 include ( ${QT_USE_FILE} )
 
 # List of preprocessor include file search directories.
-include_directories ( "${CMAKE_CURRENT_BINARY_DIR}/../../../utilities/MCUDataFiles/" )
+include_directories ( "${CMAKE_CURRENT_BINARY_DIR}/../../../utilities/MCUDataFiles/"
+                      "${CMAKE_CURRENT_BINARY_DIR}/../../../utilities/DbgFile/" )
 
 # Specify directories in which the linker will look for libraries.
-link_directories ( "${CMAKE_CURRENT_BINARY_DIR}/../../../utilities/MCUDataFiles/" )
+link_directories ( "${CMAKE_CURRENT_BINARY_DIR}/../../../utilities/MCUDataFiles/"
+                   "${CMAKE_CURRENT_BINARY_DIR}/../../../utilities/DbgFile/")
 
 ## Add switches to compiler command line
  # -Wall       : Enables all the warnings.
@@ -69,6 +71,7 @@ add_library ( ${PROJECT_NAME} SHARED
 target_link_libraries ( ${PROJECT_NAME}
                         ${QT_LIBRARIES}
                         MCUDataFiles
+                        DbgFile
                         AsmAvr8SemanticAnalyzer
                         AsmMcs51SemanticAnalyzer
                         AsmPic8SemanticAnalyzer
