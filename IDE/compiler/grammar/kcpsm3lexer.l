@@ -314,6 +314,7 @@ DIS_INT_INST            "disable"{WSPACE}"interrupt"
 "<="                    { return LE; }
 ">"                     { return GT; }
 ">="                    { return GE; }
+"~"                     { return COMPLEMENT; }
 
 \.?"include"            {
                             // Handle `include' directive
