@@ -11,7 +11,7 @@ class Xxx : public QWidget
     public:
         Xxx();
         ~Xxx();
-
+        void funkce();
     public slots:
         void proved();
         

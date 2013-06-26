@@ -24,6 +24,7 @@
  * @param
  */
 ProjectCfg_FileMgr::ProjectCfg_FileMgr(QWidget *parentWidget, Project *currProject)
+    : QWidget(parentWidget)
 {
     //prepare widget
     this->parent = parentWidget;

@@ -26,6 +26,7 @@
 #include <QMenu>
 #include <QAction>
 #include <QtXml>
+#include <QStringList>
 #include "mainform.h"
 #include "../errordialog/errordlg.h"
 #include "../enums/enums.h"
@@ -125,8 +126,9 @@ class Project : public QObject
         QString mainFilePath;
         QList<QString> fileNames;
         QList<QString> filePaths;
-        //
+        //Symbol, Macro, Debug, Code, List, Hex, Bin, SRec
         QList<bool> compileOpt;
+        QStringList compileIncPaths;
 
         int errorFlag;
 
