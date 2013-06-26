@@ -75,13 +75,25 @@ bool AsmKcpsm3MemoryPtr::tryReserve ( const CompilerSourceLocation & location,
                                       AsmKcpsm3MemoryPtr::MemorySpace where,
                                       unsigned int address )
 {
+    unsigned int hardLimit = 0;
     const char * memName = "<error-invalid>";
+
     switch ( where )
     {
-        case MS_REG:    memName = "register file"; break;
-        case MS_DATA:   memName = "scratch pad";   break;
-        case MS_CODE:   memName = "program";       break;
-        case MS__MAX__:                            break;
+        case MS_REG:
+            hardLimit = HARD_LIM_REG;
+            memName = "register file";
+            break;
+        case MS_DATA:
+            hardLimit = HARD_LIM_DATA;
+            memName = "scratch pad";
+            break;
+        case MS_CODE:
+            hardLimit = HARD_LIM_CODE;
+            memName = "program";
+            break;
+        case MS__MAX__:
+            break;
     }
 
     if ( true == isReserved(where, address) )
@@ -89,6 +101,16 @@ bool AsmKcpsm3MemoryPtr::tryReserve ( const CompilerSourceLocation & location,
         m_compilerCore->compilerMessage ( location,
                                           CompilerBase::MT_WARNING,
                                           QObject::tr ( "reusing already reserved space in %1 memory at address: %2" )
+                                                      .arg(memName)
+                                                      .arg(address)
+                                                      .toStdString() );
+        return false;
+    }
+    else if ( address > hardLimit )
+    {
+        m_compilerCore->compilerMessage ( location,
+                                          CompilerBase::MT_ERROR,
+                                          QObject::tr ( "Attempting to use unavailable space in %1 memory at address: %2" )
                                                       .arg(memName)
                                                       .arg(address)
                                                       .toStdString() );
