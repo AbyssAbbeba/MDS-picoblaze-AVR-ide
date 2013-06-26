@@ -33,9 +33,12 @@
 
 int TestSuiteErr::init()
 {
+    using namespace boost::filesystem;
+
     m_msgInt = new CompilerMsgIntfFile();
-    m_compiler = new Compiler(m_msgInt);
     m_options = new CompilerOptions();
+    m_compiler = new Compiler ( m_msgInt,
+                                system_complete( path("..") / ".." / ".." / ".." / "compiler" / "include" ).string() );
 
     m_options->m_verbosity = CompilerOptions::Verbosity ( CompilerOptions::V_GENERAL | CompilerOptions::V_ERRORS |
                                                           CompilerOptions::V_WARNINGS | CompilerOptions::V_REMARKS );

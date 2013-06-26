@@ -231,10 +231,10 @@ DIS_INT_INST            "disable"{WSPACE}"interrupt"
                             return D_END;
                         }
 
+ /* Instructions. */
 "jump"                  { return I_JUMP; }
 "call"                  { return I_CALL; }
 "return"                { return I_RETURN; }
-"ret"                   { return I_RETURN; }
 "add"                   { return I_ADD; }
 "addcy"                 { return I_ADDCY; }
 "sub"                   { return I_SUB; }
@@ -251,6 +251,8 @@ DIS_INT_INST            "disable"{WSPACE}"interrupt"
 "test"                  { return I_TEST; }
 "store"                 { return I_STORE; }
 "fetch"                 { return I_FETCH; }
+"st"                    { return I_STORE; }
+"ft"                    { return I_FETCH; }
 "sr0"                   { return I_SR0; }
 "sr1"                   { return I_SR1; }
 "srx"                   { return I_SRX; }
@@ -262,24 +264,36 @@ DIS_INT_INST            "disable"{WSPACE}"interrupt"
 "sla"                   { return I_SLA; }
 "rl"                    { return I_RL; }
 "input"                 { return I_INPUT; }
-"in"                    { return I_INPUT; }
 "output"                { return I_OUTPUT; }
-"out"                   { return I_OUTPUT; }
 
+ /* Instruction shortcuts. */
+"ena"                   { return I_ENABLE_INT; }
+"dis"                   { return I_DISABLE_INT; }
+"retie"                 { return I_RETURNI_ENA; }
+"retid"                 { return I_RETURNI_DIS; }
+"ret"                   { return I_RETURN; }
+"cmp"                   { return I_COMPARE; }
+"in"                    { return I_INPUT; }
+"out"                   { return I_OUTPUT; }
+"ld"                    { return I_LOAD; }
+
+ /* Fixed operands. */
 "z"                     { return Z; }
 "nz"                    { return NZ; }
 "c"                     { return C; }
 "nc"                    { return NC; }
 
+ /* Special "operators". */
 "high"                  { return F_HIGH; }
 "low"                   { return F_LOW; }
-
 "at"                    { return AT; }
 "@"                     { return AT_MARK; }
 "("                     { return LP; }
 ")"                     { return RP; }
 "#"                     { return IMMEDIATE; }
 ","                     { return COMMA; }
+
+ /* Operators. */
 "/"                     { return SLASH; }
 "+"                     { return PLUS; }
 "-"                     { return MINUS; }
