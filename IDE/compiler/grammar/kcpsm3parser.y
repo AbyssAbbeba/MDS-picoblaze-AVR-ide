@@ -1043,8 +1043,8 @@ dir_variable:
                                     }
 ;
 dir_namereg:
-      D_NAMEREG id "," expr        { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_REG, $id->appendLink($expr)); }
-    | label D_NAMEREG id "," expr  {
+      D_NAMEREG expr "," id        { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_REG, $id->appendLink($expr)); }
+    | label D_NAMEREG expr "," id  {
                                         $$ = $label -> appendLink ( new CompilerStatement ( LOC(@$),
                                                                                             ASMKCPSM3_DIR_REG, $id -> appendLink ( $expr ) ) );
                                     }
