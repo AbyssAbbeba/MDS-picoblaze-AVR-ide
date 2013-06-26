@@ -18,7 +18,10 @@
 
 #include <QWidget>
 #include <QTreeWidget>
+#include <QLabel>
+#include <QStringList>
 #include <QStackedWidget>
+#include <QDialogButtonBox>
 
 
 class CfgInterface : public QWidget
@@ -26,7 +29,7 @@ class CfgInterface : public QWidget
     Q_OBJECT
     public:
         CfgInterface(QWidget *parent);
-        bool addWidget(QWidget *widget, QString text, bool child = false);
+        bool addWidget(QWidget *widget, QString text, QString tabText, bool child = false);
         void fixSize();
 
     private slots:
@@ -36,6 +39,9 @@ class CfgInterface : public QWidget
         QTreeWidget *menuList;
         QTreeWidgetItem *lastItem;
         QStackedWidget *tabs;
+        QDialogButtonBox *buttonBox;
+        QLabel *widgetLabel;
+        QStringList labelTexts;
         int count;
 
     //protected:

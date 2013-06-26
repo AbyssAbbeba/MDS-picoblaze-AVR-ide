@@ -9,15 +9,6 @@
   <File path="a.asm" name="a.asm"/>
   <File path="kcpsm3_mac.inc" name="kcpsm3_mac.inc"/>
   <File path="../../tests/compiler/assembler/PicoBlaze/TestSuiteSuc/testcases/001_logical.asm" name="001_logical.asm"/>
-  <File path="../../tests/compiler/assembler/PicoBlaze/TestSuiteSuc/testcases/001_logical.asm" name="001_logical.asm"/>
-  <File path="../../tests/compiler/assembler/PicoBlaze/TestSuiteSuc/testcases/001_logical.asm" name="001_logical.asm"/>
-  <File path="../../tests/compiler/assembler/PicoBlaze/TestSuiteSuc/testcases/001_logical.asm" name="001_logical.asm"/>
-  <File path="../../tests/compiler/assembler/PicoBlaze/TestSuiteSuc/testcases/001_logical.asm" name="001_logical.asm"/>
-  <File path="../../tests/compiler/assembler/PicoBlaze/TestSuiteSuc/testcases/001_logical.asm" name="001_logical.asm"/>
-  <File path="../../tests/compiler/assembler/PicoBlaze/TestSuiteSuc/testcases/001_logical.asm" name="001_logical.asm"/>
-  <File path="../../tests/compiler/assembler/PicoBlaze/TestSuiteSuc/testcases/001_logical.asm" name="001_logical.asm"/>
-  <File path="../../tests/compiler/assembler/PicoBlaze/TestSuiteSuc/testcases/001_logical.asm" name="001_logical.asm"/>
-  <File path="../../tests/compiler/assembler/PicoBlaze/TestSuiteSuc/testcases/001_logical.asm" name="001_logical.asm"/>
  </Files>
  <Mainfile path="a.asm" name="a.asm"/>
  <Simulator/>

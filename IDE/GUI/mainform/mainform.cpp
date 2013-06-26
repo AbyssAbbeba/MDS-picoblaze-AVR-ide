@@ -653,7 +653,8 @@ void MainForm::compileProject()
     ((QPlainTextEdit*)(wDockManager->getDockWidget(wCompileInfo)->widget()))->clear();
 
     CompilerOptions *options = new CompilerOptions();
-    QString mainFile = projectMan->getActive()->prjPath.section('/',0, -2) + "/" +  this->projectMan->getActive()->mainFilePath.section('.',0,-2);
+    //QString mainFile = projectMan->getActive()->prjPath.section('/',0, -2) + "/" +  this->projectMan->getActive()->mainFilePath.section('.',0,-2);
+    QString mainFile = this->projectMan->getActive()->mainFilePath.section('.',0,-2);
     options->m_sourceFile = (projectMan->getActive()->prjPath.section('/',0, -2) + "/" +  this->projectMan->getActive()->mainFilePath).toStdString();
     qDebug() << QString::fromStdString(options->m_sourceFile);
     qDebug() << mainFile;
@@ -665,7 +666,7 @@ void MainForm::compileProject()
     options->m_hexFile = (mainFile + ".hex").toStdString();
     options->m_binFile = (mainFile + ".bin").toStdString();
     options->m_srecFile = (mainFile + ".srec").toStdString();
-    CompilerThread *compiler = new CompilerThread();
+    CompilerThread *compiler = new CompilerThread("../compiler/include/assembler/PicoBlaze/");
     qRegisterMetaType<std::string>("std::string");
     qRegisterMetaType<CompilerBase::MessageType>("CompilerBase::MessageType");
     connect(compiler, SIGNAL(compilationMessage(const std::string&, CompilerBase::MessageType)), this, SLOT(reloadCompileInfo(const std::string&, CompilerBase::MessageType)));
