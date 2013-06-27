@@ -24,6 +24,7 @@ class AsmKcpsm3CodeListing;
 class AsmKcpsm3InstructionSet;
 class AsmKcpsm3Macros;
 class AsmKcpsm3MemoryPtr;
+class AsmKcpsm3SpecialMacros;
 
 // Common compiler header files.
 #include "../../CompilerSemanticAnalyzer.h"
@@ -129,6 +130,9 @@ class AsmKcpsm3SemanticAnalyzer : public CompilerSemanticAnalyzer
 
         ///
         AsmKcpsm3MemoryPtr * m_memoryPtr;
+
+        ///
+        AsmKcpsm3SpecialMacros * m_specialMacros;
 };
 
 #endif // ASMKCPSM3SEMANTICANALYSER_H

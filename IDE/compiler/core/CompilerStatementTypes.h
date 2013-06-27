@@ -746,6 +746,12 @@ namespace CompilerStatementTypes
             ASMKCPSM3_DIR_IFNB,             ///<
             ASMKCPSM3_DIR_ENDIF,            ///<
 
+            ASMKCPSM3_RT_COND,              ///<
+            ASMKCPSM3_DIR_RTIF,             ///<
+            ASMKCPSM3_DIR_RTELSEIF,         ///<
+            ASMKCPSM3_DIR_RTELSE,           ///<
+            ASMKCPSM3_DIR_RTENDIF,          ///<
+
             ASMKCPSM3_INS_JUMP_AAA,         ///<
             ASMKCPSM3_INS_JUMP_Z_AAA,       ///<
             ASMKCPSM3_INS_JUMP_NZ_AAA,      ///<

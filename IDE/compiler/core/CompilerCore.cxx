@@ -381,9 +381,7 @@ CompilerStatement * CompilerCore::loadDevSpecCode ( const std::string & deviceNa
 {
     if ( true == m_devSpecCodeLoaded )
     {
-        m_msgInterface->message ( QObject::tr ( "Error: device specification code is already loaded." )
-                                                . arg ( deviceName.c_str() )
-                                                . toStdString(),
+        m_msgInterface->message ( QObject::tr("Error: device specification code is already loaded.").toStdString(),
                                   MT_ERROR );
         if ( NULL != flag )
         {
@@ -701,7 +699,8 @@ void CompilerCore::syntaxAnalysisComplete ( CompilerStatement * codeTree )
         }
         else
         {
-            m_rootStatement->first()->insertLink(devSpecCode);
+            m_rootStatement->first()->insertLink(devSpecCode->next());
+            delete devSpecCode;
         }
     }
 

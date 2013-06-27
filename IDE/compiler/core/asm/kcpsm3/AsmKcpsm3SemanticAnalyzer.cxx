@@ -26,6 +26,7 @@
 #include "AsmKcpsm3InstructionSet.h"
 #include "AsmKcpsm3Macros.h"
 #include "AsmKcpsm3MemoryPtr.h"
+#include "AsmKcpsm3SpecialMacros.h"
 
 // Standard headers.
 #include <cstdint>
@@ -33,7 +34,8 @@
 #include <string>
 #include <vector>
 #include <fstream>
-
+#include <cctype>
+#include <iostream> // DEBUG
 AsmKcpsm3SemanticAnalyzer::AsmKcpsm3SemanticAnalyzer ( CompilerSemanticInterface * compilerCore,
                                                        CompilerOptions * opts )
                                                      : CompilerSemanticAnalyzer ( compilerCore, opts )
@@ -45,6 +47,7 @@ AsmKcpsm3SemanticAnalyzer::AsmKcpsm3SemanticAnalyzer ( CompilerSemanticInterface
     m_macros         = new AsmKcpsm3Macros ( compilerCore, opts, m_symbolTable, m_codeListing );
     m_dgbFile        = new AsmDgbFileGen();
     m_memoryPtr      = new AsmKcpsm3MemoryPtr ( compilerCore );
+    m_specialMacros  = new AsmKcpsm3SpecialMacros();
 
     m_memoryPtr->clear();
 }
@@ -106,7 +109,7 @@ void AsmKcpsm3SemanticAnalyzer::process ( CompilerStatement * codeTree )
 
         return;
     }
-
+std::cout << "Phase 2 ==> " << codeTree << "\n\n";
     phase2(codeTree);
 
     m_codeListing->output();
@@ -147,9 +150,19 @@ bool AsmKcpsm3SemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
 
         switch ( (int) node->type() )
         {
+            case ASMKCPSM3_RT_COND:
+            {
+                node->insertLink ( m_specialMacros->runTimeCondition ( node->branch() ) );
+                break;
+            }
             case ASMKCPSM3_DIR_DEVICE:
             {
                 std::string deviceName = node->args()->lVal().m_data.m_symbol;
+                for ( size_t i = 0; i < deviceName.size(); i++ )
+                {
+                    deviceName[i] = (char) tolower(deviceName[i]);
+                }
+
                 CompilerBase::DevSpecLoaderFlag loaderFlag;
                 CompilerStatement * devSpecCode = m_compilerCore->loadDevSpecCode(deviceName, &loaderFlag);
 
@@ -172,7 +185,8 @@ bool AsmKcpsm3SemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
                     return false;
                 }
 
-                node->insertLink(devSpecCode);
+                node->insertLink(devSpecCode->next());
+                delete devSpecCode;
                 break;
             }
             case ASMKCPSM3_DIR_LIMIT:
@@ -245,7 +259,7 @@ bool AsmKcpsm3SemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
 
                 m_codeListing->setValue(node->location(), value);
 
-                if ( value >= 0)
+                if ( ( value >= 0 ) && ( -1 != location->m_fileNumber ) )
                 {
                     if ( node->type() == ASMKCPSM3_DIR_REG )
                     {
