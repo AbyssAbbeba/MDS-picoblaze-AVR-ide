@@ -44,12 +44,13 @@ add_definitions ( -Wall -Wextra -std=c++0x -O2 -pipe -fPIC )
 ## Add a library to the project using the specified source files,
  # in this case it will procude dynamic C++ library.
 add_library ( ${PROJECT_NAME} STATIC
-              AsmKcpsm3SemanticAnalyzer.cxx
-              AsmKcpsm3CodeListing.cxx
               AsmKcpsm3Macros.cxx
               AsmKcpsm3MemoryPtr.cxx
+              AsmKcpsm3SymbolTable.cxx
+              AsmKcpsm3CodeListing.cxx
+              AsmKcpsm3SpecialMacros.cxx
               AsmKcpsm3InstructionSet.cxx
-              AsmKcpsm3SymbolTable.cxx )
+              AsmKcpsm3SemanticAnalyzer.cxx )
 
 # Add a dependency between top-level targets.
 add_dependencies ( ${PROJECT_NAME} CompilerParsers )

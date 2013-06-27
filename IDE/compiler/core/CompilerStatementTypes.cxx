@@ -676,6 +676,12 @@ std::ostream & operator << ( std::ostream & out,
         case ASMKCPSM3_DIR_IFNB:                out << "ASMKCPSM3_DIR_IFNB";            break;
         case ASMKCPSM3_DIR_ENDIF:               out << "ASMKCPSM3_DIR_ENDIF";           break;
 
+        case ASMKCPSM3_RT_COND:                 out << "ASMKCPSM3_RT_COND";             break;
+        case ASMKCPSM3_DIR_RTIF:                out << "ASMKCPSM3_DIR_RTIF";            break;
+        case ASMKCPSM3_DIR_RTELSEIF:            out << "ASMKCPSM3_DIR_RTELSEIF";        break;
+        case ASMKCPSM3_DIR_RTELSE:              out << "ASMKCPSM3_DIR_RTELSE";          break;
+        case ASMKCPSM3_DIR_RTENDIF:             out << "ASMKCPSM3_DIR_RTENDIF";         break;
+
         case ASMKCPSM3_INS_JUMP_AAA:            out << "ASMKCPSM3_INS_JUMP_AAA";        break;
         case ASMKCPSM3_INS_JUMP_Z_AAA:          out << "ASMKCPSM3_INS_JUMP_Z_AAA";      break;
         case ASMKCPSM3_INS_JUMP_NZ_AAA:         out << "ASMKCPSM3_INS_JUMP_NZ_AAA";     break;

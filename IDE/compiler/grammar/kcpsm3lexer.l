@@ -277,6 +277,12 @@ DIS_INT_INST            "disable"{WSPACE}"interrupt"
 "out"                   { return I_OUTPUT; }
 "ld"                    { return I_LOAD; }
 
+ /* Special macros. */
+"rtif"                  { return M_RTIF; }
+"rtelseif"              { return M_RTELSEIF; }
+"rtelse"                { return M_RTELSE; }
+"rtendif"               { return M_RTENDIF; }
+
  /* Fixed operands. */
 "z"                     { return Z; }
 "nz"                    { return NZ; }

@@ -30,7 +30,7 @@
 // Write an extra output file containing verbose descriptions of the parser states.
 %verbose
 // Expect exactly <n> shift/reduce conflicts in this grammar
-%expect 108
+%expect 117
 // Expect exactly <n> reduce/reduce conflicts in this grammar
 %expect-rr 0
 /* Type of parser tables within the LR family, in this case we use LALR (Look-Ahead LR parser) */
@@ -159,6 +159,9 @@
 %token I_STORE          I_FETCH         I_SR0           I_SR1           I_RETURNI_DIS
 %token I_RETURNI_ENA
 
+/* Special macros */
+%token M_RTIF           M_RTELSEIF      M_RTELSE        M_RTENDIF
+
 /* Fixed operands, i.e. those which have no value */
 %token Z NZ C NC
 
@@ -254,6 +257,9 @@
 %type<stmt>     inst_test       inst_store      inst_fetch      inst_sr0        inst_sr1
 %type<stmt>     inst_srx        inst_sra        inst_rr         inst_sl0        inst_sl1
 %type<stmt>     inst_slx        inst_sla        inst_rl         inst_input      inst_output
+// Statements - special macros
+%type<stmt>     dir_rt_cond     rtif_block      rtelseif_block  rtelse_block    dir_rtif
+%type<stmt>     dir_rtelseif    dir_rtelse      dir_rtendif
 
 /*
  * Symbol destructors:
@@ -432,18 +438,19 @@ directive:
     | dir_code      { $$ = $1; }    | dir_error     { $$ = $1; }
     | dir_warning   { $$ = $1; }    | dir_data      { $$ = $1; }
     | dir_limit     { $$ = $1; }    | dir_device    { $$ = $1; }
+    | dir_rt_cond   { $$ = $1; }
 ;
 dir_cond_asm:
-      if_block ifelse_block else_block dir_endif
-                                    {
+      if_block ifelse_block
+      else_block dir_endif          {
                                         $$ = new CompilerStatement ( CompilerSourceLocation(),
                                                                      ASMKCPSM3_COND_ASM );
                                         $$->createBranch ( $if_block -> appendLink($ifelse_block)
                                                                      -> appendLink($else_block)
                                                                      -> appendLink($dir_endif) );
                                     }
-    | label if_block ifelse_block else_block dir_endif
-                                    {
+    | label if_block ifelse_block
+      else_block dir_endif          {
                                         $$ = $label->appendLink(new CompilerStatement(CompilerSourceLocation(),
                                                                                       ASMKCPSM3_COND_ASM));
                                         $$->createBranch ( $if_block -> appendLink($ifelse_block)
@@ -694,6 +701,91 @@ dir_elseifnb_a:
                                         ARG_REQUIRED_D(@D_ELSEIFNB, "ELSEIFNB");
                                         NO_LABEL_EXPECTED(@label, "ELSEIFNB", $label);
                                     }
+;
+dir_rt_cond:
+      rtif_block rtelseif_block
+      rtelse_block dir_rtendif      {
+                                        $$ = new CompilerStatement ( CompilerSourceLocation(),
+                                                                     ASMKCPSM3_RT_COND );
+                                        $$->createBranch ( $rtif_block -> appendLink($rtelseif_block)
+                                                                       -> appendLink($rtelse_block)
+                                                                       -> appendLink($dir_rtendif) );
+                                    }
+;
+
+rtif_block:
+      dir_rtif statements EOL       { $$ = $dir_rtif->createBranch($2); }
+;
+rtelseif_block:
+      /* empty */                   { $$ = NULL; }
+    | dir_rtelseif statements EOL   { $$ = $dir_rtelseif->createBranch($2); }
+;
+rtelse_block:
+      /* empty */                   { $$ = NULL; }
+    | dir_rtelse statements EOL     { $$ = $dir_rtelse->createBranch($statements); }
+    | dir_rtelse                    { $$ = $dir_rtelse; }
+;
+dir_rtif:
+      M_RTIF expr                   { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_RTIF, $expr); }
+    | M_RTIF                        {
+                                        /* Syntax Error */
+                                        $$ = NULL;
+                                        ARG_REQUIRED_D(@M_RTIF, "RTIF");
+                                    }
+    | label M_RTIF expr             {
+                                        /* Syntax Error */
+                                        $$ = NULL;
+                                        NO_LABEL_EXPECTED(@label, "RTIF", $label);
+                                        $expr->completeDelete();
+                                    }
+    | label M_RTIF                  {
+                                        /* Syntax Error */
+                                        $$ = NULL;
+                                        ARG_REQUIRED_D(@M_RTIF, "RTIF");
+                                        NO_LABEL_EXPECTED(@label, "RTIF", $label);
+                                    }
+;
+dir_rtelseif:
+      M_RTELSEIF expr               { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_RTELSEIF, $expr); }
+    | M_RTELSEIF                    {
+                                        /* Syntax Error */
+                                        $$ = NULL;
+                                        ARG_REQUIRED_D(@M_RTELSEIF, "RTELSEIF");
+                                    }
+    | label M_RTELSEIF expr         {
+                                        /* Syntax Error */
+                                        $$ = NULL;
+                                        NO_LABEL_EXPECTED(@label, "RTELSEIF", $label);
+                                        $expr->completeDelete();
+                                    }
+    | label M_RTELSEIF              {
+                                        /* Syntax Error */
+                                        $$ = NULL;
+                                        ARG_REQUIRED_D(@M_RTELSEIF, "RTELSEIF");
+                                        NO_LABEL_EXPECTED(@label, "RTELSEIF", $label);
+                                    }
+;
+dir_rtelse:
+      M_RTELSE                      { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_RTELSE); }
+    | label M_RTELSE                {
+                                        /* Syntax error */
+                                        NO_LABEL_EXPECTED(@label, "RTELSE", $label);
+                                        $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_RTELSE);
+                                    }
+    | label M_RTELSE args           {
+                                        /* Syntax error */
+                                        NO_ARG_EXPECTED_D("RTELSE", $args, @args);
+                                        NO_LABEL_EXPECTED(@label, "RTELSE", $label);
+                                        $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_RTELSE);
+                                    }
+    | M_RTELSE args                 {
+                                        /* Syntax error */
+                                        NO_ARG_EXPECTED_D("RTELSE", $args, @args);
+                                        $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_RTELSE);
+                                    }
+;
+dir_rtendif:
+      M_RTENDIF                     { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_RTENDIF); }
 ;
 dir_org:
       D_ORG expr                    { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_ORG, $expr); }
@@ -1699,6 +1791,11 @@ inline int kcpsm3parser_error ( YYLTYPE * yylloc,
                     break;
                 case 'F':
                     errStr = QObject::tr("unexpected function ").toStdString();
+                    errStr += reinterpret_cast<const char *>( long(errorInfo) + 27 );
+                    errorInfo = errStr.c_str();
+                    break;
+                case 'M':
+                    errStr = QObject::tr("unexpected special macro ").toStdString();
                     errStr += reinterpret_cast<const char *>( long(errorInfo) + 27 );
                     errorInfo = errStr.c_str();
                     break;
