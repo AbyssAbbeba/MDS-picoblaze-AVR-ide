@@ -26,11 +26,11 @@ void error(int errCode)
         case ERR_OPENFILE:
             msgBox.setText("Error opening file");
             break;
-        case ERR_XML_CONTENT:
+        case ERR_XML_ASSIGN:
             msgBox.setText("Error: Assigning xml file");
             break;
-        case ERR_XML_ASSIGN:
-            msgBox.setText("Error: Wrong xml file");
+        case ERR_XML_CONTENT:
+            msgBox.setText("Error: Wrong content of xml file");
             break;
         case ERR_NO_PROJECT:
             msgBox.setText("Error: No active project");

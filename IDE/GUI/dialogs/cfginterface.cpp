@@ -34,7 +34,7 @@ CfgInterface::CfgInterface(QWidget *parent)
     //this->menuList->setMaximumHeight(this->tabs->height());
     this->menuList->setMaximumWidth(160);
     this->widgetLabel->move(165,5);
-    this->tabs->move(165,35);
+    this->tabs->move(165,30);
     //this->setFixedWidth(300);
     //this->setFixedHeight(300);
     //this->setFixedWidth(this->tabs->width()+this->menuList->width()+10);

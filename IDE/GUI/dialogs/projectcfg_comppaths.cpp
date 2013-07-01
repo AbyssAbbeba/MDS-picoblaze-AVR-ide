@@ -46,6 +46,7 @@ ProjectCfg_CompPaths::ProjectCfg_CompPaths(QWidget *parentWidget, Project *currP
     connect(this->newBtn, SIGNAL(clicked()), this, SLOT(New()));
     connect(this->editBtn, SIGNAL(clicked()), this, SLOT(Edit()));
     connect(this->deleteBtn, SIGNAL(clicked()), this, SLOT(Delete()));
+    //connect(this, SIGNAL(savePaths(QList<QString>)), this->project, SLOT(setCompileIncPaths(QList<QString>)));
 }
 
 
@@ -64,4 +65,24 @@ void ProjectCfg_CompPaths::Edit()
 void ProjectCfg_CompPaths::Delete()
 {
 
+}
+
+
+void ProjectCfg_CompPaths::load()
+{
+    for (int i = 0; i < this->project->compileIncPaths.count(); i++)
+    {
+        QListWidgetItem *item = new QListWidgetItem(this->project->compileIncPaths.at(i), this->fileList);
+    }
+}
+
+
+void ProjectCfg_CompPaths::save()
+{
+    QStringList paths;
+    for (int i = 0; i < this->fileList->count(); i++)
+    {
+        paths.append(this->fileList->item(i)->text());
+    }
+    this->project->setCompileIncPaths(paths);
 }

@@ -22,6 +22,7 @@ ProjectConfigDialog_Core::ProjectConfigDialog_Core(QWidget *parent, Project *cur
     this->project = currProject;
     this->reloadFiles = false;
     this->setModal(true);
+    this->setWindowTitle("Project Config");
 
     this->cfgInterface = new CfgInterface(this);
     this->generalCfg = new ProjectCfg_General(cfgInterface, this->project);
@@ -43,6 +44,8 @@ ProjectConfigDialog_Core::ProjectConfigDialog_Core(QWidget *parent, Project *cur
     //this->generalCfg->fixButtonBox();
     
     connect(this->fileMgr, SIGNAL(reloadTree()), this, SLOT(reload()));
+    connect(this->cfgInterface->buttonBox, SIGNAL(accepted()), this, SLOT(ok()));
+    connect(this->cfgInterface->buttonBox, SIGNAL(rejected()), this, SLOT(cancel()));
     qDebug() << "ProjectConfigDialog_Core: return ProjectConfigDialog_Core()";
 }
 
@@ -62,7 +65,15 @@ void ProjectConfigDialog_Core::reload()
 }
 
 
-/*void ProjectConfigDialog_Core::changeWidget(QTreeWidgetItem *curr, QTreeWidgetItem *prev)
+void ProjectConfigDialog_Core::ok()
 {
-    this->tabs->setCurrentIndex(curr->type());
-}*/
+    this->compilerCfg->save();
+    this->pathsCfg->save();
+    this->done(1);
+}
+
+
+void ProjectConfigDialog_Core::cancel()
+{
+    this->done(0);
+}

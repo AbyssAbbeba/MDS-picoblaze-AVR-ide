@@ -1087,3 +1087,230 @@ void Project::startCfgDlgCore()
 {
     emit startConfig(this);
 }
+
+
+void Project::setCompileOpt(QList<bool> opt)
+{
+
+    for (int i = 0; i < opt.size(); i++)
+    {
+        this->compileOpt[i] = opt.at(i);
+    }
+    
+
+    QFile prjFile(prjPath);
+    prjFile.open(QIODevice::ReadOnly);
+    QDomDocument domDoc("MMProject");
+    if (!domDoc.setContent(&prjFile))
+    {
+        errorFlag = ERR_ASSIGN;
+        error(ERR_XML_ASSIGN);
+    }
+    else
+    {
+        //otevrit xml, upravit a ulozit
+        QDomElement xmlRoot = domDoc.documentElement();
+        if (xmlRoot.tagName() != "MMProject")
+        {
+            errorFlag = ERR_CONTENT;
+            error(ERR_XML_CONTENT);
+        }
+        else
+        {
+            QDomNode xmlNode = xmlRoot.firstChild();
+            QDomElement xmlElement;
+            while (!xmlNode.isNull())
+            {
+                xmlElement = xmlNode.toElement();
+                if (!xmlElement.isNull())
+                {
+                    if (xmlElement.tagName() == "Compiler")
+                    {
+                        QDomNode xmlCompilerNode = xmlElement.firstChild();
+                        QDomElement xmlCompilerElement;
+                        while (!xmlCompilerNode.isNull())
+                        {
+                            xmlCompilerElement = xmlCompilerNode.toElement();
+                            if (xmlCompilerElement.tagName() == "Options")
+                            {
+                                QDomNode xmlCompOptNode = xmlCompilerNode.firstChild();
+                                while (!xmlCompOptNode.isNull())
+                                {
+                                    QDomElement xmlCompOptElem = xmlCompOptNode.toElement();
+                                    //prochazeni elementu
+                                    if (xmlCompOptElem.tagName() == "Symbol Table")
+                                    {
+                                        if (true == this->compileOpt.at(0))
+                                        {
+                                            xmlCompOptElem.setAttribute("enable", "true");
+                                        }
+                                        else
+                                        {
+                                            xmlCompOptElem.setAttribute("enable", "false");
+                                        }
+                                    }
+                                    else if (xmlCompOptElem.tagName() == "Macro Table")
+                                    {
+                                        if (true == this->compileOpt.at(1))
+                                        {
+                                            xmlCompOptElem.setAttribute("enable", "true");
+                                        }
+                                        else
+                                        {
+                                            xmlCompOptElem.setAttribute("enable", "false");
+                                        }
+                                    }
+                                    else if (xmlCompOptElem.tagName() == "Debug File")
+                                    {
+                                        if (true == this->compileOpt.at(2))
+                                        {
+                                            xmlCompOptElem.setAttribute("enable", "true");
+                                        }
+                                        else
+                                        {
+                                            xmlCompOptElem.setAttribute("enable", "false");
+                                        }
+                                    }
+                                    else if (xmlCompOptElem.tagName() == "Code Tree")
+                                    {
+                                        if (true == this->compileOpt.at(3))
+                                        {
+                                            xmlCompOptElem.setAttribute("enable", "true");
+                                        }
+                                        else
+                                        {
+                                            xmlCompOptElem.setAttribute("enable", "false");
+                                        }
+                                    }
+                                    else if (xmlCompOptElem.tagName() == "List File")
+                                    {
+                                        if (true == this->compileOpt.at(4))
+                                        {
+                                            xmlCompOptElem.setAttribute("enable", "true");
+                                        }
+                                        else
+                                        {
+                                            xmlCompOptElem.setAttribute("enable", "false");
+                                        }
+                                    }
+                                    else if (xmlCompOptElem.tagName() == "Hex File")
+                                    {
+                                        if (true == this->compileOpt.at(5))
+                                        {
+                                            xmlCompOptElem.setAttribute("enable", "true");
+                                        }
+                                        else
+                                        {
+                                            xmlCompOptElem.setAttribute("enable", "false");
+                                        }
+                                    }
+                                    else if (xmlCompOptElem.tagName() == "Bin File")
+                                    {
+                                        if (true == this->compileOpt.at(6))
+                                        {
+                                            xmlCompOptElem.setAttribute("enable", "true");
+                                        }
+                                        else
+                                        {
+                                            xmlCompOptElem.setAttribute("enable", "false");
+                                        }
+                                    }
+                                    else if (xmlCompOptElem.tagName() == "SRec File")
+                                    {
+                                        if (true == this->compileOpt.at(7))
+                                        {
+                                            xmlCompOptElem.setAttribute("enable", "true");
+                                        }
+                                        else
+                                        {
+                                            xmlCompOptElem.setAttribute("enable", "false");
+                                        }
+                                    }
+                                    
+                                    xmlCompOptNode = xmlCompOptNode.nextSibling();
+                                }
+                            }
+                            xmlCompilerNode = xmlCompilerNode.nextSibling();
+                        }
+                    }
+                }
+                xmlNode = xmlNode.nextSibling();
+            }
+            prjFile.close();
+            prjFile.open(QIODevice::WriteOnly);
+            QTextStream xmlStream(&prjFile);
+            xmlStream << domDoc.toString();
+        }
+    }
+}
+
+
+void Project::setCompileIncPaths(QList<QString> paths)
+{
+    this->compileIncPaths.clear();
+    for (int i = 0; i < paths.size(); i++)
+    {
+        this->compileIncPaths.append(paths.at(i));
+    }
+
+    QFile prjFile(prjPath);
+    prjFile.open(QIODevice::ReadOnly);
+    QDomDocument domDoc("MMProject");
+    if (!domDoc.setContent(&prjFile))
+    {
+        errorFlag = ERR_ASSIGN;
+        error(ERR_XML_ASSIGN);
+    }
+    else
+    {
+        //otevrit xml, upravit a ulozit
+        QDomElement xmlRoot = domDoc.documentElement();
+        if (xmlRoot.tagName() != "MMProject")
+        {
+            errorFlag = ERR_CONTENT;
+            error(ERR_XML_CONTENT);
+        }
+        else
+        {
+            QDomNode xmlNode = xmlRoot.firstChild();
+            QDomElement xmlElement;
+            while (!xmlNode.isNull())
+            {
+                xmlElement = xmlNode.toElement();
+                if (!xmlElement.isNull())
+                {
+                    if (xmlElement.tagName() == "Compiler")
+                    {
+                        QDomNode xmlCompilerNode = xmlElement.firstChild();
+                        QDomElement xmlCompilerElement;
+                        while (!xmlCompilerNode.isNull())
+                        {
+                            xmlCompilerElement = xmlCompilerNode.toElement();
+                            if (xmlCompilerElement.tagName() == "Include Paths")
+                            {
+                                //smazat tag
+                                xmlNode.removeChild(xmlCompilerNode);
+                                //znovu pridat tag
+                                QDomElement xmlNewCompilerElement = domDoc.createElement("Include Paths");
+                                for (int i = 0; i < this->compileIncPaths.size(); i++)
+                                {
+                                    QDomElement xmlNewPathElem = domDoc.createElement("Path");
+                                    xmlNewPathElem.setAttribute("path", this->compileIncPaths.at(i));
+                                    xmlNewCompilerElement.appendChild(xmlNewPathElem);
+                                }
+                                xmlElement.appendChild(xmlNewCompilerElement);
+                                break;
+                            }
+                            xmlCompilerNode = xmlCompilerNode.nextSibling();
+                        }
+                    }
+                }
+                xmlNode = xmlNode.nextSibling();
+            }
+            prjFile.close();
+            prjFile.open(QIODevice::WriteOnly);
+            QTextStream xmlStream(&prjFile);
+            xmlStream << domDoc.toString();
+        }
+    }
+}
