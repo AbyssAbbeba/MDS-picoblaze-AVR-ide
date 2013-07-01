@@ -932,6 +932,13 @@ void MainForm::connectProjectSlot(Project *project)
 
 
 
+/**
+ * @brief
+ * @param
+ * @param
+ * @param
+ * @param
+ */
 void MainForm::highlightLine(QString file, int line, QColor *color, QColor *origColor)
 {
     qDebug() << "MainForm: highlightLine";
@@ -941,6 +948,10 @@ void MainForm::highlightLine(QString file, int line, QColor *color, QColor *orig
 }
 
 
+/**
+ * @brief
+ * @param
+ */
 void MainForm::setEditorReadOnly(bool readOnly)
 {
     qDebug() << "MainForm: setEditorReadOnly";
@@ -949,6 +960,11 @@ void MainForm::setEditorReadOnly(bool readOnly)
 }
 
 
+/**
+ * @brief
+ * @param
+ * @param
+ */
 void MainForm::addUntrackedFile(QString name, QString path)
 {
     qDebug() << "MainForm: addUntrackedFile";
@@ -959,6 +975,10 @@ void MainForm::addUntrackedFile(QString name, QString path)
 }
 
 
+/**
+ * @brief
+ * @param
+ */
 void MainForm::startProjectConfig(Project *project)
 {
     ProjectConfigDialog_Core *cfgdlg = new ProjectConfigDialog_Core(this, project);
