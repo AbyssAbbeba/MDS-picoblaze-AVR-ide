@@ -22,8 +22,11 @@ class ProjectCfg_Compiler : public QWidget
 {
     public:
         ProjectCfg_Compiler(QWidget *parentWidget, Project *currProject);
+        void save();
 
     private:
+        void load();
+        
         Project *project;
         //QDialogButtonBox *buttonBox;
         QLabel *lblMain;

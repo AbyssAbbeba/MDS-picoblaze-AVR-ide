@@ -305,7 +305,20 @@ Highlighter::Highlighter(QTextDocument *parent, SourceType type)
             << "\\bSR1\\b" << "\\bSTAR\\b" << "\\bSTORE\\b"
             << "\\bSUB\\b" << "\\bSUBCY\\b" << "\\bTEST\\b"
             << "\\bTESTCY\\b" << "\\bXOR\\b"
-            << "\\bend\\b" << "\\bEND\\b";
+            << "\\bend\\b" << "\\bEND\\b"
+            << "\\bena\\b" << "\\bENA\\b"
+            << "\\bdis\\b" << "\\bDIS\\b"
+            << "\\bretie\\b" << "\\bRETIE\\b"
+            << "\\bretid\\b" << "\\bRETID\\b"
+            << "\\bret\\b" << "\\bRET\\b"
+            << "\\bcmp\\b" << "\\bCMP\\b"
+            << "\\bin\\b" << "\\bIN\\b"
+            << "\\bout\\b" << "\\bOUT\\b"
+            << "\\bld\\b" << "\\bLD\\b"
+            << "\\brtif\\b" << "\\bRTIF\\b"
+            << "\\brtelse\\b" << "\\bRTELSE\\b"
+            << "\\brtelsif\\b" << "\\bRTELSIF\\b"
+            << "\\brtendif\\b" << "\\bRTENDIF\\b";
 
         keywordFormat.setForeground(Qt::darkBlue);
         keywordFormat.setFontWeight(QFont::Bold);

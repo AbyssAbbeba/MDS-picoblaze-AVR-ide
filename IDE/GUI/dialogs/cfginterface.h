@@ -31,6 +31,8 @@ class CfgInterface : public QWidget
         CfgInterface(QWidget *parent);
         bool addWidget(QWidget *widget, QString text, QString tabText, bool child = false);
         void fixSize();
+        
+        QDialogButtonBox *buttonBox;
 
     private slots:
         void changeWidget(QTreeWidgetItem *curr, QTreeWidgetItem *prev);
@@ -39,7 +41,6 @@ class CfgInterface : public QWidget
         QTreeWidget *menuList;
         QTreeWidgetItem *lastItem;
         QStackedWidget *tabs;
-        QDialogButtonBox *buttonBox;
         QLabel *widgetLabel;
         QStringList labelTexts;
         int count;

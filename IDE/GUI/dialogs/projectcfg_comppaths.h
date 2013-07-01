@@ -17,13 +17,16 @@ class ProjectCfg_CompPaths : public QWidget
     Q_OBJECT
     public:
        ProjectCfg_CompPaths(QWidget *parentWidget, Project *currProject);
-
+       void save();
+       
     private slots:
         void New();
         void Edit();
         void Delete();
         
     private:
+        void load();
+        
         Project *project;
         QPushButton *newBtn;
         QPushButton *editBtn;

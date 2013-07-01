@@ -57,3 +57,32 @@ ProjectCfg_Compiler::ProjectCfg_Compiler(QWidget *parentWidget, Project *currPro
     this->chckBinFile->move(5,150);
     this->chckSRecFile->move(5,170);
 }
+
+
+void ProjectCfg_Compiler::load()
+{
+    this->chckSymbolTbl->setChecked(project->compileOpt.at(0));
+    this->chckMacroTbl->setChecked(project->compileOpt.at(1));
+    this->chckDbgFile->setChecked(project->compileOpt.at(2));
+    this->chckCodeTree->setChecked(project->compileOpt.at(3));
+    this->chckLstFile->setChecked(project->compileOpt.at(4));
+    this->chckHexFile->setChecked(project->compileOpt.at(5));
+    this->chckBinFile->setChecked(project->compileOpt.at(6));
+    this->chckSRecFile->setChecked(project->compileOpt.at(7));
+}
+
+
+void ProjectCfg_Compiler::save()
+{
+    QList<bool> opt;
+    opt[0] = this->chckSymbolTbl->isChecked();
+    opt[1] = this->chckMacroTbl->isChecked();
+    opt[2] = this->chckDbgFile->isChecked();
+    opt[3] = this->chckCodeTree->isChecked();
+    opt[4] = this->chckLstFile->isChecked();
+    opt[5] = this->chckHexFile->isChecked();
+    opt[6] = this->chckBinFile->isChecked();
+    opt[7] = this->chckSRecFile->isChecked();
+    
+    this->project->setCompileOpt(opt);
+}
