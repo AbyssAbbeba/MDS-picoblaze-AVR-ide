@@ -112,6 +112,8 @@ class Project : public QObject
         MCUSimControl* getSimControl();
         void setMainFile(QString path, QString name);
         void removeFile(QString path, QString name);
+        void setCompileOpt(QList<bool> opt);
+        void setCompileIncPaths(QList<QString> paths);
 
         QDockWidget *prjDockWidget;
         ProjectTree *prjTreeWidget;
@@ -136,7 +138,7 @@ class Project : public QObject
         McuMemoryView *m_mcuMemoryView;
         RegDisplayList *m_regList;
         MCUSimControl *m_simControlUnit;
-
+        
     private slots:
         void setActive();
         void openItem();

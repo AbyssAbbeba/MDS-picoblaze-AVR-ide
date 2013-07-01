@@ -59,7 +59,8 @@ class ProjectConfigDialog_Core : public QDialog
 
     private slots:
         void reload();
-        //void changeWidget(QTreeWidgetItem *curr, QTreeWidgetItem *prev);
+        void ok();
+        void cancel();
 
     protected:
         virtual void closeEvent(QCloseEvent *e);
