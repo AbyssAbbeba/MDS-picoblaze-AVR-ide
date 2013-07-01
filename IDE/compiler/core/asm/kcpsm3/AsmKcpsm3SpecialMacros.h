@@ -17,7 +17,14 @@
 #define ASMKCPSM3SPECIALMACROS_H
 
 // Forward declarations.
+class CompilerSemanticInterface;
+class AsmKcpsm3SymbolTable;
+class AsmKcpsm3CodeListing;
 class CompilerStatement;
+class CompilerExpr;
+
+// Standard headers.
+#include <string>
 
 /**
  * @brief
@@ -26,6 +33,24 @@ class CompilerStatement;
  */
 class AsmKcpsm3SpecialMacros
 {
+    ////    Constructors and Destructors    ////
+    public:
+        /**
+         * @brief
+         * @param[in,out] compilerCore
+         * @param[in,out] symbolTable
+         * @param[in,out] codeListing
+         * @return
+         */
+        AsmKcpsm3SpecialMacros ( CompilerSemanticInterface * compilerCore,
+                                 AsmKcpsm3SymbolTable * symbolTable,
+                                 AsmKcpsm3CodeListing * codeListing );
+
+        /**
+         * @brief
+         */
+        ~AsmKcpsm3SpecialMacros();
+
     ////    Public Operations    ////
     public:
         /**
@@ -34,6 +59,40 @@ class AsmKcpsm3SpecialMacros
          * @return
          */
         CompilerStatement * runTimeCondition ( CompilerStatement * rtIfTree );
+
+    ////    Private Operations    ////
+    private:
+        /**
+         * @brief
+         * @param[in] cnd
+         * @param[in] label
+         * @return
+         */
+        CompilerStatement * evaluateCondition ( const CompilerExpr * cnd,
+                                                const std::string & label );
+
+    ////    Inline Private Operations    ////
+    private:
+        /**
+         * @brief
+         * @param[out] label
+         * @return
+         */
+        inline const std::string & generateLabel ( std::string & label );
+
+    ////    Private Attributes    ////
+    private:
+        ///
+        unsigned int m_labelNextCounter;
+
+        ///
+        CompilerSemanticInterface * const m_compilerCore;
+
+        ///
+        AsmKcpsm3SymbolTable * const m_symbolTable;
+
+        ///
+        AsmKcpsm3CodeListing * const m_codeListing;
 };
 
 #endif // ASMKCPSM3SPECIALMACROS_H

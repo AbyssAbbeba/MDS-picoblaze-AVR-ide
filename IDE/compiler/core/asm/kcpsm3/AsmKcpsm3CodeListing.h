@@ -207,6 +207,14 @@ class AsmKcpsm3CodeListing : public CompilerMsgObserver
         /**
          * @brief
          * @param[in] location
+         * @param[in,out] code
+         */
+        void generatedCode ( CompilerSourceLocation location,
+                             CompilerStatement * code );
+
+        /**
+         * @brief
+         * @param[in] location
          * @param[in] type
          * @param[in] text
          */
@@ -258,6 +266,7 @@ class AsmKcpsm3CodeListing : public CompilerMsgObserver
          */
         void rewriteMacroLoc ( unsigned int * lineDiff,
                                CompilerStatement * macro );
+
         /**
          * @brief
          * @param[in,out] lineCounter
