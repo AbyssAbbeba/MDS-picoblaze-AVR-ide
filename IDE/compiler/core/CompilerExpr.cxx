@@ -74,7 +74,7 @@ CompilerExpr::CompilerExpr ( CompilerValue value,
                              CompilerSourceLocation location )
 {
     m_operator = Operator(oper);
-    m_rValue = value;
+    m_lValue = value;
     m_location = location;
 
     m_next = NULL;
@@ -86,7 +86,7 @@ CompilerExpr::CompilerExpr ( CompilerValue value,
                              CompilerSourceLocation location )
 {
     m_operator = Operator(oper);
-    m_rValue = value;
+    m_lValue = value;
     m_location = location;
 
     m_next = NULL;
@@ -374,6 +374,8 @@ std::ostream & operator << ( std::ostream & out,
         case CompilerExpr::OPER_AT:          out << "@";        break;
         case CompilerExpr::OPER_INTERVALS:   out << "..";       break;
         case CompilerExpr::OPER_ASSIGN:      out << "=";        break;
+        case CompilerExpr::OPER_NAND:        out << "!&";       break;
+        case CompilerExpr::OPER_HASH:        out << "#";        break;
     }
     return out;
 }

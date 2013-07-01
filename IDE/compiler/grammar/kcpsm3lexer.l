@@ -278,10 +278,10 @@ DIS_INT_INST            "disable"{WSPACE}"interrupt"
 "ld"                    { return I_LOAD; }
 
  /* Special macros. */
-"rtif"                  { return M_RTIF; }
-"rtelseif"              { return M_RTELSEIF; }
-"rtelse"                { return M_RTELSE; }
-"rtendif"               { return M_RTENDIF; }
+"rt_if"                 { return M_RTIF; }
+"rt_elseif"             { return M_RTELSEIF; }
+"rt_else"               { return M_RTELSE; }
+"rt_endif"              { return M_RTENDIF; }
 
  /* Fixed operands. */
 "z"                     { return Z; }

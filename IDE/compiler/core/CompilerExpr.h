@@ -68,6 +68,7 @@ class CompilerExpr : public CompilerSerializable
             OPER_NOT            = L'!', ///<
             OPER_AT             = L'@', ///<
             OPER_ASSIGN         = L'=', ///<
+            OPER_HASH           = L'#', ///<
             OPER_ADD_ASSIGN     = 1,    ///<
             OPER_SUB_ASSIGN     = 2,    ///<
             OPER_MUL_ASSIGN     = 3,    ///<
@@ -82,7 +83,8 @@ class CompilerExpr : public CompilerSerializable
             OPER_DEC            = 12,   ///<
             OPER_INTERVALS      = 13,   ///<
             OPER_ADD_INV        = 14,   ///<
-            OPER_INT_PROM       = 15    ///<
+            OPER_INT_PROM       = 15,   ///<
+            OPER_NAND           = 16    ///<
         };
 
     ////    Constructors and Destructors    ////

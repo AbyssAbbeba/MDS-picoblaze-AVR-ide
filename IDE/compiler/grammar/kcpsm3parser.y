@@ -229,7 +229,7 @@
  */
 // Expressions
 %type<expr>     expr            number          params          args            args_str
-%type<expr>     id              string
+%type<expr>     id              string          cond            cndval
 // Statements - general
 %type<stmt>     statements      stmt            inst_stmt       dir_stmt        macro_stmt
 %type<stmt>     instruction     directive       macro           label
@@ -725,8 +725,24 @@ rtelse_block:
     | dir_rtelse statements EOL     { $$ = $dir_rtelse->createBranch($statements); }
     | dir_rtelse                    { $$ = $dir_rtelse; }
 ;
+cond:
+      cndval "==" cndval            { $$ = new CompilerExpr($1, CompilerExpr::OPER_EQ,   $3, LOC(@$)); }
+    | cndval "!=" cndval            { $$ = new CompilerExpr($1, CompilerExpr::OPER_NE,   $3, LOC(@$)); }
+    | cndval "<=" cndval            { $$ = new CompilerExpr($1, CompilerExpr::OPER_LE,   $3, LOC(@$)); }
+    | cndval ">=" cndval            { $$ = new CompilerExpr($1, CompilerExpr::OPER_GE,   $3, LOC(@$)); }
+    | cndval "<"  cndval            { $$ = new CompilerExpr($1, CompilerExpr::OPER_LT,   $3, LOC(@$)); }
+    | cndval ">"  cndval            { $$ = new CompilerExpr($1, CompilerExpr::OPER_GT,   $3, LOC(@$)); }
+    | cndval "&"  cndval            { $$ = new CompilerExpr($1, CompilerExpr::OPER_BAND, $3, LOC(@$)); }
+    | cndval "!&" cndval            { $$ = new CompilerExpr($1, CompilerExpr::OPER_NAND, $3, LOC(@$)); }
+;
+cndval:
+      id                            { $$ = new CompilerExpr($id, LOC(@$));                              }
+    | "#" id                        { $$ = new CompilerExpr($id, CompilerExpr::OPER_HASH, LOC(@$));     }
+    | number                        { $$ = new CompilerExpr($number, LOC(@$));                          }
+    | "#" number                    { $$ = new CompilerExpr($number, CompilerExpr::OPER_HASH, LOC(@$)); }
+;
 dir_rtif:
-      M_RTIF expr                   { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_RTIF, $expr); }
+      M_RTIF cond                   { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_RTIF, $cond); }
     | M_RTIF                        {
                                         /* Syntax Error */
                                         $$ = NULL;
@@ -746,7 +762,7 @@ dir_rtif:
                                     }
 ;
 dir_rtelseif:
-      M_RTELSEIF expr               { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_RTELSEIF, $expr); }
+      M_RTELSEIF cond               { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_RTELSEIF, $cond); }
     | M_RTELSEIF                    {
                                         /* Syntax Error */
                                         $$ = NULL;
