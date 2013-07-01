@@ -503,6 +503,12 @@ void AsmKcpsm3CodeListing::repeatCode ( CompilerSourceLocation location,
     rewriteRepeatLoc(&lineCounter, code);
 }
 
+void AsmKcpsm3CodeListing::generatedCode ( CompilerSourceLocation location,
+                                           CompilerStatement * code )
+{
+    
+}
+
 inline void AsmKcpsm3CodeListing::processMsgQueue()
 {
     for ( std::vector<std::pair<CompilerSourceLocation,Message>>::const_iterator i = m_messageQueue.cbegin();

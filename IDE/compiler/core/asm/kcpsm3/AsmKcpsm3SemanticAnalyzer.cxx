@@ -47,7 +47,7 @@ AsmKcpsm3SemanticAnalyzer::AsmKcpsm3SemanticAnalyzer ( CompilerSemanticInterface
     m_macros         = new AsmKcpsm3Macros ( compilerCore, opts, m_symbolTable, m_codeListing );
     m_dgbFile        = new AsmDgbFileGen();
     m_memoryPtr      = new AsmKcpsm3MemoryPtr ( compilerCore );
-    m_specialMacros  = new AsmKcpsm3SpecialMacros();
+    m_specialMacros  = new AsmKcpsm3SpecialMacros ( compilerCore, m_symbolTable, m_codeListing );
 
     m_memoryPtr->clear();
 }
@@ -152,7 +152,8 @@ bool AsmKcpsm3SemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
         {
             case ASMKCPSM3_RT_COND:
             {
-                node->insertLink ( m_specialMacros->runTimeCondition ( node->branch() ) );
+                node->insertLink ( m_specialMacros->runTimeCondition ( node ) );
+std::cout << "ASMKCPSM3_RT_COND: \n" << node->first() << "\n";
                 break;
             }
             case ASMKCPSM3_DIR_DEVICE:
