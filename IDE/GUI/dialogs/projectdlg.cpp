@@ -16,6 +16,11 @@
 #include "projectdlg.h"
 
 
+/**
+ * @brief
+ * @param
+ * @param
+ */
 ProjectDialog::ProjectDialog(QMainWindow *dialogParent, ProjectMan *dialogProjectMan)
     : QDialog(dialogParent)
 {
@@ -70,12 +75,20 @@ ProjectDialog::ProjectDialog(QMainWindow *dialogParent, ProjectMan *dialogProjec
     projectMan = dialogProjectMan;
 }
 
+
+/**
+ * @brief
+ */
 void ProjectDialog::bSetPath()
 {
     QString path = QFileDialog::getExistingDirectory (this, tr("Project Directory"), "");
     projDir->setText(path);
 }
 
+
+/**
+ * @brief
+ */
 void ProjectDialog::bCreate()
 {
      //vytvoreni projektu
@@ -84,12 +97,17 @@ void ProjectDialog::bCreate()
      {
          QMessageBox msgBox;
          if (projName->text().isEmpty()==true)
+         {
              msgBox.setText("Enter valid project name");
+         }
          else
+         {
              msgBox.setText("Error opening file");
+         }
          msgBox.exec();
      }
-     else {
+     else
+     {
          //nacteni projektu do manageru otevrenych projektu
 #ifndef PICOBLAZE
          projectMan->addProject(projName->text(), projDir->text() + "/" + projName->text()+ ".mmp", architecture->currentText(), (LangType)language->currentIndex(), &file);
@@ -103,6 +121,9 @@ void ProjectDialog::bCreate()
 }
 
 
+/**
+ * @brief
+ */
 void ProjectDialog::bReject()
 {
     //opravdu nutne? Qt si mozna vsechny deti maze samo...
@@ -110,6 +131,9 @@ void ProjectDialog::bReject()
 }
 
 
+/**
+ * @brief
+ */
 void ProjectDialog::freeDialog()
 {
     //delete layout;

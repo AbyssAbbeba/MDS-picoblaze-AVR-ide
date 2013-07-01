@@ -15,6 +15,10 @@
 #include "cfginterface.h"
 
 
+/**
+ * @brief
+ * @param
+ */
 CfgInterface::CfgInterface(QWidget *parent)
     : QWidget(parent)
 {
@@ -47,6 +51,9 @@ CfgInterface::CfgInterface(QWidget *parent)
 }
 
 
+/**
+ * @brief
+ */
 void CfgInterface::fixSize()
 {
     qDebug() << "CfgInterface: fixSize()";
@@ -64,6 +71,13 @@ void CfgInterface::fixSize()
 }
 
 
+/**
+ * @brief
+ * @param
+ * @param
+ * @param
+ * @param
+ */
 bool CfgInterface::addWidget(QWidget *widget, QString text, QString tabText, bool child)
 {
     qDebug() << "CfgInterface: addWidget()";
@@ -95,6 +109,11 @@ bool CfgInterface::addWidget(QWidget *widget, QString text, QString tabText, boo
 
 
 
+/**
+ * @brief
+ * @param
+ * @param
+ */
 void CfgInterface::changeWidget(QTreeWidgetItem *curr, QTreeWidgetItem *prev)
 {
     this->tabs->setCurrentIndex(curr->type());

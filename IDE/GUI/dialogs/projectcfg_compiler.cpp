@@ -3,6 +3,11 @@
 
 
 
+/**
+ * @brief
+ * @param
+ * @param
+ */
 ProjectCfg_Compiler::ProjectCfg_Compiler(QWidget *parentWidget, Project *currProject)
     : QWidget(parentWidget)
 {
@@ -22,7 +27,6 @@ ProjectCfg_Compiler::ProjectCfg_Compiler(QWidget *parentWidget, Project *currPro
     this->lblSRecFile = new QLabel("SRec File", this);
 
     this->leMain = new QLineEdit(this);
-    this->leMain->setText(this->project->mainFileName);
     this->leMain->setMaximumWidth(70);
     this->leMain->setReadOnly(true);
     this->leMain->setFrame(false);
@@ -56,11 +60,17 @@ ProjectCfg_Compiler::ProjectCfg_Compiler(QWidget *parentWidget, Project *currPro
     this->chckHexFile->move(5,130);
     this->chckBinFile->move(5,150);
     this->chckSRecFile->move(5,170);
+
+    this->load();
 }
 
 
+/**
+ * @brief
+ */
 void ProjectCfg_Compiler::load()
 {
+    qDebug() << "ProjectCfg_Compiler: load()";
     this->chckSymbolTbl->setChecked(project->compileOpt.at(0));
     this->chckMacroTbl->setChecked(project->compileOpt.at(1));
     this->chckDbgFile->setChecked(project->compileOpt.at(2));
@@ -69,20 +79,25 @@ void ProjectCfg_Compiler::load()
     this->chckHexFile->setChecked(project->compileOpt.at(5));
     this->chckBinFile->setChecked(project->compileOpt.at(6));
     this->chckSRecFile->setChecked(project->compileOpt.at(7));
+    this->leMain->setText(project->mainFileName);
+    qDebug() << "ProjectCfg_Compiler: return load()";
 }
 
 
+/**
+ * @brief
+ */
 void ProjectCfg_Compiler::save()
 {
     QList<bool> opt;
-    opt[0] = this->chckSymbolTbl->isChecked();
-    opt[1] = this->chckMacroTbl->isChecked();
-    opt[2] = this->chckDbgFile->isChecked();
-    opt[3] = this->chckCodeTree->isChecked();
-    opt[4] = this->chckLstFile->isChecked();
-    opt[5] = this->chckHexFile->isChecked();
-    opt[6] = this->chckBinFile->isChecked();
-    opt[7] = this->chckSRecFile->isChecked();
+    opt.append(this->chckSymbolTbl->isChecked());
+    opt.append(this->chckMacroTbl->isChecked());
+    opt.append(this->chckDbgFile->isChecked());
+    opt.append(this->chckCodeTree->isChecked());
+    opt.append(this->chckLstFile->isChecked());
+    opt.append(this->chckHexFile->isChecked());
+    opt.append(this->chckBinFile->isChecked());
+    opt.append(this->chckSRecFile->isChecked());
     
     this->project->setCompileOpt(opt);
 }

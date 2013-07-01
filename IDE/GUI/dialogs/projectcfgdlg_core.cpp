@@ -15,6 +15,13 @@
 #include "projectcfgdlg_core.h"
 #include "../project/project.h"
 
+
+
+/**
+ * @brief
+ * @param
+ * @param
+ */
 ProjectConfigDialog_Core::ProjectConfigDialog_Core(QWidget *parent, Project *currProject)
     : QDialog(parent)
 {
@@ -50,6 +57,11 @@ ProjectConfigDialog_Core::ProjectConfigDialog_Core(QWidget *parent, Project *cur
 }
 
 
+
+/**
+ * @brief
+ * @param
+ */
 void ProjectConfigDialog_Core::closeEvent(QCloseEvent * e)
 {
     if (reloadFiles == true)
@@ -59,12 +71,18 @@ void ProjectConfigDialog_Core::closeEvent(QCloseEvent * e)
 }
 
 
+/**
+ * @brief
+ */
 void ProjectConfigDialog_Core::reload()
 {
     reloadFiles = true;
 }
 
 
+/**
+ * @brief
+ */
 void ProjectConfigDialog_Core::ok()
 {
     this->compilerCfg->save();
@@ -73,6 +91,9 @@ void ProjectConfigDialog_Core::ok()
 }
 
 
+/**
+ * @brief
+ */
 void ProjectConfigDialog_Core::cancel()
 {
     this->done(0);
