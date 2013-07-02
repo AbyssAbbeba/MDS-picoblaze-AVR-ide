@@ -370,6 +370,7 @@ Project::Project(QFile *file, ProjectMan *parent)
                         QDomElement xmlCompilerElement;
                         while (!xmlCompilerNode.isNull())
                         {
+                            qDebug() << "node";
                             xmlCompilerElement = xmlCompilerNode.toElement();
                             if (xmlCompilerElement.tagName() == "Options")
                             {
@@ -440,7 +441,8 @@ Project::Project(QFile *file, ProjectMan *parent)
                             }
                             else if (xmlCompilerElement.tagName() == "IncludePaths")
                             {
-                                QDomNode xmlIncludeNode = xmlElement.firstChild();
+                                qDebug() << "Include paths";
+                                QDomNode xmlIncludeNode = xmlCompilerElement.firstChild();
                                 QDomElement xmlIncludeElement;
                                 while (!xmlIncludeNode.isNull())
                                 {
@@ -448,7 +450,7 @@ Project::Project(QFile *file, ProjectMan *parent)
                                     if (xmlIncludeElement.tagName() == "Path")
                                     {
                                         compileIncPaths << xmlIncludeElement.attribute("path");
-                                        //qDebug() << "Include";
+                                        qDebug() << "Include";
                                     }
                                     xmlIncludeNode = xmlIncludeNode.nextSibling();
                                 }

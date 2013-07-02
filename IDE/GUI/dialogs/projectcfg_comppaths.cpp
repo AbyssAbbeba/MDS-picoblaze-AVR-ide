@@ -56,7 +56,11 @@ ProjectCfg_CompPaths::ProjectCfg_CompPaths(QWidget *parentWidget, Project *currP
  */
 void ProjectCfg_CompPaths::New()
 {
-    
+    QString path = QFileDialog::getExistingDirectory(this, tr("Open Directory"), "");
+    if (NULL != path)
+    {
+        QListWidgetItem *item = new QListWidgetItem(path, fileList);
+    }
 }
 
 
@@ -65,7 +69,11 @@ void ProjectCfg_CompPaths::New()
  */
 void ProjectCfg_CompPaths::Edit()
 {
-
+    QString path = QFileDialog::getExistingDirectory(this, tr("Open Directory"), "");
+    if (NULL != path)
+    {
+        this->fileList->currentItem()->setText(path);
+    }
 }
 
 
@@ -74,7 +82,17 @@ void ProjectCfg_CompPaths::Edit()
  */
 void ProjectCfg_CompPaths::Delete()
 {
-
+    if (0 < this->fileList->count())
+    {
+        if (NULL == this->fileList->currentItem())
+        {
+            delete this->fileList->item(0);
+        }
+        else
+        {
+            delete this->fileList->currentItem();
+        }
+    }
 }
 
 
