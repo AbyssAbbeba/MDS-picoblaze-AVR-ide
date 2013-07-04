@@ -21,7 +21,7 @@
 #include "projectcfg_filemgr.h"
 #include "projectcfg_compiler.h"
 #include "projectcfg_comppaths.h"
-#include "cfginterface.h"
+#include "../cfginterface/cfginterface.h"
 
 
 
