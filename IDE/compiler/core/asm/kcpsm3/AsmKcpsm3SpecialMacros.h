@@ -76,9 +76,25 @@ class AsmKcpsm3SpecialMacros
         /**
          * @brief
          * @param[out] label
+         * @param[in] end
          * @return
          */
-        inline const std::string & generateLabel ( std::string & label );
+        inline const std::string & generateLabel ( std::string & label,
+                                                   bool end = false );
+
+        /**
+         * @brief
+         * @param[in] label
+         * @return
+         */
+        inline CompilerStatement * jump ( const std::string & label );
+
+        /**
+         * @brief
+         * @param[in] label
+         * @return
+         */
+        inline CompilerStatement * label ( const std::string & label );
 
     ////    Private Attributes    ////
     private:

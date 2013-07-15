@@ -46,11 +46,16 @@ CompilerStatement * AsmKcpsm3SpecialMacros::runTimeCondition ( CompilerStatement
 {
     using namespace CompilerStatementTypes;
 
-    std::string labelNext = "";
+    bool elseBlock = false;
+    std::string labelNext;
+    std::string labelEnd;
     CompilerStatement * block;
     CompilerStatement * node2delete;
     CompilerStatement * nodeNext;
     CompilerStatement * result = rtIfTree->branch();
+
+    generateLabel(labelEnd, true);
+    generateLabel(labelNext);
 
     rtIfTree->m_branch = NULL;
 
@@ -62,7 +67,7 @@ CompilerStatement * AsmKcpsm3SpecialMacros::runTimeCondition ( CompilerStatement
         {
             case ASMKCPSM3_DIR_RTIF:
             {
-                block = evaluateCondition ( node->args(), generateLabel(labelNext) );
+                block = evaluateCondition ( node->args(), labelNext );
                 block->appendLink ( node->branch() );
                 m_codeListing->generatedCode(node->location(), block);
 
@@ -77,7 +82,8 @@ CompilerStatement * AsmKcpsm3SpecialMacros::runTimeCondition ( CompilerStatement
             }
             case ASMKCPSM3_DIR_RTELSEIF:
             {
-                block = new CompilerStatement ( node->location(), ASMKCPSM3_LABEL, new CompilerExpr ( labelNext ) );
+                block = jump(labelEnd);
+                block->appendLink ( label(labelNext) );
                 block->appendLink ( evaluateCondition ( node->args(), generateLabel(labelNext) ) );
                 block->appendLink ( node->branch() );
                 m_codeListing->generatedCode(node->location(), block);
@@ -93,11 +99,12 @@ CompilerStatement * AsmKcpsm3SpecialMacros::runTimeCondition ( CompilerStatement
             }
             case ASMKCPSM3_DIR_RTELSE:
             {
-                block = new CompilerStatement ( node->location(), ASMKCPSM3_LABEL, new CompilerExpr ( labelNext ) );
+                elseBlock = true;
+
+                block = jump(labelEnd);
+                block->appendLink(label(labelNext));
                 block->appendLink ( node->branch() );
                 m_codeListing->generatedCode(node->location(), block);
-
-                generateLabel(labelNext);
 
                 node2delete = node;
                 nodeNext = block->last();
@@ -110,7 +117,11 @@ CompilerStatement * AsmKcpsm3SpecialMacros::runTimeCondition ( CompilerStatement
             }
             case ASMKCPSM3_DIR_RTENDIF:
             {
-                block = new CompilerStatement ( node->location(), ASMKCPSM3_LABEL, new CompilerExpr ( labelNext ) );
+                if ( false == elseBlock )
+                {
+                    block = label(labelNext);
+                }
+                block->appendLink(label(labelEnd));
                 m_codeListing->generatedCode(node->location(), block);
                 node->insertLink(block);
                 node = node->next();
@@ -141,7 +152,7 @@ CompilerStatement * AsmKcpsm3SpecialMacros::evaluateCondition ( const CompilerEx
     const CompilerExpr * const rVal = cnd->rVal().m_data.m_expr;
 
     int resultKnownInAdvance = 0;
-std::cout << "cnd = " << cnd << "\n";
+
     cndVal[0].m_val = new CompilerExpr ( (int) m_symbolTable->resolveExpr(lVal->lVal().m_data.m_expr, 8) );
     cndVal[1].m_val = new CompilerExpr ( (int) m_symbolTable->resolveExpr(rVal->lVal().m_data.m_expr, 8) );
 
@@ -178,30 +189,12 @@ std::cout << "cnd = " << cnd << "\n";
         }
     }
 
-//  █─ ASMKCPSM3_DIR_RTIF {0:6.1-6.21} <0/-1> [ (('A') {0:6.14-6.16} == (0x2) {0:6.19-6.21}) {0:6.14-6.21} ]
-//  │   █─ ASMKCPSM3_INS_LOAD_SX_KK {0:7.1-7.30} <0/-1> [ ('A') {0:7.15-7.26} | (0x1) {0:7.29-7.30} ]
-//  ├─ ASMKCPSM3_DIR_RTELSEIF {0:8.1-8.24} <0/-1> [ (('A') {0:8.18-8.20} > (0x4) {0:8.22-8.24}) {0:8.18-8.24} ]
-//  │   █─ ASMKCPSM3_INS_LOAD_SX_KK {0:9.1-9.30} <0/-1> [ ('A') {0:9.15-9.26} | (0x2) {0:9.29-9.30} ]
-//  ├─ ASMKCPSM3_DIR_RTELSE {0:10.1-10.16} <0/-1>
-//  │   █─ ASMKCPSM3_INS_LOAD_SX_KK {0:11.1-11.30} <0/-1> [ ('A') {0:11.15-11.26} | (0x3) {0:11.29-11.30} ]
-//  └─ ASMKCPSM3_DIR_RTENDIF {0:12.1-12.17} <0/-1>
-
-//             ASMKCPSM3_INS_JUMP_AAA
-//             ASMKCPSM3_INS_JUMP_Z_AAA
-//             ASMKCPSM3_INS_JUMP_NZ_AAA
-//             ASMKCPSM3_INS_JUMP_C_AAA
-//             ASMKCPSM3_INS_JUMP_NC_AAA
-// 
-//             ASMKCPSM3_INS_COMPARE_SX_KK
-//             ASMKCPSM3_INS_COMPARE_SX_SY
-// 
-//             ASMKCPSM3_INS_TEST_SX_KK
-//             ASMKCPSM3_INS_TEST_SX_SY
-
     CompilerSourceLocation emptyLocation;
+
     switch ( (int) cnd->oper() )
     {
         case CompilerExpr::OPER_EQ:
+        case CompilerExpr::OPER_NE:
             if ( true == cndVal[0].m_reg )
             {
                 if ( true == cndVal[1].m_reg )
@@ -241,14 +234,20 @@ std::cout << "cnd = " << cnd << "\n";
 
             if ( true == cndVal[0].m_reg || true == cndVal[1].m_reg )
             {
-                result->appendLink ( new CompilerStatement(emptyLocation, ASMKCPSM3_INS_JUMP_Z_AAA, lblExpr) );
+                StatementType statementType;
+                if ( CompilerExpr::OPER_EQ == cnd->oper() )
+                {
+                    statementType = ASMKCPSM3_INS_JUMP_NZ_AAA;
+                }
+                else
+                {
+                    statementType = ASMKCPSM3_INS_JUMP_Z_AAA;
+                }
+                result->appendLink ( new CompilerStatement(emptyLocation, statementType, lblExpr) );
             }
 
             break;
 
-        case CompilerExpr::OPER_NE:
-//             COMPARE
-//             JUMP NZ
         case CompilerExpr::OPER_LT:
 //             COMPARE
 //             JUMP C
@@ -263,6 +262,11 @@ std::cout << "cnd = " << cnd << "\n";
 //             COMPARE
 //             JUMP NC && NZ
         case CompilerExpr::OPER_BAND:
+
+//             ASMKCPSM3_INS_TEST_SX_KK
+//             ASMKCPSM3_INS_TEST_SX_SY
+
+
 //             TEST
 //             JUMP NZ
         case CompilerExpr::OPER_NAND:
@@ -296,7 +300,22 @@ std::cout << "cnd = " << cnd << "\n";
     }
 }
 
-inline const std::string & AsmKcpsm3SpecialMacros::generateLabel ( std::string & label )
+inline CompilerStatement * AsmKcpsm3SpecialMacros::jump ( const std::string & label )
+{
+    return new CompilerStatement ( CompilerSourceLocation(),
+                                   CompilerStatementTypes::ASMKCPSM3_INS_JUMP_AAA,
+                                   new CompilerExpr(label) );
+}
+
+inline CompilerStatement * AsmKcpsm3SpecialMacros::label ( const std::string & label )
+{
+    return new CompilerStatement ( CompilerSourceLocation(),
+                                   CompilerStatementTypes::ASMKCPSM3_LABEL,
+                                   new CompilerExpr(label) );
+}
+
+inline const std::string & AsmKcpsm3SpecialMacros::generateLabel ( std::string & label,
+                                                                   bool end )
 {
     char buf[5];
     sprintf(buf, "%d", m_labelNextCounter);
@@ -305,7 +324,14 @@ inline const std::string & AsmKcpsm3SpecialMacros::generateLabel ( std::string &
     label = "IF-";
     label += buf;
 
-    m_labelNextCounter++;
+    if ( true == end )
+    {
+        label += "-END";
+    }
+    else
+    {
+        m_labelNextCounter++;
+    }
 
     return label;
 }
