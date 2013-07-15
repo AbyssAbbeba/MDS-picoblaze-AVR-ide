@@ -280,7 +280,7 @@ Project::Project(QFile *file, ProjectMan *parent)
     qDebug() << "Project: Project()";
     mainFileName = "";
     mainFilePath = "";
-    for (int i = 0; i < 7; i++)
+    for (int i = 0; i < 8; i++)
     {
         compileOpt.append(false);
     }
@@ -370,6 +370,7 @@ Project::Project(QFile *file, ProjectMan *parent)
                         QDomElement xmlCompilerElement;
                         while (!xmlCompilerNode.isNull())
                         {
+                            qDebug() << "node";
                             xmlCompilerElement = xmlCompilerNode.toElement();
                             if (xmlCompilerElement.tagName() == "Options")
                             {
@@ -378,56 +379,56 @@ Project::Project(QFile *file, ProjectMan *parent)
                                 while (!xmlCompileOptNode.isNull())
                                 {
                                     xmlCompileOptElem = xmlCompileOptNode.toElement();
-                                    if (xmlCompileOptElem.tagName() == "Symbol Table")
+                                    if (xmlCompileOptElem.tagName() == "SymbolTable")
                                     {
                                         if (xmlCompileOptElem.attribute("enable") == "true")
                                         {
                                             compileOpt[0] = true;
                                         }
                                     }
-                                    else if (xmlCompileOptElem.tagName() == "Macro Table")
+                                    else if (xmlCompileOptElem.tagName() == "MacroTable")
                                     {
                                         if (xmlCompileOptElem.attribute("enable") == "true")
                                         {
                                             compileOpt[1] = true;
                                         }
                                     }
-                                    else if (xmlCompileOptElem.tagName() == "Debug File")
+                                    else if (xmlCompileOptElem.tagName() == "DebugFile")
                                     {
                                         if (xmlCompileOptElem.attribute("enable") == "true")
                                         {
                                             compileOpt[2] = true;
                                         }
                                     }
-                                    else if (xmlCompileOptElem.tagName() == "Code Tree")
+                                    else if (xmlCompileOptElem.tagName() == "CodeTree")
                                     {
                                         if (xmlCompileOptElem.attribute("enable") == "true")
                                         {
                                             compileOpt[3] = true;
                                         }
                                     }
-                                    else if (xmlCompileOptElem.tagName() == "List File")
+                                    else if (xmlCompileOptElem.tagName() == "ListFile")
                                     {
                                         if (xmlCompileOptElem.attribute("enable") == "true")
                                         {
                                             compileOpt[4] = true;
                                         }
                                     }
-                                    else if (xmlCompileOptElem.tagName() == "Hex File")
+                                    else if (xmlCompileOptElem.tagName() == "HexFile")
                                     {
                                         if (xmlCompileOptElem.attribute("enable") == "true")
                                         {
                                             compileOpt[5] = true;
                                         }
                                     }
-                                    else if (xmlCompileOptElem.tagName() == "Bin File")
+                                    else if (xmlCompileOptElem.tagName() == "BinFile")
                                     {
                                         if (xmlCompileOptElem.attribute("enable") == "true")
                                         {
                                             compileOpt[6] = true;
                                         }
                                     }
-                                    else if (xmlCompileOptElem.tagName() == "SRec File")
+                                    else if (xmlCompileOptElem.tagName() == "SRecFile")
                                     {
                                         if (xmlCompileOptElem.attribute("enable") == "true")
                                         {
@@ -435,12 +436,13 @@ Project::Project(QFile *file, ProjectMan *parent)
                                         }
                                     }
                                     xmlCompileOptNode = xmlCompileOptNode.nextSibling();
-                                    qDebug() << "Opt";
+                                    //qDebug() << "Opt";
                                 }
                             }
-                            else if (xmlCompilerElement.tagName() == "Include Paths")
+                            else if (xmlCompilerElement.tagName() == "IncludePaths")
                             {
-                                QDomNode xmlIncludeNode = xmlElement.firstChild();
+                                qDebug() << "Include paths";
+                                QDomNode xmlIncludeNode = xmlCompilerElement.firstChild();
                                 QDomElement xmlIncludeElement;
                                 while (!xmlIncludeNode.isNull())
                                 {
@@ -603,32 +605,32 @@ Project::Project(QString name, QString path, QString arch, LangType lang, QFile 
 
     QDomElement xmlCompiler = domDoc.createElement("Compiler");
     QDomElement xmlCompilerOpt = domDoc.createElement("Options");
-    QDomElement xmlSymbolTbl = domDoc.createElement("Symbol Table");
+    QDomElement xmlSymbolTbl = domDoc.createElement("SymbolTable");
     xmlSymbolTbl.setAttribute("enable", "true");
     xmlCompilerOpt.appendChild(xmlSymbolTbl);
-    QDomElement xmlMacroTbl = domDoc.createElement("Macro Table");
+    QDomElement xmlMacroTbl = domDoc.createElement("MacroTable");
     xmlMacroTbl.setAttribute("enable", "true");
     xmlCompilerOpt.appendChild(xmlMacroTbl);
-    QDomElement xmlDbgFile = domDoc.createElement("Debug File");
+    QDomElement xmlDbgFile = domDoc.createElement("DebugFile");
     xmlDbgFile.setAttribute("enable", "true");
     xmlCompilerOpt.appendChild(xmlDbgFile);
-    QDomElement xmlCodeTree = domDoc.createElement("Code Tree");
+    QDomElement xmlCodeTree = domDoc.createElement("CodeTree");
     xmlCodeTree.setAttribute("enable", "true");
     xmlCompilerOpt.appendChild(xmlCodeTree);
-    QDomElement xmlLstFile = domDoc.createElement("List File");
+    QDomElement xmlLstFile = domDoc.createElement("ListFile");
     xmlLstFile.setAttribute("enable", "true");
     xmlCompilerOpt.appendChild(xmlLstFile);
-    QDomElement xmlHexFile = domDoc.createElement("Hex File");
+    QDomElement xmlHexFile = domDoc.createElement("HexFile");
     xmlHexFile.setAttribute("enable", "true");
     xmlCompilerOpt.appendChild(xmlHexFile);
-    QDomElement xmlBinFile = domDoc.createElement("Bin File");
+    QDomElement xmlBinFile = domDoc.createElement("BinFile");
     xmlBinFile.setAttribute("enable", "false");
     xmlCompilerOpt.appendChild(xmlBinFile);
-    QDomElement xmlSRecFile = domDoc.createElement("SRec File");
+    QDomElement xmlSRecFile = domDoc.createElement("SRecFile");
     xmlSRecFile.setAttribute("enable", "false");
     xmlCompilerOpt.appendChild(xmlSRecFile);
     xmlCompiler.appendChild(xmlCompilerOpt);
-    QDomElement xmlCompilerInclude = domDoc.createElement("Include Paths");
+    QDomElement xmlCompilerInclude = domDoc.createElement("IncludePaths");
     xmlCompiler.appendChild(xmlCompilerInclude);
     xmlRoot.appendChild(xmlCompiler);
 
@@ -1138,7 +1140,7 @@ void Project::setCompileOpt(QList<bool> opt)
                                 {
                                     QDomElement xmlCompOptElem = xmlCompOptNode.toElement();
                                     //prochazeni elementu
-                                    if (xmlCompOptElem.tagName() == "Symbol Table")
+                                    if (xmlCompOptElem.tagName() == "SymbolTable")
                                     {
                                         if (true == this->compileOpt.at(0))
                                         {
@@ -1149,7 +1151,7 @@ void Project::setCompileOpt(QList<bool> opt)
                                             xmlCompOptElem.setAttribute("enable", "false");
                                         }
                                     }
-                                    else if (xmlCompOptElem.tagName() == "Macro Table")
+                                    else if (xmlCompOptElem.tagName() == "MacroTable")
                                     {
                                         if (true == this->compileOpt.at(1))
                                         {
@@ -1160,7 +1162,7 @@ void Project::setCompileOpt(QList<bool> opt)
                                             xmlCompOptElem.setAttribute("enable", "false");
                                         }
                                     }
-                                    else if (xmlCompOptElem.tagName() == "Debug File")
+                                    else if (xmlCompOptElem.tagName() == "DebugFile")
                                     {
                                         if (true == this->compileOpt.at(2))
                                         {
@@ -1171,7 +1173,7 @@ void Project::setCompileOpt(QList<bool> opt)
                                             xmlCompOptElem.setAttribute("enable", "false");
                                         }
                                     }
-                                    else if (xmlCompOptElem.tagName() == "Code Tree")
+                                    else if (xmlCompOptElem.tagName() == "CodeTree")
                                     {
                                         if (true == this->compileOpt.at(3))
                                         {
@@ -1182,7 +1184,7 @@ void Project::setCompileOpt(QList<bool> opt)
                                             xmlCompOptElem.setAttribute("enable", "false");
                                         }
                                     }
-                                    else if (xmlCompOptElem.tagName() == "List File")
+                                    else if (xmlCompOptElem.tagName() == "ListFile")
                                     {
                                         if (true == this->compileOpt.at(4))
                                         {
@@ -1193,7 +1195,7 @@ void Project::setCompileOpt(QList<bool> opt)
                                             xmlCompOptElem.setAttribute("enable", "false");
                                         }
                                     }
-                                    else if (xmlCompOptElem.tagName() == "Hex File")
+                                    else if (xmlCompOptElem.tagName() == "HexFile")
                                     {
                                         if (true == this->compileOpt.at(5))
                                         {
@@ -1204,7 +1206,7 @@ void Project::setCompileOpt(QList<bool> opt)
                                             xmlCompOptElem.setAttribute("enable", "false");
                                         }
                                     }
-                                    else if (xmlCompOptElem.tagName() == "Bin File")
+                                    else if (xmlCompOptElem.tagName() == "BinFile")
                                     {
                                         if (true == this->compileOpt.at(6))
                                         {
@@ -1215,7 +1217,7 @@ void Project::setCompileOpt(QList<bool> opt)
                                             xmlCompOptElem.setAttribute("enable", "false");
                                         }
                                     }
-                                    else if (xmlCompOptElem.tagName() == "SRec File")
+                                    else if (xmlCompOptElem.tagName() == "SRecFile")
                                     {
                                         if (true == this->compileOpt.at(7))
                                         {
@@ -1286,12 +1288,12 @@ void Project::setCompileIncPaths(QList<QString> paths)
                         while (!xmlCompilerNode.isNull())
                         {
                             xmlCompilerElement = xmlCompilerNode.toElement();
-                            if (xmlCompilerElement.tagName() == "Include Paths")
+                            if (xmlCompilerElement.tagName() == "IncludePaths")
                             {
                                 //smazat tag
                                 xmlNode.removeChild(xmlCompilerNode);
                                 //znovu pridat tag
-                                QDomElement xmlNewCompilerElement = domDoc.createElement("Include Paths");
+                                QDomElement xmlNewCompilerElement = domDoc.createElement("IncludePaths");
                                 for (int i = 0; i < this->compileIncPaths.size(); i++)
                                 {
                                     QDomElement xmlNewPathElem = domDoc.createElement("Path");

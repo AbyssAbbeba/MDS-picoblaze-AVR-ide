@@ -110,6 +110,11 @@
 }*/
 
 
+/**
+ * @brief
+ * @param
+ * @param
+ */
 PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
     : QWidget(parent)
 {
@@ -169,6 +174,10 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
 
 
 
+/**
+ * @brief
+ * @param
+ */
 void PicoBlazeGrid::setProjectPath(QString prjPath)
 {
     this->projectPath = prjPath;

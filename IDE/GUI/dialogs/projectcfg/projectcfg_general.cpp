@@ -15,6 +15,13 @@
 #include "projectcfg_general.h"
 #include "../project/project.h"
 
+
+
+/**
+ * @brief
+ * @param
+ * @param
+ */
 ProjectCfg_General::ProjectCfg_General(QWidget *parentWidget, Project *currProject)
     : QWidget(parentWidget)
 {
