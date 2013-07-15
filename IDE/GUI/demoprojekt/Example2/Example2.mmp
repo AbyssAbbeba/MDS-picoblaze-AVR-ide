@@ -1,0 +1,26 @@
+<!DOCTYPE MMProject>
+<MMProject>
+ <General>
+  <Name name="Example2"/>
+  <Architecture architecture="PICOBLAZE"/>
+  <Language language="0"/>
+ </General>
+ <Files/>
+ <Mainfile path="" name=""/>
+ <Simulator/>
+ <Compiler>
+  <Options>
+   <SymbolTable enable="true"/>
+   <MacroTable enable="true"/>
+   <DebugFile enable="true"/>
+   <CodeTree enable="true"/>
+   <ListFile enable="true"/>
+   <HexFile enable="true"/>
+   <BinFile enable="false"/>
+   <SRecFile enable="false"/>
+  </Options>
+  <IncludePaths>
+   <Path path="/home/rift/Plocha/gui/localgit/mms/IDE/GUI/demoprojekt/Example2"/>
+  </IncludePaths>
+ </Compiler>
+</MMProject>

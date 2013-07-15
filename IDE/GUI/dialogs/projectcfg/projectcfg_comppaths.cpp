@@ -42,6 +42,7 @@ ProjectCfg_CompPaths::ProjectCfg_CompPaths(QWidget *parentWidget, Project *currP
     layout->addWidget(btnWidget, 0,1,Qt::AlignJustify);
     this->setLayout(layout);
     this->adjustSize();
+    this->load();
 
     connect(this->newBtn, SIGNAL(clicked()), this, SLOT(New()));
     connect(this->editBtn, SIGNAL(clicked()), this, SLOT(Edit()));
@@ -50,33 +51,68 @@ ProjectCfg_CompPaths::ProjectCfg_CompPaths(QWidget *parentWidget, Project *currP
 }
 
 
+/**
+ * @brief
+ */
 void ProjectCfg_CompPaths::New()
 {
-    
-}
-
-
-void ProjectCfg_CompPaths::Edit()
-{
-
-}
-
-
-void ProjectCfg_CompPaths::Delete()
-{
-
-}
-
-
-void ProjectCfg_CompPaths::load()
-{
-    for (int i = 0; i < this->project->compileIncPaths.count(); i++)
+    QString path = QFileDialog::getExistingDirectory(this, tr("Open Directory"), "");
+    if (NULL != path)
     {
-        QListWidgetItem *item = new QListWidgetItem(this->project->compileIncPaths.at(i), this->fileList);
+        QListWidgetItem *item = new QListWidgetItem(path, fileList);
     }
 }
 
 
+/**
+ * @brief
+ */
+void ProjectCfg_CompPaths::Edit()
+{
+    QString path = QFileDialog::getExistingDirectory(this, tr("Open Directory"), "");
+    if (NULL != path)
+    {
+        this->fileList->currentItem()->setText(path);
+    }
+}
+
+
+/**
+ * @brief
+ */
+void ProjectCfg_CompPaths::Delete()
+{
+    if (0 < this->fileList->count())
+    {
+        if (NULL == this->fileList->currentItem())
+        {
+            delete this->fileList->item(0);
+        }
+        else
+        {
+            delete this->fileList->currentItem();
+        }
+    }
+}
+
+
+/**
+ * @brief
+ */
+void ProjectCfg_CompPaths::load()
+{
+    qDebug() << "ProjectCfg_CompPaths: load()";
+    for (int i = 0; i < this->project->compileIncPaths.count(); i++)
+    {
+        QListWidgetItem *item = new QListWidgetItem(this->project->compileIncPaths.at(i), this->fileList);
+    }
+    qDebug() << "ProjectCfg_CompPaths: load()";
+}
+
+
+/**
+ * @brief
+ */
 void ProjectCfg_CompPaths::save()
 {
     QStringList paths;

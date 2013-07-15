@@ -1,4 +1,4 @@
-; MDS Demonstration code
+; MDS PicoBlaze IDE - Demonstration code
 
 ; Macro instructions
 ; See manual for more info
@@ -13,8 +13,10 @@
 ; You can easily modify this example and use it in your aplication
 ;
 ; Press Start simulation and Animate to run the program
-; 
-
+;
+; Tell compiler type of procesor (KCPSM2, KCPSM3, KCPSM6 available)
+        DEVICE          KCPSM3
+        
 ; Asign names to registers
         NAMEREG         s0,temp1              ; temporary data register
         NAMEREG         s1,temp2              ; temporary data register
@@ -22,10 +24,12 @@
         ; OR
         s3          REG         RXdata        ; RX data
         s4          REG         TXdata        ; TX data
+        s5          REG         LED_reg       ; Leds data register
 ; PORT_IDs
         TX_id       PORT        0x01          ;  data register port ID
         RX_id       PORT        0x02          ;  data register port ID
         UART_stat   PORT        0x04          ; status register port ID
+        LED_id      PORT        0x08          ; Led register
 ; UART Status register:
 ;  [2] Tx ready
 ;  [3] new Rx data
@@ -69,7 +73,9 @@ GetChar             MACRO
 SendCRLF            MACRO       
                     SendChar  0x0D          ; CR character
                     SendChar  0x0A          ; CR character
-                    ENDM                           ; Return from procedure
+                    ENDM                           ; Return from procedure                   
+;==============================================================================;
+
 ;==============================================================================;
 ; Procedures for waiting for specified time
 ; Duration is set in registers Temp1, Temp2 and Temp3
@@ -87,9 +93,9 @@ SendCRLF            MACRO
 ; Waiting loops
 ;==============================================================================;
 wait_for_1s         MACRO
-wait_1s:            LOAD      Temp1, 250          ; Load Temp1 register
-                    LOAD      Temp2, 249          ; Load Temp2 register
-                    LOAD      Temp3, 200          ; Load Temp3 register
+wait_1s:            LOAD      Temp1, #250          ; Load Temp1 register
+                    LOAD      Temp2, #249          ; Load Temp2 register
+                    LOAD      Temp3, #200          ; Load Temp3 register
 wait_1s_i:          SUB       Temp1, 1
                     JUMP      NZ, wait_1s_i
                     SUB       Temp2, 1
@@ -99,15 +105,44 @@ wait_1s_i:          SUB       Temp1, 1
                     ENDM
 
 wait_for_100ms      MACRO
-wait_100ms:         LOAD      Temp1, 250          ; Load Temp1 register
-                    LOAD      Temp2, 249          ; Load Temp2 register
-                    LOAD      Temp3, 20           ; Load Temp3 register
+wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
+                    LOAD      Temp2, #249          ; Load Temp2 register
+                    LOAD      Temp3, #20           ; Load Temp3 register
 wait_100ms_i:       SUB       Temp1, 1
                     JUMP      NZ, wait_100ms_i
                     SUB       Temp2, 1
                     JUMP      NZ, wait_100ms_i
                     SUB       Temp3, 1
                     JUMP      NZ, wait_100ms_i
+                    ENDM
+;==============================================================================;
+; UART RX register:
+;  [1] Rotate leds 8x
+;  [2] Send "Hello world" via UART
+;-------------------------------------------------------------------------------------
+RX_resolve          MACRO     uart_byte
+
+;                     RT-IF  uart_byte == 1
+;                         REPT    8
+;                         RR      LED_reg
+;                         wait_for_100ms
+;                         ENDR
+;                             EXITM
+;                         
+;                     RT-ELSEIF      uart_byte == 2
+;                         SendChar  'I'
+;                         SendChar  'N'
+;                         SendChar  'T'
+;                         SendChar  'E'
+;                         SendChar  'R'
+;                         SendChar  'R'
+;                         SendChar  'U'
+;                         SendChar  'P'
+;                         SendChar  'T'
+;                         SendCRLF
+;                             EXITM
+;                     ENDIF
+
                     ENDM
 
 ;=======================================================================
@@ -120,46 +155,28 @@ wait_100ms_i:       SUB       Temp1, 1
         JUMP    Start
         ADDRESS 0x3FF                             ; interrupt vector
         JUMP    INTERRUPT
-
+;-------------------------------------------------------------------------
+; Interrupt routine
+INTERRUPT:          SendChar  'I'
+                    SendChar  'N'
+                    SendChar  'T'
+                    SendChar  'E'
+                    SendChar  'R'
+                    SendChar  'R'
+                    SendChar  'U'
+                    SendChar  'P'
+                    SendChar  'T'
+                    SendCRLF
+                    RETURNI
 ; Start of main program
 Start:
                     wait_for_1s             ; wait for initialization of FPGA circuits
 
 ; ---------------------------------------- Main loop
 
-main_loop:          CALL      GetChar             ; get (wait for) new character
-                    COMPARE      chreg,$20           ; Space character received?
-                    JUMP      NZ,main_loop        ; If not space, get another character
-                    IN        chreg,Switch        ; If yes, read content of switches
-                    CALL      SendChar            ; And send it via UART
-                    JUMP      main_loop
-
-
-
-
-
-SendByte:           LOAD      Temp2, chreg        ; make a backup of chreg
-                    SR0       chreg               ; move upper nibble to lower nibble
-                    SR0       chreg
-                    SR0       chreg
-                    SR0       chreg
-                    COMP      chreg, 10           ; if not greater than 9, than it is a number
-                    JUMP      C, SendBNum1        ; C is set when Temp < 10 (Temp-10)
-                    ADD       chreg, $37          ; when letter, add $37; letter conversion
-                    JUMP      SendB1
-SendBNum1:          ADD       chreg, $30          ; when number, add $30; number conversion
-SendB1:             CALL      SendChar            ; Send Character
-
-                    LOAD      chreg, Temp2        ; load the whole byte again
-                    AND       chreg, $0F          ; select second character
-                    COMP      chreg, 10           ; if not greater than 9, than number
-                    JUMP      C, SendBNum2        ; C is set when Temp < 10 (Temp-10 under 0)
-                    ADD       chreg, $37          ; when letter, add $37; letter conversion
-                    JUMP      SendB2
-SendBNum2:          ADD       chreg, $30          ; when number, add $30; number conversion
-SendB2:             CALL      SendChar            ; Send character
-                    RET
-
+main_loop:          GetChar                       ; Receive via UART, get status of switches for example
+                    RX_resolve  RX_data           ; Resolve received byte
+                    JUMP        main_loop
 
 
 ; AND NOW YOU ARE READY !
