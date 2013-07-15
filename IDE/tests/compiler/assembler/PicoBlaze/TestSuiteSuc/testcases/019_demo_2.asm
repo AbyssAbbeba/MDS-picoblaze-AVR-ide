@@ -1,61 +1,47 @@
-; MCU 8051 IDE - Demonstration code
-; Macro instructions, conditional compilation and constants
+; MDS PicoBlaze IDE - Demonstration code
 ; See manual for more info
+
+; Simple example of waiting loop
+
+
 ; Press Start simulation and Animate to run the program
 
-; Constant definitions
-; --------------------
-counter         idata   00Fh    ; Counter of Px shifts
-x               set     100     ; Some variable
-inc_dec         equ     100 / X ; Flag: Increment/Decrement counter
-
-                cseg at 1FFh    ; Code segment starts at 0x1FF
-something:      db      4d      ; Reserve 4 bytes in this segment
-
-; Macro instructions
-; --------------------
-
-;; Shift the given registers
-shift   macro   reg0, reg1
-
-        ; Increment / Decrement counter
-        mov     A, counter
-        if      inc_dec <> 0
-                inc     A
-        else
-                dec     A
-        endif
-
-        mov     counter, A
+                    ORG       0x000
+                    JUMP      Start
+; Begining of main loop
+Start:              CALL      wait_1s
+                    CALL      wait_100ms
+                    JUMP      $                   ; Infinite loop, $ is translated as number of curent line
+                    END                           ; End of program
 
 
-        ; Shift
-        mov     reg1, reg0
-        mov     reg0, reg1
-        setb    C
-        mov     A, reg0
-        rl      A
-        mov     reg0, A
-endm
+; Subroutines-----------------------------------------------------------------
+; wait_time = (4 + (((2 * Temp1) + 2) * Temp2 + 2) * Temp3) * 2 * clk_period
+;   1s @ (10 MHz, Temp1 = 250, Temp2 = 249, Temp3 = 40)
 
-; Program initialization
-; --------------------
-        org     0h
-        sjmp    start
-
-; Program start
-; --------------------
-start:  mov     P1, #00Fh
-        mov     P3, #01Eh
-        sjmp    main
-
-; Main loop
-; --------------------
-main:   shift   P1, P3
-        sjmp    main
-
-; Program end
-; --------------------
-        end
+wait_1s:            LOAD      Temp1, 250          ; Load Temp1 register
+                    LOAD      Temp2, 249          ; Load Temp2 register
+                    LOAD      Temp3, 200          ; Load Temp3 register
+wait_1s_i:          SUB       Temp1, 1
+                    JUMP      NZ, wait_1s_i
+                    SUB       Temp2, 1
+                    JUMP      NZ, wait_1s_i
+                    SUB       Temp3, 1
+                    JUMP      NZ, wait_1s_i
+                    RETURN
+;-----------------------------------------------------------------------------
+wait_100ms:         LOAD      Temp1, 250          ; Load Temp1 register
+                    LOAD      Temp2, 249          ; Load Temp2 register
+                    LOAD      Temp3, 20           ; Load Temp3 register
+wait_100ms_i:       SUB       Temp1, 1
+                    JUMP      NZ, wait_100ms_i
+                    SUB       Temp2, 1
+                    JUMP      NZ, wait_100ms_i
+                    SUB       Temp3, 1
+                    JUMP      NZ, wait_100ms_i
+                    RETURN
 ; <-- Bookmark   (ctrl + shift + M)
 ; <-- Breakpoint (ctrl + shift + B)
+
+; -----------------------------------------
+; -----------------------------------------

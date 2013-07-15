@@ -1,4 +1,4 @@
-; MDS Demonstration code
+; MDS PicoBlaze IDE - Demonstration code
 
 ; Macro instructions
 ; See manual for more info
@@ -13,8 +13,10 @@
 ; You can easily modify this example and use it in your aplication
 ;
 ; Press Start simulation and Animate to run the program
-; 
+;
+; Tell compiler type of procesor (KCPSM2, KCPSM3, KCPSM6 available)
         DEVICE          KCPSM3
+        
 ; Asign names to registers
         NAMEREG         s0,temp1              ; temporary data register
         NAMEREG         s1,temp2              ; temporary data register
@@ -120,14 +122,14 @@ wait_100ms_i:       SUB       Temp1, 1
 ;-------------------------------------------------------------------------------------
 RX_resolve          MACRO     uart_byte
 
-;                     RTIF  uart_byte == 1
+;                     RT-IF  uart_byte == 1
 ;                         REPT    8
 ;                         RR      LED_reg
 ;                         wait_for_100ms
 ;                         ENDR
 ;                             EXITM
 ;                         
-;                     RTELSEIF      uart_byte == 2
+;                     RT-ELSEIF      uart_byte == 2
 ;                         SendChar  'I'
 ;                         SendChar  'N'
 ;                         SendChar  'T'

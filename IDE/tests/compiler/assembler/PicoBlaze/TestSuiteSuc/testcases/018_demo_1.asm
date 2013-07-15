@@ -1,45 +1,61 @@
-; MDS - Demonstration code
+; MDS PicoBlaze IDE - Demonstration code
+
+; Macro instructions, conditional compilation, constants and scratch-pad ram handling.
 ; See manual for more info
-
-; Simple example of waiting loop
-
 ; Press Start simulation and Animate to run the program
-                    ORG       0x000  
-                    JUMP      Start
-                    
-Start:              CALL      wait_1s      
-                    CALL      wait_100ms
-                    JUMP      $                   ; Infinite loop
-                    END                           ; End of program
 
-                    
-; Subroutines-----------------------------------------------------------------
-; wait_time = (4 + (((2 * Temp1) + 2) * Temp2 + 2) * Temp3) * 2 * clk_period
-;   1s @ (10 MHz, Temp1 = 250, Temp2 = 249, Temp3 = 40)
+; Constant definitions
+; --------------------
+counter          SET     00Fh    ; Counter of Px shifts
+x                SET     100     ; Some variable
+inc_dec          EQU     100 / X ; Flag: Increment/Decrement counter
+ram_pointer      SET     00h      ; Assign name to register 3
 
-wait_1s:            LOAD      Temp1, 250          ; Load Temp1 register
-                    LOAD      Temp2, 249          ; Load Temp2 register
-                    LOAD      Temp3, 200          ; Load Temp3 register
-wait_1s_i:          SUB       Temp1, 1
-                    JUMP      NZ, wait_1s_i
-                    SUB       Temp2, 1
-                    JUMP      NZ, wait_1s_i
-                    SUB       Temp3, 1
-                    JUMP      NZ, wait_1s_i
-                    RETURN
-;-----------------------------------------------------------------------------                 
-wait_100ms:         LOAD      Temp1, 250          ; Load Temp1 register
-                    LOAD      Temp2, 249          ; Load Temp2 register
-                    LOAD      Temp3, 20           ; Load Temp3 register
-wait_100ms_i:       SUB       Temp1, 1
-                    JUMP      NZ, wait_100ms_i
-                    SUB       Temp2, 1
-                    JUMP      NZ, wait_100ms_i
-                    SUB       Temp3, 1
-                    JUMP      NZ, wait_100ms_i
-                    RETURN
+; Macro instructions
+; --------------------
+;; Shift the given registers
+shift   MACRO    reg0, reg1
+
+        ; Increment / Decrement counter
+        if       inc_dec != 0
+                 inc     counter
+        else
+                 dec     counter
+        endif
+
+        ; Save registers to DATA memory (Scratch-pad ram with range 00h to 3Fh)
+        STORE    s0, #ram_pointer + 1
+        STORE    s1, #ram_pointer + 1
+        
+        ; Shift
+        LOAD     reg1, reg0
+        LOAD     reg0, reg1
+ENDM
+
+; Program initialization
+; --------------------
+        ORG     0h                      ; Define code segment
+        JUMP    start                   ; Jump to code initialization
+
+; Program start
+; --------------------
+start:  
+        LOAD     s0, #00Fh              ; Load content to shifted registers
+        LOAD     s1, #01Eh              ;
+        JUMP    main                    ; Execute main program loop
+
+; Main loop
+; --------------------
+main:   shift   s0, s1
+        JUMP    main
+
+; Program end
+; --------------------
+        END
+
+/*Tento program nevytváří žádný viditelný výstup, spustíme jej tedy v krokovacím režimu (debug mode)
+klávesou F10. Klávesou Alt+5 zobrazíme okno "Registers", ukazující obsahy registrů.
+Opakovaným stlačením klávesy F10 projděte program krok po kroku a sledujte, jak se obsahy registrů mění.
+  */      
 ; <-- Bookmark   (ctrl + shift + M)
 ; <-- Breakpoint (ctrl + shift + B)
-
-; -----------------------------------------
-; -----------------------------------------

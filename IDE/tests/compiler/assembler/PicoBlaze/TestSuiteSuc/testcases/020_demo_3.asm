@@ -1,8 +1,8 @@
-; MDS - Demonstration code
+; MDS PicoBlaze IDE - Demonstration code
 ; Example of sytax errors, list of directives,
 ; ------------------------------------------------------
 ; See manual for more info
-; Press Start simulation and Animate to run the program
+; 
 
 ; Code with syntax errors
         nolist                        ; Disable code listing
@@ -18,6 +18,10 @@ endif
 ; <-- Breakpoint (ctrl + shift + B)
      
 ; Here you can see syntax of some important directives
+; Those directives may significantly improve quality and readability of your code
+
+                DEVICE          KCPSM3
+; Tell compiler type of procesor (KCPSM2, KCPSM3, KCPSM6 available)
                 INCLUDE      hello.asm        ;  "< file name >"
 ;Compiler basicaly copies content of included file to line, where the directive is used.
 ;Include files can include other files.
@@ -81,7 +85,6 @@ SKIP <expresion> ; expresion determines number of skipped lines of code
 MACRO     [<parameter1>] [,<parameter2>..]
 <macro source code>
 ENDM    ; end of macro declaration       
-
 ; Macro with mandatory parameters
 
 
