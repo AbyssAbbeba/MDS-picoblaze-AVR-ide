@@ -536,6 +536,7 @@ input parameters.\\
                         \end{tabular}
                 \end{table}
 
+                
         \section{Assembler directives}
         Assembly directives are instructions
         that are executed by an assembler at assembly time,
@@ -597,15 +598,15 @@ input parameters.\\
                         }\\
                         \\
                 \textbf{DESCRIPTION:}\\
-                The directive EQU stands for "equals"; it allows you to give a numerical value to a label. This symbol cannot be redefined.
+                The directive EQU stands for "equals". It allows you to give a numerical value to a symbol. This symbol cannot be redefined.
                 \\
                 \textbf{EXAMPLE:}\\
-                
                         \begin{code}[h!]
-                        \mysmallfont{}
                                 {\color{highlight_constant}\verb'First_symb'}\verb'    '{\color{highlight_directive}\verb'EQU'}\verb' '{\color{highlight_bin}\verb'0b10011100'}\verb'   '{\color{highlight_comment}\verb'; Number in binary'}\\
                                 {\color{highlight_constant}\verb'Second_symb'}\verb'   '{\color{highlight_directive}\verb'EQU'}\verb' '{\color{highlight_oct}\verb'47'}\verb'       '{\color{highlight_comment}\verb'; Decimal'}\\
                                 {\color{highlight_constant}\verb'Third_symb'}\verb'    '{\color{highlight_directive}\verb'EQU'}\verb' '{\color{highlight_dec}\verb'0x39'}\verb'       '{\color{highlight_comment}\verb'; Hexadecimal'}\\
+                                {\color{highlight_constant}\verb'Fourth_symb'}\verb'   '{\color{highlight_directive}\verb'EQU'}\verb' '{\color{highlight_dec}\verb'(A -4)+ 18 / B)'}\verb'       '{\color{highlight_comment}\verb'; Expresion'}\\
+                                {\color{highlight_constant}\verb'Fifth_symb'}\verb'    '{\color{highlight_directive}\verb'EQU'}\verb' '{\color{highlight_dec}\verb'0x09 << 2'}\verb'       '{\color{highlight_comment}\verb'; Expresion'}\\
                         \caption{Using EQU directive}
                     \end{code}
 
@@ -625,7 +626,7 @@ input parameters.\\
                     }\\
                     \\
                 \textbf{DESCRIPTION:}\\
-                The directive CONSTANT allows you to give a numerical value to a label. It is same like EQU, but with diferent syntax. Cannot be redefined.\\
+                The directive CONSTANT allows you to give a numerical value to a symbol. It is same like EQU, but with diferent syntax. Cannot be redefined.\\
 
                 \textbf{EXAMPLE:}\\
                     \begin{code}[h!]
@@ -637,7 +638,7 @@ input parameters.\\
                     \end{code}
 
                 In this example, the assembler would always replace {\color{highlight_symbol}\verb'First_symb'} with 0x9C,
-                {\color{highlight_symbol}\verb'Second_symb'} with 0x2F and {\color{highlight_symbol}\verb'Third_symb'} with 0x39.
+                {\color{highlight_symbol}\verb'Second_symb'} with 0x2F and {\color{highlight_symbol}\verb'Third_symb'} with 0x39 etc.
 
             \subsection{SET}
             \textbf{SYNTAX:}\\
@@ -661,11 +662,13 @@ input parameters.\\
                             {\color{highlight_constant}\verb'First_symb'}\verb'    '{\color{highlight_directive}\verb'SET'}\verb' '{\color{highlight_bin}\verb'0b10011100'}\verb'   '{\color{highlight_comment}\verb'; Number in binary'}\\
                             {\color{highlight_constant}\verb'Second_symb'}\verb'   '{\color{highlight_directive}\verb'SET'}\verb' '{\color{highlight_oct}\verb'47'}\verb'       '{\color{highlight_comment}\verb'; Decimal'}\\
                             {\color{highlight_constant}\verb'Third_symb'}\verb'    '{\color{highlight_directive}\verb'SET'}\verb' '{\color{highlight_dec}\verb'0x39'}\verb'       '{\color{highlight_comment}\verb'; Hexadecimal'}\\
+                            {\color{highlight_constant}\verb'Fourth_symb'}\verb'   '{\color{highlight_directive}\verb'SET'}\verb' '{\color{highlight_dec}\verb'(A -4)+ 18 / B)'}\verb'       '{\color{highlight_comment}\verb'; Expresion'}\\
+                            {\color{highlight_constant}\verb'Fifth_symb'}\verb'    '{\color{highlight_directive}\verb'SET'}\verb' '{\color{highlight_dec}\verb'0x09 << 2'}\verb'       '{\color{highlight_comment}\verb'; Expresion'}\\
                 \caption{Using SET directive}
                 \end{code}
 
             In this example, the assembler would always replace {\color{highlight_symbol}\verb'First_symb'} with 0x9C,
-            {\color{highlight_symbol}\verb'Second_symb'} with 0x2F and {\color{highlight_symbol}\verb'Third_symb'} with 0x39.
+            {\color{highlight_symbol}\verb'Second_symb'} with 0x2F and {\color{highlight_symbol}\verb'Third_symb'} with 0x39 etc.
 
             \subsection{VARIABLE}
             \textbf{SYNTAX:}\\
@@ -716,11 +719,13 @@ input parameters.\\
                             {\color{highlight_constant}\verb'First_symb'}\verb'    '{\color{highlight_directive}\verb'REG'}\verb' '{\color{highlight_bin}\verb'0b10011100'}\verb'   '{\color{highlight_comment}\verb'; Number in binary'}\\
                             {\color{highlight_constant}\verb'Second_symb'}\verb'   '{\color{highlight_directive}\verb'REG'}\verb' '{\color{highlight_oct}\verb'47'}\verb'       '{\color{highlight_comment}\verb'; Decimal'}\\
                             {\color{highlight_constant}\verb'Third_symb'}\verb'    '{\color{highlight_directive}\verb'REG'}\verb' '{\color{highlight_dec}\verb'0x39'}\verb'       '{\color{highlight_comment}\verb'; Hexadecimal'}\\
-                \caption{Using REG directive}
+                            {\color{highlight_constant}\verb'Fourth_symb'}\verb'   '{\color{highlight_directive}\verb'REG'}\verb' '{\color{highlight_dec}\verb'(A -4)+ 18 / B)'}\verb'       '{\color{highlight_comment}\verb'; Expresion'}\\
+                            {\color{highlight_constant}\verb'Fifth_symb'}\verb'    '{\color{highlight_directive}\verb'REG'}\verb' '{\color{highlight_dec}\verb'0x09 << 2'}\verb'       '{\color{highlight_comment}\verb'; Expresion'}\\
+              \caption{Using REG directive}
                 \end{code}
 
             In this example, the assembler would always replace {\color{highlight_symbol}\verb'First_symb'} with 0x9C,
-            {\color{highlight_symbol}\verb'Second_symb'} with 0x2F and {\color{highlight_symbol}\verb'Third_symb'} with 0x39.
+            {\color{highlight_symbol}\verb'Second_symb'} with 0x2F and {\color{highlight_symbol}\verb'Third_symb'} with 0x39 etc.
             
                 \subsection{NAMEREG}
                 \textbf{SYNTAX:}\\
@@ -768,15 +773,16 @@ input parameters.\\
                
                 \textbf{EXAMPLE:}\\
                 \begin{code}[h!]
-                \mysmallfont{}
-                            {\color{highlight_constant}\verb'First_symb'}\verb'    '{\color{highlight_directive}\verb'SET'}\verb' '{\color{highlight_bin}\verb'0b10011100'}\verb'   '{\color{highlight_comment}\verb'; Number in binary'}\\
-                            {\color{highlight_constant}\verb'Second_symb'}\verb'   '{\color{highlight_directive}\verb'SET'}\verb' '{\color{highlight_oct}\verb'47'}\verb'       '{\color{highlight_comment}\verb'; Decimal'}\\
-                            {\color{highlight_constant}\verb'Third_symb'}\verb'    '{\color{highlight_directive}\verb'SET'}\verb' '{\color{highlight_dec}\verb'0x39'}\verb'       '{\color{highlight_comment}\verb'; Hexadecimal'}\\
-                \caption{Using SET directive}
+                            {\color{highlight_constant}\verb'First_symb'}\verb'    '{\color{highlight_directive}\verb'DATA'}\verb' '{\color{highlight_bin}\verb'0b10011100'}\verb'   '{\color{highlight_comment}\verb'; Number in binary'}\\
+                            {\color{highlight_constant}\verb'Second_symb'}\verb'   '{\color{highlight_directive}\verb'DATA'}\verb' '{\color{highlight_oct}\verb'47'}\verb'       '{\color{highlight_comment}\verb'; Decimal'}\\
+                            {\color{highlight_constant}\verb'Third_symb'}\verb'    '{\color{highlight_directive}\verb'DATA'}\verb' '{\color{highlight_dec}\verb'0x39'}\verb'       '{\color{highlight_comment}\verb'; Hexadecimal'}\\
+                            {\color{highlight_constant}\verb'Fourth_symb'}\verb'   '{\color{highlight_directive}\verb'DATA'}\verb' '{\color{highlight_dec}\verb'(A -4)+ 18 / B)'}\verb'       '{\color{highlight_comment}\verb'; Expresion'}\\
+                            {\color{highlight_constant}\verb'Fifth_symb'}\verb'    '{\color{highlight_directive}\verb'DATA'}\verb' '{\color{highlight_dec}\verb'0x09 << 2'}\verb'       '{\color{highlight_comment}\verb'; Expresion'}\\
+              \caption{Using DATA directive}
                 \end{code}
 
             In this example, the assembler would always replace {\color{highlight_symbol}\verb'First_symb'} with 0x9C,
-            {\color{highlight_symbol}\verb'Second_symb'} with 0x2F and {\color{highlight_symbol}\verb'Third_symb'} with 0x39.
+            {\color{highlight_symbol}\verb'Second_symb'} with 0x2F and {\color{highlight_symbol}\verb'Third_symb'} with 0x39 etc.
              
                 \subsection{CODE}
                 \textbf{SYNTAX:}\\
@@ -795,14 +801,16 @@ input parameters.\\
                 \textbf{EXAMPLE:}\\
                 \begin{code}[h!]
                 \mysmallfont{}
-                            {\color{highlight_constant}\verb'First_symb'}\verb'    '{\color{highlight_directive}\verb'SET'}\verb' '{\color{highlight_bin}\verb'0b10011100'}\verb'   '{\color{highlight_comment}\verb'; Number in binary'}\\
-                            {\color{highlight_constant}\verb'Second_symb'}\verb'   '{\color{highlight_directive}\verb'SET'}\verb' '{\color{highlight_oct}\verb'47'}\verb'       '{\color{highlight_comment}\verb'; Decimal'}\\
-                            {\color{highlight_constant}\verb'Third_symb'}\verb'    '{\color{highlight_directive}\verb'SET'}\verb' '{\color{highlight_dec}\verb'0x39'}\verb'       '{\color{highlight_comment}\verb'; Hexadecimal'}\\
-                \caption{Using SET directive}
+                            {\color{highlight_constant}\verb'First_symb'}\verb'    '{\color{highlight_directive}\verb'CODE'}\verb' '{\color{highlight_bin}\verb'0b10011100'}\verb'   '{\color{highlight_comment}\verb'; Number in binary'}\\
+                            {\color{highlight_constant}\verb'Second_symb'}\verb'   '{\color{highlight_directive}\verb'CODE'}\verb' '{\color{highlight_oct}\verb'47'}\verb'       '{\color{highlight_comment}\verb'; Decimal'}\\
+                            {\color{highlight_constant}\verb'Third_symb'}\verb'    '{\color{highlight_directive}\verb'CODE'}\verb' '{\color{highlight_dec}\verb'0x39'}\verb'       '{\color{highlight_comment}\verb'; Hexadecimal'}\\
+                            {\color{highlight_constant}\verb'Fourth_symb'}\verb'   '{\color{highlight_directive}\verb'CODE'}\verb' '{\color{highlight_dec}\verb'(A -4)+ 18 / B)'}\verb'       '{\color{highlight_comment}\verb'; Expresion'}\\
+                            {\color{highlight_constant}\verb'Fifth_symb'}\verb'    '{\color{highlight_directive}\verb'CODE'}\verb' '{\color{highlight_dec}\verb'0x09 << 2'}\verb'       '{\color{highlight_comment}\verb'; Expresion'}\\
+                            \caption{Using CODE directive}
                 \end{code}
 
             In this example, the assembler would always replace {\color{highlight_symbol}\verb'First_symb'} with 0x9C,
-            {\color{highlight_symbol}\verb'Second_symb'} with 0x2F and {\color{highlight_symbol}\verb'Third_symb'} with 0x39.
+            {\color{highlight_symbol}\verb'Second_symb'} with 0x2F and {\color{highlight_symbol}\verb'Third_symb'} with 0x39 etc.
             
                 \subsection{PORT}
                 \textbf{SYNTAX:}\\
@@ -816,19 +824,21 @@ input parameters.\\
                                 }
                                 \\
                 \textbf{DESCRIPTION:}\\
-                Symbol defined with this directive must be used only as PORT\_ID identificator.
+                Symbol defined with this directive is considered to be PORT\_ID identificator.
 
                 \textbf{EXAMPLE:}\\
                 \begin{code}[h!]
                 \mysmallfont{}
-                            {\color{highlight_constant}\verb'First_symb'}\verb'    '{\color{highlight_directive}\verb'SET'}\verb' '{\color{highlight_bin}\verb'0b10011100'}\verb'   '{\color{highlight_comment}\verb'; Number in binary'}\\
-                            {\color{highlight_constant}\verb'Second_symb'}\verb'   '{\color{highlight_directive}\verb'SET'}\verb' '{\color{highlight_oct}\verb'47'}\verb'       '{\color{highlight_comment}\verb'; Decimal'}\\
-                            {\color{highlight_constant}\verb'Third_symb'}\verb'    '{\color{highlight_directive}\verb'SET'}\verb' '{\color{highlight_dec}\verb'0x39'}\verb'       '{\color{highlight_comment}\verb'; Hexadecimal'}\\
-                \caption{Using SET directive}
+                            {\color{highlight_constant}\verb'First_symb'}\verb'    '{\color{highlight_directive}\verb'PORT'}\verb' '{\color{highlight_bin}\verb'0b10011100'}\verb'   '{\color{highlight_comment}\verb'; Number in binary'}\\
+                            {\color{highlight_constant}\verb'Second_symb'}\verb'   '{\color{highlight_directive}\verb'PORT'}\verb' '{\color{highlight_oct}\verb'47'}\verb'       '{\color{highlight_comment}\verb'; Decimal'}\\
+                            {\color{highlight_constant}\verb'Third_symb'}\verb'    '{\color{highlight_directive}\verb'PORT'}\verb' '{\color{highlight_dec}\verb'0x39'}\verb'       '{\color{highlight_comment}\verb'; Hexadecimal'}\\
+                            {\color{highlight_constant}\verb'Fourth_symb'}\verb'   '{\color{highlight_directive}\verb'PORT'}\verb' '{\color{highlight_dec}\verb'(A -4)+ 18 / B)'}\verb'       '{\color{highlight_comment}\verb'; Expresion'}\\
+                            {\color{highlight_constant}\verb'Fifth_symb'}\verb'    '{\color{highlight_directive}\verb'PORT'}\verb' '{\color{highlight_dec}\verb'0x09 << 2'}\verb'       '{\color{highlight_comment}\verb'; Expresion'}\\
+              \caption{Using PORT directive}
                 \end{code}
 
             In this example, the assembler would always replace {\color{highlight_symbol}\verb'First_symb'} with 0x9C,
-            {\color{highlight_symbol}\verb'Second_symb'} with 0x2F and {\color{highlight_symbol}\verb'Third_symb'} with 0x39.
+            {\color{highlight_symbol}\verb'Second_symb'} with 0x2F and {\color{highlight_symbol}\verb'Third_symb'} with 0x39 etc.
             
 
                 \subsection{AUTOREG}
@@ -1114,10 +1124,10 @@ input parameters.\\
                                 { \color{highlight_comment} ; hexadecimal 0060FC}\\
                                 { \color{highlight_comment} ; String syntax}\\
                                 { \color{highlight_directive} DB }
-                                { \color{highlight_symbol}   <"string">}\\
+                                { \color{highlight_symbol}   "my string"}\\
                                 { \color{highlight_comment} ; Combination of string and expresions}\\
                                 { \color{highlight_directive} DB }
-                                { \color{highlight_symbol}   <"string"> [,<expresion1>,..]}\\
+                                { \color{highlight_symbol}   "my string",2+1,3...}\\
                                 { \color{highlight_comment} ; parameter can be unlimited number of string characters, or expresions divided by comma}\\
                             \caption{DB directive}
                         \end{code}
@@ -1164,7 +1174,8 @@ input parameters.\\
                     }\\
                     \\
                 \textbf{DESCRIPTION:}\\
-                Normaly, you choose the target architecture, when you are creating a project. But you can also specific architecture with directive DEVICE.\\
+                Normaly, you choose the target architecture, when you are creating a project. But you can also specific architecture with directive DEVICE.
+                This will affect predefined symbols.\\
                 
                 \textbf{EXAMPLE:}\\
                         \begin{code}[h!]
@@ -1215,6 +1226,37 @@ input parameters.\\
                         \caption{END directive}
                     \end{code}
 
+        \section{Run time directives}
+        MDS assembler contains some special directives, which are evaluated during run time sequence. You can use them to evaluate simple conditions in your program.
+        Those directives are RTIF, ELSERTIF and ENDRTIF. Here you can see allowed conditions.
+                \begin{table}[h!]
+                        \mysmallfont{}
+                        \centering{}
+                        \begin{tabular}{|l|l}
+                        \hline
+                        Condition operator       &          Example
+                        ==                       &          A ==  B
+                        !=                       &          A !=  B
+                        >                        &          A >   B
+                        <                        &          A <   B
+                        >=                       &          A >=  B
+                        <=                       &          A <=  B
+                        \&                       &          A \&  B
+                        !\&                      &          A !\& B
+                        \end{tabular}
+                        \caption{Usable conditions in RTIF}
+                \end{table}
+                       \textbf{SYNTAX:}\\
+                \\ {
+                    \texttt{}
+                        \begin{tabular}[h!]{llll}
+                            { \color{highlight_directive} RT_IF } & \verb'     ' &
+                            { \color{highlight_constant} [<parameter1>]  [,<parameter2>..]\\
+                            { \color{highlight_symbol} <macro source code> }\\
+                            { \color{highlight_directive} ENDM } &  \verb'     ' { \color{highlight_comment} ; end of macro declaration  }
+                        \end{tabular}
+                    }\\
+                \textbf{EXAMPLE:}\\
         \section{Macro Processing}
                 Macro is a sequence of instructions which can be expanded anywhere in the code and for any number of times. That may reduce necessity of
                 repeating code fragments as well as source code size and make the solved task easier to comprehend and solve. Unlike subprograms macros do
@@ -1238,8 +1280,7 @@ input parameters.\\
                             { \color{highlight_directive} EXPAND } &  \verb'     ' { \color{highlight_comment} ; Expanding of macros allowed  }\\
                             { \color{highlight_directive} NOEXPAND } &  \verb'     ' { \color{highlight_comment} ; Expanding of macros forbidden  }
                         \end{tabular}
-                    }\\
-                    
+                    }\\                    
                 \begin{table}[h!]
                     \begin{tabular}{|ll|}
                             \hline
@@ -1256,10 +1297,9 @@ input parameters.\\
                 Standard macro, consiting of name, code and optional exit command. Macro can be expanded only after his declaration. You can use macro
                 with no parameters  or unlimited number of parameters.\\
                 \textbf{EXAMPLE:}\\
-
                 This can be well demonstrated on examples:
-                \begin{code}[h!]
-                       
+                
+                \begin{code}[h!]                       
                         {\color{highlight_macro}\verb'abc'}\verb'     '{\color{highlight_directive}\verb'macro'}\verb'   '{\color{highlight_comment}\verb'; Define named macro ``abc'\verb"'"\verb''\verb"'"\verb''}\\
                         \verb'        '{\color{highlight_instruction}\verb'LOAD'}\verb'     '{\color{highlight_sfr}\verb'a'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_sfr}\verb's0'}\\
                         \verb'        '{\color{highlight_instruction}\verb'SR0'}\verb'      '{\color{highlight_sfr}\verb'a'}\\
@@ -1381,6 +1421,7 @@ input parameters.\\
 %                         \caption{An exaple of nested macros, which will not work}
 %                 \end{code}
 
+
                     
         \section{Conditional Assembly}
 		The aim of conditional assembly to to assemble certain parts of the code if and only if certain arithmetically expressed condition is met.
@@ -1434,7 +1475,7 @@ input parameters.\\
         \section{List File Format}
                 Code listing serves as an additional information about the assembled code and the progress of the assembly process. It contains information about all symbols defined in the code. Where and how were they were defined, what are their values and whether they were used in the code. Also detailed information about all macros defined in the code and/or expanded in the code. Conditional compilation configuration, instruction OP codes, address space reservations, inclusion of code from another files. And all warnings, errors and notes generated during the assembly by the assembler. There are assembler control sequences which alters formatting of the code listing file. These control sequences will be discussed here. Format of code listing generated by this assembler is very similar to the one generated Metalink\textregistered ASM51.
                 \begin{code}[h]
-                        \mysmallfont{}
+                     
                         \verb'demo0                                                                                                                   '{\color{highlight_macro}\verb'PAGE'}\verb' '{\color{highlight_unknown_base}\verb'1'}\\
                         {\color{highlight_lst_line}\verb'                         1'}\verb'     '{\color{highlight_comment}\verb'; MDS Picoblaze - Demostration code'}\\
                         {\color{highlight_lst_line}\verb'                         2'}\verb'     '{\color{highlight_comment}\verb'; Very simple code'}\\
@@ -1476,7 +1517,7 @@ input parameters.\\
                 \end{code}
 
                 \begin{code}[h]
-                        \mysmallfont{}
+                        
                         \verb'complicated_lst                                                                                                         '{\color{highlight_macro}\verb'PAGE'}\verb' '{\color{highlight_unknown_base}\verb'1'}\\
                         {\color{highlight_lst_number}\verb'  001C'}{\color{highlight_lst_line}\verb'                   1'}\verb'     '{\color{highlight_constant}\verb'abc'}\verb'     '{\color{highlight_directive}\verb'equ'}\verb'     '{\color{highlight_symbol}\verb'('}\verb' '{\color{highlight_unknown_base}\verb'14'}\verb' '{\color{highlight_symbol}\verb'*'}\verb' '{\color{highlight_unknown_base}\verb'2'}\verb' '{\color{highlight_symbol}\verb')'}\verb'      '{\color{highlight_comment}\verb'; Define symbol abc'}\\
                         {\color{highlight_lst_line}\verb'                         2'}\verb'             '{\color{highlight_directive}\verb'org'}\verb'     '{\color{highlight_unknown_base}\verb'0'}\verb'               '{\color{highlight_comment}\verb'; Start writing code at address 0'}\\
