@@ -653,11 +653,16 @@ void MainForm::compileProject()
     ((QPlainTextEdit*)(wDockManager->getDockWidget(wCompileInfo)->widget()))->clear();
 
     CompilerOptions *options = new CompilerOptions();
-    //QString mainFile = projectMan->getActive()->prjPath.section('/',0, -2) + "/" +  this->projectMan->getActive()->mainFilePath.section('.',0,-2);
-    QString mainFile = this->projectMan->getActive()->mainFilePath.section('.',0,-2);
+    //QString mainFile =  this->projectMan->getActive()->mainFileName.section('.',0,-2);
     options->m_sourceFile = (projectMan->getActive()->prjPath.section('/',0, -2) + "/" +  this->projectMan->getActive()->mainFilePath).toStdString();
+    QDir prjDir(projectMan->getActive()->prjPath.section('/',0, -2));
+    QDir fileDir(QString::fromStdString(options->m_sourceFile).section('/',0, -2));
+
+    QString mainFile = fileDir.relativeFilePath(prjDir.absolutePath()) + "/" +  this->projectMan->getActive()->mainFileName.section('.',0,-2);
+    
     qDebug() << QString::fromStdString(options->m_sourceFile);
     qDebug() << mainFile;
+    
     options->m_symbolTable = (mainFile + ".stbl").toStdString();
     options->m_macroTable = (mainFile + ".mtbl").toStdString();
     options->m_mdsDebugFile = (mainFile + ".dbg").toStdString();

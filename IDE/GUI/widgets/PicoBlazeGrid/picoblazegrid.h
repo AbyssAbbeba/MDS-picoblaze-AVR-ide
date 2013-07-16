@@ -27,6 +27,7 @@
 #include <QLineEdit>
 #include "../../../simulators/MCUSim/MCUSim.h"
 #include "../../../simulators/SimControl/MCUSimControl.h"
+#include "../StackWidget/stackwidget.h"
 
 
 class MCUSimControl;
@@ -56,7 +57,7 @@ class PicoBlazeGrid : public QWidget
         McuMemoryView *memRegs;
         McuMemoryView *memScratch;
         McuMemoryView *memPorts;
-        QListWidget *memStack;
+        StackWidget *memStack;
 
         QLabel *lblRegs;
         QLabel *lblScratch;

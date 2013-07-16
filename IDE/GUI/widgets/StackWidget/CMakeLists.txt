@@ -40,8 +40,9 @@ find_package(Qt4 REQUIRED)
 #include(${QT_USE_FILE})
 
 # <DEBUG!>
-#link_directories(
-#	)
+link_directories(
+    "${CMAKE_CURRENT_BINARY_DIR}/../../../simulators/SimControl/"
+	)
 
 
 #include_directories(
@@ -84,7 +85,7 @@ add_library(${PROJECT_NAME} SHARED
 	${SAMPLE_MOC_SRCS} ${SAMPLE_SRCS})
 
 
-target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} SimControl)
 
 
 # ------------------------------------------------------------------------------

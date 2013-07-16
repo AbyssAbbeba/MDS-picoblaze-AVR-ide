@@ -939,7 +939,7 @@ void Project::setupSim()
 {
     qDebug() << "Project: setupSim()";
     McuSimCfgMgr::getInstance()->openConfigFile(":/resources//xml//mcuspecfile.xml");
-    //"ATmega8A"
+    //"kcpsm3"
     this->m_simControlUnit = new MCUSimControl(architecture.toUtf8().constData());
     qDebug() << architecture;
     qDebug() << "Project: return setupSim()";
