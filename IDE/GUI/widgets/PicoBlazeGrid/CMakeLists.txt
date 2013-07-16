@@ -41,8 +41,9 @@ find_package(Qt4 REQUIRED)
 
 # <DEBUG!>
 link_directories(
-    "${CMAKE_SOURCE_DIR}/simulators/SimControl/"
+#    "${CMAKE_SOURCE_DIR}/simulators/SimControl/"
     "${CMAKE_SOURCE_DIR}/GUI/widgets/sim/"
+    "${CMAKE_SOURCE_DIR}/GUI/widgets/StackWidget/"
 	)
 
 
@@ -73,7 +74,7 @@ link_directories(
  # -Wextra     : Enables some extra warning flags that are not enabled by -Wall.
  # -std=c++0x  : Default template arguments may not be used in function templates without -std=c++0x or -std=gnu++0x.
  # -O2         : Optimization, level 2.
- # -pipe       : Use pipes rather than temporary files for communication between the various stages of compilation.
+ # -pipe       : Use pipes rather than temporary files for communication betweensim the various stages of compilation.
 add_definitions(-Wall -Wextra -std=c++0x -O2 -pipe)
 
 
@@ -86,7 +87,7 @@ add_library(${PROJECT_NAME} SHARED
 	${SAMPLE_MOC_SRCS} ${SAMPLE_SRCS})
 
 
-target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} SimWidgets)
+target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} SimWidgets StackWidget)
 
 
 # ------------------------------------------------------------------------------

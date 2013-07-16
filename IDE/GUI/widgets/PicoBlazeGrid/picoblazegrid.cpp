@@ -118,17 +118,19 @@
 PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
     : QWidget(parent)
 {
-
+    qDebug() << "PicoBlazeGrid: PicoBlazeGrid()";
     this->memRegs = new McuMemoryView(this, controlUnit, MCUSim::Subsys::SubsysId::ID_MEM_REGISTERS);
     this->memRegs->move(0, 5);
     this->memRegs->fixHeight();
     this->memScratch = new McuMemoryView(this, controlUnit, MCUSim::Subsys::SubsysId::ID_MEM_DATA);
     this->memScratch->move(220,5);
+    this->memScratch->fixHeight();
     this->memPorts = new McuMemoryView(this, controlUnit, MCUSim::Subsys::SubsysId::ID_MEM_DATA);
     this->memPorts->move(440,5);
-    this->memStack = new QListWidget(this);
-    this->memStack->move(680, 37);
+    this->memStack = new StackWidget(this, controlUnit, MCUSim::Subsys::SubsysId::ID_STACK);
+    this->memStack->move(680, 25);
     this->memStack->setMaximumWidth(100);
+    this->memStack->setMaximumHeight(270);
     this->memRegs->show();
     this->memScratch->show();
     this->memPorts->show();
@@ -170,6 +172,8 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
     this->leClock->setMaximumWidth(50);
     this->leClock->setMaximumHeight(17);
     this->leClock->move(840, 40);
+    
+    qDebug() << "PicoBlazeGrid: return PicoBlazeGrid()";
 }
 
 

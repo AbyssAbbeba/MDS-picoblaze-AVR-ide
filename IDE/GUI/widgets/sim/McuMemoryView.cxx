@@ -33,6 +33,10 @@ McuMemoryView::McuMemoryView(QWidget * parent, MCUSimControl * controlUnit, MCUS
 		subsys,
         mask);
 
+    if ( NULL == controlUnit )
+    {
+        qDebug() << "McuMemoryView: controlUnit is NULL";
+    }
 	m_layout = new QHBoxLayout(this);
 	setLayout(m_layout);
 
@@ -47,7 +51,8 @@ McuMemoryView::~McuMemoryView()
 
 inline void McuMemoryView::deleteHexEdit()
 {
-	if ( NULL != m_hexEdit ) {
+	if ( NULL != m_hexEdit )
+    {
 		delete m_hexEdit;
 	}
 }
@@ -89,11 +94,17 @@ void McuMemoryView::handleEvent(int subsysId, int eventId, int locationOrReason,
 
 void McuMemoryView::deviceChanged()
 {
+    qDebug() << "McuMemoryView: deviceChanged()";
+    if ( NULL == m_simControlUnit )
+    {
+        qDebug() << "McuMemoryView: m_simControlUnit is NULL";
+    }
+    qDebug() << m_simControlUnit->getSimSubsys(this->subsys);
 	m_memory = dynamic_cast<MCUSim::Memory*>(m_simControlUnit->getSimSubsys(this->subsys));
-    qDebug() << this->subsys;
+    qDebug() << "McuMemoryView: SubsysId " << this->subsys;
     if ( NULL == m_memory )
     {
-        qDebug() << "NULL";
+        qDebug() << "McuMemoryView: m_memory is NULL";
     }
 	/*switch ( m_simControlUnit->getArch() )
     {
@@ -117,6 +128,7 @@ void McuMemoryView::deviceChanged()
 	m_layout->addWidget(m_hexEdit);
 
 	deviceReset();
+    qDebug() << "McuMemoryView: return deviceChanged()";
 }
 
 

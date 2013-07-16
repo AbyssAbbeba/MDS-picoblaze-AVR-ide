@@ -2,11 +2,14 @@
 <MMProject>
  <General>
   <Name name="Example2"/>
-  <Architecture architecture="PICOBLAZE"/>
+  <Architecture architecture="kcpsm3"/>
   <Language language="0"/>
  </General>
- <Files/>
- <Mainfile path="" name=""/>
+ <Files>
+  <File path="../Example1/a.asm" name="a.asm"/>
+  <File path="../Example1/kcpsm3_mac.inc" name="kcpsm3_mac.inc"/>
+ </Files>
+ <Mainfile path="../Example1/a.asm" name="a.asm"/>
  <Simulator/>
  <Compiler>
   <Options>
