@@ -8,6 +8,7 @@
 #include <QLineEdit>
 #include "../../../simulators/MCUSim/MCUSim.h"
 #include "../../../simulators/SimControl/MCUSimObserver.h"
+#include "../../../simulators/SimControl/MCUSimControl.h"
 
 class StackWidget : public QWidget, public MCUSimObserver
 {

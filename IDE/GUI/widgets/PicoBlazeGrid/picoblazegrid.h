@@ -25,9 +25,11 @@
 #include <QString>
 #include <QListWidget>
 #include <QLineEdit>
+#include <QPushButton>
 #include "../../../simulators/MCUSim/MCUSim.h"
 #include "../../../simulators/SimControl/MCUSimControl.h"
 #include "../StackWidget/stackwidget.h"
+#include "../RegistersWidget/registerswidget.h"
 
 
 class MCUSimControl;
@@ -54,9 +56,10 @@ class PicoBlazeGrid : public QWidget
         QWidget *parent;
         //QMenu *popupMenu;
         QString projectPath;
-        McuMemoryView *memRegs;
+        RegistersWidget *memRegs;
         McuMemoryView *memScratch;
-        McuMemoryView *memPorts;
+        McuMemoryView *memPortsIn;
+        McuMemoryView *memPortsOut;
         StackWidget *memStack;
 
         QLabel *lblRegs;
@@ -73,12 +76,18 @@ class PicoBlazeGrid : public QWidget
         QLineEdit *lePC;
         QLineEdit *leTime;
         QLineEdit *leClock;
+
+        QPushButton *btnIntr;
+        QPushButton *btnPorts;
         
 
     //signals:
         //void widgetAdded();
         //void closeSignal();
         //void focusOutSignal();
+
+    private slots:
+        void switchPorts();
         
     //protected:
         //void contextMenuEvent(QContextMenuEvent *event);

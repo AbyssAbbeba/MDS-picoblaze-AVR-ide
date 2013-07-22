@@ -119,21 +119,25 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
     : QWidget(parent)
 {
     qDebug() << "PicoBlazeGrid: PicoBlazeGrid()";
-    this->memRegs = new McuMemoryView(this, controlUnit, MCUSim::Subsys::SubsysId::ID_MEM_REGISTERS);
-    this->memRegs->move(0, 5);
-    this->memRegs->fixHeight();
+    this->memRegs = new RegistersWidget(this, controlUnit, MCUSim::Subsys::SubsysId::ID_MEM_REGISTERS);
+    this->memRegs->move(10, 25);
+    //this->memRegs->fixHeight();
     this->memScratch = new McuMemoryView(this, controlUnit, MCUSim::Subsys::SubsysId::ID_MEM_DATA);
     this->memScratch->move(220,5);
     this->memScratch->fixHeight();
-    this->memPorts = new McuMemoryView(this, controlUnit, MCUSim::Subsys::SubsysId::ID_MEM_DATA);
-    this->memPorts->move(440,5);
+    //this->memPortsIn = new McuMemoryView(this, controlUnit, MCUSim::Subsys::SubsysId::ID_PLIO);
+    this->memPortsIn = new McuMemoryView(this, controlUnit, MCUSim::Subsys::SubsysId::ID_MEM_DATA);
+    this->memPortsIn->move(440,5);
+    this->memPortsOut = new McuMemoryView(this, controlUnit, MCUSim::Subsys::SubsysId::ID_MEM_DATA);
+    this->memPortsOut->move(440,5);
+    this->memPortsOut->hide();
     this->memStack = new StackWidget(this, controlUnit, MCUSim::Subsys::SubsysId::ID_STACK);
     this->memStack->move(680, 25);
     this->memStack->setMaximumWidth(100);
     this->memStack->setMaximumHeight(270);
     this->memRegs->show();
     this->memScratch->show();
-    this->memPorts->show();
+    this->memPortsIn->show();
     this->memStack->show();
 
     this->lblRegs = new QLabel("Registers", this);
@@ -143,7 +147,7 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
     this->lblPorts = new QLabel("Ports", this);
     this->lblPorts->move(480,0);
     this->lblRD = new QLabel("RD", this);
-    this->lblRD->move(590, 0);
+    this->lblRD->move(600, 0);
     this->lblRW = new QLabel("RW", this);
     this->lblRW->move(625, 0);
     this->lblStack = new QLabel("Stack", this);
@@ -172,6 +176,22 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
     this->leClock->setMaximumWidth(50);
     this->leClock->setMaximumHeight(17);
     this->leClock->move(840, 40);
+
+    this->btnIntr = new QPushButton("Interrupts", this);
+    this->btnIntr->setMaximumHeight(17);
+    this->btnIntr->setMaximumWidth(70);
+    this->btnIntr->move(840, 60);
+    this->btnPorts = new QPushButton("Output", this);
+    this->btnPorts->setMaximumHeight(17);
+    this->btnPorts->setMaximumWidth(50);
+    this->btnPorts->move(535, 0);
+
+    QFont btnFont = this->btnIntr->font();
+    btnFont.setPointSize(9);
+    this->btnIntr->setFont(btnFont);
+    this->btnPorts->setFont(btnFont);
+
+    connect(this->btnPorts, SIGNAL(clicked()), this, SLOT(switchPorts()));
     
     qDebug() << "PicoBlazeGrid: return PicoBlazeGrid()";
 }
@@ -185,4 +205,21 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
 void PicoBlazeGrid::setProjectPath(QString prjPath)
 {
     this->projectPath = prjPath;
+}
+
+
+void PicoBlazeGrid::switchPorts()
+{
+    if ( true == this->memPortsIn->isVisible())
+    {
+        this->memPortsIn->hide();
+        this->memPortsOut->show();
+        this->btnPorts->setText("Input");
+    }
+    else
+    {
+        this->memPortsOut->hide();
+        this->memPortsIn->show();
+        this->btnPorts->setText("Output");
+    }
 }

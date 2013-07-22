@@ -5,6 +5,11 @@
 StackWidget::StackWidget(QWidget *parent, MCUSimControl * controlUnit, MCUSim::Subsys::SubsysId subsys)
     : QWidget(parent)
 {
+    if ( NULL == controlUnit )
+    {
+        qDebug() << "StackWidget: controlUnit is NULL, this should never happen";
+    }
+    
     this->subsys = subsys;
     this->setMinimumHeight(205);
     
@@ -43,15 +48,9 @@ StackWidget::StackWidget(QWidget *parent, MCUSimControl * controlUnit, MCUSim::S
 
     std::vector<int> mask;
     mask.push_back(MCUSim::Memory::EVENT_MEM_INF_WR_VAL_CHANGED);
-    controlUnit->registerObserver(
-        this,
-        subsys,
-        mask);
+    controlUnit->registerObserver(this, subsys, mask);
 
-    if ( NULL == controlUnit )
-    {
-        qDebug() << "StackWidget: controlUnit is NULL";
-    }
+    deviceChanged();
 }
 
 
