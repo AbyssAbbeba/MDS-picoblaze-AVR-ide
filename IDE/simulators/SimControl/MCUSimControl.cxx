@@ -460,7 +460,7 @@ const DbgFile * MCUSimControl::getSourceInfo()
     return m_dbgFile;
 }
 
-unsigned long long getTotalMCycles() const
+unsigned long long MCUSimControl::getTotalMCycles() const
 {
     return m_totalMCycles;
 }
