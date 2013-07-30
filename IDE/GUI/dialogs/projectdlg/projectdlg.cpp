@@ -112,7 +112,7 @@ void ProjectDialog::bCreate()
 #ifndef PICOBLAZE
          projectMan->addProject(projName->text(), projDir->text() + "/" + projName->text()+ ".mmp", architecture->currentText(), (LangType)language->currentIndex(), &file);
 #else
-         projectMan->addProject(projName->text(), projDir->text() + "/" + projName->text()+ ".mmp", "PICOBLAZE", LANG_ASM, &file);
+         projectMan->addProject(projName->text(), projDir->text() + "/" + projName->text()+ ".mmp", "kcpsm3", LANG_ASM, &file);
 #endif
          file.close();
 

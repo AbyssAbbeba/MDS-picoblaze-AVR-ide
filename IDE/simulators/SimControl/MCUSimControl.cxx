@@ -526,7 +526,7 @@ bool MCUSimControl::changeDevice ( const char * deviceName )
 
     if ( 0 == strcmp("kcpsm3", deviceName) )
     {
-        m_architecture = MCUSim::ARCH_PICOBLAZE;;
+        m_architecture = MCUSim::ARCH_PICOBLAZE;
     }
     else
     {

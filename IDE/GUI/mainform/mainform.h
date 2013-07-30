@@ -88,6 +88,7 @@ class MainForm : public QMainWindow
         void reloadCompileInfo(const std::string &text, CompilerBase::MessageType type);
         void compilationFinished(bool success);
         void startProjectConfig(Project *project);
+        void help();
 
     //signals:
     //    void dockWidgetsCreated;
