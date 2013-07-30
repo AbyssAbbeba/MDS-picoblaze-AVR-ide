@@ -16,15 +16,15 @@
 #include "AVR8Usart.h"
 #include "AVR8DataMemory.h"
 
-AVR8Usart * AVR8Usart::link ( MCUSim::EventLogger * eventLogger,
+AVR8Usart * AVR8Usart::link ( MCUSimEventLogger * eventLogger,
                               AVR8DataMemory      * dataMemory )
 {
-    Subsys::link(eventLogger, ID_USART);
+    MCUSimSubsys::link(eventLogger, ID_USART);
     m_dataMemory = dataMemory;
     return this;
 }
 
-void AVR8Usart::reset ( MCUSim::ResetMode /*mode*/ )
+void AVR8Usart::reset ( MCUSimBase::ResetMode /*mode*/ )
 {
 }
 

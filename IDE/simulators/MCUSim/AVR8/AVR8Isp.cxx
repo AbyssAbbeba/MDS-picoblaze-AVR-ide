@@ -16,15 +16,15 @@
 #include "AVR8Isp.h"
 #include "AVR8ProgramMemory.h"
 
-AVR8Isp * AVR8Isp::link ( MCUSim::EventLogger     * eventLogger,
+AVR8Isp * AVR8Isp::link ( MCUSimEventLogger     * eventLogger,
                           AVR8ProgramMemory       * programMemory )
 {
-    Subsys::link(eventLogger, ID_ISP);
+    MCUSimSubsys::link(eventLogger, ID_ISP);
     m_programMemory = programMemory;
     return this;
 }
 
-void AVR8Isp::reset ( MCUSim::ResetMode /*mode*/ )
+void AVR8Isp::reset ( MCUSimBase::ResetMode /*mode*/ )
 {
 }
 

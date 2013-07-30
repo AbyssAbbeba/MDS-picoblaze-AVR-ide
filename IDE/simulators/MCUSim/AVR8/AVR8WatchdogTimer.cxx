@@ -20,12 +20,12 @@
 
 #include <cmath>
 
-AVR8WatchdogTimer * AVR8WatchdogTimer::link ( MCUSim::EventLogger     * eventLogger,
+AVR8WatchdogTimer * AVR8WatchdogTimer::link ( MCUSimEventLogger     * eventLogger,
                                               AVR8DataMemory          * dataMemory,
                                               AVR8InterruptController * interruptController,
                                               AVR8FusesAndLocks       * fusesAndLocks )
 {
-    Subsys::link(eventLogger, ID_WATCHDOG);
+    MCUSimSubsys::link(eventLogger, ID_WATCHDOG);
 
     m_dataMemory = dataMemory;
     m_interruptController = interruptController;
@@ -188,7 +188,7 @@ void AVR8WatchdogTimer::timeStep ( float timeStep,
     }
 }
 
-void AVR8WatchdogTimer::reset(MCUSim::ResetMode mode)
+void AVR8WatchdogTimer::reset(MCUSimBase::ResetMode mode)
 {
     switch ( mode )
     {

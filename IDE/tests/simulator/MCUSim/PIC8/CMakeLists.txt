@@ -1,6 +1,6 @@
 # ==============================================================================
 #
-# Unit testing for simulator engine module for 8-bit AVR.
+# Unit tests for PIC8 Simulator.
 #
 # (C) copyright 2013 Moravia Microsystems, s.r.o.
 #
@@ -12,7 +12,7 @@
 # ------------------------------------------------------------------------------
 
 # Set project name
-project ( AVR8test )
+project ( testsMCUSimPIC8 )
 
 # Set the minimum required version of CMake
 cmake_minimum_required ( VERSION 2.8 )
@@ -25,24 +25,27 @@ enable_testing()
 
 
 # ------------------------------------------------------------------------------
+# BUILD COMPONENTS IN THE SUBDIRECTORIES
+# ------------------------------------------------------------------------------
+
+# Test suite: Single instructions.
+add_subdirectory ( TestGenericSubsys )
+
+
+# ------------------------------------------------------------------------------
 # COMPILATION OPTIONS
 # ------------------------------------------------------------------------------
 
-# Specify directories in which the linker will look for libraries.
-link_directories ( "${CMAKE_CURRENT_BINARY_DIR}/../../utilities/MCUDataFiles"
-                   "${CMAKE_CURRENT_BINARY_DIR}/../../simulators/MCUSim/AVR8"
-                   "${CMAKE_CURRENT_BINARY_DIR}/../../simulators/MCUSim/McuSimCfgMgr" )
+# Find Boost include dirs and libraries.
+find_package ( Boost 1.46
+               REQUIRED
+               COMPONENTS filesystem system )
 
-# Add include directories to the build.
-include_directories ( "${CMAKE_CURRENT_BINARY_DIR}/../../utilities/MCUDataFiles"
-                      "${CMAKE_CURRENT_BINARY_DIR}/../../simulators/MCUSim"
-                      "${CMAKE_CURRENT_BINARY_DIR}/../../simulators/MCUSim/AVR8"
-                      "${CMAKE_CURRENT_BINARY_DIR}/../../simulators/MCUSim/McuSimCfgMgr" )
+# # Add include directories to the build.
+include_directories ( ${Boost_INCLUDE_DIRS} )
 
-# Include Qt4's XML module
-find_package ( Qt4 REQUIRED )
-set ( QT_USE_QTXML 1 )
-include ( ${QT_USE_FILE} )
+# # Specify directories in which the linker will look for libraries.
+link_directories ( ${Boost_LIBRARY_DIRS} )
 
 ## Add switches to compiler command line
  # -pipe       : Use pipes rather than temporary files for communication between the various stages of compilation.
@@ -52,15 +55,13 @@ add_definitions ( -pipe -std=c++0x -O1 )
 
 # Add an executable to the project using the specified source files.
 add_executable ( ${PROJECT_NAME}
-                 AVR8test.cxx )
+                 main.cxx )
 
 # Link a target to given libraries
 target_link_libraries ( ${PROJECT_NAME}
-                        ${QT_LIBRARIES}
-                        cunit
-                        McuSimCfgMgr
-                        AVR8Sim
-                        MCUDataFiles )
+                        ${Boost_LIBRARIES}
+                        TSC_TestGenericSubsys
+                        cunit )
 
 
 # ------------------------------------------------------------------------------

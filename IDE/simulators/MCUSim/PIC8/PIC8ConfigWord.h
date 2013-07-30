@@ -25,7 +25,7 @@
  * @ingroup PIC8
  * @class PIC8ConfigWord
  */
-class PIC8ConfigWord : public MCUSim::Subsys
+class PIC8ConfigWord : public MCUSimSubsys
 {
     ////    Public Datatypes    ////
     public:
@@ -64,13 +64,13 @@ class PIC8ConfigWord : public MCUSim::Subsys
          * @param[in,out] eventLogger
          * @return
          */
-        PIC8ConfigWord * link ( MCUSim::EventLogger * eventLogger );
+        PIC8ConfigWord * link ( MCUSimEventLogger * eventLogger );
 
         /**
          * @brief
          * @param[in] mode
          */
-        void reset ( MCUSim::ResetMode mode );
+        void reset ( MCUSimBase::ResetMode mode );
 
         /**
          * @brief

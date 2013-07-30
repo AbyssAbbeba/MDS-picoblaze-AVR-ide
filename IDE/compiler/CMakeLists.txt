@@ -35,16 +35,23 @@ add_subdirectory ( core )
 # COMPILATION OPTIONS
 # ------------------------------------------------------------------------------
 
+# Find Boost include dirs and libraries.
+find_package ( Boost 1.46
+               REQUIRED
+               COMPONENTS filesystem system )
+
 # Load settings specific for the Qt4 library (we use it here for i18n)
 find_package ( Qt4 REQUIRED )
 include ( ${QT_USE_FILE} )
 
 # List of preprocessor include file search directories.
-include_directories ( "${CMAKE_CURRENT_BINARY_DIR}/core"
+include_directories ( ${Boost_INCLUDE_DIRS}
+                      "${CMAKE_CURRENT_BINARY_DIR}/core"
                       "${CMAKE_CURRENT_BINARY_DIR}/grammar" )
 
 # Specify directories in which the linker will look for libraries.
-link_directories ( "${CMAKE_CURRENT_BINARY_DIR}/../utilities/os" )
+link_directories ( ${Boost_LIBRARY_DIRS}
+                   "${CMAKE_CURRENT_BINARY_DIR}/../utilities/os" )
 
 ## Add switches to compiler command line
  # -Wall       : Enables all the warnings.

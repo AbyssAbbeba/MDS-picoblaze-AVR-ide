@@ -25,9 +25,9 @@ AVR8DataMemory::AVR8DataMemory()
     m_memory2 = NULL;
 }
 
-AVR8DataMemory * AVR8DataMemory::link ( MCUSim::EventLogger * eventLogger )
+AVR8DataMemory * AVR8DataMemory::link ( MCUSimEventLogger * eventLogger )
 {
-    Memory::link(eventLogger, SP_DATA);
+    MCUSimMemory::link(eventLogger, SP_DATA);
 
     return this;
 }
@@ -206,7 +206,7 @@ void AVR8DataMemory::resize ( unsigned int newSize )
     m_size = newSize;
 }
 
-void AVR8DataMemory::reset ( MCUSim::ResetMode mode )
+void AVR8DataMemory::reset ( MCUSimBase::ResetMode mode )
 {
     switch ( mode )
     {

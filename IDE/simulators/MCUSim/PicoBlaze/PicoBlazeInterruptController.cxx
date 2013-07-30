@@ -24,15 +24,15 @@ PicoBlazeInterruptController::~PicoBlazeInterruptController()
 {
 }
 
-PicoBlazeInterruptController * PicoBlazeInterruptController::link ( MCUSim::EventLogger      * eventLogger,
+PicoBlazeInterruptController * PicoBlazeInterruptController::link ( MCUSimEventLogger      * eventLogger,
                                                                     PicoBlazeInstructionSet  * instructionSet )
 {
-    Subsys::link(eventLogger, ID_INTERRUPTS);
+    MCUSimSubsys::link(eventLogger, ID_INTERRUPTS);
     m_instructionSet = instructionSet;
     return this;
 }
 
-void PicoBlazeInterruptController::reset ( MCUSim::ResetMode mode )
+void PicoBlazeInterruptController::reset ( MCUSimBase::ResetMode mode )
 {
     switch ( mode )
     {

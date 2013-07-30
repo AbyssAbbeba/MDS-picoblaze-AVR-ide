@@ -26,6 +26,7 @@ class AVR8InstructionSet;
 #include "../MCUSim.h"
 #include "AVR8Sim.h"
 
+// Standard headers
 #include <cstddef>
 #include <cstdint>
 
@@ -34,7 +35,7 @@ class AVR8InstructionSet;
  * @ingroup AVR8
  * @class AVR8BootLoader
  */
-class AVR8BootLoader : public MCUSim::Subsys
+class AVR8BootLoader : public MCUSimSubsys
 {
     ////    Public Datatypes    ////
     public:
@@ -109,7 +110,7 @@ class AVR8BootLoader : public MCUSim::Subsys
          * @param[in,out] haltMode
          * @return
          */
-        AVR8BootLoader * link ( MCUSim::EventLogger * eventLogger,
+        AVR8BootLoader * link ( MCUSimEventLogger * eventLogger,
                                 AVR8ProgramMemory   * programMemory,
                                 AVR8DataMemory      * dataMemory,
                                 AVR8FusesAndLocks   * fusesAndLocks,
@@ -121,7 +122,7 @@ class AVR8BootLoader : public MCUSim::Subsys
          * @brief
          * @param[in] mode
          */
-        void reset ( MCUSim::ResetMode mode );
+        void reset ( MCUSimBase::ResetMode mode );
 
         /**
          * @brief

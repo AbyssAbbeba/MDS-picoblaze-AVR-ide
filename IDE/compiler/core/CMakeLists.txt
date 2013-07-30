@@ -83,6 +83,7 @@ add_library ( ${PROJECT_NAME} SHARED
               CompilerSerializer.cxx
               CompilerMsgIntfFile.cxx
               CompilerSerializable.cxx
+              CompilerMessageStack.cxx
               CompilerMsgIntfStdout.cxx
               CompilerSourceLocation.cxx
               CompilerStatementTypes.cxx )

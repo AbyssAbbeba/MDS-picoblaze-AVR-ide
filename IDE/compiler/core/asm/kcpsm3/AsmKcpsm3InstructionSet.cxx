@@ -71,9 +71,12 @@ unsigned int AsmKcpsm3InstructionSet::checkLimit ( LimitType type,
 unsigned int AsmKcpsm3InstructionSet::getAAA ( const CompilerStatement * stmt,
                                                int index ) const
 {
-    return checkLimit ( LIM_C,
-                        stmt->args()->at(index)->location(),
-                        m_symbolTable->resolveExpr(stmt->args()->at(index), OBS_AAA) );
+    unsigned int result = checkLimit ( LIM_C,
+                                       stmt->args()->at(index)->location(),
+                                       m_symbolTable->resolveExpr(stmt->args()->at(index), OBS_AAA) );
+
+    // Make it (AAA - 1);
+    return ( result - 1 ) & ~( ~0U << OBS_AAA );
 }
 
 unsigned int AsmKcpsm3InstructionSet::getSXY ( const CompilerStatement * stmt,

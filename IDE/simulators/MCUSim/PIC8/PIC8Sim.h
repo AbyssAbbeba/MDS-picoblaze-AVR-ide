@@ -65,7 +65,7 @@ class PIC8Sim : public MCUSim
          * @brief
          * @return
          */
-        Clock::ClockSource & getClockSource();
+        MCUSimClock::ClockSource & getClockSource();
 
         /**
          * @brief
@@ -91,13 +91,13 @@ class PIC8Sim : public MCUSim
          * @param[in] id
          * @return
          */
-        Subsys * getSubsys ( Subsys::SubsysId id );
+        MCUSimSubsys * getSubsys ( MCUSimSubsys::SubsysId id );
 
         /**
          * @brief
          * @return
          */
-        Config & getConfig();
+        MCUSimConfig & getConfig();
 
         /**
          * @brief
@@ -132,7 +132,7 @@ class PIC8Sim : public MCUSim
          * @brief
          * @return
          */
-        EventLogger * getLog()
+        MCUSimEventLogger * getLog()
         {
             return m_eventLogger;
         }
@@ -163,7 +163,7 @@ class PIC8Sim : public MCUSim
          * @brief
          * @param[in,out] subSystem
          */
-        inline void regSubSys ( Subsys * subSystem );
+        inline void regSubSys ( MCUSimSubsys * subSystem );
 
         /**
          * @brief
@@ -235,7 +235,7 @@ class PIC8Sim : public MCUSim
         /**
          * @brief
          */
-        EventLogger * m_eventLogger;
+        MCUSimEventLogger * m_eventLogger;
 
         /**
          * @brief
@@ -262,7 +262,7 @@ class PIC8Sim : public MCUSim
         /**
          * @brief
          */
-        std::vector<Subsys*> m_subSystems;
+        std::vector<MCUSimSubsys*> m_subSystems;
 };
 
 #endif // PIC8SIM_H

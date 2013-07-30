@@ -27,7 +27,7 @@ class AVR8IO;
  * @ingroup AVR8
  * @class AVR8TimerCounter0
  */
-class AVR8TimerCounter0 : public MCUSim::Subsys
+class AVR8TimerCounter0 : public MCUSimSubsys
 {
     ////    Public Datatypes    ////
     public:
@@ -56,8 +56,8 @@ class AVR8TimerCounter0 : public MCUSim::Subsys
          * @param[in,out] m_io
          * @return
          */
-        AVR8TimerCounter0 * link ( MCUSim::EventLogger     * eventLogger,
-                                   MCUSim::Subsys::SubsysId  subsysId,
+        AVR8TimerCounter0 * link ( MCUSimEventLogger     * eventLogger,
+                                   MCUSimSubsys::SubsysId  subsysId,
                                    AVR8DataMemory          * dataMemory,
                                    AVR8IO                  * m_io );
 
@@ -65,7 +65,7 @@ class AVR8TimerCounter0 : public MCUSim::Subsys
          * @brief
          * @param[in] mode
          */
-        void reset ( MCUSim::ResetMode mode );
+        void reset ( MCUSimBase::ResetMode mode );
 
         /**
          * @brief

@@ -28,7 +28,7 @@
 
 PicoBlazeSim::PicoBlazeSim()
 {
-    m_eventLogger           = new EventLogger();
+    m_eventLogger           = new MCUSimEventLogger();
     m_config                = new PicoBlazeConfig();
 
     m_programMemory         = new PicoBlazeProgramMemory();
@@ -69,7 +69,7 @@ PicoBlazeSim::~PicoBlazeSim()
 
 inline void PicoBlazeSim::deleteSubSystems()
 {
-    for ( std::vector<Subsys*>::iterator i = m_subSystems.begin();
+    for ( std::vector<MCUSimSubsys*>::iterator i = m_subSystems.begin();
           i != m_subSystems.end();
           i++ )
     {
@@ -79,44 +79,44 @@ inline void PicoBlazeSim::deleteSubSystems()
 
 inline void PicoBlazeSim::checkSubSystems() const
 {
-    for ( std::vector<Subsys*>::const_iterator i = m_subSystems.begin();
+    for ( std::vector<MCUSimSubsys*>::const_iterator i = m_subSystems.begin();
           i != m_subSystems.end();
           i++ )
     {
-        assert ( Subsys::ID_INVALID != (*i)->getId() );
+        assert ( MCUSimSubsys::ID_INVALID != (*i)->getId() );
     }
 }
 
-inline void PicoBlazeSim::regSubSys ( Subsys * subSystem )
+inline void PicoBlazeSim::regSubSys ( MCUSimSubsys * subSystem )
 {
     m_subSystems.push_back(subSystem);
 }
 
-MCUSim::Subsys * PicoBlazeSim::getSubsys ( Subsys::SubsysId id )
+MCUSimSubsys * PicoBlazeSim::getSubsys ( MCUSimSubsys::SubsysId id )
 {
     switch ( id )
     {
-        case Subsys::ID_MEM_CODE:       return m_programMemory;
-        case Subsys::ID_MEM_DATA:       return m_dataMemory;
-        case Subsys::ID_MEM_REGISTERS:  return m_registers;
-        case Subsys::ID_CPU:            return m_instructionSet;
-        case Subsys::ID_IO:             return m_io;
-        case Subsys::ID_STACK:          return m_stack;
-        case Subsys::ID_CLK_CONTROL:    return m_clockControl;
-        case Subsys::ID_INTERRUPTS:     return m_interruptController;
+        case MCUSimSubsys::ID_MEM_CODE:       return m_programMemory;
+        case MCUSimSubsys::ID_MEM_DATA:       return m_dataMemory;
+        case MCUSimSubsys::ID_MEM_REGISTERS:  return m_registers;
+        case MCUSimSubsys::ID_CPU:            return m_instructionSet;
+        case MCUSimSubsys::ID_PLIO:           return m_io;
+        case MCUSimSubsys::ID_STACK:          return m_stack;
+        case MCUSimSubsys::ID_CLK_CONTROL:    return m_clockControl;
+        case MCUSimSubsys::ID_INTERRUPTS:     return m_interruptController;
 
-        default:                        return NULL;
+        default:                              return NULL;
     }
 }
 
-MCUSim::Clock::ClockSource & PicoBlazeSim::getClockSource()
+MCUSimClock::ClockSource & PicoBlazeSim::getClockSource()
 {
     return m_clockControl->m_clockSource;
 }
 
 void PicoBlazeSim::reset ( ResetMode mode )
 {
-    for ( std::vector<Subsys*>::iterator i = m_subSystems.begin();
+    for ( std::vector<MCUSimSubsys*>::iterator i = m_subSystems.begin();
           i != m_subSystems.end();
           i++ )
     {
@@ -140,7 +140,7 @@ void PicoBlazeSim::reset ( ResetMode mode )
     }
 }
 
-MCUSim::Config & PicoBlazeSim::getConfig()
+MCUSimConfig & PicoBlazeSim::getConfig()
 {
     return * m_config;
 }

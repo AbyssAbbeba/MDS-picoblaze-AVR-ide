@@ -28,7 +28,7 @@ class PIC8Stack;
  * @ingroup PIC8
  * @class PIC8InterruptController
  */
-class PIC8InterruptController : public MCUSim::Subsys
+class PIC8InterruptController : public MCUSimSubsys
 {
     ////    Public Static Constants    ////
     public:
@@ -94,7 +94,7 @@ class PIC8InterruptController : public MCUSim::Subsys
          * @param[in,out] stack
          * @return
          */
-        PIC8InterruptController * link ( MCUSim::EventLogger * eventLogger,
+        PIC8InterruptController * link ( MCUSimEventLogger * eventLogger,
                                          MCUSim::Mode        * processorMode,
                                          PIC8DataMemory      * dataMemory,
                                          PIC8InstructionSet  * instructionSet,
@@ -104,7 +104,7 @@ class PIC8InterruptController : public MCUSim::Subsys
          * @brief
          * @param[in] mode
          */
-        void reset ( MCUSim::ResetMode mode );
+        void reset ( MCUSimBase::ResetMode mode );
 
         /**
          * @brief

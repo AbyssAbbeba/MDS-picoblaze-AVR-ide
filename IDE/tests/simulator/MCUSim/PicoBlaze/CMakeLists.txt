@@ -29,18 +29,23 @@ enable_testing()
 # ------------------------------------------------------------------------------
 
 # Test suite: Single instructions.
-add_subdirectory ( TestSingleInst )
+add_subdirectory ( TestGenericSubsys )
 
 
 # ------------------------------------------------------------------------------
 # COMPILATION OPTIONS
 # ------------------------------------------------------------------------------
 
+# Find Boost include dirs and libraries.
+find_package ( Boost 1.46
+               REQUIRED
+               COMPONENTS filesystem system )
+
 # # Add include directories to the build.
-include_directories ( "${CMAKE_CURRENT_BINARY_DIR}/../../../../simulators/MCUSim/PicoBlaze" )
+include_directories ( ${Boost_INCLUDE_DIRS} )
 
 # # Specify directories in which the linker will look for libraries.
-link_directories ( "${CMAKE_CURRENT_BINARY_DIR}/../../../../simulators/MCUSim/PicoBlaze" )
+link_directories ( ${Boost_LIBRARY_DIRS} )
 
 ## Add switches to compiler command line
  # -pipe       : Use pipes rather than temporary files for communication between the various stages of compilation.
@@ -54,7 +59,8 @@ add_executable ( ${PROJECT_NAME}
 
 # Link a target to given libraries
 target_link_libraries ( ${PROJECT_NAME}
-                        TSP_TestSingleInst
+                        ${Boost_LIBRARIES}
+                        TSP_TestGenericSubsys
                         cunit )
 
 

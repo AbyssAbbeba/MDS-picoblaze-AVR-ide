@@ -103,7 +103,7 @@ class MCUSimControl : public QObject
          * @param[in] subsysEventsToObserve
          */
         void registerObserver ( MCUSimObserver * observer,
-                                MCUSim::Subsys::SubsysId simSubsysToObserve,
+                                MCUSimSubsys::SubsysId simSubsysToObserve,
                                 const std::vector<int> & subsysEventsToObserve );
 
         /**
@@ -113,7 +113,7 @@ class MCUSimControl : public QObject
          * @param[in] events
          */
         void registerObserver ( MCUSimObserver * observer,
-                                MCUSim::Subsys::SubsysId simSubsysToObserve,
+                                MCUSimSubsys::SubsysId simSubsysToObserve,
                                 uint64_t events = 0xFFFFFFFFFFFFFFFFULL );
 
         /**
@@ -158,7 +158,7 @@ class MCUSimControl : public QObject
          * @param[in] id
          * @return
          */
-        MCUSim::Subsys * getSimSubsys ( MCUSim::Subsys::SubsysId id );
+        MCUSimSubsys * getSimSubsys ( MCUSimSubsys::SubsysId id );
 
         /**
          * @brief
@@ -199,42 +199,22 @@ class MCUSimControl : public QObject
          */
         bool breakPointsEnabled() const;
 
-    ////    Private Attributes    ////
-    private:
         /**
          * @brief
+         * @return
          */
-        MCUSim::Arch m_architecture;
+        const std::vector<std::string> & getMessages() const;
 
         /**
          * @brief
          */
-        MCUSim * m_simulator;
+        void clearMessages();
 
         /**
          * @brief
+         * @return
          */
-        DbgFile * m_dbgFile;
-
-        /**
-         * @brief
-         */
-        MCUSim::CPU * m_simCpu;
-
-        /**
-         * @brief
-         */
-        MCUSim::EventLogger * m_simulatorLog;
-
-        /**
-         * @brief
-         */
-        const McuDeviceSpec * m_deviceSpec;
-
-        /**
-         * @brief
-         */
-        std::vector<std::pair<MCUSimObserver*, uint64_t> > m_observers [ MCUSim::Subsys::ID__MAX__ ];
+        unsigned long long getTotalMCycles() const;
 
     ////    Private Operations    ////
     private:
@@ -267,7 +247,7 @@ class MCUSimControl : public QObject
          * @param[in] observer
          * @return
          */
-        inline bool unregisterSpecificObserver ( MCUSim::Subsys::SubsysId subsysId,
+        inline bool unregisterSpecificObserver ( MCUSimSubsys::SubsysId subsysId,
                                                  const MCUSimObserver * observer );
 
     ////    Qt Signals    ////
@@ -323,12 +303,6 @@ class MCUSimControl : public QObject
 
         /**
          * @brief
-         * @return
-         */
-        bool isStarted() const;
-
-        /**
-         * @brief
          */
         void step();
 
@@ -361,8 +335,55 @@ class MCUSimControl : public QObject
 
     ////    Private Attributes    ////
     private:
+        /**
+         * @brief
+         */
+        MCUSim::Arch m_architecture;
+
+        /**
+         * @brief
+         */
+        MCUSim * m_simulator;
+
+        /**
+         * @brief
+         */
+        DbgFile * m_dbgFile;
+
+        /**
+         * @brief
+         */
+        MCUSimCPU * m_simCpu;
+
+        /**
+         * @brief
+         */
+        MCUSimEventLogger * m_simulatorLog;
+
+        /**
+         * @brief
+         */
+        const McuDeviceSpec * m_deviceSpec;
+
+        /**
+         * @brief
+         */
+        std::vector<std::pair<MCUSimObserver*, uint64_t> > m_observers [ MCUSimSubsys::ID__MAX__ ];
+
         /// @brief
         std::string m_fileName;
+
+        /// @brief
+        std::vector<std::string> m_messages;
+
+        /// @brief
+        bool m_breakPointsEnabled;
+
+        /// @brief
+        std::vector<std::vector<unsigned int>> m_breakpoints;
+
+        /// @brief
+        unsigned long long m_totalMCycles;
 };
 
 #endif // MCUSIMCONTROL_H

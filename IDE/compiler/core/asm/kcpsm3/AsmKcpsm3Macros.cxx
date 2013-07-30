@@ -67,7 +67,9 @@ void AsmKcpsm3Macros::define ( CompilerSourceLocation location,
 
         m_compilerCore -> compilerMessage ( location,
                                             CompilerBase::MT_WARNING,
-                                            QObject::tr("redefinition of macro ").toStdString() + "\"" + name + "\"" + QObject::tr("original definition is at ").toStdString() + m_compilerCore->locationToStr(m_table[name].m_location) );
+                                            QObject::tr("redefinition of macro ").toStdString() + "\"" + name + "\"" +
+                                            QObject::tr("original definition is at ").toStdString() +
+                                            m_compilerCore->locationToStr(m_table[name].m_location) );
     }
 
     if ( macroDef->last() == macroDef )
@@ -118,7 +120,8 @@ CompilerStatement * AsmKcpsm3Macros::expand ( const CompilerSourceLocation & msg
     {
         m_compilerCore -> compilerMessage ( msgLocation,
                                             CompilerBase::MT_REMARK,
-                                            QObject::tr("macro `%1' will not be expanded because macro expansion has been disabled ").arg(name.c_str()).toStdString() );
+                                            QObject::tr("macro `%1' will not be expanded because macro expansion has "
+                                                        "been disabled ").arg(name.c_str()).toStdString() );
         return NULL;
     }
 
@@ -153,7 +156,8 @@ CompilerStatement * AsmKcpsm3Macros::expand ( const CompilerSourceLocation & msg
         {
             m_compilerCore -> compilerMessage ( arg->m_location,
                                                 CompilerBase::MT_ERROR,
-                                                QObject::tr("too many arguments given, expecting at most %1 arguments").arg(numberOfParams).toStdString() );
+                                                QObject::tr("too many arguments given, expecting at most %1 "
+                                                            "arguments").arg(numberOfParams).toStdString() );
             break;
         }
 
@@ -170,7 +174,8 @@ CompilerStatement * AsmKcpsm3Macros::expand ( const CompilerSourceLocation & msg
         symbolSubst ( param, &blankExpr, result );
         m_compilerCore -> compilerMessage ( location,
                                             CompilerBase::MT_REMARK,
-                                            QObject::tr("parameter `%1' substituted for blank value").arg(param.c_str()).toStdString() );
+                                            QObject::tr("parameter `%1' substituted for blank "
+                                                        "value").arg(param.c_str()).toStdString() );
     }
 
     return result;

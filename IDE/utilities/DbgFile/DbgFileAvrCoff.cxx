@@ -285,7 +285,7 @@ inline void DbgFileAvrCoff::loadFile ( const std::string & filename )
 
         // These 8 bytes have a symbol name or an index to a symbol in the string table.
         char symbolName[8];
-        if ( NULL == symbolEntryRaw[0] )
+        if ( 0 == symbolEntryRaw[0] )
         {
             for ( int i = 0; i < 8; i++ )
             {

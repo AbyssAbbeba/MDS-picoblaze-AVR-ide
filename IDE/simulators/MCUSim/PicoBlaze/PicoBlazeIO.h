@@ -23,7 +23,7 @@
  * @ingroup PicoBlaze
  * @class PicoBlazeIO
  */
-class PicoBlazeIO : public MCUSim::PureLogicIO
+class PicoBlazeIO : public MCUSimPureLogicIO
 {
     ////    Public Static Constants    ////
     public:
@@ -78,13 +78,13 @@ class PicoBlazeIO : public MCUSim::PureLogicIO
          * @param[in,out] eventLogger
          * @return
          */
-        PicoBlazeIO * link ( MCUSim::EventLogger * eventLogger );
+        PicoBlazeIO * link ( MCUSimEventLogger * eventLogger );
 
         /**
          * @brief
          * @param[in] mode
          */
-        void reset ( MCUSim::ResetMode mode );
+        void reset ( MCUSimBase::ResetMode mode );
 
         /**
          * @brief

@@ -28,7 +28,7 @@ class AVR8FusesAndLocks;
  * @ingroup AVR8
  * @class AVR8WatchdogTimer
  */
-class AVR8WatchdogTimer : public MCUSim::Subsys
+class AVR8WatchdogTimer : public MCUSimSubsys
 {
     ////    Public Datatypes    ////
     public:
@@ -68,7 +68,7 @@ class AVR8WatchdogTimer : public MCUSim::Subsys
          * @param[in,out] fusesAndLocks
          * @return
          */
-        AVR8WatchdogTimer * link ( MCUSim::EventLogger     * eventLogger,
+        AVR8WatchdogTimer * link ( MCUSimEventLogger     * eventLogger,
                                    AVR8DataMemory          * dataMemory,
                                    AVR8InterruptController * interruptController,
                                    AVR8FusesAndLocks       * fusesAndLocks );
@@ -77,7 +77,7 @@ class AVR8WatchdogTimer : public MCUSim::Subsys
          * @brief
          * @param[in] mode
          */
-        void reset ( MCUSim::ResetMode mode );
+        void reset ( MCUSimBase::ResetMode mode );
 
         /**
          * @brief

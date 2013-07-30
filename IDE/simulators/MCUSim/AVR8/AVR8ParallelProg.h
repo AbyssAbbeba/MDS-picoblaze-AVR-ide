@@ -26,7 +26,7 @@ class AVR8ProgramMemory;
  * @ingroup AVR8
  * @class AVR8ParallelProg
  */
-class AVR8ParallelProg : public MCUSim::Subsys
+class AVR8ParallelProg : public MCUSimSubsys
 {
     ////    Public Datatypes    ////
     public:
@@ -53,14 +53,14 @@ class AVR8ParallelProg : public MCUSim::Subsys
          * @param[in,out] programMemory
          * @return
          */
-        AVR8ParallelProg * link ( MCUSim::EventLogger * eventLogger,
+        AVR8ParallelProg * link ( MCUSimEventLogger * eventLogger,
                                   AVR8ProgramMemory   * programMemory );
 
         /**
          * @brief
          * @param[in] mode
          */
-        void reset ( MCUSim::ResetMode mode );
+        void reset ( MCUSimBase::ResetMode mode );
 
 //         /**
 //          * @brief

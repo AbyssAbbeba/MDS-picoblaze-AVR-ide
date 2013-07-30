@@ -26,7 +26,7 @@ class PIC8ConfigWord;
  * @ingroup PIC8
  * @class PIC8ClockControl
  */
-class PIC8ClockControl : public MCUSim::Clock
+class PIC8ClockControl : public MCUSimClock
 {
     ////    Public Datatypes    ////
     public:
@@ -85,14 +85,14 @@ class PIC8ClockControl : public MCUSim::Clock
          * @param[in,out] fusesAndLocks
          * @return
          */
-        PIC8ClockControl * link ( MCUSim::EventLogger * eventLogger,
+        PIC8ClockControl * link ( MCUSimEventLogger * eventLogger,
                                   PIC8ConfigWord      * configWord );
 
         /**
          * @brief
          * @param[in] mode
          */
-        void reset ( MCUSim::ResetMode mode );
+        void reset ( MCUSimBase::ResetMode mode );
 
         /**
          * @brief

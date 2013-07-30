@@ -31,13 +31,13 @@ PIC8WatchDogTimer::~PIC8WatchDogTimer()
 {
 }
 
-PIC8WatchDogTimer * PIC8WatchDogTimer::link ( MCUSim::EventLogger     * eventLogger,
+PIC8WatchDogTimer * PIC8WatchDogTimer::link ( MCUSimEventLogger     * eventLogger,
                                               PIC8Timer0WdtPrescaller * timer0WdtPrescaller,
                                               PIC8DataMemory          * dataMemory,
                                               PIC8ConfigWord          * configWord,
                                               PIC8InterruptController * interruptCtrl )
 {
-    Subsys::link(eventLogger, ID_WATCHDOG);
+    MCUSimSubsys::link(eventLogger, ID_WATCHDOG);
     m_timer0WdtPrescaller = timer0WdtPrescaller;
     m_dataMemory = dataMemory;
     m_configWord = configWord;
@@ -45,7 +45,7 @@ PIC8WatchDogTimer * PIC8WatchDogTimer::link ( MCUSim::EventLogger     * eventLog
     return this;
 }
 
-void PIC8WatchDogTimer::reset ( MCUSim::ResetMode mode )
+void PIC8WatchDogTimer::reset ( MCUSimBase::ResetMode mode )
 {
     switch ( mode )
     {

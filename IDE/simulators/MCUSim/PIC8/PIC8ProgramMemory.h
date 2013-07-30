@@ -30,7 +30,7 @@ class DataFile;
  * @ingroup PIC8
  * @class PIC8ProgramMemory
  */
-class PIC8ProgramMemory : public MCUSim::Memory
+class PIC8ProgramMemory : public MCUSimMemory
 {
     ////    Public Datatypes    ////
     public:
@@ -71,14 +71,14 @@ class PIC8ProgramMemory : public MCUSim::Memory
          * @param[in,out] eventLogger
          * @return
          */
-        PIC8ProgramMemory * link ( MCUSim::EventLogger * eventLogger,
+        PIC8ProgramMemory * link ( MCUSimEventLogger * eventLogger,
                                    PIC8ConfigWord * configWord );
 
         /**
          * @brief
          * @param[in] mode
          */
-        void reset ( MCUSim::ResetMode mode );
+        void reset ( MCUSimBase::ResetMode mode );
 
         /**
          * @brief

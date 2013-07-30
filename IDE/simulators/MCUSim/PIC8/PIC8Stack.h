@@ -23,7 +23,7 @@
  * @ingroup PIC8
  * @class PIC8Stack
  */
-class PIC8Stack : public MCUSim::Subsys
+class PIC8Stack : public MCUSimSubsys
 {
     ////    Public Datatypes    ////
     public:
@@ -70,13 +70,13 @@ class PIC8Stack : public MCUSim::Subsys
          * @param[in,out] eventLogger
          * @return
          */
-        PIC8Stack * link ( MCUSim::EventLogger * eventLogger );
+        PIC8Stack * link ( MCUSimEventLogger * eventLogger );
 
         /**
          * @brief
          * @param[in] mode
          */
-        void reset ( MCUSim::ResetMode mode );
+        void reset ( MCUSimBase::ResetMode mode );
 
     ////    Inline Public Operations    ////
     public:

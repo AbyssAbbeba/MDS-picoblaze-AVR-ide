@@ -580,7 +580,7 @@ void AsmKcpsm3SymbolTable::output()
     if ( false == file.is_open() )
     {
         m_compilerCore -> compilerMessage ( CompilerBase::MT_ERROR,
-                                            QObject::tr ( "Unable to open " ).toStdString()
+                                            QObject::tr ( "unable to open " ).toStdString()
                                                         + "\"" + m_opts->m_symbolTable  + "\"" );
         return;
     }
@@ -590,7 +590,7 @@ void AsmKcpsm3SymbolTable::output()
     if ( true == file.fail() )
     {
         m_compilerCore -> compilerMessage ( CompilerBase::MT_ERROR,
-                                            QObject::tr ( "Unable to write to " ).toStdString()
+                                            QObject::tr ( "unable to write to " ).toStdString()
                                                         + "\"" + m_opts->m_symbolTable  + "\"" );
         return;
     }

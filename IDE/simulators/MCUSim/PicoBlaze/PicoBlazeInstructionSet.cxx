@@ -21,6 +21,8 @@
 #include "PicoBlazeProgramMemory.h"
 #include "PicoBlazeInterruptController.h"
 
+#include <iostream> // DEBUG!
+
 void ( PicoBlazeInstructionSet :: * const PicoBlazeInstructionSet::m_opCodeDispatchTable [ 32 ] ) ( const unsigned int opCode ) =
 {
     & PicoBlazeInstructionSet::inst_LOAD,       // opCode = 00 | 000x xxxx | xxxx xxxx
@@ -87,7 +89,7 @@ void PicoBlazeInstructionSet::StatusFlags::returni()
     m_interrupted--;
 }
 
-PicoBlazeInstructionSet * PicoBlazeInstructionSet::link ( MCUSim::EventLogger          * eventLogger,
+PicoBlazeInstructionSet * PicoBlazeInstructionSet::link ( MCUSimEventLogger          * eventLogger,
                                                           PicoBlazeIO                  * io,
                                                           PicoBlazeStack               * stack,
                                                           PicoBlazeRegisters           * registers,
@@ -95,7 +97,7 @@ PicoBlazeInstructionSet * PicoBlazeInstructionSet::link ( MCUSim::EventLogger   
                                                           PicoBlazeProgramMemory       * programMemory,
                                                           PicoBlazeInterruptController * interruptController )
 {
-    MCUSim::CPU::link(eventLogger);
+    MCUSimCPU::link(eventLogger);
 
     m_io                  = io;
     m_stack               = stack;
@@ -107,7 +109,7 @@ PicoBlazeInstructionSet * PicoBlazeInstructionSet::link ( MCUSim::EventLogger   
     return this;
 }
 
-void PicoBlazeInstructionSet::reset ( MCUSim::ResetMode mode )
+void PicoBlazeInstructionSet::reset ( MCUSimBase::ResetMode mode )
 {
     switch ( mode )
     {
@@ -302,7 +304,7 @@ void PicoBlazeInstructionSet::inst_JUMP ( const unsigned int opCode )
     }
 
     // Execute jump.
-    incrPc ( addr );
+    setProgramCounter ( addr + 1 );
 }
 
 void PicoBlazeInstructionSet::inst_CALL ( const unsigned int opCode )
@@ -352,7 +354,7 @@ void PicoBlazeInstructionSet::inst_CALL ( const unsigned int opCode )
     // Execute call.
     logEvent ( EVENT_CPU_CALL, m_pc, PicoBlazeInsNames::INS_CALL );
     m_stack->pushOnStack ( m_pc );
-    incrPc ( addr );
+    setProgramCounter ( addr + 1 );
     m_actSubprogCounter++;
 }
 
@@ -421,6 +423,8 @@ void PicoBlazeInstructionSet::inst_RETURN ( const unsigned int opCode )
 
 void PicoBlazeInstructionSet::inst_ADD ( const unsigned int opCode )
 {
+    instructionEnter ( PicoBlazeInsNames::INS_ADD );
+
     // Extract operands from OP code.
     const unsigned int sX   = ( opCode & 0xf00 ) >> 8;
     const unsigned int sYkk = ( opCode & 0x0ff );
@@ -450,6 +454,8 @@ void PicoBlazeInstructionSet::inst_ADD ( const unsigned int opCode )
 
 void PicoBlazeInstructionSet::inst_ADDCY ( const unsigned int opCode )
 {
+    instructionEnter ( PicoBlazeInsNames::INS_ADDCY );
+
     // Extract operands from OP code.
     const unsigned int sX   = ( opCode & 0xf00 ) >> 8;
     const unsigned int sYkk = ( opCode & 0x0ff );
@@ -485,6 +491,8 @@ void PicoBlazeInstructionSet::inst_ADDCY ( const unsigned int opCode )
 
 void PicoBlazeInstructionSet::inst_SUB ( const unsigned int opCode )
 {
+    instructionEnter ( PicoBlazeInsNames::INS_SUB );
+
     // Extract operands from OP code.
     const unsigned int sX   = ( opCode & 0xf00 ) >> 8;
     const unsigned int sYkk = ( opCode & 0x0ff );
@@ -514,6 +522,8 @@ void PicoBlazeInstructionSet::inst_SUB ( const unsigned int opCode )
 
 void PicoBlazeInstructionSet::inst_SUBCY ( const unsigned int opCode )
 {
+    instructionEnter ( PicoBlazeInsNames::INS_SUBCY );
+
     // Extract operands from OP code.
     const unsigned int sX   = ( opCode & 0xf00 ) >> 8;
     const unsigned int sYkk = ( opCode & 0x0ff );
@@ -549,6 +559,8 @@ void PicoBlazeInstructionSet::inst_SUBCY ( const unsigned int opCode )
 
 void PicoBlazeInstructionSet::inst_COMPARE ( const unsigned int opCode )
 {
+    instructionEnter ( PicoBlazeInsNames::INS_COMPARE );
+
     // Extract operands from OP code.
     const unsigned int sX   = ( opCode & 0xf00 ) >> 8;
     const unsigned int sYkk = ( opCode & 0x0ff );
@@ -629,6 +641,8 @@ inline void PicoBlazeInstructionSet::inst_DISABLE_INT ( const unsigned int )
 
 void PicoBlazeInstructionSet::inst_LOAD ( const unsigned int opCode )
 {
+    instructionEnter ( PicoBlazeInsNames::INS_LOAD );
+
     // Extract operands from OP code.
     const unsigned int sX   = ( opCode & 0xf00 ) >> 8;
     const unsigned int sYkk = ( opCode & 0x0ff );
@@ -647,6 +661,8 @@ void PicoBlazeInstructionSet::inst_LOAD ( const unsigned int opCode )
 
 void PicoBlazeInstructionSet::inst_AND ( const unsigned int opCode )
 {
+    instructionEnter ( PicoBlazeInsNames::INS_AND );
+
     // Extract operands from OP code.
     const unsigned int sX   = ( opCode & 0xf00 ) >> 8;
     const unsigned int sYkk = ( opCode & 0x0ff );
@@ -676,6 +692,8 @@ void PicoBlazeInstructionSet::inst_AND ( const unsigned int opCode )
 
 void PicoBlazeInstructionSet::inst_OR ( const unsigned int opCode )
 {
+    instructionEnter ( PicoBlazeInsNames::INS_OR );
+
     // Extract operands from OP code.
     const unsigned int sX   = ( opCode & 0xf00 ) >> 8;
     const unsigned int sYkk = ( opCode & 0x0ff );
@@ -705,6 +723,8 @@ void PicoBlazeInstructionSet::inst_OR ( const unsigned int opCode )
 
 void PicoBlazeInstructionSet::inst_XOR ( const unsigned int opCode )
 {
+    instructionEnter ( PicoBlazeInsNames::INS_XOR );
+
     // Extract operands from OP code.
     const unsigned int sX   = ( opCode & 0xf00 ) >> 8;
     const unsigned int sYkk = ( opCode & 0x0ff );
@@ -734,6 +754,8 @@ void PicoBlazeInstructionSet::inst_XOR ( const unsigned int opCode )
 
 void PicoBlazeInstructionSet::inst_TEST ( const unsigned int opCode )
 {
+    instructionEnter ( PicoBlazeInsNames::INS_TEST );
+
     // Extract operands from OP code.
     const unsigned int sX   = ( opCode & 0xf00 ) >> 8;
     const unsigned int sYkk = ( opCode & 0x0ff );
@@ -771,6 +793,8 @@ void PicoBlazeInstructionSet::inst_TEST ( const unsigned int opCode )
 
 void PicoBlazeInstructionSet::inst_STORE ( const unsigned int opCode )
 {
+    instructionEnter ( PicoBlazeInsNames::INS_STORE );
+
     // Extract operands from OP code.
     const unsigned int sX   = ( opCode & 0xf00 ) >> 8;
     const unsigned int sYPP = ( opCode & 0x0ff );
@@ -790,6 +814,8 @@ void PicoBlazeInstructionSet::inst_STORE ( const unsigned int opCode )
 
 void PicoBlazeInstructionSet::inst_FETCH ( const unsigned int opCode )
 {
+    instructionEnter ( PicoBlazeInsNames::INS_FETCH );
+
     // Extract operands from OP code.
     const unsigned int sX   = ( opCode & 0xf00 ) >> 8;
     const unsigned int sYPP = ( opCode & 0x0ff );
@@ -809,6 +835,8 @@ void PicoBlazeInstructionSet::inst_FETCH ( const unsigned int opCode )
 
 inline void PicoBlazeInstructionSet::inst_SR0 ( const unsigned int opCode )
 {
+    instructionEnter ( PicoBlazeInsNames::INS_SR0 );
+
     // Extract operands from OP code.
     const unsigned int sX = ( opCode & 0xf00 ) >> 8;
 
@@ -826,6 +854,8 @@ inline void PicoBlazeInstructionSet::inst_SR0 ( const unsigned int opCode )
 
 inline void PicoBlazeInstructionSet::inst_SR1 ( const unsigned int opCode )
 {
+    instructionEnter ( PicoBlazeInsNames::INS_SR1 );
+
     // Extract operands from OP code.
     const unsigned int sX = ( opCode & 0xf00 ) >> 8;
 
@@ -844,6 +874,8 @@ inline void PicoBlazeInstructionSet::inst_SR1 ( const unsigned int opCode )
 
 inline void PicoBlazeInstructionSet::inst_SRX ( const unsigned int opCode )
 {
+    instructionEnter ( PicoBlazeInsNames::INS_SRX );
+
     // Extract operands from OP code.
     const unsigned int sX = ( opCode & 0xf00 ) >> 8;
 
@@ -861,6 +893,8 @@ inline void PicoBlazeInstructionSet::inst_SRX ( const unsigned int opCode )
 
 inline void PicoBlazeInstructionSet::inst_SRA ( const unsigned int opCode )
 {
+    instructionEnter ( PicoBlazeInsNames::INS_SRA );
+
     // Extract operands from OP code.
     const unsigned int sX = ( opCode & 0xf00 ) >> 8;
 
@@ -883,6 +917,8 @@ inline void PicoBlazeInstructionSet::inst_SRA ( const unsigned int opCode )
 
 inline void PicoBlazeInstructionSet::inst_RR ( const unsigned int opCode )
 {
+    instructionEnter ( PicoBlazeInsNames::INS_RR );
+
     // Extract operands from OP code.
     const unsigned int sX = ( opCode & 0xf00 ) >> 8;
 
@@ -904,6 +940,8 @@ inline void PicoBlazeInstructionSet::inst_RR ( const unsigned int opCode )
 
 inline void PicoBlazeInstructionSet::inst_SL0 ( const unsigned int opCode )
 {
+    instructionEnter ( PicoBlazeInsNames::INS_SL0 );
+
     // Extract operands from OP code.
     const unsigned int sX = ( opCode & 0xf00 ) >> 8;
 
@@ -923,6 +961,8 @@ inline void PicoBlazeInstructionSet::inst_SL0 ( const unsigned int opCode )
 
 inline void PicoBlazeInstructionSet::inst_SL1 ( const unsigned int opCode )
 {
+    instructionEnter ( PicoBlazeInsNames::INS_SL1 );
+
     // Extract operands from OP code.
     const unsigned int sX = ( opCode & 0xf00 ) >> 8;
 
@@ -943,6 +983,8 @@ inline void PicoBlazeInstructionSet::inst_SL1 ( const unsigned int opCode )
 
 inline void PicoBlazeInstructionSet::inst_SLX ( const unsigned int opCode )
 {
+    instructionEnter ( PicoBlazeInsNames::INS_SLX );
+
     // Extract operands from OP code.
     const unsigned int sX = ( opCode & 0xf00 ) >> 8;
 
@@ -962,6 +1004,8 @@ inline void PicoBlazeInstructionSet::inst_SLX ( const unsigned int opCode )
 
 inline void PicoBlazeInstructionSet::inst_SLA ( const unsigned int opCode )
 {
+    instructionEnter ( PicoBlazeInsNames::INS_SLA );
+
     // Extract operands from OP code.
     const unsigned int sX = ( opCode & 0xf00 ) >> 8;
 
@@ -985,6 +1029,8 @@ inline void PicoBlazeInstructionSet::inst_SLA ( const unsigned int opCode )
 
 inline void PicoBlazeInstructionSet::inst_RL ( const unsigned int opCode )
 {
+    instructionEnter ( PicoBlazeInsNames::INS_RL );
+
     // Extract operands from OP code.
     const unsigned int sX = ( opCode & 0xf00 ) >> 8;
 
@@ -1011,6 +1057,8 @@ inline void PicoBlazeInstructionSet::inst_RL ( const unsigned int opCode )
 
 void PicoBlazeInstructionSet::inst_INPUT ( const unsigned int opCode )
 {
+    instructionEnter ( PicoBlazeInsNames::INS_INPUT );
+
     // Extract operands from OP code.
     const unsigned int sX   = ( opCode & 0xf00 ) >> 8;
     const unsigned int sYPP = ( opCode & 0x0ff );
@@ -1030,6 +1078,8 @@ void PicoBlazeInstructionSet::inst_INPUT ( const unsigned int opCode )
 
 void PicoBlazeInstructionSet::inst_OUTPUT ( const unsigned int opCode )
 {
+    instructionEnter ( PicoBlazeInsNames::INS_OUTPUT );
+
     // Extract operands from OP code.
     const unsigned int sX   = ( opCode & 0xf00 ) >> 8;
     const unsigned int sYPP = ( opCode & 0x0ff );
