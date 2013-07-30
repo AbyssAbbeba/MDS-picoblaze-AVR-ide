@@ -21,7 +21,7 @@
 #include "AVR8Sim.h"
 #include "AVR8BootLoader.h"
 
-AVR8InterruptController * AVR8InterruptController::link ( MCUSim::EventLogger     * eventLogger,
+AVR8InterruptController * AVR8InterruptController::link ( MCUSimEventLogger     * eventLogger,
                                                           AVR8InstructionSet      * instructionSet,
                                                           AVR8ProgramMemory       * programMemory,
                                                           AVR8DataMemory          * dataMemory,
@@ -29,7 +29,7 @@ AVR8InterruptController * AVR8InterruptController::link ( MCUSim::EventLogger   
                                                           AVR8Sim::SleepMode      * sleepMode,
                                                           AVR8BootLoader          * bootLoader )
 {
-    Subsys::link(eventLogger, ID_INTERRUPTS);
+    MCUSimSubsys::link(eventLogger, ID_INTERRUPTS);
 
     m_instructionSet        = instructionSet;
     m_programMemory         = programMemory;
@@ -673,7 +673,7 @@ inline bool AVR8InterruptController::confirmInterrupt ( AVR8InterruptController:
     }
 }
 
-void AVR8InterruptController::reset ( MCUSim::ResetMode mode )
+void AVR8InterruptController::reset ( MCUSimBase::ResetMode mode )
 {
     switch ( mode )
     {

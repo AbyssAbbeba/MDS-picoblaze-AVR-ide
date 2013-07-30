@@ -15,7 +15,7 @@
 
 #include "AVR8Config.h"
 
-AVR8Config::AVR8Config() : MCUSim::Config ( MCUSim::ARCH_AVR8 )
+AVR8Config::AVR8Config() : MCUSimConfig ( MCUSim::ARCH_AVR8 )
 {
     m_isLinked = false;
 

@@ -12,7 +12,7 @@
 \usepackage{wrapfig}
 \usepackage[footnotesize,bf]{caption}
 \usepackage[pdftex,colorlinks=true,linkcolor=blue,urlcolor=blue,pdftitle=MDS manual,pdfsubject=yyy,pdfkeywords=zzz,pdfauthor=Martin Madron,bookmarksopen=false,pdfpagemode=None]{hyperref}
-\setcounter{chapter}{0} 0x0xxxxx
+% \setcounter{chapter}{0} 0x0xxxxx
 %\setcounter{chapter}{-1} 
 \floatstyle{ruled}
 \newfloat{code}{thp}{lop}
@@ -81,7 +81,7 @@
 \maketitle
   
         \begin{center}
-        \includegraphics[scale=0.1]{./Moravia_Microsystems.png}
+        \includegraphics[scale=0.1]{img/Moravia_Microsystems.png}
         \end{center}
 
 
@@ -443,8 +443,8 @@ input parameters.\\
                             {\color{highlight_constant}\verb'0b00100001'}\verb' '\verb'   '{\color{highlight_comment}\verb'; Binary'}\\
                             {\color{highlight_constant}\verb'0b01'}\verb' '\verb'   '{\color{highlight_comment}\verb'; Binary, considers left side of byte zeroes'}\\
                             {\color{highlight_constant}\verb'01b'}\verb' '\verb'   '{\color{highlight_comment}\verb'; Binary, considers right side of byte zeroes'}\\
-            	            {\color{highlight_constant}\verb'\'\s\''}\verb' '\verb'   '{\color{highlight_comment}\verb'; Character'}\\
-            	            {\color{highlight_constant}\verb'\'\n\''}\verb' '\verb'   '{\color{highlight_comment}\verb'; Character'}\\
+%             	            {\color{highlight_constant}\verb'\'\s\''}\verb' '\verb'   '{\color{highlight_comment}\verb'; Character'}\\
+%             	            {\color{highlight_constant}\verb'\'\n\''}\verb' '\verb'   '{\color{highlight_comment}\verb'; Character'}\\
                                     % Caption
                     \caption{Syntax of various constant bases}
                 \end{code}
@@ -476,7 +476,7 @@ input parameters.\\
 				
                         1              &          +           & unary plus sign              & +12                  \\\hline
                         1              &          -           & unary minus sign             & -5                   \\\hline
-                        2              &           \~         & bitwise NOT		 	& ~0a55ah		\\\hline
+                        2              &           \verb'~'         & bitwise NOT		 	& \verb'~'0a55ah		\\\hline
                         2              &           !         & logical NOT		        & !0a55ah		\\\hline
                         3              &           *		& unsigned multiplication	& 11 * 12		\\\hline
                         3              &           /		& unsigned divisiono		& 11 / 12		\\\hline
@@ -492,10 +492,10 @@ input parameters.\\
                         7              &           ==         & equal to                     & 11 == 11             \\\hline
                         7              &           !=         & not equal to                 &  A != B              \\\hline
                         8              &           \&         & bitwise and                  & 48 \& 16              \\\hline
-                        8              &           \|         & bitwise or                   & 370q | 7             \\\hline
+                        8              &           \verb'|'         & bitwise or                   & 370q \verb'|' 7             \\\hline
                         9              &           \&\&       & logical and                  & 48 \&\& 16           \\\hline
                         9              &           ||         & logical or                   & 370q || 7            \\\hline
-                        9              &           \^		& exclusive or			& 00fh ^ 005h		\\\hline
+                        9              &           \verb'^'		& exclusive or			& 00fh \verb'^' 005h		\\\hline
 			\end{tabular}
 			\caption{Expression operators priority}
 		\end{table}
@@ -580,8 +580,8 @@ input parameters.\\
                 Compiler basicaly copies content of included file to line, where the directive is used. Include files can include other files.\\
                 \textbf{EXAMPLE:}\\
                     \begin{code}[h!]
-                        {\color{highlight_directive}\verb'INCLUDE'} & \verb'    ' & {\color{highlight_symbol}\verb' "LCD_characters"'}\\
-                        {\color{highlight_directive}\verb'INCLUDE'} & \verb'    ' & {\color{highlight_symbol}\verb' "LCD_print_routine"'}\\
+                        {\color{highlight_directive}\verb'INCLUDE'} \verb'    ' {\color{highlight_symbol}\verb' "LCD_characters"'}\\
+                        {\color{highlight_directive}\verb'INCLUDE'} \verb'    ' {\color{highlight_symbol}\verb' "LCD_print_routine"'}\\
                         \verb'    '{\color{highlight_comment}\verb' ; this will replace includes with content of "LCD_characters" and "LCD_print_routine"'}\\
                         \caption{INCLUDE directive}
                     \end{code}
@@ -1075,7 +1075,7 @@ input parameters.\\
                                 { \color{highlight_directive} UNDEF }\verb`     `
                                 { \color{highlight_symbol} <symbol> }
                             \end{tabular}
-                    }\\
+                    \\
                     \\
                 \textbf{DESCRIPTION:}\\
                 All symbols can be UNDEFINED. Those symbols will be deleted from symbol table (file .sym) and compiler will not recognize them.\\
@@ -1143,8 +1143,8 @@ input parameters.\\
                                 { \color{highlight_symbol} D,<number> }  \verb`     `   { \color{highlight_comment} ; Size of scratchpad ram }\\
                                 { \color{highlight_directive} LIMIT }  \verb`     ` 
                                 { \color{highlight_symbol} C,<number> }  \verb`     `   { \color{highlight_comment} ; Size of program memory }\\
-                                \caption{All three types of LIMIT directive. First number of registers, second size of scratch pad ram and third size
-                                of program memory}
+%                                 \caption{All three types of LIMIT directive. First number of registers, second size of scratch pad ram and third size
+%                                 of program memory}
                         \end{tabular}
                     }\\
                     \\
@@ -1194,8 +1194,7 @@ input parameters.\\
                             { \color{highlight_comment} ; Printing to code listing turned on (turned on by default)  }\\
                     \end{tabular}
                     }\\
-         
-                \\ {
+                {
                     \texttt{}
                     \begin{tabular}[h!]{llll}
                             { \color{highlight_directive} NOLIST }
@@ -1229,33 +1228,33 @@ input parameters.\\
         \section{Run time directives}
         MDS assembler contains some special directives, which are evaluated during run time sequence. You can use them to evaluate simple conditions in your program.
         Those directives are RTIF, ELSERTIF and ENDRTIF. Here you can see allowed conditions.
-                \begin{table}[h!]
-                        \mysmallfont{}
-                        \centering{}
-                        \begin{tabular}{|l|l}
-                        \hline
-                        Condition operator       &          Example
-                        ==                       &          A ==  B
-                        !=                       &          A !=  B
-                        >                        &          A >   B
-                        <                        &          A <   B
-                        >=                       &          A >=  B
-                        <=                       &          A <=  B
-                        \&                       &          A \&  B
-                        !\&                      &          A !\& B
-                        \end{tabular}
-                        \caption{Usable conditions in RTIF}
-                \end{table}
+%                 \begin{table}[h!]
+%                         \mysmallfont{}
+%                         \centering{}
+%                         \begin{tabular}{|l|l}
+%                         \hline
+%                         Condition operator       &          Example \\
+%                         ==                       &          A ==  B \\
+%                         !=                       &          A !=  B \\
+%                         >                        &          A >   B \\
+%                         <                        &          A <   B \\
+%                         >=                       &          A >=  B \\
+%                         <=                       &          A <=  B \\
+%                         \&                       &          A \&  B \\
+%                         !\&                      &          A !\& B \\
+%                         \end{tabular}
+%                         \caption{Usable conditions in RTIF}
+%                 \end{table}
                        \textbf{SYNTAX:}\\
-                \\ {
-                    \texttt{}
-                        \begin{tabular}[h!]{llll}
-                            { \color{highlight_directive} RT_IF } & \verb'     ' &
-                            { \color{highlight_constant} [<parameter1>]  [,<parameter2>..]\\
-                            { \color{highlight_symbol} <macro source code> }\\
-                            { \color{highlight_directive} ENDM } &  \verb'     ' { \color{highlight_comment} ; end of macro declaration  }
-                        \end{tabular}
-                    }\\
+%                 \\ {
+%                     \texttt{}
+%                         \begin{tabular}[h!]{llll}
+%                             { \color{highlight_directive} RT_IF } & \verb'     ' &
+%                             { \color{highlight_constant} [<parameter1>]  [,<parameter2>..]\\
+%                             { \color{highlight_symbol} <macro source code> }\\
+%                             { \color{highlight_directive} ENDM } &  \verb'     ' { \color{highlight_comment} ; end of macro declaration  }
+%                         \end{tabular}
+%                     }\\
                 \textbf{EXAMPLE:}\\
         \section{Macro Processing}
                 Macro is a sequence of instructions which can be expanded anywhere in the code and for any number of times. That may reduce necessity of
@@ -1269,7 +1268,7 @@ input parameters.\\
                     \texttt{}
                         \begin{tabular}[h!]{llll}
                             { \color{highlight_directive} MACRO } & \verb'     ' &
-                            { \color{highlight_constant} [<parameter1>]  [,<parameter2>..]\\
+                            { \color{highlight_constant} [<parameter1>]  [,<parameter2>..] }\\
                             { \color{highlight_symbol} <macro source code> }\\
                             { \color{highlight_directive} ENDM } &  \verb'     ' { \color{highlight_comment} ; end of macro declaration  }
                         \end{tabular}

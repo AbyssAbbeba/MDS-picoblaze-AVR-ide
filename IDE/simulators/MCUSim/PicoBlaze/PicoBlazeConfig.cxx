@@ -16,7 +16,7 @@
 #include "PicoBlazeConfig.h"
 #include "PicoBlazeSim.h"
 
-PicoBlazeConfig::PicoBlazeConfig() : MCUSim::Config ( MCUSim::ARCH_PICOBLAZE )
+PicoBlazeConfig::PicoBlazeConfig() : MCUSimConfig ( MCUSim::ARCH_PICOBLAZE )
 {
     m_isLinked = false;
 

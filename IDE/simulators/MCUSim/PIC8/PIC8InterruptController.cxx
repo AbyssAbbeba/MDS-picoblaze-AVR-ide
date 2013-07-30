@@ -27,13 +27,13 @@ PIC8InterruptController::~PIC8InterruptController()
 {
 }
 
-PIC8InterruptController * PIC8InterruptController::link ( MCUSim::EventLogger * eventLogger,
+PIC8InterruptController * PIC8InterruptController::link ( MCUSimEventLogger * eventLogger,
                                                           MCUSim::Mode        * processorMode,
                                                           PIC8DataMemory      * dataMemory,
                                                           PIC8InstructionSet  * instructionSet,
                                                           PIC8Stack           * stack )
 {
-    Subsys::link(eventLogger, ID_INTERRUPTS);
+    MCUSimSubsys::link(eventLogger, ID_INTERRUPTS);
     m_processorMode = processorMode;
     m_dataMemory = dataMemory;
     m_instructionSet = instructionSet;
@@ -41,7 +41,7 @@ PIC8InterruptController * PIC8InterruptController::link ( MCUSim::EventLogger * 
     return this;
 }
 
-void PIC8InterruptController::reset ( MCUSim::ResetMode mode )
+void PIC8InterruptController::reset ( MCUSimBase::ResetMode mode )
 {
     switch ( mode )
     {

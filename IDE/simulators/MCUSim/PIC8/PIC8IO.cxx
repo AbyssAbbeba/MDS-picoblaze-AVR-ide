@@ -39,10 +39,10 @@ PIC8IO::PIC8IO()
     m_enabled = false;
 }
 
-PIC8IO * PIC8IO::link ( MCUSim::EventLogger     * eventLogger,
+PIC8IO * PIC8IO::link ( MCUSimEventLogger     * eventLogger,
                         PIC8DataMemory          * dataMemory )
 {
-    IO::link(eventLogger);
+    MCUSimIO::link(eventLogger);
     m_dataMemory = dataMemory;
     return this;
 }
@@ -164,7 +164,7 @@ inline void PIC8IO::portReadWrite ( unsigned int pinIdx,
     m_dataMemory->writeFast(portRegAddr, in);
 }
 
-void PIC8IO::reset ( MCUSim::ResetMode mode )
+void PIC8IO::reset ( MCUSimBase::ResetMode mode )
 {
     switch ( mode )
     {

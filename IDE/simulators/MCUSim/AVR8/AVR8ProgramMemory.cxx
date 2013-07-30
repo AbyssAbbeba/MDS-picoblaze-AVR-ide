@@ -27,10 +27,10 @@ AVR8ProgramMemory::AVR8ProgramMemory()
     m_size = 0;
 }
 
-AVR8ProgramMemory * AVR8ProgramMemory::link ( MCUSim::EventLogger * eventLogger,
+AVR8ProgramMemory * AVR8ProgramMemory::link ( MCUSimEventLogger * eventLogger,
                                               AVR8BootLoader * bootLoader )
 {
-    Memory::link(eventLogger, SP_CODE);
+    MCUSimMemory::link(eventLogger, SP_CODE);
     m_bootLoader = bootLoader;
     return this;
 }
@@ -160,7 +160,7 @@ void AVR8ProgramMemory::resize ( unsigned int newSize )
     m_size = newSize;
 }
 
-void AVR8ProgramMemory::reset ( MCUSim::ResetMode mode )
+void AVR8ProgramMemory::reset ( MCUSimBase::ResetMode mode )
 {
     switch ( mode )
     {

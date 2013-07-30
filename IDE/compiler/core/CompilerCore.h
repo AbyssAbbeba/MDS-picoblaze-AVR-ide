@@ -23,6 +23,7 @@ class CompilerMsgInterface;
 class CompilerOptions;
 class CompilerSemanticAnalyzer;
 class CompilerMsgObserver;
+class CompilerMessageStack;
 class DbgFile;
 class DataFile;
 
@@ -120,6 +121,16 @@ class CompilerCore : public CompilerBase,
 
     ////    Private Operations    ////
     private:
+        /**
+         * @brief
+         * @param[in] location
+         * @param[in] type
+         * @param[in] text
+         */
+        void localMessage ( CompilerSourceLocation location,
+                            MessageType type,
+                            const std::string & text );
+
         /// @name Interface for syntax and/or lexical analyzer
         //@{
             /**
@@ -342,6 +353,11 @@ class CompilerCore : public CompilerBase,
          * @brief
          */
         CompilerOptions * m_opts;
+
+        /**
+         * @brief
+         */
+        CompilerMessageStack * m_messageStack;
 
         /**
          * @brief

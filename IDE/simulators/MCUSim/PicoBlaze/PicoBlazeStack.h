@@ -28,7 +28,7 @@ class DataFile;
  * @ingroup PicoBlaze
  * @class PicoBlazeStack
  */
-class PicoBlazeStack : public MCUSim::Memory
+class PicoBlazeStack : public MCUSimMemory
 {
     ////    Public Datatypes    ////
     public:
@@ -75,7 +75,7 @@ class PicoBlazeStack : public MCUSim::Memory
          * @param[in,out] eventLogger Simulator event observer.
          * @return This object.
          */
-        PicoBlazeStack * link ( MCUSim::EventLogger * eventLogger );
+        PicoBlazeStack * link ( MCUSimEventLogger * eventLogger );
 
         /**
          * @brief Reset the subsystem in the specified mode.
@@ -84,7 +84,7 @@ class PicoBlazeStack : public MCUSim::Memory
          *
          * @param[in] mode There are various modes of reset, e.g. accept new configuration, processor master reset, etc.
          */
-        void reset ( MCUSim::ResetMode mode );
+        void reset ( MCUSimBase::ResetMode mode );
 
         /**
          * @brief Read data directly from the stack bypassing its normal mode of operation.

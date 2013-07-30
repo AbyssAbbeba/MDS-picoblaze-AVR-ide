@@ -40,7 +40,7 @@
  * @ingroup PIC8
  * @class PIC8Config
  */
-class PIC8Config : public MCUSim::Config
+class PIC8Config : public MCUSimConfig
 {
     ////    Constructors and Destructors    ////
     public:

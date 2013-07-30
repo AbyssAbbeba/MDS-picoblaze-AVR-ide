@@ -36,7 +36,7 @@ class PicoBlazeSim;
  * @ingroup PicoBlaze
  * @class PicoBlazeConfig
  */
-class PicoBlazeConfig : public MCUSim::Config
+class PicoBlazeConfig : public MCUSimConfig
 {
     ////    Constructors and Destructors    ////
     public:

@@ -28,7 +28,7 @@ class PIC8InterruptController;
  * @ingroup PIC8
  * @class PIC8ExternalInterrupts
  */
-class PIC8ExternalInterrupts : public MCUSim::Subsys
+class PIC8ExternalInterrupts : public MCUSimSubsys
 {
     ////    Public Static Constants    ////
     public:
@@ -67,7 +67,7 @@ class PIC8ExternalInterrupts : public MCUSim::Subsys
          * @param[in,out] io
          * @return
          */
-        PIC8ExternalInterrupts * link ( MCUSim::EventLogger     * eventLogger,
+        PIC8ExternalInterrupts * link ( MCUSimEventLogger     * eventLogger,
                                         PIC8DataMemory          * dataMemory,
                                         PIC8IO                  * io,
                                         PIC8InterruptController * interruptController );
@@ -76,7 +76,7 @@ class PIC8ExternalInterrupts : public MCUSim::Subsys
          * @brief
          * @param[in] mode
          */
-        void reset ( MCUSim::ResetMode mode );
+        void reset ( MCUSimBase::ResetMode mode );
 
         /**
          * @brief

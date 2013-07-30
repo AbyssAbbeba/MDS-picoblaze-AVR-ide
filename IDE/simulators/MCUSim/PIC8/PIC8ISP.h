@@ -29,7 +29,7 @@ class PIC8ConfigWord;
  * @ingroup PIC8
  * @class PIC8ISP
  */
-class PIC8ISP : public MCUSim::Subsys
+class PIC8ISP : public MCUSimSubsys
 {
     ////    Public Static Constants    ////
     public:
@@ -137,7 +137,7 @@ class PIC8ISP : public MCUSim::Subsys
          * @param[in,out] configWord
          * @return
          */
-        PIC8ISP * link ( MCUSim::EventLogger * eventLogger,
+        PIC8ISP * link ( MCUSimEventLogger * eventLogger,
                          PIC8ProgramMemory   * programMemory,
                          PIC8DataEEPROM      * dataEEPROM,
                          PIC8IO              * io,
@@ -147,7 +147,7 @@ class PIC8ISP : public MCUSim::Subsys
          * @brief
          * @param[in] mode
          */
-        void reset ( MCUSim::ResetMode mode );
+        void reset ( MCUSimBase::ResetMode mode );
 
         /**
          * @brief

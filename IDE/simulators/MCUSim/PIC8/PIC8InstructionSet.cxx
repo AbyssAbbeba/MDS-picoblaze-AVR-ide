@@ -91,7 +91,7 @@ int ( PIC8InstructionSet :: * const PIC8InstructionSet::m_opCodeDispatchTable [ 
     &PIC8InstructionSet::inst_ADDLW,        // opCode = 11 1111 xxxx xxxx
 };
 
-PIC8InstructionSet * PIC8InstructionSet::link ( MCUSim::EventLogger     * eventLogger,
+PIC8InstructionSet * PIC8InstructionSet::link ( MCUSimEventLogger     * eventLogger,
                                                 MCUSim::Mode            * processorMode,
                                                 PIC8ProgramMemory       * programMemory,
                                                 PIC8DataMemory          * dataMemory,
@@ -100,7 +100,7 @@ PIC8InstructionSet * PIC8InstructionSet::link ( MCUSim::EventLogger     * eventL
                                                 PIC8InterruptController * interruptCtrl,
                                                 PIC8WatchDogTimer       * watchDogTimer )
 {
-    MCUSim::CPU::link(eventLogger);
+    MCUSimCPU::link(eventLogger);
 
     m_programMemory = programMemory;
     m_dataMemory = dataMemory;
@@ -113,7 +113,7 @@ PIC8InstructionSet * PIC8InstructionSet::link ( MCUSim::EventLogger     * eventL
     return this;
 }
 
-void PIC8InstructionSet::reset ( MCUSim::ResetMode mode )
+void PIC8InstructionSet::reset ( MCUSimBase::ResetMode mode )
 {
     switch ( mode )
     {

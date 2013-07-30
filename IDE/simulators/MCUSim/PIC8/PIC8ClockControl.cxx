@@ -17,15 +17,15 @@
 
 #include "PIC8ConfigWord.h"
 
-PIC8ClockControl * PIC8ClockControl::link ( MCUSim::EventLogger * eventLogger,
+PIC8ClockControl * PIC8ClockControl::link ( MCUSimEventLogger * eventLogger,
                                             PIC8ConfigWord      * configWord )
 {
-    Clock::link(eventLogger);
+    MCUSimClock::link(eventLogger);
     m_configWord = configWord;
     return this;
 }
 
-void PIC8ClockControl::reset ( MCUSim::ResetMode )
+void PIC8ClockControl::reset ( MCUSimBase::ResetMode )
 {
 }
 

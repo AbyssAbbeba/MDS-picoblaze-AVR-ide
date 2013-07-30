@@ -74,7 +74,7 @@ class McuSimCfgMgr : public QXmlDefaultHandler
          * @return
          */
         bool setupSimulator ( const char * mcuName,
-                              MCUSim::Config & mcuConfig ) const;
+                              MCUSimConfig & mcuConfig ) const;
 
         /**
          * @brief

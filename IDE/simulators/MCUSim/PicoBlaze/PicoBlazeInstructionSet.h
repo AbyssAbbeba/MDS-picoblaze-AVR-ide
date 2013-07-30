@@ -34,7 +34,7 @@ class PicoBlazeInterruptController;
  * @ingroup PicoBlaze
  * @class PicoBlazeInstructionSet
  */
-class PicoBlazeInstructionSet : public MCUSim::CPU
+class PicoBlazeInstructionSet : public MCUSimCPU
 {
     ////    Public Static Constants    ////
     public:
@@ -118,7 +118,7 @@ class PicoBlazeInstructionSet : public MCUSim::CPU
          * @param[in,out] interruptController
          * @return
          */
-        PicoBlazeInstructionSet * link ( MCUSim::EventLogger          * eventLogger,
+        PicoBlazeInstructionSet * link ( MCUSimEventLogger          * eventLogger,
                                          PicoBlazeIO                  * io,
                                          PicoBlazeStack               * stack,
                                          PicoBlazeRegisters           * registers,
@@ -136,7 +136,7 @@ class PicoBlazeInstructionSet : public MCUSim::CPU
          * @brief
          * @param[in] mode
          */
-        void reset ( MCUSim::ResetMode mode );
+        void reset ( MCUSimBase::ResetMode mode );
 
         /**
          * @brief Request program interrupt.

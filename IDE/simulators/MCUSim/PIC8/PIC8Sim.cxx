@@ -36,7 +36,7 @@ PIC8Sim::PIC8Sim()
 {
     m_processorMode = MD_NORMAL;
 
-    m_eventLogger           = new EventLogger();
+    m_eventLogger           = new MCUSimEventLogger();
     m_config                = new PIC8Config();
 
     m_configWord            = new PIC8ConfigWord();
@@ -126,7 +126,7 @@ PIC8Sim::~PIC8Sim()
 
 inline void PIC8Sim::deleteSubSystems()
 {
-    for ( std::vector<Subsys*>::iterator i = m_subSystems.begin();
+    for ( std::vector<MCUSimSubsys*>::iterator i = m_subSystems.begin();
           i != m_subSystems.end();
           i++ )
     {
@@ -136,50 +136,50 @@ inline void PIC8Sim::deleteSubSystems()
 
 inline void PIC8Sim::checkSubSystems() const
 {
-    for ( std::vector<Subsys*>::const_iterator i = m_subSystems.begin();
+    for ( std::vector<MCUSimSubsys*>::const_iterator i = m_subSystems.begin();
           i != m_subSystems.end();
           i++ )
     {
-        assert ( Subsys::ID_INVALID != (*i)->getId() );
+        assert ( MCUSimSubsys::ID_INVALID != (*i)->getId() );
     }
 }
 
-inline void PIC8Sim::regSubSys ( Subsys * subSystem )
+inline void PIC8Sim::regSubSys ( MCUSimSubsys * subSystem )
 {
     m_subSystems.push_back(subSystem);
 }
 
-MCUSim::Subsys * PIC8Sim::getSubsys ( Subsys::SubsysId id )
+MCUSimSubsys * PIC8Sim::getSubsys ( MCUSimSubsys::SubsysId id )
 {
     switch ( id )
     {
-        case Subsys::ID_MEM_CODE:       return m_programMemory;
-        case Subsys::ID_MEM_DATA:       return m_dataMemory;
-        case Subsys::ID_CPU:            return m_instructionSet;
-        case Subsys::ID_FUSES:          return m_configWord;
-        case Subsys::ID_IO:             return m_io;
-        case Subsys::ID_MEM_EEPROM:     return m_dataEEPROM;
-        case Subsys::ID_STACK:          return m_stack;
-        case Subsys::ID_COUNTER_0:      return m_timerCounter0;
-        case Subsys::ID_CLK_CONTROL:    return m_clockControl;
-        case Subsys::ID_WATCHDOG:       return m_watchDogTimer;
-        case Subsys::ID_INTERRUPTS:     return m_interruptController;
-        case Subsys::ID_PRESCALLER:     return m_timer0WdtPrescaller;
-        case Subsys::ID_ISP:            return m_isp;
-        case Subsys::ID_EXT_INT:        return m_externalInterrupts;
+        case MCUSimSubsys::ID_MEM_CODE:       return m_programMemory;
+        case MCUSimSubsys::ID_MEM_DATA:       return m_dataMemory;
+        case MCUSimSubsys::ID_CPU:            return m_instructionSet;
+        case MCUSimSubsys::ID_FUSES:          return m_configWord;
+        case MCUSimSubsys::ID_IO:             return m_io;
+        case MCUSimSubsys::ID_MEM_EEPROM:     return m_dataEEPROM;
+        case MCUSimSubsys::ID_STACK:          return m_stack;
+        case MCUSimSubsys::ID_COUNTER_0:      return m_timerCounter0;
+        case MCUSimSubsys::ID_CLK_CONTROL:    return m_clockControl;
+        case MCUSimSubsys::ID_WATCHDOG:       return m_watchDogTimer;
+        case MCUSimSubsys::ID_INTERRUPTS:     return m_interruptController;
+        case MCUSimSubsys::ID_PRESCALLER:     return m_timer0WdtPrescaller;
+        case MCUSimSubsys::ID_ISP:            return m_isp;
+        case MCUSimSubsys::ID_EXT_INT:        return m_externalInterrupts;
 
-        default:                        return NULL;
+        default:                              return NULL;
     }
 }
 
-MCUSim::Clock::ClockSource & PIC8Sim::getClockSource()
+MCUSimClock::ClockSource & PIC8Sim::getClockSource()
 {
     return m_clockControl->m_clockSource;
 }
 
 void PIC8Sim::reset ( ResetMode mode )
 {
-    for ( std::vector<Subsys*>::iterator i = m_subSystems.begin();
+    for ( std::vector<MCUSimSubsys*>::iterator i = m_subSystems.begin();
           i != m_subSystems.end();
           i++ )
     {
@@ -203,7 +203,7 @@ void PIC8Sim::reset ( ResetMode mode )
     }
 }
 
-MCUSim::Config & PIC8Sim::getConfig()
+MCUSimConfig & PIC8Sim::getConfig()
 {
     return * m_config;
 }
@@ -277,7 +277,7 @@ int PIC8Sim::executeInstruction()
             return 1;
         }
 
-        if ( m_clockControl->m_clockSource.getType() != Clock::ClockSource::TYPE_RC )
+        if ( m_clockControl->m_clockSource.getType() != MCUSimClock::ClockSource::TYPE_RC )
         {
             return ( 1024 / 2 + 1 );
         }
@@ -404,7 +404,7 @@ int PIC8Sim::timeStep ( float timeStep )
             m_clockCycles += ( cycles - allocatedCycles );
         }
 
-        if ( m_clockControl->m_clockSource.getType() != Clock::ClockSource::TYPE_RC )
+        if ( m_clockControl->m_clockSource.getType() != MCUSimClock::ClockSource::TYPE_RC )
         {
             m_clockCycles += ( 1024 / 2 + 1 );
         }

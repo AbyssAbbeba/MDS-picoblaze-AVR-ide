@@ -194,7 +194,7 @@ int ( AVR8InstructionSet :: * const AVR8InstructionSet::m_opCodeDispatchTable_10
     &AVR8InstructionSet::instInvalid        // opCode = 1001 0101 1111 1001
 };
 
-AVR8InstructionSet * AVR8InstructionSet::link ( MCUSim::EventLogger     * eventLogger,
+AVR8InstructionSet * AVR8InstructionSet::link ( MCUSimEventLogger     * eventLogger,
                                                 AVR8ProgramMemory       * programMemory,
                                                 AVR8DataMemory          * dataMemory,
                                                 MCUSim::Mode            * processorMode,
@@ -205,7 +205,7 @@ AVR8InstructionSet * AVR8InstructionSet::link ( MCUSim::EventLogger     * eventL
                                                 AVR8Sim::HaltMode       * haltMode,
                                                 AVR8BootLoader          * bootLoader )
 {
-    MCUSim::CPU::link(eventLogger);
+    MCUSimCPU::link(eventLogger);
 
     m_programMemory = programMemory;
     m_dataMemory = dataMemory;
@@ -220,7 +220,7 @@ AVR8InstructionSet * AVR8InstructionSet::link ( MCUSim::EventLogger     * eventL
     return this;
 }
 
-void AVR8InstructionSet::reset ( MCUSim::ResetMode mode )
+void AVR8InstructionSet::reset ( MCUSimBase::ResetMode mode )
 {
     switch ( mode )
     {

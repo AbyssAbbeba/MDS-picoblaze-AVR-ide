@@ -28,11 +28,11 @@ PIC8DataMemory::PIC8DataMemory()
     m_memory = NULL;
 }
 
-PIC8DataMemory * PIC8DataMemory::link ( MCUSim::EventLogger    * eventLogger,
+PIC8DataMemory * PIC8DataMemory::link ( MCUSimEventLogger    * eventLogger,
                                         PIC8ExternalInterrupts * externalInterrupts,
                                         PIC8InstructionSet     * instructionSet )
 {
-    Memory::link(eventLogger, SP_DATA);
+    MCUSimMemory::link(eventLogger, SP_DATA);
     m_externalInterrupts = externalInterrupts;
     m_instructionSet = instructionSet;
     return this;
@@ -221,7 +221,7 @@ void PIC8DataMemory::resize ( unsigned int newSize )
     m_size = newSize;
 }
 
-void PIC8DataMemory::reset(MCUSim::ResetMode mode)
+void PIC8DataMemory::reset(MCUSimBase::ResetMode mode)
 {
     switch ( mode )
     {

@@ -15,7 +15,7 @@
 
 #include "PIC8Config.h"
 
-PIC8Config::PIC8Config() : MCUSim::Config ( MCUSim::ARCH_PIC8 )
+PIC8Config::PIC8Config() : MCUSimConfig ( MCUSim::ARCH_PIC8 )
 {
     m_isLinked = false;
 

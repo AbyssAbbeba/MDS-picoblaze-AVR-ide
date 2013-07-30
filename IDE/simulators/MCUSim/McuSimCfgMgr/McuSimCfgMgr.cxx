@@ -205,7 +205,7 @@ bool McuSimCfgMgr::startElement ( const QString & namespaceURI,
 }
 
 bool McuSimCfgMgr::setupSimulator ( const char * mcuName,
-                                    MCUSim::Config & mcuConfig ) const
+                                    MCUSimConfig & mcuConfig ) const
 {
     const QString name = mcuName;
     const int size = m_devices.size();

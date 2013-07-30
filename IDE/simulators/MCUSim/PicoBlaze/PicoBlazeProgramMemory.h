@@ -29,7 +29,7 @@ class DataFile;
  * @ingroup PicoBlaze
  * @class PicoBlazeProgramMemory
  */
-class PicoBlazeProgramMemory : public MCUSim::Memory
+class PicoBlazeProgramMemory : public MCUSimMemory
 {
     ////    Public Datatypes    ////
     public:
@@ -68,13 +68,13 @@ class PicoBlazeProgramMemory : public MCUSim::Memory
          * @param[in,out] eventLogger
          * @return
          */
-        PicoBlazeProgramMemory * link ( MCUSim::EventLogger * eventLogger );
+        PicoBlazeProgramMemory * link ( MCUSimEventLogger * eventLogger );
 
         /**
          * @brief
          * @param[in] mode
          */
-        void reset ( MCUSim::ResetMode mode );
+        void reset ( MCUSimBase::ResetMode mode );
 
         /**
          * @brief

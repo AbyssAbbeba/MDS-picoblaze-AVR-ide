@@ -28,9 +28,6 @@ enable_testing()
 # BUILD COMPONENTS IN THE SUBDIRECTORIES
 # ------------------------------------------------------------------------------
 
-# # Tests for AVR8 simulator
-# add_subdirectory ( AVR8 )
-
 # Tests for compiler
 add_subdirectory ( compiler )
 

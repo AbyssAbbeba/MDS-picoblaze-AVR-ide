@@ -26,7 +26,7 @@ class AVR8DataMemory;
  * @ingroup AVR8
  * @class AVR8Usart
  */
-class AVR8Usart : public MCUSim::Subsys
+class AVR8Usart : public MCUSimSubsys
 {
     ////    Public Datatypes    ////
     public:
@@ -53,14 +53,14 @@ class AVR8Usart : public MCUSim::Subsys
          * @param[in,out] dataMemory
          * @return
          */
-        AVR8Usart * link ( MCUSim::EventLogger * eventLogger,
+        AVR8Usart * link ( MCUSimEventLogger * eventLogger,
                            AVR8DataMemory      * dataMemory );
 
         /**
          * @brief
          * @param[in] mode
          */
-        void reset ( MCUSim::ResetMode mode );
+        void reset ( MCUSimBase::ResetMode mode );
 
 //         /**
 //          * @brief

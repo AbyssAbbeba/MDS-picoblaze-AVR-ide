@@ -16,15 +16,15 @@
 #include "AVR8Twi.h"
 #include "AVR8DataMemory.h"
 
-AVR8Twi * AVR8Twi::link ( MCUSim::EventLogger * eventLogger,
+AVR8Twi * AVR8Twi::link ( MCUSimEventLogger * eventLogger,
                           AVR8DataMemory      * dataMemory )
 {
-    Subsys::link(eventLogger, ID_TWI);
+    MCUSimSubsys::link(eventLogger, ID_TWI);
     m_dataMemory = dataMemory;
     return this;
 }
 
-void AVR8Twi::reset ( MCUSim::ResetMode /*mode*/ )
+void AVR8Twi::reset ( MCUSimBase::ResetMode /*mode*/ )
 {
 }
 

@@ -529,8 +529,9 @@ XESC    (\\[0-7]{1,3})|(\\x[0-9A-F]{1,2})|(\\[uU][0-9A-F]{1,8})
 
                         if ( 1 > yylval->array.size )
                         {
-                            yyextra->lexerMessage(yylloc, CompilerBase::MT_ERROR,
-                                QObject::tr("no file name specified").toStdString());
+                            yyextra->lexerMessage ( yylloc,
+                                                    CompilerBase::MT_ERROR,
+                                                    QObject::tr("no file name specified").toStdString() );
                             return INCLUDE;
                         }
                         enlargeStringBuffer(yylval, yyextra);
@@ -540,8 +541,9 @@ XESC    (\\[0-7]{1,3})|(\\x[0-9A-F]{1,2})|(\\[uU][0-9A-F]{1,8})
 
                         if ( strlen(filename) != (size_t) yylval->array.size )
                         {
-                            yyextra->lexerMessage(yylloc, CompilerBase::MT_WARNING,
-                                QObject::tr("file name contains a null character").toStdString() );
+                            yyextra->lexerMessage ( yylloc,
+                                                    CompilerBase::MT_WARNING,
+                                                    QObject::tr("file name contains a null character").toStdString() );
                         }
 
                         FILE * file = yyextra->fileOpen(filename);
