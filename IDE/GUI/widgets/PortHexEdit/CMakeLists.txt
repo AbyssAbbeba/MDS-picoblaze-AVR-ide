@@ -5,7 +5,7 @@
 # ------------------------------------------------------------------------------
 
 # Set project name
-project(StackWidget)
+project(PortHexEdit)
 
 # Set the minimum required version of CMake
 cmake_minimum_required(VERSION 2.8)
@@ -19,12 +19,12 @@ set(CMAKE_VERBOSE_MAKEFILE OFF)
 # here we define SAMPLE_SRCS variable that contains a list of all .cpp files 
 # note that we don't need \ at the end of line
 SET( SAMPLE_SRCS
-	./stackwidget.cpp
+	./porthexedit.cpp
 )
   
 # another list, this time it includes all header files that should be treated with moc
 SET( SAMPLE_MOC_HDRS
-	./stackwidget.h
+	./porthexedit.h
 )
 
 
@@ -42,7 +42,7 @@ find_package(Qt4 REQUIRED)
 # <DEBUG!>
 link_directories(
     "${CMAKE_CURRENT_BINARY_DIR}/../../../simulators/SimControl/"
-	)
+    )
 
 
 #include_directories(

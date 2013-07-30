@@ -1,41 +1,34 @@
-#ifndef STACKWIDGET_H
-#define STACKWIDGET_H
+#ifndef REGISTERSWIDGET_H
+#define REGISTERSWIDGET_H
 
 
-#include <QListWidget>
-#include <QWidget>
-#include <QPushButton>
-#include <QLineEdit>
+#include <QTableWidget>
 #include "../../../simulators/MCUSim/MCUSim.h"
 #include "../../../simulators/SimControl/MCUSimObserver.h"
 #include "../../../simulators/SimControl/MCUSimControl.h"
 
-class StackWidget : public QWidget, public MCUSimObserver
+class RegistersWidget : public QTableWidget, public MCUSimObserver
 {
     Q_OBJECT
     public:
-        StackWidget(QWidget *parent, MCUSimControl * controlUnit, MCUSim::Subsys::SubsysId subsys);
-        virtual ~StackWidget();
+        RegistersWidget(QWidget *parent, MCUSimControl * controlUnit, MCUSim::Subsys::SubsysId subsys);
+        virtual ~RegistersWidget();
 
         void handleEvent(int subsysId, int eventId, int locationOrReason, int detail);
         void deviceChanged();
         void deviceReset();
         void setReadOnly(bool readOnly);
         void fixHeight();
-        
-    private slots:
-        void push();
-        void pop();
 
+    private slots:
+        void updateValue(int row, int column);
+        
     private:
-        QPushButton *btnPush;
-        QPushButton *btnPop;
-        QLineEdit *leInput;
-        QListWidget *lwStack;
         MCUSim::Memory * m_memory;
         MCUSim::Subsys::SubsysId subsys;
         int m_startingAddress;
         int m_size;
+        bool update;
 };
 
 

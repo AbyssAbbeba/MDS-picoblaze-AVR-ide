@@ -13,6 +13,7 @@
 
 
 #include <QtGui>
+#include <QtHelp/QHelpEngineCore>
 //pozdeji zamenit QtGui za mensi celky
 #include "mainform.h"
 #include "../dialogs/projectdlg/projectdlg.h"
@@ -220,6 +221,7 @@ void MainForm::createActions()
     aboutQTAct = new QAction(tr("About QT"), this);
     connect(aboutQTAct, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
     helpActionAct = new QAction(tr("Help"), this);
+    connect(helpActionAct, SIGNAL(triggered()), this, SLOT(help()));
     example1Act = new QAction(tr("Example 1"), this);
     connect(example1Act, SIGNAL(triggered()), this, SLOT(exampleOpen()));
     qDebug() << "MainForm: return CreateActions()";
@@ -653,11 +655,16 @@ void MainForm::compileProject()
     ((QPlainTextEdit*)(wDockManager->getDockWidget(wCompileInfo)->widget()))->clear();
 
     CompilerOptions *options = new CompilerOptions();
-    //QString mainFile = projectMan->getActive()->prjPath.section('/',0, -2) + "/" +  this->projectMan->getActive()->mainFilePath.section('.',0,-2);
-    QString mainFile = this->projectMan->getActive()->mainFilePath.section('.',0,-2);
+    //QString mainFile =  this->projectMan->getActive()->mainFileName.section('.',0,-2);
     options->m_sourceFile = (projectMan->getActive()->prjPath.section('/',0, -2) + "/" +  this->projectMan->getActive()->mainFilePath).toStdString();
+    QDir prjDir(projectMan->getActive()->prjPath.section('/',0, -2));
+    QDir fileDir(QString::fromStdString(options->m_sourceFile).section('/',0, -2));
+
+    QString mainFile = fileDir.relativeFilePath(prjDir.absolutePath()) + "/" +  this->projectMan->getActive()->mainFileName.section('.',0,-2);
+    
     qDebug() << QString::fromStdString(options->m_sourceFile);
     qDebug() << mainFile;
+    
     options->m_symbolTable = (mainFile + ".stbl").toStdString();
     options->m_macroTable = (mainFile + ".mtbl").toStdString();
     options->m_mdsDebugFile = (mainFile + ".dbg").toStdString();
@@ -983,4 +990,20 @@ void MainForm::startProjectConfig(Project *project)
 {
     ProjectConfigDialog_Core *cfgdlg = new ProjectConfigDialog_Core(this, project);
     cfgdlg->exec();
+}
+
+
+void MainForm::help()
+{
+    //QHelpEngineCore helpEngine(":/resources/help/mdshelp.qhc");
+    QProcess *process = new QProcess;
+    QStringList args;
+    args << QLatin1String("-collectionFile")
+        << QLatin1String(":/resources/help/mdshelp.qhc")
+        << QLatin1String("-enableRemoteControl");
+    process->start(QLatin1String("assistant"), args);
+    if (!process->waitForStarted())
+    {
+        return;
+    }
 }

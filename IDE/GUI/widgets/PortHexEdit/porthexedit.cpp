@@ -10,7 +10,7 @@
  *
  */
 
-#include "McuMemoryView.h"
+#include "porthexedit.h"
 
 #include <QGridLayout>
 #include <QDebug>
@@ -19,7 +19,7 @@
 #include "../../../simulators/SimControl/MCUSimControl.h"
 //#include "McuDeviceSpecAVR8.h"
 
-McuMemoryView::McuMemoryView(QWidget * parent, MCUSimControl * controlUnit, MCUSim::Subsys::SubsysId subsys)
+PortHexEdit::PortHexEdit(QWidget * parent, MCUSimControl * controlUnit, MCUSim::Subsys::SubsysId subsys)
 	: QWidget(parent),
 	  m_startingAddress(0),
 	  m_size(0),
@@ -35,7 +35,7 @@ McuMemoryView::McuMemoryView(QWidget * parent, MCUSimControl * controlUnit, MCUS
 
     if ( NULL == controlUnit )
     {
-        qDebug() << "McuMemoryView: controlUnit is NULL";
+        qDebug() << "PortHexEdit: controlUnit is NULL";
     }
 	m_layout = new QHBoxLayout(this);
 	setLayout(m_layout);
@@ -43,13 +43,13 @@ McuMemoryView::McuMemoryView(QWidget * parent, MCUSimControl * controlUnit, MCUS
 	deviceChanged();
 }
 
-McuMemoryView::~McuMemoryView()
+PortHexEdit::~PortHexEdit()
 {
 	deleteHexEdit();
 	delete m_layout;
 }
 
-inline void McuMemoryView::deleteHexEdit()
+inline void PortHexEdit::deleteHexEdit()
 {
 	if ( NULL != m_hexEdit )
     {
@@ -57,7 +57,7 @@ inline void McuMemoryView::deleteHexEdit()
 	}
 }
 
-void McuMemoryView::handleEvent(int subsysId, int eventId, int locationOrReason, int /*detail*/)
+void PortHexEdit::handleEvent(int subsysId, int eventId, int locationOrReason, int /*detail*/)
 {
 	if ( this->subsys != subsysId )
     {
@@ -78,7 +78,7 @@ void McuMemoryView::handleEvent(int subsysId, int eventId, int locationOrReason,
         {
 			uint value;
 			m_memory->directRead(locationOrReason, value);
-            qDebug() << "McuMemoryView: event: mem cell changed to" << value;
+            qDebug() << "PortHexEdit: event: mem cell changed to" << value;
 
  			m_hexEdit->setVal(idx, (char)value);
 // 			m_hexEdit->setHighlighted(idx, true);
@@ -92,19 +92,19 @@ void McuMemoryView::handleEvent(int subsysId, int eventId, int locationOrReason,
 }
 
 
-void McuMemoryView::deviceChanged()
+void PortHexEdit::deviceChanged()
 {
-    qDebug() << "McuMemoryView: deviceChanged()";
+    qDebug() << "PortHexEdit: deviceChanged()";
     if ( NULL == m_simControlUnit )
     {
-        qDebug() << "McuMemoryView: m_simControlUnit is NULL";
+        qDebug() << "PortHexEdit: m_simControlUnit is NULL";
     }
     qDebug() << m_simControlUnit->getSimSubsys(this->subsys);
 	m_memory = dynamic_cast<MCUSim::Memory*>(m_simControlUnit->getSimSubsys(this->subsys));
-    qDebug() << "McuMemoryView: SubsysId " << this->subsys;
+    qDebug() << "PortHexEdit: SubsysId " << this->subsys;
     if ( NULL == m_memory )
     {
-        qDebug() << "McuMemoryView: m_memory is NULL";
+        qDebug() << "PortHexEdit: m_memory is NULL";
     }
 	/*switch ( m_simControlUnit->getArch() )
     {
@@ -128,19 +128,19 @@ void McuMemoryView::deviceChanged()
 	m_layout->addWidget(m_hexEdit);
 
 	deviceReset();
-    qDebug() << "McuMemoryView: return deviceChanged()";
+    qDebug() << "PortHexEdit: return deviceChanged()";
 }
 
 
-void McuMemoryView::changeValue(int address)
+void PortHexEdit::changeValue(int address)
 {
  	m_memory->directWrite(address, m_hexEdit->getVal(address));
 }
 
 
-void McuMemoryView::deviceReset()
+void PortHexEdit::deviceReset()
 {
-    qDebug() << "McuMemoryView: deviceReset()"; 
+    qDebug() << "PortHexEdit: deviceReset()";
 	if ( NULL == m_hexEdit )
     {
 		return;
@@ -156,11 +156,11 @@ void McuMemoryView::deviceReset()
  		m_hexEdit->setVal(i, (char)value);
 	}
     m_hexEdit->fixHeight();
-    qDebug() << "McuMemoryView: return deviceReset()"; 
+    qDebug() << "PortHexEdit: return deviceReset()";
 }
 
 
-void McuMemoryView::setReadOnly(bool readOnly)
+void PortHexEdit::setReadOnly(bool readOnly)
 {
 	if ( NULL == m_hexEdit ) {
 		return;
@@ -175,7 +175,7 @@ void McuMemoryView::setReadOnly(bool readOnly)
 }
 
 
-void McuMemoryView::fixHeight()
+void PortHexEdit::fixHeight()
 {
     m_hexEdit->fixHeight();
 }

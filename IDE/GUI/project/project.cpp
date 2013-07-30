@@ -939,7 +939,7 @@ void Project::setupSim()
 {
     qDebug() << "Project: setupSim()";
     McuSimCfgMgr::getInstance()->openConfigFile(":/resources//xml//mcuspecfile.xml");
-    //"ATmega8A"
+    //"kcpsm3"
     this->m_simControlUnit = new MCUSimControl(architecture.toUtf8().constData());
     qDebug() << architecture;
     qDebug() << "Project: return setupSim()";
@@ -957,6 +957,8 @@ bool Project::start()
     if (langType == LANG_ASM)
     {
         //QString hexPath = prjPath.section('/',0, -2) + "/build/" + mainFileName.section('.',0,-2);
+        //QDir dir(prjPath.section('/',0, -2));
+        //QString hexPath = dir.absoluteFilePath(mainFileName.section('.',0,-2));//prjPath.section('/',0, -2) + "/" + mainFileName.section('.',0,-2);
         QString hexPath = prjPath.section('/',0, -2) + "/" + mainFileName.section('.',0,-2);
         qDebug() << "ASM:" << hexPath;
         std::string stdPath = hexPath.toUtf8().constData();
