@@ -119,25 +119,25 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
     : QWidget(parent)
 {
     qDebug() << "PicoBlazeGrid: PicoBlazeGrid()";
-    this->memRegs = new RegistersWidget(this, controlUnit, MCUSim::Subsys::SubsysId::ID_MEM_REGISTERS);
+    this->memRegs = new RegistersWidget(this, controlUnit, MCUSimSubsys::SubsysId::ID_MEM_REGISTERS);
     this->memRegs->move(10, 25);
     //this->memRegs->fixHeight();
-    this->memScratch = new McuMemoryView(this, controlUnit, MCUSim::Subsys::SubsysId::ID_MEM_DATA);
+    this->memScratch = new McuMemoryView(this, controlUnit, MCUSimSubsys::SubsysId::ID_MEM_DATA);
     this->memScratch->move(220,5);
     this->memScratch->fixHeight();
     //this->memPortsIn = new McuMemoryView(this, controlUnit, MCUSim::Subsys::SubsysId::ID_PLIO);
-    this->memPortsIn = new McuMemoryView(this, controlUnit, MCUSim::Subsys::SubsysId::ID_MEM_DATA);
-    this->memPortsIn->move(440,5);
-    this->memPortsOut = new McuMemoryView(this, controlUnit, MCUSim::Subsys::SubsysId::ID_MEM_DATA);
-    this->memPortsOut->move(440,5);
-    this->memPortsOut->hide();
-    this->memStack = new StackWidget(this, controlUnit, MCUSim::Subsys::SubsysId::ID_STACK);
+    this->memPorts = new PortHexEdit(this, controlUnit, MCUSimSubsys::SubsysId::ID_PLIO);
+    this->memPorts->move(440,5);
+    //this->memPortsOut = new PortHexEdit(this, controlUnit, MCUSim::Subsys::SubsysId::ID_PLIO);
+    //this->memPortsOut->move(440,5);
+    //this->memPortsOut->hide();
+    this->memStack = new StackWidget(this, controlUnit, MCUSimSubsys::SubsysId::ID_STACK);
     this->memStack->move(680, 25);
     this->memStack->setMaximumWidth(100);
     this->memStack->setMaximumHeight(270);
     this->memRegs->show();
     this->memScratch->show();
-    this->memPortsIn->show();
+    this->memPorts->show();
     this->memStack->show();
 
     this->lblRegs = new QLabel("Registers", this);
@@ -158,29 +158,37 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
     this->lblTime->move(800,20);
     this->lblClock = new QLabel("Clock", this);
     this->lblClock->move(800,40);
+    this->lblCarry = new QLabel("Carry", this);
+    this->lblCarry->move(840,60);
+    this->lblZero = new QLabel("Zero", this);
+    this->lblZero->move(880,60);
 
     this->leSP = new QLineEdit(this);
     this->leSP->setMaximumWidth(50);
     this->leSP->setMaximumHeight(17);
     this->leSP->setFont(QFont("Andale Mono", 9));
+    this->leSP->setReadOnly(true);
     this->leSP->move(730, 0);
     this->lePC = new QLineEdit(this);
     this->lePC->setMaximumWidth(50);
     this->lePC->setMaximumHeight(17);
+    this->lePC->setReadOnly(true);
     this->lePC->move(840, 0);
     this->leTime = new QLineEdit(this);
     this->leTime->setMaximumWidth(50);
     this->leTime->setMaximumHeight(17);
+    this->leTime->setReadOnly(true);
     this->leTime->move(840, 20);
     this->leClock = new QLineEdit(this);
     this->leClock->setMaximumWidth(50);
     this->leClock->setMaximumHeight(17);
+    this->leClock->setReadOnly(true);
     this->leClock->move(840, 40);
 
     this->btnIntr = new QPushButton("Interrupts", this);
     this->btnIntr->setMaximumHeight(17);
     this->btnIntr->setMaximumWidth(70);
-    this->btnIntr->move(840, 60);
+    this->btnIntr->move(840, 80);
     this->btnPorts = new QPushButton("Output", this);
     this->btnPorts->setMaximumHeight(17);
     this->btnPorts->setMaximumWidth(50);
@@ -190,6 +198,10 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
     btnFont.setPointSize(9);
     this->btnIntr->setFont(btnFont);
     this->btnPorts->setFont(btnFont);
+
+    //this->leClock->setText(
+    //    (dynamic_cast<MCUSim::Clock*>controlUnit->getSimSubsys(MCUSim::Subsys::SubsysId::ID_CLK_CONTROL))->
+    //);
 
     connect(this->btnPorts, SIGNAL(clicked()), this, SLOT(switchPorts()));
     
@@ -210,16 +222,14 @@ void PicoBlazeGrid::setProjectPath(QString prjPath)
 
 void PicoBlazeGrid::switchPorts()
 {
-    if ( true == this->memPortsIn->isVisible())
+    if ( true == this->memPorts->visibleIn )
     {
-        this->memPortsIn->hide();
-        this->memPortsOut->show();
+        this->memPorts->switchPorts();
         this->btnPorts->setText("Input");
     }
     else
     {
-        this->memPortsOut->hide();
-        this->memPortsIn->show();
+        this->memPorts->switchPorts();
         this->btnPorts->setText("Output");
     }
 }

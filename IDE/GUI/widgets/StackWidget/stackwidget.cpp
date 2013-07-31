@@ -2,7 +2,7 @@
 #include <QtGui>
 #include "../../../simulators/SimControl/MCUSimControl.h"
 
-StackWidget::StackWidget(QWidget *parent, MCUSimControl * controlUnit, MCUSim::Subsys::SubsysId subsys)
+StackWidget::StackWidget(QWidget *parent, MCUSimControl * controlUnit, MCUSimSubsys::SubsysId subsys)
     : QWidget(parent)
 {
     if ( NULL == controlUnit )
@@ -42,12 +42,14 @@ StackWidget::StackWidget(QWidget *parent, MCUSimControl * controlUnit, MCUSim::S
     QFont fontLW = this->lwStack->font();
     fontLW.setPointSize(9);
     this->lwStack->setFont(fontLW);
+
+    this->leInput->setInputMask("Hhhh");
     
     connect(btnPush, SIGNAL(clicked()), this, SLOT(push()));
     connect(btnPop, SIGNAL(clicked()), this, SLOT(pop()));
 
     std::vector<int> mask;
-    mask.push_back(MCUSim::Memory::EVENT_MEM_INF_WR_VAL_CHANGED);
+    mask.push_back(MCUSimMemory::EVENT_MEM_INF_WR_VAL_CHANGED);
     controlUnit->registerObserver(this, subsys, mask);
 
     deviceChanged();
@@ -97,7 +99,7 @@ void StackWidget::handleEvent(int subsysId, int eventId, int locationOrReason, i
 
     switch ( eventId )
     {
-        case MCUSim::Memory::EVENT_MEM_INF_WR_VAL_CHANGED:
+        case MCUSimMemory::EVENT_MEM_INF_WR_VAL_CHANGED:
         {
             uint value;
             m_memory->directRead(locationOrReason, value);
@@ -121,7 +123,7 @@ void StackWidget::deviceChanged()
         qDebug() << "StackWidget: m_simControlUnit is NULL";
     }
     qDebug() << m_simControlUnit->getSimSubsys(this->subsys);
-    m_memory = dynamic_cast<MCUSim::Memory*>(m_simControlUnit->getSimSubsys(this->subsys));
+    m_memory = dynamic_cast<MCUSimMemory*>(m_simControlUnit->getSimSubsys(this->subsys));
     qDebug() << "StackWidget: SubsysId " << this->subsys;
     if ( NULL == m_memory )
     {

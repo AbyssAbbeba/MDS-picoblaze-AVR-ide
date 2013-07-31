@@ -22,17 +22,19 @@ class QHBoxLayout;
 
 #include <cstdint>
 #include <QWidget>
-#include <QHBoxLayout>
+//#include <QHBoxLayout>
 
 #include "../HexEdit/hexedit.h"
 #include "../../../simulators/MCUSim/MCUSim.h"
+#include "../../../simulators/MCUSim/MCUSimSubsys.h"
+#include "../../../simulators/MCUSim/MCUSimPureLogicIO.h"
 #include "../../../simulators/SimControl/MCUSimObserver.h"
 
 class PortHexEdit : public QWidget, public MCUSimObserver
 {
 	Q_OBJECT
     public:
-        PortHexEdit(QWidget * parent, MCUSimControl * controlUnit, MCUSim::Subsys::SubsysId subsys);
+        PortHexEdit(QWidget * parent, MCUSimControl * controlUnit, MCUSimSubsys::SubsysId subsys);
         virtual ~PortHexEdit();
 
         void handleEvent(int subsysId, int eventId, int locationOrReason, int detail);
@@ -40,18 +42,23 @@ class PortHexEdit : public QWidget, public MCUSimObserver
         void deviceReset();
         void setReadOnly(bool readOnly);
         void fixHeight();
+        void switchPorts();
+
+        bool visibleIn;
 
     public slots:
-        void changeValue(int address);
+        void changeValueIn(int address);
+        void changeValueOut(int address);
 
     private:
         int m_startingAddress;
         int m_size;
-        HexEdit * m_hexEdit;
-        MCUSim::Memory * m_memory;
-        MCUSim::Subsys::SubsysId subsys;
+        HexEdit *m_hexEditIn;
+        HexEdit *m_hexEditOut;
+        MCUSimPureLogicIO * m_plio;
+        MCUSimSubsys::SubsysId subsys;
 
-        QHBoxLayout * m_layout;
+        //QHBoxLayout * m_layout;
 
         inline void deleteHexEdit();
 };
