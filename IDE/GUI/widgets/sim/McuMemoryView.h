@@ -25,12 +25,13 @@ class QHBoxLayout;
 #include <QHBoxLayout>
 
 #include "../../../simulators/MCUSim/MCUSim.h"
+#include "../../../simulators/MCUSim/MCUSimSubsys.h"
 #include "../../../simulators/SimControl/MCUSimObserver.h"
 
 class McuMemoryView : public QWidget, public MCUSimObserver  {
 	Q_OBJECT
 public:
-	McuMemoryView(QWidget * parent, MCUSimControl * controlUnit, MCUSim::Subsys::SubsysId subsys);
+	McuMemoryView(QWidget * parent, MCUSimControl * controlUnit, MCUSimSubsys::SubsysId subsys);
 	virtual ~McuMemoryView();
 
 	void handleEvent(int subsysId, int eventId, int locationOrReason, int detail);
@@ -46,8 +47,8 @@ private:
 	int m_startingAddress;
 	int m_size;
 	HexEdit * m_hexEdit;
-	MCUSim::Memory * m_memory;
-    MCUSim::Subsys::SubsysId subsys;
+	MCUSimMemory * m_memory;
+    MCUSimSubsys::SubsysId subsys;
 
 	QHBoxLayout * m_layout;
 

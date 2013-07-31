@@ -981,7 +981,7 @@ bool Project::start()
     int line = m_simControlUnit->getLineNumber(&fileName) - 1;
     QString fileNameQStr = QString::fromStdString(fileName);
     qDebug() << "Project: current line number:" << line << "in file" << fileNameQStr;
-    qDebug() << "Project: program counter value:" << dynamic_cast<MCUSim::CPU*>(m_simControlUnit->getSimSubsys(MCUSim::Subsys::ID_CPU))->getProgramCounter();
+    qDebug() << "Project: program counter value:" << dynamic_cast<MCUSimCPU*>(m_simControlUnit->getSimSubsys(MCUSimSubsys::ID_CPU))->getProgramCounter();
     emit highlightLine(fileNameQStr, line, currLineColor, origCurrLineCol);
     //parentWindow->getWDockManager()->setCentralByName(fileNameQStr);
     //parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(line, currLineColor, origCurrLineCol);
@@ -1035,7 +1035,7 @@ void Project::step()
     int line = m_simControlUnit->getLineNumber(&fileName) - 1;
     QString fileNameQStr = QString::fromStdString(fileName);
     qDebug() << "Project: current line number:" << line << "in file" << fileNameQStr;
-    qDebug() << "Project: program counter value:" << dynamic_cast<MCUSim::CPU*>(m_simControlUnit->getSimSubsys(MCUSim::Subsys::ID_CPU))->getProgramCounter();
+    qDebug() << "Project: program counter value:" << dynamic_cast<MCUSimCPU*>(m_simControlUnit->getSimSubsys(MCUSimSubsys::ID_CPU))->getProgramCounter();
     //parentWindow->getWDockManager()->setCentralByName(fileNameQStr);
     emit highlightLine(fileNameQStr, line, currLineColor, origCurrLineCol);
     emit highlightLine(fileNameQStr, prevLine, prevLineColor, origPrevLineCol);

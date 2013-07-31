@@ -30,6 +30,7 @@
 #include "../../../simulators/SimControl/MCUSimControl.h"
 #include "../StackWidget/stackwidget.h"
 #include "../RegistersWidget/registerswidget.h"
+#include "../PortHexEdit/porthexedit.h"
 
 
 class MCUSimControl;
@@ -58,8 +59,7 @@ class PicoBlazeGrid : public QWidget
         QString projectPath;
         RegistersWidget *memRegs;
         McuMemoryView *memScratch;
-        McuMemoryView *memPortsIn;
-        McuMemoryView *memPortsOut;
+        PortHexEdit *memPorts;
         StackWidget *memStack;
 
         QLabel *lblRegs;
@@ -71,6 +71,8 @@ class PicoBlazeGrid : public QWidget
         QLabel *lblPC;
         QLabel *lblTime;
         QLabel *lblClock;
+        QLabel *lblCarry;
+        QLabel *lblZero;
 
         QLineEdit *leSP;
         QLineEdit *lePC;

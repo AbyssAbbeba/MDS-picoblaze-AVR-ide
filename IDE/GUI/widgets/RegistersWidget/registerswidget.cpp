@@ -1,7 +1,7 @@
 #include <QtGui>
 #include "registerswidget.h"
 
-RegistersWidget::RegistersWidget(QWidget *parent, MCUSimControl * controlUnit, MCUSim::Subsys::SubsysId subsys)
+RegistersWidget::RegistersWidget(QWidget *parent, MCUSimControl * controlUnit, MCUSimSubsys::SubsysId subsys)
     : QTableWidget(parent)
 {
     if ( NULL == controlUnit )
@@ -29,7 +29,7 @@ RegistersWidget::RegistersWidget(QWidget *parent, MCUSimControl * controlUnit, M
     this->update = false;
     this->subsys = subsys;
     std::vector<int> mask;
-    mask.push_back(MCUSim::Memory::EVENT_MEM_INF_WR_VAL_CHANGED);
+    mask.push_back(MCUSimMemory::EVENT_MEM_INF_WR_VAL_CHANGED);
     controlUnit->registerObserver(this, subsys, mask);
 
 
@@ -61,7 +61,7 @@ void RegistersWidget::handleEvent(int subsysId, int eventId, int locationOrReaso
 
     switch ( eventId )
     {
-        case MCUSim::Memory::EVENT_MEM_INF_WR_VAL_CHANGED:
+        case MCUSimMemory::EVENT_MEM_INF_WR_VAL_CHANGED:
         {
             uint value;
             m_memory->directRead(locationOrReason, value);
@@ -95,7 +95,7 @@ void RegistersWidget::deviceChanged()
         qDebug() << "RegistersWidget: m_simControlUnit is NULL";
     }
     qDebug() << m_simControlUnit->getSimSubsys(this->subsys);
-    m_memory = dynamic_cast<MCUSim::Memory*>(m_simControlUnit->getSimSubsys(this->subsys));
+    m_memory = dynamic_cast<MCUSimMemory*>(m_simControlUnit->getSimSubsys(this->subsys));
     qDebug() << "RegistersWidget: SubsysId " << this->subsys;
     if ( NULL == m_memory )
     {
@@ -154,10 +154,6 @@ void RegistersWidget::deviceReset()
 
         this->setRowHeight(i, 17);
     }
-    /*for (int i = 0; i < 6; i++)
-    {
-        this->setColumnWidth(i, 20);
-    }*/
 }
 
 
@@ -175,12 +171,39 @@ void RegistersWidget::updateValue(int row, int column)
         if ( 0 == (column+1)%3 )
         {
             int value = this->item(row, column)->text().toInt(0, 16);
-            this->item(row, column-1)->setText(QString::number(value, 10));
+            if ( 255 < value )
+            {
+                this->item(row, column-1)->setText(QString::number(255, 10));
+                this->item(row, column)->setText(QString::number(255, 16).toUpper());
+            }
+            else if ( 0 > value )
+            {
+                this->item(row, column-1)->setText(QString::number(0, 10));
+                this->item(row, column)->setText(QString::number(0, 16).toUpper());
+            }
+            else
+            {
+                this->item(row, column-1)->setText(QString::number(value, 10));
+                this->item(row, column)->setText(QString::number(value, 16).toUpper());
+            }
         }
         else
         {
             int value = this->item(row, column)->text().toInt(0, 10);
-            this->item(row, column+1)->setText(QString::number(value, 16).toUpper());
+            if ( 255 < value )
+            {
+                this->item(row, column)->setText(QString::number(255, 10));
+                this->item(row, column+1)->setText(QString::number(255, 16).toUpper());
+            }
+            else if ( 0 > value )
+            {
+                this->item(row, column)->setText(QString::number(0, 10));
+                this->item(row, column+1)->setText(QString::number(0, 16).toUpper());
+            }
+            else
+            {
+                this->item(row, column+1)->setText(QString::number(value, 16).toUpper());
+            }
         }
         this->update = false;
     }

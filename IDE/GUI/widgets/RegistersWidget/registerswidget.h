@@ -4,6 +4,7 @@
 
 #include <QTableWidget>
 #include "../../../simulators/MCUSim/MCUSim.h"
+#include "../../../simulators/MCUSim/MCUSimSubsys.h"
 #include "../../../simulators/SimControl/MCUSimObserver.h"
 #include "../../../simulators/SimControl/MCUSimControl.h"
 
@@ -11,7 +12,7 @@ class RegistersWidget : public QTableWidget, public MCUSimObserver
 {
     Q_OBJECT
     public:
-        RegistersWidget(QWidget *parent, MCUSimControl * controlUnit, MCUSim::Subsys::SubsysId subsys);
+        RegistersWidget(QWidget *parent, MCUSimControl * controlUnit, MCUSimSubsys::SubsysId subsys);
         virtual ~RegistersWidget();
 
         void handleEvent(int subsysId, int eventId, int locationOrReason, int detail);
@@ -24,8 +25,8 @@ class RegistersWidget : public QTableWidget, public MCUSimObserver
         void updateValue(int row, int column);
         
     private:
-        MCUSim::Memory * m_memory;
-        MCUSim::Subsys::SubsysId subsys;
+        MCUSimMemory * m_memory;
+        MCUSimSubsys::SubsysId subsys;
         int m_startingAddress;
         int m_size;
         bool update;
