@@ -161,6 +161,12 @@ class PicoBlazeSim : public MCUSim
 
         /**
          * @brief
+         * @param[in] subSystem
+         */
+        inline void unregSubSys ( const MCUSimSubsys * subSystem );
+
+        /**
+         * @brief
          */
         inline void resetToInitialValues();
 

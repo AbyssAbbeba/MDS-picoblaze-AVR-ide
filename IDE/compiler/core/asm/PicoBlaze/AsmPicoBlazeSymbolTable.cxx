@@ -204,6 +204,10 @@ void AsmPicoBlazeSymbolTable::resolveSymbols ( CompilerExpr * expr,
                 }
             }
         }
+        else if ( CompilerValue::TYPE_EXPR == value->m_type )
+        {
+            resolveSymbols(value->m_data.m_expr, codePointer);
+        }
 
         value = &(expr->m_rValue);
     }

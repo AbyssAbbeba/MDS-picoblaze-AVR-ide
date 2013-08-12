@@ -95,6 +95,20 @@ inline void PicoBlazeSim::regSubSys ( MCUSimSubsys * subSystem )
     m_subSystems.push_back(subSystem);
 }
 
+
+inline void PicoBlazeSim::unregSubSys ( const MCUSimSubsys * subSystem )
+{
+    for ( std::vector<MCUSimSubsys*>::iterator it = m_subSystems.begin();
+          it != m_subSystems.end();
+          it++ )
+    {
+        if ( subSystem == *it )
+        {
+            m_subSystems.erase(it);
+        }
+    }
+}
+
 MCUSimSubsys * PicoBlazeSim::getSubsys ( MCUSimSubsys::SubsysId id )
 {
     switch ( id )
@@ -188,8 +202,12 @@ inline void PicoBlazeSim::loadConfig()
             default:
                 break;
         }
+
         m_instructionSet->adapt(origInstructionSet);
         delete origInstructionSet;
+
+        regSubSys(m_instructionSet);
+        unregSubSys(origInstructionSet);
     }
 }
 
