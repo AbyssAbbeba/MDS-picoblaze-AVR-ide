@@ -1309,75 +1309,62 @@ input parameters.\\
 
         \section{Run time directives}
         MDS assembler contains some special directives, which are evaluated during run time sequence. You can use them to evaluate simple conditions in your program.
-<<<<<<< HEAD
-        Those directives are RT-IF, ELSERTIF and ENDRTIF. Here you can see allowed conditions.
-                \begin{table}[h!]
-                        \mysmallfont{}
-                        \centering{}
-                        \begin{tabular}{|l|l}
-                        \hline
-                        Condition operator       &          Example  \\
-                        ==                       &          A ==  B  \\
-                        !=                       &          A !=  B  \\
-                        >                        &          A >   B  \\
-                        <                        &          A <   B  \\
-                        >=                       &          A >=  B  \\
-                        <=                       &          A <=  B  \\
-                        \&                       &          A \&  B  \\
-                        !\&                      &          A !\& B
-                        \end{tabular}
-                        \caption{Usable conditions with RTIF}
-                \end{table}
+        Those directives are RT_IF, RT_ELSEIF, RT_WHILE, RT_FOR.\\ Here you can see allowed conditions.
+            \begin{table}[h!]
+                    \mysmallfont{}
+                    \centering{}
+                    \begin{tabular}{|l|l}
+                    \hline
+                    Condition operator       &          Example  \\
+                    ==                       &          A ==  B  \\
+                    !=                       &          A !=  B  \\
+                    >                        &          A >   B  \\
+                    <                        &          A <   B  \\
+                    >=                       &          A >=  B  \\
+                    <=                       &          A <=  B  \\
+                    \&                       &          A \&  B  \\
+                    !\&                      &          A !\& B
+                    \end{tabular}
+                    \caption{Allowed conditions with RT_IF, RT_WHILE}
+            \end{table}
+            
+                \subsection{RT_IF}
                 \textbf{SYNTAX:}\\
                 \\ {
                     \texttt{}
                         \begin{tabular}[h!]{llll}
-                            { \color{highlight_directive} RT-IF } & \verb'     ' &
+                            { \color{highlight_directive} RT_IF } & \verb'     ' &
                             { \color{highlight_constant} <condition> }\\
                             { \color{highlight_symbol} <code> }\\
-                            { \color{highlight_directive} ENDRTIF } 
+                            { \color{highlight_directive} RT_ELSEIF } & \verb'     ' &
+                            { \color{highlight_constant} <condition> }\\
+                            { \color{highlight_symbol} <code> }\\
+                            { \color{highlight_directive} RT_ELSE } & \verb'     ' &
+                            { \color{highlight_symbol} <code> }\\
+                            { \color{highlight_directive} RT_ENDIF }
                         \end{tabular}
                     }\\
-=======
-        Those directives are RTIF, ELSERTIF and ENDRTIF. Here you can see allowed conditions.
-%                 \begin{table}[h!]
-%                         \mysmallfont{}
-%                         \centering{}
-%                         \begin{tabular}{|l|l}
-%                         \hline
-%                         Condition operator       &          Example \\
-%                         ==                       &          A ==  B \\
-%                         !=                       &          A !=  B \\
-%                         >                        &          A >   B \\
-%                         <                        &          A <   B \\
-%                         >=                       &          A >=  B \\
-%                         <=                       &          A <=  B \\
-%                         \&                       &          A \&  B \\
-%                         !\&                      &          A !\& B \\
-%                         \end{tabular}
-%                         \caption{Usable conditions in RTIF}
-%                 \end{table}
-                       \textbf{SYNTAX:}\\
-%                 \\ {
-%                     \texttt{}
-%                         \begin{tabular}[h!]{llll}
-%                             { \color{highlight_directive} RT_IF } & \verb'     ' &
-%                             { \color{highlight_constant} [<parameter1>]  [,<parameter2>..]\\
-%                             { \color{highlight_symbol} <macro source code> }\\
-%                             { \color{highlight_directive} ENDM } &  \verb'     ' { \color{highlight_comment} ; end of macro declaration  }
-%                         \end{tabular}
-%                     }\\
->>>>>>> 076069953c822134d74d02270d5581df5770f4ce
+                    
+                \\ {
+                    \texttt{}
+                        \begin{tabular}[h!]{llll}
+                            { \color{highlight_directive} RT_IF } & \verb'     ' &
+                            { \color{highlight_constant} [<parameter1>]  [,<parameter2>..]\\
+                            { \color{highlight_symbol} <macro source code> }\\
+                            { \color{highlight_directive} ENDM } &  \verb'     ' { \color{highlight_comment} ; end of macro declaration  }
+                        \end{tabular}
+                    }\\
                 \textbf{EXAMPLE:}\\
                         \begin{code}[h!]
-                                { \color{highlight_directive} RT-IF }
+                                { \color{highlight_directive} RT_IF }
                                 { \color{highlight_constant}   s0 == 10 }\\
                                 { \color{highlight_instruction}   LOAD  s0, \#10h }\\
                                 { \color{highlight_comment} ; ELSERT-IF} { \color{highlight_constant}   s0 >= 100 }\\
                                 { \color{highlight_instruction}   SR0   s0 }\\
                             \caption{Run time if example}
                         \end{code}
-
+                \subsection{RT_WHILE}
+                \subsection{RT_FOR}
         \section{Macro Processing}
                 Macro is a sequence of instructions which can be expanded anywhere in the code and for any number of times. That may reduce necessity of
                 repeating code fragments as well as source code size and make the solved task easier to comprehend and solve. Unlike subprograms macros do
