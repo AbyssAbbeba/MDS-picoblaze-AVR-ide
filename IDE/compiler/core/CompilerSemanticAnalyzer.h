@@ -21,6 +21,9 @@
 #include "CompilerCore.h"
 #include "CompilerOptions.h"
 
+// Standard header files.
+#include <string>
+
 /**
  * @brief
  * @ingroup Compiler
@@ -58,6 +61,12 @@ class CompilerSemanticAnalyzer
          * @param[in,out] codeTree
          */
         virtual void process ( CompilerStatement * codeTree ) = 0;
+
+        /**
+         * @brief
+         * @param[in] deviceName
+         */
+        virtual void setDevice ( const std::string & deviceName ) = 0;
 
     ////    Protected Attributes    ////
     protected:

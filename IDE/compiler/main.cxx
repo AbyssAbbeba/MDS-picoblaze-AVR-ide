@@ -172,7 +172,7 @@ CompilerBase::TargetArch whichArch ( const char * optarg )
     }
     else if ( 0 == strcmp(optarg, "PicoBlaze") )
     {
-        return CompilerBase::TA_KCPSM3;
+        return CompilerBase::TA_PICOBLAZE;
     }
     else
     {

@@ -12,7 +12,11 @@
 \usepackage{wrapfig}
 \usepackage[footnotesize,bf]{caption}
 \usepackage[pdftex,colorlinks=true,linkcolor=blue,urlcolor=blue,pdftitle=MDS manual,pdfsubject=yyy,pdfkeywords=zzz,pdfauthor=Martin Madron,bookmarksopen=false,pdfpagemode=None]{hyperref}
+<<<<<<< HEAD
+%\setcounter{chapter}{0} 0x0xxxxx
+=======
 % \setcounter{chapter}{0} 0x0xxxxx
+>>>>>>> 076069953c822134d74d02270d5581df5770f4ce
 %\setcounter{chapter}{-1} 
 \floatstyle{ruled}
 \newfloat{code}{thp}{lop}
@@ -443,9 +447,14 @@ input parameters.\\
                             {\color{highlight_constant}\verb'0b00100001'}\verb' '\verb'   '{\color{highlight_comment}\verb'; Binary'}\\
                             {\color{highlight_constant}\verb'0b01'}\verb' '\verb'   '{\color{highlight_comment}\verb'; Binary, considers left side of byte zeroes'}\\
                             {\color{highlight_constant}\verb'01b'}\verb' '\verb'   '{\color{highlight_comment}\verb'; Binary, considers right side of byte zeroes'}\\
+<<<<<<< HEAD
+                            '\\\\s' ; Character
+                            '\\\\n' ; Character
+=======
 %             	            {\color{highlight_constant}\verb'\'\s\''}\verb' '\verb'   '{\color{highlight_comment}\verb'; Character'}\\
 %             	            {\color{highlight_constant}\verb'\'\n\''}\verb' '\verb'   '{\color{highlight_comment}\verb'; Character'}\\
                                     % Caption
+>>>>>>> 076069953c822134d74d02270d5581df5770f4ce
                     \caption{Syntax of various constant bases}
                 \end{code}
                 When you want to say to compiler, that you are using constant, you must add "\#" before.
@@ -516,27 +525,27 @@ input parameters.\\
                                 \hline
                             \textbf{Symbol} & \textbf{Value} \\
                                 \hline
-                                s0      & 000h \\
-                                s1      & 001h  \\
-                               s2      & 002h \\
-                               s3      & 003h  \\
-                               s4      & 004h \\
-                               s5      & 005h  \\
-                               s6      & 006h \\
-                               s7      & 007h  \\
-                               s8      & 008h \\
-                               s9      & 009h  \\
-                               sA      & 00Ah \\
-                               sB      & 00Bh  \\
-                               sC      & 00Ch \\
-                               sD      & 00Dh  \\
-                               sE      & 00Eh \\
-                               sF      & 00Fh  \\
+                                s0      & 000h \\\hline
+                                s1      & 001h  \\\hline
+                               s2      & 002h \\\hline
+                               s3      & 003h  \\\hline
+                               s4      & 004h \\\hline
+                               s5      & 005h  \\\hline
+                               s6      & 006h \\\hline
+                               s7      & 007h  \\\hline
+                               s8      & 008h \\\hline
+                               s9      & 009h  \\\hline
+                               sA      & 00Ah \\\hline
+                               sB      & 00Bh  \\\hline
+                               sC      & 00Ch \\\hline
+                               sD      & 00Dh  \\\hline
+                               sE      & 00Eh \\\hline
+                               sF      & 00Fh  \\\hline
                                 \hline
                         \end{tabular}
                 \end{table}
 
-                
+
         \section{Assembler directives}
         Assembly directives are instructions
         that are executed by an assembler at assembly time,
@@ -1069,7 +1078,7 @@ input parameters.\\
                                 { \color{highlight_directive} UNDEFINE }\verb`     `
                                 { \color{highlight_symbol} <symbol> } 
                             \end{tabular}
-                    }\\
+                    }\\{
                         \texttt{}
                             \begin{tabular}[h!]{llll}
                                 { \color{highlight_directive} UNDEF }\verb`     `
@@ -1135,7 +1144,7 @@ input parameters.\\
                 \subsection{LIMIT}
                 \textbf{SYNTAX:}\\
                 \\ {
-                        \texttt{}
+                        \texttt{All three types of LIMIT directive. First number of registers, second size of scratch pad ram and third size of program memory}
                         \begin{tabular}[h!]{llll}
                                 { \color{highlight_directive} LIMIT }   \verb`     ` 
                                 { \color{highlight_symbol} R,<number> }  \verb`     `   { \color{highlight_comment} ; Number of registers }\\
@@ -1143,8 +1152,11 @@ input parameters.\\
                                 { \color{highlight_symbol} D,<number> }  \verb`     `   { \color{highlight_comment} ; Size of scratchpad ram }\\
                                 { \color{highlight_directive} LIMIT }  \verb`     ` 
                                 { \color{highlight_symbol} C,<number> }  \verb`     `   { \color{highlight_comment} ; Size of program memory }\\
+<<<<<<< HEAD
+=======
 %                                 \caption{All three types of LIMIT directive. First number of registers, second size of scratch pad ram and third size
 %                                 of program memory}
+>>>>>>> 076069953c822134d74d02270d5581df5770f4ce
                         \end{tabular}
                     }\\
                     \\
@@ -1194,6 +1206,10 @@ input parameters.\\
                             { \color{highlight_comment} ; Printing to code listing turned on (turned on by default)  }\\
                     \end{tabular}
                     }\\
+<<<<<<< HEAD
+         
+=======
+>>>>>>> 076069953c822134d74d02270d5581df5770f4ce
                 {
                     \texttt{}
                     \begin{tabular}[h!]{llll}
@@ -1204,6 +1220,72 @@ input parameters.\\
                     \\
                 \textbf{DESCRIPTION:}\\
                 You can turn on/off printing to code listing in some parts of your code.\\
+
+                \subsection{TITLE}
+                \textbf{SYNTAX:}\\
+                 {
+                    \texttt{}
+                    \begin{tabular}[h!]{llll}
+                        { \color{highlight_directive} TITLE }\verb`       `{ \color{highlight_string} <"title text"> }
+                    \end{tabular}
+                    }\\
+                    \\
+                \textbf{DESCRIPTION:}\\
+                This will put title into coresponding line in codelisting.  \\
+                \textbf{EXAMPLE:}\\
+                        \begin{code}[h!]
+                            {\color{highlight_directive}\verb'TITLE'}\verb'    '
+                            {\color{highlight_constant}\verb'"Text, that will show up in the codelisting"'}
+                        \end{code}
+                        
+                \subsection{MESSAGE}
+                 {
+                    \texttt{}
+                    \begin{tabular}[h!]{llll}
+                        { \color{highlight_directive} MESSAGE }\verb`       `{ \color{highlight_string} <"message text"> }
+                    \end{tabular}
+                    }\\
+                    \\
+                \textbf{DESCRIPTION:}\\
+                You can define message, that will show up after compilation.  \\
+                \textbf{EXAMPLE:}\\
+                        \begin{code}[h!]
+                            {\color{highlight_directive}\verb'MESSAGE'}\verb'    '
+                            {\color{highlight_constant}\verb'"Text, that will show up in the codelisting"'}
+                        \end{code}
+                        
+                \subsection{ERROR}
+                \textbf{SYNTAX:}\\
+                \\ {
+                    \texttt{}
+                    \begin{tabular}[h!]{llll}
+                        { \color{highlight_directive} ERROR }\verb`       `{ \color{highlight_string} <"error text"> }
+                    \end{tabular}
+                    }\\
+                    \\
+                \textbf{DESCRIPTION:}\\
+                You can define an error report, which aborts compilation, when is executed.  \\
+                \textbf{EXAMPLE:}\\
+                        \begin{code}[h!]
+                            {\color{highlight_directive}\verb'ERROR'}\verb'    '
+                            {\color{highlight_constant}\verb'"Text, that will show up in the codelisting"'}
+                        \end{code}
+                        
+                \subsection{WARNING}
+                 {
+                    \texttt{}
+                    \begin{tabular}[h!]{llll}
+                        { \color{highlight_directive} WARNING }\verb`       `{ \color{highlight_string} <"warning text"> }
+                    \end{tabular}
+                    }\\
+                    \\
+                \textbf{DESCRIPTION:}\\
+                This will put title into coresponding line in codelisting.  \\
+                \textbf{EXAMPLE:}\\
+                        \begin{code}[h!]
+                            {\color{highlight_directive}\verb'WARNING'}\verb'    '
+                            {\color{highlight_constant}\verb'"Text, that will show up in the codelisting"'}
+                        \end{code}
 
                 \subsection{END}
                 \textbf{SYNTAX:}\\
@@ -1227,6 +1309,36 @@ input parameters.\\
 
         \section{Run time directives}
         MDS assembler contains some special directives, which are evaluated during run time sequence. You can use them to evaluate simple conditions in your program.
+<<<<<<< HEAD
+        Those directives are RT-IF, ELSERTIF and ENDRTIF. Here you can see allowed conditions.
+                \begin{table}[h!]
+                        \mysmallfont{}
+                        \centering{}
+                        \begin{tabular}{|l|l}
+                        \hline
+                        Condition operator       &          Example  \\
+                        ==                       &          A ==  B  \\
+                        !=                       &          A !=  B  \\
+                        >                        &          A >   B  \\
+                        <                        &          A <   B  \\
+                        >=                       &          A >=  B  \\
+                        <=                       &          A <=  B  \\
+                        \&                       &          A \&  B  \\
+                        !\&                      &          A !\& B
+                        \end{tabular}
+                        \caption{Usable conditions with RTIF}
+                \end{table}
+                \textbf{SYNTAX:}\\
+                \\ {
+                    \texttt{}
+                        \begin{tabular}[h!]{llll}
+                            { \color{highlight_directive} RT-IF } & \verb'     ' &
+                            { \color{highlight_constant} <condition> }\\
+                            { \color{highlight_symbol} <code> }\\
+                            { \color{highlight_directive} ENDRTIF } 
+                        \end{tabular}
+                    }\\
+=======
         Those directives are RTIF, ELSERTIF and ENDRTIF. Here you can see allowed conditions.
 %                 \begin{table}[h!]
 %                         \mysmallfont{}
@@ -1255,7 +1367,17 @@ input parameters.\\
 %                             { \color{highlight_directive} ENDM } &  \verb'     ' { \color{highlight_comment} ; end of macro declaration  }
 %                         \end{tabular}
 %                     }\\
+>>>>>>> 076069953c822134d74d02270d5581df5770f4ce
                 \textbf{EXAMPLE:}\\
+                        \begin{code}[h!]
+                                { \color{highlight_directive} RT-IF }
+                                { \color{highlight_constant}   s0 == 10 }\\
+                                { \color{highlight_instruction}   LOAD  s0, \#10h }\\
+                                { \color{highlight_comment} ; ELSERT-IF} { \color{highlight_constant}   s0 >= 100 }\\
+                                { \color{highlight_instruction}   SR0   s0 }\\
+                            \caption{Run time if example}
+                        \end{code}
+
         \section{Macro Processing}
                 Macro is a sequence of instructions which can be expanded anywhere in the code and for any number of times. That may reduce necessity of
                 repeating code fragments as well as source code size and make the solved task easier to comprehend and solve. Unlike subprograms macros do
@@ -1471,6 +1593,132 @@ input parameters.\\
 		
 		\clearpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        \section{ERROR and WARNING messages}
+        This chapter lists the error messages generated by MDS. The following sections
+        include a brief description of the possible error messages along with a
+        description of the error and any corrective actions you can take to avoid or
+        eliminate the error. Errors terminate the assembly and generate a message that is displayed on
+        the console. Warnings generate a message in the assembly listing file but do not terminate the assembly.
+                \subsection{ERROR list}
+                    \begin{description}
+                    \item[Unable to open file] \hfill \\
+                    The given file cannot be opened for some reason.
+                    \item[Unable to write to file] \hfill \\
+                    It is not possible to write into given file.
+                    \item[Unable to save file] \hfill \\
+                    The given file cannot be saved. Check if you have enough space on your disk.
+                    \item[The resulting machine code is too big to be stored in a file]\hfill \\
+                    Size of the resulting machine code is bigger, than free disk space.
+                    \item[Some of the source code files were aparently changed during compilation]\hfill \\
+                    Do not change source files during the compilation. Wait for compilation to be finished.
+                    \item[User defined memory limit for program memory exceeded]\hfill \\
+                    You have exceeded maximum program memory defined with directive LIMIT.
+                    \item[User defined memory limit for register file exceeded]\hfill \\
+                    You have exceeded maximum number of working registers defined with directive LIMIT.
+                    \item[User defined memory limit for Scratch Pad RAM exceeded]\hfill \\
+                    You have exceeded maximum scratch pad RAM defined with directive LIMIT.
+                    \item[Instruction X requires operand \#Y to be of type(s) Z; while the given operand is of type: W] \hfill \\   %lllll
+                    Wrong type of operand. See manual for more informations.
+                    \item[Macro not defined ] \hfill \\
+                    The given macro has not been defined. You must define macro before you can use it. See chapter MACROS for more info.
+                    \item[Too many arguments given, expecting at most X arguments] \hfill \\             % lll
+                    Too many arguments, compiler tells you how many he is expecting. 
+                    \item[Attempting to use unavailable space in X memory at address: Y ] \hfill \\  %llll
+                    bl
+                    \item[The last error was critical, compilation aborted] \hfill \\                   %llll
+                    bl
+                    \item[Device not supported] \hfill \\
+                    The given device is not supported. Please choose different device.
+                    \item[Device specification code is already loaded ] \hfill \\                       %llll
+                    bl
+                    \item[Limit value X is not valid] \hfill \\
+                    Invalid limit value. Viz. LIMIT directive chapter for valid values.
+                    \item[Directive `LOCAL' cannot appear outside macro definition ] \hfill \\   % chyba, apear
+                    Directive LOCAL must be only used inside macro. Use different directive for symbol definition, or put it inside of macro.
+                    \item[Directive EXITM' cannot apper outside macro definition] \hfill \\
+                    The given directive is used to immediately exit macro. It does not make sense to use it differently.
+                    \item[Maximum macro expansion level X reached  ] \hfill \\
+                    Maximum macro expansion level reached. You can change your compiler settings and set bigger expansion level.
+                    By default, macro expansion level is unlimited.
+                    \item[Maximum number of WHILE directive iterations reached ] \hfill \\    %kkkk
+                    Maximum WHILE directive iterations reached. You can change your compiler settings and allow more iterations.
+                    By default, number of iterations is unlimited.
+                    \item[Maximum number of REPEAT directive iterations reached ] \hfill \\                     % nema byt rept?
+                    Maximum REPEAT directive iterations reached. You can change your compiler settings and allow more iterations.
+                    By default, number of iterations is unlimited.
+                    \item[Instruction word is only 18 bits wide, value X trimmed to Y ] \hfill \\
+                    You have exceeded instruction word length. Value has been trimmed to  appropriate length.                    
+                    \item[Symbol already defined] \hfill \\
+                    The given symbol has been already defined. Symbol cannot be defined more than one time.
+                    \item[Symbol not defined: X ] \hfill \\
+                    The given symbol has not been defined. Symbol has to be defined before usage.
+                    \item[Symbol X already defined with type Y] \hfill \\
+                    The given symbol has been already defined with type Y. Symbol cannot be defined more than one time.
+                    \item[Undefined value ] \hfill \\
+                    Undefined value. Compiler does not know this value.                       %mmmm
+                    \item[Real numbers are not supported in assembler ] \hfill \\
+                    Real numbers cannot be used on 8-bit processor. 
+                    \item[Undefined symbol: X ] \hfill \\
+                    Symbol has not been defined. Define symbol before usage.
+                    \item[This value is not valid inside an expression ] \hfill \\         %mmmmm
+                    The given expresion contains forbidden value.
+                    \item[Division by zero ] \hfill \\
+                    Division by zero has been detected. It is not possible to divide with zero, therefore compilation is aborted.
+                    \item[Unable to resolve this expression ] \hfill \\
+                    The given expresion cannot be resolved. Check if expresion is syntactically right.
+                    \item[Syntax not understood ] \hfill \\
+                    There is syntax error in your source code. Check manual for right syntax.
+                    \item[Character constant is too long ] \hfill \\
+                    Character constant is too long
+                    \item[Unterminated string or character constant ] \hfill \\
+                    Unterminated string or character constant
+                    \item[Unrecognized escape sequence: ] \hfill \\
+                    Unrecognized escape sequence
+                    \item[no file name specified ] \hfill \\                                                                            %llll
+                    File name has to be specified.
+                    \item[Unable to open the specified file: X] \hfill \\
+                    The given file cannot be opened for some reason.
+                    \item[Unrecognized token:  ] \hfill \\                    % mas to tam dvakrat
+                    bl
+                    \ldots
+                    \end{description}
+                    
+                 \subsection{WARNING list}
+                    \begin{description}
+                    \item[Maximum number of messages reached, suppressing compiler message generation] \hfill \\
+                    Source code contains big number of errors. Those errors were suppressed to prevent enormous size of code listing file. 
+                    \item[Redefinition of macro ] \hfill \\
+                    The given macro has been already defined. 
+                    \item[Macro X will not be expanded because macro expansion has been disabled] \hfill \\
+                    The given macro cannot be expanded, because macro expansion has been disabled by NOEXPAND directive.
+                    You can use EXPAND directive to allow expansion again.
+                    \item[Parameter X substituted for blank value ] \hfill \\     %llll
+                    Macro expected 
+                    \item[Symbol X already declared as local ] \hfill \\
+                    Symbol is already used as local inside macro.   %llll
+                    \item[Reusing already reserved space in X memory at address: Y] \hfill \\  %llll
+                    bl
+                    \item[Limit value -1 means unlimited] \hfill \\
+                    You can define limit values with LIMIT directive. Using -1 as directive argument, means unlimited.
+                    \item[Symbol X declared as local but never used, declaration ignored] \hfill \\
+                    The given local symbol has been declared, but never used. Declaration will be ignored.
+                    \item[Comparing two immediate constants, result is always positive] \hfill \\
+                    
+                    \item[Comparing two immediate constants, result is always negative] \hfill \\
+                    
+                    \item[Sign overflow. Result is negative number lower than the lowest negative number representable in two's complement arithmetic by the given number of bits ] \hfill \\
+                    
+                    \item[Result is negative number X, this will be represented as 2-bit number in two's complement arithmetic] \hfill \\
+                    
+                    \item[Value out of range, allowed range is [0,2] (trimmed to 3 bits) which makes it 4 ] \hfill \\
+                    Value out of range. Adjust input value.                                                     %,,,,
+                    \item[Maximum number of messages reached, suppressing compiler message generation ] \hfill \\
+                    Compiler is suppressing error messages generation to avoid massive code listing file size.
+                    \item[File name contains a null character ] \hfill \\
+                    Null character in file name is forbidden. Please change name of the given file.
+                    \ldots
+                    \end{description}                   
+                
         \section{List File Format}
                 Code listing serves as an additional information about the assembled code and the progress of the assembly process. It contains information about all symbols defined in the code. Where and how were they were defined, what are their values and whether they were used in the code. Also detailed information about all macros defined in the code and/or expanded in the code. Conditional compilation configuration, instruction OP codes, address space reservations, inclusion of code from another files. And all warnings, errors and notes generated during the assembly by the assembler. There are assembler control sequences which alters formatting of the code listing file. These control sequences will be discussed here. Format of code listing generated by this assembler is very similar to the one generated Metalink\textregistered ASM51.
                 \begin{code}[h]
@@ -1566,6 +1814,439 @@ input parameters.\\
 			\colorbox{GreenYellow}{\color{GreenYellow}X} Data\\
 		\colorbox{Lavender}{\color{Lavender}X} Checksum (two's complement of 8-bit sum of entire record, except for the start code and the checksum itself)
 	\end{code}
+	
+        \section{Suported instructions}
+        MDS macro assembler supports multiple instruction syntax. You can use, for example, LOAD as well as LD. This section contains
+        list of all supported instructions. For more informations about those instructions, see PicoBlaze manual.\\
+
+                \subsection{Program Control Group}
+                "X" and "Y" refer to the definition of the storage registers "s" in the range 0 to F.\\
+                "kk" represents a constant value in the range 00 to FF.\\
+                "aaa" represents an address in the range 000 to 3FF.\\
+                "pp" represents a port address in the range 00 to FF.\\
+                "ss" represents an internal storage address in the range 00 to 3F.\\
+                        \subsubsection{JUMP}
+                        Under normal conditions, the program counter (PC) increments to point to the next instruction. The address space is fixed to
+                        1024 locations (000 to 3FF hex) and therefore the program counter is 10 bits wide. It is worth noting that the top of memory is
+                        3FF hex and will increment to 000.\\
+                        The JUMP instruction may be used to modify this sequence by specifying a new address. However, the JUMP instruction may be
+                        conditional. A conditional JUMP will only be performed if a test performed on either the ZERO flag or CARRY flag is valid. The
+                        JUMP instruction has no effect on the status of the flags.\\
+                            \textbf{JUMP} aaa\\
+                            \textbf{JUMP} Z,aaa\\
+                            \textbf{JUMP} NZ,aaa\\
+                            \textbf{JUMP} C,aaa\\
+                            \textbf{JUMP} NC,aaa\\
+                                                  
+                            \begin{table}[h!]
+                                    \mysmallfont{}
+                                    \begin{tabular}{|l|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+                                    \hline
+                                    Bit     & 17 & 16 & 15 & 14 & 13 & 12 & 11 & 10 & 9 & 8 & 7 & 6 & 5 & 4 & 3 & 2 & 1 & 0\\\hline
+                                    Value   & 1  & 1  & 0  &  1 & 0  & x  & x  & x  & a & a & a & a & a & a & a & a & a & a\\\hline
+                                    \end{tabular}
+                                    \caption{OpCode of JUMP instruction}
+                            \end{table}
+
+                            \begin{table}[h!]
+                                    \mysmallfont{}
+                                    \begin{tabular}{|l|l|l}
+                                    \hline
+                                    \textbf{Bit 11}       &          \textbf{Bit 10}          &       \textbf{Condition}  \\\hline
+                                    0                     &          0                        &       If Zero  \\\hline
+                                    0                     &          1                        &       If NOT zero  \\\hline
+                                    1                     &          0                        &       If Carry  \\\hline
+                                    1                     &          1                        &       If NOT carry  \\\hline
+                                    \end{tabular}
+                                    \caption{Bit 11 and 10}
+                            \end{table}
+
+                            \begin{table}[h!]
+                                    \mysmallfont{}
+                                    \begin{tabular}{|l|l}
+                                    \hline
+                                    \textbf{Bit 12}       &                     \\\hline
+                                    0                     &          Unconditional\\\hline
+                                    1                     &          Conditional\\\hline
+                                    \end{tabular}
+                                    \caption{Bit 12}
+                            \end{table}
+                            
+                        \subsubsection{CALL}
+                        The CALL instruction is similar in operation to the JUMP instruction in that it will modify the normal program execution sequence by
+                        specifying a new address. The CALL instruction may also be conditional. In addition to supplying a new address, the CALL
+                        instruction also causes the current program counter (PC) value to be pushed onto the program counter stack. The CALL instruction
+                        has no effect on the status of the flags.\\
+                        The program counter stack supports a depth of 31 address values. This enables nested "CALL" sequences to a depth of 31 levels
+                        to be performed. However, the stack will also be used during an interrupt operation and hence at least one of these levels should
+                        be reserved when interrupts are enabled. The stack is implemented as a separate cyclic buffer. When the stack becomes full, it
+                        simply overwrites the oldest value. Hence it is not necessary to reset the stack pointer when performing a software reset. This also
+                        explains why there are no instructions to control the stack and why no other memory needs to be reserved or provided for the
+                        stack.
+                        Each CALL instruction must specify the 10-bit address as a 3 digit hexadecimal value. The assembler supports labels to simplify
+                        this process.\\
+                            \textbf{CALL} aaa\\
+                            \textbf{CALL} Z,aaa\\
+                            \textbf{CALL} NZ,aaa\\
+                            \textbf{CALL} C,aaa\\
+                            \textbf{CALL} NC,aaa\\
+                            
+                            \begin{table}[h!]
+                                    \mysmallfont{}
+                                    \begin{tabular}{|l|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+                                    \hline
+                                    Bit     & 17 & 16 & 15 & 14 & 13 & 12 & 11 & 10 & 9 & 8 & 7 & 6 & 5 & 4 & 3 & 2 & 1 & 0\\\hline
+                                    Value   & 1  & 1  & 0  &  0 & 0  & x  & x  & x  & a & a & a & a & a & a & a & a & a & a\\\hline
+                                    \end{tabular}
+                                    \caption{OpCode of CALL instruction}
+                            \end{table}
+
+                            \begin{table}[h!]
+                                    \mysmallfont{}
+                                    \begin{tabular}{|l|l|l}
+                                    \hline
+                                    \textbf{Bit 11}       &          \textbf{Bit 10}          &       \textbf{Condition}  \\\hline
+                                    0                     &          0                        &       If Zero  \\\hline
+                                    0                     &          1                        &       If NOT zero  \\\hline
+                                    1                     &          0                        &       If Carry  \\\hline
+                                    1                     &          1                        &       If NOT carry  \\\hline
+                                    \end{tabular}
+                                    \caption{Bit 11 and 10}
+                            \end{table}
+
+                            \begin{table}[h!]
+                                    \mysmallfont{}
+                                    \begin{tabular}{|l|l}
+                                    \hline
+                                    \textbf{Bit 12}       &                     \\\hline
+                                    0                     &          Unconditional\\\hline
+                                    1                     &          Conditional\\\hline
+                                    \end{tabular}
+                                    \caption{Bit 12}
+                            \end{table}
+                            
+                        \subsubsection{RETURN, RET}
+                        The RETURN instruction is the complement to the CALL instruction. The RETURN instruction may also be conditional. In this case
+                        the new program counter (PC) value will be formed internally by incrementing the last value on the program address stack. This
+                        ensures that the program will execute the instruction following the CALL instruction which resulted in the subroutine. The RETURN
+                        instruction has no effect on the status of the flags.
+                        It is the responsibility of the programmer to ensure that a RETURN is only performed in response to a previous CALL instruction
+                        such that the program counter stack contains a valid address. The cyclic implementation of the stack will continue to provide
+                        values for RETURN instructions which can not be defined.\\
+
+                            \textbf{RETURN}\\
+                            \textbf{RET}\\
+                            \textbf{RETURN} Z\\
+                            \textbf{RET} Z\\
+                            \textbf{RETURN} NZ\\
+                            \textbf{RET} NZ\\
+                            \textbf{RETURN} C\\
+                            \textbf{RET} C\\
+                            \textbf{RETURN} NC\\
+                            \textbf{RET} NC\\
+                            \textbf{RETURNI ENABLE}\\
+                            \textbf{RETURNI DISABLE}\\
+
+                            \begin{table}[h!]
+                                    \mysmallfont{}
+                                    \begin{tabular}{|l|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+                                    \hline
+                                    Bit     & 17 & 16 & 15 & 14 & 13 & 12 & 11 & 10 & 9 & 8 & 7 & 6 & 5 & 4 & 3 & 2 & 1 & 0\\\hline
+                                    Value   & 1  & 0  & 1  &  0 & 1  & x  & x  & x  & a & a & a & a & a & a & a & a & a & a\\\hline
+                                    \end{tabular}
+                                    \caption{OpCode of RETURN instruction}
+                            \end{table}
+
+                            \begin{table}[h!]
+                                    \mysmallfont{}
+                                    \begin{tabular}{|l|l|l}
+                                    \hline
+                                    \textbf{Bit 11}       &          \textbf{Bit 10}          &       \textbf{Condition}  \\\hline
+                                    0                     &          0                        &       If Zero  \\\hline
+                                    0                     &          1                        &       If NOT zero  \\\hline
+                                    1                     &          0                        &       If Carry  \\\hline
+                                    1                     &          1                        &       If NOT carry  \\\hline
+                                    \end{tabular}
+                                    \caption{Bit 11 and 10}
+                            \end{table}
+
+                            \begin{table}[h!]
+                                    \mysmallfont{}
+                                    \begin{tabular}{|l|l}
+                                    \hline
+                                    \textbf{Bit 12}       &                     \\\hline
+                                    0                     &          Unconditional\\\hline
+                                    1                     &          Conditional\\\hline
+                                    \end{tabular}
+                                    \caption{Bit 12}
+                            \end{table}
+                            
+                \subsection{Arithmetic Group}
+                "X" and "Y" refer to the definition of the storage registers "s" in the range 0 to F.\\
+                "kk" represents a constant value in the range 00 to FF.\\
+                "aaa" represents an address in the range 000 to 3FF.\\
+                "pp" represents a port address in the range 00 to FF.\\
+                "ss" represents an internal storage address in the range 00 to 3F.\\
+                        \subsubsection{ADD, ADDCY}
+                        The ADD instruction performs an 8-bit addition of two operands. The first operand is any register, and it is this register which will be
+                        assigned the result of the operation. A second operand may also be any register or an 8-bit constant value. Flags will be effected
+                        by this operation. Note that this instruction does not use the CARRY as an input, and hence there is no need to condition the flags
+                        before use. The ability to specify any constant is useful in forming control sequences and counters.\\
+                        Each ADD instruction must specify the first operand register as "s" followed by a hexadecimal digit. This register will also form the
+                        destination for the result. The second operand must then specify a second register value in a similar way or specify an 8-bit
+                        constant using 2 hexadecimal digits. The assembler supports register naming and constant labels to simplify the process.\\
+                            \textbf{ADD} sX,kk\\
+                            \textbf{ADDCY} sX,kk\\
+                            \textbf{ADD} sX,sY\\
+                            \textbf{ADDCY} sX,sY\\
+                    
+                            \begin{description}
+                                \item[ADD Sx, Sx] \hfill \\
+                                    \begin{table}[h!]
+                                            \mysmallfont{}
+                                            \begin{tabular}{|l|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+                                            \hline
+                                            Bit     & 17 & 16 & 15 & 14 & 13 & 12 & 11 & 10 & 9 & 8 & 7 & 6 & 5 & 4 & 3 & 2 & 1 & 0\\\hline
+                                            Value   & 1  & 1  & 0  &  0 & 0  & x  & x  & x  & a & a & a & a & a & a & a & a & a & a\\\hline
+                                            \end{tabular}
+                                            \caption{OpCode of ADD instruction}
+                                    \end{table}
+                                \item[ADD Sx,kk] \hfill \\
+                                    \begin{table}[h!]
+                                            \mysmallfont{}
+                                            \begin{tabular}{|l|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+                                            \hline
+                                            Bit     & 17 & 16 & 15 & 14 & 13 & 12 & 11 & 10 & 9 & 8 & 7 & 6 & 5 & 4 & 3 & 2 & 1 & 0\\\hline
+                                            Value   & 1  & 1  & 0  &  0 & 0  & x  & x  & x  & a & a & a & a & a & a & a & a & a & a\\\hline
+                                            \end{tabular}
+                                            \caption{OpCode of ADD instruction}
+                                    \end{table}
+                                    \ldots
+                            \end{description}
+                                                        
+                            \begin{table}[h!]
+                                    \mysmallfont{}
+                                    \begin{tabular}{|l|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+                                    \hline
+                                    Bit     & 17 & 16 & 15 & 14 & 13 & 12 & 11 & 10 & 9 & 8 & 7 & 6 & 5 & 4 & 3 & 2 & 1 & 0\\\hline
+                                    Value   & 1  & 1  & 0  &  0 & 0  & x  & x  & x  & a & a & a & a & a & a & a & a & a & a\\\hline
+                                    \end{tabular}
+                                    \caption{OpCode of ADDCY instruction}
+                            \end{table}
+                            
+                        \subsubsection{COMPARE, CMP}
+                        The COMPARE instruction performs an 8-bit subtraction of two operands Unlike the "SUB" instruction, the result of the operation is
+                        discarded and only the flags are affected. The ZERO flag is set when all the bits of the temporary result are low and indicates that
+                        both input operands were identical. The CARRY flag indicates when an underflow has occurred and indicates that the second
+                        operand was larger than the first. For example, if s05 contains 27 hex and the instruction COMPARE s05,35 is performed, then
+                        the CARRY flag will be set (35 > 27) and the ZERO flag will be reset (35 != 27).\\
+                        Each COMPARE instruction must specify the first operand register as "s" followed by a hexadecimal digit. The second operand
+                        must then specify a second register value in a similar way or specify an 8-bit constant using 2 hexadecimal digits. The assembler
+                        supports register naming and constant labels to simplify the process.\\
+                            \textbf{COMPARE} sX,kk\\
+                            \textbf{COMPARE} sX,sY\\
+                            \textbf{CMP}     sX,kk\\
+                            \textbf{CMP}     sX,sY\\
+                        \begin{description}
+                                \item[COMPARE Sx, kk and CMP Sx, kk] \hfill \\
+                                    \begin{table}[h!]
+                                            \mysmallfont{}
+                                            \begin{tabular}{|l|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+                                            \hline
+                                            Bit     & 17 & 16 & 15 & 14 & 13 & 12 & 11 & 10 & 9 & 8 & 7 & 6 & 5 & 4 & 3 & 2 & 1 & 0\\\hline
+                                            Value   & 0  & 1  & 0  &  1 & 0  & 0  & Sx  & Sx  & Sx & Sx & k & k & k & k & k & k & k & k\\\hline
+                                            \end{tabular}
+                                            \caption{OpCode of COMPARE and CMP instruction}
+                                    \end{table}
+                                \item[COMPARE Sx, Sy and CMP Sx, Sy] \hfill \\
+                                    \begin{table}[h!]
+                                            \mysmallfont{}
+                                            \begin{tabular}{|l|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+                                            \hline
+                                            Bit     & 17 & 16 & 15 & 14 & 13 & 12 & 11 & 10 & 9 & 8 & 7 & 6 & 5 & 4 & 3 & 2 & 1 & 0\\\hline
+                                            Value   & 0  & 1  & 0  &  1 & 0  & 1  & Sx  & Sx  & Sx & Sx & Sy & Sy & Sy & Sy & 0 & 0 & 0 & 0\\\hline
+                                            \end{tabular}
+                                            \caption{OpCode of COMPARE and CMP instruction}
+                                    \end{table}
+                                    \ldots
+                        \end{description}
+                        
+                        \subsubsection{SUB}
+                        The SUB instruction performs an 8-bit subtraction of two operands. The first operand is any register, and it is this register which will
+                        be assigned the result of the operation. The second operand may also be any register or an 8-bit constant value. Flags will be
+                        effected by this operation. Note that this instruction does not use the CARRY as an input, and hence there is no need to condition
+                        the flags before use. The CARRY flag indicates when an underflow has occurred. For example, if "s05" contains 27 hex and the
+                        instruction SUB s05,35 is performed, then the stored result will be F2 hex and the CARRY flag will be set.\\
+                        Each SUB instruction must specify the first operand register as "s" followed by a hexadecimal digit. This register will also form the
+                        destination for the result. The second operand must then specify a second register value in a similar way or specify an 8-bit
+                        constant using 2 hexadecimal digits. The assembler supports register naming and constant labels to simplify the process.
+                            \textbf{SUB} sX,kk\\
+                            \textbf{SUB} sX,sY\\
+                            \begin{description}
+                                \item[COMPARE Sx, kk and CMP Sx, kk] \hfill \\
+                                    \begin{table}[h!]
+                                            \mysmallfont{}
+                                            \begin{tabular}{|l|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+                                            \hline
+                                            Bit     & 17 & 16 & 15 & 14 & 13 & 12 & 11 & 10 & 9 & 8 & 7 & 6 & 5 & 4 & 3 & 2 & 1 & 0\\\hline
+                                            Value   & 0  & 1  & 0  &  1 & 0  & 0  & Sx  & Sx  & Sx & Sx & k & k & k & k & k & k & k & k\\\hline
+                                            \end{tabular}
+                                            \caption{OpCode of COMPARE and CMP instruction}
+                                    \end{table}
+                                \item[COMPARE Sx, Sy and CMP Sx, Sy] \hfill \\
+                                    \begin{table}[h!]
+                                            \mysmallfont{}
+                                            \begin{tabular}{|l|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+                                            \hline
+                                            Bit     & 17 & 16 & 15 & 14 & 13 & 12 & 11 & 10 & 9 & 8 & 7 & 6 & 5 & 4 & 3 & 2 & 1 & 0\\\hline
+                                            Value   & 0  & 1  & 0  &  1 & 0  & 1  & Sx  & Sx  & Sx & Sx & Sy & Sy & Sy & Sy & 0 & 0 & 0 & 0\\\hline
+                                            \end{tabular}
+                                            \caption{OpCode of COMPARE and CMP instruction}
+                                    \end{table}
+                                    \ldots
+                            \end{description}
+                            
+                        \subsubsection{SUBCY}
+                            \textbf{SUBCY} sX,kk\\
+                            \textbf{SUBCY} sX,sY\\
+                            \begin{description}
+                                \item[SUBCY Sx, kk] \hfill \\
+                                    \begin{table}[h!]
+                                            \mysmallfont{}
+                                            \begin{tabular}{|l|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+                                            \hline
+                                            Bit     & 17 & 16 & 15 & 14 & 13 & 12 & 11 & 10 & 9 & 8 & 7 & 6 & 5 & 4 & 3 & 2 & 1 & 0\\\hline
+                                            Value   & 0  & 1  & 0  &  1 & 0  & 0  & Sx  & Sx  & Sx & Sx & k & k & k & k & k & k & k & k\\\hline
+                                            \end{tabular}
+                                            \caption{OpCode of COMPARE and CMP instruction}
+                                    \end{table}
+                                \item[SUBCY Sx, sY] \hfill \\
+                                    \begin{table}[h!]
+                                            \mysmallfont{}
+                                            \begin{tabular}{|l|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+                                            \hline
+                                            Bit     & 17 & 16 & 15 & 14 & 13 & 12 & 11 & 10 & 9 & 8 & 7 & 6 & 5 & 4 & 3 & 2 & 1 & 0\\\hline
+                                            Value   & 0  & 1  & 0  &  1 & 0  & 1  & Sx  & Sx  & Sx & Sx & Sy & Sy & Sy & Sy & 0 & 0 & 0 & 0\\\hline
+                                            \end{tabular}
+                                            \caption{OpCode of COMPARE and CMP instruction}
+                                    \end{table}
+                                    \ldots
+                        \end{description}
+                        
+                \subsection{Interrupt group}
+                "X" and "Y" refer to the definition of the storage registers "s" in the range 0 to F.\\
+                "kk" represents a constant value in the range 00 to FF.\\
+                "aaa" represents an address in the range 000 to 3FF.\\
+                "pp" represents a port address in the range 00 to FF.\\
+                "ss" represents an internal storage address in the range 00 to 3F.\\
+                        \subsubsection{RETURNI, RETIE, RETID}
+                            \textbf{RETURNI ENABLE}\\
+                            \begin{table}[h!]
+                                    \mysmallfont{}
+                                    \begin{tabular}{|l|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+                                    \hline
+                                    Bit     & 17 & 16 & 15 & 14 & 13 & 12 & 11 & 10 & 9 & 8 & 7 & 6 & 5 & 4 & 3 & 2 & 1 & 0\\\hline
+                                    Value   & 1  & 1  & 1  &  0 & 0  & 0  & 0  & 0  & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1\\\hline
+                                    \end{tabular}
+                                    \caption{OpCode of RETURNI ENABLE instruction}
+                            \end{table}
+
+                            \textbf{RETURNI DISABLE}\\
+
+                            \begin{table}[h!]
+                                    \mysmallfont{}
+                                    \begin{tabular}{|l|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+                                    \hline
+                                    Bit     & 17 & 16 & 15 & 14 & 13 & 12 & 11 & 10 & 9 & 8 & 7 & 6 & 5 & 4 & 3 & 2 & 1 & 0\\\hline
+                                    Value   & 1  & 1  & 1  &  0 & 0  & 0  & 0  & 0  & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\\hline
+                                    \end{tabular}
+                                    \caption{OpCode of RETURNI DISABLE instruction}
+                            \end{table}
+                            \textbf{RETIE}\\
+                            \textbf{RETID}\\
+                        \subsubsection{ENABLE INTERRUPT, ENA, DIS}
+                            \textbf{ENABLE INTERRUPT}\\
+                            \textbf{DISABLE INTERRUPT}\\
+                            \textbf{ENA}\\
+                            \textbf{DIS}\\
+                \subsection{Logical Group}
+                "X" and "Y" refer to the definition of the storage registers "s" in the range 0 to F.\\
+                "kk" represents a constant value in the range 00 to FF.\\
+                "aaa" represents an address in the range 000 to 3FF.\\
+                "pp" represents a port address in the range 00 to FF.\\
+                "ss" represents an internal storage address in the range 00 to 3F.\\
+                        \subsubsection{LOAD, LD}
+                        The LOAD instruction provides a method for specifying the contents of any register. The new value can be a constant, or the
+                        contents of any other register. The LOAD instruction has no effect on the status of the flags.\\
+                        Since the LOAD instruction does not effect the flags it may be used to reorder and assign register contents at any stage of the
+                        program execution. The ability to assign a constant with no impact to the program size or performance means that the load
+                        instruction is the most obvious way to assign a value or clear a register.\\
+                        The first operand of a LOAD instruction must specify the register to be loaded as register "s" followed by a hexadecimal digit. The
+                        second operand must then specify a second register value in a similar way or specify an 8-bit constant using 2 hexadecimal digits.
+                        The assembler supports register naming and constant labels to simplify the process.
+                            \textbf{LOAD} sX,kk\\
+                            \textbf{LOAD} sX,sY\\
+                            \textbf{LD} sX,kk\\
+                            \textbf{LD} sX,sY\\
+                        \subsubsection{OR, XOR}
+                            \textbf{OR} sX,sY\\
+                            \textbf{OR} sX,kk\\
+                            \textbf{XOR} sX,kk\\
+                            \textbf{XOR} sX,sY\\
+                        \subsubsection{AND}
+                            \textbf{AND} sX,kk\\
+                            \textbf{AND} sX,sY\\
+                        \subsubsection{TEST}
+                            \textbf{TEST} sX,sY\\
+                            \textbf{TEST} sX,kk\\
+                \subsection{Shift and Rotate Group}
+                "X" and "Y" refer to the definition of the storage registers "s" in the range 0 to F.\\
+                "kk" represents a constant value in the range 00 to FF.\\
+                "aaa" represents an address in the range 000 to 3FF.\\
+                "pp" represents a port address in the range 00 to FF.\\
+                "ss" represents an internal storage address in the range 00 to 3F.\\
+                        \subsubsection{SR}
+                            \textbf{SR0} sX\\
+                            \textbf{SR1} sX\\
+                            \textbf{SRX} sX\\
+                            \textbf{SRA} sX\\
+                        \subsubsection{RR, RL}
+                            \textbf{RR}  sX\\
+                            \textbf{RL}  sX\\
+                        \subsubsection{SL}
+                            \textbf{SL0} sX\\
+                            \textbf{SL1} sX\\
+                            \textbf{SLX} sX\\
+                            \textbf{SLA} sX\\
+                \subsection{Storage group}
+                "X" and "Y" refer to the definition of the storage registers "s" in the range 0 to F.\\
+                "kk" represents a constant value in the range 00 to FF.\\
+                "aaa" represents an address in the range 000 to 3FF.\\
+                "pp" represents a port address in the range 00 to FF.\\
+                "ss" represents an internal storage address in the range 00 to 3F.\\
+                        \subsubsection{STORE}
+                            \textbf{STORE} sX,ss\\
+                            \textbf{STORE} sX,\@sY\\
+                        \subsubsection{FETCH}
+                            \textbf{FETCH} sX,ss\\
+                            \textbf{FETCH} sX,\@sY\\
+                \subsection{Input output group}
+                "X" and "Y" refer to the definition of the storage registers "s" in the range 0 to F.\\
+                "kk" represents a constant value in the range 00 to FF.\\
+                "aaa" represents an address in the range 000 to 3FF.\\
+                "pp" represents a port address in the range 00 to FF.\\
+                "ss" represents an internal storage address in the range 00 to 3F.\\
+                        \subsubsection{INPUT, IN}
+                            \textbf{INPUT}      sX,pp\\
+                            \textbf{INPUT}      sX,\@sY\\
+                            \textbf{IN}         sX,pp\\
+                            \textbf{IN}         sX,\@sY\\
+                        \subsubsection{OUTPUT, OUT}
+                            \textbf{OUTPUT}     sX,pp\\
+                            \textbf{OUTPUT}     sX,\@sY\\
+                            \textbf{OUT}        sX,pp\\
+                            \textbf{OUT}        sX,\@sY\\
+
   
         \section{Generated VHDL and Verilog files}
         As you know, the PicoBlaze microcontroller is primarily designed for use in a VHDL design flow.

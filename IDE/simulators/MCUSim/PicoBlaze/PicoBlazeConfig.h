@@ -16,10 +16,11 @@
 #ifndef PICOBLAZECONFIG_H
 #define PICOBLAZECONFIG_H
 
-// Forward declarations
+// Forward declarations.
 class PicoBlazeSim;
 
 #include "../MCUSim.h"
+
 #include "PicoBlazeClockControl.h"
 #include "PicoBlazeDataMemory.h"
 #include "PicoBlazeRegisters.h"
@@ -63,6 +64,12 @@ class PicoBlazeConfig : public MCUSimConfig
         {
             return m_isLinked;
         }
+
+        /**
+         * @brief
+         * @param[in] dev
+         */
+        void configure ( MCUSim::Family dev );
 
     ////    Public Attributes    ////
     public:
