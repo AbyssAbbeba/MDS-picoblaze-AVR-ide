@@ -572,6 +572,11 @@ Project::Project(QString name, QString path, QString arch, LangType lang, QFile 
     treeProjName->setData(0, Qt::ToolTipRole, path);
     fileCount=0;
 
+    for (int i = 0; i < 8; i++)
+    {
+        compileOpt.append(false);
+    }
+
     this->architecture = arch;
     this->langType = lang;
     
@@ -964,6 +969,7 @@ bool Project::start()
         std::string stdPath = hexPath.toUtf8().constData();
         if ( false == m_simControlUnit->start(stdPath, m_simControlUnit->COMPILER_NATIVE, m_simControlUnit->DBGFILEID_HEX) )
         {
+            qDebug() << "Project: return false start()";
             return false;
         }
     }
@@ -974,6 +980,7 @@ bool Project::start()
         std::string stdPath = hexPath.toUtf8().constData();
         if ( false == m_simControlUnit->start(stdPath, m_simControlUnit->COMPILER_GCC, m_simControlUnit->DBGFILEID_HEX) )
         {
+            qDebug() << "Project: return false start()";
             return false;
         }
     }
@@ -988,8 +995,8 @@ bool Project::start()
     prevLine = line;
     prevLine2 = -1;
     prevLine3 = -1;
-    return true;
     qDebug() << "Project: return start()";
+    return true;
 }
 
 

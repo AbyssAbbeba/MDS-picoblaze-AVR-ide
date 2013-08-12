@@ -659,21 +659,54 @@ void MainForm::compileProject()
     options->m_sourceFile = (projectMan->getActive()->prjPath.section('/',0, -2) + "/" +  this->projectMan->getActive()->mainFilePath).toStdString();
     QDir prjDir(projectMan->getActive()->prjPath.section('/',0, -2));
     QDir fileDir(QString::fromStdString(options->m_sourceFile).section('/',0, -2));
-
-    QString mainFile = fileDir.relativeFilePath(prjDir.absolutePath()) + "/" +  this->projectMan->getActive()->mainFileName.section('.',0,-2);
+    QString mainFile;
+    
+    if (fileDir.relativeFilePath(prjDir.absolutePath()) == "")
+    {
+        mainFile = "./" +  this->projectMan->getActive()->mainFileName.section('.',0,-2);
+    }
+    else
+    {
+        mainFile = fileDir.relativeFilePath(prjDir.absolutePath()) + "/" +  this->projectMan->getActive()->mainFileName.section('.',0,-2);
+    }
     
     qDebug() << QString::fromStdString(options->m_sourceFile);
     qDebug() << mainFile;
+
+    if (projectMan->getActive()->compileOpt.at(0))
+    {
+        options->m_symbolTable = (mainFile + ".stbl").toStdString();
+    }
+    if (projectMan->getActive()->compileOpt.at(1))
+    {
+        options->m_macroTable = (mainFile + ".mtbl").toStdString();
+    }
+    if (projectMan->getActive()->compileOpt.at(2))
+    {
+        options->m_mdsDebugFile = (mainFile + ".dbg").toStdString();
+    }
+    if (projectMan->getActive()->compileOpt.at(3))
+    {
+        options->m_codeTree = (mainFile + ".ctr").toStdString();
+    }
+    if (projectMan->getActive()->compileOpt.at(4))
+    {
+        options->m_lstFile = (mainFile + ".lst").toStdString();
+    }
+    if (projectMan->getActive()->compileOpt.at(5))
+    {
+        options->m_hexFile = (mainFile + ".hex").toStdString();
+    }
+    if (projectMan->getActive()->compileOpt.at(6))
+    {
+        options->m_binFile = (mainFile + ".bin").toStdString();
+    }
+    if (projectMan->getActive()->compileOpt.at(7))
+    {
+        options->m_srecFile = (mainFile + ".srec").toStdString();
+    }
     
-    options->m_symbolTable = (mainFile + ".stbl").toStdString();
-    options->m_macroTable = (mainFile + ".mtbl").toStdString();
-    options->m_mdsDebugFile = (mainFile + ".dbg").toStdString();
-    options->m_codeTree = (mainFile + ".ctr").toStdString();
-    options->m_lstFile = (mainFile + ".lst").toStdString();
-    options->m_hexFile = (mainFile + ".hex").toStdString();
-    options->m_binFile = (mainFile + ".bin").toStdString();
-    options->m_srecFile = (mainFile + ".srec").toStdString();
-    CompilerThread *compiler = new CompilerThread("../compiler/include/assembler/PicoBlaze/");
+    CompilerThread *compiler = new CompilerThread("../compiler/include/");
     qRegisterMetaType<std::string>("std::string");
     qRegisterMetaType<CompilerBase::MessageType>("CompilerBase::MessageType");
     connect(compiler, SIGNAL(compilationMessage(const std::string&, CompilerBase::MessageType)), this, SLOT(reloadCompileInfo(const std::string&, CompilerBase::MessageType)));
@@ -885,7 +918,13 @@ ProjectMan* MainForm::getProjectMan()
  */
 void MainForm::exampleOpen()
 {
-    this->openProject("./demoprojekt/Example2/Example2.mmp");
+    this->openProject("./demoprojekt/Example/Example.mmp");
+    int count = this->projectMan->getActive()->filePaths.count();
+    for (int i = 0; i < count; i++)
+    {
+        this->openFilePath(this->projectMan->getActive()->prjPath.section('/',0, -2) + "/"
+            + this->projectMan->getActive()->filePaths.at(i));
+    }
 }
 
 
@@ -995,15 +1034,5 @@ void MainForm::startProjectConfig(Project *project)
 
 void MainForm::help()
 {
-    //QHelpEngineCore helpEngine(":/resources/help/mdshelp.qhc");
-    QProcess *process = new QProcess;
-    QStringList args;
-    args << QLatin1String("-collectionFile")
-        << QLatin1String(":/resources/help/mdshelp.qhc")
-        << QLatin1String("-enableRemoteControl");
-    process->start(QLatin1String("assistant"), args);
-    if (!process->waitForStarted())
-    {
-        return;
-    }
+    
 }
