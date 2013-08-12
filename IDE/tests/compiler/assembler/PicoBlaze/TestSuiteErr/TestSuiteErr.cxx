@@ -102,9 +102,9 @@ void TestSuiteErr::testFunction()
     using namespace boost::filesystem;
 
     std::string testName = CU_get_current_test()->pName;
-    m_options->m_sourceFile = ( path("TestSuiteErr") / "testcases" / (testName + ".asm") ).string();
+    m_options->m_sourceFile = system_complete( path("TestSuiteErr") / "testcases" / (testName + ".asm") ).string();
 
-    std::string resultsCommonPath = ( path("..") / "results" / testName ).string();
+    std::string resultsCommonPath = system_complete( path("TestSuiteErr") / "results" / testName ).string();
     m_options->m_symbolTable  = resultsCommonPath + ".sym";
     m_options->m_macroTable   = resultsCommonPath + ".mac";
     m_options->m_codeTree     = resultsCommonPath + ".crt";;
@@ -114,7 +114,7 @@ void TestSuiteErr::testFunction()
     CU_ASSERT_FATAL ( false == m_compiler->compile(CompilerBase::LI_ASM, CompilerBase::TA_PICOBLAZE, m_options) );
     dynamic_cast<CompilerMsgIntfFile*>(m_msgInt)->closeFile();
 
-    std::string expectedCommonPath = ( path("..") / "expected" / testName ).string();
+    std::string expectedCommonPath = system_complete( path("TestSuiteErr") / "expected" / testName ).string();
     compareLst ( expectedCommonPath + ".lst.exp", m_options->m_lstFile );
     compareErr ( expectedCommonPath + ".err.exp", resultsCommonPath + ".err" );
 }
