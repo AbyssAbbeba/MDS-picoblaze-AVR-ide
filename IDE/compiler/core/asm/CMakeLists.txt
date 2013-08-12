@@ -34,8 +34,8 @@ add_subdirectory ( mcs51 )
 # Compiler semantic analyzer for assembly language for PIC8.
 add_subdirectory ( pic8 )
 
-# Compiler semantic analyzer for assembly language for KCPSM3.
-add_subdirectory ( kcpsm3 )
+# Compiler semantic analyzer for assembly language for PicoBlaze.
+add_subdirectory ( PicoBlaze )
 
 
 # ------------------------------------------------------------------------------
@@ -75,4 +75,4 @@ target_link_libraries ( ${PROJECT_NAME}
                         AsmAvr8SemanticAnalyzer
                         AsmMcs51SemanticAnalyzer
                         AsmPic8SemanticAnalyzer
-                        AsmKcpsm3SemanticAnalyzer )
+                        AsmPicoBlazeSemanticAnalyzer )

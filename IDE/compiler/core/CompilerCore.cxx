@@ -37,7 +37,7 @@
 #include "asm/avr8/AsmAvr8SemanticAnalyzer.h"
 #include "asm/pic8/AsmPic8SemanticAnalyzer.h"
 #include "asm/mcs51/AsmMcs51SemanticAnalyzer.h"
-#include "asm/kcpsm3/AsmKcpsm3SemanticAnalyzer.h"
+#include "asm/PicoBlaze/AsmPicoBlazeSemanticAnalyzer.h"
 
 // Used for i18n only.
 #include <QObject>
@@ -169,8 +169,8 @@ inline bool CompilerCore::setupSemanticAnalyzer()
                 case TA_MCS51:
                     m_semanticAnalyzer = new AsmMcs51SemanticAnalyzer ( this, m_opts );
                     break;
-                case TA_KCPSM3:
-                    m_semanticAnalyzer = new AsmKcpsm3SemanticAnalyzer ( this, m_opts );
+                case TA_PICOBLAZE:
+                    m_semanticAnalyzer = new AsmPicoBlazeSemanticAnalyzer ( this, m_opts );
                     break;
                 default:
                     m_msgInterface->message ( QObject::tr ( "Architecture not supported for the selected language." )
@@ -233,7 +233,7 @@ inline bool CompilerCore::startLexerAndParser()
                     }
                     mcs51lexer_lex_destroy ( yyscanner );
                     break;
-                case TA_KCPSM3:
+                case TA_PICOBLAZE:
                     kcpsm3lexer_lex_init_extra ( this, &yyscanner );
                     kcpsm3lexer_set_in ( sourceFile, yyscanner );
                     if ( true == m_success )
@@ -431,7 +431,7 @@ CompilerStatement * CompilerCore::loadDevSpecCode ( const std::string & deviceNa
         case TA_MCS51:
             fileName /= "mcs51";
             break;
-        case TA_KCPSM3:
+        case TA_PICOBLAZE:
             fileName /= "PicoBlaze";
             break;
     }
@@ -458,6 +458,8 @@ CompilerStatement * CompilerCore::loadDevSpecCode ( const std::string & deviceNa
                                                 . toStdString(),
                                   MT_ERROR );
     }
+
+    m_semanticAnalyzer->setDevice(deviceName);
 
     if ( NULL != flag )
     {

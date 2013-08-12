@@ -39,11 +39,11 @@ class CompilerBase
          */
         enum TargetArch
         {
-            TA_INVALID, ///<
-            TA_AVR8,    ///<
-            TA_PIC8,    ///<
-            TA_MCS51,   ///<
-            TA_KCPSM3   ///<
+            TA_INVALID,    ///<
+            TA_AVR8,       ///<
+            TA_PIC8,       ///<
+            TA_MCS51,      ///<
+            TA_PICOBLAZE   ///<
         };
 
         /**

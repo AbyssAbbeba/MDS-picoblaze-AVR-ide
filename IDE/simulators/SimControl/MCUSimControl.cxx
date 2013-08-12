@@ -524,7 +524,13 @@ bool MCUSimControl::changeDevice ( const char * deviceName )
         delete m_simulator;
     }
 
-    if ( 0 == strcmp("kcpsm3", deviceName) )
+    if (
+           ( 0 == strcmp("kcpsm2", deviceName) )
+               ||
+           ( 0 == strcmp("kcpsm3", deviceName) )
+               ||
+           ( 0 == strcmp("kcpsm6", deviceName) )
+       )
     {
         m_architecture = MCUSim::ARCH_PICOBLAZE;
     }

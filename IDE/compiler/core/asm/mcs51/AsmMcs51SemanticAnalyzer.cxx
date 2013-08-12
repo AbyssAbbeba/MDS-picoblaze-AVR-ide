@@ -17,4 +17,10 @@
 
 void AsmMcs51SemanticAnalyzer::process ( CompilerStatement * codeTree )
 {
+    std::cout << "AsmMcs51SemanticAnalyzer::process:\n" << codeTree;
+}
+
+void AsmMcs51SemanticAnalyzer::setDevice ( const std::string & deviceName )
+{
+    std::cout << "AsmMcs51SemanticAnalyzer::setDevice ( " << deviceName << ")\n";
 }

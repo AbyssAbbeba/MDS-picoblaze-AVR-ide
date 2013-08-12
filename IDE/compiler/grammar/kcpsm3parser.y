@@ -30,7 +30,7 @@
 // Write an extra output file containing verbose descriptions of the parser states.
 %verbose
 // Expect exactly <n> shift/reduce conflicts in this grammar
-%expect 117
+%expect 136
 // Expect exactly <n> reduce/reduce conflicts in this grammar
 %expect-rr 0
 /* Type of parser tables within the LR family, in this case we use LALR (Look-Ahead LR parser) */
@@ -83,8 +83,10 @@
 
     // Error messages
     #define N_OPERANDS_EXPECTED(location, instruction, number) \
-        compiler->parserMessage ( location, CompilerBase::MT_ERROR, \
-            QObject::tr("invalid number of operands, instruction %1 takes %2 operand(s)").arg(instruction).arg(number).toStdString() );
+        compiler->parserMessage ( location, \
+                                  CompilerBase::MT_ERROR, \
+                                  QObject::tr ( "invalid number of operands, instruction %1 takes %2 operand(s)" ) \
+                                              .arg(instruction).arg(number).toStdString() );
     #define NN_OPERANDS_EXPECTED(location, instruction, number, number2) \
         compiler->parserMessage ( location, CompilerBase::MT_ERROR, \
             QObject::tr("invalid number of operands, instruction %1 takes %2 or %3 operands").arg(instruction).arg(number).arg(number2).toStdString() );
@@ -100,8 +102,11 @@
         compiler->parserMessage ( location, CompilerBase::MT_ERROR, \
             QObject::tr("directive %1 takes no arguments").arg(directive).toStdString() );
     #define DECL_ID_EXPECTED(location, directive) \
-        compiler->parserMessage ( location, CompilerBase::MT_ERROR, \
-            QObject::tr("directive %1 requires an identifier for the symbol (or macro) which it defines").arg(directive).toStdString() );
+        compiler->parserMessage ( location, \
+                                  CompilerBase::MT_ERROR, \
+                                  QObject::tr ( "directive %1 requires an identifier for the symbol (or macro) which " \
+                                                "it defines" ) \
+                                              .arg(directive).toStdString() );
     #define MISSING_AT_OPERATOR(location, directive) \
         compiler->parserMessage ( location, CompilerBase::MT_ERROR, \
             QObject::tr("directive %1 requires `AT' operator before the start address").arg(directive).toStdString() );
@@ -157,10 +162,12 @@
 %token I_SLX            I_SLA           I_RL            I_INPUT         I_OUTPUT
 %token I_SRX            I_SRA           I_RR            I_SL0           I_SL1
 %token I_STORE          I_FETCH         I_SR0           I_SR1           I_RETURNI_DIS
-%token I_RETURNI_ENA
+%token I_RETURNI_ENA    I_HWBUILD       I_STAR          I_TESTCY        I_COMPARECY
+%token I_REGBANK_A      I_REGBANK_B     I_OUTPUTK
 
 /* Special macros */
-%token M_RTIF           M_RTELSEIF      M_RTELSE        M_RTENDIF
+%token M_RTIF           M_RTELSEIF      M_RTELSE        M_RTENDIF       M_RTWHILE
+%token M_RTENDW         M_RTFOR         M_RTENDF
 
 /* Fixed operands, i.e. those which have no value */
 %token Z NZ C NC
@@ -176,6 +183,7 @@
 %token RP               ")"
 %token IMMEDIATE        "#"
 %token COMMA            ","
+%token INTERVAL         ".."
 // Expression operators
 %token PLUS             "+"
 %token MINUS            "-"
@@ -257,9 +265,13 @@
 %type<stmt>     inst_test       inst_store      inst_fetch      inst_sr0        inst_sr1
 %type<stmt>     inst_srx        inst_sra        inst_rr         inst_sl0        inst_sl1
 %type<stmt>     inst_slx        inst_sla        inst_rl         inst_input      inst_output
+%type<stmt>     inst_testcy     inst_comparecy  inst_outputk    inst_star       inst_hwbuild
+%type<stmt>     inst_regbank
+
 // Statements - special macros
 %type<stmt>     dir_rt_cond     rtif_block      rtelseif_block  rtelse_block    dir_rtif
-%type<stmt>     dir_rtelseif    dir_rtelse      dir_rtendif
+%type<stmt>     dir_rtelseif    dir_rtelse      dir_rtendif     dir_rtwhile     dir_rtendw
+%type<stmt>     dir_rtfor       dir_rtendf      dir_rtwhile_b   dir_rtfor_b
 
 /*
  * Symbol destructors:
@@ -302,40 +314,40 @@ input:
       statements                    { compiler->syntaxAnalysisComplete($statements); YYACCEPT; }
 ;
 statements:
-      stmt                          { $$ = $stmt; }
+      stmt                          { $$ = $stmt;                 }
     | statements EOL stmt           { $$ = $1->appendLink($stmt); }
 ;
 stmt:
       /* empty */                   { $$ = NULL; }
     | error                         { $$ = NULL; }
     | COMMENT                       { $$ = NULL; }
-    | label                         { $$ = $1; }
-    | label COMMENT                 { $$ = $1; }
-    | dir_stmt                      { $$ = $1; }
-    | inst_stmt                     { $$ = $1; }
-    | macro_stmt                    { $$ = $1; }
+    | label                         { $$ = $1;   }
+    | label COMMENT                 { $$ = $1;   }
+    | dir_stmt                      { $$ = $1;   }
+    | inst_stmt                     { $$ = $1;   }
+    | macro_stmt                    { $$ = $1;   }
 ;
 dir_stmt:
       directive                     { $$ = $directive; }
     | directive COMMENT             { $$ = $directive; }
 ;
 inst_stmt:
-      instruction                   { $$ = $instruction; }
-    | instruction COMMENT           { $$ = $instruction; }
+      instruction                   { $$ = $instruction;                     }
+    | instruction COMMENT           { $$ = $instruction;                     }
     | label instruction             { $$ = $label->appendLink($instruction); }
     | label instruction COMMENT     { $$ = $label->appendLink($instruction); }
 ;
 macro_stmt:
-      macro                         { $$ = $macro; }
-    | macro COMMENT                 { $$ = $macro; }
+      macro                         { $$ = $macro;                     }
+    | macro COMMENT                 { $$ = $macro;                     }
     | label macro                   { $$ = $label->appendLink($macro); }
     | label macro COMMENT           { $$ = $label->appendLink($macro); }
 ;
 macro:
-      id                            { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_MACRO, $id); }
-    | id "(" ")"                    { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_MACRO, $id); }
-    | id args                       { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_MACRO, $id->appendLink($args)); }
-    | id "(" args ")"               { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_MACRO, $id->appendLink($args)); }
+      id                            { $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_MACRO, $id);                    }
+    | id "(" ")"                    { $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_MACRO, $id);                    }
+    | id args                       { $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_MACRO, $id->appendLink($args)); }
+    | id "(" args ")"               { $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_MACRO, $id->appendLink($args)); }
 ;
 
 /*
@@ -351,50 +363,50 @@ string:
       STRING                        { $$ = new CompilerExpr(CompilerValue($1.data, $1.size), LOC(@$)); }
 ;
 label:
-      LABEL                         {$$=new CompilerStatement(LOC(@$), ASMKCPSM3_LABEL, new CompilerExpr($1, LOC(@$)));}
+      LABEL                         {$$=new CompilerStatement(LOC(@$), ASMPICOBLAZE_LABEL, new CompilerExpr($1, LOC(@$)));}
 ;
 expr:
-      id                            { $$ = $id; }
-    | number                        { $$ = $number; }
-    | "(" expr ")"                  { $$ = $2; }
-    | F_LOW  "(" expr ")"           { $$ = new CompilerExpr(CompilerExpr::OPER_LOW, $3, LOC(@$)); }
-    | F_HIGH "(" expr ")"           { $$ = new CompilerExpr(CompilerExpr::OPER_HIGH, $3, LOC(@$)); }
-    | "-" expr %prec UMINUS         { $$ = new CompilerExpr($2, CompilerExpr::OPER_ADD_INV, LOC(@$)); }
+      id                            { $$ = $id;                                                        }
+    | number                        { $$ = $number;                                                    }
+    | "(" expr ")"                  { $$ = $2;                                                         }
+    | F_LOW  "(" expr ")"           { $$ = new CompilerExpr(CompilerExpr::OPER_LOW, $3, LOC(@$));      }
+    | F_HIGH "(" expr ")"           { $$ = new CompilerExpr(CompilerExpr::OPER_HIGH, $3, LOC(@$));     }
+    | "-" expr %prec UMINUS         { $$ = new CompilerExpr($2, CompilerExpr::OPER_ADD_INV, LOC(@$));  }
     | "+" expr %prec UPLUS          { $$ = new CompilerExpr($2, CompilerExpr::OPER_INT_PROM, LOC(@$)); }
-    | "~" expr                      { $$ = new CompilerExpr($2, '~', LOC(@$)); }
-    | "!" expr                      { $$ = new CompilerExpr($2, '!', LOC(@$)); }
-    | expr "+"  expr                { $$ = new CompilerExpr($1, '+', $3, LOC(@$)); }
-    | expr "-"  expr                { $$ = new CompilerExpr($1, '-', $3, LOC(@$)); }
-    | expr "*"  expr                { $$ = new CompilerExpr($1, '*', $3, LOC(@$)); }
-    | expr "/"  expr                { $$ = new CompilerExpr($1, '/', $3, LOC(@$)); }
-    | expr "%"  expr                { $$ = new CompilerExpr($1, '%', $3, LOC(@$)); }
-    | expr "|"  expr                { $$ = new CompilerExpr($1, '|', $3, LOC(@$)); }
-    | expr "^"  expr                { $$ = new CompilerExpr($1, '^', $3, LOC(@$)); }
-    | expr "&"  expr                { $$ = new CompilerExpr($1, '&', $3, LOC(@$)); }
-    | expr "<"  expr                { $$ = new CompilerExpr($1, '<', $3, LOC(@$)); }
-    | expr ">"  expr                { $$ = new CompilerExpr($1, '>', $3, LOC(@$)); }
-    | expr "||" expr                { $$ = new CompilerExpr($1, CompilerExpr::OPER_LOR, $3, LOC(@$)); }
+    | "~" expr                      { $$ = new CompilerExpr($2, '~', LOC(@$));                         }
+    | "!" expr                      { $$ = new CompilerExpr($2, '!', LOC(@$));                         }
+    | expr "+"  expr                { $$ = new CompilerExpr($1, '+', $3, LOC(@$));                     }
+    | expr "-"  expr                { $$ = new CompilerExpr($1, '-', $3, LOC(@$));                     }
+    | expr "*"  expr                { $$ = new CompilerExpr($1, '*', $3, LOC(@$));                     }
+    | expr "/"  expr                { $$ = new CompilerExpr($1, '/', $3, LOC(@$));                     }
+    | expr "%"  expr                { $$ = new CompilerExpr($1, '%', $3, LOC(@$));                     }
+    | expr "|"  expr                { $$ = new CompilerExpr($1, '|', $3, LOC(@$));                     }
+    | expr "^"  expr                { $$ = new CompilerExpr($1, '^', $3, LOC(@$));                     }
+    | expr "&"  expr                { $$ = new CompilerExpr($1, '&', $3, LOC(@$));                     }
+    | expr "<"  expr                { $$ = new CompilerExpr($1, '<', $3, LOC(@$));                     }
+    | expr ">"  expr                { $$ = new CompilerExpr($1, '>', $3, LOC(@$));                     }
+    | expr "||" expr                { $$ = new CompilerExpr($1, CompilerExpr::OPER_LOR, $3, LOC(@$));  }
     | expr "&&" expr                { $$ = new CompilerExpr($1, CompilerExpr::OPER_LAND, $3, LOC(@$)); }
-    | expr "==" expr                { $$ = new CompilerExpr($1, CompilerExpr::OPER_EQ, $3, LOC(@$)); }
-    | expr "!=" expr                { $$ = new CompilerExpr($1, CompilerExpr::OPER_NE, $3, LOC(@$)); }
-    | expr "<=" expr                { $$ = new CompilerExpr($1, CompilerExpr::OPER_LE, $3, LOC(@$)); }
-    | expr ">=" expr                { $$ = new CompilerExpr($1, CompilerExpr::OPER_GE, $3, LOC(@$)); }
-    | expr ">>" expr                { $$ = new CompilerExpr($1, CompilerExpr::OPER_SHR, $3, LOC(@$)); }
-    | expr "<<" expr                { $$ = new CompilerExpr($1, CompilerExpr::OPER_SHL, $3, LOC(@$)); }
+    | expr "==" expr                { $$ = new CompilerExpr($1, CompilerExpr::OPER_EQ, $3, LOC(@$));   }
+    | expr "!=" expr                { $$ = new CompilerExpr($1, CompilerExpr::OPER_NE, $3, LOC(@$));   }
+    | expr "<=" expr                { $$ = new CompilerExpr($1, CompilerExpr::OPER_LE, $3, LOC(@$));   }
+    | expr ">=" expr                { $$ = new CompilerExpr($1, CompilerExpr::OPER_GE, $3, LOC(@$));   }
+    | expr ">>" expr                { $$ = new CompilerExpr($1, CompilerExpr::OPER_SHR, $3, LOC(@$));  }
+    | expr "<<" expr                { $$ = new CompilerExpr($1, CompilerExpr::OPER_SHL, $3, LOC(@$));  }
 ;
 args:           // List of arguments without strings, e.g. `(1+3), XYZ, 0x4b'
       args "," expr                 { $$ = $1->appendLink($expr); }
-    | expr                          { $$ = $expr; }
+    | expr                          { $$ = $expr;                 }
 ;
 args_str:       // List of arguments possibly with strings, e.g. `ABC, "XYZ - QWE", 2 * 0x4b'
       args_str "," string           { $$ = $1->appendLink($string); }
-    | args_str "," expr             { $$ = $1->appendLink($expr); }
-    | string                        { $$ = $string; }
-    | expr                          { $$ = $expr; }
+    | args_str "," expr             { $$ = $1->appendLink($expr);   }
+    | string                        { $$ = $string;                 }
+    | expr                          { $$ = $expr;                   }
 ;
 params:         // List of identifiers, e.g. `target, source, offset, size, mode'
       params "," id                 { $$ = $1->appendLink($id); }
-    | id                            { $$ = $id; }
+    | id                            { $$ = $id;                 }
 ;
 opr:            // Matches any operand, intended for error recovery only
       expr                          { $expr->completeDelete(); }
@@ -438,13 +450,14 @@ directive:
     | dir_code      { $$ = $1; }    | dir_error     { $$ = $1; }
     | dir_warning   { $$ = $1; }    | dir_data      { $$ = $1; }
     | dir_limit     { $$ = $1; }    | dir_device    { $$ = $1; }
-    | dir_rt_cond   { $$ = $1; }
+    | dir_rt_cond   { $$ = $1; }    | dir_rtwhile_b { $$ = $1; }
+    | dir_rtfor_b   { $$ = $1; }
 ;
 dir_cond_asm:
       if_block ifelse_block
       else_block dir_endif          {
                                         $$ = new CompilerStatement ( CompilerSourceLocation(),
-                                                                     ASMKCPSM3_COND_ASM );
+                                                                     ASMPICOBLAZE_COND_ASM );
                                         $$->createBranch ( $if_block -> appendLink($ifelse_block)
                                                                      -> appendLink($else_block)
                                                                      -> appendLink($dir_endif) );
@@ -452,7 +465,7 @@ dir_cond_asm:
     | label if_block ifelse_block
       else_block dir_endif          {
                                         $$ = $label->appendLink(new CompilerStatement(CompilerSourceLocation(),
-                                                                                      ASMKCPSM3_COND_ASM));
+                                                                                      ASMPICOBLAZE_COND_ASM));
                                         $$->createBranch ( $if_block -> appendLink($ifelse_block)
                                                                      -> appendLink($else_block)
                                                                      -> appendLink($dir_endif) );
@@ -465,53 +478,53 @@ if_block:
     | dir_ifndef    statements EOL  { $$ = $1->createBranch($2); }
     | dir_ifb       statements EOL  { $$ = $1->createBranch($2); }
     | dir_ifnb      statements EOL  { $$ = $1->createBranch($2); }
-    | dir_if                        { $$ = $1; }
-    | dir_ifn                       { $$ = $1; }
-    | dir_ifdef                     { $$ = $1; }
-    | dir_ifndef                    { $$ = $1; }
-    | dir_ifb                       { $$ = $1; }
-    | dir_ifnb                      { $$ = $1; }
+    | dir_if                        { $$ = $1;                   }
+    | dir_ifn                       { $$ = $1;                   }
+    | dir_ifdef                     { $$ = $1;                   }
+    | dir_ifndef                    { $$ = $1;                   }
+    | dir_ifb                       { $$ = $1;                   }
+    | dir_ifnb                      { $$ = $1;                   }
 ;
 ifelse_block:
-      /* empty */                   { $$ = NULL; }
+      /* empty */                   { $$ = NULL;                 }
     | dir_elseif    statements EOL  { $$ = $1->createBranch($2); }
     | dir_elseifn   statements EOL  { $$ = $1->createBranch($2); }
     | dir_elseifdef statements EOL  { $$ = $1->createBranch($2); }
     | dir_elseifndf statements EOL  { $$ = $1->createBranch($2); }
     | dir_elseifb   statements EOL  { $$ = $1->createBranch($2); }
     | dir_elseifnb  statements EOL  { $$ = $1->createBranch($2); }
-    | dir_elseif                    { $$ = $1; }
-    | dir_elseifn                   { $$ = $1; }
-    | dir_elseifdef                 { $$ = $1; }
-    | dir_elseifndf                 { $$ = $1; }
-    | dir_elseifb                   { $$ = $1; }
-    | dir_elseifnb                  { $$ = $1; }
+    | dir_elseif                    { $$ = $1;                   }
+    | dir_elseifn                   { $$ = $1;                   }
+    | dir_elseifdef                 { $$ = $1;                   }
+    | dir_elseifndf                 { $$ = $1;                   }
+    | dir_elseifb                   { $$ = $1;                   }
+    | dir_elseifnb                  { $$ = $1;                   }
 ;
 else_block:
-      /* empty */                   { $$ = NULL; }
+      /* empty */                   { $$ = NULL;                                 }
     | dir_else statements EOL       { $$ = $dir_else->createBranch($statements); }
-    | dir_else                      { $$ = $dir_else; }
+    | dir_else                      { $$ = $dir_else;                            }
 ;
 dir_endif:
-      D_ENDIF                       { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_ENDIF); }
+      D_ENDIF                       { $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_DIR_ENDIF); }
 ;
 dir_else:
-      D_ELSE                        { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_ELSE); }
+      D_ELSE                        { $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_DIR_ELSE); }
     | label D_ELSE                  {
                                         /* Syntax error */
                                         NO_LABEL_EXPECTED(@label, "ELSE", $label);
-                                        $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_ELSE);
+                                        $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_DIR_ELSE);
                                     }
     | label D_ELSE args             {
                                         /* Syntax error */
                                         NO_ARG_EXPECTED_D("ELSE", $args, @args);
                                         NO_LABEL_EXPECTED(@label, "ELSE", $label);
-                                        $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_ELSE);
+                                        $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_DIR_ELSE);
                                     }
     | D_ELSE args                   {
                                         /* Syntax error */
                                         NO_ARG_EXPECTED_D("ELSE", $args, @args);
-                                        $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_ELSE);
+                                        $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_DIR_ELSE);
                                     }
 ;
 dir_if:
@@ -519,7 +532,7 @@ dir_if:
     | dir_if_a COMMENT EOL          { $$ = $dir_if_a; }
 ;
 dir_if_a:
-      D_IF expr                     { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_IF, $expr); }
+      D_IF expr                     { $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_DIR_IF, $expr); }
     | D_IF                          { /* Syntax error */ $$ = NULL; ARG_REQUIRED_D(@D_IF, "IF"); }
 ;
 dir_ifn:
@@ -527,7 +540,7 @@ dir_ifn:
     | dir_ifn_a COMMENT EOL         { $$ = $dir_ifn_a; }
 ;
 dir_ifn_a:
-      D_IFN expr                    { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_IFN, $expr); }
+      D_IFN expr                    { $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_DIR_IFN, $expr); }
     | D_IFN                         { /* Syntax error */ $$ = NULL; ARG_REQUIRED_D(@D_IFN, "IFN"); }
 ;
 dir_ifdef:
@@ -535,7 +548,7 @@ dir_ifdef:
     | dir_ifdef_a COMMENT EOL       { $$ = $dir_ifdef_a; }
 ;
 dir_ifdef_a:
-      D_IFDEF id                    { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_IFDEF, $id); }
+      D_IFDEF id                    { $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_DIR_IFDEF, $id); }
     | D_IFDEF                       { /* Syntax error */ $$ = NULL; ARG_REQUIRED_D(@D_IFDEF, "IFDEF"); }
 ;
 dir_ifndef:
@@ -543,7 +556,7 @@ dir_ifndef:
     | dir_ifndef_a COMMENT EOL      { $$ = $dir_ifndef_a; }
 ;
 dir_ifndef_a:
-      D_IFNDEF id                   { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_IFNDEF, $id); }
+      D_IFNDEF id                   { $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_DIR_IFNDEF, $id); }
     | D_IFNDEF                      { /* Syntax error */ $$ = NULL; ARG_REQUIRED_D(@D_IFNDEF, "IFNDEF"); }
 ;
 dir_ifb:
@@ -551,7 +564,7 @@ dir_ifb:
     | dir_ifb_a COMMENT EOL         { $$ = $dir_ifb_a; }
 ;
 dir_ifb_a:
-      D_IFB id                      { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_IFB, $id); }
+      D_IFB id                      { $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_DIR_IFB, $id); }
     | D_IFB                         { /* Syntax error */ $$ = NULL; ARG_REQUIRED_D(@D_IFB, "IFB"); }
 ;
 dir_ifnb:
@@ -559,7 +572,7 @@ dir_ifnb:
     | dir_ifnb_a COMMENT EOL        { $$ = $dir_ifnb_a; }
 ;
 dir_ifnb_a:
-      D_IFNB id                     { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_IFNB, $id); }
+      D_IFNB id                     { $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_DIR_IFNB, $id); }
     | D_IFNB                        { /* Syntax error */ $$ = NULL; ARG_REQUIRED_D(@D_IFNB, "IFNB"); }
 ;
 dir_elseif:
@@ -567,7 +580,7 @@ dir_elseif:
     | dir_elseif_a COMMENT EOL      { $$ = $dir_elseif_a; }
 ;
 dir_elseif_a:
-      D_ELSEIF expr                 { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_ELSEIF, $expr); }
+      D_ELSEIF expr                 { $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_DIR_ELSEIF, $expr); }
     | D_ELSEIF                      { /* Syntax Error */ $$ = NULL; ARG_REQUIRED_D(@D_ELSEIF, "ELSEIF"); }
     | label D_ELSEIF expr           {
                                         /* Syntax Error */
@@ -587,7 +600,7 @@ dir_elseifn:
     | dir_elseifn_a COMMENT EOL     { $$ = $dir_elseifn_a; }
 ;
 dir_elseifn_a:
-      D_ELSEIFN expr                { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_ELSEIFN, $expr); }
+      D_ELSEIFN expr                { $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_DIR_ELSEIFN, $expr); }
     | D_ELSEIFN                     {
                                         /* Syntax Error */
                                         $$ = NULL;
@@ -611,7 +624,7 @@ dir_elseifdef:
     | dir_elseifdef_a COMMENT EOL   { $$ = $dir_elseifdef_a; }
 ;
 dir_elseifdef_a:
-      D_ELSEIFDEF expr              { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_ELSEIFDEF, $expr); }
+      D_ELSEIFDEF expr              { $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_DIR_ELSEIFDEF, $expr); }
     | D_ELSEIFDEF                   {
                                         /* Syntax Error */
                                         $$ = NULL;
@@ -635,7 +648,7 @@ dir_elseifndf:
     | dir_elseifndf_a COMMENT EOL   { $$ = $dir_elseifndf_a; }
 ;
 dir_elseifndf_a:
-      D_ELSEIFNDEF expr             { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_ELSEIFNDEF, $expr); }
+      D_ELSEIFNDEF expr             { $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_DIR_ELSEIFNDEF, $expr); }
     | D_ELSEIFNDEF                  {
                                         /* Syntax Error */
                                         $$ = NULL;
@@ -659,7 +672,7 @@ dir_elseifb:
     | dir_elseifb_a COMMENT EOL     { $$ = $dir_elseifb_a; }
 ;
 dir_elseifb_a:
-      D_ELSEIFB expr                { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_ELSEIFB, $expr); }
+      D_ELSEIFB expr                { $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_DIR_ELSEIFB, $expr); }
     | D_ELSEIFB                     {
                                         /* Syntax Error */
                                         $$ = NULL;
@@ -683,7 +696,7 @@ dir_elseifnb:
     | dir_elseifnb_a COMMENT EOL    { $$ = $dir_elseifnb_a; }
 ;
 dir_elseifnb_a:
-      D_ELSEIFNB expr               { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_ELSEIFNB, $expr); }
+      D_ELSEIFNB expr               { $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_DIR_ELSEIFNB, $expr); }
     | D_ELSEIFNB                    {
                                         /* Syntax Error */
                                         $$ = NULL;
@@ -705,8 +718,7 @@ dir_elseifnb_a:
 dir_rt_cond:
       rtif_block rtelseif_block
       rtelse_block dir_rtendif      {
-                                        $$ = new CompilerStatement ( CompilerSourceLocation(),
-                                                                     ASMKCPSM3_RT_COND );
+                                        $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_RT_COND );
                                         $$->createBranch ( $rtif_block -> appendLink($rtelseif_block)
                                                                        -> appendLink($rtelse_block)
                                                                        -> appendLink($dir_rtendif) );
@@ -742,7 +754,7 @@ cndval:
     | "#" number                    { $$ = new CompilerExpr($number, CompilerExpr::OPER_HASH, LOC(@$)); }
 ;
 dir_rtif:
-      M_RTIF cond                   { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_RTIF, $cond); }
+      M_RTIF cond                   { $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_DIR_RTIF, $cond); }
     | M_RTIF                        {
                                         /* Syntax Error */
                                         $$ = NULL;
@@ -762,7 +774,7 @@ dir_rtif:
                                     }
 ;
 dir_rtelseif:
-      M_RTELSEIF cond               { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_RTELSEIF, $cond); }
+      M_RTELSEIF cond               { $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_DIR_RTELSEIF, $cond); }
     | M_RTELSEIF                    {
                                         /* Syntax Error */
                                         $$ = NULL;
@@ -782,30 +794,86 @@ dir_rtelseif:
                                     }
 ;
 dir_rtelse:
-      M_RTELSE                      { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_RTELSE); }
+      M_RTELSE                      { $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_DIR_RTELSE); }
     | label M_RTELSE                {
                                         /* Syntax error */
                                         NO_LABEL_EXPECTED(@label, "RTELSE", $label);
-                                        $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_RTELSE);
+                                        $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_DIR_RTELSE);
                                     }
     | label M_RTELSE args           {
                                         /* Syntax error */
                                         NO_ARG_EXPECTED_D("RTELSE", $args, @args);
                                         NO_LABEL_EXPECTED(@label, "RTELSE", $label);
-                                        $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_RTELSE);
+                                        $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_DIR_RTELSE);
                                     }
     | M_RTELSE args                 {
                                         /* Syntax error */
                                         NO_ARG_EXPECTED_D("RTELSE", $args, @args);
-                                        $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_RTELSE);
+                                        $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_DIR_RTELSE);
                                     }
 ;
 dir_rtendif:
-      M_RTENDIF                     { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_RTENDIF); }
+      M_RTENDIF                     { $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_DIR_RTENDIF); }
+;
+dir_rtwhile_b:
+      dir_rtwhile statements EOL
+      dir_rtendw                    { $$ = $dir_rtwhile->createBranch($statements->appendLink($dir_rtendw)); }
+;
+dir_rtwhile:
+      M_RTWHILE cond                { $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_DIR_RTWHILE, $cond); }
+    | M_RTWHILE                     {
+                                        /* Syntax Error */
+                                        $$ = NULL;
+                                        ARG_REQUIRED_D(@M_RTWHILE, "RTWHILE");
+                                    }
+    | label M_RTWHILE expr          {
+                                        /* Syntax Error */
+                                        $$ = NULL;
+                                        NO_LABEL_EXPECTED(@label, "RTWHILE", $label);
+                                        $expr->completeDelete();
+                                    }
+    | label M_RTWHILE               {
+                                        /* Syntax Error */
+                                        $$ = NULL;
+                                        ARG_REQUIRED_D(@M_RTWHILE, "RTWHILE");
+                                        NO_LABEL_EXPECTED(@label, "RTWHILE", $label);
+                                    }
+;
+dir_rtendw:
+      M_RTENDW                      { $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_DIR_RTENDW); }
+;
+dir_rtfor_b:
+      dir_rtfor statements EOL
+      dir_rtendf                    { $$ = $dir_rtfor->createBranch($statements->appendLink($dir_rtendf)); }
+;
+dir_rtfor:
+      M_RTFOR id "," expr           {
+                                        $$ = new CompilerStatement ( LOC(@$),
+                                                                     ASMPICOBLAZE_DIR_RTFOR,
+                                                                     $id->appendLink($expr) );
+                                    }
+    | M_RTFOR id "," expr ".." expr {
+                                        $$ = new CompilerStatement ( LOC(@$),
+                                                                     ASMPICOBLAZE_DIR_RTFOR,
+                                                                     $id->appendLink($4)->appendLink($6) );
+                                    }
+    | M_RTFOR id "," expr ".." expr
+      "," expr
+                                    {
+                                        $id->appendLink($4)->appendLink($6)->appendLink($8);
+                                        $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_DIR_RTFOR, $id);
+                                    }
+;
+dir_rtendf:
+      M_RTENDF                      { $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_DIR_RTENDF); }
 ;
 dir_org:
-      D_ORG expr                    { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_ORG, $expr); }
-    | label D_ORG expr              { $$ = $label->appendLink(new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_ORG, $expr)); }
+      D_ORG expr                    { $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_DIR_ORG, $expr); }
+    | label D_ORG expr              {
+                                        $$ = $label->appendLink ( new CompilerStatement ( LOC(@$),
+                                                                                          ASMPICOBLAZE_DIR_ORG,
+                                                                                          $expr ) );
+                                    }
     | D_ORG                         {
                                         /* Syntax error */
                                         $$ = NULL;
@@ -819,8 +887,12 @@ dir_org:
                                     }
 ;
 dir_skip:
-      D_SKIP expr                   { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_SKIP, $expr); }
-    | label D_SKIP expr             { $$ = $label->appendLink(new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_SKIP, $expr)); }
+      D_SKIP expr                   { $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_DIR_SKIP, $expr); }
+    | label D_SKIP expr             {
+                                        $$ = $label->appendLink ( new CompilerStatement ( LOC(@$),
+                                                                                          ASMPICOBLAZE_DIR_SKIP,
+                                                                                          $expr ) );
+                                    }
     | D_SKIP                        {
                                         /* Syntax error */
                                         $$ = NULL;
@@ -834,8 +906,8 @@ dir_skip:
                                     }
 ;
 dir_local:
-      D_LOCAL id                    { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_LOCAL, $id); }
-    | label D_LOCAL id              { $$ = $label->appendLink(new CompilerStatement(LOC(@$), ASMKCPSM3_LOCAL, $id)); }
+      D_LOCAL id                    { $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_LOCAL, $id); }
+    | label D_LOCAL id              { $$ = $label->appendLink(new CompilerStatement(LOC(@$), ASMPICOBLAZE_LOCAL, $id));}
     | D_LOCAL                       {
                                         /* Syntax error */
                                         $$ = NULL;
@@ -849,8 +921,8 @@ dir_local:
                                     }
 ;
 dir_exitm:
-      D_EXITM                       { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_EXITM); }
-    | label D_EXITM                 { $$ = $label->appendLink(new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_EXITM)); }
+      D_EXITM                       { $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_DIR_EXITM); }
+    | label D_EXITM                 { $$ = $label->appendLink(new CompilerStatement(LOC(@$), ASMPICOBLAZE_DIR_EXITM)); }
     | D_EXITM args                  {
                                         /* Syntax error */
                                         $$ = NULL;
@@ -864,8 +936,8 @@ dir_exitm:
                                     }
 ;
 dir_list:
-      D_LIST                        { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_LIST); }
-    | label D_LIST                  { $$ = $label->appendLink(new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_LIST)); }
+      D_LIST                        { $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_DIR_LIST); }
+    | label D_LIST                  { $$ = $label->appendLink(new CompilerStatement(LOC(@$), ASMPICOBLAZE_DIR_LIST)); }
     | D_LIST args                   {
                                         /* Syntax error */
                                         $$ = NULL;
@@ -879,8 +951,8 @@ dir_list:
                                     }
 ;
 dir_nolist:
-      D_NOLIST                      { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_NOLIST); }
-    | label D_NOLIST                { $$ = $label->appendLink(new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_NOLIST)); }
+      D_NOLIST                      { $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_DIR_NOLIST); }
+    | label D_NOLIST                { $$ = $label->appendLink(new CompilerStatement(LOC(@$),ASMPICOBLAZE_DIR_NOLIST)); }
     | D_NOLIST args                 {
                                         /* Syntax error */
                                         $$ = NULL;
@@ -894,7 +966,7 @@ dir_nolist:
                                     }
 ;
 dir_set:
-      id D_SET expr                 { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_SET, $id->appendLink($expr)); }
+      id D_SET expr                 { $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_DIR_SET,$id->appendLink($expr));}
     | id D_SET                      {
                                         /* Syntax error */
                                         $$ = NULL;
@@ -922,11 +994,11 @@ dir_set:
     | label id D_SET expr           {
                                         /* Syntax error */
                                         $$ = NULL;
-                                        NO_LABEL_EXPECTED(@label, "SET", $label->appendArgsLink($id->appendLink($expr)));
+                                        NO_LABEL_EXPECTED(@label,"SET",$label->appendArgsLink($id->appendLink($expr)));
                                     }
 ;
 dir_equ:
-      id D_EQU expr                 { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_EQU, $id->appendLink($expr)); }
+      id D_EQU expr                 { $$ = new CompilerStatement(LOC(@$),ASMPICOBLAZE_DIR_EQU,$id->appendLink($expr));}
     | id D_EQU                      {
                                         /* Syntax error */
                                         $$ = NULL;
@@ -954,11 +1026,11 @@ dir_equ:
     | label id D_EQU expr           {
                                         /* Syntax error */
                                         $$ = NULL;
-                                        NO_LABEL_EXPECTED(@label, "EQU", $label->appendArgsLink($id->appendLink($expr)));
+                                        NO_LABEL_EXPECTED(@label,"EQU",$label->appendArgsLink($id->appendLink($expr)));
                                     }
 ;
 dir_reg:
-      id D_REG expr                 { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_REG, $id->appendLink($expr)); }
+      id D_REG expr                 { $$ = new CompilerStatement(LOC(@$),ASMPICOBLAZE_DIR_REG,$id->appendLink($expr)); }
     | id D_REG                      {
                                         /* Syntax error */
                                         $$ = NULL;
@@ -986,11 +1058,11 @@ dir_reg:
     | label id D_REG expr           {
                                         /* Syntax error */
                                         $$ = NULL;
-                                        NO_LABEL_EXPECTED(@label, "REG", $label->appendArgsLink($id->appendLink($expr)));
+                                        NO_LABEL_EXPECTED(@label,"REG",$label->appendArgsLink($id->appendLink($expr)));
                                     }
 ;
 dir_undefine:
-      D_UNDEFINE id                 { $$ = new CompilerStatement(LOC(@$),ASMKCPSM3_DIR_UNDEFINE,$id); }
+      D_UNDEFINE id                 { $$ = new CompilerStatement(LOC(@$),ASMPICOBLAZE_DIR_UNDEFINE,$id); }
     | D_UNDEFINE                    {
                                         /* Syntax error */
                                         $$ = NULL;
@@ -1009,7 +1081,7 @@ dir_undefine:
                                     }
 ;
 dir_define:
-      id D_DEFINE expr              { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_DEFINE, $id->appendLink($expr)); }
+      id D_DEFINE expr              { $$=new CompilerStatement(LOC(@$),ASMPICOBLAZE_DIR_DEFINE,$id->appendLink($expr));}
     | id D_DEFINE                   {
                                         /* Syntax error */
                                         $$ = NULL;
@@ -1037,7 +1109,9 @@ dir_define:
     | label id D_DEFINE expr        {
                                         /* Syntax error */
                                         $$ = NULL;
-                                        NO_LABEL_EXPECTED(@label, "DEFINE", $label->appendArgsLink($id->appendLink($expr)));
+                                        NO_LABEL_EXPECTED(@label,
+                                                          "DEFINE",
+                                                          $label->appendArgsLink($id->appendLink($expr)));
                                     }
 ;
 dir_macro:
@@ -1054,7 +1128,7 @@ dir_macro_d:
     | dir_macro_a params COMMENT EOL{ $$ = $dir_macro_a->appendArgsLink($params); }
 ;
 dir_macro_a:
-      id D_MACRO                    { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_MACRO, $id); }
+      id D_MACRO                    { $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_DIR_MACRO, $id); }
     | D_MACRO                       { /* Syntax error */ $$ = NULL; DECL_ID_EXPECTED(@D_MACRO, "MACRO"); }
     | label D_MACRO                 {
                                         /* Syntax error */
@@ -1070,51 +1144,54 @@ dir_endm:
     | label dir_endm_a              { $$ = $label->appendLink($dir_endm_a); }
 ;
 dir_endm_a:
-      D_ENDM                        { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_ENDM); }
+      D_ENDM                        { $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_DIR_ENDM); }
     | D_ENDM args                   { /* Syntax error */ $$ = NULL; NO_ARG_EXPECTED_D("ENDM", $args, @args); }
 ;
 dir_include:
       INCLUDE                       {
-                                        CompilerSourceLocation location = compiler -> toSourceLocation ( compiler -> m_yyllocStack.back() );
+                                        CompilerSourceLocation location = compiler->toSourceLocation
+                                                                            ( compiler -> m_yyllocStack.back() );
                                         location.m_fileNumber = compiler -> getFileNumber(1);
 
                                         CompilerExpr * arg = new CompilerExpr(compiler->getFileNumber($INCLUDE));
                                         delete [] $INCLUDE;
                                         $$ = new CompilerStatement ( location,
-                                                                     ASMKCPSM3_INCLUDE,
+                                                                     ASMPICOBLAZE_INCLUDE,
                                                                      arg );
                                     }
     | label INCLUDE                 {
-                                        CompilerSourceLocation location = compiler -> toSourceLocation ( compiler -> m_yyllocStack.back() );
+                                        CompilerSourceLocation location = compiler->toSourceLocation
+                                                                              ( compiler -> m_yyllocStack.back() );
                                         location.m_fileNumber = compiler -> getFileNumber(1);
 
 
                                         CompilerExpr * arg = new CompilerExpr(compiler->getFileNumber($INCLUDE));
                                         delete [] $INCLUDE;
                                         $$ = $label->appendLink ( new CompilerStatement ( location,
-                                                                                          ASMKCPSM3_INCLUDE,
+                                                                                          ASMPICOBLAZE_INCLUDE,
                                                                                           arg ) );
                                     }
 ;
 dir_end:
-      D_END                         { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_END); }
-    | label D_END                   { $$ = $label->appendLink(new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_END)); }
+      D_END                         { $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_DIR_END); }
+    | label D_END                   { $$ = $label->appendLink(new CompilerStatement(LOC(@$), ASMPICOBLAZE_DIR_END)); }
     | D_END args                    {
                                         /* Syntax error */
                                         NO_ARG_EXPECTED_D("END", $args, @args);
-                                        $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_END);
+                                        $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_DIR_END);
                                     }
     | label D_END args              {
                                         /* Syntax error */
                                         NO_ARG_EXPECTED_D("END", $args, @args);
-                                        $$ = $label->appendLink(new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_END));
+                                        $$ = $label->appendLink(new CompilerStatement(LOC(@$), ASMPICOBLAZE_DIR_END));
                                     }
 ;
 dir_constant:
-      D_CONSTANT id "," expr        { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_EQU, $id->appendLink($expr)); }
+      D_CONSTANT id "," expr        { $$ = new CompilerStatement(LOC(@$),ASMPICOBLAZE_DIR_EQU,$id->appendLink($expr)); }
     | label D_CONSTANT id "," expr  {
                                         $$ = $label -> appendLink ( new CompilerStatement ( LOC(@$),
-                                                                                            ASMKCPSM3_DIR_EQU, $id -> appendLink ( $expr ) ) );
+                                                                                            ASMPICOBLAZE_DIR_EQU,
+                                                                                            $id -> appendLink($expr) ));
                                     }
     | D_CONSTANT expr               {
                                         /* Syntax error */
@@ -1131,10 +1208,11 @@ dir_constant:
                                     }
 ;
 dir_variable:
-      D_VARIABLE id "," expr        { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_SET, $id->appendLink($expr)); }
+      D_VARIABLE id "," expr        { $$ = new CompilerStatement(LOC(@$),ASMPICOBLAZE_DIR_SET,$id->appendLink($expr)); }
     | label D_VARIABLE id "," expr  {
                                         $$ = $label -> appendLink ( new CompilerStatement ( LOC(@$),
-                                                                                            ASMKCPSM3_DIR_SET, $id -> appendLink ( $expr ) ) );
+                                                                                            ASMPICOBLAZE_DIR_SET,
+                                                                                            $id->appendLink($expr) ) );
                                     }
     | D_VARIABLE expr               {
                                         /* Syntax error */
@@ -1151,10 +1229,11 @@ dir_variable:
                                     }
 ;
 dir_namereg:
-      D_NAMEREG expr "," id        { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_REG, $id->appendLink($expr)); }
+      D_NAMEREG expr "," id        { $$ = new CompilerStatement(LOC(@$),ASMPICOBLAZE_DIR_REG,$id->appendLink($expr)); }
     | label D_NAMEREG expr "," id  {
                                         $$ = $label -> appendLink ( new CompilerStatement ( LOC(@$),
-                                                                                            ASMKCPSM3_DIR_REG, $id -> appendLink ( $expr ) ) );
+                                                                                            ASMPICOBLAZE_DIR_REG,
+                                                                                            $id->appendLink($expr) ) );
                                     }
     | D_NAMEREG expr                {
                                         /* Syntax error */
@@ -1178,11 +1257,11 @@ dir_repeat:
       dir_endr                      { $$ = $dir_rept->createBranch($dir_endr); }
 ;
 dir_rept:
-      D_REPT expr COMMENT           { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_REPT, $expr); }
-    | D_REPT expr                   { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_REPT, $expr); }
-    | D_REPT COMMENT                { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_REPT); }
-    | label D_REPT expr COMMENT     { $$ = $label->appendLink(new CompilerStatement(LOC(@$),ASMKCPSM3_DIR_REPT,$expr));}
-    | label D_REPT expr             { $$ = $label->appendLink(new CompilerStatement(LOC(@$),ASMKCPSM3_DIR_REPT,$expr));}
+      D_REPT expr COMMENT           { $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_DIR_REPT, $expr); }
+    | D_REPT expr                   { $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_DIR_REPT, $expr); }
+    | D_REPT COMMENT                { $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_DIR_REPT); }
+    | label D_REPT expr COMMENT     {$$=$label->appendLink(new CompilerStatement(LOC(@$),ASMPICOBLAZE_DIR_REPT,$expr));}
+    | label D_REPT expr             {$$=$label->appendLink(new CompilerStatement(LOC(@$),ASMPICOBLAZE_DIR_REPT,$expr));}
     | D_REPT                        { /* Syntax error */ $$ = NULL;   ARG_REQUIRED_D(@D_REPT, "REPT"); }
     | label D_REPT COMMENT          { /* Syntax error */ $$ = $label; ARG_REQUIRED_D(@D_REPT, "REPT"); }
     | label D_REPT                  { /* Syntax error */ $$ = $label; ARG_REQUIRED_D(@D_REPT, "REPT"); }
@@ -1194,7 +1273,7 @@ dir_endr:
     | label dir_endr_a              { $$ = $label->appendLink($dir_endr_a); }
 ;
 dir_endr_a:
-      D_ENDR                        { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_ENDR); }
+      D_ENDR                        { $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_DIR_ENDR); }
     | D_ENDR args                   { /* Syntax error */ $$ = NULL; NO_ARG_EXPECTED_D("ENDR", $args, @args); }
 ;
 dir_while:
@@ -1205,20 +1284,28 @@ dir_while:
       dir_endw                      { $$ = $dir_while_a->createBranch($dir_endw); }
 ;
 dir_while_a:
-      D_WHILE expr COMMENT          { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_WHILE, $expr); }
-    | D_WHILE expr                  { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_WHILE, $expr); }
-    | D_WHILE COMMENT               { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_WHILE); }
-    | label D_WHILE expr COMMENT    { $$=$label->appendLink(new CompilerStatement(LOC(@$),ASMKCPSM3_DIR_WHILE,$expr)); }
-    | label D_WHILE expr            { $$=$label->appendLink(new CompilerStatement(LOC(@$),ASMKCPSM3_DIR_WHILE,$expr)); }
+      D_WHILE expr COMMENT          { $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_DIR_WHILE, $expr); }
+    | D_WHILE expr                  { $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_DIR_WHILE, $expr); }
+    | D_WHILE COMMENT               { $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_DIR_WHILE); }
+    | label D_WHILE expr COMMENT    {
+                                        $$ = $label->appendLink ( new CompilerStatement ( LOC(@$),
+                                                                                          ASMPICOBLAZE_DIR_WHILE,
+                                                                                          $expr ) );
+                                    }
+    | label D_WHILE expr            {
+                                        $$ = $label->appendLink ( new CompilerStatement ( LOC(@$),
+                                                                                          ASMPICOBLAZE_DIR_WHILE,
+                                                                                          $expr ) );
+                                    }
     | D_WHILE                       { /* Syntax error */ $$ = NULL;   ARG_REQUIRED_D(@D_WHILE, "WHILE"); }
     | label D_WHILE COMMENT         { /* Syntax error */ $$ = $label; ARG_REQUIRED_D(@D_WHILE, "WHILE"); }
     | label D_WHILE                 { /* Syntax error */ $$ = $label; ARG_REQUIRED_D(@D_WHILE, "WHILE"); }
 ;
 dir_endw:
-      dir_endw_a COMMENT            { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_ENDW); }
-    | dir_endw_a                    { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_ENDW); }
-    | label dir_endw_a COMMENT      { $$ = $label->appendLink(new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_ENDW)); }
-    | label dir_endw_a              { $$ = $label->appendLink(new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_ENDW)); }
+      dir_endw_a COMMENT            { $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_DIR_ENDW); }
+    | dir_endw_a                    { $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_DIR_ENDW); }
+    | label dir_endw_a COMMENT      { $$ = $label->appendLink(new CompilerStatement(LOC(@$), ASMPICOBLAZE_DIR_ENDW)); }
+    | label dir_endw_a              { $$ = $label->appendLink(new CompilerStatement(LOC(@$), ASMPICOBLAZE_DIR_ENDW)); }
 ;
 dir_endw_a:
       D_ENDW                        { }
@@ -1242,7 +1329,7 @@ dir_limit:
                                         else
                                         {
                                             $$ = new CompilerStatement ( LOC(@$),
-                                                                         ASMKCPSM3_DIR_LIMIT,
+                                                                         ASMPICOBLAZE_DIR_LIMIT,
                                                                          $id->appendLink($expr) );
                                         }
                                     }
@@ -1255,12 +1342,12 @@ dir_limit:
                                     }
 ;
 dir_device:
-      D_DEVICE id                   { $$ = new CompilerStatement ( LOC(@$), ASMKCPSM3_DIR_DEVICE, $id ); }
+      D_DEVICE id                   { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_DIR_DEVICE, $id ); }
     | D_DEVICE string               {
                                         std::string procType ( (const char *) $string->lVal().m_data.m_array.m_data,
                                                                 $string->lVal().m_data.m_array.m_size );
                                         $$ = new CompilerStatement ( LOC(@$),
-                                                                     ASMKCPSM3_DIR_DEVICE,
+                                                                     ASMPICOBLAZE_DIR_DEVICE,
                                                                      new CompilerExpr ( procType, LOC(@string) ) );
                                         compiler->parserMessage ( compiler->toSourceLocation(@string),
                                                                   CompilerBase::MT_WARNING,
@@ -1287,7 +1374,7 @@ dir_device:
                                     }
 ;
 dir_data:
-      id D_DATA expr                { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_DATA, $id->appendLink($expr)); }
+      id D_DATA expr                { $$ = new CompilerStatement(LOC(@$),ASMPICOBLAZE_DIR_DATA,$id->appendLink($expr));}
     | id D_DATA                     {
                                         /* Syntax error */
                                         $$ = NULL;
@@ -1321,7 +1408,7 @@ dir_data:
                                     }
 ;
 dir_port:
-      id D_PORT expr                { $$ = new CompilerStatement(LOC(@$),ASMKCPSM3_DIR_PORT,$id->appendLink($expr)); }
+      id D_PORT expr                { $$ = new CompilerStatement(LOC(@$),ASMPICOBLAZE_DIR_PORT,$id->appendLink($expr));}
     | id D_PORT                     {
                                         /* Syntax error */
                                         $$ = NULL;
@@ -1363,13 +1450,17 @@ dir_autoreg:
                                     }
 ;
 dir_autoreg_a:
-      id D_AUTOREG                  { $$ = new CompilerStatement(LOC(@$),ASMKCPSM3_DIR_AUTOREG,$id); }
-    | id D_AUTOREG AT expr          { $$ = new CompilerStatement(LOC(@$),ASMKCPSM3_DIR_AUTOREG,$id->appendLink($expr));}
+      id D_AUTOREG                  { $$ = new CompilerStatement(LOC(@$),ASMPICOBLAZE_DIR_AUTOREG,$id); }
+    | id D_AUTOREG AT expr          {
+                                        $$ = new CompilerStatement ( LOC(@$),
+                                                                     ASMPICOBLAZE_DIR_AUTOREG,
+                                                                     $id->appendLink ( $expr ) );
+                                    }
     | id D_AUTOREG expr             {
                                         /* Syntax error */
                                         MISSING_AT_OPERATOR(@D_AUTOREG, "AUTOREG");
                                         $$ = new CompilerStatement ( LOC(@$),
-                                                                     ASMKCPSM3_DIR_AUTOREG,
+                                                                     ASMPICOBLAZE_DIR_AUTOREG,
                                                                      $id->appendLink($expr) );
                                     }
     | D_AUTOREG                     {
@@ -1400,12 +1491,18 @@ dir_autospr:
                                     }
 ;
 dir_autospr_a:
-      id D_AUTOSPR                  { $$ = new CompilerStatement(LOC(@$),ASMKCPSM3_DIR_AUTOSPR,$id); }
-    | id D_AUTOSPR AT expr          { $$ = new CompilerStatement(LOC(@$),ASMKCPSM3_DIR_AUTOSPR,$id->appendLink($expr));}
+      id D_AUTOSPR                  { $$ = new CompilerStatement(LOC(@$),ASMPICOBLAZE_DIR_AUTOSPR,$id); }
+    | id D_AUTOSPR AT expr          {
+                                        $$ = new CompilerStatement ( LOC(@$),
+                                                                     ASMPICOBLAZE_DIR_AUTOSPR,
+                                                                     $id->appendLink ( $expr ) );
+                                    }
     | id D_AUTOSPR expr             {
                                         /* Syntax error */
                                         MISSING_AT_OPERATOR(@D_AUTOSPR, "AUTOSPR");
-                                        $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_AUTOSPR, $id->appendLink($expr));
+                                        $$ = new CompilerStatement ( LOC(@$),
+                                                                     ASMPICOBLAZE_DIR_AUTOSPR,
+                                                                     $id->appendLink ( $expr ) );
                                     }
     | D_AUTOSPR                     {
                                         /* Syntax error */
@@ -1431,14 +1528,14 @@ dir_db:
     | label dir_db_a                { $$ = $label->appendLink($dir_db_a); }
 ;
 dir_db_a:
-      D_DB args_str                 { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_DB, $args_str); }
+      D_DB args_str                 { $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_DIR_DB, $args_str); }
     | D_DB                          { /* Syntax error */ $$ = NULL; ARG_REQUIRED_D(@D_DB, "DB"); }
 ;
 dir_error:
-      D_ERROR string                { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_ERROR, $string); }
+      D_ERROR string                { $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_DIR_ERROR, $string); }
     | label D_ERROR string          {
                                         $$ = $label -> appendLink ( new CompilerStatement ( LOC(@$),
-                                                                                            ASMKCPSM3_DIR_ERROR,
+                                                                                            ASMPICOBLAZE_DIR_ERROR,
                                                                                             $string ) );
                                     }
     | label D_ERROR                 {
@@ -1450,10 +1547,10 @@ dir_error:
     | D_ERROR                       { /* Syntax error */ $$ = NULL; ARG_REQUIRED_D(@D_ERROR, "ERROR"); }
 ;
 dir_warning:
-      D_WARNING string              { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_WARNING, $string); }
+      D_WARNING string              { $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_DIR_WARNING, $string); }
     | label D_WARNING string        {
                                         $$ = $label -> appendLink ( new CompilerStatement ( LOC(@$),
-                                                                                            ASMKCPSM3_DIR_WARNING,
+                                                                                            ASMPICOBLAZE_DIR_WARNING,
                                                                                             $string ) );
                                     }
     | label D_WARNING               {
@@ -1465,10 +1562,10 @@ dir_warning:
     | D_WARNING                     { /* Syntax error */ $$ = NULL; ARG_REQUIRED_D(@D_WARNING, "WARNING"); }
 ;
 dir_messg:
-      D_MESSG string                { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_MESSG, $string); }
+      D_MESSG string                { $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_DIR_MESSG, $string); }
     | label D_MESSG string          {
                                         $$ = $label -> appendLink ( new CompilerStatement ( LOC(@$),
-                                                                                            ASMKCPSM3_DIR_MESSG,
+                                                                                            ASMPICOBLAZE_DIR_MESSG,
                                                                                             $string ) );
                                     }
     | label D_MESSG                 {
@@ -1480,10 +1577,10 @@ dir_messg:
     | D_MESSG                       { /* Syntax error */ $$ = NULL; ARG_REQUIRED_D(@D_MESSG, "MESSG"); }
 ;
 dir_title:
-      D_TITLE string                { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_TITLE, $string); }
+      D_TITLE string                { $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_DIR_TITLE, $string); }
     | label D_TITLE string          {
                                         $$ = $label -> appendLink ( new CompilerStatement ( LOC(@$),
-                                                                                            ASMKCPSM3_DIR_TITLE,
+                                                                                            ASMPICOBLAZE_DIR_TITLE,
                                                                                             $string ) );
                                     }
     | label D_TITLE                 {
@@ -1499,10 +1596,10 @@ dir_expand:
     | dir_expand_a args             { /* Syntax error */ $$ = $dir_expand_a; NO_ARG_EXPECTED_D("EXPAND",$args,@args); }
 ;
 dir_expand_a:
-      D_EXPAND                      { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_EXPAND); }
+      D_EXPAND                      { $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_DIR_EXPAND); }
     | label D_EXPAND                {
                                         /* Syntax error */
-                                        $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_EXPAND);
+                                        $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_DIR_EXPAND);
                                         NO_LABEL_EXPECTED(@label, "EXPAND", $label);
                                     }
 ;
@@ -1511,10 +1608,10 @@ dir_noexpand:
     | dir_noexpand_a args           { /* Syntax error */ $$=$dir_noexpand_a;NO_ARG_EXPECTED_D("NOEXPAND",$args,@args); }
 ;
 dir_noexpand_a:
-      D_NOEXPAND                    { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_NOEXPAND); }
+      D_NOEXPAND                    { $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_DIR_NOEXPAND); }
     | label D_NOEXPAND              {
                                         /* Syntax error */
-                                        $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_NOEXPAND);
+                                        $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_DIR_NOEXPAND);
                                         NO_LABEL_EXPECTED(@label, "NOEXPAND", $label);
                                     }
 ;
@@ -1523,14 +1620,22 @@ dir_code:
     | label dir_code_a              { /* Syntax error */ $$ = $2; NO_LABEL_EXPECTED(@label, "CODE", $label); }
 ;
 dir_code_a:
-      D_CODE                        { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_CODE); }
+      D_CODE                        { $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_DIR_CODE); }
     | D_CODE expr                   {
                                         $$ = new CompilerStatement ( LOC(@$),
-                                                                     ASMKCPSM3_DIR_CODE,
+                                                                     ASMPICOBLAZE_DIR_CODE,
                                                                      ( new CompilerExpr() ) -> appendLink ( $expr ) );
                                     }
-    | id D_CODE                     { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_CODE, $id->appendLink(new CompilerExpr())); }
-    | id D_CODE expr                { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_DIR_CODE, $id->appendLink($expr)); }
+    | id D_CODE                     {
+                                        $$ = new CompilerStatement ( LOC(@$),
+                                                                     ASMPICOBLAZE_DIR_CODE,
+                                                                     $id->appendLink ( new CompilerExpr()) );
+                                    }
+    | id D_CODE expr                {
+                                        $$ = new CompilerStatement ( LOC(@$),
+                                                                     ASMPICOBLAZE_DIR_CODE,
+                                                                     $id->appendLink ( $expr ) );
+                                    }
 ;
 
 /*
@@ -1543,14 +1648,17 @@ instruction:
     /* Arithmetic Group */
     | inst_add          { $$ = $1; } | inst_addcy       { $$ = $1; }
     | inst_sub          { $$ = $1; } | inst_subcy       { $$ = $1; }
-    | inst_compare      { $$ = $1; }
     /* Interrupt Group */
     | inst_returni      { $$ = $1; } | inst_enable_int  { $$ = $1; }
     | inst_disable_int  { $$ = $1; }
+    /* Register Loading Group */
+    | inst_load         { $$ = $1; } | inst_star        { $$ = $1; }
     /* Logical Group */
-    | inst_load         { $$ = $1; } | inst_and         { $$ = $1; }
-    | inst_or           { $$ = $1; } | inst_xor         { $$ = $1; }
-    | inst_test         { $$ = $1; }
+    | inst_and          { $$ = $1; } | inst_or          { $$ = $1; }
+    | inst_xor          { $$ = $1; }
+    /* Test & Compare Group */
+    | inst_test         { $$ = $1; } | inst_compare     { $$ = $1; }
+    | inst_testcy       { $$ = $1; } | inst_comparecy   { $$ = $1; }
     /* Storage Group */
     | inst_store        { $$ = $1; } | inst_fetch       { $$ = $1; }
     /* Shift And Rotate Group */
@@ -1561,146 +1669,161 @@ instruction:
     | inst_sla          { $$ = $1; } | inst_rl          { $$ = $1; }
     /* Input/Output Group */
     | inst_input        { $$ = $1; } | inst_output      { $$ = $1; }
+    | inst_outputk      { $$ = $1; }
+    /* Version Control Group */
+    | inst_hwbuild      { $$ = $1; }
+    /* Register Bank Selection Group */
+    | inst_regbank      { $$ = $1; }
 ;
 
 /* Program Control Group */
 inst_jump:
-      I_JUMP expr                   { $$ = new CompilerStatement ( LOC(@$), ASMKCPSM3_INS_JUMP_AAA,    $expr ); }
-    | I_JUMP Z "," expr             { $$ = new CompilerStatement ( LOC(@$), ASMKCPSM3_INS_JUMP_Z_AAA,  $expr ); }
-    | I_JUMP NZ "," expr            { $$ = new CompilerStatement ( LOC(@$), ASMKCPSM3_INS_JUMP_NZ_AAA, $expr ); }
-    | I_JUMP C "," expr             { $$ = new CompilerStatement ( LOC(@$), ASMKCPSM3_INS_JUMP_C_AAA,  $expr ); }
-    | I_JUMP NC "," expr            { $$ = new CompilerStatement ( LOC(@$), ASMKCPSM3_INS_JUMP_NC_AAA, $expr ); }
+      I_JUMP expr                   { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_JUMP_AAA,    $expr ); }
+    | I_JUMP Z "," expr             { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_JUMP_Z_AAA,  $expr ); }
+    | I_JUMP NZ "," expr            { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_JUMP_NZ_AAA, $expr ); }
+    | I_JUMP C "," expr             { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_JUMP_C_AAA,  $expr ); }
+    | I_JUMP NC "," expr            { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_JUMP_NC_AAA, $expr ); }
+    | I_JUMP "@"
+      "(" expr "," expr ")"         {
+                                        $$ = new CompilerStatement ( LOC(@$),
+                                                                     ASMPICOBLAZE_INS_JUMP_SX_SY,
+                                                                     $4->appendLink($6) );
+                                    }
     | I_JUMP opr "," opr "," oprs   { /* Syntax Error */ $$ = NULL; NN_OPERANDS_EXPECTED(@1, "JUMP", 1, 2);   }
     | I_JUMP                        { /* Syntax Error */ $$ = NULL; NN_OPERANDS_EXPECTED(@1, "JUMP", 1, 2);   }
     | I_JUMP opr oprs               { /* Syntax Error */ $$ = NULL; MISSIGN_COMMA(@2, NULL);                  }
 ;
 inst_call:
-      I_CALL expr                   { $$ = new CompilerStatement ( LOC(@$), ASMKCPSM3_INS_CALL_AAA,    $expr ); }
-    | I_CALL Z "," expr             { $$ = new CompilerStatement ( LOC(@$), ASMKCPSM3_INS_CALL_Z_AAA,  $expr ); }
-    | I_CALL NZ "," expr            { $$ = new CompilerStatement ( LOC(@$), ASMKCPSM3_INS_CALL_NZ_AAA, $expr ); }
-    | I_CALL C "," expr             { $$ = new CompilerStatement ( LOC(@$), ASMKCPSM3_INS_CALL_C_AAA,  $expr ); }
-    | I_CALL NC "," expr            { $$ = new CompilerStatement ( LOC(@$), ASMKCPSM3_INS_CALL_NC_AAA, $expr ); }
+      I_CALL expr                   { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_CALL_AAA,    $expr ); }
+    | I_CALL Z "," expr             { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_CALL_Z_AAA,  $expr ); }
+    | I_CALL NZ "," expr            { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_CALL_NZ_AAA, $expr ); }
+    | I_CALL C "," expr             { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_CALL_C_AAA,  $expr ); }
+    | I_CALL NC "," expr            { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_CALL_NC_AAA, $expr ); }
+    | I_CALL "@"
+      "(" expr "," expr ")"         {
+                                        $$ = new CompilerStatement ( LOC(@$),
+                                                                     ASMPICOBLAZE_INS_CALL_SX_SY,
+                                                                     $4->appendLink($6) );
+                                    }
     | I_CALL opr "," opr "," oprs   { /* Syntax Error */ $$ = NULL; NN_OPERANDS_EXPECTED(@1, "CALL", 1, 2);   }
     | I_CALL                        { /* Syntax Error */ $$ = NULL; NN_OPERANDS_EXPECTED(@1, "CALL", 1, 2);   }
     | I_CALL opr oprs               { /* Syntax Error */ $$ = NULL; MISSIGN_COMMA(@2, NULL);                  }
 ;
 inst_return:
-      I_RETURN                      { $$ = new CompilerStatement ( LOC(@$), ASMKCPSM3_INS_RETURN    ); }
-    | I_RETURN Z                    { $$ = new CompilerStatement ( LOC(@$), ASMKCPSM3_INS_RETURN_Z  ); }
-    | I_RETURN NZ                   { $$ = new CompilerStatement ( LOC(@$), ASMKCPSM3_INS_RETURN_NZ ); }
-    | I_RETURN C                    { $$ = new CompilerStatement ( LOC(@$), ASMKCPSM3_INS_RETURN_C  ); }
-    | I_RETURN NC                   { $$ = new CompilerStatement ( LOC(@$), ASMKCPSM3_INS_RETURN_NC ); }
+      I_RETURN                      { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_RETURN    ); }
+    | I_RETURN Z                    { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_RETURN_Z  ); }
+    | I_RETURN NZ                   { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_RETURN_NZ ); }
+    | I_RETURN C                    { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_RETURN_C  ); }
+    | I_RETURN NC                   { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_RETURN_NC ); }
     | I_RETURN opr "," oprs         { /* Syntax Error */ $$ = NULL; NN_OPERANDS_EXPECTED(@1, "RETURN", 1, 2); }
 ;
 /* Arithmetic Group */
 inst_add:
-      I_ADD expr "," "#" expr       { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_INS_ADD_SX_KK, $2->appendLink($5));}
-    | I_ADD expr "," expr           { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_INS_ADD_SX_SY, $2->appendLink($4));}
+      I_ADD expr "," "#" expr       { $$=new CompilerStatement(LOC(@$),ASMPICOBLAZE_INS_ADD_SX_KK,$2->appendLink($5)); }
+    | I_ADD expr "," expr           { $$=new CompilerStatement(LOC(@$),ASMPICOBLAZE_INS_ADD_SX_SY,$2->appendLink($4)); }
     | I_ADD eopr "," eopr "," eoprs { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "ADD", 2);                 }
     | I_ADD eopr                    { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "ADD", 2);                 }
     | I_ADD                         { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "ADD", 2);                 }
     | I_ADD eopr eoprs              { /* Syntax Error */ $$ = NULL; MISSIGN_COMMA(@2, NULL);                           }
 ;
 inst_addcy:
-      I_ADDCY expr "," "#" expr     { $$ = new CompilerStatement(LOC(@$),ASMKCPSM3_INS_ADDCY_SX_KK,$2->appendLink($5));}
-    | I_ADDCY expr "," expr         { $$ = new CompilerStatement(LOC(@$),ASMKCPSM3_INS_ADDCY_SX_SY,$2->appendLink($4));}
+      I_ADDCY expr "," "#" expr     {$$=new CompilerStatement(LOC(@$),ASMPICOBLAZE_INS_ADDCY_SX_KK,$2->appendLink($5));}
+    | I_ADDCY expr "," expr         {$$=new CompilerStatement(LOC(@$),ASMPICOBLAZE_INS_ADDCY_SX_SY,$2->appendLink($4));}
     | I_ADDCY eopr "," eopr "," eoprs { /* Syntax Error */ $$=NULL; N_OPERANDS_EXPECTED(@1, "ADDCY", 2);               }
     | I_ADDCY eopr                  { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "ADDCY", 2);               }
     | I_ADDCY                       { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "ADDCY", 2);               }
     | I_ADDCY eopr eoprs            { /* Syntax Error */ $$ = NULL; MISSIGN_COMMA(@2, NULL);                           }
 ;
 inst_sub:
-      I_SUB expr "," "#" expr       { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_INS_SUB_SX_KK, $2->appendLink($5)); }
-    | I_SUB expr "," expr           { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_INS_SUB_SX_SY, $2->appendLink($4)); }
-    | I_SUB eopr "," eopr "," eoprs { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "SUB", 2);                }
-    | I_SUB eopr                    { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "SUB", 2);                }
-    | I_SUB                         { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "SUB", 2);                }
-    | I_SUB eopr eoprs              { /* Syntax Error */ $$ = NULL; MISSIGN_COMMA(@2, NULL);                          }
+      I_SUB expr "," "#" expr       { $$=new CompilerStatement(LOC(@$),ASMPICOBLAZE_INS_SUB_SX_KK,$2->appendLink($5)); }
+    | I_SUB expr "," expr           { $$=new CompilerStatement(LOC(@$),ASMPICOBLAZE_INS_SUB_SX_SY,$2->appendLink($4)); }
+    | I_SUB eopr "," eopr "," eoprs { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "SUB", 2);                 }
+    | I_SUB eopr                    { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "SUB", 2);                 }
+    | I_SUB                         { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "SUB", 2);                 }
+    | I_SUB eopr eoprs              { /* Syntax Error */ $$ = NULL; MISSIGN_COMMA(@2, NULL);                           }
 ;
 inst_subcy:
-      I_SUBCY expr "," "#" expr     { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_INS_SUBCY_SX_KK, $2->appendLink($5));}
-    | I_SUBCY expr "," expr         { $$ = new CompilerStatement(LOC(@$), ASMKCPSM3_INS_SUBCY_SX_SY, $2->appendLink($4));}
+      I_SUBCY expr "," "#" expr     {$$=new CompilerStatement(LOC(@$),ASMPICOBLAZE_INS_SUBCY_SX_KK,$2->appendLink($5));}
+    | I_SUBCY expr "," expr         {$$=new CompilerStatement(LOC(@$),ASMPICOBLAZE_INS_SUBCY_SX_SY,$2->appendLink($4));}
     | I_SUBCY eopr "," eopr "," eoprs { /* Syntax Error */ $$=NULL; N_OPERANDS_EXPECTED(@1, "SUBCY", 2);               }
     | I_SUBCY eopr                  { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "SUBCY", 2);               }
     | I_SUBCY                       { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "SUBCY", 2);               }
     | I_SUBCY eopr eoprs            { /* Syntax Error */ $$ = NULL; MISSIGN_COMMA(@2, NULL);                           }
 ;
-inst_compare:
-      I_COMPARE expr "," "#" expr   { $$=new CompilerStatement(LOC(@$),ASMKCPSM3_INS_COMPARE_SX_KK,$2->appendLink($5));}
-    | I_COMPARE expr "," expr       { $$=new CompilerStatement(LOC(@$),ASMKCPSM3_INS_COMPARE_SX_SY,$2->appendLink($4));}
-    | I_COMPARE eopr "," eopr "," eoprs {/* Syntax Error */$$=NULL; N_OPERANDS_EXPECTED(@1, "COMPARE", 2);             }
-    | I_COMPARE eopr                { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "COMPARE", 2);             }
-    | I_COMPARE                     { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "COMPARE", 2);             }
-    | I_COMPARE eopr eoprs          { /* Syntax Error */ $$ = NULL; MISSIGN_COMMA(@2, NULL);                           }
-;
 /* Interrupt Group */
 inst_returni:
-      I_RETURNI_ENA                 { $$ = new CompilerStatement ( LOC(@$), ASMKCPSM3_INS_RETURNI_ENA );           }
-    | I_RETURNI_DIS                 { $$ = new CompilerStatement ( LOC(@$), ASMKCPSM3_INS_RETURNI_DIS );           }
-    | I_RETURNI_ENA eoprs           { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "RETURNI ENABLE", 0);  }
-    | I_RETURNI_DIS eoprs           { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "RETURNI DISABLE", 0); }
+      I_RETURNI_ENA                 { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_RETURNI_ENA );           }
+    | I_RETURNI_DIS                 { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_RETURNI_DIS );           }
+    | I_RETURNI_ENA eoprs           { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "RETURNI ENABLE", 0);     }
+    | I_RETURNI_DIS eoprs           { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "RETURNI DISABLE", 0);    }
 ;
 inst_enable_int:
-      I_ENABLE_INT                  { $$ = new CompilerStatement ( LOC(@$), ASMKCPSM3_INS_ENABLE_INT );             }
-    | I_ENABLE_INT eoprs            { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "ENABLE INTERRUPT", 0); }
+      I_ENABLE_INT                  { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_ENABLE_INT );             }
+    | I_ENABLE_INT eoprs            { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "ENABLE INTERRUPT", 0);    }
 ;
 inst_disable_int:
-      I_DISABLE_INT                 { $$ = new CompilerStatement ( LOC(@$), ASMKCPSM3_INS_DISABLE_INT );             }
-    | I_DISABLE_INT eoprs           { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "DISABLE INTERRUPT", 0); }
+      I_DISABLE_INT                 { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_DISABLE_INT );            }
+    | I_DISABLE_INT eoprs           { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "DISABLE INTERRUPT", 0);   }
 ;
-/* Logical Group */
+/* Register Loading Group */
 inst_load:
-      I_LOAD expr "," "#" expr      { $$ = new CompilerStatement(LOC(@$),ASMKCPSM3_INS_LOAD_SX_KK,$2->appendLink($5)); }
-    | I_LOAD expr "," expr          { $$ = new CompilerStatement(LOC(@$),ASMKCPSM3_INS_LOAD_SX_SY,$2->appendLink($4)); }
+      I_LOAD expr "," "#" expr      { $$=new CompilerStatement(LOC(@$),ASMPICOBLAZE_INS_LOAD_SX_KK,$2->appendLink($5));}
+    | I_LOAD expr "," expr          { $$=new CompilerStatement(LOC(@$),ASMPICOBLAZE_INS_LOAD_SX_SY,$2->appendLink($4));}
+    | I_LOAD "&" I_RETURN expr
+      "," "#" expr                  {
+                                        $$ = new CompilerStatement ( LOC(@$),
+                                                                     ASMPICOBLAZE_INS_LD_RET_SX_KK,
+                                                                     $4->appendLink($7) );
+                                    }
     | I_LOAD eopr "," eopr "," eoprs{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "LOAD", 2);                }
     | I_LOAD eopr                   { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "LOAD", 2);                }
     | I_LOAD                        { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "LOAD", 2);                }
     | I_LOAD eopr eoprs             { /* Syntax Error */ $$ = NULL; MISSIGN_COMMA(@2, NULL);                           }
 ;
+inst_star:
+      I_STAR expr "," expr          { $$=new CompilerStatement(LOC(@$),ASMPICOBLAZE_INS_STAR_SX_SY,$2->appendLink($4));}
+    | I_STAR eopr "," eopr "," eoprs{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "LOAD", 2);                }
+    | I_STAR eopr                   { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "LOAD", 2);                }
+    | I_STAR                        { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "LOAD", 2);                }
+    | I_STAR eopr eoprs             { /* Syntax Error */ $$ = NULL; MISSIGN_COMMA(@2, NULL);                           }
+;
+/* Logical Group */
 inst_and:
-      I_AND expr "," "#" expr       { $$ = new CompilerStatement(LOC(@$),ASMKCPSM3_INS_AND_SX_KK,$2->appendLink($5)); }
-    | I_AND expr "," expr           { $$ = new CompilerStatement(LOC(@$),ASMKCPSM3_INS_AND_SX_SY,$2->appendLink($4)); }
-    | I_AND eopr "," eopr "," eoprs { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "AND", 2);                }
-    | I_AND eopr                    { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "AND", 2);                }
-    | I_AND                         { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "AND", 2);                }
-    | I_AND eopr eoprs              { /* Syntax Error */ $$ = NULL; MISSIGN_COMMA(@2, NULL);                          }
+      I_AND expr "," "#" expr       { $$=new CompilerStatement(LOC(@$),ASMPICOBLAZE_INS_AND_SX_KK,$2->appendLink($5)); }
+    | I_AND expr "," expr           { $$=new CompilerStatement(LOC(@$),ASMPICOBLAZE_INS_AND_SX_SY,$2->appendLink($4)); }
+    | I_AND eopr "," eopr "," eoprs { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "AND", 2);                 }
+    | I_AND eopr                    { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "AND", 2);                 }
+    | I_AND                         { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "AND", 2);                 }
+    | I_AND eopr eoprs              { /* Syntax Error */ $$ = NULL; MISSIGN_COMMA(@2, NULL);                           }
 ;
 inst_or:
-      I_OR expr "," "#" expr        { $$ = new CompilerStatement(LOC(@$),ASMKCPSM3_INS_OR_SX_KK,$2->appendLink($5)); }
-    | I_OR expr "," expr            { $$ = new CompilerStatement(LOC(@$),ASMKCPSM3_INS_OR_SX_SY,$2->appendLink($4)); }
-    | I_OR eopr "," eopr "," eoprs  { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "OR", 2);                }
-    | I_OR eopr                     { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "OR", 2);                }
-    | I_OR                          { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "OR", 2);                }
-    | I_OR eopr eoprs               { /* Syntax Error */ $$ = NULL; MISSIGN_COMMA(@2, NULL);                         }
+      I_OR expr "," "#" expr        { $$ = new CompilerStatement(LOC(@$),ASMPICOBLAZE_INS_OR_SX_KK,$2->appendLink($5));}
+    | I_OR expr "," expr            { $$ = new CompilerStatement(LOC(@$),ASMPICOBLAZE_INS_OR_SX_SY,$2->appendLink($4));}
+    | I_OR eopr "," eopr "," eoprs  { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "OR", 2);                  }
+    | I_OR eopr                     { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "OR", 2);                  }
+    | I_OR                          { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "OR", 2);                  }
+    | I_OR eopr eoprs               { /* Syntax Error */ $$ = NULL; MISSIGN_COMMA(@2, NULL);                           }
 ;
 inst_xor:
-      I_XOR expr "," "#" expr       { $$ = new CompilerStatement(LOC(@$),ASMKCPSM3_INS_XOR_SX_KK,$2->appendLink($5)); }
-    | I_XOR expr "," expr           { $$ = new CompilerStatement(LOC(@$),ASMKCPSM3_INS_XOR_SX_SY,$2->appendLink($4)); }
-    | I_XOR eopr "," eopr "," eoprs { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "XOR", 2);                }
-    | I_XOR eopr                    { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "XOR", 2);                }
-    | I_XOR                         { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "XOR", 2);                }
-    | I_XOR eopr eoprs              { /* Syntax Error */ $$ = NULL; MISSIGN_COMMA(@2, NULL);                          }
-;
-inst_test:
-      I_TEST expr "," "#" expr      { $$ = new CompilerStatement(LOC(@$),ASMKCPSM3_INS_TEST_SX_KK,$2->appendLink($5) );}
-    | I_TEST expr "," expr          { $$ = new CompilerStatement(LOC(@$),ASMKCPSM3_INS_TEST_SX_SY,$2->appendLink($4) );}
-    | I_TEST eopr "," eopr "," eoprs{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "TEST", 2);                }
-    | I_TEST eopr                   { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "TEST", 2);                }
-    | I_TEST                        { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "TEST", 2);                }
-    | I_TEST eopr eoprs             { /* Syntax Error */ $$ = NULL; MISSIGN_COMMA(@2, NULL);                           }
+      I_XOR expr "," "#" expr       { $$=new CompilerStatement(LOC(@$),ASMPICOBLAZE_INS_XOR_SX_KK,$2->appendLink($5)); }
+    | I_XOR expr "," expr           { $$=new CompilerStatement(LOC(@$),ASMPICOBLAZE_INS_XOR_SX_SY,$2->appendLink($4)); }
+    | I_XOR eopr "," eopr "," eoprs { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "XOR", 2);                 }
+    | I_XOR eopr                    { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "XOR", 2);                 }
+    | I_XOR                         { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "XOR", 2);                 }
+    | I_XOR eopr eoprs              { /* Syntax Error */ $$ = NULL; MISSIGN_COMMA(@2, NULL);                           }
 ;
 /* Storage Group */
 inst_store:
-      I_STORE expr "," expr         { $$ = new CompilerStatement(LOC(@$),ASMKCPSM3_INS_STORE_SX_SS,$2->appendLink($4));}
-    | I_STORE expr "," "@" expr     { $$ = new CompilerStatement(LOC(@$),ASMKCPSM3_INS_STORE_SX_SY,$2->appendLink($5));}
+      I_STORE expr "," expr         {$$=new CompilerStatement(LOC(@$),ASMPICOBLAZE_INS_STORE_SX_SS,$2->appendLink($4));}
+    | I_STORE expr "," "@" expr     {$$=new CompilerStatement(LOC(@$),ASMPICOBLAZE_INS_STORE_SX_SY,$2->appendLink($5));}
     | I_STORE eopr "," eopr "," eoprs { /* Syntax Error */ $$=NULL; N_OPERANDS_EXPECTED(@1, "STORE", 2);               }
     | I_STORE eopr                  { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "STORE", 2);               }
     | I_STORE                       { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "STORE", 2);               }
     | I_STORE eopr eoprs            { /* Syntax Error */ $$ = NULL; MISSIGN_COMMA(@2, NULL);                           }
 ;
 inst_fetch:
-      I_FETCH expr "," expr         { $$ = new CompilerStatement(LOC(@$),ASMKCPSM3_INS_FETCH_SX_SS,$2->appendLink($4));}
-    | I_FETCH expr "," "@" expr     { $$ = new CompilerStatement(LOC(@$),ASMKCPSM3_INS_FETCH_SX_SY,$2->appendLink($5));}
+      I_FETCH expr "," expr         {$$=new CompilerStatement(LOC(@$),ASMPICOBLAZE_INS_FETCH_SX_SS,$2->appendLink($4));}
+    | I_FETCH expr "," "@" expr     {$$=new CompilerStatement(LOC(@$),ASMPICOBLAZE_INS_FETCH_SX_SY,$2->appendLink($5));}
     | I_FETCH eopr "," eopr "," eoprs { /* Syntax Error */$$= NULL; N_OPERANDS_EXPECTED(@1, "FETCH", 2);               }
     | I_FETCH eopr                  { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "FETCH", 2);               }
     | I_FETCH                       { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "FETCH", 2);               }
@@ -1708,71 +1831,167 @@ inst_fetch:
 ;
 /* Shift And Rotate Group */
 inst_sr0:
-      I_SR0 expr                    { $$ = new CompilerStatement ( LOC(@$), ASMKCPSM3_INS_SR0_SX, $2 ); }
-    | I_SR0 eopr "," eoprs          { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "SR0", 1);  }
-    | I_SR0                         { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "SR0", 1);  }
+      I_SR0 expr                    { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_SR0_SX, $2 ); }
+    | I_SR0 eopr "," eoprs          { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "SR0", 1);     }
+    | I_SR0                         { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "SR0", 1);     }
 ;
 inst_sr1:
-      I_SR1 expr                    { $$ = new CompilerStatement ( LOC(@$), ASMKCPSM3_INS_SR1_SX, $2 ); }
-    | I_SR1 eopr "," eoprs          { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "SR1", 1);  }
-    | I_SR1                         { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "SR1", 1);  }
+      I_SR1 expr                    { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_SR1_SX, $2 ); }
+    | I_SR1 eopr "," eoprs          { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "SR1", 1);     }
+    | I_SR1                         { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "SR1", 1);     }
 ;
 inst_srx:
-      I_SRX expr                    { $$ = new CompilerStatement ( LOC(@$), ASMKCPSM3_INS_SRX_SX, $2 ); }
-    | I_SRX eopr "," eoprs          { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "SRX", 1);  }
-    | I_SRX                         { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "SRX", 1);  }
+      I_SRX expr                    { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_SRX_SX, $2 ); }
+    | I_SRX eopr "," eoprs          { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "SRX", 1);     }
+    | I_SRX                         { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "SRX", 1);     }
 ;
 inst_sra:
-      I_SRA expr                    { $$ = new CompilerStatement ( LOC(@$), ASMKCPSM3_INS_SRA_SX, $2 ); }
-    | I_SRA eopr "," eoprs          { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "SRA", 1);  }
-    | I_SRA                         { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "SRA", 1);  }
+      I_SRA expr                    { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_SRA_SX, $2 ); }
+    | I_SRA eopr "," eoprs          { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "SRA", 1);     }
+    | I_SRA                         { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "SRA", 1);     }
 ;
 inst_rr:
-      I_RR expr                     { $$ = new CompilerStatement ( LOC(@$), ASMKCPSM3_INS_RR_SX, $2 ); }
-    | I_RR eopr "," eoprs          { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "RR", 1);   }
-    | I_RR                         { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "RR", 1);   }
+      I_RR expr                     { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_RR_SX, $2 ); }
+    | I_RR eopr "," eoprs          { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "RR", 1);      }
+    | I_RR                         { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "RR", 1);      }
 ;
 inst_sl0:
-      I_SL0 expr                    { $$ = new CompilerStatement ( LOC(@$), ASMKCPSM3_INS_SL0_SX, $2 ); }
-    | I_SL0 eopr "," eoprs          { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "SL0", 1);  }
-    | I_SL0                         { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "SL0", 1);  }
+      I_SL0 expr                    { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_SL0_SX, $2 ); }
+    | I_SL0 eopr "," eoprs          { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "SL0", 1);     }
+    | I_SL0                         { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "SL0", 1);     }
 ;
 inst_sl1:
-      I_SL1 expr                    { $$ = new CompilerStatement ( LOC(@$), ASMKCPSM3_INS_SL1_SX, $2 ); }
-    | I_SL1 eopr "," eoprs          { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "SL1", 1);  }
-    | I_SL1                         { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "SL1", 1);  }
+      I_SL1 expr                    { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_SL1_SX, $2 ); }
+    | I_SL1 eopr "," eoprs          { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "SL1", 1);     }
+    | I_SL1                         { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "SL1", 1);     }
 ;
 inst_slx:
-      I_SLX expr                    { $$ = new CompilerStatement ( LOC(@$), ASMKCPSM3_INS_SLX_SX, $2 ); }
-    | I_SLX eopr "," eoprs          { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "SLX", 1);  }
-    | I_SLX                         { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "SLX", 1);  }
+      I_SLX expr                    { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_SLX_SX, $2 ); }
+    | I_SLX eopr "," eoprs          { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "SLX", 1);     }
+    | I_SLX                         { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "SLX", 1);     }
 ;
 inst_sla:
-      I_SLA expr                    { $$ = new CompilerStatement ( LOC(@$), ASMKCPSM3_INS_SLA_SX, $2 ); }
-    | I_SLA eopr "," eoprs          { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "SLA", 1);  }
-    | I_SLA                         { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "SLA", 1);  }
+      I_SLA expr                    { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_SLA_SX, $2 ); }
+    | I_SLA eopr "," eoprs          { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "SLA", 1);     }
+    | I_SLA                         { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "SLA", 1);     }
 ;
 inst_rl:
-      I_RL expr                     { $$ = new CompilerStatement ( LOC(@$), ASMKCPSM3_INS_RL_SX, $2 ); }
-    | I_RL eopr "," eoprs          { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "RL", 1);   }
-    | I_RL                         { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "RL", 1);   }
+      I_RL expr                     { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_RL_SX, $2 ); }
+    | I_RL eopr "," eoprs          { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "RL", 1);      }
+    | I_RL                         { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "RL", 1);      }
 ;
 /* Input/Output Group */
 inst_input:
-      I_INPUT expr "," expr         { $$ = new CompilerStatement(LOC(@$),ASMKCPSM3_INS_INPUT_SX_PP,$2->appendLink($4));}
-    | I_INPUT "@" expr "," expr     { $$ = new CompilerStatement(LOC(@$),ASMKCPSM3_INS_INPUT_SX_SY,$3->appendLink($5));}
+      I_INPUT expr "," expr         {$$=new CompilerStatement(LOC(@$),ASMPICOBLAZE_INS_INPUT_SX_PP,$2->appendLink($4));}
+    | I_INPUT "@" expr "," expr     {$$=new CompilerStatement(LOC(@$),ASMPICOBLAZE_INS_INPUT_SX_SY,$3->appendLink($5));}
     | I_INPUT eopr "," eopr "," eoprs {/* Syntax Error */$$ = NULL; N_OPERANDS_EXPECTED(@1, "INPUT", 2);               }
     | I_INPUT eopr                  { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "INPUT", 2);               }
     | I_INPUT                       { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "INPUT", 2);               }
     | I_INPUT eopr eoprs            { /* Syntax Error */ $$ = NULL; MISSIGN_COMMA(@2, NULL);                           }
 ;
 inst_output:
-      I_OUTPUT expr "," expr        { $$=new CompilerStatement(LOC(@$),ASMKCPSM3_INS_OUTPUT_SX_PP,$2->appendLink($4)); }
-/*     | I_OUTPUT "@" expr "," expr    { $$=new CompilerStatement(LOC(@$),ASMKCPSM3_INS_OUTPUT_SX_SY,$3->appendLink($5)); } */
-    | I_OUTPUT eopr "," eopr "," eoprs {/* Syntax Error */$$= NULL; N_OPERANDS_EXPECTED(@1, "OUTPUT", 2);              }
-    | I_OUTPUT eopr                 { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "OUTPUT", 2);              }
-    | I_OUTPUT                      { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "OUTPUT", 2);              }
-    | I_OUTPUT eopr eoprs           { /* Syntax Error */ $$ = NULL; MISSIGN_COMMA(@2, NULL);                           }
+      I_OUTPUT expr "," expr        {
+                                        $$ = new CompilerStatement ( LOC(@$),
+                                                                     ASMPICOBLAZE_INS_OUTPUT_SX_PP,
+                                                                     $2->appendLink ( $4 ) );
+                                    }
+    | I_OUTPUT "@" expr "," expr    {
+                                        $$ = new CompilerStatement ( LOC(@$),
+                                                                     ASMPICOBLAZE_INS_OUTPUT_SX_SY,
+                                                                     $3->appendLink ( $5 ) );
+                                    }
+    | I_OUTPUT
+      eopr "," eopr "," eoprs       { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "OUTPUT", 2); }
+    | I_OUTPUT eopr                 { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "OUTPUT", 2); }
+    | I_OUTPUT                      { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "OUTPUT", 2); }
+    | I_OUTPUT eopr eoprs           { /* Syntax Error */ $$ = NULL; MISSIGN_COMMA(@2, NULL);              }
+;
+inst_outputk:
+      I_OUTPUTK "#" expr "," expr   {
+                                        $$ = new CompilerStatement ( LOC(@$),
+                                                                     ASMPICOBLAZE_INS_OUTPUTK_KK_P,
+                                                                     $3->appendLink ( $5 ) );
+                                    }
+    | I_OUTPUTK
+      eopr "," eopr "," eoprs       { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "OUTPUTK", 2); }
+    | I_OUTPUTK eopr                { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "OUTPUTK", 2); }
+    | I_OUTPUTK                     { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "OUTPUTK", 2); }
+    | I_OUTPUTK eopr eoprs          { /* Syntax Error */ $$ = NULL; MISSIGN_COMMA(@2, NULL);               }
+;
+/* Test & Compare Group */
+inst_test:
+      I_TEST expr "," "#" expr      { $$=new CompilerStatement(LOC(@$),ASMPICOBLAZE_INS_TEST_SX_KK,$2->appendLink($5));}
+    | I_TEST expr "," expr          { $$=new CompilerStatement(LOC(@$),ASMPICOBLAZE_INS_TEST_SX_SY,$2->appendLink($4));}
+    | I_TEST eopr "," eopr "," eoprs{ /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "TEST", 2);                }
+    | I_TEST eopr                   { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "TEST", 2);                }
+    | I_TEST                        { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "TEST", 2);                }
+    | I_TEST eopr eoprs             { /* Syntax Error */ $$ = NULL; MISSIGN_COMMA(@2, NULL);                           }
+;
+inst_testcy:
+      I_TESTCY expr "," "#" expr    {
+                                        $$ = new CompilerStatement ( LOC(@$),
+                                                                     ASMPICOBLAZE_INS_TESTCY_SX_KK,
+                                                                     $2->appendLink($5));
+                                    }
+    | I_TESTCY expr "," expr        {
+                                        $$ = new CompilerStatement ( LOC(@$),
+                                                                     ASMPICOBLAZE_INS_TESTCY_SX_SY,
+                                                                     $2->appendLink($4));
+                                    }
+    | I_TESTCY
+      eopr "," eopr "," eoprs       { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "TESTCY", 2); }
+    | I_TESTCY eopr                 { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "TESTCY", 2); }
+    | I_TESTCY                      { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "TESTCY", 2); }
+    | I_TESTCY eopr eoprs           { /* Syntax Error */ $$ = NULL; MISSIGN_COMMA(@2, NULL);              }
+;
+inst_compare:
+      I_COMPARE expr "," "#" expr   {
+                                        $$ = new CompilerStatement ( LOC(@$),
+                                                                     ASMPICOBLAZE_INS_COMPARE_SX_KK,
+                                                                     $2->appendLink ( $5 ) );
+                                    }
+    | I_COMPARE expr "," expr       {
+                                        $$ = new CompilerStatement ( LOC(@$),
+                                                                     ASMPICOBLAZE_INS_COMPARE_SX_SY,
+                                                                     $2->appendLink($4) );
+                                    }
+    | I_COMPARE
+      eopr "," eopr "," eoprs       { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "COMPARE", 2); }
+    | I_COMPARE eopr                { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "COMPARE", 2); }
+    | I_COMPARE                     { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "COMPARE", 2); }
+    | I_COMPARE eopr eoprs          { /* Syntax Error */ $$ = NULL; MISSIGN_COMMA(@2, NULL);               }
+;
+inst_comparecy:
+      I_COMPARECY expr "," "#" expr {
+                                        $$ = new CompilerStatement ( LOC(@$),
+                                                                     ASMPICOBLAZE_INS_COMPARECY_SX_KK,
+                                                                     $2->appendLink ( $5 ) );
+                                    }
+    | I_COMPARECY expr "," expr     {
+                                        $$ = new CompilerStatement ( LOC(@$),
+                                                                     ASMPICOBLAZE_INS_COMPARECY_SX_SY,
+                                                                     $2->appendLink($4) );
+                                    }
+    | I_COMPARECY
+      eopr "," eopr "," eoprs       { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "COMPARECY", 2); }
+    | I_COMPARECY eopr              { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "COMPARECY", 2); }
+    | I_COMPARECY                   { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "COMPARECY", 2); }
+    | I_COMPARECY eopr eoprs        { /* Syntax Error */ $$ = NULL; MISSIGN_COMMA(@2, NULL);                 }
+;
+
+
+/* Version Control Group */
+inst_hwbuild:
+      I_HWBUILD expr                    { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_HWBUILD_SX, $expr ); }
+    | I_HWBUILD eopr "," eoprs          { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "HWBUILD", 1);        }
+    | I_HWBUILD                         { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "HWBUILD", 1);        }
+;
+/* Register Bank Selection Group */
+inst_regbank:
+      I_REGBANK_A                 { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_REGBANK_A );    }
+    | I_REGBANK_B                 { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_REGBANK_B );    }
+    | I_REGBANK_A eoprs           { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "REGBANK A", 0); }
+    | I_REGBANK_B eoprs           { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "REGBANK B", 0); }
 ;
 
 %%

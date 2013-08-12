@@ -167,4 +167,10 @@ inline void PicoBlazeRegisters::resetToInitialValues()
 
 inline void PicoBlazeRegisters::mcuReset()
 {
+    m_bank = 0;
+}
+
+void PicoBlazeRegisters::setBank ( int bank )
+{
+    m_bank = bank;
 }

@@ -44,6 +44,12 @@ class AsmMcs51SemanticAnalyzer : public CompilerSemanticAnalyzer
          * @param[in,out] codeTree
          */
         void process ( CompilerStatement * codeTree );
+
+        /**
+         * @brief
+         * @param[in] deviceName
+         */
+        void setDevice ( const std::string & deviceName );
 };
 
 #endif // ASMMCS51SEMANTICANALYSER_H

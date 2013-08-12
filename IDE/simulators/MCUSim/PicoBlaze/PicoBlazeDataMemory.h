@@ -43,7 +43,6 @@ class PicoBlazeDataMemory : public MCUSimMemory
             Config()
             {
                 m_undefinedValue = -1;
-                m_size = 64; // <-- default value for KCPSM3
             }
 
             int m_undefinedValue;           ///< -1 means random

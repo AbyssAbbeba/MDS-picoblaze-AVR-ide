@@ -29,7 +29,9 @@ class MCUSim;
 STEP
 PC == 1
 DATA[1] == 125
-DATA[3] == 0
+CODE[3] == 0
+EEPROM[1] != 4
+STACK[9] != 50
 REG[0] == 10
 
 STEP

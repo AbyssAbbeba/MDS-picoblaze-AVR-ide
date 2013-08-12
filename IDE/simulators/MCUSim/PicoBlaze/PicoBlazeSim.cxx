@@ -17,6 +17,9 @@
 
 #include "PicoBlazeConfig.h"
 #include "PicoBlazeInstructionSet.h"
+#include "PicoBlazeInstructionSet2.h"
+#include "PicoBlazeInstructionSet3.h"
+#include "PicoBlazeInstructionSet6.h"
 #include "PicoBlazeProgramMemory.h"
 #include "PicoBlazeDataMemory.h"
 #include "PicoBlazeRegisters.h"
@@ -34,7 +37,7 @@ PicoBlazeSim::PicoBlazeSim()
     m_programMemory         = new PicoBlazeProgramMemory();
     m_dataMemory            = new PicoBlazeDataMemory();
     m_registers             = new PicoBlazeRegisters();
-    m_instructionSet        = new PicoBlazeInstructionSet();
+    m_instructionSet        = new PicoBlazeInstructionSet3();
     m_io                    = new PicoBlazeIO();
     m_clockControl          = new PicoBlazeClockControl();
     m_stack                 = new PicoBlazeStack();
@@ -167,6 +170,27 @@ inline void PicoBlazeSim::resetToInitialValues()
 
 inline void PicoBlazeSim::loadConfig()
 {
+    // Change instruction set, if the current one is no longer usable for the chosen device.
+    if ( false == m_instructionSet->isValid() )
+    {
+        PicoBlazeInstructionSet * origInstructionSet = m_instructionSet;
+        switch ( m_instructionSet->m_config.m_dev )
+        {
+            case MCUSim::FAMILY_KCPSM2:
+                m_instructionSet = new PicoBlazeInstructionSet2();
+                break;
+            case MCUSim::FAMILY_KCPSM3:
+                m_instructionSet = new PicoBlazeInstructionSet3();
+                break;
+            case MCUSim::FAMILY_KCPSM6:
+                m_instructionSet = new PicoBlazeInstructionSet6();
+                break;
+            default:
+                break;
+        }
+        m_instructionSet->adapt(origInstructionSet);
+        delete origInstructionSet;
+    }
 }
 
 inline void PicoBlazeSim::mcuReset()

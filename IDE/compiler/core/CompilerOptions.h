@@ -51,7 +51,7 @@ class CompilerOptions
             /// Size of external program memory, only certain architectures use this. Size is in words.
             int m_xCodeMemSize;
 
-            /// Size of internal data memory (for AVR8 it's SRAM, for 8051 it's IDATA, for KCPSM3 it's Scratch Pad...).
+            /// Size of internal data memory (for AVR8 it's SRAM, for 8051 it's IDATA, for PicoBlaze it's Scratch Pad...).
             int m_iDataMemSize;
 
             /// Size of extended data memory, only certain architectures use this.
