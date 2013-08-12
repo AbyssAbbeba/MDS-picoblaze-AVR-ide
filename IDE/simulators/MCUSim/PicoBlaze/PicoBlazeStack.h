@@ -46,12 +46,6 @@ class PicoBlazeStack : public MCUSimMemory
          */
         struct Config
         {
-            /// Sets configuration to default setting, i.e. for KCPSM3.
-            Config()
-            {
-                m_size = 31;
-            }
-
             /// Stack capacity.
             unsigned int m_size;
         };

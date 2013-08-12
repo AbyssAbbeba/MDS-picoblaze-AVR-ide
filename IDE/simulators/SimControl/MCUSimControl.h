@@ -27,14 +27,14 @@ class DataFile;
 #include <string>
 #include <utility>
 #include <cstdint>
-#include <QObject>
+#include <QThread>
 
 /**
  * @class MCUSimControl
  * @ingroup SimControl
  * @brief
  */
-class MCUSimControl : public QObject
+class MCUSimControl : public QThread
 {
     Q_OBJECT
 
@@ -87,12 +87,6 @@ class MCUSimControl : public QObject
          * @brief Destructor
          */
         virtual ~MCUSimControl();
-
-    private:
-        /**
-         * @brief Forbidden constructor
-         */
-        MCUSimControl() {};
 
     ////    Public Operations    ////
     public:

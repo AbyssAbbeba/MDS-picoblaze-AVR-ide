@@ -270,6 +270,11 @@ class CompilerExpr : public CompilerSerializable
          */
         CompilerExpr * prev() const
         {
+            if ( NULL == this )
+            {
+                return NULL;
+            }
+
             return m_prev;
         }
 
@@ -279,6 +284,11 @@ class CompilerExpr : public CompilerSerializable
          */
         CompilerExpr * next() const
         {
+            if ( NULL == this )
+            {
+                return NULL;
+            }
+
             return m_next;
         }
 

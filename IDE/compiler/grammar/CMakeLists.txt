@@ -43,7 +43,7 @@ BISON_TARGET ( mcs51parser mcs51parser.y mcs51parser.cxx VERBOSE "mcs51parser.ou
 FLEX_TARGET ( mcs51lexer mcs51lexer.l mcs51lexer.cxx)
 # ADD_FLEX_BISON_DEPENDENCY ( mcs51lexer mcs51parser )
 
-# Assembler for KCPSM3
+# Assembler for PicoBlaze
 BISON_TARGET ( kcpsm3parser kcpsm3parser.y kcpsm3parser.cxx VERBOSE "kcpsm3parser.output" )
 FLEX_TARGET ( kcpsm3lexer kcpsm3lexer.l kcpsm3lexer.cxx)
 # ADD_FLEX_BISON_DEPENDENCY ( kcpsm3lexer kcpsm3parser )
@@ -89,7 +89,7 @@ add_library ( ${PROJECT_NAME} STATIC
               ${FLEX_mcs51lexer_OUTPUTS}
               ${BISON_mcs51parser_OUTPUTS}
 
-              # Assembler for KCPSM3
+              # Assembler for PicoBlaze
               ${FLEX_kcpsm3lexer_OUTPUTS}
               ${BISON_kcpsm3parser_OUTPUTS} )
 
