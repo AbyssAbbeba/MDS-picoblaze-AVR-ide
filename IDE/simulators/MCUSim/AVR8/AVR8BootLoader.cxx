@@ -27,7 +27,7 @@ AVR8BootLoader::AVR8BootLoader()
     m_writeBuffer = NULL;
 }
 
-AVR8BootLoader * AVR8BootLoader::link ( MCUSim::EventLogger     * eventLogger,
+AVR8BootLoader * AVR8BootLoader::link ( MCUSimEventLogger     * eventLogger,
                                         AVR8ProgramMemory       * programMemory,
                                         AVR8DataMemory          * dataMemory,
                                         AVR8FusesAndLocks       * fusesAndLocks,
@@ -35,7 +35,7 @@ AVR8BootLoader * AVR8BootLoader::link ( MCUSim::EventLogger     * eventLogger,
                                         AVR8InstructionSet      * instructionSet,
                                         AVR8Sim::HaltMode       * haltMode )
 {
-    Subsys::link(eventLogger, ID_BOOT_LOADER);
+    MCUSimSubsys::link(eventLogger, ID_BOOT_LOADER);
 
     m_programMemory  = programMemory;
     m_dataMemory     = dataMemory;
@@ -505,7 +505,7 @@ unsigned int AVR8BootLoader::getBootAddress() const
     }
 }
 
-void AVR8BootLoader::reset ( MCUSim::ResetMode mode )
+void AVR8BootLoader::reset ( MCUSimBase::ResetMode mode )
 {
     switch ( mode )
     {

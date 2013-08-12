@@ -29,7 +29,7 @@ class DataFile;
  * @ingroup PicoBlaze
  * @class PicoBlazeProgramMemory
  */
-class PicoBlazeProgramMemory : public MCUSim::Memory
+class PicoBlazeProgramMemory : public MCUSimMemory
 {
     ////    Public Datatypes    ////
     public:
@@ -42,7 +42,6 @@ class PicoBlazeProgramMemory : public MCUSim::Memory
             Config()
             {
                 m_undefinedValue = -1;
-                m_size = 1024; // <-- default value for KCPSM3
             }
 
             int m_undefinedValue; ///< -1 means random
@@ -68,13 +67,13 @@ class PicoBlazeProgramMemory : public MCUSim::Memory
          * @param[in,out] eventLogger
          * @return
          */
-        PicoBlazeProgramMemory * link ( MCUSim::EventLogger * eventLogger );
+        PicoBlazeProgramMemory * link ( MCUSimEventLogger * eventLogger );
 
         /**
          * @brief
          * @param[in] mode
          */
-        void reset ( MCUSim::ResetMode mode );
+        void reset ( MCUSimBase::ResetMode mode );
 
         /**
          * @brief

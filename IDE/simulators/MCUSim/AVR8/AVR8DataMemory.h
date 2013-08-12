@@ -31,7 +31,7 @@ class DataFile;
  * @ingroup AVR8
  * @class AVR8DataMemory
  */
-class AVR8DataMemory : public MCUSim::Memory
+class AVR8DataMemory : public MCUSimMemory
 {
     ////    Public Datatypes    ////
     public:
@@ -98,7 +98,7 @@ class AVR8DataMemory : public MCUSim::Memory
          * @param[in,out] eventLogger
          * @return
          */
-        AVR8DataMemory * link ( MCUSim::EventLogger * eventLogger );
+        AVR8DataMemory * link ( MCUSimEventLogger * eventLogger );
 
         /**
          * @brief
@@ -128,7 +128,7 @@ class AVR8DataMemory : public MCUSim::Memory
          * @brief
          * @param[in] mode
          */
-        void reset ( MCUSim::ResetMode mode );
+        void reset ( MCUSimBase::ResetMode mode );
 
         /**
          * @brief

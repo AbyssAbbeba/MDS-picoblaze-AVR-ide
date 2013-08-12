@@ -16,16 +16,16 @@
 #include "AVR8TimerCounter1.h"
 #include "AVR8DataMemory.h"
 
-AVR8TimerCounter1 * AVR8TimerCounter1::link ( MCUSim::EventLogger     * eventLogger,
-                                              MCUSim::Subsys::SubsysId  subsysId,
+AVR8TimerCounter1 * AVR8TimerCounter1::link ( MCUSimEventLogger     * eventLogger,
+                                              MCUSimSubsys::SubsysId  subsysId,
                                               AVR8DataMemory          * dataMemory )
 {
-    Subsys::link(eventLogger, subsysId);
+    MCUSimSubsys::link(eventLogger, subsysId);
     m_dataMemory = dataMemory;
     return this;
 }
 
-void AVR8TimerCounter1::reset ( MCUSim::ResetMode mode )
+void AVR8TimerCounter1::reset ( MCUSimBase::ResetMode mode )
 {
 }
 

@@ -47,7 +47,7 @@ AVR8Sim::AVR8Sim()
     m_processorMode = MD_NORMAL;
     m_haltMode = HALTM_NONE;
 
-    m_eventLogger           = new EventLogger();
+    m_eventLogger           = new MCUSimEventLogger();
     m_config                = new AVR8Config();
 
     m_interrupts            = new AVR8InterruptController();
@@ -109,16 +109,16 @@ AVR8Sim::AVR8Sim()
                                          m_bootLoader ) );
 
     regSubSys ( m_timerCounter0->link ( m_eventLogger,
-                                        Subsys::ID_COUNTER_0,
+                                        MCUSimSubsys::ID_COUNTER_0,
                                         m_dataMemory,
                                         m_io ) );
 
     regSubSys ( m_timerCounter1->link ( m_eventLogger,
-                                        Subsys::ID_COUNTER_1,
+                                        MCUSimSubsys::ID_COUNTER_1,
                                         m_dataMemory ) );
 
     regSubSys ( m_timerCounter2->link ( m_eventLogger,
-                                        Subsys::ID_COUNTER_2,
+                                        MCUSimSubsys::ID_COUNTER_2,
                                         m_dataMemory ) );
 
     regSubSys ( m_io->link ( m_eventLogger,
@@ -177,7 +177,7 @@ AVR8Sim::~AVR8Sim()
 
 inline void AVR8Sim::deleteSubSystems()
 {
-    for ( std::vector<Subsys*>::iterator i = m_subSystems.begin();
+    for ( std::vector<MCUSimSubsys*>::iterator i = m_subSystems.begin();
           i != m_subSystems.end();
           i++ )
     {
@@ -187,58 +187,58 @@ inline void AVR8Sim::deleteSubSystems()
 
 inline void AVR8Sim::checkSubSystems() const
 {
-    for ( std::vector<Subsys*>::const_iterator i = m_subSystems.begin();
+    for ( std::vector<MCUSimSubsys*>::const_iterator i = m_subSystems.begin();
           i != m_subSystems.end();
           i++ )
     {
-        assert ( Subsys::ID_INVALID != (*i)->getId() );
+        assert ( MCUSimSubsys::ID_INVALID != (*i)->getId() );
     }
 }
 
-inline void AVR8Sim::regSubSys ( Subsys * subSystem )
+inline void AVR8Sim::regSubSys ( MCUSimSubsys * subSystem )
 {
     m_subSystems.push_back(subSystem);
 }
 
-MCUSim::Subsys * AVR8Sim::getSubsys ( Subsys::SubsysId id )
+MCUSimSubsys * AVR8Sim::getSubsys ( MCUSimSubsys::SubsysId id )
 {
     switch ( id )
     {
-        case Subsys::ID_MEM_CODE:       return m_programMemory;
-        case Subsys::ID_MEM_DATA:       return m_dataMemory;
-        case Subsys::ID_MEM_EEPROM:     return m_dataEEPROM;
+        case MCUSimSubsys::ID_MEM_CODE:       return m_programMemory;
+        case MCUSimSubsys::ID_MEM_DATA:       return m_dataMemory;
+        case MCUSimSubsys::ID_MEM_EEPROM:     return m_dataEEPROM;
 
-        case Subsys::ID_CPU:            return m_instructionSet;
-        case Subsys::ID_FUSES:          return m_fusesAndLocks;
-        case Subsys::ID_INTERRUPTS:     return m_interrupts;
-        case Subsys::ID_EXT_INT:        return m_externalInterrupts;
-        case Subsys::ID_WATCHDOG:       return m_watchdogTimer;
-        case Subsys::ID_IO:             return m_io;
-        case Subsys::ID_BOOT_LOADER:    return m_bootLoader;
-        case Subsys::ID_SYS_CONTROL:    return m_systemControl;
-        case Subsys::ID_CLK_CONTROL:    return m_clockControl;
-        case Subsys::ID_COUNTER_0:      return m_timerCounter0;
-        case Subsys::ID_SPI:            return m_spi;
-        case Subsys::ID_USART:          return m_usart;
-        case Subsys::ID_TWI:            return m_twi;
-        case Subsys::ID_ADC:            return m_adc;
-        case Subsys::ID_ACOMP:          return m_acomp;
-        case Subsys::ID_ISP:            return m_isp;
-        case Subsys::ID_PPROG:          return m_pprog;
+        case MCUSimSubsys::ID_CPU:            return m_instructionSet;
+        case MCUSimSubsys::ID_FUSES:          return m_fusesAndLocks;
+        case MCUSimSubsys::ID_INTERRUPTS:     return m_interrupts;
+        case MCUSimSubsys::ID_EXT_INT:        return m_externalInterrupts;
+        case MCUSimSubsys::ID_WATCHDOG:       return m_watchdogTimer;
+        case MCUSimSubsys::ID_IO:             return m_io;
+        case MCUSimSubsys::ID_BOOT_LOADER:    return m_bootLoader;
+        case MCUSimSubsys::ID_SYS_CONTROL:    return m_systemControl;
+        case MCUSimSubsys::ID_CLK_CONTROL:    return m_clockControl;
+        case MCUSimSubsys::ID_COUNTER_0:      return m_timerCounter0;
+        case MCUSimSubsys::ID_SPI:            return m_spi;
+        case MCUSimSubsys::ID_USART:          return m_usart;
+        case MCUSimSubsys::ID_TWI:            return m_twi;
+        case MCUSimSubsys::ID_ADC:            return m_adc;
+        case MCUSimSubsys::ID_ACOMP:          return m_acomp;
+        case MCUSimSubsys::ID_ISP:            return m_isp;
+        case MCUSimSubsys::ID_PPROG:          return m_pprog;
 
         default:
             return NULL;
     }
 }
 
-MCUSim::Clock::ClockSource & AVR8Sim::getClockSource()
+MCUSimClock::ClockSource & AVR8Sim::getClockSource()
 {
     return m_clockControl->m_clockSource;
 }
 
 void AVR8Sim::reset ( ResetMode mode )
 {
-    for ( std::vector<Subsys*>::iterator i = m_subSystems.begin();
+    for ( std::vector<MCUSimSubsys*>::iterator i = m_subSystems.begin();
           i != m_subSystems.end();
           i++ )
     {
@@ -262,7 +262,7 @@ void AVR8Sim::reset ( ResetMode mode )
     }
 }
 
-MCUSim::Config & AVR8Sim::getConfig()
+MCUSimConfig & AVR8Sim::getConfig()
 {
     return * m_config;
 }

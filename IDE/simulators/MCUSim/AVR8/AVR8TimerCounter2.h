@@ -26,7 +26,7 @@ class AVR8DataMemory;
  * @ingroup AVR8
  * @class AVR8TimerCounter2
  */
-class AVR8TimerCounter2 : public MCUSim::Subsys
+class AVR8TimerCounter2 : public MCUSimSubsys
 {
     ////    Public Datatypes    ////
     public:
@@ -54,15 +54,15 @@ class AVR8TimerCounter2 : public MCUSim::Subsys
          * @param[in,out] dataMemory
          * @return
          */
-        AVR8TimerCounter2 * link ( MCUSim::EventLogger     * eventLogger,
-                                   MCUSim::Subsys::SubsysId  subsysId,
+        AVR8TimerCounter2 * link ( MCUSimEventLogger     * eventLogger,
+                                   MCUSimSubsys::SubsysId  subsysId,
                                    AVR8DataMemory          * dataMemory );
 
         /**
          * @brief
          * @param[in] mode
          */
-        void reset ( MCUSim::ResetMode mode );
+        void reset ( MCUSimBase::ResetMode mode );
 
 //         /**
 //          * @brief

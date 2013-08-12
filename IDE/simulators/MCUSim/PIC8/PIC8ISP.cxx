@@ -20,13 +20,13 @@
 #include "PIC8ConfigWord.h"
 #include "PIC8DataEEPROM.h"
 
-PIC8ISP * PIC8ISP::link ( MCUSim::EventLogger * eventLogger,
+PIC8ISP * PIC8ISP::link ( MCUSimEventLogger * eventLogger,
                           PIC8ProgramMemory   * programMemory,
                           PIC8DataEEPROM      * dataEEPROM,
                           PIC8IO              * io,
                           PIC8ConfigWord      * configWord )
 {
-    Subsys::link(eventLogger, ID_ISP);
+    MCUSimSubsys::link(eventLogger, ID_ISP);
     m_programMemory = programMemory;
     m_dataEEPROM = dataEEPROM;
     m_io = io;
@@ -42,7 +42,7 @@ PIC8ISP::~PIC8ISP()
 {
 }
 
-void PIC8ISP::reset ( MCUSim::ResetMode mode )
+void PIC8ISP::reset ( MCUSimBase::ResetMode mode )
 {
     switch ( mode )
     {

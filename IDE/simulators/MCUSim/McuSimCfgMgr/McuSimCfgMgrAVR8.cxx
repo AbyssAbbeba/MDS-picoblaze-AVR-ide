@@ -709,7 +709,7 @@ inline bool McuSimCfgMgrAVR8::attributes ( const QString & localName,
             {
                 if ( "true" == atts.value(i) )
                 {
-                    initValue |= MCUSim::Memory::MFLAG_RESERVED;
+                    initValue |= MCUSimMemory::MFLAG_RESERVED;
                 }
                 else if ( "false" != atts.value(i) )
                 {
@@ -720,7 +720,7 @@ inline bool McuSimCfgMgrAVR8::attributes ( const QString & localName,
             {
                 if ( "true" == atts.value(i) )
                 {
-                    initValue |= MCUSim::Memory::MFLAG_VIRTUAL;
+                    initValue |= MCUSimMemory::MFLAG_VIRTUAL;
                 }
                 else if ( "false" != atts.value(i) )
                 {

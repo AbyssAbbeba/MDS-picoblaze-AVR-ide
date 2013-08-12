@@ -53,7 +53,7 @@ class AVR8BootLoader;
  * @ingroup AVR8
  * @class AVR8InterruptController
  */
-class AVR8InterruptController : public MCUSim::Subsys
+class AVR8InterruptController : public MCUSimSubsys
 {
     ////    Public Datatypes    ////
     public:
@@ -143,7 +143,7 @@ class AVR8InterruptController : public MCUSim::Subsys
          * @param[in,out] bootLoader
          * @return
          */
-        AVR8InterruptController * link ( MCUSim::EventLogger * eventLogger,
+        AVR8InterruptController * link ( MCUSimEventLogger * eventLogger,
                                          AVR8InstructionSet  * instructionSet,
                                          AVR8ProgramMemory   * programMemory,
                                          AVR8DataMemory      * dataMemory,
@@ -155,7 +155,7 @@ class AVR8InterruptController : public MCUSim::Subsys
          * @brief
          * @param[in] mode
          */
-        void reset ( MCUSim::ResetMode mode );
+        void reset ( MCUSimBase::ResetMode mode );
 
         /**
          * @brief

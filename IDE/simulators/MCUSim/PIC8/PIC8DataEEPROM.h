@@ -30,7 +30,7 @@ class PIC8DataMemory;
  * @ingroup PIC8
  * @class PIC8DataEEPROM
  */
-class PIC8DataEEPROM : public MCUSim::Memory
+class PIC8DataEEPROM : public MCUSimMemory
 {
     ////    Public Static Constants    ////
     public:
@@ -113,7 +113,7 @@ class PIC8DataEEPROM : public MCUSim::Memory
          * @param[in,out] eventLogger
          * @return
          */
-        PIC8DataEEPROM * link ( MCUSim::EventLogger * eventLogger,
+        PIC8DataEEPROM * link ( MCUSimEventLogger * eventLogger,
                                 PIC8DataMemory      * dataMemory );
 
         /**
@@ -144,7 +144,7 @@ class PIC8DataEEPROM : public MCUSim::Memory
          * @brief
          * @param[in] mode
          */
-        void reset ( MCUSim::ResetMode mode );
+        void reset ( MCUSimBase::ResetMode mode );
 
         /**
          * @brief
@@ -256,7 +256,7 @@ class PIC8DataEEPROM : public MCUSim::Memory
         /// @name PIC8 simulator subsystems
         //@{
             ///
-            MCUSim::EventLogger * m_eventLogger;
+            MCUSimEventLogger * m_eventLogger;
 
             ///
             PIC8DataMemory * m_dataMemory;

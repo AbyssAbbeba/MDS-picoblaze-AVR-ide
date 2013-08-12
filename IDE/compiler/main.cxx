@@ -17,15 +17,19 @@
 #include "Compiler.h"
 #include "CompilerMsgIntfStdout.h"
 
-// getopt_long() function
+// getopt_long() function.
 #include <getopt.h>
 
-// Standard headers
+// Standard headers.
 #include <iostream>
 #include <cstring>
 
 // Used for i18n only.
 #include <QObject>
+
+// Boost Filesystem library.
+#define BOOST_FILESYSTEM_NO_DEPRECATED
+#include <boost/filesystem.hpp>
 
 /**
  * @brief Program version string.
@@ -168,7 +172,7 @@ CompilerBase::TargetArch whichArch ( const char * optarg )
     }
     else if ( 0 == strcmp(optarg, "PicoBlaze") )
     {
-        return CompilerBase::TA_KCPSM3;
+        return CompilerBase::TA_PICOBLAZE;
     }
     else
     {
@@ -204,9 +208,11 @@ CompilerBase::LangId whichLang ( const char * optarg )
  */
 int main ( int argc, char ** argv )
 {
+    using namespace boost::filesystem;
+
     CompilerOptions opts;
     CompilerMsgIntfStdout msgInterface;
-    Compiler compiler(&msgInterface, "include");
+    Compiler compiler(&msgInterface, (system_complete(path(argv[0]).parent_path()) / "include").string());
     CompilerBase::TargetArch targetArchitecture = CompilerBase::TA_INVALID;
     CompilerBase::LangId targetLanguage = CompilerBase::LI_INVALID;
 

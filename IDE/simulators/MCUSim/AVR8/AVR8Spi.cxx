@@ -16,17 +16,17 @@
 #include "AVR8Spi.h"
 #include "AVR8DataMemory.h"
 
-AVR8Spi * AVR8Spi::link ( MCUSim::EventLogger     * eventLogger,
+AVR8Spi * AVR8Spi::link ( MCUSimEventLogger     * eventLogger,
                           AVR8DataMemory          * dataMemory )
 {
-    Subsys::link(eventLogger, ID_SPI);
+    MCUSimSubsys::link(eventLogger, ID_SPI);
 
     m_dataMemory = dataMemory;
 
     return this;
 }
 
-void AVR8Spi::reset ( MCUSim::ResetMode /*mode*/ )
+void AVR8Spi::reset ( MCUSimBase::ResetMode /*mode*/ )
 {
 }
 

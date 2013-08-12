@@ -49,6 +49,7 @@ MCUSimControl::MCUSimControl ( const char * deviceName )
                              : m_simulator(NULL),
                                m_dbgFile(NULL)
 {
+    m_breakPointsEnabled = true;
     changeDevice(deviceName);
 }
 
@@ -95,7 +96,7 @@ bool MCUSimControl::start ( const std::string & filename,
                 }
                 default:
                 {
-                    qDebug("File format not supported.");
+                    m_messages.push_back(QObject::tr("File format not supported.").toStdString());
                     return false;
                 }
             }
@@ -116,7 +117,7 @@ bool MCUSimControl::start ( const std::string & filename,
                 }
                 default:
                 {
-                    qDebug("File format not supported.");
+                    m_messages.push_back(QObject::tr("File format not supported.").toStdString());
                     return false;
                 }
             }
@@ -125,7 +126,7 @@ bool MCUSimControl::start ( const std::string & filename,
 
         case COMPILER_GCC: // TODO: Not implemeted yet!
         {
-            qDebug("Not implemeted yet!");
+            m_messages.push_back(QObject::tr("Compiler not implemeted yet!").toStdString());
             return false;
             break;
         }
@@ -155,7 +156,7 @@ bool MCUSimControl::start ( const std::string & filename,
                 }
                 default:
                 {
-                    qDebug("File format not supported.");
+                    m_messages.push_back(QObject::tr("File format not supported.").toStdString());
                     return false;
                 }
             }
@@ -164,7 +165,7 @@ bool MCUSimControl::start ( const std::string & filename,
 
         default:
         {
-            qDebug("Compiler not supported.");
+            m_messages.push_back(QObject::tr("Compiler not supported.").toStdString());
             return false;
         }
     }
@@ -172,7 +173,7 @@ bool MCUSimControl::start ( const std::string & filename,
     if ( ( NULL == dataFile ) || ( NULL == m_dbgFile) )
     {
         // TODO: implement a proper error handling here
-        qDebug("error: ( NULL == dataFile ) || ( NULL == m_dbgFile)");
+        m_messages.push_back(QObject::tr("error: ( NULL == dataFile ) || ( NULL == m_dbgFile)").toStdString());
         return false;
     }
 
@@ -182,7 +183,7 @@ bool MCUSimControl::start ( const std::string & filename,
     }
     catch ( DbgFile::Exception & e )
     {
-        qDebug ( "Failed to load the debug file: %s", e.toString().c_str() );
+        m_messages.push_back(QObject::tr("Failed to load the debug file: %1").arg(e.toString().c_str()).toStdString());
         return false;
     }
 
@@ -194,7 +195,7 @@ bool MCUSimControl::start ( const std::string & filename,
     catch ( DataFile::Exception & e )
     {
         // TODO: implement a proper error handling here
-        qDebug("Failed to load program memory from the given file.");
+        m_messages.push_back(QObject::tr("Failed to load program memory from the given file.").toStdString());
         delete dataFile;
         return false;
     }
@@ -207,17 +208,17 @@ bool MCUSimControl::start ( const std::string & filename,
     switch ( m_architecture )
     {
         case MCUSim::ARCH_AVR8:
-            dynamic_cast<AVR8ProgramMemory*>(m_simulator->getSubsys(MCUSim::Subsys::ID_MEM_CODE))->loadDataFile(dataFile);
+            dynamic_cast<AVR8ProgramMemory*>(m_simulator->getSubsys(MCUSimSubsys::ID_MEM_CODE))->loadDataFile(dataFile);
             break;
         case MCUSim::ARCH_PIC8:
-            dynamic_cast<PIC8ProgramMemory*>(m_simulator->getSubsys(MCUSim::Subsys::ID_MEM_CODE))->loadDataFile(dataFile);
+            dynamic_cast<PIC8ProgramMemory*>(m_simulator->getSubsys(MCUSimSubsys::ID_MEM_CODE))->loadDataFile(dataFile);
             break;
         case MCUSim::ARCH_PICOBLAZE:
-            dynamic_cast<PicoBlazeProgramMemory*>(m_simulator->getSubsys(MCUSim::Subsys::ID_MEM_CODE))->loadDataFile(dataFile);
+            dynamic_cast<PicoBlazeProgramMemory*>(m_simulator->getSubsys(MCUSimSubsys::ID_MEM_CODE))->loadDataFile(dataFile);
             break;
         default:
             // TODO: implement a proper error handling here
-            qDebug("Unknown device architecture.");
+            m_messages.push_back(QObject::tr("Unknown device architecture.").toStdString());
             return false;
     }
 
@@ -229,11 +230,39 @@ bool MCUSimControl::start ( const std::string & filename,
     return true;
 }
 
-
 bool MCUSimControl::start ( DbgFile * dbgFile,
                             DataFile * dataFile )
 {
-    
+    m_dbgFile = dbgFile;
+
+    // Reset the simulator
+    m_simulator->reset(MCUSim::RSTMD_INITIAL_VALUES);
+    reset();
+
+    // Start simulator
+    switch ( m_architecture )
+    {
+        case MCUSim::ARCH_AVR8:
+            dynamic_cast<AVR8ProgramMemory*>(m_simulator->getSubsys(MCUSimSubsys::ID_MEM_CODE))->loadDataFile(dataFile);
+            break;
+        case MCUSim::ARCH_PIC8:
+            dynamic_cast<PIC8ProgramMemory*>(m_simulator->getSubsys(MCUSimSubsys::ID_MEM_CODE))->loadDataFile(dataFile);
+            break;
+        case MCUSim::ARCH_PICOBLAZE:
+            dynamic_cast<PicoBlazeProgramMemory*>(m_simulator->getSubsys(MCUSimSubsys::ID_MEM_CODE))->loadDataFile(dataFile);
+            break;
+        default:
+            // TODO: implement a proper error handling here
+            m_messages.push_back(QObject::tr("Unknown device architecture.").toStdString());
+            return false;
+    }
+
+    //
+    m_simulatorLog->clear();
+    allObservers_setReadOnly(false);
+
+    delete dataFile;
+    return true;
 }
 
 bool MCUSimControl::start ( const std::string & dbgFileName,
@@ -263,7 +292,7 @@ bool MCUSimControl::start ( const std::string & dbgFileName,
                 }
                 default:
                 {
-                    qDebug("File format not supported.");
+                    m_messages.push_back(QObject::tr("File format not supported.").toStdString());
                     return false;
                 }
             }
@@ -282,7 +311,7 @@ bool MCUSimControl::start ( const std::string & dbgFileName,
                 }
                 default:
                 {
-                    qDebug("File format not supported.");
+                    m_messages.push_back(QObject::tr("File format not supported.").toStdString());
                     return false;
                 }
             }
@@ -291,9 +320,8 @@ bool MCUSimControl::start ( const std::string & dbgFileName,
 
         case COMPILER_GCC: // TODO: Not implemeted yet!
         {
-            qDebug("Not implemeted yet!");
+            m_messages.push_back(QObject::tr("Compiler not implemeted yet!").toStdString());
             return false;
-            break;
         }
 
         case COMPILER_AVRA: // TODO: Not implemeted yet!
@@ -317,7 +345,7 @@ bool MCUSimControl::start ( const std::string & dbgFileName,
                 }
                 default:
                 {
-                    qDebug("File format not supported.");
+                    m_messages.push_back(QObject::tr("File format not supported.").toStdString());
                     return false;
                 }
             }
@@ -326,7 +354,7 @@ bool MCUSimControl::start ( const std::string & dbgFileName,
 
         default:
         {
-            qDebug("Compiler not supported.");
+            m_messages.push_back(QObject::tr("Compiler not supported.").toStdString());
             return false;
         }
     }
@@ -334,7 +362,7 @@ bool MCUSimControl::start ( const std::string & dbgFileName,
     if ( ( NULL == dataFile ) || ( NULL == m_dbgFile) )
     {
         // TODO: implement a proper error handling here
-        qDebug("error: ( NULL == dataFile ) || ( NULL == m_dbgFile)");
+        m_messages.push_back(QObject::tr("error: ( NULL == dataFile ) || ( NULL == m_dbgFile).").toStdString());
         return false;
     }
 
@@ -344,7 +372,7 @@ bool MCUSimControl::start ( const std::string & dbgFileName,
     }
     catch ( DbgFile::Exception & e )
     {
-        qDebug ( "Failed to load the debug file: %s", e.toString().c_str() );
+        m_messages.push_back(QObject::tr("Failed to load the debug file: %1").arg(e.toString().c_str()).toStdString());
         return false;
     }
 
@@ -356,7 +384,7 @@ bool MCUSimControl::start ( const std::string & dbgFileName,
     catch ( DataFile::Exception & e )
     {
         // TODO: implement a proper error handling here
-        qDebug("Failed to load program memory from the given file.");
+        m_messages.push_back(QObject::tr("Failed to load program memory from the given file.").toStdString());
         delete dataFile;
         return false;
     }
@@ -369,17 +397,17 @@ bool MCUSimControl::start ( const std::string & dbgFileName,
     switch ( m_architecture )
     {
         case MCUSim::ARCH_AVR8:
-            dynamic_cast<AVR8ProgramMemory*>(m_simulator->getSubsys(MCUSim::Subsys::ID_MEM_CODE))->loadDataFile(dataFile);
+            dynamic_cast<AVR8ProgramMemory*>(m_simulator->getSubsys(MCUSimSubsys::ID_MEM_CODE))->loadDataFile(dataFile);
             break;
         case MCUSim::ARCH_PIC8:
-            dynamic_cast<PIC8ProgramMemory*>(m_simulator->getSubsys(MCUSim::Subsys::ID_MEM_CODE))->loadDataFile(dataFile);
+            dynamic_cast<PIC8ProgramMemory*>(m_simulator->getSubsys(MCUSimSubsys::ID_MEM_CODE))->loadDataFile(dataFile);
             break;
         case MCUSim::ARCH_PICOBLAZE:
-            dynamic_cast<PicoBlazeProgramMemory*>(m_simulator->getSubsys(MCUSim::Subsys::ID_MEM_CODE))->loadDataFile(dataFile);
+            dynamic_cast<PicoBlazeProgramMemory*>(m_simulator->getSubsys(MCUSimSubsys::ID_MEM_CODE))->loadDataFile(dataFile);
             break;
         default:
             // TODO: implement a proper error handling here
-            qDebug("Unknown device architecture.");
+            m_messages.push_back(QObject::tr("Unknown device architecture.").toStdString());
             return false;
     }
 
@@ -432,13 +460,14 @@ const DbgFile * MCUSimControl::getSourceInfo()
     return m_dbgFile;
 }
 
+unsigned long long MCUSimControl::getTotalMCycles() const
+{
+    return m_totalMCycles;
+}
+
 void MCUSimControl::stop()
 {
     allObservers_setReadOnly(true);
-}
-
-bool MCUSimControl::isStarted() const
-{
 }
 
 void MCUSimControl::step()
@@ -448,7 +477,7 @@ void MCUSimControl::step()
         return;
     }
 
-    m_simulator->executeInstruction();
+    m_totalMCycles += m_simulator->executeInstruction();
     dispatchEvents();
 
     m_fileName.clear();
@@ -458,6 +487,7 @@ void MCUSimControl::step()
 
 void MCUSimControl::stepOver()
 {
+    // TODO
     qDebug("MCUSimControl::stepOver is not implemented yet!");
 }
 
@@ -478,6 +508,7 @@ void MCUSimControl::reset()
         return;
     }
 
+    m_totalMCycles = 0;
     m_simulator->reset(MCUSim::RSTMD_MCU_RESET);
     allObservers_deviceReset();
 
@@ -493,7 +524,13 @@ bool MCUSimControl::changeDevice ( const char * deviceName )
         delete m_simulator;
     }
 
-    if ( 0 == strcmp("kcpsm3", deviceName) )
+    if (
+           ( 0 == strcmp("kcpsm2", deviceName) )
+               ||
+           ( 0 == strcmp("kcpsm3", deviceName) )
+               ||
+           ( 0 == strcmp("kcpsm6", deviceName) )
+       )
     {
         m_architecture = MCUSim::ARCH_PICOBLAZE;
     }
@@ -502,7 +539,8 @@ bool MCUSimControl::changeDevice ( const char * deviceName )
         m_deviceSpec = McuSimCfgMgr::getInstance()->getDeviceSpec(deviceName);
         if ( NULL == m_deviceSpec )
         {
-            qDebug("Failed to retrieve the device configuration specification.");
+            m_messages.push_back ( QObject::tr ( "Failed to retrieve the device configuration specification." )
+                                               . toStdString() );
             return false;
         }
 
@@ -521,13 +559,13 @@ bool MCUSimControl::changeDevice ( const char * deviceName )
             m_simulator = new PicoBlazeSim();
             break;
         default:
-            qDebug("Unknown device architecture.");
+            m_messages.push_back(QObject::tr("Unknown device architecture." ).toStdString());
             return false;
 
     }
 
     m_simulatorLog = m_simulator->getLog();
-    m_simCpu = static_cast<MCUSim::CPU*>(m_simulator->getSubsys(MCUSim::Subsys::ID_CPU));
+    m_simCpu = static_cast<MCUSimCPU*>(m_simulator->getSubsys(MCUSimSubsys::ID_CPU));
 
     McuSimCfgMgr::getInstance()->setupSimulator(deviceName, m_simulator->getConfig());
     m_simulator->reset(MCUSim::RSTMD_NEW_CONFIG);
@@ -561,7 +599,7 @@ MCUSim::Arch MCUSimControl::getArch() const
     }
 }
 
-MCUSim::Subsys * MCUSimControl::getSimSubsys ( MCUSim::Subsys::SubsysId id )
+MCUSimSubsys * MCUSimControl::getSimSubsys ( MCUSimSubsys::SubsysId id )
 {
     if ( NULL == m_simulator )
     {
@@ -596,7 +634,7 @@ bool MCUSimControl::initialized() const
 }
 
 void MCUSimControl::registerObserver ( MCUSimObserver * observer,
-                                       MCUSim::Subsys::SubsysId simSubsysToObserve,
+                                       MCUSimSubsys::SubsysId simSubsysToObserve,
                                        const std::vector<int> & subsysEventsToObserve )
 {
     uint64_t events = 0;
@@ -609,23 +647,23 @@ void MCUSimControl::registerObserver ( MCUSimObserver * observer,
 
     registerObserver(observer, simSubsysToObserve, events);
 
-    unregisterSpecificObserver(MCUSim::Subsys::SubsysId(simSubsysToObserve), observer);
+    unregisterSpecificObserver(MCUSimSubsys::SubsysId(simSubsysToObserve), observer);
     m_observers[simSubsysToObserve].push_back(std::make_pair(observer, events));
 
     observer->setControlUnit(this);
 }
 
 inline void MCUSimControl::registerObserver ( MCUSimObserver * observer,
-                                              MCUSim::Subsys::SubsysId simSubsysToObserve,
+                                              MCUSimSubsys::SubsysId simSubsysToObserve,
                                               uint64_t events )
 {
-    unregisterSpecificObserver(MCUSim::Subsys::SubsysId(simSubsysToObserve), observer);
+    unregisterSpecificObserver(MCUSimSubsys::SubsysId(simSubsysToObserve), observer);
     m_observers[simSubsysToObserve].push_back(std::make_pair(observer, events));
 
     observer->setControlUnit(this);
 }
 
-inline bool MCUSimControl::unregisterSpecificObserver ( MCUSim::Subsys::SubsysId subsysId,
+inline bool MCUSimControl::unregisterSpecificObserver ( MCUSimSubsys::SubsysId subsysId,
                                                         const MCUSimObserver * observer )
 {
     int size = m_observers[subsysId].size();
@@ -646,9 +684,9 @@ bool MCUSimControl::unregisterObserver ( const MCUSimObserver * observer )
 {
     bool result = false;
 
-    for ( int i = 0; i < MCUSim::Subsys::ID__MAX__; i++ )
+    for ( int i = 0; i < MCUSimSubsys::ID__MAX__; i++ )
     {
-        result |= unregisterSpecificObserver(MCUSim::Subsys::SubsysId(i), observer);
+        result |= unregisterSpecificObserver(MCUSimSubsys::SubsysId(i), observer);
     }
 
     return result;
@@ -660,9 +698,9 @@ void MCUSimControl::dispatchEvents()
 
     while ( 0 != m_simulatorLog->getEvent(subsysId, eventId, locationOrReason, detail))
     {
-        if ( (subsysId >= MCUSim::Subsys::ID__MAX__) || (subsysId < 0) )
+        if ( (subsysId >= MCUSimSubsys::ID__MAX__) || (subsysId < 0) )
         {
-            qDebug("Invalid subsysId");
+            m_messages.push_back(QObject::tr("Invalid subsysId." ).toStdString());
             continue;
         }
 
@@ -679,7 +717,7 @@ void MCUSimControl::dispatchEvents()
 
 void MCUSimControl::allObservers_deviceChanged()
 {
-    for ( int i = 0; i < MCUSim::Subsys::ID__MAX__; i++ )
+    for ( int i = 0; i < MCUSimSubsys::ID__MAX__; i++ )
     {
         std::vector<std::pair<MCUSimObserver*, uint64_t> >::iterator it;
         for ( it = m_observers[i].begin(); it != m_observers[i].end(); it++ )
@@ -691,7 +729,7 @@ void MCUSimControl::allObservers_deviceChanged()
 
 void MCUSimControl::allObservers_deviceReset()
 {
-    for ( int i = 0; i < MCUSim::Subsys::ID__MAX__; i++ )
+    for ( int i = 0; i < MCUSimSubsys::ID__MAX__; i++ )
     {
         std::vector<std::pair<MCUSimObserver*, uint64_t> >::iterator it;
         for ( it = m_observers[i].begin(); it != m_observers[i].end(); it++ )
@@ -703,7 +741,7 @@ void MCUSimControl::allObservers_deviceReset()
 
 void MCUSimControl::allObservers_setReadOnly ( bool readOnly )
 {
-    for ( int i = 0; i < MCUSim::Subsys::ID__MAX__; i++ )
+    for ( int i = 0; i < MCUSimSubsys::ID__MAX__; i++ )
     {
         std::vector<std::pair<MCUSimObserver*, uint64_t> >::iterator it;
         for ( it = m_observers[i].begin(); it != m_observers[i].end(); it++ )
@@ -717,15 +755,47 @@ void MCUSimControl::allObservers_setReadOnly ( bool readOnly )
 void MCUSimControl::setBreakPoints ( const std::vector<std::string> & fileNames,
                                      const std::vector<std::vector<unsigned int>> & lineNumbers )
 {
-    
+    if ( false == initialized() )
+    {
+        return;
+    }
+
+    m_breakpoints.clear();
+    m_breakpoints.resize(fileNames.size());
+
+    // NOTE: This algorithm has quadratic time complexity, and that's not very good...
+    const std::vector<std::string> & files = m_dbgFile->getFileNames();
+    for ( size_t i = 0; i < files.size(); i++ )
+    {
+        for ( size_t j = 0; j < fileNames.size(); j++ )
+        {
+            if ( files[i] == fileNames[j] )
+            {
+                m_breakpoints.back() = lineNumbers[j];
+                break;
+            }
+        }
+    }
 }
 
 void MCUSimControl::enableBreakPoints ( bool enabled )
 {
+    m_breakPointsEnabled = enabled;
 }
 
 bool MCUSimControl::breakPointsEnabled() const
 {
+    return m_breakPointsEnabled;
+}
+
+const std::vector<std::string> & MCUSimControl::getMessages() const
+{
+    return m_messages;
+}
+
+void MCUSimControl::clearMessages()
+{
+    m_messages.clear();
 }
 
 bool MCUSimControl::getListOfSFR ( std::vector<SFRRegDesc> & sfr )

@@ -26,7 +26,7 @@ class PicoBlazeInstructionSet;
  * @ingroup PicoBlaze
  * @class PicoBlazeInterruptController
  */
-class PicoBlazeInterruptController : public MCUSim::Subsys
+class PicoBlazeInterruptController : public MCUSimSubsys
 {
     ////    Public Datatypes    ////
     public:
@@ -68,14 +68,14 @@ class PicoBlazeInterruptController : public MCUSim::Subsys
          * @param[in,out] instructionSet
          * @return
          */
-        PicoBlazeInterruptController * link ( MCUSim::EventLogger      * eventLogger,
+        PicoBlazeInterruptController * link ( MCUSimEventLogger      * eventLogger,
                                               PicoBlazeInstructionSet  * instructionSet );
 
         /**
          * @brief
          * @param[in] mode
          */
-        void reset ( MCUSim::ResetMode mode );
+        void reset ( MCUSimBase::ResetMode mode );
 
         /**
          * @brief

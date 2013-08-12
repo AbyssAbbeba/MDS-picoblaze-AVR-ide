@@ -27,19 +27,19 @@ PIC8TimerCounter0::~PIC8TimerCounter0()
 {
 }
 
-PIC8TimerCounter0 * PIC8TimerCounter0::link ( MCUSim::EventLogger     * eventLogger,
+PIC8TimerCounter0 * PIC8TimerCounter0::link ( MCUSimEventLogger     * eventLogger,
                                 PIC8DataMemory          * dataMemory,
                                 PIC8IO                  * io,
                                 PIC8Timer0WdtPrescaller * timer0WdtPrescaller )
 {
-    Subsys::link(eventLogger, ID_COUNTER_0);
+    MCUSimSubsys::link(eventLogger, ID_COUNTER_0);
     m_dataMemory = dataMemory;
     m_io = io;
     m_timer0WdtPrescaller = timer0WdtPrescaller;
     return this;
 }
 
-void PIC8TimerCounter0::reset ( MCUSim::ResetMode mode )
+void PIC8TimerCounter0::reset ( MCUSimBase::ResetMode mode )
 {
     switch ( mode )
     {

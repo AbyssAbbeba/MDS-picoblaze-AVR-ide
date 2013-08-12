@@ -7,6 +7,7 @@ declare -i options_b=0
 declare -i options_c=0
 declare -i options_y=0
 declare -i options_l=0
+declare -i options_s=0
 
 function clean() {
     cmake .
@@ -120,6 +121,12 @@ function build() {
     which lscpu > /dev/null && make -j$(lscpu | gawk '/^CPU\(s\)/ {printf("%d", ($2+1))}') || make
 }
 
+function repoSync() {
+    git commit -a -m "."
+    git pull mms master
+    git push mms master
+}
+
 function printVersion() {
     printf "%s\n" "$VERSION"
     exit 1
@@ -136,6 +143,7 @@ function printHelp() {
     printf "    -l    Count number of lines in .cxx, .cpp, .c, and .h files.\n"
     printf "    -y    Automatically assume a positive response to any prompt.\n"
     printf "    -V    Print version of this script.\n"
+    printf "    -s    Synchronize with the central repository.\n"
     printf "    -h    Print this message.\n"
     printf "\n"
     printf "Order of options doesn't matter.\n"
@@ -153,7 +161,7 @@ function main() {
     cd "$(dirname "${0}")"
 
     # Parse CLI options using `getopts' utility
-    while getopts ":hVcylab" opt; do
+    while getopts ":hVcylabs" opt; do
         optTaken=1
 
         case $opt in
@@ -164,6 +172,7 @@ function main() {
             c) options_c=1;;
             y) options_y=1;;
             l) options_l=1;;
+            s) options_s=1;;
             ?) unknownOption "$(basename "${0}")";;
         esac
     done
@@ -174,6 +183,9 @@ function main() {
 
     if (( ${options_c} )); then
         clean
+    fi
+    if (( ${options_s} )); then
+        repoSync
     fi
     if (( ${options_l} )); then
         countLines

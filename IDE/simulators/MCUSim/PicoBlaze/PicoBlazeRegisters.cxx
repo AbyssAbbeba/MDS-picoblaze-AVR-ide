@@ -22,9 +22,9 @@ PicoBlazeRegisters::PicoBlazeRegisters()
     m_memory = NULL;
 }
 
-PicoBlazeRegisters * PicoBlazeRegisters::link ( MCUSim::EventLogger * eventLogger )
+PicoBlazeRegisters * PicoBlazeRegisters::link ( MCUSimEventLogger * eventLogger )
 {
-    Memory::link(eventLogger, SP_REGS);
+    MCUSimMemory::link(eventLogger, SP_REGS);
     return this;
 }
 
@@ -125,7 +125,7 @@ void PicoBlazeRegisters::resize ( unsigned int newSize )
     m_size = newSize;
 }
 
-void PicoBlazeRegisters::reset ( MCUSim::ResetMode mode )
+void PicoBlazeRegisters::reset ( MCUSimBase::ResetMode mode )
 {
     switch ( mode )
     {

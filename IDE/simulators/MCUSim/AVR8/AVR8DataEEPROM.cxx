@@ -25,11 +25,11 @@ AVR8DataEEPROM::AVR8DataEEPROM()
     m_memory = NULL;
 }
 
-AVR8DataEEPROM * AVR8DataEEPROM::link ( MCUSim::EventLogger     * eventLogger,
+AVR8DataEEPROM * AVR8DataEEPROM::link ( MCUSimEventLogger     * eventLogger,
                                         AVR8DataMemory          * dataMemory,
                                         AVR8InterruptController * interruptController )
 {
-    Memory::link(eventLogger, SP_EEPROM);
+    MCUSimMemory::link(eventLogger, SP_EEPROM);
 
     m_dataMemory = dataMemory;
     m_interruptController = interruptController;
@@ -368,7 +368,7 @@ void AVR8DataEEPROM::resize ( unsigned int newSize )
     m_config.m_size = newSize; // <-- This might look weird but it should make sense after all.
 }
 
-void AVR8DataEEPROM::reset ( MCUSim::ResetMode mode )
+void AVR8DataEEPROM::reset ( MCUSimBase::ResetMode mode )
 {
     switch ( mode )
     {

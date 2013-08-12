@@ -12,7 +12,11 @@
 \usepackage{wrapfig}
 \usepackage[footnotesize,bf]{caption}
 \usepackage[pdftex,colorlinks=true,linkcolor=blue,urlcolor=blue,pdftitle=MDS manual,pdfsubject=yyy,pdfkeywords=zzz,pdfauthor=Martin Madron,bookmarksopen=false,pdfpagemode=None]{hyperref}
+<<<<<<< HEAD
 %\setcounter{chapter}{0} 0x0xxxxx
+=======
+% \setcounter{chapter}{0} 0x0xxxxx
+>>>>>>> 076069953c822134d74d02270d5581df5770f4ce
 %\setcounter{chapter}{-1} 
 \floatstyle{ruled}
 \newfloat{code}{thp}{lop}
@@ -443,8 +447,14 @@ input parameters.\\
                             {\color{highlight_constant}\verb'0b00100001'}\verb' '\verb'   '{\color{highlight_comment}\verb'; Binary'}\\
                             {\color{highlight_constant}\verb'0b01'}\verb' '\verb'   '{\color{highlight_comment}\verb'; Binary, considers left side of byte zeroes'}\\
                             {\color{highlight_constant}\verb'01b'}\verb' '\verb'   '{\color{highlight_comment}\verb'; Binary, considers right side of byte zeroes'}\\
+<<<<<<< HEAD
                             '\\\\s' ; Character
                             '\\\\n' ; Character
+=======
+%             	            {\color{highlight_constant}\verb'\'\s\''}\verb' '\verb'   '{\color{highlight_comment}\verb'; Character'}\\
+%             	            {\color{highlight_constant}\verb'\'\n\''}\verb' '\verb'   '{\color{highlight_comment}\verb'; Character'}\\
+                                    % Caption
+>>>>>>> 076069953c822134d74d02270d5581df5770f4ce
                     \caption{Syntax of various constant bases}
                 \end{code}
                 When you want to say to compiler, that you are using constant, you must add "\#" before.
@@ -1074,7 +1084,7 @@ input parameters.\\
                                 { \color{highlight_directive} UNDEF }\verb`     `
                                 { \color{highlight_symbol} <symbol> }
                             \end{tabular}
-                    }\\
+                    \\
                     \\
                 \textbf{DESCRIPTION:}\\
                 All symbols can be UNDEFINED. Those symbols will be deleted from symbol table (file .sym) and compiler will not recognize them.\\
@@ -1142,6 +1152,11 @@ input parameters.\\
                                 { \color{highlight_symbol} D,<number> }  \verb`     `   { \color{highlight_comment} ; Size of scratchpad ram }\\
                                 { \color{highlight_directive} LIMIT }  \verb`     ` 
                                 { \color{highlight_symbol} C,<number> }  \verb`     `   { \color{highlight_comment} ; Size of program memory }\\
+<<<<<<< HEAD
+=======
+%                                 \caption{All three types of LIMIT directive. First number of registers, second size of scratch pad ram and third size
+%                                 of program memory}
+>>>>>>> 076069953c822134d74d02270d5581df5770f4ce
                         \end{tabular}
                     }\\
                     \\
@@ -1191,7 +1206,10 @@ input parameters.\\
                             { \color{highlight_comment} ; Printing to code listing turned on (turned on by default)  }\\
                     \end{tabular}
                     }\\
+<<<<<<< HEAD
          
+=======
+>>>>>>> 076069953c822134d74d02270d5581df5770f4ce
                 {
                     \texttt{}
                     \begin{tabular}[h!]{llll}
@@ -1291,6 +1309,7 @@ input parameters.\\
 
         \section{Run time directives}
         MDS assembler contains some special directives, which are evaluated during run time sequence. You can use them to evaluate simple conditions in your program.
+<<<<<<< HEAD
         Those directives are RT-IF, ELSERTIF and ENDRTIF. Here you can see allowed conditions.
                 \begin{table}[h!]
                         \mysmallfont{}
@@ -1319,6 +1338,36 @@ input parameters.\\
                             { \color{highlight_directive} ENDRTIF } 
                         \end{tabular}
                     }\\
+=======
+        Those directives are RTIF, ELSERTIF and ENDRTIF. Here you can see allowed conditions.
+%                 \begin{table}[h!]
+%                         \mysmallfont{}
+%                         \centering{}
+%                         \begin{tabular}{|l|l}
+%                         \hline
+%                         Condition operator       &          Example \\
+%                         ==                       &          A ==  B \\
+%                         !=                       &          A !=  B \\
+%                         >                        &          A >   B \\
+%                         <                        &          A <   B \\
+%                         >=                       &          A >=  B \\
+%                         <=                       &          A <=  B \\
+%                         \&                       &          A \&  B \\
+%                         !\&                      &          A !\& B \\
+%                         \end{tabular}
+%                         \caption{Usable conditions in RTIF}
+%                 \end{table}
+                       \textbf{SYNTAX:}\\
+%                 \\ {
+%                     \texttt{}
+%                         \begin{tabular}[h!]{llll}
+%                             { \color{highlight_directive} RT_IF } & \verb'     ' &
+%                             { \color{highlight_constant} [<parameter1>]  [,<parameter2>..]\\
+%                             { \color{highlight_symbol} <macro source code> }\\
+%                             { \color{highlight_directive} ENDM } &  \verb'     ' { \color{highlight_comment} ; end of macro declaration  }
+%                         \end{tabular}
+%                     }\\
+>>>>>>> 076069953c822134d74d02270d5581df5770f4ce
                 \textbf{EXAMPLE:}\\
                         \begin{code}[h!]
                                 { \color{highlight_directive} RT-IF }

@@ -16,15 +16,15 @@
 #include "AVR8ParallelProg.h"
 #include "AVR8ProgramMemory.h"
 
-AVR8ParallelProg * AVR8ParallelProg::link ( MCUSim::EventLogger     * eventLogger,
+AVR8ParallelProg * AVR8ParallelProg::link ( MCUSimEventLogger     * eventLogger,
                                             AVR8ProgramMemory       * programMemory )
 {
-    Subsys::link(eventLogger, ID_PPROG);
+    MCUSimSubsys::link(eventLogger, ID_PPROG);
     m_programMemory = programMemory;
     return this;
 }
 
-void AVR8ParallelProg::reset ( MCUSim::ResetMode /*mode*/ )
+void AVR8ParallelProg::reset ( MCUSimBase::ResetMode /*mode*/ )
 {
 }
 

@@ -28,13 +28,13 @@ PicoBlazeIO::~PicoBlazeIO()
     delete [] m_outputBitArray;
 }
 
-PicoBlazeIO * PicoBlazeIO::link ( MCUSim::EventLogger * eventLogger )
+PicoBlazeIO * PicoBlazeIO::link ( MCUSimEventLogger * eventLogger )
 {
-    PureLogicIO::link ( eventLogger );
+    MCUSimPureLogicIO::link ( eventLogger );
     return this;
 }
 
-void PicoBlazeIO::reset ( MCUSim::ResetMode )
+void PicoBlazeIO::reset ( MCUSimBase::ResetMode )
 {
 }
 

@@ -17,13 +17,13 @@
 
 #include <cstdlib>
 
-PIC8ConfigWord * PIC8ConfigWord::link ( MCUSim::EventLogger * eventLogger )
+PIC8ConfigWord * PIC8ConfigWord::link ( MCUSimEventLogger * eventLogger )
 {
-    Subsys::link(eventLogger, ID_FUSES);
+    MCUSimSubsys::link(eventLogger, ID_FUSES);
     return this;
 }
 
-void PIC8ConfigWord::reset ( MCUSim::ResetMode mode )
+void PIC8ConfigWord::reset ( MCUSimBase::ResetMode mode )
 {
     switch ( mode )
     {

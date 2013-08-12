@@ -26,7 +26,7 @@ class AVR8DataMemory;
  * @ingroup AVR8
  * @class AVR8AnalogComparator
  */
-class AVR8AnalogComparator : public MCUSim::Subsys
+class AVR8AnalogComparator : public MCUSimSubsys
 {
     ////    Public Datatypes    ////
     public:
@@ -53,14 +53,14 @@ class AVR8AnalogComparator : public MCUSim::Subsys
          * @param[in,out] dataMemory
          * @return
          */
-        AVR8AnalogComparator * link ( MCUSim::EventLogger * eventLogger,
+        AVR8AnalogComparator * link ( MCUSimEventLogger * eventLogger,
                                       AVR8DataMemory      * dataMemory );
 
         /**
          * @brief
          * @param[in] mode
          */
-        void reset ( MCUSim::ResetMode mode );
+        void reset ( MCUSimBase::ResetMode mode );
 
 //         /**
 //          * @brief

@@ -17,11 +17,11 @@
 #include "AVR8DataMemory.h"
 #include "AVR8IO.h"
 
-AVR8ExternalInterrupts * AVR8ExternalInterrupts::link ( MCUSim::EventLogger     * eventLogger,
+AVR8ExternalInterrupts * AVR8ExternalInterrupts::link ( MCUSimEventLogger     * eventLogger,
                                                         AVR8DataMemory          * dataMemory,
                                                         AVR8IO                  * io )
 {
-    Subsys::link(eventLogger, ID_EXT_INT);
+    MCUSimSubsys::link(eventLogger, ID_EXT_INT);
 
     m_dataMemory = dataMemory;
     m_io = io;
@@ -113,7 +113,7 @@ void AVR8ExternalInterrupts::clockCycle()
     m_int1prev = int1;
 }
 
-void AVR8ExternalInterrupts::reset ( MCUSim::ResetMode mode )
+void AVR8ExternalInterrupts::reset ( MCUSimBase::ResetMode mode )
 {
     switch ( mode )
     {

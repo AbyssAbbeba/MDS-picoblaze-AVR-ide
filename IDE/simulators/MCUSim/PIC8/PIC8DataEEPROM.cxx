@@ -34,10 +34,10 @@ PIC8DataEEPROM::~PIC8DataEEPROM()
     }
 }
 
-PIC8DataEEPROM * PIC8DataEEPROM::link ( MCUSim::EventLogger * eventLogger,
+PIC8DataEEPROM * PIC8DataEEPROM::link ( MCUSimEventLogger * eventLogger,
                                         PIC8DataMemory      * dataMemory )
 {
-    Memory::link(eventLogger, SP_EEPROM);
+    MCUSimMemory::link(eventLogger, SP_EEPROM);
     m_dataMemory = dataMemory;
     return this;
 }
@@ -97,7 +97,7 @@ void PIC8DataEEPROM::resize ( unsigned int newSize )
     m_config.m_size = newSize; // <-- This might look weird but it should make sense after all.
 }
 
-void PIC8DataEEPROM::reset ( MCUSim::ResetMode mode )
+void PIC8DataEEPROM::reset ( MCUSimBase::ResetMode mode )
 {
     switch ( mode )
     {
