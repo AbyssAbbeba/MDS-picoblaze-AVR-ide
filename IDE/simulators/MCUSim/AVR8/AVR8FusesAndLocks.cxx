@@ -17,9 +17,9 @@
 
 #include <cstdlib>
 
-AVR8FusesAndLocks * AVR8FusesAndLocks::link ( MCUSim::EventLogger * eventLogger )
+AVR8FusesAndLocks * AVR8FusesAndLocks::link ( MCUSimEventLogger * eventLogger )
 {
-    Subsys::link(eventLogger, ID_FUSES);
+    MCUSimSubsys::link(eventLogger, ID_FUSES);
 
     return this;
 }
@@ -81,7 +81,7 @@ unsigned char AVR8FusesAndLocks::operator[] ( Bytes byte ) const
     return result;
 }
 
-void AVR8FusesAndLocks::reset ( MCUSim::ResetMode mode )
+void AVR8FusesAndLocks::reset ( MCUSimBase::ResetMode mode )
 {
     switch ( mode )
     {

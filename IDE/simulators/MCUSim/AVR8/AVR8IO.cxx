@@ -47,10 +47,10 @@ AVR8IO::AVR8IO()
     m_enabled = false;
 }
 
-AVR8IO * AVR8IO::link ( MCUSim::EventLogger * eventLogger,
+AVR8IO * AVR8IO::link ( MCUSimEventLogger * eventLogger,
                         AVR8DataMemory      * dataMemory )
 {
-    IO::link(eventLogger);
+    MCUSimIO::link(eventLogger);
     m_dataMemory = dataMemory;
     return this;
 }
@@ -178,7 +178,7 @@ inline void AVR8IO::portReadWrite ( unsigned int pinIdx,
     m_dataMemory->writeFast(inRegAddr, in);
 }
 
-void AVR8IO::reset ( MCUSim::ResetMode mode )
+void AVR8IO::reset ( MCUSimBase::ResetMode mode )
 {
     switch ( mode )
     {

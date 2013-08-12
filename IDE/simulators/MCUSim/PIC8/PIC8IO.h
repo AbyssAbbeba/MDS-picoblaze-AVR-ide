@@ -37,7 +37,7 @@ class PIC8DataMemory;
  * @ingroup PIC8
  * @class PIC8IO
  */
-class PIC8IO : public MCUSim::IO
+class PIC8IO : public MCUSimIO
 {
     ////    Public Static Constants    ////
     public:
@@ -121,14 +121,14 @@ class PIC8IO : public MCUSim::IO
          * @param[in,out] dataMemory
          * @return
          */
-        PIC8IO * link ( MCUSim::EventLogger * eventLogger,
+        PIC8IO * link ( MCUSimEventLogger * eventLogger,
                         PIC8DataMemory      * dataMemory );
 
         /**
          * @brief
          * @param[in] mode
          */
-        void reset ( MCUSim::ResetMode mode );
+        void reset ( MCUSimBase::ResetMode mode );
 
         /**
          * @brief

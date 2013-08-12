@@ -25,10 +25,10 @@ PIC8ProgramMemory::PIC8ProgramMemory()
     m_size = 0;
 }
 
-PIC8ProgramMemory * PIC8ProgramMemory::link ( MCUSim::EventLogger * eventLogger,
+PIC8ProgramMemory * PIC8ProgramMemory::link ( MCUSimEventLogger * eventLogger,
                                               PIC8ConfigWord * configWord )
 {
-    Memory::link(eventLogger, SP_CODE);
+    MCUSimMemory::link(eventLogger, SP_CODE);
     m_configWord = configWord;
     return this;
 }
@@ -183,7 +183,7 @@ void PIC8ProgramMemory::resize ( unsigned int newSize )
     m_size = newSize;
 }
 
-void PIC8ProgramMemory::reset ( MCUSim::ResetMode mode )
+void PIC8ProgramMemory::reset ( MCUSimBase::ResetMode mode )
 {
     switch ( mode ) {
         case MCUSim::RSTMD_NEW_CONFIG:

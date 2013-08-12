@@ -27,7 +27,7 @@ class AVR8IO;
  * @ingroup AVR8
  * @class AVR8ExternalInterrupts
  */
-class AVR8ExternalInterrupts : public MCUSim::Subsys
+class AVR8ExternalInterrupts : public MCUSimSubsys
 {
     ////    Public Datatypes    ////
     public:
@@ -55,7 +55,7 @@ class AVR8ExternalInterrupts : public MCUSim::Subsys
          * @param[in,out] io
          * @return
          */
-        AVR8ExternalInterrupts * link ( MCUSim::EventLogger * eventLogger,
+        AVR8ExternalInterrupts * link ( MCUSimEventLogger * eventLogger,
                                         AVR8DataMemory      * dataMemory,
                                         AVR8IO              * io );
 
@@ -63,7 +63,7 @@ class AVR8ExternalInterrupts : public MCUSim::Subsys
          * @brief
          * @param[in] mode
          */
-        void reset ( MCUSim::ResetMode mode );
+        void reset ( MCUSimBase::ResetMode mode );
 
         // This has to be called even in a sleep mode (watchdog clock).
         // This method cannot read I/O backwards, it has to be called upon any change on I/O.

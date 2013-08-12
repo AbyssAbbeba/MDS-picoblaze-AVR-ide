@@ -35,7 +35,7 @@ class PIC8WatchDogTimer;
  * @ingroup PIC8
  * @class PIC8InstructionSet
  */
-class PIC8InstructionSet : public MCUSim::CPU
+class PIC8InstructionSet : public MCUSimCPU
 {
     ////    Public Datatypes    ////
     public:
@@ -87,7 +87,7 @@ class PIC8InstructionSet : public MCUSim::CPU
          * @param[in,out] interruptCtrl
          * @return
          */
-        PIC8InstructionSet * link ( MCUSim::EventLogger     * eventLogger,
+        PIC8InstructionSet * link ( MCUSimEventLogger     * eventLogger,
                                     MCUSim::Mode            * processorMode,
                                     PIC8ProgramMemory       * programMemory,
                                     PIC8DataMemory          * dataMemory,
@@ -106,7 +106,7 @@ class PIC8InstructionSet : public MCUSim::CPU
          * @brief
          * @param[in] mode
          */
-        void reset ( MCUSim::ResetMode mode );
+        void reset ( MCUSimBase::ResetMode mode );
 
         /**
          * @brief

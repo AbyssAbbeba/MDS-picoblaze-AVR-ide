@@ -48,7 +48,7 @@
  * @ingroup AVR8
  * @class AVR8Config
  */
-class AVR8Config : public MCUSim::Config
+class AVR8Config : public MCUSimConfig
 {
     ////    Constructors and Destructors    ////
     public:
@@ -65,6 +65,8 @@ class AVR8Config : public MCUSim::Config
          */
         void link ( AVR8Sim * system );
 
+    ////    Inline Public Operations    ////
+    public:
         /**
          * @brief
          * @return

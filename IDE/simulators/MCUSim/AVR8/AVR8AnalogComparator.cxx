@@ -16,15 +16,15 @@
 #include "AVR8AnalogComparator.h"
 #include "AVR8DataMemory.h"
 
-AVR8AnalogComparator * AVR8AnalogComparator::link ( MCUSim::EventLogger     * eventLogger,
+AVR8AnalogComparator * AVR8AnalogComparator::link ( MCUSimEventLogger     * eventLogger,
                                                     AVR8DataMemory          * dataMemory )
 {
-    Subsys::link(eventLogger, ID_ACOMP);
+    MCUSimSubsys::link(eventLogger, ID_ACOMP);
     m_dataMemory = dataMemory;
     return this;
 }
 
-void AVR8AnalogComparator::reset ( MCUSim::ResetMode /*mode*/ )
+void AVR8AnalogComparator::reset ( MCUSimBase::ResetMode /*mode*/ )
 {
 }
 

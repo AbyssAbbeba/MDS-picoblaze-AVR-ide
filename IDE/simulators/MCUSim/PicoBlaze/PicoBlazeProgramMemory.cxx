@@ -24,9 +24,9 @@ PicoBlazeProgramMemory::PicoBlazeProgramMemory()
     m_size = 0;
 }
 
-PicoBlazeProgramMemory * PicoBlazeProgramMemory::link ( MCUSim::EventLogger * eventLogger )
+PicoBlazeProgramMemory * PicoBlazeProgramMemory::link ( MCUSimEventLogger * eventLogger )
 {
-    Memory::link(eventLogger, SP_CODE);
+    MCUSimMemory::link(eventLogger, SP_CODE);
     return this;
 }
 
@@ -40,11 +40,11 @@ PicoBlazeProgramMemory::~PicoBlazeProgramMemory()
 
 void PicoBlazeProgramMemory::loadDataFile ( const DataFile * file )
 {
-    unsigned int fileSize = file->maxSize();
+    unsigned int fileSize = 10;//file->maxSize();
 
     for ( unsigned int fileAddr = 0, memAddr = 0;
           ( fileAddr < fileSize ) && ( memAddr < m_size );
-          fileAddr++, memAddr++ )
+          memAddr++ )
     {
         unsigned int word = 0;
         int byte;
@@ -53,6 +53,7 @@ void PicoBlazeProgramMemory::loadDataFile ( const DataFile * file )
         for ( int shift = 16; shift >= 0; shift -= 8 )
         {
             byte = ( *file ) [ fileAddr ];
+
             if ( -1 == byte )
             {
                 undefined = true;
@@ -151,7 +152,7 @@ void PicoBlazeProgramMemory::resize ( unsigned int newSize )
     m_size = newSize;
 }
 
-void PicoBlazeProgramMemory::reset ( MCUSim::ResetMode mode )
+void PicoBlazeProgramMemory::reset ( MCUSimBase::ResetMode mode )
 {
     switch ( mode ) {
         case MCUSim::RSTMD_NEW_CONFIG:

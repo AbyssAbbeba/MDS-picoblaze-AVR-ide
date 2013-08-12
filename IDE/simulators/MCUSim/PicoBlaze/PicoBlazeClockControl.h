@@ -23,7 +23,7 @@
  * @ingroup PicoBlaze
  * @class PicoBlazeClockControl
  */
-class PicoBlazeClockControl : public MCUSim::Clock
+class PicoBlazeClockControl : public MCUSimClock
 {
     ////    Public Datatypes    ////
     public:
@@ -51,13 +51,13 @@ class PicoBlazeClockControl : public MCUSim::Clock
          * @param[in,out] fusesAndLocks
          * @return
          */
-        PicoBlazeClockControl * link ( MCUSim::EventLogger * eventLogger );
+        PicoBlazeClockControl * link ( MCUSimEventLogger * eventLogger );
 
         /**
          * @brief
          * @param[in] mode
          */
-        void reset ( MCUSim::ResetMode mode );
+        void reset ( MCUSimBase::ResetMode mode );
 
         /**
          * @brief

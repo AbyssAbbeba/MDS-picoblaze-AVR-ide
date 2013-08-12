@@ -44,6 +44,12 @@ class AsmPic8SemanticAnalyzer : public CompilerSemanticAnalyzer
          * @param[in,out] codeTree
          */
         void process ( CompilerStatement * codeTree );
+
+        /**
+         * @brief
+         * @param[in] deviceName
+         */
+        void setDevice ( const std::string & deviceName );
 };
 
 #endif // ASMPIC8SEMANTICANALYSER_H

@@ -30,13 +30,13 @@ PicoBlazeStack::~PicoBlazeStack()
     }
 }
 
-PicoBlazeStack * PicoBlazeStack::link ( MCUSim::EventLogger * eventLogger )
+PicoBlazeStack * PicoBlazeStack::link ( MCUSimEventLogger * eventLogger )
 {
-    Memory::link(eventLogger, SP_STACK);
+    MCUSimMemory::link(eventLogger, SP_STACK);
     return this;
 }
 
-void PicoBlazeStack::reset ( MCUSim::ResetMode mode )
+void PicoBlazeStack::reset ( MCUSimBase::ResetMode mode )
 {
     switch ( mode )
     {

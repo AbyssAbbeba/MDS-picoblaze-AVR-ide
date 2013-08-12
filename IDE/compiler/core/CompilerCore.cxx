@@ -21,6 +21,7 @@
 #include "CompilerOptions.h"
 #include "CompilerSemanticAnalyzer.h"
 #include "CompilerMsgObserver.h"
+#include "CompilerMessageStack.h"
 #include "CompilerMsgFilter.h"
 #include "CompilerSerializer.h"
 
@@ -36,7 +37,7 @@
 #include "asm/avr8/AsmAvr8SemanticAnalyzer.h"
 #include "asm/pic8/AsmPic8SemanticAnalyzer.h"
 #include "asm/mcs51/AsmMcs51SemanticAnalyzer.h"
-#include "asm/kcpsm3/AsmKcpsm3SemanticAnalyzer.h"
+#include "asm/PicoBlaze/AsmPicoBlazeSemanticAnalyzer.h"
 
 // Used for i18n only.
 #include <QObject>
@@ -48,12 +49,15 @@ CompilerCore::CompilerCore ( CompilerMsgInterface * msgInterface )
     m_msgObserver = NULL;
     m_semanticAnalyzer = NULL;
     m_rootStatement = NULL;
+    m_messageStack = new CompilerMessageStack;
     m_fileNumber = -1;
 }
 
 CompilerCore::~CompilerCore()
 {
     delete m_msgInterface;
+    delete m_messageStack;
+
     if ( NULL != m_semanticAnalyzer )
     {
         delete m_semanticAnalyzer;
@@ -165,8 +169,8 @@ inline bool CompilerCore::setupSemanticAnalyzer()
                 case TA_MCS51:
                     m_semanticAnalyzer = new AsmMcs51SemanticAnalyzer ( this, m_opts );
                     break;
-                case TA_KCPSM3:
-                    m_semanticAnalyzer = new AsmKcpsm3SemanticAnalyzer ( this, m_opts );
+                case TA_PICOBLAZE:
+                    m_semanticAnalyzer = new AsmPicoBlazeSemanticAnalyzer ( this, m_opts );
                     break;
                 default:
                     m_msgInterface->message ( QObject::tr ( "Architecture not supported for the selected language." )
@@ -229,7 +233,7 @@ inline bool CompilerCore::startLexerAndParser()
                     }
                     mcs51lexer_lex_destroy ( yyscanner );
                     break;
-                case TA_KCPSM3:
+                case TA_PICOBLAZE:
                     kcpsm3lexer_lex_init_extra ( this, &yyscanner );
                     kcpsm3lexer_set_in ( sourceFile, yyscanner );
                     if ( true == m_success )
@@ -255,10 +259,15 @@ inline bool CompilerCore::startLexerAndParser()
     return m_success;
 }
 
-void CompilerCore::parserMessage ( CompilerSourceLocation location,
-                                   MessageType type,
-                                   const std::string & text )
+void CompilerCore::localMessage ( CompilerSourceLocation location,
+                                  MessageType type,
+                                  const std::string & text )
 {
+    if ( false == m_messageStack->isUnique(location, type, text) )
+    {
+        return;
+    }
+
     if ( NULL != m_msgObserver )
     {
         m_msgObserver->message(location, type, text);
@@ -307,18 +316,25 @@ void CompilerCore::parserMessage ( CompilerSourceLocation location,
     m_msgInterface->message(msgText.str(), type);
 }
 
+void CompilerCore::parserMessage ( CompilerSourceLocation location,
+                                   MessageType type,
+                                   const std::string & text )
+{
+    localMessage(location, type, text);
+}
+
 void CompilerCore::lexerMessage ( CompilerSourceLocation location,
                                   MessageType type,
                                   const std::string & text )
 {
-    parserMessage(location, type, text);
+    localMessage(location, type, text);
 }
 
 void CompilerCore::compilerMessage ( CompilerSourceLocation location,
                                      MessageType type,
                                      const std::string & text )
 {
-    parserMessage(location, type, text);
+    localMessage(location, type, text);
 }
 
 bool CompilerCore::successful() const
@@ -415,7 +431,7 @@ CompilerStatement * CompilerCore::loadDevSpecCode ( const std::string & deviceNa
         case TA_MCS51:
             fileName /= "mcs51";
             break;
-        case TA_KCPSM3:
+        case TA_PICOBLAZE:
             fileName /= "PicoBlaze";
             break;
     }
@@ -442,6 +458,8 @@ CompilerStatement * CompilerCore::loadDevSpecCode ( const std::string & deviceNa
                                                 . toStdString(),
                                   MT_ERROR );
     }
+
+    m_semanticAnalyzer->setDevice(deviceName);
 
     if ( NULL != flag )
     {
@@ -511,6 +529,7 @@ inline void CompilerCore::resetCompilerCore()
     m_success = true;
     m_devSpecCodeLoaded = false;
 
+    m_messageStack->reset();
     m_msgInterface->reset();
     m_basePath.clear();
 

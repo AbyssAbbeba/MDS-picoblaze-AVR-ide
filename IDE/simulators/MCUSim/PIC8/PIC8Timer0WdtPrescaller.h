@@ -26,7 +26,7 @@ class PIC8DataMemory;
  * @ingroup PIC8
  * @class PIC8Timer0WdtPrescaller
  */
-class PIC8Timer0WdtPrescaller : public MCUSim::Subsys
+class PIC8Timer0WdtPrescaller : public MCUSimSubsys
 {
     ////    Public Datatypes    ////
     public:
@@ -69,14 +69,14 @@ class PIC8Timer0WdtPrescaller : public MCUSim::Subsys
          * @param[in,out] dataMemory
          * @return
          */
-        PIC8Timer0WdtPrescaller * link ( MCUSim::EventLogger * eventLogger,
+        PIC8Timer0WdtPrescaller * link ( MCUSimEventLogger * eventLogger,
                                          PIC8DataMemory      * dataMemory );
 
         /**
          * @brief
          * @param[in] mode
          */
-        void reset ( MCUSim::ResetMode mode );
+        void reset ( MCUSimBase::ResetMode mode );
 
         /**
          * @brief

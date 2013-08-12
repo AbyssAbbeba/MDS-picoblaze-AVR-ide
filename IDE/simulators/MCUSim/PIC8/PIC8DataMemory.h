@@ -33,7 +33,7 @@ class PIC8InstructionSet;
  * @ingroup PIC8
  * @class PIC8DataMemory
  */
-class PIC8DataMemory : public MCUSim::Memory
+class PIC8DataMemory : public MCUSimMemory
 {
     ////    Public Static Constants    ////
     public:
@@ -79,7 +79,7 @@ class PIC8DataMemory : public MCUSim::Memory
          * @param[in,out] eventLogger
          * @return
          */
-        PIC8DataMemory * link ( MCUSim::EventLogger    * eventLogger,
+        PIC8DataMemory * link ( MCUSimEventLogger    * eventLogger,
                                 PIC8ExternalInterrupts * externalInterrupts,
                                 PIC8InstructionSet     * instructionSet );
 
@@ -111,7 +111,7 @@ class PIC8DataMemory : public MCUSim::Memory
          * @brief
          * @param[in] mode
          */
-        void reset ( MCUSim::ResetMode mode );
+        void reset ( MCUSimBase::ResetMode mode );
 
         /**
          * @brief
@@ -293,7 +293,7 @@ class PIC8DataMemory : public MCUSim::Memory
         /**
          * @brief
          */
-        MCUSim::EventLogger * m_eventLogger;
+        MCUSimEventLogger * m_eventLogger;
 };
 
 // -----------------------------------------------------------------------------

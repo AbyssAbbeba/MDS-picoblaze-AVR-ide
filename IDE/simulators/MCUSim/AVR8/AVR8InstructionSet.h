@@ -34,7 +34,7 @@ class AVR8BootLoader;
  * @ingroup AVR8
  * @class AVR8InstructionSet
  */
-class AVR8InstructionSet : public MCUSim::CPU
+class AVR8InstructionSet : public MCUSimCPU
 {
     ////    Public Datatypes    ////
     public:
@@ -262,7 +262,7 @@ class AVR8InstructionSet : public MCUSim::CPU
          * @param[in,out] bootLoader
          * @return
          */
-        AVR8InstructionSet * link ( MCUSim::EventLogger     * eventLogger,
+        AVR8InstructionSet * link ( MCUSimEventLogger     * eventLogger,
                                     AVR8ProgramMemory       * programMemory,
                                     AVR8DataMemory          * dataMemory,
                                     MCUSim::Mode            * processorMode,
@@ -284,7 +284,7 @@ class AVR8InstructionSet : public MCUSim::CPU
          * @param[in] mode
          * @return
          */
-        void reset ( MCUSim::ResetMode mode );
+        void reset ( MCUSimBase::ResetMode mode );
 
         /// @name Processor Instructions
         //@{

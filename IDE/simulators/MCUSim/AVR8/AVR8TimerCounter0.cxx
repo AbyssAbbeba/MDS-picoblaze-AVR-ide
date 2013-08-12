@@ -17,12 +17,12 @@
 #include "AVR8DataMemory.h"
 #include "AVR8IO.h"
 
-AVR8TimerCounter0 * AVR8TimerCounter0::link ( MCUSim::EventLogger * eventLogger,
-                                              MCUSim::Subsys::SubsysId subsysId,
+AVR8TimerCounter0 * AVR8TimerCounter0::link ( MCUSimEventLogger * eventLogger,
+                                              MCUSimSubsys::SubsysId subsysId,
                                               AVR8DataMemory * dataMemory,
                                               AVR8IO * io )
 {
-    Subsys::link(eventLogger, subsysId);
+    MCUSimSubsys::link(eventLogger, subsysId);
     m_dataMemory = dataMemory;
     m_io = io;
     return this;
@@ -187,7 +187,7 @@ inline void AVR8TimerCounter0::clearDelayArray()
     }
 }
 
-void AVR8TimerCounter0::reset ( MCUSim::ResetMode mode )
+void AVR8TimerCounter0::reset ( MCUSimBase::ResetMode mode )
 {
     switch ( mode )
     {

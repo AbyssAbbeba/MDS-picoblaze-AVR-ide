@@ -26,14 +26,14 @@
     #error 'NAN' macro is not defined
 #endif
 
-AVR8SystemControl * AVR8SystemControl::link ( MCUSim::EventLogger     * eventLogger,
+AVR8SystemControl * AVR8SystemControl::link ( MCUSimEventLogger     * eventLogger,
                                               AVR8DataMemory          * dataMemory,
                                               AVR8InterruptController * interruptController,
                                               AVR8WatchdogTimer       * watchdogTimer,
                                               AVR8IO                  * io,
                                               AVR8FusesAndLocks       * fusesAndLocks )
 {
-    Subsys::link(eventLogger, ID_SYS_CONTROL);
+    MCUSimSubsys::link(eventLogger, ID_SYS_CONTROL);
 
     m_dataMemory = dataMemory;
     m_interruptController = interruptController;
@@ -194,7 +194,7 @@ void AVR8SystemControl::watchDogReset()
     }
 }
 
-void AVR8SystemControl::reset ( MCUSim::ResetMode mode )
+void AVR8SystemControl::reset ( MCUSimBase::ResetMode mode )
 {
     m_watchdogTimer->reset(mode);
 

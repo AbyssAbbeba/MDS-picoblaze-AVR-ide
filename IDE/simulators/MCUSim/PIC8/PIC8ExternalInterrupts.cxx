@@ -19,19 +19,19 @@
 #include "PIC8IO.h"
 #include "PIC8InterruptController.h"
 
-PIC8ExternalInterrupts * PIC8ExternalInterrupts::link ( MCUSim::EventLogger     * eventLogger,
+PIC8ExternalInterrupts * PIC8ExternalInterrupts::link ( MCUSimEventLogger     * eventLogger,
                                                         PIC8DataMemory          * dataMemory,
                                                         PIC8IO                  * io,
                                                         PIC8InterruptController * interruptController )
 {
-    Subsys::link(eventLogger, ID_EXT_INT);
+    MCUSimSubsys::link(eventLogger, ID_EXT_INT);
     m_dataMemory = dataMemory;
     m_io = io;
     m_interruptController = interruptController;
     return this;
 }
 
-void PIC8ExternalInterrupts::reset ( MCUSim::ResetMode mode )
+void PIC8ExternalInterrupts::reset ( MCUSimBase::ResetMode mode )
 {
     switch ( mode )
     {

@@ -29,13 +29,13 @@ PIC8Stack::~PIC8Stack()
     }
 }
 
-PIC8Stack * PIC8Stack::link ( MCUSim::EventLogger * eventLogger )
+PIC8Stack * PIC8Stack::link ( MCUSimEventLogger * eventLogger )
 {
-    Subsys::link(eventLogger, ID_STACK);
+    MCUSimSubsys::link(eventLogger, ID_STACK);
     return this;
 }
 
-void PIC8Stack::reset ( MCUSim::ResetMode mode )
+void PIC8Stack::reset ( MCUSimBase::ResetMode mode )
 {
     switch ( mode )
     {

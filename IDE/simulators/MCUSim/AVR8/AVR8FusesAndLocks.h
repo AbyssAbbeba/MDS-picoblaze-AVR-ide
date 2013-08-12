@@ -23,7 +23,7 @@
  * @ingroup AVR8
  * @class AVR8FusesAndLocks
  */
-class AVR8FusesAndLocks : public MCUSim::Subsys
+class AVR8FusesAndLocks : public MCUSimSubsys
 {
     ////    Public Datatypes    ////
     public:
@@ -147,13 +147,13 @@ class AVR8FusesAndLocks : public MCUSim::Subsys
          * @param[in,out] eventLogger
          * @return
          */
-        AVR8FusesAndLocks * link ( MCUSim::EventLogger * eventLogger );
+        AVR8FusesAndLocks * link ( MCUSimEventLogger * eventLogger );
 
         /**
          * @brief
          * @param[in] mode
          */
-        void reset ( MCUSim::ResetMode mode );
+        void reset ( MCUSimBase::ResetMode mode );
 
     ////    Inline Public Operations    ////
     public:

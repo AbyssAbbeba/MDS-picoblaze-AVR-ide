@@ -32,7 +32,7 @@ class AVR8DataMemory;
  * @ingroup AVR8
  * @class AVR8IO
  */
-class AVR8IO : public MCUSim::IO
+class AVR8IO : public MCUSimIO
 {
     ////    Public Static Constants    ////
     public:
@@ -113,14 +113,14 @@ class AVR8IO : public MCUSim::IO
          * @param[in,out] dataMemory
          * @return
          */
-        AVR8IO * link ( MCUSim::EventLogger * eventLogger,
+        AVR8IO * link ( MCUSimEventLogger * eventLogger,
                         AVR8DataMemory * dataMemory );
 
         /**
          * @brief
          * @param[in] mode
          */
-        void reset ( MCUSim::ResetMode mode );
+        void reset ( MCUSimBase::ResetMode mode );
 
         /**
          * @brief

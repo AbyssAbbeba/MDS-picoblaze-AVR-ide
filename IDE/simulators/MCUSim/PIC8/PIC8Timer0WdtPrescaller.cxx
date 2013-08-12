@@ -26,15 +26,15 @@ PIC8Timer0WdtPrescaller::~PIC8Timer0WdtPrescaller()
 {
 }
 
-PIC8Timer0WdtPrescaller * PIC8Timer0WdtPrescaller::link ( MCUSim::EventLogger * eventLogger,
+PIC8Timer0WdtPrescaller * PIC8Timer0WdtPrescaller::link ( MCUSimEventLogger * eventLogger,
                                                           PIC8DataMemory      * dataMemory )
 {
-    Subsys::link(eventLogger, ID_PRESCALLER);
+    MCUSimSubsys::link(eventLogger, ID_PRESCALLER);
     m_dataMemory = dataMemory;
     return this;
 }
 
-void PIC8Timer0WdtPrescaller::reset ( MCUSim::ResetMode mode )
+void PIC8Timer0WdtPrescaller::reset ( MCUSimBase::ResetMode mode )
 {
     switch ( mode )
     {

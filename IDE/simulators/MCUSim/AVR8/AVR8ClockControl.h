@@ -26,7 +26,7 @@ class AVR8FusesAndLocks;
  * @ingroup AVR8
  * @class AVR8ClockControl
  */
-class AVR8ClockControl : public MCUSim::Clock
+class AVR8ClockControl : public MCUSimClock
 {
     ////    Public Datatypes    ////
     public:
@@ -85,14 +85,14 @@ class AVR8ClockControl : public MCUSim::Clock
          * @param[in,out] fusesAndLocks
          * @return
          */
-        AVR8ClockControl * link ( MCUSim::EventLogger * eventLogger,
+        AVR8ClockControl * link ( MCUSimEventLogger * eventLogger,
                                   AVR8FusesAndLocks   * fusesAndLocks );
 
         /**
          * @brief
          * @param[in] mode
          */
-        void reset ( MCUSim::ResetMode mode );
+        void reset ( MCUSimBase::ResetMode mode );
 
         /**
          * @brief

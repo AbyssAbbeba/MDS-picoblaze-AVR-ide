@@ -36,7 +36,7 @@
 
     /**
      * @brief
-     * @param yylval: [InOut]
+     * @param[in,out] yylval
      */
     inline void enlargeStringBuffer ( YYSTYPE * yylval,
                                       CompilerParserInterface * compiler,
@@ -160,60 +160,60 @@ DIS_INT_INST            "disable"{WSPACE}"interrupt"
                         }
 }
 
-\.?"device"             { return D_DEVICE; }
-\.?"limit"              { return D_LIMIT; }
-\.?"reg"                { return D_REG; }
-\.?"namereg"            { return D_NAMEREG; }
-\.?"address"            { return D_ORG; }
-\.?"org"                { return D_ORG; }
-\.?"define"             { return D_DEFINE; }
-\.?"undefine"           { return D_UNDEFINE; }
-\.?"undef"              { return D_UNDEFINE; }
-\.?"equ"                { return D_EQU; }
-\.?"constant"           { return D_CONSTANT; }
-\.?"set"                { return D_SET; }
-\.?"variable"           { return D_VARIABLE; }
-\.?"while"              { return D_WHILE; }
-\.?"endwhile"           { return D_ENDW; }
-\.?"endw"               { return D_ENDW; }
-\.?"port"               { return D_PORT; }
-\.?"data"               { return D_DATA; }
-\.?"code"               { return D_CODE; }
-\.?"db"                 { return D_DB; }
-\.?"error"              { return D_ERROR; }
-\.?"warning"            { return D_WARNING; }
-\.?"list"               { return D_LIST; }
-\.?"messg"              { return D_MESSG; }
-\.?"nolist"             { return D_NOLIST; }
-\.?"skip"               { return D_SKIP; }
-\.?"title"              { return D_TITLE; }
-\.?"expand"             { return D_EXPAND; }
-\.?"noexpand"           { return D_NOEXPAND; }
-\.?"if"                 { return D_IF; }
-\.?"ifn"                { return D_IFN; }
-\.?"ifdef"              { return D_IFDEF; }
-\.?"ifndef"             { return D_IFNDEF; }
-\.?"elseifb"            { return D_ELSEIFB; }
-\.?"elseifnb"           { return D_ELSEIFNB; }
-\.?"else"               { return D_ELSE; }
-\.?"elseif"             { return D_ELSEIF; }
-\.?"elseifn"            { return D_ELSEIFN; }
-\.?"elseifdef"          { return D_ELSEIFDEF; }
+\.?"device"             { return D_DEVICE;     }
+\.?"limit"              { return D_LIMIT;      }
+\.?"reg"                { return D_REG;        }
+\.?"namereg"            { return D_NAMEREG;    }
+\.?"address"            { return D_ORG;        }
+\.?"org"                { return D_ORG;        }
+\.?"define"             { return D_DEFINE;     }
+\.?"undefine"           { return D_UNDEFINE;   }
+\.?"undef"              { return D_UNDEFINE;   }
+\.?"equ"                { return D_EQU;        }
+\.?"constant"           { return D_CONSTANT;   }
+\.?"set"                { return D_SET;        }
+\.?"variable"           { return D_VARIABLE;   }
+\.?"while"              { return D_WHILE;      }
+\.?"endwhile"           { return D_ENDW;       }
+\.?"endw"               { return D_ENDW;       }
+\.?"port"               { return D_PORT;       }
+\.?"data"               { return D_DATA;       }
+\.?"code"               { return D_CODE;       }
+\.?"db"                 { return D_DB;         }
+\.?"error"              { return D_ERROR;      }
+\.?"warning"            { return D_WARNING;    }
+\.?"list"               { return D_LIST;       }
+\.?"messg"              { return D_MESSG;      }
+\.?"nolist"             { return D_NOLIST;     }
+\.?"skip"               { return D_SKIP;       }
+\.?"title"              { return D_TITLE;      }
+\.?"expand"             { return D_EXPAND;     }
+\.?"noexpand"           { return D_NOEXPAND;   }
+\.?"if"                 { return D_IF;         }
+\.?"ifn"                { return D_IFN;        }
+\.?"ifdef"              { return D_IFDEF;      }
+\.?"ifndef"             { return D_IFNDEF;     }
+\.?"elseifb"            { return D_ELSEIFB;    }
+\.?"elseifnb"           { return D_ELSEIFNB;   }
+\.?"else"               { return D_ELSE;       }
+\.?"elseif"             { return D_ELSEIF;     }
+\.?"elseifn"            { return D_ELSEIFN;    }
+\.?"elseifdef"          { return D_ELSEIFDEF;  }
 \.?"elseifndef"         { return D_ELSEIFNDEF; }
-\.?"endif"              { return D_ENDIF; }
-\.?"local"              { return D_LOCAL; }
-\.?"ifnb"               { return D_IFNB; }
-\.?"ifb"                { return D_IFB; }
-\.?"endmacro"           { return D_ENDM; }
-\.?"endm"               { return D_ENDM; }
-\.?"exitm"              { return D_EXITM; }
-\.?"repeat"             { return D_REPT; }
-\.?"rept"               { return D_REPT; }
-\.?"endrepeat"          { return D_ENDR; }
-\.?"endr"               { return D_ENDR; }
-\.?"autoreg"            { return D_AUTOREG; }
-\.?"autospr"            { return D_AUTOSPR; }
-\.?"macro"              { return D_MACRO; }
+\.?"endif"              { return D_ENDIF;      }
+\.?"local"              { return D_LOCAL;      }
+\.?"ifnb"               { return D_IFNB;       }
+\.?"ifb"                { return D_IFB;        }
+\.?"endmacro"           { return D_ENDM;       }
+\.?"endm"               { return D_ENDM;       }
+\.?"exitm"              { return D_EXITM;      }
+\.?"repeat"             { return D_REPT;       }
+\.?"rept"               { return D_REPT;       }
+\.?"endrepeat"          { return D_ENDR;       }
+\.?"endr"               { return D_ENDR;       }
+\.?"autoreg"            { return D_AUTOREG;    }
+\.?"autospr"            { return D_AUTOSPR;    }
+\.?"macro"              { return D_MACRO;      }
 \.?"end"                {
                             // Close the current file
                             kcpsm3lexer_pop_buffer_state(yyscanner);
@@ -232,94 +232,109 @@ DIS_INT_INST            "disable"{WSPACE}"interrupt"
                         }
 
  /* Instructions. */
-"jump"                  { return I_JUMP; }
-"call"                  { return I_CALL; }
-"return"                { return I_RETURN; }
-"add"                   { return I_ADD; }
-"addcy"                 { return I_ADDCY; }
-"sub"                   { return I_SUB; }
-"subcy"                 { return I_SUBCY; }
-"compare"               { return I_COMPARE; }
+"jump"                  { return I_JUMP;        }
+"call"                  { return I_CALL;        }
+"return"                { return I_RETURN;      }
+"add"                   { return I_ADD;         }
+"addcy"                 { return I_ADDCY;       }
+"sub"                   { return I_SUB;         }
+"subcy"                 { return I_SUBCY;       }
+"compare"               { return I_COMPARE;     }
 {RETURNI_ENABLE_INST}   { return I_RETURNI_ENA; }
 {RETURNI_DISABLE_INST}  { return I_RETURNI_DIS; }
-{ENA_INT_INST}          { return I_ENABLE_INT; }
+{ENA_INT_INST}          { return I_ENABLE_INT;  }
 {DIS_INT_INST}          { return I_DISABLE_INT; }
-"load"                  { return I_LOAD; }
-"and"                   { return I_AND; }
-"or"                    { return I_OR; }
-"xor"                   { return I_XOR; }
-"test"                  { return I_TEST; }
-"store"                 { return I_STORE; }
-"fetch"                 { return I_FETCH; }
-"st"                    { return I_STORE; }
-"ft"                    { return I_FETCH; }
-"sr0"                   { return I_SR0; }
-"sr1"                   { return I_SR1; }
-"srx"                   { return I_SRX; }
-"sra"                   { return I_SRA; }
-"rr"                    { return I_RR; }
-"sl0"                   { return I_SL0; }
-"sl1"                   { return I_SL1; }
-"slx"                   { return I_SLX; }
-"sla"                   { return I_SLA; }
-"rl"                    { return I_RL; }
-"input"                 { return I_INPUT; }
-"output"                { return I_OUTPUT; }
+"load"                  { return I_LOAD;        }
+"and"                   { return I_AND;         }
+"or"                    { return I_OR;          }
+"xor"                   { return I_XOR;         }
+"test"                  { return I_TEST;        }
+"store"                 { return I_STORE;       }
+"fetch"                 { return I_FETCH;       }
+"st"                    { return I_STORE;       }
+"ft"                    { return I_FETCH;       }
+"sr0"                   { return I_SR0;         }
+"sr1"                   { return I_SR1;         }
+"srx"                   { return I_SRX;         }
+"sra"                   { return I_SRA;         }
+"rr"                    { return I_RR;          }
+"sl0"                   { return I_SL0;         }
+"sl1"                   { return I_SL1;         }
+"slx"                   { return I_SLX;         }
+"sla"                   { return I_SLA;         }
+"rl"                    { return I_RL;          }
+"input"                 { return I_INPUT;       }
+"output"                { return I_OUTPUT;      }
+"hwbuild"               { return I_HWBUILD;     }
+"star"                  { return I_STAR;        }
+"testcy"                { return I_TESTCY;      }
+"comparecy"             { return I_COMPARECY;   }
+"outputk"               { return I_OUTPUTK;     }
+"regbank"{WSPACE}"A"    { return I_REGBANK_A;   }
+"regbank"{WSPACE}"B"    { return I_REGBANK_B;   }
 
  /* Instruction shortcuts. */
-"ena"                   { return I_ENABLE_INT; }
+"ena"                   { return I_ENABLE_INT;  }
 "dis"                   { return I_DISABLE_INT; }
 "retie"                 { return I_RETURNI_ENA; }
 "retid"                 { return I_RETURNI_DIS; }
-"ret"                   { return I_RETURN; }
-"cmp"                   { return I_COMPARE; }
-"in"                    { return I_INPUT; }
-"out"                   { return I_OUTPUT; }
-"ld"                    { return I_LOAD; }
+"ret"                   { return I_RETURN;      }
+"cmp"                   { return I_COMPARE;     }
+"in"                    { return I_INPUT;       }
+"out"                   { return I_OUTPUT;      }
+"ld"                    { return I_LOAD;        }
+"cmpcy"                 { return I_COMPARECY;   }
+"rb"{WSPACE}"A"         { return I_REGBANK_A;   }
+"rb"{WSPACE}"B"         { return I_REGBANK_B;   }
 
  /* Special macros. */
-"rt_if"                 { return M_RTIF; }
+"rt_if"                 { return M_RTIF;     }
 "rt_elseif"             { return M_RTELSEIF; }
-"rt_else"               { return M_RTELSE; }
-"rt_endif"              { return M_RTENDIF; }
+"rt_else"               { return M_RTELSE;   }
+"rt_endif"              { return M_RTENDIF;  }
+"rt_while"              { return M_RTWHILE;  }
+"rt_endw"               { return M_RTENDW;   }
+"rt_for"                { return M_RTFOR;    }
+"rt_endf"               { return M_RTENDF;   }
 
  /* Fixed operands. */
-"z"                     { return Z; }
+"z"                     { return Z;  }
 "nz"                    { return NZ; }
-"c"                     { return C; }
+"c"                     { return C;  }
 "nc"                    { return NC; }
 
  /* Special "operators". */
-"high"                  { return F_HIGH; }
-"low"                   { return F_LOW; }
-"at"                    { return AT; }
-"@"                     { return AT_MARK; }
-"("                     { return LP; }
-")"                     { return RP; }
+"high"                  { return F_HIGH;    }
+"low"                   { return F_LOW;     }
+"at"                    { return AT;        }
+"@"                     { return AT_MARK;   }
+"("                     { return LP;        }
+")"                     { return RP;        }
 "#"                     { return IMMEDIATE; }
-","                     { return COMMA; }
+","                     { return COMMA;     }
+".."                    { return INTERVAL;  }
 
  /* Operators. */
-"/"                     { return SLASH; }
-"+"                     { return PLUS; }
-"-"                     { return MINUS; }
-"*"                     { return ASTERISK; }
-"!"                     { return NOT; }
-"%"                     { return MOD; }
-"<<"                    { return SHL; }
-">>"                    { return SHR; }
-"&&"                    { return AND; }
-"||"                    { return OR; }
-"&"                     { return BITAND; }
-"|"                     { return BITOR; }
-"^"                     { return BITXOR; }
-"=="                    { return EQ; }
-"<>"                    { return NE; }
-"!="                    { return NE; }
-"<"                     { return LT; }
-"<="                    { return LE; }
-">"                     { return GT; }
-">="                    { return GE; }
+"/"                     { return SLASH;      }
+"+"                     { return PLUS;       }
+"-"                     { return MINUS;      }
+"*"                     { return ASTERISK;   }
+"!"                     { return NOT;        }
+"%"                     { return MOD;        }
+"<<"                    { return SHL;        }
+">>"                    { return SHR;        }
+"&&"                    { return AND;        }
+"||"                    { return OR;         }
+"&"                     { return BITAND;     }
+"|"                     { return BITOR;      }
+"^"                     { return BITXOR;     }
+"=="                    { return EQ;         }
+"<>"                    { return NE;         }
+"!="                    { return NE;         }
+"<"                     { return LT;         }
+"<="                    { return LE;         }
+">"                     { return GT;         }
+">="                    { return GE;         }
 "~"                     { return COMPLEMENT; }
 
 \.?"include"            {

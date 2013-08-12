@@ -45,21 +45,11 @@ class AsmAvr8SemanticAnalyzer : public CompilerSemanticAnalyzer
          */
         void process ( CompilerStatement * codeTree );
 
-    ////    Inline Private Operations    ////
-    private:
         /**
          * @brief
-         * @param[in,out] codeTree
+         * @param[in] deviceName
          */
-        inline void processDeclarations ( CompilerStatement * node );
-
-        /**
-         * @brief
-         * @param[in] name
-         * @param[in] value
-         */
-        inline void addToSymbolTable ( CompilerExpr * const name,
-                                       CompilerExpr * const value );
+        void setDevice ( const std::string & deviceName );
 };
 
 #endif // ASMAVR8SEMANTICANALYSER_H

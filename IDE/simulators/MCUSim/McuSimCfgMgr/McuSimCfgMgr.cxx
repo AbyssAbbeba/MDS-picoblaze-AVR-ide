@@ -20,6 +20,7 @@
 #include "McuDeviceSpecPIC8.h"
 #include "AVR8/AVR8Config.h"
 #include "PIC8/PIC8Config.h"
+#include "PicoBlaze/PicoBlazeConfig.h"
 #include "McuSimCfgMgrAVR8.h"
 #include "McuSimCfgMgrPIC8.h"
 
@@ -205,8 +206,33 @@ bool McuSimCfgMgr::startElement ( const QString & namespaceURI,
 }
 
 bool McuSimCfgMgr::setupSimulator ( const char * mcuName,
-                                    MCUSim::Config & mcuConfig ) const
+                                    MCUSimConfig & mcuConfig ) const
 {
+    if ( MCUSim::ARCH_PICOBLAZE == mcuConfig.getArch() )
+    {
+        MCUSimBase::Family dev;
+
+        if ( 0 == strcmp("kcpsm6", mcuName) )
+        {
+            dev = MCUSim::FAMILY_KCPSM6;
+        }
+        else if ( 0 == strcmp("kcpsm3", mcuName) )
+        {
+            dev = MCUSim::FAMILY_KCPSM3;
+        }
+        else if ( 0 == strcmp("kcpsm2", mcuName) )
+        {
+            dev = MCUSim::FAMILY_KCPSM2;
+        }
+        else
+        {
+            return false;
+        }
+
+        dynamic_cast<PicoBlazeConfig&>(mcuConfig).configure(dev);
+        return true;
+    }
+
     const QString name = mcuName;
     const int size = m_devices.size();
 
@@ -236,9 +262,6 @@ bool McuSimCfgMgr::setupSimulator ( const char * mcuName,
             return dynamic_cast<McuDeviceSpecAVR8*>(m_devices[idx])->setupSimulator(dynamic_cast<AVR8Config&>(mcuConfig));
         case MCUSim::Arch::ARCH_PIC8:
             return dynamic_cast<McuDeviceSpecPIC8*>(m_devices[idx])->setupSimulator(dynamic_cast<PIC8Config&>(mcuConfig));
-        case MCUSim::Arch::ARCH_PICOBLAZE:
-//             return dynamic_cast<McuDeviceSpecPicoBlaze*>(m_devices[idx])->setupSimulator(dynamic_cast<PicoBlazeConfig&>(mcuConfig));
-            return true; // In this simulator implemetation, PicoBlaze requires no configuration.
         default:
             qDebug() << "Unknown architecture";
             return false;

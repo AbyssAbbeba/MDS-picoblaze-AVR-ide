@@ -15,13 +15,13 @@
 
 #include "PicoBlazeClockControl.h"
 
-PicoBlazeClockControl * PicoBlazeClockControl::link ( MCUSim::EventLogger * eventLogger )
+PicoBlazeClockControl * PicoBlazeClockControl::link ( MCUSimEventLogger * eventLogger )
 {
-    Clock::link(eventLogger);
+    MCUSimClock::link(eventLogger);
     return this;
 }
 
-void PicoBlazeClockControl::reset ( MCUSim::ResetMode )
+void PicoBlazeClockControl::reset ( MCUSimBase::ResetMode )
 {
 }
 

@@ -17,4 +17,10 @@
 
 void AsmPic8SemanticAnalyzer::process ( CompilerStatement * codeTree )
 {
+    std::cout << "AsmPic8SemanticAnalyzer::process:\n" << codeTree;
+}
+
+void AsmPic8SemanticAnalyzer::setDevice ( const std::string & deviceName )
+{
+    std::cout << "AsmPic8SemanticAnalyzer::setDevice ( " << deviceName << ")\n";
 }

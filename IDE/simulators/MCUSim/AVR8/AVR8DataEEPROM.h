@@ -31,7 +31,7 @@ class AVR8InterruptController;
  * @ingroup AVR8
  * @class AVR8DataEEPROM
  */
-class AVR8DataEEPROM : public MCUSim::Memory
+class AVR8DataEEPROM : public MCUSimMemory
 {
     ////    Private Constants    ////
     private:
@@ -91,7 +91,7 @@ class AVR8DataEEPROM : public MCUSim::Memory
          * @param[in,out] interruptControllers
          * @return
          */
-        AVR8DataEEPROM * link ( MCUSim::EventLogger     * eventLogger,
+        AVR8DataEEPROM * link ( MCUSimEventLogger     * eventLogger,
                                 AVR8DataMemory          * dataMemory,
                                 AVR8InterruptController * interruptControllers );
 
@@ -99,7 +99,7 @@ class AVR8DataEEPROM : public MCUSim::Memory
          * @brief
          * @param[in] mode
          */
-        void reset ( MCUSim::ResetMode mode );
+        void reset ( MCUSimBase::ResetMode mode );
 
         /**
          * @brief

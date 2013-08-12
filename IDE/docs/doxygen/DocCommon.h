@@ -79,9 +79,9 @@
  * @ingroup Assembler
  * This group contains components of the MCS-51 assemble.
  *
- * @defgroup Kcpsm3Asm KCPSM3 assembler
+ * @defgroup PicoBlazeAsm PicoBlaze assembler
  * @ingroup Assembler
- * This group contains components of the KCPSM3 assembler.
+ * This group contains components of the PicoBlaze assembler.
  */
 
 /**

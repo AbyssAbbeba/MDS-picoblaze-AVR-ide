@@ -29,7 +29,7 @@ class PIC8InterruptController;
  * @ingroup PIC8
  * @class PIC8WatchDogTimer
  */
-class PIC8WatchDogTimer : public MCUSim::Subsys
+class PIC8WatchDogTimer : public MCUSimSubsys
 {
     ////    Public Static Constants    ////
     public:
@@ -78,7 +78,7 @@ class PIC8WatchDogTimer : public MCUSim::Subsys
          * @param[in,out] eventLogger
          * @return
          */
-        PIC8WatchDogTimer * link ( MCUSim::EventLogger     * eventLogger,
+        PIC8WatchDogTimer * link ( MCUSimEventLogger     * eventLogger,
                                    PIC8Timer0WdtPrescaller * timer0WdtPrescaller,
                                    PIC8DataMemory          * dataMemory,
                                    PIC8ConfigWord          * configWord,
@@ -88,7 +88,7 @@ class PIC8WatchDogTimer : public MCUSim::Subsys
          * @brief
          * @param[in] mode
          */
-        void reset ( MCUSim::ResetMode mode );
+        void reset ( MCUSimBase::ResetMode mode );
 
         /**
          * @brief

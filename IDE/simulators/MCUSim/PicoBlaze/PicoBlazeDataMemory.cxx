@@ -22,9 +22,9 @@ PicoBlazeDataMemory::PicoBlazeDataMemory()
     m_memory = NULL;
 }
 
-PicoBlazeDataMemory * PicoBlazeDataMemory::link ( MCUSim::EventLogger * eventLogger )
+PicoBlazeDataMemory * PicoBlazeDataMemory::link ( MCUSimEventLogger * eventLogger )
 {
-    Memory::link(eventLogger, SP_DATA);
+    MCUSimMemory::link(eventLogger, SP_DATA);
     return this;
 }
 
@@ -125,7 +125,7 @@ void PicoBlazeDataMemory::resize ( unsigned int newSize )
     m_size = newSize;
 }
 
-void PicoBlazeDataMemory::reset ( MCUSim::ResetMode mode )
+void PicoBlazeDataMemory::reset ( MCUSimBase::ResetMode mode )
 {
     switch ( mode )
     {

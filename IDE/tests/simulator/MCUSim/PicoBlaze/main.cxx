@@ -13,11 +13,10 @@
  */
 // =============================================================================
 
-// PicoBlaze simulator.
-#include "PicoBlazeSim.h"
-
 // Test suites header files.
-#include "TestSingleInst/TestSingleInst.h"
+#include "TestKcpsm2/TestKcpsm2.h"
+#include "TestKcpsm3/TestKcpsm3.h"
+#include "TestKcpsm6/TestKcpsm6.h"
 
 // getopt_long() function
 #include <getopt.h>
@@ -50,14 +49,14 @@ int initTestEnv()
 
 
     // -----------------------------------------------------------------------------------------------------------------
-    // Register test suite: testSingleInst - "Single instructions"
+    // Register test suites.
     // -----------------------------------------------------------------------------------------------------------------
 
-    // Add the suite to the CUnit test registry.
-    CU_pSuite testSingleInst = CU_add_suite ( "Single instructions",
-                                              TestSingleInst::init,
-                                              TestSingleInst::clean );
-    if ( NULL == testSingleInst )
+    // Add KCPSM2 test suite to the CUnit test registry.
+    CU_pSuite testKcpsm2 = CU_add_suite ( "KCPSM2",
+                                          TestKcpsm2::init,
+                                          TestKcpsm2::clean );
+    if ( NULL == testKcpsm2 )
     {
         // Unable to add the test suite to the registry.
         CU_cleanup_registry();
@@ -65,7 +64,43 @@ int initTestEnv()
     }
 
     // Add unit tests to the suite.
-    if ( false == TestSingleInst::addTests(testSingleInst) )
+    if ( false == TestKcpsm2::addTests(testKcpsm2) )
+    {
+        CU_cleanup_registry();
+        return CU_get_error();
+    }
+
+    // Add KCPSM3 test suite to the CUnit test registry.
+    CU_pSuite testKcpsm3 = CU_add_suite ( "KCPSM3",
+                                          TestKcpsm3::init,
+                                          TestKcpsm3::clean );
+    if ( NULL == testKcpsm3 )
+    {
+        // Unable to add the test suite to the registry.
+        CU_cleanup_registry();
+        return CU_get_error();
+    }
+
+    // Add unit tests to the suite.
+    if ( false == TestKcpsm3::addTests(testKcpsm3) )
+    {
+        CU_cleanup_registry();
+        return CU_get_error();
+    }
+
+    // Add KCPSM6 test suite to the CUnit test registry.
+    CU_pSuite testKcpsm6 = CU_add_suite ( "KCPSM6",
+                                          TestKcpsm6::init,
+                                          TestKcpsm6::clean );
+    if ( NULL == testKcpsm6 )
+    {
+        // Unable to add the test suite to the registry.
+        CU_cleanup_registry();
+        return CU_get_error();
+    }
+
+    // Add unit tests to the suite.
+    if ( false == TestKcpsm6::addTests(testKcpsm6) )
     {
         CU_cleanup_registry();
         return CU_get_error();
@@ -111,7 +146,7 @@ void printHelp ( const char * executable )
  */
 int main ( int argc, char ** argv )
 {
-    std::cout << "Integration testing environment for the MDS mutitarget macro-assembler for PicoBlaze" << std::endl
+    std::cout << "Integration testing environment for the MDS MCU simulator for PicoBlaze" << std::endl
               << "(C) copyright 2013 Moravia Microsystems, s.r.o., Brno, CZ, European Union." << std::endl
               << "All rights reserved." << std::endl
               << std::endl;

@@ -30,7 +30,7 @@ class DataFile;
  * @ingroup PicoBlaze
  * @class PicoBlazeRegisters
  */
-class PicoBlazeRegisters : public MCUSim::Memory
+class PicoBlazeRegisters : public MCUSimMemory
 {
     ////    Public Datatypes    ////
     public:
@@ -43,11 +43,11 @@ class PicoBlazeRegisters : public MCUSim::Memory
             Config()
             {
                 m_undefinedValue = -1;
-                m_size = 16; // <-- default value for KCPSM3
             }
 
-            int m_undefinedValue;           ///< -1 means random
-            unsigned int m_size;            ///<
+            int m_undefinedValue; ///< -1 means random
+            unsigned int m_size;  ///<
+            bool m_banks;         ///<
         };
 
     ////    Constructors and Destructors    ////
@@ -69,7 +69,7 @@ class PicoBlazeRegisters : public MCUSim::Memory
          * @param[in,out] eventLogger
          * @return
          */
-        PicoBlazeRegisters * link ( MCUSim::EventLogger * eventLogger );
+        PicoBlazeRegisters * link ( MCUSimEventLogger * eventLogger );
 
         /**
          * @brief
@@ -99,7 +99,7 @@ class PicoBlazeRegisters : public MCUSim::Memory
          * @brief
          * @param[in] mode
          */
-        void reset ( MCUSim::ResetMode mode );
+        void reset ( MCUSimBase::ResetMode mode );
 
         /**
          * @brief
@@ -190,7 +190,7 @@ class PicoBlazeRegisters : public MCUSim::Memory
         /**
          * @brief
          */
-        MCUSim::EventLogger * m_eventLogger;
+        MCUSimEventLogger * m_eventLogger;
 };
 
 // -----------------------------------------------------------------------------
@@ -224,6 +224,7 @@ inline void PicoBlazeRegisters::write ( unsigned int addr,
         {
             logEvent(EVENT_MEM_ERR_WR_NOT_IMPLEMENTED, addr);
         }
+
         return;
     }
 

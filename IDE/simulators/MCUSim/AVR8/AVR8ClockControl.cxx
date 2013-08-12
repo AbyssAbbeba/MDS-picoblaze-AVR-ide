@@ -16,10 +16,10 @@
 #include "AVR8ClockControl.h"
 #include "AVR8FusesAndLocks.h"
 
-AVR8ClockControl * AVR8ClockControl::link ( MCUSim::EventLogger     * eventLogger,
+AVR8ClockControl * AVR8ClockControl::link ( MCUSimEventLogger     * eventLogger,
                                             AVR8FusesAndLocks       * fusesAndLocks )
 {
-    Clock::link(eventLogger);
+    MCUSimClock::link(eventLogger);
     m_fusesAndLocks = fusesAndLocks;
     return this;
 }
@@ -633,6 +633,6 @@ inline AVR8ClockControl::StartUpTime AVR8ClockControl::startUpHighFreqCrystal ( 
     return result;
 }
 
-void AVR8ClockControl::reset ( MCUSim::ResetMode )
+void AVR8ClockControl::reset ( MCUSimBase::ResetMode )
 {
 }
