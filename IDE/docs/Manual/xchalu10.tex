@@ -1206,10 +1206,7 @@ input parameters.\\
                             { \color{highlight_comment} ; Printing to code listing turned on (turned on by default)  }\\
                     \end{tabular}
                     }\\
-<<<<<<< HEAD
-         
-=======
->>>>>>> 076069953c822134d74d02270d5581df5770f4ce
+
                 {
                     \texttt{}
                     \begin{tabular}[h!]{llll}
@@ -1309,7 +1306,8 @@ input parameters.\\
 
         \section{Run time directives}
         MDS assembler contains some special directives, which are evaluated during run time sequence. You can use them to evaluate simple conditions in your program.
-        Those directives are RT_IF, RT_ELSEIF, RT_WHILE, RT_FOR.\\ Here you can see allowed conditions.
+        Those directives are RT_IF, RT_ELSEIF, RT_WHILE, RT_FOR.\\ Not all conditions allowed by assembler can be used.
+        Table of allowed instructions is displayed below.
             \begin{table}[h!]
                     \mysmallfont{}
                     \centering{}
@@ -1329,22 +1327,26 @@ input parameters.\\
             \end{table}
             
                 \subsection{RT_IF}
-                \textbf{SYNTAX:}\\
-                \\ {
-                    \texttt{}
-                        \begin{tabular}[h!]{llll}
-                            { \color{highlight_directive} RT_IF } & \verb'     ' &
-                            { \color{highlight_constant} <condition> }\\
-                            { \color{highlight_symbol} <code> }\\
-                            { \color{highlight_directive} RT_ELSEIF } & \verb'     ' &
-                            { \color{highlight_constant} <condition> }\\
-                            { \color{highlight_symbol} <code> }\\
-                            { \color{highlight_directive} RT_ELSE } & \verb'     ' &
-                            { \color{highlight_symbol} <code> }\\
-                            { \color{highlight_directive} RT_ENDIF }
-                        \end{tabular}
-                    }\\
+                    \textbf{SYNTAX:}\\
+                    \\ {
+                        \texttt{}
+                            \begin{tabular}[h!]{llll}
+                                { \color{highlight_directive} RT_IF } & \verb'     ' &
+                                { \color{highlight_constant} <condition> }\\
+                                { \color{highlight_symbol} <code> }\\
+                                { \color{highlight_directive} RT_ELSEIF } & \verb'     ' &
+                                { \color{highlight_constant} <condition> }\\
+                                { \color{highlight_symbol} <code> }\\
+                                { \color{highlight_directive} RT_ELSE } & \verb'     ' &
+                                { \color{highlight_symbol} <code> }\\
+                                { \color{highlight_directive} RT_ENDIF }
+                            \end{tabular}
+                        }\\
+                    \textbf{DESCRIPTION:}\\
+                    You can use RT_IF for better readability olf you code. Compiler translates this directive as predefined MACRO with instructions COMPARE and TEST,
+                    evaluates result. You can use immediate constants (symbols) and registers in conditions.
                     
+                    \textbf{EXAMPLE:}\\
                 \\ {
                     \texttt{}
                         \begin{tabular}[h!]{llll}
