@@ -93,7 +93,7 @@ inline void DbgFileAvraLst::loadFile ( const std::string & filename )
         ++lineNumber;
         file.getline(line, MAX_LINE_LENGTH);
 
-        if ( true == file.fail() )
+        if ( true == file.bad() )
         {
             throw Exception(Exception::IO_ERROR, "Read failed, file: " + filename);
         }
@@ -146,7 +146,7 @@ inline void DbgFileAvraLst::loadFile ( const std::string & filename )
         }
     }
 
-    if ( true == file.fail() )
+    if ( true == file.bad() )
     {
         throw Exception(Exception::IO_ERROR, "Unable to read " + filename);
     }

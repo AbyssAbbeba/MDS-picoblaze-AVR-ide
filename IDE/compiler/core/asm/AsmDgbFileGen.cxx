@@ -80,10 +80,10 @@ inline void AsmDgbFileGen::outputToFile ( CompilerSemanticInterface * compilerCo
         }
     }
 
-    if ( true == file.fail() )
+    if ( true == file.bad() )
     {
         compilerCore -> compilerMessage ( CompilerBase::MT_ERROR,
-                                            QObject::tr("unable to write to ").toStdString() + "\"" + filename + "\"" );
+                                          QObject::tr("unable to write to ").toStdString() + "\"" + filename + "\"" );
         return;
     }
 }

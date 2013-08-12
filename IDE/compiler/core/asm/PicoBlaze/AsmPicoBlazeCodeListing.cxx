@@ -94,7 +94,7 @@ void AsmPicoBlazeCodeListing::loadSourceFiles()
         fileNumber++;
         file.open ( *it, std::fstream::in );
 
-        if ( true == file.fail())
+        if ( true == file.bad())
         {
             m_compilerCore -> compilerMessage ( CompilerBase::MT_ERROR,
                                                 QObject::tr("unable to open ").toStdString() + "\"" + *it  + "\"" );
@@ -102,7 +102,7 @@ void AsmPicoBlazeCodeListing::loadSourceFiles()
         }
 
         // Iterate over lines in the file
-        while ( true == file.good() )
+        while ( false == file.eof() )
         {
             file.getline ( line, MAX_LINE_LENGTH );
             m_listing[fileNumber].push_back ( LstLine ( line ) );
@@ -299,7 +299,7 @@ void AsmPicoBlazeCodeListing::output()
 
     file << this;
 
-    if ( true == file.fail() )
+    if ( true == file.bad() )
     {
         m_compilerCore -> compilerMessage ( CompilerBase::MT_ERROR,
                                             QObject::tr("unable to write to ").toStdString() + "\""
