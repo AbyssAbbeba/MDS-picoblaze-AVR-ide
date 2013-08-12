@@ -500,7 +500,7 @@ bool CompilerCore::savePrecompiledCode ( const std::string & fileName,
         std::ofstream file ( fileName, (std::ios_base::out | std::ios_base::binary) );
         CompilerSerializer serializer(file, m_fileNames, m_lang, m_arch);
         code->serializeTree(serializer);
-        return ( !file.fail() );
+        return ( !file.bad() );
     }
     catch ( CompilerSerializer::Exception & )
     {
