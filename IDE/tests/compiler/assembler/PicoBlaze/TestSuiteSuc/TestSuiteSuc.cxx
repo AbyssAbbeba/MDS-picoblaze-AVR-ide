@@ -125,7 +125,7 @@ void TestSuiteSuc::testFunction()
     m_options->m_verilogFile  = resultsCommonPath + ".v";
     m_options->m_vhdlFile     = resultsCommonPath + ".vhd";
 
-    CU_ASSERT_FATAL ( true == m_compiler->compile(CompilerBase::LI_ASM, CompilerBase::TA_KCPSM3, m_options) );
+    CU_ASSERT_FATAL ( true == m_compiler->compile(CompilerBase::LI_ASM, CompilerBase::TA_PICOBLAZE, m_options) );
 
     std::string expectedCommonPath = ( path("..") / "expected" / testName ).string();
     compareLst ( expectedCommonPath + ".lst.exp", m_options->m_lstFile     );
