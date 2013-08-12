@@ -41,7 +41,7 @@ add_library ( ${PROJECT_NAME} SHARED
               DbgFile.cxx
               DbgFileCDB.cxx
               DbgFileNative.cxx
-#               DbgFileAvrCoff.cxx
+              DbgFileAvrCoff.cxx
               DbgFileAvraLst.cxx )
 
 
