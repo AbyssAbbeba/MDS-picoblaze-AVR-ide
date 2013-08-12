@@ -111,7 +111,7 @@ void TestSuiteErr::testFunction()
     m_options->m_lstFile      = resultsCommonPath + ".lst";
 
     dynamic_cast<CompilerMsgIntfFile*>(m_msgInt)->openFile(resultsCommonPath + ".err");
-    CU_ASSERT_FATAL ( false == m_compiler->compile(CompilerBase::LI_ASM, CompilerBase::TA_KCPSM3, m_options) );
+    CU_ASSERT_FATAL ( false == m_compiler->compile(CompilerBase::LI_ASM, CompilerBase::TA_PICOBLAZE, m_options) );
     dynamic_cast<CompilerMsgIntfFile*>(m_msgInt)->closeFile();
 
     std::string expectedCommonPath = ( path("..") / "expected" / testName ).string();

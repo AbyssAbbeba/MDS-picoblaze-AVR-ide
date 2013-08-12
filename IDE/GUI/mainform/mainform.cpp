@@ -678,7 +678,7 @@ void MainForm::compileProject()
     qRegisterMetaType<CompilerBase::MessageType>("CompilerBase::MessageType");
     connect(compiler, SIGNAL(compilationMessage(const std::string&, CompilerBase::MessageType)), this, SLOT(reloadCompileInfo(const std::string&, CompilerBase::MessageType)));
     connect(compiler, SIGNAL(compilationFinished (bool)), this, SLOT(compilationFinished(bool)));
-    compiler->compile(CompilerBase::LI_ASM, CompilerBase::TA_KCPSM3, options);
+    compiler->compile(CompilerBase::LI_ASM, CompilerBase::TA_PICOBLAZE, options);
     //delete options;
     /*QThread *thread = new QThread;
     CompileWidget *compiler = new CompileWidget(projectMan->getActive()->mainFileName, projectMan->getActive()->prjPath, projectMan->getActive()->langType);
