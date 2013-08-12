@@ -1,1 +1,0 @@
-MT_ERROR: TestSuiteErr/testcases/000_InstructionsAbsOpr.asm:2.10-18: error: invalid number of operands, instruction ADDCY takes 2 operand(s).
