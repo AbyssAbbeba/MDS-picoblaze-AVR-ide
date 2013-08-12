@@ -25,32 +25,32 @@
 void ( PicoBlazeInstructionSet2 :: * const PicoBlazeInstructionSet2::m_opCodeDispatchTable [ 32 ] )
      ( const unsigned int opCode ) =
 {
-    & PicoBlazeInstructionSet2::inst_LOAD,    // opCode = 00 | 000x xxxx | xxxx xxxx
-    & PicoBlazeInstructionSet2::inst_AND,     // opCode = 00 | 001x xxxx | xxxx xxxx
-    & PicoBlazeInstructionSet2::inst_OR,      // opCode = 00 | 010x xxxx | xxxx xxxx
-    & PicoBlazeInstructionSet2::inst_XOR,     // opCode = 00 | 011x xxxx | xxxx xxxx
-    & PicoBlazeInstructionSet2::inst_ADD,     // opCode = 00 | 100x xxxx | xxxx xxxx
-    & PicoBlazeInstructionSet2::inst_ADDCY,   // opCode = 00 | 101x xxxx | xxxx xxxx
-    & PicoBlazeInstructionSet2::inst_SUB,     // opCode = 00 | 110x xxxx | xxxx xxxx
-    & PicoBlazeInstructionSet2::inst_SUBCY,   // opCode = 00 | 111x xxxx | xxxx xxxx
-    & PicoBlazeInstructionSet2::inst_LOAD,    // opCode = 01 | 000x xxxx | xxxx xxxx
-    & PicoBlazeInstructionSet2::inst_AND,     // opCode = 01 | 001x xxxx | xxxx xxxx
-    & PicoBlazeInstructionSet2::inst_OR,      // opCode = 01 | 010x xxxx | xxxx xxxx
-    & PicoBlazeInstructionSet2::inst_XOR,     // opCode = 01 | 011x xxxx | xxxx xxxx
-    & PicoBlazeInstructionSet2::inst_ADD,     // opCode = 01 | 100x xxxx | xxxx xxxx
-    & PicoBlazeInstructionSet2::inst_ADDCY,   // opCode = 01 | 101x xxxx | xxxx xxxx
-    & PicoBlazeInstructionSet2::inst_SUB,     // opCode = 01 | 110x xxxx | xxxx xxxx
-    & PicoBlazeInstructionSet2::inst_SUBCY,   // opCode = 01 | 111x xxxx | xxxx xxxx
-    & PicoBlazeInstructionSet2::inst_INPUT,   // opCode = 10 | 000x xxxx | xxxx xxxx
-    & PicoBlazeInstructionSet2::inst_OUTPUT,  // opCode = 10 | 001x xxxx | xxxx xxxx
+    & PicoBlazeInstructionSet2::inst_LOAD0,   // opCode = 00 | 000x xxxx | xxxx xxxx
+    & PicoBlazeInstructionSet2::inst_AND0,    // opCode = 00 | 001x xxxx | xxxx xxxx
+    & PicoBlazeInstructionSet2::inst_OR0,     // opCode = 00 | 010x xxxx | xxxx xxxx
+    & PicoBlazeInstructionSet2::inst_XOR0,    // opCode = 00 | 011x xxxx | xxxx xxxx
+    & PicoBlazeInstructionSet2::inst_ADD0,    // opCode = 00 | 100x xxxx | xxxx xxxx
+    & PicoBlazeInstructionSet2::inst_ADDCY0,  // opCode = 00 | 101x xxxx | xxxx xxxx
+    & PicoBlazeInstructionSet2::inst_SUB0,    // opCode = 00 | 110x xxxx | xxxx xxxx
+    & PicoBlazeInstructionSet2::inst_SUBCY0,  // opCode = 00 | 111x xxxx | xxxx xxxx
+    & PicoBlazeInstructionSet2::inst_LOAD1,   // opCode = 01 | 000x xxxx | xxxx xxxx
+    & PicoBlazeInstructionSet2::inst_AND1,    // opCode = 01 | 001x xxxx | xxxx xxxx
+    & PicoBlazeInstructionSet2::inst_OR1,     // opCode = 01 | 010x xxxx | xxxx xxxx
+    & PicoBlazeInstructionSet2::inst_XOR1,    // opCode = 01 | 011x xxxx | xxxx xxxx
+    & PicoBlazeInstructionSet2::inst_ADD1,    // opCode = 01 | 100x xxxx | xxxx xxxx
+    & PicoBlazeInstructionSet2::inst_ADDCY1,  // opCode = 01 | 101x xxxx | xxxx xxxx
+    & PicoBlazeInstructionSet2::inst_SUB1,    // opCode = 01 | 110x xxxx | xxxx xxxx
+    & PicoBlazeInstructionSet2::inst_SUBCY1,  // opCode = 01 | 111x xxxx | xxxx xxxx
+    & PicoBlazeInstructionSet2::inst_INPUT0,  // opCode = 10 | 000x xxxx | xxxx xxxx
+    & PicoBlazeInstructionSet2::inst_OUTPUT0, // opCode = 10 | 001x xxxx | xxxx xxxx
     & PicoBlazeInstructionSet2::inst_RETURN,  // opCode = 10 | 010x xxxx | xxxx xxxx
     & PicoBlazeInstructionSet2::inst__,       // opCode = 10 | 011x xxxx | xxxx xxxx
     & PicoBlazeInstructionSet2::inst_10100,   // opCode = 10 | 100x xxxx | xxxx xxxx
     & PicoBlazeInstructionSet2::inst__,       // opCode = 10 | 101x xxxx | xxxx xxxx
     & PicoBlazeInstructionSet2::inst_RETURNI, // opCode = 10 | 110x xxxx | xxxx xxxx
     & PicoBlazeInstructionSet2::inst__,       // opCode = 10 | 111x xxxx | xxxx xxxx
-    & PicoBlazeInstructionSet2::inst_INPUT,   // opCode = 11 | 000x xxxx | xxxx xxxx
-    & PicoBlazeInstructionSet2::inst_OUTPUT,  // opCode = 11 | 001x xxxx | xxxx xxxx
+    & PicoBlazeInstructionSet2::inst_INPUT1,  // opCode = 11 | 000x xxxx | xxxx xxxx
+    & PicoBlazeInstructionSet2::inst_OUTPUT1, // opCode = 11 | 001x xxxx | xxxx xxxx
     & PicoBlazeInstructionSet2::inst_JUMP,    // opCode = 11 | 010x xxxx | xxxx xxxx
     & PicoBlazeInstructionSet2::inst_CALL,    // opCode = 11 | 011x xxxx | xxxx xxxx
     & PicoBlazeInstructionSet2::inst__,       // opCode = 11 | 100x xxxx | xxxx xxxx
@@ -320,7 +320,7 @@ void PicoBlazeInstructionSet2::inst_RETURN ( const unsigned int opCode )
     setProgramCounter ( 1 + m_stack->popFromStack() );
 }
 
-void PicoBlazeInstructionSet2::inst_ADD ( const unsigned int opCode )
+void PicoBlazeInstructionSet2::inst_ADD0 ( const unsigned int opCode )
 {
     instructionEnter ( PicoBlazeInsNames::INS_ADD );
 
@@ -331,17 +331,8 @@ void PicoBlazeInstructionSet2::inst_ADD ( const unsigned int opCode )
     // Registers.
     unsigned int sXval = m_registers -> read ( sX );
 
-    // Perform the operation.
-    if ( 0x10000 & opCode )
-    {
-        // ADD sX, sY
-        sXval += m_registers -> read ( sYkk >> 4 );
-    }
-    else
-    {
-        // ADD sX, kk
-        sXval += sYkk;
-    }
+    // Perform the operation (ADD sX, kk).
+    sXval += sYkk;
 
     // Modify status flags.
     m_statusFlags.m_carry = ( ( 0x100 &  sXval ) ? true : false );
@@ -351,7 +342,29 @@ void PicoBlazeInstructionSet2::inst_ADD ( const unsigned int opCode )
     m_registers -> write ( sX, ( sXval & 0xff ) );
 }
 
-void PicoBlazeInstructionSet2::inst_ADDCY ( const unsigned int opCode )
+void PicoBlazeInstructionSet2::inst_ADD1 ( const unsigned int opCode )
+{
+    instructionEnter ( PicoBlazeInsNames::INS_ADD );
+
+    // Extract operands from OP code.
+    const unsigned int sX   = ( opCode & 0x1f00 ) >> 8;
+    const unsigned int sYkk = ( opCode & 0x00ff );
+
+    // Registers.
+    unsigned int sXval = m_registers -> read ( sX );
+
+    // Perform the operation (ADD sX, sY).
+    sXval += m_registers -> read ( sYkk >> 4 );
+
+    // Modify status flags.
+    m_statusFlags.m_carry = ( ( 0x100 &  sXval ) ? true : false );
+    m_statusFlags.m_zero  = ( ( 0     == sXval ) ? true : false );
+
+    // Save the result.
+    m_registers -> write ( sX, ( sXval & 0xff ) );
+}
+
+void PicoBlazeInstructionSet2::inst_ADDCY0 ( const unsigned int opCode )
 {
     instructionEnter ( PicoBlazeInsNames::INS_ADDCY );
 
@@ -362,17 +375,8 @@ void PicoBlazeInstructionSet2::inst_ADDCY ( const unsigned int opCode )
     // Registers.
     unsigned int sXval = m_registers -> read ( sX );
 
-    // Perform the operation.
-    if ( 0x10000 & opCode )
-    {
-        // ADDCY sX, sY
-        sXval += m_registers -> read ( sYkk >> 4 );
-    }
-    else
-    {
-        // ADDCY sX, kk
-        sXval += sYkk;
-    }
+    // Perform the operation (ADDCY sX, kk).
+    sXval += sYkk;
 
     // Add carry flag to the result.
     if ( true == m_statusFlags.m_carry )
@@ -388,9 +392,9 @@ void PicoBlazeInstructionSet2::inst_ADDCY ( const unsigned int opCode )
     m_registers -> write ( sX, ( sXval & 0xff ) );
 }
 
-void PicoBlazeInstructionSet2::inst_SUB ( const unsigned int opCode )
+void PicoBlazeInstructionSet2::inst_ADDCY1 ( const unsigned int opCode )
 {
-    instructionEnter ( PicoBlazeInsNames::INS_SUB );
+    instructionEnter ( PicoBlazeInsNames::INS_ADDCY );
 
     // Extract operands from OP code.
     const unsigned int sX   = ( opCode & 0x1f00 ) >> 8;
@@ -399,16 +403,13 @@ void PicoBlazeInstructionSet2::inst_SUB ( const unsigned int opCode )
     // Registers.
     unsigned int sXval = m_registers -> read ( sX );
 
-    // Perform the operation.
-    if ( 0x10000 & opCode )
+    // Perform the operation (ADDCY sX, sY).
+    sXval += m_registers -> read ( sYkk >> 4 );
+
+    // Add carry flag to the result.
+    if ( true == m_statusFlags.m_carry )
     {
-        // SUB sX, sY
-        sXval -= m_registers -> read ( sYkk >> 4 );
-    }
-    else
-    {
-        // SUB sX, kk
-        sXval -= sYkk;
+        sXval++;
     }
 
     // Modify status flags.
@@ -419,7 +420,51 @@ void PicoBlazeInstructionSet2::inst_SUB ( const unsigned int opCode )
     m_registers -> write ( sX, ( sXval & 0xff ) );
 }
 
-void PicoBlazeInstructionSet2::inst_SUBCY ( const unsigned int opCode )
+void PicoBlazeInstructionSet2::inst_SUB0 ( const unsigned int opCode )
+{
+    instructionEnter ( PicoBlazeInsNames::INS_SUB );
+
+    // Extract operands from OP code.
+    const unsigned int sX   = ( opCode & 0x1f00 ) >> 8;
+    const unsigned int sYkk = ( opCode & 0x00ff );
+
+    // Registers.
+    unsigned int sXval = m_registers -> read ( sX );
+
+    // Perform the operation (SUB sX, kk).
+    sXval -= sYkk;
+
+    // Modify status flags.
+    m_statusFlags.m_carry = ( ( 0x100 &  sXval ) ? true : false );
+    m_statusFlags.m_zero  = ( ( 0     == sXval ) ? true : false );
+
+    // Save the result.
+    m_registers -> write ( sX, ( sXval & 0xff ) );
+}
+
+void PicoBlazeInstructionSet2::inst_SUB1 ( const unsigned int opCode )
+{
+    instructionEnter ( PicoBlazeInsNames::INS_SUB );
+
+    // Extract operands from OP code.
+    const unsigned int sX   = ( opCode & 0x1f00 ) >> 8;
+    const unsigned int sYkk = ( opCode & 0x00ff );
+
+    // Registers.
+    unsigned int sXval = m_registers -> read ( sX );
+
+    // Perform the operation (SUB sX, sY).
+    sXval -= m_registers -> read ( sYkk >> 4 );
+
+    // Modify status flags.
+    m_statusFlags.m_carry = ( ( 0x100 &  sXval ) ? true : false );
+    m_statusFlags.m_zero  = ( ( 0     == sXval ) ? true : false );
+
+    // Save the result.
+    m_registers -> write ( sX, ( sXval & 0xff ) );
+}
+
+void PicoBlazeInstructionSet2::inst_SUBCY0 ( const unsigned int opCode )
 {
     instructionEnter ( PicoBlazeInsNames::INS_SUBCY );
 
@@ -430,17 +475,36 @@ void PicoBlazeInstructionSet2::inst_SUBCY ( const unsigned int opCode )
     // Registers.
     unsigned int sXval = m_registers -> read ( sX );
 
-    // Perform the operation.
-    if ( 0x10000 & opCode )
+    // Perform the operation (SUBCY sX, kk).
+    sXval -= sYkk;
+
+    // Add carry flag to the result.
+    if ( true == m_statusFlags.m_carry )
     {
-        // SUBCY sX, sY
-        sXval -= m_registers -> read ( sYkk >> 4 );
+        sXval--;
     }
-    else
-    {
-        // SUBCY sX, kk
-        sXval -= sYkk;
-    }
+
+    // Modify status flags.
+    m_statusFlags.m_carry = ( ( 0x100 &  sXval ) ? true : false );
+    m_statusFlags.m_zero  = ( ( 0     == sXval ) ? true : false );
+
+    // Save the result.
+    m_registers -> write ( sX, ( sXval & 0xff ) );
+}
+
+void PicoBlazeInstructionSet2::inst_SUBCY1 ( const unsigned int opCode )
+{
+    instructionEnter ( PicoBlazeInsNames::INS_SUBCY );
+
+    // Extract operands from OP code.
+    const unsigned int sX   = ( opCode & 0x1f00 ) >> 8;
+    const unsigned int sYkk = ( opCode & 0x00ff );
+
+    // Registers.
+    unsigned int sXval = m_registers -> read ( sX );
+
+    // Perform the operation (SUBCY sX, sY).
+    sXval -= m_registers -> read ( sYkk >> 4 );
 
     // Add carry flag to the result.
     if ( true == m_statusFlags.m_carry )
@@ -510,7 +574,7 @@ inline void PicoBlazeInstructionSet2::inst_DISABLE_INT ( const unsigned int )
     m_statusFlags.m_inte = false;
 }
 
-void PicoBlazeInstructionSet2::inst_LOAD ( const unsigned int opCode )
+void PicoBlazeInstructionSet2::inst_LOAD0 ( const unsigned int opCode )
 {
     instructionEnter ( PicoBlazeInsNames::INS_LOAD );
 
@@ -518,19 +582,22 @@ void PicoBlazeInstructionSet2::inst_LOAD ( const unsigned int opCode )
     const unsigned int sX   = ( opCode & 0x1f00 ) >> 8;
     const unsigned int sYkk = ( opCode & 0x00ff );
 
-    if ( 0x10000 & opCode )
-    {
-        // LOAD sX, sY
-        m_registers -> write ( sX, m_registers -> read ( sYkk >> 4 ) );
-    }
-    else
-    {
-        // LOAD sX, kk
-        m_registers -> write ( sX, sYkk );
-    }
+    // LOAD sX, kk
+    m_registers -> write ( sX, sYkk );
 }
 
-void PicoBlazeInstructionSet2::inst_AND ( const unsigned int opCode )
+void PicoBlazeInstructionSet2::inst_LOAD1 ( const unsigned int opCode )
+{
+    instructionEnter ( PicoBlazeInsNames::INS_LOAD );
+
+    // Extract operands from OP code.
+    const unsigned int sX   = ( opCode & 0x1f00 ) >> 8;
+    const unsigned int sYkk = ( opCode & 0x00ff );
+
+    m_registers -> write ( sX, m_registers -> read ( sYkk >> 4 ) );
+}
+
+void PicoBlazeInstructionSet2::inst_AND0 ( const unsigned int opCode )
 {
     instructionEnter ( PicoBlazeInsNames::INS_AND );
 
@@ -541,17 +608,8 @@ void PicoBlazeInstructionSet2::inst_AND ( const unsigned int opCode )
     // Registers.
     unsigned int sXval = m_registers -> read ( sX );
 
-    // Perform the operation.
-    if ( 0x10000 & opCode )
-    {
-        // AND sX, sY
-        sXval &= m_registers -> read ( sYkk >> 4 );
-    }
-    else
-    {
-        // AND sX, kk
-        sXval &= sYkk;
-    }
+    // Perform the operation (AND sX, kk).
+    sXval &= sYkk;
 
     // Modify status flags.
     m_statusFlags.m_carry = false;
@@ -561,7 +619,29 @@ void PicoBlazeInstructionSet2::inst_AND ( const unsigned int opCode )
     m_registers -> write ( sX, sXval );
 }
 
-void PicoBlazeInstructionSet2::inst_OR ( const unsigned int opCode )
+void PicoBlazeInstructionSet2::inst_AND1 ( const unsigned int opCode )
+{
+    instructionEnter ( PicoBlazeInsNames::INS_AND );
+
+    // Extract operands from OP code.
+    const unsigned int sX   = ( opCode & 0x1f00 ) >> 8;
+    const unsigned int sYkk = ( opCode & 0x00ff );
+
+    // Registers.
+    unsigned int sXval = m_registers -> read ( sX );
+
+    // Perform the operation (AND sX, sY).
+    sXval &= m_registers -> read ( sYkk >> 4 );
+
+    // Modify status flags.
+    m_statusFlags.m_carry = false;
+    m_statusFlags.m_zero = ( ( 0 == sXval ) ? true : false );
+
+    // Save the result.
+    m_registers -> write ( sX, sXval );
+}
+
+void PicoBlazeInstructionSet2::inst_OR0 ( const unsigned int opCode )
 {
     instructionEnter ( PicoBlazeInsNames::INS_OR );
 
@@ -572,17 +652,8 @@ void PicoBlazeInstructionSet2::inst_OR ( const unsigned int opCode )
     // Registers.
     unsigned int sXval = m_registers -> read ( sX );
 
-    // Perform the operation.
-    if ( 0x10000 & opCode )
-    {
-        // OR sX, sY
-        sXval |= m_registers -> read ( sYkk >> 4 );
-    }
-    else
-    {
-        // OR sX, kk
-        sXval |= sYkk;
-    }
+    // Perform the operation (OR sX, kk).
+    sXval |= sYkk;
 
     // Modify status flags.
     m_statusFlags.m_carry = false;
@@ -592,7 +663,29 @@ void PicoBlazeInstructionSet2::inst_OR ( const unsigned int opCode )
     m_registers -> write ( sX, sXval );
 }
 
-void PicoBlazeInstructionSet2::inst_XOR ( const unsigned int opCode )
+void PicoBlazeInstructionSet2::inst_OR1 ( const unsigned int opCode )
+{
+    instructionEnter ( PicoBlazeInsNames::INS_OR );
+
+    // Extract operands from OP code.
+    const unsigned int sX   = ( opCode & 0x1f00 ) >> 8;
+    const unsigned int sYkk = ( opCode & 0x00ff );
+
+    // Registers.
+    unsigned int sXval = m_registers -> read ( sX );
+
+    // Perform the operation (OR sX, sY).
+    sXval |= m_registers -> read ( sYkk >> 4 );
+
+    // Modify status flags.
+    m_statusFlags.m_carry = false;
+    m_statusFlags.m_zero = ( ( 0 == sXval ) ? true : false );
+
+    // Save the result.
+    m_registers -> write ( sX, sXval );
+}
+
+void PicoBlazeInstructionSet2::inst_XOR0 ( const unsigned int opCode )
 {
     instructionEnter ( PicoBlazeInsNames::INS_XOR );
 
@@ -603,17 +696,30 @@ void PicoBlazeInstructionSet2::inst_XOR ( const unsigned int opCode )
     // Registers.
     unsigned int sXval = m_registers -> read ( sX );
 
-    // Perform the operation.
-    if ( 0x10000 & opCode )
-    {
-        // XOR sX, sY
-        sXval ^= m_registers -> read ( sYkk >> 4 );
-    }
-    else
-    {
-        // XOR sX, kk
-        sXval ^= sYkk;
-    }
+    // Perform the operation (XOR sX, kk).
+    sXval ^= sYkk;
+
+    // Modify status flags.
+    m_statusFlags.m_carry = false;
+    m_statusFlags.m_zero = ( ( 0 == sXval ) ? true : false );
+
+    // Save the result.
+    m_registers -> write ( sX, sXval );
+}
+
+void PicoBlazeInstructionSet2::inst_XOR1 ( const unsigned int opCode )
+{
+    instructionEnter ( PicoBlazeInsNames::INS_XOR );
+
+    // Extract operands from OP code.
+    const unsigned int sX   = ( opCode & 0x1f00 ) >> 8;
+    const unsigned int sYkk = ( opCode & 0x00ff );
+
+    // Registers.
+    unsigned int sXval = m_registers -> read ( sX );
+
+    // Perform the operation (XOR sX, sY).
+    sXval ^= m_registers -> read ( sYkk >> 4 );
 
     // Modify status flags.
     m_statusFlags.m_carry = false;
@@ -845,7 +951,7 @@ inline void PicoBlazeInstructionSet2::inst_RL ( const unsigned int opCode )
     m_registers -> write ( sX, sXval );
 }
 
-void PicoBlazeInstructionSet2::inst_INPUT ( const unsigned int opCode )
+void PicoBlazeInstructionSet2::inst_INPUT0 ( const unsigned int opCode )
 {
     instructionEnter ( PicoBlazeInsNames::INS_INPUT );
 
@@ -853,20 +959,23 @@ void PicoBlazeInstructionSet2::inst_INPUT ( const unsigned int opCode )
     const unsigned int sX   = ( opCode & 0x1f00 ) >> 8;
     const unsigned int sYPP = ( opCode & 0x00ff );
 
-    // Perform the operation.
-    if ( 0x10000 & opCode )
-    {
-        // INPUT sX, (sY)
-        m_registers -> write ( sX, m_io -> input ( m_registers -> read ( sYPP >> 3 ) ) );
-    }
-    else
-    {
-        // INPUT sX, PP
-        m_registers -> write ( sX, m_io -> input ( sYPP ) );
-    }
+    // Perform the operation (INPUT sX, PP).
+    m_registers -> write ( sX, m_io -> input ( sYPP ) );
 }
 
-void PicoBlazeInstructionSet2::inst_OUTPUT ( const unsigned int opCode )
+void PicoBlazeInstructionSet2::inst_INPUT1 ( const unsigned int opCode )
+{
+    instructionEnter ( PicoBlazeInsNames::INS_INPUT );
+
+    // Extract operands from OP code.
+    const unsigned int sX   = ( opCode & 0x1f00 ) >> 8;
+    const unsigned int sYPP = ( opCode & 0x00ff );
+
+    // Perform the operation (INPUT sX, (sY)).
+    m_registers -> write ( sX, m_io -> input ( m_registers -> read ( sYPP >> 3 ) ) );
+}
+
+void PicoBlazeInstructionSet2::inst_OUTPUT0 ( const unsigned int opCode )
 {
     instructionEnter ( PicoBlazeInsNames::INS_OUTPUT );
 
@@ -874,15 +983,18 @@ void PicoBlazeInstructionSet2::inst_OUTPUT ( const unsigned int opCode )
     const unsigned int sX   = ( opCode & 0x1f00 ) >> 8;
     const unsigned int sYPP = ( opCode & 0x00ff );
 
-    // Perform the operation.
-    if ( 0x10000 & opCode )
-    {
-        // OUTPUT sX, (sY)
-        m_io -> output ( m_registers -> read ( sYPP >> 3 ), m_registers -> read ( sX ) );
-    }
-    else
-    {
-        // OUTPUT sX, PP
-        m_io -> output ( sYPP, m_registers -> read ( sX ) );
-    }
+    // Perform the operation (OUTPUT sX, PP).
+    m_io -> output ( sYPP, m_registers -> read ( sX ) );
+}
+
+void PicoBlazeInstructionSet2::inst_OUTPUT1 ( const unsigned int opCode )
+{
+    instructionEnter ( PicoBlazeInsNames::INS_OUTPUT );
+
+    // Extract operands from OP code.
+    const unsigned int sX   = ( opCode & 0x1f00 ) >> 8;
+    const unsigned int sYPP = ( opCode & 0x00ff );
+
+    // Perform the operation (OUTPUT sX, (sY)).
+    m_io -> output ( m_registers -> read ( sYPP >> 3 ), m_registers -> read ( sX ) );
 }

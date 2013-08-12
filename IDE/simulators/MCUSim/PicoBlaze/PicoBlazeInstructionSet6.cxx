@@ -22,44 +22,76 @@
 #include "PicoBlazeProgramMemory.h"
 #include "PicoBlazeInterruptController.h"
 
-void ( PicoBlazeInstructionSet6 :: * const PicoBlazeInstructionSet6::m_opCodeDispatchTable [ 32 ] )
+void ( PicoBlazeInstructionSet6 :: * const PicoBlazeInstructionSet6::m_opCodeDispatchTable [ 64 ] )
      ( const unsigned int opCode ) =
 {
-    & PicoBlazeInstructionSet6::inst_LOAD, // opCode = 0x00
+    & PicoBlazeInstructionSet6::inst__,    // opCode = 0x00
+    & PicoBlazeInstructionSet6::inst__,    // opCode = 0x01
     & PicoBlazeInstructionSet6::inst__,    // opCode = 0x02
+    & PicoBlazeInstructionSet6::inst__,    // opCode = 0x03
     & PicoBlazeInstructionSet6::inst__,    // opCode = 0x04
+    & PicoBlazeInstructionSet6::inst__,    // opCode = 0x05
     & PicoBlazeInstructionSet6::inst__,    // opCode = 0x06
+    & PicoBlazeInstructionSet6::inst__,    // opCode = 0x07
     & PicoBlazeInstructionSet6::inst__,    // opCode = 0x08
+    & PicoBlazeInstructionSet6::inst__,    // opCode = 0x09
     & PicoBlazeInstructionSet6::inst__,    // opCode = 0x0A
+    & PicoBlazeInstructionSet6::inst__,    // opCode = 0x0B
     & PicoBlazeInstructionSet6::inst__,    // opCode = 0x0C
+    & PicoBlazeInstructionSet6::inst__,    // opCode = 0x0D
     & PicoBlazeInstructionSet6::inst__,    // opCode = 0x0E
+    & PicoBlazeInstructionSet6::inst__,    // opCode = 0x0F
 
     & PicoBlazeInstructionSet6::inst__,    // opCode = 0x10
+    & PicoBlazeInstructionSet6::inst__,    // opCode = 0x11
     & PicoBlazeInstructionSet6::inst__,    // opCode = 0x12
+    & PicoBlazeInstructionSet6::inst__,    // opCode = 0x13
     & PicoBlazeInstructionSet6::inst__,    // opCode = 0x14
+    & PicoBlazeInstructionSet6::inst__,    // opCode = 0x15
     & PicoBlazeInstructionSet6::inst__,    // opCode = 0x16
+    & PicoBlazeInstructionSet6::inst__,    // opCode = 0x17
     & PicoBlazeInstructionSet6::inst__,    // opCode = 0x18
+    & PicoBlazeInstructionSet6::inst__,    // opCode = 0x19
     & PicoBlazeInstructionSet6::inst__,    // opCode = 0x1A
+    & PicoBlazeInstructionSet6::inst__,    // opCode = 0x1B
     & PicoBlazeInstructionSet6::inst__,    // opCode = 0x1C
+    & PicoBlazeInstructionSet6::inst__,    // opCode = 0x1D
     & PicoBlazeInstructionSet6::inst__,    // opCode = 0x1E
+    & PicoBlazeInstructionSet6::inst__,    // opCode = 0x1F
 
     & PicoBlazeInstructionSet6::inst__,    // opCode = 0x20
+    & PicoBlazeInstructionSet6::inst__,    // opCode = 0x21
     & PicoBlazeInstructionSet6::inst__,    // opCode = 0x22
+    & PicoBlazeInstructionSet6::inst__,    // opCode = 0x23
     & PicoBlazeInstructionSet6::inst__,    // opCode = 0x24
+    & PicoBlazeInstructionSet6::inst__,    // opCode = 0x25
     & PicoBlazeInstructionSet6::inst__,    // opCode = 0x26
+    & PicoBlazeInstructionSet6::inst__,    // opCode = 0x27
     & PicoBlazeInstructionSet6::inst__,    // opCode = 0x28
+    & PicoBlazeInstructionSet6::inst__,    // opCode = 0x29
     & PicoBlazeInstructionSet6::inst__,    // opCode = 0x2A
+    & PicoBlazeInstructionSet6::inst__,    // opCode = 0x2B
     & PicoBlazeInstructionSet6::inst__,    // opCode = 0x2C
+    & PicoBlazeInstructionSet6::inst__,    // opCode = 0x2D
     & PicoBlazeInstructionSet6::inst__,    // opCode = 0x2E
+    & PicoBlazeInstructionSet6::inst__,    // opCode = 0x2F
 
     & PicoBlazeInstructionSet6::inst__,    // opCode = 0x30
+    & PicoBlazeInstructionSet6::inst__,    // opCode = 0x31
     & PicoBlazeInstructionSet6::inst__,    // opCode = 0x32
+    & PicoBlazeInstructionSet6::inst__,    // opCode = 0x33
     & PicoBlazeInstructionSet6::inst__,    // opCode = 0x34
+    & PicoBlazeInstructionSet6::inst__,    // opCode = 0x35
     & PicoBlazeInstructionSet6::inst__,    // opCode = 0x36
+    & PicoBlazeInstructionSet6::inst__,    // opCode = 0x37
     & PicoBlazeInstructionSet6::inst__,    // opCode = 0x38
+    & PicoBlazeInstructionSet6::inst__,    // opCode = 0x39
     & PicoBlazeInstructionSet6::inst__,    // opCode = 0x3A
+    & PicoBlazeInstructionSet6::inst__,    // opCode = 0x3B
     & PicoBlazeInstructionSet6::inst__,    // opCode = 0x3C
+    & PicoBlazeInstructionSet6::inst__,    // opCode = 0x3D
     & PicoBlazeInstructionSet6::inst__,    // opCode = 0x3E
+    & PicoBlazeInstructionSet6::inst__,    // opCode = 0x3F
 };
 
 bool PicoBlazeInstructionSet6::isValid() const
