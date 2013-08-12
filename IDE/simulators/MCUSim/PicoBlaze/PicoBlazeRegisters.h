@@ -113,6 +113,12 @@ class PicoBlazeRegisters : public MCUSimMemory
          */
         void storeInDataFile ( DataFile * file ) const;
 
+        /**
+         * @brief
+         * @param[in] bank
+         */
+        void setBank ( int bank );
+
     ////    Inline Public Operations    ////
     public:
         /**
@@ -191,6 +197,11 @@ class PicoBlazeRegisters : public MCUSimMemory
          * @brief
          */
         MCUSimEventLogger * m_eventLogger;
+
+        /**
+         * @brief
+         */
+        int m_bank;
 };
 
 // -----------------------------------------------------------------------------
@@ -214,6 +225,11 @@ inline unsigned int PicoBlazeRegisters::getUndefVal() const
 inline void PicoBlazeRegisters::write ( unsigned int addr,
                                         unsigned int val )
 {
+    if ( true == m_config.m_banks )
+    {
+        addr += ( m_bank * ( m_size / 2 ) );
+    }
+
     if ( addr >= m_size )
     {
         if ( 0 == m_size )
@@ -245,6 +261,11 @@ inline void PicoBlazeRegisters::write ( unsigned int addr,
 
 inline unsigned int PicoBlazeRegisters::read ( unsigned int addr )
 {
+    if ( true == m_config.m_banks )
+    {
+        addr += ( m_bank * ( m_size / 2 ) );
+    }
+
     if ( addr >= m_size )
     {
         if ( 0 == m_size )
