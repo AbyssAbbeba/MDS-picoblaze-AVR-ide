@@ -43,11 +43,11 @@ class PicoBlazeRegisters : public MCUSimMemory
             Config()
             {
                 m_undefinedValue = -1;
-                m_size = 16; // <-- default value for KCPSM3
             }
 
-            int m_undefinedValue;           ///< -1 means random
-            unsigned int m_size;            ///<
+            int m_undefinedValue; ///< -1 means random
+            unsigned int m_size;  ///<
+            bool m_banks;         ///<
         };
 
     ////    Constructors and Destructors    ////

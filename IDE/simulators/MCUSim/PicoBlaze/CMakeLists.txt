@@ -38,16 +38,19 @@ add_definitions ( -Wall -Wextra -std=c++0x -O2 -pipe )
 ## Add a library to the project using the specified source files,
  # in this case it will procude dynamic C++ library.
 add_library ( ${PROJECT_NAME} SHARED
-              PicoBlazeSim.cxx
-              PicoBlazeConfig.cxx
-              PicoBlazeInstructionSet.cxx
-              PicoBlazeInterruptController.cxx
-              PicoBlazeDataMemory.cxx
-              PicoBlazeRegisters.cxx
-              PicoBlazeProgramMemory.cxx
               PicoBlazeIO.cxx
+              PicoBlazeSim.cxx
+              PicoBlazeStack.cxx
+              PicoBlazeConfig.cxx
+              PicoBlazeRegisters.cxx
+              PicoBlazeDataMemory.cxx
               PicoBlazeClockControl.cxx
-              PicoBlazeStack.cxx )
+              PicoBlazeProgramMemory.cxx
+              PicoBlazeInstructionSet.cxx
+              PicoBlazeInstructionSet2.cxx
+              PicoBlazeInstructionSet3.cxx
+              PicoBlazeInstructionSet6.cxx
+              PicoBlazeInterruptController.cxx )
 
 # Link a target to given libraries.
 target_link_libraries ( ${PROJECT_NAME} MCUDataFiles )

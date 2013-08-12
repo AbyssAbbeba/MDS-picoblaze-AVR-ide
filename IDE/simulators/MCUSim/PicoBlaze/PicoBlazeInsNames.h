@@ -62,6 +62,13 @@ namespace PicoBlazeInsNames
         INS_RL,          ///<
         INS_INPUT,       ///<
         INS_OUTPUT,      ///<
+        INS_LD_RET,      ///<
+        INS_HWBUILD,     ///<
+        INS_STAR,        ///<
+        INS_TESTCY,      ///<
+        INS_COMPARECY,   ///<
+        INS_REGBANK,     ///<
+        INS_OUTPUTK,     ///<
 
         INS__MAX__       ///<
     };
