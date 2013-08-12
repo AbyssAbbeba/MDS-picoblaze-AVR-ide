@@ -120,7 +120,7 @@ inline void DbgFileNative::loadFile ( const std::string & filename )
 
     int charRead;
     int lineNumber = 0; // -1 means binary data, 0 means file header, >0 means file name
-    while ( true == file.good() )
+    while ( false == file.eof() )
     {
         if ( -1 == lineNumber )
         {
