@@ -120,7 +120,12 @@ HexEdit::HexEdit(QWidget *parent, bool AsciiPanel, int countSize, int columns)
 
     hexColumnCount = new WColumnCounter(hexTextEdit, this->hexTextEdit->font(), columns);
     hexLineCount = new WLineCounter(hexTextEdit, false, true, this->hexTextEdit->font());
-    hexByteArray = new QByteArray(countSize, 0);
+    hexByteArray = new QList<unsigned char>();
+    hexByteArray->reserve(countSize);
+    for (int i = 0; i < countSize; i++)
+    {
+        hexByteArray->append(0);
+    }
     //hexStatusBar = new QStatusBar(this);
     hexStatusLabel = new QLabel(this);
     //hexStatusBar->addPermanentWidget(hexStatusLabel);
@@ -191,6 +196,12 @@ HexEdit::HexEdit(QWidget *parent, bool AsciiPanel, int countSize, int columns)
     }
     //this->show();
     //this->hexLineCount->getWidget()->changeHeight();
+}
+
+
+HexEdit::~HexEdit()
+{
+    delete hexByteArray;
 }
 
 
@@ -378,6 +389,7 @@ void HexEdit::changeText(int position)
         textCursor.setPosition(position*3);
         textCursor.deleteChar();
         textCursor.deleteChar();
+        qDebug() << "HexEdit: text changed to" << (int)hexByteArray->at(position);
         if (hexByteArray->at(position) > 16)
         {
             textCursor.insertText((QString::number(hexByteArray->at(position), 16)).toUpper());
@@ -435,7 +447,7 @@ void HexEdit::changeAscii(int position)
 
 
 
-void HexEdit::setData(QByteArray *byteArray)
+void HexEdit::setData(QList<unsigned char> *byteArray)
 {
     bool back = false;
     //int line is for counting rows (bad naming, heh...)
@@ -448,7 +460,7 @@ void HexEdit::setData(QByteArray *byteArray)
     {
         hexTextEdit->setTextColor(Qt::black);
     }
-    QString tmp(*byteArray);
+    //QString tmp(*byteArray);
     for (int i=0; i<byteArray->size(); i++)
     {
         if (line == 0)
@@ -457,14 +469,18 @@ void HexEdit::setData(QByteArray *byteArray)
             {
                 hexTextEdit->setTextBackgroundColor(Qt::lightGray);
                 if (ascii == true)
+                {
                     hexAsciiEdit->setTextBackgroundColor(Qt::lightGray);
+                }
                 back = false;
             }
             else
             {
                 hexTextEdit->setTextBackgroundColor(Qt::white);
                 if (ascii == true)
+                {
                     hexAsciiEdit->setTextBackgroundColor(Qt::white);
+                }
                 back = true;
             }
         }
@@ -479,30 +495,39 @@ void HexEdit::setData(QByteArray *byteArray)
         if (ascii == true)
         {
             if (byteArray->at(i) < 127 && byteArray->at(i) >= 32)
-                hexAsciiEdit->insertPlainText(tmp.at(i));
+            {
+                hexAsciiEdit->insertPlainText(QString(byteArray->at(i)));
+            }
             else
+            {
                 hexAsciiEdit->insertPlainText(".");
+            }
         }
         line++;
         if (line == this->columns) 
         {
             hexTextEdit->insertPlainText("\n");
             if (ascii == true)
+            {
                 hexAsciiEdit->insertPlainText("\n");
+            }
             line = 0;
         }
         else
+        {
             hexTextEdit->insertPlainText(" ");
+        }
     }
     this->hexByteArray = byteArray;
 }
 
 
-void HexEdit::setVal(int pos, char val)
+void HexEdit::setVal(int pos, unsigned char val)
 {
     //qDebug() << "-----------------HexEdit: setVal()";
     (*hexByteArray)[pos] = val;
-    //qDebug() << "HexEdit: val" << (int)val;
+    qDebug() << "HexEdit: val" << (int)val;
+    qDebug() << "HexEdit: array val" << (int)hexByteArray->at(pos);
     this->changeText(pos);
     //qDebug() << "-----------------HexEdit: return setVal()";
 }
@@ -523,4 +548,10 @@ void HexEdit::setReadOnly(bool readonly)
 void HexEdit::fixHeight()
 {
     this->hexLineCount->getWidget()->changeHeight();
+}
+
+
+QScrollBar* HexEdit::verticalScrollBar()
+{
+    return this->hexTextEdit->verticalScrollBar();
 }
