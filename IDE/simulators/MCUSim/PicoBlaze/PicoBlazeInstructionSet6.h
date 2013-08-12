@@ -30,7 +30,7 @@ class PicoBlazeInstructionSet6 : public PicoBlazeInstructionSet
         /**
          * @brief
          */
-        static void ( PicoBlazeInstructionSet6 :: * const m_opCodeDispatchTable [ 32 ] ) ( const unsigned int opCode );
+        static void ( PicoBlazeInstructionSet6 :: * const m_opCodeDispatchTable [ 64 ] ) ( const unsigned int opCode );
 
     ////    Public Operations    ////
     public:

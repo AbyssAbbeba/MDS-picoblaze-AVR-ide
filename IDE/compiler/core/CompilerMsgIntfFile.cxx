@@ -15,11 +15,8 @@
 
 #include "CompilerMsgIntfFile.h"
 
-#include <iostream>
-
 void CompilerMsgIntfFile::openFile ( const std::string & filename )
 {
-std::cout<<"CompilerMsgIntfFile::openFile ( const std::string & '"<<filename<<"' )\n";
     if ( true == m_ofstream.is_open() )
     {
         m_ofstream.close();
@@ -29,7 +26,6 @@ std::cout<<"CompilerMsgIntfFile::openFile ( const std::string & '"<<filename<<"'
 
 void CompilerMsgIntfFile::closeFile()
 {
-std::cout<<"CompilerMsgIntfFile::closeFile()\n";
     m_ofstream.close();
 }
 
@@ -41,6 +37,5 @@ bool CompilerMsgIntfFile::isFileOpened()
 void CompilerMsgIntfFile::message ( const std::string & text,
                                     CompilerBase::MessageType type )
 {
-std::cout<<"CompilerMsgIntfFile::message('"<<text<<"')\n";
     m_ofstream << type << ": " << text << std::endl;
 }

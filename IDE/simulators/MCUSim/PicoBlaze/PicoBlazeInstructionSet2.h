@@ -94,10 +94,14 @@ class PicoBlazeInstructionSet2 : public PicoBlazeInstructionSet
 
             /// @name Arithmetic Group
             //@{
-                void inst_ADD     ( const unsigned int opCode );
-                void inst_ADDCY   ( const unsigned int opCode );
-                void inst_SUB     ( const unsigned int opCode );
-                void inst_SUBCY   ( const unsigned int opCode );
+                void inst_ADD0   ( const unsigned int opCode );
+                void inst_ADD1   ( const unsigned int opCode );
+                void inst_ADDCY0 ( const unsigned int opCode );
+                void inst_ADDCY1 ( const unsigned int opCode );
+                void inst_SUB0   ( const unsigned int opCode );
+                void inst_SUB1   ( const unsigned int opCode );
+                void inst_SUBCY0 ( const unsigned int opCode );
+                void inst_SUBCY1 ( const unsigned int opCode );
             //@}
 
             /// @name Interrupt Group
@@ -109,10 +113,14 @@ class PicoBlazeInstructionSet2 : public PicoBlazeInstructionSet
 
             /// @name Logical Group
             //@{
-                void inst_LOAD ( const unsigned int opCode );
-                void inst_AND  ( const unsigned int opCode );
-                void inst_OR   ( const unsigned int opCode );
-                void inst_XOR  ( const unsigned int opCode );
+                void inst_LOAD0 ( const unsigned int opCode );
+                void inst_LOAD1 ( const unsigned int opCode );
+                void inst_AND0  ( const unsigned int opCode );
+                void inst_AND1  ( const unsigned int opCode );
+                void inst_OR0   ( const unsigned int opCode );
+                void inst_OR1   ( const unsigned int opCode );
+                void inst_XOR0  ( const unsigned int opCode );
+                void inst_XOR1  ( const unsigned int opCode );
             //@}
 
             /// @name Shift and Rotate Group
@@ -132,8 +140,10 @@ class PicoBlazeInstructionSet2 : public PicoBlazeInstructionSet
 
             /// @name Input/Output Group
             //@{
-                void inst_INPUT  ( const unsigned int opCode );
-                void inst_OUTPUT ( const unsigned int opCode );
+                void inst_INPUT0  ( const unsigned int opCode );
+                void inst_INPUT1  ( const unsigned int opCode );
+                void inst_OUTPUT0 ( const unsigned int opCode );
+                void inst_OUTPUT1 ( const unsigned int opCode );
             //@}
         //@}
 
