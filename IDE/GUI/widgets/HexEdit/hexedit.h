@@ -22,6 +22,7 @@
 #include <QGridLayout>
 #include <QByteArray>
 #include <QLabel>
+#include <QScrollBar>
 #include "../Counters/wlinecounter.h"
 #include "../Counters/wcolumncounter.h"
 
@@ -42,13 +43,15 @@ class HexEdit : public QWidget
     Q_OBJECT   
     public:
         HexEdit(QWidget *parent, bool AsciiPanel, int countSize, int columns);
+        ~HexEdit();
         //void setData(int pos, char value);
         QTextEdit* getTextEdit();
         //void setByteArray();
-        void setVal(int pos, char val);
+        void setVal(int pos, unsigned char val);
         char getVal(int pos);
         void setReadOnly(bool readonly);
         void fixHeight();
+        QScrollBar* verticalScrollBar();
 
     public slots:
         void changeAscii(int position);
@@ -62,13 +65,13 @@ class HexEdit : public QWidget
 
     private:
         //void clearByteArray();
-        void setData(QByteArray *byteArray);
+        void setData(QList<unsigned char> *array);
 
         WColumnCounter *hexColumnCount;
         WLineCounter *hexLineCount;
         QTextEdit *hexTextEdit;
         QTextEdit *hexAsciiEdit;
-        QByteArray *hexByteArray;
+        QList<unsigned char> *hexByteArray;
         //QStatusBar *hexStatusBar;
         QLabel *hexStatusLabel;
         QGridLayout *hexLayout;

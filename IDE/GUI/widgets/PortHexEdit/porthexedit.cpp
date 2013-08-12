@@ -86,9 +86,9 @@ void PortHexEdit::handleEvent(int subsysId, int eventId, int locationOrReason, i
         case MCUSimPureLogicIO::EVENT_PLIO_WRITE:
         {
 			uint value = m_plio->getOutputArray()[locationOrReason];
-            qDebug() << "PortHexEdit: event: mem cell changed to" << value;
+            qDebug() << "PortHexEdit: event: mem cell changed to" << (unsigned char)value;
 
- 			m_hexEditOut->setVal(idx, (char)value);
+ 			m_hexEditOut->setVal(idx, (unsigned char)value);
 // 			m_hexEdit->setHighlighted(idx, true);
 
 			break;
@@ -96,9 +96,9 @@ void PortHexEdit::handleEvent(int subsysId, int eventId, int locationOrReason, i
         case MCUSimPureLogicIO::EVENT_PLIO_READ:
         {
             uint value = m_plio->getInputArray()[locationOrReason];
-            qDebug() << "PortHexEdit: event: mem cell changed to" << value;
+            qDebug() << "PortHexEdit: event: mem cell changed to" << (unsigned char)value;
 
-            m_hexEditIn->setVal(idx, (char)value);
+            m_hexEditIn->setVal(idx, (unsigned char)value);
 //          m_hexEdit->setHighlighted(idx, true);
 
             break;
@@ -146,10 +146,12 @@ void PortHexEdit::deviceChanged()
 	deleteHexEdit();
 	m_hexEditIn = new HexEdit(this, false, m_size, 8);
     m_hexEditIn->show();
+    m_hexEditIn->verticalScrollBar()->hide();
     m_hexEditOut = new HexEdit(this, false, m_size, 8);
     m_hexEditOut->hide();
-    m_hexEditIn->fixHeight();
-    m_hexEditOut->fixHeight();
+    m_hexEditOut->verticalScrollBar()->hide();
+    //m_hexEditIn->fixHeight();
+    //m_hexEditOut->fixHeight();
 	connect(m_hexEditIn, SIGNAL(textChanged(int)), this, SLOT(changeValueIn(int)));
     connect(m_hexEditOut, SIGNAL(textChanged(int)), this, SLOT(changeValueOut(int)));
 	//m_layout->addWidget(m_hexEditIn);
@@ -186,27 +188,20 @@ void PortHexEdit::deviceReset()
 
 		uint value = 0;
         value = m_plio->getInputArray()[i];
-        if ( 255 < value )
+        if ( value > 255 )
         {
             value = 255;
-        }
-        else if ( 0 > value )
-        {
-            value = 0;
         }
  		m_hexEditIn->setVal(i, (unsigned char)value);
-        qDebug() << "PortHexEdit: value is" << (unsigned char)value;
+        //qDebug() << "PortHexEdit: in value is" << (unsigned char)value;
 
         value = m_plio->getOutputArray()[i];
-        if ( 255 < value )
+        if ( value > 255 )
         {
             value = 255;
         }
-        else if ( 0 > value )
-        {
-            value = 0;
-        }
         m_hexEditOut->setVal(i, (unsigned char)value);
+        //qDebug() << "PortHexEdit: out value is" << (unsigned char)value;
 	}
     m_hexEditIn->fixHeight();
     m_hexEditOut->fixHeight();
