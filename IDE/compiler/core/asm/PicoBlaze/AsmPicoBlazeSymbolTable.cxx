@@ -591,7 +591,7 @@ void AsmPicoBlazeSymbolTable::output()
 
     file << this;
 
-    if ( true == file.fail() )
+    if ( true == file.bad() )
     {
         m_compilerCore -> compilerMessage ( CompilerBase::MT_ERROR,
                                             QObject::tr ( "unable to write to " ).toStdString()

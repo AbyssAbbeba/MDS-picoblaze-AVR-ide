@@ -74,7 +74,7 @@ inline void DbgFileCDB::loadFile ( const std::string & filename )
     while ( false == file.eof() )
     {
         file.getline(line, MAX_LINE_LENGTH);
-        if ( true == file.fail() )
+        if ( true == file.bad() )
         {
             throw Exception(Exception::IO_ERROR, "Read failed, file: " + filename);
         }

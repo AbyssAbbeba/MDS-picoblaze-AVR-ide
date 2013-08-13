@@ -75,7 +75,7 @@ void HexFile::clearAndLoad ( const std::string & filename ) throw ( DataFile::Ex
     while ( false == file.eof() )
     {
         // Check if the file is still readable
-        if ( true == file.fail() )
+        if ( true == file.bad() )
         {
             throw Exception(Exception::EXP_IO_ERROR);
         }
@@ -336,7 +336,7 @@ void HexFile::save ( const std::string & filename,
     // Write EOF and cloase the file
     file.write(":00000001FF\n", 12);
     file.close();
-    if ( true == file.fail() )
+    if ( true == file.bad() )
     {
         throw Exception(Exception::EXP_IO_ERROR);
     }

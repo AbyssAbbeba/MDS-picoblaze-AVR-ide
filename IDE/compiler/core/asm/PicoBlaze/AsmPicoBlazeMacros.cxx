@@ -266,7 +266,7 @@ void AsmPicoBlazeMacros::output()
 
     file << this;
 
-    if ( true == file.fail() )
+    if ( true == file.bad() )
     {
         m_compilerCore -> compilerMessage ( CompilerBase::MT_ERROR,
                                             QObject::tr ( "Unable to write to " ).toStdString()

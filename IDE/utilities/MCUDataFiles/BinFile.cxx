@@ -38,7 +38,7 @@ void BinFile::clearAndLoad ( const std::string & filename ) throw ( DataFile::Ex
     {
         int charRead = file.get();
 
-        if ( true == file.fail() )
+        if ( true == file.bad() )
         {
             throw Exception(Exception::EXP_IO_ERROR);
         }
@@ -95,7 +95,7 @@ void BinFile::save ( const std::string & filename,
 
     file.close();
 
-    if ( true == file.fail() )
+    if ( true == file.bad() )
     {
         throw Exception(Exception::EXP_IO_ERROR);
     }
