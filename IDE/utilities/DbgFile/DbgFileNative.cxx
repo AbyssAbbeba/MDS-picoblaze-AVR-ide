@@ -199,7 +199,7 @@ inline void DbgFileNative::loadFile ( const std::string & filename )
         }
     }
 
-    if ( true == file.fail() )
+    if ( true == file.bad() )
     {
         throw Exception(Exception::IO_ERROR, "Unable to read " + filename);
     }
