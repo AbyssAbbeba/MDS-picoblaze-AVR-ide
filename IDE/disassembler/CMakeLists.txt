@@ -1,6 +1,6 @@
 # ==============================================================================
 #
-# Simulator engine module for PicoBlaze soft-processors.
+# Moravia Script language support library.
 #
 # (C) copyright 2013 Moravia Microsystems, s.r.o.
 #
@@ -12,7 +12,7 @@
 # ------------------------------------------------------------------------------
 
 # Set project name
-project ( PicoBlazeSim )
+project ( disassembler )
 
 # Set the minimum required version of CMake
 cmake_minimum_required ( VERSION 2.8 )
@@ -20,12 +20,35 @@ cmake_minimum_required ( VERSION 2.8 )
 # Create verbose makefiles if on
 set ( CMAKE_VERBOSE_MAKEFILE OFF )
 
+
+# ------------------------------------------------------------------------------
+# BUILD COMPONENTS IN THE SUBDIRECTORIES
+# ------------------------------------------------------------------------------
+
+# Build disassembler for PicoBlaze.
+add_subdirectory ( PicoBlaze )
+
+
 # ------------------------------------------------------------------------------
 # COMPILATION OPTIONS
 # ------------------------------------------------------------------------------
 
-# Add include directories to the build.
-include_directories ( "${CMAKE_CURRENT_BINARY_DIR}/../../../utilities" )
+# Find Boost include dirs and libraries.
+find_package ( Boost 1.46
+               REQUIRED
+               COMPONENTS filesystem system )
+
+# Load settings specific for the Qt4 library (we use it here for i18n)
+find_package ( Qt4 REQUIRED )
+include ( ${QT_USE_FILE} )
+
+# List of preprocessor include file search directories.
+include_directories ( ${Boost_INCLUDE_DIRS}
+                      "${CMAKE_CURRENT_BINARY_DIR}/PicoBlaze/" )
+
+# Specify directories in which the linker will look for libraries.
+link_directories ( ${Boost_LIBRARY_DIRS}
+                   "${CMAKE_CURRENT_BINARY_DIR}/PicoBlaze/" )
 
 ## Add switches to compiler command line
  # -Wall       : Enables all the warnings.
@@ -35,26 +58,35 @@ include_directories ( "${CMAKE_CURRENT_BINARY_DIR}/../../../utilities" )
  # -pipe       : Use pipes rather than temporary files for communication between the various stages of compilation.
 add_definitions ( -Wall -Wextra -std=c++0x -O2 -pipe )
 
+
+#
+## Disassembler as dynamic library.
+#
+
 ## Add a library to the project using the specified source files,
  # in this case it will procude dynamic C++ library.
 add_library ( ${PROJECT_NAME} SHARED
-              PicoBlazeIO.cxx
-              PicoBlazeSim.cxx
-              PicoBlazeStack.cxx
-              PicoBlazeConfig.cxx
-              PicoBlazeRegisters.cxx
-              PicoBlazeDataMemory.cxx
-              PicoBlazeStatusFlags.cxx
-              PicoBlazeClockControl.cxx
-              PicoBlazeProgramMemory.cxx
-              PicoBlazeInstructionSet.cxx
-              PicoBlazeInstructionSet2.cxx
-              PicoBlazeInstructionSet3.cxx
-              PicoBlazeInstructionSet6.cxx
-              PicoBlazeInterruptController.cxx )
+              DAsm.cxx
+              DAsmCore.cxx )
 
-# Link a target to given libraries.
-target_link_libraries ( ${PROJECT_NAME} MCUDataFiles )
+# Link a target to given libraries
+target_link_libraries ( ${PROJECT_NAME}
+                        ${QT_LIBRARIES}
+                        ${Boost_LIBRARIES}
+                        DAsmPicoBlaze )
+
+
+#
+## Disassembler as executable file.
+#
+
+# Add an executable to the project using the specified source files.
+add_executable ( disasm
+                 main.cxx )
+
+# Link a target to given libraries
+target_link_libraries ( disasm ${PROJECT_NAME} )
+
 
 # ------------------------------------------------------------------------------
 # INSTALLATION OPTIONS

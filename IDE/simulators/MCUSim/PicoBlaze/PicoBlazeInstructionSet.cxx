@@ -17,36 +17,6 @@
 
 #include "PicoBlazeStack.h"
 
-PicoBlazeInstructionSet::StatusFlags::StatusFlags()
-{
-    reset();
-}
-
-void PicoBlazeInstructionSet::StatusFlags::reset()
-{
-    m_carry       = false;
-    m_zero        = false;
-    m_inte        = false; // Interrupts are disabled by default (see KCPSM3 manual).
-    m_preCarry    = false;
-    m_preZero     = false;
-    m_interrupted = 0;
-}
-
-void PicoBlazeInstructionSet::StatusFlags::interrupt()
-{
-    m_preCarry = m_carry;
-    m_preZero  = m_zero;
-    m_inte     = false;
-    m_interrupted++;
-}
-
-void PicoBlazeInstructionSet::StatusFlags::returni()
-{
-    m_carry = m_preCarry;
-    m_zero  = m_preZero;
-    m_interrupted--;
-}
-
 PicoBlazeInstructionSet * PicoBlazeInstructionSet::link ( MCUSimEventLogger            * eventLogger,
                                                           PicoBlazeIO                  * io,
                                                           PicoBlazeStack               * stack,

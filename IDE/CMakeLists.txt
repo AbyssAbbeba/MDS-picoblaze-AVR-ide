@@ -69,6 +69,9 @@ add_subdirectory ( moraviascript )
 # Build compiler collection
 add_subdirectory ( compiler )
 
+# Build disassemblers
+add_subdirectory ( disassembler )
+
 # Add some data files to installation packages
 add_subdirectory ( pkgs )
 

@@ -22,12 +22,9 @@
 unsigned int AsmPicoBlazeInstructionSet6::getAAA ( const CompilerStatement * stmt,
                                                    int index ) const
 {
-    unsigned int result = m_instructionSet->checkLimit ( AsmPicoBlazeInstructionSet::LIM_C,
-                                                         stmt->args()->at(index)->location(),
-                                                         m_symbolTable->resolveExpr(stmt->args()->at(index), OBS_AAA) );
-
-    // Make it (AAA - 1);
-    return ( result - 1 ) & ~( ~0U << OBS_AAA );
+    return m_instructionSet->checkLimit ( AsmPicoBlazeInstructionSet::LIM_C,
+                                          stmt->args()->at(index)->location(),
+                                          m_symbolTable->resolveExpr(stmt->args()->at(index), OBS_AAA) );
 }
 
 unsigned int AsmPicoBlazeInstructionSet6::getSXY ( const CompilerStatement * stmt,

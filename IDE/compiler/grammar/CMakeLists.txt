@@ -44,13 +44,13 @@ FLEX_TARGET ( mcs51lexer mcs51lexer.l mcs51lexer.cxx)
 # ADD_FLEX_BISON_DEPENDENCY ( mcs51lexer mcs51parser )
 
 # Assembler for PicoBlaze
-BISON_TARGET ( kcpsm3parser kcpsm3parser.y kcpsm3parser.cxx VERBOSE "kcpsm3parser.output" )
-FLEX_TARGET ( kcpsm3lexer kcpsm3lexer.l kcpsm3lexer.cxx)
-# ADD_FLEX_BISON_DEPENDENCY ( kcpsm3lexer kcpsm3parser )
+BISON_TARGET ( PicoBlazeParser PicoBlazeParser.y PicoBlazeParser.cxx VERBOSE "PicoBlazeParser.output" )
+FLEX_TARGET ( PicoBlazeLexer PicoBlazeLexer.l PicoBlazeLexer.cxx)
+# ADD_FLEX_BISON_DEPENDENCY ( PicoBlazeLexer PicoBlazeParser )
 
 # List of additional files that will be cleaned as a part of the "make clean" stage.
 set_directory_properties ( PROPERTIES
-                           ADDITIONAL_MAKE_CLEAN_FILES "mcs51lexer.h;mcs51parser.h;mcs51parser.output;pic8lexer.h;pic8parser.h;pic8parser.output;avr8lexer.h;avr8parser.h;avr8parser.output;kcpsm3lexer.h;kcpsm3parser.h;kcpsm3parser.output")
+                           ADDITIONAL_MAKE_CLEAN_FILES "mcs51lexer.h;mcs51parser.h;mcs51parser.output;pic8lexer.h;pic8parser.h;pic8parser.output;avr8lexer.h;avr8parser.h;avr8parser.output;PicoBlazeLexer.h;PicoBlazeParser.h;PicoBlazeParser.output")
 
 # ------------------------------------------------------------------------------
 # COMPILATION OPTIONS
@@ -90,8 +90,8 @@ add_library ( ${PROJECT_NAME} STATIC
               ${BISON_mcs51parser_OUTPUTS}
 
               # Assembler for PicoBlaze
-              ${FLEX_kcpsm3lexer_OUTPUTS}
-              ${BISON_kcpsm3parser_OUTPUTS} )
+              ${FLEX_PicoBlazeLexer_OUTPUTS}
+              ${BISON_PicoBlazeParser_OUTPUTS} )
 
 ## Set properties on a target.
  # Targets can have properties that affect how they are built.

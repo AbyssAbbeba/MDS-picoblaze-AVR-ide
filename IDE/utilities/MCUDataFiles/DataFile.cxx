@@ -47,34 +47,34 @@ inline void DataFile::allocateMemory()
     }
 }
 
-int DataFile::at ( int idx ) const throw ( Exception )
+int DataFile::at ( int idx ) const throw ( DataFileException )
 {
     if ( idx >= int(m_arrsize) || idx < 0 )
     {
-        throw Exception(Exception::EXP_OUT_OF_RANGE);
+        throw DataFileException(DataFileException::EXP_OUT_OF_RANGE);
     }
 
     return int(m_memory[idx]);
 }
 
 void DataFile::set ( unsigned int address,
-                     uint8_t value ) throw ( Exception )
+                     uint8_t value ) throw ( DataFileException )
 {
     // Check for valid address
     if ( address >= m_arrsize )
     {
-        throw Exception(Exception::EXP_OUT_OF_RANGE);
+        throw DataFileException(DataFileException::EXP_OUT_OF_RANGE);
     }
 
     m_memory[address] = value;
 }
 
-void DataFile::unset ( unsigned int address ) throw ( Exception )
+void DataFile::unset ( unsigned int address ) throw ( DataFileException )
 {
     // Check for valid address
     if ( address >= m_arrsize )
     {
-        throw Exception(Exception::EXP_OUT_OF_RANGE);
+        throw DataFileException(DataFileException::EXP_OUT_OF_RANGE);
     }
 
     m_memory[address] = -1;

@@ -207,7 +207,7 @@ inline void AsmMachineCodeGen::saveMachineCode ( Endianness byteOrder,
         output(byteOrder, dataFile);
         dataFile->save(fileName, false);
     }
-    catch ( const DataFile::Exception & e )
+    catch ( const DataFileException & e )
     {
         std::cerr << e.toString() << std::endl;
         compilerCore -> compilerMessage ( CompilerBase::MT_ERROR,

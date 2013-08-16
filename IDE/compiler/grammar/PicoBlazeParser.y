@@ -18,9 +18,9 @@
 // Require version <version> or higher of Bison.
 %require "2.5"
 // Rename the external symbols used in the parser so that they start with prefix instead of ‘yy’.
-%name-prefix "kcpsm3parser_"
+%name-prefix "PicoBlazeParser_"
 // Generate a parser header file containing macro definitions, etc.
-%defines "kcpsm3parser.h"
+%defines "PicoBlazeParser.h"
 // Generate a pure, reentrant parser.
 %define api.pure
 // Generate the code processing the locations.
@@ -72,10 +72,10 @@
     using namespace CompilerStatementTypes; // This NS is heavily used here.
 
     // Declaration of the lexer prototypes and other things required by Bison
-    #include "kcpsm3lexer.h"
+    #include "PicoBlazeLexer.h"
 
     // Name of the lexer function required by Bison
-    #define kcpsm3parser_lex kcpsm3lexer_lex
+    #define PicoBlazeParser_lex PicoBlazeLexer_lex
 
     // Make a few things a little easier...
     #define LOC(location) \
@@ -119,10 +119,10 @@
             QObject::tr("comma (`,') expected between operands").toStdString() );
 
     // Declaration of the error reporting function used by Bison
-    inline int kcpsm3parser_error ( YYLTYPE * yylloc,
-                                    yyscan_t yyscanner,
-                                    CompilerParserInterface * compiler,
-                                    const char * errorInfo );
+    inline int PicoBlazeParser_error ( YYLTYPE * yylloc,
+                                       yyscan_t yyscanner,
+                                       CompilerParserInterface * compiler,
+                                       const char * errorInfo );
 %}
 
 // Declare an additional yyparse parameters
@@ -2001,10 +2001,10 @@ inst_regbank:
 // -----------------------------------------------------------------------------
 
 // Definition of the error reporting function used by Bison
-inline int kcpsm3parser_error ( YYLTYPE * yylloc,
-                                yyscan_t, 
-                                CompilerParserInterface * compiler, 
-                                const char * errorInfo )
+inline int PicoBlazeParser_error ( YYLTYPE * yylloc,
+                                   yyscan_t, 
+                                   CompilerParserInterface * compiler, 
+                                   const char * errorInfo )
 {
     std::string errStr;
 

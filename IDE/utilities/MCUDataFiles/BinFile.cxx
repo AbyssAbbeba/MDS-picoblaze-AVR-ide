@@ -18,18 +18,18 @@
 #include <fstream>
 #include <cstdint>
 
-void BinFile::clearAndLoad ( const char * filename ) throw ( DataFile::Exception )
+void BinFile::clearAndLoad ( const char * filename ) throw ( DataFileException )
 {
     clearAndLoad(std::string(filename));
 }
 
-void BinFile::clearAndLoad ( const std::string & filename ) throw ( DataFile::Exception )
+void BinFile::clearAndLoad ( const std::string & filename ) throw ( DataFileException )
 {
     std::fstream file ( filename, std::fstream::in | std::fstream::binary );
 
     if ( false == file.is_open() )
     {
-        throw Exception(Exception::EXP_IO_ERROR, "Unable to open file: " + filename);
+        throw DataFileException(DataFileException::EXP_IO_ERROR, "Unable to open file: " + filename);
     }
 
     unsigned int address = 0;
@@ -40,7 +40,7 @@ void BinFile::clearAndLoad ( const std::string & filename ) throw ( DataFile::Ex
 
         if ( true == file.bad() )
         {
-            throw Exception(Exception::EXP_IO_ERROR);
+            throw DataFileException(DataFileException::EXP_IO_ERROR);
         }
 
         m_memory[address] = uint16_t(charRead);
@@ -56,13 +56,13 @@ void BinFile::clearAndLoad ( const std::string & filename ) throw ( DataFile::Ex
 }
 
 void BinFile::save ( const char * filename,
-                     bool makeBackup ) throw ( DataFile::Exception )
+                     bool makeBackup ) throw ( DataFileException )
 {
     save(std::string(filename), makeBackup);
 }
 
 void BinFile::save ( const std::string & filename,
-                     bool makeBackup ) throw ( DataFile::Exception )
+                     bool makeBackup ) throw ( DataFileException )
 {
     // Create backup file
     if ( true == makeBackup )
@@ -74,7 +74,7 @@ void BinFile::save ( const std::string & filename,
 
     if ( false == file.is_open())
     {
-        throw Exception(Exception::EXP_IO_ERROR);
+        throw DataFileException(DataFileException::EXP_IO_ERROR);
     }
 
     for ( unsigned int i = 0; i < m_arrsize; i++ )
@@ -97,6 +97,6 @@ void BinFile::save ( const std::string & filename,
 
     if ( true == file.bad() )
     {
-        throw Exception(Exception::EXP_IO_ERROR);
+        throw DataFileException(DataFileException::EXP_IO_ERROR);
     }
 }

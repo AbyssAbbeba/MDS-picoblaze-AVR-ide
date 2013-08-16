@@ -140,10 +140,10 @@ void TestSuiteSuc::testFunction()
         compareBin ( expectedCommonPath + ".bin.exp",  m_options->m_binFile  );
         compareSrec( expectedCommonPath + ".srec.exp", m_options->m_srecFile );
     }
-    catch ( DataFile::Exception & e )
+    catch ( DataFileException & e )
     {
         std::cerr << std::endl << e.toString() << std::endl;
-        CU_FAIL_FATAL("An instance of DataFile::Exception thrown!");
+        CU_FAIL_FATAL("An instance of DataFileException thrown!");
     }
 
     try

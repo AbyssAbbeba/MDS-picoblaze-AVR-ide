@@ -134,6 +134,15 @@ class PicoBlazeRegisters : public MCUSimMemory
          * @brief
          * @return
          */
+        int getBank() const
+        {
+            return m_bank;
+        }
+
+        /**
+         * @brief
+         * @return
+         */
         inline unsigned int getUndefVal() const;
 
         /**
@@ -155,6 +164,15 @@ class PicoBlazeRegisters : public MCUSimMemory
              */
             inline void write ( unsigned int addr,
                                 unsigned int val );
+
+            /**
+             * @brief
+             * @param[in] addr
+             * @param[in] val
+             */
+            inline void write ( unsigned int addr,
+                                unsigned int val,
+                                int targetBank );
         //@}
 
     ////    Inline Private Operations    ////
@@ -257,6 +275,16 @@ inline void PicoBlazeRegisters::write ( unsigned int addr,
     {
         logEvent(EVENT_MEM_INF_WR_VAL_CHANGED, addr);
     }
+}
+
+inline void PicoBlazeRegisters::write ( unsigned int addr,
+                                        unsigned int val,
+                                        int targetBank )
+{
+    bool bankOrig = m_bank;
+    m_bank = targetBank;
+    write(addr, val);
+    m_bank = bankOrig;
 }
 
 inline unsigned int PicoBlazeRegisters::read ( unsigned int addr )

@@ -47,12 +47,12 @@ SrecFile::SrecFile ( unsigned int arrsize ) : DataFile(arrsize)
     m_startingExecutionAddress = 0;
 }
 
-void SrecFile::clearAndLoad ( const char * filename ) throw ( DataFile::Exception )
+void SrecFile::clearAndLoad ( const char * filename ) throw ( DataFileException )
 {
     clearAndLoad(std::string(filename));
 }
 
-void SrecFile::clearAndLoad ( const std::string & filename ) throw ( DataFile::Exception )
+void SrecFile::clearAndLoad ( const std::string & filename ) throw ( DataFileException )
 {
     int localRecordCount = 0;
     bool terminated = false;
@@ -61,7 +61,7 @@ void SrecFile::clearAndLoad ( const std::string & filename ) throw ( DataFile::E
 
     if ( false == file.is_open() )
     {
-        throw Exception(Exception::EXP_IO_ERROR, "Unable to open file: " + filename);
+        throw DataFileException(DataFileException::EXP_IO_ERROR, "Unable to open file: " + filename);
     }
 
     m_startingExecutionAddress = 0;
@@ -86,7 +86,7 @@ void SrecFile::clearAndLoad ( const std::string & filename ) throw ( DataFile::E
         getline(file, line);
         if ( true == file.bad() )
         {
-            throw Exception(Exception::EXP_IO_ERROR);
+            throw DataFileException(DataFileException::EXP_IO_ERROR);
         }
 
         size = line.size();
@@ -108,7 +108,7 @@ void SrecFile::clearAndLoad ( const std::string & filename ) throw ( DataFile::E
         {
             if ( 0 == isxdigit(line[i]) )
             {
-                throw Exception(Exception::EXP_BAD_RECORD_FORMAT);
+                throw DataFileException(DataFileException::EXP_BAD_RECORD_FORMAT);
             }
         }
 
@@ -117,7 +117,7 @@ void SrecFile::clearAndLoad ( const std::string & filename ) throw ( DataFile::E
 
         if ( ( count * 2 + 4 ) != size )
         {
-            throw Exception(Exception::EXP_BAD_RECORD_LENGTH);
+            throw DataFileException(DataFileException::EXP_BAD_RECORD_LENGTH);
         }
 
         switch ( type )
@@ -139,7 +139,7 @@ void SrecFile::clearAndLoad ( const std::string & filename ) throw ( DataFile::E
             default:
                 if ( STRICTNESS_LEVEL > 0 )
                 {
-                    throw Exception(Exception::EXP_BAD_RECORD_FORMAT);
+                    throw DataFileException(DataFileException::EXP_BAD_RECORD_FORMAT);
                 }
                 else
                 {
@@ -155,18 +155,18 @@ void SrecFile::clearAndLoad ( const std::string & filename ) throw ( DataFile::E
         #if STRICTNESS_LEVEL > 0
             if ( size != ( 6 + addressLength * 2 + dataLength * 2 ) )
             {
-                throw Exception(Exception::EXP_BAD_RECORD_FORMAT);
+                throw DataFileException(DataFileException::EXP_BAD_RECORD_FORMAT);
             }
             if ( computeCRC(line.substr(0, size-2)) != checksum )
             {
-                throw Exception(Exception::EXP_BAD_CRC);
+                throw DataFileException(DataFileException::EXP_BAD_CRC);
             }
         #endif // STRICTNESS_LEVEL > 0
 
         #if STRICTNESS_LEVEL > 1
             if ( data.size() > 64 )
             {
-                throw Exception(Exception::EXP_BAD_RECORD_FORMAT);
+                throw DataFileException(DataFileException::EXP_BAD_RECORD_FORMAT);
             }
         #endif // STRICTNESS_LEVEL > 1
 
@@ -176,14 +176,14 @@ void SrecFile::clearAndLoad ( const std::string & filename ) throw ( DataFile::E
                 #if STRICTNESS_LEVEL > 2
                     if ( ( data.size() < 24 ) || ( data.size() > 60 ) )
                     {
-                        throw Exception(Exception::EXP_BAD_RECORD_FORMAT);
+                        throw DataFileException(DataFileException::EXP_BAD_RECORD_FORMAT);
                     }
                 #endif // STRICTNESS_LEVEL > 0
 
                 #if STRICTNESS_LEVEL > 1
                     if ( 0 != address )
                     {
-                        throw Exception(Exception::EXP_BAD_RECORD_FORMAT);
+                        throw DataFileException(DataFileException::EXP_BAD_RECORD_FORMAT);
                     }
                 #endif // STRICTNESS_LEVEL > 1
 
@@ -208,14 +208,14 @@ void SrecFile::clearAndLoad ( const std::string & filename ) throw ( DataFile::E
                 #if STRICTNESS_LEVEL > 0
                     if ( address != localRecordCount )
                     {
-                        throw Exception(Exception::EXP_BAD_RECORD_COUNT);
+                        throw DataFileException(DataFileException::EXP_BAD_RECORD_COUNT);
                     }
                 #endif // STRICTNESS_LEVEL > 0
 
                 #if STRICTNESS_LEVEL > 1
                     if ( 0 != data.size() )
                     {
-                        throw Exception(Exception::EXP_BAD_RECORD_FORMAT);
+                        throw DataFileException(DataFileException::EXP_BAD_RECORD_FORMAT);
                     }
                 #endif // STRICTNESS_LEVEL > 1
 
@@ -228,7 +228,7 @@ void SrecFile::clearAndLoad ( const std::string & filename ) throw ( DataFile::E
                 #if STRICTNESS_LEVEL > 1
                     if ( 0 != data.size() )
                     {
-                        throw Exception(Exception::EXP_BAD_RECORD_FORMAT);
+                        throw DataFileException(DataFileException::EXP_BAD_RECORD_FORMAT);
                     }
                 #endif // STRICTNESS_LEVEL > 1
 
@@ -242,13 +242,13 @@ void SrecFile::clearAndLoad ( const std::string & filename ) throw ( DataFile::E
 }
 
 void SrecFile::save ( const char * filename,
-                      bool makeBackup ) throw ( DataFile::Exception )
+                      bool makeBackup ) throw ( DataFileException )
 {
     save(std::string(filename), makeBackup);
 }
 
 void SrecFile::save ( const std::string & filename,
-                      bool makeBackup ) throw ( DataFile::Exception )
+                      bool makeBackup ) throw ( DataFileException )
 {
     // Create backup file
     if ( true == makeBackup )
@@ -260,7 +260,7 @@ void SrecFile::save ( const std::string & filename,
 
     if ( false == file.is_open() )
     {
-        throw Exception(Exception::EXP_IO_ERROR);
+        throw DataFileException(DataFileException::EXP_IO_ERROR);
     }
 
     // Write block header record
