@@ -192,7 +192,7 @@ bool MCUSimControl::start ( const std::string & filename,
     {
         dataFile->clearAndLoad(filename + dataFileExt);
     }
-    catch ( DataFile::Exception & e )
+    catch ( DataFileException & e )
     {
         // TODO: implement a proper error handling here
         m_messages.push_back(QObject::tr("Failed to load program memory from the given file.").toStdString());
@@ -381,7 +381,7 @@ bool MCUSimControl::start ( const std::string & dbgFileName,
     {
         dataFile->clearAndLoad(dataFileName);
     }
-    catch ( DataFile::Exception & e )
+    catch ( DataFileException & e )
     {
         // TODO: implement a proper error handling here
         m_messages.push_back(QObject::tr("Failed to load program memory from the given file.").toStdString());

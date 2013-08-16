@@ -130,12 +130,12 @@ void PicoBlazeInstructionSet3::inst_10000 ( const unsigned int opCode )
 
 void PicoBlazeInstructionSet3::inst_11110 ( const unsigned int opCode )
 {
-    if ( 0x3c001 == opCode )
+    if ( 0x3C001 == opCode )
     {
         // ENABLE INTERRUPT  : 11 1110 0000 0000 0001
         inst_ENABLE_INT ( opCode );
     }
-    else if ( 0x3c000 == opCode )
+    else if ( 0x3C000 == opCode )
     {
         // DISABLE INTERRUPT : 11 1110 0000 0000 0000
         inst_DISABLE_INT ( opCode );
@@ -203,7 +203,7 @@ void PicoBlazeInstructionSet3::inst_JUMP ( const unsigned int opCode )
     }
 
     // Execute jump.
-    setProgramCounter ( addr + 1 );
+    setProgramCounter ( addr );
 }
 
 void PicoBlazeInstructionSet3::inst_CALL ( const unsigned int opCode )
@@ -253,7 +253,7 @@ void PicoBlazeInstructionSet3::inst_CALL ( const unsigned int opCode )
     // Execute call.
     logEvent ( EVENT_CPU_CALL, m_pc, PicoBlazeInsNames::INS_CALL );
     m_stack->pushOnStack ( m_pc );
-    setProgramCounter ( addr + 1 );
+    setProgramCounter ( addr );
     m_actSubprogCounter++;
 }
 
@@ -696,18 +696,18 @@ void PicoBlazeInstructionSet3::inst_STORE ( const unsigned int opCode )
 
     // Extract operands from OP code.
     const unsigned int sX   = ( opCode & 0xf00 ) >> 8;
-    const unsigned int sYPP = ( opCode & 0x0ff );
+    const unsigned int sYSS = ( opCode & 0x0ff );
 
     // Perform the operation.
     if ( 0x1000 & opCode )
     {
         // STORE sX, (sY)
-        m_dataMemory -> write ( ( 0x3f & m_registers -> read ( sYPP >> 4 ) ), m_registers -> read ( sX ) );
+        m_dataMemory -> write ( ( 0x3f & m_registers -> read ( sYSS >> 4 ) ), m_registers -> read ( sX ) );
     }
     else
     {
-        // STORE sX, PP
-        m_dataMemory -> write ( ( 0x3f & sYPP ), m_registers -> read ( sX ) );
+        // STORE sX, SS
+        m_dataMemory -> write ( ( 0x3f & sYSS ), m_registers -> read ( sX ) );
     }
 }
 
@@ -717,18 +717,18 @@ void PicoBlazeInstructionSet3::inst_FETCH ( const unsigned int opCode )
 
     // Extract operands from OP code.
     const unsigned int sX   = ( opCode & 0xf00 ) >> 8;
-    const unsigned int sYPP = ( opCode & 0x0ff );
+    const unsigned int sYSS = ( opCode & 0x0ff );
 
     // Perform the operation.
     if ( 0x1000 & opCode )
     {
         // FETCH sX, (sY)
-        m_registers -> write ( sX, m_dataMemory -> read ( 0x3f & m_registers -> read ( sYPP >> 4 ) ) );
+        m_registers -> write ( sX, m_dataMemory -> read ( 0x3f & m_registers -> read ( sYSS >> 4 ) ) );
     }
     else
     {
-        // FETCH sX, PP
-        m_registers -> write ( sX, m_dataMemory -> read ( ( 0x3f & sYPP ) ) );
+        // FETCH sX, SS
+        m_registers -> write ( sX, m_dataMemory -> read ( ( 0x3f & sYSS ) ) );
     }
 }
 

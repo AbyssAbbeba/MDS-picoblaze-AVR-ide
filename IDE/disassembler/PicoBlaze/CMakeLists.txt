@@ -1,6 +1,6 @@
 # ==============================================================================
 #
-# Simulator engine module for PicoBlaze soft-processors.
+# Moravia Script language support library.
 #
 # (C) copyright 2013 Moravia Microsystems, s.r.o.
 #
@@ -12,7 +12,7 @@
 # ------------------------------------------------------------------------------
 
 # Set project name
-project ( PicoBlazeSim )
+project ( DAsmPicoBlaze )
 
 # Set the minimum required version of CMake
 cmake_minimum_required ( VERSION 2.8 )
@@ -20,46 +20,35 @@ cmake_minimum_required ( VERSION 2.8 )
 # Create verbose makefiles if on
 set ( CMAKE_VERBOSE_MAKEFILE OFF )
 
+
 # ------------------------------------------------------------------------------
 # COMPILATION OPTIONS
 # ------------------------------------------------------------------------------
 
-# Add include directories to the build.
-include_directories ( "${CMAKE_CURRENT_BINARY_DIR}/../../../utilities" )
+# Load settings specific for the Qt4 library (we use it here for i18n)
+find_package ( Qt4 REQUIRED )
+include ( ${QT_USE_FILE} )
 
 ## Add switches to compiler command line
  # -Wall       : Enables all the warnings.
- # -Wextra     : Enables some extra warning flags that are not enabled by -Wall.
  # -std=c++0x  : Default template arguments may not be used in function templates without -std=c++0x or -std=gnu++0x.
  # -O2         : Optimization, level 2.
  # -pipe       : Use pipes rather than temporary files for communication between the various stages of compilation.
-add_definitions ( -Wall -Wextra -std=c++0x -O2 -pipe )
+add_definitions ( -Wall -std=c++0x -O2 -pipe )
 
 ## Add a library to the project using the specified source files,
- # in this case it will procude dynamic C++ library.
-add_library ( ${PROJECT_NAME} SHARED
-              PicoBlazeIO.cxx
-              PicoBlazeSim.cxx
-              PicoBlazeStack.cxx
-              PicoBlazeConfig.cxx
-              PicoBlazeRegisters.cxx
-              PicoBlazeDataMemory.cxx
-              PicoBlazeStatusFlags.cxx
-              PicoBlazeClockControl.cxx
-              PicoBlazeProgramMemory.cxx
-              PicoBlazeInstructionSet.cxx
-              PicoBlazeInstructionSet2.cxx
-              PicoBlazeInstructionSet3.cxx
-              PicoBlazeInstructionSet6.cxx
-              PicoBlazeInterruptController.cxx )
+ # in this case it will procude static C++ library.
+add_library ( ${PROJECT_NAME} STATIC
+              DAsmPicoBlazeCore.cxx
+              DAsmPicoBlazeKcpsm2.cxx
+              DAsmPicoBlazeKcpsm3.cxx
+              DAsmPicoBlazeKcpsm6.cxx )
 
-# Link a target to given libraries.
-target_link_libraries ( ${PROJECT_NAME} MCUDataFiles )
 
 # ------------------------------------------------------------------------------
 # INSTALLATION OPTIONS
 # ------------------------------------------------------------------------------
 
-install ( TARGETS ${PROJECT_NAME}
-          RUNTIME DESTINATION bin
-          LIBRARY DESTINATION lib )
+# install ( TARGETS ${PROJECT_NAME}
+#           RUNTIME DESTINATION bin
+#           LIBRARY DESTINATION lib )

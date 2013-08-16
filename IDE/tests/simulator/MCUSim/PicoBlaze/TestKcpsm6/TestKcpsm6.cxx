@@ -114,9 +114,9 @@ void TestKcpsm6::testFunction()
     {
         m_programFile->clearAndLoad(hexFile);
     }
-    catch ( DataFile::Exception & e )
+    catch ( DataFileException & e )
     {
-        CU_FAIL_FATAL("Instance of DataFile::Exception thrown:");
+        CU_FAIL_FATAL("Instance of DataFileException thrown:");
         std::cerr << e.toString() << std::endl;
     }
 

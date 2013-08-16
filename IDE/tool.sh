@@ -53,11 +53,45 @@ function clean() {
 function countLines() {
     local -r tempFile=$(mktemp)
 
-    find -type f -name '*.cxx' >> "$tempFile"
+    find -type f -name '*.asm' > "$tempFile"
+    sort "$tempFile" | while read f; do
+        if [[ "$f" =~ '/HW/' ]]; then
+            continue
+        fi
+        wc -lc "$f"
+    done | gawk '
+        BEGIN {
+            printf("\n")
+            printf(" LINES  BYTES  FILE\n")
+            printf(" -----  -----  -------------------------------------------------------------\n")
+
+            t=0
+            l=0
+            c=0
+        }
+        END {
+            printf(" -----  -----  -------------------------------------------------------------\n")
+            printf(" LINES  BYTES  FILE\n")
+            printf("\n")
+            printf(" +----- In total ------+    +-------- In average --------+\n")
+            printf(" | %8d lines      |    | %8.2f bytes / line      |\n", l, c/l)
+            printf(" | %8.2f megabytes  |    | %8.2f kilobytes / file  |\n", c/(1024*1024), c/(t*1024))
+            printf(" | %8d files      |    | %8.2f lines / file      |\n", t, l/t)
+            printf(" +---------------------+    +----------------------------+\n")
+            printf("\n")
+        }
+        {
+            t++
+            l+=$1
+            c+=$2
+            printf("%6d %6d  %s\n", $1, $2, $3)
+        }
+    '
+
+    find -type f -name '*.cxx' > "$tempFile"
     find -type f -name '*.cpp' >> "$tempFile"
     find -type f -name '*.c' >> "$tempFile"
     find -type f -name '*.h' >> "$tempFile"
-    find -type f -name '*.asm' >> "$tempFile"
     find -type f -name '*.l' >> "$tempFile"
     find -type f -name '*.y' >> "$tempFile"
     find -type f -name 'CMakeLists.txt' >> "$tempFile"

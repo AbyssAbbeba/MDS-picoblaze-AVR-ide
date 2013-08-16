@@ -47,7 +47,7 @@ include_directories ( "${CMAKE_CURRENT_BINARY_DIR}/../grammar"
                       "${CMAKE_CURRENT_BINARY_DIR}/asm/avr8"
                       "${CMAKE_CURRENT_BINARY_DIR}/asm/mcs51"
                       "${CMAKE_CURRENT_BINARY_DIR}/asm/pic8"
-                      "${CMAKE_CURRENT_BINARY_DIR}/asm/kcpsm3" )
+                      "${CMAKE_CURRENT_BINARY_DIR}/asm/PicoBlaze" )
 
 # Specify directories in which the linker will look for libraries.
 link_directories ( "${CMAKE_CURRENT_BINARY_DIR}/../grammar"

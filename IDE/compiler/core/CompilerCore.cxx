@@ -234,13 +234,13 @@ inline bool CompilerCore::startLexerAndParser()
                     mcs51lexer_lex_destroy ( yyscanner );
                     break;
                 case TA_PICOBLAZE:
-                    kcpsm3lexer_lex_init_extra ( this, &yyscanner );
-                    kcpsm3lexer_set_in ( sourceFile, yyscanner );
+                    PicoBlazeLexer_lex_init_extra ( this, &yyscanner );
+                    PicoBlazeLexer_set_in ( sourceFile, yyscanner );
                     if ( true == m_success )
                     {
-                        kcpsm3parser_parse ( yyscanner, this );
+                        PicoBlazeParser_parse ( yyscanner, this );
                     }
-                    kcpsm3lexer_lex_destroy ( yyscanner );
+                    PicoBlazeLexer_lex_destroy ( yyscanner );
                     break;
                 default:
                     m_msgInterface->message ( QObject::tr ( "Architecture not supported for the selected language." )

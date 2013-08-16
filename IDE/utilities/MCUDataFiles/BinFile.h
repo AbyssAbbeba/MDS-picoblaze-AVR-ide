@@ -49,10 +49,10 @@ class BinFile : public DataFile
          * @brief Load binary file into the memory array
          * @param[in] filename Source file
          */
-        void clearAndLoad ( const char * filename ) throw(DataFile::Exception);
+        void clearAndLoad ( const char * filename ) throw(DataFileException);
 
         /// @overload
-        void clearAndLoad ( const std::string & filename ) throw(DataFile::Exception);
+        void clearAndLoad ( const std::string & filename ) throw(DataFileException);
 
         /**
          * @brief Save memory array in binary file
@@ -60,11 +60,11 @@ class BinFile : public DataFile
          * @param[in] makeBackup Make backup file
          */
         void save ( const char * filename,
-                    bool makeBackup = true ) throw(DataFile::Exception);
+                    bool makeBackup = true ) throw(DataFileException);
 
         /// @overload
         void save ( const std::string & filename,
-                    bool makeBackup = true ) throw(DataFile::Exception);
+                    bool makeBackup = true ) throw(DataFileException);
 };
 
 #endif // BINFILE_H

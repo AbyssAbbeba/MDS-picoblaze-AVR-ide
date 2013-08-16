@@ -25,7 +25,9 @@ class PicoBlazeProgramMemory;
 class PicoBlazeInterruptController;
 
 #include "../MCUSim.h"
+
 #include "PicoBlazeInsNames.h"
+#include "PicoBlazeStatusFlags.h"
 
 #include <cstdint>
 
@@ -63,51 +65,6 @@ class PicoBlazeInstructionSet : public MCUSimCPU
 
             ///
             uint8_t m_hwbuild;
-        };
-
-        /**
-         * @brief
-         */
-        struct StatusFlags
-        {
-            /**
-             * @brief
-             */
-            StatusFlags();
-
-            /**
-             * @brief
-             */
-            void reset();
-
-            /**
-             * @brief
-             */
-            void interrupt();
-
-            /**
-             * @brief
-             */
-            void returni();
-
-
-            /// Interrupt enable flag
-            bool m_inte;
-
-            /// 
-            bool m_carry;
-
-            /// 
-            bool m_zero;
-
-            ///
-            bool m_preCarry;
-
-            ///
-            bool m_preZero;
-
-            ///
-            int m_interrupted;
         };
 
     ////    Public Operations    ////
@@ -174,7 +131,7 @@ class PicoBlazeInstructionSet : public MCUSimCPU
          * @brief
          * @return
          */
-        StatusFlags getStatusFlags()
+        const PicoBlazeStatusFlags & getStatusFlags()
         {
             return m_statusFlags;
         }
@@ -183,7 +140,7 @@ class PicoBlazeInstructionSet : public MCUSimCPU
          * @brief
          * @param[in] newFlags
          */
-        void setStatusFlags ( StatusFlags newFlags )
+        void setStatusFlags ( const PicoBlazeStatusFlags & newFlags )
         {
             m_statusFlags = newFlags;
         }
@@ -229,7 +186,7 @@ class PicoBlazeInstructionSet : public MCUSimCPU
     ////    Protected Attributes    ////
     protected:
         ///
-        StatusFlags m_statusFlags;
+        PicoBlazeStatusFlags m_statusFlags;
 
         ///
         int m_pc;

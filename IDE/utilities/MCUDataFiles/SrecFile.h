@@ -65,10 +65,10 @@ class SrecFile : public DataFile
          * @brief Load Motorola S-Record file into the memory array
          * @param[in] filename
          */
-        void clearAndLoad ( const char * filename ) throw ( DataFile::Exception );
+        void clearAndLoad ( const char * filename ) throw ( DataFileException );
 
         /// @overload
-        void clearAndLoad ( const std::string & filename ) throw ( DataFile::Exception );
+        void clearAndLoad ( const std::string & filename ) throw ( DataFileException );
 
         /**
          * @brief Save memory array in Motorola S-Record file
@@ -76,11 +76,11 @@ class SrecFile : public DataFile
          * @param[in] makeBackup Make backup file
          */
         void save ( const char * filename,
-                    bool makeBackup = true ) throw(DataFile::Exception);
+                    bool makeBackup = true ) throw(DataFileException);
 
         /// @overload
         void save ( const std::string & filename,
-                    bool makeBackup = true ) throw ( DataFile::Exception );
+                    bool makeBackup = true ) throw ( DataFileException );
 
         /**
          * @brief

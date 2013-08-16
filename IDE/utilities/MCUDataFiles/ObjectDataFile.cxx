@@ -20,20 +20,20 @@ ObjectDataFile::ObjectDataFile ( unsigned int arrsize ) : DataFile(arrsize)
 {
 }
 
-void ObjectDataFile::clearAndLoad ( const char * ) throw ( DataFile::Exception )
+void ObjectDataFile::clearAndLoad ( const char * ) throw ( DataFileException )
 {
 }
 
-void ObjectDataFile::clearAndLoad ( const std::string & ) throw ( DataFile::Exception )
+void ObjectDataFile::clearAndLoad ( const std::string & ) throw ( DataFileException )
 {
 }
 
 void ObjectDataFile::save ( const char *,
-                            bool ) throw ( DataFile::Exception )
+                            bool ) throw ( DataFileException )
 {
 }
 
 void ObjectDataFile::save ( const std::string &,
-                            bool ) throw ( DataFile::Exception )
+                            bool ) throw ( DataFileException )
 {
 }

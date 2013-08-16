@@ -111,6 +111,14 @@
  */
 
 /**
+ * @defgroup Disassembler Disassembler
+ *
+ * @defgroup DisasmPicoBlaze PicoBlaze disassembler
+ * @ingroup Disassembler
+ */
+
+
+/**
  * @defgroup MoraviaScript Moravia Script
  * Moravia Script language implementation: lexical analyzer, syntax analyzer, etc.
  */
