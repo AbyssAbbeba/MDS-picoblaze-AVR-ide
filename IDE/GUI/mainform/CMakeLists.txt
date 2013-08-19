@@ -67,6 +67,7 @@ link_directories(
     "${CMAKE_CURRENT_BINARY_DIR}/../widgets/Tools/Convertor"
     "${CMAKE_CURRENT_BINARY_DIR}/../widgets/Tools/Display"
     "${CMAKE_CURRENT_BINARY_DIR}/../widgets/CompileWidget"
+    "${CMAKE_CURRENT_BINARY_DIR}/../widgets/HelpWidget/"
     "${CMAKE_CURRENT_BINARY_DIR}/../dialogs/projectcfg/"
     "${CMAKE_CURRENT_BINARY_DIR}/../dialogs/projectdlg/"
     "${CMAKE_CURRENT_BINARY_DIR}/../errordialog/"
@@ -93,4 +94,4 @@ add_library(${PROJECT_NAME} SHARED
 	${SAMPLE_MOC_SRCS} ${SAMPLE_SRCS})
 
 #QtNetwork !!
-target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} ErrorDialog Project ProjectTree Editor ProjectDlg ProjectCfg WDockManager McuSimCfgMgr SimControl AVR8Sim PIC8Sim MCUDataFiles ConvertorTool DisplayTool CompileWidget CompilerCore)
+target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} ErrorDialog Project ProjectTree Editor ProjectDlg ProjectCfg WDockManager McuSimCfgMgr SimControl AVR8Sim PIC8Sim MCUDataFiles ConvertorTool DisplayTool CompileWidget CompilerCore HelpWidget)
