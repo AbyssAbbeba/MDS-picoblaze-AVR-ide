@@ -8,16 +8,6 @@
 ; Tell compiler type of procesor (KCPSM2, KCPSM3, KCPSM6 available)
         DEVICE          KCPSM3
 
-; Constant definitions
-; --------------------
-counter          SET     00Fh    ; Counter of Px shifts
-x                SET     100     ; Some variable
-inc_dec          EQU     100 / X ; Flag: Increment/Decrement counter
-ram_pointer      SET     00h      ; Assign name to register 3
-
-; Macro instructions
-
-
 ; Program initialization
 ; --------------------
         ORG     0h                      ; Define code segment
