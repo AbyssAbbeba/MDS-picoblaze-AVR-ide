@@ -46,6 +46,7 @@ RegistersWidget::~RegistersWidget()
 
 void RegistersWidget::handleEvent(int subsysId, int eventId, int locationOrReason, int detail)
 {
+    qDebug() << "RegistersWidget: handleEvent()";
     if ( subsysId != this->subsys )
     {
         qDebug("Invalid event received, event ignored.");
@@ -63,6 +64,7 @@ void RegistersWidget::handleEvent(int subsysId, int eventId, int locationOrReaso
     {
         case MCUSimMemory::EVENT_MEM_INF_WR_VAL_CHANGED:
         {
+            this->update = true;
             uint value;
             m_memory->directRead(locationOrReason, value);
             if ( 5 < idx )
@@ -76,8 +78,7 @@ void RegistersWidget::handleEvent(int subsysId, int eventId, int locationOrReaso
                 this->item((idx+1)%6, 2)->setText(QString::number(value, 16));
             }
             qDebug() << "RegistersWidget: event: mem cell changed to" << value;
-            
-
+            this->update = false;
 
             break;
         }
@@ -85,6 +86,7 @@ void RegistersWidget::handleEvent(int subsysId, int eventId, int locationOrReaso
             qDebug("Invalid event received, event ignored.");
             break;
     }
+    qDebug() << "RegistersWidget: return handleEvent()";
 }
 
 
@@ -124,6 +126,7 @@ void RegistersWidget::deviceChanged()
 
 void RegistersWidget::deviceReset()
 {
+    this->update = true;
     this->clear();
     this->setRowCount(m_size/2);
     for (int i = 0; i < m_size/2; i++)
@@ -154,6 +157,7 @@ void RegistersWidget::deviceReset()
 
         this->setRowHeight(i, 17);
     }
+    this->update = false;
 }
 
 
@@ -170,6 +174,7 @@ void RegistersWidget::updateValue(int row, int column)
         this->update = true;
         if ( 0 == (column+1)%3 )
         {
+            qDebug() << "update 1" << column + 1;
             int value = this->item(row, column)->text().toInt(0, 16);
             if ( 255 < value )
             {
@@ -189,6 +194,7 @@ void RegistersWidget::updateValue(int row, int column)
         }
         else
         {
+            qDebug() << "update 2" << column + 1;
             int value = this->item(row, column)->text().toInt(0, 10);
             if ( 255 < value )
             {
