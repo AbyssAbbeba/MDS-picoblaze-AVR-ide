@@ -13,7 +13,7 @@
 
 
 #include <QtGui>
-#include <QtHelp/QHelpEngineCore>
+//#include <QtHelp/QHelpEngineCore>
 //pozdeji zamenit QtGui za mensi celky
 #include "mainform.h"
 #include "../dialogs/projectdlg/projectdlg.h"
@@ -21,6 +21,7 @@
 #include "pluginman_gui.h"
 #include "../dialogs/projectcfg/projectcfgdlg_core.h"
 //#include "../widgets/CompileWidget/compilewidget.h"
+#include "../widgets/HelpWidget/helpwidget.h"
 
 
 
@@ -673,6 +674,8 @@ void MainForm::compileProject()
     qDebug() << QString::fromStdString(options->m_sourceFile);
     qDebug() << mainFile;
 
+    options->m_device = this->projectMan->getActive()->architecture.toStdString();
+    
     if (projectMan->getActive()->compileOpt.at(0))
     {
         options->m_symbolTable = (mainFile + ".stbl").toStdString();
@@ -1034,5 +1037,5 @@ void MainForm::startProjectConfig(Project *project)
 
 void MainForm::help()
 {
-    
+    HelpWidget *helpWidget = new HelpWidget(0, this->width(), this->height());
 }
