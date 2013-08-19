@@ -211,6 +211,7 @@ void PortHexEdit::deviceReset()
 
 void PortHexEdit::setReadOnly(bool readOnly)
 {
+    qDebug() << "PortHexEdit: setReadOnly()";
 	if ( NULL == m_hexEditIn || NULL == m_hexEditOut )
     {
 		return;
@@ -223,18 +224,22 @@ void PortHexEdit::setReadOnly(bool readOnly)
 // 			m_hexEdit->setHighlighted(i, false);
 // 		}
 // 	}
+    qDebug() << "PortHexEdit: return setReadOnly()";
 }
 
 
 void PortHexEdit::fixHeight()
 {
+    qDebug() << "PortHexEdit: fixHeight()";
     m_hexEditIn->fixHeight();
     m_hexEditOut->fixHeight();
+    qDebug() << "PortHexEdit: return fixHeight()";
 }
 
 
 void PortHexEdit::switchPorts()
 {
+    qDebug() << "PortHexEdit: switchPorts()";
     if ( true == this->visibleIn )
     {
         this->m_hexEditIn->hide();
@@ -247,4 +252,5 @@ void PortHexEdit::switchPorts()
         this->m_hexEditIn->show();
         this->visibleIn = true;
     }
+    qDebug() << "PortHexEdit: return switchPorts()";
 }
