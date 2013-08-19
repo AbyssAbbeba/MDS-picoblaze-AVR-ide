@@ -151,6 +151,7 @@ void TestSuiteErr::compareErr ( const std::string & expected,
         if ( errFileLine != errExpFileVec[errLineNumber] )
         {
             CU_FAIL("Result and expectation inconsistence found in compilation error log.");
+            break;
         }
 
         errLineNumber++;
@@ -203,6 +204,7 @@ void TestSuiteErr::compareLst ( const std::string & expected,
         if ( lstFileLine != lstExpFileVec[lstLineNumber] )
         {
             CU_FAIL("Result and expectation inconsistence found in code listing.");
+            break;
         }
 
         lstLineNumber++;

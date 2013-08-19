@@ -40,7 +40,7 @@ PicoBlazeProgramMemory::~PicoBlazeProgramMemory()
 
 void PicoBlazeProgramMemory::loadDataFile ( const DataFile * file )
 {
-    unsigned int fileSize = 10;//file->maxSize();
+    unsigned int fileSize = file->maxSize();
 
     for ( unsigned int fileAddr = 0, memAddr = 0;
           ( fileAddr < fileSize ) && ( memAddr < m_size );
@@ -73,7 +73,7 @@ void PicoBlazeProgramMemory::loadDataFile ( const DataFile * file )
         }
     }
 
-    for ( unsigned int i = ( fileSize / 3 ); i < m_size; i++ )
+    for ( unsigned int i = ( 1 + ( fileSize / 3 ) ); i < m_size; i++ )
     {
         m_memory[i] =  MFLAG_UNDEFINED;
     }
