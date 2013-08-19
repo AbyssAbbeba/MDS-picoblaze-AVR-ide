@@ -44,10 +44,12 @@ include ( ${QT_USE_FILE} )
 
 # List of preprocessor include file search directories.
 include_directories ( ${Boost_INCLUDE_DIRS}
+                      "${CMAKE_CURRENT_BINARY_DIR}/../utilities/MCUDataFiles/"
                       "${CMAKE_CURRENT_BINARY_DIR}/PicoBlaze/" )
 
 # Specify directories in which the linker will look for libraries.
 link_directories ( ${Boost_LIBRARY_DIRS}
+                   "${CMAKE_CURRENT_BINARY_DIR}/../utilities/MCUDataFiles/"
                    "${CMAKE_CURRENT_BINARY_DIR}/PicoBlaze/" )
 
 ## Add switches to compiler command line
@@ -70,10 +72,9 @@ add_library ( ${PROJECT_NAME} SHARED
               DAsmCore.cxx )
 
 # Link a target to given libraries
-target_link_libraries ( ${PROJECT_NAME}
-                        ${QT_LIBRARIES}
-                        ${Boost_LIBRARIES}
-                        DAsmPicoBlaze )
+target_link_libraries ( ${PROJECT_NAME} ${QT_LIBRARIES}
+                                        ${Boost_LIBRARIES}
+                                        DAsmPicoBlaze )
 
 
 #
@@ -85,7 +86,8 @@ add_executable ( disasm
                  main.cxx )
 
 # Link a target to given libraries
-target_link_libraries ( disasm ${PROJECT_NAME} )
+target_link_libraries ( disasm MCUDataFiles
+                               ${PROJECT_NAME} )
 
 
 # ------------------------------------------------------------------------------

@@ -92,12 +92,66 @@ class DAsmPicoBlazeCore : public DAsmCore
         virtual void phase2 ( unsigned int code,
                               unsigned int addr ) = 0;
 
+        /**
+         * @brief
+         * @param[in,out] line
+         * @param[in] addr
+         */
+        void reg ( std::string & line,
+                   unsigned int addr );
+
+        /**
+         * @brief
+         * @param[in,out] line
+         * @param[in] addr
+         */
+        void port ( std::string & line,
+                    unsigned int addr );
+
+        /**
+         * @brief
+         * @param[in,out] line
+         * @param[in] addr
+         */
+        void data ( std::string & line,
+                    unsigned int addr );
+
+        /**
+         * @brief
+         * @param[in,out] line
+         * @param[in] addr
+         */
+        void imm ( std::string & line,
+                   unsigned int addr );
+
+        /**
+         * @brief
+         * @param[in,out] line
+         * @param[in] addr
+         * @param[in] definition
+         */
+        void label ( std::string & line,
+                     unsigned int addr,
+                     bool definition = false );
+
     ////    Inline Private Operations    ////
     private:
         /**
          * @brief
          */
         inline void phase1Leave();
+
+        /**
+         * @brief
+         * @param[in,out] line
+         * @param[in] addr
+         * @param[in] addrSp
+         * @param[in] stg
+         */
+        inline void appendAddr ( std::string & line,
+                                 unsigned int addr,
+                                 AddressSpace addrSp,
+                                 Config::SymbolsToGenerate stg );
 
     ////    Protected Attributes    ////
     protected:

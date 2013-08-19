@@ -34,128 +34,130 @@ class CompilerMsgInterface;
  */
 namespace TestSuiteSuc
 {
-    /**
-     * @brief
-     * @return
-     */
-    int init();
-
-    /**
-     * @brief
-     * @return
-     */
-    int clean();
-
-    /**
-     * @brief
-     * @param[in,out] suite
-     * @return
-     */
-    bool addTests ( CU_pSuite suite );
-
-    /**
-     * @brief
-     */
-    void testFunction();
-
-    /// @name Result evaluation functions.
-    //@{
+    ////    Operations    ////
         /**
          * @brief
-         * @param[in] expected
-         * @param[in] actual
          * @return
          */
-        void compareLst ( const std::string & expected,
-                          const std::string & actual );
+        int init();
 
         /**
          * @brief
-         * @param[in] expected
-         * @param[in] actual
          * @return
          */
-        void compareHex ( const std::string & expected,
-                          const std::string & actual );
+        int clean();
 
         /**
          * @brief
-         * @param[in] expected
-         * @param[in] actual
+         * @param[in,out] suite
          * @return
          */
-        void compareBin ( const std::string & expected,
-                          const std::string & actual );
+        bool addTests ( CU_pSuite suite );
 
         /**
          * @brief
-         * @param[in] expected
-         * @param[in] actual
-         * @return
          */
-        void compareDbg ( const std::string & expected,
-                          const std::string & actual );
+        void testFunction();
+
+        /// @name Result evaluation functions.
+        //@{
+            /**
+             * @brief
+             * @param[in] expected
+             * @param[in] actual
+             * @return
+             */
+            void compareLst ( const std::string & expected,
+                              const std::string & actual );
+
+            /**
+             * @brief
+             * @param[in] expected
+             * @param[in] actual
+             * @return
+             */
+            void compareHex ( const std::string & expected,
+                              const std::string & actual );
+
+            /**
+             * @brief
+             * @param[in] expected
+             * @param[in] actual
+             * @return
+             */
+            void compareBin ( const std::string & expected,
+                              const std::string & actual );
+
+            /**
+             * @brief
+             * @param[in] expected
+             * @param[in] actual
+             * @return
+             */
+            void compareDbg ( const std::string & expected,
+                              const std::string & actual );
+
+            /**
+             * @brief
+             * @param[in] expected
+             * @param[in] actual
+             * @return
+             */
+            void compareSrec ( const std::string & expected,
+                               const std::string & actual );
+
+            /**
+             * @brief
+             * @param[in] expected
+             * @param[in] actual
+             * @return
+             */
+            void compareSym ( const std::string & expected,
+                              const std::string & actual );
+
+            /**
+             * @brief
+             * @param[in] expected
+             * @param[in] actual
+             * @return
+             */
+            void compareMac ( const std::string & expected,
+                              const std::string & actual );
+
+            /**
+             * @brief
+             * @param[in] expected
+             * @param[in] actual
+             * @return
+             */
+            void compareV ( const std::string & expected,
+                            const std::string & actual );
+
+            /**
+             * @brief
+             * @param[in] expected
+             * @param[in] actual
+             * @return
+             */
+            void compareVhd ( const std::string & expected,
+                              const std::string & actual );
+        //@}
+
+    ////    Attributes    ////
+        /**
+         * @brief
+         */
+        Compiler * m_compiler;
 
         /**
          * @brief
-         * @param[in] expected
-         * @param[in] actual
-         * @return
          */
-        void compareSrec ( const std::string & expected,
-                           const std::string & actual );
+        CompilerOptions * m_options;
 
         /**
          * @brief
-         * @param[in] expected
-         * @param[in] actual
-         * @return
          */
-        void compareSym ( const std::string & expected,
-                          const std::string & actual );
-
-        /**
-         * @brief
-         * @param[in] expected
-         * @param[in] actual
-         * @return
-         */
-        void compareMac ( const std::string & expected,
-                          const std::string & actual );
-
-        /**
-         * @brief
-         * @param[in] expected
-         * @param[in] actual
-         * @return
-         */
-        void compareV ( const std::string & expected,
-                        const std::string & actual );
-
-        /**
-         * @brief
-         * @param[in] expected
-         * @param[in] actual
-         * @return
-         */
-        void compareVhd ( const std::string & expected,
-                          const std::string & actual );
-    //@}
-
-    /**
-     * @brief
-     */
-    Compiler * m_compiler;
-
-    /**
-     * @brief
-     */
-    CompilerOptions * m_options;
-
-    /**
-     * @brief
-     */
-    CompilerMsgInterface * m_msgInt;
+        CompilerMsgInterface * m_msgInt;
 };
 
 #endif // TESTSUITESUC_H
