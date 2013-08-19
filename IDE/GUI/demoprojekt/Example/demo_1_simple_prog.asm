@@ -16,25 +16,7 @@ inc_dec          EQU     100 / X ; Flag: Increment/Decrement counter
 ram_pointer      SET     00h      ; Assign name to register 3
 
 ; Macro instructions
-; --------------------
-;; Shift the given registers
-shift   MACRO    reg0, reg1
 
-        ; Increment / Decrement counter
-;        if       inc_dec != 0
-;                 inc     counter
-;        else
-;                 dec     counter
-;        endif
-
-        ; Save registers to DATA memory (Scratch-pad ram with range 00h to 3Fh)
-;        STORE    s0, ram_pointer + 1
-;        STORE    s1, ram_pointer + 1
-        
-        ; Shift
-        LOAD     reg1, reg0
-        LOAD     reg0, reg1
-ENDM
 
 ; Program initialization
 ; --------------------
@@ -44,13 +26,34 @@ ENDM
 ; Program start
 ; --------------------
 start:  
-        LOAD     s0, #00Fh              ; Load content to shifted registers
-        LOAD     s1, #01Eh              ;
+        LOAD    s0, #00Fh              ; Load content to shifted registers
+        LOAD    s1, #01Eh              ;
+        LOAD    s3,#01h
         JUMP    main                    ; Execute main program loop
 
 ; Main loop
 ; --------------------
-main:   shift   s0, s1
+main:
+        
+; Shifting to the left
+        RR     s3
+        RR     s3
+        RR     s3
+        RR     s3
+        RR     s3
+        RR     s3
+        RR     s3
+        RR     s3
+
+        ; Shifting to the left
+        RL     s3
+        RL     s3
+        RL     s3
+        RL     s3
+        RL     s3
+        RL     s3
+        RL     s3
+        RL     s3
         JUMP    main
 
 ; Program end
