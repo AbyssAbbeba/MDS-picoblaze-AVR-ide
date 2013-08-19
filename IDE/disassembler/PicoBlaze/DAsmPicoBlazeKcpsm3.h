@@ -110,38 +110,6 @@ class DAsmPicoBlazeKcpsm3 : public DAsmPicoBlazeCore
         /**
          * @brief
          * @param[in,out] line
-         * @param[in] addr
-         */
-        void reg ( std::string & line,
-                   unsigned int addr );
-
-        /**
-         * @brief
-         * @param[in,out] line
-         * @param[in] addr
-         */
-        void port ( std::string & line,
-                    unsigned int addr );
-
-        /**
-         * @brief
-         * @param[in,out] line
-         * @param[in] addr
-         */
-        void data ( std::string & line,
-                    unsigned int addr );
-
-        /**
-         * @brief
-         * @param[in,out] line
-         * @param[in] addr
-         */
-        void imm ( std::string & line,
-                   unsigned int addr );
-
-        /**
-         * @brief
-         * @param[in,out] line
          * @param[in] code
          * @param[in] inst
          * @param[in] cnd
@@ -150,16 +118,6 @@ class DAsmPicoBlazeKcpsm3 : public DAsmPicoBlazeCore
                    unsigned int code,
                    const char * inst,
                    const char * cnd = NULL );
-
-        /**
-         * @brief
-         * @param[in,out] line
-         * @param[in] addr
-         * @param[in] definition
-         */
-        void label ( std::string & line,
-                     unsigned int addr,
-                     bool definition = false );
 };
 
 #endif // DASMPICOBLAZEKCPSM3_H
