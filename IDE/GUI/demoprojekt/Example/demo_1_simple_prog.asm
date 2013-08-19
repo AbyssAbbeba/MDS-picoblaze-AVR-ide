@@ -36,7 +36,7 @@ start:
 main:
         
 ; Shifting to the left
-        RR     s3
+        RR     s1
         RR     s3
         RR     s3
         RR     s3

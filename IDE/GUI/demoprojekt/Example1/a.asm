@@ -9,6 +9,7 @@
 ; load x, y       ; <-- error
 ; local           ; <-- error
 
+device kcpsm3
 
 main:
 	LOAD 4,#5
