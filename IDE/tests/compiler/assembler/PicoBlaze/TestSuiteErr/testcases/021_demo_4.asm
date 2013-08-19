@@ -22,9 +22,9 @@
         NAMEREG         s1,temp2              ; temporary data register
         NAMEREG         s2,temp3              ; temporary data register
         ; OR
-        s3          REG         RXdata        ; RX data
-        s4          REG         TXdata        ; TX data
-        s5          REG         LED_reg       ; Leds data register
+        RXdata          REG     s3            ; RX data
+        TXdata          REG     s4            ; TX data
+        LED_reg         REG     s5            ; Leds data register
 ; PORT_IDs
         TX_id       PORT        0x01          ;  data register port ID
         RX_id       PORT        0x02          ;  data register port ID
@@ -149,12 +149,12 @@ RX_resolve          MACRO     uart_byte
 ; END OF MACRO DEFINITIONS ;;
 ;=======================================================================
 ; Main program >>>
-                   
+        ADDRESS 0x3FF                             ; interrupt vector
+        JUMP    INTERRUPT     
 ; Vectors
         ADDRESS 0x000                             ; RESET vector
         JUMP    Start
-        ADDRESS 0x3FF                             ; interrupt vector
-        JUMP    INTERRUPT
+
 ;-------------------------------------------------------------------------
 ; Interrupt routine
 INTERRUPT:          SendChar  'I'
