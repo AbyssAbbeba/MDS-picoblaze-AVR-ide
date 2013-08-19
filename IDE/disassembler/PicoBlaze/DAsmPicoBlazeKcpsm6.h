@@ -142,48 +142,6 @@ class DAsmPicoBlazeKcpsm6 : public DAsmPicoBlazeCore
          */
         void otherOpCodes ( std::string & line,
                             unsigned int code );
-
-        /**
-         * @brief
-         * @param[in,out] line
-         * @param[in] addr
-         */
-        void reg ( std::string & line,
-                   unsigned int addr );
-
-        /**
-         * @brief
-         * @param[in,out] line
-         * @param[in] addr
-         */
-        void port ( std::string & line,
-                    unsigned int addr );
-
-        /**
-         * @brief
-         * @param[in,out] line
-         * @param[in] addr
-         */
-        void data ( std::string & line,
-                    unsigned int addr );
-
-        /**
-         * @brief
-         * @param[in,out] line
-         * @param[in] addr
-         */
-        void imm ( std::string & line,
-                   unsigned int addr );
-
-        /**
-         * @brief
-         * @param[in,out] line
-         * @param[in] addr
-         * @param[in] definition
-         */
-        void label ( std::string & line,
-                     unsigned int addr,
-                     bool definition = false );
 };
 
 #endif // DASMPICOBLAZEKCPSM6_H

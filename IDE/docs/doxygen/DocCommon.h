@@ -108,6 +108,13 @@
  *
  * @defgroup testsMCUSimPicoBlaze PicoBlaze Simulator
  * @ingroup testsMCUSim
+ *
+ *
+ * @defgroup testsDisasm Disassembler
+ * @ingroup tests
+ *
+ * @defgroup testsDisasmPicoBlaze PicoBlaze Disassembler
+ * @ingroup testsDisasm
  */
 
 /**

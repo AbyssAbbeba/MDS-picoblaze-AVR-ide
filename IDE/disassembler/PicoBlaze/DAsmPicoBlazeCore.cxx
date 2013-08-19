@@ -164,3 +164,57 @@ inline void DAsmPicoBlazeCore::phase1Leave()
         }
     }
 }
+
+inline void DAsmPicoBlazeCore::appendAddr ( std::string & line,
+                                            unsigned int addr,
+                                            AddressSpace addrSp,
+                                            Config::SymbolsToGenerate stg )
+{
+    if ( stg & m_config.m_symbolsToGenerate )
+    {
+        std::map<unsigned int,std::string>::const_iterator it = m_symbols[addrSp].find(addr);
+        if ( it != m_symbols[addrSp].end() )
+        {
+            appendStr ( line, m_symbols[addrSp].find(addr)->second );
+            return;
+        }
+    }
+
+    appendStr ( line, num2str(addr) );
+}
+
+void DAsmPicoBlazeCore::reg ( std::string & line,
+                              unsigned int addr )
+{
+    appendAddr ( line, addr, REG, Config::STG_REG );
+}
+
+void DAsmPicoBlazeCore::port ( std::string & line,
+                               unsigned int addr )
+{
+    appendAddr ( line, addr, PORT, Config::STG_PORT );
+}
+
+void DAsmPicoBlazeCore::data ( std::string & line,
+                               unsigned int addr )
+{
+    appendAddr ( line, addr, DATA, Config::STG_DATA );
+}
+
+void DAsmPicoBlazeCore::imm ( std::string & line,
+                              unsigned int addr )
+{
+    appendAddr ( line, addr, CONST, Config::STG_CONST );
+}
+
+void DAsmPicoBlazeCore::label ( std::string & line,
+                                unsigned int addr,
+                                bool definition )
+{
+    appendAddr ( line, addr, CODE, Config::STG_CODE );
+
+    if ( true == definition )
+    {
+        line += ':';
+    }
+}

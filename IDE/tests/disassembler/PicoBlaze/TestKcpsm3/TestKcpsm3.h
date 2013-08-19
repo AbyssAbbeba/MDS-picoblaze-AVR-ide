@@ -8,15 +8,16 @@
  * (C) copyright 2013 Moravia Microsystems, s.r.o.
  *
  * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
- * @ingroup testsAssemblerPicoBlaze
- * @file TestSuiteErr.h
+ * @ingroup testsDisasmPicoBlaze
+ * @file TestKcpsm3.h
  */
 // =============================================================================
 
-#ifndef TESTSUITEERR_H
-#define TESTSUITEERR_H
+#ifndef TESTKCPSM3_H
+#define TESTKCPSM3_H
 
 // Forward declarations.
+class DAsm;
 class Compiler;
 class CompilerOptions;
 class CompilerMsgInterface;
@@ -29,10 +30,10 @@ class CompilerMsgInterface;
 
 /**
  * @brief
- * @namespace TestSuiteErr
- * @ingroup testsAssemblerPicoBlaze
+ * @namespace TestKcpsm3
+ * @ingroup testsDisasmPicoBlaze
  */
-namespace TestSuiteErr
+namespace TestKcpsm3
 {
     ////    Operations    ////
         /**
@@ -59,28 +60,12 @@ namespace TestSuiteErr
          */
         void testFunction();
 
-        /// @name Result evaluation functions.
-        //@{
-            /**
-             * @brief
-             * @param[in] expected
-             * @param[in] actual
-             * @return
-             */
-            void compareLst ( const std::string & expected,
-                              const std::string & actual );
-
-            /**
-             * @brief
-             * @param[in] expected
-             * @param[in] actual
-             * @return
-             */
-            void compareErr ( const std::string & expected,
-                              const std::string & actual );
-        //@}
-
     ////    Attributes    ////
+        /**
+         * @brief
+         */
+        DAsm * m_disassembler;
+
         /**
          * @brief
          */
@@ -97,4 +82,4 @@ namespace TestSuiteErr
         CompilerMsgInterface * m_msgInt;
 };
 
-#endif // TESTSUITEERR_H
+#endif // TESTKCPSM3_H

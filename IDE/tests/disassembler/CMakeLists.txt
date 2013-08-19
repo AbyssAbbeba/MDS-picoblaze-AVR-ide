@@ -12,7 +12,7 @@
 # ------------------------------------------------------------------------------
 
 # Set project name
-project ( tests )
+project ( testsDisassembler )
 
 # Set the minimum required version of CMake
 cmake_minimum_required ( VERSION 2.8 )
@@ -28,11 +28,5 @@ enable_testing()
 # BUILD COMPONENTS IN THE SUBDIRECTORIES
 # ------------------------------------------------------------------------------
 
-# Tests for compiler
-add_subdirectory ( compiler )
-
-# Tests for simulator
-add_subdirectory ( simulator )
-
-# Tests for disassembler
-add_subdirectory ( disassembler )
+# Tests for PicoBlaze disassembler
+add_subdirectory ( PicoBlaze )

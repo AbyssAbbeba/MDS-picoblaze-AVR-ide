@@ -398,7 +398,7 @@ CompilerStatement * CompilerCore::loadDevSpecCode ( const std::string & deviceNa
     if ( true == m_devSpecCodeLoaded )
     {
         m_msgInterface->message ( QObject::tr("Error: device specification code is already loaded.").toStdString(),
-                                  MT_ERROR );
+                                  MT_WARNING );
         if ( NULL != flag )
         {
             *flag = DSLF_ALREADY_LOADED;
