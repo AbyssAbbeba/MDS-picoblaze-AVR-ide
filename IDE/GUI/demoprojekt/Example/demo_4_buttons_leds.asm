@@ -23,7 +23,10 @@ N               SET             10              ; Number of LED blinks
 OFF             AUTOREG                         ; Off register
 ON              AUTOREG                         ; On register
 SNAKE           AUTOREG                         ; Snake register
-
+; Declaration of some registers
+Temp1         REG       s0
+Temp2         REG       s1
+Temp3         REG       s2
 ; Macro table
 ; --------------------
 ; Waiting loop macro

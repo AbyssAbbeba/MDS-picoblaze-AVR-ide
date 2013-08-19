@@ -12,5 +12,19 @@
  </Files>
  <Mainfile path="a.asm" name="a.asm"/>
  <Simulator/>
- <Compiler/>
+ <Compiler>
+  <Options>
+   <SymbolTable enable="false"/>
+   <MacroTable enable="false"/>
+   <DebugFile enable="true"/>
+   <CodeTree enable="false"/>
+   <ListFile enable="false"/>
+   <HexFile enable="true"/>
+   <BinFile enable="false"/>
+   <SRecFile enable="false"/>
+  </Options>
+  <IncludePaths>
+   <Path path="/home/rift/Plocha/gui/localgit/mms/IDE/compiler/include/assembler/PicoBlaze"/>
+  </IncludePaths>
+ </Compiler>
 </MMProject>
