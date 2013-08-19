@@ -231,23 +231,18 @@ bool AsmPicoBlazeSemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
                 {
                     if ( CompilerBase::DSLF_DOES_NOT_EXIST == loaderFlag )
                     {
-                            m_compilerCore->compilerMessage ( *location,
-                                                              CompilerBase::MT_ERROR,
-                                                              QObject::tr("Device not supported: ").toStdString()
-                                                              + "\"" + deviceName + "\"" );
-                    }
-                    else if ( CompilerBase::DSLF_ALREADY_LOADED == loaderFlag )
-                    {
                         m_compilerCore->compilerMessage ( *location,
-                                                          CompilerBase::MT_WARNING,
-                                                          QObject::tr ( "Device specification code is already "
-                                                                        "loaded" ).toStdString() );
+                                                          CompilerBase::MT_ERROR,
+                                                          QObject::tr("Device not supported: ").toStdString()
+                                                          + "\"" + deviceName + "\"" );
+                        return false;
                     }
-                    return false;
                 }
-
-                node->insertLink(devSpecCode->next());
-                delete devSpecCode;
+                else
+                {
+                    node->insertLink(devSpecCode->next());
+                    delete devSpecCode;
+                }
                 break;
             }
             case ASMPICOBLAZE_DIR_LIMIT:
