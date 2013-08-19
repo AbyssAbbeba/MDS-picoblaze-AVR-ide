@@ -52,7 +52,14 @@ void PicoBlazeProgramMemory::loadDataFile ( const DataFile * file )
 
         for ( int shift = 16; shift >= 0; shift -= 8 )
         {
-            byte = ( *file ) [ fileAddr ];
+            if ( fileAddr < fileSize )
+            {
+                byte = ( *file ) [ fileAddr ];
+            }
+            else
+            {
+                byte = -1;
+            }
 
             if ( -1 == byte )
             {

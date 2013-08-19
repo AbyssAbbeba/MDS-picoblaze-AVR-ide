@@ -24,12 +24,16 @@ bool DAsmPicoBlazeCore::disassemble ( const DataFile & source )
     unsigned int addr = 0;
 
     m_lastAddr = 0;
-    for ( unsigned int i = 0; i < source.maxSize(); i++ )
+    for ( unsigned int i = 0; i < source.maxSize(); )
     {
         unsigned int code = 0;
         for ( int shift = 16; shift >= 0; shift -= 8 )
         {
-            int byte = source[i];
+            int byte = -1;
+            if ( i < source.maxSize() )
+            {
+                byte = source [ i++ ];
+            }
 
             if ( -1 == byte )
             {
@@ -47,16 +51,16 @@ bool DAsmPicoBlazeCore::disassemble ( const DataFile & source )
             code |= ( byte << shift );
         }
 
-        if ( 0x100000 & code )
+        if ( 0 == ( 0x200000 & code ) )
         {
-            result = false;
-            m_messages.push_back ( QObject::tr("Incomplete OP code at %1.").arg(addr).toStdString() );
-        }
-        else if ( 0 == ( 0x200000 & code ) )
-        {
-            if ( false == phase1(code, addr) )
+            if ( 0x100000 & code )
             {
-                m_messages.push_back ( QObject::tr("Invalid OP code at %1.").arg(addr).toStdString() );
+                result = false;
+                m_messages.push_back ( QObject::tr("Incomplete OP code at address: %1.").arg(addr).toStdString() );
+            }
+            else if ( false == phase1(code, addr) )
+            {
+                m_messages.push_back ( QObject::tr("Invalid OP code at address: %1.").arg(addr).toStdString() );
             }
         }
 
@@ -67,21 +71,30 @@ bool DAsmPicoBlazeCore::disassemble ( const DataFile & source )
 
     addr = 0;
     m_lastAddr = 0;
-    for ( unsigned int i = 0; i < source.maxSize(); i++ )
+    for ( unsigned int i = 0; i < source.maxSize(); )
     {
         unsigned int code = 0;
         for ( int shift = 16; shift >= 0; shift -= 8 )
         {
-            int byte = source[i];
+            int byte = -1;
+            if ( i < source.maxSize() )
+            {
+                byte = source [ i++ ];
+            }
 
             if ( -1 == byte )
             {
-                byte = 0;
+                code |= 0x200000;
+                continue;
             }
             code |= ( byte << shift );
         }
 
-        phase2(code, addr);
+        if ( 0 == ( 0x200000 & code ) )
+        {
+            phase2(code, addr);
+        }
+
         addr++;
     }
 

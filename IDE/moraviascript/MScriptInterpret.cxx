@@ -22,8 +22,6 @@
 // Used for i18n only
 #include <QObject>
 
-#include <iostream> // DEBUG
-
 MScriptInterpret::~MScriptInterpret()
 {
 }

@@ -151,8 +151,8 @@ void DAsmPicoBlazeKcpsm3::phase2 ( unsigned int code,
 
         case KCPSM3_SHIFT_ROTATE:       shift_rotate(line, code);       break;
 
-        case KCPSM3_CALL:               inst_JUMP(line, code);          break;
-        case KCPSM3_JUMP:               inst_CALL(line, code);          break;
+        case KCPSM3_CALL:               inst_CALL(line, code);          break;
+        case KCPSM3_JUMP:               inst_JUMP(line, code);          break;
 
         default:                        otherOpCodes(line, code);       break;
     }

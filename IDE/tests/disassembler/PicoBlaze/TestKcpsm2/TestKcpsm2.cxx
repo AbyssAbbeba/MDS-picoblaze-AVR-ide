@@ -131,7 +131,7 @@ void TestKcpsm2::testFunction()
      */
     m_disassembler->clear();
 
-    CU_ASSERT_FATAL ( true == m_disassembler->disassemble(originalHex) );
+    bool disasmExitCode = m_disassembler->disassemble(originalHex);
 
     std::ofstream disassembledCode( m_options->m_sourceFile + "_new", std::ios_base::out | std::ios_base::trunc );
     disassembledCode << *m_disassembler;
@@ -142,7 +142,12 @@ void TestKcpsm2::testFunction()
           it != messages.cend();
           it++ )
     {
-        std::cerr << *it << std::endl;
+        std::cout << *it << std::endl;
+    }
+
+    if ( false == disasmExitCode )
+    {
+        CU_FAIL_FATAL("Disassembly failed.");
     }
 
     /*
