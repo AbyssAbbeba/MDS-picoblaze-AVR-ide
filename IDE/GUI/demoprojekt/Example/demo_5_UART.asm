@@ -26,6 +26,10 @@
         s3          REG         RXdata        ; RX data
         s4          REG         TXdata        ; TX data
         s5          REG         LED_reg       ; Leds data register
+; Declaration of some registers
+        Temp1         REG       s0
+        Temp2         REG       s1
+        Temp3         REG       s2
 ; PORT_IDs
         TX_id       PORT        0x01          ;  data register port ID
         RX_id       PORT        0x02          ;  data register port ID
@@ -123,14 +127,14 @@ wait_100ms_i:       SUB       Temp1, 1
 ;-------------------------------------------------------------------------------------
 RX_resolve          MACRO     uart_byte
 
-                    RT-IF  uart_byte == 1
+                    RT_IF  uart_byte == 1
                         REPT    8
                         RR      LED_reg
                         wait_for_100ms
                         ENDR
                             EXITM
 
-                    RT-ELSEIF      uart_byte == 2
+                    RT_ELSEIF      uart_byte == 2
                         SendChar  'I'
                         SendChar  'N'
                         SendChar  'T'

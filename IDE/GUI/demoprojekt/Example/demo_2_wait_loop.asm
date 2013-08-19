@@ -10,6 +10,11 @@
 
                     ORG       0x000
                     JUMP      Start
+; Declaration of some registers
+Temp1         REG       s0
+Temp2         REG       s1
+Temp3         REG       s2
+                    
 ; Begining of main loop
 Start:              CALL      wait_1s
                     CALL      wait_100ms
