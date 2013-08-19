@@ -8,6 +8,7 @@ declare -i options_c=0
 declare -i options_y=0
 declare -i options_l=0
 declare -i options_s=0
+declare -i options_m=0
 
 function clean() {
     cmake .
@@ -140,7 +141,7 @@ function buildAll() {
     make package
 }
 
-function build() {
+function execCMake() {
     if [ "$(uname -o)" == "Msys" ]; then
         # Build on Windows
         QT_PATH="$(for i in /c/QtSDK/Desktop/Qt/*/mingw/bin; do echo $i; break; done)"
@@ -150,8 +151,11 @@ function build() {
         # Build on a POSIX system
         cmake -DCMAKE_BUILD_TYPE=Debug . || exit 1
     fi
+}
 
+function build() {
     # Build in n separate processes where n is the number of CPU cores plus one.
+    execCMake
     which lscpu > /dev/null && make -j$(lscpu | gawk '/^CPU\(s\)/ {printf("%d", ($2+1))}') || make
 }
 
@@ -195,7 +199,7 @@ function main() {
     cd "$(dirname "${0}")"
 
     # Parse CLI options using `getopts' utility
-    while getopts ":hVcylabs" opt; do
+    while getopts ":hVcylabsm" opt; do
         optTaken=1
 
         case $opt in
@@ -207,6 +211,7 @@ function main() {
             y) options_y=1;;
             l) options_l=1;;
             s) options_s=1;;
+            m) options_m=1;;
             ?) unknownOption "$(basename "${0}")";;
         esac
     done
@@ -223,6 +228,9 @@ function main() {
     fi
     if (( ${options_l} )); then
         countLines
+    fi
+    if (( ${options_m} && !${options_b} && !${options_a} )); then
+        execCMake
     fi
     if (( ${options_a} )); then
         buildAll
