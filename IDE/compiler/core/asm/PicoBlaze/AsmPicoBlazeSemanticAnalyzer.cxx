@@ -239,7 +239,7 @@ bool AsmPicoBlazeSemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
                     else if ( CompilerBase::DSLF_ALREADY_LOADED == loaderFlag )
                     {
                         m_compilerCore->compilerMessage ( *location,
-                                                          CompilerBase::MT_ERROR,
+                                                          CompilerBase::MT_WARNING,
                                                           QObject::tr ( "Device specification code is already "
                                                                         "loaded" ).toStdString() );
                     }
