@@ -1,6 +1,11 @@
 ; Compiler test case for Assembler
 ; instruction opcodes
-
+TESTsymb9               AUTOREG
+TESTsymb13              AUTOREG
+TESTsymb10              AUTOREG
+TESTsymb11              AUTOREG
+TESTsymb13              AUTOREG
+TESTsymb12              AUTOREG
 
 Start:        
         JUMP        Z, 0x000

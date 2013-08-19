@@ -1,6 +1,7 @@
 ; Compiler test case for Assembler
 ; instruction opcodes
 
+DEVICE          KCMPS3
 
 TESTsymb1    SET        1h
 TESTsymb2    SET        0x11
@@ -45,9 +46,9 @@ Start:
         RL        TESTsymb10
         
 scratchpad_transfers:
-STORE           sX, 04
+STORE           s0, 04
 ; Write register sX to RAM location 04
-FETCH           sX, 04
+FETCH           s1, 04
 ; Read RAM location 04 into register sX
         END
 
