@@ -27,7 +27,7 @@ START:
         
         ADDCY      s1,#01h
         ADDCY      s1,#5
-        ADDCY      s1,#O5
+        ADDCY      s1,#O5h
         ADDCY      s1,#0x05
         ADDCY      s1,#0b101
         ADDCY      s1,#0b00000101
@@ -83,8 +83,8 @@ START:
         ADD         s2,s2
         ADDCY       s2,s2
         SUB         s2,s2
-        SUBCY       s2,testsymb10
-        COMPARE     s2,testsymb11
+        SUBCY       s2,s3
+        COMPARE     s2,s4
 
 END
 
