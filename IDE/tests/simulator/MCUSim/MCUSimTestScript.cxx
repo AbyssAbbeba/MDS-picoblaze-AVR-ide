@@ -22,7 +22,6 @@
 #include <cctype>
 #include <cstdlib>
 #include <cstdio>
-#include <iostream> // DEBUG
 
 MCUSimTestScript::MCUSimTestScript ( MCUSim * simulator )
                                    : m_simulator ( simulator )
@@ -135,6 +134,15 @@ inline MCUSimTestScript::Command MCUSimTestScript::processLine ( const char * li
             if ( "STEP" == tokens[0] )
             {
                 result.m_type = CT_STEP;
+                result.m_args.push_back(1);
+            }
+            break;
+
+        case 2:
+            if ( ( "STEP" == tokens[0] ) && ( true == checkNumber(tokens[1]) ) )
+            {
+                result.m_type = CT_STEP;
+                result.m_args.push_back(atoi(tokens[1].c_str()));
             }
             break;
 
@@ -258,7 +266,10 @@ inline bool MCUSimTestScript::executeCommand ( const Command & cmd,
             outFile << "          ";
             return true;
         case CT_STEP:
-            m_simulator->executeInstruction();
+            for ( int i = 0; i < cmd.m_args[0]; i++ )
+            {
+                m_simulator->executeInstruction();
+            }
             outFile << "[OK]      ";
             return true;
         case CT_PC_EQ:

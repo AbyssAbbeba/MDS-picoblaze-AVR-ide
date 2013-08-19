@@ -351,6 +351,7 @@ void TestSuiteSuc::compareLst ( const std::string & expected,
         if ( lstFileLine != lstExpFileVec[lstLineNumber] )
         {
             CU_FAIL("Result and expectation inconsistence found in code listing.");
+            break;
         }
 
         lstLineNumber++;
