@@ -73,45 +73,46 @@ VARIABLE        d10,1h
 VARIABLE        d11,FEh
 VARIABLE        d12,0x03
 
-NAMEREG         d1,546
-NAMEREG         d2,0xffff
-NAMEREG         d3,12
-NAMEREG         d4,0
-NAMEREG         d5,0b00000000
-NAMEREG         d6,0b001
-NAMEREG         d7,0b01
-NAMEREG         d8,0b00010101
-NAMEREG         d9,0b11110
-NAMEREG         d10,1h
-NAMEREG         d11,FEh
-NAMEREG         d12,0x03
+NAMEREG         1,AHOJ
+NAMEREG         2,TE
+NAMEREG         3,VY
+NAMEREG         4,TAM
+NAMEREG         5,DOLE
+NAMEREG         6,ZDRA
+NAMEREG         7,VIM
+NAMEREG         8,VAS
+NAMEREG         9,SECKY
+NAMEREG         10,HOLA
+NAMEREG         11,OLA
+NAMEREG         12,HEJ
 
 
-f1      REG     580
-f2      REG     0xFFFFFF
-f3      REG     0
-f4      REG     0b11001
-f5      REG     0b0001
-f6      REG     0b00010001
-f7      REG     0b00000001
-f8      REG     3
-f9      REG     1h
-f10     REG     11h
-f11     REG     AAh
-f12     REG     0x04
+f1      REG     1
+f2      REG     2
+f3      REG     3
+f4      REG     4
+f5      REG     5
+f6      REG     6
+f7      REG     7
+f8      REG     8
+f9      REG     9
+f10     REG     10
+f11     REG     11
+f12     REG     12
 
-g1      DATA     580
-g2      DATA     0xFFFFFF
-g3      DATA     0
-g4      DATA     0b11001
-g5      DATA     0b0001
-g6      DATA     0b00010001
-g7      DATA     0b00000001
-g8      DATA     3
-g9      DATA     1h
+g1      DATA     1
+g2      DATA     2
+g3      DATA     3
+g4      DATA     4
+g5      DATA     5
+g6      DATA     6
+g7      DATA     7
+g8      DATA     8
+g9      DATA     9
 g10     DATA     11h
-g11     DATA     AAh
+g11     DATA     Ah
 g12     DATA     0x04
+
 
 h1      CODE     580
 h2      CODE     0xFFFFFF
@@ -145,95 +146,88 @@ m3      DEFINE   A3 * A4 * A5 * A6 * A7 + A8 - A9
 M4      DEFINE   (b5 - B6)--B10
 
 ;--- CODE ------------- CODE -----------------CODE -----------------
+        ORG     0x3FF
         ORG     0x000
         JUMP    Start
-        ORG     0x3FF
 
 
 Start:
         REPT    B6
-        SUB     h9,h8                   ; kkkkkkk
-        ADD     H9,H8
+        SUB     s0,s2                  ; kkkkkkk
+        ADD     s1,s2
         ENDR
         ;-----------
         REPT    C10
-        SUB     h9,h8                   ; kkkkkkk
-        ADD     H9,H8
-        INPUT   S0,S1
+        SUB     s0,s2                  ; kkkkkkk
+        ADD     s1,s2
+        INPUT   S0,i1
         ENDR
         ;-------------
 XYZ     MACRO   S0,S1,S2,S3,S4,S5,S6,S7,S8,S9,S9
         
-            IF      S0 = S1
+            IF      S0 == S1
             EXITM
             ENDIF
         ENDM
 
 XYZ0    MACRO   S0
 
-            IF      S0 = S1
+            IF      S0 == S1
             EXITM
             ENDIF
         ENDM
 
 XYZ1     MACRO   S0,S1
 
-            IF      S0 = S1
+            IF      S0 == S1
             EXITM
             ENDIF
         ENDM
        
 XYZ2     MACRO   S0,S1,S2
 
-            IF      S0 = S1
+            IF      S0 == S1
             EXITM
             ENDIF
         ENDM
 
 XYZ3     MACRO   S0,S1,S2,S3
 
-            IF      S0 = S1
+            IF      S0 == S1
             EXITM
             ENDIF
         ENDM
 XYZ4     MACRO   S0,S1,S2,S3,S4
 
-            IF      S0 = S1
+            IF      S0 == S1
             EXITM
             ENDIF
         ENDM
 XYZ5     MACRO   S0,S1,S2,S3,S4,S5
 
-            IF      S0 = S1
+            IF      S0 == S1
             EXITM
             ENDIF
         ENDM
 XYZ6     MACRO   S0,S1,S2,S3,S4,S5,S6
 
-            IF      S0 = S1
+            IF      S0 == S1
             EXITM
             ENDIF
         ENDM
 XYZ7     MACRO   S0,S1,S2,S3,S4,S5,S6,S7
 
-            IF      S0 = S1
+            IF      S0 == S1
             EXITM
             ENDIF
         ENDM
 XYZ8     MACRO   S0,S1,S2,S3,S4,S5,S6,S7,S8
 
-            IF      S0 = S1
+            IF      S0 == S1
             EXITM
             ENDIF
         ENDM
         
-        WHILE   M1 - M2 + M3 + M4
-        LOAD    I10,I10
-        LOAD    I10,I10
-        LOAD    I10,I10
-        LOAD    I10,I10
-        LOAD    I10,I10
-        ENDW
 
         END 
         5555BALBALBALABLABALA
