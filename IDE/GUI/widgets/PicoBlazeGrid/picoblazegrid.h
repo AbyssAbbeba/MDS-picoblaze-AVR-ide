@@ -87,6 +87,8 @@ class PicoBlazeGrid : public QWidget, public MCUSimObserver
 
         QPushButton *btnIntr;
         QPushButton *btnPorts;
+
+        MCUSimCPU* m_cpu;
         
 
     //signals:

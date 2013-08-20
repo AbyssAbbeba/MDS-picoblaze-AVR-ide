@@ -69,13 +69,51 @@ void RegistersWidget::handleEvent(int subsysId, int eventId, int locationOrReaso
             m_memory->directRead(locationOrReason, value);
             if ( 5 < idx )
             {
-                this->item((idx+1)%6, 4)->setText(QString::number(value, 10));
-                this->item((idx+1)%6, 5)->setText(QString::number(value, 16));
+                if (value > 99)
+                {
+                    this->item((idx+1)%6, 4)->setText(QString::number(value, 10));
+                }
+                else if (value > 9)
+                {
+                    this->item((idx+1)%6, 4)->setText("0" + QString::number(value, 10));
+                }
+                else
+                {
+                    this->item((idx+1)%6, 4)->setText("00" + QString::number(value, 10));
+                }
+                
+                if (value > 15)
+                {
+                    this->item((idx+1)%6, 5)->setText(QString::number(value, 16).toUpper());
+                }
+                else
+                {
+                    this->item((idx+1)%6, 5)->setText("0" + QString::number(value, 16).toUpper());
+                }
             }
             else
             {
-                this->item((idx+1)%6, 1)->setText(QString::number(value, 10));
-                this->item((idx+1)%6, 2)->setText(QString::number(value, 16));
+                if (value > 99)
+                {
+                    this->item((idx+1)%6, 1)->setText(QString::number(value, 10));
+                }
+                else if (value > 9)
+                {
+                    this->item((idx+1)%6, 1)->setText("0" + QString::number(value, 10));
+                }
+                else
+                {
+                    this->item((idx+1)%6, 1)->setText("00" + QString::number(value, 10));
+                }
+
+                if (value > 15)
+                {
+                    this->item((idx+1)%6, 2)->setText(QString::number(value, 16).toUpper());
+                }
+                else
+                {
+                    this->item((idx+1)%6, 2)->setText("0" + QString::number(value, 16).toUpper());
+                }
             }
             qDebug() << "RegistersWidget: event: mem cell changed to" << value;
             this->update = false;
@@ -135,11 +173,11 @@ void RegistersWidget::deviceReset()
         reg1->setFlags(Qt::NoItemFlags);
         this->setItem(i, 0, reg1);
 
-        QTableWidgetItem *dec1 = new QTableWidgetItem(QString::number(0, 10));
+        QTableWidgetItem *dec1 = new QTableWidgetItem("00" + QString::number(0, 10));
         dec1->setFlags(Qt::ItemIsEditable|Qt::ItemIsEnabled);
         this->setItem(i, 1, dec1);
 
-        QTableWidgetItem *hex1 = new QTableWidgetItem(QString::number(0, 16));
+        QTableWidgetItem *hex1 = new QTableWidgetItem("0" + QString::number(0, 16));
         hex1->setFlags(Qt::ItemIsEditable|Qt::ItemIsEnabled);
         this->setItem(i, 2, hex1);
         
@@ -147,11 +185,11 @@ void RegistersWidget::deviceReset()
         reg2->setFlags(Qt::NoItemFlags);
         this->setItem(i, 3, reg2);
 
-        QTableWidgetItem *dec2 = new QTableWidgetItem(QString::number(0, 10));
+        QTableWidgetItem *dec2 = new QTableWidgetItem("00" + QString::number(0, 10));
         dec2->setFlags(Qt::ItemIsEditable|Qt::ItemIsEnabled);
         this->setItem(i, 4, dec2);
 
-        QTableWidgetItem *hex2 = new QTableWidgetItem(QString::number(0, 16));
+        QTableWidgetItem *hex2 = new QTableWidgetItem("0" + QString::number(0, 16));
         hex2->setFlags(Qt::ItemIsEditable|Qt::ItemIsEnabled);
         this->setItem(i, 5, hex2);
 
