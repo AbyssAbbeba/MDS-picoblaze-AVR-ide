@@ -11,7 +11,6 @@ Start:
         JUMP        NC,0x000
     
 
-        RL        TESTsymb10
     ; Others
         CALl      Podprog
         CALL      Z,Podprog

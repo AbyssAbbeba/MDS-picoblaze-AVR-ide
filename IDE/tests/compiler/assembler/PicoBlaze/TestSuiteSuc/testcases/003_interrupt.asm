@@ -4,7 +4,6 @@ TESTsymb9               AUTOREG
 TESTsymb13              AUTOREG
 TESTsymb10              AUTOREG
 TESTsymb11              AUTOREG
-TESTsymb13              AUTOREG
 TESTsymb12              AUTOREG
 
 Start:        
@@ -20,9 +19,9 @@ Start:
         CALL      C,Podprog
         CALL      NC,Podprog
 
-        STORE     TESTsymb9,TESTsymb13
+        STORE     TESTsymb9,@TESTsymb13
         STORE     TESTsymb10,@10
-        FETCH     TESTsymb11,TESTsymb13
+        FETCH     TESTsymb11,@TESTsymb13
         FETCH     TESTsymb12,@5
 
 Podprog:
