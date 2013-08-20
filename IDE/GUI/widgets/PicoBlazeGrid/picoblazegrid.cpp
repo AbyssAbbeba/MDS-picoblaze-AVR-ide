@@ -119,6 +119,16 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
     : QWidget(parent)
 {
     qDebug() << "PicoBlazeGrid: PicoBlazeGrid()";
+
+    std::vector<int> mask;
+    mask.push_back(MCUSimCPU::EVENT_CPU_PC_CHANGED);
+    controlUnit->registerObserver(this, MCUSimSubsys::ID_CPU, mask);
+
+    if ( NULL == controlUnit )
+    {
+        qDebug() << "PicoBlazeGrid: controlUnit is NULL";
+    }
+    
     this->memRegs = new RegistersWidget(this, controlUnit, MCUSimSubsys::SubsysId::ID_MEM_REGISTERS);
     this->memRegs->move(10, 25);
     //this->memRegs->fixHeight();
@@ -202,8 +212,9 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
     //this->leClock->setText(
     //    (dynamic_cast<MCUSim::Clock*>controlUnit->getSimSubsys(MCUSim::Subsys::SubsysId::ID_CLK_CONTROL))->
     //);
-
     connect(this->btnPorts, SIGNAL(clicked()), this, SLOT(switchPorts()));
+
+    deviceChanged();
     
     qDebug() << "PicoBlazeGrid: return PicoBlazeGrid()";
 }
@@ -232,4 +243,52 @@ void PicoBlazeGrid::switchPorts()
         this->memPorts->switchPorts();
         this->btnPorts->setText("Output");
     }
+}
+
+
+void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason, int detail)
+{
+    if ( MCUSimSubsys::ID_CPU != subsysId )
+    {
+        qDebug("Invalid event received, event ignored.");
+        return;
+    }
+
+    switch ( eventId )
+    {
+        case MCUSimCPU::EVENT_CPU_PC_CHANGED:
+        {
+            
+            qDebug() << "PicoBlazeGrid: detail" << detail;
+
+            this->lePC->setText(QString::number(dynamic_cast<MCUSimCPU*>(m_simControlUnit->getSimSubsys(MCUSimSubsys::ID_CPU))->getProgramCounter()));
+//          m_hexEdit->setHighlighted(idx, true);
+
+            break;
+        }
+        default:
+        {
+            qDebug("Invalid event received, event ignored.");
+            break;
+        }
+    }
+}
+
+void PicoBlazeGrid::deviceChanged()
+{
+    deviceReset();
+}
+
+void PicoBlazeGrid::deviceReset()
+{
+    qDebug() << "PicoBlazeGrid: deviceReset()";
+    
+    this->lePC->setText(QString::number(dynamic_cast<MCUSimCPU*>(m_simControlUnit->getSimSubsys(MCUSimSubsys::ID_CPU))->getProgramCounter()));
+    
+    qDebug() << "PicoBlazeGrid: return deviceReset()";
+}
+
+void PicoBlazeGrid::setReadOnly(bool readOnly)
+{
+    
 }

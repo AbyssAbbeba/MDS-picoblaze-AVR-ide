@@ -46,6 +46,8 @@ link_directories(
     "${CMAKE_SOURCE_DIR}/GUI/widgets/StackWidget/"
     "${CMAKE_SOURCE_DIR}/GUI/widgets/RegistersWidget/"
     "${CMAKE_SOURCE_DIR}/GUI/widgets/PortHexEdit/"
+    "${CMAKE_CURRENT_BINARY_DIR}/../../../simulators/SimControl/"
+    "${CMAKE_CURRENT_BINARY_DIR}/../../../simulators/MCUSim/McuSimCfgMgr/"
 	)
 
 
@@ -89,7 +91,7 @@ add_library(${PROJECT_NAME} SHARED
 	${SAMPLE_MOC_SRCS} ${SAMPLE_SRCS})
 
 
-target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} SimWidgets StackWidget RegistersWidget PortHexEdit)
+target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} SimControl McuSimCfgMgr SimWidgets StackWidget RegistersWidget PortHexEdit)
 
 
 # ------------------------------------------------------------------------------
