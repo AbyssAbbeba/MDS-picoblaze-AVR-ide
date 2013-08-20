@@ -1,3 +1,5 @@
+DEVICE KCPSM3
+
 
 bSDA_In         EQU    _PIGGY + _I2C0          ; gets SDA level in Bit0
 bSDA_0          EQU    _PIGGY + _I2C0          ; Pulls SDA to 0

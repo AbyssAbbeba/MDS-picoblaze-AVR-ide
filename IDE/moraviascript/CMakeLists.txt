@@ -35,7 +35,8 @@ FLEX_TARGET ( moraviaScriptLexer moraviaScriptLexer.l moraviaScriptLexer.cxx )
 
 # List of additional files that will be cleaned as a part of the "make clean" stage.
 set_directory_properties ( PROPERTIES
-                           ADDITIONAL_MAKE_CLEAN_FILES "moraviaScriptParser.h;moraviaScriptParser.output;moraviaScriptLexer.h")
+                           ADDITIONAL_MAKE_CLEAN_FILES
+                           "moraviaScriptParser.h;moraviaScriptParser.output;moraviaScriptLexer.h" )
 
 # ------------------------------------------------------------------------------
 # COMPILATION OPTIONS
