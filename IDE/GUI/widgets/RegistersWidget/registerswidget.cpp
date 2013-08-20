@@ -91,6 +91,8 @@ void RegistersWidget::handleEvent(int subsysId, int eventId, int locationOrReaso
                 {
                     this->item(idx-6, 5)->setText("0" + QString::number(value, 16).toUpper());
                 }
+                this->item(idx-6, 4)->setBackground(Qt::yellow);
+                this->item(idx-6, 5)->setBackground(Qt::yellow);
             }
             else
             {
@@ -115,6 +117,8 @@ void RegistersWidget::handleEvent(int subsysId, int eventId, int locationOrReaso
                 {
                     this->item(idx, 2)->setText("0" + QString::number(value, 16).toUpper());
                 }
+                this->item(idx, 1)->setBackground(Qt::yellow);
+                this->item(idx, 2)->setBackground(Qt::yellow);
             }
             qDebug() << "RegistersWidget: event: mem cell changed to" << value;
             this->update = false;
@@ -176,10 +180,12 @@ void RegistersWidget::deviceReset()
 
         QTableWidgetItem *dec1 = new QTableWidgetItem("00" + QString::number(0, 10));
         dec1->setFlags(Qt::ItemIsEditable|Qt::ItemIsEnabled);
+        dec1->setBackground(this->palette().base().color());
         this->setItem(i, 1, dec1);
 
         QTableWidgetItem *hex1 = new QTableWidgetItem("0" + QString::number(0, 16));
         hex1->setFlags(Qt::ItemIsEditable|Qt::ItemIsEnabled);
+        hex1->setBackground(this->palette().base().color());
         this->setItem(i, 2, hex1);
         
         QTableWidgetItem *reg2 = new QTableWidgetItem("S" + QString::number(i + m_size/2, 16).toUpper());
@@ -188,10 +194,12 @@ void RegistersWidget::deviceReset()
 
         QTableWidgetItem *dec2 = new QTableWidgetItem("00" + QString::number(0, 10));
         dec2->setFlags(Qt::ItemIsEditable|Qt::ItemIsEnabled);
+        dec2->setBackground(this->palette().base().color());
         this->setItem(i, 4, dec2);
 
         QTableWidgetItem *hex2 = new QTableWidgetItem("0" + QString::number(0, 16));
         hex2->setFlags(Qt::ItemIsEditable|Qt::ItemIsEnabled);
+        hex2->setBackground(this->palette().base().color());
         this->setItem(i, 5, hex2);
 
         this->setRowHeight(i, 17);
