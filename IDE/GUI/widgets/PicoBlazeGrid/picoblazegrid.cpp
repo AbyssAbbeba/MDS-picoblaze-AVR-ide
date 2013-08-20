@@ -261,16 +261,19 @@ void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason,
             int value = m_cpu->getProgramCounter();
             if (value > 0xFF)
             {
-                this->lePC->setText(QString::number(value, 16).toUpper());
+                this->lePC->setText(QString::number(value, 16).toUpper() + "h");
             }
             else if (value > 0xF)
             {
-                this->lePC->setText("0" + QString::number(value, 16).toUpper());
+                this->lePC->setText("0" + QString::number(value, 16).toUpper() + "h");
             }
             else
             {
-                this->lePC->setText("00" + QString::number(value, 16).toUpper());
+                this->lePC->setText("00" + QString::number(value, 16).toUpper() + "h");
             }
+            QPalette lePalette = this->lePC->palette();
+            lePalette.setColor(lePC->backgroundRole(), QColor(Qt::yellow));
+            lePC->setPalette(lePalette);
             break;
         }
         default:
@@ -293,16 +296,20 @@ void PicoBlazeGrid::deviceReset()
     int value = m_cpu->getProgramCounter();
     if (value > 0xFF)
     {
-        this->lePC->setText(QString::number(value, 16).toUpper());
+        this->lePC->setText(QString::number(value, 16).toUpper() + "h");
     }
     else if (value > 0xF)
     {
-        this->lePC->setText("0" + QString::number(value, 16).toUpper());
+        this->lePC->setText("0" + QString::number(value, 16).toUpper() + "h");
     }
     else
     {
-        this->lePC->setText("00" + QString::number(value, 16).toUpper());
+        this->lePC->setText("00" + QString::number(value, 16).toUpper() + "h");
     }
+
+    QPalette lePalette = this->lePC->palette();
+    lePalette.setColor(lePC->backgroundRole(), lePalette.base().color());
+    lePC->setPalette(lePalette);
     
     qDebug() << "PicoBlazeGrid: return deviceReset()";
 }
