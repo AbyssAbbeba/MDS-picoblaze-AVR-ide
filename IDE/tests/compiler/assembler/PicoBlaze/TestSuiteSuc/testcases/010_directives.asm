@@ -1,8 +1,6 @@
+DEVICE  KCPSM3
 
 
-s0      AUTOREG
-s1      AUTOREG
-s2      REG     0x01
 s3      EQU     0x06
 B       SET     6
 
