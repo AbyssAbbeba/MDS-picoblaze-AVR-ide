@@ -14,11 +14,13 @@
 ;  temp register: i
 ;========================================================
 
-Start:
+device kcpsm3
+
+
 
 mult_soft:
    load s5, 00              ;clear s5
-   load i, 08                 ;initialize loop index
+   load s6, 08                 ;initialize loop index
 mult_loop:
    sr0  s4                     ;shift lsb to carry
    jump nc, shift_prod       ;lsb is 0
@@ -28,7 +30,7 @@ shift_prod:
                                   ;carry to MSB, LSB to carry
    sra s6                     ;shift lower byte right,
                                  ;lsb of s5 to MSB of s6
-   sub i, 01                ;dec loop index
+   sub s6, 01                ;dec loop index
    jump nz, mult_loop       ;repeat until i=0
    return
 
@@ -70,7 +72,7 @@ LOAD s1, 75 ;ASCII "u".
 CALL xmit
 
 ;Send character.
-LOAD s1, 6C ;ASCII "l".
+LOAD s1, 6Ch ;ASCII "l".
 CALL xmit
 
 ;Send character.
