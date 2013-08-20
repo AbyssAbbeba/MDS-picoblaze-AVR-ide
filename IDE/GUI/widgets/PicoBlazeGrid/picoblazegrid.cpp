@@ -258,12 +258,7 @@ void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason,
     {
         case MCUSimCPU::EVENT_CPU_PC_CHANGED:
         {
-            
-            qDebug() << "PicoBlazeGrid: detail" << detail;
-
-            this->lePC->setText(QString::number(dynamic_cast<MCUSimCPU*>(m_simControlUnit->getSimSubsys(MCUSimSubsys::ID_CPU))->getProgramCounter()));
-//          m_hexEdit->setHighlighted(idx, true);
-
+            this->lePC->setText(QString::number(m_cpu->getProgramCounter(), 16).toUpper());
             break;
         }
         default:
@@ -276,6 +271,7 @@ void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason,
 
 void PicoBlazeGrid::deviceChanged()
 {
+    m_cpu = dynamic_cast<MCUSimCPU*>(m_simControlUnit->getSimSubsys(MCUSimSubsys::ID_CPU));
     deviceReset();
 }
 
@@ -283,7 +279,7 @@ void PicoBlazeGrid::deviceReset()
 {
     qDebug() << "PicoBlazeGrid: deviceReset()";
     
-    this->lePC->setText(QString::number(dynamic_cast<MCUSimCPU*>(m_simControlUnit->getSimSubsys(MCUSimSubsys::ID_CPU))->getProgramCounter()));
+    this->lePC->setText(QString::number(m_cpu->getProgramCounter(), 16).toUpper());
     
     qDebug() << "PicoBlazeGrid: return deviceReset()";
 }
