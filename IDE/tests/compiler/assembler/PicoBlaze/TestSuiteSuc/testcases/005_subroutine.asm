@@ -2,7 +2,7 @@
 ; instruction opcodes
 
 
-
+DEVICE          kcpsm3
 
 Start:        
        
@@ -42,24 +42,11 @@ ADDCY           a_msb, b_msb
 RETURN
 
 
-SUB16:
-NAMEREG         s0, a_lsb
-; rename register s0 as “a_lsb”
-NAMEREG         s1, a_msb
-; rename register s1 as “a_msb”
-NAMEREG         s2, b_lsb
-; rename register s2 as “b_lsb”
-NAMEREG         s3, b_msb
-        ; rename register s3 as “b_lsb”
 
-        
-        SUB             a_lsb, b_lsb
-        ; subtract LSBs, keep result in a_lsb
-        SUBCY           a_msb, b_msb
-        ; subtract MSBs, keep result in a_msb
-        RETURN
 
 inc_16:
+                 lo_byte     REG   s8
+                hi_byte     REG   s9
         ; increment low byte
         ADD             lo_byte,01
         ; increment high byte only if CARRY bit set when incrementing low byte
@@ -68,16 +55,16 @@ inc_16:
 
 Negate:
         ; invert all bits in the register performing a one’s complement
-        XOR             sX,FF
+        XOR             sX,#FFh
         ; add one to sX
-        ADD             sX,01
+        ADD             sX,#01
         RETURN
 
 
 
-Negate:
-NAMEREG         sY, value
-NAMEREG         sX, complement
+
+NAMEREG         sF, value
+NAMEREG         sE, complement
 ; Clear ‘complement’ to zero
 LOAD            complement, 00
 ; subtract value from 0 to create two’s complement
@@ -88,7 +75,7 @@ RETURN
 mult_8x8:
 NAMEREG         s0, multiplicand
 ;
-preserved
+;preserved
 NAMEREG         s1, multiplier
 ; preserved
 NAMEREG         s2, bit_mask
@@ -138,16 +125,7 @@ JUMP            NZ, mult_loop
 ; ===================================================
 ; Connects to embedded 18x18 Hardware Multiplier via ports
 ;
-mult_8x8io:
-NAMEREG         s0, multiplicand
-;
-;preserved
-NAMEREG         s1, multiplier
-;
-preserved
-NAMEREG         s3, result_msb
-; most-significant byte (MSB) of result, modified
-NAMEREG         s4, result_lsb
+
 ;
 ;least-significant byte (LSB) of result, modified
 ;
@@ -180,7 +158,7 @@ NAMEREG          s2, quotient
 ; preserved
 NAMEREG          s3, remainder
 ; modified
-NAMEREG          s4, bit_mask
+
 ; used to test bits in dividend,
 ; one-hot encoded, modified
 ;

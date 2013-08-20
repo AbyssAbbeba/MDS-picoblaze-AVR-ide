@@ -8,69 +8,70 @@
 ; sD: address of the command register
 ; sC: address of the SPI control/status register
 ; -------------------------------------------------------------------------------
+DEVICE          KCPSM3
 
 bMOSI           EQU    0b00000001
 bMISO           EQU    0b10000000
 bSCLK           EQU    0b00000010
 
 ESPI24:
-                MOVE    sD, _PIGGY + _CMD       ; address of the command register, contains the CE signals
-                MOVE    sC, _PIGGY + _SPI       ; address of the SPI register, contains MOSI, MISO, SCLK signals
+                MOVE    sD, PIGGY + CMD       ; address of the command register, contains the CE signals
+                MOVE    sC, PIGGY + SPI       ; address of the SPI register, contains MOSI, MISO, SCLK signals
 SPI24:
-                IN      sF, sD                  ; switch on the appropriate CE
-                XOR     sE, $FF
+                IN      sF, #sD                  ; switch on the appropriate CE
+                XOR     sE, #FFh
                 AND     sF, sE
-                OUT     sF, sD
+                OUT     sF, #sD
 
                 MOVE    s0, s1
-                CALL    _SPI8
+                CALL    SPI8
                 MOVE    s0, s2
-                CALL    _SPI8
+                CALL    SPI8
                 MOVE    s0, s3
-                CALL    _SPI8
+                CALL    SPI8
 
-                IN      sF, sD
-                XOR     sE, $FF
+                IN      sF, #sD
+                XOR     sE, #FFh
                 OR      sF, sE
-                OUT     sF, sD                  ; switch off the CE
+                OUT     sF, #sD                  ; switch off the CE
 
                 RET
 
 ESPI16:
-                MOVE    sD, _PIGGY + _CMD       ; address of the command register, contains the CE signals
-                MOVE    sC, _PIGGY + _SPI       ; address of the SPI register, contains MOSI, MISO, SCLK signals
+                MOVE    sD, PIGGY + CMD       ; address of the command register, contains the CE signals
+                MOVE    sC, PIGGY + SPI       ; address of the SPI register, contains MOSI, MISO, SCLK signals
 SPI16:
-                IN      sF, sD                  ; switch on the appropriate CE
-                XOR     sE, $FF
+                IN      sF, #sD                  ; switch on the appropriate CE
+                XOR     sE, #FFh
                 AND     sF, sE
-                OUT     sF, sD
+                OUT     sF, #sD
 
                 MOVE    s0, s1
-                CALL    _SPI8
+                CALL    SPI8
                 MOVE    s0, s2
-                CALL    _SPI8
+                CALL    SPI8
 
-                IN      sF, sD
-                XOR     sE, $FF
+                IN      sF, #sD
+                XOR     sE, #FFh
                 OR      sF, sE
-                OUT     sF, sD                  ; switch off the CE
+                OUT     sF, #sD                  ; switch off the CE
 
                 RET
 
 ESPI8:
-                MOVE    sD, _PIGGY + _CMD       ; address of the command register, contains the CE signals
-                MOVE    sC, _PIGGY + _SPI       ; address of the SPI register, contains MOSI, MISO, SCLK signals
+                MOVE    sD, PIGGY + CMD       ; address of the command register, contains the CE signals
+                MOVE    sC, PIGGY + SPI       ; address of the SPI register, contains MOSI, MISO, SCLK signals
 SPI8:
                 IN      sF, sD                  ; switch on the appropriate CE
-                XOR     sE, $FF
+                XOR     sE, #FFh
                 AND     sF, sE
                 OUT     sF, sD
 
                 MOVE    s0, s1
-                CALL    _SPI8
+                CALL    SPI8
 
                 IN      sF, sD
-                XOR     sE, $FF
+                XOR     sE, #FFh
                 OR      sF, sE
                 OUT     sF, sD                  ; switch off the CE
 
@@ -82,25 +83,24 @@ SPI8:
 ; uses sF
 ; -------------------------------------------------------------------------------
 
-_SPI8:                                          ; shift 8 bits
-                CALL    _SPI4
+SPI8_:                                          ; shift 8 bits
+                CALL    SPI4_
 
-_SPI4:                                          ; shift 4 bits
-                CALL    _SPI2
+SPI4_:                                          ; shift 4 bits
+                CALL    SPI2_
 
-_SPI2:                                          ; shift 2 bits
-                CALL    _SPI1
+SPI2_:                                          ; shift 2 bits
+                CALL    SPI1_
 
 ; -------------------------------------------------------------------------------
 ; send one bit w/clock
 ; -------------------------------------------------------------------------------
 
-_SPI1:                                          ; shift 1 bit
+SPI1_:                                          ; shift 1 bit
                 IN      sF, sC
                 AND     sF, ~ bMOSI             ; clear MOSI bit
 
                 SL0     s0                      ; check if upper bit set
-                SKIP    NC
                 OR      sF, bMOSI               ; set MOSI bit
 
                 OUT     sF, sC                  ; update MOSI signal
@@ -112,7 +112,7 @@ _SPI1:                                          ; shift 1 bit
                 IN      sF, sC
                 TEST    sF, bMISO               ; test MISO signal
                 RET     Z
-                OR      s0, 1                   ; reflect it in s0
+                OR      s0, #1                   ; reflect it in s0
                 RET
 
 ; -----------SPI Subroutines end-------------------------------------------------

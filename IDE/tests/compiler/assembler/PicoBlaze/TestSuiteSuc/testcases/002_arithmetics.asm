@@ -13,7 +13,7 @@ START:
      ; Arithmetics
         ADD        s1,#01h
         ADD        s1,#5
-        ADD        s1,#O5
+        ADD        s1,#05h
         ADD        s1,#0x05
         ADD        s1,#0b101
         ADD        s1,#0b00000101
@@ -27,7 +27,7 @@ START:
         
         ADDCY      s1,#01h
         ADDCY      s1,#5
-        ADDCY      s1,#O5h
+        ADDCY      s1,#05h
         ADDCY      s1,#0x05
         ADDCY      s1,#0b101
         ADDCY      s1,#0b00000101
