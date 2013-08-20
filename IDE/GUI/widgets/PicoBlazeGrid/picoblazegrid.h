@@ -28,6 +28,7 @@
 #include <QPushButton>
 #include "../../../simulators/MCUSim/MCUSim.h"
 #include "../../../simulators/SimControl/MCUSimControl.h"
+#include "../../../simulators/SimControl/MCUSimObserver.h"
 #include "../StackWidget/stackwidget.h"
 #include "../RegistersWidget/registerswidget.h"
 #include "../PortHexEdit/porthexedit.h"
@@ -40,7 +41,7 @@ class MCUSimControl;
  * @ingroup GUI
  * @class PicoBlazeGrid
  */
-class PicoBlazeGrid : public QWidget
+class PicoBlazeGrid : public QWidget, public MCUSimObserver
 {
     Q_OBJECT
     public:
@@ -49,6 +50,11 @@ class PicoBlazeGrid : public QWidget
         QWidget* getParent();
         //void fixHeight();
         void setProjectPath(QString prjPath);
+
+        void handleEvent(int subsysId, int eventId, int locationOrReason, int detail);
+        void deviceChanged();
+        void deviceReset();
+        void setReadOnly(bool readOnly);
         
     private:
         MCUSimControl *controlUnit;
