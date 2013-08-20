@@ -424,7 +424,7 @@ wait_1s_i:          SUB       Temp1, 1
                     SUB       Temp2, 1
                     JUMP      NZ, wait_1s_i
                     SUB       Temp3, 1
-                    JUMP      NZ, wait_1s_i
+                    JUMP      NZ, wait_1s_ihbb
                     ENDM; Waiting loops
 ;==============================================================================;
 wait_for_1s         MACRO
@@ -434,10 +434,10 @@ wait_1s:            LOAD      Temp1, #250          ; Load Temp1 register
 wait_1s_i:          SUB       Temp1, 1
                     JUMP      NZ, wait_1s_i
                     SUB       Temp2, 1
-                    JUMP      NZ, wait_1s_i
+                    JUMP      NZ, wait_1s_ib
                     SUB       Temp3, 1
-                    JUMP      NZ, wait_1s_i
-                    ENDM; Waiting loops
+    b                JUMP      NZ, wait_1s_i
+    b                ENDM; Waiting loops
 ;==============================================================================;
 wait_for_1s         MACRO
 wait_1s:            LOAD      Temp1, #250          ; Load Temp1 register
@@ -445,7 +445,7 @@ wait_1s:            LOAD      Temp1, #250          ; Load Temp1 register
                     LOAD      Temp3, #200          ; Load Temp3 register
 wait_1s_i:          SUB       Temp1, 1
                     JUMP      NZ, wait_1s_i
-                    SUB       Temp2, 1
+      b              SUB       Temp2, 1
                     JUMP      NZ, wait_1s_i
                     SUB       Temp3, 1
                     JUMP      NZ, wait_1s_i
@@ -453,13 +453,13 @@ wait_1s_i:          SUB       Temp1, 1
 ;==============================================================================;
 wait_for_1s         MACRO
 wait_1s:            LOAD      Temp1, #250          ; Load Temp1 register
-                    LOAD      Temp2, #249          ; Load Temp2 register
+                    LOAD      Temp2, #249  b        ; Load Temp2 register
                     LOAD      Temp3, #200          ; Load Temp3 register
 wait_1s_i:          SUB       Temp1, 1
                     JUMP      NZ, wait_1s_i
-                    SUB       Temp2, 1
+                    SUB       Temp2, 1bb
                     JUMP      NZ, wait_1s_i
-                    SUB       Temp3, 1
+                    SUB       Temp3, 1b
                     JUMP      NZ, wait_1s_i
                     ENDM; Waiting loops
 ;==============================================================================;
