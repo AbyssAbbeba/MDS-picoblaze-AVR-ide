@@ -67,52 +67,53 @@ void RegistersWidget::handleEvent(int subsysId, int eventId, int locationOrReaso
             this->update = true;
             uint value;
             m_memory->directRead(locationOrReason, value);
+            qDebug() << "RegistersWidget: location" << locationOrReason << idx;
             if ( 5 < idx )
             {
                 if (value > 99)
                 {
-                    this->item((idx+1)%6, 4)->setText(QString::number(value, 10));
+                    this->item(idx-6, 4)->setText(QString::number(value, 10));
                 }
                 else if (value > 9)
                 {
-                    this->item((idx+1)%6, 4)->setText("0" + QString::number(value, 10));
+                    this->item(idx-6, 4)->setText("0" + QString::number(value, 10));
                 }
                 else
                 {
-                    this->item((idx+1)%6, 4)->setText("00" + QString::number(value, 10));
+                    this->item(idx-6, 4)->setText("00" + QString::number(value, 10));
                 }
                 
                 if (value > 15)
                 {
-                    this->item((idx+1)%6, 5)->setText(QString::number(value, 16).toUpper());
+                    this->item(idx-6, 5)->setText(QString::number(value, 16).toUpper());
                 }
                 else
                 {
-                    this->item((idx+1)%6, 5)->setText("0" + QString::number(value, 16).toUpper());
+                    this->item(idx-6, 5)->setText("0" + QString::number(value, 16).toUpper());
                 }
             }
             else
             {
                 if (value > 99)
                 {
-                    this->item((idx+1)%6, 1)->setText(QString::number(value, 10));
+                    this->item(idx, 1)->setText(QString::number(value, 10));
                 }
                 else if (value > 9)
                 {
-                    this->item((idx+1)%6, 1)->setText("0" + QString::number(value, 10));
+                    this->item(idx, 1)->setText("0" + QString::number(value, 10));
                 }
                 else
                 {
-                    this->item((idx+1)%6, 1)->setText("00" + QString::number(value, 10));
+                    this->item(idx, 1)->setText("00" + QString::number(value, 10));
                 }
 
                 if (value > 15)
                 {
-                    this->item((idx+1)%6, 2)->setText(QString::number(value, 16).toUpper());
+                    this->item(idx, 2)->setText(QString::number(value, 16).toUpper());
                 }
                 else
                 {
-                    this->item((idx+1)%6, 2)->setText("0" + QString::number(value, 16).toUpper());
+                    this->item(idx, 2)->setText("0" + QString::number(value, 16).toUpper());
                 }
             }
             qDebug() << "RegistersWidget: event: mem cell changed to" << value;
@@ -221,13 +222,32 @@ void RegistersWidget::updateValue(int row, int column)
             }
             else if ( 0 > value )
             {
-                this->item(row, column-1)->setText(QString::number(0, 10));
-                this->item(row, column)->setText(QString::number(0, 16).toUpper());
+                this->item(row, column-1)->setText("00" + QString::number(0, 10));
+                this->item(row, column)->setText("0" + QString::number(0, 16).toUpper());
             }
             else
             {
-                this->item(row, column-1)->setText(QString::number(value, 10));
-                this->item(row, column)->setText(QString::number(value, 16).toUpper());
+                if (value > 100)
+                {
+                    this->item(row, column-1)->setText(QString::number(value, 10));
+                }
+                else if (value > 10)
+                {
+                    this->item(row, column-1)->setText("0" + QString::number(value, 10));
+                }
+                else
+                {
+                    this->item(row, column-1)->setText("00" + QString::number(value, 10));
+                }
+
+                if (value > 0xF)
+                {
+                    this->item(row, column)->setText(QString::number(value, 16).toUpper());
+                }
+                else
+                {
+                    this->item(row, column)->setText("0" + QString::number(value, 16).toUpper());
+                }
             }
         }
         else
@@ -241,12 +261,32 @@ void RegistersWidget::updateValue(int row, int column)
             }
             else if ( 0 > value )
             {
-                this->item(row, column)->setText(QString::number(0, 10));
-                this->item(row, column+1)->setText(QString::number(0, 16).toUpper());
+                this->item(row, column)->setText("00" + QString::number(0, 10));
+                this->item(row, column+1)->setText("0" + QString::number(0, 16).toUpper());
             }
             else
             {
-                this->item(row, column+1)->setText(QString::number(value, 16).toUpper());
+                if (value > 100)
+                {
+                    this->item(row, column)->setText(QString::number(value, 10));
+                }
+                else if (value > 10)
+                {
+                    this->item(row, column)->setText("0" + QString::number(value, 10));
+                }
+                else
+                {
+                    this->item(row, column)->setText("00" + QString::number(value, 10));
+                }
+
+                if (value > 0xF)
+                {
+                    this->item(row, column+1)->setText(QString::number(value, 16).toUpper());
+                }
+                else
+                {
+                    this->item(row, column+1)->setText("0" + QString::number(value, 16).toUpper());
+                }
             }
         }
         this->update = false;

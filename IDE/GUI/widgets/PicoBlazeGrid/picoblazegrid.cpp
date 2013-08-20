@@ -258,7 +258,19 @@ void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason,
     {
         case MCUSimCPU::EVENT_CPU_PC_CHANGED:
         {
-            this->lePC->setText(QString::number(m_cpu->getProgramCounter(), 16).toUpper());
+            int value = m_cpu->getProgramCounter();
+            if (value > 0xFF)
+            {
+                this->lePC->setText(QString::number(value, 16).toUpper());
+            }
+            else if (value > 0xF)
+            {
+                this->lePC->setText("0" + QString::number(value, 16).toUpper());
+            }
+            else
+            {
+                this->lePC->setText("00" + QString::number(value, 16).toUpper());
+            }
             break;
         }
         default:
@@ -278,8 +290,19 @@ void PicoBlazeGrid::deviceChanged()
 void PicoBlazeGrid::deviceReset()
 {
     qDebug() << "PicoBlazeGrid: deviceReset()";
-    
-    this->lePC->setText(QString::number(m_cpu->getProgramCounter(), 16).toUpper());
+    int value = m_cpu->getProgramCounter();
+    if (value > 0xFF)
+    {
+        this->lePC->setText(QString::number(value, 16).toUpper());
+    }
+    else if (value > 0xF)
+    {
+        this->lePC->setText("0" + QString::number(value, 16).toUpper());
+    }
+    else
+    {
+        this->lePC->setText("00" + QString::number(value, 16).toUpper());
+    }
     
     qDebug() << "PicoBlazeGrid: return deviceReset()";
 }
