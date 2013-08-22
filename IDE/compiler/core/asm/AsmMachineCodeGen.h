@@ -36,7 +36,7 @@ class AsmMachineCodeGen
     ////    Public Static Constants    ////
     public:
         /// @brief
-        static const unsigned int INITIAL_MAX_SIZE = 128;
+        static const unsigned int INITIAL_MAX_SIZE = 128; // Should be natural power of 2.
 
         /// @brief
         static const unsigned int SIZE_HINT = ( 1024 * 1024 ); // Limit maximum size to 1MB.
@@ -110,7 +110,7 @@ class AsmMachineCodeGen
          * @throw DataFileException
          */
         void output ( Endianness byteOrder,
-                      DataFile * target ) const;
+                      DataFile * target ) /*const*/;
 
         /**
          * @brief
