@@ -90,7 +90,7 @@ void ProjectTree::contextP2(int fileCount)
 
 void ProjectTree::setMainFile()
 {
-    emit setMainFile(lastPath, lastName);
+    //emit setMainFile(lastPath, lastName);
     //parentProject->setMainFile(lastPath, lastName);
     //clear previous mainfile's background
     if (mainFileName != "" && mainFilePath != "")
@@ -120,6 +120,7 @@ void ProjectTree::setMainFile()
             items.at(i)->setBackground(0, QBrush(QColor(25,25,25,20)));
             mainFileName = lastName;
             mainFilePath = lastPath;
+            emit setMainFile(mainFilePath, mainFileName);
             break;
         }
     }

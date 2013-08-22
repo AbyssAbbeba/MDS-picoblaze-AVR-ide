@@ -489,9 +489,14 @@ Project::Project(QFile *file, ProjectMan *parent)
             connect(prjTreeWidget, SIGNAL(itemDoubleClicked (QTreeWidgetItem *,int)),this,SLOT(openItem()));
             connect(prjTreeWidget, SIGNAL(requestFileCount()), this, SLOT(emitFileCount()));
             connect(prjTreeWidget, SIGNAL(startProjectCfgDlgCore()), this, SLOT(startCfgDlgCore()));
+            connect(prjTreeWidget, SIGNAL(setMainFile(QString, QString)), this, SLOT(setMainFile(QString, QString)));
             connect(this, SIGNAL(fileCountSignal(int)), prjTreeWidget, SLOT(contextP2(int)));
             setupSim();
         }
+    }
+    for (int i = 0; i < fileCount; i++)
+    {
+        qDebug() << filePaths.at(i);
     }
     qDebug() << "Project: return Project()";
 }
@@ -524,6 +529,7 @@ Project::Project(ProjectMan *parent)
     connect(prjTreeWidget, SIGNAL(itemDoubleClicked (QTreeWidgetItem *,int)), this, SLOT(openUntrackedItem()));
     connect(prjTreeWidget, SIGNAL(requestFileCount()), this, SLOT(emitFileCount()));
     connect(prjTreeWidget, SIGNAL(startProjectCfgDlgCore()), this, SLOT(startCfgDlgCore()));
+    connect(prjTreeWidget, SIGNAL(setMainFile(QString, QString)), this, SLOT(setMainFile(QString, QString)));
     connect(this, SIGNAL(fileCountSignal(int)), prjTreeWidget, SLOT(contextP2(int)));
     qDebug() << "Project: return Project()";
 }
@@ -646,6 +652,7 @@ Project::Project(QString name, QString path, QString arch, LangType lang, QFile 
     connect(prjTreeWidget, SIGNAL(itemDoubleClicked (QTreeWidgetItem*,int)), this, SLOT(openItem()));
     connect(prjTreeWidget, SIGNAL(requestFileCount()), this, SLOT(emitFileCount()));
     connect(prjTreeWidget, SIGNAL(startProjectCfgDlgCore()), this, SLOT(startCfgDlgCore()));
+    connect(prjTreeWidget, SIGNAL(setMainFile(QString, QString)), this, SLOT(setMainFile(QString, QString)));
     connect(this, SIGNAL(fileCountSignal(int)), prjTreeWidget, SLOT(contextP2(int)));
     setupSim();
     qDebug() << "Project: return Project() blank";
@@ -663,6 +670,13 @@ void Project::addFile(QString path, QString name)
     qDebug() << "Project: addFile()";
     if (this->prjName != "untracked" && this->prjPath != "untracked")
     {
+        for (int i = 0; i < this->fileCount; i++)
+        {
+            if (path == prjPath.section('/', 0, -2) + "/" + filePaths.at(i))
+            {
+                return;
+            }
+        }
         QString relativePath;
         QDomDocument domDoc("MMProject");
         QFile *file = new QFile(prjPath);
@@ -1060,7 +1074,7 @@ void Project::step()
     this->line = m_simControlUnit->getLineNumber(&fileName) - 1;
     this->currFile = QString::fromStdString(fileName);
     qDebug() << "Project: current line number:" << line << "in file" << this->currFile;
-    qDebug() << "Project: program counter value:" << dynamic_cast<MCUSimCPU*>(m_simControlUnit->getSimSubsys(MCUSimSubsys::ID_CPU))->getProgramCounter();
+    //qDebug() << "Project: program counter value:" << dynamic_cast<MCUSimCPU*>(m_simControlUnit->getSimSubsys(MCUSimSubsys::ID_CPU))->getProgramCounter();
     //parentWindow->getWDockManager()->setCentralByName(fileNameQStr);
     emit highlightLine(this->currFile, this->line, this->currLineColor);
     emit highlightLine(this->prevFile, this->prevLine, this->prevLineColor);
