@@ -73,7 +73,7 @@ int AsmPicoBlazeSymbolTable::addSymbol ( const std::string & name,
 {
     int finalValue = -1;
 
-    if ( false == isDefined(name, type) )
+    if ( false == isDefined(name) )
     {
         if ( true == resolve )
         {
