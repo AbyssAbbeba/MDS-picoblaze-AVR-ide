@@ -992,9 +992,12 @@ void MainForm::connectProjectSlot(Project *project)
 void MainForm::highlightLine(QString file, int line, QColor *color)
 {
     qDebug() << "MainForm: highlightLine";
-    getWDockManager()->setCentralByName(file.section('/', -1));
-    getWDockManager()->getCentralTextEdit()->highlightLine(line, color);
-    getWDockManager()->getCentralTextEdit()->scrollToLine(line);
+    if (file != "")
+    {
+        this->getWDockManager()->setCentralByName(file.section('/', -1));
+        this->getWDockManager()->getCentralTextEdit()->highlightLine(line, color);
+        this->getWDockManager()->getCentralTextEdit()->scrollToLine(line);
+    }
     qDebug() << "MainForm: return highlightLine";
 }
 
@@ -1005,7 +1008,7 @@ void MainForm::highlightLine(QString file, int line, QColor *color)
  */
 void MainForm::setCentralByName(QString file)
 {
-    getWDockManager()->setCentralByName(file);
+    this->getWDockManager()->setCentralByName(file);
 }
 
 
@@ -1015,7 +1018,7 @@ void MainForm::setCentralByName(QString file)
  */
 void MainForm::scrollCentralToLine(int line)
 {
-    getWDockManager()->getCentralTextEdit()->scrollToLine(line);
+    this->getWDockManager()->getCentralTextEdit()->scrollToLine(line);
 }
 
 
@@ -1026,7 +1029,7 @@ void MainForm::scrollCentralToLine(int line)
 void MainForm::setEditorReadOnly(bool readOnly)
 {
     qDebug() << "MainForm: setEditorReadOnly";
-    getWDockManager()->setEditorsReadOnly(readOnly);
+    this->getWDockManager()->setEditorsReadOnly(readOnly);
     qDebug() << "MainForm: return setEditorReadOnly";
 }
 

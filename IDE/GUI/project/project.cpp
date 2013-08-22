@@ -489,6 +489,7 @@ Project::Project(QFile *file, ProjectMan *parent)
             connect(prjTreeWidget, SIGNAL(itemDoubleClicked (QTreeWidgetItem *,int)),this,SLOT(openItem()));
             connect(prjTreeWidget, SIGNAL(requestFileCount()), this, SLOT(emitFileCount()));
             connect(prjTreeWidget, SIGNAL(startProjectCfgDlgCore()), this, SLOT(startCfgDlgCore()));
+            connect(prjTreeWidget, SIGNAL(setMainFile(QString, QString)), this, SLOT(setMainFile(QString, QString)));
             connect(this, SIGNAL(fileCountSignal(int)), prjTreeWidget, SLOT(contextP2(int)));
             setupSim();
         }
@@ -524,6 +525,7 @@ Project::Project(ProjectMan *parent)
     connect(prjTreeWidget, SIGNAL(itemDoubleClicked (QTreeWidgetItem *,int)), this, SLOT(openUntrackedItem()));
     connect(prjTreeWidget, SIGNAL(requestFileCount()), this, SLOT(emitFileCount()));
     connect(prjTreeWidget, SIGNAL(startProjectCfgDlgCore()), this, SLOT(startCfgDlgCore()));
+    connect(prjTreeWidget, SIGNAL(setMainFile(QString, QString)), this, SLOT(setMainFile(QString, QString)));
     connect(this, SIGNAL(fileCountSignal(int)), prjTreeWidget, SLOT(contextP2(int)));
     qDebug() << "Project: return Project()";
 }
@@ -646,6 +648,7 @@ Project::Project(QString name, QString path, QString arch, LangType lang, QFile 
     connect(prjTreeWidget, SIGNAL(itemDoubleClicked (QTreeWidgetItem*,int)), this, SLOT(openItem()));
     connect(prjTreeWidget, SIGNAL(requestFileCount()), this, SLOT(emitFileCount()));
     connect(prjTreeWidget, SIGNAL(startProjectCfgDlgCore()), this, SLOT(startCfgDlgCore()));
+    connect(prjTreeWidget, SIGNAL(setMainFile(QString, QString)), this, SLOT(setMainFile(QString, QString)));
     connect(this, SIGNAL(fileCountSignal(int)), prjTreeWidget, SLOT(contextP2(int)));
     setupSim();
     qDebug() << "Project: return Project() blank";
@@ -1060,7 +1063,7 @@ void Project::step()
     this->line = m_simControlUnit->getLineNumber(&fileName) - 1;
     this->currFile = QString::fromStdString(fileName);
     qDebug() << "Project: current line number:" << line << "in file" << this->currFile;
-    qDebug() << "Project: program counter value:" << dynamic_cast<MCUSimCPU*>(m_simControlUnit->getSimSubsys(MCUSimSubsys::ID_CPU))->getProgramCounter();
+    //qDebug() << "Project: program counter value:" << dynamic_cast<MCUSimCPU*>(m_simControlUnit->getSimSubsys(MCUSimSubsys::ID_CPU))->getProgramCounter();
     //parentWindow->getWDockManager()->setCentralByName(fileNameQStr);
     emit highlightLine(this->currFile, this->line, this->currLineColor);
     emit highlightLine(this->prevFile, this->prevLine, this->prevLineColor);
