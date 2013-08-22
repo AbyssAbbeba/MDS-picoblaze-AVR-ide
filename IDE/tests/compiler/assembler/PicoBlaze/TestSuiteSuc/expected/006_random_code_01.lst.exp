@@ -1,0 +1,39 @@
+                   1     ; Compiler test case for Assembler
+                   2     ; instruction opcodes
+                   3
+                   4
+                   5
+                   6
+                   7     Start:
+000 32000          8             JUMP        Z, 0x000
+001 36000          9             JUMP        NZ,0x000
+002 3A000         10             JUMP        C, 0x000
+003 3E000         11             JUMP        NC,0x000
+                  12
+                  13
+                  14         ; Others
+004 20009         15             CALl      Podprog
+005 30009         16             CALL      Z,Podprog
+006 34009         17             CALL      NZ,Podprog
+007 38009         18             CALL      C,Podprog
+008 3C009         19             CALL      NC,Podprog
+                  20
+                  21     Podprog:
+009 25000         22             RETURN
+00A 31000         23             RETURN    Z
+00B 35000         24             RETURN    NZ
+00C 39000         25             RETURN    C
+00D 3D000         26             RETURN    NC
+                  27
+                  28
+                  29       ;  JUMP aaa ADD sX,kk LOAD sX,kk SR0 sX
+                  30     ;JUMP Z,aaa ADDCY sX,kk AND sX,kk SR1 sX
+                  31     ;JUMP NZ,aaa SUB sX,kk OR sX,kk SRX sX
+                  32     ;JUMP C,aaa SUBCY sX,kk XOR sX,kk SRA sX
+                  33     ;JUMP NC,aaa COMPARE sX,kk TEST sX,kk RR sX
+                  34     ;CALL aaa ADD sX,sY LOAD sX,sY SL0 sX
+                  35     ;CALL Z,aaa ADDCY sX,sY AND sX,sY SL1 sX
+                  36     ;CALL NZ,aaa SUB sX,sY OR sX,sY SLX sX
+                  37     ;CALL C,aaa SUBCY sX,sY XOR sX,sY SLA sX
+                  38     ;CALL NC,aaa COMPARE sX,sY TEST sX,sY RL sX
+                  39

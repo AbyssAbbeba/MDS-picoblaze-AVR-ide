@@ -43,11 +43,11 @@ wait_for_100ms      MACRO
 wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
                     LOAD      Temp2, #249          ; Load Temp2 register
                     LOAD      Temp3, #20           ; Load Temp3 register
-wait_100ms_i:       SUB       Temp1, 1
+wait_100ms_i:       SUB       Temp1, #1
                     JUMP      NZ, wait_100ms_i
-                    SUB       Temp2, 1
+                    SUB       Temp2, #1
                     JUMP      NZ, wait_100ms_i
-                    SUB       Temp3, 1
+                    SUB       Temp3, #1
                     JUMP      NZ, wait_100ms_i
                     ENDM
                     
