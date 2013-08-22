@@ -1265,6 +1265,31 @@ input parameters.\\
                             {\color{highlight_constant}\verb'"Text, that will show up in the codelisting"'}
                         \end{code}
                         
+                \subsection{LOCAL}
+                \textbf{SYNTAX:}\\
+                \\ {
+                    \texttt{}
+                    \begin{tabular}[h!]{llll}
+                            { \color{highlight_directive} LOCAL } { \color{highlight_symbol} <name> }
+                            { \color{highlight_comment}  }\\
+                    \end{tabular}
+                    }\\
+                    \\
+                \textbf{DESCRIPTION:}\\
+                This directive is used to define local variables in macros, so when you expand macro multiple times, there will be no redefinition of labels
+                or symbols.
+                \textbf{EXAMPLE:}\\
+                        \begin{code}[h!]
+                            {\color{highlight_directive}\verb'MACRO'}\verb'     '\verb'name_of_macro'\\
+                            {\color{highlight_directive}\verb'LOCAL'}\verb`    `{\color{highlight_symbol}\verb'wait'}\\
+                            {\color{highlight_directive}\verb'wait:'}\\
+                            {\color{highlight_symbol}\verb'SUBCY        s0,#10h'}\\
+                            {\color{highlight_symbol}\verb'SUB          s0,#1h' }\\
+                            {\color{highlight_symbol}\verb'LOAD         s0,#F0h'}\\
+                            {\color{highlight_symbol}\verb'JUMP         C,wait'}\\
+                            {\color{highlight_directive}\verb'ENDM'}\\
+                        \end{code}
+
                 \subsection{WARNING}
                  {
                     \texttt{}
