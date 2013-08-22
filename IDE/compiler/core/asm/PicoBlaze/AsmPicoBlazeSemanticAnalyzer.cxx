@@ -208,8 +208,6 @@ bool AsmPicoBlazeSemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
                 CompilerStatement * body = new CompilerStatement();
                 body->appendLink(m_specialMacros->runTimeFor(node));
 
-std::cout << body << "\n\n";
-
                 if ( false == phase1(body, location) )
                 {
                     body->completeDelete();

@@ -127,7 +127,7 @@ void TestSuiteSuc::testFunction()
 
     CU_ASSERT_FATAL ( true == m_compiler->compile(CompilerBase::LI_ASM, CompilerBase::TA_PICOBLAZE, m_options) );
 
-    std::string expectedCommonPath = ( path("..") / "expected" / testName ).string();
+    std::string expectedCommonPath = system_complete( path("TestSuiteSuc") / "expected" / testName ).string();
     compareLst ( expectedCommonPath + ".lst.exp", m_options->m_lstFile     );
     compareSym ( expectedCommonPath + ".sym.exp", m_options->m_symbolTable );
     compareMac ( expectedCommonPath + ".mac.exp", m_options->m_macroTable  );
