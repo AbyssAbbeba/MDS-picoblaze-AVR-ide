@@ -1,2 +1,0 @@
-PODPROG  . . . . . . . . . . . . . . LABEL  0x00009 USED     CONSTANT    006_random_code_02.asm:22.1-22.9
-START  . . . . . . . . . . . . . . . LABEL  0x00000 NOT USED CONSTANT    006_random_code_02.asm:7.1-7.7
