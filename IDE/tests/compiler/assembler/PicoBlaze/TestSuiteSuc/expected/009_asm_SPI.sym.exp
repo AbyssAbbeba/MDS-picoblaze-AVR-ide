@@ -1,0 +1,42 @@
+BSCL_0 . . . . . . . . . . . . . . . NUMBER 0x00005 USED     CONSTANT    009_asm_SPI.asm:6.1-6.18
+BSCL_Z . . . . . . . . . . . . . . . NUMBER 0x00005 USED     CONSTANT    009_asm_SPI.asm:4.1-4.18
+BSDA_0 . . . . . . . . . . . . . . . NUMBER 0x00005 USED     CONSTANT    009_asm_SPI.asm:5.1-5.18
+BSDA_IN  . . . . . . . . . . . . . . NUMBER 0x00005 USED     CONSTANT    009_asm_SPI.asm:7.1-7.18
+BSDA_Z . . . . . . . . . . . . . . . NUMBER 0x00005 USED     CONSTANT    009_asm_SPI.asm:3.1-3.18
+DELAY  . . . . . . . . . . . . . . . LABEL  0x00003 USED     CONSTANT    009_asm_SPI.asm:20.1-20.7
+I2C_MACK . . . . . . . . . . . . . . LABEL  0x00078 USED     CONSTANT    009_asm_SPI.asm:215.1-215.10
+I2C_MNACK  . . . . . . . . . . . . . LABEL  0x00083 USED     CONSTANT    009_asm_SPI.asm:231.1-231.11
+I2C_RECV . . . . . . . . . . . . . . LABEL  0x00068 USED     CONSTANT    009_asm_SPI.asm:192.1-192.10
+I2C_REPSTART . . . . . . . . . . . . LABEL  0x00098 USED     CONSTANT    009_asm_SPI.asm:265.1-265.14
+I2C_RX . . . . . . . . . . . . . . . LABEL  0x0006B USED     CONSTANT    009_asm_SPI.asm:197.1-197.8
+I2C_SACK . . . . . . . . . . . . . . LABEL  0x0008E USED     CONSTANT    009_asm_SPI.asm:247.1-247.10
+I2C_START  . . . . . . . . . . . . . LABEL  0x0009A USED     CONSTANT    009_asm_SPI.asm:268.1-268.11
+I2C_STOP . . . . . . . . . . . . . . LABEL  0x000A0 USED     CONSTANT    009_asm_SPI.asm:279.1-279.10
+I2C_TX . . . . . . . . . . . . . . . LABEL  0x00058 USED     CONSTANT    009_asm_SPI.asm:166.1-166.8
+I2C_TX0  . . . . . . . . . . . . . . LABEL  0x0005B NOT USED CONSTANT    009_asm_SPI.asm:170.1-170.9
+I2C_TX1  . . . . . . . . . . . . . . LABEL  0x0005E USED     CONSTANT    009_asm_SPI.asm:174.1-174.9
+I2C_TX2  . . . . . . . . . . . . . . LABEL  0x00060 USED     CONSTANT    009_asm_SPI.asm:177.1-177.9
+I2C_XMIT . . . . . . . . . . . . . . LABEL  0x00057 USED     CONSTANT    009_asm_SPI.asm:164.1-164.10
+INIT_I2C . . . . . . . . . . . . . . LABEL  0x00000 NOT USED CONSTANT    009_asm_SPI.asm:16.1-16.10
+READ1_I2C  . . . . . . . . . . . . . LABEL  0x00044 NOT USED CONSTANT    009_asm_SPI.asm:128.1-128.11
+READ2_I2C  . . . . . . . . . . . . . LABEL  0x0002C NOT USED CONSTANT    009_asm_SPI.asm:88.1-88.11
+READWRITE4_I2C . . . . . . . . . . . LABEL  0x00003 NOT USED CONSTANT    009_asm_SPI.asm:25.1-25.16
+S0 . . . . . . . . . . . . . . . . . REG.   0x00000 USED     CONSTANT    IMPLICIT
+S1 . . . . . . . . . . . . . . . . . REG.   0x00001 USED     CONSTANT    IMPLICIT
+S2 . . . . . . . . . . . . . . . . . REG.   0x00002 USED     CONSTANT    IMPLICIT
+S3 . . . . . . . . . . . . . . . . . REG.   0x00003 USED     CONSTANT    IMPLICIT
+S4 . . . . . . . . . . . . . . . . . REG.   0x00004 USED     CONSTANT    IMPLICIT
+S5 . . . . . . . . . . . . . . . . . REG.   0x00005 USED     CONSTANT    IMPLICIT
+S6 . . . . . . . . . . . . . . . . . REG.   0x00006 NOT USED CONSTANT    IMPLICIT
+S7 . . . . . . . . . . . . . . . . . REG.   0x00007 NOT USED CONSTANT    IMPLICIT
+S8 . . . . . . . . . . . . . . . . . REG.   0x00008 NOT USED CONSTANT    IMPLICIT
+S9 . . . . . . . . . . . . . . . . . REG.   0x00009 NOT USED CONSTANT    IMPLICIT
+SA . . . . . . . . . . . . . . . . . REG.   0x0000A NOT USED CONSTANT    IMPLICIT
+SB . . . . . . . . . . . . . . . . . REG.   0x0000B NOT USED CONSTANT    IMPLICIT
+SC . . . . . . . . . . . . . . . . . REG.   0x0000C USED     CONSTANT    IMPLICIT
+SD . . . . . . . . . . . . . . . . . REG.   0x0000D USED     CONSTANT    IMPLICIT
+SE . . . . . . . . . . . . . . . . . REG.   0x0000E NOT USED CONSTANT    IMPLICIT
+SF . . . . . . . . . . . . . . . . . REG.   0x0000F USED     CONSTANT    IMPLICIT
+WRITE1_I2C . . . . . . . . . . . . . LABEL  0x0004E NOT USED CONSTANT    009_asm_SPI.asm:147.1-147.12
+WRITE2_I2C . . . . . . . . . . . . . LABEL  0x00038 NOT USED CONSTANT    009_asm_SPI.asm:108.1-108.12
+WRITE3_I2C . . . . . . . . . . . . . LABEL  0x0001D NOT USED CONSTANT    009_asm_SPI.asm:63.1-63.12

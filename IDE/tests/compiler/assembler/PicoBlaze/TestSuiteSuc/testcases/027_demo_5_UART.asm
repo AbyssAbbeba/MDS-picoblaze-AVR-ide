@@ -23,9 +23,9 @@
         NAMEREG         s1,temp2              ; temporary data register
         NAMEREG         s2,temp3              ; temporary data register
         ; OR
-        s3          REG         RXdata        ; RX data
-        s4          REG         TXdata        ; TX data
-        s5          REG         LED_reg       ; Leds data register
+        RXdata        AUTOREG   AT 3          ; RX data
+        TXdata        AUTOREG               ; TX data
+        LED_reg       AUTOREG           ; Leds data register
 ; Declaration of some registers
         Temp1         AUTOREG
         Temp2         AUTOREG
@@ -105,11 +105,11 @@ wait_for_1s         MACRO
 wait_1s:            LOAD      Temp1, #250          ; Load Temp1 register
                     LOAD      Temp2, #249          ; Load Temp2 register
                     LOAD      Temp3, #200          ; Load Temp3 register
-wait_1s_i:          SUB       Temp1, 1
+wait_1s_i:          SUB       Temp1, #1
                     JUMP      NZ, wait_1s_i
-                    SUB       Temp2, 1
+                    SUB       Temp2, #1
                     JUMP      NZ, wait_1s_i
-                    SUB       Temp3, 1
+                    SUB       Temp3, #1
                     JUMP      NZ, wait_1s_i
                     ENDM
 ;--------------------------------------------------------------------------
@@ -121,11 +121,11 @@ wait_for_100ms      MACRO
 wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
                     LOAD      Temp2, #249          ; Load Temp2 register
                     LOAD      Temp3, #20           ; Load Temp3 register
-wait_100ms_i:       SUB       Temp1, 1
+wait_100ms_i:       SUB       Temp1, #1
                     JUMP      NZ, wait_100ms_i
-                    SUB       Temp2, 1
+                    SUB       Temp2, #1
                     JUMP      NZ, wait_100ms_i
-                    SUB       Temp3, 1
+                    SUB       Temp3, #1
                     JUMP      NZ, wait_100ms_i
                     ENDM
 ;==============================================================================;
