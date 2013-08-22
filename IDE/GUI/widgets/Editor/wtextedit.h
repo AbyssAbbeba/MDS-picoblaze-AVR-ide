@@ -39,6 +39,7 @@ class WTextEdit : public QTextEdit
         void reloadHighlighter(SourceType type);
         void setPosition(int pos);
         int getPosition();
+        void scrollToLine(int line);
 
 
     signals:
