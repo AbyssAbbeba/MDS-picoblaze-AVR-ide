@@ -32,7 +32,7 @@ AsmMachineCodeGen::AsmMachineCodeGen ( WordSize wordSize )
                                      : m_wordSize ( wordSize )
 {
     clear();
-    reserve ( INITIAL_MAX_SIZE );
+    reserve ( INITIAL_MAX_SIZE - 1 );
 }
 
 AsmMachineCodeGen::~AsmMachineCodeGen()
@@ -105,8 +105,14 @@ inline bool AsmMachineCodeGen::reserve ( unsigned int maxAddr )
 
     maxAddr++;
 
-    m_used.reserve ( maxAddr );
-    m_code.reserve ( maxAddr );
+    // "Align" maxAddr to a multiply of INITIAL_MAX_SIZE.
+    if ( 0 != ( maxAddr % INITIAL_MAX_SIZE ) )
+    {
+        maxAddr += ( INITIAL_MAX_SIZE - ( maxAddr % INITIAL_MAX_SIZE ) );
+    }
+
+    m_used.resize ( maxAddr );
+    m_code.resize ( maxAddr );
 
     for ( unsigned int i = m_maxSize; i < maxAddr; i++ )
     {
@@ -118,7 +124,7 @@ inline bool AsmMachineCodeGen::reserve ( unsigned int maxAddr )
 }
 
 void AsmMachineCodeGen::output ( Endianness byteOrder,
-                                 DataFile * target ) const
+                                 DataFile * target ) /*const*/
 {
     int addrIncrement;
 

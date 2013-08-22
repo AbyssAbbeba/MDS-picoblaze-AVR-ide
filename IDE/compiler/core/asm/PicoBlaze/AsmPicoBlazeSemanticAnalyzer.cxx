@@ -38,9 +38,9 @@
 #include <vector>
 #include <fstream>
 #include <cctype>
-
+#include <iostream> // DEBUG
 AsmPicoBlazeSemanticAnalyzer::AsmPicoBlazeSemanticAnalyzer ( CompilerSemanticInterface * compilerCore,
-                                                            CompilerOptions * opts )
+                                                             CompilerOptions * opts )
                                                            : CompilerSemanticAnalyzer ( compilerCore, opts )
 {
     m_symbolTable    = new AsmPicoBlazeSymbolTable ( compilerCore, opts );
@@ -207,6 +207,8 @@ bool AsmPicoBlazeSemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
             {
                 CompilerStatement * body = new CompilerStatement();
                 body->appendLink(m_specialMacros->runTimeFor(node));
+
+std::cout << body << "\n\n";
 
                 if ( false == phase1(body, location) )
                 {
@@ -516,7 +518,7 @@ bool AsmPicoBlazeSemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
                         body->appendLink(node->branch()->copyEntireChain());
                         m_codeListing->repeatCode(lastLocation, body, true);
                         lastLocation = body->lastLeaf()->location();
-                        if ( false == phase1(body) )
+                        if ( false == phase1(body/*, location*/) )
                         {
                             body->completeDelete();
                             return false;
@@ -528,7 +530,7 @@ bool AsmPicoBlazeSemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
                         exp->appendLink(node->branch()->copyEntireChain());
                         m_codeListing->repeatCode(lastLocation, exp, false);
                         lastLocation = exp->lastLeaf()->location();
-                        if ( false == phase1(exp) )
+                        if ( false == phase1(exp/*, location*/) )
                         {
                             body->completeDelete();
                             exp->completeDelete();
@@ -589,7 +591,7 @@ bool AsmPicoBlazeSemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
                 body->appendLink(node->branch()->copyEntireChain());
                 m_codeListing->repeatCode(lastLocation, body, true);
                 lastLocation = body->lastLeaf()->location();
-                if ( false == phase1(body, location) )
+                if ( false == phase1(body/*, location*/) )
                 {
                     body->completeDelete();
                     return false;
@@ -601,7 +603,7 @@ bool AsmPicoBlazeSemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
                     exp->appendLink(node->branch()->copyEntireChain());
                     m_codeListing->repeatCode(lastLocation, exp, false);
                     lastLocation = exp->lastLeaf()->location();
-                    if ( false == phase1(exp, location) )
+                    if ( false == phase1(exp/*, location*/) )
                     {
                         body->completeDelete();
                         exp->completeDelete();
