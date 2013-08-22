@@ -427,10 +427,10 @@ bool AsmPicoBlazeSemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
                 }
                 else
                 {
-                    m_compilerCore->compilerMessage(node->location(),
-                                                    CompilerBase::MT_ERROR,
-                                                    QObject::tr("directive EXITM' cannot apper outside macro definition")
-                                                               .toStdString());
+                    m_compilerCore->compilerMessage ( node->location(),
+                                                      CompilerBase::MT_ERROR,
+                                                      QObject::tr ( "directive EXITM' cannot apper outside macro "
+                                                                    "definition" ).toStdString() );
                     break;
                 }
             case ASMPICOBLAZE_INCLUDE:
