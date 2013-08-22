@@ -494,6 +494,10 @@ Project::Project(QFile *file, ProjectMan *parent)
             setupSim();
         }
     }
+    for (int i = 0; i < fileCount; i++)
+    {
+        qDebug() << filePaths.at(i);
+    }
     qDebug() << "Project: return Project()";
 }
 
@@ -666,6 +670,13 @@ void Project::addFile(QString path, QString name)
     qDebug() << "Project: addFile()";
     if (this->prjName != "untracked" && this->prjPath != "untracked")
     {
+        for (int i = 0; i < this->fileCount; i++)
+        {
+            if (path == prjPath.section('/', 0, -2) + "/" + filePaths.at(i))
+            {
+                return;
+            }
+        }
         QString relativePath;
         QDomDocument domDoc("MMProject");
         QFile *file = new QFile(prjPath);
