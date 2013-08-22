@@ -6,7 +6,7 @@
 ; You may find some useful advices how to use this
 ; IDE more efficiently
 ; [Main menu] -> [Help] -> [Tip of the day]
-
+device          KCPSM3
 ; Web page: www.moravia-microsystems.com
 ; --------------------
 ; Simple program for comunication via UART, with special macros
@@ -15,16 +15,16 @@
 ; Press Start simulation and Animate to run the program
 ;
 ; Tell compiler type of procesor (KCPSM2, KCPSM3, KCPSM6 available)
-        DEVICE          KCPSM3
+RX_DATA                 EQU             4
         
 ; Asign names to registers
         NAMEREG         s0,temp1              ; temporary data register
         NAMEREG         s1,temp2              ; temporary data register
         NAMEREG         s2,temp3              ; temporary data register
         ; OR
-        s3          REG         RXdata        ; RX data
-        s4          REG         TXdata        ; TX data
-        s5          REG         LED_reg       ; Leds data register
+        RXdata         REG    s3             ; RX data
+        TXdata            REG     s4          ; TX data
+        LED_reg          REG       s5         ; Leds data register
 ; PORT_IDs
         TX_id       PORT        0x01          ;  data register port ID
         RX_id       PORT        0x02          ;  data register port ID
@@ -151,11 +151,7 @@ RX_resolve          MACRO     uart_byte
 ; Main program >>>
                    
 ; Vectors
-        ADDRESS 0x000                             ; RESET vector
-        JUMP    Start
-        ADDRESS 0x3FF                             ; interrupt vector
-        JUMP    INTERRUPT
-;-------------------------------------------------------------------------
+;-----------------------------------------------
 ; Interrupt routine
 INTERRUPT:          SendChar  'I'
                     SendChar  'N'
@@ -167,7 +163,7 @@ INTERRUPT:          SendChar  'I'
                     SendChar  'P'
                     SendChar  'T'
                     SendCRLF
-                    RETURNI
+                    RETURNI enable
 ; Start of main program
 Start:
                     wait_for_1s             ; wait for initialization of FPGA circuits
