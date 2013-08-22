@@ -13,7 +13,11 @@
   <File path="demo_5_UART.asm" name="demo_5_UART.asm"/>
   <File path="../../../tests/compiler/assembler/PicoBlaze/TestSuiteSuc/testcases/026_demo_4_buttons_leds.asm" name="026_demo_4_buttons_leds.asm"/>
  </Files>
+<<<<<<< HEAD
+ <Mainfile path="demo_1_simple_prog.asm" name="demo_1_simple_prog.asm"/>
+=======
  <Mainfile path="../../../tests/compiler/assembler/PicoBlaze/TestSuiteSuc/testcases/026_demo_4_buttons_leds.asm" name="026_demo_4_buttons_leds.asm"/>
+>>>>>>> 185f2702e33e6abe93620a3e4137f480e05c8d03
  <Simulator/>
  <Compiler>
   <Options>

@@ -149,6 +149,7 @@ class Project : public QObject
     signals:
         void highlightLine(QString file, int line, QColor *color);
         void setCentralByName(QString file);
+        void scrollToLine(int line);
         void addUntrackedFile(QString name, QString path);
         //void addDockWidget(Qt::DockWidgetArea area, QDockWidget* dockWidget);
         void openFilePath(QString path);
