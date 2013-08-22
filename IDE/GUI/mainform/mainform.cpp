@@ -971,8 +971,8 @@ void MainForm::addDockWidgetSlot(Qt::DockWidgetArea area, QDockWidget *widget)
  */
 void MainForm::connectProjectSlot(Project *project)
 {
-    connect(project, SIGNAL(highlightLine(QString, int, QColor*, QColor*)), this, SLOT(highlightLine(QString, int, QColor*,
-        QColor*)));
+    connect(project, SIGNAL(highlightLine(QString, int, QColor*)), this, SLOT(highlightLine(QString, int, QColor*)));
+    connect(project, SIGNAL(setCentralByName(QString)), this, SLOT(setCentralByName(QString)));
     connect(project, SIGNAL(addUntrackedFile(QString, QString)), this, SLOT(addUntrackedFile(QString, QString)));
     connect(project, SIGNAL(openFilePath(QString)), this, SLOT(openFilePath(QString)));
     connect(project, SIGNAL(setEditorReadOnly(bool)), this, SLOT(setEditorReadOnly(bool)));
@@ -988,12 +988,22 @@ void MainForm::connectProjectSlot(Project *project)
  * @param
  * @param
  */
-void MainForm::highlightLine(QString file, int line, QColor *color, QColor *origColor)
+void MainForm::highlightLine(QString file, int line, QColor *color)
 {
     qDebug() << "MainForm: highlightLine";
-    getWDockManager()->setCentralByName(file);
-    getWDockManager()->getCentralTextEdit()->highlightLine(line, color, origColor);
+    getWDockManager()->setCentralByName(file.section('/', -1));
+    getWDockManager()->getCentralTextEdit()->highlightLine(line, color);
     qDebug() << "MainForm: return highlightLine";
+}
+
+
+/**
+ * @brief
+ * @param
+ */
+void MainForm::setCentralByName(QString file)
+{
+    getWDockManager()->setCentralByName(file);
 }
 
 

@@ -480,13 +480,13 @@ void CodeEdit::manageBreakpointEmit(int line)
     index = breakpointList.indexOf(line);
     if (index == -1)
     {
-        textEdit->highlightLine(line, breakpointColor, NULL);
+        textEdit->highlightLine(line, breakpointColor);
         breakpointList.append(line);
         emit breakpointListAdd(line);
     }
     else
     {
-        textEdit->highlightLine(line, NULL, NULL);
+        textEdit->highlightLine(line, NULL);
         breakpointList.removeAt(index);
         emit breakpointListRemove(line);
     }
