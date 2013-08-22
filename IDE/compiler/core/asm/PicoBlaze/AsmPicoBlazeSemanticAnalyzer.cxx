@@ -427,10 +427,10 @@ bool AsmPicoBlazeSemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
                 }
                 else
                 {
-                    m_compilerCore->compilerMessage(node->location(),
-                                                    CompilerBase::MT_ERROR,
-                                                    QObject::tr("directive EXITM' cannot apper outside macro definition")
-                                                               .toStdString());
+                    m_compilerCore->compilerMessage ( node->location(),
+                                                      CompilerBase::MT_ERROR,
+                                                      QObject::tr ( "directive EXITM' cannot apper outside macro "
+                                                                    "definition" ).toStdString() );
                     break;
                 }
             case ASMPICOBLAZE_INCLUDE:
@@ -516,7 +516,7 @@ bool AsmPicoBlazeSemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
                         body->appendLink(node->branch()->copyEntireChain());
                         m_codeListing->repeatCode(lastLocation, body, true);
                         lastLocation = body->lastLeaf()->location();
-                        if ( false == phase1(body, location) )
+                        if ( false == phase1(body) )
                         {
                             body->completeDelete();
                             return false;
@@ -528,7 +528,7 @@ bool AsmPicoBlazeSemanticAnalyzer::phase1 ( CompilerStatement * codeTree,
                         exp->appendLink(node->branch()->copyEntireChain());
                         m_codeListing->repeatCode(lastLocation, exp, false);
                         lastLocation = exp->lastLeaf()->location();
-                        if ( false == phase1(exp, location) )
+                        if ( false == phase1(exp) )
                         {
                             body->completeDelete();
                             exp->completeDelete();
