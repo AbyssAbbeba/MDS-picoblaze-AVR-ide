@@ -14,7 +14,7 @@ if 0
 label?: SR0        B                  ; invalid label
 endif
         list    ; Enable code listing
-
+        END
 ; <-- Bookmark   (ctrl + shift + M)
 ; <-- Breakpoint (ctrl + shift + B)
      
