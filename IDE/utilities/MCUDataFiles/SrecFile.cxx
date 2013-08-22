@@ -288,7 +288,7 @@ void SrecFile::save ( const std::string & filename,
 
     for ( unsigned int i = 0; i < m_arrsize; i++ )
     {
-        if ( ( 128 == dataLength )
+        if ( ( 32 == dataLength )
                 ||
              ( ( 0 != dataLength ) && ( -1 == m_memory[i] ) ) )
         {
