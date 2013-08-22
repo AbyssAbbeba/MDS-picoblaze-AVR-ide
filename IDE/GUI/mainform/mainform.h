@@ -83,6 +83,7 @@ class MainForm : public QMainWindow
         void connectProjectSlot(Project *project);
         void highlightLine(QString file, int line, QColor *color);
         void setCentralByName(QString file);
+        void scrollCentralToLine(int line);
         void setEditorReadOnly(bool readOnly);
         void addUntrackedFile(QString name, QString path);
         void openFilePath(QString path);
