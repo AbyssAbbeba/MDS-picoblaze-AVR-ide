@@ -56,13 +56,13 @@ DbgFileNative::~DbgFileNative()
 
     if ( NULL != m_lineToAddrMap )
     {
-//         for ( unsigned int i = 0; i < m_fileNames.size(); i++ )
-//         {
-//             if ( NULL != m_lineToAddrMap[i] )
-//             {
-//                 delete[] m_lineToAddrMap[i];
-//             }
-//         }
+        for ( unsigned int i = 0; i < m_fileNames.size(); i++ )
+        {
+            if ( NULL != m_lineToAddrMap[i] )
+            {
+                delete[] m_lineToAddrMap[i];
+            }
+        }
         delete[] m_lineToAddrMap;
     }
 }
@@ -125,6 +125,7 @@ inline void DbgFileNative::loadFile ( const std::string & filename )
         if ( -1 == lineNumber )
         {
             // Read binary section.
+            bool empty = false;
             static const int size = ( 3 * 4 );
             unsigned char binArray[size];
             for ( int i = 0; i < size; i++ )
@@ -134,6 +135,7 @@ inline void DbgFileNative::loadFile ( const std::string & filename )
                 {
                     if ( 0 == i )
                     {
+                        empty = true;
                         break;
                     }
                     throw Exception(Exception::IO_ERROR, "Binary section ends unexpectedly, file: " + filename);
@@ -144,9 +146,19 @@ inline void DbgFileNative::loadFile ( const std::string & filename )
                 }
             }
 
+            if ( true == empty )
+            {
+                break;
+            }
+
             unsigned int address    = ASSEMBLE_INT32(binArray, 0);
             unsigned int fileNumber = ASSEMBLE_INT32(binArray, 1);
             unsigned int lineNo     = ASSEMBLE_INT32(binArray, 2);
+
+            if ( fileNumber >= m_fileNames.size() )
+            {
+                throw Exception(Exception::PARSE_ERROR, "( file number >= number of files )" );
+            }
 
             m_lineRecords.push_back(LineRecord(fileNumber, lineNo, 0, 0, address));
 
@@ -303,8 +315,8 @@ inline void DbgFileNative::generateLineAddressMaps()
 
     for ( unsigned int i = 0; i < m_fileNames.size(); i++ )
     {
-        m_lineToAddrMap[i] = new int [ m_numberOfLines[i] ];
-        for ( unsigned int j = 0; j < m_numberOfLines[i]; j++ )
+        m_lineToAddrMap[i] = new int [ 1 + m_numberOfLines[i] ];
+        for ( unsigned int j = 0; j < ( 1 + m_numberOfLines[i] ); j++ )
         {
             m_lineToAddrMap[i][j] = -1;
         }
