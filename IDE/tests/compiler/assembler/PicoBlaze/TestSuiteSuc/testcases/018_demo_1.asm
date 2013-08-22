@@ -3,7 +3,7 @@
 ; Macro instructions, conditional compilation, constants and scratch-pad ram handling.
 ; See manual for more info
 ; Press Start simulation and Animate to run the program
-
+device          KCPSM3
 ; Constant definitions
 ; --------------------
 counter          SET     00Fh    ; Counter of Px shifts
@@ -16,16 +16,10 @@ ram_pointer      SET     00h      ; Assign name to register 3
 ;; Shift the given registers
 shift   MACRO    reg0, reg1
 
-        ; Increment / Decrement counter
-        if       inc_dec != 0
-                 inc     counter
-        else
-                 dec     counter
-        endif
 
         ; Save registers to DATA memory (Scratch-pad ram with range 00h to 3Fh)
-        STORE    s0, #ram_pointer + 1
-        STORE    s1, #ram_pointer + 1
+        STORE    s0, ram_pointer + 1
+        STORE    s1, ram_pointer + 1
         
         ; Shift
         LOAD     reg1, reg0
