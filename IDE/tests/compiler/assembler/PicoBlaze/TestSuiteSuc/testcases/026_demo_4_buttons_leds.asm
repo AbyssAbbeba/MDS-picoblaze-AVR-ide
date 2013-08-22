@@ -87,18 +87,18 @@ Blink_i:        WHILE   N
 ; --------------------
 start:  
         wait_for_100ms                  ; FPGA circuits startup time
-        LOAD    ON,  #0xFF                 ; Declare ON, snake and OFF
-        LOAD    OFF, #0x00                ;
-        LOAD    Snake, #0x01              ;
+        LOAD    ON,  #0xFF              ; Declare ON, snake and OFF
+        LOAD    OFF, #0x00              ;
+        LOAD    Snake, #0x01            ;
         JUMP    main                    ; Execute main program loop
 
 ; Main loop
 ; --------------------
 main:   INPUT   BTN_i,Btn               ; Save buttons status
         TEST    BTN_i,1                 ; Button one pressed
-        JUMP    C,Snake_i                 ; JUMP to snake subroutine
+        JUMP    C,Snake_i               ; JUMP to snake subroutine
         TEST    BTN_i,2                 ; Button two pressed
-        JUMP    C,Blink_i                 ; JUMP to Blink subroutine
+        JUMP    C,Blink_i               ; JUMP to Blink subroutine
         JUMP    main
 ; Program end
 ; --------------------

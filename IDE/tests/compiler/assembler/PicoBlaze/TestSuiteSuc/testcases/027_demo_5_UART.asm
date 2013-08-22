@@ -23,9 +23,9 @@
         NAMEREG         s1,temp2              ; temporary data register
         NAMEREG         s2,temp3              ; temporary data register
         ; OR
-        s3          REG         RXdata        ; RX data
-        s4          REG         TXdata        ; TX data
-        s5          REG         LED_reg       ; Leds data register
+        RXdata        AUTOREG   AT 3          ; RX data
+        TXdata        AUTOREG               ; TX data
+        LED_reg       AUTOREG           ; Leds data register
 ; Declaration of some registers
         Temp1         AUTOREG
         Temp2         AUTOREG
