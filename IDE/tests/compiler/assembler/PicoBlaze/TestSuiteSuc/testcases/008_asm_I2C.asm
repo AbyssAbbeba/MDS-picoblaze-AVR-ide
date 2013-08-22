@@ -15,65 +15,62 @@ bMISO           EQU    0b10000000
 bSCLK           EQU    0b00000010
 
 ESPI24:
-                MOVE    sD, PIGGY + CMD       ; address of the command register, contains the CE signals
-                MOVE    sC, PIGGY + SPI       ; address of the SPI register, contains MOSI, MISO, SCLK signals
+      ; address of the SPI register, contains MOSI, MISO, SCLK signals
 SPI24:
-                IN      sF, #sD                  ; switch on the appropriate CE
+                IN      sF, @sD                  ; switch on the appropriate CE
                 XOR     sE, #FFh
                 AND     sF, sE
-                OUT     sF, #sD
+                OUT     sF, @sD
 
-                MOVE    s0, s1
+                LOAD    s0, s1
                 CALL    SPI8
-                MOVE    s0, s2
+                LOAD    s0, s2
                 CALL    SPI8
-                MOVE    s0, s3
+                LOAD    s0, s3
                 CALL    SPI8
 
-                IN      sF, #sD
+                IN      sF, @sD
                 XOR     sE, #FFh
                 OR      sF, sE
-                OUT     sF, #sD                  ; switch off the CE
+                OUT     sF, @sD                  ; switch off the CE
 
                 RET
 
 ESPI16:
-                MOVE    sD, PIGGY + CMD       ; address of the command register, contains the CE signals
-                MOVE    sC, PIGGY + SPI       ; address of the SPI register, contains MOSI, MISO, SCLK signals
+      ; address of the SPI register, contains MOSI, MISO, SCLK signals
 SPI16:
-                IN      sF, #sD                  ; switch on the appropriate CE
+                IN      sF, @sD                  ; switch on the appropriate CE
                 XOR     sE, #FFh
                 AND     sF, sE
-                OUT     sF, #sD
+                OUT     sF, @sD
 
-                MOVE    s0, s1
+                LOAD    s0, s1
                 CALL    SPI8
-                MOVE    s0, s2
+                LOAD    s0, s2
                 CALL    SPI8
 
-                IN      sF, #sD
+                IN      sF, @sD
                 XOR     sE, #FFh
                 OR      sF, sE
-                OUT     sF, #sD                  ; switch off the CE
+                OUT     sF, @sD                  ; switch off the CE
 
                 RET
 
 ESPI8:
-                MOVE    sD, PIGGY + CMD       ; address of the command register, contains the CE signals
-                MOVE    sC, PIGGY + SPI       ; address of the SPI register, contains MOSI, MISO, SCLK signals
+    ; address of the SPI register, contains MOSI, MISO, SCLK signals
 SPI8:
-                IN      sF, sD                  ; switch on the appropriate CE
+                IN      sF, @sD                  ; switch on the appropriate CE
                 XOR     sE, #FFh
                 AND     sF, sE
-                OUT     sF, sD
+                OUT     sF, @sD
 
-                MOVE    s0, s1
+                LOAD    s0, s1
                 CALL    SPI8
 
-                IN      sF, sD
+                IN      sF, @sD
                 XOR     sE, #FFh
                 OR      sF, sE
-                OUT     sF, sD                  ; switch off the CE
+                OUT     sF, @sD                  ; switch off the CE
 
                 RET
 
@@ -97,19 +94,19 @@ SPI2_:                                          ; shift 2 bits
 ; -------------------------------------------------------------------------------
 
 SPI1_:                                          ; shift 1 bit
-                IN      sF, sC
+                IN      sF, @sC
                 AND     sF, ~ bMOSI             ; clear MOSI bit
 
                 SL0     s0                      ; check if upper bit set
                 OR      sF, bMOSI               ; set MOSI bit
 
-                OUT     sF, sC                  ; update MOSI signal
+                OUT     sF, @sC                  ; update MOSI signal
                 OR      sF, bSCLK               ; set SCLK bit
-                OUT     sF, sC                  ; update SCLK signal
+                OUT     sF, @sC                  ; update SCLK signal
                 AND     sF, ~ bSCLK             ; clear SCLK bit
-                OUT     sF, sC                  ; update SCLK bit
+                OUT     sF, @sC                  ; update SCLK bit
 
-                IN      sF, sC
+                IN      sF, @sC
                 TEST    sF, bMISO               ; test MISO signal
                 RET     Z
                 OR      s0, #1                   ; reflect it in s0

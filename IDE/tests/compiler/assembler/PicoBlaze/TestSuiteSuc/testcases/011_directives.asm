@@ -1,14 +1,7 @@
 ; test case for directives
-s0      AUTOREG
-s1      AUTOREG
-s2      AUTOREG
-s3      AUTOREG
-s4      AUTOREG
-s5      AUTOREG
-s6      AUTOREG
-s7      AUTOREG
-s8      AUTOREG
-s9      AUTOREG
+device KCPSM3
+
+
 
 s10     AUTOSPR
 s11     AUTOSPR
@@ -154,6 +147,10 @@ ss11    EQU     -5 * +5
 ss12    EQU     0x01 << 1
 ss13    EQU     0x02 >> 1
 ss14    EQU     0xff ^ 0x0f
+
+a       equ     -5
+B       EQU     5
+
 
 
 Start:

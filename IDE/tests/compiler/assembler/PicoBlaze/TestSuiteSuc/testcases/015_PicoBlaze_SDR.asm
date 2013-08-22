@@ -13,7 +13,7 @@
 ; Martin Madron 30.4.2013
 ;
 ;
-
+device          KCPSM3
 ; Start
 ;##############################################################################;
 ; Přiřazení jmen registrům
@@ -24,12 +24,18 @@
 	NAMEREG		s4,TXdata             ; temporary data register
 
 ; PORT_IDs
-	CONSTANT	TX_data_01,&01          ;  data register port ID
-	CONSTANT	TX_data_02,&02          ;  data register port ID
-	CONSTANT	TX_data_03,&04          ;  data register port ID
-	CONSTANT	TX_data_04,&08          ;  data register port ID
-	CONSTANT	Read_data,&12           ;  data register port ID	
+	CONSTANT	TX_data_01, 01          ;  data register port ID
+	CONSTANT	TX_data_02, 02          ;  data register port ID
+	CONSTANT	TX_data_03, 04          ;  data register port ID
+	CONSTANT	TX_data_04, 08          ;  data register port ID
+	CONSTANT	Read_data, 12           ;  data register port ID
 
+CHREG                   equ             4
+SWITCH                   equ             4
+UART_STAT                   equ             4
+UART_DATA                   equ             4
+
+	
 ; Inicializace
 ;##############################################################################;
 	ADDRESS	000
@@ -40,7 +46,7 @@ Start:              CALL      wait_1s             ; wait for 1s
 
 ;  Main 
 main_loop:          CALL      GetChar             ; get (wait for) new character
-                    COMPARE      chreg,$20           ; Space character received?
+                    COMPARE      chreg,#20           ; Space character received?
                     JUMP      NZ,main_loop        ; If not space, get another character
                     IN        chreg,Switch        ; If yes, read content of switches
                     CALL      SendChar            ; And send it via UART
@@ -83,20 +89,20 @@ SendByte:           LOAD      Temp2, chreg        ; make a backup of chreg
                     SR0       chreg
                     SR0       chreg
                     SR0       chreg
-                    COMP      chreg, 10           ; if not greater than 9, than it is a number
+                    CMP      chreg, 10           ; if not greater than 9, than it is a number
                     JUMP      C, SendBNum1        ; C is set when Temp < 10 (Temp-10)
-                    ADD       chreg, $37          ; when letter, add $37; letter conversion
+                    ADD       chreg, #37          ; when letter, add #37; letter conversion
                     JUMP      SendB1
-SendBNum1:          ADD       chreg, $30          ; when number, add $30; number conversion
+SendBNum1:          ADD       chreg, #30          ; when number, add #30; number conversion
 SendB1:             CALL      SendChar            ; Send Character
 
                     LOAD      chreg, Temp2        ; load the whole byte again
-                    AND       chreg, $0F          ; select second character
-                    COMP      chreg, 10           ; if not greater than 9, than number
+                    AND       chreg, #0Fh          ; select second character
+                    CMP      chreg, 10           ; if not greater than 9, than number
                     JUMP      C, SendBNum2        ; C is set when Temp < 10 (Temp-10 under 0)
-                    ADD       chreg, $37          ; when letter, add $37; letter conversion
+                    ADD       chreg, #37          ; when letter, add #37; letter conversion
                     JUMP      SendB2
-SendBNum2:          ADD       chreg, $30          ; when number, add $30; number conversion
+SendBNum2:          ADD       chreg, #30          ; when number, add #30; number conversion
 SendB2:             CALL      SendChar            ; Send character
                     RET
 
@@ -105,9 +111,9 @@ SendB2:             CALL      SendChar            ; Send character
 ; Registers used: Temp1, chreg
 ; Procedures used: SendChar
 ;==============================================================================;
-SendCRLF:           LOAD      chreg, $0D          ; CR character
+SendCRLF:           LOAD      chreg, #0D          ; CR character
                     CALL      SendChar            ; Send character
-                    LOAD      chreg, $0A          ; Load LF character
+                    LOAD      chreg, #0Ah          ; Load LF character
                     CALL      SendChar            ; Send character
                     RET                           ; Return from procedure
 

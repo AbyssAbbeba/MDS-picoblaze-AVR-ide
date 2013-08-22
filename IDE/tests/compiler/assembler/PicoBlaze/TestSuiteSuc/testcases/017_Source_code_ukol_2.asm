@@ -4,7 +4,7 @@
 ;
 ; Tutorial code for MPLD 2010/11
 ; Michal Kubicek 17.4.2011
-;
+device          KCPSM3
 ;
 ;##############################################################################;
 ; Start of code
@@ -18,22 +18,20 @@ RxDat               EQU       s4                  ; received character register
 addr                EQU       s5                  ; address register
 
 ; Peripherals
-UART_data           DS        $01                 ; UART data register port ID
-UART_stat           DS        $02                 ; UART control register port ID
+UART_data           EQU        01h                 ; UART data register port ID
+UART_stat           EQU        02h                 ; UART control register port ID
 ; UART Status register:
 ;  [2] Tx ready
 ;  [3] new Rx data
 ;  [4] Rx buffer overflow
 
-BCD_01              DS        $04                 ; 7 segment, upper two segments
-BCD_23              DS        $08                 ; 7 segment, lower two segments
-LED                 DS        $10                 ; LEDs
-Switch              DS        $20                 ; Switches
-Button              DS        $40                 ; Buttons (3:0)
+BCD_01              EQU        04h                 ; 7 segment, upper two segments
+BCD_23              EQU        08h                 ; 7 segment, lower two segments
+LED                 EQU        10h                 ; LEDs
+Switch              EQU        20h                 ; Switches
+Button              EQU        40h                 ; Buttons (3:0)
 
 ;##############################################################################;
-; VHDL file declaration
-                    VHDL      "ROM_blank.vhd", "ROM_code.vhd", "ROM_CODE"
 
 
 ;##############################################################################;
@@ -42,7 +40,7 @@ Button              DS        $40                 ; Buttons (3:0)
 
 ; initial wait
 Start:              CALL      wait_1s             ; wait for peripheral startup
-	                LOAD      Temp1,$00           ; LEDs OFF at startup
+	                LOAD      Temp1,#00           ; LEDs OFF at startup
 	                OUT       Temp1,LED           ; write valu to LED register
 
 ; end of initialization
@@ -94,20 +92,20 @@ SendByte:           LOAD      Temp2, chreg        ; make a backup of chreg
                     SR0       chreg
                     SR0       chreg
                     SR0       chreg
-                    COMP      chreg, 10           ; if not greater than 9, than it is a number
+                    CMP      chreg, 10           ; if not greater than 9, than it is a number
                     JUMP      C, SendBNum1        ; C is set when Temp < 10 (Temp-10)
-                    ADD       chreg, $37          ; when letter, add $37; letter conversion
+                    ADD       chreg, #37          ; when letter, add #37; letter conversion
                     JUMP      SendB1
-SendBNum1:          ADD       chreg, $30          ; when number, add $30; number conversion
+SendBNum1:          ADD       chreg, #30          ; when number, add #30; number conversion
 SendB1:             CALL      SendChar            ; Send Character
 
                     LOAD      chreg, Temp2        ; load the whole byte again
-                    AND       chreg, $0F          ; select second character
-                    COMP      chreg, 10           ; if not greater than 9, than number
+                    AND       chreg, #0Fh          ; select second character
+                    CMP      chreg, 10           ; if not greater than 9, than number
                     JUMP      C, SendBNum2        ; C is set when Temp < 10 (Temp-10 under 0)
-                    ADD       chreg, $37          ; when letter, add $37; letter conversion
+                    ADD       chreg, #37          ; when letter, add #37; letter conversion
                     JUMP      SendB2
-SendBNum2:          ADD       chreg, $30          ; when number, add $30; number conversion
+SendBNum2:          ADD       chreg, #30          ; when number, add #30; number conversion
 SendB2:             CALL      SendChar            ; Send character
                     RET
 
@@ -116,9 +114,9 @@ SendB2:             CALL      SendChar            ; Send character
 ; Registers used: Temp1, chreg
 ; Procedures used: SendChar
 ;==============================================================================;
-SendCRLF:           LOAD      chreg, $0D          ; CR character
+SendCRLF:           LOAD      chreg, #0D          ; CR character
                     CALL      SendChar            ; Send character
-                    LOAD      chreg, $0A          ; Load LF character
+                    LOAD      chreg, #0Ah          ; Load LF character
                     CALL      SendChar            ; Send character
                     RET                           ; Return from procedure
 
