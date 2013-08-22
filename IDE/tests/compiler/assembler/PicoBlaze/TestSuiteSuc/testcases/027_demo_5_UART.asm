@@ -23,9 +23,9 @@
         NAMEREG         s1,temp2              ; temporary data register
         NAMEREG         s2,temp3              ; temporary data register
         ; OR
-        s3          REG         RXdata        ; RX data
-        s4          REG         TXdata        ; TX data
-        s5          REG         LED_reg       ; Leds data register
+        RXdata        AUTOREG   AT 3          ; RX data
+        TXdata        AUTOREG               ; TX data
+        LED_reg       AUTOREG           ; Leds data register
 ; Declaration of some registers
         Temp1         AUTOREG
         Temp2         AUTOREG
@@ -98,26 +98,34 @@ SendCRLF            MACRO
 ; Waiting loops
 ;==============================================================================;
 wait_for_1s         MACRO
+
+                    LOCAL     wait_1s
+                    LOCAL     wait_1s_i
+
 wait_1s:            LOAD      Temp1, #250          ; Load Temp1 register
                     LOAD      Temp2, #249          ; Load Temp2 register
                     LOAD      Temp3, #200          ; Load Temp3 register
-wait_1s_i:          SUB       Temp1, 1
+wait_1s_i:          SUB       Temp1, #1
                     JUMP      NZ, wait_1s_i
-                    SUB       Temp2, 1
+                    SUB       Temp2, #1
                     JUMP      NZ, wait_1s_i
-                    SUB       Temp3, 1
+                    SUB       Temp3, #1
                     JUMP      NZ, wait_1s_i
                     ENDM
-
+;--------------------------------------------------------------------------
 wait_for_100ms      MACRO
+
+                    LOCAL     wait_100ms
+                    LOCAL     wait_100ms_i
+
 wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
                     LOAD      Temp2, #249          ; Load Temp2 register
                     LOAD      Temp3, #20           ; Load Temp3 register
-wait_100ms_i:       SUB       Temp1, 1
+wait_100ms_i:       SUB       Temp1, #1
                     JUMP      NZ, wait_100ms_i
-                    SUB       Temp2, 1
+                    SUB       Temp2, #1
                     JUMP      NZ, wait_100ms_i
-                    SUB       Temp3, 1
+                    SUB       Temp3, #1
                     JUMP      NZ, wait_100ms_i
                     ENDM
 ;==============================================================================;
@@ -125,30 +133,30 @@ wait_100ms_i:       SUB       Temp1, 1
 ;  [1] Rotate leds 8x
 ;  [2] Send "Hello world" via UART
 ;-------------------------------------------------------------------------------------
-RX_resolve          MACRO     uart_byte
-
-                    RT_IF  uart_byte == #1
-                        REPT    8
-                        RR      LED_reg
-                        wait_for_100ms
-                        ENDR
-                            EXITM
-
-                    RT_ELSEIF      uart_byte == #2
-                        SendChar  'I'
-                        SendChar  'N'
-                        SendChar  'T'
-                        SendChar  'E'
-                        SendChar  'R'
-                        SendChar  'R'
-                        SendChar  'U'
-                        SendChar  'P'
-                        SendChar  'T'
-                        SendCRLF
-                            EXITM
-                    RT_ENDIF
-
-                    ENDM
+; RX_resolve          MACRO     uart_byte
+; 
+;                     RT_IF  uart_byte == #1
+;                         REPT    8
+;                         RR      LED_reg
+;                         wait_for_100ms
+;                         ENDR
+;                             EXITM
+; 
+;                     RT_ELSEIF      uart_byte == #2
+;                         SendChar  'I'
+;                         SendChar  'N'
+;                         SendChar  'T'
+;                         SendChar  'E'
+;                         SendChar  'R'
+;                         SendChar  'R'
+;                         SendChar  'U'
+;                         SendChar  'P'
+;                         SendChar  'T'
+;                         SendCRLF
+;                             EXITM
+;                     RT_ENDIF
+; 
+;                     ENDM
 
 ;=======================================================================
 ; END OF MACRO DEFINITIONS ;;
