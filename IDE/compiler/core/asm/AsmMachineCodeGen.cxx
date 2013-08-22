@@ -81,8 +81,8 @@ void AsmMachineCodeGen::setCode ( unsigned int address,
 {
     if ( true == reserve ( address ) )
     {
-        m_code[address] = code;
-        m_used[address] = 1;
+        m_code [ address ] = code;
+        m_used [ address ] = 1;
 
         if ( address >= m_size )
         {

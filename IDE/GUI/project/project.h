@@ -147,7 +147,8 @@ class Project : public QObject
         void startCfgDlgCore();
 
     signals:
-        void highlightLine(QString file, int line, QColor *color, QColor *origColor);
+        void highlightLine(QString file, int line, QColor *color);
+        void setCentralByName(QString file);
         void addUntrackedFile(QString name, QString path);
         //void addDockWidget(Qt::DockWidgetArea area, QDockWidget* dockWidget);
         void openFilePath(QString path);
@@ -158,15 +159,17 @@ class Project : public QObject
         
     private:
         ProjectMan *parentManager;
+        int line;
         int prevLine;
         int prevLine2;
         int prevLine3;
         QColor *currLineColor;
         QColor *prevLineColor;
         QColor *prevLine2Color;
-        QColor *origPrevLineCol;
-        QColor *origPrevLine2Col;
-        QColor *origCurrLineCol;
+        QString currFile;
+        QString prevFile;
+        QString prevFile2;
+        QString prevFile3;
         
        
 };

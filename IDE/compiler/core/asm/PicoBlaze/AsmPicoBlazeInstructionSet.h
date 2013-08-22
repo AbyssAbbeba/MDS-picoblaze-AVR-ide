@@ -130,6 +130,13 @@ class AsmPicoBlazeInstructionSet
          */
         inline std::string getSymbolTypes ( int types ) const;
 
+        /**
+         * @brief
+         * @param[in] stmt
+         * @return
+         */
+        inline int oprIdxShift ( const CompilerStatement * stmt ) const;
+
     ////    Private Attributes    ////
     private:
         ///

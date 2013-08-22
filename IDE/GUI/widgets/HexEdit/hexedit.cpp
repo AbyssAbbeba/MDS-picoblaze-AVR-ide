@@ -555,3 +555,9 @@ QScrollBar* HexEdit::verticalScrollBar()
 {
     return this->hexTextEdit->verticalScrollBar();
 }
+
+
+QScrollBar* HexEdit::horizontalScrollBar()
+{
+    return this->hexTextEdit->horizontalScrollBar();
+}

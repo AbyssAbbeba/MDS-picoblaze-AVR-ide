@@ -52,6 +52,7 @@ class HexEdit : public QWidget
         void setReadOnly(bool readonly);
         void fixHeight();
         QScrollBar* verticalScrollBar();
+        QScrollBar* horizontalScrollBar();
 
     public slots:
         void changeAscii(int position);

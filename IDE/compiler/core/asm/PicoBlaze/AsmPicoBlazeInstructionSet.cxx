@@ -363,7 +363,7 @@ void AsmPicoBlazeInstructionSet::encapsulate ( CompilerStatement * stmt,
                                             QObject::tr ( "instruction `%1' requires operand #%2 to be of type(s): %3"
                                                           "; while the given operand is of type: %4" )
                                                         . arg ( getInstructionName(stmt).c_str() )
-                                                        . arg ( i + 1 )
+                                                        . arg ( i + oprIdxShift(stmt) )
                                                         . arg ( getSymbolTypes(acceptableTypes[i]).c_str() )
                                                         . arg ( getSymbolTypes(symbolType).c_str() )
                                                         . toStdString() );
@@ -371,6 +371,26 @@ void AsmPicoBlazeInstructionSet::encapsulate ( CompilerStatement * stmt,
 
         m_symbolTable->resolveSymbols(arg, codePointer);
         i++;
+    }
+}
+
+inline int AsmPicoBlazeInstructionSet::oprIdxShift ( const CompilerStatement * stmt ) const
+{
+    using namespace CompilerStatementTypes;
+
+    switch ( (int) stmt->type() )
+    {
+        case ASMPICOBLAZE_INS_JUMP_Z_AAA:
+        case ASMPICOBLAZE_INS_JUMP_NZ_AAA:
+        case ASMPICOBLAZE_INS_JUMP_C_AAA:
+        case ASMPICOBLAZE_INS_JUMP_NC_AAA:
+        case ASMPICOBLAZE_INS_CALL_Z_AAA:
+        case ASMPICOBLAZE_INS_CALL_NZ_AAA:
+        case ASMPICOBLAZE_INS_CALL_C_AAA:
+        case ASMPICOBLAZE_INS_CALL_NC_AAA:
+            return 2;
+        default:
+            return 1;
     }
 }
 

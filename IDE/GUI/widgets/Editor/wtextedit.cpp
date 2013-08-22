@@ -147,7 +147,7 @@ void WTextEdit::highlightCurrentLine()
 }
 
 
-void WTextEdit::highlightLine(int line, QColor *color, QColor *origColor)
+void WTextEdit::highlightLine(int line, QColor *color)
 {
     qDebug() << "WTextEdit: highlightLine()";
     qDebug() << "WTextEdit: highlighted line is" << line;
@@ -164,8 +164,8 @@ void WTextEdit::highlightLine(int line, QColor *color, QColor *origColor)
         }
         else
         {
-            QColor orig = lineFormat.background().color();
-            origColor = &orig;
+            //QColor orig = lineFormat.background().color();
+            //origColor = &orig;
             lineFormat.setBackground(*color);
         }
         QTextCursor cursor(lineBlock);
