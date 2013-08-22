@@ -6,25 +6,30 @@
 ; You may find some useful advices how to use this
 ; IDE more efficiently
 ; [Main menu] -> [Help] -> [Tip of the day]
-device          KCPSM3
+
 ; Web page: www.moravia-microsystems.com
 ; --------------------
-; Simple program for comunication via UART, with special macros
-; You can easily modify this example and use it in your aplication
+; Simple program for comunication with UART.
+; You can easily modify this example and use it in your aplication.
+; VHDL code of UART is included
 ;
 ; Press Start simulation and Animate to run the program
 ;
 ; Tell compiler type of procesor (KCPSM2, KCPSM3, KCPSM6 available)
-RX_DATA                 EQU             4
+        DEVICE          KCPSM3
         
 ; Asign names to registers
         NAMEREG         s0,temp1              ; temporary data register
         NAMEREG         s1,temp2              ; temporary data register
         NAMEREG         s2,temp3              ; temporary data register
         ; OR
-        RXdata         REG    s3             ; RX data
-        TXdata            REG     s4          ; TX data
-        LED_reg          REG       s5         ; Leds data register
+        s3          REG         RXdata        ; RX data
+        s4          REG         TXdata        ; TX data
+        s5          REG         LED_reg       ; Leds data register
+; Declaration of some registers
+        Temp1         AUTOREG
+        Temp2         AUTOREG
+        Temp3         AUTOREG   
 ; PORT_IDs
         TX_id       PORT        0x01          ;  data register port ID
         RX_id       PORT        0x02          ;  data register port ID
@@ -122,26 +127,26 @@ wait_100ms_i:       SUB       Temp1, 1
 ;-------------------------------------------------------------------------------------
 RX_resolve          MACRO     uart_byte
 
-;                     RT-IF  uart_byte == 1
-;                         REPT    8
-;                         RR      LED_reg
-;                         wait_for_100ms
-;                         ENDR
-;                             EXITM
-;                         
-;                     RT-ELSEIF      uart_byte == 2
-;                         SendChar  'I'
-;                         SendChar  'N'
-;                         SendChar  'T'
-;                         SendChar  'E'
-;                         SendChar  'R'
-;                         SendChar  'R'
-;                         SendChar  'U'
-;                         SendChar  'P'
-;                         SendChar  'T'
-;                         SendCRLF
-;                             EXITM
-;                     ENDIF
+                    RT_IF  uart_byte == #1
+                        REPT    8
+                        RR      LED_reg
+                        wait_for_100ms
+                        ENDR
+                            EXITM
+
+                    RT_ELSEIF      uart_byte == #2
+                        SendChar  'I'
+                        SendChar  'N'
+                        SendChar  'T'
+                        SendChar  'E'
+                        SendChar  'R'
+                        SendChar  'R'
+                        SendChar  'U'
+                        SendChar  'P'
+                        SendChar  'T'
+                        SendCRLF
+                            EXITM
+                    RT_ENDIF
 
                     ENDM
 
@@ -151,7 +156,12 @@ RX_resolve          MACRO     uart_byte
 ; Main program >>>
                    
 ; Vectors
-;-----------------------------------------------
+        ADDRESS 0x3FF                             ; interrupt vector
+        JUMP    INTERRUPT
+        ADDRESS 0x000                             ; RESET vector
+        JUMP    Start
+
+;-------------------------------------------------------------------------
 ; Interrupt routine
 INTERRUPT:          SendChar  'I'
                     SendChar  'N'
@@ -163,11 +173,11 @@ INTERRUPT:          SendChar  'I'
                     SendChar  'P'
                     SendChar  'T'
                     SendCRLF
-                    RETURNI enable
+                    RETURNI
 ; Start of main program
 Start:
                     wait_for_1s             ; wait for initialization of FPGA circuits
-
+                    ENABLE INTERRUPT
 ; ---------------------------------------- Main loop
 
 main_loop:          GetChar                       ; Receive via UART, get status of switches for example

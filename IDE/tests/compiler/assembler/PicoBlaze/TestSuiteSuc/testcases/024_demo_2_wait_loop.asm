@@ -2,17 +2,24 @@
 ; See manual for more info
 
 ; Simple example of waiting loop
-device          KCPSM3
+
+; Tell compiler type of procesor (KCPSM2, KCPSM3, KCPSM6 available)
+        DEVICE          KCPSM3
 
 ; Press Start simulation and Animate to run the program
 
                     ORG       0x000
                     JUMP      Start
+; Declaration of some registers
+Temp1         REG       s0
+Temp2         REG       s1
+Temp3         REG       s2
+                    
 ; Begining of main loop
 Start:              CALL      wait_1s
                     CALL      wait_100ms
                     JUMP      $                   ; Infinite loop, $ is translated as number of curent line
-                    END                           ; End of program
+                    ;END                           ; End of program
 
 
 ; Subroutines-----------------------------------------------------------------

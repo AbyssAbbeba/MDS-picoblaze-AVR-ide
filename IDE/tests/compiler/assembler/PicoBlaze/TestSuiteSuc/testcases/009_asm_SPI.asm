@@ -1,12 +1,10 @@
 DEVICE KCPSM3
 
-
-bSDA_In         EQU    _PIGGY + _I2C0          ; gets SDA level in Bit0
-bSDA_0          EQU    _PIGGY + _I2C0          ; Pulls SDA to 0
-bSDA_Z          EQU    _PIGGY + _I2C1          ; Relases SDA to float to 1
-bSCL_0          EQU    _PIGGY + _I2C2          ; Pulls CSCL to 0
-bSCL_Z          EQU    _PIGGY + _I2C3          ; Releases SCL to float to 1
-
+BSDA_Z  EQU     5
+BSCL_Z  EQU     5
+BSDA_0  EQU     5
+BSCL_0  EQU     5
+BSDA_IN EQU     5
 ; ---\              /--------\                                            /--
 ;     \  SDA       /          \                                          /
 ;      \----------/ \--------/ \----------------------------------------/
@@ -19,43 +17,43 @@ Init_I2C:       OUTPUT     sF, bSDA_Z              ; SDA = Z
                 OUTPUT     sF, bSCL_Z              ; SCL = Z
                 JUMP    Delay
 
-
+DElay:
 ; -------------------------------------------------------------------------------
 ; Routine to set up for and read four bytes from I2C device
 ; -------------------------------------------------------------------------------
 
 ReadWrite4_I2C:
                 CALL    I2C_Start               ; Send Start, control byte and ack
-                INPUT    sC, s0                  ; Load device code for TX
+                INPUT    sC, @s0                  ; Load device code for TX
                 SL0     sC                      ; add write flag
                 CALL    I2C_Xmit                ; Send address and ack
                 CALL    I2C_SAck
 
-                INPUT    sC, s1                  ; Load data for TX
+                INPUT    sC, @s1                  ; Load data for TX
                 CALL    I2C_Xmit                ; Send data and ack
                 CALL    I2C_SAck
 
                 CALL    I2C_RepStart            ; Send repeated start, control byte and ack
-                INPUT    sC, s0                  ; Load device code for TX
+                INPUT    sC, @s0                  ; Load device code for TX
                 SL1     sC                      ; add read flag
                 CALL    I2C_Xmit                ; Send address and ack
                 CALL    I2C_SAck
 
                 CALL    I2C_Recv                ; Read 8 bits of data and send ack
                 CALL    I2C_MAck
-                INPUT    s2, sC
+                INPUT    s2, @sC
 
                 CALL    I2C_Recv                ; Read next 8 bits of data and send ack
                 CALL    I2C_MAck
-                INPUT    s3, sC
+                INPUT    s3, @sC
 
                 CALL    I2C_Recv                ; Read 8 bits of data and send ack
                 CALL    I2C_MAck
-                INPUT    s4, sC
+                INPUT    s4, @sC
 
                 CALL    I2C_Recv                ; Read next 8 bits of data and send ack
                 CALL    I2C_MNAck
-                INPUT    s5, sC
+                INPUT    s5, @sC
 
                 JUMP    I2C_Stop                ; Send Stop
 
@@ -64,20 +62,20 @@ ReadWrite4_I2C:
 ; -------------------------------------------------------------------------------
 Write3_I2C:
                 CALL    I2C_Start               ; Send Start, control byte and ack
-                INPUT    sC, s0                  ; Load device code for TX
+                INPUT    sC, @s0                  ; Load device code for TX
                 SL0     sC                      ; add write flag
                 CALL    I2C_Xmit                ; Send address and ack
                 CALL    I2C_SAck
 
-                INPUT    sC, s1                  ; Load data for TX
+                INPUT    sC, @s1                  ; Load data for TX
                 CALL    I2C_Xmit                ; Send data and ack
                 CALL    I2C_SAck
 
-                INPUT    sC, s2                  ; Load data for TX
+                INPUT    sC, @s2                  ; Load data for TX
                 CALL    I2C_Xmit                ; Send data and ack
                 CALL    I2C_SAck
 
-                INPUT    sC, s3                  ; Load data for TX
+                INPUT    sC, @s3                  ; Load data for TX
                 CALL    I2C_Xmit                ; Send data and ack
                 CALL    I2C_SAck
 
@@ -89,18 +87,18 @@ Write3_I2C:
 
 Read2_I2C:
                 CALL    I2C_Start               ; Send start, control byte and ack
-                INPUT    sC, s0                  ; Load device code for TX
+                INPUT    sC, @s0                  ; Load device code for TX
                 SL1     sC                      ; add read flag
                 CALL    I2C_Xmit                ; Send address and ack
                 CALL    I2C_SAck
 
                 CALL    I2C_Recv                ; Read 8 bits of data and send ack
                 CALL    I2C_MAck
-                INPUT    s2, sC
+                INPUT    s2, @sC
 
                 CALL    I2C_Recv                ; Read next 8 bits of data and send ack
                 CALL    I2C_MNAck
-                INPUT    s3, sC
+                INPUT    s3, @sC
 
                 JUMP    I2C_Stop                ; Send Stop
 
@@ -109,16 +107,16 @@ Read2_I2C:
 ; -------------------------------------------------------------------------------
 Write2_I2C:
                 CALL    I2C_Start               ; Send Start, control byte and ack
-                INPUT    sC, s0                  ; Load device code for TX
+                INPUT    sC, @s0                  ; Load device code for TX
                 SL0     sC                      ; add write flag
                 CALL    I2C_Xmit                ; Send address and ack
                 CALL    I2C_SAck
 
-                INPUT    sC, s1                  ; Load data for TX
+                INPUT    sC, @s1                  ; Load data for TX
                 CALL    I2C_Xmit                ; Send data and ack
                 CALL    I2C_SAck
 
-                INPUT    sC, s2                  ; Load data for TX
+                INPUT    sC, @s2                  ; Load data for TX
                 CALL    I2C_Xmit                ; Send data and ack
                 CALL    I2C_SAck
 
@@ -130,7 +128,7 @@ Write2_I2C:
 Read1_I2C:
 
                 CALL    I2C_Start               ; Send start, control byte and ack
-                INPUT    sC, s0                  ; Load address for TX
+                INPUT    sC, @s0                  ; Load address for TX
                 SL1     sC                      ; add read flag
                 CALL    I2C_Xmit                ; Send address and ack
                 CALL    I2C_SAck
@@ -139,7 +137,7 @@ Read1_I2C:
 
                 CALL    I2C_Recv                ; Read 8 bits of data and send ack
                 CALL    I2C_MNAck
-                INPUT    s2, sC
+                INPUT    s2, @sC
 
                 JUMP    I2C_Stop                ; Send Stop
 
@@ -149,12 +147,12 @@ Read1_I2C:
 Write1_I2C:
 
                 CALL    I2C_Start               ; Send Start, control byte and ack
-                INPUT    sC, s0                  ; Load device code for TX
+                INPUT    sC, @s0                  ; Load device code for TX
                 SL0     sC                      ; add write flag
                 CALL    I2C_Xmit                ; Send address and ack
                 CALL    I2C_SAck
 
-                INPUT    sC, s1                  ; Load data for TX
+                INPUT    sC, @s1                  ; Load data for TX
                 CALL    I2C_Xmit                ; Send data and ack
                 CALL    I2C_SAck
 
