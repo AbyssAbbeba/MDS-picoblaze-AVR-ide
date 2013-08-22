@@ -26,10 +26,7 @@
         RXdata        AUTOREG   AT 3          ; RX data
         TXdata        AUTOREG               ; TX data
         LED_reg       AUTOREG           ; Leds data register
-; Declaration of some registers
-        Temp1         AUTOREG
-        Temp2         AUTOREG
-        Temp3         AUTOREG   
+
 ; PORT_IDs
         TX_id       PORT        0x01          ;  data register port ID
         RX_id       PORT        0x02          ;  data register port ID
