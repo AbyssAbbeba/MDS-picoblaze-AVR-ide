@@ -11,7 +11,6 @@
   <File path="demo_3_directives.asm" name="demo_3_directives.asm"/>
   <File path="demo_4_buttons_leds.asm" name="demo_4_buttons_leds.asm"/>
   <File path="demo_5_UART.asm" name="demo_5_UART.asm"/>
-  <File path="../../../tests/compiler/assembler/PicoBlaze/TestSuiteSuc/testcases/026_demo_4_buttons_leds.asm" name="026_demo_4_buttons_leds.asm"/>
  </Files>
  <Mainfile path="demo_2_wait_loop.asm" name="demo_2_wait_loop.asm"/>
  <Simulator/>

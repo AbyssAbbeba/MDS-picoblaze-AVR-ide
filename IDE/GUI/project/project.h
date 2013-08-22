@@ -110,7 +110,6 @@ class Project : public QObject
         void step();
         void run();
         MCUSimControl* getSimControl();
-        void removeFile(QString path, QString name);
         void setCompileOpt(QList<bool> opt);
         void setCompileIncPaths(QList<QString> paths);
 
@@ -140,6 +139,7 @@ class Project : public QObject
 
     public slots:
         void setMainFile(QString path, QString name);
+        void removeFile(QString path, QString name);
         
     private slots:
         void setActive();
