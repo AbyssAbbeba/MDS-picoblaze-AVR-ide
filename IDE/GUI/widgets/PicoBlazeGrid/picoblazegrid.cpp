@@ -131,16 +131,11 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
     
     this->memRegs = new RegistersWidget(this, controlUnit, MCUSimSubsys::SubsysId::ID_MEM_REGISTERS);
     this->memRegs->move(10, 25);
-    //this->memRegs->fixHeight();
     this->memScratch = new McuMemoryView(this, controlUnit, MCUSimSubsys::SubsysId::ID_MEM_DATA);
     this->memScratch->move(220,5);
     this->memScratch->fixHeight();
-    //this->memPortsIn = new McuMemoryView(this, controlUnit, MCUSim::Subsys::SubsysId::ID_PLIO);
     this->memPorts = new PortHexEdit(this, controlUnit, MCUSimSubsys::SubsysId::ID_PLIO);
     this->memPorts->move(440,5);
-    //this->memPortsOut = new PortHexEdit(this, controlUnit, MCUSim::Subsys::SubsysId::ID_PLIO);
-    //this->memPortsOut->move(440,5);
-    //this->memPortsOut->hide();
     this->memStack = new StackWidget(this, controlUnit, MCUSimSubsys::SubsysId::ID_STACK);
     this->memStack->move(680, 25);
     this->memStack->setMaximumWidth(100);

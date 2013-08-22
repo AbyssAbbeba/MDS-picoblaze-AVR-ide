@@ -81,7 +81,8 @@ class MainForm : public QMainWindow
         void tabifyDockWidgetSlot(QDockWidget *widget1, QDockWidget *widget2);
         void addDockWidgetSlot(Qt::DockWidgetArea area, QDockWidget *widget);
         void connectProjectSlot(Project *project);
-        void highlightLine(QString file, int line, QColor *color, QColor *origColor);
+        void highlightLine(QString file, int line, QColor *color);
+        void setCentralByName(QString file);
         void setEditorReadOnly(bool readOnly);
         void addUntrackedFile(QString name, QString path);
         void openFilePath(QString path);

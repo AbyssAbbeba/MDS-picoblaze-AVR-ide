@@ -535,10 +535,16 @@ void WDockManager::setCentralByName(QString fileName)
     qDebug() << "WDockManager: setCentralByName()";
     for (int i = 0; i < this->getTabCount(); i++)
     {
+        //qDebug() << "WDockManager: tabtext" << wTab->tabText(i) << "fileName" << fileName;
         if (wTab->tabText(i) == fileName)
         {
-            this->changeCodeEditor(i);
-            wTab->setCurrentIndex(i);
+            //qDebug() << "WDockManager: CodeEdit found";
+            if (wTab->currentIndex() != i)
+            {
+                this->changeCodeEditor(i);
+                wTab->setCurrentIndex(i);
+            }
+            return;
         }
     }
     qDebug() << "WDockManager: return setCentralByName()";
