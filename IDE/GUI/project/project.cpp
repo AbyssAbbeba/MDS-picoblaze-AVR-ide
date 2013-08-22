@@ -971,7 +971,7 @@ bool Project::start()
         {
             qDebug() << "Project: return false start()";
             std::vector<std::string> messages = m_simControlUnit->getMessages();
-            for (int i = 0; i < messages.size(); i++)
+            for (unsigned int i = 0; i < messages.size(); i++)
             {
                 qDebug() << QString::fromStdString(messages.at(i));
             }
@@ -991,16 +991,20 @@ bool Project::start()
     }
     qDebug() << "Project: getLineNumber";
     std::string fileName; //= new std::string;
-    int line = m_simControlUnit->getLineNumber(&fileName) - 1;
-    QString fileNameQStr = QString::fromStdString(fileName);
-    qDebug() << "Project: current line number:" << line << "in file" << fileNameQStr;
+    this->line = m_simControlUnit->getLineNumber(&fileName) - 1;
+    this->currFile = QString::fromStdString(fileName);
+    qDebug() << "Project: current line number:" << line << "in file" << this->currFile;
     qDebug() << "Project: program counter value:" << dynamic_cast<MCUSimCPU*>(m_simControlUnit->getSimSubsys(MCUSimSubsys::ID_CPU))->getProgramCounter();
-    emit highlightLine(fileNameQStr, line, currLineColor, origCurrLineCol);
+    emit highlightLine(this->currFile, this->line, this->currLineColor);
     //parentWindow->getWDockManager()->setCentralByName(fileNameQStr);
     //parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(line, currLineColor, origCurrLineCol);
-    prevLine = line;
-    prevLine2 = -1;
-    prevLine3 = -1;
+    this->prevLine = line;
+    this->prevLine2 = -1;
+    this->prevLine3 = -1;
+
+    this->prevFile = this->currFile;
+    this->prevFile2 = this->currFile;
+    this->prevFile3 = this->currFile;
     qDebug() << "Project: return start()";
     return true;
 }
@@ -1014,12 +1018,12 @@ void Project::stop()
 {
     qDebug() << "Project: stop()";
     std::string fileName; //= new std::string;
-    int line = m_simControlUnit->getLineNumber(&fileName) - 1;
-    QString fileNameQStr = QString::fromStdString(fileName);
+    this->line = m_simControlUnit->getLineNumber(&fileName) - 1;
+    this->currFile = QString::fromStdString(fileName);
     m_simControlUnit->stop();
-    emit highlightLine(fileNameQStr, prevLine, NULL, NULL);
-    emit highlightLine(fileNameQStr, prevLine2, NULL, NULL);
-    emit highlightLine(fileNameQStr, prevLine3, NULL, NULL);
+    emit highlightLine(this->prevFile, this->prevLine, NULL);
+    emit highlightLine(this->prevFile2, this->prevLine2, NULL);
+    emit highlightLine(this->prevFile3, this->prevLine3, NULL);
     //parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(prevLine, NULL, NULL);
     //parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(prevLine2, NULL, NULL);
     //parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(prevLine3, NULL, NULL);
@@ -1045,22 +1049,26 @@ void Project::step()
 {
     m_simControlUnit->step();
     std::string fileName; //= new std::string();
-    int line = m_simControlUnit->getLineNumber(&fileName) - 1;
-    QString fileNameQStr = QString::fromStdString(fileName);
-    qDebug() << "Project: current line number:" << line << "in file" << fileNameQStr;
+    this->line = m_simControlUnit->getLineNumber(&fileName) - 1;
+    this->currFile = QString::fromStdString(fileName);
+    qDebug() << "Project: current line number:" << line << "in file" << this->currFile;
     qDebug() << "Project: program counter value:" << dynamic_cast<MCUSimCPU*>(m_simControlUnit->getSimSubsys(MCUSimSubsys::ID_CPU))->getProgramCounter();
     //parentWindow->getWDockManager()->setCentralByName(fileNameQStr);
-    emit highlightLine(fileNameQStr, line, currLineColor, origCurrLineCol);
-    emit highlightLine(fileNameQStr, prevLine, prevLineColor, origPrevLineCol);
-    emit highlightLine(fileNameQStr, prevLine2, prevLine2Color, origPrevLine2Col);
-    emit highlightLine(fileNameQStr, prevLine3, NULL, NULL);
+    emit highlightLine(this->currFile, this->line, this->currLineColor);
+    emit highlightLine(this->prevFile, this->prevLine, this->prevLineColor);
+    emit highlightLine(this->prevFile2, this->prevLine2,this-> prevLine2Color);
+    emit highlightLine(this->prevFile3, this->prevLine3, NULL);
     //parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(line, currLineColor, origCurrLineCol);
     //parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(prevLine, prevLineColor, origPrevLineCol);
     //parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(prevLine2, prevLine2Color, origPrevLine2Col);
     //parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(prevLine3, NULL, NULL);
-    prevLine3 = prevLine2;
-    prevLine2 = prevLine;
-    prevLine = line;
+    this->prevLine3 = this->prevLine2;
+    this->prevLine2 = this->prevLine;
+    this->prevLine = this->line;
+
+    this->prevFile3 = this->prevFile2;
+    this->prevFile2 = this->prevFile;
+    this->prevFile = this->currFile;
     /*origPrevLine3Col = origPrevLine2Col;
     origPrevLine2Col = origPrevLineCol;
     origPrevLineCol = origCurrLineCol;*/

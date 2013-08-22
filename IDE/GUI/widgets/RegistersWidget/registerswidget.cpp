@@ -221,7 +221,7 @@ void RegistersWidget::updateValue(int row, int column)
         this->update = true;
         if ( 0 == (column+1)%3 )
         {
-            qDebug() << "update 1" << column + 1;
+            //qDebug() << "update 1" << column + 1;
             int value = this->item(row, column)->text().toInt(0, 16);
             if ( 255 < value )
             {
@@ -260,7 +260,7 @@ void RegistersWidget::updateValue(int row, int column)
         }
         else
         {
-            qDebug() << "update 2" << column + 1;
+            //qDebug() << "update 2" << column + 1;
             int value = this->item(row, column)->text().toInt(0, 10);
             if ( 255 < value )
             {
