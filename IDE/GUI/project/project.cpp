@@ -977,6 +977,10 @@ bool Project::start()
             }
             return false;
         }
+        else
+        {
+            qDebug() << "Project: m_simControlUnit->start() returned true";
+        }
     }
     else if (langType == LANG_C)
     {
@@ -987,6 +991,10 @@ bool Project::start()
         {
             qDebug() << "Project: return false start()";
             return false;
+        }
+        else
+        {
+            qDebug() << "Project: m_simControlUnit->start() returned true";
         }
     }
     qDebug() << "Project: getLineNumber";
@@ -1058,6 +1066,9 @@ void Project::step()
     emit highlightLine(this->prevFile, this->prevLine, this->prevLineColor);
     emit highlightLine(this->prevFile2, this->prevLine2,this-> prevLine2Color);
     emit highlightLine(this->prevFile3, this->prevLine3, NULL);
+
+    emit setCentralByName(this->currFile);
+    emit scrollToLine(this->line);
     //parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(line, currLineColor, origCurrLineCol);
     //parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(prevLine, prevLineColor, origPrevLineCol);
     //parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(prevLine2, prevLine2Color, origPrevLine2Col);

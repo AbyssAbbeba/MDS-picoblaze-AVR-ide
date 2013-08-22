@@ -18,7 +18,7 @@
 start:  
         LOAD    s0, #00Fh              ; Load content to shifted registers
         LOAD    s1, #01Eh              ;
-        LOAD    s3,#01h
+        LOAD    s3, #01h
         JUMP    main                    ; Execute main program loop
 
 ; Main loop
@@ -26,7 +26,7 @@ start:
 main:
         
 ; Shifting to the left
-        RR     s1
+        RR     s3
         RR     s3
         RR     s3
         RR     s3

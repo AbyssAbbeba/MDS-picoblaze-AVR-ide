@@ -190,7 +190,18 @@ void WTextEdit::setPosition(int pos)
     qDebug() << "WTextEdit: return setPosition()";
 }
 
+
 int WTextEdit::getPosition()
 {
     return this->textCursor().position();
+}
+
+
+void WTextEdit::scrollToLine(int line)
+{
+    qDebug() << "WTextEdit: scrollToLine()";
+    //qDebug() << "WTextEdit: curr value:" <<  this->verticalScrollBar()->value() << "max value:" <<  this->verticalScrollBar()->maximum() << "calculated value:" << (line / this->document()->lineCount()) * this->verticalScrollBar()->maximum();
+    //qDebug() << "WTextEdit: line" << line << "line count:" << this->document()->lineCount() << "value:" << (double)line / (double)this->document()->lineCount();
+    this->verticalScrollBar()->setValue((int)(((double)line / (double)this->document()->lineCount()) * this->verticalScrollBar()->maximum()));
+    qDebug() << "WTextEdit: return scrollToLine()";
 }

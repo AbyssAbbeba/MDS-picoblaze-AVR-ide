@@ -1,0 +1,90 @@
+                   1     ; MDS PicoBlaze IDE - Demonstration code
+                   2     ; Example of sytax errors, list of directives,
+                   3     ; ------------------------------------------------------
+                   4     ; See manual for more info
+                   5     ;
+                   6     device          KCPSM3
+                   7     ; Code with syntax errors
+                   8             nolist                        ; Disable code listing
+                  15             list    ; Enable code listing
+                  16             end
+                  17     ; <-- Bookmark   (ctrl + shift + M)
+                  18     ; <-- Breakpoint (ctrl + shift + B)
+                  19
+                  20     ; Here you can see syntax of some important directives
+                  21     ; Those directives may significantly improve quality and readability of your code
+                  22
+                  23                     DEVICE          KCPSM3
+                  24     ; Tell compiler type of procesor (KCPSM2, KCPSM3, KCPSM6 available)
+                  25                     INCLUDE      hello.asm        ;  "< file name >"
+                  26     ;Compiler basicaly copies content of included file to line, where the directive is used.
+                  27     ;Include files can include other files.
+                  28     <symbol>        EQU     <expresion>
+                  29     ;The directive EQU stands for "equals". It allows you to give a numerical value to a symbol.
+                  30     ;This symbol cannot be redefined.
+                  31     CONSTANT        <symbol>, <expresion>
+                  32     ;The directive CONSTANT allows you to give a numerical value to a symbol. It is same like EQU,
+                  33     ;but with diferent syntax. Cannot be redefined.
+                  34      <symbol>       SET     <expresion>
+                  35     ; Directive SET is quite similar to EQU, but symbols defined with the SET(and Variable)
+                  36     ; directive can be redefined with another value in your source code, but those defined with EQU cannot.
+                  37     VARIABLE        <symbol>,<expresion>
+                  38     ; Directive VARIABLE is similar to SET, but with diferent syntax. Symbols defined with
+                  39     ; VARIABLE can be redefined with another value in your source code, but those defined with EQU cannot.
+                  40     <symbol>        REG     <expresion>
+                  41     ; Symbols defined with the REG directive are by compiler considered as work registers.
+                  42     NAMEREG         <symbol>,<expresion>
+                  43     ; Directive NAMEREG is similar to REG, but with diferent syntax.
+                  44     ; Symbols defined with NAMEREG can be redefined with another value in your source code.
+                  45     <symbol>        DATA    <expresion>
+                  46     ; Symbols defined with the DATA directive are by compiler considered as data memory.
+                  47     ; It must be used only with instructions FETCH and STORE.
+                  48     <symbol>        CODE    <expresion>
+                  49     ; Symbols defined with the CODE directive are by compiler considered as program memory.
+                  50     <symbol>        PORT    <expresion>
+                  51     ; Symbol defined with this directive is considered to be PORT_ID identificator.
+                  52     <symbol>        AUTOREG [AT E]  ; Optional attribute can define counter starting adress
+                  53     ; This directive saves time. You can use it, when you dont care which work register will be used.
+                  54     ; It will automatically assign a register at adress 0x00, which is incremented with every other
+                  55     ; AUTOREG directive. Optionaly, you can change starting address counter by adding a
+                  56     ; parameter after AUTOREG directive. You can check assigned registers in codelisting (file .lst)
+                  57     ; and symbol table (file .sym).
+                  58     <symbol>        AUTOSPR [AT E]  ; Optional attribute can define counter starting adress
+                  59
+                  60     <symbol>        DEFINE  <expresion>
+                  61     ; You can define expresion using previously defined symbols.
+                  62     ; Value of this expresion is calculated every time the symbol is used.
+                  63
+                  64         ORG         <expresion>
+                  65     ADDRESS         <expresion>
+                  66     ; When the ORG or ADDRESS statement is encountered, the assembler calculates the value of the
+                  67     ; expression and changes the address counter. The MDS assembler maintains a location counter for each
+                  68     ; segment. The location counter contains the offset of the instruction or data being assembled and is
+                  69     ; incremented after each line by the number of bytes of data or code in that line.
+                  70
+                  71     REPT <expresion> ; expresion determines number of repetion
+                  72     <repeated code>
+                  73     ENDR ; end of repetion
+                  74
+                  75     ; Directive REPT is able to repeatedly execute a block of code.
+                  76
+                  77     WHILE <expresion>
+                  78     <repeated code>
+                  79     ENDW ; end of while
+                  80     ; The while construct consists of a block of code and an expresion.
+                  81     ; Following code is executed until expresion equals to zero.
+                  82
+                  83     SKIP <expresion> ; expresion determines number of skipped lines of code
+                  84
+                  85     MACRO     [<parameter1>] [,<parameter2>..]
+                  86     <macro source code>
+                  87     ENDM    ; end of macro declaration
+                  88     ; Macro with mandatory parameters
+                  89
+                  90
+                  91
+                  92
+                  93
+                  94
+                  95
+                  96
