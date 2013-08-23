@@ -25,7 +25,7 @@ void XilMemFile::clearAndLoad ( const char * filename ) throw ( DataFileExceptio
 
 void XilMemFile::clearAndLoad ( const std::string & filename ) throw ( DataFileException )
 {
-    std::ifstream file ( filename, std::fstream::in | std::fstream::binary );
+    std::ifstream file(filename);
 
     if ( false == file.is_open() )
     {
@@ -34,6 +34,7 @@ void XilMemFile::clearAndLoad ( const std::string & filename ) throw ( DataFileE
 
     clear();
 
+    size_t lineLen;
     unsigned int addr = 0;
     char buffer[MAX_LINE_LENGTH];
 
@@ -47,9 +48,20 @@ void XilMemFile::clearAndLoad ( const std::string & filename ) throw ( DataFileE
             throw DataFileException(DataFileException::EXP_IO_ERROR);
         }
 
-        if ( '@' != line[1] )
+        lineLen = strlen(line);
+
+        if ( 0 == lineLen )
+        {
+            continue;
+        }
+        if ( '@' != line[0] )
         {
             throw DataFileException(DataFileException::EXP_BAD_RECORD_FORMAT);
+        }
+
+        if ( '\r' == line [ lineLen -1 ] )
+        {
+            line [ lineLen -1 ] = '\0';
         }
 
         line++;
@@ -109,7 +121,7 @@ inline bool XilMemFile::checkHex ( const char * string )
 
     if ( 0 == length )
     {
-            return false;
+        return false;
     }
 
     for ( size_t i = 0; i < length; i++ )
