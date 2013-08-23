@@ -41,7 +41,7 @@ START:
     
         SUB        s1,#01h
         SUB        s1,#5
-        SUB        s1,#O5
+        SUB        s1,#05h
         SUB        s1,#0x05
         SUB        s1,#0b101
         SUB        s1,#0b00000101
@@ -55,7 +55,7 @@ START:
        
         SUBCY      s1,#01h
         SUBCY      s1,#5
-        SUBCY      s1,#O5
+        SUBCY      s1,#05h
         SUBCY      s1,#0x05
         SUBCY      s1,#0b101
         SUBCY      s1,#0b00000101
@@ -69,7 +69,7 @@ START:
 
         COMPARE    s1,#01h
         COMPARE    s1,#5
-        COMPARE    s1,#O5
+        COMPARE    s1,#05h
         COMPARE    s1,#0x05
         COMPARE    s1,#0b101
         COMPARE    s1,#0b00000101

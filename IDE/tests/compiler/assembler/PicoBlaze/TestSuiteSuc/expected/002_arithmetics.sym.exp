@@ -1,0 +1,5 @@
+S1 . . . . . . . . . . . . . . . . . NUMBER 0x00004 USED     CONSTANT    002_arithmetics.asm:5.1-5.24
+S2 . . . . . . . . . . . . . . . . . NUMBER 0x00004 USED     CONSTANT    002_arithmetics.asm:6.1-6.25
+S3 . . . . . . . . . . . . . . . . . NUMBER 0x00006 USED     CONSTANT    002_arithmetics.asm:7.1-7.22
+S4 . . . . . . . . . . . . . . . . . NUMBER 0x00007 USED     CONSTANT    002_arithmetics.asm:8.1-8.22
+START  . . . . . . . . . . . . . . . LABEL  0x00000 NOT USED CONSTANT    002_arithmetics.asm:12.1-12.7

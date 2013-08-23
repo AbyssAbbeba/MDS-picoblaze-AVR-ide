@@ -1,0 +1,7 @@
+PODPROG  . . . . . . . . . . . . . . LABEL  0x0000D USED     CONSTANT    003_interrupt.asm:27.1-27.9
+START  . . . . . . . . . . . . . . . LABEL  0x00000 NOT USED CONSTANT    003_interrupt.asm:9.1-9.7
+TESTSYMB10 . . . . . . . . . . . . . REG.   0x00002 USED     CONSTANT    003_interrupt.asm:5.1-5.32
+TESTSYMB11 . . . . . . . . . . . . . REG.   0x00003 USED     CONSTANT    003_interrupt.asm:6.1-6.32
+TESTSYMB12 . . . . . . . . . . . . . REG.   0x00004 USED     CONSTANT    003_interrupt.asm:7.1-7.32
+TESTSYMB13 . . . . . . . . . . . . . REG.   0x00001 USED     CONSTANT    003_interrupt.asm:4.1-4.32
+TESTSYMB9  . . . . . . . . . . . . . REG.   0x00000 USED     CONSTANT    003_interrupt.asm:3.1-3.32
