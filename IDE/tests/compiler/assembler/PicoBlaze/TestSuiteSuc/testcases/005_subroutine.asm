@@ -41,7 +41,7 @@ ADDCY           a_msb, b_msb
 ; add MSBs, keep result in a_msb
 RETURN
 
-
+sX              equ             4
 
 
 inc_16:
