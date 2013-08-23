@@ -1,0 +1,342 @@
+                   1
+                   2
+                   3     device KCPSM3
+                   4
+  00004            5     G               equ     4
+  00004            6     SBOX_ROM               equ     4
+  00004            7     STATE               equ     4
+  00004            8     RESULT               equ     4
+  00004            9     KEY               equ     4
+  00004           10     INKEY               equ     4
+  00004           11     B128               equ     4
+  00004           12     XORROUNDKEY               equ     4
+  00004           13     INTOSTATE               equ     4
+  00004           14     X   equ                         4
+                  15
+                  16     ; Rijndael encrypt entry
+                  17     ; plain  is assumed to be in {plain }, the key in {inkey}
+                  18     ; both will be copied, final state will be the result
+                  19     Encrypt:
+000 3001D         20                         CALL      InkeyToKey
+001 30004         21                         CALL      InToState           ; state = in
+                  22
+002 30004         23                         CALL      XorRoundKey         ; XorRoundKey( state, k[0], Nc )
+003 04F04         24                         INPUT      sF, X               ; x^(i-1) (i=1)
+004 04309         25                         INPUT      s3, 9               ; for round = 1 step 1 to Nn - 1
+                  26     Round:                                            ;
+005 30066         27                         CALL      SubBytes            ; ..SubBytes( state, Nc )
+006 30091         28                         CALL      ShiftRows           ; ..ShiftRows( state, Nc )
+007 300AA         29                         CALL      MixColumns          ; ..MixColumns( state, Nc )
+008 30030         30                         CALL      NextRoundKey        ; ..XorRoundKey( state, k[ round ], Nc )
+009 30004         31                         CALL      XorRoundKey
+00A 1D310         32                         SUB       s3, 1               ; ..step 1
+00B 35405         33                         JUMP      NZ, Round           ; end for
+00C 30066         34                         CALL      SubBytes            ; SubBytes( state, Nc )
+00D 30091         35                         CALL      ShiftRows           ; ShiftRows( state, Nc )
+00E 30030         36                         CALL      NextRoundKey        ; XorRoundKey( state, k[ round ], Nc )
+00F 30004         37                         CALL      XorRoundKey
+010 30026         38                         CALL      StateToOut
+011 2A000         39                         RETURN                           ; result  is last {state}
+                  40
+                  41     ; result should be: (Gladman)
+                  42     ; R[10].k_sch d014f9a8c9ee2589e13f0cc8b6630ca6
+                  43     ; R[10].result  3925841d02dc09fbdc118597196a0b32
+                  44
+                  45     ; XorRoundKey( state, k, Nc )
+  00005           46     pkey    EQU     5
+  00004           47     pstate  equ     4
+                  48
+012 04004         49     xor128:             INPUT      s0, b128            ; set up loop count
+013 01450         50     xornext:            LOAD        s4, pKey            ; get key byte
+014 01540         51                         LOAD        s5, pState          ; get state byte
+015 0F450         52                         XOR       s4, s5              ; do the xor
+016 2E404         53                         STORE        s4, pState          ; save new state byte
+017 19510         54                         ADD       pKey, 1             ; increment key pointer
+018 19410         55                         ADD       pState, 1           ; increment state pointer
+019 1D010         56                         SUB       s0, 1               ; decrement loop counter
+01A 35413         57                         JUMP      NZ, xornext         ; loop back if not done 16 times (128/8)
+01B 2A000         58                         RETURN
+                  59
+                  60       ; get pointer to state
+01C 3401F         61                         JUMP      ToScratch128
+                  62
+                  63     InkeyToKey:
+01D 04504         64                         INPUT      pKey, inkey         ; get pointer to plain
+01E 04404         65                         INPUT      pState, key         ; get pointer to state
+                  66
+                  67     ToScratch128:
+01F 01450         68     putnext:            LOAD        s4, pKey            ; get plain  byte
+020 2E404         69                         STORE        s4, pState          ; save new state byte
+021 19510         70                         ADD       pKey, 1             ; increment key pointer
+022 19410         71                         ADD       pState, 1           ; increment state pointer
+023 1D010         72                         SUB       s0, 1               ; decrement loop counter
+024 3541F         73                         JUMP      NZ, putnext         ; loop back if not done 16 times (128/8)
+025 2A000         74                         RETURN
+                  75
+                  76     StateToOut:
+026 04504         77                         INPUT      pKey, state         ; get pointer to state
+027 04404         78                         INPUT      pState, result      ; get pointer to result
+                  79
+028 04004         80                         INPUT      s0, b128            ; set up loop count
+029 01450         81     getnext:            LOAD        s4, pKey            ; get plain  byte
+02A 2E404         82                         STORE        s4, pState          ; save new state byte
+02B 19510         83                         ADD       pKey, 1             ; increment key pointer
+02C 19410         84                         ADD       pState, 1           ; increment state pointer
+02D 1D010         85                         SUB       s0, 1               ; decrement loop counter
+02E 35429         86                         JUMP      NZ, getnext         ; loop back if not done 16 times (128/8)
+02F 2A000         87                         RETURN
+                  88
+                  89     NextRoundKey:
+                  90     ; temp = k[i - 1]
+030 01400         91                         LOAD        s4, key + 12        ; get last word of previous key
+W: value out of range: 16, allowed range is [0,15] (trimmed to 4 bits) which makes it 0
+031 01510         92                         LOAD        s5, key + 13
+W: value out of range: 17, allowed range is [0,15] (trimmed to 4 bits) which makes it 1
+032 01620         93                         LOAD        s6, key + 14
+W: value out of range: 18, allowed range is [0,15] (trimmed to 4 bits) which makes it 2
+033 01730         94                         LOAD        s7, key + 15
+W: value out of range: 19, allowed range is [0,15] (trimmed to 4 bits) which makes it 3
+                  95
+034 05840         96                         INPUT      s8, @s4              ; RotWord
+035 05450         97                         INPUT      s4, @s5
+036 05560         98                         INPUT      s5, @s6
+037 05670         99                         INPUT      s6, @s7
+038 05780        100                         INPUT      s7, @s8
+                 101
+039 05840        102                         INPUT      s8, @s4              ; temp=SubWord( RotWord( temp ) )
+03A 3006F        103                         CALL      SBox
+03B 05480        104                         INPUT      s4, @s8
+                 105
+03C 0F4F0        106                         XOR       s4, sF              ; xor Rcon( i / Nk )
+03D 20F06        107                         SL0       sF                  ; x^(i-1) (i+=1)
+03E 35C40        108                         JUMP      NC, nowrap
+03F 0FF40        109                         XOR       sF, G
+                 110     nowrap:
+040 05850        111                         INPUT      s8, @s5              ; SubWord( RotWord( temp ) )
+041 3006F        112                         CALL      SBox
+042 05580        113                         INPUT      s5, @s8
+                 114
+043 05860        115                         INPUT      s8, @s6              ; SubWord( RotWord( temp ) )
+044 3006F        116                         CALL      SBox
+045 05680        117                         INPUT      s6, @s8
+                 118
+046 05870        119                         INPUT      s8, @s7              ; SubWord( RotWord( temp ) )
+047 3006F        120                         CALL      SBox
+048 05780        121                         INPUT      s7, @s8
+                 122
+049 05540        123                         INPUT      pKey, @key
+                 124
+04A 05040        125                         INPUT      s0, @b128
+04B 01850        126     key96:              LOAD        s8, pKey            ; k[i]=k[i - Nk] ^ temp
+04C 0F480        127                         XOR       s4, s8
+04D 2F450        128                         STORE        s4, @pKey
+04E 19510        129                         ADD       pKey, 1
+                 130
+04F 01850        131                         LOAD        s8, pKey            ; k[i]=k[i - Nk] ^ temp
+050 0F580        132                         XOR       s5, s8
+051 2F550        133                         STORE        s5, @pKey
+052 19510        134                         ADD       pKey, 1
+                 135
+053 01850        136                         LOAD        s8, pKey            ; k[i]=k[i - Nk] ^ temp
+054 0F680        137                         XOR       s6, s8
+055 2F650        138                         STORE        s6, @pKey
+056 19510        139                         ADD       pKey, 1
+                 140
+057 01850        141                         LOAD        s8, pKey            ; k[i]=k[i - Nk] ^ temp
+058 0F780        142                         XOR       s7, s8
+059 2F750        143                         STORE        s7, @pKey
+05A 19510        144                         ADD       pKey, 1
+                 145
+05B 1D040        146                         SUB       s0, 4
+05C 3544B        147                         JUMP      NZ, key96
+05D 2A000        148                         RETURN
+                 149
+                 150     ; Sub bytes of one 32b word pointed at by pKey
+                 151     SubWord:
+05E 04004        152                         INPUT      s0, 4
+05F 01850        153     SubWord1:           LOAD        s8, pKey
+060 3006F        154                         CALL      SBox
+061 2F850        155                         STORE        s8, @pKey
+062 19510        156                         ADD       pKey, 1
+063 1D010        157                         SUB       s0, 1
+064 3545F        158                         JUMP      NZ, SubWord1
+065 2A000        159                         RETURN
+                 160
+                 161     ; SubBytes( state, Nc )
+                 162     SubBytes:
+066 05440        163                         INPUT      pState, @state       ; get pointer to state
+                 164
+067 04004        165                         INPUT      s0, b128            ; set up loop count
+068 01840        166     sub128:             LOAD        s8, pState          ; get state byte
+069 3006F        167                         CALL      SBox
+06A 2E804        168                         STORE        s8, pState          ; save new state byte
+06B 19410        169                         ADD       pState, 1           ; increment state pointer
+06C 1D010        170                         SUB       s0, 1               ; decrement loop counter
+06D 35468        171                         JUMP      NZ, sub128          ; loop back if not done 16 times (128/8)
+06E 2A000        172                         RETURN
+                 173
+                 174     ; SBox( s )
+                 175     SBox:
+06F 2C804        176                         OUTPUT       s8, SBOX_ROM        ; set index
+070 04804        177                         INPUT        s8, SBOX_ROM        ; get data
+071 2A000        178                         RETURN
+                 179
+                 180     ; soft version of SBOX, very slow
+                 181     SBox_Soft:
+072 3007C        182                         CALL      MulInverse          ; .    x = sbox_affine(mul_inverse(in));
+                 183     SBoxAffine:
+                 184     ; for(counter = 1; counter > (DEGREE - 1)) | (s << 1); s &= MASK;
+073 0F890        185                         XOR       s8, s9              ; in ^= s;
+074 20902        186                         RL        s9
+075 0F890        187                         XOR       s8, s9
+076 20902        188                         RL        s9
+077 0F890        189                         XOR       s8, s9
+078 20902        190                         RL        s9
+079 0F890        191                         XOR       s8, s9
+07A 0E83F        192                         XOR       s8, #63             ; in ^= 0x63;
+07B 2A000        193                         RETURN                           ; return in;
+                 194     ; }
+                 195
+                 196     ; MulInverse by trial and error
+                 197     MulInverse:
+07C 04900        198                         INPUT      s9, 0               ; int result = 0;
+07D 0D880        199                         OR        s8, s8              ; if (in == 0)
+07E 2B000        200                         RETURN       Z                   ; return 0;
+07F 19910        201     MulInverse1:        ADD       s9, 1               ; result = 1; result++
+080 2B000        202                         RETURN       Z                   ; result < MOD
+081 05C80        203                         INPUT      sC, @s8              ; in
+082 05D90        204                         INPUT      sD, @s9              ; result
+083 30087        205                         CALL      GMul                ; gmul( in, result, ...)
+084 1DE10        206                         SUB       sE, 1               ; == 1
+085 3547F        207                         JUMP      NZ, MulInverse1     ; == 1?
+086 2A000        208                         RETURN                           ; return result
+                 209
+                 210     GMul:
+087 04E00        211                         INPUT      sE, 0
+                 212     GMul1:
+088 20D0E        213                         SR0       sD
+089 3588C        214                         JUMP      C, GMul2           ; ; last bit was 1
+08A 2B000        215                         RETURN       Z                  ; ; i2 was 0 already ?
+08B 3408D        216                         JUMP      GMul3
+                 217
+08C 0FEC0        218     GMul2:              XOR       sE, sC
+08D 20C06        219     GMul3:              SL0       sC
+08E 35C88        220                         JUMP      NC, GMul1
+08F 0FC40        221                         XOR       sC, G              ; ; i1 ^= field;
+090 34088        222                         JUMP      GMul1
+                 223
+                 224     ;; ShiftRows( state, Nc )
+                 225     ShiftRows:
+091 01750        226                         LOAD        s7, state + 1
+092 01490        227                         LOAD        s4, state + 1 + 4
+093 015D0        228                         LOAD        s5, state + 1 + 4 + 4
+094 01610        229                         LOAD        s6, state + 1 + 4 + 4 + 4
+095 2E405        230                         STORE        s4, state + 1
+096 2E509        231                         STORE        s5, state + 1 + 4
+097 2E60D        232                         STORE        s6, state + 1 + 4 + 4
+098 2E711        233                         STORE        s7, state + 1 + 4 + 4 + 4
+                 234
+099 01660        235                         LOAD        s6, state + 2
+09A 017A0        236                         LOAD        s7, state + 2 + 4
+09B 014E0        237                         LOAD        s4, state + 2 + 4 + 4
+09C 01520        238                         LOAD        s5, state + 2 + 4 + 4 + 4
+09D 2E406        239                         STORE        s4, state + 2
+09E 2E50A        240                         STORE        s5, state + 2 + 4
+09F 2E60E        241                         STORE        s6, state + 2 + 4 + 4
+0A0 2E712        242                         STORE        s7, state + 2 + 4 + 4 + 4
+                 243
+0A1 01570        244                         LOAD        s5, state + 3
+0A2 016B0        245                         LOAD        s6, state + 3 + 4
+0A3 017F0        246                         LOAD        s7, state + 3 + 4 + 4
+0A4 01430        247                         LOAD        s4, state + 3 + 4 + 4 + 4
+0A5 2E407        248                         STORE        s4, state + 3
+0A6 2E50B        249                         STORE        s5, state + 3 + 4
+0A7 2E60F        250                         STORE        s6, state + 3 + 4 + 4
+0A8 2E713        251                         STORE        s7, state + 3 + 4 + 4 + 4
+                 252
+0A9 2A000        253                         RETURN
+                 254
+                 255     ;; MixColumns( state, Nc )
+                 256     MixColumns:
+                 257
+0AA 01440        258                         LOAD        s4, state + 0
+0AB 01550        259                         LOAD        s5, state + 1
+0AC 01660        260                         LOAD        s6, state + 2
+0AD 01770        261                         LOAD        s7, state + 3
+0AE 300CF        262                         CALL      MixColumn
+0AF 2E404        263                         STORE        s4, state + 0
+0B0 2E505        264                         STORE        s5, state + 1
+0B1 2E606        265                         STORE        s6, state + 2
+0B2 2E707        266                         STORE        s7, state + 3
+                 267
+0B3 01480        268                         LOAD        s4, state + 0 + 4
+0B4 01590        269                         LOAD        s5, state + 1 + 4
+0B5 016A0        270                         LOAD        s6, state + 2 + 4
+0B6 017B0        271                         LOAD        s7, state + 3 + 4
+0B7 300CF        272                         CALL      MixColumn
+0B8 2E408        273                         STORE        s4, state + 0 + 4
+0B9 2E509        274                         STORE        s5, state + 1 + 4
+0BA 2E60A        275                         STORE        s6, state + 2 + 4
+0BB 2E70B        276                         STORE        s7, state + 3 + 4
+                 277
+0BC 014C0        278                         LOAD        s4, state + 0 + 4 + 4
+0BD 015D0        279                         LOAD        s5, state + 1 + 4 + 4
+0BE 016E0        280                         LOAD        s6, state + 2 + 4 + 4
+0BF 017F0        281                         LOAD        s7, state + 3 + 4 + 4
+0C0 300CF        282                         CALL      MixColumn
+0C1 2E40C        283                         STORE        s4, state + 0 + 4 + 4
+0C2 2E50D        284                         STORE        s5, state + 1 + 4 + 4
+0C3 2E60E        285                         STORE        s6, state + 2 + 4 + 4
+0C4 2E70F        286                         STORE        s7, state + 3 + 4 + 4
+                 287
+0C5 01400        288                         LOAD        s4, state + 0 + 4 + 4 + 4
+0C6 01510        289                         LOAD        s5, state + 1 + 4 + 4 + 4
+0C7 01620        290                         LOAD        s6, state + 2 + 4 + 4 + 4
+0C8 01730        291                         LOAD        s7, state + 3 + 4 + 4 + 4
+0C9 300CF        292                         CALL      MixColumn
+0CA 2E410        293                         STORE        s4, state + 0 + 4 + 4 + 4
+0CB 2E511        294                         STORE        s5, state + 1 + 4 + 4 + 4
+0CC 2E612        295                         STORE        s6, state + 2 + 4 + 4 + 4
+0CD 2E713        296                         STORE        s7, state + 3 + 4 + 4 + 4
+                 297
+0CE 2A000        298                         RETURN
+                 299
+                 300     MixColumn:
+0CF 05940        301                         INPUT      s9, @s4             ; ; t = c[0] ^ c[3]
+0D0 0F970        302                         XOR       s9, s7
+0D1 05A50        303                         INPUT      sA, @s5             ; ; u = c[1] ^ c[2]
+0D2 0FA60        304                         XOR       sA, s6
+0D3 05B90        305                         INPUT      sB, @s9            ;  ; v = t ^ u
+0D4 0FBA0        306                         XOR       sB, sA
+                 307
+0D5 05840        308                         INPUT      s8, @s4             ; ; c[0] = c[0] ^ v ^ FFmul(0x02, c[0] ^ c[1])
+0D6 0F850        309                         XOR       s8, s5
+0D7 20806        310                         SL0       s8
+0D8 35CDA        311                         JUMP      NC, mcf1
+0D9 0F840        312                         XOR       s8, G
+0DA 0F8B0        313     mcf1:               XOR       s8, sB
+0DB 0F480        314                         XOR       s4, s8
+                 315
+0DC 058A0        316                         INPUT      s8, @sA            ;  ; c[1] = c[1] ^ v ^ FFmul(0x02, u)
+0DD 20806        317                         SL0       s8
+0DE 35CE0        318                         JUMP      NC, mcf2
+0DF 0F840        319                         XOR       s8, G
+0E0 0F8B0        320     mcf2:               XOR       s8, sB
+0E1 0F580        321                         XOR       s5, s8
+                 322
+0E2 05860        323                         INPUT      s8, @s6             ; ; c[2] = c[2] ^ v ^ FFmul(0x02, c[2] ^ c[3])
+0E3 0F870        324                         XOR       s8, s7
+0E4 20806        325                         SL0       s8
+0E5 35CE7        326                         JUMP      NC, mcf3
+0E6 0F840        327                         XOR       s8, G
+0E7 0F8B0        328     mcf3:               XOR       s8, sB
+0E8 0F680        329                         XOR       s6, s8
+                 330
+0E9 05890        331                         INPUT      s8, @s9             ; ; c[3] = c[3] ^ v ^ FFmul(0x02, t)
+0EA 20806        332                         SL0       s8
+0EB 35CED        333                         JUMP      NC, mcf4
+0EC 0F840        334                         XOR       s8, G
+0ED 0F8B0        335     mcf4:               XOR       s8, sB
+0EE 0F780        336                         XOR       s7, s8
+                 337
+0EF 2A000        338                         RETURN

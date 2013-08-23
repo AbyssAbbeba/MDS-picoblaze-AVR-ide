@@ -207,18 +207,28 @@ int WDockManager::getTabCount()
 }
 
 
-
+/**
+ * @brief
+ */
 QString WDockManager::getCentralName()
 {
     return openCentralWidgets.at(wTab->currentIndex())->getCodeEdit()->getName();
 }
 
+
+/**
+ * @brief
+ */
 QString WDockManager::getCentralPath()
 {
     return openCentralWidgets.at(wTab->currentIndex())->getCodeEdit()->getPath();
 }
 
 
+/**
+ * @brief
+ * @param wName
+ */
 void WDockManager::setCentralName(QString wName)
 {
     qDebug() << "WDockManager: setCentralName()";
@@ -228,6 +238,10 @@ void WDockManager::setCentralName(QString wName)
 }
 
 
+/**
+ * @brief
+ * @param wPath
+ */
 void WDockManager::setCentralPath(QString wPath)
 {
     qDebug() << "WDockManager: setCentralPath()";

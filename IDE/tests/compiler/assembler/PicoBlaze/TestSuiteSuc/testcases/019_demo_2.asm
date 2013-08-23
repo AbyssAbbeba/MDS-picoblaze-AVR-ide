@@ -12,7 +12,7 @@ device          KCPSM3
 Start:              CALL      wait_1s
                     CALL      wait_100ms
                     JUMP      $                   ; Infinite loop, $ is translated as number of curent line
-                    END                           ; End of program
+                   
 
 
 ; Subroutines-----------------------------------------------------------------
@@ -42,6 +42,6 @@ wait_100ms_i:       SUB       Temp1, 1
                     RETURN
 ; <-- Bookmark   (ctrl + shift + M)
 ; <-- Breakpoint (ctrl + shift + B)
-
+                    END                            ; End of program
 ; -----------------------------------------
 ; -----------------------------------------
