@@ -4,6 +4,7 @@
 ; See manual for more info
 ; 
 device          KCPSM3
+end
 ; Code with syntax errors
         nolist                        ; Disable code listing
 if 0        
@@ -13,7 +14,7 @@ if 0
 label?: SR0        B                  ; invalid label
 endif
         list    ; Enable code listing
-        end
+        
 ; <-- Bookmark   (ctrl + shift + M)
 ; <-- Breakpoint (ctrl + shift + B)
      
