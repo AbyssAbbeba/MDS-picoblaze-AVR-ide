@@ -62,6 +62,7 @@ void StackWidget::push()
     {
         QListWidgetItem *item = new QListWidgetItem(this->leInput->text(), this->lwStack);
         this->lwStack->setCurrentRow(this->lwStack->count() - 1);
+        this->m_memory->directWrite(lwStack->count()-1, this->leInput->text().toInt());
     }
 }
 
@@ -71,6 +72,13 @@ void StackWidget::pop()
     if ( 0 != this->lwStack->count() )
     {
         this->leInput->setText(this->lwStack->currentItem()->text());
+        for (int i = lwStack->count()-1; i > lwStack->currentRow(); i--)
+        {
+            uint value;
+            this->m_memory->directRead(i, value);
+            this->m_memory->directWrite(i-1, value);
+        }
+        this->m_memory->directWrite(lwStack->count()-1, 0);
         delete this->lwStack->currentItem();
     }
 }
@@ -145,6 +153,7 @@ void StackWidget::deviceChanged()
             return;
     }*/
     m_size = m_memory->size();
+    qDebug() << "QStackWidget: size" << m_size;
 
     deviceReset();
 }
