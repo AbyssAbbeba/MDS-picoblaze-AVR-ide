@@ -407,35 +407,7 @@ CompilerStatement * CompilerCore::loadDevSpecCode ( const std::string & deviceNa
     }
     m_devSpecCodeLoaded = true;
 
-    boost::filesystem::path fileName = m_baseIncludeDir;
-    fileName = system_complete(fileName.make_preferred());
-
-    switch ( m_lang )
-    {
-        case LI_INVALID:
-            return NULL;
-        case LI_ASM:
-            fileName /= "assembler";
-            break;
-    }
-    switch ( m_arch )
-    {
-        case TA_INVALID:
-            return NULL;
-        case TA_AVR8:
-            fileName /= "avr8";
-            break;
-        case TA_PIC8:
-            fileName /= "pic8";
-            break;
-        case TA_MCS51:
-            fileName /= "mcs51";
-            break;
-        case TA_PICOBLAZE:
-            fileName /= "PicoBlaze";
-            break;
-    }
-    fileName /= deviceName + PRECOMPILED_CODE_EXTENSION;
+    std::string fileName = getBaseIncludeDir() + deviceName + PRECOMPILED_CODE_EXTENSION;
 
     if ( false == boost::filesystem::is_regular_file(fileName) )
     {
@@ -446,7 +418,7 @@ CompilerStatement * CompilerCore::loadDevSpecCode ( const std::string & deviceNa
         return NULL;
     }
 
-    CompilerStatement * result = loadPrecompiledCode(fileName.string(), true);
+    CompilerStatement * result = loadPrecompiledCode(fileName, true);
     if ( NULL == result )
     {
         if ( NULL != flag )
@@ -467,6 +439,48 @@ CompilerStatement * CompilerCore::loadDevSpecCode ( const std::string & deviceNa
     }
 
     return result;
+}
+
+std::string CompilerCore::getBaseName()
+{
+    return boost::filesystem::path(m_opts->m_sourceFile).filename().string();
+}
+
+std::string CompilerCore::getBaseIncludeDir()
+{
+    using namespace boost::filesystem;
+
+    std::string result = m_baseIncludeDir;
+
+    switch ( m_lang )
+    {
+        case LI_INVALID:
+            return "";
+        case LI_ASM:
+            result += "/assembler";
+            break;
+    }
+    switch ( m_arch )
+    {
+        case TA_INVALID:
+            return "";
+        case TA_AVR8:
+            result += "/avr8";
+            break;
+        case TA_PIC8:
+            result += "/pic8";
+            break;
+        case TA_MCS51:
+            result += "/mcs51";
+            break;
+        case TA_PICOBLAZE:
+            result += "/PicoBlaze";
+            break;
+    }
+
+    result += "/";
+
+    return system_complete(path(result).make_preferred()).string();
 }
 
 CompilerStatement * CompilerCore::loadPrecompiledCode ( const std::string & fileName,

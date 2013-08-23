@@ -31,6 +31,7 @@ class HexFile : public DataFile
     ////    Constructors and Destructors    ////
     public:
         /**
+         * @brief
          * @param[in] size Maximum data size
          */
         HexFile ( unsigned int arrsize = 0x10000,

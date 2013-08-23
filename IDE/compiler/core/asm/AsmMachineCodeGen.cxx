@@ -124,7 +124,7 @@ inline bool AsmMachineCodeGen::reserve ( unsigned int maxAddr )
 }
 
 void AsmMachineCodeGen::output ( Endianness byteOrder,
-                                 DataFile * target ) /*const*/
+                                 DataFile * target ) const
 {
     int addrIncrement;
 

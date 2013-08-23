@@ -15,22 +15,71 @@
 
 #include "XilVHDLFile.h"
 
-void XilVHDLFile::clearAndLoad ( const char * filename ) throw ( DataFileException )
-{
-    clearAndLoad(std::string(filename));
-}
+#include <cstring>
 
-void XilVHDLFile::clearAndLoad ( const std::string & filename ) throw ( DataFileException )
+int XilVHDLFile::extractHexField ( const std::string & line,
+                                   std::string * hexField,
+                                   const char * markFragment )
 {
-}
+    int address = -1;
 
-void XilVHDLFile::save ( const char * filename,
-                         bool makeBackup ) throw ( DataFileException )
-{
-    save(std::string(filename), makeBackup);
-}
+    size_t position = line.find(markFragment);
+    if ( std::string::npos == position )
+    {
+        return -1;
+    }
 
-void XilVHDLFile::save ( const std::string & filename,
-                         bool makeBackup ) throw ( DataFileException )
-{
+    for ( size_t i = position + strlen(markFragment); i < line.size(); i++ )
+    {
+        if ( 0 == isxdigit(line[i]) )
+        {
+            break;
+        }
+
+        if ( -1 == address )
+        {
+            address = 0;
+        }
+
+        address <<= 4;
+        address |= hexDigit2uint(line[i]);
+    }
+
+    if ( -1 == address )
+    {
+        return -1;
+    }
+
+    if (
+            ( std::string::npos != line.find("=>", position) )
+                ||
+            (
+                ( std::string::npos != line.find("of", position) )
+                    &&
+                ( std::string::npos != line.rfind("attribute", position) )
+            )
+       )
+    {
+        position = line.find('"');
+        if ( std::string::npos == position )
+        {
+            throw DataFileException(DataFileException::EXP_NOT_UNDERSTOOD);
+        }
+
+        size_t endPosition = line.find('"', position);
+        if ( std::string::npos == endPosition )
+        {
+            throw DataFileException(DataFileException::EXP_NOT_UNDERSTOOD);
+        }
+
+        position++;
+
+        *hexField = line.substr(position, endPosition - position);
+        if ( false == checkHex(*hexField) )
+        {
+            throw DataFileException(DataFileException::EXP_NOT_UNDERSTOOD);
+        }
+    }
+
+    return address;
 }

@@ -131,6 +131,18 @@ class CompilerSemanticInterface
         virtual CompilerStatement * loadDevSpecCode ( const std::string & deviceName,
                                                       CompilerBase::DevSpecLoaderFlag * flag = NULL ) = 0;
 
+        /**
+         * @brief
+         * @return
+         */
+        virtual std::string getBaseIncludeDir() = 0;
+
+        /**
+         * @brief
+         * @return
+         */
+        virtual std::string getBaseName() = 0;
+
     ////    Public Attributes    ////
     public:
         ///

@@ -71,15 +71,17 @@ void XilMemFile::clearAndLoad ( const std::string & filename ) throw ( DataFileE
             unsigned int value;
             sscanf(field, "%x", &value);
 
-            if ( m_arrsize <= ( 3 + addr ) )
+            if ( ( 0 != value ) && ( m_arrsize <= ( m_bytesPerRecord + addr ) ) )
             {
                 throw DataFileException(DataFileException::EXP_MEMORY_OVERFLOW);
             }
 
-            m_memory [ addr++ ] = ( 0xff & ( value >> 24 ) );
-            m_memory [ addr++ ] = ( 0xff & ( value >> 16 ) );
-            m_memory [ addr++ ] = ( 0xff & ( value >>  8 ) );
-            m_memory [ addr++ ] = ( 0xff & ( value >>  0 ) );
+            unsigned int shift = 0;
+            for ( unsigned int i = 0; i < m_bytesPerRecord; i++ )
+            {
+                m_memory [ addr++ ] = ( 0xff & ( value >> shift ) );
+                shift += 8;
+            }
         }
     }
 }
@@ -147,12 +149,18 @@ void XilMemFile::save ( const std::string & filename,
     char buffer[11];
 
     sprintf(buffer, "%0x", ( ( m_arrsize / 4 ) - 1 ));
-    sprintf(addrFormat, "@%%0%dX", (int) strlen(buffer));
+    int addrLen = (int) strlen(buffer);
+    if ( addrLen < 4 )
+    {
+        addrLen = 4;
+    }
+    sprintf(addrFormat, "@%%0%dX", addrLen );
 
     unsigned int addr = 0;
-    while ( addr < m_arrsize )
+    unsigned int atAddr = 0;
+    for ( unsigned int i = 0; i < m_linesInTotal; i++ )
     {
-        sprintf(buffer, addrFormat, ( addr / 4 ) );
+        sprintf(buffer, addrFormat, atAddr );
         file << buffer;
 
         for ( unsigned int recordNo = 0; recordNo < m_recordsPerLine; recordNo++ )
@@ -161,13 +169,23 @@ void XilMemFile::save ( const std::string & filename,
 
             for ( unsigned int byteNo = m_bytesPerRecord; byteNo < 4; byteNo++ )
             {
+                atAddr++;
                 file << "00";
             }
 
             for ( unsigned int byteNo = 0; byteNo < m_bytesPerRecord; byteNo++ )
             {
-                int16_t byte = m_memory[addr++];
-                if ( -1 == byte )
+                atAddr++;
+                int16_t byte;
+                if ( addr < m_arrsize )
+                {
+                    byte = m_memory[addr++];
+                    if ( -1 == byte )
+                    {
+                        byte = 0;
+                    }
+                }
+                else
                 {
                     byte = 0;
                 }
@@ -178,11 +196,6 @@ void XilMemFile::save ( const std::string & filename,
                 if ( true == file.bad() )
                 {
                     throw DataFileException(DataFileException::EXP_IO_ERROR);
-                }
-
-                if ( addr >= m_arrsize )
-                {
-                    break;
                 }
             }
         }

@@ -52,7 +52,7 @@ include_directories ( "${CMAKE_CURRENT_BINARY_DIR}/../../../utilities/MCUDataFil
 
 # Specify directories in which the linker will look for libraries.
 link_directories ( "${CMAKE_CURRENT_BINARY_DIR}/../../../utilities/MCUDataFiles/"
-                   "${CMAKE_CURRENT_BINARY_DIR}/../../../utilities/DbgFile/")
+                   "${CMAKE_CURRENT_BINARY_DIR}/../../../utilities/DbgFile/" )
 
 ## Add switches to compiler command line
  # -Wall       : Enables all the warnings.
@@ -68,11 +68,10 @@ add_library ( ${PROJECT_NAME} SHARED
               AsmDgbFileGen.cxx )
 
 # Link a target to given libraries
-target_link_libraries ( ${PROJECT_NAME}
-                        ${QT_LIBRARIES}
-                        MCUDataFiles
-                        DbgFile
-                        AsmAvr8SemanticAnalyzer
-                        AsmMcs51SemanticAnalyzer
-                        AsmPic8SemanticAnalyzer
-                        AsmPicoBlazeSemanticAnalyzer )
+target_link_libraries ( ${PROJECT_NAME} ${QT_LIBRARIES}
+                                        MCUDataFiles
+                                        DbgFile
+                                        AsmAvr8SemanticAnalyzer
+                                        AsmMcs51SemanticAnalyzer
+                                        AsmPic8SemanticAnalyzer
+                                        AsmPicoBlazeSemanticAnalyzer )

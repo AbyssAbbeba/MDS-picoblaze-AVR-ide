@@ -30,7 +30,11 @@ include ( ${QT_USE_FILE} )
 
 # List of preprocessor include file search directories.
 include_directories ( "${CMAKE_CURRENT_BINARY_DIR}/../.."
-                      "${CMAKE_CURRENT_BINARY_DIR}/../../../grammar" )
+                      "${CMAKE_CURRENT_BINARY_DIR}/../../../grammar"
+                      "${CMAKE_CURRENT_BINARY_DIR}/../../../../utilities/MCUDataFiles/" )
+
+# Specify directories in which the linker will look for libraries.
+link_directories ( "${CMAKE_CURRENT_BINARY_DIR}/../../../../utilities/MCUDataFiles/" )
 
 ## Add switches to compiler command line
  # -Wall       : Enables all the warnings.
@@ -58,4 +62,5 @@ add_library ( ${PROJECT_NAME} STATIC
               AsmPicoBlazeSemanticAnalyzer.cxx )
 
 # Add a dependency between top-level targets.
-add_dependencies ( ${PROJECT_NAME} CompilerParsers )
+add_dependencies ( ${PROJECT_NAME} CompilerParsers
+                                   MCUDataFiles )

@@ -39,7 +39,9 @@ class DataFileException
             EXP_MEMORY_OVERFLOW,   ///< Object cannot contain such large amount of data.
             EXP_OUT_OF_RANGE,      ///< Requested byte address is out of range.
             EXP_BAD_RECORD_FORMAT, ///<
-            EXP_BAD_RECORD_COUNT   ///<
+            EXP_BAD_RECORD_COUNT,  ///<
+            EXP_TEMPLATE_ERROR,    ///<
+            EXP_NOT_UNDERSTOOD     ///<
         };
 
     ////    Constructors and Destructors    ////
@@ -65,14 +67,16 @@ class DataFileException
             std::string result;
             switch ( m_errorType )
             {
-                case EXP_IO_ERROR:          result = "IO_ERROR";          break;
-                case EXP_BAD_RECORD_LENGTH: result = "BAD_RECORD_LENGTH"; break;
-                case EXP_BAD_CRC:           result = "BAD_CRC";           break;
-                case EXP_BAD_RECORD_TYPE:   result = "BAD_RECORD_TYPE";   break;
-                case EXP_MEMORY_OVERFLOW:   result = "MEMORY_OVERFLOW";   break;
-                case EXP_OUT_OF_RANGE:      result = "OUT_OF_RANGE";      break;
-                case EXP_BAD_RECORD_FORMAT: result = "BAD_RECORD_FORMAT"; break;
-                case EXP_BAD_RECORD_COUNT:  result = "BAD_RECORD_COUNT";  break;
+                case EXP_IO_ERROR:          result = "IO_ERROR";           break;
+                case EXP_BAD_RECORD_LENGTH: result = "BAD_RECORD_LENGTH";  break;
+                case EXP_BAD_CRC:           result = "BAD_CRC";            break;
+                case EXP_BAD_RECORD_TYPE:   result = "BAD_RECORD_TYPE";    break;
+                case EXP_MEMORY_OVERFLOW:   result = "MEMORY_OVERFLOW";    break;
+                case EXP_OUT_OF_RANGE:      result = "OUT_OF_RANGE";       break;
+                case EXP_BAD_RECORD_FORMAT: result = "BAD_RECORD_FORMAT";  break;
+                case EXP_BAD_RECORD_COUNT:  result = "BAD_RECORD_COUNT";   break;
+                case EXP_TEMPLATE_ERROR:    result = "EXP_TEMPLATE_ERROR"; break;
+                case EXP_NOT_UNDERSTOOD:    result = "EXP_NOT_UNDERSTOOD"; break;
             }
 
             return result + ": " + m_errorInfo;

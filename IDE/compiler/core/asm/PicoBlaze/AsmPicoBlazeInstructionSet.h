@@ -25,6 +25,9 @@ class AsmPicoBlazeInstructionSetN;
 // Common compiler header files.
 #include "../../CompilerSemanticInterface.h"
 
+// PicoBlaze assembler semantic analyzer header files.
+#include "AsmPicoBlazeSemanticAnalyzer.h"
+
 /**
  * @brief
  * @ingroup PicoBlazeAsm
@@ -54,11 +57,13 @@ class AsmPicoBlazeInstructionSet
          */
         AsmPicoBlazeInstructionSet ( CompilerSemanticInterface * compilerCore,
                                      CompilerOptions * opts,
-                                     AsmPicoBlazeSymbolTable * symbolTable )
+                                     AsmPicoBlazeSymbolTable * symbolTable,
+                                     AsmPicoBlazeSemanticAnalyzer::Device * device )
                                    : m_compilerCore ( compilerCore ),
                                      m_opts ( opts ),
                                      m_symbolTable ( symbolTable ),
-                                     m_strategy ( NULL ) {};
+                                     m_strategy ( NULL ),
+                                     m_device ( device ) {};
 
         /**
          * @brief
@@ -150,6 +155,9 @@ class AsmPicoBlazeInstructionSet
 
         ///
         AsmPicoBlazeInstructionSetN * m_strategy;
+
+        ///
+        AsmPicoBlazeSemanticAnalyzer::Device * const m_device;
 };
 
 #endif // ASMPICOBLAZEINSTRUCTIONSET_H

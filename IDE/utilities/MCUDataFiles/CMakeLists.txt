@@ -38,6 +38,7 @@ add_library ( ${PROJECT_NAME} SHARED
               BinFile.cxx
               HexFile.cxx
               SrecFile.cxx
+              XilHDLFile.cxx
               XilMemFile.cxx
               XilVHDLFile.cxx
               XilVerilogFile.cxx

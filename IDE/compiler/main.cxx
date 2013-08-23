@@ -119,6 +119,16 @@ void printHelp ( const char * executable )
               << QObject::tr("    -P, --precompile <.prc file>").toStdString() << std::endl
               << QObject::tr("        Specify target file for generation of precompiled code.")
                             .toStdString() << std::endl
+              << QObject::tr("    --vhdl <.vhd file>").toStdString() << std::endl
+              << QObject::tr("        Specify target file for generation of VHDL code.").toStdString() << std::endl
+              << QObject::tr("    --vhdl-tmpl <.vhd file>").toStdString() << std::endl
+              << QObject::tr("        Specify VHDL template file.").toStdString() << std::endl
+              << QObject::tr("    --verilog <.v file>").toStdString() << std::endl
+              << QObject::tr("        Specify target file for generation of verilog code.").toStdString() << std::endl
+              << QObject::tr("    --verilog-tmpl <.v file>").toStdString() << std::endl
+              << QObject::tr("        Specify verilog template file.").toStdString() << std::endl
+              << QObject::tr("    --mem <.mem file>").toStdString() << std::endl
+              << QObject::tr("        Specify target file for generation of MEM file.").toStdString() << std::endl
               << std::endl;
 
     std::cout << QObject::tr("Examples:").toStdString() << std::endl
@@ -258,6 +268,12 @@ int main ( int argc, char ** argv )
         { "include",     required_argument, 0,   'I' },
         { "precompile",  required_argument, 0,   'P' },
 
+        { "vhdl",        required_argument, 0, 0x100 },
+        { "verilog",     required_argument, 0, 0x101 },
+        { "vhdl-tmpl",   required_argument, 0, 0x102 },
+        { "verilog-tmpl",required_argument, 0, 0x103 },
+        { "mem",         required_argument, 0, 0x104 },
+
         { 0,             0,                 0, 0     }
     };
 
@@ -343,6 +359,21 @@ int main ( int argc, char ** argv )
                 break;
             case 'P': // --precompile=<file>
                 opts.m_prcTarget = optarg;
+                break;
+            case 0x100: // --vhdl=<file>
+                opts.m_vhdlFile = optarg;
+                break;
+            case 0x101: // --verilog=<file>
+                opts.m_verilogFile = optarg;
+                break;
+            case 0x102: // --vhdl-tmpl=<file>
+                opts.m_vhdlTemplate = optarg;
+                break;
+            case 0x103: // --verilog-tmpl=<file>
+                opts.m_verilogTemplate = optarg;
+                break;
+            case 0x104: // --mem=<file>
+                opts.m_memFile = optarg;
                 break;
 
             /* Error states */
