@@ -28,6 +28,9 @@
 #include "BinFile.h"
 #include "SrecFile.h"
 #include "DbgFileNative.h"
+#include "XilMemFile.h"
+#include "XilVerilogFile.h"
+#include "XilVHDLFile.h"
 
 // Moravia Microsystems, s.r.o. proprietary Debugger File
 #include "DbgFileNative.h"
@@ -124,6 +127,7 @@ void TestSuiteSuc::testFunction()
     m_options->m_lstFile      = resultsCommonPath + ".lst";
     m_options->m_verilogFile  = resultsCommonPath + ".v";
     m_options->m_vhdlFile     = resultsCommonPath + ".vhd";
+    m_options->m_memFile      = resultsCommonPath + ".mem";
 
     CU_ASSERT_FATAL ( true == m_compiler->compile(CompilerBase::LI_ASM, CompilerBase::TA_PICOBLAZE, m_options) );
 
@@ -131,14 +135,15 @@ void TestSuiteSuc::testFunction()
     compareLst ( expectedCommonPath + ".lst.exp", m_options->m_lstFile     );
     compareSym ( expectedCommonPath + ".sym.exp", m_options->m_symbolTable );
     compareMac ( expectedCommonPath + ".mac.exp", m_options->m_macroTable  );
-    compareV   ( expectedCommonPath + ".v.exp",   m_options->m_verilogFile );
-    compareVhd ( expectedCommonPath + ".vhd.exp", m_options->m_vhdlFile    );
 
     try
     {
-        compareHex ( expectedCommonPath + ".hex.exp",  m_options->m_hexFile  );
-        compareBin ( expectedCommonPath + ".bin.exp",  m_options->m_binFile  );
-        compareSrec( expectedCommonPath + ".srec.exp", m_options->m_srecFile );
+        compareHex  ( expectedCommonPath + ".hex.exp",  m_options->m_hexFile     );
+        compareBin  ( expectedCommonPath + ".bin.exp",  m_options->m_binFile     );
+        compareSrec ( expectedCommonPath + ".srec.exp", m_options->m_srecFile    );
+        compareMem  ( expectedCommonPath + ".mem.exp",  m_options->m_memFile     );
+        compareV    ( expectedCommonPath + ".v.exp",    m_options->m_verilogFile );
+        compareVhd  ( expectedCommonPath + ".vhd.exp",  m_options->m_vhdlFile    );
     }
     catch ( DataFileException & e )
     {
@@ -181,16 +186,26 @@ void TestSuiteSuc::compareDbg ( const std::string & expected,
     CU_ASSERT ( DbgFileNative(expected) == DbgFileNative(actual) );
 }
 
-void TestSuiteSuc::compareV ( const std::string & /*expected*/,
-                              const std::string & /*actual*/ )
+void TestSuiteSuc::compareMem ( const std::string & expected,
+                                const std::string & actual )
 {
-    // TODO: implemet this once support for Verilog code generation is complete.
+    CU_ASSERT ( XilMemFile(expected, 3) == XilMemFile(actual, 3) );
 }
 
-void TestSuiteSuc::compareVhd ( const std::string & /*expected*/,
-                                const std::string & /*actual*/ )
+void TestSuiteSuc::compareV ( const std::string & expected,
+                              const std::string & actual )
 {
-    // TODO: implemet this once support for VHDL code generation is complete.
+    XilVerilogFile expectedVerilog ( expected, "", "", XilHDLFile::SIZE_18b );
+    XilVerilogFile actualVerilog   ( actual,   "", "", XilHDLFile::SIZE_18b );
+    CU_ASSERT ( expectedVerilog == actualVerilog );
+}
+
+void TestSuiteSuc::compareVhd ( const std::string & expected,
+                                const std::string & actual )
+{
+    XilVHDLFile expectedVHDL ( expected, "", "", XilHDLFile::SIZE_18b );
+    XilVHDLFile actualVHDL   ( actual,   "", "", XilHDLFile::SIZE_18b );
+    CU_ASSERT ( expectedVHDL == actualVHDL );
 }
 
 void TestSuiteSuc::compareSym ( const std::string & expected,

@@ -130,6 +130,15 @@ namespace TestSuiteSuc
              * @param[in] actual
              * @return
              */
+            void compareMem ( const std::string & expected,
+                              const std::string & actual );
+
+            /**
+             * @brief
+             * @param[in] expected
+             * @param[in] actual
+             * @return
+             */
             void compareV ( const std::string & expected,
                             const std::string & actual );
 

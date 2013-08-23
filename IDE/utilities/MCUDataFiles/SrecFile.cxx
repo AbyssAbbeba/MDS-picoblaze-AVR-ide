@@ -83,7 +83,7 @@ void SrecFile::clearAndLoad ( const std::string & filename ) throw ( DataFileExc
         std::string line;
         std::vector<unsigned char> data;
 
-        getline(file, line);
+        std::getline(file, line);
         if ( true == file.bad() )
         {
             throw DataFileException(DataFileException::EXP_IO_ERROR);

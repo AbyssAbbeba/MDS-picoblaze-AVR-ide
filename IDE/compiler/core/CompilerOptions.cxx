@@ -36,8 +36,8 @@ CompilerOptions::ProcessorLimits::ProcessorLimits()
 
 CompilerOptions::CompilerOptions()
 {
-    m_maxMacroExp = -1;
-    m_maxInclusion = -1;
+    m_maxMacroExp     = -1;
+    m_maxInclusion    = -1;
     m_hexMaxRecLength = 16;
     m_syntaxCheckOnly = false;
     m_makeBackupFiles = true;
@@ -52,7 +52,8 @@ void CompilerOptions::clearOutputFiles()
         &m_symbolTable, &m_macroTable,  &m_mdsDebugFile,
         &m_codeTree,    &m_lstFile,     &m_hexFile,
         &m_binFile,     &m_srecFile,    &m_verilogFile,
-        &m_vhdlFile,    &m_prcTarget,   NULL
+        &m_vhdlFile,    &m_prcTarget,   &m_memFile,
+        NULL
     };
 
     for ( int i = 0; NULL != files[i]; i++ )
@@ -78,9 +79,10 @@ void CompilerOptions::normalizeFilePaths()
     std::string * const files[] =
     {
         &m_symbolTable, &m_macroTable,  &m_mdsDebugFile,
-        &m_codeTree,    &m_lstFile,     &m_hexFile,
+        &m_codeTree,    &m_lstFile,     &m_vhdlTemplate,
         &m_binFile,     &m_srecFile,    &m_verilogFile,
-        &m_vhdlFile,    &m_prcTarget,   NULL
+        &m_vhdlFile,    &m_prcTarget,   &m_verilogTemplate,
+        &m_memFile,     &m_hexFile,     NULL
     };
 
     path basePath = system_complete(path(m_sourceFile).parent_path().make_preferred());

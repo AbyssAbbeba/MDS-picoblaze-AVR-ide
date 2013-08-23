@@ -262,6 +262,17 @@ class CompilerCore : public CompilerBase,
              */
             CompilerStatement * loadDevSpecCode ( const std::string & deviceName,
                                                   CompilerBase::DevSpecLoaderFlag * flag = NULL );
+            /**
+             * @brief
+             * @return
+             */
+            std::string getBaseIncludeDir();
+
+            /**
+             * @brief
+             * @return
+             */
+            std::string getBaseName();
         //@}
 
     ////    Inline Public Operations    ////

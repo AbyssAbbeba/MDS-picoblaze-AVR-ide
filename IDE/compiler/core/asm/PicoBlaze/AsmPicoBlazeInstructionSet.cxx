@@ -85,6 +85,7 @@ int AsmPicoBlazeInstructionSet::resolveOPcode ( const CompilerStatement * stmt )
 {
     if ( NULL == m_strategy )
     {
+        *m_device = AsmPicoBlazeSemanticAnalyzer::DEV_KCPSM6;
         setStrategy(new AsmPicoBlazeInstructionSet6());
         m_compilerCore->compilerMessage ( CompilerBase::MT_WARNING,
                                           QObject::tr ( "exact device not specified, using KCPSM6 by default" )

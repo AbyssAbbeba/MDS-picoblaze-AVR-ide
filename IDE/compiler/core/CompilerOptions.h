@@ -145,6 +145,15 @@ class CompilerOptions
             /// The compiled code as file in VHDL hardware definition language.
             std::string m_vhdlFile;
 
+            ///
+            std::string m_memFile;
+
+            ///
+            std::string m_verilogTemplate;
+
+            ///
+            std::string m_vhdlTemplate;
+
             /// When this string is set to a file name, compiler will generate a precopiled code and store it the file.
             std::string m_prcTarget;
         //@}

@@ -72,12 +72,6 @@ class AsmPicoBlazeSemanticAnalyzer : public CompilerSemanticAnalyzer
          */
         virtual ~AsmPicoBlazeSemanticAnalyzer();
 
-    protected:
-        /**
-         * @brief Forbidden constructor
-         */
-        AsmPicoBlazeSemanticAnalyzer() {};
-
     ////    Public Operations    ////
     public:
         /**
@@ -118,6 +112,19 @@ class AsmPicoBlazeSemanticAnalyzer : public CompilerSemanticAnalyzer
          * @param[in,out] codeTree
          */
         inline void phase2 ( CompilerStatement * codeTree );
+
+        /**
+         * @brief
+         */
+        inline void outputHDL();
+
+        /**
+         * @brief
+         * @param[in,out] dataFile
+         * @param[in] fileName
+         */
+        inline void saveHDL ( DataFile & dataFile,
+                              const std::string & fileName );
 
         /**
          * @brief

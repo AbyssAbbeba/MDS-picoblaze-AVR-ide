@@ -31,6 +31,11 @@
 #include "AsmPicoBlazeInstructionSet3.h"
 #include "AsmPicoBlazeInstructionSet6.h"
 
+// Header files of libMCUDataFiles.
+#include "XilVHDLFile.h"
+#include "XilVerilogFile.h"
+#include "XilMemFile.h"
+
 // Standard headers.
 #include <cstdint>
 #include <cstring>
@@ -38,7 +43,7 @@
 #include <vector>
 #include <fstream>
 #include <cctype>
-#include <iostream> // DEBUG
+
 AsmPicoBlazeSemanticAnalyzer::AsmPicoBlazeSemanticAnalyzer ( CompilerSemanticInterface * compilerCore,
                                                              CompilerOptions * opts )
                                                            : CompilerSemanticAnalyzer ( compilerCore, opts )
@@ -46,7 +51,7 @@ AsmPicoBlazeSemanticAnalyzer::AsmPicoBlazeSemanticAnalyzer ( CompilerSemanticInt
     m_symbolTable    = new AsmPicoBlazeSymbolTable ( compilerCore, opts );
     m_machineCode    = new AsmMachineCodeGen ( AsmMachineCodeGen::WORD_3B );
     m_codeListing    = new AsmPicoBlazeCodeListing ( compilerCore, opts );
-    m_instructionSet = new AsmPicoBlazeInstructionSet ( compilerCore, opts, m_symbolTable );
+    m_instructionSet = new AsmPicoBlazeInstructionSet ( compilerCore, opts, m_symbolTable, &m_device );
     m_macros         = new AsmPicoBlazeMacros ( compilerCore, opts, m_symbolTable, m_codeListing );
     m_dgbFile        = new AsmDgbFileGen();
     m_memoryPtr      = new AsmPicoBlazeMemoryPtr ( compilerCore );
@@ -146,6 +151,101 @@ void AsmPicoBlazeSemanticAnalyzer::process ( CompilerStatement * codeTree )
     {
         m_dgbFile->output(m_compilerCore, m_opts);
         m_machineCode->output(AsmMachineCodeGen::E_BIG_ENDIAN, m_compilerCore, m_opts);
+
+        outputHDL();
+    }
+}
+
+inline void AsmPicoBlazeSemanticAnalyzer::outputHDL()
+{
+    unsigned int arrSize = 0;
+    unsigned int bytesPerRecord = 0;
+    unsigned int linesInTotal = 0;
+    XilHDLFile::OPCodeSize opCodeSize = XilHDLFile::SIZE_18b;
+    std::string vTemplate;
+    std::string vhdlTemplate;
+    std::string name = m_compilerCore->getBaseName();
+
+    switch ( m_device )
+    {
+        case DEV_UNSPEC:
+            return;
+
+        case DEV_KCPSM2:
+            arrSize = 1024;
+            bytesPerRecord = 3;
+            linesInTotal = 64;
+            opCodeSize = XilHDLFile::SIZE_18b;
+            vTemplate = "kcpsm2.v";
+            vhdlTemplate = "kcpsm2.vhd";
+            break;
+
+        case DEV_KCPSM3:
+            arrSize = 1024;
+            bytesPerRecord = 3;
+            linesInTotal = 64;
+            opCodeSize = XilHDLFile::SIZE_18b;
+            vTemplate = "kcpsm3.v";
+            vhdlTemplate = "kcpsm3.vhd";
+            break;
+
+        case DEV_KCPSM6:
+            arrSize = 4096;
+            bytesPerRecord = 3;
+            linesInTotal = 256;
+            opCodeSize = XilHDLFile::SIZE_18b;
+            vTemplate = "kcpsm6.v";
+            vhdlTemplate = "kcpsm6.vhd";
+            break;
+    }
+
+    if ( false == m_opts->m_verilogTemplate.empty() )
+    {
+        vTemplate = m_opts->m_verilogTemplate;
+    }
+    else
+    {
+        vTemplate.insert(0, m_compilerCore->getBaseIncludeDir());
+    }
+    if ( false == m_opts->m_vhdlTemplate.empty() )
+    {
+        vhdlTemplate = m_opts->m_vhdlTemplate;
+    }
+    else
+    {
+        vhdlTemplate.insert(0, m_compilerCore->getBaseIncludeDir());
+    }
+
+    if ( false == m_opts->m_memFile.empty() )
+    {
+        XilMemFile dataFile(bytesPerRecord, arrSize, linesInTotal);
+        saveHDL(dataFile, m_opts->m_memFile);
+    }
+    if ( false == m_opts->m_verilogFile.empty() )
+    {
+        XilVerilogFile dataFile(name, vTemplate, opCodeSize, arrSize);
+        saveHDL(dataFile, m_opts->m_verilogFile);
+    }
+    if ( false == m_opts->m_vhdlFile.empty() )
+    {
+        XilVHDLFile dataFile(name, vhdlTemplate, opCodeSize, arrSize);
+        saveHDL(dataFile, m_opts->m_vhdlFile);
+    }
+}
+
+inline void AsmPicoBlazeSemanticAnalyzer::saveHDL ( DataFile & dataFile,
+                                                    const std::string & fileName )
+{
+    try
+    {
+        m_machineCode->output(AsmMachineCodeGen::E_BIG_ENDIAN, &dataFile);
+        dataFile.save(fileName, false);
+    }
+    catch ( const DataFileException & e )
+    {
+        m_compilerCore -> compilerMessage ( CompilerBase::MT_ERROR,
+                                            QObject::tr ( "unable to save file " ).toStdString()
+                                                        + "\"" + fileName  + "\"" );
     }
 }
 

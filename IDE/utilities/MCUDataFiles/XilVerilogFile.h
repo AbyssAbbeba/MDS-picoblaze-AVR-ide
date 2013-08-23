@@ -16,54 +16,68 @@
 #ifndef XILVERILOGFILE_H
 #define XILVERILOGFILE_H
 
-#include "DataFile.h"
+#include "XilHDLFile.h"
 
 /**
  * @brief
  * @ingroup MCUDataFiles
  * @class XilVerilogFile
  */
-class XilVerilogFile : public DataFile
+class XilVerilogFile : public XilHDLFile
 {
     ////    Constructors and Destructors    ////
     public:
         /**
-         * @param[in] size Maximum data size
+         * @brief
+         * @param[in] name
+         * @param[in] templateFile
+         * @param[in] opCodeSize
+         * @param[in] arrsize
          */
-        XilVerilogFile ( unsigned int arrsize = 0x10000 )
-                       : DataFile ( arrsize ) {};
+        XilVerilogFile ( const std::string & name,
+                         const std::string & templateFile,
+                         OPCodeSize opCodeSize,
+                         unsigned int arrsize = 0x4000 )
+                       :
+                         XilHDLFile ( name,
+                                      templateFile,
+                                      opCodeSize,
+                                      arrsize ) {};
 
         /**
          * @brief
-         * @param[in] file
+         * @param[in] inputFile
+         * @param[in] name
+         * @param[in] templateFile
+         * @param[in] opCodeSize
+         * @param[in] arrsize
          */
-        XilVerilogFile ( const std::string & file )
+        XilVerilogFile ( const std::string & inputFile,
+                         const std::string & name,
+                         const std::string & templateFile,
+                         OPCodeSize opCodeSize,
+                         unsigned int arrsize = 0x4000 )
+                       :
+                         XilHDLFile ( name,
+                                      templateFile,
+                                      opCodeSize,
+                                      arrsize )
         {
-            clearAndLoad(file);
+            clearAndLoad(inputFile);
         }
 
-    ////    Public Operations    ////
-    public:
+    ////    Protected Operations    ////
+    protected:
         /**
-         * @brief Load a file into the memory array
-         * @param[in] filename
+         * @brief
+         * @param[in] line
+         * @param[in,out] hexField
+         * @param[in] markFragment
+         * @return
          */
-        void clearAndLoad ( const char * filename ) throw ( DataFileException );
-
-        /// @overload
-        void clearAndLoad ( const std::string & filename ) throw ( DataFileException );
-
-        /**
-         * @brief Save memory array in a file
-         * @param[in] filename Target file
-         * @param[in] makeBackup Make backup file
-         */
-        void save ( const char * filename,
-                    bool makeBackup = true ) throw ( DataFileException );
-
-        /// @overload
-        void save ( const std::string & filename,
-                    bool makeBackup = true ) throw ( DataFileException );
+        virtual int extractHexField ( const std::string & line,
+                                      std::string * hexField,
+                                      const char * markFragment );
 };
 
 #endif // XILVERILOGFILE_H

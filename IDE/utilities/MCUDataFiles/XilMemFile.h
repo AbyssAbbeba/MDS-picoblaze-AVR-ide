@@ -33,15 +33,18 @@ class XilMemFile : public DataFile
     ////    Constructors and Destructors    ////
     public:
         /**
+         * @brief
          * @param[in] size Maximum data size
          */
         XilMemFile ( unsigned int bytesPerRecord,
                      unsigned int arrsize        = 0x4000,
+                     unsigned int linesInTotal   = 256,
                      unsigned int recordsPerLine = 16,
                      const char * eol            = "\r\n" )
                    :
                      DataFile ( arrsize ),
                      m_bytesPerRecord ( bytesPerRecord ),
+                     m_linesInTotal ( linesInTotal ),
                      m_recordsPerLine ( recordsPerLine ),
                      m_eol ( eol ) {};
 
@@ -52,11 +55,13 @@ class XilMemFile : public DataFile
         XilMemFile ( const std::string & file,
                      unsigned int bytesPerRecord,
                      unsigned int arrsize        = 0x4000,
+                     unsigned int linesInTotal   = 64,
                      unsigned int recordsPerLine = 16,
                      const char * eol            = "\r\n" )
                    :
                      DataFile ( arrsize ),
                      m_bytesPerRecord ( bytesPerRecord ),
+                     m_linesInTotal ( linesInTotal ),
                      m_recordsPerLine ( recordsPerLine ),
                      m_eol ( eol )
         {
@@ -106,6 +111,9 @@ class XilMemFile : public DataFile
     private:
         /// @brief
         const unsigned int m_bytesPerRecord;
+
+        /// @brief
+        const unsigned int m_linesInTotal;
 
         /// @brief
         const unsigned int m_recordsPerLine;
