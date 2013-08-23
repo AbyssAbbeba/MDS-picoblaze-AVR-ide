@@ -760,8 +760,16 @@ void Project::addFile(QString path, QString name)
     else
     {
         QTreeWidgetItem *treeProjFile = new QTreeWidgetItem(prjTreeWidget->topLevelItem(0));
-        treeProjFile->setText(0, "untracked"+QString::number(fileCount));
-        treeProjFile->setData(0, Qt::ToolTipRole, "untracked");
+        if (path == "" || name == "")
+        {
+            treeProjFile->setText(0, "untracked"+QString::number(fileCount));
+            treeProjFile->setData(0, Qt::ToolTipRole, "untracked");
+        }
+        else
+        {
+            treeProjFile->setText(0, name);
+            treeProjFile->setData(0, Qt::ToolTipRole, path);
+        }
         fileCount++;
     }
     qDebug() << "Project: return addFile()";
