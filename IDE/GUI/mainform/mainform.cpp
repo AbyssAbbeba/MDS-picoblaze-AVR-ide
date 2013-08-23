@@ -376,11 +376,12 @@ void MainForm::openFile()
             error(ERR_OPENFILE);
         }
         else {
-            wDockManager->addCentralWidget(path.section('/', -1), path);
+            //wDockManager->addCentralWidget(path.section('/', -1), path);
             //wDockManager->getCentralTextEdit()->setPlainText(file.readAll());
             file.close();
-            wDockManager->getCentralWidget()->connectAct();
-            projectMan->addUntrackedFile(path.section('/', -1), path);
+            //wDockManager->getCentralWidget()->connectAct();
+            projectMan->addUntrackedFile(path, path.section('/', -1));
+            wDockManager->addUntrackedCentralWidget(path.section('/', -1), path);
         }
     }
     qDebug() << "MainForm: return openFile()";
