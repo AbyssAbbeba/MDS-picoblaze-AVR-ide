@@ -61,12 +61,12 @@ void XilHDLFile::clearAndLoad ( const std::string & filename ) throw ( DataFileE
 
         if ( -1 != ( addr = extractHexField(line, &hexField, "INIT_") ) )
         {
-            size_t iterLimit = ( hexField.size() - 1 );
+            int iterLimit = ( hexField.size() - 4 );
             char byteStr[3];
 
             byteStr[2] = '\0';
 
-            for ( size_t i = 0; i < iterLimit; i++ )
+            for ( int i = 0; i <= iterLimit; )
             {
                 if ( SIZE_18b == m_opCodeSize )
                 {
@@ -82,8 +82,8 @@ void XilHDLFile::clearAndLoad ( const std::string & filename ) throw ( DataFileE
                 {
                     unsigned int byteInt;
 
-                    byteStr[0] = hexField [   i ];
-                    byteStr[1] = hexField [ ++i ];
+                    byteStr[0] = hexField [ i++ ];
+                    byteStr[1] = hexField [ i++ ];
 
                     sscanf(byteStr, "%x", &byteInt);
 
@@ -93,12 +93,12 @@ void XilHDLFile::clearAndLoad ( const std::string & filename ) throw ( DataFileE
         }
         else if ( ( SIZE_18b == m_opCodeSize ) && ( -1 != ( addr = extractHexField(line, &hexField, "INITP_") ) ) )
         {
-            size_t iterLimit = ( hexField.size() - 1 );
+            int iterLimit = ( hexField.size() - 4 );
             char byteStr[3];
 
             byteStr[2] = '\0';
 
-            for ( size_t i = 0; i < iterLimit; i++ )
+            for ( int i = 0; i <= iterLimit; )
             {
                 if ( (unsigned int) addr >= m_arrsize )
                 {
@@ -107,8 +107,8 @@ void XilHDLFile::clearAndLoad ( const std::string & filename ) throw ( DataFileE
 
                 unsigned int byteInt;
 
-                byteStr[0] = hexField [   i ];
-                byteStr[1] = hexField [ ++i ];
+                byteStr[0] = hexField [ i++ ];
+                byteStr[1] = hexField [ i++ ];
 
                 sscanf(byteStr, "%x", &byteInt);
 
