@@ -1,7 +1,7 @@
 DEVICE  KCPSM3
 
 
-s3      EQU     0x06
+ss3      EQU     0x06
 B       SET     6
 
 
