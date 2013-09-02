@@ -1,0 +1,51 @@
+
+        PC == 0
+
+# start programu, program na testování logických operací, AND, OR, XOR
+
+
+# Nahrání do registrů 
+        STEP
+        PC == 1
+        REG[0] == 1
+
+        STEP
+        PC == 2
+        REG[1] == 2
+
+        STEP
+        PC == 3
+        REG[2] == 4
+
+        STEP
+        PC == 4
+        REG[3] == 8
+
+# test of AND instructions
+
+        STEP
+        PC == 5
+        REG[0] == 1
+
+        STEP
+        PC == 6
+        REG[0] == 0
+
+# test of OR instructions
+        STEP
+        PC == 7
+        REG[0] == 3
+
+        STEP
+        PC == 8
+        REG[1] == 2
+
+# test of XOR instructions        
+        STEP
+        PC == 9
+        REG[2] == 8
+
+        STEP
+        PC == 10
+        REG[3] == 8
+
