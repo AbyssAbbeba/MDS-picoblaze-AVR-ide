@@ -1,0 +1,21 @@
+
+       PC == 0
+     
+# waiting loop program
+       STEP
+       REG[0] == 1
+       STEP
+       REG[1] == 1
+       STEP
+       REG[2] == 1
+       STEP
+       REG[3] == 1
+       STEP
+       REG[0] == 2
+
+       STEP
+       REG[5] == 1
+
+       STEP     7
+       REG[5] == 8
+
