@@ -5,6 +5,10 @@
        STEP
        # jump to start
        REG[5]   == 255
+       REG[5]   == 0xff
+       REG[5]   == 0b00001011
+       REG[5]   == 07
+
        PC  == 1
 
        STEP
