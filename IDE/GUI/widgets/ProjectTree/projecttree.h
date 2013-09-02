@@ -49,6 +49,7 @@ class ProjectTree: public QTreeWidget
         QContextMenuEvent *lastEvent;
 
     private slots:
+        void addFile();
         void setMainFile();
         void removeFile();
         void config();
@@ -60,6 +61,7 @@ class ProjectTree: public QTreeWidget
         void startProjectCfgDlgCore();
         void setMainFile(QString path, QString name);
         void removeFile(QString path, QString name);
+        void addFile(QString path, QString name);
 
     protected:
         void contextMenuEvent(QContextMenuEvent *event);
