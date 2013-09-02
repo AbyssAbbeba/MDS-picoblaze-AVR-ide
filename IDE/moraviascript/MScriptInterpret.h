@@ -77,8 +77,9 @@ class MScriptInterpret : private MScriptExecContext
         /**
          * @brief
          * @param[in,out] rootNode
+         * @return
          */
-        inline void checkCode ( MScriptStatement * rootNode );
+        inline bool checkCode ( MScriptStatement * rootNode );
 
         /**
          * @brief

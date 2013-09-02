@@ -25,9 +25,9 @@ int main ( int argc, char ** argv )
         "    case 2:\n"                 // 18
         "        xxx += 4;\n"           // 19
         "        break;\n"              // 20
-        "    default:\n"                // 21
+        "/*    default:\n"                // 21
         "        break;\n"              // 22
-        "}\n";                          // 23
+        "*/}\n";                          // 23
 
     MScriptStrategy strategy;
     MScriptCore core(&strategy);
