@@ -47,8 +47,6 @@ class PicoBlazeClockControl : public MCUSimClock
     public:
         /**
          * @brief
-         * @param[in,out] eventLogger
-         * @param[in,out] fusesAndLocks
          * @return
          */
         PicoBlazeClockControl * link ( MCUSimEventLogger * eventLogger );

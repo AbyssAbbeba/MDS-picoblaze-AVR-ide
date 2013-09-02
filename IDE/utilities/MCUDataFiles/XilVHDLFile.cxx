@@ -66,13 +66,13 @@ int XilVHDLFile::extractHexField ( const std::string & line,
             throw DataFileException(DataFileException::EXP_NOT_UNDERSTOOD);
         }
 
+        position++;
+
         size_t endPosition = line.find('"', position);
         if ( std::string::npos == endPosition )
         {
             throw DataFileException(DataFileException::EXP_NOT_UNDERSTOOD);
         }
-
-        position++;
 
         *hexField = line.substr(position, endPosition - position);
         if ( false == checkHex(*hexField) )

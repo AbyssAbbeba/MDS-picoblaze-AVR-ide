@@ -68,7 +68,7 @@ class AsmMachineCodeGen
         /**
          * @brief
          */
-        AsmMachineCodeGen ( WordSize wordSize );
+        AsmMachineCodeGen();
 
         /**
          * @brief
@@ -105,20 +105,24 @@ class AsmMachineCodeGen
 
         /**
          * @brief
+         * @param[in] wordSize
          * @param[in] byteOrder
          * @param[in,out] target
          * @throw DataFileException
          */
-        void output ( Endianness byteOrder,
+        void output ( WordSize wordSize,
+                      Endianness byteOrder,
                       DataFile * target ) const;
 
         /**
          * @brief
+         * @param[in] wordSize
          * @param[in] byteOrder
          * @param[in,out] compilerCore
          * @param[in] opts
          */
-        void output ( Endianness byteOrder,
+        void output ( WordSize wordSize,
+                      Endianness byteOrder,
                       CompilerSemanticInterface * compilerCore,
                       const CompilerOptions * opts );
 
@@ -138,15 +142,6 @@ class AsmMachineCodeGen
             return m_size;
         }
 
-        /**
-         * @brief
-         * @return
-         */
-        unsigned int sizeB() const
-        {
-            return ( m_size * (unsigned int)m_wordSize );
-        }
-
     ////    Inline Private Operations    ////
     private:
         /**
@@ -158,23 +153,29 @@ class AsmMachineCodeGen
 
         /**
          * @brief
+         * @param[in] wordSize
          * @param[in] byteOrder
          * @param[in,out] dataFile
          * @param[in] fileName
          * @param[in,out] compilerCore
          * @param[in] opts
          */
-        inline void saveMachineCode ( Endianness byteOrder,
+        inline void saveMachineCode ( WordSize wordSize,
+                                      Endianness byteOrder,
                                       DataFile * dataFile,
                                       const std::string & fileName,
                                       CompilerSemanticInterface * compilerCore,
                                       const CompilerOptions * opts );
 
+        /**
+         * @brief
+         * @param[in] wordSize
+         * @return
+         */
+        inline unsigned int sizeB ( WordSize wordSize ) const;
+
     ////    Private Attributes    ////
     private:
-        ///
-        const WordSize m_wordSize;
-
         ///
         unsigned int m_address;
 

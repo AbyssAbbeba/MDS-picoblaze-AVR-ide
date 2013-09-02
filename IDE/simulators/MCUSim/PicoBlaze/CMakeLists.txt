@@ -48,9 +48,11 @@ add_library ( ${PROJECT_NAME} SHARED
               PicoBlazeClockControl.cxx
               PicoBlazeProgramMemory.cxx
               PicoBlazeInstructionSet.cxx
-              PicoBlazeInstructionSet2.cxx
-              PicoBlazeInstructionSet3.cxx
               PicoBlazeInstructionSet6.cxx
+              PicoBlazeInstructionSet3.cxx
+              PicoBlazeInstructionSet2.cxx
+              PicoBlazeInstructionSet1.cxx
+              PicoBlazeInstructionSet1CPLD.cxx
               PicoBlazeInterruptController.cxx )
 
 # Link a target to given libraries.

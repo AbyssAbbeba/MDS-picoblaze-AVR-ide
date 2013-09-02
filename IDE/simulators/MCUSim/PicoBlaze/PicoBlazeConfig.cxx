@@ -50,6 +50,30 @@ void PicoBlazeConfig::configure ( MCUSim::Family dev )
 
     switch ( dev )
     {
+        case MCUSim::FAMILY_KCPSM1CPLD:
+            m_name = "kcpsm1CPLD";
+            m_configDataMemory->m_size = 0;
+            m_configInstructionSet->m_dev = MCUSim::FAMILY_KCPSM1CPLD;
+            m_configInstructionSet->m_interruptVector = 0xff;
+            m_configInstructionSet->m_pcMax = 256;
+            m_configInstructionSet->m_hwbuild = 0;
+            m_configProgramMemory->m_size = 256;
+            m_configRegisters->m_size = 8;
+            m_configRegisters->m_banks = false;
+            m_configStack->m_size = 4;
+            break;
+        case MCUSim::FAMILY_KCPSM1:
+            m_name = "kcpsm1";
+            m_configDataMemory->m_size = 0;
+            m_configInstructionSet->m_dev = MCUSim::FAMILY_KCPSM1;
+            m_configInstructionSet->m_interruptVector = 0xff;
+            m_configInstructionSet->m_pcMax = 256;
+            m_configInstructionSet->m_hwbuild = 0;
+            m_configProgramMemory->m_size = 256;
+            m_configRegisters->m_size = 16;
+            m_configRegisters->m_banks = false;
+            m_configStack->m_size = 15;
+            break;
         case MCUSim::FAMILY_KCPSM2:
             m_name = "kcpsm2";
             m_configDataMemory->m_size = 0;

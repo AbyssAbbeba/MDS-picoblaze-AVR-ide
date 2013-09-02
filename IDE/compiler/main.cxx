@@ -46,12 +46,25 @@ enum ExitCode
 };
 
 /**
+ * @brief
+ */
+void printIntro()
+{
+    std::cout << QObject::tr("MDS mutitarget macro-assembler v%1").arg(VERSION).toStdString() << std::endl
+              << QObject::tr("(C) copyright 2013 Moravia Microsystems, s.r.o., Brno, CZ, European Union.")
+                            .toStdString() << std::endl
+              << "All rights reserved." << std::endl
+              << std::endl;
+}
+
+/**
  * @brief Print help message, a short introduction how to use this program.
  * @param[in] executable Name of executable binary from which this program was launched.
  * @note There is also a hidden option "--codetree \<code tree file\>" which is not mentioned in this help message.
  */
 void printHelp ( const char * executable )
 {
+    printIntro();
     std::cout << QObject::tr("Usage:").toStdString() << std::endl
               << QObject::tr("    %1 <OPTIONS>").arg(executable).toStdString() << std::endl
               << std::endl;
@@ -158,6 +171,7 @@ void printHelp ( const char * executable )
  */
 void printUsage ( const char * executable )
 {
+    printIntro();
     std::cout << "Type: `" << executable << " -h'" << QObject::tr(" for help.").toStdString() << std::endl;
 }
 
@@ -220,17 +234,12 @@ int main ( int argc, char ** argv )
 {
     using namespace boost::filesystem;
 
+    bool silent = false;
     CompilerOptions opts;
     CompilerMsgIntfStdout msgInterface;
     Compiler compiler(&msgInterface, (system_complete(path(argv[0]).parent_path()) / "include").string());
     CompilerBase::TargetArch targetArchitecture = CompilerBase::TA_INVALID;
     CompilerBase::LangId targetLanguage = CompilerBase::LI_INVALID;
-
-    std::cout << QObject::tr("MDS mutitarget macro-assembler v%1").arg(VERSION).toStdString() << std::endl
-              << QObject::tr("(C) copyright 2013 Moravia Microsystems, s.r.o., Brno, CZ, European Union.")
-                            .toStdString() << std::endl
-              << "All rights reserved." << std::endl
-              << std::endl;
 
     if ( 1 == argc )
     {
@@ -352,6 +361,7 @@ int main ( int argc, char ** argv )
                 opts.m_verbosity = CompilerOptions::Verbosity ( opts.m_verbosity & ~(CompilerOptions::V_REMARKS) );
                 break;
             case 'N': // --silent
+                silent = true;
                 opts.m_verbosity = CompilerOptions::Verbosity(0);
                 break;
             case 'I': // --include=<dir>
@@ -388,6 +398,11 @@ int main ( int argc, char ** argv )
             default:
                 return EXIT_ERROR_CLI;
         }
+    }
+
+    if ( false == silent )
+    {
+        printIntro();
     }
 
     if ( true == compiler.compile ( targetLanguage, targetArchitecture, &opts ) )

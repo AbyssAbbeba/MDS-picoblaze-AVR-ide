@@ -52,16 +52,16 @@ class PicoBlazeInstructionSet2 : public PicoBlazeInstructionSet
          * @brief
          *
          * Possible instuctions:
-         * - SRA Sx : 10 1000 xxxx 0000 1000
-         * - SRX Sx : 10 1000 xxxx 0000 1010
-         * - RR Sx  : 10 1000 xxxx 0000 1100
-         * - SR0 Sx : 10 1000 xxxx 0000 1110
-         * - SR1 Sx : 10 1000 xxxx 0000 1111
-         * - SLA Sx : 10 1000 xxxx 0000 0000
-         * - RL Sx  : 10 1000 xxxx 0000 0010
-         * - SLX Sx : 10 1000 xxxx 0000 0100
-         * - SL0 Sx : 10 1000 xxxx 0000 0110
-         * - SL1 Sx : 10 1000 xxxx 0000 0111
+         * - SRA sX : 10 1000 xxxx 0000 1000
+         * - SRX sX : 10 1000 xxxx 0000 1010
+         * - RR sX  : 10 1000 xxxx 0000 1100
+         * - SR0 sX : 10 1000 xxxx 0000 1110
+         * - SR1 sX : 10 1000 xxxx 0000 1111
+         * - SLA sX : 10 1000 xxxx 0000 0000
+         * - RL sX  : 10 1000 xxxx 0000 0010
+         * - SLX sX : 10 1000 xxxx 0000 0100
+         * - SL0 sX : 10 1000 xxxx 0000 0110
+         * - SL1 sX : 10 1000 xxxx 0000 0111
          */
         void inst_10100 ( const unsigned int opCode );
 

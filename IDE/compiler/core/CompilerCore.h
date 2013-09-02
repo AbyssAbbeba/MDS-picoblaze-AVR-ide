@@ -198,7 +198,7 @@ class CompilerCore : public CompilerBase,
              * @param[in,out] codeTree
              * @return
              */
-            void syntaxAnalysisComplete ( CompilerStatement * codeTree );
+            void processCodeTree ( CompilerStatement * codeTree );
         //@}
 
         /// @name Interface for semantic analyzer

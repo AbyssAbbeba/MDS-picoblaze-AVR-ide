@@ -675,7 +675,7 @@ int CompilerCore::getFileNumber ( const std::string & filename ) const
     return result;
 }
 
-void CompilerCore::syntaxAnalysisComplete ( CompilerStatement * codeTree )
+void CompilerCore::processCodeTree ( CompilerStatement * codeTree )
 {
     if ( NULL != m_rootStatement )
     {

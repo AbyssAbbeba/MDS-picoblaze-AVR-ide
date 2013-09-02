@@ -311,7 +311,7 @@
  * Basic code structure
  */
 input:
-      statements                    { compiler->syntaxAnalysisComplete($statements); YYACCEPT; }
+      statements                    { compiler->processCodeTree($statements); YYACCEPT; }
 ;
 statements:
       stmt                          { $$ = $stmt; }

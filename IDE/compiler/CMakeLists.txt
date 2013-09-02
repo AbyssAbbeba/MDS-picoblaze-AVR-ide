@@ -24,11 +24,14 @@ set ( CMAKE_VERBOSE_MAKEFILE OFF )
 # BUILD COMPONENTS IN THE SUBDIRECTORIES
 # ------------------------------------------------------------------------------
 
-# Build lexical and syntax analyzers
+# Build lexical and syntax analyzers.
 add_subdirectory ( grammar )
 
-# Build the assembler itself as a library
+# Build the compiler collection itself as a library.
 add_subdirectory ( core )
+
+# Build additional file of the compiler.
+add_subdirectory ( include )
 
 
 # ------------------------------------------------------------------------------

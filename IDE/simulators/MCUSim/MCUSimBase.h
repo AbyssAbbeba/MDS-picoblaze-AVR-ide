@@ -85,6 +85,8 @@ class MCUSimBase
 
             /// @name PicoBlaze
             //@{
+                FAMILY_KCPSM1CPLD,   ///<
+                FAMILY_KCPSM1,       ///<
                 FAMILY_KCPSM2,       ///<
                 FAMILY_KCPSM3,       ///<
                 FAMILY_KCPSM6,       ///<

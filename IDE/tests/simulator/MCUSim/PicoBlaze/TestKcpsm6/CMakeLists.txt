@@ -64,4 +64,4 @@ target_link_libraries ( ${PROJECT_NAME}
 add_custom_target ( "${PROJECT_NAME}_compile" ALL ${CMAKE_CURRENT_BINARY_DIR}/testcases/compileAll.sh
                     DEPENDS compiler
                     WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/testcases"
-                    COMMENT "Compile .asm files for all testcases in the `testcases' directory." )
+                    COMMENT "Compiling .asm files for all testcases in the `testcases' directory." )

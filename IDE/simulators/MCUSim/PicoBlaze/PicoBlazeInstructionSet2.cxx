@@ -398,7 +398,7 @@ void PicoBlazeInstructionSet2::inst_ADDCY1 ( const unsigned int opCode )
 
     // Extract operands from OP code.
     const unsigned int sX = ( opCode & 0x1f00 ) >> 8;
-    const unsigned int sY = ( opCode & 0x00f8 );
+    const unsigned int sY = ( opCode & 0x00f8 ) >> 3;
 
     // Registers.
     unsigned int sXval = m_registers -> read ( sX );

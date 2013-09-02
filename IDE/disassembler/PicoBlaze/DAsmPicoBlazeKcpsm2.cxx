@@ -128,8 +128,9 @@ void DAsmPicoBlazeKcpsm2::phase2 ( unsigned int code,
         case KCPSM2_ADDCY_SX_SY:        sx_sy(line, code, "ADDCY");     break;
         case KCPSM2_SUB_SX_SY:          sx_sy(line, code, "SUB");       break;
         case KCPSM2_SUBCY_SX_SY:        sx_sy(line, code, "SUBCY");     break;
-        case KCPSM2_INPUT_SX_SY:        sx_sy(line, code, "INPUT");     break;
-        case KCPSM2_OUTPUT_SX_SY:       sx_sy(line, code, "OUTPUT");    break;
+
+        case KCPSM2_INPUT_SX_SY:        sx_at_sy(line, code, "INPUT");  break;
+        case KCPSM2_OUTPUT_SX_SY:       sx_at_sy(line, code, "OUTPUT"); break;
 
         case KCPSM2_INPUT_SX_PP:        sx_pp(line, code, "INPUT");     break;
         case KCPSM2_OUTPUT_SX_PP:       sx_pp(line, code, "OUTPUT");    break;
@@ -153,6 +154,11 @@ void DAsmPicoBlazeKcpsm2::inst_JUMP ( std::string & line,
         case 0b110: aaa(line, code, "JUMP", "C");  break;
         case 0b111: aaa(line, code, "JUMP", "NC"); break;
         case 0b000: aaa(line, code, "JUMP");       break;
+        default:
+            appendStr(line, "DB");
+            indent(line, 32);
+            appendStr(line, num2str(code));
+            break;
     }
 }
 
@@ -166,6 +172,11 @@ void DAsmPicoBlazeKcpsm2::inst_CALL ( std::string & line,
         case 0b110: aaa(line, code, "CALL", "C");  break;
         case 0b111: aaa(line, code, "CALL", "NC"); break;
         case 0b000: aaa(line, code, "CALL");       break;
+        default:
+            appendStr(line, "DB");
+            indent(line, 32);
+            appendStr(line, num2str(code));
+            break;
     }
 }
 
@@ -173,18 +184,21 @@ void DAsmPicoBlazeKcpsm2::shift_rotate ( std::string & line,
                                          unsigned int code )
 {
     const char * inst = NULL;
-    switch ( code & 0xff )
+    if ( 0 == ( code & 0xff00 ) )
     {
-        case 0b0110: inst = "SL0";      break;
-        case 0b0111: inst = "SL1";      break;
-        case 0b0100: inst = "SLX";      break;
-        case 0b0000: inst = "SLA";      break;
-        case 0b0010: inst = "RL";       break;
-        case 0b1110: inst = "SR0";      break;
-        case 0b1111: inst = "SR1";      break;
-        case 0b1010: inst = "SRX";      break;
-        case 0b1000: inst = "SRA";      break;
-        case 0b1100: inst = "RR";       break;
+        switch ( code & 0xff )
+        {
+            case 0b0110: inst = "SL0";      break;
+            case 0b0111: inst = "SL1";      break;
+            case 0b0100: inst = "SLX";      break;
+            case 0b0000: inst = "SLA";      break;
+            case 0b0010: inst = "RL";       break;
+            case 0b1110: inst = "SR0";      break;
+            case 0b1111: inst = "SR1";      break;
+            case 0b1010: inst = "SRX";      break;
+            case 0b1000: inst = "SRA";      break;
+            case 0b1100: inst = "RR";       break;
+        }
     }
 
     if ( NULL == inst )

@@ -28,6 +28,12 @@ enable_testing()
 # BUILD COMPONENTS IN THE SUBDIRECTORIES
 # ------------------------------------------------------------------------------
 
+# Test suite: KCPSM1CPLD.
+add_subdirectory ( TestKcpsm1CPLD )
+
+# Test suite: KCPSM1.
+add_subdirectory ( TestKcpsm1 )
+
 # Test suite: KCPSM2.
 add_subdirectory ( TestKcpsm2 )
 
@@ -66,6 +72,8 @@ add_executable ( ${PROJECT_NAME}
 # Link a target to given libraries
 target_link_libraries ( ${PROJECT_NAME}
                         ${Boost_LIBRARIES}
+                        TSP_TestKcpsm1CPLD
+                        TSP_TestKcpsm1
                         TSP_TestKcpsm2
                         TSP_TestKcpsm3
                         TSP_TestKcpsm6
