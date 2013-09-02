@@ -119,7 +119,7 @@ HexEdit::HexEdit(QWidget *parent, bool AsciiPanel, int countSize, int columns)
     }
 
     hexColumnCount = new WColumnCounter(hexTextEdit, this->hexTextEdit->font(), columns);
-    hexLineCount = new WLineCounter(hexTextEdit, false, true, this->hexTextEdit->font());
+    hexLineCount = new WLineCounter(hexTextEdit, false, true, columns, this->hexTextEdit->font());
     hexByteArray = new QList<unsigned char>();
     hexByteArray->reserve(countSize);
     for (int i = 0; i < countSize; i++)

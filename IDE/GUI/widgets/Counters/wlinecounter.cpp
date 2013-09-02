@@ -24,7 +24,7 @@
  * @param hex If shown numbers will be hexadecimal (or decimal).
  * @param font Used font.
  */
-WLineCounter::WLineCounter(QTextEdit *parent, bool icons, bool hex, QFont font)
+WLineCounter::WLineCounter(QTextEdit *parent, bool icons, bool hex, int offset, QFont font)
     : QScrollArea(parent)
 {
     qDebug() << "WLineCounter: WLineCounter()";
@@ -37,7 +37,7 @@ WLineCounter::WLineCounter(QTextEdit *parent, bool icons, bool hex, QFont font)
     int fontWidth = fontMetrics.width("000");
     this->setMaximumWidth(fontWidth);
     this->setMinimumWidth(fontWidth);
-    widget = new WLineCounterWidget(this, icons, hex, font);
+    widget = new WLineCounterWidget(this, icons, hex, offset, font);
     this->setWidget(widget);
     this->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -86,7 +86,7 @@ void WLineCounter::change(int value)
  * @param hex If line numbers will be in hexadecimal (or decimal)
  * @param font Used font.
  */
-WLineCounterWidget::WLineCounterWidget(WLineCounter *parent, bool icons, bool hex, QFont font)
+WLineCounterWidget::WLineCounterWidget(WLineCounter *parent, bool icons, bool hex, int offset, QFont font)
     : QWidget(parent)
 {
     qDebug() << "WLineCounterWidget: WLineCounterWidget()";
@@ -102,6 +102,7 @@ WLineCounterWidget::WLineCounterWidget(WLineCounter *parent, bool icons, bool he
     this->setMinimumWidth(fontWidth*2);
     //this->setMinimumHeight(parent->parent->height());
     this->hex = hex;
+    this->offset = offset;
     //this->show();
     /*if (parent->getTextEdit()->verticalScrollBar()->maximum() > 0)
     {
@@ -180,13 +181,13 @@ void WLineCounterWidget::paintEvent(QPaintEvent *)
         //paint.setPen(pen);
         if (true == hex)
         {
-            if (i<16)
+            if (i * this->offset < 16)
             {
-                paint.drawText(rect, Qt::AlignCenter, "0" + QString::number(i, 16).toUpper());
+                paint.drawText(rect, Qt::AlignCenter, "0" + QString::number(i * this->offset, 16).toUpper());
             }
             else
             {
-                paint.drawText(rect, Qt::AlignCenter, QString::number(i, 16).toUpper());
+                paint.drawText(rect, Qt::AlignCenter, QString::number(i * this->offset, 16).toUpper());
             }
         }
         else

@@ -102,7 +102,6 @@ class Project : public QObject
         Project(QString name, QString path, QString arch, LangType langType, QFile *file, ProjectMan *parent);
         ~Project();
 
-        void addFile(QString path, QString name);
         void setupSim();
         bool start();
         void stop();
@@ -140,6 +139,7 @@ class Project : public QObject
     public slots:
         void setMainFile(QString path, QString name);
         void removeFile(QString path, QString name);
+        void addFile(QString path, QString name);
         
     private slots:
         void setActive();
