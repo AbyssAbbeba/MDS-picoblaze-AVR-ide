@@ -31,7 +31,7 @@ class WLineCounter : public QScrollArea
 {
     Q_OBJECT   
     public:
-        WLineCounter(QTextEdit *parent, bool icons, bool hex, QFont font);
+        WLineCounter(QTextEdit *parent, bool icons, bool hex, int offset, QFont font);
         QTextEdit* getTextEdit();
         WLineCounterWidget* getWidget();
 
@@ -52,7 +52,7 @@ class WLineCounterWidget : public QWidget
 {   
     Q_OBJECT   
     public:
-        WLineCounterWidget(WLineCounter *parent, bool icons, bool hex, QFont font);
+        WLineCounterWidget(WLineCounter *parent, bool icons, bool hex, int offset, QFont font);
         void changeHeight();
     //private slots:
     //    void change();
@@ -61,6 +61,7 @@ class WLineCounterWidget : public QWidget
         WLineCounter *parent;
         bool icons;
         bool hex;
+        int offset;
         int fontHeight;
         int fontWidth;
         //QList<bool> *breakpointList;
