@@ -27,7 +27,9 @@ ProjectTree::ProjectTree(QWidget *parent)
     setHeaderHidden(true);
     projectPopup = new QMenu(this);
     QAction *projectConfigAct = new QAction("Configuration", projectPopup);
+    QAction *addFileAct = new QAction("Add File", projectPopup);
     //QAction *projectHWCanvasAct = new QAction("Hardware Canvas", projectPopup);
+    projectPopup->addAction(addFileAct);
     projectPopup->addAction(projectConfigAct);
     //projectPopup->addAction(projectHWCanvasAct);
     filePopup = new QMenu(this);
@@ -37,6 +39,7 @@ ProjectTree::ProjectTree(QWidget *parent)
     filePopup->addAction(setMainFileAct);
     connect(setMainFileAct, SIGNAL(triggered()), this, SLOT(setMainFile()));
     connect(removeFileAct, SIGNAL(triggered()), this, SLOT(removeFile()));
+    connect(addFileAct, SIGNAL(triggered()), this, SLOT(addFile()));
     connect(projectConfigAct, SIGNAL(triggered()), this, SLOT(config()));
 }
 
@@ -140,7 +143,7 @@ void ProjectTree::setMainFileManual(QString name, QString path)
     qDebug() << "Project Tree: items found " << items.count();
     for (int i = 0; i < items.count(); i++)
     {
-        qDebug() << "Project Tree: path of" << i << "item is" << items.at(i)->toolTip(0);
+        //qDebug() << "Project Tree: path of" << i << "item is" << items.at(i)->toolTip(0);
         if (items.at(i)->toolTip(0) == absolutePath)
         {
             qDebug() << "Project Tree: manual color set";
@@ -176,8 +179,15 @@ void ProjectTree::config()
 }*/
 
 
-/*void ProjectTree::addFile()
+void ProjectTree::addFile()
 {
-    delete lastItem;
-    parentProject->removeFile(lastPath, lastName);
-}*/
+    QString path = QFileDialog::getOpenFileName(this, tr("Source File"), "");
+    if (path != NULL)
+    {
+        emit addFile(path, path.section('/', -1));
+        //QTreeWidgetItem *treeProjFile = new QTreeWidgetItem(this->topLevelItem(0));
+        //treeProjFile->setText(0, path.section('/', -1));
+        //treeProjFile->setData(0, Qt::ToolTipRole, path);
+        //fileList->addItem(newItem);
+    }
+}
