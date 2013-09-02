@@ -14,14 +14,19 @@
 // =============================================================================
 
 // Disassembler header files.
-#include "DAsmPicoBlazeKcpsm2.h"
-#include "DAsmPicoBlazeKcpsm3.h"
 #include "DAsmPicoBlazeKcpsm6.h"
+#include "DAsmPicoBlazeKcpsm3.h"
+#include "DAsmPicoBlazeKcpsm2.h"
+#include "DAsmPicoBlazeKcpsm1.h"
+#include "DAsmPicoBlazeKcpsm1CPLD.h"
 
 // MCU memory data container libraries.
 #include "HexFile.h"
 #include "BinFile.h"
 #include "SrecFile.h"
+#include "XilMemFile.h"
+#include "XilVerilogFile.h"
+#include "XilVHDLFile.h"
 
 // Standard headers.
 #include <cstring>
@@ -50,9 +55,9 @@ static const char * VERSION = "1.0";
 /// @brief Program exit codes.
 enum ExitCode
 {
-    EXIT_CODE_SUCCESS   = 0, ///< Everything went smoothly and disassembly was successful.
-    EXIT_ERROR_COMPILER = 1, ///< Disassembler attempted to execute the given task but for some reason without success.
-    EXIT_ERROR_CLI      = 2  ///< Command line interface did not understand the task, disassembler was not even started.
+    EXIT_CODE_SUCCESS = 0, ///< Everything went smoothly and disassembly was successful.
+    EXIT_ERROR_DASM   = 1, ///< Disassembler attempted to execute the given task but for some reason without success.
+    EXIT_ERROR_CLI    = 2  ///< Command line interface did not understand the task, disassembler was not even started.
 };
 
 /**
@@ -62,7 +67,96 @@ enum ExitCode
 void printHelp ( const char * executable )
 {
     std::cout << QObject::tr("Usage:").toStdString() << std::endl
-              << QObject::tr("    %1 <OPTIONS>").arg(executable).toStdString() << std::endl
+              << QObject::tr("    %1 <OPTIONS>").arg(executable).toStdString() << std::endl << std::endl;
+
+    std::cout << QObject::tr("Available program options:").toStdString() << std::endl
+              << QObject::tr("    -a, --arch <architecture>").toStdString() << std::endl
+              << QObject::tr("        Specify processor architecture, supported architectures are:")
+                            .toStdString() << std::endl
+//               << QObject::tr("            - avr8      : 8-bit AVR,").toStdString() << std::endl
+//               << QObject::tr("            - pic8      : 8-bit PIC,").toStdString() << std::endl
+//               << QObject::tr("            - mcs51     : MCS-51,").toStdString() << std::endl
+              << QObject::tr("            - PicoBlaze : (K)constant Coded Programmable State Machine.")
+                            .toStdString() << std::endl
+              << std::endl
+              << QObject::tr("    -f, --family <family>").toStdString() << std::endl
+              << QObject::tr("        Specify processor family, supported families for the given architectures are:")
+                            .toStdString() << std::endl
+              << QObject::tr("            - PicoBlaze : kcpsm1, kcpsm1cpld, kcpsm2, kcpsm3, kcpsm6.")
+                            .toStdString() << std::endl
+              << std::endl
+              << QObject::tr("    -o, --out <output file>").toStdString() << std::endl
+              << QObject::tr("        Specify output file where the resulting assembly language code will be stored.")
+                            .toStdString() << std::endl
+              << std::endl
+              << QObject::tr("    -i, --in <input file>").toStdString() << std::endl
+              << QObject::tr("        Specify input file with machine code to disassemble.").toStdString() << std::endl
+              << std::endl
+              << QObject::tr("    -t, --type <input file format>").toStdString() << std::endl
+              << QObject::tr("        Type of the input file; if none provided, disassembler will try to guess the ")
+                            .toStdString() << std::endl
+              << QObject::tr("        format from input file extension, supported types are:")
+                            .toStdString() << std::endl
+              << QObject::tr("            - hex  : Intel 8 HEX, or Intel 16 HEX,").toStdString() << std::endl
+              << QObject::tr("            - srec : Motorola S-Record,").toStdString() << std::endl
+              << QObject::tr("            - bin  : raw binary file,").toStdString() << std::endl
+              << QObject::tr("            - mem  : Xilinx MEM file (for PicoBlaze only),").toStdString() << std::endl
+              << QObject::tr("            - vhd  : VHDL file (for PicoBlaze only),").toStdString() << std::endl
+              << QObject::tr("            - v    : Verilog file (for PicoBlaze only).").toStdString() << std::endl
+              << std::endl
+              << std::endl
+              << QObject::tr("    --cfg-ind <indentation>").toStdString() << std::endl
+              << QObject::tr("        Indent with:").toStdString() << std::endl
+              << QObject::tr("            - spaces : indent with spaces (default),").toStdString() << std::endl
+              << QObject::tr("            - tabs   : indent with tabs.").toStdString() << std::endl
+              << std::endl
+              << QObject::tr("    --cfg-tabsz <n>").toStdString() << std::endl
+              << QObject::tr("        Consider tab to be displayed at most n spaces wide, here it is by default 8.")
+                            .toStdString() << std::endl
+              << std::endl
+              << QObject::tr("    --cfg-eof <end of line character>").toStdString() << std::endl
+              << QObject::tr("        Specify line separator, available options are:").toStdString() << std::endl
+              << QObject::tr("            - crlf : [WINDOWS] use sequence of carriage return and line feed characters")
+                            .toStdString() << std::endl
+              << QObject::tr("                     (default),").toStdString() << std::endl
+              << QObject::tr("            - lf : [UNIX] use a single line feed character (0x0a = '\\n'),")
+                            .toStdString() << std::endl
+              << QObject::tr("            - cr : [APPLE] use single carriage return (0x0d = '\\r').")
+                            .toStdString() << std::endl
+              << std::endl
+              << QObject::tr("    --cfg-sym <symbols>").toStdString() << std::endl
+              << QObject::tr("        Which kind of addresses should be translated to symbolic names, and which should")
+                            .toStdString() << std::endl
+              << QObject::tr("        remain to be represented as numbers, available options are:")
+                            .toStdString() << std::endl
+              << QObject::tr("            - C : program memory,").toStdString() << std::endl
+              << QObject::tr("            - D : data memory,").toStdString() << std::endl
+              << QObject::tr("            - R : register file,").toStdString() << std::endl
+              << QObject::tr("            - P : port address,").toStdString() << std::endl
+              << QObject::tr("            - K : immediate constants,").toStdString() << std::endl
+              << QObject::tr("        this options takes any combination of these, i.e. for example \"CDR\" stands")
+                            .toStdString() << std::endl
+              << QObject::tr("        for program memory + data memory + register file.").toStdString() << std::endl
+              << std::endl
+              << QObject::tr("    --cfg-lc <character>").toStdString() << std::endl
+              << QObject::tr("        Use uppercase, or lowercase characters:").toStdString() << std::endl
+              << QObject::tr("            - L : lowercase (default),").toStdString() << std::endl
+              << QObject::tr("            - U : uppercase.").toStdString() << std::endl
+              << std::endl
+              << QObject::tr("    --cfg-radix <radix>").toStdString() << std::endl
+              << QObject::tr("        Radix, available options are:.").toStdString() << std::endl
+              << QObject::tr("            - H : hexadecimal (default),").toStdString() << std::endl
+              << QObject::tr("            - D : decimal,").toStdString() << std::endl
+              << QObject::tr("            - B : binary,").toStdString() << std::endl
+              << QObject::tr("            - O : octal.").toStdString() << std::endl
+              << std::endl
+              << std::endl
+              << QObject::tr("    -h, --help").toStdString() << std::endl
+              << QObject::tr("        (Print this message.)").toStdString() << std::endl
+              << std::endl
+              << QObject::tr("    -V, --version").toStdString() << std::endl
+              << QObject::tr("        Print compiler version and exit.").toStdString() << std::endl
+
               << std::endl;
 }
 
@@ -92,18 +186,17 @@ inline void invalidCfgOption ( const char * opt )
  */
 int main ( int argc, char ** argv )
 {
-    using namespace boost::filesystem;
-
     DAsm * disasm = NULL;
     DataFile * dataFile = NULL;
     DAsm::Config config;
 
+    std::string infile;
     std::string outfile;
     std::string architecture;
     std::string family;
-    std::string inhex;
-    std::string inbin;
-    std::string insrec;
+    std::string type;
+
+    bool inTypeGuessed = false;
 
     std::cout << QObject::tr("MDS mutitarget disassembler v%1").arg(VERSION).toStdString() << std::endl
               << QObject::tr("(C) copyright 2013 Moravia Microsystems, s.r.o., Brno, CZ, European Union.")
@@ -121,18 +214,17 @@ int main ( int argc, char ** argv )
     // Disable error messages from getopt_long().
     opterr = 0;
 
-    const char * shortopts = ":hVo:a:f:x:b:s:";
+    const char * shortopts = ":hVo:i:a:f:t:";
     static const struct option longopts[] =
     {
         { "help",        no_argument,       0, 'h'   },
         { "version",     no_argument,       0, 'V'   },
 
         { "out",         required_argument, 0, 'o'   },
+        { "in",          required_argument, 0, 'i'   },
         { "arch",        required_argument, 0, 'a'   },
         { "family",      required_argument, 0, 'f'   },
-        { "hex",         required_argument, 0, 'x'   },
-        { "binary",      required_argument, 0, 'b'   },
-        { "srec",        required_argument, 0, 's'   },
+        { "type",        required_argument, 0, 't'   },
 
         { "cfg-ind",     required_argument, 0, 0x100 },
         { "cfg-tabsz",   required_argument, 0, 0x101 },
@@ -160,9 +252,8 @@ int main ( int argc, char ** argv )
             case 'o':  outfile      = optarg; break;
             case 'a':  architecture = optarg; break;
             case 'f':  family       = optarg; break;
-            case 'x':  inhex        = optarg; break;
-            case 'b':  inbin        = optarg; break;
-            case 's':  insrec       = optarg; break;
+            case 'i':  infile       = optarg; break;
+            case 't':  type         = optarg; break;
 
             case 0x100: // --cfg-ind
                 if ( 0 == strcmp(optarg, "tabs") )
@@ -322,45 +413,40 @@ int main ( int argc, char ** argv )
         return EXIT_ERROR_CLI;
     }
 
-    if ( false == inhex.empty() )
-    {
-        dataFile = new HexFile(inhex);
-    }
-    else if ( false == inbin.empty() )
-    {
-        dataFile = new BinFile(inbin);
-    }
-    else if ( false == insrec.empty() )
-    {
-        dataFile = new SrecFile(insrec);
-    }
-    else
-    {
-        std::cerr << QObject::tr("Error: no input file specified.").toStdString()
-                  << std::endl;
-        return EXIT_ERROR_CLI;
-    }
-
-    if ( true == outfile.empty() )
-    {
-        std::cerr << QObject::tr("Warning: output file was not specified.").toStdString()
-                  << std::endl;
-        return EXIT_ERROR_CLI;
-    }
+    int memFileBPR = -1;
+    XilHDLFile::OPCodeSize opCodeSize = XilHDLFile::OPCodeSize(-1);
 
     if ( "PicoBlaze" == architecture )
     {
-        if ( "kcpsm2" == family )
+        if ( "kcpsm1cpld" == family )
+        {
+            disasm = new DAsmPicoBlazeKcpsm1CPLD();
+            memFileBPR = 2;
+            opCodeSize = XilHDLFile::SIZE_16b;
+        }
+        else if ( "kcpsm1" == family )
+        {
+            disasm = new DAsmPicoBlazeKcpsm1();
+            memFileBPR = 2;
+            opCodeSize = XilHDLFile::SIZE_16b;
+        }
+        else if ( "kcpsm2" == family )
         {
             disasm = new DAsmPicoBlazeKcpsm2();
+            memFileBPR = 3;
+            opCodeSize = XilHDLFile::SIZE_18b;
         }
         else if ( "kcpsm3" == family )
         {
             disasm = new DAsmPicoBlazeKcpsm3();
+            memFileBPR = 3;
+            opCodeSize = XilHDLFile::SIZE_18b;
         }
         else if ( "kcpsm6" == family )
         {
             disasm = new DAsmPicoBlazeKcpsm6();
+            memFileBPR = 3;
+            opCodeSize = XilHDLFile::SIZE_18b;
         }
         else
         {
@@ -375,6 +461,102 @@ int main ( int argc, char ** argv )
         std::cerr << QObject::tr("Error: architecture `%1' is not supported.").arg(architecture.c_str()).toStdString()
                   << std::endl;
         return EXIT_ERROR_CLI;
+    }
+
+    if ( true == infile.empty() )
+    {
+        std::cerr << QObject::tr("Error: no input file specified.").toStdString() << std::endl;
+        return EXIT_ERROR_CLI;
+    }
+
+    if ( true == outfile.empty() )
+    {
+        std::cerr << QObject::tr("Warning: output file was not specified.").toStdString() << std::endl;
+    }
+
+    if ( true == type.empty() )
+    {
+        std::cerr << QObject::tr ( "Warning: input file type not specified, attempting to guess by file extension." )
+                                 . toStdString()
+                  << std::endl;
+
+        inTypeGuessed = true;
+        type = boost::filesystem::path(infile).extension().string();
+        if ( type.size() > 0 )
+        {
+            type.erase(0, 1);
+        }
+    }
+
+    try
+    {
+        if ( "hex" == type )
+        {
+            dataFile = new HexFile(infile);
+        }
+        else if ( "bin" == type )
+        {
+            dataFile = new BinFile(infile);
+        }
+        else if ( "srec" == type )
+        {
+            dataFile = new SrecFile(infile);
+        }
+        else if ( "mem" == type )
+        {
+            if ( -1 == memFileBPR )
+            {
+                std::cerr << QObject::tr ( "Error: cannot use Xilinx MEM code as input file for this processor." )
+                                         . toStdString()
+                          << std::endl;
+                return EXIT_ERROR_CLI;
+            }
+            dataFile = new XilMemFile(infile, memFileBPR);
+        }
+        else if ( "v" == type )
+        {
+            if ( XilHDLFile::OPCodeSize(-1) == opCodeSize )
+            {
+                std::cerr << QObject::tr ( "Error: cannot use Verilog source code as input file for this processor." )
+                                         . toStdString()
+                          << std::endl;
+                return EXIT_ERROR_CLI;
+            }
+            dataFile = new XilVerilogFile(infile, "", "", opCodeSize);
+        }
+        else if ( "vhd" == type )
+        {
+            if ( XilHDLFile::OPCodeSize(-1) == opCodeSize )
+            {
+                std::cerr << QObject::tr ( "Error: cannot use VHDL source code as input file for this processor." )
+                                         . toStdString()
+                          << std::endl;
+                return EXIT_ERROR_CLI;
+            }
+            dataFile = new XilVHDLFile(infile, "", "", opCodeSize);
+        }
+        else if ( true == inTypeGuessed )
+        {
+            std::cerr << QObject::tr ( "Error: unable to determinate format of the input file." )
+                                     . toStdString()
+                      << std::endl;
+            return EXIT_ERROR_CLI;
+        }
+        else
+        {
+            std::cerr << QObject::tr ( "Error: invalid file type specification: `%1'." )
+                                     . arg ( type.c_str() )
+                                     . toStdString()
+                      << std::endl;
+            return EXIT_ERROR_CLI;
+        }
+    }
+    catch ( DataFileException & e )
+    {
+        std::cerr << QObject::tr("Error: unable to read the specified input file: `%1', reason: ")
+                                .arg(infile.c_str()).toStdString()
+                  << e.toString() << std::endl;
+        return EXIT_ERROR_DASM;
     }
 
     disasm->m_config = config;
@@ -418,6 +600,6 @@ int main ( int argc, char ** argv )
     else
     {
         std::cerr << QObject::tr("Disassembly FAILED!").toStdString() << std::endl;
-        return EXIT_ERROR_COMPILER;
+        return EXIT_ERROR_DASM;
     }
 }

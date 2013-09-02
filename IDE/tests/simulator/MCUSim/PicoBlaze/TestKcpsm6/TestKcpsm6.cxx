@@ -72,6 +72,8 @@ bool TestKcpsm6::addTests ( CU_pSuite suite )
         std::string extension = dir->path().extension().string();
         std::string testName = dir->path().filename().string();
 
+        std::transform(extension.begin(), extension.end(), extension.begin(), ::tolower);
+
         if ( ".in" == extension )
         {
             testName.resize(testName.size() - 3);

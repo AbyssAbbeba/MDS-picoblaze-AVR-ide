@@ -20,9 +20,9 @@ DAsm::Config::Config()
     m_symbolsToGenerate = SymbolsToGenerate( STG_CODE | STG_DATA | STG_REG | STG_PORT | STG_CONST );
 
     m_tabSize     = 8;
-    m_eof         = EOF_LF;
+    m_eof         = EOF_CRLF;
     m_indentation = IND_SPACES;
-    m_letterCase  = LC_UPPERCASE;
+    m_letterCase  = LC_LOWERCASE;
     m_radix       = R_HEX;
 }
 

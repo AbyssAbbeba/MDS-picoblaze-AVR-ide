@@ -17,7 +17,6 @@
 #define ASMPICOBLAZESEMANTICANALYSER_H
 
 // Forward declarations.
-class AsmMachineCodeGen;
 class AsmDgbFileGen;
 class AsmPicoBlazeSymbolTable;
 class AsmPicoBlazeCodeListing;
@@ -25,9 +24,11 @@ class AsmPicoBlazeInstructionSet;
 class AsmPicoBlazeMacros;
 class AsmPicoBlazeMemoryPtr;
 class AsmPicoBlazeSpecialMacros;
+class AsmPicoBlazeTreeDecoder;
 
 // Common compiler header files.
 #include "../../CompilerSemanticAnalyzer.h"
+#include "../AsmMachineCodeGen.h"
 
 /**
  * @brief
@@ -36,14 +37,6 @@ class AsmPicoBlazeSpecialMacros;
  */
 class AsmPicoBlazeSemanticAnalyzer : public CompilerSemanticAnalyzer
 {
-    ////    Public Static Constants    ////
-    public:
-        /// @brief Maximum allowed number of iterations in a WHILE loop.
-        static const unsigned int MAX_WHILE_ITERATIONS = 1024;
-
-        /// @brief Maximum allowed number of iterations in a REPEAT loop.
-        static const unsigned int MAX_REPEAT_ITERATIONS = 1024;
-
     ////    Public Datatypes    ////
     public:
         /**
@@ -51,10 +44,12 @@ class AsmPicoBlazeSemanticAnalyzer : public CompilerSemanticAnalyzer
          */
         enum Device
         {
-            DEV_UNSPEC, ///<
-            DEV_KCPSM2, ///<
-            DEV_KCPSM3, ///<
-            DEV_KCPSM6, ///<
+            DEV_UNSPEC,      ///<
+            DEV_KCPSM1CPLD,  ///<
+            DEV_KCPSM1,      ///<
+            DEV_KCPSM2,      ///<
+            DEV_KCPSM3,      ///<
+            DEV_KCPSM6,      ///<
         };
 
     ////    Constructors and Destructors    ////
@@ -94,44 +89,22 @@ class AsmPicoBlazeSemanticAnalyzer : public CompilerSemanticAnalyzer
          */
         void printCodeTree ( const CompilerStatement * codeTree );
 
-        /**
-         * @brief
-         * @param[in,out] codeTree
-         * @param[in] origLocation
-         * @param[in] macroName
-         * @return False, if critical error occured; true otherwise.
-         */
-        bool phase1 ( CompilerStatement * codeTree,
-                      const CompilerSourceLocation * origLocation = NULL,
-                      const std::string * macroName = NULL );
-
     ////    Inline Private Operations    ////
     private:
         /**
          * @brief
-         * @param[in,out] codeTree
          */
-        inline void phase2 ( CompilerStatement * codeTree );
+        inline void genMachineCode();
 
         /**
          * @brief
-         */
-        inline void outputHDL();
-
-        /**
-         * @brief
+         * @param[in] wordSize
          * @param[in,out] dataFile
          * @param[in] fileName
          */
-        inline void saveHDL ( DataFile & dataFile,
+        inline void saveHDL ( AsmMachineCodeGen::WordSize wordSize,
+                              DataFile & dataFile,
                               const std::string & fileName );
-
-        /**
-         * @brief
-         * @param[in,out] ifTree
-         * @return
-         */
-        inline CompilerStatement * conditionalCompilation ( CompilerStatement * ifTree );
 
     ////    Protected Attributes    ////
     protected:
@@ -158,6 +131,9 @@ class AsmPicoBlazeSemanticAnalyzer : public CompilerSemanticAnalyzer
 
         ///
         AsmPicoBlazeSpecialMacros * m_specialMacros;
+
+        ///
+        AsmPicoBlazeTreeDecoder * m_treeDecoder;
 
         ///
         Device m_device;

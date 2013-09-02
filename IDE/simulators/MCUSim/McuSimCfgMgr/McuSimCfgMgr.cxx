@@ -224,6 +224,14 @@ bool McuSimCfgMgr::setupSimulator ( const char * mcuName,
         {
             dev = MCUSim::FAMILY_KCPSM2;
         }
+        else if ( 0 == strcmp("kcpsm1", mcuName) )
+        {
+            dev = MCUSim::FAMILY_KCPSM1;
+        }
+        else if ( 0 == strcmp("kcpsm1CPLD", mcuName) )
+        {
+            dev = MCUSim::FAMILY_KCPSM1CPLD;
+        }
         else
         {
             return false;

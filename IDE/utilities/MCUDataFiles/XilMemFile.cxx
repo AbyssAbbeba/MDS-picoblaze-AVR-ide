@@ -78,6 +78,9 @@ void XilMemFile::clearAndLoad ( const std::string & filename ) throw ( DataFileE
         }
         sscanf(field, "%x", &addr);
 
+        addr *= m_bytesPerRecord;
+        addr /= 4;
+
         while ( NULL != ( field = getField(&line) ) )
         {
             unsigned int value;
@@ -88,11 +91,11 @@ void XilMemFile::clearAndLoad ( const std::string & filename ) throw ( DataFileE
                 throw DataFileException(DataFileException::EXP_MEMORY_OVERFLOW);
             }
 
-            unsigned int shift = 0;
+            unsigned int shift = ( 8 * ( m_bytesPerRecord - 1 ) );
             for ( unsigned int i = 0; i < m_bytesPerRecord; i++ )
             {
                 m_memory [ addr++ ] = ( 0xff & ( value >> shift ) );
-                shift += 8;
+                shift -= 8;
             }
         }
     }

@@ -42,9 +42,11 @@ add_definitions ( -Wall -Wextra -std=c++0x -O2 -pipe -fPIC )
  # in this case it will procude static C++ library.
 add_library ( ${PROJECT_NAME} STATIC
               DAsmPicoBlazeCore.cxx
-              DAsmPicoBlazeKcpsm2.cxx
+              DAsmPicoBlazeKcpsm6.cxx
               DAsmPicoBlazeKcpsm3.cxx
-              DAsmPicoBlazeKcpsm6.cxx )
+              DAsmPicoBlazeKcpsm2.cxx
+              DAsmPicoBlazeKcpsm1.cxx
+              DAsmPicoBlazeKcpsm1CPLD.cxx )
 
 
 # ------------------------------------------------------------------------------

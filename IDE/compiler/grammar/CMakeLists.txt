@@ -29,23 +29,23 @@ find_package ( BISON ) # Syntactic analyzer generator
 find_package ( FLEX )  # Lexical analyzer generator
 
 # Assembler for 8-bit AVR
-BISON_TARGET ( avr8parser avr8parser.y avr8parser.cxx VERBOSE "avr8parser.output" )
-FLEX_TARGET ( avr8lexer avr8lexer.l avr8lexer.cxx )
+bison_target ( avr8parser avr8parser.y avr8parser.cxx VERBOSE "avr8parser.output" )
+flex_target ( avr8lexer avr8lexer.l avr8lexer.cxx )
 # ADD_FLEX_BISON_DEPENDENCY ( avr8lexer avr8parser )
 
 # Assembler for 8-bit PIC
-BISON_TARGET ( pic8parser pic8parser.y pic8parser.cxx VERBOSE "pic8parser.output" )
-FLEX_TARGET ( pic8lexer pic8lexer.l pic8lexer.cxx)
+bison_target ( pic8parser pic8parser.y pic8parser.cxx VERBOSE "pic8parser.output" )
+flex_target ( pic8lexer pic8lexer.l pic8lexer.cxx)
 # ADD_FLEX_BISON_DEPENDENCY ( pic8lexer pic8parser )
 
 # Assembler for MCS-51
-BISON_TARGET ( mcs51parser mcs51parser.y mcs51parser.cxx VERBOSE "mcs51parser.output" )
-FLEX_TARGET ( mcs51lexer mcs51lexer.l mcs51lexer.cxx)
+bison_target ( mcs51parser mcs51parser.y mcs51parser.cxx VERBOSE "mcs51parser.output" )
+flex_target ( mcs51lexer mcs51lexer.l mcs51lexer.cxx)
 # ADD_FLEX_BISON_DEPENDENCY ( mcs51lexer mcs51parser )
 
 # Assembler for PicoBlaze
-BISON_TARGET ( PicoBlazeParser PicoBlazeParser.y PicoBlazeParser.cxx VERBOSE "PicoBlazeParser.output" )
-FLEX_TARGET ( PicoBlazeLexer PicoBlazeLexer.l PicoBlazeLexer.cxx)
+bison_target ( PicoBlazeParser PicoBlazeParser.y PicoBlazeParser.cxx VERBOSE "PicoBlazeParser.output" )
+flex_target ( PicoBlazeLexer PicoBlazeLexer.l PicoBlazeLexer.cxx)
 # ADD_FLEX_BISON_DEPENDENCY ( PicoBlazeLexer PicoBlazeParser )
 
 # List of additional files that will be cleaned as a part of the "make clean" stage.

@@ -28,8 +28,7 @@
 #include "HexFile.h"
 #include "SrecFile.h"
 
-AsmMachineCodeGen::AsmMachineCodeGen ( WordSize wordSize )
-                                     : m_wordSize ( wordSize )
+AsmMachineCodeGen::AsmMachineCodeGen ()
 {
     clear();
     reserve ( INITIAL_MAX_SIZE - 1 );
@@ -123,7 +122,8 @@ inline bool AsmMachineCodeGen::reserve ( unsigned int maxAddr )
     return true;
 }
 
-void AsmMachineCodeGen::output ( Endianness byteOrder,
+void AsmMachineCodeGen::output ( AsmMachineCodeGen::WordSize wordSize,
+                                 AsmMachineCodeGen::Endianness byteOrder,
                                  DataFile * target ) const
 {
     int addrIncrement;
@@ -144,16 +144,16 @@ void AsmMachineCodeGen::output ( Endianness byteOrder,
             continue;
         }
 
-        unsigned int addr = i * (int)m_wordSize;
+        unsigned int addr = i * (int)wordSize;
         unsigned int shift = 0;
         uint32_t mask = 0xff;
 
         if ( E_BIG_ENDIAN == byteOrder )
         {
-            addr += ( (int)m_wordSize - 1 );
+            addr += ( (int)wordSize - 1 );
         }
 
-        for ( int j = 0; j < (int)m_wordSize; j++ )
+        for ( int j = 0; j < (int)wordSize; j++ )
         {
             target->set(addr, (uint8_t) ( ( m_code[i] & mask ) >> shift ));
 
@@ -164,7 +164,13 @@ void AsmMachineCodeGen::output ( Endianness byteOrder,
     }
 }
 
-void AsmMachineCodeGen::output ( Endianness byteOrder,
+inline unsigned int AsmMachineCodeGen::sizeB ( AsmMachineCodeGen::WordSize wordSize ) const
+{
+    return ( m_size * (unsigned int) wordSize );
+}
+
+void AsmMachineCodeGen::output ( AsmMachineCodeGen::WordSize wordSize,
+                                 AsmMachineCodeGen::Endianness byteOrder,
                                  CompilerSemanticInterface * compilerCore,
                                  const CompilerOptions * opts )
 {
@@ -178,31 +184,32 @@ void AsmMachineCodeGen::output ( Endianness byteOrder,
 
     if ( true == compilerCore->m_simulatorData.m_genSimData )
     {
-        BinFile * dataFile = new BinFile(sizeB());
-        saveMachineCode(byteOrder, dataFile, opts->m_binFile, compilerCore, opts);
+        BinFile * dataFile = new BinFile(sizeB(wordSize));
+        saveMachineCode(wordSize, byteOrder, dataFile, opts->m_binFile, compilerCore, opts);
         compilerCore->m_simulatorData.m_simData = dataFile;
     }
 
     if ( false == opts->m_hexFile.empty() )
     {
-        HexFile dataFile(sizeB(), opts->m_hexMaxRecLength);
-        saveMachineCode(byteOrder, &dataFile, opts->m_hexFile, compilerCore, opts);
+        HexFile dataFile(sizeB(wordSize), opts->m_hexMaxRecLength);
+        saveMachineCode(wordSize, byteOrder, &dataFile, opts->m_hexFile, compilerCore, opts);
     }
 
     if ( false == opts->m_binFile.empty() )
     {
-        BinFile dataFile(sizeB());
-        saveMachineCode(byteOrder, &dataFile, opts->m_binFile, compilerCore, opts);
+        BinFile dataFile(sizeB(wordSize));
+        saveMachineCode(wordSize, byteOrder, &dataFile, opts->m_binFile, compilerCore, opts);
     }
 
     if ( false == opts->m_srecFile.empty() )
     {
-        SrecFile dataFile(sizeB());
-        saveMachineCode(byteOrder, &dataFile, opts->m_srecFile, compilerCore, opts);
+        SrecFile dataFile(sizeB(wordSize));
+        saveMachineCode(wordSize, byteOrder, &dataFile, opts->m_srecFile, compilerCore, opts);
     }
 }
 
-inline void AsmMachineCodeGen::saveMachineCode ( Endianness byteOrder,
+inline void AsmMachineCodeGen::saveMachineCode ( AsmMachineCodeGen::WordSize wordSize,
+                                                 AsmMachineCodeGen::Endianness byteOrder,
                                                  DataFile * dataFile,
                                                  const std::string & fileName,
                                                  CompilerSemanticInterface * compilerCore,
@@ -210,7 +217,7 @@ inline void AsmMachineCodeGen::saveMachineCode ( Endianness byteOrder,
 {
     try
     {
-        output(byteOrder, dataFile);
+        output(wordSize, byteOrder, dataFile);
         dataFile->save(fileName, false);
     }
     catch ( const DataFileException & e )

@@ -50,12 +50,15 @@ add_definitions ( -Wall -Wextra -std=c++0x -O2 -pipe -fPIC )
 add_library ( ${PROJECT_NAME} STATIC
               AsmPicoBlazeMacros.cxx
               AsmPicoBlazeMemoryPtr.cxx
+              AsmPicoBlazeTreeDecoder.cxx
               AsmPicoBlazeSymbolTable.cxx
               AsmPicoBlazeCodeListing.cxx
               AsmPicoBlazeSpecialMacros.cxx
               AsmPicoBlazeCodeGenerator.cxx
               AsmPicoBlazeInstructionSet.cxx
               AsmPicoBlazeInstructionSetN.cxx
+              AsmPicoBlazeInstructionSet1CPLD.cxx
+              AsmPicoBlazeInstructionSet1.cxx
               AsmPicoBlazeInstructionSet2.cxx
               AsmPicoBlazeInstructionSet3.cxx
               AsmPicoBlazeInstructionSet6.cxx

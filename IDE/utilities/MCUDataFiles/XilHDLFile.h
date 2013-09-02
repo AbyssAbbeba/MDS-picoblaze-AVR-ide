@@ -58,8 +58,8 @@ class XilHDLFile : public DataFile
          */
         enum OPCodeSize
         {
-            SIZE_16b, ///<
-            SIZE_18b  ///<
+            SIZE_16b = 0, ///<
+            SIZE_18b      ///<
         };
 
     ////    Constructors and Destructors    ////

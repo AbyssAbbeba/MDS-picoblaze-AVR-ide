@@ -14,6 +14,8 @@
 // =============================================================================
 
 // Test suites header files.
+#include "TestKcpsm1CPLD/TestKcpsm1CPLD.h"
+#include "TestKcpsm1/TestKcpsm1.h"
 #include "TestKcpsm2/TestKcpsm2.h"
 #include "TestKcpsm3/TestKcpsm3.h"
 #include "TestKcpsm6/TestKcpsm6.h"
@@ -51,6 +53,42 @@ int initTestEnv()
     // -----------------------------------------------------------------------------------------------------------------
     // Register test suites.
     // -----------------------------------------------------------------------------------------------------------------
+
+    // Add KCPSM1CPLD test suite to the CUnit test registry.
+    CU_pSuite testKcpsm1CPLD = CU_add_suite ( "KCPSM1CPLD",
+                                             TestKcpsm1CPLD::init,
+                                             TestKcpsm1CPLD::clean );
+    if ( NULL == testKcpsm1CPLD )
+    {
+        // Unable to add the test suite to the registry.
+        CU_cleanup_registry();
+        return CU_get_error();
+    }
+
+    // Add unit tests to the suite.
+    if ( false == TestKcpsm1CPLD::addTests(testKcpsm1CPLD) )
+    {
+        CU_cleanup_registry();
+        return CU_get_error();
+    }
+
+    // Add KCPSM1 test suite to the CUnit test registry.
+    CU_pSuite testKcpsm1 = CU_add_suite ( "KCPSM1",
+                                          TestKcpsm1::init,
+                                          TestKcpsm1::clean );
+    if ( NULL == testKcpsm1 )
+    {
+        // Unable to add the test suite to the registry.
+        CU_cleanup_registry();
+        return CU_get_error();
+    }
+
+    // Add unit tests to the suite.
+    if ( false == TestKcpsm1::addTests(testKcpsm1) )
+    {
+        CU_cleanup_registry();
+        return CU_get_error();
+    }
 
     // Add KCPSM2 test suite to the CUnit test registry.
     CU_pSuite testKcpsm2 = CU_add_suite ( "KCPSM2",

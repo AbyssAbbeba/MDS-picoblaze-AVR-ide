@@ -126,6 +126,11 @@
 
 
 /**
+ * @defgroup testsMCUDataFiles MCUDataFiles
+ */
+
+
+/**
  * @defgroup MoraviaScript Moravia Script
  * Moravia Script language implementation: lexical analyzer, syntax analyzer, etc.
  */

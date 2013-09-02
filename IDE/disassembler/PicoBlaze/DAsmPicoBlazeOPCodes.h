@@ -26,6 +26,62 @@ namespace DAsmPicoBlazeOPCodes
     /**
      * @brief
      */
+    enum Kcpsm1CPLD
+    {
+        KCPSM1CPLD_LOAD_SX_KK   = 0x00,
+        KCPSM1CPLD_AND_SX_KK    = 0x01,
+        KCPSM1CPLD_OR_SX_KK     = 0x02,
+        KCPSM1CPLD_XOR_SX_KK    = 0x03,
+        KCPSM1CPLD_ADD_SX_KK    = 0x04,
+        KCPSM1CPLD_ADDCY_SX_KK  = 0x05,
+        KCPSM1CPLD_SUB_SX_KK    = 0x06,
+        KCPSM1CPLD_SUBCY_SX_KK  = 0x07,
+        KCPSM1CPLD_LOAD_SX_SY   = 0x08,
+        KCPSM1CPLD_AND_SX_SY    = 0x09,
+        KCPSM1CPLD_OR_SX_SY     = 0x0A,
+        KCPSM1CPLD_XOR_SX_SY    = 0x0B,
+        KCPSM1CPLD_ADD_SX_SY    = 0x0C,
+        KCPSM1CPLD_ADDCY_SX_SY  = 0x0D,
+        KCPSM1CPLD_SUB_SX_SY    = 0x0E,
+        KCPSM1CPLD_SUBCY_SX_SY  = 0x0F,
+        KCPSM1CPLD_INPUT_SX_PP  = 0x10,
+        KCPSM1CPLD_OUTPUT_SX_PP = 0x11,
+        KCPSM1CPLD_RETURN       = 0x12,
+        KCPSM1CPLD_SHIFT_ROTATE = 0x14,
+        KCPSM1CPLD_RETURNI      = 0x16,
+        KCPSM1CPLD_INPUT_SX_SY  = 0x18,
+        KCPSM1CPLD_OUTPUT_SX_SY = 0x19,
+        KCPSM1CPLD_JUMP         = 0x1A,
+        KCPSM1CPLD_CALL         = 0x1B,
+        KCPSM1CPLD_INTERRUPT    = 0x1E
+    };
+
+    /**
+     * @brief
+     */
+    enum Kcpsm1
+    {
+        KCPSM1_LOAD_SX_KK       = 0x0,
+        KCPSM1_AND_SX_KK        = 0x1,
+        KCPSM1_OR_SX_KK         = 0x2,
+        KCPSM1_XOR_SX_KK        = 0x3,
+        KCPSM1_ADD_SX_KK        = 0x4,
+        KCPSM1_ADDCY_SX_KK      = 0x5,
+        KCPSM1_SUB_SX_KK        = 0x6,
+        KCPSM1_SUBCY_SX_KK      = 0x7,
+        KCPSM1_1000             = 0x8,
+        KCPSM1_1001             = 0x9,
+        KCPSM1_INPUT_SX_PP      = 0xA,
+        KCPSM1_INPUT_SX_SY      = 0xB,
+        KCPSM1_1100             = 0xC,
+        KCPSM1_1101             = 0xD,
+        KCPSM1_OUTPUT_SX_PP     = 0xE,
+        KCPSM1_OUTPUT_SX_SY     = 0xF
+    };
+
+    /**
+     * @brief
+     */
     enum Kcpsm2
     {
         KCPSM2_LOAD_SX_KK       = 0x00,

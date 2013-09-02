@@ -131,7 +131,7 @@ class CompilerParserInterface
          * @brief
          * @param[in,out] codeTree
          */
-        virtual void syntaxAnalysisComplete ( CompilerStatement * codeTree ) = 0;
+        virtual void processCodeTree ( CompilerStatement * codeTree ) = 0;
 
         /// @name Methods and attributes specific for Bison and Flex
         //@{

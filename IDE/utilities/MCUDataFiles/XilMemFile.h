@@ -38,7 +38,7 @@ class XilMemFile : public DataFile
          */
         XilMemFile ( unsigned int bytesPerRecord,
                      unsigned int arrsize        = 0x4000,
-                     unsigned int linesInTotal   = 256,
+                     unsigned int linesInTotal   = 64,
                      unsigned int recordsPerLine = 16,
                      const char * eol            = "\r\n" )
                    :
