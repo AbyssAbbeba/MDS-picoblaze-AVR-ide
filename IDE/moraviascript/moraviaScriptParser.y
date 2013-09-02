@@ -29,15 +29,15 @@
 %language "C"
 // Write an extra output file containing verbose descriptions of the parser states.
 %verbose
-// Expect exactly <n> shift/reduce conflicts in this grammar
+// Expect exactly <n> shift/reduce conflicts in this grammar.
 %expect 0
-// Expect exactly <n> reduce/reduce conflicts in this grammar
+// Expect exactly <n> reduce/reduce conflicts in this grammar.
 %expect-rr 0
-/* Type of parser tables within the LR family, in this case we use LALR (Look-Ahead LR parser) */
+// Type of parser tables within the LR family, in this case we use LALR (Look-Ahead LR parser).
 %define lr.type lalr
-/* Bison declaration to request verbose, specific error message strings when yyerror is called */
+// Bison declaration to request verbose, specific error message strings when yyerror is called.
 %error-verbose
-/* Enable LAC (Lookahead Correction) to improve syntax error handling. */
+// Enable LAC (Lookahead Correction) to improve syntax error handling.
 %define parse.lac full
 
 // Symbol semantic value.
@@ -417,6 +417,7 @@ expr:
     | expr ">" expr                 { $$ = new MScriptExpr($1, MScriptExpr::OPER_GT,   $3, @$);       }
     | expr ">>" expr                { $$ = new MScriptExpr($1, MScriptExpr::OPER_SHR,  $3, @$);       }
     | expr "<<" expr                { $$ = new MScriptExpr($1, MScriptExpr::OPER_SHL,  $3, @$);       }
+    | expr "=" expr                 { $$ = new MScriptExpr($1, MScriptExpr::OPER_ASSIGN,     $3, @$); }
     | expr "+=" expr                { $$ = new MScriptExpr($1, MScriptExpr::OPER_ADD_ASSIGN, $3, @$); }
     | expr "-=" expr                { $$ = new MScriptExpr($1, MScriptExpr::OPER_SUB_ASSIGN, $3, @$); }
     | expr "*=" expr                { $$ = new MScriptExpr($1, MScriptExpr::OPER_MUL_ASSIGN, $3, @$); }
@@ -427,7 +428,6 @@ expr:
     | expr "&=" expr                { $$ = new MScriptExpr($1, MScriptExpr::OPER_AND_ASSIGN, $3, @$); }
     | expr "|=" expr                { $$ = new MScriptExpr($1, MScriptExpr::OPER_ORB_ASSIGN, $3, @$); }
     | expr "^=" expr                { $$ = new MScriptExpr($1, MScriptExpr::OPER_XOR_ASSIGN, $3, @$); }
-    | expr "=" expr                 { $$ = new MScriptExpr($1, MScriptExpr::OPER_ASSIGN, $3,     @$); }
 
     // Unary opeators.
     | "~" expr                      { $$ = new MScriptExpr($2, MScriptExpr::OPER_CMPL,     @$); }

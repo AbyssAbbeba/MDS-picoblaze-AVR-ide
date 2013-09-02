@@ -28,11 +28,11 @@ class MCUSim;
 
 STEP
 PC == 1
-DATA[1] == 125
-CODE[3] == 0
-EEPROM[1] != 4
-STACK[9] != 50
-REG[0] == 10
+CODE[3] == '0'          # ascii
+DATA[1] == 125          # dec.
+EEPROM[1] != 0x4        # hex.
+STACK[9] != 050         # oct.
+REG[0] == 0b10          # bin.
 
 STEP
 PC == 2
@@ -104,6 +104,22 @@ class MCUSimTestScript
         bool runScript ( const std::string & inFileName,
                          const std::string & outFileName );
 
+    ////    Private Operations    ////
+    private:
+        /**
+         * @brief
+         * @param[in] token
+         * @return
+         */
+        bool checkNumber ( const std::string & token ) const;
+
+        /**
+         * @brief
+         * @param[in] token
+         * @return
+         */
+        int str2num ( const std::string & token ) const;
+
     ////    Inline Private Operations    ////
     private:
         /**
@@ -121,13 +137,6 @@ class MCUSimTestScript
          */
         inline bool executeCommand ( const Command & cmd,
                                      std::ofstream & outFile );
-
-        /**
-         * @brief
-         * @param[in] token
-         * @return
-         */
-        inline bool checkNumber ( const std::string & token );
 
     ////    Private Attributes    ////
     private:

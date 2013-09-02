@@ -21,7 +21,7 @@
 
 // Used for i18n only
 #include <QObject>
-
+#include <iostream> // DEBUG
 MScriptInterpret::~MScriptInterpret()
 {
 }
@@ -29,8 +29,10 @@ MScriptInterpret::~MScriptInterpret()
 void MScriptInterpret::init ( MScriptStatement * rootNode )
 {
     clear();
-    checkCode(rootNode);
-    MScriptExecContext::init(rootNode);
+    if ( true == checkCode(rootNode) )
+    {
+        MScriptExecContext::init(rootNode);
+    }
 }
 
 void MScriptInterpret::clear()
@@ -49,6 +51,8 @@ bool MScriptInterpret::step()
     }
 
     const MScriptStatement * node = getNextNode();
+
+    std::cout << "MScriptInterpret::step(): " << (void*)node << "\n";
 
     switch ( node->type() )
     {
@@ -209,6 +213,7 @@ inline void MScriptInterpret::evalExpr ( const MScriptStatement * node )
 
 inline void MScriptInterpret::evalScope ( const MScriptStatement * node )
 {
+    replaceNext(node->next()); // (SKIP, for now...)
 }
 
 inline void MScriptInterpret::evalSwitch ( const MScriptStatement * node )
@@ -340,6 +345,7 @@ inline void MScriptInterpret::evalDelete ( const MScriptStatement * node )
 {
 }
 
-inline void MScriptInterpret::checkCode ( MScriptStatement * rootNode )
+inline bool MScriptInterpret::checkCode ( MScriptStatement * rootNode )
 {
+    return true;
 }

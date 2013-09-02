@@ -57,7 +57,7 @@ MScriptExpr::MScriptExpr ( MScriptValue value,
                            MScriptSrcLocation location )
 {
     m_operator = Operator(oper);
-    m_rValue = value;
+    m_lValue = value;
     m_location = location;
 
     m_next = NULL;
