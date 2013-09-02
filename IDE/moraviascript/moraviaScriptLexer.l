@@ -138,66 +138,72 @@ XESC    (\\[0-7]{1,3})|(\\x[0-9A-F]{1,2})|(\\[uU][0-9A-F]{1,8})
                     yylloc->last_column = 1;
                 }
 }
+
  /* Special tokens: */
-";"             { return EOS; }
+";"             { return EOS;             }
+
  /* Key Words: */
-"if"            { return KW_IF; }
-"else"          { return KW_ELSE; }
-"for"           { return KW_FOR; }
-"while"         { return KW_WHILE; }
-"func"          { return KW_FUNC; }
-"do"            { return KW_DO; }
-"return"        { return KW_RETURN; }
-"break"         { return KW_BREAK; }
-"continue"      { return KW_CONTINUE; }
-"switch"        { return KW_SWITCH; }
-"case"          { return KW_CASE; }
-"delete"        { return KW_DELETE; }
+"if"            { return KW_IF;           }
+"else"          { return KW_ELSE;         }
+"for"           { return KW_FOR;          }
+"while"         { return KW_WHILE;        }
+"func"          { return KW_FUNC;         }
+"do"            { return KW_DO;           }
+"return"        { return KW_RETURN;       }
+"break"         { return KW_BREAK;        }
+"continue"      { return KW_CONTINUE;     }
+"switch"        { return KW_SWITCH;       }
+"case"          { return KW_CASE;         }
+"default"       { return KW_DEFAULT;      }
+"delete"        { return KW_DELETE;       }
+
  /* Brackets: */
-"("             { return B_RND_LEFT; }
-")"             { return B_RND_RIGHT; }
-"["             { return B_SQR_LEFT; }
-"]"             { return B_SQR_RIGHT; }
-"{"             { return B_CRL_LEFT; }
-"}"             { return B_CRL_RIGHT; }
+"("             { return B_RND_LEFT;      }
+")"             { return B_RND_RIGHT;     }
+"["             { return B_SQR_LEFT;      }
+"]"             { return B_SQR_RIGHT;     }
+"{"             { return B_CRL_LEFT;      }
+"}"             { return B_CRL_RIGHT;     }
+
  /* Operators: */
-":"             { return O_COLON; }
+":"             { return O_COLON;         }
 "?"             { return O_QUESTION_MARK; }
-","             { return O_COMMA; }
-"/"             { return O_SLASH; }
-"+"             { return O_PLUS; }
-"-"             { return O_MINUS; }
-"*"             { return O_ASTERISK; }
-"!"             { return O_NOT; }
-"%"             { return O_MOD; }
-"<<"            { return O_SHL; }
-">>"            { return O_SHR; }
-"&&"            { return O_AND; }
-"||"            { return O_OR; }
-"&"             { return O_BITAND; }
-"|"             { return O_BITOR; }
-"^"             { return O_BITXOR; }
-"=="            { return O_EQ; }
-"<>"            { return O_NE; }
-"!="            { return O_NE; }
-"<"             { return O_LT; }
-"<="            { return O_LE; }
-">"             { return O_GT; }
-">="            { return O_GE; }
-"="             { return O_ASSIGN; }
-"~"             { return O_COMPLEMET; }
-"+="            { return O_ADD_ASSIGN; }
-"-="            { return O_SUB_ASSIGN; }
-"*="            { return O_MUL_ASSIGN; }
-"/="            { return O_DIV_ASSIGN; }
-"%="            { return O_MOD_ASSIGN; }
-"<<="           { return O_SHL_ASSIGN; }
-">>="           { return O_SHR_ASSIGN; }
-"&="            { return O_AND_ASSIGN; }
-"|="            { return O_ORB_ASSIGN; }
-"^="            { return O_XOR_ASSIGN; }
-"++"            { return O_INCREMENT; }
-"--"            { return O_DECREMENT; }
+","             { return O_COMMA;         }
+"/"             { return O_SLASH;         }
+"+"             { return O_PLUS;          }
+"-"             { return O_MINUS;         }
+"*"             { return O_ASTERISK;      }
+"!"             { return O_NOT;           }
+"%"             { return O_MOD;           }
+"<<"            { return O_SHL;           }
+">>"            { return O_SHR;           }
+"&&"            { return O_AND;           }
+"||"            { return O_OR;            }
+"&"             { return O_BITAND;        }
+"|"             { return O_BITOR;         }
+"^"             { return O_BITXOR;        }
+"=="            { return O_EQ;            }
+"<>"            { return O_NE;            }
+"!="            { return O_NE;            }
+"<"             { return O_LT;            }
+"<="            { return O_LE;            }
+">"             { return O_GT;            }
+">="            { return O_GE;            }
+"="             { return O_ASSIGN;        }
+"~"             { return O_COMPLEMET;     }
+"+="            { return O_ADD_ASSIGN;    }
+"-="            { return O_SUB_ASSIGN;    }
+"*="            { return O_MUL_ASSIGN;    }
+"/="            { return O_DIV_ASSIGN;    }
+"%="            { return O_MOD_ASSIGN;    }
+"<<="           { return O_SHL_ASSIGN;    }
+">>="           { return O_SHR_ASSIGN;    }
+"&="            { return O_AND_ASSIGN;    }
+"|="            { return O_ORB_ASSIGN;    }
+"^="            { return O_XOR_ASSIGN;    }
+"++"            { return O_INCREMENT;     }
+"--"            { return O_DECREMENT;     }
+
  /* Numbers: */
 0b[01]+         {
                     // Binary number (max. 64 digits, max. 32 bits).
@@ -224,6 +230,7 @@ XESC    (\\[0-7]{1,3})|(\\x[0-9A-F]{1,2})|(\\[uU][0-9A-F]{1,8})
                     yylval->real = MScriptLexerAuxFunc::str2float(yyextra, yylloc, yytext);
                     return REAL;
                 }
+
  /* Character literals: */
 '{XESC}'        {
                     // Handle C like escape sequence, such as `\x4A', `\uABCD', `\U1234abcd', and `\177'
@@ -251,6 +258,7 @@ XESC    (\\[0-7]{1,3})|(\\x[0-9A-F]{1,2})|(\\[uU][0-9A-F]{1,8})
                     yylval->integer = (int) yytext[1];
                     return INTEGER;
                 }
+
  /* Identifiers: */
 \$?{ID}         {
                     // Arbitrary identifier, e.g. `MYREG_U1'.
@@ -265,6 +273,7 @@ XESC    (\\[0-7]{1,3})|(\\x[0-9A-F]{1,2})|(\\[uU][0-9A-F]{1,8})
                     yylval->string = yytext;
                     return IDENTIFIER;
                 }
+
  /* Strings: */
 <INITIAL>\"     {
                     // Beginning of a string, i.e. --> "some string"
@@ -278,15 +287,15 @@ XESC    (\\[0-7]{1,3})|(\\x[0-9A-F]{1,2})|(\\[uU][0-9A-F]{1,8})
     \"          {
                     // End of the string, i.e. "my string" <--
                     yy_pop_state(yyscanner);
-                    switch ( YY_START )
+                    if ( INITIAL == YY_START )
                     {
-                        case INITIAL:
-                            return STRING;
-                        default:
-                            yyextra->lexerMessage ( yylloc,
-                                                    MScriptBase::MT_ERROR,
-                                                    QObject::tr("syntax not understood").toStdString() );
-                            break;
+                        return STRING;
+                    }
+                    else
+                    {
+                        yyextra->lexerMessage ( yylloc,
+                                                MScriptBase::MT_ERROR,
+                                                QObject::tr("syntax not understood").toStdString() );
                     }
                 }
     [^\\"]+     {

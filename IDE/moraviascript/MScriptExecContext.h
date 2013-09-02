@@ -41,6 +41,7 @@ class MScriptExecContext
             FLAG_LOOP   = 0x01, ///<
             FLAG_SWITCH = 0x02, ///<
             FLAG_CALL   = 0x04, ///<
+            FLAG_SCOPE  = 0x08, ///<
 
             FLAG_NORMAL = 0x00  ///<
         };
@@ -68,7 +69,7 @@ class MScriptExecContext
          * @param[in] node
          * @param[in] flags
          */
-        void setNext ( const MScriptStatement * node,
+        void addNext ( const MScriptStatement * node,
                        ExecFlags flags = FLAG_NORMAL );
 
         /**
@@ -101,6 +102,12 @@ class MScriptExecContext
          * @return
          */
         const MScriptStatement * getNextNode() const;
+
+        /**
+         * @brief
+         * @param[in] level
+         */
+        void cutOffBranch ( unsigned int level );
 
     ////    Inline Public Operations    ////
     public:
