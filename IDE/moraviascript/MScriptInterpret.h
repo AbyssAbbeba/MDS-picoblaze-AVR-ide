@@ -20,9 +20,10 @@
 class MScriptStatement;
 
 // MScript language interpreter header files.
+#include "MScriptBase.h"
+#include "MScriptVarTable.h"
 #include "MScriptExecContext.h"
 #include "MScriptSrcLocation.h"
-#include "MScriptBase.h"
 
 // Standard header files.
 #include <string>
@@ -146,6 +147,11 @@ class MScriptInterpret : private MScriptExecContext
          * @param[in] node
          */
         inline void evalDelete ( const MScriptStatement * node );
+
+    ////    Private Attributes    ////
+    private:
+        /// @brief
+        MScriptVarTable m_varTable;
 };
 
 #endif // MSCRIPTINTERPRET_H
