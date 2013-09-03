@@ -12,4 +12,11 @@ START:
         REPT    8
         ADD     S5,#1
         ENDR
+
+        B       SET     5
+        
+        WHILE   B
+        B       SET     B-1
+        ADD     S0,#1
+        ENDW
        
