@@ -1,8 +1,9 @@
+
 ROM_form.vhd
 
-Ken Chapman (Xilinx Ltd) July 2003
+Moravia Microsystems (July 2013)
 
-This is the VHDL template file for the KCPSM3 assembler.
+This is the VHDL template file for the MDS PicoBlaze IDE.
 It is used to configure a Spartan-3, Virtex-II or Virtex-IIPRO block RAM to act as
 a single port program ROM.
 
@@ -18,7 +19,6 @@ not perform any checking of the VHDL.
 The assembler identifies all text enclosed by {} characters, and replaces these
 character strings. All templates should include these {} character strings for
 the assembler to work correctly.
-
 ****************************************************************************************
 
 This template defines a block RAM configured in 1024 x 18-bit single port mode and
