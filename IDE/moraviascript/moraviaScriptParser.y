@@ -115,6 +115,7 @@
 %token KW_CONTINUE      "continue"
 %token KW_SWITCH        "switch"
 %token KW_CASE          "case"
+%token KW_DEFAULT       "default"
 %token KW_DELETE        "delete"
 
 /* Other terminal symbols */
@@ -206,7 +207,7 @@
  * DECLARATION OF NON-TERMINAL SYMBOLS
  */
 // Expressions
-%type<expr>     expr            e_expr          id              param_list
+%type<expr>     expr            e_expr          e_int           id              param_list
 // Statements - general
 %type<stmt>     statements      stmt            cases           switch_body
 
@@ -277,11 +278,11 @@ stmt:
     | "return" e_expr ";"           {
                                         $$ = new MScriptStatement(@$, STMT_RETURN, $e_expr);
                                     }
-    | "continue" e_expr ";"         {
-                                        $$ = new MScriptStatement(@$, STMT_CONTINUE, $e_expr);
+    | "continue" e_int ";"          {
+                                        $$ = new MScriptStatement(@$, STMT_CONTINUE, $e_int);
                                     }
-    | "break" e_expr ";"            {
-                                        $$ = new MScriptStatement(@$, STMT_BREAK, $e_expr);
+    | "break" e_int ";"             {
+                                        $$ = new MScriptStatement(@$, STMT_BREAK, $e_int);
                                     }
     | "delete" id ";"               {
                                         $$ = new MScriptStatement(@$, STMT_DELETE, $id);
@@ -352,8 +353,8 @@ stmt:
 
 // `switch' statement body.
 switch_body:
-      cases stmt                    { $$ = $cases->createBranch($stmt);                 }
-    | switch_body cases stmt        { $$ = $1->appendLink($cases->createBranch($stmt)); }
+      cases statements                    { $$ = $cases->createBranch($statements);                 }
+    | switch_body cases statements        { $$ = $1->appendLink($cases->createBranch($statements)); }
 ;
 
 // Sequence of `case:' and/or `default:' statements, used inside `switch' statement.
@@ -379,6 +380,12 @@ param_list:
     | param_list "," id             { $$ = $1->appendLink($id);                                          }
     | "&" id                        { $$ = $id; $id->m_operator = MScriptExpr::OPER_REF;                 }
     | param_list "," "&" id         { $$ = $1->appendLink($id); $id->m_operator = MScriptExpr::OPER_REF; }
+;
+
+// Integer, possibly empty.
+e_int:
+      /* empty */                   { $$ = NULL;                          }
+    | INTEGER                       { $$ = new MScriptExpr($INTEGER, @$); }
 ;
 
 // Expression, possibly empty.

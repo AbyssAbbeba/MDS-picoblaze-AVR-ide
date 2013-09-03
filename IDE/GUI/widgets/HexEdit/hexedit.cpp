@@ -389,16 +389,25 @@ void HexEdit::changeText(int position)
         textCursor.setPosition(position*3);
         textCursor.deleteChar();
         textCursor.deleteChar();
-        qDebug() << "HexEdit: text changed to" << (int)hexByteArray->at(position);
-        if (hexByteArray->at(position) > 16)
+        //qDebug() << "HexEdit: text changed to" << (int)(hexByteArray->at(position));
+        if (hexByteArray->at(position) > 15)
         {
-            textCursor.insertText((QString::number(hexByteArray->at(position), 16)).toUpper());
+            textCursor.insertText((QString::number((int)(hexByteArray->at(position)), 16)).toUpper());
         }
         else
         {
-            textCursor.insertText("0" + (QString::number(hexByteArray->at(position), 16)).toUpper());
+            textCursor.insertText("0" + (QString::number((int)(hexByteArray->at(position)), 16)).toUpper());
         }
         hexTextEdit->setTextCursor(textCursor);
+        /*if (position != hexByteArray->size() && position != 0)
+        {
+            qDebug() << "HexEdit: characters"
+                    << (hexTextEdit->document()->characterAt(position*3-2))
+                    << (hexTextEdit->document()->characterAt(position*3-1))
+                    << (hexTextEdit->document()->characterAt(position*3))
+                    << (hexTextEdit->document()->characterAt(position*3+1))
+                    << (hexTextEdit->document()->characterAt(position*3+2));
+        }*/
         changable = true;
     }
 }
@@ -429,9 +438,9 @@ void HexEdit::changeAscii(int position)
         
         asciiCursor.setPosition(asciiPosition);
         asciiCursor.deleteChar();
-        if ((unsigned char)hexByteArray->at(position) >= 32 && (unsigned char)hexByteArray->at(position) < 127)
+        if ((unsigned char)(hexByteArray->at(position)) >= 32 && (unsigned char)(hexByteArray->at(position)) < 127)
         {
-            asciiCursor.insertText(QString((unsigned char)hexByteArray->at(position)));
+            asciiCursor.insertText(QString((unsigned char)(hexByteArray->at(position))));
         }
         else
         {
@@ -484,7 +493,7 @@ void HexEdit::setData(QList<unsigned char> *byteArray)
                 back = true;
             }
         }
-        if (byteArray->at(i) > 10)
+        if (byteArray->at(i) > 15)
         {
             hexTextEdit->insertPlainText((QString::number(byteArray->at(i), 16)).toUpper());
         }
@@ -504,7 +513,7 @@ void HexEdit::setData(QList<unsigned char> *byteArray)
             }
         }
         line++;
-        if (line == this->columns) 
+        if (line == this->columns && i != byteArray->size()-1)
         {
             hexTextEdit->insertPlainText("\n");
             if (ascii == true)
@@ -526,8 +535,8 @@ void HexEdit::setVal(int pos, unsigned char val)
 {
     //qDebug() << "-----------------HexEdit: setVal()";
     (*hexByteArray)[pos] = val;
-    qDebug() << "HexEdit: val" << (int)val;
-    qDebug() << "HexEdit: array val" << (int)hexByteArray->at(pos);
+    //qDebug() << "HexEdit: val" << (int)val;
+    //qDebug() << "HexEdit: array val" << (int)hexByteArray->at(pos);
     this->changeText(pos);
     //qDebug() << "-----------------HexEdit: return setVal()";
 }
