@@ -92,6 +92,7 @@ StackWidget::~StackWidget()
 
 void StackWidget::handleEvent(int subsysId, int eventId, int locationOrReason, int detail)
 {
+    qDebug() << "StackWidget: handleEvent()";
     if ( subsysId != this->subsys )
     {
         qDebug("Invalid event received, event ignored.");
@@ -121,6 +122,7 @@ void StackWidget::handleEvent(int subsysId, int eventId, int locationOrReason, i
             qDebug("Invalid event received, event ignored.");
             break;
     }
+    qDebug() << "StackWidget: return handleEvent()";
 }
 
 
