@@ -22,6 +22,7 @@
 // Used for i18n only
 #include <QObject>
 #include <iostream> // DEBUG
+
 MScriptInterpret::~MScriptInterpret()
 {
 }
@@ -87,6 +88,8 @@ bool MScriptInterpret::step()
         case STMT_FUNCTION:
             break;
     }
+
+    return true;
 }
 
 inline void MScriptInterpret::evalFor ( const MScriptStatement * node )
@@ -118,7 +121,7 @@ inline void MScriptInterpret::evalFor ( const MScriptStatement * node )
         setNextFlags ( FLAG_LOOP );
 
         // Condition positive => for ( ...; ...; ... ) { <ENTER_HERE> }
-        setNext ( node->branch() );
+        addNext ( node->branch() );
     }
     else
     {
@@ -140,7 +143,7 @@ inline void MScriptInterpret::evalDoWhile ( const MScriptStatement * node )
         if ( 0 != node->args()->eval() )
         {
             // Condition positive => do { <ENTER_HERE> } while ( ... ); ...
-            setNext ( node->branch() );
+            addNext ( node->branch() );
         }
         else
         {
@@ -158,7 +161,7 @@ inline void MScriptInterpret::evalDoWhile ( const MScriptStatement * node )
         setNextFlags ( FLAG_LOOP );
 
         // do { <ENTER_HERE> } while ( ... ); ...
-        setNext ( node->branch() );
+        addNext ( node->branch() );
     }
 }
 
@@ -171,7 +174,7 @@ inline void MScriptInterpret::evalWhile ( const MScriptStatement * node )
     if ( 0 != node->args()->eval() )
     {
         // Condition positive => while ( ... ) { <ENTER_HERE> } ...
-        setNext ( node->branch() );
+        addNext ( node->branch() );
     }
     else
     {
@@ -196,12 +199,12 @@ inline void MScriptInterpret::evalCondition ( const MScriptStatement * node )
     if ( 0 != node->args()->eval() )
     {
         // Condition positive => if ( ... ) { <ENTER_HERE> } [ else { ... } ] ...
-        setNext ( node->branch() );
+        addNext ( node->branch() );
     }
     else if ( NULL != node->next() )
     {
         // Condition negative => if ( ... ) { ... } else { <ENTER_HERE> } ...
-        setNext ( node->next()->branch() );
+        addNext ( node->next()->branch() );
     }
 }
 
@@ -213,7 +216,19 @@ inline void MScriptInterpret::evalExpr ( const MScriptStatement * node )
 
 inline void MScriptInterpret::evalScope ( const MScriptStatement * node )
 {
-    replaceNext(node->next()); // (SKIP, for now...)
+    if ( FLAG_SCOPE & getNextFlags() )
+    {
+        // Leaving scope.
+        popNext();
+        m_varTable.popScope();
+    }
+    else
+    {
+        // Entering scope.
+        setNextFlags ( FLAG_SCOPE );
+        addNext(node->branch());
+        m_varTable.pushScope();
+    }
 }
 
 inline void MScriptInterpret::evalSwitch ( const MScriptStatement * node )
@@ -228,14 +243,16 @@ inline void MScriptInterpret::evalSwitch ( const MScriptStatement * node )
 
     setNextFlags ( FLAG_SWITCH );
 
+    const int switchArg = node->args().eval();
     bool positive = false;
+
     for ( const MScriptStatement * caseNode = node->branch();
           caseNode != NULL;
           caseNode = caseNode->next() )
     {
         if ( true == positive )
         {
-            setNext(caseNode->branch());
+            addNext(caseNode->branch());
         }
         else
         {
@@ -249,7 +266,7 @@ inline void MScriptInterpret::evalSwitch ( const MScriptStatement * node )
                       arg != NULL;
                       arg = arg->next() )
                 {
-                    if ( 0/* TODO:  *arg == *(node->args())  */ )
+                    if ( switchArg == arg->eval() )
                     {
                         positive = true;
                         break;
@@ -276,22 +293,22 @@ inline void MScriptInterpret::evalBreak ( const MScriptStatement * node )
         return;
     }
 
-    size_t index = getProgramPointer().size() - 1;
+    unsigned int level = 1;
     for ( std::vector<ProgPtr>::reverse_iterator it = getProgramPointer().rbegin();
           it != getProgramPointer().rend();
           it++ )
     {
-        index--;
         if ( ( FLAG_SWITCH | FLAG_LOOP ) & it->second )
         {
             arg--;
             if ( 0 == arg )
             {
-                getProgramPointer().erase(getProgramPointer().begin() + index, getProgramPointer().end());
-                setNext(it->first->next());
+                cutOffBranch(level);
+                addNext(it->first->next());
                 return;
             }
         }
+        level++;
     }
 
     interpreterMessage ( node->location(),
@@ -315,21 +332,21 @@ inline void MScriptInterpret::evalContinue ( const MScriptStatement * node )
         return;
     }
 
-    size_t index = getProgramPointer().size() - 1;
+    unsigned int level = 0;
     for ( std::vector<ProgPtr>::reverse_iterator it = getProgramPointer().rbegin();
           it != getProgramPointer().rend();
           it++ )
     {
-        index--;
         if ( FLAG_LOOP & it->second )
         {
             arg--;
             if ( 0 == arg )
             {
-                getProgramPointer().erase(getProgramPointer().begin() + index - 1, getProgramPointer().end() );
+                cutOffBranch(level);
                 return;
             }
         }
+        level++;
     }
 
     interpreterMessage ( node->location(),
@@ -339,10 +356,39 @@ inline void MScriptInterpret::evalContinue ( const MScriptStatement * node )
 
 inline void MScriptInterpret::evalReturn ( const MScriptStatement * node )
 {
+    unsigned int level = 1;
+    for ( std::vector<ProgPtr>::reverse_iterator it = getProgramPointer().rbegin();
+          it != getProgramPointer().rend();
+          it++ )
+    {
+        if ( FLAG_FUNCTION & it->second )
+        {
+            cutOffBranch(level);
+//             addNext(it->first->next());
+            return;
+        }
+        level++;
+    }
+
+    interpreterMessage ( node->location(),
+                         MScriptBase::MT_ERROR,
+                         QObject::tr("there is no function to return from").toStdString() );
 }
 
 inline void MScriptInterpret::evalDelete ( const MScriptStatement * node )
 {
+    std::string var = node->args()->lVal().m_data.m_symbol;
+
+    if ( false == m_varTable->remove(var) )
+    {
+        interpreterMessage ( node->location(),
+                             MScriptBase::MT_ERROR,
+                             QObject::tr ( "variable `%1' has not been defined (cannot delete nonexistent variable)" )
+                                         . arg ( var.c_str() )
+                                         . toStdString() );
+    }
+
+    replaceNext(node->next());
 }
 
 inline bool MScriptInterpret::checkCode ( MScriptStatement * rootNode )

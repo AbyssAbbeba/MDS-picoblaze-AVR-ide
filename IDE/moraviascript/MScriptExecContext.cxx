@@ -28,7 +28,10 @@ void MScriptExecContext::clear()
 
 void MScriptExecContext::popNext()
 {
-    m_programPointer.pop_back();
+    if ( false == m_programPointer.empty() )
+    {
+        m_programPointer.pop_back();
+    }
 }
 
 const MScriptStatement * MScriptExecContext::getNextNode() const
@@ -41,7 +44,7 @@ MScriptExecContext::ExecFlags MScriptExecContext::getNextFlags() const
     return m_programPointer.back().second;
 }
 
-void MScriptExecContext::setNext ( const MScriptStatement * node,
+void MScriptExecContext::addNext ( const MScriptStatement * node,
                                    MScriptExecContext::ExecFlags flags )
 {
     if ( NULL != node )
@@ -62,6 +65,14 @@ void MScriptExecContext::replaceNext ( const MScriptStatement * node,
                                        MScriptExecContext::ExecFlags flags )
 {
     popNext();
-    setNext(node, flags);
+    addNext(node, flags);
 }
 
+void MScriptExecContext::cutOffBranch ( unsigned int level )
+{
+    while ( 0 != level )
+    {
+        m_programPointer.pop_back();
+        level--;
+    }
+}
