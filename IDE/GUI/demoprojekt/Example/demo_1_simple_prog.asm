@@ -44,7 +44,12 @@ main:
         RL     s3
         RL     s3
         RL     s3
-        JUMP    main
+call ahoj
+ahoj:	call ahoj1
+		return
+ahoj1:  call ahoj2
+		return
+ahoj2:  return
 
 ; Program end
 ; --------------------
