@@ -279,10 +279,10 @@ stmt:
                                         $$ = new MScriptStatement(@$, STMT_RETURN, $e_expr);
                                     }
     | "continue" e_int ";"          {
-                                        $$ = new MScriptStatement(@$, STMT_CONTINUE, $e_expr);
+                                        $$ = new MScriptStatement(@$, STMT_CONTINUE, $e_int);
                                     }
     | "break" e_int ";"             {
-                                        $$ = new MScriptStatement(@$, STMT_BREAK, $e_expr);
+                                        $$ = new MScriptStatement(@$, STMT_BREAK, $e_int);
                                     }
     | "delete" id ";"               {
                                         $$ = new MScriptStatement(@$, STMT_DELETE, $id);
