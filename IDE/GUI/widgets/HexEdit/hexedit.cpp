@@ -528,6 +528,7 @@ void HexEdit::setData(QList<unsigned char> *byteArray)
         }
     }
     this->hexByteArray = byteArray;
+    this->hexTextEdit->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 }
 
 
@@ -557,6 +558,16 @@ void HexEdit::setReadOnly(bool readonly)
 void HexEdit::fixHeight()
 {
     this->hexLineCount->getWidget()->changeHeight();
+    //if (this->hexTextEdit->verticalScrollBar()->isVisible())
+    //{
+        hexTextEdit->setMinimumWidth((columns*3-4)*fontSize+20);
+        hexTextEdit->setMaximumWidth((columns*3-4)*fontSize+20);
+    //}
+    //else
+    //{
+    //    hexTextEdit->setMinimumWidth((columns*3-4)*fontSize);
+    //    hexTextEdit->setMaximumWidth((columns*3-4)*fontSize);
+    //}
 }
 
 
