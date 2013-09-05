@@ -24,32 +24,25 @@ start:
 ; Main loop
 ; --------------------
 main:
-        
-; Shifting to the left
-        RR     s1
-        RR     s3
-        RR     s3
-        RR     s3
-        RR     s3
-        RR     s3
-        RR     s3
-        RR     s3
 
-        ; Shifting to the left
-        RL     s3
-        RL     s3
-        RL     s3
-        RL     s3
-        RL     s3
-        RL     s3
-        RL     s3
-        RL     s3
-call ahoj
-ahoj:	call ahoj1
-		return
-ahoj1:  call ahoj2
-		return
-ahoj2:  return
+
+; Begining of main loop
+        CALL      pod2
+                            ; End of program
+
+pod2:           CALL    POD3
+                RET
+
+pod3:           CALL    POD4
+                RET
+
+pod4:           CALL    POD5
+                RET
+
+pod5:           CALL    POD6
+                RET
+
+pod6:           RET
 
 ; Program end
 ; --------------------

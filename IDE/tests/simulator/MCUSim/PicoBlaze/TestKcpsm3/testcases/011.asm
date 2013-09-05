@@ -1,15 +1,8 @@
 
-; Press Start simulation and Animate to run the program
-
-                    ORG       0x000
-                    JUMP      Start
-; Declaration of some registers
-Temp1         REG       s0
-Temp2         REG       s1
-Temp3         REG       s2
-
+; Press Start simulation and Animate to run the progra
+    ORG       0x000
 ; Begining of main loop
-Start:          CALL      pod1
+Start:          CALL      pod2
                             ; End of program
 
 pod2:           CALL    POD3

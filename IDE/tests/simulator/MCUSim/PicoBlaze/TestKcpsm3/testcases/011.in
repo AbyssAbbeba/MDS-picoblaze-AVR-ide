@@ -1,97 +1,31 @@
+# test of subroutines
 
-       PC == 0
-     
-# waiting loop program
-       STEP
-       # jump to start
-        PC == 1 
-       # subroutine call
-       STEP
-       PC == 1
-       
-       STEP     
-       PC == 1
-       REG[0] == 250
-       
-       STEP
-       REG[1] == 249
-       PC == 1
-       
-       STEP
-       REG[1] == 200
-       PC == 1
-       
-       STEP
-       PC == 1
-       REG[0] == 249
+PC == 0
 
-       STEP
-       PC == 1
+STEP
+PC == 1
 
-       STEP
-       PC == 1
-       REG[0] == 248
+STEP
+PC == 3
 
-              STEP
-       PC == 1
+STEP
+PC == 5
 
-       STEP
-       PC == 1
-       REG[0] == 247
+STEP
+PC == 7
 
-              STEP
-       PC == 1
+STEP
+PC == 9
 
-       STEP
-       PC == 1
-       REG[0] == 246
+STEP
+PC == 8
 
-              STEP
-       PC == 1
+STEP
+PC == 6
 
-       STEP
-       PC == 1
-       REG[0] == 245
+STEP
+PC == 4
 
-              STEP
-       PC == 1
-
-       STEP
-       PC == 1
-       REG[0] == 244
-
-              STEP
-       PC == 1
-
-       STEP
-       PC == 1
-       REG[0] == 243
-
-              STEP
-       PC == 1
-
-       STEP
-       PC == 1
-       REG[0] == 242
-
-              STEP
-       PC == 1
-
-       STEP
-       PC == 1
-       REG[0] == 241
-
-              STEP
-       PC == 1
-
-       STEP
-       PC == 1
-       REG[0] == 240
-
-              STEP
-       PC == 1
-
-       STEP
-       PC == 1
-       REG[0] == 239
-       
+STEP
+PC == 2
+stack[0] == 1
