@@ -70,14 +70,29 @@ bool TestKcpsm6::addTests ( CU_pSuite suite )
         }
 
         std::string extension = dir->path().extension().string();
-        std::string testName = dir->path().filename().string();
+        std::string testName  = dir->path().filename().string();
 
-        std::transform(extension.begin(), extension.end(), extension.begin(), ::tolower);
-
-        if ( ".in" == extension )
+        if ( ".in" == extension || ".asm" == extension )
         {
-            testName.resize(testName.size() - 3);
-            testCaseFiles.push_back(testName);
+            bool found = false;
+
+            testName.resize ( testName.size() - extension.size() );
+
+            for ( std::vector<std::string>::const_iterator it = testCaseFiles.cbegin();
+                  it != testCaseFiles.cend();
+                  it++ )
+            {
+                if ( 0 == it->compare(testName) )
+                {
+                    found = true;
+                    break;
+                }
+            }
+
+            if ( false == found )
+            {
+                testCaseFiles.push_back(testName);
+            }
         }
     }
 
@@ -105,9 +120,21 @@ void TestKcpsm6::testFunction()
 
     std::string testName = CU_get_current_test()->pName;
 
-    const std::string inFile  = ( path("TestKcpsm6") / "testcases" / (testName + ".in" ) ).string();
-    const std::string outFile = ( path("TestKcpsm6") / "results"   / (testName + ".out") ).string();
-    const std::string hexFile = ( path("TestKcpsm6") / "results"   / (testName + ".hex") ).string();
+    std::string inFile  = ( path("TestKcpsm6") / "testcases" / (testName + "."   ) ).string();
+    std::string outFile = ( path("TestKcpsm6") / "results"   / (testName + ".out") ).string();
+    std::string hexFile = ( path("TestKcpsm6") / "results"   / (testName + ".hex") ).string();
+
+    bool useAsmFile;
+    if ( true == exists(inFile + "in") )
+    {
+        inFile += "in";
+        useAsmFile = false;
+    }
+    else
+    {
+        inFile += "asm";
+        useAsmFile = true;
+    }
 
     m_picoBlazeSim->reset(MCUSim::RSTMD_INITIAL_VALUES);
     m_picoBlazeSim->reset(MCUSim::RSTMD_MCU_RESET);
@@ -122,7 +149,9 @@ void TestKcpsm6::testFunction()
         std::cerr << e.toString() << std::endl;
     }
 
-    dynamic_cast<PicoBlazeProgramMemory*>(m_picoBlazeSim->getSubsys(MCUSimSubsys::ID_MEM_CODE))->loadDataFile(m_programFile);
+    MCUSimSubsys * programMemSubsys = m_picoBlazeSim->getSubsys(MCUSimSubsys::ID_MEM_CODE);
+    PicoBlazeProgramMemory * programMem = dynamic_cast<PicoBlazeProgramMemory*>(programMemSubsys);
+    programMem->loadDataFile(m_programFile);
 
-    CU_ASSERT_TRUE ( m_testScript->runScript(inFile, outFile) );
+    CU_ASSERT_TRUE ( m_testScript->runScript(inFile, outFile, useAsmFile) );
 }
