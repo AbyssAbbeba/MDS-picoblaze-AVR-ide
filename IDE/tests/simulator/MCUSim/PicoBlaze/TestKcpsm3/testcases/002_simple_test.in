@@ -5,10 +5,13 @@ PC == 0
 
 STEP
 PC == 1
-REG[0] == 1
 
 STEP
 PC == 2
+REG[0] == 1
+
+STEP
+PC == 3
 REG[0] == 55
 
 
