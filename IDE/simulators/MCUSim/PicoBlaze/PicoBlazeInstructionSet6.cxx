@@ -1408,7 +1408,7 @@ void PicoBlazeInstructionSet6::inst_RETURN ( const unsigned int opCode )
         logEvent ( EVENT_CPU_RETURN, m_pc );
         m_actSubprogCounter--;
     }
-    setProgramCounter ( 1 + m_stack->popFromStack() );
+    setProgramCounter ( m_stack->popFromStack() );
 }
 
 void PicoBlazeInstructionSet6::inst_RETURN_Z ( const unsigned int opCode )
@@ -1438,7 +1438,7 @@ void PicoBlazeInstructionSet6::inst_RETURN_Z ( const unsigned int opCode )
         logEvent ( EVENT_CPU_RETURN, m_pc );
         m_actSubprogCounter--;
     }
-    setProgramCounter ( 1 + m_stack->popFromStack() );
+    setProgramCounter ( m_stack->popFromStack() );
 }
 
 void PicoBlazeInstructionSet6::inst_RETURN_NZ ( const unsigned int opCode )
@@ -1468,7 +1468,7 @@ void PicoBlazeInstructionSet6::inst_RETURN_NZ ( const unsigned int opCode )
         logEvent ( EVENT_CPU_RETURN, m_pc );
         m_actSubprogCounter--;
     }
-    setProgramCounter ( 1 + m_stack->popFromStack() );
+    setProgramCounter ( m_stack->popFromStack() );
 }
 
 void PicoBlazeInstructionSet6::inst_RETURN_C ( const unsigned int opCode )
@@ -1498,7 +1498,7 @@ void PicoBlazeInstructionSet6::inst_RETURN_C ( const unsigned int opCode )
         logEvent ( EVENT_CPU_RETURN, m_pc );
         m_actSubprogCounter--;
     }
-    setProgramCounter ( 1 + m_stack->popFromStack() );
+    setProgramCounter ( m_stack->popFromStack() );
 }
 
 void PicoBlazeInstructionSet6::inst_RETURN_NC ( const unsigned int opCode )
@@ -1528,7 +1528,7 @@ void PicoBlazeInstructionSet6::inst_RETURN_NC ( const unsigned int opCode )
         logEvent ( EVENT_CPU_RETURN, m_pc );
         m_actSubprogCounter--;
     }
-    setProgramCounter ( 1 + m_stack->popFromStack() );
+    setProgramCounter ( m_stack->popFromStack() );
 }
 
 void PicoBlazeInstructionSet6::inst_LD_RET_sX_sY ( const unsigned int opCode )
@@ -1552,7 +1552,7 @@ void PicoBlazeInstructionSet6::inst_LD_RET_sX_sY ( const unsigned int opCode )
         logEvent ( EVENT_CPU_RETURN, m_pc );
         m_actSubprogCounter--;
     }
-    setProgramCounter ( 1 + m_stack->popFromStack() );
+    setProgramCounter ( m_stack->popFromStack() );
 }
 
 inline void PicoBlazeInstructionSet6::inst_HWBUILD_sX ( const unsigned int opCode )
