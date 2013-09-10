@@ -17,11 +17,12 @@
 
 #include "MCUSim.h"
 
+#include <cctype>
+#include <cstdio>
 #include <fstream>
 #include <cstring>
-#include <cctype>
 #include <cstdlib>
-#include <cstdio>
+#include <algorithm>
 
 MCUSimTestScript::MCUSimTestScript ( MCUSim * simulator )
                                    : m_simulator ( simulator )
@@ -123,6 +124,8 @@ inline MCUSimTestScript::Command MCUSimTestScript::processLine ( const char * li
         }
     }
 
+    std::transform(tokens[0].begin(), tokens[0].end(), tokens[0].begin(), ::tolower);
+
     result.m_type = CT_ABORT;
     switch ( tokens.size() )
     {
@@ -215,6 +218,7 @@ inline MCUSimTestScript::Command MCUSimTestScript::processLine ( const char * li
                 }
                 else
                 {
+                    result.m_type = CT_ABORT;
                     break;
                 }
 
