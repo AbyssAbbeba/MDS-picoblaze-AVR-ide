@@ -30,7 +30,7 @@
 // Write an extra output file containing verbose descriptions of the parser states.
 %verbose
 // Expect exactly <n> shift/reduce conflicts in this grammar
-%expect 130
+%expect 122
 // Expect exactly <n> reduce/reduce conflicts in this grammar
 %expect-rr 0
 /* Type of parser tables within the LR family, in this case we use LALR (Look-Ahead LR parser) */
@@ -89,7 +89,8 @@
                                               .arg(instruction).arg(number).toStdString() );
     #define NN_OPERANDS_EXPECTED(location, instruction, number, number2) \
         compiler->parserMessage ( location, CompilerBase::MT_ERROR, \
-            QObject::tr("invalid number of operands, instruction %1 takes %2 or %3 operands").arg(instruction).arg(number).arg(number2).toStdString() );
+            QObject::tr("invalid number of operands, instruction %1 takes %2 or %3 operand(s)") \
+                       .arg(instruction).arg(number).arg(number2).toStdString() );
     #define NO_LABEL_EXPECTED(location, directive, statement) \
         CompilerStatement::completeDelete(statement); \
         compiler->parserMessage ( location, CompilerBase::MT_ERROR, \
@@ -156,14 +157,16 @@
 %token D_AUTOREG        D_AUTOSPR       D_DATA          D_DEVICE
 
 /* Instructions */
-%token I_JUMP           I_CALL          I_RETURN        I_ADD           I_ADDCY
+%token I_JUMP           I_CALL          I_RETURN        I_JUMP_Z        I_CALL_Z
+%token I_RETURN_Z       I_JUMP_NZ       I_CALL_NZ       I_RETURN_NZ     I_JUMP_C
+%token I_CALL_C         I_RETURN_C      I_JUMP_NC       I_CALL_NC       I_RETURN_NC
 %token I_SUB            I_SUBCY         I_COMPARE       I_ENABLE_INT    I_DISABLE_INT
 %token I_LOAD           I_AND           I_OR            I_XOR           I_TEST
 %token I_SLX            I_SLA           I_RL            I_INPUT         I_OUTPUT
 %token I_SRX            I_SRA           I_RR            I_SL0           I_SL1
 %token I_STORE          I_FETCH         I_SR0           I_SR1           I_RETURNI_DIS
 %token I_RETURNI_ENA    I_HWBUILD       I_STAR          I_TESTCY        I_COMPARECY
-%token I_REGBANK_A      I_REGBANK_B     I_OUTPUTK
+%token I_REGBANK_A      I_REGBANK_B     I_OUTPUTK       I_ADD           I_ADDCY
 
 /* Special macros */
 %token M_RTIF           M_RTELSEIF      M_RTELSE        M_RTENDIF       M_RTWHILE
@@ -1679,10 +1682,10 @@ instruction:
 /* Program Control Group */
 inst_jump:
       I_JUMP expr                   { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_JUMP_AAA,    $expr ); }
-    | I_JUMP Z "," expr             { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_JUMP_Z_AAA,  $expr ); }
-    | I_JUMP NZ "," expr            { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_JUMP_NZ_AAA, $expr ); }
-    | I_JUMP C "," expr             { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_JUMP_C_AAA,  $expr ); }
-    | I_JUMP NC "," expr            { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_JUMP_NC_AAA, $expr ); }
+    | I_JUMP_Z "," expr             { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_JUMP_Z_AAA,  $expr ); }
+    | I_JUMP_NZ "," expr            { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_JUMP_NZ_AAA, $expr ); }
+    | I_JUMP_C "," expr             { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_JUMP_C_AAA,  $expr ); }
+    | I_JUMP_NC "," expr            { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_JUMP_NC_AAA, $expr ); }
     | I_JUMP "@"
       "(" expr "," expr ")"         {
                                         $$ = new CompilerStatement ( LOC(@$),
@@ -1695,10 +1698,10 @@ inst_jump:
 ;
 inst_call:
       I_CALL expr                   { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_CALL_AAA,    $expr ); }
-    | I_CALL Z "," expr             { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_CALL_Z_AAA,  $expr ); }
-    | I_CALL NZ "," expr            { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_CALL_NZ_AAA, $expr ); }
-    | I_CALL C "," expr             { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_CALL_C_AAA,  $expr ); }
-    | I_CALL NC "," expr            { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_CALL_NC_AAA, $expr ); }
+    | I_CALL_Z "," expr             { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_CALL_Z_AAA,  $expr ); }
+    | I_CALL_NZ "," expr            { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_CALL_NZ_AAA, $expr ); }
+    | I_CALL_C "," expr             { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_CALL_C_AAA,  $expr ); }
+    | I_CALL_NC "," expr            { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_CALL_NC_AAA, $expr ); }
     | I_CALL "@"
       "(" expr "," expr ")"         {
                                         $$ = new CompilerStatement ( LOC(@$),
@@ -1711,11 +1714,11 @@ inst_call:
 ;
 inst_return:
       I_RETURN                      { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_RETURN    ); }
-    | I_RETURN Z                    { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_RETURN_Z  ); }
-    | I_RETURN NZ                   { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_RETURN_NZ ); }
-    | I_RETURN C                    { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_RETURN_C  ); }
-    | I_RETURN NC                   { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_RETURN_NC ); }
-    | I_RETURN opr "," oprs         { /* Syntax Error */ $$ = NULL; NN_OPERANDS_EXPECTED(@1, "RETURN", 1, 2); }
+    | I_RETURN_Z                    { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_RETURN_Z  ); }
+    | I_RETURN_NZ                   { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_RETURN_NZ ); }
+    | I_RETURN_C                    { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_RETURN_C  ); }
+    | I_RETURN_NC                   { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_RETURN_NC ); }
+    | I_RETURN opr "," oprs         { /* Syntax Error */ $$ = NULL; NN_OPERANDS_EXPECTED(@1, "RETURN", 0, 1); }
 ;
 /* Arithmetic Group */
 inst_add:

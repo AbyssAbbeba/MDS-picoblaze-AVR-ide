@@ -114,6 +114,17 @@ class AsmPicoBlazeTreeDecoder
          */
         void phase2 ( CompilerStatement * codeTree );
 
+    ////    Private Operations    ////
+    private:
+        /**
+         * @brief
+         * @param[in] location
+         * @param[in] functionality
+         * @return
+         */
+        bool checkKcpsm3AndHigher ( const CompilerSourceLocation * location,
+                                    const char * functionality );
+
     ////    Inline Private Operations    ////
     private:
         /**

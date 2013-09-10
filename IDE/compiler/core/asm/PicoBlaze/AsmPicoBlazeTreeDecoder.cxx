@@ -828,7 +828,7 @@ inline void AsmPicoBlazeTreeDecoder::dir_LIMIT ( CompilerStatement * node,
     {
         m_compilerCore->compilerMessage ( *location,
                                           CompilerBase::MT_ERROR,
-                                          QObject::tr("limit value %1 is not valid").toStdString() );
+                                          QObject::tr("limit value %1 is not valid").arg(limVal).toStdString() );
         return;
     }
 
@@ -900,6 +900,11 @@ inline AsmPicoBlazeTreeDecoder::CourseOfAction
        AsmPicoBlazeTreeDecoder::dir_RTCOND ( CompilerStatement * node,
                                              const CompilerSourceLocation * location )
 {
+    if ( false == checkKcpsm3AndHigher(location, "run-time conditions") )
+    {
+        return CA_NO_ACTION;
+    }
+
     CompilerStatement * body = new CompilerStatement();
     body->appendLink(m_specialMacros->runTimeCondition(node));
 
@@ -917,6 +922,11 @@ inline AsmPicoBlazeTreeDecoder::CourseOfAction
        AsmPicoBlazeTreeDecoder::dir_RTWHILE ( CompilerStatement * node,
                                               const CompilerSourceLocation * location )
 {
+    if ( false == checkKcpsm3AndHigher(location, "run-time while loops") )
+    {
+        return CA_NO_ACTION;
+    }
+
     CompilerStatement * body = new CompilerStatement();
     body->appendLink(m_specialMacros->runTimeWhile(node));
 
@@ -933,6 +943,11 @@ inline AsmPicoBlazeTreeDecoder::CourseOfAction
        AsmPicoBlazeTreeDecoder::dir_RTFOR ( CompilerStatement * node,
                                             const CompilerSourceLocation * location )
 {
+    if ( false == checkKcpsm3AndHigher(location, "run-time for loops") )
+    {
+        return CA_NO_ACTION;
+    }
+
     CompilerStatement * body = new CompilerStatement();
     body->appendLink(m_specialMacros->runTimeFor(node));
 
@@ -994,3 +1009,26 @@ inline bool AsmPicoBlazeTreeDecoder::isInstWord3B() const
             return true;
     }
 }
+
+bool AsmPicoBlazeTreeDecoder::checkKcpsm3AndHigher ( const CompilerSourceLocation * location,
+                                                     const char * functionality )
+{
+    switch ( m_device )
+    {
+        case AsmPicoBlazeSemanticAnalyzer::DEV_UNSPEC:
+        case AsmPicoBlazeSemanticAnalyzer::DEV_KCPSM1CPLD:
+        case AsmPicoBlazeSemanticAnalyzer::DEV_KCPSM1:
+        case AsmPicoBlazeSemanticAnalyzer::DEV_KCPSM2:
+            m_compilerCore->compilerMessage(*location,
+                                            CompilerBase::MT_ERROR,
+                                            QObject::tr("assembler feature '%1' is supported only on KCPSM3 and higher")
+                                                       .arg(functionality).toStdString() );
+            return false;
+
+        case AsmPicoBlazeSemanticAnalyzer::DEV_KCPSM3:
+        case AsmPicoBlazeSemanticAnalyzer::DEV_KCPSM6:
+        default:
+            return true;
+    }
+}
+
