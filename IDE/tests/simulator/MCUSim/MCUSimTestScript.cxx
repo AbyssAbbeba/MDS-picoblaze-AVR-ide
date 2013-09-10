@@ -91,7 +91,7 @@ inline MCUSimTestScript::Command MCUSimTestScript::processLine ( const char * li
             continue;
         }
 
-        if ( '#' == ch )
+        if ( '#' == ch && ';' == ch )
         {
             break;
         }
