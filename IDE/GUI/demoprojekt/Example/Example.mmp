@@ -6,14 +6,14 @@
   <Language language="0"/>
  </General>
  <Files>
-  <File path="demo_1_simple_prog.asm" name="demo_1_simple_prog.asm"/>
   <File path="demo_2_wait_loop.asm" name="demo_2_wait_loop.asm"/>
   <File path="demo_3_directives.asm" name="demo_3_directives.asm"/>
   <File path="demo_4_buttons_leds.asm" name="demo_4_buttons_leds.asm"/>
   <File path="demo_5_UART.asm" name="demo_5_UART.asm"/>
   <File path="../../../tests/compiler/assembler/PicoBlaze/TestSuiteSuc/testcases/026_demo_4_buttons_leds.asm" name="026_demo_4_buttons_leds.asm"/>
+  <File path="demo_1_simple_prog.asm" name="demo_1_simple_prog.asm"/>
  </Files>
- <Mainfile path="../../../tests/compiler/assembler/PicoBlaze/TestSuiteSuc/testcases/026_demo_4_buttons_leds.asm" name="026_demo_4_buttons_leds.asm"/>
+ <Mainfile path="demo_1_simple_prog.asm" name="demo_1_simple_prog.asm"/>
  <Simulator/>
  <Compiler>
   <Options>
