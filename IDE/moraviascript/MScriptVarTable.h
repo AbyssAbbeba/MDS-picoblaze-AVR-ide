@@ -18,6 +18,11 @@
 
 // Forward declarations.
 class MScriptValue;
+class MScriptInterpretInterface;
+
+// MScript language interpreter header files.
+#include "MScriptVariable.h"
+#include "MScriptSrcLocation.h"
 
 // Standard header files.
 #include <map>
@@ -32,44 +37,37 @@ class MScriptValue;
  */
 class MScriptVarTable
 {
-    ////    Private Datatypes    ////
-    private:
+    ////    Friends    ////
+    friend std::ostream & operator << ( std::ostream & out,
+                                        const MScriptVarTable & table );
+
+    ////    Public Datatypes    ////
+    public:
         /**
          * @brief
          */
-        enum Flags
-        {
-            FLAG_CONST = 0x01, ///< 0 == variable, 1 == constant.
-            FLAG_ARRAY = 0x02, ///< 0 == scalar, 1 == array.
-            FLAG_HASH  = 0x04, ///< 0 == indexed array, 1 == hash - associative array.
-        };
+        typedef std::map<std::string,MScriptVariable> VarTable;
 
         /**
          * @brief
          */
-        union Value
-        {
-            MScriptValue * m_scalar;
-            std::vector<MScriptValue*> * m_array;
-            std::map<std::string,MScriptValue*> * m_hash;
-        };
-
-        /**
-         * @brief
-         */
-        struct Variable
+        struct Index
         {
             /// @brief
-            Flags m_type;
+            std::vector<unsigned int> m_index;
 
             /// @brief
-            Value m_value;
+            std::vector<std::string> m_key;
         };
 
+    ////    Constructors and Destructors    ////
+    public:
         /**
          * @brief
+         * @param[in,out] interpret
          */
-        typedef std::map<std::string,Variable> VarTable;
+        MScriptVarTable ( MScriptInterpretInterface * interpret )
+                        : m_interpret ( interpret ) {}
 
     ////    Public Operations    ////
     public:
@@ -86,14 +84,79 @@ class MScriptVarTable
         /**
          * @brief
          * @param[in] variable
+         * @param[in] location
          * @return
          */
-        bool remove ( const std::string & variable );
+        bool remove ( const std::string & variable,
+                      const MScriptSrcLocation & location );
+
+        /**
+         * @brief
+         * @param[in] variable
+         * @param[in] location
+         * @param[in] flags
+         * @param[in] dimension
+         * @return
+         */
+        bool declare ( const std::string & variable,
+                       const MScriptSrcLocation & location,
+                       MScriptVariable::Flags flags = MScriptVariable::Flags(0),
+                       unsigned int dimensions = 0 );
+
+        /**
+         * @brief
+         * @param[in] variable
+         * @param[in] location
+         * @param[in] value
+         * @param[in] index
+         * @return
+         */
+        bool assign ( const std::string & variable,
+                      const MScriptSrcLocation & location,
+                      const MScriptValue & value,
+                      const Index & index );
+
+        /**
+         * @brief
+         * @param[in] variable
+         * @param[in] location
+         * @param[in] index
+         * @return
+         */
+        const MScriptValue * get  ( const std::string & variable,
+                                    const MScriptSrcLocation & location,
+                                    const Index & index );
+
+        /**
+         * @brief
+         * @param[in] variable
+         * @return
+         */
+        bool exists ( const std::string & variable ) const;
+
+        /**
+         * @brief
+         * @param[in] variable
+         * @param[in] index
+         * @return
+         */
+        bool isDefined ( const std::string & variable,
+                         const Index & index ) const;
+
+        /**
+         * @brief
+         * @param[in] variable
+         * @return
+         */
+        MScriptVariable::Flags getFlags ( const std::string & variable ) const;
 
     ////    Private Attributes    ////
     private:
         /// @brief
         std::vector<VarTable> m_varTables;
+
+        /// @brief
+        MScriptInterpretInterface * const m_interpret;
 };
 
 /// @name Tracing operators

@@ -207,7 +207,7 @@
  * DECLARATION OF NON-TERMINAL SYMBOLS
  */
 // Expressions
-%type<expr>     expr            e_expr          e_int           id              param_list
+%type<expr>     expr            e_expr          e_int           id              param_list      indexes
 // Statements - general
 %type<stmt>     statements      stmt            cases           switch_body
 
@@ -456,11 +456,16 @@ expr:
     | expr "," expr                 { $$ = new MScriptExpr($1, MScriptExpr::OPER_COMMA, $3, @$); }
 
     // Array element access.
-    | id "[" expr "]"               { $$ = new MScriptExpr($id, MScriptExpr::OPER_INDEX, $3, @$); }
+    | id indexes                    { $$ = new MScriptExpr($id, MScriptExpr::OPER_INDEX, $indexes, @$); }
 
     // Function call.
     | id "(" ")" %prec FCALL        { $$ = new MScriptExpr($id, MScriptExpr::OPER_CALL, @$);     }
     | id "(" expr ")" %prec FCALL   { $$ = new MScriptExpr($id, MScriptExpr::OPER_CALL, $3, @$); }
+;
+
+indexes:
+      "[" expr "]"                  { $$ = $expr;                                                   }
+    | indexes "[" expr "]"          { $$ = new MScriptExpr($1, MScriptExpr::OPER_INDEX, $expr, @$); }
 ;
 
 %%
