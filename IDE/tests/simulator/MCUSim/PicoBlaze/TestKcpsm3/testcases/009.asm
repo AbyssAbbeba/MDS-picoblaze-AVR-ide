@@ -3,7 +3,7 @@
 ORG 0
 
 
-DATA    AUTOREG         AT 5
+DATA1    AUTOREG         AT 5
 ADRESA  AUTOREG
 CMD1    AUTOREG
 CMD2    AUTOREG
@@ -12,13 +12,13 @@ CMD4    AUTOREG
 CMD5    AUTOREG
 
 START:
-        LOAD    DATA,#0xFF
+        LOAD    DATA1,#0xFF
         LOAD    ADRESA,1
-        LOAD    DATA,CMD1
-        LOAD    DATA,CMD2
-        LOAD    DATA,CMD3
-        LOAD    DATA,CMD4
-        LOAD    DATA,CMD5
+        LOAD    DATA1,CMD1
+        LOAD    DATA1,CMD2
+        LOAD    DATA1,CMD3
+        LOAD    DATA1,CMD4
+        LOAD    DATA1,CMD5
 
         JUMP    MULTIPLY
 
