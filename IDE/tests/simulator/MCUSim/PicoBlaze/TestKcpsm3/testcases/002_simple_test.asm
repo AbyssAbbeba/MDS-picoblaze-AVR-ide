@@ -33,15 +33,19 @@ HOP3:   JUMP    HOP4
         ;; PC == 7
 
         LOAD    s0,#1
+        ;; STEP
+        ;; PC == 9
 HOP4:   JUMP    HOP5
         ;; STEP
-        ;; PC == 8
+        ;; PC == 10
 
 HOP5:   JUMP    HOP6
         ;; STEP
-        ;; PC == 12
+        ;; PC == 14
 
         LOAD    s0,#1
+        ;;STEP
+        ;;PC == 15
         LOAD    s0,#1
         LOAD    s0,#1
 HOP6:   JUMP    HOP7
@@ -49,5 +53,6 @@ HOP7:   JUMP    HOP8
         LOAD    s0,#1
         LOAD    s0,#12
 HOP8:   
-
+        ;; STEP
+        ;; PC == 16
 END
