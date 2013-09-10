@@ -86,7 +86,7 @@ class PicoBlazeInterruptController : public MCUSimSubsys
         /**
          * @brief
          */
-        void genIntReq();
+        void irq();
 
         /**
          * @brief
