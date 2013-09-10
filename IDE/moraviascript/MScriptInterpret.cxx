@@ -23,14 +23,22 @@
 #include <QObject>
 #include <iostream> // DEBUG
 
+MScriptInterpret::MScriptInterpret()
+{
+    m_varTable = new MScriptVarTable(this);
+    m_funcTable = new MScriptFuncTable(this);
+}
+
 MScriptInterpret::~MScriptInterpret()
 {
+    delete m_varTable;
+    delete m_funcTable;
 }
 
 void MScriptInterpret::init ( MScriptStatement * rootNode )
 {
     clear();
-    if ( true == checkCode(rootNode) )
+    if ( true == postprocessCode(rootNode) )
     {
         MScriptExecContext::init(rootNode);
     }
@@ -220,14 +228,14 @@ inline void MScriptInterpret::evalScope ( const MScriptStatement * node )
     {
         // Leaving scope.
         popNext();
-        m_varTable.popScope();
+        m_varTable->popScope();
     }
     else
     {
         // Entering scope.
         setNextFlags ( FLAG_SCOPE );
         addNext(node->branch());
-        m_varTable.pushScope();
+        m_varTable->pushScope();
     }
 }
 
@@ -243,7 +251,7 @@ inline void MScriptInterpret::evalSwitch ( const MScriptStatement * node )
 
     setNextFlags ( FLAG_SWITCH );
 
-    const int switchArg = node->args().eval();
+    const int switchArg = node->args()->eval();
     bool positive = false;
 
     for ( const MScriptStatement * caseNode = node->branch();
@@ -293,27 +301,12 @@ inline void MScriptInterpret::evalBreak ( const MScriptStatement * node )
         return;
     }
 
-    unsigned int level = 1;
-    for ( std::vector<ProgPtr>::reverse_iterator it = getProgramPointer().rbegin();
-          it != getProgramPointer().rend();
-          it++ )
+    if ( false == abadonCode ( ExecFlags( FLAG_SWITCH | FLAG_LOOP ), (unsigned int) (arg) ) )
     {
-        if ( ( FLAG_SWITCH | FLAG_LOOP ) & it->second )
-        {
-            arg--;
-            if ( 0 == arg )
-            {
-                cutOffBranch(level);
-                addNext(it->first->next());
-                return;
-            }
-        }
-        level++;
+        interpreterMessage ( node->location(),
+                             MScriptBase::MT_ERROR,
+                             QObject::tr("invalid use of break command").toStdString() );
     }
-
-    interpreterMessage ( node->location(),
-                         MScriptBase::MT_ERROR,
-                         QObject::tr("invalid use of break command").toStdString() );
 }
 
 inline void MScriptInterpret::evalContinue ( const MScriptStatement * node )
@@ -332,66 +325,95 @@ inline void MScriptInterpret::evalContinue ( const MScriptStatement * node )
         return;
     }
 
-    unsigned int level = 0;
-    for ( std::vector<ProgPtr>::reverse_iterator it = getProgramPointer().rbegin();
-          it != getProgramPointer().rend();
-          it++ )
+    if ( false == abadonCode(FLAG_LOOP, (unsigned int) (arg), true) )
     {
-        if ( FLAG_LOOP & it->second )
-        {
-            arg--;
-            if ( 0 == arg )
-            {
-                cutOffBranch(level);
-                return;
-            }
-        }
-        level++;
+        interpreterMessage ( node->location(),
+                             MScriptBase::MT_ERROR,
+                             QObject::tr("invalid use of continue command").toStdString() );
     }
-
-    interpreterMessage ( node->location(),
-                         MScriptBase::MT_ERROR,
-                         QObject::tr("invalid use of continue command").toStdString() );
 }
 
 inline void MScriptInterpret::evalReturn ( const MScriptStatement * node )
 {
-    unsigned int level = 1;
+    if ( false == abadonCode(FLAG_FUNCTION) )
+    {
+        interpreterMessage ( node->location(),
+                             MScriptBase::MT_ERROR,
+                             QObject::tr("there is no function to return from").toStdString() );
+    }
+}
+
+inline bool MScriptInterpret::abadonCode ( ExecFlags upTo,
+                                           unsigned int times,
+                                           bool exclusive )
+{
+    unsigned int level = ( true == exclusive ) ? 0 : 1;
+
     for ( std::vector<ProgPtr>::reverse_iterator it = getProgramPointer().rbegin();
           it != getProgramPointer().rend();
           it++ )
     {
-        if ( FLAG_FUNCTION & it->second )
+        if ( FLAG_SCOPE & it->second )
         {
-            cutOffBranch(level);
-//             addNext(it->first->next());
-            return;
+            m_varTable->popScope();
         }
+
+        if ( upTo & it->second )
+        {
+            times--;
+            if ( 0 == times )
+            {
+                cutOffBranch(level);
+                return true;
+            }
+        }
+
         level++;
     }
 
-    interpreterMessage ( node->location(),
-                         MScriptBase::MT_ERROR,
-                         QObject::tr("there is no function to return from").toStdString() );
+    return false;
 }
 
 inline void MScriptInterpret::evalDelete ( const MScriptStatement * node )
 {
-    std::string var = node->args()->lVal().m_data.m_symbol;
-
-    if ( false == m_varTable->remove(var) )
-    {
-        interpreterMessage ( node->location(),
-                             MScriptBase::MT_ERROR,
-                             QObject::tr ( "variable `%1' has not been defined (cannot delete nonexistent variable)" )
-                                         . arg ( var.c_str() )
-                                         . toStdString() );
-    }
+    m_varTable -> remove ( node->args()->lVal().m_data.m_symbol,
+                           node->location() );
 
     replaceNext(node->next());
 }
 
-inline bool MScriptInterpret::checkCode ( MScriptStatement * rootNode )
+inline bool MScriptInterpret::postprocessCode ( MScriptStatement * rootNode )
 {
+    using namespace MScriptStmtTypes;
+
+    for ( MScriptStatement * node = rootNode->next();
+          node != NULL;
+          node = node->next() )
+    {
+        switch ( node->type() )
+        {
+            case STMT_EMPTY:
+                // Remove empty statements.
+                break;
+
+            case STMT_TRIGGER:
+                // TODO: add to trigger table.
+                break;
+
+            case STMT_FUNCTION:
+                // Add function to the Function Table.
+//                 m_funcTable->add()
+                break;
+
+            default:
+                // By default, nodes will not be removed from the tree.
+                continue;
+        }
+
+        // Remove the inspected node from the tree.
+        node = node->prev();
+        delete node->next();
+    }
+
     return true;
 }

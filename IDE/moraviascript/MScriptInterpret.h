@@ -22,8 +22,10 @@ class MScriptStatement;
 // MScript language interpreter header files.
 #include "MScriptBase.h"
 #include "MScriptVarTable.h"
+#include "MScriptFuncTable.h"
 #include "MScriptExecContext.h"
 #include "MScriptSrcLocation.h"
+#include "MScriptInterpretInterface.h"
 
 // Standard header files.
 #include <string>
@@ -33,10 +35,16 @@ class MScriptStatement;
  * @class MScriptInterpret
  * @ingroup MoraviaScript
  */
-class MScriptInterpret : private MScriptExecContext
+class MScriptInterpret : private MScriptExecContext,
+                         protected MScriptInterpretInterface
 {
     ////    Constructors and Destructors    ////
     public:
+        /**
+         * @brief
+         */
+        MScriptInterpret();
+
         /**
          * @brief
          */
@@ -61,18 +69,6 @@ class MScriptInterpret : private MScriptExecContext
          */
         bool step();
 
-    ////    Private Operations    ////
-    private:
-        /**
-         * @brief
-         * @param[in] location
-         * @param[in] type
-         * @param[in] text
-         */
-        virtual void interpreterMessage ( MScriptSrcLocation location,
-                                          MScriptBase::MessageType type,
-                                          const std::string & text ) = 0;
-
     ////    Inline Private Operations    ////
     private:
         /**
@@ -80,7 +76,7 @@ class MScriptInterpret : private MScriptExecContext
          * @param[in,out] rootNode
          * @return
          */
-        inline bool checkCode ( MScriptStatement * rootNode );
+        inline bool postprocessCode ( MScriptStatement * rootNode );
 
         /**
          * @brief
@@ -148,10 +144,24 @@ class MScriptInterpret : private MScriptExecContext
          */
         inline void evalDelete ( const MScriptStatement * node );
 
+        /**
+         * @brief
+         * @param[in] upTo
+         * @param[in] times
+         * @param[in] exclusive
+         * @return
+         */
+        inline bool abadonCode ( ExecFlags upTo,
+                                 unsigned int times = 1,
+                                 bool exclusive = false );
+
     ////    Private Attributes    ////
     private:
         /// @brief
-        MScriptVarTable m_varTable;
+        MScriptVarTable * m_varTable;
+
+        /// @brief
+        MScriptFuncTable * m_funcTable;
 };
 
 #endif // MSCRIPTINTERPRET_H
