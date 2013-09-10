@@ -291,7 +291,7 @@ void PicoBlazeInstructionSet1CPLD::inst_RETURN ( const unsigned int opCode )
         logEvent ( EVENT_CPU_RETURN, m_pc );
         m_actSubprogCounter--;
     }
-    setProgramCounter ( 1 + m_stack->popFromStack() );
+    setProgramCounter ( m_stack->popFromStack() );
 }
 
 void PicoBlazeInstructionSet1CPLD::inst_ADD_sx_kk ( const unsigned int opCode )

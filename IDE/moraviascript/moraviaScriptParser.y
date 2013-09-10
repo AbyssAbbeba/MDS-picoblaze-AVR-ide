@@ -208,6 +208,7 @@
  */
 // Expressions
 %type<expr>     expr            e_expr          e_int           id              param_list      indexes
+%type<expr>     param           sv_expr
 // Statements - general
 %type<stmt>     statements      stmt            cases           switch_body
 
@@ -373,13 +374,21 @@ id:
       IDENTIFIER                    { $$ = new MScriptExpr($IDENTIFIER, @$); }
 ;
 
+param:
+      id                            { $$ = $id;                                                          }
+    | id "=" sv_expr                { $$ = new MScriptExpr($id, MScriptExpr::OPER_ASSIGN, $sv_expr, @$); }
+    | "&" id                        { $$ = $id; $id->m_operator = MScriptExpr::OPER_REF;                 }
+    | "&" id "=" sv_expr            {
+                                        $id->m_operator = MScriptExpr::OPER_REF;
+                                        $$ = new MScriptExpr($id, MScriptExpr::OPER_ASSIGN, $sv_expr, @$);
+                                    }
+;
+
 // List of function parameters.
 param_list:
-      /* empty */                   { $$ = NULL;                                                         }
-    | id                            { $$ = $id;                                                          }
-    | param_list "," id             { $$ = $1->appendLink($id);                                          }
-    | "&" id                        { $$ = $id; $id->m_operator = MScriptExpr::OPER_REF;                 }
-    | param_list "," "&" id         { $$ = $1->appendLink($id); $id->m_operator = MScriptExpr::OPER_REF; }
+      /* empty */                   { $$ = NULL;                   }
+    | param                         { $$ = $param;                 }
+    | param_list "," param          { $$ = $1->appendLink($param); }
 ;
 
 // Integer, possibly empty.
@@ -394,13 +403,18 @@ e_expr:
     | expr                          { $$ = $expr; }
 ;
 
+// Single value expressions.
+sv_expr:
+      INTEGER                       { $$ = new MScriptExpr($INTEGER, @$);                                 }
+    | REAL                          { $$ = new MScriptExpr($REAL, @$);                                    }
+    | STRING                        { $$ = new MScriptExpr(MScriptValue($STRING.data, $STRING.size), @$); }
+;
+
 // Expression.
 expr:
     // Single value expressions.
-      id                            { $$ = $id;                                                           }
-    | INTEGER                       { $$ = new MScriptExpr($INTEGER, @$);                                 }
-    | REAL                          { $$ = new MScriptExpr($REAL, @$);                                    }
-    | STRING                        { $$ = new MScriptExpr(MScriptValue($STRING.data, $STRING.size), @$); }
+      id                            { $$ = $id;      }
+    | sv_expr                       { $$ = $sv_expr; }
 
     // Parentheses.
     | "(" expr ")"                  { $$ = $2; }
@@ -463,6 +477,7 @@ expr:
     | id "(" expr ")" %prec FCALL   { $$ = new MScriptExpr($id, MScriptExpr::OPER_CALL, $3, @$); }
 ;
 
+// Array element access.
 indexes:
       "[" expr "]"                  { $$ = $expr;                                                   }
     | indexes "[" expr "]"          { $$ = new MScriptExpr($1, MScriptExpr::OPER_INDEX, $expr, @$); }

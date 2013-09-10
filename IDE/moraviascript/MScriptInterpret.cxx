@@ -402,7 +402,7 @@ inline bool MScriptInterpret::postprocessCode ( MScriptStatement * rootNode )
 
             case STMT_FUNCTION:
                 // Add function to the Function Table.
-//                 m_funcTable->add()
+//                 m_funcTable->define()
                 break;
 
             default:
