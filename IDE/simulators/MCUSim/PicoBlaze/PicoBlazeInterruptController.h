@@ -84,12 +84,12 @@ class PicoBlazeInterruptController : public MCUSimSubsys
         int autoInterrupt();
 
         /**
-         * @brief
+         * @brief Interrupt request.
          */
         void irq();
 
         /**
-         * @brief
+         * @brief Return from ISR.
          */
         void returni();
 
