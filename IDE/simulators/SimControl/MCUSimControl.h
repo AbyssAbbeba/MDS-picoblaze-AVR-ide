@@ -205,7 +205,7 @@ class MCUSimControl : public QThread
         void clearMessages();
 
         /**
-         * @brief
+         * @brief Get total number of executed machine cycles.
          * @return
          */
         unsigned long long getTotalMCycles() const;

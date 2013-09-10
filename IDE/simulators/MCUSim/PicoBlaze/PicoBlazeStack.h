@@ -196,12 +196,12 @@ inline void PicoBlazeStack::pushOnStack ( unsigned int value )
         logEvent(EVENT_MEM_INF_WR_VAL_CHANGED, m_position, value);
     }
     m_data[m_position++] = value;
-    logEvent(EVENT_STACK_SP_CHANGED, m_position, -1);
+    logEvent(EVENT_STACK_SP_CHANGED, m_position);
 }
 
 inline unsigned int PicoBlazeStack::popFromStack()
 {
-    unsigned int result;
+    unsigned int result = ( 0x3ff & m_data[--m_position] );
 
     if ( 0 == m_position )
     {
@@ -209,10 +209,7 @@ inline unsigned int PicoBlazeStack::popFromStack()
         m_position = m_config.m_size;
     }
 
-    result = ( 0x3ff & m_data[m_position] );
-
-    m_position--;
-    logEvent(EVENT_STACK_SP_CHANGED, m_position, -1);
+    logEvent(EVENT_STACK_SP_CHANGED, m_position);
     logEvent(EVENT_MEM_INF_RD_VAL_READ, m_position, result);
 
     return result;
