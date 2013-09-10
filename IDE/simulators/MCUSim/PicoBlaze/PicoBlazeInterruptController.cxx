@@ -64,7 +64,7 @@ int PicoBlazeInterruptController::autoInterrupt()
     }
 }
 
-void PicoBlazeInterruptController::genIntReq()
+void PicoBlazeInterruptController::irq()
 {
     logEvent ( EVENT_INT_ENTERING_INTERRUPT );
     m_irq = true;
