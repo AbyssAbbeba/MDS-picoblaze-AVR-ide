@@ -124,7 +124,7 @@ inline MCUSimTestScript::Command MCUSimTestScript::processLine ( const char * li
         }
     }
 
-    std::transform(tokens[0].begin(), tokens[0].end(), tokens[0].begin(), ::tolower);
+    std::transform(tokens[0].begin(), tokens[0].end(), tokens[0].begin(), ::toupper);
 
     result.m_type = CT_ABORT;
     switch ( tokens.size() )
@@ -218,6 +218,7 @@ inline MCUSimTestScript::Command MCUSimTestScript::processLine ( const char * li
                 }
                 else
                 {
+                    m_execMessage = "memory space not recognized";
                     result.m_type = CT_ABORT;
                     break;
                 }
@@ -229,6 +230,7 @@ inline MCUSimTestScript::Command MCUSimTestScript::processLine ( const char * li
             break;
 
         default:
+            m_execMessage = "command not understood";
             break;
     }
 
