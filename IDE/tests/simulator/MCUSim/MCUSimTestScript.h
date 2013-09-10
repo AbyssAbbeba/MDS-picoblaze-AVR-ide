@@ -86,7 +86,7 @@ class MCUSimTestScript
          * @brief
          * @param[in,out] simulator
          */
-        MCUSimTestScript ( MCUSim * simulator );
+        MCUSimTestScript ( MCUSim * simulator);
 
         /**
          * @brief
@@ -99,10 +99,12 @@ class MCUSimTestScript
          * @brief
          * @param[in] inFileName
          * @param[in] outFileName
+         * @param[in] useAsmFile
          * @return
          */
         bool runScript ( const std::string & inFileName,
-                         const std::string & outFileName );
+                         const std::string & outFileName,
+                         bool useAsmFile = false );
 
     ////    Private Operations    ////
     private:
@@ -125,9 +127,11 @@ class MCUSimTestScript
         /**
          * @brief
          * @param[in] line
+         * @param[in] useAsmFile
          * @return
          */
-        inline Command processLine ( const char * line );
+        inline Command processLine ( const char * line,
+                                     bool useAsmFile );
 
         /**
          * @brief
@@ -148,12 +152,12 @@ class MCUSimTestScript
         /**
          * @brief
          */
-        bool m_success;
+        std::string m_execMessage;
 
         /**
          * @brief
          */
-        std::string m_execMessage;
+        bool m_success;
 };
 
 #endif // MCUSIMTESTSCRIPT_H

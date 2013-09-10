@@ -72,7 +72,7 @@ bool TestGenericSubsys::addTests ( CU_pSuite suite )
 
         std::transform(extension.begin(), extension.end(), extension.begin(), ::tolower);
 
-        if ( ".in" == extension )
+        if ( ".asm" == extension )
         {
             testName.resize(testName.size() - 3);
             testCaseFiles.push_back(testName);
@@ -103,7 +103,7 @@ void TestGenericSubsys::testFunction()
 
     std::string testName = CU_get_current_test()->pName;
 
-    const std::string inFile  = ( path("TestGenericSubsys") / "testcases" / (testName + ".in" ) ).string();
+    const std::string inFile  = ( path("TestGenericSubsys") / "testcases" / (testName + ".asm" ) ).string();
     const std::string outFile = ( path("TestGenericSubsys") / "results"   / (testName + ".out") ).string();
     const std::string hexFile = ( path("TestGenericSubsys") / "results"   / (testName + ".hex") ).string();
 

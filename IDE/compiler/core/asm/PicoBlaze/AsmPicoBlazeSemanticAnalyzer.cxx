@@ -16,17 +16,17 @@
 #include "AsmPicoBlazeSemanticAnalyzer.h"
 
 // Common compiler header files.
-#include "CompilerStatementTypes.h"
 #include "../AsmDgbFileGen.h"
+#include "CompilerStatementTypes.h"
 
 // PicoBlaze assembler semantic analyzer header files.
-#include "AsmPicoBlazeSymbolTable.h"
-#include "AsmPicoBlazeCodeListing.h"
-#include "AsmPicoBlazeInstructionSet.h"
 #include "AsmPicoBlazeMacros.h"
 #include "AsmPicoBlazeMemoryPtr.h"
 #include "AsmPicoBlazeTreeDecoder.h"
+#include "AsmPicoBlazeSymbolTable.h"
+#include "AsmPicoBlazeCodeListing.h"
 #include "AsmPicoBlazeSpecialMacros.h"
+#include "AsmPicoBlazeInstructionSet.h"
 #include "AsmPicoBlazeInstructionSet6.h"
 #include "AsmPicoBlazeInstructionSet3.h"
 #include "AsmPicoBlazeInstructionSet2.h"
@@ -34,17 +34,17 @@
 #include "AsmPicoBlazeInstructionSet1CPLD.h"
 
 // Header files of libMCUDataFiles.
+#include "XilMemFile.h"
 #include "XilVHDLFile.h"
 #include "XilVerilogFile.h"
-#include "XilMemFile.h"
 
 // Standard headers.
-#include <cstdint>
-#include <cstring>
 #include <string>
 #include <vector>
-#include <fstream>
 #include <cctype>
+#include <cstdint>
+#include <fstream>
+#include <cstring>
 
 AsmPicoBlazeSemanticAnalyzer::AsmPicoBlazeSemanticAnalyzer ( CompilerSemanticInterface * compilerCore,
                                                              CompilerOptions * opts )
@@ -69,15 +69,15 @@ AsmPicoBlazeSemanticAnalyzer::AsmPicoBlazeSemanticAnalyzer ( CompilerSemanticInt
 
 AsmPicoBlazeSemanticAnalyzer::~AsmPicoBlazeSemanticAnalyzer()
 {
-    delete m_symbolTable;
-    delete m_machineCode;
-    delete m_codeListing;
-    delete m_instructionSet;
     delete m_macros;
     delete m_dgbFile;
     delete m_memoryPtr;
-    delete m_specialMacros;
     delete m_treeDecoder;
+    delete m_symbolTable;
+    delete m_machineCode;
+    delete m_codeListing;
+    delete m_specialMacros;
+    delete m_instructionSet;
 }
 
 void AsmPicoBlazeSemanticAnalyzer::printCodeTree ( const CompilerStatement * codeTree )

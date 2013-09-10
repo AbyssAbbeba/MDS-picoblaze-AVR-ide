@@ -34,7 +34,8 @@ MCUSimTestScript::~MCUSimTestScript()
 }
 
 bool MCUSimTestScript::runScript ( const std::string & inFileName,
-                                   const std::string & outFileName )
+                                   const std::string & outFileName,
+                                   bool useAsmFile )
 {
     m_success = true;
 
@@ -48,11 +49,8 @@ bool MCUSimTestScript::runScript ( const std::string & inFileName,
     {
         inFile.getline(line, MAX_LINE_LENGTH);
 
-        Command cmd = processLine(line);
-        if ( false == executeCommand(cmd, outFile) )
-        {
-            return false;
-        }
+        Command cmd = processLine(line, useAsmFile);
+        bool ok = executeCommand(cmd, outFile);
 
         outFile << " :";
         if ( 0 != strlen(line) )
@@ -66,21 +64,42 @@ bool MCUSimTestScript::runScript ( const std::string & inFileName,
             outFile << ">>> " << m_execMessage << std::endl;
             m_execMessage.clear();
         }
+
+        if ( false == ok )
+        {
+            return false;
+        }
     }
 
     return m_success;
 }
 
-inline MCUSimTestScript::Command MCUSimTestScript::processLine ( const char * line )
+inline MCUSimTestScript::Command MCUSimTestScript::processLine ( const char * line,
+                                                                 bool useAsmFile )
 {
     Command result;
 
     std::vector<std::string> tokens(1);
-
     size_t len = strlen(line);
+    int acceptLine = ( ( true == useAsmFile ) ? 0 : 2 );
+
     for ( size_t i = 0; i < len; i++ )
     {
         char ch = line[i];
+
+        if ( 2 != acceptLine )
+        {
+            if ( ';' == ch )
+            {
+                acceptLine++;
+            }
+            else
+            {
+                acceptLine = 0;
+            }
+
+            continue;
+        }
 
         if ( 0 != isspace(ch) )
         {
@@ -91,7 +110,7 @@ inline MCUSimTestScript::Command MCUSimTestScript::processLine ( const char * li
             continue;
         }
 
-        if ( '#' == ch && ';' == ch )
+        if ( '#' == ch || ';' == ch )
         {
             break;
         }

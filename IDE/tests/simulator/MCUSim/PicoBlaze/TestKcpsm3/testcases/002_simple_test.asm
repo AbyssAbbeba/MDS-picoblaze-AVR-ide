@@ -6,15 +6,41 @@
 
 Start:
         LOAD    0x00,#1
+        ;; PC == 0
+        ;; STEP
+        ;; PC == 1
+        ;; REG[0x00] == 1
+
         LOAD    0x00,#55
+        ;; STEP
+        ;; PC == 2
+        ;; REG[0x00] == 55
+
         JUMP    HOP1
+        ;; STEP
+        ;; PC == 3
 
 HOP1:   JUMP    HOP2
+        ;; STEP
+        ;; PC == 4
+
 HOP2:   JUMP    HOP3
+        ;; STEP
+        ;; PC == 5
+
 HOP3:   JUMP    HOP4
+        ;; STEP
+        ;; PC == 7
+
         LOAD    s0,#1
 HOP4:   JUMP    HOP5
+        ;; STEP
+        ;; PC == 8
+
 HOP5:   JUMP    HOP6
+        ;; STEP
+        ;; PC == 12
+
         LOAD    s0,#1
         LOAD    s0,#1
         LOAD    s0,#1
