@@ -232,18 +232,11 @@ DIS_INT_INST            "disable"{WSPACE}"interrupt"
                         }
 
  /* Instructions. */
-"jump"                  { return I_JUMP;        }
-"call"                  { return I_CALL;        }
-"return"                { return I_RETURN;      }
 "add"                   { return I_ADD;         }
 "addcy"                 { return I_ADDCY;       }
 "sub"                   { return I_SUB;         }
 "subcy"                 { return I_SUBCY;       }
 "compare"               { return I_COMPARE;     }
-{RETURNI_ENABLE_INST}   { return I_RETURNI_ENA; }
-{RETURNI_DISABLE_INST}  { return I_RETURNI_DIS; }
-{ENA_INT_INST}          { return I_ENABLE_INT;  }
-{DIS_INT_INST}          { return I_DISABLE_INT; }
 "load"                  { return I_LOAD;        }
 "and"                   { return I_AND;         }
 "or"                    { return I_OR;          }
@@ -270,8 +263,27 @@ DIS_INT_INST            "disable"{WSPACE}"interrupt"
 "testcy"                { return I_TESTCY;      }
 "comparecy"             { return I_COMPARECY;   }
 "outputk"               { return I_OUTPUTK;     }
+"jump"                  { return I_JUMP;        }
+"call"                  { return I_CALL;        }
+"return"                { return I_RETURN;      }
+"jump"{WSPACE}"z"       { return I_JUMP_Z;      }
+"jump"{WSPACE}"nz"      { return I_JUMP_NZ;     }
+"jump"{WSPACE}"c"       { return I_JUMP_C;      }
+"jump"{WSPACE}"nc"      { return I_JUMP_NC;     }
+"call"{WSPACE}"z"       { return I_CALL_Z;      }
+"call"{WSPACE}"nz"      { return I_CALL_NZ;     }
+"call"{WSPACE}"c"       { return I_CALL_C;      }
+"call"{WSPACE}"nc"      { return I_CALL_NC;     }
+"return"{WSPACE}"z"     { return I_RETURN_Z;    }
+"return"{WSPACE}"nz"    { return I_RETURN_NZ;   }
+"return"{WSPACE}"c"     { return I_RETURN_C;    }
+"return"{WSPACE}"nc"    { return I_RETURN_NC;   }
 "regbank"{WSPACE}"A"    { return I_REGBANK_A;   }
 "regbank"{WSPACE}"B"    { return I_REGBANK_B;   }
+{RETURNI_ENABLE_INST}   { return I_RETURNI_ENA; }
+{RETURNI_DISABLE_INST}  { return I_RETURNI_DIS; }
+{ENA_INT_INST}          { return I_ENABLE_INT;  }
+{DIS_INT_INST}          { return I_DISABLE_INT; }
 
  /* Instruction shortcuts. */
 "ena"                   { return I_ENABLE_INT;  }
@@ -297,12 +309,6 @@ DIS_INT_INST            "disable"{WSPACE}"interrupt"
 "rt_endw"               { return M_RTENDW;   }
 "rt_for"                { return M_RTFOR;    }
 "rt_endf"               { return M_RTENDF;   }
-
- /* Fixed operands. */
-"z"                     { return Z;  }
-"nz"                    { return NZ; }
-"c"                     { return C;  }
-"nc"                    { return NC; }
 
  /* Special "operators". */
 "high"                  { return F_HIGH;    }
