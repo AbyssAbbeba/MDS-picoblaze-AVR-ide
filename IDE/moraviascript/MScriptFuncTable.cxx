@@ -23,8 +23,27 @@
 // Used for i18n only
 #include <QObject>
 
+MScriptFuncTable::Function::Function()
+{
+    m_code   = NULL;
+    m_params = NULL;
+}
+
+MScriptFuncTable::Function::~Function()
+{
+    if ( NULL != m_code )
+    {
+        m_code->completeDelete();
+    }
+    if ( NULL != m_params )
+    {
+        m_params->completeDelete();
+    };
+}
+
 bool MScriptFuncTable::define ( const std::string & name,
-                                const std::vector<Parameter> * params )
+                                const std::vector<Parameter> * params,
+                                const MScriptStatement * code )
 {
 }
 
