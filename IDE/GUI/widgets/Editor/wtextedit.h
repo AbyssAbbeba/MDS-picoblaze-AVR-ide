@@ -41,6 +41,12 @@ class WTextEdit : public QTextEdit
         int getPosition();
         void scrollToLine(int line);
 
+        /*WTextEdit & operator<< (QString const &str)
+        {
+            append(str);
+            return *this;
+        }*/
+
 
     signals:
         void focusIn();
