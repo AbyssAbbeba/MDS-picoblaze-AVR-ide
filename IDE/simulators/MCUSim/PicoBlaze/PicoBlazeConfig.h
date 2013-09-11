@@ -21,14 +21,15 @@ class PicoBlazeSim;
 
 #include "../MCUSim.h"
 
-#include "PicoBlazeClockControl.h"
-#include "PicoBlazeDataMemory.h"
-#include "PicoBlazeRegisters.h"
-#include "PicoBlazeInterruptController.h"
-#include "PicoBlazeProgramMemory.h"
-#include "PicoBlazeStack.h"
-#include "PicoBlazeInstructionSet.h"
 #include "PicoBlazeIO.h"
+#include "PicoBlazeStack.h"
+#include "PicoBlazeRegisters.h"
+#include "PicoBlazeDataMemory.h"
+#include "PicoBlazeStatusFlags.h"
+#include "PicoBlazeClockControl.h"
+#include "PicoBlazeProgramMemory.h"
+#include "PicoBlazeInstructionSet.h"
+#include "PicoBlazeInterruptController.h"
 
 #include <string>
 
@@ -108,6 +109,9 @@ class PicoBlazeConfig : public MCUSimConfig
 
             ///
             PicoBlazeIO::Config                         * m_configIO;
+
+            ///
+            PicoBlazeStatusFlags::Config                * m_configStatusFlags;
         //@}
 
     ////    Private Attributes    ////

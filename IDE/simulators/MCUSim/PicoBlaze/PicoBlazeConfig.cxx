@@ -24,6 +24,7 @@ PicoBlazeConfig::PicoBlazeConfig() : MCUSimConfig ( MCUSim::ARCH_PICOBLAZE )
     m_configInstructionSet      = NULL;
     m_configProgramMemory       = NULL;
     m_configClockControl        = NULL;
+    m_configStatusFlags         = NULL;
     m_configDataMemory          = NULL;
     m_configRegisters           = NULL;
     m_configStack               = NULL;
@@ -38,6 +39,7 @@ void PicoBlazeConfig::link ( PicoBlazeSim * system )
     m_configInstructionSet      = & ( system -> m_instructionSet      -> m_config );
     m_configProgramMemory       = & ( system -> m_programMemory       -> m_config );
     m_configClockControl        = & ( system -> m_clockControl        -> m_config );
+    m_configStatusFlags         = & ( system -> m_statusFlags         -> m_config );
     m_configDataMemory          = & ( system -> m_dataMemory          -> m_config );
     m_configRegisters           = & ( system -> m_registers           -> m_config );
     m_configStack               = & ( system -> m_stack               -> m_config );
