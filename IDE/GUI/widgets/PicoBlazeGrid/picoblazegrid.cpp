@@ -135,7 +135,7 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
     this->memScratch->move(220,5);
     this->memScratch->fixHeight();
     this->memPorts = new PortHexEdit(this, controlUnit, MCUSimSubsys::SubsysId::ID_PLIO);
-    this->memPorts->move(440,5);
+    this->memPorts->move(440,10);
     this->memStack = new StackWidget(this, controlUnit, MCUSimSubsys::SubsysId::ID_STACK);
     this->memStack->move(680, 25);
     this->memStack->setMaximumWidth(100);
@@ -163,10 +163,6 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
     this->lblTime->move(800,20);
     this->lblClock = new QLabel("Clock", this);
     this->lblClock->move(800,40);
-    this->lblCarry = new QLabel("Carry", this);
-    this->lblCarry->move(840,60);
-    this->lblZero = new QLabel("Zero", this);
-    this->lblZero->move(880,60);
 
     this->leSP = new QLineEdit(this);
     this->leSP->setMaximumWidth(50);
@@ -192,12 +188,20 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
 
     this->btnIntr = new QPushButton("Interrupts", this);
     this->btnIntr->setMaximumHeight(17);
-    this->btnIntr->setMaximumWidth(70);
+    this->btnIntr->setMaximumWidth(80);
     this->btnIntr->move(840, 80);
     this->btnPorts = new QPushButton("Output", this);
     this->btnPorts->setMaximumHeight(17);
     this->btnPorts->setMaximumWidth(50);
     this->btnPorts->move(535, 0);
+    this->btnCarry = new QPushButton("Carry", this);
+    this->btnCarry->move(840,60);
+    this->btnCarry->setMaximumHeight(17);
+    this->btnCarry->setMaximumWidth(40);
+    this->btnZero = new QPushButton("Zero", this);
+    this->btnZero->move(880,60);
+    this->btnZero->setMaximumHeight(17);
+    this->btnZero->setMaximumWidth(40);
 
     QFont btnFont = this->btnIntr->font();
     btnFont.setPointSize(9);

@@ -77,8 +77,6 @@ class PicoBlazeGrid : public QWidget, public MCUSimObserver
         QLabel *lblPC;
         QLabel *lblTime;
         QLabel *lblClock;
-        QLabel *lblCarry;
-        QLabel *lblZero;
 
         QLineEdit *leSP;
         QLineEdit *lePC;
@@ -87,6 +85,8 @@ class PicoBlazeGrid : public QWidget, public MCUSimObserver
 
         QPushButton *btnIntr;
         QPushButton *btnPorts;
+        QPushButton *btnCarry;
+        QPushButton *btnZero;
 
         MCUSimCPU* m_cpu;
         
