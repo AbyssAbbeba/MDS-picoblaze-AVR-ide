@@ -76,10 +76,12 @@ class MScriptFuncTable
          * @brief
          * @param[in] name
          * @param[in] params
+         * @param[in] code
          * @return
          */
         bool define ( const std::string & name,
-                      const std::vector<Parameter> * params );
+                      const std::vector<Parameter> * params,
+                      const MScriptStatement * code );
 
         /**
          * @brief

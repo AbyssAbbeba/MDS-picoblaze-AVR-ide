@@ -75,6 +75,7 @@ class PicoBlazeInstructionSet : public MCUSimCPU
          * @param[in,out] stack
          * @param[in,out] registers
          * @param[in,out] dataMemory
+         * @param[in,out] statusFlags
          * @param[in,out] programMemory
          * @param[in,out] interruptController
          * @return
@@ -84,6 +85,7 @@ class PicoBlazeInstructionSet : public MCUSimCPU
                                          PicoBlazeStack               * stack,
                                          PicoBlazeRegisters           * registers,
                                          PicoBlazeDataMemory          * dataMemory,
+                                         PicoBlazeStatusFlags         * statusFlags,
                                          PicoBlazeProgramMemory       * programMemory,
                                          PicoBlazeInterruptController * interruptController );
 
@@ -131,18 +133,9 @@ class PicoBlazeInstructionSet : public MCUSimCPU
          * @brief
          * @return
          */
-        const PicoBlazeStatusFlags & getStatusFlags()
+        PicoBlazeStatusFlags * getStatusFlags()
         {
             return m_statusFlags;
-        }
-
-        /**
-         * @brief
-         * @param[in] newFlags
-         */
-        void setStatusFlags ( const PicoBlazeStatusFlags & newFlags )
-        {
-            m_statusFlags = newFlags;
         }
 
         /**
@@ -186,9 +179,6 @@ class PicoBlazeInstructionSet : public MCUSimCPU
     ////    Protected Attributes    ////
     protected:
         ///
-        PicoBlazeStatusFlags m_statusFlags;
-
-        ///
         int m_pc;
 
         ///
@@ -219,6 +209,9 @@ class PicoBlazeInstructionSet : public MCUSimCPU
 
             ///
             PicoBlazeInterruptController * m_interruptController;
+
+            ///
+            PicoBlazeStatusFlags * m_statusFlags;
         //@}
 };
 
