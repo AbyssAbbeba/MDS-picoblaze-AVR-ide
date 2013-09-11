@@ -1096,6 +1096,6 @@ void MainForm::disassembleOutput(std::vector<std::string> text)
     }
     //QString name = this->projectMan->addUntrackedFile(NULL, "disasm");
     this->wDockManager->addUntrackedCentralWidget("disasm","untracked",qText);
-    //getWDockManager()->getCentralWidget()->setChanged();
+    getWDockManager()->getCentralTextEdit()->reloadHighlighter(PICOBLAZEASM);
     //getWDockManager()->getCentralWidget()->connectAct();
 }
