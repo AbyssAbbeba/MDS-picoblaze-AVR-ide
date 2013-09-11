@@ -47,7 +47,27 @@ class MScriptFuncTable
         /**
          * @brief
          */
-        typedef std::pair<std::string,MScriptValue> Parameter;
+        struct Parameter
+        {
+            /**
+             * @brief
+             * @param[in] name
+             * @param[in] defaulValue
+             */
+            Parameter ( const char * name,
+                        const MScriptValue * defaulValue = NULL );
+
+            /**
+             * @brief
+             */
+            ~Parameter();
+
+            /// @brief
+            std::string m_name;
+
+            /// @brief
+            MScriptValue * m_defaulValue;
+        };
 
         /**
          * @brief
@@ -65,10 +85,10 @@ class MScriptFuncTable
             ~Function();
 
             /// @brief
-            const MScriptStatement * m_code;
+            MScriptStatement * m_code;
 
             /// @brief
-            const std::vector<Parameter> * m_params;
+            std::vector<Parameter> * m_params;
         };
 
     ////    Constructors and Destructors    ////

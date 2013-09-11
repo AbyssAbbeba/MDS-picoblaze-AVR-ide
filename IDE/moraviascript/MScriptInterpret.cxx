@@ -413,14 +413,20 @@ inline bool MScriptInterpret::postprocessCode ( MScriptStatement * rootNode )
                       NULL != expr;
                       expr = expr->next() )
                 {
-                    
+                    if ( MScriptExpr::OPER_EQ == expr->oper() )
+                    {
+                        params->push_back ( MScriptFuncTable::Parameter ( expr->lVal().m_data.m_symbol,
+                                                                          & ( expr->rVal().m_data.m_expr->lVal() ) ) );
+                    }
+                    else
+                    {
+                        params->push_back ( MScriptFuncTable::Parameter ( expr->lVal().m_data.m_symbol ) );
+                    }
                 }
 
                 m_funcTable->define(funcName, params, node->branch());
-
-                node->args()->next()->m_prev = NULL;
-                node->args()->m_next = NULL;
                 node->m_branch = NULL;
+
                 break;
             }
 
