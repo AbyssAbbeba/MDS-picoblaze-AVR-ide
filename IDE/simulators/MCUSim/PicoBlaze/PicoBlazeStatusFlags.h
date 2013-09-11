@@ -25,7 +25,7 @@
  * @class PicoBlazeStatusFlags
  */
 class PicoBlazeStatusFlags : public MCUSimSubsys,
-                             protected PicoBlazeStatusFlagsBase
+                             public PicoBlazeStatusFlagsBase
 {
     ////    Public Datatypes    ////
     public:
