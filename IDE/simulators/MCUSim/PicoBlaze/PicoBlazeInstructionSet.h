@@ -133,7 +133,7 @@ class PicoBlazeInstructionSet : public MCUSimCPU
          * @brief
          * @return
          */
-        PicoBlazeStatusFlags * getStatusFlags()
+        PicoBlazeStatusFlagsBase * getStatusFlags()
         {
             return m_statusFlags;
         }
