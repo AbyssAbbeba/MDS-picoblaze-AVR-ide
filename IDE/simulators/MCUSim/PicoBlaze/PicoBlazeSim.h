@@ -17,15 +17,16 @@
 #define PICOBLAZESIM_H
 
 // Forward declarations
+class PicoBlazeIO;
+class PicoBlazeStack;
 class PicoBlazeConfig;
+class PicoBlazeRegisters;
+class PicoBlazeDataMemory;
+class PicoBlazeStatusFlags;
+class PicoBlazeClockControl;
+class PicoBlazeProgramMemory;
 class PicoBlazeInstructionSet;
 class PicoBlazeInterruptController;
-class PicoBlazeDataMemory;
-class PicoBlazeRegisters;
-class PicoBlazeProgramMemory;
-class PicoBlazeIO;
-class PicoBlazeClockControl;
-class PicoBlazeStack;
 
 #include "../MCUSim.h"
 
@@ -212,6 +213,9 @@ class PicoBlazeSim : public MCUSim
 
             ///
             PicoBlazeInstructionSet * m_instructionSet;
+
+            ///
+            PicoBlazeStatusFlags * m_statusFlags;
         //@}
 
         /**

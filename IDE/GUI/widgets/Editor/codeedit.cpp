@@ -99,7 +99,7 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
     connect(textEdit, SIGNAL(breakpoint(int)), this, SLOT(manageBreakpointEmit(int)));
     connect(textEdit, SIGNAL(bookmark(int)), this, SLOT(manageBookmarkEmit(int)));
     connect(textEdit, SIGNAL(textChangedSignal(const QString&, int)), this, SLOT(updateTextSlotOut(const QString&, int)));
-    this->connectAct();
+    //this->connectAct();
     prevBlockCount = this->textEdit->document()->blockCount();
     qDebug() << "CodeEdit: return CodeEdit()";
 }
@@ -178,7 +178,7 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName
     connect(textEdit, SIGNAL(breakpoint(int)), this, SLOT(manageBreakpointEmit(int)));
     connect(textEdit, SIGNAL(bookmark(int)), this, SLOT(manageBookmarkEmit(int)));
     connect(textEdit, SIGNAL(textChangedSignal(const QString&, int)), this, SLOT(updateTextSlotOut(const QString&, int)));
-    this->connectAct();
+    //this->connectAct();
     prevBlockCount = this->textEdit->document()->blockCount();
     qDebug() << "CodeEdit: return CodeEdit()";
 }
@@ -469,7 +469,10 @@ QWidget* CodeEdit::getParent()
 void CodeEdit::getFocus()
 {
     qDebug() << "CodeEdit: getFocus()";
-    ((BaseEditor*)parentWidget)->focusIn();
+    if (parentWidget != NULL)
+    {
+        ((BaseEditor*)parentWidget)->focusIn();
+    }
     qDebug() << "CodeEdit: return getFocus()";
 }
 

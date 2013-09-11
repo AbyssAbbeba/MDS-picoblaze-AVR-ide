@@ -71,6 +71,7 @@ class MainForm : public QMainWindow
         void simulationRunHandle();
         void simulationFlowHandle();
         void simulationReset();
+        void toolDisassemble();
         void toolConvertor();
         void toolDisplay();
         void exampleOpen();
@@ -91,6 +92,7 @@ class MainForm : public QMainWindow
         void compilationFinished(bool success);
         void startProjectConfig(Project *project);
         void help();
+        void disassembleOutput(std::vector<std::string> text);
 
     //signals:
     //    void dockWidgetsCreated;
@@ -150,6 +152,7 @@ class MainForm : public QMainWindow
         QAction *simulationRunAct;
         QAction *simulationResetAct;
 
+        QAction *toolDisassemblerAct;
         QAction *toolConvertorAct;
         QAction *toolDisplayAct;
 

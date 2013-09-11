@@ -37,8 +37,9 @@ class PicoBlazeStack : public MCUSimMemory
          */
         enum Event
         {
-            EVENT_STACK_OVERFLOW,  ///< Stack capacity was already exhausted by the previous push.
-            EVENT_STACK_UNDERFLOW  ///< A value was been popped from the stack while the stack was already empty.
+            EVENT_STACK_OVERFLOW = EVENT_MEM__MAX__,  ///< Stack capacity was already exhausted by the previous push.
+            EVENT_STACK_UNDERFLOW,                    ///< A value was been popped from the stack while the stack was already empty.
+            EVENT_STACK_SP_CHANGED,                   ///<
         };
 
         /**
@@ -188,17 +189,30 @@ inline void PicoBlazeStack::pushOnStack ( unsigned int value )
         logEvent(EVENT_STACK_OVERFLOW, m_position, value);
         m_position = 0;
     }
+
+    logEvent(EVENT_MEM_INF_WR_VAL_WRITTEN, m_position, value);
+    if ( m_data[m_position] != value )
+    {
+        logEvent(EVENT_MEM_INF_WR_VAL_CHANGED, m_position, value);
+    }
     m_data[m_position++] = value;
+    logEvent(EVENT_STACK_SP_CHANGED, m_position);
 }
 
 inline unsigned int PicoBlazeStack::popFromStack()
 {
+    unsigned int result = ( 0x3ff & m_data[--m_position] );
+
     if ( 0 == m_position )
     {
         logEvent(EVENT_STACK_UNDERFLOW, m_position, -1);
         m_position = m_config.m_size;
     }
-    return ( 0x3ff & m_data[--m_position] );
+
+    logEvent(EVENT_STACK_SP_CHANGED, m_position);
+    logEvent(EVENT_MEM_INF_RD_VAL_READ, m_position, result);
+
+    return result;
 }
 
 #endif // PICOBLAZESTACK_H

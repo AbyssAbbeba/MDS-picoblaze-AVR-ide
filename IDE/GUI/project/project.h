@@ -61,7 +61,7 @@ class ProjectMan : public QObject
     public:
         ProjectMan(QWidget *parent);
         void addFile(QString path, QString name);
-        void addUntrackedFile(QString path, QString name);
+        QString addUntrackedFile(QString path, QString name);
         void addProject(QString name, QString path, QString architecture, LangType langType, QFile *file);
         void addUntrackedProject();
         void openProject(QFile *file);
@@ -139,7 +139,7 @@ class Project : public QObject
     public slots:
         void setMainFile(QString path, QString name);
         void removeFile(QString path, QString name);
-        void addFile(QString path, QString name);
+        QString addFile(QString path, QString name);
         
     private slots:
         void setActive();

@@ -22,6 +22,7 @@ PicoBlazeInstructionSet * PicoBlazeInstructionSet::link ( MCUSimEventLogger     
                                                           PicoBlazeStack               * stack,
                                                           PicoBlazeRegisters           * registers,
                                                           PicoBlazeDataMemory          * dataMemory,
+                                                          PicoBlazeStatusFlags         * statusFlags,
                                                           PicoBlazeProgramMemory       * programMemory,
                                                           PicoBlazeInterruptController * interruptController )
 {
@@ -31,6 +32,7 @@ PicoBlazeInstructionSet * PicoBlazeInstructionSet::link ( MCUSimEventLogger     
     m_stack               = stack;
     m_registers           = registers;
     m_dataMemory          = dataMemory;
+    m_statusFlags         = statusFlags;
     m_programMemory       = programMemory;
     m_interruptController = interruptController;
 
@@ -44,12 +46,12 @@ void PicoBlazeInstructionSet::adapt ( const PicoBlazeInstructionSet * obj )
            obj->m_stack,
            obj->m_registers,
            obj->m_dataMemory,
+           obj->m_statusFlags,
            obj->m_programMemory,
            obj->m_interruptController);
 
     m_pc = obj->m_pc;
     m_config = obj->m_config;
-    m_statusFlags = obj->m_statusFlags;
     m_lastInstruction = obj->m_lastInstruction;
     m_actSubprogCounter = obj->m_actSubprogCounter;
 
@@ -80,7 +82,6 @@ inline void PicoBlazeInstructionSet::mcuReset()
     m_pc = 0;
     m_actSubprogCounter = 0;
     m_lastInstruction = PicoBlazeInsNames::INS_NONE;
-    m_statusFlags.reset();
     logEvent(EVENT_CPU_PC_CHANGED, m_pc);
 }
 
@@ -113,7 +114,7 @@ int PicoBlazeInstructionSet::incrPc ( const int val )
 
 void PicoBlazeInstructionSet::irq()
 {
-    if ( m_statusFlags.m_interrupted > 0 )
+    if ( m_statusFlags->getInterrupted() > 0 )
     {
         logEvent ( EVENT_CPU_WRN_INVALID_IRQ, m_pc );
     }
@@ -121,5 +122,5 @@ void PicoBlazeInstructionSet::irq()
     logEvent ( EVENT_CPU_IRQ, m_pc );
     m_stack -> pushOnStack ( m_pc );
     m_pc = m_config.m_interruptVector;
-    m_statusFlags.interrupt();
+    m_statusFlags->interrupt();
 }
