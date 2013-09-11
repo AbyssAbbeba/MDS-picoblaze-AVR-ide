@@ -60,6 +60,14 @@ void TabBar::tabChanged(int index, bool changed)
     if (tabStats.at(index) != changed)
     {
         tabStats.replace(index, changed);
+        if (changed == true)
+        {
+            this->setTabTextColor(index, Qt::red);
+        }
+        else
+        {
+            this->setTabTextColor(index, Qt::black);
+        }
     }
     qDebug() << "TabBar: return tabChanged()";
 }
