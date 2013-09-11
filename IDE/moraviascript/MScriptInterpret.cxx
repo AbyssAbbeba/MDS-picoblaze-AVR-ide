@@ -25,7 +25,7 @@
 
 MScriptInterpret::MScriptInterpret()
 {
-    m_varTable = new MScriptVarTable(this);
+    m_varTable  = new MScriptVarTable(this);
     m_funcTable = new MScriptFuncTable(this);
 }
 
@@ -401,12 +401,28 @@ inline bool MScriptInterpret::postprocessCode ( MScriptStatement * rootNode )
                 break;
 
             case STMT_FUNCTION:
-                // Add function to the Function Table.
-                m_funcTable->define(node->args()->lVal().m_data.m_symbol, node->args()->next());
+            {
+                /*
+                 * Add function to the Function Table.
+                 */
+
+                const char * funcName = node->args()->lVal().m_data.m_symbol;
+                std::vector<MScriptFuncTable::Parameter> * params = new std::vector<MScriptFuncTable::Parameter>;
+
+                for ( MScriptExpr * expr = node->args()->next();
+                      NULL != expr;
+                      expr = expr->next() )
+                {
+                    
+                }
+
+                m_funcTable->define(funcName, params, node->branch());
+
                 node->args()->next()->m_prev = NULL;
                 node->args()->m_next = NULL;
                 node->m_branch = NULL;
                 break;
+            }
 
             default:
                 // By default, nodes will not be removed from the tree.
