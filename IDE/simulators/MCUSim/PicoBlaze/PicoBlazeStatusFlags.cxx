@@ -17,17 +17,26 @@
 
 PicoBlazeStatusFlags::PicoBlazeStatusFlags()
 {
-    reset();
+    reset(MCUSim::RSTMD_MCU_RESET);
 }
 
-void PicoBlazeStatusFlags::reset()
+void PicoBlazeStatusFlags::reset ( MCUSimBase::ResetMode mode )
 {
-    m_carry       = false;
-    m_zero        = false;
-    m_inte        = false;
-    m_preCarry    = false;
-    m_preZero     = false;
-    m_interrupted = 0;
+    if ( MCUSim::RSTMD_MCU_RESET == mode )
+    {
+        m_carry       = false;
+        m_zero        = false;
+        m_inte        = false;
+        m_preCarry    = false;
+        m_preZero     = false;
+        m_interrupted = 0;
+    }
+}
+
+PicoBlazeStatusFlags * PicoBlazeStatusFlags::link ( MCUSimEventLogger * eventLogger )
+{
+    MCUSimSubsys::link(eventLogger, ID_FLAGS);
+    return this;
 }
 
 void PicoBlazeStatusFlags::interrupt()

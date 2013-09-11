@@ -17,6 +17,7 @@
 //pozdeji zamenit QtGui za mensi celky
 #include "mainform.h"
 #include "../dialogs/projectdlg/projectdlg.h"
+#include "../dialogs/disasmdlg/disasmdlg.h"
 #include "../errordialog/errordlg.h"
 #include "pluginman_gui.h"
 #include "../dialogs/projectcfg/projectcfgdlg_core.h"
@@ -84,6 +85,7 @@ void MainForm::createMenu()
     projectMenu->addAction(projectConfigAct);
 
     toolsMenu = menuBar()->addMenu(tr("&Tools"));
+    toolsMenu->addAction(toolDisassemblerAct);
     toolsMenu->addAction(toolConvertorAct);
     toolsMenu->addAction(toolDisplayAct);
     
@@ -211,10 +213,12 @@ void MainForm::createActions()
     connect(simulationResetAct, SIGNAL(triggered()), this, SLOT(simulationReset()));
     simulationResetAct->setDisabled(true);
 
-
+    QPixmap *pm_toolDis = new QPixmap(":/resources//icons//disassemble.png");
+    QIcon *icon_toolDis = new QIcon(*pm_toolDis);
+    toolDisassemblerAct = new QAction(*icon_toolDis, tr("Disassemble"), this);
+    connect(toolDisassemblerAct, SIGNAL(triggered()), this, SLOT(toolDisassemble()));
     toolConvertorAct = new QAction(tr("Convertor"), this);
     connect(toolConvertorAct, SIGNAL(triggered()), this, SLOT(toolConvertor()));
-
     toolDisplayAct = new QAction(tr("Segment Display"), this);
     connect(toolDisplayAct, SIGNAL(triggered()), this, SLOT(toolDisplay()));
 
@@ -1044,8 +1048,8 @@ void MainForm::addUntrackedFile(QString name, QString path)
 {
     qDebug() << "MainForm: addUntrackedFile";
     getWDockManager()->addUntrackedCentralWidget(name, path);
-    getWDockManager()->getCentralWidget()->setChanged();
-    getWDockManager()->getCentralWidget()->connectAct();
+    //getWDockManager()->getCentralWidget()->setChanged();
+    //getWDockManager()->getCentralWidget()->connectAct();
     qDebug() << "MainForm: return addUntrackedFile";
 }
 
@@ -1061,7 +1065,37 @@ void MainForm::startProjectConfig(Project *project)
 }
 
 
+/**
+ * @brief
+ */
 void MainForm::help()
 {
     HelpWidget *helpWidget = new HelpWidget(0, this->width(), this->height());
+}
+
+
+/**
+ * @brief
+ */
+void MainForm::toolDisassemble()
+{
+    DisAsmDialog *dlg = new DisAsmDialog(this);
+    connect(dlg, SIGNAL(output(std::vector<std::string>)), this, SLOT(disassembleOutput(std::vector<std::string>)));
+}
+
+
+/**
+ * @brief
+ */
+void MainForm::disassembleOutput(std::vector<std::string> text)
+{
+    QStringList qText;
+    for (unsigned int i = 0; i < text.size(); i++)
+    {
+        qText.append(QString::fromStdString(text.at(i)));
+    }
+    //QString name = this->projectMan->addUntrackedFile(NULL, "disasm");
+    this->wDockManager->addUntrackedCentralWidget("disasm","untracked",qText);
+    //getWDockManager()->getCentralWidget()->setChanged();
+    //getWDockManager()->getCentralWidget()->connectAct();
 }

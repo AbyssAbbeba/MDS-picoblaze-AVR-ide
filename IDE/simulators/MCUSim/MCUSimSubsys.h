@@ -62,6 +62,7 @@ class MCUSimSubsys
             ID_ACOMP,        ///<
             ID_ISP,          ///<
             ID_PPROG,        ///<
+            ID_FLAGS,        ///<
 
             ID__MAX__        ///<
         };

@@ -48,7 +48,7 @@ cmake_minimum_required(VERSION 2.8)
   QT4_ADD_RESOURCES( SAMPLE_RC_SRCS ${SAMPLE_RCS} )
   
   # this will run uic on .ui files:
-   QT4_WRAP_UI( SAMPLE_UI_HDRS ${SAMPLE_UIS} )
+  QT4_WRAP_UI( SAMPLE_UI_HDRS ${SAMPLE_UIS} )
   
   # and finally this will run moc:
   QT4_WRAP_CPP( SAMPLE_MOC_SRCS ${SAMPLE_MOC_HDRS} )

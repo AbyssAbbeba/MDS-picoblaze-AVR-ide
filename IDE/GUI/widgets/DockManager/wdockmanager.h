@@ -68,6 +68,7 @@ class WDockManager : public QObject
         void showDockWidgetArea(int area);
         void removeDockWidget(int code);
         void addUntrackedCentralWidget(QString wName, QString wPath);
+        void addUntrackedCentralWidget(QString wName, QString wPath, QStringList text);
         void addCentralWidget(QString wName, QString wPath);
         WTextEdit* getCentralTextEdit();
         WTextEdit* getTabTextEdit(int index);

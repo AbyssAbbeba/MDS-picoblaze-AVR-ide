@@ -88,15 +88,15 @@ void ProjectMan::addFile(QString path, QString name)
  * @param path Path to the file
  * @param name Name of the file
  */
-void ProjectMan::addUntrackedFile(QString path, QString name)
+QString ProjectMan::addUntrackedFile(QString path, QString name)
 {
     qDebug() << "ProjectMan: addUntrackedFile()";
     if (this->untrackedProject == NULL)
     {
         this->addUntrackedProject();
     }
-    this->untrackedProject->addFile(path, name);
-    qDebug() << "ProjectMan: return addUntrackedFile()";
+    qDebug() << "ProjectMan: return addUntrackedFile() before project->addFile()";
+    return this->untrackedProject->addFile(path, name);
 }
 
 
@@ -671,16 +671,17 @@ Project::Project(QString name, QString path, QString arch, LangType lang, QFile 
  * @param path The path to the file
  * @param name The name of the file
  */
-void Project::addFile(QString path, QString name)
+QString Project::addFile(QString path, QString name)
 {
     qDebug() << "Project: addFile()";
+    QString fileName = name;
     if (this->prjName != "untracked" && this->prjPath != "untracked")
     {
         for (int i = 0; i < this->fileCount; i++)
         {
             if (path == prjPath.section('/', 0, -2) + "/" + filePaths.at(i))
             {
-                return;
+                return "";
             }
         }
         QString relativePath;
@@ -689,7 +690,7 @@ void Project::addFile(QString path, QString name)
         if(!file->open(QIODevice::ReadWrite | QIODevice::Text))
         {
             error(ERR_OPENFILE);
-            return;
+            return "";
         }
         if (!domDoc.setContent(file))
         {
@@ -765,7 +766,16 @@ void Project::addFile(QString path, QString name)
         QTreeWidgetItem *treeProjFile = new QTreeWidgetItem(prjTreeWidget->topLevelItem(0));
         if (path == "" || name == "")
         {
-            treeProjFile->setText(0, "untracked"+QString::number(fileCount));
+            if (name == "disasm")
+            {
+                treeProjFile->setText(0, "disasm"+QString::number(fileCount));
+            fileName = "disasm"+QString::number(fileCount);
+            }
+            else
+            {
+                treeProjFile->setText(0, "untracked"+QString::number(fileCount));
+            fileName = "untracked"+QString::number(fileCount);
+            }
             treeProjFile->setData(0, Qt::ToolTipRole, "untracked");
         }
         else
@@ -775,6 +785,7 @@ void Project::addFile(QString path, QString name)
         }
         fileCount++;
     }
+    return fileName;
     qDebug() << "Project: return addFile()";
 }
 
