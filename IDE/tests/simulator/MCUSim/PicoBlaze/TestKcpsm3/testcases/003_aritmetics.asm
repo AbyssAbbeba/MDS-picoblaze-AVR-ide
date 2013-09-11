@@ -2,7 +2,8 @@
 
     ORG         0x00
     JUMP        Start
-
+    ;;STEP
+    ;;PC==1
     
 Start:
 ; Aritmetics

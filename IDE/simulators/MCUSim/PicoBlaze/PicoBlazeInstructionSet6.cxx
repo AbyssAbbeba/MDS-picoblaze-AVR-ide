@@ -274,8 +274,8 @@ void PicoBlazeInstructionSet6::inst_AND_sX_sY ( const unsigned int opCode )
     sXval &= m_registers -> read ( sY );
 
     // Modify status flags.
-    m_statusFlags.m_carry = false;
-    m_statusFlags.m_zero = ( ( 0 == sXval ) ? true : false );
+    m_statusFlags -> setCarry ( false );
+    m_statusFlags -> setZero ( ( 0 == sXval ) ? true : false );
 
     // Save the result.
     m_registers -> write ( sX, sXval );
@@ -296,8 +296,8 @@ void PicoBlazeInstructionSet6::inst_AND_sX_kk ( const unsigned int opCode )
     sXval &= kk;
 
     // Modify status flags.
-    m_statusFlags.m_carry = false;
-    m_statusFlags.m_zero = ( ( 0 == sXval ) ? true : false );
+    m_statusFlags -> setCarry ( false );
+    m_statusFlags -> setZero ( ( 0 == sXval ) ? true : false );
 
     // Save the result.
     m_registers -> write ( sX, sXval );
@@ -318,8 +318,8 @@ void PicoBlazeInstructionSet6::inst_OR_sX_sY ( const unsigned int opCode )
     sXval |= m_registers -> read ( sY );
 
     // Modify status flags.
-    m_statusFlags.m_carry = false;
-    m_statusFlags.m_zero = ( ( 0 == sXval ) ? true : false );
+    m_statusFlags -> setCarry ( false );
+    m_statusFlags -> setZero ( ( 0 == sXval ) ? true : false );
 
     // Save the result.
     m_registers -> write ( sX, sXval );
@@ -340,8 +340,8 @@ void PicoBlazeInstructionSet6::inst_OR_sX_kk ( const unsigned int opCode )
     sXval |= kk;
 
     // Modify status flags.
-    m_statusFlags.m_carry = false;
-    m_statusFlags.m_zero = ( ( 0 == sXval ) ? true : false );
+    m_statusFlags -> setCarry ( false );
+    m_statusFlags -> setZero ( ( 0 == sXval ) ? true : false );
 
     // Save the result.
     m_registers -> write ( sX, sXval );
@@ -362,8 +362,8 @@ void PicoBlazeInstructionSet6::inst_XOR_sX_sY ( const unsigned int opCode )
     sXval ^= m_registers -> read ( sY );
 
     // Modify status flags.
-    m_statusFlags.m_carry = false;
-    m_statusFlags.m_zero = ( ( 0 == sXval ) ? true : false );
+    m_statusFlags -> setCarry ( false );
+    m_statusFlags -> setZero ( ( 0 == sXval ) ? true : false );
 
     // Save the result.
     m_registers -> write ( sX, sXval );
@@ -384,8 +384,8 @@ void PicoBlazeInstructionSet6::inst_XOR_sX_kk ( const unsigned int opCode )
     sXval ^= kk;
 
     // Modify status flags.
-    m_statusFlags.m_carry = false;
-    m_statusFlags.m_zero = ( ( 0 == sXval ) ? true : false );
+    m_statusFlags -> setCarry ( false );
+    m_statusFlags -> setZero ( ( 0 == sXval ) ? true : false );
 
     // Save the result.
     m_registers -> write ( sX, sXval );
@@ -406,8 +406,8 @@ void PicoBlazeInstructionSet6::inst_ADD_sX_sY ( const unsigned int opCode )
     sXval += m_registers -> read ( sY );
 
     // Modify status flags.
-    m_statusFlags.m_carry = ( ( 0x100 &  sXval ) ? true : false );
-    m_statusFlags.m_zero  = ( ( 0     == sXval ) ? true : false );
+    m_statusFlags -> setCarry ( ( 0x100 &  sXval ) ? true : false );
+    m_statusFlags -> setZero ( ( 0     == sXval ) ? true : false );
 
     // Save the result.
     m_registers -> write ( sX, ( sXval & 0xff ) );
@@ -428,8 +428,8 @@ void PicoBlazeInstructionSet6::inst_ADD_sX_kk ( const unsigned int opCode )
     sXval += kk;
 
     // Modify status flags.
-    m_statusFlags.m_carry = ( ( 0x100 &  sXval ) ? true : false );
-    m_statusFlags.m_zero  = ( ( 0     == sXval ) ? true : false );
+    m_statusFlags -> setCarry ( ( 0x100 &  sXval ) ? true : false );
+    m_statusFlags -> setZero ( ( 0     == sXval ) ? true : false );
 
     // Save the result.
     m_registers -> write ( sX, ( sXval & 0xff ) );
@@ -450,14 +450,14 @@ void PicoBlazeInstructionSet6::inst_ADDCY_sX_sY ( const unsigned int opCode )
     sXval += m_registers -> read ( sY );
 
     // Add carry flag to the result.
-    if ( true == m_statusFlags.m_carry )
+    if ( true == m_statusFlags -> getCarry() )
     {
         sXval++;
     }
 
     // Modify status flags.
-    m_statusFlags.m_carry = ( ( 0x100 &  sXval ) ? true : false );
-    m_statusFlags.m_zero  = ( ( 0     == sXval ) ? true : false );
+    m_statusFlags -> setCarry ( ( 0x100 &  sXval ) ? true : false );
+    m_statusFlags -> setZero ( ( 0     == sXval ) ? true : false );
 
     // Save the result.
     m_registers -> write ( sX, ( sXval & 0xff ) );
@@ -478,14 +478,14 @@ void PicoBlazeInstructionSet6::inst_ADDCY_sX_kk ( const unsigned int opCode )
     sXval += kk;
 
     // Add carry flag to the result.
-    if ( true == m_statusFlags.m_carry )
+    if ( true == m_statusFlags -> getCarry() )
     {
         sXval++;
     }
 
     // Modify status flags.
-    m_statusFlags.m_carry = ( ( 0x100 &  sXval ) ? true : false );
-    m_statusFlags.m_zero  = ( ( 0     == sXval ) ? true : false );
+    m_statusFlags -> setCarry ( ( 0x100 &  sXval ) ? true : false );
+    m_statusFlags -> setZero ( ( 0     == sXval ) ? true : false );
 
     // Save the result.
     m_registers -> write ( sX, ( sXval & 0xff ) );
@@ -506,8 +506,8 @@ void PicoBlazeInstructionSet6::inst_SUB_sX_sY ( const unsigned int opCode )
     sXval -= m_registers -> read ( sY );
 
     // Modify status flags.
-    m_statusFlags.m_carry = ( ( 0x100 &  sXval ) ? true : false );
-    m_statusFlags.m_zero  = ( ( 0     == sXval ) ? true : false );
+    m_statusFlags -> setCarry ( ( 0x100 &  sXval ) ? true : false );
+    m_statusFlags -> setZero ( ( 0     == sXval ) ? true : false );
 
     // Save the result.
     m_registers -> write ( sX, ( sXval & 0xff ) );
@@ -528,8 +528,8 @@ void PicoBlazeInstructionSet6::inst_SUB_sX_kk ( const unsigned int opCode )
     sXval -= kk;
 
     // Modify status flags.
-    m_statusFlags.m_carry = ( ( 0x100 &  sXval ) ? true : false );
-    m_statusFlags.m_zero  = ( ( 0     == sXval ) ? true : false );
+    m_statusFlags -> setCarry ( ( 0x100 &  sXval ) ? true : false );
+    m_statusFlags -> setZero ( ( 0     == sXval ) ? true : false );
 
     // Save the result.
     m_registers -> write ( sX, ( sXval & 0xff ) );
@@ -550,14 +550,14 @@ void PicoBlazeInstructionSet6::inst_SUBCY_sX_sY ( const unsigned int opCode )
     sXval -= m_registers -> read ( sY );
 
     // Add carry flag to the result.
-    if ( true == m_statusFlags.m_carry )
+    if ( true == m_statusFlags -> getCarry() )
     {
         sXval--;
     }
 
     // Modify status flags.
-    m_statusFlags.m_carry = ( ( 0x100 &  sXval ) ? true : false );
-    m_statusFlags.m_zero  = ( ( 0     == sXval ) ? true : false );
+    m_statusFlags -> setCarry ( ( 0x100 &  sXval ) ? true : false );
+    m_statusFlags -> setZero ( ( 0     == sXval ) ? true : false );
 
     // Save the result.
     m_registers -> write ( sX, ( sXval & 0xff ) );
@@ -578,14 +578,14 @@ void PicoBlazeInstructionSet6::inst_SUBCY_sX_kk ( const unsigned int opCode )
     sXval -= kk;
 
     // Add carry flag to the result.
-    if ( true == m_statusFlags.m_carry )
+    if ( true == m_statusFlags -> getCarry() )
     {
         sXval--;
     }
 
     // Modify status flags.
-    m_statusFlags.m_carry = ( ( 0x100 &  sXval ) ? true : false );
-    m_statusFlags.m_zero  = ( ( 0     == sXval ) ? true : false );
+    m_statusFlags -> setCarry ( ( 0x100 &  sXval ) ? true : false );
+    m_statusFlags -> setZero ( ( 0     == sXval ) ? true : false );
 
     // Save the result.
     m_registers -> write ( sX, ( sXval & 0xff ) );
@@ -609,14 +609,14 @@ void PicoBlazeInstructionSet6::inst_TEST_sX_sY ( const unsigned int opCode )
      * Modify status flags.
      */
     // Set Z, if the result is zero.
-    m_statusFlags.m_zero = ( ( 0 == sXval ) ? true : false );
+    m_statusFlags -> setZero ( ( 0 == sXval ) ? true : false );
     // Set C, if odd parity has been detected in the result.
-    m_statusFlags.m_carry = false;
+    m_statusFlags -> setCarry ( false );
     for ( int i = 1; i < 0x100; i <<= 1 )
     {
         if ( 0 == ( sXval & i ) )
         {
-            m_statusFlags.m_carry = !m_statusFlags.m_carry;
+            m_statusFlags -> setCarry ( !m_statusFlags -> getCarry() );
         }
     }
 }
@@ -639,14 +639,14 @@ void PicoBlazeInstructionSet6::inst_TEST_sX_kk ( const unsigned int opCode )
      * Modify status flags.
      */
     // Set Z, if the result is zero.
-    m_statusFlags.m_zero = ( ( 0 == sXval ) ? true : false );
+    m_statusFlags -> setZero ( ( 0 == sXval ) ? true : false );
     // Set C, if odd parity has been detected in the result.
-    m_statusFlags.m_carry = false;
+    m_statusFlags -> setCarry ( false );
     for ( int i = 1; i < 0x100; i <<= 1 )
     {
         if ( 0 == ( sXval & i ) )
         {
-            m_statusFlags.m_carry = !m_statusFlags.m_carry;
+            m_statusFlags -> setCarry ( !m_statusFlags -> getCarry() );
         }
     }
 }
@@ -669,13 +669,13 @@ void PicoBlazeInstructionSet6::inst_TESTCY_sX_sY ( const unsigned int opCode )
      * Modify status flags.
      */
     // Set Z, if the result is zero; including previous value of the zero flag.
-    m_statusFlags.m_zero = m_statusFlags.m_zero && ( ( 0 == sXval ) ? true : false );
+    m_statusFlags -> setZero ( m_statusFlags -> getZero() && ( ( 0 == sXval ) ? true : false ) );
     // Set C, if odd parity has been detected in the result; including previous value of the carry flag.
     for ( int i = 1; i < 0x100; i <<= 1 )
     {
         if ( 0 == ( sXval & i ) )
         {
-            m_statusFlags.m_carry = !m_statusFlags.m_carry;
+            m_statusFlags -> setCarry ( !m_statusFlags -> getCarry() );
         }
     }
 }
@@ -698,13 +698,13 @@ void PicoBlazeInstructionSet6::inst_TESTCY_sX_kk ( const unsigned int opCode )
      * Modify status flags.
      */
     // Set Z, if the result is zero; including previous value of the zero flag.
-    m_statusFlags.m_zero = m_statusFlags.m_zero && ( ( 0 == sXval ) ? true : false );
+    m_statusFlags -> setZero ( m_statusFlags -> getZero() && ( ( 0 == sXval ) ? true : false ) );
     // Set C, if odd parity has been detected in the result; including previous value of the carry flag.
     for ( int i = 1; i < 0x100; i <<= 1 )
     {
         if ( 0 == ( sXval & i ) )
         {
-            m_statusFlags.m_carry = !m_statusFlags.m_carry;
+            m_statusFlags -> setCarry ( !m_statusFlags -> getCarry() );
         }
     }
 }
@@ -724,8 +724,8 @@ void PicoBlazeInstructionSet6::inst_COMPARE_sX_sY ( const unsigned int opCode )
     sXval -= m_registers -> read ( sY );
 
     // Modify status flags.
-    m_statusFlags.m_carry = ( ( 0x100 &  sXval ) ? true : false );
-    m_statusFlags.m_zero  = ( ( 0     == sXval ) ? true : false );
+    m_statusFlags -> setCarry ( ( 0x100 &  sXval ) ? true : false );
+    m_statusFlags -> setZero  ( ( 0     == sXval ) ? true : false );
 }
 
 void PicoBlazeInstructionSet6::inst_COMPARE_sX_kk ( const unsigned int opCode )
@@ -743,8 +743,8 @@ void PicoBlazeInstructionSet6::inst_COMPARE_sX_kk ( const unsigned int opCode )
     sXval -= kk;
 
     // Modify status flags.
-    m_statusFlags.m_carry = ( ( 0x100 &  sXval ) ? true : false );
-    m_statusFlags.m_zero  = ( ( 0     == sXval ) ? true : false );
+    m_statusFlags -> setCarry ( ( 0x100 &  sXval ) ? true : false );
+    m_statusFlags -> setZero  ( ( 0     == sXval ) ? true : false );
 }
 
 void PicoBlazeInstructionSet6::inst_COMPARECY_sX_sY ( const unsigned int opCode )
@@ -762,14 +762,14 @@ void PicoBlazeInstructionSet6::inst_COMPARECY_sX_sY ( const unsigned int opCode 
     sXval -= m_registers -> read ( sY );
 
     // Add carry flag to the result.
-    if ( true == m_statusFlags.m_carry )
+    if ( true == m_statusFlags -> getCarry() )
     {
         sXval--;
     }
 
     // Modify status flags.
-    m_statusFlags.m_carry = ( ( 0x100 &  sXval ) ? true : false );
-    m_statusFlags.m_zero  = ( ( 0     == sXval ) ? true : false ) && m_statusFlags.m_zero;
+    m_statusFlags -> setCarry ( ( 0x100 &  sXval ) ? true : false );
+    m_statusFlags -> setZero  ( ( ( 0     == sXval ) ? true : false ) && m_statusFlags -> getZero() );
 }
 
 void PicoBlazeInstructionSet6::inst_COMPARECY_sX_kk ( const unsigned int opCode )
@@ -787,14 +787,14 @@ void PicoBlazeInstructionSet6::inst_COMPARECY_sX_kk ( const unsigned int opCode 
     sXval -= kk;
 
     // Add carry flag to the result.
-    if ( true == m_statusFlags.m_carry )
+    if ( true == m_statusFlags -> getCarry() )
     {
         sXval--;
     }
 
     // Modify status flags.
-    m_statusFlags.m_carry = ( ( 0x100 &  sXval ) ? true : false );
-    m_statusFlags.m_zero  = ( ( 0     == sXval ) ? true : false ) && m_statusFlags.m_zero;
+    m_statusFlags -> setCarry ( ( 0x100 &  sXval ) ? true : false );
+    m_statusFlags -> setZero  ( ( ( 0     == sXval ) ? true : false ) && m_statusFlags -> getZero() );
 }
 
 inline void PicoBlazeInstructionSet6::inst_SR0_sX ( const unsigned int opCode )
@@ -808,9 +808,9 @@ inline void PicoBlazeInstructionSet6::inst_SR0_sX ( const unsigned int opCode )
     unsigned int sXval = m_registers -> read ( sX );
 
     // Perform the operation.
-    m_statusFlags.m_carry = ( ( 0 == ( 0x01 & sXval ) ) ? false : true );
+    m_statusFlags -> setCarry ( ( 0 == ( 0x01 & sXval ) ) ? false : true );
     sXval >>= 1;
-    m_statusFlags.m_zero = ( ( 0 == sXval ) ? true : false );
+    m_statusFlags -> setZero ( ( 0 == sXval ) ? true : false );
 
     // Save the result.
     m_registers -> write ( sX, sXval );
@@ -827,8 +827,8 @@ inline void PicoBlazeInstructionSet6::inst_SR1_sX ( const unsigned int opCode )
     unsigned int sXval = m_registers -> read ( sX );
 
     // Perform the operation.
-    m_statusFlags.m_zero = false;
-    m_statusFlags.m_carry = ( ( 0 == ( 0x01 & sXval ) ) ? false : true );
+    m_statusFlags -> setZero ( false );
+    m_statusFlags -> setCarry ( ( 0 == ( 0x01 & sXval ) ) ? false : true );
     sXval >>= 1;
     sXval |= 0x80;
 
@@ -847,9 +847,9 @@ inline void PicoBlazeInstructionSet6::inst_SRX_sX ( const unsigned int opCode )
     unsigned int sXval = m_registers -> read ( sX );
 
     // Perform the operation.
-    m_statusFlags.m_carry = ( ( 0 == ( 0x01 & sXval ) ) ? false : true );
+    m_statusFlags -> setCarry ( ( 0 == ( 0x01 & sXval ) ) ? false : true );
     sXval = ( 0x80 & sXval ) | ( ( 0x7f & sXval ) >> 1 );
-    m_statusFlags.m_zero = ( ( 0 == sXval ) ? true : false );
+    m_statusFlags -> setZero ( ( 0 == sXval ) ? true : false );
 
     // Save the result.
     m_registers -> write ( sX, sXval );
@@ -866,14 +866,14 @@ inline void PicoBlazeInstructionSet6::inst_SRA_sX ( const unsigned int opCode )
     unsigned int sXval = m_registers -> read ( sX );
 
     // Perform the operation.
-    bool carryOrig = m_statusFlags.m_carry;
-    m_statusFlags.m_carry = ( ( 0 == ( 0x01 & sXval ) ) ? false : true );
+    bool carryOrig = m_statusFlags -> getCarry();
+    m_statusFlags -> setCarry ( ( 0 == ( 0x01 & sXval ) ) ? false : true );
     sXval >>= 1;
     if ( true == carryOrig )
     {
         sXval |= 0x80;
     }
-    m_statusFlags.m_zero = ( ( 0 == sXval ) ? true : false );
+    m_statusFlags -> setZero ( ( 0 == sXval ) ? true : false );
 
     // Save the result.
     m_registers -> write ( sX, sXval );
@@ -890,13 +890,13 @@ inline void PicoBlazeInstructionSet6::inst_RR_sX ( const unsigned int opCode )
     unsigned int sXval = m_registers -> read ( sX );
 
     // Perform the operation.
-    m_statusFlags.m_carry = ( ( 0 == ( 0x01 & sXval ) ) ? false : true );
+    m_statusFlags -> setCarry ( ( 0 == ( 0x01 & sXval ) ) ? false : true );
     sXval >>= 1;
-    if ( true == m_statusFlags.m_carry )
+    if ( true == m_statusFlags -> getCarry() )
     {
         sXval |= 0x80;
     }
-    m_statusFlags.m_zero = ( ( 0 == sXval ) ? true : false );
+    m_statusFlags -> setZero ( ( 0 == sXval ) ? true : false );
 
     // Save the result.
     m_registers -> write ( sX, sXval );
@@ -916,8 +916,8 @@ inline void PicoBlazeInstructionSet6::inst_SL0_sX ( const unsigned int opCode )
     sXval <<= 1;
 
     // Modify status flags.
-    m_statusFlags.m_carry = ( ( 0 == ( 0x100 & sXval ) ) ? false : true );
-    m_statusFlags.m_zero = ( ( 0 == sXval ) ? true : false );
+    m_statusFlags -> setCarry ( ( 0 == ( 0x100 & sXval ) ) ? false : true );
+    m_statusFlags -> setZero ( ( 0 == sXval ) ? true : false );
 
     // Save the result.
     m_registers -> write ( sX, ( 0xff & sXval ) );
@@ -938,8 +938,8 @@ inline void PicoBlazeInstructionSet6::inst_SL1_sX ( const unsigned int opCode )
     sXval  |= 1;
 
     // Modify status flags.
-    m_statusFlags.m_carry = ( ( 0 == ( 0x100 & sXval ) ) ? false : true );
-    m_statusFlags.m_zero = false;
+    m_statusFlags -> setCarry ( ( 0 == ( 0x100 & sXval ) ) ? false : true );
+    m_statusFlags -> setZero  ( false );
 
     // Save the result.
     m_registers -> write ( sX, ( 0xff & sXval ) );
@@ -959,8 +959,8 @@ inline void PicoBlazeInstructionSet6::inst_SLX_sX ( const unsigned int opCode )
     sXval = ( 0x01 & sXval ) | ( ( 0xfe & sXval ) << 1 );
 
     // Modify status flags.
-    m_statusFlags.m_carry = ( ( 0 == ( 0x100 & sXval ) ) ? false : true );
-    m_statusFlags.m_zero = ( ( 0 == sXval ) ? true : false );
+    m_statusFlags -> setCarry ( ( 0 == ( 0x100 & sXval ) ) ? false : true );
+    m_statusFlags -> setZero  ( ( 0 == sXval ) ? true : false );
 
     // Save the result.
     m_registers -> write ( sX, ( 0xff & sXval ) );
@@ -978,14 +978,14 @@ inline void PicoBlazeInstructionSet6::inst_SLA_sX ( const unsigned int opCode )
 
     // Perform the operation.
     sXval <<= 1;
-    if ( true == m_statusFlags.m_carry )
+    if ( true == m_statusFlags -> getCarry() )
     {
         sXval |= 0x01;
     }
 
     // Modify status flags.
-    m_statusFlags.m_carry = ( ( 0 == ( 0x100 & sXval ) ) ? false : true );
-    m_statusFlags.m_zero = ( ( 0 == sXval ) ? true : false );
+    m_statusFlags -> setCarry ( ( 0 == ( 0x100 & sXval ) ) ? false : true );
+    m_statusFlags -> setZero  ( ( 0 == sXval ) ? true : false );
 
     // Save the result.
     m_registers -> write ( sX, ( 0xff & sXval ) );
@@ -1007,13 +1007,13 @@ inline void PicoBlazeInstructionSet6::inst_RL_sX ( const unsigned int opCode )
     {
         sXval &= 0xff;
         sXval |= 0x01;
-        m_statusFlags.m_carry = true;
+        m_statusFlags -> setCarry ( true );
     }
     else
     {
-        m_statusFlags.m_carry = false;
+        m_statusFlags -> setCarry ( false );
     }
-    m_statusFlags.m_zero = ( ( 0 == sXval ) ? true : false );
+    m_statusFlags -> setZero ( ( 0 == sXval ) ? true : false );
 
     // Save the result.
     m_registers -> write ( sX, sXval );
@@ -1148,7 +1148,7 @@ inline void PicoBlazeInstructionSet6::inst_DISABLE_INTERRUPT ( const unsigned in
     instructionEnter ( PicoBlazeInsNames::INS_DISABLE_INT );
 
     // Perform the operation.
-    m_statusFlags.m_inte = false;
+    m_statusFlags -> setInte ( false );
 }
 
 inline void PicoBlazeInstructionSet6::inst_ENABLE_INTERRUPT ( const unsigned int )
@@ -1156,7 +1156,7 @@ inline void PicoBlazeInstructionSet6::inst_ENABLE_INTERRUPT ( const unsigned int
     instructionEnter ( PicoBlazeInsNames::INS_ENABLE_INT );
 
     // Perform the operation.
-    m_statusFlags.m_inte = true;
+    m_statusFlags -> setInte ( true );
 }
 
 inline void PicoBlazeInstructionSet6::inst_RETURNI_DISABLE ( const unsigned int )
@@ -1164,12 +1164,12 @@ inline void PicoBlazeInstructionSet6::inst_RETURNI_DISABLE ( const unsigned int 
     instructionEnter ( PicoBlazeInsNames::INS_RETURNI );
 
     // RETURNI DISABLE
-    m_statusFlags.m_inte = false;
+    m_statusFlags -> setInte ( false );
 
     // Chech whether there is an ISR in progress to return from.
-    if ( m_statusFlags.m_interrupted <= 0 )
+    if ( m_statusFlags->getInterrupted() <= 0 )
     {
-        m_statusFlags.m_interrupted = 1;
+        m_statusFlags -> setInterrupted ( 1 );
         logEvent ( EVENT_CPU_ERR_INVALID_RETI );
     }
     else
@@ -1180,7 +1180,7 @@ inline void PicoBlazeInstructionSet6::inst_RETURNI_DISABLE ( const unsigned int 
 
     // Return from ISR (Interrupt Service Routine).
     setProgramCounter ( m_stack->popFromStack() );
-    m_statusFlags.returni();
+    m_statusFlags -> returni();
 }
 
 inline void PicoBlazeInstructionSet6::inst_RETURNI_ENABLE ( const unsigned int )
@@ -1188,12 +1188,12 @@ inline void PicoBlazeInstructionSet6::inst_RETURNI_ENABLE ( const unsigned int )
     instructionEnter ( PicoBlazeInsNames::INS_RETURNI );
 
     // RETURNI ENABLE
-    m_statusFlags.m_inte = true;
+    m_statusFlags -> setInte ( true );
 
     // Chech whether there is an ISR in progress to return from.
-    if ( m_statusFlags.m_interrupted <= 0 )
+    if ( m_statusFlags->getInterrupted() <= 0 )
     {
-        m_statusFlags.m_interrupted = 1;
+        m_statusFlags -> setInterrupted ( 1 );
         logEvent ( EVENT_CPU_ERR_INVALID_RETI );
     }
     else
@@ -1204,7 +1204,7 @@ inline void PicoBlazeInstructionSet6::inst_RETURNI_ENABLE ( const unsigned int )
 
     // Return from ISR (Interrupt Service Routine).
     setProgramCounter ( m_stack->popFromStack() );
-    m_statusFlags.returni();
+    m_statusFlags -> returni();
 }
 
 void PicoBlazeInstructionSet6::inst_JUMP_aaa ( const unsigned int opCode )
@@ -1226,7 +1226,7 @@ void PicoBlazeInstructionSet6::inst_JUMP_Z_aaa ( const unsigned int opCode )
     const unsigned int addr = ( opCode & 0xfff );
 
     // Jump, if ZERO.
-    if ( true == m_statusFlags.m_zero )
+    if ( true == m_statusFlags -> getZero() )
     {
         setProgramCounter ( addr );
     }
@@ -1240,7 +1240,7 @@ void PicoBlazeInstructionSet6::inst_JUMP_NZ_aaa ( const unsigned int opCode )
     const unsigned int addr = ( opCode & 0xfff );
 
     // Jump, if NOT ZERO.
-    if ( false == m_statusFlags.m_zero )
+    if ( false == m_statusFlags -> getZero() )
     {
         setProgramCounter ( addr );
     }
@@ -1254,7 +1254,7 @@ void PicoBlazeInstructionSet6::inst_JUMP_C_aaa ( const unsigned int opCode )
     const unsigned int addr = ( opCode & 0xfff );
 
     // Jump, if CARRY.
-    if ( false == m_statusFlags.m_carry )
+    if ( false == m_statusFlags -> getCarry() )
     {
         setProgramCounter ( addr );
     }
@@ -1268,7 +1268,7 @@ void PicoBlazeInstructionSet6::inst_JUMP_NC_aaa ( const unsigned int opCode )
     const unsigned int addr = ( opCode & 0xfff );
 
     // Jump, if NOT CARRY.
-    if ( false == m_statusFlags.m_carry )
+    if ( false == m_statusFlags -> getCarry() )
     {
         setProgramCounter ( addr );
     }
@@ -1310,7 +1310,7 @@ void PicoBlazeInstructionSet6::inst_CALL_Z_aaa ( const unsigned int opCode )
     const unsigned int addr = ( opCode & 0xfff );
 
     // Call, if ZERO.
-    if ( false == m_statusFlags.m_zero )
+    if ( false == m_statusFlags -> getZero() )
     {
         logEvent ( EVENT_CPU_CALL, m_pc, PicoBlazeInsNames::INS_CALL );
         m_stack->pushOnStack ( m_pc );
@@ -1327,7 +1327,7 @@ void PicoBlazeInstructionSet6::inst_CALL_NZ_aaa ( const unsigned int opCode )
     const unsigned int addr = ( opCode & 0xfff );
 
     // Call, if NOT ZERO.
-    if ( true == m_statusFlags.m_zero )
+    if ( true == m_statusFlags -> getZero() )
     {
         logEvent ( EVENT_CPU_CALL, m_pc, PicoBlazeInsNames::INS_CALL );
         m_stack->pushOnStack ( m_pc );
@@ -1344,7 +1344,7 @@ void PicoBlazeInstructionSet6::inst_CALL_C_aaa ( const unsigned int opCode )
     const unsigned int addr = ( opCode & 0xfff );
 
     // Call, if CARRY.
-    if ( false == m_statusFlags.m_carry )
+    if ( false == m_statusFlags -> getCarry() )
     {
         logEvent ( EVENT_CPU_CALL, m_pc, PicoBlazeInsNames::INS_CALL );
         m_stack->pushOnStack ( m_pc );
@@ -1361,7 +1361,7 @@ void PicoBlazeInstructionSet6::inst_CALL_NC_aaa ( const unsigned int opCode )
     const unsigned int addr = ( opCode & 0xfff );
 
     // Call, if NOT CARRY.
-    if ( true == m_statusFlags.m_carry )
+    if ( true == m_statusFlags -> getCarry() )
     {
         logEvent ( EVENT_CPU_CALL, m_pc, PicoBlazeInsNames::INS_CALL );
         m_stack->pushOnStack ( m_pc );
@@ -1423,7 +1423,7 @@ void PicoBlazeInstructionSet6::inst_RETURN_Z ( const unsigned int opCode )
     }
 
     // Return, if ZERO.
-    if ( false == m_statusFlags.m_zero )
+    if ( false == m_statusFlags -> getZero() )
     {
         return;
     }
@@ -1453,7 +1453,7 @@ void PicoBlazeInstructionSet6::inst_RETURN_NZ ( const unsigned int opCode )
     }
 
     // Return, if NOT ZERO.
-    if ( true == m_statusFlags.m_zero )
+    if ( true == m_statusFlags -> getZero() )
     {
         return;
     }
@@ -1483,7 +1483,7 @@ void PicoBlazeInstructionSet6::inst_RETURN_C ( const unsigned int opCode )
     }
 
     // Return, if CARRY.
-    if ( false == m_statusFlags.m_carry )
+    if ( false == m_statusFlags -> getCarry() )
     {
         return;
     }
@@ -1513,7 +1513,7 @@ void PicoBlazeInstructionSet6::inst_RETURN_NC ( const unsigned int opCode )
     }
 
     // Return, if NOT CARRY.
-    if ( true == m_statusFlags.m_carry )
+    if ( true == m_statusFlags -> getCarry() )
     {
         return;
     }
@@ -1566,6 +1566,6 @@ inline void PicoBlazeInstructionSet6::inst_HWBUILD_sX ( const unsigned int opCod
     m_registers -> write ( sX, (unsigned int) m_config.m_hwbuild );
 
     // Modify status flags.
-    m_statusFlags.m_carry = true;
-    m_statusFlags.m_zero = ( ( 0 == m_config.m_hwbuild ) ? true : false );
+    m_statusFlags -> setCarry ( true );
+    m_statusFlags -> setZero ( ( 0 == m_config.m_hwbuild ) ? true : false );
 }

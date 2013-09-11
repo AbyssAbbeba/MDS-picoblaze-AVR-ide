@@ -15,57 +15,65 @@
 
 #include "PicoBlazeSim.h"
 
+#include "PicoBlazeIO.h"
+#include "PicoBlazeStack.h"
 #include "PicoBlazeConfig.h"
+#include "PicoBlazeRegisters.h"
+#include "PicoBlazeDataMemory.h"
+#include "PicoBlazeProgramMemory.h"
 #include "PicoBlazeInstructionSet.h"
+#include "PicoBlazeInstructionSet1.h"
 #include "PicoBlazeInstructionSet2.h"
 #include "PicoBlazeInstructionSet3.h"
 #include "PicoBlazeInstructionSet6.h"
-#include "PicoBlazeProgramMemory.h"
-#include "PicoBlazeDataMemory.h"
-#include "PicoBlazeRegisters.h"
+#include "PicoBlazeInstructionSet1CPLD.h"
 #include "PicoBlazeInterruptController.h"
-#include "PicoBlazeIO.h"
-#include "PicoBlazeStack.h"
 
 #include <cassert>
 
 PicoBlazeSim::PicoBlazeSim()
 {
-    m_eventLogger           = new MCUSimEventLogger();
     m_config                = new PicoBlazeConfig();
+    m_eventLogger           = new MCUSimEventLogger();
 
-    m_programMemory         = new PicoBlazeProgramMemory();
-    m_dataMemory            = new PicoBlazeDataMemory();
-    m_registers             = new PicoBlazeRegisters();
-    m_instructionSet        = new PicoBlazeInstructionSet3();
     m_io                    = new PicoBlazeIO();
-    m_clockControl          = new PicoBlazeClockControl();
     m_stack                 = new PicoBlazeStack();
+    m_registers             = new PicoBlazeRegisters();
+    m_dataMemory            = new PicoBlazeDataMemory();
+    m_statusFlags           = new PicoBlazeStatusFlags();
+    m_clockControl          = new PicoBlazeClockControl();
+    m_programMemory         = new PicoBlazeProgramMemory();
+    m_instructionSet        = new PicoBlazeInstructionSet3();
     m_interruptController   = new PicoBlazeInterruptController();
 
-    regSubSys ( m_programMemory -> link ( m_eventLogger ) );
-    regSubSys ( m_dataMemory -> link ( m_eventLogger ) );
-    regSubSys ( m_registers -> link ( m_eventLogger ) );
-    regSubSys ( m_io -> link ( m_eventLogger ) );
+    regSubSys ( m_io             -> link ( m_eventLogger ) );
+    regSubSys ( m_stack          -> link ( m_eventLogger ) );
+    regSubSys ( m_registers      -> link ( m_eventLogger ) );
+    regSubSys ( m_dataMemory     -> link ( m_eventLogger ) );
+    regSubSys ( m_statusFlags    -> link ( m_eventLogger ) );
+    regSubSys ( m_clockControl   -> link ( m_eventLogger ) );
+    regSubSys ( m_programMemory  -> link ( m_eventLogger ) );
+
     regSubSys ( m_instructionSet -> link ( m_eventLogger,
                                            m_io,
                                            m_stack,
                                            m_registers,
                                            m_dataMemory,
+                                           m_statusFlags,
                                            m_programMemory,
                                            m_interruptController ) );
-    regSubSys ( m_clockControl -> link ( m_eventLogger ) );
-    regSubSys ( m_stack -> link ( m_eventLogger ) );
-    regSubSys ( m_interruptController -> link ( m_eventLogger,
-                                                m_instructionSet ) );
+
+    regSubSys ( m_interruptController -> link ( m_eventLogger, m_instructionSet ) );
 
     checkSubSystems();
+
     m_config->link(this);
 }
 
 PicoBlazeSim::~PicoBlazeSim()
 {
     deleteSubSystems();
+
     delete m_config;
     delete m_eventLogger;
 }
@@ -121,6 +129,7 @@ MCUSimSubsys * PicoBlazeSim::getSubsys ( MCUSimSubsys::SubsysId id )
         case MCUSimSubsys::ID_STACK:          return m_stack;
         case MCUSimSubsys::ID_CLK_CONTROL:    return m_clockControl;
         case MCUSimSubsys::ID_INTERRUPTS:     return m_interruptController;
+        case MCUSimSubsys::ID_FLAGS:          return m_statusFlags;
 
         default:                              return NULL;
     }
@@ -190,6 +199,12 @@ inline void PicoBlazeSim::loadConfig()
         PicoBlazeInstructionSet * origInstructionSet = m_instructionSet;
         switch ( m_instructionSet->m_config.m_dev )
         {
+            case MCUSim::FAMILY_KCPSM1CPLD:
+                m_instructionSet = new PicoBlazeInstructionSet1CPLD();
+                break;
+            case MCUSim::FAMILY_KCPSM1:
+                m_instructionSet = new PicoBlazeInstructionSet1();
+                break;
             case MCUSim::FAMILY_KCPSM2:
                 m_instructionSet = new PicoBlazeInstructionSet2();
                 break;
