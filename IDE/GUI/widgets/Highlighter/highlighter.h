@@ -3,10 +3,9 @@
 
 #include <QTextDocument>
 #include <QSyntaxHighlighter>
+#include "../../enums/enums.h"
 
 
-typedef enum SourceType
-{PLAIN = 0, C, CPP, AVRASM, PICASM, PICOBLAZEASM} SourceType;
 
 
 class Highlighter : public QSyntaxHighlighter

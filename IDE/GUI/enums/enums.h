@@ -17,4 +17,13 @@ typedef enum ErrorCode {
 } ErrorCode;
 
 
+typedef enum SourceType {
+    PLAIN = 0,
+    C, CPP,
+    AVRASM,
+    PICASM,
+    PICOBLAZEASM
+} SourceType;
+
+
 #endif
