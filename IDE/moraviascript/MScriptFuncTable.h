@@ -54,6 +54,16 @@ class MScriptFuncTable
          */
         struct Function
         {
+            /**
+             * @brief
+             */
+            Function();
+
+            /**
+             * @brief
+             */
+            ~Function();
+
             /// @brief
             const MScriptStatement * m_code;
 
