@@ -9,18 +9,21 @@ RegistersWidget::RegistersWidget(QWidget *parent, MCUSimControl * controlUnit, M
         qDebug() << "RegistersWidget: controlUnit is NULL, this should never happen";
     }
     
-    this->setMaximumWidth(200);
-    this->setColumnCount(6);
+    this->setMaximumWidth(300);
+    this->setMinimumWidth(300);
+    this->setColumnCount(8);
     this->setSelectionMode(QAbstractItemView::SingleSelection);
     this->verticalHeader()->hide();
     this->horizontalHeader()->hide();
     this->setShowGrid(false);
     this->setColumnWidth(0, 30);
     this->setColumnWidth(1, 30);
-    this->setColumnWidth(2, 40);
-    this->setColumnWidth(3, 30);
+    this->setColumnWidth(2, 20);
+    this->setColumnWidth(3, 65);
     this->setColumnWidth(4, 30);
-    this->setColumnWidth(5, 40);
+    this->setColumnWidth(5, 30);
+    this->setColumnWidth(6, 20);
+    this->setColumnWidth(7, 65);
     
     QFont font = this->font();
     font.setPointSize(9);
@@ -72,27 +75,36 @@ void RegistersWidget::handleEvent(int subsysId, int eventId, int locationOrReaso
             {
                 if (value > 99)
                 {
-                    this->item(idx-6, 4)->setText(QString::number(value, 10));
+                    this->item(idx-6, 5)->setText(QString::number(value, 10));
                 }
                 else if (value > 9)
                 {
-                    this->item(idx-6, 4)->setText("0" + QString::number(value, 10));
+                    this->item(idx-6, 5)->setText("0" + QString::number(value, 10));
                 }
                 else
                 {
-                    this->item(idx-6, 4)->setText("00" + QString::number(value, 10));
+                    this->item(idx-6, 5)->setText("00" + QString::number(value, 10));
                 }
                 
                 if (value > 15)
                 {
-                    this->item(idx-6, 5)->setText(QString::number(value, 16).toUpper());
+                    this->item(idx-6, 6)->setText(QString::number(value, 16).toUpper());
                 }
                 else
                 {
-                    this->item(idx-6, 5)->setText("0" + QString::number(value, 16).toUpper());
+                    this->item(idx-6, 6)->setText("0" + QString::number(value, 16).toUpper());
                 }
-                this->item(idx-6, 4)->setBackground(Qt::yellow);
+                QString bin = QString::number(value, 2);
+                for (int i = bin.size(); i < 8 ; i++)
+                {
+                    bin.prepend("0");
+                }
+                this->item(idx, 7)->setText(bin);
+
+                
                 this->item(idx-6, 5)->setBackground(Qt::yellow);
+                this->item(idx-6, 6)->setBackground(Qt::yellow);
+                this->item(idx-6, 7)->setBackground(Qt::yellow);
             }
             else
             {
@@ -117,8 +129,16 @@ void RegistersWidget::handleEvent(int subsysId, int eventId, int locationOrReaso
                 {
                     this->item(idx, 2)->setText("0" + QString::number(value, 16).toUpper());
                 }
+                QString bin = QString::number(value, 2);
+                for (int i = bin.size(); i < 8 ; i++)
+                {
+                    bin.prepend("0");
+                }
+                this->item(idx, 3)->setText(bin);
+                
                 this->item(idx, 1)->setBackground(Qt::yellow);
                 this->item(idx, 2)->setBackground(Qt::yellow);
+                this->item(idx, 3)->setBackground(Qt::yellow);
             }
             qDebug() << "RegistersWidget: event: mem cell changed to" << value;
             this->update = false;
@@ -187,20 +207,30 @@ void RegistersWidget::deviceReset()
         hex1->setFlags(Qt::ItemIsEditable|Qt::ItemIsEnabled);
         hex1->setBackground(this->palette().base().color());
         this->setItem(i, 2, hex1);
+
+        QTableWidgetItem *bin1 = new QTableWidgetItem("0000000" + QString::number(0, 2));
+        bin1->setFlags(Qt::ItemIsEditable|Qt::ItemIsEnabled);
+        bin1->setBackground(this->palette().base().color());
+        this->setItem(i, 3, bin1);
         
         QTableWidgetItem *reg2 = new QTableWidgetItem("S" + QString::number(i + m_size/2, 16).toUpper());
         reg2->setFlags(Qt::NoItemFlags);
-        this->setItem(i, 3, reg2);
+        this->setItem(i, 4, reg2);
 
         QTableWidgetItem *dec2 = new QTableWidgetItem("00" + QString::number(0, 10));
         dec2->setFlags(Qt::ItemIsEditable|Qt::ItemIsEnabled);
         dec2->setBackground(this->palette().base().color());
-        this->setItem(i, 4, dec2);
+        this->setItem(i, 5, dec2);
 
         QTableWidgetItem *hex2 = new QTableWidgetItem("0" + QString::number(0, 16));
         hex2->setFlags(Qt::ItemIsEditable|Qt::ItemIsEnabled);
         hex2->setBackground(this->palette().base().color());
-        this->setItem(i, 5, hex2);
+        this->setItem(i, 6, hex2);
+        
+        QTableWidgetItem *bin2 = new QTableWidgetItem("0000000" + QString::number(0, 2));
+        bin2->setFlags(Qt::ItemIsEditable|Qt::ItemIsEnabled);
+        bin2->setBackground(this->palette().base().color());
+        this->setItem(i, 7, bin2);
 
         this->setRowHeight(i, 17);
     }
@@ -219,7 +249,7 @@ void RegistersWidget::updateValue(int row, int column)
     if ( false == this->update )
     {
         this->update = true;
-        if ( 0 == (column+1)%3 )
+        if ( column == 2 || column == 6 )
         {
             //qDebug() << "update 1" << column + 1;
             int value = this->item(row, column)->text().toInt(0, 16);
@@ -227,11 +257,13 @@ void RegistersWidget::updateValue(int row, int column)
             {
                 this->item(row, column-1)->setText(QString::number(255, 10));
                 this->item(row, column)->setText(QString::number(255, 16).toUpper());
+                this->item(row, column+1)->setText(QString::number(255, 2));
             }
             else if ( 0 > value )
             {
                 this->item(row, column-1)->setText("00" + QString::number(0, 10));
                 this->item(row, column)->setText("0" + QString::number(0, 16).toUpper());
+                this->item(row, column+1)->setText("0000000" + QString::number(0, 2));
             }
             else
             {
@@ -256,9 +288,15 @@ void RegistersWidget::updateValue(int row, int column)
                 {
                     this->item(row, column)->setText("0" + QString::number(value, 16).toUpper());
                 }
+                QString bin = QString::number(value, 2);
+                for (int i = bin.size(); i < 8 ; i++)
+                {
+                    bin.prepend("0");
+                }
+                this->item(row, column+1)->setText(bin);
             }
         }
-        else
+        else if (column == 1 || column == 5)
         {
             //qDebug() << "update 2" << column + 1;
             int value = this->item(row, column)->text().toInt(0, 10);
@@ -266,11 +304,13 @@ void RegistersWidget::updateValue(int row, int column)
             {
                 this->item(row, column)->setText(QString::number(255, 10));
                 this->item(row, column+1)->setText(QString::number(255, 16).toUpper());
+                this->item(row, column+2)->setText(QString::number(255, 2));
             }
             else if ( 0 > value )
             {
                 this->item(row, column)->setText("00" + QString::number(0, 10));
                 this->item(row, column+1)->setText("0" + QString::number(0, 16).toUpper());
+                this->item(row, column+2)->setText(QString::number(0, 2));
             }
             else
             {
@@ -295,6 +335,59 @@ void RegistersWidget::updateValue(int row, int column)
                 {
                     this->item(row, column+1)->setText("0" + QString::number(value, 16).toUpper());
                 }
+                QString bin = QString::number(value, 2);
+                for (int i = bin.size(); i < 8 ; i++)
+                {
+                    bin.prepend("0");
+                }
+                this->item(row, column+2)->setText(bin);
+            }
+        }
+        else
+        {
+            //qDebug() << "update 3" << column + 1;
+            int value = this->item(row, column)->text().toInt(0, 10);
+            if ( 255 < value )
+            {
+                this->item(row, column-2)->setText(QString::number(255, 10));
+                this->item(row, column-1)->setText(QString::number(255, 16).toUpper());
+                this->item(row, column)->setText(QString::number(255, 2));
+            }
+            else if ( 0 > value )
+            {
+                this->item(row, column-2)->setText("00" + QString::number(0, 10));
+                this->item(row, column-1)->setText("0" + QString::number(0, 16).toUpper());
+                this->item(row, column)->setText(QString::number(0, 2));
+            }
+            else
+            {
+                if (value > 100)
+                {
+                    this->item(row, column-2)->setText(QString::number(value, 10));
+                }
+                else if (value > 10)
+                {
+                    this->item(row, column-2)->setText("0" + QString::number(value, 10));
+                }
+                else
+                {
+                    this->item(row, column-2)->setText("00" + QString::number(value, 10));
+                }
+
+                if (value > 0xF)
+                {
+                    this->item(row, column-1)->setText(QString::number(value, 16).toUpper());
+                }
+                else
+                {
+                    this->item(row, column-1)->setText("0" + QString::number(value, 16).toUpper());
+                }
+                QString bin = QString::number(value, 2);
+                for (int i = bin.size(); i < 8 ; i++)
+                {
+                    bin.prepend("0");
+                }
+                this->item(row, column)->setText(bin);
             }
         }
         this->update = false;

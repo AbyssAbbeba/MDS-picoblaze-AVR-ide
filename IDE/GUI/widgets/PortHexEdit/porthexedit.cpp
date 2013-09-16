@@ -89,7 +89,7 @@ void PortHexEdit::handleEvent(int subsysId, int eventId, int locationOrReason, i
             qDebug() << "PortHexEdit: event: mem cell changed to" << (unsigned char)value;
 
  			m_hexEditOut->setVal(idx, (unsigned char)value);
- 			m_hexEdit->setHighlighted(idx, true);
+ 			m_hexEditOut->setHighlighted(idx, true);
 
 			break;
 		}
@@ -99,7 +99,7 @@ void PortHexEdit::handleEvent(int subsysId, int eventId, int locationOrReason, i
             qDebug() << "PortHexEdit: event: mem cell changed to" << (unsigned char)value;
 
             m_hexEditIn->setVal(idx, (unsigned char)value);
-            m_hexEdit->setHighlighted(idx, true);
+            m_hexEditIn->setHighlighted(idx, true);
 
             break;
         }
