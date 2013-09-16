@@ -164,7 +164,7 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
     this->lblRW = new QLabel("RW", this);
     this->lblRW->move(705, 0);
     this->lblStack = new QLabel("Stack", this);
-    this->lblStack->move(800,0);
+    this->lblStack->move(760,0);
     this->lblPC = new QLabel("PC", this);
     this->lblPC->move(880,0);
     this->lblTime = new QLabel("Time", this);
@@ -243,12 +243,12 @@ void PicoBlazeGrid::switchPorts()
     if ( true == this->memPorts->visibleIn )
     {
         this->memPorts->switchPorts();
-        this->btnPorts->setText("Input");
+        this->btnPorts->setText("Output");
     }
     else
     {
         this->memPorts->switchPorts();
-        this->btnPorts->setText("Output");
+        this->btnPorts->setText("Input");
     }
 }
 
@@ -286,14 +286,14 @@ void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason,
         case MCUSimPureLogicIO::EVENT_PLIO_WRITE:
         {
             QPalette palette = this->lblRW->palette();
-            palette.setColor(this->lblRW->foregroundRole(), Qt::yellow);
+            palette.setColor(this->lblRW->foregroundRole(), Qt::green);
             this->lblRW->setPalette(palette);
             break;
         }
         case MCUSimPureLogicIO::EVENT_PLIO_READ:
         {
             QPalette palette = this->lblRD->palette();
-            palette.setColor(this->lblRD->foregroundRole(), Qt::yellow);
+            palette.setColor(this->lblRD->foregroundRole(), Qt::green);
             this->lblRD->setPalette(palette);
             break;
         }
