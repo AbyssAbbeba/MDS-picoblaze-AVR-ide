@@ -928,10 +928,11 @@ void MainForm::exampleOpen()
 {
     this->openProject("./demoprojekt/Example/Example.mmp");
     int count = this->projectMan->getActive()->filePaths.count();
+    QDir projectDir = QFileInfo(this->projectMan->getActive()->prjPath).dir();
+    QString absolutePath = projectDir.path();
     for (int i = 0; i < count; i++)
     {
-        this->openFilePath(this->projectMan->getActive()->prjPath.section('/',0, -2) + "/"
-            + this->projectMan->getActive()->filePaths.at(i));
+        this->openFilePath(QDir(absolutePath + "/" + this->projectMan->getActive()->filePaths.at(i)).canonicalPath());
     }
 }
 
