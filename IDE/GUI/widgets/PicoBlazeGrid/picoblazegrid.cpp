@@ -200,7 +200,7 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
     this->leClock->setReadOnly(true);
     this->leClock->move(920, 40);
 
-    this->btnIntr = new QPushButton("Interrupts", this);
+    this->btnIntr = new QPushButton("Interrupt", this);
     this->btnIntr->setMaximumHeight(17);
     this->btnIntr->setMaximumWidth(80);
     this->btnIntr->move(880, 80);

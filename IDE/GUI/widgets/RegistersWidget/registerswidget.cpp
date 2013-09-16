@@ -33,7 +33,7 @@ RegistersWidget::RegistersWidget(QWidget *parent, MCUSimControl * controlUnit, M
     this->update = false;
     this->subsys = subsys;
     std::vector<int> mask;
-    mask.push_back(MCUSimMemory::EVENT_MEM_INF_WR_VAL_CHANGED);
+    mask.push_back(MCUSimMemory::EVENT_MEM_INF_WR_VAL_WRITTEN);
     controlUnit->registerObserver(this, subsys, mask);
 
 
@@ -66,7 +66,7 @@ void RegistersWidget::handleEvent(int subsysId, int eventId, int locationOrReaso
 
     switch ( eventId )
     {
-        case MCUSimMemory::EVENT_MEM_INF_WR_VAL_CHANGED:
+        case MCUSimMemory::EVENT_MEM_INF_WR_VAL_WRITTEN:
         {
             this->update = true;
             uint value;
