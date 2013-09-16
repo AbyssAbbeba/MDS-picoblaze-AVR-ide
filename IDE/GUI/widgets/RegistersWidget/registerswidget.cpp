@@ -9,8 +9,8 @@ RegistersWidget::RegistersWidget(QWidget *parent, MCUSimControl * controlUnit, M
         qDebug() << "RegistersWidget: controlUnit is NULL, this should never happen";
     }
     
-    this->setMaximumWidth(300);
-    this->setMinimumWidth(300);
+    this->setMaximumWidth(305);
+    this->setMinimumWidth(305);
     this->setColumnCount(8);
     this->setSelectionMode(QAbstractItemView::SingleSelection);
     this->verticalHeader()->hide();
@@ -18,16 +18,17 @@ RegistersWidget::RegistersWidget(QWidget *parent, MCUSimControl * controlUnit, M
     this->setShowGrid(false);
     this->setColumnWidth(0, 30);
     this->setColumnWidth(1, 30);
-    this->setColumnWidth(2, 20);
+    this->setColumnWidth(2, 25);
     this->setColumnWidth(3, 65);
     this->setColumnWidth(4, 30);
     this->setColumnWidth(5, 30);
-    this->setColumnWidth(6, 20);
+    this->setColumnWidth(6, 25);
     this->setColumnWidth(7, 65);
     
-    QFont font = this->font();
-    font.setPointSize(9);
-    this->setFont(font);
+    //QFont font = this->font();
+    this->setFont(QFont("Andale Mono", 9));
+    //font.setPointSize(9);
+    //this->setFont(font);
 
     this->update = false;
     this->subsys = subsys;
