@@ -161,8 +161,14 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
     this->lblPorts->move(560,0);
     this->lblRD = new QLabel("RD", this);
     this->lblRD->move(680, 0);
-    this->lblRW = new QLabel("RW", this);
+    //this->lblRD->setMaximumWidth(25);
+    //this->lblRD->setFrameRect(QRect(0,0,0,0));
+    //this->lblRD->setFrameShape(QFrame::Box);
+    this->lblRW = new QLabel("WR", this);
     this->lblRW->move(705, 0);
+    //this->lblRW->setMaximumWidth(25);
+    //this->lblRW->setFrameRect(QRect(0,0,0,0));
+    //this->lblRW->setFrameShape(QFrame::NoFrame);
     this->lblStack = new QLabel("Stack", this);
     this->lblStack->move(760,0);
     this->lblPC = new QLabel("PC", this);
@@ -244,11 +250,15 @@ void PicoBlazeGrid::switchPorts()
     {
         this->memPorts->switchPorts();
         this->btnPorts->setText("Output");
+        //this->lblRD->setFrameShape(QFrame::NoFrame);
+        //this->lblRW->setFrameShape(QFrame::Box);
     }
     else
     {
         this->memPorts->switchPorts();
         this->btnPorts->setText("Input");
+        //this->lblRD->setFrameShape(QFrame::Box);
+        //this->lblRW->setFrameShape(QFrame::NoFrame);
     }
 }
 
