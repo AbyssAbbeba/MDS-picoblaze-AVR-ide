@@ -72,35 +72,35 @@ void RegistersWidget::handleEvent(int subsysId, int eventId, int locationOrReaso
             uint value;
             m_memory->directRead(locationOrReason, value);
             qDebug() << "RegistersWidget: location" << locationOrReason << idx;
-            if ( 5 < idx )
+            if ( 7 < idx )
             {
                 if (value > 99)
                 {
-                    this->item(idx-6, 5)->setText(QString::number(value, 10));
+                    this->item(idx-8, 5)->setText(QString::number(value, 10));
                 }
                 else if (value > 9)
                 {
-                    this->item(idx-6, 5)->setText("0" + QString::number(value, 10));
+                    this->item(idx-8, 5)->setText("0" + QString::number(value, 10));
                 }
                 else
                 {
-                    this->item(idx-6, 5)->setText("00" + QString::number(value, 10));
+                    this->item(idx-8, 5)->setText("00" + QString::number(value, 10));
                 }
                 
                 if (value > 15)
                 {
-                    this->item(idx-6, 6)->setText(QString::number(value, 16).toUpper());
+                    this->item(idx-8, 6)->setText(QString::number(value, 16).toUpper());
                 }
                 else
                 {
-                    this->item(idx-6, 6)->setText("0" + QString::number(value, 16).toUpper());
+                    this->item(idx-8, 6)->setText("0" + QString::number(value, 16).toUpper());
                 }
                 QString bin = QString::number(value, 2);
                 for (int i = bin.size(); i < 8 ; i++)
                 {
                     bin.prepend("0");
                 }
-                this->item(idx, 7)->setText(bin);
+                this->item(idx-8, 7)->setText(bin);
 
                 
                 this->item(idx-6, 5)->setBackground(Qt::yellow);
