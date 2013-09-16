@@ -49,7 +49,7 @@ StackWidget::StackWidget(QWidget *parent, MCUSimControl * controlUnit, MCUSimSub
     connect(btnPop, SIGNAL(clicked()), this, SLOT(pop()));
 
     std::vector<int> mask;
-    mask.push_back(MCUSimMemory::EVENT_MEM_INF_WR_VAL_CHANGED);
+    mask.push_back(MCUSimMemory::EVENT_MEM_INF_WR_VAL_WRITTEN);
     controlUnit->registerObserver(this, subsys, mask);
 
     deviceChanged();
@@ -108,7 +108,7 @@ void StackWidget::handleEvent(int subsysId, int eventId, int locationOrReason, i
 
     switch ( eventId )
     {
-        case MCUSimMemory::EVENT_MEM_INF_WR_VAL_CHANGED:
+        case MCUSimMemory::EVENT_MEM_INF_WR_VAL_WRITTEN:
         {
             uint value;
             m_memory->directRead(locationOrReason, value);
