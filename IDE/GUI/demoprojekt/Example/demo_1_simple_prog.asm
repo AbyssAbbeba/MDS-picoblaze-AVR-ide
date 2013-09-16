@@ -16,38 +16,4 @@
 ; Program start
 ; --------------------
 start:  
-        LOAD    s0, #00Fh              ; Load content to shifted registers
-        LOAD    s1, #01Eh              ;
-        LOAD    s3,#01h
-        JUMP    main                    ; Execute main program loop
-
-; Main loop
-; --------------------
-main:
-
-
-; Begining of main loop
-        CALL      pod2
-                            ; End of program
-
-pod2:           CALL    POD3
-                RET
-
-pod3:           CALL    POD4
-                RET
-
-pod4:           CALL    POD5
-                RET
-
-pod5:           CALL    POD6
-                RET
-
-pod6:           RET
-
-; Program end
-; --------------------
-        END
-
-; Compiler is case insensitive
-; <-- Bookmark   (ctrl + shift + M)
-; <-- Breakpoint (ctrl + shift + B)
+        store	s0,ffh
