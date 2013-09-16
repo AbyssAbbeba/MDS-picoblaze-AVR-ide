@@ -124,6 +124,14 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
     mask.push_back(MCUSimCPU::EVENT_CPU_PC_CHANGED);
     controlUnit->registerObserver(this, MCUSimSubsys::ID_CPU, mask);
 
+    /*mask.clear();
+    mask.push_back();
+    controlUnit->registerObserver(this, MCUSimSubsys::, mask);
+
+    mask.clear();
+    mask.push_back();
+    controlUnit->registerObserver(this, MCUSimSubsys::, mask);*/
+    
     if ( NULL == controlUnit )
     {
         qDebug() << "PicoBlazeGrid: controlUnit is NULL";
@@ -133,9 +141,8 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
     this->memRegs->move(10, 25);
     this->memScratch = new McuMemoryView(this, controlUnit, MCUSimSubsys::SubsysId::ID_MEM_DATA);
     this->memScratch->move(220,5);
-    this->memScratch->fixHeight();
     this->memPorts = new PortHexEdit(this, controlUnit, MCUSimSubsys::SubsysId::ID_PLIO);
-    this->memPorts->move(440,10);
+    this->memPorts->move(440,15);
     this->memStack = new StackWidget(this, controlUnit, MCUSimSubsys::SubsysId::ID_STACK);
     this->memStack->move(680, 25);
     this->memStack->setMaximumWidth(100);
@@ -189,17 +196,17 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
     this->btnIntr = new QPushButton("Interrupts", this);
     this->btnIntr->setMaximumHeight(17);
     this->btnIntr->setMaximumWidth(80);
-    this->btnIntr->move(840, 80);
+    this->btnIntr->move(800, 80);
     this->btnPorts = new QPushButton("Output", this);
     this->btnPorts->setMaximumHeight(17);
     this->btnPorts->setMaximumWidth(50);
     this->btnPorts->move(535, 0);
     this->btnCarry = new QPushButton("Carry", this);
-    this->btnCarry->move(840,60);
+    this->btnCarry->move(800,60);
     this->btnCarry->setMaximumHeight(17);
     this->btnCarry->setMaximumWidth(40);
     this->btnZero = new QPushButton("Zero", this);
-    this->btnZero->move(880,60);
+    this->btnZero->move(840,60);
     this->btnZero->setMaximumHeight(17);
     this->btnZero->setMaximumWidth(40);
 
