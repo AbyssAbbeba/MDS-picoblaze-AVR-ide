@@ -125,12 +125,13 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
     controlUnit->registerObserver(this, MCUSimSubsys::ID_CPU, mask);
 
     /*mask.clear();
-    mask.push_back();
-    controlUnit->registerObserver(this, MCUSimSubsys::, mask);
+    mask.push_back(PicoBlazeStatusFlags::);
+    controlUnit->registerObserver(this, MCUSimSubsys::ID_FLAGS, mask);*/
 
     mask.clear();
-    mask.push_back();
-    controlUnit->registerObserver(this, MCUSimSubsys::, mask);*/
+    mask.push_back(MCUSimPureLogicIO::EVENT_PLIO_WRITE);
+    mask.push_back(MCUSimPureLogicIO::EVENT_PLIO_READ);
+    controlUnit->registerObserver(this, MCUSimSubsys::ID_PLIO, mask);
     
     if ( NULL == controlUnit )
     {
@@ -254,7 +255,7 @@ void PicoBlazeGrid::switchPorts()
 
 void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason, int detail)
 {
-    if ( MCUSimSubsys::ID_CPU != subsysId )
+    if ( MCUSimSubsys::ID_CPU != subsysId && MCUSimSubsys::ID_PLIO != subsysId)
     {
         qDebug("Invalid event received, event ignored.");
         return;
@@ -280,6 +281,20 @@ void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason,
             QPalette lePalette = this->lePC->palette();
             lePalette.setColor(lePC->backgroundRole(), QColor(Qt::yellow));
             lePC->setPalette(lePalette);
+            break;
+        }
+        case MCUSimPureLogicIO::EVENT_PLIO_WRITE:
+        {
+            QPalette palette = this->lblRW->palette();
+            palette.setColor(this->lblRW->foregroundRole(), Qt::yellow);
+            this->lblRW->setPalette(palette);
+            break;
+        }
+        case MCUSimPureLogicIO::EVENT_PLIO_READ:
+        {
+            QPalette palette = this->lblRD->palette();
+            palette.setColor(this->lblRD->foregroundRole(), Qt::yellow);
+            this->lblRD->setPalette(palette);
             break;
         }
         default:
