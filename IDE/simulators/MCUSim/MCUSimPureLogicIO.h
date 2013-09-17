@@ -32,10 +32,13 @@ class MCUSimPureLogicIO : public MCUSimSubsys
          */
         enum Event
         {
-            EVENT_PLIO_READ,   ///<
-            EVENT_PLIO_WRITE,  ///<
+            EVENT_PLIO_READ,      ///<
+            EVENT_PLIO_READ_END,  ///<
 
-            EVENT_PLIO__MAX__  ///<
+            EVENT_PLIO_WRITE,     ///<
+            EVENT_PLIO_WRITE_END, ///<
+
+            EVENT_PLIO__MAX__     ///<
         };
 
     ////    Constructors and Destructors    ////

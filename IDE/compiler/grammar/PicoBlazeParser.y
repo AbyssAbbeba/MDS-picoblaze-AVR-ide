@@ -154,7 +154,7 @@
 %token D_ENDM           D_EXITM         D_REPT          D_MACRO         D_EQU
 %token D_END            D_REG           D_CODE          D_ENDW          D_WARNING
 %token D_VARIABLE       D_SET           D_DEFINE        D_UNDEFINE      D_ENDR
-%token D_AUTOREG        D_AUTOSPR       D_DATA          D_DEVICE
+%token D_AUTOREG        D_AUTOSPR       D_DATA          D_DEVICE        D_ADDRESS
 
 /* Instructions */
 %token I_JUMP           I_CALL          I_RETURN        I_JUMP_Z        I_CALL_Z
@@ -886,6 +886,23 @@ dir_org:
                                         /* Syntax error */
                                         $$ = NULL;
                                         ARG_REQUIRED_D(@D_ORG, "ORG");
+                                        $label->completeDelete();
+                                    }
+    | D_ADDRESS expr                { $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_DIR_ORG, $expr); }
+    | label D_ADDRESS expr          {
+                                        $$ = $label->appendLink ( new CompilerStatement ( LOC(@$),
+                                                                                          ASMPICOBLAZE_DIR_ORG,
+                                                                                          $expr ) );
+                                    }
+    | D_ADDRESS                     {
+                                        /* Syntax error */
+                                        $$ = NULL;
+                                        ARG_REQUIRED_D(@D_ADDRESS, "ADDRESS");
+                                    }
+    | label D_ADDRESS               {
+                                        /* Syntax error */
+                                        $$ = NULL;
+                                        ARG_REQUIRED_D(@D_ADDRESS, "ADDRESS");
                                         $label->completeDelete();
                                     }
 ;

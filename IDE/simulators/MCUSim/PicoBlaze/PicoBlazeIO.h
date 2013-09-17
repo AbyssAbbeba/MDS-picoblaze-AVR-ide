@@ -88,6 +88,11 @@ class PicoBlazeIO : public MCUSimPureLogicIO
 
         /**
          * @brief
+         */
+        void clockCycle();
+
+        /**
+         * @brief
          * @return
          */
         virtual unsigned int getNumberOfPorts();
@@ -144,6 +149,14 @@ class PicoBlazeIO : public MCUSimPureLogicIO
          * @brief
          */
         Config m_config;
+
+    ////    Private Attributes    ////
+    private:
+        /// @brief
+        bool m_readStrobe;
+
+        /// @brief
+        bool m_writeStrobe;
 };
 
 // -----------------------------------------------------------------------------
@@ -153,6 +166,7 @@ class PicoBlazeIO : public MCUSimPureLogicIO
 inline unsigned int PicoBlazeIO::input ( unsigned int portID )
 {
     logEvent ( EVENT_PLIO_READ, portID );
+    m_readStrobe = true;
     return ( unsigned int ) m_inputBitArray [ portID ];
 }
 
@@ -160,6 +174,7 @@ inline void PicoBlazeIO::output ( unsigned int portID,
                                   unsigned int value )
 {
     logEvent ( EVENT_PLIO_WRITE, portID, value );
+    m_writeStrobe = true;
     m_outputBitArray [ portID ] = ( char ) value;
 }
 

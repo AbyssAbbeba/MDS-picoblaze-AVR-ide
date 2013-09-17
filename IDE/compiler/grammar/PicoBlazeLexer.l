@@ -164,7 +164,7 @@ DIS_INT_INST            "disable"{WSPACE}"interrupt"
 \.?"limit"              { return D_LIMIT;      }
 \.?"reg"                { return D_REG;        }
 \.?"namereg"            { return D_NAMEREG;    }
-\.?"address"            { return D_ORG;        }
+\.?"address"            { return D_ADDRESS;    }
 \.?"org"                { return D_ORG;        }
 \.?"define"             { return D_DEFINE;     }
 \.?"undefine"           { return D_UNDEFINE;   }

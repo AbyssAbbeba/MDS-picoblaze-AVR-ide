@@ -424,7 +424,7 @@ inline bool MScriptInterpret::postprocessCode ( MScriptStatement * rootNode )
                     }
                 }
 
-                m_funcTable->define(funcName, params, node->branch());
+                m_funcTable->define(funcName, node->location(), params, node->branch());
                 node->m_branch = NULL;
 
                 break;

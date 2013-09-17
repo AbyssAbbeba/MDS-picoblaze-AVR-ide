@@ -233,6 +233,8 @@ inline void PicoBlazeSim::mcuReset()
 
 int PicoBlazeSim::executeInstruction()
 {
+    m_io->clockCycle();
+
     int intCode = m_interruptController->autoInterrupt();
     switch ( intCode )
     {
