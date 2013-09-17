@@ -16,100 +16,6 @@
 #include "picoblazegrid.h"
 
 
-/*PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
-    : QWidget(parent)
-{
-    this->layout = new QHBoxLayout(this);
-    this->layout->setSpacing(0);
-    //this->layout->setHorizontalSpacing(0);
-    //this->layout->setVerticalSpacing(0);
-
-    QWidget *wRegs = new QWidget(this);
-    //wRegs->setMaximumHeight(200);
-    QVBoxLayout *vRegs = new QVBoxLayout(wRegs);
-    vRegs->setSpacing(0);
-
-    QWidget *wScratch = new QWidget(this);
-    //wRegs->setMaximumHeight(200);
-    QVBoxLayout *vScratch = new QVBoxLayout(wScratch);
-    vScratch->setSpacing(0);
-
-    QWidget *wPorts = new QWidget(this);
-    //wRegs->setMaximumHeight(200);
-    QVBoxLayout *vPorts = new QVBoxLayout(wPorts);
-
-    QWidget *wStack = new QWidget(this);
-    //wRegs->setMaximumHeight(200);
-    QVBoxLayout *vStack = new QVBoxLayout(wStack);
-    
-    this->memRegs = new McuMemoryView(wRegs, controlUnit, MCUSim::Subsys::SubsysId::ID_MEM_REGISTERS);
-    //this->memRegs->fixHeight();
-    this->memScratch = new McuMemoryView(wScratch, controlUnit, MCUSim::Subsys::SubsysId::ID_MEM_DATA);
-    this->memPorts = new McuMemoryView(wPorts, controlUnit, MCUSim::Subsys::SubsysId::ID_MEM_DATA);
-    this->memStack = new McuMemoryView(wStack, controlUnit, MCUSim::Subsys::SubsysId::ID_MEM_DATA);
-    this->memRegs->show();
-    this->memScratch->show();
-    this->memPorts->show();
-    this->memStack->show();
-    
-    this->lblRegs = new QLabel("Registers", this);
-    this->lblScratch = new QLabel("Scratch", this);
-    this->lblPorts = new QLabel("Ports", this);
-    this->lblStack = new QLabel("Stack", this);
-    this->lblORD = new QLabel("ORD", this);
-    this->lblORW = new QLabel("ORW", this);
-    this->lblPC = new QLabel("PC", this);
-    this->lblTime = new QLabel("Time", this);
-    this->lblClock = new QLabel("Clock", this);
-
-
-    vRegs->addWidget(this->lblRegs);
-    vRegs->addWidget(this->memRegs);
-    wRegs->setLayout(vRegs);
-
-    vScratch->addWidget(this->lblScratch);
-    vScratch->addWidget(this->memScratch);
-    wScratch->setLayout(vScratch);
-
-    vPorts->addWidget(this->lblPorts);
-    vPorts->addWidget(this->memPorts);
-    wPorts->setLayout(vPorts);
-
-    vStack->addWidget(this->lblStack);
-    vStack->addWidget(this->memStack);
-    wStack->setLayout(vStack);
-
-    this->layout->addWidget(wRegs);
-    this->layout->addWidget(wScratch);
-    this->layout->addWidget(wPorts);
-    this->layout->addWidget(wStack);
-    
-    //this->layout->addWidget(this->lblRegs);//, 0,0, Qt::AlignHCenter);
-    //this->layout->addWidget(this->lblScratch);
-    //this->layout->addWidget(this->lblPorts);
-    //this->layout->addWidget(this->lblStack);
-
-    //this->layout->addWidget(this->memRegs);//, 1,0);
-    //this->layout->addWidget(this->memScratch);
-    //this->layout->addWidget(this->memPorts);
-    //this->layout->addWidget(this->memStack);
-
-    QWidget *wOR = new QWidget(this);
-    QVBoxLayout *vOR = new QVBoxLayout(wOR);
-    vOR->addWidget(this->lblORD);
-    vOR->addWidget(this->lblORW);
-    wOR->setLayout(vOR);
-    this->layout->addWidget()
-
-    QWidget *wInfo = new QWidget(this);
-    QGridLayout *gInfo = new QGridLayout(wInfo);
-    wInfo->setLayout(gInfo);
-    this->layout->addWidget(wInfo);
-    
-    this->setLayout(this->layout);
-}*/
-
-
 /**
  * @brief
  * @param
@@ -124,9 +30,12 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
     mask.push_back(MCUSimCPU::EVENT_CPU_PC_CHANGED);
     controlUnit->registerObserver(this, MCUSimSubsys::ID_CPU, mask);
 
-    /*mask.clear();
-    mask.push_back(PicoBlazeStatusFlags::);
-    controlUnit->registerObserver(this, MCUSimSubsys::ID_FLAGS, mask);*/
+    mask.clear();
+    mask.push_back(PicoBlazeStatusFlags::EVENT_FLAGS_Z_CHANGED);
+    mask.push_back(PicoBlazeStatusFlags::EVENT_FLAGS_C_CHANGED);
+    mask.push_back(PicoBlazeStatusFlags::EVENT_FLAGS_IE_CHANGED);
+    mask.push_back(PicoBlazeStatusFlags::EVENT_FLAGS_INT_CHANGED);
+    controlUnit->registerObserver(this, MCUSimSubsys::ID_FLAGS, mask);
 
     mask.clear();
     mask.push_back(MCUSimPureLogicIO::EVENT_PLIO_WRITE);
@@ -265,52 +174,123 @@ void PicoBlazeGrid::switchPorts()
 
 void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason, int detail)
 {
-    if ( MCUSimSubsys::ID_CPU != subsysId && MCUSimSubsys::ID_PLIO != subsysId)
+    if ( MCUSimSubsys::ID_CPU != subsysId && MCUSimSubsys::ID_PLIO != subsysId && MCUSimSubsys::ID_FLAGS != subsysId )
     {
         qDebug("Invalid event received, event ignored.");
         return;
     }
 
-    switch ( eventId )
+    if (MCUSimSubsys::ID_CPU == subsysId)
+    { 
+        switch ( eventId )
+        {
+            case MCUSimCPU::EVENT_CPU_PC_CHANGED:
+            {
+                int value = m_cpu->getProgramCounter();
+                if (value > 0xFF)
+                {
+                    this->lePC->setText(QString::number(value, 16).toUpper() + "h");
+                }
+                else if (value > 0xF)
+                {
+                    this->lePC->setText("0" + QString::number(value, 16).toUpper() + "h");
+                }
+                else
+                {
+                    this->lePC->setText("00" + QString::number(value, 16).toUpper() + "h");
+                }
+                QPalette lePalette = this->lePC->palette();
+                lePalette.setColor(this->lePC->backgroundRole(), QColor(Qt::yellow));
+                lePC->setPalette(lePalette);
+                break;
+            }
+            default:
+            {
+                qDebug("Invalid event received, event ignored.");
+                break;
+            }
+        }
+    }
+    else if (MCUSimSubsys::ID_PLIO == subsysId)
     {
-        case MCUSimCPU::EVENT_CPU_PC_CHANGED:
+        switch ( eventId )
         {
-            int value = m_cpu->getProgramCounter();
-            if (value > 0xFF)
+            case MCUSimPureLogicIO::EVENT_PLIO_WRITE:
             {
-                this->lePC->setText(QString::number(value, 16).toUpper() + "h");
+                QPalette palette = this->lblRW->palette();
+                palette.setColor(this->lblRW->foregroundRole(), Qt::green);
+                this->lblRW->setPalette(palette);
+                break;
             }
-            else if (value > 0xF)
+            case MCUSimPureLogicIO::EVENT_PLIO_READ:
             {
-                this->lePC->setText("0" + QString::number(value, 16).toUpper() + "h");
+                QPalette palette = this->lblRD->palette();
+                palette.setColor(this->lblRD->foregroundRole(), Qt::green);
+                this->lblRD->setPalette(palette);
+                break;
             }
-            else
+            default:
             {
-                this->lePC->setText("00" + QString::number(value, 16).toUpper() + "h");
+                qDebug("Invalid event received, event ignored.");
+                break;
             }
-            QPalette lePalette = this->lePC->palette();
-            lePalette.setColor(lePC->backgroundRole(), QColor(Qt::yellow));
-            lePC->setPalette(lePalette);
-            break;
         }
-        case MCUSimPureLogicIO::EVENT_PLIO_WRITE:
+    }
+    else if (MCUSimSubsys::ID_FLAGS == subsysId)
+    {
+        switch ( eventId )
         {
-            QPalette palette = this->lblRW->palette();
-            palette.setColor(this->lblRW->foregroundRole(), Qt::green);
-            this->lblRW->setPalette(palette);
-            break;
-        }
-        case MCUSimPureLogicIO::EVENT_PLIO_READ:
-        {
-            QPalette palette = this->lblRD->palette();
-            palette.setColor(this->lblRD->foregroundRole(), Qt::green);
-            this->lblRD->setPalette(palette);
-            break;
-        }
-        default:
-        {
-            qDebug("Invalid event received, event ignored.");
-            break;
+            case PicoBlazeStatusFlags::EVENT_FLAGS_Z_CHANGED:
+            {
+                QPalette palette = this->btnZero->palette();
+                if (palette.color(this->btnZero->foregroundRole()) ==  Qt::green)
+                {
+                    palette.setColor(this->btnZero->foregroundRole(), Qt::gray);
+                }
+                else
+                {
+                    palette.setColor(this->btnZero->foregroundRole(), Qt::green);
+                }
+                this->btnZero->setPalette(palette);
+                break;
+            }
+            case PicoBlazeStatusFlags::EVENT_FLAGS_C_CHANGED:
+            {
+                QPalette palette = this->btnCarry->palette();
+                if (palette.color(this->btnCarry->foregroundRole()) ==  Qt::green)
+                {
+                    palette.setColor(this->btnCarry->foregroundRole(), Qt::gray);
+                }
+                else
+                {
+                    palette.setColor(this->btnCarry->foregroundRole(), Qt::green);
+                }
+                this->btnCarry->setPalette(palette);
+                break;
+            }
+            case PicoBlazeStatusFlags::EVENT_FLAGS_IE_CHANGED:
+            {
+                break;
+            }
+            case PicoBlazeStatusFlags::EVENT_FLAGS_INT_CHANGED:
+            {
+                QPalette palette = this->btnIntr->palette();
+                if (palette.color(this->btnIntr->foregroundRole()) ==  Qt::green)
+                {
+                    palette.setColor(this->btnIntr->foregroundRole(), Qt::gray);
+                }
+                else
+                {
+                    palette.setColor(this->btnIntr->foregroundRole(), Qt::green);
+                }
+                this->btnIntr->setPalette(palette);
+                break;
+            }
+            default:
+            {
+                qDebug("Invalid event received, event ignored.");
+                break;
+            }
         }
     }
 }

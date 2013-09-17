@@ -27,6 +27,7 @@
 #include <QLineEdit>
 #include <QPushButton>
 #include "../../../simulators/MCUSim/MCUSim.h"
+#include "../../../simulators/MCUSim/PicoBlaze/PicoBlazeStatusFlags.h"
 #include "../../../simulators/SimControl/MCUSimControl.h"
 #include "../../../simulators/SimControl/MCUSimObserver.h"
 #include "../StackWidget/stackwidget.h"
