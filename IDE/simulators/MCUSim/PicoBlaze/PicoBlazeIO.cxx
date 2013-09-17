@@ -20,6 +20,9 @@ PicoBlazeIO::PicoBlazeIO()
     m_numberOfBits   = ( NUMBER_OF_PORTS * NUMBER_OF_BITS_PER_PORT );
     m_inputBitArray  = new char [ NUMBER_OF_PORTS ];
     m_outputBitArray = new char [ NUMBER_OF_PORTS ];
+
+    m_readStrobe = false;
+    m_writeStrobe = false;
 }
 
 PicoBlazeIO::~PicoBlazeIO()
@@ -34,8 +37,28 @@ PicoBlazeIO * PicoBlazeIO::link ( MCUSimEventLogger * eventLogger )
     return this;
 }
 
-void PicoBlazeIO::reset ( MCUSimBase::ResetMode )
+void PicoBlazeIO::reset ( MCUSimBase::ResetMode mode )
 {
+    if ( MCUSim::RSTMD_MCU_RESET == mode )
+    {
+        m_readStrobe = false;
+        m_writeStrobe = false;
+    }
+}
+
+void PicoBlazeIO::clockCycle()
+{
+    if ( true == m_readStrobe )
+    {
+        m_readStrobe = false;
+        logEvent ( EVENT_PLIO_READ_END );
+    }
+
+    if ( true == m_writeStrobe )
+    {
+        m_writeStrobe = false;
+        logEvent ( EVENT_PLIO_WRITE_END );
+    }
 }
 
 unsigned int PicoBlazeIO::getNumberOfPorts()

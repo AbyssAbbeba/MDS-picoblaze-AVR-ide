@@ -24,6 +24,9 @@ std::string MScriptBase::msgTypeToStr ( MessageType type ) const
     {
         case MT_ERROR:   return QObject::tr("error").toStdString();
         case MT_WARNING: return QObject::tr("warning").toStdString();
+        case MT_REMARK:  return QObject::tr("remark").toStdString();
         case MT_GENERAL: return "";
     }
+
+    return "";
 }

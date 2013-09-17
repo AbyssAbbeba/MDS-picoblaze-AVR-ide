@@ -40,7 +40,8 @@ add_definitions ( -pipe -std=c++0x -O1 )
 ## Add a library to the project using the specified source files,
  # in this case it will procude dynamic C++ library.
 add_library ( MCUSimTestScript SHARED
-              MCUSimTestScript.cxx )
+              MCUSimTestScript.cxx
+              MCUSimTestScriptStrategy.cxx )
 
 
 # ------------------------------------------------------------------------------

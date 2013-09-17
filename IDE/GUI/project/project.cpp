@@ -262,11 +262,11 @@ void ProjectMan::createActiveMakefile()
 /**
  * @brief Project destructor. Deletes project's tree widget
  */
-Project::~Project()
+/*Project::~Project()
 {
     delete this->prjDockWidget;
     
-}
+}*/
 
 //otevreni projektu
 /**
