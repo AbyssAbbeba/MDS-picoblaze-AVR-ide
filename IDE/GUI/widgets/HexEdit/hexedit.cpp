@@ -581,3 +581,30 @@ QScrollBar* HexEdit::horizontalScrollBar()
 {
     return this->hexTextEdit->horizontalScrollBar();
 }
+
+
+void HexEdit::setHighlighted(int pos, bool highlight)
+{
+
+    if (changable == true)
+    {
+        changable = false;
+        int position = pos * 3;
+        QTextCursor txtCursor = hexTextEdit->textCursor();
+        int prevPosition = txtCursor.position();
+        txtCursor.setPosition(position);
+        txtCursor.select(QTextCursor::WordUnderCursor);
+        QTextCharFormat format = txtCursor.charFormat();
+        if (highlight == true)
+        {
+            format.setBackground(Qt::yellow);
+        }
+        else
+        {
+            format.setBackground(Qt::white);
+        }
+        txtCursor.setCharFormat(format);
+        txtCursor.setPosition(prevPosition);
+        changable = true;
+    }
+}

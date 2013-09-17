@@ -94,9 +94,9 @@ void WDockManager::changeCodeEditor(int index)
         //qDebug() << "index: " << index;
         //qDebug() << "size: " << openCentralWidgets.count();
         CodeEdit *editor = openCentralWidgets.at(index)->getCodeEdit();
+        activeCodeEdit->loadCodeEdit(editor);
         if (breakpointList != NULL && bookmarkList != NULL)
         {
-            activeCodeEdit->loadCodeEdit(editor);
             breakpointList->disconnect();
             bookmarkList->disconnect();
             breakpointList->reload(editor->getBreakpointList());
@@ -286,7 +286,6 @@ void WDockManager::addUntrackedCentralWidget(QString wName, QString wPath)
             newBaseEditor = new BaseEditor(NULL, this, newEditor, false);
             activeCodeEdit->loadCodeEdit(newBaseEditor->getCodeEdit());
         }
-        activeCodeEdit->changeHeight();
         openCentralWidgets.append(newBaseEditor);
         wTab->addTab(wName);
         wTab->tabAdded();
@@ -296,7 +295,9 @@ void WDockManager::addUntrackedCentralWidget(QString wName, QString wPath)
         //wTab->setTabText(wTab->currentIndex(), "aa.asm");
         //add tab tooltip with path
         newEditor->connectAct();
+        activeCodeEdit->connectAct();
         connect(newEditor, SIGNAL(changedTabStatus(QString, QString, bool)), this, SLOT(changeTabStatusSlot(QString, QString, bool)));
+        connect(activeCodeEdit, SIGNAL(changedTabStatus(QString, QString, bool)), this, SLOT(changeTabStatusSlot(QString, QString, bool)));
     }
     qDebug() << "WDockManager: return addUntrackedCentralWidget()";
 }
@@ -304,7 +305,7 @@ void WDockManager::addUntrackedCentralWidget(QString wName, QString wPath)
 
 void WDockManager::addUntrackedCentralWidget(QString wName, QString wPath, QStringList text)
 {
-    qDebug() << "WDockManager: addUntrackedCentralWidget()";
+    qDebug() << "WDockManager: addUntrackedCentralWidget(text)";
     bool found = false;
     for (int i = 0; i < wTab->count(); i++)
     {
@@ -317,11 +318,15 @@ void WDockManager::addUntrackedCentralWidget(QString wName, QString wPath, QStri
     if (found != true)
     {
         CodeEdit *newEditor = new CodeEdit((QWidget *)(this->parent()), true, wName, wPath, NULL);
+        for (int i = 0; i < text.size(); i++)
+        {
+            newEditor->getTextEdit()->append(text.at(i));
+        }
         this->codeEditList.append(newEditor);
         BaseEditor *newBaseEditor;
         if (centralBase == NULL)
         {
-            //qDebug() << "WDockManager: Create centralBase";
+            qDebug() << "WDockManager: Create centralBase";
             newBaseEditor = new BaseEditor(NULL, this, newEditor, false);
             //qDebug() << "WDockManager: Created BaseEditor1";
             centralBase = new BaseEditor(splitter, this, newEditor, false);
@@ -336,24 +341,21 @@ void WDockManager::addUntrackedCentralWidget(QString wName, QString wPath, QStri
             newBaseEditor = new BaseEditor(NULL, this, newEditor, false);
             activeCodeEdit->loadCodeEdit(newBaseEditor->getCodeEdit());
         }
-        activeCodeEdit->changeHeight();
         openCentralWidgets.append(newBaseEditor);
         wTab->addTab(wName);
         wTab->tabAdded();
         wTab->setCurrentIndex(wTab->count()-1);
         wTab->setTabToolTip(wTab->currentIndex(), wPath);
-        for (int i = 0; i < text.size(); i++)
-        {
-            activeCodeEdit->getTextEdit()->append(text.at(i));
-        }
         newEditor->connectAct();
+        activeCodeEdit->connectAct();
         //testovaci nazev
         //wTab->setTabText(wTab->currentIndex(), "aa.asm");
         //add tab tooltip with path
         connect(newEditor, SIGNAL(changedTabStatus(QString, QString, bool)), this, SLOT(changeTabStatusSlot(QString, QString, bool)));
+        connect(activeCodeEdit, SIGNAL(changedTabStatus(QString, QString, bool)), this, SLOT(changeTabStatusSlot(QString, QString, bool)));
         newEditor->setChanged();
     }
-    qDebug() << "WDockManager: return addUntrackedCentralWidget()";
+    qDebug() << "WDockManager: return addUntrackedCentralWidget(text)";
 }
 
 
@@ -379,7 +381,7 @@ void WDockManager::addCentralWidget(QString wName, QString wPath)
         BaseEditor *newBaseEditor;
         if (centralBase == NULL)
         {
-            //qDebug() << "WDockManager: Create centralBase";
+            qDebug() << "WDockManager: Create centralBase";
             newBaseEditor = new BaseEditor(NULL, this, newEditor, false);
             //qDebug() << "WDockManager: Created BaseEditor1";
             centralBase = new BaseEditor(splitter, this, newEditor, false);
@@ -410,17 +412,19 @@ void WDockManager::addCentralWidget(QString wName, QString wPath)
             newBaseEditor = new BaseEditor(NULL, this, newEditor, false);
             activeCodeEdit->loadCodeEdit(newBaseEditor->getCodeEdit());
         }
-        activeCodeEdit->changeHeight();
+        newEditor->changeHeight();
         openCentralWidgets.append(newBaseEditor);
         wTab->addTab(wName);
         wTab->tabAdded();
         wTab->setCurrentIndex(wTab->count()-1);
         wTab->setTabToolTip(wTab->currentIndex(), wPath);
         newEditor->connectAct();
+        activeCodeEdit->connectAct();
         //testovaci nazev
         //wTab->setTabText(wTab->currentIndex(), "aa.asm");
         //add tab tooltip with path
         connect(newEditor, SIGNAL(changedTabStatus(QString, QString, bool)), this, SLOT(changeTabStatusSlot(QString, QString, bool)));
+        connect(activeCodeEdit, SIGNAL(changedTabStatus(QString, QString, bool)), this, SLOT(changeTabStatusSlot(QString, QString, bool)));
         //connect(newEditor, SIGNAL(updateAnalysers(CodeEdit*)), this, SLOT(updateAnalysersSlot(CodeEdit*)));
     }
     qDebug() << "WDockManager: return addCentralWidget()";
@@ -752,7 +756,8 @@ WDock::WDock(WDockManager *parent, int code, QWidget *parentWindow, QString path
             newWidget->setProjectPath(path);
             area = 2;
             wDockWidget->setWidget(newWidget);
-            //newWidget->fixHeight();
+            wDockWidget->show();
+            newWidget->fixHeight();
             //qDebug() << "WSimulationInfo: height fixed";
             break;
         }

@@ -29,7 +29,8 @@ PortHexEdit::PortHexEdit(QWidget * parent, MCUSimControl * controlUnit, MCUSimSu
     qDebug() << "PortHexEdit: PortHexEdit()";
     std::vector<int> mask;
     this->subsys = subsys;
-    mask.push_back(MCUSimMemory::EVENT_MEM_INF_WR_VAL_CHANGED);
+    mask.push_back(MCUSimPureLogicIO::EVENT_PLIO_WRITE);
+    mask.push_back(MCUSimPureLogicIO::EVENT_PLIO_READ);
 	controlUnit->registerObserver(
 		this,
 		subsys,
@@ -89,7 +90,7 @@ void PortHexEdit::handleEvent(int subsysId, int eventId, int locationOrReason, i
             qDebug() << "PortHexEdit: event: mem cell changed to" << (unsigned char)value;
 
  			m_hexEditOut->setVal(idx, (unsigned char)value);
-// 			m_hexEdit->setHighlighted(idx, true);
+ 			m_hexEditOut->setHighlighted(idx, true);
 
 			break;
 		}
@@ -99,7 +100,7 @@ void PortHexEdit::handleEvent(int subsysId, int eventId, int locationOrReason, i
             qDebug() << "PortHexEdit: event: mem cell changed to" << (unsigned char)value;
 
             m_hexEditIn->setVal(idx, (unsigned char)value);
-//          m_hexEdit->setHighlighted(idx, true);
+            m_hexEditIn->setHighlighted(idx, true);
 
             break;
         }
