@@ -36,7 +36,7 @@ MainForm::MainForm()
     qDebug() << "MainForm: MainForm()";
     projectMan = new ProjectMan(this);
     connect(projectMan, SIGNAL(addDockWidget(Qt::DockWidgetArea, QDockWidget*)), this, SLOT(addDockWidgetSlot(Qt::DockWidgetArea, QDockWidget*)));
-    connect(projectMan, SIGNAL(tabifyDockWidget(QWidget*, QWidget*)), this, SLOT(tabifyDockWidgetSlot(QDockWidget*, QDockWidget*)));
+    connect(projectMan, SIGNAL(tabifyDockWidget(QDockWidget*, QDockWidget*)), this, SLOT(tabifyDockWidgetSlot(QDockWidget*, QDockWidget*)));
     connect(projectMan, SIGNAL(connectProject(Project*)), this, SLOT(connectProjectSlot(Project*)));
     QWidget *centralWidget = new QWidget(this);
     wDockManager = new WDockManager(this, centralWidget);
@@ -955,7 +955,7 @@ void MainForm::simProjectData()
 }
 
 /**
- * @brief Slot. Tabify two ProjectTree Widgets.
+ * @brief Slot. Tabify two dock widgets.
  */
 void MainForm::tabifyDockWidgetSlot(QDockWidget *widget1, QDockWidget *widget2)
 {

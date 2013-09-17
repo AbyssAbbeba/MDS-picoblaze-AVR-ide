@@ -48,8 +48,8 @@ class PicoBlazeGrid : public QWidget, public MCUSimObserver
         PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit);
         //~PicoBlazeGrid();
         QWidget* getParent();
-        //void fixHeight();
         void setProjectPath(QString prjPath);
+        void fixHeight();
 
         void handleEvent(int subsysId, int eventId, int locationOrReason, int detail);
         void deviceChanged();

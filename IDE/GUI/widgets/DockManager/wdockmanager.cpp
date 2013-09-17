@@ -756,7 +756,8 @@ WDock::WDock(WDockManager *parent, int code, QWidget *parentWindow, QString path
             newWidget->setProjectPath(path);
             area = 2;
             wDockWidget->setWidget(newWidget);
-            //newWidget->fixHeight();
+            wDockWidget->show();
+            newWidget->fixHeight();
             //qDebug() << "WSimulationInfo: height fixed";
             break;
         }
