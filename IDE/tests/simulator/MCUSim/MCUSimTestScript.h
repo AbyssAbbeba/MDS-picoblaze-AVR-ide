@@ -18,10 +18,12 @@
 
 // Forward declarations.
 class MCUSim;
+class MCUSimTestScriptStrategy;
 
 // Standard headers.
 #include <string>
 #include <vector>
+#include <fstream>
 
 /*
 # comment
@@ -45,7 +47,7 @@ PC == 158
 
 /**
  * @brief
- * @namespace MCUSimTestScript
+ * @class MCUSimTestScript
  * @ingroup testsMCUSimPicoBlaze
  */
 class MCUSimTestScript
@@ -55,13 +57,14 @@ class MCUSimTestScript
         /// @brief
         static const unsigned int MAX_LINE_LENGTH = 5120;
 
-    ////    Private Datatypes    ////
-    private:
+    ////    Public Datatypes    ////
+    public:
         /**
          * @brief
          */
-        enum CmdType
+        enum CommandType
         {
+            CT_UNKNOWN,
             CT_ABORT,
             CT_EMPTY,   ///< 0 arguments.
             CT_STEP,    ///< 0 arguments.
@@ -69,6 +72,8 @@ class MCUSimTestScript
             CT_PC_NE,   ///< 3 arguments: (value).
             CT_EQ,      ///< 3 arguments: (memory space, address, value).
             CT_NE,      ///< 3 arguments: (memory space, address, value).
+
+            CT__MAX__   ///<
         };
 
         /**
@@ -76,7 +81,7 @@ class MCUSimTestScript
          */
         struct Command
         {
-            CmdType m_type;
+            CommandType m_type;
             std::vector<int> m_args;
         };
 
@@ -85,8 +90,10 @@ class MCUSimTestScript
         /**
          * @brief
          * @param[in,out] simulator
+         * @param[in,out] strategy
          */
-        MCUSimTestScript ( MCUSim * simulator);
+        MCUSimTestScript ( MCUSim * simulator,
+                           MCUSimTestScriptStrategy * strategy = NULL );
 
         /**
          * @brief
@@ -148,6 +155,11 @@ class MCUSimTestScript
          * @brief
          */
         MCUSim * const m_simulator;
+
+        /**
+         * @brief
+         */
+        MCUSimTestScriptStrategy * const m_strategy;
 
         /**
          * @brief
