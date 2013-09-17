@@ -40,6 +40,8 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
     mask.clear();
     mask.push_back(MCUSimPureLogicIO::EVENT_PLIO_WRITE);
     mask.push_back(MCUSimPureLogicIO::EVENT_PLIO_READ);
+    mask.push_back(MCUSimPureLogicIO::EVENT_PLIO_WRITE_END);
+    mask.push_back(MCUSimPureLogicIO::EVENT_PLIO_READ_END);
     controlUnit->registerObserver(this, MCUSimSubsys::ID_PLIO, mask);
     
     if ( NULL == controlUnit )
@@ -125,11 +127,18 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
     this->btnZero->move(920,60);
     this->btnZero->setMaximumHeight(17);
     this->btnZero->setMaximumWidth(40);
+    this->btnInte = new QPushButton("Int enable", this);
+    this->btnInte->setMaximumHeight(17);
+    this->btnInte->setMaximumWidth(80);
+    this->btnInte->move(880, 100);
 
     QFont btnFont = this->btnIntr->font();
     btnFont.setPointSize(9);
     this->btnIntr->setFont(btnFont);
     this->btnPorts->setFont(btnFont);
+    this->btnCarry->setFont(btnFont);
+    this->btnZero->setFont(btnFont);
+    this->btnInte->setFont(btnFont);
 
     //this->leClock->setText(
     //    (dynamic_cast<MCUSim::Clock*>controlUnit->getSimSubsys(MCUSim::Subsys::SubsysId::ID_CLK_CONTROL))->
@@ -180,8 +189,10 @@ void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason,
         return;
     }
 
+    qDebug() << "PicoBlazeGrid: event";
     if (MCUSimSubsys::ID_CPU == subsysId)
-    { 
+    {
+        qDebug() << "PicoBlazeGrid: ID_CPU event";
         switch ( eventId )
         {
             case MCUSimCPU::EVENT_CPU_PC_CHANGED:
@@ -213,6 +224,7 @@ void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason,
     }
     else if (MCUSimSubsys::ID_PLIO == subsysId)
     {
+        qDebug() << "PicoBlazeGrid: ID_PLIO event";
         switch ( eventId )
         {
             case MCUSimPureLogicIO::EVENT_PLIO_WRITE:
@@ -229,6 +241,20 @@ void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason,
                 this->lblRD->setPalette(palette);
                 break;
             }
+            case MCUSimPureLogicIO::EVENT_PLIO_WRITE_END:
+            {
+                QPalette palette = this->lblRW->palette();
+                palette.setColor(this->lblRW->foregroundRole(), Qt::gray);
+                this->lblRW->setPalette(palette);
+                break;
+            }
+            case MCUSimPureLogicIO::EVENT_PLIO_READ_END:
+            {
+                QPalette palette = this->lblRD->palette();
+                palette.setColor(this->lblRD->foregroundRole(), Qt::gray);
+                this->lblRD->setPalette(palette);
+                break;
+            }
             default:
             {
                 qDebug("Invalid event received, event ignored.");
@@ -238,18 +264,19 @@ void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason,
     }
     else if (MCUSimSubsys::ID_FLAGS == subsysId)
     {
+        qDebug() << "PicoBlazeGrid: ID_FLAGS event";
         switch ( eventId )
         {
             case PicoBlazeStatusFlags::EVENT_FLAGS_Z_CHANGED:
             {
                 QPalette palette = this->btnZero->palette();
-                if (palette.color(this->btnZero->foregroundRole()) ==  Qt::green)
+                if (palette.color(QPalette::ButtonText) ==  Qt::green)
                 {
-                    palette.setColor(this->btnZero->foregroundRole(), Qt::gray);
+                    palette.setColor(QPalette::ButtonText, Qt::gray);
                 }
                 else
                 {
-                    palette.setColor(this->btnZero->foregroundRole(), Qt::green);
+                    palette.setColor(QPalette::ButtonText, Qt::green);
                 }
                 this->btnZero->setPalette(palette);
                 break;
@@ -257,31 +284,41 @@ void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason,
             case PicoBlazeStatusFlags::EVENT_FLAGS_C_CHANGED:
             {
                 QPalette palette = this->btnCarry->palette();
-                if (palette.color(this->btnCarry->foregroundRole()) ==  Qt::green)
+                if (palette.color(QPalette::ButtonText) ==  Qt::green)
                 {
-                    palette.setColor(this->btnCarry->foregroundRole(), Qt::gray);
+                    palette.setColor(QPalette::ButtonText, Qt::gray);
                 }
                 else
                 {
-                    palette.setColor(this->btnCarry->foregroundRole(), Qt::green);
+                    palette.setColor(QPalette::ButtonText, Qt::green);
                 }
                 this->btnCarry->setPalette(palette);
                 break;
             }
             case PicoBlazeStatusFlags::EVENT_FLAGS_IE_CHANGED:
             {
+                QPalette palette = this->btnInte->palette();
+                if (palette.color(QPalette::ButtonText) ==  Qt::green)
+                {
+                    palette.setColor(QPalette::ButtonText, Qt::gray);
+                }
+                else
+                {
+                    palette.setColor(QPalette::ButtonText, Qt::green);
+                }
+                this->btnInte->setPalette(palette);
                 break;
             }
             case PicoBlazeStatusFlags::EVENT_FLAGS_INT_CHANGED:
             {
                 QPalette palette = this->btnIntr->palette();
-                if (palette.color(this->btnIntr->foregroundRole()) ==  Qt::green)
+                if (palette.color(QPalette::ButtonText) ==  Qt::green)
                 {
-                    palette.setColor(this->btnIntr->foregroundRole(), Qt::gray);
+                    palette.setColor(QPalette::ButtonText, Qt::gray);
                 }
                 else
                 {
-                    palette.setColor(this->btnIntr->foregroundRole(), Qt::green);
+                    palette.setColor(QPalette::ButtonText, Qt::green);
                 }
                 this->btnIntr->setPalette(palette);
                 break;
