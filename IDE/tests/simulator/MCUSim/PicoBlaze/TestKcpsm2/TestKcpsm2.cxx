@@ -25,6 +25,7 @@
 
 // MCUSim test script interpreter.
 #include "MCUSimTestScript.h"
+#include "../PicoBlazeStrategy.h"
 
 // Boost Filesystem library.
 #define BOOST_FILESYSTEM_NO_DEPRECATED
@@ -37,7 +38,8 @@ int TestKcpsm2::init()
 {
     m_picoBlazeSim = new PicoBlazeSim;
     m_programFile  = new HexFile;
-    m_testScript   = new MCUSimTestScript(m_picoBlazeSim);
+    m_strategy     = new PicoBlazeStrategy;
+    m_testScript   = new MCUSimTestScript(m_picoBlazeSim, m_strategy);
 
     dynamic_cast<PicoBlazeConfig&>(m_picoBlazeSim->getConfig()).configure(MCUSim::FAMILY_KCPSM2);
     m_picoBlazeSim->reset(MCUSim::RSTMD_NEW_CONFIG);
@@ -49,6 +51,7 @@ int TestKcpsm2::clean()
 {
     delete m_programFile;
     delete m_picoBlazeSim;
+    delete m_strategy;
     delete m_testScript;
 
     return 0;

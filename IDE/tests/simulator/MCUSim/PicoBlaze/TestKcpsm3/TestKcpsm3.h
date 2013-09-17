@@ -17,9 +17,10 @@
 #define TESTKCPSM3_H
 
 // Forward declarations.
-class PicoBlazeSim;
 class HexFile;
+class PicoBlazeSim;
 class MCUSimTestScript;
+class PicoBlazeStrategy;
 
 // The CUnit testing framework.
 #include <CUnit/Basic.h>
@@ -71,6 +72,11 @@ namespace TestKcpsm3
          * @brief
          */
         MCUSimTestScript * m_testScript;
+
+        /**
+         * @brief
+         */
+        PicoBlazeStrategy * m_strategy;
 };
 
 #endif // TESTKCPSM3_H

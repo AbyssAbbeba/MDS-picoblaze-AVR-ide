@@ -67,7 +67,8 @@ add_definitions ( -pipe -std=c++0x -O1 )
 
 # Add an executable to the project using the specified source files.
 add_executable ( ${PROJECT_NAME}
-                 main.cxx )
+                 main.cxx
+                 PicoBlazeStrategy.cxx )
 
 # Link a target to given libraries
 target_link_libraries ( ${PROJECT_NAME}

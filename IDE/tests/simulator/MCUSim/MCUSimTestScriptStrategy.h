@@ -8,7 +8,7 @@
  * (C) copyright 2013 Moravia Microsystems, s.r.o.
  *
  * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
- * @ingroup testsMCUSimPicoBlaze
+ * @ingroup testsMCUSim
  * @file MCUSimTestScriptStrategy.h
  */
 // =============================================================================
@@ -28,22 +28,10 @@ class MCUSim;
 /**
  * @brief
  * @class MCUSimTestScriptStrategy
- * @ingroup testsMCUSimPicoBlaze
+ * @ingroup testsMCUSim
  */
 class MCUSimTestScriptStrategy
 {
-    ////    Private Datatypes    ////
-    private:
-        /**
-         * @brief
-         */
-        enum CommandTypeExt
-        {
-            CTE_XXX = MCUSimTestScript::CT__MAX__, ///<
-
-            CTE__MAX__                  ///<
-        };
-
     ////    Public Operations    ////
     public:
         /**
@@ -76,8 +64,8 @@ class MCUSimTestScriptStrategy
         virtual bool executeCommand ( const MCUSimTestScript::Command & cmd,
                                       std::ofstream & outFile ) = 0;
 
-    ////    Private Attributes    ////
-    private:
+    ////    Protected Attributes    ////
+    protected:
         /**
          * @brief
          */
@@ -86,12 +74,12 @@ class MCUSimTestScriptStrategy
         /**
          * @brief
          */
-        std::string & m_execMessage;
+        std::string * m_execMessage;
 
         /**
          * @brief
          */
-        bool & m_success;
+        bool * m_success;
 };
 
 #endif // MCUSIMTESTSCRIPTSTRATEGY_H
