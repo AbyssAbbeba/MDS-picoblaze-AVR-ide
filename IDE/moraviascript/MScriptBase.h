@@ -35,6 +35,7 @@ class MScriptBase
         {
             MT_ERROR,   ///<
             MT_WARNING, ///<
+            MT_REMARK,  ///<
             MT_GENERAL  ///<
         };
 
