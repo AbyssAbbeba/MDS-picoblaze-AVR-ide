@@ -454,7 +454,7 @@ void CodeEdit::loadCodeEdit(CodeEdit* editor)
         }
     }
     emit CodeEditChanged(editor);
-    //this->changeHeight();
+    this->changeHeight();
     qDebug() << "CodeEdit: return loadCodeEditor()";
 }
 

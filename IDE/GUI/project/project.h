@@ -73,7 +73,7 @@ class ProjectMan : public QObject
     signals:
         void connectProject(Project *project);
         void addDockWidget(Qt::DockWidgetArea area, QDockWidget* dockWidget);
-        void tabifyDockWidget(QWidget *first, QWidget *second);
+        void tabifyDockWidget(QDockWidget *first, QDockWidget *second);
 
     private:
         int projectCount;
@@ -100,7 +100,7 @@ class Project : public QObject
         Project(ProjectMan *parent);
         //konstruktor pro prazdny projekt
         Project(QString name, QString path, QString arch, LangType langType, QFile *file, ProjectMan *parent);
-        ~Project();
+        //~Project();
 
         void setupSim();
         bool start();

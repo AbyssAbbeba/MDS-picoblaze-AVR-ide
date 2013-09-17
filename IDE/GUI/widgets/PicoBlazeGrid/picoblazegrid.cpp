@@ -315,11 +315,13 @@ void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason,
     }
 }
 
+
 void PicoBlazeGrid::deviceChanged()
 {
     m_cpu = dynamic_cast<MCUSimCPU*>(m_simControlUnit->getSimSubsys(MCUSimSubsys::ID_CPU));
     deviceReset();
 }
+
 
 void PicoBlazeGrid::deviceReset()
 {
@@ -345,7 +347,15 @@ void PicoBlazeGrid::deviceReset()
     qDebug() << "PicoBlazeGrid: return deviceReset()";
 }
 
+
 void PicoBlazeGrid::setReadOnly(bool readOnly)
 {
     
+}
+
+
+void PicoBlazeGrid::fixHeight()
+{
+    memScratch->fixHeight();
+    memPorts->fixHeight();
 }
