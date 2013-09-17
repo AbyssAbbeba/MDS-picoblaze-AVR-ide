@@ -8,7 +8,7 @@
  * (C) copyright 2013 Moravia Microsystems, s.r.o.
  *
  * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
- * @ingroup testsMCUSimPicoBlaze
+ * @ingroup testsMCUSim
  * @file MCUSimTestScript.h
  */
 // =============================================================================
@@ -48,7 +48,7 @@ PC == 158
 /**
  * @brief
  * @class MCUSimTestScript
- * @ingroup testsMCUSimPicoBlaze
+ * @ingroup testsMCUSim
  */
 class MCUSimTestScript
 {
