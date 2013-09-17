@@ -30,7 +30,10 @@ MCUSimTestScript::MCUSimTestScript ( MCUSim * simulator,
                                    : m_simulator ( simulator ),
                                      m_strategy ( strategy )
 {
-    m_strategy->link(simulator, &m_execMessage, &m_success);
+    if ( NULL != m_strategy )
+    {
+        m_strategy->link(simulator, &m_execMessage, &m_success);
+    }
 }
 
 MCUSimTestScript::~MCUSimTestScript()
