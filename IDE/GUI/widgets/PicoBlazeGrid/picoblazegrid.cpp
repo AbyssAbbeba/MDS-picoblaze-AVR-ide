@@ -189,8 +189,10 @@ void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason,
         return;
     }
 
+    qDebug() << "PicoBlazeGrid: event";
     if (MCUSimSubsys::ID_CPU == subsysId)
-    { 
+    {
+        qDebug() << "PicoBlazeGrid: ID_CPU event";
         switch ( eventId )
         {
             case MCUSimCPU::EVENT_CPU_PC_CHANGED:
@@ -222,6 +224,7 @@ void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason,
     }
     else if (MCUSimSubsys::ID_PLIO == subsysId)
     {
+        qDebug() << "PicoBlazeGrid: ID_PLIO event";
         switch ( eventId )
         {
             case MCUSimPureLogicIO::EVENT_PLIO_WRITE:
