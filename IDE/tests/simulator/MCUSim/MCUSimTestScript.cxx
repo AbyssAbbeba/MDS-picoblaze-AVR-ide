@@ -417,12 +417,14 @@ inline bool MCUSimTestScript::executeCommand ( const Command & cmd,
             MCUSimSubsys * cpuSubsys = m_simulator->getSubsys ( MCUSimSubsys::ID_CPU );
             if ( NULL == cpuSubsys )
             {
+                outFile << "[ABORTED] ";
                 return false;
             }
 
             MCUSimCPU * cpu = dynamic_cast<MCUSimCPU*>(cpuSubsys);
             if ( NULL == cpu )
             {
+                outFile << "[ABORTED] ";
                 return false;
             }
 
@@ -470,18 +472,21 @@ inline bool MCUSimTestScript::executeCommand ( const Command & cmd,
             MCUSimSubsys * memSubsys = m_simulator->getSubsys ( MCUSimSubsys::SubsysId(cmd.m_args[0]) );
             if ( NULL == memSubsys )
             {
+                outFile << "[ABORTED] ";
                 return false;
             }
 
             MCUSimMemory * memory = dynamic_cast<MCUSimMemory*>(memSubsys);
             if ( NULL == memory )
             {
+                outFile << "[ABORTED] ";
                 return false;
             }
 
             int data;
             if ( MCUSim::RC_OK != memory->directRead ( (unsigned int) cmd.m_args[1], (unsigned int&) data ) )
             {
+                outFile << "[ABORTED] ";
                 return false;
             }
 
