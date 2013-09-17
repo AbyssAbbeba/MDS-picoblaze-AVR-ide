@@ -15,6 +15,7 @@
 
 #include "MCUSimTestScript.h"
 
+#include "MCUSimTestScriptStrategy.h"
 #include "MCUSim.h"
 
 #include <cctype>
@@ -24,9 +25,12 @@
 #include <cstdlib>
 #include <algorithm>
 
-MCUSimTestScript::MCUSimTestScript ( MCUSim * simulator )
-                                   : m_simulator ( simulator )
+MCUSimTestScript::MCUSimTestScript ( MCUSim * simulator,
+                                     MCUSimTestScriptStrategy * strategy )
+                                   : m_simulator ( simulator ),
+                                     m_strategy ( strategy )
 {
+    m_strategy->link(simulator, &m_execMessage, &m_success);
 }
 
 MCUSimTestScript::~MCUSimTestScript()
@@ -145,7 +149,7 @@ inline MCUSimTestScript::Command MCUSimTestScript::processLine ( const char * li
 
     std::transform(tokens[0].begin(), tokens[0].end(), tokens[0].begin(), ::toupper);
 
-    result.m_type = CT_ABORT;
+    result.m_type = CT_UNKNOWN;
     switch ( tokens.size() )
     {
         case 0:
@@ -249,8 +253,16 @@ inline MCUSimTestScript::Command MCUSimTestScript::processLine ( const char * li
             break;
 
         default:
-            m_execMessage = "command not understood";
             break;
+    }
+
+    if ( CT_UNKNOWN == result.m_type )
+    {
+        if ( ( NULL == m_strategy ) || ( false == m_strategy->processLine(line, useAsmFile, &result) ) )
+        {
+            m_execMessage = "command not understood";
+            result.m_type = CT_ABORT;
+        }
     }
 
     return result;
@@ -488,6 +500,13 @@ inline bool MCUSimTestScript::executeCommand ( const Command & cmd,
 
             return true;
         }
+
+        default:
+            if ( NULL != m_strategy )
+            {
+                return m_strategy->executeCommand(cmd, outFile);
+            }
+            break;
     }
 
     return false;
