@@ -120,6 +120,7 @@ bool PicoBlazeStrategy::executeCommand ( const MCUSimTestScript::Command & cmd,
 
             if ( NULL == flags )
             {
+                outFile << "[ABORTED] ";
                 *m_execMessage = "PicoBlazeStatusFlagsBase subsystem not available";
                 return false;
             }
@@ -141,12 +142,25 @@ bool PicoBlazeStrategy::executeCommand ( const MCUSimTestScript::Command & cmd,
             {
                 if ( CTE_FLAG_EQ != cmd.m_type )
                 {
+                    outFile << "[FAILED]  ";
                     m_success = false;
                 }
+                else
+                {
+                    outFile << "[OK]      ";
+                }
             }
-            else if ( CTE_FLAG_NE != cmd.m_type )
+            else
             {
-                m_success = false;
+                if ( CTE_FLAG_NE != cmd.m_type )
+                {
+                    outFile << "[FAILED]  ";
+                    m_success = false;
+                }
+                else
+                {
+                    outFile << "[OK]      ";
+                }
             }
 
             return true;
@@ -159,11 +173,13 @@ bool PicoBlazeStrategy::executeCommand ( const MCUSimTestScript::Command & cmd,
 
             if ( NULL == intrCtrl )
             {
+                outFile << "[ABORTED] ";
                 *m_execMessage = "PicoBlazeInterruptController subsystem not available";
                 return false;
             }
 
             intrCtrl->irq();
+            outFile << "[OK]      ";
             return true;
         }
     }
