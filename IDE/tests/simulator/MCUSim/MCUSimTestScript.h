@@ -81,7 +81,7 @@ class MCUSimTestScript
          */
         struct Command
         {
-            CommandType m_type;
+            int m_type;
             std::vector<int> m_args;
         };
 
@@ -113,21 +113,35 @@ class MCUSimTestScript
                          const std::string & outFileName,
                          bool useAsmFile = false );
 
-    ////    Private Operations    ////
-    private:
+    ////    Static Public Operations    ////
+    public:
         /**
          * @brief
          * @param[in] token
          * @return
          */
-        bool checkNumber ( const std::string & token ) const;
+        static bool checkNumber ( const std::string & token );
 
         /**
          * @brief
          * @param[in] token
          * @return
          */
-        int str2num ( const std::string & token ) const;
+        static int str2num ( const std::string & token );
+
+        /**
+         * @brief
+         * @param[in] token
+         * @return
+         */
+        static bool checkBool ( const std::string & token );
+
+        /**
+         * @brief
+         * @param[in] token
+         * @return
+         */
+        static int str2bool ( const std::string & token );
 
     ////    Inline Private Operations    ////
     private:

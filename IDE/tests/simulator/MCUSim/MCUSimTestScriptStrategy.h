@@ -22,8 +22,12 @@ class MCUSim;
 #include "MCUSimTestScript.h"
 
 // Standard headers.
+#include <cctype>
+#include <vector>
 #include <string>
 #include <fstream>
+#include <cstring>
+#include <algorithm>
 
 /**
  * @brief
@@ -46,12 +50,12 @@ class MCUSimTestScriptStrategy
 
         /**
          * @brief
-         * @param[in] line
+         * @param[in,out] tokens
          * @param[in] useAsmFile
          * @param[out] cmd
          * @return
          */
-        virtual bool processLine ( const char * line,
+        virtual bool processLine ( std::vector<std::string> * tokens,
                                    bool useAsmFile,
                                    MCUSimTestScript::Command * cmd ) = 0;
 
