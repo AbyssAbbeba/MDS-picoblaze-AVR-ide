@@ -262,11 +262,11 @@ void ProjectMan::createActiveMakefile()
 /**
  * @brief Project destructor. Deletes project's tree widget
  */
-Project::~Project()
+/*Project::~Project()
 {
     delete this->prjDockWidget;
     
-}
+}*/
 
 //otevreni projektu
 /**
@@ -769,12 +769,12 @@ QString Project::addFile(QString path, QString name)
             if (name == "disasm")
             {
                 treeProjFile->setText(0, "disasm"+QString::number(fileCount));
-            fileName = "disasm"+QString::number(fileCount);
+                fileName = "disasm"+QString::number(fileCount);
             }
             else
             {
                 treeProjFile->setText(0, "untracked"+QString::number(fileCount));
-            fileName = "untracked"+QString::number(fileCount);
+                fileName = "untracked"+QString::number(fileCount);
             }
             treeProjFile->setData(0, Qt::ToolTipRole, "untracked");
         }

@@ -36,7 +36,7 @@ MainForm::MainForm()
     qDebug() << "MainForm: MainForm()";
     projectMan = new ProjectMan(this);
     connect(projectMan, SIGNAL(addDockWidget(Qt::DockWidgetArea, QDockWidget*)), this, SLOT(addDockWidgetSlot(Qt::DockWidgetArea, QDockWidget*)));
-    connect(projectMan, SIGNAL(tabifyDockWidget(QWidget*, QWidget*)), this, SLOT(tabifyDockWidgetSlot(QDockWidget*, QDockWidget*)));
+    connect(projectMan, SIGNAL(tabifyDockWidget(QDockWidget*, QDockWidget*)), this, SLOT(tabifyDockWidgetSlot(QDockWidget*, QDockWidget*)));
     connect(projectMan, SIGNAL(connectProject(Project*)), this, SLOT(connectProjectSlot(Project*)));
     QWidget *centralWidget = new QWidget(this);
     wDockManager = new WDockManager(this, centralWidget);
@@ -928,10 +928,11 @@ void MainForm::exampleOpen()
 {
     this->openProject("./demoprojekt/Example/Example.mmp");
     int count = this->projectMan->getActive()->filePaths.count();
+    QDir projectDir = QFileInfo(this->projectMan->getActive()->prjPath).dir();
+    QString absolutePath = projectDir.path();
     for (int i = 0; i < count; i++)
     {
-        this->openFilePath(this->projectMan->getActive()->prjPath.section('/',0, -2) + "/"
-            + this->projectMan->getActive()->filePaths.at(i));
+        this->openFilePath(QDir(absolutePath + "/" + this->projectMan->getActive()->filePaths.at(i)).canonicalPath());
     }
 }
 
@@ -954,7 +955,7 @@ void MainForm::simProjectData()
 }
 
 /**
- * @brief Slot. Tabify two ProjectTree Widgets.
+ * @brief Slot. Tabify two dock widgets.
  */
 void MainForm::tabifyDockWidgetSlot(QDockWidget *widget1, QDockWidget *widget2)
 {

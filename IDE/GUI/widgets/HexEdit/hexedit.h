@@ -51,6 +51,7 @@ class HexEdit : public QWidget
         char getVal(int pos);
         void setReadOnly(bool readonly);
         void fixHeight();
+        void setHighlighted(int pos, bool highlight);
         QScrollBar* verticalScrollBar();
         QScrollBar* horizontalScrollBar();
 
