@@ -51,6 +51,11 @@ class MScriptFuncTable
         {
             /**
              * @brief
+             */
+            Parameter();
+
+            /**
+             * @brief
              * @param[in] name
              * @param[in] defaulValue
              */
@@ -66,7 +71,7 @@ class MScriptFuncTable
             std::string m_name;
 
             /// @brief
-            MScriptValue * m_defaulValue;
+            MScriptValue * m_value;
         };
 
         /**
@@ -74,22 +79,46 @@ class MScriptFuncTable
          */
         struct Function
         {
-            /**
-             * @brief
-             */
-            Function();
+                /**
+                 * @brief
+                 * @param[in,out] params
+                 * @param[in,out] code
+                 */
+                Function ( std::vector<Parameter> * params,
+                           MScriptStatement * code,
+                           const MScriptSrcLocation & location,
+                           unsigned int argsRequired );
 
-            /**
-             * @brief
-             */
-            ~Function();
+                /**
+                 * @brief
+                 * @param[in] obj
+                 */
+                Function ( const Function & obj );
 
-            /// @brief
-            MScriptStatement * m_code;
+                /**
+                 * @brief
+                 */
+                ~Function();
 
-            /// @brief
-            std::vector<Parameter> * m_params;
+                /// @brief
+                std::vector<Parameter> * m_params;
+
+                /// @brief
+                MScriptStatement * m_code;
+
+                /// @brief
+                MScriptSrcLocation m_location;
+
+                /// @brief
+                unsigned int m_argsRequired;
+
+            private:
+                /// @brief
+                unsigned int m_deleteCode;
         };
+
+        /// @brief
+        typedef std::multimap<std::string,Function> FuncMultimap;
 
     ////    Constructors and Destructors    ////
     public:
@@ -105,36 +134,46 @@ class MScriptFuncTable
         /**
          * @brief
          * @param[in] name
-         * @param[in] params
-         * @param[in] code
+         * @param[in] location
+         * @param[in,out] params
+         * @param[in,out] code
          * @return
          */
         bool define ( const std::string & name,
-                      const std::vector<Parameter> * params,
-                      const MScriptStatement * code );
+                      const MScriptSrcLocation & location,
+                      std::vector<Parameter> * params,
+                      MScriptStatement * code );
 
         /**
          * @brief
          * @param[in] name
+         * @param[in] location
          * @return
          */
-        bool undefine ( const std::string & name );
+        bool undefine ( const std::string & name,
+                        const MScriptSrcLocation & location );
 
         /**
          * @brief
          * @param[in] name
+         * @param[in] argc
+         * @param[out] location
          * @return
          */
-        bool isDefined ( const std::string & name ) const;
+        bool isDefined ( const std::string & name,
+                         int argc = -1,
+                         MScriptSrcLocation * location = NULL ) const;
 
         /**
          * @brief
          * @param[in] name
+         * @param[in] location
          * @param[in] arguments
          * @return
          */
-        const Function & get ( const std::string & name,
-                               const std::vector<MScriptValue> & arguments );
+        Function * get ( const std::string & name,
+                         const MScriptSrcLocation & location,
+                         std::vector<MScriptValue> & arguments );
 
     ////    Private Attributes    ////
     private:
@@ -142,7 +181,7 @@ class MScriptFuncTable
         MScriptInterpretInterface * const m_interpret;
 
         /// @brief
-        std::multimap<std::string,Function> m_funcTable;
+        FuncMultimap m_funcTable;
 };
 
 /// @name Tracing operators
@@ -155,6 +194,15 @@ class MScriptFuncTable
      */
     std::ostream & operator << ( std::ostream & out,
                                  const MScriptFuncTable & table );
+
+    /**
+     * @brief
+     * @param[in,out] out
+     * @param[in] parameterList
+     * @return
+     */
+    std::ostream & operator << ( std::ostream & out,
+                                 const std::vector<MScriptFuncTable::Parameter> * parameterList );
 //@}
 
 #endif // MSCRIPTFUNCTABLE_H
