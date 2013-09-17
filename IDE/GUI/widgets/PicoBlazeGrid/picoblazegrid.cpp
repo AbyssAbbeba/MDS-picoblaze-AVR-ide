@@ -40,6 +40,8 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
     mask.clear();
     mask.push_back(MCUSimPureLogicIO::EVENT_PLIO_WRITE);
     mask.push_back(MCUSimPureLogicIO::EVENT_PLIO_READ);
+    mask.push_back(MCUSimPureLogicIO::EVENT_PLIO_WRITE_END);
+    mask.push_back(MCUSimPureLogicIO::EVENT_PLIO_READ_END);
     controlUnit->registerObserver(this, MCUSimSubsys::ID_PLIO, mask);
     
     if ( NULL == controlUnit )
@@ -233,6 +235,20 @@ void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason,
             {
                 QPalette palette = this->lblRD->palette();
                 palette.setColor(this->lblRD->foregroundRole(), Qt::green);
+                this->lblRD->setPalette(palette);
+                break;
+            }
+            case MCUSimPureLogicIO::EVENT_PLIO_WRITE_END:
+            {
+                QPalette palette = this->lblRW->palette();
+                palette.setColor(this->lblRW->foregroundRole(), Qt::gray);
+                this->lblRW->setPalette(palette);
+                break;
+            }
+            case MCUSimPureLogicIO::EVENT_PLIO_READ_END:
+            {
+                QPalette palette = this->lblRD->palette();
+                palette.setColor(this->lblRD->foregroundRole(), Qt::gray);
                 this->lblRD->setPalette(palette);
                 break;
             }
