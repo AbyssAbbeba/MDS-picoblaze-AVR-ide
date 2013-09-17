@@ -68,7 +68,7 @@ class PicoBlazeInterruptController : public MCUSimSubsys
          * @param[in,out] instructionSet
          * @return
          */
-        PicoBlazeInterruptController * link ( MCUSimEventLogger      * eventLogger,
+        PicoBlazeInterruptController * link ( MCUSimEventLogger        * eventLogger,
                                               PicoBlazeInstructionSet  * instructionSet );
 
         /**

@@ -34,6 +34,7 @@ class PicoBlazeStrategy : public MCUSimTestScriptStrategy
         {
             CTE_FLAG_EQ = MCUSimTestScript::CT__MAX__,  ///<
             CTE_FLAG_NE,                                ///<
+            CTE_INTERRUPT,                              ///<
 
             CTE__MAX__                                  ///<
         };

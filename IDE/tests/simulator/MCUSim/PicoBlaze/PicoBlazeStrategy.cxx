@@ -17,6 +17,7 @@
 
 #include "../../../../simulators/MCUSim/MCUSim.h"
 #include "../../../../simulators/MCUSim/PicoBlaze/PicoBlazeStatusFlagsBase.h"
+#include "../../../../simulators/MCUSim/PicoBlaze/PicoBlazeInterruptController.h"
 
 bool PicoBlazeStrategy::processLine ( std::vector<std::string> * tokens,
                                       bool useAsmFile,
@@ -24,6 +25,14 @@ bool PicoBlazeStrategy::processLine ( std::vector<std::string> * tokens,
 {
     switch ( tokens->size() )
     {
+        case 1:
+            if ( "INTERRUPT" == tokens->at(0) )
+            {
+                cmd->m_type = CTE_INTERRUPT;
+                return true;
+            }
+            break;
+
         case 7:
             if (
                    ( "[" == tokens->at(1) )
@@ -109,6 +118,12 @@ bool PicoBlazeStrategy::executeCommand ( const MCUSimTestScript::Command & cmd,
             PicoBlazeStatusFlagsBase * flags = dynamic_cast<PicoBlazeStatusFlagsBase*>
                                                (m_simulator->getSubsys(MCUSimSubsys::ID_FLAGS));
 
+            if ( NULL == flags )
+            {
+                *m_execMessage = "PicoBlazeStatusFlagsBase subsystem not available";
+                return false;
+            }
+
             switch ( cmd.m_args[0] )
             {
                 case FID_Z:  flagValue = ( ( true == flags->m_zero     ) ? 1 : 0 ); break;
@@ -134,6 +149,21 @@ bool PicoBlazeStrategy::executeCommand ( const MCUSimTestScript::Command & cmd,
                 m_success = false;
             }
 
+            return true;
+        }
+
+        case CTE_INTERRUPT:
+        {
+            PicoBlazeInterruptController * intrCtrl = dynamic_cast<PicoBlazeInterruptController*>
+                                                      (m_simulator->getSubsys(MCUSimSubsys::ID_INTERRUPTS));
+
+            if ( NULL == intrCtrl )
+            {
+                *m_execMessage = "PicoBlazeInterruptController subsystem not available";
+                return false;
+            }
+
+            intrCtrl->irq();
             return true;
         }
     }
