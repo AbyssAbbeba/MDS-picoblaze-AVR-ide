@@ -270,13 +270,13 @@ void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason,
             case PicoBlazeStatusFlags::EVENT_FLAGS_Z_CHANGED:
             {
                 QPalette palette = this->btnZero->palette();
-                if (palette.color(this->btnZero->foregroundRole()) ==  Qt::green)
+                if (palette.color(QPalette::ButtonText) ==  Qt::green)
                 {
-                    palette.setColor(this->btnZero->foregroundRole(), Qt::gray);
+                    palette.setColor(QPalette::ButtonText, Qt::gray);
                 }
                 else
                 {
-                    palette.setColor(this->btnZero->foregroundRole(), Qt::green);
+                    palette.setColor(QPalette::ButtonText, Qt::green);
                 }
                 this->btnZero->setPalette(palette);
                 break;
@@ -284,13 +284,13 @@ void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason,
             case PicoBlazeStatusFlags::EVENT_FLAGS_C_CHANGED:
             {
                 QPalette palette = this->btnCarry->palette();
-                if (palette.color(this->btnCarry->foregroundRole()) ==  Qt::green)
+                if (palette.color(QPalette::ButtonText) ==  Qt::green)
                 {
-                    palette.setColor(this->btnCarry->foregroundRole(), Qt::gray);
+                    palette.setColor(QPalette::ButtonText, Qt::gray);
                 }
                 else
                 {
-                    palette.setColor(this->btnCarry->foregroundRole(), Qt::green);
+                    palette.setColor(QPalette::ButtonText, Qt::green);
                 }
                 this->btnCarry->setPalette(palette);
                 break;
@@ -298,13 +298,13 @@ void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason,
             case PicoBlazeStatusFlags::EVENT_FLAGS_IE_CHANGED:
             {
                 QPalette palette = this->btnInte->palette();
-                if (palette.color(this->btnInte->foregroundRole()) ==  Qt::green)
+                if (palette.color(QPalette::ButtonText) ==  Qt::green)
                 {
-                    palette.setColor(this->btnInte->foregroundRole(), Qt::gray);
+                    palette.setColor(QPalette::ButtonText, Qt::gray);
                 }
                 else
                 {
-                    palette.setColor(this->btnInte->foregroundRole(), Qt::green);
+                    palette.setColor(QPalette::ButtonText, Qt::green);
                 }
                 this->btnInte->setPalette(palette);
                 break;
@@ -312,13 +312,13 @@ void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason,
             case PicoBlazeStatusFlags::EVENT_FLAGS_INT_CHANGED:
             {
                 QPalette palette = this->btnIntr->palette();
-                if (palette.color(this->btnIntr->foregroundRole()) ==  Qt::green)
+                if (palette.color(QPalette::ButtonText) ==  Qt::green)
                 {
-                    palette.setColor(this->btnIntr->foregroundRole(), Qt::gray);
+                    palette.setColor(QPalette::ButtonText, Qt::gray);
                 }
                 else
                 {
-                    palette.setColor(this->btnIntr->foregroundRole(), Qt::green);
+                    palette.setColor(QPalette::ButtonText, Qt::green);
                 }
                 this->btnIntr->setPalette(palette);
                 break;
