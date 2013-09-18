@@ -19,6 +19,8 @@
 #include "../../../../simulators/MCUSim/PicoBlaze/PicoBlazeStatusFlagsBase.h"
 #include "../../../../simulators/MCUSim/PicoBlaze/PicoBlazeInterruptController.h"
 
+#include <iostream> // DEBUG
+
 bool PicoBlazeStrategy::processLine ( std::vector<std::string> * tokens,
                                       bool useAsmFile,
                                       MCUSimTestScript::Command * cmd )
@@ -124,6 +126,9 @@ bool PicoBlazeStrategy::executeCommand ( const MCUSimTestScript::Command & cmd,
                 *m_execMessage = "PicoBlazeStatusFlagsBase subsystem not available";
                 return false;
             }
+
+
+std::cout << "PicoBlazeStrategy::executeCommand | Z == "<<flags->m_zero<<", C == "<<flags->m_carry<<"\n";
 
             switch ( cmd.m_args[0] )
             {
