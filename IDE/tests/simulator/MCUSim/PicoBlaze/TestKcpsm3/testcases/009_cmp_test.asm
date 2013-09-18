@@ -20,5 +20,14 @@ Start:
             ;; reg[4]==20
             ;; reg[5]==1
             COMPARE     s0,#20
+            ;; step
+            ;; interrupt
+            ;; flag[z] != true
+            ;; flag[c] != true
+            ;; flag[pz] == false
+            ;; flag[pc] == false
+            ;; flag[i] == false
+            ;; flag[ie] == false
+            
             
         

@@ -24,7 +24,7 @@ PicoBlazeInterruptController::~PicoBlazeInterruptController()
 {
 }
 
-PicoBlazeInterruptController * PicoBlazeInterruptController::link ( MCUSimEventLogger      * eventLogger,
+PicoBlazeInterruptController * PicoBlazeInterruptController::link ( MCUSimEventLogger        * eventLogger,
                                                                     PicoBlazeInstructionSet  * instructionSet )
 {
     MCUSimSubsys::link(eventLogger, ID_INTERRUPTS);
