@@ -27,7 +27,11 @@ int main ( int argc, char ** argv )
         "        break;\n"              // 20
         "    default:\n"                // 21
         "        break;\n"              // 22
-        "}\n";                          // 23
+        "}\n"                           // 23
+        "func testFunc ( a, b, c = 0, d = \"x\" )\n" // 24
+        "{\n"                           // 25
+        "    return ( a * b );\n"       // 26
+        "}\n";                          // 27
 
     MScriptStrategy strategy;
     MScriptCore core(&strategy);

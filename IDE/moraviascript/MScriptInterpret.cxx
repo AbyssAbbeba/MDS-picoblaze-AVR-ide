@@ -440,5 +440,7 @@ inline bool MScriptInterpret::postprocessCode ( MScriptStatement * rootNode )
         delete node->next();
     }
 
+    std::cout << "m_funcTable = \n" << (*m_funcTable) << "\n\n"; // DEBUG
+
     return true;
 }
