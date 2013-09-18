@@ -28,12 +28,12 @@
 ProjectMan::ProjectMan(QWidget *parent)
     : QObject(parent)
 {
-    qDebug() << "ProjectMan: ProjectMan()";
+    //qDebug() << "ProjectMan: ProjectMan()";
     //openProjects = new QList<Project*>;
     this->untrackedProject = NULL;
     projectCount = 0;
     activeProject = NULL;
-    qDebug() << "ProjectMan: return ProjectMan()";
+    //qDebug() << "ProjectMan: return ProjectMan()";
 }
 
 
@@ -43,7 +43,7 @@ ProjectMan::ProjectMan(QWidget *parent)
  */
 void ProjectMan::openProject(QFile *file)
 {
-    qDebug() << "ProjectMan: openProject()";
+    //qDebug() << "ProjectMan: openProject()";
     Project *newProject = new Project(file, this);
     emit addDockWidget(Qt::LeftDockWidgetArea, newProject->prjDockWidget);
     //mainWindow->addDockWidget(Qt::LeftDockWidgetArea, newProject->prjDockWidget);
@@ -66,7 +66,7 @@ void ProjectMan::openProject(QFile *file)
 
     projectCount++;
     emit connectProject(newProject);
-    qDebug() << "ProjectMan: return openProject()";
+    //qDebug() << "ProjectMan: return openProject()";
 }
 
 
@@ -77,9 +77,9 @@ void ProjectMan::openProject(QFile *file)
  */
 void ProjectMan::addFile(QString path, QString name)
 {
-    qDebug() << "ProjectMan: addFile()";
+    //qDebug() << "ProjectMan: addFile()";
     getActive()->addFile(path, name);
-    qDebug() << "ProjectMan: return addFile()";
+    //qDebug() << "ProjectMan: return addFile()";
 }
 
 
@@ -90,12 +90,12 @@ void ProjectMan::addFile(QString path, QString name)
  */
 QString ProjectMan::addUntrackedFile(QString path, QString name)
 {
-    qDebug() << "ProjectMan: addUntrackedFile()";
+    //qDebug() << "ProjectMan: addUntrackedFile()";
     if (this->untrackedProject == NULL)
     {
         this->addUntrackedProject();
     }
-    qDebug() << "ProjectMan: return addUntrackedFile() before project->addFile()";
+    //qDebug() << "ProjectMan: return addUntrackedFile() before project->addFile()";
     return this->untrackedProject->addFile(path, name);
 }
 
@@ -105,7 +105,7 @@ QString ProjectMan::addUntrackedFile(QString path, QString name)
  */
 void ProjectMan::addUntrackedProject()
 {
-    qDebug() << "ProjectMan: addUntrackedProject()";
+    //qDebug() << "ProjectMan: addUntrackedProject()";
     Project *newProject = new Project(this);
 
     //mainWindow->getWDockManager()->hideDockWidgetArea(0);
@@ -130,7 +130,7 @@ void ProjectMan::addUntrackedProject()
     untrackedProject = newProject;
     projectCount++;
     emit connectProject(newProject);
-    qDebug() << "ProjectMan: return addUntrackedProject()";
+    //qDebug() << "ProjectMan: return addUntrackedProject()";
 }
 
 
@@ -143,7 +143,7 @@ void ProjectMan::addUntrackedProject()
  */
 void ProjectMan::addProject(QString name, QString path, QString architecture, LangType langType, QFile *file)
 {
-    qDebug() << "ProjectMan: addProject()";
+    //qDebug() << "ProjectMan: addProject()";
     Project *newProject = new Project(name, path, architecture, langType, file, this);
 
     //mainWindow->getWDockManager()->hideDockWidgetArea(0);
@@ -171,7 +171,7 @@ void ProjectMan::addProject(QString name, QString path, QString architecture, La
     openProjects.append(newProject);
     projectCount++;
     emit connectProject(newProject);
-    qDebug() << "ProjectMan: return addProject()";
+    //qDebug() << "ProjectMan: return addProject()";
 }
 
 
@@ -181,9 +181,9 @@ void ProjectMan::addProject(QString name, QString path, QString architecture, La
  */
 void ProjectMan::setActive(Project *activePrj)
 {
-    qDebug() << "ProjectMan: setActive()";
+    //qDebug() << "ProjectMan: setActive()";
     activeProject = activePrj;
-    qDebug() << "ProjectMan: return setActive()";
+    //qDebug() << "ProjectMan: return setActive()";
 }
 
 
@@ -194,8 +194,8 @@ void ProjectMan::setActive(Project *activePrj)
  */
 bool ProjectMan::isActiveProject(Project *project)
 {
-    qDebug() << "ProjectMan: isActiveProject()";
-    qDebug() << "ProjectMan: return isActiveProject()";
+    //qDebug() << "ProjectMan: isActiveProject()";
+    //qDebug() << "ProjectMan: return isActiveProject()";
     return (project==activeProject);
 }
 
@@ -206,8 +206,8 @@ bool ProjectMan::isActiveProject(Project *project)
  */
 Project* ProjectMan::getActive()
 {
-    qDebug() << "ProjectMan: getActive()";
-    qDebug() << "ProjectMan: return getActive()";
+    //qDebug() << "ProjectMan: getActive()";
+    //qDebug() << "ProjectMan: return getActive()";
     return activeProject;
 }
 
@@ -277,7 +277,7 @@ void ProjectMan::createActiveMakefile()
 Project::Project(QFile *file, ProjectMan *parent)
     : QObject(parent)
 {
-    qDebug() << "Project: Project()";
+    //qDebug() << "Project: Project()";
     mainFileName = "";
     mainFilePath = "";
     for (int i = 0; i < 8; i++)
@@ -370,7 +370,7 @@ Project::Project(QFile *file, ProjectMan *parent)
                         QDomElement xmlCompilerElement;
                         while (!xmlCompilerNode.isNull())
                         {
-                            qDebug() << "node";
+                            //qDebug() << "node";
                             xmlCompilerElement = xmlCompilerNode.toElement();
                             if (xmlCompilerElement.tagName() == "Options")
                             {
@@ -441,7 +441,7 @@ Project::Project(QFile *file, ProjectMan *parent)
                             }
                             else if (xmlCompilerElement.tagName() == "IncludePaths")
                             {
-                                qDebug() << "Include paths";
+                                //qDebug() << "Include paths";
                                 QDomNode xmlIncludeNode = xmlCompilerElement.firstChild();
                                 QDomElement xmlIncludeElement;
                                 while (!xmlIncludeNode.isNull())
@@ -450,7 +450,7 @@ Project::Project(QFile *file, ProjectMan *parent)
                                     if (xmlIncludeElement.tagName() == "Path")
                                     {
                                         compileIncPaths << xmlIncludeElement.attribute("path");
-                                        qDebug() << "Include";
+                                        //qDebug() << "Include";
                                     }
                                     xmlIncludeNode = xmlIncludeNode.nextSibling();
                                 }
@@ -496,11 +496,11 @@ Project::Project(QFile *file, ProjectMan *parent)
             setupSim();
         }
     }
-    for (int i = 0; i < fileCount; i++)
+    /*for (int i = 0; i < fileCount; i++)
     {
         qDebug() << filePaths.at(i);
-    }
-    qDebug() << "Project: return Project()";
+    }*/
+    //qDebug() << "Project: return Project()";
 }
 
 
@@ -508,7 +508,7 @@ Project::Project(QFile *file, ProjectMan *parent)
 Project::Project(ProjectMan *parent)
     : QObject(parent)
 {
-    qDebug() << "Project: Project()";
+    //qDebug() << "Project: Project()";
     parentManager = parent;
     this->m_simControlUnit = NULL;
     prjName = "untracked";
@@ -535,7 +535,7 @@ Project::Project(ProjectMan *parent)
     connect(prjTreeWidget, SIGNAL(removeFile(QString, QString)), this, SLOT(removeFile(QString, QString)));
     connect(prjTreeWidget, SIGNAL(addFile(QString, QString)), this, SLOT(addFile(QString, QString)));
     connect(this, SIGNAL(fileCountSignal(int)), prjTreeWidget, SLOT(contextP2(int)));
-    qDebug() << "Project: return Project()";
+    //qDebug() << "Project: return Project()";
 }
 
 
@@ -552,7 +552,7 @@ Project::Project(ProjectMan *parent)
  */
 Project::Project(QString name, QString path, QString arch, LangType lang, QFile *file, ProjectMan *parent)
 {
-    qDebug() << "Project: Project() blank";
+    //qDebug() << "Project: Project() blank";
     errorFlag = ERR_OK;
     parentManager = parent;
     this->m_simControlUnit = NULL;
@@ -661,7 +661,7 @@ Project::Project(QString name, QString path, QString arch, LangType lang, QFile 
     connect(prjTreeWidget, SIGNAL(addFile(QString, QString)), this, SLOT(addFile(QString, QString)));
     connect(this, SIGNAL(fileCountSignal(int)), prjTreeWidget, SLOT(contextP2(int)));
     setupSim();
-    qDebug() << "Project: return Project() blank";
+    //qDebug() << "Project: return Project() blank";
 }
 
 
@@ -673,7 +673,7 @@ Project::Project(QString name, QString path, QString arch, LangType lang, QFile 
  */
 QString Project::addFile(QString path, QString name)
 {
-    qDebug() << "Project: addFile()";
+    //qDebug() << "Project: addFile()";
     QString fileName = name;
     if (this->prjName != "untracked" && this->prjPath != "untracked")
     {
@@ -786,7 +786,7 @@ QString Project::addFile(QString path, QString name)
         fileCount++;
     }
     return fileName;
-    qDebug() << "Project: return addFile()";
+    //qDebug() << "Project: return addFile()";
 }
 
 
@@ -796,12 +796,12 @@ QString Project::addFile(QString path, QString name)
  */
 void Project::setActive()
 {
-    qDebug() << "Project: setActive()";
+    //qDebug() << "Project: setActive()";
     if (false == parentManager->isActiveProject(this))
     {
         parentManager->setActive(this);
     }
-    qDebug() << "Project: return setActive()";
+    //qDebug() << "Project: return setActive()";
 }
 
 
@@ -810,7 +810,7 @@ void Project::setActive()
  */
 void Project::openUntrackedItem()
 {
-    qDebug() << "Project: openUntrackedItem()";
+    //qDebug() << "Project: openUntrackedItem()";
     if (prjTreeWidget->currentItem() != NULL)
     {
         emit addUntrackedFile(prjTreeWidget->currentItem()->text(0), prjTreeWidget->currentItem()->data(0, Qt::ToolTipRole).toString());
@@ -818,7 +818,7 @@ void Project::openUntrackedItem()
         //parentWindow->getWDockManager()->getCentralWidget()->setChanged();
         //wDockManager->getCentralWidget()->connectAct();
     }
-    qDebug() << "Project: return openUntrackedItem()";
+    //qDebug() << "Project: return openUntrackedItem()";
 }
 
 
@@ -827,14 +827,14 @@ void Project::openUntrackedItem()
  */
 void Project::openItem()
 {
-    qDebug() << "Project: openFile()";
+    //qDebug() << "Project: openFile()";
     if (prjTreeWidget->currentItem() != NULL)
     {
-        qDebug() << "Project: emit OpenFilePath";
+        //qDebug() << "Project: emit OpenFilePath";
         emit openFilePath(prjTreeWidget->currentItem()->data(0, Qt::ToolTipRole).toString());
         //parentManager->mainWindow->openFilePath(prjTreeWidget->currentItem()->data(0, Qt::ToolTipRole).toString());
     }
-    qDebug() << "Project: return openFile()";
+    //qDebug() << "Project: return openFile()";
 }
 
 
@@ -846,7 +846,7 @@ void Project::openItem()
  */
 void Project::setMainFile(QString path, QString name)
 {
-    qDebug() << "Project: setMainFile()";
+    //qDebug() << "Project: setMainFile()";
     QDir project(QFileInfo(prjPath).dir());
     QString relativePath = project.relativeFilePath(path);
 
@@ -898,7 +898,7 @@ void Project::setMainFile(QString path, QString name)
             xmlStream << domDoc.toString();
         }
     }
-    qDebug() << "Project: return setMainFile()";
+    //qDebug() << "Project: return setMainFile()";
 }
 
 
@@ -909,7 +909,7 @@ void Project::setMainFile(QString path, QString name)
  */
 void Project::removeFile(QString path, QString name)
 {
-    qDebug() << "Project: removeFile()";
+    //qDebug() << "Project: removeFile()";
     QDir project(QFileInfo(prjPath).dir());
     QString relativePath = project.relativeFilePath(path);
 
@@ -971,7 +971,7 @@ void Project::removeFile(QString path, QString name)
     fileNames.removeOne(name);
     filePaths.removeOne(path);
     fileCount--;
-    qDebug() << "Project: return removeFile()";
+    //qDebug() << "Project: return removeFile()";
 }
 
 
@@ -981,12 +981,12 @@ void Project::removeFile(QString path, QString name)
  */
 void Project::setupSim()
 {
-    qDebug() << "Project: setupSim()";
+    //qDebug() << "Project: setupSim()";
     McuSimCfgMgr::getInstance()->openConfigFile(":/resources//xml//mcuspecfile.xml");
     //"kcpsm3"
     this->m_simControlUnit = new MCUSimControl(architecture.toUtf8().constData());
-    qDebug() << architecture;
-    qDebug() << "Project: return setupSim()";
+    //qDebug() << architecture;
+    //qDebug() << "Project: return setupSim()";
 }
 
 
@@ -995,7 +995,7 @@ void Project::setupSim()
  */
 bool Project::start()
 {
-    qDebug() << "Project: start()";
+    //qDebug() << "Project: start()";
     emit setEditorReadOnly(true);
     //parentWindow->getWDockManager()->setEditorsReadOnly(true);
     if (langType == LANG_ASM)
@@ -1004,7 +1004,7 @@ bool Project::start()
         QDir dir(prjPath.section('/',0, -2));
         QString hexPath = dir.absoluteFilePath(mainFileName.section('.',0,-2));
         //QString hexPath = prjPath.section('/',0, -2) + "/" + mainFileName.section('.',0,-2);
-        qDebug() << "ASM:" << hexPath;
+        //qDebug() << "ASM:" << hexPath;
         std::string stdPath = hexPath.toUtf8().constData();
         if ( false == m_simControlUnit->start(stdPath, m_simControlUnit->COMPILER_NATIVE, m_simControlUnit->DBGFILEID_HEX) )
         {
@@ -1024,7 +1024,7 @@ bool Project::start()
     else if (langType == LANG_C)
     {
         QString hexPath = prjPath.section('/',0, -2) + "/build/" + mainFileName.section('.',0,-2);
-        qDebug() << "C:" << hexPath;
+        //qDebug() << "C:" << hexPath;
         std::string stdPath = hexPath.toUtf8().constData();
         if ( false == m_simControlUnit->start(stdPath, m_simControlUnit->COMPILER_GCC, m_simControlUnit->DBGFILEID_HEX) )
         {
@@ -1036,12 +1036,12 @@ bool Project::start()
             qDebug() << "Project: m_simControlUnit->start() returned true";
         }
     }
-    qDebug() << "Project: getLineNumber";
+    //qDebug() << "Project: getLineNumber";
     std::string fileName; //= new std::string;
     this->line = m_simControlUnit->getLineNumber(&fileName) - 1;
     this->currFile = QString::fromStdString(fileName);
-    qDebug() << "Project: current line number:" << line << "in file" << this->currFile;
-    qDebug() << "Project: program counter value:" << dynamic_cast<MCUSimCPU*>(m_simControlUnit->getSimSubsys(MCUSimSubsys::ID_CPU))->getProgramCounter();
+    //qDebug() << "Project: current line number:" << line << "in file" << this->currFile;
+    //qDebug() << "Project: program counter value:" << dynamic_cast<MCUSimCPU*>(m_simControlUnit->getSimSubsys(MCUSimSubsys::ID_CPU))->getProgramCounter();
     emit highlightLine(this->currFile, this->line, this->currLineColor);
     //parentWindow->getWDockManager()->setCentralByName(fileNameQStr);
     //parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(line, currLineColor, origCurrLineCol);
@@ -1052,7 +1052,7 @@ bool Project::start()
     this->prevFile = this->currFile;
     this->prevFile2 = this->currFile;
     this->prevFile3 = this->currFile;
-    qDebug() << "Project: return start()";
+    //qDebug() << "Project: return start()";
     return true;
 }
 
@@ -1063,7 +1063,7 @@ bool Project::start()
  */
 void Project::stop()
 {
-    qDebug() << "Project: stop()";
+    //qDebug() << "Project: stop()";
     std::string fileName; //= new std::string;
     this->line = m_simControlUnit->getLineNumber(&fileName) - 1;
     this->currFile = QString::fromStdString(fileName);
@@ -1076,7 +1076,7 @@ void Project::stop()
     //parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(prevLine3, NULL, NULL);
     emit setEditorReadOnly(false);
     //parentWindow->getWDockManager()->setEditorsReadOnly(false);
-    qDebug() << "Project: return stop()";
+    //qDebug() << "Project: return stop()";
 }
 
 
@@ -1098,7 +1098,7 @@ void Project::step()
     std::string fileName; //= new std::string();
     this->line = m_simControlUnit->getLineNumber(&fileName) - 1;
     this->currFile = QString::fromStdString(fileName);
-    qDebug() << "Project: current line number:" << line << "in file" << this->currFile;
+    //qDebug() << "Project: current line number:" << line << "in file" << this->currFile;
     //qDebug() << "Project: program counter value:" << dynamic_cast<MCUSimCPU*>(m_simControlUnit->getSimSubsys(MCUSimSubsys::ID_CPU))->getProgramCounter();
     //parentWindow->getWDockManager()->setCentralByName(fileNameQStr);
     emit highlightLine(this->prevFile3, this->prevLine3, NULL);
@@ -1140,21 +1140,21 @@ void Project::run()
  */
 MCUSimControl* Project::getSimControl()
 {
-    qDebug() << "Project: getSimControl()";
+    //qDebug() << "Project: getSimControl()";
     if (this->m_simControlUnit == NULL)
     {
         qDebug() << "Project: simcontrolunit is NULL";
     }
-    qDebug() << "Project: return getSimControl()";
+    //qDebug() << "Project: return getSimControl()";
     return this->m_simControlUnit;
 }
 
 
 void Project::emitFileCount()
 {
-    qDebug() << "Project: emitFileCount()";
+    //qDebug() << "Project: emitFileCount()";
     emit fileCountSignal(fileCount);
-    qDebug() << "Project: return emitFileCount()";
+    //qDebug() << "Project: return emitFileCount()";
 }
 
 
