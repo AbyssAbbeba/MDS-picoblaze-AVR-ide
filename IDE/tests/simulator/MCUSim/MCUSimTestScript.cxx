@@ -25,6 +25,8 @@
 #include <cstdlib>
 #include <algorithm>
 
+#include <iostream> // DEBUG
+
 MCUSimTestScript::MCUSimTestScript ( MCUSim * simulator,
                                      MCUSimTestScriptStrategy * strategy )
                                    : m_simulator ( simulator ),
@@ -388,6 +390,8 @@ int MCUSimTestScript::str2bool ( const std::string & token )
 {
     std::string str = token;
     std::transform(str.begin(), str.end(), str.begin(), ::tolower);
+
+    std::cout << "MCUSimTestScript::str2bool ( \""<<str<<"\" ) --> "<<int( ( 0 != strcmp(str.c_str(), "true") ) ? 1 : 0 )<<"\n";
 
     return ( ( 0 != strcmp(str.c_str(), "true") ) ? 1 : 0 );
 }
