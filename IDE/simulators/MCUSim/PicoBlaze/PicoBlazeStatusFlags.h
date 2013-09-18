@@ -19,8 +19,6 @@
 #include "../MCUSim.h"
 #include "PicoBlazeStatusFlagsBase.h"
 
-#include <iostream> // DEBUG
-
 /**
  * @brief
  * @ingroup PicoBlaze
@@ -160,7 +158,6 @@ class PicoBlazeStatusFlags : public MCUSimSubsys,
              */
             void setCarry ( bool flag )
             {
-std::cout << "PicoBlazeStatusFlags::setCarry ( "<<flag<<" )\n";
                 m_carry = flag;
                 logEvent(EVENT_FLAGS_C_CHANGED, 0, flag);
             }
@@ -171,7 +168,6 @@ std::cout << "PicoBlazeStatusFlags::setCarry ( "<<flag<<" )\n";
              */
             void setZero ( bool flag )
             {
-std::cout << "PicoBlazeStatusFlags::setZero ( "<<flag<<" )\n";
                 m_zero = flag;
                 logEvent(EVENT_FLAGS_Z_CHANGED, 0, flag);
             }
