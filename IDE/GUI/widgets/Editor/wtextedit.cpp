@@ -16,7 +16,7 @@
 WTextEdit::WTextEdit(QWidget *parent, SourceType type)
     : QTextEdit(parent)
 {
-    qDebug() << "WTextEdit: WTextEdit()";
+    //qDebug() << "WTextEdit: WTextEdit()";
     this->sourceType = type;
     this->installEventFilter(this);
     if (this->sourceType != PLAIN)
@@ -24,12 +24,12 @@ WTextEdit::WTextEdit(QWidget *parent, SourceType type)
         highlighter = new Highlighter(this->document(), this->sourceType);
     }
     //this->setFocusPolicy(Qt::ClickFocus);
-    qDebug() << "WTextEdit: return WTextEdit()";
+    //qDebug() << "WTextEdit: return WTextEdit()";
 }
 
 void WTextEdit::reloadHighlighter(SourceType type)
 {
-    qDebug() << "WTextEdit: reloadHighlighter()";
+    //qDebug() << "WTextEdit: reloadHighlighter()";
     if (this->sourceType != PLAIN)
     {
         delete highlighter;
@@ -39,7 +39,7 @@ void WTextEdit::reloadHighlighter(SourceType type)
         highlighter = new Highlighter(this->document(), type);
     }
     this->sourceType = type;
-    qDebug() << "WTextEdit: return reloadHighlighter()";
+    //qDebug() << "WTextEdit: return reloadHighlighter()";
 }
 
 
@@ -129,7 +129,7 @@ bool WTextEdit::eventFilter(QObject *target, QEvent *event)
 
 void WTextEdit::highlightCurrentLine()
 {
-    qDebug() << "WTextEdit: highlightCurrentLine()";
+    //qDebug() << "WTextEdit: highlightCurrentLine()";
     QTextCursor cursor(this->textCursor());
     QTextBlockFormat lineFormat = cursor.blockFormat();
     if (lineFormat.background() == Qt::green)
@@ -143,14 +143,14 @@ void WTextEdit::highlightCurrentLine()
         lineFormat.setBackground(Qt::green);
     }
     cursor.setBlockFormat(lineFormat);
-    qDebug() << "WTextEdit: return highlightCurrentLine()";
+    //qDebug() << "WTextEdit: return highlightCurrentLine()";
 }
 
 
 void WTextEdit::highlightLine(int line, QColor *color)
 {
-    qDebug() << "WTextEdit: highlightLine()";
-    qDebug() << "WTextEdit: highlighted line is" << line;
+    //qDebug() << "WTextEdit: highlightLine()";
+    //qDebug() << "WTextEdit: highlighted line is" << line;
     //origColor = NULL;
     if (line >= 0 && line <= this->document()->lineCount())
     {
@@ -176,18 +176,18 @@ void WTextEdit::highlightLine(int line, QColor *color)
     {
         qDebug() << "WTextEdit: highlight failed----";
     }
-    qDebug() << "WTextEdit: return highlightLine()";
+    //qDebug() << "WTextEdit: return highlightLine()";
 }
 
 
 void WTextEdit::setPosition(int pos)
 {
-    qDebug() << "WTextEdit: setPosition()";
+    //qDebug() << "WTextEdit: setPosition()";
     QTextCursor cursor(this->textCursor());
     cursor.setPosition(pos);
     this->setTextCursor(cursor);
     this->verticalScrollBar()->setValue(this->verticalScrollBar()->value());
-    qDebug() << "WTextEdit: return setPosition()";
+    //qDebug() << "WTextEdit: return setPosition()";
 }
 
 
@@ -199,9 +199,9 @@ int WTextEdit::getPosition()
 
 void WTextEdit::scrollToLine(int line)
 {
-    qDebug() << "WTextEdit: scrollToLine()";
+    //qDebug() << "WTextEdit: scrollToLine()";
     //qDebug() << "WTextEdit: curr value:" <<  this->verticalScrollBar()->value() << "max value:" <<  this->verticalScrollBar()->maximum() << "calculated value:" << (line / this->document()->lineCount()) * this->verticalScrollBar()->maximum();
     //qDebug() << "WTextEdit: line" << line << "line count:" << this->document()->lineCount() << "value:" << (double)line / (double)this->document()->lineCount();
     this->verticalScrollBar()->setValue((int)(((double)line / (double)this->document()->lineCount()) * this->verticalScrollBar()->maximum()));
-    qDebug() << "WTextEdit: return scrollToLine()";
+    //qDebug() << "WTextEdit: return scrollToLine()";
 }

@@ -33,7 +33,7 @@
  */
 MainForm::MainForm()
 {
-    qDebug() << "MainForm: MainForm()";
+    //qDebug() << "MainForm: MainForm()";
     projectMan = new ProjectMan(this);
     connect(projectMan, SIGNAL(addDockWidget(Qt::DockWidgetArea, QDockWidget*)), this, SLOT(addDockWidgetSlot(Qt::DockWidgetArea, QDockWidget*)));
     connect(projectMan, SIGNAL(tabifyDockWidget(QDockWidget*, QDockWidget*)), this, SLOT(tabifyDockWidgetSlot(QDockWidget*, QDockWidget*)));
@@ -52,7 +52,7 @@ MainForm::MainForm()
     createToolbar();
     //CreateDockWidgets();
     //CreateWelcome();
-    qDebug() << "MainForm: return MainForm()";
+    //qDebug() << "MainForm: return MainForm()";
 }
 
 
@@ -62,7 +62,7 @@ MainForm::MainForm()
  */
 void MainForm::createMenu()
 {
-    qDebug() << "MainForm: createMenu()";
+    //qDebug() << "MainForm: createMenu()";
     fileMenu = menuBar()->addMenu(tr("&File"));
     fileMenu->addAction(newAct);
     fileMenu->addAction(openAct);
@@ -94,7 +94,7 @@ void MainForm::createMenu()
     helpMenu->addAction(aboutQTAct);
     helpMenu->addAction(helpActionAct);
     helpMenu->addAction(example1Act);
-    qDebug() << "MainForm: return createMenu()";
+    //qDebug() << "MainForm: return createMenu()";
 }
 
 
@@ -105,7 +105,7 @@ void MainForm::createMenu()
  */
 void MainForm::createActions()
 {
-    qDebug() << "MainForm: CreateActions()";
+    //qDebug() << "MainForm: CreateActions()";
     newAct = new QAction(tr("&New File"), this);
     newAct->setStatusTip("Create a new file");
     connect(newAct, SIGNAL(triggered()), this, SLOT(newFile()));
@@ -229,7 +229,7 @@ void MainForm::createActions()
     connect(helpActionAct, SIGNAL(triggered()), this, SLOT(help()));
     example1Act = new QAction(tr("Example 1"), this);
     connect(example1Act, SIGNAL(triggered()), this, SLOT(exampleOpen()));
-    qDebug() << "MainForm: return CreateActions()";
+    //qDebug() << "MainForm: return CreateActions()";
 }
 
 
@@ -240,7 +240,7 @@ void MainForm::createActions()
  */
 void MainForm::createToolbar()
 {
-    qDebug() << "MainForm: CreateToolbar()";
+    //qDebug() << "MainForm: CreateToolbar()";
     //fileToolBar = addToolBar(tr("File Toolbar"));
     projectToolBar = addToolBar(tr("Project Toolbar"));
     simulationToolBar = addToolBar(tr("Simulation Toolbar"));
@@ -268,7 +268,7 @@ void MainForm::createToolbar()
     addToolBar(Qt::TopToolBarArea, projectToolBar);
     addToolBar(Qt::TopToolBarArea, simulationToolBar);
     //addToolBar(Qt::TopToolBarArea, fileToolBar);
-    qDebug() << "MainForm: return CreateToolbar()";
+    //qDebug() << "MainForm: return CreateToolbar()";
 }
 
 
@@ -285,7 +285,7 @@ void MainForm::createToolbar()
  */
 void MainForm::createDockWidgets()
 {
-    qDebug() << "MainForm: CreateDockWidgets()";
+    //qDebug() << "MainForm: CreateDockWidgets()";
     //setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
     setCorner(Qt::BottomLeftCorner, Qt::BottomDockWidgetArea);
     setCorner(Qt::BottomRightCorner, Qt::RightDockWidgetArea);
@@ -310,7 +310,7 @@ void MainForm::createDockWidgets()
     saveAct->setEnabled(true);
     wDockManager->dockWidgets = true;
     //emit dockWidgetsCreated;
-    qDebug() << "MainForm: return CreateDockWidgets()";
+    //qDebug() << "MainForm: return CreateDockWidgets()";
 }
 
 
@@ -330,11 +330,11 @@ void MainForm::createWelcome()
  */
 void MainForm::newFile()
 {
-    qDebug() << "MainForm: newFile()";
+    //qDebug() << "MainForm: newFile()";
     //jen se vytvori novy tab na code editoru
     //prepta se dialogem, zda pridat do aktivniho projektu
     projectMan->addUntrackedFile(NULL, NULL);
-    qDebug() << "MainForm: return newFile()";
+    //qDebug() << "MainForm: return newFile()";
 }
 
 
@@ -343,7 +343,7 @@ void MainForm::newFile()
  */
 void MainForm::newAddFile()
 {
-    qDebug() << "MainForm: newAddFile()";
+    //qDebug() << "MainForm: newAddFile()";
     //jen se vytvori novy tab na code editoru
     //a soubor se prida k projektu
     QString path = QFileDialog::getSaveFileName(this, tr("Source File"), QString(), QString(), 0, QFileDialog::DontUseNativeDialog);
@@ -361,7 +361,7 @@ void MainForm::newAddFile()
         projectMan->addFile(path, path.section('/', -1));
         wDockManager->getCentralWidget()->setParentProject(projectMan->getActive());
     }
-    qDebug() << "MainForm: return newAddFile()";
+    //qDebug() << "MainForm: return newAddFile()";
 }
 
 
@@ -370,7 +370,7 @@ void MainForm::newAddFile()
  */
 void MainForm::openFile()
 {
-    qDebug() << "MainForm: openFile()";
+    //qDebug() << "MainForm: openFile()";
     QString path = QFileDialog::getOpenFileName(this, tr("Source File"), "");
     if (path != NULL)
     {
@@ -388,7 +388,7 @@ void MainForm::openFile()
             wDockManager->addUntrackedCentralWidget(path.section('/', -1), path);
         }
     }
-    qDebug() << "MainForm: return openFile()";
+    //qDebug() << "MainForm: return openFile()";
 }
 
 
@@ -398,7 +398,7 @@ void MainForm::openFile()
  */
 void MainForm::openFilePath(QString path)
 {
-    qDebug() << "MainForm: openFilePath()";
+    //qDebug() << "MainForm: openFilePath()";
     //QDir thisDir(".");
     //QDir projectDir(QFileInfo(projectMan->activeProject->prjPath).dir());
     //QString absoluteFilePath = QFileInfo(projectMan->getActive()->prjPath).dir().path() + "/" + path;
@@ -415,7 +415,7 @@ void MainForm::openFilePath(QString path)
         wDockManager->getCentralWidget()->connectAct();
         wDockManager->getCentralWidget()->setParentProject(projectMan->getActive());
     }
-    qDebug() << "MainForm: return openFilePath()";
+    //qDebug() << "MainForm: return openFilePath()";
 }
 
 
@@ -424,7 +424,7 @@ void MainForm::openFilePath(QString path)
  */
 void MainForm::addFile()
 {
-    qDebug() << "MainForm: addFile()";
+    //qDebug() << "MainForm: addFile()";
     if (wDockManager->isEmpty() == false)
     {
         QString path;
@@ -445,7 +445,7 @@ void MainForm::addFile()
         projectMan->addFile(path, path.section('/', -1));
         wDockManager->getCentralWidget()->setParentProject(projectMan->getActive());
     }
-    qDebug() << "MainForm: return addFile()";
+    //qDebug() << "MainForm: return addFile()";
 }
 
 /**
@@ -453,7 +453,7 @@ void MainForm::addFile()
  */
 void MainForm::saveFile()
 {
-    qDebug() << "MainForm: saveFile()";
+    //qDebug() << "MainForm: saveFile()";
     if (wDockManager->getCentralWidget()->isChanged() == true)
     {
         QString path;
@@ -480,7 +480,7 @@ void MainForm::saveFile()
             //qDebug() << "mainform: file saved";
         }
     }
-    qDebug() << "MainForm: return saveFile()";
+    //qDebug() << "MainForm: return saveFile()";
 }
 
 
@@ -489,7 +489,7 @@ void MainForm::saveFile()
  */
 void MainForm::saveFileAs()
 {
-    qDebug() << "MainForm: saveFileAs()";
+    //qDebug() << "MainForm: saveFileAs()";
     //QString path = QFileDialog::getSaveFileName(this, tr("Source File");
     QString path = QFileDialog::getSaveFileName(this, tr("Source File"), QString(), QString(), 0, QFileDialog::DontUseNativeDialog);
     QFile file(path);
@@ -505,7 +505,7 @@ void MainForm::saveFileAs()
         wDockManager->setCentralName(path.section('/', -1));
         wDockManager->getCentralWidget()->setSaved();
     }
-    qDebug() << "MainForm: return saveFileAs()";
+    //qDebug() << "MainForm: return saveFileAs()";
 }
 
 
@@ -514,7 +514,7 @@ void MainForm::saveFileAs()
  */
 void MainForm::saveFile(CodeEdit *editor)
 {
-    qDebug() << "MainForm: saveFile()";
+    //qDebug() << "MainForm: saveFile()";
     if (editor->isChanged() == true)
     {
         QString path;
@@ -539,10 +539,10 @@ void MainForm::saveFile(CodeEdit *editor)
             fout << editor->getTextEdit()->toPlainText();
             file.close();
             editor->setSaved();
-            qDebug() << "mainform: editor saved";
+            //qDebug() << "mainform: editor saved";
         }
     }
-    qDebug() << "MainForm: return saveFile()";
+    //qDebug() << "MainForm: return saveFile()";
 }
 
 
@@ -552,7 +552,7 @@ void MainForm::saveFile(CodeEdit *editor)
  */
 void MainForm::saveAll()
 {
-    qDebug() << "MainForm: saveAll()";
+    //qDebug() << "MainForm: saveAll()";
     //ulozi vsechny zmenene a nepojmenovane
     for (int i = 0; i < wDockManager->getTabCount(); i++)
     {
@@ -561,7 +561,7 @@ void MainForm::saveAll()
             saveFile(wDockManager->getTabWidget(i));
         }
     }
-    qDebug() << "MainForm: return saveAll()";
+    //qDebug() << "MainForm: return saveAll()";
 }
 
 /**
@@ -569,10 +569,10 @@ void MainForm::saveAll()
  */
 void MainForm::newProject()
 {
-    qDebug() << "MainForm: newProject()";
+    //qDebug() << "MainForm: newProject()";
     ProjectDialog *projectEdit = new ProjectDialog(this, projectMan);
     projectEdit->show();
-    qDebug() << "MainForm: return newProject()";
+    //qDebug() << "MainForm: return newProject()";
 }
 
 
@@ -581,14 +581,15 @@ void MainForm::newProject()
  */
 void MainForm::openProject()
 {
-    qDebug() << "MainForm: openProject()";
+    //qDebug() << "MainForm: openProject()";
     //nalezeni projektu
     QFileDialog dialog;
     QString path = QFileDialog::getOpenFileName (this, tr("Project Directory"), tr("Project (*.mmp)"));
     
-    if (path.isEmpty()==false) {
+    if (path.isEmpty() == false)
+    {
     //nacteni projektu
-        qDebug() << path;
+        //qDebug() << path;
         QFile file(path);
         if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
         {
@@ -601,7 +602,7 @@ void MainForm::openProject()
             file.close();
         }
     }
-    qDebug() << "MainForm: return openProject()";
+    //qDebug() << "MainForm: return openProject()";
 }
 
 
@@ -611,7 +612,7 @@ void MainForm::openProject()
  */
 void MainForm::openProject(QString path)
 {
-    qDebug() << "MainForm: openProject()";
+    //qDebug() << "MainForm: openProject()";
     QFile file(path);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
@@ -623,7 +624,7 @@ void MainForm::openProject(QString path)
         projectMan->openProject(&file);
         file.close();
     }
-    qDebug() << "MainForm: return openProject()";
+    //qDebug() << "MainForm: return openProject()";
 }
 
 
@@ -632,7 +633,7 @@ void MainForm::openProject(QString path)
  */
 void MainForm::saveProject()
 {
-    qDebug() << "MainForm: saveProject()";
+    //qDebug() << "MainForm: saveProject()";
     for (int i = 0; i < wDockManager->getTabCount(); i++)
     {
         if (wDockManager->getTabWidget(i)->isChild(projectMan->getActive()) == true)
@@ -640,7 +641,7 @@ void MainForm::saveProject()
             saveFile(wDockManager->getTabWidget(i));
         }
     }
-    qDebug() << "MainForm: return saveProject()";
+    //qDebug() << "MainForm: return saveProject()";
 }
 
 
@@ -676,8 +677,8 @@ void MainForm::compileProject()
         mainFile = fileDir.relativeFilePath(prjDir.absolutePath()) + "/" +  this->projectMan->getActive()->mainFileName.section('.',0,-2);
     }
     
-    qDebug() << QString::fromStdString(options->m_sourceFile);
-    qDebug() << mainFile;
+    //qDebug() << QString::fromStdString(options->m_sourceFile);
+    //qDebug() << mainFile;
 
     options->m_device = this->projectMan->getActive()->architecture.toStdString();
     
@@ -997,14 +998,14 @@ void MainForm::connectProjectSlot(Project *project)
  */
 void MainForm::highlightLine(QString file, int line, QColor *color)
 {
-    qDebug() << "MainForm: highlightLine";
+    //qDebug() << "MainForm: highlightLine";
     if (file != "")
     {
         this->getWDockManager()->setCentralByName(file.section('/', -1));
         this->getWDockManager()->getCentralTextEdit()->highlightLine(line, color);
         this->getWDockManager()->getCentralTextEdit()->scrollToLine(line);
     }
-    qDebug() << "MainForm: return highlightLine";
+    //qDebug() << "MainForm: return highlightLine";
 }
 
 
@@ -1034,9 +1035,9 @@ void MainForm::scrollCentralToLine(int line)
  */
 void MainForm::setEditorReadOnly(bool readOnly)
 {
-    qDebug() << "MainForm: setEditorReadOnly";
+    //qDebug() << "MainForm: setEditorReadOnly";
     this->getWDockManager()->setEditorsReadOnly(readOnly);
-    qDebug() << "MainForm: return setEditorReadOnly";
+    //qDebug() << "MainForm: return setEditorReadOnly";
 }
 
 
@@ -1047,11 +1048,11 @@ void MainForm::setEditorReadOnly(bool readOnly)
  */
 void MainForm::addUntrackedFile(QString name, QString path)
 {
-    qDebug() << "MainForm: addUntrackedFile";
+    //qDebug() << "MainForm: addUntrackedFile";
     getWDockManager()->addUntrackedCentralWidget(name, path);
     //getWDockManager()->getCentralWidget()->setChanged();
     //getWDockManager()->getCentralWidget()->connectAct();
-    qDebug() << "MainForm: return addUntrackedFile";
+    //qDebug() << "MainForm: return addUntrackedFile";
 }
 
 
