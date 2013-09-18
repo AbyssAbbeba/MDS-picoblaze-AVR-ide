@@ -39,6 +39,7 @@ public:
 	void deviceReset();
 	void setReadOnly(bool readOnly);
     void fixHeight();
+    void unhighlight();
 
 public slots:
 	void changeValue(int address);

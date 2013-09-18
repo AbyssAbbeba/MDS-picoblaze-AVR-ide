@@ -19,7 +19,8 @@ class RegistersWidget : public QTableWidget, public MCUSimObserver
         void deviceChanged();
         void deviceReset();
         void setReadOnly(bool readOnly);
-        void fixHeight();
+        //void fixHeight();
+        void unhighlight();
 
     private slots:
         void updateValue(int row, int column);

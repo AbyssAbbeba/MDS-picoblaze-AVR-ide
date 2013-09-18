@@ -43,6 +43,7 @@ class PortHexEdit : public QWidget, public MCUSimObserver
         void setReadOnly(bool readOnly);
         void fixHeight();
         void switchPorts();
+        void unhighlight();
 
         bool visibleIn;
 
