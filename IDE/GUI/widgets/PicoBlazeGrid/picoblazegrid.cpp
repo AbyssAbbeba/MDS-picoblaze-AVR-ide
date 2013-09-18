@@ -24,7 +24,7 @@
 PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
     : QWidget(parent)
 {
-    qDebug() << "PicoBlazeGrid: PicoBlazeGrid()";
+    //qDebug() << "PicoBlazeGrid: PicoBlazeGrid()";
 
     std::vector<int> mask;
     mask.push_back(MCUSimCPU::EVENT_CPU_PC_CHANGED);
@@ -147,7 +147,7 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
 
     deviceChanged();
     
-    qDebug() << "PicoBlazeGrid: return PicoBlazeGrid()";
+    //qDebug() << "PicoBlazeGrid: return PicoBlazeGrid()";
 }
 
 
@@ -168,15 +168,11 @@ void PicoBlazeGrid::switchPorts()
     {
         this->memPorts->switchPorts();
         this->btnPorts->setText("Output");
-        //this->lblRD->setFrameShape(QFrame::NoFrame);
-        //this->lblRW->setFrameShape(QFrame::Box);
     }
     else
     {
         this->memPorts->switchPorts();
         this->btnPorts->setText("Input");
-        //this->lblRD->setFrameShape(QFrame::Box);
-        //this->lblRW->setFrameShape(QFrame::NoFrame);
     }
 }
 
@@ -211,7 +207,7 @@ void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason,
                     this->lePC->setText("00" + QString::number(value, 16).toUpper() + "h");
                 }
                 QPalette lePalette = this->lePC->palette();
-                lePalette.setColor(this->lePC->backgroundRole(), QColor(Qt::yellow));
+                lePalette.setColor(QPalette::Base, Qt::yellow);
                 lePC->setPalette(lePalette);
                 break;
             }
@@ -229,30 +225,22 @@ void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason,
         {
             case MCUSimPureLogicIO::EVENT_PLIO_WRITE:
             {
-                QPalette palette = this->lblRW->palette();
-                palette.setColor(this->lblRW->foregroundRole(), Qt::green);
-                this->lblRW->setPalette(palette);
+                this->lblRW->setStyleSheet("color: #00ff00");
                 break;
             }
             case MCUSimPureLogicIO::EVENT_PLIO_READ:
             {
-                QPalette palette = this->lblRD->palette();
-                palette.setColor(this->lblRD->foregroundRole(), Qt::green);
-                this->lblRD->setPalette(palette);
+                this->lblRD->setStyleSheet("color: #00ff00");
                 break;
             }
             case MCUSimPureLogicIO::EVENT_PLIO_WRITE_END:
             {
-                QPalette palette = this->lblRW->palette();
-                palette.setColor(this->lblRW->foregroundRole(), Qt::gray);
-                this->lblRW->setPalette(palette);
+                this->lblRW->setStyleSheet("color: none");
                 break;
             }
             case MCUSimPureLogicIO::EVENT_PLIO_READ_END:
             {
-                QPalette palette = this->lblRD->palette();
-                palette.setColor(this->lblRD->foregroundRole(), Qt::gray);
-                this->lblRD->setPalette(palette);
+                this->lblRD->setStyleSheet("color: none");
                 break;
             }
             default:
@@ -269,16 +257,16 @@ void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason,
         {
             case PicoBlazeStatusFlags::EVENT_FLAGS_Z_CHANGED:
             {
+                qDebug() << "PicoBlazeGrid: EVENT_FLAGS_Z_CHANGED";
                 QPalette palette = this->btnZero->palette();
                 if (palette.color(QPalette::ButtonText) ==  Qt::green)
                 {
-                    palette.setColor(QPalette::ButtonText, Qt::gray);
+                    this->btnZero->setStyleSheet("color: none");
                 }
                 else
                 {
-                    palette.setColor(QPalette::ButtonText, Qt::green);
+                    this->btnZero->setStyleSheet("color: #00ff00");
                 }
-                this->btnZero->setPalette(palette);
                 break;
             }
             case PicoBlazeStatusFlags::EVENT_FLAGS_C_CHANGED:
@@ -286,11 +274,11 @@ void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason,
                 QPalette palette = this->btnCarry->palette();
                 if (palette.color(QPalette::ButtonText) ==  Qt::green)
                 {
-                    palette.setColor(QPalette::ButtonText, Qt::gray);
+                    this->btnCarry->setStyleSheet("color: none");
                 }
                 else
                 {
-                    palette.setColor(QPalette::ButtonText, Qt::green);
+                    this->btnCarry->setStyleSheet("color: #00ff00");
                 }
                 this->btnCarry->setPalette(palette);
                 break;
@@ -300,13 +288,12 @@ void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason,
                 QPalette palette = this->btnInte->palette();
                 if (palette.color(QPalette::ButtonText) ==  Qt::green)
                 {
-                    palette.setColor(QPalette::ButtonText, Qt::gray);
+                    this->btnInte->setStyleSheet("color: none");
                 }
                 else
                 {
-                    palette.setColor(QPalette::ButtonText, Qt::green);
+                    this->btnInte->setStyleSheet("color: #00ff00");
                 }
-                this->btnInte->setPalette(palette);
                 break;
             }
             case PicoBlazeStatusFlags::EVENT_FLAGS_INT_CHANGED:
@@ -314,13 +301,12 @@ void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason,
                 QPalette palette = this->btnIntr->palette();
                 if (palette.color(QPalette::ButtonText) ==  Qt::green)
                 {
-                    palette.setColor(QPalette::ButtonText, Qt::gray);
+                    this->btnIntr->setStyleSheet("color: none");
                 }
                 else
                 {
-                    palette.setColor(QPalette::ButtonText, Qt::green);
+                    this->btnIntr->setStyleSheet("color: #00ff00");
                 }
-                this->btnIntr->setPalette(palette);
                 break;
             }
             default:
@@ -342,7 +328,7 @@ void PicoBlazeGrid::deviceChanged()
 
 void PicoBlazeGrid::deviceReset()
 {
-    qDebug() << "PicoBlazeGrid: deviceReset()";
+    //qDebug() << "PicoBlazeGrid: deviceReset()";
     int value = m_cpu->getProgramCounter();
     if (value > 0xFF)
     {
@@ -361,7 +347,7 @@ void PicoBlazeGrid::deviceReset()
     lePalette.setColor(lePC->backgroundRole(), lePalette.base().color());
     lePC->setPalette(lePalette);
     
-    qDebug() << "PicoBlazeGrid: return deviceReset()";
+    //qDebug() << "PicoBlazeGrid: return deviceReset()";
 }
 
 
