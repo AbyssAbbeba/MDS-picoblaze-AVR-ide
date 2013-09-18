@@ -15,8 +15,6 @@
 
 #include "PicoBlazeStatusFlags.h"
 
-#include <iostream> // DEBUG
-
 PicoBlazeStatusFlags::PicoBlazeStatusFlags()
 {
     reset(MCUSim::RSTMD_MCU_RESET);
@@ -26,7 +24,7 @@ void PicoBlazeStatusFlags::reset ( MCUSimBase::ResetMode mode )
 {
     if ( MCUSim::RSTMD_MCU_RESET == mode )
     {
-std::cout << "ABYSS ::::: PicoBlazeStatusFlags::reset ( MCUSim::RSTMD_MCU_RESET );\n";
+std::cout << "PicoBlazeStatusFlags::reset\n";
         m_carry       = false;
         m_zero        = false;
         m_inte        = false;
