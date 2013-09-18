@@ -34,7 +34,7 @@
 
 // Standard headers.
 #include <vector>
-
+#include <iostream> // DEBUG
 #define HANDLE_ACTION(arg)                  \
     switch ( arg )                          \
     {                                       \
@@ -199,6 +199,7 @@ void AsmPicoBlazeTreeDecoder::phase2 ( CompilerStatement * codeTree )
 
             default: // Only instructions are expected here, anything else will be ignored and deleted.
             {
+std::cout << "ABYSS ::::: " << node << "\n\n";
                 int opcode = m_instructionSet->resolveOPcode(node);
                 if ( -1 == opcode )
                 {
