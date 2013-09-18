@@ -19,8 +19,6 @@
 #include "../../../../simulators/MCUSim/PicoBlaze/PicoBlazeStatusFlagsBase.h"
 #include "../../../../simulators/MCUSim/PicoBlaze/PicoBlazeInterruptController.h"
 
-#include <iostream> // DEBUG
-
 bool PicoBlazeStrategy::processLine ( std::vector<std::string> * tokens,
                                       bool useAsmFile,
                                       MCUSimTestScript::Command * cmd )
@@ -67,27 +65,27 @@ bool PicoBlazeStrategy::processLine ( std::vector<std::string> * tokens,
                 std::transform(tokens->at(2).begin(), tokens->at(2).end(), tokens->at(2).begin(), ::toupper);
 
                 int flagID;
-                if ( 0 != strcmp("Z", tokens->at(2).c_str()) )
+                if ( 0 == strcmp("Z", tokens->at(2).c_str()) )
                 {
                     flagID = FID_Z;
                 }
-                else if ( 0 != strcmp("C", tokens->at(2).c_str()) )
+                else if ( 0 == strcmp("C", tokens->at(2).c_str()) )
                 {
                     flagID = FID_C;
                 }
-                else if ( 0 != strcmp("PZ", tokens->at(2).c_str()) )
+                else if ( 0 == strcmp("PZ", tokens->at(2).c_str()) )
                 {
                     flagID = FID_PZ;
                 }
-                else if ( 0 != strcmp("PC", tokens->at(2).c_str()) )
+                else if ( 0 == strcmp("PC", tokens->at(2).c_str()) )
                 {
                     flagID = FID_PC;
                 }
-                else if ( 0 != strcmp("IE", tokens->at(2).c_str()) )
+                else if ( 0 == strcmp("IE", tokens->at(2).c_str()) )
                 {
                     flagID = FID_IE;
                 }
-                else if ( 0 != strcmp("I", tokens->at(2).c_str()) )
+                else if ( 0 == strcmp("I", tokens->at(2).c_str()) )
                 {
                     flagID = FID_I;
                 }
@@ -126,9 +124,6 @@ bool PicoBlazeStrategy::executeCommand ( const MCUSimTestScript::Command & cmd,
                 *m_execMessage = "PicoBlazeStatusFlagsBase subsystem not available";
                 return false;
             }
-
-
-std::cout << "PicoBlazeStrategy::executeCommand | Z == "<<flags->m_zero<<", C == "<<flags->m_carry<<"\n";
 
             switch ( cmd.m_args[0] )
             {
