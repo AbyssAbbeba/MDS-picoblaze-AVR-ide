@@ -206,9 +206,7 @@ void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason,
                 {
                     this->lePC->setText("00" + QString::number(value, 16).toUpper() + "h");
                 }
-                QPalette lePalette = this->lePC->palette();
-                lePalette.setColor(QPalette::Base, Qt::yellow);
-                lePC->setPalette(lePalette);
+                this->lePC->setStyleSheet("background-color: yellow");
                 break;
             }
             default:
@@ -342,10 +340,7 @@ void PicoBlazeGrid::deviceReset()
     {
         this->lePC->setText("00" + QString::number(value, 16).toUpper() + "h");
     }
-
-    QPalette lePalette = this->lePC->palette();
-    lePalette.setColor(lePC->backgroundRole(), lePalette.base().color());
-    lePC->setPalette(lePalette);
+    this->unhighlight();
     
     //qDebug() << "PicoBlazeGrid: return deviceReset()";
 }
@@ -361,4 +356,14 @@ void PicoBlazeGrid::fixHeight()
 {
     memScratch->fixHeight();
     memPorts->fixHeight();
+}
+
+
+void PicoBlazeGrid::unhighlight()
+{
+    this->lePC->setStyleSheet("background-color: none");
+    this->btnZero->setStyleSheet("color: none");
+    this->btnCarry->setStyleSheet("color: none");
+    this->btnInte->setStyleSheet("color: none");
+    this->btnIntr->setStyleSheet("color: none");
 }

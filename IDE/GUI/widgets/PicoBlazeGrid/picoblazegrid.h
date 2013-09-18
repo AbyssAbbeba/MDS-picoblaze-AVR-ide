@@ -56,6 +56,7 @@ class PicoBlazeGrid : public QWidget, public MCUSimObserver
         void deviceChanged();
         void deviceReset();
         void setReadOnly(bool readOnly);
+        void unhighlight();
         
     private:
         MCUSimControl *controlUnit;
