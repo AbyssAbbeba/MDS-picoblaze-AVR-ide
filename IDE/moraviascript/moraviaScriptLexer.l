@@ -260,13 +260,13 @@ XESC    (\\[0-7]{1,3})|(\\x[0-9A-F]{1,2})|(\\[uU][0-9A-F]{1,8})
                 }
 
  /* Identifiers: */
-\$?{ID}         {
+{ID}            {
                     // Arbitrary identifier, e.g. `MYREG_U1'.
 
                     // Convert the string to upper case characters.
                     for ( int i = 0; i < yyleng; i++ )
                     {
-                        yytext[i] = toupper(yytext[i]);
+                        yytext[i] = yytext[i];
                     }
 
                     // Return as general identifier.
