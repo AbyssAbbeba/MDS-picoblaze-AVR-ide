@@ -199,10 +199,10 @@ void AsmPicoBlazeTreeDecoder::phase2 ( CompilerStatement * codeTree )
 
             default: // Only instructions are expected here, anything else will be ignored and deleted.
             {
-std::cout << "ABYSS ::::: " << node << "\n\n";
                 int opcode = m_instructionSet->resolveOPcode(node);
                 if ( -1 == opcode )
                 {
+std::cout << "ABYSS ::::: " << node << "\n\n";
                     m_compilerCore->compilerMessage ( node->location(),
                                                       CompilerBase::MT_ERROR,
                                                       QObject::tr ( "instruction not supported on the this device: " )
