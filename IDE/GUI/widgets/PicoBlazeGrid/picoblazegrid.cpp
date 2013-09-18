@@ -364,4 +364,7 @@ void PicoBlazeGrid::unhighlight()
     this->btnIntr->setStyleSheet("color: none");
     this->lblRD->setStyleSheet("color: none");
     this->lblWR->setStyleSheet("color: none");
+    this->memRegs->unhighlight();
+    this->memScratch->unhighlight();
+    this->memPorts->unhighlight();
 }

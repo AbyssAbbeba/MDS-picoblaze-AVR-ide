@@ -216,7 +216,7 @@ void RegistersWidget::deviceReset()
         
         QTableWidgetItem *reg2 = new QTableWidgetItem("S" + QString::number(i + m_size/2, 16).toUpper());
         reg2->setFlags(Qt::NoItemFlags);
-        this->setItem(i, 4, reg2);
+        setItem(i, 4, reg2);
 
         QTableWidgetItem *dec2 = new QTableWidgetItem("00" + QString::number(0, 10));
         dec2->setFlags(Qt::ItemIsEditable|Qt::ItemIsEnabled);
@@ -394,4 +394,18 @@ void RegistersWidget::updateValue(int row, int column)
         this->update = false;
     }
     //qDebug() << "RegistersWidget: return updateValue()";
+}
+
+
+void RegistersWidget::unhighlight()
+{
+    for (int i = 0; i < this->rowCount(); i++)
+    {
+        this->item(i, 1)->setBackground(this->palette().base().color());
+        this->item(i, 2)->setBackground(this->palette().base().color());
+        this->item(i, 3)->setBackground(this->palette().base().color());
+        this->item(i, 5)->setBackground(this->palette().base().color());
+        this->item(i, 6)->setBackground(this->palette().base().color());
+        this->item(i, 7)->setBackground(this->palette().base().color());
+    }
 }
