@@ -24,7 +24,7 @@
 WDockManager::WDockManager(QWidget *parent, QWidget *centralWidget)
     : QObject(parent)
 {
-    qDebug() << "WDockManager: WDockManager()";
+    //qDebug() << "WDockManager: WDockManager()";
     //wMainWindow = mainWindow;
     QVBoxLayout *layout = new QVBoxLayout(centralWidget);
     wTab = new TabBar(centralWidget);
@@ -47,7 +47,7 @@ WDockManager::WDockManager(QWidget *parent, QWidget *centralWidget)
     layout->addWidget(wTab);
     layout->addWidget(splitter);
     centralWidget->setLayout(layout);
-    qDebug() << "WDockManager: return WDockManager()";
+    //qDebug() << "WDockManager: return WDockManager()";
 }
 
 
@@ -58,7 +58,7 @@ WDockManager::WDockManager(QWidget *parent, QWidget *centralWidget)
  */
 void WDockManager::changeActiveCodeEdit(CodeEdit *editor)
 {
-    qDebug() << "WDockManager: changeActiveCodeEdit()";
+    //qDebug() << "WDockManager: changeActiveCodeEdit()";
     if (this->activeCodeEdit != editor)
     {
         //qDebug() << "wdockmanager - change active Code Editor";
@@ -77,7 +77,7 @@ void WDockManager::changeActiveCodeEdit(CodeEdit *editor)
         }
         wTab->setCurrentIndex(codeEditList.indexOf(this->activeCodeEdit->getParentCodeEdit()));
     }
-    qDebug() << "WDockManager: return changeActiveCodeEdit()";
+    //qDebug() << "WDockManager: return changeActiveCodeEdit()";
 }
 
 
@@ -87,10 +87,10 @@ void WDockManager::changeActiveCodeEdit(CodeEdit *editor)
  */
 void WDockManager::changeCodeEditor(int index)
 {
-    qDebug() << "WDockManager: changeCodeEditor()";
+    //qDebug() << "WDockManager: changeCodeEditor()";
     if (activeCodeEdit != NULL && index >= 0)
     {
-        qDebug() << "wdockmanager - change Code Editor";
+        //qDebug() << "wdockmanager - change Code Editor";
         //qDebug() << "index: " << index;
         //qDebug() << "size: " << openCentralWidgets.count();
         CodeEdit *editor = openCentralWidgets.at(index)->getCodeEdit();
@@ -108,7 +108,7 @@ void WDockManager::changeCodeEditor(int index)
             connect(this->activeCodeEdit, SIGNAL(breakpointListRemove(int)), breakpointList, SLOT(breakpointListRemoveSlot(int)));
         }
     }
-    qDebug() << "WDockManager: return changeCodeEditor()";
+    //qDebug() << "WDockManager: return changeCodeEditor()";
 }
 
 
@@ -120,25 +120,25 @@ void WDockManager::changeCodeEditor(int index)
  */
 void WDockManager::changeTabStatusSlot(QString name, QString path, bool changed)
 {
-    qDebug() << "WDockManager: changeTabStatusSlot()";
+    //qDebug() << "WDockManager: changeTabStatusSlot()";
     //wTab->setTabText(wTab->indexOf(editor), name);
     for (int i = 0; i < wTab->count(); i++)
     {
         if (wTab->tabText(i) == name && wTab->tabToolTip(i) == path)
         {
-            qDebug() << "wdockmanager: change tab status slot";
+            //qDebug() << "wdockmanager: change tab status slot";
             wTab->tabChanged(i, changed);
             wTab->update();
             break;
         }
     }
-    qDebug() << "WDockManager: return changeTabStatusSlot()";
+    //qDebug() << "WDockManager: return changeTabStatusSlot()";
 }
 
 
 void WDockManager::closeTab(int index)
 {
-    qDebug() << "WDockManager: closeTab()";
+    //qDebug() << "WDockManager: closeTab()";
     emit saveCodeEdit(openCentralWidgets.at(index)->getCodeEdit());
     openCentralWidgets.removeAt(index);
     wTab->removeTab(index);
@@ -150,26 +150,26 @@ void WDockManager::closeTab(int index)
         this->hideDockWidgetArea(1);
         this->hideDockWidgetArea(2);
     }
-    qDebug() << "WDockManager: return closeTab()";
+    //qDebug() << "WDockManager: return closeTab()";
 }
 
 
 
 void WDockManager::setTabChanged()
 {
-    qDebug() << "WDockManager: setTabChanged()";
+    //qDebug() << "WDockManager: setTabChanged()";
     //openCentralWidgets.at(wTab->currentIndex())->getCodeEdit()->setChanged();
     codeEditList.at(wTab->currentIndex())->setChanged();
-    qDebug() << "WDockManager: return setTabChanged()";
+    //qDebug() << "WDockManager: return setTabChanged()";
 }
 
 
 void WDockManager::setTabSaved()
 {
-    qDebug() << "WDockManager: setTabSaved()";
+    //qDebug() << "WDockManager: setTabSaved()";
     //qDebug() << "wdockmanager: set tab saved";
     codeEditList.at(wTab->currentIndex())->setSaved();
-    qDebug() << "WDockManager: return setTabSaved()";
+    //qDebug() << "WDockManager: return setTabSaved()";
 }
 
 
@@ -231,10 +231,10 @@ QString WDockManager::getCentralPath()
  */
 void WDockManager::setCentralName(QString wName)
 {
-    qDebug() << "WDockManager: setCentralName()";
+    //qDebug() << "WDockManager: setCentralName()";
     openCentralWidgets.at(wTab->currentIndex())->getCodeEdit()->setName(wName);
     wTab->setTabText(wTab->currentIndex(), wName);
-    qDebug() << "WDockManager: return setCentralName()";
+    //qDebug() << "WDockManager: return setCentralName()";
 }
 
 
@@ -244,17 +244,17 @@ void WDockManager::setCentralName(QString wName)
  */
 void WDockManager::setCentralPath(QString wPath)
 {
-    qDebug() << "WDockManager: setCentralPath()";
+    //qDebug() << "WDockManager: setCentralPath()";
     openCentralWidgets.at(wTab->currentIndex())->getCodeEdit()->setPath(wPath);
     wTab->setTabToolTip(wTab->currentIndex(), wPath);
-    qDebug() << "WDockManager: return setCentralPath()";
+    //qDebug() << "WDockManager: return setCentralPath()";
 }
 
 
 
 void WDockManager::addUntrackedCentralWidget(QString wName, QString wPath)
 {
-    qDebug() << "WDockManager: addUntrackedCentralWidget()";
+    //qDebug() << "WDockManager: addUntrackedCentralWidget()";
     bool found = false;
     for (int i = 0; i < wTab->count(); i++)
     {
@@ -299,13 +299,13 @@ void WDockManager::addUntrackedCentralWidget(QString wName, QString wPath)
         connect(newEditor, SIGNAL(changedTabStatus(QString, QString, bool)), this, SLOT(changeTabStatusSlot(QString, QString, bool)));
         connect(activeCodeEdit, SIGNAL(changedTabStatus(QString, QString, bool)), this, SLOT(changeTabStatusSlot(QString, QString, bool)));
     }
-    qDebug() << "WDockManager: return addUntrackedCentralWidget()";
+    //qDebug() << "WDockManager: return addUntrackedCentralWidget()";
 }
 
 
 void WDockManager::addUntrackedCentralWidget(QString wName, QString wPath, QStringList text)
 {
-    qDebug() << "WDockManager: addUntrackedCentralWidget(text)";
+    //qDebug() << "WDockManager: addUntrackedCentralWidget(text)";
     bool found = false;
     for (int i = 0; i < wTab->count(); i++)
     {
@@ -326,7 +326,7 @@ void WDockManager::addUntrackedCentralWidget(QString wName, QString wPath, QStri
         BaseEditor *newBaseEditor;
         if (centralBase == NULL)
         {
-            qDebug() << "WDockManager: Create centralBase";
+            //qDebug() << "WDockManager: Create centralBase";
             newBaseEditor = new BaseEditor(NULL, this, newEditor, false);
             //qDebug() << "WDockManager: Created BaseEditor1";
             centralBase = new BaseEditor(splitter, this, newEditor, false);
@@ -355,7 +355,7 @@ void WDockManager::addUntrackedCentralWidget(QString wName, QString wPath, QStri
         connect(activeCodeEdit, SIGNAL(changedTabStatus(QString, QString, bool)), this, SLOT(changeTabStatusSlot(QString, QString, bool)));
         newEditor->setChanged();
     }
-    qDebug() << "WDockManager: return addUntrackedCentralWidget(text)";
+    //qDebug() << "WDockManager: return addUntrackedCentralWidget(text)";
 }
 
 
@@ -363,7 +363,7 @@ void WDockManager::addUntrackedCentralWidget(QString wName, QString wPath, QStri
 
 void WDockManager::addCentralWidget(QString wName, QString wPath)
 {
-    qDebug() << "WDockManager: addCentralWidget()";
+    //qDebug() << "WDockManager: addCentralWidget()";
     bool found = false;
     for (int i = 0; i < wTab->count(); i++)
     {
@@ -381,7 +381,7 @@ void WDockManager::addCentralWidget(QString wName, QString wPath)
         BaseEditor *newBaseEditor;
         if (centralBase == NULL)
         {
-            qDebug() << "WDockManager: Create centralBase";
+            //qDebug() << "WDockManager: Create centralBase";
             newBaseEditor = new BaseEditor(NULL, this, newEditor, false);
             //qDebug() << "WDockManager: Created BaseEditor1";
             centralBase = new BaseEditor(splitter, this, newEditor, false);
@@ -427,18 +427,18 @@ void WDockManager::addCentralWidget(QString wName, QString wPath)
         connect(activeCodeEdit, SIGNAL(changedTabStatus(QString, QString, bool)), this, SLOT(changeTabStatusSlot(QString, QString, bool)));
         //connect(newEditor, SIGNAL(updateAnalysers(CodeEdit*)), this, SLOT(updateAnalysersSlot(CodeEdit*)));
     }
-    qDebug() << "WDockManager: return addCentralWidget()";
+    //qDebug() << "WDockManager: return addCentralWidget()";
 }
 
 
 void WDockManager::addDockWidget(int code)
 {
-    qDebug() << "WDockManager: addDockWidget()";
+    //qDebug() << "WDockManager: addDockWidget()";
     WDock *newWDock;
     if (code == wSimulationInfo)
     {
         this->addSimDockWidgetP1();
-        qDebug() << "WDockManager: return addDockWidget()";
+        //qDebug() << "WDockManager: return addDockWidget()";
         return;
         //newWDock = new WDock(this, code, (QWidget *)(this->parent()));
     }
@@ -452,21 +452,21 @@ void WDockManager::addDockWidget(int code)
         //wMainWindow->tabifyDockWidget(getDockWidgetArea(newWDock->getArea()), newWDock->getQDockWidget());
     }
     openDockWidgets.append(newWDock);
-    qDebug() << "WDockManager: return addDockWidget()";
+    //qDebug() << "WDockManager: return addDockWidget()";
 }
 
 
 void WDockManager::addSimDockWidgetP1()
 {
-    qDebug() << "WDockManager: addSimDockWidgetP1()";
+    //qDebug() << "WDockManager: addSimDockWidgetP1()";
     emit getSimProjectData();
-    qDebug() << "WDockManager: return addSimDockWidgetP1()";
+    //qDebug() << "WDockManager: return addSimDockWidgetP1()";
 }
 
 
 void WDockManager::addSimDockWidgetP2(QString path, MCUSimControl* simControl)
 {
-    qDebug() << "WDockManager: addSimDockWidgetP2()";
+    //qDebug() << "WDockManager: addSimDockWidgetP2()";
     WDock *newWDock = new WDock(this, wSimulationInfo, (QWidget *)(this->parent()), path, simControl);
     if (getDockWidgetArea(newWDock->getArea()) != NULL)
     {
@@ -474,47 +474,47 @@ void WDockManager::addSimDockWidgetP2(QString path, MCUSimControl* simControl)
         //wMainWindow->tabifyDockWidget(getDockWidgetArea(newWDock->getArea()), newWDock->getQDockWidget());
     }
     openDockWidgets.append(newWDock);
-    qDebug() << "WDockManager: return addSimDockWidgetP2()";
+    //qDebug() << "WDockManager: return addSimDockWidgetP2()";
 }
 
 
 QDockWidget* WDockManager::getDockWidget(int code)
 {
-    qDebug() << "WDockManager: getDockWidget()";
+    //qDebug() << "WDockManager: getDockWidget()";
     QList<WDock*>::iterator i;
     for (i = openDockWidgets.begin(); i != openDockWidgets.end(); i++)
     {
         if ((*i)->cmpCode(code) == true)
         {
-            qDebug() << "WDockManager: return getDockWidget()";
+            //qDebug() << "WDockManager: return getDockWidget()";
             return (*i)->getQDockWidget();
         }
     }
-    qDebug() << "WDockManager: return getDockWidget()";
+    //qDebug() << "WDockManager: return getDockWidget()";
     return NULL;
 }
 
 
 QDockWidget* WDockManager::getDockWidgetArea(int area)
 {
-    qDebug() << "WDockManager: getDockWidgetArea()";
+    //qDebug() << "WDockManager: getDockWidgetArea()";
     QList<WDock*>::iterator i;
     for (i = openDockWidgets.begin(); i != openDockWidgets.end(); i++)
     {
         if ((*i)->cmpArea(area) == true)
         {
-            qDebug() << "WDockManager: return getDockWidgetArea()";
+            //qDebug() << "WDockManager: return getDockWidgetArea()";
             return (*i)->getQDockWidget();
         }
     }
-    qDebug() << "WDockManager: return getDockWidgetArea()";
+    //qDebug() << "WDockManager: return getDockWidgetArea()";
     return NULL;
 }
 
 
 void WDockManager::hideDockWidgetArea(int area)
 {
-    qDebug() << "WDockManager: hideDockWidgetArea()";
+    //qDebug() << "WDockManager: hideDockWidgetArea()";
     QList<WDock*>::iterator i;
     for (i = openDockWidgets.begin(); i != openDockWidgets.end(); i++)
     {
@@ -523,12 +523,12 @@ void WDockManager::hideDockWidgetArea(int area)
             (*i)->getQDockWidget()->hide();
         }
     }
-    qDebug() << "WDockManager: return hideDockWidgetArea()";
+    //qDebug() << "WDockManager: return hideDockWidgetArea()";
 }
 
 void WDockManager::showDockWidgetArea(int area)
 {
-    qDebug() << "WDockManager: showDockWidgetArea()";
+    //qDebug() << "WDockManager: showDockWidgetArea()";
     QList<WDock*>::iterator i;
     for (i = openDockWidgets.begin(); i != openDockWidgets.end(); i++)
     {
@@ -537,7 +537,7 @@ void WDockManager::showDockWidgetArea(int area)
             (*i)->getQDockWidget()->show();
         }
     }
-    qDebug() << "WDockManager: return showDockWidgetArea()";
+    //qDebug() << "WDockManager: return showDockWidgetArea()";
 }
 
 
@@ -560,55 +560,55 @@ BreakpointList* WDockManager::getBreakpointList()
 
 void WDockManager::createBreakpointList(QDockWidget *wDockWidget)
 {
-    qDebug() << "WDockManager: createBreakpointList()";
+    //qDebug() << "WDockManager: createBreakpointList()";
     breakpointList = new BreakpointList(wDockWidget);
-    qDebug() << "WDockManager: return createBreakpointList()";
+    //qDebug() << "WDockManager: return createBreakpointList()";
 }
 
 void WDockManager::createBookmarkList(QDockWidget *wDockWidget)
 {
-    qDebug() << "WDockManager: createBookmarkList()";
+    //qDebug() << "WDockManager: createBookmarkList()";
     bookmarkList = new BookmarkList(wDockWidget);
-    qDebug() << "WDockManager: return createBookmarkList()";
+    //qDebug() << "WDockManager: return createBookmarkList()";
 }
 
 
 void WDockManager::updateAnalysersSlot(CodeEdit *editor)
 {
-    qDebug() << "WDockManager: updateAnalysersSlot()";
+    //qDebug() << "WDockManager: updateAnalysersSlot()";
     if (this->getDockWidget(wAnalysVar) != NULL && this->getDockWidget(wAnalysFunc) != NULL)
     {
         Analys *analyser = new Analys(*(editor->getTextEdit()->document()));
         ((AnalyserWidget*)(this->getDockWidget(wAnalysVar)->widget()))->fill(analyser->getVar());
         ((AnalyserWidget*)(this->getDockWidget(wAnalysFunc)->widget()))->fill(analyser->getFunc());
     }
-    qDebug() << "WDockManager: return updateAnalysersSlot()";
+    //qDebug() << "WDockManager: return updateAnalysersSlot()";
 }
 
 
 void WDockManager::changeLine(QListWidgetItem *item)
 {
-    qDebug() << "WDockManager: changeLine()";
+    //qDebug() << "WDockManager: changeLine()";
     QString a = item->text().right(item->text().length() - item->text().lastIndexOf('[') - 1);
     a = a.left(a.length() - 1);
     this->getCentralWidget()->getTextEdit()->setPosition(a.toInt());
-    qDebug() << "WDockManager: return changeLine()";
+    //qDebug() << "WDockManager: return changeLine()";
     
 }
 
 
 void WDockManager::moveEditorsSlot(int from, int to)
 {
-    qDebug() << "WDockManager: moveEditorsSlot()";
+    //qDebug() << "WDockManager: moveEditorsSlot()";
     codeEditList.swap(from, to);
     openCentralWidgets.swap(from, to);
-    qDebug() << "WDockManager: return moveEditorsSlot()";
+    //qDebug() << "WDockManager: return moveEditorsSlot()";
 }
 
 
 void WDockManager::setCentralByName(QString fileName)
 {
-    qDebug() << "WDockManager: setCentralByName()";
+    //qDebug() << "WDockManager: setCentralByName()";
     if (fileName != "")
     {
         for (int i = 0; i < this->getTabCount(); i++)
@@ -626,7 +626,7 @@ void WDockManager::setCentralByName(QString fileName)
             }
         }
     }
-    qDebug() << "WDockManager: return setCentralByName()";
+    //qDebug() << "WDockManager: return setCentralByName()";
 }
 
 
@@ -659,7 +659,7 @@ void WDockManager::addDockW(Qt::DockWidgetArea area, QDockWidget* dockWidget)
 
 WDock::WDock(WDockManager *parent, int code, QWidget *parentWindow)
 {
-    qDebug() << "WDock: WDock()";
+    //qDebug() << "WDock: WDock()";
     switch (code)
     {
         case wBookmarkList:
@@ -737,7 +737,7 @@ WDock::WDock(WDockManager *parent, int code, QWidget *parentWindow)
         }
     }
     this->code=code;
-    qDebug() << "WDock: return WDock()";
+    //qDebug() << "WDock: return WDock()";
 }
 
 

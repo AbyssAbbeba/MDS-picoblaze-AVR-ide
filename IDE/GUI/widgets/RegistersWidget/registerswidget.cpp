@@ -50,7 +50,7 @@ RegistersWidget::~RegistersWidget()
 
 void RegistersWidget::handleEvent(int subsysId, int eventId, int locationOrReason, int detail)
 {
-    qDebug() << "RegistersWidget: handleEvent()";
+    //qDebug() << "RegistersWidget: handleEvent()";
     if ( subsysId != this->subsys )
     {
         qDebug("Invalid event received, event ignored.");
@@ -71,7 +71,7 @@ void RegistersWidget::handleEvent(int subsysId, int eventId, int locationOrReaso
             this->update = true;
             uint value;
             m_memory->directRead(locationOrReason, value);
-            qDebug() << "RegistersWidget: location" << locationOrReason << idx;
+            //qDebug() << "RegistersWidget: location" << locationOrReason << idx;
             if ( 7 < idx )
             {
                 if (value > 99)
@@ -141,7 +141,7 @@ void RegistersWidget::handleEvent(int subsysId, int eventId, int locationOrReaso
                 this->item(idx, 2)->setBackground(Qt::yellow);
                 this->item(idx, 3)->setBackground(Qt::yellow);
             }
-            qDebug() << "RegistersWidget: event: mem cell changed to" << value;
+            //qDebug() << "RegistersWidget: event: mem cell changed to" << value;
             this->update = false;
 
             break;
@@ -150,7 +150,7 @@ void RegistersWidget::handleEvent(int subsysId, int eventId, int locationOrReaso
             qDebug("Invalid event received, event ignored.");
             break;
     }
-    qDebug() << "RegistersWidget: return handleEvent()";
+    //qDebug() << "RegistersWidget: return handleEvent()";
 }
 
 
@@ -162,7 +162,7 @@ void RegistersWidget::deviceChanged()
     }
     qDebug() << m_simControlUnit->getSimSubsys(this->subsys);
     m_memory = dynamic_cast<MCUSimMemory*>(m_simControlUnit->getSimSubsys(this->subsys));
-    qDebug() << "RegistersWidget: SubsysId " << this->subsys;
+    //qDebug() << "RegistersWidget: SubsysId " << this->subsys;
     if ( NULL == m_memory )
     {
         qDebug() << "RegistersWidget: m_memory is NULL";
@@ -246,7 +246,7 @@ void RegistersWidget::setReadOnly(bool readOnly)
 
 void RegistersWidget::updateValue(int row, int column)
 {
-    qDebug() << "RegistersWidget: updateValue()";
+    //qDebug() << "RegistersWidget: updateValue()";
     if ( false == this->update )
     {
         this->update = true;
@@ -393,5 +393,5 @@ void RegistersWidget::updateValue(int row, int column)
         }
         this->update = false;
     }
-    qDebug() << "RegistersWidget: return updateValue()";
+    //qDebug() << "RegistersWidget: return updateValue()";
 }

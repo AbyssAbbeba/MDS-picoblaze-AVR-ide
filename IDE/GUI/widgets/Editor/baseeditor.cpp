@@ -19,7 +19,7 @@
 BaseEditor::BaseEditor(QWidget *parent, WDockManager *dockParent, CodeEdit *edit, bool delCodeEdit)
     : QSplitter(parent)
 {
-    qDebug() << "BaseEditor: BaseEditor()";
+    //qDebug() << "BaseEditor: BaseEditor()";
     if (dockParent != NULL)
     {
         this->dockMan = dockParent;
@@ -48,13 +48,13 @@ BaseEditor::BaseEditor(QWidget *parent, WDockManager *dockParent, CodeEdit *edit
     connect(codeEdit, SIGNAL(CodeEditChanged(CodeEdit*)), this, SLOT(reconnect(CodeEdit*)));
     connectCodeEdits(this->codeEdit, this->codeEdit->getParentCodeEdit());
     //qDebug() << "BaseEditor: codeedit connected";
-    qDebug() << "BaseEditor: return BaseEditor()";
+    //qDebug() << "BaseEditor: return BaseEditor()";
 }
 
 
 void BaseEditor::split(Qt::Orientation orient, int line)
 {
-    qDebug() << "BaseEditor: split()";
+    //qDebug() << "BaseEditor: split()";
     //qDebug() << "BaseEditor: split signal recieved";
     isSplit = true;
     this->setOrientation(orient);
@@ -66,7 +66,7 @@ void BaseEditor::split(Qt::Orientation orient, int line)
     connectCodeEdits(next2->getCodeEdit(), next2->getCodeEdit()->getParentCodeEdit());
     this->addWidget(next);
     this->addWidget(next2);
-    qDebug() << "BaseEditor: return split()";
+    //qDebug() << "BaseEditor: return split()";
 }
 
 void BaseEditor::unsplit()
@@ -82,7 +82,7 @@ CodeEdit* BaseEditor::getCodeEdit()
 
 void BaseEditor::connectCodeEdits(CodeEdit* editor1, CodeEdit* editor2)
 {
-    qDebug() << "BaseEditor: connectCodeEdits()";
+    //qDebug() << "BaseEditor: connectCodeEdits()";
     if (editor1 != NULL && editor2 != NULL)
     {
 
@@ -106,7 +106,7 @@ void BaseEditor::connectCodeEdits(CodeEdit* editor1, CodeEdit* editor2)
         connect(editor2->getTextEdit(), SIGNAL(breakpoint(int)), editor1, SLOT(manageBreakpointEmit(int)));
         
     }
-    qDebug() << "BaseEditor: return connectCodeEdits()";
+    //qDebug() << "BaseEditor: return connectCodeEdits()";
 }
 
 /*void BaseEditor::connectBaseEditors(BaseEditor* editor1, BaseEditor* editor2)
