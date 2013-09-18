@@ -32,21 +32,36 @@ class PicoBlazeStrategy : public MCUSimTestScriptStrategy
          */
         enum CommandTypeExt
         {
-            CTE_XXX = MCUSimTestScript::CT__MAX__, ///<
+            CTE_FLAG_EQ = MCUSimTestScript::CT__MAX__,  ///<
+            CTE_FLAG_NE,                                ///<
+            CTE_INTERRUPT,                              ///<
 
-            CTE__MAX__                  ///<
+            CTE__MAX__                                  ///<
+        };
+
+        /**
+         * @brief
+         */
+        enum FlagID
+        {
+            FID_Z,  ///<
+            FID_C,  ///<
+            FID_PZ, ///<
+            FID_PC, ///<
+            FID_IE, ///<
+            FID_I   ///<
         };
 
     ////    Public Operations    ////
     public:
         /**
          * @brief
-         * @param[in] line
+         * @param[in,out] tokens
          * @param[in] useAsmFile
          * @param[out] cmd
          * @return
          */
-        virtual bool processLine ( const char * line,
+        virtual bool processLine ( std::vector<std::string> * tokens,
                                    bool useAsmFile,
                                    MCUSimTestScript::Command * cmd );
 

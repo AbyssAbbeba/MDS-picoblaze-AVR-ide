@@ -244,8 +244,11 @@ inline MCUSimTestScript::Command MCUSimTestScript::processLine ( const char * li
                 }
                 else
                 {
-                    m_execMessage = "memory space not recognized";
-                    result.m_type = CT_ABORT;
+                    if ( ( NULL == m_strategy ) || ( false == m_strategy->processLine(&tokens, useAsmFile, &result) ) )
+                    {
+                        m_execMessage = "memory space not recognized";
+                        result.m_type = CT_ABORT;
+                    }
                     break;
                 }
 
@@ -261,7 +264,7 @@ inline MCUSimTestScript::Command MCUSimTestScript::processLine ( const char * li
 
     if ( CT_UNKNOWN == result.m_type )
     {
-        if ( ( NULL == m_strategy ) || ( false == m_strategy->processLine(line, useAsmFile, &result) ) )
+        if ( ( NULL == m_strategy ) || ( false == m_strategy->processLine(&tokens, useAsmFile, &result) ) )
         {
             m_execMessage = "command not understood";
             result.m_type = CT_ABORT;
@@ -271,7 +274,7 @@ inline MCUSimTestScript::Command MCUSimTestScript::processLine ( const char * li
     return result;
 }
 
-bool MCUSimTestScript::checkNumber ( const std::string & token ) const
+bool MCUSimTestScript::checkNumber ( const std::string & token )
 {
     size_t size = token.size();
 
@@ -282,7 +285,7 @@ bool MCUSimTestScript::checkNumber ( const std::string & token ) const
 
     if ( '0' == token[0] )
     {
-        if ( 'x' == token[1] )
+        if ( 'x' == token[1] || 'X' == token[1]  )
         {
             // Hexadecimal radix.
             for ( size_t i = 2; i < size; i++ )
@@ -293,7 +296,7 @@ bool MCUSimTestScript::checkNumber ( const std::string & token ) const
                 }
             }
         }
-        else if ( 'b' == token[1] )
+        else if ( 'b' == token[1] || 'B' == token[1] )
         {
             // Binary radix.
             for ( size_t i = 2; i < size; i++ )
@@ -341,16 +344,16 @@ bool MCUSimTestScript::checkNumber ( const std::string & token ) const
     return true;
 }
 
-int MCUSimTestScript::str2num ( const std::string & token ) const
+int MCUSimTestScript::str2num ( const std::string & token )
 {
     if ( '0' == token[0] )
     {
-        if ( 'x' == token[1] )
+        if ( 'x' == token[1] || 'X' == token[1] )
         {
             // Hexadecimal radix.
             return (int) strtol (token.substr(2).c_str(), NULL, 16);
         }
-        else if ( 'b' == token[1] )
+        else if ( 'b' == token[1] || 'B' == token[1])
         {
             // Binary radix.
             return (int) strtol (token.substr(2).c_str(), NULL, 2);
@@ -371,6 +374,22 @@ int MCUSimTestScript::str2num ( const std::string & token ) const
         // Decimal radix.
         return atoi(token.c_str());
     }
+}
+
+bool MCUSimTestScript::checkBool ( const std::string & token )
+{
+    std::string str = token;
+    std::transform(str.begin(), str.end(), str.begin(), ::tolower);
+
+    return ( 0 == strcmp(str.c_str(), "true") || 0 == strcmp(str.c_str(), "false") );
+}
+
+int MCUSimTestScript::str2bool ( const std::string & token )
+{
+    std::string str = token;
+    std::transform(str.begin(), str.end(), str.begin(), ::tolower);
+
+    return ( ( 0 != strcmp(str.c_str(), "true") ) ? 1 : 0 );
 }
 
 inline bool MCUSimTestScript::executeCommand ( const Command & cmd,
@@ -398,12 +417,14 @@ inline bool MCUSimTestScript::executeCommand ( const Command & cmd,
             MCUSimSubsys * cpuSubsys = m_simulator->getSubsys ( MCUSimSubsys::ID_CPU );
             if ( NULL == cpuSubsys )
             {
+                outFile << "[ABORTED] ";
                 return false;
             }
 
             MCUSimCPU * cpu = dynamic_cast<MCUSimCPU*>(cpuSubsys);
             if ( NULL == cpu )
             {
+                outFile << "[ABORTED] ";
                 return false;
             }
 
@@ -451,18 +472,21 @@ inline bool MCUSimTestScript::executeCommand ( const Command & cmd,
             MCUSimSubsys * memSubsys = m_simulator->getSubsys ( MCUSimSubsys::SubsysId(cmd.m_args[0]) );
             if ( NULL == memSubsys )
             {
+                outFile << "[ABORTED] ";
                 return false;
             }
 
             MCUSimMemory * memory = dynamic_cast<MCUSimMemory*>(memSubsys);
             if ( NULL == memory )
             {
+                outFile << "[ABORTED] ";
                 return false;
             }
 
             int data;
             if ( MCUSim::RC_OK != memory->directRead ( (unsigned int) cmd.m_args[1], (unsigned int&) data ) )
             {
+                outFile << "[ABORTED] ";
                 return false;
             }
 
