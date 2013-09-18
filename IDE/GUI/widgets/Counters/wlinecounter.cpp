@@ -27,7 +27,7 @@
 WLineCounter::WLineCounter(QTextEdit *parent, bool icons, bool hex, int offset, QFont font)
     : QScrollArea(parent)
 {
-    qDebug() << "WLineCounter: WLineCounter()";
+    //qDebug() << "WLineCounter: WLineCounter()";
     this->setFrameShape(QFrame::NoFrame);
     //parent->show();
     this->parent = parent;
@@ -42,7 +42,7 @@ WLineCounter::WLineCounter(QTextEdit *parent, bool icons, bool hex, int offset, 
     this->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     connect(this->parent->verticalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(change(int)));
-    qDebug() << "WLineCounter: return WLineCounter()";
+    //qDebug() << "WLineCounter: return WLineCounter()";
 }
 
 
@@ -72,9 +72,9 @@ WLineCounterWidget* WLineCounter::getWidget()
  */
 void WLineCounter::change(int value)
 {
-    qDebug() << "WLineCounter: change()";
+    //qDebug() << "WLineCounter: change()";
     this->widget->update();
-    qDebug() << "WLineCounter: return change()";
+    //qDebug() << "WLineCounter: return change()";
 }
 
 
@@ -89,7 +89,7 @@ void WLineCounter::change(int value)
 WLineCounterWidget::WLineCounterWidget(WLineCounter *parent, bool icons, bool hex, int offset, QFont font)
     : QWidget(parent)
 {
-    qDebug() << "WLineCounterWidget: WLineCounterWidget()";
+    //qDebug() << "WLineCounterWidget: WLineCounterWidget()";
     this->parent = parent;
     this->icons = icons;
     font.setPixelSize(font.pixelSize()-2);
@@ -116,7 +116,7 @@ WLineCounterWidget::WLineCounterWidget(WLineCounter *parent, bool icons, bool he
     //if (icons == true)
     //{
     //}
-    qDebug() << "WLineCounterWidget: return WLineCounterWidget()";
+    //qDebug() << "WLineCounterWidget: return WLineCounterWidget()";
 }
 
 
@@ -224,12 +224,12 @@ void WLineCounterWidget::paintEvent(QPaintEvent *)
  */
 void WLineCounterWidget::changeHeight()
 {
-    qDebug() << "WLineCounterWidget: changeHeight()";
+    //qDebug() << "WLineCounterWidget: changeHeight()";
     QTextEdit* textEdit = parent->getTextEdit();
     this->setMinimumHeight(textEdit->document()->size().height());
     this->setMaximumHeight(textEdit->document()->size().height());
-    qDebug() << "WLineCounterWidget: height" << this->height();
-    qDebug() << "WLineCounterWidget: parent height:" << textEdit->document()->size().height();
+    //qDebug() << "WLineCounterWidget: height" << this->height();
+    //qDebug() << "WLineCounterWidget: parent height:" << textEdit->document()->size().height();
     this->update();
-    qDebug() << "WLineCounterWidget: return changeHeight()";
+    //qDebug() << "WLineCounterWidget: return changeHeight()";
 }
