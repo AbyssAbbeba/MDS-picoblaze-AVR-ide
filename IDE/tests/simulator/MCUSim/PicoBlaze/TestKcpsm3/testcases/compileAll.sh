@@ -22,6 +22,6 @@ for i in *.asm; do
         --dev=kcpsm3                            \
         --file="$i"                             \
         --hex="../results/${i%%.asm}.hex"       \
-        --lst="../results/${i%%.asm}.lst"       \
-        &> /dev/null
+        --lst="../results/${i%%.asm}.lst"       
+       
 done
