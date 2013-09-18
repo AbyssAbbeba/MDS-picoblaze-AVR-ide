@@ -19,6 +19,8 @@
 #include "../../../../simulators/MCUSim/PicoBlaze/PicoBlazeStatusFlagsBase.h"
 #include "../../../../simulators/MCUSim/PicoBlaze/PicoBlazeInterruptController.h"
 
+#include <iostream>
+
 bool PicoBlazeStrategy::processLine ( std::vector<std::string> * tokens,
                                       bool useAsmFile,
                                       MCUSimTestScript::Command * cmd )
@@ -137,7 +139,7 @@ bool PicoBlazeStrategy::executeCommand ( const MCUSimTestScript::Command & cmd,
                 default:
                     return false;
             }
-
+std::cout << "MARTIN MADRON ::::: cmd.m_args[1] == flagValue | " << cmd.m_args[1] << " == " << flagValue << "\n";
             if ( cmd.m_args[1] == flagValue )
             {
                 if ( CTE_FLAG_EQ != cmd.m_type )

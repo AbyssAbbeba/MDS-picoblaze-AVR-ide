@@ -283,7 +283,7 @@ std::ostream & operator << ( std::ostream & out,
         out << p->m_name;
         if ( NULL != p->m_value )
         {
-            out << " = " << p->m_value;
+            out << " = " << *(p->m_value);
         }
     }
 
@@ -305,7 +305,7 @@ std::ostream & operator << ( std::ostream & out,
         out << "    declared at: " << f->second.m_location.toString() << std::endl;
         out << "    required arguments: " << f->second.m_argsRequired << std::endl;
         out << sepLine1 << std::endl;
-        out << "    declared at: " << f->second.m_code << std::endl;
+        out << f->second.m_code << std::endl;
         out << sepLine0 << std::endl;
     }
 
