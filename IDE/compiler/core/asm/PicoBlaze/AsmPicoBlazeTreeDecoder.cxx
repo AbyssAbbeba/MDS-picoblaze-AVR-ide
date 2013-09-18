@@ -202,7 +202,6 @@ void AsmPicoBlazeTreeDecoder::phase2 ( CompilerStatement * codeTree )
                 int opcode = m_instructionSet->resolveOPcode(node);
                 if ( -1 == opcode )
                 {
-std::cout << "ABYSS ::::: " << node << "\n\n";
                     m_compilerCore->compilerMessage ( node->location(),
                                                       CompilerBase::MT_ERROR,
                                                       QObject::tr ( "instruction not supported on the this device: " )
@@ -592,7 +591,7 @@ inline AsmPicoBlazeTreeDecoder::CourseOfAction
                                             QObject::tr ( "maximum macro expansion level (%1) reached " )
                                                         . arg ( m_opts->m_maxMacroExp )
                                                         . toStdString() );
-        return CA_CONTINUE;
+        return CA_NO_ACTION;
     }
 
     const std::string nameOfMacro = node->args()->lVal().m_data.m_symbol;
@@ -605,7 +604,7 @@ inline AsmPicoBlazeTreeDecoder::CourseOfAction
     if ( CompilerStatementTypes::EMPTY_STATEMENT == macro->type() )
     {
         macro->completeDelete();
-        return CA_CONTINUE;
+        return CA_NO_ACTION;
     }
 
     //
