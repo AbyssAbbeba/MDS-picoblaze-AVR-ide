@@ -75,11 +75,11 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
     //this->lblRD->setMaximumWidth(25);
     //this->lblRD->setFrameRect(QRect(0,0,0,0));
     //this->lblRD->setFrameShape(QFrame::Box);
-    this->lblRW = new QLabel("WR", this);
-    this->lblRW->move(705, 0);
-    //this->lblRW->setMaximumWidth(25);
-    //this->lblRW->setFrameRect(QRect(0,0,0,0));
-    //this->lblRW->setFrameShape(QFrame::NoFrame);
+    this->lblWR = new QLabel("WR", this);
+    this->lblWR->move(705, 0);
+    //this->lblWR->setMaximumWidth(25);
+    //this->lblWR->setFrameRect(QRect(0,0,0,0));
+    //this->lblWR->setFrameShape(QFrame::NoFrame);
     this->lblStack = new QLabel("Stack", this);
     this->lblStack->move(760,0);
     this->lblPC = new QLabel("PC", this);
@@ -223,7 +223,7 @@ void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason,
         {
             case MCUSimPureLogicIO::EVENT_PLIO_WRITE:
             {
-                this->lblRW->setStyleSheet("color: #00ff00");
+                this->lblWR->setStyleSheet("color: #00ff00");
                 break;
             }
             case MCUSimPureLogicIO::EVENT_PLIO_READ:
@@ -233,7 +233,7 @@ void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason,
             }
             case MCUSimPureLogicIO::EVENT_PLIO_WRITE_END:
             {
-                this->lblRW->setStyleSheet("color: none");
+                this->lblWR->setStyleSheet("color: none");
                 break;
             }
             case MCUSimPureLogicIO::EVENT_PLIO_READ_END:
@@ -256,8 +256,7 @@ void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason,
             case PicoBlazeStatusFlags::EVENT_FLAGS_Z_CHANGED:
             {
                 qDebug() << "PicoBlazeGrid: EVENT_FLAGS_Z_CHANGED";
-                QPalette palette = this->btnZero->palette();
-                if (palette.color(QPalette::ButtonText) ==  Qt::green)
+                if (detail == 0)
                 {
                     this->btnZero->setStyleSheet("color: none");
                 }
@@ -269,8 +268,8 @@ void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason,
             }
             case PicoBlazeStatusFlags::EVENT_FLAGS_C_CHANGED:
             {
-                QPalette palette = this->btnCarry->palette();
-                if (palette.color(QPalette::ButtonText) ==  Qt::green)
+                qDebug() << "PicoBlazeGrid: EVENT_FLAGS_C_CHANGED";
+                if (detail == 0)
                 {
                     this->btnCarry->setStyleSheet("color: none");
                 }
@@ -278,13 +277,11 @@ void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason,
                 {
                     this->btnCarry->setStyleSheet("color: #00ff00");
                 }
-                this->btnCarry->setPalette(palette);
                 break;
             }
             case PicoBlazeStatusFlags::EVENT_FLAGS_IE_CHANGED:
             {
-                QPalette palette = this->btnInte->palette();
-                if (palette.color(QPalette::ButtonText) ==  Qt::green)
+                if (detail == 0)
                 {
                     this->btnInte->setStyleSheet("color: none");
                 }
@@ -296,8 +293,7 @@ void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason,
             }
             case PicoBlazeStatusFlags::EVENT_FLAGS_INT_CHANGED:
             {
-                QPalette palette = this->btnIntr->palette();
-                if (palette.color(QPalette::ButtonText) ==  Qt::green)
+                if (detail == 0)
                 {
                     this->btnIntr->setStyleSheet("color: none");
                 }
@@ -366,4 +362,6 @@ void PicoBlazeGrid::unhighlight()
     this->btnCarry->setStyleSheet("color: none");
     this->btnInte->setStyleSheet("color: none");
     this->btnIntr->setStyleSheet("color: none");
+    this->lblRD->setStyleSheet("color: none");
+    this->lblWR->setStyleSheet("color: none");
 }
