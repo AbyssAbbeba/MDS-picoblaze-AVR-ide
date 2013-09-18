@@ -28,6 +28,9 @@ Start:
             ;; flag[pc] == false
             ;; flag[i] == false
             ;; flag[ie] == false
+            ;; pc == 0
+            ;; step
+            ;; pc == 0
             
             
         
