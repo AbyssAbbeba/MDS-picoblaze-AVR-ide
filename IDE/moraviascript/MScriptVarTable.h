@@ -58,6 +58,18 @@ class MScriptVarTable
 
             /// @brief
             std::vector<std::string> m_key;
+
+            /**
+             * @brief
+             * @return
+             */
+            std::string toString() const;
+
+            /**
+             * @brief
+             * @return 0 == scalar, lower than 0 == associative array, higher than 0 == indexed array.
+             */
+            int dimensions() const;
         };
 
     ////    Constructors and Destructors    ////
@@ -66,8 +78,12 @@ class MScriptVarTable
          * @brief
          * @param[in,out] interpret
          */
-        MScriptVarTable ( MScriptInterpretInterface * interpret )
-                        : m_interpret ( interpret ) {}
+        MScriptVarTable ( MScriptInterpretInterface * interpret );
+
+         /**
+          * @brief
+          */
+         ~MScriptVarTable();
 
     ////    Public Operations    ////
     public:
@@ -85,10 +101,12 @@ class MScriptVarTable
          * @brief
          * @param[in] variable
          * @param[in] location
+         * @param[in] index
          * @return
          */
         bool remove ( const std::string & variable,
-                      const MScriptSrcLocation & location );
+                      const MScriptSrcLocation & location,
+                       const Index * index = NULL );
 
         /**
          * @brief
@@ -96,12 +114,14 @@ class MScriptVarTable
          * @param[in] location
          * @param[in] flags
          * @param[in] dimension
+         * @param[in] constant
          * @return
          */
         bool declare ( const std::string & variable,
                        const MScriptSrcLocation & location,
-                       MScriptVariable::Flags flags = MScriptVariable::Flags(0),
-                       unsigned int dimensions = 0 );
+                       MScriptVariable::Flags flags = MScriptVariable::FLAG_NO_FLAGS,
+                       unsigned int dimensions = 0,
+                       bool constant = false );
 
         /**
          * @brief
@@ -113,42 +133,85 @@ class MScriptVarTable
          */
         bool assign ( const std::string & variable,
                       const MScriptSrcLocation & location,
-                      const MScriptValue & value,
-                      const Index & index );
+                      MScriptValue * value,
+                      const Index * index = NULL );
 
         /**
          * @brief
          * @param[in] variable
+         * @param[in] index
+         * @param[in] location If NULL, do not generate any error messages; othewise use this location in them.
+         * @return
+         */
+        MScriptValue ** access ( const std::string & variable,
+                                 const Index * index = NULL,
+                                 const MScriptSrcLocation * location = NULL );
+
+        /**
+         * @brief
+         * @param[in] variable
+         * @param[in] index
+         * @return
+         */
+        bool declared ( const std::string & variable,
+                        const Index * index = NULL );
+
+        /**
+         * @brief
+         * @param[in] variable
+         * @param[in] index
+         * @return
+         */
+        bool defined ( const std::string & variable,
+                       const Index * index = NULL );
+
+        /**
+         * @brief
+         * @param[in] variable
+         * @return
+         */
+        MScriptVariable::Flags getFlags ( const std::string & variable );
+
+        /**
+         * @brief
+         * @param[in] variable
+         * @return
+         */
+        const MScriptSrcLocation * getLocation ( const std::string & variable );
+
+        /**
+         * @brief
+         */
+        void clear();
+
+    ////    Private Operations    ////
+    private:
+        /**
+         * @brief
+         * @param[in] flags
+         * @return
+         */
+        std::string flags2Str ( MScriptVariable::Flags flags ) const;
+
+    ////    Inline Private Operations    ////
+    private:
+        /**
+         * @brief
+         * @param[in] variable
+         * @return
+         */
+        inline MScriptVariable * rawAccess ( const std::string & variable );
+
+        /**
+         * @brief
+         * @param[in] variable
+         * @param[in] index
          * @param[in] location
-         * @param[in] index
          * @return
          */
-        const MScriptValue * get  ( const std::string & variable,
-                                    const MScriptSrcLocation & location,
-                                    const Index & index );
-
-        /**
-         * @brief
-         * @param[in] variable
-         * @return
-         */
-        bool exists ( const std::string & variable ) const;
-
-        /**
-         * @brief
-         * @param[in] variable
-         * @param[in] index
-         * @return
-         */
-        bool isDefined ( const std::string & variable,
-                         const Index & index ) const;
-
-        /**
-         * @brief
-         * @param[in] variable
-         * @return
-         */
-        MScriptVariable::Flags getFlags ( const std::string & variable ) const;
+        inline MScriptValue ** newArrayElement ( const std::string & variable,
+                                                 const Index * index,
+                                                 const MScriptSrcLocation * location );
 
     ////    Private Attributes    ////
     private:

@@ -47,6 +47,8 @@ void MScriptInterpret::init ( MScriptStatement * rootNode )
 void MScriptInterpret::clear()
 {
     MScriptExecContext::clear();
+    m_varTable->clear();
+    m_funcTable->clear();
 }
 
 bool MScriptInterpret::step()
@@ -413,14 +415,18 @@ inline bool MScriptInterpret::postprocessCode ( MScriptStatement * rootNode )
                       NULL != expr;
                       expr = expr->next() )
                 {
-                    if ( MScriptExpr::OPER_EQ == expr->oper() )
+                    if ( MScriptExpr::OPER_ASSIGN == expr->oper() )
                     {
-                        params->push_back ( MScriptFuncTable::Parameter ( expr->lVal().m_data.m_symbol,
-                                                                          & ( expr->rVal().m_data.m_expr->lVal() ) ) );
+                        const char * const param = expr->lVal().m_data.m_expr->lVal().m_data.m_symbol;
+                        const MScriptValue * const defaultValue = & ( expr->rVal().m_data.m_expr->lVal() );
+
+                        params->push_back ( MScriptFuncTable::Parameter ( param, defaultValue ) );
                     }
                     else
                     {
-                        params->push_back ( MScriptFuncTable::Parameter ( expr->lVal().m_data.m_symbol ) );
+                        const char * const param = expr->lVal().m_data.m_symbol;
+
+                        params->push_back ( MScriptFuncTable::Parameter ( param ) );
                     }
                 }
 
