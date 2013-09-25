@@ -62,11 +62,6 @@ class MScriptFuncTable
             Parameter ( const char * name,
                         const MScriptValue * defaulValue = NULL );
 
-            /**
-             * @brief
-             */
-            ~Parameter();
-
             /// @brief
             std::string m_name;
 
@@ -111,10 +106,6 @@ class MScriptFuncTable
 
                 /// @brief
                 unsigned int m_argsRequired;
-
-            private:
-                /// @brief
-                unsigned int m_deleteCode;
         };
 
         /// @brief
@@ -128,6 +119,11 @@ class MScriptFuncTable
          */
         MScriptFuncTable ( MScriptInterpretInterface * interpret )
                          : m_interpret ( interpret ) {}
+
+         /**
+          * @brief
+          */
+         ~MScriptFuncTable();
 
     ////    Public Operations    ////
     public:
@@ -174,6 +170,11 @@ class MScriptFuncTable
         Function * get ( const std::string & name,
                          const MScriptSrcLocation & location,
                          std::vector<MScriptValue> & arguments );
+
+        /**
+         * @brief
+         */
+        void clear();
 
     ////    Private Attributes    ////
     private:
