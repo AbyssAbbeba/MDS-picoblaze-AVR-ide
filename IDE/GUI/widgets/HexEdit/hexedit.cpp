@@ -608,3 +608,9 @@ void HexEdit::setHighlighted(int pos, bool highlight)
         changable = true;
     }
 }
+
+
+void HexEdit::unhighlight()
+{
+    
+}
