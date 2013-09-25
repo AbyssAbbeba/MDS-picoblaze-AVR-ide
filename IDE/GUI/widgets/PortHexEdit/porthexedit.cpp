@@ -265,3 +265,10 @@ void PortHexEdit::switchPorts()
     }
     qDebug() << "PortHexEdit: return switchPorts()";
 }
+
+
+void PortHexEdit::unhighlight()
+{
+    this->m_hexEditIn->unhighlight();
+    this->m_hexEditOut->unhighlight();
+}
