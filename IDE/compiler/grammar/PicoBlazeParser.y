@@ -1699,10 +1699,10 @@ instruction:
 /* Program Control Group */
 inst_jump:
       I_JUMP expr                   { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_JUMP_AAA,    $expr ); }
-    | I_JUMP_Z "," expr             { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_JUMP_Z_AAA,  $expr ); }
-    | I_JUMP_NZ "," expr            { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_JUMP_NZ_AAA, $expr ); }
-    | I_JUMP_C "," expr             { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_JUMP_C_AAA,  $expr ); }
-    | I_JUMP_NC "," expr            { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_JUMP_NC_AAA, $expr ); }
+    | I_JUMP_Z expr                 { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_JUMP_Z_AAA,  $expr ); }
+    | I_JUMP_NZ expr                { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_JUMP_NZ_AAA, $expr ); }
+    | I_JUMP_C expr                 { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_JUMP_C_AAA,  $expr ); }
+    | I_JUMP_NC expr                { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_JUMP_NC_AAA, $expr ); }
     | I_JUMP "@"
       "(" expr "," expr ")"         {
                                         $$ = new CompilerStatement ( LOC(@$),
@@ -1715,10 +1715,10 @@ inst_jump:
 ;
 inst_call:
       I_CALL expr                   { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_CALL_AAA,    $expr ); }
-    | I_CALL_Z "," expr             { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_CALL_Z_AAA,  $expr ); }
-    | I_CALL_NZ "," expr            { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_CALL_NZ_AAA, $expr ); }
-    | I_CALL_C "," expr             { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_CALL_C_AAA,  $expr ); }
-    | I_CALL_NC "," expr            { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_CALL_NC_AAA, $expr ); }
+    | I_CALL_Z expr                 { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_CALL_Z_AAA,  $expr ); }
+    | I_CALL_NZ expr                { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_CALL_NZ_AAA, $expr ); }
+    | I_CALL_C expr                 { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_CALL_C_AAA,  $expr ); }
+    | I_CALL_NC expr                { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_CALL_NC_AAA, $expr ); }
     | I_CALL "@"
       "(" expr "," expr ")"         {
                                         $$ = new CompilerStatement ( LOC(@$),
