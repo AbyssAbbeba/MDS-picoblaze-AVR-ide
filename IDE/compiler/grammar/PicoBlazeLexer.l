@@ -79,8 +79,12 @@
 /*
  * Named regular expressions used in the lexer
  */
+/* White space character */
+WSCHAR  ([ \t]|\u00A0)*
 /* White space */
-WSPACE  ([ \t]|\u00A0)+
+WSPACE  {WSCHAR}+
+/* Empty or white space */
+EWSPACE {WSCHAR}*
 /* New line */
 NLINE   (\r?\n)|(\n?\r)
 /* An identifier in Assembly language */
@@ -263,21 +267,21 @@ DIS_INT_INST            "disable"{WSPACE}"interrupt"
 "testcy"                { return I_TESTCY;      }
 "comparecy"             { return I_COMPARECY;   }
 "outputk"               { return I_OUTPUTK;     }
+"jump"{WSPACE}"z"{EWSPACE}","       { return I_JUMP_Z;      }
+"jump"{WSPACE}"nz"{EWSPACE}","      { return I_JUMP_NZ;     }
+"jump"{WSPACE}"c"{EWSPACE}","       { return I_JUMP_C;      }
+"jump"{WSPACE}"nc"{EWSPACE}","      { return I_JUMP_NC;     }
+"call"{WSPACE}"z"{EWSPACE}","       { return I_CALL_Z;      }
+"call"{WSPACE}"nz"{EWSPACE}","      { return I_CALL_NZ;     }
+"call"{WSPACE}"c"{EWSPACE}","       { return I_CALL_C;      }
+"call"{WSPACE}"nc"{EWSPACE}","      { return I_CALL_NC;     }
+"return"{WSPACE}"z"{EWSPACE}","     { return I_RETURN_Z;    }
+"return"{WSPACE}"nz"{EWSPACE}","    { return I_RETURN_NZ;   }
+"return"{WSPACE}"c"{EWSPACE}","     { return I_RETURN_C;    }
+"return"{WSPACE}"nc"{EWSPACE}","    { return I_RETURN_NC;   }
+"return"                { return I_RETURN;      }
 "jump"                  { return I_JUMP;        }
 "call"                  { return I_CALL;        }
-"return"                { return I_RETURN;      }
-"jump"{WSPACE}"z"       { return I_JUMP_Z;      }
-"jump"{WSPACE}"nz"      { return I_JUMP_NZ;     }
-"jump"{WSPACE}"c"       { return I_JUMP_C;      }
-"jump"{WSPACE}"nc"      { return I_JUMP_NC;     }
-"call"{WSPACE}"z"       { return I_CALL_Z;      }
-"call"{WSPACE}"nz"      { return I_CALL_NZ;     }
-"call"{WSPACE}"c"       { return I_CALL_C;      }
-"call"{WSPACE}"nc"      { return I_CALL_NC;     }
-"return"{WSPACE}"z"     { return I_RETURN_Z;    }
-"return"{WSPACE}"nz"    { return I_RETURN_NZ;   }
-"return"{WSPACE}"c"     { return I_RETURN_C;    }
-"return"{WSPACE}"nc"    { return I_RETURN_NC;   }
 "regbank"{WSPACE}"A"    { return I_REGBANK_A;   }
 "regbank"{WSPACE}"B"    { return I_REGBANK_B;   }
 {RETURNI_ENABLE_INST}   { return I_RETURNI_ENA; }
@@ -638,7 +642,7 @@ DIS_INT_INST            "disable"{WSPACE}"interrupt"
                             return LABEL;
                         }
 [0-9]{ID}:              {
-                            // Unrecognized token => ERROR
+                            // Invalid label declaration => ERROR
                             yyextra -> lexerMessage ( yylloc,
                                                       CompilerBase::MT_ERROR,
                                                       QObject::tr("label cannot start with a digit: ").toStdString() + "`" + std::string(yytext) + "'" );
@@ -663,7 +667,7 @@ DIS_INT_INST            "disable"{WSPACE}"interrupt"
                             return IDENTIFIER;
                         }
 [0-9]{ID}               {
-                            // Unrecognized token => ERROR
+                            // Invalid identifier declaration => ERROR
                             yyextra -> lexerMessage ( yylloc,
                                                       CompilerBase::MT_ERROR,
                                                       QObject::tr("identifier cannot start with a digit: ").toStdString() + "`" + std::string(yytext) + "'" );
