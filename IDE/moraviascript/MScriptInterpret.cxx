@@ -16,8 +16,11 @@
 #include "MScriptInterpret.h"
 
 // MScript language interpreter header files.
-#include "MScriptStatement.h"
 #include "MScriptExpr.h"
+#include "MScriptVarTable.h"
+#include "MScriptFuncTable.h"
+#include "MScriptStatement.h"
+#include "MScriptExprSolver.h"
 
 // Used for i18n only
 #include <QObject>
@@ -25,14 +28,16 @@
 
 MScriptInterpret::MScriptInterpret()
 {
-    m_varTable  = new MScriptVarTable(this);
-    m_funcTable = new MScriptFuncTable(this);
+    m_varTable   = new MScriptVarTable(this);
+    m_funcTable  = new MScriptFuncTable(this);
+    m_exprSolver = new MScriptExprSolver(this, m_varTable);
 }
 
 MScriptInterpret::~MScriptInterpret()
 {
     delete m_varTable;
     delete m_funcTable;
+    delete m_exprSolver;
 }
 
 void MScriptInterpret::init ( MScriptStatement * rootNode )
@@ -384,7 +389,7 @@ inline void MScriptInterpret::evalDelete ( const MScriptStatement * node )
     replaceNext(node->next());
 }
 
-inline bool MScriptInterpret::postprocessCode ( MScriptStatement * rootNode )
+bool MScriptInterpret::postprocessCode ( MScriptStatement * rootNode )
 {
     using namespace MScriptStmtTypes;
 
@@ -392,10 +397,22 @@ inline bool MScriptInterpret::postprocessCode ( MScriptStatement * rootNode )
           node != NULL;
           node = node->next() )
     {
+//         if ( NULL != node->branch() )
+//         {
+//             postprocessCode(node->branch());
+//         }
+std::cout << "node->type() = " << node->type() <<"\n";
         switch ( node->type() )
         {
             case STMT_EMPTY:
                 // Remove empty statements.
+                break;
+
+            case STMT_EXPR:
+std::cout << "\n\nSTMT_EXPR:\n";
+                // Decompose expression into a sequence of trivial expressions.
+                /*node->insertLink(*/m_exprSolver->decompose(node);/*);*/
+std::cout << "\n\n";
                 break;
 
             case STMT_TRIGGER:

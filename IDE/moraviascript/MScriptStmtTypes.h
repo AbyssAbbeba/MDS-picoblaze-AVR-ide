@@ -50,7 +50,9 @@ namespace MScriptStmtTypes
         STMT_SWITCH,          ///<
         STMT_CASE,            ///<
         STMT_DEFAULT,         ///<
-        STMT_DELETE           ///<
+        STMT_DELETE,          ///<
+
+        STMT_CALL             ///<
     };
 };
 
