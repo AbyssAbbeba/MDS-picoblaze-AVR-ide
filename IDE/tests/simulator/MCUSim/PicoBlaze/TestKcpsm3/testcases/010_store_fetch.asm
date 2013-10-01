@@ -15,14 +15,9 @@ STORE_DATA                AUTOREG
 
 SAVE_DATA:          STORE    STORE_DATA,@ADDRESS_SPR
                     ADD      ADDRESS_SPR,#10
-                    ;; step     2
-                    ;; data[0]== 0xff
-                    ;; reg[0] == 10
                     STORE    STORE_DATA,@ADDRESS_SPR
                     ADD      ADDRESS_SPR,#15
-                    ;; step     2
-                    ;; data[10]== 0xff
-                    ;; reg[0] == 25
+
                     STORE    STORE_DATA,@ADDRESS_SPR
                     ADD      ADDRESS_SPR,#10
                     ;; step     2
