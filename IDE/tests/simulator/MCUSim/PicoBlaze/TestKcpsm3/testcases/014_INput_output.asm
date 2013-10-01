@@ -45,6 +45,27 @@ dataIN:         INPUT           inout_data,@pointer_in
                 ;; flag[C] == false
                 ;; flag[Z] == false
 
+                ;; # jumped to dataIN
+                ;; step 
+                ;; flag[C] == false
+                ;; flag[Z] == false
+                ;; step
+                ;; # add instructions
+                ;; flag[C] == false
+                ;; flag[Z] == false
+                ;; step
+                ;; # cmp instruction
+                ;; flag[C] == false
+                ;; flag[Z] == false
+                ;; step
+                ;; # jump instruction
+                ;; flag[C] == false
+                ;; flag[Z] == false
+
+                ;; step 3
+                ;; flag[C] == false
+                ;; flag[Z] == false
+                 
 dataOUT:        OUTPUT          inout_data,@pointer_out
                 ADD             pointer_in,#1
                 CMP             pointer_in,#255
