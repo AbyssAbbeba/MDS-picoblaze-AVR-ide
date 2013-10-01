@@ -41,6 +41,7 @@ std::ostream & operator << ( std::ostream & out,
         case STMT_CASE:      out << "CASE";      break;
         case STMT_DEFAULT:   out << "DEFAULT";   break;
         case STMT_DELETE:    out << "DELETE";    break;
+        case STMT_CALL:      out << "CALL";      break;
     }
     return out;
 }

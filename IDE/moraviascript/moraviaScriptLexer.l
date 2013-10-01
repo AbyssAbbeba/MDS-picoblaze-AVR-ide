@@ -198,8 +198,10 @@ XESC    (\\[0-7]{1,3})|(\\x[0-9A-F]{1,2})|(\\[uU][0-9A-F]{1,8})
 "%="            { return O_MOD_ASSIGN;    }
 "<<="           { return O_SHL_ASSIGN;    }
 ">>="           { return O_SHR_ASSIGN;    }
-"&="            { return O_AND_ASSIGN;    }
-"|="            { return O_ORB_ASSIGN;    }
+"&="            { return O_BAND_ASSIGN;   }
+"|="            { return O_BOR_ASSIGN;    }
+"&&="           { return O_LAND_ASSIGN;   }
+"||="           { return O_LOR_ASSIGN;    }
 "^="            { return O_XOR_ASSIGN;    }
 "++"            { return O_INCREMENT;     }
 "--"            { return O_DECREMENT;     }

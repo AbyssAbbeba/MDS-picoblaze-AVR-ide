@@ -38,50 +38,52 @@ class MScriptExpr
          */
         enum Operator
         {
-            OPER_NONE = 0,   ///< a
-            OPER_ADD,        ///< a + b
-            OPER_SUB,        ///< a - b
-            OPER_MULT,       ///< a * b
-            OPER_DIV,        ///< a / b
-            OPER_MOD,        ///< a % b
-            OPER_CALL,       ///< a ( b[] )
-            OPER_BOR,        ///< a | b
-            OPER_BXOR,       ///< a ^ b
-            OPER_BAND,       ///< a & b
-            OPER_LOR,        ///< a || b
-            OPER_LAND,       ///< a && b
-            OPER_EQ,         ///< a == b
-            OPER_NE,         ///< a != b
-            OPER_LT,         ///< a < b
-            OPER_LE,         ///< a <= b
-            OPER_GE,         ///< a >= b
-            OPER_GT,         ///< a > b
-            OPER_SHR,        ///< a >> b
-            OPER_SHL,        ///< a << b
-            OPER_CMPL,       ///< ~ a
-            OPER_NOT,        ///< ! a
-            OPER_ADD_ASSIGN, ///< a += b
-            OPER_SUB_ASSIGN, ///< a -= b
-            OPER_MUL_ASSIGN, ///< a *= b
-            OPER_DIV_ASSIGN, ///< a /= b
-            OPER_MOD_ASSIGN, ///< a %= b
-            OPER_SHL_ASSIGN, ///< a <<= b
-            OPER_SHR_ASSIGN, ///< a >>= b
-            OPER_AND_ASSIGN, ///< a &= b
-            OPER_ORB_ASSIGN, ///< a |= b
-            OPER_XOR_ASSIGN, ///< a ^= b
-            OPER_PRE_INC,    ///< ++ a
-            OPER_PRE_DEC,    ///< -- a
-            OPER_POST_INC,   ///< a ++
-            OPER_POST_DEC,   ///< a --
-            OPER_ASSIGN,     ///< a = b
-            OPER_INDEX,      ///< a [ b ]
-            OPER_TERNARY,    ///< a ? `e', where `e' is supposed to stand for ( a : b ).
-            OPER_COLON,      ///< a : b, this is supposed to be used with the ternary operator.
-            OPER_COMMA,      ///< a , b
-            OPER_REF,        ///< & a
-            OPER_INT_PROM,   ///< Integer promotion: ( + a )
-            OPER_ADD_INV     ///< Additive inverse: ( - a )
+            OPER_NONE = 0,    ///< a
+            OPER_ADD,         ///< a + b
+            OPER_SUB,         ///< a - b
+            OPER_MULT,        ///< a * b
+            OPER_DIV,         ///< a / b
+            OPER_MOD,         ///< a % b
+            OPER_CALL,        ///< a ( b[] )
+            OPER_BOR,         ///< a | b
+            OPER_BXOR,        ///< a ^ b
+            OPER_BAND,        ///< a & b
+            OPER_LOR,         ///< a || b
+            OPER_LAND,        ///< a && b
+            OPER_EQ,          ///< a == b
+            OPER_NE,          ///< a != b
+            OPER_LT,          ///< a < b
+            OPER_LE,          ///< a <= b
+            OPER_GE,          ///< a >= b
+            OPER_GT,          ///< a > b
+            OPER_SHR,         ///< a >> b
+            OPER_SHL,         ///< a << b
+            OPER_CMPL,        ///< ~ a
+            OPER_NOT,         ///< ! a
+            OPER_ADD_ASSIGN,  ///< a += b
+            OPER_SUB_ASSIGN,  ///< a -= b
+            OPER_MUL_ASSIGN,  ///< a *= b
+            OPER_DIV_ASSIGN,  ///< a /= b
+            OPER_MOD_ASSIGN,  ///< a %= b
+            OPER_SHL_ASSIGN,  ///< a <<= b
+            OPER_SHR_ASSIGN,  ///< a >>= b
+            OPER_BAND_ASSIGN, ///< a &= b
+            OPER_BOR_ASSIGN,  ///< a |= b
+            OPER_LAND_ASSIGN, ///< a &&= b
+            OPER_LOR_ASSIGN,  ///< a ||= b
+            OPER_XOR_ASSIGN,  ///< a ^= b
+            OPER_PRE_INC,     ///< ++ a
+            OPER_PRE_DEC,     ///< -- a
+            OPER_POST_INC,    ///< a ++
+            OPER_POST_DEC,    ///< a --
+            OPER_ASSIGN,      ///< a = b
+            OPER_INDEX,       ///< a [ b ]
+            OPER_TERNARY,     ///< a ? `e', where `e' is supposed to stand for ( a : b ).
+            OPER_COLON,       ///< a : b, this is supposed to be used with the ternary operator.
+            OPER_COMMA,       ///< a , b
+            OPER_REF,         ///< & a
+            OPER_INT_PROM,    ///< Integer promotion: ( + a )
+            OPER_ADD_INV      ///< Additive inverse: ( - a )
         };
 
     ////    Constructors and Destructors    ////
