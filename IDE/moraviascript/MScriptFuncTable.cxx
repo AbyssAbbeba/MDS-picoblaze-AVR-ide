@@ -39,16 +39,7 @@ MScriptFuncTable::Parameter::Parameter ( const char * name,
     }
     else
     {
-        m_value = new MScriptValue();
-        *m_value = defaulValue->makeCopy();
-    }
-}
-
-MScriptFuncTable::Parameter::~Parameter()
-{
-    if ( NULL != m_value )
-    {
-        delete m_value;
+        m_value = &( defaulValue->makeCopy() );
     }
 }
 
@@ -61,13 +52,10 @@ MScriptFuncTable::Function::Function ( std::vector<Parameter> * params,
     m_code         = code;
     m_location     = location;
     m_argsRequired = argsRequired;
-    m_deleteCode   = true;
 }
 
 MScriptFuncTable::Function::Function ( const Function & obj )
 {
-    m_deleteCode = false;
-
     m_code         = obj.m_code;
     m_location     = obj.m_location;
     m_argsRequired = obj.m_argsRequired;
@@ -81,14 +69,15 @@ MScriptFuncTable::Function::Function ( const Function & obj )
 
 MScriptFuncTable::Function::~Function()
 {
-    if ( ( true == m_deleteCode ) && ( NULL != m_code ) )
-    {
-        m_code->completeDelete();
-    }
     if ( NULL != m_params )
     {
         delete m_params;
     }
+}
+
+MScriptFuncTable::~MScriptFuncTable()
+{
+    clear();
 }
 
 bool MScriptFuncTable::define ( const std::string & name,
@@ -263,6 +252,29 @@ MScriptFuncTable::Function * MScriptFuncTable::get ( const std::string & name,
     }
 
     return NULL;
+}
+
+void MScriptFuncTable::clear()
+{
+    for ( FuncMultimap::iterator f = m_funcTable.begin();
+          f != m_funcTable.end();
+          f++ )
+    {
+        for ( std::vector<Parameter>::iterator p = f->second.m_params->begin();
+              p != f->second.m_params->end();
+              p++ )
+        {
+            if ( NULL != p->m_value )
+            {
+                p->m_value->completeDelete();
+                delete p->m_value;
+            }
+        }
+
+        f->second.m_code->completeDelete();
+    }
+
+    m_funcTable.clear();
 }
 
 std::ostream & operator << ( std::ostream & out,

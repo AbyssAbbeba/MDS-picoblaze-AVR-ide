@@ -179,3 +179,9 @@ void McuMemoryView::fixHeight()
 {
     m_hexEdit->fixHeight();
 }
+
+
+void McuMemoryView::unhighlight()
+{
+    
+}

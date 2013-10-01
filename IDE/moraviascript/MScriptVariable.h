@@ -46,9 +46,11 @@ class MScriptVariable
          */
         enum Flags
         {
-            FLAG_CONST = 0x01, ///< 0 == variable, 1 == constant.
-            FLAG_ARRAY = 0x02, ///< 0 == scalar, 1 == array.
-            FLAG_HASH  = 0x04, ///< 0 == indexed array, 1 == hash - associative array; when FLAG_ARRAY is set to 1.
+            FLAG_INVALID  =   -1, ///<
+            FLAG_NO_FLAGS = 0x00, ///<
+            FLAG_CONST    = 0x01, ///< 0 == variable, 1 == constant.
+            FLAG_ARRAY    = 0x02, ///< 0 == scalar, 1 == array.
+            FLAG_HASH     = 0x04, ///< 0 == indexed array, 1 == hash - associative array; when FLAG_ARRAY is set to 1.
         };
 
         /**
