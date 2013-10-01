@@ -24,7 +24,6 @@ void PicoBlazeStatusFlags::reset ( MCUSimBase::ResetMode mode )
 {
     if ( MCUSim::RSTMD_MCU_RESET == mode )
     {
-std::cout << "PicoBlazeStatusFlags::reset\n";
         m_carry       = false;
         m_zero        = false;
         m_inte        = false;

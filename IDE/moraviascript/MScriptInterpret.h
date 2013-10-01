@@ -17,12 +17,13 @@
 #define MSCRIPTINTERPRET_H
 
 // Forward declarations.
+class MScriptVarTable;
+class MScriptFuncTable;
 class MScriptStatement;
+class MScriptExprSolver;
 
 // MScript language interpreter header files.
 #include "MScriptBase.h"
-#include "MScriptVarTable.h"
-#include "MScriptFuncTable.h"
 #include "MScriptExecContext.h"
 #include "MScriptSrcLocation.h"
 #include "MScriptInterpretInterface.h"
@@ -69,15 +70,17 @@ class MScriptInterpret : private MScriptExecContext,
          */
         bool step();
 
-    ////    Inline Private Operations    ////
+    ////    Private Operations    ////
     private:
         /**
          * @brief
          * @param[in,out] rootNode
          * @return
          */
-        inline bool postprocessCode ( MScriptStatement * rootNode );
+        bool postprocessCode ( MScriptStatement * rootNode );
 
+    ////    Inline Private Operations    ////
+    private:
         /**
          * @brief
          * @param[in] node
@@ -162,6 +165,9 @@ class MScriptInterpret : private MScriptExecContext,
 
         /// @brief
         MScriptFuncTable * m_funcTable;
+
+        /// @brief
+        MScriptExprSolver * m_exprSolver;
 };
 
 #endif // MSCRIPTINTERPRET_H

@@ -161,15 +161,17 @@
 %token O_MOD_ASSIGN     "%="
 %token O_SHL_ASSIGN     "<<="
 %token O_SHR_ASSIGN     ">>="
-%token O_AND_ASSIGN     "&="
-%token O_ORB_ASSIGN     "|="
+%token O_BAND_ASSIGN    "&="
+%token O_BOR_ASSIGN     "|="
+%token O_LAND_ASSIGN    "&&="
+%token O_LOR_ASSIGN     "||="
 %token O_XOR_ASSIGN     "^="
 %token O_INCREMENT      "++"
 %token O_DECREMENT      "--"
 
 /* Operator precedence (the one declared later has the higher precedence) */
 %left ","
-%right "&=" "^=" "|="
+%right "&=" "^=" "|=" "&&=" "||="
 %right "<<=" ">>="
 %right "*=" "/=" "%="
 %right "+=" "-="
@@ -420,35 +422,37 @@ expr:
     | "(" expr ")"                  { $$ = $2; }
 
     // Binary operators.
-    | expr "+" expr                 { $$ = new MScriptExpr($1, MScriptExpr::OPER_ADD,  $3, @$);       }
-    | expr "-" expr                 { $$ = new MScriptExpr($1, MScriptExpr::OPER_SUB,  $3, @$);       }
-    | expr "*" expr                 { $$ = new MScriptExpr($1, MScriptExpr::OPER_MULT, $3, @$);       }
-    | expr "/" expr                 { $$ = new MScriptExpr($1, MScriptExpr::OPER_DIV,  $3, @$);       }
-    | expr "%" expr                 { $$ = new MScriptExpr($1, MScriptExpr::OPER_MOD,  $3, @$);       }
-    | expr "|" expr                 { $$ = new MScriptExpr($1, MScriptExpr::OPER_BOR,  $3, @$);       }
-    | expr "^" expr                 { $$ = new MScriptExpr($1, MScriptExpr::OPER_BXOR, $3, @$);       }
-    | expr "&" expr                 { $$ = new MScriptExpr($1, MScriptExpr::OPER_BAND, $3, @$);       }
-    | expr "||" expr                { $$ = new MScriptExpr($1, MScriptExpr::OPER_LOR,  $3, @$);       }
-    | expr "&&" expr                { $$ = new MScriptExpr($1, MScriptExpr::OPER_LAND, $3, @$);       }
-    | expr "==" expr                { $$ = new MScriptExpr($1, MScriptExpr::OPER_EQ,   $3, @$);       }
-    | expr "!=" expr                { $$ = new MScriptExpr($1, MScriptExpr::OPER_NE,   $3, @$);       }
-    | expr "<" expr                 { $$ = new MScriptExpr($1, MScriptExpr::OPER_LT,   $3, @$);       }
-    | expr "<=" expr                { $$ = new MScriptExpr($1, MScriptExpr::OPER_LE,   $3, @$);       }
-    | expr ">=" expr                { $$ = new MScriptExpr($1, MScriptExpr::OPER_GE,   $3, @$);       }
-    | expr ">" expr                 { $$ = new MScriptExpr($1, MScriptExpr::OPER_GT,   $3, @$);       }
-    | expr ">>" expr                { $$ = new MScriptExpr($1, MScriptExpr::OPER_SHR,  $3, @$);       }
-    | expr "<<" expr                { $$ = new MScriptExpr($1, MScriptExpr::OPER_SHL,  $3, @$);       }
-    | expr "=" expr                 { $$ = new MScriptExpr($1, MScriptExpr::OPER_ASSIGN,     $3, @$); }
-    | expr "+=" expr                { $$ = new MScriptExpr($1, MScriptExpr::OPER_ADD_ASSIGN, $3, @$); }
-    | expr "-=" expr                { $$ = new MScriptExpr($1, MScriptExpr::OPER_SUB_ASSIGN, $3, @$); }
-    | expr "*=" expr                { $$ = new MScriptExpr($1, MScriptExpr::OPER_MUL_ASSIGN, $3, @$); }
-    | expr "/=" expr                { $$ = new MScriptExpr($1, MScriptExpr::OPER_DIV_ASSIGN, $3, @$); }
-    | expr "%=" expr                { $$ = new MScriptExpr($1, MScriptExpr::OPER_MOD_ASSIGN, $3, @$); }
-    | expr "<<=" expr               { $$ = new MScriptExpr($1, MScriptExpr::OPER_SHL_ASSIGN, $3, @$); }
-    | expr ">>=" expr               { $$ = new MScriptExpr($1, MScriptExpr::OPER_SHR_ASSIGN, $3, @$); }
-    | expr "&=" expr                { $$ = new MScriptExpr($1, MScriptExpr::OPER_AND_ASSIGN, $3, @$); }
-    | expr "|=" expr                { $$ = new MScriptExpr($1, MScriptExpr::OPER_ORB_ASSIGN, $3, @$); }
-    | expr "^=" expr                { $$ = new MScriptExpr($1, MScriptExpr::OPER_XOR_ASSIGN, $3, @$); }
+    | expr "+" expr                 { $$ = new MScriptExpr($1, MScriptExpr::OPER_ADD,  $3, @$);        }
+    | expr "-" expr                 { $$ = new MScriptExpr($1, MScriptExpr::OPER_SUB,  $3, @$);        }
+    | expr "*" expr                 { $$ = new MScriptExpr($1, MScriptExpr::OPER_MULT, $3, @$);        }
+    | expr "/" expr                 { $$ = new MScriptExpr($1, MScriptExpr::OPER_DIV,  $3, @$);        }
+    | expr "%" expr                 { $$ = new MScriptExpr($1, MScriptExpr::OPER_MOD,  $3, @$);        }
+    | expr "|" expr                 { $$ = new MScriptExpr($1, MScriptExpr::OPER_BOR,  $3, @$);        }
+    | expr "^" expr                 { $$ = new MScriptExpr($1, MScriptExpr::OPER_BXOR, $3, @$);        }
+    | expr "&" expr                 { $$ = new MScriptExpr($1, MScriptExpr::OPER_BAND, $3, @$);        }
+    | expr "||" expr                { $$ = new MScriptExpr($1, MScriptExpr::OPER_LOR,  $3, @$);        }
+    | expr "&&" expr                { $$ = new MScriptExpr($1, MScriptExpr::OPER_LAND, $3, @$);        }
+    | expr "==" expr                { $$ = new MScriptExpr($1, MScriptExpr::OPER_EQ,   $3, @$);        }
+    | expr "!=" expr                { $$ = new MScriptExpr($1, MScriptExpr::OPER_NE,   $3, @$);        }
+    | expr "<" expr                 { $$ = new MScriptExpr($1, MScriptExpr::OPER_LT,   $3, @$);        }
+    | expr "<=" expr                { $$ = new MScriptExpr($1, MScriptExpr::OPER_LE,   $3, @$);        }
+    | expr ">=" expr                { $$ = new MScriptExpr($1, MScriptExpr::OPER_GE,   $3, @$);        }
+    | expr ">" expr                 { $$ = new MScriptExpr($1, MScriptExpr::OPER_GT,   $3, @$);        }
+    | expr ">>" expr                { $$ = new MScriptExpr($1, MScriptExpr::OPER_SHR,  $3, @$);        }
+    | expr "<<" expr                { $$ = new MScriptExpr($1, MScriptExpr::OPER_SHL,  $3, @$);        }
+    | expr "=" expr                 { $$ = new MScriptExpr($1, MScriptExpr::OPER_ASSIGN,      $3, @$); }
+    | expr "+=" expr                { $$ = new MScriptExpr($1, MScriptExpr::OPER_ADD_ASSIGN,  $3, @$); }
+    | expr "-=" expr                { $$ = new MScriptExpr($1, MScriptExpr::OPER_SUB_ASSIGN,  $3, @$); }
+    | expr "*=" expr                { $$ = new MScriptExpr($1, MScriptExpr::OPER_MUL_ASSIGN,  $3, @$); }
+    | expr "/=" expr                { $$ = new MScriptExpr($1, MScriptExpr::OPER_DIV_ASSIGN,  $3, @$); }
+    | expr "%=" expr                { $$ = new MScriptExpr($1, MScriptExpr::OPER_MOD_ASSIGN,  $3, @$); }
+    | expr "<<=" expr               { $$ = new MScriptExpr($1, MScriptExpr::OPER_SHL_ASSIGN,  $3, @$); }
+    | expr ">>=" expr               { $$ = new MScriptExpr($1, MScriptExpr::OPER_SHR_ASSIGN,  $3, @$); }
+    | expr "&=" expr                { $$ = new MScriptExpr($1, MScriptExpr::OPER_BAND_ASSIGN, $3, @$); }
+    | expr "|=" expr                { $$ = new MScriptExpr($1, MScriptExpr::OPER_BOR_ASSIGN,  $3, @$); }
+    | expr "&&=" expr               { $$ = new MScriptExpr($1, MScriptExpr::OPER_LAND_ASSIGN, $3, @$); }
+    | expr "||=" expr               { $$ = new MScriptExpr($1, MScriptExpr::OPER_LOR_ASSIGN,  $3, @$); }
+    | expr "^=" expr                { $$ = new MScriptExpr($1, MScriptExpr::OPER_XOR_ASSIGN,  $3, @$); }
 
     // Unary opeators.
     | "~" expr                      { $$ = new MScriptExpr($2, MScriptExpr::OPER_CMPL,     @$); }

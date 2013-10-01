@@ -71,6 +71,7 @@ add_library ( ${PROJECT_NAME} SHARED
               MScriptInterpret.cxx
               MScriptStmtTypes.cxx
               MScriptStatement.cxx
+              MScriptExprSolver.cxx
               MScriptSrcLocation.cxx
               MScriptExecContext.cxx
               MScriptLexerAuxFunc.cxx )
