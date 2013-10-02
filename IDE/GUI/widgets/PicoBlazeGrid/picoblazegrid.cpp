@@ -390,4 +390,5 @@ void PicoBlazeGrid::unhighlight()
     this->memRegs->unhighlight();
     this->memScratch->unhighlight();
     this->memPorts->unhighlight();
+    this->memStack->unhighlight();
 }
