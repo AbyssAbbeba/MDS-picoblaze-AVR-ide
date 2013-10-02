@@ -25,6 +25,7 @@ class StackWidget : public QWidget, public MCUSimObserver
         void deviceReset();
         void setReadOnly(bool readOnly);
         void fixHeight();
+        void unhighlight();
         
     private slots:
         void push();
