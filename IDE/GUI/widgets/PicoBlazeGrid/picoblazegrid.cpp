@@ -43,6 +43,10 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
     mask.push_back(MCUSimPureLogicIO::EVENT_PLIO_WRITE_END);
     mask.push_back(MCUSimPureLogicIO::EVENT_PLIO_READ_END);
     controlUnit->registerObserver(this, MCUSimSubsys::ID_PLIO, mask);
+
+    mask.clear();
+    mask.push_back(PicoBlazeStack::EVENT_STACK_SP_CHANGED);
+    controlUnit->registerObserver(this, MCUSimSubsys::ID_STACK, mask);
     
     if ( NULL == controlUnit )
     {
@@ -179,7 +183,8 @@ void PicoBlazeGrid::switchPorts()
 
 void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason, int detail)
 {
-    if ( MCUSimSubsys::ID_CPU != subsysId && MCUSimSubsys::ID_PLIO != subsysId && MCUSimSubsys::ID_FLAGS != subsysId )
+    if ( MCUSimSubsys::ID_CPU != subsysId && MCUSimSubsys::ID_PLIO != subsysId && MCUSimSubsys::ID_FLAGS != subsysId
+        && MCUSimSubsys::ID_STACK != subsysId)
     {
         qDebug("Invalid event received, event ignored.");
         return;
@@ -302,6 +307,22 @@ void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason,
                     this->btnIntr->setStyleSheet("color: #00ff00");
                 }
                 break;
+            }
+            default:
+            {
+                qDebug("Invalid event received, event ignored.");
+                break;
+            }
+        }
+    }
+    else if (MCUSimSubsys::ID_STACK == subsysId)
+    {
+        switch ( eventId )
+        {
+            case PicoBlazeStack::EVENT_STACK_SP_CHANGED:
+            {
+                this->leSP->setText(QString::number(locationOrReason, 16));
+                this->leSP->setStyleSheet("background-color: yellow");
             }
             default:
             {

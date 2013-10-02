@@ -16,4 +16,13 @@
 ; Program start
 ; --------------------
 start:  
-        store	s0,ffh
+       call ahoj
+       return
+
+ahoj: call ahoj2
+      return
+
+ahoj2: call ahoj3
+       return
+
+ahoj3: return
