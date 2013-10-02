@@ -357,6 +357,7 @@ void PicoBlazeGrid::deviceReset()
     {
         this->lePC->setText("00" + QString::number(value, 16).toUpper() + "h");
     }
+    this->leSP->setText("0");
     this->unhighlight();
     
     //qDebug() << "PicoBlazeGrid: return deviceReset()";
@@ -379,6 +380,7 @@ void PicoBlazeGrid::fixHeight()
 void PicoBlazeGrid::unhighlight()
 {
     this->lePC->setStyleSheet("background-color: none");
+    this->leSP->setStyleSheet("background-color: none");
     this->btnZero->setStyleSheet("color: none");
     this->btnCarry->setStyleSheet("color: none");
     this->btnInte->setStyleSheet("color: none");
