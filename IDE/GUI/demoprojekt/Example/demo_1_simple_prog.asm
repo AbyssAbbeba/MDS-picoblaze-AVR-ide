@@ -17,7 +17,8 @@
 ; --------------------
 start:  
        call ahoj
-       return
+       call sss
+       jump start
 
 ahoj: call ahoj2
       return
@@ -26,3 +27,5 @@ ahoj2: call ahoj3
        return
 
 ahoj3: return
+
+sss: return
