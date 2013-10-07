@@ -363,7 +363,7 @@ Highlighter::Highlighter(QTextDocument *parent, SourceType type)
             highlightingRules.append(rule);
         }
 
-        QStringList operatorsPatterns;
+        /*QStringList operatorsPatterns;
         operatorsPatterns << "\\bhigh\\b" << "\\blow\\b"
             << "\\bat\\b" << "\\b@\\b"
             << "\\b(\\b" << "\\b)\\b"
@@ -381,7 +381,7 @@ Highlighter::Highlighter(QTextDocument *parent, SourceType type)
             << "\\b>\\b" << "\\b>=\\b"
             << "\\b~\\b";
 
-        operandsFormat.setForeground(Qt::blue);
+        operatorsFormat.setForeground(Qt::blue);
 
         foreach (const QString &pattern, operatorsPatterns)
         {
@@ -389,7 +389,7 @@ Highlighter::Highlighter(QTextDocument *parent, SourceType type)
             rule.format = operatorsFormat;
             rule.tag = "operator";
             highlightingRules.append(rule);
-        }
+        }*/
             
 
         labelFormat.setFontItalic(true);
