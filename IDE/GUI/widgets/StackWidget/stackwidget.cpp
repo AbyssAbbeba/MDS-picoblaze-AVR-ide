@@ -131,13 +131,19 @@ void StackWidget::handleEvent(int subsysId, int eventId, int locationOrReason, i
             qDebug() << "StackWidget: sp changed:" << locationOrReason;
             //this->lwStack->item(sp)->setIcon(NULL);
             //this->lwStack->item(locationOrReason)->setIcon(iconSP);
-            this->lwStack->item(this->sp)->setBackground(Qt::yellow);
-            this->lwStack->item(locationOrReason-1)->setBackground(Qt::green);
-            if (locationOrReason-1 < this->sp)
+            if (locationOrReason != 0)
             {
-                this->lwStack->item(this->sp)->setText("");
+                this->lwStack->item(locationOrReason-1)->setBackground(Qt::green);
             }
-            this->sp = locationOrReason-1;
+            if (locationOrReason < this->sp)
+            {
+                if (this->sp != 0)
+                {
+                    this->lwStack->item(this->sp-1)->setText("");
+                    this->lwStack->item(this->sp-1)->setBackground(Qt::yellow);
+                }
+            }
+            this->sp = locationOrReason;
         }
         default:
             qDebug("Invalid event received, event ignored.");

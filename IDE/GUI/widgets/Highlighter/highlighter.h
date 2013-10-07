@@ -37,6 +37,8 @@ class Highlighter : public QSyntaxHighlighter
         QTextCharFormat multiLineCommentFormat;
         QTextCharFormat quotationFormat;
         QTextCharFormat functionFormat;
+        QTextCharFormat operandsFormat;
+        QTextCharFormat operatorsFormat;
 
         SourceType type;
  };

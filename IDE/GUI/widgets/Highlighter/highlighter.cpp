@@ -315,10 +315,20 @@ Highlighter::Highlighter(QTextDocument *parent, SourceType type)
             << "\\bin\\b" << "\\bIN\\b"
             << "\\bout\\b" << "\\bOUT\\b"
             << "\\bld\\b" << "\\bLD\\b"
-            << "\\brtif\\b" << "\\bRTIF\\b"
-            << "\\brtelse\\b" << "\\bRTELSE\\b"
-            << "\\brtelsif\\b" << "\\bRTELSIF\\b"
-            << "\\brtendif\\b" << "\\bRTENDIF\\b";
+            << "\\brt_if\\b" << "\\bRT_IF\\b"
+            << "\\brt_else\\b" << "\\bRT_ELSE\\b"
+            << "\\brt_elsif\\b" << "\\bRT_ELSIF\\b"
+            << "\\brt_endif\\b" << "\\bRT_ENDIF\\b"
+            << "\\brt_while\\b" << "\\bRT_WHILE\\b"
+            << "\\brt_endw\\b" << "\\bRT_ENDW\\b"
+            << "\\brt_for\\b" << "\\bRT_FOR\\b"
+            << "\\brt_endf\\b" << "\\bRT_ENDF\\b"
+            << "\\bRETURNI_ENABLE_INST\\b" << "\\breturni_enable_inst\\b"
+            << "\\bRETURNI_DISABLE_INST\\b" << "\\breturni_disable_inst\\b"
+            << "\\bENA_INT_INST\\b" << "\\bena_int_inst\\b"
+            << "\\bDIS_INT_INST\\b" << "\\bdis_int_inst\\b"
+            << "\\bOUTPUTK\\b" << "\\boutputk\\b";
+            
 
         keywordFormat.setForeground(Qt::darkBlue);
         keywordFormat.setFontWeight(QFont::Bold);
@@ -338,19 +348,49 @@ Highlighter::Highlighter(QTextDocument *parent, SourceType type)
         rule.tag = "quotation";
         highlightingRules.append(rule);
 
-        //QStringList functionPatterns;
-        //functionPatterns
+        QStringList operandsPatterns;
+        operandsPatterns << "\\bz\\b" << "\\bnz\\b"
+            << "\\bc\\b" << "\\bnc\\b";
 
-        //functionFormat.setFontItalic(true);
-        //functionFormat.setForeground(Qt::gray);
+        operandsFormat.setFontWeight(QFont::Bold);
+        //operandsFormat.setForeground(Qt::gray);
 
-        /*foreach (const QString &pattern, functionPatterns)
+        foreach (const QString &pattern, operandsPatterns)
         {
             rule.pattern = QRegExp(pattern);
-            rule.format = functionFormat;
-            rule.tag = "function";
+            rule.format = operandsFormat;
+            rule.tag = "operand";
             highlightingRules.append(rule);
-        }*/
+        }
+
+        QStringList operatorsPatterns;
+        operatorsPatterns << "\\bhigh\\b" << "\\blow\\b"
+            << "\\bat\\b" << "\\b@\\b"
+            << "\\b(\\b" << "\\b)\\b"
+            << "\\b#\\b" << "\\b,\\b"
+            << "\\b..\\b"
+            << "\\b+\\b" << "\\b/\\b"
+            << "\\b-\\b" << "\\b*\\b"
+            << "\\b!\\b" << "\\b%\\b"
+            << "\\b<<\\b" << "\\b>>\\b"
+            << "\\b&&\\b" << "\\b||\\b"
+            << "\\b&\\b" << "\\b|\\b"
+            << "\\b^\\b" << "\\b==\\b"
+            << "\\b<>\\b" << "\\b!=\\b"
+            << "\\b<\\b" << "\\b<=\\b"
+            << "\\b>\\b" << "\\b>=\\b"
+            << "\\b~\\b";
+
+        operandsFormat.setForeground(Qt::blue);
+
+        foreach (const QString &pattern, operatorsPatterns)
+        {
+            rule.pattern = QRegExp(pattern);
+            rule.format = operatorsFormat;
+            rule.tag = "operator";
+            highlightingRules.append(rule);
+        }
+            
 
         labelFormat.setFontItalic(true);
         rule.pattern = QRegExp("[a-zA-Z][0-9a-zA-Z]*:");
