@@ -6,10 +6,12 @@
 #include <QWidget>
 #include <QPushButton>
 #include <QLineEdit>
+#include <QIcon>
 #include "../../../simulators/MCUSim/MCUSim.h"
 #include "../../../simulators/MCUSim/MCUSimSubsys.h"
 #include "../../../simulators/SimControl/MCUSimObserver.h"
 #include "../../../simulators/SimControl/MCUSimControl.h"
+#include "../../../simulators/MCUSim/PicoBlaze/PicoBlazeStack.h"
 
 class StackWidget : public QWidget, public MCUSimObserver
 {
@@ -23,6 +25,7 @@ class StackWidget : public QWidget, public MCUSimObserver
         void deviceReset();
         void setReadOnly(bool readOnly);
         void fixHeight();
+        void unhighlight();
         
     private slots:
         void push();
@@ -37,6 +40,8 @@ class StackWidget : public QWidget, public MCUSimObserver
         MCUSimSubsys::SubsysId subsys;
         int m_startingAddress;
         int m_size;
+        QIcon *iconSP;
+        int sp;
 };
 
 
