@@ -17,10 +17,11 @@
 
 MScriptSrcLocation::MScriptSrcLocation()
 {
-    m_line[0] = 0;
-    m_line[1] = 0;
-    m_column[0] = 0;
-    m_column[1] = 0;
+    m_file      = -1;
+    m_line[0]   = -1;
+    m_line[1]   = -1;
+    m_column[0] = -1;
+    m_column[1] = -1;
 }
 
 MScriptSrcLocation::MScriptSrcLocation ( const YYLTYPE * yylloc )
@@ -39,16 +40,46 @@ MScriptSrcLocation::MScriptSrcLocation ( const YYLTYPE & yylloc )
     m_column[1] = yylloc.last_column;
 }
 
+bool MScriptSrcLocation::operator == ( const MScriptSrcLocation & obj ) const
+{
+    if ( obj.m_file != m_file )
+    {
+        return false;
+    }
+    else if ( obj.m_line[0] != m_line[0] )
+    {
+        return false;
+    }
+    else if ( obj.m_line[1] != m_line[1] )
+    {
+        return false;
+    }
+    else if ( obj.m_column[0] != m_column[0] )
+    {
+        return false;
+    }
+    else if ( obj.m_column[1] != m_column[1] )
+    {
+        return false;
+    }
+    else
+    {
+        return true;
+    }
+}
+
 std::string MScriptSrcLocation::toString() const
 {
+    // TODO: handle file numbers
     char result[50];
-    sprintf(result, "%d.%d-%d.%d", m_line[0], m_column[0], m_line[1], m_column[1]);
+    sprintf(result, "%d:%d.%d-%d.%d", m_file, m_line[0], m_column[0], m_line[1], m_column[1]);
     return result;
 }
 
 std::ostream & operator << ( std::ostream & out,
                              const MScriptSrcLocation & location )
 {
+    // TODO: handle file numbers
     out << location.m_line[0] << "." << location.m_column[0] << "-"
         << location.m_line[1] << "." << location.m_column[1];
 

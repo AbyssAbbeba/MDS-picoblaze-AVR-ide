@@ -21,16 +21,19 @@
 #include "MScriptFuncTable.h"
 #include "MScriptStatement.h"
 #include "MScriptExprSolver.h"
+#include "MScriptExprProcessor.h"
 
 // Used for i18n only
 #include <QObject>
+
 #include <iostream> // DEBUG
 
 MScriptInterpret::MScriptInterpret()
 {
-    m_varTable   = new MScriptVarTable(this);
-    m_funcTable  = new MScriptFuncTable(this);
-    m_exprSolver = new MScriptExprSolver(this, m_varTable);
+    m_varTable      = new MScriptVarTable(this);
+    m_funcTable     = new MScriptFuncTable(this);
+    m_exprSolver    = new MScriptExprSolver(this, m_varTable);
+    m_exprProcessor = new MScriptExprProcessor(this);
 }
 
 MScriptInterpret::~MScriptInterpret()
@@ -38,6 +41,7 @@ MScriptInterpret::~MScriptInterpret()
     delete m_varTable;
     delete m_funcTable;
     delete m_exprSolver;
+    delete m_exprProcessor;
 }
 
 void MScriptInterpret::init ( MScriptStatement * rootNode )
@@ -84,6 +88,10 @@ bool MScriptInterpret::step()
         case STMT_CONTINUE:     evalContinue ( node );  break;
         case STMT_RETURN:       evalReturn ( node );    break;
         case STMT_DELETE:       evalDelete ( node );    break;
+        case STMT_VAR:          evalVar ( node );       break;
+        case STMT_CONST:        evalConst ( node );     break;
+        case STMT_CALL:         evalCall ( node );      break;
+        case STMT_TRIGGER:      evalFunction ( node );  break;
 
         // These statements are supposed to be ignored.
         case STMT_ROOT:
@@ -99,7 +107,6 @@ bool MScriptInterpret::step()
             break;
 
         // These statements should have been already processed in a previous phase of script analysis.
-        case STMT_TRIGGER:
         case STMT_FUNCTION:
             break;
     }
@@ -117,7 +124,7 @@ inline void MScriptInterpret::evalFor ( const MScriptStatement * node )
          */
 
         // for ( ...; ...; <EVAL_THIS> ) { ... }
-        node->args()[2].eval();
+        m_exprSolver->eval ( node->args()[2] );
     }
     else
     {
@@ -126,11 +133,12 @@ inline void MScriptInterpret::evalFor ( const MScriptStatement * node )
          */
 
         // for ( <EVAL_THIS>; ...; ... ) { ... }
-        node->args()[0].eval();
+        m_exprSolver->eval ( node->args()[0] );
     }
 
     // for ( ...; <EVAL_THIS>; ... ) { ... }
-    if ( 0 != node->args()[1].eval() )
+    const MScriptExpr & e = node->args()[1];
+    if ( true == m_exprSolver->eval(e).toBool(this, e.location()) )
     {
         // Mark this node as a loop and "for" loop.
         setNextFlags ( FLAG_LOOP );
@@ -155,7 +163,7 @@ inline void MScriptInterpret::evalDoWhile ( const MScriptStatement * node )
          */
 
         // do { ... } while ( <EVAL_THIS> ); ...
-        if ( 0 != node->args()->eval() )
+        if ( true == m_exprSolver->eval(node->args()).toBool(this, node->args()->location()) )
         {
             // Condition positive => do { <ENTER_HERE> } while ( ... ); ...
             addNext ( node->branch() );
@@ -186,7 +194,7 @@ inline void MScriptInterpret::evalWhile ( const MScriptStatement * node )
     setNextFlags ( FLAG_LOOP );
 
     // while ( <EVAL_THIS> ) { ... } ...
-    if ( 0 != node->args()->eval() )
+    if ( true == m_exprSolver->eval(node->args()).toBool(this, node->args()->location()) )
     {
         // Condition positive => while ( ... ) { <ENTER_HERE> } ...
         addNext ( node->branch() );
@@ -211,7 +219,7 @@ inline void MScriptInterpret::evalCondition ( const MScriptStatement * node )
     }
 
     // if ( <EVAL_THIS> ) { ... } [ else { ... } ] ...
-    if ( 0 != node->args()->eval() )
+    if ( true == m_exprSolver->eval(node->args()).toBool(this, node->args()->location()) )
     {
         // Condition positive => if ( ... ) { <ENTER_HERE> } [ else { ... } ] ...
         addNext ( node->branch() );
@@ -225,7 +233,7 @@ inline void MScriptInterpret::evalCondition ( const MScriptStatement * node )
 
 inline void MScriptInterpret::evalExpr ( const MScriptStatement * node )
 {
-    node->args()->eval();
+    m_exprSolver->eval(node->args());
     replaceNext(node->next());
 }
 
@@ -258,7 +266,7 @@ inline void MScriptInterpret::evalSwitch ( const MScriptStatement * node )
 
     setNextFlags ( FLAG_SWITCH );
 
-    const int switchArg = node->args()->eval();
+    const MScriptValue switchArg = m_exprSolver->eval(node->args());
     bool positive = false;
 
     for ( const MScriptStatement * caseNode = node->branch();
@@ -281,7 +289,7 @@ inline void MScriptInterpret::evalSwitch ( const MScriptStatement * node )
                       arg != NULL;
                       arg = arg->next() )
                 {
-                    if ( switchArg == arg->eval() )
+                    if ( switchArg == m_exprSolver->eval(arg) )
                     {
                         positive = true;
                         break;
@@ -294,10 +302,10 @@ inline void MScriptInterpret::evalSwitch ( const MScriptStatement * node )
 
 inline void MScriptInterpret::evalBreak ( const MScriptStatement * node )
 {
-    int arg = 1;
+    long long arg = 1;
     if ( NULL != node->args() )
     {
-        arg = node->args()->eval();
+        arg = m_exprSolver->eval(node->args()).toInt(this, node->args()->location());
     }
 
     if ( arg <= 0 )
@@ -312,16 +320,16 @@ inline void MScriptInterpret::evalBreak ( const MScriptStatement * node )
     {
         interpreterMessage ( node->location(),
                              MScriptBase::MT_ERROR,
-                             QObject::tr("invalid use of break command").toStdString() );
+                             QObject::tr("break command used outside of a loop or switch").toStdString() );
     }
 }
 
 inline void MScriptInterpret::evalContinue ( const MScriptStatement * node )
 {
-    int arg = 1;
+    long long arg = 1;
     if ( NULL != node->args() )
     {
-        arg = node->args()->eval();
+        arg = m_exprSolver->eval(node->args()).toInt(this, node->args()->location());
     }
 
     if ( arg <= 0 )
@@ -336,13 +344,23 @@ inline void MScriptInterpret::evalContinue ( const MScriptStatement * node )
     {
         interpreterMessage ( node->location(),
                              MScriptBase::MT_ERROR,
-                             QObject::tr("invalid use of continue command").toStdString() );
+                             QObject::tr("continue command used outside of a loop").toStdString() );
     }
 }
 
 inline void MScriptInterpret::evalReturn ( const MScriptStatement * node )
 {
-    if ( false == abadonCode(FLAG_FUNCTION) )
+    MScriptValue returnValue;
+    if ( NULL != node->args() )
+    {
+        returnValue = m_exprSolver->eval(node->args());
+    }
+
+    if ( true == abadonCode(FLAG_FUNCTION) )
+    {
+        m_varTable->assign("0", node->location(), returnValue);
+    }
+    else
     {
         interpreterMessage ( node->location(),
                              MScriptBase::MT_ERROR,
@@ -370,7 +388,12 @@ inline bool MScriptInterpret::abadonCode ( ExecFlags upTo,
             times--;
             if ( 0 == times )
             {
-                cutOffBranch(level);
+                const MScriptStatement * last = cutOffBranch(level);
+                if ( false == exclusive )
+                {
+                    replaceNext(last);
+                }
+
                 return true;
             }
         }
@@ -389,6 +412,119 @@ inline void MScriptInterpret::evalDelete ( const MScriptStatement * node )
     replaceNext(node->next());
 }
 
+inline void MScriptInterpret::evalVar ( const MScriptStatement * node )
+{
+    m_exprSolver->declaration ( node->args() );
+}
+
+inline void MScriptInterpret::evalConst ( const MScriptStatement * node )
+{
+    m_exprSolver->declaration ( node->args(), MScriptExprSolver::DF_CONST );
+}
+
+inline void MScriptInterpret::evalCall ( const MScriptStatement * node )
+{
+    if ( FLAG_FUNCTION & getNextFlags() )
+    {
+        // Returning from function.
+        m_varTable->assign("0", node->location(), MScriptValue());
+        replaceNext(node->next());
+    }
+    else
+    {
+        // Entering function.
+
+        const char * name = node->args()->lVal().m_data.m_symbol;
+        std::vector<MScriptValue> arguments;
+
+        for ( const MScriptExpr * arg = node->args()->next();
+              NULL != arg;
+              arg = arg->next() )
+        {
+            arguments.push_back(m_exprSolver->eval(arg));
+        }
+
+        MScriptFuncTable::Function * func = m_funcTable->get(name, node->location(), arguments);
+
+        setNextFlags ( FLAG_FUNCTION );
+        addNext ( func->m_code );
+
+        // Enter the function's scope.
+        step();
+
+        // Initialize function's parameters as local variables in that scope.
+        for ( size_t i = 0; i < func->m_params->size(); i++ )
+        {
+            const MScriptValue * arg;
+            if ( i >= arguments.size() )
+            {
+                arg = func->m_params->at(i).m_value;
+            }
+            else
+            {
+                arg = &( arguments[i] );
+            }
+
+            const std::string & paramName = func->m_params->at(i).m_name;
+            if ( true == func->m_params->at(i).m_reference )
+            {
+                if ( MScriptValue::TYPE_SYMBOL != arg->m_type )
+                {
+                    interpreterMessage ( node->location(),
+                                         MScriptBase::MT_ERROR,
+                                         QObject::tr ( "only variables can be referenced" ) . toStdString() );
+                    return;
+                }
+                m_varTable -> refer ( paramName, arg->m_data.m_symbol, node->location() );
+            }
+            else
+            {
+                m_varTable -> assign ( paramName, node->location(), arg );
+            }
+        }
+    }
+}
+
+inline void MScriptInterpret::evalFunction ( const MScriptStatement * node )
+{
+    const char * funcName = node->args()->lVal().m_data.m_symbol;
+    std::vector<MScriptFuncTable::Parameter> * params = new std::vector<MScriptFuncTable::Parameter>;
+
+    for ( MScriptExpr * expr = node->args()->next();
+          NULL != expr;
+          expr = expr->next() )
+    {
+        const char * param = expr->lVal().m_data.m_expr->lVal().m_data.m_symbol;
+
+        if ( MScriptExpr::OPER_ASSIGN == expr->oper() )
+        {
+            const MScriptExpr * defVal = expr->rVal().m_data.m_expr;
+            if ( true == m_exprProcessor->isConstantExpr ( defVal ) )
+            {
+                params->push_back ( MScriptFuncTable::Parameter ( param, m_exprSolver->eval(defVal) ) );
+            }
+            else
+            {
+                interpreterMessage ( defVal->location(),
+                                     MScriptBase::MT_ERROR,
+                                     QObject::tr ( "default value of function parameter has to be a constant "
+                                                   "expression" ) . toStdString() );
+                return;
+            }
+        }
+        else if ( MScriptExpr::OPER_REF == expr->oper() )
+        {
+            params->push_back ( MScriptFuncTable::Parameter ( param, true ) );
+        }
+        else
+        {
+            params->push_back ( MScriptFuncTable::Parameter ( param ) );
+        }
+    }
+
+    m_funcTable->define(funcName, node->location(), params, node->branch());
+}
+
 bool MScriptInterpret::postprocessCode ( MScriptStatement * rootNode )
 {
     using namespace MScriptStmtTypes;
@@ -401,7 +537,7 @@ bool MScriptInterpret::postprocessCode ( MScriptStatement * rootNode )
 //         {
 //             postprocessCode(node->branch());
 //         }
-std::cout << "node->type() = " << node->type() <<"\n";
+
         switch ( node->type() )
         {
             case STMT_EMPTY:
@@ -409,49 +545,13 @@ std::cout << "node->type() = " << node->type() <<"\n";
                 break;
 
             case STMT_EXPR:
-std::cout << "\n\nSTMT_EXPR:\n";
                 // Decompose expression into a sequence of trivial expressions.
-                /*node->insertLink(*/m_exprSolver->decompose(node);/*);*/
-std::cout << "\n\n";
+                node->insertLink(m_exprProcessor->decompose(node));
                 break;
 
             case STMT_TRIGGER:
                 // TODO: add to trigger table.
                 break;
-
-            case STMT_FUNCTION:
-            {
-                /*
-                 * Add function to the Function Table.
-                 */
-
-                const char * funcName = node->args()->lVal().m_data.m_symbol;
-                std::vector<MScriptFuncTable::Parameter> * params = new std::vector<MScriptFuncTable::Parameter>;
-
-                for ( MScriptExpr * expr = node->args()->next();
-                      NULL != expr;
-                      expr = expr->next() )
-                {
-                    if ( MScriptExpr::OPER_ASSIGN == expr->oper() )
-                    {
-                        const char * const param = expr->lVal().m_data.m_expr->lVal().m_data.m_symbol;
-                        const MScriptValue * const defaultValue = & ( expr->rVal().m_data.m_expr->lVal() );
-
-                        params->push_back ( MScriptFuncTable::Parameter ( param, defaultValue ) );
-                    }
-                    else
-                    {
-                        const char * const param = expr->lVal().m_data.m_symbol;
-
-                        params->push_back ( MScriptFuncTable::Parameter ( param ) );
-                    }
-                }
-
-                m_funcTable->define(funcName, node->location(), params, node->branch());
-                node->m_branch = NULL;
-
-                break;
-            }
 
             default:
                 // By default, nodes will not be removed from the tree.
@@ -462,8 +562,6 @@ std::cout << "\n\n";
         node = node->prev();
         delete node->next();
     }
-
-    std::cout << "m_funcTable = \n" << (*m_funcTable) << "\n\n"; // DEBUG
 
     return true;
 }

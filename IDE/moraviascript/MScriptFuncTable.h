@@ -57,16 +57,33 @@ class MScriptFuncTable
             /**
              * @brief
              * @param[in] name
+             */
+            Parameter ( const char * name );
+
+            /**
+             * @brief
+             * @param[in] name
              * @param[in] defaulValue
              */
             Parameter ( const char * name,
-                        const MScriptValue * defaulValue = NULL );
+                        const MScriptValue & defaulValue );
+
+            /**
+             * @brief
+             * @param[in] name
+             * @param[in] reference
+             */
+            Parameter ( const char * name,
+                        bool reference );
 
             /// @brief
             std::string m_name;
 
             /// @brief
             MScriptValue * m_value;
+
+            /// @brief
+            bool m_reference;
         };
 
         /**
@@ -135,7 +152,7 @@ class MScriptFuncTable
          * @param[in,out] code
          * @return
          */
-        bool define ( const std::string & name,
+        void define ( const std::string & name,
                       const MScriptSrcLocation & location,
                       std::vector<Parameter> * params,
                       MScriptStatement * code );

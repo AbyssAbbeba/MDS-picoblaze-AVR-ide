@@ -21,7 +21,10 @@
 #include "MScriptInterpretInterface.h"
 
 // Standard header files.
+#include <cstdio>
 #include <utility>
+#include <cstring>
+#include <cstdlib>
 
 // Used for i18n only
 #include <QObject>
@@ -73,10 +76,10 @@ bool MScriptVarTable::remove ( const std::string & variable,
             }
             else
             {
-                MScriptValue ** arrayElement = access ( variable, index, &location );
+                MScriptValue * arrayElement = access ( variable, index, &location );
                 if ( NULL != arrayElement )
                 {
-                    *arrayElement = NULL;
+                    arrayElement->completeDelete();
                 }
             }
 
@@ -108,11 +111,10 @@ bool MScriptVarTable::remove ( const std::string & variable,
     return result;
 }
 
-bool MScriptVarTable::declare ( const std::string & variable,
+void MScriptVarTable::declare ( const std::string & variable,
                                 const MScriptSrcLocation & location,
                                 MScriptVariable::Flags flags,
-                                unsigned int dimensions,
-                                bool constant )
+                                unsigned int dimensions )
 {
     VarTable::iterator var = m_varTables.back().find(variable);
 
@@ -143,60 +145,53 @@ bool MScriptVarTable::declare ( const std::string & variable,
         {
             if ( MScriptVariable::FLAG_HASH & flags )
             {
-                var->second.m_value.m_hash = new std::map<std::string,MScriptVariable*>();
+                var->second.m_value.m_hash = new std::map<std::string,MScriptVariable>();
             }
             else
             {
-                var->second.m_value.m_array = new std::vector<MScriptVariable*>;
+                var->second.m_value.m_array = new std::vector<MScriptVariable>;
             }
+
+            return;
         }
         else
         {
-            var->second.m_value.m_scalar = NULL;
+            var->second.m_value.m_scalar = MScriptValue();
         }
-
-        return true;
     }
-    else
+    else if ( var->second.m_flags != flags )
     {
         /*
          * Variable has already been declared.
          */
-        if ( var->second.m_flags != flags )
-        {
-            const std::string varLocation = var->second.m_location.toString();
-            m_interpret->interpreterMessage ( location,
-                                              MScriptBase::MT_ERROR,
-                                              QObject::tr ( "variable `%1' has been already be declared at %2 as %3, "
-                                                            "cannot redeclare as %4" )
-                                                          . arg ( variable.c_str() )
-                                                          . arg ( varLocation.c_str() )
-                                                          . arg ( flags2Str(var->second.m_flags).c_str() )
-                                                          . arg ( flags2Str(flags).c_str() )
-                                                          . toStdString() );
-            return false;
-        }
-        else
-        {
-            return true;
-        }
+
+        const std::string varLocation = var->second.m_location.toString();
+        m_interpret->interpreterMessage ( location,
+                                          MScriptBase::MT_ERROR,
+                                          QObject::tr ( "variable `%1' has been already be declared at %2 as %3, "
+                                                        "cannot redeclare as %4" )
+                                                      . arg ( variable.c_str() )
+                                                      . arg ( varLocation.c_str() )
+                                                      . arg ( flags2Str(var->second.m_flags).c_str() )
+                                                      . arg ( flags2Str(flags).c_str() )
+                                                      . toStdString() );
     }
 }
 
-bool MScriptVarTable::assign ( const std::string & variable,
+void MScriptVarTable::assign ( const std::string & variable,
                                const MScriptSrcLocation & location,
-                               MScriptValue * value,
+                               const MScriptValue & value,
                                const Index * index )
 {
     if ( true == declared ( variable, index) )
     {
         // Assign value to an exiting variable, or constant.
-        MScriptValue ** var = access ( variable, index, &location );
+        MScriptValue * var = access ( variable, index, &location );
 
         if ( MScriptVariable::FLAG_CONST & getFlags ( variable ) )
         {
             // Assigning value to a constant.
-            if ( NULL != *var )
+            if ( MScriptValue::TYPE_EMPTY != var->m_type )
             {
                 const std::string varLocation = getLocation(variable)->toString();
                 m_interpret->interpreterMessage ( location,
@@ -206,76 +201,60 @@ bool MScriptVarTable::assign ( const std::string & variable,
                                                                . arg ( variable.c_str() )
                                                                . arg ( varLocation.c_str() )
                                                                . toStdString() );
-                return false;
+                return;
             }
         }
         else
         {
             // Assigning value to a variable.
-            if ( NULL != *var )
-            {
-                (*var)->completeDelete();
-                delete *var;
-            }
+            var->completeDelete();
         }
 
-        *var = value;
-        return true;
+        value.makeCopy(*var);
+        return;
+    }
+
+    // Define a new variable.
+    if ( false == declared ( variable ) )
+    {
+        MScriptVariable::Flags flags = MScriptVariable::FLAG_NO_FLAGS;
+        int dim = 0;
+
+        if ( NULL != index )
+        {
+            flags = MScriptVariable::FLAG_ARRAY;
+            dim = index->dimensions();
+        }
+
+        if ( dim < 0 )
+        {
+            dim = -dim;
+            flags = MScriptVariable::Flags ( flags | MScriptVariable::FLAG_HASH );
+        }
+
+        declare ( variable, location, flags, (unsigned int) dim );
+    }
+
+    MScriptValue * var;
+    if ( NULL == index )
+    {
+        var = access ( variable, index, &location );
     }
     else
     {
-        // Define a new variable.
-        if ( false == declared ( variable ) )
-        {
-            MScriptVariable::Flags flags = MScriptVariable::FLAG_NO_FLAGS;
-            int dim = 0;
+        var = newArrayElement ( variable, index, &location );
+    }
 
-            if ( NULL != index )
-            {
-                flags = MScriptVariable::FLAG_ARRAY;
-                dim = index->dimensions();
-            }
-
-            if ( dim < 0 )
-            {
-                dim = -dim;
-                flags = MScriptVariable::Flags ( flags | MScriptVariable::FLAG_HASH );
-            }
-
-            bool result = declare ( variable, location, flags, (unsigned int) dim );
-            if ( false == result )
-            {
-                return false;
-            }
-        }
-
-        MScriptValue ** var;
-        if ( NULL == index )
-        {
-            var = access ( variable, index, &location );
-        }
-        else
-        {
-            var = newArrayElement ( variable, index, &location );
-        }
-
-        if ( NULL != var )
-        {
-            *var = value;
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+    if ( NULL != var )
+    {
+        value.makeCopy(*var);
     }
 }
 
 bool MScriptVarTable::defined ( const std::string & variable,
                                 const Index * index )
 {
-    MScriptValue ** result = access ( variable, index );
-    return ( ( NULL != result ) && ( NULL != *result ) );
+    return ( NULL != access ( variable, index ) );
 }
 
 bool MScriptVarTable::declared ( const std::string & variable,
@@ -319,173 +298,177 @@ const MScriptSrcLocation * MScriptVarTable::getLocation ( const std::string & va
     }
 }
 
-inline MScriptValue ** MScriptVarTable::newArrayElement ( const std::string & variable,
-                                                          const Index * index,
-                                                          const MScriptSrcLocation * location )
+inline MScriptValue * MScriptVarTable::newArrayElement ( const std::string & variable,
+                                                         const Index * index,
+                                                         const MScriptSrcLocation * location )
 {
     MScriptVariable * var = rawAccess ( variable );
 
-    if ( false == index->m_index.empty() )
+    if ( true == index->m_index.empty() )
     {
-        for ( std::vector<unsigned int>::const_iterator i = index->m_index.cbegin();
-              i != index->m_index.cend();
-              i++ )
+        return newArrayElementKey ( variable, index, location, var );
+    }
+    else
+    {
+        return newArrayElementIdx ( variable, index, location, var );
+    }
+}
+
+inline MScriptValue * MScriptVarTable::newArrayElementIdx ( const std::string & variable,
+                                                            const Index * index,
+                                                            const MScriptSrcLocation * location,
+                                                            MScriptVariable * var )
+{
+    for ( std::vector<unsigned int>::const_iterator i = index->m_index.cbegin();
+          i != index->m_index.cend();
+          i++ )
+    {
+        size_t size = var->m_value.m_array->size();
+        if ( *i >= size )
         {
-            size_t size = var->m_value.m_array->size();
-            if ( *i >= size )
+            var->m_value.m_array->resize ( 1 + *i );
+            for ( size_t j = size; j < *i; j++ )
             {
-                var->m_value.m_array->resize ( 1 + *i );
-                for ( size_t j = size; j < *i; j++ )
-                {
-                    var->m_value.m_array->at(j) = NULL;
-                }
-            }
+                MScriptVariable * var0 = &( var->m_value.m_array->at(j) );
+                var0->m_location = *location;
 
-            var = var->m_value.m_array->at(*i);
-            if ( NULL == var )
-            {
-                var->m_value.m_array->at(*i) = new MScriptVariable();
-                var = var->m_value.m_array->at(*i);
-
-                var->m_location = *location;
-                if ( index->m_index.cend() != ( i + 1 ) )
+                if ( index->m_index.cend() == ( i + 1 ) )
                 {
-                    var->m_flags = MScriptVariable::FLAG_ARRAY;
-                    var->m_value.m_array = new std::vector<MScriptVariable*>();
+                    var0->m_flags = MScriptVariable::FLAG_NO_FLAGS;
+                    var0->m_value.m_scalar = MScriptValue();
                 }
                 else
                 {
-                    var->m_flags = MScriptVariable::FLAG_NO_FLAGS;
-                    var->m_value.m_scalar = NULL;
+                    var0->m_flags = MScriptVariable::FLAG_ARRAY;
+                    var0->m_value.m_array = new std::vector<MScriptVariable>();
                 }
             }
-            else if (
-                        (
-                            ( index->m_index.cend() != ( i + 1 ) )
-                                &&
-                            (
-                               ( MScriptVariable::FLAG_ARRAY )
-                                   !=
-                               ( ( MScriptVariable::FLAG_ARRAY | MScriptVariable::FLAG_HASH ) & var->m_flags )
-                            )
-                        )
-                            ||
-                        (
-                            ( index->m_index.cend() == ( i + 1 ) )
-                                &&
-                            (
-                               ( MScriptVariable::FLAG_NO_FLAGS )
-                                   !=
-                               ( ( MScriptVariable::FLAG_ARRAY | MScriptVariable::FLAG_HASH ) & var->m_flags )
-                            )
-                        )
-                    )
+        }
+
+        var = &( var->m_value.m_array->at(*i) );
+        int flags = ( ( MScriptVariable::FLAG_ARRAY | MScriptVariable::FLAG_HASH ) & var->m_flags );
+
+        if (
+               ( index->m_index.cend() == ( i + 1 ) )
+                   ?
+               ( MScriptVariable::FLAG_NO_FLAGS != flags )
+                   :
+               ( MScriptVariable::FLAG_ARRAY    != flags )
+           )
+        {
+            m_interpret->interpreterMessage ( *location,
+                                              MScriptBase::MT_ERROR,
+                                              QObject::tr ( "cannot create new array element at the specified "
+                                                            "index, number of dimensions and/or type of the array "
+                                                            "is/are not compatible with the array declaration" )
+                                                          . arg ( variable.c_str() )
+                                                          . toStdString() );
+            return NULL;
+        }
+    }
+
+    return &( var->m_value.m_scalar );
+}
+
+inline MScriptValue * MScriptVarTable::newArrayElementKey ( const std::string & variable,
+                                                            const Index * index,
+                                                            const MScriptSrcLocation * location,
+                                                            MScriptVariable * var )
+{
+    for ( std::vector<std::string>::const_iterator i = index->m_key.cbegin();
+          i != index->m_key.cend();
+          i++ )
+    {
+        std::map<std::string,MScriptVariable>::iterator it = var->m_value.m_hash->find(*i);
+
+        if ( var->m_value.m_hash->end() != it )
+        {
+            var = &( it->second );
+            int flags = ( ( MScriptVariable::FLAG_ARRAY | MScriptVariable::FLAG_HASH ) & var->m_flags );
+
+            if (
+                   ( index->m_key.cend() == ( i + 1 ) )
+                       ?
+                   ( MScriptVariable::FLAG_NO_FLAGS != flags )
+                       :
+                   ( ( MScriptVariable::FLAG_ARRAY | MScriptVariable::FLAG_HASH ) != flags )
+               )
             {
                 m_interpret->interpreterMessage ( *location,
                                                   MScriptBase::MT_ERROR,
                                                   QObject::tr ( "cannot create new array element at the specified "
-                                                                "index, number of dimensions and/or type of the array "
-                                                                "is/are not compatible with the array declaration" )
+                                                                "key vector, number of dimensions and/or type of "
+                                                                "the array is/are not compatible with the array "
+                                                                "declaration" )
                                                               . arg ( variable.c_str() )
                                                               . toStdString() );
                 return NULL;
             }
         }
-
-        return &( var->m_value.m_scalar );
-    }
-    else
-    {
-        for ( std::vector<std::string>::const_iterator i = index->m_key.cbegin();
-              i != index->m_key.cend();
-              i++ )
+        else
         {
-            std::map<std::string,MScriptVariable*>::iterator it = var->m_value.m_hash->find(*i);
+            var->m_value.m_hash->insert ( std::make_pair ( *i, MScriptVariable() ) );
 
-            if ( var->m_value.m_hash->end() != it )
+            it = var->m_value.m_hash->find(*i);
+            var = &( it->second );
+
+            var->m_location = *location;
+            if ( index->m_key.cend() != ( i + 1 ) )
             {
-                var = it->second;
-
-                if (
-                       (
-                           ( index->m_key.cend() != ( i + 1 ) )
-                               &&
-                           (
-                               ( MScriptVariable::FLAG_ARRAY | MScriptVariable::FLAG_HASH )
-                                   !=
-                               ( ( MScriptVariable::FLAG_ARRAY | MScriptVariable::FLAG_HASH ) & var->m_flags )
-                           )
-                       )
-                           ||
-                       (
-                           ( index->m_key.cend() == ( i + 1 ) )
-                               &&
-                           (
-                               ( MScriptVariable::FLAG_NO_FLAGS )
-                                   !=
-                               ( ( MScriptVariable::FLAG_ARRAY | MScriptVariable::FLAG_HASH ) & var->m_flags )
-                           )
-                       )
-                   )
-                {
-                    m_interpret->interpreterMessage ( *location,
-                                                      MScriptBase::MT_ERROR,
-                                                      QObject::tr ( "cannot create new array element at the specified "
-                                                                    "key vector, number of dimensions and/or type of "
-                                                                    "the array is/are not compatible with the array "
-                                                                    "declaration" )
-                                                                  . arg ( variable.c_str() )
-                                                                  . toStdString() );
-                    return NULL;
-                }
+                var->m_flags = MScriptVariable::Flags ( MScriptVariable::FLAG_ARRAY | MScriptVariable::FLAG_HASH );
+                var->m_value.m_hash = new std::map<std::string,MScriptVariable>();
             }
             else
             {
-                var->m_value.m_hash->insert ( std::make_pair ( *i, new MScriptVariable() ) );
-
-                it = var->m_value.m_hash->find(*i);
-                var = it->second;
-
-                var->m_location = *location;
-                if ( index->m_key.cend() != ( i + 1 ) )
-                {
-                    var->m_flags = MScriptVariable::Flags ( MScriptVariable::FLAG_ARRAY | MScriptVariable::FLAG_HASH );
-                    var->m_value.m_hash = new std::map<std::string,MScriptVariable*>();
-                }
-                else
-                {
-                    var->m_flags = MScriptVariable::FLAG_NO_FLAGS;
-                    var->m_value.m_scalar = NULL;
-                }
+                var->m_flags = MScriptVariable::FLAG_NO_FLAGS;
+                var->m_value.m_scalar = MScriptValue();
             }
         }
-
-        return &( var->m_value.m_scalar );
     }
+
+    return &( var->m_value.m_scalar );
 }
 
-inline MScriptVariable * MScriptVarTable::rawAccess ( const std::string & variable )
+inline MScriptVariable * MScriptVarTable::rawAccess ( const std::string & variable,
+                                                      int * level )
 {
+    int enteredLevel = 0;
+
     for ( std::vector<VarTable>::reverse_iterator varTab = m_varTables.rbegin();
           varTab != m_varTables.rend();
-          varTab++ )
+          varTab++, enteredLevel++ )
     {
         VarTable::iterator var = varTab->find(variable);
 
-        if ( varTab->cend() != var )
+        if ( varTab->cend() == var )
         {
-            return &(var->second);
+            continue;
         }
+
+        if ( NULL != level )
+        {
+            if ( -1 != *level )
+            {
+                if ( enteredLevel != *level )
+                {
+                    continue;
+                }
+            }
+            *level = enteredLevel;
+        }
+
+        return &(var->second);
     }
 
     return NULL;
 }
 
-MScriptValue ** MScriptVarTable::access ( const std::string & variable,
-                                          const Index * index,
-                                          const MScriptSrcLocation * location )
+MScriptValue * MScriptVarTable::access ( const std::string & variable,
+                                         const Index * index,
+                                         const MScriptSrcLocation * location,
+                                         int * level )
 {
-    MScriptVariable * cell = rawAccess ( variable );
+    MScriptVariable * cell = rawAccess ( variable, level );
 
     if ( NULL == cell )
     {
@@ -500,10 +483,9 @@ MScriptValue ** MScriptVarTable::access ( const std::string & variable,
         return NULL;
     }
 
-
     if ( 0 == ( MScriptVariable::FLAG_ARRAY & cell->m_flags ) )
     {
-        return &( cell->m_value.m_scalar );
+        return reaccess ( variable, cell->m_value.m_scalar, location, index );
     }
 
     if ( NULL == index )
@@ -512,166 +494,331 @@ MScriptValue ** MScriptVarTable::access ( const std::string & variable,
         {
             m_interpret->interpreterMessage ( *location,
                                               MScriptBase::MT_ERROR,
-                                              QObject::tr ( "variable `%1' is an array (it cannot be accessed "
-                                                            "as scalar)" ) . arg ( variable.c_str() )
-                                                                           . toStdString() );
+                                              QObject::tr ( "variable `%1' is array (it cannot be accessed as scalar)" )
+                                                           . arg ( variable.c_str() )
+                                                           . toStdString() );
         }
         return NULL;
     }
 
-    unsigned int dimensionNo = 0;
-
     if ( MScriptVariable::FLAG_HASH & cell->m_flags )
     {
-        for ( std::vector<std::string>::const_iterator key = index->m_key.cbegin();
-              key != index->m_key.cend();
-              key++, dimensionNo++ )
+        return accessHash ( variable, index, location, cell );
+    }
+    else
+    {
+        return accessArray ( variable, index, location, cell );
+    }
+}
+
+inline MScriptValue * MScriptVarTable::accessArray ( const std::string & variable,
+                                                     const Index * index,
+                                                     const MScriptSrcLocation * location,
+                                                     MScriptVariable * cell )
+{
+    unsigned int dimensionNo = 0;
+
+    for ( std::vector<unsigned int>::const_iterator idx = index->m_index.cbegin();
+          idx != index->m_index.cend();
+          idx++, dimensionNo++ )
+    {
+        int flags = ( ( MScriptVariable::FLAG_HASH | MScriptVariable::FLAG_ARRAY ) & cell->m_flags );
+
+        if ( MScriptVariable::FLAG_ARRAY != flags )
         {
-            int flags = ( ( MScriptVariable::FLAG_HASH | MScriptVariable::FLAG_ARRAY ) & cell->m_flags );
-
-            if ( ( MScriptVariable::FLAG_HASH | MScriptVariable::FLAG_ARRAY ) != flags )
+            if ( NULL != location )
             {
-                if ( NULL != location )
-                {
-                    m_interpret->interpreterMessage ( *location,
-                                                      MScriptBase::MT_ERROR,
-                                                      QObject::tr ( "associative array `%1' has been declared with "
-                                                                    "more dimensions than provided in the key vector" )
-                                                                  . arg ( variable.c_str() )
-                                                                  . toStdString() );
-                }
-                return NULL;
+                m_interpret->interpreterMessage ( *location,
+                                                  MScriptBase::MT_ERROR,
+                                                  QObject::tr ( "indexed array `%1' has been declared with "
+                                                                "more dimensions than provided in the index" )
+                                                              . arg ( variable.c_str() )
+                                                              . toStdString() );
             }
-
-            std::map<std::string,MScriptVariable*>::const_iterator it = cell->m_value.m_hash->find(*key);
-
-            if ( cell->m_value.m_hash->cend() == it )
-            {
-                if ( NULL != location )
-                {
-                    m_interpret->interpreterMessage ( *location,
-                                                      MScriptBase::MT_ERROR,
-                                                      QObject::tr ( "associative array `%1' does not contain an "
-                                                                    "element at the specified key vector (%2), "
-                                                                    "dimension #%3" )
-                                                                  . arg ( variable.c_str() )
-                                                                  . arg ( index->toString().c_str() )
-                                                                  . arg ( dimensionNo )
-                                                                  . toStdString() );
-                }
-                return NULL;
-            }
-            else
-            {
-                cell = it->second;
-
-                if ( NULL == cell )
-                {
-                    break;
-                }
-            }
+            return NULL;
         }
+        else if ( *idx >= cell->m_value.m_array->size() )
+        {
+            if ( NULL != location )
+            {
+                m_interpret->interpreterMessage ( *location,
+                                                  MScriptBase::MT_ERROR,
+                                                  QObject::tr ( "indexed array `%1' does not contain an "
+                                                                "element at the specified index (%2), "
+                                                                "dimension #%3" )
+                                                              . arg ( variable.c_str() )
+                                                              . arg ( index->toString().c_str() )
+                                                              . arg ( dimensionNo )
+                                                              . toStdString() );
+            }
+            return NULL;
+        }
+        else
+        {
+            cell = &( cell->m_value.m_array->at(*idx) );
+        }
+    }
 
-        if (
-               ( NULL == cell )
-                   ||
-               (
-                   ( MScriptVariable::FLAG_HASH | MScriptVariable::FLAG_ARRAY )
-                       ==
-                   ( ( MScriptVariable::FLAG_HASH | MScriptVariable::FLAG_ARRAY ) & cell->m_flags )
-               )
-           )
+    const int flags = ( ( MScriptVariable::FLAG_HASH | MScriptVariable::FLAG_ARRAY ) & cell->m_flags );
+    if ( MScriptVariable::FLAG_ARRAY == flags )
+    {
+        if ( NULL != location )
+        {
+            m_interpret->interpreterMessage ( *location,
+                                              MScriptBase::MT_ERROR,
+                                              QObject::tr ( "indexed array `%1' has been declared with less "
+                                                            "dimensions than provided in the index" )
+                                                          . arg ( variable.c_str() )
+                                                          . toStdString() );
+        }
+        return NULL;
+    }
+    else
+    {
+        return reaccess ( variable, cell->m_value.m_scalar, location );
+    }
+}
+
+inline MScriptValue * MScriptVarTable::accessHash ( const std::string & variable,
+                                                    const Index * index,
+                                                    const MScriptSrcLocation * location,
+                                                    MScriptVariable * cell )
+{
+    unsigned int dimensionNo = 0;
+
+    for ( std::vector<std::string>::const_iterator key = index->m_key.cbegin();
+          key != index->m_key.cend();
+          key++, dimensionNo++ )
+    {
+        int flags = ( ( MScriptVariable::FLAG_HASH | MScriptVariable::FLAG_ARRAY ) & cell->m_flags );
+
+        if ( ( MScriptVariable::FLAG_HASH | MScriptVariable::FLAG_ARRAY ) != flags )
         {
             if ( NULL != location )
             {
                 m_interpret->interpreterMessage ( *location,
                                                   MScriptBase::MT_ERROR,
                                                   QObject::tr ( "associative array `%1' has been declared with "
-                                                                "less dimensions than provided in the index" )
+                                                                "more dimensions than provided in the key vector" )
                                                               . arg ( variable.c_str() )
                                                               . toStdString() );
             }
             return NULL;
         }
-        else
-        {
-            return &( cell->m_value.m_scalar );
-        }
-    }
-    else
-    {
-        for ( std::vector<unsigned int>::const_iterator idx = index->m_index.cbegin();
-              idx != index->m_index.cend();
-              idx++, dimensionNo++ )
-        {
-            int flags = ( ( MScriptVariable::FLAG_HASH | MScriptVariable::FLAG_ARRAY ) & cell->m_flags );
 
-            if ( MScriptVariable::FLAG_ARRAY != flags )
-            {
-                if ( NULL != location )
-                {
-                    m_interpret->interpreterMessage ( *location,
-                                                      MScriptBase::MT_ERROR,
-                                                      QObject::tr ( "indexed array `%1' has been declared with "
-                                                                    "more dimensions than provided in the index" )
-                                                                  . arg ( variable.c_str() )
-                                                                  . toStdString() );
-                }
-                return NULL;
-            }
-            else if ( *idx >= cell->m_value.m_array->size() )
-            {
-                if ( NULL != location )
-                {
-                    m_interpret->interpreterMessage ( *location,
-                                                      MScriptBase::MT_ERROR,
-                                                      QObject::tr ( "indexed array `%1' does not contain an "
-                                                                    "element at the specified index (%2), "
-                                                                    "dimension #%3" )
-                                                                  . arg ( variable.c_str() )
-                                                                  . arg ( index->toString().c_str() )
-                                                                  . arg ( dimensionNo )
-                                                                  . toStdString() );
-                }
-                return NULL;
-            }
-            else
-            {
-                cell = cell->m_value.m_array->at(*idx);
+        std::map<std::string,MScriptVariable>::iterator it = cell->m_value.m_hash->find(*key);
 
-                if ( NULL == cell )
-                {
-                    break;
-                }
-            }
-        }
-
-        if (
-               ( NULL == cell )
-                  ||
-               (
-                   MScriptVariable::FLAG_ARRAY
-                       ==
-                   ( ( MScriptVariable::FLAG_HASH | MScriptVariable::FLAG_ARRAY ) & cell->m_flags )
-               )
-           )
+        if ( cell->m_value.m_hash->cend() == it )
         {
             if ( NULL != location )
             {
                 m_interpret->interpreterMessage ( *location,
                                                   MScriptBase::MT_ERROR,
-                                                  QObject::tr ( "indexed array `%1' has been declared with less "
-                                                                "dimensions than provided in the index" )
+                                                  QObject::tr ( "associative array `%1' does not contain an "
+                                                                "element at the specified key vector (%2), "
+                                                                "dimension #%3" )
                                                               . arg ( variable.c_str() )
+                                                              . arg ( index->toString().c_str() )
+                                                              . arg ( dimensionNo )
                                                               . toStdString() );
             }
             return NULL;
         }
         else
         {
-            return &( cell->m_value.m_scalar );
+            cell = &( it->second );
         }
     }
+
+    const int flags = ( ( MScriptVariable::FLAG_HASH | MScriptVariable::FLAG_ARRAY ) & cell->m_flags );
+    if ( ( MScriptVariable::FLAG_HASH | MScriptVariable::FLAG_ARRAY ) == flags )
+    {
+        if ( NULL != location )
+        {
+            m_interpret->interpreterMessage ( *location,
+                                              MScriptBase::MT_ERROR,
+                                              QObject::tr ( "associative array `%1' has been declared with "
+                                                            "less dimensions than provided in the index" )
+                                                          . arg ( variable.c_str() )
+                                                          . toStdString() );
+        }
+        return NULL;
+    }
+    else
+    {
+        return reaccess ( variable, cell->m_value.m_scalar, location );
+    }
+}
+
+inline void MScriptVarTable::derefer ( const char * reference,
+                                       int * level,
+                                       std::string * variable,
+                                       Index * index ) const
+{
+    char * origStr = new char [ strlen(reference) ];
+    char * str = origStr;
+    char * next;
+
+    next = strchr ( str, '.' );
+    next[0] = '\0';
+    sscanf ( str, "%d", level );
+    str = ( next + 1 );
+
+    next = strchr ( str, '.' );
+    next[0] = '\0';
+    *variable = str;
+    str = ( next + 1 );
+
+    if ( '\0' == str[0] )
+    {
+        // No array element specifier.
+        return;
+    }
+
+    next = strchr ( str, '.' );
+    next[0] = '\0';
+    str = ( next + 1 );
+
+    if ( 'A' == str[0] )
+    {
+        // Index vector.
+        unsigned int number;
+        while ( NULL != ( next = strchr ( str, '\n' ) ) )
+        {
+            next[0] = '\0';
+            sscanf ( str, "%d", &number );
+            str = ( next + 1 );
+            index->m_index.push_back(number);
+        }
+    }
+    else
+    {
+        // Key vector.
+        while ( NULL != ( next = strchr ( str, '\n' ) ) )
+        {
+            next[0] = '\0';
+            index->m_key.push_back(str);
+            str = ( next + 1 );
+        }
+    }
+}
+
+inline MScriptValue * MScriptVarTable::reaccess ( const std::string & variable,
+                                                  MScriptValue & input,
+                                                  const MScriptSrcLocation * location,
+                                                  const Index * index )
+{
+    if ( MScriptValue::TYPE_SYMBOL == input.m_type )
+    {
+        int level;
+        std::string targetVar;
+        Index targetIndex;
+
+        derefer ( input.m_data.m_symbol, &level, &targetVar, &targetIndex );
+
+        if ( 0 != index->dimensions() && 0 != targetIndex.dimensions() )
+        {
+            m_interpret->interpreterMessage ( *location,
+                                              MScriptBase::MT_ERROR,
+                                              QObject::tr ( "variable referenced by `%1' is an array element, i.e. it "
+                                                            "is scalar (it cannot be accessed as array)" )
+                                                           . arg ( variable.c_str() )
+                                                           . toStdString() );
+            return NULL;
+        }
+
+        const Index * accessIndex = index;
+        if ( 0 != targetIndex.dimensions() )
+        {
+            accessIndex = &targetIndex;
+        }
+        if ( 0 == accessIndex->dimensions() )
+        {
+            accessIndex = NULL;
+        }
+
+        return access ( input.m_data.m_symbol, accessIndex, location, &level );
+    }
+    else if ( NULL != index )
+    {
+        if ( NULL != location )
+        {
+            m_interpret->interpreterMessage ( *location,
+                                              MScriptBase::MT_ERROR,
+                                              QObject::tr ( "variable `%1' is scalar (it cannot be accessed as array)" )
+                                                           . arg ( variable.c_str() )
+                                                           . toStdString() );
+        }
+
+        return NULL;
+    }
+    else
+    {
+        return &input;
+    }
+}
+
+void MScriptVarTable::refer ( const std::string & refName,
+                              const std::string & refTarget,
+                              const MScriptSrcLocation & location,
+                              const Index * refIndex,
+                              const Index * targetIndex )
+{
+    int level = -1;
+    MScriptValue * target = access ( refTarget, targetIndex, &location, &level );
+    if ( NULL == target )
+    {
+        return;
+    }
+
+    std::string refString;
+
+    {
+        char buffer[10];
+        sprintf(buffer, "%d", level);
+        refString = buffer;
+        refString += ".";
+    }
+
+    refString += refTarget;
+    refString += ".";
+
+    if ( 0 != targetIndex->dimensions() )
+    {
+        refString += ".";
+
+        if ( 0 > targetIndex->dimensions() )
+        {
+            // Lower than zero -> associative array.
+            refString += "B\n";
+            for ( std::vector<std::string>::const_iterator it = targetIndex->m_key.cbegin();
+                  it != targetIndex->m_key.cend();
+                  it++ )
+            {
+                refString += *it;
+                refString += '\n';
+            }
+        }
+        else
+        {
+            // Higher than zero -> indexed array.
+            refString += "A\n";
+            for ( std::vector<unsigned int>::const_iterator it = targetIndex->m_index.cbegin();
+                  it != targetIndex->m_index.cend();
+                  it++ )
+            {
+                char buffer[10];
+                sprintf(buffer, "%d\n", *it);
+                refString = buffer;
+            }
+        }
+    }
+
+    MScriptValue value;
+    value.m_type = MScriptValue::TYPE_SYMBOL;
+    value.m_data.m_symbol = (char*) malloc(refString.size());
+    strcpy(value.m_data.m_symbol, refString.c_str());
+    assign ( refName, location, value, refIndex );
 }
 
 void MScriptVarTable::clear()
@@ -711,6 +858,11 @@ std::string MScriptVarTable::Index::toString() const
 
 int MScriptVarTable::Index::dimensions() const
 {
+    if ( NULL == this )
+    {
+        return 0;
+    }
+
     if ( false == m_index.empty() )
     {
         return (int) m_index.size();
@@ -725,9 +877,15 @@ int MScriptVarTable::Index::dimensions() const
     }
 }
 
+void MScriptVarTable::Index::clear()
+{
+    m_index.clear();
+    m_key.clear();
+}
+
 std::string MScriptVarTable::flags2Str ( MScriptVariable::Flags flags ) const
 {
-    if ( flags & MScriptVariable::FLAG_INVALID )
+    if ( MScriptVariable::FLAG_INVALID == flags )
     {
         return "<error>";
     }

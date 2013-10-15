@@ -72,9 +72,13 @@ add_library ( ${PROJECT_NAME} SHARED
               MScriptStmtTypes.cxx
               MScriptStatement.cxx
               MScriptExprSolver.cxx
+              MScriptSerializer.cxx
+              MScriptExprAlgebra.cxx
               MScriptSrcLocation.cxx
               MScriptExecContext.cxx
-              MScriptLexerAuxFunc.cxx )
+              MScriptSerializable.cxx
+              MScriptLexerAuxFunc.cxx
+              MScriptExprProcessor.cxx )
 
 ## Set properties on a target.
  # Targets can have properties that affect how they are built.

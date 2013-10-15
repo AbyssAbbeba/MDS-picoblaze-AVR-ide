@@ -21,6 +21,7 @@ class MScriptVarTable;
 class MScriptFuncTable;
 class MScriptStatement;
 class MScriptExprSolver;
+class MScriptExprProcessor;
 
 // MScript language interpreter header files.
 #include "MScriptBase.h"
@@ -149,6 +150,30 @@ class MScriptInterpret : private MScriptExecContext,
 
         /**
          * @brief
+         * @param[in] node
+         */
+        inline void evalVar ( const MScriptStatement * node );
+
+        /**
+         * @brief
+         * @param[in] node
+         */
+        inline void evalConst ( const MScriptStatement * node );
+
+        /**
+         * @brief
+         * @param[in] node
+         */
+        inline void evalCall ( const MScriptStatement * node );
+
+        /**
+         * @brief Add function to the Function Table.
+         * @param[in] node
+         */
+        inline void evalFunction ( const MScriptStatement * node );
+
+        /**
+         * @brief
          * @param[in] upTo
          * @param[in] times
          * @param[in] exclusive
@@ -168,6 +193,9 @@ class MScriptInterpret : private MScriptExecContext,
 
         /// @brief
         MScriptExprSolver * m_exprSolver;
+
+        /// @brief
+        MScriptExprProcessor * m_exprProcessor;
 };
 
 #endif // MSCRIPTINTERPRET_H

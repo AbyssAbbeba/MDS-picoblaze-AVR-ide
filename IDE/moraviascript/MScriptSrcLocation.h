@@ -67,13 +67,23 @@ class MScriptSrcLocation
          */
         std::string toString() const;
 
+        /**
+         * @brief
+         * @param[in] obj
+         * @return
+         */
+        bool operator == ( const MScriptSrcLocation & obj ) const;
+
     ////    Public Attributes    ////
     public:
         /// @brief
-        unsigned int m_line[2];
+        int m_line[2];
 
         /// @brief
-        unsigned int m_column[2];
+        int m_column[2];
+
+        /// @brief
+        int m_file;
 };
 
 /**

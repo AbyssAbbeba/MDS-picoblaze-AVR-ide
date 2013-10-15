@@ -36,7 +36,6 @@ CompilerSerializer & operator >> ( CompilerSerializer & in,
     return in;
 }
 
-
 CompilerSerializer & operator >> ( CompilerSerializer & in,
                                    CompilerSerializable * val )
 {

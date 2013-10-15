@@ -56,11 +56,10 @@ namespace MScriptLexerAuxFunc
      * @param[in] base
      * @return
      */
-    int str2int ( MScriptParserInterface * core,
-                  const MScriptSrcLocation location,
-                  const char * str,
-                  unsigned int max,
-                  int base );
+    long long str2int ( MScriptParserInterface * core,
+                        const MScriptSrcLocation location,
+                        const char * str,
+                        int base );
 
     /**
      * @brief Convert a string to floating point number.
@@ -69,9 +68,9 @@ namespace MScriptLexerAuxFunc
      * @param[in] str
      * @return
      */
-    float str2float ( MScriptParserInterface * core,
-                      const MScriptSrcLocation location,
-                      const char * str );
+    double str2float ( MScriptParserInterface * core,
+                       const MScriptSrcLocation location,
+                       const char * str );
 };
 
 #endif // MSCRIPTLEXERAUXFUNC_H
