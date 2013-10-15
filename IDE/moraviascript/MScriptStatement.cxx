@@ -30,7 +30,7 @@ MScriptStatement::MScriptStatement()
     m_branch = NULL;
 }
 
-MScriptStatement::MScriptStatement ( MScriptSrcLocation location,
+MScriptStatement::MScriptStatement ( const MScriptSrcLocation & location,
                                      MScriptStmtTypes::Type type,
                                      MScriptExpr * args )
 {

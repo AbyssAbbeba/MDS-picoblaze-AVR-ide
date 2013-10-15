@@ -123,21 +123,21 @@ void MScriptCore::clearMessages()
     m_messages.clear();
 }
 
-void MScriptCore::parserMessage ( MScriptSrcLocation location,
+void MScriptCore::parserMessage ( const MScriptSrcLocation & location,
                                   MScriptBase::MessageType type,
                                   const std::string & text )
 {
     m_messages.push_back(location.toString() + " " + msgTypeToStr(type) + ": " + text );
 }
 
-void MScriptCore::lexerMessage ( MScriptSrcLocation location,
+void MScriptCore::lexerMessage ( const MScriptSrcLocation & location,
                                  MScriptBase::MessageType type,
                                  const std::string & text )
 {
     m_messages.push_back(location.toString() + " " + msgTypeToStr(type) + ": " + text );
 }
 
-void MScriptCore::interpreterMessage ( MScriptSrcLocation location,
+void MScriptCore::interpreterMessage ( const MScriptSrcLocation & location,
                                        MScriptBase::MessageType type,
                                        const std::string & text )
 {

@@ -16,10 +16,8 @@
 #ifndef MSCRIPTVARIABLE_H
 #define MSCRIPTVARIABLE_H
 
-// Forward declarations.
-class MScriptValue;
-
 // MScript language interpreter header files.
+#include "MScriptValue.h"
 #include "MScriptSrcLocation.h"
 
 // Standard header files.
@@ -59,13 +57,19 @@ class MScriptVariable
         union Value
         {
             /// @brief
-            MScriptValue * m_scalar;
+            Value()
+            {
+                m_array = NULL;
+            }
 
             /// @brief
-            std::vector<MScriptVariable*> * m_array;
+            MScriptValue m_scalar;
 
             /// @brief
-            std::map<std::string,MScriptVariable*> * m_hash;
+            std::vector<MScriptVariable> * m_array;
+
+            /// @brief
+            std::map<std::string,MScriptVariable> * m_hash;
         };
 
     ////    Constructors and Destructors    ////

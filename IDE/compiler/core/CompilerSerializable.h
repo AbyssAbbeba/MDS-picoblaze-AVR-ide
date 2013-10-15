@@ -18,6 +18,11 @@
 
 #include "CompilerSerializer.h"
 
+/**
+ * @brief
+ * @ingroup Compiler
+ * @class CompilerSerializable
+ */
 class CompilerSerializable
 {
     ////    Public Datatypes    ////

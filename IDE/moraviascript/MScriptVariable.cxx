@@ -15,43 +15,22 @@
 
 #include "MScriptVariable.h"
 
-// MScript language interpreter header files.
-#include "MScriptValue.h"
-
 MScriptVariable::~MScriptVariable()
 {
     if ( FLAG_ARRAY & m_flags )
     {
         if ( FLAG_HASH & m_flags )
         {
-            for ( std::map<std::string,MScriptVariable*>::const_iterator var = m_value.m_hash->cbegin();
-                  var != m_value.m_hash->cend();
-                  var++ )
-            {
-                if ( NULL != var->second )
-                {
-                    delete var->second;
-                }
-            }
             delete m_value.m_hash;
         }
         else
         {
-            for ( std::vector<MScriptVariable*>::const_iterator var = m_value.m_array->cbegin();
-                  var != m_value.m_array->cend();
-                  var++ )
-            {
-                if ( NULL != *var )
-                {
-                    delete *var;
-                }
-            }
             delete m_value.m_array;
         }
     }
-    else if ( NULL != m_value.m_scalar )
+    else
     {
-        delete m_value.m_scalar;
+        m_value.m_scalar.completeDelete();
     }
 }
 
@@ -111,21 +90,12 @@ std::ostream & operator << ( std::ostream & out,
         {
             if ( MScriptVariable::FLAG_HASH & variable.m_flags )
             {
-                const std::map<std::string,MScriptVariable*> * hashTable = variable.m_value.m_hash;
-                for ( std::map<std::string,MScriptVariable*>::const_iterator cell = hashTable->cbegin();
+                const std::map<std::string,MScriptVariable> * hashTable = variable.m_value.m_hash;
+                for ( std::map<std::string,MScriptVariable>::const_iterator cell = hashTable->cbegin();
                       cell != hashTable->cend();
                       cell++ )
                 {
-                    out << "  [\"" << cell->first << "\"] : ";
-                    if ( NULL == cell->second )
-                    {
-                        out << "<UNDEFINDED>";
-                    }
-                    else
-                    {
-                        out << *(cell->second);
-                    }
-                    out << std::endl;
+                    out << "  [\"" << cell->first << "\"] : " << cell->second << std::endl;
                 }
             }
             else
@@ -133,18 +103,7 @@ std::ostream & operator << ( std::ostream & out,
                 size_t size = variable.m_value.m_array->size();
                 for ( size_t i = 0; i < size; i++ )
                 {
-                    const MScriptVariable * value = variable.m_value.m_array->at(i);
-
-                    out << "  [" << i << "] : ";
-                    if ( NULL == value )
-                    {
-                        out << "<UNDEFINDED>";
-                    }
-                    else
-                    {
-                        out << *value;
-                    }
-                    out << std::endl;
+                    out << "  [" << i << "] : " << variable.m_value.m_array->at(i) << std::endl;
                 }
             }
         }

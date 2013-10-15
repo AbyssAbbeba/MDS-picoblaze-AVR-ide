@@ -20,23 +20,21 @@
 
 // Standard header files.
 #include <cctype>
-#include <cstdlib>
 #include <cstdio>
+#include <cstdlib>
 #include <cstring>
 
 // Used for i18n only.
 #include <QObject>
 
-int MScriptLexerAuxFunc::str2int ( MScriptParserInterface * core,
-                                   const MScriptSrcLocation location,
-                                   const char * str,
-                                   unsigned int max,
-                                   int base )
+long long  MScriptLexerAuxFunc::str2int ( MScriptParserInterface * core,
+                                          const MScriptSrcLocation location,
+                                          const char * str,
+                                          int base )
 {
-    unsigned long number;
-    if ( ( strlen(str) > max )
-            ||
-         ( ( 0x1ULL << 32 ) <= ( number = strtoul(str, NULL, base) ) ) )
+    long long result = strtoll(str, NULL, base);
+
+    if ( ( LLONG_MIN == result ) || ( LLONG_MAX == result ) )
     {
         core->lexerMessage ( location,
                              MScriptBase::MT_ERROR,
@@ -45,15 +43,24 @@ int MScriptLexerAuxFunc::str2int ( MScriptParserInterface * core,
         return 1; // Some "neutral dummy value"
     }
 
-    return int(number);
+    return result;
 }
 
-float MScriptLexerAuxFunc::str2float ( MScriptParserInterface * /*core*/,
-                                       const MScriptSrcLocation /*location*/,
-                                       const char * str )
+double MScriptLexerAuxFunc::str2float ( MScriptParserInterface * core,
+                                        const MScriptSrcLocation location,
+                                        const char * str )
 {
-    float result;
-    sscanf(str, "%f", &result);
+    double result = strtod ( str, NULL );
+
+    if ( ( -HUGE_VAL == result ) || ( HUGE_VAL == result ) )
+    {
+        core->lexerMessage ( location,
+                             MScriptBase::MT_ERROR,
+                             QObject::tr("number is too big: ").toStdString() + "`" + std::string(str) + "'" );
+
+        return 1.0; // Some "neutral dummy value"
+    }
+
     return result;
 }
 
@@ -119,7 +126,7 @@ uint32_t MScriptLexerAuxFunc::escapeSequence ( MScriptParserInterface * core,
         default:
             core->lexerMessage ( location,
                                  MScriptBase::MT_ERROR,
-                                 QObject::tr("Unrecognized escape sequence: ").toStdString() + "`" + seq + "'" );
+                                 QObject::tr("unrecognized escape sequence: ").toStdString() + "`" + seq + "'" );
             *size = 0;
             return 0; // Some "neutral" dummy value
     }

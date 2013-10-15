@@ -70,6 +70,11 @@ class MScriptVarTable
              * @return 0 == scalar, lower than 0 == associative array, higher than 0 == indexed array.
              */
             int dimensions() const;
+
+            /**
+             * @brief
+             */
+            void clear();
         };
 
     ////    Constructors and Destructors    ////
@@ -117,11 +122,10 @@ class MScriptVarTable
          * @param[in] constant
          * @return
          */
-        bool declare ( const std::string & variable,
+        void declare ( const std::string & variable,
                        const MScriptSrcLocation & location,
                        MScriptVariable::Flags flags = MScriptVariable::FLAG_NO_FLAGS,
-                       unsigned int dimensions = 0,
-                       bool constant = false );
+                       unsigned int dimensions = 0 );
 
         /**
          * @brief
@@ -131,9 +135,9 @@ class MScriptVarTable
          * @param[in] index
          * @return
          */
-        bool assign ( const std::string & variable,
+        void assign ( const std::string & variable,
                       const MScriptSrcLocation & location,
-                      MScriptValue * value,
+                      const MScriptValue & value,
                       const Index * index = NULL );
 
         /**
@@ -141,11 +145,28 @@ class MScriptVarTable
          * @param[in] variable
          * @param[in] index
          * @param[in] location If NULL, do not generate any error messages; othewise use this location in them.
+         * @param[in,out] level
          * @return
          */
-        MScriptValue ** access ( const std::string & variable,
-                                 const Index * index = NULL,
-                                 const MScriptSrcLocation * location = NULL );
+        MScriptValue * access ( const std::string & variable,
+                                const Index * index = NULL,
+                                const MScriptSrcLocation * location = NULL,
+                                int * level = NULL );
+
+        /**
+         * @brief
+         * @param[in] refName
+         * @param[in] refTarget
+         * @param[in] location
+         * @param[in] refIndex
+         * @param[in] targetIndex
+         * @return
+         */
+        void refer ( const std::string & refName,
+                     const std::string & refTarget,
+                     const MScriptSrcLocation & location,
+                     const Index * refIndex = NULL,
+                     const Index * targetIndex = NULL );
 
         /**
          * @brief
@@ -198,9 +219,11 @@ class MScriptVarTable
         /**
          * @brief
          * @param[in] variable
+         * @param[in,out] level
          * @return
          */
-        inline MScriptVariable * rawAccess ( const std::string & variable );
+        inline MScriptVariable * rawAccess ( const std::string & variable,
+                                             int * level = NULL );
 
         /**
          * @brief
@@ -209,9 +232,87 @@ class MScriptVarTable
          * @param[in] location
          * @return
          */
-        inline MScriptValue ** newArrayElement ( const std::string & variable,
-                                                 const Index * index,
-                                                 const MScriptSrcLocation * location );
+        inline MScriptValue * newArrayElement ( const std::string & variable,
+                                                const Index * index,
+                                                const MScriptSrcLocation * location );
+
+        /**
+         * @brief
+         * @param[in] variable
+         * @param[in] index
+         * @param[in] location
+         * @param[in,out] var
+         * @return
+         */
+        inline MScriptValue * newArrayElementIdx ( const std::string & variable,
+                                                   const Index * index,
+                                                   const MScriptSrcLocation * location,
+                                                   MScriptVariable * var );
+
+        /**
+         * @brief
+         * @param[in] variable
+         * @param[in] index
+         * @param[in] location
+         * @param[in,out] var
+         * @return
+         */
+        inline MScriptValue * newArrayElementKey ( const std::string & variable,
+                                                   const Index * index,
+                                                   const MScriptSrcLocation * location,
+                                                   MScriptVariable * var );
+
+        /**
+         * @brief
+         * @param[in] variable
+         * @param[in] input
+         * @param[in] location
+         * @param[in] index
+         * @return
+         */
+        inline MScriptValue * reaccess ( const std::string & variable,
+                                         MScriptValue & input,
+                                         const MScriptSrcLocation * location,
+                                         const Index * index = NULL );
+
+        /**
+         * @brief
+         * @param[in] reference
+         * @param[out] level
+         * @param[out] variable
+         * @param[out] index
+         * @return
+         */
+        inline void derefer ( const char * reference,
+                              int * level,
+                              std::string * variable,
+                              Index * index ) const;
+
+        /**
+         * @brief
+         * @param[in] variable
+         * @param[in] index
+         * @param[in] location
+         * @param[in,out] cell
+         * @return
+         */
+        inline MScriptValue * accessArray ( const std::string & variable,
+                                            const Index * index,
+                                            const MScriptSrcLocation * location,
+                                            MScriptVariable * cell );
+
+        /**
+         * @brief
+         * @param[in] variable
+         * @param[in] index
+         * @param[in] location
+         * @param[in,out] cell
+         * @return
+         */
+        inline MScriptValue * accessHash ( const std::string & variable,
+                                           const Index * index,
+                                           const MScriptSrcLocation * location,
+                                           MScriptVariable * cell );
 
     ////    Private Attributes    ////
     private:

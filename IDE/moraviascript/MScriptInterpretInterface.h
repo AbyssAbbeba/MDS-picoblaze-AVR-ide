@@ -42,7 +42,7 @@ class MScriptInterpretInterface
          * @param[in] type
          * @param[in] text
          */
-        virtual void interpreterMessage ( MScriptSrcLocation location,
+        virtual void interpreterMessage ( const MScriptSrcLocation & location,
                                           MScriptBase::MessageType type,
                                           const std::string & text ) = 0;
 };
