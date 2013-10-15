@@ -46,6 +46,7 @@ MainForm::MainForm()
     connect(wDockManager, SIGNAL(tabifyDockWidget(QDockWidget*, QDockWidget*)), this, SLOT(tabifyDockWidgetSlot(QDockWidget*, QDockWidget*)));
     connect(wDockManager, SIGNAL(addDockWidget(Qt::DockWidgetArea, QDockWidget*)), this, SLOT(addDockWidgetSlot(Qt::DockWidgetArea, QDockWidget*)));
     connect(wDockManager, SIGNAL(getSimProjectData()), this, SLOT(simProjectData()));
+    connect(this, SIGNAL(unhighlightSim()), wDockManager, SLOT(unhighlightSimWidget()));
     //this->dockWidgets = false;
     createActions();
     createMenu();
@@ -83,6 +84,13 @@ void MainForm::createMenu()
     projectMenu->addAction(saveProjAct);
     projectMenu->addAction(projectCompileAct);
     projectMenu->addAction(projectConfigAct);
+
+    simulationMenu = menuBar()->addMenu(tr("&Simulation"));
+    simulationMenu->addAction(simulationFlowAct);
+    simulationMenu->addAction(simulationStepAct);
+    simulationMenu->addAction(simulationRunAct);
+    simulationMenu->addAction(simulationResetAct);
+    simulationMenu->addAction(simulationUnhighlightAct);
 
     toolsMenu = menuBar()->addMenu(tr("&Tools"));
     toolsMenu->addAction(toolDisassemblerAct);
@@ -213,6 +221,12 @@ void MainForm::createActions()
     connect(simulationResetAct, SIGNAL(triggered()), this, SLOT(simulationReset()));
     simulationResetAct->setDisabled(true);
 
+    QPixmap *pm_simUnhighlight = new QPixmap(":/resources//icons//unhighlight.png");
+    QIcon *icon_simUnhighlight = new QIcon(*pm_simUnhighlight);
+    simulationUnhighlightAct = new QAction(*icon_simUnhighlight, tr("Unhighlight"), this);
+    connect(simulationUnhighlightAct, SIGNAL(triggered()), this, SLOT(unhighlight()));
+    simulationUnhighlightAct->setDisabled(true);
+
     QPixmap *pm_toolDis = new QPixmap(":/resources//icons//disassemble.png");
     QIcon *icon_toolDis = new QIcon(*pm_toolDis);
     toolDisassemblerAct = new QAction(*icon_toolDis, tr("Disassemble"), this);
@@ -261,6 +275,7 @@ void MainForm::createToolbar()
     simulationToolBar->addAction(simulationRunAct);
     simulationToolBar->addAction(simulationStepAct);
     simulationToolBar->addAction(simulationResetAct);
+    simulationToolBar->addAction(simulationUnhighlightAct);
 
     projectToolBar->setAllowedAreas(Qt::TopToolBarArea);
     simulationToolBar->setAllowedAreas(Qt::TopToolBarArea);
@@ -876,6 +891,7 @@ void MainForm::simulationFlowHandle()
                 simulationStepAct->setEnabled(true);
                 simulationRunAct->setEnabled(true);
                 simulationResetAct->setEnabled(true);
+                simulationUnhighlightAct->setEnabled(true);
             }
         }
         else
@@ -888,6 +904,7 @@ void MainForm::simulationFlowHandle()
             simulationStepAct->setDisabled(true);
             simulationRunAct->setDisabled(true);
             simulationResetAct->setDisabled(true);
+            simulationUnhighlightAct->setDisabled(true);
             projectMan->getActive()->stop();
         }
     }
@@ -1100,4 +1117,13 @@ void MainForm::disassembleOutput(std::vector<std::string> text)
     this->wDockManager->addUntrackedCentralWidget("disasm","untracked",qText);
     getWDockManager()->getCentralTextEdit()->reloadHighlighter(PICOBLAZEASM);
     //getWDockManager()->getCentralWidget()->connectAct();
+}
+
+
+/**
+ *
+ */
+void MainForm::unhighlight()
+{
+    emit unhighlightSim();
 }
