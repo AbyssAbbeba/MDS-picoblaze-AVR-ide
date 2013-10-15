@@ -22,6 +22,7 @@ class MScriptInterpretInterface;
 
 // MScript language interpreter header files.
 #include "MScriptSrcLocation.h"
+#include "MScriptSerializable.h"
 
 // Standard header files.
 #include <cmath>
@@ -34,7 +35,7 @@ class MScriptInterpretInterface;
  * @ingroup MoraviaScript
  * @class MScriptValue
  */
-class MScriptValue
+class MScriptValue : public MScriptSerializable
 {
     ////    Public Datatypes    ////
     public:
@@ -226,6 +227,21 @@ class MScriptValue
              */
             bool toBool ( MScriptInterpretInterface * interpret,
                           const MScriptSrcLocation & location ) const;
+        //@}
+
+        /// @name Serialization methods.
+        //@{
+            /**
+             * @brief
+             * @param[in,out]
+             */
+            virtual void serialize ( MScriptSerializer & output ) const;
+
+            /**
+             * @brief
+             * @param[in,out]
+             */
+            virtual void deserialize ( MScriptSerializer & input );
         //@}
 
     ////    Public Attributes    ////
