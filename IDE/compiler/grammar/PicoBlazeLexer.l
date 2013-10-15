@@ -337,6 +337,7 @@ DIS_INT_INST            "disable"{WSPACE}"interrupt"
 "&&"                    { return AND;        }
 "||"                    { return OR;         }
 "&"                     { return BITAND;     }
+"!&"                    { return BITNAND;    }
 "|"                     { return BITOR;      }
 "^"                     { return BITXOR;     }
 "=="                    { return EQ;         }

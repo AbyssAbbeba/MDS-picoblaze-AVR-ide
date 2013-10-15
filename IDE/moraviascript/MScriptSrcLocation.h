@@ -16,6 +16,9 @@
 #ifndef MSCRIPTSRCLOCATION_H
 #define MSCRIPTSRCLOCATION_H
 
+// MScript language interpreter header files.
+#include "MScriptSerializable.h"
+
 // Standard header files
 #include <ostream>
 #include <string>
@@ -38,7 +41,7 @@
  * @class MScriptSrcLocation
  * @ingroup MoraviaScript
  */
-class MScriptSrcLocation
+class MScriptSrcLocation : public MScriptSerializable
 {
     ////    Constructors and Destructors    ////
     public:
@@ -73,6 +76,21 @@ class MScriptSrcLocation
          * @return
          */
         bool operator == ( const MScriptSrcLocation & obj ) const;
+
+        /// @name Serialization methods.
+        //@{
+            /**
+             * @brief
+             * @param[in,out]
+             */
+            virtual void serialize ( MScriptSerializer & output ) const;
+
+            /**
+             * @brief
+             * @param[in,out]
+             */
+            virtual void deserialize ( MScriptSerializer & input );
+        //@}
 
     ////    Public Attributes    ////
     public:

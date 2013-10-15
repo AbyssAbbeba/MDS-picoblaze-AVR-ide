@@ -77,6 +77,17 @@ class MScriptVariable
         /**
          * @brief
          */
+        MScriptVariable();
+
+        /**
+         * @brief
+         * @param[in] obj
+         */
+        MScriptVariable ( const MScriptVariable & obj );
+
+        /**
+         * @brief
+         */
         ~MScriptVariable();
 
     ////    Public Attributes    ////

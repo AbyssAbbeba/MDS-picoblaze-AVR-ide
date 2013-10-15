@@ -301,6 +301,14 @@ long long MScriptValue::toInt ( MScriptInterpretInterface * interpret,
     return 0;
 }
 
+void MScriptValue::serialize ( MScriptSerializer & output ) const
+{
+}
+
+void MScriptValue::deserialize ( MScriptSerializer & input )
+{
+}
+
 std::ostream & operator << ( std::ostream & out,
                              const MScriptValue & val )
 {

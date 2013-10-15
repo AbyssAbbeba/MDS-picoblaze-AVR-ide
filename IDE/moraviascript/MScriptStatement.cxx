@@ -289,6 +289,14 @@ void MScriptStatement::completeDelete()
     delete this;
 }
 
+void MScriptStatement::serialize ( MScriptSerializer & output ) const
+{
+}
+
+void MScriptStatement::deserialize ( MScriptSerializer & input )
+{
+}
+
 std::ostream & MScriptStatement::print ( std::ostream & out,
                                          int level,
                                          std::string lineString ) const

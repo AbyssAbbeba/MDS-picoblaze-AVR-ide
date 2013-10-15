@@ -199,6 +199,7 @@
 %token AND              "&&"
 %token OR               "||"
 %token BITAND           "&"
+%token BITNAND          "!&"
 %token BITOR            "|"
 %token BITXOR           "^"
 %token EQ               "=="

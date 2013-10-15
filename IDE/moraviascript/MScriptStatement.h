@@ -22,6 +22,7 @@ class MScriptExpr;
 // MScript language interpreter header files.
 #include "MScriptStmtTypes.h"
 #include "MScriptSrcLocation.h"
+#include "MScriptSerializable.h"
 
 // Standard header files
 #include <ostream>
@@ -31,7 +32,7 @@ class MScriptExpr;
  * @class MScriptStatement
  * @ingroup MoraviaScript
  */
-class MScriptStatement
+class MScriptStatement : public MScriptSerializable
 {
     ////    Constructors and Destructors    ////
     public:
@@ -130,6 +131,21 @@ class MScriptStatement
          * @return
          */
         MScriptStatement * appendArgsLink ( MScriptExpr * chainLink );
+
+        /// @name Serialization methods.
+        //@{
+            /**
+             * @brief
+             * @param[in,out]
+             */
+            virtual void serialize ( MScriptSerializer & output ) const;
+
+            /**
+             * @brief
+             * @param[in,out]
+             */
+            virtual void deserialize ( MScriptSerializer & input );
+        //@}
 
     ////    Inline Public Operations    ////
     public:
