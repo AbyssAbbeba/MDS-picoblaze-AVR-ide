@@ -65,75 +65,140 @@ class MScriptExecContext
          */
         void clear();
 
-        /**
-         * @brief
-         * @param[in] node
-         * @param[in] flags
-         */
-        void addNext ( const MScriptStatement * node,
-                       ExecFlags flags = FLAG_NORMAL );
-
-        /**
-         * @brief
-         * @param[in] flags
-         */
-        void setNextFlags ( ExecFlags flags );
-
-        /**
-         * @brief
-         * @param[in] node
-         * @param[in] flags
-         */
-        void replaceNext ( const MScriptStatement * node,
-                           ExecFlags flags = FLAG_NORMAL );
-
-        /**
-         * @brief
-         */
-        void popNext();
-
-        /**
-         * @brief
-         * @return
-         */
-        ExecFlags getNextFlags() const;
-
-        /**
-         * @brief
-         * @return
-         */
-        const MScriptStatement * getNextNode() const;
-
-        /**
-         * @brief
-         * @param[in] level
-         */
-        void cutOffBranch ( unsigned int level );
-
     ////    Inline Public Operations    ////
     public:
         /**
          * @brief
-         * @return
+         * @param[in] node
+         * @param[in] flags
          */
-        bool empty() const
-        {
-            return m_programPointer.empty();
-        }
+        inline void addNext ( const MScriptStatement * node,
+                              ExecFlags flags = FLAG_NORMAL );
+
+        /**
+         * @brief
+         * @param[in] flags
+         */
+        inline void setNextFlags ( ExecFlags flags );
+
+        /**
+         * @brief
+         * @param[in] node
+         * @param[in] flags
+         */
+        inline void replaceNext ( const MScriptStatement * node,
+                                  ExecFlags flags = FLAG_NORMAL );
+
+        /**
+         * @brief
+         */
+        inline void popNext();
 
         /**
          * @brief
          * @return
          */
-        std::vector<ProgPtr> & getProgramPointer()
-        {
-            return m_programPointer;
-        }
+        inline ExecFlags getNextFlags() const;
+
+        /**
+         * @brief
+         * @return
+         */
+        inline const MScriptStatement * getNextNode() const;
+
+        /**
+         * @brief
+         * @param[in] level
+         * @return
+         */
+        inline const MScriptStatement * cutOffBranch ( unsigned int level );
+
+        /**
+         * @brief
+         * @return
+         */
+        inline bool empty() const;
+
+        /**
+         * @brief
+         * @return
+         */
+        inline std::vector<ProgPtr> & getProgramPointer();
 
     ////    Private Attributes    ////
     private:
         /// @brief
         std::vector<ProgPtr> m_programPointer;
 };
+
+// -----------------------------------------------------------------------------
+// Inline Function Definitions
+// -----------------------------------------------------------------------------
+
+inline void MScriptExecContext::popNext()
+{
+    if ( false == m_programPointer.empty() )
+    {
+        m_programPointer.pop_back();
+    }
+}
+
+inline const MScriptStatement * MScriptExecContext::getNextNode() const
+{
+    return m_programPointer.back().first;
+}
+
+inline MScriptExecContext::ExecFlags MScriptExecContext::getNextFlags() const
+{
+    return m_programPointer.back().second;
+}
+
+inline void MScriptExecContext::addNext ( const MScriptStatement * node,
+                                          MScriptExecContext::ExecFlags flags )
+{
+    if ( NULL != node )
+    {
+        m_programPointer.push_back(ProgPtr(node, flags));
+    }
+}
+
+inline void MScriptExecContext::setNextFlags ( MScriptExecContext::ExecFlags flags )
+{
+    if ( false == m_programPointer.empty() )
+    {
+        m_programPointer.back().second = flags;
+    }
+}
+
+inline void MScriptExecContext::replaceNext ( const MScriptStatement * node,
+                                              MScriptExecContext::ExecFlags flags )
+{
+    popNext();
+    addNext(node, flags);
+}
+
+inline const MScriptStatement * MScriptExecContext::cutOffBranch ( unsigned int level )
+{
+    const MScriptStatement * last = getNextNode();
+
+    while ( 0 != level )
+    {
+        last = getNextNode();
+        popNext();
+        level--;
+    }
+
+    return last;
+}
+
+inline bool MScriptExecContext::empty() const
+{
+    return m_programPointer.empty();
+}
+
+inline std::vector<MScriptExecContext::ProgPtr> & MScriptExecContext::getProgramPointer()
+{
+    return m_programPointer;
+}
 
 #endif // MSCRIPTEXECCONTEXT_H

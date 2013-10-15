@@ -16,16 +16,27 @@
 #include "MScriptValue.h"
 
 // MScript language interpreter header files.
+#include "MScriptBase.h"
 #include "MScriptExpr.h"
+#include "MScriptInterpretInterface.h"
 
 // Standard header files
 #include <cstring>
 #include <cctype>
 #include <cstdlib>
 
+// Used for i18n only.
+#include <QObject>
+
 MScriptValue::MScriptValue()
 {
     m_type = TYPE_EMPTY;
+}
+
+MScriptValue::MScriptValue ( bool value )
+{
+    m_type = TYPE_BOOL;
+    m_data.m_bool = value;
 }
 
 MScriptValue::MScriptValue ( int value )
@@ -42,14 +53,22 @@ MScriptValue::MScriptValue ( long long value )
 
 MScriptValue::MScriptValue ( float value )
 {
-    m_type = TYPE_REAL;
-    m_data.m_real = (double) value;
+    m_type = TYPE_FLOAT;
+    m_data.m_float = (double) value;
 }
 
 MScriptValue::MScriptValue ( double value )
 {
-    m_type = TYPE_REAL;
-    m_data.m_real = value;
+    m_type = TYPE_FLOAT;
+    m_data.m_float = value;
+}
+
+MScriptValue::MScriptValue ( double real,
+                             double img )
+{
+    m_type = TYPE_COMPLEX;
+    m_data.m_complex.m_r = real;
+    m_data.m_complex.m_i = img;
 }
 
 MScriptValue::MScriptValue ( MScriptExpr * expr )
@@ -74,70 +93,81 @@ MScriptValue::MScriptValue ( const std::string & string )
     memcpy(m_data.m_symbol, string.c_str(), length);
 }
 
-MScriptValue::MScriptValue ( const unsigned char * array,
+MScriptValue::MScriptValue ( const char * array,
                              int size )
 {
-    m_type = TYPE_ARRAY;
-    m_data.m_array.m_size = size;
+    m_type = TYPE_STRING;
+    m_data.m_string.m_size = size;
     if ( size > 0 )
     {
-        m_data.m_array.m_data = (unsigned char*) malloc(size);
-        memcpy(m_data.m_array.m_data, array, size);
+        m_data.m_string.m_data = (char*) malloc(size);
+        memcpy(m_data.m_string.m_data, array, size);
     }
 }
 
-MScriptValue::MScriptValue ( unsigned char * array,
+MScriptValue::MScriptValue ( char * array,
                              int size,
                              bool copy )
 {
-    m_type = TYPE_ARRAY;
-    m_data.m_array.m_size = size;
+    m_type = TYPE_STRING;
+    m_data.m_string.m_size = size;
 
     if ( true == copy )
     {
         if ( size > 0 )
         {
-            m_data.m_array.m_data = (unsigned char*) malloc(size);
-            memcpy(m_data.m_array.m_data, array, size);
+            m_data.m_string.m_data = (char*) malloc(size);
+            memcpy(m_data.m_string.m_data, array, size);
         }
     }
     else
     {
-        m_data.m_array.m_data = array;
+        m_data.m_string.m_data = array;
     }
 }
 
 MScriptValue & MScriptValue::makeCopy() const
 {
     MScriptValue * result = new MScriptValue();
-    result->m_type = m_type;
+    makeCopy(*result);
+    return *result;
+}
+
+void MScriptValue::makeCopy ( MScriptValue & result ) const
+{
+    result.m_type = m_type;
     switch ( m_type )
     {
         case TYPE_EMPTY:
             break;
         case TYPE_INT:
-            result->m_data.m_integer = m_data.m_integer;
+            result.m_data.m_integer = m_data.m_integer;
             break;
-        case TYPE_REAL:
-            result->m_data.m_real = m_data.m_real;
+        case TYPE_FLOAT:
+            result.m_data.m_float = m_data.m_float;
             break;
         case TYPE_EXPR:
-            result->m_data.m_expr = m_data.m_expr->copyEntireChain();
+            result.m_data.m_expr = m_data.m_expr->copyEntireChain();
             break;
         case TYPE_SYMBOL:
         {
             int length = ( 1 + strlen(m_data.m_symbol) );
-            result->m_data.m_symbol = new char[length];
-            memcpy(result->m_data.m_symbol, m_data.m_symbol, length);
+            result.m_data.m_symbol = new char[length];
+            memcpy(result.m_data.m_symbol, m_data.m_symbol, length);
             break;
         }
-        case TYPE_ARRAY:
-            result->m_data.m_array.m_size = m_data.m_array.m_size;
-            result->m_data.m_array.m_data = (unsigned char*) malloc(m_data.m_array.m_size);
-            memcpy(result->m_data.m_array.m_data, m_data.m_array.m_data, m_data.m_array.m_size);
+        case TYPE_STRING:
+            result.m_data.m_string.m_size = m_data.m_string.m_size;
+            result.m_data.m_string.m_data = (char*) malloc(m_data.m_string.m_size);
+            memcpy(result.m_data.m_string.m_data, m_data.m_string.m_data, m_data.m_string.m_size);
+            break;
+        case TYPE_BOOL:
+            result.m_data.m_bool = m_data.m_bool;
+            break;
+        case TYPE_COMPLEX:
+            result.m_data.m_complex = m_data.m_complex;
             break;
     }
-    return * result;
 }
 
 void MScriptValue::completeDelete()
@@ -146,14 +176,129 @@ void MScriptValue::completeDelete()
     {
         delete[] m_data.m_symbol;
     }
-    else if ( TYPE_ARRAY == m_type )
+    else if ( TYPE_STRING == m_type )
     {
-        free(m_data.m_array.m_data);
+        free(m_data.m_string.m_data);
     }
     else if ( TYPE_EXPR == m_type )
     {
         m_data.m_expr->completeDelete();
     }
+
+    m_type = TYPE_EMPTY;
+}
+
+bool MScriptValue::operator == ( const MScriptValue & obj ) const
+{
+    if ( obj.m_type != m_type )
+    {
+        return false;
+    }
+
+    switch ( m_type )
+    {
+        case MScriptValue::TYPE_EMPTY:
+            return false;
+        case MScriptValue::TYPE_INT:
+            return ( obj.m_data.m_integer == m_data.m_integer );
+        case MScriptValue::TYPE_FLOAT:
+            return ( obj.m_data.m_float == m_data.m_float );
+        case MScriptValue::TYPE_EXPR:
+            return false;
+        case MScriptValue::TYPE_SYMBOL:
+            if ( 0 == strcmp ( obj.m_data.m_symbol, m_data.m_symbol ) )
+            {
+                return false;
+            }
+            break;
+        case MScriptValue::TYPE_STRING:
+            if ( obj.m_data.m_string.m_size != m_data.m_string.m_size )
+            {
+                return false;
+            }
+            for ( unsigned int i = 0; i < m_data.m_string.m_size; i++ )
+            {
+                if ( obj.m_data.m_string.m_data[i] != m_data.m_string.m_data[i] )
+                {
+                    return false;
+                }
+            }
+            break;
+        case TYPE_BOOL:
+            return ( obj.m_data.m_bool == m_data.m_bool );
+        case TYPE_COMPLEX:
+            return ( obj.m_data.m_complex == m_data.m_complex );
+    }
+
+    return true;
+}
+
+bool MScriptValue::toBool ( MScriptInterpretInterface * interpret,
+                            const MScriptSrcLocation & location ) const
+{
+    switch ( m_type )
+    {
+        case MScriptValue::TYPE_INT:
+            return ( 0 != m_data.m_integer );
+        case MScriptValue::TYPE_STRING:
+            return ( 0 != m_data.m_string.m_size );
+        case MScriptValue::TYPE_FLOAT:
+            return ( ( true == std::isnormal(m_data.m_float) ) && ( 0 != m_data.m_float ) );
+        case MScriptValue::TYPE_EXPR:
+        case MScriptValue::TYPE_EMPTY:
+        case MScriptValue::TYPE_SYMBOL:
+            interpret->interpreterMessage ( location,
+                                            MScriptBase::MT_ERROR,
+                                            QObject::tr ( "cannot interpret this value as bool" ) . toStdString() );
+            return false;
+        case TYPE_BOOL:
+            return m_data.m_bool;
+        case TYPE_COMPLEX:
+            return ( ( 0 != m_data.m_complex.m_r ) || ( 0 != m_data.m_complex.m_i ) );
+    }
+
+    return false;
+}
+
+long long MScriptValue::toInt ( MScriptInterpretInterface * interpret,
+                                const MScriptSrcLocation & location ) const
+{
+    switch ( m_type )
+    {
+        case MScriptValue::TYPE_INT:
+            return m_data.m_integer;
+        case MScriptValue::TYPE_STRING:
+            interpret->interpreterMessage ( location,
+                                            MScriptBase::MT_ERROR,
+                                            QObject::tr ( "cannot interpret string as integer" ) . toStdString() );
+            return 0;
+        case MScriptValue::TYPE_FLOAT:
+            interpret->interpreterMessage ( location,
+                                            MScriptBase::MT_ERROR,
+                                            QObject::tr ( "cannot interpret float as integer" ) . toStdString() );
+            return 0;
+        case MScriptValue::TYPE_EXPR:
+        case MScriptValue::TYPE_EMPTY:
+        case MScriptValue::TYPE_SYMBOL:
+            interpret->interpreterMessage ( location,
+                                            MScriptBase::MT_ERROR,
+                                            QObject::tr ( "cannot interpret this value as integer" )
+                                                        . toStdString() );
+            return 0;
+        case TYPE_BOOL:
+            interpret->interpreterMessage ( location,
+                                            MScriptBase::MT_ERROR,
+                                            QObject::tr ( "cannot interpret bool as integer" ) . toStdString() );
+            return 0;
+        case TYPE_COMPLEX:
+            interpret->interpreterMessage ( location,
+                                            MScriptBase::MT_ERROR,
+                                            QObject::tr ( "cannot interpret complex number as integer" )
+                                                        . toStdString() );
+            return 0;
+    }
+
+    return 0;
 }
 
 std::ostream & operator << ( std::ostream & out,
@@ -167,8 +312,8 @@ std::ostream & operator << ( std::ostream & out,
         case MScriptValue::TYPE_INT:
             out << "0x" << std::hex << val.m_data.m_integer << std::dec;
             break;
-        case MScriptValue::TYPE_REAL:
-            out << std::scientific << val.m_data.m_real;
+        case MScriptValue::TYPE_FLOAT:
+            out << std::scientific << val.m_data.m_float;
             break;
         case MScriptValue::TYPE_EXPR:
             out << val.m_data.m_expr;
@@ -176,13 +321,13 @@ std::ostream & operator << ( std::ostream & out,
         case MScriptValue::TYPE_SYMBOL:
             out << "'" << val.m_data.m_symbol << "'";
             break;
-        case MScriptValue::TYPE_ARRAY:
-            out << "{" << std::dec << val.m_data.m_array.m_size << "}:\"";
-            for ( int i = 0; i < val.m_data.m_array.m_size; i++ )
+        case MScriptValue::TYPE_STRING:
+            out << "{" << std::dec << val.m_data.m_string.m_size << "}:\"";
+            for ( unsigned int i = 0; i < val.m_data.m_string.m_size; i++ )
             {
-                if ( 0 == isprint(int(val.m_data.m_array.m_data[i])) )
+                if ( 0 == isprint(int(val.m_data.m_string.m_data[i])) )
                 {
-                    if ( val.m_data.m_array.m_data[i] < 16 )
+                    if ( val.m_data.m_string.m_data[i] < 16 )
                     {
                         out << "\\x0";
                     }
@@ -190,14 +335,20 @@ std::ostream & operator << ( std::ostream & out,
                     {
                         out << "\\x";
                     }
-                    out << std::hex << int(val.m_data.m_array.m_data[i]) << std::dec;
+                    out << std::hex << int(val.m_data.m_string.m_data[i]) << std::dec;
                 }
                 else
                 {
-                    out << val.m_data.m_array.m_data[i];
+                    out << val.m_data.m_string.m_data[i];
                 }
             }
             out << "\"";
+            break;
+        case MScriptValue::TYPE_BOOL:
+            out << "" << std::boolalpha << val.m_data.m_bool << std::noboolalpha << "";
+            break;
+        case MScriptValue::TYPE_COMPLEX:
+            out << std::scientific << val.m_data.m_complex.m_r << " + " << val.m_data.m_complex.m_i << "i";
             break;
     }
 

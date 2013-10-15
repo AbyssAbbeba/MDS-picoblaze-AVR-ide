@@ -251,10 +251,10 @@ MScriptExpr * MScriptExpr::copyChainLink() const
     }
 
     MScriptExpr * result = new MScriptExpr();
-    result->m_lValue = m_lValue.makeCopy();
     result->m_operator = m_operator;
-    result->m_rValue = m_rValue.makeCopy();
     result->m_location = m_location;
+    m_lValue.makeCopy(result->m_lValue);
+    m_rValue.makeCopy(result->m_rValue);
     return result;
 }
 
@@ -271,11 +271,6 @@ MScriptExpr * MScriptExpr::unlink()
         m_prev = NULL;
     }
     return this;
-}
-
-int MScriptExpr::eval() const
-{
-    return 0;
 }
 
 std::ostream & operator << ( std::ostream & out,
@@ -317,6 +312,7 @@ std::ostream & operator << ( std::ostream & out,
         case MScriptExpr::OPER_LOR_ASSIGN:      out << "||=";   break;
         case MScriptExpr::OPER_XOR_ASSIGN:      out << "^=";    break;
         case MScriptExpr::OPER_ASSIGN:          out << "=";     break;
+        case MScriptExpr::OPER_ASSIGN_REF:      out << "=&";    break;
         case MScriptExpr::OPER_TERNARY:         out << "?";     break;
         case MScriptExpr::OPER_COLON:           out << ":";     break;
         case MScriptExpr::OPER_COMMA:           out << ",";     break;

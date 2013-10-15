@@ -18,9 +18,15 @@
 
 // Forward declarations.
 class MScriptExpr;
+class MScriptInterpretInterface;
+
+// MScript language interpreter header files.
+#include "MScriptSrcLocation.h"
 
 // Standard header files.
+#include <cmath>
 #include <string>
+#include <cstring>
 #include <ostream>
 
 /**
@@ -38,11 +44,13 @@ class MScriptValue
         enum Type
         {
             TYPE_EMPTY = 0, ///<
-            TYPE_INT,       ///<
-            TYPE_REAL,      ///<
             TYPE_EXPR,      ///<
             TYPE_SYMBOL,    ///<
-            TYPE_ARRAY      ///<
+            TYPE_INT,       ///<
+            TYPE_FLOAT,     ///<
+            TYPE_STRING,    ///<
+            TYPE_BOOL,      ///<
+            TYPE_COMPLEX    ///<
         };
 
         /**
@@ -51,26 +59,45 @@ class MScriptValue
         union Data
         {
             ///
-            long long m_integer;
-
-            ///
-            double m_real;
-
-            ///
             MScriptExpr * m_expr;
 
             ///
             char * m_symbol;
 
             ///
-            struct CharArray
+            long long m_integer;
+
+            ///
+            double m_float;
+
+            ///
+            bool m_bool;
+
+            ///
+            struct String
             {
                 ///
-                unsigned char * m_data;
+                char * m_data;
 
                 ///
-                int m_size;
-            } m_array;
+                unsigned int m_size;
+            } m_string;
+
+            ///
+            struct Complex
+            {
+                ///
+                double m_r;
+
+                ///
+                double m_i;
+
+                ///
+                bool operator == ( const Complex & n ) const
+                {
+                    return ( ( n.m_r == m_r ) &&  ( n.m_i == m_i ) );
+                }
+            } m_complex;
         };
 
     ////    Constructors and Destructors    ////
@@ -79,6 +106,12 @@ class MScriptValue
          * @brief
          */
         MScriptValue();
+
+        /**
+         * @brief
+         * @param[in] value
+         */
+        MScriptValue ( bool value );
 
         /**
          * @brief
@@ -106,6 +139,14 @@ class MScriptValue
 
         /**
          * @brief
+         * @param[in] real
+         * @param[in] img
+         */
+        MScriptValue ( double real,
+                       double img );
+
+        /**
+         * @brief
          * @param[in,out] expr
          */
         MScriptValue ( MScriptExpr * expr );
@@ -127,7 +168,7 @@ class MScriptValue
          * @param[in] array
          * @param[in] size
          */
-        MScriptValue ( const unsigned char * array,
+        MScriptValue ( const char * array,
                        int size );
 
         /**
@@ -136,7 +177,7 @@ class MScriptValue
          * @param[in] size
          * @param[in] copy
          */
-        MScriptValue ( unsigned char * array,
+        MScriptValue ( char * array,
                        int size,
                        bool copy = false );
 
@@ -150,8 +191,42 @@ class MScriptValue
 
         /**
          * @brief
+         * @param[in,out] result
+         */
+        void makeCopy ( MScriptValue & result ) const;
+
+        /**
+         * @brief
          */
         void completeDelete();
+
+        /**
+         * @brief
+         * @param[in] obj
+         * @return
+         */
+        bool operator == ( const MScriptValue & obj ) const;
+
+        /// @name Type conversion related operations.
+        //@{
+            /**
+             * @brief
+             * @param[in,out] interpret
+             * @param[in] location
+             * @return
+             */
+            long long toInt ( MScriptInterpretInterface * interpret,
+                              const MScriptSrcLocation & location ) const;
+
+            /**
+             * @brief
+             * @param[in,out] interpret
+             * @param[in] location
+             * @return
+             */
+            bool toBool ( MScriptInterpretInterface * interpret,
+                          const MScriptSrcLocation & location ) const;
+        //@}
 
     ////    Public Attributes    ////
     public:

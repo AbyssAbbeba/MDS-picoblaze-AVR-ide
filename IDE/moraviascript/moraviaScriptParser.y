@@ -43,16 +43,20 @@
 // Symbol semantic value.
 %union
 {
-    int integer;                //
-    float real;                 //
-    char * string;              //
     MScriptExpr * expr;         //
     MScriptStatement * stmt;    //
+
+    bool boolean;               //
+    long long integer;          //
+    double real;                //
+    double imaginary;           //
+    char * symbol;              //
+
     struct
     {
-        unsigned char * data;   //
-        int size;               //
-    } array;                    //
+        char * data;            //
+        unsigned int size;      //
+    } string;                   //
 };
 
 /*
@@ -117,12 +121,25 @@
 %token KW_CASE          "case"
 %token KW_DEFAULT       "default"
 %token KW_DELETE        "delete"
+%token KW_VAR           "var"
+%token KW_CONST         "const"
+%token KW_NAMESPACE     "namespace"
+
+/* Special values: */
+%token SV_EMPTY         "EMPTY"
+
+/* Built-in data types: */
+%token DT_BOOL          "bool data type specifier"
+%token DT_INT           "int data type specifier"
+%token DT_FLOAT         "float data type specifier"
+%token DT_COMPLEX       "complex data type specifier"
+%token DT_STRING        "string data type specifier"
+%token DT_OBJECT        "object data type specifier"
 
 /* Other terminal symbols */
 %token O_COLON          ":"
 %token O_QUESTION_MARK  "?"
 %token EOS              ";"
-/* %token EOL              "end of line" */
 %token END      0       "end of file"
 // Brackets.
 %token B_RND_LEFT       "("
@@ -200,17 +217,19 @@
 %nonassoc "else"
 
 /* Terminal symbols with semantic value */
-%token<string>  IDENTIFIER      "idenfifier"
-%token<array>   STRING          "string"
-%token<integer> INTEGER         "integer"
-%token<real>    REAL            "real number"
+%token<symbol>    IDENTIFIER    "idenfifier"
+%token<string>    STRING        "string"
+%token<integer>   INTEGER       "integer"
+%token<real>      REAL          "real number"
+%token<imaginary> IMAGINARY     "imaginary number"
+%token<boolean>   BOOLEAN       "boolean number"
 
 /*
  * DECLARATION OF NON-TERMINAL SYMBOLS
  */
 // Expressions
-%type<expr>     expr            e_expr          e_int           id              param_list      indexes
-%type<expr>     param           sv_expr
+%type<expr>     expr            e_expr          e_int           id              param_list
+%type<expr>     param           decl            decl_list       indexes
 // Statements - general
 %type<stmt>     statements      stmt            cases           switch_body
 
@@ -290,12 +309,18 @@ stmt:
     | "delete" id ";"               {
                                         $$ = new MScriptStatement(@$, STMT_DELETE, $id);
                                     }
+    | "var" decl_list ";"           {
+                                        $$ = new MScriptStatement(@$, STMT_VAR, $decl_list);
+                                    }
+    | "const" decl_list ";"         {
+                                        $$ = new MScriptStatement(@$, STMT_CONST, $decl_list);
+                                    }
     | "/" expr "/" stmt             {
                                         $$ = (new MScriptStatement(@$, STMT_TRIGGER, $expr))->createBranch($4);
                                     }
     | "func" id "(" param_list ")" stmt
                                     {
-                                        $$ =new MScriptStatement(@$, STMT_FUNCTION, $id->appendLink($param_list));
+                                        $$ = new MScriptStatement(@$, STMT_FUNCTION, $id->appendLink($param_list));
                                         $$->createBranch($6);
                                     }
     | "{" statements "}"            {
@@ -376,14 +401,22 @@ id:
       IDENTIFIER                    { $$ = new MScriptExpr($IDENTIFIER, @$); }
 ;
 
+// Variable or constant declarations.
+decl:
+      id                            { $$ = $id;                                                       }
+    | id "=" expr                   { $$ = new MScriptExpr($id, MScriptExpr::OPER_ASSIGN, $expr, @$); }
+;
+
+// List of variable or constant declarations.
+decl_list:
+      decl                          { $$ = $decl;                 }
+    | decl_list "," decl            { $$ = $1->appendLink($decl); }
+;
+
 param:
-      id                            { $$ = $id;                                                          }
-    | id "=" sv_expr                { $$ = new MScriptExpr($id, MScriptExpr::OPER_ASSIGN, $sv_expr, @$); }
-    | "&" id                        { $$ = $id; $id->m_operator = MScriptExpr::OPER_REF;                 }
-    | "&" id "=" sv_expr            {
-                                        $id->m_operator = MScriptExpr::OPER_REF;
-                                        $$ = new MScriptExpr($id, MScriptExpr::OPER_ASSIGN, $sv_expr, @$);
-                                    }
+      id                            { $$ = $id;                                                       }
+    | id "=" expr                   { $$ = new MScriptExpr($id, MScriptExpr::OPER_ASSIGN, $expr, @$); }
+    | "&" id                        { $$ = $id; $id->m_operator = MScriptExpr::OPER_REF;              }
 ;
 
 // List of function parameters.
@@ -405,18 +438,16 @@ e_expr:
     | expr                          { $$ = $expr; }
 ;
 
-// Single value expressions.
-sv_expr:
-      INTEGER                       { $$ = new MScriptExpr($INTEGER, @$);                                 }
-    | REAL                          { $$ = new MScriptExpr($REAL, @$);                                    }
-    | STRING                        { $$ = new MScriptExpr(MScriptValue($STRING.data, $STRING.size), @$); }
-;
-
 // Expression.
 expr:
     // Single value expressions.
       id                            { $$ = $id;      }
-    | sv_expr                       { $$ = $sv_expr; }
+    | "EMPTY"                       { $$ = new MScriptExpr(@$);                                              }
+    | BOOLEAN                       { $$ = new MScriptExpr($BOOLEAN, @$);                                    }
+    | STRING                        { $$ = new MScriptExpr(MScriptValue($STRING.data, $STRING.size), @$);    }
+    | REAL                          { $$ = new MScriptExpr($REAL, @$);                                       }
+    | INTEGER                       { $$ = new MScriptExpr($INTEGER, @$);                                    }
+    | IMAGINARY                     { $$ = new MScriptExpr(MScriptValue(0, $IMAGINARY), @$);                 }
 
     // Parentheses.
     | "(" expr ")"                  { $$ = $2; }
@@ -441,6 +472,7 @@ expr:
     | expr ">>" expr                { $$ = new MScriptExpr($1, MScriptExpr::OPER_SHR,  $3, @$);        }
     | expr "<<" expr                { $$ = new MScriptExpr($1, MScriptExpr::OPER_SHL,  $3, @$);        }
     | expr "=" expr                 { $$ = new MScriptExpr($1, MScriptExpr::OPER_ASSIGN,      $3, @$); }
+    | expr "=" "&" expr             { $$ = new MScriptExpr($1, MScriptExpr::OPER_ASSIGN_REF,  $4, @$); }
     | expr "+=" expr                { $$ = new MScriptExpr($1, MScriptExpr::OPER_ADD_ASSIGN,  $3, @$); }
     | expr "-=" expr                { $$ = new MScriptExpr($1, MScriptExpr::OPER_SUB_ASSIGN,  $3, @$); }
     | expr "*=" expr                { $$ = new MScriptExpr($1, MScriptExpr::OPER_MUL_ASSIGN,  $3, @$); }

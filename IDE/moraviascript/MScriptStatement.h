@@ -46,7 +46,7 @@ class MScriptStatement
          * @param[in] type
          * @param[in] args
          */
-        MScriptStatement ( MScriptSrcLocation location,
+        MScriptStatement ( const MScriptSrcLocation & location,
                            MScriptStmtTypes::Type type,
                            MScriptExpr * args = NULL );
 

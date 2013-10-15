@@ -51,6 +51,8 @@ namespace MScriptStmtTypes
         STMT_CASE,            ///<
         STMT_DEFAULT,         ///<
         STMT_DELETE,          ///<
+        STMT_VAR,             ///<
+        STMT_CONST,           ///<
 
         STMT_CALL             ///<
     };
