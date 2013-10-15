@@ -60,6 +60,8 @@ class MScriptExpr
             OPER_SHL,         ///< a << b
             OPER_CMPL,        ///< ~ a
             OPER_NOT,         ///< ! a
+            OPER_ASSIGN,      ///< a = b
+            OPER_ASSIGN_REF,  ///< a = &b;
             OPER_ADD_ASSIGN,  ///< a += b
             OPER_SUB_ASSIGN,  ///< a -= b
             OPER_MUL_ASSIGN,  ///< a *= b
@@ -76,7 +78,6 @@ class MScriptExpr
             OPER_PRE_DEC,     ///< -- a
             OPER_POST_INC,    ///< a ++
             OPER_POST_DEC,    ///< a --
-            OPER_ASSIGN,      ///< a = b
             OPER_INDEX,       ///< a [ b ]
             OPER_TERNARY,     ///< a ? `e', where `e' is supposed to stand for ( a : b ).
             OPER_COLON,       ///< a : b, this is supposed to be used with the ternary operator.
@@ -195,12 +196,6 @@ class MScriptExpr
          * @brief
          */
         MScriptExpr * copyChainLink() const;
-
-        /**
-         * @brief
-         * @return
-         */
-        int eval() const;
 
         /**
          * @brief

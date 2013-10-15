@@ -120,7 +120,7 @@ class MScriptCore : protected MScriptBase,
          * @param[in] type
          * @param[in] text
          */
-        virtual void parserMessage ( MScriptSrcLocation location,
+        virtual void parserMessage ( const MScriptSrcLocation & location,
                                      MScriptBase::MessageType type,
                                      const std::string & text );
 
@@ -130,7 +130,7 @@ class MScriptCore : protected MScriptBase,
          * @param[in] type
          * @param[in] text
          */
-        virtual void lexerMessage ( MScriptSrcLocation location,
+        virtual void lexerMessage ( const MScriptSrcLocation & location,
                                     MScriptBase::MessageType type,
                                     const std::string & text );
 
@@ -140,7 +140,7 @@ class MScriptCore : protected MScriptBase,
          * @param[in] type
          * @param[in] text
          */
-        virtual void interpreterMessage ( MScriptSrcLocation location,
+        virtual void interpreterMessage ( const MScriptSrcLocation & location,
                                           MScriptBase::MessageType type,
                                           const std::string & text );
 

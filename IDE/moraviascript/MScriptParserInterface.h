@@ -50,7 +50,7 @@ class MScriptParserInterface
          * @param[in] type
          * @param[in] text
          */
-        virtual void parserMessage ( MScriptSrcLocation location,
+        virtual void parserMessage ( const MScriptSrcLocation & location,
                                      MScriptBase::MessageType type,
                                      const std::string & text ) = 0;
 
@@ -60,7 +60,7 @@ class MScriptParserInterface
          * @param[in] type
          * @param[in] text
          */
-        virtual void lexerMessage ( MScriptSrcLocation location,
+        virtual void lexerMessage ( const MScriptSrcLocation & location,
                                     MScriptBase::MessageType type,
                                     const std::string & text ) = 0;
 

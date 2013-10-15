@@ -28,20 +28,25 @@ MScriptFuncTable::Parameter::Parameter()
     m_value = NULL;
 }
 
-MScriptFuncTable::Parameter::Parameter ( const char * name,
-                                         const MScriptValue * defaulValue )
+MScriptFuncTable::Parameter::Parameter ( const char * name )
                                        :
-                                         m_name ( name )
-{
-    if ( NULL == defaulValue )
-    {
-        m_value = NULL;
-    }
-    else
-    {
-        m_value = &( defaulValue->makeCopy() );
-    }
-}
+                                         m_name ( name ),
+                                         m_value ( NULL ),
+                                         m_reference ( false ) {}
+
+MScriptFuncTable::Parameter::Parameter ( const char * name,
+                                         const MScriptValue & defaulValue )
+                                       :
+                                         m_name ( name ),
+                                         m_value ( new MScriptValue(defaulValue) ),
+                                         m_reference ( false ) {}
+
+MScriptFuncTable::Parameter::Parameter ( const char * name,
+                                         bool reference )
+                                       :
+                                         m_name ( name ),
+                                         m_value ( NULL ),
+                                         m_reference ( reference ) {}
 
 MScriptFuncTable::Function::Function ( std::vector<Parameter> * params,
                                        MScriptStatement * code,
@@ -80,11 +85,19 @@ MScriptFuncTable::~MScriptFuncTable()
     clear();
 }
 
-bool MScriptFuncTable::define ( const std::string & name,
+void MScriptFuncTable::define ( const std::string & name,
                                 const MScriptSrcLocation & location,
                                 std::vector<Parameter> * params,
                                 MScriptStatement * code )
 {
+    if ( MScriptStmtTypes::STMT_SCOPE != code->type() )
+    {
+        m_interpret->interpreterMessage ( location,
+                                          MScriptBase::MT_ERROR,
+                                          QObject::tr ( "invalid function definition") . toStdString() );
+        return;
+    }
+
     unsigned int defaults = 0;
 
     for ( std::vector<Parameter>::const_iterator p = params->cbegin();
@@ -101,7 +114,7 @@ bool MScriptFuncTable::define ( const std::string & name,
                                                                 "(because one of preceding parameters has).")
                                                                . arg ( p->m_name.c_str() )
                                                                . toStdString() );
-                return false;
+                return;
             }
         }
         else
@@ -115,14 +128,23 @@ bool MScriptFuncTable::define ( const std::string & name,
 
     if ( true == isDefined(name, argsRequired, &prevDefLoc) )
     {
-        const std::string prevDefLocStr = prevDefLoc.toString();
-        m_interpret->interpreterMessage ( location,
-                                          MScriptBase::MT_ERROR,
-                                          QObject::tr("ambiguous function overload, overlaps with `%1' declared at %2")
-                                                     . arg ( name.c_str() )
-                                                     . arg ( prevDefLocStr.c_str() )
-                                                     . toStdString() );
-        return false;
+        if ( location == prevDefLoc )
+        {
+            m_interpret->interpreterMessage ( location,
+                                              MScriptBase::MT_ERROR,
+                                              QObject::tr("exactly this function was already defined").toStdString());
+        }
+        else
+        {
+            const std::string prevDefLocStr = prevDefLoc.toString();
+            m_interpret->interpreterMessage ( location,
+                                              MScriptBase::MT_ERROR,
+                                              QObject::tr ( "ambiguous function overload, overlaps with `%1' declared "
+                                                            "at %2" )
+                                                          . arg ( name.c_str() )
+                                                          . arg ( prevDefLocStr.c_str() )
+                                                          . toStdString() );
+        }
     }
     else if ( true == isDefined(name, -1, &prevDefLoc) )
     {
@@ -133,12 +155,10 @@ bool MScriptFuncTable::define ( const std::string & name,
                                                       . arg ( name.c_str() )
                                                       . arg ( prevDefLocStr.c_str() )
                                                       . toStdString() );
-        return false;
     }
     else
     {
         m_funcTable.insert(std::make_pair(name, Function(params, code, location, argsRequired)));
-        return true;
     }
 
 }
