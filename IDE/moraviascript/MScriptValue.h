@@ -21,6 +21,7 @@ class MScriptExpr;
 class MScriptInterpretInterface;
 
 // MScript language interpreter header files.
+#include "MScriptComplex.h"
 #include "MScriptSrcLocation.h"
 #include "MScriptSerializable.h"
 
@@ -85,20 +86,7 @@ class MScriptValue : public MScriptSerializable
             } m_string;
 
             ///
-            struct Complex
-            {
-                ///
-                double m_r;
-
-                ///
-                double m_i;
-
-                ///
-                bool operator == ( const Complex & n ) const
-                {
-                    return ( ( n.m_r == m_r ) &&  ( n.m_i == m_i ) );
-                }
-            } m_complex;
+            MScriptComplex m_complex;
         };
 
     ////    Constructors and Destructors    ////
