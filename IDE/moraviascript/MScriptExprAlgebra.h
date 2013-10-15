@@ -175,7 +175,7 @@ class MScriptExprAlgebra
             inline void intComplex ( MScriptValue & result,
                                      long long a,
                                      MScriptExpr::Operator oper,
-                                     const MScriptValue::Data::Complex & b,
+                                     const MScriptComplex & b,
                                      const MScriptSrcLocation & location );
         //@}
 
@@ -253,7 +253,7 @@ class MScriptExprAlgebra
             inline void floatComplex ( MScriptValue & result,
                                        double a,
                                        MScriptExpr::Operator oper,
-                                       const MScriptValue::Data::Complex & b,
+                                       const MScriptComplex & b,
                                        const MScriptSrcLocation & location );
         //@}
 
@@ -331,7 +331,7 @@ class MScriptExprAlgebra
             inline void stringComplex ( MScriptValue & result,
                                         const MScriptValue::Data::String & a,
                                         MScriptExpr::Operator oper,
-                                        const MScriptValue::Data::Complex & b,
+                                        const MScriptComplex & b,
                                         const MScriptSrcLocation & location );
         //@}
 
@@ -410,7 +410,7 @@ class MScriptExprAlgebra
             inline void boolComplex ( MScriptValue & result,
                                       bool a,
                                       MScriptExpr::Operator oper,
-                                      const MScriptValue::Data::Complex & b,
+                                      const MScriptComplex & b,
                                       const MScriptSrcLocation & location );
         //@}
 
@@ -427,7 +427,7 @@ class MScriptExprAlgebra
              * @return
              */
             inline void complexInt ( MScriptValue & result,
-                                     const MScriptValue::Data::Complex & a,
+                                     const MScriptComplex & a,
                                      MScriptExpr::Operator oper,
                                      long long b,
                                      const MScriptSrcLocation & location );
@@ -442,7 +442,7 @@ class MScriptExprAlgebra
              * @return
              */
             inline void complexFloat ( MScriptValue & result,
-                                       const MScriptValue::Data::Complex & a,
+                                       const MScriptComplex & a,
                                        MScriptExpr::Operator oper,
                                        double b,
                                        const MScriptSrcLocation & location );
@@ -457,7 +457,7 @@ class MScriptExprAlgebra
              * @return
              */
             inline void complexString ( MScriptValue & result,
-                                        const MScriptValue::Data::Complex & a,
+                                        const MScriptComplex & a,
                                         MScriptExpr::Operator oper,
                                         const MScriptValue::Data::String & b,
                                         const MScriptSrcLocation & location );
@@ -472,7 +472,7 @@ class MScriptExprAlgebra
              * @return
              */
             inline void complexBool ( MScriptValue & result,
-                                      const MScriptValue::Data::Complex & a,
+                                      const MScriptComplex & a,
                                       MScriptExpr::Operator oper,
                                       bool b,
                                       const MScriptSrcLocation & location );
@@ -487,9 +487,9 @@ class MScriptExprAlgebra
              * @return
              */
             inline void complexComplex ( MScriptValue & result,
-                                         const MScriptValue::Data::Complex & a,
+                                         const MScriptComplex & a,
                                          MScriptExpr::Operator oper,
-                                         const MScriptValue::Data::Complex & b,
+                                         const MScriptComplex & b,
                                          const MScriptSrcLocation & location );
         //@}
 
@@ -501,6 +501,10 @@ class MScriptExprAlgebra
          */
         inline bool checkDivisor ( const MScriptSrcLocation & location,
                                    long long div );
+
+        /// @overload
+        inline bool checkDivisor ( const MScriptSrcLocation & location,
+                                   double div );
 
         /**
          * @brief
