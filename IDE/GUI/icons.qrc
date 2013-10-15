@@ -14,6 +14,7 @@
      <file>resources/icons/simulationStop.png</file>
      <file>resources/icons/terminal.png</file>
      <file>resources/icons/disassemble.png</file>
+     <file>resources/icons/unhighlight.png</file>
      <file>resources/xml/mcuspecfile.xml</file>
      <file>resources/help/mdshelp.qhc</file>
  </qresource>

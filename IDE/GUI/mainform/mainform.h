@@ -93,9 +93,10 @@ class MainForm : public QMainWindow
         void startProjectConfig(Project *project);
         void help();
         void disassembleOutput(std::vector<std::string> text);
+        void unhighlight();
 
-    //signals:
-    //    void dockWidgetsCreated;
+    signals:
+        void unhighlightSim();
 
     private:
         //init functions
@@ -113,6 +114,7 @@ class MainForm : public QMainWindow
         QMenu *editMenu;
         QMenu *interfaceMenu;
         QMenu *projectMenu;
+        QMenu *simulationMenu;
         QMenu *toolsMenu;
         QMenu *helpMenu;
 
@@ -151,6 +153,7 @@ class MainForm : public QMainWindow
         QAction *simulationStepAct;
         QAction *simulationRunAct;
         QAction *simulationResetAct;
+        QAction *simulationUnhighlightAct;
 
         QAction *toolDisassemblerAct;
         QAction *toolConvertorAct;
