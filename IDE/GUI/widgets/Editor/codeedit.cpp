@@ -64,7 +64,7 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
         }
     }
     textEdit->setContextMenuPolicy(Qt::NoContextMenu);
-    textEdit->setFont(QFont ("Andale Mono", 11));
+    textEdit->setFont(QFont ("Andale Mono", 10));
     QFontMetrics fontMetrics(textEdit->font());
     textEdit->setTabStopWidth(4*fontMetrics.width(' '));
     lineCount = new WLineCounter(textEdit, false, false, 0, textEdit->font());
@@ -147,7 +147,7 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName
         textEdit = new WTextEdit(this, PLAIN);
     }
     textEdit->setContextMenuPolicy(Qt::NoContextMenu);
-    textEdit->setFont(QFont ("Andale Mono", 11));
+    textEdit->setFont(QFont ("Andale Mono", 10));
     lineCount = new WLineCounter(textEdit, false, false, 0, textEdit->font());
     layout = new QGridLayout(this);
     layout->addWidget(lineCount, 0, 0);

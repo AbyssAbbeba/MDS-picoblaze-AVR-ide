@@ -43,50 +43,59 @@ StackWidget::StackWidget(QWidget *parent, MCUSimControl * controlUnit, MCUSimSub
     fontLW.setPointSize(9);
     this->lwStack->setFont(fontLW);
 
-    this->leInput->setInputMask("Hhhh");
+    QPixmap pixSP(10,10);
+    pixSP.fill(Qt::green);
+    this->iconSP = new QIcon(pixSP);
+
+    this->sp = 0;
+
+    //this->leInput->setInputMask("Hhhh");
     
     connect(btnPush, SIGNAL(clicked()), this, SLOT(push()));
     connect(btnPop, SIGNAL(clicked()), this, SLOT(pop()));
 
     std::vector<int> mask;
     mask.push_back(MCUSimMemory::EVENT_MEM_INF_WR_VAL_WRITTEN);
+    mask.push_back(PicoBlazeStack::EVENT_STACK_OVERFLOW);
+    mask.push_back(PicoBlazeStack::EVENT_STACK_UNDERFLOW);
+    mask.push_back(PicoBlazeStack::EVENT_STACK_SP_CHANGED);
     controlUnit->registerObserver(this, subsys, mask);
 
     deviceChanged();
 }
 
 
+StackWidget::~StackWidget()
+{
+    delete iconSP;
+}
+
+
 void StackWidget::push()
 {
-    if ( 32 >= this->lwStack->count() )
+    if ( 32 >= this->sp && this->leInput->text().toInt() > 0 && this->leInput->text().toInt() <  65535)
     {
-        QListWidgetItem *item = new QListWidgetItem(this->leInput->text(), this->lwStack);
-        this->lwStack->setCurrentRow(this->lwStack->count() - 1);
-        this->m_memory->directWrite(lwStack->count()-1, this->leInput->text().toInt());
+        //QListWidgetItem *item = new QListWidgetItem(this->leInput->text(), this->lwStack);
+        //this->lwStack->setCurrentRow(this->lwStack->count() - 1);
+        //this->m_memory->directWrite(lwStack->count()-1, this->leInput->text().toInt());
     }
 }
 
 
 void StackWidget::pop()
 {
-    if ( 0 != this->lwStack->count() )
+    if ( 0 != this->sp )
     {
         this->leInput->setText(this->lwStack->currentItem()->text());
-        for (int i = lwStack->count()-1; i > lwStack->currentRow(); i--)
+        /*for (int i = lwStack->count()-1; i > lwStack->currentRow(); i--)
         {
             uint value;
             this->m_memory->directRead(i, value);
             this->m_memory->directWrite(i-1, value);
-        }
-        this->m_memory->directWrite(lwStack->count()-1, 0);
-        delete this->lwStack->currentItem();
+        }*/
+        //this->m_memory->directWrite(lwStack->count()-1, 0);
+        //delete this->lwStack->currentItem();
     }
-}
-
-
-StackWidget::~StackWidget()
-{
-
 }
 
 
@@ -110,13 +119,31 @@ void StackWidget::handleEvent(int subsysId, int eventId, int locationOrReason, i
     {
         case MCUSimMemory::EVENT_MEM_INF_WR_VAL_WRITTEN:
         {
-            uint value;
-            m_memory->directRead(locationOrReason, value);
-            qDebug() << "StackWidget: event: mem cell changed to" << value;
-            qDebug() << "StackWidget: not implemented yet";
+            qDebug() << "StackWidget: event: mem cell" << locationOrReason << "changed to" << detail;
+            this->lwStack->item(locationOrReason)->setText(QString::number(detail, 16));
+            this->lwStack->item(locationOrReason)->setBackground(Qt::yellow);
 
 
             break;
+        }
+        case PicoBlazeStack::EVENT_STACK_SP_CHANGED:
+        {
+            qDebug() << "StackWidget: sp changed:" << locationOrReason;
+            //this->lwStack->item(sp)->setIcon(NULL);
+            //this->lwStack->item(locationOrReason)->setIcon(iconSP);
+            if (locationOrReason != 0)
+            {
+                this->lwStack->item(locationOrReason-1)->setBackground(Qt::green);
+            }
+            if (locationOrReason < this->sp)
+            {
+                if (this->sp != 0)
+                {
+                    this->lwStack->item(this->sp-1)->setText("");
+                    this->lwStack->item(this->sp-1)->setBackground(Qt::yellow);
+                }
+            }
+            this->sp = locationOrReason;
         }
         default:
             qDebug("Invalid event received, event ignored.");
@@ -155,7 +182,13 @@ void StackWidget::deviceChanged()
             return;
     }*/
     m_size = m_memory->size();
-    qDebug() << "QStackWidget: size" << m_size;
+    qDebug() << "StackWidget: size" << m_size;
+
+    this->lwStack->clear();
+    for (int i = 0; i < m_size; i++)
+    {
+        QListWidgetItem *item = new QListWidgetItem("", this->lwStack, i);
+    }
 
     deviceReset();
 }
@@ -163,9 +196,23 @@ void StackWidget::deviceChanged()
 
 void StackWidget::deviceReset()
 {
+    this->sp = 0;
+    for (int i = 0; i < m_size; i++)
+    {
+        this->lwStack->item(i)->setText("");
+    }
 }
 
 
 void StackWidget::setReadOnly(bool readOnly)
 {
+}
+
+
+void StackWidget::unhighlight()
+{
+    for (int i = 0; i < m_size; i++)
+    {
+        this->lwStack->item(i)->setBackground(this->lwStack->palette().base());
+    }
 }

@@ -43,6 +43,10 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
     mask.push_back(MCUSimPureLogicIO::EVENT_PLIO_WRITE_END);
     mask.push_back(MCUSimPureLogicIO::EVENT_PLIO_READ_END);
     controlUnit->registerObserver(this, MCUSimSubsys::ID_PLIO, mask);
+
+    mask.clear();
+    mask.push_back(PicoBlazeStack::EVENT_STACK_SP_CHANGED);
+    controlUnit->registerObserver(this, MCUSimSubsys::ID_STACK, mask);
     
     if ( NULL == controlUnit )
     {
@@ -58,7 +62,7 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
     this->memStack = new StackWidget(this, controlUnit, MCUSimSubsys::SubsysId::ID_STACK);
     this->memStack->move(760, 25);
     this->memStack->setMaximumWidth(100);
-    this->memStack->setMaximumHeight(270);
+    this->memStack->setMaximumHeight(220);
     this->memRegs->show();
     this->memScratch->show();
     this->memPorts->show();
@@ -179,7 +183,8 @@ void PicoBlazeGrid::switchPorts()
 
 void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason, int detail)
 {
-    if ( MCUSimSubsys::ID_CPU != subsysId && MCUSimSubsys::ID_PLIO != subsysId && MCUSimSubsys::ID_FLAGS != subsysId )
+    if ( MCUSimSubsys::ID_CPU != subsysId && MCUSimSubsys::ID_PLIO != subsysId && MCUSimSubsys::ID_FLAGS != subsysId
+        && MCUSimSubsys::ID_STACK != subsysId)
     {
         qDebug("Invalid event received, event ignored.");
         return;
@@ -310,6 +315,22 @@ void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason,
             }
         }
     }
+    else if (MCUSimSubsys::ID_STACK == subsysId)
+    {
+        switch ( eventId )
+        {
+            case PicoBlazeStack::EVENT_STACK_SP_CHANGED:
+            {
+                this->leSP->setText(QString::number(locationOrReason, 16));
+                this->leSP->setStyleSheet("background-color: yellow");
+            }
+            default:
+            {
+                qDebug("Invalid event received, event ignored.");
+                break;
+            }
+        }
+    }
 }
 
 
@@ -336,6 +357,7 @@ void PicoBlazeGrid::deviceReset()
     {
         this->lePC->setText("00" + QString::number(value, 16).toUpper() + "h");
     }
+    this->leSP->setText("0");
     this->unhighlight();
     
     //qDebug() << "PicoBlazeGrid: return deviceReset()";
@@ -358,6 +380,7 @@ void PicoBlazeGrid::fixHeight()
 void PicoBlazeGrid::unhighlight()
 {
     this->lePC->setStyleSheet("background-color: none");
+    this->leSP->setStyleSheet("background-color: none");
     this->btnZero->setStyleSheet("color: none");
     this->btnCarry->setStyleSheet("color: none");
     this->btnInte->setStyleSheet("color: none");
@@ -367,4 +390,5 @@ void PicoBlazeGrid::unhighlight()
     this->memRegs->unhighlight();
     this->memScratch->unhighlight();
     this->memPorts->unhighlight();
+    this->memStack->unhighlight();
 }
