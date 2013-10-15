@@ -645,6 +645,12 @@ void WDockManager::addDockW(Qt::DockWidgetArea area, QDockWidget* dockWidget)
 }
 
 
+void WDockManager::unhighlightSimWidget()
+{
+    emit unhighlightSim();
+}
+
+
 /*void WDockManager::dockWidgetsCreated()
 {
     this->dockWidgets = true;
@@ -753,6 +759,7 @@ WDock::WDock(WDockManager *parent, int code, QWidget *parentWindow, QString path
             parent->addDockW(Qt::BottomDockWidgetArea, wDockWidget);
             //mainWindow->addDockWidget(Qt::BottomDockWidgetArea, wDockWidget);
             PicoBlazeGrid *newWidget = new PicoBlazeGrid(wDockWidget, simControl);
+            QObject::connect(parent, SIGNAL(unhighlightSim()), newWidget, SLOT(unhighlight()));
             newWidget->setProjectPath(path);
             area = 2;
             wDockWidget->setWidget(newWidget);

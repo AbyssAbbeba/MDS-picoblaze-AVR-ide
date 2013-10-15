@@ -102,6 +102,7 @@ class WDockManager : public QObject
     public slots:
         void changeLine(QListWidgetItem *item);
         void addDockW(Qt::DockWidgetArea area, QDockWidget* dockWidget);
+        void unhighlightSimWidget();
         //void dockWidgetsCreated();
 
     signals:
@@ -110,6 +111,7 @@ class WDockManager : public QObject
         void tabifyDockWidget(QDockWidget *widget1, QDockWidget* widget2);
         void addDockWidget(Qt::DockWidgetArea area, QDockWidget* dockWidget);
         void getSimProjectData();
+        void unhighlightSim();
 
     private:
         //MainForm *wMainWindow;
