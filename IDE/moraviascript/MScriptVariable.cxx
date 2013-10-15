@@ -15,17 +15,51 @@
 
 #include "MScriptVariable.h"
 
+MScriptVariable::MScriptVariable()
+{
+    m_flags = FLAG_ARRAY;
+    m_value.m_array = NULL;
+}
+
+MScriptVariable::MScriptVariable ( const MScriptVariable & obj )
+{
+    m_location = obj.m_location;
+    m_flags = obj.m_flags;
+
+    if ( m_flags & FLAG_ARRAY )
+    {
+        if ( m_flags & FLAG_HASH )
+        {
+            m_value.m_hash = obj.m_value.m_hash;
+        }
+        else
+        {
+            m_value.m_array = obj.m_value.m_array;
+        }
+    }
+    else
+    {
+        m_value.m_scalar = obj.m_value.m_scalar;
+    }
+}
+
 MScriptVariable::~MScriptVariable()
 {
     if ( FLAG_ARRAY & m_flags )
     {
         if ( FLAG_HASH & m_flags )
         {
-            delete m_value.m_hash;
+            if ( NULL != m_value.m_hash )
+            {
+                delete m_value.m_hash;
+            }
         }
         else
         {
-            delete m_value.m_array;
+            if ( NULL != m_value.m_array )
+            {
+                delete m_value.m_array;
+            }
         }
     }
     else

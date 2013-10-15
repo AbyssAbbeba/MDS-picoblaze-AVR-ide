@@ -76,6 +76,14 @@ std::string MScriptSrcLocation::toString() const
     return result;
 }
 
+void MScriptSrcLocation::serialize ( MScriptSerializer & output ) const
+{
+}
+
+void MScriptSrcLocation::deserialize ( MScriptSerializer & input )
+{
+}
+
 std::ostream & operator << ( std::ostream & out,
                              const MScriptSrcLocation & location )
 {

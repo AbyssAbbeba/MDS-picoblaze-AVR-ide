@@ -273,6 +273,14 @@ MScriptExpr * MScriptExpr::unlink()
     return this;
 }
 
+void MScriptExpr::serialize ( MScriptSerializer & output ) const
+{
+}
+
+void MScriptExpr::deserialize ( MScriptSerializer & input )
+{
+}
+
 std::ostream & operator << ( std::ostream & out,
                              const MScriptExpr::Operator & opr )
 {

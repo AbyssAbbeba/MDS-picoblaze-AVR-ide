@@ -17,8 +17,9 @@
 #define MSCRIPTEXPR_H
 
 // MScript language interpreter header files.
-#include "MScriptSrcLocation.h"
 #include "MScriptValue.h"
+#include "MScriptSrcLocation.h"
+#include "MScriptSerializable.h"
 
 // Standard header files.
 #include <string>
@@ -29,7 +30,7 @@
  * @ingroup MoraviaScript
  * @class MScriptExpr
  */
-class MScriptExpr
+class MScriptExpr : public MScriptSerializable
 {
     ////    Public Datatypes    ////
     public:
@@ -202,6 +203,21 @@ class MScriptExpr
          * @param[in] index
          */
         MScriptExpr * operator [] ( int index );
+
+        /// @name Serialization methods.
+        //@{
+            /**
+             * @brief
+             * @param[in,out]
+             */
+            virtual void serialize ( MScriptSerializer & output ) const;
+
+            /**
+             * @brief
+             * @param[in,out]
+             */
+            virtual void deserialize ( MScriptSerializer & input );
+        //@}
 
     ////    Inline Public Operations    ////
     public:
