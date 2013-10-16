@@ -666,22 +666,22 @@ inline void MScriptExprAlgebra::intComplex ( MScriptValue & result,
         case MScriptExpr::OPER_LAND: br = ( a && b ); boolResult = true; break;
         case MScriptExpr::OPER_EQ:   br = ( a == b ); boolResult = true; break;
         case MScriptExpr::OPER_NE:   br = ( a != b ); boolResult = true; break;
-        case MScriptExpr::OPER_LT:   br = ( a  < b ); boolResult = true; break;
-        case MScriptExpr::OPER_LE:   br = ( a <= b ); boolResult = true; break;
-        case MScriptExpr::OPER_GE:   br = ( a >= b ); boolResult = true; break;
-        case MScriptExpr::OPER_GT:   br = ( a  > b ); boolResult = true; break;
 
         case MScriptExpr::OPER_ADD:  r = a + b;  break;
         case MScriptExpr::OPER_SUB:  r = a - b;  break;
         case MScriptExpr::OPER_MULT: r = a * b;  break;
-        case MScriptExpr::OPER_DIV:  r = a / b;  break;
+        case MScriptExpr::OPER_DIV:
+            if ( true == checkDivisor ( location, a, b) )
+            {
+                r = a / b;
+            }
+            break;
 
-        case MScriptExpr::OPER_BOR:
-        case MScriptExpr::OPER_BXOR:
-        case MScriptExpr::OPER_BAND:
-        case MScriptExpr::OPER_SHR:
-        case MScriptExpr::OPER_SHL:
-        case MScriptExpr::OPER_MOD:
+        case MScriptExpr::OPER_LT:   case MScriptExpr::OPER_LE:
+        case MScriptExpr::OPER_GE:   case MScriptExpr::OPER_GT:
+        case MScriptExpr::OPER_BOR:  case MScriptExpr::OPER_BXOR:
+        case MScriptExpr::OPER_BAND: case MScriptExpr::OPER_SHR:
+        case MScriptExpr::OPER_SHL:  case MScriptExpr::OPER_MOD:
             incompatibleTypes(location, MScriptValue::TYPE_COMPLEX, MScriptValue::TYPE_COMPLEX);
             return;
         default:
@@ -733,22 +733,22 @@ inline void MScriptExprAlgebra::floatComplex ( MScriptValue & result,
         case MScriptExpr::OPER_LAND: br = ( a && b ); boolResult = true; break;
         case MScriptExpr::OPER_EQ:   br = ( a == b ); boolResult = true; break;
         case MScriptExpr::OPER_NE:   br = ( a != b ); boolResult = true; break;
-        case MScriptExpr::OPER_LT:   br = ( a  < b ); boolResult = true; break;
-        case MScriptExpr::OPER_LE:   br = ( a <= b ); boolResult = true; break;
-        case MScriptExpr::OPER_GE:   br = ( a >= b ); boolResult = true; break;
-        case MScriptExpr::OPER_GT:   br = ( a  > b ); boolResult = true; break;
 
         case MScriptExpr::OPER_ADD:  r = a + b;  break;
         case MScriptExpr::OPER_SUB:  r = a - b;  break;
         case MScriptExpr::OPER_MULT: r = a * b;  break;
-        case MScriptExpr::OPER_DIV:  r = a / b;  break;
+        case MScriptExpr::OPER_DIV:
+            if ( true == checkDivisor ( location, a, b) )
+            {
+                r = a / b;
+            }
+            break;
 
-        case MScriptExpr::OPER_BOR:
-        case MScriptExpr::OPER_BXOR:
-        case MScriptExpr::OPER_BAND:
-        case MScriptExpr::OPER_SHR:
-        case MScriptExpr::OPER_SHL:
-        case MScriptExpr::OPER_MOD:
+        case MScriptExpr::OPER_LT:   case MScriptExpr::OPER_LE:
+        case MScriptExpr::OPER_GE:   case MScriptExpr::OPER_GT:
+        case MScriptExpr::OPER_BOR:  case MScriptExpr::OPER_BXOR:
+        case MScriptExpr::OPER_BAND: case MScriptExpr::OPER_SHR:
+        case MScriptExpr::OPER_SHL:  case MScriptExpr::OPER_MOD:
             incompatibleTypes(location, MScriptValue::TYPE_COMPLEX, MScriptValue::TYPE_COMPLEX);
             return;
         default:
@@ -881,22 +881,22 @@ inline void MScriptExprAlgebra::complexInt ( MScriptValue & result,
         case MScriptExpr::OPER_LAND: br = ( a && b ); boolResult = true; break;
         case MScriptExpr::OPER_EQ:   br = ( a == b ); boolResult = true; break;
         case MScriptExpr::OPER_NE:   br = ( a != b ); boolResult = true; break;
-        case MScriptExpr::OPER_LT:   br = ( a  < b ); boolResult = true; break;
-        case MScriptExpr::OPER_LE:   br = ( a <= b ); boolResult = true; break;
-        case MScriptExpr::OPER_GE:   br = ( a >= b ); boolResult = true; break;
-        case MScriptExpr::OPER_GT:   br = ( a  > b ); boolResult = true; break;
 
         case MScriptExpr::OPER_ADD:  r = a + b;  break;
         case MScriptExpr::OPER_SUB:  r = a - b;  break;
         case MScriptExpr::OPER_MULT: r = a * b;  break;
-        case MScriptExpr::OPER_DIV:  r = a / b;  break;
+        case MScriptExpr::OPER_DIV:
+            if ( true == checkDivisor ( location, a, b) )
+            {
+                r = a / b;
+            }
+            break;
 
-        case MScriptExpr::OPER_BOR:
-        case MScriptExpr::OPER_BXOR:
-        case MScriptExpr::OPER_BAND:
-        case MScriptExpr::OPER_SHR:
-        case MScriptExpr::OPER_SHL:
-        case MScriptExpr::OPER_MOD:
+        case MScriptExpr::OPER_LT:   case MScriptExpr::OPER_LE:
+        case MScriptExpr::OPER_GE:   case MScriptExpr::OPER_GT:
+        case MScriptExpr::OPER_BOR:  case MScriptExpr::OPER_BXOR:
+        case MScriptExpr::OPER_BAND: case MScriptExpr::OPER_SHR:
+        case MScriptExpr::OPER_SHL:  case MScriptExpr::OPER_MOD:
             incompatibleTypes(location, MScriptValue::TYPE_COMPLEX, MScriptValue::TYPE_COMPLEX);
             return;
         default:
@@ -939,22 +939,22 @@ inline void MScriptExprAlgebra::complexFloat ( MScriptValue & result,
         case MScriptExpr::OPER_LAND: br = ( a && b ); boolResult = true; break;
         case MScriptExpr::OPER_EQ:   br = ( a == b ); boolResult = true; break;
         case MScriptExpr::OPER_NE:   br = ( a != b ); boolResult = true; break;
-        case MScriptExpr::OPER_LT:   br = ( a  < b ); boolResult = true; break;
-        case MScriptExpr::OPER_LE:   br = ( a <= b ); boolResult = true; break;
-        case MScriptExpr::OPER_GE:   br = ( a >= b ); boolResult = true; break;
-        case MScriptExpr::OPER_GT:   br = ( a  > b ); boolResult = true; break;
 
         case MScriptExpr::OPER_ADD:  r = a + b;  break;
         case MScriptExpr::OPER_SUB:  r = a - b;  break;
         case MScriptExpr::OPER_MULT: r = a * b;  break;
-        case MScriptExpr::OPER_DIV:  r = a / b;  break;
+        case MScriptExpr::OPER_DIV:
+            if ( true == checkDivisor ( location, a, b) )
+            {
+                r = a / b;
+            }
+            break;
 
-        case MScriptExpr::OPER_BOR:
-        case MScriptExpr::OPER_BXOR:
-        case MScriptExpr::OPER_BAND:
-        case MScriptExpr::OPER_SHR:
-        case MScriptExpr::OPER_SHL:
-        case MScriptExpr::OPER_MOD:
+        case MScriptExpr::OPER_LT:   case MScriptExpr::OPER_LE:
+        case MScriptExpr::OPER_GE:   case MScriptExpr::OPER_GT:
+        case MScriptExpr::OPER_BOR:  case MScriptExpr::OPER_BXOR:
+        case MScriptExpr::OPER_BAND: case MScriptExpr::OPER_SHR:
+        case MScriptExpr::OPER_SHL:  case MScriptExpr::OPER_MOD:
             incompatibleTypes(location, MScriptValue::TYPE_COMPLEX, MScriptValue::TYPE_COMPLEX);
             return;
         default:
@@ -1011,22 +1011,22 @@ inline void MScriptExprAlgebra::complexComplex ( MScriptValue & result,
         case MScriptExpr::OPER_LAND: br = ( a && b ); boolResult = true; break;
         case MScriptExpr::OPER_EQ:   br = ( a == b ); boolResult = true; break;
         case MScriptExpr::OPER_NE:   br = ( a != b ); boolResult = true; break;
-        case MScriptExpr::OPER_LT:   br = ( a  < b ); boolResult = true; break;
-        case MScriptExpr::OPER_LE:   br = ( a <= b ); boolResult = true; break;
-        case MScriptExpr::OPER_GE:   br = ( a >= b ); boolResult = true; break;
-        case MScriptExpr::OPER_GT:   br = ( a  > b ); boolResult = true; break;
 
         case MScriptExpr::OPER_ADD:  r = a + b;  break;
         case MScriptExpr::OPER_SUB:  r = a - b;  break;
         case MScriptExpr::OPER_MULT: r = a * b;  break;
-        case MScriptExpr::OPER_DIV:  r = a / b;  break;
+        case MScriptExpr::OPER_DIV:
+            if ( true == checkDivisor ( location, a, b) )
+            {
+                r = a / b;
+            }
+            break;
 
-        case MScriptExpr::OPER_BOR:
-        case MScriptExpr::OPER_BXOR:
-        case MScriptExpr::OPER_BAND:
-        case MScriptExpr::OPER_SHR:
-        case MScriptExpr::OPER_SHL:
-        case MScriptExpr::OPER_MOD:
+        case MScriptExpr::OPER_LT:   case MScriptExpr::OPER_LE:
+        case MScriptExpr::OPER_GE:   case MScriptExpr::OPER_GT:
+        case MScriptExpr::OPER_BOR:  case MScriptExpr::OPER_BXOR:
+        case MScriptExpr::OPER_BAND: case MScriptExpr::OPER_SHR:
+        case MScriptExpr::OPER_SHL:  case MScriptExpr::OPER_MOD:
             incompatibleTypes(location, MScriptValue::TYPE_COMPLEX, MScriptValue::TYPE_COMPLEX);
             return;
         default:
@@ -1166,6 +1166,22 @@ inline bool MScriptExprAlgebra::checkDivisor ( const MScriptSrcLocation & locati
         m_interpret->interpreterMessage ( location,
                                           MScriptBase::MT_ERROR,
                                           QObject::tr ( "division by zero" ) . toStdString() );
+
+        return false;
+    }
+
+    return true;
+}
+
+inline bool MScriptExprAlgebra::checkDivisor ( const MScriptSrcLocation & location,
+                                               const MScriptComplex & a,
+                                               const MScriptComplex & b )
+{
+    if ( false == a.divisableBy(b) )
+    {
+        m_interpret->interpreterMessage ( location,
+                                          MScriptBase::MT_ERROR,
+                                          QObject::tr ( "undefined result of complex division" ) . toStdString() );
 
         return false;
     }

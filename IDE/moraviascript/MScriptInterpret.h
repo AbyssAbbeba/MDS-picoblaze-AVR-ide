@@ -30,6 +30,7 @@ class MScriptExprProcessor;
 #include "MScriptInterpretInterface.h"
 
 // Standard header files.
+#include <vector>
 #include <string>
 
 /**
@@ -174,6 +175,18 @@ class MScriptInterpret : private MScriptExecContext,
 
         /**
          * @brief
+         * @param[in] node
+         */
+        inline void evalNamespace ( const MScriptStatement * node );
+
+        /**
+         * @brief
+         * @param[in] node
+         */
+        inline void evalInclude ( const MScriptStatement * node );
+
+        /**
+         * @brief
          * @param[in] upTo
          * @param[in] times
          * @param[in] exclusive
@@ -196,6 +209,9 @@ class MScriptInterpret : private MScriptExecContext,
 
         /// @brief
         MScriptExprProcessor * m_exprProcessor;
+
+        /// @brief
+        std::vector<const char*> m_namespace;
 };
 
 #endif // MSCRIPTINTERPRET_H

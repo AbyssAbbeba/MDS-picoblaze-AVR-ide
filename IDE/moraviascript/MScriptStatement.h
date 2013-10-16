@@ -24,7 +24,7 @@ class MScriptExpr;
 #include "MScriptSrcLocation.h"
 #include "MScriptSerializable.h"
 
-// Standard header files
+// Standard header files.
 #include <ostream>
 
 /**
@@ -50,6 +50,12 @@ class MScriptStatement : public MScriptSerializable
         MScriptStatement ( const MScriptSrcLocation & location,
                            MScriptStmtTypes::Type type,
                            MScriptExpr * args = NULL );
+
+        /**
+         * @brief
+         * @param[in,out] input
+         */
+        MScriptStatement ( MScriptSerializer & input );
 
         /**
          * @brief
@@ -145,6 +151,12 @@ class MScriptStatement : public MScriptSerializable
              * @param[in,out]
              */
             virtual void deserialize ( MScriptSerializer & input );
+
+            /**
+             * @brief
+             * @param[in,out]
+             */
+            void serializeTree ( MScriptSerializer & output ) const;
         //@}
 
     ////    Inline Public Operations    ////

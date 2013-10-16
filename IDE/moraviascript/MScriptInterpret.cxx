@@ -58,6 +58,7 @@ void MScriptInterpret::clear()
     MScriptExecContext::clear();
     m_varTable->clear();
     m_funcTable->clear();
+    m_namespace.clear();
 }
 
 bool MScriptInterpret::step()
@@ -92,6 +93,8 @@ bool MScriptInterpret::step()
         case STMT_CONST:        evalConst ( node );     break;
         case STMT_CALL:         evalCall ( node );      break;
         case STMT_TRIGGER:      evalFunction ( node );  break;
+        case STMT_NAMESPACE:    evalNamespace ( node ); break;
+        case STMT_INCLUDE:      evalInclude ( node );   break;
 
         // These statements are supposed to be ignored.
         case STMT_ROOT:
@@ -242,7 +245,7 @@ inline void MScriptInterpret::evalScope ( const MScriptStatement * node )
     if ( FLAG_SCOPE & getNextFlags() )
     {
         // Leaving scope.
-        popNext();
+        replaceNext(node->next());
         m_varTable->popScope();
     }
     else
@@ -523,6 +526,28 @@ inline void MScriptInterpret::evalFunction ( const MScriptStatement * node )
     }
 
     m_funcTable->define(funcName, node->location(), params, node->branch());
+}
+
+inline void MScriptInterpret::evalNamespace ( const MScriptStatement * node )
+{
+    if ( FLAG_NAMESPACE & getNextFlags() )
+    {
+        // Leaving namespace.
+        replaceNext(node->next());
+        m_namespace.pop_back();
+    }
+    else
+    {
+        // Entering namespace.
+        setNextFlags ( FLAG_NAMESPACE );
+        addNext(node->branch());
+        m_namespace.push_back(node->args()->lVal().m_data.m_symbol);
+    }
+}
+
+inline void MScriptInterpret::evalInclude ( const MScriptStatement * node )
+{
+    
 }
 
 bool MScriptInterpret::postprocessCode ( MScriptStatement * rootNode )

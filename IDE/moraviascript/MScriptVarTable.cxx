@@ -655,9 +655,11 @@ inline void MScriptVarTable::derefer ( const char * reference,
                                        std::string * variable,
                                        Index * index ) const
 {
-    char * origStr = new char [ strlen(reference) ];
+    char * origStr = new char [ strlen(reference) + 1 ];
     char * str = origStr;
     char * next;
+
+    strcpy(origStr, reference);
 
     next = strchr ( str, '.' );
     next[0] = '\0';
@@ -816,7 +818,7 @@ void MScriptVarTable::refer ( const std::string & refName,
 
     MScriptValue value;
     value.m_type = MScriptValue::TYPE_SYMBOL;
-    value.m_data.m_symbol = (char*) malloc(refString.size());
+    value.m_data.m_symbol = (char*) malloc( refString.size() + 1 );
     strcpy(value.m_data.m_symbol, refString.c_str());
     assign ( refName, location, value, refIndex );
 }

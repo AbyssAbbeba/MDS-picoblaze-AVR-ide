@@ -18,7 +18,7 @@
 // MScript language interpreter header files.
 #include "MScriptExpr.h"
 
-// Standard header files
+// Standard header files.
 #include <cstdio>
 
 MScriptStatement::MScriptStatement()
@@ -47,6 +47,28 @@ MScriptStatement::MScriptStatement ( const MScriptSrcLocation & location,
     else
     {
         m_args = NULL;
+    }
+}
+
+MScriptStatement::MScriptStatement ( MScriptSerializer & input )
+{
+    deserialize(input);
+
+    MScriptStatement * currentNode = this;
+    MScriptStatement * newNode;
+    SerializationMark mark;
+
+    input >> mark;
+    while ( MARK_NEXT == mark )
+    {
+        newNode = new MScriptStatement();
+        input >> newNode;
+
+        currentNode->m_next = newNode;
+        newNode->m_prev = currentNode;
+        currentNode = newNode;
+
+        input >> mark;
     }
 }
 
@@ -289,12 +311,74 @@ void MScriptStatement::completeDelete()
     delete this;
 }
 
+void MScriptStatement::serializeTree ( MScriptSerializer & output ) const
+{
+    for ( const MScriptStatement * node = this;
+          NULL != node;
+          node = node->next() )
+    {
+        output << node;
+    }
+}
+
 void MScriptStatement::serialize ( MScriptSerializer & output ) const
 {
+    output.write ( (uint32_t) m_type );
+    output << m_location;
+
+    if ( NULL == m_args )
+    {
+        output << MARK_TERMINAL;
+    }
+    else
+    {
+        output << MARK_NEXT;
+        output << m_args;
+    }
+
+    if ( NULL == m_branch )
+    {
+        output << MARK_TERMINAL;
+    }
+    else
+    {
+        output << MARK_NEXT;
+        m_branch->serializeTree(output);
+    }
+
+    if ( NULL == m_next )
+    {
+        output << MARK_TERMINAL;
+    }
+    else
+    {
+        output << MARK_NEXT;
+    }
 }
 
 void MScriptStatement::deserialize ( MScriptSerializer & input )
 {
+    m_prev = NULL;
+    m_next = NULL;
+    m_branch = NULL;
+    m_args = NULL;
+
+    m_type = MScriptStmtTypes::Type ( input.read_ui32() );
+    input >> m_location;
+
+    SerializationMark mark;
+
+    input >> mark;
+    if ( MARK_NEXT == mark )
+    {
+        m_args = new MScriptExpr(input);
+    }
+
+    input >> mark;
+    if ( MARK_NEXT == mark )
+    {
+        m_branch = new MScriptStatement(input);
+    }
 }
 
 std::ostream & MScriptStatement::print ( std::ostream & out,
@@ -304,8 +388,8 @@ std::ostream & MScriptStatement::print ( std::ostream & out,
     char addr[19];
     sprintf ( addr,
               "0x%08x%08x",
-              (unsigned int) (( 0xffffffff00000000 & reinterpret_cast<long long unsigned int>(this) ) >> 32),
-              (unsigned int) (0x00000000ffffffff & reinterpret_cast<long long unsigned int>(this)) );
+              (unsigned int) ( ( 0xffffffff00000000 & reinterpret_cast<long long unsigned int>(this) ) >> 32),
+              (unsigned int) (   0x00000000ffffffff & reinterpret_cast<long long unsigned int>(this) ) );
     out << addr << " ";
 
     if ( NULL == this )

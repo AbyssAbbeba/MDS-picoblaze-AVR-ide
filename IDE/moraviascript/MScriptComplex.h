@@ -25,20 +25,71 @@ class MScriptComplex
 {
     ////    Public Operations    ////
     public:
-        bool operator == ( const MScriptComplex & n ) const;
-        bool operator != ( const MScriptComplex & n ) const;
-        bool operator <  ( const MScriptComplex & n ) const;
-        bool operator >  ( const MScriptComplex & n ) const;
-        bool operator <= ( const MScriptComplex & n ) const;
-        bool operator >= ( const MScriptComplex & n ) const;
-        bool operator && ( const MScriptComplex & n ) const;
-        bool operator || ( const MScriptComplex & n ) const;
+        /**
+         * @brief
+         * @param[in] n
+         * @return
+         */
+        bool divisableBy ( const MScriptComplex & n ) const;
 
-        MScriptComplex operator + ( const MScriptComplex & n ) const;
-        MScriptComplex operator - ( const MScriptComplex & n ) const;
-        MScriptComplex operator * ( const MScriptComplex & n ) const;
-        MScriptComplex operator / ( const MScriptComplex & n ) const;
+        /// @name Overloaded operators.
+        //@{
+            /**
+             * @brief
+             * @param[in] n
+             * @return
+             */
+            bool operator == ( const MScriptComplex & n ) const;
 
+            /**
+             * @brief
+             * @param[in] n
+             * @return
+             */
+            bool operator != ( const MScriptComplex & n ) const;
+
+            /**
+             * @brief
+             * @param[in] n
+             * @return
+             */
+            bool operator && ( const MScriptComplex & n ) const;
+
+            /**
+             * @brief
+             * @param[in] n
+             * @return
+             */
+            bool operator || ( const MScriptComplex & n ) const;
+
+            /**
+             * @brief
+             * @param[in] n
+             * @return
+             */
+            MScriptComplex operator + ( const MScriptComplex & n ) const;
+
+            /**
+             * @brief
+             * @param[in] n
+             * @return
+             */
+            MScriptComplex operator - ( const MScriptComplex & n ) const;
+
+            /**
+             * @brief
+             * @param[in] n
+             * @return
+             */
+            MScriptComplex operator * ( const MScriptComplex & n ) const;
+
+            /**
+             * @brief
+             * @param[in] n
+             * @return
+             */
+            MScriptComplex operator / ( const MScriptComplex & n ) const;
+        //@}
 
     ////    Public Attributes    ////
     public:

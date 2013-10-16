@@ -108,6 +108,12 @@ MScriptSerializer::MScriptSerializer ( std::ostream & output,
     }
 }
 
+void MScriptSerializer::write ( bool val )
+{
+    serial();
+    m_output->put ( char ( val ? 1 : 0 ) );
+}
+
 void MScriptSerializer::write ( uint8_t val )
 {
     serial();
@@ -171,6 +177,13 @@ void MScriptSerializer::write ( const std::string & val )
     size_t len = val.size();
     write ( (uint32_t) len );
     m_output->write(val.c_str(), len);
+}
+
+bool MScriptSerializer::read_bool()
+{
+    deserial();
+    bool result = (bool) m_input->get();
+    return result;
 }
 
 uint8_t MScriptSerializer::read_ui8()
