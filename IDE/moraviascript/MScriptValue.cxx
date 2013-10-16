@@ -20,7 +20,7 @@
 #include "MScriptExpr.h"
 #include "MScriptInterpretInterface.h"
 
-// Standard header files
+// Standard header files.
 #include <cstring>
 #include <cctype>
 #include <cstdlib>
@@ -303,10 +303,81 @@ long long MScriptValue::toInt ( MScriptInterpretInterface * interpret,
 
 void MScriptValue::serialize ( MScriptSerializer & output ) const
 {
+    if ( NULL == this )
+    {
+        output.write ( (uint8_t) TYPE_EMPTY );
+        return;
+    }
+    else
+    {
+        output.write ( (uint8_t) m_type );
+    }
+
+    switch ( m_type )
+    {
+        case TYPE_EMPTY:
+            break;
+        case TYPE_EXPR:
+            output << m_data.m_expr;
+            break;
+        case TYPE_SYMBOL:
+            output.write(m_data.m_symbol);
+            break;
+        case TYPE_INT:
+            output.write ( (uint64_t) m_data.m_integer );
+            break;
+        case TYPE_FLOAT:
+            output.write(m_data.m_float);
+            break;
+        case TYPE_STRING:
+            output.write ( std::string ( ( char* ) m_data.m_string.m_data,
+                                          m_data.m_string.m_size ) );
+            break;
+        case TYPE_BOOL:
+            output.write(m_data.m_bool);
+            break;
+        case TYPE_COMPLEX:
+            output.write(m_data.m_complex.m_r);
+            output.write(m_data.m_complex.m_i);
+            break;
+    }
 }
 
 void MScriptValue::deserialize ( MScriptSerializer & input )
 {
+    m_type = Type(input.read_ui8());
+    switch ( m_type )
+    {
+        case TYPE_EMPTY:
+            break;
+        case TYPE_EXPR:
+            m_data.m_expr = new MScriptExpr(input);
+            break;
+        case TYPE_SYMBOL:
+            m_data.m_symbol = input.read_c_str_copy();
+            break;
+        case TYPE_INT:
+            m_data.m_integer = (long long) input.read_ui64();
+            break;
+        case TYPE_FLOAT:
+            m_data.m_float = input.read_double();
+            break;
+        case TYPE_STRING:
+        {
+            std::string buffer;
+            input.read_std_str(buffer);
+            m_data.m_string.m_size = buffer.size();
+            memcpy(m_data.m_string.m_data, buffer.c_str(), buffer.size());
+            break;
+        }
+        case TYPE_BOOL:
+            m_data.m_bool = input.read_bool();
+            break;
+        case TYPE_COMPLEX:
+            m_data.m_complex.m_r = input.read_double();
+            m_data.m_complex.m_i = input.read_double();
+            break;
+    }
 }
 
 std::ostream & operator << ( std::ostream & out,

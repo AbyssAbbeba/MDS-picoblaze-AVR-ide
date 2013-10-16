@@ -16,7 +16,7 @@
 /* -------------------------------------------------------------------------- */
 
 %{
-    // Standard header files
+    // Standard header files.
     #include <cmath>
     #include <cctype>
     #include <cstdio>
@@ -85,18 +85,22 @@
 /*
  * Named regular expressions used in the lexer
  */
-/* White space */
+/* White space. */
 WSPACE  ([ \t]|\u00A0)+
 /* New line */
 NLINE   (\r?\n)|(\n?\r)
-/* An identifier in the language */
-ID      [_a-zA-Z][_a-zA-Z0-9]*
-/* Comment, in this case it starts with a semicolon (`;') */
+/* Comment, in this case it starts with a semicolon (`;'). */
 COMMENT (\/\/\/*[^\r\n]*)
-/* C like escape sequence, such as `\x4A', `\uABCD', `\U1234abcd', and `\177' */
+/* C like escape sequence, such as `\x4A', `\uABCD', `\U1234abcd', and `\177'. */
 XESC    (\\[0-7]{1,3})|(\\x[0-9A-F]{1,2})|(\\[uU][0-9A-F]{1,8})
 /* Floating point number. */
 FLOAT   [0-9]+\.[0-9]+(e[+-][0-9]+)?
+/* Namespace separator. */
+NSEP    ::
+/* An identifier in the language. */
+ID      [_a-zA-Z][_a-zA-Z0-9]*
+/* ID with namespaces. */
+EID     ({NSEP})?{ID}
 
 /*
  * Exclusive start conditions
@@ -162,6 +166,7 @@ FLOAT   [0-9]+\.[0-9]+(e[+-][0-9]+)?
 "var"           { return KW_VAR;          }
 "const"         { return KW_CONST;        }
 "namespace"     { return KW_NAMESPACE;    }
+"include"       { return KW_INCLUDE;      }
 
  /* Special values: */
 "EMPTY"         { return SV_EMPTY;        }
@@ -182,7 +187,7 @@ FLOAT   [0-9]+\.[0-9]+(e[+-][0-9]+)?
 "{"             { return B_CRL_LEFT;      }
 "}"             { return B_CRL_RIGHT;     }
 
- /* Operators: */
+ /* Expression operators: */
 ":"             { return O_COLON;         }
 "?"             { return O_QUESTION_MARK; }
 ","             { return O_COMMA;         }
@@ -351,6 +356,19 @@ FLOAT   [0-9]+\.[0-9]+(e[+-][0-9]+)?
                     // Return as general identifier.
                     yylval->symbol = yytext;
                     return IDENTIFIER;
+                }
+{EID}(::{ID})*  {
+                    // Identifier with namespaces, e.g. `::MyNS::Main::func'.
+
+                    // Convert the string to upper case characters.
+                    for ( int i = 0; i < yyleng; i++ )
+                    {
+                        yytext[i] = yytext[i];
+                    }
+
+                    // Return as general identifier.
+                    yylval->symbol = yytext;
+                    return NSID;
                 }
 
  /* Strings: */

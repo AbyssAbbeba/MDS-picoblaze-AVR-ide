@@ -500,7 +500,7 @@ DIS_INT_INST            "disable"{WSPACE}"interrupt"
                                                                                            &size );
                         }
     <<EOF>>             {
-                            // Handle strings terminated by EOF (End Of File) as ERROR, of course.
+                            // Handle strings terminated by EOF (End Of File) as ERROR.
                             yy_pop_state(yyscanner);
                             yyextra->lexerMessage ( yylloc,
                                                     CompilerBase::MT_ERROR,

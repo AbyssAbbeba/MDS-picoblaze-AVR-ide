@@ -506,6 +506,11 @@ class MScriptExprAlgebra
         inline bool checkDivisor ( const MScriptSrcLocation & location,
                                    double div );
 
+        /// @overload
+        inline bool checkDivisor ( const MScriptSrcLocation & location,
+                                   const MScriptComplex & a,
+                                   const MScriptComplex & b );
+
         /**
          * @brief
          * @param[in] location

@@ -24,6 +24,7 @@ std::ostream & operator << ( std::ostream & out,
     {
         case STMT_EMPTY:     out << "EMPTY";     break;
         case STMT_ROOT:      out << "ROOT";      break;
+
         case STMT_SCOPE:     out << "SCOPE";     break;
         case STMT_CONDITION: out << "CONDITION"; break;
         case STMT_IF:        out << "IF";        break;
@@ -43,6 +44,9 @@ std::ostream & operator << ( std::ostream & out,
         case STMT_DELETE:    out << "DELETE";    break;
         case STMT_VAR:       out << "VAR";       break;
         case STMT_CONST:     out << "CONST";     break;
+        case STMT_NAMESPACE: out << "NAMESPACE"; break;
+        case STMT_INCLUDE:   out << "INCLUDE";   break;
+
         case STMT_CALL:      out << "CALL";      break;
     }
     return out;

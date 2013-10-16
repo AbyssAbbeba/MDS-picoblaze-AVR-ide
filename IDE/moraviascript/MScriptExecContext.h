@@ -38,13 +38,14 @@ class MScriptExecContext
          */
         enum ExecFlags
         {
-            FLAG_LOOP     = 0x01, ///<
-            FLAG_SWITCH   = 0x02, ///<
-            FLAG_CALL     = 0x04, ///<
-            FLAG_SCOPE    = 0x08, ///<
-            FLAG_FUNCTION = 0x10, ///<
+            FLAG_LOOP      = 0x01, ///<
+            FLAG_SWITCH    = 0x02, ///<
+            FLAG_CALL      = 0x04, ///<
+            FLAG_SCOPE     = 0x08, ///<
+            FLAG_FUNCTION  = 0x10, ///<
+            FLAG_NAMESPACE = 0x20, ///<
 
-            FLAG_NORMAL   = 0x00  ///<
+            FLAG_NORMAL    = 0x00  ///<
         };
 
         /**

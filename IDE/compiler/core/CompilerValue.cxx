@@ -184,6 +184,7 @@ void CompilerValue::serialize ( CompilerSerializer & output ) const
             break;
         case TYPE_EXPR:
             output << m_data.m_expr;
+            break;
         case TYPE_SYMBOL:
             output.write(m_data.m_symbol);
             break;
@@ -204,10 +205,11 @@ void CompilerValue::deserialize ( CompilerSerializer & input )
             m_data.m_integer = (long long) input.read_ui64();
             break;
         case TYPE_REAL:
-            m_data.m_real = (double) input.read_double();
+            m_data.m_real = input.read_double();
             break;
         case TYPE_EXPR:
             m_data.m_expr = new CompilerExpr(input);
+            break;
         case TYPE_SYMBOL:
             m_data.m_symbol = input.read_c_str_copy();
             break;

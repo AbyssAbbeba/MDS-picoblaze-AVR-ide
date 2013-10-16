@@ -19,11 +19,11 @@
 // MScript language interpreter header files.
 #include "MScriptSerializable.h"
 
-// Standard header files
+// Standard header files.
 #include <ostream>
 #include <string>
 
-// Make sure that the data type of locations is declared (see Bison manual for details)
+// Make sure that the data type of locations is declared (see Bison manual for details).
 #if ! defined ( YYLTYPE ) && ! defined ( YYLTYPE_IS_DECLARED )
     typedef struct YYLTYPE
     {
