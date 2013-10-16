@@ -111,8 +111,7 @@ inline bool CompilerCore::startCompilation()
     }
     catch ( boost::system::error_code & e )
     {
-        m_msgInterface->message ( QObject::tr("Failure: %1.").arg(e.message().c_str()).toStdString(),
-                                  MT_ERROR );
+        localMessage ( MT_ERROR, QObject::tr("failure: %1").arg(e.message().c_str()).toStdString() );
         return false;
     }
 }
@@ -131,22 +130,19 @@ inline bool CompilerCore::checkOptions()
 {
     if ( CompilerBase::LI_INVALID == m_lang )
     {
-        m_msgInterface->message ( QObject::tr("Programming language not specified.").toStdString(),
-                                  MT_ERROR );
+        localMessage ( MT_ERROR, QObject::tr("programming language not specified").toStdString() );
         return false;
     }
 
     if ( CompilerBase::TA_INVALID == m_arch )
     {
-        m_msgInterface->message ( QObject::tr("Target architecture not specified.").toStdString(),
-                                  MT_ERROR );
+        localMessage ( MT_ERROR, QObject::tr("target architecture not specified").toStdString() );
         return false;
     }
 
     if ( true == m_opts->m_sourceFile.empty() )
     {
-        m_msgInterface->message ( QObject::tr("Source code file not specified.").toStdString(),
-                                  MT_ERROR );
+        localMessage ( MT_ERROR, QObject::tr("source code file not specified").toStdString() );
         return false;
     }
 
@@ -173,15 +169,13 @@ inline bool CompilerCore::setupSemanticAnalyzer()
                     m_semanticAnalyzer = new AsmPicoBlazeSemanticAnalyzer ( this, m_opts );
                     break;
                 default:
-                    m_msgInterface->message ( QObject::tr ( "Architecture not supported for the selected language." )
-                                                          . toStdString(),
-                                              MT_ERROR );
+                    localMessage ( MT_ERROR, QObject::tr ( "architecture not supported for the selected language" )
+                                                         . toStdString() );
                     return false;
             }
             break;
         default:
-            m_msgInterface->message ( QObject::tr("Programming language not supported.").toStdString(),
-                                      MT_ERROR );
+            localMessage ( MT_ERROR, QObject::tr("programming language not supported").toStdString() );
             return false;
     }
 
@@ -196,8 +190,7 @@ inline bool CompilerCore::startLexerAndParser()
 
     if ( NULL == sourceFile )
     {
-        m_msgInterface->message ( QObject::tr("Error: unable to open file: ").toStdString() + m_opts->m_sourceFile,
-                                  MT_ERROR );
+        localMessage ( MT_ERROR, QObject::tr("unable to open file: ").toStdString() + m_opts->m_sourceFile );
         return false;
     }
 
@@ -243,15 +236,13 @@ inline bool CompilerCore::startLexerAndParser()
                     PicoBlazeLexer_lex_destroy ( yyscanner );
                     break;
                 default:
-                    m_msgInterface->message ( QObject::tr ( "Architecture not supported for the selected language." )
-                                                          . toStdString(),
-                                              MT_ERROR );
+                    localMessage ( MT_ERROR, QObject::tr ( "architecture not supported for the selected language" )
+                                                         . toStdString() );
                     return false;
             }
             break;
         default:
-            m_msgInterface->message ( QObject::tr("Programming language not supported.").toStdString(),
-                                      MT_ERROR );
+            localMessage ( MT_ERROR, QObject::tr("programming language not supported").toStdString() );
             return false;
     }
 
@@ -259,7 +250,34 @@ inline bool CompilerCore::startLexerAndParser()
     return m_success;
 }
 
-void CompilerCore::localMessage ( CompilerSourceLocation location,
+inline std::string CompilerCore::msgType2str ( MessageType type )
+{
+    switch ( type )
+    {
+        case MT_INVALID:
+            // This should never happen; when the control flow reaches this point, there is bug in the compiler!
+            return "";
+        case MT_GENERAL:
+            return "";
+        case MT_ERROR:
+            m_success = false;
+            return QObject::tr("Error: ").toStdString();
+        case MT_WARNING:
+            return QObject::tr("Warning: ").toStdString();
+        case MT_REMARK:
+            return QObject::tr("Remark: ").toStdString();
+    }
+
+    return "";
+}
+
+inline void CompilerCore::localMessage ( MessageType type,
+                                         const std::string & text )
+{
+    m_msgInterface->message(msgType2str(type) + text + ".", type);
+}
+
+void CompilerCore::localMessage ( const CompilerSourceLocation & location,
                                   MessageType type,
                                   const std::string & text )
 {
@@ -274,27 +292,6 @@ void CompilerCore::localMessage ( CompilerSourceLocation location,
     }
 
     std::stringstream msgText;
-
-    std::string msgType;
-    switch ( type )
-    {
-        case MT_INVALID:
-            // This should never happen; when the control flow reaches this point, there is bug in the compiler!
-            return;
-        case MT_GENERAL:
-            break;
-        case MT_ERROR:
-            msgType = QObject::tr("error: ").toStdString();
-            m_success = false;
-            break;
-        case MT_WARNING:
-            msgType = QObject::tr("warning: ").toStdString();
-            break;
-        case MT_REMARK:
-            msgType = QObject::tr("remark: ").toStdString();
-            break;
-    }
-
     msgText << m_filename;
     if ( location.m_lineStart > 0 )
     {
@@ -312,25 +309,25 @@ void CompilerCore::localMessage ( CompilerSourceLocation location,
         }
     }
 
-    msgText << ": " << msgType << text << ".";
+    msgText << ": " << msgType2str(type) << text << ".";
     m_msgInterface->message(msgText.str(), type);
 }
 
-void CompilerCore::parserMessage ( CompilerSourceLocation location,
+void CompilerCore::parserMessage ( const CompilerSourceLocation & location,
                                    MessageType type,
                                    const std::string & text )
 {
     localMessage(location, type, text);
 }
 
-void CompilerCore::lexerMessage ( CompilerSourceLocation location,
+void CompilerCore::lexerMessage ( const CompilerSourceLocation & location,
                                   MessageType type,
                                   const std::string & text )
 {
     localMessage(location, type, text);
 }
 
-void CompilerCore::compilerMessage ( CompilerSourceLocation location,
+void CompilerCore::compilerMessage ( const CompilerSourceLocation & location,
                                      MessageType type,
                                      const std::string & text )
 {
@@ -397,8 +394,7 @@ CompilerStatement * CompilerCore::loadDevSpecCode ( const std::string & deviceNa
 {
     if ( true == m_devSpecCodeLoaded )
     {
-        m_msgInterface->message ( QObject::tr("Warning: device specification code is already loaded.").toStdString(),
-                                  MT_WARNING );
+        localMessage ( MT_WARNING, QObject::tr("device specification code is already loaded").toStdString() );
         if ( NULL != flag )
         {
             *flag = DSLF_ALREADY_LOADED;
@@ -425,10 +421,7 @@ CompilerStatement * CompilerCore::loadDevSpecCode ( const std::string & deviceNa
         {
             *flag = DSLF_UNABLE_TO_READ;
         }
-        m_msgInterface->message ( QObject::tr ( "Error: unable to read file `%1'." )
-                                                . arg ( fileName.c_str() )
-                                                . toStdString(),
-                                  MT_ERROR );
+        localMessage ( MT_ERROR, QObject::tr ( "unable to read file: `%1'" ).arg( fileName.c_str() ).toStdString() );
     }
 
     m_semanticAnalyzer->setDevice(deviceName);
@@ -597,10 +590,9 @@ FILE * CompilerCore::fileOpen ( const std::string & filename,
         {
             if ( absoluteFileName == *it )
             {
-                m_msgInterface->message ( QObject::tr ( "Error: file %1 is already opened, you might have an "
-                                                        "\"include\" loop in your code." )
-                                                      .arg(absoluteFileName.c_str()).toStdString(),
-                                          MT_ERROR );
+                localMessage ( MT_ERROR, QObject::tr ( "file %1 is already opened, you might have an "
+                                                       "\"include\" loop in your code" )
+                                                     .arg(absoluteFileName.c_str()).toStdString() );
                 return NULL;
             }
         }
@@ -620,9 +612,8 @@ bool CompilerCore::pushFileName ( const std::string & filename )
            &&
          ( m_fileNameStack.size() >= (size_t)(m_opts->m_maxInclusion) ) )
     {
-        m_msgInterface->message ( QObject::tr ( "Error: maximum include level (%1) reached." )
-                                              .arg(m_opts->m_maxInclusion).toStdString(),
-                                  MT_ERROR );
+        localMessage ( MT_ERROR, QObject::tr ( "maximum include level (%1) reached" )
+                                             .arg(m_opts->m_maxInclusion).toStdString() );
         return false;
     }
 
@@ -697,7 +688,7 @@ void CompilerCore::processCodeTree ( CompilerStatement * codeTree )
 
     if ( NULL == m_semanticAnalyzer )
     {
-        m_msgInterface->message ( QObject::tr ( "semantic analyzer is missing" ).toStdString(), MT_ERROR );
+        localMessage ( MT_ERROR, QObject::tr ( "semantic analyzer is missing" ).toStdString() );
         return;
     }
 
@@ -705,7 +696,7 @@ void CompilerCore::processCodeTree ( CompilerStatement * codeTree )
     {
         if ( false == savePrecompiledCode ( m_opts->m_prcTarget, m_rootStatement ) )
         {
-            m_msgInterface->message ( QObject::tr ( "unable to save precompiled code" ).toStdString(), MT_ERROR );
+            localMessage ( MT_ERROR, QObject::tr ( "unable to save precompiled code" ).toStdString() );
         }
     }
 
@@ -717,16 +708,13 @@ void CompilerCore::processCodeTree ( CompilerStatement * codeTree )
         {
             if ( DSLF_DOES_NOT_EXIST == loaderFlag )
             {
-                m_msgInterface->message ( QObject::tr ( "Device not supported: `%1'" )
-                                                      . arg ( m_opts->m_device.c_str() )
-                                                      . toStdString(),
-                                          MT_ERROR );
+                localMessage ( MT_ERROR, QObject::tr ( "device not supported: `%1'" )
+                                                     . arg ( m_opts->m_device.c_str() )
+                                                     . toStdString() );
             }
             else if ( DSLF_ALREADY_LOADED == loaderFlag )
             {
-                m_msgInterface->message ( QObject::tr ( "Device specification code is already "
-                                                        "loaded" ).toStdString(),
-                                          MT_ERROR );
+                localMessage ( MT_ERROR, QObject::tr ( "device specification code is already loaded" ).toStdString() );
             }
             return;
         }

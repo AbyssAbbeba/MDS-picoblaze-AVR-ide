@@ -393,6 +393,9 @@ class AsmPicoBlazeTreeDecoder
 
         ///
         AsmPicoBlazeSemanticAnalyzer::Device & m_device;
+
+        ///
+        CompilerStatement * m_forceNext;
 };
 
 #endif // ASMPICOBLAZETREEDECODER_H
