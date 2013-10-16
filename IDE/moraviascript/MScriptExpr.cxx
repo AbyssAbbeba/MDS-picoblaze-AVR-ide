@@ -20,6 +20,11 @@
 #include <cctype>
 #include <cstdlib>
 
+MScriptExpr::MScriptExpr ( MScriptSerializer & input )
+{
+    deserialize(input);
+}
+
 MScriptExpr::MScriptExpr ( MScriptSrcLocation location )
 {
     m_operator = OPER_NONE;
@@ -275,10 +280,35 @@ MScriptExpr * MScriptExpr::unlink()
 
 void MScriptExpr::serialize ( MScriptSerializer & output ) const
 {
+    output.write ( (uint16_t) m_operator );
+    output << m_lValue << m_rValue << m_location;
+
+    if ( NULL == m_next )
+    {
+        output << MARK_TERMINAL;
+    }
+    else
+    {
+        output << MARK_NEXT;
+        output << m_next;
+    }
 }
 
 void MScriptExpr::deserialize ( MScriptSerializer & input )
 {
+    m_next = NULL;
+    m_prev = NULL;
+
+    m_operator =  Operator(input.read_ui16());
+    input >> m_lValue >> m_rValue >> m_location;
+
+    SerializationMark mark;
+    input >> mark;
+    if ( MARK_NEXT == mark )
+    {
+        m_next = new MScriptExpr(input);
+        m_next->m_prev = this;
+    }
 }
 
 std::ostream & operator << ( std::ostream & out,

@@ -69,10 +69,13 @@
 }
 
 %{
-    #include <QObject>                // For i18n, nothing else.
-    #include <cstdlib>                // We need free() here.
-    #include <cstring>                // We need strncmp() here.
-    #include <iostream>               // This is required by Bison.
+    #include <QObject>                // For i18n only
+
+    #include <string>
+    #include <cstdlib>
+    #include <cstring>
+    #include <iostream>
+
     using namespace std;              // This is required by Bison as well.
     using namespace MScriptStmtTypes; // This NS is heavily used here.
 
@@ -124,6 +127,7 @@
 %token KW_VAR           "var"
 %token KW_CONST         "const"
 %token KW_NAMESPACE     "namespace"
+%token KW_INCLUDE       "include"
 
 /* Special values: */
 %token SV_EMPTY         "EMPTY"
@@ -148,7 +152,7 @@
 %token B_SQR_RIGHT      "]"
 %token B_CRL_LEFT       "{"
 %token B_CRL_RIGHT      "}"
-// Operators.
+// Expression operators.
 %token O_COMMA          ","
 %token O_SLASH          "/"
 %token O_PLUS           "+"
@@ -218,20 +222,21 @@
 
 /* Terminal symbols with semantic value */
 %token<symbol>    IDENTIFIER    "idenfifier"
+%token<symbol>    NSID          "idenfifier with namespace"
 %token<string>    STRING        "string"
 %token<integer>   INTEGER       "integer"
 %token<real>      REAL          "real number"
-%token<imaginary> IMAGINARY     "imaginary number"
+%token<imaginary> IMAGINARY     "imaginary unit"
 %token<boolean>   BOOLEAN       "boolean number"
 
 /*
  * DECLARATION OF NON-TERMINAL SYMBOLS
  */
 // Expressions
-%type<expr>     expr            e_expr          e_int           id              param_list
-%type<expr>     param           decl            decl_list       indexes
+%type<expr>     expr            e_expr          e_int           id              sid             string
+%type<expr>     param           param_list      decl            decl_list       indexes
 // Statements - general
-%type<stmt>     statements      stmt            cases           switch_body
+%type<stmt>     statements      stmt            cases           switch_body     scope
 
 // Each time the parser discards symbol with certain semantic types, their memory have to bee freed
 %destructor
@@ -294,6 +299,9 @@ stmt:
     | error                         {
                                         $$ = NULL;
                                     }
+    | scope                         {
+                                        $$ = $scope;
+                                    }
     | expr ";"                      {
                                         $$ = new MScriptStatement(@$, STMT_EXPR, $expr);
                                     }
@@ -315,24 +323,29 @@ stmt:
     | "const" decl_list ";"         {
                                         $$ = new MScriptStatement(@$, STMT_CONST, $decl_list);
                                     }
-    | "/" expr "/" stmt             {
-                                        $$ = (new MScriptStatement(@$, STMT_TRIGGER, $expr))->createBranch($4);
+    | "include" string ";"          {
+                                        $$ = new MScriptStatement(@$, STMT_INCLUDE, $string);
                                     }
-    | "func" id "(" param_list ")" stmt
+    | "namespace" id "{" statements "}"
                                     {
-                                        $$ = new MScriptStatement(@$, STMT_FUNCTION, $id->appendLink($param_list));
-                                        $$->createBranch($6);
-                                    }
-    | "{" statements "}"            {
-                                        $$ = new MScriptStatement(@$, STMT_SCOPE);
+                                        $$ = new MScriptStatement(@$, STMT_NAMESPACE, $id);
                                         $$->createBranch($statements);
                                     }
-    | "{" /* empty */ "}"           {
-                                        // Empty scope -> optimize by deleting it.
-                                        $$ = NULL;
+    | "namespace" id "{" /* empty */ "}"
+                                    {
+                                        $$ = new MScriptStatement(@$, STMT_NAMESPACE, $id);
                                         core->parserMessage ( @$,
                                                               MScriptBase::MT_WARNING,
-                                                              QObject::tr("empty scope").toStdString() );
+                                                              QObject::tr("empty namespace").toStdString() );
+                                    }
+    | "/" expr "/" stmt             {
+                                        $$ = new MScriptStatement(@$, STMT_TRIGGER, $expr);
+                                        $$->createBranch($4);
+                                    }
+    | "func" id "(" param_list ")" scope
+                                    {
+                                        $$ = new MScriptStatement(@$, STMT_FUNCTION, $id->appendLink($param_list));
+                                        $$->createBranch($scope);
                                     }
     | "if" "(" expr ")" stmt        {
                                         MScriptStatement * ifBlock = new MScriptStatement(@1, STMT_IF, $expr);
@@ -396,9 +409,35 @@ cases:
                                     }
 ;
 
+// Scope.
+scope:
+      "{" statements "}"            {
+                                        $$ = new MScriptStatement(@$, STMT_SCOPE);
+                                        $$->createBranch($statements);
+                                    }
+    | "{" /* empty */ "}"           {
+                                        // Empty scope.
+                                        $$ = new MScriptStatement(@$, STMT_SCOPE);
+                                        core->parserMessage ( @$,
+                                                              MScriptBase::MT_WARNING,
+                                                              QObject::tr("empty scope").toStdString() );
+                                    }
+;
+
+// Simple identifier (without namespaces).
+sid:
+      IDENTIFIER                    { $$ = new MScriptExpr($IDENTIFIER, @$); }
+;
+
 // Arbitrary identifier.
 id:
-      IDENTIFIER                    { $$ = new MScriptExpr($IDENTIFIER, @$); }
+      sid                           { $$ = $sid;                       }
+    | NSID                          { $$ = new MScriptExpr($NSID, @$); }
+;
+
+// String constant.
+string:
+      STRING                        { $$ = new MScriptExpr(MScriptValue($STRING.data, $STRING.size), @$); }
 ;
 
 // Variable or constant declarations.
@@ -414,9 +453,9 @@ decl_list:
 ;
 
 param:
-      id                            { $$ = $id;                                                       }
-    | id "=" expr                   { $$ = new MScriptExpr($id, MScriptExpr::OPER_ASSIGN, $expr, @$); }
-    | "&" id                        { $$ = $id; $id->m_operator = MScriptExpr::OPER_REF;              }
+      sid                           { $$ = $sid;                                                       }
+    | sid "=" expr                  { $$ = new MScriptExpr($sid, MScriptExpr::OPER_ASSIGN, $expr, @$); }
+    | "&" sid                       { $$ = $sid; $sid->m_operator = MScriptExpr::OPER_REF;             }
 ;
 
 // List of function parameters.
@@ -441,13 +480,13 @@ e_expr:
 // Expression.
 expr:
     // Single value expressions.
-      id                            { $$ = $id;      }
-    | "EMPTY"                       { $$ = new MScriptExpr(@$);                                              }
-    | BOOLEAN                       { $$ = new MScriptExpr($BOOLEAN, @$);                                    }
-    | STRING                        { $$ = new MScriptExpr(MScriptValue($STRING.data, $STRING.size), @$);    }
-    | REAL                          { $$ = new MScriptExpr($REAL, @$);                                       }
-    | INTEGER                       { $$ = new MScriptExpr($INTEGER, @$);                                    }
-    | IMAGINARY                     { $$ = new MScriptExpr(MScriptValue(0, $IMAGINARY), @$);                 }
+      id                            { $$ = $id;                                              }
+    | string                        { $$ = $string;                                          }
+    | "EMPTY"                       { $$ = new MScriptExpr(@$);                              }
+    | BOOLEAN                       { $$ = new MScriptExpr($BOOLEAN, @$);                    }
+    | REAL                          { $$ = new MScriptExpr($REAL, @$);                       }
+    | INTEGER                       { $$ = new MScriptExpr($INTEGER, @$);                    }
+    | IMAGINARY                     { $$ = new MScriptExpr(MScriptValue(0, $IMAGINARY), @$); }
 
     // Parentheses.
     | "(" expr ")"                  { $$ = $2; }

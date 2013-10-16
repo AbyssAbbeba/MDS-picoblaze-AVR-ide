@@ -78,10 +78,20 @@ std::string MScriptSrcLocation::toString() const
 
 void MScriptSrcLocation::serialize ( MScriptSerializer & output ) const
 {
+    output.write ( (uint16_t) m_file );
+    output.write ( (uint32_t) m_line[0] );
+    output.write ( (uint32_t) m_line[1] );
+    output.write ( (uint16_t) m_column[0] );
+    output.write ( (uint16_t) m_column[1] );
 }
 
 void MScriptSrcLocation::deserialize ( MScriptSerializer & input )
 {
+    m_file      = input.translateFileNumber ( (int) input.read_ui16() );
+    m_line[0]   = (int) input.read_ui32();
+    m_line[1]   = (int) input.read_ui32();
+    m_column[0] = (int) input.read_ui16();
+    m_column[1] = (int) input.read_ui16();
 }
 
 std::ostream & operator << ( std::ostream & out,

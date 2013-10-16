@@ -92,6 +92,12 @@ class MScriptExpr : public MScriptSerializable
     public:
         /**
          * @brief
+         * @param[in,out] input
+         */
+        MScriptExpr ( MScriptSerializer & input );
+
+        /**
+         * @brief
          * @param[in] location
          */
         MScriptExpr ( MScriptSrcLocation location = MScriptSrcLocation() );
