@@ -56,7 +56,7 @@ class AsmPicoBlazeMemoryPtr
         {
             HARD_LIM_REG  = 31,
             HARD_LIM_DATA = 63,
-            HARD_LIM_CODE = 1023
+            HARD_LIM_CODE = 4095
         };
 
     ////    Constructors and Destructors    ////

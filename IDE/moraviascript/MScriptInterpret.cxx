@@ -22,6 +22,7 @@
 #include "MScriptStatement.h"
 #include "MScriptExprSolver.h"
 #include "MScriptExprProcessor.h"
+#include "MScriptNamespaces.h"
 
 // Used for i18n only
 #include <QObject>
@@ -34,6 +35,7 @@ MScriptInterpret::MScriptInterpret()
     m_funcTable     = new MScriptFuncTable(this);
     m_exprSolver    = new MScriptExprSolver(this, m_varTable);
     m_exprProcessor = new MScriptExprProcessor(this);
+    m_namespaces    = new MScriptNamespaces(this);
 }
 
 MScriptInterpret::~MScriptInterpret()
@@ -42,6 +44,7 @@ MScriptInterpret::~MScriptInterpret()
     delete m_funcTable;
     delete m_exprSolver;
     delete m_exprProcessor;
+    delete m_namespaces;
 }
 
 void MScriptInterpret::init ( MScriptStatement * rootNode )
@@ -58,7 +61,7 @@ void MScriptInterpret::clear()
     MScriptExecContext::clear();
     m_varTable->clear();
     m_funcTable->clear();
-    m_namespace.clear();
+    m_namespaces->clear();
 }
 
 bool MScriptInterpret::step()
@@ -383,7 +386,13 @@ inline bool MScriptInterpret::abadonCode ( ExecFlags upTo,
     {
         if ( FLAG_SCOPE & it->second )
         {
+            // Leave scope.
             m_varTable->popScope();
+        }
+        if ( FLAG_NAMESPACE & it->second )
+        {
+            // Leave namespace.
+            m_namespaces->leaveNamespace();
         }
 
         if ( upTo & it->second )
@@ -534,14 +543,14 @@ inline void MScriptInterpret::evalNamespace ( const MScriptStatement * node )
     {
         // Leaving namespace.
         replaceNext(node->next());
-        m_namespace.pop_back();
+        m_namespaces->leaveNamespace();
     }
     else
     {
         // Entering namespace.
         setNextFlags ( FLAG_NAMESPACE );
         addNext(node->branch());
-        m_namespace.push_back(node->args()->lVal().m_data.m_symbol);
+        m_namespaces->enterNamespace(node->location(), node->args()->lVal().m_data.m_symbol);
     }
 }
 
