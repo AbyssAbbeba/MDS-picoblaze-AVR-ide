@@ -86,7 +86,11 @@ bool AsmPicoBlazeTreeDecoder::phase1 ( CompilerStatement * codeTree,
     {
         if ( NULL != m_forceNext )
         {
-            node = m_forceNext;
+            node = m_forceNext->next();
+            if ( NULL == node )
+            {
+                break;
+            }
             m_forceNext = NULL;
         }
 
