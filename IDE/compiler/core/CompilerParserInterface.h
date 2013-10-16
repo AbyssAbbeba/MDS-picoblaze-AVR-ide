@@ -72,7 +72,7 @@ class CompilerParserInterface
          * @param[in] type
          * @param[in] text
          */
-        virtual void parserMessage ( CompilerSourceLocation location,
+        virtual void parserMessage ( const CompilerSourceLocation & location,
                                      CompilerBase::MessageType type,
                                      const std::string & text ) = 0;
 
@@ -82,7 +82,7 @@ class CompilerParserInterface
          * @param[in] type
          * @param[in] text
          */
-        virtual void lexerMessage ( CompilerSourceLocation location,
+        virtual void lexerMessage ( const CompilerSourceLocation & location,
                                     CompilerBase::MessageType type,
                                     const std::string & text ) = 0;
 
