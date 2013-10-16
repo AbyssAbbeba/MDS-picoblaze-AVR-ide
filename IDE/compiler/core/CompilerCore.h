@@ -127,7 +127,7 @@ class CompilerCore : public CompilerBase,
          * @param[in] type
          * @param[in] text
          */
-        void localMessage ( CompilerSourceLocation location,
+        void localMessage ( const CompilerSourceLocation & location,
                             MessageType type,
                             const std::string & text );
 
@@ -139,7 +139,7 @@ class CompilerCore : public CompilerBase,
              * @param[in] type
              * @param[in] text
              */
-            void parserMessage ( CompilerSourceLocation location,
+            void parserMessage ( const CompilerSourceLocation & location,
                                  MessageType type,
                                  const std::string & text );
 
@@ -149,7 +149,7 @@ class CompilerCore : public CompilerBase,
              * @param[in] type
              * @param[in] text
              */
-            void lexerMessage ( CompilerSourceLocation location,
+            void lexerMessage ( const CompilerSourceLocation & location,
                                 MessageType type,
                                 const std::string & text );
 
@@ -229,7 +229,7 @@ class CompilerCore : public CompilerBase,
              * @param[in] type
              * @param[in] text
              */
-            void compilerMessage ( CompilerSourceLocation location,
+            void compilerMessage ( const CompilerSourceLocation & location,
                                    MessageType type,
                                    const std::string & text );
 
@@ -337,6 +337,21 @@ class CompilerCore : public CompilerBase,
          * @return
          */
         inline bool startCompilation();
+
+        /**
+         * @brief
+         * @param[in] type
+         * @param[in] text
+         */
+        inline void localMessage ( MessageType type,
+                                   const std::string & text );
+
+        /**
+         * @brief
+         * @param[in] type
+         * @return
+         */
+        inline std::string msgType2str ( MessageType type );
 
     ////    Private Attributes    ////
     private:

@@ -78,10 +78,18 @@ bool AsmPicoBlazeTreeDecoder::phase1 ( CompilerStatement * codeTree,
 
     std::vector<std::string> localSymbols;
 
+    m_forceNext = NULL;
+
     for ( CompilerStatement * node = codeTree->next();
           NULL != node;
           node = node->next() )
     {
+        if ( NULL != m_forceNext )
+        {
+            node = m_forceNext;
+            m_forceNext = NULL;
+        }
+
         const CompilerSourceLocation * location = origLocation;
         if ( NULL == location )
         {
@@ -500,9 +508,8 @@ inline AsmPicoBlazeTreeDecoder::CourseOfAction
 
     node = node->prev();
     delete node->next();
-    CompilerStatement * nodeNext = body->last();
+    m_forceNext = body->last();
     node->insertLink(body);
-    node = nodeNext;
 
     return CA_CONTINUE;
 }
@@ -569,9 +576,8 @@ inline AsmPicoBlazeTreeDecoder::CourseOfAction
     {
         node = node->prev();
         delete node->next();
-        CompilerStatement * nodeNext = body->last();
+        m_forceNext = body->last();
         node->insertLink(body);
-        node = nodeNext;
         return CA_CONTINUE;
     }
     else
@@ -619,9 +625,8 @@ inline AsmPicoBlazeTreeDecoder::CourseOfAction
     node = node->prev();
     delete node->next();
 
-    CompilerStatement * nodeNext = macro->last();
+    m_forceNext = macro->last();
     node->insertLink(macro);
-    node = nodeNext;
 
     return CA_CONTINUE;
 }
@@ -914,7 +919,9 @@ inline AsmPicoBlazeTreeDecoder::CourseOfAction
         return CA_RETURN_FALSE;
     }
 
+    m_forceNext = body->last();
     node->insertLink(body);
+
     return CA_NO_ACTION;
 }
 
@@ -935,7 +942,10 @@ inline AsmPicoBlazeTreeDecoder::CourseOfAction
         body->completeDelete();
         return CA_RETURN_FALSE;
     }
+
+    m_forceNext = body->last();
     node->insertLink(body);
+
     return CA_NO_ACTION;
 }
 
@@ -956,7 +966,10 @@ inline AsmPicoBlazeTreeDecoder::CourseOfAction
         body->completeDelete();
         return CA_RETURN_FALSE;
     }
+
+    m_forceNext = body->last();
     node->insertLink(body);
+
     return CA_NO_ACTION;
 }
 
