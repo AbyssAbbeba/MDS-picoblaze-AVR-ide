@@ -97,7 +97,7 @@ class CompilerSemanticInterface
          * @param[in] type
          * @param[in] text
          */
-        virtual void compilerMessage ( CompilerSourceLocation location,
+        virtual void compilerMessage ( const CompilerSourceLocation & location,
                                        CompilerBase::MessageType type,
                                        const std::string & text ) = 0;
 
