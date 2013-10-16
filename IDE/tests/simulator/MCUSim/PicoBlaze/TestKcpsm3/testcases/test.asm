@@ -27,3 +27,6 @@ FOR_2_END:
 
         jump    $
 
+;; step 20
+;; reg[7]  == 5
+;; reg[8]  == 8
