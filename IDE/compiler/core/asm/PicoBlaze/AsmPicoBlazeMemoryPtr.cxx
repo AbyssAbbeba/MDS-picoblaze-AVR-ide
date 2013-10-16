@@ -110,7 +110,7 @@ bool AsmPicoBlazeMemoryPtr::tryReserve ( const CompilerSourceLocation & location
     {
         m_compilerCore->compilerMessage ( location,
                                           CompilerBase::MT_ERROR,
-                                          QObject::tr("Attempting to use unavailable space in %1 memory at address: %2")
+                                          QObject::tr("attempting to use unavailable space in %1 memory at address: %2")
                                                      .arg(memName)
                                                      .arg(address)
                                                      .toStdString() );

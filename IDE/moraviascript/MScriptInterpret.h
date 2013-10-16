@@ -20,6 +20,7 @@
 class MScriptVarTable;
 class MScriptFuncTable;
 class MScriptStatement;
+class MScriptNamespaces;
 class MScriptExprSolver;
 class MScriptExprProcessor;
 
@@ -31,7 +32,6 @@ class MScriptExprProcessor;
 
 // Standard header files.
 #include <vector>
-#include <string>
 
 /**
  * @brief
@@ -211,7 +211,7 @@ class MScriptInterpret : private MScriptExecContext,
         MScriptExprProcessor * m_exprProcessor;
 
         /// @brief
-        std::vector<const char*> m_namespace;
+        MScriptNamespaces * m_namespaces;
 };
 
 #endif // MSCRIPTINTERPRET_H

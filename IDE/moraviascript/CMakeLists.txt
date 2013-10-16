@@ -73,6 +73,7 @@ add_library ( ${PROJECT_NAME} SHARED
               MScriptStmtTypes.cxx
               MScriptStatement.cxx
               MScriptExprSolver.cxx
+              MScriptNamespaces.cxx
               MScriptSerializer.cxx
               MScriptExprAlgebra.cxx
               MScriptSrcLocation.cxx
