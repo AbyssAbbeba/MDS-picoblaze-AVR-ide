@@ -143,6 +143,13 @@ void StackWidget::handleEvent(int subsysId, int eventId, int locationOrReason, i
                     this->lwStack->item(this->sp-1)->setBackground(Qt::yellow);
                 }
             }
+            else
+            {
+                if (this->sp != 0)
+                {
+                    this->lwStack->item(this->sp-1)->setBackground(Qt::yellow);
+                }
+            }
             this->sp = locationOrReason;
         }
         default:
