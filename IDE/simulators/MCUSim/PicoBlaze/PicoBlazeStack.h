@@ -175,7 +175,7 @@ class PicoBlazeStack : public MCUSimMemory
         unsigned int * m_data;
 
         /// Stack pointer, starts with 0; push increments, pop decrements.
-        unsigned int m_position;
+        int m_position;
 };
 
 // -----------------------------------------------------------------------------
@@ -184,7 +184,7 @@ class PicoBlazeStack : public MCUSimMemory
 
 inline void PicoBlazeStack::pushOnStack ( unsigned int value )
 {
-    if ( m_config.m_size == m_position )
+    if ( (int) m_config.m_size == m_position )
     {
         logEvent(EVENT_STACK_OVERFLOW, m_position, value);
         m_position = 0;
@@ -203,13 +203,13 @@ inline void PicoBlazeStack::pushOnStack ( unsigned int value )
 inline unsigned int PicoBlazeStack::popFromStack()
 {
     m_position--;
-    unsigned int result = ( 0x3ff & m_data[m_position] );
-
-    if ( 0 == m_position )
+    if ( -1 == m_position )
     {
         logEvent(EVENT_STACK_UNDERFLOW, m_position, -1);
-        m_position = m_config.m_size;
+        m_position = (int) m_config.m_size - 1;
     }
+
+    unsigned int result = ( 0x3ff & m_data[m_position] );
 
     logEvent(EVENT_STACK_SP_CHANGED, m_position);
     logEvent(EVENT_MEM_INF_RD_VAL_READ, m_position, result);
