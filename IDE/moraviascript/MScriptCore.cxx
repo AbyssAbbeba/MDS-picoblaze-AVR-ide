@@ -19,7 +19,7 @@
 #include "moraviaScriptParser.h"
 #include "moraviaScriptLexer.h"
 
-// Standard header files
+// Standard header files.
 #include <iostream>
 
 // Parser prototype (the core uses it to initiate syntactical analysis).

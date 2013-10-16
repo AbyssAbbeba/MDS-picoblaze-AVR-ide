@@ -169,6 +169,12 @@ class MScriptSerializer
         /// @name Writing methods, i.e. for object serialization.
         //@{
             /**
+             * @brief Write a C++ bool.
+             * @param[in] val (boolean value to serialize.)
+             */
+            void write ( bool val );
+
+            /**
              * @brief Write one 8-bit unsigned integer.
              * @param[in] val (Value to serialize.)
              */
@@ -219,6 +225,12 @@ class MScriptSerializer
 
         /// @name Reading methods, i.e. for object deserialization.
         //@{
+            /**
+             * @brief Read one C++ bool.
+             * @return (Value read from the serialized object.)
+             */
+            bool read_bool();
+
             /**
              * @brief Read one 8-bit unsigned integer.
              * @return (Value read from the serialized object.)

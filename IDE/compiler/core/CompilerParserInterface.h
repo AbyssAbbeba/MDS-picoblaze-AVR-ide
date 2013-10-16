@@ -153,10 +153,10 @@ class CompilerParserInterface
             CompilerSourceLocation toSourceLocation ( const YYLTYPE * yylloc ) const
             {
                 return CompilerSourceLocation ( getFileNumber(),
-                                                      yylloc->first_line,
-                                                      yylloc->last_line,
-                                                      yylloc->first_column,
-                                                      yylloc->last_column );
+                                                yylloc->first_line,
+                                                yylloc->last_line,
+                                                yylloc->first_column,
+                                                yylloc->last_column );
             }
 
             /**

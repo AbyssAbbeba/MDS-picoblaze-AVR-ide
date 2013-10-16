@@ -90,14 +90,6 @@ void MScriptFuncTable::define ( const std::string & name,
                                 std::vector<Parameter> * params,
                                 MScriptStatement * code )
 {
-    if ( MScriptStmtTypes::STMT_SCOPE != code->type() )
-    {
-        m_interpret->interpreterMessage ( location,
-                                          MScriptBase::MT_ERROR,
-                                          QObject::tr ( "invalid function definition") . toStdString() );
-        return;
-    }
-
     unsigned int defaults = 0;
 
     for ( std::vector<Parameter>::const_iterator p = params->cbegin();

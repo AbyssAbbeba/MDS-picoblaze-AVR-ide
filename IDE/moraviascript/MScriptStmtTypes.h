@@ -16,7 +16,7 @@
 #ifndef MSCRIPTSTMTTYPES_H
 #define MSCRIPTSTMTTYPES_H
 
-// Standard header files
+// Standard header files.
 #include <ostream>
 
 /**
@@ -53,6 +53,8 @@ namespace MScriptStmtTypes
         STMT_DELETE,          ///<
         STMT_VAR,             ///<
         STMT_CONST,           ///<
+        STMT_NAMESPACE,       ///<
+        STMT_INCLUDE,         ///<
 
         STMT_CALL             ///<
     };
