@@ -65,6 +65,7 @@ add_library ( ${PROJECT_NAME} SHARED
               MScriptBase.cxx
               MScriptExpr.cxx
               MScriptValue.cxx
+              MScriptComplex.cxx
               MScriptVariable.cxx
               MScriptVarTable.cxx
               MScriptFuncTable.cxx
