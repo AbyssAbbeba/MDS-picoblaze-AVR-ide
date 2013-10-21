@@ -6,11 +6,12 @@
 ; Press Start simulation and Animate to run the program
 
 ; Tell compiler type of procesor (KCPSM2, KCPSM3, KCPSM6 available)
-        DEVICE          KCPSM3
+        DEVICE          KCPSM6
 
 ; Program initialization
 ; --------------------
         ORG     0h                      ; Define code segment
+		outputk	#10,0
         JUMP    start                   ; Jump to code initialization
 
 ; Program start
