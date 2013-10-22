@@ -38,7 +38,6 @@ class MCUSimCPU : public MCUSimSubsys
             EVENT_CPU_ERR_INVALID_JUMP,     ///<
             EVENT_CPU_ERR_INVALID_CALL,     ///<
             EVENT_CPU_WRN_INVALID_IRQ,      ///< Invalid interrupt, i.e. nonsense IRQ (Interrupt ReQuest).
-            EVENT_CPU_WRN_IRQ_DENIED,       ///< IRQ denied most probably means that interrupts are just disabled.
             EVENT_CPU_ERR_INVALID_RET,      ///< There is no active subprogram to return from
             EVENT_CPU_ERR_INVALID_RETI,     ///< There is no active interrupt to return from
             EVENT_CPU_ERR_INVALID_OPSET,    ///< undefined result of the operation due to invalid set of operands

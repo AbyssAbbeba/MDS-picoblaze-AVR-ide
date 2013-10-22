@@ -21,13 +21,12 @@
 MScriptNamespaces::MScriptNamespaces ( MScriptInterpretInterface * interpret )
                                      : m_interpret ( interpret )
 {
-    m_ns = new NsDesc ( "::", NULL );
-    m_current.push_back(m_ns);
+    m_ns = NULL;
+    clear();
 }
 
 MScriptNamespaces::~MScriptNamespaces()
 {
-    clear();
     delete m_ns;
 }
 
@@ -44,6 +43,26 @@ void MScriptNamespaces::NsDesc::clear()
     {
         delete *it;
     }
+}
+
+bool MScriptNamespaces::NsDesc::constains ( const NsDesc * ns ) const
+{
+    if ( ns == this )
+    {
+        return true;
+    }
+
+    for ( std::vector<NsDesc*>::const_iterator it = m_contains.cbegin();
+          it != m_contains.cend();
+          it++ )
+    {
+        if ( true == it->constains(ns) )
+        {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 void MScriptNamespaces::leave()
@@ -73,8 +92,14 @@ const MScriptNamespaces::NsDesc * MScriptNamespaces::current() const
 
 void MScriptNamespaces::clear()
 {
-    m_ns->clear();
     m_current.clear();
+    if ( NULL != m_ns )
+    {
+        delete m_ns;
+    }
+
+    m_ns = new NsDesc ( "::", NULL );
+    m_current.push_back(m_ns);
 }
 
 std::ostream & operator << ( std::ostream & out,
