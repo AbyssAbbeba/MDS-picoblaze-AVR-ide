@@ -15,9 +15,13 @@
 
 ; Program start
 ; --------------------
-start:  	load	s0, #8	
-        RT_WHILE   S0 < #10
-            ADD    S0,#1
-        RT_ENDW
+start:  	load	s0, #15	
+
+        RT_IF           S0 <= #10
+            LOAD    S5,#5
+        RT_ELSE
+            LOAD    S6,#6
+        RT_ENDIF
+
 			load s1,3
 			jump            $
