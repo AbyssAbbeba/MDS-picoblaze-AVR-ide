@@ -1254,7 +1254,7 @@ void PicoBlazeInstructionSet6::inst_JUMP_C_aaa ( const unsigned int opCode )
     const unsigned int addr = ( opCode & 0xfff );
 
     // Jump, if CARRY.
-    if ( false == m_statusFlags -> getCarry() )
+    if ( true == m_statusFlags -> getCarry() )
     {
         setProgramCounter ( addr );
     }
@@ -1276,7 +1276,7 @@ void PicoBlazeInstructionSet6::inst_JUMP_NC_aaa ( const unsigned int opCode )
 
 void PicoBlazeInstructionSet6::inst_JUMP_sX_sY ( const unsigned int opCode )
 {
-    instructionEnter ( PicoBlazeInsNames::INS_CALL );
+    instructionEnter ( PicoBlazeInsNames::INS_JUMP );
 
     // Extract operands from OP code.
     const unsigned int sX = ( opCode & 0xf00 ) >> 8;
