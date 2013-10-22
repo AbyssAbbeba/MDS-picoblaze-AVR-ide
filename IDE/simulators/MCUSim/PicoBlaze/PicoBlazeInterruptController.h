@@ -17,6 +17,7 @@
 #define PICOBLAZEINTERRUPTCONTROLLER_H
 
 // Forward declarations
+class PicoBlazeStatusFlags;
 class PicoBlazeInstructionSet;
 
 #include "../MCUSim.h"
@@ -35,6 +36,7 @@ class PicoBlazeInterruptController : public MCUSimSubsys
          */
         enum Event
         {
+            EVENT_INT_IRQ_DENIED,         ///< IRQ denied most probably means that interrupts are just disabled.
             EVENT_INT_ENTERING_INTERRUPT, ///<
             EVENT_INT_LEAVING_INTERRUPT,  ///<
 
@@ -66,10 +68,12 @@ class PicoBlazeInterruptController : public MCUSimSubsys
          * @brief
          * @param[in,out] eventLogger
          * @param[in,out] instructionSet
+         * @param[in,out] statusFlags
          * @return
          */
         PicoBlazeInterruptController * link ( MCUSimEventLogger        * eventLogger,
-                                              PicoBlazeInstructionSet  * instructionSet );
+                                              PicoBlazeInstructionSet  * instructionSet,
+                                              PicoBlazeStatusFlags     * statusFlags );
 
         /**
          * @brief
@@ -113,6 +117,9 @@ class PicoBlazeInterruptController : public MCUSimSubsys
         //@{
             ///
             PicoBlazeInstructionSet * m_instructionSet;
+
+            ///
+            PicoBlazeStatusFlags * m_statusFlags;
         //@}
 
         ///

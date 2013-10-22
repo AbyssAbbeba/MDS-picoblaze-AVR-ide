@@ -14,6 +14,8 @@
 // =============================================================================
 
 #include "PicoBlazeInterruptController.h"
+
+#include "PicoBlazeStatusFlags.h"
 #include "PicoBlazeInstructionSet.h"
 
 PicoBlazeInterruptController::PicoBlazeInterruptController()
@@ -25,10 +27,12 @@ PicoBlazeInterruptController::~PicoBlazeInterruptController()
 }
 
 PicoBlazeInterruptController * PicoBlazeInterruptController::link ( MCUSimEventLogger        * eventLogger,
-                                                                    PicoBlazeInstructionSet  * instructionSet )
+                                                                    PicoBlazeInstructionSet  * instructionSet,
+                                                                    PicoBlazeStatusFlags     * statusFlags )
 {
     MCUSimSubsys::link(eventLogger, ID_INTERRUPTS);
     m_instructionSet = instructionSet;
+    m_statusFlags = statusFlags;
     return this;
 }
 
@@ -56,17 +60,23 @@ int PicoBlazeInterruptController::autoInterrupt()
     {
         return 0;
     }
+    else if ( true == m_statusFlags->getInte() )
+    {
+        m_irq = false;
+        m_instructionSet->irq();
+        logEvent ( EVENT_INT_ENTERING_INTERRUPT );
+        return 1;
+    }
     else
     {
-        m_instructionSet->irq();
         m_irq = false;
-        return 1;
+        logEvent ( EVENT_INT_IRQ_DENIED );
+        return 0;
     }
 }
 
 void PicoBlazeInterruptController::irq()
 {
-    logEvent ( EVENT_INT_ENTERING_INTERRUPT );
     m_irq = true;
 }
 
