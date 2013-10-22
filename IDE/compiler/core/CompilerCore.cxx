@@ -405,6 +405,7 @@ CompilerStatement * CompilerCore::loadDevSpecCode ( const std::string & deviceNa
         }
         return NULL;
     }
+    m_device = deviceName;
     m_devSpecCodeLoaded = true;
 
     std::string fileName = getBaseIncludeDir() + deviceName + PRECOMPILED_CODE_EXTENSION;
@@ -429,7 +430,6 @@ CompilerStatement * CompilerCore::loadDevSpecCode ( const std::string & deviceNa
     }
 
     m_semanticAnalyzer->setDevice(deviceName);
-    m_device = deviceName;
 
     if ( NULL != flag )
     {

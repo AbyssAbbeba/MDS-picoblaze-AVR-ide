@@ -38,40 +38,50 @@ class MScriptNamespaces
         /**
          * @brief
          */
-        struct NsDesc
+        class NsDesc
         {
             ////    Constructors and Destructors    ////
-            /**
-             * @brief
-             * @param[in] name
-             * @param[in] parent
-             */
-            NsDesc ( const std::string & name,
-                     NsDesc * parent )
-                   :
-                     m_name ( name ),
-                     m_parent ( parent ) {}
+            public:
+                /**
+                 * @brief
+                 * @param[in] name
+                 * @param[in] parent
+                 */
+                NsDesc ( const std::string & name,
+                         NsDesc * parent )
+                       :
+                         m_name ( name ),
+                         m_parent ( parent ) {}
 
-            /**
-             * @brief
-             */
-            ~NsDesc();
+                /**
+                 * @brief
+                 */
+                ~NsDesc();
 
             ////    Public Operations    ////
-            /**
-             * @brief
-             */
-            void clear();
+            public:
+                /**
+                 * @brief
+                 */
+                void clear();
+
+                /**
+                 * @brief Check whether this namespace conatins the namespace given as argument.
+                 * @param[in] ns
+                 * @return
+                 */
+                bool constains ( const NsDesc * ns ) const;
 
             ////    Public Attributes    ////
-            /// @brief
-            const std::string m_name;
+            public:
+                /// @brief
+                const std::string m_name;
 
-            /// @brief
-            NsDesc * const m_parent;
+                /// @brief
+                NsDesc * const m_parent;
 
-            /// @brief
-            std::vector<NsDesc*> m_contains;
+                /// @brief
+                std::vector<NsDesc*> m_contains;
         };
 
     ////    Friends    ////
