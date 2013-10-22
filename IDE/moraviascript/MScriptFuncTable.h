@@ -18,6 +18,7 @@
 
 // Forward declarations.
 class MScriptStatement;
+class MScriptNamespaces;
 class MScriptInterpretInterface;
 
 // MScript language interpreter header files.
@@ -91,38 +92,41 @@ class MScriptFuncTable
          */
         struct Function
         {
-                /**
-                 * @brief
-                 * @param[in,out] params
-                 * @param[in,out] code
-                 */
-                Function ( std::vector<Parameter> * params,
-                           MScriptStatement * code,
-                           const MScriptSrcLocation & location,
-                           unsigned int argsRequired );
+            /**
+             * @brief
+             * @param[in,out] params
+             * @param[in,out] code
+             */
+            Function ( std::vector<Parameter> * params,
+                       MScriptStatement * code,
+                       const MScriptSrcLocation & location,
+                       unsigned int argsRequired );
 
-                /**
-                 * @brief
-                 * @param[in] obj
-                 */
-                Function ( const Function & obj );
+            /**
+             * @brief
+             * @param[in] obj
+             */
+            Function ( const Function & obj );
 
-                /**
-                 * @brief
-                 */
-                ~Function();
+            /**
+             * @brief
+             */
+            ~Function();
 
-                /// @brief
-                std::vector<Parameter> * m_params;
+            /// @brief
+            std::vector<Parameter> * m_params;
 
-                /// @brief
-                MScriptStatement * m_code;
+            /// @brief
+            MScriptStatement * m_code;
 
-                /// @brief
-                MScriptSrcLocation m_location;
+            /// @brief
+            MScriptSrcLocation m_location;
 
-                /// @brief
-                unsigned int m_argsRequired;
+            /// @brief
+            std::string m_ns;
+
+            /// @brief
+            unsigned int m_argsRequired;
         };
 
         /// @brief
@@ -133,9 +137,13 @@ class MScriptFuncTable
         /**
          * @brief
          * @param[in,out] interpret
+         * @param[in,out] namespaces
          */
-        MScriptFuncTable ( MScriptInterpretInterface * interpret )
-                         : m_interpret ( interpret ) {}
+        MScriptFuncTable ( MScriptInterpretInterface * interpret,
+                           MScriptNamespaces * namespaces )
+                         :
+                           m_interpret ( interpret ),
+                           m_namespaces ( namespaces ) {}
 
          /**
           * @brief
@@ -197,6 +205,9 @@ class MScriptFuncTable
     private:
         /// @brief
         MScriptInterpretInterface * const m_interpret;
+
+        /// @brief
+        MScriptNamespaces * const m_namespaces;
 
         /// @brief
         FuncMultimap m_funcTable;

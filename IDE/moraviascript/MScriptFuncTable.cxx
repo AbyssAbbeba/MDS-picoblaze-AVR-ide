@@ -18,6 +18,7 @@
 // MScript language interpreter header files.
 #include "MScriptBase.h"
 #include "MScriptStatement.h"
+#include "MScriptNamespaces.h"
 #include "MScriptInterpretInterface.h"
 
 // Used for i18n only
@@ -56,6 +57,7 @@ MScriptFuncTable::Function::Function ( std::vector<Parameter> * params,
     m_params       = params;
     m_code         = code;
     m_location     = location;
+//     m_ns           = ns;
     m_argsRequired = argsRequired;
 }
 
@@ -150,9 +152,11 @@ void MScriptFuncTable::define ( const std::string & name,
     }
     else
     {
-        m_funcTable.insert(std::make_pair(name, Function(params, code, location, argsRequired)));
+        m_funcTable.insert ( std::make_pair ( name, Function ( params,
+                                                               code,
+                                                               location,
+                                                               argsRequired ) ) );
     }
-
 }
 
 bool MScriptFuncTable::undefine ( const std::string & name,
