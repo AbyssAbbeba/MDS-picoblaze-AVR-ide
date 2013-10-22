@@ -24,6 +24,7 @@ class MScriptInterpretInterface;
 
 // Standard header files.
 #include <string>
+#include <vector>
 #include <ostream>
 
 /**
@@ -33,6 +34,10 @@ class MScriptInterpretInterface;
  */
 class MScriptNamespaces
 {
+    ////    Friends    ////
+    friend std::ostream & operator << ( std::ostream & out,
+                                        const MScriptNamespaces & namespaces );
+
     ////    Public Datatypes    ////
     public:
         /**
@@ -40,6 +45,10 @@ class MScriptNamespaces
          */
         class NsDesc
         {
+            ////    Friends    ////
+            friend std::ostream & operator << ( std::ostream & out,
+                                                const NsDesc * nsDesc );
+
             ////    Constructors and Destructors    ////
             public:
                 /**
@@ -48,10 +57,12 @@ class MScriptNamespaces
                  * @param[in] parent
                  */
                 NsDesc ( const std::string & name,
-                         NsDesc * parent )
+                         NsDesc * parent,
+                         const MScriptSrcLocation & location )
                        :
                          m_name ( name ),
-                         m_parent ( parent ) {}
+                         m_parent ( parent ),
+                         m_location ( location ) {}
 
                 /**
                  * @brief
@@ -72,6 +83,16 @@ class MScriptNamespaces
                  */
                 bool constains ( const NsDesc * ns ) const;
 
+                /**
+                 * @brief
+                 * @param[in,out]
+                 * @param[in] level
+                 * @param[in] lineString
+                 */
+                void print ( std::ostream & out,
+                             int level = 0,
+                             std::string lineString =  "1" ) const;
+
             ////    Public Attributes    ////
             public:
                 /// @brief
@@ -81,15 +102,11 @@ class MScriptNamespaces
                 NsDesc * const m_parent;
 
                 /// @brief
+                const MScriptSrcLocation m_location;
+
+                /// @brief
                 std::vector<NsDesc*> m_contains;
         };
-
-    ////    Friends    ////
-    friend std::ostream & operator << ( std::ostream & out,
-                                        const MScriptNamespaces & namespaces );
-
-    friend std::ostream & operator << ( std::ostream & out,
-                                        const NsDesc * nsDesc );
 
     ////    Constructors and Destructors    ////
     public:
@@ -117,10 +134,10 @@ class MScriptNamespaces
         /**
          * @brief
          * @param[in] location
-         * @param[in] ns
+         * @param[in,out] ns
          */
         void enter ( const MScriptSrcLocation & location,
-                     const std::string & ns );
+                     NsDesc * ns );
 
         /**
          * @brief
@@ -139,7 +156,7 @@ class MScriptNamespaces
          * @brief
          * @return
          */
-        const NsDesc * current() const;
+        NsDesc * current() const;
 
         /**
          * @brief
@@ -158,7 +175,7 @@ class MScriptNamespaces
         NsDesc * m_ns;
 };
 
-/// @name Tracing operators
+/// @name Tracing operators.
 //@{
     /**
      * @brief

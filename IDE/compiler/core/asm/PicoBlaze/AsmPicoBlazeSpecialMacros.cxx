@@ -436,13 +436,13 @@ CompilerStatement * AsmPicoBlazeSpecialMacros::evaluateCondition ( const Compile
                 {
                     // <DIRECT> <OPERATOR> <DIRECT>
                     result = compare_sx_sy(cndVal[0].m_val, cndVal[1].m_val);
-                    result->appendLink(jump(label, JC_NC));
+                    result->appendLink ( jump(label, ( CompilerExpr::OPER_GT == cnd->oper() ) ? JC_C : JC_NC) );
                 }
                 else
                 {
                     // <DIRECT> <OPERATOR> <IMMEDIATE>
                     result = compare_sx_kk(cndVal[0].m_val, cndVal[1].m_val);
-                    result->appendLink(jump(label, JC_NC));
+                    result->appendLink ( jump(label, ( CompilerExpr::OPER_GT == cnd->oper() ) ? JC_C : JC_NC) );
                 }
             }
             else
@@ -452,7 +452,7 @@ CompilerStatement * AsmPicoBlazeSpecialMacros::evaluateCondition ( const Compile
                 {
                     // <IMMEDIATE> <OPERATOR> <DIRECT>
                     result = compare_sx_kk(cndVal[1].m_val, cndVal[0].m_val);
-                    result->appendLink(jump(label, JC_C));
+                    result->appendLink ( jump(label, ( CompilerExpr::OPER_LT == cnd->oper() ) ? JC_C : JC_NC) );
                     result->appendLink(jump(label, JC_Z));
                 }
                 else

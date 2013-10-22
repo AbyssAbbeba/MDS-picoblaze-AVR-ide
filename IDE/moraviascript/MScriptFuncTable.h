@@ -24,6 +24,7 @@ class MScriptInterpretInterface;
 // MScript language interpreter header files.
 #include "MScriptValue.h"
 #include "MScriptSrcLocation.h"
+#include "MScriptNamespaces.h"
 
 // Standard header files.
 #include <map>
@@ -123,7 +124,7 @@ class MScriptFuncTable
             MScriptSrcLocation m_location;
 
             /// @brief
-            std::string m_ns;
+            MScriptNamespaces::NsDesc * m_ns;
 
             /// @brief
             unsigned int m_argsRequired;
