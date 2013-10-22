@@ -177,9 +177,9 @@ DIS_INT_INST            "disable"{WSPACE}"interrupt"
 \.?"constant"           { return D_CONSTANT;   }
 \.?"set"                { return D_SET;        }
 \.?"variable"           { return D_VARIABLE;   }
-\.?"while"              { return D_WHILE;      }
-\.?"endwhile"           { return D_ENDW;       }
-\.?"endw"               { return D_ENDW;       }
+\.?"#while"             { return D_WHILE;      }
+\.?"#endwhile"          { return D_ENDW;       }
+\.?"#endw"              { return D_ENDW;       }
 \.?"port"               { return D_PORT;       }
 \.?"data"               { return D_DATA;       }
 \.?"code"               { return D_CODE;       }
@@ -193,21 +193,21 @@ DIS_INT_INST            "disable"{WSPACE}"interrupt"
 \.?"title"              { return D_TITLE;      }
 \.?"expand"             { return D_EXPAND;     }
 \.?"noexpand"           { return D_NOEXPAND;   }
-\.?"if"                 { return D_IF;         }
-\.?"ifn"                { return D_IFN;        }
-\.?"ifdef"              { return D_IFDEF;      }
-\.?"ifndef"             { return D_IFNDEF;     }
-\.?"elseifb"            { return D_ELSEIFB;    }
-\.?"elseifnb"           { return D_ELSEIFNB;   }
-\.?"else"               { return D_ELSE;       }
-\.?"elseif"             { return D_ELSEIF;     }
-\.?"elseifn"            { return D_ELSEIFN;    }
-\.?"elseifdef"          { return D_ELSEIFDEF;  }
-\.?"elseifndef"         { return D_ELSEIFNDEF; }
-\.?"endif"              { return D_ENDIF;      }
+\.?"#if"                { return D_IF;         }
+\.?"#ifn"               { return D_IFN;        }
+\.?"#ifdef"             { return D_IFDEF;      }
+\.?"#ifndef"            { return D_IFNDEF;     }
+\.?"#elseifb"           { return D_ELSEIFB;    }
+\.?"#elseifnb"          { return D_ELSEIFNB;   }
+\.?"#else"              { return D_ELSE;       }
+\.?"#elseif"            { return D_ELSEIF;     }
+\.?"#elseifn"           { return D_ELSEIFN;    }
+\.?"#elseifdef"         { return D_ELSEIFDEF;  }
+\.?"#elseifndef"        { return D_ELSEIFNDEF; }
+\.?"#endif"             { return D_ENDIF;      }
+\.?"#ifnb"              { return D_IFNB;       }
+\.?"#ifb"               { return D_IFB;        }
 \.?"local"              { return D_LOCAL;      }
-\.?"ifnb"               { return D_IFNB;       }
-\.?"ifb"                { return D_IFB;        }
 \.?"endmacro"           { return D_ENDM;       }
 \.?"endm"               { return D_ENDM;       }
 \.?"exitm"              { return D_EXITM;      }
@@ -305,14 +305,14 @@ DIS_INT_INST            "disable"{WSPACE}"interrupt"
 "rb"{WSPACE}"B"         { return I_REGBANK_B;   }
 
  /* Special macros. */
-"rt_if"                 { return M_RTIF;     }
-"rt_elseif"             { return M_RTELSEIF; }
-"rt_else"               { return M_RTELSE;   }
-"rt_endif"              { return M_RTENDIF;  }
-"rt_while"              { return M_RTWHILE;  }
-"rt_endw"               { return M_RTENDW;   }
-"rt_for"                { return M_RTFOR;    }
-"rt_endf"               { return M_RTENDF;   }
+"if"                    { return M_RTIF;     }
+"elseif"                { return M_RTELSEIF; }
+"else"                  { return M_RTELSE;   }
+"endif"                 { return M_RTENDIF;  }
+"while"                 { return M_RTWHILE;  }
+"endw"                  { return M_RTENDW;   }
+"for"                   { return M_RTFOR;    }
+"endf"                  { return M_RTENDF;   }
 
  /* Special "operators". */
 "high"                  { return F_HIGH;    }
