@@ -394,7 +394,11 @@ CompilerStatement * CompilerCore::loadDevSpecCode ( const std::string & deviceNa
 {
     if ( true == m_devSpecCodeLoaded )
     {
-        localMessage ( MT_WARNING, QObject::tr("device specification code is already loaded").toStdString() );
+        localMessage ( MT_WARNING, QObject::tr ( "cannot set device to %1, device specification code is already loaded "
+                                                 "for %2")
+                                               . arg ( deviceName.c_str() )
+                                               . arg ( m_device.c_str() )
+                                               . toStdString() );
         if ( NULL != flag )
         {
             *flag = DSLF_ALREADY_LOADED;
@@ -425,6 +429,7 @@ CompilerStatement * CompilerCore::loadDevSpecCode ( const std::string & deviceNa
     }
 
     m_semanticAnalyzer->setDevice(deviceName);
+    m_device = deviceName;
 
     if ( NULL != flag )
     {
@@ -711,10 +716,6 @@ void CompilerCore::processCodeTree ( CompilerStatement * codeTree )
                 localMessage ( MT_ERROR, QObject::tr ( "device not supported: `%1'" )
                                                      . arg ( m_opts->m_device.c_str() )
                                                      . toStdString() );
-            }
-            else if ( DSLF_ALREADY_LOADED == loaderFlag )
-            {
-                localMessage ( MT_ERROR, QObject::tr ( "device specification code is already loaded" ).toStdString() );
             }
             return;
         }

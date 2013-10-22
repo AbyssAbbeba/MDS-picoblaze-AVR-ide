@@ -408,6 +408,11 @@ class CompilerCore : public CompilerBase,
         /**
          * @brief
          */
+        std::string m_device;
+
+        /**
+         * @brief
+         */
         boost::filesystem::path m_basePath;
 
         /**
