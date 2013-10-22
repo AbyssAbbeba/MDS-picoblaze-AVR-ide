@@ -18,6 +18,7 @@
 // MScript language interpreter header files.
 #include "MScriptBase.h"
 #include "MScriptValue.h"
+#include "MScriptNamespaces.h"
 #include "MScriptInterpretInterface.h"
 
 // Standard header files.
@@ -30,8 +31,11 @@
 #include <QObject>
 
 
-MScriptVarTable::MScriptVarTable ( MScriptInterpretInterface * interpret )
-                                 : m_interpret ( interpret )
+MScriptVarTable::MScriptVarTable ( MScriptInterpretInterface * interpret,
+                                   MScriptNamespaces * namespaces )
+                                 :
+                                   m_interpret ( interpret ),
+                                   m_namespaces ( namespaces )
 {
     pushScope();
 }

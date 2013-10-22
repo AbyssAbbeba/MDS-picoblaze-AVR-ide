@@ -31,11 +31,11 @@
 
 MScriptInterpret::MScriptInterpret()
 {
-    m_varTable      = new MScriptVarTable(this);
-    m_funcTable     = new MScriptFuncTable(this);
+    m_namespaces    = new MScriptNamespaces(this);
+    m_varTable      = new MScriptVarTable(this,m_namespaces);
+    m_funcTable     = new MScriptFuncTable(this,m_namespaces);
     m_exprSolver    = new MScriptExprSolver(this, m_varTable);
     m_exprProcessor = new MScriptExprProcessor(this);
-    m_namespaces    = new MScriptNamespaces(this);
 }
 
 MScriptInterpret::~MScriptInterpret()
@@ -364,6 +364,7 @@ inline void MScriptInterpret::evalReturn ( const MScriptStatement * node )
 
     if ( true == abadonCode(FLAG_FUNCTION) )
     {
+        m_namespaces->leave();
         m_varTable->assign("0", node->location(), returnValue);
     }
     else
@@ -372,48 +373,6 @@ inline void MScriptInterpret::evalReturn ( const MScriptStatement * node )
                              MScriptBase::MT_ERROR,
                              QObject::tr("there is no function to return from").toStdString() );
     }
-}
-
-inline bool MScriptInterpret::abadonCode ( ExecFlags upTo,
-                                           unsigned int times,
-                                           bool exclusive )
-{
-    unsigned int level = ( true == exclusive ) ? 0 : 1;
-
-    for ( std::vector<ProgPtr>::reverse_iterator it = getProgramPointer().rbegin();
-          it != getProgramPointer().rend();
-          it++ )
-    {
-        if ( FLAG_SCOPE & it->second )
-        {
-            // Leave scope.
-            m_varTable->popScope();
-        }
-        if ( FLAG_NAMESPACE & it->second )
-        {
-            // Leave namespace.
-            m_namespaces->leaveNamespace();
-        }
-
-        if ( upTo & it->second )
-        {
-            times--;
-            if ( 0 == times )
-            {
-                const MScriptStatement * last = cutOffBranch(level);
-                if ( false == exclusive )
-                {
-                    replaceNext(last);
-                }
-
-                return true;
-            }
-        }
-
-        level++;
-    }
-
-    return false;
 }
 
 inline void MScriptInterpret::evalDelete ( const MScriptStatement * node )
@@ -439,6 +398,7 @@ inline void MScriptInterpret::evalCall ( const MScriptStatement * node )
     if ( FLAG_FUNCTION & getNextFlags() )
     {
         // Returning from function.
+        m_namespaces->leave();
         m_varTable->assign("0", node->location(), MScriptValue());
         replaceNext(node->next());
     }
@@ -458,6 +418,7 @@ inline void MScriptInterpret::evalCall ( const MScriptStatement * node )
 
         MScriptFuncTable::Function * func = m_funcTable->get(name, node->location(), arguments);
 
+        m_namespaces->enter(node->location(), func->m_ns);
         setNextFlags ( FLAG_FUNCTION );
         addNext ( func->m_code );
 
@@ -543,20 +504,62 @@ inline void MScriptInterpret::evalNamespace ( const MScriptStatement * node )
     {
         // Leaving namespace.
         replaceNext(node->next());
-        m_namespaces->leaveNamespace();
+        m_namespaces->leave();
     }
     else
     {
         // Entering namespace.
         setNextFlags ( FLAG_NAMESPACE );
         addNext(node->branch());
-        m_namespaces->enterNamespace(node->location(), node->args()->lVal().m_data.m_symbol);
+        m_namespaces->defineEnter ( node->location(), node->args()->lVal().m_data.m_symbol );
     }
 }
 
 inline void MScriptInterpret::evalInclude ( const MScriptStatement * node )
 {
     
+}
+
+inline bool MScriptInterpret::abadonCode ( ExecFlags upTo,
+                                           unsigned int times,
+                                           bool exclusive )
+{
+    unsigned int level = ( true == exclusive ) ? 0 : 1;
+
+    for ( std::vector<ProgPtr>::reverse_iterator it = getProgramPointer().rbegin();
+          it != getProgramPointer().rend();
+          it++ )
+    {
+        if ( FLAG_SCOPE & it->second )
+        {
+            // Leave scope.
+            m_varTable->popScope();
+        }
+        if ( FLAG_NAMESPACE & it->second )
+        {
+            // Leave namespace.
+            m_namespaces->leave();
+        }
+
+        if ( upTo & it->second )
+        {
+            times--;
+            if ( 0 == times )
+            {
+                const MScriptStatement * last = cutOffBranch(level);
+                if ( false == exclusive )
+                {
+                    replaceNext(last);
+                }
+
+                return true;
+            }
+        }
+
+        level++;
+    }
+
+    return false;
 }
 
 bool MScriptInterpret::postprocessCode ( MScriptStatement * rootNode )

@@ -18,6 +18,7 @@
 
 // Forward declarations.
 class MScriptValue;
+class MScriptNamespaces;
 class MScriptInterpretInterface;
 
 // MScript language interpreter header files.
@@ -82,8 +83,10 @@ class MScriptVarTable
         /**
          * @brief
          * @param[in,out] interpret
+         * @param[in,out] namespaces
          */
-        MScriptVarTable ( MScriptInterpretInterface * interpret );
+        MScriptVarTable ( MScriptInterpretInterface * interpret,
+                          MScriptNamespaces * namespaces );
 
          /**
           * @brief
@@ -317,10 +320,13 @@ class MScriptVarTable
     ////    Private Attributes    ////
     private:
         /// @brief
-        std::vector<VarTable> m_varTables;
+        MScriptInterpretInterface * const m_interpret;
 
         /// @brief
-        MScriptInterpretInterface * const m_interpret;
+        MScriptNamespaces * const m_namespaces;
+
+        /// @brief
+        std::vector<VarTable> m_varTables;
 };
 
 /// @name Tracing operators
