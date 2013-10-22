@@ -30,7 +30,7 @@ Start:
             ;; flag[ie] == false
             ;; pc == 7
             ;; step
-            ;; pc == 0
+            ;; pc == 8
             
             
         

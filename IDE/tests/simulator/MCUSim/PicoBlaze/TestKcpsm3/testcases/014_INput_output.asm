@@ -27,7 +27,7 @@ start:          LOAD            pointer_in,#00h
                 
 dataIN:         INPUT           inout_data,@pointer_in
                 ;; STEP
-                ;; reg[0] == 120
+                ;; reg[0] == 8
                 ;; reg[1] == 0
                 ;; flag[C] == false
                 ;; flag[Z] == false
@@ -38,16 +38,16 @@ dataIN:         INPUT           inout_data,@pointer_in
                 ;; flag[Z] == false
                 CMP             pointer_in,#2
                 ;; step
-                ;; flag[C] == false
+                ;; flag[C] == true
                 ;; flag[Z] == false
                 JUMP            NZ,dataIN
                 ;; step
-                ;; flag[C] == false
+                ;; flag[C] == true
                 ;; flag[Z] == false
 
                 ;; # jumped to dataIN
                 ;; step 
-                ;; flag[C] == false
+                ;; flag[C] != false
                 ;; flag[Z] == false
                 ;; step
                 ;; # add instructions
@@ -56,14 +56,14 @@ dataIN:         INPUT           inout_data,@pointer_in
                 ;; step
                 ;; # cmp instruction
                 ;; flag[C] == false
-                ;; flag[Z] == false
+                ;; flag[Z] != false
                 ;; step
                 ;; # jump instruction
                 ;; flag[C] == false
-                ;; flag[Z] == false
+                ;; flag[Z] != false
 
                 ;; step 3
-                ;; flag[C] == false
+                ;; flag[C] == true
                 ;; flag[Z] == false
                  
 dataOUT:        OUTPUT          inout_data,@pointer_out
