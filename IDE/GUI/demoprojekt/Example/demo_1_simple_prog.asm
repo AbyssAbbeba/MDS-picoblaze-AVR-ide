@@ -6,27 +6,18 @@
 ; Press Start simulation and Animate to run the program
 
 ; Tell compiler type of procesor (KCPSM2, KCPSM3, KCPSM6 available)
-        DEVICE          KCPSM6
+        ;DEVICE          KCPSM6
 
 ; Program initialization
 ; --------------------
         ORG     0h                      ; Define code segment
-		outputk	#10,0
         JUMP    start                   ; Jump to code initialization
 
 ; Program start
 ; --------------------
-start:  
-       call ahoj
-       call sss
-       jump start
-
-ahoj: call ahoj2
-      return
-
-ahoj2: call ahoj3
-       return
-
-ahoj3: return
-
-sss: return
+start:  	load	s0, #8	
+        RT_WHILE   S0 < #10
+            ADD    S0,#1
+        RT_ENDW
+			load s1,3
+			jump            $

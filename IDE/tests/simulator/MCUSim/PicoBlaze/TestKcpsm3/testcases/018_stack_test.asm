@@ -3,9 +3,26 @@
 
 ; --------------------
 start:
-        ;; step 8
-        ;; PC == 0
-        ;; stack[0] == 0
+        ;; step 
+        ;; PC == 3
+        ;; stack[0] == 1
+        ;; step
+        ;; pc == 5
+        ;; stack[1] == 4
+        ;; step
+        ;; pc == 7
+        ;; stack[2] == 6
+        ;; step
+        ;; pc == 6
+        ;; step
+        ;; pc == 4
+        ;; step
+        ;; pc == 1
+        ;; step
+        ;; pc == 8
+        ;; step
+        ;; pc == 2
+        
        call ahoj
        call sss
        jump start
