@@ -5,15 +5,15 @@ org     0
 
 start:
 
-         ;;      flag[ie] == true
+        ;;      flag[ie] == false
         ;;      step
         ;;      reg[0] == 10
         ;;      interrupt
-        ;;      flag[ie] == true
+        ;;      flag[ie] == false
         ;;       pc == 1
         LOAD    S0, #10
-        ;; step
-        ;; pc == 2
+        ;; step 2
+        ;; pc == 1
         ;; flag[ie] == true
         ENABLE INTERRUPT  
         ;; step
