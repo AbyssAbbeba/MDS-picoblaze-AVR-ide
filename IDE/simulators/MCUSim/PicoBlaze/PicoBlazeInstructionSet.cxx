@@ -114,6 +114,11 @@ int PicoBlazeInstructionSet::incrPc ( const int val )
 
 void PicoBlazeInstructionSet::irq()
 {
+    if ( false == m_statusFlags->getInte() )
+    {
+        logEvent ( EVENT_CPU_WRN_IRQ_DENIED, m_pc );
+        return;
+    }
     if ( m_statusFlags->getInterrupted() > 0 )
     {
         logEvent ( EVENT_CPU_WRN_INVALID_IRQ, m_pc );
