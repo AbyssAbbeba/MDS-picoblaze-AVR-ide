@@ -5,24 +5,24 @@ org     0
 
 start:
 
-         ;;      flag[ie] == true
+        ;;      flag[ie] == false
         ;;      step
         ;;      reg[0] == 10
         ;;      interrupt
-        ;;      flag[ie] == true
+        ;;      flag[ie] == false
         ;;       pc == 1
         LOAD    S0, #10
-        ;; step
-        ;; pc == 2
+        ;; step 2
+        ;; pc == 3
         ;; flag[ie] == true
         ENABLE INTERRUPT  
         ;; step
-        ;; reg[0] == 250
+        ;; reg[0] == 249
 WAIT:   LOAD    s0,#250
         ;; step
         ;; flag[ie] == true
         ;; interrupt
-        ;; pc == 4
+        ;; pc == 5
         SUB     s0,#1
         CMP     s0,#1
         jump    NZ,WAIT
