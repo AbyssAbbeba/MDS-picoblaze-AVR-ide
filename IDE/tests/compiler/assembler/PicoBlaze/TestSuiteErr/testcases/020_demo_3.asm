@@ -74,10 +74,10 @@ ENDR ; end of repetion
 
 ; Directive REPT is able to repeatedly execute a block of code. 
 
-WHILE <expresion>
+#WHILE <expresion>
 <repeated code>
-ENDW ; end of while
-; The while construct consists of a block of code and an expresion.
+#ENDW ; end of #WHILE
+; The #WHILE construct consists of a block of code and an expresion.
 ; Following code is executed until expresion equals to zero.
 
 SKIP <expresion> ; expresion determines number of skipped lines of code 

@@ -1,5 +1,5 @@
 ; TEST CASE
-; testing run time directives, rtif rtfor, rtwhile
+; testing run time directives, rtif rtfor, rt#WHILE
 device kcpsm3
 org     0
 
@@ -9,72 +9,72 @@ start:
         ;; reg[0] == 10
         ;; reg[1] == 0
         
-        RT_IF   S0 == #10
+        IF   S0 == #10
             LOAD    S6,#00h
-        RT_ELSE
+        ELSE
             LOAD    S6,#ffh
-        RT_ENDIF
+        ENDIF
 
 ; ---------------------------------------------------
 ; allowed conditions
 ; == !=  <  >   <=  >=  &     !&
 
 
-        RT_IF           S0 != #10
+        IF           S0 != #10
             LOAD    S5,#5
-        RT_ELSE
+        ELSE
             LOAD    S6,#6
-        RT_ENDIF
+        ENDIF
 
         
 ;-----------------------------------------------------
 
-        RT_IF           S0 > #10
+        IF           S0 > #10
             LOAD    S5,#5
-        RT_ELSE
+        ELSE
             LOAD    S6,#6
-        RT_ENDIF
+        ENDIF
 
         
 ;-----------------------------------------------------
-        RT_IF           S0 < #10
+        IF           S0 < #10
                 
             LOAD    S5,#5
-        RT_ELSE
+        ELSE
             LOAD    S6,#6
-        RT_ENDIF
+        ENDIF
 
         
 ;--------------------------------------------------------
-        RT_IF           S0 >= #10
+        IF           S0 >= #10
             LOAD    S5,#5
-        RT_ELSE
+        ELSE
             LOAD    S6,#6
-        RT_ENDIF
+        ENDIF
 
         
 ;-------------------------------------------------------------
-        RT_IF           S0 <= #10
+        IF           S0 <= #10
             LOAD    S5,#5
-        RT_ELSE
+        ELSE
             LOAD    S6,#6
-        RT_ENDIF
+        ENDIF
 
         
 ;----------------------------------------------------------        
-        RT_IF           S0 & #10
+        IF           S0 & #10
             LOAD    S5,#5
-        RT_ELSE
+        ELSE
             LOAD    S6,#6
-        RT_ENDIF
+        ENDIF
 
         
 ;------------------------------------------------------------
-       RT_IF           S0 !& #10
+       IF           S0 !& #10
            LOAD    S5,#5
-       RT_ELSE
+       ELSE
            LOAD    S6,#6
-       RT_ENDIF
+       ENDIF
 
         
 ;-----------------------------------------------------------------
