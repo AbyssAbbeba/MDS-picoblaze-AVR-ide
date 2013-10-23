@@ -17,11 +17,11 @@ ram_pointer      SET     00h      ; Assign name to register 3
 shift   MACRO    reg0, reg1
 
         ; Increment / Decrement counter
-        if       inc_dec != 0
+        #IF       inc_dec != 0
                  inc     counter
-        else
+        #else
                  dec     counter
-        endif
+        #ENDIF
 
         ; Save registers to DATA memory (Scratch-pad ram with range 00h to 3Fh)
         STORE    s0, #ram_pointer + 1

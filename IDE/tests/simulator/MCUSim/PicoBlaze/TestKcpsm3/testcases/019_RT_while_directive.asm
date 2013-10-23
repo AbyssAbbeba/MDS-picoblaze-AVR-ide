@@ -11,62 +11,62 @@
 ; All these cycles has been manualy tested in MDS
                 
 start:          load    s0, #10
-                    RT_WHILE   S0 == #10
+                      WHILE   S0 == #10
                         SUB    S0,#1
-                    RT_ENDW
+                      ENDW
                         load s1,3
                         jump            $
 
                         ; good
 ;----------------------------------------------------------------
         
-        RT_WHILE   S0 != #10
+          WHILE   S0 != #10
             SUB    S0,#B
             B   SET     B-1
-        RT_ENDW
+          ENDW
 
         ; good
 ;---------------------------------------------------------------
 
-        RT_WHILE   S0 < #10
+          WHILE   S0 < #10
             LOAD    S0,#B
             B   SET     B-1
-        RT_ENDW
+          ENDW
 
         ; good
 
 ;--------------------------------------------------------------------
 
-        RT_WHILE   S0 > #10
+          WHILE   S0 > #10
             LOAD    S0,#B
             B   SET     B-1
-        RT_ENDW
+          ENDW
 
 ;----------------------------------------------------------------
 
-        RT_WHILE   S0 <= #10
+          WHILE   S0 <= #10
             LOAD    S0,#B
             B   SET     B-1
-        RT_ENDW
+          ENDW
 
 ;--------------------------------------------------------------
 
-        RT_WHILE   S0 >= #10
+          WHILE   S0 >= #10
             LOAD    S0,#B
             B   SET     B-1
-        RT_ENDW
+          ENDW
 
 ;-------------------------------------------------------------
 
-        RT_WHILE   S0 & #10
+          WHILE   S0 & #10
             LOAD    S0,#B
             B   SET     B-1
-        RT_ENDW
+          ENDW
         
 ; -----------------------------------------------------
 
-        RT_WHILE   S0 !& #10
+          WHILE   S0 !& #10
             LOAD    S0,#B
             B   SET     B-1
-        RT_ENDW
+          ENDW
 

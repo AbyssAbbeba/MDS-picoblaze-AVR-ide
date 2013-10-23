@@ -132,14 +132,14 @@ wait_100ms_i:       SUB       Temp1, #1
 ;-------------------------------------------------------------------------------------
 ; RX_resolve          MACRO     uart_byte
 ; 
-;                     RT_IF  uart_byte == #1
+;                     IF  uart_byte == #1
 ;                         REPT    8
 ;                         RR      LED_reg
 ;                         wait_for_100ms
 ;                         ENDR
 ;                             EXITM
 ; 
-;                     RT_ELSEIF      uart_byte == #2
+;                     ELSEIF      uart_byte == #2
 ;                         SendChar  'I'
 ;                         SendChar  'N'
 ;                         SendChar  'T'
@@ -151,7 +151,7 @@ wait_100ms_i:       SUB       Temp1, #1
 ;                         SendChar  'T'
 ;                         SendCRLF
 ;                             EXITM
-;                     RT_ENDIF
+;                     ENDIF
 ; 
 ;                     ENDM
 
