@@ -164,76 +164,76 @@ Start:
         ;-------------
 XYZ     MACRO   S0,S1,S2,S3,S4,S5,S6,S7,S8,S9,S9
         
-            IF      S0 = S1
+            #IF      S0 = S1
             EXITM
-            ENDIF
+            #ENDIF
         ENDM
 
 XYZ0    MACRO   S0
 
-            IF      S0 = S1
+            #IF      S0 = S1
             EXITM
-            ENDIF
+            #ENDIF
         ENDM
 
 XYZ1     MACRO   S0,S1
 
-            IF      S0 = S1
+            #IF      S0 = S1
             EXITM
-            ENDIF
+            #ENDIF
         ENDM
        
 XYZ2     MACRO   S0,S1,S2
 
-            IF      S0 = S1
+            #IF      S0 = S1
             EXITM
-            ENDIF
+            #ENDIF
         ENDM
 
 XYZ3     MACRO   S0,S1,S2,S3
 
-            IF      S0 = S1
+            #IF      S0 = S1
             EXITM
-            ENDIF
+            #ENDIF
         ENDM
 XYZ4     MACRO   S0,S1,S2,S3,S4
 
-            IF      S0 = S1
+            #IF      S0 = S1
             EXITM
-            ENDIF
+            #ENDIF
         ENDM
 XYZ5     MACRO   S0,S1,S2,S3,S4,S5
 
-            IF      S0 = S1
+            #IF      S0 = S1
             EXITM
-            ENDIF
+            #ENDIF
         ENDM
 XYZ6     MACRO   S0,S1,S2,S3,S4,S5,S6
 
-            IF      S0 = S1
+            #IF      S0 = S1
             EXITM
-            ENDIF
+            #ENDIF
         ENDM
 XYZ7     MACRO   S0,S1,S2,S3,S4,S5,S6,S7
 
-            IF      S0 = S1
+            #IF      S0 = S1
             EXITM
-            ENDIF
+            #ENDIF
         ENDM
 XYZ8     MACRO   S0,S1,S2,S3,S4,S5,S6,S7,S8
 
-            IF      S0 = S1
+            #IF      S0 = S1
             EXITM
-            ENDIF
+            #ENDIF
         ENDM
         
-        WHILE   M1 - M2 + M3 + M4
+        #WHILE   M1 - M2 + M3 + M4
         LOAD    I10,I10
         LOAD    I10,I10
         LOAD    I10,I10
         LOAD    I10,I10
         LOAD    I10,I10
-        ENDW
+        #ENDW
 
         END 
         5555BALBALBALABLABALA

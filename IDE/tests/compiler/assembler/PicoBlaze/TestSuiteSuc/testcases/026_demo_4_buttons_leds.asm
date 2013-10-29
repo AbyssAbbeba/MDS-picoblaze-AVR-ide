@@ -71,7 +71,7 @@ Snake_i:        OUTPUT          Snake,LEDs        ; Turn LEDs OFF
                 
 ; Blinks with LEDs for N times.                 
 ;--------------------------
-Blink_i:        WHILE   N
+Blink_i:        #WHILE   N
                 N       SET     N - 1           ; Blinks defined by N
 
                 OUTPUT          ON,LEDs         ; Turn LEDs ON          
@@ -79,7 +79,7 @@ Blink_i:        WHILE   N
                 OUTPUT          OFF,LEDs        ; Turn LEDs OFF
                 wait_for_100ms
                 
-                ENDW
+                #ENDW
                 RETURN
                 
 

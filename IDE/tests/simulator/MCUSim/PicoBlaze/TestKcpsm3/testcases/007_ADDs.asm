@@ -15,8 +15,8 @@ START:
 
         B       SET     5
         
-        WHILE   B
+        #WHILE   B
         B       SET     B-1
         ADD     S0,#1
-        ENDW
+        #ENDW
        

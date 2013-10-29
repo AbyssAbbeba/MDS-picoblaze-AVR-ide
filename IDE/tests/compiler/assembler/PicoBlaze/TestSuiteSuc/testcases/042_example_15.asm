@@ -254,7 +254,7 @@
                   ;
      mode_switch: XOR sD, FF                          ;toggle mode
                   STORE sD, mode
-wait_mode_switch: CALL delay_1ms                      ;keep shifting LCD display while waiting
+wait_mode_switch: CALL delay_1ms                      ;keep shifting LCD display #WHILE waiting
                   SUB sE, 01
                   SUBCY sF, 00
                   JUMP NC, wait_no_shift
