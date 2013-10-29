@@ -16,6 +16,9 @@
 #ifndef MSCRIPTSRCLOCATION_H
 #define MSCRIPTSRCLOCATION_H
 
+// Forward declarations.
+class MScriptBase;
+
 // MScript language interpreter header files.
 #include "MScriptSerializable.h"
 
@@ -66,9 +69,10 @@ class MScriptSrcLocation : public MScriptSerializable
     public:
         /**
          * @brief
+         * @param[in] core
          * @return
          */
-        std::string toString() const;
+        std::string toString ( const MScriptBase * core ) const;
 
         /**
          * @brief

@@ -101,7 +101,8 @@ class MScriptFuncTable
             Function ( std::vector<Parameter> * params,
                        MScriptStatement * code,
                        const MScriptSrcLocation & location,
-                       unsigned int argsRequired );
+                       unsigned int argsRequired,
+                       MScriptNamespaces::NsDesc * ns );
 
             /**
              * @brief
@@ -178,13 +179,17 @@ class MScriptFuncTable
         /**
          * @brief
          * @param[in] name
+         * @param[in] location
          * @param[in] argc
-         * @param[out] location
+         * @param[out] defLocation
+         * @param[in] exactNsMatch
          * @return
          */
         bool isDefined ( const std::string & name,
+                         const MScriptSrcLocation & location,
                          int argc = -1,
-                         MScriptSrcLocation * location = NULL ) const;
+                         MScriptSrcLocation * defLocation = NULL,
+                         bool exactNsMatch = false ) const;
 
         /**
          * @brief

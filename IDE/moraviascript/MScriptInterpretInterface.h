@@ -45,6 +45,21 @@ class MScriptInterpretInterface
         virtual void interpreterMessage ( const MScriptSrcLocation & location,
                                           MScriptBase::MessageType type,
                                           const std::string & text ) = 0;
+
+        /**
+         * @brief
+         * @param[in] location
+         * @param[in] fileName
+         * @return
+         */
+        virtual MScriptStatement * include ( const MScriptSrcLocation & location,
+                                             const std::string & fileName ) = 0;
+
+        /**
+         * @brief
+         * @return
+         */
+        virtual MScriptBase * getCoreBase() = 0;
 };
 
 #endif // MSCRIPTINTERPRETINTERFACE_H

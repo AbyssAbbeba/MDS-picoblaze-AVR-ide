@@ -103,7 +103,8 @@ MScriptStatement * MScriptStatement::createBranch ( MScriptStatement * branch )
         return this;
     }
 
-    m_branch = branch->first();
+    m_branch = new MScriptStatement();
+    m_branch->appendLink(branch);
     return this;
 }
 

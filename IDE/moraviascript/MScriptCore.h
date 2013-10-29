@@ -17,6 +17,7 @@
 #define MSCRIPTCORE_H
 
 // Forward declarations.
+class MScriptExpr;
 class MScriptStrategy;
 class MScriptStatement;
 
@@ -55,7 +56,8 @@ class MScriptCore : protected MScriptBase,
          * @param[in,out] sourceFile
          */
         MScriptCore ( MScriptStrategy * strategy,
-                      FILE * sourceFile );
+                      FILE * sourceFile,
+                      const std::string & fileName );
 
         /**
          * @brief
@@ -74,9 +76,11 @@ class MScriptCore : protected MScriptBase,
         /**
          * @brief
          * @param[in,out] sourceFile
+         * @param[in] fileName
          * @return
          */
-        bool loadScript ( FILE * sourceFile );
+        bool loadScript ( FILE * sourceFile,
+                          const std::string & fileName );
 
         /**
          * @brief
@@ -108,6 +112,38 @@ class MScriptCore : protected MScriptBase,
 
     ////    Private Operations    ////
     private:
+        /**
+         * @brief
+         * @param[in,out] file
+         * @return
+         */
+        bool loadFile ( FILE * file );
+
+        /**
+         * @brief
+         * @param[in,out] code
+         * @param[in] fileNumber
+         * @return
+         */
+        void rewriteFileNumbers ( MScriptStatement * code,
+                                  int fileNumber ) const;
+
+        /**
+         * @brief
+         * @param[in,out] expr
+         * @param[in] fileNumber
+         * @return
+         */
+        void rewriteFileNumbers ( MScriptExpr * expr,
+                                  int fileNumber ) const;
+
+        /**
+         * @brief
+         * @param[in] fileName
+         * @return
+         */
+        int getFileNumber ( const std::string & fileName );
+
         /**
          * @brief
          * @param[in,out] codeTree
@@ -144,6 +180,21 @@ class MScriptCore : protected MScriptBase,
                                           MScriptBase::MessageType type,
                                           const std::string & text );
 
+        /**
+         * @brief
+         * @param[in] location
+         * @param[in] fileName
+         * @return
+         */
+        virtual MScriptStatement * include ( const MScriptSrcLocation & location,
+                                             const std::string & fileName );
+
+        /**
+         * @brief
+         * @return
+         */
+        virtual MScriptBase * getCoreBase();
+
     ////    Private Attributes    ////
     private:
         /// @brief
@@ -153,7 +204,13 @@ class MScriptCore : protected MScriptBase,
         MScriptStatement * m_codeTree;
 
         /// @brief
+        MScriptStatement * m_includedCode;
+
+        /// @brief
         std::vector<std::string> m_messages;
+
+        /// @brief
+        std::vector<std::string> m_files;
 
         /// @brief
         bool m_success;

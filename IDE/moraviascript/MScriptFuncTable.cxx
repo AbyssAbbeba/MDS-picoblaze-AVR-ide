@@ -21,7 +21,7 @@
 #include "MScriptNamespaces.h"
 #include "MScriptInterpretInterface.h"
 
-// Used for i18n only
+// Used for i18n only.
 #include <QObject>
 
 MScriptFuncTable::Parameter::Parameter()
@@ -52,12 +52,13 @@ MScriptFuncTable::Parameter::Parameter ( const char * name,
 MScriptFuncTable::Function::Function ( std::vector<Parameter> * params,
                                        MScriptStatement * code,
                                        const MScriptSrcLocation & location,
-                                       unsigned int argsRequired )
+                                       unsigned int argsRequired,
+                                       MScriptNamespaces::NsDesc * ns )
 {
     m_params       = params;
     m_code         = code;
     m_location     = location;
-//     m_ns           = ns;
+    m_ns           = ns;
     m_argsRequired = argsRequired;
 }
 
@@ -93,6 +94,8 @@ void MScriptFuncTable::define ( const std::string & name,
                                 MScriptStatement * code )
 {
     unsigned int defaults = 0;
+    std::string bareId;
+    MScriptNamespaces::NsDesc * ns = m_namespaces->analyseId ( name, bareId, &location );
 
     for ( std::vector<Parameter>::const_iterator p = params->cbegin();
           p != params->cend();
@@ -105,7 +108,7 @@ void MScriptFuncTable::define ( const std::string & name,
                 m_interpret->interpreterMessage ( location,
                                                   MScriptBase::MT_ERROR,
                                                   QObject::tr ( "parameter `%1' has to have default value "
-                                                                "(because one of preceding parameters has).")
+                                                                "(because some of the preceding parameters have).")
                                                                . arg ( p->m_name.c_str() )
                                                                . toStdString() );
                 return;
@@ -120,116 +123,162 @@ void MScriptFuncTable::define ( const std::string & name,
     unsigned int argsRequired = params->size() - defaults;
     MScriptSrcLocation prevDefLoc;
 
-    if ( true == isDefined(name, argsRequired, &prevDefLoc) )
+    if ( true == isDefined(name, location, argsRequired, &prevDefLoc, true) )
     {
         if ( location == prevDefLoc )
         {
             m_interpret->interpreterMessage ( location,
                                               MScriptBase::MT_ERROR,
-                                              QObject::tr("exactly this function was already defined").toStdString());
+                                              QObject::tr ( "exactly this function has already been defined" )
+                                                          . toStdString() );
         }
         else
         {
-            const std::string prevDefLocStr = prevDefLoc.toString();
+            const std::string prevDefLocStr = prevDefLoc.toString(m_interpret->getCoreBase());
             m_interpret->interpreterMessage ( location,
                                               MScriptBase::MT_ERROR,
                                               QObject::tr ( "ambiguous function overload, overlaps with `%1' declared "
-                                                            "at %2" )
-                                                          . arg ( name.c_str() )
+                                                            "at %3" )
+                                                          . arg ( bareId.c_str() )
+                                                          . arg ( prevDefLocStr.c_str() )
+                                                          . toStdString() );
+        }
+        return;
+    }
+
+    if ( true == isDefined(name, location) )
+    {
+        if ( true == isDefined(name, location, -1, &prevDefLoc, true) )
+        {
+            const std::string prevDefLocStr = prevDefLoc.toString(m_interpret->getCoreBase());
+            m_interpret->interpreterMessage ( location,
+                                              MScriptBase::MT_REMARK,
+                                              QObject::tr ( "overloading function `%1' declared at %3" )
+                                                          . arg ( bareId.c_str() )
+                                                          . arg ( prevDefLocStr.c_str() )
+                                                          . toStdString() );
+        }
+        else if ( true == isDefined(name, location, argsRequired, &prevDefLoc) )
+        {
+            const std::string prevDefLocStr = prevDefLoc.toString(m_interpret->getCoreBase());
+            m_interpret->interpreterMessage ( location,
+                                              MScriptBase::MT_WARNING,
+                                              QObject::tr ( "redefining function `%1' for namespace `%2', function "
+                                                            " declared at %3 will be eclipsed in this namespace" )
+                                                          . arg ( bareId.c_str() )
+                                                          . arg ( ns->toString().c_str() )
+                                                          . arg ( prevDefLocStr.c_str() )
+                                                          . toStdString() );
+        }
+        else if ( true == isDefined(name, location, -1, &prevDefLoc) )
+        {
+            const std::string prevDefLocStr = prevDefLoc.toString(m_interpret->getCoreBase());
+            m_interpret->interpreterMessage ( location,
+                                              MScriptBase::MT_REMARK,
+                                              QObject::tr ( "this function definition overloads another function "
+                                                            "declared in antother namespace, orignal function "
+                                                            "declaration at `%1'" )
                                                           . arg ( prevDefLocStr.c_str() )
                                                           . toStdString() );
         }
     }
-    else if ( true == isDefined(name, -1, &prevDefLoc) )
-    {
-        const std::string prevDefLocStr = prevDefLoc.toString();
-        m_interpret->interpreterMessage ( location,
-                                          MScriptBase::MT_REMARK,
-                                          QObject::tr ( "overloading function `%1' declared at %2" )
-                                                      . arg ( name.c_str() )
-                                                      . arg ( prevDefLocStr.c_str() )
-                                                      . toStdString() );
-    }
-    else
-    {
-        m_funcTable.insert ( std::make_pair ( name, Function ( params,
-                                                               code,
-                                                               location,
-                                                               argsRequired ) ) );
-    }
+
+    m_funcTable.insert ( std::make_pair ( name, Function ( params, code, location, argsRequired, ns ) ) );
 }
 
 bool MScriptFuncTable::undefine ( const std::string & name,
                                   const MScriptSrcLocation & location )
 {
-    FuncMultimap::iterator it = m_funcTable.find(name);
+    std::string bareId;
+    const MScriptNamespaces::NsDesc * ns = m_namespaces->analyseId ( name, bareId, &location );
+    std::pair<FuncMultimap::iterator,FuncMultimap::iterator> range = m_funcTable.equal_range(bareId);
+    bool result = false;
 
-    if ( m_funcTable.end() == it )
+    for ( FuncMultimap::iterator i = range.first;
+          i != range.second;
+          i++ )
+    {
+        if ( ns == i->second.m_ns )
+        {
+            result = true;
+            m_funcTable.erase(i);
+        }
+    }
+
+    if ( false == result  )
     {
         m_interpret->interpreterMessage ( location,
                                           MScriptBase::MT_ERROR,
-                                          QObject::tr ( "function `%1' has not been defined (cannot delete "
-                                                        "nonexistent function)" ) . arg ( name.c_str() )
-                                                                                  . toStdString() );
-        return false;
+                                          QObject::tr ( "function `%1' in namespace `%2' has not been defined "
+                                                        "(cannot delete nonexistent function)" )
+                                                      . arg ( name.c_str() )
+                                                      . arg ( ns->toString().c_str() )
+                                                      . toStdString() );
     }
-    else
-    {
-        while ( m_funcTable.end() == it )
-        {
-            m_funcTable.erase(it);
-            it = m_funcTable.find(name);
-        }
-        return true;
-    }
+    return result;
 }
 
 bool MScriptFuncTable::isDefined ( const std::string & name,
+                                   const MScriptSrcLocation & location,
                                    int argc,
-                                   MScriptSrcLocation * location ) const
+                                   MScriptSrcLocation * defLocation,
+                                   bool exactNsMatch ) const
 {
-    FuncMultimap::const_iterator it = m_funcTable.find(name);
+    std::string bareId;
+    const MScriptNamespaces::NsDesc * ns = m_namespaces->analyseId ( name, bareId, &location );
 
-    if ( m_funcTable.end() == it )
+    if ( m_funcTable.cend() == m_funcTable.find(bareId) )
     {
         return false;
     }
 
-    if ( -1 == argc )
+    std::pair<FuncMultimap::const_iterator,FuncMultimap::const_iterator> range = m_funcTable.equal_range(bareId);
+    for ( FuncMultimap::const_iterator i = range.first;
+          i != range.second;
+          i++ )
     {
-        if ( NULL != location )
+        if ( true == exactNsMatch )
         {
-            *location = it->second.m_location;
-        }
-        return true;
-    }
-    else
-    {
-        if ( (unsigned int) argc >= it->second.m_argsRequired && (size_t) argc <= it->second.m_params->size() )
-        {
-            return true;
-        }
-
-        std::pair<FuncMultimap::const_iterator,FuncMultimap::const_iterator> range = m_funcTable.equal_range(name);
-        for ( FuncMultimap::const_iterator i = range.first;
-              i != range.second;
-              i++ )
-        {
-            if ( (unsigned int) argc >= i->second.m_argsRequired && (size_t) argc <= i->second.m_params->size() )
+            if ( ns != i->second.m_ns )
             {
-                return true;
+                continue;
             }
         }
+        else if ( -1 == ns->inheritsFrom ( i->second.m_ns ) )
+        {
+            continue;
+        }
 
-        return false;
+        if (
+               ( -1 == argc )
+                   ||
+               (
+                   ( (unsigned int) argc >= i->second.m_argsRequired )
+                       &&
+                   ( (size_t) argc <= i->second.m_params->size() )
+               )
+           )
+        {
+            if ( NULL != defLocation )
+            {
+                *defLocation = i->second.m_location;
+            }
+
+            return true;
+        }
     }
+
+    return false;
 }
 
 MScriptFuncTable::Function * MScriptFuncTable::get ( const std::string & name,
                                                      const MScriptSrcLocation & location,
                                                      std::vector<MScriptValue> & arguments )
 {
-    std::pair<FuncMultimap::const_iterator,FuncMultimap::const_iterator> range = m_funcTable.equal_range(name);
+    std::string bareId;
+    const MScriptNamespaces::NsDesc * ns = m_namespaces->analyseId ( name, bareId, &location );
+    std::pair<FuncMultimap::const_iterator,FuncMultimap::const_iterator> range = m_funcTable.equal_range(bareId);
+    std::pair<int,FuncMultimap::const_iterator> availability = std::make_pair(-1, range.first);
     size_t argc = arguments.size();
 
     for ( FuncMultimap::const_iterator i = range.first;
@@ -238,33 +287,50 @@ MScriptFuncTable::Function * MScriptFuncTable::get ( const std::string & name,
     {
         if ( argc >= i->second.m_argsRequired && argc <= i->second.m_params->size() )
         {
-            Function * result = new Function(i->second);
-
-            for ( size_t a = 0; a < arguments.size(); a++ )
+            int avb = ns->inheritsFrom ( i->second.m_ns );
+            if (
+                   ( -1 == availability.first )
+                       ||
+                   ( -1 != avb && avb < availability.first )
+               )
             {
-                result->m_params->at(a).m_value = &(arguments[a]);
+                availability.first = avb;
+                availability.second = i;
             }
-
-            return result;
         }
     }
 
-    if ( false == isDefined(name) )
+    if ( -1 != availability.first )
+    {
+        Function * result = new Function(availability.second->second);
+
+        for ( size_t a = 0; a < arguments.size(); a++ )
+        {
+            result->m_params->at(a).m_value = &(arguments[a]);
+        }
+
+        return result;
+    }
+
+    if ( false == isDefined(name, location) )
     {
         m_interpret->interpreterMessage ( location,
                                           MScriptBase::MT_ERROR,
-                                          QObject::tr ( "function `%1' has not been defined" )
-                                                      . arg ( name.c_str() )
+                                          QObject::tr ( "function `%1' in namespace `%2' has not been defined" )
+                                                      . arg ( bareId.c_str() )
+                                                      . arg ( ns->toString().c_str() )
                                                       . toStdString() );
     }
     else
     {
         m_interpret->interpreterMessage ( location,
                                           MScriptBase::MT_ERROR,
-                                          QObject::tr ( "function `%1' has not been defined for the given number of "
-                                                        "arguments (%2)" ) . arg ( name.c_str() )
-                                                                           . arg ( argc )
-                                                                           . toStdString() );
+                                          QObject::tr ( "function `%1' in namespace `%2' has not been defined for "
+                                                        "the given number of arguments (%2)" )
+                                                      . arg ( bareId.c_str() )
+                                                      . arg ( ns->toString().c_str() )
+                                                      . arg ( argc )
+                                                      . toStdString() );
     }
 
     return NULL;
@@ -329,8 +395,8 @@ std::ostream & operator << ( std::ostream & out,
           f++ )
     {
         out << sepLine0 << std::endl;
-        out << f->first << "(" << f->second.m_params << ")" << std::endl;
-        out << "    declared at: " << f->second.m_location.toString() << std::endl;
+        out << f->second.m_ns << f->first << "(" << f->second.m_params << ")" << std::endl;
+        out << "    defined at: " << f->second.m_location.toString(table.m_interpret->getCoreBase()) << std::endl;
         out << "    required arguments: " << f->second.m_argsRequired << std::endl;
         out << sepLine1 << std::endl;
         out << f->second.m_code << std::endl;

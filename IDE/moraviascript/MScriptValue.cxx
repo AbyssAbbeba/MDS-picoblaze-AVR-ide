@@ -243,7 +243,7 @@ bool MScriptValue::toBool ( MScriptInterpretInterface * interpret,
         case MScriptValue::TYPE_STRING:
             return ( 0 != m_data.m_string.m_size );
         case MScriptValue::TYPE_FLOAT:
-            return ( ( true == std::isnormal(m_data.m_float) ) && ( 0 != m_data.m_float ) );
+            return ( ( 0 != m_data.m_float ) && ( false == ::isnan(m_data.m_float) ) );
         case MScriptValue::TYPE_EXPR:
         case MScriptValue::TYPE_EMPTY:
         case MScriptValue::TYPE_SYMBOL:

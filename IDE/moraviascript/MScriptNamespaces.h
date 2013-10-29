@@ -77,13 +77,6 @@ class MScriptNamespaces
                 void clear();
 
                 /**
-                 * @brief Check whether this namespace conatins the namespace given as argument.
-                 * @param[in] ns
-                 * @return
-                 */
-                bool constains ( const NsDesc * ns ) const;
-
-                /**
                  * @brief
                  * @param[in,out]
                  * @param[in] level
@@ -92,6 +85,26 @@ class MScriptNamespaces
                 void print ( std::ostream & out,
                              int level = 0,
                              std::string lineString =  "1" ) const;
+
+                /**
+                 * @brief
+                 * @return
+                 */
+                std::string toString() const;
+
+                /**
+                 * @brief
+                 * @param[in] name
+                 * @return
+                 */
+                NsDesc * getChildByName ( const std::string & name ) const;
+
+                /**
+                 * @brief
+                 * @param[in] ns
+                 * @return
+                 */
+                int inheritsFrom ( const NsDesc * ns ) const;
 
             ////    Public Attributes    ////
             public:
@@ -127,17 +140,17 @@ class MScriptNamespaces
          * @brief
          * @param[in] location
          * @param[in] ns
+         * @return
          */
-        void define ( const MScriptSrcLocation & location,
-                      const std::string & ns );
+        NsDesc * define ( const MScriptSrcLocation & location,
+                          const std::string & ns );
 
         /**
          * @brief
          * @param[in] location
          * @param[in,out] ns
          */
-        void enter ( const MScriptSrcLocation & location,
-                     NsDesc * ns );
+        void enter ( NsDesc * ns );
 
         /**
          * @brief
@@ -159,6 +172,17 @@ class MScriptNamespaces
         NsDesc * current() const;
 
         /**
+         * @brief Determinate namespace and ID without namespace specification(s) from general ID.
+         * @param[in] id
+         * @param[out] bareId
+         * @param[in] location
+         * @return Namespace descriptor; or NULL, if determination was not possible.
+         */
+        NsDesc * analyseId ( const std::string & id,
+                             std::string & bareId,
+                             const MScriptSrcLocation * location = NULL ) const;
+
+        /**
          * @brief
          */
         void clear();
@@ -172,7 +196,7 @@ class MScriptNamespaces
         std::vector<NsDesc*> m_current;
 
         /// @brief
-        NsDesc * m_ns;
+        NsDesc * m_rootNs;
 };
 
 /// @name Tracing operators.
