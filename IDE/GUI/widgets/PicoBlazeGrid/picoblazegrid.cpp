@@ -193,7 +193,7 @@ void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason,
     qDebug() << "PicoBlazeGrid: event";
     if (MCUSimSubsys::ID_CPU == subsysId)
     {
-        qDebug() << "PicoBlazeGrid: ID_CPU event";
+        //qDebug() << "PicoBlazeGrid: ID_CPU event";
         switch ( eventId )
         {
             case MCUSimCPU::EVENT_CPU_PC_CHANGED:
@@ -223,7 +223,7 @@ void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason,
     }
     else if (MCUSimSubsys::ID_PLIO == subsysId)
     {
-        qDebug() << "PicoBlazeGrid: ID_PLIO event";
+        //qDebug() << "PicoBlazeGrid: ID_PLIO event";
         switch ( eventId )
         {
             case MCUSimPureLogicIO::EVENT_PLIO_WRITE:
@@ -255,12 +255,12 @@ void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason,
     }
     else if (MCUSimSubsys::ID_FLAGS == subsysId)
     {
-        qDebug() << "PicoBlazeGrid: ID_FLAGS event";
+        //qDebug() << "PicoBlazeGrid: ID_FLAGS event";
         switch ( eventId )
         {
             case PicoBlazeStatusFlags::EVENT_FLAGS_Z_CHANGED:
             {
-                qDebug() << "PicoBlazeGrid: EVENT_FLAGS_Z_CHANGED";
+                //qDebug() << "PicoBlazeGrid: EVENT_FLAGS_Z_CHANGED";
                 if (detail == 0)
                 {
                     this->btnZero->setStyleSheet("color: none");
@@ -273,7 +273,7 @@ void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason,
             }
             case PicoBlazeStatusFlags::EVENT_FLAGS_C_CHANGED:
             {
-                qDebug() << "PicoBlazeGrid: EVENT_FLAGS_C_CHANGED";
+                //qDebug() << "PicoBlazeGrid: EVENT_FLAGS_C_CHANGED";
                 if (detail == 0)
                 {
                     this->btnCarry->setStyleSheet("color: none");
