@@ -25,6 +25,7 @@ MScriptVariable::MScriptVariable ( const MScriptVariable & obj )
 {
     m_location = obj.m_location;
     m_flags = obj.m_flags;
+    m_ns = obj.m_ns;
 
     if ( m_flags & FLAG_ARRAY )
     {

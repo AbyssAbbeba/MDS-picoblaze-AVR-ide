@@ -27,7 +27,7 @@
 #include <cstring>
 #include <cstdlib>
 
-// Used for i18n only
+// Used for i18n only.
 #include <QObject>
 
 
@@ -60,14 +60,33 @@ bool MScriptVarTable::remove ( const std::string & variable,
                                const Index * index )
 {
     bool result = false;
+    std::string bareId;
+    const MScriptNamespaces::NsDesc * ns = m_namespaces->analyseId ( variable, bareId, &location );
 
     for ( std::vector<VarTable>::reverse_iterator varTab = m_varTables.rbegin();
           varTab != m_varTables.rend();
           varTab++ )
     {
-        VarTable::iterator var = varTab->find(variable);
+        std::pair<VarTable::iterator,VarTable::iterator> range = varTab->equal_range(bareId);
+        std::pair<int,VarTable::iterator> availability = std::make_pair(-1, range.first);
 
-        if ( varTab->end() == var )
+        for ( VarTable::iterator i = range.first;
+              i != range.second;
+              i++ )
+        {
+            int avb = ns->inheritsFrom ( i->second.m_ns );
+            if (
+                   ( -1 == availability.first )
+                       ||
+                   ( -1 != avb && avb < availability.first )
+               )
+            {
+                availability.first = avb;
+                availability.second = i;
+            }
+        }
+
+        if ( -1 == availability.first )
         {
             continue;
         }
@@ -76,7 +95,7 @@ bool MScriptVarTable::remove ( const std::string & variable,
         {
             if ( NULL == index )
             {
-                varTab->erase(var);
+                varTab->erase(availability.second);
             }
             else
             {
@@ -91,7 +110,8 @@ bool MScriptVarTable::remove ( const std::string & variable,
         }
         else
         {
-            const std::string eclipsedVarLoc = var->second.m_location.toString();
+            const std::string eclipsedVarLoc = availability.second ->
+                                               second.m_location.toString ( m_interpret->getCoreBase() );
             m_interpret->interpreterMessage ( location,
                                               MScriptBase::MT_WARNING,
                                               QObject::tr ( "variable with the same name (`%1') has also been "
@@ -120,7 +140,9 @@ void MScriptVarTable::declare ( const std::string & variable,
                                 MScriptVariable::Flags flags,
                                 unsigned int dimensions )
 {
-    VarTable::iterator var = m_varTables.back().find(variable);
+    std::string bareId;
+    MScriptNamespaces::NsDesc * ns = m_namespaces->analyseId ( variable, bareId, &location );
+    VarTable::iterator var = m_varTables.back().find(bareId);
 
     if ( m_varTables.back().end() == var )
     {
@@ -128,40 +150,42 @@ void MScriptVarTable::declare ( const std::string & variable,
          * Variable has not yet been declared.
          */
 
-        const MScriptSrcLocation * varLoc = getLocation(variable);
+        const MScriptSrcLocation * varLoc = getLocation(bareId);
         if ( NULL != varLoc )
         {
             m_interpret->interpreterMessage ( location,
                                               MScriptBase::MT_WARNING,
                                               QObject::tr ( "this declaration eclipses variable `%1' declated at %2" )
-                                                          . arg ( variable.c_str() )
-                                                          . arg ( varLoc->toString().c_str() )
+                                                          . arg ( bareId.c_str() )
+                                                          . arg ( varLoc->toString(m_interpret->getCoreBase()).c_str() )
                                                           . toStdString() );
         }
 
-        m_varTables.back().insert(std::make_pair(variable, MScriptVariable()));
+        MScriptVariable varObject;
 
-        var = m_varTables.back().find(variable);
-        var->second.m_flags = flags;
-        var->second.m_location = location;
+        varObject.m_flags = flags;
+        varObject.m_location = location;
+        varObject.m_ns = ns;
 
         if ( MScriptVariable::FLAG_ARRAY & flags )
         {
             if ( MScriptVariable::FLAG_HASH & flags )
             {
-                var->second.m_value.m_hash = new std::map<std::string,MScriptVariable>();
+                varObject.m_value.m_hash = new std::map<std::string,MScriptVariable>();
             }
             else
             {
-                var->second.m_value.m_array = new std::vector<MScriptVariable>;
+                varObject.m_value.m_array = new std::vector<MScriptVariable>;
             }
 
             return;
         }
         else
         {
-            var->second.m_value.m_scalar = MScriptValue();
+            varObject.m_value.m_scalar = MScriptValue();
         }
+
+        m_varTables.back().insert(std::make_pair(bareId, varObject));
     }
     else if ( var->second.m_flags != flags )
     {
@@ -169,12 +193,12 @@ void MScriptVarTable::declare ( const std::string & variable,
          * Variable has already been declared.
          */
 
-        const std::string varLocation = var->second.m_location.toString();
+        const std::string varLocation = var->second.m_location.toString(m_interpret->getCoreBase());
         m_interpret->interpreterMessage ( location,
                                           MScriptBase::MT_ERROR,
                                           QObject::tr ( "variable `%1' has been already be declared at %2 as %3, "
                                                         "cannot redeclare as %4" )
-                                                      . arg ( variable.c_str() )
+                                                      . arg ( bareId.c_str() )
                                                       . arg ( varLocation.c_str() )
                                                       . arg ( flags2Str(var->second.m_flags).c_str() )
                                                       . arg ( flags2Str(flags).c_str() )
@@ -197,7 +221,7 @@ void MScriptVarTable::assign ( const std::string & variable,
             // Assigning value to a constant.
             if ( MScriptValue::TYPE_EMPTY != var->m_type )
             {
-                const std::string varLocation = getLocation(variable)->toString();
+                const std::string varLocation = getLocation(variable)->toString(m_interpret->getCoreBase());
                 m_interpret->interpreterMessage ( location,
                                                   MScriptBase::MT_ERROR,
                                                   QObject::tr ( "attempting to reassign a constant, `%1' has been "
@@ -437,31 +461,48 @@ inline MScriptVariable * MScriptVarTable::rawAccess ( const std::string & variab
                                                       int * level )
 {
     int enteredLevel = 0;
+    std::string bareId;
+    const MScriptNamespaces::NsDesc * ns = m_namespaces->analyseId ( variable, bareId );
 
     for ( std::vector<VarTable>::reverse_iterator varTab = m_varTables.rbegin();
           varTab != m_varTables.rend();
           varTab++, enteredLevel++ )
     {
-        VarTable::iterator var = varTab->find(variable);
+        std::pair<VarTable::iterator,VarTable::iterator> range = varTab->equal_range(bareId);
+        std::pair<int,VarTable::iterator> availability = std::make_pair(-1, range.first);
 
-        if ( varTab->cend() == var )
+        for ( VarTable::iterator i = range.first;
+              i != range.second;
+              i++ )
         {
-            continue;
-        }
-
-        if ( NULL != level )
-        {
-            if ( -1 != *level )
+            int avb = ns->inheritsFrom ( i->second.m_ns );
+            if (
+                   ( -1 == availability.first )
+                       ||
+                   ( -1 != avb && avb < availability.first )
+               )
             {
-                if ( enteredLevel != *level )
-                {
-                    continue;
-                }
+                availability.first = avb;
+                availability.second = i;
             }
-            *level = enteredLevel;
         }
 
-        return &(var->second);
+        if ( -1 != availability.first )
+        {
+            if ( NULL != level )
+            {
+                if ( -1 != *level )
+                {
+                    if ( enteredLevel != *level )
+                    {
+                        continue;
+                    }
+                }
+                *level = enteredLevel;
+            }
+
+            return &(availability.second->second);
+        }
     }
 
     return NULL;

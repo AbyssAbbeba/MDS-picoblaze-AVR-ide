@@ -374,13 +374,23 @@ CompilerStatement * AsmPicoBlazeSpecialMacros::evaluateCondition ( const Compile
                 {
                     // <DIRECT> <OPERATOR> <DIRECT>
                     result = compare_sx_sy(cndVal[0].m_val, cndVal[1].m_val);
-                    result->appendLink(jump(label, JC_C));
                 }
                 else
                 {
                     // <DIRECT> <OPERATOR> <IMMEDIATE>
                     result = compare_sx_kk(cndVal[0].m_val, cndVal[1].m_val);
+                }
+
+                if ( CompilerExpr::OPER_GE == cnd->oper() )
+                {
                     result->appendLink(jump(label, JC_C));
+                }
+                else
+                {
+                    result->appendLink ( new CompilerStatement ( CompilerSourceLocation(),
+                                                                 CompilerStatementTypes::ASMPICOBLAZE_INS_JUMP_Z_AAA,
+                                                                 new CompilerExpr ( "$", '+', 2 ) ) );
+                    result->appendLink(jump(label, JC_NC));
                 }
             }
             else
@@ -390,10 +400,17 @@ CompilerStatement * AsmPicoBlazeSpecialMacros::evaluateCondition ( const Compile
                 {
                     // <IMMEDIATE> <OPERATOR> <DIRECT>
                     result = compare_sx_kk(cndVal[1].m_val, cndVal[0].m_val);
-                    result->appendLink ( new CompilerStatement ( CompilerSourceLocation(),
-                                                                 CompilerStatementTypes::ASMPICOBLAZE_INS_JUMP_Z_AAA,
-                                                                 new CompilerExpr ( "$", '+', 2 ) ) );
-                    result->appendLink(jump(label, JC_NC));
+                    if ( CompilerExpr::OPER_GE == cnd->oper() )
+                    {
+                        result->appendLink ( new CompilerStatement ( CompilerSourceLocation(),
+                                                                     CompilerStatementTypes::ASMPICOBLAZE_INS_JUMP_Z_AAA,
+                                                                     new CompilerExpr ( "$", '+', 2 ) ) );
+                        result->appendLink(jump(label, JC_NC));
+                    }
+                    else
+                    {
+                        result->appendLink(jump(label, JC_C));
+                    }
                 }
                 else
                 {

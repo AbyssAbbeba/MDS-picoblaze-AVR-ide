@@ -527,6 +527,36 @@ class MScriptExprAlgebra
          */
         inline void undefinedOperation ( const MScriptSrcLocation & location );
 
+        /**
+         * @brief
+         * @param[in] location
+         * @param[in] value
+         */
+        inline void checkFloat ( const MScriptSrcLocation & location,
+                                 double value );
+
+        /**
+         * @brief
+         * @param[in] location
+         * @param[in] value
+         */
+        inline void checkComplex ( const MScriptSrcLocation & location,
+                                   const MScriptComplex & value );
+
+        /**
+         * @brief
+         * @param[in] location
+         * @param[in] a
+         * @param[in] b
+         * @param[in] c
+         * @param[in] addition
+         */
+        inline void checkSignOverflow ( const MScriptSrcLocation & location,
+                                        long long a,
+                                        long long b,
+                                        long long c,
+                                        bool addition );
+
     ////    Private Attributes    ////
     private:
         /// @brief

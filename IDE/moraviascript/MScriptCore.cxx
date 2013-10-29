@@ -19,6 +19,9 @@
 #include "moraviaScriptParser.h"
 #include "moraviaScriptLexer.h"
 
+// MScript language interpreter header files.
+#include "MScriptExpr.h"
+
 // Standard header files.
 #include <iostream>
 
@@ -36,11 +39,13 @@ MScriptCore::MScriptCore ( MScriptStrategy * strategy,
 }
 
 MScriptCore::MScriptCore ( MScriptStrategy * strategy,
-                           FILE * sourceFile )
-                         : m_strategy ( strategy )
+                           FILE * sourceFile,
+                           const std::string & fileName )
+                         :
+                           m_strategy ( strategy )
 {
     m_codeTree = NULL;
-    loadScript(sourceFile);
+    loadScript(sourceFile, fileName);
 }
 
 MScriptCore::~MScriptCore()
@@ -71,16 +76,19 @@ bool MScriptCore::loadScript ( const std::string & scriptCode )
     return m_success;
 }
 
-bool MScriptCore::loadScript ( FILE * sourceFile )
+bool MScriptCore::loadScript ( FILE * sourceFile,
+                               const std::string & fileName )
 {
     unloadScript();
+    m_files.push_back(fileName);
+    return loadFile(sourceFile);
+}
 
-    /*
-     * Initiate lexical and syntax analysis of the source code.
-     */
+bool MScriptCore::loadFile ( FILE * file )
+{
     yyscan_t yyscanner; // Pointer to the lexer context
     moraviaScriptLexer_lex_init_extra ( this, &yyscanner );
-    moraviaScriptLexer_set_in ( sourceFile, yyscanner );
+    moraviaScriptLexer_set_in ( file, yyscanner );
     if ( true == m_success )
     {
         moraviaScriptParser_parse ( yyscanner, this );
@@ -98,6 +106,7 @@ void MScriptCore::unloadScript()
         m_codeTree = NULL;
     }
     m_messages.clear();
+    m_files.clear();
     m_success = true;
 }
 
@@ -127,32 +136,126 @@ void MScriptCore::parserMessage ( const MScriptSrcLocation & location,
                                   MScriptBase::MessageType type,
                                   const std::string & text )
 {
-    m_messages.push_back(location.toString() + " " + msgTypeToStr(type) + ": " + text );
+    m_messages.push_back(location.toString(this) + " " + msgTypeToStr(type) + ": " + text );
+
+    if ( type == MT_ERROR )
+    {
+        throw MScriptRunTimeError();
+    }
 }
 
 void MScriptCore::lexerMessage ( const MScriptSrcLocation & location,
                                  MScriptBase::MessageType type,
                                  const std::string & text )
 {
-    m_messages.push_back(location.toString() + " " + msgTypeToStr(type) + ": " + text );
+    m_messages.push_back(location.toString(this) + " " + msgTypeToStr(type) + ": " + text );
 }
 
 void MScriptCore::interpreterMessage ( const MScriptSrcLocation & location,
                                        MScriptBase::MessageType type,
                                        const std::string & text )
 {
-    m_messages.push_back(location.toString() + " " + msgTypeToStr(type) + ": " + text );
+    m_messages.push_back(location.toString(this) + " " + msgTypeToStr(type) + ": " + text );
+}
+
+MScriptBase * MScriptCore::getCoreBase()
+{
+    return this;
 }
 
 void MScriptCore::syntaxAnalysisComplete ( MScriptStatement * codeTree )
 {
     if ( NULL != m_codeTree )
     {
-        m_codeTree->completeDelete();
+        m_includedCode = codeTree;
+        return;
     }
 
+    m_codeTree->completeDelete();
     m_codeTree = ( new MScriptStatement(MScriptSrcLocation(), MScriptStmtTypes::STMT_ROOT) ) -> appendLink ( codeTree );
     std::cout << m_codeTree;
 
     init(m_codeTree);
 }
+
+int MScriptCore::getFileNumber ( const std::string & fileName )
+{
+    int result = 0;
+    for ( std::vector<std::string>::const_iterator i = m_files.cbegin();
+          i != m_files.cend();
+          i++ )
+    {
+        if ( fileName == *i )
+        {
+            return result;
+        }
+        result++;
+    }
+
+    return -1;
+}
+
+void MScriptCore::rewriteFileNumbers ( MScriptStatement * code,
+                                       int fileNumber ) const
+{
+    for ( MScriptStatement * node = code;
+          NULL != node;
+          node = node->next() )
+    {
+        node->m_location.m_file = fileNumber;
+        if ( NULL != node->branch() )
+        {
+            rewriteFileNumbers ( node->branch(), fileNumber );
+        }
+
+        for ( MScriptExpr * arg = node->args();
+              NULL != arg;
+              arg = arg->next() )
+        {
+            rewriteFileNumbers ( arg, fileNumber );
+        }
+    }
+}
+
+void MScriptCore::rewriteFileNumbers ( MScriptExpr * expr,
+                                       int fileNumber ) const
+{
+    expr->m_location.m_file = fileNumber;
+
+    MScriptValue * value = &( expr->m_lValue );
+    for ( int i = 0; i < 2; i++ )
+    {
+        if ( MScriptValue::TYPE_EXPR == value->m_type )
+        {
+            rewriteFileNumbers ( value->m_data.m_expr, fileNumber );
+        }
+
+        value = &( expr->m_rValue );
+    }
+}
+
+MScriptStatement * MScriptCore::include ( const MScriptSrcLocation & location,
+                                          const std::string & fileName )
+{
+    int fileNumber = getFileNumber(fileName);
+    if ( -1 == fileNumber )
+    {
+        fileNumber = (int) m_files.size();
+        m_files.push_back(fileName);
+    }
+    FILE * file = fopen ( fileName.c_str(), "r" );
+    if ( NULL == file )
+    {
+        interpreterMessage ( location,
+                             MScriptBase::MT_ERROR,
+                             QObject::tr ( "unable to open file: `%1'" )
+                                         . arg ( fileName.c_str() )
+                                         . toStdString() );
+        return NULL;
+    }
+
+    loadFile(file);
+    rewriteFileNumbers(m_includedCode, fileNumber);
+    return m_includedCode;
+}
+

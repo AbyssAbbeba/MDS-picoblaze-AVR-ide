@@ -30,3 +30,17 @@ std::string MScriptBase::msgTypeToStr ( MessageType type ) const
 
     return "";
 }
+
+const std::string & MScriptBase::fileNumber2str ( int fileNumber ) const
+{
+    static const std::string emptyString;
+
+    if ( fileNumber < 0 || fileNumber >= (int) m_files.size() )
+    {
+        return emptyString;
+    }
+    else
+    {
+        return m_files[fileNumber];
+    }
+}

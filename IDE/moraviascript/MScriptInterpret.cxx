@@ -24,7 +24,7 @@
 #include "MScriptExprProcessor.h"
 #include "MScriptNamespaces.h"
 
-// Used for i18n only
+// Used for i18n only.
 #include <QObject>
 
 #include <iostream> // DEBUG
@@ -40,11 +40,11 @@ MScriptInterpret::MScriptInterpret()
 
 MScriptInterpret::~MScriptInterpret()
 {
+    delete m_namespaces;
     delete m_varTable;
     delete m_funcTable;
     delete m_exprSolver;
     delete m_exprProcessor;
-    delete m_namespaces;
 }
 
 void MScriptInterpret::init ( MScriptStatement * rootNode )
@@ -418,7 +418,7 @@ inline void MScriptInterpret::evalCall ( const MScriptStatement * node )
 
         MScriptFuncTable::Function * func = m_funcTable->get(name, node->location(), arguments);
 
-        m_namespaces->enter(node->location(), func->m_ns);
+        m_namespaces->enter(func->m_ns);
         setNextFlags ( FLAG_FUNCTION );
         addNext ( func->m_code );
 
@@ -517,7 +517,13 @@ inline void MScriptInterpret::evalNamespace ( const MScriptStatement * node )
 
 inline void MScriptInterpret::evalInclude ( const MScriptStatement * node )
 {
-    
+    const MScriptValue & arg = node->args()->lVal();
+    const std::string filename = std::string(arg.m_data.m_string.m_data, arg.m_data.m_string.m_size);
+
+    MScriptStatement * code = include ( node->location(), filename );
+    postprocessCode(code);
+
+    const_cast<MScriptStatement*>(node)->insertLink(code);
 }
 
 inline bool MScriptInterpret::abadonCode ( ExecFlags upTo,
@@ -570,10 +576,14 @@ bool MScriptInterpret::postprocessCode ( MScriptStatement * rootNode )
           node != NULL;
           node = node->next() )
     {
-//         if ( NULL != node->branch() )
-//         {
-//             postprocessCode(node->branch());
-//         }
+        if ( NULL != node->branch() )
+        {
+            postprocessCode(node->branch());
+            if ( NULL == node->branch()->next() )
+            {
+                node->m_branch = NULL;
+            }
+        }
 
         switch ( node->type() )
         {

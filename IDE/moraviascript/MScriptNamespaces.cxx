@@ -18,16 +18,19 @@
 // MScript language interpreter header files.
 #include "MScriptInterpretInterface.h"
 
+// Used for i18n only.
+#include <QObject>
+
 MScriptNamespaces::MScriptNamespaces ( MScriptInterpretInterface * interpret )
                                      : m_interpret ( interpret )
 {
-    m_ns = NULL;
+    m_rootNs = NULL;
     clear();
 }
 
 MScriptNamespaces::~MScriptNamespaces()
 {
-    delete m_ns;
+    delete m_rootNs;
 }
 
 MScriptNamespaces::NsDesc::~NsDesc()
@@ -45,49 +48,118 @@ void MScriptNamespaces::NsDesc::clear()
     }
 }
 
-bool MScriptNamespaces::NsDesc::constains ( const NsDesc * ns ) const
-{
-    if ( ns == this )
-    {
-        return true;
-    }
-
-    for ( std::vector<NsDesc*>::const_iterator it = m_contains.cbegin();
-          it != m_contains.cend();
-          it++ )
-    {
-        if ( true == (*it)->constains(ns) )
-        {
-            return true;
-        }
-    }
-
-    return false;
-}
-
 void MScriptNamespaces::leave()
 {
     m_current.pop_back();
 }
 
-void MScriptNamespaces::define ( const MScriptSrcLocation & location,
-                                 const std::string & ns )
+MScriptNamespaces::NsDesc * MScriptNamespaces::analyseId ( const std::string & id,
+                                                           std::string & bareId,
+                                                           const MScriptSrcLocation * location ) const
 {
-//     current()
-// 
-//     m_ns
+    NsDesc * result;
+    size_t pos = id.find("::");
+
+    if ( std::string::npos == pos )
+    {
+        bareId = id;
+        return current();
+    }
+    else if ( 0 == pos )
+    {
+        pos = 2;
+        result = m_rootNs;
+    }
+    else
+    {
+        pos = 0;
+        result = current();
+    }
+
+    NsDesc * resultOrig = result;
+    size_t lastPos = pos;
+    while ( std::string::npos != ( pos = id.find("::", lastPos) ) )
+    {
+        result = result->getChildByName ( id.substr(lastPos, pos - lastPos) );
+
+        if ( NULL == result )
+        {
+            if ( NULL != location )
+            {
+                m_interpret->interpreterMessage ( *location,
+                                                  MScriptBase::MT_ERROR,
+                                                  QObject::tr ( "namespace `%1' does not exists in namespace `%2'" )
+                                                              . arg ( id.substr(lastPos, pos - lastPos).c_str() )
+                                                              . arg ( resultOrig->toString().c_str() )
+                                                              . toStdString() );
+            }
+            return NULL;
+        }
+
+        resultOrig = result;
+        lastPos = ( pos + 2 );
+    }
+
+    bareId = id.substr(lastPos);
+    return result;
 }
 
-void MScriptNamespaces::enter ( const MScriptSrcLocation & location,
-                                MScriptNamespaces::NsDesc * ns )
+int MScriptNamespaces::NsDesc::inheritsFrom ( const MScriptNamespaces::NsDesc * ns ) const
 {
-    return m_current.push_back(ns);
+    int distance = 0;
+
+    for ( const NsDesc * nsDesc = this;
+          NULL != nsDesc;
+          nsDesc = nsDesc->m_parent )
+    {
+        if ( ns == nsDesc )
+        {
+            return distance;
+        }
+        distance++;
+    }
+
+    return -1;
+}
+
+MScriptNamespaces::NsDesc * MScriptNamespaces::define ( const MScriptSrcLocation & location,
+                                                        const std::string & ns )
+{
+    std::string bareId;
+    NsDesc * nsDesc = analyseId(ns, bareId, &location);
+
+    if ( NULL == nsDesc )
+    {
+        return NULL;
+    }
+
+    if ( NULL != nsDesc->getChildByName ( bareId ) )
+    {
+        m_interpret->interpreterMessage ( location,
+                                          MScriptBase::MT_ERROR,
+                                          QObject::tr ( "namespace `%1' already constans namespace `%2'" )
+                                                      . arg ( nsDesc->toString().c_str() )
+                                                      . arg ( bareId.c_str() )
+                                                      . toStdString() );
+        return NULL;
+    }
+
+    nsDesc->m_contains.push_back(new NsDesc ( ns, nsDesc, location ));
+    return nsDesc->m_contains.back();
 }
 
 void MScriptNamespaces::defineEnter ( const MScriptSrcLocation & location,
                                       const std::string & ns )
 {
-    
+    enter(define(location, ns));
+}
+
+void MScriptNamespaces::enter ( MScriptNamespaces::NsDesc * ns )
+{
+    if ( NULL != ns )
+    {
+        m_current.push_back(ns);
+    }
 }
 
 MScriptNamespaces::NsDesc * MScriptNamespaces::current() const
@@ -97,14 +169,14 @@ MScriptNamespaces::NsDesc * MScriptNamespaces::current() const
 
 void MScriptNamespaces::clear()
 {
-    if ( NULL != m_ns )
+    if ( NULL != m_rootNs )
     {
-        delete m_ns;
+        delete m_rootNs;
     }
-    m_ns = new NsDesc ( "::", NULL, MScriptSrcLocation() );
+    m_rootNs = new NsDesc ( "::", NULL, MScriptSrcLocation() );
 
     m_current.clear();
-    m_current.push_back(m_ns);
+    m_current.push_back(m_rootNs);
 }
 
 
@@ -175,19 +247,12 @@ void MScriptNamespaces::NsDesc::print ( std::ostream & out,
     }
 }
 
-std::ostream & operator << ( std::ostream & out,
-                             const MScriptNamespaces & namespaces )
+std::string MScriptNamespaces::NsDesc::toString() const
 {
-    namespaces.m_ns->print(out);
-    return out;
-}
-
-std::ostream & operator << ( std::ostream & out,
-                             const MScriptNamespaces::NsDesc * nsDesc )
-{
+    std::string result;
     std::vector<const std::string*> path;
 
-    for ( const MScriptNamespaces::NsDesc * ns = nsDesc;
+    for ( const MScriptNamespaces::NsDesc * ns = this;
           ns != NULL;
           ns = ns->m_parent )
     {
@@ -198,8 +263,38 @@ std::ostream & operator << ( std::ostream & out,
           i != path.crend();
           i++ )
     {
-        out << "::" << **i;
+        result.append("::");
+        result.append(**i);
     }
 
+    return result;
+}
+
+MScriptNamespaces::NsDesc * MScriptNamespaces::NsDesc::getChildByName ( const std::string & name ) const
+{
+    for ( std::vector<NsDesc*>::const_iterator i = m_contains.cbegin();
+          i != m_contains.cend();
+          i++ )
+    {
+        if ( name == (*i)->m_name )
+        {
+            return *i;
+        }
+    }
+
+    return NULL;
+}
+
+std::ostream & operator << ( std::ostream & out,
+                             const MScriptNamespaces & namespaces )
+{
+    namespaces.m_rootNs->print(out);
+    return out;
+}
+
+std::ostream & operator << ( std::ostream & out,
+                             const MScriptNamespaces::NsDesc * nsDesc )
+{
+    out << nsDesc->toString() << "::";
     return out;
 }

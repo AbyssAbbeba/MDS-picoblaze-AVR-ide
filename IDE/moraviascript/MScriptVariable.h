@@ -19,6 +19,7 @@
 // MScript language interpreter header files.
 #include "MScriptValue.h"
 #include "MScriptSrcLocation.h"
+#include "MScriptNamespaces.h"
 
 // Standard header files.
 #include <map>
@@ -100,6 +101,9 @@ class MScriptVariable
 
         /// @brief
         MScriptSrcLocation m_location;
+
+        /// @brief
+        MScriptNamespaces::NsDesc * m_ns;
 };
 
 /// @name Tracing operators

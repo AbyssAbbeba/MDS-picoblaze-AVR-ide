@@ -47,7 +47,7 @@ class MScriptVarTable
         /**
          * @brief
          */
-        typedef std::map<std::string,MScriptVariable> VarTable;
+        typedef std::multimap<std::string,MScriptVariable> VarTable;
 
         /**
          * @brief

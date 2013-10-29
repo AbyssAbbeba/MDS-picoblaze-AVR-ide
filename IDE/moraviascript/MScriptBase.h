@@ -18,6 +18,7 @@
 
 // Standard header files.
 #include <string>
+#include <vector>
 
 /**
  * @brief
@@ -39,6 +40,15 @@ class MScriptBase
             MT_GENERAL  ///<
         };
 
+    ////    Public Operations    ////
+    public:
+        /**
+         * @brief
+         * @param[in] fileNumber
+         * @return
+         */
+        const std::string & fileNumber2str ( int fileNumber ) const;
+
     ////    Protected Operations    ////
     protected:
         /**
@@ -47,6 +57,11 @@ class MScriptBase
          * @return
          */
         std::string msgTypeToStr ( MessageType type ) const;
+
+    ////    Private Attributes    ////
+    private:
+        /// @brief
+        std::vector<std::string> m_files;
 };
 
 #endif // MSCRIPTBASE_H
