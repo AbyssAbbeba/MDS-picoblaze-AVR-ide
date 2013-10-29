@@ -21,20 +21,44 @@
 void error(int errCode)
 {
     QMessageBox msgBox;
+    msgBox.setWindowTitle("Error");
     switch (errCode)
     {
         case ERR_OPENFILE:
-            msgBox.setText("Error opening file");
+        {
+            msgBox.setText("Error: Opening file");
             break;
+        }
         case ERR_XML_ASSIGN:
+        {
             msgBox.setText("Error: Assigning xml file");
             break;
+        }
         case ERR_XML_CONTENT:
+        {
             msgBox.setText("Error: Wrong content of xml file");
             break;
+        }
         case ERR_NO_PROJECT:
+        {
             msgBox.setText("Error: No active project");
             break;
+        }
+        case ERR_STACK_OVERFLOW:
+        {
+            msgBox.setText("Error: Stack overflow, simulation canceled");
+            break;
+        }
+        case ERR_STACK_UNDERFLOW:
+        {
+            msgBox.setText("Error: Stack underflow, simulation canceled");
+            break;
+        }
+        default:
+        {
+            msgBox.setText("Error: Error not specified");
+            break;
+        }
     }
     msgBox.exec();
 }

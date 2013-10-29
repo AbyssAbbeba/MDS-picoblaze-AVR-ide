@@ -43,9 +43,9 @@ StackWidget::StackWidget(QWidget *parent, MCUSimControl * controlUnit, MCUSimSub
     fontLW.setPointSize(9);
     this->lwStack->setFont(fontLW);
 
-    QPixmap pixSP(10,10);
-    pixSP.fill(Qt::green);
-    this->iconSP = new QIcon(pixSP);
+    //QPixmap pixSP(10,10);
+    //pixSP.fill(Qt::green);
+    //this->iconSP = new QIcon(pixSP);
 
     this->sp = 0;
 
@@ -67,7 +67,7 @@ StackWidget::StackWidget(QWidget *parent, MCUSimControl * controlUnit, MCUSimSub
 
 StackWidget::~StackWidget()
 {
-    delete iconSP;
+    //delete iconSP;
 }
 
 
@@ -75,9 +75,12 @@ void StackWidget::push()
 {
     if ( 32 >= this->sp && this->leInput->text().toInt() > 0 && this->leInput->text().toInt() <  65535)
     {
+        this->lwStack->item(this->sp)->setText(this->leInput->text());
+        this->sp++;
         //QListWidgetItem *item = new QListWidgetItem(this->leInput->text(), this->lwStack);
         //this->lwStack->setCurrentRow(this->lwStack->count() - 1);
-        //this->m_memory->directWrite(lwStack->count()-1, this->leInput->text().toInt());
+        this->m_memory->directWrite(lwStack->count()-1, this->leInput->text().toInt());
+        this->m_memory->setSP(this->sp);
     }
 }
 
@@ -86,7 +89,10 @@ void StackWidget::pop()
 {
     if ( 0 != this->sp )
     {
-        this->leInput->setText(this->lwStack->currentItem()->text());
+        this->sp--;
+        this->leInput->setText(this->lwStack->item(this->sp)->text());
+        this->lwStack->item(this->sp)->setText("");
+        this->m_memory->setSP(this->sp);
         /*for (int i = lwStack->count()-1; i > lwStack->currentRow(); i--)
         {
             uint value;
@@ -151,6 +157,17 @@ void StackWidget::handleEvent(int subsysId, int eventId, int locationOrReason, i
                 }
             }
             this->sp = locationOrReason;
+            break;
+        }
+        case PicoBlazeStack::EVENT_STACK_OVERFLOW:
+        {
+            error(ErrorCode::ERR_STACK_OVERFLOW);
+            break;
+        }
+        case PicoBlazeStack::EVENT_STACK_UNDERFLOW:
+        {
+            error(ErrorCode::ERR_STACK_UNDERFLOW);
+            break;
         }
         default:
             qDebug("Invalid event received, event ignored.");
@@ -167,7 +184,7 @@ void StackWidget::deviceChanged()
         qDebug() << "StackWidget: m_simControlUnit is NULL";
     }
     qDebug() << m_simControlUnit->getSimSubsys(this->subsys);
-    m_memory = dynamic_cast<MCUSimMemory*>(m_simControlUnit->getSimSubsys(this->subsys));
+    m_memory = dynamic_cast<PicoBlazeStack*>(m_simControlUnit->getSimSubsys(this->subsys));
     qDebug() << "StackWidget: SubsysId " << this->subsys;
     if ( NULL == m_memory )
     {

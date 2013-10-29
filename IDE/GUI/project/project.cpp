@@ -996,7 +996,6 @@ void Project::setupSim()
 bool Project::start()
 {
     //qDebug() << "Project: start()";
-    emit setEditorReadOnly(true);
     //parentWindow->getWDockManager()->setEditorsReadOnly(true);
     if (langType == LANG_ASM)
     {
@@ -1036,6 +1035,7 @@ bool Project::start()
             qDebug() << "Project: m_simControlUnit->start() returned true";
         }
     }
+    emit setEditorReadOnly(true);
     //qDebug() << "Project: getLineNumber";
     std::string fileName; //= new std::string;
     this->line = m_simControlUnit->getLineNumber(&fileName) - 1;
