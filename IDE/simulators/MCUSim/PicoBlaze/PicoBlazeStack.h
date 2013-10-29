@@ -130,6 +130,16 @@ class PicoBlazeStack : public MCUSimMemory
         }
 
         /**
+         * @brief Set stack pointer to the given value.
+         *
+         * @param[in] sp New SP value; WARNING: setting this value incorrectly may result in undefined behavior.
+         */
+        void setSP ( unsigned int sp )
+        {
+            m_position = (int) sp;
+        }
+
+        /**
          * @brief Push value onto stack.
          *
          * This method is NOT supposed to be used outside the simulator's own subsystems, like from GUI.

@@ -40,6 +40,15 @@ class MScriptCore : protected MScriptBase,
                     protected MScriptParserInterface,
                     protected MScriptInterpret
 {
+    ////    Public Datatypes    ////
+    public:
+        /**
+         * @brief
+         */
+        class MScriptRunTimeError
+        {
+        };
+
     ////    Constructors and Destructors    ////
     public:
         /**
