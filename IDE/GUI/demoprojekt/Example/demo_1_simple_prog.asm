@@ -15,13 +15,25 @@
 
 ; Program start
 ; --------------------
-start:  	load	s0, #15	
 
-        RT_IF           S0 <= #10
-            LOAD    S5,#5
-        RT_ELSE
-            LOAD    S6,#6
-        RT_ENDIF
+
+start:  	LOAD sA, #0b01010100
+TEST sA, #0b01010100
+
+
+load	s0, #1
+			load	s1,#1
+       ;  if   s0  &  1
+             TEST    0x0, 0x1
+              JUMP    Z, IF_0
+                     add     s3,#1
+                            ;   else
+              JUMP    IF_0_END
+                   IF_0:
+                    sub     s3,#1
+                         ;    endif
+                    IF_0_END:
+
 
 			load s1,3
 			jump            $
