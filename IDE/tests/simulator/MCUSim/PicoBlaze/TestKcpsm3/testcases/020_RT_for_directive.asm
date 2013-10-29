@@ -1,5 +1,5 @@
 ; TEST CASE
-; testing run time directives, rtif rtfor, rtwhile
+; testing run time directives, rtif rtfor, rt#WHILE
 device kcpsm3
 org     0
 

@@ -141,7 +141,7 @@ RX_resolve          MACRO     uart_byte
 ;                         SendChar  'T'
 ;                         SendCRLF
 ;                             EXITM
-;                     ENDIF
+;                     #ENDIF
 
                     ENDM
 
