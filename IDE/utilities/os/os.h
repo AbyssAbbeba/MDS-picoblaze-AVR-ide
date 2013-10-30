@@ -36,25 +36,20 @@ namespace boost
 
 // Code specific for other operating systems than GNU/Linux.
 #ifndef __linux__
-
-    #ifndef STRDUP_DECLARED
-    #define STRDUP_DECLARED
-        /**
-         * @brief
-         * @param[in] s
-         * @return
-         */
-        char * strdup ( const char * s )
+    /**
+     * @brief
+     * @param[in] s
+     * @return
+     */
+    inline char * strdup ( const char * s )
+    {
+        char * d = malloc ( 1 + strlen ( s ) );
+        if ( NULL == d )
         {
-            char * d = malloc ( 1 + strlen ( s ) );
-            if ( NULL == d )
-            {
-                return NULL;
-            }
-            return strcpy ( d, s);
+            return NULL;
         }
-    #endif // STRDUP_DECLARED
-
+        return strcpy ( d, s);
+    }
 #endif // __linux__
 
 #endif // OS_H
