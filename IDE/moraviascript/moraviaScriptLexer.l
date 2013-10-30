@@ -170,14 +170,10 @@ EID     ({NSEP})?{ID}
 
  /* Special values: */
 "EMPTY"         { return SV_EMPTY;        }
-
- /* Built-in data types: */
-"bool"          { return DT_BOOL;         }
-"int"           { return DT_INT;          }
-"float"         { return DT_FLOAT;        }
-"complex"       { return DT_COMPLEX;      }
-"string"        { return DT_STRING;       }
-"object"        { return DT_OBJECT;       }
+"INFINITY"      { return SV_INFINITY;     }
+"NAN"           { return SV_NAN;          }
+"M_PI"          { return SV_PI;           }
+"M_E"           { return SV_E;            }
 
  /* Brackets: */
 "("             { return B_RND_LEFT;      }
@@ -227,6 +223,58 @@ EID     ({NSEP})?{ID}
 "^="            { return O_XOR_ASSIGN;    }
 "++"            { return O_INCREMENT;     }
 "--"            { return O_DECREMENT;     }
+"**"            { return O_POWER;         }
+
+ /*
+  * Built-in functions:
+  */
+ /* Datatype recognition. */
+"isbool"        { return F_ISBOOL;        }
+"isint"         { return F_ISINT;         }
+"isstring"      { return F_ISSTRING;      }
+"isfloat"       { return F_ISFLOAT;       }
+"iscomplex"     { return F_ISCOMPLEX;     }
+"isref"         { return F_ISREF;         }
+ /* Datatype conversion. */
+"bool"          { return F_BOOL;          }
+"int"           { return F_INT;           }
+"string"        { return F_STRING;        }
+"float"         { return F_FLOAT;         }
+"complex"       { return F_COMPLEX;       }
+ /* Floating point value classification. */
+"isnan"         { return F_ISNAN;         }
+"isinfinity"    { return F_ISINFINITY;    }
+"ispositive"    { return F_ISPOSITIVE;    }
+"isnegative"    { return F_ISNEGATIVE;    }
+"isfinite"      { return F_ISFINITE;      }
+"iszero"        { return F_ISZERO;        }
+"isnegzero"     { return F_ISNEGZERO;     }
+ /* Complex plane decomposition. */
+"Re"            { return F_RE;            }
+"Im"            { return F_IM;            }
+ /* Trigonometric functions. */
+"sin"           { return F_SIN;           }
+"cos"           { return F_COS;           }
+"tan"           { return F_TAN;           }
+ /* Inverse trigonometric functions. */
+"asin"          { return F_ARCSIN;        }
+"acos"          { return F_ARCCOS;        }
+"atan"          { return F_ARCTAN;        }
+ /* Hyperbolic functions. */
+"sinh"          { return F_SINH;          }
+"cosh"          { return F_COSH;          }
+"tanh"          { return F_TANH;          }
+ /* Inverse hyperbolic functions. */
+"asinh"         { return F_ARCSINH;       }
+"acosh"         { return F_ARCCOSH;       }
+"atanh"         { return F_ARCTANH;       }
+ /* Other functions. */
+"ceil"          { return F_CEIL;          }
+"round"         { return F_ROUND;         }
+"floor"         { return F_FLOOR;         }
+"abs"           { return F_ABS;           }
+"min"           { return F_MIN;           }
+"max"           { return F_MAX;           }
 
  /*
   * Numbers:
