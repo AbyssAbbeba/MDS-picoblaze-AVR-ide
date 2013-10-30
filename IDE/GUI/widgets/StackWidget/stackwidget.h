@@ -12,6 +12,7 @@
 #include "../../../simulators/SimControl/MCUSimObserver.h"
 #include "../../../simulators/SimControl/MCUSimControl.h"
 #include "../../../simulators/MCUSim/PicoBlaze/PicoBlazeStack.h"
+#include "../../errordialog/errordlg.h"
 
 class StackWidget : public QWidget, public MCUSimObserver
 {
@@ -36,7 +37,7 @@ class StackWidget : public QWidget, public MCUSimObserver
         QPushButton *btnPop;
         QLineEdit *leInput;
         QListWidget *lwStack;
-        MCUSimMemory * m_memory;
+        PicoBlazeStack * m_memory;
         MCUSimSubsys::SubsysId subsys;
         int m_startingAddress;
         int m_size;

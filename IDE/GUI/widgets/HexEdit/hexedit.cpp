@@ -293,7 +293,7 @@ void HexEdit::moveCursor()
             {
                 asciiCursor.setPosition(asciiPrevPosition);
                 asciiCursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor, 1);
-                if (asciiCursor.blockNumber()%2 == 0)
+                if (asciiCursor.blockNumber() % 2 == 0)
                 {
                     format.setBackground(Qt::white);
                 }
@@ -338,7 +338,7 @@ void HexEdit::moveAsciiCursor()
         asciiCursor.setCharFormat(format);
         asciiCursor.setPosition(asciiPrevPosition);
         asciiCursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor, 1);
-        if (asciiCursor.blockNumber()%2 == 0)
+        if (asciiCursor.blockNumber() % 2 == 0)
         {
             format.setBackground(Qt::white);
         }
@@ -601,7 +601,14 @@ void HexEdit::setHighlighted(int pos, bool highlight)
         }
         else
         {
-            format.setBackground(Qt::white);
+            if (txtCursor.blockNumber() % 2 == 0)
+            {
+                format.setBackground(Qt::white);
+            }
+            else
+            {
+                format.setBackground(Qt::lightGray);
+            }
         }
         txtCursor.setCharFormat(format);
         txtCursor.setPosition(prevPosition);
@@ -612,5 +619,8 @@ void HexEdit::setHighlighted(int pos, bool highlight)
 
 void HexEdit::unhighlight()
 {
-    
+    for (int i = 0; i < hexByteArray->size(); i++)
+    {
+        this->setHighlighted(i, false);
+    }
 }
