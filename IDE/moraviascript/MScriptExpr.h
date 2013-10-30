@@ -85,7 +85,8 @@ class MScriptExpr : public MScriptSerializable
             OPER_COMMA,       ///< a , b
             OPER_REF,         ///< & a
             OPER_INT_PROM,    ///< Integer promotion: ( + a )
-            OPER_ADD_INV      ///< Additive inverse: ( - a )
+            OPER_ADD_INV,     ///< Additive inverse: ( - a )
+            OPER_POW          ///< a ** b (a raised to the power of b)
         };
 
     ////    Constructors and Destructors    ////

@@ -354,6 +354,7 @@ std::ostream & operator << ( std::ostream & out,
         case MScriptExpr::OPER_TERNARY:         out << "?";     break;
         case MScriptExpr::OPER_COLON:           out << ":";     break;
         case MScriptExpr::OPER_COMMA:           out << ",";     break;
+        case MScriptExpr::OPER_POW:             out << "**";    break;
 
         case MScriptExpr::OPER_INDEX:           out << "idx[]"; break;
         case MScriptExpr::OPER_PRE_INC:         out << "++pre"; break;
