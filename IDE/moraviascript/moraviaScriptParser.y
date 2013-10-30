@@ -618,53 +618,52 @@ indexes:
 
 // Built-in functions.
 native_f:
-      "isbool" "(" expr ")"         { $$ = new MScriptExpr($expr, MScriptExpr::OPER_POST_DEC, @$); }
+      "isbool" "(" expr ")"         { $$ = new MScriptExpr($expr, MScriptExpr::OPER_IS_BOOL,     @$); }
+    | "isint" "(" expr ")"          { $$ = new MScriptExpr($expr, MScriptExpr::OPER_IS_INT,      @$); }
+    | "isstring" "(" expr ")"       { $$ = new MScriptExpr($expr, MScriptExpr::OPER_IS_STRING,   @$); }
+    | "isfloat" "(" expr ")"        { $$ = new MScriptExpr($expr, MScriptExpr::OPER_IS_FLOAT,    @$); }
+    | "iscomplex" "(" expr ")"      { $$ = new MScriptExpr($expr, MScriptExpr::OPER_IS_COMPLEX,  @$); }
+    | "isref" "(" id ")"            { $$ = new MScriptExpr($id,   MScriptExpr::OPER_IS_REF,      @$); }
 
-/*    | "isint"
-    | "isstring"
-    | "isfloat"
-    | "iscomplex"
-    | "isref"
+    | "bool" "(" expr ")"           { $$ = new MScriptExpr($expr, MScriptExpr::OPER_TO_BOOL,     @$); }
+    | "int" "(" expr ")"            { $$ = new MScriptExpr($expr, MScriptExpr::OPER_TO_INT,      @$); }
+    | "f_string" "(" expr ")"       { $$ = new MScriptExpr($expr, MScriptExpr::OPER_TO_STRING,   @$); }
+    | "float" "(" expr ")"          { $$ = new MScriptExpr($expr, MScriptExpr::OPER_TO_FLOAT,    @$); }
+    | "complex" "(" expr ")"        { $$ = new MScriptExpr($expr, MScriptExpr::OPER_TO_COMPLEX,  @$); }
 
-    | "bool"
-    | "int"
-    | "f_string"
-    | "float"
-    | "complex"
+    | "isnan" "(" expr ")"          { $$ = new MScriptExpr($expr, MScriptExpr::OPER_IS_NAN,      @$); }
+    | "isinfinity" "(" expr ")"     { $$ = new MScriptExpr($expr, MScriptExpr::OPER_IS_INFINITY, @$); }
+    | "ispositive" "(" expr ")"     { $$ = new MScriptExpr($expr, MScriptExpr::OPER_IS_POSITIVE, @$); }
+    | "isnegative" "(" expr ")"     { $$ = new MScriptExpr($expr, MScriptExpr::OPER_IS_NEGATIVE, @$); }
+    | "isfinite" "(" expr ")"       { $$ = new MScriptExpr($expr, MScriptExpr::OPER_IS_FINITE,   @$); }
+    | "iszero" "(" expr ")"         { $$ = new MScriptExpr($expr, MScriptExpr::OPER_IS_ZERO,     @$); }
+    | "isnegzero" "(" expr ")"      { $$ = new MScriptExpr($expr, MScriptExpr::OPER_IS_NEGZERO,  @$); }
 
-    | "isnan"
-    | "isinfinity"
-    | "ispositive"
-    | "isnegative"
-    | "isfinite"
-    | "iszero"
-    | "isnegzero"
+    | "Re" "(" expr ")"             { $$ = new MScriptExpr($expr, MScriptExpr::OPER_REAL,        @$); }
+    | "Im" "(" expr ")"             { $$ = new MScriptExpr($expr, MScriptExpr::OPER_IMG_UNIT,    @$); }
 
-    | "Re"
-    | "Im"
+    | "sin" "(" expr ")"            { $$ = new MScriptExpr($expr, MScriptExpr::OPER_SIN,         @$); }
+    | "cos" "(" expr ")"            { $$ = new MScriptExpr($expr, MScriptExpr::OPER_COS,         @$); }
+    | "tan" "(" expr ")"            { $$ = new MScriptExpr($expr, MScriptExpr::OPER_TAN,         @$); }
 
-    | "sin"
-    | "cos"
-    | "tan"
+    | "arcsin" "(" expr ")"         { $$ = new MScriptExpr($expr, MScriptExpr::OPER_ARCSIN,      @$); }
+    | "arccos" "(" expr ")"         { $$ = new MScriptExpr($expr, MScriptExpr::OPER_ARCCOS,      @$); }
+    | "arctan" "(" expr ")"         { $$ = new MScriptExpr($expr, MScriptExpr::OPER_ARCTAN,      @$); }
 
-    | "arcsin"
-    | "arccos"
-    | "arctan"
+    | "sinh" "(" expr ")"           { $$ = new MScriptExpr($expr, MScriptExpr::OPER_SINH,        @$); }
+    | "cosh" "(" expr ")"           { $$ = new MScriptExpr($expr, MScriptExpr::OPER_COSH,        @$); }
+    | "tanh" "(" expr ")"           { $$ = new MScriptExpr($expr, MScriptExpr::OPER_TANH,        @$); }
 
-    | "sinh"
-    | "cosh"
-    | "tanh"
+    | "arcsinh" "(" expr ")"        { $$ = new MScriptExpr($expr, MScriptExpr::OPER_ARCSINH,     @$); }
+    | "arccosh" "(" expr ")"        { $$ = new MScriptExpr($expr, MScriptExpr::OPER_ARCCOSH,     @$); }
+    | "arctanh" "(" expr ")"        { $$ = new MScriptExpr($expr, MScriptExpr::OPER_ARCTANH,     @$); }
 
-    | "arcsinh"
-    | "arccosh"
-    | "arctanh"
-
-    | "ceil"
-    | "round"
-    | "floor"
-    | "abs"
-    | "min"
-    | "max"*/
+    | "ceil" "(" expr ")"           { $$ = new MScriptExpr($expr, MScriptExpr::OPER_CEIL,        @$); }
+    | "round" "(" expr ")"          { $$ = new MScriptExpr($expr, MScriptExpr::OPER_ROUND,       @$); }
+    | "floor" "(" expr ")"          { $$ = new MScriptExpr($expr, MScriptExpr::OPER_FLOOR,       @$); }
+    | "abs" "(" expr ")"            { $$ = new MScriptExpr($expr, MScriptExpr::OPER_ABS,         @$); }
+    | "min" "(" expr "," expr ")"   { $$ = new MScriptExpr($3,    MScriptExpr::OPER_MIN, $5,     @$); }
+    | "max" "(" expr "," expr ")"   { $$ = new MScriptExpr($3,    MScriptExpr::OPER_MAX, $5,     @$); }
 ;
 
 %%

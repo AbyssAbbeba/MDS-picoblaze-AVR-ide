@@ -607,28 +607,28 @@ CompilerStatement * AsmPicoBlazeSpecialMacros::evaluateCondition ( const Compile
     switch ( resultKnownInAdvance )
     {
         case -2:
-            m_compilerCore->compilerMessage ( cnd->location(),
-                                              CompilerBase::MT_WARNING,
-                                              QObject::tr ( "comparing register with itself, result is always negative" )
-                                                          . toStdString() );
+            m_compilerCore->compilerMessage(cnd->location(),
+                                            CompilerBase::MT_WARNING,
+                                            QObject::tr("comparing a register with itself, result is always negative")
+                                                       .toStdString());
             break;
         case -1:
-            m_compilerCore->compilerMessage ( cnd->location(),
-                                              CompilerBase::MT_WARNING,
-                                              QObject::tr ( "comparing two immediate constants, result is always negative" )
-                                                          . toStdString() );
+            m_compilerCore->compilerMessage(cnd->location(),
+                                            CompilerBase::MT_WARNING,
+                                            QObject::tr("comparing two immediate constants, result is always negative")
+                                                       .toStdString());
             break;
         case 1:
-            m_compilerCore->compilerMessage ( cnd->location(),
-                                              CompilerBase::MT_WARNING,
-                                              QObject::tr ( "comparing two immediate constants, result is always positive" )
-                                                          . toStdString() );
+            m_compilerCore->compilerMessage(cnd->location(),
+                                            CompilerBase::MT_WARNING,
+                                            QObject::tr("comparing two immediate constants, result is always positive")
+                                                        .toStdString());
             break;
         case 2:
-            m_compilerCore->compilerMessage ( cnd->location(),
-                                              CompilerBase::MT_WARNING,
-                                              QObject::tr ( "comparing two register with itself, result is always positive" )
-                                                          . toStdString() );
+            m_compilerCore->compilerMessage(cnd->location(),
+                                            CompilerBase::MT_WARNING,
+                                            QObject::tr("comparing a register with itself, result is always positive")
+                                                       .toStdString());
             break;
     }
 
