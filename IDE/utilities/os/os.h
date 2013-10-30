@@ -44,7 +44,15 @@ namespace boost
          * @param[in] s
          * @return
          */
-        char * strdup ( const char * s );
+        char * strdup ( const char * s )
+        {
+            char * d = malloc ( 1 + strlen ( s ) );
+            if ( NULL == d )
+            {
+                return NULL;
+            }
+            return strcpy ( d, s);
+        }
     #endif // STRDUP_DECLARED
 
 #endif // __linux__

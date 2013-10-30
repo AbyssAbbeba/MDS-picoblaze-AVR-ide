@@ -381,9 +381,6 @@ CompilerStatement * AsmPicoBlazeSpecialMacros::evaluateCondition ( const Compile
                     result = compare_sx_kk(cndVal[0].m_val, cndVal[1].m_val);
                 }
 
-                result->appendLink ( new CompilerStatement ( CompilerSourceLocation(),
-                                                             CompilerStatementTypes::ASMPICOBLAZE_INS_JUMP_Z_AAA,
-                                                             new CompilerExpr ( "$", '+', 2 ) ) );
                 result->appendLink(jump(label, JC_C));
             }
             else
@@ -446,7 +443,10 @@ CompilerStatement * AsmPicoBlazeSpecialMacros::evaluateCondition ( const Compile
                     result = compare_sx_kk(cndVal[0].m_val, cndVal[1].m_val);
                 }
 
-                result->appendLink ( jump(label, JC_NC) );
+                result->appendLink ( new CompilerStatement ( CompilerSourceLocation(),
+                                                             CompilerStatementTypes::ASMPICOBLAZE_INS_JUMP_Z_AAA,
+                                                             new CompilerExpr ( "$", '+', 2 ) ) );
+                result->appendLink ( jump(label, JC_C) );
             }
             else
             {
@@ -455,7 +455,7 @@ CompilerStatement * AsmPicoBlazeSpecialMacros::evaluateCondition ( const Compile
                 {
                     // <IMMEDIATE> <OPERATOR> <DIRECT>
                     result = compare_sx_kk(cndVal[1].m_val, cndVal[0].m_val);
-                    result->appendLink ( jump(label, JC_C) );
+                    result->appendLink ( jump(label, JC_NC) );
                 }
                 else
                 {

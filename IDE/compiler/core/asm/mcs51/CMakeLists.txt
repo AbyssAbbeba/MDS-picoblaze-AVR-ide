@@ -43,7 +43,7 @@ include_directories ( "${CMAKE_CURRENT_BINARY_DIR}/../.."
 add_definitions ( -Wall -Wextra -std=c++0x -O2 -pipe -fPIC )
 
 ## Add a library to the project using the specified source files,
- # in this case it will procude dynamic C++ library.
+ # in this case it will procude static C++ library.
 add_library ( ${PROJECT_NAME} STATIC
               AsmMcs51SemanticAnalyzer.cxx )
 
