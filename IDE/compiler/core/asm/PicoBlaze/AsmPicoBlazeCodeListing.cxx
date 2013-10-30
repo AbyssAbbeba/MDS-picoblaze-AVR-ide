@@ -520,6 +520,11 @@ void AsmPicoBlazeCodeListing::generatedCode ( CompilerSourceLocation location,
           node != NULL;
           node = node->next() )
     {
+        if ( CompilerStatementTypes::EMPTY_STATEMENT == node->type() )
+        {
+            continue;
+        }
+
         m_listing[index].push_back(LstLine());
         m_codeGenerator.toSourceLine(m_listing[index].back().m_line, node);
 

@@ -31,6 +31,10 @@ void AsmPicoBlazeCodeGenerator::toSourceLine ( std::string & result,
 
     switch ( node->type() )
     {
+        case EMPTY_STATEMENT:
+            result.clear();
+            break;
+
         case ASMPICOBLAZE_INS_JUMP_AAA:
             result = "    JUMP    ";
             operands(result, node->args());
@@ -262,12 +266,8 @@ void AsmPicoBlazeCodeGenerator::toSourceLine ( std::string & result,
             break;
 
         default:
-        {
-            std::ostringstream strstream;
-            strstream << node->type();
-            result = "; ERROR: statement not understood." + strstream.str();
+            result = "; ERROR: statement not understood.";
             break;
-        }
     }
 }
 
