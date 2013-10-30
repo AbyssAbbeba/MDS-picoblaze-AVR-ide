@@ -18,18 +18,6 @@
 // Standard header files.
 #include <cstring>
 
-#ifdef STRDUP_DECLARED
-    char * strdup ( const char * s )
-    {
-        char * d = malloc ( 1 + strlen ( s ) );
-        if ( NULL == d )
-        {
-            return NULL;
-        }
-        return strcpy ( d, s);
-    }
-#endif // STRDUP_DECLARED
-
 namespace boost
 {
     #ifdef __linux__
