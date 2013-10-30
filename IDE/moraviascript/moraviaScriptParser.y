@@ -71,6 +71,7 @@
 %{
     #include <QObject>                // For i18n only
 
+    #include <cmath>
     #include <string>
     #include <cstdlib>
     #include <cstring>
@@ -131,14 +132,59 @@
 
 /* Special values: */
 %token SV_EMPTY         "EMPTY"
+%token SV_INFINITY      "INFINITY"
+%token SV_NAN           "NAN"
+%token SV_PI            "PI"
+%token SV_E             "E"
 
-/* Built-in data types: */
-%token DT_BOOL          "bool data type specifier"
-%token DT_INT           "int data type specifier"
-%token DT_FLOAT         "float data type specifier"
-%token DT_COMPLEX       "complex data type specifier"
-%token DT_STRING        "string data type specifier"
-%token DT_OBJECT        "object data type specifier"
+/* Built-in functions: */
+ // Datatype recognition.
+%token F_ISBOOL         "isbool"
+%token F_ISINT          "isint"
+%token F_ISSTRING       "isstring"
+%token F_ISFLOAT        "isfloat"
+%token F_ISCOMPLEX      "iscomplex"
+%token F_ISREF          "isref"
+ // Datatype conversion.
+%token F_BOOL           "bool"
+%token F_INT            "int"
+%token F_STRING         "f_string"
+%token F_FLOAT          "float"
+%token F_COMPLEX        "complex"
+ // Floating point value classification.
+%token F_ISNAN          "isnan"
+%token F_ISINFINITY     "isinfinity"
+%token F_ISPOSITIVE     "ispositive"
+%token F_ISNEGATIVE     "isnegative"
+%token F_ISFINITE       "isfinite"
+%token F_ISZERO         "iszero"
+%token F_ISNEGZERO      "isnegzero"
+ // Complex plane decomposition.
+%token F_RE             "Re"
+%token F_IM             "Im"
+ // Trigonometric functions.
+%token F_SIN            "sin"
+%token F_COS            "cos"
+%token F_TAN            "tan"
+// Inverse trigonometric functions.
+%token F_ARCSIN         "arcsin"
+%token F_ARCCOS         "arccos"
+%token F_ARCTAN         "arctan"
+// Hyperbolic functions.
+%token F_SINH           "sinh"
+%token F_COSH           "cosh"
+%token F_TANH           "tanh"
+// Inverse hyperbolic functions.
+%token F_ARCSINH        "arcsinh"
+%token F_ARCCOSH        "arccosh"
+%token F_ARCTANH        "arctanh"
+ // Other functions.
+%token F_CEIL           "ceil"
+%token F_ROUND          "round"
+%token F_FLOOR          "floor"
+%token F_ABS            "abs"
+%token F_MIN            "min"
+%token F_MAX            "max"
 
 /* Other terminal symbols */
 %token O_COLON          ":"
@@ -189,6 +235,7 @@
 %token O_XOR_ASSIGN     "^="
 %token O_INCREMENT      "++"
 %token O_DECREMENT      "--"
+%token O_POWER          "**"
 
 /* Operator precedence (the one declared later has the higher precedence) */
 %left ","
@@ -208,7 +255,7 @@
 %left "<" "<="
 %left "<<" ">>"
 %left "+" "-"
-%left "*" "/" "%"
+%left "*" "/" "%" "**"
 %right "~" "!"
 %right UPLUS UMINUS
 %right "++" "--"
@@ -234,7 +281,7 @@
  */
 // Expressions
 %type<expr>     expr            e_expr          e_int           id              sid             string
-%type<expr>     param           param_list      decl            decl_list       indexes
+%type<expr>     param           param_list      decl            decl_list       indexes         native_f
 // Statements - general
 %type<stmt>     statements      stmt            cases           switch_body     scope
 
@@ -477,16 +524,23 @@ e_expr:
     | expr                          { $$ = $expr; }
 ;
 
+
 // Expression.
 expr:
     // Single value expressions.
       id                            { $$ = $id;                                              }
     | string                        { $$ = $string;                                          }
-    | "EMPTY"                       { $$ = new MScriptExpr(@$);                              }
     | BOOLEAN                       { $$ = new MScriptExpr($BOOLEAN, @$);                    }
     | REAL                          { $$ = new MScriptExpr($REAL, @$);                       }
     | INTEGER                       { $$ = new MScriptExpr($INTEGER, @$);                    }
     | IMAGINARY                     { $$ = new MScriptExpr(MScriptValue(0, $IMAGINARY), @$); }
+
+    // Built-in constants.
+    | "EMPTY"                       { $$ = new MScriptExpr(@$);                              }
+    | "INFINITY"                    { $$ = new MScriptExpr(INFINITY, @$);                    }
+    | "NAN"                         { $$ = new MScriptExpr(NAN, @$);                         }
+    | "PI"                          { $$ = new MScriptExpr(3.1415926535897932384d, @$);      }
+    | "E"                           { $$ = new MScriptExpr(2.71828182845904523536d, @$);     }
 
     // Parentheses.
     | "(" expr ")"                  { $$ = $2; }
@@ -500,17 +554,18 @@ expr:
     | expr "|" expr                 { $$ = new MScriptExpr($1, MScriptExpr::OPER_BOR,  $3, @$);        }
     | expr "^" expr                 { $$ = new MScriptExpr($1, MScriptExpr::OPER_BXOR, $3, @$);        }
     | expr "&" expr                 { $$ = new MScriptExpr($1, MScriptExpr::OPER_BAND, $3, @$);        }
+    | expr "<" expr                 { $$ = new MScriptExpr($1, MScriptExpr::OPER_LT,   $3, @$);        }
+    | expr ">" expr                 { $$ = new MScriptExpr($1, MScriptExpr::OPER_GT,   $3, @$);        }
     | expr "||" expr                { $$ = new MScriptExpr($1, MScriptExpr::OPER_LOR,  $3, @$);        }
     | expr "&&" expr                { $$ = new MScriptExpr($1, MScriptExpr::OPER_LAND, $3, @$);        }
     | expr "==" expr                { $$ = new MScriptExpr($1, MScriptExpr::OPER_EQ,   $3, @$);        }
     | expr "!=" expr                { $$ = new MScriptExpr($1, MScriptExpr::OPER_NE,   $3, @$);        }
-    | expr "<" expr                 { $$ = new MScriptExpr($1, MScriptExpr::OPER_LT,   $3, @$);        }
     | expr "<=" expr                { $$ = new MScriptExpr($1, MScriptExpr::OPER_LE,   $3, @$);        }
     | expr ">=" expr                { $$ = new MScriptExpr($1, MScriptExpr::OPER_GE,   $3, @$);        }
-    | expr ">" expr                 { $$ = new MScriptExpr($1, MScriptExpr::OPER_GT,   $3, @$);        }
     | expr ">>" expr                { $$ = new MScriptExpr($1, MScriptExpr::OPER_SHR,  $3, @$);        }
     | expr "<<" expr                { $$ = new MScriptExpr($1, MScriptExpr::OPER_SHL,  $3, @$);        }
-    | expr "=" expr                 { $$ = new MScriptExpr($1, MScriptExpr::OPER_ASSIGN,      $3, @$); }
+    | expr "**" expr                { $$ = new MScriptExpr($1, MScriptExpr::OPER_POW,  $3, @$);        }
+    | expr "="  expr                { $$ = new MScriptExpr($1, MScriptExpr::OPER_ASSIGN,      $3, @$); }
     | expr "=" "&" expr             { $$ = new MScriptExpr($1, MScriptExpr::OPER_ASSIGN_REF,  $4, @$); }
     | expr "+=" expr                { $$ = new MScriptExpr($1, MScriptExpr::OPER_ADD_ASSIGN,  $3, @$); }
     | expr "-=" expr                { $$ = new MScriptExpr($1, MScriptExpr::OPER_SUB_ASSIGN,  $3, @$); }
@@ -550,12 +605,66 @@ expr:
     // Function call.
     | id "(" ")" %prec FCALL        { $$ = new MScriptExpr($id, MScriptExpr::OPER_CALL, @$);     }
     | id "(" expr ")" %prec FCALL   { $$ = new MScriptExpr($id, MScriptExpr::OPER_CALL, $3, @$); }
+
+    // Built-in functions.
+    | native_f                      { $$ = $native_f; }
 ;
 
 // Array element access.
 indexes:
       "[" expr "]"                  { $$ = $expr;                                                   }
     | indexes "[" expr "]"          { $$ = new MScriptExpr($1, MScriptExpr::OPER_INDEX, $expr, @$); }
+;
+
+// Built-in functions.
+native_f:
+      "isbool" "(" expr ")"         { $$ = new MScriptExpr($expr, MScriptExpr::OPER_POST_DEC, @$); }
+
+/*    | "isint"
+    | "isstring"
+    | "isfloat"
+    | "iscomplex"
+    | "isref"
+
+    | "bool"
+    | "int"
+    | "f_string"
+    | "float"
+    | "complex"
+
+    | "isnan"
+    | "isinfinity"
+    | "ispositive"
+    | "isnegative"
+    | "isfinite"
+    | "iszero"
+    | "isnegzero"
+
+    | "Re"
+    | "Im"
+
+    | "sin"
+    | "cos"
+    | "tan"
+
+    | "arcsin"
+    | "arccos"
+    | "arctan"
+
+    | "sinh"
+    | "cosh"
+    | "tanh"
+
+    | "arcsinh"
+    | "arccosh"
+    | "arctanh"
+
+    | "ceil"
+    | "round"
+    | "floor"
+    | "abs"
+    | "min"
+    | "max"*/
 ;
 
 %%

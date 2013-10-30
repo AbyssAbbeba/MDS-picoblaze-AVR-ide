@@ -32,7 +32,11 @@
 
 namespace boost
 {
-    namespace filesystem3
+    #ifdef __linux__
+      namespace filesystem3
+    #else // __linux__
+      namespace filesystem
+    #endif // __linux__
     {
         template < >
             path & path::append< typename path::iterator > ( typename path::iterator begin,
@@ -53,20 +57,21 @@ namespace boost
 {
     namespace filesystem
     {
-        // Return path when appended to a_From will resolve to same as a_To
-        path make_relative ( path a_From, path a_To )
+        // Return path when appended to a_From will resolve to same as a_To.
+        path make_relative ( path a_From,
+                             path a_To )
         {
             a_From = absolute( a_From );
             a_To = absolute( a_To );
             path ret;
             path::const_iterator itrFrom( a_From.begin() ), itrTo( a_To.begin() );
 
-            // Find common base
+            // Find common base.
             for ( path::const_iterator toEnd( a_To.end() ), fromEnd( a_From.end() );
                   itrFrom != fromEnd && itrTo != toEnd && *itrFrom == *itrTo;
                   ++itrFrom, ++itrTo );
 
-            // Navigate backwards in directory to reach previously found base
+            // Navigate backwards in directory to reach previously found base.
             for ( path::const_iterator fromEnd ( a_From.end() );
                   itrFrom != fromEnd;
                   ++itrFrom )
@@ -77,7 +82,7 @@ namespace boost
                 }
             }
 
-            // Now navigate down the directory branch
+            // Now navigate down the directory branch.
             ret.append ( itrTo, a_To.end() );
             return ret;
         }
