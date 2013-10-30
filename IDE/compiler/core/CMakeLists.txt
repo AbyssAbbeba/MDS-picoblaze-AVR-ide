@@ -60,7 +60,7 @@ link_directories ( "${CMAKE_CURRENT_BINARY_DIR}/../grammar"
  # -O2         : Optimization, level 2.
  # -pipe       : Use pipes rather than temporary files for communication between the various stages of compilation.
  # -fPIC       : Generate position-independent code (PIC) suitable for use in a shared library
-add_definitions ( -Wall -Wextra -std=c++0x -O2 -pipe )
+add_definitions ( -Wall -Wextra -std=c++0x -O2 -pipe -fPIC )
 
 ## Create moc code from a list of files containing Qt class with the Q_OBJECT declaration.
  # Per-directory preprocessor definitions are also added.
