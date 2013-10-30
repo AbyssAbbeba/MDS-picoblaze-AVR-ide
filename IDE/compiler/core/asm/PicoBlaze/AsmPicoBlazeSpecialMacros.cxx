@@ -303,7 +303,26 @@ CompilerStatement * AsmPicoBlazeSpecialMacros::evaluateCondition ( const Compile
                 if ( true == cndVal[1].m_reg )
                 {
                     // <DIRECT> <OPERATOR> <DIRECT>
-                    result = compare_sx_sy(cndVal[0].m_val, cndVal[1].m_val);
+                    if ( cndVal[0].m_val == cndVal[1].m_val )
+                    {
+                        if ( CompilerExpr::OPER_EQ == cnd->oper() )
+                        {
+                            resultKnownInAdvance = 2;
+                            result = new CompilerStatement();
+                        }
+                        else
+                        {
+                            resultKnownInAdvance = -2;
+                            result = jump(label);
+                        }
+
+                        // Do not append the label, break right here.
+                        break;
+                    }
+                    else
+                    {
+                        result = compare_sx_sy(cndVal[0].m_val, cndVal[1].m_val);
+                    }
                 }
                 else
                 {
@@ -355,7 +374,7 @@ CompilerStatement * AsmPicoBlazeSpecialMacros::evaluateCondition ( const Compile
 
         case CompilerExpr::OPER_LE:
         {
-            // Switch cndVal [0] <--> [1].
+            // Swap cndVal [0] <--> [1].
 
             bool auxFlag = cndVal[0].m_reg;
             int auxVal   = cndVal[0].m_val;
@@ -373,7 +392,26 @@ CompilerStatement * AsmPicoBlazeSpecialMacros::evaluateCondition ( const Compile
                 if ( true == cndVal[1].m_reg )
                 {
                     // <DIRECT> <OPERATOR> <DIRECT>
-                    result = compare_sx_sy(cndVal[0].m_val, cndVal[1].m_val);
+                    if ( cndVal[0].m_val == cndVal[1].m_val )
+                    {
+                        if ( CompilerExpr::OPER_GE == cnd->oper() )
+                        {
+                            resultKnownInAdvance = 2;
+                            result = new CompilerStatement();
+                        }
+                        else
+                        {
+                            resultKnownInAdvance = -2;
+                            result = jump(label);
+                        }
+
+                        // Do not append the label, break right here.
+                        break;
+                    }
+                    else
+                    {
+                        result = compare_sx_sy(cndVal[0].m_val, cndVal[1].m_val);
+                    }
                 }
                 else
                 {
@@ -417,7 +455,7 @@ CompilerStatement * AsmPicoBlazeSpecialMacros::evaluateCondition ( const Compile
             break;
         case CompilerExpr::OPER_LT:
         {
-            // Switch cndVal [0] <--> [1].
+            // Swap cndVal [0] <--> [1].
 
             bool auxFlag = cndVal[0].m_reg;
             int auxVal   = cndVal[0].m_val;
@@ -435,7 +473,18 @@ CompilerStatement * AsmPicoBlazeSpecialMacros::evaluateCondition ( const Compile
                 if ( true == cndVal[1].m_reg )
                 {
                     // <DIRECT> <OPERATOR> <DIRECT>
-                    result = compare_sx_sy(cndVal[0].m_val, cndVal[1].m_val);
+                    if ( cndVal[0].m_val == cndVal[1].m_val )
+                    {
+                        resultKnownInAdvance = -2;
+                        result = jump(label);
+
+                        // Do not append the label, break right here.
+                        break;
+                    }
+                    else
+                    {
+                        result = compare_sx_sy(cndVal[0].m_val, cndVal[1].m_val);
+                    }
                 }
                 else
                 {
@@ -485,7 +534,26 @@ CompilerStatement * AsmPicoBlazeSpecialMacros::evaluateCondition ( const Compile
                 if ( true == cndVal[1].m_reg )
                 {
                     // <DIRECT> <OPERATOR> <DIRECT>
-                    result = test_sx_sy(cndVal[0].m_val, cndVal[1].m_val);
+                    if ( cndVal[0].m_val == cndVal[1].m_val )
+                    {
+                        if ( CompilerExpr::OPER_BAND == cnd->oper() )
+                        {
+                            resultKnownInAdvance = 2;
+                            result = new CompilerStatement();
+                        }
+                        else
+                        {
+                            resultKnownInAdvance = -2;
+                            result = jump(label);
+                        }
+
+                        // Do not append the label, break right here.
+                        break;
+                    }
+                    else
+                    {
+                        result = test_sx_sy(cndVal[0].m_val, cndVal[1].m_val);
+                    }
                 }
                 else
                 {
@@ -536,19 +604,32 @@ CompilerStatement * AsmPicoBlazeSpecialMacros::evaluateCondition ( const Compile
             break;
     }
 
-    if ( 1 == resultKnownInAdvance )
+    switch ( resultKnownInAdvance )
     {
-        m_compilerCore->compilerMessage ( cnd->location(),
-                                          CompilerBase::MT_WARNING,
-                                          QObject::tr ( "comparing two immediate constants, result is always positive" )
-                                                      . toStdString() );
-    }
-    else if ( -1 == resultKnownInAdvance )
-    {
-        m_compilerCore->compilerMessage ( cnd->location(),
-                                          CompilerBase::MT_WARNING,
-                                          QObject::tr ( "comparing two immediate constants, result is always negative" )
-                                                      . toStdString() );
+        case -2:
+            m_compilerCore->compilerMessage ( cnd->location(),
+                                              CompilerBase::MT_WARNING,
+                                              QObject::tr ( "comparing register with itself, result is always negative" )
+                                                          . toStdString() );
+            break;
+        case -1:
+            m_compilerCore->compilerMessage ( cnd->location(),
+                                              CompilerBase::MT_WARNING,
+                                              QObject::tr ( "comparing two immediate constants, result is always negative" )
+                                                          . toStdString() );
+            break;
+        case 1:
+            m_compilerCore->compilerMessage ( cnd->location(),
+                                              CompilerBase::MT_WARNING,
+                                              QObject::tr ( "comparing two immediate constants, result is always positive" )
+                                                          . toStdString() );
+            break;
+        case 2:
+            m_compilerCore->compilerMessage ( cnd->location(),
+                                              CompilerBase::MT_WARNING,
+                                              QObject::tr ( "comparing two register with itself, result is always positive" )
+                                                          . toStdString() );
+            break;
     }
 
     if ( NULL == result )
