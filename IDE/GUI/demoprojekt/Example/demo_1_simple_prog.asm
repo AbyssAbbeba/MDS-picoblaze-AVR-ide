@@ -15,25 +15,28 @@
 
 ; Program start
 ; --------------------
+start:
+			load s0,#10
 
+                   ;   if   s0  != #100
+            COMPARE 0x0, #0x64
+              JUMP    Z, IF_5
+              add     s3,#1
+                               ;  else
+              JUMP    IF_5_END
+  IF_5:
+                sub     s3,#1
+                          ;  endif
+  IF_5_END:
+         
+ 			jump    next5
 
-start:  	LOAD sA, #0b01010100
-TEST sA, #0b01010100
+next5:
 
+        if   s0  != #100
+            add     s3,#1
+            else
+            sub     s3,#1
+        endif
 
-load	s0, #1
-			load	s1,#1
-       ;  if   s0  &  1
-             TEST    0x0, 0x1
-              JUMP    Z, IF_0
-                     add     s3,#1
-                            ;   else
-              JUMP    IF_0_END
-                   IF_0:
-                    sub     s3,#1
-                         ;    endif
-                    IF_0_END:
-
-
-			load s1,3
-			jump            $
+        jump    $
