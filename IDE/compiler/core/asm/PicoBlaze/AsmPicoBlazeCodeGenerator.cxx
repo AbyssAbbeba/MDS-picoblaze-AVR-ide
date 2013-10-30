@@ -22,6 +22,7 @@
 
 // Standard headers.
 #include <sstream>
+#include <cstdio>
 
 void AsmPicoBlazeCodeGenerator::toSourceLine ( std::string & result,
                                                const CompilerStatement * node )
@@ -261,8 +262,12 @@ void AsmPicoBlazeCodeGenerator::toSourceLine ( std::string & result,
             break;
 
         default:
-            result = "; ERROR: statement not understood.";
+        {
+            std::ostringstream strstream;
+            strstream << node->type();
+            result = "; ERROR: statement not understood." + strstream.str();
             break;
+        }
     }
 }
 
