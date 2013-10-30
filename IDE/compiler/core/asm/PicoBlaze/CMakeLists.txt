@@ -64,6 +64,9 @@ add_library ( ${PROJECT_NAME} STATIC
               AsmPicoBlazeInstructionSet6.cxx
               AsmPicoBlazeSemanticAnalyzer.cxx )
 
+target_link_libraries ( ${PROJECT_NAME}
+                        AsmSemanticAnalyzers )
+
 # Add a dependency between top-level targets.
 add_dependencies ( ${PROJECT_NAME} CompilerParsers
                                    MCUDataFiles )

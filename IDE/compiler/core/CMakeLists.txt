@@ -69,7 +69,7 @@ QT4_WRAP_CPP ( QT_MOC_SRCS
 
 ## Add a library to the project using the specified source files,
  # in this case it will procude dynamic C++ library.
-add_library ( ${PROJECT_NAME} SHARED
+add_library ( ${PROJECT_NAME} STATIC
               ${QT_MOC_SRCS}
               Compiler.cxx
               CompilerBase.cxx
@@ -101,6 +101,6 @@ target_link_libraries ( ${PROJECT_NAME}
 # INSTALLATION OPTIONS
 # ------------------------------------------------------------------------------
 
-install ( TARGETS ${PROJECT_NAME}
-          RUNTIME DESTINATION bin
-          LIBRARY DESTINATION lib )
+#install ( TARGETS ${PROJECT_NAME}
+#          RUNTIME DESTINATION bin
+#          LIBRARY DESTINATION lib )
