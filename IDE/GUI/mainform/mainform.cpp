@@ -312,8 +312,8 @@ void MainForm::createDockWidgets()
     //wDockManager->addDockWidget(wListCode2);
     wDockManager->addDockWidget(wCompileInfo);
     wDockManager->addDockWidget(wSimulationInfo);
-    wDockManager->addDockWidget(wBookmarkList);
-    wDockManager->addDockWidget(wBreakpointList);
+    //wDockManager->addDockWidget(wBookmarkList);
+    //wDockManager->addDockWidget(wBreakpointList);
     //wDockManager->addDockWidget(wAnalysVar);
     //wDockManager->addDockWidget(wAnalysFunc);
     addAct->setEnabled(true);
