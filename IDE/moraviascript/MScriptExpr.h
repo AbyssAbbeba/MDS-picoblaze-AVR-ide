@@ -75,6 +75,7 @@ class MScriptExpr : public MScriptSerializable
             OPER_LAND_ASSIGN, ///< a &&= b
             OPER_LOR_ASSIGN,  ///< a ||= b
             OPER_XOR_ASSIGN,  ///< a ^= b
+            OPER_POW_ASSIGN,  ///< a **= b
             OPER_PRE_INC,     ///< ++ a
             OPER_PRE_DEC,     ///< -- a
             OPER_POST_INC,    ///< a ++

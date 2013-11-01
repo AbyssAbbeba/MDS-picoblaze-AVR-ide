@@ -349,6 +349,7 @@ std::ostream & operator << ( std::ostream & out,
         case MScriptExpr::OPER_LAND_ASSIGN:     out << "&&=";   break;
         case MScriptExpr::OPER_LOR_ASSIGN:      out << "||=";   break;
         case MScriptExpr::OPER_XOR_ASSIGN:      out << "^=";    break;
+        case MScriptExpr::OPER_POW_ASSIGN:      out << "**=";   break;
         case MScriptExpr::OPER_ASSIGN:          out << "=";     break;
         case MScriptExpr::OPER_ASSIGN_REF:      out << "=&";    break;
         case MScriptExpr::OPER_TERNARY:         out << "?";     break;

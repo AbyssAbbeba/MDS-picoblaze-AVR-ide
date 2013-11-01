@@ -233,15 +233,16 @@
 %token O_LAND_ASSIGN    "&&="
 %token O_LOR_ASSIGN     "||="
 %token O_XOR_ASSIGN     "^="
+%token O_POW_ASSIGN     "**="
 %token O_INCREMENT      "++"
 %token O_DECREMENT      "--"
 %token O_POWER          "**"
 
-/* Operator precedence (the one declared later has the higher precedence) */
+/* Operator precedence (the one declared later has the higher precedence). */
 %left ","
 %right "&=" "^=" "|=" "&&=" "||="
 %right "<<=" ">>="
-%right "*=" "/=" "%="
+%right "*=" "/=" "%=" "**="
 %right "+=" "-="
 %right "="
 %right "?" ":"
@@ -267,7 +268,7 @@
 /* Precedence for non operators, placed here to solve certain shift/reduce conflicts. */
 %nonassoc "else"
 
-/* Terminal symbols with semantic value */
+/* Terminal symbols with semantic value. */
 %token<symbol>    IDENTIFIER    "idenfifier"
 %token<symbol>    NSID          "idenfifier with namespace"
 %token<string>    STRING        "string"
@@ -279,13 +280,13 @@
 /*
  * DECLARATION OF NON-TERMINAL SYMBOLS
  */
-// Expressions
+// Expressions.
 %type<expr>     expr            e_expr          e_int           id              sid             string
 %type<expr>     param           param_list      decl            decl_list       indexes         native_f
-// Statements - general
+// Statements - general.
 %type<stmt>     statements      stmt            cases           switch_body     scope
 
-// Each time the parser discards symbol with certain semantic types, their memory have to bee freed
+// Each time the parser discards symbol with certain semantic types, their memory have to bee freed.
 %destructor
 {
     if ( NULL != $$ )
@@ -579,6 +580,7 @@ expr:
     | expr "&&=" expr               { $$ = new MScriptExpr($1, MScriptExpr::OPER_LAND_ASSIGN, $3, @$); }
     | expr "||=" expr               { $$ = new MScriptExpr($1, MScriptExpr::OPER_LOR_ASSIGN,  $3, @$); }
     | expr "^=" expr                { $$ = new MScriptExpr($1, MScriptExpr::OPER_XOR_ASSIGN,  $3, @$); }
+    | expr "**=" expr               { $$ = new MScriptExpr($1, MScriptExpr::OPER_POW_ASSIGN,  $3, @$); }
 
     // Unary opeators.
     | "~" expr                      { $$ = new MScriptExpr($2, MScriptExpr::OPER_CMPL,     @$); }

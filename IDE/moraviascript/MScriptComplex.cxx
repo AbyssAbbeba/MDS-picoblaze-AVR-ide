@@ -68,6 +68,11 @@ MScriptComplex MScriptComplex::operator / ( const MScriptComplex & n ) const
     return r;
 }
 
+MScriptComplex MScriptComplex::power ( const MScriptComplex & n ) const
+{
+    
+}
+
 bool MScriptComplex::divisableBy ( const MScriptComplex & n ) const
 {
     return ( 0 != ( n.m_r * n.m_r + n.m_i * n.m_i ) );
