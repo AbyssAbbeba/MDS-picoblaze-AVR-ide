@@ -60,7 +60,7 @@ link_directories ( "${CMAKE_CURRENT_BINARY_DIR}/../grammar"
  # -O2         : Optimization, level 2.
  # -pipe       : Use pipes rather than temporary files for communication between the various stages of compilation.
  # -fPIC       : Generate position-independent code (PIC) suitable for use in a shared library
-add_definitions ( -Wall -Wextra -std=c++0x -O2 -pipe )
+add_definitions ( -Wall -Wextra -std=c++0x -O2 -pipe -fPIC )
 
 ## Create moc code from a list of files containing Qt class with the Q_OBJECT declaration.
  # Per-directory preprocessor definitions are also added.
@@ -69,7 +69,7 @@ QT4_WRAP_CPP ( QT_MOC_SRCS
 
 ## Add a library to the project using the specified source files,
  # in this case it will procude dynamic C++ library.
-add_library ( ${PROJECT_NAME} SHARED
+add_library ( ${PROJECT_NAME} STATIC
               ${QT_MOC_SRCS}
               Compiler.cxx
               CompilerBase.cxx
@@ -101,6 +101,6 @@ target_link_libraries ( ${PROJECT_NAME}
 # INSTALLATION OPTIONS
 # ------------------------------------------------------------------------------
 
-install ( TARGETS ${PROJECT_NAME}
-          RUNTIME DESTINATION bin
-          LIBRARY DESTINATION lib )
+#install ( TARGETS ${PROJECT_NAME}
+#          RUNTIME DESTINATION bin
+#          LIBRARY DESTINATION lib )
