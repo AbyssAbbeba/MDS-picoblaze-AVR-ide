@@ -221,6 +221,7 @@ EID     ({NSEP})?{ID}
 "&&="           { return O_LAND_ASSIGN;   }
 "||="           { return O_LOR_ASSIGN;    }
 "^="            { return O_XOR_ASSIGN;    }
+"**="           { return O_POW_ASSIGN;    }
 "++"            { return O_INCREMENT;     }
 "--"            { return O_DECREMENT;     }
 "**"            { return O_POWER;         }
