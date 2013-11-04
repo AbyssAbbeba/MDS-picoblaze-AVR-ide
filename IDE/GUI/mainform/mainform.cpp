@@ -423,7 +423,8 @@ void MainForm::openFilePath(QString path)
     {
         error(ERR_OPENFILE);
     }
-    else {
+    else
+    {
         wDockManager->addCentralWidget(path.section('/', -1), path);
         //wDockManager->getCentralTextEdit()->setPlainText(file.readAll());
         file.close();
