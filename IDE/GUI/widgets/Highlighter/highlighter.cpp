@@ -5,7 +5,7 @@
 Highlighter::Highlighter(QTextDocument *parent, SourceType type)
      : QSyntaxHighlighter(parent)
 {
-    qDebug() << "Highlighter: Highlighter()";
+    //qDebug() << "Highlighter: Highlighter()";
     HighlightingRule rule;
     this->type = type;
 /*    if (type == C)
@@ -276,7 +276,7 @@ Highlighter::Highlighter(QTextDocument *parent, SourceType type)
 /*    }
     else */if (type == PICOBLAZEASM)
     {
-        qDebug() << "PICOBLAZEASM-----------------------------";
+        //qDebug() << "PICOBLAZEASM-----------------------------";
         QStringList keywordPatterns;
         keywordPatterns << "\\bequ\\b" << "\\bEQU\\b"
             << "\\badd\\b" << "\\baddcy\\b" << "\\band\\b"
@@ -474,7 +474,7 @@ Highlighter::Highlighter(QTextDocument *parent, SourceType type)
     rule.format = classFormat;
     highlightingRules.append(rule);*/
 
-    qDebug() << "Highlighter: return Highlighter()";
+    //qDebug() << "Highlighter: return Highlighter()";
 
 }
 
