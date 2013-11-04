@@ -19,10 +19,21 @@ start:
         load    s2,#9
         load    s0,#10
         load    s1,#7
+        load    s2,#9
+        load    s0,#10
+        load    s1,#7       
+		 load    s2,#9
+        load    s0,#10
+        load    s1,#7
+        jump    calli
 
-        
-        while   s1  != #10
-            add     s1,#1
-        endw
+calli:
 
-        jump    $
+		call	hop1	
+		jump	calli
+
+hop1:
+		call 	hop2
+		return
+hop2:
+		return
