@@ -148,7 +148,7 @@ void StackWidget::handleEvent(int subsysId, int eventId, int locationOrReason, i
         {
             qDebug() << "StackWidget: event: mem cell" << locationOrReason << "changed to" << detail;
             QString number = QString::number(detail, 16);
-            QString text;
+            QString text = "0x";
             for (int i = number.length(); i < this->width; i++)
             {
                 text.append("0");

@@ -102,16 +102,19 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
     this->lePC = new QLineEdit(this);
     this->lePC->setMaximumWidth(50);
     this->lePC->setMaximumHeight(17);
+    this->lePC->setFont(QFont("Andale Mono", 9));
     this->lePC->setReadOnly(true);
     this->lePC->move(920, 0);
     this->leTime = new QLineEdit(this);
     this->leTime->setMaximumWidth(50);
     this->leTime->setMaximumHeight(17);
+    this->leTime->setFont(QFont("Andale Mono", 9));
     this->leTime->setReadOnly(true);
     this->leTime->move(920, 20);
     this->leClock = new QLineEdit(this);
     this->leClock->setMaximumWidth(50);
     this->leClock->setMaximumHeight(17);
+    this->leClock->setFont(QFont("Andale Mono", 9));
     this->leClock->setReadOnly(true);
     this->leClock->move(920, 40);
 
@@ -201,15 +204,15 @@ void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason,
                 int value = m_cpu->getProgramCounter();
                 if (value > 0xFF)
                 {
-                    this->lePC->setText(QString::number(value, 16).toUpper() + "h");
+                    this->lePC->setText("0x" + QString::number(value, 16).toUpper() + "h");
                 }
                 else if (value > 0xF)
                 {
-                    this->lePC->setText("0" + QString::number(value, 16).toUpper() + "h");
+                    this->lePC->setText("0x0" + QString::number(value, 16).toUpper());
                 }
                 else
                 {
-                    this->lePC->setText("00" + QString::number(value, 16).toUpper() + "h");
+                    this->lePC->setText("0x00" + QString::number(value, 16).toUpper());
                 }
                 this->lePC->setStyleSheet("background-color: yellow");
                 break;
