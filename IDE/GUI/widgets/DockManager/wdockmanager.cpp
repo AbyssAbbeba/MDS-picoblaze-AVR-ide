@@ -365,9 +365,10 @@ void WDockManager::addCentralWidget(QString wName, QString wPath)
 {
     //qDebug() << "WDockManager: addCentralWidget()";
     bool found = false;
-    for (int i = 0; i < wTab->count(); i++)
+    int tab;
+    for (tab = 0; tab < wTab->count(); tab++)
     {
-        if (wTab->tabText(i) == wName && wTab->tabToolTip(i) == wPath)
+        if (wTab->tabText(tab) == wName && wTab->tabToolTip(tab) == wPath)
         {
             found = true;
             break;
@@ -426,6 +427,10 @@ void WDockManager::addCentralWidget(QString wName, QString wPath)
         connect(newEditor, SIGNAL(changedTabStatus(QString, QString, bool)), this, SLOT(changeTabStatusSlot(QString, QString, bool)));
         connect(activeCodeEdit, SIGNAL(changedTabStatus(QString, QString, bool)), this, SLOT(changeTabStatusSlot(QString, QString, bool)));
         //connect(newEditor, SIGNAL(updateAnalysers(CodeEdit*)), this, SLOT(updateAnalysersSlot(CodeEdit*)));
+    }
+    else
+    {
+        wTab->setCurrentIndex(tab);
     }
     //qDebug() << "WDockManager: return addCentralWidget()";
 }

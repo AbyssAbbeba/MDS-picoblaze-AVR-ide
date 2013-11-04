@@ -11,7 +11,7 @@ StackWidget::StackWidget(QWidget *parent, MCUSimControl * controlUnit, MCUSimSub
     }
     
     this->subsys = subsys;
-    this->setMinimumHeight(205);
+    this->setMinimumHeight(225);
 
     this->width = 3;
     
@@ -27,7 +27,7 @@ StackWidget::StackWidget(QWidget *parent, MCUSimControl * controlUnit, MCUSimSub
     this->btnPop->setMaximumWidth(27);
     this->btnPop->setMaximumHeight(17);
 
-    this->lwStack->move(0,25);
+    this->lwStack->move(0,21);
     this->leInput->move(0,0);
     this->btnPush->move(44,0);
     this->btnPop->move(72,0);

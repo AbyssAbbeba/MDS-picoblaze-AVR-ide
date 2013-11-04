@@ -141,7 +141,7 @@ void RegistersWidget::handleEvent(int subsysId, int eventId, int locationOrReaso
                 this->item(idx, 2)->setBackground(Qt::yellow);
                 this->item(idx, 3)->setBackground(Qt::yellow);
             }
-            //qDebug() << "RegistersWidget: event: mem cell changed to" << value;
+            qDebug() << "RegistersWidget: event: mem cell changed to" << value;
             this->update = false;
 
             break;
@@ -399,6 +399,8 @@ void RegistersWidget::updateValue(int row, int column)
 
 void RegistersWidget::unhighlight()
 {
+    //qDebug() << "RegistersWidget: unhighlight()";
+    this->update = true;
     for (int i = 0; i < this->rowCount(); i++)
     {
         this->item(i, 1)->setBackground(this->palette().base().color());
@@ -408,4 +410,6 @@ void RegistersWidget::unhighlight()
         this->item(i, 6)->setBackground(this->palette().base().color());
         this->item(i, 7)->setBackground(this->palette().base().color());
     }
+    this->update = false;
+    //qDebug() << "RegistersWidget: return unhighlight()";
 }
