@@ -20,6 +20,7 @@
 #include "MScriptInterpretInterface.h"
 
 // Standard header files.
+#include <cmath>
 #include <cstring>
 #include <cstdlib>
 #include <climits>
@@ -28,6 +29,36 @@
 #include <QObject>
 
 #include <iostream> // DEBUG
+
+bool MScriptExprAlgebra::isUnary ( const MScriptExpr::Operator oper )
+{
+    switch ( oper )
+    {
+        case MScriptExpr::OPER_IS_BOOL:         case MScriptExpr::OPER_IS_INT:
+        case MScriptExpr::OPER_IS_STRING:       case MScriptExpr::OPER_IS_FLOAT:
+        case MScriptExpr::OPER_IS_COMPLEX:      case MScriptExpr::OPER_IS_REF:
+        case MScriptExpr::OPER_TO_BOOL:         case MScriptExpr::OPER_TO_INT:
+        case MScriptExpr::OPER_TO_STRING:       case MScriptExpr::OPER_TO_FLOAT:
+        case MScriptExpr::OPER_TO_COMPLEX:      case MScriptExpr::OPER_IS_NAN:
+        case MScriptExpr::OPER_IS_INFINITY:     case MScriptExpr::OPER_IS_POSITIVE:
+        case MScriptExpr::OPER_IS_NEGATIVE:     case MScriptExpr::OPER_IS_FINITE:
+        case MScriptExpr::OPER_IS_ZERO:         case MScriptExpr::OPER_IS_NEGZERO:
+        case MScriptExpr::OPER_REAL:            case MScriptExpr::OPER_IMG_UNIT:
+        case MScriptExpr::OPER_SIN:             case MScriptExpr::OPER_COS:
+        case MScriptExpr::OPER_TAN:             case MScriptExpr::OPER_ARCSIN:
+        case MScriptExpr::OPER_ARCCOS:          case MScriptExpr::OPER_ARCTAN:
+        case MScriptExpr::OPER_SINH:            case MScriptExpr::OPER_COSH:
+        case MScriptExpr::OPER_TANH:            case MScriptExpr::OPER_ARCSINH:
+        case MScriptExpr::OPER_ARCCOSH:         case MScriptExpr::OPER_ARCTANH:
+        case MScriptExpr::OPER_CEIL:            case MScriptExpr::OPER_ROUND:
+        case MScriptExpr::OPER_FLOOR:           case MScriptExpr::OPER_ABS:
+        case MScriptExpr::OPER_NOT:             case MScriptExpr::OPER_CMPL:
+        case MScriptExpr::OPER_ADD_INV:         case MScriptExpr::OPER_INT_PROM:
+            return true;
+        default:
+            return false;
+    }
+}
 
 void MScriptExprAlgebra::unaryOperation ( MScriptValue & result,
                                           const MScriptValue & input,
@@ -120,6 +151,43 @@ void MScriptExprAlgebra::unaryOperation ( MScriptValue & result,
                     break;
             }
             break;
+
+        case MScriptExpr::OPER_IS_BOOL:
+        case MScriptExpr::OPER_IS_INT:
+        case MScriptExpr::OPER_IS_STRING:
+        case MScriptExpr::OPER_IS_FLOAT:
+        case MScriptExpr::OPER_IS_COMPLEX:
+        case MScriptExpr::OPER_IS_REF:
+        case MScriptExpr::OPER_TO_BOOL:
+        case MScriptExpr::OPER_TO_INT:
+        case MScriptExpr::OPER_TO_STRING:
+        case MScriptExpr::OPER_TO_FLOAT:
+        case MScriptExpr::OPER_TO_COMPLEX:
+        case MScriptExpr::OPER_IS_NAN:
+        case MScriptExpr::OPER_IS_INFINITY:
+        case MScriptExpr::OPER_IS_POSITIVE:
+        case MScriptExpr::OPER_IS_NEGATIVE:
+        case MScriptExpr::OPER_IS_FINITE:
+        case MScriptExpr::OPER_IS_ZERO:
+        case MScriptExpr::OPER_IS_NEGZERO:
+        case MScriptExpr::OPER_REAL:
+        case MScriptExpr::OPER_IMG_UNIT:
+        case MScriptExpr::OPER_SIN:
+        case MScriptExpr::OPER_COS:
+        case MScriptExpr::OPER_TAN:
+        case MScriptExpr::OPER_ARCSIN:
+        case MScriptExpr::OPER_ARCCOS:
+        case MScriptExpr::OPER_ARCTAN:
+        case MScriptExpr::OPER_SINH:
+        case MScriptExpr::OPER_COSH:
+        case MScriptExpr::OPER_TANH:
+        case MScriptExpr::OPER_ARCSINH:
+        case MScriptExpr::OPER_ARCCOSH:
+        case MScriptExpr::OPER_ARCTANH:
+        case MScriptExpr::OPER_CEIL:
+        case MScriptExpr::OPER_ROUND:
+        case MScriptExpr::OPER_FLOOR:
+        case MScriptExpr::OPER_ABS:
 
         default:
             undefinedOperation(location);
@@ -290,18 +358,23 @@ inline void MScriptExprAlgebra::intInt ( MScriptValue & result,
                                          long long b,
                                          const MScriptSrcLocation & location )
 {
+    bool floatResult = false;
     bool boolResult = false;
     bool br;
-    long long r = 1;
+    long long r = 1ll;
+    double fr = 1.0d;
 
     switch ( oper )
     {
         case MScriptExpr::OPER_ADD:  r = a + b; checkSignOverflow ( location, a,  b, r, true  ); break;
         case MScriptExpr::OPER_SUB:  r = a - b; checkSignOverflow ( location, a, -b, r, true  ); break;
         case MScriptExpr::OPER_MULT: r = a * b; checkSignOverflow ( location, a,  b, r, false ); break;
+        case MScriptExpr::OPER_MIN:  r = ( a < b ) ? a : b; break;
+        case MScriptExpr::OPER_MAX:  r = ( a > b ) ? a : b; break;
         case MScriptExpr::OPER_BOR:  r = a | b; break;
         case MScriptExpr::OPER_BXOR: r = a ^ b; break;
         case MScriptExpr::OPER_BAND: r = a & b; break;
+        case MScriptExpr::OPER_POW:  fr = pow(double(a), double(b)); floatResult = true; break;
         case MScriptExpr::OPER_LOR:  br = ( a || b ); boolResult = true; break;
         case MScriptExpr::OPER_LAND: br = ( a && b ); boolResult = true; break;
         case MScriptExpr::OPER_EQ:   br = ( a == b ); boolResult = true; break;
@@ -344,6 +417,12 @@ inline void MScriptExprAlgebra::intInt ( MScriptValue & result,
         result.m_type = MScriptValue::TYPE_BOOL;
         result.m_data.m_bool = br;
     }
+    else if ( true == floatResult )
+    {
+        result.m_type = MScriptValue::TYPE_FLOAT;
+        result.m_data.m_float = fr;
+        checkFloat(location, fr);
+    }
     else
     {
         result.m_type = MScriptValue::TYPE_INT;
@@ -359,13 +438,17 @@ inline void MScriptExprAlgebra::intFloat ( MScriptValue & result,
 {
     bool boolResult = false;
     bool br;
-    double r = 1.0;
+    double r = 1.0d;
 
     switch ( oper )
     {
         case MScriptExpr::OPER_ADD:  r = a + b; break;
         case MScriptExpr::OPER_SUB:  r = a - b; break;
         case MScriptExpr::OPER_MULT: r = a * b; break;
+
+        case MScriptExpr::OPER_MIN:  r = ( double(a) < b ) ? double(a) : b; break;
+        case MScriptExpr::OPER_MAX:  r = ( double(a) > b ) ? double(a) : b; break;
+        case MScriptExpr::OPER_POW:  r = pow(double(a), b); break;
 
         case MScriptExpr::OPER_EQ:   br = ( a == b ); boolResult = true; break;
         case MScriptExpr::OPER_NE:   br = ( a != b ); boolResult = true; break;
@@ -452,6 +535,7 @@ inline void MScriptExprAlgebra::intString ( MScriptValue & result,
             break;
         }
 
+        case MScriptExpr::OPER_MIN:  case MScriptExpr::OPER_MAX:  case MScriptExpr::OPER_POW:
         case MScriptExpr::OPER_EQ:   case MScriptExpr::OPER_NE:   case MScriptExpr::OPER_LT:
         case MScriptExpr::OPER_GE:   case MScriptExpr::OPER_GT:   case MScriptExpr::OPER_ADD:
         case MScriptExpr::OPER_BOR:  case MScriptExpr::OPER_BXOR: case MScriptExpr::OPER_BAND:
@@ -487,6 +571,10 @@ inline void MScriptExprAlgebra::floatFloat ( MScriptValue & result,
                 r = a / b;
             }
             break;
+
+        case MScriptExpr::OPER_MIN:  r = ( a < b ) ? a : b; break;
+        case MScriptExpr::OPER_MAX:  r = ( a > b ) ? a : b; break;
+        case MScriptExpr::OPER_POW:  r = pow ( a, b ); break;
 
         case MScriptExpr::OPER_LOR:  br = ( a || b ); boolResult = true; break;
         case MScriptExpr::OPER_LAND: br = ( a && b ); boolResult = true; break;
@@ -533,7 +621,7 @@ inline void MScriptExprAlgebra::stringString ( MScriptValue & result,
         case MScriptExpr::OPER_ADD:
         {
             result.m_type = MScriptValue::TYPE_STRING;
-            result.m_data.m_string.m_size = a.m_size + b.m_size;
+            result.m_data.m_string.m_size = a.m_size + b.m_size + 1;
             result.m_data.m_string.m_data = (char*) malloc ( result.m_data.m_string.m_size );
 
             for ( unsigned int i = 0; i < a.m_size; i++ )
@@ -544,6 +632,7 @@ inline void MScriptExprAlgebra::stringString ( MScriptValue & result,
             {
                 result.m_data.m_string.m_data [ i + a.m_size ] = b.m_data[i];
             }
+            result.m_data.m_string.m_data [ result.m_data.m_string.m_size - 1 ] = '\0';
 
             return;
         }
@@ -580,6 +669,26 @@ inline void MScriptExprAlgebra::stringString ( MScriptValue & result,
         case MScriptExpr::OPER_GE:   r = ( a.m_size >= b.m_size ); break;
         case MScriptExpr::OPER_GT:   r = ( a.m_size  > b.m_size ); break;
 
+        case MScriptExpr::OPER_MIN:
+        {
+            const MScriptValue::Data::String & src = ( ( a.m_size < b.m_size ) ? a : b );
+            result.m_type = MScriptValue::TYPE_STRING;
+            result.m_data.m_string.m_size = src.m_size;
+            result.m_data.m_string.m_data = (char*) malloc ( result.m_data.m_string.m_size + 1 );
+            strcpy(result.m_data.m_string.m_data, src.m_data);
+            return;
+        }
+        case MScriptExpr::OPER_MAX:
+        {
+            const MScriptValue::Data::String & src = ( ( a.m_size > b.m_size ) ? a : b );
+            result.m_type = MScriptValue::TYPE_STRING;
+            result.m_data.m_string.m_size = src.m_size;
+            result.m_data.m_string.m_data = (char*) malloc ( result.m_data.m_string.m_size + 1 );
+            strcpy(result.m_data.m_string.m_data, src.m_data);
+            return;
+        }
+
+        case MScriptExpr::OPER_POW:
         case MScriptExpr::OPER_LOR:  case MScriptExpr::OPER_LAND: case MScriptExpr::OPER_DIV:
         case MScriptExpr::OPER_MOD:  case MScriptExpr::OPER_SHR:  case MScriptExpr::OPER_SHL:
         case MScriptExpr::OPER_BOR:  case MScriptExpr::OPER_BXOR: case MScriptExpr::OPER_BAND:
@@ -625,6 +734,10 @@ inline void MScriptExprAlgebra::intBool ( MScriptValue & result,
         case MScriptExpr::OPER_LE:   br = ( a <= b ); boolResult = true; break;
         case MScriptExpr::OPER_GE:   br = ( a >= b ); boolResult = true; break;
         case MScriptExpr::OPER_GT:   br = ( a  > b ); boolResult = true; break;
+
+        case MScriptExpr::OPER_MIN:  r = ( a < (b?1:0) ) ? a : (b?1:0); break;
+        case MScriptExpr::OPER_MAX:  r = ( a > (b?1:0) ) ? a : (b?1:0); break;
+        case MScriptExpr::OPER_POW:  r = ( true == b ) ? a : 1; break;
 
         case MScriptExpr::OPER_BOR:
         case MScriptExpr::OPER_BXOR:
@@ -827,6 +940,10 @@ inline void MScriptExprAlgebra::boolInt ( MScriptValue & result,
         case MScriptExpr::OPER_GE:   br = ( a >= b ); boolResult = true; break;
         case MScriptExpr::OPER_GT:   br = ( a  > b ); boolResult = true; break;
 
+        case MScriptExpr::OPER_MIN:  r = ( (a?1:0) < b ) ? (a?1:0) : b; break;
+        case MScriptExpr::OPER_MAX:  r = ( (a?1:0) > b ) ? (a?1:0) : b; break;
+        case MScriptExpr::OPER_POW:  r = ( a ? 1 : 0 ); break;
+
         case MScriptExpr::OPER_BOR:
         case MScriptExpr::OPER_BXOR:
         case MScriptExpr::OPER_BAND:
@@ -889,6 +1006,10 @@ inline void MScriptExprAlgebra::boolBool ( MScriptValue & result,
         case MScriptExpr::OPER_LE:   r = ( a <= b ); break;
         case MScriptExpr::OPER_GE:   r = ( a >= b ); break;
         case MScriptExpr::OPER_GT:   r = ( a  > b ); break;
+
+        case MScriptExpr::OPER_MIN:  r = ( a && b ) ? true : false; break;
+        case MScriptExpr::OPER_MAX:  r = ( a || b ) ? true : false; break;
+        case MScriptExpr::OPER_POW:  r = a; break;
 
         case MScriptExpr::OPER_ADD:  case MScriptExpr::OPER_SUB:
         case MScriptExpr::OPER_MULT: case MScriptExpr::OPER_BOR:
@@ -1089,6 +1210,7 @@ inline void MScriptExprAlgebra::complexComplex ( MScriptValue & result,
         case MScriptExpr::OPER_SHL:  case MScriptExpr::OPER_MOD:
             incompatibleTypes(location, MScriptValue::TYPE_COMPLEX, MScriptValue::TYPE_COMPLEX);
             return;
+
         default:
             undefinedOperation(location);
             return;
@@ -1143,6 +1265,10 @@ inline void MScriptExprAlgebra::floatInt ( MScriptValue & result,
         case MScriptExpr::OPER_BOR:  case MScriptExpr::OPER_BXOR: case MScriptExpr::OPER_BAND:
             incompatibleTypes(location, MScriptValue::TYPE_INT, MScriptValue::TYPE_FLOAT);
             return;
+
+        case MScriptExpr::OPER_POW:     r = pow ( a, double(b) ); break;
+        case MScriptExpr::OPER_MIN:     r = ( a < b ) ? a : b;    break;
+        case MScriptExpr::OPER_MAX:     r = ( a > b ) ? a : b;    break;
 
         default:
             undefinedOperation(location);

@@ -23,6 +23,19 @@
  */
 class MScriptComplex
 {
+    ////    Constructors and Destructors    ////
+    public:
+        /**
+         * @brief
+         * @param[in] r
+         * @param[in] i
+         */
+        MScriptComplex ( double r = 0.0d,
+                         double i = 0.0d )
+                       :
+                         m_r ( r ),
+                         m_i ( i ) {}
+
     ////    Public Operations    ////
     public:
         /**
@@ -31,6 +44,13 @@ class MScriptComplex
          * @return
          */
         bool divisableBy ( const MScriptComplex & n ) const;
+
+        /**
+         * @brief
+         * @param[in] n
+         * @return
+         */
+        MScriptComplex power ( const MScriptComplex & n ) const;
 
         /// @name Overloaded operators.
         //@{

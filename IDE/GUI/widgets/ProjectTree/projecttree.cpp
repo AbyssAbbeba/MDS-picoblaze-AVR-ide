@@ -76,7 +76,7 @@ void ProjectTree::contextMenuEvent(QContextMenuEvent *event)
 void ProjectTree::contextP2(int fileCount)
 {
     qDebug() << "ProjectTree: contextP2()";
-    if (fileCount == 0 || this->itemAt(lastEvent->pos())->childCount() > 0)
+    if (fileCount == 0 || this->itemAt(lastEvent->pos())->childCount() > 0 || this->itemAt(lastEvent->pos())->toolTip(0) == NULL)
     {
         projectPopup->popup(lastEvent->globalPos());
     }

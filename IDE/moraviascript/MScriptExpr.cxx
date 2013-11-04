@@ -349,6 +349,7 @@ std::ostream & operator << ( std::ostream & out,
         case MScriptExpr::OPER_LAND_ASSIGN:     out << "&&=";   break;
         case MScriptExpr::OPER_LOR_ASSIGN:      out << "||=";   break;
         case MScriptExpr::OPER_XOR_ASSIGN:      out << "^=";    break;
+        case MScriptExpr::OPER_POW_ASSIGN:      out << "**=";   break;
         case MScriptExpr::OPER_ASSIGN:          out << "=";     break;
         case MScriptExpr::OPER_ASSIGN_REF:      out << "=&";    break;
         case MScriptExpr::OPER_TERNARY:         out << "?";     break;
@@ -365,6 +366,45 @@ std::ostream & operator << ( std::ostream & out,
         case MScriptExpr::OPER_REF:             out << "<&ref>";break;
         case MScriptExpr::OPER_INT_PROM:        out << "<+pos>";break;
         case MScriptExpr::OPER_ADD_INV:         out << "<-neg>";break;
+
+        case MScriptExpr::OPER_IS_BOOL:         out << "<is_bool>";     break;
+        case MScriptExpr::OPER_IS_INT:          out << "<is_int>";      break;
+        case MScriptExpr::OPER_IS_STRING:       out << "<is_string>";   break;
+        case MScriptExpr::OPER_IS_FLOAT:        out << "<is_float>";    break;
+        case MScriptExpr::OPER_IS_COMPLEX:      out << "<is_complex>";  break;
+        case MScriptExpr::OPER_IS_REF:          out << "<is_ref>";      break;
+        case MScriptExpr::OPER_TO_BOOL:         out << "<to_bool>";     break;
+        case MScriptExpr::OPER_TO_INT:          out << "<to_int>";      break;
+        case MScriptExpr::OPER_TO_STRING:       out << "<to_string>";   break;
+        case MScriptExpr::OPER_TO_FLOAT:        out << "<to_float>";    break;
+        case MScriptExpr::OPER_TO_COMPLEX:      out << "<to_complex>";  break;
+        case MScriptExpr::OPER_IS_NAN:          out << "<is_nan>";      break;
+        case MScriptExpr::OPER_IS_INFINITY:     out << "<is_infinity>"; break;
+        case MScriptExpr::OPER_IS_POSITIVE:     out << "<is_positive>"; break;
+        case MScriptExpr::OPER_IS_NEGATIVE:     out << "<is_negative>"; break;
+        case MScriptExpr::OPER_IS_FINITE:       out << "<is_finite>";   break;
+        case MScriptExpr::OPER_IS_ZERO:         out << "<is_zero>";     break;
+        case MScriptExpr::OPER_IS_NEGZERO:      out << "<is_negzero>";  break;
+        case MScriptExpr::OPER_REAL:            out << "<Re>";          break;
+        case MScriptExpr::OPER_IMG_UNIT:        out << "<Im>";          break;
+        case MScriptExpr::OPER_SIN:             out << "<sin>";         break;
+        case MScriptExpr::OPER_COS:             out << "<cos>";         break;
+        case MScriptExpr::OPER_TAN:             out << "<tan>";         break;
+        case MScriptExpr::OPER_ARCSIN:          out << "<arcsin>";      break;
+        case MScriptExpr::OPER_ARCCOS:          out << "<arccos>";      break;
+        case MScriptExpr::OPER_ARCTAN:          out << "<arctan>";      break;
+        case MScriptExpr::OPER_SINH:            out << "<sinh>";        break;
+        case MScriptExpr::OPER_COSH:            out << "<cosh>";        break;
+        case MScriptExpr::OPER_TANH:            out << "<tanh>";        break;
+        case MScriptExpr::OPER_ARCSINH:         out << "<arcsinh>";     break;
+        case MScriptExpr::OPER_ARCCOSH:         out << "<arccosh>";     break;
+        case MScriptExpr::OPER_ARCTANH:         out << "<arctanh>";     break;
+        case MScriptExpr::OPER_CEIL:            out << "<ceil>";        break;
+        case MScriptExpr::OPER_ROUND:           out << "<round>";       break;
+        case MScriptExpr::OPER_FLOOR:           out << "<floor>";       break;
+        case MScriptExpr::OPER_ABS:             out << "<abs>";         break;
+        case MScriptExpr::OPER_MIN:             out << "<min>";         break;
+        case MScriptExpr::OPER_MAX:             out << "<max>";         break;
     }
     return out;
 }
