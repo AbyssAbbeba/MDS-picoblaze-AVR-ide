@@ -16,11 +16,13 @@
 ; Program start
 ; --------------------
 start:
-                    load s1,#10
-                    load s0,#1
+        load    s2,#9
+        load    s0,#10
+        load    s1,#7
 
-                    if   s0  >= #50
-                        add     s3,#1
-                        else
-                        sub     s3,#1
-                    endif
+        
+        while   s1  != #10
+            add     s1,#1
+        endw
+
+        jump    $
