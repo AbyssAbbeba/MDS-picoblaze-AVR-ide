@@ -57,7 +57,7 @@ next1:
         ;; flag[c] == false
         ;; step
         ;; step 2
-        ;; reg[3] == 2
+        ;; reg[3] == 1
 next2:
 
 
@@ -73,7 +73,7 @@ next2:
         ;; flag[c] == false
         ;; step
         ;; step 2
-        ;; reg[3] == 3
+        ;; reg[3] == 2
 next3:
 
 
@@ -89,7 +89,7 @@ next3:
         ;; flag[c] == false
         ;; step
         ;; step 2
-        ;; reg[3] == 4
+        ;; reg[3] == 3
 
 
 ; one try with different condition
@@ -103,9 +103,9 @@ next4:
 
         jump    $
         ;; step
-        ;; flag[z] == true
+        ;; flag[z] == false
         ;; flag[c] == false
         ;; step
         ;; step 2
-        ;; reg[3] == 3
+        ;; reg[3] == 4
 

@@ -19,7 +19,7 @@ start:
         jump    next1
         ;; step
         ;; flag[z] == false
-        ;; flag[c] == false
+        ;; flag[c] == true
         ;; step
         ;; step 3
         ;; reg[3] == 255
@@ -36,7 +36,7 @@ next1:
         jump    next2
         ;; step
         ;; flag[z] == false
-        ;; flag[c] == false
+        ;; flag[c] == true
         ;; step
         ;; step 3
         ;; reg[3] == 254
@@ -89,4 +89,4 @@ next4:
         ;; flag[c] == false
         ;; step
         ;; step 3
-        ;; reg[3] == 252
+        ;; reg[3] == 251
