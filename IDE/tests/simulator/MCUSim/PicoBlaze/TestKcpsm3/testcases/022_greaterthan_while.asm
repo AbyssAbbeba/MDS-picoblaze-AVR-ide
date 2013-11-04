@@ -5,12 +5,12 @@ org     0
 
 start:
         load s0,#10
-        load s1,#1
+        load s1,#1   
         ;; step 2
         ;; reg[0] == 10
         ;; reg[1] == 1
-
-        if   s0  < 1
+        
+        if   s0  > 1
         add     s3,#1
         else
         sub     s3,#1
@@ -19,15 +19,15 @@ start:
         jump    next1
         ;; step
         ;; flag[z] == false
-        ;; flag[c] == true
+        ;; flag[c] == false
         ;; step
         ;; step 3
-        ;; reg[3] == 255
+        ;; reg[3] == 1
 
-
+        
 next1:
 
-        if   0  < 1
+        if   0  > 1
         add     s3,#1
         else
         sub     s3,#1
@@ -36,15 +36,15 @@ next1:
         jump    next2
         ;; step
         ;; flag[z] == false
-        ;; flag[c] == true
+        ;; flag[c] == false
         ;; step
         ;; step 3
-        ;; reg[3] == 254
+        ;; reg[3] == 2
 
 
 next2:
 
-        if   s0  < #1
+        if   s0  > #1
         add     s3,#1
         else
         sub     s3,#1
@@ -54,30 +54,14 @@ next2:
         ;; step
         ;; flag[z] == false
         ;; flag[c] == false
-        ;; step
+        ;; step 2
         ;; step 3
-        ;; reg[3] == 253
+        ;; reg[3] == 3
 
 
 next3:
 
-        if   0  < #1
-        add     s3,#1
-        else
-        sub     s3,#1
-        endif
-
-        jump    next4
-        ;; step
-        ;; flag[z] == false
-        ;; flag[c] == false
-        ;; step
-        ;; step 3
-        ;; reg[3] == 252
-
-next4:
-
-        if   0  < #10
+        if   0  > #1
         add     s3,#1
         else
         sub     s3,#1
@@ -87,6 +71,9 @@ next4:
         ;; step
         ;; flag[z] == false
         ;; flag[c] == false
-        ;; step
+        ;; step 2
         ;; step 3
-        ;; reg[3] == 251
+        ;; reg[3] == 4
+
+
+
