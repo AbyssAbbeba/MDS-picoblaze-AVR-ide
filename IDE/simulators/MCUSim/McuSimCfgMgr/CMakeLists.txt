@@ -45,7 +45,7 @@ add_definitions ( -Wall -Wextra -std=c++0x -O2 -pipe -fPIC )
 
 ## Add a library to the project using the specified source files,
  # in this case it will procude dynamic C++ library.
-add_library ( ${PROJECT_NAME} SHARED
+add_library ( ${PROJECT_NAME} STATIC
               McuDeviceSpecAVR8.cxx
               McuDeviceSpecPIC8.cxx
               McuSimCfgMgrAVR8.cxx
@@ -60,6 +60,6 @@ target_link_libraries ( ${PROJECT_NAME} ${QT_LIBRARIES} )
 # INSTALLATION OPTIONS
 # ------------------------------------------------------------------------------
 
-install ( TARGETS ${PROJECT_NAME}
-          RUNTIME DESTINATION bin
-          LIBRARY DESTINATION lib )
+#install ( TARGETS ${PROJECT_NAME}
+#          RUNTIME DESTINATION bin
+#          LIBRARY DESTINATION lib )

@@ -60,6 +60,9 @@ class MScriptValue : public MScriptSerializable
          */
         union Data
         {
+            /// @brief
+            Data() : m_expr ( NULL ) {};
+
             ///
             MScriptExpr * m_expr;
 

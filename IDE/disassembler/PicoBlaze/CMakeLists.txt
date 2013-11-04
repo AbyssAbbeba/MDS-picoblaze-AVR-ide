@@ -29,6 +29,9 @@ set ( CMAKE_VERBOSE_MAKEFILE OFF )
 find_package ( Qt4 REQUIRED )
 include ( ${QT_USE_FILE} )
 
+# Specify directories in which the linker will look for libraries.
+link_directories ("${CMAKE_CURRENT_BINARY_DIR}/.." )
+
 ## Add switches to compiler command line
  # -Wall       : Enables all the warnings.
  # -Wextra     : Enables some extra warning flags that are not enabled by -Wall.
@@ -37,6 +40,7 @@ include ( ${QT_USE_FILE} )
  # -pipe       : Use pipes rather than temporary files for communication between the various stages of compilation.
  # -fPIC       : Generate position-independent code (PIC) suitable for use in a shared library
 add_definitions ( -Wall -Wextra -std=c++0x -O2 -pipe -fPIC )
+
 
 ## Add a library to the project using the specified source files,
  # in this case it will procude static C++ library.
@@ -47,6 +51,10 @@ add_library ( ${PROJECT_NAME} STATIC
               DAsmPicoBlazeKcpsm2.cxx
               DAsmPicoBlazeKcpsm1.cxx
               DAsmPicoBlazeKcpsm1CPLD.cxx )
+
+# Link a target to given libraries
+target_link_libraries ( ${PROJECT_NAME}
+                        disassembler )
 
 
 # ------------------------------------------------------------------------------

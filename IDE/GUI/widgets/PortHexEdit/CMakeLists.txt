@@ -42,6 +42,7 @@ find_package(Qt4 REQUIRED)
 # <DEBUG!>
 link_directories(
     "${CMAKE_CURRENT_BINARY_DIR}/../../../simulators/SimControl/"
+    "${CMAKE_CURRENT_BINARY_DIR}/HexEdit/"
     )
 
 
@@ -85,7 +86,7 @@ add_library(${PROJECT_NAME} SHARED
 	${SAMPLE_MOC_SRCS} ${SAMPLE_SRCS})
 
 
-target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} SimControl)
+target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} SimControl HexEdit)
 
 
 # ------------------------------------------------------------------------------

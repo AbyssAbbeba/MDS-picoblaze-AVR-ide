@@ -472,13 +472,47 @@ Project::Project(QFile *file, ProjectMan *parent)
             treeProjName->setText(0, prjName);
             treeProjName->setData(0, Qt::ToolTipRole, prjPath);
 
+            QTreeWidgetItem *treeProjSource = new QTreeWidgetItem(treeProjName);
+            treeProjSource->setText(0, "Source");
+            
+            QTreeWidgetItem *treeProjInclude = new QTreeWidgetItem(treeProjName);
+            treeProjInclude->setText(0, "Include");
+
+            QTreeWidgetItem *treeProjCompiled = new QTreeWidgetItem(treeProjName);
+            treeProjCompiled->setText(0, "Compiled");
+
+            QTreeWidgetItem *treeProjOther = new QTreeWidgetItem(treeProjName);
+            treeProjOther->setText(0, "Other");
+
+
             QDir projectDir = QFileInfo(prjPath).dir();
             QString absolutePath = projectDir.path();
-            for (int i=0; i<fileCount; ++i)
+            for (int i=0; i<fileCount; i++)
             {
-                 QTreeWidgetItem *treeProjFile = new QTreeWidgetItem(treeProjName);
-                 treeProjFile->setText(0, fileNames.at(i));
-                 treeProjFile->setData(0, Qt::ToolTipRole, QDir(absolutePath + "/" + filePaths.at(i)).canonicalPath());
+                QTreeWidgetItem *treeProjFile;
+                int index = fileNames.at(i).lastIndexOf(".");
+                if (index > 0)
+                {
+                    QString text(fileNames.at(i).right(fileNames.at(i).size() - index));
+                    if (text == ".inc")
+                    {
+                        treeProjFile = new QTreeWidgetItem(treeProjInclude);
+                    }
+                    else if (text == ".asm" || text == ".psm")
+                    {
+                        treeProjFile = new QTreeWidgetItem(treeProjSource);
+                    }
+                    else
+                    {
+                        treeProjFile = new QTreeWidgetItem(treeProjOther);
+                    }
+                }
+                else
+                {
+                    treeProjFile = new QTreeWidgetItem(treeProjOther);
+                }
+                treeProjFile->setText(0, fileNames.at(i));
+                treeProjFile->setData(0, Qt::ToolTipRole, QDir(absolutePath + "/" + filePaths.at(i)).canonicalPath());
             }
             if (mainFileName != "" && mainFilePath != "")
             {
@@ -581,6 +615,18 @@ Project::Project(QString name, QString path, QString arch, LangType lang, QFile 
     treeProjName->setText(0, name);
     treeProjName->setData(0, Qt::ToolTipRole, path);
     fileCount=0;
+
+    QTreeWidgetItem *treeProjSource = new QTreeWidgetItem(treeProjName);
+    treeProjName->setText(0, "Source");
+
+    QTreeWidgetItem *treeProjInclude = new QTreeWidgetItem(treeProjName);
+    treeProjName->setText(0, "Include");
+
+    QTreeWidgetItem *treeProjCompiled = new QTreeWidgetItem(treeProjName);
+    treeProjName->setText(0, "Compiled");
+
+    QTreeWidgetItem *treeProjOther = new QTreeWidgetItem(treeProjName);
+    treeProjName->setText(0, "Other");
 
     for (int i = 0; i < 8; i++)
     {

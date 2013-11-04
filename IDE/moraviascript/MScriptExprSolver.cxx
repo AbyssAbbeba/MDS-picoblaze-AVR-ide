@@ -74,10 +74,26 @@ MScriptValue MScriptExprSolver::eval ( const MScriptExpr * expr )
         }
 
         // Unary operators.
-        case MScriptExpr::OPER_CMPL:          case MScriptExpr::OPER_NOT:
-        case MScriptExpr::OPER_PRE_INC:       case MScriptExpr::OPER_PRE_DEC:
-        case MScriptExpr::OPER_POST_INC:      case MScriptExpr::OPER_POST_DEC:
-        case MScriptExpr::OPER_INT_PROM:      case MScriptExpr::OPER_ADD_INV:
+        case MScriptExpr::OPER_IS_BOOL:         case MScriptExpr::OPER_IS_INT:
+        case MScriptExpr::OPER_IS_STRING:       case MScriptExpr::OPER_IS_FLOAT:
+        case MScriptExpr::OPER_IS_COMPLEX:      case MScriptExpr::OPER_IS_REF:
+        case MScriptExpr::OPER_TO_BOOL:         case MScriptExpr::OPER_TO_INT:
+        case MScriptExpr::OPER_TO_STRING:       case MScriptExpr::OPER_TO_FLOAT:
+        case MScriptExpr::OPER_TO_COMPLEX:      case MScriptExpr::OPER_IS_NAN:
+        case MScriptExpr::OPER_IS_INFINITY:     case MScriptExpr::OPER_IS_POSITIVE:
+        case MScriptExpr::OPER_IS_NEGATIVE:     case MScriptExpr::OPER_IS_FINITE:
+        case MScriptExpr::OPER_IS_ZERO:         case MScriptExpr::OPER_IS_NEGZERO:
+        case MScriptExpr::OPER_REAL:            case MScriptExpr::OPER_IMG_UNIT:
+        case MScriptExpr::OPER_SIN:             case MScriptExpr::OPER_COS:
+        case MScriptExpr::OPER_TAN:             case MScriptExpr::OPER_ARCSIN:
+        case MScriptExpr::OPER_ARCCOS:          case MScriptExpr::OPER_ARCTAN:
+        case MScriptExpr::OPER_SINH:            case MScriptExpr::OPER_COSH:
+        case MScriptExpr::OPER_TANH:            case MScriptExpr::OPER_ARCSINH:
+        case MScriptExpr::OPER_ARCCOSH:         case MScriptExpr::OPER_ARCTANH:
+        case MScriptExpr::OPER_CEIL:            case MScriptExpr::OPER_ROUND:
+        case MScriptExpr::OPER_FLOOR:           case MScriptExpr::OPER_ABS:
+        case MScriptExpr::OPER_NOT:             case MScriptExpr::OPER_CMPL:
+        case MScriptExpr::OPER_ADD_INV:         case MScriptExpr::OPER_INT_PROM:
         {
             unaryOperation ( result, expr->lVal(), location, expr->oper() );
             break;
@@ -91,6 +107,7 @@ MScriptValue MScriptExprSolver::eval ( const MScriptExpr * expr )
         case MScriptExpr::OPER_SHR_ASSIGN:    case MScriptExpr::OPER_BAND_ASSIGN:
         case MScriptExpr::OPER_BOR_ASSIGN:    case MScriptExpr::OPER_LAND_ASSIGN:
         case MScriptExpr::OPER_LOR_ASSIGN:    case MScriptExpr::OPER_XOR_ASSIGN:
+        case MScriptExpr::OPER_POW_ASSIGN:
         {
             assignment ( result, expr->lVal(), expr->rVal(), location, expr->oper() );
             break;
@@ -106,6 +123,8 @@ MScriptValue MScriptExprSolver::eval ( const MScriptExpr * expr )
         case MScriptExpr::OPER_LT:            case MScriptExpr::OPER_LE:
         case MScriptExpr::OPER_GE:            case MScriptExpr::OPER_GT:
         case MScriptExpr::OPER_SHR:           case MScriptExpr::OPER_SHL:
+        case MScriptExpr::OPER_MIN:           case MScriptExpr::OPER_MAX:
+        case MScriptExpr::OPER_POW:
         {
             MScriptValue left, right;
             getFinalValue(left, expr->lVal(), location);

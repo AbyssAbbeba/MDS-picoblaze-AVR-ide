@@ -507,6 +507,7 @@ void MScriptExprProcessor::decomposeAsgn ( MScriptExpr * expr )
         case MScriptExpr::OPER_LAND_ASSIGN: subExprOper = MScriptExpr::OPER_LAND; break;
         case MScriptExpr::OPER_LOR_ASSIGN:  subExprOper = MScriptExpr::OPER_LOR;  break;
         case MScriptExpr::OPER_XOR_ASSIGN:  subExprOper = MScriptExpr::OPER_BXOR; break;
+        case MScriptExpr::OPER_POW_ASSIGN:  subExprOper = MScriptExpr::OPER_POW;  break;
 
         default:
             return;
@@ -584,15 +585,7 @@ void MScriptExprProcessor::evalConsts ( MScriptExpr * expr,
         const MScriptSrcLocation & location = expr->location();
         MScriptValue & result = ( ( NULL == value ) ? expr->m_lValue : *value );
 
-        if (
-               e->oper() == MScriptExpr::OPER_NOT
-                   ||
-               e->oper() == MScriptExpr::OPER_CMPL
-                   ||
-               e->oper() == MScriptExpr::OPER_ADD_INV
-                   ||
-               e->oper() == MScriptExpr::OPER_INT_PROM
-           )
+        if ( true == isUnary(e->oper()) )
         {
             unaryOperation ( result, e->lVal(), location, e->oper() );
             continue;

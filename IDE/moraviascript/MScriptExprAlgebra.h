@@ -44,6 +44,13 @@ class MScriptExprAlgebra
     public:
         /**
          * @brief
+         * @param[in] oper
+         * @return
+         */
+        bool isUnary ( const MScriptExpr::Operator oper );
+
+        /**
+         * @brief
          * @param[out] result
          * @param[in] input
          * @param[in] location

@@ -75,6 +75,7 @@ class MScriptExpr : public MScriptSerializable
             OPER_LAND_ASSIGN, ///< a &&= b
             OPER_LOR_ASSIGN,  ///< a ||= b
             OPER_XOR_ASSIGN,  ///< a ^= b
+            OPER_POW_ASSIGN,  ///< a **= b
             OPER_PRE_INC,     ///< ++ a
             OPER_PRE_DEC,     ///< -- a
             OPER_POST_INC,    ///< a ++
@@ -86,7 +87,46 @@ class MScriptExpr : public MScriptSerializable
             OPER_REF,         ///< & a
             OPER_INT_PROM,    ///< Integer promotion: ( + a )
             OPER_ADD_INV,     ///< Additive inverse: ( - a )
-            OPER_POW          ///< a ** b (a raised to the power of b)
+
+            OPER_POW,         ///< a ** b (a raised to the power of b)
+            OPER_IS_BOOL,     ///<
+            OPER_IS_INT,      ///<
+            OPER_IS_STRING,   ///<
+            OPER_IS_FLOAT,    ///<
+            OPER_IS_COMPLEX,  ///<
+            OPER_IS_REF,      ///<
+            OPER_TO_BOOL,     ///<
+            OPER_TO_INT,      ///<
+            OPER_TO_STRING,   ///<
+            OPER_TO_FLOAT,    ///<
+            OPER_TO_COMPLEX,  ///<
+            OPER_IS_NAN,      ///<
+            OPER_IS_INFINITY, ///<
+            OPER_IS_POSITIVE, ///<
+            OPER_IS_NEGATIVE, ///<
+            OPER_IS_FINITE,   ///<
+            OPER_IS_ZERO,     ///<
+            OPER_IS_NEGZERO,  ///<
+            OPER_REAL,        ///<
+            OPER_IMG_UNIT,    ///<
+            OPER_SIN,         ///<
+            OPER_COS,         ///<
+            OPER_TAN,         ///<
+            OPER_ARCSIN,      ///<
+            OPER_ARCCOS,      ///<
+            OPER_ARCTAN,      ///<
+            OPER_SINH,        ///<
+            OPER_COSH,        ///<
+            OPER_TANH,        ///<
+            OPER_ARCSINH,     ///<
+            OPER_ARCCOSH,     ///<
+            OPER_ARCTANH,     ///<
+            OPER_CEIL,        ///<
+            OPER_ROUND,       ///<
+            OPER_FLOOR,       ///<
+            OPER_ABS,         ///<
+            OPER_MIN,         ///<
+            OPER_MAX          ///<
         };
 
     ////    Constructors and Destructors    ////
