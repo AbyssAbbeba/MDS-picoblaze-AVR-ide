@@ -52,10 +52,12 @@ next2:
         sub     s1,#1
         jump    next3
         ;; step 2
+        ;; pc == 0
         ;; flag[z] == false
         ;; flag[c] == true
         ;; step 4
         ;; reg[1] == 10
+        ;; pc == 0
         ;; flag[z] == true
         ;; flag[c] == false
         ;; step
@@ -69,6 +71,7 @@ next3:
         sub     s1,#1
         jump    next4
         ;; step 2
+        ;; pc == 0
         ;; flag[z] == false
         ;; flag[c] == true
         ;; step 4
