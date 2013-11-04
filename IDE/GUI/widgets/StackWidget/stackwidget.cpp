@@ -153,7 +153,7 @@ void StackWidget::handleEvent(int subsysId, int eventId, int locationOrReason, i
             {
                 text.append("0");
             }
-            this->lwStack->item(locationOrReason)->setText(text + number);
+            this->lwStack->item(locationOrReason)->setText(text + number.toUpper());
             this->lwStack->item(locationOrReason)->setBackground(Qt::yellow);
 
 
