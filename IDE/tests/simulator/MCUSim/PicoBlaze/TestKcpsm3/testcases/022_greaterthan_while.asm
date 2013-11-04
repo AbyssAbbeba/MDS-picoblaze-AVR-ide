@@ -3,77 +3,71 @@
 device kcpsm3
 org     0
 
+
 start:
-        load s0,#10
-        load s1,#1   
-        ;; step 2
-        ;; reg[0] == 10
-        ;; reg[1] == 1
-        
-        if   s0  > 1
-        add     s3,#1
-        else
-        sub     s3,#1
-        endif
-
-        jump    next1
-        ;; step
-        ;; flag[z] == false
-        ;; flag[c] == false
-        ;; step
+        load    s2,#9
+        load    s0,#10
+        load    s1,#10
         ;; step 3
-        ;; reg[3] == 1
+        ;; reg[0] == 10
+        ;; reg[1] == 10
 
-        
+        while   s1  > #10
+            add     s1,#1
+        endw
+
+        sub     s1,#1
+        jump    next1
+        ;; step 2
+        ;; flag[z] == true
+        ;; flag[c] == false
+        ;; step 4
+        ;; reg[1] == 11
+        ;; step
+
 next1:
 
-        if   0  > 1
-        add     s3,#1
-        else
-        sub     s3,#1
-        endif
+        while   1  > #10
+            add     s1,#1
+        endw
 
+        sub     s1,#1
         jump    next2
-        ;; step
-        ;; flag[z] == false
+        ;; step 2
+        ;; flag[z] == true
         ;; flag[c] == false
+        ;; step 4
+        ;; reg[1] == 11
         ;; step
-        ;; step 3
-        ;; reg[3] == 2
-
 
 next2:
 
-        if   s0  > #1
-        add     s3,#1
-        else
-        sub     s3,#1
-        endif
+        while   s1  > s0
+            add     s1,#1
+        endw
 
+        sub     s1,#1
         jump    next3
-        ;; step
+        ;; step 2
         ;; flag[z] == false
         ;; flag[c] == false
-        ;; step 2
-        ;; step 3
-        ;; reg[3] == 3
-
+        ;; step 4
+        ;; reg[1] == 11
+        ;; step
 
 next3:
 
-        if   0  > #1
-        add     s3,#1
-        else
-        sub     s3,#1
-        endif
+        while   1  > 0
+            add     s1,#1
+        endw
 
-        jump    $
-        ;; step
+        sub     s1,#1
+        jump    next4
+        ;; step 2
         ;; flag[z] == false
         ;; flag[c] == false
-        ;; step 2
-        ;; step 3
-        ;; reg[3] == 4
+        ;; step 4
+        ;; reg[1] == 11
+        ;; step
 
-
-
+next4:
