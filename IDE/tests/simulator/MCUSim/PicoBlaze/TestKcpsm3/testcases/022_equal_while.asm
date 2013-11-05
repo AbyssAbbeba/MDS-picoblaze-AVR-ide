@@ -7,10 +7,12 @@ org     0
 ; four 
 
 start:
+        
         load    s2,#9
         load    s0,#10
         load    s1,#10
-        ;; step 3
+        load    s4,#250
+        ;; step 4
         ;; reg[0] == 10
         ;; reg[1] == 10
 
@@ -73,3 +75,15 @@ next3:
         ;; step
 
 next4:
+
+        while   s1 == s4
+            add         s1,#1
+        endw
+
+        jump    $
+        ;; step 2
+        ;; flag[z] == false
+        ;; flag[c] == false
+        ;; step 4
+        ;; reg[1] == 10
+        ;; step

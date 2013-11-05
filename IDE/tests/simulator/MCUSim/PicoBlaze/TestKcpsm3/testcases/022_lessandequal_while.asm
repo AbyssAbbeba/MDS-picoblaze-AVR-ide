@@ -3,123 +3,87 @@
 device kcpsm3
 org     0
 
+
+; four
+
 start:
-        load s0,#10
-        load s1,#1
-        ;; step 2
+
+        load    s2,#9
+        load    s0,#10
+        load    s1,#10
+        load    s4,#250
+        ;; step 4
         ;; reg[0] == 10
-        ;; reg[1] == 1
+        ;; reg[1] == 10
 
-        if   s0  <= 1
-            add     s3,#1
-            else
-            sub     s3,#1
-        endif
+        while   s1  <= #10
+            add     s1,#1
+        endw
 
+        sub     s1,#1
         jump    next1
         ;; step 2
-        ;; flag[z] == false
-        ;; flag[c] == true
+        ;; flag[z] == true
+        ;; flag[c] == false
+        ;; step 4
+        ;; reg[1] == 11
         ;; step
-        ;; step 2
-        ;; reg[3] == 255
+
 next1:
 
-        if   0  <= 1
-            add     s3,#1
-            else
-            sub     s3,#1
-        endif
+        while   1  <= #10
+            add     s1,#1
+        endw
 
+        sub     s1,#1
         jump    next2
         ;; step 2
-        ;; flag[z] == false
+        ;; flag[z] == true
         ;; flag[c] == false
+        ;; step 4
+        ;; reg[1] == 11
         ;; step
-        ;; step 2
-        ;; reg[3] == 254
+
 next2:
 
-        if   s0  <= #1
-            add     s3,#1
-            else
-            sub     s3,#1
-        endif
+        while   s1  <= s0
+            add     s1,#1
+        endw
 
+        sub     s1,#1
         jump    next3
         ;; step 2
         ;; flag[z] == false
         ;; flag[c] == false
+        ;; step 4
+        ;; reg[1] == 11
         ;; step
-        ;; step 2
-        ;; reg[3] == 253
+
 next3:
 
-        if   0  <= #1
-            add     s3,#1
-            else
-            sub     s3,#1
-        endif
+        while   1  <= 0
+            add     s1,#1
+        endw
 
+        sub     s1,#1
         jump    next4
         ;; step 2
         ;; flag[z] == false
         ;; flag[c] == false
+        ;; step 4
+        ;; reg[1] == 11
         ;; step
-        ;; step 2
-        ;; reg[3] == 252
+
 next4:
 
-        if   s0  <= #50
-            add     s3,#1
-            else
-            sub     s3,#1
-        endif
-
-        jump    next5
-        ;; step 2
-        ;; flag[z] == false
-        ;; flag[c] == false
-        ;; step
-        ;; step 2
-        ;; reg[3] == 253
-
-next5:
-
-        if   s0  <= #10
-            add     s3,#1
-            else
-            sub     s3,#1
-        endif
-
-        jump    next6
-        ;; step 2
-        ;; flag[z] == false
-        ;; flag[c] == false
-        ;; step
-        ;; step 2
-        ;; reg[3] == 255
-
-next6:
-
-        if   s0 == s0
-                add     s3,#1
-            else
-                sub     s3,#1
-        endif
-
-        jump    next7
-
-next7:
-        if      #10 == #10
-                add     s3,#1
-            else
-                sub     s3,#1
-        endif
+        while   s1 <= s4
+            add         s1,#1
+        endw
 
         jump    $
-
-
-
-
-        
+        ;; step 2
+        ;; flag[z] == false
+        ;; flag[c] == false
+        ;; step 4
+        ;; reg[1] == 10
+        ;; step

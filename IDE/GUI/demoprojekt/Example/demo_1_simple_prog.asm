@@ -16,24 +16,22 @@
 ; Program start
 ; --------------------
 start:
+		enable interrupt
+		load	s1,#10
         load    s2,#9
         load    s0,#10
-        load    s1,#7
-        load    s2,#9
-        load    s0,#10
-        load    s1,#7       
-		 load    s2,#9
-        load    s0,#10
-        load    s1,#7
-        jump    calli
 
-calli:
+        while	s1 != #10
+			add		s1,#1
+		endw
 
-		call	hop1	
-		jump	calli
+		jump	start
 
-hop1:
-		call 	hop2
-		return
-hop2:
-		return
+ISR:	
+		store   s1, 0
+		returni enable
+
+
+
+		ORG		3ffh
+		jump	ISR
