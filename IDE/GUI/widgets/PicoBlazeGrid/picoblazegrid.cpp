@@ -28,6 +28,18 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
 
     std::vector<int> mask;
     mask.push_back(MCUSimCPU::EVENT_CPU_PC_CHANGED);
+    mask.push_back(MCUSimCPU::EVENT_CPU_PC_OVERFLOW);
+    mask.push_back(MCUSimCPU::EVENT_CPU_PC_UNDERFLOW);
+    mask.push_back(MCUSimCPU::EVENT_CPU_SYS_FATAL_ERROR);
+    mask.push_back(MCUSimCPU::EVENT_CPU_ERR_INVALID_OPCODE);
+    mask.push_back(MCUSimCPU::EVENT_CPU_ERR_INVALID_JUMP);
+    mask.push_back(MCUSimCPU::EVENT_CPU_ERR_INVALID_CALL);
+    mask.push_back(MCUSimCPU::EVENT_CPU_WRN_INVALID_IRQ);
+    mask.push_back(MCUSimCPU::EVENT_CPU_ERR_INVALID_RET);
+    mask.push_back(MCUSimCPU::EVENT_CPU_ERR_INVALID_RETI);
+    mask.push_back(MCUSimCPU::EVENT_CPU_ERR_INVALID_OPSET);
+    mask.push_back(MCUSimCPU::EVENT_CPU_UNSUPPORTED_INST);
+    mask.push_back(MCUSimCPU::EVENT_CPU_INST_IGNORED);
     controlUnit->registerObserver(this, MCUSimSubsys::ID_CPU, mask);
 
     mask.clear();
@@ -151,6 +163,8 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
     //    (dynamic_cast<MCUSim::Clock*>controlUnit->getSimSubsys(MCUSim::Subsys::SubsysId::ID_CLK_CONTROL))->
     //);
     connect(this->btnPorts, SIGNAL(clicked()), this, SLOT(switchPorts()));
+    connect(this->btnInte, SIGNAL(clicked()), this, SLOT(setIntE()));
+    connect(this->btnIntr, SIGNAL(clicked()), this, SLOT(interrupt()));
 
     deviceChanged();
     
@@ -186,12 +200,12 @@ void PicoBlazeGrid::switchPorts()
 
 void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason, int detail)
 {
-    if ( MCUSimSubsys::ID_CPU != subsysId && MCUSimSubsys::ID_PLIO != subsysId && MCUSimSubsys::ID_FLAGS != subsysId
+    /*if ( MCUSimSubsys::ID_CPU != subsysId && MCUSimSubsys::ID_PLIO != subsysId && MCUSimSubsys::ID_FLAGS != subsysId
         && MCUSimSubsys::ID_STACK != subsysId)
     {
         qDebug("Invalid event received, event ignored.");
         return;
-    }
+    }*/
 
     qDebug() << "PicoBlazeGrid: event";
     if (MCUSimSubsys::ID_CPU == subsysId)
@@ -334,12 +348,17 @@ void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason,
             }
         }
     }
+    else
+    {
+        qDebug("Invalid event received, event ignored.");
+    }
 }
 
 
 void PicoBlazeGrid::deviceChanged()
 {
     m_cpu = dynamic_cast<MCUSimCPU*>(m_simControlUnit->getSimSubsys(MCUSimSubsys::ID_CPU));
+    m_flags = dynamic_cast<PicoBlazeStatusFlags*>(m_simControlUnit->getSimSubsys(MCUSimSubsys::ID_FLAGS));
     deviceReset();
 }
 
@@ -386,7 +405,14 @@ void PicoBlazeGrid::unhighlight()
     this->leSP->setStyleSheet("background-color: none");
     this->btnZero->setStyleSheet("color: none");
     this->btnCarry->setStyleSheet("color: none");
-    this->btnInte->setStyleSheet("color: none");
+    if (m_flags->getInte() == true)
+    {
+        this->btnInte->setStyleSheet("color: #00ff00");
+    }
+    else
+    {
+        this->btnInte->setStyleSheet("color: none");
+    }
     this->btnIntr->setStyleSheet("color: none");
     this->lblRD->setStyleSheet("color: none");
     this->lblWR->setStyleSheet("color: none");
@@ -394,4 +420,25 @@ void PicoBlazeGrid::unhighlight()
     this->memScratch->unhighlight();
     this->memPorts->unhighlight();
     this->memStack->unhighlight();
+}
+
+
+void PicoBlazeGrid::setIntE()
+{
+    if (m_flags->getInte() == true)
+    {
+        this->btnInte->setStyleSheet("color: none");
+        m_flags->setInte(false);
+    }
+    else
+    {
+        this->btnInte->setStyleSheet("color: #00ff00");
+        m_flags->setInte(true);
+    }
+}
+
+
+void PicoBlazeGrid::interrupt()
+{
+    m_flags->interrupt();
 }
