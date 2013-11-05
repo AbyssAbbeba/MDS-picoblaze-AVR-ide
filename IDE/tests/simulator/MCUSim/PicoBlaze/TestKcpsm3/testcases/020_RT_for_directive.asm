@@ -3,29 +3,93 @@
 device kcpsm3
 org     0
 
-;start:
-     ;   LOAD    S0, #10
-        ;; step 3
+start:
+        LOAD    S0, #10
+        ;; step 
         ;; reg[0] == 10
-        ;; reg[1] == 0
         
-    ;    RT_FOR          S0,10
-    ;    add              S6,#1
-    ;    RT_ENDF
+        FOR          S0,2
+        add              S6,#1
+        ENDF
+        ;; step         # load
+        ;; step         # compare
+        ;; step         # jump z
+        ;; flag[z] == false
+        ;; step         # add
+        ;; step         # add
+        ;; reg[6] == 1
+        ;; step         # jump to compare
+        ;; step         # compare
+        ;; step         # jump z
+        ;; flag[z] == false
+        ;; step         # add
+        ;; step         # add
+        ;; reg[6] == 2
+        ;; step         # jump to compare
+        ;; step         # compare
+        ;; step         # jump z
+        ;; flag[z] == true
         
       
-        RT_FOR          S0,10..15
+        FOR          S0,10..12
         add              S7,#1
-        RT_ENDF
+        ENDF
+        ;; step         # load
+        ;; step         # compare
+        ;; step         # jump z
+        ;; flag[z] == false
+        ;; step         # add
+        ;; step         # add
+        ;; reg[7] == 1
+        ;; step         # jump to compare
+        ;; step         # compare
+        ;; step         # jump z
+        ;; flag[z] == false
+        ;; step         # add
+        ;; step         # add
+        ;; reg[7] == 2
+        ;; step         # jump to compare
+        ;; step         # compare
+        ;; step         # jump z
+        ;; flag[z] == true
+        
+        FOR          S0,10..20,5
+        add              S8,#1
+        ENDF
+
+        jump            next1
+        ;; step         # load
+        ;; step         # compare
+        ;; step         # jump z
+        ;; flag[z] == false
+        ;; step         # add
+        ;; step         # add
+        ;; reg[8] == 1
+        ;; step         # jump to compare
+        ;; step         # compare
+        ;; step         # jump z
+        ;; flag[z] == false
+        ;; step         # add
+        ;; step         # add
+        ;; reg[8] == 2
+        ;; step         # jump to compare
+        ;; step         # compare
+        ;; step         # jump z
+        ;; flag[z] == true
+        ;; step         # jump to next for
+
+        ;; # test of nested for
+next1:
+        FOR     s0,2
+            FOR         s0,1
+                add         s7,#1
+            ENDF
+            add     s7,#1
+        ENDF
+        ;; step         # load  1
+        ;; step         # compare 1
+        ;; step         # jump z 1
+            ;; flag[z] == false
+ 
 
         
-        RT_FOR          S0,10..50,5
-        add              S8,#1
-        RT_ENDF
-
-        jump            $
-        ;; step 50
-        ;; reg[0] == 50
-        ;; reg[6] == 10
-        ;; reg[7] == 5
-        ;; reg[8] == 8
