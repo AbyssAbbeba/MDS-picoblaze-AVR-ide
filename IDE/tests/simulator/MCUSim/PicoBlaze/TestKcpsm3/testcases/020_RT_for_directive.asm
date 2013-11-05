@@ -90,6 +90,41 @@ next1:
         ;; step         # compare 1
         ;; step         # jump z 1
             ;; flag[z] == false
+        ;; step         # load  2
+        ;; step         # compare 2
+        ;; step         # jump z 2
+            ;; flag[z] == false
+        ;; step         # add 2
+            ;; reg[7] == 0
+        ;; step         # add 2
+        ;; step         # jump to compare 2
+        ;; step         # compare       2
+        ;; step         # jump z 2
+            ;; flag[z] == true
+        ;; step         # add 1
+        ;; step         # add 1
+        ;; step         # jump to compare 1
+        ;; step         # compare 1
+        ;; step         # jump z 1
+            ;; flag[z] == false
+        ;; step         # load  2
+        ;; step         # compare 2
+        ;; step         # jump z 2
+            ;; flag[z] == false
+        ;; step         # add 2
+            ;; reg[7] == 0
+        ;; step         # add 2
+        ;; step         # jump to compare 2
+        ;; step         # compare       2
+        ;; step         # jump z 2
+            ;; flag[z] == true
+        ;; step         # add 1
+        ;; step         # add 1
+        ;; step         # jump to compare 1
+        ;; step         # compare 1
+        ;; step         # jump z 1
+            ;; flag[z] == true
+        
  
 
         
