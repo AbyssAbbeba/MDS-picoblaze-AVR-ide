@@ -1328,7 +1328,7 @@ input parameters.\\
 
         \section{Run time directives}
         MDS assembler contains some special directives, which are evaluated during run time sequence. You can use them to evaluate simple conditions in your program.
-        Those directives are RT\_IF, RT\_ELSEIF, RT\_WHILE, RT\_FOR.\\ Not all conditions allowed by assembler can be used.
+        Those directives are IF, ELSEIF, WHILE, FOR.\\ Not all conditions allowed by assembler can be used.
         Table of allowed instructions is displayed below.
             \begin{table}[h!]
                     \mysmallfont{}
@@ -1345,23 +1345,23 @@ input parameters.\\
                     \&                       &          A \&  B  \\
                     !\&                      &          A !\& B
                     \end{tabular}
-                    \caption{Allowed conditions with RT\_IF, RT\_WHILE}
+                    \caption{Allowed conditions with IF, WHILE}
             \end{table}
             
-                \subsection{RT\_IF}
+                \subsection{IF}
                     \textbf{SYNTAX:}\\
                     \\ {
                         \texttt{}
                             \begin{tabular}[h!]{llll}
-                                { \color{highlight_directive} RT\_IF } & \verb'     ' &
+                                { \color{highlight_directive} IF } & \verb'     ' &
                                 { \color{highlight_constant} <condition> }\\
                                 { \color{highlight_symbol} <code> }\\
-                                { \color{highlight_directive} RT\_ELSEIF } & \verb'     ' &
+                                { \color{highlight_directive} ELSEIF } & \verb'     ' &
                                 { \color{highlight_constant} <condition> }\\
                                 { \color{highlight_symbol} <code> }\\
-                                { \color{highlight_directive} RT\_ELSE } & \verb'     ' &
+                                { \color{highlight_directive} ELSE } & \verb'     ' &
                                 { \color{highlight_symbol} <code> }\\
-                                { \color{highlight_directive} RT\_ENDIF }
+                                { \color{highlight_directive} ENDIF }
                             \end{tabular}
                         }\\
                     \textbf{DESCRIPTION:}\\
@@ -1370,76 +1370,76 @@ input parameters.\\
                     Number without \# is considered as register adress. See example for conditions syntax.                
                     \textbf{EXAMPLE:}\\
                             \begin{code}[h!]
-                                    { \color{highlight_directive} RT\_IF }
+                                    { \color{highlight_directive} IF }
                                     { \color{highlight_constant}   s0 == \#10 }\\
                                     { \color{highlight_instruction}   LOAD  s0, \#10h }\\
-                                    { \color{highlight_comment} ; RT\_ELSEIF} { \color{highlight_constant}   B >= \#100 }\\
+                                    { \color{highlight_comment} ; ELSEIF} { \color{highlight_constant}   B >= \#100 }\\
                                     { \color{highlight_instruction}   SR0   s0 }\\
-                                    { \color{highlight_comment} ; RT\_ELSE} { \color{highlight_constant}   A >= 5 }\\
+                                    { \color{highlight_comment} ; ELSE} { \color{highlight_constant}   A >= 5 }\\
                                     { \color{highlight_instruction}   INPUT   s0,RX\_data }\\
                                 \caption{Run time if example}
                         \end{code}
                 In this example, first condition is comparing register with constant 10. Second condition compares symbol with constant and third condition compares
                 symbol with register adress. So 5 would have been replaced with value storen in register with adress 5.
-                \subsection{RT\_WHILE}
+                \subsection{WHILE}
                     \textbf{SYNTAX:}\\
                     \\ {
                         \texttt{}
                             \begin{tabular}[h!]{llll}
-                                { \color{highlight_directive} RT\_WHILE } & \verb'     ' &
+                                { \color{highlight_directive} WHILE } & \verb'     ' &
                                 { \color{highlight_constant} <condition> }\\
                                 { \color{highlight_symbol} <code> }\\
-                                { \color{highlight_directive} RT\_ENDW }
+                                { \color{highlight_directive} ENDW }
                             \end{tabular}
                         }\\
                     \textbf{DESCRIPTION:}\\
-                    You can use RT\_WHILE for better readability of you code. Compiler translates this directive as predefined MACRO with instructions COMPARE and TEST and
+                    You can use WHILE for better readability of you code. Compiler translates this directive as predefined MACRO with instructions COMPARE and TEST and
                     evaluates result. You can use registers, immediate constants (symbols) or register adress. Immediate constants are specified as number with \# prefix.
                     Number without \# is considered as register adrress. See example for conditions syntax.
                     \textbf{EXAMPLE:}\\
                             \begin{code}[h!]
-                                    { \color{highlight_directive} RT\_WHILE  }
+                                    { \color{highlight_directive} WHILE  }
                                     { \color{highlight_constant}   s0 == \#10 }\\
-                                    { \color{highlight_directive} ; RT\_ENDW}\\
+                                    { \color{highlight_directive} ; ENDW}\\
                                 \caption{Run time while example}
                         \end{code}
                 
-                \subsection{RT\_FOR}
+                \subsection{FOR}
                     \textbf{SYNTAX:}\\
                     \\ {
                         \texttt{}
                             \begin{tabular}[h!]{llll}
-                                { \color{highlight_directive} RT\_FOR } & \verb'     ' &
+                                { \color{highlight_directive} FOR } & \verb'     ' &
                                 { \color{highlight_constant} <condition> }\\
                                 { \color{highlight_symbol} <code> }\\
-                                { \color{highlight_directive} RT\_ENDF }
+                                { \color{highlight_directive} ENDF }
                             \end{tabular}
                         }\\
                     \textbf{DESCRIPTION:}\\
-                    You can use RT\_FOR for better readability of you code. Compiler translates this directive as predefined MACRO with instructions COMPARE and TEST and
-                    evaluates result. There are three types of RT\_FOR conditions. In first, you have to write the name of used register and number of repetions. In this case,
+                    You can use FOR for better readability of you code. Compiler translates this directive as predefined MACRO with instructions COMPARE and TEST and
+                    evaluates result. There are three types of FOR conditions. In first, you have to write the name of used register and number of repetions. In this case,
                     counting starts at number 0 and incrementing to number of repetions. In second type, you write used register and range of
                     repetions ( for examle 5..10). In third type, you can even define size of one step, so incremented number can be for some reason bigger.
                     See examples for better understanding. WARNING: Using FOR directive will overide used register( s0 in example)
                     \textbf{EXAMPLE:}\\
                             \begin{code}[h!]
-                                    { \color{highlight_directive} RT\_FOR  }
+                                    { \color{highlight_directive} FOR  }
                                     { \color{highlight_constant}   s0,10 }\\
-                                    { \color{highlight_directive} ; RT\_ENDF}\\
+                                    { \color{highlight_directive} ; ENDF}\\
                                 \caption{Run time while example}
                             \end{code}
                     In this case, incrementing is from 0 to 10. Incrementing step is 1.
                             \begin{code}[h!]
-                                    { \color{highlight_directive} RT\_FOR  }
+                                    { \color{highlight_directive} FOR  }
                                     { \color{highlight_constant}   s0,10..20 }\\
-                                    { \color{highlight_directive} ; RT\_ENDF}\\
+                                    { \color{highlight_directive} ; ENDF}\\
                                 \caption{Run time while example}
                             \end{code}
                     In this case, incrementing is in the range 10 to 20. Incrementing step is 1.
                             \begin{code}[h!]
-                                    { \color{highlight_directive} RT\_FOR  }
+                                    { \color{highlight_directive} FOR  }
                                     { \color{highlight_constant}   s0,10..50,10 }\\
-                                    { \color{highlight_directive} ; RT\_ENDF}\\
+                                    { \color{highlight_directive} ; ENDF}\\
                                 \caption{Run time while example}
                             \end{code}
                     In this case, incrementing is from 10 to 50. Last number defines incrementing step. (In this case 10).

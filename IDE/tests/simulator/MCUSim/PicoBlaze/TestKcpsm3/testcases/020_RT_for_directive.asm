@@ -95,7 +95,7 @@ next1:
         ;; step         # jump z 2
             ;; flag[z] == false
         ;; step         # add 2
-            ;; reg[9] == 0
+            ;; reg[9] == 1
         ;; step         # add 2
         ;; step         # jump to compare 2
         ;; step         # compare       2
@@ -113,7 +113,7 @@ next1:
         ;; step         # jump z 2
             ;; flag[z] == false
         ;; step         # add 2
-            ;; reg[9] == 0
+            ;; reg[9] == 2
         ;; step         # add 2
         ;; step         # jump to compare 2
         ;; step         # compare       2
