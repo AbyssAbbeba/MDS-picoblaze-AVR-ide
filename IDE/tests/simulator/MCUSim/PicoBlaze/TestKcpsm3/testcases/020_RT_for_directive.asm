@@ -82,9 +82,9 @@ start:
 next1:
         FOR     s0,2
             FOR         s0,1
-                add         s7,#1
+                add         s9,#1
             ENDF
-            add     s7,#1
+            add     sA,#1
         ENDF
         ;; step         # load  1
         ;; step         # compare 1
@@ -95,7 +95,7 @@ next1:
         ;; step         # jump z 2
             ;; flag[z] == false
         ;; step         # add 2
-            ;; reg[7] == 0
+            ;; reg[9] == 0
         ;; step         # add 2
         ;; step         # jump to compare 2
         ;; step         # compare       2
@@ -103,6 +103,7 @@ next1:
             ;; flag[z] == true
         ;; step         # add 1
         ;; step         # add 1
+            ;; reg[10] == 1
         ;; step         # jump to compare 1
         ;; step         # compare 1
         ;; step         # jump z 1
@@ -112,7 +113,7 @@ next1:
         ;; step         # jump z 2
             ;; flag[z] == false
         ;; step         # add 2
-            ;; reg[7] == 0
+            ;; reg[9] == 0
         ;; step         # add 2
         ;; step         # jump to compare 2
         ;; step         # compare       2
@@ -120,6 +121,7 @@ next1:
             ;; flag[z] == true
         ;; step         # add 1
         ;; step         # add 1
+            ;; reg[10] == 2
         ;; step         # jump to compare 1
         ;; step         # compare 1
         ;; step         # jump z 1
