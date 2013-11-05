@@ -47,6 +47,7 @@ link_directories(
     "${CMAKE_SOURCE_DIR}/GUI/widgets/RegistersWidget/"
     "${CMAKE_SOURCE_DIR}/GUI/widgets/PortHexEdit/"
     "${CMAKE_CURRENT_BINARY_DIR}/../../../simulators/SimControl/"
+    "${CMAKE_CURRENT_BINARY_DIR}/../../../simulators/MCUSim/PicoBlaze/"
     "${CMAKE_CURRENT_BINARY_DIR}/../../../simulators/MCUSim/McuSimCfgMgr/"
 	)
 

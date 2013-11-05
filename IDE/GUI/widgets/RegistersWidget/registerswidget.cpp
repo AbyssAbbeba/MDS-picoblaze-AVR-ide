@@ -103,9 +103,9 @@ void RegistersWidget::handleEvent(int subsysId, int eventId, int locationOrReaso
                 this->item(idx-8, 7)->setText(bin);
 
                 
-                this->item(idx-6, 5)->setBackground(Qt::yellow);
-                this->item(idx-6, 6)->setBackground(Qt::yellow);
-                this->item(idx-6, 7)->setBackground(Qt::yellow);
+                this->item(idx-8, 5)->setBackground(Qt::yellow);
+                this->item(idx-8, 6)->setBackground(Qt::yellow);
+                this->item(idx-8, 7)->setBackground(Qt::yellow);
             }
             else
             {
