@@ -50,6 +50,7 @@ MainForm::MainForm()
     //this->dockWidgets = false;
     createActions();
     createMenu();
+    createShortcuts();
     createToolbar();
     //CreateDockWidgets();
     //CreateWelcome();
@@ -114,11 +115,11 @@ void MainForm::createMenu()
 void MainForm::createActions()
 {
     //qDebug() << "MainForm: CreateActions()";
-    newAct = new QAction(tr("&New File"), this);
+    newAct = new QAction(tr("New File"), this);
     newAct->setStatusTip("Create a new file");
     connect(newAct, SIGNAL(triggered()), this, SLOT(newFile()));
 
-    openAct = new QAction(tr("&Open File"), this);
+    openAct = new QAction(tr("Open File"), this);
     connect(openAct, SIGNAL(triggered()), this, SLOT(openFile()));
 
 
@@ -143,7 +144,7 @@ void MainForm::createActions()
     connect(removeFileAct, SIGNAL(triggered()), this, SLOT(removeProjFile()));*/
 
 
-    saveAct = new QAction(tr("&Save File"), this);
+    saveAct = new QAction(tr("Save File"), this);
     connect(saveAct, SIGNAL(triggered()), this, SLOT(saveFile()));
     saveAct->setDisabled(true);
 
@@ -246,6 +247,12 @@ void MainForm::createActions()
     //qDebug() << "MainForm: return CreateActions()";
 }
 
+
+void MainForm::createShortcuts()
+{
+    QShortcut *srtSave = new QShortcut(QKeySequence("Ctrl+S"), this);
+    connect(srtSave, SIGNAL(activated()), this, SLOT(saveFile()));
+}
 
 
 
