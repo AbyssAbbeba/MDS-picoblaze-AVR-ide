@@ -102,6 +102,7 @@ class MainForm : public QMainWindow
         //init functions
         void createMenu();
         void createActions();
+        void createShortcuts();
         void createToolbar();
         void createWelcome();
         //project manager

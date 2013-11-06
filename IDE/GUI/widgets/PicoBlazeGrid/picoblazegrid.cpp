@@ -440,5 +440,6 @@ void PicoBlazeGrid::setIntE()
 
 void PicoBlazeGrid::interrupt()
 {
+    //qDebug() << "PicoBlazeGrid: interrupt()";
     m_flags->interrupt();
 }
