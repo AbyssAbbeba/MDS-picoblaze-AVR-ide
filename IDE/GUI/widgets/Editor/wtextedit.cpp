@@ -205,3 +205,11 @@ void WTextEdit::scrollToLine(int line)
     this->verticalScrollBar()->setValue((int)(((double)line / (double)this->document()->lineCount()) * this->verticalScrollBar()->maximum()));
     //qDebug() << "WTextEdit: return scrollToLine()";
 }
+
+
+void WTextEdit::deselect()
+{
+    QTextCursor cursor = this->textCursor();
+    cursor.clearSelection();
+    this->setTextCursor(cursor);
+}
