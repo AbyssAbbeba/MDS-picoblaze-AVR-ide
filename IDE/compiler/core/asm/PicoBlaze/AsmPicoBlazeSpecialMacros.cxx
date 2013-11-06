@@ -75,7 +75,10 @@ CompilerStatement * AsmPicoBlazeSpecialMacros::runTimeWhile ( CompilerStatement 
 
 void AsmPicoBlazeSpecialMacros::runTimeForLeave()
 {
-    m_forLoopIterRegs.pop_back();
+    if ( false == m_forLoopIterRegs.empty() )
+    {
+        m_forLoopIterRegs.pop_back();
+    }
 }
 
 CompilerStatement * AsmPicoBlazeSpecialMacros::runTimeFor ( CompilerStatement * rtFor )
@@ -113,11 +116,11 @@ CompilerStatement * AsmPicoBlazeSpecialMacros::runTimeFor ( CompilerStatement * 
     }
     if ( true == regInUse )
     {
-            m_compilerCore->compilerMessage ( args[0]->location(),
-                                              CompilerBase::MT_WARNING,
-                                              QObject::tr ( "reuse of iterator register in nested for loop (the two "
-                                                            "loops will affect each other via their iterator "
-                                                            "registers)" ) .toStdString() );
+        m_compilerCore->compilerMessage ( args[0]->location(),
+                                          CompilerBase::MT_WARNING,
+                                          QObject::tr ( "reuse of iterator register in nested for loop (the two loops "
+                                                        "will affect each other via their iterator registers)" )
+                                                      .toStdString() );
     }
     m_forLoopIterRegs.push_back(reg);
 
