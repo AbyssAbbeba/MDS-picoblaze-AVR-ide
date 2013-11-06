@@ -3,29 +3,87 @@
 device kcpsm3
 org     0
 
-;start:
-     ;   LOAD    S0, #10
-        ;; step 3
+
+; four
+
+start:
+
+        load    s2,#9
+        load    s0,#10
+        load    s1,#10
+        load    s4,#250
+        ;; step 4
         ;; reg[0] == 10
-        ;; reg[1] == 0
-        
-    ;    RT_FOR          S0,10
-    ;    add              S6,#1
-    ;    RT_ENDF
-        
-      
-        RT_FOR          S0,10..15
-        add              S7,#1
-        RT_ENDF
+        ;; reg[1] == 10
 
-        
-        RT_FOR          S0,10..50,5
-        add              S8,#1
-        RT_ENDF
+        while   s1  !& #10
+            add     s1,#1
+        endw
 
-        jump            $
-        ;; step 50
-        ;; reg[0] == 50
-        ;; reg[6] == 10
-        ;; reg[7] == 5
-        ;; reg[8] == 8
+        sub     s1,#1
+        jump    next1
+        ;; step 2
+        ;; flag[z] == true
+        ;; flag[c] == false
+        ;; step 4
+        ;; reg[1] == 11
+        ;; step
+
+next1:
+
+        while   1  !& #10
+            add     s1,#1
+        endw
+
+        sub     s1,#1
+        jump    next2
+        ;; step 2
+        ;; flag[z] == true
+        ;; flag[c] == false
+        ;; step 4
+        ;; reg[1] == 11
+        ;; step
+
+next2:
+
+        while   s1  !& s0
+            add     s1,#1
+        endw
+
+        sub     s1,#1
+        jump    next3
+        ;; step 2
+        ;; flag[z] == false
+        ;; flag[c] == false
+        ;; step 4
+        ;; reg[1] == 11
+        ;; step
+
+next3:
+
+        while   1  !& 0
+            add     s1,#1
+        endw
+
+        sub     s1,#1
+        jump    next4
+        ;; step 2
+        ;; flag[z] == false
+        ;; flag[c] == false
+        ;; step 4
+        ;; reg[1] == 11
+        ;; step
+
+next4:
+
+        while   s1 !& s4
+            add         s1,#1
+        endw
+
+        jump    $
+        ;; step 2
+        ;; flag[z] == false
+        ;; flag[c] == false
+        ;; step 4
+        ;; reg[1] == 10
+        ;; step
