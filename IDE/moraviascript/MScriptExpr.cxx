@@ -367,12 +367,13 @@ std::ostream & operator << ( std::ostream & out,
         case MScriptExpr::OPER_INT_PROM:        out << "<+pos>";break;
         case MScriptExpr::OPER_ADD_INV:         out << "<-neg>";break;
 
+        case MScriptExpr::OPER_LENGTH:          out << "<length>";      break;
         case MScriptExpr::OPER_IS_BOOL:         out << "<is_bool>";     break;
         case MScriptExpr::OPER_IS_INT:          out << "<is_int>";      break;
         case MScriptExpr::OPER_IS_STRING:       out << "<is_string>";   break;
         case MScriptExpr::OPER_IS_FLOAT:        out << "<is_float>";    break;
         case MScriptExpr::OPER_IS_COMPLEX:      out << "<is_complex>";  break;
-        case MScriptExpr::OPER_IS_REF:          out << "<is_ref>";      break;
+        case MScriptExpr::OPER_IS_EMPTY:        out << "<is_empty>";    break;
         case MScriptExpr::OPER_TO_BOOL:         out << "<to_bool>";     break;
         case MScriptExpr::OPER_TO_INT:          out << "<to_int>";      break;
         case MScriptExpr::OPER_TO_STRING:       out << "<to_string>";   break;
@@ -383,8 +384,6 @@ std::ostream & operator << ( std::ostream & out,
         case MScriptExpr::OPER_IS_POSITIVE:     out << "<is_positive>"; break;
         case MScriptExpr::OPER_IS_NEGATIVE:     out << "<is_negative>"; break;
         case MScriptExpr::OPER_IS_FINITE:       out << "<is_finite>";   break;
-        case MScriptExpr::OPER_IS_ZERO:         out << "<is_zero>";     break;
-        case MScriptExpr::OPER_IS_NEGZERO:      out << "<is_negzero>";  break;
         case MScriptExpr::OPER_REAL:            out << "<Re>";          break;
         case MScriptExpr::OPER_IMG_UNIT:        out << "<Im>";          break;
         case MScriptExpr::OPER_SIN:             out << "<sin>";         break;

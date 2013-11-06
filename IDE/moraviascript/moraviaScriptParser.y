@@ -144,7 +144,7 @@
 %token F_ISSTRING       "isstring"
 %token F_ISFLOAT        "isfloat"
 %token F_ISCOMPLEX      "iscomplex"
-%token F_ISREF          "isref"
+%token F_ISEMPTY        "isempty"
  // Datatype conversion.
 %token F_BOOL           "bool"
 %token F_INT            "int"
@@ -157,8 +157,6 @@
 %token F_ISPOSITIVE     "ispositive"
 %token F_ISNEGATIVE     "isnegative"
 %token F_ISFINITE       "isfinite"
-%token F_ISZERO         "iszero"
-%token F_ISNEGZERO      "isnegzero"
  // Complex plane decomposition.
 %token F_RE             "Re"
 %token F_IM             "Im"
@@ -185,6 +183,7 @@
 %token F_ABS            "abs"
 %token F_MIN            "min"
 %token F_MAX            "max"
+%token F_LENGTH         "length"
 
 /* Other terminal symbols */
 %token O_COLON          ":"
@@ -242,7 +241,8 @@
 %left ","
 %right "&=" "^=" "|=" "&&=" "||="
 %right "<<=" ">>="
-%right "*=" "/=" "%=" "**="
+%right "**="
+%right "*=" "/=" "%="
 %right "+=" "-="
 %right "="
 %right "?" ":"
@@ -256,7 +256,8 @@
 %left "<" "<="
 %left "<<" ">>"
 %left "+" "-"
-%left "*" "/" "%" "**"
+%left "*" "/" "%"
+%left "**"
 %right "~" "!"
 %right UPLUS UMINUS
 %right "++" "--"
@@ -625,21 +626,25 @@ native_f:
     | "isstring" "(" expr ")"       { $$ = new MScriptExpr($expr, MScriptExpr::OPER_IS_STRING,   @$); }
     | "isfloat" "(" expr ")"        { $$ = new MScriptExpr($expr, MScriptExpr::OPER_IS_FLOAT,    @$); }
     | "iscomplex" "(" expr ")"      { $$ = new MScriptExpr($expr, MScriptExpr::OPER_IS_COMPLEX,  @$); }
-    | "isref" "(" id ")"            { $$ = new MScriptExpr($id,   MScriptExpr::OPER_IS_REF,      @$); }
+    | "isempty" "(" id ")"          { $$ = new MScriptExpr($id,   MScriptExpr::OPER_IS_EMPTY,    @$); }
 
     | "bool" "(" expr ")"           { $$ = new MScriptExpr($expr, MScriptExpr::OPER_TO_BOOL,     @$); }
     | "int" "(" expr ")"            { $$ = new MScriptExpr($expr, MScriptExpr::OPER_TO_INT,      @$); }
     | "f_string" "(" expr ")"       { $$ = new MScriptExpr($expr, MScriptExpr::OPER_TO_STRING,   @$); }
     | "float" "(" expr ")"          { $$ = new MScriptExpr($expr, MScriptExpr::OPER_TO_FLOAT,    @$); }
-    | "complex" "(" expr ")"        { $$ = new MScriptExpr($expr, MScriptExpr::OPER_TO_COMPLEX,  @$); }
+    | "complex"
+      "(" expr "," expr ")"         {
+                                        $$ = new MScriptExpr ( new MScriptExpr($3, MScriptExpr::OPER_TO_FLOAT, @3),
+                                                               MScriptExpr::OPER_TO_COMPLEX,
+                                                               new MScriptExpr($5, MScriptExpr::OPER_TO_FLOAT, @5),
+                                                               @$ );
+                                    }
 
     | "isnan" "(" expr ")"          { $$ = new MScriptExpr($expr, MScriptExpr::OPER_IS_NAN,      @$); }
     | "isinfinity" "(" expr ")"     { $$ = new MScriptExpr($expr, MScriptExpr::OPER_IS_INFINITY, @$); }
     | "ispositive" "(" expr ")"     { $$ = new MScriptExpr($expr, MScriptExpr::OPER_IS_POSITIVE, @$); }
     | "isnegative" "(" expr ")"     { $$ = new MScriptExpr($expr, MScriptExpr::OPER_IS_NEGATIVE, @$); }
     | "isfinite" "(" expr ")"       { $$ = new MScriptExpr($expr, MScriptExpr::OPER_IS_FINITE,   @$); }
-    | "iszero" "(" expr ")"         { $$ = new MScriptExpr($expr, MScriptExpr::OPER_IS_ZERO,     @$); }
-    | "isnegzero" "(" expr ")"      { $$ = new MScriptExpr($expr, MScriptExpr::OPER_IS_NEGZERO,  @$); }
 
     | "Re" "(" expr ")"             { $$ = new MScriptExpr($expr, MScriptExpr::OPER_REAL,        @$); }
     | "Im" "(" expr ")"             { $$ = new MScriptExpr($expr, MScriptExpr::OPER_IMG_UNIT,    @$); }
@@ -666,6 +671,7 @@ native_f:
     | "abs" "(" expr ")"            { $$ = new MScriptExpr($expr, MScriptExpr::OPER_ABS,         @$); }
     | "min" "(" expr "," expr ")"   { $$ = new MScriptExpr($3,    MScriptExpr::OPER_MIN, $5,     @$); }
     | "max" "(" expr "," expr ")"   { $$ = new MScriptExpr($3,    MScriptExpr::OPER_MAX, $5,     @$); }
+    | "length" "(" expr ")"         { $$ = new MScriptExpr($expr, MScriptExpr::OPER_LENGTH,      @$); }
 ;
 
 %%
