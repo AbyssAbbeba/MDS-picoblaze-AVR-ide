@@ -11,7 +11,9 @@ StackWidget::StackWidget(QWidget *parent, MCUSimControl * controlUnit, MCUSimSub
     }
     
     this->subsys = subsys;
-    this->setMinimumHeight(205);
+    this->setMinimumHeight(225);
+
+    this->width = 3;
     
     this->leInput = new QLineEdit(this);
     this->lwStack = new QListWidget(this);
@@ -25,7 +27,7 @@ StackWidget::StackWidget(QWidget *parent, MCUSimControl * controlUnit, MCUSimSub
     this->btnPop->setMaximumWidth(27);
     this->btnPop->setMaximumHeight(17);
 
-    this->lwStack->move(0,25);
+    this->lwStack->move(0,21);
     this->leInput->move(0,0);
     this->btnPush->move(44,0);
     this->btnPop->move(72,0);
@@ -38,6 +40,7 @@ StackWidget::StackWidget(QWidget *parent, MCUSimControl * controlUnit, MCUSimSub
     QFont fontLE = this->leInput->font();
     fontLE.setPointSize(9);
     this->leInput->setFont(fontLE);
+    this->leInput->setMaxLength(this->width);
     
     QFont fontLW = this->lwStack->font();
     fontLW.setPointSize(9);
@@ -73,14 +76,31 @@ StackWidget::~StackWidget()
 
 void StackWidget::push()
 {
-    if ( 32 >= this->sp && this->leInput->text().toInt() > 0 && this->leInput->text().toInt() <  65535)
+    bool ok = false;
+    int number = this->leInput->text().toInt(&ok, 16);
+    if ( 32 >= this->sp && ok == true && number > 0 && number <= 0x3FF)
     {
-        this->lwStack->item(this->sp)->setText(this->leInput->text());
+        leInput->setStyleSheet("QLineEdit{background: none;}");
+
+        QString text = "0x";
+        for (int i = this->leInput->text().length(); i < this->width; i++)
+        {
+            text.append("0");
+        }
+        this->lwStack->item(this->sp)->setText(text + this->leInput->text().toUpper());
+
         this->sp++;
-        //QListWidgetItem *item = new QListWidgetItem(this->leInput->text(), this->lwStack);
-        //this->lwStack->setCurrentRow(this->lwStack->count() - 1);
         this->m_memory->directWrite(lwStack->count()-1, this->leInput->text().toInt());
         this->m_memory->setSP(this->sp);
+    }
+    else
+    {
+        //if (ok != true)
+        //{
+        //    qDebug() << "bool, you fucked up";
+        //}
+        //qDebug() << number;
+        this->leInput->setStyleSheet("QLineEdit{background: red;}");
     }
 }
 
@@ -90,7 +110,8 @@ void StackWidget::pop()
     if ( 0 != this->sp )
     {
         this->sp--;
-        this->leInput->setText(this->lwStack->item(this->sp)->text());
+        this->leInput->setText(this->lwStack->item(this->sp)->text().right(this->width));
+        this->leInput->setStyleSheet("QLineEdit{background: none;}");
         this->lwStack->item(this->sp)->setText("");
         this->m_memory->setSP(this->sp);
         /*for (int i = lwStack->count()-1; i > lwStack->currentRow(); i--)
@@ -126,7 +147,13 @@ void StackWidget::handleEvent(int subsysId, int eventId, int locationOrReason, i
         case MCUSimMemory::EVENT_MEM_INF_WR_VAL_WRITTEN:
         {
             qDebug() << "StackWidget: event: mem cell" << locationOrReason << "changed to" << detail;
-            this->lwStack->item(locationOrReason)->setText(QString::number(detail, 16));
+            QString number = QString::number(detail, 16);
+            QString text = "0x";
+            for (int i = number.length(); i < this->width; i++)
+            {
+                text.append("0");
+            }
+            this->lwStack->item(locationOrReason)->setText(text + number.toUpper());
             this->lwStack->item(locationOrReason)->setBackground(Qt::yellow);
 
 

@@ -41,6 +41,7 @@ class StackWidget : public QWidget, public MCUSimObserver
         MCUSimSubsys::SubsysId subsys;
         int m_startingAddress;
         int m_size;
+        int width;
         QIcon *iconSP;
         int sp;
 };

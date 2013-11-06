@@ -16,11 +16,22 @@
 ; Program start
 ; --------------------
 start:
-                    load s1,#10
-                    load s0,#1
+		enable interrupt
+		load	s1,#10
+        load    s2,#9
+        load    s0,#10
 
-                    if   s0  >= #50
-                        add     s3,#1
-                        else
-                        sub     s3,#1
-                    endif
+        while	s1 != #10
+			add		s1,#1
+		endw
+
+		jump	start
+
+ISR:	
+		store   s1, 0
+		returni enable
+
+
+
+		ORG		3ffh
+		jump	ISR

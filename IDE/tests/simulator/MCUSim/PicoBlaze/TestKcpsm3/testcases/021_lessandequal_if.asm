@@ -98,7 +98,7 @@ next5:
         ;; flag[c] == false
         ;; step
         ;; step 2
-        ;; reg[3] == 254
+        ;; reg[3] == 255
 
 next6:
 

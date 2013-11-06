@@ -28,6 +28,18 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
 
     std::vector<int> mask;
     mask.push_back(MCUSimCPU::EVENT_CPU_PC_CHANGED);
+    mask.push_back(MCUSimCPU::EVENT_CPU_PC_OVERFLOW);
+    mask.push_back(MCUSimCPU::EVENT_CPU_PC_UNDERFLOW);
+    mask.push_back(MCUSimCPU::EVENT_CPU_SYS_FATAL_ERROR);
+    mask.push_back(MCUSimCPU::EVENT_CPU_ERR_INVALID_OPCODE);
+    mask.push_back(MCUSimCPU::EVENT_CPU_ERR_INVALID_JUMP);
+    mask.push_back(MCUSimCPU::EVENT_CPU_ERR_INVALID_CALL);
+    mask.push_back(MCUSimCPU::EVENT_CPU_WRN_INVALID_IRQ);
+    mask.push_back(MCUSimCPU::EVENT_CPU_ERR_INVALID_RET);
+    mask.push_back(MCUSimCPU::EVENT_CPU_ERR_INVALID_RETI);
+    mask.push_back(MCUSimCPU::EVENT_CPU_ERR_INVALID_OPSET);
+    mask.push_back(MCUSimCPU::EVENT_CPU_UNSUPPORTED_INST);
+    mask.push_back(MCUSimCPU::EVENT_CPU_INST_IGNORED);
     controlUnit->registerObserver(this, MCUSimSubsys::ID_CPU, mask);
 
     mask.clear();
@@ -54,15 +66,15 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
     }
     
     this->memRegs = new RegistersWidget(this, controlUnit, MCUSimSubsys::SubsysId::ID_MEM_REGISTERS);
-    this->memRegs->move(10, 25);
+    this->memRegs->move(10, 42);
     this->memScratch = new McuMemoryView(this, controlUnit, MCUSimSubsys::SubsysId::ID_MEM_DATA);
-    this->memScratch->move(305,5);
+    this->memScratch->move(305,10);
     this->memPorts = new PortHexEdit(this, controlUnit, MCUSimSubsys::SubsysId::ID_PLIO);
-    this->memPorts->move(520,15);
+    this->memPorts->move(520,19);
     this->memStack = new StackWidget(this, controlUnit, MCUSimSubsys::SubsysId::ID_STACK);
-    this->memStack->move(760, 25);
+    this->memStack->move(760, 20);
     this->memStack->setMaximumWidth(100);
-    this->memStack->setMaximumHeight(220);
+    this->memStack->setMaximumHeight(225);
     this->memRegs->show();
     this->memScratch->show();
     this->memPorts->show();
@@ -102,16 +114,19 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
     this->lePC = new QLineEdit(this);
     this->lePC->setMaximumWidth(50);
     this->lePC->setMaximumHeight(17);
+    this->lePC->setFont(QFont("Andale Mono", 9));
     this->lePC->setReadOnly(true);
     this->lePC->move(920, 0);
     this->leTime = new QLineEdit(this);
     this->leTime->setMaximumWidth(50);
     this->leTime->setMaximumHeight(17);
+    this->leTime->setFont(QFont("Andale Mono", 9));
     this->leTime->setReadOnly(true);
     this->leTime->move(920, 20);
     this->leClock = new QLineEdit(this);
     this->leClock->setMaximumWidth(50);
     this->leClock->setMaximumHeight(17);
+    this->leClock->setFont(QFont("Andale Mono", 9));
     this->leClock->setReadOnly(true);
     this->leClock->move(920, 40);
 
@@ -148,6 +163,8 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
     //    (dynamic_cast<MCUSim::Clock*>controlUnit->getSimSubsys(MCUSim::Subsys::SubsysId::ID_CLK_CONTROL))->
     //);
     connect(this->btnPorts, SIGNAL(clicked()), this, SLOT(switchPorts()));
+    connect(this->btnInte, SIGNAL(clicked()), this, SLOT(setIntE()));
+    connect(this->btnIntr, SIGNAL(clicked()), this, SLOT(interrupt()));
 
     deviceChanged();
     
@@ -183,12 +200,12 @@ void PicoBlazeGrid::switchPorts()
 
 void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason, int detail)
 {
-    if ( MCUSimSubsys::ID_CPU != subsysId && MCUSimSubsys::ID_PLIO != subsysId && MCUSimSubsys::ID_FLAGS != subsysId
+    /*if ( MCUSimSubsys::ID_CPU != subsysId && MCUSimSubsys::ID_PLIO != subsysId && MCUSimSubsys::ID_FLAGS != subsysId
         && MCUSimSubsys::ID_STACK != subsysId)
     {
         qDebug("Invalid event received, event ignored.");
         return;
-    }
+    }*/
 
     qDebug() << "PicoBlazeGrid: event";
     if (MCUSimSubsys::ID_CPU == subsysId)
@@ -201,15 +218,15 @@ void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason,
                 int value = m_cpu->getProgramCounter();
                 if (value > 0xFF)
                 {
-                    this->lePC->setText(QString::number(value, 16).toUpper() + "h");
+                    this->lePC->setText("0x" + QString::number(value, 16).toUpper() + "h");
                 }
                 else if (value > 0xF)
                 {
-                    this->lePC->setText("0" + QString::number(value, 16).toUpper() + "h");
+                    this->lePC->setText("0x0" + QString::number(value, 16).toUpper());
                 }
                 else
                 {
-                    this->lePC->setText("00" + QString::number(value, 16).toUpper() + "h");
+                    this->lePC->setText("0x00" + QString::number(value, 16).toUpper());
                 }
                 this->lePC->setStyleSheet("background-color: yellow");
                 break;
@@ -331,12 +348,17 @@ void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason,
             }
         }
     }
+    else
+    {
+        qDebug("Invalid event received, event ignored.");
+    }
 }
 
 
 void PicoBlazeGrid::deviceChanged()
 {
     m_cpu = dynamic_cast<MCUSimCPU*>(m_simControlUnit->getSimSubsys(MCUSimSubsys::ID_CPU));
+    m_flags = dynamic_cast<PicoBlazeStatusFlags*>(m_simControlUnit->getSimSubsys(MCUSimSubsys::ID_FLAGS));
     deviceReset();
 }
 
@@ -383,7 +405,14 @@ void PicoBlazeGrid::unhighlight()
     this->leSP->setStyleSheet("background-color: none");
     this->btnZero->setStyleSheet("color: none");
     this->btnCarry->setStyleSheet("color: none");
-    this->btnInte->setStyleSheet("color: none");
+    if (m_flags->getInte() == true)
+    {
+        this->btnInte->setStyleSheet("color: #00ff00");
+    }
+    else
+    {
+        this->btnInte->setStyleSheet("color: none");
+    }
     this->btnIntr->setStyleSheet("color: none");
     this->lblRD->setStyleSheet("color: none");
     this->lblWR->setStyleSheet("color: none");
@@ -391,4 +420,26 @@ void PicoBlazeGrid::unhighlight()
     this->memScratch->unhighlight();
     this->memPorts->unhighlight();
     this->memStack->unhighlight();
+}
+
+
+void PicoBlazeGrid::setIntE()
+{
+    if (m_flags->getInte() == true)
+    {
+        this->btnInte->setStyleSheet("color: none");
+        m_flags->setInte(false);
+    }
+    else
+    {
+        this->btnInte->setStyleSheet("color: #00ff00");
+        m_flags->setInte(true);
+    }
+}
+
+
+void PicoBlazeGrid::interrupt()
+{
+    //qDebug() << "PicoBlazeGrid: interrupt()";
+    m_flags->interrupt();
 }
