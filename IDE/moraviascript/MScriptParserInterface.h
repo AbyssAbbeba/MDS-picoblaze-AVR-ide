@@ -17,11 +17,11 @@
 #define MSCRIPTPARSERINTERFACE_H
 
 // MScript language interpreter header files.
+#include "MScriptBase.h"
+#include "MScriptExpr.h"
 #include "MScriptStmtTypes.h"
 #include "MScriptStatement.h"
-#include "MScriptExpr.h"
 #include "MScriptSrcLocation.h"
-#include "MScriptBase.h"
 
 // Standard header files.
 #include <string>
