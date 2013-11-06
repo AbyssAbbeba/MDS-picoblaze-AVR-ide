@@ -47,6 +47,9 @@ class WTextEdit : public QTextEdit
             return *this;
         }*/
 
+    public slots:
+        void deselect();
+
 
     signals:
         void focusIn();

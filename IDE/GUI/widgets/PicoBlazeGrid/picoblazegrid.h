@@ -28,6 +28,7 @@
 #include <QPushButton>
 #include "../../../simulators/MCUSim/MCUSim.h"
 #include "../../../simulators/MCUSim/PicoBlaze/PicoBlazeStatusFlags.h"
+#include "../../../simulators/MCUSim/PicoBlaze/PicoBlazeInterruptController.h"
 #include "../../../simulators/MCUSim/PicoBlaze/PicoBlazeStack.h"
 #include "../../../simulators/SimControl/MCUSimControl.h"
 #include "../../../simulators/SimControl/MCUSimObserver.h"
@@ -93,6 +94,7 @@ class PicoBlazeGrid : public QWidget, public MCUSimObserver
 
         MCUSimCPU* m_cpu;
         PicoBlazeStatusFlags *m_flags;
+        PicoBlazeInterruptController *m_interrupt;
         
 
     //signals:

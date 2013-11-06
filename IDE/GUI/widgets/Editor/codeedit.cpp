@@ -197,10 +197,31 @@ void CodeEdit::makeMenu()
 {
     //qDebug() << "CodeEdit: makeMenu()";
     editorPopup = new QMenu(this);
+    cutAct = new QAction("Cut", editorPopup);
+    copyAct = new QAction("Copy", editorPopup);
+    QAction *pasteAct = new QAction("Paste", editorPopup);
+    QAction *selectAllAct = new QAction("Select All", editorPopup);
+    deselectAct = new QAction("Deselect", editorPopup);
     QAction *splitHorizontalAct = new QAction("Split horizontal", editorPopup);
     QAction *splitVerticalAct = new QAction("Split vertical", editorPopup);
+
+
+    editorPopup->addAction(cutAct);
+    editorPopup->addAction(copyAct);
+    editorPopup->addAction(pasteAct);
+    editorPopup->addSeparator();
+    editorPopup->addAction(selectAllAct);
+    editorPopup->addAction(deselectAct);
+    editorPopup->addSeparator();
     editorPopup->addAction(splitHorizontalAct);
     editorPopup->addAction(splitVerticalAct);
+    
+
+    connect(cutAct, SIGNAL(triggered()), this->textEdit, SLOT(cut()));
+    connect(copyAct, SIGNAL(triggered()), this->textEdit, SLOT(copy()));
+    connect(pasteAct, SIGNAL(triggered()), this->textEdit, SLOT(paste()));
+    connect(selectAllAct, SIGNAL(triggered()), this->textEdit, SLOT(selectAll()));
+    connect(deselectAct, SIGNAL(triggered()), this->textEdit, SLOT(deselect()));
     connect(splitHorizontalAct, SIGNAL(triggered()), this, SLOT(splitHorizontal()));
     connect(splitVerticalAct, SIGNAL(triggered()), this, SLOT(splitVertical()));
     //qDebug() << "CodeEdit: return makeMenu()";
@@ -337,7 +358,20 @@ void CodeEdit::splitVertical()
 void CodeEdit::contextMenuEvent(QContextMenuEvent *event)
 {
     //if (target == textEdit)
-        editorPopup->popup(event->globalPos());
+
+    if (this->textEdit->textCursor().selectedText() == NULL)
+    {
+        cutAct->setEnabled(false);
+        copyAct->setEnabled(false);
+        deselectAct->setEnabled(false);
+    }
+    else
+    {
+        cutAct->setEnabled(true);
+        copyAct->setEnabled(true);
+        deselectAct->setEnabled(true);
+    }
+    editorPopup->popup(event->globalPos());
 }
 
 

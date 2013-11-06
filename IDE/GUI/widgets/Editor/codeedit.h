@@ -94,6 +94,9 @@ class CodeEdit : public QWidget
         QGridLayout *layout;
         WLineCounter *lineCount;
         QMenu *editorPopup;
+        QAction *cutAct;
+        QAction *copyAct;
+        QAction *deselectAct;
         QList<int> breakpointList;
         QList<int> bookmarkList;
         CodeEdit *parentCodeEdit;
