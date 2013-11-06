@@ -27,6 +27,7 @@ class AsmPicoBlazeCodeListing;
 
 // Standard headers.
 #include <string>
+#include <vector>
 
 /**
  * @brief
@@ -92,6 +93,11 @@ class AsmPicoBlazeSpecialMacros
          * @return
          */
         CompilerStatement * runTimeFor ( CompilerStatement * rtFor );
+
+        /**
+         * @brief
+         */
+        void runTimeForLeave();
 
         /**
          * @brief
@@ -189,6 +195,9 @@ class AsmPicoBlazeSpecialMacros
 
         ///
         AsmPicoBlazeCodeListing * const m_codeListing;
+
+        ///
+        std::vector<int> m_forLoopIterRegs;
 };
 
 #endif // ASMPICOBLAZESPECIALMACROS_H

@@ -16,6 +16,8 @@
 #ifndef MSCRIPTCOMPLEX_H
 #define MSCRIPTCOMPLEX_H
 
+#include <complex>
+
 /**
  * @brief
  * @class MScriptComplex
@@ -36,6 +38,15 @@ class MScriptComplex
                          m_r ( r ),
                          m_i ( i ) {}
 
+        /**
+         * @brief
+         * @param[in] std_complex
+         */
+        MScriptComplex ( const std::complex<double> & std_complex )
+                       :
+                         m_r ( std_complex.real() ),
+                         m_i ( std_complex.imag() ) {}
+
     ////    Public Operations    ////
     public:
         /**
@@ -44,13 +55,6 @@ class MScriptComplex
          * @return
          */
         bool divisableBy ( const MScriptComplex & n ) const;
-
-        /**
-         * @brief
-         * @param[in] n
-         * @return
-         */
-        MScriptComplex power ( const MScriptComplex & n ) const;
 
         /// @name Overloaded operators.
         //@{

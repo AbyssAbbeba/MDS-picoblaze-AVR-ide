@@ -971,6 +971,8 @@ inline AsmPicoBlazeTreeDecoder::CourseOfAction
         return CA_RETURN_FALSE;
     }
 
+    m_specialMacros->runTimeForLeave();
+
     m_forceNext = body->last();
     node->insertLink(body);
 
