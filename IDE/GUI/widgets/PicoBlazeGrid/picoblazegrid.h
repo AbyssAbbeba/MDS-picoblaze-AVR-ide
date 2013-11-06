@@ -92,6 +92,7 @@ class PicoBlazeGrid : public QWidget, public MCUSimObserver
         QPushButton *btnInte;
 
         MCUSimCPU* m_cpu;
+        PicoBlazeStatusFlags *m_flags;
         
 
     //signals:
@@ -101,6 +102,8 @@ class PicoBlazeGrid : public QWidget, public MCUSimObserver
 
     private slots:
         void switchPorts();
+        void setIntE();
+        void interrupt();
 
     public slots:
         void unhighlight();
