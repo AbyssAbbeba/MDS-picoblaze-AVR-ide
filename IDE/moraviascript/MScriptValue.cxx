@@ -424,7 +424,7 @@ std::ostream & operator << ( std::ostream & out,
             out << "\"";
             break;
         case MScriptValue::TYPE_BOOL:
-            out << "" << std::boolalpha << val.m_data.m_bool << std::noboolalpha << "";
+            out << std::boolalpha << val.m_data.m_bool << std::noboolalpha;
             break;
         case MScriptValue::TYPE_COMPLEX:
             out << std::scientific << val.m_data.m_complex.m_r << " + " << val.m_data.m_complex.m_i << "i";

@@ -21,9 +21,12 @@
 
 // Standard header files.
 #include <cmath>
+#include <regex>
+#include <complex>
 #include <cstring>
 #include <cstdlib>
 #include <climits>
+#include <sstream>
 
 // Used for i18n only.
 #include <QObject>
@@ -36,13 +39,11 @@ bool MScriptExprAlgebra::isUnary ( const MScriptExpr::Operator oper )
     {
         case MScriptExpr::OPER_IS_BOOL:         case MScriptExpr::OPER_IS_INT:
         case MScriptExpr::OPER_IS_STRING:       case MScriptExpr::OPER_IS_FLOAT:
-        case MScriptExpr::OPER_IS_COMPLEX:      case MScriptExpr::OPER_IS_REF:
+        case MScriptExpr::OPER_IS_COMPLEX:      case MScriptExpr::OPER_IS_EMPTY:
         case MScriptExpr::OPER_TO_BOOL:         case MScriptExpr::OPER_TO_INT:
         case MScriptExpr::OPER_TO_STRING:       case MScriptExpr::OPER_TO_FLOAT:
-        case MScriptExpr::OPER_TO_COMPLEX:      case MScriptExpr::OPER_IS_NAN:
         case MScriptExpr::OPER_IS_INFINITY:     case MScriptExpr::OPER_IS_POSITIVE:
         case MScriptExpr::OPER_IS_NEGATIVE:     case MScriptExpr::OPER_IS_FINITE:
-        case MScriptExpr::OPER_IS_ZERO:         case MScriptExpr::OPER_IS_NEGZERO:
         case MScriptExpr::OPER_REAL:            case MScriptExpr::OPER_IMG_UNIT:
         case MScriptExpr::OPER_SIN:             case MScriptExpr::OPER_COS:
         case MScriptExpr::OPER_TAN:             case MScriptExpr::OPER_ARCSIN:
@@ -54,6 +55,7 @@ bool MScriptExprAlgebra::isUnary ( const MScriptExpr::Operator oper )
         case MScriptExpr::OPER_FLOOR:           case MScriptExpr::OPER_ABS:
         case MScriptExpr::OPER_NOT:             case MScriptExpr::OPER_CMPL:
         case MScriptExpr::OPER_ADD_INV:         case MScriptExpr::OPER_INT_PROM:
+        case MScriptExpr::OPER_IS_NAN:          case MScriptExpr::OPER_LENGTH:
             return true;
         default:
             return false;
@@ -152,43 +154,666 @@ void MScriptExprAlgebra::unaryOperation ( MScriptValue & result,
             }
             break;
 
+        case MScriptExpr::OPER_LENGTH:
+            if ( MScriptValue::TYPE_STRING == input.m_type )
+            {
+                result.m_type = MScriptValue::TYPE_INT;
+                result.m_data.m_integer = ( long long ) ( input.m_data.m_string.m_size );
+            }
+            else
+            {
+                incompatibleType(location, input.m_type);
+            }
+            break;
         case MScriptExpr::OPER_IS_BOOL:
+            result.m_type = MScriptValue::TYPE_BOOL;
+            result.m_data.m_bool = ( MScriptValue::TYPE_BOOL == input.m_type );
+            break;
         case MScriptExpr::OPER_IS_INT:
+            result.m_type = MScriptValue::TYPE_BOOL;
+            result.m_data.m_bool = ( MScriptValue::TYPE_INT == input.m_type );
+            break;
         case MScriptExpr::OPER_IS_STRING:
+            result.m_type = MScriptValue::TYPE_BOOL;
+            result.m_data.m_bool = ( MScriptValue::TYPE_STRING == input.m_type );
+            break;
         case MScriptExpr::OPER_IS_FLOAT:
+            result.m_type = MScriptValue::TYPE_BOOL;
+            result.m_data.m_bool = ( MScriptValue::TYPE_FLOAT == input.m_type );
+            break;
         case MScriptExpr::OPER_IS_COMPLEX:
-        case MScriptExpr::OPER_IS_REF:
-        case MScriptExpr::OPER_TO_BOOL:
-        case MScriptExpr::OPER_TO_INT:
-        case MScriptExpr::OPER_TO_STRING:
-        case MScriptExpr::OPER_TO_FLOAT:
-        case MScriptExpr::OPER_TO_COMPLEX:
+            result.m_type = MScriptValue::TYPE_BOOL;
+            result.m_data.m_bool = ( MScriptValue::TYPE_COMPLEX == input.m_type );
+            break;
+        case MScriptExpr::OPER_IS_EMPTY:
+            result.m_type = MScriptValue::TYPE_BOOL;
+            result.m_data.m_bool = ( MScriptValue::TYPE_EMPTY == input.m_type );
+            break;
         case MScriptExpr::OPER_IS_NAN:
+            result.m_type = MScriptValue::TYPE_BOOL;
+            result.m_data.m_bool = false;
+            if ( MScriptValue::TYPE_FLOAT == input.m_type )
+            {
+                result.m_data.m_bool = isnan(input.m_data.m_float);
+            }
+            break;
         case MScriptExpr::OPER_IS_INFINITY:
+            result.m_type = MScriptValue::TYPE_BOOL;
+            result.m_data.m_bool = false;
+            if ( MScriptValue::TYPE_FLOAT == input.m_type )
+            {
+                result.m_data.m_bool = isinf(input.m_data.m_float);
+            }
+            break;
         case MScriptExpr::OPER_IS_POSITIVE:
+            result.m_data.m_bool = false;
+            if ( MScriptValue::TYPE_FLOAT == input.m_type )
+            {
+                result.m_data.m_bool = !std::signbit(input.m_data.m_float);
+            }
+            else if ( MScriptValue::TYPE_INT == input.m_type )
+            {
+                result.m_data.m_bool = ( input.m_data.m_integer >= 0 );
+            }
+            break;
         case MScriptExpr::OPER_IS_NEGATIVE:
+            result.m_data.m_bool = false;
+            if ( MScriptValue::TYPE_FLOAT == input.m_type )
+            {
+                result.m_data.m_bool = std::signbit(input.m_data.m_float);
+            }
+            else if ( MScriptValue::TYPE_INT == input.m_type )
+            {
+                result.m_data.m_bool = ( input.m_data.m_integer < 0 );
+            }
+            break;
         case MScriptExpr::OPER_IS_FINITE:
-        case MScriptExpr::OPER_IS_ZERO:
-        case MScriptExpr::OPER_IS_NEGZERO:
+            result.m_type = MScriptValue::TYPE_BOOL;
+            result.m_data.m_bool = true;
+            if ( MScriptValue::TYPE_FLOAT == input.m_type )
+            {
+                result.m_data.m_bool = std::isfinite(input.m_data.m_float);
+            }
+            break;
         case MScriptExpr::OPER_REAL:
+            if ( MScriptValue::TYPE_COMPLEX == input.m_type )
+            {
+                result.m_type = MScriptValue::TYPE_FLOAT;
+                result.m_data.m_float = input.m_data.m_complex.m_r;
+            }
+            else
+            {
+                incompatibleType(location, input.m_type);
+            }
+            break;
         case MScriptExpr::OPER_IMG_UNIT:
-        case MScriptExpr::OPER_SIN:
-        case MScriptExpr::OPER_COS:
-        case MScriptExpr::OPER_TAN:
-        case MScriptExpr::OPER_ARCSIN:
-        case MScriptExpr::OPER_ARCCOS:
-        case MScriptExpr::OPER_ARCTAN:
-        case MScriptExpr::OPER_SINH:
-        case MScriptExpr::OPER_COSH:
-        case MScriptExpr::OPER_TANH:
-        case MScriptExpr::OPER_ARCSINH:
-        case MScriptExpr::OPER_ARCCOSH:
-        case MScriptExpr::OPER_ARCTANH:
-        case MScriptExpr::OPER_CEIL:
-        case MScriptExpr::OPER_ROUND:
-        case MScriptExpr::OPER_FLOOR:
-        case MScriptExpr::OPER_ABS:
+            if ( MScriptValue::TYPE_COMPLEX == input.m_type )
+            {
+                result.m_type = MScriptValue::TYPE_FLOAT;
+                result.m_data.m_float = input.m_data.m_complex.m_i;
+            }
+            else
+            {
+                incompatibleType(location, input.m_type);
+            }
+            break;
+        case MScriptExpr::OPER_TO_BOOL:
+            result.m_type = MScriptValue::TYPE_BOOL;
+            switch ( input.m_type )
+            {
+                case MScriptValue::TYPE_INT:
+                    result.m_data.m_bool = ( 0 != input.m_data.m_integer );
+                    break;
+                case MScriptValue::TYPE_FLOAT:
+                    result.m_data.m_bool = ( 0 != input.m_data.m_float );
+                    break;
+                case MScriptValue::TYPE_BOOL:
+                    result.m_data.m_bool = input.m_data.m_bool;
+                    break;
+                case MScriptValue::TYPE_COMPLEX:
+                    result.m_data.m_bool = ( MScriptComplex() != input.m_data.m_complex );
+                    break;
+                case MScriptValue::TYPE_STRING:
+                    result.m_data.m_bool = ( 0 != input.m_data.m_string.m_size );
+                    break;
+                case MScriptValue::TYPE_EMPTY:
+                    result.m_data.m_bool = false;
+                    break;
+                case MScriptValue::TYPE_EXPR:
+                case MScriptValue::TYPE_SYMBOL:
+                    incompatibleType(location, input.m_type);
+                    break;
+            }
+            break;
+        case MScriptExpr::OPER_TO_INT:
+            result.m_type = MScriptValue::TYPE_INT;
+            switch ( input.m_type )
+            {
+                case MScriptValue::TYPE_INT:
+                    result.m_data.m_integer = input.m_data.m_integer;
+                    break;
+                case MScriptValue::TYPE_FLOAT:
+                    result.m_data.m_integer = ( long long ) input.m_data.m_float;
+                    break;
+                case MScriptValue::TYPE_BOOL:
+                    result.m_data.m_integer = ( input.m_data.m_bool ? 1 : 0 );
+                    break;
+                case MScriptValue::TYPE_STRING:
+                {
+                    int base;
+                    std::string str ( input.m_data.m_string.m_data, input.m_data.m_string.m_size );
+                    if ( true == std::regex_match ( str, std::regex("[0-9]+") ) )
+                    {
+                        // Decimal number.
+                        base = 10;
+                    }
+                    else if ( true == std::regex_match ( str, std::regex("0[xX][0-9a-fA-F]+") ) )
+                    {
+                        // Hexadecimal number.
+                        base = 2;
+                    }
+                    else if ( true == std::regex_match ( str, std::regex("0[bB][01]+") ) )
+                    {
+                        // Binary number.
+                        base = 2;
+                    }
+                    else if ( true == std::regex_match ( str, std::regex("0[0-7]+") ) )
+                    {
+                        // Octal number
+                        base = 2;
+                    }
+                    else
+                    {
+                        m_interpret->interpreterMessage ( location,
+                                                          MScriptBase::MT_ERROR,
+                                                          QObject::tr ( "not a number: " )
+                                                                      . toStdString() + "`" + str + "'" );
+                        break;
+                    }
 
+                    result.m_data.m_integer = strtoll ( input.m_data.m_string.m_data, NULL, base );
+                    if ( ( LLONG_MIN == result.m_data.m_integer ) || ( LLONG_MAX == result.m_data.m_integer ) )
+                    {
+                        m_interpret->interpreterMessage ( location,
+                                                          MScriptBase::MT_ERROR,
+                                                          QObject::tr ( "number is too big: " )
+                                                                      . toStdString()
+                                                                      + "`"
+                                                                      + std::string ( input.m_data.m_string.m_data )
+                                                                      + "'" );
+                    }
+                    break;
+                }
+                case MScriptValue::TYPE_EMPTY:
+                case MScriptValue::TYPE_COMPLEX:
+                case MScriptValue::TYPE_EXPR:
+                case MScriptValue::TYPE_SYMBOL:
+                    incompatibleType(location, input.m_type);
+                    break;
+            }
+            break;
+        case MScriptExpr::OPER_TO_STRING:
+        {
+            std::ostringstream strstream;
+            result.m_type = MScriptValue::TYPE_STRING;
+            switch ( input.m_type )
+            {
+                case MScriptValue::TYPE_INT:
+                    strstream << input.m_data.m_integer;
+                    break;
+                case MScriptValue::TYPE_FLOAT:
+                    strstream << input.m_data.m_float;
+                    break;
+                case MScriptValue::TYPE_BOOL:
+                    strstream << std::boolalpha << input.m_data.m_bool << std::noboolalpha;
+                    break;
+                case MScriptValue::TYPE_COMPLEX:
+                    strstream << std::scientific << input.m_data.m_complex.m_r << " + "
+                              << input.m_data.m_complex.m_i << "i";
+                    break;
+                case MScriptValue::TYPE_STRING:
+                    input.makeCopy(result);
+                    return;
+                case MScriptValue::TYPE_EMPTY:
+                case MScriptValue::TYPE_EXPR:
+                case MScriptValue::TYPE_SYMBOL:
+                    incompatibleType(location, input.m_type);
+                    return;
+            }
+            result.m_data.m_string.m_size = strstream.str().size();
+            result.m_data.m_string.m_data = (char*) malloc ( 1 + result.m_data.m_string.m_size );
+            strcpy ( result.m_data.m_string.m_data, strstream.str().c_str() );
+            break;
+        }
+        case MScriptExpr::OPER_TO_FLOAT:
+            result.m_type = MScriptValue::TYPE_FLOAT;
+            switch ( input.m_type )
+            {
+                case MScriptValue::TYPE_INT:
+                    result.m_data.m_float = double(input.m_data.m_integer);
+                    break;
+                case MScriptValue::TYPE_FLOAT:
+                    result.m_data.m_float = input.m_data.m_float;
+                    break;
+                case MScriptValue::TYPE_BOOL:
+                    result.m_data.m_float = ( input.m_data.m_bool ? 1.0d : 0.0d );
+                    break;
+                case MScriptValue::TYPE_STRING:
+                    result.m_data.m_float = strtod ( input.m_data.m_string.m_data, NULL );
+                    if ( ( -HUGE_VAL == result.m_data.m_float ) || ( HUGE_VAL == result.m_data.m_float ) )
+                    {
+                        m_interpret->interpreterMessage ( location,
+                                                          MScriptBase::MT_ERROR,
+                                                          QObject::tr ( "number is too big: " )
+                                                                      . toStdString()
+                                                                      + "`"
+                                                                      + std::string ( input.m_data.m_string.m_data,
+                                                                                      input.m_data.m_string.m_size )
+                                                                      + "'" );
+                    }
+                    break;
+                case MScriptValue::TYPE_EMPTY:
+                case MScriptValue::TYPE_COMPLEX:
+                case MScriptValue::TYPE_EXPR:
+                case MScriptValue::TYPE_SYMBOL:
+                    incompatibleType(location, input.m_type);
+                    break;
+            }
+            break;
+        case MScriptExpr::OPER_SIN:
+            switch ( input.m_type )
+            {
+                case MScriptValue::TYPE_INT:
+                    result.m_type = MScriptValue::TYPE_FLOAT;
+                    result.m_data.m_float = sin ( input.m_data.m_integer );
+                    break;
+                case MScriptValue::TYPE_FLOAT:
+                    result.m_type = MScriptValue::TYPE_FLOAT;
+                    result.m_data.m_float = sin ( input.m_data.m_float );
+                    break;
+                case MScriptValue::TYPE_BOOL:
+                    result.m_type = MScriptValue::TYPE_FLOAT;
+                    result.m_data.m_float = sin ( input.m_data.m_bool ? 1 : 0 );
+                    break;
+                case MScriptValue::TYPE_COMPLEX:
+                    result.m_type = MScriptValue::TYPE_COMPLEX;
+                    result.m_data.m_complex = sin ( std::complex<double> ( input.m_data.m_complex.m_r,
+                                                                           input.m_data.m_complex.m_i ) );
+                    break;
+                case MScriptValue::TYPE_STRING:
+                case MScriptValue::TYPE_EMPTY:
+                case MScriptValue::TYPE_EXPR:
+                case MScriptValue::TYPE_SYMBOL:
+                    incompatibleType(location, input.m_type);
+                    break;
+            }
+            break;
+        case MScriptExpr::OPER_COS:
+            switch ( input.m_type )
+            {
+                case MScriptValue::TYPE_INT:
+                    result.m_type = MScriptValue::TYPE_FLOAT;
+                    result.m_data.m_float = cos ( input.m_data.m_integer );
+                    break;
+                case MScriptValue::TYPE_FLOAT:
+                    result.m_type = MScriptValue::TYPE_FLOAT;
+                    result.m_data.m_float = cos ( input.m_data.m_float );
+                    break;
+                case MScriptValue::TYPE_BOOL:
+                    result.m_type = MScriptValue::TYPE_FLOAT;
+                    result.m_data.m_float = cos ( input.m_data.m_bool ? 1 : 0 );
+                    break;
+                case MScriptValue::TYPE_COMPLEX:
+                    result.m_type = MScriptValue::TYPE_COMPLEX;
+                    result.m_data.m_complex = cos ( std::complex<double> ( input.m_data.m_complex.m_r,
+                                                                           input.m_data.m_complex.m_i ) );
+                    break;
+                case MScriptValue::TYPE_STRING:
+                case MScriptValue::TYPE_EMPTY:
+                case MScriptValue::TYPE_EXPR:
+                case MScriptValue::TYPE_SYMBOL:
+                    incompatibleType(location, input.m_type);
+                    break;
+            }
+            break;
+        case MScriptExpr::OPER_TAN:
+            switch ( input.m_type )
+            {
+                case MScriptValue::TYPE_INT:
+                    result.m_type = MScriptValue::TYPE_FLOAT;
+                    result.m_data.m_float = tan ( input.m_data.m_integer );
+                    break;
+                case MScriptValue::TYPE_FLOAT:
+                    result.m_type = MScriptValue::TYPE_FLOAT;
+                    result.m_data.m_float = tan ( input.m_data.m_float );
+                    break;
+                case MScriptValue::TYPE_BOOL:
+                    result.m_type = MScriptValue::TYPE_FLOAT;
+                    result.m_data.m_float = tan ( input.m_data.m_bool ? 1 : 0 );
+                    break;
+                case MScriptValue::TYPE_COMPLEX:
+                    result.m_type = MScriptValue::TYPE_COMPLEX;
+                    result.m_data.m_complex = tan ( std::complex<double> ( input.m_data.m_complex.m_r,
+                                                                           input.m_data.m_complex.m_i ) );
+                    break;
+                case MScriptValue::TYPE_STRING:
+                case MScriptValue::TYPE_EMPTY:
+                case MScriptValue::TYPE_EXPR:
+                case MScriptValue::TYPE_SYMBOL:
+                    incompatibleType(location, input.m_type);
+                    break;
+            }
+            break;
+        case MScriptExpr::OPER_ARCSIN:
+            switch ( input.m_type )
+            {
+                case MScriptValue::TYPE_INT:
+                    result.m_type = MScriptValue::TYPE_FLOAT;
+                    result.m_data.m_float = asin ( input.m_data.m_integer );
+                    break;
+                case MScriptValue::TYPE_FLOAT:
+                    result.m_type = MScriptValue::TYPE_FLOAT;
+                    result.m_data.m_float = asin ( input.m_data.m_float );
+                    break;
+                case MScriptValue::TYPE_BOOL:
+                    result.m_type = MScriptValue::TYPE_FLOAT;
+                    result.m_data.m_float = asin ( input.m_data.m_bool ? 1 : 0 );
+                    break;
+                case MScriptValue::TYPE_COMPLEX:
+                    result.m_type = MScriptValue::TYPE_COMPLEX;
+                    result.m_data.m_complex = asin ( std::complex<double> ( input.m_data.m_complex.m_r,
+                                                                            input.m_data.m_complex.m_i ) );
+                    break;
+                case MScriptValue::TYPE_STRING:
+                case MScriptValue::TYPE_EMPTY:
+                case MScriptValue::TYPE_EXPR:
+                case MScriptValue::TYPE_SYMBOL:
+                    incompatibleType(location, input.m_type);
+                    break;
+            }
+            break;
+        case MScriptExpr::OPER_ARCCOS:
+            switch ( input.m_type )
+            {
+                case MScriptValue::TYPE_INT:
+                    result.m_type = MScriptValue::TYPE_FLOAT;
+                    result.m_data.m_float = acos ( input.m_data.m_integer );
+                    break;
+                case MScriptValue::TYPE_FLOAT:
+                    result.m_type = MScriptValue::TYPE_FLOAT;
+                    result.m_data.m_float = acos ( input.m_data.m_float );
+                    break;
+                case MScriptValue::TYPE_BOOL:
+                    result.m_type = MScriptValue::TYPE_FLOAT;
+                    result.m_data.m_float = acos ( input.m_data.m_bool ? 1 : 0 );
+                    break;
+                case MScriptValue::TYPE_COMPLEX:
+                    result.m_type = MScriptValue::TYPE_COMPLEX;
+                    result.m_data.m_complex = acos ( std::complex<double> ( input.m_data.m_complex.m_r,
+                                                                            input.m_data.m_complex.m_i ) );
+                    break;
+                case MScriptValue::TYPE_STRING:
+                case MScriptValue::TYPE_EMPTY:
+                case MScriptValue::TYPE_EXPR:
+                case MScriptValue::TYPE_SYMBOL:
+                    incompatibleType(location, input.m_type);
+                    break;
+            }
+            break;
+        case MScriptExpr::OPER_ARCTAN:
+            switch ( input.m_type )
+            {
+                case MScriptValue::TYPE_INT:
+                    result.m_type = MScriptValue::TYPE_FLOAT;
+                    result.m_data.m_float = atan ( input.m_data.m_integer );
+                    break;
+                case MScriptValue::TYPE_FLOAT:
+                    result.m_type = MScriptValue::TYPE_FLOAT;
+                    result.m_data.m_float = atan ( input.m_data.m_float );
+                    break;
+                case MScriptValue::TYPE_BOOL:
+                    result.m_type = MScriptValue::TYPE_FLOAT;
+                    result.m_data.m_float = atan ( input.m_data.m_bool ? 1 : 0 );
+                    break;
+                case MScriptValue::TYPE_COMPLEX:
+                    result.m_type = MScriptValue::TYPE_COMPLEX;
+                    result.m_data.m_complex = atan ( std::complex<double> ( input.m_data.m_complex.m_r,
+                                                                            input.m_data.m_complex.m_i ) );
+                    break;
+                case MScriptValue::TYPE_STRING:
+                case MScriptValue::TYPE_EMPTY:
+                case MScriptValue::TYPE_EXPR:
+                case MScriptValue::TYPE_SYMBOL:
+                    incompatibleType(location, input.m_type);
+                    break;
+            }
+            break;
+        case MScriptExpr::OPER_SINH:
+            switch ( input.m_type )
+            {
+                case MScriptValue::TYPE_INT:
+                    result.m_type = MScriptValue::TYPE_FLOAT;
+                    result.m_data.m_float = sinh ( input.m_data.m_integer );
+                    break;
+                case MScriptValue::TYPE_FLOAT:
+                    result.m_type = MScriptValue::TYPE_FLOAT;
+                    result.m_data.m_float = sinh ( input.m_data.m_float );
+                    break;
+                case MScriptValue::TYPE_BOOL:
+                    result.m_type = MScriptValue::TYPE_FLOAT;
+                    result.m_data.m_float = sinh ( input.m_data.m_bool ? 1 : 0 );
+                    break;
+                case MScriptValue::TYPE_COMPLEX:
+                    result.m_type = MScriptValue::TYPE_COMPLEX;
+                    result.m_data.m_complex = sinh ( std::complex<double> ( input.m_data.m_complex.m_r,
+                                                                            input.m_data.m_complex.m_i ) );
+                    break;
+                case MScriptValue::TYPE_STRING:
+                case MScriptValue::TYPE_EMPTY:
+                case MScriptValue::TYPE_EXPR:
+                case MScriptValue::TYPE_SYMBOL:
+                    incompatibleType(location, input.m_type);
+                    break;
+            }
+            break;
+        case MScriptExpr::OPER_COSH:
+            switch ( input.m_type )
+            {
+                case MScriptValue::TYPE_INT:
+                    result.m_type = MScriptValue::TYPE_FLOAT;
+                    result.m_data.m_float = cosh ( input.m_data.m_integer );
+                    break;
+                case MScriptValue::TYPE_FLOAT:
+                    result.m_type = MScriptValue::TYPE_FLOAT;
+                    result.m_data.m_float = cosh ( input.m_data.m_float );
+                    break;
+                case MScriptValue::TYPE_BOOL:
+                    result.m_type = MScriptValue::TYPE_FLOAT;
+                    result.m_data.m_float = cosh ( input.m_data.m_bool ? 1 : 0 );
+                    break;
+                case MScriptValue::TYPE_COMPLEX:
+                    result.m_type = MScriptValue::TYPE_COMPLEX;
+                    result.m_data.m_complex = cosh ( std::complex<double> ( input.m_data.m_complex.m_r,
+                                                                            input.m_data.m_complex.m_i ) );
+                    break;
+                case MScriptValue::TYPE_STRING:
+                case MScriptValue::TYPE_EMPTY:
+                case MScriptValue::TYPE_EXPR:
+                case MScriptValue::TYPE_SYMBOL:
+                    incompatibleType(location, input.m_type);
+                    break;
+            }
+            break;
+        case MScriptExpr::OPER_TANH:
+            switch ( input.m_type )
+            {
+                case MScriptValue::TYPE_INT:
+                    result.m_type = MScriptValue::TYPE_FLOAT;
+                    result.m_data.m_float = tanh ( input.m_data.m_integer );
+                    break;
+                case MScriptValue::TYPE_FLOAT:
+                    result.m_type = MScriptValue::TYPE_FLOAT;
+                    result.m_data.m_float = tanh ( input.m_data.m_float );
+                    break;
+                case MScriptValue::TYPE_BOOL:
+                    result.m_type = MScriptValue::TYPE_FLOAT;
+                    result.m_data.m_float = tanh ( input.m_data.m_bool ? 1 : 0 );
+                    break;
+                case MScriptValue::TYPE_COMPLEX:
+                    result.m_type = MScriptValue::TYPE_COMPLEX;
+                    result.m_data.m_complex= tanh ( std::complex<double> ( input.m_data.m_complex.m_r,
+                                                                           input.m_data.m_complex.m_i ) );
+                    break;
+                case MScriptValue::TYPE_STRING:
+                case MScriptValue::TYPE_EMPTY:
+                case MScriptValue::TYPE_EXPR:
+                case MScriptValue::TYPE_SYMBOL:
+                    incompatibleType(location, input.m_type);
+                    break;
+            }
+            break;
+        case MScriptExpr::OPER_ARCSINH:
+            switch ( input.m_type )
+            {
+                case MScriptValue::TYPE_INT:
+                    result.m_type = MScriptValue::TYPE_FLOAT;
+                    result.m_data.m_float = asinh ( input.m_data.m_integer );
+                    break;
+                case MScriptValue::TYPE_FLOAT:
+                    result.m_type = MScriptValue::TYPE_FLOAT;
+                    result.m_data.m_float = asinh ( input.m_data.m_float );
+                    break;
+                case MScriptValue::TYPE_BOOL:
+                    result.m_type = MScriptValue::TYPE_FLOAT;
+                    result.m_data.m_float = asinh ( input.m_data.m_bool ? 1 : 0 );
+                    break;
+                case MScriptValue::TYPE_COMPLEX:
+                    result.m_type = MScriptValue::TYPE_COMPLEX;
+                    result.m_data.m_complex = asinh ( std::complex<double> ( input.m_data.m_complex.m_r,
+                                                                             input.m_data.m_complex.m_i ) );
+                    break;
+                case MScriptValue::TYPE_STRING:
+                case MScriptValue::TYPE_EMPTY:
+                case MScriptValue::TYPE_EXPR:
+                case MScriptValue::TYPE_SYMBOL:
+                    incompatibleType(location, input.m_type);
+                    break;
+            }
+            break;
+        case MScriptExpr::OPER_ARCCOSH:
+            switch ( input.m_type )
+            {
+                case MScriptValue::TYPE_INT:
+                    result.m_type = MScriptValue::TYPE_FLOAT;
+                    result.m_data.m_float = acosh ( input.m_data.m_integer );
+                    break;
+                case MScriptValue::TYPE_FLOAT:
+                    result.m_type = MScriptValue::TYPE_FLOAT;
+                    result.m_data.m_float = acosh ( input.m_data.m_float );
+                    break;
+                case MScriptValue::TYPE_BOOL:
+                    result.m_type = MScriptValue::TYPE_FLOAT;
+                    result.m_data.m_float = acosh ( input.m_data.m_bool ? 1 : 0 );
+                    break;
+                case MScriptValue::TYPE_COMPLEX:
+                    result.m_type = MScriptValue::TYPE_COMPLEX;
+                    result.m_data.m_complex = acosh ( std::complex<double> ( input.m_data.m_complex.m_r,
+                                                                             input.m_data.m_complex.m_i ) );
+                    break;
+                case MScriptValue::TYPE_STRING:
+                case MScriptValue::TYPE_EMPTY:
+                case MScriptValue::TYPE_EXPR:
+                case MScriptValue::TYPE_SYMBOL:
+                    incompatibleType(location, input.m_type);
+                    break;
+            }
+            break;
+        case MScriptExpr::OPER_ARCTANH:
+            switch ( input.m_type )
+            {
+                case MScriptValue::TYPE_INT:
+                    result.m_type = MScriptValue::TYPE_FLOAT;
+                    result.m_data.m_float = atanh ( input.m_data.m_integer );
+                    break;
+                case MScriptValue::TYPE_FLOAT:
+                    result.m_type = MScriptValue::TYPE_FLOAT;
+                    result.m_data.m_float = atanh ( input.m_data.m_float );
+                    break;
+                case MScriptValue::TYPE_BOOL:
+                    result.m_type = MScriptValue::TYPE_FLOAT;
+                    result.m_data.m_float = atanh ( input.m_data.m_bool ? 1 : 0 );
+                    break;
+                case MScriptValue::TYPE_COMPLEX:
+                    result.m_type = MScriptValue::TYPE_COMPLEX;
+                    result.m_data.m_complex = atanh ( std::complex<double> ( input.m_data.m_complex.m_r,
+                                                                             input.m_data.m_complex.m_i ) );
+                    break;
+                case MScriptValue::TYPE_STRING:
+                case MScriptValue::TYPE_EMPTY:
+                case MScriptValue::TYPE_EXPR:
+                case MScriptValue::TYPE_SYMBOL:
+                    incompatibleType(location, input.m_type);
+                    break;
+            }
+            break;
+        case MScriptExpr::OPER_CEIL:
+            if ( MScriptValue::TYPE_FLOAT == input.m_type )
+            {
+                result.m_type = MScriptValue::TYPE_FLOAT;
+                result.m_data.m_float = ceil ( input.m_data.m_float );
+            }
+            else
+            {
+                incompatibleType(location, input.m_type);
+            }
+            break;
+        case MScriptExpr::OPER_ROUND:
+            if ( MScriptValue::TYPE_FLOAT == input.m_type )
+            {
+                result.m_type = MScriptValue::TYPE_FLOAT;
+                result.m_data.m_float = round ( input.m_data.m_float );
+            }
+            else
+            {
+                incompatibleType(location, input.m_type);
+            }
+            break;
+        case MScriptExpr::OPER_FLOOR:
+            if ( MScriptValue::TYPE_FLOAT == input.m_type )
+            {
+                result.m_type = MScriptValue::TYPE_FLOAT;
+                result.m_data.m_float = floor ( input.m_data.m_float );
+            }
+            else
+            {
+                incompatibleType(location, input.m_type);
+            }
+            break;
+        case MScriptExpr::OPER_ABS:
+            switch ( input.m_type )
+            {
+                case MScriptValue::TYPE_INT:
+                    result.m_type = MScriptValue::TYPE_INT;
+                    result.m_data.m_integer = abs ( input.m_data.m_integer );
+                    break;
+                case MScriptValue::TYPE_FLOAT:
+                    result.m_type = MScriptValue::TYPE_FLOAT;
+                    result.m_data.m_float = atanh ( input.m_data.m_float );
+                    break;
+                case MScriptValue::TYPE_COMPLEX:
+                    result.m_type = MScriptValue::TYPE_FLOAT;
+                    result.m_data.m_float = std::abs ( std::complex<double> ( input.m_data.m_complex.m_r,
+                                                                              input.m_data.m_complex.m_i ) );
+                    break;
+                case MScriptValue::TYPE_BOOL:
+                case MScriptValue::TYPE_STRING:
+                case MScriptValue::TYPE_EMPTY:
+                case MScriptValue::TYPE_EXPR:
+                case MScriptValue::TYPE_SYMBOL:
+                    incompatibleType(location, input.m_type);
+                    break;
+            }
+            break;
         default:
             undefinedOperation(location);
             break;
@@ -201,6 +826,14 @@ void MScriptExprAlgebra::binaryOperation ( MScriptValue & result,
                                            const MScriptSrcLocation & location,
                                            const MScriptExpr::Operator oper )
 {
+    if ( MScriptExpr::OPER_TO_COMPLEX == oper )
+    {
+        result.m_type = MScriptValue::TYPE_COMPLEX;
+        result.m_data.m_complex.m_r = left.m_data.m_float;
+        result.m_data.m_complex.m_i = right.m_data.m_float;
+        return;
+    }
+
     switch ( left.m_type )
     {
         case MScriptValue::TYPE_INT:
@@ -799,6 +1432,8 @@ inline void MScriptExprAlgebra::intComplex ( MScriptValue & result,
             }
             break;
 
+        case MScriptExpr::OPER_POW:
+        case MScriptExpr::OPER_MIN:  case MScriptExpr::OPER_MAX:
         case MScriptExpr::OPER_LT:   case MScriptExpr::OPER_LE:
         case MScriptExpr::OPER_GE:   case MScriptExpr::OPER_GT:
         case MScriptExpr::OPER_BOR:  case MScriptExpr::OPER_BXOR:
@@ -867,6 +1502,8 @@ inline void MScriptExprAlgebra::floatComplex ( MScriptValue & result,
             }
             break;
 
+        case MScriptExpr::OPER_POW:
+        case MScriptExpr::OPER_MIN:  case MScriptExpr::OPER_MAX:
         case MScriptExpr::OPER_LT:   case MScriptExpr::OPER_LE:
         case MScriptExpr::OPER_GE:   case MScriptExpr::OPER_GT:
         case MScriptExpr::OPER_BOR:  case MScriptExpr::OPER_BXOR:
@@ -1071,6 +1708,8 @@ inline void MScriptExprAlgebra::complexInt ( MScriptValue & result,
             }
             break;
 
+        case MScriptExpr::OPER_POW:
+        case MScriptExpr::OPER_MIN:  case MScriptExpr::OPER_MAX:
         case MScriptExpr::OPER_LT:   case MScriptExpr::OPER_LE:
         case MScriptExpr::OPER_GE:   case MScriptExpr::OPER_GT:
         case MScriptExpr::OPER_BOR:  case MScriptExpr::OPER_BXOR:
@@ -1130,6 +1769,8 @@ inline void MScriptExprAlgebra::complexFloat ( MScriptValue & result,
             }
             break;
 
+        case MScriptExpr::OPER_POW:
+        case MScriptExpr::OPER_MIN:  case MScriptExpr::OPER_MAX:
         case MScriptExpr::OPER_LT:   case MScriptExpr::OPER_LE:
         case MScriptExpr::OPER_GE:   case MScriptExpr::OPER_GT:
         case MScriptExpr::OPER_BOR:  case MScriptExpr::OPER_BXOR:
@@ -1203,6 +1844,8 @@ inline void MScriptExprAlgebra::complexComplex ( MScriptValue & result,
             }
             break;
 
+        case MScriptExpr::OPER_POW:
+        case MScriptExpr::OPER_MIN:  case MScriptExpr::OPER_MAX:
         case MScriptExpr::OPER_LT:   case MScriptExpr::OPER_LE:
         case MScriptExpr::OPER_GE:   case MScriptExpr::OPER_GT:
         case MScriptExpr::OPER_BOR:  case MScriptExpr::OPER_BXOR:

@@ -87,14 +87,14 @@ class MScriptExpr : public MScriptSerializable
             OPER_REF,         ///< & a
             OPER_INT_PROM,    ///< Integer promotion: ( + a )
             OPER_ADD_INV,     ///< Additive inverse: ( - a )
-
             OPER_POW,         ///< a ** b (a raised to the power of b)
+            OPER_LENGTH,      ///<
             OPER_IS_BOOL,     ///<
             OPER_IS_INT,      ///<
             OPER_IS_STRING,   ///<
             OPER_IS_FLOAT,    ///<
             OPER_IS_COMPLEX,  ///<
-            OPER_IS_REF,      ///<
+            OPER_IS_EMPTY,    ///<
             OPER_TO_BOOL,     ///<
             OPER_TO_INT,      ///<
             OPER_TO_STRING,   ///<
@@ -105,8 +105,6 @@ class MScriptExpr : public MScriptSerializable
             OPER_IS_POSITIVE, ///<
             OPER_IS_NEGATIVE, ///<
             OPER_IS_FINITE,   ///<
-            OPER_IS_ZERO,     ///<
-            OPER_IS_NEGZERO,  ///<
             OPER_REAL,        ///<
             OPER_IMG_UNIT,    ///<
             OPER_SIN,         ///<
