@@ -92,7 +92,7 @@ add_library(${PROJECT_NAME} SHARED
 	${SAMPLE_MOC_SRCS} ${SAMPLE_SRCS})
 
 
-target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} SimControl McuSimCfgMgr SimWidgets StackWidget RegistersWidget PortHexEdit)
+target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} SimControl PicoBlazeSim McuSimCfgMgr SimWidgets StackWidget RegistersWidget PortHexEdit)
 
 
 # ------------------------------------------------------------------------------

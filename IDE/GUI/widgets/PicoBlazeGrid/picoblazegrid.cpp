@@ -359,6 +359,7 @@ void PicoBlazeGrid::deviceChanged()
 {
     m_cpu = dynamic_cast<MCUSimCPU*>(m_simControlUnit->getSimSubsys(MCUSimSubsys::ID_CPU));
     m_flags = dynamic_cast<PicoBlazeStatusFlags*>(m_simControlUnit->getSimSubsys(MCUSimSubsys::ID_FLAGS));
+    m_interrupt = dynamic_cast<PicoBlazeInterruptController*>(m_simControlUnit->getSimSubsys(MCUSimSubsys::ID_INTERRUPTS));
     deviceReset();
 }
 
@@ -440,6 +441,6 @@ void PicoBlazeGrid::setIntE()
 
 void PicoBlazeGrid::interrupt()
 {
-    //qDebug() << "PicoBlazeGrid: interrupt()";
-    m_flags->interrupt();
+    m_interrupt->irq();
+    
 }
