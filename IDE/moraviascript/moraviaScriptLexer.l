@@ -235,7 +235,7 @@ EID     ({NSEP})?{ID}
 "isstring"      { return F_ISSTRING;      }
 "isfloat"       { return F_ISFLOAT;       }
 "iscomplex"     { return F_ISCOMPLEX;     }
-"isref"         { return F_ISREF;         }
+"isempty"       { return F_ISEMPTY;       }
  /* Datatype conversion. */
 "bool"          { return F_BOOL;          }
 "int"           { return F_INT;           }
@@ -248,8 +248,6 @@ EID     ({NSEP})?{ID}
 "ispositive"    { return F_ISPOSITIVE;    }
 "isnegative"    { return F_ISNEGATIVE;    }
 "isfinite"      { return F_ISFINITE;      }
-"iszero"        { return F_ISZERO;        }
-"isnegzero"     { return F_ISNEGZERO;     }
  /* Complex plane decomposition. */
 "Re"            { return F_RE;            }
 "Im"            { return F_IM;            }
@@ -276,6 +274,7 @@ EID     ({NSEP})?{ID}
 "abs"           { return F_ABS;           }
 "min"           { return F_MIN;           }
 "max"           { return F_MAX;           }
+"length"        { return F_LENGTH;        }
 
  /*
   * Numbers:

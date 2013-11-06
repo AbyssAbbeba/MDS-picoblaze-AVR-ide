@@ -73,6 +73,11 @@ CompilerStatement * AsmPicoBlazeSpecialMacros::runTimeWhile ( CompilerStatement 
     return result;
 }
 
+void AsmPicoBlazeSpecialMacros::runTimeForLeave()
+{
+    m_forLoopIterRegs.pop_back();
+}
+
 CompilerStatement * AsmPicoBlazeSpecialMacros::runTimeFor ( CompilerStatement * rtFor )
 {
     CompilerStatement * result;
@@ -94,6 +99,27 @@ CompilerStatement * AsmPicoBlazeSpecialMacros::runTimeFor ( CompilerStatement * 
     int start = 0;
     int end;
     int by = 1;
+
+    bool regInUse = false;
+    for ( std::vector<int>::const_iterator it = m_forLoopIterRegs.cbegin();
+          it != m_forLoopIterRegs.cend();
+          it++ )
+    {
+        if ( *it == reg )
+        {
+            regInUse = true;
+            break;
+        }
+    }
+    if ( true == regInUse )
+    {
+            m_compilerCore->compilerMessage ( args[0]->location(),
+                                              CompilerBase::MT_WARNING,
+                                              QObject::tr ( "reuse of iterator register in nested for loop (the two "
+                                                            "loops will affect each other via their iterator "
+                                                            "registers)" ) .toStdString() );
+    }
+    m_forLoopIterRegs.push_back(reg);
 
     if ( NULL == args[2] )
     {
@@ -492,10 +518,8 @@ CompilerStatement * AsmPicoBlazeSpecialMacros::evaluateCondition ( const Compile
                     result = compare_sx_kk(cndVal[0].m_val, cndVal[1].m_val);
                 }
 
-                result->appendLink ( new CompilerStatement ( CompilerSourceLocation(),
-                                                             CompilerStatementTypes::ASMPICOBLAZE_INS_JUMP_Z_AAA,
-                                                             new CompilerExpr ( "$", '+', 2 ) ) );
                 result->appendLink ( jump(label, JC_C) );
+                result->appendLink ( jump(label, JC_Z) );
             }
             else
             {
