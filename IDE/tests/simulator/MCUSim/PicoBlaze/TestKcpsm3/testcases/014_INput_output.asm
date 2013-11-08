@@ -27,7 +27,7 @@ start:          LOAD            pointer_in,#00h
                 
 dataIN:         INPUT           inout_data,@pointer_in
                 ;; STEP
-                ;; reg[0] == 8
+               
                 ;; reg[1] == 0
                 ;; flag[C] == false
                 ;; flag[Z] == false
