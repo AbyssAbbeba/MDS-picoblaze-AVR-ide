@@ -1,47 +1,91 @@
-; TEST CASE
-; testing run time directives, rtif rtfor, rt#WHILE
-device kcpsm3
-org     0
+device  kcpsm3
 
 start:
 
-        load    s0, #5
-        load    s1, #1
-               
-        if   s0  &  1       
-        add     s3,#1
-        else
-        sub     s3,#1
-        endif
-        ;; step
-        ;; pc == 1
-        ;; step
-        ;; pc == 2
-        load    s4,#8
-        ;; step
-        ;; pc == 3
-        ;; step
-        ;; pc == 4
-        ;; step
-        ;; pc == 5
-        ;; step
-        ;; pc == 7
-        ;; step
-        ;; pc == 8
-        ;; reg[4] == 8
-        ;; reg[3] == 255
 
-        if   s0  &  #10
-        else
-        endif
-        
+        load s0,#0b00111011
+        load s1,#0b01010101
+        load s2,#0b01010101
+        ;; step 3
+        ;; reg[0] == 59
+        ;; reg[1] == 85
+        ;; reg[2] == 85
 
-        if   0   &  1
-        else
+        if   s0  & 1
+            add     s3,#1
+            else
+            sub     s3,#1
         endif
-        
-        if   0   &  #10
-        else
+
+        jump    next1
+        ;; step
+        ;; flag[z] == false
+        ;; flag[c] == false
+        ;; step
+        ;; step 2
+        ;; reg[3] == 1
+next1:
+
+        if   0  & 1
+            add     s3,#1
+            else
+            sub     s3,#1
         endif
-        
-        jump   $
+
+        jump    next2
+        ;; step
+        ;; flag[z] == false
+        ;; flag[c] == false
+        ;; step
+        ;; step 2
+        ;; reg[3] == 1
+next2:
+
+
+        if   s0  & #1
+            add     s3,#1
+            else
+            sub     s3,#1
+        endif
+
+        jump    next3
+        ;; step
+        ;; flag[z] == false
+        ;; flag[c] == false
+        ;; step
+        ;; step 2
+        ;; reg[3] == 2
+next3:
+
+
+        if   0  & #1
+            add     s3,#1
+            else
+            sub     s3,#1
+        endif
+
+        jump    next4
+        ;; step 2
+        ;; flag[z] == false
+        ;; flag[c] == false
+        ;; step
+        ;; step 2
+        ;; reg[3] == 3
+
+
+; one try with different condition
+next4:
+
+        if   s0  & #10
+            add     s3,#1
+            else
+            sub     s3,#1
+        endif
+
+        jump    $
+        ;; step
+        ;; flag[z] == false
+        ;; flag[c] == false
+        ;; step
+        ;; step 2
+        ;; reg[3] == 4
