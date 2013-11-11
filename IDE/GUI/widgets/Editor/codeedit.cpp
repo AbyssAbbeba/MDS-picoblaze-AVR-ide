@@ -81,7 +81,7 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
     breakpointColor = new QColor(0,255,0);
     //textEdit->setWordWrapMode(QTextOption::NoWrap);
     textEdit->setWordWrapMode(QTextOption::WordWrap);
-    textEdit->setLineWrapMode(QTextEdit::WidgetWidth);
+    textEdit->setLineWrapMode(QPlainTextEdit::WidgetWidth);
     this->makeMenu();
     //this->setFocusPolicy(Qt::StrongFocus);
     //this->textEdit->setFocusPolicy(Qt::NoFocus);
@@ -161,7 +161,7 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName
     parentProject = parentPrj;
     breakpointColor = new QColor(0,255,0);
     textEdit->setWordWrapMode(QTextOption::WordWrap);
-    textEdit->setLineWrapMode(QTextEdit::WidgetWidth);
+    textEdit->setLineWrapMode(QPlainTextEdit::WidgetWidth);
     this->makeMenu();
     this->setFocusPolicy(Qt::StrongFocus);
     //this->installEventFilter(this);
@@ -450,7 +450,7 @@ void CodeEdit::loadCodeEdit(CodeEdit* editor)
     this->bookmarkList.clear();
     if (editor->getTextEdit()->toPlainText() != "")
     {
-        this->textEdit->setText(editor->getTextEdit()->toPlainText());
+        this->textEdit->setPlainText(editor->getTextEdit()->toPlainText());
     }
     this->setName(editor->getName());
     this->setPath(editor->getPath());

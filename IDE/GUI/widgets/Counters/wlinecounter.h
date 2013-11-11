@@ -15,7 +15,7 @@
 #ifndef WLINECOUNTER_H
 #define WLINECOUNTER_H
 
-#include <QTextEdit>
+#include <QPlainTextEdit>
 #include <QScrollArea>
 #include <QFont>
 
@@ -31,15 +31,15 @@ class WLineCounter : public QScrollArea
 {
     Q_OBJECT   
     public:
-        WLineCounter(QTextEdit *parent, bool icons, bool hex, int offset, QFont font);
-        QTextEdit* getTextEdit();
+        WLineCounter(QPlainTextEdit *parent, bool icons, bool hex, int offset, QFont font);
+        QPlainTextEdit* getTextEdit();
         WLineCounterWidget* getWidget();
 
     private slots:
         void change(int value);
 
     private:
-        QTextEdit *parent;
+        QPlainTextEdit *parent;
         WLineCounterWidget *widget;
 };
 
