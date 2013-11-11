@@ -167,6 +167,7 @@ EID     ({NSEP})?{ID}
 "const"         { return KW_CONST;        }
 "namespace"     { return KW_NAMESPACE;    }
 "include"       { return KW_INCLUDE;      }
+"eval"          { return KW_EVAL;         }
 
  /* Special values: */
 "EMPTY"         { return SV_EMPTY;        }

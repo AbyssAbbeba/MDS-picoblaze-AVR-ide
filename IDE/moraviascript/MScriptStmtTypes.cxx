@@ -46,6 +46,7 @@ std::ostream & operator << ( std::ostream & out,
         case STMT_CONST:     out << "CONST";     break;
         case STMT_NAMESPACE: out << "NAMESPACE"; break;
         case STMT_INCLUDE:   out << "INCLUDE";   break;
+        case STMT_EVAL:      out << "EVAL";      break;
 
         case STMT_CALL:      out << "CALL";      break;
     }
