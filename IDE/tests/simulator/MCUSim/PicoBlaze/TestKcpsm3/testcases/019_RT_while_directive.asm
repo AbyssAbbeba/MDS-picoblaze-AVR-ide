@@ -5,8 +5,9 @@
 
 ; Program start
 ; --------------------
+B      set      0
                 ;; step
-                ;; reg[0] == 10
+                
 
 ; All these cycles has been manualy tested in MDS
                 
