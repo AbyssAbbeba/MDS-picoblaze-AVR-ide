@@ -14,7 +14,7 @@
 #include "wtextedit.h"
 
 WTextEdit::WTextEdit(QWidget *parent, SourceType type)
-    : QTextEdit(parent)
+    : QPlainTextEdit(parent)
 {
     //qDebug() << "WTextEdit: WTextEdit()";
     this->sourceType = type;

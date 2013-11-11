@@ -24,7 +24,7 @@
  * @param hex If shown numbers will be hexadecimal (or decimal).
  * @param font Used font.
  */
-WLineCounter::WLineCounter(QTextEdit *parent, bool icons, bool hex, int offset, QFont font)
+WLineCounter::WLineCounter(QPlainTextEdit *parent, bool icons, bool hex, int offset, QFont font)
     : QScrollArea(parent)
 {
     //qDebug() << "WLineCounter: WLineCounter()";
@@ -50,7 +50,7 @@ WLineCounter::WLineCounter(QTextEdit *parent, bool icons, bool hex, int offset, 
  * @brief Returns pointer to the parent QTextEdit.
  * @return Returns pointer to the parent QTextEdit.
  */
-QTextEdit* WLineCounter::getTextEdit()
+QPlainTextEdit* WLineCounter::getTextEdit()
 {
     return parent;
 }
@@ -125,7 +125,7 @@ WLineCounterWidget::WLineCounterWidget(WLineCounter *parent, bool icons, bool he
  */
 void WLineCounterWidget::paintEvent(QPaintEvent *)
 {
-    QTextEdit* textEdit = parent->getTextEdit();
+    QPlainTextEdit* textEdit = parent->getTextEdit();
     //int size = textEdit->currentFont().pointSize();
     //int normalize = 0;
     //QTextCursor lastBlockCursor(textEdit->document()->lastBlock());
@@ -225,11 +225,17 @@ void WLineCounterWidget::paintEvent(QPaintEvent *)
 void WLineCounterWidget::changeHeight()
 {
     //qDebug() << "WLineCounterWidget: changeHeight()";
-    QTextEdit* textEdit = parent->getTextEdit();
-    this->setMinimumHeight(textEdit->document()->size().height());
-    this->setMaximumHeight(textEdit->document()->size().height());
+    QPlainTextEdit* textEdit = parent->getTextEdit();
+    //this->setMinimumHeight(textEdit->document()->size().height());
+    //this->setMaximumHeight(textEdit->document()->size().height());
+    this->setMinimumHeight(textEdit->height());
+    this->setMaximumHeight(textEdit->height());
+    //this->parent->setMaximumHeight(this->height());
+    //this->parent->setMinimumHeight(this->height());
     //qDebug() << "WLineCounterWidget: height" << this->height();
-    //qDebug() << "WLineCounterWidget: parent height:" << textEdit->document()->size().height();
+    //qDebug() << "WLineCounterWidget: parent doc height:" << textEdit->document()->size().height();
+    //qDebug() << "WLineCounterWidget: parent height:" << textEdit->height();
+    //qDebug() << "WLineCounterWidget: parent block count:" << textEdit->document()->blockCount();
     this->update();
     //qDebug() << "WLineCounterWidget: return changeHeight()";
 }

@@ -15,7 +15,7 @@
 #ifndef WCOLUMNCOUNTER_H
 #define WCOLUMNCOUNTER_H
 
-#include <QTextEdit>
+#include <QPlainTextEdit>
 #include <QScrollArea>
 #include <QFont>
 
@@ -31,13 +31,13 @@ class WColumnCounter : public QScrollArea
 {
     Q_OBJECT   
     public:
-        WColumnCounter(QTextEdit *parent, QFont font, int columns);
-        QTextEdit* getTextEdit();
+        WColumnCounter(QPlainTextEdit *parent, QFont font, int columns);
+        QPlainTextEdit* getTextEdit();
         WColumnCounterWidget* getWidget();
     private slots:
         void change(int value);
     private:
-        QTextEdit *parent;
+        QPlainTextEdit *parent;
         WColumnCounterWidget *widget;
 };
 

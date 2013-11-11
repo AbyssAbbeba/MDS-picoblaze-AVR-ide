@@ -17,7 +17,7 @@
 #define WTEXTEDIT_H
 
 
-#include <QTextEdit>
+#include <QPlainTextEdit>
 #include "../Highlighter/highlighter.h"
 
 
@@ -29,7 +29,7 @@ class Highlighter;
  * @ingroup GUI
  * @class WTextEdit
  */
-class WTextEdit : public QTextEdit
+class WTextEdit : public QPlainTextEdit
 {
     Q_OBJECT   
     public:

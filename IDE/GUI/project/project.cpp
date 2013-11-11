@@ -512,7 +512,15 @@ Project::Project(QFile *file, ProjectMan *parent)
                     treeProjFile = new QTreeWidgetItem(treeProjOther);
                 }
                 treeProjFile->setText(0, fileNames.at(i));
-                treeProjFile->setData(0, Qt::ToolTipRole, QDir(absolutePath + "/" + filePaths.at(i)).canonicalPath());
+                if ( NULL == QDir(absolutePath + "/" + filePaths.at(i)).canonicalPath())
+                {
+                    treeProjFile->setData(0, Qt::ToolTipRole, absolutePath + "/" + filePaths.at(i));
+                    treeProjFile->setBackground(0, Qt::red);
+                }
+                else
+                {
+                    treeProjFile->setData(0, Qt::ToolTipRole, QDir(absolutePath + "/" + filePaths.at(i)).canonicalPath());
+                }
             }
             if (mainFileName != "" && mainFilePath != "")
             {
