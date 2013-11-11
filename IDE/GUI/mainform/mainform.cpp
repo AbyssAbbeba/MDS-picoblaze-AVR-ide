@@ -425,18 +425,21 @@ void MainForm::openFilePath(QString path)
     //QDir projectDir(QFileInfo(projectMan->activeProject->prjPath).dir());
     //QString absoluteFilePath = QFileInfo(projectMan->getActive()->prjPath).dir().path() + "/" + path;
     //qDebug() << absoluteFilePath;
-    QFile file(path);
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    if (NULL != path)
     {
-        error(ERR_OPENFILE);
-    }
-    else
-    {
-        wDockManager->addCentralWidget(path.section('/', -1), path);
-        //wDockManager->getCentralTextEdit()->setPlainText(file.readAll());
-        file.close();
-        wDockManager->getCentralWidget()->connectAct();
-        wDockManager->getCentralWidget()->setParentProject(projectMan->getActive());
+        QFile file(path);
+        if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+        {
+            error(ERR_OPENFILE);
+        }
+        else
+        {
+            wDockManager->addCentralWidget(path.section('/', -1), path);
+            //wDockManager->getCentralTextEdit()->setPlainText(file.readAll());
+            file.close();
+            wDockManager->getCentralWidget()->connectAct();
+            wDockManager->getCentralWidget()->setParentProject(projectMan->getActive());
+        }
     }
     //qDebug() << "MainForm: return openFilePath()";
 }
