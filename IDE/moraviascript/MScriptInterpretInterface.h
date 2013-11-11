@@ -57,6 +57,15 @@ class MScriptInterpretInterface
 
         /**
          * @brief
+         * @param[in] location
+         * @param[in] code
+         * @return
+         */
+        virtual MScriptStatement * insertCode ( const MScriptSrcLocation & location,
+                                                const std::string & code ) = 0;
+
+        /**
+         * @brief
          * @return
          */
         virtual MScriptBase * getCoreBase() = 0;
