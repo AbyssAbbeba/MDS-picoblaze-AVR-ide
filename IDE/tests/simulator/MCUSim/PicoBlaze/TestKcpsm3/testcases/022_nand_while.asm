@@ -8,82 +8,101 @@ org     0
 
 start:
 
-        load    s2,#9
-        load    s0,#10
-        load    s1,#10
-        load    s4,#250
-        ;; step 4
-        ;; reg[0] == 10
-        ;; reg[1] == 10
+        load    s0,#0b10000000
+        load    s1,#0b00000001
+        ;; step 2
+        ;; reg[0] == 128
+        ;; reg[1] == 1
 
-        while   s1  !& #10
-            add     s1,#1
+        while   s0  !& #0b00000001
+            add     s0,#1
         endw
 
-        sub     s1,#1
+        sub     s0,#1
         jump    next1
-        ;; step 2
-        ;; flag[z] == true
-        ;; flag[c] == false
-        ;; step 4
-        ;; reg[1] == 11
-        ;; step
+        ;; step         # test
+        ;; step         # jump z
+        ;; flag[z] != false
+        ;; step         # add
+        ;; step         # jump to test
+        ;; step         # test
+        ;; step         # jump z
+        ;; flag[z] != true
+        ;; step         # sub
+        ;; step         # jump next
 
 next1:
 
-        while   1  !& #10
-            add     s1,#1
+        while   0  !& #0b00000001
+            add     s0,#1
         endw
 
-        sub     s1,#1
+        sub     s0,#1
         jump    next2
-        ;; step 2
-        ;; flag[z] == true
-        ;; flag[c] == false
-        ;; step 4
-        ;; reg[1] == 11
-        ;; step
+        ;; step         # test
+        ;; step         # jump z
+        ;; flag[z] != false
+        ;; step         # add
+        ;; step         # jump to test
+        ;; step         # test
+        ;; step         # jump z
+        ;; flag[z] != true
+        ;; step         # sub
+        ;; step         # jump next
 
 next2:
 
-        while   s1  !& s0
-            add     s1,#1
+        while   s0  !& s1
+            add     s0,#1
         endw
 
-        sub     s1,#1
+        sub     s0,#1
         jump    next3
-        ;; step 2
-        ;; flag[z] == false
-        ;; flag[c] == false
-        ;; step 4
-        ;; reg[1] == 11
-        ;; step
+        ;; step         # test
+        ;; step         # jump z
+        ;; flag[z] != false
+        ;; step         # add
+        ;; step         # jump to test
+        ;; step         # test
+        ;; step         # jump z
+        ;; flag[z] != true
+        ;; step         # sub
+        ;; step         # jump next
 
 next3:
 
-        while   1  !& 0
-            add     s1,#1
+        while   0  !& 1
+            add     s0,#1
         endw
 
-        sub     s1,#1
+        sub     s0,#1
         jump    next4
-        ;; step 2
-        ;; flag[z] == false
-        ;; flag[c] == false
-        ;; step 4
-        ;; reg[1] == 11
-        ;; step
+        ;; step         # test
+        ;; step         # jump z
+        ;; flag[z] != false
+        ;; step         # add
+        ;; step         # jump to test
+        ;; step         # test
+        ;; step         # jump z
+        ;; flag[z] != true
+        ;; step         # sub
+        ;; step         # jump next
 
 next4:
 
-        while   s1 !& s4
-            add         s1,#1
+        while   s0 !& s1
+            add     s0,#1
         endw
 
-        jump    $
-        ;; step 2
-        ;; flag[z] == false
-        ;; flag[c] == false
-        ;; step 4
-        ;; reg[1] == 10
-        ;; step
+        sub     s0,#1
+        jump    next1
+        ;; step         # test
+        ;; step         # jump z
+        ;; flag[z] != false
+        ;; step         # add
+        ;; step         # jump to test
+        ;; step         # test
+        ;; step         # jump z
+        ;; flag[z] != true
+        ;; step         # sub
+        ;; step         # jump next
