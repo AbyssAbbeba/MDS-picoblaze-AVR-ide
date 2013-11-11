@@ -8,82 +8,131 @@ org     0
 
 start:
 
-        load    s2,#9
         load    s0,#10
-        load    s1,#10
-        load    s4,#250
-        ;; step 4
+        load    s1,#11
+        ;; step 2
         ;; reg[0] == 10
-        ;; reg[1] == 10
+        ;; reg[1] == 11
 
         while   s1  >= #10
-            add     s1,#1
+            sub     s1,#1
         endw
 
-        sub     s1,#1
+        add     s1,#2
         jump    next1
-        ;; step 2
-        ;; flag[z] == true
+        ;; step         # compare
+        ;; step         # jump c
         ;; flag[c] == false
-        ;; step 4
-        ;; reg[1] == 11
-        ;; step
+        ;; flag[z] == false
+        ;; step         # sub
+        ;; step         # jump to compare
+        ;; step         # compare
+        ;; step         # jump c
+        ;; flag[c] == false
+        ;; flag[z] == true
+        ;; step         # sub
+        ;; step         # jump to compare
+        ;; step         # compare
+        ;; step         # jump c
+        ;; flag[c] == true
+        ;; flag[z] == false
+        ;; step         # add 2
+        ;; step         # jump to next 
+        
+
 
 next1:
 
         while   1  >= #10
-            add     s1,#1
+            sub     s1,#1
         endw
 
-        sub     s1,#1
+        add     s1,#2
         jump    next2
-        ;; step 2
-        ;; flag[z] == true
+        ;; step         # compare
+        ;; step         # jump c
         ;; flag[c] == false
-        ;; step 4
-        ;; reg[1] == 11
-        ;; step
-
+        ;; flag[z] == false
+        ;; step         # sub
+        ;; step         # jump to compare
+        ;; step         # compare
+        ;; step         # jump c
+        ;; flag[c] == false
+        ;; flag[z] == true
+        ;; step         # sub
+        ;; step         # jump to compare
+        ;; step         # compare
+        ;; step         # jump c
+        ;; flag[c] == true
+        ;; flag[z] == false
+        ;; step         # add 2
+        ;; step         # jump to next
+ 
 next2:
 
         while   s1  >= s0
-            add     s1,#1
+            sub     s1,#1
         endw
 
-        sub     s1,#1
+        add     s1,#2
         jump    next3
-        ;; step 2
-        ;; flag[z] == false
+        ;; step         # compare
+        ;; step         # jump c
         ;; flag[c] == false
-        ;; step 4
-        ;; reg[1] == 11
-        ;; step
-
+        ;; flag[z] == false
+        ;; step         # sub
+        ;; step         # jump to compare
+        ;; step         # compare
+        ;; step         # jump c
+        ;; flag[c] == false
+        ;; flag[z] == true
+        ;; step         # sub
+        ;; step         # jump to compare
+        ;; step         # compare
+        ;; step         # jump c
+        ;; flag[c] == true
+        ;; flag[z] == false
+        ;; step         # add 2
+        ;; step         # jump to next
+ 
 next3:
 
         while   1  >= 0
-            add     s1,#1
+            sub     s1,#1
         endw
 
-        sub     s1,#1
+        add     s1,#2
         jump    next4
-        ;; step 2
-        ;; flag[z] == false
+        ;; step         # compare
+        ;; step         # jump c
         ;; flag[c] == false
-        ;; step 4
-        ;; reg[1] == 11
-        ;; step
-
+        ;; flag[z] == false
+        ;; step         # sub
+        ;; step         # jump to compare
+        ;; step         # compare
+        ;; step         # jump c
+        ;; flag[c] == false
+        ;; flag[z] == true
+        ;; step         # sub
+        ;; step         # jump to compare
+        ;; step         # compare
+        ;; step         # jump c
+        ;; flag[c] == true
+        ;; flag[z] == false
+        ;; step         # add 2
+        ;; step         # jump to next
+ 
 next4:
 
-        while   s1 >= s4
-            add         s1,#1
+        while   s1 >= #20
+            sub     s1,#1
         endw
 
+        add     s1,#2
         jump    $
-        ;; step 2
+        ;; step         # compare
+        ;; step         # jump c
+        ;; flag[c] == true
         ;; flag[z] == false
-        ;; flag[c] == false
-        ;; step 4
-        ;; reg[1] == 10
-        ;; step
+        ;; step         # add2
+        ;; step         # jump to next

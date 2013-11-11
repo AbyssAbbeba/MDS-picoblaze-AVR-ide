@@ -8,82 +8,127 @@ org     0
 
 start:
 
-        load    s2,#9
         load    s0,#10
-        load    s1,#10
-        load    s4,#250
-        ;; step 4
+        load    s1,#9
+        ;; step 2
         ;; reg[0] == 10
-        ;; reg[1] == 10
+        ;; reg[1] == 9
 
         while   s1  <= #10
             add     s1,#1
         endw
 
-        sub     s1,#1
+        sub     s1,#2
         jump    next1
-        ;; step 2
+        ;; step         # compare
+        ;; step         # jump z
+        ;; flag[z] == false
+        ;; step         # jump c
+        ;; flag[c] == true
+        ;; step         # add
+        ;; step         # jump to compare
+        ;; step         # compare
+        ;; step         # jump z
         ;; flag[z] == true
+        ;; step         # add
+        ;; step         # jump to compare
+        ;; step         # jump z
+        ;; flag[z] == false
+        ;; step         # jump c
         ;; flag[c] == false
-        ;; step 4
-        ;; reg[1] == 11
-        ;; step
-
+        ;; step         # sub
+        ;; step         # jump next
 next1:
 
-        while   1  <= #10
+        while   1  <=  #10
             add     s1,#1
         endw
 
-        sub     s1,#1
+        sub     s1,#2
         jump    next2
-        ;; step 2
+        ;; step         # compare
+        ;; step         # jump z
+        ;; flag[z] == false
+        ;; step         # jump c
+        ;; flag[c] == true
+        ;; step         # add
+        ;; step         # jump to compare
+        ;; step         # compare
+        ;; step         # jump z
         ;; flag[z] == true
+        ;; step         # add
+        ;; step         # jump to compare
+        ;; step         # jump z
+        ;; flag[z] == false
+        ;; step         # jump c
         ;; flag[c] == false
-        ;; step 4
-        ;; reg[1] == 11
-        ;; step
-
+        ;; step         # sub
+        ;; step         # jump next
+        
 next2:
 
-        while   s1  <= s0
+        while   s1  <=  s0
             add     s1,#1
         endw
 
-        sub     s1,#1
+        sub     s1,#2
         jump    next3
-        ;; step 2
+        ;; step         # compare
+        ;; step         # jump z
         ;; flag[z] == false
+        ;; step         # jump c
+        ;; flag[c] == true
+        ;; step         # add
+        ;; step         # jump to compare
+        ;; step         # compare
+        ;; step         # jump z
+        ;; flag[z] == true
+        ;; step         # add
+        ;; step         # jump to compare
+        ;; step         # jump z
+        ;; flag[z] == false
+        ;; step         # jump c
         ;; flag[c] == false
-        ;; step 4
-        ;; reg[1] == 11
-        ;; step
-
+        ;; step         # sub
+        ;; step         # jump next
 next3:
 
         while   1  <= 0
             add     s1,#1
         endw
 
-        sub     s1,#1
+        sub     s1,#2
         jump    next4
-        ;; step 2
+        ;; step         # compare
+        ;; step         # jump z
         ;; flag[z] == false
+        ;; step         # jump c
+        ;; flag[c] == true
+        ;; step         # add
+        ;; step         # jump to compare
+        ;; step         # compare
+        ;; step         # jump z
+        ;; flag[z] == true
+        ;; step         # add
+        ;; step         # jump to compare
+        ;; step         # jump z
+        ;; flag[z] == false
+        ;; step         # jump c
         ;; flag[c] == false
-        ;; step 4
-        ;; reg[1] == 11
-        ;; step
+        ;; step         # sub
+        ;; step         # jump next
 
-next4:
-
-        while   s1 <= s4
-            add         s1,#1
+next4:        
+        while   #50 <=  #20
+            sub     s1,#1
         endw
 
+        add     s1,#1
         jump    $
-        ;; step 2
-        ;; flag[z] == false
+        ;; step         # compare
+        ;; step         # jump c
         ;; flag[c] == false
-        ;; step 4
-        ;; reg[1] == 10
-        ;; step
+        ;; flag[z] == false
+        ;; step         # add2
+        ;; step         # jump to next   
+      
