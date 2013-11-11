@@ -17,6 +17,22 @@
 ; --------------------
 start:
 		enable interrupt
+		load	s8,#0b10000000
+		load	S9,#0b00111011
+		test	0x9,0x8
+
+           TEST    0x9, 0x8
+          JUMP    Z, IF_5
+                      add     s3,#1
+                                ; else
+          JUMP    IF_5_END
+                   IF_5:
+                       sub     s3,#1
+                         ;   endif
+          IF_5_END:
+
+
+
 		load	s1,#10
         load    s2,#9
         load    s0,#10

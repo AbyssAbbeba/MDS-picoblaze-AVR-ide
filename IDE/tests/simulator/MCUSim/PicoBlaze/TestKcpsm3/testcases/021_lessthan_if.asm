@@ -56,7 +56,7 @@ next2:
         ;; flag[c] == false
         ;; step
         ;; step 3
-        ;; reg[3] == 253
+        ;; reg[3] == 252
 
 
 next3:
@@ -73,7 +73,7 @@ next3:
         ;; flag[c] == false
         ;; step
         ;; step 3
-        ;; reg[3] == 252
+        ;; reg[3] == 251
 
 next4:
 

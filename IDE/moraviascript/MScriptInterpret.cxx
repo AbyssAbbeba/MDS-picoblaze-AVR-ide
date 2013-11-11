@@ -603,10 +603,62 @@ bool MScriptInterpret::postprocessCode ( MScriptStatement * rootNode )
                 // Remove empty statements.
                 break;
 
+            case STMT_IF:
             case STMT_EXPR:
+            case STMT_SWITCH:
                 // Decompose expression into a sequence of trivial expressions.
-                node->insertLink(m_exprProcessor->decompose(node));
-                break;
+                if ( true == m_exprProcessor->detectFunctionCall(node->args()) )
+                {
+                    node->insertLink(m_exprProcessor->decompose(node));
+                }
+                else
+                {
+                    m_exprProcessor->compressExpr(node->args());
+                    m_exprProcessor->evalConsts(node->args());
+                }
+                continue;
+
+            case STMT_FOR:
+                if ( true == m_exprProcessor->detectFunctionCall(node->args()) )
+                {
+                    MScriptStatement * code;
+
+                    // for ( ...; ...; <THIS> ) { ...; <HERE> }
+                    code = m_exprProcessor->decompose ( node->args()[2], true );
+                    node->branch()->appendLink(code);
+
+                    // <HERE>; for ( ...; <THIS>; ... ) { ...; <HERE> }
+                    code = m_exprProcessor->decompose ( node->args()[1], true );
+                    node->branch()->appendLink(code->copyEntireChain());
+                    node->insertLink ( code );
+
+                    // <HERE>; for ( <THIS>; ...; ... ) { ... }
+                    code = m_exprProcessor->decompose ( node->args()[0], true );
+                    node->insertLink ( code );
+                }
+                else
+                {
+                    for ( int i = 0; i < 3; i++ )
+                    {
+                        m_exprProcessor->compressExpr(node->args()[i]);
+                    }
+                    m_exprProcessor->evalConsts(node->args());
+                }
+                continue;
+
+            case STMT_WHILE:
+                if ( true == m_exprProcessor->detectFunctionCall(node->args()) )
+                {
+                    MScriptStatement * code = m_exprProcessor->decompose(node);
+                    node->insertLink(code->copyEntireChain());
+                    node->branch()->appendLink(code);
+                }
+                else
+                {
+                    m_exprProcessor->compressExpr(node->args());
+                    m_exprProcessor->evalConsts(node->args());
+                }
+                continue;
 
             case STMT_TRIGGER:
                 // TODO: add to trigger table.
