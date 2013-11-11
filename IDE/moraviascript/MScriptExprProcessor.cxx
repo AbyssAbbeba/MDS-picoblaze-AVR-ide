@@ -29,14 +29,25 @@
 // Used for i18n only.
 #include <QObject>
 
-#include <iostream> // DEBUG
+MScriptStatement * MScriptExprProcessor::decompose ( MScriptStatement * node,
+                                                     bool single )
+{
+    return decompose(node->args(), single);
+}
 
-MScriptStatement * MScriptExprProcessor::decompose ( MScriptStatement * node )
+MScriptStatement * MScriptExprProcessor::decompose ( MScriptExpr & input,
+                                                     bool single )
+{
+    return decompose(&input, single);
+}
+
+MScriptStatement * MScriptExprProcessor::decompose ( MScriptExpr * input,
+                                                     bool single )
 {
     MScriptStatement * result = NULL;
 
-    for ( MScriptExpr * expr = node->args();
-          NULL != expr;
+    for ( MScriptExpr * expr = input;
+          ( NULL != expr ) && ( false == single );
           expr = expr->next() )
     {
         MScriptStatement * intResult = new MScriptStatement ( expr->location(), MScriptStmtTypes::STMT_EXPR, expr );
@@ -48,6 +59,7 @@ MScriptStatement * MScriptExprProcessor::decompose ( MScriptStatement * node )
         unsigned int counter = 1;
         breakDown(intResult, expr, &counter);
         removeNoOps(intResult->first());
+
         if ( NULL == result )
         {
             if ( NULL != intResult )
@@ -468,6 +480,11 @@ void MScriptExprProcessor::breakDown ( MScriptStatement * result,
     }
 }
 
+void MScriptExprProcessor::compressExpr ( MScriptExpr & expr )
+{
+    compressExpr(&expr);
+}
+
 void MScriptExprProcessor::compressExpr ( MScriptExpr * expr )
 {
     MScriptValue * value = &( expr->m_lValue );
@@ -556,7 +573,9 @@ void MScriptExprProcessor::removeNoOps ( MScriptStatement * root )
 void MScriptExprProcessor::evalConsts ( MScriptExpr * expr,
                                         MScriptValue * value )
 {
-    for ( MScriptExpr * e = expr; NULL != e; e = e->next() )
+    for ( MScriptExpr * e = expr;
+          NULL != e;
+          e = e->next() )
     {
         MScriptValue * value = &( e->m_lValue );
         for ( int i = 0; i < 2; i++ )
@@ -567,6 +586,11 @@ void MScriptExprProcessor::evalConsts ( MScriptExpr * expr,
             }
 
             value = &( e->m_rValue );
+        }
+
+        if ( false == isConstantExpr(e) )
+        {
+            continue;
         }
 
         if (
@@ -604,12 +628,47 @@ void MScriptExprProcessor::evalConsts ( MScriptExpr * expr,
 
         binaryOperation ( result, e->lVal(), e->rVal(), location, e->oper() );
 
+        if ( true == isComparison ( e->oper() ) )
+        {
+            if ( true == result.toBool(m_interpret, location) )
+            {
+                m_interpret->interpreterMessage ( location,
+                                                  MScriptBase::MT_WARNING,
+                                                  QObject::tr ( "comparing two constants, result is always positive" )
+                                                              . toStdString() );
+            }
+            else
+            {
+                m_interpret->interpreterMessage ( location,
+                                                  MScriptBase::MT_WARNING,
+                                                  QObject::tr ( "comparing two constants, result is always negative" )
+                                                              . toStdString() );
+            }
+        }
+
         if ( NULL == value )
         {
             e->m_operator = MScriptExpr::OPER_NONE;
             e->m_rValue.completeDelete();
             e->m_rValue.m_type = MScriptValue::TYPE_EMPTY;
         }
+    }
+}
+
+inline bool MScriptExprProcessor::isComparison ( const MScriptExpr::Operator oper )
+{
+    switch ( oper )
+    {
+        case MScriptExpr::OPER_EQ:
+        case MScriptExpr::OPER_NE:
+        case MScriptExpr::OPER_LT:
+        case MScriptExpr::OPER_LE:
+        case MScriptExpr::OPER_GE:
+        case MScriptExpr::OPER_GT:
+            return true;
+
+        default:
+            return false;
     }
 }
 
