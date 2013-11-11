@@ -52,16 +52,57 @@ class MScriptExprProcessor : protected MScriptExprAlgebra
         /**
          * @brief
          * @param[in,out] node
+         * @param[in] single
          * @return
          */
-        MScriptStatement * decompose ( MScriptStatement * node );
+        MScriptStatement * decompose ( MScriptStatement * node,
+                                       bool single = false );
+
+        /**
+         * @brief
+         * @param[in,out] input
+         * @param[in] single
+         * @return
+         */
+        MScriptStatement * decompose ( MScriptExpr * input,
+                                       bool single = false );
+
+        /// @overload
+        MScriptStatement * decompose ( MScriptExpr & input,
+                                       bool single = false );
+
+        /**
+         * @brief
+         * @param[in,out] expr
+         */
+        void compressExpr ( MScriptExpr * expr );
+
+        /// @overload
+        void compressExpr ( MScriptExpr & expr );
+
+        /**
+         * @brief
+         * @param[in,out] expr
+         * @param[in,out] value
+         * @return
+         */
+        void evalConsts ( MScriptExpr * expr,
+                          MScriptValue * value = NULL );
 
         /**
          * @brief
          * @param[in] expr
+         * @param[in] single
          * @return
          */
         bool isConstantExpr ( const MScriptExpr * expr );
+
+        /**
+         * @brief
+         * @param[in] root
+         * @return
+         */
+        bool detectFunctionCall ( const MScriptExpr * expr ) const;
 
     ////    Private Operations    ////
     private:
@@ -79,22 +120,7 @@ class MScriptExprProcessor : protected MScriptExprAlgebra
          * @brief
          * @param[in,out] expr
          */
-        void compressExpr ( MScriptExpr * expr );
-
-        /**
-         * @brief
-         * @param[in,out] expr
-         */
         void decomposeAsgn ( MScriptExpr * expr );
-
-        /**
-         * @brief
-         * @param[in,out] expr
-         * @param[in,out] value
-         * @return
-         */
-        void evalConsts ( MScriptExpr * expr,
-                          MScriptValue * value = NULL );
 
         /**
          * @brief
@@ -102,12 +128,14 @@ class MScriptExprProcessor : protected MScriptExprAlgebra
          */
         void removeNoOps ( MScriptStatement * root );
 
+    ////    Inline Private Operations    ////
+    private:
         /**
          * @brief
-         * @param[in] root
+         * @param[in] oper
          * @return
          */
-        bool detectFunctionCall ( const MScriptExpr * expr ) const;
+        inline bool isComparison ( const MScriptExpr::Operator oper );
 
     ////    Private Attributes    ////
     private:
