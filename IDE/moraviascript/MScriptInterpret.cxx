@@ -98,6 +98,7 @@ bool MScriptInterpret::step()
         case STMT_TRIGGER:      evalFunction ( node );  break;
         case STMT_NAMESPACE:    evalNamespace ( node ); break;
         case STMT_INCLUDE:      evalInclude ( node );   break;
+        case STMT_EVAL:         evalEval ( node );      break;
 
         // These statements are supposed to be ignored.
         case STMT_ROOT:
@@ -521,6 +522,17 @@ inline void MScriptInterpret::evalInclude ( const MScriptStatement * node )
     const std::string filename = std::string(arg.m_data.m_string.m_data, arg.m_data.m_string.m_size);
 
     MScriptStatement * code = include ( node->location(), filename );
+    postprocessCode(code);
+
+    const_cast<MScriptStatement*>(node)->insertLink(code);
+}
+
+inline void MScriptInterpret::evalEval ( const MScriptStatement * node )
+{
+    const MScriptValue & arg = node->args()->lVal();
+    MScriptStatement * code = insertCode ( node->location(),
+                                           std::string(arg.m_data.m_string.m_data, arg.m_data.m_string.m_size) );
+
     postprocessCode(code);
 
     const_cast<MScriptStatement*>(node)->insertLink(code);

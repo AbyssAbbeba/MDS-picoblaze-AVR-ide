@@ -59,10 +59,19 @@ MScriptCore::~MScriptCore()
 bool MScriptCore::loadScript ( const std::string & scriptCode )
 {
     unloadScript();
+    return loadCode(scriptCode);
+}
 
-    /*
-     * Initiate lexical and syntax analysis of the source code.
-     */
+bool MScriptCore::loadScript ( FILE * sourceFile,
+                               const std::string & fileName )
+{
+    unloadScript();
+    m_files.push_back(fileName);
+    return loadFile(sourceFile);
+}
+
+bool MScriptCore::loadCode ( const std::string & scriptCode )
+{
     yyscan_t yyscanner; // Pointer to the lexer context
     moraviaScriptLexer_lex_init_extra ( this, &yyscanner );
     YY_BUFFER_STATE bufferState = moraviaScriptLexer__scan_string ( scriptCode.c_str(), yyscanner );
@@ -74,14 +83,6 @@ bool MScriptCore::loadScript ( const std::string & scriptCode )
     moraviaScriptLexer_lex_destroy ( yyscanner );
 
     return m_success;
-}
-
-bool MScriptCore::loadScript ( FILE * sourceFile,
-                               const std::string & fileName )
-{
-    unloadScript();
-    m_files.push_back(fileName);
-    return loadFile(sourceFile);
 }
 
 bool MScriptCore::loadFile ( FILE * file )
@@ -234,6 +235,54 @@ void MScriptCore::rewriteFileNumbers ( MScriptExpr * expr,
     }
 }
 
+void MScriptCore::locationRelativeTo ( MScriptStatement * code,
+                                       const MScriptSrcLocation & location )
+{
+    for ( MScriptStatement * node = code;
+          NULL != node;
+          node = node->next() )
+    {
+        node->m_location.m_line[0]   += ( location.m_line[0] - 1 );
+        node->m_location.m_line[0]   += ( location.m_line[1] - 1 );
+        node->m_location.m_column[0] += ( location.m_column[0] - 1 );
+        node->m_location.m_column[1] += ( location.m_column[1] - 1 );
+        node->m_location.m_file       = location.m_file;
+
+        if ( NULL != node->branch() )
+        {
+            locationRelativeTo ( node->branch(), location );
+        }
+
+        for ( MScriptExpr * arg = node->args();
+              NULL != arg;
+              arg = arg->next() )
+        {
+            locationRelativeTo ( arg, location );
+        }
+    }
+}
+
+void MScriptCore::locationRelativeTo ( MScriptExpr * expr,
+                                       const MScriptSrcLocation & location )
+{
+    expr->m_location.m_line[0]   += ( location.m_line[0] - 1 );
+    expr->m_location.m_line[0]   += ( location.m_line[1] - 1 );
+    expr->m_location.m_column[0] += ( location.m_column[0] - 1 );
+    expr->m_location.m_column[1] += ( location.m_column[1] - 1 );
+    expr->m_location.m_file       = location.m_file;
+
+    MScriptValue * value = &( expr->m_lValue );
+    for ( int i = 0; i < 2; i++ )
+    {
+        if ( MScriptValue::TYPE_EXPR == value->m_type )
+        {
+            locationRelativeTo ( value->m_data.m_expr, location );
+        }
+
+        value = &( expr->m_rValue );
+    }
+}
+
 MScriptStatement * MScriptCore::include ( const MScriptSrcLocation & location,
                                           const std::string & fileName )
 {
@@ -259,3 +308,10 @@ MScriptStatement * MScriptCore::include ( const MScriptSrcLocation & location,
     return m_includedCode;
 }
 
+MScriptStatement * MScriptCore::insertCode ( const MScriptSrcLocation & location,
+                                             const std::string & code )
+{
+    loadCode(code);
+    locationRelativeTo(m_includedCode, location);
+    return m_includedCode;
+}

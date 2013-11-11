@@ -129,6 +129,7 @@
 %token KW_CONST         "const"
 %token KW_NAMESPACE     "namespace"
 %token KW_INCLUDE       "include"
+%token KW_EVAL          "eval"
 
 /* Special values: */
 %token SV_EMPTY         "EMPTY"
@@ -374,6 +375,9 @@ stmt:
                                     }
     | "include" string ";"          {
                                         $$ = new MScriptStatement(@$, STMT_INCLUDE, $string);
+                                    }
+    | "eval" "(" string ")" ";"     {
+                                        $$ = new MScriptStatement(@$, STMT_EVAL, $string);
                                     }
     | "namespace" id "{" statements "}"
                                     {
