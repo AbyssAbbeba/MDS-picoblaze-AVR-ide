@@ -55,6 +55,7 @@ namespace MScriptStmtTypes
         STMT_CONST,           ///<
         STMT_NAMESPACE,       ///<
         STMT_INCLUDE,         ///<
+        STMT_EVAL,            ///<
 
         STMT_CALL             ///<
     };

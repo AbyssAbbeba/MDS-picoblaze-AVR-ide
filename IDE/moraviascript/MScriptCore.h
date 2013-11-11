@@ -130,6 +130,13 @@ class MScriptCore : protected MScriptBase,
 
         /**
          * @brief
+         * @param[in] scriptCode
+         * @return
+         */
+        bool loadCode ( const std::string & scriptCode );
+
+        /**
+         * @brief
          * @param[in,out] code
          * @param[in] fileNumber
          * @return
@@ -145,6 +152,24 @@ class MScriptCore : protected MScriptBase,
          */
         void rewriteFileNumbers ( MScriptExpr * expr,
                                   int fileNumber ) const;
+
+        /**
+         * @brief
+         * @param[in,out] code
+         * @param[in] location
+         * @return
+         */
+        void locationRelativeTo ( MScriptStatement * code,
+                                  const MScriptSrcLocation & location );
+
+        /**
+         * @brief
+         * @param[in,out] expr
+         * @param[in] location
+         * @return
+         */
+        void locationRelativeTo ( MScriptExpr * expr,
+                                  const MScriptSrcLocation & location );
 
         /**
          * @brief
@@ -197,6 +222,15 @@ class MScriptCore : protected MScriptBase,
          */
         virtual MScriptStatement * include ( const MScriptSrcLocation & location,
                                              const std::string & fileName );
+
+        /**
+         * @brief
+         * @param[in] location
+         * @param[in] code
+         * @return
+         */
+        virtual MScriptStatement * insertCode ( const MScriptSrcLocation & location,
+                                                const std::string & code );
 
         /**
          * @brief
