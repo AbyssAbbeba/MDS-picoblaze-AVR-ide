@@ -23,7 +23,7 @@
  * @param font Used font.
  * @param columns Number of shown columns.
  */
-WColumnCounter::WColumnCounter(QTextEdit *parent, QFont font, int columns)
+WColumnCounter::WColumnCounter(QPlainTextEdit *parent, QFont font, int columns)
     : QScrollArea(parent)
 {
     this->setFrameShape(QFrame::NoFrame);
@@ -48,7 +48,7 @@ WColumnCounter::WColumnCounter(QTextEdit *parent, QFont font, int columns)
  * @brief Returns pointer to the parent QTextEdit
  * @return Returns pointer to the parent QTextEdit
  */
-QTextEdit* WColumnCounter::getTextEdit()
+QPlainTextEdit* WColumnCounter::getTextEdit()
 {
     return parent;
 }

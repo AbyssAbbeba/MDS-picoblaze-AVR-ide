@@ -320,7 +320,7 @@ void WDockManager::addUntrackedCentralWidget(QString wName, QString wPath, QStri
         CodeEdit *newEditor = new CodeEdit((QWidget *)(this->parent()), true, wName, wPath, NULL);
         for (int i = 0; i < text.size(); i++)
         {
-            newEditor->getTextEdit()->append(text.at(i));
+            newEditor->getTextEdit()->appendPlainText(text.at(i));
         }
         this->codeEditList.append(newEditor);
         BaseEditor *newBaseEditor;
