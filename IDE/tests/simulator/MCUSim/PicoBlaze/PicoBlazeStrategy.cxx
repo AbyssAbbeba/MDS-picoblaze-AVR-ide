@@ -143,7 +143,7 @@ bool PicoBlazeStrategy::executeCommand ( const MCUSimTestScript::Command & cmd,
                 if ( CTE_FLAG_EQ != cmd.m_type )
                 {
                     outFile << "[FAILED]  ";
-                    m_success = false;
+                    *m_success = false;
                 }
                 else
                 {
@@ -155,7 +155,7 @@ bool PicoBlazeStrategy::executeCommand ( const MCUSimTestScript::Command & cmd,
                 if ( CTE_FLAG_NE != cmd.m_type )
                 {
                     outFile << "[FAILED]  ";
-                    m_success = false;
+                    *m_success = false;
                 }
                 else
                 {
