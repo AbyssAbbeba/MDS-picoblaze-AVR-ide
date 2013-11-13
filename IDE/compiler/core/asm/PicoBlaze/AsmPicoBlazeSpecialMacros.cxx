@@ -504,8 +504,20 @@ CompilerStatement * AsmPicoBlazeSpecialMacros::evaluateCondition ( const Compile
                     // <DIRECT> <OPERATOR> <DIRECT>
                     if ( cndVal[0].m_val == cndVal[1].m_val )
                     {
-                        resultKnownInAdvance = -2;
-                        result = jump(label);
+                        if (
+                               ( ( cndVal[0].m_val > cndVal[1].m_val ) && ( CompilerExpr::OPER_GT == cnd->oper() ) )
+                                   ||
+                               ( ( cndVal[0].m_val < cndVal[1].m_val ) && ( CompilerExpr::OPER_LT == cnd->oper() ) )
+                           )
+                        {
+                            resultKnownInAdvance = 2;
+                            result = new CompilerStatement();
+                        }
+                        else
+                        {
+                            resultKnownInAdvance = -2;
+                            result = jump(label);
+                        }
 
                         // Do not append the label, break right here.
                         break;

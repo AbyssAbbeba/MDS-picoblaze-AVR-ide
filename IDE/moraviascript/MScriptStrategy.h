@@ -23,7 +23,11 @@
  */
 class MScriptStrategy
 {
-
+    ////    Public Operations    ////
+    public:
+        bool newFunction ( const std::string & ns,
+                           const std::string & name,
+                           unsigned int params );
 };
 
 #endif // MSCRIPTSTRATEGY_H

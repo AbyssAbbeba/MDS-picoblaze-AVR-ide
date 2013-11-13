@@ -147,7 +147,7 @@ inline void PicoBlazeInstructionSet6::instructionEnter ( PicoBlazeInsNames::Inst
 
 void PicoBlazeInstructionSet6::inst_0x14 ( const unsigned int opCode )
 {
-    switch ( opCode )
+    switch ( 0xff & opCode )
     {
         case 0x00: inst_SLA_sX     ( opCode ); break;
         case 0x02: inst_RL_sX      ( opCode ); break;
