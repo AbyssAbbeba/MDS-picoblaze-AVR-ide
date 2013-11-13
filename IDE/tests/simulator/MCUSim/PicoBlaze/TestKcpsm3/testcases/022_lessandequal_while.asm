@@ -73,22 +73,20 @@ next2:
 
         sub     s1,#2
         jump    next3
+        ;; step
         ;; step         # compare
-        ;; step         # jump z
-        ;; flag[z] == false
-        ;; step         # jump c
-        ;; flag[c] == true
-        ;; step         # add
-        ;; step         # jump to compare
-        ;; step         # compare
-        ;; step         # jump z
-        ;; flag[z] == true
-        ;; step         # add
-        ;; step         # jump to compare
-        ;; step         # jump z
-        ;; flag[z] == false
         ;; step         # jump c
         ;; flag[c] == false
+        ;; step         # add
+        ;; step         # jump to compare
+        ;; step         # compare
+        ;; step         # jump c
+        ;; flag[c] == false
+        ;; step         # add
+        ;; step         # jump to compare
+        ;; step         # compare
+        ;; step         # jump c
+        ;; flag[c] == true
         ;; step         # sub
         ;; step         # jump next
 next3:
@@ -100,21 +98,18 @@ next3:
         sub     s1,#2
         jump    next4
         ;; step         # compare
-        ;; step         # jump z
-        ;; flag[z] == false
         ;; step         # jump c
-        ;; flag[c] == true
+        ;; flag[c] == false
         ;; step         # add
         ;; step         # jump to compare
         ;; step         # compare
-        ;; step         # jump z
-        ;; flag[z] == true
-        ;; step         # add
-        ;; step         # jump to compare
-        ;; step         # jump z
-        ;; flag[z] == false
         ;; step         # jump c
         ;; flag[c] == false
+        ;; step         # add
+        ;; step         # jump to compare
+        ;; step         # compare
+        ;; step         # jump c
+        ;; flag[c] == true
         ;; step         # sub
         ;; step         # jump next
 
