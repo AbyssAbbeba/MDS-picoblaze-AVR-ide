@@ -406,7 +406,6 @@ inline bool MCUSimTestScript::executeCommand ( const Command & cmd,
     {
         case CT_ABORT:
             outFile << "[ABORTED] ";
-            m_success = false;
             return false;
         case CT_EMPTY:
             outFile << "          ";
