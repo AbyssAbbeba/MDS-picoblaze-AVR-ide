@@ -271,7 +271,7 @@ inline void PicoBlazeRegisters::write ( unsigned int addr,
 
     logEvent(EVENT_MEM_INF_WR_VAL_WRITTEN, addr);
 
-    if ( valueOrig != val)
+    if ( valueOrig != val )
     {
         logEvent(EVENT_MEM_INF_WR_VAL_CHANGED, addr);
     }
