@@ -3,90 +3,99 @@
 device kcpsm3
 org     0
 
+
+; four
+
 start:
-        load s0,#10
-        load s1,#1
+
+        load    s0,#10
+        load    s1,#9
         ;; step 2
         ;; reg[0] == 10
-        ;; reg[1] == 1
+        ;; reg[1] == 9
 
-        if   s0  < 1
-        add     s3,#1
-        else
-        sub     s3,#1
-        endif
+        while   s1  < #10
+            add     s1,#1
+        endw
 
+        sub     s1,#1
         jump    next1
-        ;; step
-        ;; flag[z] == false
+        ;; step         # compare
+        ;; step         # jump nc
         ;; flag[c] == true
-        ;; step
-        ;; step 3
-        ;; reg[3] == 255
-
+        ;; step         # add
+        ;; step         # jump to compare
+        ;; step         # compare
+        ;; step         # jump nc
+        ;; flag[c] == false
+        ;; step         # sub
+        ;; step         # jump to next
 
 next1:
 
-        if   0  < 1
-        add     s3,#1
-        else
-        sub     s3,#1
-        endif
+        while   1  <  #10
+            add     s1,#1
+        endw
 
+        sub     s1,#1
         jump    next2
-        ;; step
-        ;; flag[z] == false
+        ;; step         # compare
+        ;; step         # jump nc
         ;; flag[c] == true
-        ;; step
-        ;; step 3
-        ;; reg[3] == 254
-
-
+        ;; step         # add
+        ;; step         # jump to compare
+        ;; step         # compare
+        ;; step         # jump nc
+        ;; flag[c] == false
+        ;; step         # sub
+        ;; step         # jump to next
 next2:
 
-        if   s0  < #1
-        add     s3,#1
-        else
-        sub     s3,#1
-        endif
+        while   s1  <  s0
+            add     s1,#1
+        endw
 
+        sub     s1,#1
         jump    next3
-        ;; step
-        ;; flag[z] == false
+        ;; step         # compare
+        ;; step         # jump nc
+        ;; flag[c] == true
+        ;; step         # add
+        ;; step         # jump to compare
+        ;; step         # compare
+        ;; step         # jump nc
         ;; flag[c] == false
-        ;; step
-        ;; step 3
-        ;; reg[3] == 253
-
-
+        ;; step         # sub
+        ;; step         # jump to next
 next3:
 
-        if   0  < #1
-        add     s3,#1
-        else
-        sub     s3,#1
-        endif
+        while   1  < 0
+            add     s1,#1
+        endw
 
+        sub     s1,#1
         jump    next4
-        ;; step
-        ;; flag[z] == false
+        ;; step         # compare
+        ;; step         # jump nc
+        ;; flag[c] == true
+        ;; step         # add
+        ;; step         # jump to compare
+        ;; step         # compare
+        ;; step         # jump nc
         ;; flag[c] == false
-        ;; step
-        ;; step 3
-        ;; reg[3] == 252
+        ;; step         # sub
+        ;; step         # jump to next
 
 next4:
+        while   #50 <  #20
+            sub     s1,#1
+        endw
 
-        if   0  < #10
-        add     s3,#1
-        else
-        sub     s3,#1
-        endif
-
+        add     s1,#1
         jump    $
-        ;; step
-        ;; flag[z] == false
+        ;; step         # compare
+        ;; step         # jump nc
         ;; flag[c] == false
-        ;; step
-        ;; step 3
-        ;; reg[3] == 251
+        ;; step         # add
+        ;; step         # jump to next
+      

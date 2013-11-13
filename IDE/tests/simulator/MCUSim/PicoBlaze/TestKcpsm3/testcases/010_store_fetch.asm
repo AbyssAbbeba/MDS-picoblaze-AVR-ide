@@ -1,3 +1,5 @@
+
+device kcpsm3
       ;   FOR     s0,2
       LOAD    0x0, #0x0
 FOR_3:

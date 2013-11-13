@@ -1,6 +1,6 @@
 
 
-device kcmps6
+device kcpsm6
 
 org             0
 

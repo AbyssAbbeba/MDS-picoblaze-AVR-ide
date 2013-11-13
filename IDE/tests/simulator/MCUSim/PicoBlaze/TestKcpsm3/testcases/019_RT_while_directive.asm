@@ -1,4 +1,5 @@
 ; Program initialization
+device kcpsm3
 ; --------------------
         ORG     0h                      ; Define code segment
         JUMP    start                   ; Jump to code initialization

@@ -1,5 +1,5 @@
 ; testing of INPUT and OUTPUT instructions
-
+device kcpsm3
 port_id         PORT            20h
 
 inout_data      REG             s0

@@ -1,5 +1,5 @@
 
-
+device kcpsm3
     ORG         0x00
     JUMP        Start
     ;;STEP
