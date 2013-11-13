@@ -1,6 +1,6 @@
 ; testcase for instructions compare and TEST
 
-
+device kcpsm3
     ORG         0x000
 
 

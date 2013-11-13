@@ -1,4 +1,4 @@
-
+device kcpsm3
 ; Program initialization
 ; --------------------
         ORG     0h                      ; Define code segment

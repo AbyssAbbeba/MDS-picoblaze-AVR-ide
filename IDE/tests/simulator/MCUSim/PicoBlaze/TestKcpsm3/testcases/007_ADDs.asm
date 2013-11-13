@@ -1,3 +1,4 @@
+device kcpsm3
 ORG 0
 JUMP    START
 

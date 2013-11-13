@@ -1,4 +1,5 @@
 ; tEST SCRIPT FOR SUBROUTINES
+device kcpsm3
 org 0x00
 ;; PC == 0
 

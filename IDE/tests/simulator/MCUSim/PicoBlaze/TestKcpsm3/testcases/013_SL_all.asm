@@ -1,6 +1,6 @@
     ; testing of rotate instructions
 
-
+device kcpsm3
     org 00h
 
     start:          load        s0,#1

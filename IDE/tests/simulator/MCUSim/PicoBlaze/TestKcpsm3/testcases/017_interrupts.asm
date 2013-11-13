@@ -1,6 +1,6 @@
 ; TEST CASE
 ; testing interrupts behavior
-
+device kcpsm3
 org     0
 
 start:

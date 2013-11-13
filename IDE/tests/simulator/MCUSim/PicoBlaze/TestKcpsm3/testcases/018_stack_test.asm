@@ -1,4 +1,4 @@
-
+device kcpsm3
         ORG     0h                      ; Define code segment
 
 ; --------------------
