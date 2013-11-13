@@ -1,5 +1,3 @@
-; TEST CASE
-; testing run time directives, rtif rtfor, rt#WHILE
 device kcpsm6
 org     0
 
@@ -58,13 +56,17 @@ next2:
         sub     s1,#1
         jump    next3
         ;; step         # compare
-        ;; step         # jump nc
-        ;; flag[c] == true
+        ;; step         # jump c
+        ;; flag[c] == false
+        ;; step         # jump z
+        ;; flag[z] == false
         ;; step         # add
         ;; step         # jump to compare
         ;; step         # compare
-        ;; step         # jump nc
+        ;; step         # jump c
         ;; flag[c] == false
+        ;; step         # jump z
+        ;; flag[z] == true
         ;; step         # sub
         ;; step         # jump to next
 next3:
@@ -76,13 +78,17 @@ next3:
         sub     s1,#1
         jump    next4
         ;; step         # compare
-        ;; step         # jump nc
-        ;; flag[c] == true
+        ;; step         # jump c
+        ;; flag[c] == false
+        ;; step         # jump z
+        ;; flag[z] == false
         ;; step         # add
         ;; step         # jump to compare
         ;; step         # compare
-        ;; step         # jump nc
+        ;; step         # jump c
         ;; flag[c] == false
+        ;; step         # jump z
+        ;; flag[z] == true
         ;; step         # sub
         ;; step         # jump to next
 
@@ -98,4 +104,3 @@ next4:
         ;; flag[c] == false
         ;; step         # add
         ;; step         # jump to next
-      

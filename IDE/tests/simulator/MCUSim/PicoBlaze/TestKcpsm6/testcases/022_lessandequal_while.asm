@@ -64,7 +64,7 @@ next1:
         ;; flag[c] == false
         ;; step         # sub
         ;; step         # jump next
-        
+
 next2:
 
         while   s1  <=  s0
@@ -73,22 +73,20 @@ next2:
 
         sub     s1,#2
         jump    next3
+        ;; step
         ;; step         # compare
-        ;; step         # jump z
-        ;; flag[z] == false
-        ;; step         # jump c
-        ;; flag[c] == true
-        ;; step         # add
-        ;; step         # jump to compare
-        ;; step         # compare
-        ;; step         # jump z
-        ;; flag[z] == true
-        ;; step         # add
-        ;; step         # jump to compare
-        ;; step         # jump z
-        ;; flag[z] == false
         ;; step         # jump c
         ;; flag[c] == false
+        ;; step         # add
+        ;; step         # jump to compare
+        ;; step         # compare
+        ;; step         # jump c
+        ;; flag[c] == false
+        ;; step         # add
+        ;; step         # jump to compare
+        ;; step         # compare
+        ;; step         # jump c
+        ;; flag[c] == true
         ;; step         # sub
         ;; step         # jump next
 next3:
@@ -100,25 +98,22 @@ next3:
         sub     s1,#2
         jump    next4
         ;; step         # compare
-        ;; step         # jump z
-        ;; flag[z] == false
         ;; step         # jump c
-        ;; flag[c] == true
+        ;; flag[c] == false
         ;; step         # add
         ;; step         # jump to compare
         ;; step         # compare
-        ;; step         # jump z
-        ;; flag[z] == true
-        ;; step         # add
-        ;; step         # jump to compare
-        ;; step         # jump z
-        ;; flag[z] == false
         ;; step         # jump c
         ;; flag[c] == false
+        ;; step         # add
+        ;; step         # jump to compare
+        ;; step         # compare
+        ;; step         # jump c
+        ;; flag[c] == true
         ;; step         # sub
         ;; step         # jump next
 
-next4:        
+next4:
         while   #50 <=  #20
             sub     s1,#1
         endw
@@ -130,5 +125,5 @@ next4:
         ;; flag[c] == false
         ;; flag[z] == false
         ;; step         # add2
-        ;; step         # jump to next   
+        ;; step         # jump to next
       
