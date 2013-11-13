@@ -219,10 +219,11 @@ inline void PicoBlazeSim::loadConfig()
         }
 
         m_instructionSet->adapt(origInstructionSet);
+        m_interruptController->link(m_eventLogger, m_instructionSet, m_statusFlags);
         delete origInstructionSet;
 
-        regSubSys(m_instructionSet);
         unregSubSys(origInstructionSet);
+        regSubSys(m_instructionSet);
     }
 }
 
