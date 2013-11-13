@@ -52,8 +52,15 @@ bool MCUSimTestScript::runScript ( const std::string & inFileName,
     char * command;
     char line[MAX_LINE_LENGTH];
 
-    while ( true == inFile.good() )
+    while ( false == inFile.eof() )
     {
+        if ( true == inFile.bad() )
+        {
+            outFile << "[ABORTED] " << std::endl;
+            outFile << ">>> I/O error" << std::endl;
+            return false;
+        }
+
         inFile.getline(line, MAX_LINE_LENGTH);
 
         Command cmd = processLine(line, useAsmFile);

@@ -39,10 +39,24 @@ PicoBlazeIO * PicoBlazeIO::link ( MCUSimEventLogger * eventLogger )
 
 void PicoBlazeIO::reset ( MCUSimBase::ResetMode mode )
 {
-    if ( MCUSim::RSTMD_MCU_RESET == mode )
+    switch ( mode )
     {
-        m_readStrobe = false;
-        m_writeStrobe = false;
+        case MCUSim::RSTMD_NEW_CONFIG:
+            break;
+        case MCUSim::RSTMD_INITIAL_VALUES:
+            for ( unsigned int i = 0; i < NUMBER_OF_PORTS; i++ )
+            {
+                m_inputBitArray[i] = 0;
+                m_inputBitArray[i] = 0;
+            }
+            break;
+        case MCUSim::RSTMD_MCU_RESET:
+            m_readStrobe = false;
+            m_writeStrobe = false;
+            break;
+        default:
+            // Irrelevant requests are silently ignored
+            break;
     }
 }
 
