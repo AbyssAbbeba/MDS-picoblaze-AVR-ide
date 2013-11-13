@@ -781,7 +781,7 @@ inline void PicoBlazeInstructionSet2::inst_SRX ( const unsigned int opCode )
 
     // Perform the operation.
     m_statusFlags -> setCarry ( ( 0 == ( 0x01 & sXval ) ) ? false : true );
-    sXval = ( 0x80 & sXval ) | ( ( 0x7f & sXval ) >> 1 );
+    sXval = ( 0x80 & sXval ) | ( sXval >> 1 );
     m_statusFlags -> setZero ( ( 0 == sXval ) ? true : false );
 
     // Save the result.
@@ -889,7 +889,7 @@ inline void PicoBlazeInstructionSet2::inst_SLX ( const unsigned int opCode )
     unsigned int sXval = m_registers -> read ( sX );
 
     // Perform the operation.
-    sXval = ( 0x01 & sXval ) | ( ( 0xfe & sXval ) << 1 );
+    sXval = ( 0x01 & sXval ) | ( sXval << 1 );
 
     // Modify status flags.
     m_statusFlags -> setCarry ( ( 0 == ( 0x100 & sXval ) ) ? false : true );
