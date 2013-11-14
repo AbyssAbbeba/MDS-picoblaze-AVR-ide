@@ -20,7 +20,7 @@ device kcpsm6
                     ;; reg[1] == 192
                     srx         s2
                     ;; step
-                    ;; reg[2] == 128
+                    ;; reg[2] == 192
                     sra         s3
                     ;; step
                     ;; reg[3] == 64
@@ -32,10 +32,10 @@ device kcpsm6
                     ;; reg[4] == 192
                     srx         s4
                     ;; step
-                    ;; reg[4] == 160
+                    ;; reg[4] == 224
                     srx         s4
                     ;; step
-                    ;; reg[4] == 144
+                    ;; reg[4] == 240
                     
                     
                     
