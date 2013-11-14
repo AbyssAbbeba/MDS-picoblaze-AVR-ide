@@ -12,7 +12,7 @@
 # ------------------------------------------------------------------------------
 
 # Set project name
-project ( moraviascript )
+project ( MScript )
 
 # Set the minimum required version of CMake
 cmake_minimum_required ( VERSION 2.8 )
@@ -29,14 +29,14 @@ find_package ( BISON ) # Syntactic analyzer generator
 find_package ( FLEX )  # Lexical analyzer generator
 
 # Assembler for 8-bit AVR
-BISON_TARGET ( moraviaScriptParser moraviaScriptParser.y moraviaScriptParser.cxx VERBOSE "moraviaScriptParser.output" )
-FLEX_TARGET ( moraviaScriptLexer moraviaScriptLexer.l moraviaScriptLexer.cxx )
-# ADD_FLEX_BISON_DEPENDENCY ( moraviaScriptLexer moraviaScriptParser )
+BISON_TARGET ( MScriptParser MScriptParser.y MScriptParser.cxx VERBOSE "MScriptParser.output" )
+FLEX_TARGET ( MScriptLexer MScriptLexer.l MScriptLexer.cxx )
+# ADD_FLEX_BISON_DEPENDENCY ( MScriptLexer MScriptParser )
 
 # List of additional files that will be cleaned as a part of the "make clean" stage.
 set_directory_properties ( PROPERTIES
                            ADDITIONAL_MAKE_CLEAN_FILES
-                           "moraviaScriptParser.h;moraviaScriptParser.output;moraviaScriptLexer.h" )
+                           "MScriptParser.h;MScriptParser.output;MScriptLexer.h" )
 
 # ------------------------------------------------------------------------------
 # COMPILATION OPTIONS
@@ -59,8 +59,8 @@ add_definitions ( -Wall -std=c++0x -O2 -pipe )
 ## Add a library to the project using the specified source files,
  # in this case it will procude dynamic C++ library.
 add_library ( ${PROJECT_NAME} SHARED
-              ${FLEX_moraviaScriptLexer_OUTPUTS}
-              ${BISON_moraviaScriptParser_OUTPUTS}
+              ${FLEX_MScriptLexer_OUTPUTS}
+              ${BISON_MScriptParser_OUTPUTS}
               MScriptCore.cxx
               MScriptBase.cxx
               MScriptExpr.cxx
@@ -68,10 +68,12 @@ add_library ( ${PROJECT_NAME} SHARED
               MScriptComplex.cxx
               MScriptVariable.cxx
               MScriptVarTable.cxx
+              MScriptStrategy.cxx
               MScriptFuncTable.cxx
               MScriptInterpret.cxx
               MScriptStmtTypes.cxx
               MScriptStatement.cxx
+              MScriptArrayIndex.cxx
               MScriptExprSolver.cxx
               MScriptNamespaces.cxx
               MScriptSerializer.cxx

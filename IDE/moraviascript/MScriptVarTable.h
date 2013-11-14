@@ -49,35 +49,6 @@ class MScriptVarTable
          */
         typedef std::multimap<std::string,MScriptVariable> VarTable;
 
-        /**
-         * @brief
-         */
-        struct Index
-        {
-            /// @brief
-            std::vector<unsigned int> m_index;
-
-            /// @brief
-            std::vector<std::string> m_key;
-
-            /**
-             * @brief
-             * @return
-             */
-            std::string toString() const;
-
-            /**
-             * @brief
-             * @return 0 == scalar, lower than 0 == associative array, higher than 0 == indexed array.
-             */
-            int dimensions() const;
-
-            /**
-             * @brief
-             */
-            void clear();
-        };
-
     ////    Constructors and Destructors    ////
     public:
         /**

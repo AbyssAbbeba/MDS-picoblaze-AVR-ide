@@ -30,7 +30,6 @@
 // Used for i18n only.
 #include <QObject>
 
-
 MScriptVarTable::MScriptVarTable ( MScriptInterpretInterface * interpret,
                                    MScriptNamespaces * namespaces )
                                  :
@@ -871,63 +870,6 @@ void MScriptVarTable::refer ( const std::string & refName,
 void MScriptVarTable::clear()
 {
     m_varTables.clear();
-}
-
-std::string MScriptVarTable::Index::toString() const
-{
-    std::string result;
-
-    if ( false == m_index.empty() )
-    {
-        for ( std::vector<unsigned int>::const_iterator i = m_index.cbegin();
-              i != m_index.cend();
-              i++ )
-        {
-            result += "[";
-            result += *i;
-            result += "]";
-        }
-    }
-    else
-    {
-        for ( std::vector<std::string>::const_iterator i = m_key.cbegin();
-              i != m_key.cend();
-              i++ )
-        {
-            result += "[\"";
-            result += *i;
-            result += "\"]";
-        }
-    }
-
-    return result;
-}
-
-int MScriptVarTable::Index::dimensions() const
-{
-    if ( NULL == this )
-    {
-        return 0;
-    }
-
-    if ( false == m_index.empty() )
-    {
-        return (int) m_index.size();
-    }
-    else if ( false == m_key.empty() )
-    {
-        return (int) -(m_key.size());
-    }
-    else
-    {
-        return 0;
-    }
-}
-
-void MScriptVarTable::Index::clear()
-{
-    m_index.clear();
-    m_key.clear();
 }
 
 std::string MScriptVarTable::flags2Str ( MScriptVariable::Flags flags ) const
