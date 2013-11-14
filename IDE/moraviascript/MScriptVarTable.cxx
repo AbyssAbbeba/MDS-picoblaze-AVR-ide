@@ -56,7 +56,7 @@ void MScriptVarTable::popScope()
 
 bool MScriptVarTable::remove ( const std::string & variable,
                                const MScriptSrcLocation & location,
-                               const Index * index )
+                               const MScriptArrayIndex * index )
 {
     bool result = false;
     std::string bareId;
@@ -208,7 +208,7 @@ void MScriptVarTable::declare ( const std::string & variable,
 void MScriptVarTable::assign ( const std::string & variable,
                                const MScriptSrcLocation & location,
                                const MScriptValue & value,
-                               const Index * index )
+                               const MScriptArrayIndex * index )
 {
     if ( true == declared ( variable, index) )
     {
@@ -279,13 +279,13 @@ void MScriptVarTable::assign ( const std::string & variable,
 }
 
 bool MScriptVarTable::defined ( const std::string & variable,
-                                const Index * index )
+                                const MScriptArrayIndex * index )
 {
     return ( NULL != access ( variable, index ) );
 }
 
 bool MScriptVarTable::declared ( const std::string & variable,
-                                 const Index * index )
+                                 const MScriptArrayIndex * index )
 {
     if ( NULL == index )
     {
@@ -326,7 +326,7 @@ const MScriptSrcLocation * MScriptVarTable::getLocation ( const std::string & va
 }
 
 inline MScriptValue * MScriptVarTable::newArrayElement ( const std::string & variable,
-                                                         const Index * index,
+                                                         const MScriptArrayIndex * index,
                                                          const MScriptSrcLocation * location )
 {
     MScriptVariable * var = rawAccess ( variable );
@@ -342,7 +342,7 @@ inline MScriptValue * MScriptVarTable::newArrayElement ( const std::string & var
 }
 
 inline MScriptValue * MScriptVarTable::newArrayElementIdx ( const std::string & variable,
-                                                            const Index * index,
+                                                            const MScriptArrayIndex * index,
                                                             const MScriptSrcLocation * location,
                                                             MScriptVariable * var )
 {
@@ -398,7 +398,7 @@ inline MScriptValue * MScriptVarTable::newArrayElementIdx ( const std::string & 
 }
 
 inline MScriptValue * MScriptVarTable::newArrayElementKey ( const std::string & variable,
-                                                            const Index * index,
+                                                            const MScriptArrayIndex * index,
                                                             const MScriptSrcLocation * location,
                                                             MScriptVariable * var )
 {
@@ -508,7 +508,7 @@ inline MScriptVariable * MScriptVarTable::rawAccess ( const std::string & variab
 }
 
 MScriptValue * MScriptVarTable::access ( const std::string & variable,
-                                         const Index * index,
+                                         const MScriptArrayIndex * index,
                                          const MScriptSrcLocation * location,
                                          int * level )
 {
@@ -556,7 +556,7 @@ MScriptValue * MScriptVarTable::access ( const std::string & variable,
 }
 
 inline MScriptValue * MScriptVarTable::accessArray ( const std::string & variable,
-                                                     const Index * index,
+                                                     const MScriptArrayIndex * index,
                                                      const MScriptSrcLocation * location,
                                                      MScriptVariable * cell )
 {
@@ -624,7 +624,7 @@ inline MScriptValue * MScriptVarTable::accessArray ( const std::string & variabl
 }
 
 inline MScriptValue * MScriptVarTable::accessHash ( const std::string & variable,
-                                                    const Index * index,
+                                                    const MScriptArrayIndex * index,
                                                     const MScriptSrcLocation * location,
                                                     MScriptVariable * cell )
 {
@@ -697,7 +697,7 @@ inline MScriptValue * MScriptVarTable::accessHash ( const std::string & variable
 inline void MScriptVarTable::derefer ( const char * reference,
                                        int * level,
                                        std::string * variable,
-                                       Index * index ) const
+                                       MScriptArrayIndex * index ) const
 {
     char * origStr = new char [ strlen(reference) + 1 ];
     char * str = origStr;
@@ -752,13 +752,13 @@ inline void MScriptVarTable::derefer ( const char * reference,
 inline MScriptValue * MScriptVarTable::reaccess ( const std::string & variable,
                                                   MScriptValue & input,
                                                   const MScriptSrcLocation * location,
-                                                  const Index * index )
+                                                  const MScriptArrayIndex * index )
 {
     if ( MScriptValue::TYPE_SYMBOL == input.m_type )
     {
         int level;
         std::string targetVar;
-        Index targetIndex;
+        MScriptArrayIndex targetIndex;
 
         derefer ( input.m_data.m_symbol, &level, &targetVar, &targetIndex );
 
@@ -773,7 +773,7 @@ inline MScriptValue * MScriptVarTable::reaccess ( const std::string & variable,
             return NULL;
         }
 
-        const Index * accessIndex = index;
+        const MScriptArrayIndex * accessIndex = index;
         if ( 0 != targetIndex.dimensions() )
         {
             accessIndex = &targetIndex;
@@ -807,8 +807,8 @@ inline MScriptValue * MScriptVarTable::reaccess ( const std::string & variable,
 void MScriptVarTable::refer ( const std::string & refName,
                               const std::string & refTarget,
                               const MScriptSrcLocation & location,
-                              const Index * refIndex,
-                              const Index * targetIndex )
+                              const MScriptArrayIndex * refIndex,
+                              const MScriptArrayIndex * targetIndex )
 {
     int level = -1;
     MScriptValue * target = access ( refTarget, targetIndex, &location, &level );

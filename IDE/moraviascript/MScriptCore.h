@@ -23,8 +23,9 @@ class MScriptStatement;
 
 // MScript language interpreter header files.
 #include "MScriptBase.h"
-#include "MScriptParserInterface.h"
 #include "MScriptInterpret.h"
+#include "MScriptStrategyInterface.h"
+#include "MScriptParserInterface.h"
 
 // Standard header files.
 #include <vector>
@@ -38,6 +39,7 @@ class MScriptStatement;
  */
 class MScriptCore : protected MScriptBase,
                     protected MScriptParserInterface,
+                    protected MScriptStrategyInterface,
                     protected MScriptInterpret
 {
     ////    Public Datatypes    ////

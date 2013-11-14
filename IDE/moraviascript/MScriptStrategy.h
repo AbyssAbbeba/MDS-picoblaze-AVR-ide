@@ -47,7 +47,7 @@ class MScriptStrategy
             int newFunction ( const std::string & ns,
                               const std::string & name,
                               unsigned int params,
-                              const std::vector * defaults = NULL );
+                              const std::vector<MScriptValue> * defaults = NULL );
 
             /**
              * @brief
@@ -109,7 +109,12 @@ class MScriptStrategy
                                           const MScriptValue & value ) = 0;
         //@}
 
-                                          MScriptStrategyInterface
+    ////    Public Attributes    ////
+    public:
+        /**
+         * @brief
+         */
+        MScriptStrategyInterface * m_core;
 };
 
 #endif // MSCRIPTSTRATEGY_H
