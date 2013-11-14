@@ -15,7 +15,7 @@
 
 #include "MScriptArrayIndex.h"
 
-std::string Index::toString() const
+std::string MScriptArrayIndex::toString() const
 {
     std::string result;
 
@@ -45,7 +45,7 @@ std::string Index::toString() const
     return result;
 }
 
-int Index::dimensions() const
+int MScriptArrayIndex::dimensions() const
 {
     if ( NULL == this )
     {
@@ -66,7 +66,7 @@ int Index::dimensions() const
     }
 }
 
-void Index::clear()
+void MScriptArrayIndex::clear()
 {
     m_index.clear();
     m_key.clear();

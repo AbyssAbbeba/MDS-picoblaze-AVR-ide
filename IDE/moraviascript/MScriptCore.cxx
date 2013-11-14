@@ -34,6 +34,7 @@ MScriptCore::MScriptCore ( MScriptStrategy * strategy,
                            const std::string & scriptCode )
                          : m_strategy ( strategy )
 {
+//     m_strategy.m_core = this;
     m_codeTree = NULL;
     loadScript(scriptCode);
 }
@@ -44,6 +45,7 @@ MScriptCore::MScriptCore ( MScriptStrategy * strategy,
                          :
                            m_strategy ( strategy )
 {
+//     m_strategy.m_core = this;
     m_codeTree = NULL;
     loadScript(sourceFile, fileName);
 }

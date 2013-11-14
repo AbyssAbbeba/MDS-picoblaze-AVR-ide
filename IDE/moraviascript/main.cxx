@@ -4,6 +4,7 @@
 
 int main ( int argc, char ** argv )
 {
+    /*
     std::string script =
 //         "a = ( b * c + d );\n"          //  1
 //         "a = b * c;\n"          //  1
@@ -67,6 +68,6 @@ int main ( int argc, char ** argv )
         std::cout << *msg << std::endl;
     }
     core.clearMessages();
-
+*/
     return 0;
 }
