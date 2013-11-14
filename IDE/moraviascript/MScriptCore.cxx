@@ -16,8 +16,8 @@
 #include "MScriptCore.h"
 
 // Include lexer prototypes (they are used by the core to initialize and destroy a lexer)
-#include "moraviaScriptParser.h"
-#include "moraviaScriptLexer.h"
+#include "MScriptParser.h"
+#include "MScriptLexer.h"
 
 // MScript language interpreter header files.
 #include "MScriptExpr.h"
@@ -26,8 +26,8 @@
 #include <iostream>
 
 // Parser prototype (the core uses it to initiate syntactical analysis).
-int moraviaScriptParser_parse ( yyscan_t yyscanner,
-                                MScriptParserInterface * core );
+int MScriptParser_parse ( yyscan_t yyscanner,
+                          MScriptParserInterface * core );
 
 
 MScriptCore::MScriptCore ( MScriptStrategy * strategy,
@@ -73,14 +73,14 @@ bool MScriptCore::loadScript ( FILE * sourceFile,
 bool MScriptCore::loadCode ( const std::string & scriptCode )
 {
     yyscan_t yyscanner; // Pointer to the lexer context
-    moraviaScriptLexer_lex_init_extra ( this, &yyscanner );
-    YY_BUFFER_STATE bufferState = moraviaScriptLexer__scan_string ( scriptCode.c_str(), yyscanner );
+    MScriptLexer_lex_init_extra ( this, &yyscanner );
+    YY_BUFFER_STATE bufferState = MScriptLexer__scan_string ( scriptCode.c_str(), yyscanner );
     if ( true == m_success )
     {
-        moraviaScriptParser_parse ( yyscanner, this );
+        MScriptParser_parse ( yyscanner, this );
     }
-    moraviaScriptLexer__delete_buffer ( bufferState, yyscanner );
-    moraviaScriptLexer_lex_destroy ( yyscanner );
+    MScriptLexer__delete_buffer ( bufferState, yyscanner );
+    MScriptLexer_lex_destroy ( yyscanner );
 
     return m_success;
 }
@@ -88,13 +88,13 @@ bool MScriptCore::loadCode ( const std::string & scriptCode )
 bool MScriptCore::loadFile ( FILE * file )
 {
     yyscan_t yyscanner; // Pointer to the lexer context
-    moraviaScriptLexer_lex_init_extra ( this, &yyscanner );
-    moraviaScriptLexer_set_in ( file, yyscanner );
+    MScriptLexer_lex_init_extra ( this, &yyscanner );
+    MScriptLexer_set_in ( file, yyscanner );
     if ( true == m_success )
     {
-        moraviaScriptParser_parse ( yyscanner, this );
+        MScriptParser_parse ( yyscanner, this );
     }
-    moraviaScriptLexer_lex_destroy ( yyscanner );
+    MScriptLexer_lex_destroy ( yyscanner );
 
     return m_success;
 }

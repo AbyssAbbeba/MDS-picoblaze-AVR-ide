@@ -151,11 +151,11 @@ void PicoBlazeInstructionSet6::inst_0x14 ( const unsigned int opCode )
     {
         case 0x00: inst_SLA_sX     ( opCode ); break;
         case 0x02: inst_RL_sX      ( opCode ); break;
-        case 0x04: inst_SRX_sX     ( opCode ); break;
+        case 0x0A: inst_SRX_sX     ( opCode ); break;
         case 0x06: inst_SL0_sX     ( opCode ); break;
         case 0x07: inst_SL1_sX     ( opCode ); break;
         case 0x08: inst_SRA_sX     ( opCode ); break;
-        case 0x0A: inst_SLX_sX     ( opCode ); break;
+        case 0x04: inst_SLX_sX     ( opCode ); break;
         case 0x0C: inst_RR_sX      ( opCode ); break;
         case 0x0E: inst_SR0_sX     ( opCode ); break;
         case 0x0F: inst_SR1_sX     ( opCode ); break;
