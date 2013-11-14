@@ -23,6 +23,7 @@ class MScriptInterpretInterface;
 
 // MScript language interpreter header files.
 #include "MScriptVariable.h"
+#include "MScriptArrayIndex.h"
 #include "MScriptSrcLocation.h"
 
 // Standard header files.
@@ -85,7 +86,7 @@ class MScriptVarTable
          */
         bool remove ( const std::string & variable,
                       const MScriptSrcLocation & location,
-                       const Index * index = NULL );
+                      const MScriptArrayIndex * index = NULL );
 
         /**
          * @brief
@@ -112,7 +113,7 @@ class MScriptVarTable
         void assign ( const std::string & variable,
                       const MScriptSrcLocation & location,
                       const MScriptValue & value,
-                      const Index * index = NULL );
+                      const MScriptArrayIndex * index = NULL );
 
         /**
          * @brief
@@ -123,7 +124,7 @@ class MScriptVarTable
          * @return
          */
         MScriptValue * access ( const std::string & variable,
-                                const Index * index = NULL,
+                                const MScriptArrayIndex * index = NULL,
                                 const MScriptSrcLocation * location = NULL,
                                 int * level = NULL );
 
@@ -139,8 +140,8 @@ class MScriptVarTable
         void refer ( const std::string & refName,
                      const std::string & refTarget,
                      const MScriptSrcLocation & location,
-                     const Index * refIndex = NULL,
-                     const Index * targetIndex = NULL );
+                     const MScriptArrayIndex * refIndex = NULL,
+                     const MScriptArrayIndex * targetIndex = NULL );
 
         /**
          * @brief
@@ -149,7 +150,7 @@ class MScriptVarTable
          * @return
          */
         bool declared ( const std::string & variable,
-                        const Index * index = NULL );
+                        const MScriptArrayIndex * index = NULL );
 
         /**
          * @brief
@@ -158,7 +159,7 @@ class MScriptVarTable
          * @return
          */
         bool defined ( const std::string & variable,
-                       const Index * index = NULL );
+                       const MScriptArrayIndex * index = NULL );
 
         /**
          * @brief
@@ -207,7 +208,7 @@ class MScriptVarTable
          * @return
          */
         inline MScriptValue * newArrayElement ( const std::string & variable,
-                                                const Index * index,
+                                                const MScriptArrayIndex * index,
                                                 const MScriptSrcLocation * location );
 
         /**
@@ -219,7 +220,7 @@ class MScriptVarTable
          * @return
          */
         inline MScriptValue * newArrayElementIdx ( const std::string & variable,
-                                                   const Index * index,
+                                                   const MScriptArrayIndex * index,
                                                    const MScriptSrcLocation * location,
                                                    MScriptVariable * var );
 
@@ -232,7 +233,7 @@ class MScriptVarTable
          * @return
          */
         inline MScriptValue * newArrayElementKey ( const std::string & variable,
-                                                   const Index * index,
+                                                   const MScriptArrayIndex * index,
                                                    const MScriptSrcLocation * location,
                                                    MScriptVariable * var );
 
@@ -247,7 +248,7 @@ class MScriptVarTable
         inline MScriptValue * reaccess ( const std::string & variable,
                                          MScriptValue & input,
                                          const MScriptSrcLocation * location,
-                                         const Index * index = NULL );
+                                         const MScriptArrayIndex * index = NULL );
 
         /**
          * @brief
@@ -260,7 +261,7 @@ class MScriptVarTable
         inline void derefer ( const char * reference,
                               int * level,
                               std::string * variable,
-                              Index * index ) const;
+                              MScriptArrayIndex * index ) const;
 
         /**
          * @brief
@@ -271,7 +272,7 @@ class MScriptVarTable
          * @return
          */
         inline MScriptValue * accessArray ( const std::string & variable,
-                                            const Index * index,
+                                            const MScriptArrayIndex * index,
                                             const MScriptSrcLocation * location,
                                             MScriptVariable * cell );
 
@@ -284,7 +285,7 @@ class MScriptVarTable
          * @return
          */
         inline MScriptValue * accessHash ( const std::string & variable,
-                                           const Index * index,
+                                           const MScriptArrayIndex * index,
                                            const MScriptSrcLocation * location,
                                            MScriptVariable * cell );
 
