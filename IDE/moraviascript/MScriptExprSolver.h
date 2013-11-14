@@ -24,6 +24,7 @@ class MScriptInterpretInterface;
 #include "MScriptExpr.h"
 #include "MScriptValue.h"
 #include "MScriptVarTable.h"
+#include "MScriptArrayIndex.h"
 #include "MScriptSrcLocation.h"
 #include "MScriptExprAlgebra.h"
 
@@ -100,7 +101,7 @@ class MScriptExprSolver : protected MScriptExprAlgebra
          * @param[in] input
          * @param[in] location
          */
-        void getIndex ( MScriptVarTable::Index & index,
+        void getIndex ( MScriptArrayIndex & index,
                         const MScriptValue & input,
                         const MScriptSrcLocation & location );
 
@@ -123,7 +124,7 @@ class MScriptExprSolver : protected MScriptExprAlgebra
          * @param[in] source
          * @param[in] location
          */
-        inline const char * getVariableName ( MScriptVarTable::Index * & index,
+        inline const char * getVariableName ( MScriptArrayIndex * & index,
                                               const MScriptValue & source,
                                               const MScriptSrcLocation & location );
         /**
