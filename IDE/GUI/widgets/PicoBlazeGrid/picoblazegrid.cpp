@@ -207,7 +207,7 @@ void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason,
         return;
     }*/
 
-    qDebug() << "PicoBlazeGrid: event";
+    //qDebug() << "PicoBlazeGrid: event";
     if (MCUSimSubsys::ID_CPU == subsysId)
     {
         //qDebug() << "PicoBlazeGrid: ID_CPU event";

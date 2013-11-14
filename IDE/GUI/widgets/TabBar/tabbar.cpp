@@ -22,10 +22,10 @@
 TabBar::TabBar(QWidget *parent)
     : QTabBar(parent)
 {
-    qDebug() << "TabBar: TabBar()";
+    //qDebug() << "TabBar: TabBar()";
     //this->setDrawBase(false);
     connect(this, SIGNAL(tabMoved(int, int)), this, SLOT(tabStatsMoved(int, int)));
-    qDebug() << "TabBar: return TabBar()";
+    //qDebug() << "TabBar: return TabBar()";
 }
 
 
@@ -56,7 +56,7 @@ void TabBar::tabAdded()
  */
 void TabBar::tabChanged(int index, bool changed)
 {
-    qDebug() << "TabBar: tabChanged()";
+    //qDebug() << "TabBar: tabChanged()";
     if (tabStats.at(index) != changed)
     {
         tabStats.replace(index, changed);
@@ -69,7 +69,7 @@ void TabBar::tabChanged(int index, bool changed)
             this->setTabTextColor(index, Qt::black);
         }
     }
-    qDebug() << "TabBar: return tabChanged()";
+    //qDebug() << "TabBar: return tabChanged()";
 }
 
 
@@ -84,7 +84,7 @@ void TabBar::tabStatsMoved(int from, int to)
 }
 
 
-/**
+/*
  * @brief Reimplemented paint event.
  * @details Not completed.
  */
