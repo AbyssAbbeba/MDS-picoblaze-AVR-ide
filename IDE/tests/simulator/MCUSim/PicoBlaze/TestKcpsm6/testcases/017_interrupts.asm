@@ -30,7 +30,7 @@ WAIT:   LOAD    s0,#250
         
 INTERRUPT:
             ;; step
-            ;; pc == 1023
+            ;; pc == 4095
             
             STORE       s0,0
             STORE       s1,1
