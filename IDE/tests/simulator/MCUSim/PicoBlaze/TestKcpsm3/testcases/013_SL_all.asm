@@ -20,7 +20,7 @@ device kcpsm3
                     ;; reg[1] == 3
                     slx         s2
                     ;; step
-                    ;; reg[2] == 1
+                    ;; reg[2] == 3
                     sla         s3
                     ;; step
                     ;; reg[3] == 2
@@ -32,8 +32,8 @@ device kcpsm3
                     ;; reg[4] == 3
                     slx         s4
                     ;; step
-                    ;; reg[4] == 5
+                    ;; reg[4] == 7
                     slx         s4
                     ;; step
-                    ;; reg[4] == 9
+                    ;; reg[4] == 15
                     
