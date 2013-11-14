@@ -24,8 +24,8 @@ class MScriptStatement;
 // MScript language interpreter header files.
 #include "MScriptBase.h"
 #include "MScriptInterpret.h"
-#include "MScriptStrategyInterface.h"
 #include "MScriptParserInterface.h"
+#include "MScriptStrategyInterface.h"
 
 // Standard header files.
 #include <vector>

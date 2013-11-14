@@ -17,7 +17,6 @@
 #define MSCRIPTINTERPRETINTERFACE_H
 
 // Forward declarations.
-class MScriptStrategy;
 class MScriptStatement;
 
 // MScript language interpreter header files.
