@@ -18,6 +18,7 @@
 // MScript language interpreter header files.
 #include "MScriptBase.h"
 #include "MScriptExpr.h"
+#include "MScriptArrayIndex.h"
 #include "MScriptInterpretInterface.h"
 
 // Standard header files.
@@ -46,7 +47,7 @@ MScriptValue MScriptExprSolver::eval ( const MScriptExpr * expr )
         // Array/hash index/key.
         case MScriptExpr::OPER_INDEX:
         {
-            MScriptVarTable::Index index;
+            MScriptArrayIndex index;
             getIndex(index, expr->rVal(), location);
             result = *( m_varTable->access ( expr->lVal().m_data.m_symbol, &index, &location ) );
             break;
@@ -185,7 +186,7 @@ inline void MScriptExprSolver::getFinalValue ( MScriptValue & result,
     }
 }
 
-inline const char * MScriptExprSolver::getVariableName ( MScriptVarTable::Index * & index,
+inline const char * MScriptExprSolver::getVariableName ( MScriptArrayIndex * & index,
                                                          const MScriptValue & source,
                                                          const MScriptSrcLocation & location )
 {
@@ -194,7 +195,7 @@ inline const char * MScriptExprSolver::getVariableName ( MScriptVarTable::Index 
         const MScriptExpr * expr = source.m_data.m_expr;
         if ( ( MScriptExpr::OPER_INDEX == expr->oper() ) && ( MScriptValue::TYPE_SYMBOL == expr->lVal().m_type ) )
         {
-            index = new MScriptVarTable::Index;
+            index = new MScriptArrayIndex;
             getIndex ( *index, expr->rVal(), location );
             return expr->lVal().m_data.m_symbol;
         }
@@ -227,7 +228,7 @@ inline void MScriptExprSolver::assignment ( MScriptValue & result,
                                             const MScriptSrcLocation & location,
                                             const MScriptExpr::Operator oper )
 {
-    MScriptVarTable::Index * index = NULL;
+    MScriptArrayIndex * index = NULL;
     const char * variable = getVariableName ( index, left, location );
     MScriptExpr::Operator subOper;
 
@@ -242,7 +243,7 @@ inline void MScriptExprSolver::assignment ( MScriptValue & result,
 
         case MScriptExpr::OPER_ASSIGN_REF:
         {
-            MScriptVarTable::Index * targetIndex = NULL;
+            MScriptArrayIndex * targetIndex = NULL;
             const char * target = getVariableName ( targetIndex, right, location );
             m_varTable -> refer ( variable, target, location, index, targetIndex );
             getFinalValue(result, right, location);
@@ -276,7 +277,7 @@ inline void MScriptExprSolver::assignment ( MScriptValue & result,
     m_varTable -> assign ( variable, location, result, index );
 }
 
-void MScriptExprSolver::getIndex ( MScriptVarTable::Index & index,
+void MScriptExprSolver::getIndex ( MScriptArrayIndex & index,
                                    const MScriptValue & input,
                                    const MScriptSrcLocation & location )
 {
@@ -390,7 +391,7 @@ void MScriptExprSolver::declaration ( const MScriptExpr * expr,
 
         if ( MScriptValue::TYPE_EXPR == e->lVal().m_type )
         {
-            MScriptVarTable::Index index;
+            MScriptArrayIndex index;
             const MScriptExpr * v = e->lVal().m_data.m_expr;
             int dim;
 

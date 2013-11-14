@@ -18,9 +18,9 @@
 // Require version <version> or higher of Bison.
 %require "2.5"
 // Rename the external symbols used in the parser so that they start with prefix instead of ‘yy’.
-%name-prefix "moraviaScriptParser_"
+%name-prefix "MScriptParser_"
 // Generate a parser header file containing macro definitions, etc.
-%defines "moraviaScriptParser.h"
+%defines "MScriptParser.h"
 // Generate a pure, reentrant parser.
 %define api.pure
 // Generate the code processing the locations.
@@ -81,16 +81,16 @@
     using namespace MScriptStmtTypes; // This NS is heavily used here.
 
     // Declaration of the lexer prototypes and other things required by Bison.
-    #include "moraviaScriptLexer.h"
+    #include "MScriptLexer.h"
 
     // Name of the lexer func required by Bison.
-    #define moraviaScriptParser_lex moraviaScriptLexer_lex
+    #define MScriptParser_lex MScriptLexer_lex
 
     // Declaration of the error reporting function used by Bison.
-    inline int moraviaScriptParser_error ( YYLTYPE * yylloc,
-                                           yyscan_t yyscanner,
-                                           MScriptParserInterface * core,
-                                           const char * errorInfo );
+    inline int MScriptParser_error ( YYLTYPE * yylloc,
+                                     yyscan_t yyscanner,
+                                     MScriptParserInterface * core,
+                                     const char * errorInfo );
 %}
 
 // Declare an additional yyparse parameters.
@@ -685,10 +685,10 @@ native_f:
 // -----------------------------------------------------------------------------
 
 // Definition of the error reporting function used by Bison.
-inline int moraviaScriptParser_error ( YYLTYPE * yylloc,
-                                       yyscan_t,
-                                       MScriptParserInterface * core,
-                                       const char * errorInfo )
+inline int MScriptParser_error ( YYLTYPE * yylloc,
+                                 yyscan_t,
+                                 MScriptParserInterface * core,
+                                 const char * errorInfo )
 {
     core->parserMessage ( yylloc,
                           MScriptBase::MT_WARNING,
