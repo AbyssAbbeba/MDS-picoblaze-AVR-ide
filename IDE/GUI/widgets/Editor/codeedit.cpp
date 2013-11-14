@@ -448,7 +448,7 @@ void CodeEdit::loadCodeEdit(CodeEdit* editor)
     disconnect(this, SIGNAL(breakpointListRemove(int)), 0, 0);
     this->breakpointList.clear();
     this->bookmarkList.clear();
-    if (editor->getTextEdit()->toPlainText() != "")
+    if (editor->getTextEdit()->toPlainText().isEmpty() == false)
     {
         this->textEdit->setPlainText(editor->getTextEdit()->toPlainText());
     }
@@ -475,6 +475,7 @@ void CodeEdit::loadCodeEdit(CodeEdit* editor)
             else if (text == ".asm")
             {
                 //!!!DO NOT FORGET TO CHECK IF ASM IS AVR OR PIC TYPE!!!
+                //qDebug() << "CodeEdit: asm";
                 this->textEdit->reloadHighlighter(PICOBLAZEASM);
             }
             else

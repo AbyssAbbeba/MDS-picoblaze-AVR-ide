@@ -804,11 +804,11 @@ void MainForm::compilationFinished(bool success)
 {
     if ( true == success )
     {
-        this->writeToWCompileInfo("Compilation finished");
+        ((CompileInfo*)(wDockManager->getDockWidget(wCompileInfo)->widget()))->setFinished(true);
     }
     else
     {
-        this->writeToWCompileInfo("Compilation failed");
+        ((CompileInfo*)(wDockManager->getDockWidget(wCompileInfo)->widget()))->setFinished(false);
     }
 }
 
@@ -821,18 +821,19 @@ void MainForm::compilationFinished(bool success)
 void MainForm::reloadCompileInfo(const std::string &text, CompilerBase::MessageType type)
 {
     //qDebug() << QString::fromStdString(text);
-    this->writeToWCompileInfo(QString::fromStdString(text));
+    ((CompileInfo*)(wDockManager->getDockWidget(wCompileInfo)->widget()))->appendMessage(QString::fromStdString(text), type);
 }
 
 
-/**
+/*
  * @brief Write text to wCompileInfo dock widget, used in compilation
  * @param text String value that will be written to widget
  */
-void MainForm::writeToWCompileInfo(QString text)
-{
-    ((QPlainTextEdit*)(wDockManager->getDockWidget(wCompileInfo)->widget()))->appendPlainText(text);
-}
+//void MainForm::writeToWCompileInfo(QString text, , CompilerBase::MessageType type)
+//{
+    //((QPlainTextEdit*)(wDockManager->getDockWidget(wCompileInfo)->widget()))->appendPlainText(text);
+//    (CompileInfo*)(wDockManager->getDockWidget(wCompileInfo)->widget()))->appendMessage(text);
+//}
 
 
 /**
@@ -1030,8 +1031,14 @@ void MainForm::highlightLine(QString file, int line, QColor *color)
     if (file != "")
     {
         this->getWDockManager()->setCentralByName(file.section('/', -1));
-        this->getWDockManager()->getCentralTextEdit()->highlightLine(line, color);
-        this->getWDockManager()->getCentralTextEdit()->scrollToLine(line);
+        if (this->getWDockManager()->getCentralTextEdit()->highlightLine(line, color) == true)
+        {
+            this->getWDockManager()->getCentralTextEdit()->scrollToLine(line);
+        }
+        /*else
+        {
+            qDebug() << "MainForm: highlightLine failed";
+        }*/
     }
     //qDebug() << "MainForm: return highlightLine";
 }
