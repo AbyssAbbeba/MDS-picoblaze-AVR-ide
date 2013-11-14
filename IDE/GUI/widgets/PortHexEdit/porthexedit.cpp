@@ -26,7 +26,7 @@ PortHexEdit::PortHexEdit(QWidget * parent, MCUSimControl * controlUnit, MCUSimSu
 	  m_hexEditIn(NULL),
 	  m_hexEditOut(NULL)
 {
-    qDebug() << "PortHexEdit: PortHexEdit()";
+   //qDebug() << "PortHexEdit: PortHexEdit()";
     std::vector<int> mask;
     this->subsys = subsys;
     mask.push_back(MCUSimPureLogicIO::EVENT_PLIO_WRITE);
@@ -38,7 +38,7 @@ PortHexEdit::PortHexEdit(QWidget * parent, MCUSimControl * controlUnit, MCUSimSu
 
     if ( NULL == controlUnit )
     {
-        qDebug() << "PortHexEdit: controlUnit is NULL";
+       //qDebug() << "PortHexEdit: controlUnit is NULL";
     }
 	//m_layout = new QHBoxLayout(this);
 	//setLayout(m_layout);
@@ -46,7 +46,7 @@ PortHexEdit::PortHexEdit(QWidget * parent, MCUSimControl * controlUnit, MCUSimSu
     this->visibleIn = true;
 
 	deviceChanged();
-    qDebug() << "PortHexEdit: return PortHexEdit()";
+   //qDebug() << "PortHexEdit: return PortHexEdit()";
 }
 
 PortHexEdit::~PortHexEdit()
@@ -87,7 +87,7 @@ void PortHexEdit::handleEvent(int subsysId, int eventId, int locationOrReason, i
         case MCUSimPureLogicIO::EVENT_PLIO_WRITE:
         {
 			uint value = m_plio->getOutputArray()[locationOrReason];
-            qDebug() << "PortHexEdit: event: mem cell changed to" << (unsigned char)value;
+           //qDebug() << "PortHexEdit: event: mem cell changed to" << (unsigned char)value;
 
  			m_hexEditOut->setVal(idx, (unsigned char)value);
  			m_hexEditOut->setHighlighted(idx, true);
@@ -97,7 +97,7 @@ void PortHexEdit::handleEvent(int subsysId, int eventId, int locationOrReason, i
         case MCUSimPureLogicIO::EVENT_PLIO_READ:
         {
             uint value = m_plio->getInputArray()[locationOrReason];
-            qDebug() << "PortHexEdit: event: mem cell changed to" << (unsigned char)value;
+           //qDebug() << "PortHexEdit: event: mem cell changed to" << (unsigned char)value;
 
             m_hexEditIn->setVal(idx, (unsigned char)value);
             m_hexEditIn->setHighlighted(idx, true);
@@ -113,10 +113,10 @@ void PortHexEdit::handleEvent(int subsysId, int eventId, int locationOrReason, i
 
 void PortHexEdit::deviceChanged()
 {
-    qDebug() << "PortHexEdit: deviceChanged()";
+   //qDebug() << "PortHexEdit: deviceChanged()";
     if ( NULL == m_simControlUnit )
     {
-        qDebug() << "PortHexEdit: m_simControlUnit is NULL";
+       qDebug() << "PortHexEdit: m_simControlUnit is NULL";
     }
     if ( NULL == m_simControlUnit->getSimSubsys(this->subsys) )
     {
@@ -168,7 +168,7 @@ void PortHexEdit::deviceChanged()
 	//m_layout->addWidget(m_hexEditIn);
 
 	deviceReset();
-    qDebug() << "PortHexEdit: return deviceChanged()";
+   //qDebug() << "PortHexEdit: return deviceChanged()";
 }
 
 
@@ -186,7 +186,7 @@ void PortHexEdit::changeValueOut(int address)
 
 void PortHexEdit::deviceReset()
 {
-    qDebug() << "PortHexEdit: deviceReset()";
+   //qDebug() << "PortHexEdit: deviceReset()";
 	if ( NULL == m_hexEditIn || NULL == m_hexEditOut )
     {
 		return;
@@ -216,13 +216,13 @@ void PortHexEdit::deviceReset()
 	}
     m_hexEditIn->fixHeight();
     m_hexEditOut->fixHeight();
-    qDebug() << "PortHexEdit: return deviceReset()";
+   //qDebug() << "PortHexEdit: return deviceReset()";
 }
 
 
 void PortHexEdit::setReadOnly(bool readOnly)
 {
-    qDebug() << "PortHexEdit: setReadOnly()";
+   //qDebug() << "PortHexEdit: setReadOnly()";
 	if ( NULL == m_hexEditIn || NULL == m_hexEditOut )
     {
 		return;
@@ -235,22 +235,22 @@ void PortHexEdit::setReadOnly(bool readOnly)
 // 			m_hexEdit->setHighlighted(i, false);
 // 		}
 // 	}
-    qDebug() << "PortHexEdit: return setReadOnly()";
+   //qDebug() << "PortHexEdit: return setReadOnly()";
 }
 
 
 void PortHexEdit::fixHeight()
 {
-    qDebug() << "PortHexEdit: fixHeight()";
+    //qDebug() << "PortHexEdit: fixHeight()";
     m_hexEditIn->fixHeight();
     m_hexEditOut->fixHeight();
-    qDebug() << "PortHexEdit: return fixHeight()";
+    //qDebug() << "PortHexEdit: return fixHeight()";
 }
 
 
 void PortHexEdit::switchPorts()
 {
-    qDebug() << "PortHexEdit: switchPorts()";
+    //qDebug() << "PortHexEdit: switchPorts()";
     if ( true == this->visibleIn )
     {
         this->m_hexEditIn->hide();
@@ -263,7 +263,7 @@ void PortHexEdit::switchPorts()
         this->m_hexEditIn->show();
         this->visibleIn = true;
     }
-    qDebug() << "PortHexEdit: return switchPorts()";
+    //qDebug() << "PortHexEdit: return switchPorts()";
 }
 
 

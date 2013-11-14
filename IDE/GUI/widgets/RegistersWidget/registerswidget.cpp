@@ -141,7 +141,7 @@ void RegistersWidget::handleEvent(int subsysId, int eventId, int locationOrReaso
                 this->item(idx, 2)->setBackground(Qt::yellow);
                 this->item(idx, 3)->setBackground(Qt::yellow);
             }
-            qDebug() << "RegistersWidget: event: mem cell changed to" << value;
+            //qDebug() << "RegistersWidget: event: mem cell changed to" << value;
             this->update = false;
 
             break;

@@ -147,7 +147,7 @@ void WTextEdit::highlightCurrentLine()
 }
 
 
-void WTextEdit::highlightLine(int line, QColor *color)
+bool WTextEdit::highlightLine(int line, QColor *color)
 {
     //qDebug() << "WTextEdit: highlightLine()";
     //qDebug() << "WTextEdit: highlighted line is" << line;
@@ -161,6 +161,7 @@ void WTextEdit::highlightLine(int line, QColor *color)
             //QPalette palette = this->palette();
             //lineFormat.setBackground(palette.color(QPalette::Base));
             lineFormat.clearBackground();
+            //lineFormat.setBackground(Qt::red);
         }
         else
         {
@@ -171,11 +172,14 @@ void WTextEdit::highlightLine(int line, QColor *color)
         QTextCursor cursor(lineBlock);
         //qDebug() << "position: " << cursor.position();
         cursor.setBlockFormat(lineFormat);
+        //this->setTextCursor(cursor);
+        return true;
     }
-    else
+    /*else
     {
         qDebug() << "WTextEdit: highlight failed----";
-    }
+    }*/
+    return false;
     //qDebug() << "WTextEdit: return highlightLine()";
 }
 

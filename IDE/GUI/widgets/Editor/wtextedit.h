@@ -35,7 +35,7 @@ class WTextEdit : public QPlainTextEdit
     public:
         WTextEdit(QWidget *parent, SourceType type);
         void highlightCurrentLine();
-        void highlightLine(int line, QColor *color);
+        bool highlightLine(int line, QColor *color);
         void reloadHighlighter(SourceType type);
         void setPosition(int pos);
         int getPosition();

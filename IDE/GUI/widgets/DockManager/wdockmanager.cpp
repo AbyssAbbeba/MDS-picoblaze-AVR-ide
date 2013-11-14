@@ -63,18 +63,21 @@ void WDockManager::changeActiveCodeEdit(CodeEdit *editor)
     {
         //qDebug() << "wdockmanager - change active Code Editor";
         this->activeCodeEdit = editor;
-        if (breakpointList != NULL && bookmarkList != NULL)
+        if (breakpointList != NULL)
         {
             breakpointList->disconnect();
-            bookmarkList->disconnect();
-            breakpointList->reload(activeCodeEdit->getBreakpointList());
-            bookmarkList->reload(activeCodeEdit->getBookmarkList());
-            updateAnalysersSlot(this->activeCodeEdit);
-            connect(this->activeCodeEdit, SIGNAL(bookmarkListAdd(int)), bookmarkList, SLOT(bookmarkListAddSlot(int)));
-            connect(this->activeCodeEdit, SIGNAL(bookmarkListRemove(int)), bookmarkList, SLOT(bookmarkListRemoveSlot(int)));
+            breakpointList->reload(editor->getBreakpointList());
             connect(this->activeCodeEdit, SIGNAL(breakpointListAdd(int)), breakpointList, SLOT(breakpointListAddSlot(int)));
             connect(this->activeCodeEdit, SIGNAL(breakpointListRemove(int)), breakpointList, SLOT(breakpointListRemoveSlot(int)));
         }
+        if (bookmarkList != NULL)
+        {
+            bookmarkList->disconnect();
+            bookmarkList->reload(editor->getBookmarkList());
+            connect(this->activeCodeEdit, SIGNAL(bookmarkListAdd(int)), bookmarkList, SLOT(bookmarkListAddSlot(int)));
+            connect(this->activeCodeEdit, SIGNAL(bookmarkListRemove(int)), bookmarkList, SLOT(bookmarkListRemoveSlot(int)));
+        }
+        //    updateAnalysersSlot(this->activeCodeEdit);
         wTab->setCurrentIndex(codeEditList.indexOf(this->activeCodeEdit->getParentCodeEdit()));
     }
     //qDebug() << "WDockManager: return changeActiveCodeEdit()";
@@ -95,18 +98,21 @@ void WDockManager::changeCodeEditor(int index)
         //qDebug() << "size: " << openCentralWidgets.count();
         CodeEdit *editor = openCentralWidgets.at(index)->getCodeEdit();
         activeCodeEdit->loadCodeEdit(editor);
-        if (breakpointList != NULL && bookmarkList != NULL)
+        if (breakpointList != NULL)
         {
             breakpointList->disconnect();
-            bookmarkList->disconnect();
             breakpointList->reload(editor->getBreakpointList());
-            bookmarkList->reload(editor->getBookmarkList());
-            updateAnalysersSlot(this->activeCodeEdit);
-            connect(this->activeCodeEdit, SIGNAL(bookmarkListAdd(int)), bookmarkList, SLOT(bookmarkListAddSlot(int)));
-            connect(this->activeCodeEdit, SIGNAL(bookmarkListRemove(int)), bookmarkList, SLOT(bookmarkListRemoveSlot(int)));
             connect(this->activeCodeEdit, SIGNAL(breakpointListAdd(int)), breakpointList, SLOT(breakpointListAddSlot(int)));
             connect(this->activeCodeEdit, SIGNAL(breakpointListRemove(int)), breakpointList, SLOT(breakpointListRemoveSlot(int)));
         }
+        if (bookmarkList != NULL)
+        {
+            bookmarkList->disconnect();
+            bookmarkList->reload(editor->getBookmarkList());
+            connect(this->activeCodeEdit, SIGNAL(bookmarkListAdd(int)), bookmarkList, SLOT(bookmarkListAddSlot(int)));
+            connect(this->activeCodeEdit, SIGNAL(bookmarkListRemove(int)), bookmarkList, SLOT(bookmarkListRemoveSlot(int)));
+        }
+        //    updateAnalysersSlot(this->activeCodeEdit);
     }
     //qDebug() << "WDockManager: return changeCodeEditor()";
 }
@@ -619,13 +625,13 @@ void WDockManager::setCentralByName(QString fileName)
         for (int i = 0; i < this->getTabCount(); i++)
         {
             //qDebug() << "WDockManager: tabtext" << wTab->tabText(i) << "fileName" << fileName;
-            if (wTab->tabText(i) == fileName)
+            if (this->wTab->tabText(i) == fileName)
             {
                 //qDebug() << "WDockManager: CodeEdit found";
-                if (wTab->currentIndex() != i)
+                if (this->wTab->currentIndex() != i)
                 {
-                    this->changeCodeEditor(i);
-                    wTab->setCurrentIndex(i);
+                    this->wTab->setCurrentIndex(i);
+                    //this->changeCodeEditor(i);
                 }
                 return;
             }

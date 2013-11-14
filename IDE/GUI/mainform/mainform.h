@@ -23,6 +23,7 @@
 #include <QTreeWidget>
 #include "../widgets/Editor/codeedit.h"
 #include "../widgets/DockManager/wdockmanager.h"
+#include "../widgets/CompileInfo/compileinfo.h"
 #include "../widgets/Tools/Display/displaytool.h"
 #include "../widgets/Tools/Convertor/convertortool.h"
 #include "../project/project.h"
@@ -76,7 +77,7 @@ class MainForm : public QMainWindow
         void toolDisplay();
         void exampleOpen();
         void showPlugins();
-        void writeToWCompileInfo(QString text);
+        //void writeToWCompileInfo(QString text);
         void createDockWidgets();
         void simProjectData();
         void tabifyDockWidgetSlot(QDockWidget *widget1, QDockWidget *widget2);

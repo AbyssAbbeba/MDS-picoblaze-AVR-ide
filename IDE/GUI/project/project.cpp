@@ -1160,8 +1160,8 @@ void Project::step()
     emit highlightLine(this->prevFile, this->prevLine, this->prevLineColor);
     emit highlightLine(this->currFile, this->line, this->currLineColor);
 
-    emit setCentralByName(this->currFile);
-    emit scrollToLine(this->line);
+    //emit setCentralByName(this->currFile);
+    //emit scrollToLine(this->line);
     //parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(line, currLineColor, origCurrLineCol);
     //parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(prevLine, prevLineColor, origPrevLineCol);
     //parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(prevLine2, prevLine2Color, origPrevLine2Col);
