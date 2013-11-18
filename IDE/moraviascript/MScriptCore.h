@@ -40,9 +40,9 @@ class MScriptStatement;
  * @ingroup MoraviaScript
  */
 class MScriptCore : protected MScriptBase,
-                    protected MScriptInterpret
+                    protected MScriptInterpret,
                     protected MScriptParserInterface,
-                    protected MScriptStrategyInterface,
+                    protected MScriptStrategyInterface
 {
     ////    Public Datatypes    ////
     public:
@@ -261,6 +261,12 @@ class MScriptCore : protected MScriptBase,
              * @return
              */
             virtual MScriptVarTable * getVarTbl();
+
+            /**
+             * @brief
+             * @return
+             */
+            virtual MScriptNamespaces * getNs();
 
             /**
              * @brief

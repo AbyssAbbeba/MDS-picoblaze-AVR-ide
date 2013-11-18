@@ -202,8 +202,8 @@ class MScriptInterpret : private MScriptExecContext,
                                  unsigned int times = 1,
                                  bool exclusive = false );
 
-    ////    Private Attributes    ////
-    private:
+    ////    Protected Attributes    ////
+    protected:
         /// @brief
         MScriptVarTable * m_varTable;
 

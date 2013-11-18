@@ -188,6 +188,20 @@ void MScriptFuncTable::define ( const std::string & name,
     m_funcTable.insert ( std::make_pair ( name, Function ( params, code, location, argsRequired, ns ) ) );
 }
 
+void MScriptFuncTable::define ( MScriptNamespaces::NsDesc * ns,
+                                const std::string & name,
+                                std::vector<Parameter> * params,
+                                int id )
+{
+    
+}
+
+bool MScriptFuncTable::undefine ( const std::string & name,
+                                  int id )
+{
+    
+}
+
 bool MScriptFuncTable::undefine ( const std::string & name,
                                   const MScriptSrcLocation & location )
 {
