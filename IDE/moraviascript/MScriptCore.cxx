@@ -318,3 +318,19 @@ MScriptStatement * MScriptCore::insertCode ( const MScriptSrcLocation & location
     locationRelativeTo(m_includedCode, location);
     return m_includedCode;
 }
+
+MScriptFuncTable * MScriptCore::getFuncTbl()
+{
+    return m_funcTable;
+}
+
+MScriptVarTable * MScriptCore::getVarTbl()
+{
+    return m_varTable;
+}
+
+void MScriptCore::strategyMessage ( MScriptBase::MessageType type,
+                                    const std::string & text )
+{
+    m_messages.push_back(msgTypeToStr(type) + ": " + text );
+}

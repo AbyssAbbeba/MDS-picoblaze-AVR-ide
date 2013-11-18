@@ -19,6 +19,8 @@
 // Forward declarations.
 class MScriptExpr;
 class MScriptStrategy;
+class MScriptVarTable;
+class MScriptFuncTable;
 class MScriptStatement;
 
 // MScript language interpreter header files.
@@ -38,9 +40,9 @@ class MScriptStatement;
  * @ingroup MoraviaScript
  */
 class MScriptCore : protected MScriptBase,
+                    protected MScriptInterpret
                     protected MScriptParserInterface,
                     protected MScriptStrategyInterface,
-                    protected MScriptInterpret
 {
     ////    Public Datatypes    ////
     public:
@@ -180,65 +182,94 @@ class MScriptCore : protected MScriptBase,
          */
         int getFileNumber ( const std::string & fileName );
 
-        /**
-         * @brief
-         * @param[in,out] codeTree
-         */
-        virtual void syntaxAnalysisComplete ( MScriptStatement * codeTree );
+        /// @name Operations declared in parser interface.
+        //@{
+            /**
+             * @brief
+             * @param[in,out] codeTree
+             */
+            virtual void syntaxAnalysisComplete ( MScriptStatement * codeTree );
 
-        /**
-         * @brief
-         * @param[in] location
-         * @param[in] type
-         * @param[in] text
-         */
-        virtual void parserMessage ( const MScriptSrcLocation & location,
-                                     MScriptBase::MessageType type,
-                                     const std::string & text );
+            /**
+             * @brief
+             * @param[in] location
+             * @param[in] type
+             * @param[in] text
+             */
+            virtual void parserMessage ( const MScriptSrcLocation & location,
+                                         MScriptBase::MessageType type,
+                                         const std::string & text );
 
-        /**
-         * @brief
-         * @param[in] location
-         * @param[in] type
-         * @param[in] text
-         */
-        virtual void lexerMessage ( const MScriptSrcLocation & location,
-                                    MScriptBase::MessageType type,
-                                    const std::string & text );
+            /**
+             * @brief
+             * @param[in] location
+             * @param[in] type
+             * @param[in] text
+             */
+            virtual void lexerMessage ( const MScriptSrcLocation & location,
+                                        MScriptBase::MessageType type,
+                                        const std::string & text );
+        //@}
 
-        /**
-         * @brief
-         * @param[in] location
-         * @param[in] type
-         * @param[in] text
-         */
-        virtual void interpreterMessage ( const MScriptSrcLocation & location,
-                                          MScriptBase::MessageType type,
-                                          const std::string & text );
+        /// @name Operations declared in interpret interface.
+        //@{
+            /**
+             * @brief
+             * @param[in] location
+             * @param[in] type
+             * @param[in] text
+             */
+            virtual void interpreterMessage ( const MScriptSrcLocation & location,
+                                              MScriptBase::MessageType type,
+                                              const std::string & text );
 
-        /**
-         * @brief
-         * @param[in] location
-         * @param[in] fileName
-         * @return
-         */
-        virtual MScriptStatement * include ( const MScriptSrcLocation & location,
-                                             const std::string & fileName );
+            /**
+             * @brief
+             * @param[in] location
+             * @param[in] fileName
+             * @return
+             */
+            virtual MScriptStatement * include ( const MScriptSrcLocation & location,
+                                                 const std::string & fileName );
 
-        /**
-         * @brief
-         * @param[in] location
-         * @param[in] code
-         * @return
-         */
-        virtual MScriptStatement * insertCode ( const MScriptSrcLocation & location,
-                                                const std::string & code );
+            /**
+             * @brief
+             * @param[in] location
+             * @param[in] code
+             * @return
+             */
+            virtual MScriptStatement * insertCode ( const MScriptSrcLocation & location,
+                                                    const std::string & code );
 
-        /**
-         * @brief
-         * @return
-         */
-        virtual MScriptBase * getCoreBase();
+            /**
+             * @brief
+             * @return
+             */
+            virtual MScriptBase * getCoreBase();
+        //@}
+
+        /// @name Operations declared in strategy interface.
+        //@{
+            /**
+             * @brief
+             * @return
+             */
+            virtual MScriptFuncTable * getFuncTbl();
+
+            /**
+             * @brief
+             * @return
+             */
+            virtual MScriptVarTable * getVarTbl();
+
+            /**
+             * @brief
+             * @param[in] type
+             * @param[in] text
+             */
+            virtual void strategyMessage ( MScriptBase::MessageType type,
+                                           const std::string & text );
+        //@}
 
     ////    Private Attributes    ////
     private:
