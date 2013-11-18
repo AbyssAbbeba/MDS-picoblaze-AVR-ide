@@ -129,6 +129,9 @@ class MScriptFuncTable
 
             /// @brief
             unsigned int m_argsRequired;
+
+            /// @brief
+            int m_id;
         };
 
         /// @brief
@@ -160,12 +163,22 @@ class MScriptFuncTable
          * @param[in] location
          * @param[in,out] params
          * @param[in,out] code
-         * @return
          */
         void define ( const std::string & name,
                       const MScriptSrcLocation & location,
                       std::vector<Parameter> * params,
                       MScriptStatement * code );
+
+        /**
+         * @brief
+         * @param[in] name
+         * @param[in,out] params
+         * @param[in,out] code
+         * @return
+         */
+        void define ( const std::string & name,
+                      std::vector<Parameter> * params
+                      int id );
 
         /**
          * @brief
