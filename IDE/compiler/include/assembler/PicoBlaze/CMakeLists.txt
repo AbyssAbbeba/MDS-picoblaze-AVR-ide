@@ -27,8 +27,9 @@ set ( CMAKE_VERBOSE_MAKEFILE OFF )
 
 # List of additional files that will be cleaned as a part of the "make clean" stage.
 FILE ( GLOB PRC_FILES *.prc )
+FILE ( GLOB LST_FILES *.lst )
 set_directory_properties ( PROPERTIES
-                           ADDITIONAL_MAKE_CLEAN_FILES "${PRC_FILES}" )
+                           ADDITIONAL_MAKE_CLEAN_FILES "${PRC_FILES} ${LST_FILES}" )
 
 # Locate compiler binary.
 set ( MDS_COMPILER "../../../compiler" )
@@ -46,6 +47,7 @@ foreach ( PROCESSOR "kcpsm1" "kcpsm1cpld" "kcpsm2" "kcpsm3" "kcpsm6" )
                                                 --arch=PicoBlaze
                                                 --silent
                                                 --precompile="${PROCESSOR}.prc"
+                                                --lst="${PROCESSOR}.lst"
                                                 --file="${PROCESSOR}.asm" &> /dev/null )
 endforeach ( PROCESSOR )
 
