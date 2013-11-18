@@ -60,6 +60,7 @@ MScriptFuncTable::Function::Function ( std::vector<Parameter> * params,
     m_location     = location;
     m_ns           = ns;
     m_argsRequired = argsRequired;
+    m_id           = -1;
 }
 
 MScriptFuncTable::Function::Function ( const Function & obj )
@@ -67,6 +68,7 @@ MScriptFuncTable::Function::Function ( const Function & obj )
     m_code         = obj.m_code;
     m_location     = obj.m_location;
     m_argsRequired = obj.m_argsRequired;
+    m_id           = obj.m_id;
     m_params       = new std::vector<Parameter>(obj.m_params->size());
 
     for ( size_t i = 0; i < m_params->size(); i++ )

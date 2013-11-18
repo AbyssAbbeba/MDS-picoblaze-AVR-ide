@@ -17,6 +17,7 @@
 #define MSCRIPTSTRATEGY_H
 
 // MScript language interpreter header files.
+#include "MScriptBase.h"
 #include "MScriptValue.h"
 #include "MScriptArrayIndex.h"
 #include "MScriptStrategyInterface.h"
@@ -46,7 +47,7 @@ class MScriptStrategy
              */
             int newFunction ( const std::string & ns,
                               const std::string & name,
-                              unsigned int params,
+                              const std::vector<std::string> & params,
                               const std::vector<MScriptValue> * defaults = NULL );
 
             /**
@@ -107,6 +108,17 @@ class MScriptStrategy
             virtual void variableWritten ( int id,
                                           const MScriptArrayIndex & index,
                                           const MScriptValue & value ) = 0;
+        //@}
+
+        /// @name Miscellaneous operations.
+        //@{
+            /**
+             * @brief
+             * @param[in] type
+             * @param[in] text
+             */
+            void message ( MScriptBase::MessageType type,
+                           const std::string & text );
         //@}
 
     ////    Public Attributes    ////
