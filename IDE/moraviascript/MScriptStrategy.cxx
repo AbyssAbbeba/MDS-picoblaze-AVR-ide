@@ -18,20 +18,33 @@
 // MScript language interpreter header files.
 #include "MScriptVarTable.h"
 #include "MScriptFuncTable.h"
+#include "MScriptNamespaces.h"
 
 int MScriptStrategy::newFunction ( const std::string & ns,
                                    const std::string & name,
                                    const std::vector<std::string> & params,
                                    const std::vector<MScriptValue> * defaults )
 {
-    std::vector<MScriptFuncTable::Parameter> parameters
-    
-    m_core->getFuncTbl()->define ( ns + "::" + name, &parameters, 
-                      int id );
+    std::vector<MScriptFuncTable::Parameter> * parameters = new std::vector<MScriptFuncTable::Parameter>;
+
+    for ( size_t i = 0; i < params.size(); i ++ )
+    {
+        if ( ( NULL != defaults ) && ( i < defaults->size() ) )
+        {
+            parameters->push_back(MScriptFuncTable::Parameter(params[i], defaults->at(i)));
+        }
+        else
+        {
+            parameters->push_back(params[i]);
+        }
+    }
+
+    m_core->getFuncTbl()->define ( m_namespaces->str2ns(true), name, &parameters, m_funcId->acquire() );
 }
 
 bool MScriptStrategy::deleteFunction ( int id )
 {
+    m_funcId->release(id);
 }
 
 int MScriptStrategy::newVariable ( const std::string & ns,
