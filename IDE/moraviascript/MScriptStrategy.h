@@ -19,6 +19,7 @@
 // MScript language interpreter header files.
 #include "MScriptBase.h"
 #include "MScriptValue.h"
+#include "MScriptIdManager.h"
 #include "MScriptArrayIndex.h"
 #include "MScriptStrategyInterface.h"
 
@@ -123,10 +124,16 @@ class MScriptStrategy
 
     ////    Public Attributes    ////
     public:
-        /**
-         * @brief
-         */
+        /// @brief
         MScriptStrategyInterface * m_core;
+
+    ////    Private Attributes    ////
+    private:
+        /// @brief
+        MScriptIdManager m_funcId;
+
+        /// @brief
+        MScriptIdManager m_varId;
 };
 
 #endif // MSCRIPTSTRATEGY_H

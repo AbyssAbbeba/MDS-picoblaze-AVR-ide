@@ -19,6 +19,7 @@
 // Forward declarations.
 class MScriptVarTable;
 class MScriptFuncTable;
+class MScriptNamespaces;
 
 // MScript language interpreter header files.
 #include "MScriptBase.h"
@@ -48,7 +49,7 @@ class MScriptStrategyInterface
          * @brief
          * @return
          */
-        virtual MScriptVarTable * getNs() = 0;
+        virtual MScriptNamespaces * getNs() = 0;
 
         /**
          * @brief

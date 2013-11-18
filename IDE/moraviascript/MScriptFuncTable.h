@@ -179,7 +179,7 @@ class MScriptFuncTable
          */
         void define ( MScriptNamespaces::NsDesc * ns,
                       const std::string & name,
-                      std::vector<Parameter> * params
+                      std::vector<Parameter> * params,
                       int id );
 
         /**
@@ -190,6 +190,15 @@ class MScriptFuncTable
          */
         bool undefine ( const std::string & name,
                         const MScriptSrcLocation & location );
+
+        /**
+         * @brief
+         * @param[in] name
+         * @param[in] id
+         * @return
+         */
+        bool undefine ( const std::string & name,
+                        int id );
 
         /**
          * @brief

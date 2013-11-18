@@ -329,6 +329,11 @@ MScriptVarTable * MScriptCore::getVarTbl()
     return m_varTable;
 }
 
+MScriptNamespaces * MScriptCore::getNs()
+{
+    return m_namespaces;
+}
+
 void MScriptCore::strategyMessage ( MScriptBase::MessageType type,
                                     const std::string & text )
 {

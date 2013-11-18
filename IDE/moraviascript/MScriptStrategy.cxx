@@ -31,20 +31,20 @@ int MScriptStrategy::newFunction ( const std::string & ns,
     {
         if ( ( NULL != defaults ) && ( i < defaults->size() ) )
         {
-            parameters->push_back(MScriptFuncTable::Parameter(params[i], defaults->at(i)));
+            parameters->push_back(MScriptFuncTable::Parameter(params[i].c_str(), defaults->at(i)));
         }
         else
         {
-            parameters->push_back(params[i]);
+            parameters->push_back(params[i].c_str());
         }
     }
 
-    m_core->getFuncTbl()->define ( m_namespaces->str2ns(true), name, &parameters, m_funcId->acquire() );
+    m_core->getFuncTbl()->define ( m_core->getNs()->str2ns(true), name, parameters, m_funcId.acquire() );
 }
 
 bool MScriptStrategy::deleteFunction ( int id )
 {
-    m_funcId->release(id);
+    m_funcId.release(id);
 }
 
 int MScriptStrategy::newVariable ( const std::string & ns,
@@ -59,5 +59,5 @@ bool MScriptStrategy::deleteVariable ( int id )
 void MScriptStrategy::message ( MScriptBase::MessageType type,
                                 const std::string & text )
 {
-    
+    m_core->strategyMessage(type, text);
 }

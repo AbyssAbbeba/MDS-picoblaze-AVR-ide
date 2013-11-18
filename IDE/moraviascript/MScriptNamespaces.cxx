@@ -104,6 +104,11 @@ MScriptNamespaces::NsDesc * MScriptNamespaces::analyseId ( const std::string & i
     return result;
 }
 
+MScriptNamespaces::NsDesc * MScriptNamespaces::str2ns ( bool define )
+{
+    
+}
+
 int MScriptNamespaces::NsDesc::inheritsFrom ( const MScriptNamespaces::NsDesc * ns ) const
 {
     int distance = 0;
