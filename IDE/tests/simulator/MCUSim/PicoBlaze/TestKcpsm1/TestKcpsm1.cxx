@@ -41,7 +41,7 @@ int TestKcpsm1::init()
     m_strategy     = new PicoBlazeStrategy;
     m_testScript   = new MCUSimTestScript(m_picoBlazeSim, m_strategy);
 
-    dynamic_cast<PicoBlazeConfig&>(m_picoBlazeSim->getConfig()).configure(MCUSim::FAMILY_KCPSM2);
+    dynamic_cast<PicoBlazeConfig&>(m_picoBlazeSim->getConfig()).configure(MCUSim::FAMILY_KCPSM1);
     m_picoBlazeSim->reset(MCUSim::RSTMD_NEW_CONFIG);
 
     return 0;

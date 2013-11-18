@@ -144,7 +144,7 @@ MScriptNamespaces::NsDesc * MScriptNamespaces::define ( const MScriptSrcLocation
         return NULL;
     }
 
-    nsDesc->m_contains.push_back(new NsDesc ( ns, nsDesc, location ));
+    nsDesc->m_contains.push_back(new NsDesc ( bareId, nsDesc, location ));
     return nsDesc->m_contains.back();
 }
 

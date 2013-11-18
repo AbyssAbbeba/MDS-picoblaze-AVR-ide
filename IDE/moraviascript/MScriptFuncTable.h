@@ -171,12 +171,14 @@ class MScriptFuncTable
 
         /**
          * @brief
+         * @param[in,out] ns
          * @param[in] name
          * @param[in,out] params
          * @param[in,out] code
          * @return
          */
-        void define ( const std::string & name,
+        void define ( MScriptNamespaces::NsDesc * ns,
+                      const std::string & name,
                       std::vector<Parameter> * params
                       int id );
 

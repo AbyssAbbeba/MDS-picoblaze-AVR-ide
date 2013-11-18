@@ -46,6 +46,12 @@ class MScriptStrategyInterface
 
         /**
          * @brief
+         * @return
+         */
+        virtual MScriptVarTable * getNs() = 0;
+
+        /**
+         * @brief
          * @param[in] type
          * @param[in] text
          */
