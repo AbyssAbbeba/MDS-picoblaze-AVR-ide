@@ -36,6 +36,15 @@ class PicoBlazeProgramMemory : public MCUSimMemory
         /**
          * @brief
          */
+        enum WordSize
+        {
+            WS_16b, ///<
+            WS_18b  ///<
+        };
+
+        /**
+         * @brief
+         */
         struct Config
         {
             ///
@@ -46,6 +55,7 @@ class PicoBlazeProgramMemory : public MCUSimMemory
 
             int m_undefinedValue; ///< -1 means random
             unsigned int m_size;  ///<
+            WordSize m_wordSize;  ///<
         };
 
     ////    Constructors and Destructors    ////
