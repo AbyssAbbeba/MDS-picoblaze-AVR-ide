@@ -22,6 +22,8 @@
 #include "PicoBlazeProgramMemory.h"
 #include "PicoBlazeInterruptController.h"
 
+#include <iostream> // DEBUG
+
 void ( PicoBlazeInstructionSet1 :: * const PicoBlazeInstructionSet1::m_opCodeDispatchTable [ 16 ] )
      ( const unsigned int opCode ) =
 {
@@ -96,6 +98,7 @@ bool PicoBlazeInstructionSet1::isValid() const
 
 int PicoBlazeInstructionSet1::execInstruction()
 {
+std::cout << "PicoBlazeInstructionSet1::execInstruction()\n";
     const int pcOrig = m_pc;
     unsigned int opCode = m_programMemory->readRaw(m_pc);
     incrPc();
@@ -111,7 +114,7 @@ int PicoBlazeInstructionSet1::execInstruction()
             opCode &= 0x0ffff;
         }
     }
-
+std::cout << "    opCode = " << opCode << "\n";
     // Execute instruction from dispatch table.
     ( this ->* ( m_opCodeDispatchTable [ opCode >> 12 ] ) ) ( opCode );
 

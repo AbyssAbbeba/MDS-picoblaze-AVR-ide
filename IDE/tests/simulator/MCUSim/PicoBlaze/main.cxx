@@ -56,8 +56,8 @@ int initTestEnv()
 
     // Add KCPSM1CPLD test suite to the CUnit test registry.
     CU_pSuite testKcpsm1CPLD = CU_add_suite ( "KCPSM1CPLD",
-                                             TestKcpsm1CPLD::init,
-                                             TestKcpsm1CPLD::clean );
+                                              TestKcpsm1CPLD::init,
+                                              TestKcpsm1CPLD::clean );
     if ( NULL == testKcpsm1CPLD )
     {
         // Unable to add the test suite to the registry.
