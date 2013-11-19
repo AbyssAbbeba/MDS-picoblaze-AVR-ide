@@ -50,7 +50,7 @@ void PicoBlazeProgramMemory::loadDataFile ( const DataFile * file )
         int byte;
         bool undefined = false;
 
-        for ( int shift = 16; shift >= 0; shift -= 8 )
+        for ( int shift = ( ( WS_18b == m_config.m_wordSize ) ? 16 : 8 ); shift >= 0; shift -= 8 )
         {
             if ( fileAddr < fileSize )
             {
@@ -99,15 +99,21 @@ void PicoBlazeProgramMemory::storeInDataFile ( DataFile * file ) const
 
         if ( MFLAG_UNDEFINED & byte )
         {
-            file -> unset (   fileAddr );
-            file -> unset ( ++fileAddr );
-            file -> unset ( ++fileAddr );
+            if ( WS_18b == m_config.m_wordSize )
+            {
+                file -> unset ( fileAddr++ );
+            }
+            file -> unset ( fileAddr++ );
+            file -> unset ( fileAddr );
         }
         else
         {
-            file -> set (   fileAddr, ( byte & 0xff0000 ) >> 16 );
-            file -> set ( ++fileAddr, ( byte & 0x00ff00 ) >>  8 );
-            file -> set ( ++fileAddr, ( byte & 0x0000ff ) >>  0 );
+            if ( WS_18b == m_config.m_wordSize )
+            {
+                file -> set ( fileAddr++, ( byte & 0xff0000 ) >> 16 );
+            }
+            file -> set ( fileAddr++, ( byte & 0x00ff00 ) >>  8 );
+            file -> set ( fileAddr, ( byte & 0x0000ff ) >>  0 );
         }
     }
 }

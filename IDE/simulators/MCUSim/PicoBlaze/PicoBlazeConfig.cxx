@@ -60,6 +60,7 @@ void PicoBlazeConfig::configure ( MCUSim::Family dev )
             m_configInstructionSet->m_pcMax = 256;
             m_configInstructionSet->m_hwbuild = 0;
             m_configProgramMemory->m_size = 256;
+            m_configProgramMemory->m_wordSize = PicoBlazeProgramMemory::WS_16b;
             m_configRegisters->m_size = 8;
             m_configRegisters->m_banks = false;
             m_configStack->m_size = 4;
@@ -72,6 +73,7 @@ void PicoBlazeConfig::configure ( MCUSim::Family dev )
             m_configInstructionSet->m_pcMax = 256;
             m_configInstructionSet->m_hwbuild = 0;
             m_configProgramMemory->m_size = 256;
+            m_configProgramMemory->m_wordSize = PicoBlazeProgramMemory::WS_16b;
             m_configRegisters->m_size = 16;
             m_configRegisters->m_banks = false;
             m_configStack->m_size = 15;
@@ -84,6 +86,7 @@ void PicoBlazeConfig::configure ( MCUSim::Family dev )
             m_configInstructionSet->m_pcMax = 1024;
             m_configInstructionSet->m_hwbuild = 0;
             m_configProgramMemory->m_size = 1024;
+            m_configProgramMemory->m_wordSize = PicoBlazeProgramMemory::WS_18b;
             m_configRegisters->m_size = 32;
             m_configRegisters->m_banks = false;
             m_configStack->m_size = 31;
@@ -96,6 +99,7 @@ void PicoBlazeConfig::configure ( MCUSim::Family dev )
             m_configInstructionSet->m_pcMax = 1024;
             m_configInstructionSet->m_hwbuild = 0;
             m_configProgramMemory->m_size = 1024;
+            m_configProgramMemory->m_wordSize = PicoBlazeProgramMemory::WS_18b;
             m_configRegisters->m_size = 16;
             m_configRegisters->m_banks = false;
             m_configStack->m_size = 31;
@@ -108,6 +112,7 @@ void PicoBlazeConfig::configure ( MCUSim::Family dev )
             m_configInstructionSet->m_pcMax = 4096;
             m_configInstructionSet->m_hwbuild = 0;
             m_configProgramMemory->m_size = 4096;
+            m_configProgramMemory->m_wordSize = PicoBlazeProgramMemory::WS_18b;
             m_configRegisters->m_size = 32;
             m_configRegisters->m_banks = true;
             m_configStack->m_size = 30;
