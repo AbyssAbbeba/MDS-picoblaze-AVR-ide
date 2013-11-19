@@ -114,7 +114,7 @@ std::cout << "PicoBlazeInstructionSet1::execInstruction()\n";
             opCode &= 0x0ffff;
         }
     }
-std::cout << "    opCode = " << opCode << "\n";
+std::cout << "    opCode = " << std::hex <<  opCode << "\n";
     // Execute instruction from dispatch table.
     ( this ->* ( m_opCodeDispatchTable [ opCode >> 12 ] ) ) ( opCode );
 
@@ -554,6 +554,7 @@ inline void PicoBlazeInstructionSet1::inst_DISABLE_INT ( const unsigned int )
 
 void PicoBlazeInstructionSet1::inst_LOAD_sx_kk ( const unsigned int opCode )
 {
+std::cout << "PicoBlazeInstructionSet1::inst_LOAD_sx_kk ( "<< std::hex << opCode << " )\n";
     instructionEnter ( PicoBlazeInsNames::INS_LOAD );
 
     // Extract operands from OP code.
@@ -566,6 +567,7 @@ void PicoBlazeInstructionSet1::inst_LOAD_sx_kk ( const unsigned int opCode )
 
 void PicoBlazeInstructionSet1::inst_LOAD_sx_sy ( const unsigned int opCode )
 {
+std::cout << "PicoBlazeInstructionSet1::inst_LOAD_sx_sy ( "<< std::hex << opCode << " )\n";
     instructionEnter ( PicoBlazeInsNames::INS_LOAD );
 
     // Extract operands from OP code.
