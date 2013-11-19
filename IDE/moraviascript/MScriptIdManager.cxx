@@ -17,20 +17,21 @@
 
 MScriptIdManager::MScriptIdManager()
 {
-    
+    m_ids.push_back ( Id ( 0, -1 ) );
 }
 
-MScriptIdManager::~MScriptIdManager()
+inline void MScriptIdManager::autoReserve()
 {
-    
+}
+
+inline void MScriptIdManager::cleanUp()
+{
 }
 
 int MScriptIdManager::acquire()
 {
-    
 }
 
 void MScriptIdManager::release ( int id )
 {
-    
 }
