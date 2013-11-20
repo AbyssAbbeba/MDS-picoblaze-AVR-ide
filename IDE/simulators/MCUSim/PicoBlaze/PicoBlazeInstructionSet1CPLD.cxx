@@ -111,8 +111,8 @@ void PicoBlazeInstructionSet1CPLD::inst_10100 ( const unsigned int opCode )
     switch ( 0xff & opCode )
     {
         case 0b0000: inst_SLA ( opCode ); break; // SLA Sx : 1010 0xxx 0000 0000
-        case 0b0100: inst_SLX ( opCode ); break; // SLX Sx : 1010 0xxx 0000 0010
-        case 0b0010: inst_RL  ( opCode ); break; // RL Sx  : 1010 0xxx 0000 0100
+        case 0b0010: inst_SLX ( opCode ); break; // SLX Sx : 1010 0xxx 0000 0010
+        case 0b0100: inst_RL  ( opCode ); break; // RL Sx  : 1010 0xxx 0000 0100
         case 0b0110: inst_SL0 ( opCode ); break; // SL0 Sx : 1010 0xxx 0000 0110
         case 0b0111: inst_SL1 ( opCode ); break; // SL1 Sx : 1010 0xxx 0000 0111
         case 0b1000: inst_SRA ( opCode ); break; // SRA Sx : 1010 0xxx 0000 1000
