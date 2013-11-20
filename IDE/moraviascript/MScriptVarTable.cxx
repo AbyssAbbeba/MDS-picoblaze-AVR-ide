@@ -205,6 +205,16 @@ void MScriptVarTable::declare ( const std::string & variable,
     }
 }
 
+bool MScriptVarTable::declare ( MScriptNamespaces::NsDesc * ns,
+                                const std::string & variable,
+                                int id )
+{
+}
+
+bool MScriptVarTable::remove ( int id )
+{
+}
+
 void MScriptVarTable::assign ( const std::string & variable,
                                const MScriptSrcLocation & location,
                                const MScriptValue & value,

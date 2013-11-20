@@ -167,6 +167,11 @@ MScriptBase * MScriptCore::getCoreBase()
     return this;
 }
 
+MScriptStrategy * MScriptCore::getStrategy()
+{
+    return m_strategy;
+}
+
 void MScriptCore::syntaxAnalysisComplete ( MScriptStatement * codeTree )
 {
     if ( NULL != m_codeTree )

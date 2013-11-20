@@ -63,6 +63,18 @@ MScriptFuncTable::Function::Function ( std::vector<Parameter> * params,
     m_id           = -1;
 }
 
+MScriptFuncTable::Function::Function ( std::vector<Parameter> * params,
+                                       int id,
+                                       unsigned int argsRequired,
+                                       MScriptNamespaces::NsDesc * ns )
+{
+    m_params       = params;
+    m_code         = NULL;
+    m_ns           = ns;
+    m_argsRequired = argsRequired;
+    m_id           = id;
+}
+
 MScriptFuncTable::Function::Function ( const Function & obj )
 {
     m_code         = obj.m_code;
@@ -188,18 +200,54 @@ void MScriptFuncTable::define ( const std::string & name,
     m_funcTable.insert ( std::make_pair ( name, Function ( params, code, location, argsRequired, ns ) ) );
 }
 
-void MScriptFuncTable::define ( MScriptNamespaces::NsDesc * ns,
+bool MScriptFuncTable::define ( MScriptNamespaces::NsDesc * ns,
                                 const std::string & name,
                                 std::vector<Parameter> * params,
                                 int id )
 {
-    
+    if ( true == isDefined(ns->toString() + "::" + name, MScriptSrcLocation()) )
+    {
+        return false;
+    }
+
+    unsigned int defaults = 0;
+
+    for ( std::vector<Parameter>::const_iterator p = params->cbegin();
+          p != params->cend();
+          p++ )
+    {
+        if ( NULL != p->m_value )
+        {
+            defaults++;
+        }
+    }
+
+    m_funcTable.insert ( std::make_pair ( name, Function ( params, id, ( params->size() - defaults ), ns ) ) );
+    m_id2nameMap.insert ( std::make_pair(id, name) );
 }
 
-bool MScriptFuncTable::undefine ( const std::string & name,
-                                  int id )
+bool MScriptFuncTable::undefine ( const int id )
 {
-    
+    std::map<int,std::string>::iterator it = m_id2nameMap.find(id);
+    if ( it == m_id2nameMap.end() )
+    {
+        return false;
+    }
+
+    std::pair<FuncMultimap::iterator,FuncMultimap::iterator> range = m_funcTable.equal_range(it->second);
+    for ( FuncMultimap::iterator i = range.first;
+          i != range.second;
+          i++ )
+    {
+        if ( id == i->second.m_id )
+        {
+            m_id2nameMap.erase(it);
+            m_funcTable.erase(i);
+            return true;
+        }
+    }
+
+    return false;
 }
 
 bool MScriptFuncTable::undefine ( const std::string & name,
@@ -373,6 +421,7 @@ void MScriptFuncTable::clear()
     }
 
     m_funcTable.clear();
+    m_id2nameMap.clear();
 }
 
 std::ostream & operator << ( std::ostream & out,

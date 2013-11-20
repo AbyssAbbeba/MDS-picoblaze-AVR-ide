@@ -18,6 +18,7 @@
 
 // Standard header files.
 #include <vector>
+#include <cstddef>
 
 /**
  * @brief
@@ -26,30 +27,10 @@
  */
 class MScriptIdManager
 {
-    ////    Private Datatypes    ////
+    ////    Private Static Constants    ////
     private:
-        /**
-         * @brief
-         */
-        struct Id
-        {
-            /**
-             * @brief
-             * @param[in] data
-             * @param[in] next
-             */
-            Id ( int data,
-                 int next )
-               :
-                 m_data ( data ),
-                 m_next ( next ) {}
-
-            /// @brief
-            int m_data;
-
-            /// @brief
-            int m_next;
-        };
+        /// @brief
+        static constexpr float GROW_FACTOR = 2.0;
 
     ////    Constructors and Destructors    ////
     public:
@@ -77,17 +58,12 @@ class MScriptIdManager
         /**
          * @brief
          */
-        inline void autoReserve();
-
-        /**
-         * @brief
-         */
-        inline void cleanUp();
+        inline void autoGrow();
 
     ////    Private Attributes    ////
     private:
         /// @brief
-        std::vector<Id> m_ids;
+        std::vector<int> m_ids;
 };
 
 #endif // MSCRIPTIDMANAGER_H

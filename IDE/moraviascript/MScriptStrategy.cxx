@@ -39,21 +39,53 @@ int MScriptStrategy::newFunction ( const std::string & ns,
         }
     }
 
-    m_core->getFuncTbl()->define ( m_core->getNs()->str2ns(true), name, parameters, m_funcId.acquire() );
+    int id = m_funcId.acquire();
+    if ( true == m_core->getFuncTbl()->define ( m_core->getNs()->str2ns(ns, true), name, parameters, id ) )
+    {
+        return id;
+    }
+    else
+    {
+        m_funcId.release(id);
+        return -1;
+    }
 }
 
 bool MScriptStrategy::deleteFunction ( int id )
 {
+    if ( false == m_core->getFuncTbl()->undefine(id) )
+    {
+        return false;
+    }
+
     m_funcId.release(id);
+    return true;
 }
 
 int MScriptStrategy::newVariable ( const std::string & ns,
                                    const std::string & name )
 {
+    int id = m_varId.acquire();
+    if ( true == m_core->getVarTbl()->declare ( m_core->getNs()->str2ns(ns, true), name, id ) )
+    {
+        return id;
+    }
+    else
+    {
+        m_varId.release(id);
+        return -1;
+    }
 }
 
 bool MScriptStrategy::deleteVariable ( int id )
 {
+    if ( false == m_core->getVarTbl()->remove(id) )
+    {
+        return false;
+    }
+
+    m_varId.release(id);
+    return true;
 }
 
 void MScriptStrategy::message ( MScriptBase::MessageType type,

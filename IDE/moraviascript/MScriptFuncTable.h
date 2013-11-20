@@ -97,10 +97,25 @@ class MScriptFuncTable
              * @brief
              * @param[in,out] params
              * @param[in,out] code
+             * @param[in] location
+             * @param[in] argsRequired
+             * @param[in,out] ns
              */
             Function ( std::vector<Parameter> * params,
                        MScriptStatement * code,
                        const MScriptSrcLocation & location,
+                       unsigned int argsRequired,
+                       MScriptNamespaces::NsDesc * ns );
+
+            /**
+             * @brief
+             * @param[in,out] params
+             * @param[in] id
+             * @param[in] argsRequired
+             * @param[in,out] ns
+             */
+            Function ( std::vector<Parameter> * params,
+                       int id,
                        unsigned int argsRequired,
                        MScriptNamespaces::NsDesc * ns );
 
@@ -177,7 +192,7 @@ class MScriptFuncTable
          * @param[in,out] code
          * @return
          */
-        void define ( MScriptNamespaces::NsDesc * ns,
+        bool define ( MScriptNamespaces::NsDesc * ns,
                       const std::string & name,
                       std::vector<Parameter> * params,
                       int id );
@@ -193,12 +208,10 @@ class MScriptFuncTable
 
         /**
          * @brief
-         * @param[in] name
          * @param[in] id
          * @return
          */
-        bool undefine ( const std::string & name,
-                        int id );
+        bool undefine ( const int id );
 
         /**
          * @brief
@@ -241,6 +254,9 @@ class MScriptFuncTable
 
         /// @brief
         FuncMultimap m_funcTable;
+
+        /// @brief
+        std::map<int,std::string> m_id2nameMap;
 };
 
 /// @name Tracing operators

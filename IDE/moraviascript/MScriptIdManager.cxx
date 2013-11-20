@@ -17,21 +17,38 @@
 
 MScriptIdManager::MScriptIdManager()
 {
-    m_ids.push_back ( Id ( 0, -1 ) );
+    m_ids.push_back(-1);
 }
 
-inline void MScriptIdManager::autoReserve()
+inline void MScriptIdManager::autoGrow()
 {
-}
+    if ( -1 == m_ids[0] )
+    {
+        size_t origSize = m_ids.size();
+        m_ids.resize ( size_t ( GROW_FACTOR * m_ids.size() ) );
 
-inline void MScriptIdManager::cleanUp()
-{
+        m_ids[0] = int(origSize);
+        for ( size_t i = origSize; i < m_ids.size(); i++ )
+        {
+            m_ids[i] = int ( i + 1 );
+        }
+
+        m_ids[ m_ids.size() - 1 ] = -1;
+    }
 }
 
 int MScriptIdManager::acquire()
 {
+    autoGrow();
+
+    int result = m_ids[0];
+    m_ids[0] = m_ids[m_ids[0]];
+
+    return result;
 }
 
 void MScriptIdManager::release ( int id )
 {
+    m_ids[id] = m_ids[0];
+    m_ids[0] = id;
 }

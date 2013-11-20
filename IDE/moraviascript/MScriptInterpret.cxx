@@ -17,12 +17,13 @@
 
 // MScript language interpreter header files.
 #include "MScriptExpr.h"
+#include "MScriptStrategy.h"
 #include "MScriptVarTable.h"
 #include "MScriptFuncTable.h"
 #include "MScriptStatement.h"
+#include "MScriptNamespaces.h"
 #include "MScriptExprSolver.h"
 #include "MScriptExprProcessor.h"
-#include "MScriptNamespaces.h"
 
 // Used for i18n only.
 #include <QObject>
@@ -421,6 +422,15 @@ inline void MScriptInterpret::evalCall ( const MScriptStatement * node )
 
         m_namespaces->enter(func->m_ns);
         setNextFlags ( FLAG_FUNCTION );
+
+        if ( -1 != func->m_id )
+        {
+            MScriptValue returnValue;
+            getStrategy()->functionCalled ( func->m_id, arguments, &returnValue );
+            m_varTable->assign("0", node->location(), returnValue);
+            return;
+        }
+
         addNext ( func->m_code );
 
         // Enter the function's scope.
