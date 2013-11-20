@@ -103,6 +103,7 @@ class WDockManager : public QObject
         void changeLine(QListWidgetItem *item);
         void addDockW(Qt::DockWidgetArea area, QDockWidget* dockWidget);
         void unhighlightSimWidget();
+        void highlightError(QString filename, int line);
         //void dockWidgetsCreated();
 
     signals:
