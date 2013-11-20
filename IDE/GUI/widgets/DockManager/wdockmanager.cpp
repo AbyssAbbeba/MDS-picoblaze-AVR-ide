@@ -662,6 +662,12 @@ void WDockManager::unhighlightSimWidget()
 }
 
 
+void WDockManager::highlightError(QString filename, int line)
+{
+    this->setCentralByName(filename);
+    this->getCentralTextEdit()->scrollToLine(line);
+}
+
 /*void WDockManager::dockWidgetsCreated()
 {
     this->dockWidgets = true;
@@ -707,8 +713,10 @@ WDock::WDock(WDockManager *parent, int code, QWidget *parentWindow)
             wDockWidget->setAllowedAreas(Qt::BottomDockWidgetArea);
             parent->addDockW(Qt::BottomDockWidgetArea, wDockWidget);
             //mainWindow->addDockWidget(Qt::BottomDockWidgetArea, wDockWidget);
-            QPlainTextEdit *newWidget = new QPlainTextEdit(wDockWidget);
+            //QPlainTextEdit *newWidget = new QPlainTextEdit(wDockWidget);
+            CompileInfo *newWidget = new CompileInfo(wDockWidget);
             newWidget->setFont(QFont("Andale Mono", 10));
+            QObject::connect(newWidget, SIGNAL(errorClicked(QString, int)), parent, SLOT(highlightError(QString, int)));
             area = 2;
             newWidget->setReadOnly(true);
             wDockWidget->setWidget(newWidget);
