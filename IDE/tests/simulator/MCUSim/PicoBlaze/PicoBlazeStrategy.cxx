@@ -121,7 +121,7 @@ bool PicoBlazeStrategy::executeCommand ( const MCUSimTestScript::Command & cmd,
             if ( NULL == flags )
             {
                 outFile << "[ABORTED] ";
-                *m_execMessage = "PicoBlazeStatusFlagsBase subsystem not available";
+                *m_execMessage = "PicoBlazeStatusFlagsBase subsystem not available.";
                 return false;
             }
 
@@ -174,7 +174,7 @@ bool PicoBlazeStrategy::executeCommand ( const MCUSimTestScript::Command & cmd,
             if ( NULL == intrCtrl )
             {
                 outFile << "[ABORTED] ";
-                *m_execMessage = "PicoBlazeInterruptController subsystem not available";
+                *m_execMessage = "PicoBlazeInterruptController subsystem not available.";
                 return false;
             }
 
