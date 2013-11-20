@@ -44,10 +44,12 @@ class CompileInfo : public QTextEdit
 
 
     signals:
-        void errorClicked(int line);
+        void errorClicked(QString filepath, int line);
 
 
     protected:
+        //virtual bool eventFilter(QObject *target, QEvent *event);
+        //virtual void keyPressEvent (QKeyEvent *e);
         virtual void mouseDoubleClickEvent(QMouseEvent *e);
 };
 
