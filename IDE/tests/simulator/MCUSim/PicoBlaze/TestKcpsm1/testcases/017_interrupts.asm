@@ -28,7 +28,7 @@ WAIT:   LOAD    s0,#250
         
 INTERRUPT:
             ;; step
-            ;; pc == 1023
+            ;; pc == 255
             
             IN          S2,0
             OUT         S2,0

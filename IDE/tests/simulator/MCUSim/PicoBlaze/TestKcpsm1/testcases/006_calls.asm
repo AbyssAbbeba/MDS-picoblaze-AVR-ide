@@ -87,51 +87,6 @@ _13:     CALL    _14
         LOAD    S0,#1
         RET
 ;;STEP
-;;PC==44
-;;STACK[14]==42
-_14:     CALL    _15
+_14:    
         LOAD    S0,#1
         RET
-;;STEP
-;;PC==47
-;;STACK[15]==45
-_15:     CALL    _16
-        LOAD    S0,#1
-        RET
-;;STEP
-;;PC==50
-;;STACK[16]==48
-_16:     CALL    _17
-        LOAD    S0,#1
-        RET
-;;STEP
-;;PC==53
-;;STACK[17]==51
-_17:     CALL    _18
-        LOAD    S0,#1
-        RET
-;;STEP
-;;PC==56
-;;STACK[18]==54
-_18:     CALL    _19
-        LOAD    S0,#1
-        RET
-;;STEP
-;;PC==59
-;;STACK[19]==57
-_19:     CALL    _20
-        LOAD    S0,#1
-        RET
-;;STEP
-;;PC==62
-;;STACK[20]==60
-_20:     CALL    _21
-        LOAD    S0,#1
-        RET
-;;STEP
-;;PC==63
-;;STACK[21]==0
-        
-_21:    LOAD    S0,#1
-        RET
-
