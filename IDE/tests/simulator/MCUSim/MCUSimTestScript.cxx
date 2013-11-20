@@ -57,7 +57,7 @@ bool MCUSimTestScript::runScript ( const std::string & inFileName,
         if ( true == inFile.bad() )
         {
             outFile << "[ABORTED] " << std::endl;
-            outFile << ">>> I/O error" << std::endl;
+            outFile << ">>> I/O error." << std::endl;
             return false;
         }
 
@@ -253,7 +253,7 @@ inline MCUSimTestScript::Command MCUSimTestScript::processLine ( const char * li
                 {
                     if ( ( NULL == m_strategy ) || ( false == m_strategy->processLine(&tokens, useAsmFile, &result) ) )
                     {
-                        m_execMessage = "memory space not recognized";
+                        m_execMessage = "Memory space not recognized.";
                         result.m_type = CT_ABORT;
                     }
                     break;
@@ -431,6 +431,7 @@ inline bool MCUSimTestScript::executeCommand ( const Command & cmd,
             if ( NULL == cpu )
             {
                 outFile << "[ABORTED] ";
+                m_execMessage = "MCUSimCPU subsystem not available.";
                 return false;
             }
 
@@ -486,6 +487,7 @@ inline bool MCUSimTestScript::executeCommand ( const Command & cmd,
             if ( NULL == memory )
             {
                 outFile << "[ABORTED] ";
+                m_execMessage = "MCUSimMemory subsystem not available.";
                 return false;
             }
 
@@ -493,6 +495,7 @@ inline bool MCUSimTestScript::executeCommand ( const Command & cmd,
             if ( MCUSim::RC_OK != memory->directRead ( (unsigned int) cmd.m_args[1], (unsigned int&) data ) )
             {
                 outFile << "[ABORTED] ";
+                m_execMessage = "Unable to read from the specified location.";
                 return false;
             }
 
