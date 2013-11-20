@@ -17,6 +17,7 @@
 #define MSCRIPTINTERPRETINTERFACE_H
 
 // Forward declarations.
+class MScriptStrategy;
 class MScriptStatement;
 
 // MScript language interpreter header files.
@@ -68,6 +69,12 @@ class MScriptInterpretInterface
          * @return
          */
         virtual MScriptBase * getCoreBase() = 0;
+
+        /**
+         * @brief
+         * @return
+         */
+        virtual MScriptStrategy * getStrategy() = 0;
 };
 
 #endif // MSCRIPTINTERPRETINTERFACE_H

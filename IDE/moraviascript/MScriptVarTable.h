@@ -81,17 +81,6 @@ class MScriptVarTable
          * @brief
          * @param[in] variable
          * @param[in] location
-         * @param[in] index
-         * @return
-         */
-        bool remove ( const std::string & variable,
-                      const MScriptSrcLocation & location,
-                      const MScriptArrayIndex * index = NULL );
-
-        /**
-         * @brief
-         * @param[in] variable
-         * @param[in] location
          * @param[in] flags
          * @param[in] dimension
          * @param[in] constant
@@ -101,6 +90,35 @@ class MScriptVarTable
                        const MScriptSrcLocation & location,
                        MScriptVariable::Flags flags = MScriptVariable::FLAG_NO_FLAGS,
                        unsigned int dimensions = 0 );
+
+        /**
+         * @brief
+         * @param[in,out] ns
+         * @param[in] variable
+         * @param[in] id
+         * @return
+         */
+        bool declare ( MScriptNamespaces::NsDesc * ns,
+                       const std::string & variable,
+                       int id );
+
+        /**
+         * @brief
+         * @param[in] variable
+         * @param[in] location
+         * @param[in] index
+         * @return
+         */
+        bool remove ( const std::string & variable,
+                      const MScriptSrcLocation & location,
+                      const MScriptArrayIndex * index = NULL );
+
+        /**
+         * @brief
+         * @param[in] id
+         * @return
+         */
+        bool remove ( int id );
 
         /**
          * @brief

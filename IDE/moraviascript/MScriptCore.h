@@ -246,6 +246,12 @@ class MScriptCore : protected MScriptBase,
              * @return
              */
             virtual MScriptBase * getCoreBase();
+
+            /**
+             * @brief
+             * @return
+             */
+            virtual MScriptStrategy * getStrategy();
         //@}
 
         /// @name Operations declared in strategy interface.

@@ -183,10 +183,12 @@ class MScriptNamespaces
                              const MScriptSrcLocation * location = NULL ) const;
 
         /**
+         * @param[in] ns
          * @param[in] define
          * @return
          */
-        NsDesc * str2ns ( bool define );
+        NsDesc * str2ns ( const std::string & ns,
+                          bool define );
 
         /**
          * @brief

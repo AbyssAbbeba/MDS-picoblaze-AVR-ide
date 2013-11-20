@@ -104,9 +104,46 @@ MScriptNamespaces::NsDesc * MScriptNamespaces::analyseId ( const std::string & i
     return result;
 }
 
-MScriptNamespaces::NsDesc * MScriptNamespaces::str2ns ( bool define )
+MScriptNamespaces::NsDesc * MScriptNamespaces::str2ns ( const std::string & ns,
+                                                        bool define )
 {
-    
+    std::vector<std::string> nsVector;
+
+    // 
+    size_t pos;
+    size_t lastPos = 0;
+    while ( std::string::npos != ( pos = ns.find("::", lastPos) ) )
+    {
+        nsVector.push_back ( ns.substr(lastPos, pos - lastPos) );
+        lastPos = pos + 2;
+    }
+    nsVector.push_back ( ns.substr(lastPos) );
+
+    //
+    NsDesc * nsDesc = m_rootNs;
+    for ( std::vector<std::string>::const_iterator it = nsVector.cbegin();
+          it != nsVector.cend();
+          it++ )
+    {
+        NsDesc * child = nsDesc->getChildByName(*it);
+
+        if ( NULL == child )
+        {
+            if ( false == define )
+            {
+                return NULL;
+            }
+
+            // Define new namespace.
+            child = new NsDesc ( *it, nsDesc, MScriptSrcLocation() );
+            nsDesc->m_contains.push_back(child);
+        }
+
+        nsDesc = child;
+    }
+
+    //
+    return nsDesc;
 }
 
 int MScriptNamespaces::NsDesc::inheritsFrom ( const MScriptNamespaces::NsDesc * ns ) const
