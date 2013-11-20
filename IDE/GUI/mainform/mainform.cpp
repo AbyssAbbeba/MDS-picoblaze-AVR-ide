@@ -685,7 +685,7 @@ void MainForm::compileProject()
     }
 
     
-    ((QPlainTextEdit*)(wDockManager->getDockWidget(wCompileInfo)->widget()))->clear();
+    ((CompileInfo*)(wDockManager->getDockWidget(wCompileInfo)->widget()))->clear();
 
     CompilerOptions *options = new CompilerOptions();
     //QString mainFile =  this->projectMan->getActive()->mainFileName.section('.',0,-2);

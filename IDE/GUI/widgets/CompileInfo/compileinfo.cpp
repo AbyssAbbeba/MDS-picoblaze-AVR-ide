@@ -17,14 +17,59 @@ CompileInfo::CompileInfo(QWidget *parent)
     : QTextEdit(parent)
 {
     this->setFont(QFont("Andale Mono", 10));
+    //this->installEventFilter(this);
     //this->setWordWrap();
 }
 
 
 void CompileInfo::mouseDoubleClickEvent(QMouseEvent *e)
 {
+    //qDebug() << "CompileInfo: doubleclick";
     QTextCursor cur = this->cursorForPosition(e->pos());
+    cur.select(QTextCursor::BlockUnderCursor);
+    //QString selection = cur.selectedText();
+    QStringList list = cur.selectedText().split(':');
+    //QString line = list.at(2).
+    emit errorClicked(list.at(0), list.at(1).section('.',0,0).toInt());
+    //QString line;
+    //QString wordBegin;
+    //QString wordEnd;
+    //qDebug() << "CompileInfo: selection: " << list.at(1).section('.',0,0).toInt();
 }
+
+
+/*void CompileInfo::keyPressEvent(QKeyEvent *e)
+{
+    qDebug() << "CompileInfo: key press event";
+}
+
+bool CompileInfo::eventFilter(QObject *target, QEvent *event)
+{
+    qDebug() << "CompileInfo: event";
+    if (target == this && event->type() == QEvent::KeyPress)
+    {
+        return true;
+    }
+    else if (target == this && event->type() == QEvent::MouseButtonPress)
+    {
+        qDebug() << "CompileInfo: click event";
+        QMouseEvent *mouse = static_cast<QMouseEvent *>(event);
+        QTextCursor cur = this->cursorForPosition(mouse->pos());
+        //cur.select(QTextCursor::BlockUnderCursor);
+        //QString selection = cur.selectedText();
+        return true;
+    }
+    else if (target == this && event->type() == QEvent::MouseButtonDblClick)
+    {
+        qDebug() << "CompileInfo: double click event";
+        QMouseEvent *mouse = static_cast<QMouseEvent *>(event);
+        QTextCursor cur = this->cursorForPosition(mouse->pos());
+        cur.select(QTextCursor::BlockUnderCursor);
+        QString selection = cur.selectedText();
+        return true;
+    }
+    return QWidget::eventFilter(target, event);
+}*/
 
 
 void CompileInfo::appendMessage(QString text, CompilerBase::MessageType type)
