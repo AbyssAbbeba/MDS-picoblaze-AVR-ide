@@ -111,7 +111,7 @@ class MCUSimBase
             //@{
                 RC_NOT_COMPATIBLE,      ///< Different architecture, etc.
                 RC_ADDR_OUT_OF_RANGE,   ///< Address out of range (memory operations only).
-                RC_VAL_OUT_OF_RANGE,    ///< Address out of range (memory operations only).
+                RC_VAL_OUT_OF_RANGE,    ///< Value out of range (memory operations only).
                 RC_NOT_IMPLEMENTED,     ///< Not implemented on the simulated micro-controller/processor.
                 RC_NOT_SUPPORTED,       ///< Implemented on the simulated micro-controller/processor but not in the simulator.
                 RC_UNKNOWN_ERROR        ///< This should be never used, it's provided only for convenience.
