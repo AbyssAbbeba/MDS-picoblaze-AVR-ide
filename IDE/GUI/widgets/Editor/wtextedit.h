@@ -40,6 +40,7 @@ class WTextEdit : public QPlainTextEdit
         void setPosition(int pos);
         int getPosition();
         void scrollToLine(int line);
+        void selectLine(int line);
 
         /*WTextEdit & operator<< (QString const &str)
         {

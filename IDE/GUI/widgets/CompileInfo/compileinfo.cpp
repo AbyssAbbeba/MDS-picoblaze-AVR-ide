@@ -26,7 +26,7 @@ void CompileInfo::mouseDoubleClickEvent(QMouseEvent *e)
 {
     //qDebug() << "CompileInfo: doubleclick";
     QTextCursor cur = this->cursorForPosition(e->pos());
-    cur.select(QTextCursor::BlockUnderCursor);
+    cur.select(QTextCursor::LineUnderCursor);
     //QString selection = cur.selectedText();
     QStringList list = cur.selectedText().split(':');
     //QString line = list.at(2).

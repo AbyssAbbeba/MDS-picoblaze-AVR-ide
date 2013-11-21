@@ -87,6 +87,7 @@ class WDockManager : public QObject
         void createBookmarkList(QDockWidget *wDockWidget);
         void createBreakpointList(QDockWidget *wDockWidget);
         void setCentralByName(QString fileName);
+        void setCentralByPath(QString filePath);
         void setEditorsReadOnly(bool readonly);
         bool dockWidgets;
         
