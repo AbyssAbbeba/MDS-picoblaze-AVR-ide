@@ -95,6 +95,7 @@ class MainForm : public QMainWindow
         void help();
         void disassembleOutput(std::vector<std::string> text);
         void unhighlight();
+        void projectConfig();
 
     signals:
         void unhighlightSim();

@@ -641,6 +641,30 @@ void WDockManager::setCentralByName(QString fileName)
 }
 
 
+void WDockManager::setCentralByPath(QString filePath)
+{
+    //qDebug() << "WDockManager: setCentralByName()";
+    if (filePath != "")
+    {
+        for (int i = 0; i < this->getTabCount(); i++)
+        {
+            //qDebug() << "WDockManager: tabtooltip" << wTab->tabToolTip(i) << "filePath" << filePath;
+            if (this->wTab->tabToolTip(i) == filePath)
+            {
+                //qDebug() << "WDockManager: CodeEdit found";
+                if (this->wTab->currentIndex() != i)
+                {
+                    this->wTab->setCurrentIndex(i);
+                    //this->changeCodeEditor(i);
+                }
+                return;
+            }
+        }
+    }
+    //qDebug() << "WDockManager: return setCentralByName()";
+}
+
+
 void WDockManager::setEditorsReadOnly(bool readonly)
 {
     for (int i = 0; i < codeEditList.count(); i++)
@@ -664,8 +688,10 @@ void WDockManager::unhighlightSimWidget()
 
 void WDockManager::highlightError(QString filename, int line)
 {
-    this->setCentralByName(filename);
+    qDebug() << "Line" << QDir(filename).absolutePath() << "orig" << filename;
+    this->setCentralByPath(QDir(filename).absolutePath());
     this->getCentralTextEdit()->scrollToLine(line);
+    this->getCentralTextEdit()->selectLine(line);
 }
 
 /*void WDockManager::dockWidgetsCreated()
