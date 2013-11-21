@@ -193,6 +193,7 @@ void MainForm::createActions()
     projectCompileAct->setDisabled(true);
 
     projectConfigAct = new QAction(tr("Config"), this);
+    connect(projectConfigAct, SIGNAL(triggered()), this, SLOT(projectConfig()));
     projectConfigAct->setDisabled(true);
     //connect(projectCompileAct, SIGNAL(triggered()), this, SLOT(compileProject()));
 
@@ -1144,4 +1145,10 @@ void MainForm::disassembleOutput(std::vector<std::string> text)
 void MainForm::unhighlight()
 {
     emit unhighlightSim();
+}
+
+
+void MainForm::projectConfig()
+{
+    this->startProjectConfig(this->projectMan->getActive());
 }

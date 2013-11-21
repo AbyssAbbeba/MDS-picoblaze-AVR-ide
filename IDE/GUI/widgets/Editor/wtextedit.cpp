@@ -217,3 +217,11 @@ void WTextEdit::deselect()
     cursor.clearSelection();
     this->setTextCursor(cursor);
 }
+
+
+void WTextEdit::selectLine(int line)
+{
+    QTextCursor cursor(this->document()->findBlockByNumber(line-1));
+    cursor.select(QTextCursor::LineUnderCursor);
+    this->setTextCursor(cursor);
+}
