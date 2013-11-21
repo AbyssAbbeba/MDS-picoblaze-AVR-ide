@@ -118,7 +118,7 @@ class MScriptVarTable
          * @param[in] id
          * @return
          */
-        bool remove ( int id );
+        bool remove ( const int id );
 
         /**
          * @brief
@@ -317,6 +317,9 @@ class MScriptVarTable
 
         /// @brief
         std::vector<VarTable> m_varTables;
+
+        /// @brief
+        std::map<int,std::string> m_id2nameMap;
 };
 
 /// @name Tracing operators

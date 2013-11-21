@@ -19,6 +19,7 @@ MScriptVariable::MScriptVariable()
 {
     m_flags = FLAG_ARRAY;
     m_value.m_array = NULL;
+    m_id = -1;
 }
 
 MScriptVariable::MScriptVariable ( const MScriptVariable & obj )
@@ -26,6 +27,7 @@ MScriptVariable::MScriptVariable ( const MScriptVariable & obj )
     m_location = obj.m_location;
     m_flags = obj.m_flags;
     m_ns = obj.m_ns;
+    m_id = m_id;
 
     if ( m_flags & FLAG_ARRAY )
     {
