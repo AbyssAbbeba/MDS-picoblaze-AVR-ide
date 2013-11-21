@@ -224,6 +224,7 @@ bool MScriptFuncTable::define ( MScriptNamespaces::NsDesc * ns,
 
     m_funcTable.insert ( std::make_pair ( name, Function ( params, id, ( params->size() - defaults ), ns ) ) );
     m_id2nameMap.insert ( std::make_pair(id, name) );
+    return true;
 }
 
 bool MScriptFuncTable::undefine ( const int id )
@@ -264,8 +265,21 @@ bool MScriptFuncTable::undefine ( const std::string & name,
     {
         if ( ns == i->second.m_ns )
         {
-            result = true;
-            m_funcTable.erase(i);
+            if ( -1 == i->second.m_id )
+            {
+                m_interpret->interpreterMessage ( location,
+                                                  MScriptBase::MT_WARNING,
+                                                  QObject::tr ( "function `%1' in namespace `%2' has been defined "
+                                                                "outside the script, and cannot be deleted" )
+                                                              . arg ( name.c_str() )
+                                                              . arg ( ns->toString().c_str() )
+                                                              . toStdString() );
+            }
+            else
+            {
+                result = true;
+                m_funcTable.erase(i);
+            }
         }
     }
 

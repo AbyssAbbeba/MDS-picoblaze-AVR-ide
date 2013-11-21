@@ -18,6 +18,7 @@
 // MScript language interpreter header files.
 #include "MScriptBase.h"
 #include "MScriptValue.h"
+#include "MScriptStrategy.h"
 #include "MScriptNamespaces.h"
 #include "MScriptInterpretInterface.h"
 
@@ -209,10 +210,41 @@ bool MScriptVarTable::declare ( MScriptNamespaces::NsDesc * ns,
                                 const std::string & variable,
                                 int id )
 {
+    if ( m_varTables[0].cend() == m_varTables[0].find(variable) )
+    {
+        return false;
+    }
+
+    MScriptVariable var;
+    var.m_ns = ns;
+    var.m_id = id;
+    m_varTables[0].insert ( std::make_pair ( variable, var ) );
+    m_id2nameMap.insert ( std::make_pair ( id, variable ) );
+    return true;
 }
 
-bool MScriptVarTable::remove ( int id )
+bool MScriptVarTable::remove ( const int id )
 {
+    std::map<int,std::string>::iterator it = m_id2nameMap.find(id);
+    if ( m_id2nameMap.cend() == it )
+    {
+        return false;
+    }
+
+    std::pair<VarTable::iterator,VarTable::iterator> range = m_varTables[0].equal_range(it->second);
+    for ( VarTable::iterator i = range.first;
+          i != range.second;
+          i++ )
+    {
+        if ( id == i->second.m_id )
+        {
+            m_varTables[0].erase(i);
+            m_id2nameMap.erase(it);
+            return true;
+        }
+    }
+
+    return false;
 }
 
 void MScriptVarTable::assign ( const std::string & variable,
@@ -220,6 +252,13 @@ void MScriptVarTable::assign ( const std::string & variable,
                                const MScriptValue & value,
                                const MScriptArrayIndex * index )
 {
+    MScriptVariable * cell = rawAccess ( variable );
+    if ( ( NULL != cell ) && ( -1 != cell->m_id ) )
+    {
+        m_interpret->getStrategy()->variableWritten(cell->m_id, index, value);
+        return;
+    }
+
     if ( true == declared ( variable, index) )
     {
         // Assign value to an exiting variable, or constant.
@@ -535,6 +574,10 @@ MScriptValue * MScriptVarTable::access ( const std::string & variable,
                                                                                     . toStdString() );
         }
         return NULL;
+    }
+    else if ( -1 != cell->m_id )
+    {
+        return m_interpret->getStrategy()->variableRead(cell->m_id, index);
     }
 
     if ( 0 == ( MScriptVariable::FLAG_ARRAY & cell->m_flags ) )
@@ -880,6 +923,7 @@ void MScriptVarTable::refer ( const std::string & refName,
 void MScriptVarTable::clear()
 {
     m_varTables.clear();
+    m_id2nameMap.clear();
 }
 
 std::string MScriptVarTable::flags2Str ( MScriptVariable::Flags flags ) const
