@@ -39,3 +39,6 @@ add_subdirectory ( disassembler )
 
 # Tests machine code containers.
 add_subdirectory ( MCUDataFiles )
+
+# Unit tests for Moravia Script.
+add_subdirectory ( MScript )

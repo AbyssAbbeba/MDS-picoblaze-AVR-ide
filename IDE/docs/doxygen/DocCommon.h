@@ -105,12 +105,14 @@
  * @defgroup testsSimulator Simulator
  * @ingroup tests
  *
+ * @defgroup testsMScript MScript
+ * @ingroup tests
+ *
  * @defgroup testsMCUSim MCU Simulator
  * @ingroup testsSimulator
  *
  * @defgroup testsMCUSimPicoBlaze PicoBlaze Simulator
  * @ingroup testsMCUSim
- *
  *
  * @defgroup testsDisasm Disassembler
  * @ingroup tests
