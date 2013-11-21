@@ -104,6 +104,9 @@ class MScriptVariable
 
         /// @brief
         MScriptNamespaces::NsDesc * m_ns;
+
+        /// @brief
+        int m_id;
 };
 
 /// @name Tracing operators
