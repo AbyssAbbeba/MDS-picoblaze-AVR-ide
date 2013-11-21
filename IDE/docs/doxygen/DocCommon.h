@@ -99,6 +99,8 @@
  * @defgroup testsAssemblerPicoBlaze PicoBlaze assembler
  * @ingroup testsAssembler
  *
+ * @defgroup testsMCUDataFiles MCUDataFiles
+ * @ingroup tests
  *
  * @defgroup testsSimulator Simulator
  * @ingroup tests
@@ -124,11 +126,11 @@
  * @ingroup Disassembler
  */
 
-
 /**
- * @defgroup testsMCUDataFiles MCUDataFiles
+ * @defgroup AsmTranslator Asm. support library
+ * Assembly language support library, this tool translates between various
+ * dialects of a particular Assembly language,
  */
-
 
 /**
  * @defgroup MoraviaScript Moravia Script

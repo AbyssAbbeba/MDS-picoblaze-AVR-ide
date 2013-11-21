@@ -36,3 +36,7 @@ add_subdirectory ( McuSpecFileDesigner )
 
 # OS compatibility.
 add_subdirectory ( os )
+
+# Assembly language support library.
+add_subdirectory ( AsmTranslator )
+
