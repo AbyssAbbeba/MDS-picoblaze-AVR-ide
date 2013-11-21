@@ -94,11 +94,10 @@ class MScriptStrategy
              * @brief
              * @param[in] id
              * @param[in] index
-             * @param[out] value
+             * @return
              */
-            virtual void variableRead ( int id,
-                                        const MScriptArrayIndex & index,
-                                        MScriptValue * value ) = 0;
+            virtual MScriptValue * variableRead ( int id,
+                                                  const MScriptArrayIndex * index ) = 0;
 
             /**
              * @brief
@@ -107,8 +106,8 @@ class MScriptStrategy
              * @param[in] value
              */
             virtual void variableWritten ( int id,
-                                          const MScriptArrayIndex & index,
-                                          const MScriptValue & value ) = 0;
+                                           const MScriptArrayIndex * index,
+                                           const MScriptValue & value ) = 0;
         //@}
 
         /// @name Miscellaneous operations.
