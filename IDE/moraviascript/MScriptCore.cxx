@@ -114,33 +114,11 @@ void MScriptCore::unloadScript()
     m_success = true;
 }
 
-bool MScriptCore::executeStep()
-{
-    step();
-    return true;
-}
-
-bool MScriptCore::executeRun()
-{
-    while ( true == step() );
-    return true;
-}
-
-std::vector<std::string> & MScriptCore::getMessages()
-{
-    return m_messages;
-}
-
-void MScriptCore::clearMessages()
-{
-    m_messages.clear();
-}
-
 void MScriptCore::parserMessage ( const MScriptSrcLocation & location,
                                   MScriptBase::MessageType type,
                                   const std::string & text )
 {
-    m_messages.push_back(location.toString(this) + " " + msgTypeToStr(type) + ": " + text );
+    m_messages.push_back(location.toString(this) + " " + msgTypeToStr(type) + ": " + text + "." );
 
     if ( type == MT_ERROR )
     {
@@ -152,14 +130,35 @@ void MScriptCore::lexerMessage ( const MScriptSrcLocation & location,
                                  MScriptBase::MessageType type,
                                  const std::string & text )
 {
-    m_messages.push_back(location.toString(this) + " " + msgTypeToStr(type) + ": " + text );
+    m_messages.push_back(location.toString(this) + " " + msgTypeToStr(type) + ": " + text + "." );
+
+    if ( type == MT_ERROR )
+    {
+        throw MScriptRunTimeError();
+    }
 }
 
 void MScriptCore::interpreterMessage ( const MScriptSrcLocation & location,
                                        MScriptBase::MessageType type,
                                        const std::string & text )
 {
-    m_messages.push_back(location.toString(this) + " " + msgTypeToStr(type) + ": " + text );
+    m_messages.push_back(location.toString(this) + " " + msgTypeToStr(type) + ": " + text + "." );
+
+    if ( type == MT_ERROR )
+    {
+        throw MScriptRunTimeError();
+    }
+}
+
+void MScriptCore::strategyMessage ( MScriptBase::MessageType type,
+                                    const std::string & text )
+{
+    m_messages.push_back(msgTypeToStr(type) + ": " + text + "." );
+
+    if ( type == MT_ERROR )
+    {
+        throw MScriptRunTimeError();
+    }
 }
 
 MScriptBase * MScriptCore::getCoreBase()
@@ -182,7 +181,8 @@ void MScriptCore::syntaxAnalysisComplete ( MScriptStatement * codeTree )
 
     m_codeTree->completeDelete();
     m_codeTree = ( new MScriptStatement(MScriptSrcLocation(), MScriptStmtTypes::STMT_ROOT) ) -> appendLink ( codeTree );
-    std::cout << m_codeTree;
+
+    std::cout << "========================================================================================================================\n" << "== syntaxAnalysisComplete ( ... )                                                                                     ==\n" << "========================================================================================================================\n" << m_codeTree<< "========================================================================================================================\n\n\n";
 
     init(m_codeTree);
 }
@@ -337,10 +337,4 @@ MScriptVarTable * MScriptCore::getVarTbl()
 MScriptNamespaces * MScriptCore::getNs()
 {
     return m_namespaces;
-}
-
-void MScriptCore::strategyMessage ( MScriptBase::MessageType type,
-                                    const std::string & text )
-{
-    m_messages.push_back(msgTypeToStr(type) + ": " + text );
 }

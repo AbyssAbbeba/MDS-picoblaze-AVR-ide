@@ -52,24 +52,19 @@ class MScriptExprProcessor : protected MScriptExprAlgebra
         /**
          * @brief
          * @param[in,out] node
-         * @param[in] single
          * @return
          */
-        MScriptStatement * decompose ( MScriptStatement * node,
-                                       bool single = false );
+        MScriptStatement * decompose ( MScriptStatement * node );
 
         /**
          * @brief
-         * @param[in,out] input
-         * @param[in] single
+         * @param[in,out] expr
          * @return
          */
-        MScriptStatement * decompose ( MScriptExpr * input,
-                                       bool single = false );
+        MScriptStatement * decompose ( MScriptExpr * expr );
 
         /// @overload
-        MScriptStatement * decompose ( MScriptExpr & input,
-                                       bool single = false );
+        MScriptStatement * decompose ( MScriptExpr & expr );
 
         /**
          * @brief
@@ -136,6 +131,12 @@ class MScriptExprProcessor : protected MScriptExprAlgebra
          * @return
          */
         inline bool isComparison ( const MScriptExpr::Operator oper );
+
+        /**
+         * @brief
+         * @param[in,out] snakeNode
+         */
+        inline void removeEmpty ( MScriptStatement ** snakeNode );
 
     ////    Private Attributes    ////
     private:

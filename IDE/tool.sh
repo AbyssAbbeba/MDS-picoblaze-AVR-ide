@@ -143,12 +143,12 @@ function buildAll() {
 
 function execCMake() {
     if [ "$(uname -o)" == "Msys" ]; then
-        # Build on Windows
+        # Build on Windows.
         QT_PATH="$(for i in /c/QtSDK/Desktop/Qt/*/mingw/bin; do echo $i; break; done)"
         export PATH="${QT_PATH}:${PATH}"
         cmake -DCMAKE_BUILD_TYPE=Debug -G "MSYS Makefiles" . || exit 1
     else
-        # Build on a POSIX system
+        # Build on a POSIX system.
         cmake -DCMAKE_BUILD_TYPE=Debug . || exit 1
     fi
 }

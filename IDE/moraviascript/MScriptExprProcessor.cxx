@@ -29,50 +29,30 @@
 // Used for i18n only.
 #include <QObject>
 
-MScriptStatement * MScriptExprProcessor::decompose ( MScriptStatement * node,
-                                                     bool single )
+#include <iostream> // DEBUG
+
+MScriptStatement * MScriptExprProcessor::decompose ( MScriptStatement * node )
 {
-    return decompose(node->args(), single);
+    return decompose(node->args());
 }
 
-MScriptStatement * MScriptExprProcessor::decompose ( MScriptExpr & input,
-                                                     bool single )
+MScriptStatement * MScriptExprProcessor::decompose ( MScriptExpr & expr )
 {
-    return decompose(&input, single);
+    return decompose(&expr);
 }
 
-MScriptStatement * MScriptExprProcessor::decompose ( MScriptExpr * input,
-                                                     bool single )
+MScriptStatement * MScriptExprProcessor::decompose ( MScriptExpr * expr )
 {
-    MScriptStatement * result = NULL;
+    MScriptStatement * result = new MScriptStatement();
 
-    for ( MScriptExpr * expr = input;
-          ( NULL != expr ) && ( false == single );
-          expr = expr->next() )
-    {
-        MScriptStatement * intResult = new MScriptStatement ( expr->location(), MScriptStmtTypes::STMT_EXPR, expr );
+    compressExpr(expr);
+    decomposeAsgn(expr);
+    evalConsts(expr);
 
-        compressExpr(expr);
-        decomposeAsgn(expr);
-        evalConsts(expr);
-
-        unsigned int counter = 1;
-        breakDown(intResult, expr, &counter);
-        removeNoOps(intResult->first());
-
-        if ( NULL == result )
-        {
-            if ( NULL != intResult )
-            {
-                intResult = intResult->first();
-            }
-            result = intResult;
-        }
-        else
-        {
-            result->appendLink(intResult);
-        }
-    }
+    unsigned int counter = 1;
+    breakDown(result, expr, &counter);
+    removeNoOps(result->first());
+    removeEmpty(&result);
 
     return result;
 }
@@ -564,9 +544,29 @@ void MScriptExprProcessor::removeNoOps ( MScriptStatement * root )
             {
                 node->m_type = MScriptStmtTypes::STMT_EMPTY;
                 node->args()->completeDelete();
-                delete node->args();
             }
         }
+    }
+}
+
+inline void MScriptExprProcessor::removeEmpty ( MScriptStatement ** snakeNode )
+{
+    *snakeNode = (*snakeNode)->first();
+    for ( MScriptStatement * node = (*snakeNode)->next();
+          NULL != node;
+          node = node->next() )
+    {
+        if ( MScriptStmtTypes::STMT_EMPTY == node->m_type )
+        {
+            node = node->prev();
+            delete node->next();
+        }
+    }
+
+    if ( MScriptStmtTypes::STMT_EMPTY == (*snakeNode)->m_type )
+    {
+        delete *snakeNode;
+        *snakeNode = NULL;
     }
 }
 

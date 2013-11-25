@@ -28,6 +28,8 @@
 // Used for i18n only.
 #include <QObject>
 
+#include <iostream> // DEBUG
+
 MScriptValue::MScriptValue()
 {
     m_type = TYPE_EMPTY;
@@ -172,6 +174,7 @@ void MScriptValue::makeCopy ( MScriptValue & result ) const
 
 void MScriptValue::completeDelete()
 {
+std::cout << "MScriptValue::completeDelete() : `" << *this << "'\n" << std::flush;
     if ( TYPE_SYMBOL == m_type )
     {
         delete[] m_data.m_symbol;

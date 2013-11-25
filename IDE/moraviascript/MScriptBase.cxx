@@ -22,9 +22,9 @@ std::string MScriptBase::msgTypeToStr ( MessageType type ) const
 {
     switch ( type )
     {
-        case MT_ERROR:   return QObject::tr("error").toStdString();
-        case MT_WARNING: return QObject::tr("warning").toStdString();
-        case MT_REMARK:  return QObject::tr("remark").toStdString();
+        case MT_ERROR:   return QObject::tr("Error").toStdString();
+        case MT_WARNING: return QObject::tr("Warning").toStdString();
+        case MT_REMARK:  return QObject::tr("Remark").toStdString();
         case MT_GENERAL: return "";
     }
 

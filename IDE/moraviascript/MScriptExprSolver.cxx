@@ -34,7 +34,7 @@ MScriptValue MScriptExprSolver::eval ( const MScriptExpr * expr )
 {
     MScriptValue result;
     const MScriptSrcLocation & location = expr->location();
-
+std::cout << "MScriptExprSolver::eval ( "<<expr<<" ) -- operator: `"<<expr->oper()<<"';\n" << std::flush;
     switch ( expr->oper() )
     {
         // No operator, i.e. expression represents a single value.
@@ -152,6 +152,7 @@ MScriptValue MScriptExprSolver::eval ( const MScriptExpr * expr )
         }
     }
 
+std::cout << "MScriptExprSolver::eval ( "<<expr<<" ) [LEAVE] -- result: `"<<result<<"';\n" << std::flush;
     return result;
 }
 
@@ -159,6 +160,7 @@ inline void MScriptExprSolver::getFinalValue ( MScriptValue & result,
                                                const MScriptValue & input,
                                                const MScriptSrcLocation & location )
 {
+std::cout << "MScriptExprSolver::getFinalValue ( "<<input<<" );\n" << std::flush;
     switch ( input.m_type )
     {
         case MScriptValue::TYPE_EMPTY:
@@ -184,6 +186,7 @@ inline void MScriptExprSolver::getFinalValue ( MScriptValue & result,
             result = input;
             break;
     }
+std::cout << "MScriptExprSolver::getFinalValue ( "<<input<<" ) [LEAVE] -- result: `"<<result<<"';\n" << std::flush;
 }
 
 inline const char * MScriptExprSolver::getVariableName ( MScriptArrayIndex * & index,

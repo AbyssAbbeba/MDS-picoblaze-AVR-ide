@@ -55,6 +55,8 @@ void MScriptInterpret::init ( MScriptStatement * rootNode )
     {
         MScriptExecContext::init(rootNode);
     }
+
+    std::cout << "========================================================================================================================\n" << "== postprocessCode ( ... )                                                                                            ==\n" << "========================================================================================================================\n" << rootNode << "========================================================================================================================\n\n\n";
 }
 
 void MScriptInterpret::clear()
@@ -77,7 +79,7 @@ bool MScriptInterpret::step()
 
     const MScriptStatement * node = getNextNode();
 
-    std::cout << "MScriptInterpret::step(): " << (void*)node << "\n";
+    std::cout << "MScriptInterpret::step(): " << (void*)node << "\n" << std::flush;
 
     switch ( node->type() )
     {
@@ -132,7 +134,7 @@ inline void MScriptInterpret::evalFor ( const MScriptStatement * node )
          */
 
         // for ( ...; ...; <EVAL_THIS> ) { ... }
-        m_exprSolver->eval ( node->args()[2] );
+        m_exprSolver->eval ( node->args()->next()->next() );
     }
     else
     {
@@ -141,12 +143,12 @@ inline void MScriptInterpret::evalFor ( const MScriptStatement * node )
          */
 
         // for ( <EVAL_THIS>; ...; ... ) { ... }
-        m_exprSolver->eval ( node->args()[0] );
+        m_exprSolver->eval ( node->args() );
     }
 
     // for ( ...; <EVAL_THIS>; ... ) { ... }
-    const MScriptExpr & e = node->args()[1];
-    if ( true == m_exprSolver->eval(e).toBool(this, e.location()) )
+    const MScriptExpr * e = node->args()->next();
+    if ( true == m_exprSolver->eval(e).toBool(this, e->location()) )
     {
         // Mark this node as a loop and "for" loop.
         setNextFlags ( FLAG_LOOP );
@@ -634,24 +636,23 @@ bool MScriptInterpret::postprocessCode ( MScriptStatement * rootNode )
                     MScriptStatement * code;
 
                     // for ( ...; ...; <THIS> ) { ...; <HERE> }
-                    code = m_exprProcessor->decompose ( node->args()[2], true );
+                    code = m_exprProcessor->decompose(node->args()->next()->next());
                     node->branch()->appendLink(code);
 
                     // <HERE>; for ( ...; <THIS>; ... ) { ...; <HERE> }
-                    code = m_exprProcessor->decompose ( node->args()[1], true );
+                    code = m_exprProcessor->decompose(node->args()->next());
                     node->branch()->appendLink(code->copyEntireChain());
                     node->insertLink ( code );
 
                     // <HERE>; for ( <THIS>; ...; ... ) { ... }
-                    code = m_exprProcessor->decompose ( node->args()[0], true );
+                    code = m_exprProcessor->decompose(node->args());
                     node->insertLink ( code );
                 }
                 else
                 {
-                    for ( int i = 0; i < 3; i++ )
-                    {
-                        m_exprProcessor->compressExpr(node->args()[i]);
-                    }
+                    m_exprProcessor->compressExpr(node->args());
+                    m_exprProcessor->compressExpr(node->args()->next());
+                    m_exprProcessor->compressExpr(node->args()->next()->next());
                     m_exprProcessor->evalConsts(node->args());
                 }
                 continue;
