@@ -31,6 +31,8 @@
 // Used for i18n only.
 #include <QObject>
 
+#include <iostream> // DEBUG
+
 MScriptVarTable::MScriptVarTable ( MScriptInterpretInterface * interpret,
                                    MScriptNamespaces * namespaces )
                                  :
@@ -561,17 +563,18 @@ MScriptValue * MScriptVarTable::access ( const std::string & variable,
                                          const MScriptSrcLocation * location,
                                          int * level )
 {
+std::cout << "MScriptVarTable::access ( "<<variable<<", location = "<<*location<<" );\n" << std::flush;
     MScriptVariable * cell = rawAccess ( variable, level );
-
+std::cout << "cell = " << (void*)cell << "\n" << std::flush;
     if ( NULL == cell )
     {
         if ( NULL != location )
         {
             m_interpret->interpreterMessage ( *location,
-                                            MScriptBase::MT_ERROR,
-                                            QObject::tr ( "variable `%1' has not been declared (cannot access "
-                                                          "nonexistent variable)" ) . arg ( variable.c_str() )
-                                                                                    . toStdString() );
+                                              MScriptBase::MT_ERROR,
+                                              QObject::tr ( "variable `%1' has not been declared (cannot access "
+                                                            "nonexistent variable)" ) . arg ( variable.c_str() )
+                                                                                      . toStdString() );
         }
         return NULL;
     }

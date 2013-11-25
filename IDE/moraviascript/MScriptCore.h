@@ -39,20 +39,11 @@ class MScriptStatement;
  * @class MScriptCore
  * @ingroup MoraviaScript
  */
-class MScriptCore : protected MScriptBase,
-                    protected MScriptInterpret,
+class MScriptCore : public MScriptInterpret,
+                    protected MScriptBase,
                     protected MScriptParserInterface,
                     protected MScriptStrategyInterface
 {
-    ////    Public Datatypes    ////
-    public:
-        /**
-         * @brief
-         */
-        class MScriptRunTimeError
-        {
-        };
-
     ////    Constructors and Destructors    ////
     public:
         /**
@@ -99,29 +90,6 @@ class MScriptCore : protected MScriptBase,
          * @brief
          */
         void unloadScript();
-
-        /**
-         * @brief
-         * @return
-         */
-        bool executeStep();
-
-        /**
-         * @brief
-         * @return
-         */
-        bool executeRun();
-
-        /**
-         * @brief
-         * @return
-         */
-        std::vector<std::string> & getMessages();
-
-        /**
-         * @brief
-         */
-        void clearMessages();
 
     ////    Private Operations    ////
     private:
@@ -283,6 +251,11 @@ class MScriptCore : protected MScriptBase,
                                            const std::string & text );
         //@}
 
+    ////    Public Attributes    ////
+    public:
+        /// @brief
+        std::vector<std::string> m_messages;
+
     ////    Private Attributes    ////
     private:
         /// @brief
@@ -293,9 +266,6 @@ class MScriptCore : protected MScriptBase,
 
         /// @brief
         MScriptStatement * m_includedCode;
-
-        /// @brief
-        std::vector<std::string> m_messages;
 
         /// @brief
         std::vector<std::string> m_files;

@@ -57,6 +57,14 @@ class MScriptInterpret : private MScriptExecContext,
     public:
         /**
          * @brief
+         * @return
+         */
+        bool step();
+
+    ////    Protected Operations    ////
+    protected:
+        /**
+         * @brief
          * @param[in,out] rootNode
          */
         void init ( MScriptStatement * rootNode );
@@ -65,12 +73,6 @@ class MScriptInterpret : private MScriptExecContext,
          * @brief
          */
         void clear();
-
-        /**
-         * @brief
-         * @return
-         */
-        bool step();
 
     ////    Private Operations    ////
     private:

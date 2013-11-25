@@ -32,6 +32,13 @@ class MScriptBase
         /**
          * @brief
          */
+        class MScriptRunTimeError
+        {
+        };
+
+        /**
+         * @brief
+         */
         enum MessageType
         {
             MT_ERROR,   ///<

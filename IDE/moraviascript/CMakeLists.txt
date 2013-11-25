@@ -61,6 +61,7 @@ add_definitions ( -Wall -std=c++0x -O2 -pipe )
 add_library ( ${PROJECT_NAME} SHARED
               ${FLEX_MScriptLexer_OUTPUTS}
               ${BISON_MScriptParser_OUTPUTS}
+              MScript.cxx
               MScriptCore.cxx
               MScriptBase.cxx
               MScriptExpr.cxx

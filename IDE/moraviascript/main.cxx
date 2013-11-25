@@ -1,22 +1,46 @@
-#include "MScriptCore.h"
+#include "MScript.h"
 #include "MScriptStrategy.h"
 #include <iostream>
 
+class MyMScriptStrategy : public MScriptStrategy
+{
+    virtual void functionCalled ( int id,
+                                  const std::vector<MScriptValue> & arguments,
+                                  MScriptValue * returnValue )
+    {
+        std::cout << "MyMScriptStrategy::functionCalled ( " << id << ", ... );\n";
+        returnValue = NULL;
+    }
+
+    virtual MScriptValue * variableRead ( int id,
+                                          const MScriptArrayIndex * index )
+    {
+        std::cout << "MyMScriptStrategy::variableRead ( " << id << ", ... );\n";
+        return NULL;
+    }
+
+    virtual void variableWritten ( int id,
+                                   const MScriptArrayIndex * index,
+                                   const MScriptValue & value )
+    {
+        std::cout << "MyMScriptStrategy::variableWritten ( " << id << ", ... );\n";
+    }
+};
+
 int main ( int argc, char ** argv )
 {
-    /*
     std::string script =
-//         "a = ( b * c + d );\n"          //  1
-//         "a = b * c;\n"          //  1
+//         "a = ( b * c + d );\n"       //  1
+//         "a = b * c;\n"               //  1
         "a = ( b * c + d );\n"          //  1
         "a = ( b * c + d );\n"          //  1
-        "a = b = c = d;\n"          //  1
-        "a += ( b -= c );\n"          //  1
+        "a = b = c = d;\n"              //  1
+        "a += ( b -= c );\n"            //  1
         "a = ( b + x() ) || ( c + y() );\n"          //  1
-        "( b + x() ) || ( c + y() );\n"          //  1
+        "( b + x() ) || ( c + y() );\n" //  1
         "a = ( b++ + x() ) && ( ++c + y() );\n"          //  1
-        "x = a ? b : c;\n"          //  1
-        "x = (a, b, c);\n"          //  1
+        "x = a ? b : c;\n"              //  1
+        "x = (a, b, c);\n"              //  1
         "x = a ( b ( c ) );\n"          //  1
         "x = ( 1 + 2 ) * ( 4 - 1 ) / ( 9 - 6);\n"          //  1
         "if ( 2 == a )\n"               //  1
@@ -47,8 +71,8 @@ int main ( int argc, char ** argv )
         "    return ( a * b );\n"       // 26
         "}\n";                          // 27
 
-    MScriptStrategy strategy;
-    MScriptCore core(&strategy);
+    MyMScriptStrategy strategy;
+    MScript core(&strategy);
 
     for ( std::vector<std::string>::const_iterator msg = core.getMessages().cbegin();
           msg != core.getMessages().cend();
@@ -58,16 +82,22 @@ int main ( int argc, char ** argv )
     }
     core.clearMessages();
 
-    core.loadScript(script);
-    core.executeRun();
-
-    for ( std::vector<std::string>::const_iterator msg = core.getMessages().cbegin();
-          msg != core.getMessages().cend();
-          msg++ )
+    try
     {
-        std::cout << *msg << std::endl;
+        core.loadScript(script);
+        core.executeRun();
     }
-    core.clearMessages();
-*/
+    catch ( MScriptBase::MScriptRunTimeError & e )
+    {
+        std::cout << "\nTERMINATING CORE OPERATION due to a MScriptRunTimeError exception.\n";
+        for ( std::vector<std::string>::const_iterator msg = core.getMessages().cbegin();
+            msg != core.getMessages().cend();
+            msg++ )
+        {
+            std::cout << *msg << std::endl;
+        }
+        core.clearMessages();
+    }
+
     return 0;
 }
