@@ -25,6 +25,20 @@ enable_testing()
 
 
 # ------------------------------------------------------------------------------
+# BUILD COMPONENTS IN THE SUBDIRECTORIES
+# ------------------------------------------------------------------------------
+
+# Test suite I.
+add_subdirectory ( TestMScriptI )
+
+# Test suite II.
+add_subdirectory ( TestMScriptII )
+
+# Test suite III.
+add_subdirectory ( TestMScriptIII )
+
+
+# ------------------------------------------------------------------------------
 # COMPILATION OPTIONS
 # ------------------------------------------------------------------------------
 
@@ -53,6 +67,9 @@ add_executable ( ${PROJECT_NAME}
 # Link a target to given libraries
 target_link_libraries ( ${PROJECT_NAME}
                         ${Boost_LIBRARIES}
+                        TMS_TestMScriptI
+                        TMS_TestMScriptII
+                        TMS_TestMScriptIII
                         MScript
                         cunit )
 

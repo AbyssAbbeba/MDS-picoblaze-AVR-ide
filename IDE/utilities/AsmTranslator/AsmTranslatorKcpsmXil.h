@@ -31,13 +31,11 @@ class AsmTranslatorKcpsmXil : public AsmTranslatorBase
         /**
          * @brief
          * @param[in,out] messages
-         * @param[in,out] output
-         * @param[in] line
+         * @param[in,out] line
          * @return
          */
         virtual bool process ( std::vector<std::string> & messages,
-                               std::ostream & output,
-                               const std::string & line );
+                               std::string & line );
 };
 
 #endif // ASMTRANSLATORKCPSMXIL_H

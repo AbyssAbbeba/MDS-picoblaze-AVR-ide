@@ -35,13 +35,11 @@ class AsmTranslatorBase
         /**
          * @brief
          * @param[in,out] messages
-         * @param[in,out] output
-         * @param[in] line
+         * @param[in,out] line
          * @return
          */
         virtual bool process ( std::vector<std::string> & messages,
-                               std::ostream & output,
-                               const std::string & line ) = 0;
+                               std::string & line ) = 0;
 };
 
 #endif // ASMTRANSLATORBASE_H
