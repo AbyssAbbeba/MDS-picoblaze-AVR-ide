@@ -46,6 +46,10 @@ add_library ( ${PROJECT_NAME} SHARED
 # Link a target to given libraries.
 target_link_libraries ( ${PROJECT_NAME} ${QT_LIBRARIES} )
 
+# Main executable.
+add_executable ( AsmTransTool main.cxx )
+target_link_libraries ( AsmTransTool ${PROJECT_NAME} )
+
 # ------------------------------------------------------------------------------
 # INSTALLATION OPTIONS
 # ------------------------------------------------------------------------------
