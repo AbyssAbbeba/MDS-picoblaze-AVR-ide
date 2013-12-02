@@ -54,16 +54,17 @@ bool AsmTranslator::translate ( Variant variant,
     while ( false == input.eof() )
     {
         std::getline(input, line);
-        if ( false == ( success = translator->process(m_messages, output, line) ) )
-        {
-            break;
-        }
         if ( true == input.bad() )
         {
             m_messages.push_back ( QObject::tr("Error: input failure.").toStdString() );
             success = false;
             break;
         }
+        if ( false == ( success = translator->process(m_messages, line) ) )
+        {
+            break;
+        }
+        output << line << std::endl;
         if ( true == output.bad() )
         {
             m_messages.push_back ( QObject::tr("Error: output failure.").toStdString() );

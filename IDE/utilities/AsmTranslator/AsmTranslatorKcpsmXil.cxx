@@ -16,8 +16,7 @@
 #include "AsmTranslatorKcpsmXil.h"
 
 bool AsmTranslatorKcpsmXil::process ( std::vector<std::string> & messages,
-                                      std::ostream & output,
-                                      const std::string & line )
+                                      std::string & line )
 {
-    
+//     line.find()
 }
