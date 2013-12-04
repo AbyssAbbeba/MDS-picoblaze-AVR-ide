@@ -1,0 +1,44 @@
+/*This file has been prepared for Doxygen automatic documentation generation.*/
+
+/*!@defgroup UsbHidGenericDemos USB HID Generic PC demos
+
+This pc side applications allow to communicate with the embedded firmware which run a USB HID generic device.
+Each application allows to set/clear LEDS and to get joystick events from demo boards. 
+
+Three USB HID Generic PC demos was developped (only Windows O.S. support):
+- <A HREF="../../PC_tools/UsbHidGenericDemos/UsbHidGenericDemoLight.exe">UsbHidGenericDemoLight.exe</A>, demo DOS (without GUI) builded with a C compiler.
+- <A HREF="../../PC_tools/UsbHidGenericDemos/UsbHidGenericDemo.exe">UsbHidGenericDemo.exe</A>, demo with GUI builded with VisualC.
+- <A HREF="../../PC_tools/UsbHidGenericDemos/UsbHidGenericDemo.jar">UsbHidGenericDemo.jar</A>, demo with GUI builded with Java.
+
+\note This applications use the AtUsbHid.dll that easily allows to communicate with a USB device 
+using the native HID driver from the PC operating system.
+For more information about the AtUsbHid.dll,
+please refer to the application note "USB PC Driver based on HID class" (Atmel document number: 7645).
+
+\section UsbHidGenericDemoLight Demo DOS
+This demo gives a simple console application example. This demo uses a fixed VID/PID and has
+to be recompiled to modify these parameters. The device have to be connected and running with
+the Generic HID firmware before performing this console application.
+
+\section UsbHidGenericDemoVisualC Demo VisualC
+\image html UsbHidGenericDemo-VisualC.jpg
+
+Description of the GUI components:
+- The Vendor ID, Product ID box are used to specify the VID/PID of the device.
+- OK button should be pushed once the VID/PID are correctly set.
+- LED 1...LED4 button are used to switch ON/OFF the LEDs of the board.
+- Firmware Upgrade button allows the user to start the bootloader to upgrade the firmware through the USB interface (Refer to the bootloader datasheet for further details).
+- Exit button closes the application
+- Status field gives the connection state and also when the device is connected gives the lengths of the IN report, OUT report and Feature report (these parameters will be automatically used by the DLL to send/receive data).
+
+\note Please note that the default PID is related to one specific demo (Atmel demos which have a Generic HID interface do not have the same PID).
+You may have to modify this PID parameter to match with the device you are using (refer to the firmware or the device manager to get the VID/PID used by your demo)
+
+\section UsbHidGenericDemoJava Demo Java
+\image html UsbHidGenericDemo-Java.jpg
+
+The components have the same roles as described for the \ref UsbHidGenericDemo "VisualCVC++ interface".<br>
+The Auto-Connect box is used to allow the application to detect automatically the connection/disconnection of the device.
+\note UsbHidGenericDemo.jar uses AtUsbHid.dll through AtUsbHidJni.dll.
+
+*/

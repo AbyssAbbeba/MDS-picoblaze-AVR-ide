@@ -1,0 +1,118 @@
+                   1
+                   2
+                   3     ; -------------------------------------------------------------------------------
+                   4     ; SPI routines
+                   5     ; data to move in s1, s1&s2, s1&s2&s3
+                   6     ; uses s0, sF
+                   7     ; sE: bit in the command reg of the SPI_LE pin
+                   8     ; sD: address of the command register
+                   9     ; sC: address of the SPI control/status register
+                  10     ; -------------------------------------------------------------------------------
+                  11     DEVICE          KCPSM3
+                  12
+  00001           13     bMOSI           EQU    0b00000001
+  00080           14     bMISO           EQU    0b10000000
+  00002           15     bSCLK           EQU    0b00000010
+                  16
+                  17     ESPI24:
+                  18           ; address of the SPI register, contains MOSI, MISO, SCLK signals
+                  19     SPI24:
+000 05FD0         20                     IN      sF, @sD                  ; switch on the appropriate CE
+001 0EEFF         21                     XOR     sE, #FFh
+002 0BFE0         22                     AND     sF, sE
+003 2DFD0         23                     OUT     sF, @sD
+                  24
+004 01010         25                     LOAD    s0, s1
+005 3001C         26                     CALL    SPI8
+006 01020         27                     LOAD    s0, s2
+007 3001C         28                     CALL    SPI8
+008 01030         29                     LOAD    s0, s3
+009 3001C         30                     CALL    SPI8
+                  31
+00A 05FD0         32                     IN      sF, @sD
+00B 0EEFF         33                     XOR     sE, #FFh
+00C 0DFE0         34                     OR      sF, sE
+00D 2DFD0         35                     OUT     sF, @sD                  ; switch off the CE
+                  36
+00E 2A000         37                     RET
+                  38
+                  39     ESPI16:
+                  40           ; address of the SPI register, contains MOSI, MISO, SCLK signals
+                  41     SPI16:
+00F 05FD0         42                     IN      sF, @sD                  ; switch on the appropriate CE
+010 0EEFF         43                     XOR     sE, #FFh
+011 0BFE0         44                     AND     sF, sE
+012 2DFD0         45                     OUT     sF, @sD
+                  46
+013 01010         47                     LOAD    s0, s1
+014 3001C         48                     CALL    SPI8
+015 01020         49                     LOAD    s0, s2
+016 3001C         50                     CALL    SPI8
+                  51
+017 05FD0         52                     IN      sF, @sD
+018 0EEFF         53                     XOR     sE, #FFh
+019 0DFE0         54                     OR      sF, sE
+01A 2DFD0         55                     OUT     sF, @sD                  ; switch off the CE
+                  56
+01B 2A000         57                     RET
+                  58
+                  59     ESPI8:
+                  60         ; address of the SPI register, contains MOSI, MISO, SCLK signals
+                  61     SPI8:
+01C 05FD0         62                     IN      sF, @sD                  ; switch on the appropriate CE
+01D 0EEFF         63                     XOR     sE, #FFh
+01E 0BFE0         64                     AND     sF, sE
+01F 2DFD0         65                     OUT     sF, @sD
+                  66
+020 01010         67                     LOAD    s0, s1
+021 3001C         68                     CALL    SPI8
+                  69
+022 05FD0         70                     IN      sF, @sD
+023 0EEFF         71                     XOR     sE, #FFh
+024 0DFE0         72                     OR      sF, sE
+025 2DFD0         73                     OUT     sF, @sD                  ; switch off the CE
+                  74
+026 2A000         75                     RET
+                  76
+                  77     ; -------------------------------------------------------------------------------
+                  78     ; raw SPI routines
+                  79     ; byte to move in s0
+                  80     ; uses sF
+                  81     ; -------------------------------------------------------------------------------
+                  82
+                  83     SPI8_:                                          ; shift 8 bits
+027 30028         84                     CALL    SPI4_
+                  85
+                  86     SPI4_:                                          ; shift 4 bits
+028 30029         87                     CALL    SPI2_
+                  88
+                  89     SPI2_:                                          ; shift 2 bits
+029 3002A         90                     CALL    SPI1_
+                  91
+                  92     ; -------------------------------------------------------------------------------
+                  93     ; send one bit w/clock
+                  94     ; -------------------------------------------------------------------------------
+                  95
+                  96     SPI1_:                                          ; shift 1 bit
+02A 05FC0         97                     IN      sF, @sC
+02B 0BFE0         98                     AND     sF, ~ bMOSI             ; clear MOSI bit
+R: result is negative number: -2, this will represented as 4-bit number in two's complement arithmetic which makes it: 14
+                  99
+02C 20006        100                     SL0     s0                      ; check if upper bit set
+02D 0DF10        101                     OR      sF, bMOSI               ; set MOSI bit
+                 102
+02E 2DFC0        103                     OUT     sF, @sC                  ; update MOSI signal
+02F 0DF20        104                     OR      sF, bSCLK               ; set SCLK bit
+030 2DFC0        105                     OUT     sF, @sC                  ; update SCLK signal
+031 0BFD0        106                     AND     sF, ~ bSCLK             ; clear SCLK bit
+R: result is negative number: -3, this will represented as 4-bit number in two's complement arithmetic which makes it: 13
+032 2DFC0        107                     OUT     sF, @sC                  ; update SCLK bit
+                 108
+033 05FC0        109                     IN      sF, @sC
+034 13F00        110                     TEST    sF, bMISO               ; test MISO signal
+W: value out of range: 128, allowed range is [0,15] (trimmed to 4 bits) which makes it 0
+035 2B000        111                     RET     Z
+036 0C001        112                     OR      s0, #1                   ; reflect it in s0
+037 2A000        113                     RET
+                 114
+                 115     ; -----------SPI Subroutines end-------------------------------------------------

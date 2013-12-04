@@ -1,0 +1,33 @@
+<!DOCTYPE MMProject>
+<MMProject>
+ <General>
+  <Name name="Example"/>
+  <Architecture architecture="kcpsm3"/>
+  <Language language="0"/>
+ </General>
+ <Files>
+  <File path="demo_3_directives.asm" name="demo_3_directives.asm"/>
+  <File path="demo_4_buttons_leds.asm" name="demo_4_buttons_leds.asm"/>
+  <File path="demo_5_UART.asm" name="demo_5_UART.asm"/>
+  <File path="demo_1_simple_prog.asm" name="demo_1_simple_prog.asm"/>
+  <File path="../../../tests/simulator/MCUSim/PicoBlaze/TestKcpsm3/testcases/010_store_fetch.asm" name="010_store_fetch.asm"/>
+  <File path="../../../../../../Moje_pblaze/Examply_s3starterkit/s3esk_picoblaze_pwm_control/auto_pwm.psm" name="auto_pwm.psm"/>
+ </Files>
+ <Mainfile path="demo_3_directives.asm" name="demo_3_directives.asm"/>
+ <Simulator/>
+ <Compiler>
+  <Options>
+   <SymbolTable enable="false"/>
+   <MacroTable enable="false"/>
+   <DebugFile enable="true"/>
+   <CodeTree enable="false"/>
+   <ListFile enable="false"/>
+   <HexFile enable="true"/>
+   <BinFile enable="false"/>
+   <SRecFile enable="false"/>
+  </Options>
+  <IncludePaths>
+   <Path path="/home/rift/Plocha/gui/localgit/mms/IDE/compiler/include/assembler/PicoBlaze"/>
+  </IncludePaths>
+ </Compiler>
+</MMProject>

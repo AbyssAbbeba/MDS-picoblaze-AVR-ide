@@ -1,0 +1,1 @@
+This directory is supposed to contain file for automated software testing. Like regression tests, sanity tests, smoke tests, etc.

@@ -1,0 +1,1424 @@
+<mcuspecfile>
+	<avr8:device family="megaAVR" name="ATmega8A">
+		<adc enabled="true"/>
+		<analogcomparator enabled="true"/>
+		<bootloader
+			enabled="true"
+			minProgTime="3.7e-3"
+			maxProgTime="4.5e-3"
+			pageSize="32"
+			bootResetAddress0="0xF80"
+			bootResetAddress1="0xF00"
+			bootResetAddress2="0xE00"
+			bootResetAddress3="0xC00"
+			rwwSectionSize="96"
+		/>
+		<clockcontrol/>
+		<dataeeprom
+			enabled="true"
+			size="512"
+			writeTime="8.448e-3"
+		/>
+		<datamemory
+			regFileSize="32"
+			sramSize="1024"
+			ioRegSize="64"
+			mem2size="2"
+			spWidth="11"
+		>
+			<ioreginitvalues>
+				<!-- TWBRR - TWI Bit Rate Register -->
+				<ioreginitvalue
+					addr="0x00" value="0x00" readmask="0xFF" writemask="0xFF"
+					randommask="0x00" reserved="false" virtual="false" name="TWBRR"
+					desc="TWI Bit Rate Register"/>
+
+				<!-- TWSR - TWI Status Register -->
+				<ioreginitvalue
+					addr="0x01" value="0xF8" readmask="0xFF" writemask="0x03"
+					randommask="0x00" reserved="false" virtual="false" name="TWSR"
+					desc="TWI Status Register">
+						<bit no="7" name="TWS7"
+							stip="TWI Status"
+							ttip="TWI Status"
+						/><bit no="6" name="TWS6"
+							stip="TWI Status"
+							ttip="TWI Status"
+						/><bit no="5" name="TWS5"
+							stip="TWI Status"
+							ttip="TWI Status"
+						/><bit no="4" name="TWS4"
+							stip="TWI Status"
+							ttip="TWI Status"
+						/><bit no="3" name="TWS3"
+							stip="TWI Status"
+							ttip="TWI Status"
+						/><bit no="2" name="-"
+							stip=""
+							ttip=""
+						/><bit no="1" name="TWPS1"
+							stip="Prescaler Bit"
+							ttip="Prescaler Bit"
+						/><bit no="0" name="TWPS0"
+							stip="Prescaler Bit"
+							ttip="Prescaler Bit"
+						/>
+				</ioreginitvalue>
+
+				<!-- TWAR - TWI (Slave) Address Register -->
+				<ioreginitvalue
+					addr="0x02" value="0xFE" readmask="0xFF" writemask="0xFF"
+					randommask="0x00" reserved="false" virtual="false" name="TWAR"
+					desc="TWI (Slave) Address Register"/>
+
+				<!-- TWDR - TWI Data Register -->
+				<ioreginitvalue
+					addr="0x03" value="0xFF" readmask="0xFF" writemask="0xFF"
+					randommask="0x00" reserved="false" virtual="false" name="TWDR"
+					desc="TWI Data Register"/>
+
+				<!-- ADCL - The ADC Data Register -->
+				<ioreginitvalue
+					addr="0x04" value="0x00" readmask="0xFF" writemask="0x00"
+					randommask="0x00" reserved="false" virtual="false" name="ADCL"
+					desc="The ADC Data Register"/>
+
+				<!-- ADCH - The ADC Data Register -->
+				<ioreginitvalue
+					addr="0x05" value="0x00" readmask="0xFF" writemask="0x00"
+					randommask="0x00" reserved="false" virtual="false" name="ADCH"
+					desc="The ADC Data Register"/>
+
+				<!-- ADCSRA - ADC Control and Status Register A -->
+				<ioreginitvalue
+					addr="0x06" value="0x00" readmask="0xFF" writemask="0xFF"
+					randommask="0x00" reserved="false" virtual="false" name="ADCSRA"
+					desc="ADC Control and Status Register A">
+						<bit no="7" name="ADEN"
+							stip="ADC Enable"
+							ttip="ADC Enable"
+						/><bit no="6" name="ADSC"
+							stip="ADC Start Conversion"
+							ttip="ADC Start Conversion"
+						/><bit no="5" name="ADFR"
+							stip="ADC Free Running Select"
+							ttip="ADC Free Running Select"
+						/><bit no="4" name="ADIF"
+							stip="ADC Interrupt Flag"
+							ttip="ADC Interrupt Flag"
+						/><bit no="3" name="ADIE"
+							stip="ADC Interrupt Enable"
+							ttip="ADC Interrupt Enable"
+						/><bit no="2" name="ADPS2"
+							stip="ADC Prescaler Select Bits"
+							ttip="ADC Prescaler Select Bits"
+						/><bit no="1" name="ADPS1"
+							stip="ADC Prescaler Select Bits"
+							ttip="ADC Prescaler Select Bits"
+						/><bit no="0" name="ADPS0"
+							stip="ADC Prescaler Select Bits"
+							ttip="ADC Prescaler Select Bits"
+						/>
+				</ioreginitvalue>
+
+				<!-- ADMUX -  ADC Multiplexer Selection Register -->
+				<ioreginitvalue
+					addr="0x07" value="0x00" readmask="0xFF" writemask="0xEF"
+					randommask="0x00" reserved="false" virtual="false" name="ADMUX"
+					desc="ADC Multiplexer Selection Register">
+						<bit no="7" name="REFS1"
+							stip="Reference Selection Bit"
+							ttip="Reference Selection Bit"
+						/><bit no="6" name="REFS0"
+							stip="Reference Selection Bit"
+							ttip="Reference Selection Bit"
+						/><bit no="5" name="ADLAR"
+							stip="ADC Left Adjust Result"
+							ttip="ADC Left Adjust Result"
+						/><bit no="4" name="-"
+							stip=""
+							ttip=""
+						/><bit no="3" name="MUX3"
+							stip="Analog Channel Selection Bits"
+							ttip="Analog Channel Selection Bits"
+						/><bit no="2" name="MUX2"
+							stip="Analog Channel Selection Bits"
+							ttip="Analog Channel Selection Bits"
+						/><bit no="1" name="MUX1"
+							stip="Analog Channel Selection Bits"
+							ttip="Analog Channel Selection Bits"
+						/><bit no="0" name="MUX0"
+							stip="Analog Channel Selection Bits"
+							ttip="Analog Channel Selection Bits"
+						/>
+				</ioreginitvalue>
+
+				<!-- ACSR - Analog Comparator Control and Status Register -->
+				<ioreginitvalue
+					addr="0x08" value="0x00" readmask="0xFF" writemask="0xDF"
+					randommask="0xDF" reserved="false" virtual="false" name="ACSR"
+					desc="Analog Comparator Control and Status Register">
+						<bit no="7" name="ACD"
+							stip="Analog Comparator Disable"
+							ttip="Analog Comparator Disable"
+						/><bit no="6" name="ACBG"
+							stip="Analog Comparator Bandgap Select"
+							ttip="Analog Comparator Bandgap Select"
+						/><bit no="5" name="ACO"
+							stip="Analog Comparator Output"
+							ttip="Analog Comparator Output"
+						/><bit no="4" name="ACI"
+							stip="Analog Comparator Interrupt Flag"
+							ttip="Analog Comparator Interrupt Flag"
+						/><bit no="3" name="ACIE"
+							stip="Analog Comparator Interrupt Enable"
+							ttip="Analog Comparator Interrupt Enable"
+						/><bit no="2" name="ACIC"
+							stip="Analog Comparator Input Capture Enable"
+							ttip="Analog Comparator Input Capture Enable"
+						/><bit no="1" name="ACIS1"
+							stip="Analog Comparator Interrupt Mode Select"
+							ttip="Analog Comparator Interrupt Mode Select"
+						/><bit no="0" name="ACIS0"
+							stip="Analog Comparator Interrupt Mode Select"
+							ttip="Analog Comparator Interrupt Mode Select"
+						/>
+				</ioreginitvalue>
+
+				<!-- UBRRL - USART Baud Rate Register -->
+				<ioreginitvalue
+					addr="0x09" value="0x00" readmask="0xFF" writemask="0xFF"
+					randommask="0x00" reserved="false" virtual="false" name="UBRRL"
+					desc="USART Baud Rate Register"/>
+
+				<!-- UCSRB - USART Control and Status Register B -->
+				<ioreginitvalue
+					addr="0x0A" value="0x00" readmask="0xFF" writemask="0xFD"
+					randommask="0x00" reserved="false" virtual="false" name="UCSRB"
+					desc="USART Control and Status Register B">
+						<bit no="7" name="RXCIE"
+							stip="RX Complete Interrupt Enable"
+							ttip="RX Complete Interrupt Enable"
+						/><bit no="6" name="TXCIE"
+							stip="TX Complete Interrupt Enable"
+							ttip="TX Complete Interrupt Enable"
+						/><bit no="5" name="UDRIE"
+							stip="USART Data Register Empty Interrupt Enable"
+							ttip="USART Data Register Empty Interrupt Enable"
+						/><bit no="4" name="RXEN"
+							stip="Receiver Enable"
+							ttip="Receiver Enable"
+						/><bit no="3" name="TXEN"
+							stip="Transmitter Enable"
+							ttip="Transmitter Enable"
+						/><bit no="2" name="UCSZ2"
+							stip="Character Size"
+							ttip="Character Size"
+						/><bit no="1" name="RXB8"
+							stip="Receive Data Bit 8"
+							ttip="Receive Data Bit 8"
+						/><bit no="0" name="TXB8"
+							stip="Transmit Data Bit 8"
+							ttip="Transmit Data Bit 8"
+						/>
+				</ioreginitvalue>
+
+				<!-- UCSRA - USART Control and Status Register A -->
+				<ioreginitvalue
+					addr="0x0B" value="0x20" readmask="0xFF" writemask="0x43"
+					randommask="0x00" reserved="false" virtual="false" name="UCSRA"
+					desc="USART Control and Status Register A">
+						<bit no="7" name="RXC"
+							stip="USART Receive Complete"
+							ttip="USART Receive Complete"
+						/><bit no="6" name="TXC"
+							stip="USART Transmit Complete"
+							ttip="USART Transmit Complete"
+						/><bit no="5" name="UDRE"
+							stip="USART Data Register Empty"
+							ttip="USART Data Register Empty"
+						/><bit no="4" name="FE"
+							stip="Frame Error"
+							ttip="Frame Error"
+						/><bit no="3" name="DOR"
+							stip="Data OverRun"
+							ttip="Data OverRun"
+						/><bit no="2" name="PE"
+							stip="Parity Error"
+							ttip="Parity Error"
+						/><bit no="1" name="U2X"
+							stip="Double the USART transmission speed"
+							ttip="Double the USART transmission speed"
+						/><bit no="0" name="MPCM"
+							stip="Multi-processor Communication Mode"
+							ttip="Multi-processor Communication Mode"
+						/>
+				</ioreginitvalue>
+
+				<!-- UDR - USART I/O Data Register - Read/Write -->
+				<ioreginitvalue
+					addr="0x0C" value="0x00" readmask="0x00" writemask="0x00"
+					randommask="0xFF" reserved="false" virtual="true" name="UDR"
+					desc="USART I/O Data Register - Read/Write"/>
+
+				<!-- SPCR - SPI Control Register -->
+				<ioreginitvalue
+					addr="0x0D" value="0x00" readmask="0xFF" writemask="0xFF"
+					randommask="0x00" reserved="false" virtual="false" name="SPCR"
+					desc="SPI Control Register">
+						<bit no="7" name="SPIE"
+							stip="SPI Interrupt Enable"
+							ttip="SPI Interrupt Enable"
+						/><bit no="6" name="SPE"
+							stip="SPI Enable"
+							ttip="SPI Enable"
+						/><bit no="5" name="DORD"
+							stip="Data Order"
+							ttip="Data Order"
+						/><bit no="4" name="MSTR"
+							stip="Master/Slave Selec"
+							ttip="Master/Slave Selec"
+						/><bit no="3" name="CPOL"
+							stip="Clock Polarity"
+							ttip="Clock Polarity"
+						/><bit no="2" name="CPHA"
+							stip="Clock Phase"
+							ttip="Clock Phase"
+						/><bit no="1" name="SPR1"
+							stip="SPI Clock Rate Select 1"
+							ttip="SPI Clock Rate Select 1"
+						/><bit no="0" name="SPR0"
+							stip="SPI Clock Rate Select 0"
+							ttip="SPI Clock Rate Select 0"
+						/>
+				</ioreginitvalue>
+
+				<!-- SPSR - SPI Status Register -->
+				<ioreginitvalue
+					addr="0x0E" value="0x00" readmask="0xFF" writemask="0x01"
+					randommask="0x00" reserved="false" virtual="false" name="SPSR"
+					desc="SPI Status Register">
+						<bit no="7" name="SPIF"
+							stip="SPI Interrupt Flag"
+							ttip="SPI Interrupt Flag"
+						/><bit no="6" name="WCOL"
+							stip="Write COLlision Flag"
+							ttip="Write COLlision Flag"
+						/><bit no="5" name="-"
+							stip=""
+							ttip=""
+						/><bit no="4" name="-"
+							stip=""
+							ttip=""
+						/><bit no="3" name="-"
+							stip=""
+							ttip=""
+						/><bit no="2" name="-"
+							stip=""
+							ttip=""
+						/><bit no="1" name="-"
+							stip=""
+							ttip=""
+						/><bit no="0" name="SPI2X"
+							stip="Double SPI Speed Bit"
+							ttip="Double SPI Speed Bit"
+						/>
+				</ioreginitvalue>
+
+				<!-- SPDR - – SPI Data Register -->
+				<ioreginitvalue
+					addr="0x0F" value="0x00" readmask="0xFF" writemask="0xFF"
+					randommask="0xFF" reserved="false" virtual="false" name="SPDR"
+					desc="SPI Data Register"/>
+
+				<!-- PIND - The Port D Input Pins Address -->
+				<ioreginitvalue
+					addr="0x10" value="0x00" readmask="0xFF" writemask="0x00"
+					randommask="0xFF" reserved="false" virtual="false" name="PIND"
+					desc="The Port D Input Pins Address">
+						<bit no="7" name="PIND7"
+							stip="Input read from bit 7 in port D"
+							ttip="Input read from bit 7 in port D"
+						/><bit no="6" name="PIND6"
+							stip="Input read from bit 6 in port D"
+							ttip="Input read from bit 6 in port D"
+						/><bit no="5" name="PIND5"
+							stip="Input read from bit 5 in port D"
+							ttip="Input read from bit 5 in port D"
+						/><bit no="4" name="PIND4"
+							stip="Input read from bit 4 in port D"
+							ttip="Input read from bit 4 in port D"
+						/><bit no="3" name="PIND3"
+							stip="Input read from bit 3 in port D"
+							ttip="Input read from bit 3 in port D"
+						/><bit no="2" name="PIND2"
+							stip="Input read from bit 2 in port D"
+							ttip="Input read from bit 2 in port D"
+						/><bit no="1" name="PIND1"
+							stip="Input read from bit 1 in port D"
+							ttip="Input read from bit 1 in port D"
+						/><bit no="0" name="PIND0"
+							stip="Input read from bit 0 in port D"
+							ttip="Input read from bit 0 in port D"
+						/>
+				</ioreginitvalue>
+
+				<!-- DDRD - The Port D Data Direction Register -->
+				<ioreginitvalue
+					addr="0x11" value="0x00" readmask="0xFF" writemask="0xFF"
+					randommask="0x00" reserved="false" virtual="false" name="DDRD"
+					desc="The Port D Data Direction Register">
+						<bit no="7" name="DDD7"
+							stip="Data direction flag for bit 7 in port D"
+							ttip="Data direction flag for bit 7 in port D"
+						/><bit no="6" name="DDD6"
+							stip="Data direction flag for bit 6 in port D"
+							ttip="Data direction flag for bit 6 in port D"
+						/><bit no="5" name="DDD5"
+							stip="Data direction flag for bit 5 in port D"
+							ttip="Data direction flag for bit 5 in port D"
+						/><bit no="4" name="DDD4"
+							stip="Data direction flag for bit 4 in port D"
+							ttip="Data direction flag for bit 4 in port D"
+						/><bit no="3" name="DDD3"
+							stip="Data direction flag for bit 3 in port D"
+							ttip="Data direction flag for bit 3 in port D"
+						/><bit no="2" name="DDD2"
+							stip="Data direction flag for bit 2 in port D"
+							ttip="Data direction flag for bit 2 in port D"
+						/><bit no="1" name="DDD1"
+							stip="Data direction flag for bit 1 in port D"
+							ttip="Data direction flag for bit 1 in port D"
+						/><bit no="0" name="DDD0"
+							stip="Data direction flag for bit 0 in port D"
+							ttip="Data direction flag for bit 0 in port D"
+						/>
+				</ioreginitvalue>
+
+				<!-- PORTD - The Port D Data Register -->
+				<ioreginitvalue
+					addr="0x12" value="0x00" readmask="0xFF" writemask="0xFF"
+					randommask="0x00" reserved="false" virtual="false" name="PORTD"
+					desc="The Port D Data Register">
+						<bit no="7" name="PORTD7"
+							stip="Bit 7 in port D"
+							ttip="Bit 7 in port D"
+						/><bit no="6" name="PORTD6"
+							stip="Bit 6 in port D"
+							ttip="Bit 6 in port D"
+						/><bit no="5" name="PORTD5"
+							stip="Bit 5 in port D"
+							ttip="Bit 5 in port D"
+						/><bit no="4" name="PORTD4"
+							stip="Bit 4 in port D"
+							ttip="Bit 4 in port D"
+						/><bit no="3" name="PORTD3"
+							stip="Bit 3 in port D"
+							ttip="Bit 3 in port D"
+						/><bit no="2" name="PORTD2"
+							stip="Bit 2 in port D"
+							ttip="Bit 2 in port D"
+						/><bit no="1" name="PORTD1"
+							stip="Bit 1 in port D"
+							ttip="Bit 1 in port D"
+						/><bit no="0" name="PORTD0"
+							stip="Bit 0 in port D"
+							ttip="Bit 0 in port D"
+						/>
+				</ioreginitvalue>
+
+				<!-- PINC - The Port C Input Pins Address -->
+				<ioreginitvalue
+					addr="0x13" value="0x00" readmask="0xFF" writemask="0x00"
+					randommask="0x7F" reserved="false" virtual="false" name="PINC"
+					desc="The Port C Input Pins Address">
+						<bit no="7" name="-"
+							stip=""
+							ttip=""
+						/><bit no="6" name="PINC6"
+							stip="Input read from bit 6 in port C"
+							ttip="Input read from bit 6 in port C"
+						/><bit no="5" name="PINC5"
+							stip="Input read from bit 5 in port C"
+							ttip="Input read from bit 5 in port C"
+						/><bit no="4" name="PINC4"
+							stip="Input read from bit 4 in port C"
+							ttip="Input read from bit 4 in port C"
+						/><bit no="3" name="PINC3"
+							stip="Input read from bit 3 in port C"
+							ttip="Input read from bit 3 in port C"
+						/><bit no="2" name="PINC2"
+							stip="Input read from bit 2 in port C"
+							ttip="Input read from bit 2 in port C"
+						/><bit no="1" name="PINC1"
+							stip="Input read from bit 1 in port C"
+							ttip="Input read from bit 1 in port C"
+						/><bit no="0" name="PINC0"
+							stip="Input read from bit 0 in port C"
+							ttip="Input read from bit 0 in port C"
+						/>
+				</ioreginitvalue>
+
+				<!-- DDRC - The Port C Data Direction Register -->
+				<ioreginitvalue
+					addr="0x14" value="0x00" readmask="0xFF" writemask="0x7F"
+					randommask="0x00" reserved="false" virtual="false" name="DDRC"
+					desc="The Port C Data Direction Register">
+						<bit no="7" name="-"
+							stip=""
+							ttip=""
+						/><bit no="6" name="DDC6"
+							stip="Data direction flag for bit 6 in port C"
+							ttip="Data direction flag for bit 6 in port C"
+						/><bit no="5" name="DDC5"
+							stip="Data direction flag for bit 5 in port C"
+							ttip="Data direction flag for bit 5 in port C"
+						/><bit no="4" name="DDC4"
+							stip="Data direction flag for bit 4 in port C"
+							ttip="Data direction flag for bit 4 in port C"
+						/><bit no="3" name="DDC3"
+							stip="Data direction flag for bit 3 in port C"
+							ttip="Data direction flag for bit 3 in port C"
+						/><bit no="2" name="DDC2"
+							stip="Data direction flag for bit 2 in port C"
+							ttip="Data direction flag for bit 2 in port C"
+						/><bit no="1" name="DDC1"
+							stip="Data direction flag for bit 1 in port C"
+							ttip="Data direction flag for bit 1 in port C"
+						/><bit no="0" name="DDC0"
+							stip="Data direction flag for bit 0 in port C"
+							ttip="Data direction flag for bit 0 in port C"
+						/>
+				</ioreginitvalue>
+
+				<!-- PORTC - The Port C Data Register -->
+				<ioreginitvalue
+					addr="0x15" value="0x00" readmask="0xFF" writemask="0x7F"
+					randommask="0x00" reserved="false" virtual="false" name="PORTC"
+					desc="The Port C Data Register">
+						<bit no="7" name="-"
+							stip=""
+							ttip=""
+						/><bit no="6" name="PORTC6"
+							stip="Bit 6 in port C"
+							ttip="Bit 6 in port C"
+						/><bit no="5" name="PORTC5"
+							stip="Bit 5 in port C"
+							ttip="Bit 5 in port C"
+						/><bit no="4" name="PORTC4"
+							stip="Bit 4 in port C"
+							ttip="Bit 4 in port C"
+						/><bit no="3" name="PORTC3"
+							stip="Bit 3 in port C"
+							ttip="Bit 3 in port C"
+						/><bit no="2" name="PORTC2"
+							stip="Bit 2 in port C"
+							ttip="Bit 2 in port C"
+						/><bit no="1" name="PORTC1"
+							stip="Bit 1 in port C"
+							ttip="Bit 1 in port C"
+						/><bit no="0" name="PORTC0"
+							stip="Bit 0 in port C"
+							ttip="Bit 0 in port C"
+						/>
+				</ioreginitvalue>
+
+				<!-- PINB - The Port B Input Pins Address -->
+				<ioreginitvalue
+					addr="0x16" value="0x00" readmask="0xFF" writemask="0x00"
+					randommask="0xFF" reserved="false" virtual="false" name="PINB"
+					desc="The Port B Input Pins Address">
+						<bit no="7" name="PINB7"
+							stip="Input read from bit 7 in port B"
+							ttip="Input read from bit 7 in port B"
+						/><bit no="6" name="PINB6"
+							stip="Input read from bit 6 in port B"
+							ttip="Input read from bit 6 in port B"
+						/><bit no="5" name="PINB5"
+							stip="Input read from bit 5 in port B"
+							ttip="Input read from bit 5 in port B"
+						/><bit no="4" name="PINB4"
+							stip="Input read from bit 4 in port B"
+							ttip="Input read from bit 4 in port B"
+						/><bit no="3" name="PINB3"
+							stip="Input read from bit 3 in port B"
+							ttip="Input read from bit 3 in port B"
+						/><bit no="2" name="PINB2"
+							stip="Input read from bit 2 in port B"
+							ttip="Input read from bit 2 in port B"
+						/><bit no="1" name="PINB1"
+							stip="Input read from bit 1 in port B"
+							ttip="Input read from bit 1 in port B"
+						/><bit no="0" name="PINB0"
+							stip="Input read from bit 0 in port B"
+							ttip="Input read from bit 0 in port B"
+						/>
+				</ioreginitvalue>
+
+				<!-- DDRB - The Port B Data Direction Register -->
+				<ioreginitvalue
+					addr="0x17" value="0x00" readmask="0xFF" writemask="0xFF"
+					randommask="0x00" reserved="false" virtual="false" name="DDRB"
+					desc="The Port B Data Direction Register">
+						<bit no="7" name="DDB7"
+							stip="Data direction flag for bit 7 in port B"
+							ttip="Data direction flag for bit 7 in port B"
+						/><bit no="6" name="DDB6"
+							stip="Data direction flag for bit 6 in port B"
+							ttip="Data direction flag for bit 6 in port B"
+						/><bit no="5" name="DDB5"
+							stip="Data direction flag for bit 5 in port B"
+							ttip="Data direction flag for bit 5 in port B"
+						/><bit no="4" name="DDB4"
+							stip="Data direction flag for bit 4 in port B"
+							ttip="Data direction flag for bit 4 in port B"
+						/><bit no="3" name="DDB3"
+							stip="Data direction flag for bit 3 in port B"
+							ttip="Data direction flag for bit 3 in port B"
+						/><bit no="2" name="DDB2"
+							stip="Data direction flag for bit 2 in port B"
+							ttip="Data direction flag for bit 2 in port B"
+						/><bit no="1" name="DDB1"
+							stip="Data direction flag for bit 1 in port B"
+							ttip="Data direction flag for bit 1 in port B"
+						/><bit no="0" name="DDB0"
+							stip="Data direction flag for bit 0 in port B"
+							ttip="Data direction flag for bit 0 in port B"
+						/>
+				</ioreginitvalue>
+
+				<!-- PORTB - The Port B Data Register -->
+				<ioreginitvalue
+					addr="0x18" value="0x00" readmask="0xFF" writemask="0xFF"
+					randommask="0x00" reserved="false" virtual="false" name="PORTB"
+					desc="The Port B Data Register">
+						<bit no="7" name="PORTB7"
+							stip="Bit 7 in port B"
+							ttip="Bit 7 in port B"
+						/><bit no="6" name="PORTB6"
+							stip="Bit 6 in port B"
+							ttip="Bit 6 in port B"
+						/><bit no="5" name="PORTB5"
+							stip="Bit 5 in port B"
+							ttip="Bit 5 in port B"
+						/><bit no="4" name="PORTB4"
+							stip="Bit 4 in port B"
+							ttip="Bit 4 in port B"
+						/><bit no="3" name="PORTB3"
+							stip="Bit 3 in port B"
+							ttip="Bit 3 in port B"
+						/><bit no="2" name="PORTB2"
+							stip="Bit 2 in port B"
+							ttip="Bit 2 in port B"
+						/><bit no="1" name="PORTB1"
+							stip="Bit 1 in port B"
+							ttip="Bit 1 in port B"
+						/><bit no="0" name="PORTB0"
+							stip="Bit 0 in port B"
+							ttip="Bit 0 in port B"
+						/>
+				</ioreginitvalue>
+
+				<!-- (Reserved) -->
+				<ioreginitvalue
+					addr="0x19" value="0x00" readmask="0xFF" writemask="0xFF"
+					randommask="0xFF" reserved="true" virtual="false" name=""
+					desc=""/>
+
+				<!-- (Reserved) -->
+				<ioreginitvalue
+					addr="0x1A" value="0x00" readmask="0xFF" writemask="0xFF"
+					randommask="0xFF" reserved="true" virtual="false" name=""
+					desc=""/>
+
+				<!-- (Reserved) -->
+				<ioreginitvalue
+					addr="0x1B" value="0x00" readmask="0xFF" writemask="0xFF"
+					randommask="0xFF" reserved="true" virtual="false" name=""
+					desc=""/>
+
+				<!-- EECR - The EEPROM Control Register -->
+				<ioreginitvalue
+					addr="0x1C" value="0x00" readmask="0xFF" writemask="0x0F"
+					randommask="0x02" reserved="false" virtual="false" name="EECR"
+					desc="The EEPROM Control Register">
+						<bit no="7" name="-"
+							stip=""
+							ttip=""
+						/><bit no="6" name="-"
+							stip=""
+							ttip=""
+						/><bit no="5" name="-"
+							stip=""
+							ttip=""
+						/><bit no="4" name="-"
+							stip=""
+							ttip=""
+						/><bit no="3" name="EERIE"
+							stip="EEPROM Ready Interrupt Enable"
+							ttip="EEPROM Ready Interrupt Enable"
+						/><bit no="2" name="EEMWE"
+							stip="EEPROM Master Write Enable"
+							ttip="EEPROM Master Write Enable"
+						/><bit no="1" name="EEWE"
+							stip="EEPROM Write Enable"
+							ttip="EEPROM Write Enable"
+						/><bit no="0" name="EERE"
+							stip="EEPROM Read Enable"
+							ttip="EEPROM Read Enable"
+						/>
+				</ioreginitvalue>
+
+				<!-- EEDR - The EEPROM Data Register -->
+				<ioreginitvalue
+					addr="0x1D" value="0x00" readmask="0xFF" writemask="0xFF"
+					randommask="0x00" reserved="false" virtual="false" name="EEDR"
+					desc="The EEPROM Data Register"/>
+
+				<!-- EEARL - The EEPROM Address Register -->
+				<ioreginitvalue
+					addr="0x1E" value="0x00" readmask="0xFF" writemask="0xFF"
+					randommask="0xFF" reserved="false" virtual="false" name="EEARL"
+					desc="The EEPROM Address Register"/>
+
+				<!-- EEARH - The EEPROM Address Register -->
+				<ioreginitvalue
+					addr="0x1F" value="0x00" readmask="0xFF" writemask="0x01"
+					randommask="0x01" reserved="false" virtual="false" name="EEARH"
+					desc="The EEPROM Address Register"/>
+
+				<!-- UBRRH/UCSRC -->
+				<ioreginitvalue
+					addr="0x20" value="0x00" readmask="0x00" writemask="0x00"
+					randommask="0xFF" reserved="false" virtual="true" name="UBRRH/UCSRC"
+					desc=""/>
+
+				<!-- WDTCR - Watchdog Timer Control Register -->
+				<ioreginitvalue
+					addr="0x21" value="0x00" readmask="0xFF" writemask="0x1F"
+					randommask="0x00" reserved="false" virtual="false" name="WDTCR"
+					desc="Watchdog Timer Control Register">
+						<bit no="7" name="-"
+							stip=""
+							ttip=""
+						/><bit no="6" name="-"
+							stip=""
+							ttip=""
+						/><bit no="5" name="-"
+							stip=""
+							ttip=""
+						/><bit no="4" name="WDCE"
+							stip="Watchdog Change Enable"
+							ttip="Watchdog Change Enable"
+						/><bit no="3" name="WDE"
+							stip="Watchdog Enable"
+							ttip="Watchdog Enable"
+						/><bit no="2" name="WDP2"
+							stip="Watchdog Timer Prescaler 2"
+							ttip="Watchdog Timer Prescaler 2"
+						/><bit no="1" name="WDP1"
+							stip="Watchdog Timer Prescaler 1"
+							ttip="Watchdog Timer Prescaler 1"
+						/><bit no="0" name="WDP0"
+							stip="Watchdog Timer Prescaler 0"
+							ttip="Watchdog Timer Prescaler 0"
+						/>
+				</ioreginitvalue>
+
+				<!-- ASSR - Asynchronous Status Register -->
+				<ioreginitvalue
+					addr="0x22" value="0x00" readmask="0xFF" writemask="0x08"
+					randommask="0x00" reserved="false" virtual="false" name="ASSR"
+					desc="Asynchronous Status Register">
+						<bit no="7" name="-"
+							stip=""
+							ttip=""
+						/><bit no="6" name="-"
+							stip=""
+							ttip=""
+						/><bit no="5" name="-"
+							stip=""
+							ttip=""
+						/><bit no="4" name="-"
+							stip=""
+							ttip=""
+						/><bit no="3" name="AS2"
+							stip="Asynchronous Timer/Counter2"
+							ttip="Asynchronous Timer/Counter2"
+						/><bit no="2" name="TCN2UB"
+							stip="Timer/Counter2 Update Busy"
+							ttip="Timer/Counter2 Update Busy"
+						/><bit no="1" name="OCR2UB"
+							stip="Output Compare Register2 Update Busy"
+							ttip="Output Compare Register2 Update Busy"
+						/><bit no="0" name="TCR2UB"
+							stip="Timer/Counter Control Register2 Update Busy"
+							ttip="Timer/Counter Control Register2 Update Busy"
+						/>
+				</ioreginitvalue>
+
+				<!-- OCR2 - Output Compare Register -->
+				<ioreginitvalue
+					addr="0x23" value="0x00" readmask="0xFF" writemask="0xFF"
+					randommask="0x00" reserved="false" virtual="false" name="OCR2"
+					desc="Output Compare Register"/>
+
+				<!-- TCNT2 - Timer/Counter Register -->
+				<ioreginitvalue
+					addr="0x24" value="0x00" readmask="0xFF" writemask="0xFF"
+					randommask="0x00" reserved="false" virtual="false" name="TCNT2"
+					desc="Timer/Counter Register"/>
+
+				<!-- TCCR2 - Timer/Counter Control Register -->
+				<ioreginitvalue
+					addr="0x25" value="0x00" readmask="0x7F" writemask="0xFF"
+					randommask="0x00" reserved="false" virtual="false" name="TCCR2"
+					desc="Timer/Counter Control Register">
+						<bit no="7" name="FOC2"
+							stip="Force Output Compare"
+							ttip="Force Output Compare"
+						/><bit no="6" name="WGM20"
+							stip="Waveform Generation Mode"
+							ttip="Waveform Generation Mode"
+						/><bit no="5" name="COM21"
+							stip="Compare Match Output Mode"
+							ttip="Compare Match Output Mode"
+						/><bit no="4" name="COM20"
+							stip="Compare Match Output Mode"
+							ttip="Compare Match Output Mode"
+						/><bit no="3" name="WGM21"
+							stip="Waveform Generation Mode"
+							ttip="Waveform Generation Mode"
+						/><bit no="2" name="CS22"
+							stip="Clock Select"
+							ttip="Clock Select"
+						/><bit no="1" name="CS21"
+							stip="Clock Select"
+							ttip="Clock Select"
+						/><bit no="0" name="CS20"
+							stip="Clock Select"
+							ttip="Clock Select"
+						/>
+				</ioreginitvalue>
+
+				<!-- ICR1L - Input Capture Register 1 -->
+				<ioreginitvalue
+					addr="0x26" value="0x00" readmask="0xFF" writemask="0xFF"
+					randommask="0x00" reserved="false" virtual="false" name="ICR1L"
+					desc="Input Capture Register 1"/>
+
+				<!-- ICR1H - Input Capture Register 1 -->
+				<ioreginitvalue
+					addr="0x27" value="0x00" readmask="0xFF" writemask="0xFF"
+					randommask="0x00" reserved="false" virtual="false" name="ICR1H"
+					desc="Input Capture Register 1"/>
+
+				<!-- OCR1BL - Output Compare Register 1 B -->
+				<ioreginitvalue
+					addr="0x28" value="0x00" readmask="0xFF" writemask="0xFF"
+					randommask="0x00" reserved="false" virtual="false" name="OCR1BL"
+					desc="Output Compare Register 1 B"/>
+
+				<!-- OCR1BH - Output Compare Register 1 B -->
+				<ioreginitvalue
+					addr="0x29" value="0x00" readmask="0xFF" writemask="0xFF"
+					randommask="0x00" reserved="false" virtual="false" name="OCR1BH"
+					desc="Output Compare Register 1 B"/>
+
+				<!-- OCR1AL - Output Compare Register 1 A -->
+				<ioreginitvalue
+					addr="0x2A" value="0x00" readmask="0xFF" writemask="0xFF"
+					randommask="0x00" reserved="false" virtual="false" name="OCR1AL"
+					desc="Output Compare Register 1 A"/>
+
+				<!-- OCR1AH - Output Compare Register 1 A -->
+				<ioreginitvalue
+					addr="0x2B" value="0x00" readmask="0xFF" writemask="0xFF"
+					randommask="0x00" reserved="false" virtual="false" name="OCR1AH"
+					desc="Output Compare Register 1 A"/>
+
+				<!-- TCNT1L - Timer/Counter 1 -->
+				<ioreginitvalue
+					addr="0x2C" value="0x00" readmask="0xFF" writemask="0xFF"
+					randommask="0x00" reserved="false" virtual="false" name="TCNT1L"
+					desc="Timer/Counter 1"/>
+
+				<!-- TCNT1H - Timer/Counter 1 -->
+				<ioreginitvalue
+					addr="0x2D" value="0x00" readmask="0xFF" writemask="0xFF"
+					randommask="0x00" reserved="false" virtual="false" name="TCNT1H"
+					desc="Timer/Counter 1"/>
+
+				<!-- TCCR1B - Timer/Counter 1 Control Register B -->
+				<ioreginitvalue
+					addr="0x2E" value="0x00" readmask="0xFF" writemask="0xDF"
+					randommask="0x00" reserved="false" virtual="false" name="TCCR1B"
+					desc="Timer/Counter 1 Control Register B">
+						<bit no="7" name="ICNC1"
+							stip="Input Capture Noise Canceler"
+							ttip="Input Capture Noise Canceler"
+						/><bit no="6" name="ICES1"
+							stip="Input Capture Edge Select"
+							ttip="Input Capture Edge Select"
+						/><bit no="5" name="-"
+							stip=""
+							ttip=""
+						/><bit no="4" name="WGM13"
+							stip="Waveform Generation Mode"
+							ttip="Waveform Generation Mode"
+						/><bit no="3" name="WGM12"
+							stip="Waveform Generation Mode"
+							ttip="Waveform Generation Mode"
+						/><bit no="2" name="CS12"
+							stip="Clock Select"
+							ttip="Clock Select"
+						/><bit no="1" name="CS11"
+							stip="Clock Select"
+							ttip="Clock Select"
+						/><bit no="0" name="CS10"
+							stip="Clock Select"
+							ttip="Clock Select"
+						/>
+				</ioreginitvalue>
+
+				<!-- TCCR1A - Timer/Counter 1 Control Register A -->
+				<ioreginitvalue
+					addr="0x2F" value="0x00" readmask="0xF3" writemask="0xFF"
+					randommask="0x00" reserved="false" virtual="false" name="TCCR1A"
+					desc="Timer/Counter 1 Control Register A">
+						<bit no="7" name="COM1A1"
+							stip="Compare Output Mode for channel A"
+							ttip="Compare Output Mode for channel A"
+						/><bit no="6" name="COM1A0"
+							stip="Compare Output Mode for channel A"
+							ttip="Compare Output Mode for channel A"
+						/><bit no="5" name="COM1B1"
+							stip="Compare Output Mode for channel B"
+							ttip="Compare Output Mode for channel B"
+						/><bit no="4" name="COM1B0"
+							stip="Compare Output Mode for channel B"
+							ttip="Compare Output Mode for channel B"
+						/><bit no="3" name="FOC1A"
+							stip="Force Output Compare for channel A"
+							ttip="Force Output Compare for channel A"
+						/><bit no="2" name="FOC1B"
+							stip="Force Output Compare for channel B"
+							ttip="Force Output Compare for channel B"
+						/><bit no="1" name="WGM11"
+							stip="Waveform Generation Mode"
+							ttip="Waveform Generation Mode"
+						/><bit no="0" name="WGM10"
+							stip="Waveform Generation Mode"
+							ttip="Waveform Generation Mode"
+						/>
+				</ioreginitvalue>
+
+				<!-- SFIOR - Special Function IO Register -->
+				<ioreginitvalue
+					addr="0x30" value="0x00" readmask="0xFF" writemask="0x0F"
+					randommask="0x00" reserved="false" virtual="false" name="SFIOR"
+					desc="Special Function IO Register">
+						<bit no="7" name="-"
+							stip=""
+							ttip=""
+						/><bit no="6" name="-"
+							stip=""
+							ttip=""
+						/><bit no="5" name="-"
+							stip=""
+							ttip=""
+						/><bit no="4" name="-"
+							stip=""
+							ttip=""
+						/><bit no="3" name="ACME"
+							stip="Analog Comparator Multiplexer Enable"
+							ttip="Analog Comparator Multiplexer Enable"
+						/><bit no="2" name="PUD"
+							stip="Pull-up Disable"
+							ttip="Pull-up Disable"
+						/><bit no="1" name="PSR2"
+							stip="Prescaler Reset Timer/Counter2"
+							ttip="Prescaler Reset Timer/Counter2"
+						/><bit no="0" name="PSR10"
+							stip="Prescaler Reset Timer/Counter1 and Timer/Counter0"
+							ttip="Prescaler Reset Timer/Counter1 and Timer/Counter0"
+						/>
+				</ioreginitvalue>
+
+				<!-- OSCCAL - Oscillator Calibration Register -->
+				<ioreginitvalue
+					addr="0x31" value="0x00" readmask="0xFF" writemask="0xFF"
+					randommask="0xFF" reserved="false" virtual="false" name="OSCCAL"
+					desc="Oscillator Calibration Register"/>
+
+				<!-- TCNT0 - Timer/Counter Register -->
+				<ioreginitvalue
+					addr="0x32" value="0x00" readmask="0xFF" writemask="0xFF"
+					randommask="0x00" reserved="false" virtual="false" name="TCNT0"
+					desc="Timer/Counter Register"/>
+
+				<!-- TCCR0 - Timer/Counter Control Register -->
+				<ioreginitvalue
+					addr="0x33" value="0x00" readmask="0xFF" writemask="0x07"
+					randommask="0x00" reserved="false" virtual="false" name="TCCR0"
+					desc="Timer/Counter Control Register">
+						<bit no="7" name="-"
+							stip=""
+							ttip=""
+						/><bit no="6" name="-"
+							stip=""
+							ttip=""
+						/><bit no="5" name="-"
+							stip=""
+							ttip=""
+						/><bit no="4" name="-"
+							stip=""
+							ttip=""
+						/><bit no="3" name="-"
+							stip=""
+							ttip=""
+						/><bit no="2" name="CS02"
+							stip="Clock Select bit 2"
+							ttip="Clock Select bit 2"
+						/><bit no="1" name="CS01"
+							stip="Clock Select bit 1"
+							ttip="Clock Select bit 1"
+						/><bit no="0" name="CS00"
+							stip="Clock Select bit 0"
+							ttip="Clock Select bit 0"
+						/>
+				</ioreginitvalue>
+
+				<!-- MCUCSR - MCU Control and Status Register -->
+				<ioreginitvalue
+					addr="0x34" value="0x00" readmask="0xFF" writemask="0x0F"
+					randommask="0x00" reserved="false" virtual="false" name="MCUCSR"
+					desc="MCU Control and Status Register">
+						<bit no="7" name="-"
+							stip=""
+							ttip=""
+						/><bit no="6" name="-"
+							stip=""
+							ttip=""
+						/><bit no="5" name="-"
+							stip=""
+							ttip=""
+						/><bit no="4" name="-"
+							stip=""
+							ttip=""
+						/><bit no="3" name="WDRF"
+							stip="Watchdog Reset Flag"
+							ttip="Watchdog Reset Flag"
+						/><bit no="2" name="BORF"
+							stip="Brown-out Reset Flag"
+							ttip="Brown-out Reset Flag"
+						/><bit no="1" name="EXTRF"
+							stip="External Reset Flag"
+							ttip="External Reset Flag"
+						/><bit no="0" name="PORF"
+							stip="Power-on Reset Flag"
+							ttip="Power-on Reset Flag"
+						/>
+				</ioreginitvalue>
+
+				<!-- MCUCR - MCU Control Register-->
+				<ioreginitvalue
+					addr="0x35" value="0x00" readmask="0xFF" writemask="0xFF"
+					randommask="0x00" reserved="false" virtual="false" name="MCUCR"
+					desc="MCU Control Register">
+						<bit no="7" name="SE"
+							stip="Sleep Enable"
+							ttip="Sleep Enable"
+						/><bit no="6" name="SM2"
+							stip="Sleep Mode Select Bit 2"
+							ttip="Sleep Mode Select Bit 2"
+						/><bit no="5" name="SM1"
+							stip="Sleep Mode Select Bit 1"
+							ttip="Sleep Mode Select Bit 1"
+						/><bit no="4" name="SM0"
+							stip="Sleep Mode Select Bit 0"
+							ttip="Sleep Mode Select Bit 0"
+						/><bit no="3" name="ISC11"
+							stip="Interrupt Sense Control 1 Bit 3"
+							ttip="Interrupt Sense Control 1 Bit 3"
+						/><bit no="2" name="ISC10"
+							stip="Interrupt Sense Control 1 Bit 2"
+							ttip="Interrupt Sense Control 1 Bit 2"
+						/><bit no="1" name="ISC01"
+							stip="Interrupt Sense Control 1 Bit 1"
+							ttip="Interrupt Sense Control 1 Bit 1"
+						/><bit no="0" name="ISC00"
+							stip="Interrupt Sense Control 1 Bit 0"
+							ttip="Interrupt Sense Control 1 Bit 0"
+						/>
+				</ioreginitvalue>
+
+				<!-- TWCR - TWI Control Register -->
+				<ioreginitvalue
+					addr="0x36" value="0x00" readmask="0xFF" writemask="0xF5"
+					randommask="0x00" reserved="false" virtual="false" name="TWCR"
+					desc="TWI Control Register">
+						<bit no="7" name="TWINT"
+							stip="TWI Interrupt Flag"
+							ttip="TWI Interrupt Flag"
+						/><bit no="6" name="TWEA"
+							stip="TWI Enable Acknowledge Bit"
+							ttip="TWI Enable Acknowledge Bit"
+						/><bit no="5" name="TWSTA"
+							stip="TWI START Condition Bit"
+							ttip="TWI START Condition Bit"
+						/><bit no="4" name="TWSTO"
+							stip="TWI STOP Condition Bit"
+							ttip="TWI STOP Condition Bit"
+						/><bit no="3" name="TWWC"
+							stip="TWI Write Collision Flag"
+							ttip="TWI Write Collision Flag"
+						/><bit no="2" name="TWEN"
+							stip="TWI Enable Bit"
+							ttip="TWI Enable Bit"
+						/><bit no="1" name="-"
+							stip="Reserved Bit"
+							ttip="Reserved Bit"
+						/><bit no="0" name="TWIE"
+							stip="TWI Interrupt Enable"
+							ttip="TWI Interrupt Enable"
+						/>
+				</ioreginitvalue>
+
+				<!-- SPMCR - Store Program Memory Control Register -->
+				<ioreginitvalue
+					addr="0x37" value="0x00" readmask="0xFF" writemask="0x9F"
+					randommask="0x00" reserved="false" virtual="false" name="SPMCR"
+					desc="Store Program Memory Control Register">
+						<bit no="7" name="SPMIE"
+							stip="SPM Interrupt Enable"
+							ttip="SPM Interrupt Enable"
+						/><bit no="6" name="RWWSB"
+							stip="Read-While-Write Section Busy"
+							ttip="Read-While-Write Section Busy"
+						/><bit no="5" name="-"
+							stip=""
+							ttip=""
+						/><bit no="4" name="RWWSRE"
+							stip="Read-While-Write Section Read Enable"
+							ttip="Read-While-Write Section Read Enable"
+						/><bit no="3" name="BLBSET"
+							stip="Boot Lock Bit Set"
+							ttip="Boot Lock Bit Set"
+						/><bit no="2" name="PGWRT"
+							stip="Page Write"
+							ttip="Page Write"
+						/><bit no="1" name="PGERS"
+							stip="Page Erase"
+							ttip="Page Erase"
+						/><bit no="0" name="SPMEN"
+							stip="Store Program Memory Enable"
+							ttip="Store Program Memory Enable"
+						/>
+				</ioreginitvalue>
+
+				<!-- TIFR - Timer/Counter Interrupt Flag Register -->
+				<ioreginitvalue
+					addr="0x38" value="0x00" readmask="0xFF" writemask="0xFF"
+					randommask="0x00" reserved="false" virtual="false" name="TIFR"
+					desc="Timer/Counter Interrupt Flag Register">
+						<bit no="7" name="OCF2"
+							stip="Output Compare Flag 2"
+							ttip="Output Compare Flag 2"
+						/><bit no="6" name="TOV2"
+							stip="Timer/Counter2 Overflow Flag"
+							ttip="Timer/Counter2 Overflow Flag"
+						/><bit no="5" name="ICF1"
+							stip="Timer/Counter1, Input Capture Flag"
+							ttip="Timer/Counter1, Input Capture Flag"
+						/><bit no="4" name="OCF1A"
+							stip="Timer/Counter1, Output Compare A Match Flag"
+							ttip="Timer/Counter1, Output Compare A Match Flag"
+						/><bit no="3" name="OCF1B"
+							stip="Timer/Counter1, Output Compare B Match Flag"
+							ttip="Timer/Counter1, Output Compare B Match Flag"
+						/><bit no="2" name="TOV1"
+							stip="Timer/Counter1, Overflow Flag"
+							ttip="Timer/Counter1, Overflow Flag"
+						/><bit no="1" name="-"
+							stip=""
+							ttip=""
+						/><bit no="0" name="TOV0"
+							stip="Timer/Counter0 Overflow Flag"
+							ttip="Timer/Counter0 Overflow Flag"
+						/>
+				</ioreginitvalue>
+
+				<!-- TIMSK - Timer/Counter Interrupt Mask Register -->
+				<ioreginitvalue
+					addr="0x39" value="0x00" readmask="0xFF" writemask="0xFF"
+					randommask="0x00" reserved="false" virtual="false" name="TIMSK"
+					desc="Timer/Counter Interrupt Mask Register">
+						<bit no="7" name="OCIE2"
+							stip="Timer/Counter2 Output Compare Match Interrupt Enable"
+							ttip="Timer/Counter2 Output Compare Match Interrupt Enable"
+						/><bit no="6" name="TOIE2"
+							stip="Timer/Counter2 Overflow Interrupt Enable"
+							ttip="Timer/Counter2 Overflow Interrupt Enable"
+						/><bit no="5" name="TICIE1"
+							stip="Timer/Counter1, Input Capture Interrupt Enable"
+							ttip="Timer/Counter1, Input Capture Interrupt Enable"
+						/><bit no="4" name="OCIE1A"
+							stip="Timer/Counter1, Output Compare A Match Interrupt Enable"
+							ttip="Timer/Counter1, Output Compare A Match Interrupt Enable"
+						/><bit no="3" name="OCIE1B"
+							stip="Timer/Counter1, Output Compare B Match Interrupt Enable"
+							ttip="Timer/Counter1, Output Compare B Match Interrupt Enable"
+						/><bit no="2" name="TOIE1"
+							stip="Timer/Counter1, Overflow Interrupt Enable"
+							ttip="Timer/Counter1, Overflow Interrupt Enable"
+						/><bit no="1" name="-"
+							stip=""
+							ttip=""
+						/><bit no="0" name="TOIE0"
+							stip="Timer/Counter0 Overflow Interrupt Enable"
+							ttip="Timer/Counter0 Overflow Interrupt Enable"
+						/>
+				</ioreginitvalue>
+
+				<!-- GIFR - General Interrupt Flag Register -->
+				<ioreginitvalue
+					addr="0x3A" value="0x00" readmask="0xFF" writemask="0xC0"
+					randommask="0x00" reserved="false" virtual="false" name="GIFR"
+					desc="General Interrupt Flag Register">
+						<bit no="7" name="INTF1"
+							stip="External Interrupt Flag 1"
+							ttip="External Interrupt Flag 1"
+						/><bit no="6" name="INTF0"
+							stip="External Interrupt Flag 0"
+							ttip="External Interrupt Flag 0"
+						/><bit no="5" name="-"
+							stip=""
+							ttip=""
+						/><bit no="4" name="-"
+							stip=""
+							ttip=""
+						/><bit no="3" name="-"
+							stip=""
+							ttip=""
+						/><bit no="2" name="-"
+							stip=""
+							ttip=""
+						/><bit no="1" name="-"
+							stip=""
+							ttip=""
+						/><bit no="0" name="-"
+							stip=""
+							ttip=""
+						/>
+				</ioreginitvalue>
+
+				<!-- GICR - General Interrupt Control Register -->
+				<ioreginitvalue
+					addr="0x3B" value="0x00" readmask="0xFF" writemask="0xC3"
+					randommask="0x00" reserved="false" virtual="false" name="GICR"
+					desc="General Interrupt Control Register">
+						<bit no="7" name="INT1"
+							stip="External Interrupt Request 1 Enable"
+							ttip="External Interrupt Request 1 Enable"
+						/><bit no="6" name="INT0"
+							stip="External Interrupt Request 0 Enable"
+							ttip="External Interrupt Request 0 Enable"
+						/><bit no="5" name="-"
+							stip=""
+							ttip=""
+						/><bit no="4" name="-"
+							stip=""
+							ttip=""
+						/><bit no="3" name="-"
+							stip=""
+							ttip=""
+						/><bit no="2" name="-"
+							stip=""
+							ttip=""
+						/><bit no="1" name="IVSEL"
+							stip="Interrupt Vector Select"
+							ttip="Interrupt Vector Select"
+						/><bit no="0" name="IVCE"
+							stip="Interrupt Vector Change Enable"
+							ttip="Interrupt Vector Change Enable"
+						/>
+				</ioreginitvalue>
+
+				<!-- (Reserved) -->
+				<ioreginitvalue
+					addr="0x3C" value="0x00" readmask="0xFF" writemask="0xFF"
+					randommask="0xFF" reserved="true" virtual="false" name=""
+					desc=""/>
+
+				<!-- SPL - Stack Pointer Low Register -->
+				<ioreginitvalue
+					addr="0x3D" value="0x00" readmask="0xFF" writemask="0xFF"
+					randommask="0x00" reserved="false" virtual="false" name="SPL"
+					desc="Stack Pointer Low Register"/>
+
+				<!-- SPH - Stack Pointer High Register -->
+				<ioreginitvalue
+					addr="0x3E" value="0x00" readmask="0xFF" writemask="0xFF"
+					randommask="0x00" reserved="false" virtual="false" name="SPH"
+					desc="Stack Pointer High Register"/>
+
+				<!-- SREG - The AVR Status Register-->
+				<ioreginitvalue
+					addr="0x3F" value="0x00" readmask="0xFF" writemask="0xFF"
+					randommask="0x00" reserved="false" virtual="false" name="SREG"
+					desc="The AVR Status Register">
+						<bit no="7" name="I"
+							stip="Global Interrupt Enable"
+							ttip="Global Interrupt Enable"
+						/><bit no="6" name="T"
+							stip="Bit Copy Storage"
+							ttip="Bit Copy Storage"
+						/><bit no="5" name="H"
+							stip="Half Carry Flag"
+							ttip="Half Carry Flag"
+						/><bit no="4" name="S"
+							stip="Sign Bit"
+							ttip="Sign Bit"
+						/><bit no="3" name="V"
+							stip="Two's Complement Overflow Flag"
+							ttip="Two's Complement Overflow Flag"
+						/><bit no="2" name="N"
+							stip="Negative Flag"
+							ttip="Negative Flag"
+						/><bit no="1" name="Z"
+							stip="Zero Flag"
+							ttip="Zero Flag"
+						/><bit no="0" name="C"
+							stip="Carry Flag"
+							ttip="Carry Flag"
+						/>
+				</ioreginitvalue>
+			</ioreginitvalues>
+			<iomem2initvalues mem2sizes="2 2">
+				<!-- 0x0C: UDR - USART I/O Data Register -->
+				<initvalues>
+					<!-- Read -->
+					<initvalue value="0x00" readmask="0xFF" writemask="0xFF"/>
+
+					<!-- Write -->
+					<initvalue value="0x00" readmask="0xFF" writemask="0xFF"/>
+				</initvalues>
+
+				<!-- 0x20 -->
+				<initvalues>
+					<!-- UBRRH - USART Baud Rate Register -->
+					<initvalue value="0x00" readmask="0xFF" writemask="0x8F"/>
+
+					<!-- UCSRC -  USART Control and Status Register C -->
+					<initvalue value="0x86" readmask="0xFF" writemask="0xFF"/>
+				</initvalues>
+			</iomem2initvalues>
+		</datamemory>
+		<externalinterrupts enabled="true"/>
+		<fusesandlocks
+			defaultFuses="CKSEL1 CKSEL2 CKSEL3 SUT0 BOOTSZ0 BOOTSZ1 SPIEN"
+			defaultLockBits=""
+		/>
+		<instructionset
+			pcWidth="PCWIDTH_16"
+		>
+			<availableinstructions>
+				ADIW		CALL		JMP		BREAK
+				EICALL		EIJMP		ICALL		IJMP
+				DES		ELPM_Rd_Zplus	ELPM_Rd_Z	ELPM
+				MUL		MULS		MULSU		FMUL
+				FMULS		FMULSU		LD_Rd_X		LD_Rd_Xplus
+				LD_Rd_minusX	LDD_Rd_Y	LD_Rd_Yplus	LD_Rd_minusY
+				LDD_Rd_Yq	LDD_Rd_Z	LD_Rd_Zplus	LD_Rd_minusZ
+				LDD_Rd_Zq	ST_Rr_X		ST_Rr_Xplus	ST_Rr_minusX
+				STD_Rr_Y	ST_Rr_Yplus	ST_Rr_minusY	STD_Rr_Yq
+				STD_Rr_Z	ST_Rr_Zplus	ST_Rr_minusZ	STD_Rr_Zq
+				LAS		LAC		LAT		SPM
+				SPM_Zplus	POP		PUSH		MOVW
+				SBIW		RCALL		LDS_Rd_k_16b	LDS_Rd_k
+				LPM		LPM_Rd_Z	LPM_Rd_Zplus	STS_k_Rr_16bb
+				STS_k_Rr
+			</availableinstructions>
+		</instructionset>
+		<interruptcontroller>
+			<possibleinterrupts>
+				RESET		INT0		INT1		TIMER2_COMP
+				TIMER2_OVF	TIMER1_CAPT	TIMER1_COMPA	TIMER1_COMPB
+				TIMER1_OVF	TIMER0_OVF	SPI_STC		USART_RXC
+				USART_UDRE	USART_TXC	ADC		EE_RDY
+				ANA_COMP	TWI		SPM_RDY
+			</possibleinterrupts>
+		</interruptcontroller>
+		<io
+			pullUpresistance="35e3"
+		>
+			<specfuncmap>
+				<pin sfunc="T0" name="PD4"/>
+				<pin sfunc="INT0" name="PD2"/>
+				<pin sfunc="INT1" name="PD3"/>
+				<pin sfunc="RESET" name="PC6"/>
+				<pin sfunc="RXD" name="PD0"/>
+				<pin sfunc="TXD" name="PD1"/>
+				<pin sfunc="XCK" name="PD4"/>
+				<pin sfunc="XTAL1" name="PB6"/>
+				<pin sfunc="TOSC1" name="PB6"/>
+				<pin sfunc="XTAL2" name="PB7"/>
+				<pin sfunc="TOSC2" name="PB7"/>
+				<pin sfunc="T1" name="PD5"/>
+				<pin sfunc="AIN0" name="PD6"/>
+				<pin sfunc="AIN1" name="PD7"/>
+				<pin sfunc="ICP1" name="PB0"/>
+				<pin sfunc="ADC5" name="PC5"/>
+				<pin sfunc="SCL" name="PC5"/>
+				<pin sfunc="ADC4" name="PC4"/>
+				<pin sfunc="SDA" name="PC4"/>
+				<pin sfunc="ADC3" name="PC3"/>
+				<pin sfunc="ADC2" name="PC2"/>
+				<pin sfunc="ADC1" name="PC1"/>
+				<pin sfunc="ADC0" name="PC0"/>
+				<pin sfunc="SCK" name="PB5"/>
+				<pin sfunc="MISO" name="PB4"/>
+				<pin sfunc="MOSI" name="PB3"/>
+				<pin sfunc="OC2" name="PB3"/>
+				<pin sfunc="SS" name="PB2"/>
+				<pin sfunc="OC1B" name="PB2"/>
+				<pin sfunc="OC1A" name="PB1"/>
+			</specfuncmap>
+			<hasport>
+				B C D
+			</hasport>
+			<availablepins>
+				PB0 PB1 PB2 PB3 PB4 PB5 PB6 PB7
+				PC0 PC1 PC2 PC3 PC4 PC5 PC6 PC7
+				PD0 PD1 PD2 PD3 PD4 PD5 PD6 PD7
+			</availablepins>
+		</io>
+		<isp enabled="true"/>
+		<parallelprog enabled="true"/>
+		<programmemory
+			size="4096"
+		/>
+		<spi enabled="true"/>
+		<systemcontrol
+			resetTresholdLow="0.2"
+			resetTresholdHigh="0.9"
+			minResetPulseWidth="1.5e-6"
+			powerOnResetTresholdFalling="1.3"
+			powerOnResetTresholdRaising="1.4"
+			tBOD="2e-6"
+			brownOutTreshold0="4.0"
+			brownOutTreshold1="2.6"
+			hasPowerOnReset="true"
+			hasBrownOutReset="true"
+			hasExternalReset="true"
+			hasWatchDog="true"
+		/>
+		<timercounter0 enabled="true"/>
+		<timercounter1 enabled="true"/>
+		<timercounter2 enabled="true"/>
+		<watchdogtimer/>
+		<twi enabled="true"/>
+		<usart enabled="true"/>
+	</avr8:device>
+</mcuspecfile>

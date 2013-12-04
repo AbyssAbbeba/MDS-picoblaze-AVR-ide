@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QtHelpProject version="1.0">
+     <namespace>MDS.1.0</namespace>
+     <virtualFolder>doc</virtualFolder>
+     <filterSection>
+         <toc>
+             <section title="MDS Application Manual" ref="xchalu10/index.html">
+                 <section title="Contents" ref="xchalu10/node1.html"/>
+                 <section title="Preface" ref="xchalu10/node2.html"/>
+                 <section title="About" ref="xchalu10/node3.html"/>
+             </section>
+         </toc>
+         <keywords>
+             <keyword name="foo" id="MDS::foo" ref="doc.html#foo"/>
+             <keyword name="bar" ref="doc.html#bar"/>
+             <keyword id="MDS::foobar" ref="doc.html#foobar"/>
+         </keywords>
+         <files>
+             <file>./xchalu10/index.html</file>
+             <file>./xchalu10/node*.html</file>
+             <file>./xchalu10/*.png</file>
+         </files>
+     </filterSection>
+</QtHelpProject>
