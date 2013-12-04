@@ -1,0 +1,21 @@
+[Desktop Entry]
+Categories=Development;
+Comment=Advanced Development System
+Comment[en_US]=Advanced development environment for small embedded systems.
+Encoding=UTF-8
+Exec=mmIDE
+GenericName=Moravia Micosystems IDE
+GenericName[en_US]=Moravia Micosystems IDE
+Icon=mmIDEicon
+MimeType=application/x-mmIDE-project
+Name=mmIDE
+Name[en_US]=mmIDE
+StartupNotify=true
+Terminal=false
+TerminalOptions=
+TryExec=mmIDE
+Type=Application
+Version=1.0
+X-DCOP-ServiceType=
+X-KDE-SubstituteUID=false
+X-KDE-Username=

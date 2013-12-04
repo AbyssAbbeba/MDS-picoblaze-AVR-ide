@@ -1,0 +1,3 @@
+000 11106          1         ADD         X, #6
+E: undefined symbol: "X"
+001 13506          2         ADDCY       5, #6

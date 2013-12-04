@@ -1,0 +1,1 @@
+qcollectiongenerator mdshelp.qhcp -o mdshelp.qhc

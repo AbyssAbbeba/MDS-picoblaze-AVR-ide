@@ -1,0 +1,108 @@
+<mcuspecfile>
+    <pic8:device family="PIC16F" name="PIC16F84A">
+        <instructionset/>
+        <programmemory size="123456" configwordaddress="0x2007">
+            <!-- if ( endpoint0 > endpoint1 ) then there are no ID locations -->
+            <idlocationsrange endpoint0="0x2000" endpoint1="0x2007"/>
+        </programmemory>
+        <datamemory size="123">
+            <register
+                    addresses="0x12,0x21"
+                    value="0x00"
+                    readmask="0xFF"
+                    writemask="0xFF"
+                    randommask="0x00"
+                    reserved="false"
+                    virtual="false"
+                    name="REGISTER0"
+                    desc="abcdefghijklmnopqrstuvwxyz"
+            >
+                            <bit no="7" name="A"
+                                    stip="xxx"
+                                    ttip="yyy"
+                            /><bit no="6" name="B"
+                                    stip="xxx"
+                                    ttip="yyy"
+                            /><bit no="5" name="C"
+                                    stip="xxx"
+                                    ttip="yyy"
+                            /><bit no="4" name="D"
+                                    stip="xxx"
+                                    ttip="yyy"
+                            /><bit no="3" name="E"
+                                    stip="xxx"
+                                    ttip="yyy"
+                            /><bit no="2" name="F"
+                                    stip="xxx"
+                                    ttip="yyy"
+                            /><bit no="1" name="G"
+                                    stip="xxx"
+                                    ttip="yyy"
+                            /><bit no="0" name="H"
+                                    stip="xxx"
+                                    ttip="yyy"
+                            />
+            </register><register
+                    addresses="0x1,0x2" value="0x00" readmask="0xFF" writemask="0xFF"
+                    randommask="0x00" reserved="false" virtual="false" name="REGISTER1"
+                    desc="abcdefghijklmnopqrstuvwxyz">
+                            <bit no="7" name="A"
+                                    stip="xxx"
+                                    ttip="yyy"
+                            /><bit no="6" name="B"
+                                    stip="xxx"
+                                    ttip="yyy"
+                            /><bit no="5" name="C"
+                                    stip="xxx"
+                                    ttip="yyy"
+                            /><bit no="4" name="D"
+                                    stip="xxx"
+                                    ttip="yyy"
+                            /><bit no="3" name="E"
+                                    stip="xxx"
+                                    ttip="yyy"
+                            /><bit no="2" name="F"
+                                    stip="xxx"
+                                    ttip="yyy"
+                            /><bit no="1" name="G"
+                                    stip="xxx"
+                                    ttip="yyy"
+                            /><bit no="0" name="H"
+                                    stip="xxx"
+                                    ttip="yyy"
+                            />
+            </register>
+        </datamemory>
+        <configword defaultcfgword="0x12"/>
+        <io enabled="true" pullUpresistance="1.23e45">
+            <specfuncmap>
+                    <pin sfunc="T0" name="PD4"/>
+                    <pin sfunc="INT0" name="PD2"/>
+                    <pin sfunc="INT1" name="PD3"/>
+                    <pin sfunc="RESET" name="PC6"/>
+                    <pin sfunc="RXD" name="PD0"/>
+            </specfuncmap>
+            <hasport>
+                    A B
+            </hasport>
+            <availablepins>
+                    PB0 PB1 PB2 PB3 PB4 PB5 PB6 PB7
+                    PC0 PC1 PC2 PC3 PC4 PC5 PC6 PC7
+                    PD0 PD1 PD2 PD3 PD4 PD5 PD6 PD7
+            </availablepins>
+        </io>
+        <clockcontrol/>
+        <stack size="7">
+        <interruptcontroller>
+            <possibleinterrupts>
+                RESET   INT0    TMR0    PORTB   EEPROM
+            </possibleinterrupts>
+        </interruptcontroller>
+        <dataeeprom size="123456" writetime="1.23e45"/>
+        <watchdogtimer enabled="true"/>
+        <timercounter0 enabled="true"/>
+        <timer0wdtprescaller enabled="true"/>
+        <externalinterrupts enabled="true"/>
+        <isp enabled="true" delaybetweencmdanddata="1.23e45" progtime="1.23e45" commandset="PIC16F84A"/>
+    </pic8:device>
+</mcuspecfile>

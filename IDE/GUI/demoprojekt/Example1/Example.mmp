@@ -1,0 +1,30 @@
+<!DOCTYPE MMProject>
+<MMProject>
+ <General>
+  <Name name="Example"/>
+  <Architecture architecture="kcpsm3"/>
+  <Language language="0"/>
+ </General>
+ <Files>
+  <File path="a.asm" name="a.asm"/>
+  <File path="kcpsm3_mac.inc" name="kcpsm3_mac.inc"/>
+  <File path="../../tests/compiler/assembler/PicoBlaze/TestSuiteSuc/testcases/001_logical.asm" name="001_logical.asm"/>
+ </Files>
+ <Mainfile path="a.asm" name="a.asm"/>
+ <Simulator/>
+ <Compiler>
+  <Options>
+   <SymbolTable enable="false"/>
+   <MacroTable enable="false"/>
+   <DebugFile enable="true"/>
+   <CodeTree enable="false"/>
+   <ListFile enable="false"/>
+   <HexFile enable="true"/>
+   <BinFile enable="false"/>
+   <SRecFile enable="false"/>
+  </Options>
+  <IncludePaths>
+   <Path path="/home/rift/Plocha/gui/localgit/mms/IDE/compiler/include/assembler/PicoBlaze"/>
+  </IncludePaths>
+ </Compiler>
+</MMProject>

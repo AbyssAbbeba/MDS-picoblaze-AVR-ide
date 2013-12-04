@@ -1,0 +1,21 @@
+ <!DOCTYPE RCC><RCC version="1.0">
+ <qresource>
+     <file>resources/icons/compile.png</file>
+     <file>resources/icons/projAdd.png</file>
+     <file>resources/icons/projNew.png</file>
+     <file>resources/icons/projNewAdd.png</file>
+     <file>resources/icons/projOpen.png</file>
+     <file>resources/icons/projSave.png</file>
+     <file>resources/icons/simulationAnimate.png</file>
+     <file>resources/icons/simulationReset.png</file>
+     <file>resources/icons/simulationRun.png</file>
+     <file>resources/icons/simulationStart.png</file>
+     <file>resources/icons/simulationStep.png</file>
+     <file>resources/icons/simulationStop.png</file>
+     <file>resources/icons/terminal.png</file>
+     <file>resources/icons/disassemble.png</file>
+     <file>resources/icons/unhighlight.png</file>
+     <file>resources/xml/mcuspecfile.xml</file>
+     <file>resources/help/mdshelp.qhc</file>
+ </qresource>
+ </RCC>

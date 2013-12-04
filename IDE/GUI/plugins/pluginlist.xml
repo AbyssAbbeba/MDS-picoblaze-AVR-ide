@@ -1,0 +1,8 @@
+<mdspluginlist revision="1">
+    <plugin name="8051 Simulator" version="1.0" uid="1">
+        <description desc="This plug-in adds 8051 into simulation set."/>
+    </plugin>
+    <plugin name="8051 HW Debugger" version="1.1" uid="2">
+        <description desc="This plug-in adds 8051 into HW debugging set."/>
+    </plugin>
+</mdspluginlist>

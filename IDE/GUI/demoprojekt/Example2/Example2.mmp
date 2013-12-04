@@ -1,0 +1,29 @@
+<!DOCTYPE MMProject>
+<MMProject>
+ <General>
+  <Name name="Example2"/>
+  <Architecture architecture="kcpsm3"/>
+  <Language language="0"/>
+ </General>
+ <Files>
+  <File path="../Example1/a.asm" name="a.asm"/>
+  <File path="../Example1/kcpsm3_mac.inc" name="kcpsm3_mac.inc"/>
+ </Files>
+ <Mainfile path="../Example1/a.asm" name="a.asm"/>
+ <Simulator/>
+ <Compiler>
+  <Options>
+   <SymbolTable enable="true"/>
+   <MacroTable enable="true"/>
+   <DebugFile enable="true"/>
+   <CodeTree enable="true"/>
+   <ListFile enable="true"/>
+   <HexFile enable="true"/>
+   <BinFile enable="false"/>
+   <SRecFile enable="false"/>
+  </Options>
+  <IncludePaths>
+   <Path path="/home/rift/Plocha/gui/localgit/mms/IDE/GUI/demoprojekt/Example2"/>
+  </IncludePaths>
+ </Compiler>
+</MMProject>
