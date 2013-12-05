@@ -67,13 +67,22 @@ unsigned int AsmPicoBlazeInstructionSet::checkLimit ( LimitType type,
     switch ( type )
     {
         case LIM_C:
-            msg = QObject::tr("user defined memory limit for program memory exceeded").toStdString();
+            msg = QObject::tr ( "user defined memory limit for program memory exceeded ( %1 > %2 )" )
+                              . arg ( value )
+                              . arg ( limit - 1 )
+                              . toStdString();
             break;
         case LIM_R:
-            msg = QObject::tr("user defined memory limit for register file exceeded").toStdString();
+            msg = QObject::tr ( "user defined memory limit for register file exceeded ( %1 > %2 )" )
+                              . arg ( value )
+                              . arg ( limit - 1 )
+                              . toStdString();
             break;
         case LIM_D:
-            msg = QObject::tr("user defined memory limit for Scratch Pad RAM exceeded").toStdString();
+            msg = QObject::tr ( "user defined memory limit for Scratch Pad RAM exceeded ( %1 > %2 )" )
+                              . arg ( value )
+                              . arg ( limit - 1 )
+                              . toStdString();
             break;
     }
     m_compilerCore -> compilerMessage ( location, CompilerBase::MT_ERROR, msg );

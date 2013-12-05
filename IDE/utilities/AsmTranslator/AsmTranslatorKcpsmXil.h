@@ -54,6 +54,16 @@ class AsmTranslatorKcpsmXil : public AsmTranslatorBase
                                std::string & line,
                                bool secondPass = false );
 
+    ////    Private Operations    ////
+    private:
+        /**
+         * @brief
+         * @param[in,out] lineFields
+         * @param[in] i
+         */
+        void fixRadix ( LineFields & lineFields,
+                        int i );
+
     ////    Inline Private Operations    ////
     private:
         /**
