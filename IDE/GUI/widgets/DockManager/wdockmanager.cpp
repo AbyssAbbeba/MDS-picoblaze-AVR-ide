@@ -688,7 +688,7 @@ void WDockManager::unhighlightSimWidget()
 
 void WDockManager::highlightError(QString filename, int line)
 {
-    qDebug() << "Line" << QDir(filename).absolutePath() << "orig" << filename;
+    //qDebug() << "Line" << QDir(filename).absolutePath() << "orig" << filename;
     this->setCentralByPath(QDir(filename).absolutePath());
     this->getCentralTextEdit()->scrollToLine(line);
     this->getCentralTextEdit()->selectLine(line);

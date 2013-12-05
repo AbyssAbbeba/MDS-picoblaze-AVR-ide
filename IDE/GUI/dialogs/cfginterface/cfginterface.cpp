@@ -33,9 +33,10 @@ CfgInterface::CfgInterface(QWidget *parent)
     this->lastItem = NULL;
     
     this->menuList->setHeaderHidden(true);
-    this->show();
+    //this->show();
     this->menuList->move(5,10);
     //this->menuList->setMaximumHeight(this->tabs->height());
+    this->menuList->setMinimumWidth(160);
     this->menuList->setMaximumWidth(160);
     this->widgetLabel->move(165,5);
     this->tabs->move(165,30);
@@ -56,8 +57,7 @@ CfgInterface::CfgInterface(QWidget *parent)
  */
 void CfgInterface::fixSize()
 {
-    qDebug() << "CfgInterface: fixSize()";
-
+    //qDebug() << "CfgInterface: fixSize()";
     this->menuList->setMaximumHeight(this->tabs->height()+this->widgetLabel->height());
     this->menuList->setMinimumHeight(this->tabs->height()+this->widgetLabel->height());
     this->setFixedWidth(this->tabs->width()+this->menuList->width()+10);
@@ -67,7 +67,7 @@ void CfgInterface::fixSize()
     this->widgetLabel->setMinimumWidth(this->tabs->width());
     this->widgetLabel->setMaximumHeight(25);
     this->widgetLabel->setMinimumHeight(25);
-    qDebug() << "CfgInterface: return fixSize()";
+    //qDebug() << "CfgInterface: return fixSize()";
 }
 
 
@@ -80,8 +80,24 @@ void CfgInterface::fixSize()
  */
 bool CfgInterface::addWidget(QWidget *widget, QString text, QString tabText, bool child)
 {
-    qDebug() << "CfgInterface: addWidget()";
-    this->tabs->addWidget(widget);
+    //qDebug() << "CfgInterface: addWidget()";
+    if (widget == NULL)
+    {
+        QWidget *plainWidget = new QWidget(this);
+        this->tabs->addWidget(plainWidget);
+    }
+    else
+    {
+        this->tabs->addWidget(widget);
+        if (widget->width() > this->tabs->width())
+        {
+            this->tabs->setFixedWidth(widget->width());
+        }
+        if (widget->height() > this->tabs->height())
+        {
+            this->tabs->setFixedHeight(widget->height());
+        }
+    }
     this->labelTexts.append(tabText);
     QTreeWidgetItem *item;
     if (true == child)
@@ -103,8 +119,8 @@ bool CfgInterface::addWidget(QWidget *widget, QString text, QString tabText, boo
     }
     item->setText(0, text);
     this->count++;
+    //qDebug() << "CfgInterface: return addWidget()";
     return true;
-    qDebug() << "CfgInterface: return addWidget()";
 }
 
 
