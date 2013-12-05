@@ -42,7 +42,7 @@
         case CA_CONTINUE:     continue;     \
         case CA_RETURN_TRUE:  return true;  \
         case CA_RETURN_FALSE: return false; \
-    }                                       \
+    }
 
 AsmPicoBlazeTreeDecoder::AsmPicoBlazeTreeDecoder ( CompilerSemanticInterface            * compilerCore,
                                                    CompilerOptions                      * opts,
