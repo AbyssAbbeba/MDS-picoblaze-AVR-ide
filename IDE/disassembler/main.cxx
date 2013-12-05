@@ -166,7 +166,8 @@ void printHelp ( const char * executable )
  */
 inline void printUsage ( const char * executable )
 {
-    std::cout << "Type: `" << executable << " -h'" << QObject::tr(" for help.").toStdString() << std::endl;
+    std::cout << QObject::tr("Type: `").toStdString() << executable << " -h'" << QObject::tr(" for help.").toStdString()
+              << std::endl;
 }
 
 /**
