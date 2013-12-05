@@ -129,5 +129,5 @@ class MScriptVariable
     std::ostream & operator << ( std::ostream & out,
                                  MScriptVariable::Flags flags );
 //@}
-    
+
 #endif // MSCRIPTVARIABLE_H
