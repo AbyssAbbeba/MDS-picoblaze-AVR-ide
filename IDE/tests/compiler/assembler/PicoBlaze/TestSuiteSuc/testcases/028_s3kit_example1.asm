@@ -1,8 +1,3 @@
-
-LOAD & RETURN s0, 1a
-CALL @(s1,s2)
-JUMP @(s1,s2)
-
                       ; KCPSM3 Program - LED control with Pulse Width Modulation (PWM).
                       ;
                       ; Design provided for use with the design 'low_cost_design_authentication_for_spartan_3e.vhd'

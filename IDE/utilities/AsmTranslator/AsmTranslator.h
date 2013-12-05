@@ -40,6 +40,8 @@ class AsmTranslator
          */
         enum Variant
         {
+            V_INVALID = -1,
+
             V_KCPSM_XILINX
         };
 

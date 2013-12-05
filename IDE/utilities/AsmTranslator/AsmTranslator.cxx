@@ -105,6 +105,8 @@ bool AsmTranslator::translate ( Variant variant,
 
     switch ( variant )
     {
+        case V_INVALID:
+            break;
         case V_KCPSM_XILINX:
             translator = new AsmTranslatorKcpsmXil;
             break;
