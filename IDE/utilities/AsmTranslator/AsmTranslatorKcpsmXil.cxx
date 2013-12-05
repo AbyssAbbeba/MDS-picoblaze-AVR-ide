@@ -193,17 +193,9 @@ inline bool AsmTranslatorKcpsmXil::processDirectives ( std::vector<std::string> 
         return true;
     }
 
-    // Convert numbers to numbers with radix specifier.
-    for ( unsigned int i = 0; i < 2; i++ )
-    {
-        if ( ( true == lineFields.hasOperand(i) ) && ( true == ishex(lineFields.getOperand(i)) ) )
-        {
-            lineFields.replaceOpr ( "0x" + lineFields.getOperand(i), i );
-        }
-    }
-
     if ( "constant" == directive )
     {
+        fixRadix(lineFields, 1);
         std::string substitute = lineFields.getOperand(0) + " EQU " + lineFields.getOperand(1);
 
         if ( true == m_instFlag )
@@ -226,6 +218,7 @@ inline bool AsmTranslatorKcpsmXil::processDirectives ( std::vector<std::string> 
     }
     else if ( "address" == directive )
     {
+        fixRadix(lineFields, 0);
         lineFields.replaceInst("ORG");
     }
     else
@@ -253,6 +246,8 @@ inline bool AsmTranslatorKcpsmXil::processInstructions ( std::vector<std::string
          ( "testcy"    == instruction ) || ( "compare" == instruction ) ||
          ( "comparecy" == instruction ) )
     {
+        fixRadix(lineFields, 1);
+
         if ( m_registers.end() == m_registers.find(lineFields.getOperand(1)) )
         {
             lineFields.replaceOpr( "#" + lineFields.getOperand(1), 1);
@@ -304,6 +299,10 @@ inline bool AsmTranslatorKcpsmXil::processInstructions ( std::vector<std::string
                 lineFields.replaceOpr ( "@" + opr1subst, 1 );
             }
         }
+        else
+        {
+            fixRadix(lineFields, 1);
+        }
 
         if ( 'i' == instruction[0] )
         {
@@ -318,6 +317,8 @@ inline bool AsmTranslatorKcpsmXil::processInstructions ( std::vector<std::string
     }
     else if ( "outputk" == instruction )
     {
+        fixRadix(lineFields, 0);
+        fixRadix(lineFields, 1);
         lineFields.replaceOpr("#" + lineFields.getOperand(0), 0);
         lineFields.replaceInst("outk");
     }
@@ -366,6 +367,8 @@ inline bool AsmTranslatorKcpsmXil::processInstructions ( std::vector<std::string
     else if ( true == boost::regex_match(instruction, m_reLdAndRet ) )
     {
         lineFields.replaceInst("ld&ret");
+        fixRadix(lineFields, 1);
+        lineFields.replaceOpr("#" + lineFields.getOperand(1), 1);
     }
 
     return true;
@@ -382,4 +385,13 @@ inline bool AsmTranslatorKcpsmXil::ishex ( const std::string & str ) const
     }
 
     return true;
+}
+
+void AsmTranslatorKcpsmXil::fixRadix ( LineFields & lineFields,
+                                       int i )
+{
+    if ( ( true == lineFields.hasOperand(i) ) && ( true == ishex(lineFields.getOperand(i)) ) )
+    {
+        lineFields.replaceOpr ( "0x" + lineFields.getOperand(i), i );
+    }
 }
