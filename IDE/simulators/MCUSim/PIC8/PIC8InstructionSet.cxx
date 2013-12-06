@@ -5,7 +5,7 @@
  *
  * ...
  *
- * (C) copyright 2013 Moravia Microsystems, s.r.o.
+ * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
  *
  * @author Erik Chalupa <xchalu10@stud.fit.vutbr.cz>
  * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>

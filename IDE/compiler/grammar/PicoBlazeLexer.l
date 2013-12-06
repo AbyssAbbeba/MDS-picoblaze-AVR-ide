@@ -4,7 +4,7 @@
  *
  * ...
  *
- * (C) copyright 2013 Moravia Microsystems, s.r.o.
+ * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
  *
  * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  */
@@ -290,6 +290,7 @@ DIS_INT_INST            "disable"{WSPACE}"interrupt"
 {DIS_INT_INST}          { return I_DISABLE_INT; }
 
  /* Instruction shortcuts. */
+"ldret"                 { return I_LD_RET;      }
 "ena"                   { return I_ENABLE_INT;  }
 "dis"                   { return I_DISABLE_INT; }
 "retie"                 { return I_RETURNI_ENA; }
@@ -301,6 +302,8 @@ DIS_INT_INST            "disable"{WSPACE}"interrupt"
 "outk"                  { return I_OUTPUTK;     }
 "ld"                    { return I_LOAD;        }
 "cmpcy"                 { return I_COMPARECY;   }
+"st"                    { return I_STORE;       }
+"ft"                    { return I_FETCH;       }
 "rb"{WSPACE}"A"         { return I_REGBANK_A;   }
 "rb"{WSPACE}"B"         { return I_REGBANK_B;   }
 

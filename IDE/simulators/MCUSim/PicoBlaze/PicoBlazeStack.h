@@ -7,7 +7,7 @@
  * only zeros after MCU reset. Fast operation of the subsystem was a priority. The stack subsystem simulator shares the
  * common memory interface, like register file, scratch pad RAM, program memory, etc.
  *
- * (C) copyright 2013 Moravia Microsystems, s.r.o.
+ * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
  *
  * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>, (C) 2013
  * @ingroup PicoBlaze
