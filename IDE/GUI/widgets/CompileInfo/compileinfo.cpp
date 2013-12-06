@@ -17,8 +17,58 @@ CompileInfo::CompileInfo(QWidget *parent)
     : QTextEdit(parent)
 {
     this->setFont(QFont("Andale Mono", 10));
+    this->setMouseTracking(true);
     //this->installEventFilter(this);
     //this->setWordWrap();
+}
+
+
+void CompileInfo::mouseMoveEvent(QMouseEvent *e)
+{
+    //qDebug() << "CompileInfo: mouseMoveEvent";
+    QTextCursor cur = this->cursorForPosition(e->pos());
+    cur.select(QTextCursor::LineUnderCursor);
+    QStringList list = cur.selectedText().split(':');
+    //QString line = list.at(2).
+    bool ok = false;
+    if (list.size() > 1)
+    {
+        int line = list.at(1).section('.',0,0).toInt(&ok, 10);
+        if (ok == true)
+        {
+            QWidget *viewport = this->viewport();
+            viewport->setCursor(Qt::PointingHandCursor);
+            this->setViewport(viewport);
+            
+            QTextCharFormat format = cur.blockCharFormat();
+            format.setFontUnderline(true);
+            format.setFontItalic(true);
+            cur.setBlockCharFormat(format);
+            setTextCursor(cur);
+
+            /*prevCur.select(QTextCursor::LineUnderCursor);
+            QTextCharFormat prevFormat = prevCur.blockCharFormat();
+            prevFormat.setFontUnderline(false);
+            prevFormat.setFontItalic(false);
+            prevCur.setBlockCharFormat(prevFormat);
+            prevCur.clearSelection();
+            setTextCursor(prevCur);*/
+            
+            prevCur = cur;
+        }
+        else
+        {
+            QWidget *viewport = this->viewport();
+            viewport->setCursor(Qt::IBeamCursor);
+            this->setViewport(viewport);
+        }
+    }
+    else
+    {
+        QWidget *viewport = this->viewport();
+        viewport->setCursor(Qt::IBeamCursor);
+        this->setViewport(viewport);
+    }
 }
 
 
@@ -30,7 +80,15 @@ void CompileInfo::mouseDoubleClickEvent(QMouseEvent *e)
     //QString selection = cur.selectedText();
     QStringList list = cur.selectedText().split(':');
     //QString line = list.at(2).
-    emit errorClicked(list.at(0), list.at(1).section('.',0,0).toInt());
+    bool ok = false;
+    if (list.size() > 1)
+    {
+        int line = list.at(1).section('.',0,0).toInt(&ok, 10);
+        if (ok == true)
+        {
+            emit errorClicked(list.at(0), line);
+        }
+    }
     //QString line;
     //QString wordBegin;
     //QString wordEnd;
@@ -74,7 +132,8 @@ bool CompileInfo::eventFilter(QObject *target, QEvent *event)
 
 void CompileInfo::appendMessage(QString text, CompilerBase::MessageType type)
 {
-    this->setTextColor(Qt::black);
+    //this->setTextColor(Qt::black);
+    QString color = "rgb(0,0,0)";
     switch (type)
     {
         case CompilerBase::MessageType::MT_INVALID:
@@ -87,21 +146,26 @@ void CompileInfo::appendMessage(QString text, CompilerBase::MessageType type)
         }
         case CompilerBase::MessageType::MT_ERROR:
         {
-            this->setTextColor(Qt::darkRed);
+            //this->setTextColor(Qt::darkRed);
+            color = "rgb(80,0,0)";
             break;
         }
         case CompilerBase::MessageType::MT_WARNING:
         {
-            this->setTextColor(Qt::red);
+            //this->setTextColor(Qt::red);
+            color = "rgb(255,0,0)";
             break;
         }
         case CompilerBase::MessageType::MT_REMARK:
         {
-            this->setTextColor(Qt::blue);
+            //this->setTextColor(Qt::blue);
+            color = "rgb(0,0,255)";
             break;
         }
     }
-    this->append(text);
+    this->insertHtml("<a style=\"color:" + color + "\">" + text + "</a>");
+    this->insertPlainText("\n");
+    //this->append(text);
 }
 
 
