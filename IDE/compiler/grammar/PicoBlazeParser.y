@@ -4,7 +4,7 @@
  *
  * ...
  *
- * (C) copyright 2013 Moravia Microsystems, s.r.o.
+ * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
  *
  * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  */
@@ -30,7 +30,7 @@
 // Write an extra output file containing verbose descriptions of the parser states.
 %verbose
 // Expect exactly <n> shift/reduce conflicts in this grammar
-%expect 122
+%expect 125
 // Expect exactly <n> reduce/reduce conflicts in this grammar
 %expect-rr 0
 /* Type of parser tables within the LR family, in this case we use LALR (Look-Ahead LR parser) */
@@ -171,6 +171,7 @@
 %token I_STORE          I_FETCH         I_SR0           I_SR1           I_RETURNI_DIS
 %token I_RETURNI_ENA    I_HWBUILD       I_STAR          I_TESTCY        I_COMPARECY
 %token I_REGBANK_A      I_REGBANK_B     I_OUTPUTK       I_ADD           I_ADDCY
+%token I_LD_RET
 
 /* Special macros */
 %token M_RTIF           M_RTELSEIF      M_RTELSE        M_RTENDIF       M_RTWHILE
@@ -274,7 +275,7 @@
 %type<stmt>     inst_srx        inst_sra        inst_rr         inst_sl0        inst_sl1
 %type<stmt>     inst_slx        inst_sla        inst_rl         inst_input      inst_output
 %type<stmt>     inst_testcy     inst_comparecy  inst_outputk    inst_star       inst_hwbuild
-%type<stmt>     inst_regbank
+%type<stmt>     inst_regbank    inst_ld_ret
 
 // Statements - special macros
 %type<stmt>     dir_rt_cond     rtif_block      rtelseif_block  rtelse_block    dir_rtif
@@ -1669,7 +1670,7 @@ dir_code_a:
 instruction:
     /* Program Control Group */
       inst_jump         { $$ = $1; } | inst_call        { $$ = $1; }
-    | inst_return       { $$ = $1; }
+    | inst_return       { $$ = $1; } | inst_ld_ret      { $$ = $1; }
     /* Arithmetic Group */
     | inst_add          { $$ = $1; } | inst_addcy       { $$ = $1; }
     | inst_sub          { $$ = $1; } | inst_subcy       { $$ = $1; }
@@ -1741,6 +1742,18 @@ inst_return:
     | I_RETURN_C                    { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_RETURN_C  ); }
     | I_RETURN_NC                   { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_RETURN_NC ); }
     | I_RETURN opr "," oprs         { /* Syntax Error */ $$ = NULL; NN_OPERANDS_EXPECTED(@1, "RETURN", 0, 1); }
+;
+inst_ld_ret:
+      I_LD_RET expr "," "#" expr    {
+                                        $$ = new CompilerStatement ( LOC(@$),
+                                                                     ASMPICOBLAZE_INS_LD_RET_SX_KK,
+                                                                     $2->appendLink($5) );
+                                    }
+    | I_LD_RET
+      eopr "," eopr "," eoprs       { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "LDRET", 2); }
+    | I_LD_RET eopr                 { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "LDRET", 2); }
+    | I_LD_RET                      { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "LDRET", 2); }
+    | I_LD_RET eopr eoprs           { /* Syntax Error */ $$ = NULL; MISSIGN_COMMA(@2, NULL);             }
 ;
 /* Arithmetic Group */
 inst_add:

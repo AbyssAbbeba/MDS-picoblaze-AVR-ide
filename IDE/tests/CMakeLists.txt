@@ -42,3 +42,6 @@ add_subdirectory ( MCUDataFiles )
 
 # Unit tests for Moravia Script.
 add_subdirectory ( MScript )
+
+# Unit tests for Assembly language support library.
+add_subdirectory ( AsmTranslator )
