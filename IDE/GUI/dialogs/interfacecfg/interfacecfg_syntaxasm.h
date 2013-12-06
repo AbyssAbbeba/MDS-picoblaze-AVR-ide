@@ -12,7 +12,17 @@ class InterfaceCfg_SyntaxAsm : public QWidget
         InterfaceCfg_SyntaxAsm(QWidget *parent);
 
     private:
+        int type;
         Ui_InterfaceCfg_SyntaxAsm ui;
+
+    private slots:
+        void commentColor();
+        void labelColor();
+        void keywordColor();
+        void operandColor();
+        void operatorColor();
+        void quoteColor();
+        void colorSelected(const QColor &color);
 
 };
 
