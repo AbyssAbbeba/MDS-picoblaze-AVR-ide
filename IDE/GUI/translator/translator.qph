@@ -1,0 +1,31 @@
+<!DOCTYPE QPH>
+<QPH language="cs" sourcelanguage="en">
+<phrase>
+    <source>File</source>
+    <target>Soubor</target>
+</phrase>
+<phrase>
+    <source>Edit</source>
+    <target>Úpravy</target>
+</phrase>
+<phrase>
+    <source>Interface</source>
+    <target>Rozhraní</target>
+</phrase>
+<phrase>
+    <source>Project</source>
+    <target>Projekt</target>
+</phrase>
+<phrase>
+    <source>Simulation</source>
+    <target>Simulace</target>
+</phrase>
+<phrase>
+    <source>Tools</source>
+    <target>Nástroje</target>
+</phrase>
+<phrase>
+    <source>Help</source>
+    <target>Nápověda</target>
+</phrase>
+</QPH>

@@ -47,7 +47,7 @@ class ProjectConfigDialog_Core : public QDialog
         void reloadTree();
 
     private:
-        void freeDialog();
+        //void freeDialog();
 
         //QWidget *parent;
         Project *project;

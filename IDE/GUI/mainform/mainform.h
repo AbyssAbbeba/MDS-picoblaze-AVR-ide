@@ -76,7 +76,7 @@ class MainForm : public QMainWindow
         void toolConvertor();
         void toolDisplay();
         void exampleOpen();
-        void showPlugins();
+        //void showPlugins();
         //void writeToWCompileInfo(QString text);
         void createDockWidgets();
         void simProjectData();
@@ -96,6 +96,7 @@ class MainForm : public QMainWindow
         void disassembleOutput(std::vector<std::string> text);
         void unhighlight();
         void projectConfig();
+        void interfaceConfig();
 
     signals:
         void unhighlightSim();

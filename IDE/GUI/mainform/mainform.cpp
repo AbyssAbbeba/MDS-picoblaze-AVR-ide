@@ -21,6 +21,7 @@
 #include "../errordialog/errordlg.h"
 #include "pluginman_gui.h"
 #include "../dialogs/projectcfg/projectcfgdlg_core.h"
+#include "../dialogs/interfacecfg/interfacecfgdlg_core.h"
 //#include "../widgets/CompileWidget/compilewidget.h"
 #include "../widgets/HelpWidget/helpwidget.h"
 
@@ -77,7 +78,7 @@ void MainForm::createMenu()
     editMenu = menuBar()->addMenu(tr("&Edit"));
     interfaceMenu = menuBar()->addMenu(tr("&Interface"));
     interfaceMenu->addAction(interfaceConfigAct);
-    interfaceMenu->addAction(pluginAct);
+    //interfaceMenu->addAction(pluginAct);
 
     projectMenu = menuBar()->addMenu(tr("&Project"));
     projectMenu->addAction(newProjAct);
@@ -161,8 +162,9 @@ void MainForm::createActions()
 
     //INTERFACE
     interfaceConfigAct = new QAction(tr("Config"), this);
-    pluginAct = new QAction(tr("Plugins"), this);
-    connect(pluginAct, SIGNAL(triggered()), this, SLOT(showPlugins()));
+    connect(interfaceConfigAct, SIGNAL(triggered()), this, SLOT(interfaceConfig()));
+    //pluginAct = new QAction(tr("Plugins"), this);
+    //connect(pluginAct, SIGNAL(triggered()), this, SLOT(showPlugins()));
 
 
 
@@ -968,13 +970,13 @@ void MainForm::exampleOpen()
 }
 
 
-/**
+/* *
  * @brief Slot. Show plugin manager gui.
  */
-void MainForm::showPlugins()
+/*void MainForm::showPlugins()
 {
     //PluginMan_GUI *a = new PluginMan_GUI(0);
-}
+}*/
 
 
 /**
@@ -1151,4 +1153,11 @@ void MainForm::unhighlight()
 void MainForm::projectConfig()
 {
     this->startProjectConfig(this->projectMan->getActive());
+}
+
+
+void MainForm::interfaceConfig()
+{
+    InterfaceCfgDlg_Core *cfgdlg = new InterfaceCfgDlg_Core(this);
+    cfgdlg->exec();
 }

@@ -6,5 +6,6 @@
 
 add_subdirectory(cfginterface)
 add_subdirectory(projectcfg)
+add_subdirectory(interfacecfg)
 add_subdirectory(projectdlg)
 add_subdirectory(disasmdlg)

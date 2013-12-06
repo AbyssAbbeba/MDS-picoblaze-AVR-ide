@@ -41,25 +41,33 @@ ProjectCfg_Compiler::ProjectCfg_Compiler(QWidget *parentWidget, Project *currPro
     this->chckSRecFile = new QCheckBox(this);
 
     this->lblMain->move(5,5);
-    this->lblSymbolTbl->move(25,30);
-    this->lblMacroTbl->move(25,50);
-    this->lblDbgFile->move(25,70);
-    this->lblCodeTree->move(25,90);
-    this->lblLstFile->move(25,110);
+    this->lblSymbolTbl->move(25,50);
+    this->lblMacroTbl->move(25,70);
+    this->lblDbgFile->move(25,90);
+    this->lblCodeTree->move(25,110);
+    /*this->lblLstFile->move(25,110);
     this->lblHexFile->move(25,130);
     this->lblBinFile->move(25,150);
-    this->lblSRecFile->move(25,170);
+    this->lblSRecFile->move(25,170);*/
+    this->lblLstFile->move(155,50);
+    this->lblHexFile->move(155,70);
+    this->lblBinFile->move(155,90);
+    this->lblSRecFile->move(155, 110);
 
-    this->leMain->move(75, 5);
+    this->leMain->move(5, 20);
 
-    this->chckSymbolTbl->move(5,30);
-    this->chckMacroTbl->move(5,50);
-    this->chckDbgFile->move(5,70);
-    this->chckCodeTree->move(5,90);
-    this->chckLstFile->move(5,110);
+    this->chckSymbolTbl->move(5,50);
+    this->chckMacroTbl->move(5,70);
+    this->chckDbgFile->move(5,90);
+    this->chckCodeTree->move(5,110);
+    /*this->chckLstFile->move(5,110);
     this->chckHexFile->move(5,130);
     this->chckBinFile->move(5,150);
-    this->chckSRecFile->move(5,170);
+    this->chckSRecFile->move(5,170);*/
+    this->chckLstFile->move(135,50);
+    this->chckHexFile->move(135,70);
+    this->chckBinFile->move(135,90);
+    this->chckSRecFile->move(135,110);
 
     this->load();
 }
@@ -80,6 +88,16 @@ void ProjectCfg_Compiler::load()
     this->chckBinFile->setChecked(project->compileOpt.at(6));
     this->chckSRecFile->setChecked(project->compileOpt.at(7));
     this->leMain->setText(project->mainFileName);
+    
+    /*int w = leMain->fontMetrics().boundingRect(leMain->text()).width();
+    if (w > 200)
+    {
+    }
+    else
+    {*/
+        this->leMain->setMinimumWidth(200);
+        this->leMain->setMaximumWidth(200);
+    //}
     qDebug() << "ProjectCfg_Compiler: return load()";
 }
 
