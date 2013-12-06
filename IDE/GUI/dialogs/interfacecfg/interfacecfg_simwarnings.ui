@@ -1,0 +1,449 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>InterfaceCfg_SimWarnings</class>
+ <widget class="QWidget" name="InterfaceCfg_SimWarnings">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>298</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <widget class="QTabWidget" name="tabWidget">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>401</width>
+     <height>301</height>
+    </rect>
+   </property>
+   <property name="currentIndex">
+    <number>0</number>
+   </property>
+   <widget class="QWidget" name="tab">
+    <attribute name="title">
+     <string>Memory</string>
+    </attribute>
+    <widget class="QCheckBox" name="chckRdUnimpl">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>30</y>
+       <width>181</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>Attempt to read from an unimplemented memory cell</string>
+     </property>
+     <property name="text">
+      <string>Read unimplemented</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="chckRdAccess">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>50</y>
+       <width>181</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Read access denied</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="chckRdUndef">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>70</y>
+       <width>181</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>Undefined (uninitialized) value read.</string>
+     </property>
+     <property name="text">
+      <string>Read undefined</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="chckRdDefault">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>90</y>
+       <width>181</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>Value defined by default condition was read</string>
+     </property>
+     <property name="text">
+      <string>Read default</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="chckRdWrOnly">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>110</y>
+       <width>171</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>Value read from write only memory cell</string>
+     </property>
+     <property name="text">
+      <string>Read write-only</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="chckRdPtWrOnly">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>130</y>
+       <width>191</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>Value read from partially write only memory cell</string>
+     </property>
+     <property name="text">
+      <string>Read part write-only</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="chckRdNonexist">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>10</y>
+       <width>191</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>Attempt to read from nonexistent memory space</string>
+     </property>
+     <property name="text">
+      <string>Read nonexistent</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="chckWrNonexist">
+     <property name="geometry">
+      <rect>
+       <x>210</x>
+       <y>10</y>
+       <width>171</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>Attempt to write to a nonexistent memory space</string>
+     </property>
+     <property name="text">
+      <string>Write nonexistent</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="chckWrUnimpl">
+     <property name="geometry">
+      <rect>
+       <x>210</x>
+       <y>30</y>
+       <width>181</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>Attempt to write to an unimplemented memory cell</string>
+     </property>
+     <property name="text">
+      <string>Write unimplemented</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="chckWrAccess">
+     <property name="geometry">
+      <rect>
+       <x>210</x>
+       <y>50</y>
+       <width>161</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Write access denied</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="chckWrRdOnly">
+     <property name="geometry">
+      <rect>
+       <x>210</x>
+       <y>110</y>
+       <width>161</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>alue written to read only memory cell</string>
+     </property>
+     <property name="text">
+      <string>Write read-only</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="chckWrPtRdOnly">
+     <property name="geometry">
+      <rect>
+       <x>210</x>
+       <y>130</y>
+       <width>171</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>Value written to partially read only memory cell</string>
+     </property>
+     <property name="text">
+      <string>Write part read-only</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="chckRdReserved">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>150</y>
+       <width>191</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Read reserved register</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="chckWrReserved">
+     <property name="geometry">
+      <rect>
+       <x>210</x>
+       <y>150</y>
+       <width>181</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Write reserved register</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="tab_2">
+    <attribute name="title">
+     <string>Stack</string>
+    </attribute>
+    <widget class="QCheckBox" name="chckStackOver">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>10</y>
+       <width>131</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Stack overflow</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="chckStackUnder">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>30</y>
+       <width>141</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Stack underflow</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="tab_3">
+    <attribute name="title">
+     <string>CPU</string>
+    </attribute>
+    <widget class="QCheckBox" name="chckOpcode">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>10</y>
+       <width>151</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Invalid opcode</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="chckJmp">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>30</y>
+       <width>131</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Invalid jump</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="chckCall">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>50</y>
+       <width>131</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Invalid call</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="chckIRQ">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>70</y>
+       <width>141</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>Invalid interrupt, i.e. nonsense IRQ (Interrupt ReQuest)</string>
+     </property>
+     <property name="text">
+      <string>Invalid IRQ</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="chckRet">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>90</y>
+       <width>131</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>There is no active subprogram to return from</string>
+     </property>
+     <property name="text">
+      <string>Invalid return</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="chckReti">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>110</y>
+       <width>191</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>There is no active interrupt to return from</string>
+     </property>
+     <property name="text">
+      <string>Invalid interrupt return</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="chckOpset">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>130</y>
+       <width>201</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>Undefined result of the operation due to invalid set of operands</string>
+     </property>
+     <property name="text">
+      <string>Invalid set of operands</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="chckInstUnsup">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>150</y>
+       <width>201</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Instruction unsupported</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="chckInsIgnored">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>170</y>
+       <width>201</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>Instruction ignored due to settings</string>
+     </property>
+     <property name="text">
+      <string>Instruction ignored</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="chckPcOver">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>190</y>
+       <width>191</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>Program counter overflow</string>
+     </property>
+     <property name="text">
+      <string>PC overflow</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="chckPcUnder">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>210</y>
+       <width>191</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>Program counter underflow</string>
+     </property>
+     <property name="text">
+      <string>PC underflow</string>
+     </property>
+    </widget>
+   </widget>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

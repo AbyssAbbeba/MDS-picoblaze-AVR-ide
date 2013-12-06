@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>InterfaceCfg_EditGeneral</class>
+ <widget class="QWidget" name="InterfaceCfg_EditGeneral">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>40</x>
+     <y>50</y>
+     <width>81</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Tab width</string>
+   </property>
+  </widget>
+  <widget class="QSpinBox" name="spinTabWidth">
+   <property name="geometry">
+    <rect>
+     <x>270</x>
+     <y>50</y>
+     <width>60</width>
+     <height>27</height>
+    </rect>
+   </property>
+   <property name="minimum">
+    <number>1</number>
+   </property>
+   <property name="maximum">
+    <number>20</number>
+   </property>
+   <property name="value">
+    <number>4</number>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="chckSpaces">
+   <property name="geometry">
+    <rect>
+     <x>270</x>
+     <y>80</y>
+     <width>97</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_2">
+   <property name="geometry">
+    <rect>
+     <x>40</x>
+     <y>80</y>
+     <width>201</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Insert spaces instead of tabs</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_3">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>40</x>
+     <y>110</y>
+     <width>171</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Number of spaces</string>
+   </property>
+  </widget>
+  <widget class="QSpinBox" name="spinSpaces">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>270</x>
+     <y>110</y>
+     <width>60</width>
+     <height>27</height>
+    </rect>
+   </property>
+   <property name="minimum">
+    <number>1</number>
+   </property>
+   <property name="maximum">
+    <number>20</number>
+   </property>
+   <property name="value">
+    <number>4</number>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_4">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>20</y>
+     <width>66</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Editing</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_5">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>160</y>
+     <width>66</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Files</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_6">
+   <property name="geometry">
+    <rect>
+     <x>40</x>
+     <y>190</y>
+     <width>131</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Default encoding</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_7">
+   <property name="geometry">
+    <rect>
+     <x>40</x>
+     <y>220</y>
+     <width>111</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Default EOL</string>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="comboBox">
+   <property name="geometry">
+    <rect>
+     <x>270</x>
+     <y>220</y>
+     <width>78</width>
+     <height>27</height>
+    </rect>
+   </property>
+   <item>
+    <property name="text">
+     <string>lf</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>cr</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>crlf</string>
+    </property>
+   </item>
+  </widget>
+  <widget class="QComboBox" name="comboBox_2">
+   <property name="geometry">
+    <rect>
+     <x>270</x>
+     <y>190</y>
+     <width>78</width>
+     <height>27</height>
+    </rect>
+   </property>
+   <item>
+    <property name="text">
+     <string>utf-8</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>iso 8859-1</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>iso 8859-2</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>iso 8859-3</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>iso 8859-4</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>iso 8859-5</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>iso 8859-6</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>iso 8859-7</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>iso 8859-8</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>iso 8859-9</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>iso 8859-10</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>iso 8859-13</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>iso 8859-14</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>iso 8859-15</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>iso 8859-16</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>cp-1250</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>cp-1251</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>cp-1252</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>cp-1253</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>cp-1254</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>cp-1255</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>cp-1256</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>cp-1257</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>cp-1258</string>
+    </property>
+   </item>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

@@ -32,11 +32,22 @@ set_directory_properties ( PROPERTIES
 # COMPILATION OPTIONS
 # ------------------------------------------------------------------------------
 
+# Find Boost include directories and libraries.
+find_package ( Boost 1.46
+               REQUIRED
+               COMPONENTS filesystem system )
+
 # Add include directories to the build.
-include_directories ( "${CMAKE_CURRENT_BINARY_DIR}/../../../../utilities/AsmTranslator" )
+include_directories ( ${Boost_INCLUDE_DIRS}
+                      "${CMAKE_CURRENT_BINARY_DIR}/../../../../compiler"
+                      "${CMAKE_CURRENT_BINARY_DIR}/../../../../utilities/MCUDataFiles"
+                      "${CMAKE_CURRENT_BINARY_DIR}/../../../../utilities/AsmTranslator" )
 
 # Specify directories in which the linker will look for libraries.
-link_directories ( "${CMAKE_CURRENT_BINARY_DIR}/../../../../utilities/AsmTranslator" )
+link_directories ( ${Boost_LIBRARY_DIRS}
+                   "${CMAKE_CURRENT_BINARY_DIR}/../../../../compiler/core"
+                   "${CMAKE_CURRENT_BINARY_DIR}/../../../../utilities/MCUDataFiles"
+                   "${CMAKE_CURRENT_BINARY_DIR}/../../../../utilities/AsmTranslator" )
 
 ## Add switches to compiler command line
  # -pipe       : Use pipes rather than temporary files for communication between the various stages of compilation.
@@ -51,5 +62,8 @@ add_library ( ${PROJECT_NAME} SHARED
 
 # Link a target to given libraries
 target_link_libraries ( ${PROJECT_NAME}
+                        ${Boost_LIBRARIES}
                         AsmTranslator
+                        CompilerCore
+                        MCUDataFiles
                         cunit )

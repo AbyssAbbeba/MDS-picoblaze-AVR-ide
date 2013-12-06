@@ -191,7 +191,7 @@ inline void AsmPicoBlazeSemanticAnalyzer::genMachineCode()
             bytesPerRecord = 2;
             linesInTotal = 16;
             wordSize = AsmMachineCodeGen::WORD_2B;
-            opCodeSize = XilHDLFile::SIZE_18b;
+            opCodeSize = XilHDLFile::SIZE_16b;
             vTemplate = "kcpsm1cpld.v";
             vhdlTemplate = "kcpsm1cpld.vhd";
             break;
@@ -201,7 +201,7 @@ inline void AsmPicoBlazeSemanticAnalyzer::genMachineCode()
             bytesPerRecord = 2;
             linesInTotal = 16;
             wordSize = AsmMachineCodeGen::WORD_2B;
-            opCodeSize = XilHDLFile::SIZE_18b;
+            opCodeSize = XilHDLFile::SIZE_16b;
             vTemplate = "kcpsm1.v";
             vhdlTemplate = "kcpsm1.vhd";
             break;
