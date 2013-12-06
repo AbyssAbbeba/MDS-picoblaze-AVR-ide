@@ -5,7 +5,7 @@
  *
  * ...
  *
- * (C) copyright 2013 Moravia Microsystems, s.r.o.
+ * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
  *
  * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup AsmTranslator
@@ -18,6 +18,8 @@
 // AsmTranslator header files.
 #include "AsmTranslatorBase.h"
 #include "AsmTranslatorKcpsmXil.h"
+#include "AsmTranslatorKcpsmMed.h"
+#include "AsmTranslatorKcpsmPBIDE.h"
 
 // Standard header files.
 #include <cstdio>
@@ -28,6 +30,39 @@
 
 AsmTranslator::~AsmTranslator()
 {
+}
+
+bool AsmTranslator::translate ( Variant variant,
+                                std::ostream & output,
+                                std::istream & input )
+{
+    AsmTranslatorBase * translator = NULL;
+
+    switch ( variant )
+    {
+        case V_INVALID:
+            break;
+        case V_KCPSM_XILINX:
+            translator = new AsmTranslatorKcpsmXil;
+            break;
+        case V_KCPSM_MEDIATRONIX:
+            translator = new AsmTranslatorKcpsmMed;
+            break;
+        case V_KCPSM_OPENPICIDE:
+            translator = new AsmTranslatorKcpsmPBIDE;
+            break;
+    }
+
+    if ( NULL == translator )
+    {
+        m_messages.push_back ( QObject::tr("Error: unsupported assembler variant.").toStdString() );
+        return false;
+    }
+
+    translator->m_config = &m_config;
+    bool result = translate(translator, output, input);
+    delete translator;
+    return result;
 }
 
 inline bool AsmTranslator::translate ( AsmTranslatorBase * translator,
@@ -95,33 +130,6 @@ inline bool AsmTranslator::translate ( AsmTranslatorBase * translator,
     }
 
     return true;
-}
-
-bool AsmTranslator::translate ( Variant variant,
-                                std::ostream & output,
-                                std::istream & input )
-{
-    AsmTranslatorBase * translator = NULL;
-
-    switch ( variant )
-    {
-        case V_INVALID:
-            break;
-        case V_KCPSM_XILINX:
-            translator = new AsmTranslatorKcpsmXil;
-            break;
-    }
-
-    if ( NULL == translator )
-    {
-        m_messages.push_back ( QObject::tr("Error: unsupported assembler variant.").toStdString() );
-        return false;
-    }
-
-    translator->m_config = &m_config;
-    bool result = translate(translator, output, input);
-    delete translator;
-    return result;
 }
 
 bool AsmTranslator::translate ( Variant variant,

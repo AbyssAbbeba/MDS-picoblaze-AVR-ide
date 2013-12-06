@@ -5,7 +5,7 @@
  *
  * ...
  *
- * (C) copyright 2013 Moravia Microsystems, s.r.o.
+ * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
  *
  * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup PicoBlazeAsm
@@ -841,15 +841,15 @@ inline void AsmPicoBlazeTreeDecoder::dir_LIMIT ( CompilerStatement * node,
         return;
     }
 
-    if ( 0 != strcmp("R", limSel) )
+    if ( 0 == strcmp("R", limSel) )
     {
         m_opts->m_processorlimits.m_regFileSize = limVal;
     }
-    else if ( 0 != strcmp("D", limSel) )
+    else if ( 0 == strcmp("D", limSel) )
     {
         m_opts->m_processorlimits.m_iDataMemSize = limVal;
     }
-    else if ( 0 != strcmp("C", limSel) )
+    else if ( 0 == strcmp("C", limSel) )
     {
         m_opts->m_processorlimits.m_iCodeMemSize = limVal;
     }

@@ -5,7 +5,7 @@
  *
  * ...
  *
- * (C) copyright 2013 Moravia Microsystems, s.r.o.
+ * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
  *
  * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup AsmTranslator
@@ -27,7 +27,7 @@ AsmTranslatorKcpsmXil::AsmTranslatorKcpsmXil()
     const boost::regex::flag_type flags = ( boost::regex::extended | boost::regex::icase | boost::regex::optimize );
 
     m_reWhiteSpace  = boost::regex ( "^[[:space:]]+", flags );
-    m_reLabel       = boost::regex ( "^[_[:alpha:]][_[:alnum:]]*:", flags );
+    m_reLabel       = boost::regex ( "^[_[:alpha:]][_[:alnum:]]*[[:space:]]*:", flags );
     m_reInstruction = boost::regex ( "^[_[:alpha:]][_[:alnum:]]+", flags );
     m_reWord        = boost::regex ( "[_[:alnum:]]+", flags );
     m_reOperand     = boost::regex ( "^([_[:alnum:]]+)|(\\([[:space:]]*[_[:alnum:]]+[[:space:]]*\\))", flags );
@@ -193,6 +193,33 @@ inline bool AsmTranslatorKcpsmXil::processDirectives ( std::vector<std::string> 
         return true;
     }
 
+    // Fix stupidly formed labels, i.e. `stupid   :' -> ``stupid:'.
+    {
+        std::string lbl = lineFields.getLabel();
+        if ( false == lbl.empty() )
+        {
+            bool modified = false;
+            while ( true )
+            {
+                size_t pos = lbl.find(' ');
+                if ( std::string::npos == pos )
+                {
+                    pos = lbl.find('\t');
+                }
+                if ( std::string::npos == pos )
+                {
+                    break;
+                }
+                lbl.replace(pos, 1, "");
+                modified = true;
+            }
+            if ( true == modified )
+            {
+                lineFields.replaceLabel(lbl);
+            }
+        }
+    }
+
     if ( "constant" == directive )
     {
         fixRadix(lineFields, 1);
@@ -314,6 +341,16 @@ inline bool AsmTranslatorKcpsmXil::processInstructions ( std::vector<std::string
             // Instruction `output'.
             lineFields.replaceInst("out");
         }
+        else if ( 's' == instruction[0] )
+        {
+            // Instruction store'.
+            lineFields.replaceInst("st");
+        }
+        else if ( 'f' == instruction[0] )
+        {
+            // Instruction `fetch'.
+            lineFields.replaceInst("ft");
+        }
     }
     else if ( "outputk" == instruction )
     {
@@ -366,7 +403,7 @@ inline bool AsmTranslatorKcpsmXil::processInstructions ( std::vector<std::string
     }
     else if ( true == boost::regex_match(instruction, m_reLdAndRet ) )
     {
-        lineFields.replaceInst("ld&ret");
+        lineFields.replaceInst("ldret");
         fixRadix(lineFields, 1);
         lineFields.replaceOpr("#" + lineFields.getOperand(1), 1);
     }

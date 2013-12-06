@@ -119,6 +119,9 @@
  *
  * @defgroup testsDisasmPicoBlaze PicoBlaze Disassembler
  * @ingroup testsDisasm
+ *
+ * @defgroup testsAsmTranslator AsmTranslator
+ * @ingroup tests
  */
 
 /**

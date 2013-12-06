@@ -5,7 +5,7 @@
  *
  * ...
  *
- * (C) copyright 2013 Moravia Microsystems, s.r.o.
+ * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
  *
  * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup Compiler
@@ -469,6 +469,7 @@ void CompilerStatement::deserialize ( CompilerSerializer & input )
     m_args = NULL;
 
     m_type = CompilerStatementTypes::StatementType ( input.read_ui32() );
+
     input >> m_location;
 
     SerializationMark mark;
