@@ -5,7 +5,7 @@
  *
  * ...
  *
- * (C) copyright 2013 Moravia Microsystems, s.r.o.
+ * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
  *
  * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup AsmTranslator
@@ -47,6 +47,8 @@ void printHelp ( const char * executable )
     std::cout << QObject::tr("        Specify variant of assembly language used in the input file, possible options "
                              "are:").toStdString() << std::endl;
     std::cout << QObject::tr("            1 : Xilinx KCPSMx.").toStdString() << std::endl;
+    std::cout << QObject::tr("            2 : Mediatronix KCPSMx.").toStdString() << std::endl;
+    std::cout << QObject::tr("            3 : openPICIDE KCPSMx.").toStdString() << std::endl;
     std::cout << QObject::tr("    --input, -i <file.asm>").toStdString() << std::endl;
     std::cout << QObject::tr("        Specify input file.").toStdString() << std::endl;
     std::cout << QObject::tr("    --output, -o <file.asm>").toStdString() << std::endl;
@@ -135,6 +137,14 @@ int main ( int argc, char ** argv )
                 if ( "1" == arg )
                 {
                     type = AsmTranslator::V_KCPSM_XILINX;
+                }
+                else if ( "2" == arg )
+                {
+                    type = AsmTranslator::V_KCPSM_MEDIATRONIX;
+                }
+                else if ( "3" == arg )
+                {
+                    type = AsmTranslator::V_KCPSM_OPENPICIDE;
                 }
             }
             break;

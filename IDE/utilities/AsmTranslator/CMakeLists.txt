@@ -54,7 +54,9 @@ add_library ( ${PROJECT_NAME} SHARED
               AsmTranslator.cxx
               AsmTranslatorBase.cxx
               AsmTranslatorConfig.cxx
-              AsmTranslatorKcpsmXil.cxx )
+              AsmTranslatorKcpsmXil.cxx
+              AsmTranslatorKcpsmMed.cxx
+              AsmTranslatorKcpsmPBIDE.cxx )
 
 # Link a target to given libraries.
 target_link_libraries ( ${PROJECT_NAME} ${Boost_LIBRARIES} ${QT_LIBRARIES} )

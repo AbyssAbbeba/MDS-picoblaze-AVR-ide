@@ -5,7 +5,7 @@
  *
  * ...
  *
- * (C) copyright 2013 Moravia Microsystems, s.r.o.
+ * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
  *
  * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup AsmTranslator
@@ -80,6 +80,26 @@ bool AsmTranslatorBase::LineFields::hasOperand ( unsigned int number ) const
     }
 
     return true;
+}
+
+void AsmTranslatorBase::LineFields::replaceLabel ( const std::string & substitute )
+{
+    if ( ( -1 != m_label[0] ) && ( -1 != m_label[1] ) )
+    {
+        m_line->replace(m_label[0], m_label[1] - m_label[0], substitute);
+
+        int diff = ( int(substitute.size()) - ( m_label[1] - m_label[0] ) );
+        m_label[0] += diff;
+        m_instruction[0] += diff;
+        m_instruction[1] += diff;
+        m_comment[0] += diff;
+        m_comment[1] += diff;
+        for ( size_t i = 0; i < m_operands.size(); i++ )
+        {
+            m_operands[i].first  += diff;
+            m_operands[i].second += diff;
+        }
+    }
 }
 
 void AsmTranslatorBase::LineFields::replaceInst ( const std::string & substitute )
