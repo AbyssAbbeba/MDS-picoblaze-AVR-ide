@@ -12,17 +12,17 @@ InterfaceCfg_SyntaxAsm::InterfaceCfg_SyntaxAsm(QWidget *parent)
     this->show();
 
     connect(ui.btnColorCmnt, SIGNAL(clicked()), this, SLOT(commentColor()));
-    connect(ui.btnColorLbl, SIGNAL(clicked()), this, SLOT(commentColor()));
-    connect(ui.btnColorKwrd, SIGNAL(clicked()), this, SLOT(commentColor()));
-    connect(ui.btnColorOpds, SIGNAL(clicked()), this, SLOT(commentColor()));
-    connect(ui.btnColorOpts, SIGNAL(clicked()), this, SLOT(commentColor()));
-    connect(ui.btnColorQuote, SIGNAL(clicked()), this, SLOT(commentColor()));
+    connect(ui.btnColorLbl, SIGNAL(clicked()), this, SLOT(labelColor()));
+    connect(ui.btnColorKwrd, SIGNAL(clicked()), this, SLOT(keywordColor()));
+    connect(ui.btnColorOpds, SIGNAL(clicked()), this, SLOT(operandColor()));
+    connect(ui.btnColorOpts, SIGNAL(clicked()), this, SLOT(operatorColor()));
+    connect(ui.btnColorQuote, SIGNAL(clicked()), this, SLOT(quoteColor()));
 }
 
 
 void InterfaceCfg_SyntaxAsm::commentColor()
 {
-    this->type = 0;
+    this->type = Types::COMMENT;
     QColorDialog dialog;
     //dialog.setOption(QColorDialog::ShowAlphaChannel, false);
     connect(&dialog, SIGNAL(colorSelected(const QColor&)), this, SLOT(colorSelected(const QColor&)));
@@ -32,7 +32,7 @@ void InterfaceCfg_SyntaxAsm::commentColor()
 
 void InterfaceCfg_SyntaxAsm::labelColor()
 {
-    this->type = 1;
+    this->type = Types::LABEL;
     QColorDialog dialog;
     //dialog.setOption(QColorDialog::ShowAlphaChannel, false);
     connect(&dialog, SIGNAL(colorSelected(const QColor&)), this, SLOT(colorSelected(const QColor&)));
@@ -42,7 +42,7 @@ void InterfaceCfg_SyntaxAsm::labelColor()
 
 void InterfaceCfg_SyntaxAsm::keywordColor()
 {
-    this->type = 2;
+    this->type = Types::KEYWORD;
     QColorDialog dialog;
     //dialog.setOption(QColorDialog::ShowAlphaChannel, false);
     connect(&dialog, SIGNAL(colorSelected(const QColor&)), this, SLOT(colorSelected(const QColor&)));
@@ -52,30 +52,30 @@ void InterfaceCfg_SyntaxAsm::keywordColor()
 
 void InterfaceCfg_SyntaxAsm::operandColor()
 {
-    this->type = 3;
+    this->type = Types::OPERAND;
     QColorDialog dialog;
     //dialog.setOption(QColorDialog::ShowAlphaChannel, false);
-    connect(&dialog, SIGNAL(colorSelected(const QColor&)), this, SLOT(const colorSelected(QColor&)));
+    connect(&dialog, SIGNAL(colorSelected(const QColor&)), this, SLOT(colorSelected(const QColor&)));
     dialog.exec();
 }
 
 
 void InterfaceCfg_SyntaxAsm::operatorColor()
 {
-    this->type = 4;
+    this->type = Types::OPERATOR;
     QColorDialog dialog;
     //dialog.setOption(QColorDialog::ShowAlphaChannel, false);
-    connect(&dialog, SIGNAL(colorSelected(const QColor&)), this, SLOT(const colorSelected(QColor&)));
+    connect(&dialog, SIGNAL(colorSelected(const QColor&)), this, SLOT(colorSelected(const QColor&)));
     dialog.exec();
 }
 
 
 void InterfaceCfg_SyntaxAsm::quoteColor()
 {
-    this->type = 5;
+    this->type = Types::QUOTE;
     QColorDialog dialog;
     //dialog.setOption(QColorDialog::ShowAlphaChannel, false);
-    connect(&dialog, SIGNAL(colorSelected(const QColor&)), this, SLOT(const colorSelected(QColor&)));
+    connect(&dialog, SIGNAL(colorSelected(const QColor&)), this, SLOT(colorSelected(const QColor&)));
     dialog.exec();
 }
 
@@ -84,46 +84,52 @@ void InterfaceCfg_SyntaxAsm::colorSelected(const QColor &color)
 {
     switch (this->type)
     {
-        case 0:
+        case Types::COMMENT:
         {
             QPalette palette = this->ui.btnColorCmnt->palette();
             palette.setColor(QPalette::Button, color);
             this->ui.btnColorCmnt->setPalette(palette);
+            emit colorChanged(color, Types::COMMENT);
             break;
         }
-        case 1:
+        case Types::LABEL:
         {
             QPalette palette = this->ui.btnColorLbl->palette();
             palette.setColor(QPalette::Button, color);
             this->ui.btnColorLbl->setPalette(palette);
+            emit colorChanged(color, Types::LABEL);
             break;
         }
-        case 2:
+        case Types::KEYWORD:
         {
             QPalette palette = this->ui.btnColorKwrd->palette();
             palette.setColor(QPalette::Button, color);
             this->ui.btnColorKwrd->setPalette(palette);
+            emit colorChanged(color, Types::KEYWORD);
             break;
         }
-        case 3:
+        case Types::OPERAND:
         {
             QPalette palette = this->ui.btnColorOpds->palette();
             palette.setColor(QPalette::Button, color);
             this->ui.btnColorOpds->setPalette(palette);
+            emit colorChanged(color, Types::OPERAND);
             break;
         }
-        case 4:
+        case Types::OPERATOR:
         {
             QPalette palette = this->ui.btnColorOpts->palette();
             palette.setColor(QPalette::Button, color);
             this->ui.btnColorOpts->setPalette(palette);
+            emit colorChanged(color, Types::OPERATOR);
             break;
         }
-        case 5:
+        case Types::QUOTE:
         {
             QPalette palette = this->ui.btnColorQuote->palette();
             palette.setColor(QPalette::Button, color);
             this->ui.btnColorQuote->setPalette(palette);
+            emit colorChanged(color, Types::QUOTE);
             break;
         }
         default:
