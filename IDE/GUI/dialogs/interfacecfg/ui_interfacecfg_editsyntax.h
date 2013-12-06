@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'interfacecfg_editsyntax.ui'
 **
-** Created: Thu Dec 5 18:47:58 2013
+** Created: Fri Dec 6 12:48:25 2013
 **      by: Qt User Interface Compiler version 4.8.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -61,6 +61,7 @@ public:
         scrollArea = new QScrollArea(InterfaceCfg_EditSyntax);
         scrollArea->setObjectName(QString::fromUtf8("scrollArea"));
         scrollArea->setGeometry(QRect(20, 70, 361, 141));
+        scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
         scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         scrollArea->setWidgetResizable(true);
         scrollAreaWidgetContents = new QWidget();
@@ -109,22 +110,22 @@ public:
         lblIgnore_2->setGeometry(QRect(90, 40, 66, 17));
         lblName = new QLabel(InterfaceCfg_EditSyntax);
         lblName->setObjectName(QString::fromUtf8("lblName"));
-        lblName->setGeometry(QRect(40, 50, 66, 17));
+        lblName->setGeometry(QRect(30, 50, 66, 17));
         lblI = new QLabel(InterfaceCfg_EditSyntax);
         lblI->setObjectName(QString::fromUtf8("lblI"));
-        lblI->setGeometry(QRect(180, 50, 16, 17));
+        lblI->setGeometry(QRect(170, 50, 16, 17));
         lblU = new QLabel(InterfaceCfg_EditSyntax);
         lblU->setObjectName(QString::fromUtf8("lblU"));
-        lblU->setGeometry(QRect(210, 50, 16, 17));
+        lblU->setGeometry(QRect(200, 50, 16, 17));
         lblS = new QLabel(InterfaceCfg_EditSyntax);
         lblS->setObjectName(QString::fromUtf8("lblS"));
-        lblS->setGeometry(QRect(240, 50, 16, 17));
+        lblS->setGeometry(QRect(230, 50, 16, 17));
         lblB = new QLabel(InterfaceCfg_EditSyntax);
         lblB->setObjectName(QString::fromUtf8("lblB"));
-        lblB->setGeometry(QRect(270, 50, 16, 17));
+        lblB->setGeometry(QRect(260, 50, 16, 17));
         lblColor = new QLabel(InterfaceCfg_EditSyntax);
         lblColor->setObjectName(QString::fromUtf8("lblColor"));
-        lblColor->setGeometry(QRect(320, 50, 66, 17));
+        lblColor->setGeometry(QRect(310, 50, 66, 17));
 
         retranslateUi(InterfaceCfg_EditSyntax);
 
