@@ -168,6 +168,9 @@ EID     ({NSEP})?{ID}
 "namespace"     { return KW_NAMESPACE;    }
 "include"       { return KW_INCLUDE;      }
 "eval"          { return KW_EVAL;         }
+"message"       { return KW_MESSAGE;      }
+"warning"       { return KW_WARNING;      }
+"abort"         { return KW_ABORT;        }
 
  /* Special values: */
 "EMPTY"         { return SV_EMPTY;        }

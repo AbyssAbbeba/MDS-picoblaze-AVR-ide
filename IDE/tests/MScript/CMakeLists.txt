@@ -28,6 +28,9 @@ enable_testing()
 # BUILD COMPONENTS IN THE SUBDIRECTORIES
 # ------------------------------------------------------------------------------
 
+# Testing strategy for the MScript language.
+add_subdirectory ( MScriptTestStrategy )
+
 # Test suite I.
 add_subdirectory ( TestMScriptI )
 
@@ -49,10 +52,13 @@ find_package ( Boost 1.46
 
 # # Add include directories to the build.
 include_directories ( ${Boost_INCLUDE_DIRS}
-                      "${CMAKE_CURRENT_BINARY_DIR}/../../moraviascript" )
+                      "${CMAKE_CURRENT_BINARY_DIR}/../../moraviascript"
+                      "${CMAKE_CURRENT_BINARY_DIR}/MScriptTestStrategy" )
 
 # # Specify directories in which the linker will look for libraries.
-link_directories ( ${Boost_LIBRARY_DIRS} )
+link_directories ( ${Boost_LIBRARY_DIRS}
+                   "${CMAKE_CURRENT_BINARY_DIR}/../../moraviascript"
+                   "${CMAKE_CURRENT_BINARY_DIR}/MScriptTestStrategy" )
 
 ## Add switches to compiler command line
  # -pipe       : Use pipes rather than temporary files for communication between the various stages of compilation.
@@ -71,6 +77,7 @@ target_link_libraries ( ${PROJECT_NAME}
                         TMS_TestMScriptII
                         TMS_TestMScriptIII
                         MScript
+                        MScriptTestStrategy
                         cunit )
 
 

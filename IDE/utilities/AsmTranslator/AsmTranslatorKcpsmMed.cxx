@@ -28,14 +28,16 @@ AsmTranslatorKcpsmMed::AsmTranslatorKcpsmMed()
 
     m_reWhiteSpace  = boost::regex ( "^[[:space:]]+", flags );
     m_reLabel       = boost::regex ( "^[_[:alpha:]][_[:alnum:]]*[[:space:]]*:", flags );
-    m_reInstruction = boost::regex ( "^[_[:alpha:]][_[:alnum:]]+", flags );
+    m_reInstruction = boost::regex ( "^\\.?[_[:alpha:]][_[:alnum:]]*", flags );
+    m_reSymDef      = boost::regex ( "^[_[:alpha:]][_[:alnum:]]*[[:space:]]+\\.[_[:alnum:]]*", flags );
     m_reWord        = boost::regex ( "[_[:alnum:]]+", flags );
-    m_reOperand     = boost::regex ( "^([_[:alnum:]]+)|(\\([[:space:]]*[_[:alnum:]]+[[:space:]]*\\))", flags );
+    m_reOperand     = boost::regex ( "^[^,;]+", flags );
     m_reOperandSep  = boost::regex ( "^[[:space:]]*,[[:space:]]*", flags );
     m_reComment     = boost::regex ( "^;.*$", flags );
     m_reAtMark      = boost::regex ( "^@", flags );
     m_reAndReturn   = boost::regex ( "^&[[:space:]]*return", flags );
     m_reLdAndRet    = boost::regex ( "load[[:space:]]*&[[:space:]]*return", flags );
+    m_reUNumber     = boost::regex ( "(^|[[:space:]])(0[xb])?[_[:xdigit:]]+([[:space:]]|$)", flags );
 
     for ( int i = 0; i < 16; i++ )
     {
@@ -55,6 +57,39 @@ bool AsmTranslatorKcpsmMed::process ( std::vector<std::string> & messages,
                                       std::string & line,
                                       bool secondPass )
 {
+    if ( false == secondPass )
+    {
+        // Fix underscores in numbers, i.e. `0x12_3_4_56' -> `0x123456'.
+        std::string::const_iterator begin = line.cbegin();
+        while ( true )
+        {
+            boost::smatch match;
+            boost::regex_search(begin, line.cend(), match, m_reUNumber);
+            if ( true == match[0].matched )
+            {
+                size_t endPos = std::distance(line.cbegin(), match[0].second);
+                size_t startPos = line.find('_', std::distance(line.cbegin(), match[0].first));
+
+                if ( ( std::string::npos == startPos ) || ( startPos >= endPos ) )
+                {
+                    begin = match[0].second;
+                    continue;
+                }
+
+                for ( size_t pos = startPos;
+                      ( std::string::npos != pos ) && ( pos < endPos );
+                      pos = line.find('_', pos) )
+                {
+                    line.replace(pos, 1, "");
+                }
+            }
+            else
+            {
+                break;
+            }
+        }
+    }
+
     LineFields lineFields(line);
     boost::smatch match;
     std::string::const_iterator begin = line.cbegin();
@@ -67,8 +102,20 @@ bool AsmTranslatorKcpsmMed::process ( std::vector<std::string> & messages,
         begin = match[0].second;
     }
 
+    //
+    boost::regex * labelRE;
+    boost::regex_search(begin, line.cend(), match, m_reSymDef);
+    if ( true == match[0].matched )
+    {
+        labelRE = &m_reWord;
+    }
+    else
+    {
+        labelRE = &m_reLabel;
+    }
+
     // Find label.
-    boost::regex_search(begin, line.cend(), match, m_reLabel);
+    boost::regex_search(begin, line.cend(), match, *labelRE);
     if ( true == match[0].matched )
     {
         begin = match[0].second;
@@ -252,6 +299,33 @@ inline bool AsmTranslatorKcpsmMed::processDirectives ( std::vector<std::string> 
     {
         lineFields.replaceInst("db");
         fixRadix(lineFields, 0);
+    }
+    else if ( ".end" == directive )
+    {
+        fixRadix(lineFields, 0);
+        lineFields.replaceInstOpr("limit c, 1 + " + lineFields.getOperand(0));
+    }
+    else if ( ".if" == directive )
+    {
+        lineFields.replaceInst("#if");
+    }
+    else if ( ".fi" == directive )
+    {
+        lineFields.replaceInst("#endif");
+    }
+    else if ( ".def" == directive )
+    {
+        lineFields.replaceInst("define");
+        std::string opr = lineFields.getOperand(0);
+        for ( size_t pos = opr.find('@');
+              std::string::npos != pos;
+              pos = opr.find('@', pos) )
+        {
+            // NOTE: this works only for `@d' where `d' is a single decimal digit, it won't work for more digits than 1.
+            opr.replace(pos, 1, "{");
+            opr.insert(pos + 2, "}");
+        }
+        lineFields.replaceOpr(opr, 0);
     }
     else
     {

@@ -248,8 +248,6 @@ DIS_INT_INST            "disable"{WSPACE}"interrupt"
 "test"                  { return I_TEST;        }
 "store"                 { return I_STORE;       }
 "fetch"                 { return I_FETCH;       }
-"st"                    { return I_STORE;       }
-"ft"                    { return I_FETCH;       }
 "sr0"                   { return I_SR0;         }
 "sr1"                   { return I_SR1;         }
 "srx"                   { return I_SRX;         }
@@ -669,6 +667,11 @@ DIS_INT_INST            "disable"{WSPACE}"interrupt"
                             // Return as general identifier
                             yylval->string = yytext;
                             return IDENTIFIER;
+                        }
+\{[0-9]+\}              {
+                            // Substitution mark.
+                            yylval->string = yytext;
+                            return SUBST_MARK;
                         }
 [0-9]{ID}               {
                             // Invalid identifier declaration => ERROR

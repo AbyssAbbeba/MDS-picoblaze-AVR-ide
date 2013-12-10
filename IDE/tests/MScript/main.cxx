@@ -14,7 +14,6 @@
 // =============================================================================
 
 // Test suites header files.
-#include "MScript.h"
 #include "TestMScriptI/TestMScriptI.h"
 #include "TestMScriptII/TestMScriptII.h"
 #include "TestMScriptIII/TestMScriptIII.h"

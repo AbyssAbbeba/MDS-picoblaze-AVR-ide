@@ -18,6 +18,7 @@
 
 // Forward declarations.
 class MScript;
+class MScriptStrategy;
 
 // The CUnit testing framework.
 #include <CUnit/Basic.h>
@@ -59,6 +60,11 @@ namespace TestMScriptII
          * @brief
          */
         MScript * m_core;
+
+        /**
+         * @brief
+         */
+        MScriptStrategy * m_testStrategy;
 };
 
 #endif // TESTMSCRIPTII_H

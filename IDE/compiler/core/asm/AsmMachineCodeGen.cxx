@@ -69,7 +69,6 @@ unsigned int AsmMachineCodeGen::setCode ( uint32_t code )
             m_size = ( 1 + m_address );
         }
     }
-
     m_address++;
 
     return ( m_address - 1 );

@@ -148,7 +148,7 @@ void CompilerValue::completeDelete()
 {
     if ( TYPE_SYMBOL == m_type )
     {
-        delete[] m_data.m_symbol;
+        delete [] m_data.m_symbol;
     }
     else if ( TYPE_ARRAY == m_type )
     {

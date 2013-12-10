@@ -79,7 +79,7 @@ namespace TestMedAsmTrans
         /**
          * @brief
          */
-        AsmTranslator * m_msgInt;
+        AsmTranslator * m_translator;
 };
 
 #endif // TESTMEDASMTRANS_H

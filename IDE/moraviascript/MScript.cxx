@@ -15,6 +15,9 @@
 
 #include "MScript.h"
 
+// Standard header files.
+#include <cstdio>
+
 // MScript language interpreter header files.
 #include "MScriptCore.h"
 #include "MScriptStrategy.h"
@@ -47,7 +50,12 @@ bool MScript::loadScript ( const std::string & scriptCode )
 bool MScript::loadScript ( FILE * sourceFile,
                            const std::string & fileName )
 {
-    return m_core->loadScript(sourceFile, fileName);
+    bool result = m_core->loadScript(sourceFile, fileName);
+    if ( 0 != fclose(sourceFile) )
+    {
+        return false;
+    }
+    return result;
 }
 
 void MScript::unloadScript()

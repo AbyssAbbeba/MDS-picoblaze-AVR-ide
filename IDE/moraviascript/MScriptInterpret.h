@@ -195,6 +195,24 @@ class MScriptInterpret : private MScriptExecContext,
 
         /**
          * @brief
+         * @param[in] node
+         */
+        inline void evalMessage ( const MScriptStatement * node );
+
+        /**
+         * @brief
+         * @param[in] node
+         */
+        inline void evalWarning ( const MScriptStatement * node );
+
+        /**
+         * @brief
+         * @param[in] node
+         */
+        inline void evalAbort ( const MScriptStatement * node );
+
+        /**
+         * @brief
          * @param[in] upTo
          * @param[in] times
          * @param[in] exclusive

@@ -80,7 +80,7 @@ namespace TestOpenPICIDEAsmTrans
         /**
          * @brief
          */
-        AsmTranslator * m_msgInt;
+        AsmTranslator * m_translator;
 };
 
 #endif // TESTOPENPICIDEASMTRANS_H

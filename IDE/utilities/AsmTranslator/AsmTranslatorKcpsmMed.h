@@ -96,6 +96,9 @@ class AsmTranslatorKcpsmMed : public AsmTranslatorBase
         boost::regex m_reInstruction;
 
         /// @brief
+        boost::regex m_reSymDef;
+
+        /// @brief
         boost::regex m_reWord;
 
         /// @brief
@@ -115,6 +118,9 @@ class AsmTranslatorKcpsmMed : public AsmTranslatorBase
 
         /// @brief
         boost::regex m_reLdAndRet;
+
+        /// @brief
+        boost::regex m_reUNumber;
 
         /// @brief
         std::set<std::string> m_registers;
