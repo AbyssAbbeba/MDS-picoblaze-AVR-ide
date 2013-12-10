@@ -26,18 +26,18 @@ AsmTranslatorKcpsmMed::AsmTranslatorKcpsmMed()
 
     const boost::regex::flag_type flags = ( boost::regex::extended | boost::regex::icase | boost::regex::optimize );
 
-    m_reWhiteSpace  = boost::regex ( "^[[:space:]]+", flags );
-    m_reLabel       = boost::regex ( "^[_[:alpha:]][_[:alnum:]]*[[:space:]]*:", flags );
-    m_reInstruction = boost::regex ( "^\\.?[_[:alpha:]][_[:alnum:]]*", flags );
-    m_reSymDef      = boost::regex ( "^[_[:alpha:]][_[:alnum:]]*[[:space:]]+\\.[_[:alnum:]]*", flags );
-    m_reWord        = boost::regex ( "[_[:alnum:]]+", flags );
-    m_reOperand     = boost::regex ( "^[^,;]+", flags );
-    m_reOperandSep  = boost::regex ( "^[[:space:]]*,[[:space:]]*", flags );
-    m_reComment     = boost::regex ( "^;.*$", flags );
     m_reAtMark      = boost::regex ( "^@", flags );
+    m_reComment     = boost::regex ( "^;.*$", flags );
+    m_reOperand     = boost::regex ( "^[^,;]+", flags );
+    m_reWord        = boost::regex ( "[_[:alnum:]]+", flags );
+    m_reWhiteSpace  = boost::regex ( "^[[:space:]]+", flags );
     m_reAndReturn   = boost::regex ( "^&[[:space:]]*return", flags );
+    m_reOperandSep  = boost::regex ( "^[[:space:]]*,[[:space:]]*", flags );
+    m_reInstruction = boost::regex ( "^\\.?[_[:alpha:]][_[:alnum:]]*", flags );
     m_reLdAndRet    = boost::regex ( "load[[:space:]]*&[[:space:]]*return", flags );
+    m_reLabel       = boost::regex ( "^[_[:alpha:]][_[:alnum:]]*[[:space:]]*:", flags );
     m_reUNumber     = boost::regex ( "(^|[[:space:]])(0[xb])?[_[:xdigit:]]+([[:space:]]|$)", flags );
+    m_reSymDef      = boost::regex ( "^[_[:alpha:]][_[:alnum:]]*[[:space:]]+\\.[_[:alnum:]]*", flags );
 
     for ( int i = 0; i < 16; i++ )
     {
