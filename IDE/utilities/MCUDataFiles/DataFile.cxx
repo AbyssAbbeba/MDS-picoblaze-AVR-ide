@@ -143,13 +143,15 @@ int16_t * DataFile::getData()
     return m_memory;
 }
 
-void DataFile::setData ( int16_t * data )
+void DataFile::setData ( int16_t * data,
+                         unsigned int arrsize )
 {
     if ( NULL != m_memory)
     {
         delete[] m_memory;
     }
 
+    m_arrsize = arrsize;
     m_memory = data;
 }
 
