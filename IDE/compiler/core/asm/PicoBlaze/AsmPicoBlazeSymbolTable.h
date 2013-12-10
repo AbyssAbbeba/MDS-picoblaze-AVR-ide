@@ -268,17 +268,42 @@ class AsmPicoBlazeSymbolTable
          * @brief
          * @param[in] side
          * @param[in] expr
+         * @param[in] argList
          * @return
          */
         int getExprValue ( ExprValSide side,
-                           const CompilerExpr * expr );
+                           const CompilerExpr * expr,
+                           const CompilerExpr * argList = NULL );
 
         /**
          * @brief
          * @param[in] expr
+         * @param[in] argList
          * @return
          */
-        int computeExpr ( const CompilerExpr * expr );
+        int computeExpr ( const CompilerExpr * expr,
+                          const CompilerExpr * argList = NULL );
+
+        /**
+         * @brief
+         * @param[in,out] expr
+         * @param[in] subst
+         * @param[in] position
+         */
+        void substArg ( CompilerExpr * expr,
+                        const CompilerExpr * subst,
+                        const int position );
+
+    ////    Inline Private Operations    ////
+    private:
+        /**
+         * @brief
+         * @param[in] expr
+         * @param[in] argList
+         * @return
+         */
+        inline CompilerExpr * substituteArgs ( const CompilerExpr * expr,
+                                               const CompilerExpr * argList );
 
     ////    Private Attributes    ////
     private:

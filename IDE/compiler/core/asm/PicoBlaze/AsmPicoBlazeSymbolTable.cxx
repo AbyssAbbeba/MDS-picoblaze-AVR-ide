@@ -18,6 +18,7 @@
 
 // Standard headers.
 #include <cstdio>
+#include <cstring>
 #include <fstream>
 
 AsmPicoBlazeSymbolTable::Symbol::Symbol ( const CompilerExpr * value,
@@ -306,7 +307,8 @@ const CompilerExpr * AsmPicoBlazeSymbolTable::getValue ( const std::string & nam
 }
 
 int AsmPicoBlazeSymbolTable::getExprValue ( ExprValSide side,
-                                            const CompilerExpr * expr )
+                                            const CompilerExpr * expr,
+                                            const CompilerExpr * argList )
 {
     const CompilerValue * value;
 
@@ -342,7 +344,7 @@ int AsmPicoBlazeSymbolTable::getExprValue ( ExprValSide side,
         }
         case CompilerValue::TYPE_EXPR:
         {
-            return computeExpr(value->m_data.m_expr);
+            return computeExpr(value->m_data.m_expr, argList);
         }
         case CompilerValue::TYPE_SYMBOL:
         {
@@ -357,7 +359,17 @@ int AsmPicoBlazeSymbolTable::getExprValue ( ExprValSide side,
             }
             else
             {
-                return computeExpr(symbolValue);
+                if ( NULL != argList )
+                {
+                    CompilerExpr * newValue = substituteArgs(symbolValue, argList);
+                    int result = computeExpr(newValue);
+                    delete newValue;
+                    return result;
+                }
+                else
+                {
+                    return computeExpr(symbolValue);
+                }
             }
         }
         case CompilerValue::TYPE_ARRAY:
@@ -372,24 +384,83 @@ int AsmPicoBlazeSymbolTable::getExprValue ( ExprValSide side,
     return 1;
 }
 
-int AsmPicoBlazeSymbolTable::computeExpr ( const CompilerExpr * expr )
+inline CompilerExpr * AsmPicoBlazeSymbolTable::substituteArgs ( const CompilerExpr * expr,
+                                                                const CompilerExpr * argList )
+{
+    CompilerExpr * result = expr->copyEntireChain();
+
+    int i = 0;
+    for ( const CompilerExpr * arg = argList;
+          NULL != arg;
+          arg = arg->next() )
+    {
+        substArg(result, arg, i);
+        i++;
+    }
+
+    return result;
+}
+
+void AsmPicoBlazeSymbolTable::substArg ( CompilerExpr * expr,
+                                         const CompilerExpr * subst,
+                                         const int position )
+{
+    CompilerValue * value = &( expr->m_lValue );
+    for ( int valIdx = 0; valIdx < 2; valIdx ++ )
+    {
+        if ( CompilerValue::TYPE_SYMBOL == value->m_type )
+        {
+            char * symbol = value->m_data.m_symbol;
+            size_t len = strlen(symbol);
+            if ( len >= 3 )
+            {
+                if ( ( '{' == symbol[0] ) && ( '}' == symbol[len-1] ) )
+                {
+                    char buf[len-1];
+                    for ( int i = 1, j = 0; i < ( len - 1 ); i++, j++ )
+                    {
+                        buf[j] = symbol[i];
+                    }
+                    buf[len-2] = '\0';
+
+                    int mark;
+                    sscanf(buf, "%d", &mark);
+                    if ( position == mark )
+                    {
+                        delete [] symbol;
+                        value->m_type = CompilerValue::TYPE_EXPR;
+                        value->m_data.m_expr = subst->copyChainLink();
+                    }
+                }
+            }
+        }
+        else if ( CompilerValue::TYPE_EXPR == value->m_type )
+        {
+            substArg(value->m_data.m_expr, subst, position);
+        }
+        value = &( expr->m_rValue );
+    }
+}
+
+int AsmPicoBlazeSymbolTable::computeExpr ( const CompilerExpr * expr,
+                                           const CompilerExpr * argList )
 {
     switch ( expr->m_operator )
     {
         case CompilerExpr::OPER_NONE:
         case CompilerExpr::OPER_INT_PROM:
-            return getExprValue(LEFT, expr);
+            return getExprValue(LEFT, expr, argList);
         case CompilerExpr::OPER_ADD_INV:
-            return -getExprValue(LEFT, expr);
+            return -getExprValue(LEFT, expr,  argList);
         case CompilerExpr::OPER_ADD:
-            return getExprValue(LEFT, expr) + getExprValue(RIGHT, expr);
+            return getExprValue(LEFT, expr,  argList) + getExprValue(RIGHT, expr,  argList);
         case CompilerExpr::OPER_SUB:
-            return getExprValue(LEFT, expr) - getExprValue(RIGHT, expr);
+            return getExprValue(LEFT, expr,  argList) - getExprValue(RIGHT, expr,  argList);
         case CompilerExpr::OPER_MULT:
-            return getExprValue(LEFT, expr) * getExprValue(RIGHT, expr);
+            return getExprValue(LEFT, expr,  argList) * getExprValue(RIGHT, expr,  argList);
         case CompilerExpr::OPER_DIV:
         {
-            int right = getExprValue(RIGHT, expr);
+            int right = getExprValue(RIGHT, expr,  argList);
             if ( 0 == right )
             {
                 m_compilerCore -> compilerMessage ( expr->m_location,
@@ -397,19 +468,19 @@ int AsmPicoBlazeSymbolTable::computeExpr ( const CompilerExpr * expr )
                                                     QObject::tr("division by zero").toStdString());
                 return 1;
             }
-            return getExprValue(LEFT, expr) / right;
+            return getExprValue(LEFT, expr,  argList) / right;
         }
         case CompilerExpr::OPER_LOW:
-            return ( 0xff & getExprValue(LEFT, expr) );
+            return ( 0xff & getExprValue(LEFT, expr,  argList) );
         case CompilerExpr::OPER_HIGH:
-            return ( ( 0xff00 & getExprValue(LEFT, expr) ) >> 8 );
+            return ( ( 0xff00 & getExprValue(LEFT, expr,  argList) ) >> 8 );
         case CompilerExpr::OPER_CMPL:
-            return ~getExprValue(LEFT, expr);
+            return ~getExprValue(LEFT, expr,  argList);
         case CompilerExpr::OPER_NOT:
-            return ( 0 == getExprValue(LEFT, expr) ) ? 1 : 0;
+            return ( 0 == getExprValue(LEFT, expr,  argList) ) ? 1 : 0;
         case CompilerExpr::OPER_MOD:
         {
-            int right = getExprValue(RIGHT, expr);
+            int right = getExprValue(RIGHT, expr,  argList);
             if ( 0 == right )
             {
                 m_compilerCore -> compilerMessage ( expr->m_location,
@@ -417,34 +488,36 @@ int AsmPicoBlazeSymbolTable::computeExpr ( const CompilerExpr * expr )
                                                     QObject::tr("division by zero").toStdString());
                 return 1;
             }
-            return getExprValue(LEFT, expr) % right;
+            return getExprValue(LEFT, expr,  argList) % right;
         }
         case CompilerExpr::OPER_LOR:
-            return ( getExprValue(LEFT, expr) || getExprValue(RIGHT, expr) ) ? 1 : 0;
+            return ( getExprValue(LEFT, expr,  argList) || getExprValue(RIGHT, expr,  argList) ) ? 1 : 0;
         case CompilerExpr::OPER_LAND:
-            return ( getExprValue(LEFT, expr) && getExprValue(RIGHT, expr) ) ? 1 : 0;
+            return ( getExprValue(LEFT, expr,  argList) && getExprValue(RIGHT, expr,  argList) ) ? 1 : 0;
         case CompilerExpr::OPER_BOR:
-            return getExprValue(LEFT, expr) | getExprValue(RIGHT, expr);
+            return getExprValue(LEFT, expr,  argList) | getExprValue(RIGHT, expr,  argList);
         case CompilerExpr::OPER_BXOR:
-            return getExprValue(LEFT, expr) ^ getExprValue(RIGHT, expr);
+            return getExprValue(LEFT, expr,  argList) ^ getExprValue(RIGHT, expr,  argList);
         case CompilerExpr::OPER_BAND:
-            return getExprValue(LEFT, expr) & getExprValue(RIGHT, expr);
+            return getExprValue(LEFT, expr,  argList) & getExprValue(RIGHT, expr,  argList);
         case CompilerExpr::OPER_EQ:
-            return ( getExprValue(LEFT, expr) == getExprValue(RIGHT, expr) ) ? 1 : 0;
+            return ( getExprValue(LEFT, expr,  argList) == getExprValue(RIGHT, expr,  argList) ) ? 1 : 0;
         case CompilerExpr::OPER_NE:
-            return ( getExprValue(LEFT, expr) != getExprValue(RIGHT, expr) ) ? 1 : 0;
+            return ( getExprValue(LEFT, expr,  argList) != getExprValue(RIGHT, expr,  argList) ) ? 1 : 0;
         case CompilerExpr::OPER_LT:
-            return ( getExprValue(LEFT, expr) < getExprValue(RIGHT, expr) ) ? 1 : 0;
+            return ( getExprValue(LEFT, expr,  argList) < getExprValue(RIGHT, expr,  argList) ) ? 1 : 0;
         case CompilerExpr::OPER_LE:
-            return ( getExprValue(LEFT, expr) <= getExprValue(RIGHT, expr) ) ? 1 : 0;
+            return ( getExprValue(LEFT, expr,  argList) <= getExprValue(RIGHT, expr,  argList) ) ? 1 : 0;
         case CompilerExpr::OPER_GE:
-            return ( getExprValue(LEFT, expr) >= getExprValue(RIGHT, expr) ) ? 1 : 0;
+            return ( getExprValue(LEFT, expr,  argList) >= getExprValue(RIGHT, expr,  argList) ) ? 1 : 0;
         case CompilerExpr::OPER_GT:
-            return ( getExprValue(LEFT, expr) > getExprValue(RIGHT, expr) ) ? 1 : 0;
+            return ( getExprValue(LEFT, expr,  argList) > getExprValue(RIGHT, expr,  argList) ) ? 1 : 0;
         case CompilerExpr::OPER_SHR:
-            return getExprValue(LEFT, expr) >> getExprValue(RIGHT, expr);
+            return getExprValue(LEFT, expr,  argList) >> getExprValue(RIGHT, expr,  argList);
         case CompilerExpr::OPER_SHL:
-            return getExprValue(LEFT, expr) << getExprValue(RIGHT, expr);
+            return getExprValue(LEFT, expr,  argList) << getExprValue(RIGHT, expr,  argList);
+        case CompilerExpr::OPER_CALL:
+            return getExprValue(LEFT, expr, expr->m_rValue.m_data.m_expr);
         default:
             // Unsupported operator.
             break;

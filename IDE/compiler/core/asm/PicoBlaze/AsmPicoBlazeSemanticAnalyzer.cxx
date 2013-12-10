@@ -187,7 +187,7 @@ inline void AsmPicoBlazeSemanticAnalyzer::genMachineCode()
             return;
 
         case DEV_KCPSM1CPLD:
-            arrSize = 256;
+            arrSize = ( 2 * 256 );
             bytesPerRecord = 2;
             linesInTotal = 16;
             wordSize = AsmMachineCodeGen::WORD_2B;
@@ -197,7 +197,7 @@ inline void AsmPicoBlazeSemanticAnalyzer::genMachineCode()
             break;
 
         case DEV_KCPSM1:
-            arrSize = 256;
+            arrSize = ( 2 * 256 );
             bytesPerRecord = 2;
             linesInTotal = 16;
             wordSize = AsmMachineCodeGen::WORD_2B;
@@ -207,7 +207,7 @@ inline void AsmPicoBlazeSemanticAnalyzer::genMachineCode()
             break;
 
         case DEV_KCPSM2:
-            arrSize = 1024;
+            arrSize = ( 3 * 1024 );
             bytesPerRecord = 3;
             linesInTotal = 64;
             wordSize = AsmMachineCodeGen::WORD_3B;
@@ -217,7 +217,7 @@ inline void AsmPicoBlazeSemanticAnalyzer::genMachineCode()
             break;
 
         case DEV_KCPSM3:
-            arrSize = 1024;
+            arrSize = ( 3 * 1024 );
             bytesPerRecord = 3;
             linesInTotal = 64;
             wordSize = AsmMachineCodeGen::WORD_3B;
@@ -227,7 +227,7 @@ inline void AsmPicoBlazeSemanticAnalyzer::genMachineCode()
             break;
 
         case DEV_KCPSM6:
-            arrSize = 4096;
+            arrSize = ( 3 * 4096 );
             bytesPerRecord = 3;
             linesInTotal = 256;
             wordSize = AsmMachineCodeGen::WORD_3B;

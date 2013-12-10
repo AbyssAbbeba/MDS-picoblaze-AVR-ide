@@ -41,13 +41,14 @@ int TestXilAsmTrans::init()
 {
     using namespace boost::filesystem;
 
-    m_msgInt = new CompilerMsgIntfFile();
-    m_options = new CompilerOptions();
+    m_msgInt   = new CompilerMsgIntfFile();
+    m_options  = new CompilerOptions();
     m_compiler = new Compiler ( m_msgInt,
                                 system_complete( path("..") / ".." / ".." / "compiler" / "include" ).string() );
     m_translator = new AsmTranslator();
 
-    m_options->m_verbosity = CompilerOptions::V_GENERAL;
+    m_options->m_verbosity = CompilerOptions::Verbosity ( CompilerOptions::V_GENERAL  | CompilerOptions::V_ERRORS |
+                                                          CompilerOptions::V_WARNINGS | CompilerOptions::V_REMARKS );
 
     return 0;
 }
@@ -114,10 +115,10 @@ void TestXilAsmTrans::testFunction()
     std::string testName = CU_get_current_test()->pName;
 
     m_translator->clear();
-    bool transResult = m_translator->translate ( AsmTranslator::V_KCPSM_XILINX,
-                                                 ( path("Xilinx") / "results" / (testName + ".asm") ).string(),
-                                                 ( path("Xilinx") / "testcases" / (testName + ".psm") ).string(),
-                                                 true );
+    bool result = m_translator->translate ( AsmTranslator::V_KCPSM_XILINX,
+                                            ( path("Xilinx") / "results"   / (testName + ".asm") ).string(),
+                                            ( path("Xilinx") / "testcases" / (testName + ".psm") ).string(),
+                                            true );
 
     {
         std::ofstream logFile( ( path("Xilinx") / "results" / (testName + ".log") ).string() );
@@ -127,14 +128,14 @@ void TestXilAsmTrans::testFunction()
         }
     }
 
-    if ( false == transResult )
+    if ( false == result )
     {
         CU_FAIL_FATAL("Translation failed!");
     }
 
     m_options->m_sourceFile = ( path("Xilinx") / "results" / (testName + ".asm") ).string();
-    std::string resultsCommonPath = ( path("..") / "results" / testName ).string();
-    m_options->m_vhdlFile     = resultsCommonPath + ".vhd";
+    m_options->m_vhdlFile   = testName + ".vhd";
+    m_options->m_lstFile    = testName + ".lst";
 
     switch ( testName.front() )
     {
@@ -163,9 +164,15 @@ void TestXilAsmTrans::testFunction()
             break;
     }
 
-    dynamic_cast<CompilerMsgIntfFile*>(m_msgInt)->openFile(resultsCommonPath + ".err");
-    CU_ASSERT_FATAL ( true == m_compiler->compile(CompilerBase::LI_ASM, CompilerBase::TA_PICOBLAZE, m_options) );
+    const std::string errFile = (path("Xilinx") / "results" / (testName + ".err")).string();
+    dynamic_cast<CompilerMsgIntfFile*>(m_msgInt)->openFile(errFile);
+    result = m_compiler->compile(CompilerBase::LI_ASM, CompilerBase::TA_PICOBLAZE, m_options);
     dynamic_cast<CompilerMsgIntfFile*>(m_msgInt)->closeFile();
+
+    if ( false == result )
+    {
+        CU_FAIL_FATAL("Compilation failed!");
+    }
 
     std::string expectedCommonPath = system_complete( path("Xilinx") / "expected" / testName ).string();
 

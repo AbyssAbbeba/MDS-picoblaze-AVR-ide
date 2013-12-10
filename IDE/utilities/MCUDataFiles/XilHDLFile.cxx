@@ -328,6 +328,8 @@ void XilHDLFile::generateDataField ( std::string * dataField,
     }
     else
     {
+        addr *= 8;
+
         char hexString[9];
         for ( int i = 0; i < ( 128 / 16 ); i++ )
         {
