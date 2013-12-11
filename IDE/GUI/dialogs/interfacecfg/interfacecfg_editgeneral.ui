@@ -118,6 +118,12 @@
      <height>17</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
    <property name="text">
     <string>Editing</string>
    </property>
@@ -130,6 +136,12 @@
      <width>66</width>
      <height>17</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
    </property>
    <property name="text">
     <string>Files</string>

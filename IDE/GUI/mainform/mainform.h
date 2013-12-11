@@ -73,6 +73,8 @@ class MainForm : public QMainWindow
         void simulationFlowHandle();
         void simulationReset();
         void toolDisassemble();
+        void toolTranslate();
+        void toolFileConvert();
         void toolConvertor();
         void toolDisplay();
         void exampleOpen();
@@ -94,6 +96,7 @@ class MainForm : public QMainWindow
         void startProjectConfig(Project *project);
         void help();
         void disassembleOutput(std::vector<std::string> text);
+        void translatorOutput(std::vector<std::string> text);
         void unhighlight();
         void projectConfig();
         void interfaceConfig();
@@ -160,6 +163,8 @@ class MainForm : public QMainWindow
         QAction *simulationUnhighlightAct;
 
         QAction *toolDisassemblerAct;
+        QAction *toolTranslatorAct;
+        QAction *toolFileConvertAct;
         QAction *toolConvertorAct;
         QAction *toolDisplayAct;
 
