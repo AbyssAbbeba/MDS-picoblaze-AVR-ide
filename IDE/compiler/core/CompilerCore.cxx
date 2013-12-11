@@ -68,87 +68,6 @@ CompilerCore::~CompilerCore()
     }
 }
 
-bool CompilerCore::compile ( LangId lang,
-                             TargetArch arch,
-                             CompilerOptions * opts,
-                             bool genSimData )
-{
-    m_lang = lang;
-    m_arch = arch;
-    m_opts = opts;
-    m_simulatorData.m_genSimData = genSimData;
-
-    bool result = startCompilation();
-    resetCompilerCore();
-    return result;
-}
-
-inline bool CompilerCore::startCompilation()
-{
-    try
-    {
-        resetCompilerCore();
-
-        if ( false == checkOptions() )
-        {
-            return false;
-        }
-
-        m_opts->normalizeFilePaths();
-        m_opts->clearOutputFiles();
-
-        {
-            using namespace boost::filesystem;
-            m_basePath = system_complete(path(m_opts->m_sourceFile).parent_path().make_preferred());
-        }
-
-        if ( true == setupSemanticAnalyzer() )
-        {
-            return startLexerAndParser();
-        }
-
-        return false;
-    }
-    catch ( boost::system::error_code & e )
-    {
-        localMessage ( MT_ERROR, QObject::tr("failure: %1").arg(e.message().c_str()).toStdString() );
-        return false;
-    }
-}
-
-DbgFile * CompilerCore::getSimDbg()
-{
-    return m_simulatorData.m_simDbg;
-}
-
-DataFile * CompilerCore::getSimData()
-{
-    return m_simulatorData.m_simData;
-}
-
-inline bool CompilerCore::checkOptions()
-{
-    if ( CompilerBase::LI_INVALID == m_lang )
-    {
-        localMessage ( MT_ERROR, QObject::tr("programming language not specified").toStdString() );
-        return false;
-    }
-
-    if ( CompilerBase::TA_INVALID == m_arch )
-    {
-        localMessage ( MT_ERROR, QObject::tr("target architecture not specified").toStdString() );
-        return false;
-    }
-
-    if ( true == m_opts->m_sourceFile.empty() )
-    {
-        localMessage ( MT_ERROR, QObject::tr("source code file not specified").toStdString() );
-        return false;
-    }
-
-    return true;
-}
-
 inline bool CompilerCore::setupSemanticAnalyzer()
 {
     switch ( m_lang )
@@ -248,6 +167,87 @@ inline bool CompilerCore::startLexerAndParser()
 
     fclose(sourceFile);
     return m_success;
+}
+
+bool CompilerCore::compile ( LangId lang,
+                             TargetArch arch,
+                             CompilerOptions * opts,
+                             bool genSimData )
+{
+    m_lang = lang;
+    m_arch = arch;
+    m_opts = opts;
+    m_simulatorData.m_genSimData = genSimData;
+
+    bool result = startCompilation();
+    resetCompilerCore();
+    return result;
+}
+
+inline bool CompilerCore::startCompilation()
+{
+    try
+    {
+        resetCompilerCore();
+
+        if ( false == checkOptions() )
+        {
+            return false;
+        }
+
+        m_opts->normalizeFilePaths();
+        m_opts->clearOutputFiles();
+
+        {
+            using namespace boost::filesystem;
+            m_basePath = system_complete(path(m_opts->m_sourceFile).parent_path().make_preferred());
+        }
+
+        if ( true == setupSemanticAnalyzer() )
+        {
+            return startLexerAndParser();
+        }
+
+        return false;
+    }
+    catch ( boost::system::error_code & e )
+    {
+        localMessage ( MT_ERROR, QObject::tr("failure: %1").arg(e.message().c_str()).toStdString() );
+        return false;
+    }
+}
+
+DbgFile * CompilerCore::getSimDbg()
+{
+    return m_simulatorData.m_simDbg;
+}
+
+DataFile * CompilerCore::getSimData()
+{
+    return m_simulatorData.m_simData;
+}
+
+inline bool CompilerCore::checkOptions()
+{
+    if ( CompilerBase::LI_INVALID == m_lang )
+    {
+        localMessage ( MT_ERROR, QObject::tr("programming language not specified").toStdString() );
+        return false;
+    }
+
+    if ( CompilerBase::TA_INVALID == m_arch )
+    {
+        localMessage ( MT_ERROR, QObject::tr("target architecture not specified").toStdString() );
+        return false;
+    }
+
+    if ( true == m_opts->m_sourceFile.empty() )
+    {
+        localMessage ( MT_ERROR, QObject::tr("source code file not specified").toStdString() );
+        return false;
+    }
+
+    return true;
 }
 
 inline std::string CompilerCore::msgType2str ( MessageType type )
