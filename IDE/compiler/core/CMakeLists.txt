@@ -22,14 +22,6 @@ set ( CMAKE_VERBOSE_MAKEFILE OFF )
 
 
 # ------------------------------------------------------------------------------
-# BUILD COMPONENTS IN THE SUBDIRECTORIES
-# ------------------------------------------------------------------------------
-
-# Compiler semantic analyzers for assembly language.
-add_subdirectory ( asm )
-
-
-# ------------------------------------------------------------------------------
 # COMPILATION OPTIONS
 # ------------------------------------------------------------------------------
 
@@ -80,6 +72,7 @@ add_library ( ${PROJECT_NAME} STATIC
               CompilerOptions.cxx
               CompilerStatement.cxx
               CompilerMsgFilter.cxx
+              CompilerLexerUtils.cxx
               CompilerSerializer.cxx
               CompilerMsgIntfFile.cxx
               CompilerSerializable.cxx
@@ -92,15 +85,14 @@ add_library ( ${PROJECT_NAME} STATIC
 target_link_libraries ( ${PROJECT_NAME}
                         ${QT_LIBRARIES}
                         ${Boost_LIBRARIES}
-                        os
-                        CompilerParsers
-                        AsmSemanticAnalyzers )
+                        CompilerModules
+                        os )
 
 
 # ------------------------------------------------------------------------------
 # INSTALLATION OPTIONS
 # ------------------------------------------------------------------------------
 
-#install ( TARGETS ${PROJECT_NAME}
-#          RUNTIME DESTINATION bin
-#          LIBRARY DESTINATION lib )
+# install ( TARGETS ${PROJECT_NAME}
+#           RUNTIME DESTINATION bin
+#           LIBRARY DESTINATION lib )

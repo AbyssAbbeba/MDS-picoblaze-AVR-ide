@@ -33,11 +33,8 @@
 #include <cstdio>
 #include <fstream>
 
-// Include all implemented semantic analyzers we have in this compiler collection.
-#include "asm/avr8/AsmAvr8SemanticAnalyzer.h"
-#include "asm/pic8/AsmPic8SemanticAnalyzer.h"
-#include "asm/mcs51/AsmMcs51SemanticAnalyzer.h"
-#include "asm/PicoBlaze/AsmPicoBlazeSemanticAnalyzer.h"
+// Include compiler modules for compiling various supported programming languages.
+#include "modules/CompilerModules.h"
 
 // Used for i18n only.
 #include <QObject>
@@ -119,40 +116,40 @@ inline bool CompilerCore::startLexerAndParser()
             switch ( m_arch )
             {
                 case TA_AVR8:
-                    avr8lexer_lex_init_extra ( this, &yyscanner );
-                    avr8lexer_set_in ( sourceFile, yyscanner );
+                    AsmAvr8Lexer_lex_init_extra ( this, &yyscanner );
+                    AsmAvr8Lexer_set_in ( sourceFile, yyscanner );
                     if ( true == m_success )
                     {
-                        avr8parser_parse ( yyscanner, this );
+                        AsmAvr8Parser_parse ( yyscanner, this );
                     }
-                    avr8lexer_lex_destroy ( yyscanner );
+                    AsmAvr8Lexer_lex_destroy ( yyscanner );
                     break;
                 case TA_PIC8:
-                    pic8lexer_lex_init_extra ( this, &yyscanner );
-                    pic8lexer_set_in ( sourceFile, yyscanner );
+                    AsmPic8Lexer_lex_init_extra ( this, &yyscanner );
+                    AsmPic8Lexer_set_in ( sourceFile, yyscanner );
                     if ( true == m_success )
                     {
-                        pic8parser_parse ( yyscanner, this );
+                        AsmPic8Parser_parse ( yyscanner, this );
                     }
-                    pic8lexer_lex_destroy ( yyscanner );
+                    AsmPic8Lexer_lex_destroy ( yyscanner );
                     break;
                 case TA_MCS51:
-                    mcs51lexer_lex_init_extra ( this, &yyscanner );
-                    mcs51lexer_set_in ( sourceFile, yyscanner );
+                    AsmMcs51Lexer_lex_init_extra ( this, &yyscanner );
+                    AsmMcs51Lexer_set_in ( sourceFile, yyscanner );
                     if ( true == m_success )
                     {
-                        mcs51parser_parse ( yyscanner, this );
+                        AsmMcs51Parser_parse ( yyscanner, this );
                     }
-                    mcs51lexer_lex_destroy ( yyscanner );
+                    AsmMcs51Lexer_lex_destroy ( yyscanner );
                     break;
                 case TA_PICOBLAZE:
-                    PicoBlazeLexer_lex_init_extra ( this, &yyscanner );
-                    PicoBlazeLexer_set_in ( sourceFile, yyscanner );
+                    AsmPicoBlazeLexer_lex_init_extra ( this, &yyscanner );
+                    AsmPicoBlazeLexer_set_in ( sourceFile, yyscanner );
                     if ( true == m_success )
                     {
-                        PicoBlazeParser_parse ( yyscanner, this );
+                        AsmPicoBlazeParser_parse ( yyscanner, this );
                     }
-                    PicoBlazeLexer_lex_destroy ( yyscanner );
+                    AsmPicoBlazeLexer_lex_destroy ( yyscanner );
                     break;
                 default:
                     localMessage ( MT_ERROR, QObject::tr ( "architecture not supported for the selected language" )
