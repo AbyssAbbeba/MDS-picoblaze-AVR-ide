@@ -1,1 +1,0 @@
-Compiler semantic analyzer for assembly language for AVR8.

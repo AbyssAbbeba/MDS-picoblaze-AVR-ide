@@ -25,7 +25,7 @@ set ( CMAKE_VERBOSE_MAKEFILE OFF )
 # ------------------------------------------------------------------------------
 
 # Build lexical and syntax analyzers.
-add_subdirectory ( grammar )
+add_subdirectory ( modules )
 
 # Build the compiler collection itself as a library.
 add_subdirectory ( core )
