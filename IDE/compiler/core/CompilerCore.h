@@ -17,21 +17,21 @@
 #define COMPILERCORE_H
 
 // Forward declarations
-class CompilerExpr;
-class CompilerStatement;
-class CompilerMsgInterface;
-class CompilerOptions;
-class CompilerSemanticAnalyzer;
-class CompilerMsgObserver;
-class CompilerMessageStack;
 class DbgFile;
 class DataFile;
+class CompilerExpr;
+class CompilerOptions;
+class CompilerStatement;
+class CompilerMsgObserver;
+class CompilerMsgInterface;
+class CompilerMessageStack;
+class CompilerSemanticAnalyzer;
 
 // Base class and compiler interfaces.
 #include "CompilerBase.h"
+#include "CompilerSourceLocation.h"
 #include "CompilerParserInterface.h"
 #include "CompilerSemanticInterface.h"
-#include "CompilerSourceLocation.h"
 
 // Boost Filesystem library.
 #define BOOST_FILESYSTEM_NO_DEPRECATED
@@ -47,8 +47,8 @@ class DataFile;
  * @class CompilerCore
  */
 class CompilerCore : public CompilerBase,
-                     private CompilerParserInterface,
-                     private CompilerSemanticInterface
+                     public CompilerParserInterface,
+                     public CompilerSemanticInterface
 {
     ////    Public Static Constants    ////
     public:
@@ -307,22 +307,6 @@ class CompilerCore : public CompilerBase,
          * @brief
          */
         inline void resetCompilerCore();
-
-        /**
-         * @brief
-         * @param[in] lang
-         * @param[in] arch
-         * @return
-         */
-        inline bool setupSemanticAnalyzer();
-
-        /**
-         * @brief
-         * @param[in] lang
-         * @param[in] arch
-         * @return
-         */
-        inline bool startLexerAndParser();
 
         /**
          * @brief

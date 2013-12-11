@@ -16,25 +16,23 @@
 // Compiler header files.
 #include "CompilerCore.h"
 #include "CompilerExpr.h"
-#include "CompilerStatement.h"
-#include "CompilerMsgInterface.h"
 #include "CompilerOptions.h"
-#include "CompilerSemanticAnalyzer.h"
-#include "CompilerMsgObserver.h"
-#include "CompilerMessageStack.h"
+#include "CompilerModules.h"
+#include "CompilerStatement.h"
 #include "CompilerMsgFilter.h"
 #include "CompilerSerializer.h"
+#include "CompilerMsgObserver.h"
+#include "CompilerMsgInterface.h"
+#include "CompilerMessageStack.h"
+#include "CompilerSemanticAnalyzer.h"
 
 // OS compatibility.
 #include "../../utilities/os/os.h"
 
 // Standard header files.
-#include <sstream>
 #include <cstdio>
+#include <sstream>
 #include <fstream>
-
-// Include compiler modules for compiling various supported programming languages.
-#include "modules/CompilerModules.h"
 
 // Used for i18n only.
 #include <QObject>
@@ -65,107 +63,6 @@ CompilerCore::~CompilerCore()
     }
 }
 
-inline bool CompilerCore::setupSemanticAnalyzer()
-{
-    switch ( m_lang )
-    {
-        case LI_ASM:
-            switch ( m_arch )
-            {
-                case TA_AVR8:
-                    m_semanticAnalyzer = new AsmAvr8SemanticAnalyzer ( this, m_opts );
-                    break;
-                case TA_PIC8:
-                    m_semanticAnalyzer = new AsmPic8SemanticAnalyzer ( this, m_opts );
-                    break;
-                case TA_MCS51:
-                    m_semanticAnalyzer = new AsmMcs51SemanticAnalyzer ( this, m_opts );
-                    break;
-                case TA_PICOBLAZE:
-                    m_semanticAnalyzer = new AsmPicoBlazeSemanticAnalyzer ( this, m_opts );
-                    break;
-                default:
-                    localMessage ( MT_ERROR, QObject::tr ( "architecture not supported for the selected language" )
-                                                         . toStdString() );
-                    return false;
-            }
-            break;
-        default:
-            localMessage ( MT_ERROR, QObject::tr("programming language not supported").toStdString() );
-            return false;
-    }
-
-    return true;
-}
-
-inline bool CompilerCore::startLexerAndParser()
-{
-
-    FILE * sourceFile = fileOpen ( m_opts->m_sourceFile );
-    yyscan_t yyscanner; // Pointer to the lexer context
-
-    if ( NULL == sourceFile )
-    {
-        localMessage ( MT_ERROR, QObject::tr("unable to open file: ").toStdString() + m_opts->m_sourceFile );
-        return false;
-    }
-
-    switch ( m_lang )
-    {
-        case LI_ASM:
-            switch ( m_arch )
-            {
-                case TA_AVR8:
-                    AsmAvr8Lexer_lex_init_extra ( this, &yyscanner );
-                    AsmAvr8Lexer_set_in ( sourceFile, yyscanner );
-                    if ( true == m_success )
-                    {
-                        AsmAvr8Parser_parse ( yyscanner, this );
-                    }
-                    AsmAvr8Lexer_lex_destroy ( yyscanner );
-                    break;
-                case TA_PIC8:
-                    AsmPic8Lexer_lex_init_extra ( this, &yyscanner );
-                    AsmPic8Lexer_set_in ( sourceFile, yyscanner );
-                    if ( true == m_success )
-                    {
-                        AsmPic8Parser_parse ( yyscanner, this );
-                    }
-                    AsmPic8Lexer_lex_destroy ( yyscanner );
-                    break;
-                case TA_MCS51:
-                    AsmMcs51Lexer_lex_init_extra ( this, &yyscanner );
-                    AsmMcs51Lexer_set_in ( sourceFile, yyscanner );
-                    if ( true == m_success )
-                    {
-                        AsmMcs51Parser_parse ( yyscanner, this );
-                    }
-                    AsmMcs51Lexer_lex_destroy ( yyscanner );
-                    break;
-                case TA_PICOBLAZE:
-                    AsmPicoBlazeLexer_lex_init_extra ( this, &yyscanner );
-                    AsmPicoBlazeLexer_set_in ( sourceFile, yyscanner );
-                    if ( true == m_success )
-                    {
-                        AsmPicoBlazeParser_parse ( yyscanner, this );
-                    }
-                    AsmPicoBlazeLexer_lex_destroy ( yyscanner );
-                    break;
-                default:
-                    localMessage ( MT_ERROR, QObject::tr ( "architecture not supported for the selected language" )
-                                                         . toStdString() );
-                    return false;
-            }
-            break;
-        default:
-            localMessage ( MT_ERROR, QObject::tr("programming language not supported").toStdString() );
-            return false;
-    }
-
-    fclose(sourceFile);
-    return m_success;
-}
-
 bool CompilerCore::compile ( LangId lang,
                              TargetArch arch,
                              CompilerOptions * opts,
@@ -183,6 +80,8 @@ bool CompilerCore::compile ( LangId lang,
 
 inline bool CompilerCore::startCompilation()
 {
+    using namespace CompilerModules;
+
     try
     {
         resetCompilerCore();
@@ -200,14 +99,27 @@ inline bool CompilerCore::startCompilation()
             m_basePath = system_complete(path(m_opts->m_sourceFile).parent_path().make_preferred());
         }
 
-        if ( true == setupSemanticAnalyzer() )
-        {
-            return startLexerAndParser();
-        }
+        ModEmplStatCode statusCode = employModule ( m_lang, m_arch, this, m_semanticAnalyzer );
 
-        return false;
+        switch ( statusCode )
+        {
+            case MESC_OK:
+                return true;
+            case MESC_IO_ERROR:
+                localMessage ( MT_ERROR, QObject::tr("unable to open file: ").toStdString() + m_opts->m_sourceFile );
+                return false;
+            case MESC_ARCH_NOT_SUPPORTED:
+                localMessage ( MT_ERROR,
+                               QObject::tr("architecture not supported for the selected language").toStdString() );
+                return false;
+            case MESC_LANG_NOT_SUPPORTED:
+                localMessage ( MT_ERROR, QObject::tr("programming language not supported").toStdString() );
+                return false;
+            case MESC_UNKNOWN_ERROR:
+                return false;
+        }
     }
-    catch ( boost::system::error_code & e )
+    catch ( const boost::system::error_code & e )
     {
         localMessage ( MT_ERROR, QObject::tr("failure: %1").arg(e.message().c_str()).toStdString() );
         return false;
