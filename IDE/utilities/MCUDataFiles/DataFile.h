@@ -175,8 +175,9 @@ class DataFile
 
     ////    Protected Attributes    ////
     protected:
-        unsigned int m_arrsize;   ///< Size of the memory array
-        int16_t * m_memory;             ///< Memory array
+        unsigned int m_arrsize;   ///< Size of the memory array.
+        int16_t * m_memory;       ///< Memory array.
+        bool m_dontDelete;        ///< If true, don't delete the memory array.
 };
 
 #endif // DATAFILE_H
