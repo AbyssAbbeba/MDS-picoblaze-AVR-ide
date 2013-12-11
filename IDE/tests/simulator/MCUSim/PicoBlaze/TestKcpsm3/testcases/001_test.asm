@@ -1,4 +1,11 @@
-    LOAD        0x5, #159
-    ADD         0x5, #2
-    JUMP        123
     device kcpsm3
+
+  XXX     define          1 * {0} + {1}/{2}+5
+  YYY     define          1 + {0}
+  Abyss   EQU             XXX(1,2,YYY(0x01)) + 2
+    
+
+        LOAD        0x5, #Abyss
+        ;; step
+        ;; reg[5] == 9
+ 
