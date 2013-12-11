@@ -18,6 +18,8 @@
 #include "mainform.h"
 #include "../dialogs/projectdlg/projectdlg.h"
 #include "../dialogs/disasmdlg/disasmdlg.h"
+#include "../dialogs/translatordlg/translatordlg.h"
+#include "../dialogs/fileconvertdlg/fileconvertdlg.h"
 #include "../errordialog/errordlg.h"
 #include "pluginman_gui.h"
 #include "../dialogs/projectcfg/projectcfgdlg_core.h"
@@ -96,6 +98,8 @@ void MainForm::createMenu()
 
     toolsMenu = menuBar()->addMenu(tr("&Tools"));
     toolsMenu->addAction(toolDisassemblerAct);
+    toolsMenu->addAction(toolTranslatorAct);
+    toolsMenu->addAction(toolFileConvertAct);
     toolsMenu->addAction(toolConvertorAct);
     toolsMenu->addAction(toolDisplayAct);
     
@@ -235,6 +239,10 @@ void MainForm::createActions()
     QIcon *icon_toolDis = new QIcon(*pm_toolDis);
     toolDisassemblerAct = new QAction(*icon_toolDis, tr("Disassemble"), this);
     connect(toolDisassemblerAct, SIGNAL(triggered()), this, SLOT(toolDisassemble()));
+    toolTranslatorAct = new QAction(tr("ASM Translator"), this);
+    connect(toolTranslatorAct, SIGNAL(triggered()), this, SLOT(toolTranslate()));
+    toolFileConvertAct = new QAction(tr("DataFile Convertor"), this);
+    connect(toolFileConvertAct, SIGNAL(triggered()), this, SLOT(toolFileConvert()));
     toolConvertorAct = new QAction(tr("Convertor"), this);
     connect(toolConvertorAct, SIGNAL(triggered()), this, SLOT(toolConvertor()));
     toolDisplayAct = new QAction(tr("Segment Display"), this);
@@ -1138,6 +1146,42 @@ void MainForm::disassembleOutput(std::vector<std::string> text)
     this->wDockManager->addUntrackedCentralWidget("disasm","untracked",qText);
     getWDockManager()->getCentralTextEdit()->reloadHighlighter(PICOBLAZEASM);
     //getWDockManager()->getCentralWidget()->connectAct();
+}
+
+
+/**
+ * @brief
+ */
+void MainForm::toolTranslate()
+{
+    TranslatorDlg *dlg = new TranslatorDlg(this);
+    connect(dlg, SIGNAL(output(std::vector<std::string>)), this, SLOT(translatorOutput(std::vector<std::string>)));
+}
+
+
+/**
+ * @brief
+ */
+void MainForm::translatorOutput(std::vector<std::string> text)
+{
+    QStringList qText;
+    for (unsigned int i = 0; i < text.size(); i++)
+    {
+        qText.append(QString::fromStdString(text.at(i)));
+    }
+    //QString name = this->projectMan->addUntrackedFile(NULL, "disasm");
+    this->wDockManager->addUntrackedCentralWidget("ASM Translator","untracked",qText);
+    getWDockManager()->getCentralTextEdit()->reloadHighlighter(PICOBLAZEASM);
+    //getWDockManager()->getCentralWidget()->connectAct();
+}
+
+
+/**
+ * @brief
+ */
+void MainForm::toolFileConvert()
+{
+    FileConvertDlg *dlg = new FileConvertDlg(this);
 }
 
 
