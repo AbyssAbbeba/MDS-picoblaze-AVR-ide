@@ -35,15 +35,14 @@ find_package ( Boost 1.46
                COMPONENTS filesystem system )
 
 # List of preprocessor include file search directories.
-include_directories ( "${CMAKE_CURRENT_BINARY_DIR}/../grammar"
-                      "${CMAKE_CURRENT_BINARY_DIR}/asm/avr8"
-                      "${CMAKE_CURRENT_BINARY_DIR}/asm/mcs51"
-                      "${CMAKE_CURRENT_BINARY_DIR}/asm/pic8"
-                      "${CMAKE_CURRENT_BINARY_DIR}/asm/PicoBlaze" )
+include_directories ( "${CMAKE_CURRENT_BINARY_DIR}"
+                      "${CMAKE_CURRENT_BINARY_DIR}/../modules" )
 
 # Specify directories in which the linker will look for libraries.
-link_directories ( "${CMAKE_CURRENT_BINARY_DIR}/../grammar"
-                   "${CMAKE_CURRENT_BINARY_DIR}/../../utilities/os" )
+link_directories ( "${CMAKE_CURRENT_BINARY_DIR}/../modules"
+                   "${CMAKE_CURRENT_BINARY_DIR}/../../utilities/os"
+                   "${CMAKE_CURRENT_BINARY_DIR}/../../utilities/DbgFile/"
+                   "${CMAKE_CURRENT_BINARY_DIR}/../../utilities/MCUDataFiles/" )
 
 ## Add switches to compiler command line
  # -Wall       : Enables all the warnings.
@@ -61,7 +60,7 @@ QT4_WRAP_CPP ( QT_MOC_SRCS
 
 ## Add a library to the project using the specified source files,
  # in this case it will procude dynamic C++ library.
-add_library ( ${PROJECT_NAME} STATIC
+add_library ( ${PROJECT_NAME} SHARED
               ${QT_MOC_SRCS}
               Compiler.cxx
               CompilerBase.cxx
