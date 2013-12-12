@@ -225,13 +225,13 @@ void DbgFileNative::directSetupPrepare()
     clear();
 }
 
-void DbgFileNative::directSetupFiles ( const std::vector<std::string> & files )
+void DbgFileNative::directSetupFiles ( const std::vector<std::pair<std::string,FILE*>> & files )
 {
-    for ( std::vector<std::string>::const_iterator it = files.cbegin();
+    for ( std::vector<std::pair<std::string,FILE*>>::const_iterator it = files.cbegin();
           it != files.cend();
           it++ )
     {
-        m_fileNames.push_back(*it);
+        m_fileNames.push_back(it->first);
         m_numberOfLines.push_back(0);
     }
 }

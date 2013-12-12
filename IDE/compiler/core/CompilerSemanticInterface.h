@@ -75,7 +75,7 @@ class CompilerSemanticInterface
          * @brief
          * @return
          */
-        virtual const std::vector<std::string> & listSourceFiles() const = 0;
+        virtual const std::vector<std::pair<std::string,FILE*>> & listSourceFiles() const = 0;
 
         /**
          * @brief

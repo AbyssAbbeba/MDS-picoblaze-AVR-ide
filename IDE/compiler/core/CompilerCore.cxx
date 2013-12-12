@@ -30,7 +30,6 @@
 #include "../../utilities/os/os.h"
 
 // Standard header files.
-#include <cstdio>
 #include <sstream>
 #include <fstream>
 
@@ -124,6 +123,8 @@ inline bool CompilerCore::startCompilation()
         localMessage ( MT_ERROR, QObject::tr("failure: %1").arg(e.message().c_str()).toStdString() );
         return false;
     }
+
+    return false;
 }
 
 DbgFile * CompilerCore::getSimDbg()
@@ -276,7 +277,8 @@ void CompilerCore::compilerMessage ( MessageType type,
     m_msgInterface -> message ( msgText.str(), type );
 }
 
-inline void CompilerCore::setFileName ( const std::string & filename )
+inline void CompilerCore::setOpenedFile ( const std::string & filename,
+                                          FILE ** fileHandle )
 {
     int idx = getFileNumber(filename);
 
@@ -284,11 +286,24 @@ inline void CompilerCore::setFileName ( const std::string & filename )
     if ( -1 != idx )
     {
         m_fileNumber = idx;
+        if ( NULL != fileHandle )
+        {
+            if ( NULL == m_openedFiles[idx].second )
+            {
+                m_openedFiles[idx].second = (*fileHandle);
+            }
+            else
+            {
+                fclose(*fileHandle);
+                (*fileHandle) = m_openedFiles[idx].second;
+                rewind(*fileHandle);
+            }
+        }
     }
     else
     {
-        m_fileNumber = m_fileNames.size();
-        m_fileNames.push_back(filename);
+        m_fileNumber = m_openedFiles.size();
+        m_openedFiles.push_back(std::make_pair(filename, *fileHandle));
     }
 }
 
@@ -396,7 +411,7 @@ CompilerStatement * CompilerCore::loadPrecompiledCode ( const std::string & file
     try
     {
         std::ifstream file ( fileName, (std::ios_base::in | std::ios_base::binary) );
-        CompilerSerializer deserializer(file, m_fileNames, m_lang, m_arch, hide);
+        CompilerSerializer deserializer(file, m_openedFiles, m_lang, m_arch, hide);
         CompilerStatement * result = new CompilerStatement(deserializer);
 
         if ( true == file.bad() )
@@ -419,7 +434,7 @@ bool CompilerCore::savePrecompiledCode ( const std::string & fileName,
     try
     {
         std::ofstream file ( fileName, (std::ios_base::out | std::ios_base::binary) );
-        CompilerSerializer serializer(file, m_fileNames, m_lang, m_arch);
+        CompilerSerializer serializer(file, m_openedFiles, m_lang, m_arch);
         code->serializeTree(serializer);
         return ( !file.bad() );
     }
@@ -447,6 +462,17 @@ inline void CompilerCore::resetCompilerCore()
         m_semanticAnalyzer = NULL;
     }
 
+    // Close all opened input files.
+    for ( std::vector<std::pair<std::string,FILE*>>::const_iterator it = m_openedFiles.cbegin();
+          m_openedFiles.cend() != it;
+          it++ )
+    {
+        if ( NULL != it->second )
+        {
+            fclose(it->second);
+        }
+    }
+
     m_success = true;
     m_devSpecCodeLoaded = false;
 
@@ -455,7 +481,7 @@ inline void CompilerCore::resetCompilerCore()
     m_basePath.clear();
 
     m_fileNameStack.clear();
-    m_fileNames.clear();
+    m_openedFiles.clear();
     m_filename.clear();
 
     resetCompilerParserInterface();
@@ -498,11 +524,11 @@ FILE * CompilerCore::fileOpen ( const std::string & filename,
 
     if ( true == acyclic )
     {
-        for ( std::vector<std::string>::const_iterator it = m_fileNameStack.begin();
-              it != m_fileNameStack.end();
+        for ( std::vector<std::string>::const_iterator it = m_fileNameStack.cbegin();
+              it != m_fileNameStack.cend();
               ++it )
         {
-            if ( absoluteFileName == *it )
+            if ( *it == absoluteFileName )
             {
                 localMessage ( MT_ERROR, QObject::tr ( "file %1 is already opened, you might have an "
                                                        "\"include\" loop in your code" )
@@ -512,15 +538,21 @@ FILE * CompilerCore::fileOpen ( const std::string & filename,
         }
     }
 
-    if ( false == pushFileName(absoluteFileName) )
+    FILE * fileHandle = fopen(absoluteFileName.c_str(), "r");
+    if ( NULL == fileHandle )
+    {
+        return NULL;
+    }
+    if ( false == pushFileName(absoluteFileName, &fileHandle) )
     {
         return NULL;
     }
 
-    return fopen(absoluteFileName.c_str(), "r");
+    return fileHandle;
 }
 
-bool CompilerCore::pushFileName ( const std::string & filename )
+bool CompilerCore::pushFileName ( const std::string & filename,
+                                  FILE ** fileHandle )
 {
     if ( ( -1 != m_opts->m_maxInclusion )
            &&
@@ -528,10 +560,11 @@ bool CompilerCore::pushFileName ( const std::string & filename )
     {
         localMessage ( MT_ERROR, QObject::tr ( "maximum include level (%1) reached" )
                                              .arg(m_opts->m_maxInclusion).toStdString() );
+        fclose(*fileHandle);
         return false;
     }
 
-    setFileName(filename);
+    setOpenedFile(filename, fileHandle);
     m_fileNameStack.push_back(filename);
 
     return true;
@@ -540,7 +573,7 @@ bool CompilerCore::pushFileName ( const std::string & filename )
 void CompilerCore::popFileName()
 {
     m_fileNameStack.pop_back();
-    setFileName(m_fileNameStack.back());
+    setOpenedFile(m_fileNameStack.back());
 }
 
 int CompilerCore::getFileNumber() const
@@ -570,9 +603,9 @@ int CompilerCore::getFileNumber ( unsigned int uplevel ) const
 int CompilerCore::getFileNumber ( const std::string & filename ) const
 {
     int result = -1;
-    for ( unsigned int i = 0; i < m_fileNames.size(); i++ )
+    for ( unsigned int i = 0; i < m_openedFiles.size(); i++ )
     {
-        if ( filename == m_fileNames[i] )
+        if ( filename == m_openedFiles[i].first )
         {
             result = i;
         }
@@ -638,19 +671,19 @@ void CompilerCore::processCodeTree ( CompilerStatement * codeTree )
     m_semanticAnalyzer->process(m_rootStatement);
 }
 
-const std::vector<std::string> & CompilerCore::listSourceFiles() const
+const std::vector<std::pair<std::string,FILE*>> & CompilerCore::listSourceFiles() const
 {
-    return m_fileNames;
+    return m_openedFiles;
 }
 
 const std::string & CompilerCore::getFileName ( int fileNumber ) const
 {
-    return m_fileNames.at(fileNumber);
+    return m_openedFiles.at(fileNumber).first;
 }
 
 std::string CompilerCore::locationToStr ( const CompilerSourceLocation & location ) const
 {
-    if ( -1 == location.m_fileNumber || location.m_fileNumber >= (int)m_fileNames.size() )
+    if ( -1 == location.m_fileNumber || location.m_fileNumber >= (int)m_openedFiles.size() )
     {
         return "";
     }
