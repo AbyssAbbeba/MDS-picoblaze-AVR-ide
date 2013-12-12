@@ -96,7 +96,6 @@ CompilerModules::ModEmplStatCode CompilerModules::employModule ( CompilerBase::L
                     AsmAvr8Lexer_lex_destroy ( yyscanner );
 
                     // Finalize.
-                    fclose(sourceFile);
                     return MESC_OK;
                 }
 
@@ -121,7 +120,6 @@ CompilerModules::ModEmplStatCode CompilerModules::employModule ( CompilerBase::L
                     AsmPic8Lexer_lex_destroy ( yyscanner );
 
                     // Finalize.
-                    fclose(sourceFile);
                     return MESC_OK;
                 }
 
@@ -146,7 +144,6 @@ CompilerModules::ModEmplStatCode CompilerModules::employModule ( CompilerBase::L
                     AsmMcs51Lexer_lex_destroy ( yyscanner );
 
                     // Finalize.
-                    fclose(sourceFile);
                     return MESC_OK;
                 }
 
@@ -171,7 +168,6 @@ CompilerModules::ModEmplStatCode CompilerModules::employModule ( CompilerBase::L
                     AsmPicoBlazeLexer_lex_destroy ( yyscanner );
 
                     // Finalize.
-                    fclose(sourceFile);
                     return MESC_OK;
                 }
 

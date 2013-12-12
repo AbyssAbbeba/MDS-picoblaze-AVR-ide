@@ -38,8 +38,10 @@ class CompilerSemanticAnalyzer;
 #include <boost/filesystem.hpp>
 
 // Standard header files.
+#include <cstdio>
 #include <string>
 #include <vector>
+#include <utility>
 
 /**
  * @brief
@@ -165,8 +167,11 @@ class CompilerCore : public CompilerBase,
             /**
              * @brief
              * @param[in] filename
+             * @param[in,out] fileHandle
+             * @return
              */
-            bool pushFileName ( const std::string & filename );
+            bool pushFileName ( const std::string & filename,
+                                FILE ** fileHandle );
 
             /**
              * @brief
@@ -207,7 +212,7 @@ class CompilerCore : public CompilerBase,
              * @brief
              * @return
              */
-            const std::vector<std::string> & listSourceFiles() const;
+            const std::vector<std::pair<std::string,FILE*>> & listSourceFiles() const;
 
             /**
              * @brief
@@ -300,8 +305,10 @@ class CompilerCore : public CompilerBase,
         /**
          * @brief
          * @param[in] filename
+         * @param[in,out] fileHandle In case this is a newly opened file, this parameter has to be set.
          */
-        inline void setFileName ( const std::string & filename );
+        inline void setOpenedFile ( const std::string & filename,
+                                    FILE ** fileHandle = NULL );
 
         /**
          * @brief
@@ -377,7 +384,7 @@ class CompilerCore : public CompilerBase,
         /**
          * @brief
          */
-        std::vector<std::string> m_fileNames;
+        std::vector<std::pair<std::string,FILE*>> m_openedFiles;
 
         /**
          * @brief

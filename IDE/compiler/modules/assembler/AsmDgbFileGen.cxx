@@ -60,12 +60,12 @@ inline void AsmDgbFileGen::outputToFile ( CompilerSemanticInterface * compilerCo
     }
 
     file << CompilerFileHeaders::AsmNativeDgbFile << "\n";
-    const std::vector<std::string> & sourceFiles = compilerCore->listSourceFiles();
-    for ( std::vector<std::string>::const_iterator it = sourceFiles.cbegin();
+    const std::vector<std::pair<std::string,FILE*>> & sourceFiles = compilerCore->listSourceFiles();
+    for ( std::vector<std::pair<std::string,FILE*>>::const_iterator it = sourceFiles.cbegin();
           it != sourceFiles.cend();
           it++ )
     {
-        file << *it << "\n";
+        file << it->first << "\n";
     }
     file << "\n";
     for ( std::vector<DbgRecord>::const_iterator i = m_data.cbegin();

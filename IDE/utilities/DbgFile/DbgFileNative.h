@@ -82,7 +82,7 @@ class DbgFileNative : public DbgFile
              * @brief
              * @param[in] files
              */
-            void directSetupFiles ( const std::vector<std::string> & files );
+            void directSetupFiles ( const std::vector<std::pair<std::string,FILE*>> & files );
 
             /**
              * @brief

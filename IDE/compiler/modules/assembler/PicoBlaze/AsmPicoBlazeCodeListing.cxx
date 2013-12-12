@@ -16,6 +16,7 @@
 #include "AsmPicoBlazeCodeListing.h"
 
 // Standard headers.
+#include <cstdio>
 #include <fstream>
 
 // Used for i18n only
@@ -80,35 +81,44 @@ AsmPicoBlazeCodeListing::~AsmPicoBlazeCodeListing()
 
 void AsmPicoBlazeCodeListing::loadSourceFiles()
 {
-    std::fstream file;
+    char * line = NULL;
+    size_t bufSize = 0;
+    ssize_t lineLen = -1;
     int fileNumber = -1;
-    char line [ MAX_LINE_LENGTH ];
 
     m_numberOfFiles = m_compilerCore->listSourceFiles().size();
     m_listing.resize(m_numberOfFiles);
 
-    for ( std::vector<std::string>::const_iterator it = m_compilerCore->listSourceFiles().begin();
-          it != m_compilerCore->listSourceFiles().end();
+    for ( std::vector<std::pair<std::string,FILE*>>::const_iterator it = m_compilerCore->listSourceFiles().cbegin();
+          it != m_compilerCore->listSourceFiles().cend();
           it++ )
     {
         fileNumber++;
-        file.open ( *it, std::fstream::in );
+        rewind(it->second);
 
-        if ( true == file.bad())
+        if ( 0 != ferror(it->second) )
         {
             m_compilerCore -> compilerMessage ( CompilerBase::MT_ERROR,
-                                                QObject::tr("unable to open ").toStdString() + "\"" + *it  + "\"" );
+                                                QObject::tr("unable to read file: ").toStdString()
+                                                + "`" + it->first  + "'" );
             return;
         }
 
         // Iterate over lines in the file
-        while ( false == file.eof() )
+        while ( -1 != ( lineLen = getline(&line, &bufSize, it->second) ) )
         {
-            file.getline ( line, MAX_LINE_LENGTH );
+            // Dispose of the terminating EOL character sequence.
+            if ( '\r' == line[lineLen-2] )
+            {
+                line[lineLen-2] = '\0';
+            }
+            else if ( ( '\n' == line[lineLen-1] ) && ( '\r' == line[lineLen-1] ) )
+            {
+                line[lineLen-1] = '\0';
+            }
+
             m_listing[fileNumber].push_back ( LstLine ( line ) );
         }
-
-        file.close();
     }
 
     processMsgQueue();

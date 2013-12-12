@@ -98,9 +98,11 @@ class CompilerParserInterface
         /**
          * @brief
          * @param[in] filename
+         * @param[in,out] fileHandle
          * @return
          */
-        virtual bool pushFileName ( const std::string & filename ) = 0;
+        virtual bool pushFileName ( const std::string & filename,
+                                    FILE ** fileHandle ) = 0;
 
         /**
          * @brief

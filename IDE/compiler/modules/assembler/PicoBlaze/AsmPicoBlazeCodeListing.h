@@ -41,11 +41,6 @@ class AsmPicoBlazeCodeListing : public CompilerMsgObserver
     friend std::ostream & operator << ( std::ostream & out,
                                         const AsmPicoBlazeCodeListing * codeListing );
 
-    ////    Public Static Constants    ////
-    public:
-        /// @brief
-        static const unsigned int MAX_LINE_LENGTH = 1024;
-
     ////    Constructors and Destructors    ////
     public:
         /**
