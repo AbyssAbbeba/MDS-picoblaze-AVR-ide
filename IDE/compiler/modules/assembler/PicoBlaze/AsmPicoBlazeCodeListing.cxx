@@ -112,7 +112,7 @@ void AsmPicoBlazeCodeListing::loadSourceFiles()
             {
                 line[lineLen-2] = '\0';
             }
-            else if ( ( '\n' == line[lineLen-1] ) && ( '\r' == line[lineLen-1] ) )
+            else if ( ( '\n' == line[lineLen-1] ) || ( '\r' == line[lineLen-1] ) )
             {
                 line[lineLen-1] = '\0';
             }

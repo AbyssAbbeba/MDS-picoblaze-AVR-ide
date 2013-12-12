@@ -82,9 +82,9 @@
 /* White space character */
 WSCHAR  ([ \t]|\u00A0)*
 /* White space */
-WSPACE  {WSCHAR}+
+WS      {WSCHAR}+
 /* Empty or white space */
-EWSPACE {WSCHAR}*
+EWS     {WSCHAR}*
 /* New line */
 NLINE   (\r?\n)|(\n?\r)
 /* An identifier in Assembly language */
@@ -94,13 +94,13 @@ COMMENT (;[^\r\n]*)
 /* C like escape sequence, such as `\x4A', `\uABCD', `\U1234abcd', and `\177' */
 XESC    (\\[0-7]{1,3})|(\\x[0-9A-F]{1,2})|(\\[uU][0-9A-F]{1,8})
 /* Instruction "RETURNI ENABLE" */
-RETURNI_ENABLE_INST    "returni"{WSPACE}"enable"
+RETURNI_ENABLE_INST    "returni"{WS}"enable"
 /* Instruction "RETURNI DISABLE" */
-RETURNI_DISABLE_INST    "returni"{WSPACE}"disable"
+RETURNI_DISABLE_INST    "returni"{WS}"disable"
 /* Instruction "ENABLE INTERRUPT" */
-ENA_INT_INST            "enable"{WSPACE}"interrupt"
+ENA_INT_INST            "enable"{WS}"interrupt"
 /* Instruction "DISABLE INTERRUPT" */
-DIS_INT_INST            "disable"{WSPACE}"interrupt"
+DIS_INT_INST            "disable"{WS}"interrupt"
 
 /*
  * Exclusive start conditions
@@ -139,7 +139,7 @@ DIS_INT_INST            "disable"{WSPACE}"interrupt"
     yylloc_param->first_column = yylloc_param->last_column;
 %}
 
-{WSPACE}                { /* eat up white space */ }
+{WS}                    { /* eat up white space */ }
 {NLINE}                 {
                             yylloc->last_line++;
                             yylloc->last_column = 1;
@@ -265,23 +265,23 @@ DIS_INT_INST            "disable"{WSPACE}"interrupt"
 "testcy"                { return I_TESTCY;      }
 "comparecy"             { return I_COMPARECY;   }
 "outputk"               { return I_OUTPUTK;     }
-"jump"{WSPACE}"z"{EWSPACE}","       { return I_JUMP_Z;      }
-"jump"{WSPACE}"nz"{EWSPACE}","      { return I_JUMP_NZ;     }
-"jump"{WSPACE}"c"{EWSPACE}","       { return I_JUMP_C;      }
-"jump"{WSPACE}"nc"{EWSPACE}","      { return I_JUMP_NC;     }
-"call"{WSPACE}"z"{EWSPACE}","       { return I_CALL_Z;      }
-"call"{WSPACE}"nz"{EWSPACE}","      { return I_CALL_NZ;     }
-"call"{WSPACE}"c"{EWSPACE}","       { return I_CALL_C;      }
-"call"{WSPACE}"nc"{EWSPACE}","      { return I_CALL_NC;     }
-"return"{WSPACE}"z"{EWSPACE}","     { return I_RETURN_Z;    }
-"return"{WSPACE}"nz"{EWSPACE}","    { return I_RETURN_NZ;   }
-"return"{WSPACE}"c"{EWSPACE}","     { return I_RETURN_C;    }
-"return"{WSPACE}"nc"{EWSPACE}","    { return I_RETURN_NC;   }
+"jump"{WS}"z"{EWS}","   { return I_JUMP_Z;      }
+"jump"{WS}"nz"{EWS}","  { return I_JUMP_NZ;     }
+"jump"{WS}"c"{EWS}","   { return I_JUMP_C;      }
+"jump"{WS}"nc"{EWS}","  { return I_JUMP_NC;     }
+"call"{WS}"z"{EWS}","   { return I_CALL_Z;      }
+"call"{WS}"nz"{EWS}","  { return I_CALL_NZ;     }
+"call"{WS}"c"{EWS}","   { return I_CALL_C;      }
+"call"{WS}"nc"{EWS}","  { return I_CALL_NC;     }
+"return"{WS}"z"{EWS}    { return I_RETURN_Z;    }
+"return"{WS}"nz"{EWS}   { return I_RETURN_NZ;   }
+"return"{WS}"c"{EWS}    { return I_RETURN_C;    }
+"return"{WS}"nc"{EWS}   { return I_RETURN_NC;   }
 "return"                { return I_RETURN;      }
 "jump"                  { return I_JUMP;        }
 "call"                  { return I_CALL;        }
-"regbank"{WSPACE}"A"    { return I_REGBANK_A;   }
-"regbank"{WSPACE}"B"    { return I_REGBANK_B;   }
+"regbank"{WS}"A"        { return I_REGBANK_A;   }
+"regbank"{WS}"B"        { return I_REGBANK_B;   }
 {RETURNI_ENABLE_INST}   { return I_RETURNI_ENA; }
 {RETURNI_DISABLE_INST}  { return I_RETURNI_DIS; }
 {ENA_INT_INST}          { return I_ENABLE_INT;  }
@@ -293,7 +293,6 @@ DIS_INT_INST            "disable"{WSPACE}"interrupt"
 "dis"                   { return I_DISABLE_INT; }
 "retie"                 { return I_RETURNI_ENA; }
 "retid"                 { return I_RETURNI_DIS; }
-"ret"                   { return I_RETURN;      }
 "cmp"                   { return I_COMPARE;     }
 "in"                    { return I_INPUT;       }
 "out"                   { return I_OUTPUT;      }
@@ -302,8 +301,13 @@ DIS_INT_INST            "disable"{WSPACE}"interrupt"
 "cmpcy"                 { return I_COMPARECY;   }
 "st"                    { return I_STORE;       }
 "ft"                    { return I_FETCH;       }
-"rb"{WSPACE}"A"         { return I_REGBANK_A;   }
-"rb"{WSPACE}"B"         { return I_REGBANK_B;   }
+"rb"{WS}"A"             { return I_REGBANK_A;   }
+"rb"{WS}"B"             { return I_REGBANK_B;   }
+"ret"{WS}"z"{EWS}       { return I_RETURN_Z;    }
+"ret"{WS}"nz"{EWS}      { return I_RETURN_NZ;   }
+"ret"{WS}"c"{EWS}       { return I_RETURN_C;    }
+"ret"{WS}"nc"{EWS}      { return I_RETURN_NC;   }
+"ret"                   { return I_RETURN;      }
 
  /* Special macros. */
 "if"                    { return M_RTIF;     }
@@ -358,7 +362,7 @@ DIS_INT_INST            "disable"{WSPACE}"interrupt"
                         }
 <INC,INC_END>
 {
-    {WSPACE}            { /* eat up white space */ }
+    {WS}                { /* eat up white space */ }
     ;{COMMENT}          { return COMMENT; }
     {COMMENT}           { /* ignore commets */ }
 }
