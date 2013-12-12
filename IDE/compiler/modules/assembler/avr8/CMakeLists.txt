@@ -35,7 +35,7 @@ flex_target ( AsmAvr8Lexer AsmAvr8Lexer.l AsmAvr8Lexer.cxx )
 # List of additional files that will be cleaned as a part of the "make clean" stage.
 set ( CLEAN_FILES "AsmAvr8Lexer.h;AsmAvr8Parser.h;AsmAvr8Parser.output" )
 set_directory_properties ( PROPERTIES
-                           ADDITIONAL_MAKE_CLEAN_FILES ${CLEAN_FILES} )
+                           ADDITIONAL_MAKE_CLEAN_FILES "${CLEAN_FILES}" )
 
 # ------------------------------------------------------------------------------
 # COMPILATION OPTIONS

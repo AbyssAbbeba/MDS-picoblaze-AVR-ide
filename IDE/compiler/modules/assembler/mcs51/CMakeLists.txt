@@ -35,7 +35,7 @@ flex_target ( AsmMcs51Lexer AsmMcs51Lexer.l AsmMcs51Lexer.cxx )
 # List of additional files that will be cleaned as a part of the "make clean" stage.
 set ( CLEAN_FILES "AsmMcs51Lexer.h;AsmMcs51Parser.h;AsmMcs51Parser.output" )
 set_directory_properties ( PROPERTIES
-                           ADDITIONAL_MAKE_CLEAN_FILES ${CLEAN_FILES} )
+                           ADDITIONAL_MAKE_CLEAN_FILES "${CLEAN_FILES}" )
 
 # ------------------------------------------------------------------------------
 # COMPILATION OPTIONS

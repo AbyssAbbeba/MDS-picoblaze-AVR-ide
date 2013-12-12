@@ -25,6 +25,9 @@ set ( CMAKE_VERBOSE_MAKEFILE OFF )
 # BUILD COMPONENTS IN THE SUBDIRECTORIES
 # ------------------------------------------------------------------------------
 
+# Compiler module for C language.
+add_subdirectory ( C )
+
 # Compiler modules for assembler.
 add_subdirectory ( assembler )
 
@@ -56,6 +59,7 @@ add_library ( ${PROJECT_NAME} SHARED
 
 # Link a target to given libraries
 target_link_libraries ( ${PROJECT_NAME} CompilerModulesAsm
+                                        CompilerModuleC
                                         MCUDataFiles
                                         DbgFile )
 

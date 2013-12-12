@@ -52,6 +52,7 @@ class CompilerBase
         enum LangId
         {
             LI_INVALID, ///<
+            LI_C,       ///<
             LI_ASM      ///<
         };
 

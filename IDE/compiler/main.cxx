@@ -80,6 +80,7 @@ void printHelp ( const char * executable )
                             .toStdString() << std::endl
               << QObject::tr("    -p, --plang <programming language>").toStdString() << std::endl
               << QObject::tr("        Specify programming language, supported languages are:").toStdString()<<std::endl
+              << QObject::tr("            - c   : C language,").toStdString() << std::endl
               << QObject::tr("            - asm : assembly language.").toStdString() << std::endl
               << QObject::tr("    -f, --file <source file>").toStdString() << std::endl
               << QObject::tr("        Specify input file containing source code to compile.").toStdString() << std::endl
@@ -213,7 +214,11 @@ CompilerBase::TargetArch whichArch ( const char * optarg )
  */
 CompilerBase::LangId whichLang ( const char * optarg )
 {
-    if ( 0 == strcmp(optarg, "asm") )
+    if ( 0 == strcmp(optarg, "c") )
+    {
+        return CompilerBase::LI_C;
+    }
+    else if ( 0 == strcmp(optarg, "asm") )
     {
         return CompilerBase::LI_ASM;
     }
@@ -311,7 +316,7 @@ int main ( int argc, char ** argv )
                 {
                     break;
                 }
-            case 'p':
+            case 'p': // --plang=<language>
                 targetLanguage = whichLang(optarg);
                 if ( CompilerBase::LI_INVALID == targetLanguage )
                 {
