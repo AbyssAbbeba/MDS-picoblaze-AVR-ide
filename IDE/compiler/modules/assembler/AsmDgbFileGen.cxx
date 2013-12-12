@@ -55,7 +55,7 @@ inline void AsmDgbFileGen::outputToFile ( CompilerSemanticInterface * compilerCo
     if ( false == file.is_open() )
     {
         compilerCore -> compilerMessage ( CompilerBase::MT_ERROR,
-                                          QObject::tr("unable to open ").toStdString() + "\"" + filename  + "\"" );
+                                          QObject::tr("unable to open: ").toStdString() + "`" + filename  + "'" );
         return;
     }
 
@@ -83,7 +83,7 @@ inline void AsmDgbFileGen::outputToFile ( CompilerSemanticInterface * compilerCo
     if ( true == file.bad() )
     {
         compilerCore -> compilerMessage ( CompilerBase::MT_ERROR,
-                                          QObject::tr("unable to write to ").toStdString() + "\"" + filename + "\"" );
+                                          QObject::tr("unable to write to: ").toStdString() + "`" + filename + "'" );
         return;
     }
 }
