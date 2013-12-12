@@ -35,7 +35,7 @@ flex_target ( AsmPicoBlazeLexer AsmPicoBlazeLexer.l AsmPicoBlazeLexer.cxx )
 # List of additional files that will be cleaned as a part of the "make clean" stage.
 set ( CLEAN_FILES "AsmPicoBlazeLexer.h;AsmPicoBlazeParser.h;AsmPicoBlazeParser.output" )
 set_directory_properties ( PROPERTIES
-                           ADDITIONAL_MAKE_CLEAN_FILES ${CLEAN_FILES} )
+                           ADDITIONAL_MAKE_CLEAN_FILES "${CLEAN_FILES}" )
 
 # ------------------------------------------------------------------------------
 # COMPILATION OPTIONS

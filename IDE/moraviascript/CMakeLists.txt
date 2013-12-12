@@ -35,8 +35,7 @@ FLEX_TARGET ( MScriptLexer MScriptLexer.l MScriptLexer.cxx )
 
 # List of additional files that will be cleaned as a part of the "make clean" stage.
 set_directory_properties ( PROPERTIES
-                           ADDITIONAL_MAKE_CLEAN_FILES
-                           "MScriptParser.h;MScriptParser.output;MScriptLexer.h" )
+                           ADDITIONAL_MAKE_CLEAN_FILES "MScriptParser.output;MScriptParser.h;MScriptLexer.h" )
 
 # ------------------------------------------------------------------------------
 # COMPILATION OPTIONS

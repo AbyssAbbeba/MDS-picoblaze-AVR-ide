@@ -378,6 +378,9 @@ std::string CompilerCore::getBaseIncludeDir()
     {
         case LI_INVALID:
             return "";
+        case LI_C:
+            result += "/C";
+            break;
         case LI_ASM:
             result += "/assembler";
             break;

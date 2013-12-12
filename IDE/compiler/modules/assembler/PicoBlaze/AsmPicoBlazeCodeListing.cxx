@@ -66,13 +66,14 @@ AsmPicoBlazeCodeListing::AsmPicoBlazeCodeListing ( CompilerSemanticInterface * c
 
 void AsmPicoBlazeCodeListing::clear()
 {
-    m_msgCounter = 0;
-    m_numberOfFiles = 0;
+    m_msgCounter     = 0;
+    m_numberOfFiles  = 0;
     m_numberOfMacros = 0;
+
+    m_title.clear();
     m_listing.clear();
     m_messages.clear();
     m_messageQueue.clear();
-    m_title.clear();
 }
 
 AsmPicoBlazeCodeListing::~AsmPicoBlazeCodeListing()
@@ -104,7 +105,7 @@ void AsmPicoBlazeCodeListing::loadSourceFiles()
             return;
         }
 
-        // Iterate over lines in the file
+        // Iterate over lines in the file.
         while ( -1 != ( lineLen = getline(&line, &bufSize, it->second) ) )
         {
             // Dispose of the terminating EOL character sequence.

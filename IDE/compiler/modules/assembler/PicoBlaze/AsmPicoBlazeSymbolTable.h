@@ -17,8 +17,8 @@
 #define ASMPICOBLAZESYMBOLTABLE_H
 
 // Common compiler header files.
-#include "CompilerSemanticInterface.h"
 #include "CompilerOptions.h"
+#include "CompilerSemanticInterface.h"
 
 // Standard headers.
 #include <map>

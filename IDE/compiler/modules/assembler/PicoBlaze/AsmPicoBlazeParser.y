@@ -1895,8 +1895,8 @@ inst_sra:
 ;
 inst_rr:
       I_RR expr                     { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_RR_SX, $2 ); }
-    | I_RR eopr "," eoprs          { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "RR", 1);      }
-    | I_RR                         { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "RR", 1);      }
+    | I_RR eopr "," eoprs           { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "RR", 1);      }
+    | I_RR                          { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "RR", 1);      }
 ;
 inst_sl0:
       I_SL0 expr                    { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_SL0_SX, $2 ); }
@@ -1920,8 +1920,8 @@ inst_sla:
 ;
 inst_rl:
       I_RL expr                     { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_RL_SX, $2 ); }
-    | I_RL eopr "," eoprs          { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "RL", 1);      }
-    | I_RL                         { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "RL", 1);      }
+    | I_RL eopr "," eoprs           { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "RL", 1);      }
+    | I_RL                          { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "RL", 1);      }
 ;
 /* Input/Output Group */
 inst_input:
@@ -2025,16 +2025,16 @@ inst_comparecy:
 
 /* Version Control Group */
 inst_hwbuild:
-      I_HWBUILD expr                    { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_HWBUILD_SX, $expr ); }
-    | I_HWBUILD eopr "," eoprs          { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "HWBUILD", 1);        }
-    | I_HWBUILD                         { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "HWBUILD", 1);        }
+      I_HWBUILD expr                { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_HWBUILD_SX, $expr ); }
+    | I_HWBUILD eopr "," eoprs      { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "HWBUILD", 1);        }
+    | I_HWBUILD                     { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@1, "HWBUILD", 1);        }
 ;
 /* Register Bank Selection Group */
 inst_regbank:
-      I_REGBANK_A                 { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_REGBANK_A );    }
-    | I_REGBANK_B                 { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_REGBANK_B );    }
-    | I_REGBANK_A eoprs           { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "REGBANK A", 0); }
-    | I_REGBANK_B eoprs           { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "REGBANK B", 0); }
+      I_REGBANK_A                   { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_REGBANK_A );    }
+    | I_REGBANK_B                   { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_REGBANK_B );    }
+    | I_REGBANK_A eoprs             { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "REGBANK A", 0); }
+    | I_REGBANK_B eoprs             { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "REGBANK B", 0); }
 ;
 
 %%

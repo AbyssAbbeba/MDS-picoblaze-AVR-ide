@@ -18,13 +18,13 @@
 
 // Forward declarations.
 class AsmDgbFileGen;
-class AsmPicoBlazeSymbolTable;
-class AsmPicoBlazeCodeListing;
-class AsmPicoBlazeInstructionSet;
 class AsmPicoBlazeMacros;
 class AsmPicoBlazeMemoryPtr;
-class AsmPicoBlazeSpecialMacros;
+class AsmPicoBlazeSymbolTable;
 class AsmPicoBlazeTreeDecoder;
+class AsmPicoBlazeCodeListing;
+class AsmPicoBlazeSpecialMacros;
+class AsmPicoBlazeInstructionSet;
 
 // Common compiler header files.
 #include "CompilerSemanticAnalyzer.h"

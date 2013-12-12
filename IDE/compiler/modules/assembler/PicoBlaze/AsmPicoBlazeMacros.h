@@ -25,10 +25,10 @@ class AsmPicoBlazeCodeListing;
 #include "CompilerOptions.h"
 
 // Standard headers.
+#include <map>
 #include <string>
 #include <vector>
 #include <ostream>
-#include <map>
 
 /**
  * @brief

@@ -63,6 +63,10 @@
 /**
  * @defgroup Compiler Built-in compiler collection
  *
+ * @defgroup CompilerC C compiler
+ * @ingroup Compiler
+ * This group contains components of the C compiler.
+ *
  * @defgroup Assembler Assembler
  * @ingroup Compiler
  * This group contains components of the built-in assemblers.
