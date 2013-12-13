@@ -34,7 +34,7 @@ WLineCounter::WLineCounter(QPlainTextEdit *parent, bool icons, bool hex, int off
     //this->setMaximumHeight(parent->height());
     //this->setMinimumHeight(this->parent->height());
     QFontMetrics fontMetrics(font);
-    int fontWidth = fontMetrics.width("000");
+    int fontWidth = fontMetrics.width("0000");
     this->setMaximumWidth(fontWidth);
     this->setMinimumWidth(fontWidth);
     widget = new WLineCounterWidget(this, icons, hex, offset, font);
@@ -78,6 +78,20 @@ void WLineCounter::change(int value)
 }
 
 
+/**
+ * @brief
+ */
+void WLineCounter::changeFont(QFont font)
+{
+    QFontMetrics fontMetrics(font);
+    int fontWidth = fontMetrics.width("0000");
+    this->setMaximumWidth(fontWidth);
+    this->setMinimumWidth(fontWidth);
+    this->widget->changeFont(font);
+    this->widget->update();
+}
+
+
 
 /**
  * @brief Constructor. Inits shown widget.
@@ -95,7 +109,7 @@ WLineCounterWidget::WLineCounterWidget(WLineCounter *parent, bool icons, bool he
     font.setPixelSize(font.pixelSize()-2);
     this->setFont(font);
     QFontMetrics fontMetrics(font);
-    this->fontWidth = fontMetrics.width("000");
+    this->fontWidth = fontMetrics.width("0000");
     this->fontHeight = fontMetrics.height();
     this->setMaximumWidth(fontWidth*2);
     //this->setMaximumHeight(parent->height());
@@ -148,7 +162,7 @@ void WLineCounterWidget::paintEvent(QPaintEvent *)
     //paint.setPen(pen);
     QTextBlock lineBlock;
     QRect cursorRect;
-    for (int i = 0; i<textEdit->document()->blockCount(); i++)
+    for (int i = 0; i < textEdit->document()->blockCount(); i++)
     {
         lineBlock = textEdit->document()->findBlockByNumber(i);
         QTextCursor cursor(lineBlock);
@@ -238,4 +252,19 @@ void WLineCounterWidget::changeHeight()
     //qDebug() << "WLineCounterWidget: parent block count:" << textEdit->document()->blockCount();
     this->update();
     //qDebug() << "WLineCounterWidget: return changeHeight()";
+}
+
+
+/**
+ * @brief
+ */
+void WLineCounterWidget::changeFont(QFont font)
+{
+    font.setPixelSize(font.pixelSize()-2);
+    this->setFont(font);
+    QFontMetrics fontMetrics(font);
+    this->fontWidth = fontMetrics.width("0000");
+    this->fontHeight = fontMetrics.height();
+    this->setMaximumWidth(fontWidth*2);
+    this->setMinimumWidth(fontWidth*2);
 }

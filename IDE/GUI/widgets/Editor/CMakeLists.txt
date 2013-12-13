@@ -57,6 +57,7 @@ include_directories(
 link_directories(
 	"${CMAKE_CURRENT_BINARY_DIR}/../Counters"
 	"${CMAKE_CURRENT_BINARY_DIR}/../Highlighter"
+    "${CMAKE_CURRENT_BINARY_DIR}/../../guicfg"
 	)
 
 #include_directories(
@@ -90,7 +91,7 @@ add_library(${PROJECT_NAME} SHARED
 	${SAMPLE_MOC_SRCS} ${SAMPLE_SRCS})
 
 
-target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} Counters Highlighter)
+target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} Counters Highlighter GuiCfg)
 
 
 # ------------------------------------------------------------------------------

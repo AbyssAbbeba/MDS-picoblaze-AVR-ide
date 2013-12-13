@@ -353,7 +353,7 @@ void MainForm::createDockWidgets()
  */
 void MainForm::createWelcome()
 {
-    wDockManager->addCentralWidget("Welcome", "Free tips from developers!");
+    wDockManager->addCentralWidget("Welcome", "Tips from developers.");
 }
 
 
