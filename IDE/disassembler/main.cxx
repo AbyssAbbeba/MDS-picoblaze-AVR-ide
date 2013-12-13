@@ -5,7 +5,7 @@
  *
  * ...
  *
- * (C) copyright 2013 Moravia Microsystems, s.r.o.
+ * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
  *
  * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup Disassembler
@@ -166,7 +166,8 @@ void printHelp ( const char * executable )
  */
 inline void printUsage ( const char * executable )
 {
-    std::cout << "Type: `" << executable << " -h'" << QObject::tr(" for help.").toStdString() << std::endl;
+    std::cout << QObject::tr("Type: `").toStdString() << executable << " -h'" << QObject::tr(" for help.").toStdString()
+              << std::endl;
 }
 
 /**

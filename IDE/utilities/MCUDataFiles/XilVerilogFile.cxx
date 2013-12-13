@@ -5,7 +5,7 @@
  *
  * ...
  *
- * (C) copyright 2013 Moravia Microsystems, s.r.o.
+ * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
  *
  * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup MCUDataFiles
@@ -55,13 +55,13 @@ int XilVerilogFile::extractHexField ( const std::string & line,
         position = line.find("256'h");
         if ( std::string::npos == position )
         {
-            throw DataFileException(DataFileException::EXP_NOT_UNDERSTOOD);
+            throw DataFileException(DataFileException::EXP_NOT_UNDERSTOOD, "missing \"256'h\" in `" + line + "'");
         }
 
         size_t endPosition = line.find(';', position);
         if ( std::string::npos == endPosition )
         {
-            throw DataFileException(DataFileException::EXP_NOT_UNDERSTOOD);
+            throw DataFileException(DataFileException::EXP_NOT_UNDERSTOOD, "missing `;' in `" + line + "'");
         }
 
         position += 5;
@@ -69,7 +69,7 @@ int XilVerilogFile::extractHexField ( const std::string & line,
         *hexField = line.substr(position, endPosition - position);
         if ( false == checkHex(*hexField) )
         {
-            throw DataFileException(DataFileException::EXP_NOT_UNDERSTOOD);
+            throw DataFileException(DataFileException::EXP_NOT_UNDERSTOOD, "`" + (*hexField) + "' is not a hex. field");
         }
     }
 

@@ -5,7 +5,7 @@
  *
  * ...
  *
- * (C) copyright 2013 Moravia Microsystems, s.r.o.
+ * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
  *
  * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup MCUDataFiles
@@ -15,21 +15,21 @@
 
 #include "XilHDLFile.h"
 
-#include <fstream>
-#include <cstring>
+#include <ctime>
 #include <cstdio>
 #include <string>
-#include <ctime>
+#include <fstream>
+#include <cstring>
 
 // Initialize private static constants.
-const char * const XilHDLFile::MARK_TIMESTAMP = "{timestamp}";
-const char * const XilHDLFile::MARK_NAME      = "{name}";
-const char * const XilHDLFile::MARK_START     = "{begin template}";
-const char * const XilHDLFile::MARK_INIT_S    = "{INIT_";
-const char * const XilHDLFile::MARK_INIT_E    = "}";
-const char * const XilHDLFile::MARK_INITP_S   = "{INITP_";
-const char * const XilHDLFile::MARK_INITP_E   = "}";
-const char * const XilHDLFile::EOL_SEQUENCE   = "\r\n";
+const char * const XilHDLFile::MARK_TIMESTAMP  = "{timestamp}";
+const char * const XilHDLFile::MARK_NAME       = "{name}";
+const char * const XilHDLFile::MARK_START      = "{begin template}";
+const char * const XilHDLFile::MARK_INIT_E     = "}";
+const char * const XilHDLFile::MARK_INITP_E    = "}";
+const char * const XilHDLFile::EOL_SEQUENCE    = "\r\n";
+const char * const XilHDLFile::MARK_INIT_S[4]  = { "{INIT_",  "{[8:0]_INIT_",  "{[17:9]_INIT_",  "{[26:18]_INIT_"  };
+const char * const XilHDLFile::MARK_INITP_S[4] = { "{INITP_", "{[8:0]_INITP_", "{[17:9]_INITP_", "{[26:18]_INITP_" };
 
 void XilHDLFile::clearAndLoad ( const char * filename ) throw ( DataFileException )
 {
@@ -229,10 +229,33 @@ void XilHDLFile::save ( const std::string & filename,
             line.replace(position, strlen(MARK_NAME), m_name);
         }
 
-        substDataMark(line, MARK_INIT_S, MARK_INIT_E);
+        unsigned int offset = 0;
+        const char * startMark = MARK_INIT_S[0];
+        for ( int i = 1; i < 4; i++ )
+        {
+            if ( std::string::npos != line.find(startMark) )
+            {
+                break;
+            }
+            offset += 1024;
+            startMark = MARK_INIT_S[i];
+        }
+        substDataMark(line, startMark, MARK_INIT_E, offset, false);
+
         if ( SIZE_18b == m_opCodeSize )
         {
-            substDataMark(line, MARK_INITP_S, MARK_INITP_E, true);
+            offset = 0;
+            startMark = MARK_INITP_S[0];
+            for ( int i = 1; i < 4; i++ )
+            {
+                if ( std::string::npos != line.find(startMark) )
+                {
+                    break;
+                }
+                offset += 1024;
+                startMark = MARK_INITP_S[i];
+            }
+            substDataMark(line, startMark, MARK_INITP_E, offset, true);
         }
 
         outFile << line << EOL_SEQUENCE;
@@ -242,6 +265,7 @@ void XilHDLFile::save ( const std::string & filename,
 void XilHDLFile::substDataMark ( std::string & line,
                                  const char * markStart,
                                  const char * markEnd,
+                                 unsigned int offset,
                                  bool parity ) const
 {
     size_t markStartPos = line.find(markStart);
@@ -272,6 +296,7 @@ void XilHDLFile::substDataMark ( std::string & line,
 
     unsigned int addr;
     sscanf(addrStr.c_str(), "%x", &addr);
+    addr += offset;
 
     std::string dataField;
     generateDataField(&dataField, addr, parity);
@@ -328,6 +353,8 @@ void XilHDLFile::generateDataField ( std::string * dataField,
     }
     else
     {
+        addr *= 8;
+
         char hexString[9];
         for ( int i = 0; i < ( 128 / 16 ); i++ )
         {

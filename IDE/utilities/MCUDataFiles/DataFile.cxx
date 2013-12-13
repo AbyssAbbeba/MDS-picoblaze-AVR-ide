@@ -5,7 +5,7 @@
  *
  * ...
  *
- * (C) copyright 2013 Moravia Microsystems, s.r.o.
+ * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
  *
  * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup MCUDataFiles
@@ -23,7 +23,7 @@ DataFile::DataFile ( unsigned int arrsize ) : m_arrsize ( arrsize )
 DataFile::~DataFile()
 {
     // Deallocate the memory array
-    if ( NULL != m_memory )
+    if ( ( false == m_dontDelete ) && ( NULL != m_memory ) )
     {
         delete[] m_memory;
     }
@@ -31,6 +31,8 @@ DataFile::~DataFile()
 
 inline void DataFile::allocateMemory()
 {
+    m_dontDelete = false;
+
     // Allocate the memory array
     if ( 0 != m_arrsize )
     {
@@ -143,13 +145,17 @@ int16_t * DataFile::getData()
     return m_memory;
 }
 
-void DataFile::setData ( int16_t * data )
+void DataFile::setData ( int16_t * data,
+                         unsigned int arrsize )
 {
+    m_dontDelete = true;
+
     if ( NULL != m_memory)
     {
         delete[] m_memory;
     }
 
+    m_arrsize = arrsize;
     m_memory = data;
 }
 

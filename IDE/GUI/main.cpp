@@ -20,6 +20,19 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
     Q_INIT_RESOURCE(icons);
     QDir::setCurrent(QCoreApplication::applicationDirPath());
+    QFontDatabase fdb;
+    //fdb.addApplicationFont("./resources/fonts/MostlyMono/MostlyMono.ttf");
+    fdb.addApplicationFont("./resources/fonts/FreeMono/FreeMono.ttf");
+    fdb.addApplicationFont("./resources/fonts/FreeMono/FreeMonoBold.ttf");
+    fdb.addApplicationFont("./resources/fonts/FreeMono/FreeMonoOblique.ttf");
+    fdb.addApplicationFont("./resources/fonts/FreeMono/FreeMonoBoldOblique.ttf");
+
+    /*QStringList list = fdb.families();
+
+    foreach (QString string, list)
+    {
+        qDebug() << string;
+    }*/
     //QResource::registerResource("icons.rcc");
     MainForm MainGUI;
     MainGUI.showMaximized();

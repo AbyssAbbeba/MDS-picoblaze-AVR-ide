@@ -5,7 +5,7 @@
  *
  * ...
  *
- * (C) copyright 2013 Moravia Microsystems, s.r.o.
+ * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
  *
  * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup Compiler
@@ -42,7 +42,7 @@ class CompilerSemanticAnalyzer
         CompilerSemanticAnalyzer ( CompilerSemanticInterface * compilerCore,
                                    CompilerOptions * opts )
                                  : m_compilerCore ( compilerCore ),
-                                   m_opts(opts) {};
+                                   m_opts ( opts ) {};
         /**
          * @brief
          */

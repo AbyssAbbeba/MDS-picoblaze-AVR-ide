@@ -5,7 +5,7 @@
  *
  * ...
  *
- * (C) copyright 2013 Moravia Microsystems, s.r.o.
+ * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
  *
  * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup Compiler
@@ -20,12 +20,13 @@
 #include "CompilerBase.h"
 
 // Standard header files.
+#include <cstdio>
+#include <string>
+#include <vector>
 #include <istream>
 #include <ostream>
 #include <cstdint>
 #include <cstddef>
-#include <string>
-#include <vector>
 
 /**
  * @brief
@@ -154,20 +155,20 @@ class CompilerSerializer
          * @param[in] hide
          */
         CompilerSerializer ( std::istream & input,
-                             std::vector<std::string> & files,
+                             std::vector<std::pair<std::string,FILE*>> & files,
                              CompilerBase::LangId lang,
                              CompilerBase::TargetArch arch,
                              bool hide = false );
 
         /**
          * @brief
-         * @param[in,out] input
+         * @param[in,out] output
          * @param[in,out] files
          * @param[in] lang
          * @param[in] arch
          */
         CompilerSerializer ( std::ostream & output,
-                             const std::vector<std::string> & files,
+                             const std::vector<std::pair<std::string,FILE*>> & files,
                              CompilerBase::LangId lang,
                              CompilerBase::TargetArch arch );
 

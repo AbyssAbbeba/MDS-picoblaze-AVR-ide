@@ -5,7 +5,7 @@
  *
  * ...
  *
- * (C) copyright 2013 Moravia Microsystems, s.r.o.
+ * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
  *
  * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup Compiler
@@ -156,6 +156,9 @@ class CompilerOptions
 
             /// When this string is set to a file name, compiler will generate a precopiled code and store it the file.
             std::string m_prcTarget;
+
+            /// Write output from C preprocessor in this file.
+            std::string m_cunit;
         //@}
 
         /**

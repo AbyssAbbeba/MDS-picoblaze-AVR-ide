@@ -18,6 +18,7 @@
 
 
 #include <QTextEdit>
+#include <QTextCursor>
 #include "../../../compiler/core/CompilerBase.h"
 
 
@@ -46,11 +47,15 @@ class CompileInfo : public QTextEdit
     signals:
         void errorClicked(QString filepath, int line);
 
+    private:
+        QTextCursor prevCur;
+
 
     protected:
         //virtual bool eventFilter(QObject *target, QEvent *event);
         //virtual void keyPressEvent (QKeyEvent *e);
         virtual void mouseDoubleClickEvent(QMouseEvent *e);
+        virtual void mouseMoveEvent(QMouseEvent *e);
 };
 
 

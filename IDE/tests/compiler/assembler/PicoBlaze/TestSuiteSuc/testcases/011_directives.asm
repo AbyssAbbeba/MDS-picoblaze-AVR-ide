@@ -151,7 +151,13 @@ ss14    EQU     0xff ^ 0x0f
 a       equ     -5
 B       EQU     5
 
+XXX     define          1 * {0} + {1}/{2}+5
+YYY     define          1 + {0}
+Abyss   EQU             XXX(1,1,YYY(0x01)) + 2
 
+limit   d,10
+limit   r,10
+limit   c,10
 
 Start:
         SKIP    6

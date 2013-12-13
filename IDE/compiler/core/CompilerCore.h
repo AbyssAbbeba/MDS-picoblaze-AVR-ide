@@ -5,7 +5,7 @@
  *
  * ...
  *
- * (C) copyright 2013 Moravia Microsystems, s.r.o.
+ * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
  *
  * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup Compiler
@@ -17,29 +17,31 @@
 #define COMPILERCORE_H
 
 // Forward declarations
-class CompilerExpr;
-class CompilerStatement;
-class CompilerMsgInterface;
-class CompilerOptions;
-class CompilerSemanticAnalyzer;
-class CompilerMsgObserver;
-class CompilerMessageStack;
 class DbgFile;
 class DataFile;
+class CompilerExpr;
+class CompilerOptions;
+class CompilerStatement;
+class CompilerMsgObserver;
+class CompilerMsgInterface;
+class CompilerMessageStack;
+class CompilerSemanticAnalyzer;
 
 // Base class and compiler interfaces.
 #include "CompilerBase.h"
+#include "CompilerSourceLocation.h"
 #include "CompilerParserInterface.h"
 #include "CompilerSemanticInterface.h"
-#include "CompilerSourceLocation.h"
 
 // Boost Filesystem library.
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include <boost/filesystem.hpp>
 
 // Standard header files.
+#include <cstdio>
 #include <string>
 #include <vector>
+#include <utility>
 
 /**
  * @brief
@@ -47,8 +49,8 @@ class DataFile;
  * @class CompilerCore
  */
 class CompilerCore : public CompilerBase,
-                     private CompilerParserInterface,
-                     private CompilerSemanticInterface
+                     public CompilerParserInterface,
+                     public CompilerSemanticInterface
 {
     ////    Public Static Constants    ////
     public:
@@ -139,9 +141,9 @@ class CompilerCore : public CompilerBase,
              * @param[in] type
              * @param[in] text
              */
-            void parserMessage ( const CompilerSourceLocation & location,
-                                 MessageType type,
-                                 const std::string & text );
+            virtual void preprocessorMessage ( const CompilerSourceLocation & location,
+                                               CompilerBase::MessageType type,
+                                               const std::string & text );
 
             /**
              * @brief
@@ -149,9 +151,19 @@ class CompilerCore : public CompilerBase,
              * @param[in] type
              * @param[in] text
              */
-            void lexerMessage ( const CompilerSourceLocation & location,
-                                MessageType type,
-                                const std::string & text );
+            virtual void lexerMessage ( const CompilerSourceLocation & location,
+                                        MessageType type,
+                                        const std::string & text );
+
+            /**
+             * @brief
+             * @param[in] location
+             * @param[in] type
+             * @param[in] text
+             */
+            virtual void parserMessage ( const CompilerSourceLocation & location,
+                                         MessageType type,
+                                         const std::string & text );
 
             /**
              * @brief
@@ -165,8 +177,11 @@ class CompilerCore : public CompilerBase,
             /**
              * @brief
              * @param[in] filename
+             * @param[in,out] fileHandle
+             * @return
              */
-            bool pushFileName ( const std::string & filename );
+            bool pushFileName ( const std::string & filename,
+                                FILE ** fileHandle );
 
             /**
              * @brief
@@ -207,7 +222,7 @@ class CompilerCore : public CompilerBase,
              * @brief
              * @return
              */
-            const std::vector<std::string> & listSourceFiles() const;
+            const std::vector<std::pair<std::string,FILE*>> & listSourceFiles() const;
 
             /**
              * @brief
@@ -300,29 +315,15 @@ class CompilerCore : public CompilerBase,
         /**
          * @brief
          * @param[in] filename
+         * @param[in,out] fileHandle In case this is a newly opened file, this parameter has to be set.
          */
-        inline void setFileName ( const std::string & filename );
+        inline void setOpenedFile ( const std::string & filename,
+                                    FILE ** fileHandle = NULL );
 
         /**
          * @brief
          */
         inline void resetCompilerCore();
-
-        /**
-         * @brief
-         * @param[in] lang
-         * @param[in] arch
-         * @return
-         */
-        inline bool setupSemanticAnalyzer();
-
-        /**
-         * @brief
-         * @param[in] lang
-         * @param[in] arch
-         * @return
-         */
-        inline bool startLexerAndParser();
 
         /**
          * @brief
@@ -393,7 +394,7 @@ class CompilerCore : public CompilerBase,
         /**
          * @brief
          */
-        std::vector<std::string> m_fileNames;
+        std::vector<std::pair<std::string,FILE*>> m_openedFiles;
 
         /**
          * @brief

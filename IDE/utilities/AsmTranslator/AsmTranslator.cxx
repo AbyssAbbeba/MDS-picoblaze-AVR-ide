@@ -5,7 +5,7 @@
  *
  * ...
  *
- * (C) copyright 2013 Moravia Microsystems, s.r.o.
+ * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
  *
  * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup AsmTranslator
@@ -18,6 +18,8 @@
 // AsmTranslator header files.
 #include "AsmTranslatorBase.h"
 #include "AsmTranslatorKcpsmXil.h"
+#include "AsmTranslatorKcpsmMed.h"
+#include "AsmTranslatorKcpsmPBIDE.h"
 
 // Standard header files.
 #include <cstdio>
@@ -34,47 +36,100 @@ bool AsmTranslator::translate ( Variant variant,
                                 std::ostream & output,
                                 std::istream & input )
 {
-    bool success = true;
     AsmTranslatorBase * translator = NULL;
 
     switch ( variant )
     {
+        case V_INVALID:
+            break;
         case V_KCPSM_XILINX:
             translator = new AsmTranslatorKcpsmXil;
+            break;
+        case V_KCPSM_MEDIATRONIX:
+            translator = new AsmTranslatorKcpsmMed;
+            break;
+        case V_KCPSM_OPENPICIDE:
+            translator = new AsmTranslatorKcpsmPBIDE;
             break;
     }
 
     if ( NULL == translator )
     {
-        m_messages.push_back ( QObject::tr("Error: input failure.").toStdString() );
+        m_messages.push_back ( QObject::tr("Error: unsupported assembler variant.").toStdString() );
         return false;
     }
 
-    std::string line;
+    translator->m_config = &m_config;
+    bool result = translate(translator, output, input);
+    delete translator;
+    return result;
+}
+
+inline bool AsmTranslator::translate ( AsmTranslatorBase * translator,
+                                       std::ostream & output,
+                                       std::istream & input )
+{
+    // Read the entire input.
+    std::vector<std::string> buffer;
     while ( false == input.eof() )
     {
-        std::getline(input, line);
+        buffer.push_back(std::string());
+        std::getline(input, buffer.back());
         if ( true == input.bad() )
         {
             m_messages.push_back ( QObject::tr("Error: input failure.").toStdString() );
-            success = false;
-            break;
+            return false;
         }
-        if ( false == ( success = translator->process(m_messages, line) ) )
+    }
+
+    // Process the input in two steps.
+    {
+        bool success = true;
+        for ( std::vector<std::string>::iterator line = buffer.begin();
+              buffer.end() != line;
+              line++ )
         {
-            break;
+            if ( false == translator->process(m_messages, *line) )
+            {
+                success = false;
+            }
         }
+        for ( std::vector<std::string>::iterator line = buffer.begin();
+              buffer.end() != line;
+              line++ )
+        {
+            if ( false == translator->process(m_messages, *line, true) )
+            {
+                success = false;
+            }
+        }
+        if ( false == success )
+        {
+            return false;
+        }
+    }
+
+    // Write output.
+    for ( auto line : translator->m_prologue )
+    {
         output << line << std::endl;
         if ( true == output.bad() )
         {
             m_messages.push_back ( QObject::tr("Error: output failure.").toStdString() );
-            success = false;
-            break;
+            return false;
+        }
+    }
+    for ( auto line : buffer )
+    {
+        output << line << std::endl;
+        if ( true == output.bad() )
+        {
+            m_messages.push_back ( QObject::tr("Error: output failure.").toStdString() );
+            return false;
         }
     }
 
-    delete translator;
-    return success;
+    return true;
 }
 
 bool AsmTranslator::translate ( Variant variant,

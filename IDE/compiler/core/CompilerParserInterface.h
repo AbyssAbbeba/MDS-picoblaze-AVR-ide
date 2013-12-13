@@ -5,7 +5,7 @@
  *
  * ...
  *
- * (C) copyright 2013 Moravia Microsystems, s.r.o.
+ * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
  *
  * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup Compiler
@@ -72,9 +72,9 @@ class CompilerParserInterface
          * @param[in] type
          * @param[in] text
          */
-        virtual void parserMessage ( const CompilerSourceLocation & location,
-                                     CompilerBase::MessageType type,
-                                     const std::string & text ) = 0;
+        virtual void preprocessorMessage ( const CompilerSourceLocation & location,
+                                           CompilerBase::MessageType type,
+                                           const std::string & text ) = 0;
 
         /**
          * @brief
@@ -88,6 +88,16 @@ class CompilerParserInterface
 
         /**
          * @brief
+         * @param[in] location
+         * @param[in] type
+         * @param[in] text
+         */
+        virtual void parserMessage ( const CompilerSourceLocation & location,
+                                     CompilerBase::MessageType type,
+                                     const std::string & text ) = 0;
+
+        /**
+         * @brief
          * @param[in] filename
          * @param[in] acyclic
          * @return
@@ -98,9 +108,11 @@ class CompilerParserInterface
         /**
          * @brief
          * @param[in] filename
+         * @param[in,out] fileHandle
          * @return
          */
-        virtual bool pushFileName ( const std::string & filename ) = 0;
+        virtual bool pushFileName ( const std::string & filename,
+                                    FILE ** fileHandle ) = 0;
 
         /**
          * @brief
@@ -234,33 +246,5 @@ class CompilerParserInterface
         ///
         bool m_insertEol;
 };
-
-    /*
-     * In case this file is included in the compiler core, and not in a parser or lexer, we may also
-     * need to declare parser/lexer functions, data types, and variables, used by the compiler core.
-     */
-    #ifdef COMPILERCORE_H
-        /*
-         * Make sure that the data type of semantic values is declared (see Bison manual).
-         * Actually the compiler core does not work with this data type, it is used only by
-         * the Flex generated lexical analyzer prototypes; in other words, each syntax/lexical
-         * analyzer might use it's own data type of semantic values.
-         */
-        #if ! defined ( YYSTYPE ) && ! defined ( YYSTYPE_IS_DECLARED )
-            typedef union YYSTYPE {} YYSTYPE;
-        #endif
-
-        // Include lexer prototypes (they are used by the core to initialize and destroy a lexer)
-        #include "avr8lexer.h"
-        #include "pic8lexer.h"
-        #include "mcs51lexer.h"
-        #include "PicoBlazeLexer.h"
-
-        // Parser prototypes (the core uses them to initiate syntactical analysis)
-        int avr8parser_parse      ( yyscan_t yyscanner, CompilerParserInterface * asmCore );
-        int pic8parser_parse      ( yyscan_t yyscanner, CompilerParserInterface * asmCore );
-        int mcs51parser_parse     ( yyscan_t yyscanner, CompilerParserInterface * asmCore );
-        int PicoBlazeParser_parse ( yyscan_t yyscanner, CompilerParserInterface * asmCore );
-    #endif // COMPILERCORE_H
 
 #endif // COMPILERPARSERINTERFACE_H
