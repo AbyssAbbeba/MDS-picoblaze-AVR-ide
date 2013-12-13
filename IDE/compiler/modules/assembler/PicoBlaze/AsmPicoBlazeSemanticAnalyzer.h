@@ -28,7 +28,7 @@ class AsmPicoBlazeInstructionSet;
 
 // Common compiler header files.
 #include "CompilerSemanticAnalyzer.h"
-#include "../AsmMachineCodeGen.h"
+#include "AsmMachineCodeGen.h"
 
 /**
  * @brief

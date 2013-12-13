@@ -1,6 +1,6 @@
 # ==============================================================================
 #
-# Utility for working with USB devices.
+# Utility for working with USB devices in HID class.
 #
 # (C) copyright 2013 Moravia Microsystems, s.r.o.
 #

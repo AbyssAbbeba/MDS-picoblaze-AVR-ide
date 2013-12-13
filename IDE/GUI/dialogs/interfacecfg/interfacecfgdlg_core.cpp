@@ -44,6 +44,7 @@ InterfaceCfgDlg_Core::InterfaceCfgDlg_Core(QWidget *parent)
  */
 void InterfaceCfgDlg_Core::ok()
 {
+    this->editFonts->save();
     this->done(1);
 }
 
@@ -57,7 +58,7 @@ void InterfaceCfgDlg_Core::cancel()
 }
 
 
-void InterfaceCfgDlg_Core::load()
+/*void InterfaceCfgDlg_Core::load()
 {
-    GuiCfg::getInstance();
-}
+    //GuiCfg::getInstance();
+}*/

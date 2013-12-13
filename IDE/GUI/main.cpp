@@ -14,6 +14,7 @@
 
 #include <QtGui>
 #include "mainform/mainform.h"
+#include "guicfg/guicfg.h"
 
 int main(int argc, char *argv[])
 {
@@ -26,6 +27,8 @@ int main(int argc, char *argv[])
     fdb.addApplicationFont("./resources/fonts/FreeMono/FreeMonoBold.ttf");
     fdb.addApplicationFont("./resources/fonts/FreeMono/FreeMonoOblique.ttf");
     fdb.addApplicationFont("./resources/fonts/FreeMono/FreeMonoBoldOblique.ttf");
+
+    GuiCfg::getInstance().setDefaultAll();
 
     /*QStringList list = fdb.families();
 

@@ -16,13 +16,13 @@
 #include "AsmPicoBlazeTreeDecoder.h"
 
 // Common compiler header files.
+#include "AsmDgbFileGen.h"
 #include "CompilerExpr.h"
 #include "CompilerOptions.h"
 #include "CompilerStatement.h"
+#include "AsmMachineCodeGen.h"
 #include "CompilerSourceLocation.h"
 #include "CompilerSemanticInterface.h"
-#include "../AsmMachineCodeGen.h"
-#include "../AsmDgbFileGen.h"
 
 // PicoBlaze assembler semantic analyzer header files.
 #include "AsmPicoBlazeMacros.h"
