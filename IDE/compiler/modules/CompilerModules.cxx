@@ -149,6 +149,12 @@ CompilerModules::ModEmplStatCode CompilerModules::employModule ( CompilerBase::L
                     // Done.
                     return MESC_OK;
                 }
+
+                /*
+                 * Error.
+                 */
+                default:
+                    return MESC_ARCH_NOT_SUPPORTED;
             }
         }
 

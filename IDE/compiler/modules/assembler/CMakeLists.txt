@@ -37,6 +37,8 @@ add_subdirectory ( pic8 )
 # Compiler modules for assembly language for PicoBlaze.
 add_subdirectory ( PicoBlaze )
 
+# Code generators.
+add_subdirectory ( generators )
 
 # ------------------------------------------------------------------------------
 # COMPILATION OPTIONS
@@ -66,13 +68,12 @@ add_definitions ( -Wall -std=c++0x -O2 -pipe -fPIC )
 ## Add a library to the project using the specified source files,
  # in this case it will procude static C++ library.
 add_library ( ${PROJECT_NAME} SHARED
-              AsmMachineCodeGen.cxx
-              AsmDgbFileGen.cxx )
+              CompilerModulesAsm.cxx )
 
 # Link a target to given libraries
 target_link_libraries ( ${PROJECT_NAME} ${QT_LIBRARIES}
-                                        MCUDataFiles
                                         DbgFile
+                                        MCUDataFiles
                                         CompilerModuleAsmAvr8
                                         CompilerModuleAsmMcs51
                                         CompilerModuleAsmPic8

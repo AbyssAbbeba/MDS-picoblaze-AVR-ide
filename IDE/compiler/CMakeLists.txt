@@ -50,7 +50,8 @@ include ( ${QT_USE_FILE} )
 # List of preprocessor include file search directories.
 include_directories ( ${Boost_INCLUDE_DIRS}
                       "${CMAKE_CURRENT_BINARY_DIR}/core"
-                      "${CMAKE_CURRENT_BINARY_DIR}/modules" )
+                      "${CMAKE_CURRENT_BINARY_DIR}/modules"
+                      "${CMAKE_CURRENT_BINARY_DIR}/modules/generators" )
 
 # Specify directories in which the linker will look for libraries.
 link_directories ( ${Boost_LIBRARY_DIRS}
