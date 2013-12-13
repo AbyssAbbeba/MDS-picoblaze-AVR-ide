@@ -15,6 +15,7 @@
 #include <QtGui>
 #include "codeedit.h"
 #include "wdockmanager.h"
+#include "../../guicfg/guicfg.h"
 
 
 CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, CodeEdit *parentCodeEdit)
@@ -64,7 +65,7 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
         }
     }
     textEdit->setContextMenuPolicy(Qt::NoContextMenu);
-    textEdit->setFont(QFont ("Monospace", 9));
+    textEdit->setFont(GuiCfg::getInstance().getEditorFont());
     QFontMetrics fontMetrics(textEdit->font());
     textEdit->setTabStopWidth(4*fontMetrics.width(' '));
     lineCount = new WLineCounter(textEdit, false, false, 0, textEdit->font());
@@ -99,6 +100,8 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
     connect(textEdit, SIGNAL(breakpoint(int)), this, SLOT(manageBreakpointEmit(int)));
     connect(textEdit, SIGNAL(bookmark(int)), this, SLOT(manageBookmarkEmit(int)));
     connect(textEdit, SIGNAL(textChangedSignal(const QString&, int)), this, SLOT(updateTextSlotOut(const QString&, int)));
+    connect(&GuiCfg::getInstance(), SIGNAL(editorFontChanged(QFont)), this, SLOT(changeFont(QFont)));
+    connect(&GuiCfg::getInstance(), SIGNAL(editorFontChanged(QFont)), this->lineCount, SLOT(changeFont(QFont)));
     //this->connectAct();
     prevBlockCount = this->textEdit->document()->blockCount();
     //qDebug() << "CodeEdit: return CodeEdit()";
@@ -147,7 +150,7 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName
         textEdit = new WTextEdit(this, PLAIN);
     }
     textEdit->setContextMenuPolicy(Qt::NoContextMenu);
-    textEdit->setFont(QFont ("Monospace", 9));
+    textEdit->setFont(GuiCfg::getInstance().getEditorFont());
     lineCount = new WLineCounter(textEdit, false, false, 0, textEdit->font());
     layout = new QGridLayout(this);
     layout->addWidget(lineCount, 0, 0);
@@ -178,6 +181,8 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName
     connect(textEdit, SIGNAL(breakpoint(int)), this, SLOT(manageBreakpointEmit(int)));
     connect(textEdit, SIGNAL(bookmark(int)), this, SLOT(manageBookmarkEmit(int)));
     connect(textEdit, SIGNAL(textChangedSignal(const QString&, int)), this, SLOT(updateTextSlotOut(const QString&, int)));
+    connect(&GuiCfg::getInstance(), SIGNAL(editorFontChanged(QFont)), this, SLOT(changeFont(QFont)));
+    connect(&GuiCfg::getInstance(), SIGNAL(editorFontChanged(QFont)), this->lineCount, SLOT(changeFont(QFont)));
     //this->connectAct();
     prevBlockCount = this->textEdit->document()->blockCount();
     //qDebug() << "CodeEdit: return CodeEdit()";
@@ -587,4 +592,10 @@ void CodeEdit::changeHeight()
     this->lineCount->getWidget()->changeHeight();
     //this->lineCount->getWidget()->update();
     //qDebug() << "CodeEdit: return changeHeight()";
+}
+
+
+void CodeEdit::changeFont(QFont font)
+{
+    this->textEdit->setFont(font);
 }
