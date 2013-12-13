@@ -1,0 +1,106 @@
+Partlist
+
+Exported from Deska Transf.brd at 17.5.2013 14:10:23
+
+EAGLE Version 5.6.0 Copyright (c) 1988-2009 CadSoft
+
+Part       Value              Package               Library               Position (mm)         Orientation
+
+10         100                M1206                 resistor              (30.48 52.07)         MR90
+11         100                M1206                 resistor              (34.6075 52.07)       MR90
+12         100                M1206                 resistor              (38.4175 52.07)       MR90
+BTN4       P-B1720            P-B1720               #PaJa_prepinace       (131.445 6.0325)      R0
+BTN5       P-B1720            P-B1720               #PaJa_prepinace       (120.9675 6.0325)     R0
+BTN6       P-B1720            P-B1720               #PaJa_prepinace       (110.49 6.0325)       R0
+BTN7       P-B1720            P-B1720               #PaJa_prepinace       (100.0125 6.0325)     R0
+C1         27p                C1206                 resistor              (55.88 51.7525)       MR0
+C2         27p                C1206                 resistor              (61.9125 51.7525)     MR0
+C3         100n               C1206                 resistor              (63.8175 48.26)       MR180
+C4         100n               C1206                 resistor              (65.7225 35.2425)     MR180
+C7         100n               C1206                 resistor              (24.4475 38.1)        R180
+C22        100u               E2,5-7                resistor              (6.35 54.61)          R180
+C23        27p                C1206                 resistor              (20.955 52.07)        MR270
+C24        27p                C1206                 resistor              (26.035 52.07)        MR270
+C25        1u                 C1206                 resistor              (16.1925 37.1475)     MR180
+C26        100n               C1206                 resistor              (24.4475 41.91)       R180
+CON1       MLW10              MLW10G                #PaJa_konektory       (6.985 20.6375)       R90
+H3                            HDM51X                #_GM99                (103.505 49.8475)     R0
+IC1        MEGA16-P           DIL40                 avr-7                 (63.1825 37.7825)     R180
+JP1        MLW06              MLW06G                #PaJa_konektory       (17.4625 22.86)       R90
+JP2                           1X03                  pinhead               (86.0425 19.685)      R0
+JP3                           1X02                  acon-tyco (19)        (131.1275 73.9775)    R180
+JP4                           1X16                  pinhead               (87.63 70.485)        R0
+JP5                           1X10/90               acon-tyco (18)        (145.415 53.6575)     R270
+JP6                           1X20                  pinhead               (92.71 73.9775)       R0
+JP7                           1X10                  acon-tyco (19)        (112.5475 19.515)     R0
+JP8                           1X03                  pinhead               (28.2575 24.4475)     R90
+JP9                           1X02                  pinhead               (124.1425 73.9775)    R180
+JP10                          1X10                  acon-tyco (19)        (112.5475 39.575)     R0
+JP11                          1X10/90               acon-tyco (18)        (145.415 24.13)       R270
+JP13                          2X20/90               acon-tyco (19)        (53.975 0.635)        R180
+JP15                          1X02                  acon-tyco (19)        (6.0325 35.2425)      R180
+JUM1       S1G2_JUMP          S1G2_JUM              #PaJa_konektory       (28.2575 16.8275)     R90
+JUM2       S1G2_JUMP          S1G2_JUM              #PaJa_konektory       (38.735 18.7325)      R270
+KXG0905C1  KXG0905C           KXG0905C              piezo2                (45.72 18.7325)       R0
+LED8                          1206                  led                   (16.51 43.4975)       R0
+LED9                          1206                  led                   (16.51 40.64)         R0
+LED10                         1206                  led                   (32.0675 56.8325)     R0
+LED11                         1206                  led                   (32.0675 59.3725)     R0
+LED12                         1206                  led                   (32.0675 61.9125)     R0
+LED13                         1206                  led                   (32.0675 64.4525)     R0
+LED14                         1206                  led                   (32.0675 66.9925)     R0
+LED15                         1206                  led                   (32.0675 69.5325)     R0
+LED16                         1206                  led                   (32.0675 72.0725)     R0
+LED17                         1206                  led                   (32.0675 74.6125)     R0
+LEDVCCUSB1                    1206                  led                   (5.715 61.9125)       R180
+Q1         Q_HC-49U           HC-49U                #PaJa_22              (57.15 49.53)         R0
+Q2         BC857CSMD          SOT23-BEC             transistor-pnp        (101.2825 62.23)      MR0
+Q3         Q_HC-49U           HC-49U                #PaJa_22              (23.495 48.5775)      R0
+Q5         BC857CSMD          SOT23-BEC             transistor-pnp        (120.3325 63.5)       MR0
+Q7         BC857CSMD          SOT23-BEC             transistor-pnp        (111.76 61.595)       MR0
+Q8         BC857CSMD          SOT23-BEC             transistor-pnp        (118.11 53.34)        MR180
+R1         4k7                M1206                 resistor              (23.8125 32.7025)     MR0
+R2         10k                PT6V                  #_GM99                (61.2775 69.5325)     R90
+R3         10k                M1206                 resistor              (68.8975 50.165)      MR90
+R4         1500               M0805                 resistor              (26.9875 74.6125)     R180
+R5         1500               M0805                 resistor              (26.9875 72.0725)     R180
+R6         10k                PT10V                 #_GM99                (24.4475 5.08)        R90
+R7         1500               M0805                 resistor              (105.0925 61.595)     MR270
+R8         1500               M0805                 resistor              (116.205 61.595)      MR270
+R9         1500               M0805                 resistor              (111.4425 46.6725)    MR270
+R10        1500               M0805                 resistor              (106.045 46.6725)     MR270
+R11        1500               M0805                 resistor              (103.505 46.6725)     MR270
+R12        1500               M0805                 resistor              (107.95 61.595)       MR270
+R13        1500               M0805                 resistor              (113.9825 46.6725)    MR270
+R14        1500               M0805                 resistor              (26.9875 69.5325)     R180
+R15        1500               M0805                 resistor              (26.9875 66.9925)     R180
+R16        1500               M0805                 resistor              (26.9875 64.4525)     R180
+R17        1500               M0805                 resistor              (26.9875 61.9125)     R180
+R18        23R                M1206                 resistor              (14.605 43.4975)      MR180
+R19        23R                M1206                 resistor              (14.605 40.3225)      MR180
+R20        330R               M1206                 resistor              (75.565 52.07)        MR180
+R21        1500               M0805                 resistor              (108.9025 46.6725)    MR270
+R22        47k                M0805                 resistor              (94.9325 58.42)       MR0
+R23        1500               M0805                 resistor              (26.9875 59.3725)     R180
+R24        47k                M0805                 resistor              (94.9325 55.245)      MR0
+R25        47k                M0805                 resistor              (94.9325 52.3875)     MR0
+R26        10uH               M1206                 resistor              (65.7225 38.4175)     MR0
+R27        10k                M1206                 resistor              (129.54 69.5325)      MR0
+R28        10k                M1206                 resistor              (16.1925 33.9725)     MR0
+R29        1500               M0805                 resistor              (14.9225 56.1975)     MR180
+R30        1500               M0805                 resistor              (14.9225 59.055)      MR180
+R31        2k                 M1206                 resistor              (14.9225 53.0225)     MR180
+R32        1500               M0805                 resistor              (26.9875 56.8325)     R180
+R33        4k7                M1206                 resistor              (127.9525 12.3825)    MR270
+R34        4k7                M1206                 resistor              (117.475 12.3825)     MR270
+R35        4k7                M1206                 resistor              (106.9975 12.3825)    MR270
+R36        4k7                M1206                 resistor              (96.52 12.3825)       MR270
+R37        330                M1206                 resistor              (122.2375 69.5325)    MR180
+R38        47k                M0805                 resistor              (94.9325 61.9125)     MR0
+R39        10k                PT6V                  #_GM99                (61.2775 60.96)       R90
+S2                            M251                  switch                (17.78 66.3575)       R90
+SW1        DIP-8X_DIP         DIP-8X                #PaJa_prepinace       (44.7675 65.7225)     R90
+SW2        P-B1720            P-B1720               #PaJa_prepinace       (75.565 52.07)        R0
+SW5        DIP-4X_DIP         DIP-4X                #PaJa_prepinace       (87.9475 7.9375)      R0
+U1         AT90USB162-16AU    QFP80P900X900X120-32N at90,                 (24.4475 40.005)      MR270
+X3         MINI-USB-32005-201 32005-201             con-cypressindustries (5.08 44.45)          R0
