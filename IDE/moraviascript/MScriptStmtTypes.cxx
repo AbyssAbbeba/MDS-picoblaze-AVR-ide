@@ -5,7 +5,7 @@
  *
  * ...
  *
- * (C) copyright 2013 Moravia Microsystems, s.r.o.
+ * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
  *
  * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup MoraviaScript
@@ -47,6 +47,9 @@ std::ostream & operator << ( std::ostream & out,
         case STMT_NAMESPACE: out << "NAMESPACE"; break;
         case STMT_INCLUDE:   out << "INCLUDE";   break;
         case STMT_EVAL:      out << "EVAL";      break;
+        case STMT_MESSAGE:   out << "MESSAGE";   break;
+        case STMT_WARNING:   out << "WARNING";   break;
+        case STMT_ABORT:     out << "ABORT";     break;
 
         case STMT_CALL:      out << "CALL";      break;
     }

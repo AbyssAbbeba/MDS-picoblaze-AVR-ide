@@ -1,1 +1,0 @@
-The assembler itself as a library.

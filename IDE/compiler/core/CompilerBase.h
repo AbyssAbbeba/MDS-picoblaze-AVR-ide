@@ -5,7 +5,7 @@
  *
  * ...
  *
- * (C) copyright 2013 Moravia Microsystems, s.r.o.
+ * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
  *
  * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup Compiler
@@ -52,6 +52,7 @@ class CompilerBase
         enum LangId
         {
             LI_INVALID, ///<
+            LI_C,       ///<
             LI_ASM      ///<
         };
 

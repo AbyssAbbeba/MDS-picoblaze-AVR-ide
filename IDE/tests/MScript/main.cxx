@@ -5,7 +5,7 @@
  *
  * ...
  *
- * (C) copyright 2013 Moravia Microsystems, s.r.o.
+ * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
  *
  * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup testsMScript
@@ -14,7 +14,6 @@
 // =============================================================================
 
 // Test suites header files.
-#include "MScript.h"
 #include "TestMScriptI/TestMScriptI.h"
 #include "TestMScriptII/TestMScriptII.h"
 #include "TestMScriptIII/TestMScriptIII.h"

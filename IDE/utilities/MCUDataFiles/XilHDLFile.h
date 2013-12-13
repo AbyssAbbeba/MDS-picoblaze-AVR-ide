@@ -5,7 +5,7 @@
  *
  * ...
  *
- * (C) copyright 2013 Moravia Microsystems, s.r.o.
+ * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
  *
  * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup MCUDataFiles
@@ -37,13 +37,31 @@ class XilHDLFile : public DataFile
         static const char * const MARK_START;
 
         /// @brief
-        static const char * const MARK_INIT_S;
+        static const char * const MARK_INIT_S[4];
+
+        /// @brief
+        static const char * const MARK_INIT_1_S;
+
+        /// @brief
+        static const char * const MARK_INIT_2_S;
+
+        /// @brief
+        static const char * const MARK_INIT_3_S;
 
         /// @brief
         static const char * const MARK_INIT_E;
 
         /// @brief
-        static const char * const MARK_INITP_S;
+        static const char * const MARK_INITP_S[4];
+
+        /// @brief
+        static const char * const MARK_INITP_1_S;
+
+        /// @brief
+        static const char * const MARK_INITP_2_S;
+
+        /// @brief
+        static const char * const MARK_INITP_3_S;
 
         /// @brief
         static const char * const MARK_INITP_E;
@@ -122,12 +140,14 @@ class XilHDLFile : public DataFile
          * @param[in,out] line
          * @param[in] markStart
          * @param[in] markEnd
+         * @param[in] offset
          * @param[in] parity
          * @return
          */
         void substDataMark ( std::string & line,
                              const char * markStart,
                              const char * markEnd,
+                             unsigned int offset = 0,
                              bool parity = false ) const;
 
         /**

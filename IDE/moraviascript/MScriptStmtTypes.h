@@ -5,7 +5,7 @@
  *
  * ...
  *
- * (C) copyright 2013 Moravia Microsystems, s.r.o.
+ * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
  *
  * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup MoraviaScript
@@ -56,6 +56,9 @@ namespace MScriptStmtTypes
         STMT_NAMESPACE,       ///<
         STMT_INCLUDE,         ///<
         STMT_EVAL,            ///<
+        STMT_MESSAGE,         ///<
+        STMT_WARNING,         ///<
+        STMT_ABORT,           ///<
 
         STMT_CALL             ///<
     };

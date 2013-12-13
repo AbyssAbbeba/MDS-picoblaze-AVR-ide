@@ -5,7 +5,7 @@
  *
  * ...
  *
- * (C) copyright 2013 Moravia Microsystems, s.r.o.
+ * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
  *
  * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup Compiler
@@ -32,7 +32,7 @@
 const char * const CompilerSerializer::COMMON_FILE_HEADER = "Moravia Microsystems, s.r.o. precompiled code";
 
 CompilerSerializer::CompilerSerializer ( std::istream & input,
-                                         std::vector<std::string> & files,
+                                         std::vector<std::pair<std::string,FILE*>> & files,
                                          CompilerBase::LangId lang,
                                          CompilerBase::TargetArch arch,
                                          bool hide )
@@ -73,12 +73,12 @@ CompilerSerializer::CompilerSerializer ( std::istream & input,
         }
         else
         {
-            for ( std::vector<std::string>::const_iterator it = files.cbegin();
-                it != files.cend();
-                it++ )
+            for ( std::vector<std::pair<std::string,FILE*>>::const_iterator it = files.cbegin();
+                  it != files.cend();
+                  it++ )
             {
                 fileNumber++;
-                if ( *it == filename )
+                if ( it->first == filename )
                 {
                     found = true;
                     break;
@@ -88,7 +88,7 @@ CompilerSerializer::CompilerSerializer ( std::istream & input,
             if ( false == found )
             {
                 fileNumber++;
-                files.push_back(filename);
+                files.push_back(std::make_pair(filename,(FILE*)NULL));
             }
 
             m_fileNumberMap.push_back(fileNumber);
@@ -97,7 +97,7 @@ CompilerSerializer::CompilerSerializer ( std::istream & input,
 }
 
 CompilerSerializer::CompilerSerializer ( std::ostream & output,
-                                         const std::vector<std::string> & files,
+                                         const std::vector<std::pair<std::string,FILE*>> & files,
                                          CompilerBase::LangId lang,
                                          CompilerBase::TargetArch arch )
                                        : m_input  ( NULL ),
@@ -110,11 +110,11 @@ CompilerSerializer::CompilerSerializer ( std::ostream & output,
     write ( (uint16_t) arch );
 
     write ( (uint32_t) files.size() );
-    for ( std::vector<std::string>::const_iterator it = files.cbegin();
+    for ( std::vector<std::pair<std::string,FILE*>>::const_iterator it = files.cbegin();
           it != files.cend();
           it++ )
     {
-        write ( *it );
+        write ( it->first );
     }
 }
 

@@ -5,7 +5,7 @@
  *
  * ...
  *
- * (C) copyright 2013 Moravia Microsystems, s.r.o.
+ * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
  *
  * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup MCUDataFiles
@@ -15,6 +15,7 @@
 
 #include "XilVHDLFile.h"
 
+#include <cctype>
 #include <cstring>
 
 int XilVHDLFile::extractHexField ( const std::string & line,
@@ -33,6 +34,10 @@ int XilVHDLFile::extractHexField ( const std::string & line,
     {
         if ( 0 == isxdigit(line[i]) )
         {
+            if ( 0 != isalpha(line[i]) )
+            {
+                address = -1;
+            }
             break;
         }
 
@@ -63,7 +68,7 @@ int XilVHDLFile::extractHexField ( const std::string & line,
         position = line.find('"');
         if ( std::string::npos == position )
         {
-            throw DataFileException(DataFileException::EXP_NOT_UNDERSTOOD);
+            throw DataFileException(DataFileException::EXP_NOT_UNDERSTOOD, "missing `\"' in `" + line + "'");
         }
 
         position++;
@@ -71,13 +76,13 @@ int XilVHDLFile::extractHexField ( const std::string & line,
         size_t endPosition = line.find('"', position);
         if ( std::string::npos == endPosition )
         {
-            throw DataFileException(DataFileException::EXP_NOT_UNDERSTOOD);
+            throw DataFileException(DataFileException::EXP_NOT_UNDERSTOOD, "missing 2nd `\"' in `" + line + "'");
         }
 
         *hexField = line.substr(position, endPosition - position);
         if ( false == checkHex(*hexField) )
         {
-            throw DataFileException(DataFileException::EXP_NOT_UNDERSTOOD);
+            throw DataFileException(DataFileException::EXP_NOT_UNDERSTOOD, "`" + (*hexField) + "' is not a hex. field");
         }
     }
 

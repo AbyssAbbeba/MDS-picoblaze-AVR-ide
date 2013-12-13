@@ -25,7 +25,7 @@ set ( CMAKE_VERBOSE_MAKEFILE OFF )
 # ------------------------------------------------------------------------------
 
 # Build lexical and syntax analyzers.
-add_subdirectory ( grammar )
+add_subdirectory ( modules )
 
 # Build the compiler collection itself as a library.
 add_subdirectory ( core )
@@ -50,11 +50,15 @@ include ( ${QT_USE_FILE} )
 # List of preprocessor include file search directories.
 include_directories ( ${Boost_INCLUDE_DIRS}
                       "${CMAKE_CURRENT_BINARY_DIR}/core"
-                      "${CMAKE_CURRENT_BINARY_DIR}/grammar" )
+                      "${CMAKE_CURRENT_BINARY_DIR}/modules" )
 
 # Specify directories in which the linker will look for libraries.
 link_directories ( ${Boost_LIBRARY_DIRS}
-                   "${CMAKE_CURRENT_BINARY_DIR}/../utilities/os" )
+                   "${CMAKE_CURRENT_BINARY_DIR}/core/"
+                   "${CMAKE_CURRENT_BINARY_DIR}/modules/"
+                   "${CMAKE_CURRENT_BINARY_DIR}/../utilities/os/"
+                   "${CMAKE_CURRENT_BINARY_DIR}/../utilities/DbgFile/"
+                   "${CMAKE_CURRENT_BINARY_DIR}/../utilities/MCUDataFiles/" )
 
 ## Add switches to compiler command line
  # -Wall       : Enables all the warnings.

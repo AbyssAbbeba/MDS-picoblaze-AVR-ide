@@ -5,7 +5,7 @@
  *
  * ...
  *
- * (C) copyright 2013 Moravia Microsystems, s.r.o.
+ * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
  *
  * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup AsmTranslator
@@ -15,6 +15,12 @@
 
 #ifndef ASMTRANSLATOR_H
 #define ASMTRANSLATOR_H
+
+// Forward declarations.
+class AsmTranslatorBase;
+
+// AsmTranslator header files.
+#include "AsmTranslatorConfig.h"
 
 // Standard header files.
 #include <string>
@@ -34,7 +40,11 @@ class AsmTranslator
          */
         enum Variant
         {
-            V_KCPSM_XILINX
+            V_KCPSM_XILINX,      ///<
+            V_KCPSM_MEDIATRONIX, ///<
+            V_KCPSM_OPENPICIDE,  ///<
+
+            V_INVALID            ///<
         };
 
     ////    Constructors and Destructors    ////
@@ -79,6 +89,24 @@ class AsmTranslator
          * @brief
          */
         void clear();
+
+    ////    Inline Private Operations    ////
+    private:
+        /**
+         * @brief
+         * @param[in,out] translator
+         * @param[in,out] output
+         * @param[in,out] input
+         * @return
+         */
+        inline bool translate ( AsmTranslatorBase * translator,
+                                std::ostream & output,
+                                std::istream & input );
+
+    ////    Public Attributes    ////
+    public:
+        /// @brief
+        AsmTranslatorConfig m_config;
 
     ////    Private Attributes    ////
     private:

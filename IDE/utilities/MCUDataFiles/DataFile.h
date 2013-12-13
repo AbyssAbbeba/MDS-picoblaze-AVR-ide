@@ -5,7 +5,7 @@
  *
  * ...
  *
- * (C) copyright 2013 Moravia Microsystems, s.r.o.
+ * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
  *
  * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup MCUDataFiles
@@ -44,9 +44,9 @@ class DataFile
     ////    Public Operations    ////
     public:
         /**
-         * @brief
-         * @param[in] obj
-         * @return
+         * @brief Compare contents of this container instance with another one.
+         * @param[in] obj Object to compare with this one.
+         * @return true == they both contain the same data; false == they don't
          */
         bool operator == ( const DataFile & obj ) const;
 
@@ -123,9 +123,15 @@ class DataFile
         /**
          * @brief Replace native memory array with another one, the original memory is deleted.
          *
-         * @param[in,out] data Memory array from somewhere else. Must be the same size!
+         * @note
+         * One you use this, this object becomes bonded with the array provided, any change here will therefore affect
+         * the array.
+         *
+         * @param[in,out] data Memory array from somewhere else, this array won't be copied.
+         * @param[in] arrsize Size of the memory array, as returned by maxSize();
          */
-        void setData ( int16_t * data );
+        void setData ( int16_t * data,
+                       unsigned int arrsize );
 
     ////    Inline Public Operations    ////
     public:
@@ -169,8 +175,9 @@ class DataFile
 
     ////    Protected Attributes    ////
     protected:
-        const unsigned int m_arrsize;   ///< Size of the memory array
-        int16_t * m_memory;             ///< Memory array
+        unsigned int m_arrsize;   ///< Size of the memory array.
+        int16_t * m_memory;       ///< Memory array.
+        bool m_dontDelete;        ///< If true, don't delete the memory array.
 };
 
 #endif // DATAFILE_H

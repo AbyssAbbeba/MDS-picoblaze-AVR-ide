@@ -5,7 +5,7 @@
  *
  * ...
  *
- * (C) copyright 2013 Moravia Microsystems, s.r.o.
+ * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
  *
  * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup Compiler
@@ -16,28 +16,22 @@
 // Compiler header files.
 #include "CompilerCore.h"
 #include "CompilerExpr.h"
-#include "CompilerStatement.h"
-#include "CompilerMsgInterface.h"
 #include "CompilerOptions.h"
-#include "CompilerSemanticAnalyzer.h"
-#include "CompilerMsgObserver.h"
-#include "CompilerMessageStack.h"
+#include "CompilerModules.h"
+#include "CompilerStatement.h"
 #include "CompilerMsgFilter.h"
 #include "CompilerSerializer.h"
+#include "CompilerMsgObserver.h"
+#include "CompilerMsgInterface.h"
+#include "CompilerMessageStack.h"
+#include "CompilerSemanticAnalyzer.h"
 
 // OS compatibility.
 #include "../../utilities/os/os.h"
 
 // Standard header files.
 #include <sstream>
-#include <cstdio>
 #include <fstream>
-
-// Include all implemented semantic analyzers we have in this compiler collection.
-#include "asm/avr8/AsmAvr8SemanticAnalyzer.h"
-#include "asm/pic8/AsmPic8SemanticAnalyzer.h"
-#include "asm/mcs51/AsmMcs51SemanticAnalyzer.h"
-#include "asm/PicoBlaze/AsmPicoBlazeSemanticAnalyzer.h"
 
 // Used for i18n only.
 #include <QObject>
@@ -85,6 +79,8 @@ bool CompilerCore::compile ( LangId lang,
 
 inline bool CompilerCore::startCompilation()
 {
+    using namespace CompilerModules;
+
     try
     {
         resetCompilerCore();
@@ -102,18 +98,33 @@ inline bool CompilerCore::startCompilation()
             m_basePath = system_complete(path(m_opts->m_sourceFile).parent_path().make_preferred());
         }
 
-        if ( true == setupSemanticAnalyzer() )
-        {
-            return startLexerAndParser();
-        }
+        ModEmplStatCode statusCode = employModule ( m_lang, m_arch, this, m_semanticAnalyzer );
 
-        return false;
+        switch ( statusCode )
+        {
+            case MESC_OK:
+                return true;
+            case MESC_IO_ERROR:
+                localMessage ( MT_ERROR, QObject::tr("unable to open file: ").toStdString() + m_opts->m_sourceFile );
+                return false;
+            case MESC_ARCH_NOT_SUPPORTED:
+                localMessage ( MT_ERROR,
+                               QObject::tr("architecture not supported for the selected language").toStdString() );
+                return false;
+            case MESC_LANG_NOT_SUPPORTED:
+                localMessage ( MT_ERROR, QObject::tr("programming language not supported").toStdString() );
+                return false;
+            case MESC_UNKNOWN_ERROR:
+                return false;
+        }
     }
-    catch ( boost::system::error_code & e )
+    catch ( const boost::system::error_code & e )
     {
         localMessage ( MT_ERROR, QObject::tr("failure: %1").arg(e.message().c_str()).toStdString() );
         return false;
     }
+
+    return false;
 }
 
 DbgFile * CompilerCore::getSimDbg()
@@ -147,107 +158,6 @@ inline bool CompilerCore::checkOptions()
     }
 
     return true;
-}
-
-inline bool CompilerCore::setupSemanticAnalyzer()
-{
-    switch ( m_lang )
-    {
-        case LI_ASM:
-            switch ( m_arch )
-            {
-                case TA_AVR8:
-                    m_semanticAnalyzer = new AsmAvr8SemanticAnalyzer ( this, m_opts );
-                    break;
-                case TA_PIC8:
-                    m_semanticAnalyzer = new AsmPic8SemanticAnalyzer ( this, m_opts );
-                    break;
-                case TA_MCS51:
-                    m_semanticAnalyzer = new AsmMcs51SemanticAnalyzer ( this, m_opts );
-                    break;
-                case TA_PICOBLAZE:
-                    m_semanticAnalyzer = new AsmPicoBlazeSemanticAnalyzer ( this, m_opts );
-                    break;
-                default:
-                    localMessage ( MT_ERROR, QObject::tr ( "architecture not supported for the selected language" )
-                                                         . toStdString() );
-                    return false;
-            }
-            break;
-        default:
-            localMessage ( MT_ERROR, QObject::tr("programming language not supported").toStdString() );
-            return false;
-    }
-
-    return true;
-}
-
-inline bool CompilerCore::startLexerAndParser()
-{
-
-    FILE * sourceFile = fileOpen ( m_opts->m_sourceFile );
-    yyscan_t yyscanner; // Pointer to the lexer context
-
-    if ( NULL == sourceFile )
-    {
-        localMessage ( MT_ERROR, QObject::tr("unable to open file: ").toStdString() + m_opts->m_sourceFile );
-        return false;
-    }
-
-    switch ( m_lang )
-    {
-        case LI_ASM:
-            switch ( m_arch )
-            {
-                case TA_AVR8:
-                    avr8lexer_lex_init_extra ( this, &yyscanner );
-                    avr8lexer_set_in ( sourceFile, yyscanner );
-                    if ( true == m_success )
-                    {
-                        avr8parser_parse ( yyscanner, this );
-                    }
-                    avr8lexer_lex_destroy ( yyscanner );
-                    break;
-                case TA_PIC8:
-                    pic8lexer_lex_init_extra ( this, &yyscanner );
-                    pic8lexer_set_in ( sourceFile, yyscanner );
-                    if ( true == m_success )
-                    {
-                        pic8parser_parse ( yyscanner, this );
-                    }
-                    pic8lexer_lex_destroy ( yyscanner );
-                    break;
-                case TA_MCS51:
-                    mcs51lexer_lex_init_extra ( this, &yyscanner );
-                    mcs51lexer_set_in ( sourceFile, yyscanner );
-                    if ( true == m_success )
-                    {
-                        mcs51parser_parse ( yyscanner, this );
-                    }
-                    mcs51lexer_lex_destroy ( yyscanner );
-                    break;
-                case TA_PICOBLAZE:
-                    PicoBlazeLexer_lex_init_extra ( this, &yyscanner );
-                    PicoBlazeLexer_set_in ( sourceFile, yyscanner );
-                    if ( true == m_success )
-                    {
-                        PicoBlazeParser_parse ( yyscanner, this );
-                    }
-                    PicoBlazeLexer_lex_destroy ( yyscanner );
-                    break;
-                default:
-                    localMessage ( MT_ERROR, QObject::tr ( "architecture not supported for the selected language" )
-                                                         . toStdString() );
-                    return false;
-            }
-            break;
-        default:
-            localMessage ( MT_ERROR, QObject::tr("programming language not supported").toStdString() );
-            return false;
-    }
-
-    fclose(sourceFile);
-    return m_success;
 }
 
 inline std::string CompilerCore::msgType2str ( MessageType type )
@@ -313,9 +223,9 @@ void CompilerCore::localMessage ( const CompilerSourceLocation & location,
     m_msgInterface->message(msgText.str(), type);
 }
 
-void CompilerCore::parserMessage ( const CompilerSourceLocation & location,
-                                   MessageType type,
-                                   const std::string & text )
+void CompilerCore::preprocessorMessage ( const CompilerSourceLocation & location,
+                                         MessageType type,
+                                         const std::string & text )
 {
     localMessage(location, type, text);
 }
@@ -323,6 +233,13 @@ void CompilerCore::parserMessage ( const CompilerSourceLocation & location,
 void CompilerCore::lexerMessage ( const CompilerSourceLocation & location,
                                   MessageType type,
                                   const std::string & text )
+{
+    localMessage(location, type, text);
+}
+
+void CompilerCore::parserMessage ( const CompilerSourceLocation & location,
+                                   MessageType type,
+                                   const std::string & text )
 {
     localMessage(location, type, text);
 }
@@ -367,7 +284,8 @@ void CompilerCore::compilerMessage ( MessageType type,
     m_msgInterface -> message ( msgText.str(), type );
 }
 
-inline void CompilerCore::setFileName ( const std::string & filename )
+inline void CompilerCore::setOpenedFile ( const std::string & filename,
+                                          FILE ** fileHandle )
 {
     int idx = getFileNumber(filename);
 
@@ -375,11 +293,24 @@ inline void CompilerCore::setFileName ( const std::string & filename )
     if ( -1 != idx )
     {
         m_fileNumber = idx;
+        if ( NULL != fileHandle )
+        {
+            if ( NULL == m_openedFiles[idx].second )
+            {
+                m_openedFiles[idx].second = (*fileHandle);
+            }
+            else
+            {
+                fclose(*fileHandle);
+                (*fileHandle) = m_openedFiles[idx].second;
+                rewind(*fileHandle);
+            }
+        }
     }
     else
     {
-        m_fileNumber = m_fileNames.size();
-        m_fileNames.push_back(filename);
+        m_fileNumber = m_openedFiles.size();
+        m_openedFiles.push_back(std::make_pair(filename, *fileHandle));
     }
 }
 
@@ -454,6 +385,9 @@ std::string CompilerCore::getBaseIncludeDir()
     {
         case LI_INVALID:
             return "";
+        case LI_C:
+            result += "/C";
+            break;
         case LI_ASM:
             result += "/assembler";
             break;
@@ -487,7 +421,7 @@ CompilerStatement * CompilerCore::loadPrecompiledCode ( const std::string & file
     try
     {
         std::ifstream file ( fileName, (std::ios_base::in | std::ios_base::binary) );
-        CompilerSerializer deserializer(file, m_fileNames, m_lang, m_arch, hide);
+        CompilerSerializer deserializer(file, m_openedFiles, m_lang, m_arch, hide);
         CompilerStatement * result = new CompilerStatement(deserializer);
 
         if ( true == file.bad() )
@@ -510,7 +444,7 @@ bool CompilerCore::savePrecompiledCode ( const std::string & fileName,
     try
     {
         std::ofstream file ( fileName, (std::ios_base::out | std::ios_base::binary) );
-        CompilerSerializer serializer(file, m_fileNames, m_lang, m_arch);
+        CompilerSerializer serializer(file, m_openedFiles, m_lang, m_arch);
         code->serializeTree(serializer);
         return ( !file.bad() );
     }
@@ -538,6 +472,17 @@ inline void CompilerCore::resetCompilerCore()
         m_semanticAnalyzer = NULL;
     }
 
+    // Close all opened input files.
+    for ( std::vector<std::pair<std::string,FILE*>>::const_iterator it = m_openedFiles.cbegin();
+          m_openedFiles.cend() != it;
+          it++ )
+    {
+        if ( NULL != it->second )
+        {
+            fclose(it->second);
+        }
+    }
+
     m_success = true;
     m_devSpecCodeLoaded = false;
 
@@ -546,7 +491,7 @@ inline void CompilerCore::resetCompilerCore()
     m_basePath.clear();
 
     m_fileNameStack.clear();
-    m_fileNames.clear();
+    m_openedFiles.clear();
     m_filename.clear();
 
     resetCompilerParserInterface();
@@ -589,11 +534,11 @@ FILE * CompilerCore::fileOpen ( const std::string & filename,
 
     if ( true == acyclic )
     {
-        for ( std::vector<std::string>::const_iterator it = m_fileNameStack.begin();
-              it != m_fileNameStack.end();
+        for ( std::vector<std::string>::const_iterator it = m_fileNameStack.cbegin();
+              it != m_fileNameStack.cend();
               ++it )
         {
-            if ( absoluteFileName == *it )
+            if ( *it == absoluteFileName )
             {
                 localMessage ( MT_ERROR, QObject::tr ( "file %1 is already opened, you might have an "
                                                        "\"include\" loop in your code" )
@@ -603,15 +548,21 @@ FILE * CompilerCore::fileOpen ( const std::string & filename,
         }
     }
 
-    if ( false == pushFileName(absoluteFileName) )
+    FILE * fileHandle = fopen(absoluteFileName.c_str(), "r");
+    if ( NULL == fileHandle )
+    {
+        return NULL;
+    }
+    if ( false == pushFileName(absoluteFileName, &fileHandle) )
     {
         return NULL;
     }
 
-    return fopen(absoluteFileName.c_str(), "r");
+    return fileHandle;
 }
 
-bool CompilerCore::pushFileName ( const std::string & filename )
+bool CompilerCore::pushFileName ( const std::string & filename,
+                                  FILE ** fileHandle )
 {
     if ( ( -1 != m_opts->m_maxInclusion )
            &&
@@ -619,10 +570,11 @@ bool CompilerCore::pushFileName ( const std::string & filename )
     {
         localMessage ( MT_ERROR, QObject::tr ( "maximum include level (%1) reached" )
                                              .arg(m_opts->m_maxInclusion).toStdString() );
+        fclose(*fileHandle);
         return false;
     }
 
-    setFileName(filename);
+    setOpenedFile(filename, fileHandle);
     m_fileNameStack.push_back(filename);
 
     return true;
@@ -631,7 +583,7 @@ bool CompilerCore::pushFileName ( const std::string & filename )
 void CompilerCore::popFileName()
 {
     m_fileNameStack.pop_back();
-    setFileName(m_fileNameStack.back());
+    setOpenedFile(m_fileNameStack.back());
 }
 
 int CompilerCore::getFileNumber() const
@@ -661,9 +613,9 @@ int CompilerCore::getFileNumber ( unsigned int uplevel ) const
 int CompilerCore::getFileNumber ( const std::string & filename ) const
 {
     int result = -1;
-    for ( unsigned int i = 0; i < m_fileNames.size(); i++ )
+    for ( unsigned int i = 0; i < m_openedFiles.size(); i++ )
     {
-        if ( filename == m_fileNames[i] )
+        if ( filename == m_openedFiles[i].first )
         {
             result = i;
         }
@@ -729,19 +681,19 @@ void CompilerCore::processCodeTree ( CompilerStatement * codeTree )
     m_semanticAnalyzer->process(m_rootStatement);
 }
 
-const std::vector<std::string> & CompilerCore::listSourceFiles() const
+const std::vector<std::pair<std::string,FILE*>> & CompilerCore::listSourceFiles() const
 {
-    return m_fileNames;
+    return m_openedFiles;
 }
 
 const std::string & CompilerCore::getFileName ( int fileNumber ) const
 {
-    return m_fileNames.at(fileNumber);
+    return m_openedFiles.at(fileNumber).first;
 }
 
 std::string CompilerCore::locationToStr ( const CompilerSourceLocation & location ) const
 {
-    if ( -1 == location.m_fileNumber || location.m_fileNumber >= (int)m_fileNames.size() )
+    if ( -1 == location.m_fileNumber || location.m_fileNumber >= (int)m_openedFiles.size() )
     {
         return "";
     }

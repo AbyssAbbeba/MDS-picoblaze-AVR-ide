@@ -26,9 +26,20 @@ set ( CMAKE_VERBOSE_MAKEFILE OFF )
 # COMPILATION OPTIONS
 # ------------------------------------------------------------------------------
 
+# Find Boost include directories and libraries.
+find_package ( Boost 1.46
+               REQUIRED
+               COMPONENTS regex filesystem system )
+
 # Load settings specific for the Qt4 library (we use it here for i18n)
 find_package( Qt4 REQUIRED )
 include ( ${QT_USE_FILE} )
+
+# Add include directories to the build.
+include_directories ( ${Boost_INCLUDE_DIRS} )
+
+# Specify directories in which the linker will look for libraries.
+link_directories ( ${Boost_LIBRARY_DIRS} )
 
 ## Add switches to compiler command line
  # -Wall       : Enables all the warnings.
@@ -41,10 +52,14 @@ add_definitions ( -Wall -std=c++0x -O2 -pipe )
  # in this case it will procude dynamic C++ library.
 add_library ( ${PROJECT_NAME} SHARED
               AsmTranslator.cxx
-              AsmTranslatorKcpsmXil.cxx )
+              AsmTranslatorBase.cxx
+              AsmTranslatorConfig.cxx
+              AsmTranslatorKcpsmXil.cxx
+              AsmTranslatorKcpsmMed.cxx
+              AsmTranslatorKcpsmPBIDE.cxx )
 
 # Link a target to given libraries.
-target_link_libraries ( ${PROJECT_NAME} ${QT_LIBRARIES} )
+target_link_libraries ( ${PROJECT_NAME} ${Boost_LIBRARIES} ${QT_LIBRARIES} )
 
 # Main executable.
 add_executable ( AsmTransTool main.cxx )

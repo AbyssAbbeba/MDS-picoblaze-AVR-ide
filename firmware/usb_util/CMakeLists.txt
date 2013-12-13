@@ -38,4 +38,4 @@ add_definitions(-pipe -std=c++0x -O1)
 add_executable ( ${PROJECT_NAME}
                  main.cxx )
 
-target_link_libraries ( ${PROJECT_NAME} ${QT_LIBRARIES} usb-1.0 )
+target_link_libraries ( ${PROJECT_NAME} ${QT_LIBRARIES} libusb/usb-1.0 )

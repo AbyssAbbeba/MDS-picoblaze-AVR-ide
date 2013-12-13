@@ -5,7 +5,7 @@
  *
  * ...
  *
- * (C) copyright 2013 Moravia Microsystems, s.r.o.
+ * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
  *
  * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup Compiler
@@ -148,7 +148,7 @@ void CompilerValue::completeDelete()
 {
     if ( TYPE_SYMBOL == m_type )
     {
-        delete[] m_data.m_symbol;
+        delete [] m_data.m_symbol;
     }
     else if ( TYPE_ARRAY == m_type )
     {

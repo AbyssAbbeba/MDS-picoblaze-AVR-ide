@@ -5,7 +5,7 @@
  *
  * ...
  *
- * (C) copyright 2013 Moravia Microsystems, s.r.o.
+ * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
  *
  * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup MoraviaScript
@@ -102,6 +102,9 @@ bool MScriptInterpret::step()
         case STMT_NAMESPACE:    evalNamespace ( node ); break;
         case STMT_INCLUDE:      evalInclude ( node );   break;
         case STMT_EVAL:         evalEval ( node );      break;
+        case STMT_MESSAGE:      evalMessage ( node );   break;
+        case STMT_WARNING:      evalWarning ( node );   break;
+        case STMT_ABORT:        evalAbort ( node );     break;
 
         // These statements are supposed to be ignored.
         case STMT_ROOT:
@@ -548,6 +551,24 @@ inline void MScriptInterpret::evalEval ( const MScriptStatement * node )
     postprocessCode(code);
 
     const_cast<MScriptStatement*>(node)->insertLink(code);
+}
+
+inline void MScriptInterpret::evalMessage ( const MScriptStatement * node )
+{
+    const MScriptValue::Data::String & arg = node->args()->lVal().m_data.m_string;
+    interpreterMessage ( node->location(), MScriptBase::MT_GENERAL, std::string(arg.m_data, arg.m_size) );
+}
+
+inline void MScriptInterpret::evalWarning ( const MScriptStatement * node )
+{
+    const MScriptValue::Data::String & arg = node->args()->lVal().m_data.m_string;
+    interpreterMessage ( node->location(), MScriptBase::MT_WARNING, std::string(arg.m_data, arg.m_size) );
+}
+
+inline void MScriptInterpret::evalAbort ( const MScriptStatement * node )
+{
+    const MScriptValue::Data::String & arg = node->args()->lVal().m_data.m_string;
+    interpreterMessage ( node->location(), MScriptBase::MT_ERROR, std::string(arg.m_data, arg.m_size) );
 }
 
 inline bool MScriptInterpret::abadonCode ( ExecFlags upTo,

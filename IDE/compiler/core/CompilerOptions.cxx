@@ -5,7 +5,7 @@
  *
  * ...
  *
- * (C) copyright 2013 Moravia Microsystems, s.r.o.
+ * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
  *
  * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup Compiler
@@ -53,7 +53,7 @@ void CompilerOptions::clearOutputFiles()
         &m_codeTree,    &m_lstFile,     &m_hexFile,
         &m_binFile,     &m_srecFile,    &m_verilogFile,
         &m_vhdlFile,    &m_prcTarget,   &m_memFile,
-        NULL
+        &m_cunit,       NULL
     };
 
     for ( int i = 0; NULL != files[i]; i++ )
@@ -82,7 +82,8 @@ void CompilerOptions::normalizeFilePaths()
         &m_codeTree,    &m_lstFile,     &m_vhdlTemplate,
         &m_binFile,     &m_srecFile,    &m_verilogFile,
         &m_vhdlFile,    &m_prcTarget,   &m_verilogTemplate,
-        &m_memFile,     &m_hexFile,     NULL
+        &m_memFile,     &m_hexFile,     &m_cunit,
+        NULL
     };
 
     path basePath = system_complete(path(m_sourceFile).parent_path().make_preferred());
@@ -141,17 +142,22 @@ std::ostream & operator << ( std::ostream & out,
     out << "== CompilerOptions ==" << std::endl;
 
     out << "  === File names ==="       << std::endl;
-    out << "    m_sourceFile = \""      << opts.m_sourceFile    << "\"" << std::endl;
-    out << "    m_symbolTable = \""     << opts.m_symbolTable   << "\"" << std::endl;
-    out << "    m_macroTable = \""      << opts.m_macroTable    << "\"" << std::endl;
-    out << "    m_mdsDebugFile = \""    << opts.m_mdsDebugFile  << "\"" << std::endl;
-    out << "    m_codeTree = \""        << opts.m_codeTree      << "\"" << std::endl;
-    out << "    m_lstFile = \""         << opts.m_lstFile       << "\"" << std::endl;
-    out << "    m_hexFile = \""         << opts.m_hexFile       << "\"" << std::endl;
-    out << "    m_binFile = \""         << opts.m_binFile       << "\"" << std::endl;
-    out << "    m_srecFile = \""        << opts.m_srecFile      << "\"" << std::endl;
-    out << "    m_verilogFile = \""     << opts.m_verilogFile   << "\"" << std::endl;
-    out << "    m_vhdlFile = \""        << opts.m_vhdlFile      << "\"" << std::endl;
+    out << "    m_sourceFile = \""      << opts.m_sourceFile      << "\"" << std::endl;
+    out << "    m_symbolTable = \""     << opts.m_symbolTable     << "\"" << std::endl;
+    out << "    m_macroTable = \""      << opts.m_macroTable      << "\"" << std::endl;
+    out << "    m_mdsDebugFile = \""    << opts.m_mdsDebugFile    << "\"" << std::endl;
+    out << "    m_codeTree = \""        << opts.m_codeTree        << "\"" << std::endl;
+    out << "    m_lstFile = \""         << opts.m_lstFile         << "\"" << std::endl;
+    out << "    m_hexFile = \""         << opts.m_hexFile         << "\"" << std::endl;
+    out << "    m_binFile = \""         << opts.m_binFile         << "\"" << std::endl;
+    out << "    m_srecFile = \""        << opts.m_srecFile        << "\"" << std::endl;
+    out << "    m_verilogFile = \""     << opts.m_verilogFile     << "\"" << std::endl;
+    out << "    m_vhdlFile = \""        << opts.m_vhdlFile        << "\"" << std::endl;
+    out << "    m_memFile = \""         << opts.m_memFile         << "\"" << std::endl;
+    out << "    m_verilogTemplate = \"" << opts.m_verilogTemplate << "\"" << std::endl;
+    out << "    m_vhdlTemplate = \""    << opts.m_vhdlTemplate    << "\"" << std::endl;
+    out << "    m_prcTarget = \""       << opts.m_prcTarget       << "\"" << std::endl;
+    out << "    m_cunit = \""           << opts.m_cunit           << "\"" << std::endl;
 
     out << "  === Other compilation and code generation options ===" << std::endl;
     out << "    m_maxMacroExp = "       << opts.m_maxMacroExp << std::endl;

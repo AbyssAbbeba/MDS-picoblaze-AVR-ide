@@ -33,10 +33,12 @@ set_directory_properties ( PROPERTIES
 # ------------------------------------------------------------------------------
 
 # Add include directories to the build.
-include_directories ( "${CMAKE_CURRENT_BINARY_DIR}/../../../moraviascript" )
+include_directories ( "${CMAKE_CURRENT_BINARY_DIR}/../../../moraviascript"
+                      "${CMAKE_CURRENT_BINARY_DIR}/../MScriptTestStrategy" )
 
 # Specify directories in which the linker will look for libraries.
-link_directories ( "${CMAKE_CURRENT_BINARY_DIR}/../../../moraviascript" )
+link_directories ( "${CMAKE_CURRENT_BINARY_DIR}/../../../moraviascript"
+                   "${CMAKE_CURRENT_BINARY_DIR}/../MScriptTestStrategy" )
 
 ## Add switches to compiler command line
  # -pipe       : Use pipes rather than temporary files for communication between the various stages of compilation.
@@ -53,4 +55,5 @@ add_library ( ${PROJECT_NAME} SHARED
 target_link_libraries ( ${PROJECT_NAME}
                         ${Boost_LIBRARIES}
                         MScript
+                        MScriptTestStrategy
                         cunit )

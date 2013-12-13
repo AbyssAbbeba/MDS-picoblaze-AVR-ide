@@ -4,7 +4,7 @@
  *
  * ...
  *
- * (C) copyright 2013 Moravia Microsystems, s.r.o.
+ * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
  *
  * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  */
@@ -130,6 +130,9 @@
 %token KW_NAMESPACE     "namespace"
 %token KW_INCLUDE       "include"
 %token KW_EVAL          "eval"
+%token KW_MESSAGE       "message"
+%token KW_WARNING       "warning"
+%token KW_ABORT         "abort"
 
 /* Special values: */
 %token SV_EMPTY         "EMPTY"
@@ -378,6 +381,15 @@ stmt:
                                     }
     | "eval" "(" string ")" ";"     {
                                         $$ = new MScriptStatement(@$, STMT_EVAL, $string);
+                                    }
+    | "message" "(" string ")" ";"  {
+                                        $$ = new MScriptStatement(@$, STMT_MESSAGE, $string);
+                                    }
+    | "warning" "(" string ")" ";"  {
+                                        $$ = new MScriptStatement(@$, STMT_WARNING, $string);
+                                    }
+    | "abort" "(" string ")" ";"    {
+                                        $$ = new MScriptStatement(@$, STMT_ABORT, $string);
                                     }
     | "namespace" id "{" statements "}"
                                     {

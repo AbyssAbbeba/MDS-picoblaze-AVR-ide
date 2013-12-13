@@ -22,14 +22,6 @@ set ( CMAKE_VERBOSE_MAKEFILE OFF )
 
 
 # ------------------------------------------------------------------------------
-# BUILD COMPONENTS IN THE SUBDIRECTORIES
-# ------------------------------------------------------------------------------
-
-# Compiler semantic analyzers for assembly language.
-add_subdirectory ( asm )
-
-
-# ------------------------------------------------------------------------------
 # COMPILATION OPTIONS
 # ------------------------------------------------------------------------------
 
@@ -43,15 +35,14 @@ find_package ( Boost 1.46
                COMPONENTS filesystem system )
 
 # List of preprocessor include file search directories.
-include_directories ( "${CMAKE_CURRENT_BINARY_DIR}/../grammar"
-                      "${CMAKE_CURRENT_BINARY_DIR}/asm/avr8"
-                      "${CMAKE_CURRENT_BINARY_DIR}/asm/mcs51"
-                      "${CMAKE_CURRENT_BINARY_DIR}/asm/pic8"
-                      "${CMAKE_CURRENT_BINARY_DIR}/asm/PicoBlaze" )
+include_directories ( "${CMAKE_CURRENT_BINARY_DIR}"
+                      "${CMAKE_CURRENT_BINARY_DIR}/../modules" )
 
 # Specify directories in which the linker will look for libraries.
-link_directories ( "${CMAKE_CURRENT_BINARY_DIR}/../grammar"
-                   "${CMAKE_CURRENT_BINARY_DIR}/../../utilities/os" )
+link_directories ( "${CMAKE_CURRENT_BINARY_DIR}/../modules"
+                   "${CMAKE_CURRENT_BINARY_DIR}/../../utilities/os"
+                   "${CMAKE_CURRENT_BINARY_DIR}/../../utilities/DbgFile/"
+                   "${CMAKE_CURRENT_BINARY_DIR}/../../utilities/MCUDataFiles/" )
 
 ## Add switches to compiler command line
  # -Wall       : Enables all the warnings.
@@ -69,7 +60,7 @@ QT4_WRAP_CPP ( QT_MOC_SRCS
 
 ## Add a library to the project using the specified source files,
  # in this case it will procude dynamic C++ library.
-add_library ( ${PROJECT_NAME} STATIC
+add_library ( ${PROJECT_NAME} SHARED
               ${QT_MOC_SRCS}
               Compiler.cxx
               CompilerBase.cxx
@@ -80,6 +71,7 @@ add_library ( ${PROJECT_NAME} STATIC
               CompilerOptions.cxx
               CompilerStatement.cxx
               CompilerMsgFilter.cxx
+              CompilerLexerUtils.cxx
               CompilerSerializer.cxx
               CompilerMsgIntfFile.cxx
               CompilerSerializable.cxx
@@ -92,15 +84,14 @@ add_library ( ${PROJECT_NAME} STATIC
 target_link_libraries ( ${PROJECT_NAME}
                         ${QT_LIBRARIES}
                         ${Boost_LIBRARIES}
-                        os
-                        CompilerParsers
-                        AsmSemanticAnalyzers )
+                        CompilerModules
+                        os )
 
 
 # ------------------------------------------------------------------------------
 # INSTALLATION OPTIONS
 # ------------------------------------------------------------------------------
 
-#install ( TARGETS ${PROJECT_NAME}
-#          RUNTIME DESTINATION bin
-#          LIBRARY DESTINATION lib )
+# install ( TARGETS ${PROJECT_NAME}
+#           RUNTIME DESTINATION bin
+#           LIBRARY DESTINATION lib )

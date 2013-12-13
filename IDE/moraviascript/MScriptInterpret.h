@@ -5,7 +5,7 @@
  *
  * ...
  *
- * (C) copyright 2013 Moravia Microsystems, s.r.o.
+ * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
  *
  * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup MoraviaScript
@@ -192,6 +192,24 @@ class MScriptInterpret : private MScriptExecContext,
          * @param[in] node
          */
         inline void evalEval ( const MScriptStatement * node );
+
+        /**
+         * @brief
+         * @param[in] node
+         */
+        inline void evalMessage ( const MScriptStatement * node );
+
+        /**
+         * @brief
+         * @param[in] node
+         */
+        inline void evalWarning ( const MScriptStatement * node );
+
+        /**
+         * @brief
+         * @param[in] node
+         */
+        inline void evalAbort ( const MScriptStatement * node );
 
         /**
          * @brief

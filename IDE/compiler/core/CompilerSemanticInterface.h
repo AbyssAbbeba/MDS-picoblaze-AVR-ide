@@ -5,7 +5,7 @@
  *
  * ...
  *
- * (C) copyright 2013 Moravia Microsystems, s.r.o.
+ * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
  *
  * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup Compiler
@@ -75,7 +75,7 @@ class CompilerSemanticInterface
          * @brief
          * @return
          */
-        virtual const std::vector<std::string> & listSourceFiles() const = 0;
+        virtual const std::vector<std::pair<std::string,FILE*>> & listSourceFiles() const = 0;
 
         /**
          * @brief
