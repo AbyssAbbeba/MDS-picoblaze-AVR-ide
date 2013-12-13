@@ -10,9 +10,14 @@ class InterfaceCfg_EditFonts : public QWidget
     Q_OBJECT
     public:
         InterfaceCfg_EditFonts(QWidget *parent);
+        void save();
 
     private:
         Ui_InterfaceCfg_EditFonts ui;
+
+    private slots:
+        void familyChanged(QString family);
+        void sizeChanged(QString pointSize);
 
 };
 

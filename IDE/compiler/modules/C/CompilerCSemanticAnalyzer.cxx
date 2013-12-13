@@ -13,6 +13,7 @@
 // =============================================================================
 
 #include "CompilerCSemanticAnalyzer.h"
+#include <iostream>
 
 CompilerCSemanticAnalyzer::CompilerCSemanticAnalyzer ( CompilerSemanticInterface * compilerCore,
                                                        CompilerOptions * opts )
