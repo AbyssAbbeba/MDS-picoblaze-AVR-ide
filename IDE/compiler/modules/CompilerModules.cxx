@@ -54,6 +54,7 @@ int AsmPicoBlazeParser_parse ( yyscan_t yyscanner, CompilerParserInterface * asm
 
 // Standard header files.
 #include <cstdio>
+#include <cstdlib>
 
 CompilerModules::ModEmplStatCode CompilerModules::employModule ( CompilerBase::LangId lang,
                                                                  CompilerBase::TargetArch arch,
@@ -119,7 +120,7 @@ CompilerModules::ModEmplStatCode CompilerModules::employModule ( CompilerBase::L
                     }
 
                     // Initiate C preprocessor.
-                    CompilerCPreprocessor preprocessor ( compilerCore, options );
+                    CompilerCPreprocessor preprocessor ( parserIntf, options );
                     char * buffer = preprocessor.processFile ( sourceFile );
 
                     if ( NULL == buffer )
@@ -140,9 +141,10 @@ CompilerModules::ModEmplStatCode CompilerModules::employModule ( CompilerBase::L
                     // Initiate syntax analyzer (syntax analyzer will automatically call semantic analyzer when done).
                     CompilerCParser_parse ( yyscanner, compilerCore );
 
-                    // Clean up the lexer.
+                    // Clean up.
                     CompilerCLexer__delete_buffer ( bufferState, yyscanner );
                     CompilerCLexer_lex_destroy ( yyscanner );
+                    free(buffer);
 
                     // Done.
                     return MESC_OK;

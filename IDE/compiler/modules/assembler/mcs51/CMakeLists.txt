@@ -59,7 +59,7 @@ add_definitions ( -Wall -Wextra -std=c++0x -O2 -pipe -fPIC )
 
 ## Add a library to the project using the specified source files,
  # in this case it will procude static C++ library.
-add_library ( ${PROJECT_NAME} STATIC
+add_library ( ${PROJECT_NAME} SHARED
               ${FLEX_AsmMcs51Lexer_OUTPUTS}
               ${BISON_AsmMcs51Parser_OUTPUTS}
               AsmMcs51SemanticAnalyzer.cxx )

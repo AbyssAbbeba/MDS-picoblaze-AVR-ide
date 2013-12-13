@@ -42,7 +42,7 @@ class CompilerSemanticAnalyzer
         CompilerSemanticAnalyzer ( CompilerSemanticInterface * compilerCore,
                                    CompilerOptions * opts )
                                  : m_compilerCore ( compilerCore ),
-                                   m_opts(opts) {};
+                                   m_opts ( opts ) {};
         /**
          * @brief
          */

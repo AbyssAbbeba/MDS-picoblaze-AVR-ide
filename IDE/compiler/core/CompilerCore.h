@@ -141,9 +141,9 @@ class CompilerCore : public CompilerBase,
              * @param[in] type
              * @param[in] text
              */
-            void parserMessage ( const CompilerSourceLocation & location,
-                                 MessageType type,
-                                 const std::string & text );
+            virtual void preprocessorMessage ( const CompilerSourceLocation & location,
+                                               CompilerBase::MessageType type,
+                                               const std::string & text );
 
             /**
              * @brief
@@ -151,9 +151,19 @@ class CompilerCore : public CompilerBase,
              * @param[in] type
              * @param[in] text
              */
-            void lexerMessage ( const CompilerSourceLocation & location,
-                                MessageType type,
-                                const std::string & text );
+            virtual void lexerMessage ( const CompilerSourceLocation & location,
+                                        MessageType type,
+                                        const std::string & text );
+
+            /**
+             * @brief
+             * @param[in] location
+             * @param[in] type
+             * @param[in] text
+             */
+            virtual void parserMessage ( const CompilerSourceLocation & location,
+                                         MessageType type,
+                                         const std::string & text );
 
             /**
              * @brief

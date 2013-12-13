@@ -17,13 +17,10 @@
 
 // Forward declarations.
 class CompilerOptions;
-class CompilerSemanticInterface;
+class CompilerParserInterface;
 
 // Standard headers.
 #include <cstdio>
-
-// Boost regular expressions library.
-#include <boost/regex.hpp>
 
 /**
  * @brief
@@ -39,7 +36,7 @@ class CompilerCPreprocessor
          * @param[in,out] compilerCore
          * @param[in] opts
          */
-        CompilerCPreprocessor ( CompilerSemanticInterface * compilerCore,
+        CompilerCPreprocessor ( CompilerParserInterface * compilerCore,
                                 CompilerOptions * opts );
 
         /**
@@ -55,6 +52,31 @@ class CompilerCPreprocessor
          * @return
          */
         char * processFile ( FILE * sourceFile );
+
+    ////    Inline Private Operations    ////
+    private:
+        /**
+         * @brief
+         * @param[in,out] length
+         * @param[in,out] line
+         * @param[in,out] bufferSize
+         * @return
+         */
+        inline bool processLine ( ssize_t & length,
+                                  char * & line,
+                                  size_t & bufferSize );
+
+    ////    Protected Attributes    ////
+    protected:
+        /**
+         * @brief
+         */
+        CompilerParserInterface * const m_compilerCore;
+
+        /**
+         * @brief
+         */
+        CompilerOptions * const m_opts;
 };
 
 #endif // COMPILERCPREPROCESSOR_H

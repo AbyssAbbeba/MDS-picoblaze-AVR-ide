@@ -72,9 +72,9 @@ class CompilerParserInterface
          * @param[in] type
          * @param[in] text
          */
-        virtual void parserMessage ( const CompilerSourceLocation & location,
-                                     CompilerBase::MessageType type,
-                                     const std::string & text ) = 0;
+        virtual void preprocessorMessage ( const CompilerSourceLocation & location,
+                                           CompilerBase::MessageType type,
+                                           const std::string & text ) = 0;
 
         /**
          * @brief
@@ -85,6 +85,16 @@ class CompilerParserInterface
         virtual void lexerMessage ( const CompilerSourceLocation & location,
                                     CompilerBase::MessageType type,
                                     const std::string & text ) = 0;
+
+        /**
+         * @brief
+         * @param[in] location
+         * @param[in] type
+         * @param[in] text
+         */
+        virtual void parserMessage ( const CompilerSourceLocation & location,
+                                     CompilerBase::MessageType type,
+                                     const std::string & text ) = 0;
 
         /**
          * @brief

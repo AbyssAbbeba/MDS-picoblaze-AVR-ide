@@ -41,21 +41,12 @@ set_directory_properties ( PROPERTIES
 # COMPILATION OPTIONS
 # ------------------------------------------------------------------------------
 
-# Find Boost include directories and libraries.
-find_package ( Boost 1.46
-               REQUIRED
-               COMPONENTS regex filesystem system )
-
 # Load settings specific for the Qt4 library (we use it here for i18n)
 find_package( Qt4 REQUIRED )
 include ( ${QT_USE_FILE} )
 
 # List of preprocessor include file search directories.
-include_directories ( ${Boost_INCLUDE_DIRS}
-                      "${CMAKE_CURRENT_BINARY_DIR}/../../core/" )
-
-# Specify directories in which the linker will look for libraries.
-link_directories ( ${Boost_LIBRARY_DIRS} )
+include_directories ( "${CMAKE_CURRENT_BINARY_DIR}/../../core/" )
 
 ## Add switches to compiler command line
  # -Wall       : Enables all the warnings.
@@ -68,7 +59,7 @@ add_definitions ( -Wall -Wextra -std=c++0x -O2 -pipe -fPIC )
 
 ## Add a library to the project using the specified source files,
  # in this case it will procude static C++ library.
-add_library ( ${PROJECT_NAME} STATIC
+add_library ( ${PROJECT_NAME} SHARED
               ${FLEX_CompilerCLexer_OUTPUTS}
               ${BISON_CompilerCParser_OUTPUTS}
               CompilerCPreprocessor.cxx
@@ -77,9 +68,6 @@ add_library ( ${PROJECT_NAME} STATIC
 ## Set properties on a target.
  # Targets can have properties that affect how they are built.
 set_target_properties ( ${PROJECT_NAME} PROPERTIES LINKER_LANGUAGE "CXX" )
-
-# Add a dependency between top-level targets.
-# add_dependencies ( ${PROJECT_NAME} )
 
 # ------------------------------------------------------------------------------
 # INSTALLATION OPTIONS
