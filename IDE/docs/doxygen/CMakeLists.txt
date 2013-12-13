@@ -1,17 +1,18 @@
 # ==============================================================================
 #
-# Software for development hardware (this does not include firmware).
+# API documentation.
 #
 # (C) copyright 2013 Moravia Microsystems, s.r.o.
 #
 # ==============================================================================
+
 
 # ------------------------------------------------------------------------------
 # GENERAL OPTIONS
 # ------------------------------------------------------------------------------
 
 # Set project name
-project ( HW )
+project ( doxygen )
 
 # Set the minimum required version of CMake
 cmake_minimum_required ( VERSION 2.8 )
@@ -19,10 +20,15 @@ cmake_minimum_required ( VERSION 2.8 )
 # Create verbose makefiles if on
 set ( CMAKE_VERBOSE_MAKEFILE OFF )
 
-
 # ------------------------------------------------------------------------------
-# BUILD COMPONENTS IN THE SUBDIRECTORIES
+# GENERATE API DOCUMENTATION WITH DOXYGEN
 # ------------------------------------------------------------------------------
 
-# Software for USB programmer for SPI ISP capable 8-bit AVR microcontrollers.
-add_subdirectory ( Avr8UsbProg )
+find_package ( Doxygen )
+if ( DOXYGEN_FOUND )
+    configure_file ( ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY )
+    add_custom_target ( doxygen ALL
+                        ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
+                        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+                        COMMENT "Generating API documentation with Doxygen" VERBATIM )
+endif ( DOXYGEN_FOUND )

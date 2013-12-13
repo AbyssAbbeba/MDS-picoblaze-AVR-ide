@@ -51,31 +51,34 @@ endif ( DOXYGEN_FOUND )
 # BUILD COMPONENTS IN THE SUBDIRECTORIES
 # ------------------------------------------------------------------------------
 
-# Build utility libraries
+# Build utility libraries.
 add_subdirectory ( utilities )
 
-# Build GUI
+# Build GUI.
 add_subdirectory ( GUI )
 
-# Build HW (not for now due to "absence" of libUSB on MS Windows OS)
-# add_subdirectory ( HW )
+# Build dev. hardware support software.
+add_subdirectory ( HW )
 
-# Build simulators
+# Build simulators.
 add_subdirectory ( simulators )
 
-# Build Moravia Script language support
+# Build Moravia Script language support.
 add_subdirectory ( moraviascript )
 
-# Build compiler collection
+# Build compiler collection.
 add_subdirectory ( compiler )
 
-# Build disassemblers
+# Build disassemblers.
 add_subdirectory ( disassembler )
 
-# Add some data files to installation packages
+# Add some data files to installation packages.
 add_subdirectory ( pkgs )
 
-# Build automated tests
+# Add some data files to installation packages.
+add_subdirectory ( docs )
+
+# Build automated tests.
 if ( NOT CMAKE_HOST_WIN32 )
     add_subdirectory ( tests )
 endif ( NOT CMAKE_HOST_WIN32 )
