@@ -67,6 +67,7 @@ class CodeEdit : public QWidget
         void getFocus();
         void manageBreakpointEmit(int line);
         void manageBookmarkEmit(int line);
+        void changeFont(QFont font);
 
     signals:
         void splitSignal(Qt::Orientation orient, int line);

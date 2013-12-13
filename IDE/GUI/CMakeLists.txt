@@ -60,21 +60,19 @@ cmake_minimum_required(VERSION 2.8)
 
 link_directories(
 	"${CMAKE_CURRENT_BINARY_DIR}/mainform/"
-	"${CMAKE_CURRENT_BINARY_DIR}/../simulators/MCUSim/McuSimCfgMgr/"
-	"${CMAKE_CURRENT_BINARY_DIR}/../simulators/MCUSim"
-	"${CMAKE_CURRENT_BINARY_DIR}/../simulators/SimControl/"
-        "${CMAKE_CURRENT_BINARY_DIR}/../utilities/MCUDataFiles/"
-	"${CMAKE_CURRENT_BINARY_DIR}/../simulators/MCUSim/AVR8/")
+	"${CMAKE_CURRENT_BINARY_DIR}/guicfg/"
+)
 
 include_directories(
-	"${CMAKE_CURRENT_BINARY_DIR}/mainform/")
+	"${CMAKE_CURRENT_BINARY_DIR}/mainform/"
+)
   
   # here we instruct CMake to build "mmIDE" executable from all of the source files
   ADD_EXECUTABLE( MDS ${SAMPLE_SRCS} ${SAMPLE_MOC_SRCS} ${SAMPLE_RC_SRCS} ${SAMPLE_UI_HDRS} )
   
   # last thing we have to do is to tell CMake what libraries our executable needs,
   # luckily FIND_PACKAGE prepared QT_LIBRARIES variable for us:
-  TARGET_LINK_LIBRARIES( MDS ${QT_LIBRARIES} Mainform)
+  TARGET_LINK_LIBRARIES( MDS ${QT_LIBRARIES} Mainform GuiCfg)
 
 
 
@@ -89,6 +87,7 @@ add_subdirectory(dialogs)
 add_subdirectory(mainform)
 add_subdirectory(project)
 add_subdirectory(errordialog)
+add_subdirectory(guicfg)
 
 
 
