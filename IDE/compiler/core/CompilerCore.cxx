@@ -223,9 +223,9 @@ void CompilerCore::localMessage ( const CompilerSourceLocation & location,
     m_msgInterface->message(msgText.str(), type);
 }
 
-void CompilerCore::parserMessage ( const CompilerSourceLocation & location,
-                                   MessageType type,
-                                   const std::string & text )
+void CompilerCore::preprocessorMessage ( const CompilerSourceLocation & location,
+                                         MessageType type,
+                                         const std::string & text )
 {
     localMessage(location, type, text);
 }
@@ -233,6 +233,13 @@ void CompilerCore::parserMessage ( const CompilerSourceLocation & location,
 void CompilerCore::lexerMessage ( const CompilerSourceLocation & location,
                                   MessageType type,
                                   const std::string & text )
+{
+    localMessage(location, type, text);
+}
+
+void CompilerCore::parserMessage ( const CompilerSourceLocation & location,
+                                   MessageType type,
+                                   const std::string & text )
 {
     localMessage(location, type, text);
 }
