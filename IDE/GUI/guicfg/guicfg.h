@@ -72,6 +72,9 @@ class GuiCfg : public QObject, public GuiCfg_Items
         QString getLastDialogPath();
 
         GuiCfg::HighlightOpt getHighlightOpts(GuiCfg::HighlightLang lang, GuiCfg::HighlightRole role);
+
+        //xml loader
+        void loadConfig();
 };
 
 
