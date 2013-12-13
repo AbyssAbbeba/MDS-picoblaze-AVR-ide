@@ -16,7 +16,7 @@
 #include "AsmPicoBlazeSemanticAnalyzer.h"
 
 // Common compiler header files.
-#include "../AsmDgbFileGen.h"
+#include "AsmDgbFileGen.h"
 #include "CompilerStatementTypes.h"
 
 // PicoBlaze assembler semantic analyzer header files.

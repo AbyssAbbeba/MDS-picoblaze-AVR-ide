@@ -69,7 +69,7 @@ int main ( int argc, char * argv[] )
     res = hid_get_indexed_string(handle, 1, wstr, MAX_STR);
     wprintf(L"[OK] Indexed String 1: %s\n", wstr);
 
-    buf[0] = 0x0;
+    buf[0] = 0x00;
     int len = strlen(argv[1]);
     for ( int i = 0; i < len; i++ )
     {
@@ -80,7 +80,7 @@ int main ( int argc, char * argv[] )
         buf[i] = 0;
     }
     wprintf(L"\nSending report to the device ...");
-    res = hid_write(handle, buf, 64);
+    res = hid_write(handle, buf, 65);
     if ( -1 == res )
     {
         wprintf(L"\nError: cannot send data to the device.\n", res);
@@ -94,7 +94,7 @@ int main ( int argc, char * argv[] )
 
     // Read requested state
     wprintf(L"\nWaitning for the device to respond...");
-    while ( 0 == (res = hid_read(handle, buf, 64)) )
+    while ( 0 == (res = hid_read(handle, buf, 65)) )
     {
         wprintf(L".");
     }

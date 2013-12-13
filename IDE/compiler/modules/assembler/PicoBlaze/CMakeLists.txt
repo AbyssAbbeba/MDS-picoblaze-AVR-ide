@@ -46,11 +46,13 @@ find_package ( Qt4 REQUIRED )
 include ( ${QT_USE_FILE} )
 
 # List of preprocessor include file search directories.
-include_directories ( "${CMAKE_CURRENT_BINARY_DIR}/../../../core"
+include_directories ( "${CMAKE_CURRENT_BINARY_DIR}/../generators/"
+                      "${CMAKE_CURRENT_BINARY_DIR}/../../../core/"
                       "${CMAKE_CURRENT_BINARY_DIR}/../../../../utilities/MCUDataFiles/" )
 
 # Specify directories in which the linker will look for libraries.
-link_directories ( "${CMAKE_CURRENT_BINARY_DIR}/../../../../utilities/MCUDataFiles/" )
+link_directories ( "${CMAKE_CURRENT_BINARY_DIR}/../generators/"
+                   "${CMAKE_CURRENT_BINARY_DIR}/../../../../utilities/MCUDataFiles/" )
 
 ## Add switches to compiler command line
  # -Wall       : Enables all the warnings.
@@ -82,8 +84,10 @@ add_library ( ${PROJECT_NAME} SHARED
               AsmPicoBlazeSemanticAnalyzer.cxx
               AsmPicoBlazeInstructionSet1CPLD.cxx )
 
-# Add a dependency between top-level targets.
-add_dependencies ( ${PROJECT_NAME} MCUDataFiles )
+              # Link a target to given libraries
+target_link_libraries ( ${PROJECT_NAME} ${QT_LIBRARIES}
+                                        MCUDataFiles
+                                        CompilerModuleAsmGenerators )
 
 ## Set properties on a target.
  # Targets can have properties that affect how they are built.

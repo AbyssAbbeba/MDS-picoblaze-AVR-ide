@@ -35,6 +35,9 @@ class WLineCounter : public QScrollArea
         QPlainTextEdit* getTextEdit();
         WLineCounterWidget* getWidget();
 
+    public slots:
+        void changeFont(QFont font);
+        
     private slots:
         void change(int value);
 
@@ -54,9 +57,8 @@ class WLineCounterWidget : public QWidget
     public:
         WLineCounterWidget(WLineCounter *parent, bool icons, bool hex, int offset, QFont font);
         void changeHeight();
-    //private slots:
-    //    void change();
-
+        void changeFont(QFont font);
+        
     private:
         WLineCounter *parent;
         bool icons;
