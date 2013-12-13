@@ -7,9 +7,9 @@ HelpWidget::HelpWidget(QWidget *parent, int width, int height)
     : QWidget(parent)
 {
     this->textBrowser = new QTextBrowser(this);
-    QFile file("../docs/Manual/xchalu10/index.html");
+    QFile file("../docs/manual/MDS_manual/index.html");
     QStringList pathList;
-    pathList << "../docs/Manual/xchalu10/";
+    pathList << "../docs/manual/MDS_manual/";
     this->textBrowser->setSearchPaths(pathList);
     
     if (file.open(QIODevice::ReadOnly))
