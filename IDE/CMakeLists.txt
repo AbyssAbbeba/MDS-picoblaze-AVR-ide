@@ -33,21 +33,6 @@ endif ( NOT CMAKE_BUILD_TYPE )
 enable_testing()
 
 # ------------------------------------------------------------------------------
-# GENERATE API DOCUMENTATION WITH DOXYGEN
-# ------------------------------------------------------------------------------
-
-find_package ( Doxygen )
-if ( DOXYGEN_FOUND )
-    configure_file ( ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY )
-    add_custom_target ( doc
-                        ${DOXYGEN_EXECUTABLE}
-                        ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
-                        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-                        COMMENT "Generating API documentation with Doxygen" VERBATIM )
-endif ( DOXYGEN_FOUND )
-
-
-# ------------------------------------------------------------------------------
 # BUILD COMPONENTS IN THE SUBDIRECTORIES
 # ------------------------------------------------------------------------------
 
@@ -75,7 +60,7 @@ add_subdirectory ( disassembler )
 # Add some data files to installation packages.
 add_subdirectory ( pkgs )
 
-# Add some data files to installation packages.
+# Build API and user documentation.
 add_subdirectory ( docs )
 
 # Build automated tests.

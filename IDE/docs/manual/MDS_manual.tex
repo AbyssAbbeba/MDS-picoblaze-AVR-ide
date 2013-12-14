@@ -5,6 +5,7 @@
 \usepackage[T1]{fontenc}
 \usepackage{float}
 \usepackage{graphicx}
+\usepackage{makeidx}
 \usepackage{fancyhdr}
 \usepackage{longtable}
 \usepackage[usenames,dvipsnames]{color}
@@ -61,6 +62,7 @@
 \pdfadjustspacing=1
 \raggedbottom
 
+\makeindex
 \pagestyle{fancy}
 \fancyhf{}
 \fancyhead[EL,OR]{\bfseries\thepage}
@@ -94,7 +96,7 @@
 \newpage
 
 \chapter{Preface}
-This manual is an introduction to the Moravia Microsystems development tools designed for microcontrollers.
+\index{This manual} is an \index{introduction} to the \index{Moravia Microsystems} development tools designed for microcontrollers.
 It introduces the MDS Integrated Development Environment, Simulator and 
 presents a step-by-step guided tour of the numerous features and capabilities 
 the Moravia Microsystems embedded development tools offer.
@@ -2356,8 +2358,6 @@ input parameters.\\
                             \includegraphics [width=300pt]{img/rom_instantiation.png}
                             \caption{VHDL Component Instantiation of Program ROM}
                         \end{figure}
+\printindex
 
 \end{document}
-
-
-

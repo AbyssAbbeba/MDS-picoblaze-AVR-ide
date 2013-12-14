@@ -14,7 +14,6 @@ function clean() {
     cmake .
     make clean
 
-    rm -rfv "docs/doxygen/html"
     rm -fv $(find -type f -name '*~')
     rm -fv $(find -type f -name '*.a')
     rm -fv $(find -type f -name '*.so')
@@ -55,6 +54,7 @@ function countLines() {
     local -r tempFile=$(mktemp)
 
     find -type f -name '*.asm' > "$tempFile"
+    find -type f -name '*.psm' >> "$tempFile"
     sort "$tempFile" | while read f; do
         wc -lc "$f"
     done | gawk '
@@ -87,6 +87,8 @@ function countLines() {
     '
 
     find -type f -name '*.cxx' > "$tempFile"
+    find -type f -name '*.awk' >> "$tempFile"
+    find -type f -name '*.sh' >> "$tempFile"
     find -type f -name '*.cpp' >> "$tempFile"
     find -type f -name '*.c' >> "$tempFile"
     find -type f -name '*.h' >> "$tempFile"
@@ -130,7 +132,8 @@ function countLines() {
 
 function buildAll() {
     build
-    make doc
+    make manual
+    make doxygen
     make test
     make package
 }
