@@ -16,9 +16,9 @@
 #ifndef PROJECT_H
 #define PROJECT_H
 
-#define ERR_OK 500
-#define ERR_ASSIGN 501
-#define ERR_CONTENT 502
+//#define ERR_OK 500
+//#define ERR_ASSIGN 501
+//#define ERR_CONTENT 502
 
 #include <QString>
 #include <QList>
@@ -128,8 +128,6 @@ class Project : public QObject
         //Symbol, Macro, Debug, Code, List, Hex, Bin, SRec
         QList<bool> compileOpt;
         QStringList compileIncPaths;
-
-        int errorFlag;
 
         //simulation handle
         McuMemoryView *m_mcuMemoryView;

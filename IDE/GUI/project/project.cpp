@@ -285,7 +285,6 @@ Project::Project(QFile *file, ProjectMan *parent)
         compileOpt.append(false);
     }
     
-    errorFlag = ERR_OK;
     fileCount = 0;
     parentManager = parent;
     this->m_simControlUnit = NULL;
@@ -297,7 +296,6 @@ Project::Project(QFile *file, ProjectMan *parent)
     QDomDocument domDoc("MMProject");
     if (!domDoc.setContent(file))
     {
-        errorFlag = ERR_ASSIGN;
         error(ERR_XML_ASSIGN);
     }
     else
@@ -305,7 +303,6 @@ Project::Project(QFile *file, ProjectMan *parent)
         QDomElement xmlRoot = domDoc.documentElement();
         if (xmlRoot.tagName() != "MMProject")
         {
-            errorFlag = ERR_CONTENT;
             error(ERR_XML_CONTENT);
         }
         else
@@ -595,7 +592,6 @@ Project::Project(ProjectMan *parent)
 Project::Project(QString name, QString path, QString arch, LangType lang, QFile *file, ProjectMan *parent)
 {
     //qDebug() << "Project: Project() blank";
-    errorFlag = ERR_OK;
     parentManager = parent;
     this->m_simControlUnit = NULL;
     currLineColor = new QColor(102,204,255,255);
@@ -748,7 +744,6 @@ QString Project::addFile(QString path, QString name)
         }
         if (!domDoc.setContent(file))
         {
-            errorFlag = ERR_ASSIGN;
             error(ERR_XML_ASSIGN);
         }
         else
@@ -758,7 +753,6 @@ QString Project::addFile(QString path, QString name)
             QDomElement xmlRoot = domDoc.documentElement();
             if (xmlRoot.tagName() != "MMProject")
             {
-                errorFlag = ERR_CONTENT;
                 error(ERR_XML_CONTENT);
             }
             else
@@ -915,7 +909,6 @@ void Project::setMainFile(QString path, QString name)
     QDomDocument domDoc("MMProject");
     if (!domDoc.setContent(&prjFile))
     {
-        errorFlag = ERR_ASSIGN;
         error(ERR_XML_ASSIGN);
     }
     else
@@ -924,7 +917,6 @@ void Project::setMainFile(QString path, QString name)
         QDomElement xmlRoot = domDoc.documentElement();
         if (xmlRoot.tagName() != "MMProject")
         {
-            errorFlag = ERR_CONTENT;
             error(ERR_XML_CONTENT);
         }
         else
@@ -972,7 +964,6 @@ void Project::removeFile(QString path, QString name)
     QDomDocument domDoc("MMProject");
     if (!domDoc.setContent(&prjFile))
     {
-        errorFlag = ERR_ASSIGN;
         error(ERR_XML_ASSIGN);
     }
     else
@@ -981,7 +972,6 @@ void Project::removeFile(QString path, QString name)
         QDomElement xmlRoot = domDoc.documentElement();
         if (xmlRoot.tagName() != "MMProject")
         {
-            errorFlag = ERR_CONTENT;
             error(ERR_XML_CONTENT);
         }
         else
@@ -1019,6 +1009,7 @@ void Project::removeFile(QString path, QString name)
             prjFile.open(QIODevice::WriteOnly);
             QTextStream xmlStream(&prjFile);
             xmlStream << domDoc.toString();
+            prjFile.close();
         }
     }
     //pozor na stejna jmena, musi se to smazat zaroven (item at index check pres iterator)
@@ -1232,7 +1223,6 @@ void Project::setCompileOpt(QList<bool> opt)
     QDomDocument domDoc("MMProject");
     if (!domDoc.setContent(&prjFile))
     {
-        errorFlag = ERR_ASSIGN;
         error(ERR_XML_ASSIGN);
     }
     else
@@ -1241,7 +1231,6 @@ void Project::setCompileOpt(QList<bool> opt)
         QDomElement xmlRoot = domDoc.documentElement();
         if (xmlRoot.tagName() != "MMProject")
         {
-            errorFlag = ERR_CONTENT;
             error(ERR_XML_CONTENT);
         }
         else
@@ -1387,7 +1376,6 @@ void Project::setCompileIncPaths(QList<QString> paths)
     QDomDocument domDoc("MMProject");
     if (!domDoc.setContent(&prjFile))
     {
-        errorFlag = ERR_ASSIGN;
         error(ERR_XML_ASSIGN);
     }
     else
@@ -1396,7 +1384,6 @@ void Project::setCompileIncPaths(QList<QString> paths)
         QDomElement xmlRoot = domDoc.documentElement();
         if (xmlRoot.tagName() != "MMProject")
         {
-            errorFlag = ERR_CONTENT;
             error(ERR_XML_CONTENT);
         }
         else

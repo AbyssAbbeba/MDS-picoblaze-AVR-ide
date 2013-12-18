@@ -5,6 +5,8 @@
 #include <QFont>
 #include <QObject>
 #include "guicfg_items.h"
+#include "../enums/enums.h"
+#include "../errordialog/errordlg.h"
 
 
 class GuiCfg : public QObject, public GuiCfg_Items
@@ -73,8 +75,26 @@ class GuiCfg : public QObject, public GuiCfg_Items
 
         GuiCfg::HighlightOpt getHighlightOpts(GuiCfg::HighlightLang lang, GuiCfg::HighlightRole role);
 
-        //xml loader
+        bool getSplash();
+        
+        bool getTipsOnStart();
+
+        QString getLanguage();
+
+        int getTabWidth();
+
+        bool getTabToSpaces();
+
+        int getSpacesInTabs();
+
+        QString getEncoding();
+
+        QString getEOL();
+
+        //xml parser
         void loadConfig();
+        
+        void saveConfig();
 };
 
 
