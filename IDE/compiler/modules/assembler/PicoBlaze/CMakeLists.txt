@@ -84,7 +84,7 @@ add_library ( ${PROJECT_NAME} SHARED
               AsmPicoBlazeSemanticAnalyzer.cxx
               AsmPicoBlazeInstructionSet1CPLD.cxx )
 
-              # Link a target to given libraries
+# Link a target to given libraries
 target_link_libraries ( ${PROJECT_NAME} ${QT_LIBRARIES}
                                         MCUDataFiles
                                         CompilerModuleAsmGenerators )
