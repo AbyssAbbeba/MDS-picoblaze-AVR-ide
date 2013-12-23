@@ -7,7 +7,7 @@
 
 ; Tell compiler type of procesor (KCPSM2, KCPSM3, KCPSM6 available)
         ;DEVICE          KCPSM6
-
+_
 ; Program initialization
 ; --------------------
         ORG     0h                      ; Define code segment

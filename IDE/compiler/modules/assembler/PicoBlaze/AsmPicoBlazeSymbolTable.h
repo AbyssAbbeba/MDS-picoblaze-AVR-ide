@@ -237,6 +237,18 @@ class AsmPicoBlazeSymbolTable
 
         /**
          * @brief
+         * @param[in,out] expr
+         * @param[in] newLocation
+         * @param[in] keepColumns
+         * @param[in] origin
+         */
+        void rewriteExprLoc ( CompilerExpr * expr,
+                              const CompilerSourceLocation & newLocation,
+                              bool keepColumns,
+                              int origin = -1 ) const;
+
+        /**
+         * @brief
          */
         void output();
 
