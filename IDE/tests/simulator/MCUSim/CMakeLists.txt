@@ -29,7 +29,7 @@ enable_testing()
 # ------------------------------------------------------------------------------
 
 # Add include directories to the build.
-include_directories ( "${CMAKE_CURRENT_BINARY_DIR}/../../../simulators/MCUSim" )
+include_directories ( "${CMAKE_CURRENT_SOURCE_DIR}/../../../simulators/MCUSim" )
 
 ## Add a library to the project using the specified source files,
  # in this case it will procude dynamic C++ library.

@@ -34,14 +34,14 @@ find_package ( Boost 1.55
                COMPONENTS filesystem system )
 
 # List of preprocessor include file search directories.
-include_directories ( "${CMAKE_CURRENT_BINARY_DIR}"
-                      "${CMAKE_CURRENT_BINARY_DIR}/../modules" )
+include_directories ( "${CMAKE_CURRENT_SOURCE_DIR}"
+                      "${CMAKE_CURRENT_SOURCE_DIR}/../modules" )
 
 # Specify directories in which the linker will look for libraries.
-link_directories ( "${CMAKE_CURRENT_BINARY_DIR}/../modules"
-                   "${CMAKE_CURRENT_BINARY_DIR}/../../utilities/os"
-                   "${CMAKE_CURRENT_BINARY_DIR}/../../utilities/DbgFile/"
-                   "${CMAKE_CURRENT_BINARY_DIR}/../../utilities/MCUDataFiles/" )
+link_directories ( "${CMAKE_CURRENT_SOURCE_DIR}/../modules"
+                   "${CMAKE_CURRENT_SOURCE_DIR}/../../utilities/os"
+                   "${CMAKE_CURRENT_SOURCE_DIR}/../../utilities/DbgFile/"
+                   "${CMAKE_CURRENT_SOURCE_DIR}/../../utilities/MCUDataFiles/" )
 
 ## Create moc code from a list of files containing Qt class with the Q_OBJECT declaration.
  # Per-directory preprocessor definitions are also added.

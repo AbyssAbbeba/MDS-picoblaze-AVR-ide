@@ -25,7 +25,7 @@ set ( CMAKE_VERBOSE_MAKEFILE OFF )
 # ------------------------------------------------------------------------------
 
 # Generate lexical and syntax analyzers
-include ( "${CMAKE_CURRENT_BINARY_DIR}/../../../FlexBisonPair.cmake" )
+include ( "${CMAKE_CURRENT_SOURCE_DIR}/../../../FlexBisonPair.cmake" )
 FLEX_BISON_PAIR ( CompilerCLexer CompilerCParser CompilerCLexerParser )
 
 # Load settings specific for the Qt4 library (we use it here for i18n)
@@ -33,7 +33,7 @@ find_package( Qt4 REQUIRED )
 include ( ${QT_USE_FILE} )
 
 # List of preprocessor include file search directories.
-include_directories ( "${CMAKE_CURRENT_BINARY_DIR}/../../core/" )
+include_directories ( "${CMAKE_CURRENT_SOURCE_DIR}/../../core/" )
 
 ## Add a library to the project using the specified source files,
  # in this case it will procude static C++ library.

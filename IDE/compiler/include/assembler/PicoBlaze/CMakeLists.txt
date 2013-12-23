@@ -20,29 +20,28 @@ cmake_minimum_required ( VERSION 2.8 )
 # Create verbose makefiles if on
 set ( CMAKE_VERBOSE_MAKEFILE OFF )
 
-
 # ------------------------------------------------------------------------------
 # COMPILATION OPTIONS
 # ------------------------------------------------------------------------------
 
 # List of additional files that will be cleaned as a part of the "make clean" stage.
-FILE ( GLOB PRC_FILES *.prc )
-FILE ( GLOB LST_FILES *.lst )
+file ( GLOB PRC_FILES *.prc )
+file ( GLOB LST_FILES *.lst )
 set_directory_properties ( PROPERTIES
                            ADDITIONAL_MAKE_CLEAN_FILES "${PRC_FILES};${LST_FILES}" )
 
 # Locate compiler binary.
-set ( MDS_COMPILER "${CMAKE_CURRENT_BINARY_DIR}/../../../compiler" )
+set ( MDS_COMPILER "${CMAKE_CURRENT_SOURCE_DIR}/../../../compiler" )
 if ( CMAKE_HOST_WIN32 )
     set ( MDS_COMPILER "${MDS_COMPILER}.exe" )
 endif ( CMAKE_HOST_WIN32 )
 
 # Build device specification files.
 foreach ( PROCESSOR "kcpsm1" "kcpsm1cpld" "kcpsm2" "kcpsm3" "kcpsm6" )
-    set ( FILE_BASE "${CMAKE_CURRENT_BINARY_DIR}/${PROCESSOR}" )
+    set ( FILE_BASE "${CMAKE_CURRENT_SOURCE_DIR}/${PROCESSOR}" )
     if ( "${FILE_BASE}.asm" IS_NEWER_THAN "${FILE_BASE}.prc" )
         add_custom_target ( "${PROJECT_NAME}_build_prc_file_${PROCESSOR}" ALL
-                            WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
+                            WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
                             COMMENT "Building device specification file for ${PROCESSOR}."
                             DEPENDS compiler
                             SOURCES "${FILE_BASE}.asm"
@@ -52,9 +51,11 @@ foreach ( PROCESSOR "kcpsm1" "kcpsm1cpld" "kcpsm2" "kcpsm3" "kcpsm6" )
                                                     --precompile="${FILE_BASE}.prc"
                                                     --lst="${FILE_BASE}.lst"
                                                     --file="${FILE_BASE}.asm" &> /dev/null )
+    else ( "${FILE_BASE}.asm" IS_NEWER_THAN "${FILE_BASE}.prc" )
+        add_custom_target ( "${PROJECT_NAME}_build_prc_file_${PROCESSOR}" ALL
+                            COMMENT "Device specification file for ${PROCESSOR} is already built ... skipping." )
     endif ( "${FILE_BASE}.asm" IS_NEWER_THAN "${FILE_BASE}.prc" )
 endforeach ( PROCESSOR )
-
 
 # ------------------------------------------------------------------------------
 # INSTALLATION OPTIONS

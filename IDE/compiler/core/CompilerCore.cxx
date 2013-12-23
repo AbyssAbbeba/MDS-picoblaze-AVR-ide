@@ -31,7 +31,7 @@
 
 // Standard header files.
 #include <fstream>
-#include <iostream>//DEBUG
+
 // Used for i18n only.
 #include <QObject>
 
@@ -225,8 +225,7 @@ void CompilerCore::coreMessage ( const CompilerSourceLocation & location,
         int next = m_locationTracker.getNext(location.m_origin);
         if ( -1 != next )
         {
-std::cout << ">> NEXT = " << next << " -- " << m_locationTracker.getLocation(next) << "\n" << std::flush;
-//             coreMessage ( m_locationTracker.getLocation(next), type, "(ORG) " + text );
+            coreMessage ( m_locationTracker.getLocation(next), type, "==> " + text );
         }
 
         return;

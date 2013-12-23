@@ -29,7 +29,7 @@ find_package ( Qt4 REQUIRED )
 include ( ${QT_USE_FILE} )
 
 # Specify directories in which the linker will look for libraries.
-link_directories ("${CMAKE_CURRENT_BINARY_DIR}/.." )
+link_directories ("${CMAKE_CURRENT_SOURCE_DIR}/.." )
 
 ## Add switches to compiler command line.
  # -fPIC       : Generate position-independent code (PIC) suitable for use in a shared library

@@ -34,7 +34,7 @@
 
 // Standard headers.
 #include <vector>
-#include <iostream>//DEBUG
+
 #define HANDLE_ACTION(arg)                  \
     switch ( arg )                          \
     {                                       \
@@ -71,7 +71,6 @@ AsmPicoBlazeTreeDecoder::AsmPicoBlazeTreeDecoder ( CompilerSemanticInterface    
 }
 
 bool AsmPicoBlazeTreeDecoder::phase1 ( CompilerStatement * codeTree,
-                                       const CompilerSourceLocation * origLocation,
                                        const std::string * macroName )
 {
     using namespace CompilerStatementTypes;
@@ -94,12 +93,6 @@ bool AsmPicoBlazeTreeDecoder::phase1 ( CompilerStatement * codeTree,
             m_forceNext = NULL;
         }
 
-        const CompilerSourceLocation * location = NULL/*origLocation*/;
-        if ( NULL == location )
-        {
-            location = &(node->location());
-        }
-
         if ( true == m_instructionSet->isInstruction ( node ) )
         {
             m_instructionSet->encapsulate(node, m_memoryPtr->m_code);
@@ -107,6 +100,7 @@ bool AsmPicoBlazeTreeDecoder::phase1 ( CompilerStatement * codeTree,
             continue;
         }
 
+        const CompilerSourceLocation * location = &( node->location() );
         switch ( (int) node->type() )
         {
             case ASMPICOBLAZE_DIR_EQU:
@@ -175,7 +169,7 @@ bool AsmPicoBlazeTreeDecoder::phase1 ( CompilerStatement * codeTree,
 void AsmPicoBlazeTreeDecoder::phase2 ( CompilerStatement * codeTree )
 {
     using namespace CompilerStatementTypes;
-std::cout << "AsmPicoBlazeTreeDecoder::phase2(...)\n" << codeTree << "\n";
+
     m_symbolTable->maskNonLabels();
 
     for ( CompilerStatement * node = codeTree->next();
@@ -489,7 +483,7 @@ inline AsmPicoBlazeTreeDecoder::CourseOfAction
     body->appendLink(node->branch()->copyEntireChain());
     m_codeListing->repeatCode(lastLocation, body, true);
     lastLocation = body->lastLeaf()->location();
-    if ( false == phase1(body/*, location*/) )
+    if ( false == phase1(body) )
     {
         body->completeDelete();
         return CA_RETURN_FALSE;
@@ -545,7 +539,7 @@ inline AsmPicoBlazeTreeDecoder::CourseOfAction
             body->appendLink(node->branch()->copyEntireChain());
             m_codeListing->repeatCode(lastLocation, body, true);
             lastLocation = body->lastLeaf()->location();
-            if ( false == phase1(body/*, location*/) )
+            if ( false == phase1(body) )
             {
                 body->completeDelete();
                 return CA_RETURN_FALSE;
@@ -557,7 +551,7 @@ inline AsmPicoBlazeTreeDecoder::CourseOfAction
             exp->appendLink(node->branch()->copyEntireChain());
             m_codeListing->repeatCode(lastLocation, exp, false);
             lastLocation = exp->lastLeaf()->location();
-            if ( false == phase1(exp/*, location*/) )
+            if ( false == phase1(exp) )
             {
                 body->completeDelete();
                 exp->completeDelete();
@@ -620,8 +614,8 @@ inline AsmPicoBlazeTreeDecoder::CourseOfAction
     //
     macro->prependLink(new CompilerStatement());
     macro = macro->first();
-std::cout << "macro: " << macro <<"\n\n";
-    if ( false == phase1(macro, location, &nameOfMacro) )
+
+    if ( false == phase1(macro, &nameOfMacro) )
     {
         macro->completeDelete();
         return CA_RETURN_FALSE;
@@ -918,7 +912,7 @@ inline AsmPicoBlazeTreeDecoder::CourseOfAction
     CompilerStatement * body = new CompilerStatement();
     body->appendLink(m_specialMacros->runTimeCondition(node));
 
-    if ( false == phase1(body, location) )
+    if ( false == phase1(body) )
     {
         body->completeDelete();
         return CA_RETURN_FALSE;
@@ -942,7 +936,7 @@ inline AsmPicoBlazeTreeDecoder::CourseOfAction
     CompilerStatement * body = new CompilerStatement();
     body->appendLink(m_specialMacros->runTimeWhile(node));
 
-    if ( false == phase1(body, location) )
+    if ( false == phase1(body) )
     {
         body->completeDelete();
         return CA_RETURN_FALSE;
@@ -966,7 +960,7 @@ inline AsmPicoBlazeTreeDecoder::CourseOfAction
     CompilerStatement * body = new CompilerStatement();
     body->appendLink(m_specialMacros->runTimeFor(node));
 
-    if ( false == phase1(body, location) )
+    if ( false == phase1(body) )
     {
         body->completeDelete();
         return CA_RETURN_FALSE;

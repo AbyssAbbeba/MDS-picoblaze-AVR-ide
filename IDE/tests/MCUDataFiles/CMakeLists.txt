@@ -40,11 +40,11 @@ find_package ( Boost 1.55
 
 # Add include directories to the build.
 include_directories ( ${Boost_INCLUDE_DIRS}
-                      "${CMAKE_CURRENT_BINARY_DIR}/../../utilities/MCUDataFiles" )
+                      "${CMAKE_CURRENT_SOURCE_DIR}/../../utilities/MCUDataFiles" )
 
 # Specify directories in which the linker will look for libraries.
 link_directories ( ${Boost_LIBRARY_DIRS}
-                   "${CMAKE_CURRENT_BINARY_DIR}/../../utilities/MCUDataFiles" )
+                   "${CMAKE_CURRENT_SOURCE_DIR}/../../utilities/MCUDataFiles" )
 
 # Add an executable to the project using the specified source files.
 add_executable ( ${PROJECT_NAME} testsMCUDataFiles.cxx
@@ -61,4 +61,4 @@ target_link_libraries ( ${PROJECT_NAME} ${Boost_LIBRARIES}
 # ------------------------------------------------------------------------------
 
 add_test ( NAME ${PROJECT_NAME}
-           COMMAND ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME} )
+           COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME} )

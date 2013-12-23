@@ -79,6 +79,7 @@ void AsmPicoBlazeCodeListing::clear()
     m_title.clear();
     m_listing.clear();
     m_messages.clear();
+    m_files2skip.clear();
     m_messageQueue.clear();
 }
 
@@ -101,6 +102,12 @@ void AsmPicoBlazeCodeListing::loadSourceFiles()
           it++ )
     {
         fileNumber++;
+        if ( NULL == it->second )
+        {
+            m_files2skip.insert(fileNumber);
+            continue;
+        }
+
         rewind(it->second);
 
         if ( 0 != ferror(it->second) )
@@ -328,9 +335,14 @@ void AsmPicoBlazeCodeListing::output()
     }
 }
 
-inline bool AsmPicoBlazeCodeListing::checkLocation ( const CompilerSourceLocation & location,
-                                                  bool silent )
+bool AsmPicoBlazeCodeListing::checkLocation ( const CompilerSourceLocation & location,
+                                              bool silent )
 {
+    if ( m_files2skip.end() != m_files2skip.find(location.m_fileNumber) )
+    {
+        return false;
+    }
+
     if ( -1 != location.m_fileNumber && (size_t)location.m_fileNumber < (m_numberOfFiles + m_numberOfMacros) )
     {
         if ( 0 < location.m_lineStart && (size_t)location.m_lineStart <= m_listing[location.m_fileNumber].size() )

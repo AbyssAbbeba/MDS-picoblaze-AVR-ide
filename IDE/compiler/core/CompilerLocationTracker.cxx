@@ -14,12 +14,11 @@
 // =============================================================================
 
 #include "CompilerLocationTracker.h"
-#include <iostream>//DEBUG
+
 int CompilerLocationTracker::add ( const CompilerSourceLocation & location,
                                    int next )
 {
     m_locations.push_back(std::make_pair(location, next));
-    std::cout << "CompilerLocationTracker::add ( "<< location<<", "<<next<<") --> "<<((int) (m_locations.size() - 1))<<"\n";
     return (int) (m_locations.size() - 1);
 }
 

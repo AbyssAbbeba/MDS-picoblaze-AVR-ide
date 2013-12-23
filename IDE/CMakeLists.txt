@@ -15,7 +15,7 @@
 project ( mmIDE )
 
 # Set the minimum required version of CMake
-cmake_minimum_required ( VERSION 2.8 )
+cmake_minimum_required ( VERSION 2.8 FATAL_ERROR )
 
 # Create verbose makefiles if on
 set ( CMAKE_VERBOSE_MAKEFILE OFF )
@@ -118,10 +118,10 @@ set ( MY_CPACK_PACKAGE_DETAILED_DESC "Some detailed description, like:
 " )
 
 # Resource file (see the CPack manual for details)
-set ( CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_BINARY_DIR}/pkgs/pkgdesc.txt" )
-set ( CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_BINARY_DIR}/pkgs/pkglicense.txt" )
-set ( CPACK_RESOURCE_FILE_README "${CMAKE_CURRENT_BINARY_DIR}/pkgs/pkgreadme.txt" )
-set ( CPACK_RESOURCE_FILE_WELCOME "${CMAKE_CURRENT_BINARY_DIR}/pkgs/pkgwelcome.txt" )
+set ( CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/pkgs/pkgdesc.txt" )
+set ( CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/pkgs/pkglicense.txt" )
+set ( CPACK_RESOURCE_FILE_README "${CMAKE_CURRENT_SOURCE_DIR}/pkgs/pkgreadme.txt" )
+set ( CPACK_RESOURCE_FILE_WELCOME "${CMAKE_CURRENT_SOURCE_DIR}/pkgs/pkgwelcome.txt" )
 
 # Options for the "DEB" generator
 # set ( CPACK_DEBIAN_PACKAGE_ARCHITECTURE "amd64" )
@@ -141,12 +141,12 @@ set ( CPACK_RPM_PACKAGE_GROUP "Development/Tools/IDE" )
 set ( CPACK_RPM_PACKAGE_LICENSE "<package license>" )
 
 # Options for the "NSIS" generator
-set ( CPACK_NSIS_MUI_ICON "${CMAKE_CURRENT_BINARY_DIR}/pkgs/mmIDEicon.ico" )
-# set ( CPACK_NSIS_MUI_UNIICON "${CMAKE_CURRENT_BINARY_DIR}/pkgs/uninstaller.ico" )
-# set ( CPACK_PACKAGE_ICON "${CMAKE_CURRENT_BINARY_DIR}/pkgs/installer.bmp" )
+set ( CPACK_NSIS_MUI_ICON "${CMAKE_CURRENT_SOURCE_DIR}/pkgs/mmIDEicon.ico" )
+# set ( CPACK_NSIS_MUI_UNIICON "${CMAKE_CURRENT_SOURCE_DIR}/pkgs/uninstaller.ico" )
+# set ( CPACK_PACKAGE_ICON "${CMAKE_CURRENT_SOURCE_DIR}/pkgs/installer.bmp" )
 set ( CPACK_NSIS_DISPLAY_NAME "mmIDE" )
 set ( CPACK_NSIS_CREATE_ICONS_EXTRA "CreateShortCut '\$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\${PROJECT_NAME}.lnk' '\$INSTDIR\\\\bin\\\\${PROJECT_NAME}.exe'" )
-# set ( CPACK_NSIS_INSTALLED_ICON_NAME "${CMAKE_CURRENT_BINARY_DIR}/pkgs/something.exe" )
+# set ( CPACK_NSIS_INSTALLED_ICON_NAME "${CMAKE_CURRENT_SOURCE_DIR}/pkgs/something.exe" )
 set ( CPACK_NSIS_HELP_LINK "http://www.project-home-page.org" )
 set ( CPACK_NSIS_URL_INFO_ABOUT "http://www.project-home-page.org" )
 set ( CPACK_NSIS_CONTACT "support@abc.xyz" )

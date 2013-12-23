@@ -49,17 +49,17 @@ include ( ${QT_USE_FILE} )
 
 # List of preprocessor include file search directories.
 include_directories ( ${Boost_INCLUDE_DIRS}
-                      "${CMAKE_CURRENT_BINARY_DIR}/core"
-                      "${CMAKE_CURRENT_BINARY_DIR}/modules"
-                      "${CMAKE_CURRENT_BINARY_DIR}/modules/generators" )
+                      "${CMAKE_CURRENT_SOURCE_DIR}/core"
+                      "${CMAKE_CURRENT_SOURCE_DIR}/modules"
+                      "${CMAKE_CURRENT_SOURCE_DIR}/modules/generators" )
 
 # Specify directories in which the linker will look for libraries.
 link_directories ( ${Boost_LIBRARY_DIRS}
-                   "${CMAKE_CURRENT_BINARY_DIR}/core/"
-                   "${CMAKE_CURRENT_BINARY_DIR}/modules/"
-                   "${CMAKE_CURRENT_BINARY_DIR}/../utilities/os/"
-                   "${CMAKE_CURRENT_BINARY_DIR}/../utilities/DbgFile/"
-                   "${CMAKE_CURRENT_BINARY_DIR}/../utilities/MCUDataFiles/" )
+                   "${CMAKE_CURRENT_SOURCE_DIR}/core/"
+                   "${CMAKE_CURRENT_SOURCE_DIR}/modules/"
+                   "${CMAKE_CURRENT_SOURCE_DIR}/../utilities/os/"
+                   "${CMAKE_CURRENT_SOURCE_DIR}/../utilities/DbgFile/"
+                   "${CMAKE_CURRENT_SOURCE_DIR}/../utilities/MCUDataFiles/" )
 
 # Add an executable to the project using the specified source files.
 add_executable ( ${PROJECT_NAME}
