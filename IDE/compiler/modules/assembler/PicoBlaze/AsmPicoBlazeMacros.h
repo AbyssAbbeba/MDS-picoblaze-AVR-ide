@@ -93,6 +93,8 @@ class AsmPicoBlazeMacros
          * @brief
          * @param[in,out] compilerCore
          * @param[in] opts
+         * @param[in,out] symbolTable
+         * @param[in,out] codeListing
          * @return
          */
         AsmPicoBlazeMacros ( CompilerSemanticInterface * compilerCore,

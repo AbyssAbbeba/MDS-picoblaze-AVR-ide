@@ -43,7 +43,7 @@ add_subdirectory ( Xilinx )
 # ------------------------------------------------------------------------------
 
 # Find Boost include directories and libraries.
-find_package ( Boost 1.48
+find_package ( Boost 1.55
                REQUIRED
                COMPONENTS filesystem system )
 

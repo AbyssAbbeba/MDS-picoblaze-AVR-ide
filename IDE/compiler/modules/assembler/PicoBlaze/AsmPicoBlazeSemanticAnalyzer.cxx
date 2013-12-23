@@ -54,7 +54,7 @@ AsmPicoBlazeSemanticAnalyzer::AsmPicoBlazeSemanticAnalyzer ( CompilerSemanticInt
     m_machineCode    = new AsmMachineCodeGen();
     m_memoryPtr      = new AsmPicoBlazeMemoryPtr ( compilerCore );
     m_symbolTable    = new AsmPicoBlazeSymbolTable ( compilerCore, opts );
-    m_codeListing    = new AsmPicoBlazeCodeListing ( compilerCore, opts );
+    m_codeListing    = new AsmPicoBlazeCodeListing ( compilerCore, opts, m_symbolTable );
     m_macros         = new AsmPicoBlazeMacros ( compilerCore, opts, m_symbolTable, m_codeListing );
     m_specialMacros  = new AsmPicoBlazeSpecialMacros ( compilerCore, m_symbolTable, m_codeListing );
     m_instructionSet = new AsmPicoBlazeInstructionSet ( compilerCore, opts, m_symbolTable, &m_device );

@@ -27,11 +27,7 @@
 
 namespace boost
 {
-//     #ifdef __linux__
-//       namespace filesystem3
-//     #else // __linux__
-      namespace filesystem
-//     #endif // __linux__
+    namespace filesystem
     {
         template < >
             path & path::append< typename path::iterator > ( typename path::iterator begin,

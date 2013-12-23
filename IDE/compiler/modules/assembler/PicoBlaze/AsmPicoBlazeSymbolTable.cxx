@@ -20,7 +20,7 @@
 #include <cstdio>
 #include <cstring>
 #include <fstream>
-
+#include <iostream>//DEBUG
 AsmPicoBlazeSymbolTable::Symbol::Symbol ( const CompilerExpr * value,
                                           const CompilerSourceLocation * location,
                                           SymbolType type,
@@ -430,7 +430,9 @@ void AsmPicoBlazeSymbolTable::substArg ( CompilerExpr * expr,
                     {
                         delete [] symbol;
                         value->m_type = CompilerValue::TYPE_EXPR;
-                        value->m_data.m_expr = subst->copyChainLink();
+                        CompilerExpr * substCopy = subst->copyChainLink();
+                        rewriteExprLoc(substCopy, value->m_data.m_expr->location(), false);
+                        value->m_data.m_expr = substCopy;
                     }
                 }
             }
@@ -622,16 +624,18 @@ unsigned int AsmPicoBlazeSymbolTable::substitute ( const std::string & origSymbo
                 case CompilerValue::TYPE_SYMBOL:
                     if ( origSymbol == value->m_data.m_symbol )
                     {
+                        CompilerExpr * newSymbolCopy = newSymbol->copyChainLink();
+                        rewriteExprLoc(newSymbolCopy, expr->location(), false);
+
                         delete [] value->m_data.m_symbol;
-                        if ( CompilerExpr::OPER_NONE == newSymbol->oper() )
+                        if ( CompilerExpr::OPER_NONE == newSymbolCopy->oper() )
                         {
-                            CompilerValue * val = newSymbol->lVal().makeCopy();
-                            *value = *val;
-                            delete val;
+                            *value = newSymbolCopy->lVal();
+                            delete newSymbolCopy;
                         }
                         else
                         {
-                            *value = CompilerValue(newSymbol->copyChainLink());
+                            *value = CompilerValue(newSymbolCopy);
                         }
                         result++;
                     }
@@ -644,6 +648,40 @@ unsigned int AsmPicoBlazeSymbolTable::substitute ( const std::string & origSymbo
     }
 
     return result;
+}
+
+void AsmPicoBlazeSymbolTable::rewriteExprLoc ( CompilerExpr * expr,
+                                               const CompilerSourceLocation & newLocation,
+                                               bool keepColumns,
+                                               int origin ) const
+{
+    if ( -1 == origin)
+    {
+        origin = m_compilerCore->locationTrack().add(newLocation, origin);
+    }
+
+    for ( ; NULL != expr; expr = expr->next() )
+    {
+std::cout << "AsmPicoBlazeSymbolTable::rewriteExprLoc("<<expr<<")\n";
+        expr->m_location.m_origin     = m_compilerCore->locationTrack().add(expr->m_location, origin);
+        expr->m_location.m_fileNumber = newLocation.m_fileNumber;
+        expr->m_location.m_lineStart  = newLocation.m_lineStart;
+        expr->m_location.m_lineEnd    = newLocation.m_lineEnd;
+        if ( false == keepColumns )
+        {
+            expr->m_location.m_colStart = newLocation.m_colStart;
+            expr->m_location.m_colEnd   = newLocation.m_colEnd;
+        }
+std::cout << "  --->" << expr << "\n";
+        if ( CompilerValue::TYPE_EXPR == expr->lVal().m_type )
+        {
+            rewriteExprLoc(expr->lVal().m_data.m_expr, newLocation, keepColumns, origin);
+        }
+        if ( CompilerValue::TYPE_EXPR == expr->rVal().m_type )
+        {
+            rewriteExprLoc(expr->rVal().m_data.m_expr, newLocation, keepColumns, origin);
+        }
+    }
 }
 
 void AsmPicoBlazeSymbolTable::output()
