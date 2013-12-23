@@ -9,3 +9,8 @@ InterfaceCfg_SimOthers::InterfaceCfg_SimOthers(QWidget *parent)
     ui.setupUi(this);
     this->show();
 }
+
+
+void InterfaceCfg_SimOthers::save()
+{
+}

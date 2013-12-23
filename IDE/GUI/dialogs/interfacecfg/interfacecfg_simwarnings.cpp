@@ -9,3 +9,8 @@ InterfaceCfg_SimWarnings::InterfaceCfg_SimWarnings(QWidget *parent)
     ui.setupUi(this);
     this->show();
 }
+
+
+void InterfaceCfg_SimWarnings::save()
+{
+}

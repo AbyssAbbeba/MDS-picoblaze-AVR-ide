@@ -10,6 +10,7 @@ class InterfaceCfg_SimWarnings : public QWidget
     Q_OBJECT
     public:
         InterfaceCfg_SimWarnings(QWidget *parent);
+        void save();
 
     private:
         Ui_InterfaceCfg_SimWarnings ui;

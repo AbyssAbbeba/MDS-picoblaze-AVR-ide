@@ -9,3 +9,7 @@ InterfaceCfg_IDEGeneral::InterfaceCfg_IDEGeneral(QWidget *parent)
     ui.setupUi(this);
     this->show();
 }
+
+void InterfaceCfg_IDEGeneral::save()
+{
+}

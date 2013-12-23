@@ -19,7 +19,7 @@ class InterfaceCfgDlg_Core : public QDialog
         InterfaceCfgDlg_Core(QWidget *parent);
         
     private:
-        //void load();
+        //void save();
         
         CfgInterface *cfgInterface;
         InterfaceCfg_EditFonts *editFonts;
