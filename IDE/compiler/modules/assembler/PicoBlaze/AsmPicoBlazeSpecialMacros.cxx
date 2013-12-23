@@ -116,7 +116,7 @@ CompilerStatement * AsmPicoBlazeSpecialMacros::runTimeFor ( CompilerStatement * 
     }
     if ( true == regInUse )
     {
-        m_compilerCore->compilerMessage ( args[0]->location(),
+        m_compilerCore->semanticMessage ( args[0]->location(),
                                           CompilerBase::MT_WARNING,
                                           QObject::tr ( "reuse of iterator register in nested for loop (the two loops "
                                                         "will affect each other via their iterator registers)" )
@@ -646,25 +646,25 @@ CompilerStatement * AsmPicoBlazeSpecialMacros::evaluateCondition ( const Compile
     switch ( resultKnownInAdvance )
     {
         case -2:
-            m_compilerCore->compilerMessage(cnd->location(),
+            m_compilerCore->semanticMessage(cnd->location(),
                                             CompilerBase::MT_WARNING,
                                             QObject::tr("comparing a register with itself, result is always negative")
                                                        .toStdString());
             break;
         case -1:
-            m_compilerCore->compilerMessage(cnd->location(),
+            m_compilerCore->semanticMessage(cnd->location(),
                                             CompilerBase::MT_WARNING,
                                             QObject::tr("comparing two immediate constants, result is always negative")
                                                        .toStdString());
             break;
         case 1:
-            m_compilerCore->compilerMessage(cnd->location(),
+            m_compilerCore->semanticMessage(cnd->location(),
                                             CompilerBase::MT_WARNING,
                                             QObject::tr("comparing two immediate constants, result is always positive")
                                                         .toStdString());
             break;
         case 2:
-            m_compilerCore->compilerMessage(cnd->location(),
+            m_compilerCore->semanticMessage(cnd->location(),
                                             CompilerBase::MT_WARNING,
                                             QObject::tr("comparing a register with itself, result is always positive")
                                                        .toStdString());

@@ -25,4 +25,4 @@ set ( CMAKE_VERBOSE_MAKEFILE OFF )
 # ------------------------------------------------------------------------------
 
 # Software for USB programmer for SPI ISP capable 8-bit AVR microcontrollers.
-# add_subdirectory ( Avr8UsbProg )
+add_subdirectory ( Avr8UsbProg )

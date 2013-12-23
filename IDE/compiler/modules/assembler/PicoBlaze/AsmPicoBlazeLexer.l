@@ -34,6 +34,12 @@
     #define YY_USER_ACTION \
         yylloc->last_column += yyleng;
 
+
+    // At each yylex invocation, mark the current position as the start of the next token.
+    #define advanceLocation()                                   \
+        yylloc_param->first_line   = yylloc_param->last_line;   \
+        yylloc_param->first_column = yylloc_param->last_column;
+
     /**
      * @brief
      * @param[in,out] yylval
@@ -135,11 +141,10 @@ DIS_INT_INST            "disable"{WS}"interrupt"
     }
 
     // At each yylex invocation, mark the current position as the start of the next token.
-    yylloc_param->first_line   = yylloc_param->last_line;
-    yylloc_param->first_column = yylloc_param->last_column;
+    advanceLocation();
 %}
 
-{WS}                    { /* eat up white space */ }
+{WS}                    { advanceLocation(); /* eat up white space */ }
 {NLINE}                 {
                             yylloc->last_line++;
                             yylloc->last_column = 1;
@@ -147,14 +152,14 @@ DIS_INT_INST            "disable"{WS}"interrupt"
                         }
 
 ;{COMMENT}              { return COMMENT; }
-{COMMENT}               { /* ignore ordinary comment */ }
+{COMMENT}               { advanceLocation(); /* ignore ordinary comment */ }
 <INITIAL,INC,INC_END>
 {
     "/*"                { yy_push_state(MCOMMENT, yyscanner); }
 }
 <MCOMMENT>
 {
-    "*/"                { yy_pop_state(yyscanner); }
+    "*/"                { advanceLocation(); yy_pop_state(yyscanner); }
     [^*\n]*             { /* eat anything that's not a '*' */ }
     "*"+[^*/\n]*        { /* eat up '*'s not followed by '/'s */ }
     {NLINE}             {
@@ -164,6 +169,23 @@ DIS_INT_INST            "disable"{WS}"interrupt"
                         }
 }
 
+"#if"                   { return D_IF;         }
+"#ifn"                  { return D_IFN;        }
+"#ifdef"                { return D_IFDEF;      }
+"#ifndef"               { return D_IFNDEF;     }
+"#elseifb"              { return D_ELSEIFB;    }
+"#elseifnb"             { return D_ELSEIFNB;   }
+"#else"                 { return D_ELSE;       }
+"#elseif"               { return D_ELSEIF;     }
+"#elseifn"              { return D_ELSEIFN;    }
+"#elseifdef"            { return D_ELSEIFDEF;  }
+"#elseifndef"           { return D_ELSEIFNDEF; }
+"#endif"                { return D_ENDIF;      }
+"#ifnb"                 { return D_IFNB;       }
+"#ifb"                  { return D_IFB;        }
+"#while"                { return D_WHILE;      }
+"#endwhile"             { return D_ENDW;       }
+"#endw"                 { return D_ENDW;       }
 \.?"device"             { return D_DEVICE;     }
 \.?"limit"              { return D_LIMIT;      }
 \.?"reg"                { return D_REG;        }
@@ -177,9 +199,6 @@ DIS_INT_INST            "disable"{WS}"interrupt"
 \.?"constant"           { return D_CONSTANT;   }
 \.?"set"                { return D_SET;        }
 \.?"variable"           { return D_VARIABLE;   }
-\.?"#while"             { return D_WHILE;      }
-\.?"#endwhile"          { return D_ENDW;       }
-\.?"#endw"              { return D_ENDW;       }
 \.?"port"               { return D_PORT;       }
 \.?"data"               { return D_DATA;       }
 \.?"code"               { return D_CODE;       }
@@ -193,20 +212,6 @@ DIS_INT_INST            "disable"{WS}"interrupt"
 \.?"title"              { return D_TITLE;      }
 \.?"expand"             { return D_EXPAND;     }
 \.?"noexpand"           { return D_NOEXPAND;   }
-\.?"#if"                { return D_IF;         }
-\.?"#ifn"               { return D_IFN;        }
-\.?"#ifdef"             { return D_IFDEF;      }
-\.?"#ifndef"            { return D_IFNDEF;     }
-\.?"#elseifb"           { return D_ELSEIFB;    }
-\.?"#elseifnb"          { return D_ELSEIFNB;   }
-\.?"#else"              { return D_ELSE;       }
-\.?"#elseif"            { return D_ELSEIF;     }
-\.?"#elseifn"           { return D_ELSEIFN;    }
-\.?"#elseifdef"         { return D_ELSEIFDEF;  }
-\.?"#elseifndef"        { return D_ELSEIFNDEF; }
-\.?"#endif"             { return D_ENDIF;      }
-\.?"#ifnb"              { return D_IFNB;       }
-\.?"#ifb"               { return D_IFB;        }
 \.?"local"              { return D_LOCAL;      }
 \.?"endmacro"           { return D_ENDM;       }
 \.?"endm"               { return D_ENDM;       }
@@ -328,6 +333,7 @@ DIS_INT_INST            "disable"{WS}"interrupt"
 ")"                     { return RP;        }
 "#"                     { return IMMEDIATE; }
 ","                     { return COMMA;     }
+":"                     { return COLON;     }
 ".."                    { return INTERVAL;  }
 
  /* Operators. */
@@ -479,7 +485,8 @@ DIS_INT_INST            "disable"{WS}"interrupt"
                             {
                                 yyextra->lexerMessage ( yylloc, 
                                                         CompilerBase::MT_ERROR,
-                                                        QObject::tr("unrecognized escape sequence: ").toStdString() + "`" + yytext + "'" );
+                                                        QObject::tr("unrecognized escape sequence: ").toStdString()
+                                                        + "`" + yytext + "'" );
                                 yyterminate();
                             }
 
@@ -492,7 +499,10 @@ DIS_INT_INST            "disable"{WS}"interrupt"
                             }
                         }
     \\.                 {
-                            // Handle escape sequences inside strings and character literals, and convert the to binary values
+                            /*
+                             * Handle escape sequences inside strings and character literals, and convert them to binary
+                             * values.
+                             */
 
                             // Enlarge the string buffer, if necessary
                             enlargeStringBuffer(yylval, yyextra);
@@ -583,10 +593,11 @@ DIS_INT_INST            "disable"{WS}"interrupt"
                             }
                         }
     .                   {
-                            // Anything else results in an error, it wouldn't make sense otherwise
+                            // Anything else results in an error, it wouldn't make sense otherwise.
                             yyextra->lexerMessage ( yylloc,
                                                     CompilerBase::MT_ERROR,
-                                                    QObject::tr("unrecognized token: ").toStdString() + "`" + std::string(yytext) + "'" );
+                                                    QObject::tr("unrecognized token: ").toStdString()
+                                                    + "`" + std::string(yytext) + "'" );
                             yyterminate();
                         }
 }
@@ -634,38 +645,17 @@ DIS_INT_INST            "disable"{WS}"interrupt"
                             yylval->number = convertStrToNumber(yyextra, yylloc, yytext, 10, 10);
                             return NUMBER;
                         }
-{ID}:                   {
-                            // Label, e.g. `main:'
-
-                            // Remove the trailing `:'
-                            yytext [ yyleng - 1 ] = '\0';
-
-                            // Convert the string to upper case characters
-                            for ( int i = 0; i < yyleng; i++ )
-                            {
-                                yytext[i] = toupper(yytext[i]);
-                            }
-
-                            // Return as label
-                            yylval->string = yytext;
-                            return LABEL;
-                        }
-[0-9]{ID}:              {
-                            // Invalid label declaration => ERROR
-                            yyextra -> lexerMessage ( yylloc,
-                                                      CompilerBase::MT_ERROR,
-                                                      QObject::tr("label cannot start with a digit: ").toStdString() + "`" + std::string(yytext) + "'" );
-                        }
 \$[_A-Z0-9]+            {
-                            // Unrecognized token => ERROR
+                            // Unrecognized token => ERROR.
                             yyextra -> lexerMessage ( yylloc,
                                                       CompilerBase::MT_ERROR,
-                                                      QObject::tr("invalid token: ").toStdString() + "`" + std::string(yytext) + "'" );
+                                                      QObject::tr("invalid token: ").toStdString()
+                                                      + "`" + std::string(yytext) + "'" );
                         }
 {ID}|"$"                {
-                            // Arbitrary identifier, e.g. `MYREG_U1'
+                            // Arbitrary identifier, e.g. `MYREG_U1'.
 
-                            // Convert the string to upper case characters
+                            // Convert the string to upper case characters.
                             for ( int i = 0; i < yyleng; i++ )
                             {
                                 yytext[i] = toupper(yytext[i]);
@@ -675,19 +665,20 @@ DIS_INT_INST            "disable"{WS}"interrupt"
                             yylval->string = yytext;
                             return IDENTIFIER;
                         }
+[0-9]{ID}               {
+                            // Invalid identifier declaration => ERROR.
+                            yyextra -> lexerMessage ( yylloc,
+                                                      CompilerBase::MT_ERROR,
+                                                      QObject::tr ( "identifier cannot start with a digit: " )
+                                                                  . toStdString() + "`" + std::string(yytext) + "'" );
+                        }
 \{[0-9]+\}              {
                             // Substitution mark.
                             yylval->string = yytext;
                             return SUBST_MARK;
                         }
-[0-9]{ID}               {
-                            // Invalid identifier declaration => ERROR
-                            yyextra -> lexerMessage ( yylloc,
-                                                      CompilerBase::MT_ERROR,
-                                                      QObject::tr("identifier cannot start with a digit: ").toStdString() + "`" + std::string(yytext) + "'" );
-                        }
 <<EOF>>                 {
-                            // Handle end of file; possibly switch back to previous file, in case "include" was used
+                            // Handle end of file; possibly switch back to previous file, in case "include" was used.
 
                             AsmPicoBlazeLexer_pop_buffer_state(yyscanner);
                             if ( !YY_CURRENT_BUFFER )
@@ -702,10 +693,11 @@ DIS_INT_INST            "disable"{WS}"interrupt"
                             }
                         }
 .                       {
-                            // Unrecognized token => ERROR
+                            // Unrecognized token => ERROR.
                             yyextra -> lexerMessage ( yylloc,
                                                       CompilerBase::MT_ERROR,
-                                                      QObject::tr("unrecognized token: ").toStdString() + "`" + std::string(yytext) + "'" );
+                                                      QObject::tr("unrecognized token: ").toStdString()
+                                                      + "`" + std::string(yytext) + "'" );
                         }
 
 %%

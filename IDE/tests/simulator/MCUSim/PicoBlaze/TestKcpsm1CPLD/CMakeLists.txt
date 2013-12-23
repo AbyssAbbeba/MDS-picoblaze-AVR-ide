@@ -23,7 +23,7 @@ cmake_minimum_required ( VERSION 2.8 )
 set ( CMAKE_VERBOSE_MAKEFILE OFF )
 
 # List of additional files that will be cleaned as a part of the "make clean" stage.
-FILE ( GLOB resultFiles results/*.* )
+file ( GLOB resultFiles results/*.* )
 set_directory_properties ( PROPERTIES
                            ADDITIONAL_MAKE_CLEAN_FILES "${resultFiles}" )
 
@@ -42,12 +42,6 @@ link_directories ( "${CMAKE_CURRENT_BINARY_DIR}/../../../../../simulators/MCUSim
                    "${CMAKE_CURRENT_BINARY_DIR}/../../../../../utilities/MCUDataFiles"
                    "${CMAKE_CURRENT_BINARY_DIR}/../.." )
 
-## Add switches to compiler command line
- # -pipe       : Use pipes rather than temporary files for communication between the various stages of compilation.
- # -std=c++0x  : Default template arguments may not be used in function templates without -std=c++0x or -std=gnu++0x.
- # -O1         : Optimization, level 1.
-add_definitions ( -pipe -std=c++0x -O1 )
-
 ## Add a library to the project using the specified source files,
  # in this case it will procude dynamic C++ library.
 add_library ( ${PROJECT_NAME} SHARED
@@ -61,7 +55,8 @@ target_link_libraries ( ${PROJECT_NAME}
 
 ## Add a target with no output so it will always be built.
  # Compile .asm files for all testcases in the `testcases' directory
-add_custom_target ( "${PROJECT_NAME}_compile" ALL ${CMAKE_CURRENT_BINARY_DIR}/testcases/compileAll.sh
+add_custom_target ( "${PROJECT_NAME}_compile" ALL
+                    COMMAND ${CMAKE_CURRENT_BINARY_DIR}/testcases/compileAll.sh
                     DEPENDS compiler
                     WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/testcases"
-                    COMMENT "Compiling .asm files for all testcases in the `testcases' directory." )
+                    COMMENT "Compiling .asm files for all testcases in `${CMAKE_CURRENT_BINARY_DIR}/testcases'." )

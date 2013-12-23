@@ -85,7 +85,7 @@ unsigned int AsmPicoBlazeInstructionSet::checkLimit ( LimitType type,
                               . toStdString();
             break;
     }
-    m_compilerCore -> compilerMessage ( location, CompilerBase::MT_ERROR, msg );
+    m_compilerCore -> semanticMessage ( location, CompilerBase::MT_ERROR, msg );
 
     return 0;
 }
@@ -96,7 +96,8 @@ int AsmPicoBlazeInstructionSet::resolveOPcode ( const CompilerStatement * stmt )
     {
         *m_device = AsmPicoBlazeSemanticAnalyzer::DEV_KCPSM6;
         setStrategy(new AsmPicoBlazeInstructionSet6());
-        m_compilerCore->compilerMessage ( CompilerBase::MT_WARNING,
+        m_compilerCore->semanticMessage ( CompilerSourceLocation(),
+                                          CompilerBase::MT_WARNING,
                                           QObject::tr ( "exact device not specified, using KCPSM6 by default" )
                                                       .toStdString() );
     }
@@ -348,7 +349,7 @@ inline std::string AsmPicoBlazeInstructionSet::getSymbolTypes ( int types ) cons
 
     if ( true == result.empty() )
     {
-        result = "<no type allowed>";
+        result = "<no type>";
     }
 
     return result;
@@ -368,7 +369,7 @@ void AsmPicoBlazeInstructionSet::encapsulate ( CompilerStatement * stmt,
         int symbolType = (int) m_symbolTable->getType(arg);
         if ( 0 == ( acceptableTypes[i] & symbolType ) )
         {
-            m_compilerCore->compilerMessage(arg->location(),
+            m_compilerCore->semanticMessage(arg->location(),
                                             CompilerBase::MT_ERROR,
                                             QObject::tr ( "instruction `%1' requires operand #%2 to be of type(s): %3"
                                                           "; while the given operand is of type: %4" )

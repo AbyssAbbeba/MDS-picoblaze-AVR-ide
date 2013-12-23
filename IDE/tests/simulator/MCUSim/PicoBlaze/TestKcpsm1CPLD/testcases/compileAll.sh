@@ -1,27 +1,11 @@
 #! /bin/bash
 
-cd $(dirname "$0")
+cd "$(dirname "$(readlink -n -f "${0}")" )"
 
-declare COMPILER_EXEC="../../../../../../compiler/compiler"
+LANG="asm"
+ARCH="PicoBlaze"
+DEV="kcpsm1cpld"
 
-if [ "$(uname -o)" == "Msys" ]; then
-    COMPILER_EXEC+=".exe"
-fi
+source "../../../libCompile.sh"
 
-if [ ! -e "${COMPILER_EXEC}" ]; then
-    echo "Unable to locate compiler binary."
-    exit 1
-fi
-
-for i in *.asm; do
-    echo "Building $i ..."
-
-    ${COMPILER_EXEC}                            \
-        --plang=asm                             \
-        --arch=PicoBlaze                        \
-        --dev=kcpsm1cpld                        \
-        --file="$i"                             \
-        --hex="../results/${i%%.asm}.hex"       \
-        --lst="../results/${i%%.asm}.lst"       \
-        &> /dev/null
-done
+runBuild "../results"

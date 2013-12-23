@@ -86,6 +86,9 @@ class CompilerSourceLocation : public CompilerSerializable
 
         ///
         int m_colEnd;
+
+        ///
+        int m_origin;
 };
 
 /// @name Tracing operators

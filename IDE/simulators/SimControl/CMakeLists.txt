@@ -49,14 +49,6 @@ include_directories ( "${CMAKE_CURRENT_BINARY_DIR}/../MCUSim/"
                       "${CMAKE_CURRENT_BINARY_DIR}/../../utilities/DbgFile/"
                       "${CMAKE_CURRENT_BINARY_DIR}/../../utilities/MCUDataFiles/" )
 
-## Add switches to compiler command line
- # -Wall       : Enables all the warnings.
- # -Wextra     : Enables some extra warning flags that are not enabled by -Wall.
- # -std=c++0x  : Default template arguments may not be used in function templates without -std=c++0x or -std=gnu++0x.
- # -O2         : Optimization, level 2.
- # -pipe       : Use pipes rather than temporary files for communication between the various stages of compilation.
-add_definitions(-Wall -Wextra -std=c++0x -O2 -pipe)
-
 # Produce moc files for all the listed  .h files.
 qt4_wrap_cpp ( QT_MOC_GENERATED_CPP_FILES
                SimControl.h
