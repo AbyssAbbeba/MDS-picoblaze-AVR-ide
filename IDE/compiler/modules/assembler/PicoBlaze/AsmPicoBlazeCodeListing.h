@@ -16,6 +16,9 @@
 #ifndef ASMPICOBLAZECODELISTING_H
 #define ASMPICOBLAZECODELISTING_H
 
+// Forward declarations.
+class AsmPicoBlazeSymbolTable;
+
 // Common compiler header files.
 #include "CompilerOptions.h"
 #include "CompilerMsgObserver.h"
@@ -47,10 +50,12 @@ class AsmPicoBlazeCodeListing : public CompilerMsgObserver
          * @brief
          * @param[in,out] compilerCore
          * @param[in] opts
+         * @param[in,out] symbolTable
          * @return
          */
         AsmPicoBlazeCodeListing ( CompilerSemanticInterface * compilerCore,
-                                  CompilerOptions * opts );
+                                  CompilerOptions * opts,
+                                  AsmPicoBlazeSymbolTable * symbolTable );
 
         /**
          * @brief
@@ -311,6 +316,9 @@ class AsmPicoBlazeCodeListing : public CompilerMsgObserver
 
         ///
         CompilerOptions * const m_opts;
+
+        ///
+        AsmPicoBlazeSymbolTable * const m_symbolTable;
 
         ///
         AsmPicoBlazeCodeGenerator m_codeGenerator;

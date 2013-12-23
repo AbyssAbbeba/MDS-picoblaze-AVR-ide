@@ -15,6 +15,9 @@
 
 #include "AsmPicoBlazeCodeListing.h"
 
+// PicoBlaze assembler semantic analyzer header files.
+#include "AsmPicoBlazeSymbolTable.h"
+
 // Standard headers.
 #include <cstdio>
 #include <fstream>
@@ -54,9 +57,12 @@ AsmPicoBlazeCodeListing::Message::Message ( CompilerBase::MessageType type,
 }
 
 AsmPicoBlazeCodeListing::AsmPicoBlazeCodeListing ( CompilerSemanticInterface * compilerCore,
-                                                   CompilerOptions * opts )
-                                                 : m_compilerCore ( compilerCore ),
-                                                   m_opts ( opts )
+                                                   CompilerOptions * opts,
+                                                   AsmPicoBlazeSymbolTable * symbolTable )
+                                                 :
+                                                   m_compilerCore ( compilerCore ),
+                                                   m_opts ( opts ),
+                                                   m_symbolTable ( symbolTable )
 {
     m_messageLimit = 0;
     m_compilerCore->registerMsgObserver(this);
@@ -465,6 +471,8 @@ void AsmPicoBlazeCodeListing::rewriteMacroLoc ( unsigned int * lineDiff,
             node->m_location.m_fileNumber = ( m_numberOfFiles + m_numberOfMacros - 1 );
             node->m_location.m_lineStart -= *lineDiff;
             node->m_location.m_lineEnd   -= *lineDiff;
+
+            m_symbolTable->rewriteExprLoc ( node->args(), node->location(), true, formerOrigin );
         }
 
         rewriteMacroLoc ( lineDiff, node->branch(), formerOrigin );

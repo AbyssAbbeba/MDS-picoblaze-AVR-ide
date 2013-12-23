@@ -72,7 +72,6 @@ void CompilerSourceLocation::serialize ( CompilerSerializer & output ) const
     output.write ( (uint32_t) m_lineEnd );
     output.write ( (uint16_t) m_colStart );
     output.write ( (uint16_t) m_colEnd );
-    output.write ( (uint32_t) m_origin );
 }
 
 void CompilerSourceLocation::deserialize ( CompilerSerializer & input )
@@ -82,7 +81,7 @@ void CompilerSourceLocation::deserialize ( CompilerSerializer & input )
     m_lineEnd    = (int) input.read_ui32();
     m_colStart   = (int16_t) input.read_ui16();
     m_colEnd     = (int16_t) input.read_ui16();
-    m_origin     = (int) input.read_ui32();
+    m_origin     = -1;
 }
 
 std::ostream & operator << ( std::ostream & out,
