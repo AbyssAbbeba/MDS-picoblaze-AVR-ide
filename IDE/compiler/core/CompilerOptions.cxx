@@ -86,10 +86,10 @@ void CompilerOptions::normalizeFilePaths()
         &m_binFile,     &m_srecFile,    &m_verilogFile,
         &m_vhdlFile,    &m_prcTarget,   &m_verilogTemplate,
         &m_memFile,     &m_hexFile,     &m_cunit,
-        &m_sourceFile,
         NULL
     };
 
+    m_sourceFile = system_complete(path(makeHomeSafe(m_sourceFile)).make_preferred()).string();
     const path basePath = system_complete(path(makeHomeSafe(m_sourceFile)).parent_path().make_preferred());
 
     for ( int i = 0; NULL != files[i]; i++ )

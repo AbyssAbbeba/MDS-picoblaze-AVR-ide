@@ -37,7 +37,7 @@ add_subdirectory ( TestGenericSubsys )
 # ------------------------------------------------------------------------------
 
 # Find Boost include dirs and libraries.
-find_package ( Boost 1.48
+find_package ( Boost 1.55
                REQUIRED
                COMPONENTS filesystem system )
 
