@@ -26,8 +26,8 @@ set ( CMAKE_VERBOSE_MAKEFILE OFF )
 # ------------------------------------------------------------------------------
 
 # Added for compatibility with Microsoft Windows OS
-link_directories ( "${CMAKE_CURRENT_BINARY_DIR}" )
-include_directories ( "${CMAKE_CURRENT_BINARY_DIR}" )
+link_directories ( "${CMAKE_CURRENT_SOURCE_DIR}" )
+include_directories ( "${CMAKE_CURRENT_SOURCE_DIR}" )
 
 ## Add switches to compiler command line
  # -pipe       : Use pipes rather than temporary files for communication between the various stages of compilation.

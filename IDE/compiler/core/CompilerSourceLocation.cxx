@@ -41,6 +41,10 @@ CompilerSourceLocation::CompilerSourceLocation()
 
 bool CompilerSourceLocation::isSet() const
 {
+    if ( -1 != m_origin )
+    {
+        return true;
+    }
     if ( -1 == m_fileNumber )
     {
         return false;

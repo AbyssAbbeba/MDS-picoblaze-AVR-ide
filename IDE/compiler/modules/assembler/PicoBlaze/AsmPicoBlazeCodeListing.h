@@ -28,6 +28,7 @@ class AsmPicoBlazeSymbolTable;
 #include "AsmPicoBlazeCodeGenerator.h"
 
 // Standard headers.
+#include <set>
 #include <string>
 #include <vector>
 #include <ostream>
@@ -280,17 +281,17 @@ class AsmPicoBlazeCodeListing : public CompilerMsgObserver
         void rewriteRepeatLoc ( unsigned int * lineCounter,
                                 CompilerStatement * code );
 
-    ////    Inline Private Operations    ////
-    private:
         /**
          * @brief
          * @param[in] location
          * @param[in] silent
          * @return
          */
-        inline bool checkLocation ( const CompilerSourceLocation & location,
-                                    bool silent = false );
+        bool checkLocation ( const CompilerSourceLocation & location,
+                             bool silent = false );
 
+    ////    Inline Private Operations    ////
+    private:
         /**
          * @brief
          * @return
@@ -325,6 +326,9 @@ class AsmPicoBlazeCodeListing : public CompilerMsgObserver
 
         ///
         std::string m_title;
+
+        ///
+        std::set<int> m_files2skip;
 
         ///
         std::vector<std::vector<LstLine>> m_listing;

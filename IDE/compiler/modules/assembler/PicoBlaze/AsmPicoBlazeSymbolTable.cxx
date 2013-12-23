@@ -20,7 +20,7 @@
 #include <cstdio>
 #include <cstring>
 #include <fstream>
-#include <iostream>//DEBUG
+
 AsmPicoBlazeSymbolTable::Symbol::Symbol ( const CompilerExpr * value,
                                           const CompilerSourceLocation * location,
                                           SymbolType type,
@@ -431,7 +431,7 @@ void AsmPicoBlazeSymbolTable::substArg ( CompilerExpr * expr,
                         delete [] symbol;
                         value->m_type = CompilerValue::TYPE_EXPR;
                         CompilerExpr * substCopy = subst->copyChainLink();
-                        rewriteExprLoc(substCopy, value->m_data.m_expr->location(), false);
+                        rewriteExprLoc(substCopy, expr->location(), false);
                         value->m_data.m_expr = substCopy;
                     }
                 }
@@ -662,7 +662,6 @@ void AsmPicoBlazeSymbolTable::rewriteExprLoc ( CompilerExpr * expr,
 
     for ( ; NULL != expr; expr = expr->next() )
     {
-std::cout << "AsmPicoBlazeSymbolTable::rewriteExprLoc("<<expr<<")\n";
         expr->m_location.m_origin     = m_compilerCore->locationTrack().add(expr->m_location, origin);
         expr->m_location.m_fileNumber = newLocation.m_fileNumber;
         expr->m_location.m_lineStart  = newLocation.m_lineStart;
@@ -672,7 +671,7 @@ std::cout << "AsmPicoBlazeSymbolTable::rewriteExprLoc("<<expr<<")\n";
             expr->m_location.m_colStart = newLocation.m_colStart;
             expr->m_location.m_colEnd   = newLocation.m_colEnd;
         }
-std::cout << "  --->" << expr << "\n";
+
         if ( CompilerValue::TYPE_EXPR == expr->lVal().m_type )
         {
             rewriteExprLoc(expr->lVal().m_data.m_expr, newLocation, keepColumns, origin);

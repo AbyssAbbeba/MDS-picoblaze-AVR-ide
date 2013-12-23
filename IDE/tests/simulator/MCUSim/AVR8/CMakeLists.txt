@@ -63,4 +63,4 @@ target_link_libraries ( ${PROJECT_NAME}
 # ------------------------------------------------------------------------------
 
 add_test ( NAME ${PROJECT_NAME}
-           COMMAND ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME} )
+           COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME} )

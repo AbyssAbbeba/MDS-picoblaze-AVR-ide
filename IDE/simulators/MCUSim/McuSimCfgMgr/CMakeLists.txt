@@ -25,7 +25,7 @@ set ( CMAKE_VERBOSE_MAKEFILE OFF )
 # ------------------------------------------------------------------------------
 
 # Add include directories to the build.
-include_directories ( "${CMAKE_CURRENT_BINARY_DIR}/.." )
+include_directories ( "${CMAKE_CURRENT_SOURCE_DIR}/.." )
 
 # Load settings specific for the Qt4 library
 find_package ( Qt4 REQUIRED )
