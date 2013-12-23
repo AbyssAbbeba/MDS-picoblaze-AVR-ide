@@ -24,9 +24,9 @@
 
 CompilerCPreprocessor::CompilerCPreprocessor ( CompilerParserInterface * compilerCore,
                                                CompilerOptions * opts )
-                                              :
-                                                m_compilerCore ( compilerCore ),
-                                                m_opts ( opts )
+                                             :
+                                               m_compilerCore ( compilerCore ),
+                                               m_opts ( opts )
 {
 }
 
@@ -90,7 +90,7 @@ char * CompilerCPreprocessor::processFile ( FILE * sourceFile )
     // Save the output from preprocessor into a file specified by CompilerOptions.
     if ( false == m_opts->m_cunit.empty() )
     {
-        FILE * file = fopen(m_opts->m_cunit.c_str(), "w");
+        FILE * file = fopen(m_opts->m_cunit.c_str(), "w+");
         if ( NULL != file )
         {
             fwrite(outBuffer, sizeof(char), outBufferCurP, file);

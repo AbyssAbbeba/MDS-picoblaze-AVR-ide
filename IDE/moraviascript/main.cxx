@@ -5,29 +5,28 @@
 class MyMScriptStrategy : public MScriptStrategy
 {
     virtual void functionCalled ( int id,
-                                  const std::vector<MScriptValue> & arguments,
-                                  MScriptValue * returnValue )
+                                  const std::vector<MScriptValue> & /*arguments*/,
+                                  MScriptValue * /*returnValue*/ )
     {
         std::cout << "MyMScriptStrategy::functionCalled ( " << id << ", ... );\n";
-        returnValue = NULL;
     }
 
     virtual MScriptValue * variableRead ( int id,
-                                          const MScriptArrayIndex * index )
+                                          const MScriptArrayIndex * /*index*/ )
     {
         std::cout << "MyMScriptStrategy::variableRead ( " << id << ", ... );\n";
         return NULL;
     }
 
     virtual void variableWritten ( int id,
-                                   const MScriptArrayIndex * index,
-                                   const MScriptValue & value )
+                                   const MScriptArrayIndex * /*index*/,
+                                   const MScriptValue & /*value*/ )
     {
         std::cout << "MyMScriptStrategy::variableWritten ( " << id << ", ... );\n";
     }
 };
 
-int main ( int argc, char ** argv )
+int main ( int /*argc*/, char ** /*argv*/ )
 {
     std::string script =
 //         "a = ( b * c + d );\n"       //  1

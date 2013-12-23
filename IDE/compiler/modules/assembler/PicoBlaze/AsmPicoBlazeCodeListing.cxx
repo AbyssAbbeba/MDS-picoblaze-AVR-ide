@@ -99,7 +99,8 @@ void AsmPicoBlazeCodeListing::loadSourceFiles()
 
         if ( 0 != ferror(it->second) )
         {
-            m_compilerCore -> compilerMessage ( CompilerBase::MT_ERROR,
+            m_compilerCore -> semanticMessage ( CompilerSourceLocation(),
+                                                CompilerBase::MT_ERROR,
                                                 QObject::tr("unable to read file: ").toStdString()
                                                 + "`" + it->first  + "'" );
             return;
@@ -302,7 +303,8 @@ void AsmPicoBlazeCodeListing::output()
 
     if ( false == file.is_open() )
     {
-        m_compilerCore -> compilerMessage ( CompilerBase::MT_ERROR,
+        m_compilerCore -> semanticMessage ( CompilerSourceLocation(),
+                                            CompilerBase::MT_ERROR,
                                             QObject::tr("unable to open ").toStdString() + "\""
                                             + m_opts -> m_lstFile  + "\"" );
         return;
@@ -312,7 +314,8 @@ void AsmPicoBlazeCodeListing::output()
 
     if ( true == file.bad() )
     {
-        m_compilerCore -> compilerMessage ( CompilerBase::MT_ERROR,
+        m_compilerCore -> semanticMessage ( CompilerSourceLocation(),
+                                            CompilerBase::MT_ERROR,
                                             QObject::tr("unable to write to ").toStdString() + "\""
                                             + m_opts -> m_lstFile  + "\"" );
         return;
@@ -334,7 +337,8 @@ inline bool AsmPicoBlazeCodeListing::checkLocation ( const CompilerSourceLocatio
     // Location is NOT valid.
     if ( ( false == silent ) && ( -1 != location.m_fileNumber ) )
     {
-        m_compilerCore -> compilerMessage ( CompilerBase::MT_ERROR,
+        m_compilerCore -> semanticMessage ( CompilerSourceLocation(),
+                                            CompilerBase::MT_ERROR,
                                             QObject::tr ( "some of the source code files were aparently changed"
                                                           " during compilation" ).toStdString() );
     }
@@ -401,16 +405,18 @@ void AsmPicoBlazeCodeListing::expandMacro ( CompilerSourceLocation location,
         return;
     }
 
+    unsigned int lineCounter = 0;
+    int formerOrigin = m_compilerCore->locationTrack().add(location);
+
     m_numberOfMacros++;
 
     location.m_lineStart--;
     m_listing[location.m_fileNumber][location.m_lineStart].m_macro.push_back( m_numberOfFiles + m_numberOfMacros );
 
-    unsigned int lineCounter = 0;
     m_listing.resize(m_numberOfFiles + m_numberOfMacros);
     copyMacroBody(&lineCounter, definition);
     lineCounter = 0;
-    rewriteMacroLoc(&lineCounter, expansion);
+    rewriteMacroLoc(&lineCounter, expansion, formerOrigin);
 }
 
 void AsmPicoBlazeCodeListing::copyMacroBody ( unsigned int * lastLine,
@@ -442,7 +448,8 @@ void AsmPicoBlazeCodeListing::copyMacroBody ( unsigned int * lastLine,
 }
 
 void AsmPicoBlazeCodeListing::rewriteMacroLoc ( unsigned int * lineDiff,
-                                                CompilerStatement * macro )
+                                                CompilerStatement * macro,
+                                                int formerOrigin )
 {
     for ( CompilerStatement * node = macro;
           node != NULL;
@@ -454,12 +461,13 @@ void AsmPicoBlazeCodeListing::rewriteMacroLoc ( unsigned int * lineDiff,
             {
                 *lineDiff = node->m_location.m_lineStart - 1;
             }
+            node->m_location.m_origin     = m_compilerCore->locationTrack().add(node->m_location, formerOrigin);
             node->m_location.m_fileNumber = ( m_numberOfFiles + m_numberOfMacros - 1 );
             node->m_location.m_lineStart -= *lineDiff;
             node->m_location.m_lineEnd   -= *lineDiff;
         }
 
-        rewriteMacroLoc ( lineDiff, node->branch() );
+        rewriteMacroLoc ( lineDiff, node->branch(), formerOrigin );
     }
 }
 

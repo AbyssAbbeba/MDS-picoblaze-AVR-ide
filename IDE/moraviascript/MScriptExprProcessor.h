@@ -78,11 +78,11 @@ class MScriptExprProcessor : protected MScriptExprAlgebra
         /**
          * @brief
          * @param[in,out] expr
-         * @param[in,out] value
+         * @param[in,out] constValue
          * @return
          */
         void evalConsts ( MScriptExpr * expr,
-                          MScriptValue * value = NULL );
+                          MScriptValue * constValue = NULL );
 
         /**
          * @brief

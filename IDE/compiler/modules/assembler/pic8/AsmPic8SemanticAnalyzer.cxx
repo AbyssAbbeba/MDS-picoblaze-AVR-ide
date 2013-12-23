@@ -15,6 +15,8 @@
 
 #include "AsmPic8SemanticAnalyzer.h"
 
+#include <iostream>
+
 void AsmPic8SemanticAnalyzer::process ( CompilerStatement * codeTree )
 {
     std::cout << "AsmPic8SemanticAnalyzer::process:\n" << codeTree;

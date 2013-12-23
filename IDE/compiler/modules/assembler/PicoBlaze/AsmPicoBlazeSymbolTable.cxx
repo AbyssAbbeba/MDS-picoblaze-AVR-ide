@@ -101,13 +101,14 @@ int AsmPicoBlazeSymbolTable::addSymbol ( const std::string & name,
     {
         if ( NULL == location )
         {
-            m_compilerCore -> compilerMessage ( CompilerBase::MT_ERROR,
+            m_compilerCore -> semanticMessage ( CompilerSourceLocation(),
+                                                CompilerBase::MT_ERROR,
                                                 QObject::tr ( "symbol already defined: " ).toStdString()
                                                             + "\"" + name + "\"" );
         }
         else
         {
-            m_compilerCore -> compilerMessage ( *location,
+            m_compilerCore -> semanticMessage ( *location,
                                                 CompilerBase::MT_ERROR,
                                                 QObject::tr ( "symbol already defined: " ).toStdString()
                                                             + "\"" + name + "\"" );
@@ -221,7 +222,7 @@ void AsmPicoBlazeSymbolTable::removeSymbol ( const std::string & name,
     std::map<std::string,Symbol>::iterator it = m_table.find(name);
     if ( it == m_table.end() )
     {
-        m_compilerCore -> compilerMessage ( location,
+        m_compilerCore -> semanticMessage ( location,
                                             CompilerBase::MT_ERROR,
                                             QObject::tr("symbol not defined: ").toStdString() + "\"" + name + "\"");
     }
@@ -276,7 +277,7 @@ int AsmPicoBlazeSymbolTable::assignValue ( const std::string & name,
     }
     else
     {
-        m_compilerCore -> compilerMessage ( *location,
+        m_compilerCore -> semanticMessage ( *location,
                                             CompilerBase::MT_ERROR,
                                             QObject::tr ( "symbol `%1' already defined with type: " )
                                                         . arg ( name.c_str() )
@@ -325,7 +326,7 @@ int AsmPicoBlazeSymbolTable::getExprValue ( ExprValSide side,
     {
         case CompilerValue::TYPE_EMPTY:
         {
-            m_compilerCore -> compilerMessage ( expr->m_location,
+            m_compilerCore -> semanticMessage ( expr->m_location,
                                                 CompilerBase::MT_ERROR,
                                                 QObject::tr("undefined value").toStdString());
             break;
@@ -336,7 +337,7 @@ int AsmPicoBlazeSymbolTable::getExprValue ( ExprValSide side,
         }
         case CompilerValue::TYPE_REAL:
         {
-            m_compilerCore -> compilerMessage ( expr->m_location,
+            m_compilerCore -> semanticMessage ( expr->m_location,
                                                 CompilerBase::MT_ERROR,
                                                 QObject::tr("real numbers are not supported in assembler")
                                                            .toStdString());
@@ -351,7 +352,7 @@ int AsmPicoBlazeSymbolTable::getExprValue ( ExprValSide side,
             const CompilerExpr * symbolValue = getValue(value->m_data.m_symbol);
             if ( NULL == symbolValue )
             {
-                m_compilerCore -> compilerMessage ( expr->m_location,
+                m_compilerCore -> semanticMessage ( expr->m_location,
                                                     CompilerBase::MT_ERROR,
                                                     QObject::tr("undefined symbol: ").toStdString()
                                                     + "\"" + value->m_data.m_symbol + "\"");
@@ -374,7 +375,7 @@ int AsmPicoBlazeSymbolTable::getExprValue ( ExprValSide side,
         }
         case CompilerValue::TYPE_ARRAY:
         {
-            m_compilerCore -> compilerMessage ( expr->m_location,
+            m_compilerCore -> semanticMessage ( expr->m_location,
                                                 CompilerBase::MT_ERROR,
                                                 QObject::tr("this value is not valid inside an expression").toStdString());
             break;
@@ -463,7 +464,7 @@ int AsmPicoBlazeSymbolTable::computeExpr ( const CompilerExpr * expr,
             int right = getExprValue(RIGHT, expr,  argList);
             if ( 0 == right )
             {
-                m_compilerCore -> compilerMessage ( expr->m_location,
+                m_compilerCore -> semanticMessage ( expr->m_location,
                                                     CompilerBase::MT_ERROR,
                                                     QObject::tr("division by zero").toStdString());
                 return 1;
@@ -483,7 +484,7 @@ int AsmPicoBlazeSymbolTable::computeExpr ( const CompilerExpr * expr,
             int right = getExprValue(RIGHT, expr,  argList);
             if ( 0 == right )
             {
-                m_compilerCore -> compilerMessage ( expr->m_location,
+                m_compilerCore -> semanticMessage ( expr->m_location,
                                                     CompilerBase::MT_ERROR,
                                                     QObject::tr("division by zero").toStdString());
                 return 1;
@@ -523,7 +524,7 @@ int AsmPicoBlazeSymbolTable::computeExpr ( const CompilerExpr * expr,
             break;
     }
 
-    m_compilerCore -> compilerMessage ( expr->m_location,
+    m_compilerCore -> semanticMessage ( expr->m_location,
                                         CompilerBase::MT_ERROR,
                                         QObject::tr("unable to resolve this expression").toStdString());
     return 1;
@@ -557,7 +558,7 @@ unsigned int AsmPicoBlazeSymbolTable::resolveExpr ( const CompilerExpr * expr,
             // Check whether it's still a negative number.
             if ( 0 == ( result & ( 1 << ( bitsMax - 1 ) ) ) )
             {
-                m_compilerCore -> compilerMessage ( *location,
+                m_compilerCore -> semanticMessage ( *location,
                                                     CompilerBase::MT_WARNING,
                                                     QObject::tr ( "sign overflow. Result is negative number lower that "
                                                                   "the lowest negative number representable in two's "
@@ -568,7 +569,7 @@ unsigned int AsmPicoBlazeSymbolTable::resolveExpr ( const CompilerExpr * expr,
             }
             else
             {
-                m_compilerCore -> compilerMessage ( *location,
+                m_compilerCore -> semanticMessage ( *location,
                                                     CompilerBase::MT_REMARK,
                                                     QObject::tr ( "result is negative number: %1, this will "
                                                                   "represented as %2-bit number in two's complement "
@@ -581,7 +582,7 @@ unsigned int AsmPicoBlazeSymbolTable::resolveExpr ( const CompilerExpr * expr,
         }
         else if ( ( result & mask ) != result )
         {
-            m_compilerCore -> compilerMessage ( *location,
+            m_compilerCore -> semanticMessage ( *location,
                                                 CompilerBase::MT_WARNING,
                                                 QObject::tr ( "value out of range: %1, allowed range is [0,%2] "
                                                               "(trimmed to %3 bits) which makes it %4" )
@@ -656,7 +657,8 @@ void AsmPicoBlazeSymbolTable::output()
 
     if ( false == file.is_open() )
     {
-        m_compilerCore -> compilerMessage ( CompilerBase::MT_ERROR,
+        m_compilerCore -> semanticMessage ( CompilerSourceLocation(),
+                                            CompilerBase::MT_ERROR,
                                             QObject::tr ( "unable to open " ).toStdString()
                                                         + "\"" + m_opts->m_symbolTable  + "\"" );
         return;
@@ -666,7 +668,8 @@ void AsmPicoBlazeSymbolTable::output()
 
     if ( true == file.bad() )
     {
-        m_compilerCore -> compilerMessage ( CompilerBase::MT_ERROR,
+        m_compilerCore -> semanticMessage ( CompilerSourceLocation(),
+                                            CompilerBase::MT_ERROR,
                                             QObject::tr ( "unable to write to " ).toStdString()
                                                         + "\"" + m_opts->m_symbolTable  + "\"" );
         return;

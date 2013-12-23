@@ -19,6 +19,9 @@
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include <boost/filesystem.hpp>
 
+// OS compatibility.
+#include "../../utilities/os/os.h"
+
 // Standard headers.
 #include <fstream>
 #include <cstdio>
@@ -83,10 +86,11 @@ void CompilerOptions::normalizeFilePaths()
         &m_binFile,     &m_srecFile,    &m_verilogFile,
         &m_vhdlFile,    &m_prcTarget,   &m_verilogTemplate,
         &m_memFile,     &m_hexFile,     &m_cunit,
+        &m_sourceFile,
         NULL
     };
 
-    path basePath = system_complete(path(m_sourceFile).parent_path().make_preferred());
+    const path basePath = system_complete(path(makeHomeSafe(m_sourceFile)).parent_path().make_preferred());
 
     for ( int i = 0; NULL != files[i]; i++ )
     {
@@ -95,12 +99,7 @@ void CompilerOptions::normalizeFilePaths()
             continue;
         }
 
-        *files[i] = path(*files[i]).make_preferred().string();
-
-        if ( false == path(*files[i]).is_absolute() )
-        {
-            *files[i] = system_complete(basePath / path(*files[i]).make_preferred()).string();
-        }
+        *files[i] = absolute(path(makeHomeSafe(*files[i])).make_preferred(), basePath).string();
     }
 }
 

@@ -18,18 +18,25 @@
 // Standard header files.
 #include <cstring>
 
+// Linux specific header files.
+#ifdef __linux__
+#  include <unistd.h>
+#  include <sys/types.h>
+#  include <pwd.h>
+#endif // __linux__
+
 namespace boost
 {
-    #ifdef __linux__
-      namespace filesystem3
-    #else // __linux__
+//     #ifdef __linux__
+//       namespace filesystem3
+//     #else // __linux__
       namespace filesystem
-    #endif // __linux__
+//     #endif // __linux__
     {
         template < >
             path & path::append< typename path::iterator > ( typename path::iterator begin,
                                                              typename path::iterator end,
-                                                             const codecvt_type & cvt )
+                                                             const codecvt_type & /*cvt*/ )
             {
                 for( ; begin != end ; ++begin )
                 {
@@ -73,6 +80,20 @@ namespace boost
             // Now navigate down the directory branch.
             ret.append ( itrTo, a_To.end() );
             return ret;
+        }
+
+        std::string makeHomeSafe ( const std::string & input )
+        {
+            #ifdef __linux__
+                std::string result = input;
+                if ( '~' == result[0] )
+                {
+                    result.replace(0, 1, getpwuid(getuid())->pw_dir);
+                }
+                return result;
+            #else // __linux__
+                return input;
+            #endif // __linux__
         }
     }
 }

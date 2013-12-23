@@ -34,7 +34,7 @@ add_subdirectory ( PicoBlaze )
 # ------------------------------------------------------------------------------
 
 # Find Boost include dirs and libraries.
-find_package ( Boost 1.46
+find_package ( Boost 1.48
                REQUIRED
                COMPONENTS filesystem system )
 
@@ -52,22 +52,13 @@ link_directories ( ${Boost_LIBRARY_DIRS}
                    "${CMAKE_CURRENT_BINARY_DIR}/../utilities/MCUDataFiles/"
                    "${CMAKE_CURRENT_BINARY_DIR}/PicoBlaze/" )
 
-## Add switches to compiler command line
- # -Wall       : Enables all the warnings.
- # -Wextra     : Enables some extra warning flags that are not enabled by -Wall.
- # -std=c++0x  : Default template arguments may not be used in function templates without -std=c++0x or -std=gnu++0x.
- # -O2         : Optimization, level 2.
- # -pipe       : Use pipes rather than temporary files for communication between the various stages of compilation.
-add_definitions ( -Wall -Wextra -std=c++0x -O2 -pipe -fPIC )
-
-
 #
 ## Disassembler as dynamic library.
 #
 
 ## Add a library to the project using the specified source files,
  # in this case it will procude dynamic C++ library.
-add_library ( ${PROJECT_NAME} STATIC
+add_library ( ${PROJECT_NAME} SHARED
               DAsm.cxx
               DAsmCore.cxx )
 
@@ -75,7 +66,6 @@ add_library ( ${PROJECT_NAME} STATIC
 target_link_libraries ( ${PROJECT_NAME} ${QT_LIBRARIES}
                                         ${Boost_LIBRARIES}
                                         DAsmPicoBlaze )
-
 
 #
 ## Disassembler as executable file.
@@ -94,6 +84,6 @@ target_link_libraries ( disasm MCUDataFiles
 # INSTALLATION OPTIONS
 # ------------------------------------------------------------------------------
 
-#install ( TARGETS ${PROJECT_NAME}
-#          RUNTIME DESTINATION bin
-#          LIBRARY DESTINATION lib )
+install ( TARGETS ${PROJECT_NAME}
+         RUNTIME DESTINATION bin
+         LIBRARY DESTINATION lib )

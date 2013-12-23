@@ -153,7 +153,7 @@ function execCMake() {
 function build() {
     # Build in n separate processes where n is the number of CPU cores plus one.
     execCMake
-    which lscpu > /dev/null && make -j$(lscpu | gawk '/^CPU\(s\)/ {printf("%d", ($2+1))}') || make
+    which lscpu > /dev/null && make -j$(lscpu | gawk '/^CPU\(s\)/ {printf("%d", ($2+2))}') || make
 }
 
 function repoSync() {
@@ -179,6 +179,7 @@ function printHelp() {
     printf "    -y    Automatically assume a positive response to any prompt.\n"
     printf "    -V    Print version of this script.\n"
     printf "    -s    Synchronize with the central repository.\n"
+    printf "    -q    Print some statistics regarding generated binary files.\n"
     printf "    -h    Print this message.\n"
     printf "\n"
     printf "Order of options doesn't matter.\n"
@@ -196,7 +197,7 @@ function main() {
     cd "$(dirname "${0}")"
 
     # Parse CLI options using `getopts' utility
-    while getopts ":hVcylabsm" opt; do
+    while getopts ":hVcylabsmq" opt; do
         optTaken=1
 
         case $opt in
@@ -209,6 +210,7 @@ function main() {
             l) options_l=1;;
             s) options_s=1;;
             m) options_m=1;;
+            q) options_q=1;;
             ?) unknownOption "$(basename "${0}")";;
         esac
     done
@@ -234,6 +236,15 @@ function main() {
     fi
     if (( ${options_b} && !${options_a} )); then
         build
+    fi
+    if (( ${options_q} )); then
+        for i in $(find . -executable); do
+            if [ -f "$i" ]; then
+                if file "$i" | grep 'ELF' &>/dev/null; then
+                    ls -l $i
+                fi
+            fi
+        done | tee /dev/stderr | gawk 'BEGIN {b=0} END {printf("%.2f MB\n", b/(1024*1024))} {b+=$5}'
     fi
 }
 
