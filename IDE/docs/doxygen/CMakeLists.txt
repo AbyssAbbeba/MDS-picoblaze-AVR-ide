@@ -36,7 +36,7 @@ if ( DOXYGEN_FOUND )
 
     # Use doxygen to generate API documentation,
     configure_file ( ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY )
-    add_custom_target ( doxygen ALL
+    add_custom_target ( doxygen
                         COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile > "${LOG_FILE}" 2>&1
                         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
                         COMMENT "Generating API documentation with Doxygen"

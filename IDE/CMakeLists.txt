@@ -2,7 +2,7 @@
 #
 # The entire Multitarget Development System.
 #
-# (C) copyright 2013 Moravia Microsystems, s.r.o.
+# (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
 #
 # ==============================================================================
 
@@ -20,17 +20,35 @@ cmake_minimum_required ( VERSION 2.8 )
 # Create verbose makefiles if on
 set ( CMAKE_VERBOSE_MAKEFILE OFF )
 
-# Set default build type to Debug
+# Set default build type to Debug.
 if ( NOT CMAKE_BUILD_TYPE )
   set ( CMAKE_BUILD_TYPE Debug CACHE STRING
         "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel."
         FORCE )
 endif ( NOT CMAKE_BUILD_TYPE )
+message ( STATUS "Configuring environment for build in mode: ${CMAKE_BUILD_TYPE}" )
+
+## Set global compilation flags:
+ # - for all build types:
+set ( CMAKE_CXX_FLAGS            "-Wall -Wextra -std=c++0x -pipe" )
+ # - for debug build only:
+set ( CMAKE_CXX_FLAGS_DEBUG      "-O0 -g" )
+ # - for release build only:
+set ( CMAKE_CXX_FLAGS_RELEASE    "-O3 -DNDEBUG" )
+ # - for minimum size release build only:
+set ( CMAKE_CXX_FLAGS_MINSIZEREL "-Os -DNDEBUG" )
+
+# Set the same compilation flags for C as they are set for C++.
+set ( CMAKE_C_FLAGS              "${CMAKE_CXX_FLAGS}" )
+set ( CMAKE_C_FLAGS_DEBUG        "${CMAKE_CXX_FLAGS_DEBUG}" )
+set ( CMAKE_C_FLAGS_RELEASE      "${CMAKE_CXX_FLAGS_RELEASE}" )
+set ( CMAKE_C_FLAGS_MINSIZEREL   "${CMAKE_CXX_FLAGS_MINSIZEREL}" )
 
 # set ( CMAKE_INSTALL_PREFIX "/some/path" )
 
 # After this command, you can add tests in the project using ADD_TEST command.
 enable_testing()
+
 
 # ------------------------------------------------------------------------------
 # BUILD COMPONENTS IN THE SUBDIRECTORIES
@@ -129,8 +147,8 @@ set ( CPACK_NSIS_MUI_ICON "${CMAKE_CURRENT_BINARY_DIR}/pkgs/mmIDEicon.ico" )
 set ( CPACK_NSIS_DISPLAY_NAME "mmIDE" )
 set ( CPACK_NSIS_CREATE_ICONS_EXTRA "CreateShortCut '\$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\${PROJECT_NAME}.lnk' '\$INSTDIR\\\\bin\\\\${PROJECT_NAME}.exe'" )
 # set ( CPACK_NSIS_INSTALLED_ICON_NAME "${CMAKE_CURRENT_BINARY_DIR}/pkgs/something.exe" )
-set ( CPACK_NSIS_HELP_LINK "http://www.my-project-home-page.org" )
-set ( CPACK_NSIS_URL_INFO_ABOUT "http://www.my-project-home-page.org" )
+set ( CPACK_NSIS_HELP_LINK "http://www.project-home-page.org" )
+set ( CPACK_NSIS_URL_INFO_ABOUT "http://www.project-home-page.org" )
 set ( CPACK_NSIS_CONTACT "support@abc.xyz" )
 set ( CPACK_NSIS_MUI_FINISHPAGE_RUN "mmIDE.exe" )
 

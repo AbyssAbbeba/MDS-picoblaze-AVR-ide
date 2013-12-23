@@ -191,6 +191,7 @@
 %token RP               ")"
 %token IMMEDIATE        "#"
 %token COMMA            ","
+%token COLON            ":"
 %token INTERVAL         ".."
 // Expression operators
 %token PLUS             "+"
@@ -236,7 +237,7 @@
 
 /* Terminal symbols with semantic value */
   // semantic value is a string
-%token<string>  IDENTIFIER      SUBST_MARK      LABEL           INCLUDE
+%token<string>  IDENTIFIER      SUBST_MARK      INCLUDE
 %token<array>   STRING
   // semantic value is a number
 %token<number>  NUMBER
@@ -363,19 +364,19 @@ macro:
  * Generally used non-terminal symbols
  */
 number:
-      NUMBER                        { $$ = new CompilerExpr($1, LOC(@$)); }
+      NUMBER                        { $$ = new CompilerExpr($NUMBER, LOC(@$)); }
 ;
 id:
-      IDENTIFIER                    { $$ = new CompilerExpr($1, LOC(@$)); }
+      IDENTIFIER                    { $$ = new CompilerExpr($IDENTIFIER, LOC(@$)); }
 ;
 mark:
-      SUBST_MARK                    { $$ = new CompilerExpr($1, LOC(@$)); }
+      SUBST_MARK                    { $$ = new CompilerExpr($SUBST_MARK, LOC(@$)); }
 ;
 string:
-      STRING                        { $$ = new CompilerExpr(CompilerValue($1.data, $1.size), LOC(@$)); }
+      STRING                        { $$ = new CompilerExpr(CompilerValue($STRING.data, $STRING.size), LOC(@$)); }
 ;
 label:
-      LABEL                         {$$=new CompilerStatement(LOC(@$), ASMPICOBLAZE_LABEL, new CompilerExpr($1, LOC(@$)));}
+      id ":"                        { $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_LABEL, $id ); }
 ;
 expr:
       id                            { $$ = $id;                                                            }

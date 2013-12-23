@@ -21,10 +21,10 @@
 #include "MScriptSrcLocation.h"
 
 // Standard header files.
+#include <cstddef>
 #include <cstdint>
-
-// OS compatibility.
-#include "../utilities/os/os.h"
+#include <cstdlib>
+#include <cstring>
 
 /**
  * @brief
@@ -72,5 +72,23 @@ namespace MScriptLexerAuxFunc
                        const MScriptSrcLocation location,
                        const char * str );
 };
+
+// Code specific for other operating systems than GNU/Linux.
+#ifndef __linux__
+    /**
+     * @brief
+     * @param[in] s
+     * @return
+     */
+    inline char * strdup ( const char * s )
+    {
+        char * d = malloc ( 1 + strlen ( s ) )
+        if ( NULL == d )
+        {
+            return NULL;
+        }
+        return strcpy ( d, s );
+    }
+#endif // __linux__
 
 #endif // MSCRIPTLEXERAUXFUNC_H

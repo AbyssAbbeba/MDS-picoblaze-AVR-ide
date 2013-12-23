@@ -39,7 +39,7 @@ add_subdirectory ( include )
 # ------------------------------------------------------------------------------
 
 # Find Boost include dirs and libraries.
-find_package ( Boost 1.46
+find_package ( Boost 1.48
                REQUIRED
                COMPONENTS filesystem system )
 
@@ -60,14 +60,6 @@ link_directories ( ${Boost_LIBRARY_DIRS}
                    "${CMAKE_CURRENT_BINARY_DIR}/../utilities/os/"
                    "${CMAKE_CURRENT_BINARY_DIR}/../utilities/DbgFile/"
                    "${CMAKE_CURRENT_BINARY_DIR}/../utilities/MCUDataFiles/" )
-
-## Add switches to compiler command line
- # -Wall       : Enables all the warnings.
- # -Wextra     : Enables some extra warning flags that are not enabled by -Wall.
- # -std=c++0x  : Default template arguments may not be used in function templates without -std=c++0x or -std=gnu++0x.
- # -O2         : Optimization, level 2.
- # -pipe       : Use pipes rather than temporary files for communication between the various stages of compilation.
-add_definitions ( -Wall -Wextra -std=c++0x -O2 -pipe )
 
 # Add an executable to the project using the specified source files.
 add_executable ( ${PROJECT_NAME}

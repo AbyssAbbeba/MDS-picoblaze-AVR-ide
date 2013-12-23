@@ -60,6 +60,9 @@ int initTestEnv()
  */
 void printHelp ( const char * executable )
 {
+    std::cout << "Usage:" << std::endl;
+    std::cout << "    " << executable << " [ OPTION [ OPTION ... ] ]" << std::endl;
+    std::cout << std::endl;
     std::cout << "Options:" << std::endl;
     std::cout << "    --all, -a" << std::endl;
     std::cout << "        Run all test cases in all suites." << std::endl;
@@ -166,7 +169,7 @@ int main ( int argc, char ** argv )
                 testCaseNumberSrt[0] = '\0';
                 testCaseNumberSrt++;
 
-                for ( int i = 0; i < strlen(testSuiteNumberSrt); i++ )
+                for ( size_t i = 0; i < strlen(testSuiteNumberSrt); i++ )
                 {
                     if ( 0 == isdigit(testSuiteNumberSrt[i]) )
                     {
@@ -176,7 +179,7 @@ int main ( int argc, char ** argv )
                         return 1;
                     }
                 }
-                for ( int i = 0; i < strlen(testCaseNumberSrt); i++ )
+                for ( size_t i = 0; i < strlen(testCaseNumberSrt); i++ )
                 {
                     if ( 0 == isdigit(testCaseNumberSrt[i]) )
                     {
@@ -188,7 +191,7 @@ int main ( int argc, char ** argv )
                 }
 
                 int suiteNumber = atoi(testSuiteNumberSrt);
-                if ( suiteNumber >= CU_get_registry()->uiNumberOfSuites )
+                if ( suiteNumber >= (int) (CU_get_registry()->uiNumberOfSuites) )
                 {
                     std::cerr << "Error: there is no test suite with number `" << testSuiteNumberSrt << "'."
                               << std::endl;
@@ -203,7 +206,7 @@ int main ( int argc, char ** argv )
                 }
 
                 int testNumber = atoi(testCaseNumberSrt);
-                if ( testNumber >= suite->uiNumberOfTests )
+                if ( testNumber >= (int) (suite->uiNumberOfTests) )
                 {
                     std::cerr << "Error: there is no test case with number `" << testCaseNumberSrt << "'." << std::endl;
                     delete [] testSuiteNumberSrt;
@@ -221,7 +224,7 @@ int main ( int argc, char ** argv )
             }
             case 's':
             {
-                for ( int i = 0; i < strlen(optarg); i++ )
+                for ( size_t i = 0; i < strlen(optarg); i++ )
                 {
                     if ( 0 == isdigit(optarg[i]) )
                     {
@@ -234,7 +237,7 @@ int main ( int argc, char ** argv )
                 int suiteNumber = atoi(optarg);
 
                 CU_pSuite suite = CU_get_registry()->pSuite;
-                if ( suiteNumber >= CU_get_registry()->uiNumberOfSuites )
+                if ( suiteNumber >= (int) (CU_get_registry()->uiNumberOfSuites) )
                 {
                     std::cerr << "Error: there is no test suite with number `" << optarg << "'." << std::endl;
                     return 1;
