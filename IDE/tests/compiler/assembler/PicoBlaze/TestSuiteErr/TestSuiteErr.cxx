@@ -138,7 +138,7 @@ void TestSuiteErr::compareErr ( const std::string & expected,
     errExpFile.close();
 
     size_t expFileNoOfLines = errExpFileVec.size();
-    int errLineNumber = 0;
+    size_t errLineNumber = 0;
 
     std::ifstream errFile(actual);
     while ( false == errFile.eof() )
@@ -185,7 +185,7 @@ void TestSuiteErr::compareLst ( const std::string & expected,
     lstExpFile.close();
 
     size_t expFileNoOfLines = lstExpFileVec.size();
-    int lstLineNumber = 0;
+    size_t lstLineNumber = 0;
 
     std::ifstream lstFile(actual);
     while ( false == lstFile.eof() )
@@ -212,6 +212,6 @@ void TestSuiteErr::compareLst ( const std::string & expected,
         lstLineNumber++;
     }
 
-    int lstFileNoOfLines = lstLineNumber;
+    size_t lstFileNoOfLines = lstLineNumber;
     CU_ASSERT_EQUAL(lstFileNoOfLines, expFileNoOfLines);
 }

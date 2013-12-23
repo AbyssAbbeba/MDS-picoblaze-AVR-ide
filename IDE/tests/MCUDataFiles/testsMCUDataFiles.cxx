@@ -232,6 +232,7 @@ fptr testSuiteID2funcPtr ( int id )
         case TS_VHDL_18: return &testVHDL<XilHDLFile::SIZE_18b>;
         case TS__MAX__:  return NULL;
     }
+    return NULL;
 }
 
 const char * testSuiteID2cstring ( int id )
@@ -249,6 +250,7 @@ const char * testSuiteID2cstring ( int id )
         case TS_VHDL_18: return "VHDL (16b)";
         case TS__MAX__:  return "<invalid>";
     }
+    return NULL;
 }
 
 const char * testSuiteID2ext ( int id )
@@ -266,6 +268,7 @@ const char * testSuiteID2ext ( int id )
         case TS_VHDL_18: return ".vhd";
         case TS__MAX__:  return NULL;
     }
+    return NULL;
 }
 
 const char * testSuiteID2dir ( int id )
@@ -283,6 +286,7 @@ const char * testSuiteID2dir ( int id )
         case TS_VHDL_18: return "18.vhd";
         case TS__MAX__:  return NULL;
     }
+    return NULL;
 }
 
 int init()

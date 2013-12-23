@@ -91,7 +91,8 @@ void AsmPicoBlazeSemanticAnalyzer::printCodeTree ( const CompilerStatement * cod
 
     if ( false == file.is_open() )
     {
-        m_compilerCore -> compilerMessage ( CompilerBase::MT_ERROR,
+        m_compilerCore -> semanticMessage ( CompilerSourceLocation(),
+                                            CompilerBase::MT_ERROR,
                                             QObject::tr ( "Unable to open " )
                                                         . toStdString()
                                                         + "\"" + m_opts->m_codeTree  + "\"" );
@@ -102,7 +103,8 @@ void AsmPicoBlazeSemanticAnalyzer::printCodeTree ( const CompilerStatement * cod
 
     if ( true == file.bad() )
     {
-        m_compilerCore -> compilerMessage ( CompilerBase::MT_ERROR,
+        m_compilerCore -> semanticMessage ( CompilerSourceLocation(),
+                                            CompilerBase::MT_ERROR,
                                             QObject::tr ( "Unable to write to " ).toStdString()
                                                         + "\"" + m_opts->m_codeTree  + "\"" );
         return;
@@ -147,7 +149,8 @@ void AsmPicoBlazeSemanticAnalyzer::process ( CompilerStatement * codeTree )
 
     if ( false == m_treeDecoder->phase1(codeTree) )
     {
-        m_compilerCore->compilerMessage(CompilerBase::MT_ERROR,
+        m_compilerCore->semanticMessage(CompilerSourceLocation(),
+                                        CompilerBase::MT_ERROR,
                                         QObject::tr("the last error was critical, compilation aborted").toStdString());
 
         m_codeListing->output();
@@ -287,7 +290,8 @@ inline void AsmPicoBlazeSemanticAnalyzer::saveHDL ( AsmMachineCodeGen::WordSize 
     }
     catch ( const DataFileException & e )
     {
-        m_compilerCore -> compilerMessage ( CompilerBase::MT_ERROR,
+        m_compilerCore -> semanticMessage ( CompilerSourceLocation(),
+                                            CompilerBase::MT_ERROR,
                                             QObject::tr ( "unable to save file " ).toStdString()
                                                         + "\"" + fileName  + "\"" );
     }

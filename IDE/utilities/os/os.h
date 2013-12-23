@@ -31,25 +31,9 @@ namespace boost
          * @return
          */
         path make_relative ( path a, path b );
+
+        std::string makeHomeSafe ( const std::string & input );
     }
 }
-
-// Code specific for other operating systems than GNU/Linux.
-#ifndef __linux__
-    /**
-     * @brief
-     * @param[in] s
-     * @return
-     */
-    inline char * strdup ( const char * s )
-    {
-        char * d = malloc ( 1 + strlen ( s ) );
-        if ( NULL == d )
-        {
-            return NULL;
-        }
-        return strcpy ( d, s);
-    }
-#endif // __linux__
 
 #endif // OS_H

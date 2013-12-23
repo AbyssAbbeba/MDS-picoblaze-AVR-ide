@@ -122,6 +122,7 @@ CompilerModules::ModEmplStatCode CompilerModules::employModule ( CompilerBase::L
                     // Initiate C preprocessor.
                     CompilerCPreprocessor preprocessor ( parserIntf, options );
                     char * buffer = preprocessor.processFile ( sourceFile );
+                    compilerCore->closeInputFiles();
 
                     if ( NULL == buffer )
                     {

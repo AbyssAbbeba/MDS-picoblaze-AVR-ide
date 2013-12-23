@@ -20,7 +20,6 @@ cmake_minimum_required ( VERSION 2.8 )
 # Create verbose makefiles if on
 set ( CMAKE_VERBOSE_MAKEFILE OFF )
 
-
 # ------------------------------------------------------------------------------
 # COMPILATION OPTIONS
 # ------------------------------------------------------------------------------
@@ -30,7 +29,7 @@ find_package ( Qt4 REQUIRED )
 include ( ${QT_USE_FILE} )
 
 # Find Boost include directories and libraries.
-find_package ( Boost 1.46
+find_package ( Boost 1.48
                REQUIRED
                COMPONENTS filesystem system )
 
@@ -43,15 +42,6 @@ link_directories ( "${CMAKE_CURRENT_BINARY_DIR}/../modules"
                    "${CMAKE_CURRENT_BINARY_DIR}/../../utilities/os"
                    "${CMAKE_CURRENT_BINARY_DIR}/../../utilities/DbgFile/"
                    "${CMAKE_CURRENT_BINARY_DIR}/../../utilities/MCUDataFiles/" )
-
-## Add switches to compiler command line
- # -Wall       : Enables all the warnings.
- # -Wextra     : Enables some extra warning flags that are not enabled by -Wall.
- # -std=c++0x  : Default template arguments may not be used in function templates without -std=c++0x or -std=gnu++0x.
- # -O2         : Optimization, level 2.
- # -pipe       : Use pipes rather than temporary files for communication between the various stages of compilation.
- # -fPIC       : Generate position-independent code (PIC) suitable for use in a shared library
-add_definitions ( -Wall -Wextra -std=c++0x -O2 -pipe -fPIC )
 
 ## Create moc code from a list of files containing Qt class with the Q_OBJECT declaration.
  # Per-directory preprocessor definitions are also added.
@@ -78,7 +68,8 @@ add_library ( ${PROJECT_NAME} SHARED
               CompilerMessageStack.cxx
               CompilerMsgIntfStdout.cxx
               CompilerSourceLocation.cxx
-              CompilerStatementTypes.cxx )
+              CompilerStatementTypes.cxx
+              CompilerLocationTracker.cxx )
 
 # Link a target to given libraries.
 target_link_libraries ( ${PROJECT_NAME}
@@ -87,11 +78,10 @@ target_link_libraries ( ${PROJECT_NAME}
                         CompilerModules
                         os )
 
-
 # ------------------------------------------------------------------------------
 # INSTALLATION OPTIONS
 # ------------------------------------------------------------------------------
 
-# install ( TARGETS ${PROJECT_NAME}
-#           RUNTIME DESTINATION bin
-#           LIBRARY DESTINATION lib )
+install ( TARGETS ${PROJECT_NAME}
+          RUNTIME DESTINATION bin
+          LIBRARY DESTINATION lib )

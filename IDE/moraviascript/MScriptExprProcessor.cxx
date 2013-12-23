@@ -571,7 +571,7 @@ inline void MScriptExprProcessor::removeEmpty ( MScriptStatement ** snakeNode )
 }
 
 void MScriptExprProcessor::evalConsts ( MScriptExpr * expr,
-                                        MScriptValue * value )
+                                        MScriptValue * constValue )
 {
     for ( MScriptExpr * e = expr;
           NULL != e;
@@ -646,11 +646,18 @@ void MScriptExprProcessor::evalConsts ( MScriptExpr * expr,
             }
         }
 
-        if ( NULL == value )
+        if ( NULL == constValue )
         {
-            e->m_operator = MScriptExpr::OPER_NONE;
             e->m_rValue.completeDelete();
-            e->m_rValue.m_type = MScriptValue::TYPE_EMPTY;
+            e->m_rValue.completeDelete();
+            e->m_operator = MScriptExpr::OPER_NONE;
+
+            result.makeCopy(e->m_rValue);
+        }
+        else
+        {
+            constValue->completeDelete();
+            result.makeCopy(*constValue);
         }
     }
 }

@@ -40,12 +40,6 @@ include_directories ( "${CMAKE_CURRENT_BINARY_DIR}/../../../moraviascript"
 link_directories ( "${CMAKE_CURRENT_BINARY_DIR}/../../../moraviascript"
                    "${CMAKE_CURRENT_BINARY_DIR}/../MScriptTestStrategy" )
 
-## Add switches to compiler command line
- # -pipe       : Use pipes rather than temporary files for communication between the various stages of compilation.
- # -std=c++0x  : Default template arguments may not be used in function templates without -std=c++0x or -std=gnu++0x.
- # -O1         : Optimization, level 1.
-add_definitions ( -pipe -std=c++0x -O1 )
-
 ## Add a library to the project using the specified source files,
  # in this case it will procude dynamic C++ library.
 add_library ( ${PROJECT_NAME} SHARED

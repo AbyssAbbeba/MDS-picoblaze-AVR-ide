@@ -31,6 +31,9 @@
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include <boost/filesystem.hpp>
 
+// OS compatibility.
+#include "../utilities/os/os.h"
+
 /**
  * @brief Program version string.
  * @note Be careful with this value, it might be expected in "[0-9]+\.[0-9]+(\.[0-9]+)?" format.
@@ -246,7 +249,7 @@ int main ( int argc, char ** argv )
     bool silent = false;
     CompilerOptions opts;
     CompilerMsgIntfStdout msgInterface;
-    Compiler compiler(&msgInterface, (system_complete(path(argv[0]).parent_path()) / "include").string());
+    Compiler compiler(&msgInterface, (system_complete(path(makeHomeSafe(argv[0])).parent_path()) / "include").string());
     CompilerBase::TargetArch targetArchitecture = CompilerBase::TA_INVALID;
     CompilerBase::LangId targetLanguage = CompilerBase::LI_INVALID;
 

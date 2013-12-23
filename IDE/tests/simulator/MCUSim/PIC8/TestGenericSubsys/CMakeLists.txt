@@ -42,12 +42,6 @@ link_directories ( "${CMAKE_CURRENT_BINARY_DIR}/../../../../../simulators/MCUSim
                    "${CMAKE_CURRENT_BINARY_DIR}/../../../../../utilities/MCUDataFiles"
                    "${CMAKE_CURRENT_BINARY_DIR}/../.." )
 
-## Add switches to compiler command line
- # -pipe       : Use pipes rather than temporary files for communication between the various stages of compilation.
- # -std=c++0x  : Default template arguments may not be used in function templates without -std=c++0x or -std=gnu++0x.
- # -O1         : Optimization, level 1.
-add_definitions ( -pipe -std=c++0x -O1 )
-
 ## Add a library to the project using the specified source files,
  # in this case it will procude dynamic C++ library.
 add_library ( ${PROJECT_NAME} SHARED
@@ -64,4 +58,4 @@ target_link_libraries ( ${PROJECT_NAME}
 add_custom_target ( "${PROJECT_NAME}_compile" ALL ${CMAKE_CURRENT_BINARY_DIR}/testcases/compileAll.sh
                     DEPENDS compiler
                     WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/testcases"
-                    COMMENT "Compiling .asm files for all testcases in the `testcases' directory." )
+                    COMMENT "Compiling .asm files for all testcases in `${CMAKE_CURRENT_BINARY_DIR}/testcases'." )

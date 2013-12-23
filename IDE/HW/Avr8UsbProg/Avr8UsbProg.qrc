@@ -1,0 +1,35 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+    <qresource prefix="/Avr8UsbProg" >
+        <file>devices.xml</file>
+        <file>images/1downarrow.png</file>
+        <file>images/1rightarrow.png</file>
+        <file>images/add.png</file>
+        <file>images/button_cancel.png</file>
+        <file>images/clear_left.png</file>
+        <file>images/configure.png</file>
+        <file>images/contexthelp.png</file>
+        <file>images/eraser.png</file>
+        <file>images/extended.png</file>
+        <file>images/fileopen.png</file>
+        <file>images/gear.png</file>
+        <file>images/help.png</file>
+        <file>images/high.png</file>
+        <file>images/kcmmemory.png</file>
+        <file>images/ledgreen.png</file>
+        <file>images/ledorange.png</file>
+        <file>images/ledred.png</file>
+        <file>images/ledyellow.png</file>
+        <file>images/low.png</file>
+        <file>images/next.png</file>
+        <file>images/qt-logo.png</file>
+        <file>images/reload.png</file>
+        <file>images/resume.png</file>
+        <file>images/sub.png</file>
+        <file>images/terminal.png</file>
+        <file>images/usb.png</file>
+        <file>images/vcs_commit.png</file>
+        <file>images/vcs_update.png</file>
+        <file>images/view_choose.png</file>
+    </qresource>
+</RCC>

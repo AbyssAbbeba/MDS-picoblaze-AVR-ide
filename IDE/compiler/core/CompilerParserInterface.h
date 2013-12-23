@@ -29,6 +29,7 @@
 #include "CompilerStatement.h"
 #include "CompilerStatementTypes.h"
 #include "CompilerSourceLocation.h"
+#include "CompilerLocationTracker.h"
 
 // Used for i18n only
 #include <QObject>
@@ -95,6 +96,12 @@ class CompilerParserInterface
         virtual void parserMessage ( const CompilerSourceLocation & location,
                                      CompilerBase::MessageType type,
                                      const std::string & text ) = 0;
+
+        /**
+         * @brief
+         * @return
+         */
+        virtual CompilerLocationTracker & locationTrack() = 0;
 
         /**
          * @brief
