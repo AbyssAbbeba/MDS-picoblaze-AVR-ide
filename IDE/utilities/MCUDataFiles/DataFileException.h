@@ -79,7 +79,12 @@ class DataFileException
                 case EXP_NOT_UNDERSTOOD:    result = "EXP_NOT_UNDERSTOOD"; break;
             }
 
-            return result + ": " + m_errorInfo;
+            if ( false == m_errorInfo.empty() )
+            {
+                result += ": " + m_errorInfo;
+            }
+
+            return result;
         }
 
     ////    Public Attributes    ////
