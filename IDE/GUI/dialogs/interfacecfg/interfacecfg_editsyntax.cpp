@@ -8,7 +8,10 @@ InterfaceCfg_EditSyntax::InterfaceCfg_EditSyntax(QWidget *parent)
 {
     ui.setupUi(this);
     InterfaceCfg_SyntaxAsm *syntaxWidget = new InterfaceCfg_SyntaxAsm(this);
-    ui.scrollArea->setWidget(syntaxWidget);
+    this->ui.scrollArea->setWidget(syntaxWidget);
+    this->ui.chckHighlight->setChecked(GuiCfg::getInstance().getHighlightEnabled());
+    this->ui.scrollArea->setEnabled(GuiCfg::getInstance().getHighlightEnabled());
+    this->ui.frameExample->setEnabled(GuiCfg::getInstance().getHighlightEnabled());
     this->show();
 
     connect(syntaxWidget, SIGNAL(colorChanged(const QColor&, InterfaceCfg_SyntaxAsm::Types)), this, SLOT(colorChanged(const QColor&, InterfaceCfg_SyntaxAsm::Types)));
@@ -16,6 +19,7 @@ InterfaceCfg_EditSyntax::InterfaceCfg_EditSyntax(QWidget *parent)
     connect(syntaxWidget, SIGNAL(underlineChanged(bool, InterfaceCfg_SyntaxAsm::Types)), this, SLOT(underlineChanged(bool, InterfaceCfg_SyntaxAsm::Types)));
     connect(syntaxWidget, SIGNAL(strikeChanged(bool, InterfaceCfg_SyntaxAsm::Types)), this, SLOT(strikeChanged(bool, InterfaceCfg_SyntaxAsm::Types)));
     connect(syntaxWidget, SIGNAL(boldChanged(bool, InterfaceCfg_SyntaxAsm::Types)), this, SLOT(boldChanged(bool, InterfaceCfg_SyntaxAsm::Types)));
+    connect(this->ui.chckHighlight, SIGNAL(stateChanged(int)), this, SLOT(checkBoxChanged(int)));
 }
 
 
@@ -42,4 +46,16 @@ void InterfaceCfg_EditSyntax::strikeChanged(bool enabled, InterfaceCfg_SyntaxAsm
 
 void InterfaceCfg_EditSyntax::boldChanged(bool enabled, InterfaceCfg_SyntaxAsm::Types type)
 {
+}
+
+
+void InterfaceCfg_EditSyntax::save()
+{
+}
+
+
+void InterfaceCfg_EditSyntax::checkBoxChanged(int state)
+{
+    this->ui.scrollArea->setEnabled(state);
+    this->ui.frameExample->setEnabled(state);
 }
