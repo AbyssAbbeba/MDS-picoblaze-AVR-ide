@@ -18,6 +18,7 @@
 %{
     // Standard header files
     #include <cctype>
+    #include <string>
     #include <cstdio>
     #include <cstdlib>
     #include <cstdint>
@@ -531,17 +532,15 @@ DIS_INT_INST            "disable"{WS}"interrupt"
 <INC,INC_END>
 {
     {NLINE}             {
-                            yyextra->setInsertEOL();
-
                             // Attempt to open the specified file
 
-                            // Put the EOL character sequence back onto the input stream
-                            char * eol = strdup(yytext);
+                            // Put the EOL character sequence back onto the input stream.
+                            char eol [ strlen(yytext) ];
+                            strcpy(eol, yytext);
                             for ( int i = yyleng - 1; i >= 0; --i )
                             {
                                 unput(eol[i]);
                             }
-                            free(eol);
 
                             yy_pop_state(yyscanner);
 
@@ -550,16 +549,15 @@ DIS_INT_INST            "disable"{WS}"interrupt"
                                 yyextra->lexerMessage ( yylloc,
                                                         CompilerBase::MT_ERROR,
                                                         QObject::tr("no file name specified").toStdString() );
-                                return INCLUDE;
+                                return EOL;
                             }
                             enlargeStringBuffer(yylval, yyextra);
                             yylval->array.data [ yylval->array.size ] = '\0';
 
-                            char * filename = new char [ yylval->array.size + 1 ];
-                            strcpy(filename, (char*) yylval->array.data);
+                            std::string filename = std::string((char*) yylval->array.data, yylval->array.size);
                             free(yylval->array.data);
 
-                            if ( strlen(filename) != (size_t) yylval->array.size )
+                            if ( filename.size() != (size_t) yylval->array.size )
                             {
                                 yyextra->lexerMessage ( yylloc,
                                                         CompilerBase::MT_WARNING,
@@ -567,7 +565,7 @@ DIS_INT_INST            "disable"{WS}"interrupt"
                                                                    .toStdString() );
                             }
 
-                            FILE * file = yyextra->fileOpen(filename);
+                            FILE * file = yyextra->fileOpen(filename, &filename);
                             if ( NULL == file )
                             {
                                 yyextra->lexerMessage ( yylloc,
@@ -578,9 +576,13 @@ DIS_INT_INST            "disable"{WS}"interrupt"
                             }
                             else
                             {
-                                yylval->string = filename;
 
+                                yylval->string = new char [ 1 + filename.size() ];
+                                strcpy(yylval->string, filename.c_str());
+
+                                yyextra->setInsertEOL();
                                 yyextra->m_yyllocStack.push_back(*yylloc);
+
                                 AsmPicoBlazeLexer_push_buffer_state ( AsmPicoBlazeLexer__create_buffer ( file,
                                                                                                          YY_BUF_SIZE,
                                                                                                          yyscanner),

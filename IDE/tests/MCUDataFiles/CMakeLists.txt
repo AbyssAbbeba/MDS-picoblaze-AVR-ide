@@ -40,11 +40,13 @@ find_package ( Boost 1.55
 
 # Add include directories to the build.
 include_directories ( ${Boost_INCLUDE_DIRS}
-                      "${CMAKE_CURRENT_SOURCE_DIR}/../../utilities/MCUDataFiles" )
+                      "${CMAKE_CURRENT_SOURCE_DIR}/../../utilities/MCUDataFiles"
+                      "${CMAKE_CURRENT_SOURCE_DIR}/../../utilities/AutoTest/" )
 
 # Specify directories in which the linker will look for libraries.
 link_directories ( ${Boost_LIBRARY_DIRS}
-                   "${CMAKE_CURRENT_SOURCE_DIR}/../../utilities/MCUDataFiles" )
+                   "${CMAKE_CURRENT_SOURCE_DIR}/../../utilities/MCUDataFiles"
+                   "${CMAKE_CURRENT_SOURCE_DIR}/../../utilities/AutoTest/" )
 
 # Add an executable to the project using the specified source files.
 add_executable ( ${PROJECT_NAME} testsMCUDataFiles.cxx
@@ -53,12 +55,11 @@ add_executable ( ${PROJECT_NAME} testsMCUDataFiles.cxx
 # Link a target to given libraries
 target_link_libraries ( ${PROJECT_NAME} ${Boost_LIBRARIES}
                                         MCUDataFiles
-                                        cunit )
+                                        AutoTest )
 
 
 # ------------------------------------------------------------------------------
 # TESTS
 # ------------------------------------------------------------------------------
 
-add_test ( NAME ${PROJECT_NAME}
-           COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME} )
+ADD_TEST_SUBJECT ( "MCU_Data_Files" "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}" )

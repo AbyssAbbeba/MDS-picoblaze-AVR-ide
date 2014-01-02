@@ -34,10 +34,11 @@ class CompilerMessageStack
 {
     ////    Private Datatypes    ////
     private:
-        /**
-         * @brief
-         */
+        ///
         typedef std::pair<CompilerSourceLocation,CompilerBase::MessageType> MsgMetaData;
+
+        ///
+        typedef std::multimap<std::string,MsgMetaData> MsgMap;
 
     ////    Public Operations    ////
     public:
@@ -46,24 +47,26 @@ class CompilerMessageStack
          * @param[in] location
          * @param[in] type
          * @param[in] text
+         * @param[in] ignoreLocation
          * @return
          */
         bool isUnique ( const CompilerSourceLocation & location,
                         CompilerBase::MessageType type,
-                        const std::string & text );
+                        const std::string & text,
+                        bool ignoreLocation );
 
         /**
          * @brief
          * @return
          */
-        void reset();
+        void clear();
 
     ////    Private Attributes    ////
     private:
         /**
          * @brief
          */
-        std::map<std::string,MsgMetaData> m_data;
+        MsgMap m_data;
 };
 
 #endif // COMPILERMESSAGESTACK_H

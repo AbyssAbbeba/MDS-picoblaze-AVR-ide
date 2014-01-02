@@ -385,7 +385,7 @@ std::ostream & operator << ( std::ostream & out,
 {
     if ( NULL == expr )
     {
-        out << "(<ERROR:NULL!>)";
+        out << "(<NULL>)";
         return out;
     }
 
@@ -402,9 +402,11 @@ std::ostream & operator << ( std::ostream & out,
     out << expr->location();
     out << "}";
 
-    if ( NULL != expr->next() )
+    for ( const CompilerExpr * e = expr->next();
+          NULL != e;
+          e = e->next() )
     {
-        out << " | " << expr->next();
+        out << " | " << e;
     }
 
     return out;

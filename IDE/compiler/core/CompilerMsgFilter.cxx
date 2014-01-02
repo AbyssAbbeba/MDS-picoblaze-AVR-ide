@@ -23,12 +23,13 @@
 
 CompilerMsgFilter::CompilerMsgFilter ( const CompilerCore * compilerCore,
                                        CompilerMsgInterface * msgInterface,
-                                       unsigned int messageLimit )
-                                     : m_compilerCore ( compilerCore ),
-                                       m_msgInterface ( msgInterface ),
-                                       m_messageLimit ( messageLimit )
+                                       int messageLimit )
+                                     :
+                                       m_messageLimit ( messageLimit ),
+                                       m_compilerCore ( compilerCore ),
+                                       m_msgInterface ( msgInterface )
 {
-    reset();
+    clear();
 }
 
 void CompilerMsgFilter::message ( const std::string & text,
@@ -71,7 +72,7 @@ void CompilerMsgFilter::message ( const std::string & text,
             return;
     }
 
-    if ( 0 != m_messageLimit )
+    if ( -1 != m_messageLimit )
     {
         if ( m_messageLimit == m_msgCounter )
         {
@@ -91,7 +92,7 @@ void CompilerMsgFilter::message ( const std::string & text,
     m_msgInterface->message(text, type);
 }
 
-void CompilerMsgFilter::reset()
+void CompilerMsgFilter::clear()
 {
     m_msgCounter = 0;
 }

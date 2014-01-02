@@ -43,7 +43,7 @@ elseif ( CMAKE_HOST_WIN32 )
 elseif ( CMAKE_HOST_APPLE )
     # Mac OS X
     set ( HID "hid-mac.c" )
-endif ( CMAKE_HOST_UNIX )
+endif()
 
 add_executable ( ${PROJECT_NAME}
                  ${HID}
@@ -58,4 +58,4 @@ elseif ( CMAKE_HOST_WIN32 )
 elseif ( CMAKE_HOST_APPLE )
     # Mac OS X
     target_link_libraries ( ${PROJECT_NAME} IOKit CoreFoundation )
-endif ( CMAKE_HOST_UNIX )
+endif()

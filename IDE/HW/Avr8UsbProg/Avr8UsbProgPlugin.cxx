@@ -266,7 +266,7 @@ void Avr8UsbProgPlugin::setConnections()
 		SLOT(programmerThread_downloadingFlash()));
 }
 
-void Avr8UsbProgPlugin::directoryContentsChanged(const QString & path)
+void Avr8UsbProgPlugin::directoryContentsChanged(const QString & /*path*/)
 {
 	on_eepromFileLineEdit_textChanged(eepromFileLineEdit->text());
 	on_programFileLineEdit_textChanged(programFileLineEdit->text());

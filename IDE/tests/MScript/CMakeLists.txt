@@ -51,12 +51,14 @@ find_package ( Boost 1.55
 # Add include directories to the build.
 include_directories ( ${Boost_INCLUDE_DIRS}
                       "${CMAKE_CURRENT_SOURCE_DIR}/../../moraviascript"
-                      "${CMAKE_CURRENT_SOURCE_DIR}/MScriptTestStrategy" )
+                      "${CMAKE_CURRENT_SOURCE_DIR}/MScriptTestStrategy"
+                      "${CMAKE_CURRENT_SOURCE_DIR}/../../utilities/AutoTest/" )
 
 # Specify directories in which the linker will look for libraries.
 link_directories ( ${Boost_LIBRARY_DIRS}
                    "${CMAKE_CURRENT_SOURCE_DIR}/../../moraviascript"
-                   "${CMAKE_CURRENT_SOURCE_DIR}/MScriptTestStrategy" )
+                   "${CMAKE_CURRENT_SOURCE_DIR}/MScriptTestStrategy"
+                   "${CMAKE_CURRENT_SOURCE_DIR}/../../utilities/AutoTest/" )
 
 # Add an executable to the project using the specified source files.
 add_executable ( ${PROJECT_NAME}
@@ -70,11 +72,10 @@ target_link_libraries ( ${PROJECT_NAME}
                         TMS_TestMScriptIII
                         MScript
                         MScriptTestStrategy
-                        cunit )
+                        AutoTest )
 
 # ------------------------------------------------------------------------------
 # TESTS
 # ------------------------------------------------------------------------------
 
-add_test ( NAME ${PROJECT_NAME}
-           COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME} )
+ADD_TEST_SUBJECT ( "Moravia_Script" "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}" )

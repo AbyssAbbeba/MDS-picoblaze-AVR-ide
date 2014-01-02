@@ -27,10 +27,10 @@
 #include "HexFile.h"
 #include "BinFile.h"
 #include "SrecFile.h"
-#include "DbgFileNative.h"
 #include "XilMemFile.h"
-#include "XilVerilogFile.h"
 #include "XilVHDLFile.h"
+#include "DbgFileNative.h"
+#include "XilVerilogFile.h"
 
 // Moravia Microsystems, s.r.o. proprietary Debugger File
 #include "DbgFileNative.h"
@@ -98,10 +98,7 @@ bool TestSuiteSuc::addTests ( CU_pSuite suite )
           it != testCaseFiles.cend();
           it++ )
     {
-        char * testCaseName = new char [ it->size() + 1 ];
-        strcpy(testCaseName, it->c_str());
-
-        if ( NULL == CU_add_test(suite, testCaseName, &testFunction) )
+        if ( NULL == CU_add_test(suite, it->c_str(), &testFunction) )
         {
             return false;
         }
@@ -114,11 +111,11 @@ void TestSuiteSuc::testFunction()
 {
     using namespace boost::filesystem;
 
-    std::string testName = CU_get_current_test()->pName;
+    const std::string testName = CU_get_current_test()->pName;
 
     m_options->m_sourceFile = ( path("TestSuiteSuc") / "testcases" / (testName + ".asm") ).string();
 
-    std::string resultsCommonPath = ( path("..") / "results" / testName ).string();
+    const std::string resultsCommonPath = ( path("..") / "results" / testName ).string();
     m_options->m_symbolTable  = resultsCommonPath + ".sym";
     m_options->m_macroTable   = resultsCommonPath + ".mac";
     m_options->m_mdsDebugFile = resultsCommonPath + ".dbg";
@@ -131,9 +128,13 @@ void TestSuiteSuc::testFunction()
     m_options->m_vhdlFile     = resultsCommonPath + ".vhd";
     m_options->m_memFile      = resultsCommonPath + ".mem";
 
-    CU_ASSERT_FATAL ( true == m_compiler->compile(CompilerBase::LI_ASM, CompilerBase::TA_PICOBLAZE, m_options) );
+    if ( false == m_compiler->compile(CompilerBase::LI_ASM, CompilerBase::TA_PICOBLAZE, m_options) )
+    {
+        CU_FAIL("Compilation failed.");
+        return;
+    }
 
-    std::string expectedCommonPath = system_complete( path("TestSuiteSuc") / "expected" / testName ).string();
+    const std::string expectedCommonPath = system_complete( path("TestSuiteSuc") / "expected" / testName ).string();
     compareLst ( expectedCommonPath + ".lst.exp", m_options->m_lstFile     );
     compareSym ( expectedCommonPath + ".sym.exp", m_options->m_symbolTable );
     compareMac ( expectedCommonPath + ".mac.exp", m_options->m_macroTable  );
@@ -150,7 +151,8 @@ void TestSuiteSuc::testFunction()
     catch ( DataFileException & e )
     {
         std::cerr << std::endl << e.toString() << std::endl;
-        CU_FAIL_FATAL("An instance of DataFileException thrown!");
+        CU_FAIL("An instance of DataFileException thrown!");
+        return;
     }
 
     try
@@ -160,7 +162,8 @@ void TestSuiteSuc::testFunction()
     catch ( DbgFile::Exception & e )
     {
         std::cerr << std::endl << e.toString() << std::endl;
-        CU_FAIL_FATAL("An instance of DbgFile::Exception thrown!");
+        CU_FAIL("An instance of DbgFile::Exception thrown!");
+        return;
     }
 }
 
@@ -219,7 +222,11 @@ void TestSuiteSuc::compareSym ( const std::string & expected,
     std::ifstream symExpFile(expected);
     while ( false == symExpFile.eof() )
     {
-        CU_ASSERT_TRUE_FATAL(symExpFile.good());
+        if ( false == symExpFile.good() )
+        {
+            CU_FAIL((std::string("Cannot read file: ") + expected ).c_str());
+            return;
+        }
 
         std::string line;
         std::getline(symExpFile, line);
@@ -241,7 +248,11 @@ void TestSuiteSuc::compareSym ( const std::string & expected,
     std::ifstream symFile(actual);
     while ( false == symFile.eof() )
     {
-        CU_ASSERT_TRUE_FATAL(symFile.good());
+        if ( false == symFile.good() )
+        {
+            CU_FAIL((std::string("Cannot read file: ") + actual ).c_str());
+            return;
+        }
 
         std::string line;
         std::getline(symFile, line);
@@ -286,7 +297,11 @@ void TestSuiteSuc::compareMac ( const std::string & expected,
     std::ifstream macExpFile(expected);
     while ( false == macExpFile.eof() )
     {
-        CU_ASSERT_TRUE_FATAL(macExpFile.good());
+        if ( false == macExpFile.good() )
+        {
+            CU_FAIL((std::string("Cannot read file: ") + expected ).c_str());
+            return;
+        }
 
         std::string line;
         std::getline(macExpFile, line);
@@ -298,7 +313,11 @@ void TestSuiteSuc::compareMac ( const std::string & expected,
     std::ifstream macFile(actual);
     while ( false == macFile.eof() )
     {
-        CU_ASSERT_TRUE_FATAL(macFile.good());
+        if ( false == macFile.good() )
+        {
+            CU_FAIL((std::string("Cannot read file: ") + actual ).c_str());
+            return;
+        }
 
         std::string line;
         std::getline(macFile, line);
@@ -333,7 +352,11 @@ void TestSuiteSuc::compareLst ( const std::string & expected,
     std::ifstream lstExpFile(expected);
     while ( false == lstExpFile.eof() )
     {
-        CU_ASSERT_TRUE_FATAL(lstExpFile.good());
+        if ( false == lstExpFile.good() )
+        {
+            CU_FAIL((std::string("Cannot read file: ") + expected ).c_str());
+            return;
+        }
 
         std::string line;
         std::getline(lstExpFile, line);
@@ -347,12 +370,16 @@ void TestSuiteSuc::compareLst ( const std::string & expected,
     lstExpFile.close();
 
     size_t expFileNoOfLines = lstExpFileVec.size();
-    int lstLineNumber = 0;
+    size_t lstLineNumber = 0;
 
     std::ifstream lstFile(actual);
     while ( false == lstFile.eof() )
     {
-        CU_ASSERT_TRUE_FATAL(lstFile.good());
+        if ( false == lstFile.good() )
+        {
+            CU_FAIL((std::string("Cannot read file: ") + actual ).c_str());
+            return;
+        }
 
         std::string lstFileLine;
         std::getline(lstFile, lstFileLine);
@@ -363,7 +390,11 @@ void TestSuiteSuc::compareLst ( const std::string & expected,
             continue;
         }
 
-        CU_ASSERT_FATAL(lstLineNumber < expFileNoOfLines);
+        if ( lstLineNumber >= expFileNoOfLines )
+        {
+            CU_FAIL("lstLineNumber < expFileNoOfLines");
+            return;
+        }
 
         if ( lstFileLine != lstExpFileVec[lstLineNumber] )
         {
@@ -374,6 +405,6 @@ void TestSuiteSuc::compareLst ( const std::string & expected,
         lstLineNumber++;
     }
 
-    int lstFileNoOfLines = lstLineNumber;
+    size_t lstFileNoOfLines = lstLineNumber;
     CU_ASSERT_EQUAL(lstFileNoOfLines, expFileNoOfLines);
 }

@@ -27,7 +27,6 @@ FILE ( GLOB resultFiles results/*.* )
 set_directory_properties ( PROPERTIES
                            ADDITIONAL_MAKE_CLEAN_FILES "${resultFiles}" )
 
-
 # ------------------------------------------------------------------------------
 # COMPILATION OPTIONS
 # ------------------------------------------------------------------------------

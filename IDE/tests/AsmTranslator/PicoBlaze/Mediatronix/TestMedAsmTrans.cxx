@@ -95,10 +95,7 @@ bool TestMedAsmTrans::addTests ( CU_pSuite suite )
           it != testCaseFiles.cend();
           it++ )
     {
-        char * testCaseName = new char [ it->size() + 1 ];
-        strcpy(testCaseName, it->c_str());
-
-        if ( NULL == CU_add_test(suite, testCaseName, &testFunction) )
+        if ( NULL == CU_add_test(suite, it->c_str(), &testFunction) )
         {
             return false;
         }
@@ -112,7 +109,7 @@ void TestMedAsmTrans::testFunction()
     using namespace boost::filesystem;
 
     XilHDLFile::OPCodeSize opCodeSize;
-    std::string testName = CU_get_current_test()->pName;
+    const std::string testName = CU_get_current_test()->pName;
 
     m_translator->clear();
     bool result = m_translator->translate ( AsmTranslator::V_KCPSM_MEDIATRONIX,

@@ -267,11 +267,11 @@ class AsmPicoBlazeCodeListing : public CompilerMsgObserver
          * @brief
          * @param[in,out] lineDiff
          * @param[in,out] macro
-         * @param[in] formerOrigin
+         * @param[in] origin
          */
         void rewriteMacroLoc ( unsigned int * lineDiff,
                                CompilerStatement * macro,
-                               int formerOrigin );
+                               int origin );
 
         /**
          * @brief
