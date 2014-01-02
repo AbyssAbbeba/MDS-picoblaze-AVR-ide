@@ -9,7 +9,7 @@ if ! which xsltproc &> /dev/null; then
     exit 1
 fi
 
-declare -ri CLEAN_UP=1
+declare -ri CLEAN_UP=0
 declare -ri MERGE_LOGS=0
 declare -r  XSLT_PROC_LOG="xsltproc.log"
 declare -ri CPU_CORES=$( which lscpu &> /dev/null && lscpu |
