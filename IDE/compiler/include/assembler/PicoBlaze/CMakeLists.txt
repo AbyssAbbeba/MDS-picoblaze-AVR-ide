@@ -34,7 +34,7 @@ set_directory_properties ( PROPERTIES
 set ( MDS_COMPILER "${CMAKE_CURRENT_SOURCE_DIR}/../../../compiler" )
 if ( CMAKE_HOST_WIN32 )
     set ( MDS_COMPILER "${MDS_COMPILER}.exe" )
-endif ( CMAKE_HOST_WIN32 )
+endif()
 
 # Build device specification files.
 foreach ( PROCESSOR "kcpsm1" "kcpsm1cpld" "kcpsm2" "kcpsm3" "kcpsm6" )
@@ -51,10 +51,10 @@ foreach ( PROCESSOR "kcpsm1" "kcpsm1cpld" "kcpsm2" "kcpsm3" "kcpsm6" )
                                                     --precompile="${FILE_BASE}.prc"
                                                     --lst="${FILE_BASE}.lst"
                                                     --file="${FILE_BASE}.asm" &> /dev/null )
-    else ( "${FILE_BASE}.asm" IS_NEWER_THAN "${FILE_BASE}.prc" )
+    else()
         add_custom_target ( "${PROJECT_NAME}_build_prc_file_${PROCESSOR}" ALL
                             COMMENT "Device specification file for ${PROCESSOR} is already built ... skipping." )
-    endif ( "${FILE_BASE}.asm" IS_NEWER_THAN "${FILE_BASE}.prc" )
+    endif()
 endforeach ( PROCESSOR )
 
 # ------------------------------------------------------------------------------

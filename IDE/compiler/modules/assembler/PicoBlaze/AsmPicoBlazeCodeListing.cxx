@@ -20,6 +20,7 @@
 
 // Standard headers.
 #include <cstdio>
+#include <cstdlib>
 #include <fstream>
 
 // Used for i18n only
@@ -116,14 +117,14 @@ void AsmPicoBlazeCodeListing::loadSourceFiles()
                                                 CompilerBase::MT_ERROR,
                                                 QObject::tr("unable to read file: ").toStdString()
                                                 + "`" + it->first  + "'" );
-            return;
+            break;
         }
 
         // Iterate over lines in the file.
-        while ( -1 != ( lineLen = getline(&line, &bufSize, it->second) ) )
+        while ( 0 < ( lineLen = getline(&line, &bufSize, it->second) ) )
         {
             // Dispose of the terminating EOL character sequence.
-            if ( '\r' == line[lineLen-2] )
+            if ( ( lineLen > 1 ) && ( '\r' == line[lineLen-2] ) )
             {
                 line[lineLen-2] = '\0';
             }
@@ -134,6 +135,11 @@ void AsmPicoBlazeCodeListing::loadSourceFiles()
 
             m_listing[fileNumber].push_back ( LstLine ( line ) );
         }
+    }
+
+    if ( NULL != line )
+    {
+        free(line);
     }
 
     processMsgQueue();
@@ -274,7 +280,7 @@ void AsmPicoBlazeCodeListing::printCodeListing ( std::ostream & out,
                             break;
                     }
 
-                    out << msg->m_text << std::endl;;
+                    out << msg->m_text << "." << std::endl;;
                 }
             }
         }
@@ -467,7 +473,7 @@ void AsmPicoBlazeCodeListing::copyMacroBody ( unsigned int * lastLine,
 
 void AsmPicoBlazeCodeListing::rewriteMacroLoc ( unsigned int * lineDiff,
                                                 CompilerStatement * macro,
-                                                int formerOrigin )
+                                                int origin )
 {
     for ( CompilerStatement * node = macro;
           node != NULL;
@@ -479,15 +485,15 @@ void AsmPicoBlazeCodeListing::rewriteMacroLoc ( unsigned int * lineDiff,
             {
                 *lineDiff = node->m_location.m_lineStart - 1;
             }
-            node->m_location.m_origin     = m_compilerCore->locationTrack().add(node->m_location, formerOrigin);
+            node->m_location.m_origin     = m_compilerCore->locationTrack().add(node->m_location, origin);
             node->m_location.m_fileNumber = ( m_numberOfFiles + m_numberOfMacros - 1 );
             node->m_location.m_lineStart -= *lineDiff;
             node->m_location.m_lineEnd   -= *lineDiff;
 
-            m_symbolTable->rewriteExprLoc ( node->args(), node->location(), true, formerOrigin );
+            m_symbolTable->rewriteExprLoc ( node->args(), node->location(), origin, true );
         }
 
-        rewriteMacroLoc ( lineDiff, node->branch(), formerOrigin );
+        rewriteMacroLoc ( lineDiff, node->branch(), origin );
     }
 }
 

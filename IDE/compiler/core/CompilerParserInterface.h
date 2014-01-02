@@ -106,10 +106,12 @@ class CompilerParserInterface
         /**
          * @brief
          * @param[in] filename
+         * @param[in,out] finalFilename
          * @param[in] acyclic
          * @return
          */
         virtual FILE * fileOpen ( const std::string & filename,
+                                  std::string * finalFilename = NULL,
                                   bool acyclic = true ) = 0;
 
         /**

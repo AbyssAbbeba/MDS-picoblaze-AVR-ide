@@ -23,7 +23,6 @@ set ( CMAKE_VERBOSE_MAKEFILE OFF )
 # After this command, you can add tests in the project using ADD_TEST command.
 enable_testing()
 
-
 # ------------------------------------------------------------------------------
 # COMPILATION OPTIONS
 # ------------------------------------------------------------------------------
@@ -36,7 +35,6 @@ include_directories ( "${CMAKE_CURRENT_SOURCE_DIR}/../../../simulators/MCUSim" )
 add_library ( MCUSimTestScript SHARED
               MCUSimTestScript.cxx
               MCUSimTestScriptStrategy.cxx )
-
 
 # ------------------------------------------------------------------------------
 # BUILD COMPONENTS IN THE SUBDIRECTORIES

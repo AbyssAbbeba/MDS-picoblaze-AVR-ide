@@ -15,6 +15,11 @@
 
 #include "CompilerMsgIntfFile.h"
 
+CompilerMsgIntfFile::~CompilerMsgIntfFile()
+{
+    closeFile();
+}
+
 void CompilerMsgIntfFile::openFile ( const std::string & filename )
 {
     if ( true == m_ofstream.is_open() )

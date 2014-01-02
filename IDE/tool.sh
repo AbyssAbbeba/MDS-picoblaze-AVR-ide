@@ -1,14 +1,98 @@
 #! /bin/bash
 
-readonly VERSION=0.1
+readonly VERSION=0.2
 
-declare -i options_a=0
 declare -i options_b=0
 declare -i options_c=0
-declare -i options_y=0
+declare -i options_T=0
 declare -i options_l=0
+declare -i options_q=0
 declare -i options_s=0
-declare -i options_m=0
+declare -i options_t=0
+declare -ir CPU_CORES=$( which lscpu > /dev/null && lscpu | \
+                         gawk 'BEGIN { n = 1 } END { print(n) } /^CPU\(s\)/ { n = $2; exit }' || echo 1 )
+declare -ir PP=$(( CPU_CORES + 1 ))
+
+echo "Using up to ${CPU_CORES} CPU cores."
+
+function build() {
+    if [ "$(uname -o)" == "Msys" ]; then
+        # Build on Windows.
+        QT_PATH="$(for i in /c/QtSDK/Desktop/Qt/*/mingw/bin; do echo $i; break; done)"
+        export PATH="${QT_PATH}:${PATH}"
+        cmake -DCMAKE_BUILD_TYPE=Debug -DTEST_COVERAGE=OFF -DCOLOR_GCC=ON -DCMAKE_COLOR_MAKEFILE=OFF \
+              -G "MSYS Makefiles" . || exit 1
+    else
+        # Build on a POSIX system.
+        cmake -DCMAKE_BUILD_TYPE=Debug -DTEST_COVERAGE=OFF -DCOLOR_GCC=ON -DCMAKE_COLOR_MAKEFILE=OFF . || exit 1
+    fi
+
+    make -j${PP}
+}
+
+function repoSync() {
+    local -r REPO=$( git remote show | head -n 1 )
+
+    git commit -a -m "."
+    git pull ${REPO} master
+    git push ${REPO} master
+}
+
+function tests() {
+    if [[ -e tests/results ]]; then
+        rm -rf tests/results || exit 1
+    fi
+
+    mkdir tests/results || exit 1
+    date +'%s' > tests/results/startTime.log
+
+    local -r BUILD_LOG="tests/results/BuildLog.txt"
+    local -r STATUS_FILE="tests/results/status.txt"
+    local -i status=1
+
+    cmake -DCMAKE_BUILD_TYPE=Debug          \
+          -DTEST_COVERAGE=${cov:-ON}        \
+          -DTEST_MEMCHECK=${val:-ON}        \
+          -DCOLOR_GCC=OFF                   \
+          -DCMAKE_COLOR_MAKEFILE=OFF . 2>&1 \
+        | tee "${BUILD_LOG}" || status=0
+    if [[ "${1}" != "0" ]]; then
+        make -j${PP} 2>&1 | tee -a "${BUILD_LOG}" || status=0
+    fi
+    echo ${status} > "${STATUS_FILE}"
+
+    ctest -j${PP}
+    make test_analysis
+}
+
+function printVersion() {
+    printf "%s\n" "$VERSION"
+    exit 1
+}
+
+function printHelp() {
+    printf "This is a tool for doing various things with the code here.\n"
+    printf "Version: %s\n" "$VERSION"
+    printf "\n"
+    printf "Options:\n"
+    printf "    -b    Build.\n"
+    printf "    -h    Print this message.\n"
+    printf "    -t    Build and run all tests.\n"
+    printf "    -V    Print version of this script.\n"
+    printf "    -T    Run all tests (without build).\n"
+    printf "    -s    Synchronize with the central repository.\n"
+    printf "    -l    Count number of lines in .cxx, .cpp, .c, and .h files.\n"
+    printf "    -q    Print some statistics regarding generated binary files.\n"
+    printf "    -c    Clean up the directories by removing all automatically generated files.\n"
+    printf "\n"
+    printf "Order of options does not matter.\n"
+    exit 1
+}
+
+function unknownOption() {
+    printf "Unknow option. Try to run './${1} -h' to get help.\n\n"
+    printHelp
+}
 
 function clean() {
     cmake .
@@ -33,21 +117,23 @@ function clean() {
     rm -fv 'CPackConfig.cmake'
     rm -fv *-Linux.*
 
-    while true; do
-        if [ "${options_y}" != "1" ]; then
-            printf "Remove also Makefiles? [yes]: "
-            read response
-        fi
+    rm -fv $(find -type f -name 'Makefile')
 
-        if [[ "${options_y}" == "1" || "$response" == "yes" || "$response" == "y" || "$response" == "" ]]; then
-            rm -fv $(find -type f -name 'Makefile')
-            break
-        elif [[ "$response" == "no" || "$response" == "n" ]]; then
-            break
-        else
-            printf "Please respond 'yes' or 'no'.\n\n"
-        fi
-    done
+#     while true; do
+#         if [[ "${options_y}" != "1" ]]; then
+#             printf "Remove also Makefiles? [yes]: "
+#             read response
+#         fi
+#
+#         if [[ "${options_y}" == "1" || "$response" == "yes" || "$response" == "y" || "$response" == "" ]]; then
+#             rm -fv $(find -type f -name 'Makefile')
+#             break
+#         elif [[ "$response" == "no" || "$response" == "n" ]]; then
+#             break
+#         else
+#             printf "Please respond 'yes' or 'no'.\n\n"
+#         fi
+#     done
 }
 
 function countLines() {
@@ -130,86 +216,24 @@ function countLines() {
     rm "$tempFile"
 }
 
-function buildAll() {
-    build
-    make manual
-    make doxygen
-    make test
-    make package
-}
-
-function execCMake() {
-    if [ "$(uname -o)" == "Msys" ]; then
-        # Build on Windows.
-        QT_PATH="$(for i in /c/QtSDK/Desktop/Qt/*/mingw/bin; do echo $i; break; done)"
-        export PATH="${QT_PATH}:${PATH}"
-        cmake -DCMAKE_BUILD_TYPE=Debug -G "MSYS Makefiles" . || exit 1
-    else
-        # Build on a POSIX system.
-        cmake -DCMAKE_BUILD_TYPE=Debug . || exit 1
-    fi
-}
-
-function build() {
-    # Build in n separate processes where n is the number of CPU cores plus one.
-    execCMake
-    which lscpu > /dev/null && make -j$(lscpu | gawk '/^CPU\(s\)/ {printf("%d", ($2+2))}') || make
-}
-
-function repoSync() {
-    git commit -a -m "."
-    git pull mms master
-    git push mms master
-}
-
-function printVersion() {
-    printf "%s\n" "$VERSION"
-    exit 1
-}
-
-function printHelp() {
-    printf "This is a tool for doing various things with the code here.\n"
-    printf "Version: %s\n" "$VERSION"
-    printf "\n"
-    printf "Options:\n"
-    printf "    -b    Build.\n"
-    printf "    -a    Build EVERYTHING, and run the tests.\n"
-    printf "    -c    Clean up the directories by removing all temporary files.\n"
-    printf "    -l    Count number of lines in .cxx, .cpp, .c, and .h files.\n"
-    printf "    -y    Automatically assume a positive response to any prompt.\n"
-    printf "    -V    Print version of this script.\n"
-    printf "    -s    Synchronize with the central repository.\n"
-    printf "    -q    Print some statistics regarding generated binary files.\n"
-    printf "    -h    Print this message.\n"
-    printf "\n"
-    printf "Order of options doesn't matter.\n"
-    exit 1
-}
-
-function unknownOption() {
-    printf "Unknow option. Try to run './${1} -h' to get help.\n\n"
-    printHelp
-}
-
 function main() {
     local -i optTaken=0
 
-    cd "$(dirname "${0}")"
+    cd "$(dirname "$(readlink -n -f "${0}")" )"
 
     # Parse CLI options using `getopts' utility
-    while getopts ":hVcylabsmq" opt; do
+    while getopts ":hVcltTbsmq" opt; do
         optTaken=1
 
         case $opt in
             h) printHelp;;
             V) printVersion;;
             b) options_b=1;;
-            a) options_a=1;;
+            t) options_t=1;;
+            T) options_T=1;;
             c) options_c=1;;
-            y) options_y=1;;
             l) options_l=1;;
             s) options_s=1;;
-            m) options_m=1;;
             q) options_q=1;;
             ?) unknownOption "$(basename "${0}")";;
         esac
@@ -228,18 +252,16 @@ function main() {
     if (( ${options_l} )); then
         countLines
     fi
-    if (( ${options_m} && !${options_b} && !${options_a} )); then
-        execCMake
-    fi
-    if (( ${options_a} )); then
-        buildAll
-    fi
-    if (( ${options_b} && !${options_a} )); then
+    if (( ${options_T} )); then
+        tests 0
+    elif (( ${options_t} )); then
+        tests 1
+    elif (( ${options_b} )); then
         build
     fi
     if (( ${options_q} )); then
         for i in $(find . -executable); do
-            if [ -f "$i" ]; then
+            if [[ -f "$i" ]]; then
                 if file "$i" | grep 'ELF' &>/dev/null; then
                     ls -l $i
                 fi

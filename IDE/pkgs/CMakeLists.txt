@@ -44,7 +44,7 @@ elseif ( CMAKE_HOST_WIN32 )
     INSTALL ( FILES ${libgcc} ${libstdc} ${libmingwm} ${libqtcore} ${libqtgui} ${libqtxml}
               DESTINATION bin )
 
-else ( CMAKE_HOST_WIN32 )
+else()
     #
     ## GNU/Linux and possibly other POSIX systems
     #
@@ -54,4 +54,4 @@ else ( CMAKE_HOST_WIN32 )
     install ( FILES mmIDE.desktop DESTINATION share/applications/ )
     install ( FILES application-x-mmIDE.xml DESTINATION share/mime/packages/ )
 
-endif ( CMAKE_HOST_APPLE )
+endif()

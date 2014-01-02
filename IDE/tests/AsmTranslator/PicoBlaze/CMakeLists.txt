@@ -23,7 +23,6 @@ set ( CMAKE_VERBOSE_MAKEFILE OFF )
 # After this command, you can add tests in the project using ADD_TEST command.
 enable_testing()
 
-
 # ------------------------------------------------------------------------------
 # BUILD COMPONENTS IN THE SUBDIRECTORIES
 # ------------------------------------------------------------------------------
@@ -37,7 +36,6 @@ add_subdirectory ( openPICIDE )
 # Tests for Xilinx assembler variant.
 add_subdirectory ( Xilinx )
 
-
 # ------------------------------------------------------------------------------
 # COMPILATION OPTIONS
 # ------------------------------------------------------------------------------
@@ -49,13 +47,15 @@ find_package ( Boost 1.55
 
 # Add include directories to the build.
 include_directories ( ${Boost_INCLUDE_DIRS}
-                      "${CMAKE_CURRENT_SOURCE_DIR}/../../../compiler"
-                      "${CMAKE_CURRENT_SOURCE_DIR}/../../../utilities/MCUDataFiles"
-                      "${CMAKE_CURRENT_SOURCE_DIR}/../../../utilities/AsmTranslator" )
+                      "${CMAKE_CURRENT_SOURCE_DIR}/../../../compiler/"
+                      "${CMAKE_CURRENT_SOURCE_DIR}/../../../utilities/AutoTest/"
+                      "${CMAKE_CURRENT_SOURCE_DIR}/../../../utilities/MCUDataFiles/"
+                      "${CMAKE_CURRENT_SOURCE_DIR}/../../../utilities/AsmTranslator/" )
 
 # Specify directories in which the linker will look for libraries.
 link_directories ( ${Boost_LIBRARY_DIRS}
                    "${CMAKE_CURRENT_SOURCE_DIR}/../../../compiler/core"
+                   "${CMAKE_CURRENT_SOURCE_DIR}/../../../utilities/AutoTest/"
                    "${CMAKE_CURRENT_SOURCE_DIR}/../../../utilities/MCUDataFiles"
                    "${CMAKE_CURRENT_SOURCE_DIR}/../../../utilities/AsmTranslator" )
 
@@ -72,12 +72,10 @@ target_link_libraries ( ${PROJECT_NAME}
                         AsmTranslator
                         CompilerCore
                         MCUDataFiles
-                        cunit )
-
+                        AutoTest )
 
 # ------------------------------------------------------------------------------
 # TESTS
 # ------------------------------------------------------------------------------
 
-add_test ( NAME ${PROJECT_NAME}
-           COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME} )
+ADD_TEST_SUBJECT ( "AsmTranslator_PicoBlaze" "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}" )

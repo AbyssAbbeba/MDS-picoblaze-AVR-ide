@@ -24,8 +24,7 @@ set ( CMAKE_VERBOSE_MAKEFILE OFF )
 # COMPILATION OPTIONS
 # ------------------------------------------------------------------------------
 
-# Generate lexical and syntax analyzers
-include ( "${CMAKE_CURRENT_SOURCE_DIR}/../../../../FlexBisonPair.cmake" )
+# Generate lexical and syntax analyzers.
 FLEX_BISON_PAIR ( AsmPicoBlazeLexer AsmPicoBlazeParser AsmPicoBlazeLexerParser )
 
 # Load settings specific for the Qt4 library (we use it here for i18n)

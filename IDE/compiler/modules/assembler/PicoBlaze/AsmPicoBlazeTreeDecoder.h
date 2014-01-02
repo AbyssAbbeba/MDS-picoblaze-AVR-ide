@@ -120,8 +120,15 @@ class AsmPicoBlazeTreeDecoder
          * @param[in] functionality
          * @return
          */
-        bool checkKcpsm3AndHigher ( const CompilerSourceLocation * location,
+        bool checkKcpsm3AndHigher ( const CompilerSourceLocation & location,
                                     const char * functionality );
+
+        /**
+         * @brief
+         * @param[in] expr
+         * @return
+         */
+        bool isBlank ( const CompilerExpr * expr ) const;
 
     ////    Inline Private Operations    ////
     private:
@@ -156,18 +163,14 @@ class AsmPicoBlazeTreeDecoder
         /**
          * @brief
          * @param[in,out] node
-         * @param[in] location
          */
-        inline void dir_AUTOxxx ( CompilerStatement * node,
-                                  const CompilerSourceLocation * location );
+        inline void dir_AUTOxxx ( CompilerStatement * node );
 
         /**
          * @brief
          * @param[in,out] node
-         * @param[in] location
          */
-        inline void dir_DB ( CompilerStatement * node,
-                             const CompilerSourceLocation * location );
+        inline void dir_DB ( CompilerStatement * node );
 
         /**
          * @brief
@@ -184,26 +187,20 @@ class AsmPicoBlazeTreeDecoder
         /**
          * @brief
          * @param[in,out] node
-         * @param[in] location
          */
-        inline void dir_MESSG ( CompilerStatement * node,
-                                const CompilerSourceLocation * location );
+        inline void dir_MESSG ( CompilerStatement * node );
 
         /**
          * @brief
          * @param[in,out] node
-         * @param[in] location
          */
-        inline void dir_WARNING ( CompilerStatement * node,
-                                  const CompilerSourceLocation * location );
+        inline void dir_WARNING ( CompilerStatement * node );
 
         /**
          * @brief
          * @param[in,out] node
-         * @param[in] location
          */
-        inline void dir_ERROR ( CompilerStatement * node,
-                                const CompilerSourceLocation * location );
+        inline void dir_ERROR ( CompilerStatement * node );
 
         /**
          * @brief
@@ -214,30 +211,24 @@ class AsmPicoBlazeTreeDecoder
         /**
          * @brief
          * @param[in,out] node
-         * @param[in] location
          * @param[in] macroName
          * @param[in,out] localSymbols
          */
         inline void dir_LOCAL ( CompilerStatement * node,
-                                const CompilerSourceLocation * location,
                                 const std::string * macroName,
                                 std::vector<std::string> & localSymbols );
 
         /**
          * @brief
          * @param[in,out] node
-         * @param[in] location
          */
-        inline void dir_SET ( CompilerStatement * node,
-                              const CompilerSourceLocation * location );
+        inline void dir_SET ( CompilerStatement * node );
 
         /**
          * @brief
          * @param[in,out] node
-         * @param[in] location
          */
-        inline void dir_DEFINE ( CompilerStatement * node,
-                                 const CompilerSourceLocation * location );
+        inline void dir_DEFINE ( CompilerStatement * node );
 
         /**
          * @brief
@@ -248,10 +239,8 @@ class AsmPicoBlazeTreeDecoder
         /**
          * @brief
          * @param[in,out] node
-         * @param[in] location
          */
-        inline void label ( CompilerStatement * node,
-                            const CompilerSourceLocation * location );
+        inline void label ( CompilerStatement * node );
 
         /**
          * @brief
@@ -268,18 +257,14 @@ class AsmPicoBlazeTreeDecoder
         /**
          * @brief
          * @param[in,out] node
-         * @param[in] location
          */
-        inline void dir_LIMIT ( CompilerStatement * node,
-                                const CompilerSourceLocation * location );
+        inline void dir_LIMIT ( CompilerStatement * node );
 
         /**
          * @brief
          * @param[in,out] node
-         * @param[in] location
          */
-        inline void dir_EQU_etc ( CompilerStatement * node,
-                                  const CompilerSourceLocation * location );
+        inline void dir_EQU_etc ( CompilerStatement * node );
 
         /**
          * @brief
@@ -291,65 +276,51 @@ class AsmPicoBlazeTreeDecoder
         /**
          * @brief
          * @param[in,out] node
-         * @param[in] location
          * @return
          */
-        inline CourseOfAction dir_REPT ( CompilerStatement * node,
-                                         const CompilerSourceLocation * location );
+        inline CourseOfAction dir_REPT ( CompilerStatement * node );
 
         /**
          * @brief
          * @param[in,out] node
-         * @param[in] location
          * @return
          */
-        inline CourseOfAction dir_WHILE ( CompilerStatement * node,
-                                          const CompilerSourceLocation * location );
+        inline CourseOfAction dir_WHILE ( CompilerStatement * node );
 
         /**
          * @brief
          * @param[in,out] node
-         * @param[in] location
          * @return
          */
-        inline CourseOfAction macro ( CompilerStatement * node,
-                                      const CompilerSourceLocation * location );
+        inline CourseOfAction macro ( CompilerStatement * node );
 
         /**
          * @brief
          * @param[in,out] node
-         * @param[in] location
          * @return
          */
-        inline CourseOfAction dir_RTCOND ( CompilerStatement * node,
-                                           const CompilerSourceLocation * location );
+        inline CourseOfAction dir_RTCOND ( CompilerStatement * node );
 
         /**
          * @brief
          * @param[in,out] node
-         * @param[in] location
          * @return
          */
-        inline CourseOfAction dir_RTWHILE ( CompilerStatement * node,
-                                            const CompilerSourceLocation * location );
+        inline CourseOfAction dir_RTWHILE ( CompilerStatement * node );
 
         /**
          * @brief
          * @param[in,out] node
-         * @param[in] location
          * @return
          */
-        inline CourseOfAction dir_RTFOR ( CompilerStatement * node,
-                                          const CompilerSourceLocation * location );
+        inline CourseOfAction dir_RTFOR ( CompilerStatement * node );
 
         /**
          * @brief
          * @param[in,out] node
-         * @param[in] location
          * @return
          */
-        inline CourseOfAction dir_DEVICE ( CompilerStatement * node,
-                                           const CompilerSourceLocation * location );
+        inline CourseOfAction dir_DEVICE ( CompilerStatement * node );
 
         /**
          * @brief

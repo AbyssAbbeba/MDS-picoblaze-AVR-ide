@@ -19,8 +19,8 @@
 // Common compiler header files.
 #include "CompilerBase.h"
 #include "CompilerExpr.h"
-#include "CompilerStatementTypes.h"
 #include "CompilerSerializable.h"
+#include "CompilerStatementTypes.h"
 #include "CompilerSourceLocation.h"
 
 // Standard header files.
