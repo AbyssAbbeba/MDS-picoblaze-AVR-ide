@@ -45,6 +45,9 @@ BEGIN {
     print "        span.char {"
     print "            color: #FF80E0;"
     print "        }"
+    print "        span.char span.symbol {"
+    print "            color: #FF80E0;"
+    print "        }"
     print "        span.symbol {"
     print "            color: #008000;"
     print "        }"
@@ -212,7 +215,7 @@ function syntaxHgMinor ( string ) {
 
     gsub ( /</,  "\x01", string )
     gsub ( />/,  "\x02", string )
-    gsub ( / /,  "\x03 ",string )
+    gsub ( / /,  "\x03", string )
     gsub ( /;/,  "\x04", string )
     gsub ( /\//, "\x05", string )
     gsub ( /=/,  "<span class=\"symbol\">=</span>",        string )
@@ -230,7 +233,7 @@ function syntaxHgMinor ( string ) {
     string = "<span>" string "</span>"
 
     buffer = ""
-    while ( match ( string, /[;&>](if|else|while|do|for|continue|break|switch|case|default|namespace|struct|union|return|enum|sizeof|using|export|typedef|class|catch|try|throw|new|delete|virtual|constexpr|inline|goto|public:?|private:?|protected:?)[<;&]/ ) ) {
+    while ( match ( string, /[;&>](if|else|while|do|for|continue|break|switch|case|default|namespace|struct|union|return|enum|sizeof|using|export|typedef|class|friend|catch|try|throw|new|delete|virtual|constexpr|inline|goto|public:?|private:?|protected:?)[<;&]/ ) ) {
         buffer = buffer substr(string, 1, RSTART) "<span class=\"kw\">" substr(string, RSTART+1, RLENGTH-2) "</span>"
         string = substr(string, RSTART + RLENGTH - 1)
     }
