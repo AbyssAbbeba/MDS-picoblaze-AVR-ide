@@ -212,9 +212,9 @@ function syntaxHgMinor ( string ) {
 
     gsub ( /</,  "\x01", string )
     gsub ( />/,  "\x02", string )
-    gsub ( / /,  "\x03", string )
+    gsub ( / /,  "\x03 ",string )
     gsub ( /;/,  "\x04", string )
-    gsub ( /\//,  "\x05", string )
+    gsub ( /\//, "\x05", string )
     gsub ( /=/,  "<span class=\"symbol\">=</span>",        string )
     gsub ( /&/,  "<span class=\"symbol\">\\&amp;</span>",  string )
     gsub ( /\x01/, "<span class=\"symbol\">\\&lt;</span>", string )
