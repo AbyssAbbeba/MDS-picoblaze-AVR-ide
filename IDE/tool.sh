@@ -32,7 +32,7 @@ function build() {
 
 function tests() {
     for program in 'xsltproc' 'valgrind' 'gcov'; do
-        if ! which xsltproc; then
+        if ! which xsltproc &> /dev/null; then
             echo "${program} is missing, please install ${program} and run again." > /dev/stderr
             exit 1
         fi
