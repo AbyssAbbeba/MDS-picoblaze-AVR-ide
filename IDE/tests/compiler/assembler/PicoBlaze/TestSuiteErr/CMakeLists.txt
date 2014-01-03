@@ -16,12 +16,6 @@
 # Set project name
 project ( TAP_TestSuiteErr )
 
-# Set the minimum required version of CMake
-cmake_minimum_required ( VERSION 2.8 )
-
-# Create verbose makefiles if on
-set ( CMAKE_VERBOSE_MAKEFILE OFF )
-
 # List of additional files that will be cleaned as a part of the "make clean" stage.
 FILE ( GLOB resultFiles results/* )
 set_directory_properties ( PROPERTIES
@@ -30,11 +24,6 @@ set_directory_properties ( PROPERTIES
 # ------------------------------------------------------------------------------
 # COMPILATION OPTIONS
 # ------------------------------------------------------------------------------
-
-# Find Boost include directories and libraries.
-find_package ( Boost 1.55
-               REQUIRED
-               COMPONENTS filesystem system )
 
 # Add include directories to the build.
 include_directories ( ${Boost_INCLUDE_DIRS}

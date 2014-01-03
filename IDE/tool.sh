@@ -31,6 +31,13 @@ function build() {
 }
 
 function tests() {
+    for program in 'xsltproc' 'valgrind' 'gcov'; do
+        if ! which xsltproc; then
+            echo "${program} is missing, please install ${program} and run again." > /dev/stderr
+            exit 1
+        fi
+    done
+
     if [[ -e tests/results ]]; then
         rm -rf tests/results || exit 1
     fi
