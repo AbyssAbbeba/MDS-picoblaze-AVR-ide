@@ -27,7 +27,7 @@ AsmTranslatorKcpsmMed::AsmTranslatorKcpsmMed()
     const boost::regex::flag_type flags = ( boost::regex::extended | boost::regex::icase | boost::regex::optimize );
 
     m_reAtMark      = boost::regex ( "^@", flags );
-    m_reComment     = boost::regex ( "^;.*$", flags );
+    m_reComment     = boost::regex ( "^(;)|(//).*$", flags );
     m_reOperand     = boost::regex ( "^[^,;]+", flags );
     m_reWord        = boost::regex ( "[_[:alnum:]]+", flags );
     m_reWhiteSpace  = boost::regex ( "^[[:space:]]+", flags );
@@ -211,6 +211,12 @@ bool AsmTranslatorKcpsmMed::process ( std::vector<std::string> & messages,
         begin = match[0].second;
         lineFields.m_comment[0] = std::distance(lineStartIt, match[0].first);
         lineFields.m_comment[1] = std::distance(lineStartIt, match[0].second);
+
+        if ( '/' == line[lineFields.m_comment[0]] )
+        {
+            line.replace(lineFields.m_comment[0], 2, ";");
+            lineFields.m_comment[1]--;
+        }
     }
 
     if ( ( false == secondPass ) && ( line.cend() != begin ) )
