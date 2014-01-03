@@ -215,6 +215,7 @@ bool AsmTranslatorKcpsmMed::process ( std::vector<std::string> & messages,
         if ( '/' == line[lineFields.m_comment[0]] )
         {
             line.replace(lineFields.m_comment[0], 2, ";");
+            begin = match[0].second - 1;
             lineFields.m_comment[1]--;
         }
     }
