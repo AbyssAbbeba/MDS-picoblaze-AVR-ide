@@ -16,12 +16,6 @@
 # Set project name
 project ( TMS_TestMScriptIII )
 
-# Set the minimum required version of CMake
-cmake_minimum_required ( VERSION 2.8 )
-
-# Create verbose makefiles if on
-set ( CMAKE_VERBOSE_MAKEFILE OFF )
-
 # List of additional files that will be cleaned as a part of the "make clean" stage.
 FILE ( GLOB resultFiles results/*.* )
 set_directory_properties ( PROPERTIES

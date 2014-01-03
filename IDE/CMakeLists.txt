@@ -1,18 +1,19 @@
-# ==============================================================================
+# ======================================================================================================================
+#
+#    M   M  OO  RRR    A   V   V III   A      M   M III  OOO  RRR   OO   SSSS Y   Y  SSSS TTTTT EEEEE M   M  SSSS
+#    MM MM O  O R  R  A A  V   V  I   A A     MM MM  I  O   O R  R O  O S      Y Y  S       T   E     MM MM S
+#    M M M O  O RRR  A   A V   V  I  A   A    M M M  I  O   O RRR  O  O  SS     Y    SS     T   EEEEE M M M  SS
+#    M   M O  O RR   AAAAA  V V   I  AAAAA    M   M  I  O   O RR   O  O    SS   Y      SS   T   E     M   M    SS
+#    M   M O  O R R  A   A  V V   I  A   A    M   M  I  O   O R R  O  O      S  Y        S  T   E     M   M      S
+#    M   M  OO  R  R A   A   V   III A   A    M   M III  OOO  R  R  OO   SSSS   Y    SSSS   T   EEEEE M   M  SSSS
+#
+# ======================================================================================================================
 #
 # The entire Multitarget Development System.
 #
 # (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
 #
-# ==============================================================================
-
-
-# M   M  OO  RRR    A   V   V III   A      M   M III  OOO  RRR   OO   SSSS Y   Y  SSSS TTTTT EEEEE M   M  SSSS
-# MM MM O  O R  R  A A  V   V  I   A A     MM MM  I  O   O R  R O  O S      Y Y  S       T   E     MM MM S
-# M M M O  O RRR  A   A V   V  I  A   A    M M M  I  O   O RRR  O  O  SS     Y    SS     T   EEEEE M M M  SS
-# M   M O  O RR   AAAAA  V V   I  AAAAA    M   M  I  O   O RR   O  O    SS   Y      SS   T   E     M   M    SS
-# M   M O  O R R  A   A  V V   I  A   A    M   M  I  O   O R R  O  O      S  Y        S  T   E     M   M      S
-# M   M  OO  R  R A   A   V   III A   A    M   M III  OOO  R  R  OO   SSSS   Y    SSSS   T   EEEEE M   M  SSSS
+# ======================================================================================================================
 
 # ------------------------------------------------------------------------------
 # GENERAL OPTIONS
@@ -30,7 +31,7 @@ set ( CMAKE_VERBOSE_MAKEFILE OFF )
 # Set default build type to Debug.
 if ( NOT CMAKE_BUILD_TYPE )
   set ( CMAKE_BUILD_TYPE Debug CACHE STRING
-        "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel."
+        "Choose the type of build, options are: Debug, Release, and MinSizeRel."
         FORCE )
 endif()
 message ( STATUS "Configuring environment for build in mode: ${CMAKE_BUILD_TYPE}" )
@@ -71,8 +72,20 @@ if ( CMAKE_COMPILER_IS_GNUCXX OR CMAKE_COMPILER_IS_GNUCPP )
     endif()
 endif()
 
-# Include our own CMake scripts.
-include ( "${CMAKE_SOURCE_DIR}/tests.cmake" )
+# ------------------------------------------------------------------------------
+# LIBRARIES
+# ------------------------------------------------------------------------------
+
+# Find Qt4 directories and libraries.
+find_package ( Qt4 4.8.1 REQUIRED
+               COMPONENTS QtCore QtGui QtXml QtHelp )
+include ( ${QT_USE_FILE} )
+
+# Find Boost include directories and libraries.
+find_package ( Boost 1.55 REQUIRED
+               COMPONENTS regex filesystem system )
+
+# Include our own macros for using Flex and Bison.
 include ( "${CMAKE_SOURCE_DIR}/FlexBisonPair.cmake" )
 
 # ------------------------------------------------------------------------------
@@ -84,6 +97,9 @@ enable_testing()
 
 # CTest is a testing tool distributed as a part of CMake.
 include ( CTest )
+
+# Include our own test macros.
+include ( "${CMAKE_SOURCE_DIR}/tests.cmake" )
 
 # ------------------------------------------------------------------------------
 # BUILD COMPONENTS IN THE SUBDIRECTORIES
