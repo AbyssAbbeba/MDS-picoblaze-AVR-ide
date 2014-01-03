@@ -1,5 +1,7 @@
 #! /bin/bash
 
+export LC_ALL="${LANG}"
+
 readonly VERSION="0.2"
 declare -ir CPU_CORES=$( which lscpu > /dev/null && lscpu | \
                          gawk 'BEGIN { n = 1 } END { print(n) } /^CPU\(s\)/ { n = $2; exit }' || echo 1 )
@@ -55,7 +57,7 @@ function tests() {
           -DCOLOR_GCC=OFF                   \
           -DCMAKE_COLOR_MAKEFILE=OFF . 2>&1 \
         | tee "${BUILD_LOG}" || status=0
-    make -j${PP} 2>&1 | tee -a "${BUILD_LOG}" || status=0
+    make -j${PP} --keep-going 2>&1 | tee -a "${BUILD_LOG}" || status=0
     echo ${status} > "${STATUS_FILE}"
 
     if [[ -z "${1}" ]]; then
@@ -73,7 +75,7 @@ function clean() {
     for dirGlob in 'CMakeFiles' 'Testing' '_CPack_Packages'; do
         rm -rfv $(find -type d -name "${dirGlob}")
     done
-    for fileGlob in 'Makefile''Doxyfile' 'DartConfiguration.tcl' 'CPackSourceConfig.cmake' 'CPackConfig.cmake' \
+    for fileGlob in 'Makefile' 'Doxyfile' 'DartConfiguration.tcl' 'CPackSourceConfig.cmake' 'CPackConfig.cmake' \
                     '*-Linux.*' '*~' '*.a' '*.so' 'moc_*.cxx' '.directory' 'CMakeCache.txt' 'cmake_install.cmake' \
                     'CTestTestfile.cmake' 'install_manifest.txt'
     do
@@ -84,7 +86,7 @@ function clean() {
 function repoSync() {
     local -r REPO=$( git remote show | head -n 1 )
 
-    git commit -a -m "."
+    git commit -a -m "(no comment)"
     git pull ${REPO} master
     git push ${REPO} master
 }
