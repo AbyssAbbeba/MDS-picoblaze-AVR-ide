@@ -15,6 +15,9 @@
 
 #include "CompilerSerializer.h"
 
+// Compiler compiler header files.
+#include "CompilerLocationTracker.h"
+
 // Standard header files.
 #include <cstring>
 
@@ -33,10 +36,12 @@ const char * const CompilerSerializer::COMMON_FILE_HEADER = "Moravia Microsystem
 
 CompilerSerializer::CompilerSerializer ( std::istream & input,
                                          std::vector<std::pair<std::string,FILE*>> & files,
+                                         CompilerLocationTracker * locationTracker,
                                          CompilerBase::LangId lang,
                                          CompilerBase::TargetArch arch,
                                          bool hide )
-                                       : m_input  ( &input ),
+                                       :
+                                         m_input  ( &input ),
                                          m_output ( NULL ),
                                          m_role   ( DESERIALIZER )
 {
@@ -94,13 +99,18 @@ CompilerSerializer::CompilerSerializer ( std::istream & input,
             m_fileNumberMap.push_back(fileNumber);
         }
     }
+
+    m_locInitShift = locationTracker->getInitShift();
+    locationTracker->deserialize(*this);
 }
 
 CompilerSerializer::CompilerSerializer ( std::ostream & output,
                                          const std::vector<std::pair<std::string,FILE*>> & files,
+                                         const CompilerLocationTracker * locationTracker,
                                          CompilerBase::LangId lang,
                                          CompilerBase::TargetArch arch )
-                                       : m_input  ( NULL ),
+                                       :
+                                         m_input  ( NULL ),
                                          m_output ( &output ),
                                          m_role   ( SERIALIZER )
 {
@@ -116,6 +126,8 @@ CompilerSerializer::CompilerSerializer ( std::ostream & output,
     {
         write ( it->first );
     }
+
+    locationTracker->serialize(*this);
 }
 
 void CompilerSerializer::write ( uint8_t val )
@@ -317,4 +329,9 @@ int CompilerSerializer::translateFileNumber ( int number ) const
     {
         return m_fileNumberMap[number];
     }
+}
+
+int CompilerSerializer::translateLOrigin ( int origin )
+{
+    return ( origin + m_locInitShift );
 }

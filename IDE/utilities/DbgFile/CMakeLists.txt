@@ -25,15 +25,7 @@ set ( CMAKE_VERBOSE_MAKEFILE OFF )
 # ------------------------------------------------------------------------------
 
 # Add include directories to the build.
-include_directories ( "${CMAKE_CURRENT_BINARY_DIR}/.." )
-
-## Add switches to compiler command line
- # -Wall       : Enables all the warnings.
- # -Wextra     : Enables some extra warning flags that are not enabled by -Wall.
- # -std=c++0x  : Default template arguments may not be used in function templates without -std=c++0x or -std=gnu++0x.
- # -O2         : Optimization, level 2.
- # -pipe       : Use pipes rather than temporary files for communication between the various stages of compilation.
-add_definitions ( -Wall -Wextra -std=c++0x -O2 -pipe )
+include_directories ( "${CMAKE_CURRENT_SOURCE_DIR}/.." )
 
 ## Add a library to the project using the specified source files,
  # in this case it will procude dynamic C++ library.
@@ -43,7 +35,6 @@ add_library ( ${PROJECT_NAME} SHARED
               DbgFileNative.cxx
               DbgFileAvrCoff.cxx
               DbgFileAvraLst.cxx )
-
 
 # ------------------------------------------------------------------------------
 # INSTALLATION OPTIONS

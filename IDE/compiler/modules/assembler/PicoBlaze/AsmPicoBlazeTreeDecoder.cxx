@@ -68,37 +68,20 @@ AsmPicoBlazeTreeDecoder::AsmPicoBlazeTreeDecoder ( CompilerSemanticInterface    
                                                    m_instructionSet ( instructionSet ),
                                                    m_device         ( device         )
 {
+    m_forceNext = NULL;
 }
 
 bool AsmPicoBlazeTreeDecoder::phase1 ( CompilerStatement * codeTree,
-                                       const CompilerSourceLocation * origLocation,
                                        const std::string * macroName )
 {
     using namespace CompilerStatementTypes;
-
     std::vector<std::string> localSymbols;
-
-    m_forceNext = NULL;
 
     for ( CompilerStatement * node = codeTree->next();
           NULL != node;
-          node = node->next() )
+          node = ( ( NULL == m_forceNext ) ? node : m_forceNext )->next() )
     {
-        if ( NULL != m_forceNext )
-        {
-            node = m_forceNext->next();
-            if ( NULL == node )
-            {
-                break;
-            }
-            m_forceNext = NULL;
-        }
-
-        const CompilerSourceLocation * location = origLocation;
-        if ( NULL == location )
-        {
-            location = &(node->location());
-        }
+        m_forceNext = NULL;
 
         if ( true == m_instructionSet->isInstruction ( node ) )
         {
@@ -114,47 +97,47 @@ bool AsmPicoBlazeTreeDecoder::phase1 ( CompilerStatement * codeTree,
             case ASMPICOBLAZE_DIR_CODE:
             case ASMPICOBLAZE_DIR_PORT:
             case ASMPICOBLAZE_DIR_DATA:
-                dir_EQU_etc(node, location);
+                dir_EQU_etc(node);
                 break;
 
             case ASMPICOBLAZE_DIR_AUTOREG:
             case ASMPICOBLAZE_DIR_AUTOSPR:
-                dir_AUTOxxx(node, location);
+                dir_AUTOxxx(node);
                 break;
 
             case ASMPICOBLAZE_LOCAL:
-                dir_LOCAL ( node, location, macroName, localSymbols );
+                dir_LOCAL ( node, macroName, localSymbols );
                 break;
 
             case ASMPICOBLAZE_DIR_END:
                 break;
 
-            case ASMPICOBLAZE_MACRO:       HANDLE_ACTION( macro       ( node, location ) ); break;
-            case ASMPICOBLAZE_DIR_RTFOR:   HANDLE_ACTION( dir_RTFOR   ( node, location ) ); break;
-            case ASMPICOBLAZE_DIR_REPT:    HANDLE_ACTION( dir_REPT    ( node, location ) ); break;
-            case ASMPICOBLAZE_DIR_WHILE:   HANDLE_ACTION( dir_WHILE   ( node, location ) ); break;
-            case ASMPICOBLAZE_RT_COND:     HANDLE_ACTION( dir_RTCOND  ( node, location ) ); break;
-            case ASMPICOBLAZE_DIR_DEVICE:  HANDLE_ACTION( dir_DEVICE  ( node, location ) ); break;
-            case ASMPICOBLAZE_DIR_RTWHILE: HANDLE_ACTION( dir_RTWHILE ( node, location ) ); break;
-            case ASMPICOBLAZE_DIR_EXITM:   HANDLE_ACTION( dir_EXITM   ( node ) );           break;
+            case ASMPICOBLAZE_MACRO:       HANDLE_ACTION( macro       ( node ) ); break;
+            case ASMPICOBLAZE_DIR_RTFOR:   HANDLE_ACTION( dir_RTFOR   ( node ) ); break;
+            case ASMPICOBLAZE_DIR_REPT:    HANDLE_ACTION( dir_REPT    ( node ) ); break;
+            case ASMPICOBLAZE_DIR_WHILE:   HANDLE_ACTION( dir_WHILE   ( node ) ); break;
+            case ASMPICOBLAZE_RT_COND:     HANDLE_ACTION( dir_RTCOND  ( node ) ); break;
+            case ASMPICOBLAZE_DIR_DEVICE:  HANDLE_ACTION( dir_DEVICE  ( node ) ); break;
+            case ASMPICOBLAZE_DIR_RTWHILE: HANDLE_ACTION( dir_RTWHILE ( node ) ); break;
+            case ASMPICOBLAZE_DIR_EXITM:   HANDLE_ACTION( dir_EXITM   ( node ) ); break;
 
-            case ASMPICOBLAZE_DIR_DB:       dir_DB       ( node, location ); continue;
-            case ASMPICOBLAZE_DIR_ORG:      dir_ORG      ( node );           continue;
-            case ASMPICOBLAZE_DIR_SKIP:     dir_SKIP     ( node );           continue;
-            case ASMPICOBLAZE_COND_ASM:     dir_IF       ( node );           break;
-            case ASMPICOBLAZE_DIR_LIST:     dir_LIST     ( node );           break;
-            case ASMPICOBLAZE_DIR_NOLIST:   dir_NOLIST   ( node );           break;
-            case ASMPICOBLAZE_DIR_MACRO:    dir_MACRO    ( node );           break;
-            case ASMPICOBLAZE_DIR_TITLE:    dir_TITLE    ( node );           break;
-            case ASMPICOBLAZE_INCLUDE:      dir_INCLUDE  ( node );           break;
-            case ASMPICOBLAZE_DIR_UNDEFINE: dir_UNDEFINE ( node );           break;
-            case ASMPICOBLAZE_LABEL:        label        ( node, location ); break;
-            case ASMPICOBLAZE_DIR_SET:      dir_SET      ( node, location ); break;
-            case ASMPICOBLAZE_DIR_LIMIT:    dir_LIMIT    ( node, location ); break;
-            case ASMPICOBLAZE_DIR_ERROR:    dir_ERROR    ( node, location ); break;
-            case ASMPICOBLAZE_DIR_MESSG:    dir_MESSG    ( node, location ); break;
-            case ASMPICOBLAZE_DIR_DEFINE:   dir_DEFINE   ( node, location ); break;
-            case ASMPICOBLAZE_DIR_WARNING:  dir_WARNING  ( node, location ); break;
+            case ASMPICOBLAZE_DIR_DB:       dir_DB       ( node ); continue;
+            case ASMPICOBLAZE_DIR_ORG:      dir_ORG      ( node ); continue;
+            case ASMPICOBLAZE_DIR_SKIP:     dir_SKIP     ( node ); continue;
+            case ASMPICOBLAZE_COND_ASM:     dir_IF       ( node ); break;
+            case ASMPICOBLAZE_DIR_LIST:     dir_LIST     ( node ); break;
+            case ASMPICOBLAZE_DIR_NOLIST:   dir_NOLIST   ( node ); break;
+            case ASMPICOBLAZE_DIR_MACRO:    dir_MACRO    ( node ); break;
+            case ASMPICOBLAZE_DIR_TITLE:    dir_TITLE    ( node ); break;
+            case ASMPICOBLAZE_INCLUDE:      dir_INCLUDE  ( node ); break;
+            case ASMPICOBLAZE_DIR_UNDEFINE: dir_UNDEFINE ( node ); break;
+            case ASMPICOBLAZE_LABEL:        label        ( node ); break;
+            case ASMPICOBLAZE_DIR_SET:      dir_SET      ( node ); break;
+            case ASMPICOBLAZE_DIR_LIMIT:    dir_LIMIT    ( node ); break;
+            case ASMPICOBLAZE_DIR_ERROR:    dir_ERROR    ( node ); break;
+            case ASMPICOBLAZE_DIR_MESSG:    dir_MESSG    ( node ); break;
+            case ASMPICOBLAZE_DIR_DEFINE:   dir_DEFINE   ( node ); break;
+            case ASMPICOBLAZE_DIR_WARNING:  dir_WARNING  ( node ); break;
 
             case ASMPICOBLAZE_DIR_EXPAND:   dir_EXPAND   (); break;
             case ASMPICOBLAZE_DIR_NOEXPAND: dir_NOEXPAND (); break;
@@ -214,11 +197,12 @@ void AsmPicoBlazeTreeDecoder::phase2 ( CompilerStatement * codeTree )
                 int opcode = m_instructionSet->resolveOPcode(node);
                 if ( -1 == opcode )
                 {
-                    m_compilerCore->compilerMessage ( node->location(),
+                    m_compilerCore->semanticMessage ( node->location(),
                                                       CompilerBase::MT_ERROR,
                                                       QObject::tr ( "instruction not supported on the this device: " )
                                                                   . toStdString()
                                                                   + m_instructionSet->getInstructionName(node) );
+
                 }
                 else
                 {
@@ -268,7 +252,7 @@ inline void AsmPicoBlazeTreeDecoder::dir_IF ( CompilerStatement * rootNode )
 
             case ASMPICOBLAZE_DIR_IFDEF:
             case ASMPICOBLAZE_DIR_ELSEIFDEF:
-                if ( CompilerValue::TYPE_EMPTY == node->args()->lVal().m_type )
+                if ( true == isBlank(node->args()) )
                 {
                     conditionVal = 0;
                 }
@@ -284,7 +268,7 @@ inline void AsmPicoBlazeTreeDecoder::dir_IF ( CompilerStatement * rootNode )
 
             case ASMPICOBLAZE_DIR_IFNDEF:
             case ASMPICOBLAZE_DIR_ELSEIFNDEF:
-                if ( CompilerValue::TYPE_EMPTY == node->args()->lVal().m_type )
+                if ( true == isBlank(node->args()) )
                 {
                     conditionVal = 1;
                 }
@@ -300,12 +284,12 @@ inline void AsmPicoBlazeTreeDecoder::dir_IF ( CompilerStatement * rootNode )
 
             case ASMPICOBLAZE_DIR_IFB:
             case ASMPICOBLAZE_DIR_ELSEIFB:
-                conditionVal = ( ( CompilerValue::TYPE_EMPTY == node->args()->lVal().m_type ) ? 1 : 0 );
+                conditionVal = ( isBlank(node->args()) ? 1 : 0 );
                 break;
 
             case ASMPICOBLAZE_DIR_IFNB:
             case ASMPICOBLAZE_DIR_ELSEIFNB:
-                conditionVal = ( ( CompilerValue::TYPE_EMPTY == node->args()->lVal().m_type ) ? 0 : 1 );
+                conditionVal = ( isBlank(node->args()) ? 0 : 1 );
                 break;
 
             case ASMPICOBLAZE_DIR_ELSE:
@@ -313,7 +297,7 @@ inline void AsmPicoBlazeTreeDecoder::dir_IF ( CompilerStatement * rootNode )
                 break;
 
             case ASMPICOBLAZE_DIR_ENDIF:
-                break;
+                return;
         }
 
         m_codeListing->setValue(node->location(), conditionVal);
@@ -322,12 +306,12 @@ inline void AsmPicoBlazeTreeDecoder::dir_IF ( CompilerStatement * rootNode )
         {
             rootNode->insertLink(node->branch());
             node->m_branch = NULL;
+            return;
         }
     }
 }
 
-inline void AsmPicoBlazeTreeDecoder::dir_AUTOxxx ( CompilerStatement * node,
-                                                   const CompilerSourceLocation * location )
+inline void AsmPicoBlazeTreeDecoder::dir_AUTOxxx ( CompilerStatement * node )
 {
     using namespace CompilerStatementTypes;
 
@@ -345,7 +329,7 @@ inline void AsmPicoBlazeTreeDecoder::dir_AUTOxxx ( CompilerStatement * node,
         m_memoryPtr->m_data++;
         symbolType = AsmPicoBlazeSymbolTable::STYPE_DATA;
 
-        m_memoryPtr -> tryReserve ( *location, AsmPicoBlazeMemoryPtr::MS_DATA, addr );
+        m_memoryPtr -> tryReserve ( node->location(), AsmPicoBlazeMemoryPtr::MS_DATA, addr );
     }
     else
     {
@@ -358,20 +342,19 @@ inline void AsmPicoBlazeTreeDecoder::dir_AUTOxxx ( CompilerStatement * node,
         m_memoryPtr->m_reg++;
         symbolType = AsmPicoBlazeSymbolTable::STYPE_REGISTER;
 
-        m_memoryPtr -> tryReserve ( *location, AsmPicoBlazeMemoryPtr::MS_REG, addr );
+        m_memoryPtr -> tryReserve ( node->location(), AsmPicoBlazeMemoryPtr::MS_REG, addr );
     }
 
     CompilerExpr value(addr);
     m_symbolTable -> addSymbol ( node->args()->lVal().m_data.m_symbol,
                                  &value,
-                                 location,
+                                 &( node->location() ),
                                  symbolType,
                                  true );
     m_codeListing->setValue(node->location(), addr);
 }
 
-inline void AsmPicoBlazeTreeDecoder::dir_DB ( CompilerStatement * node,
-                                              const CompilerSourceLocation * location )
+inline void AsmPicoBlazeTreeDecoder::dir_DB ( CompilerStatement * node )
 {
     std::vector<unsigned char> dbData;
 
@@ -439,7 +422,7 @@ inline void AsmPicoBlazeTreeDecoder::dir_DB ( CompilerStatement * node,
 
         if ( ( true == isInstWord3B() ) && ( 0 != ( code & ~0x3ffff ) ) )
         {
-            m_compilerCore -> compilerMessage ( *location,
+            m_compilerCore -> semanticMessage ( node->location(),
                                                 CompilerBase::MT_WARNING,
                                                 QObject::tr ( "instruction word is only 18 bits wide, value"
                                                               " `%1' trimmed to `%2'" )
@@ -461,8 +444,7 @@ inline void AsmPicoBlazeTreeDecoder::dir_DB ( CompilerStatement * node,
 }
 
 inline AsmPicoBlazeTreeDecoder::CourseOfAction
-       AsmPicoBlazeTreeDecoder::dir_REPT ( CompilerStatement * node,
-                                           const CompilerSourceLocation * location )
+       AsmPicoBlazeTreeDecoder::dir_REPT ( CompilerStatement * node )
 {
     if ( node->branch()->last() == node->branch() )
     {
@@ -476,7 +458,7 @@ inline AsmPicoBlazeTreeDecoder::CourseOfAction
     }
     if ( times >= MAX_REPEAT_ITERATIONS )
     {
-        m_compilerCore -> compilerMessage ( *location,
+        m_compilerCore -> semanticMessage ( node->location(),
                                             CompilerBase::MT_ERROR,
                                             QObject::tr("maximum number of REPEAT directive iterations (%1) reached")
                                                        .arg(MAX_REPEAT_ITERATIONS).toStdString() );
@@ -489,7 +471,7 @@ inline AsmPicoBlazeTreeDecoder::CourseOfAction
     body->appendLink(node->branch()->copyEntireChain());
     m_codeListing->repeatCode(lastLocation, body, true);
     lastLocation = body->lastLeaf()->location();
-    if ( false == phase1(body/*, location*/) )
+    if ( false == phase1(body) )
     {
         body->completeDelete();
         return CA_RETURN_FALSE;
@@ -501,7 +483,7 @@ inline AsmPicoBlazeTreeDecoder::CourseOfAction
         exp->appendLink(node->branch()->copyEntireChain());
         m_codeListing->repeatCode(lastLocation, exp, false);
         lastLocation = exp->lastLeaf()->location();
-        if ( false == phase1(exp/*, location*/) )
+        if ( false == phase1(exp) )
         {
             body->completeDelete();
             exp->completeDelete();
@@ -519,8 +501,7 @@ inline AsmPicoBlazeTreeDecoder::CourseOfAction
 }
 
 inline AsmPicoBlazeTreeDecoder::CourseOfAction
-       AsmPicoBlazeTreeDecoder::dir_WHILE ( CompilerStatement * node,
-                                            const CompilerSourceLocation * location )
+       AsmPicoBlazeTreeDecoder::dir_WHILE ( CompilerStatement * node )
 {
     if ( node->branch()->last() == node->branch() )
     {
@@ -536,16 +517,15 @@ inline AsmPicoBlazeTreeDecoder::CourseOfAction
     {
         if ( 0 == m_symbolTable->resolveExpr(node->args()) )
         {
-            return CA_NO_ACTION;
+            break;
         }
 
         if ( NULL == body )
         {
-            body = new CompilerStatement();
-            body->appendLink(node->branch()->copyEntireChain());
+            body = (new CompilerStatement())->appendLink(node->branch()->copyEntireChain())->first();
             m_codeListing->repeatCode(lastLocation, body, true);
             lastLocation = body->lastLeaf()->location();
-            if ( false == phase1(body/*, location*/) )
+            if ( false == phase1(body) )
             {
                 body->completeDelete();
                 return CA_RETURN_FALSE;
@@ -553,11 +533,10 @@ inline AsmPicoBlazeTreeDecoder::CourseOfAction
         }
         else
         {
-            CompilerStatement * exp = new CompilerStatement();
-            exp->appendLink(node->branch()->copyEntireChain());
+            CompilerStatement * exp = (new CompilerStatement())->appendLink(node->branch()->copyEntireChain())->first();
             m_codeListing->repeatCode(lastLocation, exp, false);
             lastLocation = exp->lastLeaf()->location();
-            if ( false == phase1(exp/*, location*/) )
+            if ( false == phase1(exp) )
             {
                 body->completeDelete();
                 exp->completeDelete();
@@ -569,7 +548,7 @@ inline AsmPicoBlazeTreeDecoder::CourseOfAction
 
     if ( MAX_WHILE_ITERATIONS == i )
     {
-        m_compilerCore -> compilerMessage ( *location,
+        m_compilerCore -> semanticMessage ( node->location(),
                                             CompilerBase::MT_ERROR,
                                             QObject::tr ( "maximum number of WHILE directive iterations "
                                                           "(%1) reached" )
@@ -591,12 +570,11 @@ inline AsmPicoBlazeTreeDecoder::CourseOfAction
 }
 
 inline AsmPicoBlazeTreeDecoder::CourseOfAction
-       AsmPicoBlazeTreeDecoder::macro ( CompilerStatement * node,
-                                        const CompilerSourceLocation * location )
+       AsmPicoBlazeTreeDecoder::macro ( CompilerStatement * node )
 {
     if ( -1 != m_opts->m_maxMacroExp && node->m_userData >= m_opts->m_maxMacroExp )
     {
-        m_compilerCore -> compilerMessage ( node->location(),
+        m_compilerCore -> semanticMessage ( node->location(),
                                             CompilerBase::MT_ERROR,
                                             QObject::tr ( "maximum macro expansion level (%1) reached " )
                                                         . arg ( m_opts->m_maxMacroExp )
@@ -606,8 +584,7 @@ inline AsmPicoBlazeTreeDecoder::CourseOfAction
 
     const std::string nameOfMacro = node->args()->lVal().m_data.m_symbol;
 
-    CompilerStatement * macro = m_macros -> expand ( *location,
-                                                     node->location(),
+    CompilerStatement * macro = m_macros -> expand ( node->location(),
                                                      nameOfMacro,
                                                      node->args()->next() );
 
@@ -618,9 +595,9 @@ inline AsmPicoBlazeTreeDecoder::CourseOfAction
     }
 
     //
-    macro->prependLink(new CompilerStatement());
-    macro = macro->first();
-    if ( false == phase1(macro, location, &nameOfMacro) )
+    macro = (new CompilerStatement())->appendLink(macro)->first();
+
+    if ( false == phase1(macro, &nameOfMacro) )
     {
         macro->completeDelete();
         return CA_RETURN_FALSE;
@@ -651,28 +628,25 @@ inline void AsmPicoBlazeTreeDecoder::dir_TITLE ( CompilerStatement * node )
     m_codeListing->setTitle(arg);
 }
 
-inline void AsmPicoBlazeTreeDecoder::dir_MESSG ( CompilerStatement * node,
-                                                 const CompilerSourceLocation * location )
+inline void AsmPicoBlazeTreeDecoder::dir_MESSG ( CompilerStatement * node )
 {
     const CompilerValue::Data::CharArray & argCharArray = node->args()->lVal().m_data.m_array;
     std::string arg ( (char*) argCharArray.m_data, argCharArray.m_size );
-    m_compilerCore->compilerMessage(*location, CompilerBase::MT_REMARK, arg);
+    m_compilerCore->semanticMessage(node->location(), CompilerBase::MT_REMARK, arg);
 }
 
-inline void AsmPicoBlazeTreeDecoder::dir_WARNING ( CompilerStatement * node,
-                                                   const CompilerSourceLocation * location )
+inline void AsmPicoBlazeTreeDecoder::dir_WARNING ( CompilerStatement * node )
 {
     const CompilerValue::Data::CharArray & argCharArray = node->args()->lVal().m_data.m_array;
     std::string arg ( (char*) argCharArray.m_data, argCharArray.m_size );
-    m_compilerCore->compilerMessage(*location, CompilerBase::MT_WARNING, arg);
+    m_compilerCore->semanticMessage(node->location(), CompilerBase::MT_WARNING, arg);
 }
 
-inline void AsmPicoBlazeTreeDecoder::dir_ERROR ( CompilerStatement * node,
-                                                 const CompilerSourceLocation * location )
+inline void AsmPicoBlazeTreeDecoder::dir_ERROR ( CompilerStatement * node )
 {
     const CompilerValue::Data::CharArray & argCharArray = node->args()->lVal().m_data.m_array;
     std::string arg ( (char*) argCharArray.m_data, argCharArray.m_size );
-    m_compilerCore->compilerMessage(*location, CompilerBase::MT_ERROR, arg);
+    m_compilerCore->semanticMessage(node->location(), CompilerBase::MT_ERROR, arg);
 }
 
 inline void AsmPicoBlazeTreeDecoder::dir_LIST ( CompilerStatement * node )
@@ -700,7 +674,7 @@ inline AsmPicoBlazeTreeDecoder::CourseOfAction
 {
     if ( false == m_macros->isFromMacro(node) )
     {
-        m_compilerCore->compilerMessage ( node->location(),
+        m_compilerCore->semanticMessage ( node->location(),
                                           CompilerBase::MT_ERROR,
                                           QObject::tr ( "directive EXITM' cannot apper outside macro definition")
                                                       .toStdString() );
@@ -720,13 +694,12 @@ inline void AsmPicoBlazeTreeDecoder::dir_INCLUDE ( CompilerStatement * node )
 }
 
 inline void AsmPicoBlazeTreeDecoder::dir_LOCAL ( CompilerStatement * node,
-                                                 const CompilerSourceLocation * location,
                                                  const std::string * macroName,
                                                  std::vector<std::string> & localSymbols )
 {
     if ( false == m_macros->isFromMacro(node) )
     {
-        m_compilerCore->compilerMessage ( node->location(),
+        m_compilerCore->semanticMessage ( node->location(),
                                           CompilerBase::MT_ERROR,
                                           QObject::tr ( "directive `LOCAL' cannot apper outside macro "
                                                         "definition" )
@@ -734,13 +707,13 @@ inline void AsmPicoBlazeTreeDecoder::dir_LOCAL ( CompilerStatement * node,
     }
 
     const std::string local = node->args()->lVal().m_data.m_symbol;
-    if ( false == m_macros -> mangleName ( *location,
+    if ( false == m_macros -> mangleName ( node->location(),
                                            &localSymbols,
                                            local,
                                            *macroName,
                                            node->next() ) )
     {
-        m_compilerCore->compilerMessage ( *location,
+        m_compilerCore->semanticMessage ( node->location(),
                                           CompilerBase::MT_WARNING,
                                           QObject::tr ( "symbol `%1' declared as local but never used, "
                                                         "declaration ignored"  )
@@ -749,8 +722,7 @@ inline void AsmPicoBlazeTreeDecoder::dir_LOCAL ( CompilerStatement * node,
     }
 }
 
-inline void AsmPicoBlazeTreeDecoder::dir_SET ( CompilerStatement * node,
-                                               const CompilerSourceLocation * location )
+inline void AsmPicoBlazeTreeDecoder::dir_SET ( CompilerStatement * node )
 {
     int value;
     std::string name = node->args()->lVal().m_data.m_symbol;
@@ -759,7 +731,7 @@ inline void AsmPicoBlazeTreeDecoder::dir_SET ( CompilerStatement * node,
     {
         value = m_symbolTable -> assignValue ( name,
                                                node->args()->next(),
-                                               location,
+                                               &( node->location() ),
                                                AsmPicoBlazeSymbolTable::STYPE_NUMBER,
                                                true );
     }
@@ -767,7 +739,7 @@ inline void AsmPicoBlazeTreeDecoder::dir_SET ( CompilerStatement * node,
     {
         value = m_symbolTable -> addSymbol ( name,
                                              node->args()->next(),
-                                             location,
+                                             &( node->location() ),
                                              AsmPicoBlazeSymbolTable::STYPE_NUMBER,
                                              true,
                                              true );
@@ -776,12 +748,11 @@ inline void AsmPicoBlazeTreeDecoder::dir_SET ( CompilerStatement * node,
     m_codeListing->setValue(node->location(), value);
 }
 
-inline void AsmPicoBlazeTreeDecoder::dir_DEFINE ( CompilerStatement * node,
-                                                  const CompilerSourceLocation * location )
+inline void AsmPicoBlazeTreeDecoder::dir_DEFINE ( CompilerStatement * node )
 {
     int value = m_symbolTable -> addSymbol ( node->args()->lVal().m_data.m_symbol,
                                              node->args()->next(),
-                                             location,
+                                             &( node->location() ),
                                              AsmPicoBlazeSymbolTable::STYPE_EXPRESSION,
                                              false );
 
@@ -794,13 +765,12 @@ inline void AsmPicoBlazeTreeDecoder::dir_UNDEFINE ( CompilerStatement * node )
                                     node->location() );
 }
 
-inline void AsmPicoBlazeTreeDecoder::label ( CompilerStatement * node,
-                                             const CompilerSourceLocation * location )
+inline void AsmPicoBlazeTreeDecoder::label ( CompilerStatement * node )
 {
     CompilerExpr e(m_memoryPtr->m_code);
     m_symbolTable -> addSymbol ( node->args()->lVal().m_data.m_symbol,
                                  &e,
-                                 location,
+                                 &( node->location() ),
                                  AsmPicoBlazeSymbolTable::STYPE_LABEL,
                                  true );
 }
@@ -821,21 +791,20 @@ inline void AsmPicoBlazeTreeDecoder::dir_SKIP ( CompilerStatement * node )
     node->m_args = new CompilerExpr(skip);
 }
 
-inline void AsmPicoBlazeTreeDecoder::dir_LIMIT ( CompilerStatement * node,
-                                                 const CompilerSourceLocation * location )
+inline void AsmPicoBlazeTreeDecoder::dir_LIMIT ( CompilerStatement * node )
 {
     const char * limSel = node->args()->lVal().m_data.m_symbol;
     int limVal = m_symbolTable->resolveExpr ( node->args()->next() );
 
     if ( -1 == limVal )
     {
-        m_compilerCore->compilerMessage ( *location,
+        m_compilerCore->semanticMessage ( node->location(),
                                           CompilerBase::MT_REMARK,
                                           QObject::tr("limit value -1 means unlimited").toStdString() );
     }
     else if ( -1 > limVal )
     {
-        m_compilerCore->compilerMessage ( *location,
+        m_compilerCore->semanticMessage ( node->location(),
                                           CompilerBase::MT_ERROR,
                                           QObject::tr("limit value %1 is not valid").arg(limVal).toStdString() );
         return;
@@ -855,8 +824,7 @@ inline void AsmPicoBlazeTreeDecoder::dir_LIMIT ( CompilerStatement * node,
     }
 }
 
-inline void AsmPicoBlazeTreeDecoder::dir_EQU_etc ( CompilerStatement * node,
-                                                   const CompilerSourceLocation * location )
+inline void AsmPicoBlazeTreeDecoder::dir_EQU_etc ( CompilerStatement * node )
 {
     using namespace CompilerStatementTypes;
 
@@ -886,30 +854,29 @@ inline void AsmPicoBlazeTreeDecoder::dir_EQU_etc ( CompilerStatement * node,
 
     int value = m_symbolTable -> addSymbol ( node->args()->lVal().m_data.m_symbol,
                                              node->args()->m_next,
-                                             location,
+                                             &( node->location() ),
                                              symbolType,
                                              true );
 
     m_codeListing->setValue(node->location(), value);
 
-    if ( ( value >= 0 ) && ( -1 != location->m_fileNumber ) )
+    if ( ( value >= 0 ) && ( -1 != node->location().m_fileNumber ) )
     {
         if ( node->type() == ASMPICOBLAZE_DIR_REG )
         {
-            m_memoryPtr -> tryReserve ( *location, AsmPicoBlazeMemoryPtr::MS_REG, (unsigned int) value );
+            m_memoryPtr -> tryReserve ( node->location(), AsmPicoBlazeMemoryPtr::MS_REG, (unsigned int) value );
         }
         else if ( node->type() == ASMPICOBLAZE_DIR_DATA )
         {
-            m_memoryPtr -> tryReserve ( *location, AsmPicoBlazeMemoryPtr::MS_DATA, (unsigned int) value );
+            m_memoryPtr -> tryReserve ( node->location(), AsmPicoBlazeMemoryPtr::MS_DATA, (unsigned int) value );
         }
     }
 }
 
 inline AsmPicoBlazeTreeDecoder::CourseOfAction
-       AsmPicoBlazeTreeDecoder::dir_RTCOND ( CompilerStatement * node,
-                                             const CompilerSourceLocation * location )
+       AsmPicoBlazeTreeDecoder::dir_RTCOND ( CompilerStatement * node )
 {
-    if ( false == checkKcpsm3AndHigher(location, "run-time conditions") )
+    if ( false == checkKcpsm3AndHigher(node->location(), "run-time conditions") )
     {
         return CA_NO_ACTION;
     }
@@ -917,7 +884,7 @@ inline AsmPicoBlazeTreeDecoder::CourseOfAction
     CompilerStatement * body = new CompilerStatement();
     body->appendLink(m_specialMacros->runTimeCondition(node));
 
-    if ( false == phase1(body, location) )
+    if ( false == phase1(body) )
     {
         body->completeDelete();
         return CA_RETURN_FALSE;
@@ -930,10 +897,9 @@ inline AsmPicoBlazeTreeDecoder::CourseOfAction
 }
 
 inline AsmPicoBlazeTreeDecoder::CourseOfAction
-       AsmPicoBlazeTreeDecoder::dir_RTWHILE ( CompilerStatement * node,
-                                              const CompilerSourceLocation * location )
+       AsmPicoBlazeTreeDecoder::dir_RTWHILE ( CompilerStatement * node )
 {
-    if ( false == checkKcpsm3AndHigher(location, "run-time while loops") )
+    if ( false == checkKcpsm3AndHigher(node->location(), "run-time while loops") )
     {
         return CA_NO_ACTION;
     }
@@ -941,7 +907,7 @@ inline AsmPicoBlazeTreeDecoder::CourseOfAction
     CompilerStatement * body = new CompilerStatement();
     body->appendLink(m_specialMacros->runTimeWhile(node));
 
-    if ( false == phase1(body, location) )
+    if ( false == phase1(body) )
     {
         body->completeDelete();
         return CA_RETURN_FALSE;
@@ -954,10 +920,9 @@ inline AsmPicoBlazeTreeDecoder::CourseOfAction
 }
 
 inline AsmPicoBlazeTreeDecoder::CourseOfAction
-       AsmPicoBlazeTreeDecoder::dir_RTFOR ( CompilerStatement * node,
-                                            const CompilerSourceLocation * location )
+       AsmPicoBlazeTreeDecoder::dir_RTFOR ( CompilerStatement * node )
 {
-    if ( false == checkKcpsm3AndHigher(location, "run-time for loops") )
+    if ( false == checkKcpsm3AndHigher(node->location(), "run-time for loops") )
     {
         return CA_NO_ACTION;
     }
@@ -965,7 +930,7 @@ inline AsmPicoBlazeTreeDecoder::CourseOfAction
     CompilerStatement * body = new CompilerStatement();
     body->appendLink(m_specialMacros->runTimeFor(node));
 
-    if ( false == phase1(body, location) )
+    if ( false == phase1(body) )
     {
         body->completeDelete();
         return CA_RETURN_FALSE;
@@ -980,8 +945,7 @@ inline AsmPicoBlazeTreeDecoder::CourseOfAction
 }
 
 inline AsmPicoBlazeTreeDecoder::CourseOfAction
-       AsmPicoBlazeTreeDecoder::dir_DEVICE ( CompilerStatement * node,
-                                             const CompilerSourceLocation * location )
+       AsmPicoBlazeTreeDecoder::dir_DEVICE ( CompilerStatement * node )
 {
     std::string deviceName = node->args()->lVal().m_data.m_symbol;
     for ( size_t i = 0; i < deviceName.size(); i++ )
@@ -996,7 +960,7 @@ inline AsmPicoBlazeTreeDecoder::CourseOfAction
     {
         if ( CompilerBase::DSLF_DOES_NOT_EXIST == loaderFlag )
         {
-            m_compilerCore->compilerMessage ( *location,
+            m_compilerCore->semanticMessage ( node->location(),
                                               CompilerBase::MT_ERROR,
                                               QObject::tr("Device not supported: ").toStdString()
                                               + "\"" + deviceName + "\"" );
@@ -1029,25 +993,45 @@ inline bool AsmPicoBlazeTreeDecoder::isInstWord3B() const
     }
 }
 
-bool AsmPicoBlazeTreeDecoder::checkKcpsm3AndHigher ( const CompilerSourceLocation * location,
+bool AsmPicoBlazeTreeDecoder::checkKcpsm3AndHigher ( const CompilerSourceLocation & location,
                                                      const char * functionality )
 {
     switch ( m_device )
     {
+        case AsmPicoBlazeSemanticAnalyzer::DEV_KCPSM3:
+        case AsmPicoBlazeSemanticAnalyzer::DEV_KCPSM6:
+            return true;
+
         case AsmPicoBlazeSemanticAnalyzer::DEV_UNSPEC:
         case AsmPicoBlazeSemanticAnalyzer::DEV_KCPSM1CPLD:
         case AsmPicoBlazeSemanticAnalyzer::DEV_KCPSM1:
         case AsmPicoBlazeSemanticAnalyzer::DEV_KCPSM2:
-            m_compilerCore->compilerMessage(*location,
+        default:
+            m_compilerCore->semanticMessage(location,
                                             CompilerBase::MT_ERROR,
                                             QObject::tr("assembler feature '%1' is supported only on KCPSM3 and higher")
                                                        .arg(functionality).toStdString() );
             return false;
-
-        case AsmPicoBlazeSemanticAnalyzer::DEV_KCPSM3:
-        case AsmPicoBlazeSemanticAnalyzer::DEV_KCPSM6:
-        default:
-            return true;
     }
 }
 
+bool AsmPicoBlazeTreeDecoder::isBlank ( const CompilerExpr * expr ) const
+{
+    if ( CompilerExpr::OPER_NONE != expr->oper() )
+    {
+        return false;
+    }
+
+    if ( CompilerValue::TYPE_EMPTY == expr->lVal().m_type )
+    {
+        return true;
+    }
+    else if ( CompilerValue::TYPE_EXPR == expr->lVal().m_type )
+    {
+        return isBlank(expr->lVal().m_data.m_expr);
+    }
+    else
+    {
+        return false;
+    }
+}

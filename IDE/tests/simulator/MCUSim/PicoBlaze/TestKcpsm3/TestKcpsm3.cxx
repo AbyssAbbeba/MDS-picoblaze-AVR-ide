@@ -105,10 +105,7 @@ bool TestKcpsm3::addTests ( CU_pSuite suite )
           it != testCaseFiles.cend();
           it++ )
     {
-        char * testCaseName = new char [ it->size() + 1 ];
-        strcpy(testCaseName, it->c_str());
-
-        if ( NULL == CU_add_test(suite, testCaseName, &testFunction) )
+        if ( NULL == CU_add_test(suite, it->c_str(), &testFunction) )
         {
             return false;
         }
@@ -121,7 +118,7 @@ void TestKcpsm3::testFunction()
 {
     using namespace boost::filesystem;
 
-    std::string testName = CU_get_current_test()->pName;
+    const std::string testName = CU_get_current_test()->pName;
 
     std::string inFile  = ( path("TestKcpsm3") / "testcases" / (testName + "."   ) ).string();
     std::string outFile = ( path("TestKcpsm3") / "results"   / (testName + ".out") ).string();

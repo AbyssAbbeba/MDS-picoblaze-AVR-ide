@@ -16,6 +16,9 @@
 #ifndef COMPILERSERIALIZER_H
 #define COMPILERSERIALIZER_H
 
+// Forward declarations.
+class CompilerLocationTracker;
+
 // Compiler compiler header files.
 #include "CompilerBase.h"
 
@@ -150,12 +153,14 @@ class CompilerSerializer
          * @brief
          * @param[in,out] input
          * @param[in,out] files
+         * @param[in,out] locationTracker
          * @param[in] lang
          * @param[in] arch
          * @param[in] hide
          */
         CompilerSerializer ( std::istream & input,
                              std::vector<std::pair<std::string,FILE*>> & files,
+                             CompilerLocationTracker * locationTracker,
                              CompilerBase::LangId lang,
                              CompilerBase::TargetArch arch,
                              bool hide = false );
@@ -163,12 +168,14 @@ class CompilerSerializer
         /**
          * @brief
          * @param[in,out] output
-         * @param[in,out] files
+         * @param[in] files
+         * @param[in] locationTracker
          * @param[in] lang
          * @param[in] arch
          */
         CompilerSerializer ( std::ostream & output,
                              const std::vector<std::pair<std::string,FILE*>> & files,
+                             const CompilerLocationTracker * locationTracker,
                              CompilerBase::LangId lang,
                              CompilerBase::TargetArch arch );
 
@@ -297,6 +304,13 @@ class CompilerSerializer
          */
         int translateFileNumber ( int number ) const;
 
+        /**
+         * @brief
+         * @param[in] origin
+         * @return
+         */
+        int translateLOrigin ( int origin );
+
     ////    Inline Private Operations    ////
     private:
         /**
@@ -319,6 +333,9 @@ class CompilerSerializer
 
         /// @brief
         const Role m_role;
+
+        /// @brief
+        int m_locInitShift;
 
         /// @brief
         std::vector<int> m_fileNumberMap;

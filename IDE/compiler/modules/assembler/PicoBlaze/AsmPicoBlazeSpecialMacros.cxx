@@ -116,7 +116,7 @@ CompilerStatement * AsmPicoBlazeSpecialMacros::runTimeFor ( CompilerStatement * 
     }
     if ( true == regInUse )
     {
-        m_compilerCore->compilerMessage ( args[0]->location(),
+        m_compilerCore->semanticMessage ( args[0]->location(),
                                           CompilerBase::MT_WARNING,
                                           QObject::tr ( "reuse of iterator register in nested for loop (the two loops "
                                                         "will affect each other via their iterator registers)" )
@@ -201,19 +201,17 @@ CompilerStatement * AsmPicoBlazeSpecialMacros::runTimeCondition ( CompilerStatem
     using namespace CompilerStatementTypes;
 
     bool elseBlock = false;
-    std::string labelNext;
     std::string labelEnd;
+    std::string labelNext;
     CompilerStatement * block;
-    CompilerStatement * node2delete;
     CompilerStatement * nodeNext;
-    CompilerStatement * result = rtIfTree->branch();
+    CompilerStatement * node2delete;
+    CompilerStatement * result = NULL;
 
     generateLabel(labelEnd, LT_IF, true);
     generateLabel(labelNext, LT_IF);
 
-    rtIfTree->m_branch = NULL;
-
-    for ( CompilerStatement * node = result;
+    for ( CompilerStatement * node = rtIfTree->branch();
           NULL != node;
           node = node->next() )
     {
@@ -258,6 +256,11 @@ CompilerStatement * AsmPicoBlazeSpecialMacros::runTimeCondition ( CompilerStatem
             }
         }
 
+        if ( NULL == result )
+        {
+            result = block;
+        }
+
         node2delete = node;
         nodeNext = block->last();
         node->insertLink ( block );
@@ -267,6 +270,7 @@ CompilerStatement * AsmPicoBlazeSpecialMacros::runTimeCondition ( CompilerStatem
         delete node2delete;
     }
 
+    rtIfTree->m_branch = NULL;
     return result;
 }
 
@@ -646,25 +650,25 @@ CompilerStatement * AsmPicoBlazeSpecialMacros::evaluateCondition ( const Compile
     switch ( resultKnownInAdvance )
     {
         case -2:
-            m_compilerCore->compilerMessage(cnd->location(),
+            m_compilerCore->semanticMessage(cnd->location(),
                                             CompilerBase::MT_WARNING,
                                             QObject::tr("comparing a register with itself, result is always negative")
                                                        .toStdString());
             break;
         case -1:
-            m_compilerCore->compilerMessage(cnd->location(),
+            m_compilerCore->semanticMessage(cnd->location(),
                                             CompilerBase::MT_WARNING,
                                             QObject::tr("comparing two immediate constants, result is always negative")
                                                        .toStdString());
             break;
         case 1:
-            m_compilerCore->compilerMessage(cnd->location(),
+            m_compilerCore->semanticMessage(cnd->location(),
                                             CompilerBase::MT_WARNING,
                                             QObject::tr("comparing two immediate constants, result is always positive")
                                                         .toStdString());
             break;
         case 2:
-            m_compilerCore->compilerMessage(cnd->location(),
+            m_compilerCore->semanticMessage(cnd->location(),
                                             CompilerBase::MT_WARNING,
                                             QObject::tr("comparing a register with itself, result is always positive")
                                                        .toStdString());

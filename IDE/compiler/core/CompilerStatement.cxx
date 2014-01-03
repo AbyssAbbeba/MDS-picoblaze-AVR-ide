@@ -345,70 +345,70 @@ std::ostream & CompilerStatement::print ( std::ostream & out,
 {
     if ( NULL == this )
     {
-        out << "<ERROR:NULL!>";
+        out << "<NULL>";
         return out;
     }
 
-    for ( int i = 0; i < level; i++ )
+    for ( const CompilerStatement * node = this;
+          NULL != node;
+          node = node->next() )
     {
-        if ( '0' == lineString[i] )
+        for ( int i = 0; i < level; i++ )
         {
-            out << "    ";
+            if ( '0' == lineString[i] )
+            {
+                out << "    ";
+            }
+            else
+            {
+                out << "  │ ";
+            }
+        }
+
+        if ( NULL == node->prev() )
+        {
+            if ( NULL == node->next() )
+            {
+                lineString[level] = '0';
+            }
+            out << "  █─ ";
         }
         else
         {
-            out << "  │ ";
+            if ( NULL == node->next() )
+            {
+                out << "  └─ ";
+                lineString[level] = '0';
+            }
+            else
+            {
+                out << "  ├─ ";
+            }
         }
-    }
 
-    if ( NULL == m_prev )
-    {
-        if ( NULL == m_next )
+        out << node->type();
+
+        out << " {";
+        out << node->location();
+        out << "} <";
+        out << node->m_userData;
+        out << "/";
+        out << node->m_serialNumber;
+        out << ">";
+
+        if ( NULL != node->args() )
         {
-            lineString[level] = '0';
+            out << " [ ";
+            out << node->args();
+            out << " ]";
         }
-        out << "  █─ ";
-    }
-    else
-    {
-        if ( NULL == m_next )
+        out << "\n";
+
+        if ( NULL != node->branch() )
         {
-            out << "  └─ ";
-            lineString[level] = '0';
+            lineString += "1";
+            node->branch()->print(out, level + 1, lineString);
         }
-        else
-        {
-            out << "  ├─ ";
-        }
-    }
-
-    out << m_type;
-
-    out << " {";
-    out << m_location;
-    out << "} <";
-    out << m_userData;
-    out << "/";
-    out << m_serialNumber;
-    out << ">";
-
-    if ( NULL != m_args )
-    {
-        out << " [ ";
-        out << m_args;
-        out << " ]";
-    }
-    out << "\n";
-
-    if ( NULL != m_branch )
-    {
-        lineString += "1";
-        m_branch->print(out, level + 1, lineString);
-    }
-
-    if ( NULL != m_next )
-    {
-        m_next->print(out, level, lineString);
     }
 
     return out;

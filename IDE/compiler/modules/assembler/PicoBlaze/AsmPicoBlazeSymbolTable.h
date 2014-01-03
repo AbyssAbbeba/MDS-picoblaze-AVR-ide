@@ -217,12 +217,10 @@ class AsmPicoBlazeSymbolTable
          * @brief
          * @param[in] expr
          * @param[in] bitsMax
-         * @param[in] origLocation
          * @return
          */
         unsigned int resolveExpr ( const CompilerExpr * expr,
-                                   int bitsMax = 18,
-                                   const CompilerSourceLocation * origLocation = NULL );
+                                   int bitsMax = 18 );
 
         /**
          * @brief
@@ -234,6 +232,18 @@ class AsmPicoBlazeSymbolTable
         unsigned int substitute ( const std::string & origSymbol,
                                   const CompilerExpr * newSymbol,
                                   CompilerExpr * expr );
+
+        /**
+         * @brief
+         * @param[in,out] expr
+         * @param[in] newLocation
+         * @param[in] origin
+         * @param[in] keepColumns
+         */
+        void rewriteExprLoc ( CompilerExpr * expr,
+                              const CompilerSourceLocation & newLocation,
+                              int origin = -1,
+                              bool keepColumns = false ) const;
 
         /**
          * @brief

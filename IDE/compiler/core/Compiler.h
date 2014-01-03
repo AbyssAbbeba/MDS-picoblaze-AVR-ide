@@ -21,11 +21,11 @@ class CompilerCore;
 class CompilerMsgInterface;
 
 // Compiler header files.
-#include "CompilerOptions.h"
 #include "CompilerBase.h"
+#include "CompilerOptions.h"
 
 // Standard header files.
-#include <iostream>
+#include <string>
 
 /**
  * @brief

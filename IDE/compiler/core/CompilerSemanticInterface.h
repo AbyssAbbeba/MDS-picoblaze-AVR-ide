@@ -29,11 +29,12 @@ class DataFile;
 // Include basic general compiler declarations and definitions.
 #include "CompilerBase.h"
 
-// Include compiler components used by parsers and/or lexers.
+// Include compiler components used by semantic analyzers..
 #include "CompilerExpr.h"
 #include "CompilerStatement.h"
 #include "CompilerStatementTypes.h"
 #include "CompilerSourceLocation.h"
+#include "CompilerLocationTracker.h"
 
 // Used for i18n only.
 #include <QObject>
@@ -87,9 +88,11 @@ class CompilerSemanticInterface
         /**
          * @brief
          * @param[in] location
+         * @param[in] colon
          * @return
          */
-        virtual std::string locationToStr ( const CompilerSourceLocation & location ) const = 0;
+        virtual std::string locationToStr ( const CompilerSourceLocation & location,
+                                            bool colon = false ) const = 0;
 
         /**
          * @brief
@@ -97,17 +100,15 @@ class CompilerSemanticInterface
          * @param[in] type
          * @param[in] text
          */
-        virtual void compilerMessage ( const CompilerSourceLocation & location,
+        virtual void semanticMessage ( const CompilerSourceLocation & location,
                                        CompilerBase::MessageType type,
                                        const std::string & text ) = 0;
 
         /**
          * @brief
-         * @param[in] type
-         * @param[in] text
+         * @return
          */
-        virtual void compilerMessage ( CompilerBase::MessageType type,
-                                       const std::string & text ) = 0;
+        virtual CompilerLocationTracker & locationTrack() = 0;
 
         /**
          * @brief

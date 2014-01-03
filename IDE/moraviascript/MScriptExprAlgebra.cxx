@@ -1459,10 +1459,10 @@ inline void MScriptExprAlgebra::intComplex ( MScriptValue & result,
     }
 }
 
-inline void MScriptExprAlgebra::floatBool ( MScriptValue & result,
-                                            double a,
-                                            MScriptExpr::Operator oper,
-                                            bool b,
+inline void MScriptExprAlgebra::floatBool ( MScriptValue & /*result*/,
+                                            double /*a*/,
+                                            MScriptExpr::Operator /*oper*/,
+                                            bool /*b*/,
                                             const MScriptSrcLocation & location )
 {
     incompatibleTypes(location, MScriptValue::TYPE_FLOAT, MScriptValue::TYPE_BOOL);
@@ -1529,19 +1529,19 @@ inline void MScriptExprAlgebra::floatComplex ( MScriptValue & result,
     }
 }
 
-inline void MScriptExprAlgebra::stringBool ( MScriptValue & result,
-                                             const MScriptValue::Data::String & a,
-                                             MScriptExpr::Operator oper,
-                                             bool b,
+inline void MScriptExprAlgebra::stringBool ( MScriptValue & /*result*/,
+                                             const MScriptValue::Data::String & /*a*/,
+                                             MScriptExpr::Operator /*oper*/,
+                                             bool /*b*/,
                                              const MScriptSrcLocation & location )
 {
     incompatibleTypes(location, MScriptValue::TYPE_STRING, MScriptValue::TYPE_BOOL);
 }
 
-inline void MScriptExprAlgebra::stringComplex ( MScriptValue & result,
-                                                const MScriptValue::Data::String & a,
-                                                MScriptExpr::Operator oper,
-                                                const MScriptComplex & b,
+inline void MScriptExprAlgebra::stringComplex ( MScriptValue & /*result*/,
+                                                const MScriptValue::Data::String & /*a*/,
+                                                MScriptExpr::Operator /*oper*/,
+                                                const MScriptComplex & /*b*/,
                                                 const MScriptSrcLocation & location )
 {
     incompatibleTypes(location, MScriptValue::TYPE_STRING, MScriptValue::TYPE_COMPLEX);
@@ -1607,19 +1607,19 @@ inline void MScriptExprAlgebra::boolInt ( MScriptValue & result,
     }
 }
 
-inline void MScriptExprAlgebra::boolFloat ( MScriptValue & result,
-                                            bool a,
-                                            MScriptExpr::Operator oper,
-                                            double b,
+inline void MScriptExprAlgebra::boolFloat ( MScriptValue & /*result*/,
+                                            bool /*a*/,
+                                            MScriptExpr::Operator /*oper*/,
+                                            double /*b*/,
                                             const MScriptSrcLocation & location )
 {
     incompatibleTypes(location, MScriptValue::TYPE_BOOL, MScriptValue::TYPE_FLOAT);
 }
 
-inline void MScriptExprAlgebra::boolString ( MScriptValue & result,
-                                             bool a,
-                                             MScriptExpr::Operator oper,
-                                             const MScriptValue::Data::String & b,
+inline void MScriptExprAlgebra::boolString ( MScriptValue & /*result*/,
+                                             bool /*a*/,
+                                             MScriptExpr::Operator /*oper*/,
+                                             const MScriptValue::Data::String & /*b*/,
                                              const MScriptSrcLocation & location )
 {
     incompatibleTypes(location, MScriptValue::TYPE_BOOL, MScriptValue::TYPE_STRING);
@@ -1931,7 +1931,7 @@ inline void MScriptExprAlgebra::floatInt ( MScriptValue & result,
     }
 }
 
-inline void MScriptExprAlgebra::floatString ( MScriptValue & result,
+inline void MScriptExprAlgebra::floatString ( MScriptValue & /*result*/,
                                               double /*a*/,
                                               MScriptExpr::Operator /*oper*/,
                                               const MScriptValue::Data::String & /*b*/,
@@ -1949,10 +1949,10 @@ inline void MScriptExprAlgebra::stringInt ( MScriptValue & result,
     intString ( result, b, oper, a, location );
 }
 
-inline void MScriptExprAlgebra::stringFloat ( MScriptValue & result,
-                                              const MScriptValue::Data::String & a,
-                                              MScriptExpr::Operator oper,
-                                              double b,
+inline void MScriptExprAlgebra::stringFloat ( MScriptValue & /*result*/,
+                                              const MScriptValue::Data::String & /*a*/,
+                                              MScriptExpr::Operator /*oper*/,
+                                              double /*b*/,
                                               const MScriptSrcLocation & location )
 {
     incompatibleTypes(location, MScriptValue::TYPE_STRING, MScriptValue::TYPE_FLOAT);
@@ -2205,7 +2205,7 @@ void MScriptExprAlgebra::incompatibleTypes ( const MScriptSrcLocation & location
                                                             "datatypes" ) . toStdString() );
             break;
         case MScriptValue::TYPE_INT:
-            switch ( typeA )
+            switch ( typeB )
             {
                 case MScriptValue::TYPE_EMPTY:
                     m_interpret->interpreterMessage ( location,
@@ -2253,7 +2253,7 @@ void MScriptExprAlgebra::incompatibleTypes ( const MScriptSrcLocation & location
             }
             break;
         case MScriptValue::TYPE_FLOAT:
-            switch ( typeA )
+            switch ( typeB )
             {
                 case MScriptValue::TYPE_EMPTY:
                     m_interpret->interpreterMessage ( location,
@@ -2304,7 +2304,7 @@ void MScriptExprAlgebra::incompatibleTypes ( const MScriptSrcLocation & location
             }
             break;
         case MScriptValue::TYPE_STRING:
-            switch ( typeA )
+            switch ( typeB )
             {
                 case MScriptValue::TYPE_EMPTY:
                     m_interpret->interpreterMessage ( location,
@@ -2356,7 +2356,7 @@ void MScriptExprAlgebra::incompatibleTypes ( const MScriptSrcLocation & location
             }
             break;
         case MScriptValue::TYPE_BOOL:
-            switch ( typeA )
+            switch ( typeB )
             {
                 case MScriptValue::TYPE_EMPTY:
                     m_interpret->interpreterMessage ( location,
@@ -2408,7 +2408,7 @@ void MScriptExprAlgebra::incompatibleTypes ( const MScriptSrcLocation & location
             }
             break;
         case MScriptValue::TYPE_COMPLEX:
-            switch ( typeA )
+            switch ( typeB )
             {
                 case MScriptValue::TYPE_EMPTY:
                     m_interpret->interpreterMessage ( location,

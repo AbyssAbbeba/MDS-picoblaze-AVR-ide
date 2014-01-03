@@ -15,6 +15,8 @@
 
 #include "AsmMcs51SemanticAnalyzer.h"
 
+#include <iostream>
+
 void AsmMcs51SemanticAnalyzer::process ( CompilerStatement * codeTree )
 {
     std::cout << "AsmMcs51SemanticAnalyzer::process:\n" << codeTree;

@@ -16,6 +16,9 @@
 #ifndef ASMPICOBLAZECODELISTING_H
 #define ASMPICOBLAZECODELISTING_H
 
+// Forward declarations.
+class AsmPicoBlazeSymbolTable;
+
 // Common compiler header files.
 #include "CompilerOptions.h"
 #include "CompilerMsgObserver.h"
@@ -25,6 +28,7 @@
 #include "AsmPicoBlazeCodeGenerator.h"
 
 // Standard headers.
+#include <set>
 #include <string>
 #include <vector>
 #include <ostream>
@@ -47,10 +51,12 @@ class AsmPicoBlazeCodeListing : public CompilerMsgObserver
          * @brief
          * @param[in,out] compilerCore
          * @param[in] opts
+         * @param[in,out] symbolTable
          * @return
          */
         AsmPicoBlazeCodeListing ( CompilerSemanticInterface * compilerCore,
-                                  CompilerOptions * opts );
+                                  CompilerOptions * opts,
+                                  AsmPicoBlazeSymbolTable * symbolTable );
 
         /**
          * @brief
@@ -261,9 +267,11 @@ class AsmPicoBlazeCodeListing : public CompilerMsgObserver
          * @brief
          * @param[in,out] lineDiff
          * @param[in,out] macro
+         * @param[in] origin
          */
         void rewriteMacroLoc ( unsigned int * lineDiff,
-                               CompilerStatement * macro );
+                               CompilerStatement * macro,
+                               int origin );
 
         /**
          * @brief
@@ -273,17 +281,17 @@ class AsmPicoBlazeCodeListing : public CompilerMsgObserver
         void rewriteRepeatLoc ( unsigned int * lineCounter,
                                 CompilerStatement * code );
 
-    ////    Inline Private Operations    ////
-    private:
         /**
          * @brief
          * @param[in] location
          * @param[in] silent
          * @return
          */
-        inline bool checkLocation ( const CompilerSourceLocation & location,
-                                    bool silent = false );
+        bool checkLocation ( const CompilerSourceLocation & location,
+                             bool silent = false );
 
+    ////    Inline Private Operations    ////
+    private:
         /**
          * @brief
          * @return
@@ -311,10 +319,16 @@ class AsmPicoBlazeCodeListing : public CompilerMsgObserver
         CompilerOptions * const m_opts;
 
         ///
+        AsmPicoBlazeSymbolTable * const m_symbolTable;
+
+        ///
         AsmPicoBlazeCodeGenerator m_codeGenerator;
 
         ///
         std::string m_title;
+
+        ///
+        std::set<int> m_files2skip;
 
         ///
         std::vector<std::vector<LstLine>> m_listing;

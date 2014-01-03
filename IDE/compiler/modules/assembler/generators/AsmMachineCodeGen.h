@@ -158,14 +158,12 @@ class AsmMachineCodeGen
          * @param[in,out] dataFile
          * @param[in] fileName
          * @param[in,out] compilerCore
-         * @param[in] opts
          */
         inline void saveMachineCode ( WordSize wordSize,
                                       Endianness byteOrder,
                                       DataFile * dataFile,
                                       const std::string & fileName,
-                                      CompilerSemanticInterface * compilerCore,
-                                      const CompilerOptions * opts );
+                                      CompilerSemanticInterface * compilerCore );
 
         /**
          * @brief

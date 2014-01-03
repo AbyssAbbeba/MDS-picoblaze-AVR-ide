@@ -92,6 +92,9 @@
  * @defgroup tests Automated tests
  * This group contains automated unit test for various components of the MDS.
  *
+ * @defgroup AutoTest libAutoTest
+ * @ingroup tests
+ * Library for automated testing environment using libCUnit.
  *
  * @defgroup testsCompiler Compiler
  * @ingroup tests

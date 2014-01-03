@@ -31,24 +31,18 @@ set_directory_properties ( PROPERTIES
 # COMPILATION OPTIONS
 # ------------------------------------------------------------------------------
 
-# Find Boost include dirs and libraries.
-find_package ( Boost 1.46
+# Find Boost include directories and libraries.
+find_package ( Boost 1.55
                REQUIRED
                COMPONENTS filesystem system )
 
 # Add include directories to the build.
 include_directories ( ${Boost_INCLUDE_DIRS}
-                      "${CMAKE_CURRENT_BINARY_DIR}/../../../../../compiler" )
+                      "${CMAKE_CURRENT_SOURCE_DIR}/../../../../../compiler" )
 
 # Specify directories in which the linker will look for libraries.
 link_directories ( ${Boost_LIBRARY_DIRS}
-                   "${CMAKE_CURRENT_BINARY_DIR}/../../../../../compiler/core" )
-
-## Add switches to compiler command line
- # -pipe       : Use pipes rather than temporary files for communication between the various stages of compilation.
- # -std=c++0x  : Default template arguments may not be used in function templates without -std=c++0x or -std=gnu++0x.
- # -O1         : Optimization, level 1.
-add_definitions ( -pipe -std=c++0x -O1 )
+                   "${CMAKE_CURRENT_SOURCE_DIR}/../../../../../compiler/core" )
 
 ## Add a library to the project using the specified source files,
  # in this case it will procude dynamic C++ library.
@@ -58,5 +52,4 @@ add_library ( ${PROJECT_NAME} SHARED
 # Link a target to given libraries
 target_link_libraries ( ${PROJECT_NAME}
                         ${Boost_LIBRARIES}
-                        CompilerCore
-                        cunit )
+                        CompilerCore )

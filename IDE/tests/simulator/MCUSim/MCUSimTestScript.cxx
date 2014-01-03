@@ -49,7 +49,6 @@ bool MCUSimTestScript::runScript ( const std::string & inFileName,
     std::ifstream inFile  ( inFileName,  std::ios_base::in );
     std::ofstream outFile ( outFileName, std::ios_base::out | std::ios_base::trunc );
 
-    char * command;
     char line[MAX_LINE_LENGTH];
 
     while ( false == inFile.eof() )

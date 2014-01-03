@@ -19,6 +19,9 @@
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include <boost/filesystem.hpp>
 
+// OS compatibility.
+#include "../../utilities/os/os.h"
+
 // Standard headers.
 #include <fstream>
 #include <cstdio>
@@ -39,8 +42,11 @@ CompilerOptions::CompilerOptions()
     m_maxMacroExp     = -1;
     m_maxInclusion    = -1;
     m_hexMaxRecLength = 16;
-    m_syntaxCheckOnly = false;
+    m_messageLimit    = 1024;
+
     m_makeBackupFiles = true;
+    m_briefMsgOutput  = false;
+    m_syntaxCheckOnly = false;
 
     m_verbosity = (Verbosity)( V_GENERAL | V_ERRORS | V_WARNINGS | V_REMARKS );
 }
@@ -86,7 +92,8 @@ void CompilerOptions::normalizeFilePaths()
         NULL
     };
 
-    path basePath = system_complete(path(m_sourceFile).parent_path().make_preferred());
+    m_sourceFile = system_complete(path(makeHomeSafe(m_sourceFile)).make_preferred()).string();
+    const path basePath = system_complete(path(makeHomeSafe(m_sourceFile)).parent_path().make_preferred());
 
     for ( int i = 0; NULL != files[i]; i++ )
     {
@@ -95,12 +102,7 @@ void CompilerOptions::normalizeFilePaths()
             continue;
         }
 
-        *files[i] = path(*files[i]).make_preferred().string();
-
-        if ( false == path(*files[i]).is_absolute() )
-        {
-            *files[i] = system_complete(basePath / path(*files[i]).make_preferred()).string();
-        }
+        *files[i] = absolute(path(makeHomeSafe(*files[i])).make_preferred(), basePath).string();
     }
 }
 

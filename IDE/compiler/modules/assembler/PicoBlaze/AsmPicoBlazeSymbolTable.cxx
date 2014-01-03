@@ -101,13 +101,14 @@ int AsmPicoBlazeSymbolTable::addSymbol ( const std::string & name,
     {
         if ( NULL == location )
         {
-            m_compilerCore -> compilerMessage ( CompilerBase::MT_ERROR,
+            m_compilerCore -> semanticMessage ( CompilerSourceLocation(),
+                                                CompilerBase::MT_ERROR,
                                                 QObject::tr ( "symbol already defined: " ).toStdString()
                                                             + "\"" + name + "\"" );
         }
         else
         {
-            m_compilerCore -> compilerMessage ( *location,
+            m_compilerCore -> semanticMessage ( *location,
                                                 CompilerBase::MT_ERROR,
                                                 QObject::tr ( "symbol already defined: " ).toStdString()
                                                             + "\"" + name + "\"" );
@@ -136,7 +137,7 @@ void AsmPicoBlazeSymbolTable::maskNonLabels()
           it != m_table.end();
           it++ )
     {
-        if ( STYPE_LABEL != it->second.m_type )
+        if ( ( STYPE_LABEL != it->second.m_type ) && ( STYPE_EXPRESSION != it->second.m_type ) )
         {
             it->second.m_masked = true;
         }
@@ -181,36 +182,46 @@ AsmPicoBlazeSymbolTable::SymbolType AsmPicoBlazeSymbolTable::getType ( const Com
 void AsmPicoBlazeSymbolTable::resolveSymbols ( CompilerExpr * expr,
                                                int codePointer )
 {
-    CompilerValue * value = &(expr->m_lValue);
-    for ( int i = 0; i < 2; i++ )
+    for ( ; NULL != expr; expr = expr->next() )
     {
-        if ( CompilerValue::TYPE_SYMBOL == value->m_type )
+        CompilerValue * value = &(expr->m_lValue);
+        for ( int i = 0; i < 2; i++ )
         {
-            const std::string symbolName = value->m_data.m_symbol;
-            if ( "$" == symbolName )
+            // Keep IDs defined with `DEFINE' directive intact until phase #2 where they will be substituted.
+            if ( ( 0 == i ) && ( expr->oper() == CompilerExpr::OPER_CALL ) )
             {
-                delete [] value->m_data.m_symbol;
-                value->m_type = CompilerValue::TYPE_INT;
-                value->m_data.m_integer = codePointer;
+                value = &(expr->m_rValue);
+                continue;
             }
-            else
+
+            if ( CompilerValue::TYPE_SYMBOL == value->m_type )
             {
-                CompilerExpr * subExpr = getValue(symbolName)->copyChainLink();
-                if ( NULL != subExpr )
+                const char * symbolName = value->m_data.m_symbol;
+                if ( ( '$' == symbolName[0] ) && ( '\0' == symbolName[1] ) )
                 {
-                    resolveSymbols(subExpr, codePointer);
                     delete [] value->m_data.m_symbol;
-                    value->m_type = CompilerValue::TYPE_EXPR;
-                    value->m_data.m_expr = subExpr;
+                    value->m_type = CompilerValue::TYPE_INT;
+                    value->m_data.m_integer = codePointer;
+                }
+                else
+                {
+                    CompilerExpr * subExpr = getValue(symbolName)->copyChainLink();
+                    if ( NULL != subExpr )
+                    {
+                        resolveSymbols(subExpr, codePointer);
+                        delete [] value->m_data.m_symbol;
+                        value->m_type = CompilerValue::TYPE_EXPR;
+                        value->m_data.m_expr = subExpr;
+                    }
                 }
             }
-        }
-        else if ( CompilerValue::TYPE_EXPR == value->m_type )
-        {
-            resolveSymbols(value->m_data.m_expr, codePointer);
-        }
+            else if ( CompilerValue::TYPE_EXPR == value->m_type )
+            {
+                resolveSymbols(value->m_data.m_expr, codePointer);
+            }
 
-        value = &(expr->m_rValue);
+            value = &(expr->m_rValue);
+        }
     }
 }
 
@@ -221,9 +232,9 @@ void AsmPicoBlazeSymbolTable::removeSymbol ( const std::string & name,
     std::map<std::string,Symbol>::iterator it = m_table.find(name);
     if ( it == m_table.end() )
     {
-        m_compilerCore -> compilerMessage ( location,
+        m_compilerCore -> semanticMessage ( location,
                                             CompilerBase::MT_ERROR,
-                                            QObject::tr("symbol not defined: ").toStdString() + "\"" + name + "\"");
+                                            QObject::tr("symbol not defined: `%1'").arg(name.c_str()).toStdString() );
     }
     else if ( STYPE_UNSPECIFIED == type || type == it->second.m_type )
     {
@@ -262,7 +273,7 @@ int AsmPicoBlazeSymbolTable::assignValue ( const std::string & name,
     {
         if ( true == resolve )
         {
-            finalValue = (int) resolveExpr(value, -1, location);
+            finalValue = (int) resolveExpr(value, -1);
             it->second.m_finalValue = finalValue;
             it->second.m_value->completeDelete();
             it->second.m_value = new CompilerExpr(finalValue);
@@ -276,7 +287,7 @@ int AsmPicoBlazeSymbolTable::assignValue ( const std::string & name,
     }
     else
     {
-        m_compilerCore -> compilerMessage ( *location,
+        m_compilerCore -> semanticMessage ( *location,
                                             CompilerBase::MT_ERROR,
                                             QObject::tr ( "symbol `%1' already defined with type: " )
                                                         . arg ( name.c_str() )
@@ -325,9 +336,9 @@ int AsmPicoBlazeSymbolTable::getExprValue ( ExprValSide side,
     {
         case CompilerValue::TYPE_EMPTY:
         {
-            m_compilerCore -> compilerMessage ( expr->m_location,
+            m_compilerCore -> semanticMessage ( expr->m_location,
                                                 CompilerBase::MT_ERROR,
-                                                QObject::tr("undefined value").toStdString());
+                                                QObject::tr("blank value").toStdString());
             break;
         }
         case CompilerValue::TYPE_INT:
@@ -336,7 +347,7 @@ int AsmPicoBlazeSymbolTable::getExprValue ( ExprValSide side,
         }
         case CompilerValue::TYPE_REAL:
         {
-            m_compilerCore -> compilerMessage ( expr->m_location,
+            m_compilerCore -> semanticMessage ( expr->m_location,
                                                 CompilerBase::MT_ERROR,
                                                 QObject::tr("real numbers are not supported in assembler")
                                                            .toStdString());
@@ -351,10 +362,11 @@ int AsmPicoBlazeSymbolTable::getExprValue ( ExprValSide side,
             const CompilerExpr * symbolValue = getValue(value->m_data.m_symbol);
             if ( NULL == symbolValue )
             {
-                m_compilerCore -> compilerMessage ( expr->m_location,
+                m_compilerCore -> semanticMessage ( expr->m_location,
                                                     CompilerBase::MT_ERROR,
-                                                    QObject::tr("undefined symbol: ").toStdString()
-                                                    + "\"" + value->m_data.m_symbol + "\"");
+                                                    QObject::tr ( "symbol not defined: `%1'" )
+                                                                . arg ( value->m_data.m_symbol )
+                                                                . toStdString() );
                 break;
             }
             else
@@ -363,7 +375,7 @@ int AsmPicoBlazeSymbolTable::getExprValue ( ExprValSide side,
                 {
                     CompilerExpr * newValue = substituteArgs(symbolValue, argList);
                     int result = computeExpr(newValue);
-                    delete newValue;
+                    newValue->completeDelete();
                     return result;
                 }
                 else
@@ -374,9 +386,10 @@ int AsmPicoBlazeSymbolTable::getExprValue ( ExprValSide side,
         }
         case CompilerValue::TYPE_ARRAY:
         {
-            m_compilerCore -> compilerMessage ( expr->m_location,
+            m_compilerCore -> semanticMessage ( expr->m_location,
                                                 CompilerBase::MT_ERROR,
-                                                QObject::tr("this value is not valid inside an expression").toStdString());
+                                                QObject::tr ( "this value is not valid inside an expression" )
+                                                            . toStdString());
             break;
         }
     }
@@ -405,196 +418,59 @@ void AsmPicoBlazeSymbolTable::substArg ( CompilerExpr * expr,
                                          const CompilerExpr * subst,
                                          const int position )
 {
-    CompilerValue * value = &( expr->m_lValue );
-    for ( int valIdx = 0; valIdx < 2; valIdx ++ )
+    for ( ; NULL != expr; expr = expr->next() )
     {
-        if ( CompilerValue::TYPE_SYMBOL == value->m_type )
+        CompilerValue * value = &( expr->m_lValue );
+        for ( int valIdx = 0; valIdx < 2; valIdx ++ )
         {
-            char * symbol = value->m_data.m_symbol;
-            size_t len = strlen(symbol);
-            if ( len >= 3 )
+            if ( CompilerValue::TYPE_SYMBOL == value->m_type )
             {
-                if ( ( '{' == symbol[0] ) && ( '}' == symbol[len-1] ) )
+                char * symbol = value->m_data.m_symbol;
+                size_t len = strlen(symbol);
+                if ( len >= 3 )
                 {
-                    char buf[len-1];
-                    for ( int i = 1, j = 0; i < ( len - 1 ); i++, j++ )
+                    if ( ( '{' == symbol[0] ) && ( '}' == symbol[len-1] ) )
                     {
-                        buf[j] = symbol[i];
-                    }
-                    buf[len-2] = '\0';
+                        char buf[len-1];
+                        for ( int i = 1, j = 0; i < ( len - 1 ); i++, j++ )
+                        {
+                            buf[j] = symbol[i];
+                        }
+                        buf[len-2] = '\0';
 
-                    int mark;
-                    sscanf(buf, "%d", &mark);
-                    if ( position == mark )
-                    {
-                        delete [] symbol;
-                        value->m_type = CompilerValue::TYPE_EXPR;
-                        value->m_data.m_expr = subst->copyChainLink();
+                        int mark;
+                        sscanf(buf, "%d", &mark);
+                        if ( position == mark )
+                        {
+                            delete [] symbol;
+                            CompilerExpr * substCopy = subst->copyChainLink();
+                            rewriteExprLoc(substCopy, expr->location());
+
+                            if ( ( 0 == valIdx ) && ( CompilerExpr::OPER_NONE == expr->oper() ) )
+                            {
+                                CompilerValue * val = substCopy->lVal().makeCopy();
+                                *value = *val;
+
+                                expr->m_location = substCopy->location();
+                                substCopy->completeDelete();
+                                delete val;
+                            }
+                            else
+                            {
+                                value->m_type = CompilerValue::TYPE_EXPR;
+                                value->m_data.m_expr = substCopy;
+                            }
+                        }
                     }
                 }
             }
-        }
-        else if ( CompilerValue::TYPE_EXPR == value->m_type )
-        {
-            substArg(value->m_data.m_expr, subst, position);
-        }
-        value = &( expr->m_rValue );
-    }
-}
-
-int AsmPicoBlazeSymbolTable::computeExpr ( const CompilerExpr * expr,
-                                           const CompilerExpr * argList )
-{
-    switch ( expr->m_operator )
-    {
-        case CompilerExpr::OPER_NONE:
-        case CompilerExpr::OPER_INT_PROM:
-            return getExprValue(LEFT, expr, argList);
-        case CompilerExpr::OPER_ADD_INV:
-            return -getExprValue(LEFT, expr,  argList);
-        case CompilerExpr::OPER_ADD:
-            return getExprValue(LEFT, expr,  argList) + getExprValue(RIGHT, expr,  argList);
-        case CompilerExpr::OPER_SUB:
-            return getExprValue(LEFT, expr,  argList) - getExprValue(RIGHT, expr,  argList);
-        case CompilerExpr::OPER_MULT:
-            return getExprValue(LEFT, expr,  argList) * getExprValue(RIGHT, expr,  argList);
-        case CompilerExpr::OPER_DIV:
-        {
-            int right = getExprValue(RIGHT, expr,  argList);
-            if ( 0 == right )
+            else if ( CompilerValue::TYPE_EXPR == value->m_type )
             {
-                m_compilerCore -> compilerMessage ( expr->m_location,
-                                                    CompilerBase::MT_ERROR,
-                                                    QObject::tr("division by zero").toStdString());
-                return 1;
+                substArg(value->m_data.m_expr, subst, position);
             }
-            return getExprValue(LEFT, expr,  argList) / right;
-        }
-        case CompilerExpr::OPER_LOW:
-            return ( 0xff & getExprValue(LEFT, expr,  argList) );
-        case CompilerExpr::OPER_HIGH:
-            return ( ( 0xff00 & getExprValue(LEFT, expr,  argList) ) >> 8 );
-        case CompilerExpr::OPER_CMPL:
-            return ~getExprValue(LEFT, expr,  argList);
-        case CompilerExpr::OPER_NOT:
-            return ( 0 == getExprValue(LEFT, expr,  argList) ) ? 1 : 0;
-        case CompilerExpr::OPER_MOD:
-        {
-            int right = getExprValue(RIGHT, expr,  argList);
-            if ( 0 == right )
-            {
-                m_compilerCore -> compilerMessage ( expr->m_location,
-                                                    CompilerBase::MT_ERROR,
-                                                    QObject::tr("division by zero").toStdString());
-                return 1;
-            }
-            return getExprValue(LEFT, expr,  argList) % right;
-        }
-        case CompilerExpr::OPER_LOR:
-            return ( getExprValue(LEFT, expr,  argList) || getExprValue(RIGHT, expr,  argList) ) ? 1 : 0;
-        case CompilerExpr::OPER_LAND:
-            return ( getExprValue(LEFT, expr,  argList) && getExprValue(RIGHT, expr,  argList) ) ? 1 : 0;
-        case CompilerExpr::OPER_BOR:
-            return getExprValue(LEFT, expr,  argList) | getExprValue(RIGHT, expr,  argList);
-        case CompilerExpr::OPER_BXOR:
-            return getExprValue(LEFT, expr,  argList) ^ getExprValue(RIGHT, expr,  argList);
-        case CompilerExpr::OPER_BAND:
-            return getExprValue(LEFT, expr,  argList) & getExprValue(RIGHT, expr,  argList);
-        case CompilerExpr::OPER_EQ:
-            return ( getExprValue(LEFT, expr,  argList) == getExprValue(RIGHT, expr,  argList) ) ? 1 : 0;
-        case CompilerExpr::OPER_NE:
-            return ( getExprValue(LEFT, expr,  argList) != getExprValue(RIGHT, expr,  argList) ) ? 1 : 0;
-        case CompilerExpr::OPER_LT:
-            return ( getExprValue(LEFT, expr,  argList) < getExprValue(RIGHT, expr,  argList) ) ? 1 : 0;
-        case CompilerExpr::OPER_LE:
-            return ( getExprValue(LEFT, expr,  argList) <= getExprValue(RIGHT, expr,  argList) ) ? 1 : 0;
-        case CompilerExpr::OPER_GE:
-            return ( getExprValue(LEFT, expr,  argList) >= getExprValue(RIGHT, expr,  argList) ) ? 1 : 0;
-        case CompilerExpr::OPER_GT:
-            return ( getExprValue(LEFT, expr,  argList) > getExprValue(RIGHT, expr,  argList) ) ? 1 : 0;
-        case CompilerExpr::OPER_SHR:
-            return getExprValue(LEFT, expr,  argList) >> getExprValue(RIGHT, expr,  argList);
-        case CompilerExpr::OPER_SHL:
-            return getExprValue(LEFT, expr,  argList) << getExprValue(RIGHT, expr,  argList);
-        case CompilerExpr::OPER_CALL:
-            return getExprValue(LEFT, expr, expr->m_rValue.m_data.m_expr);
-        default:
-            // Unsupported operator.
-            break;
-    }
-
-    m_compilerCore -> compilerMessage ( expr->m_location,
-                                        CompilerBase::MT_ERROR,
-                                        QObject::tr("unable to resolve this expression").toStdString());
-    return 1;
-}
-
-unsigned int AsmPicoBlazeSymbolTable::resolveExpr ( const CompilerExpr * expr,
-                                                    int bitsMax,
-                                                    const CompilerSourceLocation * origLocation )
-{
-    int resultOrig = computeExpr(expr);
-    unsigned int result = (unsigned int) resultOrig;
-    const CompilerSourceLocation * location = origLocation;
-
-    if ( NULL == location )
-    {
-        location = &(expr->location());
-    }
-
-    if ( -1 != bitsMax )
-    {
-        unsigned int mask = 0;
-        for ( int i = 0; i < bitsMax; i++ )
-        {
-            mask |= ( 1 << i );
-        }
-
-        if ( resultOrig < 0 )
-        {
-            result &= mask;
-
-            // Check whether it's still a negative number.
-            if ( 0 == ( result & ( 1 << ( bitsMax - 1 ) ) ) )
-            {
-                m_compilerCore -> compilerMessage ( *location,
-                                                    CompilerBase::MT_WARNING,
-                                                    QObject::tr ( "sign overflow. Result is negative number lower that "
-                                                                  "the lowest negative number representable in two's "
-                                                                  "complement arithmetic by the given number of bits "
-                                                                  "(%1 bits in this case) " )
-                                                                . arg ( bitsMax )
-                                                                . toStdString() );
-            }
-            else
-            {
-                m_compilerCore -> compilerMessage ( *location,
-                                                    CompilerBase::MT_REMARK,
-                                                    QObject::tr ( "result is negative number: %1, this will "
-                                                                  "represented as %2-bit number in two's complement "
-                                                                  "arithmetic which makes it: %3" )
-                                                                . arg ( resultOrig )
-                                                                . arg ( bitsMax )
-                                                                . arg ( result )
-                                                                . toStdString() );
-            }
-        }
-        else if ( ( result & mask ) != result )
-        {
-            m_compilerCore -> compilerMessage ( *location,
-                                                CompilerBase::MT_WARNING,
-                                                QObject::tr ( "value out of range: %1, allowed range is [0,%2] "
-                                                              "(trimmed to %3 bits) which makes it %4" )
-                                                            . arg ( result )
-                                                            . arg ( mask )
-                                                            . arg ( bitsMax )
-                                                            . arg ( result & mask )
-                                                            . toStdString() );
-            result &= mask;
+            value = &( expr->m_rValue );
         }
     }
-
-    return result;
 }
 
 unsigned int AsmPicoBlazeSymbolTable::substitute ( const std::string & origSymbol,
@@ -622,15 +498,12 @@ unsigned int AsmPicoBlazeSymbolTable::substitute ( const std::string & origSymbo
                     if ( origSymbol == value->m_data.m_symbol )
                     {
                         delete [] value->m_data.m_symbol;
-                        if ( CompilerExpr::OPER_NONE == newSymbol->oper() )
+                        CompilerExpr * newSymbolCopy = newSymbol->copyChainLink();
+                        rewriteExprLoc(newSymbolCopy, expr->location());
+                        *value = CompilerValue(newSymbolCopy);
+                        if ( CompilerExpr::OPER_NONE == expr->oper() )
                         {
-                            CompilerValue * val = newSymbol->lVal().makeCopy();
-                            *value = *val;
-                            delete val;
-                        }
-                        else
-                        {
-                            *value = CompilerValue(newSymbol->copyChainLink());
+                            expr->m_location = newSymbolCopy->location();
                         }
                         result++;
                     }
@@ -641,8 +514,200 @@ unsigned int AsmPicoBlazeSymbolTable::substitute ( const std::string & origSymbo
             value = &(expr->m_rValue);
         }
     }
+    return result;
+}
+
+int AsmPicoBlazeSymbolTable::computeExpr ( const CompilerExpr * expr,
+                                           const CompilerExpr * argList )
+{
+    switch ( expr->m_operator )
+    {
+        case CompilerExpr::OPER_NONE:
+        case CompilerExpr::OPER_INT_PROM:
+            return getExprValue(LEFT, expr, argList);
+        case CompilerExpr::OPER_ADD_INV:
+            return -getExprValue(LEFT, expr,  argList);
+        case CompilerExpr::OPER_ADD:
+            return getExprValue(LEFT, expr,  argList) + getExprValue(RIGHT, expr,  argList);
+        case CompilerExpr::OPER_SUB:
+            return getExprValue(LEFT, expr,  argList) - getExprValue(RIGHT, expr,  argList);
+        case CompilerExpr::OPER_MULT:
+            return getExprValue(LEFT, expr,  argList) * getExprValue(RIGHT, expr,  argList);
+        case CompilerExpr::OPER_DIV:
+        {
+            int right = getExprValue(RIGHT, expr,  argList);
+            if ( 0 == right )
+            {
+                const CompilerSourceLocation & loc = ( CompilerValue::TYPE_EXPR == expr->rVal().m_type )
+                                                     ? expr->rVal().m_data.m_expr->location() : expr->location();
+
+                m_compilerCore -> semanticMessage ( loc,
+                                                    CompilerBase::MT_ERROR,
+                                                    QObject::tr("division by zero").toStdString());
+                return 1;
+            }
+            return getExprValue(LEFT, expr,  argList) / right;
+        }
+        case CompilerExpr::OPER_LOW:
+            return ( 0xff & getExprValue(LEFT, expr,  argList) );
+        case CompilerExpr::OPER_HIGH:
+            return ( ( 0xff00 & getExprValue(LEFT, expr,  argList) ) >> 8 );
+        case CompilerExpr::OPER_CMPL:
+            return ~getExprValue(LEFT, expr,  argList);
+        case CompilerExpr::OPER_NOT:
+            return ( 0 == getExprValue(LEFT, expr,  argList) ) ? 1 : 0;
+        case CompilerExpr::OPER_MOD:
+        {
+            int right = getExprValue(RIGHT, expr,  argList);
+            if ( 0 == right )
+            {
+                const CompilerSourceLocation & loc = ( CompilerValue::TYPE_EXPR == expr->rVal().m_type )
+                                                     ? expr->rVal().m_data.m_expr->location() : expr->location();
+
+                m_compilerCore -> semanticMessage ( loc,
+                                                    CompilerBase::MT_ERROR,
+                                                    QObject::tr("division by zero").toStdString());
+                return 1;
+            }
+            return getExprValue(LEFT, expr,  argList) % right;
+        }
+        case CompilerExpr::OPER_LOR:
+            return ( getExprValue(LEFT, expr, argList) || getExprValue(RIGHT, expr, argList) ) ? 1 : 0;
+        case CompilerExpr::OPER_LAND:
+            return ( getExprValue(LEFT, expr, argList) && getExprValue(RIGHT, expr, argList) ) ? 1 : 0;
+        case CompilerExpr::OPER_BOR:
+            return ( getExprValue(LEFT, expr, argList) |  getExprValue(RIGHT, expr, argList) );
+        case CompilerExpr::OPER_BXOR:
+            return ( getExprValue(LEFT, expr, argList) ^  getExprValue(RIGHT, expr, argList) );
+        case CompilerExpr::OPER_BAND:
+            return ( getExprValue(LEFT, expr, argList) &  getExprValue(RIGHT, expr, argList) );
+        case CompilerExpr::OPER_EQ:
+            return ( getExprValue(LEFT, expr, argList) == getExprValue(RIGHT, expr, argList) ) ? 1 : 0;
+        case CompilerExpr::OPER_NE:
+            return ( getExprValue(LEFT, expr, argList) != getExprValue(RIGHT, expr, argList) ) ? 1 : 0;
+        case CompilerExpr::OPER_LT:
+            return ( getExprValue(LEFT, expr, argList) <  getExprValue(RIGHT, expr, argList) ) ? 1 : 0;
+        case CompilerExpr::OPER_LE:
+            return ( getExprValue(LEFT, expr, argList) <= getExprValue(RIGHT, expr, argList) ) ? 1 : 0;
+        case CompilerExpr::OPER_GE:
+            return ( getExprValue(LEFT, expr, argList) >= getExprValue(RIGHT, expr, argList) ) ? 1 : 0;
+        case CompilerExpr::OPER_GT:
+            return ( getExprValue(LEFT, expr, argList) >  getExprValue(RIGHT, expr, argList) ) ? 1 : 0;
+        case CompilerExpr::OPER_SHR:
+            return ( getExprValue(LEFT, expr, argList) >> getExprValue(RIGHT, expr, argList) );
+        case CompilerExpr::OPER_SHL:
+            return ( getExprValue(LEFT, expr, argList) << getExprValue(RIGHT, expr, argList) );
+        case CompilerExpr::OPER_CALL:
+            return getExprValue(LEFT, expr, expr->m_rValue.m_data.m_expr);
+        default:
+            // Unsupported operator.
+            break;
+    }
+
+    m_compilerCore -> semanticMessage ( expr->m_location,
+                                        CompilerBase::MT_ERROR,
+                                        QObject::tr("unable to resolve this expression").toStdString());
+    return 1;
+}
+
+unsigned int AsmPicoBlazeSymbolTable::resolveExpr ( const CompilerExpr * expr,
+                                                    int bitsMax )
+{
+    int resultOrig = computeExpr(expr);
+    unsigned int result = (unsigned int) resultOrig;
+
+    if ( -1 != bitsMax )
+    {
+        unsigned int mask = 0;
+        for ( int i = 0; i < bitsMax; i++ )
+        {
+            mask |= ( 1 << i );
+        }
+
+        if ( resultOrig < 0 )
+        {
+            result &= mask;
+
+            // Check whether it's still a negative number.
+            if ( 0 == ( result & ( 1 << ( bitsMax - 1 ) ) ) )
+            {
+                m_compilerCore -> semanticMessage ( expr->location(),
+                                                    CompilerBase::MT_WARNING,
+                                                    QObject::tr ( "sign overflow. Result is negative number lower that "
+                                                                  "the lowest negative number representable in two's "
+                                                                  "complement arithmetic by the given number of bits "
+                                                                  "(%1 bits in this case) " )
+                                                                . arg ( bitsMax )
+                                                                . toStdString() );
+            }
+            else
+            {
+                m_compilerCore -> semanticMessage ( expr->location(),
+                                                    CompilerBase::MT_REMARK,
+                                                    QObject::tr ( "result is negative number: %1, this will "
+                                                                  "represented as %2-bit number in two's complement "
+                                                                  "arithmetic which makes it: %3" )
+                                                                . arg ( resultOrig )
+                                                                . arg ( bitsMax )
+                                                                . arg ( result )
+                                                                . toStdString() );
+            }
+        }
+        else if ( ( result & mask ) != result )
+        {
+            m_compilerCore -> semanticMessage ( expr->location(),
+                                                CompilerBase::MT_WARNING,
+                                                QObject::tr ( "value out of range: %1, allowed range is [0,%2] "
+                                                              "(trimmed to %3 bits) which makes it %4" )
+                                                            . arg ( result )
+                                                            . arg ( mask )
+                                                            . arg ( bitsMax )
+                                                            . arg ( result & mask )
+                                                            . toStdString() );
+            result &= mask;
+        }
+    }
 
     return result;
+}
+
+void AsmPicoBlazeSymbolTable::rewriteExprLoc ( CompilerExpr * expr,
+                                               const CompilerSourceLocation & newLocation,
+                                               int origin,
+                                               bool keepColumns ) const
+{
+    if ( -1 == origin )
+    {
+        origin = newLocation.m_origin;
+        if ( -1 == origin )
+        {
+            origin = m_compilerCore->locationTrack().add(newLocation, origin);
+        }
+    }
+
+    for ( ; NULL != expr; expr = expr->next() )
+    {
+        expr->m_location.m_origin     = m_compilerCore->locationTrack().add(expr->location(), origin);
+
+        expr->m_location.m_fileNumber = newLocation.m_fileNumber;
+        expr->m_location.m_lineStart  = newLocation.m_lineStart;
+        expr->m_location.m_lineEnd    = newLocation.m_lineEnd;
+
+        if ( false == keepColumns )
+        {
+            expr->m_location.m_colStart = newLocation.m_colStart;
+            expr->m_location.m_colEnd   = newLocation.m_colEnd;
+        }
+
+        if ( CompilerValue::TYPE_EXPR == expr->lVal().m_type )
+        {
+            rewriteExprLoc(expr->lVal().m_data.m_expr, newLocation, origin, keepColumns);
+        }
+        if ( CompilerValue::TYPE_EXPR == expr->rVal().m_type )
+        {
+            rewriteExprLoc(expr->rVal().m_data.m_expr, newLocation, origin, keepColumns);
+        }
+    }
 }
 
 void AsmPicoBlazeSymbolTable::output()
@@ -656,8 +721,9 @@ void AsmPicoBlazeSymbolTable::output()
 
     if ( false == file.is_open() )
     {
-        m_compilerCore -> compilerMessage ( CompilerBase::MT_ERROR,
-                                            QObject::tr ( "unable to open " ).toStdString()
+        m_compilerCore -> semanticMessage ( CompilerSourceLocation(),
+                                            CompilerBase::MT_ERROR,
+                                            QObject::tr ( "unable to open: " ).toStdString()
                                                         + "\"" + m_opts->m_symbolTable  + "\"" );
         return;
     }
@@ -666,8 +732,9 @@ void AsmPicoBlazeSymbolTable::output()
 
     if ( true == file.bad() )
     {
-        m_compilerCore -> compilerMessage ( CompilerBase::MT_ERROR,
-                                            QObject::tr ( "unable to write to " ).toStdString()
+        m_compilerCore -> semanticMessage ( CompilerSourceLocation(),
+                                            CompilerBase::MT_ERROR,
+                                            QObject::tr ( "unable to write to: " ).toStdString()
                                                         + "\"" + m_opts->m_symbolTable  + "\"" );
         return;
     }

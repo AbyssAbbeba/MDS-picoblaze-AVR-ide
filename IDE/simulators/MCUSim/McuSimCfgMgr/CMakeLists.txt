@@ -25,7 +25,7 @@ set ( CMAKE_VERBOSE_MAKEFILE OFF )
 # ------------------------------------------------------------------------------
 
 # Add include directories to the build.
-include_directories ( "${CMAKE_CURRENT_BINARY_DIR}/.." )
+include_directories ( "${CMAKE_CURRENT_SOURCE_DIR}/.." )
 
 # Load settings specific for the Qt4 library
 find_package ( Qt4 REQUIRED )
@@ -34,18 +34,9 @@ find_package ( Qt4 REQUIRED )
 set ( QT_USE_QTXML 1 )
 include ( ${QT_USE_FILE} )
 
-## Add switches to compiler command line
- # -Wall       : Enables all the warnings.
- # -Wextra     : Enables some extra warning flags that are not enabled by -Wall.
- # -std=c++0x  : Default template arguments may not be used in function templates without -std=c++0x or -std=gnu++0x.
- # -O2         : Optimization, level 2.
- # -pipe       : Use pipes rather than temporary files for communication between the various stages of compilation.
- # -fPIC       : Generate position-independent code (PIC) suitable for use in a shared library
-add_definitions ( -Wall -Wextra -std=c++0x -O2 -pipe -fPIC )
-
 ## Add a library to the project using the specified source files,
  # in this case it will procude dynamic C++ library.
-add_library ( ${PROJECT_NAME} STATIC
+add_library ( ${PROJECT_NAME} SHARED
               McuDeviceSpecAVR8.cxx
               McuDeviceSpecPIC8.cxx
               McuSimCfgMgrAVR8.cxx
@@ -60,6 +51,6 @@ target_link_libraries ( ${PROJECT_NAME} ${QT_LIBRARIES} )
 # INSTALLATION OPTIONS
 # ------------------------------------------------------------------------------
 
-#install ( TARGETS ${PROJECT_NAME}
-#          RUNTIME DESTINATION bin
-#          LIBRARY DESTINATION lib )
+install ( TARGETS ${PROJECT_NAME}
+         RUNTIME DESTINATION bin
+         LIBRARY DESTINATION lib )
