@@ -53,17 +53,17 @@ add_library ( ${PLUGIN_LIB} SHARED
               Avr8UsbProgDeviceDB.cxx )
 
 # Add an executable to the project using the specified source files.
-add_executable ( ${EXECUTABLE}
-                 main.cxx )
+# add_executable ( ${EXECUTABLE}
+#                  main.cxx )
 
 # Link targets to given libraries.
 target_link_libraries ( ${PLUGIN_LIB} ${QT_LIBRARIES} MCUDataFiles )
-target_link_libraries ( ${EXECUTABLE} ${PLUGIN_LIB} )
+# target_link_libraries ( ${EXECUTABLE} ${PLUGIN_LIB} )
 
 # ------------------------------------------------------------------------------
 # INSTALLATION OPTIONS
 # ------------------------------------------------------------------------------
 
-install ( TARGETS ${PROJECT_NAME}
-          RUNTIME DESTINATION bin
-          LIBRARY DESTINATION lib )
+# install ( TARGETS ${PROJECT_NAME}
+#           RUNTIME DESTINATION bin
+#           LIBRARY DESTINATION lib )
