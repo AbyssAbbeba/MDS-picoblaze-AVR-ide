@@ -17,8 +17,8 @@
 # ==============================================================================
 
 # Find flex and bison executable and provides macros to generate custom build rules.
-find_package ( FLEX  REQUIRED )
-find_package ( BISON REQUIRED )
+find_package ( FLEX  2.5.35 REQUIRED )
+find_package ( BISON 2.5    REQUIRED )
 
 ## Apply syntax analyzer generator.
  # This macro has exactly the same usage as macro FLEX_TARGET.

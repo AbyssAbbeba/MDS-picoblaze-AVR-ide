@@ -13,23 +13,9 @@
 # Set project name
 project ( SimControl )
 
-# Set the minimum required version of CMake
-cmake_minimum_required ( VERSION 2.8 )
-
-# Create verbose makefiles if on
-set ( CMAKE_VERBOSE_MAKEFILE OFF )
-
-
 # ------------------------------------------------------------------------------
 # COMPILATION OPTIONS
 # ------------------------------------------------------------------------------
-
-# Load settings specific for the Qt4 library
-find_package ( Qt4 REQUIRED )
-
-# Include Qt4's XML module
-set ( QT_USE_QTXML 1 )
-include ( ${QT_USE_FILE} )
 
 # Specify directories in which the linker will look for libraries.
 link_directories ( "${CMAKE_CURRENT_SOURCE_DIR}/../MCUSim/"
