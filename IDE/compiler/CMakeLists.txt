@@ -14,12 +14,6 @@
 # Set project name
 project ( compiler )
 
-# Set the minimum required version of CMake
-cmake_minimum_required ( VERSION 2.8 )
-
-# Create verbose makefiles if on
-set ( CMAKE_VERBOSE_MAKEFILE OFF )
-
 # ------------------------------------------------------------------------------
 # BUILD COMPONENTS IN THE SUBDIRECTORIES
 # ------------------------------------------------------------------------------
@@ -33,19 +27,9 @@ add_subdirectory ( core )
 # Build additional file of the compiler.
 add_subdirectory ( include )
 
-
 # ------------------------------------------------------------------------------
 # COMPILATION OPTIONS
 # ------------------------------------------------------------------------------
-
-# Find Boost include dirs and libraries.
-find_package ( Boost 1.55
-               REQUIRED
-               COMPONENTS filesystem system )
-
-# Load settings specific for the Qt4 library (we use it here for i18n)
-find_package ( Qt4 REQUIRED )
-include ( ${QT_USE_FILE} )
 
 # List of preprocessor include file search directories.
 include_directories ( ${Boost_INCLUDE_DIRS}
@@ -68,7 +52,6 @@ add_executable ( ${PROJECT_NAME}
 # Link a target to given libraries
 target_link_libraries ( ${PROJECT_NAME} ${Boost_LIBRARIES}
                                         CompilerCore )
-
 
 # ------------------------------------------------------------------------------
 # INSTALLATION OPTIONS

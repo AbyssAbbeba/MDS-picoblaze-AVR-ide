@@ -13,24 +13,12 @@
 # Set project name
 project ( Avr8UsbProg )
 
-# Set the minimum required version of CMake
-cmake_minimum_required ( VERSION 2.8 )
-
-# Create verbose makefiles if on
-set ( CMAKE_VERBOSE_MAKEFILE OFF )
-
 # ------------------------------------------------------------------------------
 # COMPILATION OPTIONS
 # ------------------------------------------------------------------------------
 
 set ( PLUGIN_LIB "${PROJECT_NAME}Plugin" )
 set ( EXECUTABLE "${PROJECT_NAME}"       )
-
-# Load settings specific for the Qt4 library.
-find_package ( Qt4 REQUIRED )
-set( QT_USE_QTXML  1 )
-set( QT_USE_QTHELP 1 )
-include ( ${QT_USE_FILE} )
 
 # List of preprocessor include file search directories.
 include_directories ( "${CMAKE_CURRENT_SOURCE_DIR}/../../utilities/MCUDataFiles/" )
