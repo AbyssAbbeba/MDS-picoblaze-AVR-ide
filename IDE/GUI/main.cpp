@@ -29,6 +29,7 @@ int main(int argc, char *argv[])
     fdb.addApplicationFont("./resources/fonts/FreeMono/FreeMonoBoldOblique.ttf");
 
     GuiCfg::getInstance().setDefaultAll();
+    GuiCfg::getInstance().loadConfig();
 
     /*QStringList list = fdb.families();
 
