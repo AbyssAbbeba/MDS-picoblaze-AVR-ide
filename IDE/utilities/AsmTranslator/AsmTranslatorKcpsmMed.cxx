@@ -27,7 +27,7 @@ AsmTranslatorKcpsmMed::AsmTranslatorKcpsmMed()
     const boost::regex::flag_type flags = ( boost::regex::extended | boost::regex::icase | boost::regex::optimize );
 
     m_reAtMark      = boost::regex ( "^@", flags );
-    m_reComment     = boost::regex ( "^(;)|(//).*$", flags );
+    m_reComment     = boost::regex ( "^((;)|(//)).*$", flags );
     m_reOperand     = boost::regex ( "^[^,;]+", flags );
     m_reWord        = boost::regex ( "[_[:alnum:]]+", flags );
     m_reWhiteSpace  = boost::regex ( "^[[:space:]]+", flags );
