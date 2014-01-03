@@ -3,7 +3,7 @@
 export LC_ALL="${LANG}"
 
 readonly VERSION="0.2"
-declare -ir CPU_CORES=$( which lscpu > /dev/null && lscpu | \
+declare -ir CPU_CORES=$( which lscpu &> /dev/null && lscpu 2> /dev/null | \
                          gawk 'BEGIN { n = 1 } END { print(n) } /^CPU\(s\)/ { n = $2; exit }' || echo 1 )
 declare -ir PP=$(( CPU_CORES + 1 ))
 
@@ -29,7 +29,7 @@ function build() {
               . || exit 1
     fi
 
-    make -j${PP}
+    make -j${PP} --keep-going
 }
 
 function tests() {
