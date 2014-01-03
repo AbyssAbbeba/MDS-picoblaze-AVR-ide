@@ -10,6 +10,11 @@ SET(CMAKE_FORCE_UNIX_PATHS 1)
 
 # The C and CXX include file search paths:
 SET(CMAKE_C_INCLUDE_PATH
+  "/usr/include/qt4"
+  "/usr/include/qt4/QtHelp"
+  "/usr/include/qt4/QtGui"
+  "/usr/include/qt4/QtXml"
+  "/usr/include/qt4/QtCore"
   "tests/simulator/MCUSim/../../../simulators/MCUSim"
   "tests/simulator/MCUSim/PicoBlaze/TestKcpsm1CPLD/../../../../../simulators/MCUSim/PicoBlaze"
   "tests/simulator/MCUSim/PicoBlaze/TestKcpsm1CPLD/../../../../../utilities/MCUDataFiles"
