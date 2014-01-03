@@ -44,7 +44,7 @@ class CompilerMsgInterface
         /**
          * @brief
          */
-        virtual void reset() {};
+        virtual void clear() {};
 };
 
 #endif // COMPILERMSGINTERFACE_H

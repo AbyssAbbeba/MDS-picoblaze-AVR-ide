@@ -60,6 +60,15 @@ class CompilerSourceLocation : public CompilerSerializable
 
         /**
          * @brief
+         * @param[in] obj
+         * @param[in] omitOrigin
+         * @return
+         */
+        bool equal ( const CompilerSourceLocation & obj,
+                     bool omitOrigin = false ) const;
+
+        /**
+         * @brief
          * @param[in,out]
          */
         virtual void serialize ( CompilerSerializer & output ) const;
@@ -86,6 +95,9 @@ class CompilerSourceLocation : public CompilerSerializable
 
         ///
         int m_colEnd;
+
+        ///
+        int m_origin;
 };
 
 /// @name Tracing operators

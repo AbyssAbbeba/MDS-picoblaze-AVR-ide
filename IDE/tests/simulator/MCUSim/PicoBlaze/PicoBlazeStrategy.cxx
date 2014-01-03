@@ -20,7 +20,7 @@
 #include "../../../../simulators/MCUSim/PicoBlaze/PicoBlazeInterruptController.h"
 
 bool PicoBlazeStrategy::processLine ( std::vector<std::string> * tokens,
-                                      bool useAsmFile,
+                                      bool /*useAsmFile*/,
                                       MCUSimTestScript::Command * cmd )
 {
     switch ( tokens->size() )

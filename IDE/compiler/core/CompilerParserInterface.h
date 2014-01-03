@@ -29,6 +29,7 @@
 #include "CompilerStatement.h"
 #include "CompilerStatementTypes.h"
 #include "CompilerSourceLocation.h"
+#include "CompilerLocationTracker.h"
 
 // Used for i18n only
 #include <QObject>
@@ -98,11 +99,19 @@ class CompilerParserInterface
 
         /**
          * @brief
+         * @return
+         */
+        virtual CompilerLocationTracker & locationTrack() = 0;
+
+        /**
+         * @brief
          * @param[in] filename
+         * @param[in,out] finalFilename
          * @param[in] acyclic
          * @return
          */
         virtual FILE * fileOpen ( const std::string & filename,
+                                  std::string * finalFilename = NULL,
                                   bool acyclic = true ) = 0;
 
         /**

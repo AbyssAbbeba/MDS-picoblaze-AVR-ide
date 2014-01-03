@@ -23,7 +23,6 @@ set ( CMAKE_VERBOSE_MAKEFILE OFF )
 # After this command, you can add tests in the project using ADD_TEST command.
 enable_testing()
 
-
 # ------------------------------------------------------------------------------
 # BUILD COMPONENTS IN THE SUBDIRECTORIES
 # ------------------------------------------------------------------------------
@@ -34,27 +33,24 @@ add_subdirectory ( TestSuiteSuc )
 # Test suite: Error cases.
 add_subdirectory ( TestSuiteErr )
 
-
 # ------------------------------------------------------------------------------
 # COMPILATION OPTIONS
 # ------------------------------------------------------------------------------
 
-# Find Boost include dirs and libraries.
-find_package ( Boost 1.46
+# Find Boost include directories and libraries.
+find_package ( Boost 1.55
                REQUIRED
                COMPONENTS filesystem system )
 
 # Add include directories to the build.
-include_directories ( ${Boost_INCLUDE_DIRS} )
+include_directories ( ${Boost_INCLUDE_DIRS}
+                      "${CMAKE_CURRENT_SOURCE_DIR}/../../../../utilities/AutoTest/" )
 
 # Specify directories in which the linker will look for libraries.
-link_directories ( ${Boost_LIBRARY_DIRS} )
-
-## Add switches to compiler command line
- # -pipe       : Use pipes rather than temporary files for communication between the various stages of compilation.
- # -std=c++0x  : Default template arguments may not be used in function templates without -std=c++0x or -std=gnu++0x.
- # -O1         : Optimization, level 1.
-add_definitions ( -pipe -std=c++0x -O1 )
+link_directories ( ${Boost_LIBRARY_DIRS}
+                   "${CMAKE_CURRENT_SOURCE_DIR}/TestSuiteSuc/"
+                   "${CMAKE_CURRENT_SOURCE_DIR}/TestSuiteErr/"
+                   "${CMAKE_CURRENT_SOURCE_DIR}/../../../../utilities/AutoTest/" )
 
 # Add an executable to the project using the specified source files.
 add_executable ( ${PROJECT_NAME}
@@ -65,12 +61,10 @@ target_link_libraries ( ${PROJECT_NAME}
                         ${Boost_LIBRARIES}
                         TAP_TestSuiteSuc
                         TAP_TestSuiteErr
-                        cunit )
-
+                        AutoTest )
 
 # ------------------------------------------------------------------------------
 # TESTS
 # ------------------------------------------------------------------------------
 
-add_test ( NAME ${PROJECT_NAME}
-           COMMAND ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME} )
+ADD_TEST_SUBJECT ( "Assembler_PicoBlaze" "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}" )

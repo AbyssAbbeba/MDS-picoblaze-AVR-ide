@@ -10,6 +10,14 @@
 # on purpose since the last entry is expected to be "Index" which is supposed to
 # be handled separately.
 #
+# Usage:
+# genQHP.awk -v DNPR=1 -v RESFILE=<file.qhp> <index.html> <file.qhp.in>
+#   - DNPR=1 : Don't print final result at the end (it will be written to the
+#              file specified in the RESFILE variable instead).
+#   - Use {@GENQHP_KEYWORDS@} and {@GENQHP_SECTIONS@} in the .qhp.in file, these
+#     will be automatically replaced with appropriate XML tag sequences by this 
+#     script.
+#
 # (C) copyright 2013 Moravia Microsystems, s.r.o.
 #
 # author: Martin Ošmera <martin.osmera@moravia-microsystems.com>

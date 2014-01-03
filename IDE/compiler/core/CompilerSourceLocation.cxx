@@ -26,6 +26,7 @@ CompilerSourceLocation::CompilerSourceLocation ( int fileNumber,
     m_lineEnd    = lineEnd;
     m_colStart   = colStart;
     m_colEnd     = colEnd;
+    m_origin     = -1;
 }
 
 CompilerSourceLocation::CompilerSourceLocation()
@@ -35,10 +36,15 @@ CompilerSourceLocation::CompilerSourceLocation()
     m_lineEnd    = -1;
     m_colStart   = -1;
     m_colEnd     = -1;
+    m_origin     = -1;
 }
 
 bool CompilerSourceLocation::isSet() const
 {
+    if ( -1 != m_origin )
+    {
+        return true;
+    }
     if ( -1 == m_fileNumber )
     {
         return false;
@@ -63,6 +69,25 @@ bool CompilerSourceLocation::isSet() const
     return true;
 }
 
+bool CompilerSourceLocation::equal ( const CompilerSourceLocation & obj,
+                                     bool omitOrigin ) const
+{
+    if ( ( false == omitOrigin ) && ( obj.m_origin != m_origin ) )
+    {
+        return false;
+    }
+
+    return ( ( obj.m_fileNumber == m_fileNumber )
+               &&
+             ( obj.m_lineStart  == m_lineStart  )
+               &&
+             ( obj.m_lineEnd    == m_lineEnd    )
+               &&
+             ( obj.m_colStart   == m_colStart   )
+               &&
+             ( obj.m_colEnd     == m_colEnd     ) );
+}
+
 void CompilerSourceLocation::serialize ( CompilerSerializer & output ) const
 {
     output.write ( (uint16_t) m_fileNumber );
@@ -70,6 +95,7 @@ void CompilerSourceLocation::serialize ( CompilerSerializer & output ) const
     output.write ( (uint32_t) m_lineEnd );
     output.write ( (uint16_t) m_colStart );
     output.write ( (uint16_t) m_colEnd );
+    output.write ( (uint32_t) m_origin );
 }
 
 void CompilerSourceLocation::deserialize ( CompilerSerializer & input )
@@ -77,8 +103,9 @@ void CompilerSourceLocation::deserialize ( CompilerSerializer & input )
     m_fileNumber = input.translateFileNumber ( (int) input.read_ui16() );
     m_lineStart  = (int) input.read_ui32();
     m_lineEnd    = (int) input.read_ui32();
-    m_colStart   = (int16_t) input.read_ui16();
-    m_colEnd     = (int16_t) input.read_ui16();
+    m_colStart   = (int) input.read_ui16();
+    m_colEnd     = (int) input.read_ui16();
+    m_origin     = input.translateLOrigin ( (int) input.read_ui32() );
 }
 
 std::ostream & operator << ( std::ostream & out,
@@ -107,6 +134,10 @@ std::ostream & operator << ( std::ostream & out,
     if ( -1 != location.m_colEnd )
     {
         out << location.m_colEnd;
+    }
+    if ( -1 != location.m_origin )
+    {
+        out << "[" << location.m_origin << "]";
     }
 
     return out;

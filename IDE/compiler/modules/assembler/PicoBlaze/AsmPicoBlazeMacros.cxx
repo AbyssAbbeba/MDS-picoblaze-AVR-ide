@@ -65,11 +65,12 @@ void AsmPicoBlazeMacros::define ( CompilerSourceLocation location,
             m_table[name].m_definition->completeDelete();
         }
 
-        m_compilerCore -> compilerMessage ( location,
+        m_compilerCore -> semanticMessage ( location,
                                             CompilerBase::MT_WARNING,
-                                            QObject::tr("redefinition of macro ").toStdString() + "\"" + name + "\"" +
-                                            QObject::tr("original definition is at ").toStdString() +
-                                            m_compilerCore->locationToStr(m_table[name].m_location) );
+                                            QObject::tr ( "redefinition of macro `%1', original definition is at: " )
+                                                        . arg ( name.c_str() )
+                                                        . toStdString()
+                                                        + m_compilerCore->locationToStr(m_table[name].m_location) );
     }
 
     if ( macroDef->last() == macroDef )
@@ -90,7 +91,30 @@ void AsmPicoBlazeMacros::define ( CompilerSourceLocation location,
           param != NULL;
           param = param->m_next )
     {
-        m_table[name].m_parameters.push_back(param->m_lValue.m_data.m_symbol);
+        const char * paramName = param->m_lValue.m_data.m_symbol;
+        if ( true == m_symbolTable->isDefined(paramName) )
+        {
+            const CompilerSourceLocation & symLocation = m_symbolTable->getValue(paramName)->location();
+            if ( true == symLocation.isSet() )
+            {
+                m_compilerCore -> semanticMessage ( param->location(),
+                                                    CompilerBase::MT_WARNING,
+                                                    QObject::tr ( "macro parameter `%1' eclipses global symbol `%1', "
+                                                                  "defined at: " )
+                                                                . arg ( paramName )
+                                                                . toStdString()
+                                                                + m_compilerCore->locationToStr(symLocation) );
+            }
+            else
+            {
+                m_compilerCore -> semanticMessage ( param->location(),
+                                                    CompilerBase::MT_WARNING,
+                                                    QObject::tr ( "macro parameter `%1' eclipses global symbol `%1'" )
+                                                                . arg ( paramName )
+                                                                . toStdString() );
+            }
+        }
+        m_table[name].m_parameters.push_back(paramName);
     }
 }
 
@@ -106,28 +130,33 @@ void AsmPicoBlazeMacros::incrMacroCounter ( CompilerStatement * macro ) const
         return;
     }
 
-    macro->m_userData++;
-    incrMacroCounter(macro->m_branch);
-    incrMacroCounter(macro->m_next);
+    for ( CompilerStatement * node = macro;
+          NULL != node;
+          node = node->next() )
+    {
+        node->m_userData++;
+        incrMacroCounter(node->branch());
+    }
 }
 
-CompilerStatement * AsmPicoBlazeMacros::expand ( const CompilerSourceLocation & msgLocation,
-                                                 const CompilerSourceLocation & location,
+CompilerStatement * AsmPicoBlazeMacros::expand ( const CompilerSourceLocation & location,
                                                  const std::string & name,
                                                  const CompilerExpr * arguments )
 {
     if ( false == m_expEnabled )
     {
-        m_compilerCore -> compilerMessage ( msgLocation,
+        m_compilerCore -> semanticMessage ( location,
                                             CompilerBase::MT_REMARK,
-                                            QObject::tr("macro `%1' will not be expanded because macro expansion has "
-                                                        "been disabled ").arg(name.c_str()).toStdString() );
+                                            QObject::tr ( "macro expansion has been disabled, macro `%1' will not be "
+                                                          "expanded" )
+                                                        . arg ( name.c_str() )
+                                                        . toStdString() );
         return NULL;
     }
 
     if ( m_table.end() == m_table.find(name) )
     {
-        m_compilerCore -> compilerMessage ( msgLocation,
+        m_compilerCore -> semanticMessage ( location,
                                             CompilerBase::MT_ERROR,
                                             QObject::tr("macro not defined: ").toStdString() + "\"" + name + "\"" );
         return new CompilerStatement();
@@ -147,14 +176,14 @@ CompilerStatement * AsmPicoBlazeMacros::expand ( const CompilerSourceLocation & 
     int numberOfParams = (int) macro.m_parameters.size();
     int argNo = -1;
     for ( const CompilerExpr * arg = arguments;
-          arg != NULL;
+          NULL != arg;
           arg = arg->m_next )
     {
         argNo++;
 
         if ( numberOfParams <= argNo )
         {
-            m_compilerCore -> compilerMessage ( arg->m_location,
+            m_compilerCore -> semanticMessage ( arg->m_location,
                                                 CompilerBase::MT_ERROR,
                                                 QObject::tr("too many arguments given, expecting at most %1 "
                                                             "arguments").arg(numberOfParams).toStdString() );
@@ -167,12 +196,13 @@ CompilerStatement * AsmPicoBlazeMacros::expand ( const CompilerSourceLocation & 
     }
 
     // Substitute remaining parameters with "blank values".
-    static const CompilerExpr blankExpr;
+    CompilerExpr blankExpr;
+    blankExpr.m_location = location;
     for ( int i = argNo + 1; i < numberOfParams; i++ )
     {
         const std::string & param = macro.m_parameters[i];
         symbolSubst ( param, &blankExpr, result );
-        m_compilerCore -> compilerMessage ( location,
+        m_compilerCore -> semanticMessage ( location,
                                             CompilerBase::MT_REMARK,
                                             QObject::tr("parameter `%1' substituted for blank "
                                                         "value").arg(param.c_str()).toStdString() );
@@ -202,7 +232,7 @@ bool AsmPicoBlazeMacros::mangleName ( const CompilerSourceLocation & location,
         if ( *i == local )
         {
             found = true;
-            m_compilerCore -> compilerMessage ( location,
+            m_compilerCore -> semanticMessage ( location,
                                                 CompilerBase::MT_WARNING,
                                                 QObject::tr ( "symbol `%1' already declared as local" )
                                                             . arg(i->c_str()).toStdString() );
@@ -230,17 +260,20 @@ bool AsmPicoBlazeMacros::symbolSubst ( const std::string & parameter,
 {
     if ( NULL == target )
     {
-        return false;;
+        return false;
     }
 
     bool result = false;
 
-    result |= symbolSubst ( parameter, argument, target->next() );
-    result |= symbolSubst ( parameter, argument, target->branch() );
-
-    if ( 0 != m_symbolTable->substitute ( parameter, argument, target->args() ) )
+    for ( CompilerStatement * node = target;
+          NULL != node;
+          node = node->next() )
     {
-        result = true;
+        if ( 0 != m_symbolTable->substitute ( parameter, argument, node->args() ) )
+        {
+            result = true;
+        }
+        result |= symbolSubst ( parameter, argument, node->branch() );
     }
 
     return result;
@@ -258,7 +291,8 @@ void AsmPicoBlazeMacros::output()
 
     if ( false == file.is_open() )
     {
-        m_compilerCore -> compilerMessage ( CompilerBase::MT_ERROR,
+        m_compilerCore -> semanticMessage ( CompilerSourceLocation(),
+                                            CompilerBase::MT_ERROR,
                                             QObject::tr ( "Unable to open " ).toStdString()
                                                         + "\"" + m_opts -> m_macroTable  + "\"" );
         return;
@@ -268,7 +302,8 @@ void AsmPicoBlazeMacros::output()
 
     if ( true == file.bad() )
     {
-        m_compilerCore -> compilerMessage ( CompilerBase::MT_ERROR,
+        m_compilerCore -> semanticMessage ( CompilerSourceLocation(),
+                                            CompilerBase::MT_ERROR,
                                             QObject::tr ( "Unable to write to " ).toStdString()
                                                         + "\"" + m_opts -> m_macroTable  + "\"" );
         return;

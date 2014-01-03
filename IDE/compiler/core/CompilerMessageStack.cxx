@@ -17,18 +17,35 @@
 
 bool CompilerMessageStack::isUnique ( const CompilerSourceLocation & location,
                                       CompilerBase::MessageType type,
-                                      const std::string & text )
+                                      const std::string & text,
+                                      bool ignoreLocation )
 {
-    if ( m_data.cend() != m_data.find(text) )
+    if ( true == ignoreLocation )
     {
-        return false;
+        if ( m_data.cend() != m_data.find(text) )
+        {
+            return false;
+        }
+    }
+    else
+    {
+        std::pair<MsgMap::iterator,MsgMap::iterator> range = m_data.equal_range(text);
+        for ( MsgMap::iterator i = range.first;
+              i != range.second;
+              i++ )
+        {
+            if ( true == location.equal(i->second.first) )
+            {
+                return false;
+            }
+        }
     }
 
     m_data.insert ( std::pair<std::string,MsgMetaData>(text, MsgMetaData(location, type)) );
     return true;
 }
 
-void CompilerMessageStack::reset()
+void CompilerMessageStack::clear()
 {
     m_data.clear();
 }

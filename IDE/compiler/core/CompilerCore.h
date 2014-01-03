@@ -22,6 +22,7 @@ class DataFile;
 class CompilerExpr;
 class CompilerOptions;
 class CompilerStatement;
+class CompilerMsgFilter;
 class CompilerMsgObserver;
 class CompilerMsgInterface;
 class CompilerMessageStack;
@@ -32,6 +33,9 @@ class CompilerSemanticAnalyzer;
 #include "CompilerSourceLocation.h"
 #include "CompilerParserInterface.h"
 #include "CompilerSemanticInterface.h"
+
+// Additional compiler components.
+#include "CompilerLocationTracker.h"
 
 // Boost Filesystem library.
 #define BOOST_FILESYSTEM_NO_DEPRECATED
@@ -52,11 +56,6 @@ class CompilerCore : public CompilerBase,
                      public CompilerParserInterface,
                      public CompilerSemanticInterface
 {
-    ////    Public Static Constants    ////
-    public:
-        /// @brief Maximum allowed number of messages.
-        static const unsigned int MAX_MESSAGES = 1024;
-
     ////    Constructors and Destructors    ////
     public:
         /**
@@ -121,6 +120,15 @@ class CompilerCore : public CompilerBase,
         bool savePrecompiledCode ( const std::string & fileName,
                                    const CompilerStatement * code );
 
+        /**
+         * @brief Close all opened input files.
+         *
+         * @note
+         * This is normally done automatically anyway, use this method only when you wish to close the files before the
+         * cleanup phase.
+         */
+        void closeInputFiles();
+
     ////    Private Operations    ////
     private:
         /**
@@ -128,12 +136,14 @@ class CompilerCore : public CompilerBase,
          * @param[in] location
          * @param[in] type
          * @param[in] text
+         * @param[in] forceAsUnique
          */
-        void localMessage ( const CompilerSourceLocation & location,
-                            MessageType type,
-                            const std::string & text );
+        void coreMessage ( const CompilerSourceLocation & location,
+                           MessageType type,
+                           const std::string & text,
+                           bool forceAsUnique = false );
 
-        /// @name Interface for syntax and/or lexical analyzer
+        /// @name Interface for syntax and/or lexical analyzer, and for preprocessor.
         //@{
             /**
              * @brief
@@ -168,11 +178,13 @@ class CompilerCore : public CompilerBase,
             /**
              * @brief
              * @param[in] filename
+             * @param[in,out] finalFilename
              * @param[in] acyclic
              * @return
              */
-            FILE * fileOpen ( const std::string & filename,
-                              bool acyclic = true );
+            virtual FILE * fileOpen ( const std::string & filename,
+                                      std::string * finalFilename = NULL,
+                                      bool acyclic = true );
 
             /**
              * @brief
@@ -180,40 +192,49 @@ class CompilerCore : public CompilerBase,
              * @param[in,out] fileHandle
              * @return
              */
-            bool pushFileName ( const std::string & filename,
-                                FILE ** fileHandle );
+            virtual bool pushFileName ( const std::string & filename,
+                                        FILE ** fileHandle );
 
             /**
              * @brief
              */
-            void popFileName();
+            virtual void popFileName();
 
             /**
              * @brief
              * @return
              */
-            int getFileNumber() const;
+            virtual int getFileNumber() const;
 
             /**
              * @brief
              * @param[in] uplevel
              * @return
              */
-            int getFileNumber ( unsigned int uplevel ) const;
+            virtual int getFileNumber ( unsigned int uplevel ) const;
 
             /**
              * @brief
              * @param[in] filename
              * @return
              */
-            int getFileNumber ( const std::string & filename ) const;
+            virtual int getFileNumber ( const std::string & filename ) const;
 
             /**
              * @brief
              * @param[in,out] codeTree
              * @return
              */
-            void processCodeTree ( CompilerStatement * codeTree );
+            virtual void processCodeTree ( CompilerStatement * codeTree );
+        //@}
+
+        /// @name Interface common for syntax analyzer, lexical analyzer, preprocessor, and for semantic analyzer.
+        //@{
+            /**
+             * @brief
+             * @return
+             */
+            virtual CompilerLocationTracker & locationTrack();
         //@}
 
         /// @name Interface for semantic analyzer
@@ -222,21 +243,23 @@ class CompilerCore : public CompilerBase,
              * @brief
              * @return
              */
-            const std::vector<std::pair<std::string,FILE*>> & listSourceFiles() const;
+            virtual const std::vector<std::pair<std::string,FILE*>> & listSourceFiles() const;
 
             /**
              * @brief
              * @param[in] fileNumber
              * @return
              */
-            const std::string & getFileName ( int fileNumber ) const;
+            virtual const std::string & getFileName ( int fileNumber ) const;
 
             /**
              * @brief
              * @param[in] location
+             * @param[in] main If location is used inside a message text, the to false.
              * @return
              */
-            std::string locationToStr ( const CompilerSourceLocation & location ) const;
+            virtual std::string locationToStr ( const CompilerSourceLocation & location,
+                                                bool main = false ) const;
 
             /**
              * @brief
@@ -244,30 +267,22 @@ class CompilerCore : public CompilerBase,
              * @param[in] type
              * @param[in] text
              */
-            void compilerMessage ( const CompilerSourceLocation & location,
-                                   MessageType type,
-                                   const std::string & text );
-
-            /**
-             * @brief
-             * @param[in] type
-             * @param[in] text
-             */
-            void compilerMessage ( MessageType type,
-                                   const std::string & text );
+            virtual void semanticMessage ( const CompilerSourceLocation & location,
+                                           MessageType type,
+                                           const std::string & text );
 
             /**
              * @brief
              * @return
              */
-            bool successful() const;
+            virtual bool successful() const;
 
             /**
              * @brief
              * @param[in,out] observer
              * @return
              */
-            void registerMsgObserver ( CompilerMsgObserver * observer );
+            virtual void registerMsgObserver ( CompilerMsgObserver * observer );
 
             /**
              * @brief
@@ -275,19 +290,19 @@ class CompilerCore : public CompilerBase,
              * @param[in] flag
              * @return
              */
-            CompilerStatement * loadDevSpecCode ( const std::string & deviceName,
-                                                  CompilerBase::DevSpecLoaderFlag * flag = NULL );
+            virtual CompilerStatement * loadDevSpecCode ( const std::string & deviceName,
+                                                          CompilerBase::DevSpecLoaderFlag * flag = NULL );
             /**
              * @brief
              * @return
              */
-            std::string getBaseIncludeDir();
+            virtual std::string getBaseIncludeDir();
 
             /**
              * @brief
              * @return
              */
-            std::string getBaseName();
+            virtual std::string getBaseName();
         //@}
 
     ////    Inline Public Operations    ////
@@ -303,7 +318,7 @@ class CompilerCore : public CompilerBase,
 
         /**
          * @brief
-         * @param[in] directory
+         * @param[in] directory Must be an absolute path (on Windows including c:\ and such stuff).
          */
         void setBaseIncludeDir ( const std::string & directory )
         {
@@ -344,8 +359,8 @@ class CompilerCore : public CompilerBase,
          * @param[in] type
          * @param[in] text
          */
-        inline void localMessage ( MessageType type,
-                                   const std::string & text );
+        inline void coreMessage ( MessageType type,
+                                  const std::string & text );
 
         /**
          * @brief
@@ -356,79 +371,52 @@ class CompilerCore : public CompilerBase,
 
     ////    Private Attributes    ////
     private:
-        /**
-         * @brief
-         */
-        CompilerMsgInterface * const m_msgInterface;
+        /// @brief
+        CompilerMsgFilter * m_msgInterface;
 
-        /**
-         * @brief
-         */
+        /// @brief
         CompilerMsgObserver * m_msgObserver;
 
-        /**
-         * @brief
-         */
+        /// @brief
         CompilerSemanticAnalyzer * m_semanticAnalyzer;
 
-        /**
-         * @brief
-         */
+        /// @brief
         CompilerStatement * m_rootStatement;
 
-        /**
-         * @brief
-         */
+        /// @brief
         CompilerOptions * m_opts;
 
-        /**
-         * @brief
-         */
+        /// @brief
         CompilerMessageStack * m_messageStack;
 
-        /**
-         * @brief
-         */
+        /// @brief
         std::vector<std::string> m_fileNameStack;
 
-        /**
-         * @brief
-         */
+        /// @brief
         std::vector<std::pair<std::string,FILE*>> m_openedFiles;
 
-        /**
-         * @brief
-         */
+        /// @brief
+        CompilerLocationTracker m_locationTracker;
+
+        /// @brief
         std::string m_filename;
 
-        /**
-         * @brief
-         */
+        /// @brief
         std::string m_baseIncludeDir;
 
-        /**
-         * @brief
-         */
+        /// @brief
         std::string m_device;
 
-        /**
-         * @brief
-         */
+        /// @brief
         boost::filesystem::path m_basePath;
 
-        /**
-         * @brief
-         */
+        /// @brief
         int m_fileNumber;
 
-        /**
-         * @brief
-         */
+        /// @brief
         bool m_success;
 
-        /**
-         * @brief
-         */
+        /// @brief
         bool m_devSpecCodeLoaded;
 };
 

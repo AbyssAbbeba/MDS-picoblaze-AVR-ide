@@ -38,7 +38,7 @@ class CompilerMsgFilter : public CompilerMsgInterface
          */
         CompilerMsgFilter ( const CompilerCore * compilerCore,
                             CompilerMsgInterface * msgInterface = NULL,
-                            unsigned int messageLimit = 0 );
+                            int messageLimit = -1 );
 
     ////    Public Operations    ////
     public:
@@ -53,7 +53,12 @@ class CompilerMsgFilter : public CompilerMsgInterface
         /**
          * @brief
          */
-        virtual void reset();
+        virtual void clear();
+
+    ////    Public Attributes    ////
+    public:
+        /// @brief
+        int m_messageLimit;
 
     ////    Private Attributes    ////
     private:
@@ -64,10 +69,7 @@ class CompilerMsgFilter : public CompilerMsgInterface
         CompilerMsgInterface * const m_msgInterface;
 
         /// @brief
-        const unsigned int m_messageLimit;
-
-        /// @brief
-        unsigned int m_msgCounter;
+        int m_msgCounter;
 };
 
 #endif // COMPILERMSGFILTER_H

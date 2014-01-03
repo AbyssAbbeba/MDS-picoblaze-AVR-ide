@@ -15,8 +15,12 @@
 
 #include "AsmPicoBlazeCodeListing.h"
 
+// PicoBlaze assembler semantic analyzer header files.
+#include "AsmPicoBlazeSymbolTable.h"
+
 // Standard headers.
 #include <cstdio>
+#include <cstdlib>
 #include <fstream>
 
 // Used for i18n only
@@ -54,9 +58,12 @@ AsmPicoBlazeCodeListing::Message::Message ( CompilerBase::MessageType type,
 }
 
 AsmPicoBlazeCodeListing::AsmPicoBlazeCodeListing ( CompilerSemanticInterface * compilerCore,
-                                                   CompilerOptions * opts )
-                                                 : m_compilerCore ( compilerCore ),
-                                                   m_opts ( opts )
+                                                   CompilerOptions * opts,
+                                                   AsmPicoBlazeSymbolTable * symbolTable )
+                                                 :
+                                                   m_compilerCore ( compilerCore ),
+                                                   m_opts ( opts ),
+                                                   m_symbolTable ( symbolTable )
 {
     m_messageLimit = 0;
     m_compilerCore->registerMsgObserver(this);
@@ -73,6 +80,7 @@ void AsmPicoBlazeCodeListing::clear()
     m_title.clear();
     m_listing.clear();
     m_messages.clear();
+    m_files2skip.clear();
     m_messageQueue.clear();
 }
 
@@ -95,21 +103,28 @@ void AsmPicoBlazeCodeListing::loadSourceFiles()
           it++ )
     {
         fileNumber++;
+        if ( NULL == it->second )
+        {
+            m_files2skip.insert(fileNumber);
+            continue;
+        }
+
         rewind(it->second);
 
         if ( 0 != ferror(it->second) )
         {
-            m_compilerCore -> compilerMessage ( CompilerBase::MT_ERROR,
+            m_compilerCore -> semanticMessage ( CompilerSourceLocation(),
+                                                CompilerBase::MT_ERROR,
                                                 QObject::tr("unable to read file: ").toStdString()
                                                 + "`" + it->first  + "'" );
-            return;
+            break;
         }
 
         // Iterate over lines in the file.
-        while ( -1 != ( lineLen = getline(&line, &bufSize, it->second) ) )
+        while ( 0 < ( lineLen = getline(&line, &bufSize, it->second) ) )
         {
             // Dispose of the terminating EOL character sequence.
-            if ( '\r' == line[lineLen-2] )
+            if ( ( lineLen > 1 ) && ( '\r' == line[lineLen-2] ) )
             {
                 line[lineLen-2] = '\0';
             }
@@ -120,6 +135,11 @@ void AsmPicoBlazeCodeListing::loadSourceFiles()
 
             m_listing[fileNumber].push_back ( LstLine ( line ) );
         }
+    }
+
+    if ( NULL != line )
+    {
+        free(line);
     }
 
     processMsgQueue();
@@ -260,7 +280,7 @@ void AsmPicoBlazeCodeListing::printCodeListing ( std::ostream & out,
                             break;
                     }
 
-                    out << msg->m_text << std::endl;;
+                    out << msg->m_text << "." << std::endl;;
                 }
             }
         }
@@ -302,7 +322,8 @@ void AsmPicoBlazeCodeListing::output()
 
     if ( false == file.is_open() )
     {
-        m_compilerCore -> compilerMessage ( CompilerBase::MT_ERROR,
+        m_compilerCore -> semanticMessage ( CompilerSourceLocation(),
+                                            CompilerBase::MT_ERROR,
                                             QObject::tr("unable to open ").toStdString() + "\""
                                             + m_opts -> m_lstFile  + "\"" );
         return;
@@ -312,16 +333,22 @@ void AsmPicoBlazeCodeListing::output()
 
     if ( true == file.bad() )
     {
-        m_compilerCore -> compilerMessage ( CompilerBase::MT_ERROR,
+        m_compilerCore -> semanticMessage ( CompilerSourceLocation(),
+                                            CompilerBase::MT_ERROR,
                                             QObject::tr("unable to write to ").toStdString() + "\""
                                             + m_opts -> m_lstFile  + "\"" );
         return;
     }
 }
 
-inline bool AsmPicoBlazeCodeListing::checkLocation ( const CompilerSourceLocation & location,
-                                                  bool silent )
+bool AsmPicoBlazeCodeListing::checkLocation ( const CompilerSourceLocation & location,
+                                              bool silent )
 {
+    if ( m_files2skip.end() != m_files2skip.find(location.m_fileNumber) )
+    {
+        return false;
+    }
+
     if ( -1 != location.m_fileNumber && (size_t)location.m_fileNumber < (m_numberOfFiles + m_numberOfMacros) )
     {
         if ( 0 < location.m_lineStart && (size_t)location.m_lineStart <= m_listing[location.m_fileNumber].size() )
@@ -334,7 +361,8 @@ inline bool AsmPicoBlazeCodeListing::checkLocation ( const CompilerSourceLocatio
     // Location is NOT valid.
     if ( ( false == silent ) && ( -1 != location.m_fileNumber ) )
     {
-        m_compilerCore -> compilerMessage ( CompilerBase::MT_ERROR,
+        m_compilerCore -> semanticMessage ( CompilerSourceLocation(),
+                                            CompilerBase::MT_ERROR,
                                             QObject::tr ( "some of the source code files were aparently changed"
                                                           " during compilation" ).toStdString() );
     }
@@ -401,16 +429,18 @@ void AsmPicoBlazeCodeListing::expandMacro ( CompilerSourceLocation location,
         return;
     }
 
+    unsigned int lineCounter = 0;
+    int formerOrigin = m_compilerCore->locationTrack().add(location);
+
     m_numberOfMacros++;
 
     location.m_lineStart--;
     m_listing[location.m_fileNumber][location.m_lineStart].m_macro.push_back( m_numberOfFiles + m_numberOfMacros );
 
-    unsigned int lineCounter = 0;
     m_listing.resize(m_numberOfFiles + m_numberOfMacros);
     copyMacroBody(&lineCounter, definition);
     lineCounter = 0;
-    rewriteMacroLoc(&lineCounter, expansion);
+    rewriteMacroLoc(&lineCounter, expansion, formerOrigin);
 }
 
 void AsmPicoBlazeCodeListing::copyMacroBody ( unsigned int * lastLine,
@@ -442,7 +472,8 @@ void AsmPicoBlazeCodeListing::copyMacroBody ( unsigned int * lastLine,
 }
 
 void AsmPicoBlazeCodeListing::rewriteMacroLoc ( unsigned int * lineDiff,
-                                                CompilerStatement * macro )
+                                                CompilerStatement * macro,
+                                                int origin )
 {
     for ( CompilerStatement * node = macro;
           node != NULL;
@@ -454,12 +485,15 @@ void AsmPicoBlazeCodeListing::rewriteMacroLoc ( unsigned int * lineDiff,
             {
                 *lineDiff = node->m_location.m_lineStart - 1;
             }
+            node->m_location.m_origin     = m_compilerCore->locationTrack().add(node->m_location, origin);
             node->m_location.m_fileNumber = ( m_numberOfFiles + m_numberOfMacros - 1 );
             node->m_location.m_lineStart -= *lineDiff;
             node->m_location.m_lineEnd   -= *lineDiff;
+
+            m_symbolTable->rewriteExprLoc ( node->args(), node->location(), origin, true );
         }
 
-        rewriteMacroLoc ( lineDiff, node->branch() );
+        rewriteMacroLoc ( lineDiff, node->branch(), origin );
     }
 }
 

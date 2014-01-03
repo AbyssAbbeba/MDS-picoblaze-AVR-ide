@@ -54,7 +54,7 @@ AsmPicoBlazeSemanticAnalyzer::AsmPicoBlazeSemanticAnalyzer ( CompilerSemanticInt
     m_machineCode    = new AsmMachineCodeGen();
     m_memoryPtr      = new AsmPicoBlazeMemoryPtr ( compilerCore );
     m_symbolTable    = new AsmPicoBlazeSymbolTable ( compilerCore, opts );
-    m_codeListing    = new AsmPicoBlazeCodeListing ( compilerCore, opts );
+    m_codeListing    = new AsmPicoBlazeCodeListing ( compilerCore, opts, m_symbolTable );
     m_macros         = new AsmPicoBlazeMacros ( compilerCore, opts, m_symbolTable, m_codeListing );
     m_specialMacros  = new AsmPicoBlazeSpecialMacros ( compilerCore, m_symbolTable, m_codeListing );
     m_instructionSet = new AsmPicoBlazeInstructionSet ( compilerCore, opts, m_symbolTable, &m_device );
@@ -91,7 +91,8 @@ void AsmPicoBlazeSemanticAnalyzer::printCodeTree ( const CompilerStatement * cod
 
     if ( false == file.is_open() )
     {
-        m_compilerCore -> compilerMessage ( CompilerBase::MT_ERROR,
+        m_compilerCore -> semanticMessage ( CompilerSourceLocation(),
+                                            CompilerBase::MT_ERROR,
                                             QObject::tr ( "Unable to open " )
                                                         . toStdString()
                                                         + "\"" + m_opts->m_codeTree  + "\"" );
@@ -102,7 +103,8 @@ void AsmPicoBlazeSemanticAnalyzer::printCodeTree ( const CompilerStatement * cod
 
     if ( true == file.bad() )
     {
-        m_compilerCore -> compilerMessage ( CompilerBase::MT_ERROR,
+        m_compilerCore -> semanticMessage ( CompilerSourceLocation(),
+                                            CompilerBase::MT_ERROR,
                                             QObject::tr ( "Unable to write to " ).toStdString()
                                                         + "\"" + m_opts->m_codeTree  + "\"" );
         return;
@@ -147,7 +149,8 @@ void AsmPicoBlazeSemanticAnalyzer::process ( CompilerStatement * codeTree )
 
     if ( false == m_treeDecoder->phase1(codeTree) )
     {
-        m_compilerCore->compilerMessage(CompilerBase::MT_ERROR,
+        m_compilerCore->semanticMessage(CompilerSourceLocation(),
+                                        CompilerBase::MT_ERROR,
                                         QObject::tr("the last error was critical, compilation aborted").toStdString());
 
         m_codeListing->output();
@@ -287,7 +290,8 @@ inline void AsmPicoBlazeSemanticAnalyzer::saveHDL ( AsmMachineCodeGen::WordSize 
     }
     catch ( const DataFileException & e )
     {
-        m_compilerCore -> compilerMessage ( CompilerBase::MT_ERROR,
+        m_compilerCore -> semanticMessage ( CompilerSourceLocation(),
+                                            CompilerBase::MT_ERROR,
                                             QObject::tr ( "unable to save file " ).toStdString()
                                                         + "\"" + fileName  + "\"" );
     }

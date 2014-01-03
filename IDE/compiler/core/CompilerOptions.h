@@ -183,6 +183,9 @@ class CompilerOptions
             /// Maximum allowed size of Intel HEX record, in bytes of data field (1-255).
             int m_hexMaxRecLength;
 
+            ///
+            int m_messageLimit;
+
             /// 
             Verbosity m_verbosity;
 
@@ -191,6 +194,9 @@ class CompilerOptions
 
             /// Make backup copy of every file which would be overwritten by direct output from the compiler.
             bool m_makeBackupFiles;
+
+            ///
+            bool m_briefMsgOutput;
         //@}
 };
 

@@ -175,7 +175,8 @@ void AsmMachineCodeGen::output ( AsmMachineCodeGen::WordSize wordSize,
 {
     if ( size() > 0x10000 )
     {
-        compilerCore -> compilerMessage ( CompilerBase::MT_ERROR,
+        compilerCore -> semanticMessage ( CompilerSourceLocation(),
+                                          CompilerBase::MT_ERROR,
                                           QObject::tr("The resulting machine code is too big to be stored in a "
                                                       "file.").toStdString() );
         return;
@@ -184,26 +185,26 @@ void AsmMachineCodeGen::output ( AsmMachineCodeGen::WordSize wordSize,
     if ( true == compilerCore->m_simulatorData.m_genSimData )
     {
         BinFile * dataFile = new BinFile(sizeB(wordSize));
-        saveMachineCode(wordSize, byteOrder, dataFile, opts->m_binFile, compilerCore, opts);
+        saveMachineCode(wordSize, byteOrder, dataFile, opts->m_binFile, compilerCore);
         compilerCore->m_simulatorData.m_simData = dataFile;
     }
 
     if ( false == opts->m_hexFile.empty() )
     {
         HexFile dataFile(sizeB(wordSize), opts->m_hexMaxRecLength);
-        saveMachineCode(wordSize, byteOrder, &dataFile, opts->m_hexFile, compilerCore, opts);
+        saveMachineCode(wordSize, byteOrder, &dataFile, opts->m_hexFile, compilerCore);
     }
 
     if ( false == opts->m_binFile.empty() )
     {
         BinFile dataFile(sizeB(wordSize));
-        saveMachineCode(wordSize, byteOrder, &dataFile, opts->m_binFile, compilerCore, opts);
+        saveMachineCode(wordSize, byteOrder, &dataFile, opts->m_binFile, compilerCore);
     }
 
     if ( false == opts->m_srecFile.empty() )
     {
         SrecFile dataFile(sizeB(wordSize));
-        saveMachineCode(wordSize, byteOrder, &dataFile, opts->m_srecFile, compilerCore, opts);
+        saveMachineCode(wordSize, byteOrder, &dataFile, opts->m_srecFile, compilerCore);
     }
 }
 
@@ -211,8 +212,7 @@ inline void AsmMachineCodeGen::saveMachineCode ( AsmMachineCodeGen::WordSize wor
                                                  AsmMachineCodeGen::Endianness byteOrder,
                                                  DataFile * dataFile,
                                                  const std::string & fileName,
-                                                 CompilerSemanticInterface * compilerCore,
-                                                 const CompilerOptions * opts )
+                                                 CompilerSemanticInterface * compilerCore )
 {
     try
     {
@@ -222,7 +222,8 @@ inline void AsmMachineCodeGen::saveMachineCode ( AsmMachineCodeGen::WordSize wor
     catch ( const DataFileException & e )
     {
         std::cerr << e.toString() << std::endl;
-        compilerCore -> compilerMessage ( CompilerBase::MT_ERROR,
+        compilerCore -> semanticMessage ( CompilerSourceLocation(),
+                                          CompilerBase::MT_ERROR,
                                           QObject::tr("unable to save file ").toStdString() + "\"" + fileName  + "\"" );
     }
 }

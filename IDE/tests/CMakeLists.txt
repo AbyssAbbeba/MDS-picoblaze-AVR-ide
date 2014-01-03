@@ -23,6 +23,21 @@ set ( CMAKE_VERBOSE_MAKEFILE OFF )
 # After this command, you can add tests in the project using ADD_TEST command.
 enable_testing()
 
+# ------------------------------------------------------------------------------
+# COMPILATION OPTIONS
+# ------------------------------------------------------------------------------
+
+# List of additional files that will be cleaned as a part of the "make clean" stage.
+FILE ( GLOB resultFiles *-Results.xml *-Listing.xml *-Valgring.txt *.html *.gcov *.log *.gcda *.gcno )
+set_directory_properties ( PROPERTIES
+                           ADDITIONAL_MAKE_CLEAN_FILES "${resultFiles}" )
+
+## Add a target with no output so it will always be built.
+ # Process test results and generate corresponding HTML files.
+add_custom_target ( test_analysis
+                    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/results2html.sh
+                    WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+                    COMMENT "Processing test results." )
 
 # ------------------------------------------------------------------------------
 # BUILD COMPONENTS IN THE SUBDIRECTORIES
