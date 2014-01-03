@@ -25,6 +25,9 @@
    <property name="text">
     <string>Return random value</string>
    </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
   </widget>
   <widget class="QLabel" name="label">
    <property name="geometry">
@@ -152,7 +155,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>Widget changed</string>
+    <string>Value update</string>
    </property>
   </widget>
   <widget class="QPushButton" name="btnColorWidget">

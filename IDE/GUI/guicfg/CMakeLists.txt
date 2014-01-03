@@ -44,8 +44,9 @@ include(${QT_USE_FILE})
 
 
 # <DEBUG!>
-#link_directories(
-#)
+link_directories(
+    "${CMAKE_CURRENT_BINARY_DIR}/../errordialog/"
+)
 #include_directories(
 #	"${CMAKE_CURRENT_BINARY_DIR}/.."
 #	"${CMAKE_CURRENT_BINARY_DIR}/../../../simulators/MCUSim/")
@@ -68,4 +69,4 @@ add_library(${PROJECT_NAME} SHARED
 	${SAMPLE_MOC_SRCS} ${SAMPLE_SRCS})
 
 #QtNetwork !!
-target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} ErrorDialog)
