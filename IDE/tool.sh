@@ -71,7 +71,7 @@ function clean() {
     make clean
 
     for dirGlob in 'CMakeFiles' 'Testing' '_CPack_Packages'; do
-        rm -rfv $(find -type d -name "${fileGlob}")
+        rm -rfv $(find -type d -name "${dirGlob}")
     done
     for fileGlob in 'Makefile''Doxyfile' 'DartConfiguration.tcl' 'CPackSourceConfig.cmake' 'CPackConfig.cmake' \
                     '*-Linux.*' '*~' '*.a' '*.so' 'moc_*.cxx' '.directory' 'CMakeCache.txt' 'cmake_install.cmake' \
