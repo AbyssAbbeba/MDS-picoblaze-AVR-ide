@@ -1,0 +1,271 @@
+
+//
+// Copyright © 2003..2012 : Henk van Kampen <henk@mediatronix.com>
+//
+// This file is part of pBlazASM.
+//
+// pBlazASM is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// pBlazASM is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with pBlazASM.  If not, see <http://www.gnu.org/licenses/>.
+//
+
+C10ll	.EQU	        10 % 256
+C10lh	.EQU	        10 / 256 % 256
+C10hl	.EQU	        10 / 256 / 256 % 256
+C10hh	.EQU	        10 / 256 / 256 / 256 % 256
+
+C100ll	.EQU	       100 % 256
+C100lh	.EQU	       100 / 256 % 256     
+C100hl	.EQU	       100 / 256 / 256 % 256   
+C100hh	.EQU	       100 / 256 / 256 / 256 % 256
+
+C1kll	.EQU	      1000 % 256
+C1klh	.EQU	      1000 / 256 % 256
+C1khl	.EQU	      1000 / 256 / 256 % 256
+C1khh	.EQU	      1000 / 256 / 256 / 256 % 256
+
+C10kll	.EQU	     10000 % 256
+C10klh	.EQU	     10000 / 256 % 256
+C10khl	.EQU	     10000 / 256 / 256 % 256
+C10khh	.EQU	     10000 / 256 / 256 / 256 % 256
+
+C100kll	.EQU	    100000 % 256
+C100klh	.EQU	    100000 / 256 % 256
+C100khl	.EQU	    100000 / 256 / 256 % 256
+C100khh	.EQU	    100000 / 256 / 256 / 256 % 256
+
+C1Mll	.EQU	   1000000 % 256
+C1Mlh	.EQU	   1000000 / 256 % 256
+C1Mhl	.EQU	   1000000 / 256 / 256 % 256
+C1Mhh	.EQU	   1000000 / 256 / 256 / 256 % 256
+
+C10Mll	.EQU	  10000000 % 256
+C10Mlh	.EQU	  10000000 / 256 % 256
+C10Mhl	.EQU	  10000000 / 256 / 256 % 256
+C10Mhh	.EQU	  10000000 / 256 / 256 / 256 % 256
+
+C100Mll	.EQU	 100000000 % 256
+C100Mlh	.EQU	 100000000 / 256 % 256
+C100Mhl	.EQU	 100000000 / 256 / 256 % 256
+C100Mhh	.EQU	 100000000 / 256 / 256 / 256 % 256
+
+C1Gll	.EQU	1000000000 % 256
+C1Glh	.EQU	1000000000 / 256 % 256
+C1Ghl	.EQU	1000000000 / 256 / 256 % 256
+C1Ghh	.EQU	1000000000 / 256 / 256 / 256 % 256
+
+d32	.BUF	11
+
+// convert a 32 bit value in s0..s3 to a decimal string
+// reptitively substracts 9 powers of 10, remainder is last digit
+
+convd32:
+
+	MOVE	s4, '0'			// start with a zero
+	MOVE	s5, d32
+	
+convd32_1G:				// try to divide by 1G
+	ADD	s4, 1			// count successes
+	SUB	s0, C1Gll
+	SUBC	s1, C1Glh
+	SUBC	s2, C1Ghl
+	SUBC	s3, C1Ghh
+	JUMP	NC, convd32_1G
+	
+	SUB	s4, 1			// restore
+	ADD	s0, C1Gll
+	ADDC	s1, C1Glh
+	ADDC	s2, C1Ghl
+	ADDC	s3, C1Ghh
+	
+	ST	s4, s5			// save string
+	ADD	s5, 1
+	
+	MOVE	s4, '0'			// start with a zero
+
+convd32_100M :				// try to divide by 100M
+	ADD	s4, 1			// count successes
+	SUB	s0, C100Mll
+	SUBC	s1, C100Mlh
+	SUBC	s2, C100Mhl
+	SUBC	s3, C100Mhh
+	JUMP	NC, convd32_100M
+	
+	SUB	s4, 1			// restore
+	ADD	s0, C100Mll
+	ADDC	s1, C100Mlh
+	ADDC	s2, C100Mhl
+	ADDC	s3, C100Mhh
+	
+	ST	s4, s5			// save string
+	ADD	s5, 1
+	
+	MOVE	s4, '0'			// start with a zero
+	
+convd32_10M :				// try to divide by 10M
+	ADD	s4, 1			// count successes
+	SUB	s0, C10Mll
+	SUBC	s1, C10Mlh
+	SUBC	s2, C10Mhl
+	SUBC	s3, C10Mhh
+	JUMP	NC, convd32_10M
+	
+	SUB	s4, 1			// restore
+	ADD	s0, C10Mll
+	ADDC	s1, C10Mlh
+	ADDC	s2, C10Mhl
+	ADDC	s3, C10Mhh
+	
+	ST	s4, s5			// save string
+	ADD	s5, 1
+	
+	MOVE	s4, '0'			// start with a zero
+	
+convd32_1M :				// try to divide by 1M
+	ADD	s4, 1			// count successes
+	SUB	s0, C1Mll
+	SUBC	s1, C1Mlh
+	SUBC	s2, C1Mhl
+	SUBC	s3, C1Mhh
+	JUMP	NC, convd32_1M
+	
+	SUB	s4, 1			// restore
+	ADD	s0, C1Mll
+	ADDC	s1, C1Mlh
+	ADDC	s2, C1Mhl
+	ADDC	s3, C1Mhh
+	
+	ST	s4, s5			// save string
+	ADD	s5, 1
+	
+	MOVE	s4, '0'			// start with a zero
+	
+convd32_100k :				// try to divide by 100k
+	ADD	s4, 1			// count successes
+	SUB	s0, C100kll
+	SUBC	s1, C100klh
+	SUBC	s2, C100khl
+	SUBC	s3, C100khh
+	JUMP	NC, convd32_100k
+	
+	SUB	s4, 1			// restore
+	ADD	s0, C100kll
+	ADDC	s1, C100klh
+	ADDC	s2, C100khl
+	ADDC	s3, C100khh
+	
+	ST	s4, s5			// save string
+	ADD	s5, 1
+	
+	MOVE	s4, '0'			// start with a zero
+	
+convd32_10k :				// try to divide by 10k
+	ADD	s4, 1			// count successes
+	SUB	s0, C10kll
+	SUBC	s1, C10klh
+	SUBC	s2, C10khl
+	SUBC	s3, C10khh
+	JUMP	NC, convd32_10k
+	
+	SUB	s4, 1			// restore
+	ADD	s0, C10kll
+	ADDC	s1, C10klh
+	ADDC	s2, C10khl
+	ADDC	s3, C10khh
+	
+	ST	s4, s5			// save string
+	ADD	s5, 1
+	
+	MOVE	s4, '0'			// start with a zero
+	
+convd32_1k :				// try to divide by 1k
+	ADD	s4, 1			// count successes
+	SUB	s0, C1kll
+	SUBC	s1, C1klh
+	SUBC	s2, C1khl
+	SUBC	s3, C1khh
+	JUMP	NC, convd32_1k
+	
+	SUB	s4, 1			// restore
+	ADD	s0, C1kll
+	ADDC	s1, C1klh
+	ADDC	s2, C1khl
+	ADDC	s3, C1khh
+	
+	ST	s4, s5			// save string
+	ADD	s5, 1
+	
+	MOVE	s4, '0'			// start with a zero
+	
+convd32_100 :				// try to divide by 100
+	ADD	s4, 1			// count successes
+	SUB	s0, C100ll
+	SUBC	s1, C100lh
+	SUBC	s2, C100hl
+	SUBC	s3, C100hh
+	JUMP	NC, convd32_100
+	
+	SUB	s4, 1			// restore
+	ADD	s0, C100ll
+	ADDC	s1, C100lh
+	ADDC	s2, C100hl
+	ADDC	s3, C100hh
+	
+	ST	s4, s5			// save string
+	ADD	s5, 1
+	
+	MOVE	s4, '0'			// start with a zero
+	
+convd32_10 :				// try to divide by 10
+	ADD	s4, 1			// count successes
+	SUB	s0, C10ll
+	SUBC	s1, C10lh
+	SUBC	s2, C10hl
+	SUBC	s3, C10hh
+	JUMP	NC, convd32_10
+	
+	SUB	s4, 1			// restore
+	ADD	s0, C10ll
+	ADDC	s1, C10lh
+	ADDC	s2, C10hl
+	ADDC	s3, C10hh
+	
+	ST	s4, s5			// save string
+	ADD	s5, 1
+	
+	ADD	s0, '0'
+	ST	s0, s5			// remainder is last digit
+	ADD	s5, 1
+	
+	MOVE	s0, 0			// string terminated by zero
+	ST	s0, s5
+	
+	RET
+	
+// print decimal string with leading zeroes
+
+putd032:				
+	MOVE	s1, d32
+	JUMP	puts
+
+// print decimal string without leading zeroes	
+
+putd32:					
+	MOVE	s1, d32
+putd32_10:
+	LD	s0, s1
+	COMP	s0, '0'
+	JUMP	NZ, puts
+	COMP	s1, d32 + 9
+	JUMP	Z, puts
+	ADD	s1, 1
+	JUMP	putd32_10
