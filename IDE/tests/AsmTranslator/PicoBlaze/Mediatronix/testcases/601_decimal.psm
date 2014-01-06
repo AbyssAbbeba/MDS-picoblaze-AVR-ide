@@ -62,8 +62,7 @@ C1Gll	.EQU	1000000000 % 256
 C1Glh	.EQU	1000000000 / 256 % 256
 C1Ghl	.EQU	1000000000 / 256 / 256 % 256
 C1Ghh	.EQU	1000000000 / 256 / 256 / 256 % 256
-
-d32	.BUF	11
+d32	.EQU	11
 
 // convert a 32 bit value in s0..s3 to a decimal string
 // reptitively substracts 9 powers of 10, remainder is last digit
