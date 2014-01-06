@@ -1,5 +1,6 @@
 ;KCPSM3 Program - FC_CTRL
-                      ;
+                                         device kcpsm6
+                    ; warning > added only for testing purposes
                       ;Frequency Generator Control
                       ;Calculates and displays results on the 16x2 LCD display.
                       ;

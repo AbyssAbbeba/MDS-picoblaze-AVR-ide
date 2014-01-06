@@ -14,13 +14,6 @@
 # Set project name
 project ( CompilerModules )
 
-# Set the minimum required version of CMake
-cmake_minimum_required ( VERSION 2.8 )
-
-# Create verbose makefiles if on
-set ( CMAKE_VERBOSE_MAKEFILE OFF )
-
-
 # ------------------------------------------------------------------------------
 # BUILD COMPONENTS IN THE SUBDIRECTORIES
 # ------------------------------------------------------------------------------
@@ -35,15 +28,11 @@ add_subdirectory ( assembler )
 # COMPILATION OPTIONS
 # ------------------------------------------------------------------------------
 
-# Load settings specific for the Qt4 library (we use it here for i18n)
-find_package ( Qt4 REQUIRED )
-include ( ${QT_USE_FILE} )
-
 # List of preprocessor include file search directories.
-include_directories ( "${CMAKE_CURRENT_BINARY_DIR}/../core/"
-                      "${CMAKE_CURRENT_BINARY_DIR}/assembler/generators/"
-                      "${CMAKE_CURRENT_BINARY_DIR}/../../utilities/DbgFile/"
-                      "${CMAKE_CURRENT_BINARY_DIR}/../../utilities/MCUDataFiles/" )
+include_directories ( "${CMAKE_CURRENT_SOURCE_DIR}/../core/"
+                      "${CMAKE_CURRENT_SOURCE_DIR}/assembler/generators/"
+                      "${CMAKE_CURRENT_SOURCE_DIR}/../../utilities/DbgFile/"
+                      "${CMAKE_CURRENT_SOURCE_DIR}/../../utilities/MCUDataFiles/" )
 
 ## Add a library to the project using the specified source files,
  # in this case it will procude static C++ library.

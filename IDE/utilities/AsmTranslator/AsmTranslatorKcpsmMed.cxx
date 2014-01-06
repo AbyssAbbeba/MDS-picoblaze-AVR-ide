@@ -27,7 +27,7 @@ AsmTranslatorKcpsmMed::AsmTranslatorKcpsmMed()
     const boost::regex::flag_type flags = ( boost::regex::extended | boost::regex::icase | boost::regex::optimize );
 
     m_reAtMark      = boost::regex ( "^@", flags );
-    m_reComment     = boost::regex ( "^;.*$", flags );
+    m_reComment     = boost::regex ( "(;)|(//).*$", flags );
     m_reOperand     = boost::regex ( "^[^,;]+", flags );
     m_reWord        = boost::regex ( "[_[:alnum:]]+", flags );
     m_reWhiteSpace  = boost::regex ( "^[[:space:]]+", flags );
@@ -93,10 +93,26 @@ bool AsmTranslatorKcpsmMed::process ( std::vector<std::string> & messages,
     LineFields lineFields(line);
     boost::smatch match;
     std::string::const_iterator begin = line.cbegin();
+    std::string::const_iterator end   = line.cend();
     std::string::const_iterator lineStartIt = begin;
 
+    // Find comment.
+    boost::regex_search(begin, end, match, m_reComment);
+    if ( true == match[0].matched )
+    {
+        end = match[0].first;
+        lineFields.m_comment[0] = std::distance(lineStartIt, match[0].first);
+        lineFields.m_comment[1] = std::distance(lineStartIt, match[0].second);
+
+        if ( ( false == secondPass ) && ( '/' == line[lineFields.m_comment[0]] ) )
+        {
+            line.replace(lineFields.m_comment[0], 2, ";");
+            lineFields.m_comment[1]--;
+        }
+    }
+
     // Find white space at the beginning of the line.
-    boost::regex_search(begin, line.cend(), match, m_reWhiteSpace);
+    boost::regex_search(begin, end, match, m_reWhiteSpace);
     if ( true == match[0].matched )
     {
         begin = match[0].second;
@@ -104,7 +120,7 @@ bool AsmTranslatorKcpsmMed::process ( std::vector<std::string> & messages,
 
     //
     boost::regex * labelRE;
-    boost::regex_search(begin, line.cend(), match, m_reSymDef);
+    boost::regex_search(begin, end, match, m_reSymDef);
     if ( true == match[0].matched )
     {
         labelRE = &m_reWord;
@@ -115,7 +131,7 @@ bool AsmTranslatorKcpsmMed::process ( std::vector<std::string> & messages,
     }
 
     // Find label.
-    boost::regex_search(begin, line.cend(), match, *labelRE);
+    boost::regex_search(begin, end, match, *labelRE);
     if ( true == match[0].matched )
     {
         begin = match[0].second;
@@ -123,7 +139,7 @@ bool AsmTranslatorKcpsmMed::process ( std::vector<std::string> & messages,
         lineFields.m_label[1] = std::distance(lineStartIt, match[0].second);
 
         // Find white space.
-        boost::regex_search(begin, line.cend(), match, m_reWhiteSpace);
+        boost::regex_search(begin, end, match, m_reWhiteSpace);
         if ( true == match[0].matched )
         {
             begin = match[0].second;
@@ -131,7 +147,7 @@ bool AsmTranslatorKcpsmMed::process ( std::vector<std::string> & messages,
     }
 
     // Find instruction and its operands.
-    boost::regex_search(begin, line.cend(), match, m_reInstruction);
+    boost::regex_search(begin, end, match, m_reInstruction);
     if ( true == match[0].matched )
     {
         begin = match[0].second;
@@ -139,7 +155,7 @@ bool AsmTranslatorKcpsmMed::process ( std::vector<std::string> & messages,
         lineFields.m_instruction[1] = std::distance(lineStartIt, match[0].second);
 
         // Find white space.
-        boost::regex_search(begin, line.cend(), match, m_reWhiteSpace);
+        boost::regex_search(begin, end, match, m_reWhiteSpace);
         if ( true == match[0].matched )
         {
             begin = match[0].second;
@@ -150,7 +166,7 @@ bool AsmTranslatorKcpsmMed::process ( std::vector<std::string> & messages,
          */
         if ( ( "call" == lineFields.getInstruction() ) || ( "jump" == lineFields.getInstruction() ) )
         {
-            boost::regex_search(begin, line.cend(), match, m_reAtMark);
+            boost::regex_search(begin, end, match, m_reAtMark);
             if ( true == match[0].matched )
             {
                 return true;
@@ -158,13 +174,13 @@ bool AsmTranslatorKcpsmMed::process ( std::vector<std::string> & messages,
         }
         else if ( "load" == lineFields.getInstruction() )
         {
-            boost::regex_search(begin, line.cend(), match, m_reAndReturn);
+            boost::regex_search(begin, end, match, m_reAndReturn);
             if ( true == match[0].matched )
             {
                 begin = match[0].second;
                 lineFields.m_instruction[1] = std::distance(lineStartIt, match[0].second);
 
-                boost::regex_search(begin, line.cend(), match, m_reWhiteSpace);
+                boost::regex_search(begin, end, match, m_reWhiteSpace);
                 if ( true == match[0].matched )
                 {
                     begin = match[0].second;
@@ -173,7 +189,7 @@ bool AsmTranslatorKcpsmMed::process ( std::vector<std::string> & messages,
         }
 
         // Find operands.
-        while ( true == boost::regex_search(begin, line.cend(), match, m_reOperand) )
+        while ( true == boost::regex_search(begin, end, match, m_reOperand) )
         {
             if ( false == match[0].matched )
             {
@@ -185,7 +201,7 @@ bool AsmTranslatorKcpsmMed::process ( std::vector<std::string> & messages,
                                                                std::distance(lineStartIt, match[0].second) ) );
 
             // Find operand separator.
-            boost::regex_search(begin, line.cend(), match, m_reOperandSep);
+            boost::regex_search(begin, end, match, m_reOperandSep);
             if ( true == match[0].matched )
             {
                 begin = match[0].second;
@@ -197,23 +213,14 @@ bool AsmTranslatorKcpsmMed::process ( std::vector<std::string> & messages,
         }
 
         // Find white space.
-        boost::regex_search(begin, line.cend(), match, m_reWhiteSpace);
+        boost::regex_search(begin, end, match, m_reWhiteSpace);
         if ( true == match[0].matched )
         {
             begin = match[0].second;
         }
     }
 
-    // Find comment.
-    boost::regex_search(begin, line.cend(), match, m_reComment);
-    if ( true == match[0].matched )
-    {
-        begin = match[0].second;
-        lineFields.m_comment[0] = std::distance(lineStartIt, match[0].first);
-        lineFields.m_comment[1] = std::distance(lineStartIt, match[0].second);
-    }
-
-    if ( ( false == secondPass ) && ( line.cend() != begin ) )
+    if ( ( false == secondPass ) && ( end != begin ) )
     {
         messages.push_back ( QObject::tr ( "Warning: line not understood: `%1'." )
                                          . arg (line.c_str())

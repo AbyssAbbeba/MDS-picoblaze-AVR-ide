@@ -29,7 +29,7 @@ class CompilerMsgInterface
         /**
          * @brief
          */
-        ~CompilerMsgInterface() {};
+        virtual ~CompilerMsgInterface() {};
 
     ////    Public Operations    ////
     public:
@@ -44,7 +44,7 @@ class CompilerMsgInterface
         /**
          * @brief
          */
-        virtual void reset() {};
+        virtual void clear() {};
 };
 
 #endif // COMPILERMSGINTERFACE_H

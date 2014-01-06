@@ -23,6 +23,13 @@
 
 class CompilerMsgIntfFile : public CompilerMsgInterface
 {
+    ////    Constructors and Destructors    ////
+    public:
+        /**
+         * @brief
+         */
+        ~CompilerMsgIntfFile();
+
     ////    Public Operations    ////
     public:
         /**

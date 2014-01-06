@@ -3,6 +3,9 @@
                            ;
                            ; Ken Chapman - Xilinx Ltd
                            ;
+
+                                               device kcpsm6
+                    ; warning > added only for testing purposes
                            ; Version v1.00 - 19th April 2006
                            ;
                            ;

@@ -1,3 +1,6 @@
+                        device kcpsm6
+                    ; warning > added only for testing purposes
+
                       ; KCPSM3 Program - LED control with Pulse Width Modulation (PWM).
                       ;
                       ; Design provided for use with the design 'low_cost_design_authentication_for_spartan_3e.vhd'

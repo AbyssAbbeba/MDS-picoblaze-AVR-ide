@@ -1,189 +1,108 @@
 #! /bin/bash
 
-readonly VERSION=0.1
+export LC_ALL="${LANG}"
 
-declare -i options_a=0
-declare -i options_b=0
-declare -i options_c=0
-declare -i options_y=0
-declare -i options_l=0
-declare -i options_s=0
-declare -i options_m=0
+readonly VERSION="0.2"
+declare -ir CPU_CORES=$( which lscpu &> /dev/null && lscpu 2> /dev/null | \
+                         gawk 'BEGIN { n = 1 } END { print(n) } /^CPU\(s\)/ { n = $2; exit }' || echo 1 )
+declare -ir PP=$(( CPU_CORES + 1 ))
+
+function build() {
+    local generator
+
+    if [ "$(uname -o)" == "Msys" ]; then
+        # Build on Windows.
+        QT_PATH="$(for i in /c/QtSDK/Desktop/Qt/*/mingw/bin; do echo $i; break; done)"
+        export PATH="${QT_PATH}:${PATH}"
+        generator='MSYS Makefiles'
+    else
+        # Build on a POSIX system.
+        generator='Unix Makefiles'
+    fi
+
+    cmake -DCOLOR_GCC=ON                  \
+          -DTEST_COVERAGE=OFF             \
+          -DCMAKE_COLOR_MAKEFILE=ON       \
+          -DCMAKE_BUILD_TYPE=${bt:-Debug} \
+          -G "${generator}"               \
+          . || exit 1
+
+    if ! make -j${PP} --keep-going; then
+        echo -e "\nBuild FAILED!\n" > /dev/stderr
+        exit 1
+    fi
+}
+
+function tests() {
+    requirePrograms 'xsltproc' 'valgrind' 'gcov'
+
+    if [[ -e tests/results ]]; then
+        rm -rf tests/results || exit 1
+    fi
+
+    mkdir tests/results || exit 1
+    date +'%s' > tests/results/startTime.log
+
+    local -r BUILD_LOG="tests/results/BuildLog.log"
+    local -r STATUS_FILE="tests/results/status.log"
+    local -i status=1
+
+    cmake -DCOLOR_GCC=ON                    \
+          -DCMAKE_BUILD_TYPE=${bt:-Debug}   \
+          -DTEST_COVERAGE=${cov:-ON}        \
+          -DTEST_MEMCHECK=${val:-ON}        \
+          -DCMAKE_COLOR_MAKEFILE=ON  . 2>&1 \
+        | tee "${BUILD_LOG}" || status=0
+    make -j${PP} --keep-going 2>&1 | tee -a "${BUILD_LOG}" || status=0
+    echo ${status} > "${STATUS_FILE}"
+
+    if [[ -z "${1}" ]]; then
+        ctest -j${PP}
+    else
+        ctest -j${PP} --tests-regex "${1}"
+    fi
+    make test_analysis
+}
 
 function clean() {
     cmake .
     make clean
 
-    rm -fv $(find -type f -name '*~')
-    rm -fv $(find -type f -name '*.a')
-    rm -fv $(find -type f -name '*.so')
-    rm -fv $(find -type f -name 'moc_*.cxx')
-    rm -fv $(find -type f -name '.directory')
-    rm -fv $(find -type f -name 'CMakeCache.txt')
-    rm -fv $(find -type f -name 'cmake_install.cmake')
-    rm -fv $(find -type f -name 'CTestTestfile.cmake')
-    rm -fv $(find -type f -name 'install_manifest.txt')
-    rm -rfv $(find -type d -name 'CMakeFiles')
-    rm -rfv $(find -type d -name 'Testing')
-    rm -rfv '_CPack_Packages'
+    for dirGlob in 'CMakeFiles' 'Testing' '_CPack_Packages'; do
+        rm -rfv $(find -type d -name "${dirGlob}")
+    done
+    for fileGlob in 'Makefile' 'Doxyfile' 'DartConfiguration.tcl' 'CPackSourceConfig.cmake' 'CPackConfig.cmake' \
+                    '*-Linux.*' '*~' '*.a' '*.so' 'moc_*.cxx' '.directory' 'CMakeCache.txt' 'cmake_install.cmake' \
+                    'CTestTestfile.cmake' 'install_manifest.txt'
+    do
+        rm -fv $(find -type f -name "${fileGlob}")
+    done
+}
 
-    rm -fv 'Doxyfile'
-    rm -fv 'DartConfiguration.tcl'
-    rm -fv 'CPackSourceConfig.cmake'
-    rm -fv 'CPackConfig.cmake'
-    rm -fv *-Linux.*
+function repoSync() {
+    local -r REPO=$( git remote show | head -n 1 )
 
-    while true; do
-        if [ "${options_y}" != "1" ]; then
-            printf "Remove also Makefiles? [yes]: "
-            read response
-        fi
+    git commit -a -m "(no comment)"
+    git pull ${REPO} master
+    git push ${REPO} master
+}
 
-        if [[ "${options_y}" == "1" || "$response" == "yes" || "$response" == "y" || "$response" == "" ]]; then
-            rm -fv $(find -type f -name 'Makefile')
-            break
-        elif [[ "$response" == "no" || "$response" == "n" ]]; then
-            break
-        else
-            printf "Please respond 'yes' or 'no'.\n\n"
+function requirePrograms() {
+    for program in "${@}"; do
+        if ! which xsltproc &> /dev/null; then
+            echo "${program} is missing, please install ${program} and run again." > /dev/stderr
+            exit 1
         fi
     done
 }
 
 function countLines() {
-    local -r tempFile=$(mktemp)
-
-    find -type f -name '*.asm' > "$tempFile"
-    find -type f -name '*.psm' >> "$tempFile"
-    sort "$tempFile" | while read f; do
-        wc -lc "$f"
-    done | gawk '
-        BEGIN {
-            printf("\n")
-            printf(" LINES  BYTES  FILE\n")
-            printf(" -----  -----  -------------------------------------------------------------\n")
-
-            t=0
-            l=0
-            c=0
-        }
-        END {
-            printf(" -----  -----  -------------------------------------------------------------\n")
-            printf(" LINES  BYTES  FILE\n")
-            printf("\n")
-            printf(" +----- In total ------+    +-------- In average --------+\n")
-            printf(" | %8d lines      |    | %8.2f bytes / line      |\n", l, c/l)
-            printf(" | %8.2f megabytes  |    | %8.2f kilobytes / file  |\n", c/(1024*1024), c/(t*1024))
-            printf(" | %8d files      |    | %8.2f lines / file      |\n", t, l/t)
-            printf(" +---------------------+    +----------------------------+\n")
-            printf("\n")
-        }
-        {
-            t++
-            l+=$1
-            c+=$2
-            printf("%6d %6d  %s\n", $1, $2, $3)
-        }
-    '
-
-    find -type f -name '*.cxx' > "$tempFile"
-    find -type f -name '*.awk' >> "$tempFile"
-    find -type f -name '*.sh' >> "$tempFile"
-    find -type f -name '*.cpp' >> "$tempFile"
-    find -type f -name '*.c' >> "$tempFile"
-    find -type f -name '*.h' >> "$tempFile"
-    find -type f -name '*.l' >> "$tempFile"
-    find -type f -name '*.y' >> "$tempFile"
-    find -type f -name 'CMakeLists.txt' >> "$tempFile"
-
-    sort "$tempFile" | while read f; do
-        wc -lc "$f"
-    done | gawk '
-        BEGIN {
-            printf("\n")
-            printf(" LINES  BYTES  FILE\n")
-            printf(" -----  -----  -------------------------------------------------------------\n")
-
-            t=0
-            l=0
-            c=0
-        }
-        END {
-            printf(" -----  -----  -------------------------------------------------------------\n")
-            printf(" LINES  BYTES  FILE\n")
-            printf("\n")
-            printf(" +----- In total ------+    +-------- In average --------+\n")
-            printf(" | %8d lines      |    | %8.2f bytes / line      |\n", l, c/l)
-            printf(" | %8.2f megabytes  |    | %8.2f kilobytes / file  |\n", c/(1024*1024), c/(t*1024))
-            printf(" | %8d files      |    | %8.2f lines / file      |\n", t, l/t)
-            printf(" +---------------------+    +----------------------------+\n")
-            printf("\n")
-        }
-        {
-            t++
-            l+=$1
-            c+=$2
-            printf("%6d %6d  %s\n", $1, $2, $3)
-        }
-    '
-
-    rm "$tempFile"
-}
-
-function buildAll() {
-    build
-    make manual
-    make doxygen
-    make test
-    make package
-}
-
-function execCMake() {
-    if [ "$(uname -o)" == "Msys" ]; then
-        # Build on Windows.
-        QT_PATH="$(for i in /c/QtSDK/Desktop/Qt/*/mingw/bin; do echo $i; break; done)"
-        export PATH="${QT_PATH}:${PATH}"
-        cmake -DCMAKE_BUILD_TYPE=Debug -G "MSYS Makefiles" . || exit 1
-    else
-        # Build on a POSIX system.
-        cmake -DCMAKE_BUILD_TYPE=Debug . || exit 1
-    fi
-}
-
-function build() {
-    # Build in n separate processes where n is the number of CPU cores plus one.
-    execCMake
-    which lscpu > /dev/null && make -j$(lscpu | gawk '/^CPU\(s\)/ {printf("%d", ($2+2))}') || make
-}
-
-function repoSync() {
-    git commit -a -m "."
-    git pull mms master
-    git push mms master
+    requirePrograms 'cloc'
+    cloc --exclude-dir=3rdParty .
 }
 
 function printVersion() {
     printf "%s\n" "$VERSION"
-    exit 1
-}
-
-function printHelp() {
-    printf "This is a tool for doing various things with the code here.\n"
-    printf "Version: %s\n" "$VERSION"
-    printf "\n"
-    printf "Options:\n"
-    printf "    -b    Build.\n"
-    printf "    -a    Build EVERYTHING, and run the tests.\n"
-    printf "    -c    Clean up the directories by removing all temporary files.\n"
-    printf "    -l    Count number of lines in .cxx, .cpp, .c, and .h files.\n"
-    printf "    -y    Automatically assume a positive response to any prompt.\n"
-    printf "    -V    Print version of this script.\n"
-    printf "    -s    Synchronize with the central repository.\n"
-    printf "    -q    Print some statistics regarding generated binary files.\n"
-    printf "    -h    Print this message.\n"
-    printf "\n"
-    printf "Order of options doesn't matter.\n"
-    exit 1
 }
 
 function unknownOption() {
@@ -191,55 +110,85 @@ function unknownOption() {
     printHelp
 }
 
+function printHelp() {
+    printf "This is a tool for doing various things with the code here.\n"
+    printf "Version: %s\n" "$VERSION"
+    printf "\n"
+    printf "Options:\n"
+    printf "    -b     Build.\n"
+    printf "    -t     Build and run all tests.\n"
+    printf "    -T <r> Build and run only the tests matching regular expression <r>.\n"
+    printf "    -c     Clean up the directories by removing all automatically generated files.\n"
+    printf "    -s     Synchronize with the central repository.\n"
+    printf "    -l     Count number of lines source code files.\n"
+    printf "    -q     Print some statistics regarding generated binary files.\n"
+    printf "    -h     Print this message.\n"
+    printf "    -V     Print version of this script.\n"
+    printf "\n"
+    printf "The script might be run with these variables: (value in parentheses is default value)\n"
+    printf "    bt=<b>   Set build type to <b>, options are: 'Debug', 'Release', and 'MinSizeRel' (all: 'Debug').\n"
+    printf "    cov=<on|off>   Configure build for coverage analysis (normal: 'OFF', tests: 'ON').\n"
+    printf "    val=<on|off>   Turn on/off Valgrind:Memcheck during automated test run. (normal: n/a, tests: 'ON').\n"
+    printf "\n"
+    printf "Example:\n"
+    printf "    bt=Release cov=off ./tool.sh -t     # Run tests without coverage and with binaries built for release.\n"
+    printf "    bt=MinSizeRel ./tool.sh -csb        # Clear, synchronize GIT, and build for minimum size binaries.\n"
+    printf "\n"
+    printf "Order of options does not matter because order of operations is fixed (see the script code for details).\n"
+    printf "\n"
+}
+
 function main() {
-    local -i optTaken=0
+    set +o pipefail
+    cd "$(dirname "$(readlink -n -f "${0}")" )"
+    echo "Using up to ${CPU_CORES} CPU cores."
 
-    cd "$(dirname "${0}")"
+    local -A opts
 
-    # Parse CLI options using `getopts' utility
-    while getopts ":hVcylabsmq" opt; do
-        optTaken=1
-
+    # Parse CLI options using `getopts' utility.
+    while getopts ":hVcltbsmqT:" opt; do
         case $opt in
-            h) printHelp;;
-            V) printVersion;;
-            b) options_b=1;;
-            a) options_a=1;;
-            c) options_c=1;;
-            y) options_y=1;;
-            l) options_l=1;;
-            s) options_s=1;;
-            m) options_m=1;;
-            q) options_q=1;;
-            ?) unknownOption "$(basename "${0}")";;
+            b) opts['b']=1;;
+            t) opts['t']=1;;
+            T) opts['T']="${OPTARG}";;
+            c) opts['c']=1;;
+            l) opts['l']=1;;
+            s) opts['s']=1;;
+            q) opts['q']=1;;
+            h) printHelp; exit;;
+            V) printVersion; exit;;
+            ?) unknownOption "$(basename "${0}")"; exit 1;;
         esac
     done
 
-    if (( ! $optTaken )); then
+    if (( ! ${#opts[@]} )); then
         printHelp
+        exit
     fi
 
-    if (( ${options_c} )); then
+    if [[ ! -z "${opts['c']}" ]]; then
         clean
     fi
-    if (( ${options_s} )); then
+
+    if [[ ! -z "${opts['s']}" ]]; then
         repoSync
     fi
-    if (( ${options_l} )); then
+
+    if [[ ! -z "${opts['l']}" ]]; then
         countLines
     fi
-    if (( ${options_m} && !${options_b} && !${options_a} )); then
-        execCMake
-    fi
-    if (( ${options_a} )); then
-        buildAll
-    fi
-    if (( ${options_b} && !${options_a} )); then
+
+    if [[ ! -z "${opts['T']}" ]]; then
+        tests "${opts['T']}"
+    elif [[ ! -z "${opts['t']}" ]]; then
+        tests
+    elif [[ ! -z "${opts['b']}" ]]; then
         build
     fi
-    if (( ${options_q} )); then
+
+    if [[ ! -z "${opts['q']}" ]]; then
         for i in $(find . -executable); do
-            if [ -f "$i" ]; then
+            if [[ -f "$i" ]]; then
                 if file "$i" | grep 'ELF' &>/dev/null; then
                     ls -l $i
                 fi

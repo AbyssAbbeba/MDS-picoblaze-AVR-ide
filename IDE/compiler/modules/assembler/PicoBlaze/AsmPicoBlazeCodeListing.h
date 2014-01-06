@@ -28,6 +28,7 @@ class AsmPicoBlazeSymbolTable;
 #include "AsmPicoBlazeCodeGenerator.h"
 
 // Standard headers.
+#include <set>
 #include <string>
 #include <vector>
 #include <ostream>
@@ -60,7 +61,7 @@ class AsmPicoBlazeCodeListing : public CompilerMsgObserver
         /**
          * @brief
          */
-        ~AsmPicoBlazeCodeListing();
+        virtual ~AsmPicoBlazeCodeListing();
 
     ////    Public Datatypes    ////
     public:
@@ -119,15 +120,20 @@ class AsmPicoBlazeCodeListing : public CompilerMsgObserver
              * @brief
              * @param[in] type
              * @param[in] text
+             * @param[in] subsequent
              */
             Message ( CompilerBase::MessageType type,
-                      const std::string & text );
+                      const std::string & text,
+                      bool subsequent = false );
 
             ///
             CompilerBase::MessageType m_type;
 
             ///
             std::string m_text;
+
+            ///
+            bool m_subsequent;
         };
 
     ////    Public Operations    ////
@@ -220,10 +226,12 @@ class AsmPicoBlazeCodeListing : public CompilerMsgObserver
          * @param[in] location
          * @param[in] type
          * @param[in] text
+         * @param[in] subsequent
          */
         virtual void message ( const CompilerSourceLocation & location,
                                CompilerBase::MessageType type,
-                               const std::string & text );
+                               const std::string & text,
+                               bool subsequent = false );
 
         /**
          * @brief
@@ -266,11 +274,11 @@ class AsmPicoBlazeCodeListing : public CompilerMsgObserver
          * @brief
          * @param[in,out] lineDiff
          * @param[in,out] macro
-         * @param[in] formerOrigin
+         * @param[in] origin
          */
         void rewriteMacroLoc ( unsigned int * lineDiff,
                                CompilerStatement * macro,
-                               int formerOrigin );
+                               int origin );
 
         /**
          * @brief
@@ -280,17 +288,17 @@ class AsmPicoBlazeCodeListing : public CompilerMsgObserver
         void rewriteRepeatLoc ( unsigned int * lineCounter,
                                 CompilerStatement * code );
 
-    ////    Inline Private Operations    ////
-    private:
         /**
          * @brief
          * @param[in] location
          * @param[in] silent
          * @return
          */
-        inline bool checkLocation ( const CompilerSourceLocation & location,
-                                    bool silent = false );
+        bool checkLocation ( const CompilerSourceLocation & location,
+                             bool silent = false );
 
+    ////    Inline Private Operations    ////
+    private:
         /**
          * @brief
          * @return
@@ -325,6 +333,9 @@ class AsmPicoBlazeCodeListing : public CompilerMsgObserver
 
         ///
         std::string m_title;
+
+        ///
+        std::set<int> m_files2skip;
 
         ///
         std::vector<std::vector<LstLine>> m_listing;

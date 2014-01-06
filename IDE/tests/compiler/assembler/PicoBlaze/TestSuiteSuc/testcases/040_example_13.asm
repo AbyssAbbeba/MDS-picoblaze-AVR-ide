@@ -1,4 +1,8 @@
-                 CONSTANT LED_port, 80               ;8 simple LEDs
+                    device kcpsm6
+                    ; warning > added only for testing purposes
+
+
+           CONSTANT LED_port, 80               ;8 simple LEDs
                  CONSTANT LED0, 01                   ;     LED 0 - bit0
                  CONSTANT LED1, 02                   ;         1 - bit1
                  CONSTANT LED2, 04                   ;         2 - bit2

@@ -173,6 +173,11 @@ class CompilerExpr : public CompilerSerializable
                        CompilerValue rValue,
                        CompilerSourceLocation location = CompilerSourceLocation() );
 
+        /**
+         * @brief
+         */
+        virtual ~CompilerExpr() {}
+
     ////    Public Operations    ////
     public:
         /**

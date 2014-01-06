@@ -25,7 +25,7 @@ AVR8TimerCounter1 * AVR8TimerCounter1::link ( MCUSimEventLogger     * eventLogge
     return this;
 }
 
-void AVR8TimerCounter1::reset ( MCUSimBase::ResetMode mode )
+void AVR8TimerCounter1::reset ( MCUSimBase::ResetMode /*mode*/ )
 {
 }
 

@@ -16,12 +16,6 @@
 # Set project name
 project ( TAP_TestSuiteSuc )
 
-# Set the minimum required version of CMake
-cmake_minimum_required ( VERSION 2.8 )
-
-# Create verbose makefiles if on
-set ( CMAKE_VERBOSE_MAKEFILE OFF )
-
 # List of additional files that will be cleaned as a part of the "make clean" stage.
 FILE ( GLOB resultFiles results/* )
 set_directory_properties ( PROPERTIES
@@ -31,22 +25,18 @@ set_directory_properties ( PROPERTIES
 # COMPILATION OPTIONS
 # ------------------------------------------------------------------------------
 
-# Find Boost include directories and libraries.
-find_package ( Boost 1.55
-               REQUIRED
-               COMPONENTS filesystem system )
-
 # Add include directories to the build.
 include_directories ( ${Boost_INCLUDE_DIRS}
-                      "${CMAKE_CURRENT_BINARY_DIR}/../../../../../compiler"
-                      "${CMAKE_CURRENT_BINARY_DIR}/../../../../../utilities/MCUDataFiles"
-                      "${CMAKE_CURRENT_BINARY_DIR}/../../../../../utilities/DbgFile" )
+                      "${CMAKE_SOURCE_DIR}"
+                      "${CMAKE_CURRENT_SOURCE_DIR}/../../../../../compiler/"
+                      "${CMAKE_CURRENT_SOURCE_DIR}/../../../../../utilities/MCUDataFiles/"
+                      "${CMAKE_CURRENT_SOURCE_DIR}/../../../../../utilities/DbgFile/" )
 
 # Specify directories in which the linker will look for libraries.
 link_directories ( ${Boost_LIBRARY_DIRS}
-                   "${CMAKE_CURRENT_BINARY_DIR}/../../../../../compiler/core"
-                   "${CMAKE_CURRENT_BINARY_DIR}/../../../../../utilities/MCUDataFiles"
-                   "${CMAKE_CURRENT_BINARY_DIR}/../../../../../utilities/DbgFile" )
+                   "${CMAKE_CURRENT_SOURCE_DIR}/../../../../../compiler/core/"
+                   "${CMAKE_CURRENT_SOURCE_DIR}/../../../../../utilities/MCUDataFiles/"
+                   "${CMAKE_CURRENT_SOURCE_DIR}/../../../../../utilities/DbgFile/" )
 
 ## Add a library to the project using the specified source files,
  # in this case it will procude dynamic C++ library.
@@ -58,5 +48,4 @@ target_link_libraries ( ${PROJECT_NAME}
                         ${Boost_LIBRARIES}
                         CompilerCore
                         MCUDataFiles
-                        DbgFile
-                        cunit )
+                        DbgFile )

@@ -1,4 +1,6 @@
-                         ; KCPSM3 Program - Security control and design authentication.
+                                             device kcpsm6
+                    ; warning > added only for testing purposes
+                    ; KCPSM3 Program - Security control and design authentication.
                           ;
                           ; This program is provided for use with the reference design
                           ; 'low_cost_design_authentication_for_spartan_3e.vhd' implemented on the Spartan-3E Starter
@@ -1804,7 +1806,7 @@ send_FLASH_Serial_Number: CALL send_FLASH
                           INPUT s0, LCD_input_port                 ;read lower nibble
                           XOR s4, LCD_E                            ;E=0
                           OUTPUT s4, LCD_output_port
-                          AND s5, F0                               ;merge upper and lower nibbles
+                         AND s5, F0                               ;merge upper and lower nibbles
                           SR0 s0
                           SR0 s0
                           SR0 s0

@@ -13,26 +13,12 @@
 # Set project name
 project ( McuSimCfgMgr )
 
-# Set the minimum required version of CMake
-cmake_minimum_required ( VERSION 2.8 )
-
-# Create verbose makefiles if on
-set ( CMAKE_VERBOSE_MAKEFILE OFF )
-
-
 # ------------------------------------------------------------------------------
 # COMPILATION OPTIONS
 # ------------------------------------------------------------------------------
 
 # Add include directories to the build.
-include_directories ( "${CMAKE_CURRENT_BINARY_DIR}/.." )
-
-# Load settings specific for the Qt4 library
-find_package ( Qt4 REQUIRED )
-
-# Include Qt4's XML module
-set ( QT_USE_QTXML 1 )
-include ( ${QT_USE_FILE} )
+include_directories ( "${CMAKE_CURRENT_SOURCE_DIR}/.." )
 
 ## Add a library to the project using the specified source files,
  # in this case it will procude dynamic C++ library.
@@ -43,9 +29,8 @@ add_library ( ${PROJECT_NAME} SHARED
               McuSimCfgMgrPIC8.cxx
               McuSimCfgMgr.cxx )
 
-# Link a target to given libraries.
+# Link the target to given libraries.
 target_link_libraries ( ${PROJECT_NAME} ${QT_LIBRARIES} )
-
 
 # ------------------------------------------------------------------------------
 # INSTALLATION OPTIONS

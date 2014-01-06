@@ -13,6 +13,8 @@
  */
 // =============================================================================
 
+#include "testsMCUDataFiles.h"
+
 //
 #include "HexFile.h"
 #include "BinFile.h"
@@ -29,28 +31,20 @@
 #include <algorithm>
 
 // The CUnit testing framework.
-#include <CUnit/Basic.h>
+#include "3rdParty/CUnit/Basic.h"
 
 // Boost Filesystem library.
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include <boost/filesystem.hpp>
 
-typedef void (*fptr)();
+// Library for automated testing environment using libCUnit.
+#include "AutoTest.h"
 
-enum TestSuiteID
-{
-    TS_IHEX = 0,
-    TS_BIN,
-    TS_SREC,
-    TS_MEM_2,
-    TS_MEM_3,
-    TS_V_16,
-    TS_V_18,
-    TS_VHDL_16,
-    TS_VHDL_18,
-
-    TS__MAX__
-};
+#define ADD_TEST_SUITE(id)                                              \
+    autoTest->addTestSuite ( testSuiteID2cstring(TestSuiteID(id)),      \
+                             &TestSuite::init,                          \
+                             &TestSuite::clean,                         \
+                             &TestSuite::addTests<TestSuiteID(id)> );
 
 bool fileCompare ( const std::string & fileName1,
                    const std::string & fileName2 )
@@ -120,7 +114,8 @@ void testLoadAndSave ( DataFile & file0,
     catch ( DataFileException & e )
     {
         std::cerr << std::endl << e.toString() << std::endl;
-        CU_FAIL_FATAL("DataFileException thrown.");
+        CU_FAIL("DataFileException thrown.");
+        return;
     }
 
     if ( true == invertable )
@@ -135,7 +130,7 @@ void testHex()
 {
     using namespace boost::filesystem;
 
-    std::string testName = CU_get_current_test()->pName;
+    const std::string testName = CU_get_current_test()->pName;
     std::string testcase = system_complete( path("testcases") / "hex" / testName ).string();
     std::string result   = system_complete( path("results") / testName ).string();
 
@@ -146,7 +141,7 @@ void testBin()
 {
     using namespace boost::filesystem;
 
-    std::string testName = CU_get_current_test()->pName;
+    const std::string testName = CU_get_current_test()->pName;
     std::string testcase = system_complete( path("testcases") / "bin" / testName ).string();
     std::string result   = system_complete( path("results") / testName ).string();
 
@@ -157,7 +152,7 @@ void testSrec()
 {
     using namespace boost::filesystem;
 
-    std::string testName = CU_get_current_test()->pName;
+    const std::string testName = CU_get_current_test()->pName;
     std::string testcase = system_complete( path("testcases") / "srec" / testName ).string();
     std::string result   = system_complete( path("results") / testName ).string();
 
@@ -170,7 +165,7 @@ template <int BYTES_PER_RECORD> void testMem()
 
     static const std::string number = ( ( 2 == BYTES_PER_RECORD ) ? "2" : "3" );
 
-    std::string testName = CU_get_current_test()->pName;
+    const std::string testName = CU_get_current_test()->pName;
     std::string testcase = system_complete( path("testcases") / ( number + ".mem" ) / testName ).string();
     std::string result   = system_complete( path("results") / testName ).string();
 
@@ -188,7 +183,7 @@ template <XilHDLFile::OPCodeSize OP_CODE_SIZE> void testVerilog()
     static const std::string number = ( ( XilHDLFile::SIZE_16b == OP_CODE_SIZE ) ? "16" : "18" );
     static const std::string templateFile = ( number + ".VerilogTemplate.v" );
 
-    std::string testName = CU_get_current_test()->pName;
+    const std::string testName = CU_get_current_test()->pName;
     std::string testcase = system_complete( path("testcases") / ( number + ".v" ) / testName ).string();
     std::string result   = system_complete( path("results") / testName ).string();
 
@@ -206,7 +201,7 @@ template <XilHDLFile::OPCodeSize OP_CODE_SIZE> void testVHDL()
     static const std::string number = ( ( XilHDLFile::SIZE_16b == OP_CODE_SIZE ) ? "16" : "18" );
     static const std::string templateFile = ( number + ".VHDLTemplate.vhd" );
 
-    std::string testName = CU_get_current_test()->pName;
+    const std::string testName = CU_get_current_test()->pName;
     std::string testcase = system_complete( path("testcases") / ( number + ".vhd" ) / testName ).string();
     std::string result   = system_complete( path("results") / testName ).string();
 
@@ -217,137 +212,136 @@ template <XilHDLFile::OPCodeSize OP_CODE_SIZE> void testVHDL()
     testLoadAndSave( file0, file1, file2, testcase, result + number + ".0", result + number + ".1", false );
 }
 
-fptr testSuiteID2funcPtr ( int id )
+TestSuite::fptr testSuiteID2funcPtr ( TestSuite::TestSuiteID id )
 {
-    switch ( TestSuiteID(id) )
+    switch ( id )
     {
-        case TS_IHEX:    return &testHex;
-        case TS_BIN:     return &testBin;
-        case TS_SREC:    return &testSrec;
-        case TS_MEM_2:   return &testMem<2>;
-        case TS_MEM_3:   return &testMem<3>;
-        case TS_V_16:    return &testVerilog<XilHDLFile::SIZE_16b>;
-        case TS_V_18:    return &testVerilog<XilHDLFile::SIZE_18b>;
-        case TS_VHDL_16: return &testVHDL<XilHDLFile::SIZE_16b>;
-        case TS_VHDL_18: return &testVHDL<XilHDLFile::SIZE_18b>;
-        case TS__MAX__:  return NULL;
+        case TestSuite::TS_IHEX:    return &testHex;
+        case TestSuite::TS_BIN:     return &testBin;
+        case TestSuite::TS_SREC:    return &testSrec;
+        case TestSuite::TS_MEM_2:   return &testMem<2>;
+        case TestSuite::TS_MEM_3:   return &testMem<3>;
+        case TestSuite::TS_V_16:    return &testVerilog<XilHDLFile::SIZE_16b>;
+        case TestSuite::TS_V_18:    return &testVerilog<XilHDLFile::SIZE_18b>;
+        case TestSuite::TS_VHDL_16: return &testVHDL<XilHDLFile::SIZE_16b>;
+        case TestSuite::TS_VHDL_18: return &testVHDL<XilHDLFile::SIZE_18b>;
+        case TestSuite::TS__MAX__:  return NULL;
     }
     return NULL;
 }
 
-const char * testSuiteID2cstring ( int id )
+const char * testSuiteID2cstring ( TestSuite::TestSuiteID id )
 {
-    switch ( TestSuiteID(id) )
+    switch ( id )
     {
-        case TS_IHEX:    return "Intel® HEX";
-        case TS_BIN:     return "raw binary";
-        case TS_SREC:    return "Motorola® S-Record";
-        case TS_MEM_2:   return "Xilinx® MEM (2B)";
-        case TS_MEM_3:   return "Xilinx® MEM (3B)";
-        case TS_V_16:    return "Verilog (16b)";
-        case TS_V_18:    return "Verilog (18b)";
-        case TS_VHDL_16: return "VHDL (18b)";
-        case TS_VHDL_18: return "VHDL (16b)";
-        case TS__MAX__:  return "<invalid>";
+        case TestSuite::TS_IHEX:    return "Intel HEX";
+        case TestSuite::TS_BIN:     return "raw binary";
+        case TestSuite::TS_SREC:    return "Motorola S-Record";
+        case TestSuite::TS_MEM_2:   return "Xilinx MEM (2B)";
+        case TestSuite::TS_MEM_3:   return "Xilinx MEM (3B)";
+        case TestSuite::TS_V_16:    return "Verilog (16b)";
+        case TestSuite::TS_V_18:    return "Verilog (18b)";
+        case TestSuite::TS_VHDL_16: return "VHDL (18b)";
+        case TestSuite::TS_VHDL_18: return "VHDL (16b)";
+        case TestSuite::TS__MAX__:  return "<invalid>";
     }
     return NULL;
 }
 
-const char * testSuiteID2ext ( int id )
+const char * testSuiteID2ext ( TestSuite::TestSuiteID id )
 {
-    switch ( TestSuiteID(id) )
+    switch ( id )
     {
-        case TS_IHEX:    return ".hex";
-        case TS_BIN:     return ".bin";
-        case TS_SREC:    return ".srec";
-        case TS_MEM_2:   return ".mem";
-        case TS_MEM_3:   return ".mem";
-        case TS_V_16:    return ".v";
-        case TS_V_18:    return ".v";
-        case TS_VHDL_16: return ".vhd";
-        case TS_VHDL_18: return ".vhd";
-        case TS__MAX__:  return NULL;
+        case TestSuite::TS_IHEX:    return ".hex";
+        case TestSuite::TS_BIN:     return ".bin";
+        case TestSuite::TS_SREC:    return ".srec";
+        case TestSuite::TS_MEM_2:   return ".mem";
+        case TestSuite::TS_MEM_3:   return ".mem";
+        case TestSuite::TS_V_16:    return ".v";
+        case TestSuite::TS_V_18:    return ".v";
+        case TestSuite::TS_VHDL_16: return ".vhd";
+        case TestSuite::TS_VHDL_18: return ".vhd";
+        case TestSuite::TS__MAX__:  return NULL;
     }
     return NULL;
 }
 
-const char * testSuiteID2dir ( int id )
+const char * testSuiteID2dir ( TestSuite::TestSuiteID id )
 {
-    switch ( TestSuiteID(id) )
+    switch ( id )
     {
-        case TS_IHEX:    return "hex";
-        case TS_BIN:     return "bin";
-        case TS_SREC:    return "srec";
-        case TS_MEM_2:   return "2.mem";
-        case TS_MEM_3:   return "3.mem";
-        case TS_V_16:    return "16.v";
-        case TS_V_18:    return "18.v";
-        case TS_VHDL_16: return "16.vhd";
-        case TS_VHDL_18: return "18.vhd";
-        case TS__MAX__:  return NULL;
+        case TestSuite::TS_IHEX:    return "hex";
+        case TestSuite::TS_BIN:     return "bin";
+        case TestSuite::TS_SREC:    return "srec";
+        case TestSuite::TS_MEM_2:   return "2.mem";
+        case TestSuite::TS_MEM_3:   return "3.mem";
+        case TestSuite::TS_V_16:    return "16.v";
+        case TestSuite::TS_V_18:    return "18.v";
+        case TestSuite::TS_VHDL_16: return "16.vhd";
+        case TestSuite::TS_VHDL_18: return "18.vhd";
+        case TestSuite::TS__MAX__:  return NULL;
     }
     return NULL;
 }
 
-int init()
+int TestSuite::init()
 {
     return 0;
 }
 
-int clean()
+int TestSuite::clean()
 {
     return 0;
 }
 
-bool addTests()
+void TestSuite::addSuites ( AutoTest * autoTest )
+{
+    ADD_TEST_SUITE(TS_IHEX);
+    ADD_TEST_SUITE(TS_BIN);
+    ADD_TEST_SUITE(TS_SREC);
+    ADD_TEST_SUITE(TS_MEM_2);
+    ADD_TEST_SUITE(TS_MEM_3);
+    ADD_TEST_SUITE(TS_V_16);
+    ADD_TEST_SUITE(TS_V_18);
+    ADD_TEST_SUITE(TS_VHDL_16);
+    ADD_TEST_SUITE(TS_VHDL_18);
+}
+
+template<TestSuite::TestSuiteID id> bool TestSuite::addTests ( CU_pSuite suite )
 {
     using namespace boost::filesystem;
 
-    for ( int i = 0; i < TS__MAX__; i++ )
+    std::vector<std::string> testCaseFiles;
+
+    for ( directory_iterator dir ( path("testcases") / testSuiteID2dir(id) );
+          directory_iterator() != dir;
+          dir++ )
     {
-        std::vector<std::string> testCaseFiles;
-
-        for ( directory_iterator dir ( path("testcases") / testSuiteID2dir(i) );
-              directory_iterator() != dir;
-              dir++ )
+        if ( false == is_regular_file(*dir) )
         {
-            if ( false == is_regular_file(*dir) )
-            {
-                continue;
-            }
-
-            std::string extension = dir->path().extension().string();
-            std::string testName = dir->path().filename().string();
-
-            std::transform(extension.begin(), extension.end(), extension.begin(), ::tolower);
-
-            if ( testSuiteID2ext(i) == extension )
-            {
-                testCaseFiles.push_back(testName);
-            }
+            continue;
         }
 
-        CU_pSuite testSuite = CU_add_suite ( testSuiteID2cstring(i), &init, &clean );
-        if ( NULL == testSuite )
+        std::string extension = dir->path().extension().string();
+        std::string testName = dir->path().filename().string();
+
+        std::transform(extension.begin(), extension.end(), extension.begin(), ::tolower);
+
+        if ( testSuiteID2ext(id) == extension )
         {
-            // Unable to add the test suite to the registry.
-            CU_cleanup_registry();
+            testCaseFiles.push_back(testName);
+        }
+    }
+
+    std::sort(testCaseFiles.begin(), testCaseFiles.end());
+
+    for ( std::vector<std::string>::const_iterator it = testCaseFiles.cbegin();
+          it != testCaseFiles.cend();
+          it++ )
+    {
+        if ( NULL == CU_add_test(suite, it->c_str(), testSuiteID2funcPtr(id)) )
+        {
             return false;
-        }
-
-        std::sort(testCaseFiles.begin(), testCaseFiles.end());
-
-        for ( std::vector<std::string>::const_iterator it = testCaseFiles.cbegin();
-              it != testCaseFiles.cend();
-              it++ )
-        {
-            char * testCaseName = new char [ it->size() + 1 ];
-            strcpy(testCaseName, it->c_str());
-
-            if ( NULL == CU_add_test(testSuite, testCaseName, testSuiteID2funcPtr(i)) )
-            {
-                return false;
-            }
         }
     }
 

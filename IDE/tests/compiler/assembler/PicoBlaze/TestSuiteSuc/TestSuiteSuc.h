@@ -25,7 +25,7 @@ class CompilerMsgInterface;
 #include <string>
 
 // The CUnit testing framework.
-#include <CUnit/Basic.h>
+#include "3rdParty/CUnit/CUnit.h"
 
 /**
  * @brief

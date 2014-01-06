@@ -123,14 +123,12 @@ class AsmPicoBlazeMacros
 
         /**
          * @brief 
-         * @param[in] msgLocation
          * @param[in] location
          * @param[in] name
          * @param[in] arguments
          * @return
          */
-        CompilerStatement * expand ( const CompilerSourceLocation & msgLocation,
-                                     const CompilerSourceLocation & location,
+        CompilerStatement * expand ( const CompilerSourceLocation & location,
                                      const std::string & name,
                                      const CompilerExpr * arguments );
 

@@ -80,10 +80,7 @@ bool TestMScriptIII::addTests ( CU_pSuite suite )
           it != testCaseFiles.cend();
           it++ )
     {
-        char * testCaseName = new char [ it->size() + 1 ];
-        strcpy(testCaseName, it->c_str());
-
-        if ( NULL == CU_add_test(suite, testCaseName, &testFunction) )
+        if ( NULL == CU_add_test(suite, it->c_str(), &testFunction) )
         {
             return false;
         }
@@ -102,8 +99,16 @@ void TestMScriptIII::testFunction()
     std::string scriptFileName = ( path(TEST_SUITE_DIR) / "testcases" / (testName + ".mscript") ).string();
 
     FILE * scriptFile = fopen(scriptFileName.c_str(), "r");
-    CU_ASSERT_FATAL( NULL != scriptFile );
-    CU_ASSERT_FATAL( true == m_core->loadScript(scriptFile, scriptFileName) );
+    if ( NULL == scriptFile )
+    {
+        CU_FAIL( "Unable to open script file." );
+        return;
+    }
+    if ( false == m_core->loadScript(scriptFile, scriptFileName) )
+    {
+        CU_FAIL( "Unable to load script into the interpreter." );
+        return;
+    }
 
     try
     {
@@ -122,5 +127,5 @@ void TestMScriptIII::testFunction()
     }
     m_core->clearMessages();
 
-    CU_ASSERT_FATAL( true == success );
+    CU_ASSERT( true == success );
 }

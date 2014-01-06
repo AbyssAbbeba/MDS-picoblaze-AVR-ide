@@ -4,6 +4,8 @@
                      ;
                      ; Version v1.00 - 22nd May 2006
                      ;
+                                         device kcpsm6
+                    ; warning > added only for testing purposes
                      ; Provides control for 12 channels of PWM with a Pulse Repetition Frequency (PRF) of 1KHz
                      ; and an 8-bit duty cycle resolution (256 steps). Control is provided for each channel
                      ; via the UART interface to the PC running HyperTerminal or similar to enter simple text

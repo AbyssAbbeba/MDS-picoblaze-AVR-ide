@@ -2,6 +2,8 @@
                           ;
                           ; Ken Chapman - Xilinx Ltd
                           ;
+                                              device kcpsm6
+                    ; warning > added only for testing purposes
                           ; Version v1.00 - 5th April 2006
                           ;
                           ; This program uses a 9600 baud UART connection to allow communication with the

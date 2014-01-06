@@ -21,6 +21,7 @@ class CompilerParserInterface;
 
 // Standard headers.
 #include <cstdio>
+#include <vector>
 
 /**
  * @brief
@@ -48,10 +49,10 @@ class CompilerCPreprocessor
     public:
         /**
          * @brief
-         * @param[in,out] sourceFile
+         * @param[in,out] inputFiles
          * @return
          */
-        char * processFile ( FILE * sourceFile );
+        char * processFiles ( const std::vector<FILE *> & inputFiles );
 
     ////    Inline Private Operations    ////
     private:

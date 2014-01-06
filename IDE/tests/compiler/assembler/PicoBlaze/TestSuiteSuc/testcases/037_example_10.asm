@@ -10,6 +10,8 @@
                         ;
                         ;
                         ;
+                                            device kcpsm6
+                    ; warning > added only for testing purposes
                         ;
                         ;**************************************************************************************
                         ; Port definitions

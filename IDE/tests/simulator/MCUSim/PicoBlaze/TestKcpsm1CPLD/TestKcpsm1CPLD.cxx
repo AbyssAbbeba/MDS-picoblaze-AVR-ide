@@ -105,10 +105,7 @@ bool TestKcpsm1CPLD::addTests ( CU_pSuite suite )
           it != testCaseFiles.cend();
           it++ )
     {
-        char * testCaseName = new char [ it->size() + 1 ];
-        strcpy(testCaseName, it->c_str());
-
-        if ( NULL == CU_add_test(suite, testCaseName, &testFunction) )
+        if ( NULL == CU_add_test(suite, it->c_str(), &testFunction) )
         {
             return false;
         }
@@ -121,7 +118,7 @@ void TestKcpsm1CPLD::testFunction()
 {
     using namespace boost::filesystem;
 
-    std::string testName = CU_get_current_test()->pName;
+    const std::string testName = CU_get_current_test()->pName;
 
     std::string inFile  = ( path("TestKcpsm1CPLD") / "testcases" / (testName + "."   ) ).string();
     std::string outFile = ( path("TestKcpsm1CPLD") / "results"   / (testName + ".out") ).string();
@@ -146,10 +143,11 @@ void TestKcpsm1CPLD::testFunction()
     {
         m_programFile->clearAndLoad(hexFile);
     }
-    catch ( DataFileException & e )
+    catch ( const DataFileException & e )
     {
-        CU_FAIL_FATAL("Instance of DataFileException thrown:");
+        CU_FAIL("Instance of DataFileException thrown:");
         std::cerr << e.toString() << std::endl;
+        return;
     }
 
     MCUSimSubsys * programMemSubsys = m_picoBlazeSim->getSubsys(MCUSimSubsys::ID_MEM_CODE);

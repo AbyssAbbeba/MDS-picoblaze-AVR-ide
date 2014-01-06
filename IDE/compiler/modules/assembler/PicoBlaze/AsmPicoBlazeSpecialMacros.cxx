@@ -201,19 +201,17 @@ CompilerStatement * AsmPicoBlazeSpecialMacros::runTimeCondition ( CompilerStatem
     using namespace CompilerStatementTypes;
 
     bool elseBlock = false;
-    std::string labelNext;
     std::string labelEnd;
+    std::string labelNext;
     CompilerStatement * block;
-    CompilerStatement * node2delete;
     CompilerStatement * nodeNext;
-    CompilerStatement * result = rtIfTree->branch();
+    CompilerStatement * node2delete;
+    CompilerStatement * result = NULL;
 
     generateLabel(labelEnd, LT_IF, true);
     generateLabel(labelNext, LT_IF);
 
-    rtIfTree->m_branch = NULL;
-
-    for ( CompilerStatement * node = result;
+    for ( CompilerStatement * node = rtIfTree->branch();
           NULL != node;
           node = node->next() )
     {
@@ -258,6 +256,11 @@ CompilerStatement * AsmPicoBlazeSpecialMacros::runTimeCondition ( CompilerStatem
             }
         }
 
+        if ( NULL == result )
+        {
+            result = block;
+        }
+
         node2delete = node;
         nodeNext = block->last();
         node->insertLink ( block );
@@ -267,6 +270,7 @@ CompilerStatement * AsmPicoBlazeSpecialMacros::runTimeCondition ( CompilerStatem
         delete node2delete;
     }
 
+    rtIfTree->m_branch = NULL;
     return result;
 }
 

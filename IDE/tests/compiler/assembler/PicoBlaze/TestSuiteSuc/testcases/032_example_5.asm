@@ -1,6 +1,7 @@
                        ; KCPSM3 Program - Control and calculation for Frequency Generator design using the
                        ;                 Spartan-3E Starter Kit.
-                       ;
+                                           device kcpsm6
+                    ; warning > added only for testing purposes
                        ; Interfaces with the rotary encoder and LCD display to enable a frequency to be set.
                        ; Converts the BCD frequency value into a binary integer and then performs the high
                        ; precision calculation necessary to derive the control numbers required by the high

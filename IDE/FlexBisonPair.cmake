@@ -10,35 +10,34 @@
 # very annoying to be always forced to regenerate and recompile all involved
 # lexical and syntax analyzers.
 #
-# (C) copyright 2013 Moravia Microsystems, s.r.o.
+# (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
 #
 # author: Martin Ošmera <martin.osmera@moravia-microsystems.com>
 #
 # ==============================================================================
 
-# Find flex and bison executable and provides macros to generate custom build rules.
-find_package ( FLEX  REQUIRED )
-find_package ( BISON REQUIRED )
+# find_package ( FLEX  REQUIRED )
+# find_package ( BISON REQUIRED )
 
 ## Apply syntax analyzer generator.
  # This macro has exactly the same usage as macro FLEX_TARGET.
 macro ( FLEX_TARGET_IMPROVED )
     if ( "${CMAKE_CURRENT_BINARY_DIR}/${ARGV1}" IS_NEWER_THAN "${CMAKE_CURRENT_BINARY_DIR}/${ARGV2}" )
         FLEX_TARGET ( ${ARGV} )
-    else ( "${CMAKE_CURRENT_BINARY_DIR}/${ARGV1}" IS_NEWER_THAN "${CMAKE_CURRENT_BINARY_DIR}/${ARGV2}" )
+    else()
         set ( FLEX_${ARGV0}_OUTPUTS "${ARGV2}" )
-    endif ( "${CMAKE_CURRENT_BINARY_DIR}/${ARGV1}" IS_NEWER_THAN "${CMAKE_CURRENT_BINARY_DIR}/${ARGV2}" )
-endmacro ( FLEX_TARGET_IMPROVED )
+    endif()
+endmacro()
 
 ## Apply lexical analyzer generator.
  # This macro has exactly the same usage as macro BISON_TARGET.
 macro ( BISON_TARGET_IMPROVED )
     if ( "${CMAKE_CURRENT_BINARY_DIR}/${ARGV1}" IS_NEWER_THAN "${CMAKE_CURRENT_BINARY_DIR}/${ARGV2}" )
         BISON_TARGET ( ${ARGV} )
-    else ( "${CMAKE_CURRENT_BINARY_DIR}/${ARGV1}" IS_NEWER_THAN "${CMAKE_CURRENT_BINARY_DIR}/${ARGV2}" )
+    else()
         set ( BISON_${ARGV0}_OUTPUTS "${ARGV2}" )
-    endif ( "${CMAKE_CURRENT_BINARY_DIR}/${ARGV1}" IS_NEWER_THAN "${CMAKE_CURRENT_BINARY_DIR}/${ARGV2}" )
-endmacro ( BISON_TARGET_IMPROVED )
+    endif()
+endmacro()
 
 ## Apply lexical and syntax analyzer generator, and set threir output files to be cleaned in the "make clean" stage.
  # parameter LexerTarget   : expectes LexerTarget.l; generates LexerTarget.h, and LexerTarget.cxx
@@ -66,6 +65,6 @@ macro ( FLEX_BISON_PAIR LexerTarget ParserTarget libraryTarget )
     set_target_properties ( ${libraryTarget} PROPERTIES
                                              COMPILE_FLAGS "-w -fPIC" )
 
-endmacro ( FLEX_BISON_PAIR LexerTarget ParserTarget )
+endmacro()
 
 # FlexBisonPair.cmake ends here

@@ -168,8 +168,8 @@ inline void AVR8SystemControl::handlePowerOnReset()
     }
 }
 
-void AVR8SystemControl::timeStep ( float timeStep,
-                                   unsigned int clockCycles )
+void AVR8SystemControl::timeStep ( float /*timeStep*/,
+                                   unsigned int /*clockCycles*/ )
 {
 // Not ready yet.
 //      if ( true == m_config.m_hasPowerOnReset ) {

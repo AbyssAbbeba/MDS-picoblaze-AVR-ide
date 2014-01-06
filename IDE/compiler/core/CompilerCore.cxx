@@ -31,18 +31,20 @@
 
 // Standard header files.
 #include <fstream>
-#include <iostream>//DEBUG
+
 // Used for i18n only.
 #include <QObject>
 
 CompilerCore::CompilerCore ( CompilerMsgInterface * msgInterface )
-                           : m_msgInterface ( new CompilerMsgFilter(this, msgInterface, MAX_MESSAGES) )
 {
-    m_opts = NULL;
-    m_msgObserver = NULL;
+    m_opts             = NULL;
+    m_msgObserver      = NULL;
+    m_rootStatement    = NULL;
     m_semanticAnalyzer = NULL;
-    m_rootStatement = NULL;
+
     m_messageStack = new CompilerMessageStack;
+    m_msgInterface = new CompilerMsgFilter ( this, msgInterface );
+
     m_fileNumber = -1;
 }
 
@@ -92,16 +94,18 @@ inline bool CompilerCore::startCompilation()
         m_opts->normalizeFilePaths();
         m_opts->clearOutputFiles();
 
-        m_basePath = boost::filesystem::path(m_opts->m_sourceFile).parent_path();
+        m_msgInterface->m_messageLimit = m_opts->m_messageLimit;
+        m_basePath = boost::filesystem::path(m_opts->m_sourceFiles[0]).parent_path();
 
-        ModEmplStatCode statusCode = employModule ( m_lang, m_arch, this, m_semanticAnalyzer );
+        std::string errStr;
+        ModEmplStatCode statusCode = employModule ( m_lang, m_arch, this, m_semanticAnalyzer, &errStr );
 
         switch ( statusCode )
         {
             case MESC_OK:
                 return m_success;
             case MESC_IO_ERROR:
-                coreMessage ( MT_ERROR, QObject::tr("unable to open file: ").toStdString() + m_opts->m_sourceFile );
+                coreMessage ( MT_ERROR, QObject::tr("unable to open file: ").toStdString() + errStr );
                 return false;
             case MESC_ARCH_NOT_SUPPORTED:
                 coreMessage ( MT_ERROR,
@@ -152,10 +156,21 @@ inline bool CompilerCore::checkOptions()
         return false;
     }
 
-    if ( true == m_opts->m_sourceFile.empty() )
+    if ( true == m_opts->m_sourceFiles.empty() )
     {
         coreMessage ( MT_ERROR, QObject::tr("source code file not specified").toStdString() );
         return false;
+    }
+    else
+    {
+        for ( const auto file : m_opts->m_sourceFiles )
+        {
+            if ( true == file.empty() )
+            {
+                coreMessage ( MT_ERROR, QObject::tr("empty string used as source code file name").toStdString() );
+                return false;
+            }
+        }
     }
 
     return true;
@@ -166,31 +181,51 @@ inline std::string CompilerCore::msgType2str ( MessageType type )
     switch ( type )
     {
         case MT_INVALID:
-            // This should never happen; when the control flow reaches this point, there is bug in the compiler!
+            // This should never happen; when the control flow reaches this point, there is a bug in the compiler!
             return "";
         case MT_GENERAL:
-            return "";
+            return QObject::tr("Message: ").toStdString();
         case MT_ERROR:
             m_success = false;
-            return QObject::tr("error: ").toStdString();
+            return QObject::tr("Error: ").toStdString();
         case MT_WARNING:
-            return QObject::tr("warning: ").toStdString();
+            return QObject::tr("Warning: ").toStdString();
         case MT_REMARK:
-            return QObject::tr("remark: ").toStdString();
+            return QObject::tr("Remark: ").toStdString();
     }
 
     return "";
 }
 
 std::string CompilerCore::locationToStr ( const CompilerSourceLocation & location,
-                                          bool colon ) const
+                                          bool main ) const
 {
+    std::string result;
+
+    if ( ( false == main ) && ( -1 != location.m_origin ) )
+    {
+        bool first = true;
+        std::string prefix;
+        std::vector<const CompilerSourceLocation *> locationBackTr;
+        m_locationTracker.traverse(location, &locationBackTr);
+        for ( const auto i : locationBackTr )
+        {
+            if ( false == first )
+            {
+                prefix += " ==> ";
+            }
+            first = false;
+            result += locationToStr ( *i, main );
+        }
+        return result;
+    }
+
     if ( -1 == location.m_fileNumber || location.m_fileNumber >= (int)m_openedFiles.size() )
     {
         return "";
     }
 
-    std::string result = boost::filesystem::make_relative ( m_basePath, getFileName(location.m_fileNumber) ).string();
+    result += boost::filesystem::make_relative ( m_basePath, getFileName(location.m_fileNumber) ).string();
 
     char tmp[100];
     sprintf ( tmp,
@@ -201,10 +236,11 @@ std::string CompilerCore::locationToStr ( const CompilerSourceLocation & locatio
               location.m_colEnd );
 
     result.append(tmp);
-    if ( true == colon )
+    if ( true == main )
     {
         result.append(": ");
     }
+
     return result;
 }
 
@@ -216,28 +252,42 @@ inline void CompilerCore::coreMessage ( MessageType type,
 
 void CompilerCore::coreMessage ( const CompilerSourceLocation & location,
                                  MessageType type,
-                                 const std::string & text )
+                                 const std::string & text,
+                                 bool forceAsUnique,
+                                 bool noObserver )
 {
     if ( -1 != location.m_origin )
     {
-        coreMessage ( m_locationTracker.getLocation(location.m_origin), type, text );
+        std::string prefixNormal;
+        std::string prefixObserver;
+        std::vector<const CompilerSourceLocation *> locationBackTr;
+        m_locationTracker.traverse(location, &locationBackTr, true);
 
-        int next = m_locationTracker.getNext(location.m_origin);
-        if ( -1 != next )
+        for ( const auto tracePoint : locationBackTr )
         {
-std::cout << ">> NEXT = " << next << " -- " << m_locationTracker.getLocation(next) << "\n" << std::flush;
-//             coreMessage ( m_locationTracker.getLocation(next), type, "(ORG) " + text );
+            if ( -1 == tracePoint->m_origin )
+            {
+                coreMessage ( *tracePoint, type, prefixNormal + text, forceAsUnique, true );
+                prefixNormal += "==> ";
+            }
+            else if ( NULL != m_msgObserver )
+            {
+                m_msgObserver->message(*tracePoint, type, prefixObserver + text);
+                prefixObserver += "==> ";
+            }
         }
 
         return;
     }
 
-    if ( false == m_messageStack->isUnique(location, type, text) )
+    if ( ( false == forceAsUnique )
+           &&
+         ( false == m_messageStack->isUnique(location, type, text, m_opts->m_briefMsgOutput) ) )
     {
         return;
     }
 
-    if ( NULL != m_msgObserver )
+    if ( ( false == noObserver ) && ( NULL != m_msgObserver ) )
     {
         m_msgObserver->message(location, type, text);
     }
@@ -247,30 +297,34 @@ std::cout << ">> NEXT = " << next << " -- " << m_locationTracker.getLocation(nex
 
 void CompilerCore::preprocessorMessage ( const CompilerSourceLocation & location,
                                          MessageType type,
-                                         const std::string & text )
+                                         const std::string & text,
+                                         bool forceAsUnique )
 {
-    coreMessage(location, type, text);
+    coreMessage(location, type, text, forceAsUnique);
 }
 
 void CompilerCore::lexerMessage ( const CompilerSourceLocation & location,
                                   MessageType type,
-                                  const std::string & text )
+                                  const std::string & text,
+                                  bool forceAsUnique )
 {
-    coreMessage(location, type, text);
+    coreMessage(location, type, text, forceAsUnique);
 }
 
 void CompilerCore::parserMessage ( const CompilerSourceLocation & location,
                                    MessageType type,
-                                   const std::string & text )
+                                   const std::string & text,
+                                   bool forceAsUnique )
 {
-    coreMessage(location, type, text);
+    coreMessage(location, type, text, forceAsUnique);
 }
 
 void CompilerCore::semanticMessage ( const CompilerSourceLocation & location,
                                      MessageType type,
-                                     const std::string & text )
+                                     const std::string & text,
+                                     bool forceAsUnique )
 {
-    coreMessage(location, type, text);
+    coreMessage(location, type, text, forceAsUnique);
 }
 
 bool CompilerCore::successful() const
@@ -311,7 +365,7 @@ inline void CompilerCore::setOpenedFile ( const std::string & filename,
 void CompilerCore::registerMsgObserver ( CompilerMsgObserver * observer )
 {
     m_msgObserver = observer;
-    m_msgObserver->setMaxNumberOfMessages(MAX_MESSAGES);
+    m_msgObserver->setMaxNumberOfMessages(m_opts->m_messageLimit);
 }
 
 CompilerStatement * CompilerCore::loadDevSpecCode ( const std::string & deviceName,
@@ -370,7 +424,7 @@ CompilerStatement * CompilerCore::loadDevSpecCode ( const std::string & deviceNa
 
 std::string CompilerCore::getBaseName()
 {
-    return boost::filesystem::path(m_opts->m_sourceFile).filename().string();
+    return boost::filesystem::path(m_opts->m_sourceFiles[0]).filename().string();
 }
 
 std::string CompilerCore::getBaseIncludeDir()
@@ -419,7 +473,7 @@ CompilerStatement * CompilerCore::loadPrecompiledCode ( const std::string & file
     try
     {
         std::ifstream file ( fileName, (std::ios_base::in | std::ios_base::binary) );
-        CompilerSerializer deserializer(file, m_openedFiles, m_lang, m_arch, hide);
+        CompilerSerializer deserializer(file, m_openedFiles, &m_locationTracker, m_lang, m_arch, hide);
         CompilerStatement * result = new CompilerStatement(deserializer);
 
         if ( true == file.bad() )
@@ -442,7 +496,7 @@ bool CompilerCore::savePrecompiledCode ( const std::string & fileName,
     try
     {
         std::ofstream file ( fileName, (std::ios_base::out | std::ios_base::binary) );
-        CompilerSerializer serializer(file, m_openedFiles, m_lang, m_arch);
+        CompilerSerializer serializer(file, m_openedFiles, &m_locationTracker, m_lang, m_arch);
         code->serializeTree(serializer);
         return ( !file.bad() );
     }
@@ -498,8 +552,8 @@ inline void CompilerCore::resetCompilerCore()
     m_success = true;
     m_devSpecCodeLoaded = false;
 
-    m_messageStack->reset();
-    m_msgInterface->reset();
+    m_messageStack->clear();
+    m_msgInterface->clear();
     m_basePath.clear();
 
     m_filename.clear();
@@ -511,6 +565,7 @@ inline void CompilerCore::resetCompilerCore()
 }
 
 FILE * CompilerCore::fileOpen ( const std::string & filename,
+                                std::string * finalFilename,
                                 bool acyclic )
 {
     using namespace boost::filesystem;
@@ -560,7 +615,7 @@ FILE * CompilerCore::fileOpen ( const std::string & filename,
         {
             if ( *it == absoluteFileName )
             {
-                coreMessage ( MT_ERROR, QObject::tr ( "file %1 is already opened, you might have an "
+                coreMessage ( MT_ERROR, QObject::tr ( "file `%1' is already opened, you might have an "
                                                       "\"include\" loop in your code" )
                                                     .arg(absoluteFileName.c_str()).toStdString() );
                 return NULL;
@@ -575,9 +630,14 @@ FILE * CompilerCore::fileOpen ( const std::string & filename,
     }
     if ( false == pushFileName(absoluteFileName, &fileHandle) )
     {
+        fclose(fileHandle);
         return NULL;
     }
 
+    if ( NULL != finalFilename )
+    {
+        *finalFilename = absoluteFileName;
+    }
     return fileHandle;
 }
 
