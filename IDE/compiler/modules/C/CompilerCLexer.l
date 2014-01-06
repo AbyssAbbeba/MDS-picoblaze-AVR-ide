@@ -80,6 +80,24 @@
 /* To suppress the warning message "yyunput defined but not used". */
 %option nounput
 
+
+/*
+ * Named regular expressions used in the lexer
+ */
+/* White space. */
+WSPACE  ([ \t]|\u00A0)+
+/* New line */
+NLINE   (\r?\n)|(\n?\r)
+/* C like escape sequence, such as `\x4A', `\uABCD', `\U1234abcd', and `\177'. */
+ //EDIT THIS! Include \t \n and so
+XESC    (\\[0-7]{1,3})|(\\x[0-9A-F]{1,2})|(\\[uU][0-9A-F]{1,8})
+/* Floating point number. */
+FLOAT   [0-9]+\.[0-9]+(e[+-][0-9]+)?
+/* An identifier in the language. */
+ID      [_a-zA-Z][_a-zA-Z0-9]*
+
+
+
 /* -------------------------------------------------------------------------- */
 /* LEXICAL RULES                                                              */
 /* -------------------------------------------------------------------------- */
@@ -95,6 +113,177 @@
  // -----------------------------------------------------------------------------------------
  // >>>>>>>>>>>>>>>>>>>>>>>>>> TODO: write lexical rules here! <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
  // -----------------------------------------------------------------------------------------
+
+
+ /* White space: */
+{WSPACE}        { /* eat up white space */ }
+{NLINE}         {
+                    yylloc->last_line++;
+                    yylloc->last_column = 1;
+                }
+
+ /* Special tokens */
+";"             { return EOS;               }
+
+ /* Keywords */
+"auto"          { return KW_AUTO;           }
+"break"         { return KW_BREAK;          }
+"case"          { return KW_CASE;           }
+"const"         { return KW_CONST;          }
+"continue"      { return KW_CONTINUE;       }
+"default"       { return KW_DEFAULT;        }
+"do"            { return KW_DO;             }
+"else"          { return KW_ELSE;           }
+"extern"        { return KW_EXTERN;         }
+"for"           { return KW_FOR;            }
+"goto"          { return KW_GOTO;           }
+"if"            { return KW_IF;             }
+"register"      { return KW_REGISTER;       }
+"return"        { return KW_RETURN;         }
+"sizeof"        { return KW_SIZEOF;         }
+"static"        { return KW_STATIC;         }
+"switch"        { return KW_SWITCH;         }
+"typedef"       { return KW_TYPEDEF;        }
+"volatile"      { return KW_VOLATILE;       }
+"while"         { return KW_WHILE;          }
+
+
+"char"          { return DATA_CHAR;         }
+"double"        { return DATA_DOUBLE;       }
+"float"         { return DATA_FLOAT;        }
+"enum"          { return DATA_ENUM;         }
+"int"           { return DATA_INT;          }
+"long"          { return DATA_LONG;         }
+"short"         { return DATA_SHORT;        }
+"signed"        { return DATA_SIGNED;       }
+"struct"        { return DATA_STRUCT;       }
+"union"         { return DATA_UNION;        }
+"unsigned"      { return DATA_UNSIGNED;     }
+"void"          { return DATA_VOID;         }
+
+ /* Brackets */
+"("             { return B_RND_LEFT;        }
+")"             { return B_RND_RIGHT;       }
+"["             { return B_SQR_LEFT;        }
+"]"             { return B_SQR_RIGHT;       }
+"{"             { return B_CRL_LEFT;        }
+"}"             { return B_CRL_RIGHT;       }
+
+
+ /* Expression operators */
+":"             { return O_COLON;           }
+"?"             { return O_QUESTION_MARK;   }
+","             { return O_COMMA;           }
+"."             { return O_DOT;             }
+"->"            { return O_ARROW;           }
+"/"             { return O_SLASH;           }
+"+"             { return O_PLUS;            }
+"-"             { return O_MINUS;           }
+"*"             { return O_ASTERISK;        }
+"!"             { return O_NOT;             }
+"%"             { return O_MOD;             }
+"<<"            { return O_SHL;             }
+">>"            { return O_SHR;             }
+"&&"            { return O_AND;             }
+"||"            { return O_OR;              }
+"&"             { return O_BITAND;          }
+"|"             { return O_BITOR;           }
+"^"             { return O_BITXOR;          }
+"=="            { return O_EQ;              }
+"<>"            { return O_NE;              }
+"!="            { return O_NE2;             }
+"<"             { return O_LT;              }
+"<="            { return O_LE;              }
+">"             { return O_GT;              }
+">="            { return O_GE;              }
+"="             { return O_ASSIGN;          }
+"~"             { return O_BITNOT;          }
+"+="            { return O_ADD_ASSIGN;      }
+"-="            { return O_SUB_ASSIGN;      }
+"*="            { return O_MUL_ASSIGN;      }
+"/="            { return O_DIV_ASSIGN;      }
+"%="            { return O_MOD_ASSIGN;      }
+"<<="           { return O_SHL_ASSIGN;      }
+">>="           { return O_SHR_ASSIGN;      }
+"&="            { return O_BAND_ASSIGN;     }
+"|="            { return O_BOR_ASSIGN;      }
+"&&="           { return O_LAND_ASSIGN;     }
+"||="           { return O_LOR_ASSIGN;      }
+"^="            { return O_XOR_ASSIGN;      }
+"--"            { return O_DECREMENT;       }
+"++"            { return O_INCREMENT;       }
+
+ /*
+    Numbers
+ */
+
+ /* Integral */
+0b[01]+         {
+                    // Binary number.
+                    //yylval->integer = MScriptLexerAuxFunc::str2int ( yyextra, yylloc, ( yytext + 2 ), 2 );
+                    return INTEGER;
+                }
+0x[0-9A-F]+     {
+                    // Hexadecimal number.
+                    //yylval->integer = MScriptLexerAuxFunc::str2int ( yyextra, yylloc, ( yytext + 2 ), 16 );
+                    return INTEGER;
+                }
+0[0-7]+         {
+                    // Octal number.
+                    //yylval->integer = MScriptLexerAuxFunc::str2int ( yyextra, yylloc, ( yytext + 1 ), 8 );
+                    return INTEGER;
+                }
+[0-9]+          {
+                    // Decimal number.
+                    //yylval->integer = MScriptLexerAuxFunc::str2int ( yyextra, yylloc, yytext, 10 );
+                    return INTEGER;
+                }
+
+ /* Real numbers */
+{FLOAT}         {
+                    // Floating point number.
+                    //yylval->real = MScriptLexerAuxFunc::str2float ( yyextra, yylloc, yytext );
+                    return REAL;
+                }
+
+
+ /* Character literals */
+'{XESC}'        {
+                    // Handle C like escape sequence, such as `\x4A', `\uABCD', `\U1234abcd', and `\177'
+
+                    int size; // Size of the binary value in bytes
+                    //yylval->integer = (long long) MScriptLexerAuxFunc::escapeSequence(yyextra, yylloc, yytext, &size);
+
+                    // Check whether the conversion was successful
+                    if ( 0 == size )
+                    {
+                        //yyextra->lexerMessage ( yylloc,
+                        //                        MScriptBase::MT_ERROR,
+                        //                        QObject::tr ( "unrecognized escape sequence: " ).toStdString()
+                        //                                    + "`" + yytext + "'" );
+                        yyterminate();
+                    }
+
+                    return INTEGER;
+                }
+
+
+ /* Identifiers */
+{ID}            {
+                    // Arbitrary identifier, e.g. `MYREG_U1'.
+
+                    // Convert the string to upper case characters.
+                    for ( int i = 0; i < yyleng; i++ )
+                    {
+                        yytext[i] = yytext[i];
+                    }
+
+                    // Return as general identifier.
+                    yylval->symbol = yytext;
+                    return IDENTIFIER;
+                }
+
+
 
 %%
 

@@ -700,9 +700,9 @@ void MainForm::compileProject()
 
     CompilerOptions *options = new CompilerOptions();
     //QString mainFile =  this->projectMan->getActive()->mainFileName.section('.',0,-2);
-    options->m_sourceFile = (projectMan->getActive()->prjPath.section('/',0, -2) + "/" +  this->projectMan->getActive()->mainFilePath).toStdString();
+    options->m_sourceFiles.push_back((projectMan->getActive()->prjPath.section('/',0, -2) + "/" +  this->projectMan->getActive()->mainFilePath).toStdString());
     QDir prjDir(projectMan->getActive()->prjPath.section('/',0, -2));
-    QDir fileDir(QString::fromStdString(options->m_sourceFile).section('/',0, -2));
+    QDir fileDir(QString::fromStdString(options->m_sourceFiles.at(0)).section('/',0, -2));
     QString mainFile;
     
     if (fileDir.relativeFilePath(prjDir.absolutePath()) == "")
