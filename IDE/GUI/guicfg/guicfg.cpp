@@ -3,10 +3,12 @@
 #include "guicfg.h"
 
 
+
 GuiCfg::GuiCfg()
     : QObject(0), GuiCfg_Items()
 {
 }
+
 
 GuiCfg::~GuiCfg()
 {
@@ -19,6 +21,7 @@ GuiCfg& GuiCfg::getInstance()
     return instance;
 }
 
+
 //setters
 void GuiCfg::setEditorFont(QFont font)
 {
@@ -26,25 +29,30 @@ void GuiCfg::setEditorFont(QFont font)
     emit editorFontChanged(font);
 }
 
+
 void GuiCfg::setSimColor(QColor color)
 {
     simColorLine = color;
 }
+
 
 void GuiCfg::setSimWidgetUpdatedColor(QColor color)
 {
     simColorWidgetChanged = color;
 }
 
+
 void GuiCfg::setBreakpointColor(QColor color)
 {
     simColorBreakpoint = color;
 }
 
+
 void GuiCfg::setWarningsOpt(GuiCfg::WarningsOpt opts)
 {
     warnings = opts;
 }
+
 
 void GuiCfg::fileOpened(QString path, QString name)
 {
@@ -57,10 +65,12 @@ void GuiCfg::fileOpened(QString path, QString name)
     recentFiles.filePaths[0] = path;
 }
 
+
 void GuiCfg::setLastDialogPath(QString path)
 {
     lastDialogPath = path;
 }
+
 
 void GuiCfg::setHighlightOpt(GuiCfg_Items::HighlightLang lang, GuiCfg_Items::HighlightRole role, GuiCfg_Items::HighlightOpt opts)
 {
@@ -98,12 +108,14 @@ void GuiCfg::setHighlightOpt(GuiCfg_Items::HighlightLang lang, GuiCfg_Items::Hig
     }
 }
 
+
 void GuiCfg::setDefaultIDEGeneral()
 {
     this->splash = false;
     this->tipsOnStart = false;
     this->language = "English";
 }
+
 
 void GuiCfg::setDefaultIDEShortcuts()
 {
@@ -115,6 +127,7 @@ void GuiCfg::setDefaultEditFont()
     this->editorFont.setPointSize(9);
 }
 
+
 void GuiCfg::setDefaultEditGeneral()
 {
     this->tabWidth = 4;
@@ -123,6 +136,7 @@ void GuiCfg::setDefaultEditGeneral()
     this->encoding = "utf-8";
     this->eol = "lf";
 }
+
 
 void GuiCfg::setDefaultEditSyntax()
 {
@@ -165,6 +179,7 @@ void GuiCfg::setDefaultEditSyntax()
     this->highQuote.bold = false;
 }
 
+
 void GuiCfg::setDefaultSimWarnings()
 {
     this->warnings.memReadNonexist = true;
@@ -196,6 +211,7 @@ void GuiCfg::setDefaultSimWarnings()
     this->warnings.cpuPcUnderflow = true;
 }
 
+
 void GuiCfg::setDefaultSimOthers()
 {
     this->undefinedValue = (GuiCfg_Items::UndefinedValueOpt)0;
@@ -203,6 +219,7 @@ void GuiCfg::setDefaultSimOthers()
     this->simColorBreakpoint.setNamedColor("#FFFFFF");
     this->simColorWidgetChanged.setNamedColor("#FFFFFF");
 }
+
 
 void GuiCfg::setDefaultAll()
 {
@@ -213,6 +230,36 @@ void GuiCfg::setDefaultAll()
     this->setDefaultEditSyntax();
     this->setDefaultSimWarnings();
     this->setDefaultSimOthers();
+}
+
+
+void GuiCfg::setTabWidth(int width)
+{
+    this->tabWidth = width;
+}
+
+
+void GuiCfg::setTabToSpaces(bool enabled)
+{
+    this->tabToSpaces = enabled;
+}
+
+        
+void GuiCfg::setSpacesInTab(int count)
+{
+    this->spacesInTab = count;
+}
+
+        
+void GuiCfg::setEncoding(QString encoding)
+{
+    this->encoding = encoding;
+}
+
+        
+void GuiCfg::setEOL(QString eol)
+{
+    this->eol = eol;
 }
 
 
@@ -327,6 +374,12 @@ QString GuiCfg::getEncoding()
 QString GuiCfg::getEOL()
 {
     return this->eol;
+}
+
+
+bool GuiCfg::getHighlightEnabled()
+{
+    return this->highlightEnabled;
 }
 
 

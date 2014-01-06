@@ -10,6 +10,7 @@ class InterfaceCfg_IDEGeneral : public QWidget
     Q_OBJECT
     public:
         InterfaceCfg_IDEGeneral(QWidget *parent);
+        void save();
 
     private:
         Ui_InterfaceCfg_IDEGeneral ui;

@@ -12,6 +12,7 @@ class InterfaceCfg_EditSyntax : public QWidget
     Q_OBJECT
     public:
         InterfaceCfg_EditSyntax(QWidget *parent);
+        void save();
 
     private:
         Ui_InterfaceCfg_EditSyntax ui;
@@ -22,6 +23,7 @@ class InterfaceCfg_EditSyntax : public QWidget
         void underlineChanged(bool enabled, InterfaceCfg_SyntaxAsm::Types type);
         void strikeChanged(bool enabled, InterfaceCfg_SyntaxAsm::Types type);
         void boldChanged(bool enabled, InterfaceCfg_SyntaxAsm::Types type);
+        void checkBoxChanged(int state);
 
 };
 

@@ -56,6 +56,16 @@ class GuiCfg : public QObject, public GuiCfg_Items
         void setDefaultSimOthers();
 
         void setDefaultAll();
+
+        void setTabWidth(int width);
+        
+        void setTabToSpaces(bool enabled);
+
+        void setSpacesInTab(int count);
+
+        void setEncoding(QString encoding);
+
+        void setEOL(QString eol);
         
         
         //getters
@@ -72,6 +82,8 @@ class GuiCfg : public QObject, public GuiCfg_Items
         GuiCfg::RecentFiles getRecentFiles();
 
         QString getLastDialogPath();
+
+        bool getHighlightEnabled();
 
         GuiCfg::HighlightOpt getHighlightOpts(GuiCfg::HighlightLang lang, GuiCfg::HighlightRole role);
 

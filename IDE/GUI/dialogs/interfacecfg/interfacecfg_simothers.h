@@ -10,6 +10,7 @@ class InterfaceCfg_SimOthers : public QWidget
     Q_OBJECT
     public:
         InterfaceCfg_SimOthers(QWidget *parent);
+        void save();
 
     private:
         Ui_InterfaceCfg_SimOthers ui;

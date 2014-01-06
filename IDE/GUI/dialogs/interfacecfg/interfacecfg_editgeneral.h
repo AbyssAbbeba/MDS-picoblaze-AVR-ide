@@ -10,9 +10,13 @@ class InterfaceCfg_EditGeneral : public QWidget
     Q_OBJECT
     public:
         InterfaceCfg_EditGeneral(QWidget *parent);
+        void save();
 
     private:
         Ui_InterfaceCfg_EditGeneral ui;
+
+    private slots:
+        void checkBoxChanged(int state);
 
 };
 
