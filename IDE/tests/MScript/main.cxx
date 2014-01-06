@@ -28,19 +28,19 @@ int main ( int argc, char ** argv )
                         "All rights reserved." );
 
     autoTest.addTestSuite ( "MScript-I",
-                            TestMScriptI::init,
-                            TestMScriptI::clean,
-                            TestMScriptI::addTests );
+                            &TestMScriptI::init,
+                            &TestMScriptI::clean,
+                            &TestMScriptI::addTests );
 
     autoTest.addTestSuite ( "MScript-II",
-                            TestMScriptII::init,
-                            TestMScriptII::clean,
-                            TestMScriptII::addTests );
+                            &TestMScriptII::init,
+                            &TestMScriptII::clean,
+                            &TestMScriptII::addTests );
 
     autoTest.addTestSuite ( "MScript-III",
-                            TestMScriptIII::init,
-                            TestMScriptIII::clean,
-                            TestMScriptIII::addTests );
+                            &TestMScriptIII::init,
+                            &TestMScriptIII::clean,
+                            &TestMScriptIII::addTests );
 
     return autoTest.main(argc, argv);
 }

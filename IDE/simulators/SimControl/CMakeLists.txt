@@ -48,7 +48,7 @@ add_library ( ${PROJECT_NAME} SHARED
               MCUSimControl.cxx
               MCUSimObserver.cxx )
 
-# Link a target to given libraries.
+# Link the target to given libraries.
 target_link_libraries ( ${PROJECT_NAME} ${QT_LIBRARIES} MCUDataFiles McuSimCfgMgr AVR8Sim PIC8Sim PicoBlazeSim DbgFile )
 
 

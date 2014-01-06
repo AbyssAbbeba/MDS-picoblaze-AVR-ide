@@ -119,6 +119,13 @@ class AsmTranslatorBase
             std::vector<std::pair<int,int> > m_operands;
         };
 
+    ////    Constructors and Destructors    ////
+    public:
+        /**
+         * @brief
+         */
+        virtual ~AsmTranslatorBase() {}
+
     ////    Public Operations    ////
     public:
         /**

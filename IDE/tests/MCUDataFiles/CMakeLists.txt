@@ -25,13 +25,14 @@ set_directory_properties ( PROPERTIES
 
 # Add include directories to the build.
 include_directories ( ${Boost_INCLUDE_DIRS}
-                      "${CMAKE_CURRENT_SOURCE_DIR}/../../utilities/MCUDataFiles"
-                      "${CMAKE_CURRENT_SOURCE_DIR}/../../utilities/AutoTest/" )
+                      "${CMAKE_SOURCE_DIR}"
+                      "${CMAKE_SOURCE_DIR}/utilities/MCUDataFiles"
+                      "${CMAKE_SOURCE_DIR}/utilities/AutoTest/" )
 
 # Specify directories in which the linker will look for libraries.
 link_directories ( ${Boost_LIBRARY_DIRS}
-                   "${CMAKE_CURRENT_SOURCE_DIR}/../../utilities/MCUDataFiles"
-                   "${CMAKE_CURRENT_SOURCE_DIR}/../../utilities/AutoTest/" )
+                   "${CMAKE_SOURCE_DIR}/utilities/MCUDataFiles"
+                   "${CMAKE_SOURCE_DIR}/utilities/AutoTest/" )
 
 # Add an executable to the project using the specified source files.
 add_executable ( ${PROJECT_NAME} testsMCUDataFiles.cxx

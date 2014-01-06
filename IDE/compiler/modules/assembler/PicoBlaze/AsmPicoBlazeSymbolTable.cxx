@@ -432,7 +432,7 @@ void AsmPicoBlazeSymbolTable::substArg ( CompilerExpr * expr,
                     if ( ( '{' == symbol[0] ) && ( '}' == symbol[len-1] ) )
                     {
                         char buf[len-1];
-                        for ( int i = 1, j = 0; i < ( len - 1 ); i++, j++ )
+                        for ( size_t i = 1, j = 0; i < ( len - 1 ); i++, j++ )
                         {
                             buf[j] = symbol[i];
                         }

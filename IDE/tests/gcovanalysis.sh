@@ -6,6 +6,7 @@ declare -r TEST_SUB_DIR="$(readlink -f "${1}")"
 declare -r HTML_FILE="${2}"
 declare -r FILE_PREFIX="${3}"
 declare -r MAIN_DIR="$(readlink -f ../..)"
+declare -r TEST_NAME="$(basename "${TEST_SUB_DIR}")"
 declare -a SRC_FILES=( $(find -L "${MAIN_DIR}" -type f -name '*.cxx') \
                        $(find -L "${MAIN_DIR}" -type f -name '*.cpp') \
                        $(find -L "${MAIN_DIR}" -type f -name '*.c'  ) \
@@ -64,7 +65,7 @@ for gcovFile in "${GCOV_FILES[@]}"; do
 
         if (( 1 == ${inResults} )); then
             orgLine="${RESULTS[${filename}:${lineno}]}"
-            if [[ "${line}" =~ ^' '*#####: || "${line}" =~ ^' '*-: ]]; then
+            if [[ "${line}" =~ ^' '*((#####)|(\=\=\=\=\=)|(\-)): ]]; then
                 line="${orgLine}"
             elif [[ "${line}" =~ ^' '*[0-9]+: && "${orgLine}" =~ ^' '*[0-9]+: ]]; then
                 [[ "${line}" =~ ^' '*[0-9]+: ]]
@@ -104,15 +105,23 @@ echo "<head>" >> "${HTML_FILE}"
 echo "    <meta http-equiv=\"Content-Type\" content=\"application/xhtml+xml; charset=utf-8\" />" >> "${HTML_FILE}"
 echo "    <meta name=\"content-language\" content=\"en\"/>" >> "${HTML_FILE}"
 echo "    <link rel=\"shortcut icon\" href=\"favicon.png\" type=\"image/png\"/>" >> "${HTML_FILE}"
-echo "    <title> ${TEST_SUB_DIR}: Test Coverage Analysis </title>" >> "${HTML_FILE}"
+echo "    <title> Test Coverage Analysis for ${TEST_NAME} </title>" >> "${HTML_FILE}"
 echo "    <style type=\"text/css\">" >> "${HTML_FILE}"
 echo "        a {" >> "${HTML_FILE}"
-echo "                text-decoration: underline;" >> "${HTML_FILE}"
-echo "                color: #0000FF;" >> "${HTML_FILE}"
+echo "            text-decoration: underline;" >> "${HTML_FILE}"
+echo "            color: #0000FF;" >> "${HTML_FILE}"
 echo "        }" >> "${HTML_FILE}"
 echo "        a:hover {" >> "${HTML_FILE}"
-echo "                text-decoration: none;" >> "${HTML_FILE}"
-echo "                color: #0088FF;" >> "${HTML_FILE}"
+echo "            text-decoration: none;" >> "${HTML_FILE}"
+echo "            color: #0088FF;" >> "${HTML_FILE}"
+echo "        }" >> "${HTML_FILE}"
+echo "        td.filename {" >> "${HTML_FILE}"
+echo "            text-align: left;" >> "${HTML_FILE}"
+echo "            padding-left: 5px" >> "${HTML_FILE}"
+echo "        }" >> "${HTML_FILE}"
+echo "        td.percentage {" >> "${HTML_FILE}"
+echo "            background-repeat: no-repeat;" >> "${HTML_FILE}"
+echo "            background-position: left center;" >> "${HTML_FILE}"
 echo "        }" >> "${HTML_FILE}"
 echo "    </style>" >> "${HTML_FILE}"
 echo "</head>" >> "${HTML_FILE}"
@@ -127,14 +136,16 @@ echo "        <col/>" >> "${HTML_FILE}"
 echo "        <col/>" >> "${HTML_FILE}"
 echo "        <col/>" >> "${HTML_FILE}"
 echo "        <col/>" >> "${HTML_FILE}"
+echo "        <col/>" >> "${HTML_FILE}"
 echo "        <tr style=\"background-color: skyblue\">" >> "${HTML_FILE}"
-echo "                <th colspan=\"5\">Test Coverage Analysis for $(basename ${TEST_SUB_DIR})</th>" >> "${HTML_FILE}"
+echo "                <th colspan=\"6\">Test Coverage Analysis for ${TEST_NAME}</th>" >> "${HTML_FILE}"
 echo "        </tr>" >> "${HTML_FILE}"
 echo "        <tr style=\"background-color: #ffffc0\">" >> "${HTML_FILE}"
-echo "            <th style=\"width: 10%\"> Executed blocks </th>" >> "${HTML_FILE}"
-echo "            <th style=\"width: 10%\"> Missed blocks </th>" >> "${HTML_FILE}"
-echo "            <th style=\"width: 10%\"> Blocks total </th>" >> "${HTML_FILE}"
-echo "            <th style=\"width: 10%\"> Coverage </th>" >> "${HTML_FILE}"
+echo "            <th style=\"width: 7%\"> Executed blocks </th>" >> "${HTML_FILE}"
+echo "            <th style=\"width: 7%\"> Missed blocks </th>" >> "${HTML_FILE}"
+echo "            <th style=\"width: 7%\"> Ignored blocks </th>" >> "${HTML_FILE}"
+echo "            <th style=\"width: 7%\"> Blocks total </th>" >> "${HTML_FILE}"
+echo "            <th style=\"width: 7%\"> Coverage </th>" >> "${HTML_FILE}"
 echo "            <th> File </th>" >> "${HTML_FILE}"
 echo "        </tr>" >> "${HTML_FILE}"
 
@@ -145,11 +156,13 @@ declare -ra SORTED_FILENAMES=( $( for filename in ${!FILENAMES[*]}; do
 dotCounter=0
 declare -i fileno=0
 declare -i executedTotal=0
+declare -i ignoredTotal=0
 declare -i missedTotal=0
 for filename in "${SORTED_FILENAMES[@]}"; do
     targetFile="${FILE_PREFIX}${fileno}.gcov.log"
     targetFileHtml="${FILE_PREFIX}${fileno}.gcov.html"
     executed=0
+    ignored=0
     missed=0
 
     let dotCounter++
@@ -171,37 +184,60 @@ for filename in "${SORTED_FILENAMES[@]}"; do
             let executed++
         elif [[ "${line}" =~ ^' '*#####: ]]; then
             let missed++
+        elif [[ "${line}" =~ ^' '*=====: ]]; then
+            let ignored++
         fi
 
         echo "${padding}${line}"
     done > "${targetFile}"
 
     wait
-    gawk -f "../gcov2html.awk" -v INDEX="${HTML_FILE}" \
-                               -v TITLE="${filename}" "${targetFile}" > "${targetFileHtml}" &
+    gawk -f '../gcov2html.awk'                 \
+         -v INDEX="${HTML_FILE}"               \
+         -v TITLE="${TEST_NAME}: ${filename}"  \
+         "${targetFile}" > "${targetFileHtml}" &
 
     if (( ${executed} + ${missed} )); then
-        percentage="$(bc -q <<<"scale=2; ${executed} * 100.0 / ( ${executed} + ${missed})") %"
+        percentage="$( bc -q <<< "scale = 2; ${executed} * 100.0 / ( ${executed} + ${missed} )" ) %"
+        percentInt=${percentage%% *}
+        percentInt=${percentInt%%.*}
     else
         percentage="n/a"
+        percentInt=""
     fi
 
     if (( ( 1 + fileno ) % 4 )); then
-        color="#90EE90"
+        rowBgColor="#90EE90"
     else
-        color="#AAFFAA"
+        rowBgColor="#AAFFAA"
     fi
-
-    echo "        <tr style=\"background-color: ${color}\">" >> "${HTML_FILE}"
+    echo "        <tr style=\"background-color: ${rowBgColor}\">" >> "${HTML_FILE}"
     echo "            <td> ${executed} </td>" >> "${HTML_FILE}"
     echo "            <td> ${missed} </td>" >> "${HTML_FILE}"
+    echo "            <td> ${ignored} </td>" >> "${HTML_FILE}"
     echo "            <td> $(( executed + missed )) </td>" >> "${HTML_FILE}"
-    echo "            <td> ${percentage} </td>" >> "${HTML_FILE}"
-    echo -n "            <td style=\"text-align: left; padding-left: 5px\"> " >> "${HTML_FILE}"
+    if [[ -z "${percentInt}" ]]; then
+        percentageStyle=""
+    else
+        if (( ${percentInt} >= 67 )); then
+            img='bgg.png'
+        elif (( ${percentInt} >= 33 )); then
+            img='bgo.png'
+        else
+            img='bgr.png'
+            if (( ${percentInt} < 5 )); then
+                percentInt=5
+            fi
+        fi
+        percentageStyle="background-image: url('${img}'); background-size: ${percentInt}% 100%;"
+    fi
+    echo "            <td class=\"percentage\" style=\"${percentageStyle}\"> ${percentage} </td>" >> "${HTML_FILE}"
+    echo -n "            <td class=\"filename\"> " >> "${HTML_FILE}"
     echo    "<a href=\"${targetFileHtml}\">.${filename##${MAIN_DIR}}</a> </td>" >> "${HTML_FILE}"
     echo "        </tr>" >> "${HTML_FILE}"
 
     let executedTotal+=${executed}
+    let ignoredTotal+=${ignored}
     let missedTotal+=${missed}
     let fileno++
 done
@@ -213,6 +249,7 @@ fi
 echo "        <tr style=\"background-color: #ffffc0\">" >> "${HTML_FILE}"
 echo "            <td><b> ${executedTotal} </b></td>" >> "${HTML_FILE}"
 echo "            <td><b> ${missedTotal} </b></td>" >> "${HTML_FILE}"
+echo "            <td><b> ${ignoredTotal} </b></td>" >> "${HTML_FILE}"
 echo "            <td><b> $(( executedTotal + missedTotal )) </b></td>" >> "${HTML_FILE}"
 if [[ "" != ${FINAL_PERCENTAGE} ]]; then
     echo "            <td style=\"background-color: #ffffc0\"><b> ${FINAL_PERCENTAGE} % </b></td>" >> "${HTML_FILE}"
@@ -236,4 +273,5 @@ else
     rm "${HTML_FILE%%.html}.sum" &> /dev/null
 fi
 
+wait
 echo " [DONE]"

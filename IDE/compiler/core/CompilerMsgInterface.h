@@ -29,7 +29,7 @@ class CompilerMsgInterface
         /**
          * @brief
          */
-        ~CompilerMsgInterface() {};
+        virtual ~CompilerMsgInterface() {};
 
     ////    Public Operations    ////
     public:

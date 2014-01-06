@@ -56,7 +56,7 @@ add_library ( ${PROJECT_NAME} SHARED
               CompilerStatementTypes.cxx
               CompilerLocationTracker.cxx )
 
-# Link a target to given libraries.
+# Link the target to given libraries.
 target_link_libraries ( ${PROJECT_NAME}
                         ${QT_LIBRARIES}
                         ${Boost_LIBRARIES}

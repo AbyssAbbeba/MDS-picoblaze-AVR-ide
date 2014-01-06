@@ -18,7 +18,7 @@ macro ( ADD_TEST_SUBJECT testName testBinary )
     if ( TEST_MEMCHECK )
         add_test ( NAME "${testName}"
                    COMMAND "${testDir}/coverage.sh" "${testName}" "${coverageFlag}"
-                            valgrind --leak-check=full "--log-file=${testDir}/results/${testName}-Valgring.txt"
+                            valgrind --leak-check=full "--log-file=${testDir}/results/${testName}-Valgring.log"
                            "${testBinary}" -x "${testDir}/results/${testName}" )
     else()
         add_test ( NAME "${testName}"

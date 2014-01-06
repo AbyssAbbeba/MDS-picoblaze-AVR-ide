@@ -28,7 +28,7 @@
 #include <iostream>
 
 // The CUnit testing framework.
-#include <CUnit/CUnit.h>
+#include "3rdParty/CUnit/CUnit.h"
 
 // Boost Filesystem library.
 #define BOOST_FILESYSTEM_NO_DEPRECATED

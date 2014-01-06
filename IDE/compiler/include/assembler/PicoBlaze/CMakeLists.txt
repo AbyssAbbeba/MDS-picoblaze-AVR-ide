@@ -39,12 +39,12 @@ foreach ( PROCESSOR "kcpsm1" "kcpsm1cpld" "kcpsm2" "kcpsm3" "kcpsm6" )
                             COMMENT "Building device specification file for ${PROCESSOR}."
                             DEPENDS compiler
                             SOURCES "${FILE_BASE}.asm"
-                            COMMAND ${MDS_COMPILER} --plang=asm
+                            COMMAND ${MDS_COMPILER} --silent
+                                                    --plang=asm
                                                     --arch=PicoBlaze
-                                                    --silent
-                                                    --precompile="${FILE_BASE}.prc"
                                                     --lst="${FILE_BASE}.lst"
-                                                    --file="${FILE_BASE}.asm" &> /dev/null )
+                                                    --precompile="${FILE_BASE}.prc"
+                                                    "${FILE_BASE}.asm" 1> /dev/null )
     else()
         add_custom_target ( "${PROJECT_NAME}_build_prc_file_${PROCESSOR}" ALL
                             COMMENT "Device specification file for ${PROCESSOR} is already built ... skipping." )

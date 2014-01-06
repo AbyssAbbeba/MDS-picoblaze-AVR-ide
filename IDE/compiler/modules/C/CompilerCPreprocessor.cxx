@@ -34,12 +34,12 @@ CompilerCPreprocessor::~CompilerCPreprocessor()
 {
 }
 
-char * CompilerCPreprocessor::processFile ( FILE * sourceFile )
+char * CompilerCPreprocessor::processFiles ( const std::vector<FILE *> & inputFiles )
 {
     // Input buffer for reading the sourceFile.
-    ssize_t lineLen;             // Number of character currently loaded in the buffer; including EOLs, without NULL(s).
-    size_t  inBufferSize  = 0;    // Overall size of the input buffer.
-    char *  inBuffer      = NULL; // Buffer pointer, used for single line only.
+    ssize_t lineLen;             // Number of characters loaded in the buffer; including EOLs, without NULL(s).
+    size_t  inBufferSize = 0;    // Overall size of the input buffer.
+    char *  inBuffer     = NULL; // Buffer pointer, used for single line only.
 
     // Output buffer for stroring preprocessor output.
     size_t  outBufferCurP = 0;                             // Current position in the buffer.
@@ -49,43 +49,52 @@ char * CompilerCPreprocessor::processFile ( FILE * sourceFile )
 
     outBuffer[outBufferCurP] = '\0';
 
-    // Iterate over lines in the source file.
-    while ( -1 != ( lineLen = getline(&inBuffer, &inBufferSize, sourceFile) ) )
+    // Iterate over all given input files.
+    for ( auto sourceFile : inputFiles )
     {
-        // Process input and generate output.
-        if ( false == processLine ( lineLen, inBuffer, inBufferSize ) )
+        // Iterate over lines in the source file.
+        while ( -1 != ( lineLen = getline(&inBuffer, &inBufferSize, sourceFile) ) )
         {
+            // Process input and generate output.
+            if ( false == processLine ( lineLen, inBuffer, inBufferSize ) )
+            {
+                // Error -> terminate preprocessor.
+                free(inBuffer);
+                free(outBuffer);
+                return NULL;
+            }
+
+            // Safely copy contents of the input buffer to the output buffer.
+            outBufferCap -= lineLen;
+            if ( outBufferCap < 0 )
+            {
+                size_t incr = 1024 + ( 10 * -outBufferCap );
+                outBufferSize += incr;
+                outBufferCap  += incr;
+
+                outBuffer = (char*) realloc ( outBuffer, outBufferSize );
+            }
+            strcpy((outBuffer + outBufferCurP), inBuffer);
+            outBufferCurP += lineLen;
+        }
+
+        // Check for error condition on the sourceFile.
+        if ( 0 != ferror(sourceFile) )
+        {
+            m_compilerCore->preprocessorMessage ( CompilerSourceLocation(),
+                                                  CompilerBase::MT_ERROR,
+                                                  QObject::tr ( "I/O error, cannot read the source file properly" )
+                                                              . toStdString() );
+
             // Error -> terminate preprocessor.
             free(inBuffer);
             free(outBuffer);
             return NULL;
         }
-
-        // Safely copy contents of the input buffer to the output buffer.
-        outBufferCap -= lineLen;
-        if ( outBufferCap < 0 )
-        {
-            size_t incr = 1024 + ( 10 * -outBufferCap );
-            outBufferSize += incr;
-            outBufferCap  += incr;
-
-            outBuffer = (char*) realloc ( outBuffer, outBufferSize );
-        }
-        strcpy((outBuffer + outBufferCurP), inBuffer);
-        outBufferCurP += lineLen;
     }
 
     // Dispose of the input buffer.
     free(inBuffer);
-
-    // Check for error condition on the sourceFile.
-    if ( 0 != ferror(sourceFile) )
-    {
-        m_compilerCore->preprocessorMessage ( CompilerSourceLocation(),
-                                              CompilerBase::MT_ERROR,
-                                              QObject::tr ( "I/O error, cannot read the source file properly" )
-                                                          . toStdString() );
-    }
 
     // Save the output from preprocessor into a file specified by CompilerOptions.
     if ( false == m_opts->m_cunit.empty() )

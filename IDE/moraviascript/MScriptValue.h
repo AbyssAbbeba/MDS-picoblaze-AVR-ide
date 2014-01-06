@@ -173,6 +173,11 @@ class MScriptValue : public MScriptSerializable
                        int size,
                        bool copy = false );
 
+        /**
+         * @brief
+         */
+        virtual ~MScriptValue() {}
+
     ////    Public Operations    ////
     public:
         /**

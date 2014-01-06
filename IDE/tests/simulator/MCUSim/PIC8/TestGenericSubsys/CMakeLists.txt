@@ -28,6 +28,7 @@ set_directory_properties ( PROPERTIES
 # Add include directories to the build.
 include_directories ( "${CMAKE_CURRENT_SOURCE_DIR}/../../../../../simulators/MCUSim/PIC8"
                       "${CMAKE_CURRENT_SOURCE_DIR}/../../../../../utilities/MCUDataFiles"
+                      "${CMAKE_SOURCE_DIR}"
                       "${CMAKE_CURRENT_SOURCE_DIR}/../.." )
 
 # Specify directories in which the linker will look for libraries.
@@ -44,7 +45,7 @@ add_library ( ${PROJECT_NAME} SHARED
 target_link_libraries ( ${PROJECT_NAME}
                         MCUSimTestScript
                         PIC8Sim
-                        cunit )
+                        CUnit )
 
 ## Add a target with no output so it will always be built.
  # Compile .asm files for all testcases in the `testcases' directory

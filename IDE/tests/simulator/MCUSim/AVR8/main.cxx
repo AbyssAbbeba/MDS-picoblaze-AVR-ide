@@ -26,9 +26,9 @@ int main ( int argc, char ** argv )
                         "All rights reserved." );
 
     autoTest.addTestSuite ( "Generic subsystems",
-                            TestGenericSubsys::init,
-                            TestGenericSubsys::clean,
-                            TestGenericSubsys::addTests );
+                            &TestGenericSubsys::init,
+                            &TestGenericSubsys::clean,
+                            &TestGenericSubsys::addTests );
 
     return autoTest.main(argc, argv);
 }

@@ -11,6 +11,13 @@ BEGIN {
     print "    <link rel=\"shortcut icon\" href=\"favicon.png\" type=\"image/png\"/>"
     print "    <title>" TITLE "</title>"
     print "    <style type=\"text/css\">"
+    print "        table.results {"
+    print "            background-color: #F0F0F0;"
+    print "            width: 90%;"
+    print "            margin: 0 auto;"
+    print "            font-size: 14px;"
+    print "            font-family: DejaVu Sans Mono, Monospace, Courier New;"
+    print "        }"
     print "        td.exec {"
     print "            text-align: right;"
     print "            padding-right: 5px;"
@@ -67,7 +74,7 @@ BEGIN {
     print "        <a href=\"" INDEX "\"><img src=\"logo.png\" width=\"309\" height=\"83\" alt=\"\"/></a>"
     print "        <br/><i>Moravia Microsystems, s.r.o.</i><br/><br/>"
     print "    </div>"
-    print "    <table style=\"background-color: #F0F0F0; width: 90%; margin: 0 auto; font-size: 14px; font-family: Monospace, Courier New;\">"
+    print "    <table class=\"results\">"
     print "        <col style=\"background-color: #90EE90;\"/>"
     print "        <col style=\"background-color: #90EE90;\"/>"
     print "        <col style=\"background-color: #FFFFFF;\"/>"
@@ -233,7 +240,7 @@ function syntaxHgMinor ( string ) {
     string = "<span>" string "</span>"
 
     buffer = ""
-    while ( match ( string, /[;&>](if|else|while|do|for|continue|break|switch|case|default|namespace|struct|union|return|enum|sizeof|using|export|typedef|class|friend|catch|try|throw|new|delete|virtual|constexpr|inline|goto|public:?|private:?|protected:?)[<;&]/ ) ) {
+    while ( match ( string, /[;&>](if|else|while|do|for|continue|break|switch|case|default|namespace|struct|union|return|enum|sizeof|using|export|typedef|true|false|class|friend|catch|try|throw|new|delete|virtual|constexpr|inline|goto|public:?|private:?|protected:?)[<;&]/ ) ) {
         buffer = buffer substr(string, 1, RSTART) "<span class=\"kw\">" substr(string, RSTART+1, RLENGTH-2) "</span>"
         string = substr(string, RSTART + RLENGTH - 1)
     }
@@ -278,8 +285,11 @@ function xmlEntities ( string ) {
     if ( "#####" == execSumStr ) {
         execStyle = "background-color: #ff8888"
         execSumStr="0"
+    } else if ( "=====" == execSumStr ) {
+        execStyle = ""
+        execSumStr="(0)"
     } else if ( "-" == execSumStr ) {
-        execStyle = "background-color: #90EE90"
+        execStyle = ""
         execSumStr=""
     } else {
         execStyle = "background-color: #50ff50"

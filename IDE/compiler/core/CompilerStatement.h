@@ -42,11 +42,6 @@ class CompilerStatement : public CompilerSerializable
         /**
          * @brief
          */
-        ~CompilerStatement();
-
-        /**
-         * @brief
-         */
         CompilerStatement();
 
         /**
@@ -64,6 +59,11 @@ class CompilerStatement : public CompilerSerializable
         CompilerStatement ( CompilerSourceLocation location,
                             CompilerStatementTypes::StatementType type,
                             CompilerExpr * args = NULL );
+
+        /**
+         * @brief
+         */
+        virtual ~CompilerStatement();
 
     ////    Public Operations    ////
     public:

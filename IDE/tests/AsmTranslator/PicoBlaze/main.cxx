@@ -28,19 +28,19 @@ int main ( int argc, char ** argv )
                         "All rights reserved." );
 
     autoTest.addTestSuite ( "Mediatronix",
-                            TestMedAsmTrans::init,
-                            TestMedAsmTrans::clean,
-                            TestMedAsmTrans::addTests );
+                            &TestMedAsmTrans::init,
+                            &TestMedAsmTrans::clean,
+                            &TestMedAsmTrans::addTests );
 
     autoTest.addTestSuite ( "openPICIDE",
-                            TestOpenPICIDEAsmTrans::init,
-                            TestOpenPICIDEAsmTrans::clean,
-                            TestOpenPICIDEAsmTrans::addTests );
+                            &TestOpenPICIDEAsmTrans::init,
+                            &TestOpenPICIDEAsmTrans::clean,
+                            &TestOpenPICIDEAsmTrans::addTests );
 
     autoTest.addTestSuite ( "Xilinx",
-                            TestXilAsmTrans::init,
-                            TestXilAsmTrans::clean,
-                            TestXilAsmTrans::addTests );
+                            &TestXilAsmTrans::init,
+                            &TestXilAsmTrans::clean,
+                            &TestXilAsmTrans::addTests );
 
     return autoTest.main(argc, argv);
 }

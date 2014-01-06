@@ -31,7 +31,7 @@
 #include <algorithm>
 
 // The CUnit testing framework.
-#include <CUnit/Basic.h>
+#include "3rdParty/CUnit/Basic.h"
 
 // Boost Filesystem library.
 #define BOOST_FILESYSTEM_NO_DEPRECATED
@@ -114,7 +114,8 @@ void testLoadAndSave ( DataFile & file0,
     catch ( DataFileException & e )
     {
         std::cerr << std::endl << e.toString() << std::endl;
-        CU_FAIL_FATAL("DataFileException thrown.");
+        CU_FAIL("DataFileException thrown.");
+        return;
     }
 
     if ( true == invertable )

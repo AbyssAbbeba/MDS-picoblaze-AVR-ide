@@ -40,6 +40,7 @@ add_subdirectory ( TestKcpsm6 )
 
 # Add include directories to the build.
 include_directories ( ${Boost_INCLUDE_DIRS}
+                      "${CMAKE_SOURCE_DIR}"
                       "${CMAKE_CURRENT_SOURCE_DIR}/../../../utilities/AutoTest/" )
 
 # Specify directories in which the linker will look for libraries.

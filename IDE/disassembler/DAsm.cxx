@@ -15,6 +15,10 @@
 
 #include "DAsm.h"
 
+DAsm::~DAsm()
+{
+}
+
 DAsm::Config::Config()
 {
     m_symbolsToGenerate = SymbolsToGenerate( STG_CODE | STG_DATA | STG_REG | STG_PORT | STG_CONST );
@@ -29,21 +33,18 @@ DAsm::Config::Config()
 std::ostream & operator << ( std::ostream & out,
                              const DAsm & dAsm )
 {
-    const std::vector<std::string> & sourceCode = dAsm.getSourceCode();
     const char * eol = "\n";
 
     switch ( dAsm.m_config.m_eof )
     {
-        case DAsm::Config::EOF_LF:   eol = "\n";
-        case DAsm::Config::EOF_CR:   eol = "\r";
-        case DAsm::Config::EOF_CRLF: eol = "\r\n";
+        case DAsm::Config::EOF_LF:   eol = "\n";   break;
+        case DAsm::Config::EOF_CR:   eol = "\r";   break;
+        case DAsm::Config::EOF_CRLF: eol = "\r\n"; break;
     }
 
-    for ( std::vector<std::string>::const_iterator it = sourceCode.begin();
-          it != sourceCode.end();
-          it++ )
+    for ( auto src : dAsm.getSourceCode() )
     {
-        out << *it << eol;
+        out << src << eol;
     }
 
     return out;

@@ -30,13 +30,12 @@ function runBuild()
         fi
 
         echo -n "Building $i ... "
-        if ! output=$( ${COMPILER_EXEC}                 \
-                            --plang="${LANG}"           \
-                            --arch="${ARCH}"            \
-                            --dev="${DEV}"              \
-                            --file="${i}"               \
-                            --hex="${1}/${i%%.asm}.hex" \
-                            --lst="${1}/${i%%.asm}.lst" 2>&1 )
+        if ! output="$( ${COMPILER_EXEC} --dev="${DEV}"              \
+                                         --arch="${ARCH}"            \
+                                         --plang="${LANG}"           \
+                                         --hex="${1}/${i%%.asm}.hex" \
+                                         --lst="${1}/${i%%.asm}.lst" \
+                                         "${i}" 2>&1 )"
         then
             echo "[ERROR]"
             echo "${output}" > /dev/stderr

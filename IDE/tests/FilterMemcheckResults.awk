@@ -7,7 +7,7 @@ BEGIN {
 
 /^==[0-9]+== Invalid read of size 8$/ {
     getline line
-    buffer=line
+    buffer = line
     if ( line ~ /^==[0-9]+==    at 0x[0-9a-fA-F]+: wcscmp \([\.[:alnum:]]+:[0-9]+\)$/ ) {
         getline line
         buffer = buffer "\n" line
@@ -23,10 +23,11 @@ BEGIN {
                     if ( line ~ /^==[0-9]+==    by 0x[0-9a-fA-F]+: std::locale::~locale\(\) \(in [^\)]+\)$/ ) {
                         buffer = ""
                         getline line
-                        errors+=1
+                        errors += 1
                         while ( line !~ /^==[0-9]+== *$/ ) {
                             getline line
                         }
+                        print line "(libboost related error automatically removed)"
                         next
                     }
                 }

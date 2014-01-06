@@ -34,4 +34,3 @@ add_library ( ${PROJECT_NAME} STATIC
               DAsmPicoBlazeKcpsm2.cxx
               DAsmPicoBlazeKcpsm1.cxx
               DAsmPicoBlazeKcpsm1CPLD.cxx )
-
