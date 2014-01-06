@@ -111,10 +111,11 @@ void TestGenericSubsys::testFunction()
     {
         m_programFile->clearAndLoad(hexFile);
     }
-    catch ( DataFileException & e )
+    catch ( const DataFileException & e )
     {
-        CU_FAIL_FATAL("Instance of DataFileException thrown:");
+        CU_FAIL("Instance of DataFileException thrown:");
         std::cerr << e.toString() << std::endl;
+        return;
     }
 
     dynamic_cast<AVR8ProgramMemory*>(m_avr8Sim->getSubsys(MCUSimSubsys::ID_MEM_CODE))->loadDataFile(m_programFile);

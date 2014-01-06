@@ -112,8 +112,8 @@ class CompilerOptions
          * the reason for this is to avoid possible compatibility issues across different operating systems.
          */
         //@{
-            /// File containing program source code to compile.
-            std::string m_sourceFile;
+            /// File(s) containing program source code to compile.
+            std::vector<std::string> m_sourceFiles;
 
             /// File in which table of symbols will be stored.
             std::string m_symbolTable;

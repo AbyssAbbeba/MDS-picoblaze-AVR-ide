@@ -48,13 +48,16 @@ AsmPicoBlazeCodeListing::LstLine::LstLine ( const char * line )
 AsmPicoBlazeCodeListing::Message::Message()
 {
     m_type = CompilerBase::MT_INVALID;
+    m_subsequent = false;
 }
 
 AsmPicoBlazeCodeListing::Message::Message ( CompilerBase::MessageType type,
-                                            const std::string & text )
+                                            const std::string & text,
+                                            bool subsequent )
 {
     m_type = type;
     m_text = text;
+    m_subsequent = subsequent;
 }
 
 AsmPicoBlazeCodeListing::AsmPicoBlazeCodeListing ( CompilerSemanticInterface * compilerCore,
@@ -586,7 +589,7 @@ inline void AsmPicoBlazeCodeListing::processMsgQueue()
           i != m_messageQueue.cend();
           i++ )
     {
-        message(i->first, i->second.m_type, i->second.m_text);
+        message(i->first, i->second.m_type, i->second.m_text, i->second.m_subsequent);
     }
 
     m_messageQueue.clear();
@@ -594,7 +597,8 @@ inline void AsmPicoBlazeCodeListing::processMsgQueue()
 
 void AsmPicoBlazeCodeListing::message ( const CompilerSourceLocation & location,
                                         CompilerBase::MessageType type,
-                                        const std::string & text )
+                                        const std::string & text,
+                                        bool subsequent )
 {
     if ( 0 != m_messageLimit )
     {
@@ -617,7 +621,7 @@ void AsmPicoBlazeCodeListing::message ( const CompilerSourceLocation & location,
 
     if ( 0 == m_numberOfFiles )
     {
-        m_messageQueue.push_back ( std::pair<CompilerSourceLocation,Message>(location, Message(type, text)) );
+        m_messageQueue.push_back(std::pair<CompilerSourceLocation,Message>(location, Message(type, text, subsequent)));
         return;
     }
 

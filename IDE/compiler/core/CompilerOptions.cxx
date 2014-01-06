@@ -92,8 +92,15 @@ void CompilerOptions::normalizeFilePaths()
         NULL
     };
 
-    m_sourceFile = system_complete(path(makeHomeSafe(m_sourceFile)).make_preferred()).string();
-    const path basePath = system_complete(path(makeHomeSafe(m_sourceFile)).parent_path().make_preferred());
+    m_sourceFiles[0] = system_complete(path(makeHomeSafe(m_sourceFiles[0])).make_preferred()).string();
+    const path basePath = system_complete(path(makeHomeSafe(m_sourceFiles[0])).parent_path().make_preferred());
+
+    for ( std::vector<std::string>::iterator it = m_sourceFiles.begin();
+          m_sourceFiles.end() != it;
+          ++it )
+    {
+        *it = absolute(path(makeHomeSafe(*it)).make_preferred(), basePath).string();
+    }
 
     for ( int i = 0; NULL != files[i]; i++ )
     {
@@ -110,12 +117,12 @@ std::ostream & operator << ( std::ostream & out,
                              const CompilerOptions::ProcessorLimits & limits )
 {
     out << "== CompilerOptions::ProcessorLimits ==" << std::endl;
-    out << "  m_iCodeMemSize = " << limits.m_iCodeMemSize << std::endl;
-    out << "  m_xCodeMemSize = " << limits.m_xCodeMemSize << std::endl;
-    out << "  m_iDataMemSize = " << limits.m_iDataMemSize << std::endl;
-    out << "  m_eDataMemSize = " << limits.m_eDataMemSize << std::endl;
-    out << "  m_xDataMemSize = " << limits.m_xDataMemSize << std::endl;
-    out << "  m_regFileSize = " << limits.m_regFileSize << std::endl;
+    out << "  m_iCodeMemSize = "  << limits.m_iCodeMemSize  << std::endl;
+    out << "  m_xCodeMemSize = "  << limits.m_xCodeMemSize  << std::endl;
+    out << "  m_iDataMemSize = "  << limits.m_iDataMemSize  << std::endl;
+    out << "  m_eDataMemSize = "  << limits.m_eDataMemSize  << std::endl;
+    out << "  m_xDataMemSize = "  << limits.m_xDataMemSize  << std::endl;
+    out << "  m_regFileSize = "   << limits.m_regFileSize   << std::endl;
     out << "  m_nvDataMemSize = " << limits.m_nvDataMemSize << std::endl;
 
     out << "  m_disabledInstructions: ";
@@ -141,10 +148,11 @@ std::ostream & operator << ( std::ostream & out,
 std::ostream & operator << ( std::ostream & out,
                              const CompilerOptions & opts )
 {
+    out << std::boolalpha;
+
     out << "== CompilerOptions ==" << std::endl;
 
     out << "  === File names ==="       << std::endl;
-    out << "    m_sourceFile = \""      << opts.m_sourceFile      << "\"" << std::endl;
     out << "    m_symbolTable = \""     << opts.m_symbolTable     << "\"" << std::endl;
     out << "    m_macroTable = \""      << opts.m_macroTable      << "\"" << std::endl;
     out << "    m_mdsDebugFile = \""    << opts.m_mdsDebugFile    << "\"" << std::endl;
@@ -160,21 +168,25 @@ std::ostream & operator << ( std::ostream & out,
     out << "    m_vhdlTemplate = \""    << opts.m_vhdlTemplate    << "\"" << std::endl;
     out << "    m_prcTarget = \""       << opts.m_prcTarget       << "\"" << std::endl;
     out << "    m_cunit = \""           << opts.m_cunit           << "\"" << std::endl;
+    out << "    m_sourceFiles:\""       << std::endl;
+    for ( const auto file : opts.m_sourceFiles )
+    {
+        out << "      - \"" << file << "\"" << std::endl;
+    }
 
     out << "  === Other compilation and code generation options ===" << std::endl;
     out << "    m_maxMacroExp = "       << opts.m_maxMacroExp << std::endl;
     out << "    m_maxInclusion = "      << opts.m_maxInclusion << std::endl;
     out << "    m_hexMaxRecLength = "   << opts.m_hexMaxRecLength << std::endl;
-    out << "    m_syntaxCheckOnly = "   << ( true == opts.m_syntaxCheckOnly ? "true" : "false" ) << std::endl;
-    out << "    m_makeBackupFiles = "   << ( true == opts.m_makeBackupFiles ? "true" : "false" ) << std::endl;
+    out << "    m_syntaxCheckOnly = "   << opts.m_syntaxCheckOnly << std::endl;
+    out << "    m_makeBackupFiles = "   << opts.m_makeBackupFiles << std::endl;
     out << "    m_device = " << opts.m_device << std::endl;
     out << "    m_includePath: " << std::endl;
-    for ( std::vector<std::string>::const_iterator it = opts.m_includePath.cbegin();
-          it != opts.m_includePath.cend();
-          it++ )
+    for ( const auto path : opts.m_includePath )
     {
-        out << "      - \"" << *it << "\"" << std::endl;
+        out << "      - \"" << path << "\"" << std::endl;
     }
+
     out << opts.m_processorlimits;
 
     return out;

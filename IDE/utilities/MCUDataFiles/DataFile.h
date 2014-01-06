@@ -39,7 +39,7 @@ class DataFile
         /**
          * @brief
          */
-        ~DataFile();
+        virtual ~DataFile();
 
     ////    Public Operations    ////
     public:

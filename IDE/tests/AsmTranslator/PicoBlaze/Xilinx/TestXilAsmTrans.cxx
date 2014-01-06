@@ -127,10 +127,12 @@ void TestXilAsmTrans::testFunction()
 
     if ( false == result )
     {
-        CU_FAIL_FATAL("Translation failed!");
+        CU_FAIL("Translation failed!");
+        return;
     }
 
-    m_options->m_sourceFile = ( path("Xilinx") / "results" / (testName + ".asm") ).string();
+    m_options->m_sourceFiles.clear();
+    m_options->m_sourceFiles.push_back ( ( path("Xilinx") / "results" / (testName + ".asm") ).string() );
     m_options->m_vhdlFile   = testName + ".vhd";
     m_options->m_lstFile    = testName + ".lst";
 
@@ -157,8 +159,8 @@ void TestXilAsmTrans::testFunction()
             opCodeSize = XilHDLFile::SIZE_18b;
             break;
         default:
-            CU_FAIL_FATAL("Environment setup error: unknown device.");
-            break;
+            CU_FAIL("Environment setup error: unknown device.");
+            return;
     }
 
     const std::string errFile = (path("Xilinx") / "results" / (testName + ".err")).string();
@@ -168,7 +170,8 @@ void TestXilAsmTrans::testFunction()
 
     if ( false == result )
     {
-        CU_FAIL_FATAL("Compilation failed!");
+        CU_FAIL("Compilation failed!");
+        return;
     }
 
     std::string expectedCommonPath = system_complete( path("Xilinx") / "expected" / testName ).string();
@@ -182,6 +185,7 @@ void TestXilAsmTrans::testFunction()
     catch ( DataFileException & e )
     {
         std::cerr << std::endl << e.toString() << std::endl;
-        CU_FAIL_FATAL("An instance of DataFileException thrown!");
+        CU_FAIL("An instance of DataFileException thrown!");
+        return;
     }
 }

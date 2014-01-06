@@ -34,6 +34,13 @@
  */
 class MScriptStrategy
 {
+    ////    Constructors and Destructors    ////
+    public:
+        /**
+         * @brief
+         */
+        virtual ~MScriptStrategy() {}
+
     ////    Public Operations    ////
     public:
         /// @name Operations related to script functions.

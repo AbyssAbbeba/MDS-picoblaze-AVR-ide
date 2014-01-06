@@ -27,6 +27,7 @@ set_directory_properties ( PROPERTIES
 
 # Add include directories to the build.
 include_directories ( ${Boost_INCLUDE_DIRS}
+                      "${CMAKE_SOURCE_DIR}"
                       "${CMAKE_CURRENT_SOURCE_DIR}/../../../../../compiler/"
                       "${CMAKE_CURRENT_SOURCE_DIR}/../../../../../utilities/MCUDataFiles/"
                       "${CMAKE_CURRENT_SOURCE_DIR}/../../../../../utilities/DbgFile/" )

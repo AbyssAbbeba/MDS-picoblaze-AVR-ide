@@ -9,17 +9,17 @@ if ! which xsltproc &> /dev/null; then
     exit 1
 fi
 
-declare -ri CLEAN_UP=0
-declare -ri MERGE_LOGS=0
+declare -ri CLEAN_UP=${clean_up:-1}
+declare -ri MERGE_LOGS=${merge_logs:-0}
 declare -r  XSLT_PROC_LOG="xsltproc.log"
 declare -ri CPU_CORES=$( which lscpu &> /dev/null && lscpu |
                         gawk 'BEGIN {n=1} END {print(n)} /^CPU\(s\)/ {n=$2;exit}' || echo 1 )
 
 cd "$(dirname "$(readlink -n -f "${0}")" )/results" || exit 1
 
-cp ../logo.png .
-cp ../favicon.png .
-cp ../../Testing/Temporary/LastTest.log TestLog.txt
+cp ../*.png .
+gawk -f '../TestLog2html.awk' \
+     -v TITLE="Test log from $(date +'%c')" '../../Testing/Temporary/LastTest.log' > 'TestLog.html'
 
 : > "${XSLT_PROC_LOG}"
 
@@ -110,23 +110,24 @@ fi
 
 
 echo "Coverage analysis complete."
+echo -n "Generating final results ... "
 
 if (( MERGE_LOGS )); then
     readonly sepLine="================================================================================"
 
-    echo -e "\n\n" >> BuildLog.txt
-    echo "${sepLine}" >> BuildLog.txt
-    echo "gcov.log" >> BuildLog.txt
-    echo "${sepLine}" >> BuildLog.txt
-    cat gcov.log >> BuildLog.txt
-    echo "${sepLine}" >> BuildLog.txt
+    echo -e "\n\n" >> BuildLog.log
+    echo "${sepLine}" >> BuildLog.log
+    echo "gcov.log" >> BuildLog.log
+    echo "${sepLine}" >> BuildLog.log
+    cat gcov.log >> BuildLog.log
+    echo "${sepLine}" >> BuildLog.log
 
-    echo -e "\n\n" >> BuildLog.txt
-    echo "${sepLine}" >> BuildLog.txt
-    echo "${XSLT_PROC_LOG}" >> BuildLog.txt
-    echo "${sepLine}" >> BuildLog.txt
-    cat ${XSLT_PROC_LOG} >> BuildLog.txt
-    echo "${sepLine}" >> BuildLog.txt
+    echo -e "\n\n" >> BuildLog.log
+    echo "${sepLine}" >> BuildLog.log
+    echo "${XSLT_PROC_LOG}" >> BuildLog.log
+    echo "${sepLine}" >> BuildLog.log
+    cat ${XSLT_PROC_LOG} >> BuildLog.log
+    echo "${sepLine}" >> BuildLog.log
 fi
 
 readonly RESULTS_PKG="TestResults-$(date +'%Y-%m-%d-%H-%M').tar.bz2"
@@ -148,6 +149,16 @@ echo "        a:hover {" >> index.html
 echo "            text-decoration: none;" >> index.html
 echo "            color: #0088FF;" >> index.html
 echo "        }" >> index.html
+echo "        td.filename {" >> index.html
+echo "            text-align: left;" >> index.html
+echo "            padding-left: 5px" >> index.html
+echo "        }" >> index.html
+echo "        td.percentage {" >> index.html
+echo "            background-color: #50ff50;" >> index.html
+echo "            background-repeat: no-repeat;" >> index.html
+echo "            background-position: right center;" >> index.html
+echo "        }" >> index.html
+echo "    </style>" >> index.html
 echo "    </style>" >> index.html
 echo "</head>" >> index.html
 echo "<body style=\"text-align: center\">" >> index.html
@@ -156,10 +167,11 @@ echo "        <a href=\"index.html\"><img src=\"logo.png\" width=\"309\" height=
 echo "        <br/><i>Moravia Microsystems, s.r.o.</i><br/><br/>" >> index.html
 echo "    </div>" >> index.html
 echo "    <div style=\"width: 90%; margin: 0 auto; text-align: left\">" >> index.html
-read status < status.txt
+read status < status.log
+sed $'s/\033[^m]*m//g' BuildLog.log > BuildLog.log.0
 if [[ "1" == "${status}" ]]; then
     status="<b style=\"color: green\">OK</b>"
-    warnings=$(grep ': warning:' BuildLog.txt | wc -l)
+    warnings=$( grep ': warning:' BuildLog.log.0 | wc -l )
     if (( 0 != warnings )); then
         status+=" <span style=\"color: #DD8800\">(<b>${warnings}</b> warnings)</span>"
     else
@@ -168,17 +180,9 @@ if [[ "1" == "${status}" ]]; then
 else
     status="<b style=\"color: red\">FAILED</b>"
 fi
-echo "        <a href=\"BuildLog.txt\">[ Build: ${status} ]</a>" >> index.html
-echo "        &nbsp;|&nbsp; <a href=\"TestLog.txt\">[ Show Test Run Log ]</a>" >> index.html
-if [[ -f "Total-Coverage.html" ]]; then
-    if [[ -f Total-Coverage.sum ]]; then
-        coverage="$( cat Total-Coverage.sum ) %"
-    else
-        coverage="??"
-    fi
-    echo -n "        &nbsp;|&nbsp; <a href=\"Total-Coverage.html\">" >> index.html
-    echo    "[ Total Coverage: <b>${coverage}</b> ]</a>" >> index.html
-fi
+gawk -f '../BuildLog2html.awk' -v TITLE="Build log from $(date +'%c')" 'BuildLog.log.0' > 'BuildLog.html' &
+echo "        <a href=\"BuildLog.html\">[ Build: ${status} ]</a>" >> index.html
+echo "        &nbsp;|&nbsp; <a href=\"TestLog.html\">[ Show Test Run Log ]</a>" >> index.html
 echo "        &nbsp;|&nbsp; <a href=\"${RESULTS_PKG}\">[ Download Results ]</a>" >> index.html
 echo "        <br/><br/>" >> index.html
 echo "    </div>" >> index.html
@@ -193,19 +197,25 @@ echo "        <col/>" >> index.html
 echo "        <tr style=\"background-color: skyblue\">" >> index.html
 echo "                <th colspan=\"7\"> Automated Test Run Summary Reports </th>" >> index.html
 echo "        </tr>" >> index.html
-echo "        <tr>" >> index.html
-echo "            <th style=\"width: 5%; background-color: #ffffc0\"> Suites </th>" >> index.html
-echo "            <th style=\"width: 5%; background-color: #ffffc0\"> Cases </th>" >> index.html
-echo "            <th style=\"width: 10%; background-color: #ffffc0\"> Coverage </th>" >> index.html
-echo "            <th style=\"width: 20%; background-color: #ffffc0\" colspan=\"2\"> Memcheck </th>" >> index.html
-echo "            <th style=\"width: 15%; background-color: #ffffc0\"> Status </th>" >> index.html
-echo "            <th style=\"background-color: #ffffc0\"> Test subject </th>" >> index.html
+echo "        <tr style=\"background-color: #ffffc0\">" >> index.html
+echo "            <th style=\"width: 5%\"> Suites </th>" >> index.html
+echo "            <th style=\"width: 5%\"> Cases </th>" >> index.html
+echo "            <th style=\"width: 10%\"> Coverage </th>" >> index.html
+echo "            <th style=\"width: 20%\" colspan=\"2\"> Memcheck </th>" >> index.html
+echo "            <th style=\"width: 15%\"> Status </th>" >> index.html
+echo "            <th> Test subject </th>" >> index.html
 echo "        </tr>" >> index.html
+declare -i suitesTotal=0
+declare -i casesTotal=0
+declare -i memErrorsTotal=0
+declare -i failedTotal=0
+declare    memLeaksTotal=0
 for i in *-Results.xml; do
     TEST_NAME="${i%%-Results.xml}"
     LIST_FILE_XML="${TEST_NAME}-Listing.xml"
     LIST_FILE_HTML="${TEST_NAME}-Listing.html"
-    VALGRIND_LOG="${TEST_NAME}-Valgring.txt"
+    VALGRIND_LOG="${TEST_NAME}-Valgring.log"
+    VALGRIND_HTML="${VALGRIND_LOG%%.log}.html"
     COVERAGE_HTML="${TEST_NAME}-Coverage.html"
 
     if [[ "1" == "${CLEAN_UP}" && -d "${TEST_NAME}" ]]; then
@@ -219,11 +229,12 @@ for i in *-Results.xml; do
     if [[ -f "${LIST_FILE_XML}" ]]; then
         CASES=$(gawk 'BEGIN {n=0} END {print(n)} /<TEST_CASE_DEFINITION>/ {n+=1}' "${LIST_FILE_XML}")
         SUITES=$(gawk 'BEGIN {n=0} END {print(n)} /<CUNIT_ALL_TEST_LISTING_SUITE>/ {n+=1}' "${LIST_FILE_XML}")
+        let suitesTotal+=${SUITES}
+        let casesTotal+=${CASES}
     else
         CASES=0
         SUITES=0
     fi
-
 
     if [[ -f "${LIST_FILE_HTML}" ]]; then
         anchorStart="<a href=\"${LIST_FILE_HTML}\">"
@@ -248,65 +259,70 @@ for i in *-Results.xml; do
 
     if [[ -f "${VALGRIND_LOG}" ]]; then
         cp "${VALGRIND_LOG}" "${VALGRIND_LOG}.0"
-        gawk -f ../FilterMemcheckResults.awk "${VALGRIND_LOG}.0" > "${VALGRIND_LOG}"
-        rm "${VALGRIND_LOG}.0"
+        gawk -f '../FilterMemcheckResults.awk' "${VALGRIND_LOG}.0" > "${VALGRIND_LOG}"
+        gawk -f '../valgrind2html.awk' -v TITLE="Memcheck log ${TEST_NAME}" "${VALGRIND_LOG}" > "${VALGRIND_HTML}" &
 
-        read leaked errors <<<"$(gawk '
+        read leaked errors <<< "$( gawk '
             BEGIN {
-                leaks=0
-                errors=0
-                accept=0
+                leaks  = 0
+                errors = 0
+                accept = 0
             }
             END {
                 printf ( "%.2f %d\n", ( leaks / 1024.0 ), errors )
             }
             /^==[0-9]+== *LEAK SUMMARY:/ {
-                accept=1
+                accept = 1
             }
             /^==[0-9]+== *ERROR SUMMARY:/ {
-                errors=$4
+                errors = $4
             }
-            (!accept) {
+            ( !accept ) {
                 next
             }
             /definitely lost:/ {
                 sub ( /,/, "", $4 )
-                leaks+=$4
+                leaks += $4
             }
             /indirectly lost:/ {
                 sub ( /,/, "", $4 )
-                leaks+=$4
+                leaks += $4
             }
             /possibly lost:/ {
                 sub ( /,/, "", $4 )
-                leaks+=$4
-            }' "${VALGRIND_LOG}")"
+                leaks += $4
+            }' "${VALGRIND_LOG}" )"
 
         if [[ "${leaked}" == "0.00" ]]; then
             style="background-color: #50ff50"
         else
             style="background-color: #ffbb00"
         fi
-        echo "            <td style=\"${style}\"><a href=\"${VALGRIND_LOG}\"> ${leaked} kB </a></td>" >> index.html
+        echo "            <td style=\"${style}\"><a href=\"${VALGRIND_HTML}\"> ${leaked} kB </a></td>" >> index.html
+        memLeaksTotal="$( bc -q <<< "scale = 2; ${memLeaksTotal} + ${leaked} " )"
 
         if [[ "${errors}" == "0" ]]; then
             style="background-color: #50ff50"
         else
             style="background-color: #ffbb00"
         fi
-        echo "            <td style=\"${style}\"><a href=\"${VALGRIND_LOG}\">${errors} error(s)</a></td>" >> index.html
+        echo "            <td style=\"${style}\"><a href=\"${VALGRIND_HTML}\">${errors} error(s)</a></td>" >> index.html
+        let memErrorsTotal+=${errors}
     else
         echo "            <td> -- </td>" >> index.html
         echo "            <td> -- </td>" >> index.html
     fi
 
     if [[ -f "${i%%.xml}.html" ]]; then
-        if grep "CUNIT_RUN_TEST_FAILURE" "${i}" &> /dev/null; then
-            echo -n "            <td style=\"background-color: #ff5050\"> " >> index.html
+        if (( ! CASES )); then
+            echo "            <td><a href=\"${i%%.xml}.html\"> Passed </a></td>" >> index.html
+        elif (( CASES != SUCCESSFUL_CASES )); then
+            style="background-image:url('bgr.png'); background-size: $(( 100 - SUCCESSFUL_CASES * 100 / CASES ))% 100%;"
+            echo -n "            <td class=\"percentage\" style=\"${style}\"> " >> index.html
             echo    "<a href=\"${i%%.xml}.html\">$(( CASES - SUCCESSFUL_CASES )) case(s) failed </a></td>" >> index.html
+            let failedTotal+=$(( CASES - SUCCESSFUL_CASES ))
         else
-            echo -n "            <td style=\"background-color: #50ff50\"><a href=\"${i%%.xml}.html\"> " >> index.html
-            echo    "Passed </a></td>" >> index.html
+            echo "            <td><a href=\"${i%%.xml}.html\"> Passed </a></td>" >> index.html
         fi
     else
         echo "            <td style=\"background-color: #555555; color: #FFFFFF\"> CRASHED </td>" >> index.html
@@ -315,6 +331,24 @@ for i in *-Results.xml; do
     echo "            <td style=\"text-align: left; padding-left: 5px\">${TEST_NAME}</td>" >> index.html
     echo "        </tr>" >> index.html
 done
+echo "        <tr style=\"background-color: #ffffc0\">" >> index.html
+echo "            <td><b>${suitesTotal}</b></th>" >> index.html
+echo "            <td><b>${casesTotal}</b></th>" >> index.html
+if [[ -f "Total-Coverage.html" ]]; then
+    if [[ -f Total-Coverage.sum ]]; then
+        coverage="$( cat Total-Coverage.sum ) %"
+    else
+        coverage="??"
+    fi
+    echo "            <td><a href=\"Total-Coverage.html\"><b>${coverage}</b></a></th>" >> index.html
+else
+    echo "            <td><b>--</b></th>" >> index.html
+fi
+echo "            <td style=\"width: 10%\"><b>${memLeaksTotal} kB</b></th>" >> index.html
+echo "            <td><b>${memErrorsTotal}</b></th>" >> index.html
+echo "            <td><b>${failedTotal}</b></th>" >> index.html
+echo "            <td style=\"text-align: left; padding-left: 5px\"><b>Total</b></th>" >> index.html
+echo "        </tr>" >> index.html
 echo "    </table>" >> index.html
 echo "    <div>" >> index.html
 echo "        <br/><br/>" >> index.html
@@ -330,10 +364,12 @@ echo "</body>" >> index.html
 echo "</html>" >> index.html
 
 if (( ${CLEAN_UP} )); then
-    rm *.sum *.log status.txt *.xml 2> /dev/null
+    rm *.sum *.log *.xml *.0 2> /dev/null
 fi
 
 cp index.html index.html.0
 gawk '/\[ Download Results \]/ {next} {print($0)}' index.html.0 > index.html
-tar cjf "${RESULTS_PKG}" *.html *.png *.txt
+tar cjf "${RESULTS_PKG}" *.html *.png
 mv index.html.0 index.html
+wait
+echo "[DONE]"

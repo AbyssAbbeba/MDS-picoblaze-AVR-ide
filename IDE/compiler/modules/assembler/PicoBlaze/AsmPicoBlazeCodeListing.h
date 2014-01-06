@@ -61,7 +61,7 @@ class AsmPicoBlazeCodeListing : public CompilerMsgObserver
         /**
          * @brief
          */
-        ~AsmPicoBlazeCodeListing();
+        virtual ~AsmPicoBlazeCodeListing();
 
     ////    Public Datatypes    ////
     public:
@@ -120,15 +120,20 @@ class AsmPicoBlazeCodeListing : public CompilerMsgObserver
              * @brief
              * @param[in] type
              * @param[in] text
+             * @param[in] subsequent
              */
             Message ( CompilerBase::MessageType type,
-                      const std::string & text );
+                      const std::string & text,
+                      bool subsequent = false );
 
             ///
             CompilerBase::MessageType m_type;
 
             ///
             std::string m_text;
+
+            ///
+            bool m_subsequent;
         };
 
     ////    Public Operations    ////
@@ -221,10 +226,12 @@ class AsmPicoBlazeCodeListing : public CompilerMsgObserver
          * @param[in] location
          * @param[in] type
          * @param[in] text
+         * @param[in] subsequent
          */
         virtual void message ( const CompilerSourceLocation & location,
                                CompilerBase::MessageType type,
-                               const std::string & text );
+                               const std::string & text,
+                               bool subsequent = false );
 
         /**
          * @brief

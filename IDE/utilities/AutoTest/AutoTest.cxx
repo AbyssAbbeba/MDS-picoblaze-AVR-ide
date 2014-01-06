@@ -14,9 +14,9 @@
 #include "AutoTest.h"
 
 // The CUnit testing framework.
-#include <CUnit/Basic.h>
-#include <CUnit/Console.h>
-#include <CUnit/Automated.h>
+#include "3rdParty/CUnit/Basic.h"
+#include "3rdParty/CUnit/Console.h"
+#include "3rdParty/CUnit/Automated.h"
 
 AutoTest::AutoTest ( const std::string & intoMessage )
                    : m_intoMessage ( intoMessage )
@@ -212,7 +212,7 @@ int AutoTest::main ( int argc, char ** argv )
                 CU_pSuite suite = CU_get_suite_at_pos(number);
                 if ( NULL == suite )
                 {
-                    std::cerr << "Error: there is no test suite with number `" << number << "'." << std::endl;
+                    std::cerr << "Error: there is no test suite with number `" << ( number - 1 ) << "'." << std::endl;
                     return 1;
                 }
 
@@ -259,7 +259,7 @@ int AutoTest::main ( int argc, char ** argv )
                 CU_pSuite suite = CU_get_suite_at_pos(number);
                 if ( NULL == suite )
                 {
-                    std::cerr << "Error: there is no test suite with number `" << number << "'."
+                    std::cerr << "Error: there is no test suite with number `" << ( number - 1 ) << "'."
                               << std::endl;
                     delete [] testSuiteNumberSrt;
                     return 1;
@@ -269,7 +269,8 @@ int AutoTest::main ( int argc, char ** argv )
                 CU_pTest test = CU_get_test_at_pos(suite, number);
                 if ( NULL == test )
                 {
-                    std::cerr << "Error: there is no test case with number `" << number << "'." << std::endl;
+                    std::cerr << "Error: there is no test case with number `" << ( number - 1 )
+                              << "' in the selected suite." << std::endl;
                     delete [] testSuiteNumberSrt;
                     return 1;
                 }

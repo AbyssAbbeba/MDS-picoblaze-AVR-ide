@@ -23,7 +23,7 @@ class MCUSimTestScript;
 class PicoBlazeStrategy;
 
 // The CUnit testing framework.
-#include <CUnit/Basic.h>
+#include "3rdParty/CUnit/Basic.h"
 
 /**
  * @brief

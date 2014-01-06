@@ -137,11 +137,13 @@ class CompilerCore : public CompilerBase,
          * @param[in] type
          * @param[in] text
          * @param[in] forceAsUnique
+         * @param[in] noObserver
          */
         void coreMessage ( const CompilerSourceLocation & location,
                            MessageType type,
                            const std::string & text,
-                           bool forceAsUnique = false );
+                           bool forceAsUnique = false,
+                           bool noObserver = false );
 
         /// @name Interface for syntax and/or lexical analyzer, and for preprocessor.
         //@{
@@ -150,30 +152,36 @@ class CompilerCore : public CompilerBase,
              * @param[in] location
              * @param[in] type
              * @param[in] text
+             * @param[in] forceAsUnique
              */
             virtual void preprocessorMessage ( const CompilerSourceLocation & location,
                                                CompilerBase::MessageType type,
-                                               const std::string & text );
+                                               const std::string & text,
+                                               bool forceAsUnique = false );
 
             /**
              * @brief
              * @param[in] location
              * @param[in] type
              * @param[in] text
+             * @param[in] forceAsUnique
              */
             virtual void lexerMessage ( const CompilerSourceLocation & location,
                                         MessageType type,
-                                        const std::string & text );
+                                        const std::string & text,
+                                        bool forceAsUnique = false );
 
             /**
              * @brief
              * @param[in] location
              * @param[in] type
              * @param[in] text
+             * @param[in] forceAsUnique
              */
             virtual void parserMessage ( const CompilerSourceLocation & location,
                                          MessageType type,
-                                         const std::string & text );
+                                         const std::string & text,
+                                         bool forceAsUnique = false  );
 
             /**
              * @brief
@@ -266,10 +274,12 @@ class CompilerCore : public CompilerBase,
              * @param[in] location
              * @param[in] type
              * @param[in] text
+             * @param[in] forceAsUnique
              */
             virtual void semanticMessage ( const CompilerSourceLocation & location,
                                            MessageType type,
-                                           const std::string & text );
+                                           const std::string & text,
+                                           bool forceAsUnique = false );
 
             /**
              * @brief

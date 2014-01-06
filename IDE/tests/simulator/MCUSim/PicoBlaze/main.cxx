@@ -30,29 +30,29 @@ int main ( int argc, char ** argv )
                         "All rights reserved." );
 
     autoTest.addTestSuite ( "KCPSM1CPLD",
-                            TestKcpsm1CPLD::init,
-                            TestKcpsm1CPLD::clean,
-                            TestKcpsm1CPLD::addTests );
+                            &TestKcpsm1CPLD::init,
+                            &TestKcpsm1CPLD::clean,
+                            &TestKcpsm1CPLD::addTests );
 
     autoTest.addTestSuite ( "KCPSM1",
-                            TestKcpsm1::init,
-                            TestKcpsm1::clean,
-                            TestKcpsm1::addTests );
+                            &TestKcpsm1::init,
+                            &TestKcpsm1::clean,
+                            &TestKcpsm1::addTests );
 
     autoTest.addTestSuite ( "KCPSM2",
-                            TestKcpsm2::init,
-                            TestKcpsm2::clean,
-                            TestKcpsm2::addTests );
+                            &TestKcpsm2::init,
+                            &TestKcpsm2::clean,
+                            &TestKcpsm2::addTests );
 
     autoTest.addTestSuite ( "KCPSM3",
-                            TestKcpsm3::init,
-                            TestKcpsm3::clean,
-                            TestKcpsm3::addTests );
+                            &TestKcpsm3::init,
+                            &TestKcpsm3::clean,
+                            &TestKcpsm3::addTests );
 
     autoTest.addTestSuite ( "KCPSM6",
-                            TestKcpsm6::init,
-                            TestKcpsm6::clean,
-                            TestKcpsm6::addTests );
+                            &TestKcpsm6::init,
+                            &TestKcpsm6::clean,
+                            &TestKcpsm6::addTests );
 
     return autoTest.main(argc, argv);
 }

@@ -22,6 +22,7 @@ project ( TAT_TestPicoBlazeOPI )
 
 # Add include directories to the build.
 include_directories ( ${Boost_INCLUDE_DIRS}
+                      "${CMAKE_SOURCE_DIR}"
                       "${CMAKE_CURRENT_SOURCE_DIR}/../../../../compiler"
                       "${CMAKE_CURRENT_SOURCE_DIR}/../../../../utilities/MCUDataFiles"
                       "${CMAKE_CURRENT_SOURCE_DIR}/../../../../utilities/AsmTranslator" )
@@ -43,4 +44,4 @@ target_link_libraries ( ${PROJECT_NAME}
                         AsmTranslator
                         CompilerCore
                         MCUDataFiles
-                        cunit )
+                        CUnit )

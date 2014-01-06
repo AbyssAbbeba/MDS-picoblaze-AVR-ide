@@ -143,10 +143,11 @@ void TestKcpsm1::testFunction()
     {
         m_programFile->clearAndLoad(hexFile);
     }
-    catch ( DataFileException & e )
+    catch ( const DataFileException & e )
     {
-        CU_FAIL_FATAL("Instance of DataFileException thrown:");
+        CU_FAIL("Instance of DataFileException thrown:");
         std::cerr << e.toString() << std::endl;
+        return;
     }
 
     MCUSimSubsys * programMemSubsys = m_picoBlazeSim->getSubsys(MCUSimSubsys::ID_MEM_CODE);

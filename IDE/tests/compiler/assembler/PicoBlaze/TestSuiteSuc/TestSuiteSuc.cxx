@@ -113,7 +113,8 @@ void TestSuiteSuc::testFunction()
 
     const std::string testName = CU_get_current_test()->pName;
 
-    m_options->m_sourceFile = ( path("TestSuiteSuc") / "testcases" / (testName + ".asm") ).string();
+    m_options->m_sourceFiles.clear();
+    m_options->m_sourceFiles.push_back ( ( path("TestSuiteSuc") / "testcases" / (testName + ".asm") ).string() );
 
     const std::string resultsCommonPath = ( path("..") / "results" / testName ).string();
     m_options->m_symbolTable  = resultsCommonPath + ".sym";

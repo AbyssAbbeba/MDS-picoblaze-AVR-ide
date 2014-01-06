@@ -64,6 +64,9 @@ class MScriptVariable
             }
 
             /// @brief
+            ~Value() {}
+
+            /// @brief
             MScriptValue m_scalar;
 
             /// @brief
@@ -89,7 +92,7 @@ class MScriptVariable
         /**
          * @brief
          */
-        ~MScriptVariable();
+        virtual ~MScriptVariable();
 
     ////    Public Attributes    ////
     public:

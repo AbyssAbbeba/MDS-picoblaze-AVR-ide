@@ -32,10 +32,12 @@ class CompilerMsgObserver
          * @param[in] location
          * @param[in] type
          * @param[in] text
+         * @param[in] subsequent
          */
         virtual void message ( const CompilerSourceLocation & location,
                                CompilerBase::MessageType type,
-                               const std::string & text ) = 0;
+                               const std::string & text,
+                               bool subsequent = false ) = 0;
 
         /**
          * @brief

@@ -60,7 +60,7 @@ add_library ( ${PROJECT_NAME} SHARED
  # Targets can have properties that affect how they are built.
 set_target_properties ( ${PROJECT_NAME} PROPERTIES LINKER_LANGUAGE "CXX" )
 
-# Link a target to given libraries.
+# Link the target to given libraries.
 target_link_libraries ( ${PROJECT_NAME} ${QT_LIBRARIES}
                                         MScriptLexerParser )
 

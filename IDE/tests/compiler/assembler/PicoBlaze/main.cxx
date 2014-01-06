@@ -27,14 +27,14 @@ int main ( int argc, char ** argv )
                         "All rights reserved." );
 
     autoTest.addTestSuite ( "Successful compilation",
-                            TestSuiteSuc::init,
-                            TestSuiteSuc::clean,
-                            TestSuiteSuc::addTests );
+                            &TestSuiteSuc::init,
+                            &TestSuiteSuc::clean,
+                            &TestSuiteSuc::addTests );
 
     autoTest.addTestSuite ( "Error cases",
-                            TestSuiteErr::init,
-                            TestSuiteErr::clean,
-                            TestSuiteErr::addTests );
+                            &TestSuiteErr::init,
+                            &TestSuiteErr::clean,
+                            &TestSuiteErr::addTests );
 
     return autoTest.main(argc, argv);
 }

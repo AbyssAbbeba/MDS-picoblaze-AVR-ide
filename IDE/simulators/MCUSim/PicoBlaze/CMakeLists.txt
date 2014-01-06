@@ -41,7 +41,7 @@ add_library ( ${PROJECT_NAME} SHARED
               PicoBlazeInstructionSet1CPLD.cxx
               PicoBlazeInterruptController.cxx )
 
-# Link a target to given libraries.
+# Link the target to given libraries.
 target_link_libraries ( ${PROJECT_NAME} MCUDataFiles )
 
 # ------------------------------------------------------------------------------

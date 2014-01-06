@@ -7,38 +7,34 @@ declare -ir CPU_CORES=$( which lscpu &> /dev/null && lscpu 2> /dev/null | \
                          gawk 'BEGIN { n = 1 } END { print(n) } /^CPU\(s\)/ { n = $2; exit }' || echo 1 )
 declare -ir PP=$(( CPU_CORES + 1 ))
 
-echo "Using up to ${CPU_CORES} CPU cores."
-
 function build() {
+    local generator
+
     if [ "$(uname -o)" == "Msys" ]; then
         # Build on Windows.
         QT_PATH="$(for i in /c/QtSDK/Desktop/Qt/*/mingw/bin; do echo $i; break; done)"
         export PATH="${QT_PATH}:${PATH}"
-        cmake -DCOLOR_GCC=ON                    \
-              -DTEST_COVERAGE=OFF               \
-              -DCMAKE_COLOR_MAKEFILE=ON         \
-              -DCMAKE_BUILD_TYPE="${1:-Debug}"  \
-              -G "MSYS Makefiles"               \
-              . || exit 1
+        generator='MSYS Makefiles'
     else
         # Build on a POSIX system.
-        cmake -DCOLOR_GCC=ON                    \
-              -DTEST_COVERAGE=OFF               \
-              -DCMAKE_COLOR_MAKEFILE=ON         \
-              -DCMAKE_BUILD_TYPE="${1:-Debug}"  \
-              . || exit 1
+        generator='Unix Makefiles'
     fi
 
-    make -j${PP} --keep-going
+    cmake -DCOLOR_GCC=ON                  \
+          -DTEST_COVERAGE=OFF             \
+          -DCMAKE_COLOR_MAKEFILE=ON       \
+          -DCMAKE_BUILD_TYPE=${bt:-Debug} \
+          -G "${generator}"               \
+          . || exit 1
+
+    if ! make -j${PP} --keep-going; then
+        echo -e "\nBuild FAILED!\n" > /dev/stderr
+        exit 1
+    fi
 }
 
 function tests() {
-    for program in 'xsltproc' 'valgrind' 'gcov'; do
-        if ! which xsltproc &> /dev/null; then
-            echo "${program} is missing, please install ${program} and run again." > /dev/stderr
-            exit 1
-        fi
-    done
+    requirePrograms 'xsltproc' 'valgrind' 'gcov'
 
     if [[ -e tests/results ]]; then
         rm -rf tests/results || exit 1
@@ -47,15 +43,15 @@ function tests() {
     mkdir tests/results || exit 1
     date +'%s' > tests/results/startTime.log
 
-    local -r BUILD_LOG="tests/results/BuildLog.txt"
-    local -r STATUS_FILE="tests/results/status.txt"
+    local -r BUILD_LOG="tests/results/BuildLog.log"
+    local -r STATUS_FILE="tests/results/status.log"
     local -i status=1
 
-    cmake -DCMAKE_BUILD_TYPE=Debug          \
+    cmake -DCOLOR_GCC=ON                    \
+          -DCMAKE_BUILD_TYPE=${bt:-Debug}   \
           -DTEST_COVERAGE=${cov:-ON}        \
           -DTEST_MEMCHECK=${val:-ON}        \
-          -DCOLOR_GCC=OFF                   \
-          -DCMAKE_COLOR_MAKEFILE=OFF . 2>&1 \
+          -DCMAKE_COLOR_MAKEFILE=ON  . 2>&1 \
         | tee "${BUILD_LOG}" || status=0
     make -j${PP} --keep-going 2>&1 | tee -a "${BUILD_LOG}" || status=0
     echo ${status} > "${STATUS_FILE}"
@@ -91,8 +87,18 @@ function repoSync() {
     git push ${REPO} master
 }
 
+function requirePrograms() {
+    for program in "${@}"; do
+        if ! which xsltproc &> /dev/null; then
+            echo "${program} is missing, please install ${program} and run again." > /dev/stderr
+            exit 1
+        fi
+    done
+}
+
 function countLines() {
-    cloc .
+    requirePrograms 'cloc'
+    cloc --exclude-dir=3rdParty .
 }
 
 function printVersion() {
@@ -110,7 +116,6 @@ function printHelp() {
     printf "\n"
     printf "Options:\n"
     printf "    -b     Build.\n"
-    printf "    -B <t> Build with <t> build type specification.\n"
     printf "    -t     Build and run all tests.\n"
     printf "    -T <r> Build and run only the tests matching regular expression <r>.\n"
     printf "    -c     Clean up the directories by removing all automatically generated files.\n"
@@ -120,21 +125,32 @@ function printHelp() {
     printf "    -h     Print this message.\n"
     printf "    -V     Print version of this script.\n"
     printf "\n"
-    printf "Order of options does not matter.\n"
+    printf "The script might be run with these variables: (value in parentheses is default value)\n"
+    printf "    bt=<b>   Set build type to <b>, options are: 'Debug', 'Release', and 'MinSizeRel' (all: 'Debug').\n"
+    printf "    cov=<on|off>   Configure build for coverage analysis (normal: 'OFF', tests: 'ON').\n"
+    printf "    val=<on|off>   Turn on/off Valgrind:Memcheck during automated test run. (normal: n/a, tests: 'ON').\n"
+    printf "\n"
+    printf "Example:\n"
+    printf "    bt=Release cov=off ./tool.sh -t     # Run tests without coverage and with binaries built for release.\n"
+    printf "    bt=MinSizeRel ./tool.sh -csb        # Clear, synchronize GIT, and build for minimum size binaries.\n"
+    printf "\n"
+    printf "Order of options does not matter because order of operations is fixed (see the script code for details).\n"
+    printf "\n"
 }
 
 function main() {
+    set +o pipefail
     cd "$(dirname "$(readlink -n -f "${0}")" )"
+    echo "Using up to ${CPU_CORES} CPU cores."
 
     local -A opts
 
     # Parse CLI options using `getopts' utility.
-    while getopts ":hVcltbsmqT:B:" opt; do
+    while getopts ":hVcltbsmqT:" opt; do
         case $opt in
             b) opts['b']=1;;
             t) opts['t']=1;;
             T) opts['T']="${OPTARG}";;
-            B) opts['B']="${OPTARG}";;
             c) opts['c']=1;;
             l) opts['l']=1;;
             s) opts['s']=1;;
@@ -166,8 +182,6 @@ function main() {
         tests "${opts['T']}"
     elif [[ ! -z "${opts['t']}" ]]; then
         tests
-    elif [[ ! -z "${opts['B']}" ]]; then
-        build "${opts['B']}"
     elif [[ ! -z "${opts['b']}" ]]; then
         build
     fi

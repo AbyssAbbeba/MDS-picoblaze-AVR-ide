@@ -36,6 +36,13 @@ class MCUSim;
  */
 class MCUSimTestScriptStrategy
 {
+    ////    Constructors and Destructors    ////
+    public:
+        /**
+         * @brief
+         */
+        virtual ~MCUSimTestScriptStrategy() {}
+
     ////    Public Operations    ////
     public:
         /**

@@ -73,10 +73,12 @@ class CompilerLocationTracker : public CompilerSerializable
         /**
          * @brief
          * @param[in] source
-         * @param[in] target
+         * @param[out] target
+         * @param[in] includeRedirected
          */
         void traverse ( const CompilerSourceLocation & source,
-                        std::vector<const CompilerSourceLocation *> * target ) const;
+                        std::vector<const CompilerSourceLocation *> * target,
+                        bool includeRedirected = false ) const;
 
         /**
          * @brief

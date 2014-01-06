@@ -42,27 +42,36 @@ static const char * VERSION = "1.0";
  */
 void printHelp ( const char * executable )
 {
-    std::cout << QObject::tr("Options:").toStdString() << std::endl;
-    std::cout << QObject::tr("    --type, -t <AsmVariant>").toStdString() << std::endl;
-    std::cout << QObject::tr("        Specify variant of assembly language used in the input file, possible options "
-                             "are:").toStdString() << std::endl;
-    std::cout << QObject::tr("            1 : Xilinx KCPSMx.").toStdString() << std::endl;
-    std::cout << QObject::tr("            2 : Mediatronix KCPSMx.").toStdString() << std::endl;
-    std::cout << QObject::tr("            3 : openPICIDE KCPSMx.").toStdString() << std::endl;
-    std::cout << QObject::tr("    --input, -i <file.asm>").toStdString() << std::endl;
-    std::cout << QObject::tr("        Specify input file.").toStdString() << std::endl;
-    std::cout << QObject::tr("    --output, -o <file.asm>").toStdString() << std::endl;
-    std::cout << QObject::tr("        Specify output file.").toStdString() << std::endl;
-    std::cout << QObject::tr("    --backup, -b").toStdString() << std::endl;
-    std::cout << QObject::tr("        Enable generation of backup files.").toStdString() << std::endl;
-    std::cout << QObject::tr("    --version, -V").toStdString() << std::endl;
-    std::cout << QObject::tr("        Print version and exit.").toStdString() << std::endl;
-    std::cout << QObject::tr("    --help, -h").toStdString() << std::endl;
-    std::cout << QObject::tr("        Print this message.").toStdString() << std::endl;
-    std::cout << std::endl;
-    std::cout << QObject::tr("Examples of usage:").toStdString() << std::endl;
-    std::cout << "    " << executable << "--type=1 --input=my_file.psm --output=final_file.asm" << std::endl;
-    std::cout << std::endl;
+    std::cout << QObject::tr("Usage:").toStdString() << std::endl
+              << QObject::tr("    %1 <OPTIONS> [ -- ] <input_file>").arg(executable)
+                            .toStdString() << std::endl
+              << std::endl;
+
+    std::cout << QObject::tr("Options:").toStdString() << std::endl
+              << QObject::tr("    --type, -t <AsmVariant>").toStdString() << std::endl
+              << QObject::tr("        Specify variant of assembly language used in the input file, possible options "
+                             "are:").toStdString() << std::endl
+              << QObject::tr("            1 : Xilinx KCPSMx.").toStdString() << std::endl
+              << QObject::tr("            2 : Mediatronix KCPSMx.").toStdString() << std::endl
+              << QObject::tr("            3 : openPICIDE KCPSMx.").toStdString() << std::endl
+              << QObject::tr("    --output, -o <file.asm>").toStdString() << std::endl
+              << QObject::tr("        Specify output file.").toStdString() << std::endl
+              << QObject::tr("    --backup, -b").toStdString() << std::endl
+              << QObject::tr("        Enable generation of backup files.").toStdString() << std::endl
+              << QObject::tr("    --version, -V").toStdString() << std::endl
+              << QObject::tr("        Print version and exit.").toStdString() << std::endl
+              << QObject::tr("    --help, -h").toStdString() << std::endl
+              << QObject::tr("        Print this message.").toStdString() << std::endl
+              << std::endl;
+
+    std::cout << QObject::tr("Notes:").toStdString() << std::endl
+              << QObject::tr("    * `--' marks the end of options, it becomes useful when you want to translate file "
+                             "which name could be mistaken for a command line option.").toStdString()
+                            << std::endl;
+
+    std::cout << QObject::tr("Examples of usage:").toStdString() << std::endl
+              << "    " << executable << "--type=1 --input=my_file.psm --output=final_file.asm" << std::endl
+              << std::endl;
 }
 
 int main ( int argc, char ** argv )
@@ -94,13 +103,12 @@ int main ( int argc, char ** argv )
     // Disable error messages from getopt_long().
     opterr = 0;
 
-    const char * shortopts = ":hVbi:o:t:";
+    const char * shortopts = ":hVbo:t:";
     static const struct option longopts[] =
     {
         { "help",        no_argument,       0, 'h' },
         { "version",     no_argument,       0, 'V' },
         { "backup",      no_argument,       0, 'b' },
-        { "input",       required_argument, 0, 'i' },
         { "output",      required_argument, 0, 'o' },
         { "type",        required_argument, 0, 't' },
         { 0,             0,                 0, 0   }
@@ -121,10 +129,6 @@ int main ( int argc, char ** argv )
 
             case 'b':
                 makeBackup = true;
-                break;
-
-            case 'i':
-                input = optarg;
                 break;
 
             case 'o':
@@ -166,6 +170,16 @@ int main ( int argc, char ** argv )
     }
 
     bool ok = true;
+    for ( int i = optind; i < argc; i++ )
+    {
+        if ( false == input.empty() )
+        {
+            std::cerr << QObject::tr("Error: only one input file may be specified.").toStdString() << std::endl;
+            ok = false;
+            break;
+        }
+        input = argv[i];
+    }
     if ( true == input.empty() )
     {
         std::cerr << QObject::tr("Error: input file not specified.").toStdString()

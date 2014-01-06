@@ -113,7 +113,7 @@ void HexFile::clearAndLoad ( const std::string & filename ) throw ( DataFileExce
         strncpy(tmp, line + 7, 2);
         tmp[2] = '\0';
         sscanf(tmp, "%X", &hexType);
-        if ( strlen(line) != ( hexLength * 2 + 11 ) )
+        if ( (int) strlen(line) != ( hexLength * 2 + 11 ) )
         {
             throw DataFileException(DataFileException::EXP_BAD_RECORD_LENGTH);
         }

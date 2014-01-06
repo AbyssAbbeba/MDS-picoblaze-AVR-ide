@@ -46,7 +46,8 @@ bool CompilerLocationTracker::differs ( const CompilerSourceLocation & a,
 }
 
 void CompilerLocationTracker::traverse ( const CompilerSourceLocation & source,
-                                         std::vector<const CompilerSourceLocation *> * target ) const
+                                         std::vector<const CompilerSourceLocation *> * target,
+                                         bool includeRedirected ) const
 {
     if ( -1 == source.m_origin )
     {
@@ -64,11 +65,16 @@ void CompilerLocationTracker::traverse ( const CompilerSourceLocation & source,
     }
     else
     {
-        traverse(getLocation(source.m_origin), target);
+        traverse(getLocation(source.m_origin), target, includeRedirected);
         int next = getNext(source.m_origin);
         if ( -1 != next )
         {
-            traverse(getLocation(next), target);
+            traverse(getLocation(next), target, includeRedirected);
+        }
+
+        if ( true == includeRedirected )
+        {
+            target->push_back(&source);
         }
     }
 }

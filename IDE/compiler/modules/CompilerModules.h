@@ -50,12 +50,14 @@ namespace CompilerModules
      * @param[in] arch
      * @param[in,out] compilerCore
      * @param[out] semanticAnalyzer
+     * @param[out] errStr
      * @return
      */
     ModEmplStatCode employModule ( CompilerBase::LangId lang,
                                    CompilerBase::TargetArch arch,
                                    CompilerCore * compilerCore,
-                                   CompilerSemanticAnalyzer * & semanticAnalyzer );
+                                   CompilerSemanticAnalyzer * & semanticAnalyzer,
+                                   std::string * errStr );
 };
 
 #endif // COMPILERMODULES_H

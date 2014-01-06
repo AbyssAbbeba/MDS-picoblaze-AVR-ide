@@ -95,16 +95,17 @@ inline bool CompilerCore::startCompilation()
         m_opts->clearOutputFiles();
 
         m_msgInterface->m_messageLimit = m_opts->m_messageLimit;
-        m_basePath = boost::filesystem::path(m_opts->m_sourceFile).parent_path();
+        m_basePath = boost::filesystem::path(m_opts->m_sourceFiles[0]).parent_path();
 
-        ModEmplStatCode statusCode = employModule ( m_lang, m_arch, this, m_semanticAnalyzer );
+        std::string errStr;
+        ModEmplStatCode statusCode = employModule ( m_lang, m_arch, this, m_semanticAnalyzer, &errStr );
 
         switch ( statusCode )
         {
             case MESC_OK:
                 return m_success;
             case MESC_IO_ERROR:
-                coreMessage ( MT_ERROR, QObject::tr("unable to open file: ").toStdString() + m_opts->m_sourceFile );
+                coreMessage ( MT_ERROR, QObject::tr("unable to open file: ").toStdString() + errStr );
                 return false;
             case MESC_ARCH_NOT_SUPPORTED:
                 coreMessage ( MT_ERROR,
@@ -155,10 +156,21 @@ inline bool CompilerCore::checkOptions()
         return false;
     }
 
-    if ( true == m_opts->m_sourceFile.empty() )
+    if ( true == m_opts->m_sourceFiles.empty() )
     {
         coreMessage ( MT_ERROR, QObject::tr("source code file not specified").toStdString() );
         return false;
+    }
+    else
+    {
+        for ( const auto file : m_opts->m_sourceFiles )
+        {
+            if ( true == file.empty() )
+            {
+                coreMessage ( MT_ERROR, QObject::tr("empty string used as source code file name").toStdString() );
+                return false;
+            }
+        }
     }
 
     return true;
@@ -194,9 +206,9 @@ std::string CompilerCore::locationToStr ( const CompilerSourceLocation & locatio
     {
         bool first = true;
         std::string prefix;
-        std::vector<const CompilerSourceLocation *> locationTrBack;
-        m_locationTracker.traverse(location, &locationTrBack);
-        for ( auto i : locationTrBack )
+        std::vector<const CompilerSourceLocation *> locationBackTr;
+        m_locationTracker.traverse(location, &locationBackTr);
+        for ( const auto i : locationBackTr )
         {
             if ( false == first )
             {
@@ -241,18 +253,30 @@ inline void CompilerCore::coreMessage ( MessageType type,
 void CompilerCore::coreMessage ( const CompilerSourceLocation & location,
                                  MessageType type,
                                  const std::string & text,
-                                 bool forceAsUnique )
+                                 bool forceAsUnique,
+                                 bool noObserver )
 {
     if ( -1 != location.m_origin )
     {
-        std::string prefix;
-        std::vector<const CompilerSourceLocation *> locationTrBack;
-        m_locationTracker.traverse(location, &locationTrBack);
-        for ( auto i : locationTrBack )
+        std::string prefixNormal;
+        std::string prefixObserver;
+        std::vector<const CompilerSourceLocation *> locationBackTr;
+        m_locationTracker.traverse(location, &locationBackTr, true);
+
+        for ( const auto tracePoint : locationBackTr )
         {
-            coreMessage ( *i, type, prefix + text );
-            prefix += "==> ";
+            if ( -1 == tracePoint->m_origin )
+            {
+                coreMessage ( *tracePoint, type, prefixNormal + text, forceAsUnique, true );
+                prefixNormal += "==> ";
+            }
+            else if ( NULL != m_msgObserver )
+            {
+                m_msgObserver->message(*tracePoint, type, prefixObserver + text);
+                prefixObserver += "==> ";
+            }
         }
+
         return;
     }
 
@@ -263,7 +287,7 @@ void CompilerCore::coreMessage ( const CompilerSourceLocation & location,
         return;
     }
 
-    if ( NULL != m_msgObserver )
+    if ( ( false == noObserver ) && ( NULL != m_msgObserver ) )
     {
         m_msgObserver->message(location, type, text);
     }
@@ -273,30 +297,34 @@ void CompilerCore::coreMessage ( const CompilerSourceLocation & location,
 
 void CompilerCore::preprocessorMessage ( const CompilerSourceLocation & location,
                                          MessageType type,
-                                         const std::string & text )
+                                         const std::string & text,
+                                         bool forceAsUnique )
 {
-    coreMessage(location, type, text);
+    coreMessage(location, type, text, forceAsUnique);
 }
 
 void CompilerCore::lexerMessage ( const CompilerSourceLocation & location,
                                   MessageType type,
-                                  const std::string & text )
+                                  const std::string & text,
+                                  bool forceAsUnique )
 {
-    coreMessage(location, type, text);
+    coreMessage(location, type, text, forceAsUnique);
 }
 
 void CompilerCore::parserMessage ( const CompilerSourceLocation & location,
                                    MessageType type,
-                                   const std::string & text )
+                                   const std::string & text,
+                                   bool forceAsUnique )
 {
-    coreMessage(location, type, text);
+    coreMessage(location, type, text, forceAsUnique);
 }
 
 void CompilerCore::semanticMessage ( const CompilerSourceLocation & location,
                                      MessageType type,
-                                     const std::string & text )
+                                     const std::string & text,
+                                     bool forceAsUnique )
 {
-    coreMessage(location, type, text);
+    coreMessage(location, type, text, forceAsUnique);
 }
 
 bool CompilerCore::successful() const
@@ -396,7 +424,7 @@ CompilerStatement * CompilerCore::loadDevSpecCode ( const std::string & deviceNa
 
 std::string CompilerCore::getBaseName()
 {
-    return boost::filesystem::path(m_opts->m_sourceFile).filename().string();
+    return boost::filesystem::path(m_opts->m_sourceFiles[0]).filename().string();
 }
 
 std::string CompilerCore::getBaseIncludeDir()

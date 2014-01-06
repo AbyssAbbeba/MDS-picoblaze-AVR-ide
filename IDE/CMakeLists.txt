@@ -38,24 +38,24 @@ message ( STATUS "Configuring environment for build in mode: ${CMAKE_BUILD_TYPE}
 
 ## Set global compilation flags:
  # - for all build types:
-set ( CMAKE_CXX_FLAGS            "-Wall -Wextra -std=c++0x -pipe" )
+set ( CMAKE_C_FLAGS            "-Wall -Wextra -Wno-unused-local-typedefs -pipe" )
  # - for debug build only:
-set ( CMAKE_CXX_FLAGS_DEBUG      "-O0 -g" )
+set ( CMAKE_C_FLAGS_DEBUG      "-O0 -g" )
  # - for release build only:
-set ( CMAKE_CXX_FLAGS_RELEASE    "-O3 -DNDEBUG" )
+set ( CMAKE_C_FLAGS_RELEASE    "-O3 -DNDEBUG" )
  # - for minimum size release build only:
-set ( CMAKE_CXX_FLAGS_MINSIZEREL "-Os -DNDEBUG" )
+set ( CMAKE_C_FLAGS_MINSIZEREL "-Os -DNDEBUG" )
 
-# Set the same compilation flags for C as they are set for C++.
-set ( CMAKE_C_FLAGS              "${CMAKE_CXX_FLAGS}" )
-set ( CMAKE_C_FLAGS_DEBUG        "${CMAKE_CXX_FLAGS_DEBUG}" )
-set ( CMAKE_C_FLAGS_RELEASE      "${CMAKE_CXX_FLAGS_RELEASE}" )
-set ( CMAKE_C_FLAGS_MINSIZEREL   "${CMAKE_CXX_FLAGS_MINSIZEREL}" )
+# Set the same compilation flags for C++ as they are set for C.
+set ( CMAKE_CXX_FLAGS              "${CMAKE_C_FLAGS} -std=c++0x" )
+set ( CMAKE_CXX_FLAGS_DEBUG        "${CMAKE_C_FLAGS_DEBUG}" )
+set ( CMAKE_CXX_FLAGS_RELEASE      "${CMAKE_C_FLAGS_RELEASE}" )
+set ( CMAKE_CXX_FLAGS_MINSIZEREL   "${CMAKE_C_FLAGS_MINSIZEREL}" )
 
-# Optionally build with support for coverage testing and profiling support.
-option ( TEST_COVERAGE "Configure build for coverage analysis and profiling." OFF )
+# Optionally build with support for coverage analysis support.
+option ( TEST_COVERAGE "Configure build for coverage analysis." OFF )
 if ( TEST_COVERAGE )
-    message ( STATUS "This build is configured for coverage analysis and profiling!" )
+    message ( STATUS "This build is configured for coverage analysis!" )
     set ( CMAKE_EXE_LINKER_FLAGS "--coverage" )
     set ( CMAKE_SHARED_LINKER_FLAGS "--coverage" )
     set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --coverage" )
@@ -73,7 +73,27 @@ if ( CMAKE_COMPILER_IS_GNUCXX OR CMAKE_COMPILER_IS_GNUCPP )
 endif()
 
 # ------------------------------------------------------------------------------
-# LIBRARIES
+# Required compiler and its minimum required version.
+# ------------------------------------------------------------------------------
+
+set ( GCC_MIN_VER "4.8.1" )
+
+if ( CMAKE_COMPILER_IS_GNUCXX OR CMAKE_COMPILER_IS_GNUCPP )
+    exec_program ( ${CMAKE_CXX_COMPILER}
+                   ARGS --version
+                   OUTPUT_VARIABLE gccOutput )
+    string ( REGEX MATCH "[0-9]+\\.[0-9]+\\.[0-9]+" gccVersion "${gccOutput}" )
+    message ( STATUS "Found GCC compiler: ${CMAKE_CXX_COMPILER} (version: ${gccVersion}, required is: ${GCC_MIN_VER})" )
+
+    if ( "${gccVersion}" VERSION_LESS "${GCC_MIN_VER}" )
+        message ( SEND_ERROR "Minimum required version of GCC compiler is ${GCC_MIN_VER}." )
+    endif()
+else()
+    message ( SEND_ERROR "Required compiler is GCC" )
+endif()
+
+# ------------------------------------------------------------------------------
+# LIBRARIES & TOOLS
 # ------------------------------------------------------------------------------
 
 # Find Qt4 directories and libraries.
@@ -84,6 +104,10 @@ include ( ${QT_USE_FILE} )
 # Find Boost include directories and libraries.
 find_package ( Boost 1.55 REQUIRED
                COMPONENTS regex filesystem system )
+
+# Find Flex (lexer generator) and Bison (parser generator) executables.
+find_package ( FLEX  2.5.35 REQUIRED )
+find_package ( BISON 2.5    REQUIRED )
 
 # Include our own macros for using Flex and Bison.
 include ( "${CMAKE_SOURCE_DIR}/FlexBisonPair.cmake" )
@@ -105,11 +129,17 @@ include ( "${CMAKE_SOURCE_DIR}/tests.cmake" )
 # BUILD COMPONENTS IN THE SUBDIRECTORIES
 # ------------------------------------------------------------------------------
 
-# Build utility libraries.
-add_subdirectory ( utilities )
+# Build API and user documentation.
+add_subdirectory ( docs )
+
+# Build compiler collection.
+add_subdirectory ( compiler )
 
 # Build GUI.
 add_subdirectory ( GUI )
+
+# Build Moravia Script language support.
+add_subdirectory ( moraviascript )
 
 # Build dev. hardware support software.
 add_subdirectory ( HW )
@@ -117,25 +147,20 @@ add_subdirectory ( HW )
 # Build simulators.
 add_subdirectory ( simulators )
 
-# Build Moravia Script language support.
-add_subdirectory ( moraviascript )
-
-# Build compiler collection.
-add_subdirectory ( compiler )
-
 # Build disassemblers.
 add_subdirectory ( disassembler )
+
+# Build utility libraries.
+add_subdirectory ( utilities )
 
 # Add some data files to installation packages.
 add_subdirectory ( pkgs )
 
-# Build API and user documentation.
-add_subdirectory ( docs )
-
 # Build automated tests.
-if ( NOT CMAKE_HOST_WIN32 )
-    add_subdirectory ( tests )
-endif()
+add_subdirectory ( tests )
+
+# Build 3rd party software.
+add_subdirectory ( 3rdParty )
 
 # ------------------------------------------------------------------------------
 # BUILD INSTALLATION PACKAGES
@@ -161,12 +186,8 @@ set ( CPACK_PACKAGE_VENDOR "Moravia Microsystems" )
 set ( CPACK_PACKAGE_VERSION_MAJOR 0 )
 set ( CPACK_PACKAGE_VERSION_MINOR 1 )
 set ( CPACK_PACKAGE_VERSION_PATCH 0 )
-set ( CPACK_PACKAGE_DESCRIPTION_SUMMARY "Advanced development environment for small embedded systems." )
-set ( MY_CPACK_PACKAGE_DETAILED_DESC "Some detailed description, like:
-   * Advanced simulation capabilities including simulation of devices peripheral to the microcontroller.
-   *  Multiplatform development tools allowing thousands, or tens of thousands, of engineers, scientist, and students, all around the world to use this kind of software and hardware tools also on GNU/Linux and Mac OS X operating systems.
-   *  etc. etc.
-" )
+set ( CPACK_PACKAGE_DESCRIPTION_SUMMARY "<CPACK_PACKAGE_DESCRIPTION_SUMMARY>" )
+set ( MY_CPACK_PACKAGE_DETAILED_DESC "<MY_CPACK_PACKAGE_DETAILED_DESC>" )
 
 # Resource file (see the CPack manual for details)
 set ( CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/pkgs/pkgdesc.txt" )
@@ -182,7 +203,7 @@ set ( CPACK_DEBIAN_PACKAGE_SUGGESTS "" )
 set ( CPACK_PACKAGE_CONTACT "Moravia Microsystems, s.r.o., <some address>" )
 set ( CPACK_DEBIAN_PACKAGE_HOMEPAGE "http://www.someaddress.com" )
 set ( CPACK_DEBIAN_PACKAGE_SECTION "Development" )
-set ( CPACK_DEBIAN_PACKAGE_DESCRIPTION "\t${CPACK_PACKAGE_DESCRIPTION_SUMMARY}.\n\t\t${MY_CPACK_PACKAGE_DETAILED_DESC}" )
+set ( CPACK_DEBIAN_PACKAGE_DESCRIPTION "${CPACK_PACKAGE_DESCRIPTION_SUMMARY}\n${MY_CPACK_PACKAGE_DETAILED_DESC}" )
 
 # Options for the "RPM" generator
 set ( CPACK_RPM_PACKAGE_REQUIRES "qt >= 4.8" )

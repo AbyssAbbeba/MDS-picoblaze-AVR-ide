@@ -29,7 +29,7 @@ add_library ( ${PROJECT_NAME} SHARED
               McuSimCfgMgrPIC8.cxx
               McuSimCfgMgr.cxx )
 
-# Link a target to given libraries.
+# Link the target to given libraries.
 target_link_libraries ( ${PROJECT_NAME} ${QT_LIBRARIES} )
 
 # ------------------------------------------------------------------------------

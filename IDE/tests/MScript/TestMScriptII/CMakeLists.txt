@@ -27,6 +27,7 @@ set_directory_properties ( PROPERTIES
 
 # Add include directories to the build.
 include_directories ( "${CMAKE_CURRENT_SOURCE_DIR}/../../../moraviascript"
+                      "${CMAKE_SOURCE_DIR}"
                       "${CMAKE_CURRENT_SOURCE_DIR}/../MScriptTestStrategy" )
 
 # Specify directories in which the linker will look for libraries.
@@ -43,4 +44,4 @@ target_link_libraries ( ${PROJECT_NAME}
                         ${Boost_LIBRARIES}
                         MScript
                         MScriptTestStrategy
-                        cunit )
+                        CUnit )
