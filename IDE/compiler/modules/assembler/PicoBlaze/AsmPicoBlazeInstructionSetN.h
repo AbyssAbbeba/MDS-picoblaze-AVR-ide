@@ -37,6 +37,11 @@ class AsmPicoBlazeInstructionSetN
          */
         AsmPicoBlazeInstructionSetN();
 
+        /**
+         * @brief
+         */
+        virtual ~AsmPicoBlazeInstructionSetN() {}
+
     ////    Public Operations    ////
     public:
         /**

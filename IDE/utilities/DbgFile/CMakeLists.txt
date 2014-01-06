@@ -14,18 +14,12 @@
 # Set project name
 project ( DbgFile )
 
-# Set the minimum required version of CMake
-cmake_minimum_required ( VERSION 2.8 )
-
-# Create verbose makefiles if on
-set ( CMAKE_VERBOSE_MAKEFILE OFF )
-
 # ------------------------------------------------------------------------------
 # COMPILATION OPTIONS
 # ------------------------------------------------------------------------------
 
 # Add include directories to the build.
-include_directories ( "${CMAKE_CURRENT_BINARY_DIR}/.." )
+include_directories ( "${CMAKE_CURRENT_SOURCE_DIR}/.." )
 
 ## Add a library to the project using the specified source files,
  # in this case it will procude dynamic C++ library.

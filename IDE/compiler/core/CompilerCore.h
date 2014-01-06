@@ -22,6 +22,7 @@ class DataFile;
 class CompilerExpr;
 class CompilerOptions;
 class CompilerStatement;
+class CompilerMsgFilter;
 class CompilerMsgObserver;
 class CompilerMsgInterface;
 class CompilerMessageStack;
@@ -55,11 +56,6 @@ class CompilerCore : public CompilerBase,
                      public CompilerParserInterface,
                      public CompilerSemanticInterface
 {
-    ////    Public Static Constants    ////
-    public:
-        /// @brief Maximum allowed number of messages.
-        static const unsigned int MAX_MESSAGES = 1024;
-
     ////    Constructors and Destructors    ////
     public:
         /**
@@ -140,10 +136,14 @@ class CompilerCore : public CompilerBase,
          * @param[in] location
          * @param[in] type
          * @param[in] text
+         * @param[in] forceAsUnique
+         * @param[in] noObserver
          */
         void coreMessage ( const CompilerSourceLocation & location,
                            MessageType type,
-                           const std::string & text );
+                           const std::string & text,
+                           bool forceAsUnique = false,
+                           bool noObserver = false );
 
         /// @name Interface for syntax and/or lexical analyzer, and for preprocessor.
         //@{
@@ -152,38 +152,46 @@ class CompilerCore : public CompilerBase,
              * @param[in] location
              * @param[in] type
              * @param[in] text
+             * @param[in] forceAsUnique
              */
             virtual void preprocessorMessage ( const CompilerSourceLocation & location,
                                                CompilerBase::MessageType type,
-                                               const std::string & text );
+                                               const std::string & text,
+                                               bool forceAsUnique = false );
 
             /**
              * @brief
              * @param[in] location
              * @param[in] type
              * @param[in] text
+             * @param[in] forceAsUnique
              */
             virtual void lexerMessage ( const CompilerSourceLocation & location,
                                         MessageType type,
-                                        const std::string & text );
+                                        const std::string & text,
+                                        bool forceAsUnique = false );
 
             /**
              * @brief
              * @param[in] location
              * @param[in] type
              * @param[in] text
+             * @param[in] forceAsUnique
              */
             virtual void parserMessage ( const CompilerSourceLocation & location,
                                          MessageType type,
-                                         const std::string & text );
+                                         const std::string & text,
+                                         bool forceAsUnique = false  );
 
             /**
              * @brief
              * @param[in] filename
+             * @param[in,out] finalFilename
              * @param[in] acyclic
              * @return
              */
             virtual FILE * fileOpen ( const std::string & filename,
+                                      std::string * finalFilename = NULL,
                                       bool acyclic = true );
 
             /**
@@ -255,21 +263,23 @@ class CompilerCore : public CompilerBase,
             /**
              * @brief
              * @param[in] location
-             * @param[in] colon
+             * @param[in] main If location is used inside a message text, the to false.
              * @return
              */
             virtual std::string locationToStr ( const CompilerSourceLocation & location,
-                                                bool colon = false ) const;
+                                                bool main = false ) const;
 
             /**
              * @brief
              * @param[in] location
              * @param[in] type
              * @param[in] text
+             * @param[in] forceAsUnique
              */
             virtual void semanticMessage ( const CompilerSourceLocation & location,
                                            MessageType type,
-                                           const std::string & text );
+                                           const std::string & text,
+                                           bool forceAsUnique = false );
 
             /**
              * @brief
@@ -318,7 +328,7 @@ class CompilerCore : public CompilerBase,
 
         /**
          * @brief
-         * @param[in] directory
+         * @param[in] directory Must be an absolute path (on Windows including c:\ and such stuff).
          */
         void setBaseIncludeDir ( const std::string & directory )
         {
@@ -372,7 +382,7 @@ class CompilerCore : public CompilerBase,
     ////    Private Attributes    ////
     private:
         /// @brief
-        CompilerMsgInterface * const m_msgInterface;
+        CompilerMsgFilter * m_msgInterface;
 
         /// @brief
         CompilerMsgObserver * m_msgObserver;

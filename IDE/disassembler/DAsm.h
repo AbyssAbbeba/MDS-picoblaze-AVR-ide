@@ -86,6 +86,13 @@ class DAsm
             } m_radix;
         };
 
+    ////    Constructors and Destructors    ////
+    public:
+        /**
+         * @return
+         */
+        virtual ~DAsm();
+
     ////    Public Operations    ////
     public:
         /**

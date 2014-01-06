@@ -181,6 +181,11 @@ class MScriptExpr : public MScriptSerializable
                       MScriptValue rValue,
                       MScriptSrcLocation location = MScriptSrcLocation() );
 
+        /**
+         * @brief
+         */
+        virtual ~MScriptExpr() {}
+
     ////    Public Operations    ////
     public:
         /**

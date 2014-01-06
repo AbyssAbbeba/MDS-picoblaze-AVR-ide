@@ -72,30 +72,36 @@ class CompilerParserInterface
          * @param[in] location
          * @param[in] type
          * @param[in] text
+         * @param[in] forceAsUnique
          */
         virtual void preprocessorMessage ( const CompilerSourceLocation & location,
                                            CompilerBase::MessageType type,
-                                           const std::string & text ) = 0;
+                                           const std::string & text,
+                                           bool forceAsUnique = false ) = 0;
 
         /**
          * @brief
          * @param[in] location
          * @param[in] type
          * @param[in] text
+         * @param[in] forceAsUnique
          */
         virtual void lexerMessage ( const CompilerSourceLocation & location,
                                     CompilerBase::MessageType type,
-                                    const std::string & text ) = 0;
+                                    const std::string & text,
+                                    bool forceAsUnique = false ) = 0;
 
         /**
          * @brief
          * @param[in] location
          * @param[in] type
          * @param[in] text
+         * @param[in] forceAsUnique
          */
         virtual void parserMessage ( const CompilerSourceLocation & location,
                                      CompilerBase::MessageType type,
-                                     const std::string & text ) = 0;
+                                     const std::string & text,
+                                     bool forceAsUnique = false ) = 0;
 
         /**
          * @brief
@@ -106,10 +112,12 @@ class CompilerParserInterface
         /**
          * @brief
          * @param[in] filename
+         * @param[in,out] finalFilename
          * @param[in] acyclic
          * @return
          */
         virtual FILE * fileOpen ( const std::string & filename,
+                                  std::string * finalFilename = NULL,
                                   bool acyclic = true ) = 0;
 
         /**

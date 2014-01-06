@@ -67,7 +67,8 @@ enum ExitCode
 void printHelp ( const char * executable )
 {
     std::cout << QObject::tr("Usage:").toStdString() << std::endl
-              << QObject::tr("    %1 <OPTIONS>").arg(executable).toStdString() << std::endl << std::endl;
+              << QObject::tr("    %1 <OPTIONS> [ -- ] <input_file>").arg(executable)
+                            .toStdString() << std::endl << std::endl;
 
     std::cout << QObject::tr("Available program options:").toStdString() << std::endl
               << QObject::tr("    -a, --arch <architecture>").toStdString() << std::endl
@@ -88,9 +89,6 @@ void printHelp ( const char * executable )
               << QObject::tr("    -o, --out <output file>").toStdString() << std::endl
               << QObject::tr("        Specify output file where the resulting assembly language code will be stored.")
                             .toStdString() << std::endl
-              << std::endl
-              << QObject::tr("    -i, --in <input file>").toStdString() << std::endl
-              << QObject::tr("        Specify input file with machine code to disassemble.").toStdString() << std::endl
               << std::endl
               << QObject::tr("    -t, --type <input file format>").toStdString() << std::endl
               << QObject::tr("        Type of the input file; if none provided, disassembler will try to guess the ")
@@ -155,8 +153,12 @@ void printHelp ( const char * executable )
               << QObject::tr("        (Print this message.)").toStdString() << std::endl
               << std::endl
               << QObject::tr("    -V, --version").toStdString() << std::endl
-              << QObject::tr("        Print compiler version and exit.").toStdString() << std::endl
+              << QObject::tr("        Print compiler version and exit.").toStdString() << std::endl;
 
+    std::cout << QObject::tr("Notes:").toStdString() << std::endl
+              << QObject::tr("    * `--' marks the end of options, it becomes useful when you want to disassemble file "
+                             "which name could be mistaken for a command line option.").toStdString()
+                            << std::endl
               << std::endl;
 }
 
@@ -215,14 +217,13 @@ int main ( int argc, char ** argv )
     // Disable error messages from getopt_long().
     opterr = 0;
 
-    const char * shortopts = ":hVo:i:a:f:t:";
+    const char * shortopts = ":hVo:a:f:t:";
     static const struct option longopts[] =
     {
         { "help",        no_argument,       0, 'h'   },
         { "version",     no_argument,       0, 'V'   },
 
         { "out",         required_argument, 0, 'o'   },
-        { "in",          required_argument, 0, 'i'   },
         { "arch",        required_argument, 0, 'a'   },
         { "family",      required_argument, 0, 'f'   },
         { "type",        required_argument, 0, 't'   },
@@ -253,7 +254,6 @@ int main ( int argc, char ** argv )
             case 'o':  outfile      = optarg; break;
             case 'a':  architecture = optarg; break;
             case 'f':  family       = optarg; break;
-            case 'i':  infile       = optarg; break;
             case 't':  type         = optarg; break;
 
             case 0x100: // --cfg-ind
@@ -405,6 +405,16 @@ int main ( int argc, char ** argv )
             default:
                 return EXIT_ERROR_CLI;
         }
+    }
+
+    for ( int i = optind; i < argc; i++ )
+    {
+        if ( false == infile.empty() )
+        {
+            std::cerr << QObject::tr("Error: only one input file may be specified.").toStdString() << std::endl;
+            return EXIT_ERROR_CLI;
+        }
+        infile = argv[i];
     }
 
     if ( ( true == architecture.empty() ) || ( true == family.empty() ) )

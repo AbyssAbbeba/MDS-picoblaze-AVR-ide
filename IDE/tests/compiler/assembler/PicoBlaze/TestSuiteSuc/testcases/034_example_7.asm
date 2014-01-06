@@ -1,5 +1,7 @@
                   ;KCPSM3 Program - SPI Control of D/A converter on Spartan-3E Starter Kit.
                   ;
+                    device kcpsm6
+                    ; warning > added only for testing purposes
                   ;
                   ;Ken Chapman - Xilinx Ltd
                   ;

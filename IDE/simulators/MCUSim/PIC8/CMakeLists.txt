@@ -14,18 +14,12 @@
 # Set project name
 project ( PIC8Sim )
 
-# Set the minimum required version of CMake
-cmake_minimum_required ( VERSION 2.8 )
-
-# Create verbose makefiles if on
-set ( CMAKE_VERBOSE_MAKEFILE OFF )
-
 # ------------------------------------------------------------------------------
 # COMPILATION OPTIONS
 # ------------------------------------------------------------------------------
 
 # Add include directories to the build.
-include_directories ( "${CMAKE_CURRENT_BINARY_DIR}/../../../utilities" )
+include_directories ( "${CMAKE_CURRENT_SOURCE_DIR}/../../../utilities" )
 
 ## Add a library to the project using the specified source files,
  # in this case it will procude dynamic C++ library.
@@ -47,7 +41,7 @@ add_library ( ${PROJECT_NAME} SHARED
               PIC8ISP.cxx
               PIC8ExternalInterrupts.cxx )
 
-# Link a target to given libraries.
+# Link the target to given libraries.
 target_link_libraries ( ${PROJECT_NAME} MCUDataFiles )
 
 # ------------------------------------------------------------------------------

@@ -386,7 +386,7 @@ bool Avr8UsbProgDeviceDB::parseAttributes(const QString &localName, const QXmlAt
 
                 QString parentElement=currentXMLElement.at(currentXMLElement.size()-2);
                 QString bitName;
-                bool defaultState;
+                bool defaultState = false;
 
                 for(int i=0; i<length; i++) {
                         if(atts.localName(i) == "name") {

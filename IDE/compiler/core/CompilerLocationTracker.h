@@ -17,19 +17,25 @@
 #define COMPILERLOCATIONTRACKER_H
 
 // Compiler core header files.
+#include "CompilerSerializable.h"
 #include "CompilerSourceLocation.h"
 
 // Standard header files.
 #include <vector>
 #include <utility>
+#include <ostream>
 
 /**
  * @brief
  * @ingroup Compiler
  * @class CompilerLocationTracker
  */
-class CompilerLocationTracker
+class CompilerLocationTracker : public CompilerSerializable
 {
+    ////    Friends    ////
+    friend std::ostream & operator << ( std::ostream & out,
+                                        const CompilerLocationTracker & tracker );
+
     ////    Public Operations    ////
     public:
         /**
@@ -46,24 +52,73 @@ class CompilerLocationTracker
          * @param[in] origin
          * @return
          */
-        const CompilerSourceLocation & getLocation ( int origin );
+        const CompilerSourceLocation & getLocation ( int origin ) const;
 
         /**
          * @brief
          * @param[in] origin
          * @return
          */
-        int getNext ( int origin );
+        int getNext ( int origin ) const;
+
+        /**
+         * @brief
+         * @param[in] a
+         * @param[in] b
+         * @return
+         */
+        bool differs ( const CompilerSourceLocation & a,
+                       const CompilerSourceLocation & b ) const;
+
+        /**
+         * @brief
+         * @param[in] source
+         * @param[out] target
+         * @param[in] includeRedirected
+         */
+        void traverse ( const CompilerSourceLocation & source,
+                        std::vector<const CompilerSourceLocation *> * target,
+                        bool includeRedirected = false ) const;
 
         /**
          * @brief
          */
         void clear();
 
+        /**
+         * @brief
+         * @return
+         */
+        int getInitShift();
+
+        /**
+         * @brief
+         * @param[in,out]
+         */
+        virtual void serialize ( CompilerSerializer & output ) const;
+
+        /**
+         * @brief
+         * @param[in,out]
+         */
+        virtual void deserialize ( CompilerSerializer & input );
+
     ////    Private Attributes    ////
     private:
         /// @brief
         std::vector<std::pair<CompilerSourceLocation,int> > m_locations;
 };
+
+/// @name Tracing operators
+//@{
+    /**
+     * @brief
+     * @param[in,out] out
+     * @param[in] location
+     * @return
+     */
+    std::ostream & operator << ( std::ostream & out,
+                                 const CompilerLocationTracker & tracker );
+//@}
 
 #endif // COMPILERLOCATIONTRACKER_H

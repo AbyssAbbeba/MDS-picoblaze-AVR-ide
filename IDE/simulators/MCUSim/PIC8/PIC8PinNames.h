@@ -56,7 +56,7 @@ namespace PIC8PinNames
         PIN_VSS,        ///<
         PIN_VDD,        ///<
 
-        // Added only for compatibility with more advanced device
+        // Added only for compatibility with more advanced devices.
         PIN_RC0,
         PIN_RD0,
 

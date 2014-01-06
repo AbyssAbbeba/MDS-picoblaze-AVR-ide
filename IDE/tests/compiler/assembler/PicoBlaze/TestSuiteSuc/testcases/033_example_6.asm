@@ -1,5 +1,7 @@
                     ;KCPSM3 Program - SPI Control of Amplifier and A/D converter on Spartan-3E Starter Kit.
                     ;
+                                        device kcpsm6
+                    ; warning > added only for testing purposes
                     ;
                     ;Ken Chapman - Xilinx Ltd
                     ;

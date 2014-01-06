@@ -16,12 +16,6 @@
 # Set project name
 project ( TMS_TestMScriptIII )
 
-# Set the minimum required version of CMake
-cmake_minimum_required ( VERSION 2.8 )
-
-# Create verbose makefiles if on
-set ( CMAKE_VERBOSE_MAKEFILE OFF )
-
 # List of additional files that will be cleaned as a part of the "make clean" stage.
 FILE ( GLOB resultFiles results/*.* )
 set_directory_properties ( PROPERTIES
@@ -33,12 +27,13 @@ set_directory_properties ( PROPERTIES
 # ------------------------------------------------------------------------------
 
 # Add include directories to the build.
-include_directories ( "${CMAKE_CURRENT_BINARY_DIR}/../../../moraviascript"
-                      "${CMAKE_CURRENT_BINARY_DIR}/../MScriptTestStrategy" )
+include_directories ( "${CMAKE_CURRENT_SOURCE_DIR}/../../../moraviascript"
+                      "${CMAKE_SOURCE_DIR}"
+                      "${CMAKE_CURRENT_SOURCE_DIR}/../MScriptTestStrategy" )
 
 # Specify directories in which the linker will look for libraries.
-link_directories ( "${CMAKE_CURRENT_BINARY_DIR}/../../../moraviascript"
-                   "${CMAKE_CURRENT_BINARY_DIR}/../MScriptTestStrategy" )
+link_directories ( "${CMAKE_CURRENT_SOURCE_DIR}/../../../moraviascript"
+                   "${CMAKE_CURRENT_SOURCE_DIR}/../MScriptTestStrategy" )
 
 ## Add a library to the project using the specified source files,
  # in this case it will procude dynamic C++ library.
@@ -50,4 +45,4 @@ target_link_libraries ( ${PROJECT_NAME}
                         ${Boost_LIBRARIES}
                         MScript
                         MScriptTestStrategy
-                        cunit )
+                        CUnit )

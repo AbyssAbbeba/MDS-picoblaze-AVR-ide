@@ -2,6 +2,8 @@
                      ;
                      ; Ken Chapman - Xilinx Ltd
                      ;
+                                         device kcpsm6
+                    ; warning > added only for testing purposes
                      ; Version v1.00 - 26th June 2006
                      ;
                      ; PicoBlaze communicates via the UART to control the value applied to the inputs of

@@ -19,8 +19,8 @@
 // Common compiler header files.
 #include "CompilerBase.h"
 #include "CompilerExpr.h"
-#include "CompilerStatementTypes.h"
 #include "CompilerSerializable.h"
+#include "CompilerStatementTypes.h"
 #include "CompilerSourceLocation.h"
 
 // Standard header files.
@@ -42,11 +42,6 @@ class CompilerStatement : public CompilerSerializable
         /**
          * @brief
          */
-        ~CompilerStatement();
-
-        /**
-         * @brief
-         */
         CompilerStatement();
 
         /**
@@ -64,6 +59,11 @@ class CompilerStatement : public CompilerSerializable
         CompilerStatement ( CompilerSourceLocation location,
                             CompilerStatementTypes::StatementType type,
                             CompilerExpr * args = NULL );
+
+        /**
+         * @brief
+         */
+        virtual ~CompilerStatement();
 
     ////    Public Operations    ////
     public:

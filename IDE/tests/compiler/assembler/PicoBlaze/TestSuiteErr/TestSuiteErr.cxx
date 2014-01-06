@@ -16,11 +16,11 @@
 #include "TestSuiteErr.h"
 
 // Standard header files.
-#include <iostream>
+#include <vector>
+#include <string>
 #include <cstring>
 #include <fstream>
-#include <string>
-#include <vector>
+#include <iostream>
 #include <algorithm>
 
 // Boost Filesystem library.
@@ -87,10 +87,7 @@ bool TestSuiteErr::addTests ( CU_pSuite suite )
           it != testCaseFiles.cend();
           it++ )
     {
-        char * testCaseName = new char [ it->size() + 1 ];
-        strcpy(testCaseName, it->c_str());
-
-        if ( NULL == CU_add_test(suite, testCaseName, &testFunction) )
+        if ( NULL == CU_add_test(suite, it->c_str(), &testFunction) )
         {
             return false;
         }
@@ -103,20 +100,27 @@ void TestSuiteErr::testFunction()
 {
     using namespace boost::filesystem;
 
-    std::string testName = CU_get_current_test()->pName;
-    m_options->m_sourceFile = system_complete( path("TestSuiteErr") / "testcases" / (testName + ".asm") ).string();
+    const std::string testName = CU_get_current_test()->pName;
+    m_options->m_sourceFiles.clear();
+    m_options->m_sourceFiles.push_back ( system_complete ( path("TestSuiteErr") / "testcases" / ( testName + ".asm" ) )
+                                                         . string() );
 
-    std::string resultsCommonPath = system_complete( path("TestSuiteErr") / "results" / testName ).string();
+    const std::string resultsCommonPath = system_complete( path("TestSuiteErr") / "results" / testName ).string();
     m_options->m_symbolTable  = resultsCommonPath + ".sym";
     m_options->m_macroTable   = resultsCommonPath + ".mac";
     m_options->m_codeTree     = resultsCommonPath + ".crt";;
     m_options->m_lstFile      = resultsCommonPath + ".lst";
 
     dynamic_cast<CompilerMsgIntfFile*>(m_msgInt)->openFile(resultsCommonPath + ".err");
-    CU_ASSERT_FATAL ( false == m_compiler->compile(CompilerBase::LI_ASM, CompilerBase::TA_PICOBLAZE, m_options) );
+    if ( true == m_compiler->compile(CompilerBase::LI_ASM, CompilerBase::TA_PICOBLAZE, m_options) )
+    {
+        CU_FAIL("Compilation succeeded (while it should have failed).");
+        dynamic_cast<CompilerMsgIntfFile*>(m_msgInt)->closeFile();
+        return;
+    }
     dynamic_cast<CompilerMsgIntfFile*>(m_msgInt)->closeFile();
 
-    std::string expectedCommonPath = system_complete( path("TestSuiteErr") / "expected" / testName ).string();
+    const std::string expectedCommonPath = system_complete( path("TestSuiteErr") / "expected" / testName ).string();
     compareLst ( expectedCommonPath + ".lst.exp", m_options->m_lstFile );
     compareErr ( expectedCommonPath + ".err.exp", resultsCommonPath + ".err" );
 }
@@ -129,7 +133,11 @@ void TestSuiteErr::compareErr ( const std::string & expected,
     std::ifstream errExpFile(expected);
     while ( false == errExpFile.eof() )
     {
-        CU_ASSERT_TRUE_FATAL(errExpFile.good());
+        if ( false == errExpFile.good() )
+        {
+            CU_FAIL((std::string("Cannot read file: ") + expected ).c_str());
+            return;
+        }
 
         std::string line;
         std::getline(errExpFile, line);
@@ -143,12 +151,20 @@ void TestSuiteErr::compareErr ( const std::string & expected,
     std::ifstream errFile(actual);
     while ( false == errFile.eof() )
     {
-        CU_ASSERT_TRUE_FATAL(errFile.good());
+        if ( false == errFile.good() )
+        {
+            CU_FAIL((std::string("Cannot read file: ") + actual ).c_str());
+            return;
+        }
 
         std::string errFileLine;
         std::getline(errFile, errFileLine);
 
-        CU_ASSERT_FATAL(errLineNumber < expFileNoOfLines);
+        if ( errLineNumber >= expFileNoOfLines )
+        {
+            CU_FAIL("errLineNumber < expFileNoOfLines");
+            return;
+        }
 
         if ( errFileLine != errExpFileVec[errLineNumber] )
         {
@@ -159,7 +175,7 @@ void TestSuiteErr::compareErr ( const std::string & expected,
         errLineNumber++;
     }
 
-    int errFileNoOfLines = errLineNumber;
+    size_t errFileNoOfLines = errLineNumber;
     CU_ASSERT_EQUAL(errFileNoOfLines, expFileNoOfLines);
 }
 
@@ -171,7 +187,11 @@ void TestSuiteErr::compareLst ( const std::string & expected,
     std::ifstream lstExpFile(expected);
     while ( false == lstExpFile.eof() )
     {
-        CU_ASSERT_TRUE_FATAL(lstExpFile.good());
+        if ( false == lstExpFile.good() )
+        {
+            CU_FAIL((std::string("Cannot read file: ") + expected ).c_str());
+            return;
+        }
 
         std::string line;
         std::getline(lstExpFile, line);
@@ -190,7 +210,11 @@ void TestSuiteErr::compareLst ( const std::string & expected,
     std::ifstream lstFile(actual);
     while ( false == lstFile.eof() )
     {
-        CU_ASSERT_TRUE_FATAL(lstFile.good());
+        if ( false == lstFile.good() )
+        {
+            CU_FAIL((std::string("Cannot read file: ") + actual ).c_str());
+            return;
+        }
 
         std::string lstFileLine;
         std::getline(lstFile, lstFileLine);
@@ -201,7 +225,11 @@ void TestSuiteErr::compareLst ( const std::string & expected,
             continue;
         }
 
-        CU_ASSERT_FATAL(lstLineNumber < expFileNoOfLines);
+        if ( lstLineNumber >= expFileNoOfLines )
+        {
+            CU_FAIL("lstLineNumber < expFileNoOfLines");
+            return;
+        }
 
         if ( lstFileLine != lstExpFileVec[lstLineNumber] )
         {

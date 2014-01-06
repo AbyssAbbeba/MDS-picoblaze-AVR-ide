@@ -54,16 +54,38 @@ int AsmPicoBlazeParser_parse ( yyscan_t yyscanner, CompilerParserInterface * asm
 
 // Standard header files.
 #include <cstdio>
+#include <vector>
 #include <cstdlib>
+
+#define PUSH_OTHER_FILES_ON_LEXER_STACK(lexer)                                                                  \
+    for ( size_t i = 1; i < sourceFiles.size(); i++ )                                                           \
+    {                                                                                                           \
+        parserIntf->m_yyllocStack.push_back ( { 1, 1, 1, 1 } );                                                 \
+        lexer ## _push_buffer_state ( lexer ## __create_buffer ( sourceFiles[i], YY_BUF_SIZE, yyscanner ),      \
+                                      yyscanner );                                                              \
+    }
+
+#define OPEN_ALL_SOURCE_FILES()                                         \
+    for ( const auto srcFile : options->m_sourceFiles )                 \
+    {                                                                   \
+        FILE * file;                                                    \
+        if ( NULL == ( file = parserIntf->fileOpen ( srcFile ) ) )      \
+        {                                                               \
+            *errStr = srcFile;                                          \
+            return MESC_IO_ERROR;                                       \
+        }                                                               \
+        sourceFiles.push_back(file);                                    \
+    }
 
 CompilerModules::ModEmplStatCode CompilerModules::employModule ( CompilerBase::LangId lang,
                                                                  CompilerBase::TargetArch arch,
                                                                  CompilerCore * compilerCore,
-                                                                 CompilerSemanticAnalyzer * & semanticAnalyzer )
+                                                                 CompilerSemanticAnalyzer * & semanticAnalyzer,
+                                                                 std::string * errStr )
 {
     CompilerOptions * options = compilerCore->getCompilationOptions();
     CompilerParserInterface * parserIntf = dynamic_cast<CompilerParserInterface*>(compilerCore);
-    FILE * sourceFile;
+    std::vector<FILE *> sourceFiles;
 
     // Pointer to the lexer context.
     yyscan_t yyscanner;
@@ -113,15 +135,12 @@ CompilerModules::ModEmplStatCode CompilerModules::employModule ( CompilerBase::L
                     // Setup compiler's semantic analyzer.
                     semanticAnalyzer = new CompilerCSemanticAnalyzer ( compilerCore, options );
 
-                    // Attempt to open the source file.
-                    if ( NULL == ( sourceFile = parserIntf->fileOpen ( options->m_sourceFile ) ) )
-                    {
-                        return MESC_IO_ERROR;
-                    }
+                    // Attempt to open the source files.
+                    OPEN_ALL_SOURCE_FILES();
 
                     // Initiate C preprocessor.
                     CompilerCPreprocessor preprocessor ( parserIntf, options );
-                    char * buffer = preprocessor.processFile ( sourceFile );
+                    char * buffer = preprocessor.processFiles ( sourceFiles );
                     compilerCore->closeInputFiles();
 
                     if ( NULL == buffer )
@@ -174,15 +193,13 @@ CompilerModules::ModEmplStatCode CompilerModules::employModule ( CompilerBase::L
                     // Setup compiler's semantic analyzer.
                     semanticAnalyzer = new AsmAvr8SemanticAnalyzer ( compilerCore, options );
 
-                    // Attempt to open the source file.
-                    if ( NULL == ( sourceFile = parserIntf->fileOpen ( options->m_sourceFile ) ) )
-                    {
-                        return MESC_IO_ERROR;
-                    }
+                    // Attempt to open the source files.
+                    OPEN_ALL_SOURCE_FILES();
 
                     // Initiate language analyzers.
                     AsmAvr8Lexer_lex_init_extra ( compilerCore, &yyscanner );
-                    AsmAvr8Lexer_set_in ( sourceFile, yyscanner );
+                    AsmAvr8Lexer_set_in ( sourceFiles[0], yyscanner );
+                    PUSH_OTHER_FILES_ON_LEXER_STACK(AsmAvr8Lexer);
                     AsmAvr8Parser_parse ( yyscanner, compilerCore );
                     AsmAvr8Lexer_lex_destroy ( yyscanner );
 
@@ -198,15 +215,13 @@ CompilerModules::ModEmplStatCode CompilerModules::employModule ( CompilerBase::L
                     // Setup compiler's semantic analyzer.
                     semanticAnalyzer = new AsmPic8SemanticAnalyzer ( compilerCore, options );
 
-                    // Attempt to open the source file.
-                    if ( NULL == ( sourceFile = parserIntf->fileOpen ( options->m_sourceFile ) ) )
-                    {
-                        return MESC_IO_ERROR;
-                    }
+                    // Attempt to open the source files.
+                    OPEN_ALL_SOURCE_FILES();
 
                     // Initiate language analyzers.
                     AsmPic8Lexer_lex_init_extra ( compilerCore, &yyscanner );
-                    AsmPic8Lexer_set_in ( sourceFile, yyscanner );
+                    AsmPic8Lexer_set_in ( sourceFiles[0], yyscanner );
+                    PUSH_OTHER_FILES_ON_LEXER_STACK(AsmPic8Lexer);
                     AsmPic8Parser_parse ( yyscanner, compilerCore );
                     AsmPic8Lexer_lex_destroy ( yyscanner );
 
@@ -222,15 +237,13 @@ CompilerModules::ModEmplStatCode CompilerModules::employModule ( CompilerBase::L
                     // Setup compiler's semantic analyzer.
                     semanticAnalyzer = new AsmMcs51SemanticAnalyzer ( compilerCore, options );
 
-                    // Attempt to open the source file.
-                    if ( NULL == ( sourceFile = parserIntf->fileOpen ( options->m_sourceFile ) ) )
-                    {
-                        return MESC_IO_ERROR;
-                    }
+                    // Attempt to open the source files.
+                    OPEN_ALL_SOURCE_FILES();
 
                     // Initiate language analyzers.
                     AsmMcs51Lexer_lex_init_extra ( compilerCore, &yyscanner );
-                    AsmMcs51Lexer_set_in ( sourceFile, yyscanner );
+                    AsmMcs51Lexer_set_in ( sourceFiles[0], yyscanner );
+                    PUSH_OTHER_FILES_ON_LEXER_STACK(AsmMcs51Lexer);
                     AsmMcs51Parser_parse ( yyscanner, compilerCore );
                     AsmMcs51Lexer_lex_destroy ( yyscanner );
 
@@ -246,15 +259,13 @@ CompilerModules::ModEmplStatCode CompilerModules::employModule ( CompilerBase::L
                     // Setup compiler's semantic analyzer.
                     semanticAnalyzer = new AsmPicoBlazeSemanticAnalyzer ( compilerCore, options );
 
-                    // Attempt to open the source file.
-                    if ( NULL == ( sourceFile = parserIntf->fileOpen ( options->m_sourceFile ) ) )
-                    {
-                        return MESC_IO_ERROR;
-                    }
+                    // Attempt to open the source files.
+                    OPEN_ALL_SOURCE_FILES();
 
                     // Initiate language analyzers.
                     AsmPicoBlazeLexer_lex_init_extra ( compilerCore, &yyscanner );
-                    AsmPicoBlazeLexer_set_in ( sourceFile, yyscanner );
+                    AsmPicoBlazeLexer_set_in ( sourceFiles[0], yyscanner );
+                    PUSH_OTHER_FILES_ON_LEXER_STACK(AsmPicoBlazeLexer);
                     AsmPicoBlazeParser_parse ( yyscanner, compilerCore );
                     AsmPicoBlazeLexer_lex_destroy ( yyscanner );
 

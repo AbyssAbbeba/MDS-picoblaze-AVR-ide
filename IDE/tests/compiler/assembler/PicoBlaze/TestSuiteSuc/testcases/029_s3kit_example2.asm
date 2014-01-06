@@ -1,5 +1,6 @@
                      ; KCPSM3 Program - LED control with Pulse Width Modulation (PWM).
-                      ;
+                                         device kcpsm6
+                    ; warning > added only for testing purposes ;
                       ; Design provided for use with the design 'low_cost_design_authentication_for_spartan_3e.vhd'
                       ; and the Spartan-3E Starter Kit. This design provides the token 'real' application to be
                       ; protected by design authentication.

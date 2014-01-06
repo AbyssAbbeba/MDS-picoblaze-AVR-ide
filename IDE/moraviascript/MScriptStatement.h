@@ -60,7 +60,7 @@ class MScriptStatement : public MScriptSerializable
         /**
          * @brief
          */
-        ~MScriptStatement();
+        virtual ~MScriptStatement();
 
     ////    Public Operations    ////
     public:

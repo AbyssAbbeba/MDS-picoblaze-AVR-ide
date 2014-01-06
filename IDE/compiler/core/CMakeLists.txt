@@ -14,34 +14,19 @@
 # Set project name
 project ( CompilerCore )
 
-# Set the minimum required version of CMake
-cmake_minimum_required ( VERSION 2.8 )
-
-# Create verbose makefiles if on
-set ( CMAKE_VERBOSE_MAKEFILE OFF )
-
 # ------------------------------------------------------------------------------
 # COMPILATION OPTIONS
 # ------------------------------------------------------------------------------
 
-# Load settings specific for the Qt4 library (we use it here for i18n)
-find_package ( Qt4 REQUIRED )
-include ( ${QT_USE_FILE} )
-
-# Find Boost include directories and libraries.
-find_package ( Boost 1.55
-               REQUIRED
-               COMPONENTS filesystem system )
-
 # List of preprocessor include file search directories.
-include_directories ( "${CMAKE_CURRENT_BINARY_DIR}"
-                      "${CMAKE_CURRENT_BINARY_DIR}/../modules" )
+include_directories ( "${CMAKE_CURRENT_SOURCE_DIR}"
+                      "${CMAKE_CURRENT_SOURCE_DIR}/../modules" )
 
 # Specify directories in which the linker will look for libraries.
-link_directories ( "${CMAKE_CURRENT_BINARY_DIR}/../modules"
-                   "${CMAKE_CURRENT_BINARY_DIR}/../../utilities/os"
-                   "${CMAKE_CURRENT_BINARY_DIR}/../../utilities/DbgFile/"
-                   "${CMAKE_CURRENT_BINARY_DIR}/../../utilities/MCUDataFiles/" )
+link_directories ( "${CMAKE_CURRENT_SOURCE_DIR}/../modules"
+                   "${CMAKE_CURRENT_SOURCE_DIR}/../../utilities/os"
+                   "${CMAKE_CURRENT_SOURCE_DIR}/../../utilities/DbgFile/"
+                   "${CMAKE_CURRENT_SOURCE_DIR}/../../utilities/MCUDataFiles/" )
 
 ## Create moc code from a list of files containing Qt class with the Q_OBJECT declaration.
  # Per-directory preprocessor definitions are also added.
@@ -71,7 +56,7 @@ add_library ( ${PROJECT_NAME} SHARED
               CompilerStatementTypes.cxx
               CompilerLocationTracker.cxx )
 
-# Link a target to given libraries.
+# Link the target to given libraries.
 target_link_libraries ( ${PROJECT_NAME}
                         ${QT_LIBRARIES}
                         ${Boost_LIBRARIES}

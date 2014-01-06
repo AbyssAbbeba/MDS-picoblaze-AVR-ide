@@ -149,6 +149,10 @@ class CompilerValue : public CompilerSerializable
         CompilerValue ( unsigned char * array,
                         int size,
                         bool copy = false );
+        /**
+         * @brief
+         */
+        virtual ~CompilerValue() {}
 
     ////    Public Operations    ////
     public:
