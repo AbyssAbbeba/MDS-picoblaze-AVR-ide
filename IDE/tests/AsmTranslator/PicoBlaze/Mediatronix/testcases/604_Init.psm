@@ -20,7 +20,7 @@
 
 ; -------------------------------------------------------------------------------
 
-		.SCR	0x380		// we want the scratchpad to appear at 0x380 in the code map
+		//.SCR	0x380		// we want the scratchpad to appear at 0x380 in the code map
 
 ; -------------------------------------------------------------------------------
 
