@@ -185,8 +185,11 @@ CompilerStatement * AsmPicoBlazeMacros::expand ( const CompilerSourceLocation & 
         {
             m_compilerCore -> semanticMessage ( arg->m_location,
                                                 CompilerBase::MT_ERROR,
-                                                QObject::tr("too many arguments given, expecting at most %1 "
-                                                            "arguments").arg(numberOfParams).toStdString() );
+                                                QObject::tr ( "too many arguments given to macro `%1', expecting at "
+                                                              "most %2 argument(s)")
+                                                           . arg ( name.c_str() )
+                                                           . arg ( numberOfParams )
+                                                           . toStdString() );
             break;
         }
 
@@ -204,8 +207,9 @@ CompilerStatement * AsmPicoBlazeMacros::expand ( const CompilerSourceLocation & 
         symbolSubst ( param, &blankExpr, result );
         m_compilerCore -> semanticMessage ( location,
                                             CompilerBase::MT_REMARK,
-                                            QObject::tr("parameter `%1' substituted for blank "
-                                                        "value").arg(param.c_str()).toStdString() );
+                                            QObject::tr ( "parameter `%1' substituted for blank value" )
+                                                       . arg ( param.c_str() )
+                                                       . toStdString() );
     }
 
     return result;

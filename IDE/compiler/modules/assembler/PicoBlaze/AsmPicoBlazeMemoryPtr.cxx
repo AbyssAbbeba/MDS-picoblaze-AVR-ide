@@ -100,20 +100,21 @@ bool AsmPicoBlazeMemoryPtr::tryReserve ( const CompilerSourceLocation & location
     {
         m_compilerCore->semanticMessage ( location,
                                           CompilerBase::MT_WARNING,
-                                          QObject::tr ( "reusing already reserved space in %1 memory at address: %2" )
-                                                      .arg(memName)
-                                                      .arg(address)
-                                                      .toStdString() );
+                                          QObject::tr ( "reusing already reserved space in %1 memory at address: 0x%2" )
+                                                      . arg ( memName )
+                                                      . arg ( address, 0, 16 )
+                                                      . toStdString() );
         return false;
     }
     else if ( address > hardLimit )
     {
         m_compilerCore->semanticMessage ( location,
                                           CompilerBase::MT_ERROR,
-                                          QObject::tr("attempting to use unavailable space in %1 memory at address: %2")
-                                                     .arg(memName)
-                                                     .arg(address)
-                                                     .toStdString() );
+                                          QObject::tr ( "attempting to use unavailable space in %1 memory at address: "
+                                                        "0x%2" )
+                                                      . arg ( memName )
+                                                      . arg ( address, 0, 16 )
+                                                      . toStdString() );
         return false;
     }
 

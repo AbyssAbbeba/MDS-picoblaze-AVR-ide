@@ -338,7 +338,8 @@ int AsmPicoBlazeSymbolTable::getExprValue ( ExprValSide side,
         {
             m_compilerCore -> semanticMessage ( expr->m_location,
                                                 CompilerBase::MT_ERROR,
-                                                QObject::tr("blank value").toStdString());
+                                                QObject::tr("blank value").toStdString(),
+                                                true );
             break;
         }
         case CompilerValue::TYPE_INT:
@@ -350,7 +351,8 @@ int AsmPicoBlazeSymbolTable::getExprValue ( ExprValSide side,
             m_compilerCore -> semanticMessage ( expr->m_location,
                                                 CompilerBase::MT_ERROR,
                                                 QObject::tr("real numbers are not supported in assembler")
-                                                           .toStdString());
+                                                           .toStdString(),
+                                                true );
             break;
         }
         case CompilerValue::TYPE_EXPR:
@@ -389,7 +391,8 @@ int AsmPicoBlazeSymbolTable::getExprValue ( ExprValSide side,
             m_compilerCore -> semanticMessage ( expr->m_location,
                                                 CompilerBase::MT_ERROR,
                                                 QObject::tr ( "this value is not valid inside an expression" )
-                                                            . toStdString());
+                                                            . toStdString(),
+                                                true );
             break;
         }
     }
@@ -543,7 +546,8 @@ int AsmPicoBlazeSymbolTable::computeExpr ( const CompilerExpr * expr,
 
                 m_compilerCore -> semanticMessage ( loc,
                                                     CompilerBase::MT_ERROR,
-                                                    QObject::tr("division by zero").toStdString());
+                                                    QObject::tr("division by zero").toStdString(),
+                                                    true );
                 return 1;
             }
             return getExprValue(LEFT, expr,  argList) / right;
@@ -566,7 +570,8 @@ int AsmPicoBlazeSymbolTable::computeExpr ( const CompilerExpr * expr,
 
                 m_compilerCore -> semanticMessage ( loc,
                                                     CompilerBase::MT_ERROR,
-                                                    QObject::tr("division by zero").toStdString());
+                                                    QObject::tr("division by zero").toStdString(),
+                                                    true );
                 return 1;
             }
             return getExprValue(LEFT, expr,  argList) % right;
@@ -606,7 +611,8 @@ int AsmPicoBlazeSymbolTable::computeExpr ( const CompilerExpr * expr,
 
     m_compilerCore -> semanticMessage ( expr->m_location,
                                         CompilerBase::MT_ERROR,
-                                        QObject::tr("unable to resolve this expression").toStdString());
+                                        QObject::tr("unable to resolve this expression").toStdString(),
+                                        true );
     return 1;
 }
 
@@ -644,12 +650,12 @@ unsigned int AsmPicoBlazeSymbolTable::resolveExpr ( const CompilerExpr * expr,
             {
                 m_compilerCore -> semanticMessage ( expr->location(),
                                                     CompilerBase::MT_REMARK,
-                                                    QObject::tr ( "result is negative number: %1, this will "
+                                                    QObject::tr ( "result is negative number: 0x%1, this will "
                                                                   "represented as %2-bit number in two's complement "
-                                                                  "arithmetic which makes it: %3" )
-                                                                . arg ( resultOrig )
+                                                                  "arithmetic which makes it: 0x%3" )
+                                                                . arg ( -resultOrig, 0, 16 )
                                                                 . arg ( bitsMax )
-                                                                . arg ( result )
+                                                                . arg ( result, 0, 16 )
                                                                 . toStdString() );
             }
         }
@@ -657,12 +663,12 @@ unsigned int AsmPicoBlazeSymbolTable::resolveExpr ( const CompilerExpr * expr,
         {
             m_compilerCore -> semanticMessage ( expr->location(),
                                                 CompilerBase::MT_WARNING,
-                                                QObject::tr ( "value out of range: %1, allowed range is [0,%2] "
-                                                              "(trimmed to %3 bits) which makes it %4" )
-                                                            . arg ( result )
-                                                            . arg ( mask )
+                                                QObject::tr ( "value out of range: 0x%1, allowed range is [0x0,0x%2] "
+                                                              "(trimmed to %3 bits) which makes it 0x%4" )
+                                                            . arg ( result, 0, 16 )
+                                                            . arg ( mask, 0, 16 )
                                                             . arg ( bitsMax )
-                                                            . arg ( result & mask )
+                                                            . arg ( (result & mask), 0, 16 )
                                                             . toStdString() );
             result &= mask;
         }

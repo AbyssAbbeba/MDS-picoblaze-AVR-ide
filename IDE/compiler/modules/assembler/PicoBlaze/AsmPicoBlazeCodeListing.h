@@ -305,6 +305,16 @@ class AsmPicoBlazeCodeListing : public CompilerMsgObserver
          */
         inline void processMsgQueue();
 
+        /**
+         * @brief
+         * @param[in] location
+         * @param[in] type
+         * @param[in] text
+         */
+        inline void insertMessage ( const CompilerSourceLocation & location,
+                                    CompilerBase::MessageType type,
+                                    const std::string & text );
+
     ////    Private Attributes    ////
     private:
         ///
@@ -345,6 +355,15 @@ class AsmPicoBlazeCodeListing : public CompilerMsgObserver
 
         ///
         std::vector<std::pair<CompilerSourceLocation,Message>> m_messageQueue;
+
+        ///
+        std::string m_lastMsgPrefix;
+
+        ///
+        bool m_lastMsgSubsequent;
+
+        ///
+        CompilerSourceLocation m_lastMsgLocation;
 };
 
 /// @name Tracing operators
