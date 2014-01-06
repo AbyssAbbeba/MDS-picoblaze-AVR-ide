@@ -41,15 +41,15 @@
 SBOX_ROM            .EQU       $F0                 // uSBOX.VHD is instatiated at this port address
 
 // key value
-inkey               .BYT       $2B, $7E, $15, $16, $28, $AE, $D2, $A6, $AB, $F7, $15, $88, $09, $CF, $4F, $3C
+//inkey               .BYT       $2B, $7E, $15, $16, $28, $AE, $D2, $A6, $AB, $F7, $15, $88, $09, $CF, $4F, $3C
 
 // plaintext, key  and result
-plain               .BYT       $32, $43, $F6, $A8, $88, $5A, $30, $8D, $31, $31, $98, $A2, $E0, $37, $07, $34
-key                 .BUF       16
-result              .BUF       16
+//plain               .BYT       $32, $43, $F6, $A8, $88, $5A, $30, $8D, $31, $31, $98, $A2, $E0, $37, $07, $34
+//key                 .BUF       16
+//result              .BUF       16
 
 // state buffer
-state               .BUF       16
+//state               .BUF       16
 
 // special registers
 pKey                .EQU       s1                  // key pointer
