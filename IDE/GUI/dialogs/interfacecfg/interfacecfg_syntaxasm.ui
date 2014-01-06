@@ -363,7 +363,7 @@
     <string/>
    </property>
   </widget>
-  <widget class="QCheckBox" name="chckUPtds">
+  <widget class="QCheckBox" name="chckUOpds">
    <property name="geometry">
     <rect>
      <x>170</x>

@@ -45,6 +45,12 @@ InterfaceCfgDlg_Core::InterfaceCfgDlg_Core(QWidget *parent)
 void InterfaceCfgDlg_Core::ok()
 {
     this->editFonts->save();
+    this->editGeneral->save();
+    this->editSyntax->save();
+    this->ideGeneral->save();
+    this->simWarnings->save();
+    this->simOthers->save();
+    GuiCfg::getInstance().saveConfig();
     this->done(1);
 }
 

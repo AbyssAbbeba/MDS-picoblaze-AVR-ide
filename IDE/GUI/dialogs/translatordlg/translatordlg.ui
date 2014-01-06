@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>ASM Translator</string>
   </property>
   <widget class="QDialogButtonBox" name="btnBox">
    <property name="geometry">
