@@ -434,7 +434,7 @@ DIS_INT_INST            "disable"{WS}"interrupt"
                                                         CompilerBase::MT_ERROR,
                                                         QObject::tr("character constant has to have 8 bits")
                                                                    .toStdString(),
-                                                                   true );
+                                                        true );
                             }
 
                             yylval->number = result;
