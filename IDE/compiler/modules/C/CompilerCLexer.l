@@ -219,22 +219,22 @@ ID      [_a-zA-Z][_a-zA-Z0-9]*
  /* Integral */
 0b[01]+         {
                     // Binary number.
-                    yylval->number = convertStrToNumber(yyextra, yylloc, (yytext + 2), 64, 2);
+                    yylval->integer = convertStrToNumber(yyextra, yylloc, (yytext + 2), 64, 2);
                     return INTEGER;
                 }
 0x[0-9A-F]+     {
                     // Hexadecimal number.
-                    yylval->number = convertStrToNumber(yyextra, yylloc, (yytext + 2), 16, 16);
+                    yylval->integer = convertStrToNumber(yyextra, yylloc, (yytext + 2), 16, 16);
                     return INTEGER;
                 }
 0[0-7]+         {
-                    // Octal number.
-                    yylval->number = convertStrToNumber(yyextra, yylloc, (yytext + 1), 22, 8);
+                    // Octal integer.
+                    yylval->integer = convertStrToNumber(yyextra, yylloc, (yytext + 1), 22, 8);
                     return INTEGER;
                 }
 [0-9]+          {
-                    // Decimal number.
-                    yylval->number = convertStrToNumber(yyextra, yylloc, yytext, 20, 10);
+                    // Decimal integer.
+                    yylval->integer = convertStrToNumber(yyextra, yylloc, yytext, 20, 10);
                     return INTEGER;
                 }
 
