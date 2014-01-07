@@ -15,7 +15,6 @@
 
 // PicoBlaze assembler semantic analyzer header files.
 #include "AsmPicoBlazeSpecialMacros.h"
-#include "AsmPicoBlazeSymbolTable.h"
 #include "AsmPicoBlazeCodeListing.h"
 
 // Common compiler header files.
@@ -120,9 +119,20 @@ CompilerStatement * AsmPicoBlazeSpecialMacros::runTimeFor ( CompilerStatement * 
                                           CompilerBase::MT_WARNING,
                                           QObject::tr ( "reuse of iterator register in nested for loop (the two loops "
                                                         "will affect each other via their iterator registers)" )
-                                                      .toStdString() );
+                                                      .toStdString(),
+                                          true );
     }
     m_forLoopIterRegs.push_back(reg);
+
+    checkType ( true, m_symbolTable->getType(args[0]), args[0]->location() );
+    for ( int i = 1; i < 4; i++ )
+    {
+        if ( NULL == args[i] )
+        {
+            break;
+        }
+        checkType ( false, m_symbolTable->getType(args[i]), args[i]->location() );
+    }
 
     if ( NULL == args[2] )
     {
@@ -279,8 +289,9 @@ CompilerStatement * AsmPicoBlazeSpecialMacros::evaluateCondition ( const Compile
 {
     struct
     {
-        bool m_reg;
+        AsmPicoBlazeSymbolTable::SymbolType m_type;
         int m_val;
+        bool m_reg;
     } cndVal[2];
 
     int resultKnownInAdvance = 0;
@@ -290,8 +301,10 @@ CompilerStatement * AsmPicoBlazeSpecialMacros::evaluateCondition ( const Compile
     const CompilerExpr * const lVal = cnd->lVal().m_data.m_expr;
     const CompilerExpr * const rVal = cnd->rVal().m_data.m_expr;
 
-    cndVal[0].m_val = (int) m_symbolTable->resolveExpr(lVal->lVal().m_data.m_expr, 8);
-    cndVal[1].m_val = (int) m_symbolTable->resolveExpr(rVal->lVal().m_data.m_expr, 8);
+    cndVal[0].m_type = m_symbolTable->getType(lVal->lVal().m_data.m_expr);
+    cndVal[1].m_type = m_symbolTable->getType(rVal->lVal().m_data.m_expr);
+    cndVal[0].m_val  = (int) m_symbolTable->resolveExpr(lVal->lVal().m_data.m_expr, 8);
+    cndVal[1].m_val  = (int) m_symbolTable->resolveExpr(rVal->lVal().m_data.m_expr, 8);
 
     if ( CompilerExpr::OPER_HASH == lVal->oper() )
     {
@@ -323,6 +336,15 @@ CompilerStatement * AsmPicoBlazeSpecialMacros::evaluateCondition ( const Compile
         {
             // <DIRECT> <OPERATOR> <DIRECT>
             cndVal[1].m_reg = true;
+        }
+    }
+
+    {
+        const CompilerExpr * e = lVal;
+        for ( int  i = 0; i < 2; i++ )
+        {
+            checkType ( cndVal[i].m_reg, cndVal[i].m_type, e->location() );
+            e = rVal;
         }
     }
 
@@ -653,25 +675,29 @@ CompilerStatement * AsmPicoBlazeSpecialMacros::evaluateCondition ( const Compile
             m_compilerCore->semanticMessage(cnd->location(),
                                             CompilerBase::MT_WARNING,
                                             QObject::tr("comparing a register with itself, result is always negative")
-                                                       .toStdString());
+                                                       .toStdString(),
+                                            true );
             break;
         case -1:
             m_compilerCore->semanticMessage(cnd->location(),
                                             CompilerBase::MT_WARNING,
                                             QObject::tr("comparing two immediate constants, result is always negative")
-                                                       .toStdString());
+                                                       .toStdString(),
+                                            true );
             break;
         case 1:
             m_compilerCore->semanticMessage(cnd->location(),
                                             CompilerBase::MT_WARNING,
                                             QObject::tr("comparing two immediate constants, result is always positive")
-                                                        .toStdString());
+                                                        .toStdString(),
+                                            true);
             break;
         case 2:
             m_compilerCore->semanticMessage(cnd->location(),
                                             CompilerBase::MT_WARNING,
                                             QObject::tr("comparing a register with itself, result is always positive")
-                                                       .toStdString());
+                                                       .toStdString(),
+                                            true);
             break;
     }
 
@@ -771,4 +797,36 @@ inline const std::string & AsmPicoBlazeSpecialMacros::generateLabel ( std::strin
     }
 
     return label;
+}
+
+inline void AsmPicoBlazeSpecialMacros::checkType ( bool regOrNumber,
+                                                   AsmPicoBlazeSymbolTable::SymbolType type,
+                                                   const CompilerSourceLocation & location )
+{
+    if ( AsmPicoBlazeSymbolTable::STYPE_EXPRESSION == type )
+    {
+        return;
+    }
+
+    if ( true == regOrNumber )
+    {
+        if ( AsmPicoBlazeSymbolTable::STYPE_REGISTER != type )
+        {
+            m_compilerCore->semanticMessage ( location,
+                                              CompilerBase::MT_WARNING,
+                                              QObject::tr ( "register is expected here but given type is: " )
+                                                          . toStdString()
+                                                          + m_symbolTable->symType2Str(type),
+                                              true );
+        }
+    }
+    else if ( AsmPicoBlazeSymbolTable::STYPE_NUMBER != type )
+    {
+        m_compilerCore->semanticMessage ( location,
+                                          CompilerBase::MT_WARNING,
+                                          QObject::tr ( "generic number is expected here but given type is: " )
+                                                      . toStdString()
+                                                      + m_symbolTable->symType2Str(type),
+                                          true );
+    }
 }

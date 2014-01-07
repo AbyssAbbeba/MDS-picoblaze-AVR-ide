@@ -403,7 +403,8 @@ DIS_INT_INST            "disable"{WS}"interrupt"
                                 default:
                                     yyextra->lexerMessage ( yylloc,
                                                             CompilerBase::MT_ERROR,
-                                                            QObject::tr("syntax not understood").toStdString() );
+                                                            QObject::tr("syntax not understood").toStdString(),
+                                                            true );
                                     break;
                             }
                         }
@@ -432,7 +433,8 @@ DIS_INT_INST            "disable"{WS}"interrupt"
                                 yyextra->lexerMessage ( yylloc,
                                                         CompilerBase::MT_ERROR,
                                                         QObject::tr("character constant has to have 8 bits")
-                                                                   .toStdString() );
+                                                                   .toStdString(),
+                                                                   true );
                             }
 
                             yylval->number = result;
@@ -460,7 +462,8 @@ DIS_INT_INST            "disable"{WS}"interrupt"
                             yyextra->lexerMessage ( yylloc,
                                                     CompilerBase::MT_ERROR,
                                                     QObject::tr("unterminated string or character constant")
-                                                               .toStdString() );
+                                                               .toStdString(),
+                                                    true );
 
                             // Put the EOL character sequence back onto the input stream
                             char * eol = strdup(yytext);
@@ -521,7 +524,8 @@ DIS_INT_INST            "disable"{WS}"interrupt"
                             yyextra->lexerMessage ( yylloc,
                                                     CompilerBase::MT_ERROR,
                                                     QObject::tr("unterminated string or character constant")
-                                                               .toStdString() );
+                                                               .toStdString(),
+                                                    true );
 
                             // Discard the string buffer and terminate lexical analysis (this is a fatal error)
                             free(yylval->array.data);
@@ -548,7 +552,8 @@ DIS_INT_INST            "disable"{WS}"interrupt"
                             {
                                 yyextra->lexerMessage ( yylloc,
                                                         CompilerBase::MT_ERROR,
-                                                        QObject::tr("no file name specified").toStdString() );
+                                                        QObject::tr("no file name specified").toStdString(),
+                                                        true );
                                 return EOL;
                             }
                             enlargeStringBuffer(yylval, yyextra);
@@ -562,7 +567,8 @@ DIS_INT_INST            "disable"{WS}"interrupt"
                                 yyextra->lexerMessage ( yylloc,
                                                         CompilerBase::MT_WARNING,
                                                         QObject::tr("file name contains a null character")
-                                                                   .toStdString() );
+                                                                   .toStdString(),
+                                                        true );
                             }
 
                             FILE * file = yyextra->fileOpen(filename, &filename);

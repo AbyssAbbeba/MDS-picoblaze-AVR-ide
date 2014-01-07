@@ -425,9 +425,9 @@ inline void AsmPicoBlazeTreeDecoder::dir_DB ( CompilerStatement * node )
             m_compilerCore -> semanticMessage ( node->location(),
                                                 CompilerBase::MT_WARNING,
                                                 QObject::tr ( "instruction word is only 18 bits wide, value"
-                                                              " `%1' trimmed to `%2'" )
-                                                            . arg ( code )
-                                                            . arg ( code & 0x3ffff )
+                                                              " 0x%1 trimmed to 0x%2" )
+                                                            . arg ( code, 0, 16 )
+                                                            . arg ( (code & 0x3ffff), 5, 16, QLatin1Char('0') )
                                                             . toStdString() );
             code &= 0x3ffff;
         }
@@ -461,7 +461,8 @@ inline AsmPicoBlazeTreeDecoder::CourseOfAction
         m_compilerCore -> semanticMessage ( node->location(),
                                             CompilerBase::MT_ERROR,
                                             QObject::tr("maximum number of REPEAT directive iterations (%1) reached")
-                                                       .arg(MAX_REPEAT_ITERATIONS).toStdString() );
+                                                       .arg(MAX_REPEAT_ITERATIONS).toStdString(),
+                                            true );
     }
 
     CompilerSourceLocation lastLocation = node->branch()->last()->location();
@@ -553,7 +554,8 @@ inline AsmPicoBlazeTreeDecoder::CourseOfAction
                                             QObject::tr ( "maximum number of WHILE directive iterations "
                                                           "(%1) reached" )
                                                         . arg ( MAX_WHILE_ITERATIONS )
-                                                        . toStdString() );
+                                                        . toStdString(),
+                                            true );
     }
     if ( NULL != body)
     {
@@ -578,7 +580,8 @@ inline AsmPicoBlazeTreeDecoder::CourseOfAction
                                             CompilerBase::MT_ERROR,
                                             QObject::tr ( "maximum macro expansion level (%1) reached " )
                                                         . arg ( m_opts->m_maxMacroExp )
-                                                        . toStdString() );
+                                                        . toStdString(),
+                                            true );
         return CA_NO_ACTION;
     }
 
@@ -632,21 +635,21 @@ inline void AsmPicoBlazeTreeDecoder::dir_MESSG ( CompilerStatement * node )
 {
     const CompilerValue::Data::CharArray & argCharArray = node->args()->lVal().m_data.m_array;
     std::string arg ( (char*) argCharArray.m_data, argCharArray.m_size );
-    m_compilerCore->semanticMessage(node->location(), CompilerBase::MT_REMARK, arg);
+    m_compilerCore->semanticMessage(node->location(), CompilerBase::MT_REMARK, arg, true);
 }
 
 inline void AsmPicoBlazeTreeDecoder::dir_WARNING ( CompilerStatement * node )
 {
     const CompilerValue::Data::CharArray & argCharArray = node->args()->lVal().m_data.m_array;
     std::string arg ( (char*) argCharArray.m_data, argCharArray.m_size );
-    m_compilerCore->semanticMessage(node->location(), CompilerBase::MT_WARNING, arg);
+    m_compilerCore->semanticMessage(node->location(), CompilerBase::MT_WARNING, arg, true);
 }
 
 inline void AsmPicoBlazeTreeDecoder::dir_ERROR ( CompilerStatement * node )
 {
     const CompilerValue::Data::CharArray & argCharArray = node->args()->lVal().m_data.m_array;
     std::string arg ( (char*) argCharArray.m_data, argCharArray.m_size );
-    m_compilerCore->semanticMessage(node->location(), CompilerBase::MT_ERROR, arg);
+    m_compilerCore->semanticMessage(node->location(), CompilerBase::MT_ERROR, arg, true);
 }
 
 inline void AsmPicoBlazeTreeDecoder::dir_LIST ( CompilerStatement * node )
@@ -677,7 +680,8 @@ inline AsmPicoBlazeTreeDecoder::CourseOfAction
         m_compilerCore->semanticMessage ( node->location(),
                                           CompilerBase::MT_ERROR,
                                           QObject::tr ( "directive EXITM' cannot apper outside macro definition")
-                                                      .toStdString() );
+                                                      .toStdString(),
+                                          true );
         return CA_NO_ACTION;
     }
 
@@ -703,7 +707,8 @@ inline void AsmPicoBlazeTreeDecoder::dir_LOCAL ( CompilerStatement * node,
                                           CompilerBase::MT_ERROR,
                                           QObject::tr ( "directive `LOCAL' cannot apper outside macro "
                                                         "definition" )
-                                                      . toStdString() );
+                                                      . toStdString(),
+                                          true );
     }
 
     const std::string local = node->args()->lVal().m_data.m_symbol;
@@ -800,13 +805,15 @@ inline void AsmPicoBlazeTreeDecoder::dir_LIMIT ( CompilerStatement * node )
     {
         m_compilerCore->semanticMessage ( node->location(),
                                           CompilerBase::MT_REMARK,
-                                          QObject::tr("limit value -1 means unlimited").toStdString() );
+                                          QObject::tr("limit value -1 means unlimited").toStdString(),
+                                          true );
     }
     else if ( -1 > limVal )
     {
         m_compilerCore->semanticMessage ( node->location(),
                                           CompilerBase::MT_ERROR,
-                                          QObject::tr("limit value %1 is not valid").arg(limVal).toStdString() );
+                                          QObject::tr("limit value %1 is not valid").arg(limVal).toStdString(),
+                                          true );
         return;
     }
 
@@ -1010,7 +1017,8 @@ bool AsmPicoBlazeTreeDecoder::checkKcpsm3AndHigher ( const CompilerSourceLocatio
             m_compilerCore->semanticMessage(location,
                                             CompilerBase::MT_ERROR,
                                             QObject::tr("assembler feature '%1' is supported only on KCPSM3 and higher")
-                                                       .arg(functionality).toStdString() );
+                                                       .arg(functionality).toStdString(),
+                                            true );
             return false;
     }
 }
