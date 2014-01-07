@@ -1,0 +1,91 @@
+                   1     ; Compiler test case for Assembler
+                   2     ; instruction opcodes
+                   3
+                   4
+                   5
+  00004            6     s1       EQU        04h
+  00004            7     s2       EQU        0x04
+  00006            8     s3       EQU        6
+                   9     s4       EQU        7bb
+E: identifier cannot start with a digit: `7bb'.
+E: directive EQU requires a single argument.
+                  10
+                  11     bb
+E: macro not defined: "BB".
+                  12     Start:b
+E: macro not defined: "B".
+                  13
+                  14
+                  15     ; Logical
+000 01401         16             LOAD      s1,#01h
+001 01405         17             LOAD      s1,#5
+002 01405         18             LOAD      s1,#05
+003 01405         19             LOAD      s1,#0x05
+004 01405         20             LOAD      s1,#0b101
+005 01405         21             LOAD      s1,#0b00000101
+006 01405         22             LOAD      s1,#5D
+007 01405         23             LOAD      s1,#5O
+008 01405         24             LOAD      s1,#5Q
+009 01405         25             LOAD      s1,#5h
+00A 01405         26             LOAD      s1,#101b
+00B 01405         27             LOAD      s1,#00000101b
+                  28
+00C 03405         29             AND       s1,#5
+00D 03405         30             AND       s1,#05
+00E 03405         31             AND       s1,#0x05
+00F 03405         32             AND       s1,#0b101
+010 03405         33             AND       s1,#0b00000101
+011 03405         34             AND       s1,#5D
+012 03405         35             AND       s1,#5O
+013 03405         36             AND       s1,#5Q
+014 03405         37             AND       s1,#5h
+015 03405         38             AND       s1,#101b
+016 03405         39             AND       s1,#00000101b
+                  40
+017 05405         41             OR        s1,#5
+018 05405         42             OR        s1,#5
+019 05405         43             OR        s1,#05
+01A 05405         44             OR        s1,#0x05
+01B 05405         45             OR        s1,#0b101
+01C 05405         46             OR        s1,#0b00000101
+01D 05405         47             OR        s1,#5D
+01E 05405         48             OR        s1,#5O
+01F 05405         49             OR        s1,#5Q
+020 05405         50             OR        s1,#5h
+021 05405         51             OR        s1,#101b
+022 05405         52             OR        s1,#00000101b
+                  53
+023 07405         54             XOR       s1,#5
+024 07405         55             XOR       s1,#5
+025 07405         56             XOR       s1,#05
+026 07405         57             XOR       s1,#0x05
+027 07405         58             XOR       s1,#0b101
+028 07405         59             XOR       s1,#0b00000101
+029 07405         60             XOR       s1,#5D
+02A 07405         61             XOR       s1,#5O
+02B 07405         62             XOR       s1,#5Q
+02C 07405         63             XOR       s1,#5h
+02D 07405         64             XOR       s1,#101b
+02E 07405         65             XOR       s1,#00000101b
+                  66
+02F 0D405         67             TEST      s1,#5
+030 0D405         68             TEST      s1,#5
+031 0D405         69             TEST      s1,#05
+032 0D405         70             TEST      s1,#0x05
+033 0D405         71             TEST      s1,#0b101
+034 0D405         72             TEST      s1,#0b00000101
+035 0D405         73             TEST      s1,#5D
+036 0D405         74             TEST      s1,#5O
+037 0D405         75             TEST      s1,#5Q
+038 0D405         76             TEST      s1,#5h
+039 0D405         77             TEST      s1,#101b
+03A 0D405         78             TEST      s1,#00000101b
+                  79
+03B 00440         80             LOAD      s1,s2
+03C 02440         81             AND       s1,s2
+03D 04440         82             OR        s1,s2
+03E 06440         83             XOR       s1,s2
+03F 0C440         84             TEST      s1,s2
+                  85
+                  86     END
+                  87

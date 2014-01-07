@@ -1,0 +1,55 @@
+                   1     ; Compiler test case for Assembler
+                   2     ; instruction opcodes
+                   3
+                   4
+  00001            5     TESTsymb1    SET        1h
+  00011            6     TESTsymb2    SET        0x11
+  00001            7     TESTsymb3    SET        1
+  00003            8     TESTsymb4    SET        3d
+  00004            9     TESTsymb5    EQU        4h
+  00005           10     TESTsymb6    EQU        0x05
+  00006           11     TESTsymb7    EQU        6
+  00007           12     TESTsymb8    EQU        7
+  00008           13     TESTsymb9    REG        8h
+  00009           14     TESTsymb10    REG        9h
+  0000A           15     TESTsymb11    REG        Ah
+  0000B           16     TESTsymb12    REG        Bh
+  0000C           17     TESTsymb13    DATA        Ch
+  00005           18     TESTsymb14    DATA        0x05
+  00002           19     TESTsymb15    DATA        2
+  00003           20     TESTsymb16    DATA        3d
+  00002           21     TESTsymb17    CODE        0h + 2h
+  00002           22     TESTsymb18    CODE        2h
+  00002           23     TESTsymb19    CODE        2h
+  00002           24     TESTsymb20    CODE        2h
+                  25     TESTsymb21    DEFINE        3h
+                  26     TESTsymb22    DEFINE        4h
+                  27     TESTsymb23    DEFINE        5h
+                  28     TESTsymb24    DEFINE        TESTsymb1 + TESTsymb11
+                  29
+                  30
+                  31
+                  32     Start:
+                  33
+                  34     ; Shift and rotate
+000 1490E         35             SR0       TESTsymb10
+001 1490F         36             SR1       TESTsymb10
+002 1490A         37             SRX        TESTsymb10
+003 14908         38             SRA        TESTsymb10
+004 1490C         39             RR         TESTsymb10
+                  40
+005 14906         41             SL0       TESTsymb10
+006 14907         42             SL1       TESTsymb10
+007 14904         43             SLX       TESTsymb10
+008 14900         44             SLA       TESTsymb10
+009 14902         45             RL        TESTsymb10
+                  46
+                  47     scratchpad_transfers:
+00A 2F104         48     STORE           sX, 04
+E: symbol not defined: `SX'.
+                  49     ; Write register sX to RAM location 04
+00B 0B104         50     FETCH           sX, 04
+E: symbol not defined: `SX'.
+                  51     ; Read RAM location 04 into register sX
+                  52             END
+                  53
