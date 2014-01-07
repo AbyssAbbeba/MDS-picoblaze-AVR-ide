@@ -327,7 +327,12 @@ for i in *-Results.xml; do
         else
             style="background-color: #ffbb00"
         fi
-        echo "            <td style=\"${style}\"><a href=\"${VALGRIND_HTML}\">${errors} error(s)</a></td>" >> index.html
+        case "${errors}" in
+            0) errStr="no errors";;
+            1) errStr="1 error";;
+            *) errStr="${errors} errors";;
+        esac
+        echo "            <td style=\"${style}\"><a href=\"${VALGRIND_HTML}\">${errStr}</a></td>" >> index.html
         let memErrorsTotal+=${errors}
     else
         echo "            <td> -- </td>" >> index.html
@@ -340,8 +345,14 @@ for i in *-Results.xml; do
         elif (( CASES != SUCCESSFUL_CASES )); then
             style="background-image:url('bgr.png'); background-size: $(( 100 - SUCCESSFUL_CASES * 100 / CASES ))% 100%;"
             echo -n "            <td class=\"percentage\" style=\"${style}\"> " >> index.html
-            echo    "<a href=\"${i%%.xml}.html\">$(( CASES - SUCCESSFUL_CASES )) case(s) failed </a></td>" >> index.html
-            let failedTotal+=$(( CASES - SUCCESSFUL_CASES ))
+            failed=$(( CASES - SUCCESSFUL_CASES ))
+            if (( 1 == ${failed})); then
+                failedStr="1 case"
+            else
+                failedStr="${failed} cases"
+            fi
+            echo    "<a href=\"${i%%.xml}.html\">${failedStr} failed </a></td>" >> index.html
+            let failedTotal+=${failed}
         else
             echo "            <td><a href=\"${i%%.xml}.html\"> Passed </a></td>" >> index.html
         fi
