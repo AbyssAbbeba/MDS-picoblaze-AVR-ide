@@ -1,0 +1,161 @@
+                   1     ; Compiler test case for Assembler
+                   2
+                   3
+                   4     ;=========================================================
+                   5     ; routine: mult_soft
+                   6     ;  function: 8-bit unsigned multiplier using
+                   7     ;           shift-and-add algorithm
+                   8     ;  input register:
+                   9     ;     s3: multiplicand
+                  10     ;     s4: multiplier
+                  11     ;  output register:
+                  12     ;     s5: upper byte of product
+                  13     ;     s6: lower byte of product
+                  14     ;  temp register: i
+                  15     ;========================================================
+                  16
+                  17     Start:
+                  18
+                  19     mult_soft:
+000 00100         20        load s5, 00              ;clear s5
+E: symbol not defined: `S5'.
+001 00180         21        load i, 08                 ;initialize loop index
+E: symbol not defined: `I'.
+                  22     mult_loop:
+002 1410E         23        sr0  s4                     ;shift lsb to carry
+E: symbol not defined: `S4'.
+003 3E005         24        jump nc, shift_prod       ;lsb is 0
+004 10110         25        add s5, s3                    ;lsb is 1
+E: symbol not defined: `S5'.
+E: symbol not defined: `S3'.
+                  26     shift_prod:
+005 14108         27        sra s5                     ;shift upper byte right,
+E: symbol not defined: `S5'.
+                  28                                       ;carry to MSB, LSB to carry
+006 14108         29        sra s6                     ;shift lower byte right,
+E: symbol not defined: `S6'.
+                  30                                      ;lsb of s5 to MSB of s6
+007 18110         31        sub i, 01                ;dec loop index
+E: symbol not defined: `I'.
+008 36002         32        jump nz, mult_loop       ;repeat until i=0
+009 25000         33        return
+                  34
+                  35     ; UART Transmit Example
+                  36     ;
+00A 001D0         37     start: LOAD s1, 45 ;ASCII "E".
+E: symbol already defined: "START".
+E: symbol not defined: `S1'.
+W: value out of range: 45, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
+00B 2002A         38     CALL xmit
+                  39
+                  40     ;Send character.
+00C 001D0         41     LOAD s1, 45 ;ASCII "E".
+E: symbol not defined: `S1'.
+W: value out of range: 45, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
+00D 2002A         42     CALL xmit
+                  43
+                  44     ;Send character.
+00E 00110         45     LOAD s1, 33 ;ASCII "3".
+E: symbol not defined: `S1'.
+W: value out of range: 33, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
+00F 2002A         46     CALL xmit
+                  47
+                  48     ;Send character.
+010 00160         49     LOAD s1, 38 ;ASCII "8".
+E: symbol not defined: `S1'.
+W: value out of range: 38, allowed range is [0,15] (trimmed to 4 bits) which makes it 6.
+011 2002A         50     CALL xmit
+                  51
+                  52     ;Send character.
+012 001F0         53     LOAD s1, 31 ;ASCII "1".
+E: symbol not defined: `S1'.
+W: value out of range: 31, allowed range is [0,15] (trimmed to 4 bits) which makes it 15.
+013 2002A         54     CALL xmit
+                  55
+                  56     ;Send character.
+014 001E0         57     LOAD s1, 30 ;ASCII "0".
+E: symbol not defined: `S1'.
+W: value out of range: 30, allowed range is [0,15] (trimmed to 4 bits) which makes it 14.
+015 2002A         58     CALL xmit
+                  59
+                  60     ;Send character.
+016 00140         61     LOAD s1, 20 ;ASCII " ".
+E: symbol not defined: `S1'.
+W: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+017 2002A         62     CALL xmit
+                  63
+                  64     ;Send character.
+018 00140         65     LOAD s1, 52 ;ASCII "R".
+E: symbol not defined: `S1'.
+W: value out of range: 52, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+019 2002A         66     CALL xmit
+                  67
+                  68     ;Send character.
+01A 001B0         69     LOAD s1, 75 ;ASCII "u".
+E: symbol not defined: `S1'.
+W: value out of range: 75, allowed range is [0,15] (trimmed to 4 bits) which makes it 11.
+01B 2002A         70     CALL xmit
+                  71
+                  72     ;Send character.
+                  73     LOAD s1, 6C ;ASCII "l".
+E: identifier cannot start with a digit: `6C'.
+E: unexpected end of line.
+01C 2002A         74     CALL xmit
+                  75
+                  76     ;Send character.
+01D 00110         77     LOAD s1, 65 ;ASCII "e".
+E: symbol not defined: `S1'.
+W: value out of range: 65, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
+01E 2002A         78     CALL xmit
+                  79     ;Send character.
+                  80
+01F 00190         81     LOAD s1, 73 ;ASCII "s".
+E: symbol not defined: `S1'.
+W: value out of range: 73, allowed range is [0,15] (trimmed to 4 bits) which makes it 9.
+020 2002A         82     CALL xmit
+                  83
+                  84     ;Send character.
+021 00150         85     LOAD s1, 21 ;ASCII "!".
+E: symbol not defined: `S1'.
+W: value out of range: 21, allowed range is [0,15] (trimmed to 4 bits) which makes it 5.
+022 2002A         86     CALL xmit
+                  87
+                  88     ;Send character.
+023 00150         89     LOAD s1, 21 ;ASCII "!".
+E: symbol not defined: `S1'.
+W: value out of range: 21, allowed range is [0,15] (trimmed to 4 bits) which makes it 5.
+024 2002A         90     CALL xmit
+                  91
+                  92     ;Send character.
+025 00150         93     LOAD s1, 21 ;ASCII "!".
+E: symbol not defined: `S1'.
+W: value out of range: 21, allowed range is [0,15] (trimmed to 4 bits) which makes it 5.
+026 2002A         94     CALL xmit
+                  95
+                  96     ;Send character.
+027 00140         97     LOAD s1, 20 ;ASCII " ".
+E: symbol not defined: `S1'.
+W: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+028 2002A         98     CALL xmit
+                  99
+                 100     ;Send character.
+029 22000        101     JUMP start
+                 102
+                 103     ; Routine to transmit data via RS-232
+                 104     ; First check UART status.
+02A 09100        105     xmit: INPUT s0, 00 ;read uart status.
+E: symbol not defined: `S0'.
+02B 02100        106             AND s0, 80 ;Buffer full mask.
+E: symbol not defined: `S0'.
+W: value out of range: 80, allowed range is [0,15] (trimmed to 4 bits) which makes it 0.
+02C 3602A        107             JUMP NZ, xmit ;Poll if buffer is full.
+                 108     ; Buffer is not full, transmit byte in s1
+02D 2D100        109     OUTPUT s1, 00 ;Ship byte.
+E: symbol not defined: `S1'.
+02E 25000        110     RETURN
+                 111
+                 112
+                 113
+                 114
+                 115     END
+                 116

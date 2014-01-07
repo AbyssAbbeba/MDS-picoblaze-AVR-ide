@@ -1,0 +1,71 @@
+MT_ERROR: 016_Source_code_ukol_1.asm:20.31-20.34: Error: invalid token: `$01'.
+MT_ERROR: 016_Source_code_ukol_1.asm:21.31-21.34: Error: invalid token: `$02'.
+MT_ERROR: 016_Source_code_ukol_1.asm:27.31-27.34: Error: invalid token: `$04'.
+MT_ERROR: 016_Source_code_ukol_1.asm:28.31-28.34: Error: invalid token: `$08'.
+MT_ERROR: 016_Source_code_ukol_1.asm:29.31-29.34: Error: invalid token: `$10'.
+MT_ERROR: 016_Source_code_ukol_1.asm:30.31-30.34: Error: invalid token: `$20'.
+MT_ERROR: 016_Source_code_ukol_1.asm:31.31-31.34: Error: invalid token: `$40'.
+MT_ERROR: 016_Source_code_ukol_1.asm:35.31-35.46: Error: unexpected STRING.
+MT_ERROR: 016_Source_code_ukol_1.asm:44.34-44.37: Error: invalid token: `$00'.
+MT_ERROR: 016_Source_code_ukol_1.asm:44.69-45.1: Error: unexpected end of line.
+MT_ERROR: 016_Source_code_ukol_1.asm:53.37-53.40: Error: invalid token: `$20'.
+MT_ERROR: 016_Source_code_ukol_1.asm:53.78-54.1: Error: unexpected end of line.
+MT_ERROR: 016_Source_code_ukol_1.asm:98.38-98.41: Error: invalid token: `$37'.
+MT_ERROR: 016_Source_code_ukol_1.asm:98.92-99.1: Error: unexpected end of line.
+MT_ERROR: 016_Source_code_ukol_1.asm:100.38-100.41: Error: invalid token: `$30'.
+MT_ERROR: 016_Source_code_ukol_1.asm:100.92-101.1: Error: unexpected end of line.
+MT_ERROR: 016_Source_code_ukol_1.asm:104.38-104.41: Error: invalid token: `$0F'.
+MT_ERROR: 016_Source_code_ukol_1.asm:104.76-105.1: Error: unexpected end of line.
+MT_ERROR: 016_Source_code_ukol_1.asm:107.38-107.41: Error: invalid token: `$37'.
+MT_ERROR: 016_Source_code_ukol_1.asm:107.92-108.1: Error: unexpected end of line.
+MT_ERROR: 016_Source_code_ukol_1.asm:109.38-109.41: Error: invalid token: `$30'.
+MT_ERROR: 016_Source_code_ukol_1.asm:109.92-110.1: Error: unexpected end of line.
+MT_ERROR: 016_Source_code_ukol_1.asm:118.38-118.41: Error: invalid token: `$0D'.
+MT_ERROR: 016_Source_code_ukol_1.asm:118.65-119.1: Error: unexpected end of line.
+MT_ERROR: 016_Source_code_ukol_1.asm:120.38-120.41: Error: invalid token: `$0A'.
+MT_ERROR: 016_Source_code_ukol_1.asm:120.70-121.1: Error: unexpected end of line.
+MT_ERROR: 016_Source_code_ukol_1.asm:96.21-96.40: Error: macro not defined: "COMP".
+MT_ERROR: 016_Source_code_ukol_1.asm:105.21-105.40: Error: macro not defined: "COMP".
+MT_WARNING: Warning: exact device not specified, using KCPSM6 by default.
+MT_ERROR: 016_Source_code_ukol_1.asm:45.28-45.33: Error: symbol not defined: `TEMP1'.
+MT_ERROR: 016_Source_code_ukol_1.asm:45.34-45.37: Error: symbol not defined: `LED'.
+MT_ERROR: 016_Source_code_ukol_1.asm:55.31-55.36: Error: symbol not defined: `CHREG'.
+MT_ERROR: 016_Source_code_ukol_1.asm:55.37-55.43: Error: symbol not defined: `SWITCH'.
+MT_ERROR: 016_Source_code_ukol_1.asm:69.31-69.36: Error: symbol not defined: `TEMP1'.
+MT_ERROR: 016_Source_code_ukol_1.asm:69.38-69.47: Error: symbol not defined: `UART_STAT'.
+MT_ERROR: 016_Source_code_ukol_1.asm:70.31-70.36: Error: symbol not defined: `TEMP1'.
+MT_ERROR: 016_Source_code_ukol_1.asm:72.31-72.36: Error: symbol not defined: `CHREG'.
+MT_ERROR: 016_Source_code_ukol_1.asm:72.38-72.47: Error: symbol not defined: `UART_DATA'.
+MT_ERROR: 016_Source_code_ukol_1.asm:79.31-79.36: Error: symbol not defined: `TEMP1'.
+MT_ERROR: 016_Source_code_ukol_1.asm:79.38-79.47: Error: symbol not defined: `UART_STAT'.
+MT_ERROR: 016_Source_code_ukol_1.asm:80.31-80.36: Error: symbol not defined: `TEMP1'.
+MT_ERROR: 016_Source_code_ukol_1.asm:82.31-82.36: Error: symbol not defined: `CHREG'.
+MT_ERROR: 016_Source_code_ukol_1.asm:82.38-82.47: Error: symbol not defined: `UART_DATA'.
+MT_ERROR: 016_Source_code_ukol_1.asm:91.31-91.36: Error: symbol not defined: `TEMP2'.
+MT_ERROR: 016_Source_code_ukol_1.asm:91.38-91.43: Error: symbol not defined: `CHREG'.
+MT_ERROR: 016_Source_code_ukol_1.asm:92.31-92.36: Error: symbol not defined: `CHREG'.
+MT_ERROR: 016_Source_code_ukol_1.asm:93.31-93.36: Error: symbol not defined: `CHREG'.
+MT_ERROR: 016_Source_code_ukol_1.asm:94.31-94.36: Error: symbol not defined: `CHREG'.
+MT_ERROR: 016_Source_code_ukol_1.asm:95.31-95.36: Error: symbol not defined: `CHREG'.
+MT_ERROR: 016_Source_code_ukol_1.asm:97.34-97.43: Error: symbol not defined: `SENDBNUM1'.
+MT_ERROR: 016_Source_code_ukol_1.asm:103.31-103.36: Error: symbol not defined: `CHREG'.
+MT_ERROR: 016_Source_code_ukol_1.asm:103.38-103.43: Error: symbol not defined: `TEMP2'.
+MT_ERROR: 016_Source_code_ukol_1.asm:106.34-106.43: Error: symbol not defined: `SENDBNUM2'.
+MT_ERROR: 016_Source_code_ukol_1.asm:138.31-138.36: Error: symbol not defined: `TEMP1'.
+MT_WARNING: 016_Source_code_ukol_1.asm:138.38-138.41: Warning: value out of range: 250, allowed range is [0,15] (trimmed to 4 bits) which makes it 10.
+MT_ERROR: 016_Source_code_ukol_1.asm:139.31-139.36: Error: symbol not defined: `TEMP2'.
+MT_WARNING: 016_Source_code_ukol_1.asm:139.38-139.41: Warning: value out of range: 249, allowed range is [0,15] (trimmed to 4 bits) which makes it 9.
+MT_ERROR: 016_Source_code_ukol_1.asm:140.31-140.36: Error: symbol not defined: `TEMP3'.
+MT_WARNING: 016_Source_code_ukol_1.asm:140.38-140.41: Warning: value out of range: 200, allowed range is [0,15] (trimmed to 4 bits) which makes it 8.
+MT_ERROR: 016_Source_code_ukol_1.asm:141.31-141.36: Error: symbol not defined: `TEMP1'.
+MT_ERROR: 016_Source_code_ukol_1.asm:143.31-143.36: Error: symbol not defined: `TEMP2'.
+MT_ERROR: 016_Source_code_ukol_1.asm:145.31-145.36: Error: symbol not defined: `TEMP3'.
+MT_ERROR: 016_Source_code_ukol_1.asm:149.31-149.36: Error: symbol not defined: `TEMP1'.
+MT_WARNING: 016_Source_code_ukol_1.asm:149.38-149.41: Warning: value out of range: 250, allowed range is [0,15] (trimmed to 4 bits) which makes it 10.
+MT_ERROR: 016_Source_code_ukol_1.asm:150.31-150.36: Error: symbol not defined: `TEMP2'.
+MT_WARNING: 016_Source_code_ukol_1.asm:150.38-150.41: Warning: value out of range: 249, allowed range is [0,15] (trimmed to 4 bits) which makes it 9.
+MT_ERROR: 016_Source_code_ukol_1.asm:151.31-151.36: Error: symbol not defined: `TEMP3'.
+MT_WARNING: 016_Source_code_ukol_1.asm:151.38-151.40: Warning: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+MT_ERROR: 016_Source_code_ukol_1.asm:152.31-152.36: Error: symbol not defined: `TEMP1'.
+MT_ERROR: 016_Source_code_ukol_1.asm:154.31-154.36: Error: symbol not defined: `TEMP2'.
+MT_ERROR: 016_Source_code_ukol_1.asm:156.31-156.36: Error: symbol not defined: `TEMP3'.

@@ -1,0 +1,276 @@
+                   1     ; Compiler test case for Assembler
+                   2     ; instruction opcodes
+                   3
+                   4
+                   5
+                   6
+                   7     Start:
+                   8
+                   9         ; Others
+000 20001         10                     CALl      Podprog1
+                  11
+                  12     Podprog1:
+001 20003         13                     CALl      Podprog2
+002 25000         14                     RETURN
+003 20005         15     Podprog2:       CALl      Podprog3
+004 25000         16                     RETURN
+005 20007         17     Podprog3:       CALl      Podprog4
+006 25000         18                     RETURN
+007 20009         19     Podprog4:       CALl      Podprog5
+008 25000         20                     RETURN
+009 2000B         21     Podprog5:       CALl      Podprog6
+00A 25000         22                     RETURN
+00B 2000D         23     Podprog6:       CALl      Podprog7
+00C 25000         24                     RETURN
+                  25     Podprog7:
+00D 25000         26                     RETURN
+                  27
+                  28     ADD16:
+                  29
+  00001           30     NAMEREG         s0, a_lsb
+E: symbol not defined: `S0'.
+                  31     ; rename register s0 as “a_lsb”
+  00001           32     NAMEREG         s1, a_msb
+E: symbol not defined: `S1'.
+W: reusing already reserved space in register file memory at address: 1.
+                  33     ; rename register s1 as “a_msb”
+  00001           34     NAMEREG         s2, b_lsb
+E: symbol not defined: `S2'.
+W: reusing already reserved space in register file memory at address: 1.
+                  35     ; rename register s2 as “b_lsb”
+  00001           36     NAMEREG         s3, b_msb
+E: symbol not defined: `S3'.
+W: reusing already reserved space in register file memory at address: 1.
+                  37     ; rename register s3 as “b_lsb”
+00E 10110         38     ADD             a_lsb, b_lsb
+                  39     ; add LSBs, keep result in a_lsb
+00F 12110         40     ADDCY           a_msb, b_msb
+                  41     ; add MSBs, keep result in a_msb
+010 25000         42     RETURN
+                  43
+                  44
+                  45     SUB16:
+                  46     NAMEREG         s0, a_lsb
+E: symbol already defined: "A_LSB".
+                  47     ; rename register s0 as “a_lsb”
+                  48     NAMEREG         s1, a_msb
+E: symbol already defined: "A_MSB".
+                  49     ; rename register s1 as “a_msb”
+                  50     NAMEREG         s2, b_lsb
+E: symbol already defined: "B_LSB".
+                  51     ; rename register s2 as “b_lsb”
+                  52     NAMEREG         s3, b_msb
+E: symbol already defined: "B_MSB".
+                  53             ; rename register s3 as “b_lsb”
+                  54
+                  55
+011 18110         56             SUB             a_lsb, b_lsb
+                  57             ; subtract LSBs, keep result in a_lsb
+012 1A110         58             SUBCY           a_msb, b_msb
+                  59             ; subtract MSBs, keep result in a_msb
+013 25000         60             RETURN
+                  61
+                  62     inc_16:
+                  63             ; increment low byte
+014 10110         64             ADD             lo_byte,01
+E: symbol not defined: `LO_BYTE'.
+                  65             ; increment high byte only if CARRY bit set when incrementing low byte
+015 12100         66             ADDCY           hi_byte,00
+E: symbol not defined: `HI_BYTE'.
+                  67
+                  68
+                  69     Negate:
+                  70             ; invert all bits in the register performing a one’s complement
+016 06110         71             XOR             sX,FF
+E: symbol not defined: `SX'.
+E: symbol not defined: `FF'.
+                  72             ; add one to sX
+017 10110         73             ADD             sX,01
+E: symbol not defined: `SX'.
+018 25000         74             RETURN
+                  75
+                  76
+                  77
+                  78     Negate:
+E: symbol already defined: "NEGATE".
+  00001           79     NAMEREG         sY, value
+E: symbol not defined: `SY'.
+W: reusing already reserved space in register file memory at address: 1.
+  00001           80     NAMEREG         sX, complement
+E: symbol not defined: `SX'.
+W: reusing already reserved space in register file memory at address: 1.
+                  81     ; Clear ‘complement’ to zero
+019 00100         82     LOAD            complement, 00
+                  83     ; subtract value from 0 to create two’s complement
+01A 18110         84     SUB             complement, value
+01B 25000         85     RETURN
+                  86
+                  87
+                  88     mult_8x8:
+  00001           89     NAMEREG         s0, multiplicand
+E: symbol not defined: `S0'.
+W: reusing already reserved space in register file memory at address: 1.
+                  90     ;
+                  91     preserved
+E: macro not defined: "PRESERVED".
+  00001           92     NAMEREG         s1, multiplier
+E: symbol not defined: `S1'.
+W: reusing already reserved space in register file memory at address: 1.
+                  93     ; preserved
+  00001           94     NAMEREG         s2, bit_mask
+E: symbol not defined: `S2'.
+W: reusing already reserved space in register file memory at address: 1.
+                  95     ; modified
+  00001           96     NAMEREG         s3, result_msb
+E: symbol not defined: `S3'.
+W: reusing already reserved space in register file memory at address: 1.
+                  97     ;
+                  98     ;most-significant byte (MSB) of result,
+                  99     ; modified
+  00001          100     NAMEREG         s4, result_lsb
+E: symbol not defined: `S4'.
+W: reusing already reserved space in register file memory at address: 1.
+                 101     ; least-significant byte (LSB) of result,
+                 102     ; modified
+                 103     ;
+01C 00110        104     LOAD            bit_mask, 01
+                 105     ; start with least-significant bit (lsb)
+01D 00100        106     LOAD            result_msb, 00
+                 107     ; clear product MSB
+01E 00100        108     LOAD            result_lsb, 00
+                 109     ; clear product LSB (not required)
+                 110     ;
+                 111     ; loop through all bits in multiplier
+                 112     mult_loop:
+01F 0C110        113     TEST            multiplier, bit_mask
+                 114     ; check if bit is set
+020 32022        115     JUMP            Z, no_add
+                 116     ; if bit is not set, skip addition
+                 117     ;
+021 10110        118     ADD             result_msb, multiplicand
+                 119     ; addition only occurs in MSB
+                 120     ;
+                 121     no_add:
+022 14108        122     SRA             result_msb
+                 123     ; shift MSB right, CARRY into bit 7,
+                 124     ; lsb into CARRY
+023 14108        125     SRA             result_lsb
+                 126     ; shift LSB right,
+                 127     ; lsb from result_msb into bit 7
+                 128     ;
+024 14106        129     SL0             bit_mask
+                 130     ; shift bit_mask left to examine
+                 131     ; next bit in multiplier
+                 132     ;
+025 3601F        133     JUMP            NZ, mult_loop
+                 134     ; if all bit examined, then bit_mask = 0,
+                 135
+                 136
+                 137     ; Multiplier Routine (8-bit x 8-bit = 16-bit product)
+                 138     ; ===================================================
+                 139     ; Connects to embedded 18x18 Hardware Multiplier via ports
+                 140     ;
+                 141     mult_8x8io:
+                 142     NAMEREG         s0, multiplicand
+E: symbol already defined: "MULTIPLICAND".
+                 143     ;
+                 144     ;preserved
+                 145     NAMEREG         s1, multiplier
+E: symbol already defined: "MULTIPLIER".
+                 146     ;
+                 147     preserved
+E: macro not defined: "PRESERVED".
+                 148     NAMEREG         s3, result_msb
+E: symbol already defined: "RESULT_MSB".
+                 149     ; most-significant byte (MSB) of result, modified
+                 150     NAMEREG         s4, result_lsb
+E: symbol already defined: "RESULT_LSB".
+                 151     ;
+                 152     ;least-significant byte (LSB) of result, modified
+                 153     ;
+                 154     ; Define the port ID numbers as constants for better clarity
+  00000          155     CONSTANT         multiplier_lsb, 00
+  00001          156     CONSTANT         multiplier_msb, 01
+                 157     ;
+                 158     ;
+                 159     ;Output multiplicand and multiplier to FPGA registers connected to the
+                 160     ;inputs of
+                 161     ; the embedded multiplier.
+026 2D100        162     OUTPUT           multiplicand, multiplier_lsb
+027 2D101        163     OUTPUT           multiplier, multiplier_msb
+                 164     ;
+                 165     ; Input the resulting product from the embedded multiplier.
+028 09100        166     INPUT            result_lsb, multiplier_lsb
+029 09101        167     INPUT            result_msb, multiplier_msb
+                 168
+                 169
+                 170     ; Divide Routine (8-bit / 8-bit = 8-bit result, remainder)
+                 171     ; ==================================================
+                 172     ; Shift and subtract algorithm
+                 173     ;
+                 174     div_8by8:
+  00001          175     NAMEREG          s0, dividend
+E: symbol not defined: `S0'.
+W: reusing already reserved space in register file memory at address: 1.
+                 176     ; preserved
+  00001          177     NAMEREG          s1, divisor
+E: symbol not defined: `S1'.
+W: reusing already reserved space in register file memory at address: 1.
+                 178     ; preserved
+  00001          179     NAMEREG          s2, quotient
+E: symbol not defined: `S2'.
+W: reusing already reserved space in register file memory at address: 1.
+                 180     ; preserved
+  00001          181     NAMEREG          s3, remainder
+E: symbol not defined: `S3'.
+W: reusing already reserved space in register file memory at address: 1.
+                 182     ; modified
+                 183     NAMEREG          s4, bit_mask
+E: symbol already defined: "BIT_MASK".
+                 184     ; used to test bits in dividend,
+                 185     ; one-hot encoded, modified
+                 186     ;
+02A 00100        187     LOAD             remainder, 00
+                 188     ; clear remainder
+02B 00100        189     LOAD             bit_mask, 80
+W: value out of range: 80, allowed range is [0,15] (trimmed to 4 bits) which makes it 0.
+                 190     ; start with most-significant bit (msb)
+                 191     div_loop:
+02C 0C110        192     TEST             dividend, bit_mask
+                 193     ; test bit, set CARRY if bit is '1'
+02D 14100        194     SLA              remainder
+                 195     ; shift CARRY into lsb of remainder
+02E 14106        196     SL0              quotient
+                 197     ; shift quotient left (multiply by 2)
+                 198     ;
+02F 1C110        199     COMPARE          remainder, divisor
+                 200     ; is remainder > divisor?
+030 3A033        201     JUMP             C, no_sub
+                 202     ; if divisor is greater, continue to next bit
+031 18110        203     SUB              remainder, divisor
+                 204     ; if remainder > divisor, then subtract
+032 10110        205     ADD              quotient, 01
+                 206     ; add one to quotient
+                 207     no_sub:
+033 1410E        208     SR0              bit_mask
+                 209     ; shift to examine next bit position
+034 3602C        210     JUMP             NZ, div_loop
+                 211     ;
+                 212     ;if bit_mask=0, then all bits examined
+                 213
+                 214
+                 215     set_carry:
+035 00100        216     LOAD             sX, 00
+E: symbol not defined: `SX'.
+036 1C110        217     COMPARE          sX, 01
+E: symbol not defined: `SX'.
+                 218     ; set CARRY flag and reset ZERO flag
+                 219
+                 220
+037 00150        221     LOAD             s0, 05
+E: symbol not defined: `S0'.
+                 222     ; s0 = 00000101
+038 0C140        223     TEST             s0, 04
+E: symbol not defined: `S0'.
+                 224     ; mask = 00000100
+                 225     ; CARRY = 1, ZERO = 0

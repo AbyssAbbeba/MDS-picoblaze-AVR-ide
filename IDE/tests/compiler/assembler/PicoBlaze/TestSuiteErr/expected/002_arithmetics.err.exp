@@ -1,0 +1,8 @@
+MT_WARNING: Warning: exact device not specified, using KCPSM6 by default.
+MT_ERROR: 002_arithmetics.asm:16.24-16.26: Error: symbol not defined: `O5'.
+MT_ERROR: 002_arithmetics.asm:30.24-30.26: Error: symbol not defined: `O5'.
+MT_ERROR: 002_arithmetics.asm:44.24-44.26: Error: symbol not defined: `O5'.
+MT_ERROR: 002_arithmetics.asm:58.24-58.26: Error: symbol not defined: `O5'.
+MT_ERROR: 002_arithmetics.asm:72.24-72.26: Error: symbol not defined: `O5'.
+MT_ERROR: 002_arithmetics.asm:86.24-86.34: Error: symbol not defined: `TESTSYMB10'.
+MT_ERROR: 002_arithmetics.asm:87.24-87.34: Error: symbol not defined: `TESTSYMB11'.

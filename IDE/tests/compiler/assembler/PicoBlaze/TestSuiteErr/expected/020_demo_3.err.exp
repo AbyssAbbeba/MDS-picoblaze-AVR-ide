@@ -1,0 +1,6 @@
+MT_ERROR: 020_demo_3.asm:9.13-10.1: Error: unexpected end of line.
+MT_ERROR: 020_demo_3.asm:10.27-10.28: Error: unexpected ",".
+MT_ERROR: 020_demo_3.asm:11.25-11.26: Error: unexpected ",".
+MT_ERROR: 020_demo_3.asm:12.24-12.25: Error: unexpected *.
+MT_ERROR: 020_demo_3.asm:13.6-13.7: Error: unrecognized token: `?'.
+MT_ERROR: 020_demo_3.asm:14.1-14.6: Error: unexpected special macro RTENDIF.

@@ -1,0 +1,11 @@
+MT_ERROR: 018_demo_1.asm:27.22-27.23: Error: unexpected #.
+MT_ERROR: 018_demo_1.asm:28.22-28.23: Error: unexpected #.
+MT_WARNING: Warning: exact device not specified, using KCPSM6 by default.
+MT_ERROR: 018_demo_1.asm:43.18-43.20: Error: symbol not defined: `S0'.
+MT_ERROR: 018_demo_1.asm:44.18-44.20: Error: symbol not defined: `S1'.
+MT_ERROR: 018_demo_1.asm:49.21-49.23: Error: symbol not defined: `S1'.
+MT_ERROR: 018_demo_1.asm:31.18-31.22: Error: ==> symbol not defined: `S1'.
+MT_ERROR: 018_demo_1.asm:49.17-49.19: Error: symbol not defined: `S0'.
+MT_ERROR: 018_demo_1.asm:31.24-31.28: Error: ==> symbol not defined: `S0'.
+MT_ERROR: 018_demo_1.asm:32.18-32.22: Error: ==> symbol not defined: `S0'.
+MT_ERROR: 018_demo_1.asm:32.24-32.28: Error: ==> symbol not defined: `S1'.

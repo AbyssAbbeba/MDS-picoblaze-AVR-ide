@@ -1,0 +1,64 @@
+MT_ERROR: 015_PicoBlaze_SDR.asm:27.22-27.23: Error: unexpected &.
+MT_ERROR: 015_PicoBlaze_SDR.asm:28.22-28.23: Error: unexpected &.
+MT_ERROR: 015_PicoBlaze_SDR.asm:29.22-29.23: Error: unexpected &.
+MT_ERROR: 015_PicoBlaze_SDR.asm:30.22-30.23: Error: unexpected &.
+MT_ERROR: 015_PicoBlaze_SDR.asm:31.21-31.22: Error: unexpected &.
+MT_ERROR: 015_PicoBlaze_SDR.asm:43.40-43.43: Error: invalid token: `$20'.
+MT_ERROR: 015_PicoBlaze_SDR.asm:43.81-44.1: Error: unexpected end of line.
+MT_ERROR: 015_PicoBlaze_SDR.asm:88.38-88.41: Error: invalid token: `$37'.
+MT_ERROR: 015_PicoBlaze_SDR.asm:88.92-89.1: Error: unexpected end of line.
+MT_ERROR: 015_PicoBlaze_SDR.asm:90.38-90.41: Error: invalid token: `$30'.
+MT_ERROR: 015_PicoBlaze_SDR.asm:90.92-91.1: Error: unexpected end of line.
+MT_ERROR: 015_PicoBlaze_SDR.asm:94.38-94.41: Error: invalid token: `$0F'.
+MT_ERROR: 015_PicoBlaze_SDR.asm:94.76-95.1: Error: unexpected end of line.
+MT_ERROR: 015_PicoBlaze_SDR.asm:97.38-97.41: Error: invalid token: `$37'.
+MT_ERROR: 015_PicoBlaze_SDR.asm:97.92-98.1: Error: unexpected end of line.
+MT_ERROR: 015_PicoBlaze_SDR.asm:99.38-99.41: Error: invalid token: `$30'.
+MT_ERROR: 015_PicoBlaze_SDR.asm:99.92-100.1: Error: unexpected end of line.
+MT_ERROR: 015_PicoBlaze_SDR.asm:108.38-108.41: Error: invalid token: `$0D'.
+MT_ERROR: 015_PicoBlaze_SDR.asm:108.65-109.1: Error: unexpected end of line.
+MT_ERROR: 015_PicoBlaze_SDR.asm:110.38-110.41: Error: invalid token: `$0A'.
+MT_ERROR: 015_PicoBlaze_SDR.asm:110.70-111.1: Error: unexpected end of line.
+MT_ERROR: 015_PicoBlaze_SDR.asm:86.21-86.40: Error: macro not defined: "COMP".
+MT_ERROR: 015_PicoBlaze_SDR.asm:95.21-95.40: Error: macro not defined: "COMP".
+MT_WARNING: Warning: exact device not specified, using KCPSM6 by default.
+MT_ERROR: 015_PicoBlaze_SDR.asm:45.31-45.36: Error: symbol not defined: `CHREG'.
+MT_ERROR: 015_PicoBlaze_SDR.asm:45.37-45.43: Error: symbol not defined: `SWITCH'.
+MT_ERROR: 015_PicoBlaze_SDR.asm:59.31-59.36: Error: symbol not defined: `TEMP1'.
+MT_ERROR: 015_PicoBlaze_SDR.asm:59.38-59.47: Error: symbol not defined: `UART_STAT'.
+MT_ERROR: 015_PicoBlaze_SDR.asm:60.31-60.36: Error: symbol not defined: `TEMP1'.
+MT_ERROR: 015_PicoBlaze_SDR.asm:62.31-62.36: Error: symbol not defined: `CHREG'.
+MT_ERROR: 015_PicoBlaze_SDR.asm:62.38-62.47: Error: symbol not defined: `UART_DATA'.
+MT_ERROR: 015_PicoBlaze_SDR.asm:69.31-69.36: Error: symbol not defined: `TEMP1'.
+MT_ERROR: 015_PicoBlaze_SDR.asm:69.38-69.47: Error: symbol not defined: `UART_STAT'.
+MT_ERROR: 015_PicoBlaze_SDR.asm:70.31-70.36: Error: symbol not defined: `TEMP1'.
+MT_ERROR: 015_PicoBlaze_SDR.asm:72.31-72.36: Error: symbol not defined: `CHREG'.
+MT_ERROR: 015_PicoBlaze_SDR.asm:72.38-72.47: Error: symbol not defined: `UART_DATA'.
+MT_ERROR: 015_PicoBlaze_SDR.asm:81.31-81.36: Error: symbol not defined: `TEMP2'.
+MT_ERROR: 015_PicoBlaze_SDR.asm:81.38-81.43: Error: symbol not defined: `CHREG'.
+MT_ERROR: 015_PicoBlaze_SDR.asm:82.31-82.36: Error: symbol not defined: `CHREG'.
+MT_ERROR: 015_PicoBlaze_SDR.asm:83.31-83.36: Error: symbol not defined: `CHREG'.
+MT_ERROR: 015_PicoBlaze_SDR.asm:84.31-84.36: Error: symbol not defined: `CHREG'.
+MT_ERROR: 015_PicoBlaze_SDR.asm:85.31-85.36: Error: symbol not defined: `CHREG'.
+MT_ERROR: 015_PicoBlaze_SDR.asm:87.34-87.43: Error: symbol not defined: `SENDBNUM1'.
+MT_ERROR: 015_PicoBlaze_SDR.asm:93.31-93.36: Error: symbol not defined: `CHREG'.
+MT_ERROR: 015_PicoBlaze_SDR.asm:93.38-93.43: Error: symbol not defined: `TEMP2'.
+MT_ERROR: 015_PicoBlaze_SDR.asm:96.34-96.43: Error: symbol not defined: `SENDBNUM2'.
+MT_ERROR: 015_PicoBlaze_SDR.asm:130.31-130.36: Error: symbol not defined: `TEMP1'.
+MT_WARNING: 015_PicoBlaze_SDR.asm:130.38-130.41: Warning: value out of range: 250, allowed range is [0,15] (trimmed to 4 bits) which makes it 10.
+MT_ERROR: 015_PicoBlaze_SDR.asm:131.31-131.36: Error: symbol not defined: `TEMP2'.
+MT_WARNING: 015_PicoBlaze_SDR.asm:131.38-131.41: Warning: value out of range: 249, allowed range is [0,15] (trimmed to 4 bits) which makes it 9.
+MT_ERROR: 015_PicoBlaze_SDR.asm:132.31-132.36: Error: symbol not defined: `TEMP3'.
+MT_WARNING: 015_PicoBlaze_SDR.asm:132.38-132.41: Warning: value out of range: 200, allowed range is [0,15] (trimmed to 4 bits) which makes it 8.
+MT_ERROR: 015_PicoBlaze_SDR.asm:133.31-133.36: Error: symbol not defined: `TEMP1'.
+MT_ERROR: 015_PicoBlaze_SDR.asm:135.31-135.36: Error: symbol not defined: `TEMP2'.
+MT_ERROR: 015_PicoBlaze_SDR.asm:137.31-137.36: Error: symbol not defined: `TEMP3'.
+MT_ERROR: 015_PicoBlaze_SDR.asm:141.31-141.36: Error: symbol not defined: `TEMP1'.
+MT_WARNING: 015_PicoBlaze_SDR.asm:141.38-141.41: Warning: value out of range: 250, allowed range is [0,15] (trimmed to 4 bits) which makes it 10.
+MT_ERROR: 015_PicoBlaze_SDR.asm:142.31-142.36: Error: symbol not defined: `TEMP2'.
+MT_WARNING: 015_PicoBlaze_SDR.asm:142.38-142.41: Warning: value out of range: 249, allowed range is [0,15] (trimmed to 4 bits) which makes it 9.
+MT_ERROR: 015_PicoBlaze_SDR.asm:143.31-143.36: Error: symbol not defined: `TEMP3'.
+MT_WARNING: 015_PicoBlaze_SDR.asm:143.38-143.40: Warning: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+MT_ERROR: 015_PicoBlaze_SDR.asm:144.31-144.36: Error: symbol not defined: `TEMP1'.
+MT_ERROR: 015_PicoBlaze_SDR.asm:146.31-146.36: Error: symbol not defined: `TEMP2'.
+MT_ERROR: 015_PicoBlaze_SDR.asm:148.31-148.36: Error: symbol not defined: `TEMP3'.

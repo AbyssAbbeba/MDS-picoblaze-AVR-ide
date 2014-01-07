@@ -1,0 +1,5 @@
+MT_ERROR: 001_logical.asm:9.21-9.24: Error: identifier cannot start with a digit: `7bb'.
+MT_ERROR: 001_logical.asm:9.10-9.13: Error: directive EQU requires a single argument.
+MT_ERROR: 001_logical.asm:11.1-11.3: Error: macro not defined: "BB".
+MT_ERROR: 001_logical.asm:12.7-12.8: Error: macro not defined: "B".
+MT_WARNING: Warning: exact device not specified, using KCPSM6 by default.
