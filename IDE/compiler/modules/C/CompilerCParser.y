@@ -419,9 +419,17 @@ id:
 
 
 param:
-      datatype id                   { $$ = $id;                                                     }
-    | datatype "&" id               { $$ = $id; $id->m_operator = CompilerExpr::OPER_REF;           }
-    | datatype "*" id               { $$ = $id; $id->m_operator = CompilerExpr::OPER_DEREF;         }
+      datatype id                   {
+                                        $$ = $id;
+                                    }
+    | datatype "&" id               {
+                                        $$ = $id;
+                                        $id->m_operator = CompilerExpr::OPER_REF;
+                                    }
+    | datatype "*" id               {
+                                        $$ = $id;
+                                        $id->m_operator = CompilerExpr::OPER_DEREF;
+                                    }
 ;
 
 
@@ -470,43 +478,43 @@ expr:
     // Single value expressions.    z
       id                            { $$ = $id;                                                                  }
     | string                        { $$ = $string;                                                              }
-    | INTEGER                       { $$ = new CompilerExpr($INTEGER, LOC(@$));  printf("INTEGER = %d",$INTEGER);}
+    | INTEGER                       { $$ = new CompilerExpr($INTEGER, LOC(@$));                                  }
     | REAL                          { $$ = new CompilerExpr($REAL, LOC(@$));                                     }
 
     // Parentheses.
     | "(" expr ")"                  { $$ = $2;                                                                   }
 
     // Binary operators.
-    | expr "/" expr                 {  $$ = new CompilerExpr($1, CompilerExpr::OPER_DIV,  $3, LOC(@$));          }
-    | expr "+" expr                 {  $$ = new CompilerExpr($1, CompilerExpr::OPER_ADD,  $3, LOC(@$));          }
-    | expr "-" expr                 {  $$ = new CompilerExpr($1, CompilerExpr::OPER_SUB, $3, LOC(@$));           }
-    | expr "*" expr                 {  $$ = new CompilerExpr($1, CompilerExpr::OPER_MULT,  $3, LOC(@$));         }
-    | expr "!" expr                 {  $$ = new CompilerExpr($1, CompilerExpr::OPER_NOT,  $3, LOC(@$));          }
-    | expr "%" expr                 {  $$ = new CompilerExpr($1, CompilerExpr::OPER_MOD,  $3, LOC(@$));          }
-    | expr "<<" expr                {  $$ = new CompilerExpr($1, CompilerExpr::OPER_SHL, $3, LOC(@$));           }
-    | expr ">>" expr                {  $$ = new CompilerExpr($1, CompilerExpr::OPER_SHR, $3, LOC(@$));           }
-    | expr "&&" expr                {  $$ = new CompilerExpr($1, CompilerExpr::OPER_LAND,   $3, LOC(@$));        }
-    | expr "||" expr                {  $$ = new CompilerExpr($1, CompilerExpr::OPER_LOR,   $3, LOC(@$));         }
-    | expr "&" expr                 {  $$ = new CompilerExpr($1, CompilerExpr::OPER_BAND,  $3, LOC(@$));         }
-    | expr "|" expr                 {  $$ = new CompilerExpr($1, CompilerExpr::OPER_BOR, $3, LOC(@$));           }
-    | expr "^" expr                 {  $$ = new CompilerExpr($1, CompilerExpr::OPER_BXOR,   $3, LOC(@$));        }
-    | expr "==" expr                {  $$ = new CompilerExpr($1, CompilerExpr::OPER_EQ,   $3, LOC(@$));          }
-    | expr "!=" expr                {  $$ = new CompilerExpr($1, CompilerExpr::OPER_NE,   $3, LOC(@$));          }
-    | expr "<" expr                 {  $$ = new CompilerExpr($1, CompilerExpr::OPER_LT,  $3, LOC(@$));           }
-    | expr "<=" expr                {  $$ = new CompilerExpr($1, CompilerExpr::OPER_LE,  $3, LOC(@$));           }
-    | expr ">" expr                 {  $$ = new CompilerExpr($1, CompilerExpr::OPER_GT,  $3, LOC(@$));           }
-    | expr ">=" expr                {  $$ = new CompilerExpr($1, CompilerExpr::OPER_GE,      $3, LOC(@$));       }
-    | expr "=" expr                 {  $$ = new CompilerExpr($1, CompilerExpr::OPER_EQ,  $3, LOC(@$));           }
-    | expr "~" expr                 {  $$ = new CompilerExpr($1, CompilerExpr::OPER_CMPL,  $3, LOC(@$));         }
+    | expr "/" expr                 {  $$ = new CompilerExpr($1, CompilerExpr::OPER_DIV,         $3, LOC(@$));   }
+    | expr "+" expr                 {  $$ = new CompilerExpr($1, CompilerExpr::OPER_ADD,         $3, LOC(@$));   }
+    | expr "-" expr                 {  $$ = new CompilerExpr($1, CompilerExpr::OPER_SUB,         $3, LOC(@$));   }
+    | expr "*" expr                 {  $$ = new CompilerExpr($1, CompilerExpr::OPER_MULT,        $3, LOC(@$));   }
+    | expr "!" expr                 {  $$ = new CompilerExpr($1, CompilerExpr::OPER_NOT,         $3, LOC(@$));   }
+    | expr "%" expr                 {  $$ = new CompilerExpr($1, CompilerExpr::OPER_MOD,         $3, LOC(@$));   }
+    | expr "<<" expr                {  $$ = new CompilerExpr($1, CompilerExpr::OPER_SHL,         $3, LOC(@$));   }
+    | expr ">>" expr                {  $$ = new CompilerExpr($1, CompilerExpr::OPER_SHR,         $3, LOC(@$));   }
+    | expr "&&" expr                {  $$ = new CompilerExpr($1, CompilerExpr::OPER_LAND,        $3, LOC(@$));   }
+    | expr "||" expr                {  $$ = new CompilerExpr($1, CompilerExpr::OPER_LOR,         $3, LOC(@$));   }
+    | expr "&" expr                 {  $$ = new CompilerExpr($1, CompilerExpr::OPER_BAND,        $3, LOC(@$));   }
+    | expr "|" expr                 {  $$ = new CompilerExpr($1, CompilerExpr::OPER_BOR,         $3, LOC(@$));   }
+    | expr "^" expr                 {  $$ = new CompilerExpr($1, CompilerExpr::OPER_BXOR,        $3, LOC(@$));   }
+    | expr "==" expr                {  $$ = new CompilerExpr($1, CompilerExpr::OPER_EQ,          $3, LOC(@$));   }
+    | expr "!=" expr                {  $$ = new CompilerExpr($1, CompilerExpr::OPER_NE,          $3, LOC(@$));   }
+    | expr "<" expr                 {  $$ = new CompilerExpr($1, CompilerExpr::OPER_LT,          $3, LOC(@$));   }
+    | expr "<=" expr                {  $$ = new CompilerExpr($1, CompilerExpr::OPER_LE,          $3, LOC(@$));   }
+    | expr ">" expr                 {  $$ = new CompilerExpr($1, CompilerExpr::OPER_GT,          $3, LOC(@$));   }
+    | expr ">=" expr                {  $$ = new CompilerExpr($1, CompilerExpr::OPER_GE,          $3, LOC(@$));   }
+    | expr "=" expr                 {  $$ = new CompilerExpr($1, CompilerExpr::OPER_ASSIGN,      $3, LOC(@$));   }
+    | expr "~" expr                 {  $$ = new CompilerExpr($1, CompilerExpr::OPER_CMPL,        $3, LOC(@$));   }
     | expr "+=" expr                {  $$ = new CompilerExpr($1, CompilerExpr::OPER_ADD_ASSIGN,  $3, LOC(@$));   }
     | expr "-=" expr                {  $$ = new CompilerExpr($1, CompilerExpr::OPER_SUB_ASSIGN,  $3, LOC(@$));   }
     | expr "*=" expr                {  $$ = new CompilerExpr($1, CompilerExpr::OPER_MUL_ASSIGN,  $3, LOC(@$));   }
     | expr "/=" expr                {  $$ = new CompilerExpr($1, CompilerExpr::OPER_DIV_ASSIGN,  $3, LOC(@$));   }
     | expr "%=" expr                {  $$ = new CompilerExpr($1, CompilerExpr::OPER_MOD_ASSIGN,  $3, LOC(@$));   }
     | expr "<<=" expr               {  $$ = new CompilerExpr($1, CompilerExpr::OPER_SHL_ASSIGN,  $3, LOC(@$));   }
-    | expr ">>=" expr               {  $$ = new CompilerExpr($1, CompilerExpr::OPER_SHR_ASSIGN, $3, LOC(@$));    }
-    | expr "&=" expr                {  $$ = new CompilerExpr($1, CompilerExpr::OPER_AND_ASSIGN,  $3, LOC(@$));  }
-    | expr "|=" expr                {  $$ = new CompilerExpr($1, CompilerExpr::OPER_ORB_ASSIGN, $3, LOC(@$));    }
+    | expr ">>=" expr               {  $$ = new CompilerExpr($1, CompilerExpr::OPER_SHR_ASSIGN,  $3, LOC(@$));   }
+    | expr "&=" expr                {  $$ = new CompilerExpr($1, CompilerExpr::OPER_AND_ASSIGN,  $3, LOC(@$));   }
+    | expr "|=" expr                {  $$ = new CompilerExpr($1, CompilerExpr::OPER_ORB_ASSIGN,  $3, LOC(@$));   }
     | expr "^=" expr                {  $$ = new CompilerExpr($1, CompilerExpr::OPER_XOR_ASSIGN,  $3, LOC(@$));   }
 
     // Unary operators.
