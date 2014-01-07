@@ -44,10 +44,8 @@
     CompilerExpr      * expr;   //
     CompilerStatement * stmt;   //
 
-    int integer;                //
-    uint64_t longInt;           //
-    float real;                 //
-    long double longReal;       //
+    int64_t integer;            //
+    double real;                //
     char * symbol;              //
 
     struct
@@ -335,6 +333,11 @@ stmt:
                                     {
                                         $$ = new CompilerStatement(LOC(@$), C_STMT_FUNC, $datatype->appendLink($id)->appendLink($param_list));
                                     }
+    | datatype id "(" param_list ")" scope
+                                    {
+                                        $$ = new CompilerStatement(LOC(@$), C_STMT_FUNC, $datatype->appendLink($id)->appendLink($param_list));
+                                        $$->createBranch($6);
+                                    }
     | "if" "(" expr ")" stmt        {
                                         CompilerStatement *ifBlock = new CompilerStatement(LOC(@1), C_STMT_IF, $expr);
                                         ifBlock->createBranch($5);
@@ -348,7 +351,7 @@ stmt:
                                         ifBlock->createBranch($5);
 
                                         CompilerStatement *elseBlock = new CompilerStatement(LOC(@6), C_STMT_ELSE);
-                                        ifBlock->createBranch($7);
+                                        elseBlock->createBranch($7);
 
                                         $$ = new CompilerStatement(LOC(@$), C_STMT_CONDITION);
                                         $$->createBranch(ifBlock->appendLink(elseBlock));
@@ -416,9 +419,9 @@ id:
 
 
 param:
-      id                            { $$ = $id;                                                     }
-    | "&" id                        { $$ = $id; $id->m_operator = CompilerExpr::OPER_REF;           }
-    | "*" id                        { $$ = $id; $id->m_operator = CompilerExpr::OPER_DEREF;         }
+      datatype id                   { $$ = $id;                                                     }
+    | datatype "&" id               { $$ = $id; $id->m_operator = CompilerExpr::OPER_REF;           }
+    | datatype "*" id               { $$ = $id; $id->m_operator = CompilerExpr::OPER_DEREF;         }
 ;
 
 
@@ -467,7 +470,7 @@ expr:
     // Single value expressions.    z
       id                            { $$ = $id;                                                                  }
     | string                        { $$ = $string;                                                              }
-    | INTEGER                       { $$ = new CompilerExpr($INTEGER, LOC(@$));                                  }
+    | INTEGER                       { $$ = new CompilerExpr($INTEGER, LOC(@$));  printf("INTEGER = %d",$INTEGER);}
     | REAL                          { $$ = new CompilerExpr($REAL, LOC(@$));                                     }
 
     // Parentheses.
@@ -494,7 +497,7 @@ expr:
     | expr ">" expr                 {  $$ = new CompilerExpr($1, CompilerExpr::OPER_GT,  $3, LOC(@$));           }
     | expr ">=" expr                {  $$ = new CompilerExpr($1, CompilerExpr::OPER_GE,      $3, LOC(@$));       }
     | expr "=" expr                 {  $$ = new CompilerExpr($1, CompilerExpr::OPER_EQ,  $3, LOC(@$));           }
-    | expr "~" expr                 {  $$ = new CompilerExpr($1, CompilerExpr::OPER_BNOT,  $3, LOC(@$));         }
+    | expr "~" expr                 {  $$ = new CompilerExpr($1, CompilerExpr::OPER_CMPL,  $3, LOC(@$));         }
     | expr "+=" expr                {  $$ = new CompilerExpr($1, CompilerExpr::OPER_ADD_ASSIGN,  $3, LOC(@$));   }
     | expr "-=" expr                {  $$ = new CompilerExpr($1, CompilerExpr::OPER_SUB_ASSIGN,  $3, LOC(@$));   }
     | expr "*=" expr                {  $$ = new CompilerExpr($1, CompilerExpr::OPER_MUL_ASSIGN,  $3, LOC(@$));   }
@@ -507,7 +510,7 @@ expr:
     | expr "^=" expr                {  $$ = new CompilerExpr($1, CompilerExpr::OPER_XOR_ASSIGN,  $3, LOC(@$));   }
 
     // Unary operators.
-    | "~" expr                      { $$ = new CompilerExpr($2, CompilerExpr::OPER_BNOT, LOC(@$));               }
+    | "~" expr                      { $$ = new CompilerExpr($2, CompilerExpr::OPER_CMPL, LOC(@$));               }
     | "!" expr                      { $$ = new CompilerExpr($2, CompilerExpr::OPER_NOT, LOC(@$));                }
     | "+" expr  %prec UPLUS         { $$ = new CompilerExpr($2, CompilerExpr::OPER_INT_PROM, LOC(@$));           }
     | "-" expr  %prec UMINUS        { $$ = new CompilerExpr($2, CompilerExpr::OPER_ADD_INV, LOC(@$));            }
