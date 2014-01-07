@@ -25,6 +25,7 @@ class CompilerExpr;
 
 // Standard header files.
 #include <string>
+#include <cstdint>
 #include <ostream>
 
 /**
@@ -55,7 +56,7 @@ class CompilerValue : public CompilerSerializable
         union Data
         {
             ///
-            long long m_integer;
+            int64_t m_integer;
 
             ///
             double m_real;
@@ -100,7 +101,7 @@ class CompilerValue : public CompilerSerializable
          * @brief
          * @param[in] value
          */
-        CompilerValue ( long long value );
+        CompilerValue ( int64_t value );
 
         /**
          * @brief
