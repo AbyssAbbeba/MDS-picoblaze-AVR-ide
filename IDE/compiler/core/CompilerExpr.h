@@ -51,7 +51,6 @@ class CompilerExpr : public CompilerSerializable
             OPER_BOR            = L'|', ///< Bitwise OR
             OPER_BXOR           = L'^', ///< Bitwise XOR
             OPER_BAND           = L'&', ///< Bitwise AND
-            OPER_BNOT           = L'~', ///< Bitwise NOT
             OPER_LOR            = L'⋁', ///< Logical OR
             OPER_LXOR           = L'⊕', ///< Logical XOR
             OPER_LAND           = L'⋀', ///< Logical AND
@@ -88,13 +87,13 @@ class CompilerExpr : public CompilerSerializable
             OPER_NAND           = 16,   ///<
             OPER_REF            = 17,   ///< Reference
             OPER_DEREF          = 18,   ///< Dereference
-            OPER_TERNARY        = 19,
-            OPER_COLON          = 20,
-            OPER_INDEX          = 21,
-            OPER_POST_INC       = 22,
-            OPER_POST_DEC       = 23,
-            OPER_PRE_INC        = 24,
-            OPER_PRE_DEC        = 25
+            OPER_TERNARY        = 19,   ///<
+            OPER_COLON          = 20,   ///<
+            OPER_INDEX          = 21,   ///<
+            OPER_POST_INC       = 22,   ///<
+            OPER_POST_DEC       = 23,   ///<
+            OPER_PRE_INC        = 24,   ///<
+            OPER_PRE_DEC        = 25    ///<
         };
 
     ////    Constructors and Destructors    ////
