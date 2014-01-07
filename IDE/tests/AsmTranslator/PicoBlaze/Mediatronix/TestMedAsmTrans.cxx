@@ -111,6 +111,8 @@ void TestMedAsmTrans::testFunction()
     XilHDLFile::OPCodeSize opCodeSize;
     const std::string testName = CU_get_current_test()->pName;
 
+    create_directory ( path("Mediatronix") / "results" );
+
     m_translator->clear();
     bool result = m_translator->translate ( AsmTranslator::V_KCPSM_MEDIATRONIX,
                                             ( path("Mediatronix") / "results"   / (testName + ".asm") ).string(),

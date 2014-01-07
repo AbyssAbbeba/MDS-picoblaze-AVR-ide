@@ -286,6 +286,7 @@ const char * testSuiteID2dir ( TestSuite::TestSuiteID id )
 
 int TestSuite::init()
 {
+    boost::filesystem::create_directory("results");
     return 0;
 }
 

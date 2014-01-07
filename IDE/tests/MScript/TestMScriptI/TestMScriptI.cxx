@@ -93,6 +93,8 @@ void TestMScriptI::testFunction()
 {
     using namespace boost::filesystem;
 
+    create_directory ( path(TEST_SUITE_DIR) / "results" );
+
     bool success = true;
     std::string testName       = CU_get_current_test()->pName;
     std::string logFileName    = ( path(TEST_SUITE_DIR) / "results"   / (testName + ".log") ).string();

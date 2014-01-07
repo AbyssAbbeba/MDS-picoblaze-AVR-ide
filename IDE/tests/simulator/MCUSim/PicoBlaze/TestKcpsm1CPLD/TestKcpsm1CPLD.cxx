@@ -120,6 +120,8 @@ void TestKcpsm1CPLD::testFunction()
 
     const std::string testName = CU_get_current_test()->pName;
 
+    create_directory ( path("TestKcpsm1CPLD") / "results" );
+
     std::string inFile  = ( path("TestKcpsm1CPLD") / "testcases" / (testName + "."   ) ).string();
     std::string outFile = ( path("TestKcpsm1CPLD") / "results"   / (testName + ".out") ).string();
     std::string hexFile = ( path("TestKcpsm1CPLD") / "results"   / (testName + ".hex") ).string();

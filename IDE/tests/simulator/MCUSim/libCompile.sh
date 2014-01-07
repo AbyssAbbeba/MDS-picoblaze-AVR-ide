@@ -24,6 +24,10 @@ function runBuild()
         return
     fi
 
+    if [[ ! -d "${1}" ]]; then
+        mkdir "${1}"
+    fi
+
     for i in *.asm; do
         if [[ -f "${1}/${i%%.asm}.hex" && "${1}/${i%%.asm}.hex" -nt "$i" ]]; then
             continue

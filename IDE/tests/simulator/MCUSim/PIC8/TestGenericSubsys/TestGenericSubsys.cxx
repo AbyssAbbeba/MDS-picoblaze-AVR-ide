@@ -98,6 +98,8 @@ void TestGenericSubsys::testFunction()
 {
     using namespace boost::filesystem;
 
+    create_directory ( path("TestGenericSubsys") / "results" );
+
     const std::string testName = CU_get_current_test()->pName;
 
     const std::string inFile  = ( path("TestGenericSubsys") / "testcases" / (testName + ".asm" ) ).string();

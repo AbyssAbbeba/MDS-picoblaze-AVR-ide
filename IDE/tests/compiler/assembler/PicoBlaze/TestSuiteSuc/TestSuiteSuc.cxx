@@ -113,6 +113,8 @@ void TestSuiteSuc::testFunction()
 
     const std::string testName = CU_get_current_test()->pName;
 
+    create_directory ( path("TestSuiteSuc") / "results" );
+
     m_options->m_sourceFiles.clear();
     m_options->m_sourceFiles.push_back ( ( path("TestSuiteSuc") / "testcases" / (testName + ".asm") ).string() );
 

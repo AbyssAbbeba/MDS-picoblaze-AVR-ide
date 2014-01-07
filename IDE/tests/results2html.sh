@@ -114,8 +114,12 @@ for i in *-Listing.xml; do
 done
 runParallelJobs
 
+read megaBytesOfGcov _ <<< $( wc -c $(find . -name '*.gcov') | tail -n 1 )
+megaBytesOfGcov=$( bc -q <<< "scale = 2; ${megaBytesOfGcov} / ( 1024 * 1024 )" )
+numberOfGcovFiles=$( find . -name '*.gcov' | wc -l )
+
 echo ""
-echo "Initiating final stage of coverage analysis:"
+echo "Initiating final stage of coverage analysis (processing ${megaBytesOfGcov} MB in ${numberOfGcovFiles} files):"
 unset JOBS
 idx=1
 prefix=1
@@ -178,7 +182,6 @@ echo "            background-repeat: no-repeat;" >> index.html
 echo "            background-position: right center;" >> index.html
 echo "        }" >> index.html
 echo "    </style>" >> index.html
-echo "    </style>" >> index.html
 echo "</head>" >> index.html
 echo "<body style=\"text-align: center\">" >> index.html
 echo "    <div>" >> index.html
@@ -215,8 +218,9 @@ echo "        <col/>" >> index.html
 echo "        <col/>" >> index.html
 echo "        <col/>" >> index.html
 echo "        <col/>" >> index.html
+echo "        <col/>" >> index.html
 echo "        <tr style=\"background-color: skyblue\">" >> index.html
-echo "                <th colspan=\"7\"> Automated Test Run Summary Reports </th>" >> index.html
+echo "                <th colspan=\"8\"> Automated Test Run Summary Reports </th>" >> index.html
 echo "        </tr>" >> index.html
 echo "        <tr style=\"background-color: #ffffc0\">" >> index.html
 echo "            <th style=\"width: 5%\"> Suites </th>" >> index.html
@@ -224,12 +228,14 @@ echo "            <th style=\"width: 5%\"> Cases </th>" >> index.html
 echo "            <th style=\"width: 10%\"> Coverage </th>" >> index.html
 echo "            <th style=\"width: 20%\" colspan=\"2\"> Memcheck </th>" >> index.html
 echo "            <th style=\"width: 15%\"> Status </th>" >> index.html
+echo "            <th style=\"width: 1%\"> # </th>" >> index.html
 echo "            <th> Test subject </th>" >> index.html
 echo "        </tr>" >> index.html
 declare -i suitesTotal=0
 declare -i casesTotal=0
 declare -i memErrorsTotal=0
 declare -i failedTotal=0
+declare -i testNumber=1
 declare    memLeaksTotal=0
 for i in *-Results.xml; do
     TEST_NAME="${i%%-Results.xml}"
@@ -360,26 +366,28 @@ for i in *-Results.xml; do
         echo "            <td style=\"background-color: #555555; color: #FFFFFF\"> CRASHED </td>" >> index.html
     fi
 
+    echo "            <td> ${testNumber} </td>" >> index.html
     echo "            <td style=\"text-align: left; padding-left: 5px\">${TEST_NAME}</td>" >> index.html
     echo "        </tr>" >> index.html
+    let testNumber++
 done
 echo "        <tr style=\"background-color: #ffffc0\">" >> index.html
-echo "            <td><b>${suitesTotal}</b></th>" >> index.html
-echo "            <td><b>${casesTotal}</b></th>" >> index.html
+echo "            <td><b>${suitesTotal}</b></td>" >> index.html
+echo "            <td><b>${casesTotal}</b></td>" >> index.html
 if [[ -f "Total-Coverage.html" ]]; then
     if [[ -f Total-Coverage.sum ]]; then
         coverage="$( cat Total-Coverage.sum ) %"
     else
         coverage="??"
     fi
-    echo "            <td><a href=\"Total-Coverage.html\"><b>${coverage}</b></a></th>" >> index.html
+    echo "            <td><a href=\"Total-Coverage.html\"><b>${coverage}</b></a></td>" >> index.html
 else
-    echo "            <td><b>--</b></th>" >> index.html
+    echo "            <td><b>--</b></td>" >> index.html
 fi
-echo "            <td style=\"width: 10%\"><b>${memLeaksTotal} kB</b></th>" >> index.html
-echo "            <td><b>${memErrorsTotal}</b></th>" >> index.html
-echo "            <td><b>${failedTotal}</b></th>" >> index.html
-echo "            <td style=\"text-align: left; padding-left: 5px\"><b>Total</b></th>" >> index.html
+echo "            <td style=\"width: 10%\"><b>${memLeaksTotal} kB</b></td>" >> index.html
+echo "            <td><b>${memErrorsTotal}</b></td>" >> index.html
+echo "            <td><b>${failedTotal}</b></td>" >> index.html
+echo "            <td colspan=\"2\" style=\"text-align: left; padding-left: 5px\"><b>Total</b></td>" >> index.html
 echo "        </tr>" >> index.html
 echo "    </table>" >> index.html
 echo "    <div>" >> index.html
