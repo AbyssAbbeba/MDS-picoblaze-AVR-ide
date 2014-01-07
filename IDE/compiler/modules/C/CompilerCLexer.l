@@ -219,22 +219,22 @@ ID      [_a-zA-Z][_a-zA-Z0-9]*
  /* Integral */
 0b[01]+         {
                     // Binary number.
-                    //yylval->integer = MScriptLexerAuxFunc::str2int ( yyextra, yylloc, ( yytext + 2 ), 2 );
+                    yylval->number = convertStrToNumber(yyextra, yylloc, (yytext + 2), 64, 2);
                     return INTEGER;
                 }
 0x[0-9A-F]+     {
                     // Hexadecimal number.
-                    //yylval->integer = MScriptLexerAuxFunc::str2int ( yyextra, yylloc, ( yytext + 2 ), 16 );
+                    yylval->number = convertStrToNumber(yyextra, yylloc, (yytext + 2), 16, 16);
                     return INTEGER;
                 }
 0[0-7]+         {
                     // Octal number.
-                    //yylval->integer = MScriptLexerAuxFunc::str2int ( yyextra, yylloc, ( yytext + 1 ), 8 );
+                    yylval->number = convertStrToNumber(yyextra, yylloc, (yytext + 1), 22, 8);
                     return INTEGER;
                 }
 [0-9]+          {
                     // Decimal number.
-                    //yylval->integer = MScriptLexerAuxFunc::str2int ( yyextra, yylloc, yytext, 10 );
+                    yylval->number = convertStrToNumber(yyextra, yylloc, yytext, 20, 10);
                     return INTEGER;
                 }
 
