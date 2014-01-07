@@ -101,6 +101,9 @@ void TestSuiteErr::testFunction()
     using namespace boost::filesystem;
 
     const std::string testName = CU_get_current_test()->pName;
+
+    create_directory ( path("TestSuiteErr") / "results" );
+
     m_options->m_sourceFiles.clear();
     m_options->m_sourceFiles.push_back ( system_complete ( path("TestSuiteErr") / "testcases" / ( testName + ".asm" ) )
                                                          . string() );

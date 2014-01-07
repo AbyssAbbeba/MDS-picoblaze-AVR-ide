@@ -54,7 +54,7 @@ for gcda in "${GCDA_FILES[@]}"; do
     mkdir -p "${TEST_NAME}/${dirCounter:=0}"
 
     cd "${TEST_NAME}/${dirCounter}"
-    gcov --object-file "${gcda}" "${src}"
+    gcov --long-file-names --display-progress --object-file "${gcda}" "${src}"
     cd ../..
 
     let dirCounter++

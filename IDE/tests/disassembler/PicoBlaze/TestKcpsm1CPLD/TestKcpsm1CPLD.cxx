@@ -112,6 +112,8 @@ void TestKcpsm1CPLD::testFunction()
 
     const std::string testName = CU_get_current_test()->pName;
 
+    create_directory ( path("TestKcpsm1CPLD") / "results" );
+
     /*
      * Compile the original source code, and generate <testcase>.hex file from it.
      */

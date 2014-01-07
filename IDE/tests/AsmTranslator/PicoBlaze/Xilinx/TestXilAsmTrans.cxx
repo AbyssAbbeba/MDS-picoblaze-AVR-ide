@@ -111,6 +111,8 @@ void TestXilAsmTrans::testFunction()
     XilHDLFile::OPCodeSize opCodeSize;
     const std::string testName = CU_get_current_test()->pName;
 
+    create_directory ( path("Xilinx") / "results" );
+
     m_translator->clear();
     bool result = m_translator->translate ( AsmTranslator::V_KCPSM_XILINX,
                                             ( path("Xilinx") / "results"   / (testName + ".asm") ).string(),
