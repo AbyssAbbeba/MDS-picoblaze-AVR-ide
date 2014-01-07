@@ -35,10 +35,10 @@ CompilerValue::CompilerValue ( CompilerSerializer & input )
 CompilerValue::CompilerValue ( int value )
 {
     m_type = TYPE_INT;
-    m_data.m_integer = (long long) value;
+    m_data.m_integer = (int64_t) value;
 }
 
-CompilerValue::CompilerValue ( long long value )
+CompilerValue::CompilerValue ( int64_t value )
 {
     m_type = TYPE_INT;
     m_data.m_integer = value;
