@@ -27,7 +27,7 @@ function isInSources() {
 }
 
 dotCounter=0
-echo -n "Processing ${#GCOV_FILES[@]} gcov input files ..."
+echo "${TEST_NAME}: processing ${#GCOV_FILES[@]} gcov input files ... [STARTED]"
 for gcovFile in "${GCOV_FILES[@]}"; do
     filename=""
     lineno=0
@@ -88,14 +88,14 @@ for gcovFile in "${GCOV_FILES[@]}"; do
         FILENAMES[${filename}]="${lineno}"
     fi
 done
-echo " [DONE]"
+echo "${TEST_NAME}: gcov input files ... [DONE]"
 
 if (( 0 == ${#FILENAMES[*]} )); then
     echo "No coverage analysis data available, exiting."
     exit
 fi
 
-echo -n "Generating ${#FILENAMES[*]} HTML output files ..."
+echo "${TEST_NAME}: Generating ${#FILENAMES[*]} HTML output files ... [STARTED]"
 
 echo "<?xml version='1.0' encoding='utf-8'?>" > "${HTML_FILE}"
 echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\"" >> "${HTML_FILE}"
@@ -274,4 +274,4 @@ else
 fi
 
 wait
-echo " [DONE]"
+echo "${TEST_NAME}: HTML output files ... [DONE]"
