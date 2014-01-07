@@ -51,6 +51,6 @@ target_link_libraries ( ${PROJECT_NAME}
  # Compile .asm files for all testcases in the `testcases' directory
 add_custom_target ( "${PROJECT_NAME}_compile" ALL
                     COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/testcases/compileAll.sh
-                    DEPENDS compiler
+                    DEPENDS PicoBlazeAsmIncludeFiles_prc_file_kcpsm1cpld
                     WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/testcases"
                     COMMENT "Compiling .asm files for all testcases in `${CMAKE_CURRENT_SOURCE_DIR}/testcases'." )
