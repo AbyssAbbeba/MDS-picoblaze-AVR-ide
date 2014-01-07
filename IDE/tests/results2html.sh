@@ -349,7 +349,7 @@ for i in *-Results.xml; do
             if (( 1 == ${failed})); then
                 failedStr="1 case"
             else
-                failedStr="${errors} cases"
+                failedStr="${failed} cases"
             fi
             echo    "<a href=\"${i%%.xml}.html\">${failedStr} failed </a></td>" >> index.html
             let failedTotal+=${failed}
