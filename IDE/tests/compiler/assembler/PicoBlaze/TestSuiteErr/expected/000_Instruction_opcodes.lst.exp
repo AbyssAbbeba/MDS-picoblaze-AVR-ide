@@ -1,0 +1,109 @@
+                   1     ; Compiler test case for Assembler
+                   2     ; instruction opcodes
+                   3
+                   4
+                   5     TESTsymb1    SET        1h
+                   6     TESTsymb2    SET        0x11
+                   7     TESTsymb3    SET        1
+                   8     TESTsymb4    SET        3d
+                   9     TESTsymb5    EQU        4h
+                  10     TESTsymb6    EQU        0x05
+                  11     TESTsymb7    EQU        6
+                  12     TESTsymb8    EQU        7
+                  13     TESTsymb9    REG        8h
+                  14     TESTsymb10    REG        9h
+                  15     TESTsymb11    REG        Ah
+                  16     TESTsymb12    REG        Bh
+                  17     TESTsymb13    DATA        Ch
+                  18     TESTsymb14    DATA        0x05
+                  19     TESTsymb15    DATA        2
+                  20     TESTsymb16    DATA        3d
+                  21     TESTsymb17    CODE        0h + 2h
+                  22     TESTsymb18    CODE        2h
+                  23     TESTsymb19    CODE        2h
+                  24     TESTsymb20    CODE        2h
+                  25     TESTsymb21    DEFINE        3h
+                  26     TESTsymb22    DEFINE        4h
+                  27     TESTsymb23    DEFINE        5h
+                  28     TESTsymb24    DEFINE        TESTsymb1 + TESTsymb11
+                  29
+                  30
+                  31               ORG        0x000
+                  32               JUMP        Start
+                  33               JUMP        0x000
+                  34     Start:
+                  35             JUMP        Z, 0x000
+                  36             JUMP        NZ,0x000
+                  37             JUMP        C, 0x000
+                  38             JUMP        NC,0x000
+                  39
+                  40          ; Arithmetics
+                  41             ADD         testsymb9,#12
+                  42             ADDCY       testsymb9,#20
+                  43             SUB         testsymb9,#ffh
+                  44             SUBCY       testsymb9,#0xff
+                  45             COMPARE     testsymb9,#0
+                  46
+                  47             ADD         testsymb9,testsymb9
+                  48             ADDCY       testsymb9,testsymb9
+                  49             SUB         testsymb9,testsymb9
+                  50             SUBCY       testsymb9,testsymb10
+                  51             COMPARE     testsymb9,testsymb11
+                  52
+                  53     ; Logical
+                  54             LOAD      testsymb9,#01h
+                  55             AND       testsymb9,#0
+                  56             OR        testsymb9,#1
+                  57             XOR       testsymb9,#2
+                  58             TEST      testsymb9,#3
+                  59
+                  60             LOAD      testsymb9,testsymb9
+                  61             AND       testsymb9,testsymb9
+                  62             OR        testsymb9,testsymb9
+                  63             XOR       testsymb9,testsymb9
+                  64             TEST      testsymb9,testsymb9
+                  65     ; Shift and rotate
+                  66             SR0       TESTsymb10
+                  67             SR1       TESTsymb10
+                  68             SRX        TESTsymb10
+                  69             SRA        TESTsymb10
+                  70             RR         TESTsymb10
+                  71
+                  72             SL0       TESTsymb10
+                  73             SL1       TESTsymb10
+                  74             SLX       TESTsymb10
+                  75             SLA       TESTsymb10
+                  76             RL        TESTsymb10
+                  77         ; Others
+                  78             CALl      Podprog
+                  79             CALL      Z,Podprogcc
+                  80             CALL      NZ,Podprog
+                  81             CALL      C,Podprog
+                  82             CALL      NC,Podprog
+                  83
+                  84             STORE     TESTsymb9,TESTsymb13
+                  85             STORE     TESTsymb10,@10
+                  86             FETCH     TESTsymb11,TESTsymb13
+                  87             FETCH     TESTsymb12,@5x
+E: identifier cannot start with a digit: `5x'.
+E: unexpected end of line.
+                  88
+                  89     Podprog:
+                  90             RETURN
+                  91             RETURN    ZZZ
+E: unexpected IDENTIFIER, expecting end of file or COMMENT or end of line.
+000 35000         92             RETURN    NZ
+001 39000         93             RETURN    C
+002 3D000         94             RETURN    NC
+                  95
+                  96
+                  97       ;  JUMP aaa ADD sX,kk LOAD sX,kk SR0 sX
+                  98     ;JUMP Z,aaa ADDCY sX,kk AND sX,kk SR1 sX
+                  99     ;JUMP NZ,aaa SUB sX,kk OR sX,kk SRX sX
+                 100     ;JUMP C,aaa SUBCY sX,kk XOR sX,kk SRA sX
+                 101     ;JUMP NC,aaa COMPARE sX,kk TEST sX,kk RR sX
+                 102     ;CALL aaa ADD sX,sY LOAD sX,sY SL0 sX
+                 103     ;CALL Z,aaa ADDCY sX,sY AND sX,sY SL1 sX
+                 104     ;CALL NZ,aaa SUB sX,sY OR sX,sY SLX sX
+                 105     ;CALL C,aaa SUBCY sX,sY XOR sX,sY SLA sX
+                 106     ;CALL NC,aaa COMPARE sX,sY TEST sX,sY RL sX

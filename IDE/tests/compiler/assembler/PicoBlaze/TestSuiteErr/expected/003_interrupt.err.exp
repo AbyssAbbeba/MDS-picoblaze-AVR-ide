@@ -1,0 +1,7 @@
+MT_WARNING: Warning: exact device not specified, using KCPSM6 by default.
+MT_ERROR: 003_interrupt.asm:18.19-18.28: Error: symbol not defined: `TESTSYMB9'.
+MT_ERROR: 003_interrupt.asm:18.29-18.39: Error: symbol not defined: `TESTSYMB13'.
+MT_ERROR: 003_interrupt.asm:19.19-19.29: Error: symbol not defined: `TESTSYMB10'.
+MT_ERROR: 003_interrupt.asm:20.19-20.29: Error: symbol not defined: `TESTSYMB11'.
+MT_ERROR: 003_interrupt.asm:20.30-20.40: Error: symbol not defined: `TESTSYMB13'.
+MT_ERROR: 003_interrupt.asm:21.19-21.29: Error: symbol not defined: `TESTSYMB12'.

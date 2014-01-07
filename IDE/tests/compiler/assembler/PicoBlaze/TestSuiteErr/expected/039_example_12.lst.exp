@@ -1,0 +1,1049 @@
+                   1                          ; KCPSM3 Program - Pulse Width Modulation (PWM) Control on the Spartan-3E Starter Kit.
+                   2                          ;
+                   3                          ; Ken Chapman - Xilinx Ltd
+                   4                          ;
+                   5                          ; Version v1.00 - 22nd May 2006
+                   6                          ;
+                   7                          ; Provides control for 12 channels of PWM with a Pulse Repetition Frequency (PRF) of 1KHz
+                   8                          ; and an 8-bit duty cycle resolution (256 steps). Control is provided for each channel
+                   9                          ; via the UART interface to the PC running HyperTerminal or similar to enter simple text
+                  10                          ; commands.
+                  11                          ;
+                  12                          ;**************************************************************************************
+                  13                          ; Port definitions
+                  14                          ;**************************************************************************************
+                  15                          ;
+                  16                          ;
+                  17                          ;
+                  18                          CONSTANT LED_port, 80                  ;8 simple LEDs
+                  19                          CONSTANT LED0, 01                      ;     LED 0 - bit0
+                  20                          CONSTANT LED1, 02                      ;         1 - bit1
+                  21                          CONSTANT LED2, 04                      ;         2 - bit2
+                  22                          CONSTANT LED3, 08                      ;         3 - bit3
+                  23                          CONSTANT LED4, 10                      ;         4 - bit4
+                  24                          CONSTANT LED5, 20                      ;         5 - bit5
+                  25                          CONSTANT LED6, 40                      ;         6 - bit6
+                  26                          CONSTANT LED7, 80                      ;         7 - bit7
+                  27                          ;
+                  28                          ;
+                  29                          CONSTANT simple_port, 40               ;4 simple outputs
+                  30                          CONSTANT simple_IO9, 01                ;  Header  IO9  - bit0
+                  31                          CONSTANT simple_IO10, 02               ;          IO10 - bit1
+                  32                          CONSTANT simple_IO11, 04               ;          IO11 - bit2
+                  33                          CONSTANT simple_IO12, 08               ;          IO12 - bit3
+                  34                          ;
+                  35                          ;
+                  36                          ;
+                  37                          CONSTANT status_port, 00               ;UART status input
+                  38                          CONSTANT tx_half_full, 01              ;  Transmitter     half full - bit0
+                  39                          CONSTANT tx_full, 02                   ;    FIFO               full - bit1
+                  40                          CONSTANT rx_data_present, 04           ;  Receiver     data present - bit2
+                  41                          CONSTANT rx_half_full, 08              ;    FIFO          half full - bit3
+                  42                          CONSTANT rx_full, 10                   ;                   full - bit4
+                  43                          CONSTANT spare1, 20                    ;                  spare '0' - bit5
+                  44                          CONSTANT spare2, 40                    ;                  spare '0' - bit6
+                  45                          CONSTANT spare3, 80                    ;                  spare '0' - bit7
+                  46                          ;
+                  47                          CONSTANT UART_read_port, 01            ;UART Rx data input
+                  48                          ;
+                  49                          CONSTANT UART_write_port, 20           ;UART Tx data output
+                  50                          ;
+                  51                          ;
+                  52                          ;
+                  53                          ;**************************************************************************************
+                  54                          ; Special Register usage
+                  55                          ;**************************************************************************************
+                  56                          ;
+                  57                          NAMEREG sF, UART_data                  ;used to pass data to and from the UART
+                  58                          ;
+                  59                          ;
+                  60                          ;
+                  61                          ;**************************************************************************************
+                  62                          ;Scratch Pad Memory Locations
+                  63                          ;**************************************************************************************
+                  64                          ;
+                  65                          CONSTANT PWM_duty_counter, 00          ;Duty Counter 0 to 255 within 1KHz period (1ms)
+                  66                          CONSTANT PWM_channel0, 01              ;PWM settings for each channel
+                  67                          CONSTANT PWM_channel1, 02              ; Channels 0 to 7 = LEDs 0 to 7
+                  68                          CONSTANT PWM_channel2, 03              ; Channels 8 to 11 = IO9 to IO12
+                  69                          CONSTANT PWM_channel3, 04
+                  70                          CONSTANT PWM_channel4, 05
+                  71                          CONSTANT PWM_channel5, 06
+                  72                          CONSTANT PWM_channel6, 07
+                  73                          CONSTANT PWM_channel7, 08
+                  74                          CONSTANT PWM_channel8, 09
+                  75                          CONSTANT PWM_channel9, 0A
+E: identifier cannot start with a digit: `0A'.
+E: unexpected end of line.
+                  76                          CONSTANT PWM_channel10, 0B
+                  77                          CONSTANT PWM_channel11, 0C
+E: identifier cannot start with a digit: `0C'.
+E: unexpected end of line.
+                  78                          CONSTANT ISR_preserve_s0, 0D           ;preserve register contents during Interrupt Service Routine
+                  79                          CONSTANT ISR_preserve_s1, 0E
+E: identifier cannot start with a digit: `0E'.
+E: unexpected end of line.
+                  80                          CONSTANT ISR_preserve_s2, 0F
+E: identifier cannot start with a digit: `0F'.
+E: unexpected end of line.
+                  81                          ;
+                  82                          ;
+                  83                          ;
+                  84                          ;
+                  85                          ;UART character strings will be stored in scratch pad memory ending in carriage return.
+                  86                          ;A string can be up to 16 characters with the start location defined by this constant.
+                  87                          ;
+                  88                          CONSTANT string_start, 30
+                  89                          ;
+                  90                          ;
+                  91                          ;
+                  92                          ;**************************************************************************************
+                  93                          ;Useful data constants
+                  94                          ;**************************************************************************************
+                  95                          ;
+                  96                          ;
+                  97                          ;
+                  98                          ;
+                  99                          ;ASCII table
+                 100                          ;
+                 101                          CONSTANT character_a, 61
+                 102                          CONSTANT character_b, 62
+                 103                          CONSTANT character_c, 63
+                 104                          CONSTANT character_d, 64
+                 105                          CONSTANT character_e, 65
+                 106                          CONSTANT character_f, 66
+                 107                          CONSTANT character_g, 67
+                 108                          CONSTANT character_h, 68
+                 109                          CONSTANT character_i, 69
+                 110                          CONSTANT character_j, 6A
+E: identifier cannot start with a digit: `6A'.
+E: unexpected end of line.
+                 111                          CONSTANT character_k, 6B
+E: identifier cannot start with a digit: `6B'.
+E: unexpected end of line.
+                 112                          CONSTANT character_l, 6C
+E: identifier cannot start with a digit: `6C'.
+E: unexpected end of line.
+                 113                          CONSTANT character_m, 6D
+                 114                          CONSTANT character_n, 6E
+E: identifier cannot start with a digit: `6E'.
+E: unexpected end of line.
+                 115                          CONSTANT character_o, 6F
+E: identifier cannot start with a digit: `6F'.
+E: unexpected end of line.
+                 116                          CONSTANT character_p, 70
+                 117                          CONSTANT character_q, 71
+                 118                          CONSTANT character_r, 72
+                 119                          CONSTANT character_s, 73
+                 120                          CONSTANT character_t, 74
+                 121                          CONSTANT character_u, 75
+                 122                          CONSTANT character_v, 76
+                 123                          CONSTANT character_w, 77
+                 124                          CONSTANT character_x, 78
+                 125                          CONSTANT character_y, 79
+                 126                          CONSTANT character_z, 7A
+E: identifier cannot start with a digit: `7A'.
+E: unexpected end of line.
+                 127                          CONSTANT character_A, 41
+                 128                          CONSTANT character_B, 42
+                 129                          CONSTANT character_C, 43
+                 130                          CONSTANT character_D, 44
+                 131                          CONSTANT character_E, 45
+                 132                          CONSTANT character_F, 46
+                 133                          CONSTANT character_G, 47
+                 134                          CONSTANT character_H, 48
+                 135                          CONSTANT character_I, 49
+                 136                          CONSTANT character_J, 4A
+E: identifier cannot start with a digit: `4A'.
+E: unexpected end of line.
+                 137                          CONSTANT character_K, 4B
+E: identifier cannot start with a digit: `4B'.
+E: unexpected end of line.
+                 138                          CONSTANT character_L, 4C
+E: identifier cannot start with a digit: `4C'.
+E: unexpected end of line.
+                 139                          CONSTANT character_M, 4D
+                 140                          CONSTANT character_N, 4E
+E: identifier cannot start with a digit: `4E'.
+E: unexpected end of line.
+                 141                          CONSTANT character_O, 4F
+E: identifier cannot start with a digit: `4F'.
+E: unexpected end of line.
+                 142                          CONSTANT character_P, 50
+                 143                          CONSTANT character_Q, 51
+                 144                          CONSTANT character_R, 52
+                 145                          CONSTANT character_S, 53
+                 146                          CONSTANT character_T, 54
+                 147                          CONSTANT character_U, 55
+                 148                          CONSTANT character_V, 56
+                 149                          CONSTANT character_W, 57
+                 150                          CONSTANT character_X, 58
+                 151                          CONSTANT character_Y, 59
+                 152                          CONSTANT character_Z, 5A
+E: identifier cannot start with a digit: `5A'.
+E: unexpected end of line.
+                 153                          CONSTANT character_0, 30
+                 154                          CONSTANT character_1, 31
+                 155                          CONSTANT character_2, 32
+                 156                          CONSTANT character_3, 33
+                 157                          CONSTANT character_4, 34
+                 158                          CONSTANT character_5, 35
+                 159                          CONSTANT character_6, 36
+                 160                          CONSTANT character_7, 37
+                 161                          CONSTANT character_8, 38
+                 162                          CONSTANT character_9, 39
+                 163                          CONSTANT character_colon, 3A
+E: identifier cannot start with a digit: `3A'.
+E: unexpected end of line.
+                 164                          CONSTANT character_stop, 2E
+E: identifier cannot start with a digit: `2E'.
+E: unexpected end of line.
+                 165                          CONSTANT character_semi_colon, 3B
+E: identifier cannot start with a digit: `3B'.
+E: unexpected end of line.
+                 166                          CONSTANT character_minus, 2D
+                 167                          CONSTANT character_divide, 2F          ;'/'
+E: identifier cannot start with a digit: `2F'.
+E: unexpected end of line.
+                 168                          CONSTANT character_plus, 2B
+E: identifier cannot start with a digit: `2B'.
+E: unexpected end of line.
+                 169                          CONSTANT character_comma, 2C
+E: identifier cannot start with a digit: `2C'.
+E: unexpected end of line.
+                 170                          CONSTANT character_less_than, 3C
+E: identifier cannot start with a digit: `3C'.
+E: unexpected end of line.
+                 171                          CONSTANT character_greater_than, 3E
+E: identifier cannot start with a digit: `3E'.
+E: unexpected end of line.
+                 172                          CONSTANT character_equals, 3D
+                 173                          CONSTANT character_space, 20
+                 174                          CONSTANT character_CR, 0D              ;carriage return
+                 175                          CONSTANT character_question, 3F        ;'?'
+E: identifier cannot start with a digit: `3F'.
+E: unexpected end of line.
+                 176                          CONSTANT character_dollar, 24
+                 177                          CONSTANT character_exclaim, 21         ;'!'
+                 178                          CONSTANT character_BS, 08              ;Back Space command character
+                 179                          ;
+                 180                          ;
+                 181                          ;
+                 182                          ;
+                 183                          ;
+                 184                          ;**************************************************************************************
+                 185                          ;Initialise the system
+                 186                          ;**************************************************************************************
+                 187                          ;
+                 188                          ; Each PWM channels will be set to a different initial value just for the purposes
+                 189                          ; of demonstration. In practice, the initial duty values will depend on the requirements
+                 190                          ; of a given system but completely off (zero) is normally the safe option.
+                 191                          ;
+                 192                          ; Note that it is difficult to distinguish difference between the intensity of LEDs driven
+                 193                          ; with duty factors more than 40% (40% = 102/256 or 66Hex). So using relatively small values
+                 194                          ; will better demonstrate the PWM control of intensity.
+                 195                          ;
+                 196                          ; Initial values for LEDs give graduated intensity. Large change required for brighter LEDs.
+                 197                          ;
+                 198              cold_start: LOAD s0, 05                            ;5/256 = 2%
+                 199                          STORE s0, PWM_channel0
+                 200                          LOAD s0, 0D                            ;13/256 = 5%
+                 201                          STORE s0, PWM_channel1
+                 202                          LOAD s0, 14                            ;26/256 = 8%
+                 203                          STORE s0, PWM_channel2
+                 204                          LOAD s0, 26                            ;38/256 = 15%
+                 205                          STORE s0, PWM_channel3
+                 206                          LOAD s0, 40                            ;64/256 = 25%
+                 207                          STORE s0, PWM_channel4
+                 208                          LOAD s0, 58                            ;88/256 = 34%
+                 209                          STORE s0, PWM_channel5
+                 210                          LOAD s0, 80                            ;128/256 = 50%
+                 211                          STORE s0, PWM_channel6
+                 212                          LOAD s0, FF                            ;255/256 = 99.6% Maximum possible
+                 213                          STORE s0, PWM_channel7
+                 214                          ;
+                 215                          ; Initial values for simple outputs match documentation example
+                 216                          ;
+                 217                          LOAD s0, 11                            ;17/256 = 7%
+                 218                          STORE s0, PWM_channel8
+                 219                          LOAD s0, BC                            ;188/256 = 73%
+                 220                          STORE s0, PWM_channel9
+                 221                          LOAD s0, EF                            ;239/256 = 93%
+                 222                          STORE s0, PWM_channel10
+                 223                          LOAD s0, 22                            ;34/256 = 13%
+                 224                          STORE s0, PWM_channel11
+                 225                          ;
+                 226                          ENABLE INTERRUPT                       ;interrupts used to drive servo
+                 227                          ;
+                 228                          CALL send_welcome                      ;Write welcome message to UART
+                 229                          ;
+                 230                          ;
+                 231                          ;
+                 232                          ;**************************************************************************************
+                 233                          ; Main program
+                 234                          ;**************************************************************************************
+                 235                          ;
+                 236                          ; Provides a prompt to which an input with one of the following formats is expected...
+                 237                          ;
+                 238                          ;     LDn hh
+                 239                          ;
+                 240                          ;     IOk hh
+                 241                          ;     IOkk hh
+                 242                          ;
+                 243                          ;
+                 244                          ;  Where
+                 245                          ;     'LD' is a command to set one of the LED channels.
+                 246                          ;     'IO' is a command to set one of the simple I/O outputs on J4.
+                 247                          ;     'n' is an LED number in the range 0 to 7.
+                 248                          ;     'k' or 'kk' is a simple I/O number in the range 9 to 12.
+                 249                          ;     'hh' is a 2 digit hex value to specify the PWM duty factor (range 00 to FF).
+                 250                          ;
+                 251                          ; The input allows a degree of editing to be performed and upper and lower case letters
+                 252                          ; to be used.
+                 253                          ;
+                 254              warm_start: CALL send_prompt                       ;Prompt 'KCPSM3>'
+                 255                          CALL receive_string                    ;obtain input string of up to 16 characters
+                 256                          CALL upper_case_string                 ;convert string to upper case
+                 257                          ;
+                 258                          LOAD sE, string_start                  ;sE is memory pointer
+                 259                          FETCH s0, (sE)                         ;test for carriage return
+                 260                          COMPARE s0, character_CR
+                 261                          JUMP Z, warm_start
+                 262                          COMPARE s0, character_L                ;test for 'L' of 'LD' command
+                 263                          JUMP Z, LD_command
+                 264                          COMPARE s0, character_I                ;test for 'I' of 'IO' command
+                 265                          JUMP Z, IO_command
+                 266             bad_command: CALL send_CR                           ;no valid command entered
+                 267                          CALL send_Error
+                 268                          JUMP warm_start
+                 269                          ;
+                 270                          ;Processing potential 'LD' command
+                 271                          ;
+                 272              LD_command: CALL read_next_char
+                 273                          COMPARE s0, character_D                ;test for 'D' of 'LD' command
+                 274                          JUMP NZ, bad_command
+                 275                          CALL read_next_char                    ;test for LED number
+                 276                          CALL 1char_to_value
+E: identifier cannot start with a digit: `1char_to_value'.
+E: invalid number of operands, instruction CALL takes 1 or 2 operand(s).
+                 277                          JUMP C, bad_command
+                 278                          COMPARE s0, 08                         ;test for number in range 0 to 7
+                 279                          JUMP NC, bad_command
+                 280                          LOAD sD, s0                            ;convert number into memory pointer in sD
+                 281                          ADD sD, PWM_channel0
+                 282         read_duty_value: CALL read_next_char                    ;test for a space
+                 283                          COMPARE s0, character_space
+                 284                          JUMP NZ, bad_command
+                 285                          CALL read_next_char                    ;read two character hex value
+                 286                          LOAD s3, s0
+                 287                          CALL read_next_char
+                 288                          LOAD s2, s0
+                 289                          CALL ASCII_byte_to_hex                 ;convert to value in s0
+                 290                          JUMP C, bad_command
+                 291                          LOAD sC, s0                            ;remember value
+                 292                          CALL read_next_char                    ;test for carriage return to end command
+                 293                          COMPARE s0, character_CR
+                 294                          JUMP NZ, bad_command
+                 295                          STORE sC, (sD)                         ;store new PWM duty factor for an LED
+                 296                          CALL send_OK
+                 297                          JUMP warm_start
+                 298                          ;
+                 299                          ;Processing potential 'LD' command
+                 300                          ;
+                 301              IO_command: CALL read_next_char
+                 302                          COMPARE s0, character_O                ;test for '0' of 'IO' command
+                 303                          JUMP NZ, bad_command
+                 304                          CALL read_next_char                    ;test for IO number
+                 305                          COMPARE s0, character_1                ;first number must either be '1' or '9'
+                 306                          JUMP Z, next_IO_number
+                 307                          COMPARE s0, character_9
+                 308                          JUMP NZ, bad_command
+                 309                          LOAD sD, PWM_channel8                  ;IO9 is controlled by PWM channel8
+                 310                          JUMP read_duty_value
+                 311          next_IO_number: CALL read_next_char                    ;read next number for IO10 to IO12
+                 312                          CALL 1char_to_value
+E: identifier cannot start with a digit: `1char_to_value'.
+E: invalid number of operands, instruction CALL takes 1 or 2 operand(s).
+                 313                          JUMP C, bad_command
+                 314                          COMPARE s0, 03                         ;test for number in range 0 to 2
+                 315                          JUMP NC, bad_command
+                 316                          LOAD sD, s0                            ;convert number into memory pointer in sD
+                 317                          ADD sD, PWM_channel9
+                 318                          JUMP read_duty_value
+                 319                          ;
+                 320                          ;Read next character from scratch pad memory
+                 321                          ;
+                 322          read_next_char: ADD sE, 01
+                 323                          FETCH s0, (sE)                         ;test for space
+                 324                          RETURN
+                 325                          ;
+                 326                          ;
+                 327                          ;
+                 328                          ;**************************************************************************************
+                 329                          ; UART communication routines
+                 330                          ;**************************************************************************************
+                 331                          ;
+                 332                          ; Read one character from the UART
+                 333                          ;
+                 334                          ; Character read will be returned in a register called 'UART_data'.
+                 335                          ;
+                 336                          ; The routine first tests the receiver FIFO buffer to see if data is present.
+                 337                          ; If the FIFO is empty, the routine waits until there is a character to read.
+                 338                          ; As this could take any amount of time the wait loop could include a call to a
+                 339                          ; subroutine which performs a useful function.
+                 340                          ;
+                 341                          ;
+                 342                          ; Registers used s0 and UART_data
+                 343                          ;
+                 344          read_from_UART: INPUT s0, status_port                  ;test Rx_FIFO buffer
+                 345                          TEST s0, rx_data_present               ;wait if empty
+                 346                          JUMP NZ, read_character
+                 347                          JUMP read_from_UART
+                 348          read_character: INPUT UART_data, UART_read_port        ;read from FIFO
+                 349                          RETURN
+                 350                          ;
+                 351                          ;
+                 352                          ;
+                 353                          ; Transmit one character to the UART
+                 354                          ;
+                 355                          ; Character supplied in register called 'UART_data'.
+                 356                          ;
+                 357                          ; The routine first tests the transmit FIFO buffer to see if it is full.
+                 358                          ; If the FIFO is full, then the routine waits until it there is space.
+                 359                          ;
+                 360                          ; Registers used s0
+                 361                          ;
+                 362            send_to_UART: INPUT s0, status_port                  ;test Tx_FIFO buffer
+                 363                          TEST s0, tx_full                       ;wait if full
+                 364                          JUMP Z, UART_write
+                 365                          JUMP send_to_UART
+                 366              UART_write: OUTPUT UART_data, UART_write_port
+                 367                          RETURN
+                 368                          ;
+                 369                          ;
+                 370                          ;
+                 371                          ;
+                 372                          ;Receive ASCII string from UART
+                 373                          ;
+                 374                          ;An ASCII string will be read from the UART and stored in scratch pad memory
+                 375                          ;commencing at the location specified by a constant named 'string_start'.
+                 376                          ;The string will have a maximum length of 16 characters including a
+                 377                          ;carriage return (0D) denoting the end of the string.
+                 378                          ;
+                 379                          ;As each character is read, it is echoed to the UART transmitter.
+                 380                          ;Some minor editing is supported using backspace (BS=08) which is used
+                 381                          ;to adjust what is stored in scratch pad memory and adjust the display
+                 382                          ;on the terminal screen using characters sent to the UART transmitter.
+                 383                          ;
+                 384                          ;A test is made for the receiver FIFO becoming full. A full status is treated as
+                 385                          ;a potential error situation and will result in a 'Overflow Error' message being
+                 386                          ;transmitted to the UART, the receiver FIFO being purged of all data and an
+                 387                          ;empty string being stored (carriage return at first location).
+                 388                          ;
+                 389                          ;Registers used s0, s1, s2 and 'UART_data'.
+                 390                          ;
+                 391          receive_string: LOAD s1, string_start                  ;locate start of string
+                 392                          LOAD s2, s1                            ;compute 16 character address
+                 393                          ADD s2, 10
+                 394       receive_full_test: INPUT s0, status_port                  ;test Rx_FIFO buffer for full
+                 395                          TEST s0, rx_full
+                 396                          JUMP NZ, read_error
+                 397                          CALL read_from_UART                    ;obtain and echo character
+                 398                          CALL send_to_UART
+                 399                          STORE UART_data, (s1)                  ;write to memory
+                 400                          COMPARE UART_data, character_CR        ;test for end of string
+                 401                          RETURN Z
+                 402                          COMPARE UART_data, character_BS        ;test for back space
+                 403                          JUMP Z, BS_edit
+                 404                          ADD s1, 01                             ;increment memory pointer
+                 405                          COMPARE s1, s2                         ;test for pointer exceeding 16 characters
+                 406                          JUMP NZ, receive_full_test             ;next character
+                 407                          CALL send_backspace                    ;hold end of string position on terminal display
+                 408                 BS_edit: SUB s1, 01                             ;memory pointer back one
+                 409                          COMPARE s1, string_start               ;test for under flow
+                 410                          JUMP C, string_start_again
+                 411                          CALL send_space                        ;clear character at current position
+                 412                          CALL send_backspace                    ;position cursor
+                 413                          JUMP receive_full_test                 ;next character
+                 414      string_start_again: CALL send_greater_than                 ;restore '>' at prompt
+                 415                          JUMP receive_string                    ;begin again
+                 416                          ;Receiver buffer overflow condition
+                 417              read_error: CALL send_CR                           ;Transmit error message
+                 418                          STORE UART_data, string_start          ;empty string in memory (start with CR)
+                 419                          CALL send_Overflow_Error
+                 420                          CALL send_CR
+                 421      clear_UART_Rx_loop: INPUT s0, status_port                  ;test Rx_FIFO buffer for data
+                 422                          TEST s0, rx_data_present
+                 423                          RETURN Z                               ;finish when buffer is empty
+                 424                          INPUT UART_data, UART_read_port        ;read from FIFO and ignore
+                 425                          JUMP clear_UART_Rx_loop
+                 426                          ;
+                 427                          ;
+                 428                          ;**************************************************************************************
+                 429                          ; Useful ASCII conversion and handling routines
+                 430                          ;**************************************************************************************
+                 431                          ;
+                 432                          ;
+                 433                          ;
+                 434                          ; Convert character to upper case
+                 435                          ;
+                 436                          ; The character supplied in register s0.
+                 437                          ; If the character is in the range 'a' to 'z', it is converted
+                 438                          ; to the equivalent upper case character in the range 'A' to 'Z'.
+                 439                          ; All other characters remain unchanged.
+                 440                          ;
+                 441                          ; Registers used s0.
+                 442                          ;
+                 443              upper_case: COMPARE s0, 61                         ;eliminate character codes below 'a' (61 hex)
+                 444                          RETURN C
+                 445                          COMPARE s0, 7B                         ;eliminate character codes above 'z' (7A hex)
+E: identifier cannot start with a digit: `7B'.
+E: unexpected end of line.
+                 446                          RETURN NC
+                 447                          AND s0, DF                             ;mask bit5 to convert to upper case
+                 448                          RETURN
+                 449                          ;
+                 450                          ;
+                 451                          ;
+                 452                          ; Convert string held in scratch pad memory to upper case.
+                 453                          ;
+                 454                          ; Registers used s0, s1
+                 455                          ;
+                 456       upper_case_string: LOAD s1, string_start
+                 457                ucs_loop: FETCH s0, (s1)
+                 458                          COMPARE s0, character_CR
+                 459                          RETURN Z
+                 460                          CALL upper_case
+                 461                          STORE s0, (s1)
+                 462                          ADD s1, 01
+                 463                          JUMP ucs_loop
+                 464                          ;
+                 465                          ;
+                 466                          ; Convert character '0' to '9' to numerical value in range 0 to 9
+                 467                          ;
+                 468                          ; The character supplied in register s0. If the character is in the
+                 469                          ; range '0' to '9', it is converted to the equivalent decimal value.
+                 470                          ; Characters not in the range '0' to '9' are signified by the return
+                 471                          ; with the CARRY flag set.
+                 472                          ;
+                 473                          ; Registers used s0.
+                 474                          ;
+                 475          1char_to_value: ADD s0, C6                             ;reject character codes above '9' (39 hex)
+E: identifier cannot start with a digit: `1char_to_value'.
+E: unexpected :.
+000 39000        476                          RETURN C                               ;carry flag is set
+001 18110        477                          SUB s0, F6                             ;reject character codes below '0' (30 hex)
+E: symbol not defined: `S0'.
+E: symbol not defined: `F6'.
+002 25000        478                          RETURN                                 ;carry is set if value not in range
+                 479                          ;
+                 480                          ;
+                 481                          ;
+                 482                          ; Convert the HEX ASCII characters contained in 's3' and 's2' into
+                 483                          ; an equivalent hexadecimal value in register 's0'.
+                 484                          ;     The upper nibble is represented by an ASCII character in register s3.
+                 485                          ;     The lower nibble is represented by an ASCII character in register s2.
+                 486                          ;
+                 487                          ; Input characters must be in the range 00 to FF hexadecimal or the CARRY flag
+                 488                          ; will be set on return.
+                 489                          ;
+                 490                          ; Registers used s0, s2 and s3.
+                 491                          ;
+003 00110        492       ASCII_byte_to_hex: LOAD s0, s3                            ;Take upper nibble
+E: symbol not defined: `S0'.
+E: symbol not defined: `S3'.
+004 20010        493                          CALL ASCII_to_hex                      ;convert to value
+005 39000        494                          RETURN C                               ;reject if out of range
+006 00110        495                          LOAD s3, s0                            ;remember value
+E: symbol not defined: `S3'.
+E: symbol not defined: `S0'.
+007 14106        496                          SL0 s3                                 ;multiply value by 16 to put in upper nibble
+E: symbol not defined: `S3'.
+008 14106        497                          SL0 s3
+E: symbol not defined: `S3'.
+009 14106        498                          SL0 s3
+E: symbol not defined: `S3'.
+00A 14106        499                          SL0 s3
+E: symbol not defined: `S3'.
+00B 00110        500                          LOAD s0, s2                            ;Take lower nibble
+E: symbol not defined: `S0'.
+E: symbol not defined: `S2'.
+00C 20010        501                          CALL ASCII_to_hex                      ;convert to value
+00D 39000        502                          RETURN C                               ;reject if out of range
+00E 04110        503                          OR s0, s3                              ;merge in the upper nibble with CARRY reset
+E: symbol not defined: `S0'.
+E: symbol not defined: `S3'.
+00F 25000        504                          RETURN
+                 505                          ;
+                 506                          ;
+                 507                          ; Routine to convert ASCII data in 's0' to an equivalent HEX value.
+                 508                          ;
+                 509                          ; If character is not valid for hex, then CARRY is set on return.
+                 510                          ;
+                 511                          ; Register used s0
+                 512                          ;
+010 10110        513            ASCII_to_hex: ADD s0, B9                             ;test for above ASCII code 46 ('F')
+E: symbol not defined: `S0'.
+E: symbol not defined: `B9'.
+011 39000        514                          RETURN C
+012 18110        515                          SUB s0, E9                             ;normalise 0 to 9 with A-F in 11 to 16 hex
+E: symbol not defined: `S0'.
+E: symbol not defined: `E9'.
+013 39000        516                          RETURN C                               ;reject below ASCII code 30 ('0')
+014 181B0        517                          SUB s0, 11                             ;isolate A-F down to 00 to 05 hex
+E: symbol not defined: `S0'.
+015 3E001        518                          JUMP NC, ASCII_letter
+E: symbol not defined: `ASCII_LETTER'.
+016 10170        519                          ADD s0, 07                             ;test for above ASCII code 46 ('F')
+E: symbol not defined: `S0'.
+017 39000        520                          RETURN C
+018 18110        521                          SUB s0, F6                             ;convert to range 00 to 09
+E: symbol not defined: `S0'.
+E: symbol not defined: `F6'.
+019 25000        522                          RETURN
+                 523            ASCII_letter: ADD s0, 0A                             ;convert to range 0A to 0F
+E: identifier cannot start with a digit: `0A'.
+E: unexpected end of line.
+01A 25000        524                          RETURN
+                 525                          ;
+                 526                          ;
+                 527                          ;
+                 528                          ;**************************************************************************************
+                 529                          ; Text messages
+                 530                          ;**************************************************************************************
+                 531                          ;
+                 532                          ;
+                 533                          ; Send Carriage Return to the UART
+                 534                          ;
+01B 00110        535                 send_CR: LOAD UART_data, character_CR
+E: symbol not defined: `UART_DATA'.
+E: symbol not defined: `CHARACTER_CR'.
+01C 20001        536                          CALL send_to_UART
+E: symbol not defined: `SEND_TO_UART'.
+01D 25000        537                          RETURN
+                 538                          ;
+                 539                          ; Send a space to the UART
+                 540                          ;
+01E 00110        541              send_space: LOAD UART_data, character_space
+E: symbol not defined: `UART_DATA'.
+E: symbol not defined: `CHARACTER_SPACE'.
+01F 20001        542                          CALL send_to_UART
+E: symbol not defined: `SEND_TO_UART'.
+020 25000        543                          RETURN
+                 544                          ;
+                 545                          ;
+                 546                          ;
+                 547                          ;Send a back space to the UART
+                 548                          ;
+021 00110        549          send_backspace: LOAD UART_data, character_BS
+E: symbol not defined: `UART_DATA'.
+E: symbol not defined: `CHARACTER_BS'.
+022 20001        550                          CALL send_to_UART
+E: symbol not defined: `SEND_TO_UART'.
+023 25000        551                          RETURN
+                 552                          ;
+                 553                          ;
+                 554                          ; Send 'PicoBlaze Servo Control' string to the UART
+                 555                          ;
+024 2001B        556            send_welcome: CALL send_CR
+025 2001B        557                          CALL send_CR
+026 00110        558                          LOAD UART_data, character_P
+E: symbol not defined: `UART_DATA'.
+E: symbol not defined: `CHARACTER_P'.
+027 20001        559                          CALL send_to_UART
+E: symbol not defined: `SEND_TO_UART'.
+028 00110        560                          LOAD UART_data, character_i
+E: symbol not defined: `UART_DATA'.
+E: symbol not defined: `CHARACTER_I'.
+029 20001        561                          CALL send_to_UART
+E: symbol not defined: `SEND_TO_UART'.
+02A 00110        562                          LOAD UART_data, character_c
+E: symbol not defined: `UART_DATA'.
+E: symbol not defined: `CHARACTER_C'.
+02B 20001        563                          CALL send_to_UART
+E: symbol not defined: `SEND_TO_UART'.
+02C 00110        564                          LOAD UART_data, character_o
+E: symbol not defined: `UART_DATA'.
+E: symbol not defined: `CHARACTER_O'.
+02D 20001        565                          CALL send_to_UART
+E: symbol not defined: `SEND_TO_UART'.
+02E 00110        566                          LOAD UART_data, character_B
+E: symbol not defined: `UART_DATA'.
+E: symbol not defined: `CHARACTER_B'.
+02F 20001        567                          CALL send_to_UART
+E: symbol not defined: `SEND_TO_UART'.
+030 00110        568                          LOAD UART_data, character_l
+E: symbol not defined: `UART_DATA'.
+E: symbol not defined: `CHARACTER_L'.
+031 20001        569                          CALL send_to_UART
+E: symbol not defined: `SEND_TO_UART'.
+032 00110        570                          LOAD UART_data, character_a
+E: symbol not defined: `UART_DATA'.
+E: symbol not defined: `CHARACTER_A'.
+033 20001        571                          CALL send_to_UART
+E: symbol not defined: `SEND_TO_UART'.
+034 00110        572                          LOAD UART_data, character_z
+E: symbol not defined: `UART_DATA'.
+E: symbol not defined: `CHARACTER_Z'.
+035 20001        573                          CALL send_to_UART
+E: symbol not defined: `SEND_TO_UART'.
+036 00110        574                          LOAD UART_data, character_e
+E: symbol not defined: `UART_DATA'.
+E: symbol not defined: `CHARACTER_E'.
+037 20001        575                          CALL send_to_UART
+E: symbol not defined: `SEND_TO_UART'.
+038 2001E        576                          CALL send_space
+039 00110        577                          LOAD UART_data, character_P
+E: symbol not defined: `UART_DATA'.
+E: symbol not defined: `CHARACTER_P'.
+03A 20001        578                          CALL send_to_UART
+E: symbol not defined: `SEND_TO_UART'.
+03B 00110        579                          LOAD UART_data, character_W
+E: symbol not defined: `UART_DATA'.
+E: symbol not defined: `CHARACTER_W'.
+03C 20001        580                          CALL send_to_UART
+E: symbol not defined: `SEND_TO_UART'.
+03D 00110        581                          LOAD UART_data, character_M
+E: symbol not defined: `UART_DATA'.
+E: symbol not defined: `CHARACTER_M'.
+03E 20001        582                          CALL send_to_UART
+E: symbol not defined: `SEND_TO_UART'.
+03F 2001E        583                          CALL send_space
+040 00110        584                          LOAD UART_data, character_C
+E: symbol not defined: `UART_DATA'.
+E: symbol not defined: `CHARACTER_C'.
+041 20001        585                          CALL send_to_UART
+E: symbol not defined: `SEND_TO_UART'.
+042 00110        586                          LOAD UART_data, character_o
+E: symbol not defined: `UART_DATA'.
+E: symbol not defined: `CHARACTER_O'.
+043 20001        587                          CALL send_to_UART
+E: symbol not defined: `SEND_TO_UART'.
+044 00110        588                          LOAD UART_data, character_n
+E: symbol not defined: `UART_DATA'.
+E: symbol not defined: `CHARACTER_N'.
+045 20001        589                          CALL send_to_UART
+E: symbol not defined: `SEND_TO_UART'.
+046 00110        590                          LOAD UART_data, character_t
+E: symbol not defined: `UART_DATA'.
+E: symbol not defined: `CHARACTER_T'.
+047 20001        591                          CALL send_to_UART
+E: symbol not defined: `SEND_TO_UART'.
+048 00110        592                          LOAD UART_data, character_r
+E: symbol not defined: `UART_DATA'.
+E: symbol not defined: `CHARACTER_R'.
+049 20001        593                          CALL send_to_UART
+E: symbol not defined: `SEND_TO_UART'.
+04A 00110        594                          LOAD UART_data, character_o
+E: symbol not defined: `UART_DATA'.
+E: symbol not defined: `CHARACTER_O'.
+04B 20001        595                          CALL send_to_UART
+E: symbol not defined: `SEND_TO_UART'.
+04C 00110        596                          LOAD UART_data, character_l
+E: symbol not defined: `UART_DATA'.
+E: symbol not defined: `CHARACTER_L'.
+04D 20001        597                          CALL send_to_UART
+E: symbol not defined: `SEND_TO_UART'.
+04E 2001B        598                          CALL send_CR
+04F 2001B        599                          CALL send_CR
+050 25000        600                          RETURN
+                 601                          ;
+                 602                          ;
+                 603                          ;Send 'KCPSM3>' prompt to the UART
+                 604                          ;
+051 2001B        605             send_prompt: CALL send_CR                           ;start new line
+052 00110        606                          LOAD UART_data, character_K
+E: symbol not defined: `UART_DATA'.
+E: symbol not defined: `CHARACTER_K'.
+053 20001        607                          CALL send_to_UART
+E: symbol not defined: `SEND_TO_UART'.
+054 00110        608                          LOAD UART_data, character_C
+E: symbol not defined: `UART_DATA'.
+E: symbol not defined: `CHARACTER_C'.
+055 20001        609                          CALL send_to_UART
+E: symbol not defined: `SEND_TO_UART'.
+056 00110        610                          LOAD UART_data, character_P
+E: symbol not defined: `UART_DATA'.
+E: symbol not defined: `CHARACTER_P'.
+057 20001        611                          CALL send_to_UART
+E: symbol not defined: `SEND_TO_UART'.
+058 00110        612                          LOAD UART_data, character_S
+E: symbol not defined: `UART_DATA'.
+E: symbol not defined: `CHARACTER_S'.
+059 20001        613                          CALL send_to_UART
+E: symbol not defined: `SEND_TO_UART'.
+05A 00110        614                          LOAD UART_data, character_M
+E: symbol not defined: `UART_DATA'.
+E: symbol not defined: `CHARACTER_M'.
+05B 20001        615                          CALL send_to_UART
+E: symbol not defined: `SEND_TO_UART'.
+05C 00110        616                          LOAD UART_data, character_3
+E: symbol not defined: `UART_DATA'.
+E: symbol not defined: `CHARACTER_3'.
+05D 20001        617                          CALL send_to_UART
+E: symbol not defined: `SEND_TO_UART'.
+                 618                          ;
+                 619                          ;Send '>' character to the UART
+                 620                          ;
+05E 00110        621       send_greater_than: LOAD UART_data, character_greater_than
+E: symbol not defined: `UART_DATA'.
+E: symbol not defined: `CHARACTER_GREATER_THAN'.
+05F 20001        622                          CALL send_to_UART
+E: symbol not defined: `SEND_TO_UART'.
+060 25000        623                          RETURN
+                 624                          ;
+                 625                          ;
+                 626                          ;Send 'Overflow Error' to the UART
+                 627                          ;
+061 00110        628     send_Overflow_Error: LOAD UART_data, character_O
+E: symbol not defined: `UART_DATA'.
+E: symbol not defined: `CHARACTER_O'.
+062 20001        629                          CALL send_to_UART
+E: symbol not defined: `SEND_TO_UART'.
+063 00110        630                          LOAD UART_data, character_v
+E: symbol not defined: `UART_DATA'.
+E: symbol not defined: `CHARACTER_V'.
+064 20001        631                          CALL send_to_UART
+E: symbol not defined: `SEND_TO_UART'.
+065 00110        632                          LOAD UART_data, character_e
+E: symbol not defined: `UART_DATA'.
+E: symbol not defined: `CHARACTER_E'.
+066 20001        633                          CALL send_to_UART
+E: symbol not defined: `SEND_TO_UART'.
+067 00110        634                          LOAD UART_data, character_r
+E: symbol not defined: `UART_DATA'.
+E: symbol not defined: `CHARACTER_R'.
+068 20001        635                          CALL send_to_UART
+E: symbol not defined: `SEND_TO_UART'.
+069 00110        636                          LOAD UART_data, character_f
+E: symbol not defined: `UART_DATA'.
+E: symbol not defined: `CHARACTER_F'.
+06A 20001        637                          CALL send_to_UART
+E: symbol not defined: `SEND_TO_UART'.
+06B 00110        638                          LOAD UART_data, character_l
+E: symbol not defined: `UART_DATA'.
+E: symbol not defined: `CHARACTER_L'.
+06C 20001        639                          CALL send_to_UART
+E: symbol not defined: `SEND_TO_UART'.
+06D 00110        640                          LOAD UART_data, character_o
+E: symbol not defined: `UART_DATA'.
+E: symbol not defined: `CHARACTER_O'.
+06E 20001        641                          CALL send_to_UART
+E: symbol not defined: `SEND_TO_UART'.
+06F 00110        642                          LOAD UART_data, character_w
+E: symbol not defined: `UART_DATA'.
+E: symbol not defined: `CHARACTER_W'.
+070 20001        643                          CALL send_to_UART
+E: symbol not defined: `SEND_TO_UART'.
+071 2001E        644        send_space_Error: CALL send_space
+                 645                          ;
+                 646                          ;Send 'Error' to the UART
+                 647                          ;
+072 00110        648              send_Error: LOAD UART_data, character_E
+E: symbol not defined: `UART_DATA'.
+E: symbol not defined: `CHARACTER_E'.
+073 20001        649                          CALL send_to_UART
+E: symbol not defined: `SEND_TO_UART'.
+074 00110        650                          LOAD UART_data, character_r
+E: symbol not defined: `UART_DATA'.
+E: symbol not defined: `CHARACTER_R'.
+075 20001        651                          CALL send_to_UART
+E: symbol not defined: `SEND_TO_UART'.
+076 20001        652                          CALL send_to_UART
+E: symbol not defined: `SEND_TO_UART'.
+077 00110        653                          LOAD UART_data, character_o
+E: symbol not defined: `UART_DATA'.
+E: symbol not defined: `CHARACTER_O'.
+078 20001        654                          CALL send_to_UART
+E: symbol not defined: `SEND_TO_UART'.
+079 00110        655                          LOAD UART_data, character_r
+E: symbol not defined: `UART_DATA'.
+E: symbol not defined: `CHARACTER_R'.
+07A 20001        656                          CALL send_to_UART
+E: symbol not defined: `SEND_TO_UART'.
+07B 2201B        657                          JUMP send_CR
+                 658                          ;
+                 659                          ;
+                 660                          ;Send 'OK' to the UART
+                 661                          ;
+07C 2001B        662                 send_OK: CALL send_CR
+07D 00110        663                          LOAD UART_data, character_O
+E: symbol not defined: `UART_DATA'.
+E: symbol not defined: `CHARACTER_O'.
+07E 20001        664                          CALL send_to_UART
+E: symbol not defined: `SEND_TO_UART'.
+07F 00110        665                          LOAD UART_data, character_K
+E: symbol not defined: `UART_DATA'.
+E: symbol not defined: `CHARACTER_K'.
+080 20001        666                          CALL send_to_UART
+E: symbol not defined: `SEND_TO_UART'.
+081 2201B        667                          JUMP send_CR
+                 668                          ;
+                 669                          ;
+                 670                          ;**************************************************************************************
+                 671                          ; Interrupt Service Routine (ISR)
+                 672                          ;**************************************************************************************
+                 673                          ;
+                 674                          ; Interrupts occur at 3.92us intervals and are used to generate the PWM pulses generated
+                 675                          ; at a PRF of 1KHz. The 3.92us interrupt rate corresponds with a resolution of 256 steps
+                 676                          ; over the 1ms associated with the 1KHz PRF.
+                 677                          ;
+                 678                          ; The ISR is self contained and all registers used are preserved. Scratch pad memory
+                 679                          ; locations are used to determine the desired duty factor for each of 12 channels.
+                 680                          ;
+                 681                          ; Note that an interrupt is generated every 196 clock cycles. This means that there is
+                 682                          ; only time to execute 98 instructions between each interrupt. This ISR is 48 instructions
+                 683                          ; long. A further 3 instructions are also consumed by the interrupt process
+                 684                          ; (abandoned instruction, virtual CALL to 3FF and the interrupt vector JUMP) and hence
+                 685                          ; PicoBlaze has approximately half of its time available for other tasks in the main program.
+                 686                          ;
+                 687                          ; Although a loop would normal be employed in software to process each of 12 channels,
+                 688                          ; the implementation of a loop would increase the number of instructions which needed to
+                 689                          ; be executed to such an extent that this 12 channel implementation would not be possible.
+                 690                          ; Consequently the code is written out in a linear fashion which consumes more program
+                 691                          ; space but which executes faster.
+                 692                          ;
+082 2F101        693                     ISR: STORE s0, ISR_preserve_s0              ;preserve registers to be used
+E: symbol not defined: `S0'.
+E: symbol not defined: `ISR_PRESERVE_S0'.
+083 2F101        694                          STORE s1, ISR_preserve_s1
+E: symbol not defined: `S1'.
+E: symbol not defined: `ISR_PRESERVE_S1'.
+084 2F101        695                          STORE s2, ISR_preserve_s2
+E: symbol not defined: `S2'.
+E: symbol not defined: `ISR_PRESERVE_S2'.
+                 696                          ;Determine the number of steps currently through the 1ms PWM cycle
+085 0B101        697                          FETCH s1, PWM_duty_counter             ;read 8-bit counter of steps
+E: symbol not defined: `S1'.
+E: symbol not defined: `PWM_DUTY_COUNTER'.
+086 10110        698                          ADD s1, 01                             ;increment counter (will roll over to zero)
+E: symbol not defined: `S1'.
+087 2F101        699                          STORE s1, PWM_duty_counter             ;update count value in memory for next interrupt.
+E: symbol not defined: `S1'.
+E: symbol not defined: `PWM_DUTY_COUNTER'.
+                 700                          ;Read duty factor for each channel and compare it with the duty counter and set or
+                 701                          ;reset a bit in register s2 accordingly.
+088 0B101        702                          FETCH s0, PWM_channel11                ;read desired setting of pulse width
+E: symbol not defined: `S0'.
+E: symbol not defined: `PWM_CHANNEL11'.
+089 1C110        703                          COMPARE s1, s0                         ;set carry flag if duty factor > duty counter
+E: symbol not defined: `S1'.
+E: symbol not defined: `S0'.
+08A 14100        704                          SLA s2                                 ;shift carry into register s2
+E: symbol not defined: `S2'.
+08B 0B101        705                          FETCH s0, PWM_channel10                ;read desired setting of pulse width
+E: symbol not defined: `S0'.
+E: symbol not defined: `PWM_CHANNEL10'.
+08C 1C110        706                          COMPARE s1, s0                         ;set carry flag if duty factor > duty counter
+E: symbol not defined: `S1'.
+E: symbol not defined: `S0'.
+08D 14100        707                          SLA s2                                 ;shift carry into register s2
+E: symbol not defined: `S2'.
+08E 0B101        708                          FETCH s0, PWM_channel9                 ;read desired setting of pulse width
+E: symbol not defined: `S0'.
+E: symbol not defined: `PWM_CHANNEL9'.
+08F 1C110        709                          COMPARE s1, s0                         ;set carry flag if duty factor > duty counter
+E: symbol not defined: `S1'.
+E: symbol not defined: `S0'.
+090 14100        710                          SLA s2                                 ;shift carry into register s2
+E: symbol not defined: `S2'.
+091 0B101        711                          FETCH s0, PWM_channel8                 ;read desired setting of pulse width
+E: symbol not defined: `S0'.
+E: symbol not defined: `PWM_CHANNEL8'.
+092 1C110        712                          COMPARE s1, s0                         ;set carry flag if duty factor > duty counter
+E: symbol not defined: `S1'.
+E: symbol not defined: `S0'.
+093 14100        713                          SLA s2                                 ;shift carry into register s2
+E: symbol not defined: `S2'.
+094 2D101        714                          OUTPUT s2, simple_port                 ;drive pins on connector J4
+E: symbol not defined: `S2'.
+E: symbol not defined: `SIMPLE_PORT'.
+095 0B101        715                          FETCH s0, PWM_channel7                 ;read desired setting of pulse width
+E: symbol not defined: `S0'.
+E: symbol not defined: `PWM_CHANNEL7'.
+096 1C110        716                          COMPARE s1, s0                         ;set carry flag if duty factor > duty counter
+E: symbol not defined: `S1'.
+E: symbol not defined: `S0'.
+097 14100        717                          SLA s2                                 ;shift carry into register s2
+E: symbol not defined: `S2'.
+098 0B101        718                          FETCH s0, PWM_channel6                 ;read desired setting of pulse width
+E: symbol not defined: `S0'.
+E: symbol not defined: `PWM_CHANNEL6'.
+099 1C110        719                          COMPARE s1, s0                         ;set carry flag if duty factor > duty counter
+E: symbol not defined: `S1'.
+E: symbol not defined: `S0'.
+09A 14100        720                          SLA s2                                 ;shift carry into register s2
+E: symbol not defined: `S2'.
+09B 0B101        721                          FETCH s0, PWM_channel5                 ;read desired setting of pulse width
+E: symbol not defined: `S0'.
+E: symbol not defined: `PWM_CHANNEL5'.
+09C 1C110        722                          COMPARE s1, s0                         ;set carry flag if duty factor > duty counter
+E: symbol not defined: `S1'.
+E: symbol not defined: `S0'.
+09D 14100        723                          SLA s2                                 ;shift carry into register s2
+E: symbol not defined: `S2'.
+09E 0B101        724                          FETCH s0, PWM_channel4                 ;read desired setting of pulse width
+E: symbol not defined: `S0'.
+E: symbol not defined: `PWM_CHANNEL4'.
+09F 1C110        725                          COMPARE s1, s0                         ;set carry flag if duty factor > duty counter
+E: symbol not defined: `S1'.
+E: symbol not defined: `S0'.
+0A0 14100        726                          SLA s2                                 ;shift carry into register s2
+E: symbol not defined: `S2'.
+0A1 0B101        727                          FETCH s0, PWM_channel3                 ;read desired setting of pulse width
+E: symbol not defined: `S0'.
+E: symbol not defined: `PWM_CHANNEL3'.
+0A2 1C110        728                          COMPARE s1, s0                         ;set carry flag if duty factor > duty counter
+E: symbol not defined: `S1'.
+E: symbol not defined: `S0'.
+0A3 14100        729                          SLA s2                                 ;shift carry into register s2
+E: symbol not defined: `S2'.
+0A4 0B101        730                          FETCH s0, PWM_channel2                 ;read desired setting of pulse width
+E: symbol not defined: `S0'.
+E: symbol not defined: `PWM_CHANNEL2'.
+0A5 1C110        731                          COMPARE s1, s0                         ;set carry flag if duty factor > duty counter
+E: symbol not defined: `S1'.
+E: symbol not defined: `S0'.
+0A6 14100        732                          SLA s2                                 ;shift carry into register s2
+E: symbol not defined: `S2'.
+0A7 0B101        733                          FETCH s0, PWM_channel1                 ;read desired setting of pulse width
+E: symbol not defined: `S0'.
+E: symbol not defined: `PWM_CHANNEL1'.
+0A8 1C110        734                          COMPARE s1, s0                         ;set carry flag if duty factor > duty counter
+E: symbol not defined: `S1'.
+E: symbol not defined: `S0'.
+0A9 14100        735                          SLA s2                                 ;shift carry into register s2
+E: symbol not defined: `S2'.
+0AA 0B101        736                          FETCH s0, PWM_channel0                 ;read desired setting of pulse width
+E: symbol not defined: `S0'.
+E: symbol not defined: `PWM_CHANNEL0'.
+0AB 1C110        737                          COMPARE s1, s0                         ;set carry flag if duty factor > duty counter
+E: symbol not defined: `S1'.
+E: symbol not defined: `S0'.
+0AC 14100        738                          SLA s2                                 ;shift carry into register s2
+E: symbol not defined: `S2'.
+0AD 2D101        739                          OUTPUT s2, LED_port                    ;drive LEDs
+E: symbol not defined: `S2'.
+E: symbol not defined: `LED_PORT'.
+0AE 0B101        740                          FETCH s0, ISR_preserve_s0              ;restore register values
+E: symbol not defined: `S0'.
+E: symbol not defined: `ISR_PRESERVE_S0'.
+0AF 0B101        741                          FETCH s1, ISR_preserve_s1
+E: symbol not defined: `S1'.
+E: symbol not defined: `ISR_PRESERVE_S1'.
+0B0 0B101        742                          FETCH s2, ISR_preserve_s2
+E: symbol not defined: `S2'.
+E: symbol not defined: `ISR_PRESERVE_S2'.
+0B1 29001        743                          RETURNI ENABLE
+                 744                          ;
+                 745                          ;
+                 746                          ;**************************************************************************************
+                 747                          ; Interrupt Vector
+                 748                          ;**************************************************************************************
+                 749                          ;
+                 750                          ADDRESS 3FF
+E: identifier cannot start with a digit: `3FF'.
+E: directive ADDRESS requires a single argument.
+0B2 22082        751                          JUMP ISR
+                 752                          ;
+                 753                          ;

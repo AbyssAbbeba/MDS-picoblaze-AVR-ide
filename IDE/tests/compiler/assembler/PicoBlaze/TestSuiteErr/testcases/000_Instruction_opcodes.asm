@@ -76,7 +76,7 @@ Start:
         RL        TESTsymb10
     ; Others
         CALl      Podprog
-        CALL      Z,Podprog
+        CALL      Z,Podprogcc
         CALL      NZ,Podprog
         CALL      C,Podprog
         CALL      NC,Podprog
@@ -84,11 +84,11 @@ Start:
         STORE     TESTsymb9,TESTsymb13
         STORE     TESTsymb10,@10
         FETCH     TESTsymb11,TESTsymb13
-        FETCH     TESTsymb12,@5
+        FETCH     TESTsymb12,@5x
 
 Podprog:
         RETURN
-        RETURN    Z
+        RETURN    ZZZ
         RETURN    NZ
         RETURN    C
         RETURN    NC
