@@ -38,6 +38,7 @@ function runBuild()
                                          "${i}" 2>&1 )"
         then
             echo "[ERROR]"
+            rm "${1}/${i%%.asm}.hex"
             echo "${output}" > /dev/stderr
         else
             echo "[OK]"

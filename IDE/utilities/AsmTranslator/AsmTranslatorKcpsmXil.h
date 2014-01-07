@@ -127,6 +127,9 @@ class AsmTranslatorKcpsmXil : public AsmTranslatorBase
         std::set<std::string> m_registers;
 
         /// @brief
+        std::set<std::string> m_usedIDs;
+
+        /// @brief
         bool m_instFlag;
 };
 

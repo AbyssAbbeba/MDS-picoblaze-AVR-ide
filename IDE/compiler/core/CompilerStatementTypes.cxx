@@ -756,6 +756,23 @@ std::ostream & operator << ( std::ostream & out,
         case ASMPICOBLAZE_INS_REGBANK_B:        out << "ASMPICOBLAZE_INS_REGBANK_B";        break;
         case ASMPICOBLAZE_INS_OUTPUTK_KK_P:     out << "ASMPICOBLAZE_INS_OUTPUTK_KK_P";     break;
 
+        case C_STMT_EXPR:                       out << "C_STMT_EXPR";                       break;
+        case C_STMT_BREAK:                      out << "C_STMT_BREAK";                      break;
+        case C_STMT_CONTINUE:                   out << "C_STMT_CONTINUE";                   break;
+        case C_STMT_RETURN:                     out << "C_STMT_RETURN";                     break;
+        case C_STMT_VAR:                        out << "C_STMT_VAR";                        break;
+        case C_STMT_FUNC:                       out << "C_STMT_FUNC";                       break;
+        case C_STMT_IF:                         out << "C_STMT_IF";                         break;
+        case C_STMT_CONDITION:                  out << "C_STMT_CONDITION";                  break;
+        case C_STMT_ELSE:                       out << "C_STMT_ELSE";                       break;
+        case C_STMT_FOR:                        out << "C_STMT_FOR";                        break;
+        case C_STMT_WHILE:                      out << "C_STMT_WHILE";                      break;
+        case C_STMT_DO_WHILE:                   out << "C_STMT_DO_WHILE";                   break;
+        case C_STMT_SWITCH:                     out << "C_STMT_SWITCH";                     break;
+        case C_STMT_CASE:                       out << "C_STMT_CASE";                       break;
+        case C_STMT_DEFAULT:                    out << "C_STMT_DEFAULT";                    break;
+        case C_STMT_SCOPE:                      out << "C_STMT_SCOPE";                      break;
+
         case STATEMENTTYPE__MAX__:              out << "(STATEMENTTYPE__MAX__)";            break;
     }
 

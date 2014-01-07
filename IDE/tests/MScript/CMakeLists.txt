@@ -65,4 +65,4 @@ target_link_libraries ( ${PROJECT_NAME}
 # TESTS
 # ------------------------------------------------------------------------------
 
-ADD_TEST_SUBJECT ( "Moravia_Script" "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}" )
+# ADD_TEST_SUBJECT ( "Moravia_Script" "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}" )
