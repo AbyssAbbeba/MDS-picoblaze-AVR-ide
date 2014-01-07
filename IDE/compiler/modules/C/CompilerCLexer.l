@@ -251,15 +251,15 @@ ID      [_a-zA-Z][_a-zA-Z0-9]*
                     // Handle C like escape sequence, such as `\x4A', `\uABCD', `\U1234abcd', and `\177'
 
                     int size; // Size of the binary value in bytes
-                    //yylval->integer = (long long) MScriptLexerAuxFunc::escapeSequence(yyextra, yylloc, yytext, &size);
+                    yylval->integer = (long long) escapeSequence(yyextra, yylloc, yytext, &size);
 
                     // Check whether the conversion was successful
                     if ( 0 == size )
                     {
-                        //yyextra->lexerMessage ( yylloc,
-                        //                        MScriptBase::MT_ERROR,
-                        //                        QObject::tr ( "unrecognized escape sequence: " ).toStdString()
-                        //                                    + "`" + yytext + "'" );
+                        yyextra->lexerMessage ( yylloc,
+                                                CompilerBase::MT_ERROR,
+                                                QObject::tr ( "unrecognized escape sequence: " ).toStdString()
+                                                            + "`" + yytext + "'" );
                         yyterminate();
                     }
 
