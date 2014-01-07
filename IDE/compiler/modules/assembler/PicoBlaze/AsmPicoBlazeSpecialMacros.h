@@ -17,13 +17,14 @@
 #define ASMPICOBLAZESPECIALMACROS_H
 
 // Forward declarations.
-class CompilerSemanticInterface;
-class CompilerSourceLocation;
-class CompilerStatement;
 class CompilerExpr;
-
-class AsmPicoBlazeSymbolTable;
+class CompilerStatement;
+class CompilerSourceLocation;
 class AsmPicoBlazeCodeListing;
+class CompilerSemanticInterface;
+
+// PicoBlaze assembler semantic analyzer header files.
+#include "AsmPicoBlazeSymbolTable.h"
 
 // Standard headers.
 #include <string>
@@ -181,6 +182,16 @@ class AsmPicoBlazeSpecialMacros
          */
         inline CompilerStatement * test_sx_kk ( int sx,
                                                 int kk ) const;
+
+        /**
+         * @brief
+         * @param[in] regOrNumber
+         * @param[in] type
+         * @param[in] location
+         */
+        inline void checkType ( bool regOrNumber,
+                                AsmPicoBlazeSymbolTable::SymbolType type,
+                                const CompilerSourceLocation & location );
 
     ////    Private Attributes    ////
     private:

@@ -85,6 +85,10 @@ void AsmPicoBlazeCodeListing::clear()
     m_messages.clear();
     m_files2skip.clear();
     m_messageQueue.clear();
+    m_lastMsgPrefix.clear();
+
+    m_lastMsgSubsequent = false;
+    m_lastMsgLocation = CompilerSourceLocation();
 }
 
 AsmPicoBlazeCodeListing::~AsmPicoBlazeCodeListing()
@@ -630,6 +634,41 @@ void AsmPicoBlazeCodeListing::message ( const CompilerSourceLocation & location,
         return;
     }
 
+    if ( true == subsequent )
+    {
+        if ( location.m_fileNumber >= (int) m_numberOfFiles )
+        {
+            if ( location.m_fileNumber > m_lastMsgLocation.m_fileNumber )
+            {
+                m_lastMsgLocation = location;
+                m_lastMsgSubsequent = true;
+            }
+            return;
+        }
+        else
+        {
+            m_lastMsgPrefix += "==> ";
+        }
+    }
+    else if ( true == m_lastMsgSubsequent )
+    {
+        insertMessage(m_lastMsgLocation, type, text);
+        m_lastMsgSubsequent = false;
+        m_lastMsgLocation = CompilerSourceLocation();
+    }
+
+    insertMessage(location, type, m_lastMsgPrefix + text);
+
+    if ( false == subsequent )
+    {
+        m_lastMsgPrefix.clear();
+    }
+}
+
+inline void AsmPicoBlazeCodeListing::insertMessage ( const CompilerSourceLocation & location,
+                                                     CompilerBase::MessageType type,
+                                                     const std::string & text )
+{
     LstLine & lstLine = m_listing[location.m_fileNumber][location.m_lineStart - 1];
 
     int msgIdx = lstLine.m_message;

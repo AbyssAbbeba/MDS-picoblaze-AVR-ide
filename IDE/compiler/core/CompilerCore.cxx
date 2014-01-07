@@ -258,22 +258,21 @@ void CompilerCore::coreMessage ( const CompilerSourceLocation & location,
 {
     if ( -1 != location.m_origin )
     {
-        std::string prefixNormal;
-        std::string prefixObserver;
+        std::string prefix;
         std::vector<const CompilerSourceLocation *> locationBackTr;
         m_locationTracker.traverse(location, &locationBackTr, true);
 
-        for ( const auto tracePoint : locationBackTr )
+        const size_t size = locationBackTr.size();
+        for ( size_t i = 0; i < size; i++ )
         {
-            if ( -1 == tracePoint->m_origin )
+            if ( -1 == locationBackTr[i]->m_origin )
             {
-                coreMessage ( *tracePoint, type, prefixNormal + text, forceAsUnique, true );
-                prefixNormal += "==> ";
+                coreMessage ( *(locationBackTr[i]), type, prefix + text, forceAsUnique, true );
+                prefix += "==> ";
             }
             else if ( NULL != m_msgObserver )
             {
-                m_msgObserver->message(*tracePoint, type, prefixObserver + text);
-                prefixObserver += "==> ";
+                m_msgObserver->message(*(locationBackTr[i]), type, text, ( ( i + 1 ) < size ) );
             }
         }
 
