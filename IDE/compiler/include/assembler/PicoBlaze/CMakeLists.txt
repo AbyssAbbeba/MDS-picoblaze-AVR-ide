@@ -34,7 +34,7 @@ endif()
 foreach ( PROCESSOR "kcpsm1" "kcpsm1cpld" "kcpsm2" "kcpsm3" "kcpsm6" )
     set ( FILE_BASE "${CMAKE_CURRENT_SOURCE_DIR}/${PROCESSOR}" )
     if ( "${FILE_BASE}.asm" IS_NEWER_THAN "${FILE_BASE}.prc" )
-        add_custom_target ( "${PROJECT_NAME}_build_prc_file_${PROCESSOR}" ALL
+        add_custom_target ( "${PROJECT_NAME}_prc_file_${PROCESSOR}" ALL
                             WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
                             COMMENT "Building device specification file for ${PROCESSOR}."
                             DEPENDS compiler
@@ -46,7 +46,7 @@ foreach ( PROCESSOR "kcpsm1" "kcpsm1cpld" "kcpsm2" "kcpsm3" "kcpsm6" )
                                                     --precompile="${FILE_BASE}.prc"
                                                     "${FILE_BASE}.asm" 1> /dev/null )
     else()
-        add_custom_target ( "${PROJECT_NAME}_build_prc_file_${PROCESSOR}" ALL
+        add_custom_target ( "${PROJECT_NAME}_prc_file_${PROCESSOR}" ALL
                             COMMENT "Device specification file for ${PROCESSOR} is already built ... skipping." )
     endif()
 endforeach ( PROCESSOR )
