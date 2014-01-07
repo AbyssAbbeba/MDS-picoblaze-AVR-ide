@@ -1,0 +1,297 @@
+MT_ERROR: 039_example_12.asm:75.45-75.47: Error: identifier cannot start with a digit: `0A'.
+MT_ERROR: 039_example_12.asm:75.45-76.1: Error: unexpected end of line.
+MT_ERROR: 039_example_12.asm:77.46-77.48: Error: identifier cannot start with a digit: `0C'.
+MT_ERROR: 039_example_12.asm:77.46-78.1: Error: unexpected end of line.
+MT_ERROR: 039_example_12.asm:79.48-79.50: Error: identifier cannot start with a digit: `0E'.
+MT_ERROR: 039_example_12.asm:79.48-80.1: Error: unexpected end of line.
+MT_ERROR: 039_example_12.asm:80.48-80.50: Error: identifier cannot start with a digit: `0F'.
+MT_ERROR: 039_example_12.asm:80.48-81.1: Error: unexpected end of line.
+MT_ERROR: 039_example_12.asm:110.44-110.46: Error: identifier cannot start with a digit: `6A'.
+MT_ERROR: 039_example_12.asm:110.44-111.1: Error: unexpected end of line.
+MT_ERROR: 039_example_12.asm:111.44-111.46: Error: identifier cannot start with a digit: `6B'.
+MT_ERROR: 039_example_12.asm:111.44-112.1: Error: unexpected end of line.
+MT_ERROR: 039_example_12.asm:112.44-112.46: Error: identifier cannot start with a digit: `6C'.
+MT_ERROR: 039_example_12.asm:112.44-113.1: Error: unexpected end of line.
+MT_ERROR: 039_example_12.asm:114.44-114.46: Error: identifier cannot start with a digit: `6E'.
+MT_ERROR: 039_example_12.asm:114.44-115.1: Error: unexpected end of line.
+MT_ERROR: 039_example_12.asm:115.44-115.46: Error: identifier cannot start with a digit: `6F'.
+MT_ERROR: 039_example_12.asm:115.44-116.1: Error: unexpected end of line.
+MT_ERROR: 039_example_12.asm:126.44-126.46: Error: identifier cannot start with a digit: `7A'.
+MT_ERROR: 039_example_12.asm:126.44-127.1: Error: unexpected end of line.
+MT_ERROR: 039_example_12.asm:136.44-136.46: Error: identifier cannot start with a digit: `4A'.
+MT_ERROR: 039_example_12.asm:136.44-137.1: Error: unexpected end of line.
+MT_ERROR: 039_example_12.asm:137.44-137.46: Error: identifier cannot start with a digit: `4B'.
+MT_ERROR: 039_example_12.asm:137.44-138.1: Error: unexpected end of line.
+MT_ERROR: 039_example_12.asm:138.44-138.46: Error: identifier cannot start with a digit: `4C'.
+MT_ERROR: 039_example_12.asm:138.44-139.1: Error: unexpected end of line.
+MT_ERROR: 039_example_12.asm:140.44-140.46: Error: identifier cannot start with a digit: `4E'.
+MT_ERROR: 039_example_12.asm:140.44-141.1: Error: unexpected end of line.
+MT_ERROR: 039_example_12.asm:141.44-141.46: Error: identifier cannot start with a digit: `4F'.
+MT_ERROR: 039_example_12.asm:141.44-142.1: Error: unexpected end of line.
+MT_ERROR: 039_example_12.asm:152.44-152.46: Error: identifier cannot start with a digit: `5A'.
+MT_ERROR: 039_example_12.asm:152.44-153.1: Error: unexpected end of line.
+MT_ERROR: 039_example_12.asm:163.48-163.50: Error: identifier cannot start with a digit: `3A'.
+MT_ERROR: 039_example_12.asm:163.48-164.1: Error: unexpected end of line.
+MT_ERROR: 039_example_12.asm:164.47-164.49: Error: identifier cannot start with a digit: `2E'.
+MT_ERROR: 039_example_12.asm:164.47-165.1: Error: unexpected end of line.
+MT_ERROR: 039_example_12.asm:165.53-165.55: Error: identifier cannot start with a digit: `3B'.
+MT_ERROR: 039_example_12.asm:165.53-166.1: Error: unexpected end of line.
+MT_ERROR: 039_example_12.asm:167.49-167.51: Error: identifier cannot start with a digit: `2F'.
+MT_ERROR: 039_example_12.asm:167.65-168.1: Error: unexpected end of line.
+MT_ERROR: 039_example_12.asm:168.47-168.49: Error: identifier cannot start with a digit: `2B'.
+MT_ERROR: 039_example_12.asm:168.47-169.1: Error: unexpected end of line.
+MT_ERROR: 039_example_12.asm:169.48-169.50: Error: identifier cannot start with a digit: `2C'.
+MT_ERROR: 039_example_12.asm:169.48-170.1: Error: unexpected end of line.
+MT_ERROR: 039_example_12.asm:170.52-170.54: Error: identifier cannot start with a digit: `3C'.
+MT_ERROR: 039_example_12.asm:170.52-171.1: Error: unexpected end of line.
+MT_ERROR: 039_example_12.asm:171.55-171.57: Error: identifier cannot start with a digit: `3E'.
+MT_ERROR: 039_example_12.asm:171.55-172.1: Error: unexpected end of line.
+MT_ERROR: 039_example_12.asm:175.51-175.53: Error: identifier cannot start with a digit: `3F'.
+MT_ERROR: 039_example_12.asm:175.65-176.1: Error: unexpected end of line.
+MT_ERROR: 039_example_12.asm:276.27-276.41: Error: identifier cannot start with a digit: `1char_to_value'.
+MT_ERROR: 039_example_12.asm:276.22-276.26: Error: invalid number of operands, instruction CALL takes 1 or 2 operand(s).
+MT_ERROR: 039_example_12.asm:312.27-312.41: Error: identifier cannot start with a digit: `1char_to_value'.
+MT_ERROR: 039_example_12.asm:312.22-312.26: Error: invalid number of operands, instruction CALL takes 1 or 2 operand(s).
+MT_ERROR: 039_example_12.asm:445.34-445.36: Error: identifier cannot start with a digit: `7B'.
+MT_ERROR: 039_example_12.asm:445.106-446.1: Error: unexpected end of line.
+MT_ERROR: 039_example_12.asm:475.6-475.20: Error: identifier cannot start with a digit: `1char_to_value'.
+MT_ERROR: 039_example_12.asm:475.6-475.21: Error: unexpected :.
+MT_ERROR: 039_example_12.asm:523.30-523.32: Error: identifier cannot start with a digit: `0A'.
+MT_ERROR: 039_example_12.asm:523.87-524.1: Error: unexpected end of line.
+MT_ERROR: 039_example_12.asm:750.30-750.33: Error: identifier cannot start with a digit: `3FF'.
+MT_ERROR: 039_example_12.asm:750.22-750.29: Error: directive ADDRESS requires a single argument.
+MT_WARNING: Warning: exact device not specified, using KCPSM6 by default.
+MT_ERROR: 039_example_12.asm:477.26-477.28: Error: symbol not defined: `S0'.
+MT_ERROR: 039_example_12.asm:477.30-477.32: Error: symbol not defined: `F6'.
+MT_ERROR: 039_example_12.asm:492.27-492.29: Error: symbol not defined: `S0'.
+MT_ERROR: 039_example_12.asm:492.31-492.33: Error: symbol not defined: `S3'.
+MT_ERROR: 039_example_12.asm:495.27-495.29: Error: symbol not defined: `S3'.
+MT_ERROR: 039_example_12.asm:495.31-495.33: Error: symbol not defined: `S0'.
+MT_ERROR: 039_example_12.asm:496.26-496.28: Error: symbol not defined: `S3'.
+MT_ERROR: 039_example_12.asm:497.26-497.28: Error: symbol not defined: `S3'.
+MT_ERROR: 039_example_12.asm:498.26-498.28: Error: symbol not defined: `S3'.
+MT_ERROR: 039_example_12.asm:499.26-499.28: Error: symbol not defined: `S3'.
+MT_ERROR: 039_example_12.asm:500.27-500.29: Error: symbol not defined: `S0'.
+MT_ERROR: 039_example_12.asm:500.31-500.33: Error: symbol not defined: `S2'.
+MT_ERROR: 039_example_12.asm:503.25-503.27: Error: symbol not defined: `S0'.
+MT_ERROR: 039_example_12.asm:503.29-503.31: Error: symbol not defined: `S3'.
+MT_ERROR: 039_example_12.asm:513.26-513.28: Error: symbol not defined: `S0'.
+MT_ERROR: 039_example_12.asm:513.30-513.32: Error: symbol not defined: `B9'.
+MT_ERROR: 039_example_12.asm:515.26-515.28: Error: symbol not defined: `S0'.
+MT_ERROR: 039_example_12.asm:515.30-515.32: Error: symbol not defined: `E9'.
+MT_ERROR: 039_example_12.asm:517.26-517.28: Error: symbol not defined: `S0'.
+MT_ERROR: 039_example_12.asm:518.31-518.43: Error: symbol not defined: `ASCII_LETTER'.
+MT_ERROR: 039_example_12.asm:519.26-519.28: Error: symbol not defined: `S0'.
+MT_ERROR: 039_example_12.asm:521.26-521.28: Error: symbol not defined: `S0'.
+MT_ERROR: 039_example_12.asm:521.30-521.32: Error: symbol not defined: `F6'.
+MT_ERROR: 039_example_12.asm:535.27-535.36: Error: symbol not defined: `UART_DATA'.
+MT_ERROR: 039_example_12.asm:535.38-535.50: Error: symbol not defined: `CHARACTER_CR'.
+MT_ERROR: 039_example_12.asm:536.27-536.39: Error: symbol not defined: `SEND_TO_UART'.
+MT_ERROR: 039_example_12.asm:541.27-541.36: Error: symbol not defined: `UART_DATA'.
+MT_ERROR: 039_example_12.asm:541.38-541.53: Error: symbol not defined: `CHARACTER_SPACE'.
+MT_ERROR: 039_example_12.asm:542.27-542.39: Error: symbol not defined: `SEND_TO_UART'.
+MT_ERROR: 039_example_12.asm:549.27-549.36: Error: symbol not defined: `UART_DATA'.
+MT_ERROR: 039_example_12.asm:549.38-549.50: Error: symbol not defined: `CHARACTER_BS'.
+MT_ERROR: 039_example_12.asm:550.27-550.39: Error: symbol not defined: `SEND_TO_UART'.
+MT_ERROR: 039_example_12.asm:558.27-558.36: Error: symbol not defined: `UART_DATA'.
+MT_ERROR: 039_example_12.asm:558.38-558.49: Error: symbol not defined: `CHARACTER_P'.
+MT_ERROR: 039_example_12.asm:559.27-559.39: Error: symbol not defined: `SEND_TO_UART'.
+MT_ERROR: 039_example_12.asm:560.27-560.36: Error: symbol not defined: `UART_DATA'.
+MT_ERROR: 039_example_12.asm:560.38-560.49: Error: symbol not defined: `CHARACTER_I'.
+MT_ERROR: 039_example_12.asm:561.27-561.39: Error: symbol not defined: `SEND_TO_UART'.
+MT_ERROR: 039_example_12.asm:562.27-562.36: Error: symbol not defined: `UART_DATA'.
+MT_ERROR: 039_example_12.asm:562.38-562.49: Error: symbol not defined: `CHARACTER_C'.
+MT_ERROR: 039_example_12.asm:563.27-563.39: Error: symbol not defined: `SEND_TO_UART'.
+MT_ERROR: 039_example_12.asm:564.27-564.36: Error: symbol not defined: `UART_DATA'.
+MT_ERROR: 039_example_12.asm:564.38-564.49: Error: symbol not defined: `CHARACTER_O'.
+MT_ERROR: 039_example_12.asm:565.27-565.39: Error: symbol not defined: `SEND_TO_UART'.
+MT_ERROR: 039_example_12.asm:566.27-566.36: Error: symbol not defined: `UART_DATA'.
+MT_ERROR: 039_example_12.asm:566.38-566.49: Error: symbol not defined: `CHARACTER_B'.
+MT_ERROR: 039_example_12.asm:567.27-567.39: Error: symbol not defined: `SEND_TO_UART'.
+MT_ERROR: 039_example_12.asm:568.27-568.36: Error: symbol not defined: `UART_DATA'.
+MT_ERROR: 039_example_12.asm:568.38-568.49: Error: symbol not defined: `CHARACTER_L'.
+MT_ERROR: 039_example_12.asm:569.27-569.39: Error: symbol not defined: `SEND_TO_UART'.
+MT_ERROR: 039_example_12.asm:570.27-570.36: Error: symbol not defined: `UART_DATA'.
+MT_ERROR: 039_example_12.asm:570.38-570.49: Error: symbol not defined: `CHARACTER_A'.
+MT_ERROR: 039_example_12.asm:571.27-571.39: Error: symbol not defined: `SEND_TO_UART'.
+MT_ERROR: 039_example_12.asm:572.27-572.36: Error: symbol not defined: `UART_DATA'.
+MT_ERROR: 039_example_12.asm:572.38-572.49: Error: symbol not defined: `CHARACTER_Z'.
+MT_ERROR: 039_example_12.asm:573.27-573.39: Error: symbol not defined: `SEND_TO_UART'.
+MT_ERROR: 039_example_12.asm:574.27-574.36: Error: symbol not defined: `UART_DATA'.
+MT_ERROR: 039_example_12.asm:574.38-574.49: Error: symbol not defined: `CHARACTER_E'.
+MT_ERROR: 039_example_12.asm:575.27-575.39: Error: symbol not defined: `SEND_TO_UART'.
+MT_ERROR: 039_example_12.asm:577.27-577.36: Error: symbol not defined: `UART_DATA'.
+MT_ERROR: 039_example_12.asm:577.38-577.49: Error: symbol not defined: `CHARACTER_P'.
+MT_ERROR: 039_example_12.asm:578.27-578.39: Error: symbol not defined: `SEND_TO_UART'.
+MT_ERROR: 039_example_12.asm:579.27-579.36: Error: symbol not defined: `UART_DATA'.
+MT_ERROR: 039_example_12.asm:579.38-579.49: Error: symbol not defined: `CHARACTER_W'.
+MT_ERROR: 039_example_12.asm:580.27-580.39: Error: symbol not defined: `SEND_TO_UART'.
+MT_ERROR: 039_example_12.asm:581.27-581.36: Error: symbol not defined: `UART_DATA'.
+MT_ERROR: 039_example_12.asm:581.38-581.49: Error: symbol not defined: `CHARACTER_M'.
+MT_ERROR: 039_example_12.asm:582.27-582.39: Error: symbol not defined: `SEND_TO_UART'.
+MT_ERROR: 039_example_12.asm:584.27-584.36: Error: symbol not defined: `UART_DATA'.
+MT_ERROR: 039_example_12.asm:584.38-584.49: Error: symbol not defined: `CHARACTER_C'.
+MT_ERROR: 039_example_12.asm:585.27-585.39: Error: symbol not defined: `SEND_TO_UART'.
+MT_ERROR: 039_example_12.asm:586.27-586.36: Error: symbol not defined: `UART_DATA'.
+MT_ERROR: 039_example_12.asm:586.38-586.49: Error: symbol not defined: `CHARACTER_O'.
+MT_ERROR: 039_example_12.asm:587.27-587.39: Error: symbol not defined: `SEND_TO_UART'.
+MT_ERROR: 039_example_12.asm:588.27-588.36: Error: symbol not defined: `UART_DATA'.
+MT_ERROR: 039_example_12.asm:588.38-588.49: Error: symbol not defined: `CHARACTER_N'.
+MT_ERROR: 039_example_12.asm:589.27-589.39: Error: symbol not defined: `SEND_TO_UART'.
+MT_ERROR: 039_example_12.asm:590.27-590.36: Error: symbol not defined: `UART_DATA'.
+MT_ERROR: 039_example_12.asm:590.38-590.49: Error: symbol not defined: `CHARACTER_T'.
+MT_ERROR: 039_example_12.asm:591.27-591.39: Error: symbol not defined: `SEND_TO_UART'.
+MT_ERROR: 039_example_12.asm:592.27-592.36: Error: symbol not defined: `UART_DATA'.
+MT_ERROR: 039_example_12.asm:592.38-592.49: Error: symbol not defined: `CHARACTER_R'.
+MT_ERROR: 039_example_12.asm:593.27-593.39: Error: symbol not defined: `SEND_TO_UART'.
+MT_ERROR: 039_example_12.asm:594.27-594.36: Error: symbol not defined: `UART_DATA'.
+MT_ERROR: 039_example_12.asm:594.38-594.49: Error: symbol not defined: `CHARACTER_O'.
+MT_ERROR: 039_example_12.asm:595.27-595.39: Error: symbol not defined: `SEND_TO_UART'.
+MT_ERROR: 039_example_12.asm:596.27-596.36: Error: symbol not defined: `UART_DATA'.
+MT_ERROR: 039_example_12.asm:596.38-596.49: Error: symbol not defined: `CHARACTER_L'.
+MT_ERROR: 039_example_12.asm:597.27-597.39: Error: symbol not defined: `SEND_TO_UART'.
+MT_ERROR: 039_example_12.asm:606.27-606.36: Error: symbol not defined: `UART_DATA'.
+MT_ERROR: 039_example_12.asm:606.38-606.49: Error: symbol not defined: `CHARACTER_K'.
+MT_ERROR: 039_example_12.asm:607.27-607.39: Error: symbol not defined: `SEND_TO_UART'.
+MT_ERROR: 039_example_12.asm:608.27-608.36: Error: symbol not defined: `UART_DATA'.
+MT_ERROR: 039_example_12.asm:608.38-608.49: Error: symbol not defined: `CHARACTER_C'.
+MT_ERROR: 039_example_12.asm:609.27-609.39: Error: symbol not defined: `SEND_TO_UART'.
+MT_ERROR: 039_example_12.asm:610.27-610.36: Error: symbol not defined: `UART_DATA'.
+MT_ERROR: 039_example_12.asm:610.38-610.49: Error: symbol not defined: `CHARACTER_P'.
+MT_ERROR: 039_example_12.asm:611.27-611.39: Error: symbol not defined: `SEND_TO_UART'.
+MT_ERROR: 039_example_12.asm:612.27-612.36: Error: symbol not defined: `UART_DATA'.
+MT_ERROR: 039_example_12.asm:612.38-612.49: Error: symbol not defined: `CHARACTER_S'.
+MT_ERROR: 039_example_12.asm:613.27-613.39: Error: symbol not defined: `SEND_TO_UART'.
+MT_ERROR: 039_example_12.asm:614.27-614.36: Error: symbol not defined: `UART_DATA'.
+MT_ERROR: 039_example_12.asm:614.38-614.49: Error: symbol not defined: `CHARACTER_M'.
+MT_ERROR: 039_example_12.asm:615.27-615.39: Error: symbol not defined: `SEND_TO_UART'.
+MT_ERROR: 039_example_12.asm:616.27-616.36: Error: symbol not defined: `UART_DATA'.
+MT_ERROR: 039_example_12.asm:616.38-616.49: Error: symbol not defined: `CHARACTER_3'.
+MT_ERROR: 039_example_12.asm:617.27-617.39: Error: symbol not defined: `SEND_TO_UART'.
+MT_ERROR: 039_example_12.asm:621.27-621.36: Error: symbol not defined: `UART_DATA'.
+MT_ERROR: 039_example_12.asm:621.38-621.60: Error: symbol not defined: `CHARACTER_GREATER_THAN'.
+MT_ERROR: 039_example_12.asm:622.27-622.39: Error: symbol not defined: `SEND_TO_UART'.
+MT_ERROR: 039_example_12.asm:628.27-628.36: Error: symbol not defined: `UART_DATA'.
+MT_ERROR: 039_example_12.asm:628.38-628.49: Error: symbol not defined: `CHARACTER_O'.
+MT_ERROR: 039_example_12.asm:629.27-629.39: Error: symbol not defined: `SEND_TO_UART'.
+MT_ERROR: 039_example_12.asm:630.27-630.36: Error: symbol not defined: `UART_DATA'.
+MT_ERROR: 039_example_12.asm:630.38-630.49: Error: symbol not defined: `CHARACTER_V'.
+MT_ERROR: 039_example_12.asm:631.27-631.39: Error: symbol not defined: `SEND_TO_UART'.
+MT_ERROR: 039_example_12.asm:632.27-632.36: Error: symbol not defined: `UART_DATA'.
+MT_ERROR: 039_example_12.asm:632.38-632.49: Error: symbol not defined: `CHARACTER_E'.
+MT_ERROR: 039_example_12.asm:633.27-633.39: Error: symbol not defined: `SEND_TO_UART'.
+MT_ERROR: 039_example_12.asm:634.27-634.36: Error: symbol not defined: `UART_DATA'.
+MT_ERROR: 039_example_12.asm:634.38-634.49: Error: symbol not defined: `CHARACTER_R'.
+MT_ERROR: 039_example_12.asm:635.27-635.39: Error: symbol not defined: `SEND_TO_UART'.
+MT_ERROR: 039_example_12.asm:636.27-636.36: Error: symbol not defined: `UART_DATA'.
+MT_ERROR: 039_example_12.asm:636.38-636.49: Error: symbol not defined: `CHARACTER_F'.
+MT_ERROR: 039_example_12.asm:637.27-637.39: Error: symbol not defined: `SEND_TO_UART'.
+MT_ERROR: 039_example_12.asm:638.27-638.36: Error: symbol not defined: `UART_DATA'.
+MT_ERROR: 039_example_12.asm:638.38-638.49: Error: symbol not defined: `CHARACTER_L'.
+MT_ERROR: 039_example_12.asm:639.27-639.39: Error: symbol not defined: `SEND_TO_UART'.
+MT_ERROR: 039_example_12.asm:640.27-640.36: Error: symbol not defined: `UART_DATA'.
+MT_ERROR: 039_example_12.asm:640.38-640.49: Error: symbol not defined: `CHARACTER_O'.
+MT_ERROR: 039_example_12.asm:641.27-641.39: Error: symbol not defined: `SEND_TO_UART'.
+MT_ERROR: 039_example_12.asm:642.27-642.36: Error: symbol not defined: `UART_DATA'.
+MT_ERROR: 039_example_12.asm:642.38-642.49: Error: symbol not defined: `CHARACTER_W'.
+MT_ERROR: 039_example_12.asm:643.27-643.39: Error: symbol not defined: `SEND_TO_UART'.
+MT_ERROR: 039_example_12.asm:648.27-648.36: Error: symbol not defined: `UART_DATA'.
+MT_ERROR: 039_example_12.asm:648.38-648.49: Error: symbol not defined: `CHARACTER_E'.
+MT_ERROR: 039_example_12.asm:649.27-649.39: Error: symbol not defined: `SEND_TO_UART'.
+MT_ERROR: 039_example_12.asm:650.27-650.36: Error: symbol not defined: `UART_DATA'.
+MT_ERROR: 039_example_12.asm:650.38-650.49: Error: symbol not defined: `CHARACTER_R'.
+MT_ERROR: 039_example_12.asm:651.27-651.39: Error: symbol not defined: `SEND_TO_UART'.
+MT_ERROR: 039_example_12.asm:652.27-652.39: Error: symbol not defined: `SEND_TO_UART'.
+MT_ERROR: 039_example_12.asm:653.27-653.36: Error: symbol not defined: `UART_DATA'.
+MT_ERROR: 039_example_12.asm:653.38-653.49: Error: symbol not defined: `CHARACTER_O'.
+MT_ERROR: 039_example_12.asm:654.27-654.39: Error: symbol not defined: `SEND_TO_UART'.
+MT_ERROR: 039_example_12.asm:655.27-655.36: Error: symbol not defined: `UART_DATA'.
+MT_ERROR: 039_example_12.asm:655.38-655.49: Error: symbol not defined: `CHARACTER_R'.
+MT_ERROR: 039_example_12.asm:656.27-656.39: Error: symbol not defined: `SEND_TO_UART'.
+MT_ERROR: 039_example_12.asm:663.27-663.36: Error: symbol not defined: `UART_DATA'.
+MT_ERROR: 039_example_12.asm:663.38-663.49: Error: symbol not defined: `CHARACTER_O'.
+MT_ERROR: 039_example_12.asm:664.27-664.39: Error: symbol not defined: `SEND_TO_UART'.
+MT_ERROR: 039_example_12.asm:665.27-665.36: Error: symbol not defined: `UART_DATA'.
+MT_ERROR: 039_example_12.asm:665.38-665.49: Error: symbol not defined: `CHARACTER_K'.
+MT_ERROR: 039_example_12.asm:666.27-666.39: Error: symbol not defined: `SEND_TO_UART'.
+MT_ERROR: 039_example_12.asm:693.28-693.30: Error: symbol not defined: `S0'.
+MT_ERROR: 039_example_12.asm:693.32-693.47: Error: symbol not defined: `ISR_PRESERVE_S0'.
+MT_ERROR: 039_example_12.asm:694.28-694.30: Error: symbol not defined: `S1'.
+MT_ERROR: 039_example_12.asm:694.32-694.47: Error: symbol not defined: `ISR_PRESERVE_S1'.
+MT_ERROR: 039_example_12.asm:695.28-695.30: Error: symbol not defined: `S2'.
+MT_ERROR: 039_example_12.asm:695.32-695.47: Error: symbol not defined: `ISR_PRESERVE_S2'.
+MT_ERROR: 039_example_12.asm:697.28-697.30: Error: symbol not defined: `S1'.
+MT_ERROR: 039_example_12.asm:697.32-697.48: Error: symbol not defined: `PWM_DUTY_COUNTER'.
+MT_ERROR: 039_example_12.asm:698.26-698.28: Error: symbol not defined: `S1'.
+MT_ERROR: 039_example_12.asm:699.28-699.30: Error: symbol not defined: `S1'.
+MT_ERROR: 039_example_12.asm:699.32-699.48: Error: symbol not defined: `PWM_DUTY_COUNTER'.
+MT_ERROR: 039_example_12.asm:702.28-702.30: Error: symbol not defined: `S0'.
+MT_ERROR: 039_example_12.asm:702.32-702.45: Error: symbol not defined: `PWM_CHANNEL11'.
+MT_ERROR: 039_example_12.asm:703.30-703.32: Error: symbol not defined: `S1'.
+MT_ERROR: 039_example_12.asm:703.34-703.36: Error: symbol not defined: `S0'.
+MT_ERROR: 039_example_12.asm:704.26-704.28: Error: symbol not defined: `S2'.
+MT_ERROR: 039_example_12.asm:705.28-705.30: Error: symbol not defined: `S0'.
+MT_ERROR: 039_example_12.asm:705.32-705.45: Error: symbol not defined: `PWM_CHANNEL10'.
+MT_ERROR: 039_example_12.asm:706.30-706.32: Error: symbol not defined: `S1'.
+MT_ERROR: 039_example_12.asm:706.34-706.36: Error: symbol not defined: `S0'.
+MT_ERROR: 039_example_12.asm:707.26-707.28: Error: symbol not defined: `S2'.
+MT_ERROR: 039_example_12.asm:708.28-708.30: Error: symbol not defined: `S0'.
+MT_ERROR: 039_example_12.asm:708.32-708.44: Error: symbol not defined: `PWM_CHANNEL9'.
+MT_ERROR: 039_example_12.asm:709.30-709.32: Error: symbol not defined: `S1'.
+MT_ERROR: 039_example_12.asm:709.34-709.36: Error: symbol not defined: `S0'.
+MT_ERROR: 039_example_12.asm:710.26-710.28: Error: symbol not defined: `S2'.
+MT_ERROR: 039_example_12.asm:711.28-711.30: Error: symbol not defined: `S0'.
+MT_ERROR: 039_example_12.asm:711.32-711.44: Error: symbol not defined: `PWM_CHANNEL8'.
+MT_ERROR: 039_example_12.asm:712.30-712.32: Error: symbol not defined: `S1'.
+MT_ERROR: 039_example_12.asm:712.34-712.36: Error: symbol not defined: `S0'.
+MT_ERROR: 039_example_12.asm:713.26-713.28: Error: symbol not defined: `S2'.
+MT_ERROR: 039_example_12.asm:714.29-714.31: Error: symbol not defined: `S2'.
+MT_ERROR: 039_example_12.asm:714.33-714.44: Error: symbol not defined: `SIMPLE_PORT'.
+MT_ERROR: 039_example_12.asm:715.28-715.30: Error: symbol not defined: `S0'.
+MT_ERROR: 039_example_12.asm:715.32-715.44: Error: symbol not defined: `PWM_CHANNEL7'.
+MT_ERROR: 039_example_12.asm:716.30-716.32: Error: symbol not defined: `S1'.
+MT_ERROR: 039_example_12.asm:716.34-716.36: Error: symbol not defined: `S0'.
+MT_ERROR: 039_example_12.asm:717.26-717.28: Error: symbol not defined: `S2'.
+MT_ERROR: 039_example_12.asm:718.28-718.30: Error: symbol not defined: `S0'.
+MT_ERROR: 039_example_12.asm:718.32-718.44: Error: symbol not defined: `PWM_CHANNEL6'.
+MT_ERROR: 039_example_12.asm:719.30-719.32: Error: symbol not defined: `S1'.
+MT_ERROR: 039_example_12.asm:719.34-719.36: Error: symbol not defined: `S0'.
+MT_ERROR: 039_example_12.asm:720.26-720.28: Error: symbol not defined: `S2'.
+MT_ERROR: 039_example_12.asm:721.28-721.30: Error: symbol not defined: `S0'.
+MT_ERROR: 039_example_12.asm:721.32-721.44: Error: symbol not defined: `PWM_CHANNEL5'.
+MT_ERROR: 039_example_12.asm:722.30-722.32: Error: symbol not defined: `S1'.
+MT_ERROR: 039_example_12.asm:722.34-722.36: Error: symbol not defined: `S0'.
+MT_ERROR: 039_example_12.asm:723.26-723.28: Error: symbol not defined: `S2'.
+MT_ERROR: 039_example_12.asm:724.28-724.30: Error: symbol not defined: `S0'.
+MT_ERROR: 039_example_12.asm:724.32-724.44: Error: symbol not defined: `PWM_CHANNEL4'.
+MT_ERROR: 039_example_12.asm:725.30-725.32: Error: symbol not defined: `S1'.
+MT_ERROR: 039_example_12.asm:725.34-725.36: Error: symbol not defined: `S0'.
+MT_ERROR: 039_example_12.asm:726.26-726.28: Error: symbol not defined: `S2'.
+MT_ERROR: 039_example_12.asm:727.28-727.30: Error: symbol not defined: `S0'.
+MT_ERROR: 039_example_12.asm:727.32-727.44: Error: symbol not defined: `PWM_CHANNEL3'.
+MT_ERROR: 039_example_12.asm:728.30-728.32: Error: symbol not defined: `S1'.
+MT_ERROR: 039_example_12.asm:728.34-728.36: Error: symbol not defined: `S0'.
+MT_ERROR: 039_example_12.asm:729.26-729.28: Error: symbol not defined: `S2'.
+MT_ERROR: 039_example_12.asm:730.28-730.30: Error: symbol not defined: `S0'.
+MT_ERROR: 039_example_12.asm:730.32-730.44: Error: symbol not defined: `PWM_CHANNEL2'.
+MT_ERROR: 039_example_12.asm:731.30-731.32: Error: symbol not defined: `S1'.
+MT_ERROR: 039_example_12.asm:731.34-731.36: Error: symbol not defined: `S0'.
+MT_ERROR: 039_example_12.asm:732.26-732.28: Error: symbol not defined: `S2'.
+MT_ERROR: 039_example_12.asm:733.28-733.30: Error: symbol not defined: `S0'.
+MT_ERROR: 039_example_12.asm:733.32-733.44: Error: symbol not defined: `PWM_CHANNEL1'.
+MT_ERROR: 039_example_12.asm:734.30-734.32: Error: symbol not defined: `S1'.
+MT_ERROR: 039_example_12.asm:734.34-734.36: Error: symbol not defined: `S0'.
+MT_ERROR: 039_example_12.asm:735.26-735.28: Error: symbol not defined: `S2'.
+MT_ERROR: 039_example_12.asm:736.28-736.30: Error: symbol not defined: `S0'.
+MT_ERROR: 039_example_12.asm:736.32-736.44: Error: symbol not defined: `PWM_CHANNEL0'.
+MT_ERROR: 039_example_12.asm:737.30-737.32: Error: symbol not defined: `S1'.
+MT_ERROR: 039_example_12.asm:737.34-737.36: Error: symbol not defined: `S0'.
+MT_ERROR: 039_example_12.asm:738.26-738.28: Error: symbol not defined: `S2'.
+MT_ERROR: 039_example_12.asm:739.29-739.31: Error: symbol not defined: `S2'.
+MT_ERROR: 039_example_12.asm:739.33-739.41: Error: symbol not defined: `LED_PORT'.
+MT_ERROR: 039_example_12.asm:740.28-740.30: Error: symbol not defined: `S0'.
+MT_ERROR: 039_example_12.asm:740.32-740.47: Error: symbol not defined: `ISR_PRESERVE_S0'.
+MT_ERROR: 039_example_12.asm:741.28-741.30: Error: symbol not defined: `S1'.
+MT_ERROR: 039_example_12.asm:741.32-741.47: Error: symbol not defined: `ISR_PRESERVE_S1'.
+MT_ERROR: 039_example_12.asm:742.28-742.30: Error: symbol not defined: `S2'.
+MT_ERROR: 039_example_12.asm:742.32-742.47: Error: symbol not defined: `ISR_PRESERVE_S2'.

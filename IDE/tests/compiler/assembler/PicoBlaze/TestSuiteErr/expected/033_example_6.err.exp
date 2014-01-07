@@ -1,0 +1,549 @@
+MT_ERROR: 033_example_6.asm:122.40-122.42: Error: identifier cannot start with a digit: `0A'.
+MT_ERROR: 033_example_6.asm:122.40-123.1: Error: unexpected end of line.
+MT_ERROR: 033_example_6.asm:159.43-159.45: Error: identifier cannot start with a digit: `6A'.
+MT_ERROR: 033_example_6.asm:159.43-160.1: Error: unexpected end of line.
+MT_ERROR: 033_example_6.asm:160.43-160.45: Error: identifier cannot start with a digit: `6B'.
+MT_ERROR: 033_example_6.asm:160.43-161.1: Error: unexpected end of line.
+MT_ERROR: 033_example_6.asm:161.43-161.45: Error: identifier cannot start with a digit: `6C'.
+MT_ERROR: 033_example_6.asm:161.43-162.1: Error: unexpected end of line.
+MT_ERROR: 033_example_6.asm:163.43-163.45: Error: identifier cannot start with a digit: `6E'.
+MT_ERROR: 033_example_6.asm:163.43-164.1: Error: unexpected end of line.
+MT_ERROR: 033_example_6.asm:164.43-164.45: Error: identifier cannot start with a digit: `6F'.
+MT_ERROR: 033_example_6.asm:164.43-165.1: Error: unexpected end of line.
+MT_ERROR: 033_example_6.asm:175.43-175.45: Error: identifier cannot start with a digit: `7A'.
+MT_ERROR: 033_example_6.asm:175.43-176.1: Error: unexpected end of line.
+MT_ERROR: 033_example_6.asm:185.43-185.45: Error: identifier cannot start with a digit: `4A'.
+MT_ERROR: 033_example_6.asm:185.43-186.1: Error: unexpected end of line.
+MT_ERROR: 033_example_6.asm:186.43-186.45: Error: identifier cannot start with a digit: `4B'.
+MT_ERROR: 033_example_6.asm:186.43-187.1: Error: unexpected end of line.
+MT_ERROR: 033_example_6.asm:187.43-187.45: Error: identifier cannot start with a digit: `4C'.
+MT_ERROR: 033_example_6.asm:187.43-188.1: Error: unexpected end of line.
+MT_ERROR: 033_example_6.asm:189.43-189.45: Error: identifier cannot start with a digit: `4E'.
+MT_ERROR: 033_example_6.asm:189.43-190.1: Error: unexpected end of line.
+MT_ERROR: 033_example_6.asm:190.43-190.45: Error: identifier cannot start with a digit: `4F'.
+MT_ERROR: 033_example_6.asm:190.43-191.1: Error: unexpected end of line.
+MT_ERROR: 033_example_6.asm:201.43-201.45: Error: identifier cannot start with a digit: `5A'.
+MT_ERROR: 033_example_6.asm:201.43-202.1: Error: unexpected end of line.
+MT_ERROR: 033_example_6.asm:212.47-212.49: Error: identifier cannot start with a digit: `3A'.
+MT_ERROR: 033_example_6.asm:212.47-213.1: Error: unexpected end of line.
+MT_ERROR: 033_example_6.asm:213.46-213.48: Error: identifier cannot start with a digit: `2E'.
+MT_ERROR: 033_example_6.asm:213.46-214.1: Error: unexpected end of line.
+MT_ERROR: 033_example_6.asm:214.52-214.54: Error: identifier cannot start with a digit: `3B'.
+MT_ERROR: 033_example_6.asm:214.52-215.1: Error: unexpected end of line.
+MT_ERROR: 033_example_6.asm:216.48-216.50: Error: identifier cannot start with a digit: `2F'.
+MT_ERROR: 033_example_6.asm:216.61-217.1: Error: unexpected end of line.
+MT_ERROR: 033_example_6.asm:217.46-217.48: Error: identifier cannot start with a digit: `2B'.
+MT_ERROR: 033_example_6.asm:217.46-218.1: Error: unexpected end of line.
+MT_ERROR: 033_example_6.asm:218.47-218.49: Error: identifier cannot start with a digit: `2C'.
+MT_ERROR: 033_example_6.asm:218.47-219.1: Error: unexpected end of line.
+MT_ERROR: 033_example_6.asm:219.51-219.53: Error: identifier cannot start with a digit: `3C'.
+MT_ERROR: 033_example_6.asm:219.51-220.1: Error: unexpected end of line.
+MT_ERROR: 033_example_6.asm:220.54-220.56: Error: identifier cannot start with a digit: `3E'.
+MT_ERROR: 033_example_6.asm:220.54-221.1: Error: unexpected end of line.
+MT_ERROR: 033_example_6.asm:224.50-224.52: Error: identifier cannot start with a digit: `3F'.
+MT_ERROR: 033_example_6.asm:224.61-225.1: Error: unexpected end of line.
+MT_ERROR: 033_example_6.asm:298.30-298.32: Error: identifier cannot start with a digit: `2C'.
+MT_ERROR: 033_example_6.asm:298.76-299.1: Error: unexpected end of line.
+MT_ERROR: 033_example_6.asm:427.30-427.32: Error: identifier cannot start with a digit: `0C'.
+MT_ERROR: 033_example_6.asm:427.97-428.1: Error: unexpected end of line.
+MT_ERROR: 033_example_6.asm:435.30-435.32: Error: identifier cannot start with a digit: `9C'.
+MT_ERROR: 033_example_6.asm:435.98-436.1: Error: unexpected end of line.
+MT_ERROR: 033_example_6.asm:467.33-467.35: Error: identifier cannot start with a digit: `1F'.
+MT_ERROR: 033_example_6.asm:467.83-468.1: Error: unexpected end of line.
+MT_ERROR: 033_example_6.asm:640.30-640.32: Error: identifier cannot start with a digit: `0F'.
+MT_ERROR: 033_example_6.asm:640.105-641.1: Error: unexpected end of line.
+MT_ERROR: 033_example_6.asm:999.29-999.31: Error: identifier cannot start with a digit: `0F'.
+MT_ERROR: 033_example_6.asm:999.78-1000.1: Error: unexpected end of line.
+MT_ERROR: 033_example_6.asm:1008.29-1008.31: Error: identifier cannot start with a digit: `0A'.
+MT_ERROR: 033_example_6.asm:1008.90-1009.1: Error: unexpected end of line.
+MT_ERROR: 033_example_6.asm:1011.29-1011.31: Error: identifier cannot start with a digit: `3A'.
+MT_ERROR: 033_example_6.asm:1011.93-1012.1: Error: unexpected end of line.
+MT_ERROR: 033_example_6.asm:1177.28-1177.30: Error: identifier cannot start with a digit: `0C'.
+MT_ERROR: 033_example_6.asm:1177.93-1178.1: Error: unexpected end of line.
+MT_ERROR: 033_example_6.asm:1212.30-1212.32: Error: identifier cannot start with a digit: `0E'.
+MT_ERROR: 033_example_6.asm:1212.92-1213.1: Error: unexpected end of line.
+MT_ERROR: 033_example_6.asm:1267.30-1267.32: Error: identifier cannot start with a digit: `0C'.
+MT_ERROR: 033_example_6.asm:1267.73-1268.1: Error: unexpected end of line.
+MT_ERROR: 033_example_6.asm:1294.29-1294.31: Error: identifier cannot start with a digit: `0F'.
+MT_ERROR: 033_example_6.asm:1294.99-1295.1: Error: unexpected end of line.
+MT_ERROR: 033_example_6.asm:1298.29-1298.31: Error: identifier cannot start with a digit: `0F'.
+MT_ERROR: 033_example_6.asm:1298.99-1299.1: Error: unexpected end of line.
+MT_ERROR: 033_example_6.asm:1327.29-1327.32: Error: identifier cannot start with a digit: `3FF'.
+MT_ERROR: 033_example_6.asm:1327.21-1327.28: Error: directive ADDRESS requires a single argument.
+MT_ERROR: 033_example_6.asm:176.21-176.45: Error: symbol already defined: "CHARACTER_A".
+MT_ERROR: 033_example_6.asm:177.21-177.45: Error: symbol already defined: "CHARACTER_B".
+MT_ERROR: 033_example_6.asm:178.21-178.45: Error: symbol already defined: "CHARACTER_C".
+MT_ERROR: 033_example_6.asm:179.21-179.45: Error: symbol already defined: "CHARACTER_D".
+MT_ERROR: 033_example_6.asm:180.21-180.45: Error: symbol already defined: "CHARACTER_E".
+MT_ERROR: 033_example_6.asm:181.21-181.45: Error: symbol already defined: "CHARACTER_F".
+MT_ERROR: 033_example_6.asm:182.21-182.45: Error: symbol already defined: "CHARACTER_G".
+MT_ERROR: 033_example_6.asm:183.21-183.45: Error: symbol already defined: "CHARACTER_H".
+MT_ERROR: 033_example_6.asm:184.21-184.45: Error: symbol already defined: "CHARACTER_I".
+MT_ERROR: 033_example_6.asm:188.21-188.45: Error: symbol already defined: "CHARACTER_M".
+MT_ERROR: 033_example_6.asm:191.21-191.45: Error: symbol already defined: "CHARACTER_P".
+MT_ERROR: 033_example_6.asm:192.21-192.45: Error: symbol already defined: "CHARACTER_Q".
+MT_ERROR: 033_example_6.asm:193.21-193.45: Error: symbol already defined: "CHARACTER_R".
+MT_ERROR: 033_example_6.asm:194.21-194.45: Error: symbol already defined: "CHARACTER_S".
+MT_ERROR: 033_example_6.asm:195.21-195.45: Error: symbol already defined: "CHARACTER_T".
+MT_ERROR: 033_example_6.asm:196.21-196.45: Error: symbol already defined: "CHARACTER_U".
+MT_ERROR: 033_example_6.asm:197.21-197.45: Error: symbol already defined: "CHARACTER_V".
+MT_ERROR: 033_example_6.asm:198.21-198.45: Error: symbol already defined: "CHARACTER_W".
+MT_ERROR: 033_example_6.asm:199.21-199.45: Error: symbol already defined: "CHARACTER_X".
+MT_ERROR: 033_example_6.asm:200.21-200.45: Error: symbol already defined: "CHARACTER_Y".
+MT_WARNING: Warning: exact device not specified, using KCPSM6 by default.
+MT_ERROR: 033_example_6.asm:242.26-242.28: Error: symbol not defined: `S5'.
+MT_ERROR: 033_example_6.asm:245.26-245.28: Error: symbol not defined: `S5'.
+MT_WARNING: 033_example_6.asm:245.30-245.32: Warning: value out of range: 23, allowed range is [0,15] (trimmed to 4 bits) which makes it 7.
+MT_ERROR: 033_example_6.asm:255.26-255.28: Error: symbol not defined: `S0'.
+MT_ERROR: 033_example_6.asm:256.27-256.29: Error: symbol not defined: `S0'.
+MT_ERROR: 033_example_6.asm:261.26-261.28: Error: symbol not defined: `S0'.
+MT_ERROR: 033_example_6.asm:262.27-262.29: Error: symbol not defined: `S0'.
+MT_ERROR: 033_example_6.asm:263.27-263.29: Error: symbol not defined: `S0'.
+MT_ERROR: 033_example_6.asm:275.26-275.28: Error: symbol not defined: `SF'.
+MT_ERROR: 033_example_6.asm:275.30-275.32: Error: symbol not defined: `FF'.
+MT_ERROR: 033_example_6.asm:277.27-277.29: Error: symbol not defined: `SE'.
+MT_ERROR: 033_example_6.asm:278.26-278.28: Error: symbol not defined: `SE'.
+MT_ERROR: 033_example_6.asm:280.26-280.28: Error: symbol not defined: `SE'.
+MT_ERROR: 033_example_6.asm:282.29-282.31: Error: symbol not defined: `SF'.
+MT_ERROR: 033_example_6.asm:282.33-282.35: Error: symbol not defined: `FF'.
+MT_ERROR: 033_example_6.asm:290.27-290.29: Error: symbol not defined: `S0'.
+MT_ERROR: 033_example_6.asm:291.25-291.27: Error: symbol not defined: `S0'.
+MT_ERROR: 033_example_6.asm:292.27-292.29: Error: symbol not defined: `S0'.
+MT_ERROR: 033_example_6.asm:293.28-293.30: Error: symbol not defined: `S0'.
+MT_ERROR: 033_example_6.asm:300.27-300.29: Error: symbol not defined: `S0'.
+MT_ERROR: 033_example_6.asm:302.27-302.29: Error: symbol not defined: `S0'.
+MT_ERROR: 033_example_6.asm:348.27-348.29: Error: symbol not defined: `S2'.
+MT_ERROR: 033_example_6.asm:349.27-349.29: Error: symbol not defined: `S3'.
+MT_ERROR: 033_example_6.asm:350.26-350.28: Error: symbol not defined: `S0'.
+MT_ERROR: 033_example_6.asm:351.26-351.28: Error: symbol not defined: `S1'.
+MT_WARNING: 033_example_6.asm:351.30-351.32: Warning: value out of range: 27, allowed range is [0,15] (trimmed to 4 bits) which makes it 11.
+MT_ERROR: 033_example_6.asm:353.25-353.27: Error: symbol not defined: `S5'.
+MT_ERROR: 033_example_6.asm:354.27-354.29: Error: symbol not defined: `S6'.
+MT_ERROR: 033_example_6.asm:355.27-355.29: Error: symbol not defined: `S7'.
+MT_ERROR: 033_example_6.asm:362.26-362.28: Error: symbol not defined: `S5'.
+MT_WARNING: 033_example_6.asm:362.30-362.32: Warning: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+MT_ERROR: 033_example_6.asm:365.26-365.28: Error: symbol not defined: `S7'.
+MT_WARNING: 033_example_6.asm:365.30-365.32: Warning: value out of range: 80, allowed range is [0,15] (trimmed to 4 bits) which makes it 0.
+MT_ERROR: 033_example_6.asm:367.26-367.28: Error: symbol not defined: `S5'.
+MT_ERROR: 033_example_6.asm:367.30-367.44: Error: symbol not defined: `CHARACTER_PLUS'.
+MT_ERROR: 033_example_6.asm:369.25-369.27: Error: symbol not defined: `S6'.
+MT_ERROR: 033_example_6.asm:369.29-369.31: Error: symbol not defined: `FF'.
+MT_ERROR: 033_example_6.asm:370.25-370.27: Error: symbol not defined: `S7'.
+MT_ERROR: 033_example_6.asm:370.29-370.31: Error: symbol not defined: `FF'.
+MT_ERROR: 033_example_6.asm:371.25-371.27: Error: symbol not defined: `S6'.
+MT_ERROR: 033_example_6.asm:372.27-372.29: Error: symbol not defined: `S7'.
+MT_ERROR: 033_example_6.asm:373.26-373.28: Error: symbol not defined: `S5'.
+MT_ERROR: 033_example_6.asm:408.27-408.29: Error: symbol not defined: `S2'.
+MT_ERROR: 033_example_6.asm:409.27-409.29: Error: symbol not defined: `S3'.
+MT_ERROR: 033_example_6.asm:410.27-410.29: Error: symbol not defined: `S4'.
+MT_ERROR: 033_example_6.asm:411.26-411.28: Error: symbol not defined: `S0'.
+MT_ERROR: 033_example_6.asm:411.30-411.32: Error: symbol not defined: `EF'.
+MT_ERROR: 033_example_6.asm:412.26-412.28: Error: symbol not defined: `S1'.
+MT_ERROR: 033_example_6.asm:412.30-412.32: Error: symbol not defined: `D8'.
+MT_ERROR: 033_example_6.asm:413.29-413.31: Error: symbol not defined: `S4'.
+MT_ERROR: 033_example_6.asm:415.26-415.28: Error: symbol not defined: `S0'.
+MT_WARNING: 033_example_6.asm:415.30-415.32: Warning: value out of range: 77, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
+MT_ERROR: 033_example_6.asm:416.26-416.28: Error: symbol not defined: `S1'.
+MT_ERROR: 033_example_6.asm:416.30-416.32: Error: symbol not defined: `EC'.
+MT_ERROR: 033_example_6.asm:417.29-417.31: Error: symbol not defined: `S4'.
+MT_ERROR: 033_example_6.asm:419.26-419.28: Error: symbol not defined: `S0'.
+MT_WARNING: 033_example_6.asm:419.30-419.32: Warning: value out of range: 30, allowed range is [0,15] (trimmed to 4 bits) which makes it 14.
+MT_ERROR: 033_example_6.asm:420.26-420.28: Error: symbol not defined: `S1'.
+MT_ERROR: 033_example_6.asm:420.30-420.32: Error: symbol not defined: `F8'.
+MT_ERROR: 033_example_6.asm:421.29-421.31: Error: symbol not defined: `S4'.
+MT_ERROR: 033_example_6.asm:423.26-423.28: Error: symbol not defined: `S0'.
+MT_WARNING: 033_example_6.asm:423.30-423.32: Warning: value out of range: 18, allowed range is [0,15] (trimmed to 4 bits) which makes it 2.
+MT_ERROR: 033_example_6.asm:424.26-424.28: Error: symbol not defined: `S1'.
+MT_ERROR: 033_example_6.asm:424.30-424.32: Error: symbol not defined: `FC'.
+MT_ERROR: 033_example_6.asm:425.29-425.31: Error: symbol not defined: `S4'.
+MT_ERROR: 033_example_6.asm:428.26-428.28: Error: symbol not defined: `S1'.
+MT_ERROR: 033_example_6.asm:428.30-428.32: Error: symbol not defined: `FE'.
+MT_ERROR: 033_example_6.asm:429.29-429.31: Error: symbol not defined: `S4'.
+MT_ERROR: 033_example_6.asm:431.26-431.28: Error: symbol not defined: `S0'.
+MT_WARNING: 033_example_6.asm:431.30-431.32: Warning: value out of range: 38, allowed range is [0,15] (trimmed to 4 bits) which makes it 6.
+MT_ERROR: 033_example_6.asm:432.26-432.28: Error: symbol not defined: `S1'.
+MT_ERROR: 033_example_6.asm:432.30-432.32: Error: symbol not defined: `FF'.
+MT_ERROR: 033_example_6.asm:433.29-433.31: Error: symbol not defined: `S4'.
+MT_ERROR: 033_example_6.asm:436.26-436.28: Error: symbol not defined: `S1'.
+MT_ERROR: 033_example_6.asm:436.30-436.32: Error: symbol not defined: `FF'.
+MT_ERROR: 033_example_6.asm:438.25-438.27: Error: symbol not defined: `S5'.
+MT_ERROR: 033_example_6.asm:439.27-439.29: Error: symbol not defined: `S6'.
+MT_ERROR: 033_example_6.asm:440.27-440.29: Error: symbol not defined: `S7'.
+MT_ERROR: 033_example_6.asm:441.25-441.27: Error: symbol not defined: `S6'.
+MT_WARNING: 033_example_6.asm:441.29-441.37: Warning: value out of range: 72, allowed range is [0,15] (trimmed to 4 bits) which makes it 8.
+MT_ERROR: 033_example_6.asm:442.27-442.29: Error: symbol not defined: `S7'.
+MT_ERROR: 033_example_6.asm:455.26-455.28: Error: symbol not defined: `S5'.
+MT_WARNING: 033_example_6.asm:455.30-455.32: Warning: value out of range: 17, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
+MT_ERROR: 033_example_6.asm:458.27-458.29: Error: symbol not defined: `S2'.
+MT_ERROR: 033_example_6.asm:459.27-459.29: Error: symbol not defined: `S3'.
+MT_ERROR: 033_example_6.asm:460.29-460.31: Error: symbol not defined: `S3'.
+MT_ERROR: 033_example_6.asm:460.33-460.35: Error: symbol not defined: `E0'.
+MT_ERROR: 033_example_6.asm:461.30-461.42: Error: symbol not defined: `TEST_MAX_POS'.
+MT_ERROR: 033_example_6.asm:462.29-462.31: Error: symbol not defined: `S2'.
+MT_ERROR: 033_example_6.asm:463.30-463.42: Error: symbol not defined: `TEST_MAX_POS'.
+MT_ERROR: 033_example_6.asm:464.26-464.28: Error: symbol not defined: `S5'.
+MT_ERROR: 033_example_6.asm:464.30-464.52: Error: symbol not defined: `CHARACTER_GREATER_THAN'.
+MT_ERROR: 033_example_6.asm:469.29-469.31: Error: symbol not defined: `S2'.
+MT_ERROR: 033_example_6.asm:469.33-469.35: Error: symbol not defined: `FF'.
+MT_ERROR: 033_example_6.asm:471.26-471.28: Error: symbol not defined: `S5'.
+MT_ERROR: 033_example_6.asm:471.30-471.49: Error: symbol not defined: `CHARACTER_LESS_THAN'.
+MT_ERROR: 033_example_6.asm:485.27-485.29: Error: symbol not defined: `S5'.
+MT_ERROR: 033_example_6.asm:485.31-485.39: Error: symbol not defined: `DECIMAL3'.
+MT_ERROR: 033_example_6.asm:486.25-486.27: Error: symbol not defined: `S5'.
+MT_WARNING: 033_example_6.asm:486.29-486.31: Warning: value out of range: 30, allowed range is [0,15] (trimmed to 4 bits) which makes it 14.
+MT_ERROR: 033_example_6.asm:488.26-488.28: Error: symbol not defined: `S5'.
+MT_ERROR: 033_example_6.asm:488.30-488.44: Error: symbol not defined: `CHARACTER_STOP'.
+MT_ERROR: 033_example_6.asm:490.27-490.29: Error: symbol not defined: `S5'.
+MT_ERROR: 033_example_6.asm:491.25-491.27: Error: symbol not defined: `S5'.
+MT_WARNING: 033_example_6.asm:491.29-491.31: Warning: value out of range: 30, allowed range is [0,15] (trimmed to 4 bits) which makes it 14.
+MT_ERROR: 033_example_6.asm:493.27-493.29: Error: symbol not defined: `S5'.
+MT_ERROR: 033_example_6.asm:494.25-494.27: Error: symbol not defined: `S5'.
+MT_WARNING: 033_example_6.asm:494.29-494.31: Warning: value out of range: 30, allowed range is [0,15] (trimmed to 4 bits) which makes it 14.
+MT_ERROR: 033_example_6.asm:496.27-496.29: Error: symbol not defined: `S5'.
+MT_ERROR: 033_example_6.asm:497.25-497.27: Error: symbol not defined: `S5'.
+MT_WARNING: 033_example_6.asm:497.29-497.31: Warning: value out of range: 30, allowed range is [0,15] (trimmed to 4 bits) which makes it 14.
+MT_ERROR: 033_example_6.asm:499.26-499.28: Error: symbol not defined: `S5'.
+MT_WARNING: 033_example_6.asm:499.30-499.45: Warning: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+MT_ERROR: 033_example_6.asm:519.27-519.29: Error: symbol not defined: `S0'.
+MT_ERROR: 033_example_6.asm:520.25-520.27: Error: symbol not defined: `S0'.
+MT_ERROR: 033_example_6.asm:521.29-521.31: Error: symbol not defined: `S0'.
+MT_ERROR: 033_example_6.asm:523.26-523.28: Error: symbol not defined: `S0'.
+MT_ERROR: 033_example_6.asm:526.27-526.29: Error: symbol not defined: `S0'.
+MT_ERROR: 033_example_6.asm:527.25-527.27: Error: symbol not defined: `S0'.
+MT_ERROR: 033_example_6.asm:529.26-529.28: Error: symbol not defined: `S0'.
+MT_ERROR: 033_example_6.asm:530.27-530.29: Error: symbol not defined: `S0'.
+MT_ERROR: 033_example_6.asm:531.27-531.29: Error: symbol not defined: `S2'.
+MT_ERROR: 033_example_6.asm:532.25-532.27: Error: symbol not defined: `S2'.
+MT_ERROR: 033_example_6.asm:533.25-533.27: Error: symbol not defined: `S2'.
+MT_ERROR: 033_example_6.asm:534.25-534.27: Error: symbol not defined: `S2'.
+MT_ERROR: 033_example_6.asm:535.25-535.27: Error: symbol not defined: `S2'.
+MT_ERROR: 033_example_6.asm:536.24-536.26: Error: symbol not defined: `S2'.
+MT_ERROR: 033_example_6.asm:536.28-536.30: Error: symbol not defined: `S0'.
+MT_ERROR: 033_example_6.asm:539.26-539.28: Error: symbol not defined: `S5'.
+MT_ERROR: 033_example_6.asm:541.26-541.28: Error: symbol not defined: `S5'.
+MT_WARNING: 033_example_6.asm:541.30-541.41: Warning: value out of range: 67, allowed range is [0,15] (trimmed to 4 bits) which makes it 3.
+MT_ERROR: 033_example_6.asm:543.26-543.28: Error: symbol not defined: `S5'.
+MT_ERROR: 033_example_6.asm:545.26-545.28: Error: symbol not defined: `S5'.
+MT_ERROR: 033_example_6.asm:547.27-547.29: Error: symbol not defined: `S0'.
+MT_ERROR: 033_example_6.asm:548.29-548.31: Error: symbol not defined: `S0'.
+MT_ERROR: 033_example_6.asm:550.26-550.28: Error: symbol not defined: `S5'.
+MT_WARNING: 033_example_6.asm:550.30-550.41: Warning: value out of range: 31, allowed range is [0,15] (trimmed to 4 bits) which makes it 15.
+MT_ERROR: 033_example_6.asm:552.26-552.28: Error: symbol not defined: `S5'.
+MT_WARNING: 033_example_6.asm:552.30-552.45: Warning: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+MT_ERROR: 033_example_6.asm:554.26-554.28: Error: symbol not defined: `S5'.
+MT_WARNING: 033_example_6.asm:554.30-554.45: Warning: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+MT_ERROR: 033_example_6.asm:557.29-557.31: Error: symbol not defined: `S0'.
+MT_ERROR: 033_example_6.asm:559.26-559.28: Error: symbol not defined: `S5'.
+MT_WARNING: 033_example_6.asm:559.30-559.41: Warning: value out of range: 32, allowed range is [0,15] (trimmed to 4 bits) which makes it 0.
+MT_ERROR: 033_example_6.asm:561.26-561.28: Error: symbol not defined: `S5'.
+MT_WARNING: 033_example_6.asm:561.30-561.45: Warning: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+MT_ERROR: 033_example_6.asm:563.26-563.28: Error: symbol not defined: `S5'.
+MT_WARNING: 033_example_6.asm:563.30-563.45: Warning: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+MT_ERROR: 033_example_6.asm:566.29-566.31: Error: symbol not defined: `S0'.
+MT_ERROR: 033_example_6.asm:568.26-568.28: Error: symbol not defined: `S5'.
+MT_WARNING: 033_example_6.asm:568.30-568.41: Warning: value out of range: 35, allowed range is [0,15] (trimmed to 4 bits) which makes it 3.
+MT_ERROR: 033_example_6.asm:570.26-570.28: Error: symbol not defined: `S5'.
+MT_WARNING: 033_example_6.asm:570.30-570.45: Warning: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+MT_ERROR: 033_example_6.asm:572.26-572.28: Error: symbol not defined: `S5'.
+MT_WARNING: 033_example_6.asm:572.30-572.45: Warning: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+MT_ERROR: 033_example_6.asm:575.29-575.31: Error: symbol not defined: `S0'.
+MT_ERROR: 033_example_6.asm:577.26-577.28: Error: symbol not defined: `S5'.
+MT_WARNING: 033_example_6.asm:577.30-577.41: Warning: value out of range: 31, allowed range is [0,15] (trimmed to 4 bits) which makes it 15.
+MT_ERROR: 033_example_6.asm:579.26-579.28: Error: symbol not defined: `S5'.
+MT_WARNING: 033_example_6.asm:579.30-579.41: Warning: value out of range: 30, allowed range is [0,15] (trimmed to 4 bits) which makes it 14.
+MT_ERROR: 033_example_6.asm:581.26-581.28: Error: symbol not defined: `S5'.
+MT_WARNING: 033_example_6.asm:581.30-581.45: Warning: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+MT_ERROR: 033_example_6.asm:584.29-584.31: Error: symbol not defined: `S0'.
+MT_ERROR: 033_example_6.asm:586.26-586.28: Error: symbol not defined: `S5'.
+MT_WARNING: 033_example_6.asm:586.30-586.41: Warning: value out of range: 32, allowed range is [0,15] (trimmed to 4 bits) which makes it 0.
+MT_ERROR: 033_example_6.asm:588.26-588.28: Error: symbol not defined: `S5'.
+MT_WARNING: 033_example_6.asm:588.30-588.41: Warning: value out of range: 30, allowed range is [0,15] (trimmed to 4 bits) which makes it 14.
+MT_ERROR: 033_example_6.asm:590.26-590.28: Error: symbol not defined: `S5'.
+MT_WARNING: 033_example_6.asm:590.30-590.45: Warning: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+MT_ERROR: 033_example_6.asm:593.29-593.31: Error: symbol not defined: `S0'.
+MT_ERROR: 033_example_6.asm:595.26-595.28: Error: symbol not defined: `S5'.
+MT_WARNING: 033_example_6.asm:595.30-595.41: Warning: value out of range: 35, allowed range is [0,15] (trimmed to 4 bits) which makes it 3.
+MT_ERROR: 033_example_6.asm:597.26-597.28: Error: symbol not defined: `S5'.
+MT_WARNING: 033_example_6.asm:597.30-597.41: Warning: value out of range: 30, allowed range is [0,15] (trimmed to 4 bits) which makes it 14.
+MT_ERROR: 033_example_6.asm:599.26-599.28: Error: symbol not defined: `S5'.
+MT_WARNING: 033_example_6.asm:599.30-599.45: Warning: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+MT_ERROR: 033_example_6.asm:602.26-602.28: Error: symbol not defined: `S5'.
+MT_WARNING: 033_example_6.asm:602.30-602.41: Warning: value out of range: 31, allowed range is [0,15] (trimmed to 4 bits) which makes it 15.
+MT_ERROR: 033_example_6.asm:604.26-604.28: Error: symbol not defined: `S5'.
+MT_WARNING: 033_example_6.asm:604.30-604.41: Warning: value out of range: 30, allowed range is [0,15] (trimmed to 4 bits) which makes it 14.
+MT_ERROR: 033_example_6.asm:606.26-606.28: Error: symbol not defined: `S5'.
+MT_WARNING: 033_example_6.asm:606.30-606.41: Warning: value out of range: 30, allowed range is [0,15] (trimmed to 4 bits) which makes it 14.
+MT_ERROR: 033_example_6.asm:609.27-609.29: Error: symbol not defined: `S0'.
+MT_ERROR: 033_example_6.asm:610.26-610.28: Error: symbol not defined: `S0'.
+MT_ERROR: 033_example_6.asm:631.26-631.28: Error: symbol not defined: `S7'.
+MT_ERROR: 033_example_6.asm:632.26-632.28: Error: symbol not defined: `S6'.
+MT_ERROR: 033_example_6.asm:633.26-633.28: Error: symbol not defined: `S5'.
+MT_ERROR: 033_example_6.asm:634.26-634.28: Error: symbol not defined: `S4'.
+MT_ERROR: 033_example_6.asm:635.26-635.28: Error: symbol not defined: `S8'.
+MT_ERROR: 033_example_6.asm:636.26-636.28: Error: symbol not defined: `S3'.
+MT_WARNING: 033_example_6.asm:636.30-636.32: Warning: value out of range: 80, allowed range is [0,15] (trimmed to 4 bits) which makes it 0.
+MT_ERROR: 033_example_6.asm:638.26-638.28: Error: symbol not defined: `S8'.
+MT_ERROR: 033_example_6.asm:638.30-638.32: Error: symbol not defined: `FF'.
+MT_ERROR: 033_example_6.asm:639.26-639.28: Error: symbol not defined: `S9'.
+MT_ERROR: 033_example_6.asm:639.30-639.32: Error: symbol not defined: `S8'.
+MT_ERROR: 033_example_6.asm:641.25-641.27: Error: symbol not defined: `S1'.
+MT_ERROR: 033_example_6.asm:642.25-642.27: Error: symbol not defined: `S0'.
+MT_ERROR: 033_example_6.asm:644.25-644.27: Error: symbol not defined: `S4'.
+MT_ERROR: 033_example_6.asm:644.29-644.31: Error: symbol not defined: `S2'.
+MT_ERROR: 033_example_6.asm:645.27-645.29: Error: symbol not defined: `S5'.
+MT_ERROR: 033_example_6.asm:645.31-645.33: Error: symbol not defined: `S3'.
+MT_ERROR: 033_example_6.asm:646.27-646.29: Error: symbol not defined: `S6'.
+MT_ERROR: 033_example_6.asm:646.31-646.33: Error: symbol not defined: `S8'.
+MT_ERROR: 033_example_6.asm:647.27-647.29: Error: symbol not defined: `S7'.
+MT_ERROR: 033_example_6.asm:647.31-647.33: Error: symbol not defined: `S9'.
+MT_ERROR: 033_example_6.asm:648.25-648.27: Error: symbol not defined: `S2'.
+MT_ERROR: 033_example_6.asm:649.25-649.27: Error: symbol not defined: `S3'.
+MT_ERROR: 033_example_6.asm:650.25-650.27: Error: symbol not defined: `S8'.
+MT_ERROR: 033_example_6.asm:651.25-651.27: Error: symbol not defined: `S9'.
+MT_ERROR: 033_example_6.asm:652.25-652.27: Error: symbol not defined: `SA'.
+MT_ERROR: 033_example_6.asm:654.26-654.28: Error: symbol not defined: `S0'.
+MT_ERROR: 033_example_6.asm:656.25-656.27: Error: symbol not defined: `S4'.
+MT_ERROR: 033_example_6.asm:656.29-656.31: Error: symbol not defined: `S2'.
+MT_ERROR: 033_example_6.asm:657.27-657.29: Error: symbol not defined: `S5'.
+MT_ERROR: 033_example_6.asm:657.31-657.33: Error: symbol not defined: `S3'.
+MT_ERROR: 033_example_6.asm:658.27-658.29: Error: symbol not defined: `S6'.
+MT_ERROR: 033_example_6.asm:658.31-658.33: Error: symbol not defined: `S8'.
+MT_ERROR: 033_example_6.asm:659.27-659.29: Error: symbol not defined: `S7'.
+MT_ERROR: 033_example_6.asm:659.31-659.33: Error: symbol not defined: `S9'.
+MT_ERROR: 033_example_6.asm:679.26-679.28: Error: symbol not defined: `S0'.
+MT_ERROR: 033_example_6.asm:680.26-680.28: Error: symbol not defined: `S8'.
+MT_ERROR: 033_example_6.asm:682.27-682.29: Error: symbol not defined: `S4'.
+MT_ERROR: 033_example_6.asm:682.32-682.34: Error: symbol not defined: `S8'.
+MT_ERROR: 033_example_6.asm:683.25-683.27: Error: symbol not defined: `S8'.
+MT_ERROR: 033_example_6.asm:684.25-684.27: Error: symbol not defined: `S0'.
+MT_ERROR: 033_example_6.asm:699.26-699.28: Error: symbol not defined: `S4'.
+MT_ERROR: 033_example_6.asm:699.30-699.32: Error: symbol not defined: `S6'.
+MT_ERROR: 033_example_6.asm:700.26-700.28: Error: symbol not defined: `S5'.
+MT_ERROR: 033_example_6.asm:700.30-700.32: Error: symbol not defined: `S7'.
+MT_ERROR: 033_example_6.asm:701.26-701.28: Error: symbol not defined: `S6'.
+MT_ERROR: 033_example_6.asm:702.26-702.28: Error: symbol not defined: `S7'.
+MT_ERROR: 033_example_6.asm:703.26-703.28: Error: symbol not defined: `S2'.
+MT_ERROR: 033_example_6.asm:704.26-704.28: Error: symbol not defined: `S3'.
+MT_ERROR: 033_example_6.asm:704.30-704.32: Error: symbol not defined: `A0'.
+MT_ERROR: 033_example_6.asm:705.26-705.28: Error: symbol not defined: `S1'.
+MT_ERROR: 033_example_6.asm:706.25-706.27: Error: symbol not defined: `S4'.
+MT_ERROR: 033_example_6.asm:706.29-706.31: Error: symbol not defined: `S2'.
+MT_ERROR: 033_example_6.asm:707.27-707.29: Error: symbol not defined: `S5'.
+MT_ERROR: 033_example_6.asm:707.31-707.33: Error: symbol not defined: `S3'.
+MT_ERROR: 033_example_6.asm:709.25-709.27: Error: symbol not defined: `S6'.
+MT_ERROR: 033_example_6.asm:711.25-711.27: Error: symbol not defined: `S4'.
+MT_ERROR: 033_example_6.asm:711.29-711.31: Error: symbol not defined: `S2'.
+MT_ERROR: 033_example_6.asm:712.27-712.29: Error: symbol not defined: `S5'.
+MT_ERROR: 033_example_6.asm:712.31-712.33: Error: symbol not defined: `S3'.
+MT_ERROR: 033_example_6.asm:713.25-713.27: Error: symbol not defined: `S6'.
+MT_ERROR: 033_example_6.asm:714.25-714.27: Error: symbol not defined: `S7'.
+MT_ERROR: 033_example_6.asm:715.25-715.27: Error: symbol not defined: `S3'.
+MT_ERROR: 033_example_6.asm:716.25-716.27: Error: symbol not defined: `S2'.
+MT_ERROR: 033_example_6.asm:717.25-717.27: Error: symbol not defined: `S1'.
+MT_ERROR: 033_example_6.asm:770.26-770.28: Error: symbol not defined: `S0'.
+MT_ERROR: 033_example_6.asm:770.30-770.32: Error: symbol not defined: `AE'.
+MT_ERROR: 033_example_6.asm:771.28-771.30: Error: symbol not defined: `S0'.
+MT_ERROR: 033_example_6.asm:802.25-802.27: Error: symbol not defined: `S0'.
+MT_ERROR: 033_example_6.asm:803.28-803.30: Error: symbol not defined: `S0'.
+MT_ERROR: 033_example_6.asm:804.26-804.28: Error: symbol not defined: `S1'.
+MT_ERROR: 033_example_6.asm:805.28-805.30: Error: symbol not defined: `S2'.
+MT_ERROR: 033_example_6.asm:806.25-806.27: Error: symbol not defined: `S0'.
+MT_ERROR: 033_example_6.asm:807.28-807.30: Error: symbol not defined: `S0'.
+MT_ERROR: 033_example_6.asm:808.27-808.29: Error: symbol not defined: `S3'.
+MT_ERROR: 033_example_6.asm:809.26-809.28: Error: symbol not defined: `S3'.
+MT_WARNING: 033_example_6.asm:809.30-809.41: Warning: value out of range: 40, allowed range is [0,15] (trimmed to 4 bits) which makes it 8.
+MT_ERROR: 033_example_6.asm:810.25-810.27: Error: symbol not defined: `S2'.
+MT_ERROR: 033_example_6.asm:811.25-811.27: Error: symbol not defined: `S0'.
+MT_ERROR: 033_example_6.asm:812.28-812.30: Error: symbol not defined: `S0'.
+MT_ERROR: 033_example_6.asm:813.25-813.27: Error: symbol not defined: `S1'.
+MT_ERROR: 033_example_6.asm:815.25-815.27: Error: symbol not defined: `S0'.
+MT_ERROR: 033_example_6.asm:816.28-816.30: Error: symbol not defined: `S0'.
+MT_ERROR: 033_example_6.asm:862.25-862.27: Error: symbol not defined: `S0'.
+MT_ERROR: 033_example_6.asm:863.28-863.30: Error: symbol not defined: `S0'.
+MT_ERROR: 033_example_6.asm:864.25-864.27: Error: symbol not defined: `S0'.
+MT_ERROR: 033_example_6.asm:865.28-865.30: Error: symbol not defined: `S0'.
+MT_ERROR: 033_example_6.asm:866.26-866.28: Error: symbol not defined: `S1'.
+MT_WARNING: 033_example_6.asm:866.30-866.32: Warning: value out of range: 22, allowed range is [0,15] (trimmed to 4 bits) which makes it 6.
+MT_ERROR: 033_example_6.asm:867.25-867.27: Error: symbol not defined: `S0'.
+MT_ERROR: 033_example_6.asm:868.28-868.30: Error: symbol not defined: `S0'.
+MT_ERROR: 033_example_6.asm:869.25-869.27: Error: symbol not defined: `S0'.
+MT_ERROR: 033_example_6.asm:870.28-870.30: Error: symbol not defined: `S0'.
+MT_ERROR: 033_example_6.asm:871.27-871.29: Error: symbol not defined: `S3'.
+MT_ERROR: 033_example_6.asm:872.26-872.28: Error: symbol not defined: `S3'.
+MT_WARNING: 033_example_6.asm:872.30-872.37: Warning: value out of range: 80, allowed range is [0,15] (trimmed to 4 bits) which makes it 0.
+MT_ERROR: 033_example_6.asm:873.25-873.27: Error: symbol not defined: `S6'.
+MT_ERROR: 033_example_6.asm:874.25-874.27: Error: symbol not defined: `S7'.
+MT_ERROR: 033_example_6.asm:875.25-875.27: Error: symbol not defined: `S8'.
+MT_ERROR: 033_example_6.asm:876.25-876.27: Error: symbol not defined: `S9'.
+MT_ERROR: 033_example_6.asm:877.25-877.27: Error: symbol not defined: `S1'.
+MT_ERROR: 033_example_6.asm:879.25-879.27: Error: symbol not defined: `S9'.
+MT_ERROR: 033_example_6.asm:880.25-880.27: Error: symbol not defined: `S8'.
+MT_ERROR: 033_example_6.asm:881.25-881.27: Error: symbol not defined: `S9'.
+MT_ERROR: 033_example_6.asm:882.25-882.27: Error: symbol not defined: `S8'.
+MT_ERROR: 033_example_6.asm:883.25-883.27: Error: symbol not defined: `S7'.
+MT_ERROR: 033_example_6.asm:884.25-884.27: Error: symbol not defined: `S6'.
+MT_ERROR: 033_example_6.asm:885.25-885.27: Error: symbol not defined: `S7'.
+MT_ERROR: 033_example_6.asm:886.25-886.27: Error: symbol not defined: `S6'.
+MT_ERROR: 033_example_6.asm:898.26-898.28: Error: symbol not defined: `S5'.
+MT_WARNING: 033_example_6.asm:898.30-898.41: Warning: value out of range: 70, allowed range is [0,15] (trimmed to 4 bits) which makes it 6.
+MT_ERROR: 033_example_6.asm:900.26-900.28: Error: symbol not defined: `S5'.
+MT_WARNING: 033_example_6.asm:900.30-900.41: Warning: value out of range: 69, allowed range is [0,15] (trimmed to 4 bits) which makes it 5.
+MT_ERROR: 033_example_6.asm:902.26-902.28: Error: symbol not defined: `S5'.
+MT_WARNING: 033_example_6.asm:902.30-902.41: Warning: value out of range: 63, allowed range is [0,15] (trimmed to 4 bits) which makes it 15.
+MT_ERROR: 033_example_6.asm:904.26-904.28: Error: symbol not defined: `S5'.
+MT_ERROR: 033_example_6.asm:904.30-904.41: Error: symbol not defined: `CHARACTER_O'.
+MT_ERROR: 033_example_6.asm:906.26-906.28: Error: symbol not defined: `S5'.
+MT_WARNING: 033_example_6.asm:906.30-906.41: Warning: value out of range: 62, allowed range is [0,15] (trimmed to 4 bits) which makes it 14.
+MT_ERROR: 033_example_6.asm:908.26-908.28: Error: symbol not defined: `S5'.
+MT_ERROR: 033_example_6.asm:908.30-908.41: Error: symbol not defined: `CHARACTER_L'.
+MT_ERROR: 033_example_6.asm:910.26-910.28: Error: symbol not defined: `S5'.
+MT_WARNING: 033_example_6.asm:910.30-910.41: Warning: value out of range: 61, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
+MT_ERROR: 033_example_6.asm:912.26-912.28: Error: symbol not defined: `S5'.
+MT_ERROR: 033_example_6.asm:912.30-912.41: Error: symbol not defined: `CHARACTER_Z'.
+MT_ERROR: 033_example_6.asm:914.26-914.28: Error: symbol not defined: `S5'.
+MT_WARNING: 033_example_6.asm:914.30-914.41: Warning: value out of range: 65, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
+MT_ERROR: 033_example_6.asm:922.26-922.28: Error: symbol not defined: `S5'.
+MT_WARNING: 033_example_6.asm:922.30-922.41: Warning: value out of range: 61, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
+MT_ERROR: 033_example_6.asm:924.26-924.28: Error: symbol not defined: `S5'.
+MT_WARNING: 033_example_6.asm:924.30-924.41: Warning: value out of range: 64, allowed range is [0,15] (trimmed to 4 bits) which makes it 0.
+MT_ERROR: 033_example_6.asm:926.26-926.28: Error: symbol not defined: `S5'.
+MT_WARNING: 033_example_6.asm:926.30-926.41: Warning: value out of range: 63, allowed range is [0,15] (trimmed to 4 bits) which makes it 15.
+MT_ERROR: 033_example_6.asm:928.26-928.28: Error: symbol not defined: `S5'.
+MT_WARNING: 033_example_6.asm:928.30-928.45: Warning: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+MT_ERROR: 033_example_6.asm:930.26-930.28: Error: symbol not defined: `S5'.
+MT_WARNING: 033_example_6.asm:930.30-930.41: Warning: value out of range: 63, allowed range is [0,15] (trimmed to 4 bits) which makes it 15.
+MT_ERROR: 033_example_6.asm:932.26-932.28: Error: symbol not defined: `S5'.
+MT_ERROR: 033_example_6.asm:932.30-932.41: Error: symbol not defined: `CHARACTER_O'.
+MT_ERROR: 033_example_6.asm:934.26-934.28: Error: symbol not defined: `S5'.
+MT_ERROR: 033_example_6.asm:934.30-934.41: Error: symbol not defined: `CHARACTER_N'.
+MT_ERROR: 033_example_6.asm:936.26-936.28: Error: symbol not defined: `S5'.
+MT_WARNING: 033_example_6.asm:936.30-936.41: Warning: value out of range: 74, allowed range is [0,15] (trimmed to 4 bits) which makes it 10.
+MT_ERROR: 033_example_6.asm:938.26-938.28: Error: symbol not defined: `S5'.
+MT_WARNING: 033_example_6.asm:938.30-938.41: Warning: value out of range: 72, allowed range is [0,15] (trimmed to 4 bits) which makes it 8.
+MT_ERROR: 033_example_6.asm:940.26-940.28: Error: symbol not defined: `S5'.
+MT_ERROR: 033_example_6.asm:940.30-940.41: Error: symbol not defined: `CHARACTER_O'.
+MT_ERROR: 033_example_6.asm:942.26-942.28: Error: symbol not defined: `S5'.
+MT_ERROR: 033_example_6.asm:942.30-942.41: Error: symbol not defined: `CHARACTER_L'.
+MT_ERROR: 033_example_6.asm:950.26-950.28: Error: symbol not defined: `S5'.
+MT_WARNING: 033_example_6.asm:950.30-950.41: Warning: value out of range: 76, allowed range is [0,15] (trimmed to 4 bits) which makes it 12.
+MT_ERROR: 033_example_6.asm:952.26-952.28: Error: symbol not defined: `S5'.
+MT_WARNING: 033_example_6.asm:952.30-952.41: Warning: value out of range: 61, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
+MT_ERROR: 033_example_6.asm:954.26-954.28: Error: symbol not defined: `S5'.
+MT_ERROR: 033_example_6.asm:962.26-962.28: Error: symbol not defined: `S5'.
+MT_WARNING: 033_example_6.asm:962.30-962.41: Warning: value out of range: 61, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
+MT_ERROR: 033_example_6.asm:964.26-964.28: Error: symbol not defined: `S5'.
+MT_ERROR: 033_example_6.asm:964.30-964.46: Error: symbol not defined: `CHARACTER_DIVIDE'.
+MT_ERROR: 033_example_6.asm:966.26-966.28: Error: symbol not defined: `S5'.
+MT_WARNING: 033_example_6.asm:966.30-966.41: Warning: value out of range: 64, allowed range is [0,15] (trimmed to 4 bits) which makes it 0.
+MT_ERROR: 033_example_6.asm:968.26-968.28: Error: symbol not defined: `S5'.
+MT_ERROR: 033_example_6.asm:991.26-991.28: Error: symbol not defined: `S1'.
+MT_ERROR: 033_example_6.asm:991.30-991.32: Error: symbol not defined: `S0'.
+MT_ERROR: 033_example_6.asm:992.25-992.27: Error: symbol not defined: `S0'.
+MT_ERROR: 033_example_6.asm:993.25-993.27: Error: symbol not defined: `S0'.
+MT_ERROR: 033_example_6.asm:994.25-994.27: Error: symbol not defined: `S0'.
+MT_ERROR: 033_example_6.asm:995.25-995.27: Error: symbol not defined: `S0'.
+MT_ERROR: 033_example_6.asm:996.26-996.38: Error: symbol not defined: `HEX_TO_ASCII'.
+MT_ERROR: 033_example_6.asm:997.26-997.28: Error: symbol not defined: `S2'.
+MT_ERROR: 033_example_6.asm:997.30-997.32: Error: symbol not defined: `S0'.
+MT_ERROR: 033_example_6.asm:998.26-998.28: Error: symbol not defined: `S0'.
+MT_ERROR: 033_example_6.asm:998.30-998.32: Error: symbol not defined: `S1'.
+MT_ERROR: 033_example_6.asm:1000.26-1000.38: Error: symbol not defined: `HEX_TO_ASCII'.
+MT_ERROR: 033_example_6.asm:1001.26-1001.28: Error: symbol not defined: `S1'.
+MT_ERROR: 033_example_6.asm:1001.30-1001.32: Error: symbol not defined: `S0'.
+MT_ERROR: 033_example_6.asm:1009.29-1009.40: Error: symbol not defined: `NUMBER_CHAR'.
+MT_ERROR: 033_example_6.asm:1010.25-1010.27: Error: symbol not defined: `S0'.
+MT_ERROR: 033_example_6.asm:1021.26-1021.28: Error: symbol not defined: `S6'.
+MT_ERROR: 033_example_6.asm:1021.30-1021.32: Error: symbol not defined: `S1'.
+MT_ERROR: 033_example_6.asm:1022.26-1022.28: Error: symbol not defined: `S5'.
+MT_ERROR: 033_example_6.asm:1022.30-1022.32: Error: symbol not defined: `S2'.
+MT_ERROR: 033_example_6.asm:1024.26-1024.28: Error: symbol not defined: `S5'.
+MT_ERROR: 033_example_6.asm:1024.30-1024.32: Error: symbol not defined: `S6'.
+MT_ERROR: 033_example_6.asm:1045.26-1045.28: Error: symbol not defined: `S0'.
+MT_ERROR: 033_example_6.asm:1046.25-1046.27: Error: symbol not defined: `S0'.
+MT_ERROR: 033_example_6.asm:1054.26-1054.28: Error: symbol not defined: `S1'.
+MT_WARNING: 033_example_6.asm:1054.30-1054.32: Warning: value out of range: 28, allowed range is [0,15] (trimmed to 4 bits) which makes it 12.
+MT_ERROR: 033_example_6.asm:1056.25-1056.27: Error: symbol not defined: `S1'.
+MT_ERROR: 033_example_6.asm:1065.26-1065.28: Error: symbol not defined: `S2'.
+MT_WARNING: 033_example_6.asm:1065.30-1065.32: Warning: value out of range: 19, allowed range is [0,15] (trimmed to 4 bits) which makes it 3.
+MT_ERROR: 033_example_6.asm:1067.25-1067.27: Error: symbol not defined: `S2'.
+MT_ERROR: 033_example_6.asm:1077.26-1077.28: Error: symbol not defined: `S3'.
+MT_ERROR: 033_example_6.asm:1079.25-1079.27: Error: symbol not defined: `S3'.
+MT_ERROR: 033_example_6.asm:1087.26-1087.28: Error: symbol not defined: `S4'.
+MT_WARNING: 033_example_6.asm:1087.30-1087.32: Warning: value out of range: 32, allowed range is [0,15] (trimmed to 4 bits) which makes it 0.
+MT_ERROR: 033_example_6.asm:1089.25-1089.27: Error: symbol not defined: `S4'.
+MT_ERROR: 033_example_6.asm:1113.25-1113.27: Error: symbol not defined: `S4'.
+MT_ERROR: 033_example_6.asm:1114.28-1114.30: Error: symbol not defined: `S4'.
+MT_ERROR: 033_example_6.asm:1116.25-1116.27: Error: symbol not defined: `S4'.
+MT_ERROR: 033_example_6.asm:1117.28-1117.30: Error: symbol not defined: `S4'.
+MT_ERROR: 033_example_6.asm:1129.25-1129.27: Error: symbol not defined: `S4'.
+MT_ERROR: 033_example_6.asm:1129.29-1129.31: Error: symbol not defined: `F8'.
+MT_ERROR: 033_example_6.asm:1130.28-1130.30: Error: symbol not defined: `S4'.
+MT_ERROR: 033_example_6.asm:1146.26-1146.28: Error: symbol not defined: `S4'.
+MT_ERROR: 033_example_6.asm:1146.30-1146.32: Error: symbol not defined: `S5'.
+MT_ERROR: 033_example_6.asm:1147.25-1147.27: Error: symbol not defined: `S4'.
+MT_ERROR: 033_example_6.asm:1147.29-1147.31: Error: symbol not defined: `F0'.
+MT_ERROR: 033_example_6.asm:1148.24-1148.26: Error: symbol not defined: `S4'.
+MT_ERROR: 033_example_6.asm:1151.26-1151.28: Error: symbol not defined: `S4'.
+MT_ERROR: 033_example_6.asm:1151.30-1151.32: Error: symbol not defined: `S5'.
+MT_ERROR: 033_example_6.asm:1152.25-1152.27: Error: symbol not defined: `S4'.
+MT_ERROR: 033_example_6.asm:1153.25-1153.27: Error: symbol not defined: `S4'.
+MT_ERROR: 033_example_6.asm:1154.25-1154.27: Error: symbol not defined: `S4'.
+MT_ERROR: 033_example_6.asm:1155.25-1155.27: Error: symbol not defined: `S4'.
+MT_ERROR: 033_example_6.asm:1158.26-1158.28: Error: symbol not defined: `S4'.
+MT_ERROR: 033_example_6.asm:1158.30-1158.32: Error: symbol not defined: `F0'.
+MT_ERROR: 033_example_6.asm:1159.28-1159.30: Error: symbol not defined: `S4'.
+MT_ERROR: 033_example_6.asm:1175.26-1175.28: Error: symbol not defined: `S4'.
+MT_ERROR: 033_example_6.asm:1175.30-1175.32: Error: symbol not defined: `S5'.
+MT_ERROR: 033_example_6.asm:1176.25-1176.27: Error: symbol not defined: `S4'.
+MT_ERROR: 033_example_6.asm:1176.29-1176.31: Error: symbol not defined: `F0'.
+MT_ERROR: 033_example_6.asm:1178.28-1178.30: Error: symbol not defined: `S4'.
+MT_ERROR: 033_example_6.asm:1181.26-1181.28: Error: symbol not defined: `S4'.
+MT_ERROR: 033_example_6.asm:1181.30-1181.32: Error: symbol not defined: `S5'.
+MT_ERROR: 033_example_6.asm:1182.25-1182.27: Error: symbol not defined: `S4'.
+MT_ERROR: 033_example_6.asm:1183.25-1183.27: Error: symbol not defined: `S4'.
+MT_ERROR: 033_example_6.asm:1184.25-1184.27: Error: symbol not defined: `S4'.
+MT_ERROR: 033_example_6.asm:1185.25-1185.27: Error: symbol not defined: `S4'.
+MT_ERROR: 033_example_6.asm:1186.28-1186.30: Error: symbol not defined: `S4'.
+MT_ERROR: 033_example_6.asm:1189.26-1189.28: Error: symbol not defined: `S4'.
+MT_ERROR: 033_example_6.asm:1189.30-1189.32: Error: symbol not defined: `F0'.
+MT_ERROR: 033_example_6.asm:1190.28-1190.30: Error: symbol not defined: `S4'.
+MT_ERROR: 033_example_6.asm:1213.28-1213.30: Error: symbol not defined: `S4'.
+MT_ERROR: 033_example_6.asm:1214.25-1214.27: Error: symbol not defined: `S4'.
+MT_ERROR: 033_example_6.asm:1215.28-1215.30: Error: symbol not defined: `S4'.
+MT_ERROR: 033_example_6.asm:1217.27-1217.29: Error: symbol not defined: `S5'.
+MT_ERROR: 033_example_6.asm:1218.25-1218.27: Error: symbol not defined: `S4'.
+MT_ERROR: 033_example_6.asm:1219.28-1219.30: Error: symbol not defined: `S4'.
+MT_ERROR: 033_example_6.asm:1221.25-1221.27: Error: symbol not defined: `S4'.
+MT_ERROR: 033_example_6.asm:1222.28-1222.30: Error: symbol not defined: `S4'.
+MT_ERROR: 033_example_6.asm:1224.27-1224.29: Error: symbol not defined: `S0'.
+MT_ERROR: 033_example_6.asm:1225.25-1225.27: Error: symbol not defined: `S4'.
+MT_ERROR: 033_example_6.asm:1226.28-1226.30: Error: symbol not defined: `S4'.
+MT_ERROR: 033_example_6.asm:1227.25-1227.27: Error: symbol not defined: `S5'.
+MT_ERROR: 033_example_6.asm:1227.29-1227.31: Error: symbol not defined: `F0'.
+MT_ERROR: 033_example_6.asm:1228.25-1228.27: Error: symbol not defined: `S0'.
+MT_ERROR: 033_example_6.asm:1229.25-1229.27: Error: symbol not defined: `S0'.
+MT_ERROR: 033_example_6.asm:1230.25-1230.27: Error: symbol not defined: `S0'.
+MT_ERROR: 033_example_6.asm:1231.25-1231.27: Error: symbol not defined: `S0'.
+MT_ERROR: 033_example_6.asm:1232.24-1232.26: Error: symbol not defined: `S5'.
+MT_ERROR: 033_example_6.asm:1232.28-1232.30: Error: symbol not defined: `S0'.
+MT_ERROR: 033_example_6.asm:1233.26-1233.28: Error: symbol not defined: `S4'.
+MT_ERROR: 033_example_6.asm:1234.28-1234.30: Error: symbol not defined: `S4'.
+MT_ERROR: 033_example_6.asm:1253.26-1253.28: Error: symbol not defined: `S4'.
+MT_WARNING: 033_example_6.asm:1253.30-1253.32: Warning: value out of range: 30, allowed range is [0,15] (trimmed to 4 bits) which makes it 14.
+MT_ERROR: 033_example_6.asm:1260.26-1260.28: Error: symbol not defined: `S4'.
+MT_WARNING: 033_example_6.asm:1260.30-1260.32: Warning: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+MT_ERROR: 033_example_6.asm:1263.26-1263.28: Error: symbol not defined: `S5'.
+MT_WARNING: 033_example_6.asm:1263.30-1263.32: Warning: value out of range: 28, allowed range is [0,15] (trimmed to 4 bits) which makes it 12.
+MT_ERROR: 033_example_6.asm:1265.26-1265.28: Error: symbol not defined: `S5'.
+MT_ERROR: 033_example_6.asm:1269.26-1269.28: Error: symbol not defined: `S5'.
+MT_ERROR: 033_example_6.asm:1292.26-1292.28: Error: symbol not defined: `S5'.
+MT_ERROR: 033_example_6.asm:1293.29-1293.38: Error: symbol not defined: `SET_LINE2'.
+MT_ERROR: 033_example_6.asm:1295.24-1295.26: Error: symbol not defined: `S5'.
+MT_WARNING: 033_example_6.asm:1295.28-1295.30: Warning: value out of range: 80, allowed range is [0,15] (trimmed to 4 bits) which makes it 0.
+MT_ERROR: 033_example_6.asm:1299.24-1299.26: Error: symbol not defined: `S5'.
+MT_ERROR: 033_example_6.asm:1299.28-1299.30: Error: symbol not defined: `C0'.
+MT_ERROR: 033_example_6.asm:1314.27-1314.29: Error: symbol not defined: `S8'.
+MT_ERROR: 033_example_6.asm:1315.27-1315.29: Error: symbol not defined: `S9'.
+MT_ERROR: 033_example_6.asm:1316.27-1316.29: Error: symbol not defined: `S6'.
+MT_ERROR: 033_example_6.asm:1317.27-1317.29: Error: symbol not defined: `S7'.
+MT_ERROR: 033_example_6.asm:1319.26-1319.28: Error: symbol not defined: `SF'.

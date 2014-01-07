@@ -1,0 +1,24 @@
+MT_ERROR: 007_SCRATCHPAD_ram.asm:37.32-37.34: Error: identifier cannot start with a digit: `8E'.
+MT_ERROR: 007_SCRATCHPAD_ram.asm:37.32-38.1: Error: unexpected end of line.
+MT_ERROR: 007_SCRATCHPAD_ram.asm:55.37-55.39: Error: identifier cannot start with a digit: `0F'.
+MT_ERROR: 007_SCRATCHPAD_ram.asm:55.37-56.1: Error: unexpected end of line.
+MT_ERROR: 007_SCRATCHPAD_ram.asm:61.39-61.41: Error: identifier cannot start with a digit: `0F'.
+MT_ERROR: 007_SCRATCHPAD_ram.asm:61.39-62.1: Error: unexpected end of line.
+MT_ERROR: 007_SCRATCHPAD_ram.asm:7.17-7.19: Error: symbol not defined: `S0'.
+MT_ERROR: 007_SCRATCHPAD_ram.asm:8.17-8.19: Error: symbol not defined: `S1'.
+MT_WARNING: 007_SCRATCHPAD_ram.asm:8.1-8.32: Warning: reusing already reserved space in register file memory at address: 1.
+MT_ERROR: 007_SCRATCHPAD_ram.asm:32.32-32.34: Error: symbol not defined: `C0'.
+MT_ERROR: 007_SCRATCHPAD_ram.asm:34.32-34.34: Error: symbol not defined: `F9'.
+MT_ERROR: 007_SCRATCHPAD_ram.asm:39.25-39.27: Error: symbol not defined: `S0'.
+MT_WARNING: 007_SCRATCHPAD_ram.asm:39.1-39.41: Warning: reusing already reserved space in register file memory at address: 1.
+MT_ERROR: 007_SCRATCHPAD_ram.asm:41.25-41.27: Error: symbol not defined: `S1'.
+MT_WARNING: 007_SCRATCHPAD_ram.asm:41.1-41.39: Warning: reusing already reserved space in register file memory at address: 1.
+MT_ERROR: 007_SCRATCHPAD_ram.asm:72.17-72.19: Error: symbol not defined: `SF'.
+MT_WARNING: 007_SCRATCHPAD_ram.asm:72.1-72.30: Warning: reusing already reserved space in register file memory at address: 1.
+MT_WARNING: Warning: exact device not specified, using KCPSM6 by default.
+MT_WARNING: 007_SCRATCHPAD_ram.asm:16.38-16.51: Warning: value out of range: 40, allowed range is [0,15] (trimmed to 4 bits) which makes it 8.
+MT_ERROR: 007_SCRATCHPAD_ram.asm:53.37-53.42: Error: symbol not defined: `LED_F'.
+MT_ERROR: 007_SCRATCHPAD_ram.asm:75.25-75.27: Error: symbol not defined: `SF'.
+MT_WARNING: 007_SCRATCHPAD_ram.asm:75.29-75.31: Warning: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+MT_ERROR: 007_SCRATCHPAD_ram.asm:85.25-85.27: Error: symbol not defined: `S0'.
+MT_ERROR: 007_SCRATCHPAD_ram.asm:94.25-94.27: Error: symbol not defined: `S0'.
