@@ -36,25 +36,23 @@ function build() {
 function tests() {
     requirePrograms 'xsltproc' 'valgrind' 'gcov'
 
+    local -r BUILD_LOG="tests/results/BuildLog.log"
+    local -r TIME_FILE="tests/results/startTime.log"
+
     if [[ -e tests/results ]]; then
         rm -rf tests/results || exit 1
     fi
 
     mkdir tests/results || exit 1
-    date +'%s' > tests/results/startTime.log
+    date +'%s' > "${TIME_FILE}"
 
-    local -r BUILD_LOG="tests/results/BuildLog.log"
-    local -r STATUS_FILE="tests/results/status.log"
-    local -i status=1
-
-    cmake -DCOLOR_GCC=ON                    \
+    cmake -DCOLOR_GCC=OFF                   \
           -DCMAKE_BUILD_TYPE=${bt:-Debug}   \
           -DTEST_COVERAGE=${cov:-ON}        \
           -DTEST_MEMCHECK=${val:-ON}        \
-          -DCMAKE_COLOR_MAKEFILE=ON  . 2>&1 \
-        | tee "${BUILD_LOG}" || status=0
-    make -j${PP} --keep-going 2>&1 | tee -a "${BUILD_LOG}" || status=0
-    echo ${status} > "${STATUS_FILE}"
+          -DCMAKE_COLOR_MAKEFILE=OFF . 2>&1 \
+        | tee "${BUILD_LOG}"
+    make -j${PP} --keep-going 2>&1 | tee -a "${BUILD_LOG}"
 
     if [[ -z "${1}" ]]; then
         ctest -j${PP}

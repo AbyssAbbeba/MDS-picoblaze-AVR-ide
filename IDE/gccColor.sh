@@ -2,7 +2,7 @@
 
 # for i in {30..37}; do echo -e "\E[${i}m${i}\E[m "; done
 
-if [[ -z "${TERM}" || "dumb" == "${TERM}" ]]; then
+if [[ ! -t 1 || -z "${TERM}" || "${TERM}" == 'dumb' ]]; then
     exec "${@}"
     exit $?
 fi

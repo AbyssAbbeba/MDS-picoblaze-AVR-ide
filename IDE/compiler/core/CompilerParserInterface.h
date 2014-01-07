@@ -191,12 +191,14 @@ class CompilerParserInterface
              * @param[in] yylloc
              * @param[in] type
              * @param[in] text
+             * @param[in] forceAsUnique
              */
             void parserMessage ( const YYLTYPE & yylloc,
                                 CompilerBase::MessageType type,
-                                const std::string & text )
+                                const std::string & text,
+                                bool forceAsUnique = false  )
             {
-                parserMessage(toSourceLocation(yylloc), type, text);
+                parserMessage(toSourceLocation(yylloc), type, text, forceAsUnique);
             }
 
             /**
@@ -204,12 +206,14 @@ class CompilerParserInterface
              * @param[in] yylloc
              * @param[in] type
              * @param[in] text
+             * @param[in] forceAsUnique
              */
             void lexerMessage ( const YYLTYPE * yylloc,
                                 CompilerBase::MessageType type,
-                                const std::string & text )
+                                const std::string & text,
+                                bool forceAsUnique = false  )
             {
-                lexerMessage(toSourceLocation(yylloc), type, text);
+                lexerMessage(toSourceLocation(yylloc), type, text, forceAsUnique);
             }
         //@}
 

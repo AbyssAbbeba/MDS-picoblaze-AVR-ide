@@ -307,7 +307,7 @@ EID     ({NSEP})?{ID}
                     // Octal number.
                     yylval->integer = MScriptLexerAuxFunc::str2int ( yyextra, yylloc, ( yytext + 1 ), 8 );
                     return INTEGER;
-/*                 } */
+                }
 [0-9]+          {
                     // Decimal number.
                     yylval->integer = MScriptLexerAuxFunc::str2int ( yyextra, yylloc, yytext, 10 );
