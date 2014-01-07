@@ -241,7 +241,7 @@ ID      [_a-zA-Z][_a-zA-Z0-9]*
  /* Real numbers */
 {FLOAT}         {
                     // Floating point number.
-                    //yylval->real = MScriptLexerAuxFunc::str2float ( yyextra, yylloc, yytext );
+                    yylval->real = str2float ( yyextra, yylloc, yytext );
                     return REAL;
                 }
 

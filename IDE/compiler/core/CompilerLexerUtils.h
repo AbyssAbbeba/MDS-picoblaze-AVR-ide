@@ -59,6 +59,17 @@ namespace CompilerLexerUtils
                              const char * str,
                              unsigned int max,
                              int base );
+    
+    /**
+     * @brief
+     * @param
+     * @param
+     * @param
+     * @return
+     */
+    double str2float ( CompilerParserInterface * compiler,
+                       const YYLTYPE * location,
+                       const char * str );
 };
 
 // Code specific for other operating systems than GNU/Linux.

@@ -161,3 +161,22 @@ int CompilerLexerUtils::convertStrToNumber ( CompilerParserInterface * compiler,
 
     return int(number);
 }
+
+
+double CompilerLexerUtils::str2float ( CompilerParserInterface * compiler,
+                                       const YYLTYPE * location,
+                                       const char * str )
+{
+    double result = strtod ( str, NULL );
+
+    if ( ( -HUGE_VAL == result ) || ( HUGE_VAL == result ) )
+    {
+        compiler->lexerMessage ( location,
+                             CompilerBase::MT_ERROR,
+                             QObject::tr("number is too big: ").toStdString() + "`" + std::string(str) + "'" );
+
+        return 1.0; // Some "neutral dummy value"
+    }
+
+    return result;
+}
