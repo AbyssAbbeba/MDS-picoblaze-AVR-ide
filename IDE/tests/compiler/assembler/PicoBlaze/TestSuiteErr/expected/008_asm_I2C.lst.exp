@@ -1,0 +1,199 @@
+                   1
+                   2
+                   3     ; -------------------------------------------------------------------------------
+                   4     ; SPI routines
+                   5     ; data to move in s1, s1&s2, s1&s2&s3
+                   6     ; uses s0, sF
+                   7     ; sE: bit in the command reg of the SPI_LE pin
+                   8     ; sD: address of the command register
+                   9     ; sC: address of the SPI control/status register
+                  10     ; -------------------------------------------------------------------------------
+                  11
+  00001           12     bMOSI           EQU    0b00000001
+  00080           13     bMISO           EQU    0b10000000
+  00002           14     bSCLK           EQU    0b00000010
+                  15
+                  16     ESPI24:
+                  17                     MOVE    sD, _PIGGY + _CMD       ; address of the command register, contains the CE signals
+E: macro not defined: "MOVE".
+                  18                     MOVE    sC, _PIGGY + _SPI       ; address of the SPI register, contains MOSI, MISO, SCLK signals
+E: macro not defined: "MOVE".
+                  19     SPI24:
+000 09101         20                     IN      sF, sD                  ; switch on the appropriate CE
+E: symbol not defined: `SF'.
+E: symbol not defined: `SD'.
+                  21                     XOR     sE, $FF
+E: invalid token: `$FF'.
+E: unexpected end of line.
+001 02110         22                     AND     sF, sE
+E: symbol not defined: `SF'.
+E: symbol not defined: `SE'.
+002 2D101         23                     OUT     sF, sD
+E: symbol not defined: `SF'.
+E: symbol not defined: `SD'.
+                  24
+                  25                     MOVE    s0, s1
+E: macro not defined: "MOVE".
+003 2001B         26                     CALL    _SPI8
+                  27                     MOVE    s0, s2
+E: macro not defined: "MOVE".
+004 2001B         28                     CALL    _SPI8
+                  29                     MOVE    s0, s3
+E: macro not defined: "MOVE".
+005 2001B         30                     CALL    _SPI8
+                  31
+006 09101         32                     IN      sF, sD
+E: symbol not defined: `SF'.
+E: symbol not defined: `SD'.
+                  33                     XOR     sE, $FF
+E: invalid token: `$FF'.
+E: unexpected end of line.
+007 04110         34                     OR      sF, sE
+E: symbol not defined: `SF'.
+E: symbol not defined: `SE'.
+008 2D101         35                     OUT     sF, sD                  ; switch off the CE
+E: symbol not defined: `SF'.
+E: symbol not defined: `SD'.
+                  36
+009 25000         37                     RET
+                  38
+                  39     ESPI16:
+                  40                     MOVE    sD, _PIGGY + _CMD       ; address of the command register, contains the CE signals
+E: macro not defined: "MOVE".
+                  41                     MOVE    sC, _PIGGY + _SPI       ; address of the SPI register, contains MOSI, MISO, SCLK signals
+E: macro not defined: "MOVE".
+                  42     SPI16:
+00A 09101         43                     IN      sF, sD                  ; switch on the appropriate CE
+E: symbol not defined: `SF'.
+E: symbol not defined: `SD'.
+                  44                     XOR     sE, $FF
+E: invalid token: `$FF'.
+E: unexpected end of line.
+00B 02110         45                     AND     sF, sE
+E: symbol not defined: `SF'.
+E: symbol not defined: `SE'.
+00C 2D101         46                     OUT     sF, sD
+E: symbol not defined: `SF'.
+E: symbol not defined: `SD'.
+                  47
+                  48                     MOVE    s0, s1
+E: macro not defined: "MOVE".
+00D 2001B         49                     CALL    _SPI8
+                  50                     MOVE    s0, s2
+E: macro not defined: "MOVE".
+00E 2001B         51                     CALL    _SPI8
+                  52
+00F 09101         53                     IN      sF, sD
+E: symbol not defined: `SF'.
+E: symbol not defined: `SD'.
+                  54                     XOR     sE, $FF
+E: invalid token: `$FF'.
+E: unexpected end of line.
+010 04110         55                     OR      sF, sE
+E: symbol not defined: `SF'.
+E: symbol not defined: `SE'.
+011 2D101         56                     OUT     sF, sD                  ; switch off the CE
+E: symbol not defined: `SF'.
+E: symbol not defined: `SD'.
+                  57
+012 25000         58                     RET
+                  59
+                  60     ESPI8:
+                  61                     MOVE    sD, _PIGGY + _CMD       ; address of the command register, contains the CE signals
+E: macro not defined: "MOVE".
+                  62                     MOVE    sC, _PIGGY + _SPI       ; address of the SPI register, contains MOSI, MISO, SCLK signals
+E: macro not defined: "MOVE".
+                  63     SPI8:
+013 09101         64                     IN      sF, sD                  ; switch on the appropriate CE
+E: symbol not defined: `SF'.
+E: symbol not defined: `SD'.
+                  65                     XOR     sE, $FF
+E: invalid token: `$FF'.
+E: unexpected end of line.
+014 02110         66                     AND     sF, sE
+E: symbol not defined: `SF'.
+E: symbol not defined: `SE'.
+015 2D101         67                     OUT     sF, sD
+E: symbol not defined: `SF'.
+E: symbol not defined: `SD'.
+                  68
+                  69                     MOVE    s0, s1
+E: macro not defined: "MOVE".
+016 2001B         70                     CALL    _SPI8
+                  71
+017 09101         72                     IN      sF, sD
+E: symbol not defined: `SF'.
+E: symbol not defined: `SD'.
+                  73                     XOR     sE, $FF
+E: invalid token: `$FF'.
+E: unexpected end of line.
+018 04110         74                     OR      sF, sE
+E: symbol not defined: `SF'.
+E: symbol not defined: `SE'.
+019 2D101         75                     OUT     sF, sD                  ; switch off the CE
+E: symbol not defined: `SF'.
+E: symbol not defined: `SD'.
+                  76
+01A 25000         77                     RET
+                  78
+                  79     ; -------------------------------------------------------------------------------
+                  80     ; raw SPI routines
+                  81     ; byte to move in s0
+                  82     ; uses sF
+                  83     ; -------------------------------------------------------------------------------
+                  84
+                  85     _SPI8:                                          ; shift 8 bits
+01B 2001C         86                     CALL    _SPI4
+                  87
+                  88     _SPI4:                                          ; shift 4 bits
+01C 2001D         89                     CALL    _SPI2
+                  90
+                  91     _SPI2:                                          ; shift 2 bits
+01D 2001E         92                     CALL    _SPI1
+                  93
+                  94     ; -------------------------------------------------------------------------------
+                  95     ; send one bit w/clock
+                  96     ; -------------------------------------------------------------------------------
+                  97
+                  98     _SPI1:                                          ; shift 1 bit
+01E 09101         99                     IN      sF, sC
+E: symbol not defined: `SF'.
+E: symbol not defined: `SC'.
+01F 021E0        100                     AND     sF, ~ bMOSI             ; clear MOSI bit
+E: symbol not defined: `SF'.
+R: result is negative number: -2, this will represented as 4-bit number in two's complement arithmetic which makes it: 14.
+                 101
+020 14106        102                     SL0     s0                      ; check if upper bit set
+E: symbol not defined: `S0'.
+                 103                     SKIP    NC
+E: symbol not defined: `NC'.
+022 04110        104                     OR      sF, bMOSI               ; set MOSI bit
+E: symbol not defined: `SF'.
+                 105
+023 2D101        106                     OUT     sF, sC                  ; update MOSI signal
+E: symbol not defined: `SF'.
+E: symbol not defined: `SC'.
+024 04120        107                     OR      sF, bSCLK               ; set SCLK bit
+E: symbol not defined: `SF'.
+025 2D101        108                     OUT     sF, sC                  ; update SCLK signal
+E: symbol not defined: `SF'.
+E: symbol not defined: `SC'.
+026 021D0        109                     AND     sF, ~ bSCLK             ; clear SCLK bit
+E: symbol not defined: `SF'.
+R: result is negative number: -3, this will represented as 4-bit number in two's complement arithmetic which makes it: 13.
+027 2D101        110                     OUT     sF, sC                  ; update SCLK bit
+E: symbol not defined: `SF'.
+E: symbol not defined: `SC'.
+                 111
+028 09101        112                     IN      sF, sC
+E: symbol not defined: `SF'.
+E: symbol not defined: `SC'.
+029 0C100        113                     TEST    sF, bMISO               ; test MISO signal
+E: symbol not defined: `SF'.
+W: value out of range: 128, allowed range is [0,15] (trimmed to 4 bits) which makes it 0.
+02A 31000        114                     RET     Z
+02B 04110        115                     OR      s0, 1                   ; reflect it in s0
+E: symbol not defined: `S0'.
+02C 25000        116                     RET
+                 117
+                 118     ; -----------SPI Subroutines end-------------------------------------------------

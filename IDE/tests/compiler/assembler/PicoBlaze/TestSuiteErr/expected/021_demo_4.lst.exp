@@ -1,0 +1,279 @@
+                   1     ; MDS PicoBlaze IDE - Demonstration code
+                   2
+                   3     ; Macro instructions
+                   4     ; See manual for more info
+                   5
+                   6     ; You may find some useful advices how to use this
+                   7     ; IDE more efficiently
+                   8     ; [Main menu] -> [Help] -> [Tip of the day]
+                   9
+                  10     ; Web page: www.moravia-microsystems.com
+                  11     ; --------------------
+                  12     ; Simple program for comunication via UART, with special macros
+                  13     ; You can easily modify this example and use it in your aplication
+                  14     ;
+                  15     ; Press Start simulation and Animate to run the program
+                  16     ;
+                  17     ; Tell compiler type of procesor (KCPSM2, KCPSM3, KCPSM6 available)
+                  18             DEVICE          KCPSM3
+                  19
+                  20     ; Asign names to registers
+  00000           21             NAMEREG         s0,temp1              ; temporary data register
+  00001           22             NAMEREG         s1,temp2              ; temporary data register
+  00002           23             NAMEREG         s2,temp3              ; temporary data register
+                  24             ; OR
+  00003           25             RXdata          REG     s3            ; RX data
+  00004           26             TXdata          REG     s4            ; TX data
+  00005           27             LED_reg         REG     s5            ; Leds data register
+                  28     ; PORT_IDs
+  00001           29             TX_id       PORT        0x01          ;  data register port ID
+  00002           30             RX_id       PORT        0x02          ;  data register port ID
+  00004           31             UART_stat   PORT        0x04          ; status register port ID
+  00008           32             LED_id      PORT        0x08          ; Led register
+                  33     ; UART Status register:
+                  34     ;  [2] Tx ready
+                  35     ;  [3] new Rx data
+                  36     ;  [4] Rx buffer overflow
+                  37
+                  38     ;  Macro definition
+                  39     ;==============================================================================;
+                  40     ; UART status checking MACRO (IF TX can be done)
+                  41     UART_ready_wait     MACRO
+                  42                         INPUT       Temp1, UART_stat    ; checking UART status
+                  43                         TEST        Temp1, 4            ; test bit 2 (is Tx ready?)
+                  44                         JUMP        Z, ($ - 2)
+                  45                         ENDM
+                  46     ; UART status checking MACRO (NEW RX data?)
+                  47     UART_new_data_wait  MACRO
+                  48                         INPUT       Temp1, UART_stat    ; checking UART status
+                  49                         TEST        Temp1, 8            ; test bit 2 (is Tx ready?)
+                  50                         JUMP        Z, ($ - 2)
+                  51                         ENDM
+                  52     ;==============================================================================;
+                  53     ; Macro for sending character via UART
+                  54     ; Parameters: 1
+                  55     ;==============================================================================;
+                  56     Sendchar            MACRO       char                 ; One parameter
+                  57                         UART_ready_wait                  ; Expand UART_ready_wait MACRO here
+                  58                         LOAD        TXdata, char
+                  59                         OUTPUT      TXdata, TX_id       ; TX PORT_ID, sending char parameter
+                  60                         ENDM
+                  61     ;==============================================================================;
+                  62     ; Reads a single character from UART (waits on receive when none is prepared)
+                  63     ; Registers used: Temp1, chreg
+                  64     ;==============================================================================;
+                  65     GetChar             MACRO
+                  66                         UART_new_data_wait              ; Wait for new data
+                  67                         INPUT       RX_data, RX_id       ; TX PORT_ID, sending char parameter
+                  68                         ENDM
+                  69     ;==============================================================================;
+                  70     ; Send 0D and 0A character pair via UART
+                  71     ; Macros used: SendChar
+                  72     ;==============================================================================;
+                  73     SendCRLF            MACRO
+                  74                         SendChar  0x0D          ; CR character
+                  75                         SendChar  0x0A          ; CR character
+                  76                         ENDM                           ; Return from procedure
+                  77     ;==============================================================================;
+                  78
+                  79     ;==============================================================================;
+                  80     ; Procedures for waiting for specified time
+                  81     ; Duration is set in registers Temp1, Temp2 and Temp3
+                  82     ;
+                  83     ;   clock           instruction execution time
+                  84     ;   10.00 MHz              200.00 ns
+                  85     ;   19.44 MHz              102.88 ns
+                  86     ;   38.88 MHz               51.44 ns
+                  87     ;   50.00 MHz               40.00 ns
+                  88     ;  100.00 MHz               20.00 ns
+                  89     ;
+                  90     ; wait_time = (4 + (((2 * Temp1) + 2) * Temp2 + 2) * Temp3) * 2 * clk_period
+                  91     ;   1s @ (10 MHz, Temp1 = 250, Temp2 = 249, Temp3 = 40)
+                  92     ;
+                  93     ; Waiting loops
+                  94     ;==============================================================================;
+                  95     wait_for_1s         MACRO
+                  96     wait_1s:            LOAD      Temp1, #250          ; Load Temp1 register
+                  97                         LOAD      Temp2, #249          ; Load Temp2 register
+                  98                         LOAD      Temp3, #200          ; Load Temp3 register
+                  99     wait_1s_i:          SUB       Temp1, 1
+                 100                         JUMP      NZ, wait_1s_i
+                 101                         SUB       Temp2, 1
+                 102                         JUMP      NZ, wait_1s_i
+                 103                         SUB       Temp3, 1
+                 104                         JUMP      NZ, wait_1s_i
+                 105                         ENDM
+                 106
+                 107     wait_for_100ms      MACRO
+                 108     wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
+                 109                         LOAD      Temp2, #249          ; Load Temp2 register
+                 110                         LOAD      Temp3, #20           ; Load Temp3 register
+                 111     wait_100ms_i:       SUB       Temp1, 1
+                 112                         JUMP      NZ, wait_100ms_i
+                 113                         SUB       Temp2, 1
+                 114                         JUMP      NZ, wait_100ms_i
+                 115                         SUB       Temp3, 1
+                 116                         JUMP      NZ, wait_100ms_i
+                 117                         ENDM
+                 118     ;==============================================================================;
+                 119     ; UART RX register:
+                 120     ;  [1] Rotate leds 8x
+                 121     ;  [2] Send "Hello world" via UART
+                 122     ;-------------------------------------------------------------------------------------
+                 123     RX_resolve          MACRO     uart_byte
+                 124
+                 125     ;                     RT-IF  uart_byte == 1
+                 126     ;                         REPT    8
+                 127     ;                         RR      LED_reg
+                 128     ;                         wait_for_100ms
+                 129     ;                         ENDR
+                 130     ;                             EXITM
+                 131     ;
+                 132     ;                     RT-ELSEIF      uart_byte == 2
+                 133     ;                         SendChar  'I'
+                 134     ;                         SendChar  'N'
+                 135     ;                         SendChar  'T'
+                 136     ;                         SendChar  'E'
+                 137     ;                         SendChar  'R'
+                 138     ;                         SendChar  'R'
+                 139     ;                         SendChar  'U'
+                 140     ;                         SendChar  'P'
+                 141     ;                         SendChar  'T'
+                 142     ;                         SendCRLF
+                 143     ;                             EXITM
+                 144     ;                     #ENDIF
+                 145
+                 146                         ENDM
+                 147
+                 148     ;=======================================================================
+                 149     ; END OF MACRO DEFINITIONS ;;
+                 150     ;=======================================================================
+                 151     ; Main program >>>
+  003FF          152             ADDRESS 0x3FF                             ; interrupt vector
+3FF 34001        153             JUMP    INTERRUPT
+                 154     ; Vectors
+  00000          155             ADDRESS 0x000                             ; RESET vector
+000 34038        156             JUMP    Start
+                 157
+                 158     ;-------------------------------------------------------------------------
+                 159     ; Interrupt routine
+                 160     INTERRUPT:          SendChar  'I'
+                 161 +1                      UART_ready_wait                  ; Expand UART_ready_wait MACRO here
+001 04004        162 +2                      INPUT       Temp1, UART_stat    ; checking UART status
+002 13040        163 +2                      TEST        Temp1, 4            ; test bit 2 (is Tx ready?)
+003 35001        164 +2                      JUMP        Z, ($ - 2)
+004 01490        165 +1                      LOAD        TXdata, char
+W: value out of range: 73, allowed range is [0,15] (trimmed to 4 bits) which makes it 9.
+005 2C401        166 +1                      OUTPUT      TXdata, TX_id       ; TX PORT_ID, sending char parameter
+                 167                         SendChar  'N'
+                 168 +1                      UART_ready_wait                  ; Expand UART_ready_wait MACRO here
+006 04004        169 +2                      INPUT       Temp1, UART_stat    ; checking UART status
+007 13040        170 +2                      TEST        Temp1, 4            ; test bit 2 (is Tx ready?)
+008 35006        171 +2                      JUMP        Z, ($ - 2)
+009 014E0        172 +1                      LOAD        TXdata, char
+W: value out of range: 78, allowed range is [0,15] (trimmed to 4 bits) which makes it 14.
+00A 2C401        173 +1                      OUTPUT      TXdata, TX_id       ; TX PORT_ID, sending char parameter
+                 174                         SendChar  'T'
+                 175 +1                      UART_ready_wait                  ; Expand UART_ready_wait MACRO here
+00B 04004        176 +2                      INPUT       Temp1, UART_stat    ; checking UART status
+00C 13040        177 +2                      TEST        Temp1, 4            ; test bit 2 (is Tx ready?)
+00D 3500B        178 +2                      JUMP        Z, ($ - 2)
+00E 01440        179 +1                      LOAD        TXdata, char
+W: value out of range: 84, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+00F 2C401        180 +1                      OUTPUT      TXdata, TX_id       ; TX PORT_ID, sending char parameter
+                 181                         SendChar  'E'
+                 182 +1                      UART_ready_wait                  ; Expand UART_ready_wait MACRO here
+010 04004        183 +2                      INPUT       Temp1, UART_stat    ; checking UART status
+011 13040        184 +2                      TEST        Temp1, 4            ; test bit 2 (is Tx ready?)
+012 35010        185 +2                      JUMP        Z, ($ - 2)
+013 01450        186 +1                      LOAD        TXdata, char
+W: value out of range: 69, allowed range is [0,15] (trimmed to 4 bits) which makes it 5.
+014 2C401        187 +1                      OUTPUT      TXdata, TX_id       ; TX PORT_ID, sending char parameter
+                 188                         SendChar  'R'
+                 189 +1                      UART_ready_wait                  ; Expand UART_ready_wait MACRO here
+015 04004        190 +2                      INPUT       Temp1, UART_stat    ; checking UART status
+016 13040        191 +2                      TEST        Temp1, 4            ; test bit 2 (is Tx ready?)
+017 35015        192 +2                      JUMP        Z, ($ - 2)
+018 01420        193 +1                      LOAD        TXdata, char
+W: value out of range: 82, allowed range is [0,15] (trimmed to 4 bits) which makes it 2.
+019 2C401        194 +1                      OUTPUT      TXdata, TX_id       ; TX PORT_ID, sending char parameter
+                 195                         SendChar  'R'
+                 196 +1                      UART_ready_wait                  ; Expand UART_ready_wait MACRO here
+01A 04004        197 +2                      INPUT       Temp1, UART_stat    ; checking UART status
+01B 13040        198 +2                      TEST        Temp1, 4            ; test bit 2 (is Tx ready?)
+01C 3501A        199 +2                      JUMP        Z, ($ - 2)
+01D 01420        200 +1                      LOAD        TXdata, char
+W: value out of range: 82, allowed range is [0,15] (trimmed to 4 bits) which makes it 2.
+01E 2C401        201 +1                      OUTPUT      TXdata, TX_id       ; TX PORT_ID, sending char parameter
+                 202                         SendChar  'U'
+                 203 +1                      UART_ready_wait                  ; Expand UART_ready_wait MACRO here
+01F 04004        204 +2                      INPUT       Temp1, UART_stat    ; checking UART status
+020 13040        205 +2                      TEST        Temp1, 4            ; test bit 2 (is Tx ready?)
+021 3501F        206 +2                      JUMP        Z, ($ - 2)
+022 01450        207 +1                      LOAD        TXdata, char
+W: value out of range: 85, allowed range is [0,15] (trimmed to 4 bits) which makes it 5.
+023 2C401        208 +1                      OUTPUT      TXdata, TX_id       ; TX PORT_ID, sending char parameter
+                 209                         SendChar  'P'
+                 210 +1                      UART_ready_wait                  ; Expand UART_ready_wait MACRO here
+024 04004        211 +2                      INPUT       Temp1, UART_stat    ; checking UART status
+025 13040        212 +2                      TEST        Temp1, 4            ; test bit 2 (is Tx ready?)
+026 35024        213 +2                      JUMP        Z, ($ - 2)
+027 01400        214 +1                      LOAD        TXdata, char
+W: value out of range: 80, allowed range is [0,15] (trimmed to 4 bits) which makes it 0.
+028 2C401        215 +1                      OUTPUT      TXdata, TX_id       ; TX PORT_ID, sending char parameter
+                 216                         SendChar  'T'
+                 217 +1                      UART_ready_wait                  ; Expand UART_ready_wait MACRO here
+029 04004        218 +2                      INPUT       Temp1, UART_stat    ; checking UART status
+02A 13040        219 +2                      TEST        Temp1, 4            ; test bit 2 (is Tx ready?)
+02B 35029        220 +2                      JUMP        Z, ($ - 2)
+02C 01440        221 +1                      LOAD        TXdata, char
+W: value out of range: 84, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+02D 2C401        222 +1                      OUTPUT      TXdata, TX_id       ; TX PORT_ID, sending char parameter
+                 223                         SendCRLF
+                 224 +1                      SendChar  0x0D          ; CR character
+                 225 +2                      UART_ready_wait                  ; Expand UART_ready_wait MACRO here
+02E 04004        226 +3                      INPUT       Temp1, UART_stat    ; checking UART status
+02F 13040        227 +3                      TEST        Temp1, 4            ; test bit 2 (is Tx ready?)
+030 3502E        228 +3                      JUMP        Z, ($ - 2)
+031 014D0        229 +2                      LOAD        TXdata, char
+032 2C401        230 +2                      OUTPUT      TXdata, TX_id       ; TX PORT_ID, sending char parameter
+                 231 +1                      SendChar  0x0A          ; CR character
+                 232 +2                      UART_ready_wait                  ; Expand UART_ready_wait MACRO here
+033 04004        233 +3                      INPUT       Temp1, UART_stat    ; checking UART status
+034 13040        234 +3                      TEST        Temp1, 4            ; test bit 2 (is Tx ready?)
+035 35033        235 +3                      JUMP        Z, ($ - 2)
+036 014A0        236 +2                      LOAD        TXdata, char
+037 2C401        237 +2                      OUTPUT      TXdata, TX_id       ; TX PORT_ID, sending char parameter
+                 238                         RETURNI
+E: macro not defined: "RETURNI".
+                 239     ; Start of main program
+                 240     Start:
+                 241                         wait_for_1s             ; wait for initialization of FPGA circuits
+038 000FA        242 +1  wait_1s:            LOAD      Temp1, #250          ; Load Temp1 register
+039 001F9        243 +1  wait_1s:            LOAD      Temp1, #250          ; Load Temp1 register
+03A 002C8        244 +1                      LOAD      Temp2, #249          ; Load Temp2 register
+03B 1D010        245 +1                      LOAD      Temp3, #200          ; Load Temp3 register
+03C 3543B        246 +1  wait_1s_i:          SUB       Temp1, 1
+03D 1D110        247 +1  wait_1s_i:          SUB       Temp1, 1
+03E 3543B        248 +1                      JUMP      NZ, wait_1s_i
+03F 1D210        249 +1                      SUB       Temp2, 1
+040 3543B        250 +1                      JUMP      NZ, wait_1s_i
+                 251 +1                      SUB       Temp3, 1
+                 252 +1                      JUMP      NZ, wait_1s_i
+                 253
+                 254     ; ---------------------------------------- Main loop
+                 255
+                 256     main_loop:          GetChar                       ; Receive via UART, get status of switches for example
+                 257 +1                      UART_new_data_wait              ; Wait for new data
+041 04004        258 +2                      INPUT       Temp1, UART_stat    ; checking UART status
+042 13080        259 +2                      TEST        Temp1, 8            ; test bit 2 (is Tx ready?)
+043 35041        260 +2                      JUMP        Z, ($ - 2)
+044 04102        261 +1                      INPUT       RX_data, RX_id       ; TX PORT_ID, sending char parameter
+E: symbol not defined: `RX_DATA'.
+                 262                         RX_resolve  RX_data           ; Resolve received byte
+045 34041        263                         JUMP        main_loop
+                 264
+                 265
+                 266     ; AND NOW YOU ARE READY !
+                 267     ; We hope this example can help you use this IDE at his maximum potential
+                 268     ; Click on [Main menu] -> [Project] -> [New] and create your own PicoBlaze project ...

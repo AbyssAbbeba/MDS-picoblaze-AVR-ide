@@ -1,0 +1,191 @@
+MT_ERROR: 040_example_13.asm:75.34-75.36: Error: identifier cannot start with a digit: `0A'.
+MT_ERROR: 040_example_13.asm:75.34-76.1: Error: unexpected end of line.
+MT_ERROR: 040_example_13.asm:77.34-77.36: Error: identifier cannot start with a digit: `0C'.
+MT_ERROR: 040_example_13.asm:77.34-78.1: Error: unexpected end of line.
+MT_ERROR: 040_example_13.asm:79.34-79.36: Error: identifier cannot start with a digit: `0E'.
+MT_ERROR: 040_example_13.asm:79.34-80.1: Error: unexpected end of line.
+MT_ERROR: 040_example_13.asm:80.34-80.36: Error: identifier cannot start with a digit: `0F'.
+MT_ERROR: 040_example_13.asm:80.34-81.1: Error: unexpected end of line.
+MT_ERROR: 040_example_13.asm:91.39-91.41: Error: identifier cannot start with a digit: `1A'.
+MT_ERROR: 040_example_13.asm:91.54-91.65: Error: unexpected COMMENT.
+MT_ERROR: 040_example_13.asm:93.33-93.35: Error: identifier cannot start with a digit: `1C'.
+MT_ERROR: 040_example_13.asm:93.33-94.1: Error: unexpected end of line.
+MT_ERROR: 040_example_13.asm:95.33-95.35: Error: identifier cannot start with a digit: `1E'.
+MT_ERROR: 040_example_13.asm:95.33-96.1: Error: unexpected end of line.
+MT_ERROR: 040_example_13.asm:96.35-96.37: Error: identifier cannot start with a digit: `1F'.
+MT_ERROR: 040_example_13.asm:96.35-97.1: Error: unexpected end of line.
+MT_ERROR: 040_example_13.asm:107.32-107.34: Error: identifier cannot start with a digit: `2A'.
+MT_ERROR: 040_example_13.asm:107.55-108.1: Error: unexpected end of line.
+MT_ERROR: 040_example_13.asm:108.32-108.34: Error: identifier cannot start with a digit: `2B'.
+MT_ERROR: 040_example_13.asm:108.55-109.1: Error: unexpected end of line.
+MT_ERROR: 040_example_13.asm:109.32-109.34: Error: identifier cannot start with a digit: `2C'.
+MT_ERROR: 040_example_13.asm:109.55-110.1: Error: unexpected end of line.
+MT_ERROR: 040_example_13.asm:111.32-111.34: Error: identifier cannot start with a digit: `2E'.
+MT_ERROR: 040_example_13.asm:111.55-112.1: Error: unexpected end of line.
+MT_ERROR: 040_example_13.asm:112.32-112.34: Error: identifier cannot start with a digit: `2F'.
+MT_ERROR: 040_example_13.asm:112.55-113.1: Error: unexpected end of line.
+MT_ERROR: 040_example_13.asm:123.33-123.35: Error: identifier cannot start with a digit: `3A'.
+MT_ERROR: 040_example_13.asm:123.55-124.1: Error: unexpected end of line.
+MT_ERROR: 040_example_13.asm:124.33-124.35: Error: identifier cannot start with a digit: `3B'.
+MT_ERROR: 040_example_13.asm:124.55-125.1: Error: unexpected end of line.
+MT_ERROR: 040_example_13.asm:125.33-125.35: Error: identifier cannot start with a digit: `3C'.
+MT_ERROR: 040_example_13.asm:125.55-126.1: Error: unexpected end of line.
+MT_ERROR: 040_example_13.asm:127.33-127.35: Error: identifier cannot start with a digit: `3E'.
+MT_ERROR: 040_example_13.asm:127.55-128.1: Error: unexpected end of line.
+MT_ERROR: 040_example_13.asm:128.33-128.35: Error: identifier cannot start with a digit: `3F'.
+MT_ERROR: 040_example_13.asm:128.55-129.1: Error: unexpected end of line.
+MT_ERROR: 040_example_13.asm:157.40-157.42: Error: identifier cannot start with a digit: `6A'.
+MT_ERROR: 040_example_13.asm:157.40-158.1: Error: unexpected end of line.
+MT_ERROR: 040_example_13.asm:158.40-158.42: Error: identifier cannot start with a digit: `6B'.
+MT_ERROR: 040_example_13.asm:158.40-159.1: Error: unexpected end of line.
+MT_ERROR: 040_example_13.asm:159.40-159.42: Error: identifier cannot start with a digit: `6C'.
+MT_ERROR: 040_example_13.asm:159.40-160.1: Error: unexpected end of line.
+MT_ERROR: 040_example_13.asm:161.40-161.42: Error: identifier cannot start with a digit: `6E'.
+MT_ERROR: 040_example_13.asm:161.40-162.1: Error: unexpected end of line.
+MT_ERROR: 040_example_13.asm:162.40-162.42: Error: identifier cannot start with a digit: `6F'.
+MT_ERROR: 040_example_13.asm:162.40-163.1: Error: unexpected end of line.
+MT_ERROR: 040_example_13.asm:173.40-173.42: Error: identifier cannot start with a digit: `7A'.
+MT_ERROR: 040_example_13.asm:173.40-174.1: Error: unexpected end of line.
+MT_ERROR: 040_example_13.asm:183.40-183.42: Error: identifier cannot start with a digit: `4A'.
+MT_ERROR: 040_example_13.asm:183.40-184.1: Error: unexpected end of line.
+MT_ERROR: 040_example_13.asm:184.40-184.42: Error: identifier cannot start with a digit: `4B'.
+MT_ERROR: 040_example_13.asm:184.40-185.1: Error: unexpected end of line.
+MT_ERROR: 040_example_13.asm:185.40-185.42: Error: identifier cannot start with a digit: `4C'.
+MT_ERROR: 040_example_13.asm:185.40-186.1: Error: unexpected end of line.
+MT_ERROR: 040_example_13.asm:187.40-187.42: Error: identifier cannot start with a digit: `4E'.
+MT_ERROR: 040_example_13.asm:187.40-188.1: Error: unexpected end of line.
+MT_ERROR: 040_example_13.asm:188.40-188.42: Error: identifier cannot start with a digit: `4F'.
+MT_ERROR: 040_example_13.asm:188.40-189.1: Error: unexpected end of line.
+MT_ERROR: 040_example_13.asm:199.40-199.42: Error: identifier cannot start with a digit: `5A'.
+MT_ERROR: 040_example_13.asm:199.40-200.1: Error: unexpected end of line.
+MT_ERROR: 040_example_13.asm:210.44-210.46: Error: identifier cannot start with a digit: `3A'.
+MT_ERROR: 040_example_13.asm:210.44-211.1: Error: unexpected end of line.
+MT_ERROR: 040_example_13.asm:211.43-211.45: Error: identifier cannot start with a digit: `2E'.
+MT_ERROR: 040_example_13.asm:211.43-212.1: Error: unexpected end of line.
+MT_ERROR: 040_example_13.asm:212.49-212.51: Error: identifier cannot start with a digit: `3B'.
+MT_ERROR: 040_example_13.asm:212.49-213.1: Error: unexpected end of line.
+MT_ERROR: 040_example_13.asm:214.45-214.47: Error: identifier cannot start with a digit: `2F'.
+MT_ERROR: 040_example_13.asm:214.58-215.1: Error: unexpected end of line.
+MT_ERROR: 040_example_13.asm:215.43-215.45: Error: identifier cannot start with a digit: `2B'.
+MT_ERROR: 040_example_13.asm:215.43-216.1: Error: unexpected end of line.
+MT_ERROR: 040_example_13.asm:216.44-216.46: Error: identifier cannot start with a digit: `2C'.
+MT_ERROR: 040_example_13.asm:216.44-217.1: Error: unexpected end of line.
+MT_ERROR: 040_example_13.asm:217.48-217.50: Error: identifier cannot start with a digit: `3C'.
+MT_ERROR: 040_example_13.asm:217.48-218.1: Error: unexpected end of line.
+MT_ERROR: 040_example_13.asm:218.51-218.53: Error: identifier cannot start with a digit: `3E'.
+MT_ERROR: 040_example_13.asm:218.51-219.1: Error: unexpected end of line.
+MT_ERROR: 040_example_13.asm:222.47-222.49: Error: identifier cannot start with a digit: `3F'.
+MT_ERROR: 040_example_13.asm:222.58-223.1: Error: unexpected end of line.
+MT_ERROR: 040_example_13.asm:255.27-255.29: Error: identifier cannot start with a digit: `1A'.
+MT_ERROR: 040_example_13.asm:255.27-256.1: Error: unexpected end of line.
+MT_ERROR: 040_example_13.asm:257.27-257.29: Error: identifier cannot start with a digit: `1F'.
+MT_ERROR: 040_example_13.asm:257.27-258.1: Error: unexpected end of line.
+MT_ERROR: 040_example_13.asm:265.27-265.29: Error: identifier cannot start with a digit: `1E'.
+MT_ERROR: 040_example_13.asm:265.27-266.1: Error: unexpected end of line.
+MT_ERROR: 040_example_13.asm:270.27-270.29: Error: identifier cannot start with a digit: `1C'.
+MT_ERROR: 040_example_13.asm:270.27-271.1: Error: unexpected end of line.
+MT_ERROR: 040_example_13.asm:306.27-306.29: Error: identifier cannot start with a digit: `2F'.
+MT_ERROR: 040_example_13.asm:306.27-307.1: Error: unexpected end of line.
+MT_ERROR: 040_example_13.asm:315.27-315.29: Error: identifier cannot start with a digit: `2F'.
+MT_ERROR: 040_example_13.asm:315.27-316.1: Error: unexpected end of line.
+MT_ERROR: 040_example_13.asm:322.30-322.32: Error: identifier cannot start with a digit: `2F'.
+MT_ERROR: 040_example_13.asm:322.30-323.1: Error: unexpected end of line.
+MT_ERROR: 040_example_13.asm:337.27-337.29: Error: identifier cannot start with a digit: `2F'.
+MT_ERROR: 040_example_13.asm:337.27-338.1: Error: unexpected end of line.
+MT_ERROR: 040_example_13.asm:346.27-346.29: Error: identifier cannot start with a digit: `2F'.
+MT_ERROR: 040_example_13.asm:346.27-347.1: Error: unexpected end of line.
+MT_ERROR: 040_example_13.asm:353.30-353.32: Error: identifier cannot start with a digit: `2F'.
+MT_ERROR: 040_example_13.asm:353.30-354.1: Error: unexpected end of line.
+MT_ERROR: 040_example_13.asm:458.27-458.29: Error: identifier cannot start with a digit: `1C'.
+MT_ERROR: 040_example_13.asm:458.27-459.1: Error: unexpected end of line.
+MT_ERROR: 040_example_13.asm:570.27-570.29: Error: identifier cannot start with a digit: `2C'.
+MT_ERROR: 040_example_13.asm:570.27-571.1: Error: unexpected end of line.
+MT_ERROR: 040_example_13.asm:727.26-727.28: Error: identifier cannot start with a digit: `0A'.
+MT_ERROR: 040_example_13.asm:727.26-728.1: Error: unexpected end of line.
+MT_ERROR: 040_example_13.asm:1127.25-1127.27: Error: identifier cannot start with a digit: `0C'.
+MT_ERROR: 040_example_13.asm:1127.90-1128.1: Error: unexpected end of line.
+MT_ERROR: 040_example_13.asm:1217.27-1217.29: Error: identifier cannot start with a digit: `0C'.
+MT_ERROR: 040_example_13.asm:1217.70-1218.1: Error: unexpected end of line.
+MT_ERROR: 040_example_13.asm:1225.27-1225.29: Error: identifier cannot start with a digit: `3A'.
+MT_ERROR: 040_example_13.asm:1225.54-1225.82: Error: unexpected COMMENT.
+MT_ERROR: 040_example_13.asm:1241.27-1241.29: Error: identifier cannot start with a digit: `2F'.
+MT_ERROR: 040_example_13.asm:1241.54-1241.82: Error: unexpected COMMENT.
+MT_ERROR: 040_example_13.asm:1243.27-1243.29: Error: identifier cannot start with a digit: `2B'.
+MT_ERROR: 040_example_13.asm:1243.27-1244.1: Error: unexpected end of line.
+MT_ERROR: 040_example_13.asm:1245.27-1245.29: Error: identifier cannot start with a digit: `2F'.
+MT_ERROR: 040_example_13.asm:1245.54-1245.82: Error: unexpected COMMENT.
+MT_ERROR: 040_example_13.asm:1268.26-1268.28: Error: identifier cannot start with a digit: `0F'.
+MT_ERROR: 040_example_13.asm:1268.96-1269.1: Error: unexpected end of line.
+MT_ERROR: 040_example_13.asm:1272.26-1272.28: Error: identifier cannot start with a digit: `0F'.
+MT_ERROR: 040_example_13.asm:1272.96-1273.1: Error: unexpected end of line.
+MT_ERROR: 040_example_13.asm:1339.27-1339.29: Error: identifier cannot start with a digit: `3B'.
+MT_ERROR: 040_example_13.asm:1339.27-1340.1: Error: unexpected end of line.
+MT_ERROR: 040_example_13.asm:1348.27-1348.29: Error: identifier cannot start with a digit: `3B'.
+MT_ERROR: 040_example_13.asm:1348.27-1349.1: Error: unexpected end of line.
+MT_ERROR: 040_example_13.asm:1357.27-1357.29: Error: identifier cannot start with a digit: `0C'.
+MT_ERROR: 040_example_13.asm:1357.27-1358.1: Error: unexpected end of line.
+MT_ERROR: 040_example_13.asm:1398.30-1398.32: Error: identifier cannot start with a digit: `3C'.
+MT_ERROR: 040_example_13.asm:1398.54-1398.63: Error: unexpected COMMENT.
+MT_ERROR: 040_example_13.asm:1407.30-1407.32: Error: identifier cannot start with a digit: `3C'.
+MT_ERROR: 040_example_13.asm:1407.54-1407.59: Error: unexpected COMMENT.
+MT_ERROR: 040_example_13.asm:1471.27-1471.29: Error: identifier cannot start with a digit: `7C'.
+MT_ERROR: 040_example_13.asm:1471.54-1471.61: Error: unexpected COMMENT.
+MT_ERROR: 040_example_13.asm:1475.27-1475.29: Error: identifier cannot start with a digit: `2F'.
+MT_ERROR: 040_example_13.asm:1475.54-1475.61: Error: unexpected COMMENT.
+MT_ERROR: 040_example_13.asm:1484.30-1484.32: Error: identifier cannot start with a digit: `3C'.
+MT_ERROR: 040_example_13.asm:1484.54-1484.59: Error: unexpected COMMENT.
+MT_ERROR: 040_example_13.asm:1491.30-1491.32: Error: identifier cannot start with a digit: `3C'.
+MT_ERROR: 040_example_13.asm:1491.30-1492.1: Error: unexpected end of line.
+MT_ERROR: 040_example_13.asm:1525.26-1525.29: Error: identifier cannot start with a digit: `3FF'.
+MT_ERROR: 040_example_13.asm:1525.18-1525.25: Error: directive ADDRESS requires a single argument.
+MT_WARNING: Warning: exact device not specified, using KCPSM6 by default.
+MT_ERROR: 040_example_13.asm:1486.22-1486.24: Error: symbol not defined: `S0'.
+MT_ERROR: 040_example_13.asm:1487.24-1487.26: Error: symbol not defined: `S0'.
+MT_ERROR: 040_example_13.asm:1487.28-1487.32: Error: symbol not defined: `SECB'.
+MT_ERROR: 040_example_13.asm:1488.24-1488.26: Error: symbol not defined: `S0'.
+MT_ERROR: 040_example_13.asm:1488.28-1488.32: Error: symbol not defined: `MINB'.
+MT_ERROR: 040_example_13.asm:1489.22-1489.24: Error: symbol not defined: `S0'.
+MT_ERROR: 040_example_13.asm:1490.24-1490.26: Error: symbol not defined: `S0'.
+MT_ERROR: 040_example_13.asm:1490.28-1490.32: Error: symbol not defined: `MINB'.
+MT_ERROR: 040_example_13.asm:1493.22-1493.24: Error: symbol not defined: `S0'.
+MT_ERROR: 040_example_13.asm:1494.24-1494.26: Error: symbol not defined: `S0'.
+MT_ERROR: 040_example_13.asm:1494.28-1494.32: Error: symbol not defined: `MINB'.
+MT_ERROR: 040_example_13.asm:1496.24-1496.26: Error: symbol not defined: `S0'.
+MT_ERROR: 040_example_13.asm:1496.28-1496.33: Error: symbol not defined: `HOURB'.
+MT_ERROR: 040_example_13.asm:1497.22-1497.24: Error: symbol not defined: `S0'.
+MT_ERROR: 040_example_13.asm:1498.24-1498.26: Error: symbol not defined: `S0'.
+MT_ERROR: 040_example_13.asm:1498.28-1498.33: Error: symbol not defined: `HOURB'.
+MT_ERROR: 040_example_13.asm:1499.26-1499.28: Error: symbol not defined: `S0'.
+MT_WARNING: 040_example_13.asm:1499.30-1499.32: Warning: value out of range: 18, allowed range is [0,15] (trimmed to 4 bits) which makes it 2.
+MT_ERROR: 040_example_13.asm:1501.22-1501.24: Error: symbol not defined: `S0'.
+MT_ERROR: 040_example_13.asm:1502.24-1502.26: Error: symbol not defined: `S0'.
+MT_ERROR: 040_example_13.asm:1502.28-1502.33: Error: symbol not defined: `HOURB'.
+MT_ERROR: 040_example_13.asm:1503.24-1503.26: Error: symbol not defined: `S0'.
+MT_ERROR: 040_example_13.asm:1503.28-1503.34: Error: symbol not defined: `DAY_UP'.
+MT_ERROR: 040_example_13.asm:1504.23-1504.25: Error: symbol not defined: `S0'.
+MT_ERROR: 040_example_13.asm:1505.24-1505.26: Error: symbol not defined: `S0'.
+MT_ERROR: 040_example_13.asm:1505.28-1505.34: Error: symbol not defined: `DAY_UP'.
+MT_ERROR: 040_example_13.asm:1506.24-1506.26: Error: symbol not defined: `S0'.
+MT_ERROR: 040_example_13.asm:1506.28-1506.31: Error: symbol not defined: `MS2'.
+MT_ERROR: 040_example_13.asm:1507.22-1507.24: Error: symbol not defined: `S0'.
+MT_ERROR: 040_example_13.asm:1508.26-1508.28: Error: symbol not defined: `S0'.
+MT_WARNING: 040_example_13.asm:1508.30-1508.32: Warning: value out of range: 28, allowed range is [0,15] (trimmed to 4 bits) which makes it 12.
+MT_ERROR: 040_example_13.asm:1510.24-1510.26: Error: symbol not defined: `S1'.
+MT_ERROR: 040_example_13.asm:1510.28-1510.33: Error: symbol not defined: `MS100'.
+MT_ERROR: 040_example_13.asm:1511.22-1511.24: Error: symbol not defined: `S1'.
+MT_ERROR: 040_example_13.asm:1512.24-1512.26: Error: symbol not defined: `S1'.
+MT_ERROR: 040_example_13.asm:1512.28-1512.33: Error: symbol not defined: `MS100'.
+MT_ERROR: 040_example_13.asm:1513.23-1513.25: Error: symbol not defined: `S0'.
+MT_ERROR: 040_example_13.asm:1514.24-1514.26: Error: symbol not defined: `S0'.
+MT_ERROR: 040_example_13.asm:1514.28-1514.31: Error: symbol not defined: `MS2'.
+MT_ERROR: 040_example_13.asm:1515.24-1515.26: Error: symbol not defined: `S0'.
+MT_ERROR: 040_example_13.asm:1515.28-1515.39: Error: symbol not defined: `LED_PATTERN'.
+MT_ERROR: 040_example_13.asm:1516.25-1516.27: Error: symbol not defined: `S0'.
+MT_ERROR: 040_example_13.asm:1516.29-1516.37: Error: symbol not defined: `LED_PORT'.
+MT_ERROR: 040_example_13.asm:1517.24-1517.26: Error: symbol not defined: `S0'.
+MT_ERROR: 040_example_13.asm:1517.28-1517.34: Error: symbol not defined: `ISR_S0'.
+MT_ERROR: 040_example_13.asm:1518.24-1518.26: Error: symbol not defined: `S1'.
+MT_ERROR: 040_example_13.asm:1518.28-1518.34: Error: symbol not defined: `ISR_S1'.
+MT_ERROR: 040_example_13.asm:1519.24-1519.26: Error: symbol not defined: `S2'.
+MT_ERROR: 040_example_13.asm:1519.28-1519.34: Error: symbol not defined: `ISR_S2'.
+MT_ERROR: 040_example_13.asm:1526.23-1526.26: Error: symbol not defined: `ISR'.
