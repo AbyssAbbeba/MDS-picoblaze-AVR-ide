@@ -11,60 +11,112 @@ fi
 
 declare -ri CLEAN_UP=${clean_up:-1}
 declare -ri MERGE_LOGS=${merge_logs:-0}
-declare -r  XSLT_PROC_LOG="xsltproc.log"
+declare -r  XSLT_PROC_LOG_SUFFIX="xsltproc.log"
 declare -ri CPU_CORES=$( which lscpu &> /dev/null && lscpu |
-                        gawk 'BEGIN {n=1} END {print(n)} /^CPU\(s\)/ {n=$2;exit}' || echo 1 )
+                         gawk 'BEGIN {n=1} END {print(n)} /^CPU\(s\)/ {n=$2;exit}' || echo 1 )
+
+# ======================================================================================================================
+# SUPPORT FOR PARALLEL RUN OF MULTIPLE JOBS
+# ======================================================================================================================
+
+## Run all jobs in array ${JOBS[@]} (bash scripts) in parallel in accordance with CPU_CORES variable
+ # ( #jobs <= CPU_CORES+1 ), if CPU_CORES == 1 then jobs are run sequentially (i.e. not in parallel).
+function runParallelJobs() {
+    local -a runningJobs
+    local -i next
+    local    job
+
+    if (( 1 == ${CPU_CORES} )); then
+        for job in "${JOBS[@]}"; do
+            wait
+            bash -c "${job}" &
+        done
+    else
+        next=0
+        while (( ${next} < ${#JOBS[@]} )); do
+            runningJobs=( $( jobs -pr ) )
+            for (( i=0; i < ( 1 + ${CPU_CORES} - ${#runningJobs[@]} ); i++ )); do
+                if (( ${next} >= ${#JOBS[@]} )); then
+                    # No more jobs left to do.
+                    break
+                fi
+
+                # Run additional job.
+                bash -c "${JOBS[${next}]}" &
+                let next++
+            done
+            sleep 0.5
+        done
+    fi
+
+    wait
+}
+
+# Ensure termination of all jobs running in background, when the script is terminated.
+for signal in SIGINT SIGTERM; do
+    trap 'for pid in $( jobs -pr ); do
+                echo "Terminating child process ${pid}."
+                kill ${pid} &> /dev/null &
+            done
+            wait
+            echo ""
+            exit 1' ${signal}
+done
+
+# ======================================================================================================================
 
 cd "$(dirname "$(readlink -n -f "${0}")" )/results" || exit 1
 
 cp ../*.png .
 gawk -f '../TestLog2html.awk' \
-     -v TITLE="Test log from $(date +'%c')" '../../Testing/Temporary/LastTest.log' > 'TestLog.html'
-
-: > "${XSLT_PROC_LOG}"
+     -v TITLE="Test log from $(date +'%c')" '../../Testing/Temporary/LastTest.log' > 'TestLog.html' &
 
 if [[ "1" == "${CPU_CORES}" ]]; then
     echo "Warning: this machine appears to have only one CPU core, parallel processing disabled!"
 else
     echo "Using up to ${CPU_CORES} CPU cores."
 fi
-echo ""
-echo "Note: error output from xsltproc will be captured in file: \"${XSLT_PROC_LOG}\"."
 
+unset JOBS
+idx=0
 for i in *-Results.xml; do
     if [[ ! -f "$i" ]]; then
         echo "Warning: nothing to do here." > /dev/stderr
         exit 0;
     fi
 
-    echo -n "Converting \"$i\" to \"${i%%.xml}.html\" ..."
-    if xsltproc --path .. CUnit-Run.xsl "$i" > "${i%%.xml}.html" 2>> "${XSLT_PROC_LOG}"; then
-        echo " [OK]"
-    else
-        echo " [FAILED]"
-        rm "${i%%.xml}.html"
-        continue
-    fi
-done
+    JOBS[${idx}]="
+        echo 'XSTL processor \"${i}\" to \"${i%%.xml}.html\" ... [STARTED]'
+        if xsltproc --path .. CUnit-Run.xsl '${i}' > '${i%%.xml}.html' 2> '${i}.${XSLT_PROC_LOG_SUFFIX}'; then
+            echo 'XSTL processor \"${i}\" to \"${i%%.xml}.html\" ... [DONE]'
+        else
+            echo 'XSTL processor \"${i}\" to \"${i%%.xml}.html\" ...  [FAILED]'
+            rm '${i%%.xml}.html'
+        fi"
 
+    let idx++
+done
 for i in *-Listing.xml; do
     if [[ ! -f "$i" ]]; then
         break
     fi
 
-    echo -n "Converting \"$i\" to \"${i%%.xml}.html\" ..."
-    if xsltproc --path .. CUnit-List.xsl "$i" > "${i%%.xml}.html" 2>> "${XSLT_PROC_LOG}"; then
-        echo " [OK]"
-    else
-        echo " [FAILED]"
-        rm "${i%%.xml}.html"
-        continue
-    fi
+    JOBS[${idx}]="
+        echo 'XSTL processor \"${i}\" to \"${i%%.xml}.html\" ... [STARTED]'
+        if xsltproc --path .. CUnit-List.xsl '${i}' > '${i%%.xml}.html' 2> "${i}.${XSLT_PROC_LOG_SUFFIX}"; then
+            echo 'XSTL processor \"${i}\" to \"${i%%.xml}.html\" ... [DONE]'
+        else
+            echo 'XSTL processor \"${i}\" to \"${i%%.xml}.html\" ... [FAILED]'
+            rm '${i%%.xml}.html'
+        fi"
+
+    let idx++
 done
+runParallelJobs
 
 echo ""
 echo "Initiating final stage of coverage analysis:"
-declare -a JOBS
+unset JOBS
 idx=1
 prefix=1
 JOBS[0]="../gcovanalysis.sh . 'Total-Coverage.html' 0"
@@ -74,42 +126,9 @@ for i in *-Results.xml; do
     let prefix++
     let idx++
 done
-
-# Run all jobs in array JOBS (bash scripts) in paraller in accordance with CPU_CORES variable ( #jobs <= CPU_CORES+1 ).
-if [[ "1" == ${CPU_CORES} ]]; then
-    for job in "${JOBS[@]}"; do
-        bash -c "${job}"
-    done
-else
-    next=0
-    for signal in SIGINT SIGTERM; do
-        trap 'for pid in $( jobs -pr ); do
-                  echo "Terminating child process ${pid}."
-                  kill ${pid} &> /dev/null &
-              done
-              wait
-              echo ""
-              exit' ${signal}
-    done
-    while (( ${next} < ${#JOBS[@]} )); do
-        runningJobs=( $( jobs -pr ) )
-        for (( i=0; i < ( 1 + ${CPU_CORES} - ${#runningJobs[@]} ); i++ )); do
-            if (( ${next} >= ${#JOBS[@]} )); then
-                # No more jobs left to do.
-                break
-            fi
-
-            # Run additional job.
-            bash -c "${JOBS[${next}]}" &
-            let next++
-        done
-        sleep 0.5
-    done
-    wait
-fi
-
-
+runParallelJobs
 echo "Coverage analysis complete."
+
 echo -n "Generating final results ... "
 
 if (( MERGE_LOGS )); then
@@ -167,20 +186,22 @@ echo "        <a href=\"index.html\"><img src=\"logo.png\" width=\"309\" height=
 echo "        <br/><i>Moravia Microsystems, s.r.o.</i><br/><br/>" >> index.html
 echo "    </div>" >> index.html
 echo "    <div style=\"width: 90%; margin: 0 auto; text-align: left\">" >> index.html
-read status < status.log
+
 sed $'s/\033[^m]*m//g' BuildLog.log > BuildLog.log.0
-if [[ "1" == "${status}" ]]; then
+gawk -f '../BuildLog2html.awk' -v TITLE="Build log from $(date +'%c')" 'BuildLog.log.0' > 'BuildLog.html' &
+warnings=$( grep ': warning:' BuildLog.log.0 | wc -l )
+errors=$( grep ': [Ee]rror:' BuildLog.log.0 | wc -l )
+if (( 0 == errors )); then
     status="<b style=\"color: green\">OK</b>"
-    warnings=$( grep ': warning:' BuildLog.log.0 | wc -l )
-    if (( 0 != warnings )); then
-        status+=" <span style=\"color: #DD8800\">(<b>${warnings}</b> warnings)</span>"
-    else
+    if (( 0 == warnings )); then
         status+=" <span style=\"color: green\">(0 warnings)</span>"
+    else
+        status+=" <span style=\"color: #DD8800\">(<b>${warnings}</b> warnings)</span>"
     fi
 else
-    status="<b style=\"color: red\">FAILED</b>"
+    status="<span style=\"color: red\">FAILED (<b>${errors}</b> errors)</span>"
 fi
-gawk -f '../BuildLog2html.awk' -v TITLE="Build log from $(date +'%c')" 'BuildLog.log.0' > 'BuildLog.html' &
+
 echo "        <a href=\"BuildLog.html\">[ Build: ${status} ]</a>" >> index.html
 echo "        &nbsp;|&nbsp; <a href=\"TestLog.html\">[ Show Test Run Log ]</a>" >> index.html
 echo "        &nbsp;|&nbsp; <a href=\"${RESULTS_PKG}\">[ Download Results ]</a>" >> index.html
@@ -369,7 +390,7 @@ fi
 
 cp index.html index.html.0
 gawk '/\[ Download Results \]/ {next} {print($0)}' index.html.0 > index.html
+wait
 tar cjf "${RESULTS_PKG}" *.html *.png
 mv index.html.0 index.html
-wait
 echo "[DONE]"

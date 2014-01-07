@@ -217,13 +217,18 @@ inline bool AsmTranslatorKcpsmXil::processDirectives ( std::vector<std::string> 
             {
                 lineFields.replaceLabel(lbl);
             }
+
+            m_usedIDs.insert ( lbl.substr ( 0, lbl.size() -1 ) );
         }
     }
 
     if ( "constant" == directive )
     {
+        std::string id = lineFields.getOperand(0);
+
+        m_usedIDs.insert(id);
         fixRadix(lineFields, 1);
-        std::string substitute = lineFields.getOperand(0) + " EQU " + lineFields.getOperand(1);
+        std::string substitute = id + " EQU " + lineFields.getOperand(1);
 
         if ( true == m_instFlag )
         {
@@ -240,8 +245,11 @@ inline bool AsmTranslatorKcpsmXil::processDirectives ( std::vector<std::string> 
     }
     else if ( "namereg" == directive )
     {
-        m_registers.insert(lineFields.getOperand(1));
-        lineFields.replaceInstOpr(lineFields.getOperand(1) + " REG " + lineFields.getOperand(0));
+        std::string id = lineFields.getOperand(1);
+
+        m_usedIDs.insert(id);
+        m_registers.insert(id);
+        lineFields.replaceInstOpr(id + " REG " + lineFields.getOperand(0));
     }
     else if ( "address" == directive )
     {

@@ -48,4 +48,4 @@ target_link_libraries ( ${PROJECT_NAME}
 # TESTS
 # ------------------------------------------------------------------------------
 
-ADD_TEST_SUBJECT ( "MCU_Simulator_PIC8" "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}" )
+# ADD_TEST_SUBJECT ( "MCU_Simulator_PIC8" "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}" )

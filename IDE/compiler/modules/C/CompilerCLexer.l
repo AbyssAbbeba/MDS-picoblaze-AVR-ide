@@ -190,8 +190,7 @@ ID      [_a-zA-Z][_a-zA-Z0-9]*
 "|"             { return O_BITOR;           }
 "^"             { return O_BITXOR;          }
 "=="            { return O_EQ;              }
-"<>"            { return O_NE;              }
-"!="            { return O_NE2;             }
+"!="            { return O_NE;             }
 "<"             { return O_LT;              }
 "<="            { return O_LE;              }
 ">"             { return O_GT;              }

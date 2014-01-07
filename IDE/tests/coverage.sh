@@ -14,6 +14,8 @@ readonly GCOV_LOG="${TEST_NAME}.gcov.log"
 shift
 shift
 
+: > "${TEST_NAME}-Results.xml"
+
 if (( 0 == ${TEST_COVERAGE} )); then
     eval "$@"
     exit $?

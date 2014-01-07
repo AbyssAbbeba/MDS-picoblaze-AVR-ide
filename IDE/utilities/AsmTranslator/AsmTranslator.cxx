@@ -55,7 +55,7 @@ bool AsmTranslator::translate ( Variant variant,
 
     if ( NULL == translator )
     {
-        m_messages.push_back ( QObject::tr("Error: unsupported assembler variant.").toStdString() );
+        m_messages.push_back ( QObject::tr("Error: specified assembler variant is not supported.").toStdString() );
         return false;
     }
 
