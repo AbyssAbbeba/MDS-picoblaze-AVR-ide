@@ -194,7 +194,7 @@ inline bool AsmTranslatorKcpsmPBIDE::processDirectives ( std::vector<std::string
         return true;
     }
 
-    // Fix stupidly formed labels, i.e. `stupid   :' -> ``stupid:'.
+    // Fix strangely formed labels, i.e. `label   :' -> `label:'.
     {
         std::string lbl = lineFields.getLabel();
         if ( false == lbl.empty() )

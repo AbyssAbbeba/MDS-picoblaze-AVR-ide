@@ -55,9 +55,9 @@ function tests() {
     make -j${PP} --keep-going 2>&1 | tee -a "${BUILD_LOG}"
 
     if [[ -z "${1}" ]]; then
-        ctest -j${PP}
+        ctest -j${CPU_CORES}
     else
-        ctest -j${PP} --tests-regex "${1}"
+        ctest -j${CPU_CORES} --tests-regex "${1}"
     fi
     make test_analysis
 }

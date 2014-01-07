@@ -18,6 +18,7 @@
 // Standard header files.
 #include <cstdio>
 #include <cctype>
+#include <utility>
 #include <iterator>
 
 AsmTranslatorKcpsmXil::AsmTranslatorKcpsmXil()
@@ -27,7 +28,7 @@ AsmTranslatorKcpsmXil::AsmTranslatorKcpsmXil()
     const boost::regex::flag_type flags = ( boost::regex::extended | boost::regex::icase | boost::regex::optimize );
 
     m_reWhiteSpace  = boost::regex ( "^[[:space:]]+", flags );
-    m_reLabel       = boost::regex ( "^[_[:alpha:]][_[:alnum:]]*[[:space:]]*:", flags );
+    m_reLabel       = boost::regex ( "^[_[:alnum:]]*[[:space:]]*:", flags );
     m_reInstruction = boost::regex ( "^[_[:alpha:]][_[:alnum:]]+", flags );
     m_reWord        = boost::regex ( "[_[:alnum:]]+", flags );
     m_reOperand     = boost::regex ( "^([_[:alnum:]]+)|(\\([[:space:]]*[_[:alnum:]]+[[:space:]]*\\))", flags );
@@ -106,6 +107,29 @@ bool AsmTranslatorKcpsmXil::process ( std::vector<std::string> & messages,
             boost::regex_search(begin, line.cend(), match, m_reAtMark);
             if ( true == match[0].matched )
             {
+                if ( true == secondPass )
+                {
+                    begin = match[0].second;
+                    boost::regex_search(begin, line.cend(), match, m_reWord);
+                    if ( true == match[0].matched )
+                    {
+                        lineFields.m_operands.push_back(std::make_pair(std::distance(lineStartIt, match[0].first),
+                                                                       std::distance(lineStartIt, match[0].second)));
+
+                        begin = match[0].second;
+                        boost::regex_search(begin, line.cend(), match, m_reWord);
+                        if ( false == match[0].matched )
+                        {
+                            return true;
+                        }
+
+                        lineFields.m_operands.push_back(std::make_pair(std::distance(lineStartIt, match[0].first),
+                                                                       std::distance(lineStartIt, match[0].second)));
+
+                        translateIdentifiers(lineFields);
+                    }
+                }
+
                 return true;
             }
         }
@@ -174,13 +198,13 @@ bool AsmTranslatorKcpsmXil::process ( std::vector<std::string> & messages,
         return false;
     }
 
-    if ( true == secondPass )
+    if ( false == secondPass )
     {
-        return processInstructions ( messages, lineFields );
+        return processDirectives ( messages, lineFields );
     }
     else
     {
-        return processDirectives ( messages, lineFields );
+        return processInstructions ( messages, lineFields );
     }
 }
 
@@ -193,9 +217,9 @@ inline bool AsmTranslatorKcpsmXil::processDirectives ( std::vector<std::string> 
         return true;
     }
 
-    // Fix stupidly formed labels, i.e. `stupid   :' -> ``stupid:'.
+    // Fix strangely formed labels, i.e. `0label   :' -> `_0label:'.
     {
-        std::string lbl = lineFields.getLabel();
+        std::string lbl = lineFields.getLabel(true);
         if ( false == lbl.empty() )
         {
             bool modified = false;
@@ -218,15 +242,15 @@ inline bool AsmTranslatorKcpsmXil::processDirectives ( std::vector<std::string> 
                 lineFields.replaceLabel(lbl);
             }
 
-            m_usedIDs.insert ( lbl.substr ( 0, lbl.size() -1 ) );
+            lbl = newIdentifier(lbl.substr ( 0, lbl.size() -1 ));
+            lineFields.replaceLabel(lbl + ":");
         }
     }
 
     if ( "constant" == directive )
     {
-        std::string id = lineFields.getOperand(0);
+        std::string id = newIdentifier(lineFields.getOperand(0, true));
 
-        m_usedIDs.insert(id);
         fixRadix(lineFields, 1);
         std::string substitute = id + " EQU " + lineFields.getOperand(1);
 
@@ -245,9 +269,8 @@ inline bool AsmTranslatorKcpsmXil::processDirectives ( std::vector<std::string> 
     }
     else if ( "namereg" == directive )
     {
-        std::string id = lineFields.getOperand(1);
+        std::string id = newIdentifier(lineFields.getOperand(1, true));
 
-        m_usedIDs.insert(id);
         m_registers.insert(id);
         lineFields.replaceInstOpr(id + " REG " + lineFields.getOperand(0));
     }
@@ -267,6 +290,8 @@ inline bool AsmTranslatorKcpsmXil::processDirectives ( std::vector<std::string> 
 inline bool AsmTranslatorKcpsmXil::processInstructions ( std::vector<std::string> & messages,
                                                          LineFields & lineFields )
 {
+    translateIdentifiers(lineFields);
+
     std::string instruction = lineFields.getInstruction();
     if ( true == instruction.empty() )
     {
@@ -438,5 +463,55 @@ void AsmTranslatorKcpsmXil::fixRadix ( LineFields & lineFields,
     if ( ( true == lineFields.hasOperand(i) ) && ( true == ishex(lineFields.getOperand(i)) ) )
     {
         lineFields.replaceOpr ( "0x" + lineFields.getOperand(i), i );
+    }
+}
+
+std::string AsmTranslatorKcpsmXil::newIdentifier ( const std::string & id )
+{
+    std::string idLowerCase = id;
+    std::transform(idLowerCase.begin(), idLowerCase.end(), idLowerCase.begin(), ::tolower);
+
+    if ( ( 0 == isdigit(idLowerCase[0]) ) && ( m_usedIDs.cend() == m_usedIDs.find(idLowerCase) ) )
+    {
+        m_usedIDs.insert(idLowerCase);
+        return idLowerCase;
+    }
+    else
+    {
+        std::string newId  = ( "_" + idLowerCase );
+        while ( m_usedIDs.cend() != m_usedIDs.find(newId) )
+        {
+            newId = ( "_" + newId );
+        }
+
+        m_usedIDs.insert(newId);
+        m_idTranslationMap.insert(std::make_pair(id, newId));
+
+        return newId;
+    }
+}
+
+inline void AsmTranslatorKcpsmXil::translateIdentifiers ( AsmTranslatorBase::LineFields & lineFields )
+{
+    std::string id;
+    std::map<std::string,std::string>::const_iterator it;
+    std::map<std::string,std::string>::const_iterator end = m_idTranslationMap.cend();
+
+    id = lineFields.getLabel(true);
+    id = id.substr ( 0, id.size() -1 );
+    it = m_idTranslationMap.find(id);
+    if ( end != it )
+    {
+        lineFields.replaceLabel ( it->second + ":" );
+    }
+
+    for ( int  i = 0; true == lineFields.hasOperand(i); i++ )
+    {
+        id = lineFields.getOperand(i, true);
+        it = m_idTranslationMap.find(id);
+        if ( end != it )
+        {
+            lineFields.replaceOpr ( it->second, i );
+        }
     }
 }
