@@ -1,0 +1,46 @@
+                   1     ; Compiler test case for Assembler
+                   2     ; instruction opcodes
+                   3
+                   4
+                   5     Start:
+000 32000          6             JUMP        Z, 0x000
+001 36000          7             JUMP        NZ,0x000
+002 3A000          8             JUMP        C, 0x000
+003 3E000          9             JUMP        NC,0x000
+                  10
+                  11         ; Others
+004 2000D         12             CALl      Podprog
+005 3000D         13             CALL      Z,Podprog
+006 3400D         14             CALL      NZ,Podprog
+007 3800D         15             CALL      C,Podprog
+008 3C00D         16             CALL      NC,Podprog
+                  17
+009 2F101         18             STORE     TESTsymb9,TESTsymb13
+E: symbol not defined: `TESTSYMB9'.
+E: symbol not defined: `TESTSYMB13'.
+00A 2E1A0         19             STORE     TESTsymb10,@10
+E: symbol not defined: `TESTSYMB10'.
+00B 0B101         20             FETCH     TESTsymb11,TESTsymb13
+E: symbol not defined: `TESTSYMB11'.
+E: symbol not defined: `TESTSYMB13'.
+00C 0A150         21             FETCH     TESTsymb12,@5
+E: symbol not defined: `TESTSYMB12'.
+                  22
+                  23     Podprog:
+00D 25000         24             RETURN
+00E 31000         25             RETURN    Z
+00F 35000         26             RETURN    NZ
+010 39000         27             RETURN    C
+011 3D000         28             RETURN    NC
+                  29
+                  30
+                  31       ;  JUMP aaa ADD sX,kk LOAD sX,kk SR0 sX
+                  32     ;JUMP Z,aaa ADDCY sX,kk AND sX,kk SR1 sX
+                  33     ;JUMP NZ,aaa SUB sX,kk OR sX,kk SRX sX
+                  34     ;JUMP C,aaa SUBCY sX,kk XOR sX,kk SRA sX
+                  35     ;JUMP NC,aaa COMPARE sX,kk TEST sX,kk RR sX
+                  36     ;CALL aaa ADD sX,sY LOAD sX,sY SL0 sX
+                  37     ;CALL Z,aaa ADDCY sX,sY AND sX,sY SL1 sX
+                  38     ;CALL NZ,aaa SUB sX,sY OR sX,sY SLX sX
+                  39     ;CALL C,aaa SUBCY sX,sY XOR sX,sY SLA sX
+                  40     ;CALL NC,aaa COMPARE sX,sY TEST sX,sY RL sX

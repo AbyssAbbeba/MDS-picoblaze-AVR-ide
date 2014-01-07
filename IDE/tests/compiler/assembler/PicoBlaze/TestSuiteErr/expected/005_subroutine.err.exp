@@ -1,0 +1,52 @@
+MT_ERROR: 005_subroutine.asm:30.17-30.19: Error: symbol not defined: `S0'.
+MT_ERROR: 005_subroutine.asm:32.17-32.19: Error: symbol not defined: `S1'.
+MT_WARNING: 005_subroutine.asm:32.1-32.26: Warning: reusing already reserved space in register file memory at address: 1.
+MT_ERROR: 005_subroutine.asm:34.17-34.19: Error: symbol not defined: `S2'.
+MT_WARNING: 005_subroutine.asm:34.1-34.26: Warning: reusing already reserved space in register file memory at address: 1.
+MT_ERROR: 005_subroutine.asm:36.17-36.19: Error: symbol not defined: `S3'.
+MT_WARNING: 005_subroutine.asm:36.1-36.26: Warning: reusing already reserved space in register file memory at address: 1.
+MT_ERROR: 005_subroutine.asm:46.1-46.26: Error: symbol already defined: "A_LSB".
+MT_ERROR: 005_subroutine.asm:48.1-48.26: Error: symbol already defined: "A_MSB".
+MT_ERROR: 005_subroutine.asm:50.1-50.26: Error: symbol already defined: "B_LSB".
+MT_ERROR: 005_subroutine.asm:52.1-52.26: Error: symbol already defined: "B_MSB".
+MT_ERROR: 005_subroutine.asm:78.1-78.8: Error: symbol already defined: "NEGATE".
+MT_ERROR: 005_subroutine.asm:79.17-79.19: Error: symbol not defined: `SY'.
+MT_WARNING: 005_subroutine.asm:79.1-79.26: Warning: reusing already reserved space in register file memory at address: 1.
+MT_ERROR: 005_subroutine.asm:80.17-80.19: Error: symbol not defined: `SX'.
+MT_WARNING: 005_subroutine.asm:80.1-80.31: Warning: reusing already reserved space in register file memory at address: 1.
+MT_ERROR: 005_subroutine.asm:89.17-89.19: Error: symbol not defined: `S0'.
+MT_WARNING: 005_subroutine.asm:89.1-89.33: Warning: reusing already reserved space in register file memory at address: 1.
+MT_ERROR: 005_subroutine.asm:91.1-91.10: Error: macro not defined: "PRESERVED".
+MT_ERROR: 005_subroutine.asm:92.17-92.19: Error: symbol not defined: `S1'.
+MT_WARNING: 005_subroutine.asm:92.1-92.31: Warning: reusing already reserved space in register file memory at address: 1.
+MT_ERROR: 005_subroutine.asm:94.17-94.19: Error: symbol not defined: `S2'.
+MT_WARNING: 005_subroutine.asm:94.1-94.29: Warning: reusing already reserved space in register file memory at address: 1.
+MT_ERROR: 005_subroutine.asm:96.17-96.19: Error: symbol not defined: `S3'.
+MT_WARNING: 005_subroutine.asm:96.1-96.31: Warning: reusing already reserved space in register file memory at address: 1.
+MT_ERROR: 005_subroutine.asm:100.17-100.19: Error: symbol not defined: `S4'.
+MT_WARNING: 005_subroutine.asm:100.1-100.31: Warning: reusing already reserved space in register file memory at address: 1.
+MT_ERROR: 005_subroutine.asm:142.1-142.33: Error: symbol already defined: "MULTIPLICAND".
+MT_ERROR: 005_subroutine.asm:145.1-145.31: Error: symbol already defined: "MULTIPLIER".
+MT_ERROR: 005_subroutine.asm:147.1-147.10: Error: macro not defined: "PRESERVED".
+MT_ERROR: 005_subroutine.asm:148.1-148.31: Error: symbol already defined: "RESULT_MSB".
+MT_ERROR: 005_subroutine.asm:150.1-150.31: Error: symbol already defined: "RESULT_LSB".
+MT_ERROR: 005_subroutine.asm:175.18-175.20: Error: symbol not defined: `S0'.
+MT_WARNING: 005_subroutine.asm:175.1-175.30: Warning: reusing already reserved space in register file memory at address: 1.
+MT_ERROR: 005_subroutine.asm:177.18-177.20: Error: symbol not defined: `S1'.
+MT_WARNING: 005_subroutine.asm:177.1-177.29: Warning: reusing already reserved space in register file memory at address: 1.
+MT_ERROR: 005_subroutine.asm:179.18-179.20: Error: symbol not defined: `S2'.
+MT_WARNING: 005_subroutine.asm:179.1-179.30: Warning: reusing already reserved space in register file memory at address: 1.
+MT_ERROR: 005_subroutine.asm:181.18-181.20: Error: symbol not defined: `S3'.
+MT_WARNING: 005_subroutine.asm:181.1-181.31: Warning: reusing already reserved space in register file memory at address: 1.
+MT_ERROR: 005_subroutine.asm:183.1-183.30: Error: symbol already defined: "BIT_MASK".
+MT_WARNING: Warning: exact device not specified, using KCPSM6 by default.
+MT_ERROR: 005_subroutine.asm:64.25-64.32: Error: symbol not defined: `LO_BYTE'.
+MT_ERROR: 005_subroutine.asm:66.25-66.32: Error: symbol not defined: `HI_BYTE'.
+MT_ERROR: 005_subroutine.asm:71.25-71.27: Error: symbol not defined: `SX'.
+MT_ERROR: 005_subroutine.asm:71.28-71.30: Error: symbol not defined: `FF'.
+MT_ERROR: 005_subroutine.asm:73.25-73.27: Error: symbol not defined: `SX'.
+MT_WARNING: 005_subroutine.asm:189.28-189.30: Warning: value out of range: 80, allowed range is [0,15] (trimmed to 4 bits) which makes it 0.
+MT_ERROR: 005_subroutine.asm:216.18-216.20: Error: symbol not defined: `SX'.
+MT_ERROR: 005_subroutine.asm:217.18-217.20: Error: symbol not defined: `SX'.
+MT_ERROR: 005_subroutine.asm:221.18-221.20: Error: symbol not defined: `S0'.
+MT_ERROR: 005_subroutine.asm:223.18-223.20: Error: symbol not defined: `S0'.

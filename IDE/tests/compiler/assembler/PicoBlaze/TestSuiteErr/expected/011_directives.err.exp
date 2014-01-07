@@ -1,0 +1,14 @@
+MT_ERROR: 011_directives.asm:76.20-76.23: Error: unexpected NUMBER, expecting IDENTIFIER.
+MT_ERROR: 011_directives.asm:77.20-77.26: Error: unexpected NUMBER, expecting IDENTIFIER.
+MT_ERROR: 011_directives.asm:78.20-78.22: Error: unexpected NUMBER, expecting IDENTIFIER.
+MT_ERROR: 011_directives.asm:79.20-79.21: Error: unexpected NUMBER, expecting IDENTIFIER.
+MT_ERROR: 011_directives.asm:80.20-80.30: Error: unexpected NUMBER, expecting IDENTIFIER.
+MT_ERROR: 011_directives.asm:81.20-81.25: Error: unexpected NUMBER, expecting IDENTIFIER.
+MT_ERROR: 011_directives.asm:82.20-82.24: Error: unexpected NUMBER, expecting IDENTIFIER.
+MT_ERROR: 011_directives.asm:83.20-83.30: Error: unexpected NUMBER, expecting IDENTIFIER.
+MT_ERROR: 011_directives.asm:84.20-84.27: Error: unexpected NUMBER, expecting IDENTIFIER.
+MT_ERROR: 011_directives.asm:85.21-85.23: Error: unexpected NUMBER, expecting IDENTIFIER.
+MT_ERROR: 011_directives.asm:86.21-86.24: Error: unexpected NUMBER, expecting IDENTIFIER.
+MT_ERROR: 011_directives.asm:87.21-87.25: Error: unexpected NUMBER, expecting IDENTIFIER.
+MT_ERROR: 011_directives.asm:172.20-172.21: Error: unexpected #.
+MT_ERROR: 011_directives.asm:173.9-173.15: Error: invalid number of operands, instruction OUTPUT takes 2 operand(s).

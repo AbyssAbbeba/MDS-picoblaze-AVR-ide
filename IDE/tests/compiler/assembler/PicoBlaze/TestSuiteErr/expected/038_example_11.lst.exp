@@ -1,0 +1,936 @@
+                   1                      ; KCPSM3 Program - Automatic Pulse Width Modulation (PWM) Control on the Spartan-3E Starter Kit.
+                   2                      ;
+                   3                      ; Ken Chapman - Xilinx Ltd
+                   4                      ;
+                   5                      ; Version v1.00 - 24th May 2006
+                   6                      ;
+                   7                      ; Automatically sequences the LEDs on the board using PWM to change intensity.
+                   8                      ;
+                   9                      ;**************************************************************************************
+                  10                      ; Port definitions
+                  11                      ;**************************************************************************************
+                  12                      ;
+                  13                      ;
+                  14                      ;
+  00050           15                      CONSTANT LED_port, 80               ;8 simple LEDs
+  00001           16                      CONSTANT LED0, 01                   ;     LED 0 - bit0
+  00002           17                      CONSTANT LED1, 02                   ;         1 - bit1
+  00004           18                      CONSTANT LED2, 04                   ;         2 - bit2
+  00008           19                      CONSTANT LED3, 08                   ;         3 - bit3
+  0000A           20                      CONSTANT LED4, 10                   ;         4 - bit4
+  00014           21                      CONSTANT LED5, 20                   ;         5 - bit5
+  00028           22                      CONSTANT LED6, 40                   ;         6 - bit6
+  00050           23                      CONSTANT LED7, 80                   ;         7 - bit7
+                  24                      ;
+                  25                      ;
+  00028           26                      CONSTANT simple_port, 40            ;4 simple outputs
+  00001           27                      CONSTANT simple_IO9, 01             ;  Header  IO9  - bit0
+  00002           28                      CONSTANT simple_IO10, 02            ;          IO10 - bit1
+  00004           29                      CONSTANT simple_IO11, 04            ;          IO11 - bit2
+  00008           30                      CONSTANT simple_IO12, 08            ;          IO12 - bit3
+                  31                      ;
+                  32                      ;
+                  33                      ;
+  00000           34                      CONSTANT status_port, 00            ;UART status input
+  00001           35                      CONSTANT tx_half_full, 01           ;  Transmitter     half full - bit0
+  00002           36                      CONSTANT tx_full, 02                ;    FIFO               full - bit1
+  00004           37                      CONSTANT rx_data_present, 04        ;  Receiver     data present - bit2
+  00008           38                      CONSTANT rx_half_full, 08           ;    FIFO          half full - bit3
+  0000A           39                      CONSTANT rx_full, 10                ;                   full - bit4
+  00014           40                      CONSTANT spare1, 20                 ;                  spare '0' - bit5
+  00028           41                      CONSTANT spare2, 40                 ;                  spare '0' - bit6
+  00050           42                      CONSTANT spare3, 80                 ;                  spare '0' - bit7
+                  43                      ;
+  00001           44                      CONSTANT UART_read_port, 01         ;UART Rx data input
+                  45                      ;
+  00014           46                      CONSTANT UART_write_port, 20        ;UART Tx data output
+                  47                      ;
+                  48                      ;
+                  49                      ;
+                  50                      ;**************************************************************************************
+                  51                      ; Special Register usage
+                  52                      ;**************************************************************************************
+                  53                      ;
+  00001           54                      NAMEREG sF, UART_data               ;used to pass data to and from the UART
+E: symbol not defined: `SF'.
+                  55                      ;
+                  56                      ;
+                  57                      ;
+                  58                      ;**************************************************************************************
+                  59                      ;Scratch Pad Memory Locations
+                  60                      ;**************************************************************************************
+                  61                      ;
+  00000           62                      CONSTANT PWM_duty_counter, 00       ;Duty Counter 0 to 255 within 1KHz period (1ms)
+  00001           63                      CONSTANT PWM_channel0, 01           ;PWM settings for each channel
+  00002           64                      CONSTANT PWM_channel1, 02           ; Channels 0 to 7 = LEDs 0 to 7
+  00003           65                      CONSTANT PWM_channel2, 03           ; Channels 8 to 11 = IO9 to IO12
+  00004           66                      CONSTANT PWM_channel3, 04
+  00005           67                      CONSTANT PWM_channel4, 05
+  00006           68                      CONSTANT PWM_channel5, 06
+  00007           69                      CONSTANT PWM_channel6, 07
+  00008           70                      CONSTANT PWM_channel7, 08
+  00009           71                      CONSTANT PWM_channel8, 09
+                  72                      CONSTANT PWM_channel9, 0A
+E: identifier cannot start with a digit: `0A'.
+E: unexpected end of line.
+  00000           73                      CONSTANT PWM_channel10, 0B
+                  74                      CONSTANT PWM_channel11, 0C
+E: identifier cannot start with a digit: `0C'.
+E: unexpected end of line.
+  00000           75                      CONSTANT ISR_preserve_s0, 0D        ;preserve register contents during Interrupt Service Routine
+                  76                      CONSTANT ISR_preserve_s1, 0E
+E: identifier cannot start with a digit: `0E'.
+E: unexpected end of line.
+                  77                      CONSTANT ISR_preserve_s2, 0F
+E: identifier cannot start with a digit: `0F'.
+E: unexpected end of line.
+                  78                      ;
+                  79                      ;
+  0000A           80                      CONSTANT LED0_sequence, 10          ;LED sequence values
+  0000B           81                      CONSTANT LED1_sequence, 11
+  0000C           82                      CONSTANT LED2_sequence, 12
+  0000D           83                      CONSTANT LED3_sequence, 13
+  0000E           84                      CONSTANT LED4_sequence, 14
+  0000F           85                      CONSTANT LED5_sequence, 15
+  00010           86                      CONSTANT LED6_sequence, 16
+  00011           87                      CONSTANT LED7_sequence, 17
+                  88                      ;
+                  89                      ;
+                  90                      ;
+                  91                      ;**************************************************************************************
+                  92                      ;Useful data constants
+                  93                      ;**************************************************************************************
+                  94                      ;
+                  95                      ;
+                  96                      ;
+                  97                      ;
+                  98                      ;ASCII table
+                  99                      ;
+  0003D          100                      CONSTANT character_a, 61
+  0003E          101                      CONSTANT character_b, 62
+  0003F          102                      CONSTANT character_c, 63
+  00040          103                      CONSTANT character_d, 64
+  00041          104                      CONSTANT character_e, 65
+  00042          105                      CONSTANT character_f, 66
+  00043          106                      CONSTANT character_g, 67
+  00044          107                      CONSTANT character_h, 68
+  00045          108                      CONSTANT character_i, 69
+                 109                      CONSTANT character_j, 6A
+E: identifier cannot start with a digit: `6A'.
+E: unexpected end of line.
+                 110                      CONSTANT character_k, 6B
+E: identifier cannot start with a digit: `6B'.
+E: unexpected end of line.
+                 111                      CONSTANT character_l, 6C
+E: identifier cannot start with a digit: `6C'.
+E: unexpected end of line.
+  00006          112                      CONSTANT character_m, 6D
+                 113                      CONSTANT character_n, 6E
+E: identifier cannot start with a digit: `6E'.
+E: unexpected end of line.
+                 114                      CONSTANT character_o, 6F
+E: identifier cannot start with a digit: `6F'.
+E: unexpected end of line.
+  00046          115                      CONSTANT character_p, 70
+  00047          116                      CONSTANT character_q, 71
+  00048          117                      CONSTANT character_r, 72
+  00049          118                      CONSTANT character_s, 73
+  0004A          119                      CONSTANT character_t, 74
+  0004B          120                      CONSTANT character_u, 75
+  0004C          121                      CONSTANT character_v, 76
+  0004D          122                      CONSTANT character_w, 77
+  0004E          123                      CONSTANT character_x, 78
+  0004F          124                      CONSTANT character_y, 79
+                 125                      CONSTANT character_z, 7A
+E: identifier cannot start with a digit: `7A'.
+E: unexpected end of line.
+                 126                      CONSTANT character_A, 41
+E: symbol already defined: "CHARACTER_A".
+                 127                      CONSTANT character_B, 42
+E: symbol already defined: "CHARACTER_B".
+                 128                      CONSTANT character_C, 43
+E: symbol already defined: "CHARACTER_C".
+                 129                      CONSTANT character_D, 44
+E: symbol already defined: "CHARACTER_D".
+                 130                      CONSTANT character_E, 45
+E: symbol already defined: "CHARACTER_E".
+                 131                      CONSTANT character_F, 46
+E: symbol already defined: "CHARACTER_F".
+                 132                      CONSTANT character_G, 47
+E: symbol already defined: "CHARACTER_G".
+                 133                      CONSTANT character_H, 48
+E: symbol already defined: "CHARACTER_H".
+                 134                      CONSTANT character_I, 49
+E: symbol already defined: "CHARACTER_I".
+                 135                      CONSTANT character_J, 4A
+E: identifier cannot start with a digit: `4A'.
+E: unexpected end of line.
+                 136                      CONSTANT character_K, 4B
+E: identifier cannot start with a digit: `4B'.
+E: unexpected end of line.
+                 137                      CONSTANT character_L, 4C
+E: identifier cannot start with a digit: `4C'.
+E: unexpected end of line.
+                 138                      CONSTANT character_M, 4D
+E: symbol already defined: "CHARACTER_M".
+                 139                      CONSTANT character_N, 4E
+E: identifier cannot start with a digit: `4E'.
+E: unexpected end of line.
+                 140                      CONSTANT character_O, 4F
+E: identifier cannot start with a digit: `4F'.
+E: unexpected end of line.
+                 141                      CONSTANT character_P, 50
+E: symbol already defined: "CHARACTER_P".
+                 142                      CONSTANT character_Q, 51
+E: symbol already defined: "CHARACTER_Q".
+                 143                      CONSTANT character_R, 52
+E: symbol already defined: "CHARACTER_R".
+                 144                      CONSTANT character_S, 53
+E: symbol already defined: "CHARACTER_S".
+                 145                      CONSTANT character_T, 54
+E: symbol already defined: "CHARACTER_T".
+                 146                      CONSTANT character_U, 55
+E: symbol already defined: "CHARACTER_U".
+                 147                      CONSTANT character_V, 56
+E: symbol already defined: "CHARACTER_V".
+                 148                      CONSTANT character_W, 57
+E: symbol already defined: "CHARACTER_W".
+                 149                      CONSTANT character_X, 58
+E: symbol already defined: "CHARACTER_X".
+                 150                      CONSTANT character_Y, 59
+E: symbol already defined: "CHARACTER_Y".
+                 151                      CONSTANT character_Z, 5A
+E: identifier cannot start with a digit: `5A'.
+E: unexpected end of line.
+  0001E          152                      CONSTANT character_0, 30
+  0001F          153                      CONSTANT character_1, 31
+  00020          154                      CONSTANT character_2, 32
+  00021          155                      CONSTANT character_3, 33
+  00022          156                      CONSTANT character_4, 34
+  00023          157                      CONSTANT character_5, 35
+  00024          158                      CONSTANT character_6, 36
+  00025          159                      CONSTANT character_7, 37
+  00026          160                      CONSTANT character_8, 38
+  00027          161                      CONSTANT character_9, 39
+                 162                      CONSTANT character_colon, 3A
+E: identifier cannot start with a digit: `3A'.
+E: unexpected end of line.
+                 163                      CONSTANT character_stop, 2E
+E: identifier cannot start with a digit: `2E'.
+E: unexpected end of line.
+                 164                      CONSTANT character_semi_colon, 3B
+E: identifier cannot start with a digit: `3B'.
+E: unexpected end of line.
+  00002          165                      CONSTANT character_minus, 2D
+                 166                      CONSTANT character_divide, 2F       ;'/'
+E: identifier cannot start with a digit: `2F'.
+E: unexpected end of line.
+                 167                      CONSTANT character_plus, 2B
+E: identifier cannot start with a digit: `2B'.
+E: unexpected end of line.
+                 168                      CONSTANT character_comma, 2C
+E: identifier cannot start with a digit: `2C'.
+E: unexpected end of line.
+                 169                      CONSTANT character_less_than, 3C
+E: identifier cannot start with a digit: `3C'.
+E: unexpected end of line.
+                 170                      CONSTANT character_greater_than, 3E
+E: identifier cannot start with a digit: `3E'.
+E: unexpected end of line.
+  00003          171                      CONSTANT character_equals, 3D
+  00014          172                      CONSTANT character_space, 20
+  00000          173                      CONSTANT character_CR, 0D           ;carriage return
+                 174                      CONSTANT character_question, 3F     ;'?'
+E: identifier cannot start with a digit: `3F'.
+E: unexpected end of line.
+  00018          175                      CONSTANT character_dollar, 24
+  00015          176                      CONSTANT character_exclaim, 21      ;'!'
+  00008          177                      CONSTANT character_BS, 08           ;Back Space command character
+                 178                      ;
+                 179                      ;
+                 180                      ;
+                 181                      ;
+                 182                      ;
+                 183                      ;**************************************************************************************
+                 184                      ;Initialise the system
+                 185                      ;**************************************************************************************
+                 186                      ;
+                 187                      ; All PWM channels initialise to off (zero).
+                 188                      ; Simple I/O outputs will remain off at all times.
+                 189                      ;
+000 00100        190          cold_start: LOAD s0, 00
+E: symbol not defined: `S0'.
+001 00110        191                      LOAD s1, PWM_channel0
+E: symbol not defined: `S1'.
+002 2F101        192          clear_loop: STORE s0, (s1)
+E: symbol not defined: `S0'.
+E: symbol not defined: `S1'.
+003 1C110        193                      COMPARE s1, PWM_channel11
+E: symbol not defined: `S1'.
+E: symbol not defined: `PWM_CHANNEL11'.
+004 32007        194                      JUMP Z, enable_int
+005 10110        195                      ADD s1, 01
+E: symbol not defined: `S1'.
+006 22002        196                      JUMP clear_loop
+                 197                      ;
+007 28001        198          enable_int: ENABLE INTERRUPT                    ;interrupts used to drive servo
+                 199                      ;
+008 200C7        200                      CALL send_welcome                   ;Write welcome message to UART
+009 200FB        201                      CALL send_OK
+                 202                      ;
+                 203                      ;
+                 204                      ; Initialise LED pattern sequence
+                 205                      ;
+00A 00110        206                      LOAD s0, 01                         ;trigger to start wave pattern
+E: symbol not defined: `S0'.
+00B 2F10A        207                      STORE s0, LED0_sequence
+E: symbol not defined: `S0'.
+00C 00100        208                      LOAD s0, 00
+E: symbol not defined: `S0'.
+00D 2F10B        209                      STORE s0, LED1_sequence
+E: symbol not defined: `S0'.
+00E 2F10C        210                      STORE s0, LED2_sequence
+E: symbol not defined: `S0'.
+00F 2F10D        211                      STORE s0, LED3_sequence
+E: symbol not defined: `S0'.
+010 2F10E        212                      STORE s0, LED4_sequence
+E: symbol not defined: `S0'.
+011 2F10F        213                      STORE s0, LED5_sequence
+E: symbol not defined: `S0'.
+012 2F110        214                      STORE s0, LED6_sequence
+E: symbol not defined: `S0'.
+013 2F111        215                      STORE s0, LED7_sequence
+E: symbol not defined: `S0'.
+                 216                      ;
+                 217                      ;**************************************************************************************
+                 218                      ; Main program
+                 219                      ;**************************************************************************************
+                 220                      ;
+                 221                      ; Provides a pattern of interest on the LEDs :-)
+                 222                      ;
+                 223                      ; Each LED increases intensity in 8 steps and then decreases intensity in 8 steps until it is off.
+                 224                      ; The middle LEDs (LD2 to LD5) each start to turn on when either neighbour is turned half on and increasing
+                 225                      ; to provide the effect of a passing a 'wave' of light passing from side to side. The pair of LEDs at each
+                 226                      ; (LD0, Ld1 and LD6, LD7) are required to reflect the 'wave' so that the pattern continues.
+                 227                      ;
+                 228                      ; I'm sure this code cold be written in more elegant way, but I leave that as an exercise to you :-)
+                 229                      ;
+014 00130        230          warm_start: LOAD s2, 03                         ;simple delay loop (time will be increased by ISR processing)
+E: symbol not defined: `S2'.
+015 00110        231       delay_s2_loop: LOAD s1, FF
+E: symbol not defined: `S1'.
+E: symbol not defined: `FF'.
+016 00110        232       delay_s1_loop: LOAD s0, FF
+E: symbol not defined: `S0'.
+E: symbol not defined: `FF'.
+017 18110        233       delay_s0_loop: SUB s0, 01
+E: symbol not defined: `S0'.
+018 3E017        234                      JUMP NC, delay_s0_loop
+019 18110        235                      SUB s1, 01
+E: symbol not defined: `S1'.
+01A 3E016        236                      JUMP NC, delay_s1_loop
+01B 18110        237                      SUB s2, 01
+E: symbol not defined: `S2'.
+01C 3E015        238                      JUMP NC, delay_s2_loop
+                 239                      ;
+                 240                      ;Pattern generation
+                 241                      ;
+01D 0B10A        242                      FETCH s0, LED0_sequence             ;read sequence for LED0
+E: symbol not defined: `S0'.
+01E 1C100        243                      COMPARE s0, 00
+E: symbol not defined: `S0'.
+01F 32025        244                      JUMP Z, test_LED0_start
+020 18140        245                      SUB s0, 20                          ;Count longer to ensure end stops then reset count if maximum
+E: symbol not defined: `S0'.
+W: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+021 32028        246                      JUMP Z, update_LED0
+022 10140        247                      ADD s0, 20
+E: symbol not defined: `S0'.
+W: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+023 10110        248            inc_LED0: ADD s0, 01                          ;increment counter
+E: symbol not defined: `S0'.
+024 22028        249                      JUMP update_LED0
+025 0B10B        250     test_LED0_start: FETCH s1, LED1_sequence             ;start LED0 if LED1 = 4
+E: symbol not defined: `S1'.
+026 1C140        251                      COMPARE s1, 04
+E: symbol not defined: `S1'.
+027 32023        252                      JUMP Z, inc_LED0
+028 2F10A        253         update_LED0: STORE s0, LED0_sequence
+E: symbol not defined: `S0'.
+029 200A7        254                      CALL LED_to_duty
+02A 2F101        255                      STORE s1, PWM_channel0
+E: symbol not defined: `S1'.
+                 256                      ;
+02B 0B10A        257                      FETCH s1, LED0_sequence             ; refresh LED1 if LED0 = 11 (0B hex) to reflect wave
+E: symbol not defined: `S1'.
+02C 1C100        258                      COMPARE s1, 0B
+E: symbol not defined: `S1'.
+02D 36030        259                      JUMP NZ, normal_LED1
+02E 00140        260                      LOAD s0, 04
+E: symbol not defined: `S0'.
+02F 2203E        261                      JUMP update_LED1
+030 0B10B        262         normal_LED1: FETCH s0, LED1_sequence             ;read sequence for LED1
+E: symbol not defined: `S0'.
+031 1C100        263                      COMPARE s0, 00
+E: symbol not defined: `S0'.
+032 32038        264                      JUMP Z, test_LED1_start
+033 181A0        265                      SUB s0, 10                          ;reset count if maximum
+E: symbol not defined: `S0'.
+034 3203E        266                      JUMP Z, update_LED1
+035 101A0        267                      ADD s0, 10
+E: symbol not defined: `S0'.
+036 10110        268            inc_LED1: ADD s0, 01                          ;increment counter
+E: symbol not defined: `S0'.
+037 2203E        269                      JUMP update_LED1
+038 0B10A        270     test_LED1_start: FETCH s1, LED0_sequence             ;start LED1 if LED0 = 11 (0B hex) to reflect wave
+E: symbol not defined: `S1'.
+039 1C100        271                      COMPARE s1, 0B
+E: symbol not defined: `S1'.
+03A 32036        272                      JUMP Z, inc_LED1
+03B 0B10C        273                      FETCH s1, LED2_sequence             ;start LED1 if LED2 = 4
+E: symbol not defined: `S1'.
+03C 1C140        274                      COMPARE s1, 04
+E: symbol not defined: `S1'.
+03D 32036        275                      JUMP Z, inc_LED1
+03E 2F10B        276         update_LED1: STORE s0, LED1_sequence
+E: symbol not defined: `S0'.
+03F 200A7        277                      CALL LED_to_duty
+040 2F102        278                      STORE s1, PWM_channel1
+E: symbol not defined: `S1'.
+                 279                      ;
+041 0B10C        280                      FETCH s0, LED2_sequence             ;read sequence for LED2
+E: symbol not defined: `S0'.
+042 1C100        281                      COMPARE s0, 00
+E: symbol not defined: `S0'.
+043 32049        282                      JUMP Z, test_LED2_start
+044 181A0        283                      SUB s0, 10                          ;reset count if maximum
+E: symbol not defined: `S0'.
+045 3204F        284                      JUMP Z, update_LED2
+046 101A0        285                      ADD s0, 10
+E: symbol not defined: `S0'.
+047 10110        286            inc_LED2: ADD s0, 01                          ;increment counter
+E: symbol not defined: `S0'.
+048 2204F        287                      JUMP update_LED2
+049 0B10B        288     test_LED2_start: FETCH s1, LED1_sequence             ;start LED2 if LED1 = 4
+E: symbol not defined: `S1'.
+04A 1C140        289                      COMPARE s1, 04
+E: symbol not defined: `S1'.
+04B 32047        290                      JUMP Z, inc_LED2
+04C 0B10D        291                      FETCH s1, LED3_sequence             ;start LED2 if LED3 = 4
+E: symbol not defined: `S1'.
+04D 1C140        292                      COMPARE s1, 04
+E: symbol not defined: `S1'.
+04E 32047        293                      JUMP Z, inc_LED2
+04F 2F10C        294         update_LED2: STORE s0, LED2_sequence
+E: symbol not defined: `S0'.
+050 200A7        295                      CALL LED_to_duty
+051 2F103        296                      STORE s1, PWM_channel2
+E: symbol not defined: `S1'.
+                 297                      ;
+                 298                      ;
+052 0B10D        299                      FETCH s0, LED3_sequence             ;read sequence for LED3
+E: symbol not defined: `S0'.
+053 1C100        300                      COMPARE s0, 00
+E: symbol not defined: `S0'.
+054 3205A        301                      JUMP Z, test_LED3_start
+055 181A0        302                      SUB s0, 10                          ;reset count if maximum
+E: symbol not defined: `S0'.
+056 32060        303                      JUMP Z, update_LED3
+057 101A0        304                      ADD s0, 10
+E: symbol not defined: `S0'.
+058 10110        305            inc_LED3: ADD s0, 01                          ;increment counter
+E: symbol not defined: `S0'.
+059 22060        306                      JUMP update_LED3
+05A 0B10C        307     test_LED3_start: FETCH s1, LED2_sequence             ;start LED3 if LED2 = 4
+E: symbol not defined: `S1'.
+05B 1C140        308                      COMPARE s1, 04
+E: symbol not defined: `S1'.
+05C 32058        309                      JUMP Z, inc_LED3
+05D 0B10E        310                      FETCH s1, LED4_sequence             ;start LED3 if LED4 = 4
+E: symbol not defined: `S1'.
+05E 1C140        311                      COMPARE s1, 04
+E: symbol not defined: `S1'.
+05F 32058        312                      JUMP Z, inc_LED3
+060 2F10D        313         update_LED3: STORE s0, LED3_sequence
+E: symbol not defined: `S0'.
+061 200A7        314                      CALL LED_to_duty
+062 2F104        315                      STORE s1, PWM_channel3
+E: symbol not defined: `S1'.
+                 316                      ;
+063 0B10E        317                      FETCH s0, LED4_sequence             ;read sequence for LED4
+E: symbol not defined: `S0'.
+064 1C100        318                      COMPARE s0, 00
+E: symbol not defined: `S0'.
+065 3206B        319                      JUMP Z, test_LED4_start
+066 181A0        320                      SUB s0, 10                          ;reset count if maximum
+E: symbol not defined: `S0'.
+067 32071        321                      JUMP Z, update_LED4
+068 101A0        322                      ADD s0, 10
+E: symbol not defined: `S0'.
+069 10110        323            inc_LED4: ADD s0, 01                          ;increment counter
+E: symbol not defined: `S0'.
+06A 22071        324                      JUMP update_LED4
+06B 0B10D        325     test_LED4_start: FETCH s1, LED3_sequence             ;start LED4 if LED3 = 4
+E: symbol not defined: `S1'.
+06C 1C140        326                      COMPARE s1, 04
+E: symbol not defined: `S1'.
+06D 32069        327                      JUMP Z, inc_LED4
+06E 0B10F        328                      FETCH s1, LED5_sequence             ;start LED4 if LED5 = 4
+E: symbol not defined: `S1'.
+06F 1C140        329                      COMPARE s1, 04
+E: symbol not defined: `S1'.
+070 32069        330                      JUMP Z, inc_LED4
+071 2F10E        331         update_LED4: STORE s0, LED4_sequence
+E: symbol not defined: `S0'.
+072 200A7        332                      CALL LED_to_duty
+073 2F105        333                      STORE s1, PWM_channel4
+E: symbol not defined: `S1'.
+                 334                      ;
+074 0B10F        335                      FETCH s0, LED5_sequence             ;read sequence for LED5
+E: symbol not defined: `S0'.
+075 1C100        336                      COMPARE s0, 00
+E: symbol not defined: `S0'.
+076 3207C        337                      JUMP Z, test_LED5_start
+077 181A0        338                      SUB s0, 10                          ;reset count if maximum
+E: symbol not defined: `S0'.
+078 32082        339                      JUMP Z, update_LED5
+079 101A0        340                      ADD s0, 10
+E: symbol not defined: `S0'.
+07A 10110        341            inc_LED5: ADD s0, 01                          ;increment counter
+E: symbol not defined: `S0'.
+07B 22082        342                      JUMP update_LED5
+07C 0B10E        343     test_LED5_start: FETCH s1, LED4_sequence             ;start LED5 if LED4 = 4
+E: symbol not defined: `S1'.
+07D 1C140        344                      COMPARE s1, 04
+E: symbol not defined: `S1'.
+07E 3207A        345                      JUMP Z, inc_LED5
+07F 0B110        346                      FETCH s1, LED6_sequence             ;start LED5 if LED6 = 4
+E: symbol not defined: `S1'.
+080 1C140        347                      COMPARE s1, 04
+E: symbol not defined: `S1'.
+081 3207A        348                      JUMP Z, inc_LED5
+082 2F10F        349         update_LED5: STORE s0, LED5_sequence
+E: symbol not defined: `S0'.
+083 200A7        350                      CALL LED_to_duty
+084 2F106        351                      STORE s1, PWM_channel5
+E: symbol not defined: `S1'.
+                 352                      ;
+085 0B111        353                      FETCH s1, LED7_sequence             ; refresh LED6 if LED7 = 11 (0B hex) to reflect wave
+E: symbol not defined: `S1'.
+086 1C100        354                      COMPARE s1, 0B
+E: symbol not defined: `S1'.
+087 3608A        355                      JUMP NZ, normal_LED6
+088 00140        356                      LOAD s0, 04
+E: symbol not defined: `S0'.
+089 22095        357                      JUMP update_LED6
+08A 0B110        358         normal_LED6: FETCH s0, LED6_sequence             ;read sequence for LED6
+E: symbol not defined: `S0'.
+08B 1C100        359                      COMPARE s0, 00
+E: symbol not defined: `S0'.
+08C 32092        360                      JUMP Z, test_LED6_start
+08D 181A0        361                      SUB s0, 10                          ;reset count if maximum
+E: symbol not defined: `S0'.
+08E 32095        362                      JUMP Z, update_LED6
+08F 101A0        363                      ADD s0, 10
+E: symbol not defined: `S0'.
+090 10110        364            inc_LED6: ADD s0, 01                          ;increment counter
+E: symbol not defined: `S0'.
+091 22095        365                      JUMP update_LED6
+092 0B10F        366     test_LED6_start: FETCH s1, LED5_sequence             ;start LED6 if LED5 = 4
+E: symbol not defined: `S1'.
+093 1C140        367                      COMPARE s1, 04
+E: symbol not defined: `S1'.
+094 32090        368                      JUMP Z, inc_LED6
+095 2F110        369         update_LED6: STORE s0, LED6_sequence
+E: symbol not defined: `S0'.
+096 200A7        370                      CALL LED_to_duty
+097 2F107        371                      STORE s1, PWM_channel6
+E: symbol not defined: `S1'.
+                 372                      ;
+098 0B111        373                      FETCH s0, LED7_sequence             ;read sequence for LED7
+E: symbol not defined: `S0'.
+099 1C100        374                      COMPARE s0, 00
+E: symbol not defined: `S0'.
+09A 320A0        375                      JUMP Z, test_LED7_start
+09B 18140        376                      SUB s0, 20                          ;Count longer to ensure end stops then reset count if maximum
+E: symbol not defined: `S0'.
+W: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+09C 320A3        377                      JUMP Z, update_LED7
+09D 10140        378                      ADD s0, 20
+E: symbol not defined: `S0'.
+W: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+09E 10110        379            inc_LED7: ADD s0, 01                          ;increment counter
+E: symbol not defined: `S0'.
+09F 220A3        380                      JUMP update_LED7
+0A0 0B110        381     test_LED7_start: FETCH s1, LED6_sequence             ;start LED7 if LED6 = 4
+E: symbol not defined: `S1'.
+0A1 1C140        382                      COMPARE s1, 04
+E: symbol not defined: `S1'.
+0A2 3209E        383                      JUMP Z, inc_LED7
+0A3 2F111        384         update_LED7: STORE s0, LED7_sequence
+E: symbol not defined: `S0'.
+0A4 200A7        385                      CALL LED_to_duty
+0A5 2F108        386                      STORE s1, PWM_channel7
+E: symbol not defined: `S1'.
+0A6 22014        387                      JUMP warm_start
+                 388                      ;
+                 389                      ;
+                 390                      ; Convert LED sequence number into PWM intensity figure
+                 391                      ;
+                 392                      ; LEDs duty cycle values are 0,1,2,4,8,16,32 and 64 because they appear to give what
+                 393                      ; appears to be a fairly liner change in intensity and provides a simple way to set
+                 394                      ; the duty value.
+                 395                      ;
+                 396                      ; Provide sequence value in register s0 and intensity will be
+                 397                      ; returned in register s1.
+                 398                      ;
+                 399                      ; s0   s1
+                 400                      ; 00   00
+                 401                      ; 01   01
+                 402                      ; 02   02
+                 403                      ; 03   04
+                 404                      ; 04   08
+                 405                      ; 05   10
+                 406                      ; 06   20
+                 407                      ; 07   40
+                 408                      ; 08   80
+                 409                      ; 09   40
+                 410                      ; 0A   20
+                 411                      ; 0B   10
+                 412                      ; 0C   08
+                 413                      ; 0D   04
+                 414                      ; 0E   02
+                 415                      ; 0F   01
+                 416                      ; 10   00  and zero for all larger values of s0
+                 417                      ;
+0A7 00100        418         LED_to_duty: LOAD s1, 00
+E: symbol not defined: `S1'.
+0A8 1C100        419                      COMPARE s0, 00                      ;test for zero
+E: symbol not defined: `S0'.
+0A9 31000        420                      RETURN Z
+0AA 00110        421                      LOAD s1, 01                         ;inject '1'
+E: symbol not defined: `S1'.
+0AB 18110        422          go_up_loop: SUB s0, 01
+E: symbol not defined: `S0'.
+0AC 31000        423                      RETURN Z
+0AD 14106        424                      SL0 s1                              ;multiply by 2
+E: symbol not defined: `S1'.
+0AE 3A0B0        425                      JUMP C, go_down
+0AF 220AB        426                      JUMP go_up_loop
+0B0 00180        427             go_down: LOAD s1, 40
+E: symbol not defined: `S1'.
+W: value out of range: 40, allowed range is [0,15] (trimmed to 4 bits) which makes it 8.
+0B1 18110        428        go_down_loop: SUB s0, 01
+E: symbol not defined: `S0'.
+0B2 31000        429                      RETURN Z
+0B3 1410E        430                      SR0 s1                              ;divide by 2
+E: symbol not defined: `S1'.
+0B4 220B1        431                      JUMP go_down_loop
+                 432                      ;
+                 433                      ;**************************************************************************************
+                 434                      ; UART communication routines
+                 435                      ;**************************************************************************************
+                 436                      ;
+                 437                      ; Read one character from the UART
+                 438                      ;
+                 439                      ; Character read will be returned in a register called 'UART_data'.
+                 440                      ;
+                 441                      ; The routine first tests the receiver FIFO buffer to see if data is present.
+                 442                      ; If the FIFO is empty, the routine waits until there is a character to read.
+                 443                      ; As this could take any amount of time the wait loop could include a call to a
+                 444                      ; subroutine which performs a useful function.
+                 445                      ;
+                 446                      ;
+                 447                      ; Registers used s0 and UART_data
+                 448                      ;
+0B5 09100        449      read_from_UART: INPUT s0, status_port               ;test Rx_FIFO buffer
+E: symbol not defined: `S0'.
+0B6 0C140        450                      TEST s0, rx_data_present            ;wait if empty
+E: symbol not defined: `S0'.
+0B7 360B9        451                      JUMP NZ, read_character
+0B8 220B5        452                      JUMP read_from_UART
+0B9 09101        453      read_character: INPUT UART_data, UART_read_port     ;read from FIFO
+0BA 25000        454                      RETURN
+                 455                      ;
+                 456                      ;
+                 457                      ;
+                 458                      ; Transmit one character to the UART
+                 459                      ;
+                 460                      ; Character supplied in register called 'UART_data'.
+                 461                      ;
+                 462                      ; The routine first tests the transmit FIFO buffer to see if it is full.
+                 463                      ; If the FIFO is full, then the routine waits until it there is space.
+                 464                      ;
+                 465                      ; Registers used s0
+                 466                      ;
+0BB 09100        467        send_to_UART: INPUT s0, status_port               ;test Tx_FIFO buffer
+E: symbol not defined: `S0'.
+0BC 0C120        468                      TEST s0, tx_full                    ;wait if full
+E: symbol not defined: `S0'.
+0BD 320BF        469                      JUMP Z, UART_write
+0BE 220BB        470                      JUMP send_to_UART
+0BF 2D114        471          UART_write: OUTPUT UART_data, UART_write_port
+0C0 25000        472                      RETURN
+                 473                      ;
+                 474                      ;
+                 475                      ;
+                 476                      ;**************************************************************************************
+                 477                      ; Text messages
+                 478                      ;**************************************************************************************
+                 479                      ;
+                 480                      ;
+                 481                      ; Send Carriage Return to the UART
+                 482                      ;
+0C1 00100        483             send_CR: LOAD UART_data, character_CR
+0C2 200BB        484                      CALL send_to_UART
+0C3 25000        485                      RETURN
+                 486                      ;
+                 487                      ; Send a space to the UART
+                 488                      ;
+0C4 00140        489          send_space: LOAD UART_data, character_space
+W: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+0C5 200BB        490                      CALL send_to_UART
+0C6 25000        491                      RETURN
+                 492                      ;
+                 493                      ;
+                 494                      ;
+                 495                      ; Send 'PicoBlaze Servo Control' string to the UART
+                 496                      ;
+0C7 200C1        497        send_welcome: CALL send_CR
+0C8 200C1        498                      CALL send_CR
+0C9 00160        499                      LOAD UART_data, character_P
+W: value out of range: 70, allowed range is [0,15] (trimmed to 4 bits) which makes it 6.
+0CA 200BB        500                      CALL send_to_UART
+0CB 00150        501                      LOAD UART_data, character_i
+W: value out of range: 69, allowed range is [0,15] (trimmed to 4 bits) which makes it 5.
+0CC 200BB        502                      CALL send_to_UART
+0CD 001F0        503                      LOAD UART_data, character_c
+W: value out of range: 63, allowed range is [0,15] (trimmed to 4 bits) which makes it 15.
+0CE 200BB        504                      CALL send_to_UART
+0CF 00110        505                      LOAD UART_data, character_o
+E: symbol not defined: `CHARACTER_O'.
+0D0 200BB        506                      CALL send_to_UART
+0D1 001E0        507                      LOAD UART_data, character_B
+W: value out of range: 62, allowed range is [0,15] (trimmed to 4 bits) which makes it 14.
+0D2 200BB        508                      CALL send_to_UART
+0D3 00110        509                      LOAD UART_data, character_l
+E: symbol not defined: `CHARACTER_L'.
+0D4 200BB        510                      CALL send_to_UART
+0D5 001D0        511                      LOAD UART_data, character_a
+W: value out of range: 61, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
+0D6 200BB        512                      CALL send_to_UART
+0D7 00110        513                      LOAD UART_data, character_z
+E: symbol not defined: `CHARACTER_Z'.
+0D8 200BB        514                      CALL send_to_UART
+0D9 00110        515                      LOAD UART_data, character_e
+W: value out of range: 65, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
+0DA 200BB        516                      CALL send_to_UART
+0DB 200C4        517                      CALL send_space
+0DC 001D0        518                      LOAD UART_data, character_A
+W: value out of range: 61, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
+0DD 200BB        519                      CALL send_to_UART
+0DE 001B0        520                      LOAD UART_data, character_u
+W: value out of range: 75, allowed range is [0,15] (trimmed to 4 bits) which makes it 11.
+0DF 200BB        521                      CALL send_to_UART
+0E0 001A0        522                      LOAD UART_data, character_t
+W: value out of range: 74, allowed range is [0,15] (trimmed to 4 bits) which makes it 10.
+0E1 200BB        523                      CALL send_to_UART
+0E2 00110        524                      LOAD UART_data, character_o
+E: symbol not defined: `CHARACTER_O'.
+0E3 200BB        525                      CALL send_to_UART
+0E4 200C4        526                      CALL send_space
+0E5 00160        527                      LOAD UART_data, character_P
+W: value out of range: 70, allowed range is [0,15] (trimmed to 4 bits) which makes it 6.
+0E6 200BB        528                      CALL send_to_UART
+0E7 001D0        529                      LOAD UART_data, character_W
+W: value out of range: 77, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
+0E8 200BB        530                      CALL send_to_UART
+0E9 00160        531                      LOAD UART_data, character_M
+0EA 200BB        532                      CALL send_to_UART
+0EB 200C4        533                      CALL send_space
+0EC 001D0        534                      LOAD UART_data, character_A
+W: value out of range: 61, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
+0ED 200BB        535                      CALL send_to_UART
+0EE 001F0        536                      LOAD UART_data, character_c
+W: value out of range: 63, allowed range is [0,15] (trimmed to 4 bits) which makes it 15.
+0EF 200BB        537                      CALL send_to_UART
+0F0 001A0        538                      LOAD UART_data, character_t
+W: value out of range: 74, allowed range is [0,15] (trimmed to 4 bits) which makes it 10.
+0F1 200BB        539                      CALL send_to_UART
+0F2 00150        540                      LOAD UART_data, character_i
+W: value out of range: 69, allowed range is [0,15] (trimmed to 4 bits) which makes it 5.
+0F3 200BB        541                      CALL send_to_UART
+0F4 001C0        542                      LOAD UART_data, character_v
+W: value out of range: 76, allowed range is [0,15] (trimmed to 4 bits) which makes it 12.
+0F5 200BB        543                      CALL send_to_UART
+0F6 00110        544                      LOAD UART_data, character_e
+W: value out of range: 65, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
+0F7 200BB        545                      CALL send_to_UART
+0F8 200C1        546                      CALL send_CR
+0F9 200C1        547                      CALL send_CR
+0FA 25000        548                      RETURN
+                 549                      ;
+                 550                      ;
+                 551                      ;Send 'OK' to the UART
+                 552                      ;
+0FB 200C1        553             send_OK: CALL send_CR
+0FC 00110        554                      LOAD UART_data, character_O
+E: symbol not defined: `CHARACTER_O'.
+0FD 200BB        555                      CALL send_to_UART
+0FE 00110        556                      LOAD UART_data, character_K
+E: symbol not defined: `CHARACTER_K'.
+0FF 200BB        557                      CALL send_to_UART
+100 220C1        558                      JUMP send_CR
+                 559                      ;
+                 560                      ;
+                 561                      ;**************************************************************************************
+                 562                      ; Interrupt Service Routine (ISR)
+                 563                      ;**************************************************************************************
+                 564                      ;
+                 565                      ; Interrupts occur at 3.92us intervals and are used to generate the PWM pulses generated
+                 566                      ; at a PRF of 1KHz. The 3.92us interrupt rate corresponds with a resolution of 256 steps
+                 567                      ; over the 1ms associated with the 1KHz PRF.
+                 568                      ;
+                 569                      ; The ISR is self contained and all registers used are preserved. Scratch pad memory
+                 570                      ; locations are used to determine the desired duty factor for each of 12 channels.
+                 571                      ;
+                 572                      ; Note that an interrupt is generated every 196 clock cycles. This means that there is
+                 573                      ; only time to execute 98 instructions between each interrupt. This ISR is 48 instructions
+                 574                      ; long. A further 3 instructions are also consumed by the interrupt process
+                 575                      ; (abandoned instruction, virtual CALL to 3FF and the interrupt vector JUMP) and hence
+                 576                      ; PicoBlaze has approximately half of its time available for other tasks in the main program.
+                 577                      ;
+                 578                      ; Although a loop would normal be employed in software to process each of 12 channels,
+                 579                      ; the implementation of a loop would increase the number of instructions which needed to
+                 580                      ; be executed to such an extent that this 12 channel implementation would not be possible.
+                 581                      ; Consequently the code is written out in a linear fashion which consumes more program
+                 582                      ; space but which executes faster.
+                 583                      ;
+101 2F100        584                 ISR: STORE s0, ISR_preserve_s0           ;preserve registers to be used
+E: symbol not defined: `S0'.
+102 2F101        585                      STORE s1, ISR_preserve_s1
+E: symbol not defined: `S1'.
+E: symbol not defined: `ISR_PRESERVE_S1'.
+103 2F101        586                      STORE s2, ISR_preserve_s2
+E: symbol not defined: `S2'.
+E: symbol not defined: `ISR_PRESERVE_S2'.
+                 587                      ;Determine the number of steps currently through the 1ms PWM cycle
+104 0B100        588                      FETCH s1, PWM_duty_counter          ;read 8-bit counter of steps
+E: symbol not defined: `S1'.
+105 10110        589                      ADD s1, 01                          ;increment counter (will roll over to zero)
+E: symbol not defined: `S1'.
+106 2F100        590                      STORE s1, PWM_duty_counter          ;update count value in memory for next interrupt.
+E: symbol not defined: `S1'.
+                 591                      ;Read duty factor for each channel and compare it with the duty counter and set or
+                 592                      ;reset a bit in register s2 accordingly.
+107 0B101        593                      FETCH s0, PWM_channel11             ;read desired setting of pulse width
+E: symbol not defined: `S0'.
+E: symbol not defined: `PWM_CHANNEL11'.
+108 1C110        594                      COMPARE s1, s0                      ;set carry flag if duty factor > duty counter
+E: symbol not defined: `S1'.
+E: symbol not defined: `S0'.
+109 14100        595                      SLA s2                              ;shift carry into register s2
+E: symbol not defined: `S2'.
+10A 0B100        596                      FETCH s0, PWM_channel10             ;read desired setting of pulse width
+E: symbol not defined: `S0'.
+10B 1C110        597                      COMPARE s1, s0                      ;set carry flag if duty factor > duty counter
+E: symbol not defined: `S1'.
+E: symbol not defined: `S0'.
+10C 14100        598                      SLA s2                              ;shift carry into register s2
+E: symbol not defined: `S2'.
+10D 0B101        599                      FETCH s0, PWM_channel9              ;read desired setting of pulse width
+E: symbol not defined: `S0'.
+E: symbol not defined: `PWM_CHANNEL9'.
+10E 1C110        600                      COMPARE s1, s0                      ;set carry flag if duty factor > duty counter
+E: symbol not defined: `S1'.
+E: symbol not defined: `S0'.
+10F 14100        601                      SLA s2                              ;shift carry into register s2
+E: symbol not defined: `S2'.
+110 0B109        602                      FETCH s0, PWM_channel8              ;read desired setting of pulse width
+E: symbol not defined: `S0'.
+111 1C110        603                      COMPARE s1, s0                      ;set carry flag if duty factor > duty counter
+E: symbol not defined: `S1'.
+E: symbol not defined: `S0'.
+112 14100        604                      SLA s2                              ;shift carry into register s2
+E: symbol not defined: `S2'.
+113 2D128        605                      OUTPUT s2, simple_port              ;drive pins on connector J4
+E: symbol not defined: `S2'.
+114 0B108        606                      FETCH s0, PWM_channel7              ;read desired setting of pulse width
+E: symbol not defined: `S0'.
+115 1C110        607                      COMPARE s1, s0                      ;set carry flag if duty factor > duty counter
+E: symbol not defined: `S1'.
+E: symbol not defined: `S0'.
+116 14100        608                      SLA s2                              ;shift carry into register s2
+E: symbol not defined: `S2'.
+117 0B107        609                      FETCH s0, PWM_channel6              ;read desired setting of pulse width
+E: symbol not defined: `S0'.
+118 1C110        610                      COMPARE s1, s0                      ;set carry flag if duty factor > duty counter
+E: symbol not defined: `S1'.
+E: symbol not defined: `S0'.
+119 14100        611                      SLA s2                              ;shift carry into register s2
+E: symbol not defined: `S2'.
+11A 0B106        612                      FETCH s0, PWM_channel5              ;read desired setting of pulse width
+E: symbol not defined: `S0'.
+11B 1C110        613                      COMPARE s1, s0                      ;set carry flag if duty factor > duty counter
+E: symbol not defined: `S1'.
+E: symbol not defined: `S0'.
+11C 14100        614                      SLA s2                              ;shift carry into register s2
+E: symbol not defined: `S2'.
+11D 0B105        615                      FETCH s0, PWM_channel4              ;read desired setting of pulse width
+E: symbol not defined: `S0'.
+11E 1C110        616                      COMPARE s1, s0                      ;set carry flag if duty factor > duty counter
+E: symbol not defined: `S1'.
+E: symbol not defined: `S0'.
+11F 14100        617                      SLA s2                              ;shift carry into register s2
+E: symbol not defined: `S2'.
+120 0B104        618                      FETCH s0, PWM_channel3              ;read desired setting of pulse width
+E: symbol not defined: `S0'.
+121 1C110        619                      COMPARE s1, s0                      ;set carry flag if duty factor > duty counter
+E: symbol not defined: `S1'.
+E: symbol not defined: `S0'.
+122 14100        620                      SLA s2                              ;shift carry into register s2
+E: symbol not defined: `S2'.
+123 0B103        621                      FETCH s0, PWM_channel2              ;read desired setting of pulse width
+E: symbol not defined: `S0'.
+124 1C110        622                      COMPARE s1, s0                      ;set carry flag if duty factor > duty counter
+E: symbol not defined: `S1'.
+E: symbol not defined: `S0'.
+125 14100        623                      SLA s2                              ;shift carry into register s2
+E: symbol not defined: `S2'.
+126 0B102        624                      FETCH s0, PWM_channel1              ;read desired setting of pulse width
+E: symbol not defined: `S0'.
+127 1C110        625                      COMPARE s1, s0                      ;set carry flag if duty factor > duty counter
+E: symbol not defined: `S1'.
+E: symbol not defined: `S0'.
+128 14100        626                      SLA s2                              ;shift carry into register s2
+E: symbol not defined: `S2'.
+129 0B101        627                      FETCH s0, PWM_channel0              ;read desired setting of pulse width
+E: symbol not defined: `S0'.
+12A 1C110        628                      COMPARE s1, s0                      ;set carry flag if duty factor > duty counter
+E: symbol not defined: `S1'.
+E: symbol not defined: `S0'.
+12B 14100        629                      SLA s2                              ;shift carry into register s2
+E: symbol not defined: `S2'.
+12C 2D150        630                      OUTPUT s2, LED_port                 ;drive LEDs
+E: symbol not defined: `S2'.
+12D 0B100        631                      FETCH s0, ISR_preserve_s0           ;restore register values
+E: symbol not defined: `S0'.
+12E 0B101        632                      FETCH s1, ISR_preserve_s1
+E: symbol not defined: `S1'.
+E: symbol not defined: `ISR_PRESERVE_S1'.
+12F 0B101        633                      FETCH s2, ISR_preserve_s2
+E: symbol not defined: `S2'.
+E: symbol not defined: `ISR_PRESERVE_S2'.
+130 29001        634                      RETURNI ENABLE
+                 635                      ;
+                 636                      ;
+                 637                      ;**************************************************************************************
+                 638                      ; Interrupt Vector
+                 639                      ;**************************************************************************************
+                 640                      ;
+                 641                      ADDRESS 3FF
+E: identifier cannot start with a digit: `3FF'.
+E: directive ADDRESS requires a single argument.
+131 22101        642                      JUMP ISR
+                 643                      ;
+                 644                      ;

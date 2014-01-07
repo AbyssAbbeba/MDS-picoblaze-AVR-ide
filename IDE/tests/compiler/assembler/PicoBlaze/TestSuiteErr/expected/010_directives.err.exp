@@ -1,0 +1,3 @@
+MT_WARNING: 010_directives.asm:5.1-5.21: Warning: reusing already reserved space in register file memory at address: 1.
+MT_WARNING: Warning: exact device not specified, using KCPSM6 by default.
+MT_ERROR: 010_directives.asm:26.25-26.27: Error: symbol not defined: `SC'.

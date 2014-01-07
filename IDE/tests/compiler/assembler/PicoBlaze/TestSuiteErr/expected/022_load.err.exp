@@ -1,0 +1,6 @@
+MT_ERROR: 022_load.asm:439.22-439.35: Error: unexpected instruction JUMP_NZ.
+MT_ERROR: 022_load.asm:448.22-448.25: Error: unexpected instruction SUB.
+MT_ERROR: 022_load.asm:456.44-456.45: Error: unexpected IDENTIFIER.
+MT_ERROR: 022_load.asm:460.38-460.41: Error: identifier cannot start with a digit: `1bb'.
+MT_ERROR: 022_load.asm:460.38-461.1: Error: unexpected end of line.
+MT_ERROR: 022_load.asm:3596.25-3596.25: Error: unexpected end of file.

@@ -1,0 +1,2 @@
+MT_WARNING: Warning: exact device not specified, using KCPSM6 by default.
+MT_ERROR: 006_random_code_01.asm:14.19-14.29: Error: symbol not defined: `TESTSYMB10'.

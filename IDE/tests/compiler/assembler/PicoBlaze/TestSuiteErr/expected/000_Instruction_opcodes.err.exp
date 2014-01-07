@@ -1,0 +1,4 @@
+MT_ERROR: 000_Instruction_opcodes.asm:87.31-87.33: Error: identifier cannot start with a digit: `5x'.
+MT_ERROR: 000_Instruction_opcodes.asm:87.31-88.1: Error: unexpected end of line.
+MT_ERROR: 000_Instruction_opcodes.asm:91.20-91.22: Error: unexpected IDENTIFIER, expecting end of file or COMMENT or end of line.
+MT_WARNING: Warning: exact device not specified, using KCPSM6 by default.
