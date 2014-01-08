@@ -65,18 +65,21 @@ for gcovFile in "${GCOV_FILES[@]}"; do
 
         if (( 1 == ${inResults} )); then
             orgLine="${RESULTS[${filename}:${lineno}]}"
-            if [[ "${line}" =~ ^' '*((#####)|(\=\=\=\=\=)|(\-)): ]]; then
-                line="${orgLine}"
-            elif [[ "${line}" =~ ^' '*[0-9]+: && "${orgLine}" =~ ^' '*[0-9]+: ]]; then
-                [[ "${line}" =~ ^' '*[0-9]+: ]]
-                n=$(( ${#BASH_REMATCH[0]} - 1))
-                a="${line:0:${n}}"
 
-                [[ "${orgLine}" =~ ^' '*[0-9]+: ]]
-                n=$(( ${#BASH_REMATCH[0]} - 1))
-                b="${orgLine:0:${n}}"
+            if [[ ! "${orgLine}" =~ ^' '*-: ]]; then
+                if [[ "${line}" =~ ^' '*((#####)|(\=\=\=\=\=)|(\-)): ]]; then
+                    line="${orgLine}"
+                elif [[ "${line}" =~ ^' '*[0-9]+: && "${orgLine}" =~ ^' '*[0-9]+: ]]; then
+                    [[ "${line}" =~ ^' '*[0-9]+: ]]
+                    n=$(( ${#BASH_REMATCH[0]} - 1))
+                    a="${line:0:${n}}"
 
-                line="$(( a + b ))${orgLine:n}"
+                    [[ "${orgLine}" =~ ^' '*[0-9]+: ]]
+                    n=$(( ${#BASH_REMATCH[0]} - 1))
+                    b="${orgLine:0:${n}}"
+
+                    line="$(( a + b ))${orgLine:n}"
+                fi
             fi
         fi
 
