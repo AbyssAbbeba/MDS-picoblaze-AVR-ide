@@ -69,7 +69,7 @@ for gcovFile in "${GCOV_FILES[@]}"; do
             if [[ ! "${orgLine}" =~ ^' '*-: ]]; then
                 if [[ "${line}" =~ ^' '*((#####)|(\=\=\=\=\=)|(\-)): ]]; then
                     line="${orgLine}"
-                elif [[ "${line}" =~ ^' '*[0-9]+: && "${orgLine}" =~ ^' '*[0-9]+: ]]; then
+                elif [[ "${orgLine}" =~ ^' '*[0-9]+: ]]; then
                     [[ "${line}" =~ ^' '*[0-9]+: ]]
                     n=$(( ${#BASH_REMATCH[0]} - 1))
                     a="${line:0:${n}}"
