@@ -85,6 +85,7 @@ inline bool AsmTranslator::translate ( AsmTranslatorBase * translator,
     // Process the input in two steps.
     {
         bool success = true;
+
         for ( std::vector<std::string>::iterator line = buffer.begin();
               buffer.end() != line;
               line++ )
@@ -94,6 +95,7 @@ inline bool AsmTranslator::translate ( AsmTranslatorBase * translator,
                 success = false;
             }
         }
+
         for ( std::vector<std::string>::iterator line = buffer.begin();
               buffer.end() != line;
               line++ )
@@ -103,6 +105,7 @@ inline bool AsmTranslator::translate ( AsmTranslatorBase * translator,
                 success = false;
             }
         }
+
         if ( false == success )
         {
             return false;
@@ -110,7 +113,7 @@ inline bool AsmTranslator::translate ( AsmTranslatorBase * translator,
     }
 
     // Write output.
-    for ( auto line : translator->m_prologue )
+    for ( const auto line : translator->m_prologue )
     {
         output << line << std::endl;
         if ( true == output.bad() )
@@ -119,7 +122,7 @@ inline bool AsmTranslator::translate ( AsmTranslatorBase * translator,
             return false;
         }
     }
-    for ( auto line : buffer )
+    for ( const auto line : buffer )
     {
         output << line << std::endl;
         if ( true == output.bad() )

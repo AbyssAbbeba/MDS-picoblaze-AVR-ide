@@ -14,19 +14,20 @@ declare -ri MERGE_LOGS=${merge_logs:-0}
 declare -r  XSLT_PROC_LOG_SUFFIX="xsltproc.log"
 declare -ri CPU_CORES=$( which lscpu &> /dev/null && lscpu |
                          gawk 'BEGIN {n=1} END {print(n)} /^CPU\(s\)/ {n=$2;exit}' || echo 1 )
+declare -ri PP=${CPU_CORES}
 
 # ======================================================================================================================
 # SUPPORT FOR PARALLEL RUN OF MULTIPLE JOBS
 # ======================================================================================================================
 
-## Run all jobs in array ${JOBS[@]} (bash scripts) in parallel in accordance with CPU_CORES variable
- # ( #jobs <= CPU_CORES+1 ), if CPU_CORES == 1 then jobs are run sequentially (i.e. not in parallel).
+## Run all jobs in array ${JOBS[@]} (bash scripts) in parallel in accordance with PP variable
+ # ( #jobs <= ( PP + ${1:-0} ) ), if PP == 1 then jobs are run sequentially (i.e. not in parallel).
 function runParallelJobs() {
     local -a runningJobs
     local -i next
     local    job
 
-    if (( 1 == ${CPU_CORES} )); then
+    if (( 1 == ${PP} )); then
         for job in "${JOBS[@]}"; do
             wait
             bash -c "${job}" &
@@ -35,7 +36,7 @@ function runParallelJobs() {
         next=0
         while (( ${next} < ${#JOBS[@]} )); do
             runningJobs=( $( jobs -pr ) )
-            for (( i=0; i < ( 1 + ${CPU_CORES} - ${#runningJobs[@]} ); i++ )); do
+            for (( i=0; i < ( ${1:-0} + ${PP} - ${#runningJobs[@]} ); i++ )); do
                 if (( ${next} >= ${#JOBS[@]} )); then
                     # No more jobs left to do.
                     break
@@ -112,7 +113,7 @@ for i in *-Listing.xml; do
 
     let idx++
 done
-runParallelJobs
+runParallelJobs ${PP} # (${PP} in args. means run in twice as many processes as usual.)
 
 read megaBytesOfGcov _ <<< $( wc -c $(find . -name '*.gcov') | tail -n 1 )
 megaBytesOfGcov=$( bc -q <<< "scale = 2; ${megaBytesOfGcov} / ( 1024 * 1024 )" )

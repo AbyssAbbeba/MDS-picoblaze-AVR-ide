@@ -21,6 +21,7 @@
 
 // Standard header files.
 #include <set>
+#include <map>
 #include <string>
 #include <vector>
 
@@ -64,6 +65,13 @@ class AsmTranslatorKcpsmXil : public AsmTranslatorBase
         void fixRadix ( LineFields & lineFields,
                         int i );
 
+        /**
+         * @brief
+         * @param[in] id
+         * @return
+         */
+        std::string newIdentifier ( const std::string & id );
+
     ////    Inline Private Operations    ////
     private:
         /**
@@ -90,6 +98,12 @@ class AsmTranslatorKcpsmXil : public AsmTranslatorBase
          * @return
          */
         inline bool ishex ( const std::string & str ) const;
+
+        /**
+         * @brief
+         * @param[in,out] lineFields
+         */
+        inline void translateIdentifiers ( AsmTranslatorBase::LineFields & lineFields );
 
     ////    Private Attributes    ////
     private:
@@ -128,6 +142,9 @@ class AsmTranslatorKcpsmXil : public AsmTranslatorBase
 
         /// @brief
         std::set<std::string> m_usedIDs;
+
+        /// @brief
+        std::map<std::string,std::string> m_idTranslationMap;
 
         /// @brief
         bool m_instFlag;

@@ -32,6 +32,8 @@ class AsmTranslatorConfig
 
     ////    Public Attributes    ////
     public:
+        ///
+//         bool m_
 };
 
 #endif // ASMTRANSLATORCONFIG_H

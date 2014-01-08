@@ -194,6 +194,8 @@
               cold_start: CALL DS_wire_init                      ;Ensure DS_wire is not driven (pulled High)
                           CALL delay_1s                          ;Allow everything to settle!
            welcome_start: CALL send_welcome                      ;start up message and version number
+
+call @(character_y, character_Y)
                           ;
                           ;
                           ;

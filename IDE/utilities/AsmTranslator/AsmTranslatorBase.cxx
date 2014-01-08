@@ -31,7 +31,7 @@ AsmTranslatorBase::LineFields::LineFields ( std::string & line )
     m_comment[1] = -1;
 }
 
-std::string AsmTranslatorBase::LineFields::getLabel() const
+std::string AsmTranslatorBase::LineFields::getLabel ( bool keepCase ) const
 {
     if ( ( -1 == m_label[0] ) || ( -1 == m_label[1] ) )
     {
@@ -39,11 +39,14 @@ std::string AsmTranslatorBase::LineFields::getLabel() const
     }
 
     std::string result = m_line->substr(m_label[0], m_label[1] - m_label[0]);
-    std::transform(result.begin(), result.end(), result.begin(), ::tolower);
+    if ( false == keepCase )
+    {
+        std::transform(result.begin(), result.end(), result.begin(), ::tolower);
+    }
     return result;
 }
 
-std::string AsmTranslatorBase::LineFields::getInstruction() const
+std::string AsmTranslatorBase::LineFields::getInstruction ( bool keepCase ) const
 {
     if ( ( -1 == m_instruction[0] ) || ( -1 == m_instruction[1] ) )
     {
@@ -51,19 +54,28 @@ std::string AsmTranslatorBase::LineFields::getInstruction() const
     }
 
     std::string result = m_line->substr(m_instruction[0], m_instruction[1] - m_instruction[0]);
-    std::transform(result.begin(), result.end(), result.begin(), ::tolower);
+    if ( false == keepCase )
+    {
+        std::transform(result.begin(), result.end(), result.begin(), ::tolower);
+    }
     return result;
 }
 
-std::string AsmTranslatorBase::LineFields::getOperand ( unsigned int number ) const
+std::string AsmTranslatorBase::LineFields::getOperand ( unsigned int number,
+                                                        bool keepCase ) const
 {
     if ( false == hasOperand(number) )
     {
         return "";
     }
 
-    std::string result = m_line->substr(m_operands[number].first, m_operands[number].second - m_operands[number].first);
-    std::transform(result.begin(), result.end(), result.begin(), ::tolower);
+    std::string result = m_line->substr ( m_operands[number].first,
+                                          m_operands[number].second - m_operands[number].first );
+
+    if ( false == keepCase )
+    {
+        std::transform(result.begin(), result.end(), result.begin(), ::tolower);
+    }
     return result;
 }
 

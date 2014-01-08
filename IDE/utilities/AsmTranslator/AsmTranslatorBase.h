@@ -53,22 +53,26 @@ class AsmTranslatorBase
 
             /**
              * @brief
+             * @param[in] keepCase
              * @return
              */
-            std::string getLabel() const;
+            std::string getLabel ( bool keepCase = false ) const;
 
             /**
              * @brief
+             * @param[in] keepCase
              * @return
              */
-            std::string getInstruction() const;
+            std::string getInstruction ( bool keepCase = false ) const;
 
             /**
              * @brief
              * @param[in] number
+             * @param[in] keepCase
              * @return
              */
-            std::string getOperand ( unsigned int number = 0 ) const;
+            std::string getOperand ( unsigned int number = 0,
+                                     bool keepCase = false ) const;
 
             /**
              * @brief
