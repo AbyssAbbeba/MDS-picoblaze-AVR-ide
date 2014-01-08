@@ -122,39 +122,38 @@
 // -----------------------------------------------------------------------------------------
 %token EOS              ";"
 
-%token KW_AUTO          "auto"
 %token KW_BREAK         "break"
-//%token KW_BOOL;         "bool"
 %token KW_CASE          "case"
-%token KW_CONST         "const"
 %token KW_CONTINUE      "continue"
 %token KW_DEFAULT       "default"
 %token KW_DO            "do"
 %token KW_ELSE          "else"
-%token KW_EXTERN        "extern"
 %token KW_FOR           "for"
 %token KW_GOTO          "goto"
 %token KW_IF            "if"
-%token KW_REGISTER      "register"
 %token KW_RETURN        "return"
 %token KW_SIZEOF        "sizeof"
-%token KW_STATIC        "static"
 %token KW_SWITCH        "switch"
-%token KW_TYPEDEF       "typedef"
-%token KW_VOLATILE      "volatile"
 %token KW_WHILE         "while"
 
+%token DATA_AUTO        "auto"
 %token DATA_CHAR        "char"
+%token DATA_CONST       "const"
 %token DATA_DOUBLE      "double"
 %token DATA_ENUM        "enum"
+%token DATA_EXTERN      "extern"
 %token DATA_FLOAT       "float"
 %token DATA_INT         "int"
 %token DATA_LONG        "long"
+%token DATA_REGISTER    "register"
 %token DATA_SHORT       "short"
 %token DATA_SIGNED      "signed"
+%token DATA_STATIC      "static"
 %token DATA_STRUCT      "struct"
+%token DATA_TYPEDEF     "typedef"
 %token DATA_UNION       "union"
 %token DATA_UNSIGNED    "unsigned"
+%token DATA_VOLATILE    "volatile"
 %token DATA_VOID        "void"
 
 %token B_RND_LEFT       "("
@@ -199,15 +198,13 @@
 %token O_SHR_ASSIGN     ">>="
 %token O_BAND_ASSIGN    "&="
 %token O_BOR_ASSIGN     "|="
-%token O_LAND_ASSIGN    "&&="
-%token O_LOR_ASSIGN     "||="
 %token O_XOR_ASSIGN     "^="
 %token O_DECREMENT      "--"
 %token O_INCREMENT      "++"
 
 /* Operator precedence (the one declared later has the higher precedence). */
 %left ","
-%right "&=" "^=" "|=" "&&=" "||="
+%right "&=" "^=" "|="
 %right "<<=" ">>="
 %right "*=" "/=" "%="
 %right "+=" "-="
@@ -248,6 +245,7 @@
  */
 // Expressions.
 %type<expr>     expr            e_expr      id      string      param       param_list      indexes     datatype
+%type<expr>     decl            decl_list   dt
 // Statements - general.
 %type<stmt>     statements      stmt        cases   scope       switch_body
 
@@ -326,18 +324,16 @@ stmt:
     | "return" e_expr ";"           {
                                         $$ = new CompilerStatement(LOC(@$), C_STMT_RETURN, $e_expr);
                                     }
-    | datatype id ";"               {
-                                        $$ = new CompilerStatement(LOC(@$), C_STMT_VAR, $datatype->appendLink($id));
+    | datatype decl_list ";"        {
+                                        $$ = new CompilerStatement(LOC(@$), C_STMT_VAR, $datatype->appendLink($decl_list));
                                     }
-    | datatype id "(" param_list ")" ";"
-                                    {
-                                        $$ = new CompilerStatement(LOC(@$), C_STMT_FUNC, $datatype->appendLink($id)->appendLink($param_list));
-                                    }
-    | datatype id "(" param_list ")" scope
+    | datatype id "(" param_list ")" stmt
                                     {
                                         $$ = new CompilerStatement(LOC(@$), C_STMT_FUNC, $datatype->appendLink($id)->appendLink($param_list));
                                         $$->createBranch($6);
                                     }
+    //| "typedef" datatype id ";"     {
+    //                                }
     | "if" "(" expr ")" stmt        {
                                         CompilerStatement *ifBlock = new CompilerStatement(LOC(@1), C_STMT_IF, $expr);
                                         ifBlock->createBranch($5);
@@ -373,16 +369,13 @@ stmt:
                                         $$ = new CompilerStatement(LOC(@$), C_STMT_SWITCH, $expr);
                                         $$->createBranch($switch_body);
                                     }
-    | "switch" "(" expr ")" "{" /* empty */ "}"
-                                    {
-                                        $$ = new CompilerStatement(LOC(@$), C_STMT_SWITCH, $expr);
-                                    }
 ;
 
 
 // `switch' statement body.
 switch_body:
-      cases statements              { $$ = $cases->createBranch($statements);                  }
+      /* empty */                   { $$ = NULL;                                               }
+    | cases statements              { $$ = $cases->createBranch($statements);                  }
     | switch_body cases statements  { $$ = $1->appendLink($cases->createBranch($statements));  }
 ;
 
@@ -418,17 +411,27 @@ id:
 
 
 
+decl:
+      id                            {
+                                        $$ = $id;
+                                    }
+    | id "=" expr                   {
+                                        $$ = new CompilerExpr($id, CompilerExpr::OPER_ASSIGN, $expr, LOC(@$));
+                                    }
+;
+
+
+// List of function parameters.
+decl_list:
+      decl                          { $$ = $decl;                                                   }
+    | decl_list "," decl            { $$ = $1->appendLink($decl);                                   }
+;
+
+
+
 param:
       datatype id                   {
-                                        $$ = $id;
-                                    }
-    | datatype "&" id               {
-                                        $$ = $id;
-                                        $id->m_operator = CompilerExpr::OPER_REF;
-                                    }
-    | datatype "*" id               {
-                                        $$ = $id;
-                                        $id->m_operator = CompilerExpr::OPER_DEREF;
+                                        $$ = $datatype->appendLink($id);
                                     }
 ;
 
@@ -443,7 +446,7 @@ param_list:
 
 // Expression, possibly empty.
 e_expr:
-      /* empty */                   { $$ = NULL;                                                    }
+      /* empty */                   { $$ = new CompilerExpr(LOC(@$));                               }
     | expr                          { $$ = $expr;                                                   }
 ;
 
@@ -451,25 +454,57 @@ e_expr:
 // String constant.
 string:
       STRING                        {
-                                        //$ = new CompilerExpr(CompilerValue($STRING.data, $STRING.size), LOC(@$));
+                                         $$ = new CompilerExpr(std::string($STRING.data, $STRING.size), LOC(@$));
                                     }
 ;
 
 
-// Datatypes
 datatype:
-      /* empty */                   {  }
-    | "char"                        {  }
-    | "double"                      {  }
-    | "enum"                        {  }
-    | "float"                       {  }
-    | "int"                         {  }
-    | "long"                        {  }
-    | "short"                       {  }
-    | "signed"                      {  }
-    | "struct"                      {  }
-    | "union"                       {  }
-    | "unsigned"                    {  }
+     dt                             { $$ = $dt;                                                                    }
+    | datatype dt                   { $$ = new CompilerExpr($1, CompilerExpr::OPER_DATATYPE, $dt, LOC(@$));        }
+;
+
+// Datatypes
+dt:
+      /* empty */                   {
+                                        $$ = new CompilerExpr(CompilerValue(0), CompilerExpr::OPER_DATATYPE, LOC(@$));
+                                    }
+    | "char"                        {
+                                        $$ = new CompilerExpr(CompilerValue(1), CompilerExpr::OPER_DATATYPE, LOC(@$));
+                                    }
+    | "double"                      {
+                                        $$ = new CompilerExpr(CompilerValue(2), CompilerExpr::OPER_DATATYPE, LOC(@$));
+                                    }
+    | "enum"                        {
+                                        $$ = new CompilerExpr(CompilerValue(3), CompilerExpr::OPER_DATATYPE, LOC(@$));
+                                    }
+    | "float"                       {
+                                        $$ = new CompilerExpr(CompilerValue(4), CompilerExpr::OPER_DATATYPE, LOC(@$));
+                                    }
+    | "int"                         {
+                                        $$ = new CompilerExpr(CompilerValue(5), CompilerExpr::OPER_DATATYPE, LOC(@$));
+                                    }
+    | "long"                        {
+                                        $$ = new CompilerExpr(CompilerValue(6), CompilerExpr::OPER_DATATYPE, LOC(@$));
+                                    }
+    | "short"                       {
+                                        $$ = new CompilerExpr(CompilerValue(7), CompilerExpr::OPER_DATATYPE, LOC(@$));
+                                    }
+    | "signed"                      {
+                                        $$ = new CompilerExpr(CompilerValue(8), CompilerExpr::OPER_DATATYPE, LOC(@$));
+                                    }
+    | "struct"                      {
+                                        $$ = new CompilerExpr(CompilerValue(9), CompilerExpr::OPER_DATATYPE, LOC(@$));
+                                    }
+    | "union"                       {
+                                        $$ = new CompilerExpr(CompilerValue(10), CompilerExpr::OPER_DATATYPE, LOC(@$));
+                                    }
+    | "unsigned"                    {
+                                        $$ = new CompilerExpr(CompilerValue(11), CompilerExpr::OPER_DATATYPE, LOC(@$));
+                                    }
+    | "void"                        {
+                                        $$ = new CompilerExpr(CompilerValue(12), CompilerExpr::OPER_DATATYPE, LOC(@$));
+                                    }
 ;
 
 
@@ -527,6 +562,7 @@ expr:
     | expr "++" %prec POST_INC      { $$ = new CompilerExpr($1, CompilerExpr::OPER_POST_INC, LOC(@$));           }
     | expr "--" %prec POST_DEC      { $$ = new CompilerExpr($1, CompilerExpr::OPER_POST_DEC, LOC(@$));           }
 
+
     // Ternary operator.
     | expr "?" expr ":" expr        {
                                         CompilerExpr *choices = new CompilerExpr($3, CompilerExpr::OPER_COLON, $5, LOC(@$));
@@ -554,12 +590,12 @@ indexes:
 ;
 
 
-struct_index:
+/*member_access:
       id "." id                     {  }
     | id "->" id                    {  }
-    | id "." struct_index           {  }
-    | id "->" struct_index          {  }
-;
+    | id "." member_access          {  }
+    | id "->" member_access         {  }
+;*/
 
 %%
 

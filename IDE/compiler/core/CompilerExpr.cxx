@@ -381,10 +381,11 @@ std::ostream & operator << ( std::ostream & out,
         case CompilerExpr::OPER_TERNARY:     out << "?:";       break;
         case CompilerExpr::OPER_COLON:       out << ":";        break;
         case CompilerExpr::OPER_INDEX:       out << "[]";       break;
-        case CompilerExpr::OPER_POST_INC:    out << "post++";    break;
-        case CompilerExpr::OPER_POST_DEC:    out << "post--";    break;
-        case CompilerExpr::OPER_PRE_INC:     out << "++pre";   break;
-        case CompilerExpr::OPER_PRE_DEC:     out << "--pre";   break;
+        case CompilerExpr::OPER_POST_INC:    out << "post++";   break;
+        case CompilerExpr::OPER_POST_DEC:    out << "post--";   break;
+        case CompilerExpr::OPER_PRE_INC:     out << "++pre";    break;
+        case CompilerExpr::OPER_PRE_DEC:     out << "--pre";    break;
+        case CompilerExpr::OPER_DATATYPE:    out << "datatype"; break;
         
     }
     return out;
