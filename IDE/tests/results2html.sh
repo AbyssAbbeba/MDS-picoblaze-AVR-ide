@@ -9,7 +9,7 @@ if ! which xsltproc &> /dev/null; then
     exit 1
 fi
 
-declare -ri CLEAN_UP=${clean_up:-1}
+declare -ri CLEAN_UP=${clean_up:-0}
 declare -ri MERGE_LOGS=${merge_logs:-0}
 declare -r  XSLT_PROC_LOG_SUFFIX="xsltproc.log"
 declare -ri CPU_CORES=$( which lscpu &> /dev/null && lscpu |
@@ -21,7 +21,7 @@ declare -ri PP=${CPU_CORES}
 # ======================================================================================================================
 
 ## Run all jobs in array ${JOBS[@]} (bash scripts) in parallel in accordance with PP variable
- # ( #jobs <= PP ), if PP == 1 then jobs are run sequentially (i.e. not in parallel).
+ # ( #jobs <= ( PP + ${1:-0} ) ), if PP == 1 then jobs are run sequentially (i.e. not in parallel).
 function runParallelJobs() {
     local -a runningJobs
     local -i next
@@ -36,7 +36,7 @@ function runParallelJobs() {
         next=0
         while (( ${next} < ${#JOBS[@]} )); do
             runningJobs=( $( jobs -pr ) )
-            for (( i=0; i < ( ${PP} - ${#runningJobs[@]} ); i++ )); do
+            for (( i=0; i < ( ${1:-0} + ${PP} - ${#runningJobs[@]} ); i++ )); do
                 if (( ${next} >= ${#JOBS[@]} )); then
                     # No more jobs left to do.
                     break
@@ -113,7 +113,7 @@ for i in *-Listing.xml; do
 
     let idx++
 done
-runParallelJobs
+runParallelJobs ${PP} # (${PP} in args. means run in twice as many processes as usual.)
 
 read megaBytesOfGcov _ <<< $( wc -c $(find . -name '*.gcov') | tail -n 1 )
 megaBytesOfGcov=$( bc -q <<< "scale = 2; ${megaBytesOfGcov} / ( 1024 * 1024 )" )
