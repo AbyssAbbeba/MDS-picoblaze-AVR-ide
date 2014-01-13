@@ -24,10 +24,10 @@
 MScriptStatement::MScriptStatement()
 {
     m_type = MScriptStmtTypes::STMT_EMPTY;
-    m_args = NULL;
-    m_next = NULL;
-    m_prev = NULL;
-    m_branch = NULL;
+    m_args = nullptr;
+    m_next = nullptr;
+    m_prev = nullptr;
+    m_branch = nullptr;
 }
 
 MScriptStatement::MScriptStatement ( const MScriptSrcLocation & location,
@@ -36,17 +36,17 @@ MScriptStatement::MScriptStatement ( const MScriptSrcLocation & location,
 {
     m_location = location;
     m_type = type;
-    m_next = NULL;
-    m_prev = NULL;
-    m_branch = NULL;
+    m_next = nullptr;
+    m_prev = nullptr;
+    m_branch = nullptr;
 
-    if ( NULL != args )
+    if ( nullptr != args )
     {
         m_args = args->first();
     }
     else
     {
-        m_args = NULL;
+        m_args = nullptr;
     }
 }
 
@@ -74,19 +74,19 @@ MScriptStatement::MScriptStatement ( MScriptSerializer & input )
 
 MScriptStatement::~MScriptStatement()
 {
-    if ( NULL != m_args )
+    if ( nullptr != m_args )
     {
         m_args->completeDelete();
     }
-    if ( NULL != m_branch )
+    if ( nullptr != m_branch )
     {
         m_branch->completeDelete();
     }
-    if ( NULL != m_prev )
+    if ( nullptr != m_prev )
     {
         m_prev->m_next = m_next;
     }
-    if ( NULL != m_next )
+    if ( nullptr != m_next )
     {
         m_next->m_prev = m_prev;
     }
@@ -94,11 +94,11 @@ MScriptStatement::~MScriptStatement()
 
 MScriptStatement * MScriptStatement::createBranch ( MScriptStatement * branch )
 {
-    if ( NULL == this )
+    if ( nullptr == this )
     {
-        return NULL;
+        return nullptr;
     }
-    if ( NULL == branch )
+    if ( nullptr == branch )
     {
         return this;
     }
@@ -110,14 +110,14 @@ MScriptStatement * MScriptStatement::createBranch ( MScriptStatement * branch )
 
 MScriptStatement * MScriptStatement::first()
 {
-    if ( NULL == this )
+    if ( nullptr == this )
     {
-        return NULL;
+        return nullptr;
     }
 
     MScriptStatement * stmt = this;
 
-    while ( NULL != stmt->m_prev )
+    while ( nullptr != stmt->m_prev )
     {
         stmt = stmt->m_prev;
     }
@@ -128,7 +128,7 @@ MScriptStatement * MScriptStatement::first()
 MScriptStatement * MScriptStatement::last()
 {
     MScriptStatement * result = this;
-    while ( NULL != result->m_next )
+    while ( nullptr != result->m_next )
     {
         result = result->m_next;
     }
@@ -137,11 +137,11 @@ MScriptStatement * MScriptStatement::last()
 
 MScriptStatement * MScriptStatement::insertLink ( MScriptStatement * chainLink )
 {
-    if ( NULL == chainLink )
+    if ( nullptr == chainLink )
     {
         return this;
     }
-    if ( NULL == this )
+    if ( nullptr == this )
     {
         return chainLink;
     }
@@ -156,7 +156,7 @@ MScriptStatement * MScriptStatement::insertLink ( MScriptStatement * chainLink )
     chainLink->m_prev = this;
 
     chainLinkLast->m_next = nextOrig;
-    if ( NULL != nextOrig )
+    if ( nullptr != nextOrig )
     {
         nextOrig->m_prev = chainLinkLast;
     }
@@ -166,11 +166,11 @@ MScriptStatement * MScriptStatement::insertLink ( MScriptStatement * chainLink )
 
 MScriptStatement * MScriptStatement::appendLink ( MScriptStatement * chainLink )
 {
-    if ( NULL == chainLink )
+    if ( nullptr == chainLink )
     {
         return this;
     }
-    if ( NULL == this )
+    if ( nullptr == this )
     {
         return chainLink;
     }
@@ -178,7 +178,7 @@ MScriptStatement * MScriptStatement::appendLink ( MScriptStatement * chainLink )
     chainLink = chainLink->first();
 
     MScriptStatement * stmt = this;
-    while ( NULL != stmt->next() )
+    while ( nullptr != stmt->next() )
     {
         stmt = stmt->next();
     }
@@ -190,11 +190,11 @@ MScriptStatement * MScriptStatement::appendLink ( MScriptStatement * chainLink )
 
 MScriptStatement * MScriptStatement::prependLink ( MScriptStatement * chainLink )
 {
-    if ( NULL == chainLink )
+    if ( nullptr == chainLink )
     {
         return this;
     }
-    if ( NULL == this )
+    if ( nullptr == this )
     {
         return chainLink;
     }
@@ -211,36 +211,36 @@ MScriptStatement * MScriptStatement::prependLink ( MScriptStatement * chainLink 
 
 MScriptStatement * MScriptStatement::unlink()
 {
-    if ( NULL != m_next )
+    if ( nullptr != m_next )
     {
         m_next->m_prev = m_prev;
-        m_next = NULL;
+        m_next = nullptr;
     }
-    if ( NULL != m_prev )
+    if ( nullptr != m_prev )
     {
         m_prev->m_next = m_next;
-        m_prev = NULL;
+        m_prev = nullptr;
     }
     return this;
 }
 
 MScriptStatement * MScriptStatement::copyEntireChain() const
 {
-    if ( NULL == this )
+    if ( nullptr == this )
     {
-        return NULL;
+        return nullptr;
     }
 
     MScriptStatement * result = copyChainLink();
 
     const MScriptStatement * next = this;
-    while ( NULL != ( next = next->m_next ) )
+    while ( nullptr != ( next = next->m_next ) )
     {
         result->appendLink(next->copyChainLink());
     }
 
     const MScriptStatement * prev = this;
-    while ( NULL != ( prev = prev->m_prev ) )
+    while ( nullptr != ( prev = prev->m_prev ) )
     {
         result->prependLink(prev->copyChainLink());
     }
@@ -250,9 +250,9 @@ MScriptStatement * MScriptStatement::copyEntireChain() const
 
 MScriptStatement * MScriptStatement::copyChainLink() const
 {
-    if ( NULL == this )
+    if ( nullptr == this )
     {
-        return NULL;
+        return nullptr;
     }
 
     MScriptStatement * result = new MScriptStatement(m_location, m_type, m_args->copyEntireChain());
@@ -263,16 +263,16 @@ MScriptStatement * MScriptStatement::copyChainLink() const
 
 MScriptStatement * MScriptStatement::appendArgsLink ( MScriptExpr * chainLink )
 {
-    if ( NULL == this )
+    if ( nullptr == this )
     {
-        return NULL;
+        return nullptr;
     }
-    if ( NULL == chainLink )
+    if ( nullptr == chainLink )
     {
         return this;
     }
 
-    if ( NULL == m_args )
+    if ( nullptr == m_args )
     {
         m_args = chainLink;
     }
@@ -290,23 +290,23 @@ void MScriptStatement::completeDelete ( MScriptStatement * stmt )
 
 void MScriptStatement::completeDelete()
 {
-    if ( NULL == this )
+    if ( nullptr == this )
     {
         return;
     }
 
-    if ( NULL != m_next )
+    if ( nullptr != m_next )
     {
-        m_next->m_prev = NULL;
+        m_next->m_prev = nullptr;
         m_next->completeDelete();
-        m_next = NULL;
+        m_next = nullptr;
     }
 
-    if ( NULL != m_prev )
+    if ( nullptr != m_prev )
     {
-        m_prev->m_next = NULL;
+        m_prev->m_next = nullptr;
         m_prev->completeDelete();
-        m_prev = NULL;
+        m_prev = nullptr;
     }
 
     delete this;
@@ -315,7 +315,7 @@ void MScriptStatement::completeDelete()
 void MScriptStatement::serializeTree ( MScriptSerializer & output ) const
 {
     for ( const MScriptStatement * node = this;
-          NULL != node;
+          nullptr != node;
           node = node->next() )
     {
         output << node;
@@ -327,7 +327,7 @@ void MScriptStatement::serialize ( MScriptSerializer & output ) const
     output.write ( (uint32_t) m_type );
     output << m_location;
 
-    if ( NULL == m_args )
+    if ( nullptr == m_args )
     {
         output << MARK_TERMINAL;
     }
@@ -337,7 +337,7 @@ void MScriptStatement::serialize ( MScriptSerializer & output ) const
         output << m_args;
     }
 
-    if ( NULL == m_branch )
+    if ( nullptr == m_branch )
     {
         output << MARK_TERMINAL;
     }
@@ -347,7 +347,7 @@ void MScriptStatement::serialize ( MScriptSerializer & output ) const
         m_branch->serializeTree(output);
     }
 
-    if ( NULL == m_next )
+    if ( nullptr == m_next )
     {
         output << MARK_TERMINAL;
     }
@@ -359,10 +359,10 @@ void MScriptStatement::serialize ( MScriptSerializer & output ) const
 
 void MScriptStatement::deserialize ( MScriptSerializer & input )
 {
-    m_prev = NULL;
-    m_next = NULL;
-    m_branch = NULL;
-    m_args = NULL;
+    m_prev = nullptr;
+    m_next = nullptr;
+    m_branch = nullptr;
+    m_args = nullptr;
 
     m_type = MScriptStmtTypes::Type ( input.read_ui32() );
     input >> m_location;
@@ -393,9 +393,9 @@ std::ostream & MScriptStatement::print ( std::ostream & out,
               (unsigned int) (   0x00000000ffffffff & reinterpret_cast<long long unsigned int>(this) ) );
     out << addr << " ";
 
-    if ( NULL == this )
+    if ( nullptr == this )
     {
-        out << "<ERROR:NULL!>" << std::endl;
+        out << "<ERROR:nullptr!>" << std::endl;
         return out;
     }
 
@@ -411,9 +411,9 @@ std::ostream & MScriptStatement::print ( std::ostream & out,
         }
     }
 
-    if ( NULL == m_prev )
+    if ( nullptr == m_prev )
     {
-        if ( NULL == m_next )
+        if ( nullptr == m_next )
         {
             lineString[level] = '0';
         }
@@ -421,7 +421,7 @@ std::ostream & MScriptStatement::print ( std::ostream & out,
     }
     else
     {
-        if ( NULL == m_next )
+        if ( nullptr == m_next )
         {
             out << "  └─ ";
             lineString[level] = '0';
@@ -438,7 +438,7 @@ std::ostream & MScriptStatement::print ( std::ostream & out,
     out << m_location;
     out << "}";
 
-    if ( NULL != m_args )
+    if ( nullptr != m_args )
     {
         out << " [ ";
         out << m_args;
@@ -446,13 +446,13 @@ std::ostream & MScriptStatement::print ( std::ostream & out,
     }
     out << std::endl;
 
-    if ( NULL != m_branch )
+    if ( nullptr != m_branch )
     {
         lineString += "1";
         m_branch->print(out, level + 1, lineString);
     }
 
-    if ( NULL != m_next )
+    if ( nullptr != m_next )
     {
         m_next->print(out, level, lineString);
     }

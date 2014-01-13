@@ -331,7 +331,7 @@ void MScriptExprAlgebra::unaryOperation ( MScriptValue & result,
                         break;
                     }
 
-                    result.m_data.m_integer = strtoll ( input.m_data.m_string.m_data, NULL, base );
+                    result.m_data.m_integer = strtoll ( input.m_data.m_string.m_data, nullptr, base );
                     if ( ( LLONG_MIN == result.m_data.m_integer ) || ( LLONG_MAX == result.m_data.m_integer ) )
                     {
                         m_interpret->interpreterMessage ( location,
@@ -399,7 +399,7 @@ void MScriptExprAlgebra::unaryOperation ( MScriptValue & result,
                     result.m_data.m_float = ( input.m_data.m_bool ? 1.0d : 0.0d );
                     break;
                 case MScriptValue::TYPE_STRING:
-                    result.m_data.m_float = strtod ( input.m_data.m_string.m_data, NULL );
+                    result.m_data.m_float = strtod ( input.m_data.m_string.m_data, nullptr );
                     if ( ( -HUGE_VAL == result.m_data.m_float ) || ( HUGE_VAL == result.m_data.m_float ) )
                     {
                         m_interpret->interpreterMessage ( location,

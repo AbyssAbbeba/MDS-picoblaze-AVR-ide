@@ -97,7 +97,7 @@ AsmPicoBlazeCodeListing::~AsmPicoBlazeCodeListing()
 
 void AsmPicoBlazeCodeListing::loadSourceFiles()
 {
-    char * line = NULL;
+    char * line = nullptr;
     size_t bufSize = 0;
     ssize_t lineLen = -1;
     int fileNumber = -1;
@@ -105,30 +105,28 @@ void AsmPicoBlazeCodeListing::loadSourceFiles()
     m_numberOfFiles = m_compilerCore->listSourceFiles().size();
     m_listing.resize(m_numberOfFiles);
 
-    for ( std::vector<std::pair<std::string,FILE*>>::const_iterator it = m_compilerCore->listSourceFiles().cbegin();
-          it != m_compilerCore->listSourceFiles().cend();
-          it++ )
+    for ( const auto & file : m_compilerCore->listSourceFiles() )
     {
         fileNumber++;
-        if ( NULL == it->second )
+        if ( nullptr == file.second )
         {
             m_files2skip.insert(fileNumber);
             continue;
         }
 
-        rewind(it->second);
+        rewind(file.second);
 
-        if ( 0 != ferror(it->second) )
+        if ( 0 != ferror(file.second) )
         {
             m_compilerCore -> semanticMessage ( CompilerSourceLocation(),
                                                 CompilerBase::MT_ERROR,
                                                 QObject::tr("unable to read file: ").toStdString()
-                                                + "`" + it->first  + "'" );
+                                                + "`" + file.first  + "'" );
             break;
         }
 
         // Iterate over lines in the file.
-        while ( 0 < ( lineLen = getline(&line, &bufSize, it->second) ) )
+        while ( 0 < ( lineLen = getline(&line, &bufSize, file.second) ) )
         {
             // Dispose of the terminating EOL character sequence.
             if ( ( lineLen > 1 ) && ( '\r' == line[lineLen-2] ) )
@@ -144,7 +142,7 @@ void AsmPicoBlazeCodeListing::loadSourceFiles()
         }
     }
 
-    if ( NULL != line )
+    if ( nullptr != line )
     {
         free(line);
     }
@@ -159,16 +157,14 @@ void AsmPicoBlazeCodeListing::printCodeListing ( std::ostream & out,
                                                  unsigned int inclusionLevel,
                                                  unsigned int macroLevel ) const
 {
-    char line [ 16 ];
+    char buffer [ 16 ];
     std::string output;
 
-    for ( std::vector<LstLine>::const_iterator i = m_listing[fileNumber].cbegin();
-          i != m_listing[fileNumber].cend();
-          i++ )
+    for ( const auto & lstLine : m_listing[fileNumber] )
     {
         lineNumber++;
 
-        if ( 1 == i->m_noList )
+        if ( 1 == lstLine.m_noList )
         {
             outputEnabled = true;
         }
@@ -177,27 +173,27 @@ void AsmPicoBlazeCodeListing::printCodeListing ( std::ostream & out,
         {
             output.clear();
 
-            if ( -1 != i->m_value )
+            if ( -1 != lstLine.m_value )
             {
-                sprintf ( line, "  %05X   ", i->m_value );
-                output += line;
+                sprintf ( buffer, "  %05X   ", lstLine.m_value );
+                output += buffer;
             }
             else
             {
-                if ( -1 != i->m_address )
+                if ( -1 != lstLine.m_address )
                 {
-                    sprintf ( line, "%03X ", i->m_address );
-                    output += line;
+                    sprintf ( buffer, "%03X ", lstLine.m_address );
+                    output += buffer;
                 }
                 else
                 {
                     output += "    ";
                 }
 
-                if ( 0 != i->m_code.size() )
+                if ( 0 != lstLine.m_code.size() )
                 {
-                    sprintf ( line, "%05X ", i->m_code[0] );
-                    output += line;
+                    sprintf ( buffer, "%05X ", lstLine.m_code[0] );
+                    output += buffer;
                 }
                 else
                 {
@@ -207,8 +203,8 @@ void AsmPicoBlazeCodeListing::printCodeListing ( std::ostream & out,
 
             if ( 0 != inclusionLevel )
             {
-                sprintf ( line, "=%d ", inclusionLevel );
-                output += line;
+                sprintf ( buffer, "=%d ", inclusionLevel );
+                output += buffer;
                 if ( inclusionLevel < 10 )
                 {
                     output += " ";
@@ -219,13 +215,13 @@ void AsmPicoBlazeCodeListing::printCodeListing ( std::ostream & out,
                 output += "    ";
             }
 
-            sprintf ( line, "%6d ", lineNumber);
-            output += line;
+            sprintf ( buffer, "%6d ", lineNumber);
+            output += buffer;
 
             if ( 0 != macroLevel )
             {
-                sprintf ( line, "+%d ", macroLevel );
-                output += line;
+                sprintf ( buffer, "+%d ", macroLevel );
+                output += buffer;
                 if ( macroLevel < 10 )
                 {
                     output += " ";
@@ -236,7 +232,7 @@ void AsmPicoBlazeCodeListing::printCodeListing ( std::ostream & out,
                 output += "    ";
             }
 
-            output += i->m_line;
+            output += lstLine.m_line;
             int newSize;
             for ( newSize = (int)output.size() - 1; newSize >= 0; newSize-- )
             {
@@ -248,28 +244,26 @@ void AsmPicoBlazeCodeListing::printCodeListing ( std::ostream & out,
             output.resize( newSize + 1 );
             out << output << std::endl;
 
-            int addr = i->m_address + 1;
-            for ( size_t j = 1; j < i->m_code.size(); j++ )
+            int addr = lstLine.m_address + 1;
+            for ( size_t j = 1; j < lstLine.m_code.size(); j++ )
             {
                 char tmp[11];
-                sprintf ( tmp, "%04X %05X", addr, i->m_code[j] );
+                sprintf ( tmp, "%04X %05X", addr, lstLine.m_code[j] );
                 out << tmp << std::endl;
 
                 addr++;
             }
 
-            if ( -1 != i->m_message )
+            if ( -1 != lstLine.m_message )
             {
-                for ( std::vector<Message>::const_iterator msg = m_messages[i->m_message].cbegin();
-                    msg != m_messages[i->m_message].cend();
-                    msg++ )
+                for ( const auto & msg : m_messages[lstLine.m_message] )
                 {
-                    if ( true == msg->m_text.empty() || CompilerBase::MT_INVALID == msg->m_type )
+                    if ( true == msg.m_text.empty() || CompilerBase::MT_INVALID == msg.m_type )
                     {
                         continue;
                     }
 
-                    switch ( msg->m_type )
+                    switch ( msg.m_type )
                     {
                         case CompilerBase::MT_INVALID:
                             break;
@@ -287,33 +281,31 @@ void AsmPicoBlazeCodeListing::printCodeListing ( std::ostream & out,
                             break;
                     }
 
-                    out << msg->m_text << "." << std::endl;;
+                    out << msg.m_text << "." << std::endl;;
                 }
             }
         }
 
-        if ( -1 == i->m_noList )
+        if ( -1 == lstLine.m_noList )
         {
             outputEnabled = false;
         }
 
-        for ( std::vector<int>::const_iterator mark = i->m_macro.cbegin();
-              mark != i->m_macro.cend();
-              mark ++ )
+        for ( const auto macro : lstLine.m_macro )
         {
-            if ( 0 < *mark )
+            if ( 0 < macro )
             {
-                printCodeListing ( out, outputEnabled, lineNumber, ( *mark - 1 ), inclusionLevel, ( 1 + macroLevel ) );
+                printCodeListing ( out, outputEnabled, lineNumber, ( macro - 1 ), inclusionLevel, ( 1 + macroLevel ) );
             }
-            else if ( 0 > *mark )
+            else if ( 0 > macro )
             {
-                printCodeListing ( out, outputEnabled, lineNumber, -( *mark + 1 ), inclusionLevel, macroLevel );
+                printCodeListing ( out, outputEnabled, lineNumber, -( macro + 1 ), inclusionLevel, macroLevel );
             }
         }
 
-        if ( -1 != i->m_inclusion )
+        if ( -1 != lstLine.m_inclusion )
         {
-            printCodeListing ( out, outputEnabled, lineNumber, i->m_inclusion, ( 1 + inclusionLevel ), macroLevel );
+            printCodeListing ( out, outputEnabled, lineNumber, lstLine.m_inclusion, ( 1 + inclusionLevel ), macroLevel );
         }
     }
 }
@@ -454,7 +446,7 @@ void AsmPicoBlazeCodeListing::copyMacroBody ( unsigned int * lastLine,
                                               const CompilerStatement * macro )
 {
     for ( const CompilerStatement * node = macro;
-          node != NULL;
+          node != nullptr;
           node = node->next() )
     {
         if ( true == node->location().isSet() )
@@ -483,7 +475,7 @@ void AsmPicoBlazeCodeListing::rewriteMacroLoc ( unsigned int * lineDiff,
                                                 int origin )
 {
     for ( CompilerStatement * node = macro;
-          node != NULL;
+          node != nullptr;
           node = node->next() )
     {
         if ( true == node->location().isSet() )
@@ -508,7 +500,7 @@ void AsmPicoBlazeCodeListing::rewriteRepeatLoc ( unsigned int * lineDiff,
                                                  CompilerStatement * code )
 {
     for ( CompilerStatement * node = code;
-          node != NULL;
+          node != nullptr;
           node = node->next() )
     {
         if ( true == node->location().isSet() )
@@ -569,7 +561,7 @@ void AsmPicoBlazeCodeListing::generatedCode ( CompilerSourceLocation location,
     int lineNumber = 0;
     const unsigned int index = ( m_numberOfFiles + m_numberOfMacros - 1 );
     for ( CompilerStatement * node = code;
-          node != NULL;
+          node != nullptr;
           node = node->next() )
     {
         if ( CompilerStatementTypes::EMPTY_STATEMENT == node->type() )
@@ -589,11 +581,9 @@ void AsmPicoBlazeCodeListing::generatedCode ( CompilerSourceLocation location,
 
 inline void AsmPicoBlazeCodeListing::processMsgQueue()
 {
-    for ( std::vector<std::pair<CompilerSourceLocation,Message>>::const_iterator i = m_messageQueue.cbegin();
-          i != m_messageQueue.cend();
-          i++ )
+    for ( const auto & msg : m_messageQueue )
     {
-        message(i->first, i->second.m_type, i->second.m_text, i->second.m_subsequent);
+        message(msg.first, msg.second.m_type, msg.second.m_text, msg.second.m_subsequent);
     }
 
     m_messageQueue.clear();
@@ -636,7 +626,7 @@ void AsmPicoBlazeCodeListing::message ( const CompilerSourceLocation & location,
 
     if ( true == subsequent )
     {
-        if ( location.m_fileNumber >= (int) m_numberOfFiles )
+        if ( ( false == m_lastMsgSubsequent ) || ( location.m_fileNumber >= (int) m_numberOfFiles ) )
         {
             if ( location.m_fileNumber > m_lastMsgLocation.m_fileNumber )
             {
@@ -653,6 +643,8 @@ void AsmPicoBlazeCodeListing::message ( const CompilerSourceLocation & location,
     else if ( true == m_lastMsgSubsequent )
     {
         insertMessage(m_lastMsgLocation, type, text);
+
+        m_lastMsgPrefix += "==> ";
         m_lastMsgSubsequent = false;
         m_lastMsgLocation = CompilerSourceLocation();
     }

@@ -18,12 +18,12 @@
 #include <fstream>
 #include <cstdint>
 
-void BinFile::clearAndLoad ( const char * filename ) throw ( DataFileException )
+void BinFile::clearAndLoad ( const char * filename )
 {
     clearAndLoad(std::string(filename));
 }
 
-void BinFile::clearAndLoad ( const std::string & filename ) throw ( DataFileException )
+void BinFile::clearAndLoad ( const std::string & filename )
 {
     std::fstream file ( filename, std::fstream::in | std::fstream::binary );
 
@@ -56,13 +56,13 @@ void BinFile::clearAndLoad ( const std::string & filename ) throw ( DataFileExce
 }
 
 void BinFile::save ( const char * filename,
-                     bool makeBackup ) throw ( DataFileException )
+                     bool makeBackup )
 {
     save(std::string(filename), makeBackup);
 }
 
 void BinFile::save ( const std::string & filename,
-                     bool makeBackup ) throw ( DataFileException )
+                     bool makeBackup )
 {
     // Create backup file
     if ( true == makeBackup )

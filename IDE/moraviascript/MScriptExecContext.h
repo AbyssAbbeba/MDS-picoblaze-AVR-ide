@@ -157,7 +157,7 @@ inline MScriptExecContext::ExecFlags MScriptExecContext::getNextFlags() const
 inline void MScriptExecContext::addNext ( const MScriptStatement * node,
                                           MScriptExecContext::ExecFlags flags )
 {
-    if ( NULL != node )
+    if ( nullptr != node )
     {
         m_programPointer.push_back(ProgPtr(node, flags));
     }

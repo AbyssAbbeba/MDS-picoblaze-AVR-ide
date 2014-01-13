@@ -76,20 +76,15 @@ class DbgFileAvrCoff : public DbgFile
          * @brief
          * @param[in] filename
          */
-        void openFile ( const std::string & filename ) throw ( Exception );
-
-        /**
-         * @brief
-         * @param[in,out] dataContainer
-         */
-        void assignCodeMemDataContainer ( ObjectDataFile * dataContainer );
+        virtual void openFile ( const std::string & filename ) override;
 
         /**
          * @brief
          * @param[in] addr
-         * @return
+         * @param[out] recordNumber
          */
-        int getLineByAddr ( unsigned int addr ) const;
+        virtual void getLineByAddr ( unsigned int addr,
+                                     std::vector<unsigned int> & recordNumbers ) const override;
 
         /**
          * @brief
@@ -97,8 +92,14 @@ class DbgFileAvrCoff : public DbgFile
          * @param[in] filename
          * @return
          */
-        int getAddrByLine ( unsigned int line,
-                            const std::string & filename ) const;
+        virtual int getAddrByLine ( unsigned int line,
+                                    const std::string & filename ) const override;
+
+        /**
+         * @brief
+         * @param[in,out] dataContainer
+         */
+        void assignCodeMemDataContainer ( ObjectDataFile * dataContainer );
 
     ////    Inline Private Operations    ////
     private:
@@ -135,7 +136,7 @@ class DbgFileAvrCoff : public DbgFile
         /**
          * @brief
          */
-        inline void checkBadAndEof ( const std::fstream & file, char * buffer = NULL );
+        inline void checkBadAndEof ( const std::fstream & file, char * buffer = nullptr );
 
     ////    Private Attributes    ////
     private:

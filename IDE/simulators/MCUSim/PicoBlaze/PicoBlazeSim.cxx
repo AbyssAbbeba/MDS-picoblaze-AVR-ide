@@ -80,21 +80,17 @@ PicoBlazeSim::~PicoBlazeSim()
 
 inline void PicoBlazeSim::deleteSubSystems()
 {
-    for ( std::vector<MCUSimSubsys*>::iterator i = m_subSystems.begin();
-          i != m_subSystems.end();
-          i++ )
+    for ( auto subsys : m_subSystems )
     {
-        delete *i;
+        delete subsys;
     }
 }
 
 inline void PicoBlazeSim::checkSubSystems() const
 {
-    for ( std::vector<MCUSimSubsys*>::const_iterator i = m_subSystems.begin();
-          i != m_subSystems.end();
-          i++ )
+    for ( const auto subsys : m_subSystems )
     {
-        assert ( MCUSimSubsys::ID_INVALID != (*i)->getId() );
+        assert ( MCUSimSubsys::ID_INVALID != subsys->getId() );
     }
 }
 
@@ -106,7 +102,7 @@ inline void PicoBlazeSim::regSubSys ( MCUSimSubsys * subSystem )
 
 inline void PicoBlazeSim::unregSubSys ( const MCUSimSubsys * subSystem )
 {
-    for ( std::vector<MCUSimSubsys*>::iterator it = m_subSystems.begin();
+    for ( auto it = m_subSystems.begin();
           it != m_subSystems.end();
           it++ )
     {
@@ -131,7 +127,7 @@ MCUSimSubsys * PicoBlazeSim::getSubsys ( MCUSimSubsys::SubsysId id )
         case MCUSimSubsys::ID_INTERRUPTS:     return m_interruptController;
         case MCUSimSubsys::ID_FLAGS:          return m_statusFlags;
 
-        default:                              return NULL;
+        default:                              return nullptr;
     }
 }
 
@@ -142,11 +138,9 @@ MCUSimClock::ClockSource & PicoBlazeSim::getClockSource()
 
 void PicoBlazeSim::reset ( ResetMode mode )
 {
-    for ( std::vector<MCUSimSubsys*>::iterator i = m_subSystems.begin();
-          i != m_subSystems.end();
-          i++ )
+    for ( auto subsys : m_subSystems )
     {
-        (*i)->reset(mode);
+        subsys->reset(mode);
     }
 
     switch ( mode )

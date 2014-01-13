@@ -105,22 +105,22 @@ class XilHDLFile : public DataFile
          * @brief Load a file into the memory array
          * @param[in] filename
          */
-        void clearAndLoad ( const char * filename ) throw ( DataFileException );
+        virtual void clearAndLoad ( const char * filename ) final override;
 
         /// @overload
-        void clearAndLoad ( const std::string & filename ) throw ( DataFileException );
+        virtual void clearAndLoad ( const std::string & filename ) final override;
 
         /**
          * @brief Save memory array in a file
          * @param[in] filename Target file
          * @param[in] makeBackup Make backup file
          */
-        void save ( const char * filename,
-                    bool makeBackup = true ) throw ( DataFileException );
+        virtual void save ( const char * filename,
+                            bool makeBackup = true ) final override;
 
         /// @overload
-        void save ( const std::string & filename,
-                    bool makeBackup = true ) throw ( DataFileException );
+        virtual void save ( const std::string & filename,
+                            bool makeBackup = true ) final override;
 
     ////    Protected Operations    ////
     protected:

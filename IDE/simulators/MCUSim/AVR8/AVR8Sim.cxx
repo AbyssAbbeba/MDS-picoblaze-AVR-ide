@@ -177,21 +177,17 @@ AVR8Sim::~AVR8Sim()
 
 inline void AVR8Sim::deleteSubSystems()
 {
-    for ( std::vector<MCUSimSubsys*>::iterator i = m_subSystems.begin();
-          i != m_subSystems.end();
-          i++ )
+    for ( auto subsys : m_subSystems )
     {
-        delete *i;
+        delete subsys;
     }
 }
 
 inline void AVR8Sim::checkSubSystems() const
 {
-    for ( std::vector<MCUSimSubsys*>::const_iterator i = m_subSystems.begin();
-          i != m_subSystems.end();
-          i++ )
+    for ( const auto subsys : m_subSystems )
     {
-        assert ( MCUSimSubsys::ID_INVALID != (*i)->getId() );
+        assert ( MCUSimSubsys::ID_INVALID != subsys->getId() );
     }
 }
 
@@ -227,7 +223,7 @@ MCUSimSubsys * AVR8Sim::getSubsys ( MCUSimSubsys::SubsysId id )
         case MCUSimSubsys::ID_PPROG:          return m_pprog;
 
         default:
-            return NULL;
+            return nullptr;
     }
 }
 
@@ -238,11 +234,9 @@ MCUSimClock::ClockSource & AVR8Sim::getClockSource()
 
 void AVR8Sim::reset ( ResetMode mode )
 {
-    for ( std::vector<MCUSimSubsys*>::iterator i = m_subSystems.begin();
-          i != m_subSystems.end();
-          i++ )
+    for ( auto subsys : m_subSystems )
     {
-        (*i)->reset(mode);
+        subsys->reset(mode);
     }
 
     switch ( mode )

@@ -37,7 +37,7 @@ class CompilerMsgFilter : public CompilerMsgInterface
          * @param[in] messageLimit
          */
         CompilerMsgFilter ( const CompilerCore * compilerCore,
-                            CompilerMsgInterface * msgInterface = NULL,
+                            CompilerMsgInterface * msgInterface = nullptr,
                             int messageLimit = -1 );
 
     ////    Public Operations    ////
@@ -48,12 +48,12 @@ class CompilerMsgFilter : public CompilerMsgInterface
          * @param[in] type
          */
         virtual void message ( const std::string & text,
-                               CompilerBase::MessageType type = CompilerBase::MT_GENERAL );
+                               CompilerBase::MessageType type = CompilerBase::MT_GENERAL ) override;
 
         /**
          * @brief
          */
-        virtual void clear();
+        virtual void clear() override;
 
     ////    Public Attributes    ////
     public:

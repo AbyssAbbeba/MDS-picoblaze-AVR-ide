@@ -42,12 +42,12 @@ inline int HexFile::computeCRC ( const char * data ) const
     return result;
 }
 
-void HexFile::clearAndLoad ( const char * filename ) throw ( DataFileException )
+void HexFile::clearAndLoad ( const char * filename )
 {
     clearAndLoad(std::string(filename));
 }
 
-void HexFile::clearAndLoad ( const std::string & filename ) throw ( DataFileException )
+void HexFile::clearAndLoad ( const std::string & filename )
 {
     // Local variables
     int segmentAddress = 0; // Address specified by Extended Segment Address Record (I16HEX)
@@ -191,13 +191,13 @@ void HexFile::clearAndLoad ( const std::string & filename ) throw ( DataFileExce
 }
 
 void HexFile::save ( const char * filename,
-                     bool makeBackup ) throw ( DataFileException )
+                     bool makeBackup )
 {
     save(std::string(filename), makeBackup);
 }
 
 void HexFile::save ( const std::string & filename,
-                     bool makeBackup ) throw ( DataFileException )
+                     bool makeBackup )
 {
     // Local variables
     int segmentAddress = 0; // Segment address (for I16HEX only)

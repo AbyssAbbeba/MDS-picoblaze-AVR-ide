@@ -20,8 +20,8 @@
 
 PIC8ProgramMemory::PIC8ProgramMemory()
 {
-    m_memory = NULL;
-    m_idLocations = NULL;
+    m_memory = nullptr;
+    m_idLocations = nullptr;
     m_size = 0;
 }
 
@@ -35,11 +35,11 @@ PIC8ProgramMemory * PIC8ProgramMemory::link ( MCUSimEventLogger * eventLogger,
 
 PIC8ProgramMemory::~PIC8ProgramMemory()
 {
-    if ( NULL != m_memory )
+    if ( nullptr != m_memory )
     {
         delete[] m_memory;
     }
-    if ( NULL != m_idLocations )
+    if ( nullptr != m_idLocations )
     {
         delete[] m_idLocations;
     }
@@ -176,7 +176,7 @@ void PIC8ProgramMemory::resize ( unsigned int newSize )
         m_memory[i] = ( getUndefVal() | MFLAG_UNDEFINED );
     }
 
-    if ( NULL != memoryOrig )
+    if ( nullptr != memoryOrig )
     {
         delete[] memoryOrig;
     }
@@ -205,7 +205,7 @@ inline void PIC8ProgramMemory::loadConfig()
 {
     resize(m_config.m_size);
 
-    if ( NULL != m_idLocations )
+    if ( nullptr != m_idLocations )
     {
         delete[] m_idLocations;
     }

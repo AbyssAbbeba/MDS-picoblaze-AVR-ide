@@ -30,7 +30,7 @@
 #include <QDebug>
 #include <QRegExp>
 
-McuSimCfgMgr * McuSimCfgMgr::m_instance = NULL;
+McuSimCfgMgr * McuSimCfgMgr::m_instance = nullptr;
 
 McuSimCfgMgr::McuSimCfgMgr()
 {
@@ -58,7 +58,7 @@ McuSimCfgMgr::~McuSimCfgMgr()
 
 McuSimCfgMgr * McuSimCfgMgr::getInstance()
 {
-    if ( NULL == m_instance )
+    if ( nullptr == m_instance )
     {
         m_instance = new McuSimCfgMgr();
     }
@@ -295,7 +295,7 @@ const McuDeviceSpec * McuSimCfgMgr::getDeviceSpec ( const char * mcuName ) const
 
     if ( -1 == idx )
     {
-        return NULL;
+        return nullptr;
     }
 
     return m_devices[idx];

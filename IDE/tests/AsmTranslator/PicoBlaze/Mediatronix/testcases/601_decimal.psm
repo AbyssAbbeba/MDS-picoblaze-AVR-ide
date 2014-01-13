@@ -257,7 +257,6 @@ putd032:
 	JUMP	puts
 
 // print decimal string without leading zeroes	
-
 putd32:					
 	MOVE	s1, d32
 putd32_10:

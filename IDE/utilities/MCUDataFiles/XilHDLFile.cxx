@@ -31,12 +31,12 @@ const char * const XilHDLFile::EOL_SEQUENCE    = "\r\n";
 const char * const XilHDLFile::MARK_INIT_S[4]  = { "{INIT_",  "{[8:0]_INIT_",  "{[17:9]_INIT_",  "{[26:18]_INIT_"  };
 const char * const XilHDLFile::MARK_INITP_S[4] = { "{INITP_", "{[8:0]_INITP_", "{[17:9]_INITP_", "{[26:18]_INITP_" };
 
-void XilHDLFile::clearAndLoad ( const char * filename ) throw ( DataFileException )
+void XilHDLFile::clearAndLoad ( const char * filename )
 {
     clearAndLoad(std::string(filename));
 }
 
-void XilHDLFile::clearAndLoad ( const std::string & filename ) throw ( DataFileException )
+void XilHDLFile::clearAndLoad ( const std::string & filename )
 {
     std::ifstream file(filename);
 
@@ -153,13 +153,13 @@ unsigned int XilHDLFile::hexDigit2uint ( char digit ) const
 }
 
 void XilHDLFile::save ( const char * filename,
-                         bool makeBackup ) throw ( DataFileException )
+                         bool makeBackup )
 {
     save(std::string(filename), makeBackup);
 }
 
 void XilHDLFile::save ( const std::string & filename,
-                         bool makeBackup ) throw ( DataFileException )
+                         bool makeBackup )
 {
     // Create backup file
     if ( true == makeBackup )

@@ -44,7 +44,7 @@ set ( CMAKE_C_FLAGS_DEBUG      "-O0 -g" )
  # - for release build only:
 set ( CMAKE_C_FLAGS_RELEASE    "-O3 -DNDEBUG" )
  # - for minimum size release build only:
-set ( CMAKE_C_FLAGS_MINSIZEREL "-Os -DNDEBUG" )
+set ( CMAKE_C_FLAGS_MINSIZEREL "-O3 -DNDEBUG" )
 
 # Set the same compilation flags for C++ as they are set for C.
 set ( CMAKE_CXX_FLAGS              "${CMAKE_C_FLAGS} -std=c++0x" )

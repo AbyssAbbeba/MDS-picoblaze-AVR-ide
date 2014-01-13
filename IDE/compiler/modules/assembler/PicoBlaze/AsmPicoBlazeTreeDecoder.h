@@ -104,7 +104,7 @@ class AsmPicoBlazeTreeDecoder
          * @return False, if critical error occured; true otherwise.
          */
         bool phase1 ( CompilerStatement * codeTree,
-                      const std::string * macroName = NULL );
+                      const std::string * macroName = nullptr );
 
         /**
          * @brief

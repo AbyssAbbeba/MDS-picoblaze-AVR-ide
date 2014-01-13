@@ -22,22 +22,22 @@
 
 DbgFileAvraLst::DbgFileAvraLst()
 {
-    m_addrToLineMap = NULL;
-    m_lineToAddrMap = NULL;
+    m_addrToLineMap = nullptr;
+    m_lineToAddrMap = nullptr;
 }
 
 DbgFileAvraLst::~DbgFileAvraLst()
 {
-    if ( NULL != m_addrToLineMap )
+    if ( nullptr != m_addrToLineMap )
     {
         delete[] m_addrToLineMap;
     }
 
-    if ( NULL != m_lineToAddrMap )
+    if ( nullptr != m_lineToAddrMap )
     {
         for ( unsigned int i = 0; i < m_fileNames.size(); i++ )
         {
-            if ( NULL != m_lineToAddrMap[i] )
+            if ( nullptr != m_lineToAddrMap[i] )
             {
                 delete[] m_lineToAddrMap[i];
             }
@@ -62,13 +62,13 @@ inline void DbgFileAvraLst::clear()
     m_moduleRecords.clear();
 }
 
-void DbgFileAvraLst::openFile ( const std::string & filename ) throw ( Exception )
+void DbgFileAvraLst::openFile ( const std::string & filename )
 {
     try
     {
         loadFile(filename);
     }
-    catch ( Exception & e )
+    catch ( const Exception & e )
     {
         clear();
         throw(e);
@@ -135,7 +135,7 @@ inline void DbgFileAvraLst::loadFile ( const std::string & filename )
         if ( 'C' == line[0] && ':' == line[1] )
         {
             line[8] = '\0'; // trim to 8 characters
-            int address = int(strtol(checkHexNumber ( line + 2 ), NULL, 16));
+            int address = int(strtol(checkHexNumber ( line + 2 ), nullptr, 16));
 
             m_lineRecords.push_back(LineRecord(0, lineNumber, 0, 0, address));
 
@@ -157,14 +157,20 @@ inline void DbgFileAvraLst::loadFile ( const std::string & filename )
     generateLineAddressMaps();
 }
 
-int DbgFileAvraLst::getLineByAddr ( unsigned int addr ) const
+void DbgFileAvraLst::getLineByAddr ( unsigned int addr,
+                                     std::vector<unsigned int> & recordNumbers ) const
 {
+    recordNumbers.clear();
+
     if ( (int)(addr) > m_lastAddress )
     {
-        return -1;
+        return;
     }
 
-    return m_addrToLineMap[addr];
+    if ( -1 != m_addrToLineMap[addr] )
+    {
+        recordNumbers.push_back ( (unsigned int) m_addrToLineMap[addr] );
+    }
 }
 
 int DbgFileAvraLst::getAddrByLine ( unsigned int line,
@@ -219,7 +225,7 @@ inline int DbgFileAvraLst::getFileNumber ( const std::string & filename ) const
 
 inline void DbgFileAvraLst::generateLineAddressMaps()
 {
-    if ( NULL != m_addrToLineMap )
+    if ( nullptr != m_addrToLineMap )
     {
         delete[] m_addrToLineMap;
     }
@@ -229,11 +235,11 @@ inline void DbgFileAvraLst::generateLineAddressMaps()
         m_addrToLineMap[i] = -1;
     }
 
-    if ( NULL != m_lineToAddrMap )
+    if ( nullptr != m_lineToAddrMap )
     {
         for ( unsigned int i = 0; i < m_fileNames.size(); i++ )
         {
-            if ( NULL != m_lineToAddrMap[i] )
+            if ( nullptr != m_lineToAddrMap[i] )
             {
                 delete[] m_lineToAddrMap[i];
             }

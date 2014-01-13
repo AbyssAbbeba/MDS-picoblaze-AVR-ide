@@ -102,21 +102,21 @@ class CompilerExpr : public CompilerSerializable
          * @brief
          * @param[in,out] input
          */
-        CompilerExpr ( CompilerSerializer & input );
+        explicit CompilerExpr ( CompilerSerializer & input );
 
         /**
          * @brief
          * @param[in] location
          */
-        CompilerExpr ( CompilerSourceLocation location = CompilerSourceLocation() );
+        explicit CompilerExpr ( CompilerSourceLocation location = CompilerSourceLocation() );
 
         /**
          * @brief
          * @param[in] value
          * @param[in] location
          */
-        CompilerExpr ( CompilerValue value,
-                       CompilerSourceLocation location = CompilerSourceLocation() );
+        explicit CompilerExpr ( CompilerValue value,
+                                CompilerSourceLocation location = CompilerSourceLocation() );
 
         /**
          * @brief
@@ -124,9 +124,9 @@ class CompilerExpr : public CompilerSerializable
          * @param[in] value
          * @param[in] location
          */
-        CompilerExpr ( Operator oper,
-                       CompilerValue value,
-                       CompilerSourceLocation location = CompilerSourceLocation() );
+        explicit CompilerExpr ( Operator oper,
+                                CompilerValue value,
+                                CompilerSourceLocation location = CompilerSourceLocation() );
 
         /**
          * @brief
@@ -134,9 +134,9 @@ class CompilerExpr : public CompilerSerializable
          * @param[in] value
          * @param[in] location
          */
-        CompilerExpr ( char oper,
-                       CompilerValue value,
-                       CompilerSourceLocation location = CompilerSourceLocation() );
+        explicit CompilerExpr ( char oper,
+                                CompilerValue value,
+                                CompilerSourceLocation location = CompilerSourceLocation() );
 
         /**
          * @brief
@@ -144,9 +144,9 @@ class CompilerExpr : public CompilerSerializable
          * @param[in] oper
          * @param[in] location
          */
-        CompilerExpr ( CompilerValue value,
-                       Operator oper,
-                       CompilerSourceLocation location = CompilerSourceLocation() );
+        explicit CompilerExpr ( CompilerValue value,
+                                Operator oper,
+                                CompilerSourceLocation location = CompilerSourceLocation() );
 
         /**
          * @brief
@@ -154,9 +154,9 @@ class CompilerExpr : public CompilerSerializable
          * @param[in] oper
          * @param[in] location
          */
-        CompilerExpr ( CompilerValue value,
-                       char oper,
-                       CompilerSourceLocation location = CompilerSourceLocation() );
+        explicit CompilerExpr ( CompilerValue value,
+                                char oper,
+                                CompilerSourceLocation location = CompilerSourceLocation() );
 
         /**
          * @brief
@@ -165,10 +165,10 @@ class CompilerExpr : public CompilerSerializable
          * @param[in] rValue
          * @param[in] location
          */
-        CompilerExpr ( CompilerValue lValue,
-                       Operator oper,
-                       CompilerValue rValue,
-                       CompilerSourceLocation location = CompilerSourceLocation() );
+        explicit CompilerExpr ( CompilerValue lValue,
+                                Operator oper,
+                                CompilerValue rValue,
+                                CompilerSourceLocation location = CompilerSourceLocation() );
 
         /**
          * @brief
@@ -177,10 +177,10 @@ class CompilerExpr : public CompilerSerializable
          * @param[in] rValue
          * @param[in] location
          */
-        CompilerExpr ( CompilerValue lValue,
-                       char oper,
-                       CompilerValue rValue,
-                       CompilerSourceLocation location = CompilerSourceLocation() );
+        explicit CompilerExpr ( CompilerValue lValue,
+                                char oper,
+                                CompilerValue rValue,
+                                CompilerSourceLocation location = CompilerSourceLocation() );
 
         /**
          * @brief
@@ -259,13 +259,13 @@ class CompilerExpr : public CompilerSerializable
          * @brief
          * @param[in,out]
          */
-        virtual void serialize ( CompilerSerializer & output ) const;
+        virtual void serialize ( CompilerSerializer & output ) const override;
 
         /**
          * @brief
          * @param[in,out]
          */
-        virtual void deserialize ( CompilerSerializer & input );
+        virtual void deserialize ( CompilerSerializer & input ) override;
 
     ////    Inline Public Operations    ////
     public:
@@ -284,9 +284,9 @@ class CompilerExpr : public CompilerSerializable
          */
         CompilerExpr * prev() const
         {
-            if ( NULL == this )
+            if ( nullptr == this )
             {
-                return NULL;
+                return nullptr;
             }
 
             return m_prev;
@@ -298,9 +298,9 @@ class CompilerExpr : public CompilerSerializable
          */
         CompilerExpr * next() const
         {
-            if ( NULL == this )
+            if ( nullptr == this )
             {
-                return NULL;
+                return nullptr;
             }
 
             return m_next;

@@ -62,7 +62,7 @@ class AsmPicoBlazeInstructionSet
                                    : m_compilerCore ( compilerCore ),
                                      m_opts ( opts ),
                                      m_symbolTable ( symbolTable ),
-                                     m_strategy ( NULL ),
+                                     m_strategy ( nullptr ),
                                      m_device ( device ) {};
 
         /**

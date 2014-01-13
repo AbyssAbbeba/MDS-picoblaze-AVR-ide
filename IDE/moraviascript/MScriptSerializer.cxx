@@ -35,7 +35,7 @@ MScriptSerializer::MScriptSerializer ( std::istream & input,
                                        std::vector<std::string> & files,
                                        bool hide )
                                      : m_input  ( &input ),
-                                       m_output ( NULL ),
+                                       m_output ( nullptr ),
                                        m_role   ( DESERIALIZER )
 {
     size_t headerLength = ( 1 + strlen(COMMON_FILE_HEADER) );
@@ -67,12 +67,10 @@ MScriptSerializer::MScriptSerializer ( std::istream & input,
         }
         else
         {
-            for ( std::vector<std::string>::const_iterator it = files.cbegin();
-                it != files.cend();
-                it++ )
+            for ( const auto & file : files )
             {
                 fileNumber++;
-                if ( *it == filename )
+                if ( file == filename )
                 {
                     found = true;
                     break;
@@ -92,7 +90,7 @@ MScriptSerializer::MScriptSerializer ( std::istream & input,
 
 MScriptSerializer::MScriptSerializer ( std::ostream & output,
                                        const std::vector<std::string> & files )
-                                     : m_input  ( NULL ),
+                                     : m_input  ( nullptr ),
                                        m_output ( &output ),
                                        m_role   ( SERIALIZER )
 {
@@ -100,11 +98,9 @@ MScriptSerializer::MScriptSerializer ( std::ostream & output,
     write ( (uint16_t) INTERFACE_VERSION );
 
     write ( (uint32_t) files.size() );
-    for ( std::vector<std::string>::const_iterator it = files.cbegin();
-          it != files.cend();
-          it++ )
+    for ( const auto & file : files )
     {
-        write ( *it );
+        write ( file );
     }
 }
 

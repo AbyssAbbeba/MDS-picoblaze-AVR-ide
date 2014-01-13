@@ -162,7 +162,7 @@ void CompilerValue::completeDelete()
 
 void CompilerValue::serialize ( CompilerSerializer & output ) const
 {
-    if ( NULL == this )
+    if ( nullptr == this )
     {
         output.write ( (uint8_t) TYPE_EMPTY );
         return;

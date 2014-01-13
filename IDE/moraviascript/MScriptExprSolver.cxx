@@ -175,7 +175,7 @@ std::cout << "MScriptExprSolver::getFinalValue ( "<<input<<" );\n" << std::flush
             return;
 
         case MScriptValue::TYPE_SYMBOL:
-            result = *( m_varTable->access ( input.m_data.m_symbol, NULL, &location ) );
+            result = *( m_varTable->access ( input.m_data.m_symbol, nullptr, &location ) );
             break;
 
         case MScriptValue::TYPE_INT:
@@ -222,7 +222,7 @@ inline const char * MScriptExprSolver::getVariableName ( MScriptArrayIndex * & i
                                                       . toStdString() );
     }
 
-    return NULL;
+    return nullptr;
 }
 
 inline void MScriptExprSolver::assignment ( MScriptValue & result,
@@ -231,7 +231,7 @@ inline void MScriptExprSolver::assignment ( MScriptValue & result,
                                             const MScriptSrcLocation & location,
                                             const MScriptExpr::Operator oper )
 {
-    MScriptArrayIndex * index = NULL;
+    MScriptArrayIndex * index = nullptr;
     const char * variable = getVariableName ( index, left, location );
     MScriptExpr::Operator subOper;
 
@@ -246,7 +246,7 @@ inline void MScriptExprSolver::assignment ( MScriptValue & result,
 
         case MScriptExpr::OPER_ASSIGN_REF:
         {
-            MScriptArrayIndex * targetIndex = NULL;
+            MScriptArrayIndex * targetIndex = nullptr;
             const char * target = getVariableName ( targetIndex, right, location );
             m_varTable -> refer ( variable, target, location, index, targetIndex );
             getFinalValue(result, right, location);
@@ -385,7 +385,7 @@ void MScriptExprSolver::declaration ( const MScriptExpr * expr,
     }
 
     for ( const MScriptExpr * e = expr;
-          NULL != e;
+          nullptr != e;
           e = e->next() )
     {
         MScriptVariable::Flags varFlags = baseFlags;

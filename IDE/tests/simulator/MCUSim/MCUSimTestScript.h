@@ -93,7 +93,7 @@ class MCUSimTestScript
          * @param[in,out] strategy
          */
         MCUSimTestScript ( MCUSim * simulator,
-                           MCUSimTestScriptStrategy * strategy = NULL );
+                           MCUSimTestScriptStrategy * strategy = nullptr );
 
         /**
          * @brief

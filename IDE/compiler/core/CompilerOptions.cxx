@@ -59,10 +59,10 @@ void CompilerOptions::clearOutputFiles()
         &m_codeTree,    &m_lstFile,     &m_hexFile,
         &m_binFile,     &m_srecFile,    &m_verilogFile,
         &m_vhdlFile,    &m_prcTarget,   &m_memFile,
-        &m_cunit,       NULL
+        &m_cunit,       nullptr
     };
 
-    for ( int i = 0; NULL != files[i]; i++ )
+    for ( int i = 0; nullptr != files[i]; i++ )
     {
         if ( true == files[i]->empty() )
         {
@@ -89,20 +89,18 @@ void CompilerOptions::normalizeFilePaths()
         &m_binFile,     &m_srecFile,    &m_verilogFile,
         &m_vhdlFile,    &m_prcTarget,   &m_verilogTemplate,
         &m_memFile,     &m_hexFile,     &m_cunit,
-        NULL
+        nullptr
     };
 
     m_sourceFiles[0] = system_complete(path(makeHomeSafe(m_sourceFiles[0])).make_preferred()).string();
     const path basePath = system_complete(path(makeHomeSafe(m_sourceFiles[0])).parent_path().make_preferred());
 
-    for ( std::vector<std::string>::iterator it = m_sourceFiles.begin();
-          m_sourceFiles.end() != it;
-          ++it )
+    for ( std::string & srcFile : m_sourceFiles )
     {
-        *it = absolute(path(makeHomeSafe(*it)).make_preferred(), basePath).string();
+        srcFile = absolute(path(makeHomeSafe(srcFile)).make_preferred(), basePath).string();
     }
 
-    for ( int i = 0; NULL != files[i]; i++ )
+    for ( int i = 0; nullptr != files[i]; i++ )
     {
         if ( true == files[i]->empty() )
         {
@@ -134,11 +132,9 @@ std::ostream & operator << ( std::ostream & out,
     {
         out << std::endl;
         int idx = 0;
-        for ( std::vector<char>::const_iterator it = limits.m_disabledInstructions.cbegin();
-            it != limits.m_disabledInstructions.cend();
-            it++ )
+        for ( const auto instruction : limits.m_disabledInstructions )
         {
-            out << "    [" << idx++ << "] = " << (int)*it << std::endl;
+            out << "    [" << idx++ << "] = " << (int)instruction << std::endl;
         }
     }
 
@@ -169,7 +165,7 @@ std::ostream & operator << ( std::ostream & out,
     out << "    m_prcTarget = \""       << opts.m_prcTarget       << "\"" << std::endl;
     out << "    m_cunit = \""           << opts.m_cunit           << "\"" << std::endl;
     out << "    m_sourceFiles:\""       << std::endl;
-    for ( const auto file : opts.m_sourceFiles )
+    for ( const auto & file : opts.m_sourceFiles )
     {
         out << "      - \"" << file << "\"" << std::endl;
     }
@@ -182,7 +178,7 @@ std::ostream & operator << ( std::ostream & out,
     out << "    m_makeBackupFiles = "   << opts.m_makeBackupFiles << std::endl;
     out << "    m_device = " << opts.m_device << std::endl;
     out << "    m_includePath: " << std::endl;
-    for ( const auto path : opts.m_includePath )
+    for ( const auto & path : opts.m_includePath )
     {
         out << "      - \"" << path << "\"" << std::endl;
     }

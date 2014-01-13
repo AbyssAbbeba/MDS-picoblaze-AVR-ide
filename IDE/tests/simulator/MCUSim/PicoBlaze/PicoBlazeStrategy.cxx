@@ -118,7 +118,7 @@ bool PicoBlazeStrategy::executeCommand ( const MCUSimTestScript::Command & cmd,
             PicoBlazeStatusFlagsBase * flags = dynamic_cast<PicoBlazeStatusFlagsBase*>
                                                (m_simulator->getSubsys(MCUSimSubsys::ID_FLAGS));
 
-            if ( NULL == flags )
+            if ( nullptr == flags )
             {
                 outFile << "[ABORTED] ";
                 *m_execMessage = "PicoBlazeStatusFlagsBase subsystem not available.";
@@ -171,7 +171,7 @@ bool PicoBlazeStrategy::executeCommand ( const MCUSimTestScript::Command & cmd,
             PicoBlazeInterruptController * intrCtrl = dynamic_cast<PicoBlazeInterruptController*>
                                                       (m_simulator->getSubsys(MCUSimSubsys::ID_INTERRUPTS));
 
-            if ( NULL == intrCtrl )
+            if ( nullptr == intrCtrl )
             {
                 outFile << "[ABORTED] ";
                 *m_execMessage = "PicoBlazeInterruptController subsystem not available.";

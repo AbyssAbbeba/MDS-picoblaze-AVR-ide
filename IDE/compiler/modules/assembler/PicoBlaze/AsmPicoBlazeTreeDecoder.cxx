@@ -68,7 +68,7 @@ AsmPicoBlazeTreeDecoder::AsmPicoBlazeTreeDecoder ( CompilerSemanticInterface    
                                                    m_instructionSet ( instructionSet ),
                                                    m_device         ( device         )
 {
-    m_forceNext = NULL;
+    m_forceNext = nullptr;
 }
 
 bool AsmPicoBlazeTreeDecoder::phase1 ( CompilerStatement * codeTree,
@@ -78,10 +78,10 @@ bool AsmPicoBlazeTreeDecoder::phase1 ( CompilerStatement * codeTree,
     std::vector<std::string> localSymbols;
 
     for ( CompilerStatement * node = codeTree->next();
-          NULL != node;
-          node = ( ( NULL == m_forceNext ) ? node : m_forceNext )->next() )
+          nullptr != node;
+          node = ( ( nullptr == m_forceNext ) ? node : m_forceNext )->next() )
     {
-        m_forceNext = NULL;
+        m_forceNext = nullptr;
 
         if ( true == m_instructionSet->isInstruction ( node ) )
         {
@@ -162,7 +162,7 @@ void AsmPicoBlazeTreeDecoder::phase2 ( CompilerStatement * codeTree )
     m_symbolTable->maskNonLabels();
 
     for ( CompilerStatement * node = codeTree->next();
-          NULL != node;
+          nullptr != node;
           node = node->next() )
     {
         switch ( node->type() )
@@ -181,7 +181,7 @@ void AsmPicoBlazeTreeDecoder::phase2 ( CompilerStatement * codeTree )
 
             case ASMPICOBLAZE_DIR_DB:
                 for ( CompilerExpr * arg = node->args();
-                      NULL != arg;
+                      nullptr != arg;
                       arg = arg->next() )
                 {
                     long long code = arg->lVal().m_data.m_integer;
@@ -227,14 +227,14 @@ inline void AsmPicoBlazeTreeDecoder::dir_IF ( CompilerStatement * rootNode )
 
     CompilerStatement * ifTree = rootNode->branch();
 
-    if ( NULL == ifTree )
+    if ( nullptr == ifTree )
     {
         return;
     }
 
     unsigned int conditionVal = 0;
     for ( CompilerStatement * node = ifTree;
-          NULL != node;
+          nullptr != node;
           node = node->next() )
     {
         switch ( (int) node->type() )
@@ -305,7 +305,7 @@ inline void AsmPicoBlazeTreeDecoder::dir_IF ( CompilerStatement * rootNode )
         if ( 0 != conditionVal )
         {
             rootNode->insertLink(node->branch());
-            node->m_branch = NULL;
+            node->m_branch = nullptr;
             return;
         }
     }
@@ -320,7 +320,7 @@ inline void AsmPicoBlazeTreeDecoder::dir_AUTOxxx ( CompilerStatement * node )
 
     if ( ASMPICOBLAZE_DIR_AUTOSPR == node->type() )
     {
-        if ( NULL != node->args()->next() )
+        if ( nullptr != node->args()->next() )
         {
             m_memoryPtr->m_data = m_symbolTable->resolveExpr(node->args()->next());
         }
@@ -333,7 +333,7 @@ inline void AsmPicoBlazeTreeDecoder::dir_AUTOxxx ( CompilerStatement * node )
     }
     else
     {
-        if ( NULL != node->args()->next() )
+        if ( nullptr != node->args()->next() )
         {
             m_memoryPtr->m_reg = m_symbolTable->resolveExpr(node->args()->next());
         }
@@ -359,7 +359,7 @@ inline void AsmPicoBlazeTreeDecoder::dir_DB ( CompilerStatement * node )
     std::vector<unsigned char> dbData;
 
     for ( CompilerExpr * arg = node->args();
-          NULL != arg;
+          nullptr != arg;
           arg = arg->next() )
     {
         if ( CompilerValue::TYPE_ARRAY == arg->lVal().m_type )
@@ -386,7 +386,7 @@ inline void AsmPicoBlazeTreeDecoder::dir_DB ( CompilerStatement * node )
     }
 
     node->args()->completeDelete();
-    node->m_args = NULL;
+    node->m_args = nullptr;
 
     if ( true == isInstWord3B() )
     {
@@ -432,7 +432,7 @@ inline void AsmPicoBlazeTreeDecoder::dir_DB ( CompilerStatement * node )
             code &= 0x3ffff;
         }
 
-        if ( NULL == node->m_args )
+        if ( nullptr == node->m_args )
         {
             node->m_args = new CompilerExpr((int)code);
         }
@@ -513,7 +513,7 @@ inline AsmPicoBlazeTreeDecoder::CourseOfAction
     delete node->branch()->last(); // remove `ENDW' directive
 
     unsigned int i;
-    CompilerStatement * body = NULL;
+    CompilerStatement * body = nullptr;
     for ( i = 0; i < MAX_WHILE_ITERATIONS; i++ )
     {
         if ( 0 == m_symbolTable->resolveExpr(node->args()) )
@@ -521,7 +521,7 @@ inline AsmPicoBlazeTreeDecoder::CourseOfAction
             break;
         }
 
-        if ( NULL == body )
+        if ( nullptr == body )
         {
             body = (new CompilerStatement())->appendLink(node->branch()->copyEntireChain())->first();
             m_codeListing->repeatCode(lastLocation, body, true);
@@ -557,7 +557,7 @@ inline AsmPicoBlazeTreeDecoder::CourseOfAction
                                                         . toStdString(),
                                             true );
     }
-    if ( NULL != body)
+    if ( nullptr != body)
     {
         node = node->prev();
         delete node->next();
@@ -621,7 +621,7 @@ inline void AsmPicoBlazeTreeDecoder::dir_MACRO ( CompilerStatement * node )
                          node->args()->lVal().m_data.m_symbol,
                          node->args()->m_next,
                          node->branch() );
-    node->m_branch = NULL;
+    node->m_branch = nullptr;
 }
 
 inline void AsmPicoBlazeTreeDecoder::dir_TITLE ( CompilerStatement * node )
@@ -685,8 +685,8 @@ inline AsmPicoBlazeTreeDecoder::CourseOfAction
         return CA_NO_ACTION;
     }
 
-    node->m_prev = NULL;
-    node->prev()->m_next = NULL;
+    node->m_prev = nullptr;
+    node->prev()->m_next = nullptr;
     node->completeDelete();
     return CA_RETURN_TRUE;
 }
@@ -963,7 +963,7 @@ inline AsmPicoBlazeTreeDecoder::CourseOfAction
     CompilerBase::DevSpecLoaderFlag loaderFlag;
     CompilerStatement * devSpecCode = m_compilerCore->loadDevSpecCode(deviceName, &loaderFlag);
 
-    if ( NULL == devSpecCode )
+    if ( nullptr == devSpecCode )
     {
         if ( CompilerBase::DSLF_DOES_NOT_EXIST == loaderFlag )
         {

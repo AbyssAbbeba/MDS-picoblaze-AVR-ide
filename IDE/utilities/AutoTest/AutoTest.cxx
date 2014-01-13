@@ -45,11 +45,11 @@ int AutoTest::initTestEnv()
     }
 
     // Register test suites.
-    for ( auto suite : m_testSuites )
+    for ( const auto & suite : m_testSuites )
     {
         // Add the suite to the CUnit test registry.
         CU_pSuite testSuite = CU_add_suite ( suite.m_name.c_str(), suite.m_init, suite.m_clean );
-        if ( NULL == testSuite )
+        if ( nullptr == testSuite )
         {
             // Unable to add the test suite to the registry.
             CU_cleanup_registry();
@@ -180,12 +180,12 @@ int AutoTest::main ( int argc, char ** argv )
             case 'l':
             {
                 CU_pSuite suite = CU_get_registry()->pSuite;
-                for ( int i = 0; NULL != suite; i++ )
+                for ( int i = 0; nullptr != suite; i++ )
                 {
                     std::cout << "Suite #" << i << ": \"" << suite->pName << "\"" << std::endl;
 
                     CU_pTest test = suite->pTest;
-                    for ( int j = 0; NULL != test; j++ )
+                    for ( int j = 0; nullptr != test; j++ )
                     {
                         std::cout << "    Test #" << j << ": \"" << test->pName << "\"" << std::endl;
                         test = test->pNext;
@@ -210,7 +210,7 @@ int AutoTest::main ( int argc, char ** argv )
 
                 unsigned int number = 1 + (unsigned int) atoi(optarg);
                 CU_pSuite suite = CU_get_suite_at_pos(number);
-                if ( NULL == suite )
+                if ( nullptr == suite )
                 {
                     std::cerr << "Error: there is no test suite with number `" << ( number - 1 ) << "'." << std::endl;
                     return 1;
@@ -224,7 +224,7 @@ int AutoTest::main ( int argc, char ** argv )
                 char * testSuiteNumberSrt = new char [ strlen(optarg) + 1 ];
                 strcpy(testSuiteNumberSrt, optarg);
                 char * testCaseNumberSrt = strchr(testSuiteNumberSrt, '/');
-                if ( NULL == testCaseNumberSrt )
+                if ( nullptr == testCaseNumberSrt )
                 {
                     std::cerr << "Error: option `" << argv[optind-2] << "' requires argument in format "
                               << "`<test_suite_number>/<test_case_number>'." << std::endl;
@@ -257,7 +257,7 @@ int AutoTest::main ( int argc, char ** argv )
 
                 unsigned int number = 1 + (unsigned int) atoi(testSuiteNumberSrt);
                 CU_pSuite suite = CU_get_suite_at_pos(number);
-                if ( NULL == suite )
+                if ( nullptr == suite )
                 {
                     std::cerr << "Error: there is no test suite with number `" << ( number - 1 ) << "'."
                               << std::endl;
@@ -267,7 +267,7 @@ int AutoTest::main ( int argc, char ** argv )
 
                 number = 1 + (unsigned int) atoi(testCaseNumberSrt);
                 CU_pTest test = CU_get_test_at_pos(suite, number);
-                if ( NULL == test )
+                if ( nullptr == test )
                 {
                     std::cerr << "Error: there is no test case with number `" << ( number - 1 )
                               << "' in the selected suite." << std::endl;
@@ -282,7 +282,7 @@ int AutoTest::main ( int argc, char ** argv )
             case 'S':
             {
                 CU_pSuite suite = CU_get_suite(optarg);
-                if ( NULL == suite )
+                if ( nullptr == suite )
                 {
                     std::cerr << "Error: there is no test suite with name `" << optarg << "'." << std::endl;
                     return 1;
@@ -296,7 +296,7 @@ int AutoTest::main ( int argc, char ** argv )
                 char * testSuiteName = new char [ strlen(optarg) + 1 ];
                 strcpy(testSuiteName, optarg);
                 char * testCaseName = strchr(testSuiteName, '/');
-                if ( NULL == testCaseName )
+                if ( nullptr == testCaseName )
                 {
                     std::cerr << "Error: option `" << argv[optind-2] << "' requires argument in format "
                               << "`<test_suite_name>/<test_case_name>'." << std::endl;
@@ -307,7 +307,7 @@ int AutoTest::main ( int argc, char ** argv )
                 testCaseName++;
 
                 CU_pSuite suite = CU_get_suite(testSuiteName);
-                if ( NULL == suite )
+                if ( nullptr == suite )
                 {
                     std::cerr << "Error: there is no test suite with name `" << testSuiteName << "'." << std::endl;
                     delete [] testSuiteName;
@@ -315,7 +315,7 @@ int AutoTest::main ( int argc, char ** argv )
                 }
 
                 CU_pTest test = CU_get_test(suite, testCaseName);
-                if ( NULL == test )
+                if ( nullptr == test )
                 {
                     std::cerr << "Error: there is no test case with name `" << testCaseName << "'." << std::endl;
                     delete [] testSuiteName;

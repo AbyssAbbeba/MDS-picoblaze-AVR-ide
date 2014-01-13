@@ -30,8 +30,8 @@ MScriptExpr::MScriptExpr ( MScriptSrcLocation location )
     m_operator = OPER_NONE;
     m_location = location;
 
-    m_next = NULL;
-    m_prev = NULL;
+    m_next = nullptr;
+    m_prev = nullptr;
 }
 
 MScriptExpr::MScriptExpr ( MScriptValue value,
@@ -41,8 +41,8 @@ MScriptExpr::MScriptExpr ( MScriptValue value,
     m_operator = OPER_NONE;
     m_location = location;
 
-    m_next = NULL;
-    m_prev = NULL;
+    m_next = nullptr;
+    m_prev = nullptr;
 }
 
 MScriptExpr::MScriptExpr ( Operator oper,
@@ -53,8 +53,8 @@ MScriptExpr::MScriptExpr ( Operator oper,
     m_rValue = value;
     m_location = location;
 
-    m_next = NULL;
-    m_prev = NULL;
+    m_next = nullptr;
+    m_prev = nullptr;
 }
 
 MScriptExpr::MScriptExpr ( MScriptValue value,
@@ -65,8 +65,8 @@ MScriptExpr::MScriptExpr ( MScriptValue value,
     m_lValue = value;
     m_location = location;
 
-    m_next = NULL;
-    m_prev = NULL;
+    m_next = nullptr;
+    m_prev = nullptr;
 }
 
 MScriptExpr::MScriptExpr ( MScriptValue lValue,
@@ -79,20 +79,20 @@ MScriptExpr::MScriptExpr ( MScriptValue lValue,
     m_rValue = rValue;
     m_location = location;
 
-    m_next = NULL;
-    m_prev = NULL;
+    m_next = nullptr;
+    m_prev = nullptr;
 }
 
 MScriptExpr * MScriptExpr::first()
 {
     MScriptExpr * expr = this;
 
-    if ( NULL == this )
+    if ( nullptr == this )
     {
-        return NULL;
+        return nullptr;
     }
 
-    while ( NULL != expr->m_prev )
+    while ( nullptr != expr->m_prev )
     {
         expr = expr->m_prev;
     }
@@ -103,7 +103,7 @@ MScriptExpr * MScriptExpr::first()
 MScriptExpr * MScriptExpr::last()
 {
     MScriptExpr * result = this;
-    while ( NULL != result->m_next )
+    while ( nullptr != result->m_next )
     {
         result = result->m_next;
     }
@@ -112,11 +112,11 @@ MScriptExpr * MScriptExpr::last()
 
 MScriptExpr * MScriptExpr::insertLink ( MScriptExpr * chainLink )
 {
-    if ( NULL == chainLink )
+    if ( nullptr == chainLink )
     {
         return this;
     }
-    if ( NULL == this )
+    if ( nullptr == this )
     {
         return chainLink;
     }
@@ -138,11 +138,11 @@ MScriptExpr * MScriptExpr::insertLink ( MScriptExpr * chainLink )
 
 MScriptExpr * MScriptExpr::appendLink ( MScriptExpr * chainLink )
 {
-    if ( NULL == chainLink )
+    if ( nullptr == chainLink )
     {
         return this;
     }
-    if ( NULL == this )
+    if ( nullptr == this )
     {
         return chainLink;
     }
@@ -159,11 +159,11 @@ MScriptExpr * MScriptExpr::appendLink ( MScriptExpr * chainLink )
 
 MScriptExpr * MScriptExpr::prependLink ( MScriptExpr * chainLink )
 {
-    if ( NULL == chainLink )
+    if ( nullptr == chainLink )
     {
         return this;
     }
-    if ( NULL == this )
+    if ( nullptr == this )
     {
         return chainLink;
     }
@@ -185,7 +185,7 @@ void MScriptExpr::completeDelete ( MScriptExpr * expr )
 
 void MScriptExpr::completeDelete()
 {
-    if ( NULL == this )
+    if ( nullptr == this )
     {
         return;
     }
@@ -193,18 +193,18 @@ void MScriptExpr::completeDelete()
     m_lValue.completeDelete();
     m_rValue.completeDelete();
 
-    if ( NULL != m_next )
+    if ( nullptr != m_next )
     {
-        m_next->m_prev = NULL;
+        m_next->m_prev = nullptr;
         m_next->completeDelete();
-        m_next = NULL;
+        m_next = nullptr;
     }
 
-    if ( NULL != m_prev )
+    if ( nullptr != m_prev )
     {
-        m_prev->m_next = NULL;
+        m_prev->m_next = nullptr;
         m_prev->completeDelete();
-        m_prev = NULL;
+        m_prev = nullptr;
     }
 
     delete this;
@@ -216,9 +216,9 @@ MScriptExpr * MScriptExpr::operator [] ( int index )
     for ( int i = 0; i < index; i++ )
     {
         result = result->m_next;
-        if ( NULL == result )
+        if ( nullptr == result )
         {
-            return NULL;
+            return nullptr;
         }
     }
     return result;
@@ -226,21 +226,21 @@ MScriptExpr * MScriptExpr::operator [] ( int index )
 
 MScriptExpr * MScriptExpr::copyEntireChain() const
 {
-    if ( NULL == this )
+    if ( nullptr == this )
     {
-        return NULL;
+        return nullptr;
     }
 
     MScriptExpr * result = copyChainLink();
 
     const MScriptExpr * next = this;
-    while ( NULL != ( next = next->m_next ) )
+    while ( nullptr != ( next = next->m_next ) )
     {
         result->appendLink(next->copyChainLink());
     }
 
     const MScriptExpr * prev = this;
-    while ( NULL != ( prev = prev->m_prev ) )
+    while ( nullptr != ( prev = prev->m_prev ) )
     {
         result->prependLink(prev->copyChainLink());
     }
@@ -250,9 +250,9 @@ MScriptExpr * MScriptExpr::copyEntireChain() const
 
 MScriptExpr * MScriptExpr::copyChainLink() const
 {
-    if ( NULL == this )
+    if ( nullptr == this )
     {
-        return NULL;
+        return nullptr;
     }
 
     MScriptExpr * result = new MScriptExpr();
@@ -265,15 +265,15 @@ MScriptExpr * MScriptExpr::copyChainLink() const
 
 MScriptExpr * MScriptExpr::unlink()
 {
-    if ( NULL != m_next )
+    if ( nullptr != m_next )
     {
         m_next->m_prev = m_prev;
-        m_next = NULL;
+        m_next = nullptr;
     }
-    if ( NULL != m_prev )
+    if ( nullptr != m_prev )
     {
         m_prev->m_next = m_next;
-        m_prev = NULL;
+        m_prev = nullptr;
     }
     return this;
 }
@@ -283,7 +283,7 @@ void MScriptExpr::serialize ( MScriptSerializer & output ) const
     output.write ( (uint16_t) m_operator );
     output << m_lValue << m_rValue << m_location;
 
-    if ( NULL == m_next )
+    if ( nullptr == m_next )
     {
         output << MARK_TERMINAL;
     }
@@ -296,8 +296,8 @@ void MScriptExpr::serialize ( MScriptSerializer & output ) const
 
 void MScriptExpr::deserialize ( MScriptSerializer & input )
 {
-    m_next = NULL;
-    m_prev = NULL;
+    m_next = nullptr;
+    m_prev = nullptr;
 
     m_operator =  Operator(input.read_ui16());
     input >> m_lValue >> m_rValue >> m_location;
@@ -411,9 +411,9 @@ std::ostream & operator << ( std::ostream & out,
 std::ostream & operator << ( std::ostream & out,
                              const MScriptExpr * const expr )
 {
-    if ( NULL == expr )
+    if ( nullptr == expr )
     {
-        out << "(<ERROR:NULL!>)";
+        out << "(<ERROR:nullptr!>)";
         return out;
     }
 
@@ -430,7 +430,7 @@ std::ostream & operator << ( std::ostream & out,
     out << expr->m_location;
     out << "}";
 
-    if ( NULL != expr->m_next )
+    if ( nullptr != expr->m_next )
     {
         out << " | " << expr->m_next;
     }

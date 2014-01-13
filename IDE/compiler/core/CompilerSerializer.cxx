@@ -42,7 +42,7 @@ CompilerSerializer::CompilerSerializer ( std::istream & input,
                                          bool hide )
                                        :
                                          m_input  ( &input ),
-                                         m_output ( NULL ),
+                                         m_output ( nullptr ),
                                          m_role   ( DESERIALIZER )
 {
     size_t headerLength = ( 1 + strlen(COMMON_FILE_HEADER) );
@@ -78,12 +78,10 @@ CompilerSerializer::CompilerSerializer ( std::istream & input,
         }
         else
         {
-            for ( std::vector<std::pair<std::string,FILE*>>::const_iterator it = files.cbegin();
-                  it != files.cend();
-                  it++ )
+            for ( const auto & file : files )
             {
                 fileNumber++;
-                if ( it->first == filename )
+                if ( file.first == filename )
                 {
                     found = true;
                     break;
@@ -93,7 +91,7 @@ CompilerSerializer::CompilerSerializer ( std::istream & input,
             if ( false == found )
             {
                 fileNumber++;
-                files.push_back(std::make_pair(filename,(FILE*)NULL));
+                files.push_back(std::make_pair(filename, (FILE*)nullptr));
             }
 
             m_fileNumberMap.push_back(fileNumber);
@@ -110,7 +108,7 @@ CompilerSerializer::CompilerSerializer ( std::ostream & output,
                                          CompilerBase::LangId lang,
                                          CompilerBase::TargetArch arch )
                                        :
-                                         m_input  ( NULL ),
+                                         m_input  ( nullptr ),
                                          m_output ( &output ),
                                          m_role   ( SERIALIZER )
 {
@@ -120,11 +118,9 @@ CompilerSerializer::CompilerSerializer ( std::ostream & output,
     write ( (uint16_t) arch );
 
     write ( (uint32_t) files.size() );
-    for ( std::vector<std::pair<std::string,FILE*>>::const_iterator it = files.cbegin();
-          it != files.cend();
-          it++ )
+    for ( const auto & file : files )
     {
-        write ( it->first );
+        write ( file.first );
     }
 
     locationTracker->serialize(*this);

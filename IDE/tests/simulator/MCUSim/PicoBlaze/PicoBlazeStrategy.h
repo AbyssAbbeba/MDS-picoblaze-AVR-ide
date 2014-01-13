@@ -63,7 +63,7 @@ class PicoBlazeStrategy : public MCUSimTestScriptStrategy
          */
         virtual bool processLine ( std::vector<std::string> * tokens,
                                    bool useAsmFile,
-                                   MCUSimTestScript::Command * cmd );
+                                   MCUSimTestScript::Command * cmd ) override;
 
         /**
          * @brief
@@ -72,7 +72,7 @@ class PicoBlazeStrategy : public MCUSimTestScriptStrategy
          * @return
          */
         virtual bool executeCommand ( const MCUSimTestScript::Command & cmd,
-                                      std::ofstream & outFile );
+                                      std::ofstream & outFile ) override;
 };
 
 #endif // PICOBLAZESTRATEGY_H

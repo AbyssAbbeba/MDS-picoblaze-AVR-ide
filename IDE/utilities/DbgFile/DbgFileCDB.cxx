@@ -22,22 +22,22 @@
 
 DbgFileCDB::DbgFileCDB()
 {
-    m_addrToLineMap = NULL;
-    m_lineToAddrMap = NULL;
+    m_addrToLineMap = nullptr;
+    m_lineToAddrMap = nullptr;
 }
 
 DbgFileCDB::~DbgFileCDB()
 {
-    if ( NULL != m_addrToLineMap )
+    if ( nullptr != m_addrToLineMap )
     {
         delete[] m_addrToLineMap;
     }
 
-    if ( NULL != m_lineToAddrMap )
+    if ( nullptr != m_lineToAddrMap )
     {
         for ( unsigned int i = 0; i < m_fileNames.size(); i++ )
         {
-            if ( NULL != m_lineToAddrMap[i] )
+            if ( nullptr != m_lineToAddrMap[i] )
             {
                 delete[] m_lineToAddrMap[i];
             }
@@ -46,13 +46,13 @@ DbgFileCDB::~DbgFileCDB()
     }
 }
 
-void DbgFileCDB::openFile ( const std::string & filename ) throw ( Exception )
+void DbgFileCDB::openFile ( const std::string & filename )
 {
     try
     {
         loadFile(filename);
     }
-    catch ( Exception & e )
+    catch ( const Exception & e )
     {
         clear();
         throw(e);
@@ -333,9 +333,9 @@ inline DbgFileCDB::TypeChain DbgFileCDB::parseTypeChain ( char * typeChain ) con
     result.m_size = atoi(checkNumber(extractToken(typeChain, '}')));
     char * dclTypes = extractToken(typeChain, ':');
     char * comma;
-    while ( NULL != ( comma = strchr(dclTypes, int(',')) ) )
+    while ( nullptr != ( comma = strchr(dclTypes, int(',')) ) )
     {
-        // Replace ',' with NULL, i.e. terminate a substring here
+        // Replace ',' with nullptr, i.e. terminate a substring here
         comma[0] = '\0';
 
         // append the substring after ',' to the vector
@@ -474,9 +474,9 @@ inline void DbgFileCDB::handleSymbolRecord ( char * line,
         line++;
 
         char * comma;
-        while ( NULL != ( comma = strchr(line, int(',')) ) )
+        while ( nullptr != ( comma = strchr(line, int(',')) ) )
         {
-            // Replace ',' with NULL, i.e. terminate a substring here
+            // Replace ',' with nullptr, i.e. terminate a substring here
             comma[0] = '\0';
 
             // append the substring after ',' to the vector
@@ -492,7 +492,7 @@ inline void DbgFileCDB::handleSymbolRecord ( char * line,
         symbolRecord.m_stackOffset = atoi(checkNumber(line));
     }
 
-    if ( NULL == target )
+    if ( nullptr == target )
     {
         m_symbolRecords.push_back(symbolRecord);
     }
@@ -552,7 +552,7 @@ inline void DbgFileCDB::parseMemberSymbol ( char * typeMemberDef,
                                             std::vector<TypeRecord::TypeMember> & typeMembers )
 {
     char * par = strchr(typeMemberDef, int(')'));
-    if ( NULL == par )
+    if ( nullptr == par )
     {
         throw Exception(Exception::PARSE_ERROR, "')' expected.");
     }
@@ -631,34 +631,32 @@ inline void DbgFileCDB::handleLinkerSymbolAddressRecord ( char * line,
     name = extractToken(line);
     level = atoi(checkNumber(extractToken(line)));
     block = atoi(checkNumber(extractToken(line, ':')));
-    address = int(strtol(checkHexNumber(extractToken(line, ':')), NULL, 16)); // address is in hex
+    address = int(strtol(checkHexNumber(extractToken(line, ':')), nullptr, 16)); // address is in hex
 
-    for ( std::vector<SymbolRecord>::iterator it = m_symbolRecords.begin();
-          it != m_symbolRecords.end();
-          it++ )
+    for ( auto & symbolRecord : m_symbolRecords )
     {
-        if ( ( it->m_block != block )
-                ||
-              ( it->m_level != level )
-                ||
-              ( it->m_scope != scope )
-                ||
-              ( it->m_fileNumber != fileNumber )
-                ||
-              ( it->m_name != name )
-                ||
-              ( it->m_function != function ) )
+        if ( ( symbolRecord.m_block != block )
+               ||
+             ( symbolRecord.m_level != level )
+               ||
+             ( symbolRecord.m_scope != scope )
+               ||
+             ( symbolRecord.m_fileNumber != fileNumber )
+               ||
+             ( symbolRecord.m_name != name )
+               ||
+             ( symbolRecord.m_function != function ) )
         {
             continue;
         }
 
         if ( true == startAddress )
         {
-            it->m_startAddress = address;
+            symbolRecord.m_startAddress = address;
         }
         else
         {
-            it->m_endAddress = address;
+            symbolRecord.m_endAddress = address;
         }
     }
 }
@@ -679,7 +677,7 @@ inline void DbgFileCDB::handleLinkerLineRecord ( char * line,
         // extract line number
         lineRecord.m_lineNumber = atoi(checkNumber(extractToken(line, ':')));
         // extract end address
-        lineRecord.m_address = int(strtol(checkHexNumber(line), NULL, 16)); // address is in hex
+        lineRecord.m_address = int(strtol(checkHexNumber(line), nullptr, 16)); // address is in hex
     }
     else
     {
@@ -693,7 +691,7 @@ inline void DbgFileCDB::handleLinkerLineRecord ( char * line,
         // extract block number
         lineRecord.m_block = atoi(checkNumber(extractToken(line, ':')));
         // extract end address
-        lineRecord.m_address = int(strtol(checkHexNumber(line), NULL, 16)); // address is in hex
+        lineRecord.m_address = int(strtol(checkHexNumber(line), nullptr, 16)); // address is in hex
     }
 
     if ( m_numberOfLines.size() == (unsigned int)(lineRecord.m_fileNumber) )
@@ -814,7 +812,7 @@ inline int DbgFileCDB::getOrInsertFileNumber ( const std::string & filename )
 
 inline void DbgFileCDB::generateLineAddressMaps()
 {
-    if ( NULL != m_addrToLineMap )
+    if ( nullptr != m_addrToLineMap )
     {
         delete[] m_addrToLineMap;
     }
@@ -824,11 +822,11 @@ inline void DbgFileCDB::generateLineAddressMaps()
         m_addrToLineMap[i] = -1;
     }
 
-    if ( NULL != m_lineToAddrMap )
+    if ( nullptr != m_lineToAddrMap )
     {
         for ( unsigned int i = 0; i < m_fileNames.size(); i++ )
         {
-            if ( NULL != m_lineToAddrMap[i] )
+            if ( nullptr != m_lineToAddrMap[i] )
             {
                 delete[] m_lineToAddrMap[i];
             }
@@ -871,14 +869,20 @@ inline void DbgFileCDB::clear()
     m_moduleRecords.clear();
 }
 
-int DbgFileCDB::getLineByAddr ( unsigned int addr ) const
+void DbgFileCDB::getLineByAddr ( unsigned int addr,
+                                     std::vector<unsigned int> & recordNumbers ) const
 {
+    recordNumbers.clear();
+
     if ( (int)(addr) > m_lastAddress )
     {
-        return -1;
+        return;
     }
 
-    return m_addrToLineMap[addr];
+    if ( -1 != m_addrToLineMap[addr] )
+    {
+        recordNumbers.push_back ( (unsigned int) m_addrToLineMap[addr] );
+    }
 }
 
 int DbgFileCDB::getAddrByLine ( unsigned int line,

@@ -183,7 +183,7 @@ void DAsmPicoBlazeKcpsm2::inst_CALL ( std::string & line,
 void DAsmPicoBlazeKcpsm2::shift_rotate ( std::string & line,
                                          unsigned int code )
 {
-    const char * inst = NULL;
+    const char * inst = nullptr;
     if ( 0 == ( code & 0xff00 ) )
     {
         switch ( code & 0xff )
@@ -201,7 +201,7 @@ void DAsmPicoBlazeKcpsm2::shift_rotate ( std::string & line,
         }
     }
 
-    if ( NULL == inst )
+    if ( nullptr == inst )
     {
         appendStr(line, "DB");
         indent(line, 32);
@@ -314,7 +314,7 @@ void DAsmPicoBlazeKcpsm2::aaa ( std::string & line,
 {
     appendStr(line, inst);
     indent(line, 32);
-    if ( NULL != cnd )
+    if ( nullptr != cnd )
     {
         appendStr(line, cnd);
         line += ", ";

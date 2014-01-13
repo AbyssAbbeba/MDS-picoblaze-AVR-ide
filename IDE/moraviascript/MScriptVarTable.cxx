@@ -69,8 +69,8 @@ bool MScriptVarTable::remove ( const std::string & variable,
           varTab != m_varTables.rend();
           varTab++ )
     {
-        std::pair<VarTable::iterator,VarTable::iterator> range = varTab->equal_range(bareId);
-        std::pair<int,VarTable::iterator> availability = std::make_pair(-1, range.first);
+        auto range = varTab->equal_range(bareId);
+        auto availability = std::make_pair(-1, range.first);
 
         for ( VarTable::iterator i = range.first;
               i != range.second;
@@ -95,14 +95,14 @@ bool MScriptVarTable::remove ( const std::string & variable,
 
         if ( false == result )
         {
-            if ( NULL == index )
+            if ( nullptr == index )
             {
                 varTab->erase(availability.second);
             }
             else
             {
                 MScriptValue * arrayElement = access ( variable, index, &location );
-                if ( NULL != arrayElement )
+                if ( nullptr != arrayElement )
                 {
                     arrayElement->completeDelete();
                 }
@@ -153,7 +153,7 @@ void MScriptVarTable::declare ( const std::string & variable,
          */
 
         const MScriptSrcLocation * varLoc = getLocation(bareId);
-        if ( NULL != varLoc )
+        if ( nullptr != varLoc )
         {
             m_interpret->interpreterMessage ( location,
                                               MScriptBase::MT_WARNING,
@@ -233,7 +233,7 @@ bool MScriptVarTable::remove ( const int id )
         return false;
     }
 
-    std::pair<VarTable::iterator,VarTable::iterator> range = m_varTables[0].equal_range(it->second);
+    auto range = m_varTables[0].equal_range(it->second);
     for ( VarTable::iterator i = range.first;
           i != range.second;
           i++ )
@@ -255,7 +255,7 @@ void MScriptVarTable::assign ( const std::string & variable,
                                const MScriptArrayIndex * index )
 {
     MScriptVariable * cell = rawAccess ( variable );
-    if ( ( NULL != cell ) && ( -1 != cell->m_id ) )
+    if ( ( nullptr != cell ) && ( -1 != cell->m_id ) )
     {
         m_interpret->getStrategy()->variableWritten(cell->m_id, index, value);
         return;
@@ -298,7 +298,7 @@ void MScriptVarTable::assign ( const std::string & variable,
         MScriptVariable::Flags flags = MScriptVariable::FLAG_NO_FLAGS;
         int dim = 0;
 
-        if ( NULL != index )
+        if ( nullptr != index )
         {
             flags = MScriptVariable::FLAG_ARRAY;
             dim = index->dimensions();
@@ -314,7 +314,7 @@ void MScriptVarTable::assign ( const std::string & variable,
     }
 
     MScriptValue * var;
-    if ( NULL == index )
+    if ( nullptr == index )
     {
         var = access ( variable, index, &location );
     }
@@ -323,7 +323,7 @@ void MScriptVarTable::assign ( const std::string & variable,
         var = newArrayElement ( variable, index, &location );
     }
 
-    if ( NULL != var )
+    if ( nullptr != var )
     {
         value.makeCopy(*var);
     }
@@ -332,19 +332,19 @@ void MScriptVarTable::assign ( const std::string & variable,
 bool MScriptVarTable::defined ( const std::string & variable,
                                 const MScriptArrayIndex * index )
 {
-    return ( NULL != access ( variable, index ) );
+    return ( nullptr != access ( variable, index ) );
 }
 
 bool MScriptVarTable::declared ( const std::string & variable,
                                  const MScriptArrayIndex * index )
 {
-    if ( NULL == index )
+    if ( nullptr == index )
     {
         return ( MScriptVariable::FLAG_INVALID != getFlags ( variable ) );
     }
     else
     {
-        return ( NULL != access ( variable, index ) );
+        return ( nullptr != access ( variable, index ) );
     }
 }
 
@@ -352,7 +352,7 @@ MScriptVariable::Flags MScriptVarTable::getFlags ( const std::string & variable 
 {
     MScriptVariable * var = rawAccess ( variable );
 
-    if ( NULL != var )
+    if ( nullptr != var )
     {
         return var->m_flags;
     }
@@ -366,13 +366,13 @@ const MScriptSrcLocation * MScriptVarTable::getLocation ( const std::string & va
 {
     MScriptVariable * var = rawAccess ( variable );
 
-    if ( NULL != var )
+    if ( nullptr != var )
     {
         return &( var->m_location );
     }
     else
     {
-        return NULL;
+        return nullptr;
     }
 }
 
@@ -397,7 +397,7 @@ inline MScriptValue * MScriptVarTable::newArrayElementIdx ( const std::string & 
                                                             const MScriptSrcLocation * location,
                                                             MScriptVariable * var )
 {
-    for ( std::vector<unsigned int>::const_iterator i = index->m_index.cbegin();
+    for ( auto i = index->m_index.cbegin();
           i != index->m_index.cend();
           i++ )
     {
@@ -441,7 +441,7 @@ inline MScriptValue * MScriptVarTable::newArrayElementIdx ( const std::string & 
                                                             "is/are not compatible with the array declaration" )
                                                           . arg ( variable.c_str() )
                                                           . toStdString() );
-            return NULL;
+            return nullptr;
         }
     }
 
@@ -453,7 +453,7 @@ inline MScriptValue * MScriptVarTable::newArrayElementKey ( const std::string & 
                                                             const MScriptSrcLocation * location,
                                                             MScriptVariable * var )
 {
-    for ( std::vector<std::string>::const_iterator i = index->m_key.cbegin();
+    for ( auto i = index->m_key.cbegin();
           i != index->m_key.cend();
           i++ )
     {
@@ -480,7 +480,7 @@ inline MScriptValue * MScriptVarTable::newArrayElementKey ( const std::string & 
                                                                 "declaration" )
                                                               . arg ( variable.c_str() )
                                                               . toStdString() );
-                return NULL;
+                return nullptr;
             }
         }
         else
@@ -518,8 +518,8 @@ inline MScriptVariable * MScriptVarTable::rawAccess ( const std::string & variab
           varTab != m_varTables.rend();
           varTab++, enteredLevel++ )
     {
-        std::pair<VarTable::iterator,VarTable::iterator> range = varTab->equal_range(bareId);
-        std::pair<int,VarTable::iterator> availability = std::make_pair(-1, range.first);
+        auto range = varTab->equal_range(bareId);
+        auto availability = std::make_pair(-1, range.first);
 
         for ( VarTable::iterator i = range.first;
               i != range.second;
@@ -539,7 +539,7 @@ inline MScriptVariable * MScriptVarTable::rawAccess ( const std::string & variab
 
         if ( -1 != availability.first )
         {
-            if ( NULL != level )
+            if ( nullptr != level )
             {
                 if ( -1 != *level )
                 {
@@ -555,7 +555,7 @@ inline MScriptVariable * MScriptVarTable::rawAccess ( const std::string & variab
         }
     }
 
-    return NULL;
+    return nullptr;
 }
 
 MScriptValue * MScriptVarTable::access ( const std::string & variable,
@@ -566,9 +566,9 @@ MScriptValue * MScriptVarTable::access ( const std::string & variable,
 std::cout << "MScriptVarTable::access ( "<<variable<<", location = "<<*location<<" );\n" << std::flush;
     MScriptVariable * cell = rawAccess ( variable, level );
 std::cout << "cell = " << (void*)cell << "\n" << std::flush;
-    if ( NULL == cell )
+    if ( nullptr == cell )
     {
-        if ( NULL != location )
+        if ( nullptr != location )
         {
             m_interpret->interpreterMessage ( *location,
                                               MScriptBase::MT_ERROR,
@@ -576,7 +576,7 @@ std::cout << "cell = " << (void*)cell << "\n" << std::flush;
                                                             "nonexistent variable)" ) . arg ( variable.c_str() )
                                                                                       . toStdString() );
         }
-        return NULL;
+        return nullptr;
     }
     else if ( -1 != cell->m_id )
     {
@@ -588,9 +588,9 @@ std::cout << "cell = " << (void*)cell << "\n" << std::flush;
         return reaccess ( variable, cell->m_value.m_scalar, location, index );
     }
 
-    if ( NULL == index )
+    if ( nullptr == index )
     {
-        if ( NULL != location )
+        if ( nullptr != location )
         {
             m_interpret->interpreterMessage ( *location,
                                               MScriptBase::MT_ERROR,
@@ -598,7 +598,7 @@ std::cout << "cell = " << (void*)cell << "\n" << std::flush;
                                                            . arg ( variable.c_str() )
                                                            . toStdString() );
         }
-        return NULL;
+        return nullptr;
     }
 
     if ( MScriptVariable::FLAG_HASH & cell->m_flags )
@@ -626,7 +626,7 @@ inline MScriptValue * MScriptVarTable::accessArray ( const std::string & variabl
 
         if ( MScriptVariable::FLAG_ARRAY != flags )
         {
-            if ( NULL != location )
+            if ( nullptr != location )
             {
                 m_interpret->interpreterMessage ( *location,
                                                   MScriptBase::MT_ERROR,
@@ -635,11 +635,11 @@ inline MScriptValue * MScriptVarTable::accessArray ( const std::string & variabl
                                                               . arg ( variable.c_str() )
                                                               . toStdString() );
             }
-            return NULL;
+            return nullptr;
         }
         else if ( *idx >= cell->m_value.m_array->size() )
         {
-            if ( NULL != location )
+            if ( nullptr != location )
             {
                 m_interpret->interpreterMessage ( *location,
                                                   MScriptBase::MT_ERROR,
@@ -651,7 +651,7 @@ inline MScriptValue * MScriptVarTable::accessArray ( const std::string & variabl
                                                               . arg ( dimensionNo )
                                                               . toStdString() );
             }
-            return NULL;
+            return nullptr;
         }
         else
         {
@@ -662,7 +662,7 @@ inline MScriptValue * MScriptVarTable::accessArray ( const std::string & variabl
     const int flags = ( ( MScriptVariable::FLAG_HASH | MScriptVariable::FLAG_ARRAY ) & cell->m_flags );
     if ( MScriptVariable::FLAG_ARRAY == flags )
     {
-        if ( NULL != location )
+        if ( nullptr != location )
         {
             m_interpret->interpreterMessage ( *location,
                                               MScriptBase::MT_ERROR,
@@ -671,7 +671,7 @@ inline MScriptValue * MScriptVarTable::accessArray ( const std::string & variabl
                                                           . arg ( variable.c_str() )
                                                           . toStdString() );
         }
-        return NULL;
+        return nullptr;
     }
     else
     {
@@ -694,7 +694,7 @@ inline MScriptValue * MScriptVarTable::accessHash ( const std::string & variable
 
         if ( ( MScriptVariable::FLAG_HASH | MScriptVariable::FLAG_ARRAY ) != flags )
         {
-            if ( NULL != location )
+            if ( nullptr != location )
             {
                 m_interpret->interpreterMessage ( *location,
                                                   MScriptBase::MT_ERROR,
@@ -703,14 +703,14 @@ inline MScriptValue * MScriptVarTable::accessHash ( const std::string & variable
                                                               . arg ( variable.c_str() )
                                                               . toStdString() );
             }
-            return NULL;
+            return nullptr;
         }
 
         std::map<std::string,MScriptVariable>::iterator it = cell->m_value.m_hash->find(*key);
 
         if ( cell->m_value.m_hash->cend() == it )
         {
-            if ( NULL != location )
+            if ( nullptr != location )
             {
                 m_interpret->interpreterMessage ( *location,
                                                   MScriptBase::MT_ERROR,
@@ -722,7 +722,7 @@ inline MScriptValue * MScriptVarTable::accessHash ( const std::string & variable
                                                               . arg ( dimensionNo )
                                                               . toStdString() );
             }
-            return NULL;
+            return nullptr;
         }
         else
         {
@@ -733,7 +733,7 @@ inline MScriptValue * MScriptVarTable::accessHash ( const std::string & variable
     const int flags = ( ( MScriptVariable::FLAG_HASH | MScriptVariable::FLAG_ARRAY ) & cell->m_flags );
     if ( ( MScriptVariable::FLAG_HASH | MScriptVariable::FLAG_ARRAY ) == flags )
     {
-        if ( NULL != location )
+        if ( nullptr != location )
         {
             m_interpret->interpreterMessage ( *location,
                                               MScriptBase::MT_ERROR,
@@ -742,7 +742,7 @@ inline MScriptValue * MScriptVarTable::accessHash ( const std::string & variable
                                                           . arg ( variable.c_str() )
                                                           . toStdString() );
         }
-        return NULL;
+        return nullptr;
     }
     else
     {
@@ -785,7 +785,7 @@ inline void MScriptVarTable::derefer ( const char * reference,
     {
         // Index vector.
         unsigned int number;
-        while ( NULL != ( next = strchr ( str, '\n' ) ) )
+        while ( nullptr != ( next = strchr ( str, '\n' ) ) )
         {
             next[0] = '\0';
             sscanf ( str, "%d", &number );
@@ -796,7 +796,7 @@ inline void MScriptVarTable::derefer ( const char * reference,
     else
     {
         // Key vector.
-        while ( NULL != ( next = strchr ( str, '\n' ) ) )
+        while ( nullptr != ( next = strchr ( str, '\n' ) ) )
         {
             next[0] = '\0';
             index->m_key.push_back(str);
@@ -826,7 +826,7 @@ inline MScriptValue * MScriptVarTable::reaccess ( const std::string & variable,
                                                             "is scalar (it cannot be accessed as array)" )
                                                            . arg ( variable.c_str() )
                                                            . toStdString() );
-            return NULL;
+            return nullptr;
         }
 
         const MScriptArrayIndex * accessIndex = index;
@@ -836,14 +836,14 @@ inline MScriptValue * MScriptVarTable::reaccess ( const std::string & variable,
         }
         if ( 0 == accessIndex->dimensions() )
         {
-            accessIndex = NULL;
+            accessIndex = nullptr;
         }
 
         return access ( input.m_data.m_symbol, accessIndex, location, &level );
     }
-    else if ( NULL != index )
+    else if ( nullptr != index )
     {
-        if ( NULL != location )
+        if ( nullptr != location )
         {
             m_interpret->interpreterMessage ( *location,
                                               MScriptBase::MT_ERROR,
@@ -852,7 +852,7 @@ inline MScriptValue * MScriptVarTable::reaccess ( const std::string & variable,
                                                            . toStdString() );
         }
 
-        return NULL;
+        return nullptr;
     }
     else
     {
@@ -868,7 +868,7 @@ void MScriptVarTable::refer ( const std::string & refName,
 {
     int level = -1;
     MScriptValue * target = access ( refTarget, targetIndex, &location, &level );
-    if ( NULL == target )
+    if ( nullptr == target )
     {
         return;
     }

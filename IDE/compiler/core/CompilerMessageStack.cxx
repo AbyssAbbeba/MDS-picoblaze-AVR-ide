@@ -29,7 +29,7 @@ bool CompilerMessageStack::isUnique ( const CompilerSourceLocation & location,
     }
     else
     {
-        std::pair<MsgMap::iterator,MsgMap::iterator> range = m_data.equal_range(text);
+        auto range = m_data.equal_range(text);
         for ( MsgMap::iterator i = range.first;
               i != range.second;
               i++ )

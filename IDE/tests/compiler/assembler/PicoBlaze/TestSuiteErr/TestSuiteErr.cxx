@@ -83,11 +83,9 @@ bool TestSuiteErr::addTests ( CU_pSuite suite )
 
     std::sort(testCaseFiles.begin(), testCaseFiles.end());
 
-    for ( std::vector<std::string>::const_iterator it = testCaseFiles.cbegin();
-          it != testCaseFiles.cend();
-          it++ )
+    for ( const auto & testCaseFile : testCaseFiles )
     {
-        if ( NULL == CU_add_test(suite, it->c_str(), &testFunction) )
+        if ( nullptr == CU_add_test(suite, testCaseFile.c_str(), &testFunction) )
         {
             return false;
         }

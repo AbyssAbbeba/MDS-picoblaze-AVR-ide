@@ -94,11 +94,9 @@ bool TestSuiteSuc::addTests ( CU_pSuite suite )
 
     std::sort(testCaseFiles.begin(), testCaseFiles.end());
 
-    for ( std::vector<std::string>::const_iterator it = testCaseFiles.cbegin();
-          it != testCaseFiles.cend();
-          it++ )
+    for ( const auto & testCaseFile : testCaseFiles )
     {
-        if ( NULL == CU_add_test(suite, it->c_str(), &testFunction) )
+        if ( nullptr == CU_add_test(suite, testCaseFile.c_str(), &testFunction) )
         {
             return false;
         }
@@ -151,7 +149,7 @@ void TestSuiteSuc::testFunction()
         compareV    ( expectedCommonPath + ".v.exp",    m_options->m_verilogFile );
         compareVhd  ( expectedCommonPath + ".vhd.exp",  m_options->m_vhdlFile    );
     }
-    catch ( DataFileException & e )
+    catch ( const DataFileException & e )
     {
         std::cerr << std::endl << e.toString() << std::endl;
         CU_FAIL("An instance of DataFileException thrown!");
@@ -162,7 +160,7 @@ void TestSuiteSuc::testFunction()
     {
         compareDbg ( expectedCommonPath + ".dbg.exp",  m_options->m_mdsDebugFile );
     }
-    catch ( DbgFile::Exception & e )
+    catch ( const DbgFile::Exception & e )
     {
         std::cerr << std::endl << e.toString() << std::endl;
         CU_FAIL("An instance of DbgFile::Exception thrown!");
@@ -271,7 +269,7 @@ void TestSuiteSuc::compareSym ( const std::string & expected,
         }
 
         bool entryFoundInSymExpFile = false;
-        for ( std::vector<std::string>::iterator it = symExpFileVec[numberOfTable].begin();
+        for ( auto it = symExpFileVec[numberOfTable].begin();
               it != symExpFileVec[numberOfTable].end();
               it++ )
         {
@@ -326,7 +324,7 @@ void TestSuiteSuc::compareMac ( const std::string & expected,
         std::getline(macFile, line);
 
         bool entryFoundInMacExpFile = false;
-        for ( std::vector<std::string>::iterator it = macExpFileVec.begin();
+        for ( auto it = macExpFileVec.begin();
               it != macExpFileVec.end();
               it++ )
         {

@@ -21,8 +21,8 @@
 AVR8DataMemory::AVR8DataMemory()
 {
     m_size = 0;
-    m_memory = NULL;
-    m_memory2 = NULL;
+    m_memory = nullptr;
+    m_memory2 = nullptr;
 }
 
 AVR8DataMemory * AVR8DataMemory::link ( MCUSimEventLogger * eventLogger )
@@ -34,12 +34,12 @@ AVR8DataMemory * AVR8DataMemory::link ( MCUSimEventLogger * eventLogger )
 
 AVR8DataMemory::~AVR8DataMemory()
 {
-    if ( NULL != m_memory )
+    if ( nullptr != m_memory )
     {
         delete[] m_memory;
     }
 
-    if ( NULL != m_memory2 )
+    if ( nullptr != m_memory2 )
     {
         for ( unsigned int i = 0; i < m_config.m_mem2size; i++ )
         {
@@ -199,7 +199,7 @@ void AVR8DataMemory::resize ( unsigned int newSize )
         m_memory[i] = getUndefVal();
     }
 
-    if ( NULL != memoryOrig )
+    if ( nullptr != memoryOrig )
     {
         delete memoryOrig;
     }
@@ -249,7 +249,7 @@ inline void AVR8DataMemory::loadConfig()
 
     if ( 0 == m_config.m_mem2size )
     {
-        if ( NULL != m_memory2 )
+        if ( nullptr != m_memory2 )
         {
             delete[] m_memory2;
         }
@@ -266,9 +266,9 @@ inline void AVR8DataMemory::loadConfig()
             for ( unsigned int j = 0; j < m_config.m_mem2sizes[i]; j++ )
             {
                 if (
-                     ( NULL != memory2Orig )
+                     ( nullptr != memory2Orig )
                          &&
-                     ( NULL != m_config.m_mem2sizes )
+                     ( nullptr != m_config.m_mem2sizes )
                          &&
                      ( i < m_config.m_mem2size )
                          &&
@@ -283,7 +283,7 @@ inline void AVR8DataMemory::loadConfig()
             }
         }
 
-        if ( NULL != memory2Orig )
+        if ( nullptr != memory2Orig )
         {
             delete[] memory2Orig;
         }
@@ -337,31 +337,31 @@ AVR8DataMemory::Config::Config()
 {
     m_undefinedValue = -1;
 
-    m_ioRegInitValues = NULL;
-    m_ioRegRandomInit = NULL;
-    m_mem2sizes = NULL;
-    m_ioMem2InitValues = NULL;
+    m_ioRegInitValues = nullptr;
+    m_ioRegRandomInit = nullptr;
+    m_mem2sizes = nullptr;
+    m_ioMem2InitValues = nullptr;
 }
 
 AVR8DataMemory::Config::~Config()
 {
-    if ( NULL != m_ioRegInitValues )
+    if ( nullptr != m_ioRegInitValues )
     {
         delete[] m_ioRegInitValues;
     }
-    if ( NULL != m_ioRegRandomInit )
+    if ( nullptr != m_ioRegRandomInit )
     {
         delete[] m_ioRegRandomInit;
     }
-    if ( NULL != m_mem2sizes )
+    if ( nullptr != m_mem2sizes )
     {
         delete[] m_mem2sizes;
     }
-    if ( NULL != m_ioMem2InitValues )
+    if ( nullptr != m_ioMem2InitValues )
     {
         for ( unsigned int i = 0; i < m_mem2size; i++ )
         {
-            if ( NULL != m_ioMem2InitValues[i] )
+            if ( nullptr != m_ioMem2InitValues[i] )
             {
                 delete[] m_ioMem2InitValues[i];
             }

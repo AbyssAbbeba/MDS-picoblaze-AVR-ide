@@ -23,6 +23,39 @@
  */
 class AsmTranslatorConfig
 {
+    ////    Public Datatypes    ////
+    public:
+        ///
+        enum LetterCase
+        {
+            LC_LOWERCASE, ///<
+            LC_UPPERCASE  ///<
+        };
+
+        ///
+        enum Field
+        {
+            F_SYMBOL,     ///<
+            F_DIRECTIVE,  ///<
+            F_INSTRUCTION ///<
+        };
+
+        ///
+        enum Indentation
+        {
+            IND_KEEP,  ///<
+            IND_TABS,  ///<
+            IND_SPACES ///<
+        };
+
+        ///
+        enum EndOfLine
+        {
+            EOF_LF,  ///<
+            EOF_CR,  ///<
+            EOF_CRLF ///<
+        };
+
     ////    Constructors and Destructors    ////
     public:
         /**
@@ -30,10 +63,27 @@ class AsmTranslatorConfig
          */
         AsmTranslatorConfig();
 
+        /**
+         * @brief
+         */
+        virtual ~AsmTranslatorConfig() {}
+
     ////    Public Attributes    ////
     public:
         ///
-//         bool m_
+        LetterCase m_letterCase [ F_INSTRUCTION + 1 ];
+
+        ///
+        EndOfLine m_eol;
+
+        ///
+        Indentation m_indentation;
+
+        ///
+        unsigned int m_tabSize;
+
+        ///
+        bool m_shortInstructions;
 };
 
 #endif // ASMTRANSLATORCONFIG_H
