@@ -18,6 +18,7 @@
 
 #include <vector>
 #include <string>
+#include <utility>
 
 /**
  * @brief
@@ -399,23 +400,23 @@ class DbgFile
          * @brief
          * @param[in] filename
          */
-        virtual void openFile ( const std::string & filename ) throw ( Exception ) = 0;
+        virtual void openFile ( const std::string & filename ) = 0;
 
         /**
          * @brief
          * @param[in] addr
-         * @return
+         * @param[out] recordNumber
          */
-        virtual int getLineByAddr ( unsigned int addr ) const = 0;
+        virtual void getLineByAddr ( unsigned int addr,
+                                     std::vector<unsigned int> & recordNumbers ) const = 0;
 
         /**
          * @brief
          * @param[in] addr
-         * @param[out] fileName
-         * @return
+         * @param[out] lines
          */
-        int getLineByAddr ( unsigned int addr,
-                            std::string & fileName ) const;
+        void getLinesByAddr ( unsigned int addr,
+                              std::vector<std::pair<const std::string *, unsigned int>> & lines ) const;
 
         /**
          * @brief

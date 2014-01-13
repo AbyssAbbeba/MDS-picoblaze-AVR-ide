@@ -225,7 +225,7 @@ class MScriptFuncTable
         bool isDefined ( const std::string & name,
                          const MScriptSrcLocation & location,
                          int argc = -1,
-                         MScriptSrcLocation * defLocation = NULL,
+                         MScriptSrcLocation * defLocation = nullptr,
                          bool exactNsMatch = false ) const;
 
         /**

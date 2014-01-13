@@ -73,13 +73,13 @@ class AsmPicoBlazeSemanticAnalyzer : public CompilerSemanticAnalyzer
          * @brief
          * @param[in,out] codeTree
          */
-        void process ( CompilerStatement * codeTree );
+        virtual void process ( CompilerStatement * codeTree ) override;
 
         /**
          * @brief
          * @param[in] deviceName
          */
-        void setDevice ( const std::string & deviceName );
+        virtual void setDevice ( const std::string & deviceName ) override;
 
     ////    Private Operations    ////
     private:

@@ -32,7 +32,7 @@ long long  MScriptLexerAuxFunc::str2int ( MScriptParserInterface * core,
                                           const char * str,
                                           int base )
 {
-    long long result = strtoll(str, NULL, base);
+    long long result = strtoll(str, nullptr, base);
 
     if ( ( LLONG_MIN == result ) || ( LLONG_MAX == result ) )
     {
@@ -50,7 +50,7 @@ double MScriptLexerAuxFunc::str2float ( MScriptParserInterface * core,
                                         const MScriptSrcLocation location,
                                         const char * str )
 {
-    double result = strtod ( str, NULL );
+    double result = strtod ( str, nullptr );
 
     if ( ( -HUGE_VAL == result ) || ( HUGE_VAL == result ) )
     {

@@ -136,7 +136,7 @@ DIS_INT_INST            "disable"{WS}"interrupt"
     }
 
     // Terminate lexical analysis, in case all input files have been closed using the EXIT' directive.
-    if ( NULL == AsmPicoBlazeLexer_get_in(yyscanner) )
+    if ( nullptr == AsmPicoBlazeLexer_get_in(yyscanner) )
     {
         yyterminate();
     }
@@ -187,6 +187,8 @@ DIS_INT_INST            "disable"{WS}"interrupt"
 "#while"                { return D_WHILE;      }
 "#endwhile"             { return D_ENDW;       }
 "#endw"                 { return D_ENDW;       }
+\.?"failjmp"            { return D_FAILJMP;    }
+\.?"default_jump"       { return D_FAILJMP;    }
 \.?"device"             { return D_DEVICE;     }
 \.?"limit"              { return D_LIMIT;      }
 \.?"reg"                { return D_REG;        }
@@ -235,7 +237,7 @@ DIS_INT_INST            "disable"{WS}"interrupt"
                             }
                             else
                             {
-                                AsmPicoBlazeLexer_set_in(NULL, yyscanner);
+                                AsmPicoBlazeLexer_set_in(nullptr, yyscanner);
                             }
 
                             return D_END;
@@ -572,7 +574,7 @@ DIS_INT_INST            "disable"{WS}"interrupt"
                             }
 
                             FILE * file = yyextra->fileOpen(filename, &filename);
-                            if ( NULL == file )
+                            if ( nullptr == file )
                             {
                                 yyextra->lexerMessage ( yylloc,
                                                         CompilerBase::MT_ERROR,

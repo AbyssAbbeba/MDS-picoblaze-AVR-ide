@@ -21,6 +21,7 @@
 // Standard header files.
 #include <vector>
 #include <string>
+#include <utility>
 
 /**
  * @brief
@@ -53,14 +54,15 @@ class DbgFileNative : public DbgFile
          * @brief
          * @param[in] filename
          */
-        void openFile ( const std::string & filename ) throw ( Exception );
+        virtual void openFile ( const std::string & filename ) override;
 
         /**
          * @brief
          * @param[in] addr
-         * @return
+         * @param[out] recordNumber
          */
-        int getLineByAddr ( unsigned int addr ) const;
+        virtual void getLineByAddr ( unsigned int addr,
+                                     std::vector<unsigned int> & recordNumbers ) const override;
 
         /**
          * @brief
@@ -68,8 +70,8 @@ class DbgFileNative : public DbgFile
          * @param[in] filename
          * @return
          */
-        int getAddrByLine ( unsigned int line,
-                            const std::string & filename ) const;
+        virtual int getAddrByLine ( unsigned int line,
+                                    const std::string & filename ) const override;
 
         /// @name Methods for direct set-up of the debug data container, i.e. without loading a debug file.
         //@{
@@ -93,6 +95,14 @@ class DbgFileNative : public DbgFile
             void directSetupRelation ( unsigned int addr,
                                        unsigned int file,
                                        unsigned int line );
+
+            /**
+             * @brief
+             * @param[in] addr
+             * @param[in] locations
+             */
+            void directSetupRelation ( unsigned int addr,
+                                       const std::vector<std::pair<unsigned int, unsigned int>> & locations );
 
             /**
              * @brief
@@ -130,7 +140,7 @@ class DbgFileNative : public DbgFile
         /**
          * @brief
          */
-        int * m_addrToLineMap;
+        std::vector<unsigned int> * m_addrToLineMap;
 
         /**
          * @brief

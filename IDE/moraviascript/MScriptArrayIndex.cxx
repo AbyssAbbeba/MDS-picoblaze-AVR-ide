@@ -21,23 +21,19 @@ std::string MScriptArrayIndex::toString() const
 
     if ( false == m_index.empty() )
     {
-        for ( std::vector<unsigned int>::const_iterator i = m_index.cbegin();
-              i != m_index.cend();
-              i++ )
+        for ( const auto idx : m_index )
         {
             result += "[";
-            result += *i;
+            result += idx;
             result += "]";
         }
     }
     else
     {
-        for ( std::vector<std::string>::const_iterator i = m_key.cbegin();
-              i != m_key.cend();
-              i++ )
+        for ( const auto & key : m_key )
         {
             result += "[\"";
-            result += *i;
+            result += key;
             result += "\"]";
         }
     }
@@ -47,7 +43,7 @@ std::string MScriptArrayIndex::toString() const
 
 int MScriptArrayIndex::dimensions() const
 {
-    if ( NULL == this )
+    if ( nullptr == this )
     {
         return 0;
     }

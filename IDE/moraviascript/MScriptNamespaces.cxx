@@ -24,7 +24,7 @@
 MScriptNamespaces::MScriptNamespaces ( MScriptInterpretInterface * interpret )
                                      : m_interpret ( interpret )
 {
-    m_rootNs = NULL;
+    m_rootNs = nullptr;
     clear();
 }
 
@@ -40,11 +40,9 @@ MScriptNamespaces::NsDesc::~NsDesc()
 
 void MScriptNamespaces::NsDesc::clear()
 {
-    for ( std::vector<NsDesc*>::iterator it = m_contains.begin();
-          it != m_contains.end();
-          it++ )
+    for ( auto ns : m_contains )
     {
-        delete *it;
+        delete ns;
     }
 }
 
@@ -82,9 +80,9 @@ MScriptNamespaces::NsDesc * MScriptNamespaces::analyseId ( const std::string & i
     {
         result = result->getChildByName ( id.substr(lastPos, pos - lastPos) );
 
-        if ( NULL == result )
+        if ( nullptr == result )
         {
-            if ( NULL != location )
+            if ( nullptr != location )
             {
                 m_interpret->interpreterMessage ( *location,
                                                   MScriptBase::MT_ERROR,
@@ -93,7 +91,7 @@ MScriptNamespaces::NsDesc * MScriptNamespaces::analyseId ( const std::string & i
                                                               . arg ( resultOrig->toString().c_str() )
                                                               . toStdString() );
             }
-            return NULL;
+            return nullptr;
         }
 
         resultOrig = result;
@@ -121,21 +119,19 @@ MScriptNamespaces::NsDesc * MScriptNamespaces::str2ns ( const std::string & ns,
 
     //
     NsDesc * nsDesc = m_rootNs;
-    for ( std::vector<std::string>::const_iterator it = nsVector.cbegin();
-          it != nsVector.cend();
-          it++ )
+    for ( const auto & nspace : nsVector )
     {
-        NsDesc * child = nsDesc->getChildByName(*it);
+        NsDesc * child = nsDesc->getChildByName(nspace);
 
-        if ( NULL == child )
+        if ( nullptr == child )
         {
             if ( false == define )
             {
-                return NULL;
+                return nullptr;
             }
 
             // Define new namespace.
-            child = new NsDesc ( *it, nsDesc, MScriptSrcLocation() );
+            child = new NsDesc ( nspace, nsDesc, MScriptSrcLocation() );
             nsDesc->m_contains.push_back(child);
         }
 
@@ -151,7 +147,7 @@ int MScriptNamespaces::NsDesc::inheritsFrom ( const MScriptNamespaces::NsDesc * 
     int distance = 0;
 
     for ( const NsDesc * nsDesc = this;
-          NULL != nsDesc;
+          nullptr != nsDesc;
           nsDesc = nsDesc->m_parent )
     {
         if ( ns == nsDesc )
@@ -170,12 +166,12 @@ MScriptNamespaces::NsDesc * MScriptNamespaces::define ( const MScriptSrcLocation
     std::string bareId;
     NsDesc * nsDesc = analyseId(ns, bareId, &location);
 
-    if ( NULL == nsDesc )
+    if ( nullptr == nsDesc )
     {
-        return NULL;
+        return nullptr;
     }
 
-    if ( NULL != nsDesc->getChildByName ( bareId ) )
+    if ( nullptr != nsDesc->getChildByName ( bareId ) )
     {
         m_interpret->interpreterMessage ( location,
                                           MScriptBase::MT_ERROR,
@@ -183,7 +179,7 @@ MScriptNamespaces::NsDesc * MScriptNamespaces::define ( const MScriptSrcLocation
                                                       . arg ( nsDesc->toString().c_str() )
                                                       . arg ( bareId.c_str() )
                                                       . toStdString() );
-        return NULL;
+        return nullptr;
     }
 
     nsDesc->m_contains.push_back(new NsDesc ( bareId, nsDesc, location ));
@@ -198,7 +194,7 @@ void MScriptNamespaces::defineEnter ( const MScriptSrcLocation & location,
 
 void MScriptNamespaces::enter ( MScriptNamespaces::NsDesc * ns )
 {
-    if ( NULL != ns )
+    if ( nullptr != ns )
     {
         m_current.push_back(ns);
     }
@@ -211,11 +207,11 @@ MScriptNamespaces::NsDesc * MScriptNamespaces::current() const
 
 void MScriptNamespaces::clear()
 {
-    if ( NULL != m_rootNs )
+    if ( nullptr != m_rootNs )
     {
         delete m_rootNs;
     }
-    m_rootNs = new NsDesc ( "::", NULL, MScriptSrcLocation() );
+    m_rootNs = new NsDesc ( "::", nullptr, MScriptSrcLocation() );
 
     m_current.clear();
     m_current.push_back(m_rootNs);
@@ -233,9 +229,9 @@ void MScriptNamespaces::NsDesc::print ( std::ostream & out,
               (unsigned int) (   0x00000000ffffffff & reinterpret_cast<long long unsigned int>(this) ) );
     out << addr << " ";
 
-    if ( NULL == this )
+    if ( nullptr == this )
     {
-        out << "<ERROR:NULL!>" << std::endl;
+        out << "<ERROR:nullptr!>" << std::endl;
         return;
     }
 
@@ -251,7 +247,7 @@ void MScriptNamespaces::NsDesc::print ( std::ostream & out,
         }
     }
 
-    if ( NULL == m_parent )
+    if ( nullptr == m_parent )
     {
         if ( true == m_contains.empty() )
         {
@@ -281,11 +277,9 @@ void MScriptNamespaces::NsDesc::print ( std::ostream & out,
 
     level++;
     lineString += "1";
-    for ( std::vector<NsDesc*>::const_iterator i = m_contains.cbegin();
-          i != m_contains.cend();
-          i++ )
+    for ( const auto child : m_contains )
     {
-        (*i)->print(out, level, lineString);
+        child->print(out, level, lineString);
     }
 }
 
@@ -295,7 +289,7 @@ std::string MScriptNamespaces::NsDesc::toString() const
     std::vector<const std::string*> path;
 
     for ( const MScriptNamespaces::NsDesc * ns = this;
-          ns != NULL;
+          ns != nullptr;
           ns = ns->m_parent )
     {
         path.push_back ( &(ns->m_name) );
@@ -314,17 +308,15 @@ std::string MScriptNamespaces::NsDesc::toString() const
 
 MScriptNamespaces::NsDesc * MScriptNamespaces::NsDesc::getChildByName ( const std::string & name ) const
 {
-    for ( std::vector<NsDesc*>::const_iterator i = m_contains.cbegin();
-          i != m_contains.cend();
-          i++ )
+    for ( auto child : m_contains )
     {
-        if ( name == (*i)->m_name )
+        if ( name == child->m_name )
         {
-            return *i;
+            return child;
         }
     }
 
-    return NULL;
+    return nullptr;
 }
 
 std::ostream & operator << ( std::ostream & out,

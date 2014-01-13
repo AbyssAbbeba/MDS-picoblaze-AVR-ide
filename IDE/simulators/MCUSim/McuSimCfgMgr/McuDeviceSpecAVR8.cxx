@@ -28,36 +28,36 @@ McuDeviceSpecAVR8::McuDeviceSpecAVR8() : McuDeviceSpec(MCUSim::Arch::ARCH_AVR8)
 
 McuDeviceSpecAVR8::DataMemory::DataMemory()
 {
-    m_ioRegInitValues = NULL;
-    m_ioRegRandomInit = NULL;
-    m_mem2sizes = NULL;
-    m_ioMem2InitValues = NULL;
+    m_ioRegInitValues = nullptr;
+    m_ioRegRandomInit = nullptr;
+    m_mem2sizes = nullptr;
+    m_ioMem2InitValues = nullptr;
     m_mem2size = 0;
-    m_ioRegDesc = NULL;
+    m_ioRegDesc = nullptr;
 }
 
 McuDeviceSpecAVR8::DataMemory::~DataMemory()
 {
-    if ( NULL != m_ioRegInitValues )
+    if ( nullptr != m_ioRegInitValues )
     {
         delete[] m_ioRegInitValues;
     }
 
-    if ( NULL != m_ioRegRandomInit )
+    if ( nullptr != m_ioRegRandomInit )
     {
         delete[] m_ioRegRandomInit;
     }
 
-    if ( NULL != m_mem2sizes )
+    if ( nullptr != m_mem2sizes )
     {
         delete[] m_mem2sizes;
     }
 
-    if ( NULL != m_ioMem2InitValues )
+    if ( nullptr != m_ioMem2InitValues )
     {
         for ( unsigned int i = 0; i < m_mem2size; i++ )
         {
-            if ( NULL != m_ioMem2InitValues[i] )
+            if ( nullptr != m_ioMem2InitValues[i] )
             {
                 delete[] m_ioMem2InitValues[i];
             }
@@ -65,7 +65,7 @@ McuDeviceSpecAVR8::DataMemory::~DataMemory()
         delete[] m_ioMem2InitValues;
     }
 
-    if ( NULL != m_ioRegDesc )
+    if ( nullptr != m_ioRegDesc )
     {
         delete[] m_ioRegDesc;
     }
@@ -98,23 +98,23 @@ bool McuDeviceSpecAVR8::setupSimulator ( AVR8Config & mcuConfig ) const
     mcuConfig.m_configDataEEPROM->m_size = m_dataEEPROM.m_size;
     mcuConfig.m_configDataEEPROM->m_writeTime = m_dataEEPROM.m_writeTime;
     // Data memory
-    if ( NULL != mcuConfig.m_configDataMemory->m_ioRegInitValues )
+    if ( nullptr != mcuConfig.m_configDataMemory->m_ioRegInitValues )
     {
         delete [] mcuConfig.m_configDataMemory->m_ioRegInitValues;
     }
-    if ( NULL != mcuConfig.m_configDataMemory->m_ioRegRandomInit )
+    if ( nullptr != mcuConfig.m_configDataMemory->m_ioRegRandomInit )
     {
         delete [] mcuConfig.m_configDataMemory->m_ioRegRandomInit;
     }
-    if ( NULL != mcuConfig.m_configDataMemory->m_mem2sizes )
+    if ( nullptr != mcuConfig.m_configDataMemory->m_mem2sizes )
     {
         delete [] mcuConfig.m_configDataMemory->m_mem2sizes;
     }
-    if ( NULL != mcuConfig.m_configDataMemory->m_ioMem2InitValues )
+    if ( nullptr != mcuConfig.m_configDataMemory->m_ioMem2InitValues )
     {
         for ( unsigned int i = 0; i < mcuConfig.m_configDataMemory->m_mem2size; i++ )
         {
-            if ( NULL != mcuConfig.m_configDataMemory->m_ioMem2InitValues[i] )
+            if ( nullptr != mcuConfig.m_configDataMemory->m_ioMem2InitValues[i] )
             {
                 delete [] mcuConfig.m_configDataMemory->m_ioMem2InitValues[i];
             }

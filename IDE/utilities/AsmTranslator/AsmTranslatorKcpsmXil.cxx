@@ -47,13 +47,23 @@ AsmTranslatorKcpsmXil::AsmTranslatorKcpsmXil()
     for ( int i = 0; i < 32; i++ )
     {
         char reg[4];
-        sprintf(reg, "s%0x", i);
+        sprintf(reg, "s%02x", i);
         m_registers.insert(reg);
     }
+
+    m_defaultSymbols.insert ( std::make_pair ( "NUL", "'\\0'" ) );
+    m_defaultSymbols.insert ( std::make_pair ( "BEL", "'\\a'" ) );
+    m_defaultSymbols.insert ( std::make_pair ( "BS",  "'\\b'" ) );
+    m_defaultSymbols.insert ( std::make_pair ( "HT",  "'\\t'" ) );
+    m_defaultSymbols.insert ( std::make_pair ( "LF",  "'\\n'" ) );
+    m_defaultSymbols.insert ( std::make_pair ( "VT",  "'\\v'" ) );
+    m_defaultSymbols.insert ( std::make_pair ( "CR",  "'\\r'" ) );
+    m_defaultSymbols.insert ( std::make_pair ( "ESC", "'\\e'" ) );
 }
 
-bool AsmTranslatorKcpsmXil::process ( std::vector<std::string> & messages,
+bool AsmTranslatorKcpsmXil::process ( std::vector<std::pair<unsigned int, std::string> > & messages,
                                       std::string & line,
+                                      unsigned int lineNumber,
                                       bool secondPass )
 {
     LineFields lineFields(line);
@@ -107,6 +117,7 @@ bool AsmTranslatorKcpsmXil::process ( std::vector<std::string> & messages,
             boost::regex_search(begin, line.cend(), match, m_reAtMark);
             if ( true == match[0].matched )
             {
+                m_instFlag = true;
                 if ( true == secondPass )
                 {
                     begin = match[0].second;
@@ -128,8 +139,14 @@ bool AsmTranslatorKcpsmXil::process ( std::vector<std::string> & messages,
 
                         translateIdentifiers(lineFields);
                     }
+
+                    lineFields.replaceInst ( changeLetterCase ( lineFields.getInstruction(),
+                                                                m_config->m_letterCase [
+                                                                    AsmTranslatorConfig::F_INSTRUCTION
+                                                                ] ) );
                 }
 
+                line = autoIndent(&line, indSz());
                 return true;
             }
         }
@@ -192,31 +209,27 @@ bool AsmTranslatorKcpsmXil::process ( std::vector<std::string> & messages,
 
     if ( ( false == secondPass ) && ( line.cend() != begin ) )
     {
-        messages.push_back ( QObject::tr ( "Warning: line not understood: `%1'." )
-                                         . arg (line.c_str())
-                                         . toStdString() );
+        messages.push_back ( std::make_pair ( lineNumber,
+                                              QObject::tr ( "Warning: line not understood: `%1'." )
+                                                          . arg ( line.c_str() )
+                                                          . toStdString() ) );
         return false;
     }
 
     if ( false == secondPass )
     {
-        return processDirectives ( messages, lineFields );
+        return processDirectives ( messages, lineFields, lineNumber );
     }
     else
     {
-        return processInstructions ( messages, lineFields );
+        return processInstructions ( messages, lineFields, lineNumber );
     }
 }
 
-inline bool AsmTranslatorKcpsmXil::processDirectives ( std::vector<std::string> & messages,
-                                                       LineFields & lineFields )
+inline bool AsmTranslatorKcpsmXil::processDirectives ( std::vector<std::pair<unsigned int, std::string> > & messages,
+                                                       LineFields & lineFields,
+                                                       unsigned int lineNumber )
 {
-    std::string directive = lineFields.getInstruction();
-    if ( true == directive.empty() )
-    {
-        return true;
-    }
-
     // Fix strangely formed labels, i.e. `0label   :' -> `_0label:'.
     {
         std::string lbl = lineFields.getLabel(true);
@@ -243,24 +256,34 @@ inline bool AsmTranslatorKcpsmXil::processDirectives ( std::vector<std::string> 
             }
 
             lbl = newIdentifier(lbl.substr ( 0, lbl.size() -1 ));
-            lineFields.replaceLabel(lbl + ":");
+            lineFields.replaceLabel(changeLetterCase(lbl, m_config->m_letterCase[AsmTranslatorConfig::F_SYMBOL]) + ":");
         }
+    }
+
+    std::string directive = lineFields.getInstruction();
+    if ( true == directive.empty() )
+    {
+        return true;
     }
 
     if ( "constant" == directive )
     {
         std::string id = newIdentifier(lineFields.getOperand(0, true));
-
         fixRadix(lineFields, 1);
-        std::string substitute = id + " EQU " + lineFields.getOperand(1);
+        std::string substitute = changeLetterCase ( id, m_config->m_letterCase[AsmTranslatorConfig::F_SYMBOL] )
+                                 + changeLetterCase ( " equ ",m_config->m_letterCase[AsmTranslatorConfig::F_DIRECTIVE] )
+                                 + changeLetterCase ( lineFields.getOperand(1, true),
+                                                      m_config->m_letterCase[AsmTranslatorConfig::F_SYMBOL] );
 
         if ( true == m_instFlag )
         {
-            lineFields.replaceInstOpr("");
-            m_prologue.push_back(substitute);
-            messages.push_back ( QObject::tr ( "Warning: directive `constant' should be used prior to any "
-                                               "instructions." )
-                                             . toStdString() );
+            substitute += lineFields.getComment();
+            m_prologue.push_back(autoIndent(&substitute, indSz(), true));
+            lineFields.replaceAll("; >>>>> (line moved to the beginning) <<<<<");
+            messages.push_back ( std::make_pair ( lineNumber,
+                                                  QObject::tr ( "Warning: directive `constant' should be used prior to "
+                                                                "any instructions." )
+                                                              . toStdString() ) );
         }
         else
         {
@@ -270,31 +293,61 @@ inline bool AsmTranslatorKcpsmXil::processDirectives ( std::vector<std::string> 
     else if ( "namereg" == directive )
     {
         std::string id = newIdentifier(lineFields.getOperand(1, true));
-
         m_registers.insert(id);
-        lineFields.replaceInstOpr(id + " REG " + lineFields.getOperand(0));
+        lineFields.replaceInstOpr ( changeLetterCase ( id, m_config->m_letterCase[AsmTranslatorConfig::F_SYMBOL] )
+                                    + changeLetterCase ( " reg ",
+                                                         m_config->m_letterCase[AsmTranslatorConfig::F_DIRECTIVE] )
+                                    + changeLetterCase ( lineFields.getOperand(0, true),
+                                                         m_config->m_letterCase[AsmTranslatorConfig::F_SYMBOL] ) );
     }
     else if ( "address" == directive )
     {
         fixRadix(lineFields, 0);
-        lineFields.replaceInst("ORG");
+        lineFields.replaceInst ( changeLetterCase ( "org", m_config->m_letterCase[AsmTranslatorConfig::F_DIRECTIVE] ) );
+        lineFields.replaceOpr ( changeLetterCase ( lineFields.getOperand(0, true),
+                                                   m_config->m_letterCase[AsmTranslatorConfig::F_SYMBOL] ),
+                                0 );
+        lineFields.replaceAll(autoIndent(lineFields.m_line, indSz()));
+        return true;
+    }
+    else if ( "default_jump" == directive )
+    {
+        if ( true == m_config->m_shortInstructions )
+        {
+            lineFields.replaceInst ( changeLetterCase ( "failjmp",
+                                                        m_config->m_letterCase[AsmTranslatorConfig::F_DIRECTIVE] ) );
+        }
+        lineFields.replaceAll(autoIndent(lineFields.m_line, indSz()));
+        return true;
     }
     else
     {
         m_instFlag = true;
+        return true;
     }
 
+    lineFields.replaceAll(autoIndent(lineFields.m_line, indSz(), true));
     return true;
 }
 
-inline bool AsmTranslatorKcpsmXil::processInstructions ( std::vector<std::string> & messages,
-                                                         LineFields & lineFields )
+inline bool AsmTranslatorKcpsmXil::processInstructions ( std::vector<std::pair<unsigned int, std::string> > & messages,
+                                                         LineFields & lineFields,
+                                                         unsigned int lineNumber )
 {
+    {
+        std::string op0 = lineFields.getOperand(0);
+        if ( ( "equ" == op0 ) || ( "reg" == op0 ) )
+        {
+            return true;
+        }
+    }
+
     translateIdentifiers(lineFields);
 
     std::string instruction = lineFields.getInstruction();
     if ( true == instruction.empty() )
     {
+        lineFields.replaceAll(autoIndent(lineFields.m_line, indSz()));
         return true;
     }
 
@@ -310,20 +363,23 @@ inline bool AsmTranslatorKcpsmXil::processInstructions ( std::vector<std::string
 
         if ( m_registers.end() == m_registers.find(lineFields.getOperand(1)) )
         {
-            lineFields.replaceOpr( "#" + lineFields.getOperand(1), 1);
+            lineFields.replaceOpr( "#" + lineFields.getOperand(1, true), 1);
         }
 
-        if ( "comparecy" == instruction )
+        if ( true == m_config->m_shortInstructions )
         {
-            lineFields.replaceInst("cmpcy");
-        }
-        else if ( "compare" == instruction )
-        {
-            lineFields.replaceInst("cmp");
-        }
-        else if ( "load" == instruction )
-        {
-            lineFields.replaceInst("ld");
+            if ( "comparecy" == instruction )
+            {
+                lineFields.replaceInst("cmpcy");
+            }
+            else if ( "compare" == instruction )
+            {
+                lineFields.replaceInst("cmp");
+            }
+            else if ( "load" == instruction )
+            {
+                lineFields.replaceInst("ld");
+            }
         }
     }
     else if ( ( "sl0" == instruction ) || ( "sl1" == instruction ) ||
@@ -336,12 +392,15 @@ inline bool AsmTranslatorKcpsmXil::processInstructions ( std::vector<std::string
     }
     else if ( "regbank" == instruction )
     {
-        lineFields.replaceInst("rb");
+        if ( true == m_config->m_shortInstructions )
+        {
+            lineFields.replaceInst("rb");
+        }
     }
     else if ( ( "input" == instruction ) || ( "output" == instruction ) ||
               ( "store" == instruction ) || ( "fetch"  == instruction ) )
     {
-        std::string opr1 = lineFields.getOperand(1);
+        std::string opr1 = lineFields.getOperand(1, true);
         if ( '(' == opr1[0] )
         {
             boost::smatch match;
@@ -364,57 +423,77 @@ inline bool AsmTranslatorKcpsmXil::processInstructions ( std::vector<std::string
             fixRadix(lineFields, 1);
         }
 
-        if ( 'i' == instruction[0] )
+        if ( true == m_config->m_shortInstructions )
         {
-            // Instruction `input'.
-            lineFields.replaceInst("in");
-        }
-        else if ( 'o' == instruction[0] )
-        {
-            // Instruction `output'.
-            lineFields.replaceInst("out");
-        }
-        else if ( 's' == instruction[0] )
-        {
-            // Instruction store'.
-            lineFields.replaceInst("st");
-        }
-        else if ( 'f' == instruction[0] )
-        {
-            // Instruction `fetch'.
-            lineFields.replaceInst("ft");
+            if ( 'i' == instruction[0] )
+            {
+                // Instruction `input'.
+                lineFields.replaceInst("in");
+            }
+            else if ( 'o' == instruction[0] )
+            {
+                // Instruction `output'.
+                lineFields.replaceInst("out");
+            }
+            else if ( 's' == instruction[0] )
+            {
+                // Instruction store'.
+                lineFields.replaceInst("st");
+            }
+            else if ( 'f' == instruction[0] )
+            {
+                // Instruction `fetch'.
+                lineFields.replaceInst("ft");
+            }
         }
     }
     else if ( "outputk" == instruction )
     {
         fixRadix(lineFields, 0);
         fixRadix(lineFields, 1);
-        lineFields.replaceOpr("#" + lineFields.getOperand(0), 0);
-        lineFields.replaceInst("outk");
+        lineFields.replaceOpr("#" + lineFields.getOperand(0, true), 0);
+        if ( true == m_config->m_shortInstructions )
+        {
+            lineFields.replaceInst("outk");
+        }
     }
     else if ( "disable" == instruction )
     {
-        lineFields.replaceInstOpr("dis");
+        if ( true == m_config->m_shortInstructions )
+        {
+            lineFields.replaceInstOpr("dis");
+        }
     }
     else if ( "enable" == instruction )
     {
-        lineFields.replaceInstOpr("ena");
+        if ( true == m_config->m_shortInstructions )
+        {
+            lineFields.replaceInstOpr("ena");
+        }
     }
     else if ( "returni" == instruction )
     {
         if ( "enable" == lineFields.getOperand(0) )
         {
-            lineFields.replaceInstOpr("retie");
+            if ( true == m_config->m_shortInstructions )
+            {
+                lineFields.replaceInstOpr("retie");
+            }
         }
         else if ( "disable" == lineFields.getOperand(0) )
         {
-            lineFields.replaceInstOpr("retid");
+            if ( true == m_config->m_shortInstructions )
+            {
+                lineFields.replaceInstOpr("retid");
+            }
         }
         else
         {
-            messages.push_back ( QObject::tr ( "Error: instruction not understood, `returni enable' or `returni "
-                                               "disable' was expeced." )
-                                             . toStdString() );
+            messages.push_back ( std::make_pair ( lineNumber,
+                                                  QObject::tr ( "Error: instruction not understood, `returni enable' or"
+                                                                " `returni disable' was expeced." )
+                                                              . toStdString() ) );
+            lineFields.replaceAll(autoIndent(lineFields.m_line, indSz()));
             return false;
         }
     }
@@ -428,7 +507,10 @@ inline bool AsmTranslatorKcpsmXil::processInstructions ( std::vector<std::string
     }
     else if ( "return" == instruction )
     {
-        lineFields.replaceInstOpr("ret");
+        if ( true == m_config->m_shortInstructions )
+        {
+            lineFields.replaceInstOpr("ret");
+        }
     }
     else if ( "hwbuild" == instruction )
     {
@@ -436,17 +518,28 @@ inline bool AsmTranslatorKcpsmXil::processInstructions ( std::vector<std::string
     }
     else if ( true == boost::regex_match(instruction, m_reLdAndRet ) )
     {
-        lineFields.replaceInst("ldret");
+        if ( true == m_config->m_shortInstructions )
+        {
+            lineFields.replaceInst("ldret");
+        }
         fixRadix(lineFields, 1);
-        lineFields.replaceOpr("#" + lineFields.getOperand(1), 1);
+        lineFields.replaceOpr("#" + lineFields.getOperand(1, true), 1);
+    }
+    else
+    {
+        return true;
     }
 
+    lineFields.replaceInst ( changeLetterCase ( lineFields.getInstruction(),
+                                                m_config->m_letterCase[AsmTranslatorConfig::F_INSTRUCTION] ) );
+
+    lineFields.replaceAll(autoIndent(lineFields.m_line, indSz()));
     return true;
 }
 
 inline bool AsmTranslatorKcpsmXil::ishex ( const std::string & str ) const
 {
-    for ( auto c : str )
+    for ( const auto c : str )
     {
         if ( 0 == isxdigit(c) )
         {
@@ -508,10 +601,25 @@ inline void AsmTranslatorKcpsmXil::translateIdentifiers ( AsmTranslatorBase::Lin
     for ( int  i = 0; true == lineFields.hasOperand(i); i++ )
     {
         id = lineFields.getOperand(i, true);
-        it = m_idTranslationMap.find(id);
-        if ( end != it )
+        it = m_defaultSymbols.find(id);
+        if ( m_defaultSymbols.cend() != it )
         {
-            lineFields.replaceOpr ( it->second, i );
+            id = it->second;
         }
+        else
+        {
+            it = m_idTranslationMap.find(id);
+            if ( end != it )
+            {
+                id = it->second;
+            }
+        }
+
+        lineFields.replaceOpr ( changeLetterCase ( id, m_config->m_letterCase[AsmTranslatorConfig::F_SYMBOL] ), i );
     }
+}
+
+inline unsigned int AsmTranslatorKcpsmXil::indSz() const
+{
+    return ( ( true == m_config->m_shortInstructions ) ? 0x313 : 0x323 );
 }

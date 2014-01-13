@@ -126,21 +126,17 @@ PIC8Sim::~PIC8Sim()
 
 inline void PIC8Sim::deleteSubSystems()
 {
-    for ( std::vector<MCUSimSubsys*>::iterator i = m_subSystems.begin();
-          i != m_subSystems.end();
-          i++ )
+    for ( auto subsys : m_subSystems )
     {
-        delete *i;
+        delete subsys;
     }
 }
 
 inline void PIC8Sim::checkSubSystems() const
 {
-    for ( std::vector<MCUSimSubsys*>::const_iterator i = m_subSystems.begin();
-          i != m_subSystems.end();
-          i++ )
+    for ( const auto subsys : m_subSystems )
     {
-        assert ( MCUSimSubsys::ID_INVALID != (*i)->getId() );
+        assert ( MCUSimSubsys::ID_INVALID != subsys->getId() );
     }
 }
 
@@ -168,7 +164,7 @@ MCUSimSubsys * PIC8Sim::getSubsys ( MCUSimSubsys::SubsysId id )
         case MCUSimSubsys::ID_ISP:            return m_isp;
         case MCUSimSubsys::ID_EXT_INT:        return m_externalInterrupts;
 
-        default:                              return NULL;
+        default:                              return nullptr;
     }
 }
 
@@ -179,11 +175,9 @@ MCUSimClock::ClockSource & PIC8Sim::getClockSource()
 
 void PIC8Sim::reset ( ResetMode mode )
 {
-    for ( std::vector<MCUSimSubsys*>::iterator i = m_subSystems.begin();
-          i != m_subSystems.end();
-          i++ )
+    for ( auto subsys : m_subSystems )
     {
-        (*i)->reset(mode);
+        subsys->reset(mode);
     }
 
     switch ( mode )

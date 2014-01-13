@@ -19,20 +19,20 @@ PIC8Config::PIC8Config() : MCUSimConfig ( MCUSim::ARCH_PIC8 )
 {
     m_isLinked = false;
 
-    m_configIO                  = NULL;
-    m_configDataMemory          = NULL;
-    m_configClockControl        = NULL;
-    m_configInstructionSet      = NULL;
-    m_configProgramMemory       = NULL;
-    m_configConfigWord          = NULL;
-    m_configStack               = NULL;
-    m_configInterruptController = NULL;
-    m_configDataEEPROM          = NULL;
-    m_configWatchDogTimer       = NULL;
-    m_configTimerCounter0       = NULL;
-    m_configTimer0WdtPrescaller = NULL;
-    m_configExternalInterrupts  = NULL;
-    m_configISP                 = NULL;
+    m_configIO                  = nullptr;
+    m_configDataMemory          = nullptr;
+    m_configClockControl        = nullptr;
+    m_configInstructionSet      = nullptr;
+    m_configProgramMemory       = nullptr;
+    m_configConfigWord          = nullptr;
+    m_configStack               = nullptr;
+    m_configInterruptController = nullptr;
+    m_configDataEEPROM          = nullptr;
+    m_configWatchDogTimer       = nullptr;
+    m_configTimerCounter0       = nullptr;
+    m_configTimer0WdtPrescaller = nullptr;
+    m_configExternalInterrupts  = nullptr;
+    m_configISP                 = nullptr;
 }
 
 void PIC8Config::link ( PIC8Sim * system )

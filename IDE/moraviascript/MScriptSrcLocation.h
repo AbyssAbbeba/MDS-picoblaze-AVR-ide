@@ -87,13 +87,13 @@ class MScriptSrcLocation : public MScriptSerializable
              * @brief
              * @param[in,out]
              */
-            virtual void serialize ( MScriptSerializer & output ) const;
+            virtual void serialize ( MScriptSerializer & output ) const override;
 
             /**
              * @brief
              * @param[in,out]
              */
-            virtual void deserialize ( MScriptSerializer & input );
+            virtual void deserialize ( MScriptSerializer & input ) override;
         //@}
 
     ////    Public Attributes    ////

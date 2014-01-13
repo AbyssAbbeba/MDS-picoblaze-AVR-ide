@@ -72,8 +72,8 @@ class AsmPicoBlazeSymbolTable
              * @param[in] value
              * @param[in] type
              */
-            Symbol ( const CompilerExpr * value = NULL,
-                     const CompilerSourceLocation * location = NULL,
+            Symbol ( const CompilerExpr * value = nullptr,
+                     const CompilerSourceLocation * location = nullptr,
                      SymbolType type = STYPE_UNSPECIFIED,
                      int finalValue = -1,
                      bool redefinable = false );
@@ -137,8 +137,8 @@ class AsmPicoBlazeSymbolTable
          * @return
          */
         int addSymbol ( const std::string & name,
-                        const CompilerExpr * value = NULL,
-                        const CompilerSourceLocation * location = NULL,
+                        const CompilerExpr * value = nullptr,
+                        const CompilerSourceLocation * location = nullptr,
                         const SymbolType type = STYPE_UNSPECIFIED,
                         bool resolve = false,
                         bool redefinable = false );
@@ -181,7 +181,7 @@ class AsmPicoBlazeSymbolTable
          */
         int assignValue ( const std::string & name,
                           const CompilerExpr * value,
-                          const CompilerSourceLocation * location = NULL,
+                          const CompilerSourceLocation * location = nullptr,
                           const SymbolType type = STYPE_UNSPECIFIED,
                           bool resolve = true );
 
@@ -283,7 +283,7 @@ class AsmPicoBlazeSymbolTable
          */
         int getExprValue ( ExprValSide side,
                            const CompilerExpr * expr,
-                           const CompilerExpr * argList = NULL );
+                           const CompilerExpr * argList = nullptr );
 
         /**
          * @brief
@@ -292,15 +292,16 @@ class AsmPicoBlazeSymbolTable
          * @return
          */
         int computeExpr ( const CompilerExpr * expr,
-                          const CompilerExpr * argList = NULL );
+                          const CompilerExpr * argList = nullptr );
 
         /**
          * @brief
          * @param[in,out] expr
          * @param[in] subst
          * @param[in] position
+         * @return
          */
-        void substArg ( CompilerExpr * expr,
+        bool substArg ( CompilerExpr * expr,
                         const CompilerExpr * subst,
                         const int position );
 

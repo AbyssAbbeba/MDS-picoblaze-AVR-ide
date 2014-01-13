@@ -117,7 +117,7 @@ class CompilerParserInterface
          * @return
          */
         virtual FILE * fileOpen ( const std::string & filename,
-                                  std::string * finalFilename = NULL,
+                                  std::string * finalFilename = nullptr,
                                   bool acyclic = true ) = 0;
 
         /**

@@ -250,7 +250,7 @@ void DAsmPicoBlazeKcpsm3::inst_CALL ( std::string & line,
 void DAsmPicoBlazeKcpsm3::shift_rotate ( std::string & line,
                                          unsigned int code )
 {
-    const char * inst = NULL;
+    const char * inst = nullptr;
     switch ( 0x10ff & code )
     {
         case 0b0110: inst = "SL0";      break;
@@ -265,7 +265,7 @@ void DAsmPicoBlazeKcpsm3::shift_rotate ( std::string & line,
         case 0b1100: inst = "RR";       break;
     }
 
-    if ( NULL == inst )
+    if ( nullptr == inst )
     {
         appendStr(line, "DB");
         indent(line, 32);
@@ -334,7 +334,7 @@ void DAsmPicoBlazeKcpsm3::aaa ( std::string & line,
 {
     appendStr(line, inst);
     indent(line, 32);
-    if ( NULL != cnd )
+    if ( nullptr != cnd )
     {
         appendStr(line, cnd);
         line += ", ";

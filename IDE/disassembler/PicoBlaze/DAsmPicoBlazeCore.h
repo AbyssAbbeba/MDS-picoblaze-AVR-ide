@@ -55,24 +55,24 @@ class DAsmPicoBlazeCore : public DAsmCore
          * @param[in] source
          * @return
          */
-        bool disassemble ( const DataFile & source );
+        virtual bool disassemble ( const DataFile & source ) override;
 
         /**
          * @brief
          * @return
          */
-        const std::vector<std::string> & getSourceCode() const;
+        virtual const std::vector<std::string> & getSourceCode() const override;
 
         /**
          * @brief
          * @return
          */
-        const std::vector<std::string> & getMessages() const;
+        virtual const std::vector<std::string> & getMessages() const override;
 
         /**
          * @brief
          */
-        void clear();
+        virtual void clear() override;
 
     ////    Protected Operations    ////
     protected:

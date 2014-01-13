@@ -83,7 +83,7 @@ class PicoBlazeProgramMemory : public MCUSimMemory
          * @brief
          * @param[in] mode
          */
-        void reset ( MCUSimBase::ResetMode mode );
+        virtual void reset ( MCUSimBase::ResetMode mode ) override;
 
         /**
          * @brief
@@ -91,8 +91,8 @@ class PicoBlazeProgramMemory : public MCUSimMemory
          * @param[out] data
          * @return
          */
-        MCUSim::RetCode directRead ( unsigned int addr,
-                                     unsigned int & data ) const;
+        virtual MCUSim::RetCode directRead ( unsigned int addr,
+                                             unsigned int & data ) const override;
 
         /**
          * @brief
@@ -100,26 +100,26 @@ class PicoBlazeProgramMemory : public MCUSimMemory
          * @param[in] data
          * @return
          */
-        MCUSim::RetCode directWrite ( unsigned int addr,
-                                      unsigned int data );
+        virtual MCUSim::RetCode directWrite ( unsigned int addr,
+                                              unsigned int data ) override;
 
         /**
          * @brief
          * @param[in] newSize
          */
-        void resize ( unsigned int newSize );
+        virtual void resize ( unsigned int newSize ) override;
 
         /**
          * @brief
          * @param[in] file
          */
-        void loadDataFile ( const DataFile * file );
+        virtual void loadDataFile ( const DataFile * file ) override;
 
         /**
          * @brief
          * @param[in] file
          */
-        void storeInDataFile ( DataFile * file ) const;
+        virtual void storeInDataFile ( DataFile * file ) const override;
 
         /**
          * @brief
@@ -133,7 +133,7 @@ class PicoBlazeProgramMemory : public MCUSimMemory
          * @brief
          * @return
          */
-        inline unsigned int size() const;
+        virtual unsigned int size() const override;
 
         /**
          * @brief

@@ -76,11 +76,9 @@ bool TestMScriptI::addTests ( CU_pSuite suite )
 
     std::sort(testCaseFiles.begin(), testCaseFiles.end());
 
-    for ( std::vector<std::string>::const_iterator it = testCaseFiles.cbegin();
-          it != testCaseFiles.cend();
-          it++ )
+    for ( const auto & testCaseFile : testCaseFiles )
     {
-        if ( NULL == CU_add_test(suite, it->c_str(), &testFunction) )
+        if ( nullptr == CU_add_test(suite, testCaseFile.c_str(), &testFunction) )
         {
             return false;
         }
@@ -101,7 +99,7 @@ void TestMScriptI::testFunction()
     std::string scriptFileName = ( path(TEST_SUITE_DIR) / "testcases" / (testName + ".mscript") ).string();
 
     FILE * scriptFile = fopen(scriptFileName.c_str(), "r");
-    if ( NULL == scriptFile )
+    if ( nullptr == scriptFile )
     {
         CU_FAIL( "Unable to open script file." );
         return;
@@ -123,7 +121,7 @@ void TestMScriptI::testFunction()
     }
 
     std::ofstream logFile(logFileName);
-    for ( auto i : m_core->getMessages() )
+    for ( const auto & i : m_core->getMessages() )
     {
         logFile << i << std::endl;
     }

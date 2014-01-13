@@ -79,7 +79,7 @@ class PicoBlazeStack : public MCUSimMemory
          *
          * @param[in] mode There are various modes of reset, e.g. accept new configuration, processor master reset, etc.
          */
-        void reset ( MCUSimBase::ResetMode mode );
+        virtual void reset ( MCUSimBase::ResetMode mode ) override;
 
         /**
          * @brief Read data directly from the stack bypassing its normal mode of operation.
@@ -87,8 +87,8 @@ class PicoBlazeStack : public MCUSimMemory
          * @param[out] data Address to the program memory read from the specified address.
          * @return This method doesn't generate simulator events that's why it uses return code to report final status.
          */
-        MCUSim::RetCode directRead ( unsigned int addr,
-                                     unsigned int & data ) const;
+        virtual MCUSim::RetCode directRead ( unsigned int addr,
+                                             unsigned int & data ) const override;
 
         /**
          * @brief Write data directly to the stack bypassing its normal mode of operation.
@@ -96,27 +96,27 @@ class PicoBlazeStack : public MCUSimMemory
          * @param[in] data Address to the program memory to store at the specified address.
          * @return This method doesn't generate simulator events that's why it uses return code to report final status.
          */
-        MCUSim::RetCode directWrite ( unsigned int addr,
-                                      unsigned int data );
+        virtual MCUSim::RetCode directWrite ( unsigned int addr,
+                                              unsigned int data ) override;
 
         /**
          * @brief Change stack capacity.
          * @warning This operation does NOT preserve the memory contents, i.e. the stack is (re-)initialize to zeros.
          * @param[in] newSize New size of the stack in number of values which can be stored in the stack at once.
          */
-        void resize ( unsigned int newSize );
+        virtual void resize ( unsigned int newSize ) override;
 
         /**
          * @brief Load contents of the stack from a file, like Intel 8 HEX file or something of that sort.
          * @param[in] file File data container.
          */
-        void loadDataFile ( const DataFile * file );
+        virtual void loadDataFile ( const DataFile * file ) override;
 
         /**
          * @brief Store contents of the stack to a file, like Intel 8 HEX file or something of that sort.
          * @param[in,out] file File data container.
          */
-        void storeInDataFile ( DataFile * file ) const;
+        virtual void storeInDataFile ( DataFile * file ) const override;
 
     ////    Inline Public Operations    ////
     public:
@@ -124,7 +124,7 @@ class PicoBlazeStack : public MCUSimMemory
          * @brief Get stack capacity.
          * @return Stack in number of values which can be stored in the stack at the same time, not bytes.
          */
-        unsigned int size() const
+        virtual unsigned int size() const override
         {
             return m_config.m_size;
         }

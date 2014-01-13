@@ -67,7 +67,7 @@ CompilerStatement * AsmPicoBlazeSpecialMacros::runTimeWhile ( CompilerStatement 
 
     result->appendLink(rtWhile->branch());
     result->appendLink(resultEnd);
-    rtWhile->m_branch = NULL;
+    rtWhile->m_branch = nullptr;
 
     return result;
 }
@@ -103,11 +103,9 @@ CompilerStatement * AsmPicoBlazeSpecialMacros::runTimeFor ( CompilerStatement * 
     int by = 1;
 
     bool regInUse = false;
-    for ( std::vector<int>::const_iterator it = m_forLoopIterRegs.cbegin();
-          it != m_forLoopIterRegs.cend();
-          it++ )
+    for ( const auto i : m_forLoopIterRegs )
     {
-        if ( *it == reg )
+        if ( i == reg )
         {
             regInUse = true;
             break;
@@ -127,19 +125,19 @@ CompilerStatement * AsmPicoBlazeSpecialMacros::runTimeFor ( CompilerStatement * 
     checkType ( true, m_symbolTable->getType(args[0]), args[0]->location() );
     for ( int i = 1; i < 4; i++ )
     {
-        if ( NULL == args[i] )
+        if ( nullptr == args[i] )
         {
             break;
         }
         checkType ( false, m_symbolTable->getType(args[i]), args[i]->location() );
     }
 
-    if ( NULL == args[2] )
+    if ( nullptr == args[2] )
     {
         // RT_FOR <REG>, <NUMBER>
         end = (int) m_symbolTable->resolveExpr(args[1], 8);
     }
-    else if ( NULL == args[3] )
+    else if ( nullptr == args[3] )
     {
         // RT_FOR <REG>, <START> .. <END>
         start = (int) m_symbolTable->resolveExpr(args[1], 8);
@@ -201,7 +199,7 @@ CompilerStatement * AsmPicoBlazeSpecialMacros::runTimeFor ( CompilerStatement * 
 
     result->appendLink(rtFor->branch());
     result->appendLink(resultEnd);
-    rtFor->m_branch = NULL;
+    rtFor->m_branch = nullptr;
 
     return result;
 }
@@ -216,16 +214,16 @@ CompilerStatement * AsmPicoBlazeSpecialMacros::runTimeCondition ( CompilerStatem
     CompilerStatement * block;
     CompilerStatement * nodeNext;
     CompilerStatement * node2delete;
-    CompilerStatement * result = NULL;
+    CompilerStatement * result = nullptr;
 
     generateLabel(labelEnd, LT_IF, true);
     generateLabel(labelNext, LT_IF);
 
     for ( CompilerStatement * node = rtIfTree->branch();
-          NULL != node;
+          nullptr != node;
           node = node->next() )
     {
-        block = NULL;
+        block = nullptr;
         switch ( (int) node->type() )
         {
             case ASMPICOBLAZE_DIR_RTIF:
@@ -266,7 +264,7 @@ CompilerStatement * AsmPicoBlazeSpecialMacros::runTimeCondition ( CompilerStatem
             }
         }
 
-        if ( NULL == result )
+        if ( nullptr == result )
         {
             result = block;
         }
@@ -276,11 +274,11 @@ CompilerStatement * AsmPicoBlazeSpecialMacros::runTimeCondition ( CompilerStatem
         node->insertLink ( block );
         node = nodeNext;
 
-        node2delete->m_branch = NULL;
+        node2delete->m_branch = nullptr;
         delete node2delete;
     }
 
-    rtIfTree->m_branch = NULL;
+    rtIfTree->m_branch = nullptr;
     return result;
 }
 
@@ -296,7 +294,7 @@ CompilerStatement * AsmPicoBlazeSpecialMacros::evaluateCondition ( const Compile
 
     int resultKnownInAdvance = 0;
 
-    CompilerStatement * result = NULL;
+    CompilerStatement * result = nullptr;
 
     const CompilerExpr * const lVal = cnd->lVal().m_data.m_expr;
     const CompilerExpr * const rVal = cnd->rVal().m_data.m_expr;
@@ -701,7 +699,7 @@ CompilerStatement * AsmPicoBlazeSpecialMacros::evaluateCondition ( const Compile
             break;
     }
 
-    if ( NULL == result )
+    if ( nullptr == result )
     {
         return new CompilerStatement();
     }

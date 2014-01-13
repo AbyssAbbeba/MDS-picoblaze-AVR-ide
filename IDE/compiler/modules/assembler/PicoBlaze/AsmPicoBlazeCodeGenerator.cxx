@@ -278,7 +278,7 @@ void AsmPicoBlazeCodeGenerator::operands ( std::string & result,
 {
     bool first = true;
     for ( const CompilerExpr * arg = args;
-          NULL != arg;
+          nullptr != arg;
           arg = arg->next() )
     {
         if ( false == first )

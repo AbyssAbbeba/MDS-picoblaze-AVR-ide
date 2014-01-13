@@ -26,7 +26,7 @@
 
 AsmPicoBlazeInstructionSet::~AsmPicoBlazeInstructionSet()
 {
-    if ( NULL != m_strategy )
+    if ( nullptr != m_strategy )
     {
         delete m_strategy;
     }
@@ -92,7 +92,7 @@ unsigned int AsmPicoBlazeInstructionSet::checkLimit ( LimitType type,
 
 int AsmPicoBlazeInstructionSet::resolveOPcode ( const CompilerStatement * stmt )
 {
-    if ( NULL == m_strategy )
+    if ( nullptr == m_strategy )
     {
         *m_device = AsmPicoBlazeSemanticAnalyzer::DEV_KCPSM6;
         setStrategy(new AsmPicoBlazeInstructionSet6());
@@ -363,7 +363,7 @@ void AsmPicoBlazeInstructionSet::encapsulate ( CompilerStatement * stmt,
 
     int i = 0;
     for ( CompilerExpr * arg = stmt->args();
-          NULL != arg;
+          nullptr != arg;
           arg = arg->next() )
     {
         int symbolType = (int) m_symbolTable->getType(arg);
@@ -442,7 +442,7 @@ bool AsmPicoBlazeInstructionSet::isInstruction ( const CompilerStatement * const
 
 void AsmPicoBlazeInstructionSet::setStrategy ( AsmPicoBlazeInstructionSetN * strategy )
 {
-    if ( NULL != m_strategy )
+    if ( nullptr != m_strategy )
     {
         delete m_strategy;
     }

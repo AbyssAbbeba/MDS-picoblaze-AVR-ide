@@ -58,7 +58,7 @@ class CompilerStatement : public CompilerSerializable
          */
         CompilerStatement ( CompilerSourceLocation location,
                             CompilerStatementTypes::StatementType type,
-                            CompilerExpr * args = NULL );
+                            CompilerExpr * args = nullptr );
 
         /**
          * @brief
@@ -168,13 +168,13 @@ class CompilerStatement : public CompilerSerializable
          * @brief
          * @param[in,out]
          */
-        virtual void serialize ( CompilerSerializer & output ) const;
+        virtual void serialize ( CompilerSerializer & output ) const override;
 
         /**
          * @brief
          * @param[in,out]
          */
-        virtual void deserialize ( CompilerSerializer & input );
+        virtual void deserialize ( CompilerSerializer & input ) override;
 
     ////    Inline Public Operations    ////
     public:

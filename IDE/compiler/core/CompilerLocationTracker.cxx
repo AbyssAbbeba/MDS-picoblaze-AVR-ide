@@ -36,7 +36,7 @@ bool CompilerLocationTracker::differs ( const CompilerSourceLocation & a,
                                         const CompilerSourceLocation & b ) const
 {
     size_t size;
-    std::vector<const CompilerSourceLocation *> foundLocations;
+    std::vector<CompilerSourceLocation> foundLocations;
 
     traverse(a, &foundLocations);
     size = foundLocations.size();
@@ -46,27 +46,26 @@ bool CompilerLocationTracker::differs ( const CompilerSourceLocation & a,
 }
 
 void CompilerLocationTracker::traverse ( const CompilerSourceLocation & source,
-                                         std::vector<const CompilerSourceLocation *> * target,
+                                         std::vector<CompilerSourceLocation> * target,
                                          bool includeRedirected ) const
 {
     if ( -1 == source.m_origin )
     {
-        for ( std::vector<const CompilerSourceLocation *>::const_iterator it = target->cbegin();
-              target->cend() != it;
-              ++it )
+        for ( const auto & i : *target )
         {
-            if ( (*it)->equal(source) )
+            if ( i.equal(source) )
             {
                 return;
             }
         }
 
-        target->push_back(&source);
+        target->push_back(source);
     }
     else
     {
-        traverse(getLocation(source.m_origin), target, includeRedirected);
         int next = getNext(source.m_origin);
+        traverse(getLocation(source.m_origin), target, includeRedirected);
+
         if ( -1 != next )
         {
             traverse(getLocation(next), target, includeRedirected);
@@ -74,7 +73,7 @@ void CompilerLocationTracker::traverse ( const CompilerSourceLocation & source,
 
         if ( true == includeRedirected )
         {
-            target->push_back(&source);
+            target->push_back(source);
         }
     }
 }
@@ -114,11 +113,11 @@ void CompilerLocationTracker::deserialize ( CompilerSerializer & input )
 std::ostream & operator << ( std::ostream & out,
                              const CompilerLocationTracker & tracker )
 {
-    for ( std::vector<std::pair<CompilerSourceLocation,int> >::const_iterator it = tracker.m_locations.cbegin();
-          it != tracker.m_locations.cend();
-          it++ )
+    int i = 0;
+    for ( const auto & location : tracker.m_locations )
     {
-        out << it->first << " --> " << it->second << std::endl;
+        out << i << ": " << location.first << " --> " << location.second << std::endl;
+        i++;
     }
     return out;
 }

@@ -226,7 +226,7 @@ inline void MScriptInterpret::evalCondition ( const MScriptStatement * node )
 
     // Go into the CONDITION branch, see code tree for details.
     node = node->branch();
-    if ( NULL == node )
+    if ( nullptr == node )
     {
         return;
     }
@@ -237,7 +237,7 @@ inline void MScriptInterpret::evalCondition ( const MScriptStatement * node )
         // Condition positive => if ( ... ) { <ENTER_HERE> } [ else { ... } ] ...
         addNext ( node->branch() );
     }
-    else if ( NULL != node->next() )
+    else if ( nullptr != node->next() )
     {
         // Condition negative => if ( ... ) { ... } else { <ENTER_HERE> } ...
         addNext ( node->next()->branch() );
@@ -271,7 +271,7 @@ inline void MScriptInterpret::evalSwitch ( const MScriptStatement * node )
 {
     using namespace MScriptStmtTypes;
 
-    if ( ( NULL == node->branch() ) || ( FLAG_SWITCH & getNextFlags() ) )
+    if ( ( nullptr == node->branch() ) || ( FLAG_SWITCH & getNextFlags() ) )
     {
         replaceNext(node->next());
         return;
@@ -283,7 +283,7 @@ inline void MScriptInterpret::evalSwitch ( const MScriptStatement * node )
     bool positive = false;
 
     for ( const MScriptStatement * caseNode = node->branch();
-          caseNode != NULL;
+          caseNode != nullptr;
           caseNode = caseNode->next() )
     {
         if ( true == positive )
@@ -299,7 +299,7 @@ inline void MScriptInterpret::evalSwitch ( const MScriptStatement * node )
             else if ( STMT_CASE & caseNode->type() )
             {
                 for ( const MScriptExpr * arg = caseNode->args();
-                      arg != NULL;
+                      arg != nullptr;
                       arg = arg->next() )
                 {
                     if ( switchArg == m_exprSolver->eval(arg) )
@@ -316,7 +316,7 @@ inline void MScriptInterpret::evalSwitch ( const MScriptStatement * node )
 inline void MScriptInterpret::evalBreak ( const MScriptStatement * node )
 {
     long long arg = 1;
-    if ( NULL != node->args() )
+    if ( nullptr != node->args() )
     {
         arg = m_exprSolver->eval(node->args()).toInt(this, node->args()->location());
     }
@@ -340,7 +340,7 @@ inline void MScriptInterpret::evalBreak ( const MScriptStatement * node )
 inline void MScriptInterpret::evalContinue ( const MScriptStatement * node )
 {
     long long arg = 1;
-    if ( NULL != node->args() )
+    if ( nullptr != node->args() )
     {
         arg = m_exprSolver->eval(node->args()).toInt(this, node->args()->location());
     }
@@ -364,7 +364,7 @@ inline void MScriptInterpret::evalContinue ( const MScriptStatement * node )
 inline void MScriptInterpret::evalReturn ( const MScriptStatement * node )
 {
     MScriptValue returnValue;
-    if ( NULL != node->args() )
+    if ( nullptr != node->args() )
     {
         returnValue = m_exprSolver->eval(node->args());
     }
@@ -417,7 +417,7 @@ inline void MScriptInterpret::evalCall ( const MScriptStatement * node )
         std::vector<MScriptValue> arguments;
 
         for ( const MScriptExpr * arg = node->args()->next();
-              NULL != arg;
+              nullptr != arg;
               arg = arg->next() )
         {
             arguments.push_back(m_exprSolver->eval(arg));
@@ -480,7 +480,7 @@ inline void MScriptInterpret::evalFunction ( const MScriptStatement * node )
     std::vector<MScriptFuncTable::Parameter> * params = new std::vector<MScriptFuncTable::Parameter>;
 
     for ( MScriptExpr * expr = node->args()->next();
-          NULL != expr;
+          nullptr != expr;
           expr = expr->next() )
     {
         const char * param = expr->lVal().m_data.m_expr->lVal().m_data.m_symbol;
@@ -618,15 +618,15 @@ bool MScriptInterpret::postprocessCode ( MScriptStatement * rootNode )
     using namespace MScriptStmtTypes;
 
     for ( MScriptStatement * node = rootNode->next();
-          node != NULL;
+          node != nullptr;
           node = node->next() )
     {
-        if ( NULL != node->branch() )
+        if ( nullptr != node->branch() )
         {
             postprocessCode(node->branch());
-            if ( NULL == node->branch()->next() )
+            if ( nullptr == node->branch()->next() )
             {
-                node->m_branch = NULL;
+                node->m_branch = nullptr;
             }
         }
 

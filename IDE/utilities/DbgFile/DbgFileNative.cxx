@@ -22,43 +22,31 @@
 #include <fstream>
 #include <string>
 
-/**
- * @brief
- * @param[in] array
- * @param[in] idx
- */
-#define ASSEMBLE_INT32(array, idx)   \
-    binArray [ 0 + 4 * idx ] << 24 | \
-    binArray [ 1 + 4 * idx ] << 16 | \
-    binArray [ 2 + 4 * idx ] <<  8 | \
-    binArray [ 3 + 4 * idx ]
-
-
 DbgFileNative::DbgFileNative()
 {
-    m_addrToLineMap = NULL;
-    m_lineToAddrMap = NULL;
+    m_addrToLineMap = nullptr;
+    m_lineToAddrMap = nullptr;
 }
 
 DbgFileNative::DbgFileNative ( const std::string & file)
 {
-    m_addrToLineMap = NULL;
-    m_lineToAddrMap = NULL;
+    m_addrToLineMap = nullptr;
+    m_lineToAddrMap = nullptr;
     openFile(file);
 }
 
 DbgFileNative::~DbgFileNative()
 {
-    if ( NULL != m_addrToLineMap )
+    if ( nullptr != m_addrToLineMap )
     {
         delete[] m_addrToLineMap;
     }
 
-    if ( NULL != m_lineToAddrMap )
+    if ( nullptr != m_lineToAddrMap )
     {
         for ( unsigned int i = 0; i < m_fileNames.size(); i++ )
         {
-            if ( NULL != m_lineToAddrMap[i] )
+            if ( nullptr != m_lineToAddrMap[i] )
             {
                 delete[] m_lineToAddrMap[i];
             }
@@ -67,27 +55,29 @@ DbgFileNative::~DbgFileNative()
     }
 }
 
-void DbgFileNative::openFile ( const std::string & filename ) throw ( Exception )
+void DbgFileNative::openFile ( const std::string & filename )
 {
     try
     {
         loadFile(filename);
     }
-    catch ( Exception & e )
+    catch ( const Exception & e )
     {
         clear();
         throw(e);
     }
 }
 
-int DbgFileNative::getLineByAddr ( unsigned int addr ) const
+void DbgFileNative::getLineByAddr ( unsigned int addr,
+                                    std::vector<unsigned int> & recordNumbers ) const
 {
     if ( (int)(addr) > m_lastAddress )
     {
-        return -1;
+        recordNumbers.clear();
+        return;
     }
 
-    return m_addrToLineMap[addr];
+    recordNumbers = m_addrToLineMap[addr];
 }
 
 int DbgFileNative::getAddrByLine ( unsigned int line,
@@ -120,55 +110,119 @@ inline void DbgFileNative::loadFile ( const std::string & filename )
 
     int charRead;
     int lineNumber = 0; // -1 means binary data, 0 means file header, >0 means file name
+
     while ( false == file.eof() )
     {
         if ( -1 == lineNumber )
         {
-            // Read binary section.
-            bool empty = false;
-            static const int size = ( 3 * 4 );
-            unsigned char binArray[size];
-            for ( int i = 0; i < size; i++ )
+            /*
+             * Read binary section.
+             */
+
+            unsigned int address;
+            unsigned int lineNo;
+            unsigned int fileNumber;
+
+            bool stop = false;
+            unsigned char binArray[4];
+
+            for ( int i = 0, j = 0; i < ( 4 + 1 + 2 + 4 ); i++, j++ )
             {
-                charRead = file.get();
-                if ( EOF == charRead )
+                if ( -1 == ( charRead = file.get() ) )
                 {
                     if ( 0 == i )
                     {
-                        empty = true;
                         break;
                     }
+
                     throw Exception(Exception::IO_ERROR, "Binary section ends unexpectedly, file: " + filename);
                 }
-                else
+
+                binArray[j] = (unsigned char) charRead;
+
+                switch ( i )
                 {
-                    binArray[i] = (unsigned char) charRead;
+                    case 3:
+                    {
+                        // Read adddress (4B).
+                        address = ( binArray[0] << 24 ) | ( binArray[1] << 16 ) | ( binArray[2] << 8 ) | binArray[3];
+
+                        // Start refilling the binArray from start.
+                        j = -1;
+
+                        // Continue reading the file.
+                        break;
+                    }
+                    case 4:
+                    {
+                        // Read `NEXT' mark (1B).
+                        switch ( charRead )
+                        {
+                            case '\0':
+                                // End of record.
+                                stop = true;
+                                break;
+                            case '\1':
+                                // Record continues.
+                                break;
+                            default:
+                                // Record is corrupted.
+                                throw Exception(Exception::IO_ERROR, "Binary section is corrupted, file: " + filename);
+                        }
+
+                        // Continue reading the file.
+                        break;
+                    }
+                    case 6:
+                    {
+                        // Read file number (2B).
+                        fileNumber = ( binArray[0] << 8 ) | binArray[1];
+
+                        // Start refilling the binArray from start.
+                        j = -1;
+
+                        // Continue reading the file.
+                        break;
+                    }
+                    case 10:
+                    {
+                        // Read line number (4B).
+                        lineNo = ( binArray[0] << 24 ) | ( binArray[1] << 16 ) | ( binArray[2] << 8 ) | binArray[3];
+
+                        // Start refilling the binArray from start.
+                        j = -1;
+
+                        // Go back to read the next `NEXT' mark.
+                        i = 3;
+
+                        // Check the file number.
+                        if ( fileNumber >= m_fileNames.size() )
+                        {
+                            throw Exception(Exception::PARSE_ERROR, "( file number >= number of files )" );
+                        }
+
+                        // Create the actual line record.
+                        m_lineRecords.push_back(LineRecord(fileNumber, lineNo, 0, 0, address));
+
+                        // Adjust recorded limits.
+                        if ( lineNo > m_numberOfLines[fileNumber] )
+                        {
+                            m_numberOfLines[fileNumber] = lineNo;
+                        }
+                        if ( (int) address > m_lastAddress )
+                        {
+                            m_lastAddress = address;
+                        }
+
+                        // Continue reading the file.
+                        break;
+                    }
                 }
-            }
 
-            if ( true == empty )
-            {
-                break;
-            }
-
-            unsigned int address    = ASSEMBLE_INT32(binArray, 0);
-            unsigned int fileNumber = ASSEMBLE_INT32(binArray, 1);
-            unsigned int lineNo     = ASSEMBLE_INT32(binArray, 2);
-
-            if ( fileNumber >= m_fileNames.size() )
-            {
-                throw Exception(Exception::PARSE_ERROR, "( file number >= number of files )" );
-            }
-
-            m_lineRecords.push_back(LineRecord(fileNumber, lineNo, 0, 0, address));
-
-            if ( lineNo > m_numberOfLines[fileNumber] )
-            {
-                m_numberOfLines[fileNumber] = lineNo;
-            }
-            if ( (int)address > m_lastAddress )
-            {
-                m_lastAddress = address;
+                if ( true == stop )
+                {
+                    break;
+                }
             }
         }
         else if ( 0 == lineNumber )
@@ -227,11 +281,9 @@ void DbgFileNative::directSetupPrepare()
 
 void DbgFileNative::directSetupFiles ( const std::vector<std::pair<std::string,FILE*>> & files )
 {
-    for ( std::vector<std::pair<std::string,FILE*>>::const_iterator it = files.cbegin();
-          it != files.cend();
-          it++ )
+    for ( const auto & file : files )
     {
-        m_fileNames.push_back(it->first);
+        m_fileNames.push_back(file.first);
         m_numberOfLines.push_back(0);
     }
 }
@@ -250,6 +302,15 @@ void DbgFileNative::directSetupRelation ( unsigned int addr,
     if ( (int)addr > m_lastAddress )
     {
         m_lastAddress = addr;
+    }
+}
+
+void DbgFileNative::directSetupRelation ( unsigned int addr,
+                                          const std::vector<std::pair<unsigned int, unsigned int>> & locations )
+{
+    for ( auto loc : locations )
+    {
+        directSetupRelation(addr, loc.first, loc.second);
     }
 }
 
@@ -289,21 +350,18 @@ inline int DbgFileNative::getFileNumber ( const std::string & filename ) const
 
 inline void DbgFileNative::generateLineAddressMaps()
 {
-    if ( NULL != m_addrToLineMap )
+    if ( nullptr != m_addrToLineMap )
     {
         delete[] m_addrToLineMap;
     }
-    m_addrToLineMap = new int [ m_lastAddress + 1 ];
-    for ( int i = 0; i <= m_lastAddress; i++ )
-    {
-        m_addrToLineMap[i] = -1;
-    }
 
-    if ( NULL != m_lineToAddrMap )
+    m_addrToLineMap = new std::vector<unsigned int> [ m_lastAddress + 1 ];
+
+    if ( nullptr != m_lineToAddrMap )
     {
         for ( unsigned int i = 0; i < m_fileNames.size(); i++ )
         {
-            if ( NULL != m_lineToAddrMap[i] )
+            if ( nullptr != m_lineToAddrMap[i] )
             {
                 delete[] m_lineToAddrMap[i];
             }
@@ -324,7 +382,7 @@ inline void DbgFileNative::generateLineAddressMaps()
 
     for ( unsigned int i = 0; i < m_lineRecords.size(); i++ )
     {
-        m_addrToLineMap [ m_lineRecords[i].m_address ] = i;
+        m_addrToLineMap [ m_lineRecords[i].m_address ] . push_back(i);
         m_lineToAddrMap [ m_lineRecords[i].m_fileNumber ] [ m_lineRecords[i].m_lineNumber ] = i;
     }
 }

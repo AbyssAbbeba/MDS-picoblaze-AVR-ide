@@ -82,32 +82,32 @@ class PicoBlazeIO : public MCUSimPureLogicIO
 
         /**
          * @brief
-         * @param[in] mode
-         */
-        void reset ( MCUSimBase::ResetMode mode );
-
-        /**
-         * @brief
          */
         void clockCycle();
 
         /**
          * @brief
-         * @return
+         * @param[in] mode
          */
-        virtual unsigned int getNumberOfPorts();
+        virtual void reset ( MCUSimBase::ResetMode mode ) override;
 
         /**
          * @brief
          * @return
          */
-        virtual unsigned int getNumberOfBitsPerPort();
+        virtual unsigned int getNumberOfPorts() override;
 
         /**
          * @brief
          * @return
          */
-        virtual unsigned int getNumberOfBitsTotal();
+        virtual unsigned int getNumberOfBitsPerPort() override;
+
+        /**
+         * @brief
+         * @return
+         */
+        virtual unsigned int getNumberOfBitsTotal() override;
 
         /**
          * @brief
@@ -116,14 +116,14 @@ class PicoBlazeIO : public MCUSimPureLogicIO
          * @return
          */
         virtual bool read ( unsigned int port,
-                            unsigned int bit );
+                            unsigned int bit ) override;
 
         /**
          * @brief
          * @param[in] port
          * @return
          */
-        virtual unsigned int read ( unsigned int port );
+        virtual unsigned int read ( unsigned int port ) override;
 
         /**
          * @brief
@@ -133,7 +133,7 @@ class PicoBlazeIO : public MCUSimPureLogicIO
          */
         virtual void write ( unsigned int port,
                              unsigned int bit,
-                             bool value );
+                             bool value ) override;
 
         /**
          * @brief
@@ -141,7 +141,7 @@ class PicoBlazeIO : public MCUSimPureLogicIO
          * @param[in] value
          */
         virtual void write ( unsigned int port,
-                             unsigned int value );
+                             unsigned int value ) override;
 
     ////    Public Attributes    ////
     public:

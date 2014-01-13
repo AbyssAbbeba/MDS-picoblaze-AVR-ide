@@ -306,7 +306,7 @@ long long MScriptValue::toInt ( MScriptInterpretInterface * interpret,
 
 void MScriptValue::serialize ( MScriptSerializer & output ) const
 {
-    if ( NULL == this )
+    if ( nullptr == this )
     {
         output.write ( (uint8_t) TYPE_EMPTY );
         return;

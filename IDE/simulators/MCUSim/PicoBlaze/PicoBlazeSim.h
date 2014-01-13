@@ -52,7 +52,7 @@ class PicoBlazeSim : public MCUSim
         /**
          * @brief
          */
-        ~PicoBlazeSim();
+        virtual ~PicoBlazeSim();
 
     ////    Public Operations    ////
     public:
@@ -60,57 +60,57 @@ class PicoBlazeSim : public MCUSim
          * @brief
          * @return
          */
-        MCUSimClock::ClockSource & getClockSource();
+        virtual MCUSimClock::ClockSource & getClockSource() override;
 
         /**
          * @brief
          * @param[in] mode
          */
-        void reset ( ResetMode mode );
+        virtual void reset ( ResetMode mode ) override;
 
         /**
          * @brief
          * @return
          */
-        int executeInstruction();
+        virtual int executeInstruction() override;
 
         /**
          * @brief
          * @param[in] timeStep
          * @return
          */
-        int timeStep ( float timeStep );
+        virtual int timeStep ( float timeStep ) override;
 
         /**
          * @brief
          * @param[in] id
          * @return
          */
-        MCUSimSubsys * getSubsys ( MCUSimSubsys::SubsysId id );
+        virtual MCUSimSubsys * getSubsys ( MCUSimSubsys::SubsysId id ) override;
 
         /**
          * @brief
          * @return
          */
-        MCUSimConfig & getConfig();
+        virtual MCUSimConfig & getConfig() override;
 
         /**
          * @brief
          * @return
          */
-        Family family() const;
+        virtual Family family() const override;
 
         /**
          * @brief
          * @return
          */
-        Arch arch() const;
+        virtual Arch arch() const override;
 
         /**
          * @brief
          * @return
          */
-        const char * name() const;
+        virtual const char * name() const override;
 
     ////    Inline Public Operations    ////
     public:
@@ -118,7 +118,7 @@ class PicoBlazeSim : public MCUSim
          * @brief
          * @return
          */
-        Mode mode() const
+        virtual Mode mode() const override
         {
             return MD_NORMAL;
         }
@@ -127,7 +127,7 @@ class PicoBlazeSim : public MCUSim
          * @brief
          * @return
          */
-        MCUSimEventLogger * getLog()
+        virtual MCUSimEventLogger * getLog() override
         {
             return m_eventLogger;
         }
@@ -137,7 +137,7 @@ class PicoBlazeSim : public MCUSim
          * @param[in] numOfCycles
          * @return
          */
-        float cycles2time ( int numOfCycles )
+        virtual float cycles2time ( int numOfCycles ) override
         {
             return ( numOfCycles * m_clockPeriod );
         }

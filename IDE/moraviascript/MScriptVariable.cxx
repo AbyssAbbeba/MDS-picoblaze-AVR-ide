@@ -18,7 +18,7 @@
 MScriptVariable::MScriptVariable()
 {
     m_flags = FLAG_ARRAY;
-    m_value.m_array = NULL;
+    m_value.m_array = nullptr;
     m_id = -1;
 }
 
@@ -52,14 +52,14 @@ MScriptVariable::~MScriptVariable()
     {
         if ( FLAG_HASH & m_flags )
         {
-            if ( NULL != m_value.m_hash )
+            if ( nullptr != m_value.m_hash )
             {
                 delete m_value.m_hash;
             }
         }
         else
         {
-            if ( NULL != m_value.m_array )
+            if ( nullptr != m_value.m_array )
             {
                 delete m_value.m_array;
             }
@@ -117,7 +117,7 @@ std::ostream & operator << ( std::ostream & out,
     out << "declared at: " << variable.m_location << std::endl;
     out << "value: ";
 
-    if ( NULL == variable.m_value.m_hash )
+    if ( nullptr == variable.m_value.m_hash )
     {
         out << "<UNDEFINDED>" << std::endl;
     }
@@ -127,12 +127,9 @@ std::ostream & operator << ( std::ostream & out,
         {
             if ( MScriptVariable::FLAG_HASH & variable.m_flags )
             {
-                const std::map<std::string,MScriptVariable> * hashTable = variable.m_value.m_hash;
-                for ( std::map<std::string,MScriptVariable>::const_iterator cell = hashTable->cbegin();
-                      cell != hashTable->cend();
-                      cell++ )
+                for ( const auto & cell : *(variable.m_value.m_hash) )
                 {
-                    out << "  [\"" << cell->first << "\"] : " << cell->second << std::endl;
+                    out << "  [\"" << cell.first << "\"] : " << cell.second << std::endl;
                 }
             }
             else

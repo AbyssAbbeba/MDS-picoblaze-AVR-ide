@@ -47,6 +47,9 @@ int TestMedAsmTrans::init()
                                 system_complete( path("..") / ".." / ".." / "compiler" / "include" ).string() );
     m_translator = new AsmTranslator();
 
+    m_translator->m_config.m_letterCase[AsmTranslatorConfig::F_INSTRUCTION] = AsmTranslatorConfig::LC_UPPERCASE;
+    m_translator->m_config.m_letterCase[AsmTranslatorConfig::F_DIRECTIVE]   = AsmTranslatorConfig::LC_UPPERCASE;
+
     m_options->m_verbosity = CompilerOptions::Verbosity ( CompilerOptions::V_GENERAL  | CompilerOptions::V_ERRORS |
                                                           CompilerOptions::V_WARNINGS | CompilerOptions::V_REMARKS );
 
@@ -91,11 +94,9 @@ bool TestMedAsmTrans::addTests ( CU_pSuite suite )
 
     std::sort(testCaseFiles.begin(), testCaseFiles.end());
 
-    for ( std::vector<std::string>::const_iterator it = testCaseFiles.cbegin();
-          it != testCaseFiles.cend();
-          it++ )
+    for ( const auto & testCaseFile : testCaseFiles )
     {
-        if ( NULL == CU_add_test(suite, it->c_str(), &testFunction) )
+        if ( nullptr == CU_add_test(suite, testCaseFile.c_str(), &testFunction) )
         {
             return false;
         }
@@ -106,6 +107,28 @@ bool TestMedAsmTrans::addTests ( CU_pSuite suite )
 
 void TestMedAsmTrans::testFunction()
 {
+    AsmTranslatorConfig::Indentation indentation[3] =
+    {
+        AsmTranslatorConfig::IND_KEEP,
+        AsmTranslatorConfig::IND_TABS,
+        AsmTranslatorConfig::IND_SPACES
+    };
+    std::string suffixes[3] = { ".ind_keep", ".ind_tabs", ".ind_spaces" };
+
+    for ( int i = 0; i < 3; i++ )
+    {
+        m_translator->m_config.m_indentation = indentation[i];
+
+        m_translator->m_config.m_shortInstructions = false;
+        test ( suffixes[i] + ".full_inst" );
+
+        m_translator->m_config.m_shortInstructions = true;
+        test ( suffixes[i] + ".short_inst" );
+    }
+}
+
+void TestMedAsmTrans::test ( const std::string & suffix )
+{
     using namespace boost::filesystem;
 
     XilHDLFile::OPCodeSize opCodeSize;
@@ -115,15 +138,22 @@ void TestMedAsmTrans::testFunction()
 
     m_translator->clear();
     bool result = m_translator->translate ( AsmTranslator::V_KCPSM_MEDIATRONIX,
-                                            ( path("Mediatronix") / "results"   / (testName + ".asm") ).string(),
+                                            ( path("Mediatronix") / "results"   / (testName + suffix+".asm") ).string(),
                                             ( path("Mediatronix") / "testcases" / (testName + ".psm") ).string(),
                                             true );
 
     {
-        std::ofstream logFile( ( path("Mediatronix") / "results" / (testName + ".log") ).string() );
-        for ( auto line : m_translator->getMessages() )
+        std::ofstream logFile( ( path("Mediatronix") / "results" / (testName + suffix + ".log") ).string() );
+        for ( const auto & i : m_translator->getMessages() )
         {
-            logFile << line << std::endl;
+            if ( 0 == i.first )
+            {
+                logFile << (testName + ".psm") << ": " << i.second << std::endl;
+            }
+            else
+            {
+                logFile << (testName + ".psm") << ":" << i.first << ": " << i.second << std::endl;
+            }
         }
     }
 
@@ -134,9 +164,9 @@ void TestMedAsmTrans::testFunction()
     }
 
     m_options->m_sourceFiles.clear();
-    m_options->m_sourceFiles.push_back ( ( path("Mediatronix") / "results" / (testName + ".asm") ).string() );
-    m_options->m_vhdlFile   = testName + ".vhd";
-    m_options->m_lstFile    = testName + ".lst";
+    m_options->m_sourceFiles.push_back ( ( path("Mediatronix") / "results" / (testName + suffix + ".asm") ).string() );
+    m_options->m_vhdlFile   = testName + suffix + ".vhd";
+    m_options->m_lstFile    = testName + suffix + ".lst";
 
     switch ( testName.front() )
     {
@@ -165,7 +195,7 @@ void TestMedAsmTrans::testFunction()
             return;
     }
 
-    const std::string errFile = (path("Mediatronix") / "results" / (testName + ".err")).string();
+    const std::string errFile = (path("Mediatronix") / "results" / (testName + suffix + ".err")).string();
     dynamic_cast<CompilerMsgIntfFile*>(m_msgInt)->openFile(errFile);
     result = m_compiler->compile(CompilerBase::LI_ASM, CompilerBase::TA_PICOBLAZE, m_options);
     dynamic_cast<CompilerMsgIntfFile*>(m_msgInt)->closeFile();
