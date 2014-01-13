@@ -385,7 +385,7 @@ std::ostream & operator << ( std::ostream & out,
         case CompilerExpr::OPER_POST_DEC:    out << "post--";   break;
         case CompilerExpr::OPER_PRE_INC:     out << "++pre";    break;
         case CompilerExpr::OPER_PRE_DEC:     out << "--pre";    break;
-        
+        case CompilerExpr::OPER_DATATYPE:    out << "datatype"; break;
     }
     return out;
 }

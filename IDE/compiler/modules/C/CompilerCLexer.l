@@ -126,40 +126,40 @@ ID      [_a-zA-Z][_a-zA-Z0-9]*
 ";"             { return EOS;               }
 
  /* Keywords */
-"auto"          { return KW_AUTO;           }
 "break"         { return KW_BREAK;          }
 "case"          { return KW_CASE;           }
-"const"         { return KW_CONST;          }
 "continue"      { return KW_CONTINUE;       }
 "default"       { return KW_DEFAULT;        }
 "do"            { return KW_DO;             }
 "else"          { return KW_ELSE;           }
-"extern"        { return KW_EXTERN;         }
 "for"           { return KW_FOR;            }
 "goto"          { return KW_GOTO;           }
 "if"            { return KW_IF;             }
-"register"      { return KW_REGISTER;       }
 "return"        { return KW_RETURN;         }
 "sizeof"        { return KW_SIZEOF;         }
-"static"        { return KW_STATIC;         }
 "switch"        { return KW_SWITCH;         }
-"typedef"       { return KW_TYPEDEF;        }
-"volatile"      { return KW_VOLATILE;       }
 "while"         { return KW_WHILE;          }
 
 
+"auto"          { return DATA_AUTO;         }
 "char"          { return DATA_CHAR;         }
+"const"         { return DATA_CONST;        }
 "double"        { return DATA_DOUBLE;       }
+"extern"        { return DATA_EXTERN;       }
 "float"         { return DATA_FLOAT;        }
 "enum"          { return DATA_ENUM;         }
 "int"           { return DATA_INT;          }
 "long"          { return DATA_LONG;         }
+"register"      { return DATA_REGISTER;     }
 "short"         { return DATA_SHORT;        }
 "signed"        { return DATA_SIGNED;       }
+"static"        { return DATA_STATIC;       }
 "struct"        { return DATA_STRUCT;       }
+"typedef"       { return DATA_TYPEDEF;      }
 "union"         { return DATA_UNION;        }
 "unsigned"      { return DATA_UNSIGNED;     }
 "void"          { return DATA_VOID;         }
+"volatile"      { return DATA_VOLATILE;     }
 
  /* Brackets */
 "("             { return B_RND_LEFT;        }
@@ -206,8 +206,6 @@ ID      [_a-zA-Z][_a-zA-Z0-9]*
 ">>="           { return O_SHR_ASSIGN;      }
 "&="            { return O_BAND_ASSIGN;     }
 "|="            { return O_BOR_ASSIGN;      }
-"&&="           { return O_LAND_ASSIGN;     }
-"||="           { return O_LOR_ASSIGN;      }
 "^="            { return O_XOR_ASSIGN;      }
 "--"            { return O_DECREMENT;       }
 "++"            { return O_INCREMENT;       }
