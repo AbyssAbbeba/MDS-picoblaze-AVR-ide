@@ -48,13 +48,13 @@ class PicoBlazeInstructionSet1 : public PicoBlazeInstructionSet
          * @brief
          * @return
          */
-        int execInstruction();
+        virtual int execInstruction() override;
 
         /**
          * @brief
          * @return
          */
-        bool isValid() const;
+        virtual bool isValid() const override;
 
     ////    Instruction Operations - Public Operations and Inline Public Operations    ////
     public:

@@ -60,7 +60,7 @@ MScriptStatement * MScriptExprProcessor::decompose ( MScriptExpr * expr )
 bool MScriptExprProcessor::isConstantExpr ( const MScriptExpr * expr )
 {
     for ( const MScriptExpr * e = expr;
-          NULL != e;
+          nullptr != e;
           e = e->next() )
     {
         const MScriptValue * value = &( e->lVal() );
@@ -115,7 +115,7 @@ void MScriptExprProcessor::breakDown ( MScriptStatement * result,
                 funcNameAndArgs->appendLink(expr->m_rValue.m_data.m_expr);
 
                 for ( MScriptExpr * e = expr->m_rValue.m_data.m_expr;
-                      NULL != e;
+                      nullptr != e;
                       e = e->next() )
                 {
                     breakDown ( result, e, counter );
@@ -530,10 +530,10 @@ void MScriptExprProcessor::decomposeAsgn ( MScriptExpr * expr )
 void MScriptExprProcessor::removeNoOps ( MScriptStatement * root )
 {
     for ( MScriptStatement * node = root;
-          NULL != node;
+          nullptr != node;
           node = node->next() )
     {
-        if ( NULL != node->branch() )
+        if ( nullptr != node->branch() )
         {
             removeNoOps ( node->branch() );
         }
@@ -553,7 +553,7 @@ inline void MScriptExprProcessor::removeEmpty ( MScriptStatement ** snakeNode )
 {
     *snakeNode = (*snakeNode)->first();
     for ( MScriptStatement * node = (*snakeNode)->next();
-          NULL != node;
+          nullptr != node;
           node = node->next() )
     {
         if ( MScriptStmtTypes::STMT_EMPTY == node->m_type )
@@ -566,7 +566,7 @@ inline void MScriptExprProcessor::removeEmpty ( MScriptStatement ** snakeNode )
     if ( MScriptStmtTypes::STMT_EMPTY == (*snakeNode)->m_type )
     {
         delete *snakeNode;
-        *snakeNode = NULL;
+        *snakeNode = nullptr;
     }
 }
 
@@ -574,7 +574,7 @@ void MScriptExprProcessor::evalConsts ( MScriptExpr * expr,
                                         MScriptValue * constValue )
 {
     for ( MScriptExpr * e = expr;
-          NULL != e;
+          nullptr != e;
           e = e->next() )
     {
         MScriptValue * value = &( e->m_lValue );
@@ -607,7 +607,7 @@ void MScriptExprProcessor::evalConsts ( MScriptExpr * expr,
         }
 
         const MScriptSrcLocation & location = expr->location();
-        MScriptValue & result = ( ( NULL == value ) ? expr->m_lValue : *value );
+        MScriptValue & result = ( ( nullptr == value ) ? expr->m_lValue : *value );
 
         if ( true == isUnary(e->oper()) )
         {
@@ -646,7 +646,7 @@ void MScriptExprProcessor::evalConsts ( MScriptExpr * expr,
             }
         }
 
-        if ( NULL == constValue )
+        if ( nullptr == constValue )
         {
             e->m_rValue.completeDelete();
             e->m_rValue.completeDelete();
@@ -682,7 +682,7 @@ inline bool MScriptExprProcessor::isComparison ( const MScriptExpr::Operator ope
 bool MScriptExprProcessor::detectFunctionCall ( const MScriptExpr * expr ) const
 {
     for ( const MScriptExpr * e = expr;
-          NULL != e;
+          nullptr != e;
           e = e->next() )
     {
         if ( MScriptExpr::OPER_CALL == e->oper() )

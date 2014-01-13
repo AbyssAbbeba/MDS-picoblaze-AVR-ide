@@ -128,7 +128,7 @@ class PIC8IO : public MCUSimIO
          * @brief
          * @param[in] mode
          */
-        void reset ( MCUSimBase::ResetMode mode );
+        virtual void reset ( MCUSimBase::ResetMode mode ) override;
 
         /**
          * @brief
@@ -315,7 +315,7 @@ class PIC8IO : public MCUSimIO
          * @brief
          * @param[in] voltage
          */
-        void setSourceVoltage ( SimFloatType voltage )
+        virtual void setSourceVoltage ( SimFloatType voltage ) override
         {
             m_sourceVoltage = voltage;
             m_logThreshold0 = m_sourceVoltage / 2;
@@ -326,7 +326,7 @@ class PIC8IO : public MCUSimIO
          * @brief
          * @return
          */
-        SimFloatType getSourceVoltage() const
+        virtual SimFloatType getSourceVoltage() const override
         {
                 return m_sourceVoltage;
         }
@@ -335,7 +335,7 @@ class PIC8IO : public MCUSimIO
          * @brief
          * @return
          */
-        unsigned int getNumberOfPins() const
+        virtual unsigned int getNumberOfPins() const override
         {
                 return NUMBER_OF_PINS;
         }
@@ -344,7 +344,7 @@ class PIC8IO : public MCUSimIO
          * @brief
          * @return
          */
-        SimFloatType ** getLowLevelInterface()
+        virtual SimFloatType ** getLowLevelInterface() override
         {
                 return m_lowLevelInterface;
         }

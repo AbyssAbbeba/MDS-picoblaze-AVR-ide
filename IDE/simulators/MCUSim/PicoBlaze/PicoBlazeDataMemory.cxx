@@ -19,7 +19,7 @@
 PicoBlazeDataMemory::PicoBlazeDataMemory()
 {
     m_size = 0;
-    m_memory = NULL;
+    m_memory = nullptr;
 }
 
 PicoBlazeDataMemory * PicoBlazeDataMemory::link ( MCUSimEventLogger * eventLogger )
@@ -30,7 +30,7 @@ PicoBlazeDataMemory * PicoBlazeDataMemory::link ( MCUSimEventLogger * eventLogge
 
 PicoBlazeDataMemory::~PicoBlazeDataMemory()
 {
-    if ( NULL != m_memory )
+    if ( nullptr != m_memory )
     {
         delete[] m_memory;
     }
@@ -118,7 +118,7 @@ void PicoBlazeDataMemory::resize ( unsigned int newSize )
         m_memory[i] = getUndefVal();
     }
 
-    if ( NULL != memoryOrig )
+    if ( nullptr != memoryOrig )
     {
         delete memoryOrig;
     }

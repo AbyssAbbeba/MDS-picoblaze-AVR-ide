@@ -41,7 +41,7 @@ inline PIC8PinNames::PIN McuSimCfgMgrPIC8::sfunc2pinEnum ( const QString & str,
 {
     using namespace PIC8PinNames;
 
-    if ( NULL != ok )
+    if ( nullptr != ok )
     {
         *ok = true;
     }
@@ -132,7 +132,7 @@ inline PIC8PinNames::PIN McuSimCfgMgrPIC8::sfunc2pinEnum ( const QString & str,
     }
     else
     {
-        if ( NULL != ok )
+        if ( nullptr != ok )
         {
             *ok = false;
         }
@@ -145,7 +145,7 @@ inline int McuSimCfgMgrPIC8::name2spfEnum ( const QString & str,
 {
     using namespace PIC8PinNames;
 
-    if ( NULL != ok )
+    if ( nullptr != ok )
     {
         *ok = true;
     }
@@ -180,7 +180,7 @@ inline int McuSimCfgMgrPIC8::name2spfEnum ( const QString & str,
     }
     else
     {
-        if ( NULL != ok )
+        if ( nullptr != ok )
         {
             *ok = false;
         }
@@ -191,7 +191,7 @@ inline int McuSimCfgMgrPIC8::name2spfEnum ( const QString & str,
 inline int McuSimCfgMgrPIC8::string2interruptNumber ( const QString & str,
                                                       bool * ok )
 {
-    if ( NULL != ok )
+    if ( nullptr != ok )
     {
         *ok = true;
     }
@@ -217,7 +217,7 @@ inline int McuSimCfgMgrPIC8::string2interruptNumber ( const QString & str,
         return PIC8InterruptController::INTVEC_EEPROM;
     }
 
-    if ( NULL != ok )
+    if ( nullptr != ok )
     {
         *ok = false;
     }

@@ -46,7 +46,7 @@ class AsmPicoBlazeInstructionSet1CPLD : public AsmPicoBlazeInstructionSetN
          * @param[in] stmt
          * @return
          */
-        int resolveOPcode ( const CompilerStatement * stmt ) const;
+        virtual int resolveOPcode ( const CompilerStatement * stmt ) const override;
 
     ////    Private Operations    ////
     private:

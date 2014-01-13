@@ -23,7 +23,7 @@
 
 AVR8ProgramMemory::AVR8ProgramMemory()
 {
-    m_memory = NULL;
+    m_memory = nullptr;
     m_size = 0;
 }
 
@@ -37,7 +37,7 @@ AVR8ProgramMemory * AVR8ProgramMemory::link ( MCUSimEventLogger * eventLogger,
 
 AVR8ProgramMemory::~AVR8ProgramMemory()
 {
-    if ( NULL != m_memory )
+    if ( nullptr != m_memory )
     {
         delete[] m_memory;
     }
@@ -153,7 +153,7 @@ void AVR8ProgramMemory::resize ( unsigned int newSize )
         m_memory[i] = (getUndefVal() | MFLAG_UNDEFINED);
     }
 
-    if ( NULL != memoryOrig )
+    if ( nullptr != memoryOrig )
     {
         delete[] memoryOrig;
     }

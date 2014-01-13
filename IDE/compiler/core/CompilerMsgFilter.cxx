@@ -35,7 +35,7 @@ CompilerMsgFilter::CompilerMsgFilter ( const CompilerCore * compilerCore,
 void CompilerMsgFilter::message ( const std::string & text,
                                   CompilerBase::MessageType type )
 {
-    if ( NULL == m_msgInterface )
+    if ( nullptr == m_msgInterface )
     {
         return;
     }

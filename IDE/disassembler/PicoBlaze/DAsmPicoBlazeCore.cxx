@@ -141,7 +141,7 @@ inline void DAsmPicoBlazeCore::phase1Leave()
         { Config::STG_REG,   REG,     "REG",  "R",     false },
         { Config::STG_PORT,  PORT,    "PORT", "P",     false },
         { Config::STG_CONST, CONST,   "EQU",  "C",     false },
-        { Config::STG_NONE,  AS_MAX_, NULL,   NULL,    false }
+        { Config::STG_NONE,  AS_MAX_, nullptr,   nullptr,    false }
     };
 
     for ( int i = 0; Config::STG_NONE != spec[i].m_stg; i++ )
@@ -150,13 +150,11 @@ inline void DAsmPicoBlazeCore::phase1Leave()
         {
             unsigned int symbolIndex = 0;
             char symbolIndexStr[16];
-            for ( std::set<unsigned int>::iterator it = m_addresses[spec[i].m_as].begin();
-                  it != m_addresses[spec[i].m_as].end();
-                  it++ )
+            for ( const unsigned int addr : m_addresses[spec[i].m_as] )
             {
                 sprintf(symbolIndexStr, "%d", symbolIndex);
 
-                if ( ( false == spec[i].m_isCode ) || ( m_usedCode.end() == m_usedCode.find(*it) ) )
+                if ( ( false == spec[i].m_isCode ) || ( m_usedCode.end() == m_usedCode.find(addr) ) )
                 {
                     m_code.push_back(std::string());
                     std::string & line = m_code.back();
@@ -167,11 +165,11 @@ inline void DAsmPicoBlazeCore::phase1Leave()
                     appendStr(line, spec[i].m_dir);
 
                     indent(line, 32);
-                    appendStr(line, num2str(*it));
+                    appendStr(line, num2str(addr));
                 }
 
                 m_symbols[spec[i].m_as].insert ( std::pair<unsigned int,std::string>
-                                                 ( *it, ( letterCase(spec[i].m_prefix) + symbolIndexStr ) ) );
+                                                 ( addr, ( letterCase(spec[i].m_prefix) + symbolIndexStr ) ) );
                 symbolIndex++;
             }
         }
@@ -185,7 +183,7 @@ inline void DAsmPicoBlazeCore::appendAddr ( std::string & line,
 {
     if ( stg & m_config.m_symbolsToGenerate )
     {
-        std::map<unsigned int,std::string>::const_iterator it = m_symbols[addrSp].find(addr);
+        auto it = m_symbols[addrSp].find(addr);
         if ( it != m_symbols[addrSp].end() )
         {
             appendStr ( line, m_symbols[addrSp].find(addr)->second );

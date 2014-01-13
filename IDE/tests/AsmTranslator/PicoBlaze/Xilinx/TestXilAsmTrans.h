@@ -60,6 +60,12 @@ namespace TestXilAsmTrans
          */
         void testFunction();
 
+        /**
+         * @brief
+         * @param[in] suffix
+         */
+        void test ( const std::string & suffix );
+
     ////    Attributes    ////
         /**
          * @brief

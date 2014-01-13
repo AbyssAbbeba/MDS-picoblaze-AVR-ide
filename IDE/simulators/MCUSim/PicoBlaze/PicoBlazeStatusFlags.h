@@ -64,7 +64,7 @@ class PicoBlazeStatusFlags : public MCUSimSubsys,
          * @brief
          * @param[in] mode
          */
-        void reset ( MCUSimBase::ResetMode mode );
+        virtual void reset ( MCUSimBase::ResetMode mode ) override;
 
         /**
          * @brief

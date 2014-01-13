@@ -41,7 +41,7 @@ class Compiler
          * @param[in,out] msgInterface
          * @param[in] baseIncludeDir
          */
-        Compiler ( CompilerMsgInterface * msgInterface = NULL,
+        Compiler ( CompilerMsgInterface * msgInterface = nullptr,
                    std::string baseIncludeDir = "" );
 
         /**

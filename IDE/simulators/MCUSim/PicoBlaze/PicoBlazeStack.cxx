@@ -18,13 +18,13 @@
 
 PicoBlazeStack::PicoBlazeStack()
 {
-    m_data = NULL;
+    m_data = nullptr;
     m_position = 0;
 }
 
 PicoBlazeStack::~PicoBlazeStack()
 {
-    if ( NULL != m_data )
+    if ( nullptr != m_data )
     {
         delete[] m_data;
     }
@@ -100,7 +100,7 @@ MCUSim::RetCode PicoBlazeStack::directWrite ( unsigned int addr,
 
 void PicoBlazeStack::resize ( unsigned int newSize )
 {
-    if ( NULL != m_data )
+    if ( nullptr != m_data )
     {
         delete[] m_data;
     }

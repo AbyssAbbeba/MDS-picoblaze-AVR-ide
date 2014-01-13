@@ -111,7 +111,7 @@ class MScriptVarTable
          */
         bool remove ( const std::string & variable,
                       const MScriptSrcLocation & location,
-                      const MScriptArrayIndex * index = NULL );
+                      const MScriptArrayIndex * index = nullptr );
 
         /**
          * @brief
@@ -131,20 +131,20 @@ class MScriptVarTable
         void assign ( const std::string & variable,
                       const MScriptSrcLocation & location,
                       const MScriptValue & value,
-                      const MScriptArrayIndex * index = NULL );
+                      const MScriptArrayIndex * index = nullptr );
 
         /**
          * @brief
          * @param[in] variable
          * @param[in] index
-         * @param[in] location If NULL, do not generate any error messages; othewise use this location in them.
+         * @param[in] location If nullptr, do not generate any error messages; othewise use this location in them.
          * @param[in,out] level
          * @return
          */
         MScriptValue * access ( const std::string & variable,
-                                const MScriptArrayIndex * index = NULL,
-                                const MScriptSrcLocation * location = NULL,
-                                int * level = NULL );
+                                const MScriptArrayIndex * index = nullptr,
+                                const MScriptSrcLocation * location = nullptr,
+                                int * level = nullptr );
 
         /**
          * @brief
@@ -158,8 +158,8 @@ class MScriptVarTable
         void refer ( const std::string & refName,
                      const std::string & refTarget,
                      const MScriptSrcLocation & location,
-                     const MScriptArrayIndex * refIndex = NULL,
-                     const MScriptArrayIndex * targetIndex = NULL );
+                     const MScriptArrayIndex * refIndex = nullptr,
+                     const MScriptArrayIndex * targetIndex = nullptr );
 
         /**
          * @brief
@@ -168,7 +168,7 @@ class MScriptVarTable
          * @return
          */
         bool declared ( const std::string & variable,
-                        const MScriptArrayIndex * index = NULL );
+                        const MScriptArrayIndex * index = nullptr );
 
         /**
          * @brief
@@ -177,7 +177,7 @@ class MScriptVarTable
          * @return
          */
         bool defined ( const std::string & variable,
-                       const MScriptArrayIndex * index = NULL );
+                       const MScriptArrayIndex * index = nullptr );
 
         /**
          * @brief
@@ -216,7 +216,7 @@ class MScriptVarTable
          * @return
          */
         inline MScriptVariable * rawAccess ( const std::string & variable,
-                                             int * level = NULL );
+                                             int * level = nullptr );
 
         /**
          * @brief
@@ -266,7 +266,7 @@ class MScriptVarTable
         inline MScriptValue * reaccess ( const std::string & variable,
                                          MScriptValue & input,
                                          const MScriptSrcLocation * location,
-                                         const MScriptArrayIndex * index = NULL );
+                                         const MScriptArrayIndex * index = nullptr );
 
         /**
          * @brief

@@ -52,25 +52,25 @@ class HexFile : public DataFile
     ////    Public Operations    ////
     public:
         /**
-         * @brief Load I16HEX file into the memory array
-         * @param[in] filename
+         * @brief Load I16HEX file into the memory array.
+         * @param[in] filename Source file
          */
-        void clearAndLoad ( const char * filename ) throw ( DataFileException );
+        virtual void clearAndLoad ( const char * filename ) override;
 
         /// @overload
-        void clearAndLoad ( const std::string & filename ) throw ( DataFileException );
+        virtual void clearAndLoad ( const std::string & filename ) override;
 
         /**
-         * @brief Save memory array in I16HEX file
+         * @brief Save memory array in I16HEX file.
          * @param[in] filename Target file
          * @param[in] makeBackup Make backup file
          */
-        void save ( const char * filename,
-                    bool makeBackup = true ) throw ( DataFileException );
+        virtual void save ( const char * filename,
+                            bool makeBackup = true ) override;
 
         /// @overload
-        void save ( const std::string & filename,
-                    bool makeBackup = true ) throw ( DataFileException );
+        virtual void save ( const std::string & filename,
+                            bool makeBackup = true ) override;
 
     ////    Private Operations    ////
     private:

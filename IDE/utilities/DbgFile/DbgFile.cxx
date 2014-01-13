@@ -15,25 +15,31 @@
 
 #include "DbgFile.h"
 
-int DbgFile::getLineByAddr ( unsigned int addr,
-                             std::string & fileName ) const
+void DbgFile::getLinesByAddr ( unsigned int addr,
+                               std::vector<std::pair<const std::string *, unsigned int>> & lines ) const
 {
-    int lineRecordIdx = getLineByAddr(addr);
-    if ( -1 == lineRecordIdx )
+    std::vector<unsigned int> recordNumbers;
+
+    lines.clear();
+    getLineByAddr(addr, recordNumbers);
+
+    if ( true == recordNumbers.empty() )
     {
-        return -1;
+        return;
     }
 
-    int fileNumber = m_lineRecords[lineRecordIdx].m_fileNumber;
-    if ( -1 == fileNumber )
+    for ( auto lineRecordIdx : recordNumbers )
     {
-        fileName = "";
+        int fileNumber = m_lineRecords[lineRecordIdx].m_fileNumber;
+
+        if ( -1 == fileNumber )
+        {
+            continue;
+        }
+
+        lines.push_back ( std::make_pair ( & m_fileNames [ fileNumber ],
+                                           m_lineRecords [ lineRecordIdx ].m_lineNumber ) );
     }
-    else
-    {
-        fileName = m_fileNames[fileNumber];
-    }
-    return m_lineRecords[lineRecordIdx].m_lineNumber;
 }
 
 std::string DbgFile::Exception::toString() const
@@ -54,48 +60,36 @@ bool DbgFile::operator == ( const DbgFile & obj )
     {
         return false;
     }
-    if ( obj.m_numberOfLines.size() != m_numberOfLines.size() )
+    else if ( obj.m_numberOfLines.size() != m_numberOfLines.size() )
     {
         return false;
     }
-    if ( obj.m_lineRecords.size() != m_lineRecords.size() )
+    else if ( obj.m_lineRecords.size() != m_lineRecords.size() )
     {
         return false;
     }
-    if ( obj.m_symbolRecords.size() != m_symbolRecords.size() )
+    else if ( obj.m_symbolRecords.size() != m_symbolRecords.size() )
     {
         return false;
     }
-    if ( obj.m_functionRecords.size() != m_functionRecords.size() )
+    else if ( obj.m_functionRecords.size() != m_functionRecords.size() )
     {
         return false;
     }
-    if ( obj.m_moduleRecords.size() != m_moduleRecords.size() )
+    else if ( obj.m_moduleRecords.size() != m_moduleRecords.size() )
     {
         return false;
     }
-    if ( obj.m_typeRecords.size() != m_typeRecords.size() )
+    else if ( obj.m_typeRecords.size() != m_typeRecords.size() )
     {
         return false;
     }
-    if ( obj.m_fileNames.size() != m_fileNames.size() )
+    else if ( obj.m_fileNames.size() != m_fileNames.size() )
     {
         return false;
     }
-
-    for ( int i = 0; i < m_lastAddress; i++ )
+    else
     {
-        std::string fileNames[2];
-
-        if ( getLineByAddr(i, fileNames[0]) != obj.getLineByAddr(i, fileNames[1]) )
-        {
-            return false;
-        }
-        if ( fileNames[0] != fileNames[1] )
-        {
-            return false;
-        }
+        return true;
     }
-
-    return true;
 }

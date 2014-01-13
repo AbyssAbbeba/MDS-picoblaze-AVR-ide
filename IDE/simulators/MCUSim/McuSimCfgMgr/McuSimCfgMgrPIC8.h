@@ -99,7 +99,7 @@ class McuSimCfgMgrPIC8
          * @return
          */
         inline PIC8PinNames::PIN sfunc2pinEnum ( const QString & str,
-                                                 bool * ok = NULL );
+                                                 bool * ok = nullptr );
 
         /**
          * @brief
@@ -108,7 +108,7 @@ class McuSimCfgMgrPIC8
          * @return
          */
         inline int name2spfEnum ( const QString & str,
-                                  bool * ok = NULL );
+                                  bool * ok = nullptr );
 
         /**
          * @brief
@@ -117,7 +117,7 @@ class McuSimCfgMgrPIC8
          * @return
          */
         inline int string2interruptNumber ( const QString & str,
-                                            bool * ok = NULL );
+                                            bool * ok = nullptr );
 
     ////    Private Attributes    ////
     private:

@@ -651,7 +651,7 @@ inline bool McuSimCfgMgrAVR8::attributes ( const QString & localName,
                     device->m_dataMemory.m_ioMem2InitValues = new uint32_t * [device->m_dataMemory.m_mem2size];
                     for ( unsigned int i = 0; i < device->m_dataMemory.m_mem2size; i++ )
                     {
-                        device->m_dataMemory.m_ioMem2InitValues[i] = NULL;
+                        device->m_dataMemory.m_ioMem2InitValues[i] = nullptr;
                     }
                     device->m_dataMemory.m_mem2sizes = new unsigned int[device->m_dataMemory.m_mem2size];
                 }

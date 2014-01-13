@@ -172,13 +172,13 @@ class CompilerValue : public CompilerSerializable
          * @brief
          * @param[in,out]
          */
-        virtual void serialize ( CompilerSerializer & output ) const;
+        virtual void serialize ( CompilerSerializer & output ) const override;
 
         /**
          * @brief
          * @param[in,out]
          */
-        virtual void deserialize ( CompilerSerializer & input );
+        virtual void deserialize ( CompilerSerializer & input ) override;
 
     ////    Public Attributes    ////
     public:

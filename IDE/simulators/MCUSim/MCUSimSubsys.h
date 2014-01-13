@@ -83,7 +83,7 @@ class MCUSimSubsys
                        SubsysId id )
         {
             link(eventLogger, id);
-        };
+        }
 
     public:
         /**

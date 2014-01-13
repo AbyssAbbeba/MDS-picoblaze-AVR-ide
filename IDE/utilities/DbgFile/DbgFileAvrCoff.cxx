@@ -24,22 +24,22 @@
 
 DbgFileAvrCoff::DbgFileAvrCoff()
 {
-    m_addrToLineMap = NULL;
-    m_lineToAddrMap = NULL;
+    m_addrToLineMap = nullptr;
+    m_lineToAddrMap = nullptr;
 }
 
 DbgFileAvrCoff::~DbgFileAvrCoff()
 {
-    if ( NULL != m_addrToLineMap )
+    if ( nullptr != m_addrToLineMap )
     {
         delete[] m_addrToLineMap;
     }
 
-    if ( NULL != m_lineToAddrMap )
+    if ( nullptr != m_lineToAddrMap )
     {
         for ( unsigned int i = 0; i < m_fileNames.size(); i++ )
         {
-            if ( NULL != m_lineToAddrMap[i] )
+            if ( nullptr != m_lineToAddrMap[i] )
             {
                 delete[] m_lineToAddrMap[i];
             }
@@ -64,13 +64,13 @@ inline void DbgFileAvrCoff::clear()
     m_moduleRecords.clear();
 }
 
-void DbgFileAvrCoff::openFile ( const std::string & filename ) throw ( Exception )
+void DbgFileAvrCoff::openFile ( const std::string & filename )
 {
     try
     {
         loadFile(filename);
     }
-    catch ( Exception & e )
+    catch ( const Exception & e )
     {
         clear();
         throw(e);
@@ -338,7 +338,7 @@ inline void DbgFileAvrCoff::checkBadAndEof ( const std::fstream & file, char * b
 {
     if ( false == file.good() )
     {
-        if ( NULL != buffer )
+        if ( nullptr != buffer )
         {
             delete [] buffer;
         }
@@ -346,14 +346,20 @@ inline void DbgFileAvrCoff::checkBadAndEof ( const std::fstream & file, char * b
     }
 }
 
-int DbgFileAvrCoff::getLineByAddr ( unsigned int addr ) const
+void DbgFileAvrCoff::getLineByAddr ( unsigned int addr,
+                                     std::vector<unsigned int> & recordNumbers ) const
 {
+    recordNumbers.clear();
+
     if ( (int)(addr) > m_lastAddress )
     {
-        return -1;
+        return;
     }
 
-    return m_addrToLineMap[addr];
+    if ( -1 != m_addrToLineMap[addr] )
+    {
+        recordNumbers.push_back ( (unsigned int) m_addrToLineMap[addr] );
+    }
 }
 
 int DbgFileAvrCoff::getAddrByLine ( unsigned int line,
@@ -408,7 +414,7 @@ inline int DbgFileAvrCoff::getFileNumber ( const std::string & filename ) const
 
 inline void DbgFileAvrCoff::generateLineAddressMaps()
 {
-    if ( NULL != m_addrToLineMap )
+    if ( nullptr != m_addrToLineMap )
     {
         delete[] m_addrToLineMap;
     }
@@ -418,11 +424,11 @@ inline void DbgFileAvrCoff::generateLineAddressMaps()
         m_addrToLineMap[i] = -1;
     }
 
-    if ( NULL != m_lineToAddrMap )
+    if ( nullptr != m_lineToAddrMap )
     {
         for ( unsigned int i = 0; i < m_fileNames.size(); i++ )
         {
-            if ( NULL != m_lineToAddrMap[i] )
+            if ( nullptr != m_lineToAddrMap[i] )
             {
                 delete[] m_lineToAddrMap[i];
             }

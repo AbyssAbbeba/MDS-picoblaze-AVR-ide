@@ -81,11 +81,9 @@ bool TestKcpsm6::addTests ( CU_pSuite suite )
 
             testName.resize ( testName.size() - extension.size() );
 
-            for ( std::vector<std::string>::const_iterator it = testCaseFiles.cbegin();
-                  it != testCaseFiles.cend();
-                  it++ )
+            for ( const auto & testCaseFile : testCaseFiles )
             {
-                if ( 0 == it->compare(testName) )
+                if ( testCaseFile == testName )
                 {
                     found = true;
                     break;
@@ -101,11 +99,9 @@ bool TestKcpsm6::addTests ( CU_pSuite suite )
 
     std::sort(testCaseFiles.begin(), testCaseFiles.end());
 
-    for ( std::vector<std::string>::const_iterator it = testCaseFiles.cbegin();
-          it != testCaseFiles.cend();
-          it++ )
+    for ( const auto & testCaseFile : testCaseFiles )
     {
-        if ( NULL == CU_add_test(suite, it->c_str(), &testFunction) )
+        if ( nullptr == CU_add_test(suite, testCaseFile.c_str(), &testFunction) )
         {
             return false;
         }
@@ -145,7 +141,7 @@ void TestKcpsm6::testFunction()
     {
         m_programFile->clearAndLoad(hexFile);
     }
-    catch ( DataFileException & e )
+    catch ( const DataFileException & e )
     {
         CU_FAIL("Instance of DataFileException thrown:");
         std::cerr << e.toString() << std::endl;

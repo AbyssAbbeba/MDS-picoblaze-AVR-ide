@@ -47,12 +47,12 @@ SrecFile::SrecFile ( unsigned int arrsize ) : DataFile(arrsize)
     m_startingExecutionAddress = 0;
 }
 
-void SrecFile::clearAndLoad ( const char * filename ) throw ( DataFileException )
+void SrecFile::clearAndLoad ( const char * filename )
 {
     clearAndLoad(std::string(filename));
 }
 
-void SrecFile::clearAndLoad ( const std::string & filename ) throw ( DataFileException )
+void SrecFile::clearAndLoad ( const std::string & filename )
 {
     int localRecordCount = 0;
     bool terminated = false;
@@ -242,13 +242,13 @@ void SrecFile::clearAndLoad ( const std::string & filename ) throw ( DataFileExc
 }
 
 void SrecFile::save ( const char * filename,
-                      bool makeBackup ) throw ( DataFileException )
+                      bool makeBackup )
 {
     save(std::string(filename), makeBackup);
 }
 
 void SrecFile::save ( const std::string & filename,
-                      bool makeBackup ) throw ( DataFileException )
+                      bool makeBackup )
 {
     // Create backup file
     if ( true == makeBackup )
@@ -527,11 +527,9 @@ inline std::string SrecFile::vec2str ( const std::vector<unsigned char> & source
 {
     std::string result;
 
-    for ( std::vector<unsigned char>::const_iterator i = source.begin();
-          i != source.end();
-          i++ )
+    for ( const auto ch : source )
     {
-        result.push_back(*i);
+        result.push_back(ch);
     }
 
     return result;

@@ -33,7 +33,7 @@ class DAsmPicoBlazeKcpsm1CPLD : public DAsmPicoBlazeCore
          * @param[in] addr
          */
         virtual bool phase1 ( unsigned int code,
-                              unsigned int addr );
+                              unsigned int addr ) override;
 
         /**
          * @brief
@@ -41,7 +41,7 @@ class DAsmPicoBlazeKcpsm1CPLD : public DAsmPicoBlazeCore
          * @param[in] addr
          */
         virtual void phase2 ( unsigned int code,
-                              unsigned int addr );
+                              unsigned int addr ) override;
 
     ////    Private Operations    ////
     private:
@@ -95,7 +95,7 @@ class DAsmPicoBlazeKcpsm1CPLD : public DAsmPicoBlazeCore
         void aaa ( std::string & line,
                    unsigned int code,
                    const char * inst,
-                   const char * cnd = NULL );
+                   const char * cnd = nullptr );
 
         /**
          * @brief

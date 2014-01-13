@@ -46,8 +46,8 @@
 #include <QDebug>
 
 MCUSimControl::MCUSimControl ( const char * deviceName )
-                             : m_simulator(NULL),
-                               m_dbgFile(NULL)
+                             : m_simulator(nullptr),
+                               m_dbgFile(nullptr)
 {
     m_breakPointsEnabled = true;
     changeDevice(deviceName);
@@ -55,12 +55,12 @@ MCUSimControl::MCUSimControl ( const char * deviceName )
 
 MCUSimControl::~MCUSimControl()
 {
-    if ( NULL != m_simulator )
+    if ( nullptr != m_simulator )
     {
         delete m_simulator;
     }
 
-    if ( NULL != m_dbgFile )
+    if ( nullptr != m_dbgFile )
     {
         delete m_dbgFile;
     }
@@ -70,13 +70,13 @@ bool MCUSimControl::start ( const std::string & filename,
                             CompilerID compilerId,
                             DataFileType dataFileType )
 {
-    if ( NULL != m_dbgFile )
+    if ( nullptr != m_dbgFile )
     {
         delete m_dbgFile;
-        m_dbgFile = NULL;
+        m_dbgFile = nullptr;
     }
 
-    DataFile * dataFile = NULL;
+    DataFile * dataFile = nullptr;
     std::string dbgFileExt;
     std::string dataFileExt;
 
@@ -170,10 +170,10 @@ bool MCUSimControl::start ( const std::string & filename,
         }
     }
 
-    if ( ( NULL == dataFile ) || ( NULL == m_dbgFile) )
+    if ( ( nullptr == dataFile ) || ( nullptr == m_dbgFile) )
     {
         // TODO: implement a proper error handling here
-        m_messages.push_back(QObject::tr("error: ( NULL == dataFile ) || ( NULL == m_dbgFile)").toStdString());
+        m_messages.push_back(QObject::tr("error: ( nullptr == dataFile ) || ( nullptr == m_dbgFile)").toStdString());
         return false;
     }
 
@@ -181,7 +181,7 @@ bool MCUSimControl::start ( const std::string & filename,
     {
         m_dbgFile->openFile(filename + dbgFileExt);
     }
-    catch ( DbgFile::Exception & e )
+    catch ( const DbgFile::Exception & e )
     {
         m_messages.push_back(QObject::tr("Failed to load the debug file: %1").arg(e.toString().c_str()).toStdString());
         return false;
@@ -192,7 +192,7 @@ bool MCUSimControl::start ( const std::string & filename,
     {
         dataFile->clearAndLoad(filename + dataFileExt);
     }
-    catch ( DataFileException & e )
+    catch ( const DataFileException & e )
     {
         // TODO: implement a proper error handling here
         m_messages.push_back(QObject::tr("Failed to load program memory from the given file.").toStdString());
@@ -270,13 +270,13 @@ bool MCUSimControl::start ( const std::string & dbgFileName,
                             MCUSimControl::CompilerID compilerId,
                             MCUSimControl::DataFileType dataFileType )
 {
-    if ( NULL != m_dbgFile )
+    if ( nullptr != m_dbgFile )
     {
         delete m_dbgFile;
-        m_dbgFile = NULL;
+        m_dbgFile = nullptr;
     }
 
-    DataFile * dataFile = NULL;
+    DataFile * dataFile = nullptr;
 
     switch ( compilerId )
     {
@@ -359,10 +359,10 @@ bool MCUSimControl::start ( const std::string & dbgFileName,
         }
     }
 
-    if ( ( NULL == dataFile ) || ( NULL == m_dbgFile) )
+    if ( ( nullptr == dataFile ) || ( nullptr == m_dbgFile) )
     {
         // TODO: implement a proper error handling here
-        m_messages.push_back(QObject::tr("error: ( NULL == dataFile ) || ( NULL == m_dbgFile).").toStdString());
+        m_messages.push_back(QObject::tr("error: ( nullptr == dataFile ) || ( nullptr == m_dbgFile).").toStdString());
         return false;
     }
 
@@ -370,7 +370,7 @@ bool MCUSimControl::start ( const std::string & dbgFileName,
     {
         m_dbgFile->openFile(dbgFileName);
     }
-    catch ( DbgFile::Exception & e )
+    catch ( const DbgFile::Exception & e )
     {
         m_messages.push_back(QObject::tr("Failed to load the debug file: %1").arg(e.toString().c_str()).toStdString());
         return false;
@@ -381,7 +381,7 @@ bool MCUSimControl::start ( const std::string & dbgFileName,
     {
         dataFile->clearAndLoad(dataFileName);
     }
-    catch ( DataFileException & e )
+    catch ( const DataFileException & e )
     {
         // TODO: implement a proper error handling here
         m_messages.push_back(QObject::tr("Failed to load program memory from the given file.").toStdString());
@@ -419,35 +419,30 @@ bool MCUSimControl::start ( const std::string & dbgFileName,
     return true;
 }
 
-int MCUSimControl::getLineNumber ( std::string * fileName )
+void MCUSimControl::getLineNumber ( std::vector<std::pair<const std::string *, unsigned int>> & lines ) const
 {
+    lines.clear();
+
     if ( false == initialized() )
     {
-        if ( NULL != fileName )
-        {
-            *fileName = "";
-        }
-        return -1;
+        return;
     }
 
-    unsigned int pc = m_simCpu->getProgramCounter();
-    int idx = m_dbgFile->getLineByAddr(pc);
-    if ( -1 == idx )
+    std::vector<unsigned int> recordNumbers;
+
+    m_dbgFile->getLineByAddr(m_simCpu->getProgramCounter(), recordNumbers);
+    if ( true == recordNumbers.empty() )
     {
-        if ( NULL != fileName )
-        {
-            *fileName = "";
-        }
-        return -1;
+        return;
     }
-    else
+
+    for ( unsigned int idx : recordNumbers )
     {
-        int fileNumber = m_dbgFile->getLineRecords().at(idx).m_fileNumber;
-        if ( NULL != fileName )
-        {
-            *fileName = m_dbgFile->fileNumber2Name(fileNumber);
-        }
-        return m_dbgFile->getLineRecords().at(idx).m_lineNumber;
+        const DbgFile::LineRecord & lineRecord = m_dbgFile->getLineRecords()[idx];
+        const std::string * filename = &( m_dbgFile->fileNumber2Name(lineRecord.m_fileNumber) );
+        unsigned int lineNumber = lineRecord.m_lineNumber;
+
+        lines.push_back(std::make_pair(filename, lineNumber));
     }
 }
 
@@ -455,7 +450,7 @@ const DbgFile * MCUSimControl::getSourceInfo()
 {
     if ( false == initialized() )
     {
-        return NULL;
+        return nullptr;
     }
     return m_dbgFile;
 }
@@ -472,7 +467,7 @@ void MCUSimControl::stop()
 
 void MCUSimControl::step()
 {
-    if ( NULL == m_simulator )
+    if ( nullptr == m_simulator )
     {
         return;
     }
@@ -480,9 +475,9 @@ void MCUSimControl::step()
     m_totalMCycles += m_simulator->executeInstruction();
     dispatchEvents();
 
-    m_fileName.clear();
-    int lineNumber = getLineNumber(&m_fileName);
-    emit(lineNumberChanged(lineNumber, m_fileName));
+//     m_fileName.clear();
+//     int lineNumber = getLineNumber(&m_fileName);
+//     emit(lineNumberChanged(lineNumber, m_fileName));
 }
 
 void MCUSimControl::stepOver()
@@ -503,7 +498,7 @@ void MCUSimControl::run()
 
 void MCUSimControl::reset()
 {
-    if ( NULL == m_simulator )
+    if ( nullptr == m_simulator )
     {
         return;
     }
@@ -512,14 +507,14 @@ void MCUSimControl::reset()
     m_simulator->reset(MCUSim::RSTMD_MCU_RESET);
     allObservers_deviceReset();
 
-    std::string fileName;
-    int lineNumber = getLineNumber(&fileName);
-    emit(lineNumberChanged(lineNumber, fileName));
+//     std::string fileName;
+//     int lineNumber = getLineNumber(&fileName);
+//     emit(lineNumberChanged(lineNumber, fileName));
 }
 
 bool MCUSimControl::changeDevice ( const char * deviceName )
 {
-    if ( NULL != m_simulator )
+    if ( nullptr != m_simulator )
     {
         delete m_simulator;
     }
@@ -537,7 +532,7 @@ bool MCUSimControl::changeDevice ( const char * deviceName )
     else
     {
         m_deviceSpec = McuSimCfgMgr::getInstance()->getDeviceSpec(deviceName);
-        if ( NULL == m_deviceSpec )
+        if ( nullptr == m_deviceSpec )
         {
             m_messages.push_back ( QObject::tr ( "Failed to retrieve the device configuration specification." )
                                                . toStdString() );
@@ -577,7 +572,7 @@ bool MCUSimControl::changeDevice ( const char * deviceName )
 
 const char * MCUSimControl::getDeviceName() const
 {
-    if ( NULL == m_simulator )
+    if ( nullptr == m_simulator )
     {
         return "";
     }
@@ -589,7 +584,7 @@ const char * MCUSimControl::getDeviceName() const
 
 MCUSim::Arch MCUSimControl::getArch() const
 {
-    if ( NULL == m_simulator )
+    if ( nullptr == m_simulator )
     {
         return MCUSim::ARCH_INVALID;
     }
@@ -601,9 +596,9 @@ MCUSim::Arch MCUSimControl::getArch() const
 
 MCUSimSubsys * MCUSimControl::getSimSubsys ( MCUSimSubsys::SubsysId id )
 {
-    if ( NULL == m_simulator )
+    if ( nullptr == m_simulator )
     {
-        return NULL;
+        return nullptr;
     }
     else
     {
@@ -618,9 +613,9 @@ MCUSim * MCUSimControl::directAccess()
 
 const McuDeviceSpec * MCUSimControl::getDeviceSpec() const
 {
-    if ( NULL == m_simulator )
+    if ( nullptr == m_simulator )
     {
-        return NULL;
+        return nullptr;
     }
     else
     {
@@ -630,7 +625,7 @@ const McuDeviceSpec * MCUSimControl::getDeviceSpec() const
 
 bool MCUSimControl::initialized() const
 {
-    return ( NULL != m_simulator );
+    return ( nullptr != m_simulator );
 }
 
 void MCUSimControl::registerObserver ( MCUSimObserver * observer,
@@ -638,11 +633,9 @@ void MCUSimControl::registerObserver ( MCUSimObserver * observer,
                                        const std::vector<int> & subsysEventsToObserve )
 {
     uint64_t events = 0;
-    for ( std::vector<int>::const_iterator it = subsysEventsToObserve.begin();
-          it != subsysEventsToObserve.end();
-          it++ )
+    for ( const auto ev : subsysEventsToObserve )
     {
-        events |= ( 1 << *it );
+        events |= ( 1 << ev );
     }
 
     registerObserver(observer, simSubsysToObserve, events);
@@ -800,7 +793,7 @@ void MCUSimControl::clearMessages()
 
 bool MCUSimControl::getListOfSFR ( std::vector<SFRRegDesc> & sfr )
 {
-    if ( NULL == m_simulator )
+    if ( nullptr == m_simulator )
     {
         return false;
     }

@@ -54,10 +54,10 @@ class DataFile
          * @brief Load data file into the memory array
          * @param[in] filename
          */
-        virtual void clearAndLoad ( const char * filename ) throw ( DataFileException ) = 0;
+        virtual void clearAndLoad ( const char * filename ) = 0;
 
         /// @overload
-        virtual void clearAndLoad ( const std::string & filename ) throw ( DataFileException ) = 0;
+        virtual void clearAndLoad ( const std::string & filename ) = 0;
 
         /**
          * @brief Save memory array in data file
@@ -65,11 +65,11 @@ class DataFile
          * @param[in] makeBackup Make backup file
          */
         virtual void save ( const char * filename,
-                            bool makeBackup = true ) throw ( DataFileException ) = 0;
+                            bool makeBackup = true ) = 0;
 
         /// @overload
         virtual void save ( const std::string & filename,
-                            bool makeBackup = true ) throw ( DataFileException ) = 0;
+                            bool makeBackup = true ) = 0;
 
         /**
          * @brief Set value for certain cell in the memory array
@@ -77,13 +77,13 @@ class DataFile
          * @param[in] value New value (0..255)
          */
         void set ( unsigned int address,
-                   uint8_t value ) throw ( DataFileException );
+                   uint8_t value );
 
         /**
          * @brief Unset certain cell in the memory array.
          * @param[in] address Address of the target memory cell
          */
-        void unset ( unsigned int address ) throw ( DataFileException );
+        void unset ( unsigned int address );
 
         /**
          * @brief Same as the indexing operator.

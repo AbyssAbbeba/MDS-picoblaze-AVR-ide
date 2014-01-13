@@ -17,13 +17,13 @@
 
 PIC8Stack::PIC8Stack()
 {
-    m_data = NULL;
+    m_data = nullptr;
     m_position = 0;
 }
 
 PIC8Stack::~PIC8Stack()
 {
-    if ( NULL != m_data )
+    if ( nullptr != m_data )
     {
         delete[] m_data;
     }
@@ -56,7 +56,7 @@ void PIC8Stack::reset ( MCUSimBase::ResetMode mode )
 
 inline void PIC8Stack::loadConfig()
 {
-    if ( NULL != m_data )
+    if ( nullptr != m_data )
     {
         delete[] m_data;
     }

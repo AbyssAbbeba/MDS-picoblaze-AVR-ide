@@ -23,7 +23,7 @@ DataFile::DataFile ( unsigned int arrsize ) : m_arrsize ( arrsize )
 DataFile::~DataFile()
 {
     // Deallocate the memory array
-    if ( ( false == m_dontDelete ) && ( NULL != m_memory ) )
+    if ( ( false == m_dontDelete ) && ( nullptr != m_memory ) )
     {
         delete[] m_memory;
     }
@@ -40,7 +40,7 @@ inline void DataFile::allocateMemory()
     }
     else
     {
-        m_memory = NULL;
+        m_memory = nullptr;
     }
 
     for ( unsigned int i = 0; i < m_arrsize; i++ )
@@ -60,7 +60,7 @@ int DataFile::at ( int idx ) const throw ( DataFileException )
 }
 
 void DataFile::set ( unsigned int address,
-                     uint8_t value ) throw ( DataFileException )
+                     uint8_t value )
 {
     // Check for valid address
     if ( address >= m_arrsize )
@@ -71,7 +71,7 @@ void DataFile::set ( unsigned int address,
     m_memory[address] = value;
 }
 
-void DataFile::unset ( unsigned int address ) throw ( DataFileException )
+void DataFile::unset ( unsigned int address )
 {
     // Check for valid address
     if ( address >= m_arrsize )
@@ -150,7 +150,7 @@ void DataFile::setData ( int16_t * data,
 {
     m_dontDelete = true;
 
-    if ( NULL != m_memory)
+    if ( nullptr != m_memory)
     {
         delete[] m_memory;
     }

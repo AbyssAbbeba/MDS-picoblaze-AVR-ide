@@ -96,7 +96,7 @@ class McuDeviceSpecPIC8 : public McuDeviceSpec
                 RegDescription()
                 {
                     m_numberOfAddresses = 0;
-                    m_addresses = NULL;
+                    m_addresses = nullptr;
                 }
 
                 std::string m_name;  ///<

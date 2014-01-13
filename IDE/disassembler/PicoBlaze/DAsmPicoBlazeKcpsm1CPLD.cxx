@@ -189,7 +189,7 @@ void DAsmPicoBlazeKcpsm1CPLD::inst_CALL ( std::string & line,
 void DAsmPicoBlazeKcpsm1CPLD::inst_RETURN ( std::string & line,
                                             unsigned int code )
 {
-    const char * cnd = NULL;
+    const char * cnd = nullptr;
     switch ( ( code & 0x0700 ) >> 8 )
     {
         case 0b100: cnd = "Z";  break;
@@ -200,7 +200,7 @@ void DAsmPicoBlazeKcpsm1CPLD::inst_RETURN ( std::string & line,
 
     appendStr(line, "RETURN");
     indent(line, 32);
-    if ( NULL != cnd )
+    if ( nullptr != cnd )
     {
         appendStr(line, cnd);
         line += ", ";
@@ -252,7 +252,7 @@ void DAsmPicoBlazeKcpsm1CPLD::inst_INTERRUPT ( std::string & line,
 void DAsmPicoBlazeKcpsm1CPLD::shift_rotate ( std::string & line,
                                              unsigned int code )
 {
-    const char * inst = NULL;
+    const char * inst = nullptr;
     if ( 0 == ( code & 0xff00 ) )
     {
         switch ( code & 0xff )
@@ -270,7 +270,7 @@ void DAsmPicoBlazeKcpsm1CPLD::shift_rotate ( std::string & line,
         }
     }
 
-    if ( NULL == inst )
+    if ( nullptr == inst )
     {
         appendStr(line, "DB");
         indent(line, 32);
@@ -335,7 +335,7 @@ void DAsmPicoBlazeKcpsm1CPLD::aaa ( std::string & line,
 {
     appendStr(line, inst);
     indent(line, 32);
-    if ( NULL != cnd )
+    if ( nullptr != cnd )
     {
         appendStr(line, cnd);
         line += ", ";

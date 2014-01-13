@@ -17,19 +17,19 @@
 
 CompilerStatement::~CompilerStatement()
 {
-    if ( NULL != m_args )
+    if ( nullptr != m_args )
     {
         m_args->completeDelete();
     }
-    if ( NULL != m_branch )
+    if ( nullptr != m_branch )
     {
         m_branch->completeDelete();
     }
-    if ( NULL != m_prev )
+    if ( nullptr != m_prev )
     {
         m_prev->m_next = m_next;
     }
-    if ( NULL != m_next )
+    if ( nullptr != m_next )
     {
         m_next->m_prev = m_prev;
     }
@@ -42,10 +42,10 @@ CompilerStatement::CompilerStatement()
     m_userData     =  0;
     m_serialNumber = -1;
 
-    m_prev      = NULL;
-    m_next      = NULL;
-    m_branch    = NULL;
-    m_args      = NULL;
+    m_prev      = nullptr;
+    m_next      = nullptr;
+    m_branch    = nullptr;
+    m_args      = nullptr;
 }
 
 CompilerStatement::CompilerStatement ( CompilerSerializer & input )
@@ -80,26 +80,26 @@ CompilerStatement::CompilerStatement ( CompilerSourceLocation location,
     m_userData = 0;
     m_serialNumber = -1;
 
-    m_prev = NULL;
-    m_next = NULL;
-    m_branch = NULL;
-    if ( NULL != args )
+    m_prev = nullptr;
+    m_next = nullptr;
+    m_branch = nullptr;
+    if ( nullptr != args )
     {
         m_args = args->first();
     }
     else
     {
-        m_args = NULL;
+        m_args = nullptr;
     }
 }
 
 CompilerStatement * CompilerStatement::createBranch ( CompilerStatement * branch )
 {
-    if ( NULL == this )
+    if ( nullptr == this )
     {
-        return NULL;
+        return nullptr;
     }
-    if ( NULL == branch )
+    if ( nullptr == branch )
     {
         return this;
     }
@@ -110,14 +110,14 @@ CompilerStatement * CompilerStatement::createBranch ( CompilerStatement * branch
 
 CompilerStatement * CompilerStatement::first()
 {
-    if ( NULL == this )
+    if ( nullptr == this )
     {
-        return NULL;
+        return nullptr;
     }
 
     CompilerStatement * stmt = this;
 
-    while ( NULL != stmt->prev() )
+    while ( nullptr != stmt->prev() )
     {
         stmt = stmt->prev();
     }
@@ -128,7 +128,7 @@ CompilerStatement * CompilerStatement::first()
 CompilerStatement * CompilerStatement::last()
 {
     CompilerStatement * result = this;
-    while ( NULL != result->next() )
+    while ( nullptr != result->next() )
     {
         result = result->next();
     }
@@ -139,14 +139,14 @@ CompilerStatement * CompilerStatement::lastLeaf()
 {
     CompilerStatement * result = this;
 
-    while ( NULL != result->next() )
+    while ( nullptr != result->next() )
     {
-        while ( NULL != result->next() )
+        while ( nullptr != result->next() )
         {
             result = result->next();
         }
 
-        while ( NULL != result->branch() )
+        while ( nullptr != result->branch() )
         {
             result = result->branch();
         }
@@ -157,11 +157,11 @@ CompilerStatement * CompilerStatement::lastLeaf()
 
 CompilerStatement * CompilerStatement::insertLink ( CompilerStatement * chainLink )
 {
-    if ( NULL == chainLink )
+    if ( nullptr == chainLink )
     {
         return this;
     }
-    if ( NULL == this )
+    if ( nullptr == this )
     {
         return chainLink;
     }
@@ -176,7 +176,7 @@ CompilerStatement * CompilerStatement::insertLink ( CompilerStatement * chainLin
     chainLink->m_prev = this;
 
     chainLinkLast->m_next = nextOrig;
-    if ( NULL != nextOrig )
+    if ( nullptr != nextOrig )
     {
         nextOrig->m_prev = chainLinkLast;
     }
@@ -186,11 +186,11 @@ CompilerStatement * CompilerStatement::insertLink ( CompilerStatement * chainLin
 
 CompilerStatement * CompilerStatement::appendLink ( CompilerStatement * chainLink )
 {
-    if ( NULL == chainLink )
+    if ( nullptr == chainLink )
     {
         return this;
     }
-    if ( NULL == this )
+    if ( nullptr == this )
     {
         return chainLink;
     }
@@ -198,7 +198,7 @@ CompilerStatement * CompilerStatement::appendLink ( CompilerStatement * chainLin
     chainLink = chainLink->first();
 
     CompilerStatement * stmt = this;
-    while ( NULL != stmt->next() )
+    while ( nullptr != stmt->next() )
     {
         stmt = stmt->next();
     }
@@ -210,11 +210,11 @@ CompilerStatement * CompilerStatement::appendLink ( CompilerStatement * chainLin
 
 CompilerStatement * CompilerStatement::prependLink ( CompilerStatement * chainLink )
 {
-    if ( NULL == chainLink )
+    if ( nullptr == chainLink )
     {
         return this;
     }
-    if ( NULL == this )
+    if ( nullptr == this )
     {
         return chainLink;
     }
@@ -231,36 +231,36 @@ CompilerStatement * CompilerStatement::prependLink ( CompilerStatement * chainLi
 
 CompilerStatement * CompilerStatement::unlink()
 {
-    if ( NULL != m_next )
+    if ( nullptr != m_next )
     {
         m_next->m_prev = m_prev;
-        m_next = NULL;
+        m_next = nullptr;
     }
-    if ( NULL != m_prev )
+    if ( nullptr != m_prev )
     {
         m_prev->m_next = m_next;
-        m_prev = NULL;
+        m_prev = nullptr;
     }
     return this;
 }
 
 CompilerStatement * CompilerStatement::copyEntireChain() const
 {
-    if ( NULL == this )
+    if ( nullptr == this )
     {
-        return NULL;
+        return nullptr;
     }
 
     CompilerStatement * result = copyChainLink();
 
     const CompilerStatement * next = this;
-    while ( NULL != ( next = next->next() ) )
+    while ( nullptr != ( next = next->next() ) )
     {
         result->appendLink(next->copyChainLink());
     }
 
     const CompilerStatement * prev = this;
-    while ( NULL != ( prev = prev->prev() ) )
+    while ( nullptr != ( prev = prev->prev() ) )
     {
         result->prependLink(prev->copyChainLink());
     }
@@ -270,9 +270,9 @@ CompilerStatement * CompilerStatement::copyEntireChain() const
 
 CompilerStatement * CompilerStatement::copyChainLink() const
 {
-    if ( NULL == this )
+    if ( nullptr == this )
     {
-        return NULL;
+        return nullptr;
     }
 
     CompilerStatement * result = new CompilerStatement(m_location, m_type, m_args->copyEntireChain());
@@ -285,16 +285,16 @@ CompilerStatement * CompilerStatement::copyChainLink() const
 
 CompilerStatement * CompilerStatement::appendArgsLink ( CompilerExpr * chainLink )
 {
-    if ( NULL == this )
+    if ( nullptr == this )
     {
-        return NULL;
+        return nullptr;
     }
-    if ( NULL == chainLink )
+    if ( nullptr == chainLink )
     {
         return this;
     }
 
-    if ( NULL == m_args )
+    if ( nullptr == m_args )
     {
         m_args = chainLink;
     }
@@ -312,7 +312,7 @@ void CompilerStatement::completeDelete ( CompilerStatement * stmt )
 
 void CompilerStatement::completeDelete()
 {
-    if ( NULL == this )
+    if ( nullptr == this )
     {
         return;
     }
@@ -321,7 +321,7 @@ void CompilerStatement::completeDelete()
     CompilerStatement * node;
 
     node = m_next;
-    while ( NULL != node )
+    while ( nullptr != node )
     {
         tmp = node;
         node = node->next();
@@ -329,7 +329,7 @@ void CompilerStatement::completeDelete()
     }
 
     node = m_prev;
-    while ( NULL != node )
+    while ( nullptr != node )
     {
         tmp = node;
         node = node->prev();
@@ -343,14 +343,14 @@ std::ostream & CompilerStatement::print ( std::ostream & out,
                                           int level,
                                           std::string lineString ) const
 {
-    if ( NULL == this )
+    if ( nullptr == this )
     {
-        out << "<NULL>";
+        out << "<nullptr>";
         return out;
     }
 
     for ( const CompilerStatement * node = this;
-          NULL != node;
+          nullptr != node;
           node = node->next() )
     {
         for ( int i = 0; i < level; i++ )
@@ -365,9 +365,9 @@ std::ostream & CompilerStatement::print ( std::ostream & out,
             }
         }
 
-        if ( NULL == node->prev() )
+        if ( nullptr == node->prev() )
         {
-            if ( NULL == node->next() )
+            if ( nullptr == node->next() )
             {
                 lineString[level] = '0';
             }
@@ -375,7 +375,7 @@ std::ostream & CompilerStatement::print ( std::ostream & out,
         }
         else
         {
-            if ( NULL == node->next() )
+            if ( nullptr == node->next() )
             {
                 out << "  └─ ";
                 lineString[level] = '0';
@@ -392,21 +392,21 @@ std::ostream & CompilerStatement::print ( std::ostream & out,
         out << node->location();
         out << "} <";
         out << node->m_userData;
-        out << "/";
+        out << '/';
         out << node->m_serialNumber;
-        out << ">";
+        out << '>';
 
-        if ( NULL != node->args() )
+        if ( nullptr != node->args() )
         {
             out << " [ ";
             out << node->args();
             out << " ]";
         }
-        out << "\n";
+        out << '\n';
 
-        if ( NULL != node->branch() )
+        if ( nullptr != node->branch() )
         {
-            lineString += "1";
+            lineString += '1';
             node->branch()->print(out, level + 1, lineString);
         }
     }
@@ -417,7 +417,7 @@ std::ostream & CompilerStatement::print ( std::ostream & out,
 void CompilerStatement::serializeTree ( CompilerSerializer & output ) const
 {
     for ( const CompilerStatement * node = this;
-          NULL != node;
+          nullptr != node;
           node = node->next() )
     {
         output << node;
@@ -429,7 +429,7 @@ void CompilerStatement::serialize ( CompilerSerializer & output ) const
     output.write ( (uint32_t) m_type );
     output << m_location;
 
-    if ( NULL == m_args )
+    if ( nullptr == m_args )
     {
         output << MARK_TERMINAL;
     }
@@ -439,7 +439,7 @@ void CompilerStatement::serialize ( CompilerSerializer & output ) const
         output << m_args;
     }
 
-    if ( NULL == m_branch )
+    if ( nullptr == m_branch )
     {
         output << MARK_TERMINAL;
     }
@@ -449,7 +449,7 @@ void CompilerStatement::serialize ( CompilerSerializer & output ) const
         m_branch->serializeTree(output);
     }
 
-    if ( NULL == m_next )
+    if ( nullptr == m_next )
     {
         output << MARK_TERMINAL;
     }
@@ -463,10 +463,10 @@ void CompilerStatement::deserialize ( CompilerSerializer & input )
 {
     m_userData = 0;
     m_serialNumber = -1;
-    m_prev = NULL;
-    m_next = NULL;
-    m_branch = NULL;
-    m_args = NULL;
+    m_prev = nullptr;
+    m_next = nullptr;
+    m_branch = nullptr;
+    m_args = nullptr;
 
     m_type = CompilerStatementTypes::StatementType ( input.read_ui32() );
 

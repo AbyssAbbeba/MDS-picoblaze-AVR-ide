@@ -76,7 +76,7 @@ class PIC8Stack : public MCUSimSubsys
          * @brief
          * @param[in] mode
          */
-        void reset ( MCUSimBase::ResetMode mode );
+        virtual void reset ( MCUSimBase::ResetMode mode ) override;
 
     ////    Inline Public Operations    ////
     public:

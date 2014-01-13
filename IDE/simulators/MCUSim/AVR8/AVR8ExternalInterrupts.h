@@ -63,7 +63,7 @@ class AVR8ExternalInterrupts : public MCUSimSubsys
          * @brief
          * @param[in] mode
          */
-        void reset ( MCUSimBase::ResetMode mode );
+        virtual void reset ( MCUSimBase::ResetMode mode ) override;
 
         // This has to be called even in a sleep mode (watchdog clock).
         // This method cannot read I/O backwards, it has to be called upon any change on I/O.

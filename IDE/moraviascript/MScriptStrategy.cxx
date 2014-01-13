@@ -29,7 +29,7 @@ int MScriptStrategy::newFunction ( const std::string & ns,
 
     for ( size_t i = 0; i < params.size(); i ++ )
     {
-        if ( ( NULL != defaults ) && ( i < defaults->size() ) )
+        if ( ( nullptr != defaults ) && ( i < defaults->size() ) )
         {
             parameters->push_back(MScriptFuncTable::Parameter(params[i].c_str(), defaults->at(i)));
         }

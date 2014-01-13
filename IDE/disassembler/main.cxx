@@ -25,14 +25,15 @@
 #include "BinFile.h"
 #include "SrecFile.h"
 #include "XilMemFile.h"
-#include "XilVerilogFile.h"
 #include "XilVHDLFile.h"
+#include "XilVerilogFile.h"
 
 // Standard headers.
-#include <cstring>
-#include <cstdlib>
+#include <cctype>
 #include <string>
 #include <vector>
+#include <cstring>
+#include <cstdlib>
 #include <fstream>
 #include <iostream>
 
@@ -102,7 +103,6 @@ void printHelp ( const char * executable )
               << QObject::tr("            - vhd  : VHDL file (for PicoBlaze only),").toStdString() << std::endl
               << QObject::tr("            - v    : Verilog file (for PicoBlaze only).").toStdString() << std::endl
               << std::endl
-              << std::endl
               << QObject::tr("    --cfg-ind <indentation>").toStdString() << std::endl
               << QObject::tr("        Indent with:").toStdString() << std::endl
               << QObject::tr("            - spaces : indent with spaces (default),").toStdString() << std::endl
@@ -116,8 +116,7 @@ void printHelp ( const char * executable )
               << QObject::tr("        Specify line separator, available options are:").toStdString() << std::endl
               << QObject::tr("            - crlf : [WINDOWS] use sequence of carriage return and line feed characters")
                             .toStdString() << std::endl
-              << QObject::tr("                     (default),").toStdString() << std::endl
-              << QObject::tr("            - lf : [UNIX] use a single line feed character (0x0a = '\\n'),")
+              << QObject::tr("            - lf : [UNIX] use a single line feed character (0x0a = '\\n') (default),")
                             .toStdString() << std::endl
               << QObject::tr("            - cr : [APPLE] use single carriage return (0x0d = '\\r').")
                             .toStdString() << std::endl
@@ -127,38 +126,39 @@ void printHelp ( const char * executable )
                             .toStdString() << std::endl
               << QObject::tr("        remain to be represented as numbers, available options are:")
                             .toStdString() << std::endl
-              << QObject::tr("            - C : program memory,").toStdString() << std::endl
-              << QObject::tr("            - D : data memory,").toStdString() << std::endl
-              << QObject::tr("            - R : register file,").toStdString() << std::endl
-              << QObject::tr("            - P : port address,").toStdString() << std::endl
-              << QObject::tr("            - K : immediate constants,").toStdString() << std::endl
+              << QObject::tr("            - c : program memory,").toStdString() << std::endl
+              << QObject::tr("            - d : data memory,").toStdString() << std::endl
+              << QObject::tr("            - r : register file,").toStdString() << std::endl
+              << QObject::tr("            - p : port address,").toStdString() << std::endl
+              << QObject::tr("            - k : immediate constants,").toStdString() << std::endl
               << QObject::tr("        this options takes any combination of these, i.e. for example \"CDR\" stands")
                             .toStdString() << std::endl
               << QObject::tr("        for program memory + data memory + register file.").toStdString() << std::endl
               << std::endl
               << QObject::tr("    --cfg-lc <character>").toStdString() << std::endl
               << QObject::tr("        Use uppercase, or lowercase characters:").toStdString() << std::endl
-              << QObject::tr("            - L : lowercase (default),").toStdString() << std::endl
-              << QObject::tr("            - U : uppercase.").toStdString() << std::endl
+              << QObject::tr("            - l : lowercase (default),").toStdString() << std::endl
+              << QObject::tr("            - u : uppercase.").toStdString() << std::endl
               << std::endl
               << QObject::tr("    --cfg-radix <radix>").toStdString() << std::endl
               << QObject::tr("        Radix, available options are:.").toStdString() << std::endl
-              << QObject::tr("            - H : hexadecimal (default),").toStdString() << std::endl
-              << QObject::tr("            - D : decimal,").toStdString() << std::endl
-              << QObject::tr("            - B : binary,").toStdString() << std::endl
-              << QObject::tr("            - O : octal.").toStdString() << std::endl
-              << std::endl
+              << QObject::tr("            - h : hexadecimal (default),").toStdString() << std::endl
+              << QObject::tr("            - d : decimal,").toStdString() << std::endl
+              << QObject::tr("            - b : binary,").toStdString() << std::endl
+              << QObject::tr("            - o : octal.").toStdString() << std::endl
               << std::endl
               << QObject::tr("    -h, --help").toStdString() << std::endl
               << QObject::tr("        (Print this message.)").toStdString() << std::endl
               << std::endl
               << QObject::tr("    -V, --version").toStdString() << std::endl
-              << QObject::tr("        Print compiler version and exit.").toStdString() << std::endl;
+              << QObject::tr("        Print compiler version and exit.").toStdString() << std::endl
+              << std::endl
+              << std::endl;
 
     std::cout << QObject::tr("Notes:").toStdString() << std::endl
-              << QObject::tr("    * `--' marks the end of options, it becomes useful when you want to disassemble file "
-                             "which name could be mistaken for a command line option.").toStdString()
-                            << std::endl
+              << QObject::tr("    * `--' marks the end of options, it becomes useful when you want to disassemble file")
+                            .toStdString() << std::endl
+              << QObject::tr("      which name could be mistaken for a command line option.").toStdString() << std::endl
               << std::endl;
 }
 
@@ -178,7 +178,8 @@ inline void printUsage ( const char * executable )
  */
 inline void invalidCfgOption ( const char * opt )
 {
-    std::cout << QObject::tr("invalid configuration option value: ").toStdString() << "`" << opt << "'." << std::endl;
+    std::cout << QObject::tr("Error: invalid configuration option value: ").toStdString() << "`" << opt << "'."
+              << std::endl;
 }
 
 /**
@@ -189,8 +190,8 @@ inline void invalidCfgOption ( const char * opt )
  */
 int main ( int argc, char ** argv )
 {
-    DAsm * disasm = NULL;
-    DataFile * dataFile = NULL;
+    DAsm * disasm = nullptr;
+    DataFile * dataFile = nullptr;
     DAsm::Config config;
 
     std::string infile;
@@ -244,10 +245,11 @@ int main ( int argc, char ** argv )
     {
         switch ( opt )
         {
-            case 'h':
+            case 'h': // --help
                 printHelp(argv[0]);
                 return EXIT_CODE_SUCCESS;
-            case 'V':
+
+            case 'V': // --version
                 std::cout << QObject::tr("VERSION: %1").arg(VERSION).toStdString() << std::endl;
                 return EXIT_CODE_SUCCESS;
 
@@ -279,7 +281,7 @@ int main ( int argc, char ** argv )
 
                 for ( int i = 0; i < len; i++ )
                 {
-                    if ( ( i > 999 ) || ( 0 == isdigit(optarg[i]) ) )
+                    if ( ( i > 2 ) || ( 0 == isdigit(optarg[i]) ) )
                     {
                         failed = true;
                         break;
@@ -288,8 +290,9 @@ int main ( int argc, char ** argv )
 
                 if ( false == failed )
                 {
-                    config.m_tabSize = atoi(optarg);
+                    config.m_tabSize = (unsigned int) atoi(optarg);
                 }
+                else
                 {
                     invalidCfgOption(argv[optind-1]);
                     return EXIT_ERROR_CLI;
@@ -300,15 +303,15 @@ int main ( int argc, char ** argv )
             case 0x102: // --cfg-eof
                 if ( 0 == strcmp(optarg, "lf") )
                 {
-                    config.m_eof = DAsm::Config::EOF_LF;
+                    config.m_eol = DAsm::Config::EOF_LF;
                 }
                 else if ( 0 == strcmp(optarg, "cr") )
                 {
-                    config.m_eof = DAsm::Config::EOF_CR;
+                    config.m_eol = DAsm::Config::EOF_CR;
                 }
                 else if ( 0 == strcmp(optarg, "crlf") )
                 {
-                    config.m_eof = DAsm::Config::EOF_CRLF;
+                    config.m_eol = DAsm::Config::EOF_CRLF;
                 }
                 else
                 {
@@ -325,23 +328,23 @@ int main ( int argc, char ** argv )
                 {
                     switch ( optarg[i] )
                     {
-                        case 'C':
+                        case 'c':
                             config.m_symbolsToGenerate = DAsm::Config::SymbolsToGenerate ( config.m_symbolsToGenerate |
                                                                                            DAsm::Config::STG_CODE );
                             break;
-                        case 'D':
+                        case 'd':
                             config.m_symbolsToGenerate = DAsm::Config::SymbolsToGenerate ( config.m_symbolsToGenerate |
                                                                                            DAsm::Config::STG_DATA );
                             break;
-                        case 'R':
+                        case 'r':
                             config.m_symbolsToGenerate = DAsm::Config::SymbolsToGenerate ( config.m_symbolsToGenerate |
                                                                                            DAsm::Config::STG_REG );
                             break;
-                        case 'P':
+                        case 'p':
                             config.m_symbolsToGenerate = DAsm::Config::SymbolsToGenerate ( config.m_symbolsToGenerate |
                                                                                            DAsm::Config::STG_PORT );
                             break;
-                        case 'K':
+                        case 'k':
                             config.m_symbolsToGenerate = DAsm::Config::SymbolsToGenerate ( config.m_symbolsToGenerate |
                                                                                            DAsm::Config::STG_CONST );
                             break;
@@ -354,11 +357,11 @@ int main ( int argc, char ** argv )
             }
 
             case 0x104: // --cfg-lc
-                if ( 0 == strcmp(optarg, "L") )
+                if ( 0 == strcmp(optarg, "l") )
                 {
                     config.m_letterCase = DAsm::Config::LC_LOWERCASE;
                 }
-                else if ( 0 == strcmp(optarg, "U") )
+                else if ( 0 == strcmp(optarg, "u") )
                 {
                     config.m_letterCase = DAsm::Config::LC_UPPERCASE;
                 }
@@ -370,19 +373,19 @@ int main ( int argc, char ** argv )
                 break;
 
             case 0x105: // --cfg-radix
-                if ( 0 == strcmp(optarg, "B") )
+                if ( 0 == strcmp(optarg, "b") )
                 {
                     config.m_radix = DAsm::Config::R_BIN;
                 }
-                else if ( 0 == strcmp(optarg, "O") )
+                else if ( 0 == strcmp(optarg, "o") )
                 {
                     config.m_radix = DAsm::Config::R_OCT;
                 }
-                else if ( 0 == strcmp(optarg, "D") )
+                else if ( 0 == strcmp(optarg, "d") )
                 {
                     config.m_radix = DAsm::Config::R_DEC;
                 }
-                else if ( 0 == strcmp(optarg, "H") )
+                else if ( 0 == strcmp(optarg, "h") )
                 {
                     config.m_radix = DAsm::Config::R_HEX;
                 }
@@ -562,7 +565,7 @@ int main ( int argc, char ** argv )
             return EXIT_ERROR_CLI;
         }
     }
-    catch ( DataFileException & e )
+    catch ( const DataFileException & e )
     {
         std::cerr << QObject::tr("Error: unable to read the specified input file: `%1', reason: ")
                                 .arg(infile.c_str()).toStdString()
@@ -586,19 +589,16 @@ int main ( int argc, char ** argv )
         }
     }
 
-    const std::vector<std::string> & messages = disasm->getMessages();
-    for ( std::vector<std::string>::const_iterator it = messages.cbegin();
-          it != messages.cend();
-          it++ )
+    for ( const auto & msg : disasm->getMessages() )
     {
-        std::cout << *it << std::endl;
+        std::cout << msg << std::endl;
     }
 
-    if ( NULL != dataFile )
+    if ( nullptr != dataFile )
     {
         delete dataFile;
     }
-    if ( NULL != disasm )
+    if ( nullptr != disasm )
     {
         delete disasm;
     }

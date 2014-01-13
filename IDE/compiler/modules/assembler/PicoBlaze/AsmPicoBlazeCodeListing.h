@@ -231,18 +231,18 @@ class AsmPicoBlazeCodeListing : public CompilerMsgObserver
         virtual void message ( const CompilerSourceLocation & location,
                                CompilerBase::MessageType type,
                                const std::string & text,
-                               bool subsequent = false );
+                               bool subsequent = false ) override;
 
         /**
          * @brief
          * @param[in] limit
          */
-        virtual void setMaxNumberOfMessages ( unsigned int limit );
+        virtual void setMaxNumberOfMessages ( unsigned int limit ) override;
 
         /**
          * @brief
          */
-        virtual void reset();
+        virtual void reset() override;
 
     ////    Private Operations    ////
     private:

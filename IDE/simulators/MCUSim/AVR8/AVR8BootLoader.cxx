@@ -24,7 +24,7 @@
 
 AVR8BootLoader::AVR8BootLoader()
 {
-    m_writeBuffer = NULL;
+    m_writeBuffer = nullptr;
 }
 
 AVR8BootLoader * AVR8BootLoader::link ( MCUSimEventLogger     * eventLogger,
@@ -49,7 +49,7 @@ AVR8BootLoader * AVR8BootLoader::link ( MCUSimEventLogger     * eventLogger,
 
 AVR8BootLoader::~AVR8BootLoader()
 {
-    if ( NULL != m_writeBuffer )
+    if ( nullptr != m_writeBuffer )
     {
         delete[] m_writeBuffer;
     }
@@ -526,7 +526,7 @@ void AVR8BootLoader::reset ( MCUSimBase::ResetMode mode )
 
 inline void AVR8BootLoader::loadConfig()
 {
-    if ( NULL != m_writeBuffer )
+    if ( nullptr != m_writeBuffer )
     {
         delete[] m_writeBuffer;
     }

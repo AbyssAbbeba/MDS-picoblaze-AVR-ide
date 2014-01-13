@@ -56,7 +56,7 @@ class DAsm
                 EOF_LF,
                 EOF_CR,
                 EOF_CRLF
-            } m_eof;
+            } m_eol;
 
             ///
             enum SymbolsToGenerate

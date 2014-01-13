@@ -152,11 +152,13 @@ void printHelp ( const char * executable )
               << std::endl;
 
     std::cout << QObject::tr("Notes:").toStdString() << std::endl
-              << QObject::tr("    * `--' marks the end of options, it becomes useful when you want to compile file(s) "
-                             "which name(s) could be mistaken for a command line option.").toStdString()
+              << QObject::tr("    * `--' marks the end of options, it becomes useful when you want to compile file(s) ")
+                            .toStdString() << std::endl
+              << QObject::tr("      which name(s) could be mistaken for a command line option.").toStdString()
                             << std::endl
-              << QObject::tr("    * When multiple source files are specified, they are compiled as one unit in the "
-                             "order in which they appear on the command line (from left to right).").toStdString()
+              << QObject::tr("    * When multiple source files are specified, they are compiled as one unit in the ")
+                            .toStdString() << std::endl
+              << QObject::tr("      order in which they appear on the command line (from left to right).").toStdString()
                             << std::endl
               << std::endl;
 

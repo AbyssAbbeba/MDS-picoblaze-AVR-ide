@@ -47,6 +47,7 @@ uint32_t CompilerLexerUtils::escapeSequence ( CompilerParserInterface * compiler
         case 'r' : return '\r'; // carriage return
         case 't' : return '\t'; // horizontal tab
         case 'v' : return '\v'; // vertical tab
+        case 'e' : return 0x1B; // escape (not part of ISO C)
 
         // Octal, 3 digits
         case '0': case '1': case '2': case '3':
@@ -150,7 +151,7 @@ int CompilerLexerUtils::convertStrToNumber ( CompilerParserInterface * compiler,
     unsigned long number;
     if ( ( strlen(str) > max )
             ||
-         ( ( 0x1ULL << 32 ) <= ( number = strtoul(str, NULL, base) ) ) )
+         ( ( 0x1ULL << 32 ) <= ( number = strtoul(str, nullptr, base) ) ) )
     {
         compiler->lexerMessage ( location,
                                  CompilerBase::MT_ERROR,
@@ -167,7 +168,7 @@ double CompilerLexerUtils::str2float ( CompilerParserInterface * compiler,
                                        const YYLTYPE * location,
                                        const char * str )
 {
-    double result = strtod ( str, NULL );
+    double result = strtod ( str, nullptr );
 
     if ( ( -HUGE_VAL == result ) || ( HUGE_VAL == result ) )
     {
