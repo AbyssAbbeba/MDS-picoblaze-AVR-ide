@@ -37,10 +37,10 @@
 
 CompilerCore::CompilerCore ( CompilerMsgInterface * msgInterface )
 {
-    m_opts             = NULL;
-    m_msgObserver      = NULL;
-    m_rootStatement    = NULL;
-    m_semanticAnalyzer = NULL;
+    m_opts             = nullptr;
+    m_msgObserver      = nullptr;
+    m_rootStatement    = nullptr;
+    m_semanticAnalyzer = nullptr;
 
     m_messageStack = new CompilerMessageStack;
     m_msgInterface = new CompilerMsgFilter ( this, msgInterface );
@@ -53,11 +53,11 @@ CompilerCore::~CompilerCore()
     delete m_msgInterface;
     delete m_messageStack;
 
-    if ( NULL != m_semanticAnalyzer )
+    if ( nullptr != m_semanticAnalyzer )
     {
         delete m_semanticAnalyzer;
     }
-    if ( NULL != m_rootStatement )
+    if ( nullptr != m_rootStatement )
     {
         m_rootStatement->completeDelete();
     }
@@ -163,7 +163,7 @@ inline bool CompilerCore::checkOptions()
     }
     else
     {
-        for ( const auto file : m_opts->m_sourceFiles )
+        for ( const auto & file : m_opts->m_sourceFiles )
         {
             if ( true == file.empty() )
             {
@@ -206,16 +206,16 @@ std::string CompilerCore::locationToStr ( const CompilerSourceLocation & locatio
     {
         bool first = true;
         std::string prefix;
-        std::vector<const CompilerSourceLocation *> locationBackTr;
+        std::vector<CompilerSourceLocation> locationBackTr;
         m_locationTracker.traverse(location, &locationBackTr);
-        for ( const auto i : locationBackTr )
+        for ( const auto & i : locationBackTr )
         {
             if ( false == first )
             {
                 prefix += " ==> ";
             }
             first = false;
-            result += locationToStr ( *i, main );
+            result += locationToStr ( i, main );
         }
         return result;
     }
@@ -258,37 +258,56 @@ void CompilerCore::coreMessage ( const CompilerSourceLocation & location,
 {
     if ( -1 != location.m_origin )
     {
+        size_t size;
         std::string prefix;
-        std::vector<const CompilerSourceLocation *> locationBackTr;
-        m_locationTracker.traverse(location, &locationBackTr, true);
+        std::vector<CompilerSourceLocation> locationBackTr;
 
-        const size_t size = locationBackTr.size();
+        m_locationTracker.traverse(location, &locationBackTr, true);
+        size = locationBackTr.size();
+
+        if ( 0 != size )
+        {
+            m_msgObserver->message(locationBackTr[0], type, text, true );
+        }
+
         for ( size_t i = 0; i < size; i++ )
         {
-            if ( -1 == locationBackTr[i]->m_origin )
+            if ( -1 == locationBackTr[i].m_origin )
             {
-                coreMessage ( *(locationBackTr[i]), type, prefix + text, forceAsUnique, true );
+                coreMessage ( locationBackTr[i], type, prefix + text, forceAsUnique, true );
                 prefix += "==> ";
             }
-            else if ( NULL != m_msgObserver )
+            else if ( 0 != i )
             {
-                m_msgObserver->message(*(locationBackTr[i]), type, text, ( ( i + 1 ) < size ) );
+                if ( nullptr != m_msgObserver )
+                {
+                    bool subsequent = ( ( i + 1 ) != size );
+                    m_msgObserver->message(locationBackTr[i], type, text, subsequent );
+                }
             }
         }
 
         return;
     }
 
-    if ( ( false == forceAsUnique )
-           &&
-         ( false == m_messageStack->isUnique(location, type, text, m_opts->m_briefMsgOutput) ) )
     {
-        return;
+        bool ignoreLocation = m_opts->m_briefMsgOutput;
+        if ( true == forceAsUnique )
+        {
+            ignoreLocation = false;
+        }
+        if ( false == m_messageStack->isUnique ( location, type, text, ignoreLocation ) )
+        {
+            return;
+        }
     }
 
-    if ( ( false == noObserver ) && ( NULL != m_msgObserver ) )
+    if ( false == noObserver )
     {
-        m_msgObserver->message(location, type, text);
+        if ( nullptr != m_msgObserver )
+        {
+            m_msgObserver->message(location, type, text);
+        }
     }
 
     m_msgInterface->message ( ( locationToStr(location, true) + msgType2str(type) + text + "." ), type );
@@ -340,9 +359,9 @@ inline void CompilerCore::setOpenedFile ( const std::string & filename,
     if ( -1 != idx )
     {
         m_fileNumber = idx;
-        if ( NULL != fileHandle )
+        if ( nullptr != fileHandle )
         {
-            if ( NULL == m_openedFiles[idx].second )
+            if ( nullptr == m_openedFiles[idx].second )
             {
                 m_openedFiles[idx].second = (*fileHandle);
             }
@@ -381,11 +400,11 @@ CompilerStatement * CompilerCore::loadDevSpecCode ( const std::string & deviceNa
                                                   . toStdString() );
         }
 
-        if ( NULL != flag )
+        if ( nullptr != flag )
         {
             *flag = DSLF_ALREADY_LOADED;
         }
-        return NULL;
+        return nullptr;
     }
     m_device = deviceName;
     m_devSpecCodeLoaded = true;
@@ -394,17 +413,17 @@ CompilerStatement * CompilerCore::loadDevSpecCode ( const std::string & deviceNa
 
     if ( false == boost::filesystem::is_regular_file(fileName) )
     {
-        if ( NULL != flag )
+        if ( nullptr != flag )
         {
             *flag = DSLF_DOES_NOT_EXIST;
         }
-        return NULL;
+        return nullptr;
     }
 
     CompilerStatement * result = loadPrecompiledCode(fileName, true);
-    if ( NULL == result )
+    if ( nullptr == result )
     {
-        if ( NULL != flag )
+        if ( nullptr != flag )
         {
             *flag = DSLF_UNABLE_TO_READ;
         }
@@ -413,7 +432,7 @@ CompilerStatement * CompilerCore::loadDevSpecCode ( const std::string & deviceNa
 
     m_semanticAnalyzer->setDevice(deviceName);
 
-    if ( NULL != flag )
+    if ( nullptr != flag )
     {
         *flag = DSLF_OK;
     }
@@ -478,14 +497,14 @@ CompilerStatement * CompilerCore::loadPrecompiledCode ( const std::string & file
         if ( true == file.bad() )
         {
             result->completeDelete();
-            result = NULL;
+            result = nullptr;
         }
 
         return result;
     }
     catch ( const CompilerSerializer::Exception & e )
     {
-        return NULL;
+        return nullptr;
     }
 }
 
@@ -507,44 +526,40 @@ bool CompilerCore::savePrecompiledCode ( const std::string & fileName,
 
 void CompilerCore::closeInputFiles()
 {
-    for ( std::vector<std::pair<std::string,FILE*>>::iterator it = m_openedFiles.begin();
-          m_openedFiles.end() != it;
-          it++ )
+    for ( auto & file : m_openedFiles )
     {
-        if ( NULL != it->second )
+        if ( nullptr != file.second )
         {
-            fclose(it->second);
-            it->second = NULL;
+            fclose(file.second);
+            file.second = nullptr;
         }
     }
 }
 
 inline void CompilerCore::resetCompilerCore()
 {
-    if ( NULL != m_msgObserver )
+    if ( nullptr != m_msgObserver )
     {
         m_msgObserver->reset();
-        m_msgObserver = NULL;
+        m_msgObserver = nullptr;
     }
-    if ( NULL != m_rootStatement )
+    if ( nullptr != m_rootStatement )
     {
         m_rootStatement->completeDelete();
-        m_rootStatement = NULL;
+        m_rootStatement = nullptr;
     }
-    if ( NULL != m_semanticAnalyzer )
+    if ( nullptr != m_semanticAnalyzer )
     {
         delete m_semanticAnalyzer;
-        m_semanticAnalyzer = NULL;
+        m_semanticAnalyzer = nullptr;
     }
 
     // Close all opened input files.
-    for ( std::vector<std::pair<std::string,FILE*>>::const_iterator it = m_openedFiles.cbegin();
-          m_openedFiles.cend() != it;
-          it++ )
+    for ( const auto & file : m_openedFiles )
     {
-        if ( NULL != it->second )
+        if ( nullptr != file.second )
         {
-            fclose(it->second);
+            fclose(file.second);
         }
     }
 
@@ -585,12 +600,10 @@ FILE * CompilerCore::fileOpen ( const std::string & filename,
         }
         else
         {
-            for ( std::vector<std::string>::const_iterator it = m_opts->m_includePath.cbegin();
-                  it != m_opts->m_includePath.cend();
-                  it++ )
+            for ( const auto & iPath : m_opts->m_includePath )
             {
                 // Determinate absolute include path.
-                path includePath = path(*it).make_preferred();
+                path includePath = path(iPath).make_preferred();
                 if ( false == includePath.is_absolute() )
                 {
                     includePath = ( basePath / includePath );
@@ -602,38 +615,36 @@ FILE * CompilerCore::fileOpen ( const std::string & filename,
                     break;
                 }
             }
-            return NULL;
+            return nullptr;
         }
     }
 
     if ( true == acyclic )
     {
-        for ( std::vector<std::string>::const_iterator it = m_fileNameStack.cbegin();
-              it != m_fileNameStack.cend();
-              ++it )
+        for ( const auto & file : m_fileNameStack )
         {
-            if ( *it == absoluteFileName )
+            if ( file == absoluteFileName )
             {
                 coreMessage ( MT_ERROR, QObject::tr ( "file `%1' is already opened, you might have an "
                                                       "\"include\" loop in your code" )
                                                     .arg(absoluteFileName.c_str()).toStdString() );
-                return NULL;
+                return nullptr;
             }
         }
     }
 
     FILE * fileHandle = fopen(absoluteFileName.c_str(), "r");
-    if ( NULL == fileHandle )
+    if ( nullptr == fileHandle )
     {
-        return NULL;
+        return nullptr;
     }
     if ( false == pushFileName(absoluteFileName, &fileHandle) )
     {
         fclose(fileHandle);
-        return NULL;
+        return nullptr;
     }
 
-    if ( NULL != finalFilename )
+    if ( nullptr != finalFilename )
     {
         *finalFilename = absoluteFileName;
     }
@@ -704,10 +715,10 @@ int CompilerCore::getFileNumber ( const std::string & filename ) const
 
 void CompilerCore::processCodeTree ( CompilerStatement * codeTree )
 {
-    if ( NULL != m_rootStatement )
+    if ( nullptr != m_rootStatement )
     {
         m_rootStatement->completeDelete();
-        m_rootStatement = NULL;
+        m_rootStatement = nullptr;
     }
 
     if ( true == m_opts->m_syntaxCheckOnly )
@@ -717,12 +728,12 @@ void CompilerCore::processCodeTree ( CompilerStatement * codeTree )
     }
 
     m_rootStatement = new CompilerStatement();
-    if ( NULL != codeTree )
+    if ( nullptr != codeTree )
     {
         m_rootStatement -> appendLink ( codeTree -> first() );
     }
 
-    if ( NULL == m_semanticAnalyzer )
+    if ( nullptr == m_semanticAnalyzer )
     {
         coreMessage ( MT_ERROR, QObject::tr ( "semantic analyzer is missing" ).toStdString() );
         return;
@@ -740,7 +751,7 @@ void CompilerCore::processCodeTree ( CompilerStatement * codeTree )
     {
         DevSpecLoaderFlag loaderFlag;
         CompilerStatement * devSpecCode = loadDevSpecCode(m_opts->m_device, &loaderFlag);
-        if ( NULL == devSpecCode )
+        if ( nullptr == devSpecCode )
         {
             if ( DSLF_DOES_NOT_EXIST == loaderFlag )
             {

@@ -33,12 +33,12 @@ AsmPicoBlazeSymbolTable::Symbol::Symbol ( const CompilerExpr * value,
     m_constant = !redefinable;
     m_finalValue = finalValue;
 
-    if ( NULL != location )
+    if ( nullptr != location )
     {
         m_location = *location;
     }
 
-    if ( NULL != value )
+    if ( nullptr != value )
     {
         m_value = value->copyChainLink();
     }
@@ -99,7 +99,7 @@ int AsmPicoBlazeSymbolTable::addSymbol ( const std::string & name,
     }
     else
     {
-        if ( NULL == location )
+        if ( nullptr == location )
         {
             m_compilerCore -> semanticMessage ( CompilerSourceLocation(),
                                                 CompilerBase::MT_ERROR,
@@ -120,7 +120,7 @@ int AsmPicoBlazeSymbolTable::addSymbol ( const std::string & name,
 
 AsmPicoBlazeSymbolTable::SymbolType AsmPicoBlazeSymbolTable::getType ( const std::string & name )
 {
-    std::map<std::string,Symbol>::const_iterator it = m_table.find(name);
+    auto it = m_table.find(name);
     if ( it != m_table.end() )
     {
         return it->second.m_type;
@@ -133,13 +133,11 @@ AsmPicoBlazeSymbolTable::SymbolType AsmPicoBlazeSymbolTable::getType ( const std
 
 void AsmPicoBlazeSymbolTable::maskNonLabels()
 {
-    for ( std::map<std::string,Symbol>::iterator it = m_table.begin();
-          it != m_table.end();
-          it++ )
+    for ( auto & symbol : m_table )
     {
-        if ( ( STYPE_LABEL != it->second.m_type ) && ( STYPE_EXPRESSION != it->second.m_type ) )
+        if ( ( STYPE_LABEL != symbol.second.m_type ) && ( STYPE_EXPRESSION != symbol.second.m_type ) )
         {
-            it->second.m_masked = true;
+            symbol.second.m_masked = true;
         }
     }
 }
@@ -182,7 +180,7 @@ AsmPicoBlazeSymbolTable::SymbolType AsmPicoBlazeSymbolTable::getType ( const Com
 void AsmPicoBlazeSymbolTable::resolveSymbols ( CompilerExpr * expr,
                                                int codePointer )
 {
-    for ( ; NULL != expr; expr = expr->next() )
+    for ( ; nullptr != expr; expr = expr->next() )
     {
         CompilerValue * value = &(expr->m_lValue);
         for ( int i = 0; i < 2; i++ )
@@ -206,7 +204,7 @@ void AsmPicoBlazeSymbolTable::resolveSymbols ( CompilerExpr * expr,
                 else
                 {
                     CompilerExpr * subExpr = getValue(symbolName)->copyChainLink();
-                    if ( NULL != subExpr )
+                    if ( nullptr != subExpr )
                     {
                         resolveSymbols(subExpr, codePointer);
                         delete [] value->m_data.m_symbol;
@@ -229,7 +227,7 @@ void AsmPicoBlazeSymbolTable::removeSymbol ( const std::string & name,
                                              const CompilerSourceLocation & location,
                                              const SymbolType type )
 {
-    std::map<std::string,Symbol>::iterator it = m_table.find(name);
+    auto it = m_table.find(name);
     if ( it == m_table.end() )
     {
         m_compilerCore -> semanticMessage ( location,
@@ -246,7 +244,7 @@ void AsmPicoBlazeSymbolTable::removeSymbol ( const std::string & name,
 bool AsmPicoBlazeSymbolTable::isDefined ( const std::string & name,
                                           const SymbolType type ) const
 {
-    std::map<std::string,Symbol>::const_iterator it = m_table.find(name);
+    auto it = m_table.find(name);
     if ( ( it != m_table.cend() ) && ( STYPE_UNSPECIFIED == type || type == it->second.m_type ) )
     {
         return true;
@@ -314,7 +312,7 @@ const CompilerExpr * AsmPicoBlazeSymbolTable::getValue ( const std::string & nam
         return it->second.m_value;
     }
 
-    return NULL;
+    return nullptr;
 }
 
 int AsmPicoBlazeSymbolTable::getExprValue ( ExprValSide side,
@@ -362,7 +360,7 @@ int AsmPicoBlazeSymbolTable::getExprValue ( ExprValSide side,
         case CompilerValue::TYPE_SYMBOL:
         {
             const CompilerExpr * symbolValue = getValue(value->m_data.m_symbol);
-            if ( NULL == symbolValue )
+            if ( nullptr == symbolValue )
             {
                 m_compilerCore -> semanticMessage ( expr->m_location,
                                                     CompilerBase::MT_ERROR,
@@ -373,7 +371,7 @@ int AsmPicoBlazeSymbolTable::getExprValue ( ExprValSide side,
             }
             else
             {
-                if ( NULL != argList )
+                if ( nullptr != argList )
                 {
                     CompilerExpr * newValue = substituteArgs(symbolValue, argList);
                     int result = computeExpr(newValue);
@@ -407,21 +405,29 @@ inline CompilerExpr * AsmPicoBlazeSymbolTable::substituteArgs ( const CompilerEx
 
     int i = 0;
     for ( const CompilerExpr * arg = argList;
-          NULL != arg;
+          nullptr != arg;
           arg = arg->next() )
     {
-        substArg(result, arg, i);
+        if ( false == substArg(result, arg, i) )
+        {
+            m_compilerCore -> semanticMessage ( arg->location(),
+                                                CompilerBase::MT_WARNING,
+                                                QObject::tr("argument #%1 not used").arg(i).toStdString(),
+                                                true );
+        }
         i++;
     }
 
     return result;
 }
 
-void AsmPicoBlazeSymbolTable::substArg ( CompilerExpr * expr,
+bool AsmPicoBlazeSymbolTable::substArg ( CompilerExpr * expr,
                                          const CompilerExpr * subst,
                                          const int position )
 {
-    for ( ; NULL != expr; expr = expr->next() )
+    bool result = false;
+
+    for ( ; nullptr != expr; expr = expr->next() )
     {
         CompilerValue * value = &( expr->m_lValue );
         for ( int valIdx = 0; valIdx < 2; valIdx ++ )
@@ -451,29 +457,30 @@ void AsmPicoBlazeSymbolTable::substArg ( CompilerExpr * expr,
 
                             if ( ( 0 == valIdx ) && ( CompilerExpr::OPER_NONE == expr->oper() ) )
                             {
-                                CompilerValue * val = substCopy->lVal().makeCopy();
-                                *value = *val;
-
+                                value->m_type = CompilerValue::TYPE_EXPR;
+                                value->m_data.m_expr = substCopy;
                                 expr->m_location = substCopy->location();
-                                substCopy->completeDelete();
-                                delete val;
                             }
                             else
                             {
                                 value->m_type = CompilerValue::TYPE_EXPR;
                                 value->m_data.m_expr = substCopy;
                             }
+
+                            result = true;
                         }
                     }
                 }
             }
             else if ( CompilerValue::TYPE_EXPR == value->m_type )
             {
-                substArg(value->m_data.m_expr, subst, position);
+                result |= substArg(value->m_data.m_expr, subst, position);
             }
             value = &( expr->m_rValue );
         }
     }
+
+    return result;
 }
 
 unsigned int AsmPicoBlazeSymbolTable::substitute ( const std::string & origSymbol,
@@ -482,12 +489,12 @@ unsigned int AsmPicoBlazeSymbolTable::substitute ( const std::string & origSymbo
 {
     unsigned int result = 0;
 
-    if ( NULL == expr )
+    if ( nullptr == expr )
     {
         return result;
     }
 
-    for ( ; NULL != expr; expr = expr->m_next )
+    for ( ; nullptr != expr; expr = expr->m_next )
     {
         CompilerValue * value = &(expr->m_lValue);
         for ( int i = 0; i < 2; i++ )
@@ -691,7 +698,7 @@ void AsmPicoBlazeSymbolTable::rewriteExprLoc ( CompilerExpr * expr,
         }
     }
 
-    for ( ; NULL != expr; expr = expr->next() )
+    for ( ; nullptr != expr; expr = expr->next() )
     {
         expr->m_location.m_origin     = m_compilerCore->locationTrack().add(expr->location(), origin);
 
@@ -748,19 +755,15 @@ void AsmPicoBlazeSymbolTable::output()
 
 void AsmPicoBlazeSymbolTable::clear()
 {
-    for ( std::map<std::string,AsmPicoBlazeSymbolTable::Symbol>::const_iterator symbol = m_table.cbegin();
-          symbol != m_table.cend();
-          symbol++ )
+    for ( const auto & symbol : m_table )
     {
-        symbol->second.m_value->completeDelete();
+        symbol.second.m_value->completeDelete();
     }
     m_table.clear();
 
-    for ( std::map<std::string,AsmPicoBlazeSymbolTable::Symbol>::const_iterator symbol = m_deletedSymbols.cbegin();
-          symbol != m_deletedSymbols.cend();
-          symbol++ )
+    for ( const auto & symbol : m_deletedSymbols )
     {
-        symbol->second.m_value->completeDelete();
+        symbol.second.m_value->completeDelete();
     }
     m_deletedSymbols.clear();
 }
@@ -817,13 +820,11 @@ std::ostream & operator << ( std::ostream & out,
 
     for ( int i = 0; i < 2; i++ )
     {
-        for ( std::map<std::string,AsmPicoBlazeSymbolTable::Symbol>::const_iterator symbol = table->cbegin();
-              symbol != table->cend();
-              symbol++ )
+        for ( const auto & symbol : *table )
         {
-            out << symbol->first;
+            out << symbol.first;
             out << " ";
-            for ( unsigned int i = symbol->first.size(); i < 35; i++ )
+            for ( unsigned int i = symbol.first.size(); i < 35; i++ )
             {
                 if ( i % 2 )
                 {
@@ -835,20 +836,20 @@ std::ostream & operator << ( std::ostream & out,
                 }
             }
 
-            out << " " << AsmPicoBlazeSymbolTable::symType2Str(symbol->second.m_type, true);
+            out << " " << AsmPicoBlazeSymbolTable::symType2Str(symbol.second.m_type, true);
 
-            if ( -1 == symbol->second.m_finalValue )
+            if ( -1 == symbol.second.m_finalValue )
             {
                 out << "        ";
             }
             else
             {
                 char finalValue[9];
-                sprintf(finalValue, "0x%05X ", symbol->second.m_finalValue);
+                sprintf(finalValue, "0x%05X ", symbol.second.m_finalValue);
                 out << finalValue;
             }
 
-            if ( true == symbol->second.m_used )
+            if ( true == symbol.second.m_used )
             {
                 out << "USED     ";
             }
@@ -857,7 +858,7 @@ std::ostream & operator << ( std::ostream & out,
                 out << "NOT USED ";
             }
 
-            if ( true == symbol->second.m_constant )
+            if ( true == symbol.second.m_constant )
             {
                 out << "CONSTANT    ";
             }
@@ -866,19 +867,19 @@ std::ostream & operator << ( std::ostream & out,
                 out << "REDEFINABLE ";
             }
 
-            if ( AsmPicoBlazeMacros::MANGLE_PREFIX == symbol->first[0] )
+            if ( AsmPicoBlazeMacros::MANGLE_PREFIX == symbol.first[0] )
             {
                 out << "LOCAL";
             }
             else
             {
-                if ( -1 == symbol->second.m_location.m_fileNumber )
+                if ( -1 == symbol.second.m_location.m_fileNumber )
                 {
                     out << "IMPLICIT";
                 }
                 else
                 {
-                    symbolTable->printSymLocation(out, symbol->second.m_location);
+                    symbolTable->printSymLocation(out, symbol.second.m_location);
                 }
             }
 

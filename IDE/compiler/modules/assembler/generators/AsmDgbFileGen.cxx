@@ -18,19 +18,31 @@
 // Support for debug files.
 #include "DbgFileNative.h"
 
+// Common compiler header files.
+#include "CompilerLocationTracker.h"
+
 // Standard headers.
 #include <fstream>
 #include <cstdint>
+#include <utility>
 
 /**
  * @brief
  * @param[in] arg
  */
-#define BREAK_TO_4_CHARS(arg) \
+#define BREAK_TO_4_CHARS(arg)                                \
     ( (char) ( ( (uint32_t)(arg) & 0xff000000 ) >> 24 ) ) << \
     ( (char) ( ( (uint32_t)(arg) & 0x00ff0000 ) >> 16 ) ) << \
     ( (char) ( ( (uint32_t)(arg) & 0x0000ff00 ) >> 8  ) ) << \
-    ( (char) ( ( (uint32_t)(arg) & 0x000000ff ) ) )
+    ( (char) ( ( (uint32_t)(arg) & 0x000000ff )       ) )
+
+/**
+ * @brief
+ * @param[in] arg
+ */
+#define BREAK_TO_2_CHARS(arg)                            \
+    ( (char) ( ( (uint16_t)(arg) & 0xff00 ) >> 8  ) ) << \
+    ( (char) ( ( (uint16_t)(arg) & 0x00ff )       ) )
 
 AsmDgbFileGen::AsmDgbFileGen()
 {
@@ -60,25 +72,30 @@ inline void AsmDgbFileGen::outputToFile ( CompilerSemanticInterface * compilerCo
         return;
     }
 
-    file << CompilerFileHeaders::AsmNativeDgbFile << "\n";
+    file << CompilerFileHeaders::AsmNativeDgbFile << '\n';
     const std::vector<std::pair<std::string,FILE*>> & sourceFiles = compilerCore->listSourceFiles();
-    for ( std::vector<std::pair<std::string,FILE*>>::const_iterator it = sourceFiles.cbegin();
-          it != sourceFiles.cend();
-          it++ )
+    for ( const auto & srcFile : sourceFiles )
     {
-        file << it->first << "\n";
+        file << srcFile.first << '\n';
     }
-    file << "\n";
-    for ( std::vector<DbgRecord>::const_iterator i = m_data.cbegin();
-          i != m_data.cend();
-          i ++ )
+    file << '\n';
+    for ( const auto & dbgRecord : m_data )
     {
-        if ( (size_t)(i->m_location.m_fileNumber) < sourceFiles.size() )
+        std::vector<CompilerSourceLocation> locationTrace;
+        compilerCore->locationTrack().traverse ( dbgRecord.m_location, &locationTrace );
+
+        file << BREAK_TO_4_CHARS(dbgRecord.m_address);
+
+        for ( const auto & location : locationTrace )
         {
-            file << BREAK_TO_4_CHARS(i->m_address)
-                 << BREAK_TO_4_CHARS(i->m_location.m_fileNumber)
-                 << BREAK_TO_4_CHARS(i->m_location.m_lineStart);
+            if ( location.m_fileNumber < (int) sourceFiles.size() )
+            {
+                file << '\1'
+                     << BREAK_TO_2_CHARS(location.m_fileNumber)
+                     << BREAK_TO_4_CHARS(location.m_lineStart);
+            }
         }
+        file << '\0';
     }
 
     if ( true == file.bad() )
@@ -93,20 +110,30 @@ inline void AsmDgbFileGen::outputToFile ( CompilerSemanticInterface * compilerCo
 inline void AsmDgbFileGen::outputToContainer ( CompilerSemanticInterface * compilerCore,
                                                DbgFileNative * target )
 {
-    size_t numberOfFiles = compilerCore->listSourceFiles().size();
+    int numberOfFiles = (int) compilerCore->listSourceFiles().size();
 
     target->directSetupPrepare();
     target->directSetupFiles ( compilerCore->listSourceFiles() );
 
-    for ( std::vector<DbgRecord>::const_iterator i = m_data.cbegin();
-          i != m_data.cend();
-          i ++ )
+    for ( const auto & dbgRecord : m_data )
     {
-        if ( (size_t)(i->m_location.m_fileNumber) < numberOfFiles )
+        std::vector<CompilerSourceLocation> locationTrace;
+        std::vector<std::pair<unsigned int, unsigned int>> locationTrace2;
+
+        compilerCore->locationTrack().traverse ( dbgRecord.m_location, &locationTrace );
+
+        for ( const auto & location : locationTrace )
         {
-            target->directSetupRelation ( (unsigned int) i->m_address,
-                                          (unsigned int) i->m_location.m_fileNumber,
-                                          (unsigned int) i->m_location.m_lineStart );
+            if ( location.m_fileNumber < numberOfFiles )
+            {
+                locationTrace2.push_back ( std::make_pair ( (unsigned int) location.m_fileNumber,
+                                                            (unsigned int) location.m_lineStart ) );
+            }
+        }
+
+        if ( false == locationTrace2.empty() )
+        {
+            target->directSetupRelation ( (unsigned int) dbgRecord.m_address, locationTrace2 );
         }
     }
 

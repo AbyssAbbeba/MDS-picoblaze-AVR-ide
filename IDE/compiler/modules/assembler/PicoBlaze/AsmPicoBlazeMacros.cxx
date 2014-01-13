@@ -27,7 +27,7 @@
 
 AsmPicoBlazeMacros::Macro::Macro()
 {
-    m_definition = NULL;
+    m_definition = nullptr;
     m_id = -1;
 }
 
@@ -60,7 +60,7 @@ void AsmPicoBlazeMacros::define ( CompilerSourceLocation location,
 {
     if ( m_table.cend() != m_table.find(name) )
     {
-        if ( NULL != m_table[name].m_definition )
+        if ( nullptr != m_table[name].m_definition )
         {
             m_table[name].m_definition->completeDelete();
         }
@@ -88,7 +88,7 @@ void AsmPicoBlazeMacros::define ( CompilerSourceLocation location,
     m_table[name] = Macro(location, m_idCounter++, macroDef);
 
     for ( const CompilerExpr * param = parameters;
-          param != NULL;
+          param != nullptr;
           param = param->m_next )
     {
         const char * paramName = param->m_lValue.m_data.m_symbol;
@@ -125,13 +125,13 @@ bool AsmPicoBlazeMacros::isFromMacro ( const CompilerStatement * node ) const
 
 void AsmPicoBlazeMacros::incrMacroCounter ( CompilerStatement * macro ) const
 {
-    if ( NULL == macro )
+    if ( nullptr == macro )
     {
         return;
     }
 
     for ( CompilerStatement * node = macro;
-          NULL != node;
+          nullptr != node;
           node = node->next() )
     {
         node->m_userData++;
@@ -151,7 +151,7 @@ CompilerStatement * AsmPicoBlazeMacros::expand ( const CompilerSourceLocation & 
                                                           "expanded" )
                                                         . arg ( name.c_str() )
                                                         . toStdString() );
-        return NULL;
+        return nullptr;
     }
 
     if ( m_table.end() == m_table.find(name) )
@@ -176,7 +176,7 @@ CompilerStatement * AsmPicoBlazeMacros::expand ( const CompilerSourceLocation & 
     int numberOfParams = (int) macro.m_parameters.size();
     int argNo = -1;
     for ( const CompilerExpr * arg = arguments;
-          NULL != arg;
+          nullptr != arg;
           arg = arg->m_next )
     {
         argNo++;
@@ -221,7 +221,7 @@ bool AsmPicoBlazeMacros::mangleName ( const CompilerSourceLocation & location,
                                       const std::string & macroName,
                                       CompilerStatement * node )
 {
-    if ( NULL == node )
+    if ( nullptr == node )
     {
         return false;
     }
@@ -229,17 +229,15 @@ bool AsmPicoBlazeMacros::mangleName ( const CompilerSourceLocation & location,
     bool result = false;
     bool found = false;
 
-    for ( std::vector<std::string>::const_iterator i = localSymbols->cbegin();
-            i != localSymbols->cend();
-            i++ )
+    for ( const auto & symbol : *localSymbols )
     {
-        if ( *i == local )
+        if ( symbol == local )
         {
             found = true;
             m_compilerCore -> semanticMessage ( location,
                                                 CompilerBase::MT_WARNING,
                                                 QObject::tr ( "symbol `%1' already declared as local" )
-                                                            . arg(i->c_str()).toStdString() );
+                                                            . arg(symbol.c_str()).toStdString() );
         }
     }
 
@@ -262,7 +260,7 @@ bool AsmPicoBlazeMacros::symbolSubst ( const std::string & parameter,
                                        const CompilerExpr * argument,
                                        CompilerStatement * target )
 {
-    if ( NULL == target )
+    if ( nullptr == target )
     {
         return false;
     }
@@ -270,7 +268,7 @@ bool AsmPicoBlazeMacros::symbolSubst ( const std::string & parameter,
     bool result = false;
 
     for ( CompilerStatement * node = target;
-          NULL != node;
+          nullptr != node;
           node = node->next() )
     {
         if ( 0 != m_symbolTable->substitute ( parameter, argument, node->args() ) )
@@ -320,12 +318,11 @@ void AsmPicoBlazeMacros::clear()
     m_expCounter = 0;
     m_expEnabled = true;
 
-    for ( std::map<std::string,AsmPicoBlazeMacros::Macro>::const_iterator mac = m_table.cbegin();
-          mac != m_table.cend();
-          mac++ )
+    for ( const auto & mac : m_table )
     {
-        mac->second.m_definition->completeDelete();
+        mac.second.m_definition->completeDelete();
     }
+
     m_table.clear();
 }
 
@@ -343,22 +340,20 @@ void AsmPicoBlazeMacros::printSymLocation ( std::ostream & out,
 std::ostream & operator << ( std::ostream & out,
                              const AsmPicoBlazeMacros * macros )
 {
-    for ( std::map<std::string,AsmPicoBlazeMacros::Macro>::const_iterator mac = macros->m_table.cbegin();
+    for ( auto mac = macros->m_table.cbegin();
           mac != macros->m_table.cend();
           mac++ )
     {
         out << mac->first;
 
         std::string parameters;
-        for ( std::vector<std::string>::const_iterator param = mac->second.m_parameters.cbegin();
-              param != mac->second.m_parameters.cend();
-              param++ )
+        for ( const auto & param : mac->second.m_parameters )
         {
             if ( false == parameters.empty() )
             {
                 parameters += ", ";
             }
-            parameters += *param;
+            parameters += param;
         }
         out << " ( ";
         out << parameters;

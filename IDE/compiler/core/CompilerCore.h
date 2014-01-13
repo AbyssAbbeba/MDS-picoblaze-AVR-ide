@@ -62,7 +62,7 @@ class CompilerCore : public CompilerBase,
          * @brief
          * @param[in,out] msgInterface
          */
-        CompilerCore ( CompilerMsgInterface * msgInterface = NULL );
+        CompilerCore ( CompilerMsgInterface * msgInterface = nullptr );
 
         /**
          * @brief
@@ -157,7 +157,7 @@ class CompilerCore : public CompilerBase,
             virtual void preprocessorMessage ( const CompilerSourceLocation & location,
                                                CompilerBase::MessageType type,
                                                const std::string & text,
-                                               bool forceAsUnique = false );
+                                               bool forceAsUnique = false ) override;
 
             /**
              * @brief
@@ -169,7 +169,7 @@ class CompilerCore : public CompilerBase,
             virtual void lexerMessage ( const CompilerSourceLocation & location,
                                         MessageType type,
                                         const std::string & text,
-                                        bool forceAsUnique = false );
+                                        bool forceAsUnique = false ) override;
 
             /**
              * @brief
@@ -181,7 +181,7 @@ class CompilerCore : public CompilerBase,
             virtual void parserMessage ( const CompilerSourceLocation & location,
                                          MessageType type,
                                          const std::string & text,
-                                         bool forceAsUnique = false  );
+                                         bool forceAsUnique = false ) override;
 
             /**
              * @brief
@@ -191,8 +191,8 @@ class CompilerCore : public CompilerBase,
              * @return
              */
             virtual FILE * fileOpen ( const std::string & filename,
-                                      std::string * finalFilename = NULL,
-                                      bool acyclic = true );
+                                      std::string * finalFilename = nullptr,
+                                      bool acyclic = true ) override;
 
             /**
              * @brief
@@ -201,39 +201,39 @@ class CompilerCore : public CompilerBase,
              * @return
              */
             virtual bool pushFileName ( const std::string & filename,
-                                        FILE ** fileHandle );
+                                        FILE ** fileHandle ) override;
 
             /**
              * @brief
              */
-            virtual void popFileName();
+            virtual void popFileName() override;
 
             /**
              * @brief
              * @return
              */
-            virtual int getFileNumber() const;
+            virtual int getFileNumber() const override;
 
             /**
              * @brief
              * @param[in] uplevel
              * @return
              */
-            virtual int getFileNumber ( unsigned int uplevel ) const;
+            virtual int getFileNumber ( unsigned int uplevel ) const override;
 
             /**
              * @brief
              * @param[in] filename
              * @return
              */
-            virtual int getFileNumber ( const std::string & filename ) const;
+            virtual int getFileNumber ( const std::string & filename ) const override;
 
             /**
              * @brief
              * @param[in,out] codeTree
              * @return
              */
-            virtual void processCodeTree ( CompilerStatement * codeTree );
+            virtual void processCodeTree ( CompilerStatement * codeTree ) override;
         //@}
 
         /// @name Interface common for syntax analyzer, lexical analyzer, preprocessor, and for semantic analyzer.
@@ -242,7 +242,7 @@ class CompilerCore : public CompilerBase,
              * @brief
              * @return
              */
-            virtual CompilerLocationTracker & locationTrack();
+            virtual CompilerLocationTracker & locationTrack() override;
         //@}
 
         /// @name Interface for semantic analyzer
@@ -251,14 +251,14 @@ class CompilerCore : public CompilerBase,
              * @brief
              * @return
              */
-            virtual const std::vector<std::pair<std::string,FILE*>> & listSourceFiles() const;
+            virtual const std::vector<std::pair<std::string,FILE*>> & listSourceFiles() const override;
 
             /**
              * @brief
              * @param[in] fileNumber
              * @return
              */
-            virtual const std::string & getFileName ( int fileNumber ) const;
+            virtual const std::string & getFileName ( int fileNumber ) const override;
 
             /**
              * @brief
@@ -267,7 +267,7 @@ class CompilerCore : public CompilerBase,
              * @return
              */
             virtual std::string locationToStr ( const CompilerSourceLocation & location,
-                                                bool main = false ) const;
+                                                bool main = false ) const override;
 
             /**
              * @brief
@@ -279,20 +279,20 @@ class CompilerCore : public CompilerBase,
             virtual void semanticMessage ( const CompilerSourceLocation & location,
                                            MessageType type,
                                            const std::string & text,
-                                           bool forceAsUnique = false );
+                                           bool forceAsUnique = false ) override;
 
             /**
              * @brief
              * @return
              */
-            virtual bool successful() const;
+            virtual bool successful() const override;
 
             /**
              * @brief
              * @param[in,out] observer
              * @return
              */
-            virtual void registerMsgObserver ( CompilerMsgObserver * observer );
+            virtual void registerMsgObserver ( CompilerMsgObserver * observer ) override;
 
             /**
              * @brief
@@ -301,18 +301,18 @@ class CompilerCore : public CompilerBase,
              * @return
              */
             virtual CompilerStatement * loadDevSpecCode ( const std::string & deviceName,
-                                                          CompilerBase::DevSpecLoaderFlag * flag = NULL );
+                                                          CompilerBase::DevSpecLoaderFlag * flag = nullptr ) override;
             /**
              * @brief
              * @return
              */
-            virtual std::string getBaseIncludeDir();
+            virtual std::string getBaseIncludeDir() override;
 
             /**
              * @brief
              * @return
              */
-            virtual std::string getBaseName();
+            virtual std::string getBaseName() override;
         //@}
 
     ////    Inline Public Operations    ////
@@ -343,7 +343,7 @@ class CompilerCore : public CompilerBase,
          * @param[in,out] fileHandle In case this is a newly opened file, this parameter has to be set.
          */
         inline void setOpenedFile ( const std::string & filename,
-                                    FILE ** fileHandle = NULL );
+                                    FILE ** fileHandle = nullptr );
 
         /**
          * @brief

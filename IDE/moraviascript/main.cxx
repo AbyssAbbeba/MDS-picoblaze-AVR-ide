@@ -15,7 +15,7 @@ class MyMScriptStrategy : public MScriptStrategy
                                           const MScriptArrayIndex * /*index*/ )
     {
         std::cout << "MyMScriptStrategy::variableRead ( " << id << ", ... );\n";
-        return NULL;
+        return nullptr;
     }
 
     virtual void variableWritten ( int id,
@@ -73,11 +73,9 @@ int main ( int /*argc*/, char ** /*argv*/ )
     MyMScriptStrategy strategy;
     MScript core(&strategy);
 
-    for ( std::vector<std::string>::const_iterator msg = core.getMessages().cbegin();
-          msg != core.getMessages().cend();
-          msg++ )
+    for ( const auto & msg : core.getMessages() )
     {
-        std::cout << *msg << std::endl;
+        std::cout << msg << std::endl;
     }
     core.clearMessages();
 
@@ -86,14 +84,12 @@ int main ( int /*argc*/, char ** /*argv*/ )
         core.loadScript(script);
         core.executeRun();
     }
-    catch ( MScriptBase::MScriptRunTimeError & e )
+    catch ( const MScriptBase::MScriptRunTimeError & e )
     {
         std::cout << "\nTERMINATING CORE OPERATION due to a MScriptRunTimeError exception.\n";
-        for ( std::vector<std::string>::const_iterator msg = core.getMessages().cbegin();
-            msg != core.getMessages().cend();
-            msg++ )
+        for ( const auto & msg : core.getMessages() )
         {
-            std::cout << *msg << std::endl;
+            std::cout << msg << std::endl;
         }
         core.clearMessages();
     }

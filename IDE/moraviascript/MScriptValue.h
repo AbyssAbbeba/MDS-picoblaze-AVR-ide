@@ -61,7 +61,7 @@ class MScriptValue : public MScriptSerializable
         union Data
         {
             /// @brief
-            Data() : m_expr ( NULL ) {};
+            Data() : m_expr ( nullptr ) {};
 
             ///
             MScriptExpr * m_expr;
@@ -231,13 +231,13 @@ class MScriptValue : public MScriptSerializable
              * @brief
              * @param[in,out]
              */
-            virtual void serialize ( MScriptSerializer & output ) const;
+            virtual void serialize ( MScriptSerializer & output ) const override;
 
             /**
              * @brief
              * @param[in,out]
              */
-            virtual void deserialize ( MScriptSerializer & input );
+            virtual void deserialize ( MScriptSerializer & input ) override;
         //@}
 
     ////    Public Attributes    ////

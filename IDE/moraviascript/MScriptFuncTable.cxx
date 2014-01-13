@@ -26,13 +26,13 @@
 
 MScriptFuncTable::Parameter::Parameter()
 {
-    m_value = NULL;
+    m_value = nullptr;
 }
 
 MScriptFuncTable::Parameter::Parameter ( const char * name )
                                        :
                                          m_name ( name ),
-                                         m_value ( NULL ),
+                                         m_value ( nullptr ),
                                          m_reference ( false ) {}
 
 MScriptFuncTable::Parameter::Parameter ( const char * name,
@@ -46,7 +46,7 @@ MScriptFuncTable::Parameter::Parameter ( const char * name,
                                          bool reference )
                                        :
                                          m_name ( name ),
-                                         m_value ( NULL ),
+                                         m_value ( nullptr ),
                                          m_reference ( reference ) {}
 
 MScriptFuncTable::Function::Function ( std::vector<Parameter> * params,
@@ -69,7 +69,7 @@ MScriptFuncTable::Function::Function ( std::vector<Parameter> * params,
                                        MScriptNamespaces::NsDesc * ns )
 {
     m_params       = params;
-    m_code         = NULL;
+    m_code         = nullptr;
     m_ns           = ns;
     m_argsRequired = argsRequired;
     m_id           = id;
@@ -91,7 +91,7 @@ MScriptFuncTable::Function::Function ( const Function & obj )
 
 MScriptFuncTable::Function::~Function()
 {
-    if ( NULL != m_params )
+    if ( nullptr != m_params )
     {
         delete m_params;
     }
@@ -111,11 +111,9 @@ void MScriptFuncTable::define ( const std::string & name,
     std::string bareId;
     MScriptNamespaces::NsDesc * ns = m_namespaces->analyseId ( name, bareId, &location );
 
-    for ( std::vector<Parameter>::const_iterator p = params->cbegin();
-          p != params->cend();
-          p++ )
+    for ( const auto & p : *params )
     {
-        if ( NULL == p->m_value )
+        if ( nullptr == p.m_value )
         {
             if ( 0 != defaults )
             {
@@ -123,7 +121,7 @@ void MScriptFuncTable::define ( const std::string & name,
                                                   MScriptBase::MT_ERROR,
                                                   QObject::tr ( "parameter `%1' has to have default value "
                                                                 "(because some of the preceding parameters have).")
-                                                               . arg ( p->m_name.c_str() )
+                                                               . arg ( p.m_name.c_str() )
                                                                . toStdString() );
                 return;
             }
@@ -212,11 +210,9 @@ bool MScriptFuncTable::define ( MScriptNamespaces::NsDesc * ns,
 
     unsigned int defaults = 0;
 
-    for ( std::vector<Parameter>::const_iterator p = params->cbegin();
-          p != params->cend();
-          p++ )
+    for ( const auto & p : *params )
     {
-        if ( NULL != p->m_value )
+        if ( nullptr != p.m_value )
         {
             defaults++;
         }
@@ -235,7 +231,7 @@ bool MScriptFuncTable::undefine ( const int id )
         return false;
     }
 
-    std::pair<FuncMultimap::iterator,FuncMultimap::iterator> range = m_funcTable.equal_range(it->second);
+    auto range = m_funcTable.equal_range(it->second);
     for ( FuncMultimap::iterator i = range.first;
           i != range.second;
           i++ )
@@ -256,7 +252,7 @@ bool MScriptFuncTable::undefine ( const std::string & name,
 {
     std::string bareId;
     const MScriptNamespaces::NsDesc * ns = m_namespaces->analyseId ( name, bareId, &location );
-    std::pair<FuncMultimap::iterator,FuncMultimap::iterator> range = m_funcTable.equal_range(bareId);
+    auto range = m_funcTable.equal_range(bareId);
     bool result = false;
 
     for ( FuncMultimap::iterator i = range.first;
@@ -310,8 +306,8 @@ bool MScriptFuncTable::isDefined ( const std::string & name,
         return false;
     }
 
-    std::pair<FuncMultimap::const_iterator,FuncMultimap::const_iterator> range = m_funcTable.equal_range(bareId);
-    for ( FuncMultimap::const_iterator i = range.first;
+    const auto range = m_funcTable.equal_range(bareId);
+    for ( auto i = range.first;
           i != range.second;
           i++ )
     {
@@ -337,7 +333,7 @@ bool MScriptFuncTable::isDefined ( const std::string & name,
                )
            )
         {
-            if ( NULL != defLocation )
+            if ( nullptr != defLocation )
             {
                 *defLocation = i->second.m_location;
             }
@@ -355,11 +351,11 @@ MScriptFuncTable::Function * MScriptFuncTable::get ( const std::string & name,
 {
     std::string bareId;
     const MScriptNamespaces::NsDesc * ns = m_namespaces->analyseId ( name, bareId, &location );
-    std::pair<FuncMultimap::const_iterator,FuncMultimap::const_iterator> range = m_funcTable.equal_range(bareId);
-    std::pair<int,FuncMultimap::const_iterator> availability = std::make_pair(-1, range.first);
+    const auto range = m_funcTable.equal_range(bareId);
+    auto availability = std::make_pair(-1, range.first);
     size_t argc = arguments.size();
 
-    for ( FuncMultimap::const_iterator i = range.first;
+    for ( auto i = range.first;
           i != range.second;
           i++ )
     {
@@ -411,27 +407,23 @@ MScriptFuncTable::Function * MScriptFuncTable::get ( const std::string & name,
                                                       . toStdString() );
     }
 
-    return NULL;
+    return nullptr;
 }
 
 void MScriptFuncTable::clear()
 {
-    for ( FuncMultimap::iterator f = m_funcTable.begin();
-          f != m_funcTable.end();
-          f++ )
+    for ( auto & func : m_funcTable )
     {
-        for ( std::vector<Parameter>::iterator p = f->second.m_params->begin();
-              p != f->second.m_params->end();
-              p++ )
+        for ( auto & param : *(func.second.m_params) )
         {
-            if ( NULL != p->m_value )
+            if ( nullptr != param.m_value )
             {
-                p->m_value->completeDelete();
-                delete p->m_value;
+                param.m_value->completeDelete();
+                delete param.m_value;
             }
         }
 
-        f->second.m_code->completeDelete();
+        func.second.m_code->completeDelete();
     }
 
     m_funcTable.clear();
@@ -443,7 +435,7 @@ std::ostream & operator << ( std::ostream & out,
 {
     bool first = true;
 
-    for ( std::vector<MScriptFuncTable::Parameter>::const_iterator p = parameterList->cbegin();
+    for ( auto p = parameterList->cbegin();
           p != parameterList->cend();
           p++ )
     {
@@ -454,7 +446,7 @@ std::ostream & operator << ( std::ostream & out,
         first = false;
 
         out << p->m_name;
-        if ( NULL != p->m_value )
+        if ( nullptr != p->m_value )
         {
             out << " = " << *(p->m_value);
         }
@@ -469,16 +461,14 @@ std::ostream & operator << ( std::ostream & out,
     static const char * const sepLine0 = "==================================================";
     static const char * const sepLine1 = "--------------------------------------------------";
 
-    for ( MScriptFuncTable::FuncMultimap::const_iterator f = table.m_funcTable.cbegin();
-          f != table.m_funcTable.cend();
-          f++ )
+    for ( const auto & func : table.m_funcTable )
     {
         out << sepLine0 << std::endl;
-        out << f->second.m_ns << f->first << "(" << f->second.m_params << ")" << std::endl;
-        out << "    defined at: " << f->second.m_location.toString(table.m_interpret->getCoreBase()) << std::endl;
-        out << "    required arguments: " << f->second.m_argsRequired << std::endl;
+        out << func.second.m_ns << func.first << "(" << func.second.m_params << ")" << std::endl;
+        out << "    defined at: " << func.second.m_location.toString(table.m_interpret->getCoreBase()) << std::endl;
+        out << "    required arguments: " << func.second.m_argsRequired << std::endl;
         out << sepLine1 << std::endl;
-        out << f->second.m_code << std::endl;
+        out << func.second.m_code << std::endl;
         out << sepLine0 << std::endl;
     }
 

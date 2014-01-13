@@ -18,8 +18,8 @@
 
 AsmPicoBlazeInstructionSetN::AsmPicoBlazeInstructionSetN()
 {
-    m_symbolTable = NULL;
-    m_instructionSet = NULL;
+    m_symbolTable = nullptr;
+    m_instructionSet = nullptr;
 }
 
 void AsmPicoBlazeInstructionSetN::init ( AsmPicoBlazeInstructionSet * instructionSet,

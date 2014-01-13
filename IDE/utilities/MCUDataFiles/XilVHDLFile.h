@@ -77,7 +77,7 @@ class XilVHDLFile : public XilHDLFile
          */
         virtual int extractHexField ( const std::string & line,
                                       std::string * hexField,
-                                      const char * markFragment );
+                                      const char * markFragment ) override;
 };
 
 #endif // XILVHDLFILE_H

@@ -37,7 +37,7 @@ class MScriptTestStrategy : public MScriptStrategy
          */
         virtual void functionCalled ( int id,
                                       const std::vector<MScriptValue> & arguments,
-                                      MScriptValue * returnValue );
+                                      MScriptValue * returnValue ) override;
 
         /**
          * @brief
@@ -46,7 +46,7 @@ class MScriptTestStrategy : public MScriptStrategy
          * @return
          */
         virtual MScriptValue * variableRead ( int id,
-                                              const MScriptArrayIndex * index );
+                                              const MScriptArrayIndex * index ) override;
 
         /**
          * @brief
@@ -56,7 +56,7 @@ class MScriptTestStrategy : public MScriptStrategy
          */
         virtual void variableWritten ( int id,
                                        const MScriptArrayIndex * index,
-                                       const MScriptValue & value );
+                                       const MScriptValue & value ) override;
 };
 
 #endif // MSCRIPTTESTSTRATEGY_H

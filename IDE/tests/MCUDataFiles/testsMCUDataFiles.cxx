@@ -111,7 +111,7 @@ void testLoadAndSave ( DataFile & file0,
 
         file2.clearAndLoad(genFile2);
     }
-    catch ( DataFileException & e )
+    catch ( const DataFileException & e )
     {
         std::cerr << std::endl << e.toString() << std::endl;
         CU_FAIL("DataFileException thrown.");
@@ -225,9 +225,9 @@ TestSuite::fptr testSuiteID2funcPtr ( TestSuite::TestSuiteID id )
         case TestSuite::TS_V_18:    return &testVerilog<XilHDLFile::SIZE_18b>;
         case TestSuite::TS_VHDL_16: return &testVHDL<XilHDLFile::SIZE_16b>;
         case TestSuite::TS_VHDL_18: return &testVHDL<XilHDLFile::SIZE_18b>;
-        case TestSuite::TS__MAX__:  return NULL;
+        case TestSuite::TS__MAX__:  return nullptr;
     }
-    return NULL;
+    return nullptr;
 }
 
 const char * testSuiteID2cstring ( TestSuite::TestSuiteID id )
@@ -245,7 +245,7 @@ const char * testSuiteID2cstring ( TestSuite::TestSuiteID id )
         case TestSuite::TS_VHDL_18: return "VHDL (16b)";
         case TestSuite::TS__MAX__:  return "<invalid>";
     }
-    return NULL;
+    return nullptr;
 }
 
 const char * testSuiteID2ext ( TestSuite::TestSuiteID id )
@@ -261,9 +261,9 @@ const char * testSuiteID2ext ( TestSuite::TestSuiteID id )
         case TestSuite::TS_V_18:    return ".v";
         case TestSuite::TS_VHDL_16: return ".vhd";
         case TestSuite::TS_VHDL_18: return ".vhd";
-        case TestSuite::TS__MAX__:  return NULL;
+        case TestSuite::TS__MAX__:  return nullptr;
     }
-    return NULL;
+    return nullptr;
 }
 
 const char * testSuiteID2dir ( TestSuite::TestSuiteID id )
@@ -279,9 +279,9 @@ const char * testSuiteID2dir ( TestSuite::TestSuiteID id )
         case TestSuite::TS_V_18:    return "18.v";
         case TestSuite::TS_VHDL_16: return "16.vhd";
         case TestSuite::TS_VHDL_18: return "18.vhd";
-        case TestSuite::TS__MAX__:  return NULL;
+        case TestSuite::TS__MAX__:  return nullptr;
     }
-    return NULL;
+    return nullptr;
 }
 
 int TestSuite::init()
@@ -336,11 +336,9 @@ template<TestSuite::TestSuiteID id> bool TestSuite::addTests ( CU_pSuite suite )
 
     std::sort(testCaseFiles.begin(), testCaseFiles.end());
 
-    for ( std::vector<std::string>::const_iterator it = testCaseFiles.cbegin();
-          it != testCaseFiles.cend();
-          it++ )
+    for ( const auto & testCaseFile : testCaseFiles )
     {
-        if ( NULL == CU_add_test(suite, it->c_str(), testSuiteID2funcPtr(id)) )
+        if ( nullptr == CU_add_test(suite, testCaseFile.c_str(), testSuiteID2funcPtr(id)) )
         {
             return false;
         }

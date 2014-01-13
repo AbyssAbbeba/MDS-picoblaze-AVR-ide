@@ -49,7 +49,7 @@ class MScriptStatement : public MScriptSerializable
          */
         MScriptStatement ( const MScriptSrcLocation & location,
                            MScriptStmtTypes::Type type,
-                           MScriptExpr * args = NULL );
+                           MScriptExpr * args = nullptr );
 
         /**
          * @brief
@@ -144,13 +144,13 @@ class MScriptStatement : public MScriptSerializable
              * @brief
              * @param[in,out]
              */
-            virtual void serialize ( MScriptSerializer & output ) const;
+            virtual void serialize ( MScriptSerializer & output ) const override;
 
             /**
              * @brief
              * @param[in,out]
              */
-            virtual void deserialize ( MScriptSerializer & input );
+            virtual void deserialize ( MScriptSerializer & input ) override;
 
             /**
              * @brief

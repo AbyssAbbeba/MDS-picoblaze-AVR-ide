@@ -114,7 +114,7 @@ XESC    (\\[0-7]{1,3})|(\\x[0-9A-F]{1,2})|(\\[uU][0-9A-F]{1,8})
 
 %{
     // Terminate lexical analysis, in case all input files have been closed using the EXIT' directive.
-    if ( NULL == AsmPic8Lexer_get_in(yyscanner) )
+    if ( nullptr == AsmPic8Lexer_get_in(yyscanner) )
     {
         yyterminate();
     }
@@ -240,7 +240,7 @@ XESC    (\\[0-7]{1,3})|(\\x[0-9A-F]{1,2})|(\\[uU][0-9A-F]{1,8})
                     }
                     else
                     {
-                        AsmPic8Lexer_set_in(NULL, yyscanner);
+                        AsmPic8Lexer_set_in(nullptr, yyscanner);
                     }
 
                     return D_END;
@@ -523,7 +523,7 @@ XESC    (\\[0-7]{1,3})|(\\x[0-9A-F]{1,2})|(\\[uU][0-9A-F]{1,8})
                     }
 
                     FILE * file = yyextra->fileOpen(filename);
-                    if ( NULL == file )
+                    if ( nullptr == file )
                     {
                         yyextra->lexerMessage ( yylloc,
                                                 CompilerBase::MT_ERROR,

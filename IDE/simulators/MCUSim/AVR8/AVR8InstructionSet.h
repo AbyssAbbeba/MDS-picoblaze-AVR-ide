@@ -107,7 +107,7 @@ class AVR8InstructionSet : public MCUSimCPU
          * @brief
          * @return
          */
-        unsigned int getProgramCounter() const
+        virtual unsigned int getProgramCounter() const override
         {
             return (unsigned int)m_pc;
         }
@@ -117,7 +117,7 @@ class AVR8InstructionSet : public MCUSimCPU
          * @param
          * @return
          */
-        void setProgramCounter ( unsigned int newPc )
+        virtual void setProgramCounter ( unsigned int newPc ) override
         {
             m_pc = int(newPc);
         }
@@ -284,7 +284,7 @@ class AVR8InstructionSet : public MCUSimCPU
          * @param[in] mode
          * @return
          */
-        void reset ( MCUSimBase::ResetMode mode );
+        virtual void reset ( MCUSimBase::ResetMode mode ) override;
 
         /// @name Processor Instructions
         //@{

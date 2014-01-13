@@ -30,8 +30,8 @@ CompilerExpr::CompilerExpr ( CompilerSourceLocation location )
     m_operator = OPER_NONE;
     m_location = location;
 
-    m_next = NULL;
-    m_prev = NULL;
+    m_next = nullptr;
+    m_prev = nullptr;
 }
 
 CompilerExpr::CompilerExpr ( CompilerValue value,
@@ -41,8 +41,8 @@ CompilerExpr::CompilerExpr ( CompilerValue value,
     m_operator = OPER_NONE;
     m_location = location;
 
-    m_next = NULL;
-    m_prev = NULL;
+    m_next = nullptr;
+    m_prev = nullptr;
 }
 
 CompilerExpr::CompilerExpr ( Operator oper,
@@ -53,8 +53,8 @@ CompilerExpr::CompilerExpr ( Operator oper,
     m_rValue = value;
     m_location = location;
 
-    m_next = NULL;
-    m_prev = NULL;
+    m_next = nullptr;
+    m_prev = nullptr;
 }
 
 CompilerExpr::CompilerExpr ( char oper,
@@ -65,8 +65,8 @@ CompilerExpr::CompilerExpr ( char oper,
     m_rValue = value;
     m_location = location;
 
-    m_next = NULL;
-    m_prev = NULL;
+    m_next = nullptr;
+    m_prev = nullptr;
 }
 
 CompilerExpr::CompilerExpr ( CompilerValue value,
@@ -77,8 +77,8 @@ CompilerExpr::CompilerExpr ( CompilerValue value,
     m_lValue = value;
     m_location = location;
 
-    m_next = NULL;
-    m_prev = NULL;
+    m_next = nullptr;
+    m_prev = nullptr;
 }
 
 CompilerExpr::CompilerExpr ( CompilerValue value,
@@ -89,8 +89,8 @@ CompilerExpr::CompilerExpr ( CompilerValue value,
     m_lValue = value;
     m_location = location;
 
-    m_next = NULL;
-    m_prev = NULL;
+    m_next = nullptr;
+    m_prev = nullptr;
 }
 
 CompilerExpr::CompilerExpr ( CompilerValue lValue,
@@ -103,8 +103,8 @@ CompilerExpr::CompilerExpr ( CompilerValue lValue,
     m_rValue = rValue;
     m_location = location;
 
-    m_next = NULL;
-    m_prev = NULL;
+    m_next = nullptr;
+    m_prev = nullptr;
 }
 
 CompilerExpr::CompilerExpr ( CompilerValue lValue,
@@ -117,20 +117,20 @@ CompilerExpr::CompilerExpr ( CompilerValue lValue,
     m_rValue = rValue;
     m_location = location;
 
-    m_next = NULL;
-    m_prev = NULL;
+    m_next = nullptr;
+    m_prev = nullptr;
 }
 
 CompilerExpr * CompilerExpr::first()
 {
     CompilerExpr * expr = this;
 
-    if ( NULL == this )
+    if ( nullptr == this )
     {
-        return NULL;
+        return nullptr;
     }
 
-    while ( NULL != expr->m_prev )
+    while ( nullptr != expr->m_prev )
     {
         expr = expr->m_prev;
     }
@@ -141,7 +141,7 @@ CompilerExpr * CompilerExpr::first()
 CompilerExpr * CompilerExpr::last()
 {
     CompilerExpr * result = this;
-    while ( NULL != result->m_next )
+    while ( nullptr != result->m_next )
     {
         result = result->m_next;
     }
@@ -150,11 +150,11 @@ CompilerExpr * CompilerExpr::last()
 
 CompilerExpr * CompilerExpr::insertLink ( CompilerExpr * chainLink )
 {
-    if ( NULL == chainLink )
+    if ( nullptr == chainLink )
     {
         return this;
     }
-    if ( NULL == this )
+    if ( nullptr == this )
     {
         return chainLink;
     }
@@ -176,11 +176,11 @@ CompilerExpr * CompilerExpr::insertLink ( CompilerExpr * chainLink )
 
 CompilerExpr * CompilerExpr::appendLink ( CompilerExpr * chainLink )
 {
-    if ( NULL == chainLink )
+    if ( nullptr == chainLink )
     {
         return this;
     }
-    if ( NULL == this )
+    if ( nullptr == this )
     {
         return chainLink;
     }
@@ -197,11 +197,11 @@ CompilerExpr * CompilerExpr::appendLink ( CompilerExpr * chainLink )
 
 CompilerExpr * CompilerExpr::prependLink ( CompilerExpr * chainLink )
 {
-    if ( NULL == chainLink )
+    if ( nullptr == chainLink )
     {
         return this;
     }
-    if ( NULL == this )
+    if ( nullptr == this )
     {
         return chainLink;
     }
@@ -223,7 +223,7 @@ void CompilerExpr::completeDelete ( CompilerExpr * expr )
 
 void CompilerExpr::completeDelete()
 {
-    if ( NULL == this )
+    if ( nullptr == this )
     {
         return;
     }
@@ -231,18 +231,18 @@ void CompilerExpr::completeDelete()
     m_lValue.completeDelete();
     m_rValue.completeDelete();
 
-    if ( NULL != m_next )
+    if ( nullptr != m_next )
     {
-        m_next->m_prev = NULL;
+        m_next->m_prev = nullptr;
         m_next->completeDelete();
-        m_next = NULL;
+        m_next = nullptr;
     }
 
-    if ( NULL != m_prev )
+    if ( nullptr != m_prev )
     {
-        m_prev->m_next = NULL;
+        m_prev->m_next = nullptr;
         m_prev->completeDelete();
-        m_prev = NULL;
+        m_prev = nullptr;
     }
 
     delete this;
@@ -254,9 +254,9 @@ CompilerExpr * CompilerExpr::operator [] ( int index )
     for ( int i = 0; i < index; i++ )
     {
         result = result->m_next;
-        if ( NULL == result )
+        if ( nullptr == result )
         {
-            return NULL;
+            return nullptr;
         }
     }
     return result;
@@ -264,21 +264,21 @@ CompilerExpr * CompilerExpr::operator [] ( int index )
 
 CompilerExpr * CompilerExpr::copyEntireChain() const
 {
-    if ( NULL == this )
+    if ( nullptr == this )
     {
-        return NULL;
+        return nullptr;
     }
 
     CompilerExpr * result = copyChainLink();
 
     const CompilerExpr * next = this;
-    while ( NULL != ( next = next->m_next ) )
+    while ( nullptr != ( next = next->m_next ) )
     {
         result->appendLink(next->copyChainLink());
     }
 
     const CompilerExpr * prev = this;
-    while ( NULL != ( prev = prev->m_prev ) )
+    while ( nullptr != ( prev = prev->m_prev ) )
     {
         result->prependLink(prev->copyChainLink());
     }
@@ -288,9 +288,9 @@ CompilerExpr * CompilerExpr::copyEntireChain() const
 
 CompilerExpr * CompilerExpr::copyChainLink() const
 {
-    if ( NULL == this )
+    if ( nullptr == this )
     {
-        return NULL;
+        return nullptr;
     }
 
     CompilerExpr * result = new CompilerExpr();
@@ -313,15 +313,15 @@ CompilerExpr * CompilerExpr::copyChainLink() const
 
 CompilerExpr * CompilerExpr::unlink()
 {
-    if ( NULL != m_next )
+    if ( nullptr != m_next )
     {
         m_next->m_prev = m_prev;
-        m_next = NULL;
+        m_next = nullptr;
     }
-    if ( NULL != m_prev )
+    if ( nullptr != m_prev )
     {
         m_prev->m_next = m_next;
-        m_prev = NULL;
+        m_prev = nullptr;
     }
     return this;
 }
@@ -381,10 +381,10 @@ std::ostream & operator << ( std::ostream & out,
         case CompilerExpr::OPER_TERNARY:     out << "?:";       break;
         case CompilerExpr::OPER_COLON:       out << ":";        break;
         case CompilerExpr::OPER_INDEX:       out << "[]";       break;
-        case CompilerExpr::OPER_POST_INC:    out << "post++";    break;
-        case CompilerExpr::OPER_POST_DEC:    out << "post--";    break;
-        case CompilerExpr::OPER_PRE_INC:     out << "++pre";   break;
-        case CompilerExpr::OPER_PRE_DEC:     out << "--pre";   break;
+        case CompilerExpr::OPER_POST_INC:    out << "post++";   break;
+        case CompilerExpr::OPER_POST_DEC:    out << "post--";   break;
+        case CompilerExpr::OPER_PRE_INC:     out << "++pre";    break;
+        case CompilerExpr::OPER_PRE_DEC:     out << "--pre";    break;
         
     }
     return out;
@@ -393,9 +393,9 @@ std::ostream & operator << ( std::ostream & out,
 std::ostream & operator << ( std::ostream & out,
                              const CompilerExpr * const expr )
 {
-    if ( NULL == expr )
+    if ( nullptr == expr )
     {
-        out << "(<NULL>)";
+        out << "(<nullptr>)";
         return out;
     }
 
@@ -412,11 +412,9 @@ std::ostream & operator << ( std::ostream & out,
     out << expr->location();
     out << "}";
 
-    for ( const CompilerExpr * e = expr->next();
-          NULL != e;
-          e = e->next() )
+    if ( nullptr != expr->next() )
     {
-        out << " | " << e;
+        out << " | " << expr->next();
     }
 
     return out;
@@ -434,7 +432,7 @@ void CompilerExpr::serialize ( CompilerSerializer & output ) const
     output.write ( (uint16_t) m_operator );
     output << m_lValue << m_rValue << m_location;
 
-    if ( NULL == m_next )
+    if ( nullptr == m_next )
     {
         output << MARK_TERMINAL;
     }
@@ -447,8 +445,8 @@ void CompilerExpr::serialize ( CompilerSerializer & output ) const
 
 void CompilerExpr::deserialize ( CompilerSerializer & input )
 {
-    m_next = NULL;
-    m_prev = NULL;
+    m_next = nullptr;
+    m_prev = nullptr;
 
     m_operator =  Operator(input.read_ui16());
     input >> m_lValue >> m_rValue >> m_location;

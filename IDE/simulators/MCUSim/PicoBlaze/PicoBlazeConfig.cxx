@@ -20,15 +20,15 @@ PicoBlazeConfig::PicoBlazeConfig() : MCUSimConfig ( MCUSim::ARCH_PICOBLAZE )
 {
     m_isLinked = false;
 
-    m_configInterruptController = NULL;
-    m_configInstructionSet      = NULL;
-    m_configProgramMemory       = NULL;
-    m_configClockControl        = NULL;
-    m_configStatusFlags         = NULL;
-    m_configDataMemory          = NULL;
-    m_configRegisters           = NULL;
-    m_configStack               = NULL;
-    m_configIO                  = NULL;
+    m_configInterruptController = nullptr;
+    m_configInstructionSet      = nullptr;
+    m_configProgramMemory       = nullptr;
+    m_configClockControl        = nullptr;
+    m_configStatusFlags         = nullptr;
+    m_configDataMemory          = nullptr;
+    m_configRegisters           = nullptr;
+    m_configStack               = nullptr;
+    m_configIO                  = nullptr;
 }
 
 void PicoBlazeConfig::link ( PicoBlazeSim * system )

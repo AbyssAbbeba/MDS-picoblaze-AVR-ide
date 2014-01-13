@@ -19,28 +19,28 @@ AVR8Config::AVR8Config() : MCUSimConfig ( MCUSim::ARCH_AVR8 )
 {
     m_isLinked = false;
 
-    m_configIO                      = NULL;
-    m_configBootLoader              = NULL;
-    m_configDataMemory              = NULL;
-    m_configDataEEPROM              = NULL;
-    m_configClockControl            = NULL;
-    m_configInstructionSet          = NULL;
-    m_configProgramMemory           = NULL;
-    m_configFusesAndLocks           = NULL;
-    m_configTimerCounter0           = NULL;
-    m_configTimerCounter1           = NULL;
-    m_configTimerCounter2           = NULL;
-    m_configWatchdogTimer           = NULL;
-    m_configSystemControl           = NULL;
-    m_configExternalInterrupts      = NULL;
-    m_configInterruptController     = NULL;
-    m_configSpi                     = NULL;
-    m_configUsart                   = NULL;
-    m_configTwi                     = NULL;
-    m_configAdc                     = NULL;
-    m_configAcomp                   = NULL;
-    m_configIsp                     = NULL;
-    m_configPprog                   = NULL;
+    m_configIO                      = nullptr;
+    m_configBootLoader              = nullptr;
+    m_configDataMemory              = nullptr;
+    m_configDataEEPROM              = nullptr;
+    m_configClockControl            = nullptr;
+    m_configInstructionSet          = nullptr;
+    m_configProgramMemory           = nullptr;
+    m_configFusesAndLocks           = nullptr;
+    m_configTimerCounter0           = nullptr;
+    m_configTimerCounter1           = nullptr;
+    m_configTimerCounter2           = nullptr;
+    m_configWatchdogTimer           = nullptr;
+    m_configSystemControl           = nullptr;
+    m_configExternalInterrupts      = nullptr;
+    m_configInterruptController     = nullptr;
+    m_configSpi                     = nullptr;
+    m_configUsart                   = nullptr;
+    m_configTwi                     = nullptr;
+    m_configAdc                     = nullptr;
+    m_configAcomp                   = nullptr;
+    m_configIsp                     = nullptr;
+    m_configPprog                   = nullptr;
 }
 
 void AVR8Config::link ( AVR8Sim * system )

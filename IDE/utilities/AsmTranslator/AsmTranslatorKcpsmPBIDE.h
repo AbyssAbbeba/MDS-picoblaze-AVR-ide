@@ -47,12 +47,14 @@ class AsmTranslatorKcpsmPBIDE : public AsmTranslatorBase
          * @brief
          * @param[in,out] messages
          * @param[in,out] line
+         * @param[in] lineNumber
          * @param[in] secondPass
          * @return
          */
-        virtual bool process ( std::vector<std::string> & messages,
+        virtual bool process ( std::vector<std::pair<unsigned int, std::string> > & messages,
                                std::string & line,
-                               bool secondPass = false );
+                               unsigned int lineNumber,
+                               bool secondPass = false ) override;
 
     ////    Private Operations    ////
     private:
@@ -70,19 +72,29 @@ class AsmTranslatorKcpsmPBIDE : public AsmTranslatorBase
          * @brief
          * @param[in,out] messages
          * @param[in,out] lineFields
+         * @param[in] lineNumber
          * @return
          */
-        inline bool processInstructions ( std::vector<std::string> & messages,
-                                          LineFields & lineFields );
+        inline bool processInstructions ( std::vector<std::pair<unsigned int, std::string> > & messages,
+                                          LineFields & lineFields,
+                                          unsigned int lineNumber );
 
         /**
          * @brief
          * @param[in,out] messages
          * @param[in,out] lineFields
+         * @param[in] lineNumber
          * @return
          */
-        inline bool processDirectives ( std::vector<std::string> & messages,
-                                        LineFields & lineFields );
+        inline bool processDirectives ( std::vector<std::pair<unsigned int, std::string> > & messages,
+                                        LineFields & lineFields,
+                                        unsigned int lineNumber );
+
+        /**
+         * @brief
+         * @return
+         */
+        inline unsigned int indSz() const;
 
     ////    Private Attributes    ////
     private:

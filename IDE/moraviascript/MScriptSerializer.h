@@ -211,7 +211,7 @@ class MScriptSerializer
             void write ( double val );
 
             /**
-             * @brief Write a NULL terminated (C language style) string.
+             * @brief Write a nullptr terminated (C language style) string.
              * @param[in] val (String to serialize.)
              */
             void write ( const char * val );
@@ -271,7 +271,7 @@ class MScriptSerializer
              * @brief Read a string of arbitrary length.
              * @note This method automatically allocates storage for the string. 
              * @warning The return value has to be deallocated elsewhere (using delete[] operator);
-             * @return NULL terminated (C language style) string read from the serialized object.
+             * @return nullptr terminated (C language style) string read from the serialized object.
              */
             char * read_c_str_copy();
 

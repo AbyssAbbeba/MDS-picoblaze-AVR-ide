@@ -93,11 +93,9 @@ bool TestKcpsm1::addTests ( CU_pSuite suite )
 
     std::sort(testCaseFiles.begin(), testCaseFiles.end());
 
-    for ( std::vector<std::string>::const_iterator it = testCaseFiles.cbegin();
-          it != testCaseFiles.cend();
-          it++ )
+    for ( const auto & testCaseFile : testCaseFiles )
     {
-        if ( NULL == CU_add_test(suite, it->c_str(), &testFunction) )
+        if ( nullptr == CU_add_test(suite, testCaseFile.c_str(), &testFunction) )
         {
             return false;
         }
@@ -145,11 +143,9 @@ void TestKcpsm1::testFunction()
     disassembledCode.close();
 
     const std::vector<std::string> & messages = m_disassembler->getMessages();
-    for ( std::vector<std::string>::const_iterator it = messages.cbegin();
-          it != messages.cend();
-          it++ )
+    for ( const auto & msg : messages )
     {
-        std::cout << *it << std::endl;
+        std::cout << msg << std::endl;
     }
 
     if ( false == disasmExitCode )
@@ -180,7 +176,7 @@ void TestKcpsm1::testFunction()
     {
         CU_ASSERT ( originalHex == generatedHex );
     }
-    catch ( DataFileException & e )
+    catch ( const DataFileException & e )
     {
         std::cerr << std::endl << e.toString() << std::endl;
         CU_FAIL("An instance of DataFileException thrown!");

@@ -56,7 +56,7 @@ class MScriptStrategy
             int newFunction ( const std::string & ns,
                               const std::string & name,
                               const std::vector<std::string> & params,
-                              const std::vector<MScriptValue> * defaults = NULL );
+                              const std::vector<MScriptValue> * defaults = nullptr );
 
             /**
              * @brief

@@ -48,23 +48,24 @@ class DbgFileCDB : public DbgFile
          * @brief
          * @param[in] filename
          */
-        void openFile ( const std::string & filename ) throw ( Exception );
+        virtual void openFile ( const std::string & filename ) override;
 
         /**
          * @brief
          * @param[in] addr
-         * @return
+         * @param[out] recordNumber
          */
-        int getLineByAddr ( unsigned int addr ) const;
+        virtual void getLineByAddr ( unsigned int addr,
+                                     std::vector<unsigned int> & recordNumbers ) const override;
 
         /**
          * @brief
-         * @param[in] line
+         * @param[in] addr
          * @param[in] filename
          * @return
          */
-        int getAddrByLine ( unsigned int line,
-                            const std::string & filename ) const;
+        virtual int getAddrByLine ( unsigned int line,
+                                    const std::string & filename ) const override;
 
     ////    Inline Private Operations    ////
     private:
@@ -97,7 +98,7 @@ class DbgFileCDB : public DbgFile
          * @param[in,out] target
          */
         inline void handleSymbolRecord ( char * line,
-                                         SymbolRecord * target = NULL );
+                                         SymbolRecord * target = nullptr );
 
         /**
          * @brief

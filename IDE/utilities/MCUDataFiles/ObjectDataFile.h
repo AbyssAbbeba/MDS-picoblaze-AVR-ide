@@ -52,10 +52,10 @@ class ObjectDataFile : public DataFile
          * @brief Load data file into the memory array
          * @param[in] filename
          */
-        virtual void clearAndLoad ( const char * filename ) throw ( DataFileException );
+        virtual void clearAndLoad ( const char * filename ) override;
 
         /// @overload
-        virtual void clearAndLoad ( const std::string & filename ) throw ( DataFileException );
+        virtual void clearAndLoad ( const std::string & filename ) override;
 
         /**
          * @brief Save memory array in data file
@@ -63,11 +63,11 @@ class ObjectDataFile : public DataFile
          * @param[in] makeBackup Make backup file
          */
         virtual void save ( const char * filename,
-                            bool makeBackup = true ) throw ( DataFileException );
+                            bool makeBackup = true ) override;
 
         /// @overload
         virtual void save ( const std::string & filename,
-                            bool makeBackup = true ) throw ( DataFileException );
+                            bool makeBackup = true ) override;
 };
 
 #endif // OBJECTDATAFILE_H

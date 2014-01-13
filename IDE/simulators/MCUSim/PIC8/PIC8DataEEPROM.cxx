@@ -23,12 +23,12 @@
 
 PIC8DataEEPROM::PIC8DataEEPROM()
 {
-    m_memory = NULL;
+    m_memory = nullptr;
 }
 
 PIC8DataEEPROM::~PIC8DataEEPROM()
 {
-    if ( NULL != m_memory )
+    if ( nullptr != m_memory )
     {
         delete[] m_memory;
     }
@@ -74,7 +74,7 @@ void PIC8DataEEPROM::resize ( unsigned int newSize )
     uint32_t * memoryOrig = m_memory;
     m_memory = new uint32_t[newSize];
 
-    if ( NULL == memoryOrig )
+    if ( nullptr == memoryOrig )
     {
         m_config.m_size = 0;
     }
@@ -90,7 +90,7 @@ void PIC8DataEEPROM::resize ( unsigned int newSize )
         m_memory[i] = ( getUndefVal() | MFLAG_UNDEFINED );
     }
 
-    if ( NULL != memoryOrig )
+    if ( nullptr != memoryOrig )
     {
         delete[] memoryOrig;
     }

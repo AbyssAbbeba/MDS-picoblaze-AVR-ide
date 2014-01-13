@@ -42,6 +42,7 @@ class AsmTranslatorBase
          */
         struct LineFields
         {
+            //
             friend std::ostream & operator << ( std::ostream & out,
                                                 const LineFields & obj );
 
@@ -76,6 +77,12 @@ class AsmTranslatorBase
 
             /**
              * @brief
+             * @return
+             */
+            std::string getComment() const;
+
+            /**
+             * @brief
              * @param[in] number
              * @return
              */
@@ -107,6 +114,12 @@ class AsmTranslatorBase
             void replaceOpr ( const std::string & substitute,
                               unsigned int number = 0 );
 
+            /**
+             * @brief
+             * @param[in] substitute
+             */
+            void replaceAll ( const std::string & substitute );
+
             /// @brief
             std::string * m_line;
 
@@ -136,12 +149,36 @@ class AsmTranslatorBase
          * @brief
          * @param[in,out] messages
          * @param[in,out] line
+         * @param[in] lineNumber
          * @param[in] secondPass
          * @return
          */
-        virtual bool process ( std::vector<std::string> & messages,
+        virtual bool process ( std::vector<std::pair<unsigned int, std::string> > & messages,
                                std::string & line,
+                               unsigned int lineNumber,
                                bool secondPass = false ) = 0;
+
+    ////    Protected Operations    ////
+    protected:
+        /**
+         * @brief
+         * @param[in] string
+         * @param[in] letterCase
+         * @return
+         */
+        std::string changeLetterCase ( const std::string & string,
+                                       AsmTranslatorConfig::LetterCase letterCase ) const;
+
+        /**
+         * @brief
+         * @param[in] line
+         * @param[in] tabSizes
+         * @param[in] useLabelCol
+         * @return
+         */
+        std::string autoIndent ( const std::string * line,
+                                 unsigned int tabSizes,
+                                 bool useLabelCol = false ) const;
 
     ////    Public Attributes    ////
     public:

@@ -111,7 +111,7 @@ class PicoBlazeInstructionSet : public MCUSimCPU
          * @brief
          * @param[in] mode
          */
-        void reset ( MCUSimBase::ResetMode mode );
+        virtual void reset ( MCUSimBase::ResetMode mode ) override;
 
         /**
          * @brief Request program interrupt.
@@ -142,7 +142,7 @@ class PicoBlazeInstructionSet : public MCUSimCPU
          * @brief
          * @return
          */
-        unsigned int getProgramCounter() const
+        virtual unsigned int getProgramCounter() const override
         {
             return ( unsigned int ) m_pc;
         }
@@ -151,7 +151,7 @@ class PicoBlazeInstructionSet : public MCUSimCPU
          * @brief
          * @param[in] newPc
          */
-        void setProgramCounter ( unsigned int newPc )
+        virtual void setProgramCounter ( unsigned int newPc ) override
         {
             m_pc = int ( newPc );
             logEvent ( EVENT_CPU_PC_CHANGED, m_pc );

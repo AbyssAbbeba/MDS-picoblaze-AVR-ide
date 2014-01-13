@@ -60,7 +60,7 @@ class MScriptVariable
             /// @brief
             Value()
             {
-                m_array = NULL;
+                m_array = nullptr;
             }
 
             /// @brief

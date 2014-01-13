@@ -57,7 +57,7 @@ AVR8IO * AVR8IO::link ( MCUSimEventLogger * eventLogger,
 
 AVR8IO::~AVR8IO()
 {
-    if ( NULL != m_lowLevelInterface )
+    if ( nullptr != m_lowLevelInterface )
     {
         for ( int i = 0; i < II__MAX__; i++ )
         {

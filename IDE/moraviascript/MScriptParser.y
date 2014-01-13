@@ -294,7 +294,7 @@
 // Each time the parser discards symbol with certain semantic types, their memory have to bee freed.
 %destructor
 {
-    if ( NULL != $$ )
+    if ( nullptr != $$ )
     {
         $$->completeDelete();
     }
@@ -302,7 +302,7 @@
 
 %destructor
 {
-    if ( NULL != $$ )
+    if ( nullptr != $$ )
     {
         $$->completeDelete();
     }
@@ -333,7 +333,7 @@ input:
                                         YYACCEPT;
                                     }
     | /* empty */                   {
-                                        core->syntaxAnalysisComplete(NULL);
+                                        core->syntaxAnalysisComplete(nullptr);
                                         YYACCEPT;
                                     }
 ;
@@ -347,10 +347,10 @@ statements:
 // Single statement.
 stmt:
       ";"                           {
-                                        $$ = NULL;
+                                        $$ = nullptr;
                                     }
     | error                         {
-                                        $$ = NULL;
+                                        $$ = nullptr;
                                     }
     | scope                         {
                                         $$ = $scope;
@@ -525,20 +525,20 @@ param:
 
 // List of function parameters.
 param_list:
-      /* empty */                   { $$ = NULL;                   }
+      /* empty */                   { $$ = nullptr;                   }
     | param                         { $$ = $param;                 }
     | param_list "," param          { $$ = $1->appendLink($param); }
 ;
 
 // Integer, possibly empty.
 e_int:
-      /* empty */                   { $$ = NULL;                          }
+      /* empty */                   { $$ = nullptr;                          }
     | INTEGER                       { $$ = new MScriptExpr($INTEGER, @$); }
 ;
 
 // Expression, possibly empty.
 e_expr:
-      /* empty */                   { $$ = NULL;  }
+      /* empty */                   { $$ = nullptr;  }
     | expr                          { $$ = $expr; }
 ;
 

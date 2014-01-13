@@ -25,7 +25,7 @@
 PIC8DataMemory::PIC8DataMemory()
 {
     m_size = 0;
-    m_memory = NULL;
+    m_memory = nullptr;
 }
 
 PIC8DataMemory * PIC8DataMemory::link ( MCUSimEventLogger    * eventLogger,
@@ -40,7 +40,7 @@ PIC8DataMemory * PIC8DataMemory::link ( MCUSimEventLogger    * eventLogger,
 
 PIC8DataMemory::~PIC8DataMemory()
 {
-    if ( NULL != m_memory )
+    if ( nullptr != m_memory )
     {
         delete[] m_memory;
     }
@@ -214,7 +214,7 @@ void PIC8DataMemory::resize ( unsigned int newSize )
         m_memory[i] = getUndefVal();
     }
 
-    if ( NULL != memoryOrig )
+    if ( nullptr != memoryOrig )
     {
         delete memoryOrig;
     }
@@ -301,22 +301,22 @@ PIC8DataMemory::Config::Config()
     m_undefinedValue = -1;
 
     m_size = 0;
-    m_addrTransTab = NULL;
-    m_randomInit = NULL;
-    m_initValues = NULL;
+    m_addrTransTab = nullptr;
+    m_randomInit = nullptr;
+    m_initValues = nullptr;
 }
 
 PIC8DataMemory::Config::~Config()
 {
-    if ( NULL != m_addrTransTab )
+    if ( nullptr != m_addrTransTab )
     {
         delete[] m_addrTransTab;
     }
-    if ( NULL != m_randomInit )
+    if ( nullptr != m_randomInit )
     {
         delete[] m_randomInit;
     }
-    if ( NULL != m_initValues )
+    if ( nullptr != m_initValues )
     {
         delete[] m_initValues;
     }

@@ -176,11 +176,11 @@ class MScriptNamespaces
          * @param[in] id
          * @param[out] bareId
          * @param[in] location
-         * @return Namespace descriptor; or NULL, if determination was not possible.
+         * @return Namespace descriptor; or nullptr, if determination was not possible.
          */
         NsDesc * analyseId ( const std::string & id,
                              std::string & bareId,
-                             const MScriptSrcLocation * location = NULL ) const;
+                             const MScriptSrcLocation * location = nullptr ) const;
 
         /**
          * @param[in] ns

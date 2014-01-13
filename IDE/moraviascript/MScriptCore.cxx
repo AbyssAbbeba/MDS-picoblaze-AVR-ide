@@ -36,7 +36,7 @@ MScriptCore::MScriptCore ( MScriptStrategy * strategy,
                          : m_strategy ( strategy )
 {
     m_strategy->m_core = this;
-    m_codeTree = NULL;
+    m_codeTree = nullptr;
     loadScript(scriptCode);
 }
 
@@ -47,13 +47,13 @@ MScriptCore::MScriptCore ( MScriptStrategy * strategy,
                            m_strategy ( strategy )
 {
     m_strategy->m_core = this;
-    m_codeTree = NULL;
+    m_codeTree = nullptr;
     loadScript(sourceFile, fileName);
 }
 
 MScriptCore::~MScriptCore()
 {
-    if ( NULL != m_codeTree )
+    if ( nullptr != m_codeTree )
     {
         m_codeTree->completeDelete();
     }
@@ -104,10 +104,10 @@ bool MScriptCore::loadFile ( FILE * file )
 
 void MScriptCore::unloadScript()
 {
-    if ( NULL != m_codeTree )
+    if ( nullptr != m_codeTree )
     {
         m_codeTree->completeDelete();
-        m_codeTree = NULL;
+        m_codeTree = nullptr;
     }
     m_messages.clear();
     m_files.clear();
@@ -173,7 +173,7 @@ MScriptStrategy * MScriptCore::getStrategy()
 
 void MScriptCore::syntaxAnalysisComplete ( MScriptStatement * codeTree )
 {
-    if ( NULL != m_codeTree )
+    if ( nullptr != m_codeTree )
     {
         m_includedCode = codeTree;
         return;
@@ -190,11 +190,9 @@ void MScriptCore::syntaxAnalysisComplete ( MScriptStatement * codeTree )
 int MScriptCore::getFileNumber ( const std::string & fileName )
 {
     int result = 0;
-    for ( std::vector<std::string>::const_iterator i = m_files.cbegin();
-          i != m_files.cend();
-          i++ )
+    for ( const auto & file : m_files )
     {
-        if ( fileName == *i )
+        if ( fileName == file )
         {
             return result;
         }
@@ -208,17 +206,17 @@ void MScriptCore::rewriteFileNumbers ( MScriptStatement * code,
                                        int fileNumber ) const
 {
     for ( MScriptStatement * node = code;
-          NULL != node;
+          nullptr != node;
           node = node->next() )
     {
         node->m_location.m_file = fileNumber;
-        if ( NULL != node->branch() )
+        if ( nullptr != node->branch() )
         {
             rewriteFileNumbers ( node->branch(), fileNumber );
         }
 
         for ( MScriptExpr * arg = node->args();
-              NULL != arg;
+              nullptr != arg;
               arg = arg->next() )
         {
             rewriteFileNumbers ( arg, fileNumber );
@@ -247,7 +245,7 @@ void MScriptCore::locationRelativeTo ( MScriptStatement * code,
                                        const MScriptSrcLocation & location )
 {
     for ( MScriptStatement * node = code;
-          NULL != node;
+          nullptr != node;
           node = node->next() )
     {
         node->m_location.m_line[0]   += ( location.m_line[0] - 1 );
@@ -256,13 +254,13 @@ void MScriptCore::locationRelativeTo ( MScriptStatement * code,
         node->m_location.m_column[1] += ( location.m_column[1] - 1 );
         node->m_location.m_file       = location.m_file;
 
-        if ( NULL != node->branch() )
+        if ( nullptr != node->branch() )
         {
             locationRelativeTo ( node->branch(), location );
         }
 
         for ( MScriptExpr * arg = node->args();
-              NULL != arg;
+              nullptr != arg;
               arg = arg->next() )
         {
             locationRelativeTo ( arg, location );
@@ -301,14 +299,14 @@ MScriptStatement * MScriptCore::include ( const MScriptSrcLocation & location,
         m_files.push_back(fileName);
     }
     FILE * file = fopen ( fileName.c_str(), "r" );
-    if ( NULL == file )
+    if ( nullptr == file )
     {
         interpreterMessage ( location,
                              MScriptBase::MT_ERROR,
                              QObject::tr ( "unable to open file: `%1'" )
                                          . arg ( fileName.c_str() )
                                          . toStdString() );
-        return NULL;
+        return nullptr;
     }
 
     loadFile(file);

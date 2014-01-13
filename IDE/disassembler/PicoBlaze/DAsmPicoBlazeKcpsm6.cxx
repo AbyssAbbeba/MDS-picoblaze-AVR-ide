@@ -210,7 +210,7 @@ void DAsmPicoBlazeKcpsm6::phase2 ( unsigned int code,
 void DAsmPicoBlazeKcpsm6::shift_rotate ( std::string & line,
                                          unsigned int code )
 {
-    const char * inst = NULL;
+    const char * inst = nullptr;
     switch ( code & 0xff )
     {
         case 0x06: inst = "SL0";      break;
@@ -226,7 +226,7 @@ void DAsmPicoBlazeKcpsm6::shift_rotate ( std::string & line,
         case 0x80: inst = "HWBUILD";  break;
     }
 
-    if ( NULL == inst )
+    if ( nullptr == inst )
     {
         appendStr(line, "DB");
         indent(line, 32);
@@ -373,7 +373,7 @@ void DAsmPicoBlazeKcpsm6::aaa ( std::string & line,
 {
     appendStr(line, inst);
     indent(line, 32);
-    if ( NULL != cnd )
+    if ( nullptr != cnd )
     {
         appendStr(line, cnd);
         line += ", ";

@@ -90,9 +90,7 @@ class MCUSimIO : public MCUSimSubsys
          * @brief
          * @param[in,out] eventLogger
          */
-        MCUSimIO ( MCUSimEventLogger * eventLogger ) : MCUSimSubsys(eventLogger, ID_IO)
-        {
-        };
+        MCUSimIO ( MCUSimEventLogger * eventLogger ) : MCUSimSubsys(eventLogger, ID_IO) {}
 
     ////    Public Operations    ////
     public:

@@ -30,7 +30,7 @@ MCUSimTestScript::MCUSimTestScript ( MCUSim * simulator,
                                    : m_simulator ( simulator ),
                                      m_strategy ( strategy )
 {
-    if ( NULL != m_strategy )
+    if ( nullptr != m_strategy )
     {
         m_strategy->link(simulator, &m_execMessage, &m_success);
     }
@@ -250,7 +250,7 @@ inline MCUSimTestScript::Command MCUSimTestScript::processLine ( const char * li
                 }
                 else
                 {
-                    if ( ( NULL == m_strategy ) || ( false == m_strategy->processLine(&tokens, useAsmFile, &result) ) )
+                    if ( ( nullptr == m_strategy ) || ( false == m_strategy->processLine(&tokens, useAsmFile, &result) ) )
                     {
                         m_execMessage = "Memory space not recognized.";
                         result.m_type = CT_ABORT;
@@ -270,7 +270,7 @@ inline MCUSimTestScript::Command MCUSimTestScript::processLine ( const char * li
 
     if ( CT_UNKNOWN == result.m_type )
     {
-        if ( ( NULL == m_strategy ) || ( false == m_strategy->processLine(&tokens, useAsmFile, &result) ) )
+        if ( ( nullptr == m_strategy ) || ( false == m_strategy->processLine(&tokens, useAsmFile, &result) ) )
         {
             m_execMessage = "command not understood";
             result.m_type = CT_ABORT;
@@ -357,17 +357,17 @@ int MCUSimTestScript::str2num ( const std::string & token )
         if ( 'x' == token[1] || 'X' == token[1] )
         {
             // Hexadecimal radix.
-            return (int) strtol (token.substr(2).c_str(), NULL, 16);
+            return (int) strtol (token.substr(2).c_str(), nullptr, 16);
         }
         else if ( 'b' == token[1] || 'B' == token[1])
         {
             // Binary radix.
-            return (int) strtol (token.substr(2).c_str(), NULL, 2);
+            return (int) strtol (token.substr(2).c_str(), nullptr, 2);
         }
         else
         {
             // Octal radix.
-            return (int) strtol (token.substr(1).c_str(), NULL, 8);
+            return (int) strtol (token.substr(1).c_str(), nullptr, 8);
         }
     }
     else if ( ( 3 == token.size() ) && ( '\'' == token[0] ) && ( '\'' != token[1] ) && ( '\'' == token[2] ) )
@@ -420,14 +420,14 @@ inline bool MCUSimTestScript::executeCommand ( const Command & cmd,
         case CT_PC_NE:
         {
             MCUSimSubsys * cpuSubsys = m_simulator->getSubsys ( MCUSimSubsys::ID_CPU );
-            if ( NULL == cpuSubsys )
+            if ( nullptr == cpuSubsys )
             {
                 outFile << "[ABORTED] ";
                 return false;
             }
 
             MCUSimCPU * cpu = dynamic_cast<MCUSimCPU*>(cpuSubsys);
-            if ( NULL == cpu )
+            if ( nullptr == cpu )
             {
                 outFile << "[ABORTED] ";
                 m_execMessage = "MCUSimCPU subsystem not available.";
@@ -476,14 +476,14 @@ inline bool MCUSimTestScript::executeCommand ( const Command & cmd,
         case CT_NE:
         {
             MCUSimSubsys * memSubsys = m_simulator->getSubsys ( MCUSimSubsys::SubsysId(cmd.m_args[0]) );
-            if ( NULL == memSubsys )
+            if ( nullptr == memSubsys )
             {
                 outFile << "[ABORTED] ";
                 return false;
             }
 
             MCUSimMemory * memory = dynamic_cast<MCUSimMemory*>(memSubsys);
-            if ( NULL == memory )
+            if ( nullptr == memory )
             {
                 outFile << "[ABORTED] ";
                 m_execMessage = "MCUSimMemory subsystem not available.";
@@ -537,7 +537,7 @@ inline bool MCUSimTestScript::executeCommand ( const Command & cmd,
         }
 
         default:
-            if ( NULL != m_strategy )
+            if ( nullptr != m_strategy )
             {
                 return m_strategy->executeCommand(cmd, outFile);
             }

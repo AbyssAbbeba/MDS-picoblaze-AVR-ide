@@ -17,11 +17,11 @@
 
 #include "MCUSimControl.h"
 
-MCUSimObserver::MCUSimObserver() : m_simControlUnit(NULL) {}
+MCUSimObserver::MCUSimObserver() : m_simControlUnit(nullptr) {}
 
 MCUSimObserver::~MCUSimObserver()
 {
-    if ( NULL != m_simControlUnit )
+    if ( nullptr != m_simControlUnit )
     {
         m_simControlUnit->unregisterObserver(this);
     }

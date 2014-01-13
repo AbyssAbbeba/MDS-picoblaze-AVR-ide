@@ -49,7 +49,7 @@ PIC8IO * PIC8IO::link ( MCUSimEventLogger     * eventLogger,
 
 PIC8IO::~PIC8IO()
 {
-    if ( NULL != m_lowLevelInterface )
+    if ( nullptr != m_lowLevelInterface )
     {
         for ( int i = 0; i < II__MAX__; i++ )
         {

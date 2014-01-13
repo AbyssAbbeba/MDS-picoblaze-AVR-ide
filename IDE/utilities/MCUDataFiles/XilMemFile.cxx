@@ -18,12 +18,12 @@
 #include <cstring>
 #include <fstream>
 
-void XilMemFile::clearAndLoad ( const char * filename ) throw ( DataFileException )
+void XilMemFile::clearAndLoad ( const char * filename )
 {
     clearAndLoad(std::string(filename));
 }
 
-void XilMemFile::clearAndLoad ( const std::string & filename ) throw ( DataFileException )
+void XilMemFile::clearAndLoad ( const std::string & filename )
 {
     std::ifstream file(filename);
 
@@ -72,7 +72,7 @@ void XilMemFile::clearAndLoad ( const std::string & filename ) throw ( DataFileE
         }
 
         char * field = getField(&line);
-        if ( NULL == field )
+        if ( nullptr == field )
         {
             throw DataFileException(DataFileException::EXP_BAD_RECORD_FORMAT);
         }
@@ -81,7 +81,7 @@ void XilMemFile::clearAndLoad ( const std::string & filename ) throw ( DataFileE
         addr *= m_bytesPerRecord;
         addr /= 4;
 
-        while ( NULL != ( field = getField(&line) ) )
+        while ( nullptr != ( field = getField(&line) ) )
         {
             unsigned int value;
             sscanf(field, "%x", &value);
@@ -105,10 +105,10 @@ inline char * XilMemFile::getField ( char ** line )
 {
     char * result = *line;
 
-    if ( NULL != *line )
+    if ( nullptr != *line )
     {
         *line = strchr(*line, ' ');
-        if ( NULL != *line )
+        if ( nullptr != *line )
         {
             (*line)[0] = '\0';
             (*line)++;
@@ -139,13 +139,13 @@ inline bool XilMemFile::checkHex ( const char * string )
 }
 
 void XilMemFile::save ( const char * filename,
-                        bool makeBackup ) throw ( DataFileException )
+                        bool makeBackup )
 {
     save(std::string(filename), makeBackup);
 }
 
 void XilMemFile::save ( const std::string & filename,
-                        bool makeBackup ) throw ( DataFileException )
+                        bool makeBackup )
 {
     // Create backup file
     if ( true == makeBackup )

@@ -66,10 +66,10 @@ int AsmPicoBlazeParser_parse ( yyscan_t yyscanner, CompilerParserInterface * asm
     }
 
 #define OPEN_ALL_SOURCE_FILES()                                         \
-    for ( const auto srcFile : options->m_sourceFiles )                 \
+    for ( const auto & srcFile : options->m_sourceFiles )               \
     {                                                                   \
         FILE * file;                                                    \
-        if ( NULL == ( file = parserIntf->fileOpen ( srcFile ) ) )      \
+        if ( nullptr == ( file = parserIntf->fileOpen ( srcFile ) ) )      \
         {                                                               \
             *errStr = srcFile;                                          \
             return MESC_IO_ERROR;                                       \
@@ -90,7 +90,7 @@ CompilerModules::ModEmplStatCode CompilerModules::employModule ( CompilerBase::L
     // Pointer to the lexer context.
     yyscan_t yyscanner;
 
-    if ( NULL == parserIntf )
+    if ( nullptr == parserIntf )
     {
         return MESC_UNKNOWN_ERROR;
     }
@@ -143,7 +143,7 @@ CompilerModules::ModEmplStatCode CompilerModules::employModule ( CompilerBase::L
                     char * buffer = preprocessor.processFiles ( sourceFiles );
                     compilerCore->closeInputFiles();
 
-                    if ( NULL == buffer )
+                    if ( nullptr == buffer )
                     {
                         /*
                          * This is clearly an error condition but at this point the error message should have been

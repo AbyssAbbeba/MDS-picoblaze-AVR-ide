@@ -289,12 +289,12 @@
 
 // Each time the parser discards symbol with certain semantic types, their memory have to bee freed
 %destructor {
-    if ( NULL != $$ ) {
+    if ( nullptr != $$ ) {
         $$->completeDelete();
     }
 } <expr>
 %destructor {
-    if ( NULL != $$ ) {
+    if ( nullptr != $$ ) {
         $$->completeDelete();
     }
 } <stmt>
@@ -319,13 +319,13 @@ input:
 ;
 statements:
       stmt                          { $$ = $stmt; }
-    | error                         { $$ = NULL; }
+    | error                         { $$ = nullptr; }
     | statements EOL stmt           { $$ = $1->appendLink($stmt); }
     | statements error EOL stmt     { $$ = $1->appendLink($stmt); }
 ;
 stmt:
-      /* empty */                   { $$ = NULL; }
-    | COMMENT                       { $$ = NULL; }
+      /* empty */                   { $$ = nullptr; }
+    | COMMENT                       { $$ = nullptr; }
     | label                         { $$ = $1; }
     | label COMMENT                 { $$ = $1; }
     | dir_stmt                      { $$ = $1; }
@@ -509,7 +509,7 @@ if_block:
     | dir_ifnb                      { $$ = $1; }
 ;
 ifelse_block:
-      /* empty */                   { $$ = NULL; }
+      /* empty */                   { $$ = nullptr; }
     | dir_elseif    statements EOL  { $$ = $1->createBranch($2); }
     | dir_elseifn   statements EOL  { $$ = $1->createBranch($2); }
     | dir_elseifdef statements EOL  { $$ = $1->createBranch($2); }
@@ -524,7 +524,7 @@ ifelse_block:
     | dir_elseifnb                  { $$ = $1; }
 ;
 else_block:
-      /* empty */                   { $$ = NULL; }
+      /* empty */                   { $$ = nullptr; }
     | dir_else statements EOL       { $$ = $dir_else->createBranch($statements); }
     | dir_else                      { $$ = $dir_else; }
 ;
@@ -553,7 +553,7 @@ dir_if:
 ;
 dir_if_a:
       D_IF expr                     { $$ = new CompilerStatement(LOC(), ASMPIC8_DIR_IF, $expr); }
-    | D_IF                          { /* Syntax error */ $$ = NULL; ARG_REQUIRED_D(@D_IF, "IF"); }
+    | D_IF                          { /* Syntax error */ $$ = nullptr; ARG_REQUIRED_D(@D_IF, "IF"); }
 ;
 dir_ifn:
       dir_ifn_a EOL                 { $$ = $dir_ifn_a; }
@@ -561,7 +561,7 @@ dir_ifn:
 ;
 dir_ifn_a:
       D_IFN expr                    { $$ = new CompilerStatement(LOC(), ASMPIC8_DIR_IFN, $expr); }
-    | D_IFN                         { /* Syntax error */ $$ = NULL; ARG_REQUIRED_D(@D_IFN, "IFN"); }
+    | D_IFN                         { /* Syntax error */ $$ = nullptr; ARG_REQUIRED_D(@D_IFN, "IFN"); }
 ;
 dir_ifdef:
       dir_ifdef_a EOL               { $$ = $dir_ifdef_a; }
@@ -569,7 +569,7 @@ dir_ifdef:
 ;
 dir_ifdef_a:
       D_IFDEF id                    { $$ = new CompilerStatement(LOC(), ASMPIC8_DIR_IFDEF, $id); }
-    | D_IFDEF                       { /* Syntax error */ $$ = NULL; ARG_REQUIRED_D(@D_IFDEF, "IFDEF"); }
+    | D_IFDEF                       { /* Syntax error */ $$ = nullptr; ARG_REQUIRED_D(@D_IFDEF, "IFDEF"); }
 ;
 dir_ifndef:
       dir_ifndef_a EOL              { $$ = $dir_ifndef_a; }
@@ -577,7 +577,7 @@ dir_ifndef:
 ;
 dir_ifndef_a:
       D_IFNDEF id                   { $$ = new CompilerStatement(LOC(), ASMPIC8_DIR_IFNDEF, $id); }
-    | D_IFNDEF                      { /* Syntax error */ $$ = NULL; ARG_REQUIRED_D(@D_IFNDEF, "IFNDEF"); }
+    | D_IFNDEF                      { /* Syntax error */ $$ = nullptr; ARG_REQUIRED_D(@D_IFNDEF, "IFNDEF"); }
 ;
 dir_ifb:
       dir_ifb_a EOL                 { $$ = $dir_ifb_a; }
@@ -585,7 +585,7 @@ dir_ifb:
 ;
 dir_ifb_a:
       D_IFB id                      { $$ = new CompilerStatement(LOC(), ASMPIC8_DIR_IFB, $id); }
-    | D_IFB                         { /* Syntax error */ $$ = NULL; ARG_REQUIRED_D(@D_IFB, "IFB"); }
+    | D_IFB                         { /* Syntax error */ $$ = nullptr; ARG_REQUIRED_D(@D_IFB, "IFB"); }
 ;
 dir_ifnb:
       dir_ifnb_a EOL                { $$ = $dir_ifnb_a; }
@@ -593,7 +593,7 @@ dir_ifnb:
 ;
 dir_ifnb_a:
       D_IFNB id                     { $$ = new CompilerStatement(LOC(), ASMPIC8_DIR_IFNB, $id); }
-    | D_IFNB                        { /* Syntax error */ $$ = NULL; ARG_REQUIRED_D(@D_IFNB, "IFNB"); }
+    | D_IFNB                        { /* Syntax error */ $$ = nullptr; ARG_REQUIRED_D(@D_IFNB, "IFNB"); }
 ;
 dir_elseif:
       dir_elseif_a EOL              { $$ = $dir_elseif_a; }
@@ -601,11 +601,11 @@ dir_elseif:
 ;
 dir_elseif_a:
       D_ELSEIF expr                 { $$ = new CompilerStatement(LOC(), ASMPIC8_DIR_ELSEIF, $expr); }
-    | D_ELSEIF                      { /* Syntax Error */ $$ = NULL; ARG_REQUIRED_D(@D_ELSEIF, "ELSEIF"); }
-    | label D_ELSEIF expr           { /* Syntax Error */ $$ = NULL; NO_LABEL_EXPECTED(@label, "ELSEIF", $label); $expr->completeDelete(); }
+    | D_ELSEIF                      { /* Syntax Error */ $$ = nullptr; ARG_REQUIRED_D(@D_ELSEIF, "ELSEIF"); }
+    | label D_ELSEIF expr           { /* Syntax Error */ $$ = nullptr; NO_LABEL_EXPECTED(@label, "ELSEIF", $label); $expr->completeDelete(); }
     | label D_ELSEIF                {
                         /* Syntax Error */
-                        $$ = NULL;
+                        $$ = nullptr;
                         ARG_REQUIRED_D(@D_ELSEIF, "ELSEIF");
                         NO_LABEL_EXPECTED(@label, "ELSEIF", $label);
                     }
@@ -616,16 +616,16 @@ dir_elseifn:
 ;
 dir_elseifn_a:
       D_ELSEIFN expr                { $$ = new CompilerStatement(LOC(), ASMPIC8_DIR_ELSEIFN, $expr); }
-    | D_ELSEIFN                     { /* Syntax Error */ $$ = NULL; ARG_REQUIRED_D(@D_ELSEIFN, "ELSEIFN"); }
+    | D_ELSEIFN                     { /* Syntax Error */ $$ = nullptr; ARG_REQUIRED_D(@D_ELSEIFN, "ELSEIFN"); }
     | label D_ELSEIFN expr          {
                         /* Syntax Error */
-                        $$ = NULL;
+                        $$ = nullptr;
                         NO_LABEL_EXPECTED(@label, "ELSEIFN", $label);
                         $expr->completeDelete();
                     }
     | label D_ELSEIFN               {
                         /* Syntax Error */
-                        $$ = NULL;
+                        $$ = nullptr;
                         ARG_REQUIRED_D(@D_ELSEIFN, "ELSEIFN");
                         NO_LABEL_EXPECTED(@label, "ELSEIFN", $label);
                     }
@@ -636,11 +636,11 @@ dir_elseifdef:
 ;
 dir_elseifdef_a:
       D_ELSEIFDEF expr              { $$ = new CompilerStatement(LOC(), ASMPIC8_DIR_ELSEIFDEF, $expr); }
-    | D_ELSEIFDEF                   { /* Syntax Error */ $$ = NULL; ARG_REQUIRED_D(@D_ELSEIFDEF, "ELSEIFDEF"); }
-    | label D_ELSEIFDEF expr        { /* Syntax Error */ $$ = NULL; NO_LABEL_EXPECTED(@label, "ELSEIFDEF", $label); $expr->completeDelete(); }
+    | D_ELSEIFDEF                   { /* Syntax Error */ $$ = nullptr; ARG_REQUIRED_D(@D_ELSEIFDEF, "ELSEIFDEF"); }
+    | label D_ELSEIFDEF expr        { /* Syntax Error */ $$ = nullptr; NO_LABEL_EXPECTED(@label, "ELSEIFDEF", $label); $expr->completeDelete(); }
     | label D_ELSEIFDEF             {
                         /* Syntax Error */
-                        $$ = NULL;
+                        $$ = nullptr;
                         ARG_REQUIRED_D(@D_ELSEIFDEF, "ELSEIFDEF");
                         NO_LABEL_EXPECTED(@label, "ELSEIFDEF", $label);
                     }
@@ -651,11 +651,11 @@ dir_elseifndf:
 ;
 dir_elseifndf_a:
       D_ELSEIFNDEF expr             { $$ = new CompilerStatement(LOC(), ASMPIC8_DIR_ELSEIFNDEF, $expr); }
-    | D_ELSEIFNDEF                  { /* Syntax Error */ $$ = NULL; ARG_REQUIRED_D(@D_ELSEIFNDEF, "ELSEIFNDEF"); }
-    | label D_ELSEIFNDEF expr       { /* Syntax Error */ $$ = NULL; NO_LABEL_EXPECTED(@label, "ELSEIFNDEF", $label); $expr->completeDelete(); }
+    | D_ELSEIFNDEF                  { /* Syntax Error */ $$ = nullptr; ARG_REQUIRED_D(@D_ELSEIFNDEF, "ELSEIFNDEF"); }
+    | label D_ELSEIFNDEF expr       { /* Syntax Error */ $$ = nullptr; NO_LABEL_EXPECTED(@label, "ELSEIFNDEF", $label); $expr->completeDelete(); }
     | label D_ELSEIFNDEF            {
                         /* Syntax Error */
-                        $$ = NULL;
+                        $$ = nullptr;
                         ARG_REQUIRED_D(@D_ELSEIFNDEF, "ELSEIFNDEF");
                         NO_LABEL_EXPECTED(@label, "ELSEIFNDEF", $label);
                     }
@@ -666,16 +666,16 @@ dir_elseifb:
 ;
 dir_elseifb_a:
       D_ELSEIFB expr                { $$ = new CompilerStatement(LOC(), ASMPIC8_DIR_ELSEIFB, $expr); }
-    | D_ELSEIFB                     { /* Syntax Error */ $$ = NULL; ARG_REQUIRED_D(@D_ELSEIFB, "ELSEIFB"); }
+    | D_ELSEIFB                     { /* Syntax Error */ $$ = nullptr; ARG_REQUIRED_D(@D_ELSEIFB, "ELSEIFB"); }
     | label D_ELSEIFB expr          {
                         /* Syntax Error */
-                        $$ = NULL;
+                        $$ = nullptr;
                         NO_LABEL_EXPECTED(@label, "ELSEIFB", $label);
                         $expr->completeDelete();
                     }
     | label D_ELSEIFB               {
                         /* Syntax Error */
-                        $$ = NULL;
+                        $$ = nullptr;
                         ARG_REQUIRED_D(@D_ELSEIFB, "ELSEIFB");
                         NO_LABEL_EXPECTED(@label, "ELSEIFB", $label);
                     }
@@ -686,16 +686,16 @@ dir_elseifnb:
 ;
 dir_elseifnb_a:
       D_ELSEIFNB expr               { $$ = new CompilerStatement(LOC(), ASMPIC8_DIR_ELSEIFNB, $expr); }
-    | D_ELSEIFNB                    { /* Syntax Error */ $$ = NULL; ARG_REQUIRED_D(@D_ELSEIFNB, "ELSEIFNB"); }
+    | D_ELSEIFNB                    { /* Syntax Error */ $$ = nullptr; ARG_REQUIRED_D(@D_ELSEIFNB, "ELSEIFNB"); }
     | label D_ELSEIFNB expr         {
                         /* Syntax Error */
-                        $$ = NULL;
+                        $$ = nullptr;
                         NO_LABEL_EXPECTED(@label, "ELSEIFNB", $label);
                         $expr->completeDelete();
                     }
     | label D_ELSEIFNB              {
                         /* Syntax Error */
-                        $$ = NULL;
+                        $$ = nullptr;
                         ARG_REQUIRED_D(@D_ELSEIFNB, "ELSEIFNB");
                         NO_LABEL_EXPECTED(@label, "ELSEIFNB", $label);
                     }
@@ -703,48 +703,48 @@ dir_elseifnb_a:
 dir_org:
       D_ORG expr                    { $$ = new CompilerStatement(LOC(), ASMPIC8_DIR_ORG, $expr); }
     | label D_ORG expr              { $$ = $label->appendLink(new CompilerStatement(LOC(), ASMPIC8_DIR_ORG, $expr)); }
-    | D_ORG                         { /* Syntax error */ $$ = NULL; ARG_REQUIRED_D(@D_ORG, "ORG"); }
-    | label D_ORG                   { /* Syntax error */ $$ = NULL; ARG_REQUIRED_D(@D_ORG, "ORG"); $label->completeDelete(); }
+    | D_ORG                         { /* Syntax error */ $$ = nullptr; ARG_REQUIRED_D(@D_ORG, "ORG"); }
+    | label D_ORG                   { /* Syntax error */ $$ = nullptr; ARG_REQUIRED_D(@D_ORG, "ORG"); $label->completeDelete(); }
 ;
 dir_skip:
       D_SKIP expr                   { $$ = new CompilerStatement(LOC(), ASMPIC8_DIR_SKIP, $expr); }
     | label D_SKIP expr             { $$ = $label->appendLink(new CompilerStatement(LOC(), ASMPIC8_DIR_SKIP, $expr)); }
-    | D_SKIP                        { /* Syntax error */ $$ = NULL; ARG_REQUIRED_D(@D_SKIP, "SKIP"); }
-    | label D_SKIP                  { /* Syntax error */ $$ = NULL; ARG_REQUIRED_D(@D_SKIP, "SKIP"); $label->completeDelete(); }
+    | D_SKIP                        { /* Syntax error */ $$ = nullptr; ARG_REQUIRED_D(@D_SKIP, "SKIP"); }
+    | label D_SKIP                  { /* Syntax error */ $$ = nullptr; ARG_REQUIRED_D(@D_SKIP, "SKIP"); $label->completeDelete(); }
 ;
 dir_local:
       D_LOCAL id                    { $$ = new CompilerStatement(LOC(), ASMPIC8_DIR_LOCAL, $id); }
     | label D_LOCAL id              { $$ = $label->appendLink(new CompilerStatement(LOC(), ASMPIC8_DIR_LOCAL, $id)); }
-    | D_LOCAL                       { /* Syntax error */ $$ = NULL; ARG_REQUIRED_D(@D_LOCAL, "LOCAL"); }
-    | label D_LOCAL                 { /* Syntax error */ $$ = NULL; ARG_REQUIRED_D(@D_LOCAL, "LOCAL"); $label->completeDelete(); }
+    | D_LOCAL                       { /* Syntax error */ $$ = nullptr; ARG_REQUIRED_D(@D_LOCAL, "LOCAL"); }
+    | label D_LOCAL                 { /* Syntax error */ $$ = nullptr; ARG_REQUIRED_D(@D_LOCAL, "LOCAL"); $label->completeDelete(); }
 ;
 dir_exitm:
       D_EXITM                       { $$ = new CompilerStatement(LOC(), ASMPIC8_DIR_EXITM); }
     | label D_EXITM                 { $$ = $label->appendLink(new CompilerStatement(LOC(), ASMPIC8_DIR_EXITM)); }
-    | D_EXITM args                  { /* Syntax error */ $$ = NULL; NO_ARG_EXPECTED_D("EXITM", $args, @args); }
-    | label D_EXITM args            { /* Syntax error */ $$ = NULL; NO_ARG_EXPECTED_D("EXITM", $args, @args); $label->completeDelete(); }
+    | D_EXITM args                  { /* Syntax error */ $$ = nullptr; NO_ARG_EXPECTED_D("EXITM", $args, @args); }
+    | label D_EXITM args            { /* Syntax error */ $$ = nullptr; NO_ARG_EXPECTED_D("EXITM", $args, @args); $label->completeDelete(); }
 ;
 dir_nolist:
       D_NOLIST                      { $$ = new CompilerStatement(LOC(), ASMPIC8_DIR_NOLIST); }
     | label D_NOLIST                { $$ = $label->appendLink(new CompilerStatement(LOC(), ASMPIC8_DIR_NOLIST)); }
-    | D_NOLIST args                 { /* Syntax error */ $$ = NULL; NO_ARG_EXPECTED_D("NOLIST", $args, @args); }
-    | label D_NOLIST args           { /* Syntax error */ $$ = NULL; NO_ARG_EXPECTED_D("NOLIST", $args, @args); $label->completeDelete(); }
+    | D_NOLIST args                 { /* Syntax error */ $$ = nullptr; NO_ARG_EXPECTED_D("NOLIST", $args, @args); }
+    | label D_NOLIST args           { /* Syntax error */ $$ = nullptr; NO_ARG_EXPECTED_D("NOLIST", $args, @args); $label->completeDelete(); }
 ;
 dir_set:
       id D_SET expr                 { $$ = new CompilerStatement(LOC(), ASMPIC8_DIR_SET, $id->appendLink($expr)); }
-    | id D_SET                      { /* Syntax error */ $$ = NULL; ARG_REQUIRED_D(@D_SET, "SET"); $id->completeDelete(); }
-    | D_SET                         { /* Syntax error */ $$ = NULL; DECL_ID_EXPECTED(@D_SET, "SET"); ARG_REQUIRED_D(@D_SET, "SET"); }
-    | D_SET expr                    { /* Syntax error */ $$ = NULL; DECL_ID_EXPECTED(@D_SET, "SET"); $expr->completeDelete(); }
-    | label D_SET expr              { /* Syntax error */ $$ = NULL; DECL_ID_EXPECTED(@D_SET, "SET"); NO_LABEL_EXPECTED(@label, "SET", $label->appendArgsLink($expr)) }
-    | label id D_SET expr           { /* Syntax error */ $$ = NULL; NO_LABEL_EXPECTED(@label, "SET", $label->appendArgsLink($id->appendLink($expr))); }
+    | id D_SET                      { /* Syntax error */ $$ = nullptr; ARG_REQUIRED_D(@D_SET, "SET"); $id->completeDelete(); }
+    | D_SET                         { /* Syntax error */ $$ = nullptr; DECL_ID_EXPECTED(@D_SET, "SET"); ARG_REQUIRED_D(@D_SET, "SET"); }
+    | D_SET expr                    { /* Syntax error */ $$ = nullptr; DECL_ID_EXPECTED(@D_SET, "SET"); $expr->completeDelete(); }
+    | label D_SET expr              { /* Syntax error */ $$ = nullptr; DECL_ID_EXPECTED(@D_SET, "SET"); NO_LABEL_EXPECTED(@label, "SET", $label->appendArgsLink($expr)) }
+    | label id D_SET expr           { /* Syntax error */ $$ = nullptr; NO_LABEL_EXPECTED(@label, "SET", $label->appendArgsLink($id->appendLink($expr))); }
 ;
 dir_equ:
       id D_EQU expr                 { $$ = new CompilerStatement(LOC(), ASMPIC8_DIR_EQU, $id->appendLink($expr)); }
-    | id D_EQU                      { /* Syntax error */ $$ = NULL; ARG_REQUIRED_D(@D_EQU, "EQU"); $id->completeDelete(); }
-    | D_EQU                         { /* Syntax error */ $$ = NULL; DECL_ID_EXPECTED(@D_EQU, "EQU"); ARG_REQUIRED_D(@D_EQU, "EQU"); }
-    | D_EQU expr                    { /* Syntax error */ $$ = NULL; DECL_ID_EXPECTED(@D_EQU, "EQU"); $expr->completeDelete(); }
-    | label D_EQU expr              { /* Syntax error */ $$ = NULL; DECL_ID_EXPECTED(@D_EQU, "EQU"); NO_LABEL_EXPECTED(@label, "EQU", $label->appendArgsLink($expr)) }
-    | label id D_EQU expr           { /* Syntax error */ $$ = NULL; NO_LABEL_EXPECTED(@label, "EQU", $label->appendArgsLink($id->appendLink($expr))); }
+    | id D_EQU                      { /* Syntax error */ $$ = nullptr; ARG_REQUIRED_D(@D_EQU, "EQU"); $id->completeDelete(); }
+    | D_EQU                         { /* Syntax error */ $$ = nullptr; DECL_ID_EXPECTED(@D_EQU, "EQU"); ARG_REQUIRED_D(@D_EQU, "EQU"); }
+    | D_EQU expr                    { /* Syntax error */ $$ = nullptr; DECL_ID_EXPECTED(@D_EQU, "EQU"); $expr->completeDelete(); }
+    | label D_EQU expr              { /* Syntax error */ $$ = nullptr; DECL_ID_EXPECTED(@D_EQU, "EQU"); NO_LABEL_EXPECTED(@label, "EQU", $label->appendArgsLink($expr)) }
+    | label id D_EQU expr           { /* Syntax error */ $$ = nullptr; NO_LABEL_EXPECTED(@label, "EQU", $label->appendArgsLink($id->appendLink($expr))); }
 ;
 dir_repeat:
       dir_rept
@@ -759,7 +759,7 @@ dir_rept:
     | D_REPT COMMENT                { $$ = new CompilerStatement(LOC(), ASMPIC8_DIR_REPT); }
     | label D_REPT expr COMMENT     { $$ = $label->appendLink(new CompilerStatement(LOC(), ASMPIC8_DIR_REPT, $expr)); }
     | label D_REPT expr             { $$ = $label->appendLink(new CompilerStatement(LOC(), ASMPIC8_DIR_REPT, $expr)); }
-    | D_REPT                        { /* Syntax error */ $$ = NULL;   ARG_REQUIRED_D(@D_REPT, "REPT (TIMES)"); }
+    | D_REPT                        { /* Syntax error */ $$ = nullptr;   ARG_REQUIRED_D(@D_REPT, "REPT (TIMES)"); }
     | label D_REPT COMMENT          { /* Syntax error */ $$ = $label; ARG_REQUIRED_D(@D_REPT, "REPT (TIMES)"); }
     | label D_REPT                  { /* Syntax error */ $$ = $label; ARG_REQUIRED_D(@D_REPT, "REPT (TIMES)"); }
 ;
@@ -778,17 +778,17 @@ dir_macro_d:
 ;
 dir_macro_a:
       id D_MACRO                    { $$ = new CompilerStatement(LOC(), ASMPIC8_DIR_MACRO, $id); }
-    | D_MACRO                       { /* Syntax error */ $$ = NULL; DECL_ID_EXPECTED(@D_MACRO, "MACRO"); }
+    | D_MACRO                       { /* Syntax error */ $$ = nullptr; DECL_ID_EXPECTED(@D_MACRO, "MACRO"); }
     | label D_MACRO                 {
                         /* Syntax error */
-                        $$ = NULL;
+                        $$ = nullptr;
                         NO_LABEL_EXPECTED(@label, "MACRO", $label);
                         DECL_ID_EXPECTED(@D_MACRO, "MACRO");
                     }
 ;
 dir_endm:
-      dir_endm_a COMMENT            { $$ = NULL; }
-    | dir_endm_a                    { $$ = NULL; }
+      dir_endm_a COMMENT            { $$ = nullptr; }
+    | dir_endm_a                    { $$ = nullptr; }
     | label dir_endm_a COMMENT      { $$ = $label; }
     | label dir_endm_a              { $$ = $label; }
 ;
@@ -837,13 +837,13 @@ dir_constant:
     | label D_CONSTANT id "=" expr  { $$ = $label->appendLink(new CompilerStatement(LOC(), ASMPIC8_DIR_CONSTANT, $id->appendLink($expr))); }
     | D_CONSTANT expr               {
                         /* Syntax error */
-                        $$ = NULL;
+                        $$ = nullptr;
                         DECL_ID_EXPECTED(@D_CONSTANT, "CONSTANT");
                         $expr->completeDelete();
                     }
     | label D_CONSTANT expr         {
                         /* Syntax error */
-                        $$ = NULL;
+                        $$ = nullptr;
                         DECL_ID_EXPECTED(@D_CONSTANT, "CONSTANT");
                         $label->completeDelete();
                         $expr->completeDelete();
@@ -854,13 +854,13 @@ dir_variable:
     | label D_VARIABLE id "=" expr  { $$ = $label->appendLink(new CompilerStatement(LOC(), ASMPIC8_DIR_VARIABLE, $id->appendLink($expr))); }
     | D_VARIABLE expr               {
                         /* Syntax error */
-                        $$ = NULL;
+                        $$ = nullptr;
                         DECL_ID_EXPECTED(@D_VARIABLE, "VARIABLE");
                         $expr->completeDelete();
                     }
     | label D_VARIABLE expr         {
                         /* Syntax error */
-                        $$ = NULL;
+                        $$ = nullptr;
                         DECL_ID_EXPECTED(@D_VARIABLE, "VARIABLE");
                         $label->completeDelete();
                         $expr->completeDelete();
@@ -869,14 +869,14 @@ dir_variable:
 dir_processor:
       D_PROCESSOR id                { $$ = new CompilerStatement(LOC(), ASMPIC8_DIR_PROCESSOR, $id); }
     | label D_PROCESSOR id          { $$ = $label->appendLink(new CompilerStatement(LOC(), ASMPIC8_DIR_PROCESSOR, $id)); }
-    | D_PROCESSOR                   { /* Syntax error */ $$ = NULL; ARG_REQUIRED_D(@D_PROCESSOR, "PROCESSOR"); }
-    | label D_PROCESSOR             { /* Syntax error */ $$ = NULL; ARG_REQUIRED_D(@D_PROCESSOR, "PROCESSOR"); $label->completeDelete(); }
+    | D_PROCESSOR                   { /* Syntax error */ $$ = nullptr; ARG_REQUIRED_D(@D_PROCESSOR, "PROCESSOR"); }
+    | label D_PROCESSOR             { /* Syntax error */ $$ = nullptr; ARG_REQUIRED_D(@D_PROCESSOR, "PROCESSOR"); $label->completeDelete(); }
 ;
 dir_radix:
       D_RADIX id                    { $$ = new CompilerStatement(LOC(), ASMPIC8_DIR_RADIX, $id); }
     | label D_RADIX id              { $$ = $label->appendLink(new CompilerStatement(LOC(), ASMPIC8_DIR_RADIX, $id)); }
-    | D_RADIX                       { /* Syntax error */ $$ = NULL; ARG_REQUIRED_D(@D_RADIX, "RADIX"); }
-    | label D_RADIX                 { /* Syntax error */ $$ = NULL; ARG_REQUIRED_D(@D_RADIX, "RADIX"); $label->completeDelete(); }
+    | D_RADIX                       { /* Syntax error */ $$ = nullptr; ARG_REQUIRED_D(@D_RADIX, "RADIX"); }
+    | label D_RADIX                 { /* Syntax error */ $$ = nullptr; ARG_REQUIRED_D(@D_RADIX, "RADIX"); $label->completeDelete(); }
 ;
 dir_while:
       dir_while_a
@@ -891,13 +891,13 @@ dir_while_a:
     | D_WHILE COMMENT               { $$ = new CompilerStatement(LOC(), ASMPIC8_DIR_WHILE); }
     | label D_WHILE expr COMMENT    { $$ = $label->appendLink(new CompilerStatement(LOC(), ASMPIC8_DIR_WHILE, $expr)); }
     | label D_WHILE expr            { $$ = $label->appendLink(new CompilerStatement(LOC(), ASMPIC8_DIR_WHILE, $expr)); }
-    | D_WHILE                       { /* Syntax error */ $$ = NULL;   ARG_REQUIRED_D(@D_WHILE, "WHILE"); }
+    | D_WHILE                       { /* Syntax error */ $$ = nullptr;   ARG_REQUIRED_D(@D_WHILE, "WHILE"); }
     | label D_WHILE COMMENT         { /* Syntax error */ $$ = $label; ARG_REQUIRED_D(@D_WHILE, "WHILE"); }
     | label D_WHILE                 { /* Syntax error */ $$ = $label; ARG_REQUIRED_D(@D_WHILE, "WHILE"); }
 ;
 dir_endw:
-      dir_endw_a COMMENT            { $$ = NULL; }
-    | dir_endw_a                    { $$ = NULL; }
+      dir_endw_a COMMENT            { $$ = nullptr; }
+    | dir_endw_a                    { $$ = nullptr; }
     | label dir_endw_a COMMENT      { $$ = $label; }
     | label dir_endw_a              { $$ = $label; }
 ;
@@ -912,7 +912,7 @@ intervals:
     | expr                          { $$ = new CompilerExpr($1, CompilerExpr::OPER_INTERVALS, $1->copyEntireChain()); }
     | /* empty */                   {
                         /* Syntax error */
-                        $$ = NULL;
+                        $$ = nullptr;
                         compiler->parserMessage (
                             yylloc, CompilerBase::MT_ERROR,
                             QObject::tr("missing address interval").toStdString() );
@@ -933,10 +933,10 @@ dir___config:
 dir___config_a:
       D___CONFIG expr               { $$ = new CompilerStatement(LOC(), ASMPIC8_DIR___CONFIG, $expr); }
     | D___CONFIG expr "," expr      { $$ = new CompilerStatement(LOC(), ASMPIC8_DIR___CONFIG, $2->appendLink($4)); }
-    | D___CONFIG                    { /* Syntax error */ $$ = NULL; ARG_REQUIRED_D(@D___CONFIG, "__CONFIG"); }
+    | D___CONFIG                    { /* Syntax error */ $$ = nullptr; ARG_REQUIRED_D(@D___CONFIG, "__CONFIG"); }
 ;
 dir_config:
-    D_CONFIG                        { $$ = NULL; /* TODO: make this supported */}
+    D_CONFIG                        { $$ = nullptr; /* TODO: make this supported */}
 ;
 dir_define:
       dir_define_a                  { $$ = $dir_define_a; }
@@ -945,7 +945,7 @@ dir_define:
 dir_define_a:
       D_DEFINE id                   { $$ = new CompilerStatement(LOC(), ASMPIC8_DIR_DEFINE, $id); }
     | D_DEFINE id string            { $$ = new CompilerStatement(LOC(), ASMPIC8_DIR_DEFINE, $id->appendLink($string)); }
-    | D_DEFINE                      { /* Syntax error */ $$ = NULL; ARG_REQUIRED_D(@D_DEFINE, "#define"); }
+    | D_DEFINE                      { /* Syntax error */ $$ = nullptr; ARG_REQUIRED_D(@D_DEFINE, "#define"); }
 ;
 dir_undefine:
       dir_undefine_a                { $$ = $dir_undefine_a; }
@@ -953,7 +953,7 @@ dir_undefine:
 ;
 dir_undefine_a:
       D_UNDEFINE id                 { $$ = new CompilerStatement(LOC(), ASMPIC8_DIR_UNDEFINE, $id); }
-    | D_UNDEFINE                    { /* Syntax error */ $$ = NULL; ARG_REQUIRED_D(@D_UNDEFINE, "#undefine"); }
+    | D_UNDEFINE                    { /* Syntax error */ $$ = nullptr; ARG_REQUIRED_D(@D_UNDEFINE, "#undefine"); }
 ;
 dir_dc_ifdef:
       dir_dc_ifdef_a                { $$ = $dir_dc_ifdef_a; }
@@ -961,7 +961,7 @@ dir_dc_ifdef:
 ;
 dir_dc_ifdef_a: // Double-cross (#) ifdef - `#ifdef'.
       D_DC_IFDEF id                 { $$ = new CompilerStatement(LOC(), ASMPIC8_DIR_DC_IFDEF, $id); }
-    | D_DC_IFDEF                    { /* Syntax error */ $$ = NULL; ARG_REQUIRED_D(@D_DC_IFDEF, "#ifdef"); }
+    | D_DC_IFDEF                    { /* Syntax error */ $$ = nullptr; ARG_REQUIRED_D(@D_DC_IFDEF, "#ifdef"); }
 ;
 dir_dc_ifndef:
       dir_dc_ifndef_a               { $$ = $dir_dc_ifndef_a; }
@@ -969,7 +969,7 @@ dir_dc_ifndef:
 ;
 dir_dc_ifndef_a:// Double-cross (#) ifndef - `#ifndef'.
       D_DC_IFNDEF id                { $$ = new CompilerStatement(LOC(), ASMPIC8_DIR_DC_IFNDEF, $id); }
-    | D_DC_IFNDEF                   { /* Syntax error */ $$ = NULL; ARG_REQUIRED_D(@D_DC_IFNDEF, "#ifndef"); }
+    | D_DC_IFNDEF                   { /* Syntax error */ $$ = nullptr; ARG_REQUIRED_D(@D_DC_IFNDEF, "#ifndef"); }
 ;
 dir_dc_endif:
       dir_dc_endif_a                { $$ = $dir_dc_endif_a; }
@@ -977,7 +977,7 @@ dir_dc_endif:
 ;
 dir_dc_endif_a: // Double-cross (#) endif - `#endif'.
       D_DC_ENDIF                    { $$ = new CompilerStatement(LOC(), ASMPIC8_DIR_DC_ENDIF); }
-    | D_DC_ENDIF args               { /* Syntax error */ $$ = NULL; NO_ARG_EXPECTED_D("#endif", $args, @args); }
+    | D_DC_ENDIF args               { /* Syntax error */ $$ = nullptr; NO_ARG_EXPECTED_D("#endif", $args, @args); }
 ;
 dir___idlocs:
       dir___idlocs_a                { $$ = $dir___idlocs_a; }
@@ -985,10 +985,10 @@ dir___idlocs:
 ;
 dir___idlocs_a:
       D___IDLOCS expr "," expr      { $$ = new CompilerStatement(LOC(), ASMPIC8_DIR___IDLOCS, $2->appendLink($4)); }
-    | D___IDLOCS                    { /* Syntax error */ $$ = NULL; ARGS_REQUIRED_D(@D___IDLOCS, "__IDLOCS", 2); }
+    | D___IDLOCS                    { /* Syntax error */ $$ = nullptr; ARGS_REQUIRED_D(@D___IDLOCS, "__IDLOCS", 2); }
     | D___IDLOCS expr               {
                         /* Syntax error */
-                        $$ = NULL;
+                        $$ = nullptr;
                         ARGS_REQUIRED_D(@D___IDLOCS, "__IDLOCS", 2);
                         $expr->completeDelete();
                     }
@@ -996,10 +996,10 @@ dir___idlocs_a:
 dir___maxram:
       D___MAXRAM expr               { $$ = new CompilerStatement(LOC(), ASMPIC8_DIR___MAXRAM, $expr); }
     | label D___MAXRAM expr         { $$ = $label->appendLink(new CompilerStatement(LOC(), ASMPIC8_DIR___MAXRAM, $expr)); }
-    | D___MAXRAM                    { /* Syntax error */ $$ = NULL; ARG_REQUIRED_D(@D___MAXRAM, "__MAXRAM"); }
+    | D___MAXRAM                    { /* Syntax error */ $$ = nullptr; ARG_REQUIRED_D(@D___MAXRAM, "__MAXRAM"); }
     | label D___MAXRAM              {
                         /* Syntax error */
-                        $$ = NULL;
+                        $$ = nullptr;
                         ARG_REQUIRED_D(@D___MAXRAM, "__MAXRAM");
                         $label->completeDelete();
                     }
@@ -1007,10 +1007,10 @@ dir___maxram:
 dir___maxrom:
       D___MAXROM expr               { $$ = new CompilerStatement(LOC(), ASMPIC8_DIR___MAXRAM, $expr); }
     | label D___MAXROM expr         { $$ = $label->appendLink(new CompilerStatement(LOC(), ASMPIC8_DIR___MAXRAM, $expr)); }
-    | D___MAXROM                    { /* Syntax error */ $$ = NULL; ARG_REQUIRED_D(@D___MAXROM, "__MAXROM"); }
+    | D___MAXROM                    { /* Syntax error */ $$ = nullptr; ARG_REQUIRED_D(@D___MAXROM, "__MAXROM"); }
     | label D___MAXROM              {
                         /* Syntax error */
-                        $$ = NULL;
+                        $$ = nullptr;
                         ARG_REQUIRED_D(@D___MAXROM, "__MAXROM");
                         $label->completeDelete();
                     }
@@ -1036,7 +1036,7 @@ label_list_ml:
     | label_list                    { $$ = $1; }
 ;
 label_list:
-    /* empty */                     { $$ = NULL; }
+    /* empty */                     { $$ = nullptr; }
     | label_list "," id             { $$ = $1->appendLink(new CompilerStatement(LOC(), ASMPIC8_LABEL, $id)); }
     | label_list "," label expr     { $$ = $1->appendLink($label->appendArgsLink($expr)); }
     | label_list "," id ":" expr    { $$ = $1->appendLink(new CompilerStatement(LOC(), ASMPIC8_LABEL, $id->appendLink($expr))); }
@@ -1048,8 +1048,8 @@ dir_da:
 dir_da_a:
       D_DA args_str                 { $$ = new CompilerStatement(LOC(), ASMPIC8_DIR_DA, $args_str); }
     | id D_DA args_str              { $$ = new CompilerStatement(LOC(), ASMPIC8_DIR_DA, $id->appendLink($args_str)); }
-    | D_DA                          { /* Syntax error */ $$ = NULL; ARG_REQUIRED_D(@D_DA, "DA"); }
-    | id D_DA                       { /* Syntax error */ $$ = NULL; ARG_REQUIRED_D(@D_DA, "DA"); $id->completeDelete(); }
+    | D_DA                          { /* Syntax error */ $$ = nullptr; ARG_REQUIRED_D(@D_DA, "DA"); }
+    | id D_DA                       { /* Syntax error */ $$ = nullptr; ARG_REQUIRED_D(@D_DA, "DA"); $id->completeDelete(); }
 ;
 dir_data:
       dir_data_a                    { $$ = $dir_data_a; }
@@ -1058,8 +1058,8 @@ dir_data:
 dir_data_a:
       D_DATA args_str               { $$ = new CompilerStatement(LOC(), ASMPIC8_DIR_DATA, $args_str); }
     | id D_DATA args_str            { $$ = new CompilerStatement(LOC(), ASMPIC8_DIR_DATA, $id->appendLink($args_str)); }
-    | D_DATA                        { /* Syntax error */ $$ = NULL; ARG_REQUIRED_D(@D_DATA, "DATA"); }
-    | id D_DATA                     { /* Syntax error */ $$ = NULL; ARG_REQUIRED_D(@D_DATA, "DATA"); $id->completeDelete(); }
+    | D_DATA                        { /* Syntax error */ $$ = nullptr; ARG_REQUIRED_D(@D_DATA, "DATA"); }
+    | id D_DATA                     { /* Syntax error */ $$ = nullptr; ARG_REQUIRED_D(@D_DATA, "DATA"); $id->completeDelete(); }
 ;
 dir_db:
       dir_db_a                      { $$ = $dir_db_a; }
@@ -1068,8 +1068,8 @@ dir_db:
 dir_db_a:
       D_DB args_str                 { $$ = new CompilerStatement(LOC(), ASMPIC8_DIR_DB, $args_str); }
     | id D_DB args_str              { $$ = new CompilerStatement(LOC(), ASMPIC8_DIR_DB, $id->appendLink($args_str)); }
-    | D_DB                          { /* Syntax error */ $$ = NULL; ARG_REQUIRED_D(@D_DB, "DB"); }
-    | id D_DB                       { /* Syntax error */ $$ = NULL; ARG_REQUIRED_D(@D_DB, "DB"); $id->completeDelete(); }
+    | D_DB                          { /* Syntax error */ $$ = nullptr; ARG_REQUIRED_D(@D_DB, "DB"); }
+    | id D_DB                       { /* Syntax error */ $$ = nullptr; ARG_REQUIRED_D(@D_DB, "DB"); $id->completeDelete(); }
 ;
 dir_de:
       dir_de_a                      { $$ = $dir_de_a; }
@@ -1078,8 +1078,8 @@ dir_de:
 dir_de_a:
       D_DE args_str                 { $$ = new CompilerStatement(LOC(), ASMPIC8_DIR_DE, $args_str); }
     | id D_DE args_str              { $$ = new CompilerStatement(LOC(), ASMPIC8_DIR_DE, $id->appendLink($args_str)); }
-    | D_DE                          { /* Syntax error */ $$ = NULL; ARG_REQUIRED_D(@D_DE, "DE"); }
-    | id D_DE                       { /* Syntax error */ $$ = NULL; ARG_REQUIRED_D(@D_DE, "DE"); $id->completeDelete(); }
+    | D_DE                          { /* Syntax error */ $$ = nullptr; ARG_REQUIRED_D(@D_DE, "DE"); }
+    | id D_DE                       { /* Syntax error */ $$ = nullptr; ARG_REQUIRED_D(@D_DE, "DE"); $id->completeDelete(); }
 ;
 dir_dt:
       dir_dt_a                      { $$ = $dir_dt_a; }
@@ -1088,8 +1088,8 @@ dir_dt:
 dir_dt_a:
       D_DT args_str                 { $$ = new CompilerStatement(LOC(), ASMPIC8_DIR_DT, $args_str); }
     | id D_DT args_str              { $$ = new CompilerStatement(LOC(), ASMPIC8_DIR_DT, $id->appendLink($args_str)); }
-    | D_DT                          { /* Syntax error */ $$ = NULL; ARG_REQUIRED_D(@D_DT, "DT"); }
-    | id D_DT                       { /* Syntax error */ $$ = NULL; ARG_REQUIRED_D(@D_DT, "DT"); $id->completeDelete(); }
+    | D_DT                          { /* Syntax error */ $$ = nullptr; ARG_REQUIRED_D(@D_DT, "DT"); }
+    | id D_DT                       { /* Syntax error */ $$ = nullptr; ARG_REQUIRED_D(@D_DT, "DT"); $id->completeDelete(); }
 ;
 dir_dw:
       dir_dw_a                      { $$ = $dir_dw_a; }
@@ -1098,8 +1098,8 @@ dir_dw:
 dir_dw_a:
       D_DW args_str                 { $$ = new CompilerStatement(LOC(), ASMPIC8_DIR_DW, $args_str); }
     | id D_DW args_str              { $$ = new CompilerStatement(LOC(), ASMPIC8_DIR_DW, $id->appendLink($args_str)); }
-    | D_DW                          { /* Syntax error */ $$ = NULL; ARG_REQUIRED_D(@D_DW, "DW"); }
-    | id D_DW                       { /* Syntax error */ $$ = NULL; ARG_REQUIRED_D(@D_DW, "DW"); $id->completeDelete(); }
+    | D_DW                          { /* Syntax error */ $$ = nullptr; ARG_REQUIRED_D(@D_DW, "DW"); }
+    | id D_DW                       { /* Syntax error */ $$ = nullptr; ARG_REQUIRED_D(@D_DW, "DW"); $id->completeDelete(); }
 ;
 dir_fill:
       dir_fill_a                    { $$ = $dir_fill_a; }
@@ -1108,8 +1108,8 @@ dir_fill:
 dir_fill_a:
       D_FILL expr "," expr          { $$ = new CompilerStatement(LOC(), ASMPIC8_DIR_FILL, (new CompilerExpr())->appendLink($2)->appendLink($4)); }
     | id D_FILL expr "," expr       { $$ = new CompilerStatement(LOC(), ASMPIC8_DIR_FILL, $id->appendLink($3)->appendLink($5)); }
-    | D_FILL                        { /* Syntax error */ $$ = NULL; ARG_REQUIRED_D(@D_FILL, "FILL"); }
-    | id D_FILL                     { /* Syntax error */ $$ = NULL; ARG_REQUIRED_D(@D_FILL, "FILL"); $id->completeDelete(); }
+    | D_FILL                        { /* Syntax error */ $$ = nullptr; ARG_REQUIRED_D(@D_FILL, "FILL"); }
+    | id D_FILL                     { /* Syntax error */ $$ = nullptr; ARG_REQUIRED_D(@D_FILL, "FILL"); $id->completeDelete(); }
     | D_FILL "(" instruction ")"
       "," expr                      {
                         $$ = new CompilerStatement (
@@ -1134,54 +1134,54 @@ dir_res:
 dir_res_a:
       D_RES expr                    { $$ = new CompilerStatement(LOC(), ASMPIC8_DIR_RES, $expr); }
     | id D_RES expr                 { $$ = new CompilerStatement(LOC(), ASMPIC8_DIR_RES, $id->appendLink($expr)); }
-    | D_RES                         { /* Syntax error */ $$ = NULL; ARG_REQUIRED_D(@D_RES, "RES"); }
-    | id D_RES                      { /* Syntax error */ $$ = NULL; ARG_REQUIRED_D(@D_RES, "RES"); $id->completeDelete(); }
+    | D_RES                         { /* Syntax error */ $$ = nullptr; ARG_REQUIRED_D(@D_RES, "RES"); }
+    | id D_RES                      { /* Syntax error */ $$ = nullptr; ARG_REQUIRED_D(@D_RES, "RES"); $id->completeDelete(); }
 ;
 dir_error:
       D_ERROR string                { $$ = new CompilerStatement(LOC(), ASMPIC8_DIR_ERROR, $string); }
     | label D_ERROR string          { $$ = $label->appendLink($$ = new CompilerStatement(LOC(), ASMPIC8_DIR_ERROR, $string)); }
-    | label D_ERROR                 { /* Syntax error */ $$ = NULL; ARG_REQUIRED_D(@D_ERROR, "ERROR"); $label->completeDelete(); }
-    | D_ERROR                       { /* Syntax error */ $$ = NULL; ARG_REQUIRED_D(@D_ERROR, "ERROR"); }
+    | label D_ERROR                 { /* Syntax error */ $$ = nullptr; ARG_REQUIRED_D(@D_ERROR, "ERROR"); $label->completeDelete(); }
+    | D_ERROR                       { /* Syntax error */ $$ = nullptr; ARG_REQUIRED_D(@D_ERROR, "ERROR"); }
 ;
 dir_messg:
       D_MESSG string                { $$ = new CompilerStatement(LOC(), ASMPIC8_DIR_MESSG, $string); }
     | label D_MESSG string          { $$ = $label->appendLink($$ = new CompilerStatement(LOC(), ASMPIC8_DIR_MESSG, $string)); }
-    | label D_MESSG                 { /* Syntax error */ $$ = NULL; ARG_REQUIRED_D(@D_MESSG, "MESSG"); $label->completeDelete(); }
-    | D_MESSG                       { /* Syntax error */ $$ = NULL; ARG_REQUIRED_D(@D_MESSG, "MESSG"); }
+    | label D_MESSG                 { /* Syntax error */ $$ = nullptr; ARG_REQUIRED_D(@D_MESSG, "MESSG"); $label->completeDelete(); }
+    | D_MESSG                       { /* Syntax error */ $$ = nullptr; ARG_REQUIRED_D(@D_MESSG, "MESSG"); }
 ;
 dir_subtitle:
       D_SUBTITLE string             { $$ = new CompilerStatement(LOC(), ASMPIC8_DIR_SUBTITLE, $string); }
     | label D_SUBTITLE string       { $$ = $label->appendLink($$ = new CompilerStatement(LOC(), ASMPIC8_DIR_SUBTITLE, $string)); }
     | label D_SUBTITLE              {
                         /* Syntax error */
-                        $$ = NULL;
+                        $$ = nullptr;
                         ARG_REQUIRED_D(@D_SUBTITLE, "SUBTITLE");
                         $label->completeDelete();
                     }
     | D_SUBTITLE                    {
                         /* Syntax error */
-                        $$ = NULL;
+                        $$ = nullptr;
                         ARG_REQUIRED_D(@D_SUBTITLE, "SUBTITLE");
                     }
 ;
 dir_title:
       D_TITLE string                { $$ = new CompilerStatement(LOC(), ASMPIC8_DIR_TITLE, $string); }
     | label D_TITLE string          { $$ = $label->appendLink($$ = new CompilerStatement(LOC(), ASMPIC8_DIR_TITLE, $string)); }
-    | label D_TITLE                 { /* Syntax error */ $$ = NULL; ARG_REQUIRED_D(@D_TITLE, "TITLE"); $label->completeDelete(); }
-    | D_TITLE                       { /* Syntax error */ $$ = NULL; ARG_REQUIRED_D(@D_TITLE, "TITLE"); }
+    | label D_TITLE                 { /* Syntax error */ $$ = nullptr; ARG_REQUIRED_D(@D_TITLE, "TITLE"); $label->completeDelete(); }
+    | D_TITLE                       { /* Syntax error */ $$ = nullptr; ARG_REQUIRED_D(@D_TITLE, "TITLE"); }
 ;
 dir_errorlevel:
       D_ERRORLEVEL err_lvls         { $$ = new CompilerStatement(LOC(), ASMPIC8_DIR_ERRORLEVEL, $err_lvls); }
     | label D_ERRORLEVEL err_lvls   { $$ = $label->appendLink($$ = new CompilerStatement(LOC(), ASMPIC8_DIR_ERRORLEVEL, $err_lvls)); }
     | label D_ERRORLEVEL            {
                         /* Syntax error */
-                        $$ = NULL;
+                        $$ = nullptr;
                         ARG_REQUIRED_D(@D_ERRORLEVEL, "ERRORLEVEL");
                         $label->completeDelete();
                     }
     | D_ERRORLEVEL                  {
                         /* Syntax error */
-                        $$ = NULL;
+                        $$ = nullptr;
                         ARG_REQUIRED_D(@D_ERRORLEVEL, "ERRORLEVEL");
                     }
 ;
@@ -1231,7 +1231,7 @@ dir_noexpand_a:
 ;
 dir_list:
       D_LIST opts                   { $$ = new CompilerStatement(LOC(), ASMPIC8_DIR_LIST, $opts); }
-    | D_LIST                        { /* Syntax error */ $$ = NULL; ARG_REQUIRED_D(@D_LIST, "LIST"); }
+    | D_LIST                        { /* Syntax error */ $$ = nullptr; ARG_REQUIRED_D(@D_LIST, "LIST"); }
     | label D_LIST opts             {
                         /* Syntax error */
                         $$ = new CompilerStatement(LOC(), ASMPIC8_DIR_LIST, $opts);
@@ -1239,7 +1239,7 @@ dir_list:
                     }
     | label D_LIST                  {
                         /* Syntax error */
-                        $$ = NULL;
+                        $$ = nullptr;
                         NO_LABEL_EXPECTED(@label, "LIST", $label);
                         ARG_REQUIRED_D(@D_LIST, "LIST");
                     }
@@ -1290,30 +1290,30 @@ dir_code_pack_a:
 ;
 dir_extern:
       D_EXTERN params               { $$ = new CompilerStatement(LOC(), ASMPIC8_DIR_EXTERN, $params); }
-    | D_EXTERN                      { /* Syntax error */ $$ = NULL; ARG_REQUIRED_D(@D_EXTERN, "EXTERN"); }
+    | D_EXTERN                      { /* Syntax error */ $$ = nullptr; ARG_REQUIRED_D(@D_EXTERN, "EXTERN"); }
     | label D_EXTERN params         {
                         /* Syntax error */
-                        $$ = NULL;
+                        $$ = nullptr;
                         NO_LABEL_EXPECTED(@label, "EXTERN", $label->appendArgsLink($params));
                     }
     | label D_EXTERN                {
                         /* Syntax error */
-                        $$ = NULL;
+                        $$ = nullptr;
                         ARG_REQUIRED_D(@D_EXTERN, "EXTERN");
                         NO_LABEL_EXPECTED(@label, "EXTERN", $label);
                     }
 ;
 dir_global:
       D_GLOBAL params               { $$ = new CompilerStatement(LOC(), ASMPIC8_DIR_GLOBAL, $params); }
-    | D_GLOBAL                      { /* Syntax error */ $$ = NULL; ARG_REQUIRED_D(@D_GLOBAL, "GLOBAL"); }
+    | D_GLOBAL                      { /* Syntax error */ $$ = nullptr; ARG_REQUIRED_D(@D_GLOBAL, "GLOBAL"); }
     | label D_GLOBAL params         {
                         /* Syntax error */
-                        $$ = NULL;
+                        $$ = nullptr;
                         NO_LABEL_EXPECTED(@label, "GLOBAL", $label->appendArgsLink($params));
                     }
     | label D_GLOBAL                {
                         /* Syntax error */
-                        $$ = NULL;
+                        $$ = nullptr;
                         ARG_REQUIRED_D(@D_GLOBAL, "GLOBAL");
                         NO_LABEL_EXPECTED(@label, "GLOBAL", $label);
                     }
@@ -1327,13 +1327,13 @@ dir_bankisel:
                     }
     | label D_BANKISEL              {
                         /* Syntax error */
-                        $$ = NULL;
+                        $$ = nullptr;
                         ARG_REQUIRED_D(@D_BANKISEL, "BANKISEL");
                         NO_LABEL_EXPECTED(@label, "BANKISEL", $label);
                     }
     | D_BANKISEL                    {
                         /* Syntax error */
-                        $$ = NULL;
+                        $$ = nullptr;
                         ARG_REQUIRED_D(@D_BANKISEL, "BANKISEL");
                     }
 ;
@@ -1346,13 +1346,13 @@ dir_banksel:
                     }
     | label D_BANKSEL               {
                         /* Syntax error */
-                        $$ = NULL;
+                        $$ = nullptr;
                         ARG_REQUIRED_D(@D_BANKSEL, "BANKSEL");
                         NO_LABEL_EXPECTED(@label, "BANKSEL", $label);
                     }
     | D_BANKSEL                     {
                         /* Syntax error */
-                        $$ = NULL;
+                        $$ = nullptr;
                         ARG_REQUIRED_D(@D_BANKSEL, "BANKSEL");
                     }
 ;
@@ -1365,13 +1365,13 @@ dir_pagesel:
                     }
     | label D_PAGESEL               {
                         /* Syntax error */
-                        $$ = NULL;
+                        $$ = nullptr;
                         ARG_REQUIRED_D(@D_PAGESEL, "PAGESEL");
                         NO_LABEL_EXPECTED(@label, "PAGESEL", $label);
                     }
     | D_PAGESEL                     {
                         /* Syntax error */
-                        $$ = NULL;
+                        $$ = nullptr;
                         ARG_REQUIRED_D(@D_PAGESEL, "PAGESEL");
                     }
 ;
@@ -1384,13 +1384,13 @@ dir_pageselw:
                     }
     | label D_PAGESELW              {
                         /* Syntax error */
-                        $$ = NULL;
+                        $$ = nullptr;
                         ARG_REQUIRED_D(@D_PAGESELW, "PAGESELW");
                         NO_LABEL_EXPECTED(@label, "PAGESELW", $label);
                     }
     | D_PAGESELW                    {
                         /* Syntax error */
-                        $$ = NULL;
+                        $$ = nullptr;
                         ARG_REQUIRED_D(@D_PAGESELW, "PAGESELW");
                     }
 ;
@@ -1505,153 +1505,153 @@ instruction:
 /* BYTE-ORIENTED FILE REGISTER OPERATIONS */
 ins_addwf:
       I_ADDWF expr "," expr { $$ = new CompilerStatement(LOC(), ASMPIC8_INS_ADDWF, $2->appendLink($4)); }
-    | I_ADDWF oprs_2        { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "ADDWF", 2); }
+    | I_ADDWF oprs_2        { /* Syntax Error */ $$ = nullptr; N_OPERANDS_EXPECTED(@2, "ADDWF", 2); }
 ;
 ins_andwf:
       I_ANDWF expr "," expr { $$ = new CompilerStatement(LOC(), ASMPIC8_INS_ANDWF, $2->appendLink($4)); }
-    | I_ANDWF oprs_2        { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "ANDWF", 2); }
+    | I_ANDWF oprs_2        { /* Syntax Error */ $$ = nullptr; N_OPERANDS_EXPECTED(@2, "ANDWF", 2); }
 ;
 ins_clrf:
       I_CLRF expr           { $$ = new CompilerStatement(LOC(), ASMPIC8_INS_CLRF, $2); }
-    | I_CLRF oprs_1         { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "CLRF", 1); }
+    | I_CLRF oprs_1         { /* Syntax Error */ $$ = nullptr; N_OPERANDS_EXPECTED(@2, "CLRF", 1); }
 ;
 ins_clrw:
       I_CLRW                { $$ = new CompilerStatement(LOC(), ASMPIC8_INS_CLRW); }
-    | I_CLRW oprs_0         { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "CLRW", 0); }
+    | I_CLRW oprs_0         { /* Syntax Error */ $$ = nullptr; N_OPERANDS_EXPECTED(@2, "CLRW", 0); }
 ;
 ins_comf:
       I_COMF expr "," expr  { $$ = new CompilerStatement(LOC(), ASMPIC8_INS_COMF, $2->appendLink($4)); }
-    | I_COMF oprs_2         { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "COMF", 2); }
+    | I_COMF oprs_2         { /* Syntax Error */ $$ = nullptr; N_OPERANDS_EXPECTED(@2, "COMF", 2); }
 ;
 ins_decf:
       I_DECF expr "," expr  { $$ = new CompilerStatement(LOC(), ASMPIC8_INS_DECF, $2->appendLink($4)); }
-    | I_DECF oprs_2         { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "DECF", 2); }
+    | I_DECF oprs_2         { /* Syntax Error */ $$ = nullptr; N_OPERANDS_EXPECTED(@2, "DECF", 2); }
 ;
 ins_decfsz:
       I_DECFSZ expr "," expr{ $$ = new CompilerStatement(LOC(), ASMPIC8_INS_DECFSZ, $2->appendLink($4)); }
-    | I_DECFSZ oprs_2       { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "DECFSZ", 2); }
+    | I_DECFSZ oprs_2       { /* Syntax Error */ $$ = nullptr; N_OPERANDS_EXPECTED(@2, "DECFSZ", 2); }
 ;
 ins_incf:
       I_INCF expr "," expr  { $$ = new CompilerStatement(LOC(), ASMPIC8_INS_INCF, $2->appendLink($4)); }
-    | I_INCF oprs_2         { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "INCF", 2); }
+    | I_INCF oprs_2         { /* Syntax Error */ $$ = nullptr; N_OPERANDS_EXPECTED(@2, "INCF", 2); }
 ;
 ins_incfsz:
       I_INCFSZ expr "," expr{ $$ = new CompilerStatement(LOC(), ASMPIC8_INS_INCFSZ, $2->appendLink($4)); }
-    | I_INCFSZ oprs_2       { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "INCFSZ", 2); }
+    | I_INCFSZ oprs_2       { /* Syntax Error */ $$ = nullptr; N_OPERANDS_EXPECTED(@2, "INCFSZ", 2); }
 ;
 ins_iorwf:
       I_IORWF expr "," expr { $$ = new CompilerStatement(LOC(), ASMPIC8_INS_IORWF, $2->appendLink($4)); }
-    | I_IORWF oprs_2        { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "IORWF", 2); }
+    | I_IORWF oprs_2        { /* Syntax Error */ $$ = nullptr; N_OPERANDS_EXPECTED(@2, "IORWF", 2); }
 ;
 ins_movf:
       I_MOVF expr "," expr  { $$ = new CompilerStatement(LOC(), ASMPIC8_INS_MOVF, $2->appendLink($4)); }
-    | I_MOVF oprs_2         { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "MOVF", 2); }
+    | I_MOVF oprs_2         { /* Syntax Error */ $$ = nullptr; N_OPERANDS_EXPECTED(@2, "MOVF", 2); }
 ;
 ins_movwf:
       I_MOVWF expr          { $$ = new CompilerStatement(LOC(), ASMPIC8_INS_MOVWF, $2); }
-    | I_MOVWF oprs_1        { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "MOVWF", 1); }
+    | I_MOVWF oprs_1        { /* Syntax Error */ $$ = nullptr; N_OPERANDS_EXPECTED(@2, "MOVWF", 1); }
 ;
 ins_nop:
       I_NOP                 { $$ = new CompilerStatement(LOC(), ASMPIC8_INS_NOP); }
-    | I_NOP oprs_0          { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "NOP", 0); }
+    | I_NOP oprs_0          { /* Syntax Error */ $$ = nullptr; N_OPERANDS_EXPECTED(@2, "NOP", 0); }
 ;
 ins_rlf:
       I_RLF expr "," expr   { $$ = new CompilerStatement(LOC(), ASMPIC8_INS_RLF, $2->appendLink($4)); }
-    | I_RLF oprs_2          { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "RLF", 2); }
+    | I_RLF oprs_2          { /* Syntax Error */ $$ = nullptr; N_OPERANDS_EXPECTED(@2, "RLF", 2); }
 ;
 ins_rrf:
       I_RRF expr "," expr   { $$ = new CompilerStatement(LOC(), ASMPIC8_INS_RRF, $2->appendLink($4)); }
-    | I_RRF oprs_2          { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "RRF", 2); }
+    | I_RRF oprs_2          { /* Syntax Error */ $$ = nullptr; N_OPERANDS_EXPECTED(@2, "RRF", 2); }
 ;
 ins_subwf:
       I_SUBWF expr "," expr { $$ = new CompilerStatement(LOC(), ASMPIC8_INS_SUBWF, $2->appendLink($4)); }
-    | I_SUBWF oprs_2        { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "SUBWF", 2); }
+    | I_SUBWF oprs_2        { /* Syntax Error */ $$ = nullptr; N_OPERANDS_EXPECTED(@2, "SUBWF", 2); }
 ;
 ins_swapf:
       I_SWAPF expr "," expr { $$ = new CompilerStatement(LOC(), ASMPIC8_INS_SWAPF, $2->appendLink($4)); }
-    | I_SWAPF oprs_2        { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "SWAPF", 2); }
+    | I_SWAPF oprs_2        { /* Syntax Error */ $$ = nullptr; N_OPERANDS_EXPECTED(@2, "SWAPF", 2); }
 ;
 ins_xorwf:
       I_XORWF expr "," expr { $$ = new CompilerStatement(LOC(), ASMPIC8_INS_XORWF, $2->appendLink($4)); }
-    | I_XORWF oprs_2        { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "XORWF", 2); }
+    | I_XORWF oprs_2        { /* Syntax Error */ $$ = nullptr; N_OPERANDS_EXPECTED(@2, "XORWF", 2); }
 ;
 /* BIT-ORIENTED FILE REGISTER OPERATIONS */
 ins_bcf:
       I_BCF expr "," expr   { $$ = new CompilerStatement(LOC(), ASMPIC8_INS_BCF, $2->appendLink($4)); }
-    | I_BCF oprs_2          { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "BCF", 2); }
+    | I_BCF oprs_2          { /* Syntax Error */ $$ = nullptr; N_OPERANDS_EXPECTED(@2, "BCF", 2); }
 ;
 ins_bsf:
       I_BSF expr "," expr   { $$ = new CompilerStatement(LOC(), ASMPIC8_INS_BSF, $2->appendLink($4)); }
-    | I_BSF oprs_2          { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "BSF", 2); }
+    | I_BSF oprs_2          { /* Syntax Error */ $$ = nullptr; N_OPERANDS_EXPECTED(@2, "BSF", 2); }
 ;
 ins_btfsc:
       I_BTFSC expr "," expr { $$ = new CompilerStatement(LOC(), ASMPIC8_INS_BTFSC, $2->appendLink($4)); }
-    | I_BTFSC oprs_2        { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "BTFSC", 2); }
+    | I_BTFSC oprs_2        { /* Syntax Error */ $$ = nullptr; N_OPERANDS_EXPECTED(@2, "BTFSC", 2); }
 ;
 ins_btfss:
       I_BTFSS expr "," expr { $$ = new CompilerStatement(LOC(), ASMPIC8_INS_BTFSS, $2->appendLink($4)); }
-    | I_BTFSS oprs_2        { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "BTFSS", 2); }
+    | I_BTFSS oprs_2        { /* Syntax Error */ $$ = nullptr; N_OPERANDS_EXPECTED(@2, "BTFSS", 2); }
 ;
     /* LITERAL AND CONTROL OPERATIONS */
 ins_addlw:
       I_ADDLW expr          { $$ = new CompilerStatement(LOC(), ASMPIC8_INS_ADDLW, $2); }
-    | I_ADDLW oprs_1        { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "ADDLW", 1); }
+    | I_ADDLW oprs_1        { /* Syntax Error */ $$ = nullptr; N_OPERANDS_EXPECTED(@2, "ADDLW", 1); }
 ;
 ins_andlw:
       I_ANDLW expr          { $$ = new CompilerStatement(LOC(), ASMPIC8_INS_ANDLW, $2); }
-    | I_ANDLW oprs_1        { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "ANDLW", 1); }
+    | I_ANDLW oprs_1        { /* Syntax Error */ $$ = nullptr; N_OPERANDS_EXPECTED(@2, "ANDLW", 1); }
 ;
 ins_call:
       I_CALL expr           { $$ = new CompilerStatement(LOC(), ASMPIC8_INS_CALL, $2); }
-    | I_CALL oprs_1         { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "CALL", 1); }
+    | I_CALL oprs_1         { /* Syntax Error */ $$ = nullptr; N_OPERANDS_EXPECTED(@2, "CALL", 1); }
 ;
 ins_clrwdt:
       I_CLRWDT              { $$ = new CompilerStatement(LOC(), ASMPIC8_INS_CLRWDT); }
-    | I_CLRWDT oprs_0       { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "CLRWDT", 0); }
+    | I_CLRWDT oprs_0       { /* Syntax Error */ $$ = nullptr; N_OPERANDS_EXPECTED(@2, "CLRWDT", 0); }
 ;
 ins_goto:
       I_GOTO expr           { $$ = new CompilerStatement(LOC(), ASMPIC8_INS_GOTO, $2); }
-    | I_GOTO oprs_1         { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "GOTO", 1); }
+    | I_GOTO oprs_1         { /* Syntax Error */ $$ = nullptr; N_OPERANDS_EXPECTED(@2, "GOTO", 1); }
 ;
 ins_iorlw:
       I_IORLW expr          { $$ = new CompilerStatement(LOC(), ASMPIC8_INS_IORLW, $2); }
-    | I_IORLW oprs_1        { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "IORLW", 1); }
+    | I_IORLW oprs_1        { /* Syntax Error */ $$ = nullptr; N_OPERANDS_EXPECTED(@2, "IORLW", 1); }
 ;
 ins_movlw:
       I_MOVLW expr          { $$ = new CompilerStatement(LOC(), ASMPIC8_INS_MOVLW, $2); }
-    | I_MOVLW oprs_1        { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "MOVLW", 1); }
+    | I_MOVLW oprs_1        { /* Syntax Error */ $$ = nullptr; N_OPERANDS_EXPECTED(@2, "MOVLW", 1); }
 ;
 ins_retfie:
       I_RETFIE              { $$ = new CompilerStatement(LOC(), ASMPIC8_INS_RETFIE); }
-    | I_RETFIE oprs_0       { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "RETFIE", 0); }
+    | I_RETFIE oprs_0       { /* Syntax Error */ $$ = nullptr; N_OPERANDS_EXPECTED(@2, "RETFIE", 0); }
 ;
 ins_retlw:
       I_RETLW expr          { $$ = new CompilerStatement(LOC(), ASMPIC8_INS_RETLW, $2); }
-    | I_RETLW oprs_1        { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "RETLW", 1); }
+    | I_RETLW oprs_1        { /* Syntax Error */ $$ = nullptr; N_OPERANDS_EXPECTED(@2, "RETLW", 1); }
 ;
 ins_return:
       I_RETURN              { $$ = new CompilerStatement(LOC(), ASMPIC8_INS_RETURN); }
-    | I_RETURN oprs_0       { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "RETURN", 0); }
+    | I_RETURN oprs_0       { /* Syntax Error */ $$ = nullptr; N_OPERANDS_EXPECTED(@2, "RETURN", 0); }
 ;
 ins_sleep:
       I_SLEEP               { $$ = new CompilerStatement(LOC(), ASMPIC8_INS_SLEEP); }
-    | I_SLEEP oprs_0        { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "SLEEP", 0); }
+    | I_SLEEP oprs_0        { /* Syntax Error */ $$ = nullptr; N_OPERANDS_EXPECTED(@2, "SLEEP", 0); }
 ;
 ins_sublw:
       I_SUBLW expr          { $$ = new CompilerStatement(LOC(), ASMPIC8_INS_SUBLW, $2); }
-    | I_SUBLW oprs_1        { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "SUBLW", 1); }
+    | I_SUBLW oprs_1        { /* Syntax Error */ $$ = nullptr; N_OPERANDS_EXPECTED(@2, "SUBLW", 1); }
 ;
 ins_xorlw:
       I_XORLW expr          { $$ = new CompilerStatement(LOC(), ASMPIC8_INS_XORLW, $2); }
-    | I_XORLW oprs_1        { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "XORLW", 1); }
+    | I_XORLW oprs_1        { /* Syntax Error */ $$ = nullptr; N_OPERANDS_EXPECTED(@2, "XORLW", 1); }
 ;
 ins_option:
       I_OPTION expr         { $$ = new CompilerStatement(LOC(), ASMPIC8_INS_OPTION, $2); }
-    | I_OPTION oprs_1       { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "OPTION", 1); }
+    | I_OPTION oprs_1       { /* Syntax Error */ $$ = nullptr; N_OPERANDS_EXPECTED(@2, "OPTION", 1); }
 ;
 ins_tris:
       I_TRIS expr           { $$ = new CompilerStatement(LOC(), ASMPIC8_INS_TRIS, $2); }
-    | I_TRIS oprs_1         { /* Syntax Error */ $$ = NULL; N_OPERANDS_EXPECTED(@2, "TRIS", 1); }
+    | I_TRIS oprs_1         { /* Syntax Error */ $$ = nullptr; N_OPERANDS_EXPECTED(@2, "TRIS", 1); }
 ;
 
 /* Dummy operands for detailed error reporting. */

@@ -25,6 +25,7 @@ class AsmTranslatorBase;
 // Standard header files.
 #include <string>
 #include <vector>
+#include <utility>
 
 /**
  * @brief
@@ -83,7 +84,7 @@ class AsmTranslator
          * @brief
          * @return
          */
-        const std::vector<std::string> & getMessages() const;
+        const std::vector<std::pair<unsigned int, std::string> > & getMessages() const;
 
         /**
          * @brief
@@ -111,7 +112,7 @@ class AsmTranslator
     ////    Private Attributes    ////
     private:
         /// @brief
-        std::vector<std::string> m_messages;
+        std::vector<std::pair<unsigned int, std::string> > m_messages;
 };
 
 #endif // ASMTRANSLATOR_H

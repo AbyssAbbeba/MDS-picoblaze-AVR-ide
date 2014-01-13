@@ -17,16 +17,18 @@
 #define MCUSIMCONTROL_H
 
 // Forward declarations
-class MCUSimObserver;
-class McuDeviceSpec;
 class DbgFile;
 class DataFile;
+class McuDeviceSpec;
+class MCUSimObserver;
 
 #include "../MCUSim/MCUSim.h"
+
 #include <vector>
 #include <string>
 #include <utility>
 #include <cstdint>
+
 #include <QThread>
 
 /**
@@ -118,10 +120,9 @@ class MCUSimControl : public QThread
 
         /**
          * @brief
-         * @param[out] filename
-         * @return
+         * @param[out] lines
          */
-        int getLineNumber ( std::string * filename = NULL );
+        void getLineNumber ( std::vector<std::pair<const std::string *, unsigned int>> & lines ) const;
 
         /**
          * @brief
@@ -363,9 +364,6 @@ class MCUSimControl : public QThread
          * @brief
          */
         std::vector<std::pair<MCUSimObserver*, uint64_t> > m_observers [ MCUSimSubsys::ID__MAX__ ];
-
-        /// @brief
-        std::string m_fileName;
 
         /// @brief
         std::vector<std::string> m_messages;

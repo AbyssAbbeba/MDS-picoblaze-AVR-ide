@@ -35,22 +35,22 @@ McuDeviceSpecPIC8::McuDeviceSpecPIC8()
 
 McuDeviceSpecPIC8::DataMemory::DataMemory()
 {
-    m_addrTransTab = NULL;
-    m_randomInit = NULL;
-    m_initValues = NULL;
+    m_addrTransTab = nullptr;
+    m_randomInit = nullptr;
+    m_initValues = nullptr;
 }
 
 McuDeviceSpecPIC8::DataMemory::~DataMemory()
 {
-    if ( NULL != m_addrTransTab )
+    if ( nullptr != m_addrTransTab )
     {
         delete[] m_addrTransTab;
     }
-    if ( NULL != m_randomInit )
+    if ( nullptr != m_randomInit )
     {
         delete[] m_randomInit;
     }
-    if ( NULL != m_initValues )
+    if ( nullptr != m_initValues )
     {
         delete m_initValues;
     }
@@ -71,15 +71,15 @@ bool McuDeviceSpecPIC8::setupSimulator ( PIC8Config & mcuConfig ) const
     mcuConfig.m_configProgramMemory->m_idLocationsRange[1] = m_programMemory.m_idLocationsRange[1];
 
     mcuConfig.m_configDataMemory->m_size = m_dataMemory.m_size;
-    if ( NULL != mcuConfig.m_configDataMemory->m_addrTransTab )
+    if ( nullptr != mcuConfig.m_configDataMemory->m_addrTransTab )
     {
         delete [] mcuConfig.m_configDataMemory->m_addrTransTab;
     }
-    if ( NULL != mcuConfig.m_configDataMemory->m_randomInit )
+    if ( nullptr != mcuConfig.m_configDataMemory->m_randomInit )
     {
         delete [] mcuConfig.m_configDataMemory->m_randomInit;
     }
-    if ( NULL != mcuConfig.m_configDataMemory->m_initValues )
+    if ( nullptr != mcuConfig.m_configDataMemory->m_initValues )
     {
         delete [] mcuConfig.m_configDataMemory->m_initValues;
     }

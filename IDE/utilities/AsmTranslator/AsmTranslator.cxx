@@ -36,7 +36,7 @@ bool AsmTranslator::translate ( Variant variant,
                                 std::ostream & output,
                                 std::istream & input )
 {
-    AsmTranslatorBase * translator = NULL;
+    AsmTranslatorBase * translator = nullptr;
 
     switch ( variant )
     {
@@ -53,9 +53,11 @@ bool AsmTranslator::translate ( Variant variant,
             break;
     }
 
-    if ( NULL == translator )
+    if ( nullptr == translator )
     {
-        m_messages.push_back ( QObject::tr("Error: specified assembler variant is not supported.").toStdString() );
+        m_messages.push_back ( std::make_pair ( 0,
+                                                QObject::tr ( "Error: specified assembler variant is not supported." )
+                                                           . toStdString() ) );
         return false;
     }
 
@@ -77,7 +79,7 @@ inline bool AsmTranslator::translate ( AsmTranslatorBase * translator,
         std::getline(input, buffer.back());
         if ( true == input.bad() )
         {
-            m_messages.push_back ( QObject::tr("Error: input failure.").toStdString() );
+            m_messages.push_back ( std::make_pair(0, QObject::tr("Error: input failure.").toStdString()) );
             return false;
         }
     }
@@ -85,25 +87,25 @@ inline bool AsmTranslator::translate ( AsmTranslatorBase * translator,
     // Process the input in two steps.
     {
         bool success = true;
+        unsigned int lineNumber = 1;
 
-        for ( std::vector<std::string>::iterator line = buffer.begin();
-              buffer.end() != line;
-              line++ )
+        for ( auto & line : buffer )
         {
-            if ( false == translator->process(m_messages, *line) )
+            if ( false == translator->process(m_messages, line, lineNumber) )
             {
                 success = false;
             }
+            lineNumber++;
         }
 
-        for ( std::vector<std::string>::iterator line = buffer.begin();
-              buffer.end() != line;
-              line++ )
+        lineNumber = 1;
+        for ( auto & line : buffer )
         {
-            if ( false == translator->process(m_messages, *line, true) )
+            if ( false == translator->process(m_messages, line, lineNumber, true) )
             {
                 success = false;
             }
+            lineNumber++;
         }
 
         if ( false == success )
@@ -113,21 +115,28 @@ inline bool AsmTranslator::translate ( AsmTranslatorBase * translator,
     }
 
     // Write output.
+    const char * eol = "\n";
+    switch ( m_config.m_eol )
+    {
+        case AsmTranslatorConfig::EOF_LF:   eol = "\n";   break;
+        case AsmTranslatorConfig::EOF_CR:   eol = "\r";   break;
+        case AsmTranslatorConfig::EOF_CRLF: eol = "\r\n"; break;
+    }
     for ( const auto line : translator->m_prologue )
     {
-        output << line << std::endl;
+        output << line << eol;
         if ( true == output.bad() )
         {
-            m_messages.push_back ( QObject::tr("Error: output failure.").toStdString() );
+            m_messages.push_back ( std::make_pair(0, QObject::tr("Error: output failure.").toStdString()) );
             return false;
         }
     }
     for ( const auto line : buffer )
     {
-        output << line << std::endl;
+        output << line << eol;
         if ( true == output.bad() )
         {
-            m_messages.push_back ( QObject::tr("Error: output failure.").toStdString() );
+            m_messages.push_back ( std::make_pair(0, QObject::tr("Error: output failure.").toStdString()) );
             return false;
         }
     }
@@ -151,7 +160,7 @@ bool AsmTranslator::translate ( Variant variant,
     return translate(variant, oFile, iFile);
 }
 
-const std::vector<std::string> & AsmTranslator::getMessages() const
+const std::vector<std::pair<unsigned int, std::string> > & AsmTranslator::getMessages() const
 {
     return m_messages;
 }

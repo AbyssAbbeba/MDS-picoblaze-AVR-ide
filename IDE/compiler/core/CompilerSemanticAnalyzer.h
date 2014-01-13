@@ -52,7 +52,7 @@ class CompilerSemanticAnalyzer
         /**
          * @brief
          */
-        CompilerSemanticAnalyzer() : m_compilerCore ( NULL ), m_opts ( NULL ) {};
+        CompilerSemanticAnalyzer() : m_compilerCore ( nullptr ), m_opts ( nullptr ) {};
 
     ////    Public Operations    ////
     public:

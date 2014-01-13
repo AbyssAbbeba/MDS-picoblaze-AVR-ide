@@ -132,7 +132,7 @@ class CompilerSemanticInterface
          * @return
          */
         virtual CompilerStatement * loadDevSpecCode ( const std::string & deviceName,
-                                                      CompilerBase::DevSpecLoaderFlag * flag = NULL ) = 0;
+                                                      CompilerBase::DevSpecLoaderFlag * flag = nullptr ) = 0;
 
         /**
          * @brief
