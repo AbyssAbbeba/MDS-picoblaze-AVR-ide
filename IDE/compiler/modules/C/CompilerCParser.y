@@ -62,7 +62,11 @@
  */
 %code requires
 {
+
     #include "CompilerParserInterface.h"
+    // C Datatypes enum
+    #include "CompilerCDatatypes.h"
+
     #ifndef YY_TYPEDEF_YY_SCANNER_T
     #define YY_TYPEDEF_YY_SCANNER_T
     typedef void* yyscan_t;
@@ -131,7 +135,9 @@
 %token KW_FOR           "for"
 %token KW_GOTO          "goto"
 %token KW_IF            "if"
+%token KW_INLINE        "inline"
 %token KW_RETURN        "return"
+%token KW_RESTRICT      "restrict"
 %token KW_SIZEOF        "sizeof"
 %token KW_SWITCH        "switch"
 %token KW_WHILE         "while"
@@ -245,7 +251,7 @@
  */
 // Expressions.
 %type<expr>     expr            e_expr      id      string      param       param_list      indexes     datatype
-%type<expr>     decl            decl_list   dt
+%type<expr>     decl            decl_list   dt      member_access
 // Statements - general.
 %type<stmt>     statements      stmt        cases   scope       switch_body
 
@@ -410,13 +416,19 @@ id:
 ;
 
 
+ptr_attr:
+      "const"                       {  }
+    | "restrict"                    {  }
+;
+
 
 decl:
       id                            {
                                         $$ = $id;
                                     }
-    | id "=" expr                   {
-                                        $$ = new CompilerExpr($id, CompilerExpr::OPER_ASSIGN, $expr, LOC(@$));
+    | "*" ptr_attr id               {  }
+    | decl "=" expr                 {
+                                        $$ = new CompilerExpr($1, CompilerExpr::OPER_ASSIGN, $expr, LOC(@$));
                                     }
 ;
 
@@ -467,16 +479,25 @@ datatype:
 // Datatypes
 dt:
       /* empty */                   {
-                                        $$ = new CompilerExpr(CompilerValue(0), CompilerExpr::OPER_DATATYPE, LOC(@$));
+                                        $$ = new CompilerExpr(CompilerCDatatypes::DT_EMPTY, CompilerExpr::OPER_DATATYPE, LOC(@$));
+                                    }
+    | id                            {
+                                        $$ = new CompilerExpr($id, CompilerExpr::OPER_DATATYPE, LOC(@$));
+                                    }
+    | "auto"                        {
+                                        $$ = new CompilerExpr(CompilerValue(14), CompilerExpr::OPER_DATATYPE, LOC(@$));
                                     }
     | "char"                        {
                                         $$ = new CompilerExpr(CompilerValue(1), CompilerExpr::OPER_DATATYPE, LOC(@$));
                                     }
+    | "const"                       {
+                                        $$ = new CompilerExpr(CompilerValue(15), CompilerExpr::OPER_DATATYPE, LOC(@$));
+                                    }
     | "double"                      {
                                         $$ = new CompilerExpr(CompilerValue(2), CompilerExpr::OPER_DATATYPE, LOC(@$));
                                     }
-    | "enum"                        {
-                                        $$ = new CompilerExpr(CompilerValue(3), CompilerExpr::OPER_DATATYPE, LOC(@$));
+    | "extern"                      {
+                                        $$ = new CompilerExpr(CompilerValue(16), CompilerExpr::OPER_DATATYPE, LOC(@$));
                                     }
     | "float"                       {
                                         $$ = new CompilerExpr(CompilerValue(4), CompilerExpr::OPER_DATATYPE, LOC(@$));
@@ -487,23 +508,35 @@ dt:
     | "long"                        {
                                         $$ = new CompilerExpr(CompilerValue(6), CompilerExpr::OPER_DATATYPE, LOC(@$));
                                     }
+    | "register"                    {
+                                        $$ = new CompilerExpr(CompilerValue(17), CompilerExpr::OPER_DATATYPE, LOC(@$));
+                                    }
     | "short"                       {
                                         $$ = new CompilerExpr(CompilerValue(7), CompilerExpr::OPER_DATATYPE, LOC(@$));
                                     }
     | "signed"                      {
                                         $$ = new CompilerExpr(CompilerValue(8), CompilerExpr::OPER_DATATYPE, LOC(@$));
                                     }
-    | "struct"                      {
-                                        $$ = new CompilerExpr(CompilerValue(9), CompilerExpr::OPER_DATATYPE, LOC(@$));
-                                    }
-    | "union"                       {
-                                        $$ = new CompilerExpr(CompilerValue(10), CompilerExpr::OPER_DATATYPE, LOC(@$));
+    | "static"                      {
+                                        $$ = new CompilerExpr(CompilerValue(18), CompilerExpr::OPER_DATATYPE, LOC(@$));
                                     }
     | "unsigned"                    {
                                         $$ = new CompilerExpr(CompilerValue(11), CompilerExpr::OPER_DATATYPE, LOC(@$));
                                     }
     | "void"                        {
                                         $$ = new CompilerExpr(CompilerValue(12), CompilerExpr::OPER_DATATYPE, LOC(@$));
+                                    }
+    | "volatile"                    {
+                                        $$ = new CompilerExpr(CompilerValue(13), CompilerExpr::OPER_DATATYPE, LOC(@$));
+                                    }
+    | "enum" id                     {
+                                        $$ = new CompilerExpr(CompilerValue(3), CompilerExpr::OPER_DATATYPE, $id, LOC(@$));
+                                    }
+    | "struct" id                   {
+                                        $$ = new CompilerExpr(CompilerValue(9), CompilerExpr::OPER_DATATYPE, $id, LOC(@$));
+                                    }
+    | "union" id                    {
+                                        $$ = new CompilerExpr(CompilerValue(10), CompilerExpr::OPER_DATATYPE, $id, LOC(@$));
                                     }
 ;
 
@@ -561,6 +594,8 @@ expr:
     | "--" expr                     { $$ = new CompilerExpr($2, CompilerExpr::OPER_PRE_DEC, LOC(@$));            }
     | expr "++" %prec POST_INC      { $$ = new CompilerExpr($1, CompilerExpr::OPER_POST_INC, LOC(@$));           }
     | expr "--" %prec POST_DEC      { $$ = new CompilerExpr($1, CompilerExpr::OPER_POST_DEC, LOC(@$));           }
+    | "&" expr                      { $$ = new CompilerExpr($2, CompilerExpr::OPER_REF, LOC(@$));                }
+    | "*" expr                      { $$ = new CompilerExpr($2, CompilerExpr::OPER_DEREF, LOC(@$));              }
 
 
     // Ternary operator.
@@ -576,7 +611,7 @@ expr:
     | id indexes                    { $$ = new CompilerExpr($id, CompilerExpr::OPER_INDEX, $indexes, LOC(@$));   }
 
     // Struct index
-    // | struct_index                  {  }
+    | member_access                 { $$ = $member_access; }
 
     // Function call
     | id "(" ")" %prec FCALL        { $$ = new CompilerExpr($id, CompilerExpr::OPER_CALL, LOC(@$));              }
@@ -590,12 +625,10 @@ indexes:
 ;
 
 
-/*member_access:
-      id "." id                     {  }
-    | id "->" id                    {  }
-    | id "." member_access          {  }
-    | id "->" member_access         {  }
-;*/
+member_access:
+      expr "." id                    { $$ = new CompilerExpr($expr, CompilerExpr::OPER_DOT, $id, LOC(@$));       }
+    | expr "->" id                   { $$ = new CompilerExpr($expr, CompilerExpr::OPER_ARROW, $id, LOC(@$));     }
+;
 
 %%
 

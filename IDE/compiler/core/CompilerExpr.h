@@ -94,7 +94,8 @@ class CompilerExpr : public CompilerSerializable
             OPER_POST_DEC       = 23,   ///<
             OPER_PRE_INC        = 24,   ///<
             OPER_PRE_DEC        = 25,   ///<
-            OPER_DATATYPE       = 26    ///<
+            OPER_DATATYPE       = 26,   ///<
+            OPER_ARROW          = 27    ///<
         };
 
     ////    Constructors and Destructors    ////
