@@ -685,8 +685,8 @@ inline AsmPicoBlazeTreeDecoder::CourseOfAction
         return CA_NO_ACTION;
     }
 
-    node->m_prev = nullptr;
     node->prev()->m_next = nullptr;
+    node->m_prev = nullptr;
     node->completeDelete();
     return CA_RETURN_TRUE;
 }
