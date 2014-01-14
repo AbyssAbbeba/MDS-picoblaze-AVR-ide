@@ -772,6 +772,9 @@ std::ostream & operator << ( std::ostream & out,
         case C_STMT_CASE:                       out << "C_STMT_CASE";                       break;
         case C_STMT_DEFAULT:                    out << "C_STMT_DEFAULT";                    break;
         case C_STMT_SCOPE:                      out << "C_STMT_SCOPE";                      break;
+        case C_STMT_INLINE_FUNC:                out << "C_STMT_INLINE_FUNC";                break;
+        case C_STMT_TYPEDEF:                    out << "C_STMT_TYPEDEF";                    break;
+        case C_STMT_GOTO:                       out << "C_STMT_GOTO";                       break;
 
         case STATEMENTTYPE__MAX__:              out << "(STATEMENTTYPE__MAX__)";            break;
     }
