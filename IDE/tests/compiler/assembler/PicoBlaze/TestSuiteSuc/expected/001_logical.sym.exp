@@ -1,5 +1,0 @@
-S1 . . . . . . . . . . . . . . . . . NUMBER 0x00004 USED     CONSTANT    001_logical.asm:6.1-6.24
-S2 . . . . . . . . . . . . . . . . . NUMBER 0x00004 USED     CONSTANT    001_logical.asm:7.1-7.25
-S3 . . . . . . . . . . . . . . . . . NUMBER 0x00006 NOT USED CONSTANT    001_logical.asm:8.1-8.22
-S4 . . . . . . . . . . . . . . . . . NUMBER 0x00007 NOT USED CONSTANT    001_logical.asm:9.1-9.22
-START  . . . . . . . . . . . . . . . LABEL  0x00000 NOT USED CONSTANT    001_logical.asm:12.1-12.7
