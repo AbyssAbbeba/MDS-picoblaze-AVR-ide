@@ -73,19 +73,27 @@ E: symbol already defined: "B_MSB".
                   62     inc_16:
                   63             ; increment low byte
 014 10110         64             ADD             lo_byte,01
+W: instruction `ADD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+W: instruction `ADD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `LO_BYTE'.
                   65             ; increment high byte only if CARRY bit set when incrementing low byte
 015 12100         66             ADDCY           hi_byte,00
+W: instruction `ADDCY sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+W: instruction `ADDCY sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `HI_BYTE'.
                   67
                   68
                   69     Negate:
                   70             ; invert all bits in the register performing a one’s complement
 016 06110         71             XOR             sX,FF
+W: instruction `YOR sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+W: instruction `YOR sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `SX'.
 E: symbol not defined: `FF'.
                   72             ; add one to sX
 017 10110         73             ADD             sX,01
+W: instruction `ADD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+W: instruction `ADD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `SX'.
 018 25000         74             RETURN
                   75
@@ -101,6 +109,7 @@ E: symbol not defined: `SX'.
 W: reusing already reserved space in register file memory at address: 0x1.
                   81     ; Clear ‘complement’ to zero
 019 00100         82     LOAD            complement, 00
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
                   83     ; subtract value from 0 to create two’s complement
 01A 18110         84     SUB             complement, value
 01B 25000         85     RETURN
@@ -134,10 +143,13 @@ W: reusing already reserved space in register file memory at address: 0x1.
                  102     ; modified
                  103     ;
 01C 00110        104     LOAD            bit_mask, 01
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
                  105     ; start with least-significant bit (lsb)
 01D 00100        106     LOAD            result_msb, 00
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
                  107     ; clear product MSB
 01E 00100        108     LOAD            result_lsb, 00
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
                  109     ; clear product LSB (not required)
                  110     ;
                  111     ; loop through all bits in multiplier
@@ -231,8 +243,10 @@ E: symbol already defined: "BIT_MASK".
                  185     ; one-hot encoded, modified
                  186     ;
 02A 00100        187     LOAD             remainder, 00
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
                  188     ; clear remainder
 02B 00100        189     LOAD             bit_mask, 80
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 W: value out of range: 0x50, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x0.
                  190     ; start with most-significant bit (msb)
                  191     div_loop:
@@ -250,6 +264,7 @@ W: value out of range: 0x50, allowed range is [0x0,0xf] (trimmed to 4 bits) whic
 031 18110        203     SUB              remainder, divisor
                  204     ; if remainder > divisor, then subtract
 032 10110        205     ADD              quotient, 01
+W: instruction `ADD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
                  206     ; add one to quotient
                  207     no_sub:
 033 1410E        208     SR0              bit_mask
@@ -261,16 +276,24 @@ W: value out of range: 0x50, allowed range is [0x0,0xf] (trimmed to 4 bits) whic
                  214
                  215     set_carry:
 035 00100        216     LOAD             sX, 00
+W: instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `SX'.
 036 1C110        217     COMPARE          sX, 01
+W: instruction `COMPARE sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+W: instruction `COMPARE sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `SX'.
                  218     ; set CARRY flag and reset ZERO flag
                  219
                  220
 037 00150        221     LOAD             s0, 05
+W: instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `S0'.
                  222     ; s0 = 00000101
 038 0C140        223     TEST             s0, 04
+W: instruction `TEST sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+W: instruction `TEST sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `S0'.
                  224     ; mask = 00000100
                  225     ; CARRY = 1, ZERO = 0

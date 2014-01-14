@@ -24,8 +24,10 @@ E: symbol not defined: `_I2C3'.
                   14     ; | Start    |      Data bit     |                             |  Stop     |
                   15
 000 2D102         16     Init_I2C:       OUTPUT     sF, bSDA_Z              ; SDA = Z
+W: instruction `OUTPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `SF'.
 001 2D102         17                     OUTPUT     sF, bSCL_Z              ; SCL = Z
+W: instruction `OUTPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `SF'.
 002 22001         18                     JUMP    Delay
 E: symbol not defined: `DELAY'.
@@ -38,14 +40,17 @@ E: symbol not defined: `DELAY'.
                   25     ReadWrite4_I2C:
 003 2009A         26                     CALL    I2C_Start               ; Send Start, control byte and ack
 004 09101         27                     INPUT    sC, s0                  ; Load device code for TX
+W: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `SC'.
 E: symbol not defined: `S0'.
 005 14106         28                     SL0     sC                      ; add write flag
+W: instruction `SL0 sX' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `SC'.
 006 20057         29                     CALL    I2C_Xmit                ; Send address and ack
 007 2008E         30                     CALL    I2C_SAck
                   31
 008 09101         32                     INPUT    sC, s1                  ; Load data for TX
+W: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `SC'.
 E: symbol not defined: `S1'.
 009 20057         33                     CALL    I2C_Xmit                ; Send data and ack
@@ -53,9 +58,11 @@ E: symbol not defined: `S1'.
                   35
 00B 20098         36                     CALL    I2C_RepStart            ; Send repeated start, control byte and ack
 00C 09101         37                     INPUT    sC, s0                  ; Load device code for TX
+W: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `SC'.
 E: symbol not defined: `S0'.
 00D 14107         38                     SL1     sC                      ; add read flag
+W: instruction `SL1 sX' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `SC'.
 00E 20057         39                     CALL    I2C_Xmit                ; Send address and ack
 00F 2008E         40                     CALL    I2C_SAck
@@ -63,24 +70,28 @@ E: symbol not defined: `SC'.
 010 20068         42                     CALL    I2C_Recv                ; Read 8 bits of data and send ack
 011 20078         43                     CALL    I2C_MAck
 012 09101         44                     INPUT    s2, sC
+W: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `S2'.
 E: symbol not defined: `SC'.
                   45
 013 20068         46                     CALL    I2C_Recv                ; Read next 8 bits of data and send ack
 014 20078         47                     CALL    I2C_MAck
 015 09101         48                     INPUT    s3, sC
+W: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `S3'.
 E: symbol not defined: `SC'.
                   49
 016 20068         50                     CALL    I2C_Recv                ; Read 8 bits of data and send ack
 017 20078         51                     CALL    I2C_MAck
 018 09101         52                     INPUT    s4, sC
+W: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `S4'.
 E: symbol not defined: `SC'.
                   53
 019 20068         54                     CALL    I2C_Recv                ; Read next 8 bits of data and send ack
 01A 20083         55                     CALL    I2C_MNAck
 01B 09101         56                     INPUT    s5, sC
+W: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `S5'.
 E: symbol not defined: `SC'.
                   57
@@ -92,26 +103,31 @@ E: symbol not defined: `SC'.
                   63     Write3_I2C:
 01D 2009A         64                     CALL    I2C_Start               ; Send Start, control byte and ack
 01E 09101         65                     INPUT    sC, s0                  ; Load device code for TX
+W: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `SC'.
 E: symbol not defined: `S0'.
 01F 14106         66                     SL0     sC                      ; add write flag
+W: instruction `SL0 sX' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `SC'.
 020 20057         67                     CALL    I2C_Xmit                ; Send address and ack
 021 2008E         68                     CALL    I2C_SAck
                   69
 022 09101         70                     INPUT    sC, s1                  ; Load data for TX
+W: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `SC'.
 E: symbol not defined: `S1'.
 023 20057         71                     CALL    I2C_Xmit                ; Send data and ack
 024 2008E         72                     CALL    I2C_SAck
                   73
 025 09101         74                     INPUT    sC, s2                  ; Load data for TX
+W: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `SC'.
 E: symbol not defined: `S2'.
 026 20057         75                     CALL    I2C_Xmit                ; Send data and ack
 027 2008E         76                     CALL    I2C_SAck
                   77
 028 09101         78                     INPUT    sC, s3                  ; Load data for TX
+W: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `SC'.
 E: symbol not defined: `S3'.
 029 20057         79                     CALL    I2C_Xmit                ; Send data and ack
@@ -126,9 +142,11 @@ E: symbol not defined: `S3'.
                   88     Read2_I2C:
 02C 2009A         89                     CALL    I2C_Start               ; Send start, control byte and ack
 02D 09101         90                     INPUT    sC, s0                  ; Load device code for TX
+W: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `SC'.
 E: symbol not defined: `S0'.
 02E 14107         91                     SL1     sC                      ; add read flag
+W: instruction `SL1 sX' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `SC'.
 02F 20057         92                     CALL    I2C_Xmit                ; Send address and ack
 030 2008E         93                     CALL    I2C_SAck
@@ -136,12 +154,14 @@ E: symbol not defined: `SC'.
 031 20068         95                     CALL    I2C_Recv                ; Read 8 bits of data and send ack
 032 20078         96                     CALL    I2C_MAck
 033 09101         97                     INPUT    s2, sC
+W: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `S2'.
 E: symbol not defined: `SC'.
                   98
 034 20068         99                     CALL    I2C_Recv                ; Read next 8 bits of data and send ack
 035 20083        100                     CALL    I2C_MNAck
 036 09101        101                     INPUT    s3, sC
+W: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `S3'.
 E: symbol not defined: `SC'.
                  102
@@ -153,20 +173,24 @@ E: symbol not defined: `SC'.
                  108     Write2_I2C:
 038 2009A        109                     CALL    I2C_Start               ; Send Start, control byte and ack
 039 09101        110                     INPUT    sC, s0                  ; Load device code for TX
+W: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `SC'.
 E: symbol not defined: `S0'.
 03A 14106        111                     SL0     sC                      ; add write flag
+W: instruction `SL0 sX' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `SC'.
 03B 20057        112                     CALL    I2C_Xmit                ; Send address and ack
 03C 2008E        113                     CALL    I2C_SAck
                  114
 03D 09101        115                     INPUT    sC, s1                  ; Load data for TX
+W: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `SC'.
 E: symbol not defined: `S1'.
 03E 20057        116                     CALL    I2C_Xmit                ; Send data and ack
 03F 2008E        117                     CALL    I2C_SAck
                  118
 040 09101        119                     INPUT    sC, s2                  ; Load data for TX
+W: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `SC'.
 E: symbol not defined: `S2'.
 041 20057        120                     CALL    I2C_Xmit                ; Send data and ack
@@ -181,9 +205,11 @@ E: symbol not defined: `S2'.
                  129
 044 2009A        130                     CALL    I2C_Start               ; Send start, control byte and ack
 045 09101        131                     INPUT    sC, s0                  ; Load address for TX
+W: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `SC'.
 E: symbol not defined: `S0'.
 046 14107        132                     SL1     sC                      ; add read flag
+W: instruction `SL1 sX' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `SC'.
 047 20057        133                     CALL    I2C_Xmit                ; Send address and ack
 048 2008E        134                     CALL    I2C_SAck
@@ -193,6 +219,7 @@ E: symbol not defined: `SC'.
 04A 20068        138                     CALL    I2C_Recv                ; Read 8 bits of data and send ack
 04B 20083        139                     CALL    I2C_MNAck
 04C 09101        140                     INPUT    s2, sC
+W: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `S2'.
 E: symbol not defined: `SC'.
                  141
@@ -205,14 +232,17 @@ E: symbol not defined: `SC'.
                  148
 04E 2009A        149                     CALL    I2C_Start               ; Send Start, control byte and ack
 04F 09101        150                     INPUT    sC, s0                  ; Load device code for TX
+W: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `SC'.
 E: symbol not defined: `S0'.
 050 14106        151                     SL0     sC                      ; add write flag
+W: instruction `SL0 sX' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `SC'.
 051 20057        152                     CALL    I2C_Xmit                ; Send address and ack
 052 2008E        153                     CALL    I2C_SAck
                  154
 053 09101        155                     INPUT    sC, s1                  ; Load data for TX
+W: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `SC'.
 E: symbol not defined: `S1'.
 054 20057        156                     CALL    I2C_Xmit                ; Send data and ack
@@ -225,27 +255,32 @@ E: symbol not defined: `S1'.
                  163     ; -------------------------------------------------------------------------------
                  164     I2C_Xmit:
 057 09108        165                     INPUT    sD, 8                   ; Load I2C bit counter
+W: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `SD'.
                  166     I2C_TX:
 058 20001        167                     CALL    Delay
 E: symbol not defined: `DELAY'.
 059 14106        168                     SL0     sC                      ; Move data bit -> carry
+W: instruction `SL0 sX' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `SC'.
 05A 3A05E        169                     JUMP    C, I2C_TX1              ; Jump if bit high
                  170     I2C_TX0:
 05B 2D102        171                     OUTPUT     sF, bSDA_0              ; SDA = 0
+W: instruction `OUTPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `SF'.
 05C 20001        172                     CALL    Delay
 E: symbol not defined: `DELAY'.
 05D 22060        173                     JUMP    I2C_TX2                 ; Jump over next instructions
                  174     I2C_TX1:
 05E 2D102        175                     OUTPUT     sF, bSDA_Z              ; SDA = 1 due to pull-up
+W: instruction `OUTPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `SF'.
 05F 20001        176                     CALL    Delay
 E: symbol not defined: `DELAY'.
                  177     I2C_TX2:
                  178
 060 2D102        179                     OUTPUT     sF, bSCL_Z              ; SCL = 1 due to pull-up
+W: instruction `OUTPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `SF'.
 061 20001        180                     CALL    Delay
 E: symbol not defined: `DELAY'.
@@ -254,9 +289,12 @@ E: symbol not defined: `DELAY'.
 063 20001        182                     CALL    Delay
 E: symbol not defined: `DELAY'.
 064 2D102        183                     OUTPUT     sF, bSCL_0              ; SCL = 0
+W: instruction `OUTPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `SF'.
                  184
 065 18110        185                     SUB     sD, 1                   ; Decrement I2C bit counter
+W: instruction `SUB sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+W: instruction `SUB sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `SD'.
 066 36058        186                     JUMP    NZ, I2C_TX              ; Loop until 8 bits are sent
 067 22001        187                     JUMP    Delay
@@ -267,34 +305,43 @@ E: symbol not defined: `DELAY'.
                  191     ; -------------------------------------------------------------------------------
                  192     I2C_Recv:
 068 09108        193                     INPUT    sD, 8                   ; Load I2C bit counter
+W: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `SD'.
 069 20001        194                     CALL    Delay
 E: symbol not defined: `DELAY'.
 06A 2D102        195                     OUTPUT     sF, bSDA_Z              ; SDA = 1 due to pull-up
+W: instruction `OUTPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `SF'.
                  196
                  197     I2C_RX:
 06B 20001        198                     CALL    Delay
 E: symbol not defined: `DELAY'.
 06C 2D102        199                     OUTPUT     sF, bSCL_Z              ; SCL = 1 due to pull-up
+W: instruction `OUTPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `SF'.
 06D 20001        200                     CALL    Delay
 E: symbol not defined: `DELAY'.
 06E 20001        201                     CALL    Delay
 E: symbol not defined: `DELAY'.
 06F 09102        202                     IN      sF, bSDA_In
+W: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `SF'.
 070 20001        203                     CALL    Delay
 E: symbol not defined: `DELAY'.
 071 1410E        204                     SR0     sF                      ; LSBit -> carry bit
+W: instruction `SR0 sX' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `SF'.
 072 14100        205                     SLA     sC                      ; Carry shifted into LSBit
+W: instruction `SLA sX' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `SC'.
 073 2D102        206                     OUTPUT     sF, bSCL_0              ; SCL = 0
+W: instruction `OUTPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `SF'.
 074 20001        207                     CALL    Delay
 E: symbol not defined: `DELAY'.
 075 18110        208                     SUB     sD, 1                   ; Decrement I2C bit counter
+W: instruction `SUB sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+W: instruction `SUB sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `SD'.
 076 3606B        209                     JUMP    NZ, I2C_RX              ; Loop until 8 bits are read
 077 25000        210                     RETURN
@@ -306,10 +353,12 @@ E: symbol not defined: `SD'.
 078 20001        216                     CALL    Delay
 E: symbol not defined: `DELAY'.
 079 2D102        217                     OUTPUT     sF, bSDA_0              ; SDA = 0
+W: instruction `OUTPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `SF'.
 07A 20001        218                     CALL    Delay
 E: symbol not defined: `DELAY'.
 07B 2D102        219                     OUTPUT     sF, bSCL_Z              ; SCL = 1 due to pull-up
+W: instruction `OUTPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `SF'.
 07C 20001        220                     CALL    Delay
 E: symbol not defined: `DELAY'.
@@ -318,10 +367,12 @@ E: symbol not defined: `DELAY'.
 07E 20001        222                     CALL    Delay
 E: symbol not defined: `DELAY'.
 07F 2D102        223                     OUTPUT     sF, bSCL_0              ; SCL = 0
+W: instruction `OUTPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `SF'.
 080 20001        224                     CALL    Delay
 E: symbol not defined: `DELAY'.
 081 2D102        225                     OUTPUT     sF, bSDA_0              ; SDA = 0
+W: instruction `OUTPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `SF'.
 082 25000        226                     RETURN
                  227
@@ -332,10 +383,12 @@ E: symbol not defined: `SF'.
 083 20001        232                     CALL    Delay
 E: symbol not defined: `DELAY'.
 084 2D102        233                     OUTPUT     sF, bSDA_Z              ; SDA = 1 due to pull-up
+W: instruction `OUTPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `SF'.
 085 20001        234                     CALL    Delay
 E: symbol not defined: `DELAY'.
 086 2D102        235                     OUTPUT     sF, bSCL_Z              ; SCL = 1 due to pull-up
+W: instruction `OUTPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `SF'.
 087 20001        236                     CALL    Delay
 E: symbol not defined: `DELAY'.
@@ -344,10 +397,12 @@ E: symbol not defined: `DELAY'.
 089 20001        238                     CALL    Delay
 E: symbol not defined: `DELAY'.
 08A 2D102        239                     OUTPUT     sF, bSCL_0              ; SCL = 0
+W: instruction `OUTPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `SF'.
 08B 20001        240                     CALL    Delay
 E: symbol not defined: `DELAY'.
 08C 2D102        241                     OUTPUT     sF, bSDA_0              ; SDA = 0
+W: instruction `OUTPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `SF'.
 08D 25000        242                     RETURN
                  243
@@ -358,10 +413,12 @@ E: symbol not defined: `SF'.
 08E 20001        248                     CALL    Delay
 E: symbol not defined: `DELAY'.
 08F 2D102        249                     OUTPUT     sF, bSDA_Z              ; SDA = 1 due to pull-up
+W: instruction `OUTPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `SF'.
 090 20001        250                     CALL    Delay
 E: symbol not defined: `DELAY'.
 091 2D102        251                     OUTPUT     sF, bSCL_Z              ; SCL = 1 due to pull-up
+W: instruction `OUTPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `SF'.
 092 20001        252                     CALL    Delay
 E: symbol not defined: `DELAY'.
@@ -370,6 +427,7 @@ E: symbol not defined: `DELAY'.
 094 20001        254                     CALL    Delay
 E: symbol not defined: `DELAY'.
 095 2D102        255                     OUTPUT     sF, bSCL_0              ; SCL = 0
+W: instruction `OUTPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `SF'.
 096 20001        256                     CALL    Delay
 E: symbol not defined: `DELAY'.
@@ -385,15 +443,18 @@ E: symbol not defined: `DELAY'.
 098 20001        266                     CALL    Delay
 E: symbol not defined: `DELAY'.
 099 2D102        267                     OUTPUT     sF, bSCL_Z              ; SCL = Z
+W: instruction `OUTPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `SF'.
                  268     I2C_Start:
 09A 20001        269                     CALL    Delay
 E: symbol not defined: `DELAY'.
 09B 2D102        270                     OUTPUT     sF, bSDA_0              ; SDA = 0
+W: instruction `OUTPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `SF'.
 09C 20001        271                     CALL    Delay
 E: symbol not defined: `DELAY'.
 09D 2D102        272                     OUTPUT     sF, bSCL_0              ; SCL = 0
+W: instruction `OUTPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `SF'.
 09E 20001        273                     CALL    Delay
 E: symbol not defined: `DELAY'.
@@ -406,10 +467,12 @@ E: symbol not defined: `DELAY'.
 0A0 20001        280                     CALL    Delay
 E: symbol not defined: `DELAY'.
 0A1 2D102        281                     OUTPUT     sF, bSCL_Z              ; SCL = 1 due to pull-up
+W: instruction `OUTPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `SF'.
 0A2 20001        282                     CALL    Delay
 E: symbol not defined: `DELAY'.
 0A3 2D102        283                     OUTPUT     sF, bSDA_Z              ; SDA = 1 due to pull-up
+W: instruction `OUTPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `SF'.
 0A4 20001        284                     CALL    Delay
 E: symbol not defined: `DELAY'.

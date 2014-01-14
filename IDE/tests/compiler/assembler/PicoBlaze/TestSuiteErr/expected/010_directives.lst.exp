@@ -37,16 +37,47 @@ W: reusing already reserved space in register file memory at address: 0x1.
                   36
                   37             REPT    8
                   38                     SL0     sC
+W: instruction `SL0 sX' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `SC'.
                   39             ENDR
 012 14106         40 +1                  SL0     sC
+W: ==> instruction `SL0 sX' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+W: instruction `SL0 sX' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+E: ==> symbol not defined: `SC'.
+E: symbol not defined: `SC'.
 013 14106         41 +1                  SL0     sC
+W: ==> instruction `SL0 sX' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+W: instruction `SL0 sX' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+E: ==> symbol not defined: `SC'.
+E: symbol not defined: `SC'.
 014 14106         42 +1                  SL0     sC
+W: ==> instruction `SL0 sX' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+W: instruction `SL0 sX' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+E: ==> symbol not defined: `SC'.
+E: symbol not defined: `SC'.
 015 14106         43 +1                  SL0     sC
+W: ==> instruction `SL0 sX' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+W: instruction `SL0 sX' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+E: ==> symbol not defined: `SC'.
+E: symbol not defined: `SC'.
 016 14106         44 +1                  SL0     sC
+W: ==> instruction `SL0 sX' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+W: instruction `SL0 sX' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+E: ==> symbol not defined: `SC'.
+E: symbol not defined: `SC'.
 017 14106         45 +1                  SL0     sC
+W: ==> instruction `SL0 sX' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+W: instruction `SL0 sX' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+E: ==> symbol not defined: `SC'.
+E: symbol not defined: `SC'.
 018 14106         46 +1                  SL0     sC
+W: ==> instruction `SL0 sX' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+W: instruction `SL0 sX' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+E: ==> symbol not defined: `SC'.
+E: symbol not defined: `SC'.
 019 14106         47 +1                  SL0     sC
+W: ==> instruction `SL0 sX' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+E: ==> symbol not defined: `SC'.
                   48
                   49             END
                   50
