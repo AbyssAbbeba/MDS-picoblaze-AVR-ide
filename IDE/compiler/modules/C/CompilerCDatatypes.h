@@ -21,6 +21,7 @@ namespace CompilerCDatatypes
         DT_VOLATILE,        ///<
         DT_ENUM,            ///<
         DT_STRUCT,          ///<
-        DT_UNION            ///<
+        DT_UNION,           ///<
+        DT_PTR              ///<
     };
 }
