@@ -8,7 +8,7 @@
 E: symbol not defined: `S0'.
   00001            8     NAMEREG         s1, ram_address
 E: symbol not defined: `S1'.
-W: reusing already reserved space in register file memory at address: 1.
+W: reusing already reserved space in register file memory at address: 0x1.
                    9
   00028           10     CONSTANT        ram_locations, 40               ; there are 64 locations
   00000           11     CONSTANT        initial_value, 00               ; initialize to zero
@@ -17,7 +17,7 @@ W: reusing already reserved space in register file memory at address: 1.
                   14     Start:
 000 00100         15             LOAD            ram_data, initial_value         ; load initial value
 001 00180         16             LOAD            ram_address, ram_locations
-W: value out of range: 40, allowed range is [0,15] (trimmed to 4 bits) which makes it 8.
+W: value out of range: 0x28, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x8.
                   17             ; fill from top to bottom
                   18     ram_fill:
 002 18110         19             SUB             ram_address, 01
@@ -46,11 +46,11 @@ E: unexpected end of line.
                   38     ; display 'F' on 7-segment display
   00001           39     NAMEREG                 s0, switch_value
 E: symbol not defined: `S0'.
-W: reusing already reserved space in register file memory at address: 1.
+W: reusing already reserved space in register file memory at address: 0x1.
                   40     ; read switches into register s0
   00001           41     NAMEREG                 s1, LED_output
 E: symbol not defined: `S1'.
-W: reusing already reserved space in register file memory at address: 1.
+W: reusing already reserved space in register file memory at address: 0x1.
                   42     ; load LED output data in register s1
                   43     ; Load 7-segment LED patterns into scratchpad RAM
 005 00110         44             LOAD            LED_output, LED_0
@@ -88,12 +88,12 @@ E: unexpected end of line.
                   71
   00001           72     NAMEREG         sF, stack_ptr
 E: symbol not defined: `SF'.
-W: reusing already reserved space in register file memory at address: 1.
+W: reusing already reserved space in register file memory at address: 0x1.
                   73     ; reserve register sF for the stack pointer
                   74     ; Initialize stack pointer to location 32 in the scratchpad RAM
 00E 00140         75             LOAD            sF, 20
 E: symbol not defined: `SF'.
-W: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+W: value out of range: 0x14, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
                   76     my_subroutine:
                   77             ; preserve register s0
 00F 20012         78             CALL            push_s0

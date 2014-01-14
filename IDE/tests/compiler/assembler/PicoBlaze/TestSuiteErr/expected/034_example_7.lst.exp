@@ -294,7 +294,7 @@ E: symbol not defined: `SQUARE_HIGH'.
 E: symbol not defined: `S1'.
 037 00110        245                       LOAD s0, 33
 E: symbol not defined: `S0'.
-W: value out of range: 33, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
+W: value out of range: 0x21, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
 038 2203A        246                       JUMP store_channel_C
                  247          square_high: LOAD s1, 0C                     ;Set high level
 E: identifier cannot start with a digit: `0C'.
@@ -366,7 +366,7 @@ E: symbol not defined: `S1'.
                  290                       ;
 050 00180        291       init_sine_wave: LOAD s0, 24                     ;initial value 9216 (2400 hex)
 E: symbol not defined: `S0'.
-W: value out of range: 24, allowed range is [0,15] (trimmed to 4 bits) which makes it 8.
+W: value out of range: 0x18, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x8.
 051 2F10B        292                       STORE s0, sine_y_msb
 E: symbol not defined: `S0'.
 052 00100        293                       LOAD s0, 00
@@ -386,7 +386,7 @@ E: symbol not defined: `D2'.
 E: symbol not defined: `S0'.
 059 00130        300                       LOAD s0, 99
 E: symbol not defined: `S0'.
-W: value out of range: 99, allowed range is [0,15] (trimmed to 4 bits) which makes it 3.
+W: value out of range: 0x63, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x3.
 05A 2F10E        301                       STORE s0, sine_k_lsb
 E: symbol not defined: `S0'.
 05B 25000        302                       RETURN
@@ -567,7 +567,7 @@ E: symbol not defined: `S0'.
 E: symbol not defined: `S3'.
 07E 0C100        443                       TEST s3, SPI_sdi                ;detect state of received bit
 E: symbol not defined: `S3'.
-W: value out of range: 80, allowed range is [0,15] (trimmed to 4 bits) which makes it 0.
+W: value out of range: 0x50, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x0.
 07F 14100        444                       SLA s2                          ;shift new data into result and move to next transmit bit
 E: symbol not defined: `S2'.
 080 2D108        445                       OUTPUT s0, SPI_control_port     ;drive clock Low
@@ -631,7 +631,7 @@ E: symbol not defined: `S1'.
 084 20075        501              set_dac: CALL SPI_init                   ;ensure known state of bus and s0 register
 085 06140        502                       XOR s0, SPI_dac_cs              ;select low on D/A converter
 E: symbol not defined: `S0'.
-W: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+W: value out of range: 0x14, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
 086 2D108        503                       OUTPUT s0, SPI_control_port
 E: symbol not defined: `S0'.
 087 00100        504                       LOAD s2, 00                     ;Write dummy byte to DAC
@@ -648,7 +648,7 @@ E: identifier cannot start with a digit: `0F'.
 E: unexpected end of line.
 08B 041E0        509                       OR s2, 30                       ;Use immediate Write and Update command is "0011"
 E: symbol not defined: `S2'.
-W: value out of range: 30, allowed range is [0,15] (trimmed to 4 bits) which makes it 14.
+W: value out of range: 0x1e, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xe.
 08C 20078        510                       CALL SPI_dac_tx_rx
 08D 00110        511                       LOAD s8, s2                     ;capture response
 E: symbol not defined: `S8'.
@@ -685,7 +685,7 @@ E: symbol not defined: `S6'.
 E: symbol not defined: `S2'.
 09C 06140        526                       XOR s0, SPI_dac_cs              ;deselect the D/A converter to execute
 E: symbol not defined: `S0'.
-W: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+W: value out of range: 0x14, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
 09D 2D108        527                       OUTPUT s0, SPI_control_port
 E: symbol not defined: `S0'.
 09E 25000        528                       RETURN
@@ -695,12 +695,12 @@ E: symbol not defined: `S0'.
 09F 20075        532            dac_reset: CALL SPI_init                   ;ensure known state of bus and s0 register
 0A0 06100        533                       XOR s0, SPI_dac_clr             ;pulse the clear signal.
 E: symbol not defined: `S0'.
-W: value out of range: 80, allowed range is [0,15] (trimmed to 4 bits) which makes it 0.
+W: value out of range: 0x50, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x0.
 0A1 2D108        534                       OUTPUT s0, SPI_control_port
 E: symbol not defined: `S0'.
 0A2 06100        535                       XOR s0, SPI_dac_clr
 E: symbol not defined: `S0'.
-W: value out of range: 80, allowed range is [0,15] (trimmed to 4 bits) which makes it 0.
+W: value out of range: 0x50, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x0.
 0A3 2D108        536                       OUTPUT s0, SPI_control_port
 E: symbol not defined: `S0'.
 0A4 25000        537                       RETURN
@@ -735,7 +735,7 @@ E: symbol not defined: `S0'.
                  564                       ;
 0A9 001C0        565           delay_40us: LOAD s1, 28                     ;40 x 1us = 40us
 E: symbol not defined: `S1'.
-W: value out of range: 28, allowed range is [0,15] (trimmed to 4 bits) which makes it 12.
+W: value out of range: 0x1c, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xc.
 0AA 200A5        566            wait_40us: CALL delay_1us
 0AB 18110        567                       SUB s1, 01
 E: symbol not defined: `S1'.
@@ -749,7 +749,7 @@ E: symbol not defined: `S1'.
                  575                       ;
 0AE 00130        576            delay_1ms: LOAD s2, 19                     ;25 x 40us = 1ms
 E: symbol not defined: `S2'.
-W: value out of range: 19, allowed range is [0,15] (trimmed to 4 bits) which makes it 3.
+W: value out of range: 0x13, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x3.
 0AF 200A9        577             wait_1ms: CALL delay_40us
 0B0 18110        578                       SUB s2, 01
 E: symbol not defined: `S2'.
