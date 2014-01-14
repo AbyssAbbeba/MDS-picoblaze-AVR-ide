@@ -248,7 +248,7 @@ void AsmPicoBlazeCodeListing::printCodeListing ( std::ostream & out,
             for ( size_t j = 1; j < lstLine.m_code.size(); j++ )
             {
                 char tmp[11];
-                sprintf ( tmp, "%04X %05X", addr, lstLine.m_code[j] );
+                sprintf ( tmp, "%03X %05X", addr, lstLine.m_code[j] );
                 out << tmp << std::endl;
 
                 addr++;
