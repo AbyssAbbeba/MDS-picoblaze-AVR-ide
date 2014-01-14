@@ -159,15 +159,15 @@ void DisAsmDialog::create()
 
     if ( this->ui.cbxCase->currentText() == "LF" )
     {
-        config.m_eof = DAsm::Config::EOF_LF;
+        config.m_eol = DAsm::Config::EOL_LF;
     }
     else if ( this->ui.cbxCase->currentText() == "CR" )
     {
-        config.m_eof = DAsm::Config::EOF_CR;
+        config.m_eol = DAsm::Config::EOL_CR;
     }
     else
     {
-        config.m_eof = DAsm::Config::EOF_CRLF;
+        config.m_eol = DAsm::Config::EOL_CRLF;
     }
 
     config.m_symbolsToGenerate = DAsm::Config::STG_NONE;
