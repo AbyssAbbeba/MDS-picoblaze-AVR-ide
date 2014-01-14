@@ -150,6 +150,12 @@ inline void DbgFileNative::loadFile ( const std::string & filename )
                         // Start refilling the binArray from start.
                         j = -1;
 
+                        // Adjust highest address met so far.
+                        if ( (int) address > m_lastAddress )
+                        {
+                            m_lastAddress = address;
+                        }
+
                         // Continue reading the file.
                         break;
                     }
@@ -170,6 +176,9 @@ inline void DbgFileNative::loadFile ( const std::string & filename )
                                 throw Exception(Exception::IO_ERROR, "Binary section is corrupted, file: " + filename);
                         }
 
+                        // Start refilling the binArray from start.
+                        j = -1;
+
                         // Continue reading the file.
                         break;
                     }
@@ -177,6 +186,12 @@ inline void DbgFileNative::loadFile ( const std::string & filename )
                     {
                         // Read file number (2B).
                         fileNumber = ( binArray[0] << 8 ) | binArray[1];
+
+                        // Check the file number.
+                        if ( fileNumber >= m_fileNames.size() )
+                        {
+                            throw Exception(Exception::PARSE_ERROR, "( file number >= number of files )" );
+                        }
 
                         // Start refilling the binArray from start.
                         j = -1;
@@ -195,23 +210,13 @@ inline void DbgFileNative::loadFile ( const std::string & filename )
                         // Go back to read the next `NEXT' mark.
                         i = 3;
 
-                        // Check the file number.
-                        if ( fileNumber >= m_fileNames.size() )
-                        {
-                            throw Exception(Exception::PARSE_ERROR, "( file number >= number of files )" );
-                        }
-
                         // Create the actual line record.
                         m_lineRecords.push_back(LineRecord(fileNumber, lineNo, 0, 0, address));
 
-                        // Adjust recorded limits.
+                        // Adjust recorded number of lines for a particular file number.
                         if ( lineNo > m_numberOfLines[fileNumber] )
                         {
                             m_numberOfLines[fileNumber] = lineNo;
-                        }
-                        if ( (int) address > m_lastAddress )
-                        {
-                            m_lastAddress = address;
                         }
 
                         // Continue reading the file.

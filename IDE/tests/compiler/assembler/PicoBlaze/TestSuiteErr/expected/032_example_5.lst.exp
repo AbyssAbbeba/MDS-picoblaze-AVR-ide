@@ -959,7 +959,7 @@ E: unexpected end of line.
                  887                            ;
 004 101E0        888             display_digit: ADD s5, 30                          ;convert BCD to ASCII character
 E: symbol not defined: `S5'.
-W: value out of range: 30, allowed range is [0,15] (trimmed to 4 bits) which makes it 14.
+W: value out of range: 0x1e, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xe.
 005 2010D        889                            CALL LCD_write_data
 006 25000        890                            RETURN
                  891                            ;
@@ -1174,7 +1174,7 @@ E: symbol not defined: `S8'.
 E: symbol not defined: `FREQUENCY0'.
 049 00140       1004                            LOAD s1, 20                         ;32-bit multiply
 E: symbol not defined: `S1'.
-W: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+W: value out of range: 0x14, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
 04A 1410E       1005            scale_mult_bit: SR0 sB                              ;shift right frequency integer
 E: symbol not defined: `SB'.
 04B 14108       1006                            SRA sA
@@ -1331,7 +1331,7 @@ E: symbol not defined: `S1'.
                 1067                            ;
 082 00140       1068          display_DDS_data: LOAD s5, 20                         ;Line 2 position 0
 E: symbol not defined: `S5'.
-W: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+W: value out of range: 0x14, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
 083 2014A       1069                            CALL LCD_cursor
 084 00110       1070                            LOAD s5, character_N
 E: symbol not defined: `S5'.
@@ -1597,7 +1597,7 @@ E: symbol not defined: `S0'.
                 1241                            ;
 0E0 001C0       1242                delay_40us: LOAD s1, 28                         ;40 x 1us = 40us
 E: symbol not defined: `S1'.
-W: value out of range: 28, allowed range is [0,15] (trimmed to 4 bits) which makes it 12.
+W: value out of range: 0x1c, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xc.
 0E1 200DC       1243                 wait_40us: CALL delay_1us
 0E2 18110       1244                            SUB s1, 01
 E: symbol not defined: `S1'.
@@ -1611,7 +1611,7 @@ E: symbol not defined: `S1'.
                 1252                            ;
 0E5 00130       1253                 delay_1ms: LOAD s2, 19                         ;25 x 40us = 1ms
 E: symbol not defined: `S2'.
-W: value out of range: 19, allowed range is [0,15] (trimmed to 4 bits) which makes it 3.
+W: value out of range: 0x13, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x3.
 0E6 200E0       1254                  wait_1ms: CALL delay_40us
 0E7 18110       1255                            SUB s2, 01
 E: symbol not defined: `S2'.
@@ -1638,7 +1638,7 @@ E: symbol not defined: `S3'.
                 1274                            ;
 0EF 00100       1275                  delay_1s: LOAD s4, 32                         ;50 x 20ms = 1000ms
 E: symbol not defined: `S4'.
-W: value out of range: 32, allowed range is [0,15] (trimmed to 4 bits) which makes it 0.
+W: value out of range: 0x20, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x0.
 0F0 200EA       1276                   wait_1s: CALL delay_20ms
 0F1 18110       1277                            SUB s4, 01
 E: symbol not defined: `S4'.
@@ -1890,7 +1890,7 @@ E: symbol not defined: `LCD_OUTPUT_PORT'.
 135 200EA       1440                 LCD_reset: CALL delay_20ms                     ;wait more that 15ms for display to be ready
 136 001E0       1441                            LOAD s4, 30
 E: symbol not defined: `S4'.
-W: value out of range: 30, allowed range is [0,15] (trimmed to 4 bits) which makes it 14.
+W: value out of range: 0x1e, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xe.
 137 200FA       1442                            CALL LCD_write_inst4                ;send '3'
 138 200EA       1443                            CALL delay_20ms                     ;wait >4.1ms
 139 200FA       1444                            CALL LCD_write_inst4                ;send '3'
@@ -1899,12 +1899,12 @@ W: value out of range: 30, allowed range is [0,15] (trimmed to 4 bits) which mak
 13C 200E0       1447                            CALL delay_40us                     ;wait >40us
 13D 00140       1448                            LOAD s4, 20
 E: symbol not defined: `S4'.
-W: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+W: value out of range: 0x14, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
 13E 200FA       1449                            CALL LCD_write_inst4                ;send '2'
 13F 200E0       1450                            CALL delay_40us                     ;wait >40us
 140 001C0       1451                            LOAD s5, 28                         ;Function set
 E: symbol not defined: `S5'.
-W: value out of range: 28, allowed range is [0,15] (trimmed to 4 bits) which makes it 12.
+W: value out of range: 0x1c, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xc.
 141 200FE       1452                            CALL LCD_write_inst8
 142 00160       1453                            LOAD s5, 06                         ;Entry mode
 E: symbol not defined: `S5'.
@@ -1946,7 +1946,7 @@ E: identifier cannot start with a digit: `0F'.
 E: unexpected end of line.
 14C 04100       1483                            OR s5, 80
 E: symbol not defined: `S5'.
-W: value out of range: 80, allowed range is [0,15] (trimmed to 4 bits) which makes it 0.
+W: value out of range: 0x50, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x0.
 14D 200FE       1484                            CALL LCD_write_inst8                ;instruction write to set cursor
 14E 25000       1485                            RETURN
                 1486                 set_line2: AND s5, 0F                          ;make address in range C0 to CF for line 2
@@ -1966,7 +1966,7 @@ E: symbol not defined: `C0'.
                 1496                            ;
 152 00120       1497            LCD_shift_left: LOAD s5, 18                         ;shift display left
 E: symbol not defined: `S5'.
-W: value out of range: 18, allowed range is [0,15] (trimmed to 4 bits) which makes it 2.
+W: value out of range: 0x12, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x2.
 153 200FE       1498                            CALL LCD_write_inst8
 154 25000       1499                            RETURN
                 1500                            ;

@@ -3,7 +3,7 @@
   00000            3     s0      AUTOREG
   00001            4     s1      AUTOREG
   00001            5     s2      REG     0x01
-W: reusing already reserved space in register file memory at address: 1.
+W: reusing already reserved space in register file memory at address: 0x1.
   00006            6     s3      EQU     0x06
   00006            7     B       SET     6
                    8
