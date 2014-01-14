@@ -113,10 +113,12 @@ class AsmPicoBlazeSpecialMacros
          * @brief
          * @param[in] cnd
          * @param[in] label
+         * @param[in] location
          * @return
          */
         CompilerStatement * evaluateCondition ( const CompilerExpr * cnd,
-                                                const std::string & label );
+                                                const std::string & label,
+                                                const CompilerSourceLocation & location );
 
     ////    Inline Private Operations    ////
     private:
@@ -134,54 +136,66 @@ class AsmPicoBlazeSpecialMacros
         /**
          * @brief
          * @param[in] label
+         * @param[in] location
          * @param[in] cnd
          * @return
          */
         inline CompilerStatement * jump ( const std::string & label,
+                                          const CompilerSourceLocation & location,
                                           JumpCondition cnd = JC_NONE ) const;
 
         /**
          * @brief
          * @param[in] label
+         * @param[in] location
          * @return
          */
-        inline CompilerStatement * label ( const std::string & label ) const;
+        inline CompilerStatement * label ( const std::string & label,
+                                           const CompilerSourceLocation & location ) const;
 
         /**
          * @brief
          * @param[in] sx
          * @param[in] sy
+         * @param[in] location
          * @return
          */
         inline CompilerStatement * compare_sx_sy ( int sx,
-                                                   int sy ) const;
+                                                   int sy,
+                                                   const CompilerSourceLocation & location ) const;
 
         /**
          * @brief
          * @param[in] sx
          * @param[in] kk
+         * @param[in] location
          * @return
          */
         inline CompilerStatement * compare_sx_kk ( int sx,
-                                                   int kk ) const;
+                                                   int kk,
+                                                   const CompilerSourceLocation & location ) const;
 
         /**
          * @brief
          * @param[in] sx
          * @param[in] sy
+         * @param[in] location
          * @return
          */
         inline CompilerStatement * test_sx_sy ( int sx,
-                                                int sy ) const;
+                                                int sy,
+                                                const CompilerSourceLocation & location ) const;
 
         /**
          * @brief
          * @param[in] sx
          * @param[in] kk
+         * @param[in] location
          * @return
          */
         inline CompilerStatement * test_sx_kk ( int sx,
-                                                int kk ) const;
+                                                int kk,
+                                                const CompilerSourceLocation & location ) const;
 
         /**
          * @brief
