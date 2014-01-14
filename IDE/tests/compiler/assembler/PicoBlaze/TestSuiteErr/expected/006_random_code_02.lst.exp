@@ -12,6 +12,7 @@
                   12
                   13
 004 14102         14             RL        TESTsymb10
+W: instruction `RL sX' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `TESTSYMB10'.
                   15         ; Others
 005 2000A         16             CALl      Podprog

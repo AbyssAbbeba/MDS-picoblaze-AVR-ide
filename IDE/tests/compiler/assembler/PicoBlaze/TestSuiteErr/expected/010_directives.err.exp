@@ -1,3 +1,10 @@
 MT_WARNING: 010_directives.asm:5.1-5.21: Warning: reusing already reserved space in register file memory at address: 0x1.
+MT_WARNING: 010_directives.asm:26.25-26.27: Warning: instruction `SL0 sX' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 010_directives.asm:27.9-27.13: Warning: ==> instruction `SL0 sX' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 010_directives.asm:26.17-26.27: Warning: ==> instruction `SL0 sX' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 010_directives.asm:27.9-27.13: Warning: ==> ==> instruction `SL0 sX' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 MT_WARNING: Warning: exact device not specified, using KCPSM6 by default.
 MT_ERROR: 010_directives.asm:26.25-26.27: Error: symbol not defined: `SC'.
+MT_ERROR: 010_directives.asm:27.9-27.13: Error: ==> symbol not defined: `SC'.
+MT_ERROR: 010_directives.asm:26.17-26.27: Error: ==> symbol not defined: `SC'.
+MT_ERROR: 010_directives.asm:27.9-27.13: Error: ==> ==> symbol not defined: `SC'.

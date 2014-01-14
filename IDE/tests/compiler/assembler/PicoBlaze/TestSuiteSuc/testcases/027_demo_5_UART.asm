@@ -23,7 +23,7 @@
         NAMEREG         s1,temp2              ; temporary data register
         NAMEREG         s2,temp3              ; temporary data register
         ; OR
-        RXdata        AUTOREG   AT 3          ; RX data
+        RX_data        AUTOREG   AT 3          ; RX data
         TXdata        AUTOREG               ; TX data
         LED_reg       AUTOREG           ; Leds data register
 
@@ -130,30 +130,30 @@ wait_100ms_i:       SUB       Temp1, #1
 ;  [1] Rotate leds 8x
 ;  [2] Send "Hello world" via UART
 ;-------------------------------------------------------------------------------------
-; RX_resolve          MACRO     uart_byte
-; 
-;                     IF  uart_byte == #1
-;                         REPT    8
-;                         RR      LED_reg
-;                         wait_for_100ms
-;                         ENDR
-;                             EXITM
-; 
-;                     ELSEIF      uart_byte == #2
-;                         SendChar  'I'
-;                         SendChar  'N'
-;                         SendChar  'T'
-;                         SendChar  'E'
-;                         SendChar  'R'
-;                         SendChar  'R'
-;                         SendChar  'U'
-;                         SendChar  'P'
-;                         SendChar  'T'
-;                         SendCRLF
-;                             EXITM
-;                     ENDIF
-; 
-;                     ENDM
+RX_resolve          MACRO     uart_byte
+
+                    IF  uart_byte == #1
+                        REPT    8
+                        RR      LED_reg
+                        wait_for_100ms
+                        ENDR
+                            EXITM
+
+                    ELSEIF      uart_byte == #2
+                        SendChar  'I'
+                        SendChar  'N'
+                        SendChar  'T'
+                        SendChar  'E'
+                        SendChar  'R'
+                        SendChar  'R'
+                        SendChar  'U'
+                        SendChar  'P'
+                        SendChar  'T'
+                        SendCRLF
+                            EXITM
+                    ENDIF
+
+                    ENDM
 
 ;=======================================================================
 ; END OF MACRO DEFINITIONS ;;
