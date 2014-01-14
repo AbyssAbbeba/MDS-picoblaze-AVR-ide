@@ -118,6 +118,12 @@ void printHelp ( const char * executable )
               << QObject::tr("        Do not perform the actual compilation, do only lexical and syntax analysis of"
                              " the").toStdString() << std::endl
               << QObject::tr("        the provided source code and exit.").toStdString() << std::endl
+              << QObject::tr("    --no-backup").toStdString() << std::endl
+              << QObject::tr("        Don't generate backup files.").toStdString() << std::endl
+              << QObject::tr("    --brief-msg").toStdString() << std::endl
+              << QObject::tr("        Print only unique messages.").toStdString() << std::endl
+              << QObject::tr("    --no-strict").toStdString() << std::endl
+              << QObject::tr("        Disable certain error and warning messages.").toStdString() << std::endl
               << QObject::tr("    --no-warnings").toStdString() << std::endl
               << QObject::tr("        Do not print any warnings.").toStdString() << std::endl
               << QObject::tr("    --no-errors").toStdString() << std::endl
@@ -284,6 +290,10 @@ int main ( int argc, char ** argv )
         { "no-remarks",  no_argument,       0,   'R' },
         { "silent",      no_argument,       0,   'N' },
 
+        { "no-backup",   no_argument,       0, 0x200 },
+        { "brief-msg",   no_argument,       0, 0x201 },
+        { "no-strict",   no_argument,       0, 0x202 },
+
         { "arch",        required_argument, 0,   'a' },
         { "plang",       required_argument, 0,   'p' },
         { "mtable",      required_argument, 0,   'm' },
@@ -406,6 +416,16 @@ int main ( int argc, char ** argv )
                 break;
             case 0x105: // --cunit=<compilation_unit>
                 opts.m_cunit = optarg;
+                break;
+
+            case 0x200: // --no-backup
+                opts.m_makeBackupFiles = false;
+                break;
+            case 0x201: // --brief-msg
+                opts.m_briefMsgOutput = true;
+                break;
+            case 0x202: // --no-strict
+                opts.m_strict = false;
                 break;
 
             /* Error states */
