@@ -153,7 +153,14 @@ inline void AsmPicoBlazeInstructionSet::detAccSymTypes ( const CompilerStatement
         case ASMPICOBLAZE_INS_LD_RET_SX_KK:
         case ASMPICOBLAZE_INS_TESTCY_SX_KK:
         case ASMPICOBLAZE_INS_COMPARECY_SX_KK:
-            acceptableTypes[0] = AsmPicoBlazeSymbolTable::STYPE_REGISTER;
+            if ( true == m_opts->m_strict )
+            {
+                acceptableTypes[0] = AsmPicoBlazeSymbolTable::STYPE_REGISTER;
+            }
+            else
+            {
+                acceptableTypes[0] |= AsmPicoBlazeSymbolTable::STYPE_REGISTER;
+            }
             break;
 
         case ASMPICOBLAZE_INS_ADD_SX_SY:
@@ -175,8 +182,16 @@ inline void AsmPicoBlazeInstructionSet::detAccSymTypes ( const CompilerStatement
         case ASMPICOBLAZE_INS_COMPARECY_SX_SY:
         case ASMPICOBLAZE_INS_TESTCY_SX_SY:
         case ASMPICOBLAZE_INS_STAR_SX_SY:
-            acceptableTypes[0] = AsmPicoBlazeSymbolTable::STYPE_REGISTER;
-            acceptableTypes[1] = AsmPicoBlazeSymbolTable::STYPE_REGISTER;
+            if ( true == m_opts->m_strict )
+            {
+                acceptableTypes[0] = AsmPicoBlazeSymbolTable::STYPE_REGISTER;
+                acceptableTypes[1] = AsmPicoBlazeSymbolTable::STYPE_REGISTER;
+            }
+            else
+            {
+                acceptableTypes[0] |= AsmPicoBlazeSymbolTable::STYPE_REGISTER;
+                acceptableTypes[1] |= AsmPicoBlazeSymbolTable::STYPE_REGISTER;
+            }
             break;
 
         case ASMPICOBLAZE_INS_SR0_SX:
@@ -190,18 +205,39 @@ inline void AsmPicoBlazeInstructionSet::detAccSymTypes ( const CompilerStatement
         case ASMPICOBLAZE_INS_SLX_SX:
         case ASMPICOBLAZE_INS_RL_SX:
         case ASMPICOBLAZE_INS_HWBUILD_SX:
-            acceptableTypes[0] = AsmPicoBlazeSymbolTable::STYPE_REGISTER;
+            if ( true == m_opts->m_strict )
+            {
+                acceptableTypes[0] = AsmPicoBlazeSymbolTable::STYPE_REGISTER;
+            }
+            else
+            {
+                acceptableTypes[0] |= AsmPicoBlazeSymbolTable::STYPE_REGISTER;
+            }
             break;
 
         case ASMPICOBLAZE_INS_STORE_SX_SS:
         case ASMPICOBLAZE_INS_FETCH_SX_SS:
-            acceptableTypes[0]  = AsmPicoBlazeSymbolTable::STYPE_REGISTER;
+            if ( true == m_opts->m_strict )
+            {
+                acceptableTypes[0] = AsmPicoBlazeSymbolTable::STYPE_REGISTER;
+            }
+            else
+            {
+                acceptableTypes[0] |= AsmPicoBlazeSymbolTable::STYPE_REGISTER;
+            }
             acceptableTypes[1] |= AsmPicoBlazeSymbolTable::STYPE_DATA;
             break;
 
         case ASMPICOBLAZE_INS_OUTPUT_SX_PP:
         case ASMPICOBLAZE_INS_INPUT_SX_PP:
-            acceptableTypes[0]  = AsmPicoBlazeSymbolTable::STYPE_REGISTER;
+            if ( true == m_opts->m_strict )
+            {
+                acceptableTypes[0]  = AsmPicoBlazeSymbolTable::STYPE_REGISTER;
+            }
+            else
+            {
+                acceptableTypes[0] |= AsmPicoBlazeSymbolTable::STYPE_REGISTER;
+            }
             acceptableTypes[1] |= AsmPicoBlazeSymbolTable::STYPE_PORT;
             break;
 

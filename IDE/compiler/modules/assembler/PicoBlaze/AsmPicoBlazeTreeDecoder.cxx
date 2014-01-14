@@ -773,7 +773,14 @@ inline void AsmPicoBlazeTreeDecoder::dir_UNDEFINE ( CompilerStatement * node )
 inline void AsmPicoBlazeTreeDecoder::label ( CompilerStatement * node )
 {
     CompilerExpr e(m_memoryPtr->m_code);
-    m_symbolTable -> addSymbol ( node->args()->lVal().m_data.m_symbol,
+
+    CompilerExpr * label = node->args();
+    while ( CompilerValue::TYPE_EXPR == label->lVal().m_type )
+    {
+        label = label->lVal().m_data.m_expr;
+    }
+
+    m_symbolTable -> addSymbol ( label->lVal().m_data.m_symbol,
                                  &e,
                                  &( node->location() ),
                                  AsmPicoBlazeSymbolTable::STYPE_LABEL,
