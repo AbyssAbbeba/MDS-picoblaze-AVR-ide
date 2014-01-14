@@ -1,0 +1,403 @@
+                   1             device  kcpsm3
+                   2
+                   3     /*
+                   4      * A simple basic test code solely for debugging purposes.
+                   5      */
+                   6
+  00001            7     _S3     REG     1
+                   8     abcd    DEFINE  5 / {0}
+                   9     ab_cd   DEFINE  abcd({0}) + 1
+                  10     abcdef  DEFINE  4 % ab_cd({0})
+                  11     abcde   DEFINE  {0} * 2 + abcdef({1})
+  00001           12     u       EQU     1                       ; <-- Set this to `0' to produce a compilation error,
+  00005           13     a       EQU     5 + 0 * abcde(0x7, 8)
+                  14     ab      DEFINE  1 + abcde('a', {0})
+                  15
+                  16     _X_     define  2 + {0}
+W: ==> argument #3 not used.
+W: ==> argument #1 not used.
+                  17     XXX     define  1 * {0} + {1}/{2}+5
+W: ==> ==> argument #1 not used.
+                  18     _Y_     define  1 + {0} + 2
+  0000A           19     o0o     EQU     _X_(xXx(1,2,_Y_(1, 1),8)) + 2
+W: argument #3 not used.
+W: argument #1 not used.
+000 0050A         20             LOAD    0x5, #o0o
+                  21
+                  22     _a      MACRO   a, b, c
+W: macro parameter `A' eclipses global symbol `A', defined at: 044_random_test.asm:13.1-13.38.
+                  23             ADD     S1, #a
+                  24             _b      b, c
+                  25     ENDM
+                  26
+                  27     _b      MACRO   b, c
+                  28             ADD     S2, #b
+                  29             _c      c
+                  30     ENDM
+                  31
+                  32     _c      MACRO   c
+                  33             ADD     _S3, #c
+                  34     ENDM
+                  35
+                  36     xyz:    _a      1, 2, ab(u)
+001 18101         37 +1          ADD     S1, #a
+                  38 +1          _b      b, c
+002 18202         39 +2          ADD     S2, #b
+                  40 +2          _c      c
+003 181C7         41 +3          ADD     _S3, #c
+                  42
+004 00005         43             LOAD    S0, #a
+005 34005         44             JUMP    $
+                  45
+                  46     REPT            2
+                  47         IF A == 2
+W: register is expected here but given type is: NUMBER.
+W: register is expected here but given type is: NUMBER.
+                  48             LD      A, A - 100
+W: sign overflow. Result is negative number lower that the lowest negative number representable in two's complement arithmetic by the given number of bits (4 bits in this case) .
+                  49         ELSEIF A > #4
+W: register is expected here but given type is: NUMBER.
+                  50             LD      A, #2
+                  51         ELSE
+                  52             LD      A, #3
+                  53         ENDIF
+                  54
+                  55         WHILE A > #2
+W: register is expected here but given type is: NUMBER.
+                  56             ADD     S2, #5
+                  57         ENDW
+                  58
+                  59         FOR S0, 10
+                  60             ADDCY   S2, #5
+                  61         ENDF
+                  62     ENDR
+                  63 +1      IF A == 2
+006 15520         64 +2      COMPARE 0x5, 0x2
+007 3540A         65 +2      JUMP    NZ, IF-0
+008 01510         66 +1      IF A == 2
+                  67 +1          LD      A, A - 100
+009 34010         68 +2      JUMP    IF-0-END
+                  69 +2  IF-0:
+00A 14504         70 +2      COMPARE 0x5, #0x4
+00B 3580F         71 +2      JUMP    C, IF-1
+00C 3500F         72 +2      JUMP    Z, IF-1
+00D 00502         73 +1      ELSEIF A > #4
+                  74 +1          LD      A, #2
+00E 34010         75 +2      JUMP    IF-0-END
+                  76 +2  IF-1:
+00F 00503         77 +1      ELSE
+                  78 +1          LD      A, #3
+                  79 +2  IF-0-END:
+                  80 +1      ENDIF
+                  81 +1
+                  82 +2  WHILE-0:
+010 14502         83 +2      COMPARE 0x5, #0x2
+011 35815         84 +2      JUMP    C, WHILE-0-END
+012 35015         85 +2      JUMP    Z, WHILE-0-END
+013 18205         86 +1      WHILE A > #2
+                  87 +1          ADD     S2, #5
+014 34010         88 +2      JUMP    WHILE-0
+                  89 +2  WHILE-0-END:
+                  90 +1      ENDW
+                  91 +1
+015 00000         92 +2      LOAD    0x0, #0x0
+                  93 +2  FOR-0:
+016 1400A         94 +2      COMPARE 0x0, #0xa
+017 3501B         95 +2      JUMP    Z, FOR-0-END
+018 1A205         96 +1      FOR S0, 10
+                  97 +1          ADDCY   S2, #5
+019 18001         98 +2      ADD     0x0, #0x1
+01A 34016         99 +2      JUMP    FOR-0
+                 100 +2  FOR-0-END:
+                 101 +1      IF A == 2
+01B 15520        102 +2      COMPARE 0x5, 0x2
+01C 3541F        103 +2      JUMP    NZ, IF-2
+01D 01510        104 +1      IF A == 2
+                 105 +1          LD      A, A - 100
+01E 34025        106 +2      JUMP    IF-2-END
+                 107 +2  IF-2:
+01F 14504        108 +2      COMPARE 0x5, #0x4
+020 35824        109 +2      JUMP    C, IF-3
+021 35024        110 +2      JUMP    Z, IF-3
+022 00502        111 +1      ELSEIF A > #4
+                 112 +1          LD      A, #2
+023 34025        113 +2      JUMP    IF-2-END
+                 114 +2  IF-3:
+024 00503        115 +1      ELSE
+                 116 +1          LD      A, #3
+                 117 +2  IF-2-END:
+                 118 +1      ENDIF
+                 119 +1
+                 120 +2  WHILE-1:
+025 14502        121 +2      COMPARE 0x5, #0x2
+026 3582A        122 +2      JUMP    C, WHILE-1-END
+027 3502A        123 +2      JUMP    Z, WHILE-1-END
+028 18205        124 +1      WHILE A > #2
+                 125 +1          ADD     S2, #5
+029 34025        126 +2      JUMP    WHILE-1
+                 127 +2  WHILE-1-END:
+                 128 +1      ENDW
+                 129 +1
+02A 00000        130 +2      LOAD    0x0, #0x0
+                 131 +2  FOR-1:
+02B 1400A        132 +2      COMPARE 0x0, #0xa
+02C 35030        133 +2      JUMP    Z, FOR-1-END
+02D 1A205        134 +1      FOR S0, 10
+                 135 +1          ADDCY   S2, #5
+02E 18001        136 +2      ADD     0x0, #0x1
+02F 3402B        137 +2      JUMP    FOR-1
+                 138 +2  FOR-1-END:
+                 139 +1      ENDF
+                 140 +1      ENDF
+                 141
+  00006          142     i       SET     6
+  00003          143     j       SET     3
+                 144
+                 145     REPT            i
+                 146             LOAD    1, #0x5a
+                 147         REPT        3
+                 148             LOAD    0x5, 1
+                 149         ENDR
+                 150     ENDR
+030 0015A        151 +1          LOAD    1, #0x5a
+                 152 +1      REPT        3
+                 153 +1          LOAD    0x5, 1
+                 154 +1      ENDR
+031 01510        155 +2          LOAD    0x5, 1
+032 01510        156 +2          LOAD    0x5, 1
+033 01510        157 +2          LOAD    0x5, 1
+034 0015A        158 +1          LOAD    1, #0x5a
+                 159 +1      REPT        3
+                 160 +1          LOAD    0x5, 1
+                 161 +1      ENDR
+035 01510        162 +2          LOAD    0x5, 1
+036 01510        163 +2          LOAD    0x5, 1
+037 01510        164 +2          LOAD    0x5, 1
+038 0015A        165 +1          LOAD    1, #0x5a
+                 166 +1      REPT        3
+                 167 +1          LOAD    0x5, 1
+                 168 +1      ENDR
+039 01510        169 +2          LOAD    0x5, 1
+03A 01510        170 +2          LOAD    0x5, 1
+03B 01510        171 +2          LOAD    0x5, 1
+03C 0015A        172 +1          LOAD    1, #0x5a
+                 173 +1      REPT        3
+                 174 +1          LOAD    0x5, 1
+                 175 +1      ENDR
+03D 01510        176 +2          LOAD    0x5, 1
+03E 01510        177 +2          LOAD    0x5, 1
+03F 01510        178 +2          LOAD    0x5, 1
+040 0015A        179 +1          LOAD    1, #0x5a
+                 180 +1      REPT        3
+                 181 +1          LOAD    0x5, 1
+                 182 +1      ENDR
+041 01510        183 +2          LOAD    0x5, 1
+042 01510        184 +2          LOAD    0x5, 1
+043 01510        185 +2          LOAD    0x5, 1
+044 0015A        186 +1          LOAD    1, #0x5a
+                 187 +1      REPT        3
+                 188 +1          LOAD    0x5, 1
+                 189 +1      ENDR
+045 01510        190 +2          LOAD    0x5, 1
+046 01510        191 +2          LOAD    0x5, 1
+047 01510        192 +2          LOAD    0x5, 1
+                 193
+                 194     #WHILE          i
+                 195             LOAD    1, #0x5a
+                 196         #WHILE      j
+                 197             LOAD    1, #0x5
+                 198         j   SET     j - 1
+                 199         #ENDW
+                 200     i       SET     i - 1
+                 201     j       SET     3
+                 202     #ENDW
+048 0015A        203 +1          LOAD    1, #0x5a
+                 204 +1      #WHILE      j
+                 205 +1          LOAD    1, #0x5
+                 206 +1      j   SET     j - 1
+                 207 +1      #ENDW
+049 00105        208 +2          LOAD    1, #0x5
+  00002          209 +2      j   SET     j - 1
+04A 00105        210 +2          LOAD    1, #0x5
+  00001          211 +2      j   SET     j - 1
+04B 00105        212 +2          LOAD    1, #0x5
+  00000          213 +2      j   SET     j - 1
+  00005          214 +1  i       SET     i - 1
+  00003          215 +1  j       SET     3
+04C 0015A        216 +1          LOAD    1, #0x5a
+                 217 +1      #WHILE      j
+                 218 +1          LOAD    1, #0x5
+                 219 +1      j   SET     j - 1
+                 220 +1      #ENDW
+04D 00105        221 +2          LOAD    1, #0x5
+  00002          222 +2      j   SET     j - 1
+04E 00105        223 +2          LOAD    1, #0x5
+  00001          224 +2      j   SET     j - 1
+04F 00105        225 +2          LOAD    1, #0x5
+  00000          226 +2      j   SET     j - 1
+  00004          227 +1  i       SET     i - 1
+  00003          228 +1  j       SET     3
+050 0015A        229 +1          LOAD    1, #0x5a
+                 230 +1      #WHILE      j
+                 231 +1          LOAD    1, #0x5
+                 232 +1      j   SET     j - 1
+                 233 +1      #ENDW
+051 00105        234 +2          LOAD    1, #0x5
+  00002          235 +2      j   SET     j - 1
+052 00105        236 +2          LOAD    1, #0x5
+  00001          237 +2      j   SET     j - 1
+053 00105        238 +2          LOAD    1, #0x5
+  00000          239 +2      j   SET     j - 1
+  00003          240 +1  i       SET     i - 1
+  00003          241 +1  j       SET     3
+054 0015A        242 +1          LOAD    1, #0x5a
+                 243 +1      #WHILE      j
+                 244 +1          LOAD    1, #0x5
+                 245 +1      j   SET     j - 1
+                 246 +1      #ENDW
+055 00105        247 +2          LOAD    1, #0x5
+  00002          248 +2      j   SET     j - 1
+056 00105        249 +2          LOAD    1, #0x5
+  00001          250 +2      j   SET     j - 1
+057 00105        251 +2          LOAD    1, #0x5
+  00000          252 +2      j   SET     j - 1
+  00002          253 +1  i       SET     i - 1
+  00003          254 +1  j       SET     3
+058 0015A        255 +1          LOAD    1, #0x5a
+                 256 +1      #WHILE      j
+                 257 +1          LOAD    1, #0x5
+                 258 +1      j   SET     j - 1
+                 259 +1      #ENDW
+059 00105        260 +2          LOAD    1, #0x5
+  00002          261 +2      j   SET     j - 1
+05A 00105        262 +2          LOAD    1, #0x5
+  00001          263 +2      j   SET     j - 1
+05B 00105        264 +2          LOAD    1, #0x5
+  00000          265 +2      j   SET     j - 1
+  00001          266 +1  i       SET     i - 1
+  00003          267 +1  j       SET     3
+05C 0015A        268 +1          LOAD    1, #0x5a
+                 269 +1      #WHILE      j
+                 270 +1          LOAD    1, #0x5
+                 271 +1      j   SET     j - 1
+                 272 +1      #ENDW
+05D 00105        273 +2          LOAD    1, #0x5
+  00002          274 +2      j   SET     j - 1
+05E 00105        275 +2          LOAD    1, #0x5
+  00001          276 +2      j   SET     j - 1
+05F 00105        277 +2          LOAD    1, #0x5
+  00000          278 +2      j   SET     j - 1
+  00000          279 +1  i       SET     i - 1
+  00003          280 +1  j       SET     3
+                 281
+060 34061        282     lbl_X:  JUMP lbl_Y
+061 30060        283     lbl_Y:  CALL lbl_X
+                 284
+                 285
+  00006          286     cccp    EQU     ( 2h + 4d )     ; Define a compile-time constant.
+  00003          287     eu      EQU     3h              ; Define another compile-time constant.
+                 288
+                 289     include "044_random_test.0.inc"
+          =1     290
+          =1     291
+          =1     292     usa     MACRO   x, y
+          =1     293         #ifb        y
+          =1     294         _y   EQU    010
+          =1     295         #else
+          =1     296         _y  EQU     y
+          =1     297         #endif
+          =1     298             LOAD    x, #_y
+          =1     299     ENDM
+062 19610        300     b:      ADD     cccp, 1
+                 301
+063 00534        302             DB      4, 5, "456\0\n", 'x'
+0064 13600
+0065 27800
+W: instruction word is only 18 bits wide, value 0x40534 trimmed to 0x00534.
+W: instruction word is only 18 bits wide, value 0x353600 trimmed to 0x13600.
+W: instruction word is only 18 bits wide, value 0xa7800 trimmed to 0x27800.
+                 303
+                 304
+                 305     abc     MACRO   pa, pb, pc
+                 306             ADD     cccp, 1
+                 307     ENDM
+                 308
+                 309     ; jump            ; <-- error
+                 310     ; load x, y       ; <-- error
+                 311     ; local           ; <-- error
+                 312     nolist
+                 320     list
+  00000          321     #if ( 2 + ( 1 - 3 ) )
+                 322             SR0     eu
+  0000C          323     #elseif ( 3 * 4 )
+06A 2060E        324             SR0     cccp
+  00000          325             #ifn ( 3 - 2 )
+                 326                     ADD     eu, cccp
+  00001          327             #else
+  00005          328                     org     5
+005 1C306        329                     SUB     eu, #cccp
+W: reusing already reserved space in program memory at address: 0x5.
+                 330             #endif
+                 331     #else
+                 332             ENABLE INTERRUPT
+                 333             DISABLE INTERRUPT
+                 334     #endif
+                 335
+  00100          336             ORG     0x100
+                 337
+  00006          338     i       SET     6
+                 339
+                 340             REPT    i
+                 341                 LOAD    cccp, #0x5a
+                 342             ENDR
+100 0065A        343 +1              LOAD    cccp, #0x5a
+101 0065A        344 +1              LOAD    cccp, #0x5a
+102 0065A        345 +1              LOAD    cccp, #0x5a
+103 0065A        346 +1              LOAD    cccp, #0x5a
+104 0065A        347 +1              LOAD    cccp, #0x5a
+105 0065A        348 +1              LOAD    cccp, #0x5a
+                 349
+                 350             #WHILE  i
+                 351                 LOAD    cccp, #0x5a
+                 352                 i       SET     i - 1
+                 353             #ENDW
+106 0065A        354 +1              LOAD    cccp, #0x5a
+  00005          355 +1              i       SET     i - 1
+107 0065A        356 +1              LOAD    cccp, #0x5a
+  00004          357 +1              i       SET     i - 1
+108 0065A        358 +1              LOAD    cccp, #0x5a
+  00003          359 +1              i       SET     i - 1
+109 0065A        360 +1              LOAD    cccp, #0x5a
+  00002          361 +1              i       SET     i - 1
+10A 0065A        362 +1              LOAD    cccp, #0x5a
+  00001          363 +1              i       SET     i - 1
+10B 0065A        364 +1              LOAD    cccp, #0x5a
+  00000          365 +1              i       SET     i - 1
+                 366
+10C 0065A        367     main:   LOAD    cccp, #0x5a
+                 368             usa     eu;, cccp
+R: parameter `Y' substituted for blank value.
+  00001          369 +1      #ifb        y
+  00008          370 +1      _y   EQU    010
+                 371 +1      #else
+                 372 +1      _y  EQU     y
+                 373 +1      #endif
+10D 00308        374 +1          LOAD    x, #_y
+10E 34110        375             JUMP    mylbl
+10F 3410C        376             JUMP    main
+110 34110        377     mylbl:  JUMP    $
+                 378
+                 379             UNDEF   cccp
+  00000          380     #ifdef  cccp
+                 381             LOAD    cccp, #0x5a
+  00001          382     #else
+111 00A5A        383             LOAD    10, #0x5a
+                 384     #endif
+112 20C0C        385             RR      12
+                 386
+113 2060E        387             DB      0x2060E         ; <-- "SR0 6"
+                 388
+                 389
+                 390     ; ==========================================
+                 391             END               ; End of assembly.
+                 392     ; ==========================================

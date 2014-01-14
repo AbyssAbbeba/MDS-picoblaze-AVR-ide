@@ -221,11 +221,11 @@ E: symbol not defined: `S0'.
 020 32026        189                           JUMP Z, test_LED0_start
 021 18140        190                           SUB s0, 20                          ;Count longer to ensure end stops then reset count if maximum
 E: symbol not defined: `S0'.
-W: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+W: value out of range: 0x14, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
 022 32029        191                           JUMP Z, update_LED0
 023 10140        192                           ADD s0, 20
 E: symbol not defined: `S0'.
-W: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+W: value out of range: 0x14, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
 024 10110        193                 inc_LED0: ADD s0, 01                          ;increment counter
 E: symbol not defined: `S0'.
 025 22029        194                           JUMP update_LED0
@@ -433,11 +433,11 @@ E: symbol not defined: `S0'.
 09B 320A1        320                           JUMP Z, test_LED7_start
 09C 18140        321                           SUB s0, 20                          ;Count longer to ensure end stops then reset count if maximum
 E: symbol not defined: `S0'.
-W: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+W: value out of range: 0x14, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
 09D 320A4        322                           JUMP Z, update_LED7
 09E 10140        323                           ADD s0, 20
 E: symbol not defined: `S0'.
-W: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+W: value out of range: 0x14, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
 09F 10110        324                 inc_LED7: ADD s0, 01                          ;increment counter
 E: symbol not defined: `S0'.
 0A0 220A4        325                           JUMP update_LED7
@@ -498,7 +498,7 @@ E: symbol not defined: `S1'.
 0B0 220AC        371                           JUMP go_up_loop
 0B1 00180        372                  go_down: LOAD s1, 40
 E: symbol not defined: `S1'.
-W: value out of range: 40, allowed range is [0,15] (trimmed to 4 bits) which makes it 8.
+W: value out of range: 0x28, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x8.
 0B2 18110        373             go_down_loop: SUB s0, 01
 E: symbol not defined: `S0'.
 0B3 31000        374                           RETURN Z
@@ -553,22 +553,22 @@ E: symbol not defined: `S0'.
 0BE 200F9        412                           CALL read_link_FIFO                 ;read each character and compare
 0BF 1C120        413                           COMPARE s0, character_P
 E: symbol not defined: `S0'.
-W: value out of range: 50, allowed range is [0,15] (trimmed to 4 bits) which makes it 2.
+W: value out of range: 0x32, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x2.
 0C0 360CB        414                           JUMP NZ, fail_confirm
 0C1 200F9        415                           CALL read_link_FIFO
 0C2 1C190        416                           COMPARE s0, character_A
 E: symbol not defined: `S0'.
-W: value out of range: 41, allowed range is [0,15] (trimmed to 4 bits) which makes it 9.
+W: value out of range: 0x29, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x9.
 0C3 360CB        417                           JUMP NZ, fail_confirm
 0C4 200F9        418                           CALL read_link_FIFO
 0C5 1C150        419                           COMPARE s0, character_S
 E: symbol not defined: `S0'.
-W: value out of range: 53, allowed range is [0,15] (trimmed to 4 bits) which makes it 5.
+W: value out of range: 0x35, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
 0C6 360CB        420                           JUMP NZ, fail_confirm
 0C7 200F9        421                           CALL read_link_FIFO
 0C8 1C150        422                           COMPARE s0, character_S
 E: symbol not defined: `S0'.
-W: value out of range: 53, allowed range is [0,15] (trimmed to 4 bits) which makes it 5.
+W: value out of range: 0x35, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
 0C9 360CB        423                           JUMP NZ, fail_confirm
 0CA 22015        424                           JUMP normal_LED_sequence            ;Continue normal operation for PASS message
                  425                           ;
@@ -604,17 +604,17 @@ E: symbol not defined: `S0'.
 0D6 200F9        444                           CALL read_link_FIFO                 ;read each character and compare
 0D7 1C1E0        445                           COMPARE s0, character_F
 E: symbol not defined: `S0'.
-W: value out of range: 46, allowed range is [0,15] (trimmed to 4 bits) which makes it 14.
+W: value out of range: 0x2e, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xe.
 0D8 36015        446                           JUMP NZ, normal_LED_sequence
 0D9 200F9        447                           CALL read_link_FIFO
 0DA 1C190        448                           COMPARE s0, character_A
 E: symbol not defined: `S0'.
-W: value out of range: 41, allowed range is [0,15] (trimmed to 4 bits) which makes it 9.
+W: value out of range: 0x29, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x9.
 0DB 36015        449                           JUMP NZ, normal_LED_sequence
 0DC 200F9        450                           CALL read_link_FIFO
 0DD 1C110        451                           COMPARE s0, character_I
 E: symbol not defined: `S0'.
-W: value out of range: 49, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
+W: value out of range: 0x31, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
 0DE 36015        452                           JUMP NZ, normal_LED_sequence
 0DF 200F9        453                           CALL read_link_FIFO
 0E0 1C110        454                           COMPARE s0, character_L
@@ -647,7 +647,7 @@ E: symbol not defined: `S1'.
 E: symbol not defined: `S4'.
 0EB 00120        470                  wait_s1: LOAD s2, 18
 E: symbol not defined: `S2'.
-W: value out of range: 18, allowed range is [0,15] (trimmed to 4 bits) which makes it 2.
+W: value out of range: 0x12, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x2.
 0EC 00110        471                  wait_s2: LOAD s3, FF
 E: symbol not defined: `S3'.
 E: symbol not defined: `FF'.

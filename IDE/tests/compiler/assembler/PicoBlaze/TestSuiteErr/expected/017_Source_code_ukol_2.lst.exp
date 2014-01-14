@@ -191,13 +191,13 @@ E: unexpected end of line.
                  138     ;==============================================================================;
 022 001A0        139     wait_1s:            LOAD      Temp1, 250          ; Load Temp1 register
 E: symbol not defined: `TEMP1'.
-W: value out of range: 250, allowed range is [0,15] (trimmed to 4 bits) which makes it 10.
+W: value out of range: 0xfa, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xa.
 023 00190        140                         LOAD      Temp2, 249          ; Load Temp2 register
 E: symbol not defined: `TEMP2'.
-W: value out of range: 249, allowed range is [0,15] (trimmed to 4 bits) which makes it 9.
+W: value out of range: 0xf9, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x9.
 024 00180        141                         LOAD      Temp3, 200          ; Load Temp3 register
 E: symbol not defined: `TEMP3'.
-W: value out of range: 200, allowed range is [0,15] (trimmed to 4 bits) which makes it 8.
+W: value out of range: 0xc8, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x8.
 025 18110        142     wait_1s_i:          SUB       Temp1, 1
 E: symbol not defined: `TEMP1'.
 026 36025        143                         JUMP      NZ, wait_1s_i
@@ -211,13 +211,13 @@ E: symbol not defined: `TEMP3'.
                  149
 02C 001A0        150     wait_100ms:         LOAD      Temp1, 250          ; Load Temp1 register
 E: symbol not defined: `TEMP1'.
-W: value out of range: 250, allowed range is [0,15] (trimmed to 4 bits) which makes it 10.
+W: value out of range: 0xfa, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xa.
 02D 00190        151                         LOAD      Temp2, 249          ; Load Temp2 register
 E: symbol not defined: `TEMP2'.
-W: value out of range: 249, allowed range is [0,15] (trimmed to 4 bits) which makes it 9.
+W: value out of range: 0xf9, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x9.
 02E 00140        152                         LOAD      Temp3, 20           ; Load Temp3 register
 E: symbol not defined: `TEMP3'.
-W: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+W: value out of range: 0x14, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
 02F 18110        153     wait_100ms_i:       SUB       Temp1, 1
 E: symbol not defined: `TEMP1'.
 030 3602F        154                         JUMP      NZ, wait_100ms_i

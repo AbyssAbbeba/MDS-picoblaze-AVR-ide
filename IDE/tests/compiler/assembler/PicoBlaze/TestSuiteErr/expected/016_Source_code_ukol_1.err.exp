@@ -52,20 +52,20 @@ MT_ERROR: 016_Source_code_ukol_1.asm:103.31-103.36: Error: symbol not defined: `
 MT_ERROR: 016_Source_code_ukol_1.asm:103.38-103.43: Error: symbol not defined: `TEMP2'.
 MT_ERROR: 016_Source_code_ukol_1.asm:106.34-106.43: Error: symbol not defined: `SENDBNUM2'.
 MT_ERROR: 016_Source_code_ukol_1.asm:138.31-138.36: Error: symbol not defined: `TEMP1'.
-MT_WARNING: 016_Source_code_ukol_1.asm:138.38-138.41: Warning: value out of range: 250, allowed range is [0,15] (trimmed to 4 bits) which makes it 10.
+MT_WARNING: 016_Source_code_ukol_1.asm:138.38-138.41: Warning: value out of range: 0xfa, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xa.
 MT_ERROR: 016_Source_code_ukol_1.asm:139.31-139.36: Error: symbol not defined: `TEMP2'.
-MT_WARNING: 016_Source_code_ukol_1.asm:139.38-139.41: Warning: value out of range: 249, allowed range is [0,15] (trimmed to 4 bits) which makes it 9.
+MT_WARNING: 016_Source_code_ukol_1.asm:139.38-139.41: Warning: value out of range: 0xf9, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x9.
 MT_ERROR: 016_Source_code_ukol_1.asm:140.31-140.36: Error: symbol not defined: `TEMP3'.
-MT_WARNING: 016_Source_code_ukol_1.asm:140.38-140.41: Warning: value out of range: 200, allowed range is [0,15] (trimmed to 4 bits) which makes it 8.
+MT_WARNING: 016_Source_code_ukol_1.asm:140.38-140.41: Warning: value out of range: 0xc8, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x8.
 MT_ERROR: 016_Source_code_ukol_1.asm:141.31-141.36: Error: symbol not defined: `TEMP1'.
 MT_ERROR: 016_Source_code_ukol_1.asm:143.31-143.36: Error: symbol not defined: `TEMP2'.
 MT_ERROR: 016_Source_code_ukol_1.asm:145.31-145.36: Error: symbol not defined: `TEMP3'.
 MT_ERROR: 016_Source_code_ukol_1.asm:149.31-149.36: Error: symbol not defined: `TEMP1'.
-MT_WARNING: 016_Source_code_ukol_1.asm:149.38-149.41: Warning: value out of range: 250, allowed range is [0,15] (trimmed to 4 bits) which makes it 10.
+MT_WARNING: 016_Source_code_ukol_1.asm:149.38-149.41: Warning: value out of range: 0xfa, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xa.
 MT_ERROR: 016_Source_code_ukol_1.asm:150.31-150.36: Error: symbol not defined: `TEMP2'.
-MT_WARNING: 016_Source_code_ukol_1.asm:150.38-150.41: Warning: value out of range: 249, allowed range is [0,15] (trimmed to 4 bits) which makes it 9.
+MT_WARNING: 016_Source_code_ukol_1.asm:150.38-150.41: Warning: value out of range: 0xf9, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x9.
 MT_ERROR: 016_Source_code_ukol_1.asm:151.31-151.36: Error: symbol not defined: `TEMP3'.
-MT_WARNING: 016_Source_code_ukol_1.asm:151.38-151.40: Warning: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+MT_WARNING: 016_Source_code_ukol_1.asm:151.38-151.40: Warning: value out of range: 0x14, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
 MT_ERROR: 016_Source_code_ukol_1.asm:152.31-152.36: Error: symbol not defined: `TEMP1'.
 MT_ERROR: 016_Source_code_ukol_1.asm:154.31-154.36: Error: symbol not defined: `TEMP2'.
 MT_ERROR: 016_Source_code_ukol_1.asm:156.31-156.36: Error: symbol not defined: `TEMP3'.

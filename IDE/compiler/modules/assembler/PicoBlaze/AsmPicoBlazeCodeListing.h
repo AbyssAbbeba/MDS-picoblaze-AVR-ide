@@ -284,9 +284,11 @@ class AsmPicoBlazeCodeListing : public CompilerMsgObserver
          * @brief
          * @param[in,out] lineCounter
          * @param[in,out] code
+         * @param[in] origin
          */
         void rewriteRepeatLoc ( unsigned int * lineCounter,
-                                CompilerStatement * code );
+                                CompilerStatement * code,
+                                int origin );
 
         /**
          * @brief

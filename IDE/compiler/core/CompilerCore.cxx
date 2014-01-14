@@ -727,16 +727,16 @@ void CompilerCore::processCodeTree ( CompilerStatement * codeTree )
         return;
     }
 
-    m_rootStatement = new CompilerStatement();
-    if ( nullptr != codeTree )
-    {
-        m_rootStatement -> appendLink ( codeTree -> first() );
-    }
-
     if ( nullptr == m_semanticAnalyzer )
     {
         coreMessage ( MT_ERROR, QObject::tr ( "semantic analyzer is missing" ).toStdString() );
         return;
+    }
+
+    m_rootStatement = new CompilerStatement();
+    if ( nullptr != codeTree )
+    {
+        m_rootStatement -> appendLink ( codeTree -> first() );
     }
 
     if ( false == m_opts->m_prcTarget.empty() )
@@ -766,6 +766,13 @@ void CompilerCore::processCodeTree ( CompilerStatement * codeTree )
             m_rootStatement->first()->insertLink(devSpecCode->next());
             delete devSpecCode;
         }
+    }
+
+    if ( false == m_success )
+    {
+        coreMessage ( MT_WARNING, QObject::tr ( "semantic analysis was not executed due to syntax error(s)" )
+                                              . toStdString() );
+        return;
     }
 
     m_semanticAnalyzer->process(m_rootStatement);

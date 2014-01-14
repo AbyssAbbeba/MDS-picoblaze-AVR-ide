@@ -56,7 +56,7 @@ MT_ERROR: 034_example_7.asm:242.24-242.26: Error: symbol not defined: `S2'.
 MT_ERROR: 034_example_7.asm:243.28-243.39: Error: symbol not defined: `SQUARE_HIGH'.
 MT_ERROR: 034_example_7.asm:244.24-244.26: Error: symbol not defined: `S1'.
 MT_ERROR: 034_example_7.asm:245.24-245.26: Error: symbol not defined: `S0'.
-MT_WARNING: 034_example_7.asm:245.28-245.30: Warning: value out of range: 33, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
+MT_WARNING: 034_example_7.asm:245.28-245.30: Warning: value out of range: 0x21, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
 MT_ERROR: 034_example_7.asm:248.24-248.26: Error: symbol not defined: `S0'.
 MT_ERROR: 034_example_7.asm:248.28-248.30: Error: symbol not defined: `CD'.
 MT_ERROR: 034_example_7.asm:249.25-249.27: Error: symbol not defined: `S0'.
@@ -80,7 +80,7 @@ MT_ERROR: 034_example_7.asm:278.25-278.27: Error: symbol not defined: `S0'.
 MT_ERROR: 034_example_7.asm:279.25-279.27: Error: symbol not defined: `S1'.
 MT_ERROR: 034_example_7.asm:280.26-280.28: Error: symbol not defined: `S1'.
 MT_ERROR: 034_example_7.asm:291.24-291.26: Error: symbol not defined: `S0'.
-MT_WARNING: 034_example_7.asm:291.28-291.30: Warning: value out of range: 24, allowed range is [0,15] (trimmed to 4 bits) which makes it 8.
+MT_WARNING: 034_example_7.asm:291.28-291.30: Warning: value out of range: 0x18, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x8.
 MT_ERROR: 034_example_7.asm:292.25-292.27: Error: symbol not defined: `S0'.
 MT_ERROR: 034_example_7.asm:293.24-293.26: Error: symbol not defined: `S0'.
 MT_ERROR: 034_example_7.asm:294.25-294.27: Error: symbol not defined: `S0'.
@@ -91,7 +91,7 @@ MT_ERROR: 034_example_7.asm:298.24-298.26: Error: symbol not defined: `S0'.
 MT_ERROR: 034_example_7.asm:298.28-298.30: Error: symbol not defined: `D2'.
 MT_ERROR: 034_example_7.asm:299.25-299.27: Error: symbol not defined: `S0'.
 MT_ERROR: 034_example_7.asm:300.24-300.26: Error: symbol not defined: `S0'.
-MT_WARNING: 034_example_7.asm:300.28-300.30: Warning: value out of range: 99, allowed range is [0,15] (trimmed to 4 bits) which makes it 3.
+MT_WARNING: 034_example_7.asm:300.28-300.30: Warning: value out of range: 0x63, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x3.
 MT_ERROR: 034_example_7.asm:301.25-301.27: Error: symbol not defined: `S0'.
 MT_ERROR: 034_example_7.asm:314.25-314.27: Error: symbol not defined: `SF'.
 MT_ERROR: 034_example_7.asm:315.25-315.27: Error: symbol not defined: `SE'.
@@ -129,12 +129,12 @@ MT_ERROR: 034_example_7.asm:440.26-440.28: Error: symbol not defined: `S0'.
 MT_ERROR: 034_example_7.asm:441.23-441.25: Error: symbol not defined: `S0'.
 MT_ERROR: 034_example_7.asm:442.25-442.27: Error: symbol not defined: `S3'.
 MT_ERROR: 034_example_7.asm:443.24-443.26: Error: symbol not defined: `S3'.
-MT_WARNING: 034_example_7.asm:443.28-443.35: Warning: value out of range: 80, allowed range is [0,15] (trimmed to 4 bits) which makes it 0.
+MT_WARNING: 034_example_7.asm:443.28-443.35: Warning: value out of range: 0x50, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x0.
 MT_ERROR: 034_example_7.asm:444.23-444.25: Error: symbol not defined: `S2'.
 MT_ERROR: 034_example_7.asm:445.26-445.28: Error: symbol not defined: `S0'.
 MT_ERROR: 034_example_7.asm:446.23-446.25: Error: symbol not defined: `S1'.
 MT_ERROR: 034_example_7.asm:502.23-502.25: Error: symbol not defined: `S0'.
-MT_WARNING: 034_example_7.asm:502.27-502.37: Warning: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+MT_WARNING: 034_example_7.asm:502.27-502.37: Warning: value out of range: 0x14, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
 MT_ERROR: 034_example_7.asm:503.26-503.28: Error: symbol not defined: `S0'.
 MT_ERROR: 034_example_7.asm:504.24-504.26: Error: symbol not defined: `S2'.
 MT_ERROR: 034_example_7.asm:506.24-506.26: Error: symbol not defined: `S9'.
@@ -142,7 +142,7 @@ MT_ERROR: 034_example_7.asm:506.28-506.30: Error: symbol not defined: `S2'.
 MT_ERROR: 034_example_7.asm:507.24-507.26: Error: symbol not defined: `S2'.
 MT_ERROR: 034_example_7.asm:507.28-507.30: Error: symbol not defined: `SC'.
 MT_ERROR: 034_example_7.asm:509.22-509.24: Error: symbol not defined: `S2'.
-MT_WARNING: 034_example_7.asm:509.26-509.28: Warning: value out of range: 30, allowed range is [0,15] (trimmed to 4 bits) which makes it 14.
+MT_WARNING: 034_example_7.asm:509.26-509.28: Warning: value out of range: 0x1e, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xe.
 MT_ERROR: 034_example_7.asm:511.24-511.26: Error: symbol not defined: `S8'.
 MT_ERROR: 034_example_7.asm:511.28-511.30: Error: symbol not defined: `S2'.
 MT_ERROR: 034_example_7.asm:512.23-512.25: Error: symbol not defined: `SA'.
@@ -162,21 +162,21 @@ MT_ERROR: 034_example_7.asm:523.28-523.30: Error: symbol not defined: `SA'.
 MT_ERROR: 034_example_7.asm:525.24-525.26: Error: symbol not defined: `S6'.
 MT_ERROR: 034_example_7.asm:525.28-525.30: Error: symbol not defined: `S2'.
 MT_ERROR: 034_example_7.asm:526.23-526.25: Error: symbol not defined: `S0'.
-MT_WARNING: 034_example_7.asm:526.27-526.37: Warning: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+MT_WARNING: 034_example_7.asm:526.27-526.37: Warning: value out of range: 0x14, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
 MT_ERROR: 034_example_7.asm:527.26-527.28: Error: symbol not defined: `S0'.
 MT_ERROR: 034_example_7.asm:533.23-533.25: Error: symbol not defined: `S0'.
-MT_WARNING: 034_example_7.asm:533.27-533.38: Warning: value out of range: 80, allowed range is [0,15] (trimmed to 4 bits) which makes it 0.
+MT_WARNING: 034_example_7.asm:533.27-533.38: Warning: value out of range: 0x50, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x0.
 MT_ERROR: 034_example_7.asm:534.26-534.28: Error: symbol not defined: `S0'.
 MT_ERROR: 034_example_7.asm:535.23-535.25: Error: symbol not defined: `S0'.
-MT_WARNING: 034_example_7.asm:535.27-535.38: Warning: value out of range: 80, allowed range is [0,15] (trimmed to 4 bits) which makes it 0.
+MT_WARNING: 034_example_7.asm:535.27-535.38: Warning: value out of range: 0x50, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x0.
 MT_ERROR: 034_example_7.asm:536.26-536.28: Error: symbol not defined: `S0'.
 MT_ERROR: 034_example_7.asm:556.24-556.26: Error: symbol not defined: `S0'.
 MT_ERROR: 034_example_7.asm:557.23-557.25: Error: symbol not defined: `S0'.
 MT_ERROR: 034_example_7.asm:565.24-565.26: Error: symbol not defined: `S1'.
-MT_WARNING: 034_example_7.asm:565.28-565.30: Warning: value out of range: 28, allowed range is [0,15] (trimmed to 4 bits) which makes it 12.
+MT_WARNING: 034_example_7.asm:565.28-565.30: Warning: value out of range: 0x1c, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xc.
 MT_ERROR: 034_example_7.asm:567.23-567.25: Error: symbol not defined: `S1'.
 MT_ERROR: 034_example_7.asm:576.24-576.26: Error: symbol not defined: `S2'.
-MT_WARNING: 034_example_7.asm:576.28-576.30: Warning: value out of range: 19, allowed range is [0,15] (trimmed to 4 bits) which makes it 3.
+MT_WARNING: 034_example_7.asm:576.28-576.30: Warning: value out of range: 0x13, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x3.
 MT_ERROR: 034_example_7.asm:578.23-578.25: Error: symbol not defined: `S2'.
 MT_ERROR: 034_example_7.asm:588.24-588.26: Error: symbol not defined: `S3'.
 MT_ERROR: 034_example_7.asm:590.23-590.25: Error: symbol not defined: `S3'.

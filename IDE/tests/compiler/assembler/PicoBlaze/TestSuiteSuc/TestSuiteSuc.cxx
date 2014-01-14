@@ -41,18 +41,16 @@
 
 // Compiler header files.
 #include "core/Compiler.h"
-#include "core/CompilerMsgIntfStdout.h"
+#include "core/CompilerMsgIntfFile.h"
 
 int TestSuiteSuc::init()
 {
     using namespace boost::filesystem;
 
-    m_msgInt = new CompilerMsgIntfStdout();
+    m_msgInt = new CompilerMsgIntfFile();
     m_options = new CompilerOptions();
     m_compiler = new Compiler ( m_msgInt,
                                 system_complete( path("..") / ".." / ".." / ".." / "compiler" / "include" ).string() );
-
-    m_options->m_verbosity = CompilerOptions::V_GENERAL;
 
     return 0;
 }
@@ -129,7 +127,12 @@ void TestSuiteSuc::testFunction()
     m_options->m_vhdlFile     = resultsCommonPath + ".vhd";
     m_options->m_memFile      = resultsCommonPath + ".mem";
 
-    if ( false == m_compiler->compile(CompilerBase::LI_ASM, CompilerBase::TA_PICOBLAZE, m_options) )
+    const std::string errFile = (path("TestSuiteSuc") / "results" / ( testName + ".err" )).string();
+    dynamic_cast<CompilerMsgIntfFile*>(m_msgInt)->openFile(errFile);
+    bool result = m_compiler->compile(CompilerBase::LI_ASM, CompilerBase::TA_PICOBLAZE, m_options);
+    dynamic_cast<CompilerMsgIntfFile*>(m_msgInt)->closeFile();
+
+    if ( false == result )
     {
         CU_FAIL("Compilation failed.");
         return;
