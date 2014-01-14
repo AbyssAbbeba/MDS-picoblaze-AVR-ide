@@ -70,7 +70,8 @@ void TranslatorDlg::create()
     }
     else
     {
-        emit output(translator.getMessages());
+        //connect in mainform
+        emit outputError(translator.getMessages());
     }
     
     accept();
