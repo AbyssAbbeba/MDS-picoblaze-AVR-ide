@@ -197,6 +197,9 @@ class CompilerOptions
 
             ///
             bool m_briefMsgOutput;
+
+            /// Enables additional warning and/or error messages.
+            bool m_strict;
         //@}
 };
 

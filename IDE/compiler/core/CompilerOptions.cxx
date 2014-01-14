@@ -44,9 +44,10 @@ CompilerOptions::CompilerOptions()
     m_hexMaxRecLength = 16;
     m_messageLimit    = 1024;
 
+    m_syntaxCheckOnly = false;
     m_makeBackupFiles = true;
     m_briefMsgOutput  = false;
-    m_syntaxCheckOnly = false;
+    m_strict = true;
 
     m_verbosity = (Verbosity)( V_GENERAL | V_ERRORS | V_WARNINGS | V_REMARKS );
 }

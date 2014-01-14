@@ -104,4 +104,3 @@
                  104     ;CALL NZ,aaa SUB sX,sY OR sX,sY SLX sX
                  105     ;CALL C,aaa SUBCY sX,sY XOR sX,sY SLA sX
                  106     ;CALL NC,aaa COMPARE sX,sY TEST sX,sY RL sX
-                 107
