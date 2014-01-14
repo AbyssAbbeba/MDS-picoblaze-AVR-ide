@@ -245,16 +245,6 @@ class MCUSimControl : public QThread
         inline bool unregisterSpecificObserver ( MCUSimSubsys::SubsysId subsysId,
                                                  const MCUSimObserver * observer );
 
-    ////    Qt Signals    ////
-    signals:
-        /**
-         * @brief
-         * @param[out] lineNumber
-         * @param[out] fileName
-         */
-        void lineNumberChanged ( int lineNumber,
-                                 const std::string & fileName );
-
     ////    Qt Public Slots    ////
     public slots:
         /**

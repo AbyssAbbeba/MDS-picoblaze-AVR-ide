@@ -1,7 +1,5 @@
 #! /bin/bash
 
-export LC_ALL="${LANG}"
-
 readonly VERSION="0.2"
 declare -ir CPU_CORES=$( which lscpu &> /dev/null && lscpu 2> /dev/null | \
                          gawk 'BEGIN { n = 1 } END { print(n) } /^CPU\(s\)/ { n = $2; exit }' || echo 1 )

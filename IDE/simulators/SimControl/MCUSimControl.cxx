@@ -474,10 +474,6 @@ void MCUSimControl::step()
 
     m_totalMCycles += m_simulator->executeInstruction();
     dispatchEvents();
-
-//     m_fileName.clear();
-//     int lineNumber = getLineNumber(&m_fileName);
-//     emit(lineNumberChanged(lineNumber, m_fileName));
 }
 
 void MCUSimControl::stepOver()
@@ -506,10 +502,6 @@ void MCUSimControl::reset()
     m_totalMCycles = 0;
     m_simulator->reset(MCUSim::RSTMD_MCU_RESET);
     allObservers_deviceReset();
-
-//     std::string fileName;
-//     int lineNumber = getLineNumber(&fileName);
-//     emit(lineNumberChanged(lineNumber, fileName));
 }
 
 bool MCUSimControl::changeDevice ( const char * deviceName )

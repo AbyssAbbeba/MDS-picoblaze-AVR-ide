@@ -73,29 +73,39 @@ inline void AsmDgbFileGen::outputToFile ( CompilerSemanticInterface * compilerCo
     }
 
     file << CompilerFileHeaders::AsmNativeDgbFile << '\n';
+
     const std::vector<std::pair<std::string,FILE*>> & sourceFiles = compilerCore->listSourceFiles();
     for ( const auto & srcFile : sourceFiles )
     {
         file << srcFile.first << '\n';
     }
     file << '\n';
+
+    bool first = true;
     for ( const auto & dbgRecord : m_data )
     {
         std::vector<CompilerSourceLocation> locationTrace;
         compilerCore->locationTrack().traverse ( dbgRecord.m_location, &locationTrace );
 
-        file << BREAK_TO_4_CHARS(dbgRecord.m_address);
-
         for ( const auto & location : locationTrace )
         {
             if ( location.m_fileNumber < (int) sourceFiles.size() )
             {
+                if ( true == first )
+                {
+                    first = false;
+                    file << BREAK_TO_4_CHARS(dbgRecord.m_address);
+                }
                 file << '\1'
                      << BREAK_TO_2_CHARS(location.m_fileNumber)
                      << BREAK_TO_4_CHARS(location.m_lineStart);
             }
         }
-        file << '\0';
+        if ( false == first )
+        {
+            file << '\0';
+            first = true;
+        }
     }
 
     if ( true == file.bad() )

@@ -497,7 +497,8 @@ void AsmPicoBlazeCodeListing::rewriteMacroLoc ( unsigned int * lineDiff,
 }
 
 void AsmPicoBlazeCodeListing::rewriteRepeatLoc ( unsigned int * lineDiff,
-                                                 CompilerStatement * code )
+                                                 CompilerStatement * code,
+                                                 int origin )
 {
     for ( CompilerStatement * node = code;
           node != nullptr;
@@ -509,12 +510,15 @@ void AsmPicoBlazeCodeListing::rewriteRepeatLoc ( unsigned int * lineDiff,
             {
                 *lineDiff = node->m_location.m_lineStart - 1;
             }
+            node->m_location.m_origin     = m_compilerCore->locationTrack().add(node->m_location, origin);
             node->m_location.m_fileNumber = ( m_numberOfFiles + m_numberOfMacros - 1 );
             node->m_location.m_lineStart -= *lineDiff;
             node->m_location.m_lineEnd   -= *lineDiff;
+
+            m_symbolTable->rewriteExprLoc ( node->args(), node->location(), origin, true );
         }
 
-        rewriteRepeatLoc ( lineDiff, node->branch() );
+        rewriteRepeatLoc ( lineDiff, node->branch(), origin );
     }
 }
 
@@ -534,14 +538,17 @@ void AsmPicoBlazeCodeListing::repeatCode ( CompilerSourceLocation location,
     {
         macroMark = -macroMark;
     }
+
+    unsigned int lineCounter = 0;
+    int formerOrigin = m_compilerCore->locationTrack().add(location);
+
     location.m_lineStart--;
     m_listing[location.m_fileNumber][location.m_lineStart].m_macro.push_back(macroMark);
 
-    unsigned int lineCounter = 0;
     m_listing.resize(m_numberOfFiles + m_numberOfMacros);
     copyMacroBody(&lineCounter, code);
     lineCounter = 0;
-    rewriteRepeatLoc(&lineCounter, code);
+    rewriteRepeatLoc(&lineCounter, code, formerOrigin);
 }
 
 void AsmPicoBlazeCodeListing::generatedCode ( CompilerSourceLocation location,
