@@ -51,12 +51,16 @@ E: symbol not defined: `S1'.
                   47     ; Main loop
                   48     ; --------------------
                   49     main:   shift   s0, s1
+E: symbol not defined: `S1'.
+E: symbol not defined: `S0'.
+E: symbol not defined: `S0'.
+E: symbol not defined: `S1'.
 004 00110         50 +1          LOAD     reg1, reg0
-E: symbol not defined: `S1'.
-E: symbol not defined: `S0'.
+E: ==> symbol not defined: `S1'.
+E: ==> symbol not defined: `S0'.
 005 00110         51 +1          LOAD     reg0, reg1
-E: symbol not defined: `S0'.
-E: symbol not defined: `S1'.
+E: ==> symbol not defined: `S0'.
+E: ==> symbol not defined: `S1'.
 006 22004         52             JUMP    main
                   53
                   54     ; Program end

@@ -100,9 +100,9 @@ MT_ERROR: 038_example_11.asm:237.22-237.24: Error: symbol not defined: `S2'.
 MT_ERROR: 038_example_11.asm:242.24-242.26: Error: symbol not defined: `S0'.
 MT_ERROR: 038_example_11.asm:243.26-243.28: Error: symbol not defined: `S0'.
 MT_ERROR: 038_example_11.asm:245.22-245.24: Error: symbol not defined: `S0'.
-MT_WARNING: 038_example_11.asm:245.26-245.28: Warning: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+MT_WARNING: 038_example_11.asm:245.26-245.28: Warning: value out of range: 0x14, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
 MT_ERROR: 038_example_11.asm:247.22-247.24: Error: symbol not defined: `S0'.
-MT_WARNING: 038_example_11.asm:247.26-247.28: Warning: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+MT_WARNING: 038_example_11.asm:247.26-247.28: Warning: value out of range: 0x14, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
 MT_ERROR: 038_example_11.asm:248.22-248.24: Error: symbol not defined: `S0'.
 MT_ERROR: 038_example_11.asm:250.24-250.26: Error: symbol not defined: `S1'.
 MT_ERROR: 038_example_11.asm:251.26-251.28: Error: symbol not defined: `S1'.
@@ -181,9 +181,9 @@ MT_ERROR: 038_example_11.asm:371.24-371.26: Error: symbol not defined: `S1'.
 MT_ERROR: 038_example_11.asm:373.24-373.26: Error: symbol not defined: `S0'.
 MT_ERROR: 038_example_11.asm:374.26-374.28: Error: symbol not defined: `S0'.
 MT_ERROR: 038_example_11.asm:376.22-376.24: Error: symbol not defined: `S0'.
-MT_WARNING: 038_example_11.asm:376.26-376.28: Warning: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+MT_WARNING: 038_example_11.asm:376.26-376.28: Warning: value out of range: 0x14, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
 MT_ERROR: 038_example_11.asm:378.22-378.24: Error: symbol not defined: `S0'.
-MT_WARNING: 038_example_11.asm:378.26-378.28: Warning: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+MT_WARNING: 038_example_11.asm:378.26-378.28: Warning: value out of range: 0x14, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
 MT_ERROR: 038_example_11.asm:379.22-379.24: Error: symbol not defined: `S0'.
 MT_ERROR: 038_example_11.asm:381.24-381.26: Error: symbol not defined: `S1'.
 MT_ERROR: 038_example_11.asm:382.26-382.28: Error: symbol not defined: `S1'.
@@ -195,35 +195,35 @@ MT_ERROR: 038_example_11.asm:421.23-421.25: Error: symbol not defined: `S1'.
 MT_ERROR: 038_example_11.asm:422.22-422.24: Error: symbol not defined: `S0'.
 MT_ERROR: 038_example_11.asm:424.22-424.24: Error: symbol not defined: `S1'.
 MT_ERROR: 038_example_11.asm:427.23-427.25: Error: symbol not defined: `S1'.
-MT_WARNING: 038_example_11.asm:427.27-427.29: Warning: value out of range: 40, allowed range is [0,15] (trimmed to 4 bits) which makes it 8.
+MT_WARNING: 038_example_11.asm:427.27-427.29: Warning: value out of range: 0x28, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x8.
 MT_ERROR: 038_example_11.asm:428.22-428.24: Error: symbol not defined: `S0'.
 MT_ERROR: 038_example_11.asm:430.22-430.24: Error: symbol not defined: `S1'.
 MT_ERROR: 038_example_11.asm:449.24-449.26: Error: symbol not defined: `S0'.
 MT_ERROR: 038_example_11.asm:450.23-450.25: Error: symbol not defined: `S0'.
 MT_ERROR: 038_example_11.asm:467.24-467.26: Error: symbol not defined: `S0'.
 MT_ERROR: 038_example_11.asm:468.23-468.25: Error: symbol not defined: `S0'.
-MT_WARNING: 038_example_11.asm:489.34-489.49: Warning: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
-MT_WARNING: 038_example_11.asm:499.34-499.45: Warning: value out of range: 70, allowed range is [0,15] (trimmed to 4 bits) which makes it 6.
-MT_WARNING: 038_example_11.asm:501.34-501.45: Warning: value out of range: 69, allowed range is [0,15] (trimmed to 4 bits) which makes it 5.
-MT_WARNING: 038_example_11.asm:503.34-503.45: Warning: value out of range: 63, allowed range is [0,15] (trimmed to 4 bits) which makes it 15.
+MT_WARNING: 038_example_11.asm:489.34-489.49: Warning: value out of range: 0x14, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
+MT_WARNING: 038_example_11.asm:499.34-499.45: Warning: value out of range: 0x46, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x6.
+MT_WARNING: 038_example_11.asm:501.34-501.45: Warning: value out of range: 0x45, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
+MT_WARNING: 038_example_11.asm:503.34-503.45: Warning: value out of range: 0x3f, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xf.
 MT_ERROR: 038_example_11.asm:505.34-505.45: Error: symbol not defined: `CHARACTER_O'.
-MT_WARNING: 038_example_11.asm:507.34-507.45: Warning: value out of range: 62, allowed range is [0,15] (trimmed to 4 bits) which makes it 14.
+MT_WARNING: 038_example_11.asm:507.34-507.45: Warning: value out of range: 0x3e, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xe.
 MT_ERROR: 038_example_11.asm:509.34-509.45: Error: symbol not defined: `CHARACTER_L'.
-MT_WARNING: 038_example_11.asm:511.34-511.45: Warning: value out of range: 61, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
+MT_WARNING: 038_example_11.asm:511.34-511.45: Warning: value out of range: 0x3d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
 MT_ERROR: 038_example_11.asm:513.34-513.45: Error: symbol not defined: `CHARACTER_Z'.
-MT_WARNING: 038_example_11.asm:515.34-515.45: Warning: value out of range: 65, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
-MT_WARNING: 038_example_11.asm:518.34-518.45: Warning: value out of range: 61, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
-MT_WARNING: 038_example_11.asm:520.34-520.45: Warning: value out of range: 75, allowed range is [0,15] (trimmed to 4 bits) which makes it 11.
-MT_WARNING: 038_example_11.asm:522.34-522.45: Warning: value out of range: 74, allowed range is [0,15] (trimmed to 4 bits) which makes it 10.
+MT_WARNING: 038_example_11.asm:515.34-515.45: Warning: value out of range: 0x41, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
+MT_WARNING: 038_example_11.asm:518.34-518.45: Warning: value out of range: 0x3d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
+MT_WARNING: 038_example_11.asm:520.34-520.45: Warning: value out of range: 0x4b, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xb.
+MT_WARNING: 038_example_11.asm:522.34-522.45: Warning: value out of range: 0x4a, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xa.
 MT_ERROR: 038_example_11.asm:524.34-524.45: Error: symbol not defined: `CHARACTER_O'.
-MT_WARNING: 038_example_11.asm:527.34-527.45: Warning: value out of range: 70, allowed range is [0,15] (trimmed to 4 bits) which makes it 6.
-MT_WARNING: 038_example_11.asm:529.34-529.45: Warning: value out of range: 77, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
-MT_WARNING: 038_example_11.asm:534.34-534.45: Warning: value out of range: 61, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
-MT_WARNING: 038_example_11.asm:536.34-536.45: Warning: value out of range: 63, allowed range is [0,15] (trimmed to 4 bits) which makes it 15.
-MT_WARNING: 038_example_11.asm:538.34-538.45: Warning: value out of range: 74, allowed range is [0,15] (trimmed to 4 bits) which makes it 10.
-MT_WARNING: 038_example_11.asm:540.34-540.45: Warning: value out of range: 69, allowed range is [0,15] (trimmed to 4 bits) which makes it 5.
-MT_WARNING: 038_example_11.asm:542.34-542.45: Warning: value out of range: 76, allowed range is [0,15] (trimmed to 4 bits) which makes it 12.
-MT_WARNING: 038_example_11.asm:544.34-544.45: Warning: value out of range: 65, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
+MT_WARNING: 038_example_11.asm:527.34-527.45: Warning: value out of range: 0x46, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x6.
+MT_WARNING: 038_example_11.asm:529.34-529.45: Warning: value out of range: 0x4d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
+MT_WARNING: 038_example_11.asm:534.34-534.45: Warning: value out of range: 0x3d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
+MT_WARNING: 038_example_11.asm:536.34-536.45: Warning: value out of range: 0x3f, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xf.
+MT_WARNING: 038_example_11.asm:538.34-538.45: Warning: value out of range: 0x4a, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xa.
+MT_WARNING: 038_example_11.asm:540.34-540.45: Warning: value out of range: 0x45, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
+MT_WARNING: 038_example_11.asm:542.34-542.45: Warning: value out of range: 0x4c, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xc.
+MT_WARNING: 038_example_11.asm:544.34-544.45: Warning: value out of range: 0x41, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
 MT_ERROR: 038_example_11.asm:554.34-554.45: Error: symbol not defined: `CHARACTER_O'.
 MT_ERROR: 038_example_11.asm:556.34-556.45: Error: symbol not defined: `CHARACTER_K'.
 MT_ERROR: 038_example_11.asm:584.24-584.26: Error: symbol not defined: `S0'.

@@ -65,13 +65,13 @@ MT_ERROR: 014_AES_sourcecode.asm:131.33-131.35: Error: symbol not defined: `S4'.
 MT_ERROR: 014_AES_sourcecode.asm:132.34-132.36: Error: symbol not defined: `S4'.
 MT_ERROR: 014_AES_sourcecode.asm:135.31-135.33: Error: symbol not defined: `S0'.
 MT_ERROR: 014_AES_sourcecode.asm:141.33-141.35: Error: symbol not defined: `S4'.
-MT_WARNING: 014_AES_sourcecode.asm:141.37-141.45: Warning: value out of range: 28, allowed range is [0,15] (trimmed to 4 bits) which makes it 12.
+MT_WARNING: 014_AES_sourcecode.asm:141.37-141.45: Warning: value out of range: 0x1c, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xc.
 MT_ERROR: 014_AES_sourcecode.asm:142.33-142.35: Error: symbol not defined: `S5'.
-MT_WARNING: 014_AES_sourcecode.asm:142.37-142.45: Warning: value out of range: 29, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
+MT_WARNING: 014_AES_sourcecode.asm:142.37-142.45: Warning: value out of range: 0x1d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
 MT_ERROR: 014_AES_sourcecode.asm:143.33-143.35: Error: symbol not defined: `S6'.
-MT_WARNING: 014_AES_sourcecode.asm:143.37-143.45: Warning: value out of range: 30, allowed range is [0,15] (trimmed to 4 bits) which makes it 14.
+MT_WARNING: 014_AES_sourcecode.asm:143.37-143.45: Warning: value out of range: 0x1e, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xe.
 MT_ERROR: 014_AES_sourcecode.asm:144.33-144.35: Error: symbol not defined: `S7'.
-MT_WARNING: 014_AES_sourcecode.asm:144.37-144.45: Warning: value out of range: 31, allowed range is [0,15] (trimmed to 4 bits) which makes it 15.
+MT_WARNING: 014_AES_sourcecode.asm:144.37-144.45: Warning: value out of range: 0x1f, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xf.
 MT_ERROR: 014_AES_sourcecode.asm:146.32-146.34: Error: symbol not defined: `S8'.
 MT_ERROR: 014_AES_sourcecode.asm:146.36-146.38: Error: symbol not defined: `S4'.
 MT_ERROR: 014_AES_sourcecode.asm:147.32-147.34: Error: symbol not defined: `S4'.
@@ -161,85 +161,85 @@ MT_ERROR: 014_AES_sourcecode.asm:269.31-269.33: Error: symbol not defined: `SC'.
 MT_ERROR: 014_AES_sourcecode.asm:271.31-271.33: Error: symbol not defined: `SC'.
 MT_ERROR: 014_AES_sourcecode.asm:271.35-271.36: Error: symbol not defined: `G'.
 MT_ERROR: 014_AES_sourcecode.asm:276.33-276.35: Error: symbol not defined: `S7'.
-MT_WARNING: 014_AES_sourcecode.asm:276.37-276.46: Warning: value out of range: 17, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
+MT_WARNING: 014_AES_sourcecode.asm:276.37-276.46: Warning: value out of range: 0x11, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
 MT_ERROR: 014_AES_sourcecode.asm:277.33-277.35: Error: symbol not defined: `S4'.
-MT_WARNING: 014_AES_sourcecode.asm:277.37-277.50: Warning: value out of range: 21, allowed range is [0,15] (trimmed to 4 bits) which makes it 5.
+MT_WARNING: 014_AES_sourcecode.asm:277.37-277.50: Warning: value out of range: 0x15, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
 MT_ERROR: 014_AES_sourcecode.asm:278.33-278.35: Error: symbol not defined: `S5'.
-MT_WARNING: 014_AES_sourcecode.asm:278.37-278.54: Warning: value out of range: 25, allowed range is [0,15] (trimmed to 4 bits) which makes it 9.
+MT_WARNING: 014_AES_sourcecode.asm:278.37-278.54: Warning: value out of range: 0x19, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x9.
 MT_ERROR: 014_AES_sourcecode.asm:279.33-279.35: Error: symbol not defined: `S6'.
-MT_WARNING: 014_AES_sourcecode.asm:279.37-279.58: Warning: value out of range: 29, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
+MT_WARNING: 014_AES_sourcecode.asm:279.37-279.58: Warning: value out of range: 0x1d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
 MT_ERROR: 014_AES_sourcecode.asm:280.34-280.36: Error: symbol not defined: `S4'.
 MT_ERROR: 014_AES_sourcecode.asm:281.34-281.36: Error: symbol not defined: `S5'.
 MT_ERROR: 014_AES_sourcecode.asm:282.34-282.36: Error: symbol not defined: `S6'.
 MT_ERROR: 014_AES_sourcecode.asm:283.34-283.36: Error: symbol not defined: `S7'.
 MT_ERROR: 014_AES_sourcecode.asm:285.33-285.35: Error: symbol not defined: `S6'.
-MT_WARNING: 014_AES_sourcecode.asm:285.37-285.46: Warning: value out of range: 18, allowed range is [0,15] (trimmed to 4 bits) which makes it 2.
+MT_WARNING: 014_AES_sourcecode.asm:285.37-285.46: Warning: value out of range: 0x12, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x2.
 MT_ERROR: 014_AES_sourcecode.asm:286.33-286.35: Error: symbol not defined: `S7'.
-MT_WARNING: 014_AES_sourcecode.asm:286.37-286.50: Warning: value out of range: 22, allowed range is [0,15] (trimmed to 4 bits) which makes it 6.
+MT_WARNING: 014_AES_sourcecode.asm:286.37-286.50: Warning: value out of range: 0x16, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x6.
 MT_ERROR: 014_AES_sourcecode.asm:287.33-287.35: Error: symbol not defined: `S4'.
-MT_WARNING: 014_AES_sourcecode.asm:287.37-287.54: Warning: value out of range: 26, allowed range is [0,15] (trimmed to 4 bits) which makes it 10.
+MT_WARNING: 014_AES_sourcecode.asm:287.37-287.54: Warning: value out of range: 0x1a, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xa.
 MT_ERROR: 014_AES_sourcecode.asm:288.33-288.35: Error: symbol not defined: `S5'.
-MT_WARNING: 014_AES_sourcecode.asm:288.37-288.58: Warning: value out of range: 30, allowed range is [0,15] (trimmed to 4 bits) which makes it 14.
+MT_WARNING: 014_AES_sourcecode.asm:288.37-288.58: Warning: value out of range: 0x1e, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xe.
 MT_ERROR: 014_AES_sourcecode.asm:289.34-289.36: Error: symbol not defined: `S4'.
 MT_ERROR: 014_AES_sourcecode.asm:290.34-290.36: Error: symbol not defined: `S5'.
 MT_ERROR: 014_AES_sourcecode.asm:291.34-291.36: Error: symbol not defined: `S6'.
 MT_ERROR: 014_AES_sourcecode.asm:292.34-292.36: Error: symbol not defined: `S7'.
 MT_ERROR: 014_AES_sourcecode.asm:294.33-294.35: Error: symbol not defined: `S5'.
-MT_WARNING: 014_AES_sourcecode.asm:294.37-294.46: Warning: value out of range: 19, allowed range is [0,15] (trimmed to 4 bits) which makes it 3.
+MT_WARNING: 014_AES_sourcecode.asm:294.37-294.46: Warning: value out of range: 0x13, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x3.
 MT_ERROR: 014_AES_sourcecode.asm:295.33-295.35: Error: symbol not defined: `S6'.
-MT_WARNING: 014_AES_sourcecode.asm:295.37-295.50: Warning: value out of range: 23, allowed range is [0,15] (trimmed to 4 bits) which makes it 7.
+MT_WARNING: 014_AES_sourcecode.asm:295.37-295.50: Warning: value out of range: 0x17, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x7.
 MT_ERROR: 014_AES_sourcecode.asm:296.33-296.35: Error: symbol not defined: `S7'.
-MT_WARNING: 014_AES_sourcecode.asm:296.37-296.54: Warning: value out of range: 27, allowed range is [0,15] (trimmed to 4 bits) which makes it 11.
+MT_WARNING: 014_AES_sourcecode.asm:296.37-296.54: Warning: value out of range: 0x1b, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xb.
 MT_ERROR: 014_AES_sourcecode.asm:297.33-297.35: Error: symbol not defined: `S4'.
-MT_WARNING: 014_AES_sourcecode.asm:297.37-297.58: Warning: value out of range: 31, allowed range is [0,15] (trimmed to 4 bits) which makes it 15.
+MT_WARNING: 014_AES_sourcecode.asm:297.37-297.58: Warning: value out of range: 0x1f, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xf.
 MT_ERROR: 014_AES_sourcecode.asm:298.34-298.36: Error: symbol not defined: `S4'.
 MT_ERROR: 014_AES_sourcecode.asm:299.34-299.36: Error: symbol not defined: `S5'.
 MT_ERROR: 014_AES_sourcecode.asm:300.34-300.36: Error: symbol not defined: `S6'.
 MT_ERROR: 014_AES_sourcecode.asm:301.34-301.36: Error: symbol not defined: `S7'.
 MT_ERROR: 014_AES_sourcecode.asm:308.33-308.35: Error: symbol not defined: `S4'.
-MT_WARNING: 014_AES_sourcecode.asm:308.37-308.46: Warning: value out of range: 16, allowed range is [0,15] (trimmed to 4 bits) which makes it 0.
+MT_WARNING: 014_AES_sourcecode.asm:308.37-308.46: Warning: value out of range: 0x10, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x0.
 MT_ERROR: 014_AES_sourcecode.asm:309.33-309.35: Error: symbol not defined: `S5'.
-MT_WARNING: 014_AES_sourcecode.asm:309.37-309.46: Warning: value out of range: 17, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
+MT_WARNING: 014_AES_sourcecode.asm:309.37-309.46: Warning: value out of range: 0x11, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
 MT_ERROR: 014_AES_sourcecode.asm:310.33-310.35: Error: symbol not defined: `S6'.
-MT_WARNING: 014_AES_sourcecode.asm:310.37-310.46: Warning: value out of range: 18, allowed range is [0,15] (trimmed to 4 bits) which makes it 2.
+MT_WARNING: 014_AES_sourcecode.asm:310.37-310.46: Warning: value out of range: 0x12, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x2.
 MT_ERROR: 014_AES_sourcecode.asm:311.33-311.35: Error: symbol not defined: `S7'.
-MT_WARNING: 014_AES_sourcecode.asm:311.37-311.46: Warning: value out of range: 19, allowed range is [0,15] (trimmed to 4 bits) which makes it 3.
+MT_WARNING: 014_AES_sourcecode.asm:311.37-311.46: Warning: value out of range: 0x13, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x3.
 MT_ERROR: 014_AES_sourcecode.asm:313.34-313.36: Error: symbol not defined: `S4'.
 MT_ERROR: 014_AES_sourcecode.asm:314.34-314.36: Error: symbol not defined: `S5'.
 MT_ERROR: 014_AES_sourcecode.asm:315.34-315.36: Error: symbol not defined: `S6'.
 MT_ERROR: 014_AES_sourcecode.asm:316.34-316.36: Error: symbol not defined: `S7'.
 MT_ERROR: 014_AES_sourcecode.asm:318.33-318.35: Error: symbol not defined: `S4'.
-MT_WARNING: 014_AES_sourcecode.asm:318.37-318.50: Warning: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+MT_WARNING: 014_AES_sourcecode.asm:318.37-318.50: Warning: value out of range: 0x14, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
 MT_ERROR: 014_AES_sourcecode.asm:319.33-319.35: Error: symbol not defined: `S5'.
-MT_WARNING: 014_AES_sourcecode.asm:319.37-319.50: Warning: value out of range: 21, allowed range is [0,15] (trimmed to 4 bits) which makes it 5.
+MT_WARNING: 014_AES_sourcecode.asm:319.37-319.50: Warning: value out of range: 0x15, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
 MT_ERROR: 014_AES_sourcecode.asm:320.33-320.35: Error: symbol not defined: `S6'.
-MT_WARNING: 014_AES_sourcecode.asm:320.37-320.50: Warning: value out of range: 22, allowed range is [0,15] (trimmed to 4 bits) which makes it 6.
+MT_WARNING: 014_AES_sourcecode.asm:320.37-320.50: Warning: value out of range: 0x16, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x6.
 MT_ERROR: 014_AES_sourcecode.asm:321.33-321.35: Error: symbol not defined: `S7'.
-MT_WARNING: 014_AES_sourcecode.asm:321.37-321.50: Warning: value out of range: 23, allowed range is [0,15] (trimmed to 4 bits) which makes it 7.
+MT_WARNING: 014_AES_sourcecode.asm:321.37-321.50: Warning: value out of range: 0x17, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x7.
 MT_ERROR: 014_AES_sourcecode.asm:323.34-323.36: Error: symbol not defined: `S4'.
 MT_ERROR: 014_AES_sourcecode.asm:324.34-324.36: Error: symbol not defined: `S5'.
 MT_ERROR: 014_AES_sourcecode.asm:325.34-325.36: Error: symbol not defined: `S6'.
 MT_ERROR: 014_AES_sourcecode.asm:326.34-326.36: Error: symbol not defined: `S7'.
 MT_ERROR: 014_AES_sourcecode.asm:328.33-328.35: Error: symbol not defined: `S4'.
-MT_WARNING: 014_AES_sourcecode.asm:328.37-328.54: Warning: value out of range: 24, allowed range is [0,15] (trimmed to 4 bits) which makes it 8.
+MT_WARNING: 014_AES_sourcecode.asm:328.37-328.54: Warning: value out of range: 0x18, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x8.
 MT_ERROR: 014_AES_sourcecode.asm:329.33-329.35: Error: symbol not defined: `S5'.
-MT_WARNING: 014_AES_sourcecode.asm:329.37-329.54: Warning: value out of range: 25, allowed range is [0,15] (trimmed to 4 bits) which makes it 9.
+MT_WARNING: 014_AES_sourcecode.asm:329.37-329.54: Warning: value out of range: 0x19, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x9.
 MT_ERROR: 014_AES_sourcecode.asm:330.33-330.35: Error: symbol not defined: `S6'.
-MT_WARNING: 014_AES_sourcecode.asm:330.37-330.54: Warning: value out of range: 26, allowed range is [0,15] (trimmed to 4 bits) which makes it 10.
+MT_WARNING: 014_AES_sourcecode.asm:330.37-330.54: Warning: value out of range: 0x1a, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xa.
 MT_ERROR: 014_AES_sourcecode.asm:331.33-331.35: Error: symbol not defined: `S7'.
-MT_WARNING: 014_AES_sourcecode.asm:331.37-331.54: Warning: value out of range: 27, allowed range is [0,15] (trimmed to 4 bits) which makes it 11.
+MT_WARNING: 014_AES_sourcecode.asm:331.37-331.54: Warning: value out of range: 0x1b, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xb.
 MT_ERROR: 014_AES_sourcecode.asm:333.34-333.36: Error: symbol not defined: `S4'.
 MT_ERROR: 014_AES_sourcecode.asm:334.34-334.36: Error: symbol not defined: `S5'.
 MT_ERROR: 014_AES_sourcecode.asm:335.34-335.36: Error: symbol not defined: `S6'.
 MT_ERROR: 014_AES_sourcecode.asm:336.34-336.36: Error: symbol not defined: `S7'.
 MT_ERROR: 014_AES_sourcecode.asm:338.33-338.35: Error: symbol not defined: `S4'.
-MT_WARNING: 014_AES_sourcecode.asm:338.37-338.58: Warning: value out of range: 28, allowed range is [0,15] (trimmed to 4 bits) which makes it 12.
+MT_WARNING: 014_AES_sourcecode.asm:338.37-338.58: Warning: value out of range: 0x1c, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xc.
 MT_ERROR: 014_AES_sourcecode.asm:339.33-339.35: Error: symbol not defined: `S5'.
-MT_WARNING: 014_AES_sourcecode.asm:339.37-339.58: Warning: value out of range: 29, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
+MT_WARNING: 014_AES_sourcecode.asm:339.37-339.58: Warning: value out of range: 0x1d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
 MT_ERROR: 014_AES_sourcecode.asm:340.33-340.35: Error: symbol not defined: `S6'.
-MT_WARNING: 014_AES_sourcecode.asm:340.37-340.58: Warning: value out of range: 30, allowed range is [0,15] (trimmed to 4 bits) which makes it 14.
+MT_WARNING: 014_AES_sourcecode.asm:340.37-340.58: Warning: value out of range: 0x1e, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xe.
 MT_ERROR: 014_AES_sourcecode.asm:341.33-341.35: Error: symbol not defined: `S7'.
-MT_WARNING: 014_AES_sourcecode.asm:341.37-341.58: Warning: value out of range: 31, allowed range is [0,15] (trimmed to 4 bits) which makes it 15.
+MT_WARNING: 014_AES_sourcecode.asm:341.37-341.58: Warning: value out of range: 0x1f, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xf.
 MT_ERROR: 014_AES_sourcecode.asm:343.34-343.36: Error: symbol not defined: `S4'.
 MT_ERROR: 014_AES_sourcecode.asm:344.34-344.36: Error: symbol not defined: `S5'.
 MT_ERROR: 014_AES_sourcecode.asm:345.34-345.36: Error: symbol not defined: `S6'.

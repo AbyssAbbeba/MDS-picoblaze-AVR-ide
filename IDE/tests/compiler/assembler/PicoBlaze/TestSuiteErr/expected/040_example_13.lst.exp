@@ -1652,7 +1652,7 @@ E: symbol not defined: `S0'.
 E: symbol not defined: `HOURB'.
 00C 1C120       1499                      COMPARE s0, 18
 E: symbol not defined: `S0'.
-W: value out of range: 18, allowed range is [0,15] (trimmed to 4 bits) which makes it 2.
+W: value out of range: 0x12, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x2.
 00D 36013       1500                      JUMP NZ, real_time_end
 00E 02100       1501                      AND s0, 00
 E: symbol not defined: `S0'.
@@ -1674,7 +1674,7 @@ E: symbol not defined: `MS2'.
 E: symbol not defined: `S0'.
 015 1C1C0       1508                      COMPARE s0, 28                      ;;;;;;counter to 100ms
 E: symbol not defined: `S0'.
-W: value out of range: 28, allowed range is [0,15] (trimmed to 4 bits) which makes it 12.
+W: value out of range: 0x1c, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xc.
 016 3601B       1509                      JUMP NZ, store_ms2
 017 0B101       1510                      FETCH s1, ms100
 E: symbol not defined: `S1'.

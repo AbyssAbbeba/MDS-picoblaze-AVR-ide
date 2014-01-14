@@ -362,7 +362,7 @@ E: symbol not defined: `S0'.
 E: symbol not defined: `S0'.
 003 00160        294                               LOAD s0, character_P                     ;start with design enabled by software (see ISR)
 E: symbol not defined: `S0'.
-W: value out of range: 70, allowed range is [0,15] (trimmed to 4 bits) which makes it 6.
+W: value out of range: 0x46, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x6.
 004 2F101        295                               STORE s0, authentication_status
 E: symbol not defined: `S0'.
 E: symbol not defined: `AUTHENTICATION_STATUS'.
@@ -397,7 +397,7 @@ E: symbol not defined: `S5'.
 00A 2034F        323                               CALL disp_PicoBlaze                      ;Display 'PicoBlaze'
 00B 00190        324                               LOAD s5, 25                              ;Line 2 position 5
 E: symbol not defined: `S5'.
-W: value out of range: 25, allowed range is [0,15] (trimmed to 4 bits) which makes it 9.
+W: value out of range: 0x19, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x9.
 00C 2032B        325                               CALL LCD_cursor
 00D 20362        326                               CALL disp_Security                       ;Display 'Security'
                  327                               ;
@@ -550,7 +550,7 @@ E: symbol not defined: `SE'.
 036 20053        450                               CALL disable_app_hardware                ;sequence hardware disable signals
 037 00120        451                               LOAD s0, character_F                     ;change authentication status to 'F' for failed.
 E: symbol not defined: `S0'.
-W: value out of range: 66, allowed range is [0,15] (trimmed to 4 bits) which makes it 2.
+W: value out of range: 0x42, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x2.
 038 2F101        452                               STORE s0, authentication_status          ; so that application software disable is demonstrated
 E: symbol not defined: `S0'.
 E: symbol not defined: `AUTHENTICATION_STATUS'.
@@ -563,13 +563,13 @@ E: symbol not defined: `AUTHENTICATION_STATUS'.
 03A 20111        459                               CALL read_from_UART                      ;read character from PC
 03B 2011D        460                               CALL upper_case                          ;convert to upper case
 03C 1C180        461                               COMPARE UART_data, character_R
-W: value out of range: 72, allowed range is [0,15] (trimmed to 4 bits) which makes it 8.
+W: value out of range: 0x48, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x8.
 03D 32043        462                               JUMP Z, read_command
 03E 1C110        463                               COMPARE UART_data, character_E
-W: value out of range: 65, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
+W: value out of range: 0x41, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
 03F 32048        464                               JUMP Z, erase_command
 040 1C1D0        465                               COMPARE UART_data, character_A
-W: value out of range: 61, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
+W: value out of range: 0x3d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
 041 3204C        466                               JUMP Z, authorise_command
 042 22039        467                               JUMP Menu                                ;repeat menu for invalid selection
                  468                               ;
@@ -665,7 +665,7 @@ E: symbol not defined: `S0'.
 062 201E2        545           send_serial_number: CALL send_FLASH_Serial_Number            ;display text message
 063 00110        546                               LOAD s3, serial_number7                  ;pointer to scratch pad memory
 E: symbol not defined: `S3'.
-W: value out of range: 17, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
+W: value out of range: 0x11, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
 064 0B101        547                 send_SN_loop: FETCH s0, (s3)                           ;read serial number byte
 E: symbol not defined: `S0'.
 E: symbol not defined: `S3'.
@@ -701,11 +701,11 @@ E: symbol not defined: `S5'.
 070 20373        574                               CALL disp_FLASH_Serial_No                ;display text message
 071 00140        575                               LOAD s5, 20                              ;Line 2 position 0
 E: symbol not defined: `S5'.
-W: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+W: value out of range: 0x14, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
 072 2032B        576                               CALL LCD_cursor
 073 00110        577                               LOAD s6, serial_number7                  ;pointer to scratch pad memory
 E: symbol not defined: `S6'.
-W: value out of range: 17, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
+W: value out of range: 0x11, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
 074 0B101        578                 disp_SN_loop: FETCH s0, (s6)                           ;read serial number byte
 E: symbol not defined: `S0'.
 E: symbol not defined: `S6'.
@@ -749,7 +749,7 @@ E: symbol not defined: `S4'.
 07E 20083        611                               CALL compute_CRC16                       ;compute CRC for value in 's3'
 07F 1C110        612                               COMPARE s4, serial_number7               ;check for 8 bytes processed
 E: symbol not defined: `S4'.
-W: value out of range: 17, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
+W: value out of range: 0x11, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
 080 31000        613                               RETURN Z
 081 10110        614                               ADD s4, 01                               ;increment memory pointer
 E: symbol not defined: `S4'.
@@ -792,7 +792,7 @@ E: symbol not defined: `S0'.
 E: symbol not defined: `SD'.
 089 06180        645                               XOR sE, 40                               ;compliment bit 14 of CRC
 E: symbol not defined: `SE'.
-W: value out of range: 40, allowed range is [0,15] (trimmed to 4 bits) which makes it 8.
+W: value out of range: 0x28, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x8.
 08A 1410E        646                  crc16_shift: SR0 s0                                   ;Carry gets LSB XOR next input bit
 E: symbol not defined: `S0'.
 08B 14108        647                               SRA sE                                   ;shift Carry into MSB to form new CRC value
@@ -858,7 +858,7 @@ E: symbol not defined: `SA'.
 E: symbol not defined: `F0'.
 099 1C190        696                  auth_check2: COMPARE s7, 25
 E: symbol not defined: `S7'.
-W: value out of range: 25, allowed range is [0,15] (trimmed to 4 bits) which makes it 9.
+W: value out of range: 0x19, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x9.
 09A 36001        697                               JUMP NZ, auth_check3
 E: symbol not defined: `AUTH_CHECK3'.
 09B 00110        698                               LOAD sB, s0                              ;isolate upper order nibble for MS-Byte
@@ -983,7 +983,7 @@ E: symbol not defined: `S0'.
 E: symbol not defined: `S1'.
 0C0 1C190        778            auth_write_check2: COMPARE s7, 25
 E: symbol not defined: `S7'.
-W: value out of range: 25, allowed range is [0,15] (trimmed to 4 bits) which makes it 9.
+W: value out of range: 0x19, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x9.
 0C1 36001        779                               JUMP NZ, auth_write_check3
 E: symbol not defined: `AUTH_WRITE_CHECK3'.
 0C2 00110        780                               LOAD s1, sE                              ;merge upper order nibble for MS-Byte with random
@@ -1094,7 +1094,7 @@ E: symbol not defined: `S8'.
 E: symbol not defined: `S7'.
 0DA 00140        852                               LOAD s1, 20                              ;block erase command
 E: symbol not defined: `S1'.
-W: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+W: value out of range: 0x14, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
 0DB 200FF        853                               CALL SF_byte_write
 0DC 00110        854                               LOAD s1, D0                              ;write confirm command
 E: symbol not defined: `S1'.
@@ -1125,7 +1125,7 @@ E: symbol not defined: `D0'.
                  878                               ;
 0E0 00180        879         SF_single_byte_write: LOAD s1, 40                              ;command for single byte program
 E: symbol not defined: `S1'.
-W: value out of range: 40, allowed range is [0,15] (trimmed to 4 bits) which makes it 8.
+W: value out of range: 0x28, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x8.
 0E1 200FF        880                               CALL SF_byte_write
 0E2 00110        881                               LOAD s1, s0                              ;write data to be programmed
 E: symbol not defined: `S1'.
@@ -1162,7 +1162,7 @@ E: symbol not defined: `S7'.
 E: symbol not defined: `S2'.
 0EA 001A0        908                               LOAD s1, 90                              ;command to read device information
 E: symbol not defined: `S1'.
-W: value out of range: 90, allowed range is [0,15] (trimmed to 4 bits) which makes it 10.
+W: value out of range: 0x5a, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xa.
 0EB 200FF        909                               CALL SF_byte_write
 0EC 200F5        910                 read_SN_loop: CALL SF_byte_read                        ;read serial number value
 0ED 2F101        911                               STORE s0, (s2)
@@ -1170,7 +1170,7 @@ E: symbol not defined: `S0'.
 E: symbol not defined: `S2'.
 0EE 1C110        912                               COMPARE s2, serial_number7               ;check for 8 bytes copied
 E: symbol not defined: `S2'.
-W: value out of range: 17, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
+W: value out of range: 0x11, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
 0EF 320F3        913                               JUMP Z, end_read_SN
 0F0 10110        914                               ADD s7, 01                               ;increment StrataFLASH address
 E: symbol not defined: `S7'.
@@ -1301,7 +1301,7 @@ E: symbol not defined: `FF'.
 10C 200F5       1018                wait_SF_ready: CALL SF_byte_read                        ;read status register into s0
 10D 0C100       1019                               TEST s0, 80                              ;test ready/busy flag
 E: symbol not defined: `S0'.
-W: value out of range: 80, allowed range is [0,15] (trimmed to 4 bits) which makes it 0.
+W: value out of range: 0x50, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x0.
 10E 3210C       1020                               JUMP Z, wait_SF_ready
 10F 20109       1021                               CALL set_SF_read_array_mode              ;restore normal read array mode
 110 25000       1022                               RETURN
@@ -1372,7 +1372,7 @@ E: symbol not defined: `S0'.
                 1083                               ;Registers used s0.
                 1084                               ;
 11D 1C1D0       1085                   upper_case: COMPARE UART_data, 61                    ;eliminate character codes below 'a' (61 hex)
-W: value out of range: 61, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
+W: value out of range: 0x3d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
 11E 39000       1086                               RETURN C
                 1087                               COMPARE UART_data, 7B                    ;eliminate character codes above 'z' (7A hex)
 E: identifier cannot start with a digit: `7B'.
@@ -1509,7 +1509,7 @@ E: symbol not defined: `S3'.
                 1180                               ;Send a space to the UART
                 1181                               ;
 147 00140       1182                   send_space: LOAD UART_data, character_space
-W: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+W: value out of range: 0x14, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
 148 20117       1183                               CALL send_to_UART
 149 25000       1184                               RETURN
                 1185                               ;
@@ -1538,31 +1538,31 @@ W: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which mak
 154 20144       1208                 send_welcome: CALL send_CR
 155 20144       1209                               CALL send_CR
 156 00160       1210                               LOAD UART_data, character_P
-W: value out of range: 70, allowed range is [0,15] (trimmed to 4 bits) which makes it 6.
+W: value out of range: 0x46, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x6.
 157 20117       1211                               CALL send_to_UART
 158 00150       1212                               LOAD UART_data, character_i
-W: value out of range: 69, allowed range is [0,15] (trimmed to 4 bits) which makes it 5.
+W: value out of range: 0x45, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
 159 20117       1213                               CALL send_to_UART
 15A 001F0       1214                               LOAD UART_data, character_c
-W: value out of range: 63, allowed range is [0,15] (trimmed to 4 bits) which makes it 15.
+W: value out of range: 0x3f, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xf.
 15B 20117       1215                               CALL send_to_UART
 15C 00110       1216                               LOAD UART_data, character_o
 E: symbol not defined: `CHARACTER_O'.
 15D 20117       1217                               CALL send_to_UART
 15E 001E0       1218                               LOAD UART_data, character_B
-W: value out of range: 62, allowed range is [0,15] (trimmed to 4 bits) which makes it 14.
+W: value out of range: 0x3e, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xe.
 15F 20117       1219                               CALL send_to_UART
 160 00110       1220                               LOAD UART_data, character_l
 E: symbol not defined: `CHARACTER_L'.
 161 20117       1221                               CALL send_to_UART
 162 001D0       1222                               LOAD UART_data, character_a
-W: value out of range: 61, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
+W: value out of range: 0x3d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
 163 20117       1223                               CALL send_to_UART
 164 00110       1224                               LOAD UART_data, character_z
 E: symbol not defined: `CHARACTER_Z'.
 165 20117       1225                               CALL send_to_UART
 166 00110       1226                               LOAD UART_data, character_e
-W: value out of range: 65, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
+W: value out of range: 0x41, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
 167 20117       1227                               CALL send_to_UART
 168 20147       1228                               CALL send_space
 169 00110       1229                               LOAD UART_data, character_L
@@ -1572,80 +1572,80 @@ E: symbol not defined: `CHARACTER_L'.
 E: symbol not defined: `CHARACTER_O'.
 16C 20117       1232                               CALL send_to_UART
 16D 001D0       1233                               LOAD UART_data, character_w
-W: value out of range: 77, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
+W: value out of range: 0x4d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
 16E 20117       1234                               CALL send_to_UART
 16F 20147       1235                               CALL send_space
 170 001F0       1236                               LOAD UART_data, character_C
-W: value out of range: 63, allowed range is [0,15] (trimmed to 4 bits) which makes it 15.
+W: value out of range: 0x3f, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xf.
 171 20117       1237                               CALL send_to_UART
 172 00110       1238                               LOAD UART_data, character_o
 E: symbol not defined: `CHARACTER_O'.
 173 20117       1239                               CALL send_to_UART
 174 00190       1240                               LOAD UART_data, character_s
-W: value out of range: 73, allowed range is [0,15] (trimmed to 4 bits) which makes it 9.
+W: value out of range: 0x49, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x9.
 175 20117       1241                               CALL send_to_UART
 176 001A0       1242                               LOAD UART_data, character_t
-W: value out of range: 74, allowed range is [0,15] (trimmed to 4 bits) which makes it 10.
+W: value out of range: 0x4a, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xa.
 177 20117       1243                               CALL send_to_UART
 178 20147       1244                               CALL send_space
 179 00100       1245                               LOAD UART_data, character_D
-W: value out of range: 64, allowed range is [0,15] (trimmed to 4 bits) which makes it 0.
+W: value out of range: 0x40, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x0.
 17A 20117       1246                               CALL send_to_UART
 17B 00110       1247                               LOAD UART_data, character_e
-W: value out of range: 65, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
+W: value out of range: 0x41, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
 17C 20117       1248                               CALL send_to_UART
 17D 00190       1249                               LOAD UART_data, character_s
-W: value out of range: 73, allowed range is [0,15] (trimmed to 4 bits) which makes it 9.
+W: value out of range: 0x49, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x9.
 17E 20117       1250                               CALL send_to_UART
 17F 00150       1251                               LOAD UART_data, character_i
-W: value out of range: 69, allowed range is [0,15] (trimmed to 4 bits) which makes it 5.
+W: value out of range: 0x45, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
 180 20117       1252                               CALL send_to_UART
 181 00130       1253                               LOAD UART_data, character_g
-W: value out of range: 67, allowed range is [0,15] (trimmed to 4 bits) which makes it 3.
+W: value out of range: 0x43, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x3.
 182 20117       1254                               CALL send_to_UART
 183 00110       1255                               LOAD UART_data, character_n
 E: symbol not defined: `CHARACTER_N'.
 184 20117       1256                               CALL send_to_UART
 185 20147       1257                               CALL send_space
 186 00190       1258                               LOAD UART_data, character_S
-W: value out of range: 73, allowed range is [0,15] (trimmed to 4 bits) which makes it 9.
+W: value out of range: 0x49, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x9.
 187 20117       1259                               CALL send_to_UART
 188 00110       1260                               LOAD UART_data, character_e
-W: value out of range: 65, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
+W: value out of range: 0x41, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
 189 20117       1261                               CALL send_to_UART
 18A 001F0       1262                               LOAD UART_data, character_c
-W: value out of range: 63, allowed range is [0,15] (trimmed to 4 bits) which makes it 15.
+W: value out of range: 0x3f, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xf.
 18B 20117       1263                               CALL send_to_UART
 18C 001B0       1264                               LOAD UART_data, character_u
-W: value out of range: 75, allowed range is [0,15] (trimmed to 4 bits) which makes it 11.
+W: value out of range: 0x4b, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xb.
 18D 20117       1265                               CALL send_to_UART
 18E 00180       1266                               LOAD UART_data, character_r
-W: value out of range: 72, allowed range is [0,15] (trimmed to 4 bits) which makes it 8.
+W: value out of range: 0x48, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x8.
 18F 20117       1267                               CALL send_to_UART
 190 00150       1268                               LOAD UART_data, character_i
-W: value out of range: 69, allowed range is [0,15] (trimmed to 4 bits) which makes it 5.
+W: value out of range: 0x45, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
 191 20117       1269                               CALL send_to_UART
 192 001A0       1270                               LOAD UART_data, character_t
-W: value out of range: 74, allowed range is [0,15] (trimmed to 4 bits) which makes it 10.
+W: value out of range: 0x4a, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xa.
 193 20117       1271                               CALL send_to_UART
 194 001F0       1272                               LOAD UART_data, character_y
-W: value out of range: 79, allowed range is [0,15] (trimmed to 4 bits) which makes it 15.
+W: value out of range: 0x4f, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xf.
 195 20117       1273                               CALL send_to_UART
 196 20147       1274                               CALL send_space
 197 001C0       1275                               LOAD UART_data, character_v
-W: value out of range: 76, allowed range is [0,15] (trimmed to 4 bits) which makes it 12.
+W: value out of range: 0x4c, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xc.
 198 20117       1276                               CALL send_to_UART
 199 001F0       1277                               LOAD UART_data, character_1
-W: value out of range: 31, allowed range is [0,15] (trimmed to 4 bits) which makes it 15.
+W: value out of range: 0x1f, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xf.
 19A 20117       1278                               CALL send_to_UART
 19B 00110       1279                               LOAD UART_data, character_fullstop
 E: symbol not defined: `CHARACTER_FULLSTOP'.
 19C 20117       1280                               CALL send_to_UART
 19D 001E0       1281                               LOAD UART_data, character_0
-W: value out of range: 30, allowed range is [0,15] (trimmed to 4 bits) which makes it 14.
+W: value out of range: 0x1e, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xe.
 19E 20117       1282                               CALL send_to_UART
 19F 001E0       1283                               LOAD UART_data, character_0
-W: value out of range: 30, allowed range is [0,15] (trimmed to 4 bits) which makes it 14.
+W: value out of range: 0x1e, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xe.
 1A0 20117       1284                               CALL send_to_UART
 1A1 20144       1285                               CALL send_CR
 1A2 20144       1286                               CALL send_CR
@@ -1664,73 +1664,73 @@ W: value out of range: 30, allowed range is [0,15] (trimmed to 4 bits) which mak
                 1299                               ;the design will again be disabled.
                 1300                               ;
 1A4 001F0       1301               send_Copyright: LOAD UART_data, character_C
-W: value out of range: 63, allowed range is [0,15] (trimmed to 4 bits) which makes it 15.
+W: value out of range: 0x3f, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xf.
 1A5 20117       1302                               CALL send_to_UART
 1A6 00110       1303                               LOAD UART_data, character_o
 E: symbol not defined: `CHARACTER_O'.
 1A7 20117       1304                               CALL send_to_UART
 1A8 00160       1305                               LOAD UART_data, character_p
-W: value out of range: 70, allowed range is [0,15] (trimmed to 4 bits) which makes it 6.
+W: value out of range: 0x46, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x6.
 1A9 20117       1306                               CALL send_to_UART
 1AA 001F0       1307                               LOAD UART_data, character_y
-W: value out of range: 79, allowed range is [0,15] (trimmed to 4 bits) which makes it 15.
+W: value out of range: 0x4f, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xf.
 1AB 20117       1308                               CALL send_to_UART
 1AC 00180       1309                               LOAD UART_data, character_r
-W: value out of range: 72, allowed range is [0,15] (trimmed to 4 bits) which makes it 8.
+W: value out of range: 0x48, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x8.
 1AD 20117       1310                               CALL send_to_UART
 1AE 00150       1311                               LOAD UART_data, character_i
-W: value out of range: 69, allowed range is [0,15] (trimmed to 4 bits) which makes it 5.
+W: value out of range: 0x45, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
 1AF 20117       1312                               CALL send_to_UART
 1B0 00130       1313                               LOAD UART_data, character_g
-W: value out of range: 67, allowed range is [0,15] (trimmed to 4 bits) which makes it 3.
+W: value out of range: 0x43, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x3.
 1B1 20117       1314                               CALL send_to_UART
 1B2 00140       1315                               LOAD UART_data, character_h
-W: value out of range: 68, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+W: value out of range: 0x44, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
 1B3 20117       1316                               CALL send_to_UART
 1B4 001A0       1317                               LOAD UART_data, character_t
-W: value out of range: 74, allowed range is [0,15] (trimmed to 4 bits) which makes it 10.
+W: value out of range: 0x4a, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xa.
 1B5 20117       1318                               CALL send_to_UART
 1B6 20147       1319                               CALL send_space
 1B7 00110       1320                               LOAD UART_data, character_K
 E: symbol not defined: `CHARACTER_K'.
 1B8 20117       1321                               CALL send_to_UART
 1B9 00110       1322                               LOAD UART_data, character_e
-W: value out of range: 65, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
+W: value out of range: 0x41, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
 1BA 20117       1323                               CALL send_to_UART
 1BB 00110       1324                               LOAD UART_data, character_n
 E: symbol not defined: `CHARACTER_N'.
 1BC 20117       1325                               CALL send_to_UART
 1BD 20147       1326                               CALL send_space
 1BE 001F0       1327                               LOAD UART_data, character_C
-W: value out of range: 63, allowed range is [0,15] (trimmed to 4 bits) which makes it 15.
+W: value out of range: 0x3f, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xf.
 1BF 20117       1328                               CALL send_to_UART
 1C0 00140       1329                               LOAD UART_data, character_h
-W: value out of range: 68, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+W: value out of range: 0x44, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
 1C1 20117       1330                               CALL send_to_UART
 1C2 001D0       1331                               LOAD UART_data, character_a
-W: value out of range: 61, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
+W: value out of range: 0x3d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
 1C3 20117       1332                               CALL send_to_UART
 1C4 00160       1333                               LOAD UART_data, character_p
-W: value out of range: 70, allowed range is [0,15] (trimmed to 4 bits) which makes it 6.
+W: value out of range: 0x46, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x6.
 1C5 20117       1334                               CALL send_to_UART
 1C6 00160       1335                               LOAD UART_data, character_m
 1C7 20117       1336                               CALL send_to_UART
 1C8 001D0       1337                               LOAD UART_data, character_a
-W: value out of range: 61, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
+W: value out of range: 0x3d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
 1C9 20117       1338                               CALL send_to_UART
 1CA 00110       1339                               LOAD UART_data, character_n
 E: symbol not defined: `CHARACTER_N'.
 1CB 20117       1340                               CALL send_to_UART
 1CC 20147       1341                               CALL send_space
 1CD 00100       1342                               LOAD UART_data, character_2
-W: value out of range: 32, allowed range is [0,15] (trimmed to 4 bits) which makes it 0.
+W: value out of range: 0x20, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x0.
 1CE 20117       1343                               CALL send_to_UART
 1CF 001E0       1344                               LOAD UART_data, character_0
-W: value out of range: 30, allowed range is [0,15] (trimmed to 4 bits) which makes it 14.
+W: value out of range: 0x1e, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xe.
 1D0 20117       1345                               CALL send_to_UART
 1D1 20117       1346                               CALL send_to_UART
 1D2 00140       1347                               LOAD UART_data, character_6
-W: value out of range: 36, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+W: value out of range: 0x24, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
 1D3 20117       1348                               CALL send_to_UART
 1D4 20144       1349                               CALL send_CR
 1D5 20144       1350                               CALL send_CR
@@ -1741,19 +1741,19 @@ W: value out of range: 36, allowed range is [0,15] (trimmed to 4 bits) which mak
                 1355                               ;Send 'FLASH ' string to the UART
                 1356                               ;
 1D7 00120       1357                   send_FLASH: LOAD UART_data, character_F
-W: value out of range: 66, allowed range is [0,15] (trimmed to 4 bits) which makes it 2.
+W: value out of range: 0x42, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x2.
 1D8 20117       1358                               CALL send_to_UART
 1D9 00110       1359                               LOAD UART_data, character_L
 E: symbol not defined: `CHARACTER_L'.
 1DA 20117       1360                               CALL send_to_UART
 1DB 001D0       1361                               LOAD UART_data, character_A
-W: value out of range: 61, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
+W: value out of range: 0x3d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
 1DC 20117       1362                               CALL send_to_UART
 1DD 00190       1363                               LOAD UART_data, character_S
-W: value out of range: 73, allowed range is [0,15] (trimmed to 4 bits) which makes it 9.
+W: value out of range: 0x49, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x9.
 1DE 20117       1364                               CALL send_to_UART
 1DF 00140       1365                               LOAD UART_data, character_H
-W: value out of range: 68, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+W: value out of range: 0x44, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
 1E0 20117       1366                               CALL send_to_UART
 1E1 25000       1367                               RETURN
                 1368                               ;
@@ -1764,19 +1764,19 @@ W: value out of range: 68, allowed range is [0,15] (trimmed to 4 bits) which mak
 1E2 201D7       1373     send_FLASH_Serial_Number: CALL send_FLASH
 1E3 20147       1374                               CALL send_space
 1E4 00190       1375                               LOAD UART_data, character_S
-W: value out of range: 73, allowed range is [0,15] (trimmed to 4 bits) which makes it 9.
+W: value out of range: 0x49, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x9.
 1E5 20117       1376                               CALL send_to_UART
 1E6 00110       1377                               LOAD UART_data, character_e
-W: value out of range: 65, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
+W: value out of range: 0x41, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
 1E7 20117       1378                               CALL send_to_UART
 1E8 00180       1379                               LOAD UART_data, character_r
-W: value out of range: 72, allowed range is [0,15] (trimmed to 4 bits) which makes it 8.
+W: value out of range: 0x48, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x8.
 1E9 20117       1380                               CALL send_to_UART
 1EA 00150       1381                               LOAD UART_data, character_i
-W: value out of range: 69, allowed range is [0,15] (trimmed to 4 bits) which makes it 5.
+W: value out of range: 0x45, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
 1EB 20117       1382                               CALL send_to_UART
 1EC 001D0       1383                               LOAD UART_data, character_a
-W: value out of range: 61, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
+W: value out of range: 0x3d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
 1ED 20117       1384                               CALL send_to_UART
 1EE 00110       1385                               LOAD UART_data, character_l
 E: symbol not defined: `CHARACTER_L'.
@@ -1786,18 +1786,18 @@ E: symbol not defined: `CHARACTER_L'.
 E: symbol not defined: `CHARACTER_N'.
 1F2 20117       1389                               CALL send_to_UART
 1F3 001B0       1390                               LOAD UART_data, character_u
-W: value out of range: 75, allowed range is [0,15] (trimmed to 4 bits) which makes it 11.
+W: value out of range: 0x4b, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xb.
 1F4 20117       1391                               CALL send_to_UART
 1F5 00160       1392                               LOAD UART_data, character_m
 1F6 20117       1393                               CALL send_to_UART
 1F7 001E0       1394                               LOAD UART_data, character_b
-W: value out of range: 62, allowed range is [0,15] (trimmed to 4 bits) which makes it 14.
+W: value out of range: 0x3e, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xe.
 1F8 20117       1395                               CALL send_to_UART
 1F9 00110       1396                               LOAD UART_data, character_e
-W: value out of range: 65, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
+W: value out of range: 0x41, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
 1FA 20117       1397                               CALL send_to_UART
 1FB 00180       1398                               LOAD UART_data, character_r
-W: value out of range: 72, allowed range is [0,15] (trimmed to 4 bits) which makes it 8.
+W: value out of range: 0x48, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x8.
 1FC 20117       1399                               CALL send_to_UART
 1FD 2014A       1400                               CALL send_equals
 1FE 25000       1401                               RETURN
@@ -1806,16 +1806,16 @@ W: value out of range: 72, allowed range is [0,15] (trimmed to 4 bits) which mak
                 1404                               ;Send 'Auth' string to the UART
                 1405                               ;
 1FF 001D0       1406                    send_Auth: LOAD UART_data, character_A
-W: value out of range: 61, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
+W: value out of range: 0x3d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
 200 20117       1407                               CALL send_to_UART
 201 001B0       1408                               LOAD UART_data, character_u
-W: value out of range: 75, allowed range is [0,15] (trimmed to 4 bits) which makes it 11.
+W: value out of range: 0x4b, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xb.
 202 20117       1409                               CALL send_to_UART
 203 001A0       1410                               LOAD UART_data, character_t
-W: value out of range: 74, allowed range is [0,15] (trimmed to 4 bits) which makes it 10.
+W: value out of range: 0x4a, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xa.
 204 20117       1411                               CALL send_to_UART
 205 00140       1412                               LOAD UART_data, character_h
-W: value out of range: 68, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+W: value out of range: 0x44, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
 206 20117       1413                               CALL send_to_UART
 207 25000       1414                               RETURN
                 1415                               ;
@@ -1826,13 +1826,13 @@ W: value out of range: 68, allowed range is [0,15] (trimmed to 4 bits) which mak
 E: symbol not defined: `CHARACTER_O'.
 20A 20117       1420                               CALL send_to_UART
 20B 00180       1421                               LOAD UART_data, character_r
-W: value out of range: 72, allowed range is [0,15] (trimmed to 4 bits) which makes it 8.
+W: value out of range: 0x48, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x8.
 20C 20117       1422                               CALL send_to_UART
 20D 00150       1423                               LOAD UART_data, character_i
-W: value out of range: 69, allowed range is [0,15] (trimmed to 4 bits) which makes it 5.
+W: value out of range: 0x45, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
 20E 20117       1424                               CALL send_to_UART
 20F 00190       1425                               LOAD UART_data, character_s
-W: value out of range: 73, allowed range is [0,15] (trimmed to 4 bits) which makes it 9.
+W: value out of range: 0x49, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x9.
 210 20117       1426                               CALL send_to_UART
 211 25000       1427                               RETURN
                 1428                               ;
@@ -1840,13 +1840,13 @@ W: value out of range: 73, allowed range is [0,15] (trimmed to 4 bits) which mak
                 1430                               ;
 212 20208       1431           send_Authorisation: CALL send_Authoris
 213 001D0       1432                               LOAD UART_data, character_a
-W: value out of range: 61, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
+W: value out of range: 0x3d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
 214 20117       1433                               CALL send_to_UART
 215 001A0       1434                               LOAD UART_data, character_t
-W: value out of range: 74, allowed range is [0,15] (trimmed to 4 bits) which makes it 10.
+W: value out of range: 0x4a, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xa.
 216 20117       1435                               CALL send_to_UART
 217 00150       1436                               LOAD UART_data, character_i
-W: value out of range: 69, allowed range is [0,15] (trimmed to 4 bits) which makes it 5.
+W: value out of range: 0x45, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
 218 20117       1437                               CALL send_to_UART
 219 00110       1438                               LOAD UART_data, character_o
 E: symbol not defined: `CHARACTER_O'.
@@ -1860,7 +1860,7 @@ E: symbol not defined: `CHARACTER_N'.
                 1445                               ;
 21E 20208       1446               send_Authorise: CALL send_Authoris
 21F 00110       1447                               LOAD UART_data, character_e
-W: value out of range: 65, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
+W: value out of range: 0x41, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
 220 20117       1448                               CALL send_to_UART
 221 25000       1449                               RETURN
                 1450                               ;
@@ -1868,28 +1868,28 @@ W: value out of range: 65, allowed range is [0,15] (trimmed to 4 bits) which mak
                 1452                               ;
 222 201FF       1453          send_Authentication: CALL send_Auth
 223 00110       1454                               LOAD UART_data, character_e
-W: value out of range: 65, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
+W: value out of range: 0x41, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
 224 20117       1455                               CALL send_to_UART
 225 00110       1456                               LOAD UART_data, character_n
 E: symbol not defined: `CHARACTER_N'.
 226 20117       1457                               CALL send_to_UART
 227 001A0       1458                               LOAD UART_data, character_t
-W: value out of range: 74, allowed range is [0,15] (trimmed to 4 bits) which makes it 10.
+W: value out of range: 0x4a, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xa.
 228 20117       1459                               CALL send_to_UART
 229 00150       1460                               LOAD UART_data, character_i
-W: value out of range: 69, allowed range is [0,15] (trimmed to 4 bits) which makes it 5.
+W: value out of range: 0x45, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
 22A 20117       1461                               CALL send_to_UART
 22B 001F0       1462                               LOAD UART_data, character_c
-W: value out of range: 63, allowed range is [0,15] (trimmed to 4 bits) which makes it 15.
+W: value out of range: 0x3f, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xf.
 22C 20117       1463                               CALL send_to_UART
 22D 001D0       1464                               LOAD UART_data, character_a
-W: value out of range: 61, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
+W: value out of range: 0x3d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
 22E 20117       1465                               CALL send_to_UART
 22F 001A0       1466                               LOAD UART_data, character_t
-W: value out of range: 74, allowed range is [0,15] (trimmed to 4 bits) which makes it 10.
+W: value out of range: 0x4a, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xa.
 230 20117       1467                               CALL send_to_UART
 231 00150       1468                               LOAD UART_data, character_i
-W: value out of range: 69, allowed range is [0,15] (trimmed to 4 bits) which makes it 5.
+W: value out of range: 0x45, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
 232 20117       1469                               CALL send_to_UART
 233 00110       1470                               LOAD UART_data, character_o
 E: symbol not defined: `CHARACTER_O'.
@@ -1909,13 +1909,13 @@ E: symbol not defined: `CHARACTER_N'.
                 1483                               ;
 239 20147       1484                     send_CRC: CALL send_space
 23A 001F0       1485                               LOAD UART_data, character_C
-W: value out of range: 63, allowed range is [0,15] (trimmed to 4 bits) which makes it 15.
+W: value out of range: 0x3f, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xf.
 23B 20117       1486                               CALL send_to_UART
 23C 00180       1487                               LOAD UART_data, character_R
-W: value out of range: 72, allowed range is [0,15] (trimmed to 4 bits) which makes it 8.
+W: value out of range: 0x48, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x8.
 23D 20117       1488                               CALL send_to_UART
 23E 001F0       1489                               LOAD UART_data, character_C
-W: value out of range: 63, allowed range is [0,15] (trimmed to 4 bits) which makes it 15.
+W: value out of range: 0x3f, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xf.
 23F 20117       1490                               CALL send_to_UART
 240 2014A       1491                               CALL send_equals
 241 25000       1492                               RETURN
@@ -1925,7 +1925,7 @@ W: value out of range: 63, allowed range is [0,15] (trimmed to 4 bits) which mak
                 1496                               ;Send 'Computed CRC = ' string to the UART
                 1497                               ;
 242 001F0       1498            send_Computed_CRC: LOAD UART_data, character_C
-W: value out of range: 63, allowed range is [0,15] (trimmed to 4 bits) which makes it 15.
+W: value out of range: 0x3f, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xf.
 243 20117       1499                               CALL send_to_UART
 244 00110       1500                               LOAD UART_data, character_o
 E: symbol not defined: `CHARACTER_O'.
@@ -1933,19 +1933,19 @@ E: symbol not defined: `CHARACTER_O'.
 246 00160       1502                               LOAD UART_data, character_m
 247 20117       1503                               CALL send_to_UART
 248 00160       1504                               LOAD UART_data, character_p
-W: value out of range: 70, allowed range is [0,15] (trimmed to 4 bits) which makes it 6.
+W: value out of range: 0x46, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x6.
 249 20117       1505                               CALL send_to_UART
 24A 001B0       1506                               LOAD UART_data, character_u
-W: value out of range: 75, allowed range is [0,15] (trimmed to 4 bits) which makes it 11.
+W: value out of range: 0x4b, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xb.
 24B 20117       1507                               CALL send_to_UART
 24C 001A0       1508                               LOAD UART_data, character_t
-W: value out of range: 74, allowed range is [0,15] (trimmed to 4 bits) which makes it 10.
+W: value out of range: 0x4a, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xa.
 24D 20117       1509                               CALL send_to_UART
 24E 00110       1510                               LOAD UART_data, character_e
-W: value out of range: 65, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
+W: value out of range: 0x41, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
 24F 20117       1511                               CALL send_to_UART
 250 00100       1512                               LOAD UART_data, character_d
-W: value out of range: 64, allowed range is [0,15] (trimmed to 4 bits) which makes it 0.
+W: value out of range: 0x40, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x0.
 251 20117       1513                               CALL send_to_UART
 252 22239       1514                               JUMP send_CRC
                 1515                               ;
@@ -1953,19 +1953,19 @@ W: value out of range: 64, allowed range is [0,15] (trimmed to 4 bits) which mak
                 1517                               ;Send 'Erase ' string to the UART
                 1518                               ;
 253 00110       1519                   send_Erase: LOAD UART_data, character_E
-W: value out of range: 65, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
+W: value out of range: 0x41, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
 254 20117       1520                               CALL send_to_UART
 255 00180       1521                               LOAD UART_data, character_r
-W: value out of range: 72, allowed range is [0,15] (trimmed to 4 bits) which makes it 8.
+W: value out of range: 0x48, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x8.
 256 20117       1522                               CALL send_to_UART
 257 001D0       1523                               LOAD UART_data, character_a
-W: value out of range: 61, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
+W: value out of range: 0x3d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
 258 20117       1524                               CALL send_to_UART
 259 00190       1525                               LOAD UART_data, character_s
-W: value out of range: 73, allowed range is [0,15] (trimmed to 4 bits) which makes it 9.
+W: value out of range: 0x49, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x9.
 25A 20117       1526                               CALL send_to_UART
 25B 00110       1527                               LOAD UART_data, character_e
-W: value out of range: 65, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
+W: value out of range: 0x41, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
 25C 20117       1528                               CALL send_to_UART
 25D 20147       1529                               CALL send_space
 25E 25000       1530                               RETURN
@@ -1978,32 +1978,32 @@ W: value out of range: 65, allowed range is [0,15] (trimmed to 4 bits) which mak
 261 20212       1537                               CALL send_Authorisation
 262 20147       1538                               CALL send_space
 263 00150       1539                               LOAD UART_data, character_i
-W: value out of range: 69, allowed range is [0,15] (trimmed to 4 bits) which makes it 5.
+W: value out of range: 0x45, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
 264 20117       1540                               CALL send_to_UART
 265 00110       1541                               LOAD UART_data, character_n
 E: symbol not defined: `CHARACTER_N'.
 266 20117       1542                               CALL send_to_UART
 267 20147       1543                               CALL send_space
 268 00160       1544                               LOAD UART_data, character_P
-W: value out of range: 70, allowed range is [0,15] (trimmed to 4 bits) which makes it 6.
+W: value out of range: 0x46, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x6.
 269 20117       1545                               CALL send_to_UART
 26A 00180       1546                               LOAD UART_data, character_r
-W: value out of range: 72, allowed range is [0,15] (trimmed to 4 bits) which makes it 8.
+W: value out of range: 0x48, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x8.
 26B 20117       1547                               CALL send_to_UART
 26C 00110       1548                               LOAD UART_data, character_o
 E: symbol not defined: `CHARACTER_O'.
 26D 20117       1549                               CALL send_to_UART
 26E 00130       1550                               LOAD UART_data, character_g
-W: value out of range: 67, allowed range is [0,15] (trimmed to 4 bits) which makes it 3.
+W: value out of range: 0x43, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x3.
 26F 20117       1551                               CALL send_to_UART
 270 00180       1552                               LOAD UART_data, character_r
-W: value out of range: 72, allowed range is [0,15] (trimmed to 4 bits) which makes it 8.
+W: value out of range: 0x48, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x8.
 271 20117       1553                               CALL send_to_UART
 272 00110       1554                               LOAD UART_data, character_e
-W: value out of range: 65, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
+W: value out of range: 0x41, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
 273 20117       1555                               CALL send_to_UART
 274 00190       1556                               LOAD UART_data, character_s
-W: value out of range: 73, allowed range is [0,15] (trimmed to 4 bits) which makes it 9.
+W: value out of range: 0x49, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x9.
 275 20117       1557                               CALL send_to_UART
 276 20117       1558                               CALL send_to_UART
 277 20144       1559                               CALL send_CR
@@ -2026,22 +2026,22 @@ E: symbol not defined: `CHARACTER_K'.
                 1574                               ;
 27F 20147       1575                  send_FAILED: CALL send_space
 280 00120       1576                               LOAD UART_data, character_F
-W: value out of range: 66, allowed range is [0,15] (trimmed to 4 bits) which makes it 2.
+W: value out of range: 0x42, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x2.
 281 20117       1577                               CALL send_to_UART
 282 001D0       1578                               LOAD UART_data, character_A
-W: value out of range: 61, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
+W: value out of range: 0x3d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
 283 20117       1579                               CALL send_to_UART
 284 00150       1580                               LOAD UART_data, character_I
-W: value out of range: 69, allowed range is [0,15] (trimmed to 4 bits) which makes it 5.
+W: value out of range: 0x45, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
 285 20117       1581                               CALL send_to_UART
 286 00110       1582                               LOAD UART_data, character_L
 E: symbol not defined: `CHARACTER_L'.
 287 20117       1583                               CALL send_to_UART
 288 00110       1584                               LOAD UART_data, character_E
-W: value out of range: 65, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
+W: value out of range: 0x41, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
 289 20117       1585                               CALL send_to_UART
 28A 00100       1586                               LOAD UART_data, character_D
-W: value out of range: 64, allowed range is [0,15] (trimmed to 4 bits) which makes it 0.
+W: value out of range: 0x40, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x0.
 28B 20117       1587                               CALL send_to_UART
 28C 25000       1588                               RETURN
                 1589                               ;
@@ -2050,20 +2050,20 @@ W: value out of range: 64, allowed range is [0,15] (trimmed to 4 bits) which mak
                 1592                               ;
 28D 20147       1593                  send_PASSED: CALL send_space
 28E 00160       1594                               LOAD UART_data, character_P
-W: value out of range: 70, allowed range is [0,15] (trimmed to 4 bits) which makes it 6.
+W: value out of range: 0x46, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x6.
 28F 20117       1595                               CALL send_to_UART
 290 001D0       1596                               LOAD UART_data, character_A
-W: value out of range: 61, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
+W: value out of range: 0x3d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
 291 20117       1597                               CALL send_to_UART
 292 00190       1598                               LOAD UART_data, character_S
-W: value out of range: 73, allowed range is [0,15] (trimmed to 4 bits) which makes it 9.
+W: value out of range: 0x49, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x9.
 293 20117       1599                               CALL send_to_UART
 294 20117       1600                               CALL send_to_UART
 295 00110       1601                               LOAD UART_data, character_E
-W: value out of range: 65, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
+W: value out of range: 0x41, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
 296 20117       1602                               CALL send_to_UART
 297 00100       1603                               LOAD UART_data, character_D
-W: value out of range: 64, allowed range is [0,15] (trimmed to 4 bits) which makes it 0.
+W: value out of range: 0x40, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x0.
 298 20117       1604                               CALL send_to_UART
 299 25000       1605                               RETURN
                 1606                               ;
@@ -2073,25 +2073,25 @@ W: value out of range: 64, allowed range is [0,15] (trimmed to 4 bits) which mak
                 1610                               ;
 29A 20144       1611                 send_Writing: CALL send_CR
 29B 001D0       1612                               LOAD UART_data, character_W
-W: value out of range: 77, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
+W: value out of range: 0x4d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
 29C 20117       1613                               CALL send_to_UART
 29D 00180       1614                               LOAD UART_data, character_r
-W: value out of range: 72, allowed range is [0,15] (trimmed to 4 bits) which makes it 8.
+W: value out of range: 0x48, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x8.
 29E 20117       1615                               CALL send_to_UART
 29F 00150       1616                               LOAD UART_data, character_i
-W: value out of range: 69, allowed range is [0,15] (trimmed to 4 bits) which makes it 5.
+W: value out of range: 0x45, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
 2A0 20117       1617                               CALL send_to_UART
 2A1 001A0       1618                               LOAD UART_data, character_t
-W: value out of range: 74, allowed range is [0,15] (trimmed to 4 bits) which makes it 10.
+W: value out of range: 0x4a, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xa.
 2A2 20117       1619                               CALL send_to_UART
 2A3 00150       1620                               LOAD UART_data, character_i
-W: value out of range: 69, allowed range is [0,15] (trimmed to 4 bits) which makes it 5.
+W: value out of range: 0x45, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
 2A4 20117       1621                               CALL send_to_UART
 2A5 00110       1622                               LOAD UART_data, character_n
 E: symbol not defined: `CHARACTER_N'.
 2A6 20117       1623                               CALL send_to_UART
 2A7 00130       1624                               LOAD UART_data, character_g
-W: value out of range: 67, allowed range is [0,15] (trimmed to 4 bits) which makes it 3.
+W: value out of range: 0x43, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x3.
 2A8 20117       1625                               CALL send_to_UART
 2A9 20147       1626                               CALL send_space
 2AA 20212       1627                               CALL send_Authorisation
@@ -2105,44 +2105,44 @@ W: value out of range: 67, allowed range is [0,15] (trimmed to 4 bits) which mak
 2AE 00160       1635                               LOAD UART_data, character_M
 2AF 20117       1636                               CALL send_to_UART
 2B0 00110       1637                               LOAD UART_data, character_e
-W: value out of range: 65, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
+W: value out of range: 0x41, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
 2B1 20117       1638                               CALL send_to_UART
 2B2 00110       1639                               LOAD UART_data, character_n
 E: symbol not defined: `CHARACTER_N'.
 2B3 20117       1640                               CALL send_to_UART
 2B4 001B0       1641                               LOAD UART_data, character_u
-W: value out of range: 75, allowed range is [0,15] (trimmed to 4 bits) which makes it 11.
+W: value out of range: 0x4b, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xb.
 2B5 20117       1642                               CALL send_to_UART
 2B6 20144       1643                               CALL send_CR
 2B7 20144       1644                               CALL send_CR
 2B8 00180       1645                               LOAD UART_data, character_R
-W: value out of range: 72, allowed range is [0,15] (trimmed to 4 bits) which makes it 8.
+W: value out of range: 0x48, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x8.
 2B9 20117       1646                               CALL send_to_UART
 2BA 2014F       1647                               CALL send_dash
 2BB 00180       1648                               LOAD UART_data, character_R
-W: value out of range: 72, allowed range is [0,15] (trimmed to 4 bits) which makes it 8.
+W: value out of range: 0x48, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x8.
 2BC 20117       1649                               CALL send_to_UART
 2BD 00110       1650                               LOAD UART_data, character_e
-W: value out of range: 65, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
+W: value out of range: 0x41, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
 2BE 20117       1651                               CALL send_to_UART
 2BF 001D0       1652                               LOAD UART_data, character_a
-W: value out of range: 61, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
+W: value out of range: 0x3d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
 2C0 20117       1653                               CALL send_to_UART
 2C1 00100       1654                               LOAD UART_data, character_d
-W: value out of range: 64, allowed range is [0,15] (trimmed to 4 bits) which makes it 0.
+W: value out of range: 0x40, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x0.
 2C2 20117       1655                               CALL send_to_UART
 2C3 20147       1656                               CALL send_space
 2C4 20212       1657                               CALL send_Authorisation
 2C5 20144       1658                               CALL send_CR
 2C6 00110       1659                               LOAD UART_data, character_E
-W: value out of range: 65, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
+W: value out of range: 0x41, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
 2C7 20117       1660                               CALL send_to_UART
 2C8 2014F       1661                               CALL send_dash
 2C9 20253       1662                               CALL send_Erase
 2CA 20212       1663                               CALL send_Authorisation
 2CB 20144       1664                               CALL send_CR
 2CC 001D0       1665                               LOAD UART_data, character_A
-W: value out of range: 61, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
+W: value out of range: 0x3d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
 2CD 20117       1666                               CALL send_to_UART
 2CE 2014F       1667                               CALL send_dash
 2CF 2021E       1668                               CALL send_Authorise
@@ -2374,7 +2374,7 @@ E: symbol not defined: `S4'.
 316 20341       1832                    LCD_reset: CALL delay_20ms                          ;wait more that 15ms for display to be ready
 317 001E0       1833                               LOAD s4, 30
 E: symbol not defined: `S4'.
-W: value out of range: 30, allowed range is [0,15] (trimmed to 4 bits) which makes it 14.
+W: value out of range: 0x1e, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xe.
 318 202DB       1834                               CALL LCD_write_inst4                     ;send '3'
 319 20341       1835                               CALL delay_20ms                          ;wait >4.1ms
 31A 202DB       1836                               CALL LCD_write_inst4                     ;send '3'
@@ -2383,12 +2383,12 @@ W: value out of range: 30, allowed range is [0,15] (trimmed to 4 bits) which mak
 31D 20337       1839                               CALL delay_40us                          ;wait >40us
 31E 00140       1840                               LOAD s4, 20
 E: symbol not defined: `S4'.
-W: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+W: value out of range: 0x14, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
 31F 202DB       1841                               CALL LCD_write_inst4                     ;send '2'
 320 20337       1842                               CALL delay_40us                          ;wait >40us
 321 001C0       1843                               LOAD s5, 28                              ;Function set
 E: symbol not defined: `S5'.
-W: value out of range: 28, allowed range is [0,15] (trimmed to 4 bits) which makes it 12.
+W: value out of range: 0x1c, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xc.
 322 202DF       1844                               CALL LCD_write_inst8
 323 00160       1845                               LOAD s5, 06                              ;Entry mode
 E: symbol not defined: `S5'.
@@ -2430,7 +2430,7 @@ E: identifier cannot start with a digit: `0F'.
 E: unexpected end of line.
 32D 04100       1875                               OR s5, 80
 E: symbol not defined: `S5'.
-W: value out of range: 80, allowed range is [0,15] (trimmed to 4 bits) which makes it 0.
+W: value out of range: 0x50, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x0.
 32E 202DF       1876                               CALL LCD_write_inst8                     ;instruction write to set cursor
 32F 25000       1877                               RETURN
                 1878                    set_line2: AND s5, 0F                               ;make address in range C0 to CF for line 2
@@ -2471,7 +2471,7 @@ E: symbol not defined: `S0'.
                 1907                               ;
 337 001C0       1908                   delay_40us: LOAD s1, 28                              ;40 x 1us = 40us
 E: symbol not defined: `S1'.
-W: value out of range: 28, allowed range is [0,15] (trimmed to 4 bits) which makes it 12.
+W: value out of range: 0x1c, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xc.
 338 20333       1909                    wait_40us: CALL delay_1us
 339 18110       1910                               SUB s1, 01
 E: symbol not defined: `S1'.
@@ -2485,7 +2485,7 @@ E: symbol not defined: `S1'.
                 1918                               ;
 33C 00130       1919                    delay_1ms: LOAD s2, 19                              ;25 x 40us = 1ms
 E: symbol not defined: `S2'.
-W: value out of range: 19, allowed range is [0,15] (trimmed to 4 bits) which makes it 3.
+W: value out of range: 0x13, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x3.
 33D 20337       1920                     wait_1ms: CALL delay_40us
 33E 18110       1921                               SUB s2, 01
 E: symbol not defined: `S2'.
@@ -2512,7 +2512,7 @@ E: symbol not defined: `S3'.
                 1940                               ;
 346 00100       1941                     delay_1s: LOAD s4, 32                              ;50 x 20ms = 1000ms
 E: symbol not defined: `S4'.
-W: value out of range: 32, allowed range is [0,15] (trimmed to 4 bits) which makes it 0.
+W: value out of range: 0x20, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x0.
 347 20341       1942                      wait_1s: CALL delay_20ms
 348 18110       1943                               SUB s4, 01
 E: symbol not defined: `S4'.
@@ -2543,15 +2543,15 @@ E: symbol not defined: `S5'.
                 1967                               ;
 34F 00160       1968               disp_PicoBlaze: LOAD s5, character_P
 E: symbol not defined: `S5'.
-W: value out of range: 70, allowed range is [0,15] (trimmed to 4 bits) which makes it 6.
+W: value out of range: 0x46, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x6.
 350 202EE       1969                               CALL LCD_write_data
 351 00150       1970                               LOAD s5, character_i
 E: symbol not defined: `S5'.
-W: value out of range: 69, allowed range is [0,15] (trimmed to 4 bits) which makes it 5.
+W: value out of range: 0x45, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
 352 202EE       1971                               CALL LCD_write_data
 353 001F0       1972                               LOAD s5, character_c
 E: symbol not defined: `S5'.
-W: value out of range: 63, allowed range is [0,15] (trimmed to 4 bits) which makes it 15.
+W: value out of range: 0x3f, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xf.
 354 202EE       1973                               CALL LCD_write_data
 355 00110       1974                               LOAD s5, character_o
 E: symbol not defined: `S5'.
@@ -2559,7 +2559,7 @@ E: symbol not defined: `CHARACTER_O'.
 356 202EE       1975                               CALL LCD_write_data
 357 001E0       1976                               LOAD s5, character_B
 E: symbol not defined: `S5'.
-W: value out of range: 62, allowed range is [0,15] (trimmed to 4 bits) which makes it 14.
+W: value out of range: 0x3e, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xe.
 358 202EE       1977                               CALL LCD_write_data
 359 00110       1978                               LOAD s5, character_l
 E: symbol not defined: `S5'.
@@ -2567,7 +2567,7 @@ E: symbol not defined: `CHARACTER_L'.
 35A 202EE       1979                               CALL LCD_write_data
 35B 001D0       1980                               LOAD s5, character_a
 E: symbol not defined: `S5'.
-W: value out of range: 61, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
+W: value out of range: 0x3d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
 35C 202EE       1981                               CALL LCD_write_data
 35D 00110       1982                               LOAD s5, character_z
 E: symbol not defined: `S5'.
@@ -2575,7 +2575,7 @@ E: symbol not defined: `CHARACTER_Z'.
 35E 202EE       1983                               CALL LCD_write_data
 35F 00110       1984                               LOAD s5, character_e
 E: symbol not defined: `S5'.
-W: value out of range: 65, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
+W: value out of range: 0x41, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
 360 202EE       1985                               CALL LCD_write_data
 361 25000       1986                               RETURN
                 1987                               ;
@@ -2585,35 +2585,35 @@ W: value out of range: 65, allowed range is [0,15] (trimmed to 4 bits) which mak
                 1991                               ;
 362 00190       1992                disp_Security: LOAD s5, character_S
 E: symbol not defined: `S5'.
-W: value out of range: 73, allowed range is [0,15] (trimmed to 4 bits) which makes it 9.
+W: value out of range: 0x49, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x9.
 363 202EE       1993                               CALL LCD_write_data
 364 00110       1994                               LOAD s5, character_e
 E: symbol not defined: `S5'.
-W: value out of range: 65, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
+W: value out of range: 0x41, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
 365 202EE       1995                               CALL LCD_write_data
 366 001F0       1996                               LOAD s5, character_c
 E: symbol not defined: `S5'.
-W: value out of range: 63, allowed range is [0,15] (trimmed to 4 bits) which makes it 15.
+W: value out of range: 0x3f, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xf.
 367 202EE       1997                               CALL LCD_write_data
 368 001B0       1998                               LOAD s5, character_u
 E: symbol not defined: `S5'.
-W: value out of range: 75, allowed range is [0,15] (trimmed to 4 bits) which makes it 11.
+W: value out of range: 0x4b, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xb.
 369 202EE       1999                               CALL LCD_write_data
 36A 00180       2000                               LOAD s5, character_r
 E: symbol not defined: `S5'.
-W: value out of range: 72, allowed range is [0,15] (trimmed to 4 bits) which makes it 8.
+W: value out of range: 0x48, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x8.
 36B 202EE       2001                               CALL LCD_write_data
 36C 00150       2002                               LOAD s5, character_i
 E: symbol not defined: `S5'.
-W: value out of range: 69, allowed range is [0,15] (trimmed to 4 bits) which makes it 5.
+W: value out of range: 0x45, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
 36D 202EE       2003                               CALL LCD_write_data
 36E 001A0       2004                               LOAD s5, character_t
 E: symbol not defined: `S5'.
-W: value out of range: 74, allowed range is [0,15] (trimmed to 4 bits) which makes it 10.
+W: value out of range: 0x4a, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xa.
 36F 202EE       2005                               CALL LCD_write_data
 370 001F0       2006                               LOAD s5, character_y
 E: symbol not defined: `S5'.
-W: value out of range: 79, allowed range is [0,15] (trimmed to 4 bits) which makes it 15.
+W: value out of range: 0x4f, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xf.
 371 202EE       2007                               CALL LCD_write_data
 372 25000       2008                               RETURN
                 2009                               ;
@@ -2623,7 +2623,7 @@ W: value out of range: 79, allowed range is [0,15] (trimmed to 4 bits) which mak
                 2013                               ;
 373 00120       2014         disp_FLASH_Serial_No: LOAD s5, character_F
 E: symbol not defined: `S5'.
-W: value out of range: 66, allowed range is [0,15] (trimmed to 4 bits) which makes it 2.
+W: value out of range: 0x42, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x2.
 374 202EE       2015                               CALL LCD_write_data
 375 00110       2016                               LOAD s5, character_L
 E: symbol not defined: `S5'.
@@ -2631,39 +2631,39 @@ E: symbol not defined: `CHARACTER_L'.
 376 202EE       2017                               CALL LCD_write_data
 377 001D0       2018                               LOAD s5, character_A
 E: symbol not defined: `S5'.
-W: value out of range: 61, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
+W: value out of range: 0x3d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
 378 202EE       2019                               CALL LCD_write_data
 379 00190       2020                               LOAD s5, character_S
 E: symbol not defined: `S5'.
-W: value out of range: 73, allowed range is [0,15] (trimmed to 4 bits) which makes it 9.
+W: value out of range: 0x49, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x9.
 37A 202EE       2021                               CALL LCD_write_data
 37B 00140       2022                               LOAD s5, character_H
 E: symbol not defined: `S5'.
-W: value out of range: 68, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+W: value out of range: 0x44, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
 37C 202EE       2023                               CALL LCD_write_data
 37D 00140       2024                               LOAD s5, character_space
 E: symbol not defined: `S5'.
-W: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+W: value out of range: 0x14, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
 37E 202EE       2025                               CALL LCD_write_data
 37F 00190       2026                               LOAD s5, character_S
 E: symbol not defined: `S5'.
-W: value out of range: 73, allowed range is [0,15] (trimmed to 4 bits) which makes it 9.
+W: value out of range: 0x49, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x9.
 380 202EE       2027                               CALL LCD_write_data
 381 00110       2028                               LOAD s5, character_e
 E: symbol not defined: `S5'.
-W: value out of range: 65, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
+W: value out of range: 0x41, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
 382 202EE       2029                               CALL LCD_write_data
 383 00180       2030                               LOAD s5, character_r
 E: symbol not defined: `S5'.
-W: value out of range: 72, allowed range is [0,15] (trimmed to 4 bits) which makes it 8.
+W: value out of range: 0x48, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x8.
 384 202EE       2031                               CALL LCD_write_data
 385 00150       2032                               LOAD s5, character_i
 E: symbol not defined: `S5'.
-W: value out of range: 69, allowed range is [0,15] (trimmed to 4 bits) which makes it 5.
+W: value out of range: 0x45, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
 386 202EE       2033                               CALL LCD_write_data
 387 001D0       2034                               LOAD s5, character_a
 E: symbol not defined: `S5'.
-W: value out of range: 61, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
+W: value out of range: 0x3d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
 388 202EE       2035                               CALL LCD_write_data
 389 00110       2036                               LOAD s5, character_l
 E: symbol not defined: `S5'.
@@ -2671,7 +2671,7 @@ E: symbol not defined: `CHARACTER_L'.
 38A 202EE       2037                               CALL LCD_write_data
 38B 00140       2038                               LOAD s5, character_space
 E: symbol not defined: `S5'.
-W: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+W: value out of range: 0x14, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
 38C 202EE       2039                               CALL LCD_write_data
 38D 00110       2040                               LOAD s5, character_N
 E: symbol not defined: `S5'.
@@ -2697,23 +2697,23 @@ E: symbol not defined: `S5'.
 395 2032B       2054                               CALL LCD_cursor
 396 001D0       2055                               LOAD s5, character_A
 E: symbol not defined: `S5'.
-W: value out of range: 61, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
+W: value out of range: 0x3d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
 397 202EE       2056                               CALL LCD_write_data
 398 001B0       2057                               LOAD s5, character_u
 E: symbol not defined: `S5'.
-W: value out of range: 75, allowed range is [0,15] (trimmed to 4 bits) which makes it 11.
+W: value out of range: 0x4b, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xb.
 399 202EE       2058                               CALL LCD_write_data
 39A 001A0       2059                               LOAD s5, character_t
 E: symbol not defined: `S5'.
-W: value out of range: 74, allowed range is [0,15] (trimmed to 4 bits) which makes it 10.
+W: value out of range: 0x4a, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xa.
 39B 202EE       2060                               CALL LCD_write_data
 39C 00140       2061                               LOAD s5, character_h
 E: symbol not defined: `S5'.
-W: value out of range: 68, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+W: value out of range: 0x44, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
 39D 202EE       2062                               CALL LCD_write_data
 39E 00110       2063                               LOAD s5, character_e
 E: symbol not defined: `S5'.
-W: value out of range: 65, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
+W: value out of range: 0x41, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
 39F 202EE       2064                               CALL LCD_write_data
 3A0 00110       2065                               LOAD s5, character_n
 E: symbol not defined: `S5'.
@@ -2721,27 +2721,27 @@ E: symbol not defined: `CHARACTER_N'.
 3A1 202EE       2066                               CALL LCD_write_data
 3A2 001A0       2067                               LOAD s5, character_t
 E: symbol not defined: `S5'.
-W: value out of range: 74, allowed range is [0,15] (trimmed to 4 bits) which makes it 10.
+W: value out of range: 0x4a, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xa.
 3A3 202EE       2068                               CALL LCD_write_data
 3A4 00150       2069                               LOAD s5, character_i
 E: symbol not defined: `S5'.
-W: value out of range: 69, allowed range is [0,15] (trimmed to 4 bits) which makes it 5.
+W: value out of range: 0x45, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
 3A5 202EE       2070                               CALL LCD_write_data
 3A6 001F0       2071                               LOAD s5, character_c
 E: symbol not defined: `S5'.
-W: value out of range: 63, allowed range is [0,15] (trimmed to 4 bits) which makes it 15.
+W: value out of range: 0x3f, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xf.
 3A7 202EE       2072                               CALL LCD_write_data
 3A8 001D0       2073                               LOAD s5, character_a
 E: symbol not defined: `S5'.
-W: value out of range: 61, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
+W: value out of range: 0x3d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
 3A9 202EE       2074                               CALL LCD_write_data
 3AA 001A0       2075                               LOAD s5, character_t
 E: symbol not defined: `S5'.
-W: value out of range: 74, allowed range is [0,15] (trimmed to 4 bits) which makes it 10.
+W: value out of range: 0x4a, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xa.
 3AB 202EE       2076                               CALL LCD_write_data
 3AC 00150       2077                               LOAD s5, character_i
 E: symbol not defined: `S5'.
-W: value out of range: 69, allowed range is [0,15] (trimmed to 4 bits) which makes it 5.
+W: value out of range: 0x45, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
 3AD 202EE       2078                               CALL LCD_write_data
 3AE 00110       2079                               LOAD s5, character_o
 E: symbol not defined: `S5'.
@@ -2761,28 +2761,28 @@ E: symbol not defined: `CHARACTER_N'.
                 2090                               ;
 3B3 00190       2091                  disp_Passed: LOAD s5, 25                              ;Line 2 position 5
 E: symbol not defined: `S5'.
-W: value out of range: 25, allowed range is [0,15] (trimmed to 4 bits) which makes it 9.
+W: value out of range: 0x19, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x9.
 3B4 2032B       2092                               CALL LCD_cursor
 3B5 00160       2093                               LOAD s5, character_P
 E: symbol not defined: `S5'.
-W: value out of range: 70, allowed range is [0,15] (trimmed to 4 bits) which makes it 6.
+W: value out of range: 0x46, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x6.
 3B6 202EE       2094                               CALL LCD_write_data
 3B7 001D0       2095                               LOAD s5, character_a
 E: symbol not defined: `S5'.
-W: value out of range: 61, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
+W: value out of range: 0x3d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
 3B8 202EE       2096                               CALL LCD_write_data
 3B9 00190       2097                               LOAD s5, character_s
 E: symbol not defined: `S5'.
-W: value out of range: 73, allowed range is [0,15] (trimmed to 4 bits) which makes it 9.
+W: value out of range: 0x49, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x9.
 3BA 202EE       2098                               CALL LCD_write_data
 3BB 202EE       2099                               CALL LCD_write_data
 3BC 00110       2100                               LOAD s5, character_e
 E: symbol not defined: `S5'.
-W: value out of range: 65, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
+W: value out of range: 0x41, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
 3BD 202EE       2101                               CALL LCD_write_data
 3BE 00100       2102                               LOAD s5, character_d
 E: symbol not defined: `S5'.
-W: value out of range: 64, allowed range is [0,15] (trimmed to 4 bits) which makes it 0.
+W: value out of range: 0x40, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x0.
 3BF 202EE       2103                               CALL LCD_write_data
 3C0 25000       2104                               RETURN
                 2105                               ;
@@ -2795,19 +2795,19 @@ W: value out of range: 64, allowed range is [0,15] (trimmed to 4 bits) which mak
                 2112                               ;
 3C1 00190       2113                  disp_Failed: LOAD s5, 25                              ;Line 2 position 5
 E: symbol not defined: `S5'.
-W: value out of range: 25, allowed range is [0,15] (trimmed to 4 bits) which makes it 9.
+W: value out of range: 0x19, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x9.
 3C2 2032B       2114                               CALL LCD_cursor
 3C3 00120       2115                               LOAD s5, character_F
 E: symbol not defined: `S5'.
-W: value out of range: 66, allowed range is [0,15] (trimmed to 4 bits) which makes it 2.
+W: value out of range: 0x42, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x2.
 3C4 202EE       2116                               CALL LCD_write_data
 3C5 001D0       2117                               LOAD s5, character_a
 E: symbol not defined: `S5'.
-W: value out of range: 61, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
+W: value out of range: 0x3d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
 3C6 202EE       2118                               CALL LCD_write_data
 3C7 00150       2119                               LOAD s5, character_i
 E: symbol not defined: `S5'.
-W: value out of range: 69, allowed range is [0,15] (trimmed to 4 bits) which makes it 5.
+W: value out of range: 0x45, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
 3C8 202EE       2120                               CALL LCD_write_data
 3C9 00110       2121                               LOAD s5, character_l
 E: symbol not defined: `S5'.
@@ -2815,11 +2815,11 @@ E: symbol not defined: `CHARACTER_L'.
 3CA 202EE       2122                               CALL LCD_write_data
 3CB 00110       2123                               LOAD s5, character_e
 E: symbol not defined: `S5'.
-W: value out of range: 65, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
+W: value out of range: 0x41, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
 3CC 202EE       2124                               CALL LCD_write_data
 3CD 00100       2125                               LOAD s5, character_d
 E: symbol not defined: `S5'.
-W: value out of range: 64, allowed range is [0,15] (trimmed to 4 bits) which makes it 0.
+W: value out of range: 0x40, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x0.
 3CE 202EE       2126                               CALL LCD_write_data
 3CF 25000       2127                               RETURN
                 2128                               ;
@@ -2840,22 +2840,22 @@ E: symbol not defined: `S0'.
 E: symbol not defined: `AUTHENTICATION_STATUS'.
 3D2 1C160       2141                               COMPARE s0, character_P                  ;test for pass 'P' or fail 'F'
 E: symbol not defined: `S0'.
-W: value out of range: 70, allowed range is [0,15] (trimmed to 4 bits) which makes it 6.
+W: value out of range: 0x46, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x6.
 3D3 323DD       2142                               JUMP Z, pass_token
                 2143                               ;
 3D4 00120       2144                               LOAD s0, character_F                     ;send FAIL to link FIFO
 E: symbol not defined: `S0'.
-W: value out of range: 66, allowed range is [0,15] (trimmed to 4 bits) which makes it 2.
+W: value out of range: 0x42, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x2.
 3D5 2D104       2145                               OUTPUT s0, link_FIFO_write_port
 E: symbol not defined: `S0'.
 3D6 001D0       2146                               LOAD s0, character_A
 E: symbol not defined: `S0'.
-W: value out of range: 61, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
+W: value out of range: 0x3d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
 3D7 2D104       2147                               OUTPUT s0, link_FIFO_write_port
 E: symbol not defined: `S0'.
 3D8 00150       2148                               LOAD s0, character_I
 E: symbol not defined: `S0'.
-W: value out of range: 69, allowed range is [0,15] (trimmed to 4 bits) which makes it 5.
+W: value out of range: 0x45, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
 3D9 2D104       2149                               OUTPUT s0, link_FIFO_write_port
 E: symbol not defined: `S0'.
 3DA 00110       2150                               LOAD s0, character_L
@@ -2869,12 +2869,12 @@ E: symbol not defined: `S0'.
 E: symbol not defined: `S0'.
 3DE 001D0       2155                               LOAD s0, character_A
 E: symbol not defined: `S0'.
-W: value out of range: 61, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
+W: value out of range: 0x3d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
 3DF 2D104       2156                               OUTPUT s0, link_FIFO_write_port
 E: symbol not defined: `S0'.
 3E0 00190       2157                               LOAD s0, character_S
 E: symbol not defined: `S0'.
-W: value out of range: 73, allowed range is [0,15] (trimmed to 4 bits) which makes it 9.
+W: value out of range: 0x49, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x9.
 3E1 2D104       2158                               OUTPUT s0, link_FIFO_write_port
 E: symbol not defined: `S0'.
 3E2 2D104       2159                               OUTPUT s0, link_FIFO_write_port

@@ -203,16 +203,16 @@ E: symbol not defined: `S0'.
                  140     ; temp = k[i - 1]
 035 001C0        141                         LOAD        s4, key + 12        ; get last word of previous key
 E: symbol not defined: `S4'.
-W: value out of range: 28, allowed range is [0,15] (trimmed to 4 bits) which makes it 12.
+W: value out of range: 0x1c, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xc.
 036 001D0        142                         LOAD        s5, key + 13
 E: symbol not defined: `S5'.
-W: value out of range: 29, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
+W: value out of range: 0x1d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
 037 001E0        143                         LOAD        s6, key + 14
 E: symbol not defined: `S6'.
-W: value out of range: 30, allowed range is [0,15] (trimmed to 4 bits) which makes it 14.
+W: value out of range: 0x1e, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xe.
 038 001F0        144                         LOAD        s7, key + 15
 E: symbol not defined: `S7'.
-W: value out of range: 31, allowed range is [0,15] (trimmed to 4 bits) which makes it 15.
+W: value out of range: 0x1f, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xf.
                  145
 039 09101        146                         INPUT      s8, s4              ; RotWord
 E: symbol not defined: `S8'.
@@ -436,16 +436,16 @@ E: symbol not defined: `G'.
                  275     ShiftRows:
 095 00110        276                         LOAD        s7, state + 1
 E: symbol not defined: `S7'.
-W: value out of range: 17, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
+W: value out of range: 0x11, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
 096 00150        277                         LOAD        s4, state + 1 + 4
 E: symbol not defined: `S4'.
-W: value out of range: 21, allowed range is [0,15] (trimmed to 4 bits) which makes it 5.
+W: value out of range: 0x15, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
 097 00190        278                         LOAD        s5, state + 1 + 4 + 4
 E: symbol not defined: `S5'.
-W: value out of range: 25, allowed range is [0,15] (trimmed to 4 bits) which makes it 9.
+W: value out of range: 0x19, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x9.
 098 001D0        279                         LOAD        s6, state + 1 + 4 + 4 + 4
 E: symbol not defined: `S6'.
-W: value out of range: 29, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
+W: value out of range: 0x1d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
 099 2F111        280                         STORE        s4, state + 1
 E: symbol not defined: `S4'.
 09A 2F115        281                         STORE        s5, state + 1 + 4
@@ -457,16 +457,16 @@ E: symbol not defined: `S7'.
                  284
 09D 00120        285                         LOAD        s6, state + 2
 E: symbol not defined: `S6'.
-W: value out of range: 18, allowed range is [0,15] (trimmed to 4 bits) which makes it 2.
+W: value out of range: 0x12, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x2.
 09E 00160        286                         LOAD        s7, state + 2 + 4
 E: symbol not defined: `S7'.
-W: value out of range: 22, allowed range is [0,15] (trimmed to 4 bits) which makes it 6.
+W: value out of range: 0x16, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x6.
 09F 001A0        287                         LOAD        s4, state + 2 + 4 + 4
 E: symbol not defined: `S4'.
-W: value out of range: 26, allowed range is [0,15] (trimmed to 4 bits) which makes it 10.
+W: value out of range: 0x1a, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xa.
 0A0 001E0        288                         LOAD        s5, state + 2 + 4 + 4 + 4
 E: symbol not defined: `S5'.
-W: value out of range: 30, allowed range is [0,15] (trimmed to 4 bits) which makes it 14.
+W: value out of range: 0x1e, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xe.
 0A1 2F112        289                         STORE        s4, state + 2
 E: symbol not defined: `S4'.
 0A2 2F116        290                         STORE        s5, state + 2 + 4
@@ -478,16 +478,16 @@ E: symbol not defined: `S7'.
                  293
 0A5 00130        294                         LOAD        s5, state + 3
 E: symbol not defined: `S5'.
-W: value out of range: 19, allowed range is [0,15] (trimmed to 4 bits) which makes it 3.
+W: value out of range: 0x13, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x3.
 0A6 00170        295                         LOAD        s6, state + 3 + 4
 E: symbol not defined: `S6'.
-W: value out of range: 23, allowed range is [0,15] (trimmed to 4 bits) which makes it 7.
+W: value out of range: 0x17, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x7.
 0A7 001B0        296                         LOAD        s7, state + 3 + 4 + 4
 E: symbol not defined: `S7'.
-W: value out of range: 27, allowed range is [0,15] (trimmed to 4 bits) which makes it 11.
+W: value out of range: 0x1b, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xb.
 0A8 001F0        297                         LOAD        s4, state + 3 + 4 + 4 + 4
 E: symbol not defined: `S4'.
-W: value out of range: 31, allowed range is [0,15] (trimmed to 4 bits) which makes it 15.
+W: value out of range: 0x1f, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xf.
 0A9 2F113        298                         STORE        s4, state + 3
 E: symbol not defined: `S4'.
 0AA 2F117        299                         STORE        s5, state + 3 + 4
@@ -504,16 +504,16 @@ E: symbol not defined: `S7'.
                  307
 0AE 00100        308                         LOAD        s4, state + 0
 E: symbol not defined: `S4'.
-W: value out of range: 16, allowed range is [0,15] (trimmed to 4 bits) which makes it 0.
+W: value out of range: 0x10, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x0.
 0AF 00110        309                         LOAD        s5, state + 1
 E: symbol not defined: `S5'.
-W: value out of range: 17, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
+W: value out of range: 0x11, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
 0B0 00120        310                         LOAD        s6, state + 2
 E: symbol not defined: `S6'.
-W: value out of range: 18, allowed range is [0,15] (trimmed to 4 bits) which makes it 2.
+W: value out of range: 0x12, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x2.
 0B1 00130        311                         LOAD        s7, state + 3
 E: symbol not defined: `S7'.
-W: value out of range: 19, allowed range is [0,15] (trimmed to 4 bits) which makes it 3.
+W: value out of range: 0x13, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x3.
 0B2 200D3        312                         CALL      MixColumn
 0B3 2F110        313                         STORE        s4, state + 0
 E: symbol not defined: `S4'.
@@ -526,16 +526,16 @@ E: symbol not defined: `S7'.
                  317
 0B7 00140        318                         LOAD        s4, state + 0 + 4
 E: symbol not defined: `S4'.
-W: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+W: value out of range: 0x14, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
 0B8 00150        319                         LOAD        s5, state + 1 + 4
 E: symbol not defined: `S5'.
-W: value out of range: 21, allowed range is [0,15] (trimmed to 4 bits) which makes it 5.
+W: value out of range: 0x15, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
 0B9 00160        320                         LOAD        s6, state + 2 + 4
 E: symbol not defined: `S6'.
-W: value out of range: 22, allowed range is [0,15] (trimmed to 4 bits) which makes it 6.
+W: value out of range: 0x16, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x6.
 0BA 00170        321                         LOAD        s7, state + 3 + 4
 E: symbol not defined: `S7'.
-W: value out of range: 23, allowed range is [0,15] (trimmed to 4 bits) which makes it 7.
+W: value out of range: 0x17, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x7.
 0BB 200D3        322                         CALL      MixColumn
 0BC 2F114        323                         STORE        s4, state + 0 + 4
 E: symbol not defined: `S4'.
@@ -548,16 +548,16 @@ E: symbol not defined: `S7'.
                  327
 0C0 00180        328                         LOAD        s4, state + 0 + 4 + 4
 E: symbol not defined: `S4'.
-W: value out of range: 24, allowed range is [0,15] (trimmed to 4 bits) which makes it 8.
+W: value out of range: 0x18, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x8.
 0C1 00190        329                         LOAD        s5, state + 1 + 4 + 4
 E: symbol not defined: `S5'.
-W: value out of range: 25, allowed range is [0,15] (trimmed to 4 bits) which makes it 9.
+W: value out of range: 0x19, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x9.
 0C2 001A0        330                         LOAD        s6, state + 2 + 4 + 4
 E: symbol not defined: `S6'.
-W: value out of range: 26, allowed range is [0,15] (trimmed to 4 bits) which makes it 10.
+W: value out of range: 0x1a, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xa.
 0C3 001B0        331                         LOAD        s7, state + 3 + 4 + 4
 E: symbol not defined: `S7'.
-W: value out of range: 27, allowed range is [0,15] (trimmed to 4 bits) which makes it 11.
+W: value out of range: 0x1b, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xb.
 0C4 200D3        332                         CALL      MixColumn
 0C5 2F118        333                         STORE        s4, state + 0 + 4 + 4
 E: symbol not defined: `S4'.
@@ -570,16 +570,16 @@ E: symbol not defined: `S7'.
                  337
 0C9 001C0        338                         LOAD        s4, state + 0 + 4 + 4 + 4
 E: symbol not defined: `S4'.
-W: value out of range: 28, allowed range is [0,15] (trimmed to 4 bits) which makes it 12.
+W: value out of range: 0x1c, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xc.
 0CA 001D0        339                         LOAD        s5, state + 1 + 4 + 4 + 4
 E: symbol not defined: `S5'.
-W: value out of range: 29, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
+W: value out of range: 0x1d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
 0CB 001E0        340                         LOAD        s6, state + 2 + 4 + 4 + 4
 E: symbol not defined: `S6'.
-W: value out of range: 30, allowed range is [0,15] (trimmed to 4 bits) which makes it 14.
+W: value out of range: 0x1e, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xe.
 0CC 001F0        341                         LOAD        s7, state + 3 + 4 + 4 + 4
 E: symbol not defined: `S7'.
-W: value out of range: 31, allowed range is [0,15] (trimmed to 4 bits) which makes it 15.
+W: value out of range: 0x1f, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xf.
 0CD 200D3        342                         CALL      MixColumn
 0CE 2F11C        343                         STORE        s4, state + 0 + 4 + 4 + 4
 E: symbol not defined: `S4'.

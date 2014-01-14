@@ -113,12 +113,12 @@ MT_WARNING: Warning: exact device not specified, using KCPSM6 by default.
 MT_ERROR: 030_example3.asm:292.32-292.34: Error: symbol not defined: `S0'.
 MT_ERROR: 030_example3.asm:293.34-293.36: Error: symbol not defined: `S0'.
 MT_ERROR: 030_example3.asm:294.32-294.34: Error: symbol not defined: `S0'.
-MT_WARNING: 030_example3.asm:294.36-294.47: Warning: value out of range: 70, allowed range is [0,15] (trimmed to 4 bits) which makes it 6.
+MT_WARNING: 030_example3.asm:294.36-294.47: Warning: value out of range: 0x46, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x6.
 MT_ERROR: 030_example3.asm:295.33-295.35: Error: symbol not defined: `S0'.
 MT_ERROR: 030_example3.asm:295.37-295.58: Error: symbol not defined: `AUTHENTICATION_STATUS'.
 MT_ERROR: 030_example3.asm:321.32-321.34: Error: symbol not defined: `S5'.
 MT_ERROR: 030_example3.asm:324.32-324.34: Error: symbol not defined: `S5'.
-MT_WARNING: 030_example3.asm:324.36-324.38: Warning: value out of range: 25, allowed range is [0,15] (trimmed to 4 bits) which makes it 9.
+MT_WARNING: 030_example3.asm:324.36-324.38: Warning: value out of range: 0x19, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x9.
 MT_ERROR: 030_example3.asm:384.32-384.34: Error: symbol not defined: `SE'.
 MT_ERROR: 030_example3.asm:390.33-390.35: Error: symbol not defined: `SD'.
 MT_ERROR: 030_example3.asm:391.33-391.35: Error: symbol not defined: `SE'.
@@ -138,12 +138,12 @@ MT_ERROR: 030_example3.asm:424.39-424.41: Error: symbol not defined: `SD'.
 MT_ERROR: 030_example3.asm:426.35-426.37: Error: symbol not defined: `SB'.
 MT_ERROR: 030_example3.asm:426.39-426.41: Error: symbol not defined: `SE'.
 MT_ERROR: 030_example3.asm:451.32-451.34: Error: symbol not defined: `S0'.
-MT_WARNING: 030_example3.asm:451.36-451.47: Warning: value out of range: 66, allowed range is [0,15] (trimmed to 4 bits) which makes it 2.
+MT_WARNING: 030_example3.asm:451.36-451.47: Warning: value out of range: 0x42, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x2.
 MT_ERROR: 030_example3.asm:452.33-452.35: Error: symbol not defined: `S0'.
 MT_ERROR: 030_example3.asm:452.37-452.58: Error: symbol not defined: `AUTHENTICATION_STATUS'.
-MT_WARNING: 030_example3.asm:461.46-461.57: Warning: value out of range: 72, allowed range is [0,15] (trimmed to 4 bits) which makes it 8.
-MT_WARNING: 030_example3.asm:463.46-463.57: Warning: value out of range: 65, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
-MT_WARNING: 030_example3.asm:465.46-465.57: Warning: value out of range: 61, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
+MT_WARNING: 030_example3.asm:461.46-461.57: Warning: value out of range: 0x48, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x8.
+MT_WARNING: 030_example3.asm:463.46-463.57: Warning: value out of range: 0x41, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
+MT_WARNING: 030_example3.asm:465.46-465.57: Warning: value out of range: 0x3d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
 MT_ERROR: 030_example3.asm:488.33-488.35: Error: symbol not defined: `SD'.
 MT_ERROR: 030_example3.asm:489.33-489.35: Error: symbol not defined: `SE'.
 MT_ERROR: 030_example3.asm:505.32-505.34: Error: symbol not defined: `S0'.
@@ -158,16 +158,16 @@ MT_ERROR: 030_example3.asm:521.32-521.34: Error: symbol not defined: `S5'.
 MT_ERROR: 030_example3.asm:528.32-528.34: Error: symbol not defined: `S0'.
 MT_ERROR: 030_example3.asm:529.34-529.36: Error: symbol not defined: `S0'.
 MT_ERROR: 030_example3.asm:546.32-546.34: Error: symbol not defined: `S3'.
-MT_WARNING: 030_example3.asm:546.36-546.50: Warning: value out of range: 17, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
+MT_WARNING: 030_example3.asm:546.36-546.50: Warning: value out of range: 0x11, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
 MT_ERROR: 030_example3.asm:547.33-547.35: Error: symbol not defined: `S0'.
 MT_ERROR: 030_example3.asm:547.38-547.40: Error: symbol not defined: `S3'.
 MT_ERROR: 030_example3.asm:550.35-550.37: Error: symbol not defined: `S3'.
 MT_ERROR: 030_example3.asm:552.31-552.33: Error: symbol not defined: `S3'.
 MT_ERROR: 030_example3.asm:572.32-572.34: Error: symbol not defined: `S5'.
 MT_ERROR: 030_example3.asm:575.32-575.34: Error: symbol not defined: `S5'.
-MT_WARNING: 030_example3.asm:575.36-575.38: Warning: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+MT_WARNING: 030_example3.asm:575.36-575.38: Warning: value out of range: 0x14, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
 MT_ERROR: 030_example3.asm:577.32-577.34: Error: symbol not defined: `S6'.
-MT_WARNING: 030_example3.asm:577.36-577.50: Warning: value out of range: 17, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
+MT_WARNING: 030_example3.asm:577.36-577.50: Warning: value out of range: 0x11, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
 MT_ERROR: 030_example3.asm:578.33-578.35: Error: symbol not defined: `S0'.
 MT_ERROR: 030_example3.asm:578.38-578.40: Error: symbol not defined: `S6'.
 MT_ERROR: 030_example3.asm:580.35-580.37: Error: symbol not defined: `S6'.
@@ -176,7 +176,7 @@ MT_ERROR: 030_example3.asm:609.32-609.34: Error: symbol not defined: `S4'.
 MT_ERROR: 030_example3.asm:610.33-610.35: Error: symbol not defined: `S3'.
 MT_ERROR: 030_example3.asm:610.38-610.40: Error: symbol not defined: `S4'.
 MT_ERROR: 030_example3.asm:612.35-612.37: Error: symbol not defined: `S4'.
-MT_WARNING: 030_example3.asm:612.39-612.53: Warning: value out of range: 17, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
+MT_WARNING: 030_example3.asm:612.39-612.53: Warning: value out of range: 0x11, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
 MT_ERROR: 030_example3.asm:614.31-614.33: Error: symbol not defined: `S4'.
 MT_ERROR: 030_example3.asm:639.32-639.34: Error: symbol not defined: `S1'.
 MT_ERROR: 030_example3.asm:640.32-640.34: Error: symbol not defined: `S0'.
@@ -186,7 +186,7 @@ MT_ERROR: 030_example3.asm:641.35-641.37: Error: symbol not defined: `S3'.
 MT_ERROR: 030_example3.asm:642.32-642.34: Error: symbol not defined: `S0'.
 MT_ERROR: 030_example3.asm:644.31-644.33: Error: symbol not defined: `SD'.
 MT_ERROR: 030_example3.asm:645.31-645.33: Error: symbol not defined: `SE'.
-MT_WARNING: 030_example3.asm:645.35-645.37: Warning: value out of range: 40, allowed range is [0,15] (trimmed to 4 bits) which makes it 8.
+MT_WARNING: 030_example3.asm:645.35-645.37: Warning: value out of range: 0x28, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x8.
 MT_ERROR: 030_example3.asm:646.31-646.33: Error: symbol not defined: `S0'.
 MT_ERROR: 030_example3.asm:647.31-647.33: Error: symbol not defined: `SE'.
 MT_ERROR: 030_example3.asm:648.31-648.33: Error: symbol not defined: `SD'.
@@ -201,7 +201,7 @@ MT_ERROR: 030_example3.asm:694.36-694.38: Error: symbol not defined: `S0'.
 MT_ERROR: 030_example3.asm:695.31-695.33: Error: symbol not defined: `SA'.
 MT_ERROR: 030_example3.asm:695.35-695.37: Error: symbol not defined: `F0'.
 MT_ERROR: 030_example3.asm:696.35-696.37: Error: symbol not defined: `S7'.
-MT_WARNING: 030_example3.asm:696.39-696.41: Warning: value out of range: 25, allowed range is [0,15] (trimmed to 4 bits) which makes it 9.
+MT_WARNING: 030_example3.asm:696.39-696.41: Warning: value out of range: 0x19, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x9.
 MT_ERROR: 030_example3.asm:697.36-697.47: Error: symbol not defined: `AUTH_CHECK3'.
 MT_ERROR: 030_example3.asm:698.32-698.34: Error: symbol not defined: `SB'.
 MT_ERROR: 030_example3.asm:698.36-698.38: Error: symbol not defined: `S0'.
@@ -234,7 +234,7 @@ MT_ERROR: 030_example3.asm:775.35-775.37: Error: symbol not defined: `F0'.
 MT_ERROR: 030_example3.asm:777.30-777.32: Error: symbol not defined: `S0'.
 MT_ERROR: 030_example3.asm:777.34-777.36: Error: symbol not defined: `S1'.
 MT_ERROR: 030_example3.asm:778.35-778.37: Error: symbol not defined: `S7'.
-MT_WARNING: 030_example3.asm:778.39-778.41: Warning: value out of range: 25, allowed range is [0,15] (trimmed to 4 bits) which makes it 9.
+MT_WARNING: 030_example3.asm:778.39-778.41: Warning: value out of range: 0x19, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x9.
 MT_ERROR: 030_example3.asm:779.36-779.53: Error: symbol not defined: `AUTH_WRITE_CHECK3'.
 MT_ERROR: 030_example3.asm:780.32-780.34: Error: symbol not defined: `S1'.
 MT_ERROR: 030_example3.asm:780.36-780.38: Error: symbol not defined: `SE'.
@@ -263,11 +263,11 @@ MT_ERROR: 030_example3.asm:826.34-826.36: Error: symbol not defined: `S0'.
 MT_ERROR: 030_example3.asm:850.32-850.34: Error: symbol not defined: `S8'.
 MT_ERROR: 030_example3.asm:851.32-851.34: Error: symbol not defined: `S7'.
 MT_ERROR: 030_example3.asm:852.32-852.34: Error: symbol not defined: `S1'.
-MT_WARNING: 030_example3.asm:852.36-852.38: Warning: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+MT_WARNING: 030_example3.asm:852.36-852.38: Warning: value out of range: 0x14, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
 MT_ERROR: 030_example3.asm:854.32-854.34: Error: symbol not defined: `S1'.
 MT_ERROR: 030_example3.asm:854.36-854.38: Error: symbol not defined: `D0'.
 MT_ERROR: 030_example3.asm:879.32-879.34: Error: symbol not defined: `S1'.
-MT_WARNING: 030_example3.asm:879.36-879.38: Warning: value out of range: 40, allowed range is [0,15] (trimmed to 4 bits) which makes it 8.
+MT_WARNING: 030_example3.asm:879.36-879.38: Warning: value out of range: 0x28, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x8.
 MT_ERROR: 030_example3.asm:881.32-881.34: Error: symbol not defined: `S1'.
 MT_ERROR: 030_example3.asm:881.36-881.38: Error: symbol not defined: `S0'.
 MT_ERROR: 030_example3.asm:904.32-904.34: Error: symbol not defined: `S9'.
@@ -275,11 +275,11 @@ MT_ERROR: 030_example3.asm:905.32-905.34: Error: symbol not defined: `S8'.
 MT_ERROR: 030_example3.asm:906.32-906.34: Error: symbol not defined: `S7'.
 MT_ERROR: 030_example3.asm:907.32-907.34: Error: symbol not defined: `S2'.
 MT_ERROR: 030_example3.asm:908.32-908.34: Error: symbol not defined: `S1'.
-MT_WARNING: 030_example3.asm:908.36-908.38: Warning: value out of range: 90, allowed range is [0,15] (trimmed to 4 bits) which makes it 10.
+MT_WARNING: 030_example3.asm:908.36-908.38: Warning: value out of range: 0x5a, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xa.
 MT_ERROR: 030_example3.asm:911.33-911.35: Error: symbol not defined: `S0'.
 MT_ERROR: 030_example3.asm:911.38-911.40: Error: symbol not defined: `S2'.
 MT_ERROR: 030_example3.asm:912.35-912.37: Error: symbol not defined: `S2'.
-MT_WARNING: 030_example3.asm:912.39-912.53: Warning: value out of range: 17, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
+MT_WARNING: 030_example3.asm:912.39-912.53: Warning: value out of range: 0x11, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
 MT_ERROR: 030_example3.asm:914.31-914.33: Error: symbol not defined: `S7'.
 MT_ERROR: 030_example3.asm:915.31-915.33: Error: symbol not defined: `S2'.
 MT_ERROR: 030_example3.asm:942.34-942.36: Error: symbol not defined: `S9'.
@@ -303,12 +303,12 @@ MT_ERROR: 030_example3.asm:981.34-981.36: Error: symbol not defined: `S1'.
 MT_ERROR: 030_example3.asm:999.32-999.34: Error: symbol not defined: `S1'.
 MT_ERROR: 030_example3.asm:999.36-999.38: Error: symbol not defined: `FF'.
 MT_ERROR: 030_example3.asm:1019.32-1019.34: Error: symbol not defined: `S0'.
-MT_WARNING: 030_example3.asm:1019.36-1019.38: Warning: value out of range: 80, allowed range is [0,15] (trimmed to 4 bits) which makes it 0.
+MT_WARNING: 030_example3.asm:1019.36-1019.38: Warning: value out of range: 0x50, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x0.
 MT_ERROR: 030_example3.asm:1043.33-1043.35: Error: symbol not defined: `S0'.
 MT_ERROR: 030_example3.asm:1044.32-1044.34: Error: symbol not defined: `S0'.
 MT_ERROR: 030_example3.asm:1061.33-1061.35: Error: symbol not defined: `S0'.
 MT_ERROR: 030_example3.asm:1062.32-1062.34: Error: symbol not defined: `S0'.
-MT_WARNING: 030_example3.asm:1085.46-1085.48: Warning: value out of range: 61, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
+MT_WARNING: 030_example3.asm:1085.46-1085.48: Warning: value out of range: 0x3d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
 MT_ERROR: 030_example3.asm:1089.42-1089.44: Error: symbol not defined: `DF'.
 MT_ERROR: 030_example3.asm:1106.32-1106.34: Error: symbol not defined: `S1'.
 MT_ERROR: 030_example3.asm:1106.36-1106.38: Error: symbol not defined: `S0'.
@@ -340,157 +340,157 @@ MT_ERROR: 030_example3.asm:1161.32-1161.34: Error: symbol not defined: `S5'.
 MT_ERROR: 030_example3.asm:1161.36-1161.38: Error: symbol not defined: `S2'.
 MT_ERROR: 030_example3.asm:1163.32-1163.34: Error: symbol not defined: `S5'.
 MT_ERROR: 030_example3.asm:1163.36-1163.38: Error: symbol not defined: `S3'.
-MT_WARNING: 030_example3.asm:1182.43-1182.58: Warning: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
-MT_WARNING: 030_example3.asm:1210.43-1210.54: Warning: value out of range: 70, allowed range is [0,15] (trimmed to 4 bits) which makes it 6.
-MT_WARNING: 030_example3.asm:1212.43-1212.54: Warning: value out of range: 69, allowed range is [0,15] (trimmed to 4 bits) which makes it 5.
-MT_WARNING: 030_example3.asm:1214.43-1214.54: Warning: value out of range: 63, allowed range is [0,15] (trimmed to 4 bits) which makes it 15.
+MT_WARNING: 030_example3.asm:1182.43-1182.58: Warning: value out of range: 0x14, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
+MT_WARNING: 030_example3.asm:1210.43-1210.54: Warning: value out of range: 0x46, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x6.
+MT_WARNING: 030_example3.asm:1212.43-1212.54: Warning: value out of range: 0x45, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
+MT_WARNING: 030_example3.asm:1214.43-1214.54: Warning: value out of range: 0x3f, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xf.
 MT_ERROR: 030_example3.asm:1216.43-1216.54: Error: symbol not defined: `CHARACTER_O'.
-MT_WARNING: 030_example3.asm:1218.43-1218.54: Warning: value out of range: 62, allowed range is [0,15] (trimmed to 4 bits) which makes it 14.
+MT_WARNING: 030_example3.asm:1218.43-1218.54: Warning: value out of range: 0x3e, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xe.
 MT_ERROR: 030_example3.asm:1220.43-1220.54: Error: symbol not defined: `CHARACTER_L'.
-MT_WARNING: 030_example3.asm:1222.43-1222.54: Warning: value out of range: 61, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
+MT_WARNING: 030_example3.asm:1222.43-1222.54: Warning: value out of range: 0x3d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
 MT_ERROR: 030_example3.asm:1224.43-1224.54: Error: symbol not defined: `CHARACTER_Z'.
-MT_WARNING: 030_example3.asm:1226.43-1226.54: Warning: value out of range: 65, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
+MT_WARNING: 030_example3.asm:1226.43-1226.54: Warning: value out of range: 0x41, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
 MT_ERROR: 030_example3.asm:1229.43-1229.54: Error: symbol not defined: `CHARACTER_L'.
 MT_ERROR: 030_example3.asm:1231.43-1231.54: Error: symbol not defined: `CHARACTER_O'.
-MT_WARNING: 030_example3.asm:1233.43-1233.54: Warning: value out of range: 77, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
-MT_WARNING: 030_example3.asm:1236.43-1236.54: Warning: value out of range: 63, allowed range is [0,15] (trimmed to 4 bits) which makes it 15.
+MT_WARNING: 030_example3.asm:1233.43-1233.54: Warning: value out of range: 0x4d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
+MT_WARNING: 030_example3.asm:1236.43-1236.54: Warning: value out of range: 0x3f, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xf.
 MT_ERROR: 030_example3.asm:1238.43-1238.54: Error: symbol not defined: `CHARACTER_O'.
-MT_WARNING: 030_example3.asm:1240.43-1240.54: Warning: value out of range: 73, allowed range is [0,15] (trimmed to 4 bits) which makes it 9.
-MT_WARNING: 030_example3.asm:1242.43-1242.54: Warning: value out of range: 74, allowed range is [0,15] (trimmed to 4 bits) which makes it 10.
-MT_WARNING: 030_example3.asm:1245.43-1245.54: Warning: value out of range: 64, allowed range is [0,15] (trimmed to 4 bits) which makes it 0.
-MT_WARNING: 030_example3.asm:1247.43-1247.54: Warning: value out of range: 65, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
-MT_WARNING: 030_example3.asm:1249.43-1249.54: Warning: value out of range: 73, allowed range is [0,15] (trimmed to 4 bits) which makes it 9.
-MT_WARNING: 030_example3.asm:1251.43-1251.54: Warning: value out of range: 69, allowed range is [0,15] (trimmed to 4 bits) which makes it 5.
-MT_WARNING: 030_example3.asm:1253.43-1253.54: Warning: value out of range: 67, allowed range is [0,15] (trimmed to 4 bits) which makes it 3.
+MT_WARNING: 030_example3.asm:1240.43-1240.54: Warning: value out of range: 0x49, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x9.
+MT_WARNING: 030_example3.asm:1242.43-1242.54: Warning: value out of range: 0x4a, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xa.
+MT_WARNING: 030_example3.asm:1245.43-1245.54: Warning: value out of range: 0x40, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x0.
+MT_WARNING: 030_example3.asm:1247.43-1247.54: Warning: value out of range: 0x41, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
+MT_WARNING: 030_example3.asm:1249.43-1249.54: Warning: value out of range: 0x49, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x9.
+MT_WARNING: 030_example3.asm:1251.43-1251.54: Warning: value out of range: 0x45, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
+MT_WARNING: 030_example3.asm:1253.43-1253.54: Warning: value out of range: 0x43, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x3.
 MT_ERROR: 030_example3.asm:1255.43-1255.54: Error: symbol not defined: `CHARACTER_N'.
-MT_WARNING: 030_example3.asm:1258.43-1258.54: Warning: value out of range: 73, allowed range is [0,15] (trimmed to 4 bits) which makes it 9.
-MT_WARNING: 030_example3.asm:1260.43-1260.54: Warning: value out of range: 65, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
-MT_WARNING: 030_example3.asm:1262.43-1262.54: Warning: value out of range: 63, allowed range is [0,15] (trimmed to 4 bits) which makes it 15.
-MT_WARNING: 030_example3.asm:1264.43-1264.54: Warning: value out of range: 75, allowed range is [0,15] (trimmed to 4 bits) which makes it 11.
-MT_WARNING: 030_example3.asm:1266.43-1266.54: Warning: value out of range: 72, allowed range is [0,15] (trimmed to 4 bits) which makes it 8.
-MT_WARNING: 030_example3.asm:1268.43-1268.54: Warning: value out of range: 69, allowed range is [0,15] (trimmed to 4 bits) which makes it 5.
-MT_WARNING: 030_example3.asm:1270.43-1270.54: Warning: value out of range: 74, allowed range is [0,15] (trimmed to 4 bits) which makes it 10.
-MT_WARNING: 030_example3.asm:1272.43-1272.54: Warning: value out of range: 79, allowed range is [0,15] (trimmed to 4 bits) which makes it 15.
-MT_WARNING: 030_example3.asm:1275.43-1275.54: Warning: value out of range: 76, allowed range is [0,15] (trimmed to 4 bits) which makes it 12.
-MT_WARNING: 030_example3.asm:1277.43-1277.54: Warning: value out of range: 31, allowed range is [0,15] (trimmed to 4 bits) which makes it 15.
+MT_WARNING: 030_example3.asm:1258.43-1258.54: Warning: value out of range: 0x49, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x9.
+MT_WARNING: 030_example3.asm:1260.43-1260.54: Warning: value out of range: 0x41, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
+MT_WARNING: 030_example3.asm:1262.43-1262.54: Warning: value out of range: 0x3f, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xf.
+MT_WARNING: 030_example3.asm:1264.43-1264.54: Warning: value out of range: 0x4b, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xb.
+MT_WARNING: 030_example3.asm:1266.43-1266.54: Warning: value out of range: 0x48, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x8.
+MT_WARNING: 030_example3.asm:1268.43-1268.54: Warning: value out of range: 0x45, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
+MT_WARNING: 030_example3.asm:1270.43-1270.54: Warning: value out of range: 0x4a, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xa.
+MT_WARNING: 030_example3.asm:1272.43-1272.54: Warning: value out of range: 0x4f, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xf.
+MT_WARNING: 030_example3.asm:1275.43-1275.54: Warning: value out of range: 0x4c, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xc.
+MT_WARNING: 030_example3.asm:1277.43-1277.54: Warning: value out of range: 0x1f, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xf.
 MT_ERROR: 030_example3.asm:1279.43-1279.61: Error: symbol not defined: `CHARACTER_FULLSTOP'.
-MT_WARNING: 030_example3.asm:1281.43-1281.54: Warning: value out of range: 30, allowed range is [0,15] (trimmed to 4 bits) which makes it 14.
-MT_WARNING: 030_example3.asm:1283.43-1283.54: Warning: value out of range: 30, allowed range is [0,15] (trimmed to 4 bits) which makes it 14.
-MT_WARNING: 030_example3.asm:1301.43-1301.54: Warning: value out of range: 63, allowed range is [0,15] (trimmed to 4 bits) which makes it 15.
+MT_WARNING: 030_example3.asm:1281.43-1281.54: Warning: value out of range: 0x1e, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xe.
+MT_WARNING: 030_example3.asm:1283.43-1283.54: Warning: value out of range: 0x1e, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xe.
+MT_WARNING: 030_example3.asm:1301.43-1301.54: Warning: value out of range: 0x3f, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xf.
 MT_ERROR: 030_example3.asm:1303.43-1303.54: Error: symbol not defined: `CHARACTER_O'.
-MT_WARNING: 030_example3.asm:1305.43-1305.54: Warning: value out of range: 70, allowed range is [0,15] (trimmed to 4 bits) which makes it 6.
-MT_WARNING: 030_example3.asm:1307.43-1307.54: Warning: value out of range: 79, allowed range is [0,15] (trimmed to 4 bits) which makes it 15.
-MT_WARNING: 030_example3.asm:1309.43-1309.54: Warning: value out of range: 72, allowed range is [0,15] (trimmed to 4 bits) which makes it 8.
-MT_WARNING: 030_example3.asm:1311.43-1311.54: Warning: value out of range: 69, allowed range is [0,15] (trimmed to 4 bits) which makes it 5.
-MT_WARNING: 030_example3.asm:1313.43-1313.54: Warning: value out of range: 67, allowed range is [0,15] (trimmed to 4 bits) which makes it 3.
-MT_WARNING: 030_example3.asm:1315.43-1315.54: Warning: value out of range: 68, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
-MT_WARNING: 030_example3.asm:1317.43-1317.54: Warning: value out of range: 74, allowed range is [0,15] (trimmed to 4 bits) which makes it 10.
+MT_WARNING: 030_example3.asm:1305.43-1305.54: Warning: value out of range: 0x46, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x6.
+MT_WARNING: 030_example3.asm:1307.43-1307.54: Warning: value out of range: 0x4f, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xf.
+MT_WARNING: 030_example3.asm:1309.43-1309.54: Warning: value out of range: 0x48, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x8.
+MT_WARNING: 030_example3.asm:1311.43-1311.54: Warning: value out of range: 0x45, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
+MT_WARNING: 030_example3.asm:1313.43-1313.54: Warning: value out of range: 0x43, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x3.
+MT_WARNING: 030_example3.asm:1315.43-1315.54: Warning: value out of range: 0x44, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
+MT_WARNING: 030_example3.asm:1317.43-1317.54: Warning: value out of range: 0x4a, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xa.
 MT_ERROR: 030_example3.asm:1320.43-1320.54: Error: symbol not defined: `CHARACTER_K'.
-MT_WARNING: 030_example3.asm:1322.43-1322.54: Warning: value out of range: 65, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
+MT_WARNING: 030_example3.asm:1322.43-1322.54: Warning: value out of range: 0x41, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
 MT_ERROR: 030_example3.asm:1324.43-1324.54: Error: symbol not defined: `CHARACTER_N'.
-MT_WARNING: 030_example3.asm:1327.43-1327.54: Warning: value out of range: 63, allowed range is [0,15] (trimmed to 4 bits) which makes it 15.
-MT_WARNING: 030_example3.asm:1329.43-1329.54: Warning: value out of range: 68, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
-MT_WARNING: 030_example3.asm:1331.43-1331.54: Warning: value out of range: 61, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
-MT_WARNING: 030_example3.asm:1333.43-1333.54: Warning: value out of range: 70, allowed range is [0,15] (trimmed to 4 bits) which makes it 6.
-MT_WARNING: 030_example3.asm:1337.43-1337.54: Warning: value out of range: 61, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
+MT_WARNING: 030_example3.asm:1327.43-1327.54: Warning: value out of range: 0x3f, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xf.
+MT_WARNING: 030_example3.asm:1329.43-1329.54: Warning: value out of range: 0x44, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
+MT_WARNING: 030_example3.asm:1331.43-1331.54: Warning: value out of range: 0x3d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
+MT_WARNING: 030_example3.asm:1333.43-1333.54: Warning: value out of range: 0x46, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x6.
+MT_WARNING: 030_example3.asm:1337.43-1337.54: Warning: value out of range: 0x3d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
 MT_ERROR: 030_example3.asm:1339.43-1339.54: Error: symbol not defined: `CHARACTER_N'.
-MT_WARNING: 030_example3.asm:1342.43-1342.54: Warning: value out of range: 32, allowed range is [0,15] (trimmed to 4 bits) which makes it 0.
-MT_WARNING: 030_example3.asm:1344.43-1344.54: Warning: value out of range: 30, allowed range is [0,15] (trimmed to 4 bits) which makes it 14.
-MT_WARNING: 030_example3.asm:1347.43-1347.54: Warning: value out of range: 36, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
-MT_WARNING: 030_example3.asm:1357.43-1357.54: Warning: value out of range: 66, allowed range is [0,15] (trimmed to 4 bits) which makes it 2.
+MT_WARNING: 030_example3.asm:1342.43-1342.54: Warning: value out of range: 0x20, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x0.
+MT_WARNING: 030_example3.asm:1344.43-1344.54: Warning: value out of range: 0x1e, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xe.
+MT_WARNING: 030_example3.asm:1347.43-1347.54: Warning: value out of range: 0x24, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
+MT_WARNING: 030_example3.asm:1357.43-1357.54: Warning: value out of range: 0x42, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x2.
 MT_ERROR: 030_example3.asm:1359.43-1359.54: Error: symbol not defined: `CHARACTER_L'.
-MT_WARNING: 030_example3.asm:1361.43-1361.54: Warning: value out of range: 61, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
-MT_WARNING: 030_example3.asm:1363.43-1363.54: Warning: value out of range: 73, allowed range is [0,15] (trimmed to 4 bits) which makes it 9.
-MT_WARNING: 030_example3.asm:1365.43-1365.54: Warning: value out of range: 68, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
-MT_WARNING: 030_example3.asm:1375.43-1375.54: Warning: value out of range: 73, allowed range is [0,15] (trimmed to 4 bits) which makes it 9.
-MT_WARNING: 030_example3.asm:1377.43-1377.54: Warning: value out of range: 65, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
-MT_WARNING: 030_example3.asm:1379.43-1379.54: Warning: value out of range: 72, allowed range is [0,15] (trimmed to 4 bits) which makes it 8.
-MT_WARNING: 030_example3.asm:1381.43-1381.54: Warning: value out of range: 69, allowed range is [0,15] (trimmed to 4 bits) which makes it 5.
-MT_WARNING: 030_example3.asm:1383.43-1383.54: Warning: value out of range: 61, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
+MT_WARNING: 030_example3.asm:1361.43-1361.54: Warning: value out of range: 0x3d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
+MT_WARNING: 030_example3.asm:1363.43-1363.54: Warning: value out of range: 0x49, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x9.
+MT_WARNING: 030_example3.asm:1365.43-1365.54: Warning: value out of range: 0x44, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
+MT_WARNING: 030_example3.asm:1375.43-1375.54: Warning: value out of range: 0x49, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x9.
+MT_WARNING: 030_example3.asm:1377.43-1377.54: Warning: value out of range: 0x41, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
+MT_WARNING: 030_example3.asm:1379.43-1379.54: Warning: value out of range: 0x48, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x8.
+MT_WARNING: 030_example3.asm:1381.43-1381.54: Warning: value out of range: 0x45, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
+MT_WARNING: 030_example3.asm:1383.43-1383.54: Warning: value out of range: 0x3d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
 MT_ERROR: 030_example3.asm:1385.43-1385.54: Error: symbol not defined: `CHARACTER_L'.
 MT_ERROR: 030_example3.asm:1388.43-1388.54: Error: symbol not defined: `CHARACTER_N'.
-MT_WARNING: 030_example3.asm:1390.43-1390.54: Warning: value out of range: 75, allowed range is [0,15] (trimmed to 4 bits) which makes it 11.
-MT_WARNING: 030_example3.asm:1394.43-1394.54: Warning: value out of range: 62, allowed range is [0,15] (trimmed to 4 bits) which makes it 14.
-MT_WARNING: 030_example3.asm:1396.43-1396.54: Warning: value out of range: 65, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
-MT_WARNING: 030_example3.asm:1398.43-1398.54: Warning: value out of range: 72, allowed range is [0,15] (trimmed to 4 bits) which makes it 8.
-MT_WARNING: 030_example3.asm:1406.43-1406.54: Warning: value out of range: 61, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
-MT_WARNING: 030_example3.asm:1408.43-1408.54: Warning: value out of range: 75, allowed range is [0,15] (trimmed to 4 bits) which makes it 11.
-MT_WARNING: 030_example3.asm:1410.43-1410.54: Warning: value out of range: 74, allowed range is [0,15] (trimmed to 4 bits) which makes it 10.
-MT_WARNING: 030_example3.asm:1412.43-1412.54: Warning: value out of range: 68, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+MT_WARNING: 030_example3.asm:1390.43-1390.54: Warning: value out of range: 0x4b, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xb.
+MT_WARNING: 030_example3.asm:1394.43-1394.54: Warning: value out of range: 0x3e, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xe.
+MT_WARNING: 030_example3.asm:1396.43-1396.54: Warning: value out of range: 0x41, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
+MT_WARNING: 030_example3.asm:1398.43-1398.54: Warning: value out of range: 0x48, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x8.
+MT_WARNING: 030_example3.asm:1406.43-1406.54: Warning: value out of range: 0x3d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
+MT_WARNING: 030_example3.asm:1408.43-1408.54: Warning: value out of range: 0x4b, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xb.
+MT_WARNING: 030_example3.asm:1410.43-1410.54: Warning: value out of range: 0x4a, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xa.
+MT_WARNING: 030_example3.asm:1412.43-1412.54: Warning: value out of range: 0x44, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
 MT_ERROR: 030_example3.asm:1419.43-1419.54: Error: symbol not defined: `CHARACTER_O'.
-MT_WARNING: 030_example3.asm:1421.43-1421.54: Warning: value out of range: 72, allowed range is [0,15] (trimmed to 4 bits) which makes it 8.
-MT_WARNING: 030_example3.asm:1423.43-1423.54: Warning: value out of range: 69, allowed range is [0,15] (trimmed to 4 bits) which makes it 5.
-MT_WARNING: 030_example3.asm:1425.43-1425.54: Warning: value out of range: 73, allowed range is [0,15] (trimmed to 4 bits) which makes it 9.
-MT_WARNING: 030_example3.asm:1432.43-1432.54: Warning: value out of range: 61, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
-MT_WARNING: 030_example3.asm:1434.43-1434.54: Warning: value out of range: 74, allowed range is [0,15] (trimmed to 4 bits) which makes it 10.
-MT_WARNING: 030_example3.asm:1436.43-1436.54: Warning: value out of range: 69, allowed range is [0,15] (trimmed to 4 bits) which makes it 5.
+MT_WARNING: 030_example3.asm:1421.43-1421.54: Warning: value out of range: 0x48, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x8.
+MT_WARNING: 030_example3.asm:1423.43-1423.54: Warning: value out of range: 0x45, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
+MT_WARNING: 030_example3.asm:1425.43-1425.54: Warning: value out of range: 0x49, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x9.
+MT_WARNING: 030_example3.asm:1432.43-1432.54: Warning: value out of range: 0x3d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
+MT_WARNING: 030_example3.asm:1434.43-1434.54: Warning: value out of range: 0x4a, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xa.
+MT_WARNING: 030_example3.asm:1436.43-1436.54: Warning: value out of range: 0x45, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
 MT_ERROR: 030_example3.asm:1438.43-1438.54: Error: symbol not defined: `CHARACTER_O'.
 MT_ERROR: 030_example3.asm:1440.43-1440.54: Error: symbol not defined: `CHARACTER_N'.
-MT_WARNING: 030_example3.asm:1447.43-1447.54: Warning: value out of range: 65, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
-MT_WARNING: 030_example3.asm:1454.43-1454.54: Warning: value out of range: 65, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
+MT_WARNING: 030_example3.asm:1447.43-1447.54: Warning: value out of range: 0x41, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
+MT_WARNING: 030_example3.asm:1454.43-1454.54: Warning: value out of range: 0x41, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
 MT_ERROR: 030_example3.asm:1456.43-1456.54: Error: symbol not defined: `CHARACTER_N'.
-MT_WARNING: 030_example3.asm:1458.43-1458.54: Warning: value out of range: 74, allowed range is [0,15] (trimmed to 4 bits) which makes it 10.
-MT_WARNING: 030_example3.asm:1460.43-1460.54: Warning: value out of range: 69, allowed range is [0,15] (trimmed to 4 bits) which makes it 5.
-MT_WARNING: 030_example3.asm:1462.43-1462.54: Warning: value out of range: 63, allowed range is [0,15] (trimmed to 4 bits) which makes it 15.
-MT_WARNING: 030_example3.asm:1464.43-1464.54: Warning: value out of range: 61, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
-MT_WARNING: 030_example3.asm:1466.43-1466.54: Warning: value out of range: 74, allowed range is [0,15] (trimmed to 4 bits) which makes it 10.
-MT_WARNING: 030_example3.asm:1468.43-1468.54: Warning: value out of range: 69, allowed range is [0,15] (trimmed to 4 bits) which makes it 5.
+MT_WARNING: 030_example3.asm:1458.43-1458.54: Warning: value out of range: 0x4a, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xa.
+MT_WARNING: 030_example3.asm:1460.43-1460.54: Warning: value out of range: 0x45, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
+MT_WARNING: 030_example3.asm:1462.43-1462.54: Warning: value out of range: 0x3f, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xf.
+MT_WARNING: 030_example3.asm:1464.43-1464.54: Warning: value out of range: 0x3d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
+MT_WARNING: 030_example3.asm:1466.43-1466.54: Warning: value out of range: 0x4a, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xa.
+MT_WARNING: 030_example3.asm:1468.43-1468.54: Warning: value out of range: 0x45, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
 MT_ERROR: 030_example3.asm:1470.43-1470.54: Error: symbol not defined: `CHARACTER_O'.
 MT_ERROR: 030_example3.asm:1472.43-1472.54: Error: symbol not defined: `CHARACTER_N'.
-MT_WARNING: 030_example3.asm:1485.43-1485.54: Warning: value out of range: 63, allowed range is [0,15] (trimmed to 4 bits) which makes it 15.
-MT_WARNING: 030_example3.asm:1487.43-1487.54: Warning: value out of range: 72, allowed range is [0,15] (trimmed to 4 bits) which makes it 8.
-MT_WARNING: 030_example3.asm:1489.43-1489.54: Warning: value out of range: 63, allowed range is [0,15] (trimmed to 4 bits) which makes it 15.
-MT_WARNING: 030_example3.asm:1498.43-1498.54: Warning: value out of range: 63, allowed range is [0,15] (trimmed to 4 bits) which makes it 15.
+MT_WARNING: 030_example3.asm:1485.43-1485.54: Warning: value out of range: 0x3f, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xf.
+MT_WARNING: 030_example3.asm:1487.43-1487.54: Warning: value out of range: 0x48, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x8.
+MT_WARNING: 030_example3.asm:1489.43-1489.54: Warning: value out of range: 0x3f, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xf.
+MT_WARNING: 030_example3.asm:1498.43-1498.54: Warning: value out of range: 0x3f, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xf.
 MT_ERROR: 030_example3.asm:1500.43-1500.54: Error: symbol not defined: `CHARACTER_O'.
-MT_WARNING: 030_example3.asm:1504.43-1504.54: Warning: value out of range: 70, allowed range is [0,15] (trimmed to 4 bits) which makes it 6.
-MT_WARNING: 030_example3.asm:1506.43-1506.54: Warning: value out of range: 75, allowed range is [0,15] (trimmed to 4 bits) which makes it 11.
-MT_WARNING: 030_example3.asm:1508.43-1508.54: Warning: value out of range: 74, allowed range is [0,15] (trimmed to 4 bits) which makes it 10.
-MT_WARNING: 030_example3.asm:1510.43-1510.54: Warning: value out of range: 65, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
-MT_WARNING: 030_example3.asm:1512.43-1512.54: Warning: value out of range: 64, allowed range is [0,15] (trimmed to 4 bits) which makes it 0.
-MT_WARNING: 030_example3.asm:1519.43-1519.54: Warning: value out of range: 65, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
-MT_WARNING: 030_example3.asm:1521.43-1521.54: Warning: value out of range: 72, allowed range is [0,15] (trimmed to 4 bits) which makes it 8.
-MT_WARNING: 030_example3.asm:1523.43-1523.54: Warning: value out of range: 61, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
-MT_WARNING: 030_example3.asm:1525.43-1525.54: Warning: value out of range: 73, allowed range is [0,15] (trimmed to 4 bits) which makes it 9.
-MT_WARNING: 030_example3.asm:1527.43-1527.54: Warning: value out of range: 65, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
-MT_WARNING: 030_example3.asm:1539.43-1539.54: Warning: value out of range: 69, allowed range is [0,15] (trimmed to 4 bits) which makes it 5.
+MT_WARNING: 030_example3.asm:1504.43-1504.54: Warning: value out of range: 0x46, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x6.
+MT_WARNING: 030_example3.asm:1506.43-1506.54: Warning: value out of range: 0x4b, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xb.
+MT_WARNING: 030_example3.asm:1508.43-1508.54: Warning: value out of range: 0x4a, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xa.
+MT_WARNING: 030_example3.asm:1510.43-1510.54: Warning: value out of range: 0x41, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
+MT_WARNING: 030_example3.asm:1512.43-1512.54: Warning: value out of range: 0x40, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x0.
+MT_WARNING: 030_example3.asm:1519.43-1519.54: Warning: value out of range: 0x41, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
+MT_WARNING: 030_example3.asm:1521.43-1521.54: Warning: value out of range: 0x48, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x8.
+MT_WARNING: 030_example3.asm:1523.43-1523.54: Warning: value out of range: 0x3d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
+MT_WARNING: 030_example3.asm:1525.43-1525.54: Warning: value out of range: 0x49, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x9.
+MT_WARNING: 030_example3.asm:1527.43-1527.54: Warning: value out of range: 0x41, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
+MT_WARNING: 030_example3.asm:1539.43-1539.54: Warning: value out of range: 0x45, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
 MT_ERROR: 030_example3.asm:1541.43-1541.54: Error: symbol not defined: `CHARACTER_N'.
-MT_WARNING: 030_example3.asm:1544.43-1544.54: Warning: value out of range: 70, allowed range is [0,15] (trimmed to 4 bits) which makes it 6.
-MT_WARNING: 030_example3.asm:1546.43-1546.54: Warning: value out of range: 72, allowed range is [0,15] (trimmed to 4 bits) which makes it 8.
+MT_WARNING: 030_example3.asm:1544.43-1544.54: Warning: value out of range: 0x46, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x6.
+MT_WARNING: 030_example3.asm:1546.43-1546.54: Warning: value out of range: 0x48, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x8.
 MT_ERROR: 030_example3.asm:1548.43-1548.54: Error: symbol not defined: `CHARACTER_O'.
-MT_WARNING: 030_example3.asm:1550.43-1550.54: Warning: value out of range: 67, allowed range is [0,15] (trimmed to 4 bits) which makes it 3.
-MT_WARNING: 030_example3.asm:1552.43-1552.54: Warning: value out of range: 72, allowed range is [0,15] (trimmed to 4 bits) which makes it 8.
-MT_WARNING: 030_example3.asm:1554.43-1554.54: Warning: value out of range: 65, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
-MT_WARNING: 030_example3.asm:1556.43-1556.54: Warning: value out of range: 73, allowed range is [0,15] (trimmed to 4 bits) which makes it 9.
+MT_WARNING: 030_example3.asm:1550.43-1550.54: Warning: value out of range: 0x43, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x3.
+MT_WARNING: 030_example3.asm:1552.43-1552.54: Warning: value out of range: 0x48, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x8.
+MT_WARNING: 030_example3.asm:1554.43-1554.54: Warning: value out of range: 0x41, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
+MT_WARNING: 030_example3.asm:1556.43-1556.54: Warning: value out of range: 0x49, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x9.
 MT_ERROR: 030_example3.asm:1565.43-1565.54: Error: symbol not defined: `CHARACTER_O'.
 MT_ERROR: 030_example3.asm:1567.43-1567.54: Error: symbol not defined: `CHARACTER_K'.
-MT_WARNING: 030_example3.asm:1576.43-1576.54: Warning: value out of range: 66, allowed range is [0,15] (trimmed to 4 bits) which makes it 2.
-MT_WARNING: 030_example3.asm:1578.43-1578.54: Warning: value out of range: 61, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
-MT_WARNING: 030_example3.asm:1580.43-1580.54: Warning: value out of range: 69, allowed range is [0,15] (trimmed to 4 bits) which makes it 5.
+MT_WARNING: 030_example3.asm:1576.43-1576.54: Warning: value out of range: 0x42, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x2.
+MT_WARNING: 030_example3.asm:1578.43-1578.54: Warning: value out of range: 0x3d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
+MT_WARNING: 030_example3.asm:1580.43-1580.54: Warning: value out of range: 0x45, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
 MT_ERROR: 030_example3.asm:1582.43-1582.54: Error: symbol not defined: `CHARACTER_L'.
-MT_WARNING: 030_example3.asm:1584.43-1584.54: Warning: value out of range: 65, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
-MT_WARNING: 030_example3.asm:1586.43-1586.54: Warning: value out of range: 64, allowed range is [0,15] (trimmed to 4 bits) which makes it 0.
-MT_WARNING: 030_example3.asm:1594.43-1594.54: Warning: value out of range: 70, allowed range is [0,15] (trimmed to 4 bits) which makes it 6.
-MT_WARNING: 030_example3.asm:1596.43-1596.54: Warning: value out of range: 61, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
-MT_WARNING: 030_example3.asm:1598.43-1598.54: Warning: value out of range: 73, allowed range is [0,15] (trimmed to 4 bits) which makes it 9.
-MT_WARNING: 030_example3.asm:1601.43-1601.54: Warning: value out of range: 65, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
-MT_WARNING: 030_example3.asm:1603.43-1603.54: Warning: value out of range: 64, allowed range is [0,15] (trimmed to 4 bits) which makes it 0.
-MT_WARNING: 030_example3.asm:1612.43-1612.54: Warning: value out of range: 77, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
-MT_WARNING: 030_example3.asm:1614.43-1614.54: Warning: value out of range: 72, allowed range is [0,15] (trimmed to 4 bits) which makes it 8.
-MT_WARNING: 030_example3.asm:1616.43-1616.54: Warning: value out of range: 69, allowed range is [0,15] (trimmed to 4 bits) which makes it 5.
-MT_WARNING: 030_example3.asm:1618.43-1618.54: Warning: value out of range: 74, allowed range is [0,15] (trimmed to 4 bits) which makes it 10.
-MT_WARNING: 030_example3.asm:1620.43-1620.54: Warning: value out of range: 69, allowed range is [0,15] (trimmed to 4 bits) which makes it 5.
+MT_WARNING: 030_example3.asm:1584.43-1584.54: Warning: value out of range: 0x41, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
+MT_WARNING: 030_example3.asm:1586.43-1586.54: Warning: value out of range: 0x40, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x0.
+MT_WARNING: 030_example3.asm:1594.43-1594.54: Warning: value out of range: 0x46, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x6.
+MT_WARNING: 030_example3.asm:1596.43-1596.54: Warning: value out of range: 0x3d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
+MT_WARNING: 030_example3.asm:1598.43-1598.54: Warning: value out of range: 0x49, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x9.
+MT_WARNING: 030_example3.asm:1601.43-1601.54: Warning: value out of range: 0x41, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
+MT_WARNING: 030_example3.asm:1603.43-1603.54: Warning: value out of range: 0x40, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x0.
+MT_WARNING: 030_example3.asm:1612.43-1612.54: Warning: value out of range: 0x4d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
+MT_WARNING: 030_example3.asm:1614.43-1614.54: Warning: value out of range: 0x48, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x8.
+MT_WARNING: 030_example3.asm:1616.43-1616.54: Warning: value out of range: 0x45, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
+MT_WARNING: 030_example3.asm:1618.43-1618.54: Warning: value out of range: 0x4a, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xa.
+MT_WARNING: 030_example3.asm:1620.43-1620.54: Warning: value out of range: 0x45, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
 MT_ERROR: 030_example3.asm:1622.43-1622.54: Error: symbol not defined: `CHARACTER_N'.
-MT_WARNING: 030_example3.asm:1624.43-1624.54: Warning: value out of range: 67, allowed range is [0,15] (trimmed to 4 bits) which makes it 3.
-MT_WARNING: 030_example3.asm:1637.43-1637.54: Warning: value out of range: 65, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
+MT_WARNING: 030_example3.asm:1624.43-1624.54: Warning: value out of range: 0x43, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x3.
+MT_WARNING: 030_example3.asm:1637.43-1637.54: Warning: value out of range: 0x41, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
 MT_ERROR: 030_example3.asm:1639.43-1639.54: Error: symbol not defined: `CHARACTER_N'.
-MT_WARNING: 030_example3.asm:1641.43-1641.54: Warning: value out of range: 75, allowed range is [0,15] (trimmed to 4 bits) which makes it 11.
-MT_WARNING: 030_example3.asm:1645.43-1645.54: Warning: value out of range: 72, allowed range is [0,15] (trimmed to 4 bits) which makes it 8.
-MT_WARNING: 030_example3.asm:1648.43-1648.54: Warning: value out of range: 72, allowed range is [0,15] (trimmed to 4 bits) which makes it 8.
-MT_WARNING: 030_example3.asm:1650.43-1650.54: Warning: value out of range: 65, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
-MT_WARNING: 030_example3.asm:1652.43-1652.54: Warning: value out of range: 61, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
-MT_WARNING: 030_example3.asm:1654.43-1654.54: Warning: value out of range: 64, allowed range is [0,15] (trimmed to 4 bits) which makes it 0.
-MT_WARNING: 030_example3.asm:1659.43-1659.54: Warning: value out of range: 65, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
-MT_WARNING: 030_example3.asm:1665.43-1665.54: Warning: value out of range: 61, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
+MT_WARNING: 030_example3.asm:1641.43-1641.54: Warning: value out of range: 0x4b, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xb.
+MT_WARNING: 030_example3.asm:1645.43-1645.54: Warning: value out of range: 0x48, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x8.
+MT_WARNING: 030_example3.asm:1648.43-1648.54: Warning: value out of range: 0x48, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x8.
+MT_WARNING: 030_example3.asm:1650.43-1650.54: Warning: value out of range: 0x41, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
+MT_WARNING: 030_example3.asm:1652.43-1652.54: Warning: value out of range: 0x3d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
+MT_WARNING: 030_example3.asm:1654.43-1654.54: Warning: value out of range: 0x40, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x0.
+MT_WARNING: 030_example3.asm:1659.43-1659.54: Warning: value out of range: 0x41, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
+MT_WARNING: 030_example3.asm:1665.43-1665.54: Warning: value out of range: 0x3d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
 MT_ERROR: 030_example3.asm:1671.43-1671.65: Error: symbol not defined: `CHARACTER_GREATER_THAN'.
 MT_ERROR: 030_example3.asm:1693.31-1693.33: Error: symbol not defined: `S4'.
 MT_ERROR: 030_example3.asm:1694.34-1694.36: Error: symbol not defined: `S4'.
@@ -550,93 +550,93 @@ MT_ERROR: 030_example3.asm:1812.34-1812.36: Error: symbol not defined: `S0'.
 MT_ERROR: 030_example3.asm:1813.32-1813.34: Error: symbol not defined: `S4'.
 MT_ERROR: 030_example3.asm:1814.34-1814.36: Error: symbol not defined: `S4'.
 MT_ERROR: 030_example3.asm:1833.32-1833.34: Error: symbol not defined: `S4'.
-MT_WARNING: 030_example3.asm:1833.36-1833.38: Warning: value out of range: 30, allowed range is [0,15] (trimmed to 4 bits) which makes it 14.
+MT_WARNING: 030_example3.asm:1833.36-1833.38: Warning: value out of range: 0x1e, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xe.
 MT_ERROR: 030_example3.asm:1840.32-1840.34: Error: symbol not defined: `S4'.
-MT_WARNING: 030_example3.asm:1840.36-1840.38: Warning: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+MT_WARNING: 030_example3.asm:1840.36-1840.38: Warning: value out of range: 0x14, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
 MT_ERROR: 030_example3.asm:1843.32-1843.34: Error: symbol not defined: `S5'.
-MT_WARNING: 030_example3.asm:1843.36-1843.38: Warning: value out of range: 28, allowed range is [0,15] (trimmed to 4 bits) which makes it 12.
+MT_WARNING: 030_example3.asm:1843.36-1843.38: Warning: value out of range: 0x1c, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xc.
 MT_ERROR: 030_example3.asm:1845.32-1845.34: Error: symbol not defined: `S5'.
 MT_ERROR: 030_example3.asm:1849.32-1849.34: Error: symbol not defined: `S5'.
 MT_ERROR: 030_example3.asm:1872.32-1872.34: Error: symbol not defined: `S5'.
 MT_ERROR: 030_example3.asm:1873.35-1873.44: Error: symbol not defined: `SET_LINE2'.
 MT_ERROR: 030_example3.asm:1875.30-1875.32: Error: symbol not defined: `S5'.
-MT_WARNING: 030_example3.asm:1875.34-1875.36: Warning: value out of range: 80, allowed range is [0,15] (trimmed to 4 bits) which makes it 0.
+MT_WARNING: 030_example3.asm:1875.34-1875.36: Warning: value out of range: 0x50, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x0.
 MT_ERROR: 030_example3.asm:1879.30-1879.32: Error: symbol not defined: `S5'.
 MT_ERROR: 030_example3.asm:1879.34-1879.36: Error: symbol not defined: `C0'.
 MT_ERROR: 030_example3.asm:1899.32-1899.34: Error: symbol not defined: `S0'.
 MT_ERROR: 030_example3.asm:1900.31-1900.33: Error: symbol not defined: `S0'.
 MT_ERROR: 030_example3.asm:1908.32-1908.34: Error: symbol not defined: `S1'.
-MT_WARNING: 030_example3.asm:1908.36-1908.38: Warning: value out of range: 28, allowed range is [0,15] (trimmed to 4 bits) which makes it 12.
+MT_WARNING: 030_example3.asm:1908.36-1908.38: Warning: value out of range: 0x1c, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xc.
 MT_ERROR: 030_example3.asm:1910.31-1910.33: Error: symbol not defined: `S1'.
 MT_ERROR: 030_example3.asm:1919.32-1919.34: Error: symbol not defined: `S2'.
-MT_WARNING: 030_example3.asm:1919.36-1919.38: Warning: value out of range: 19, allowed range is [0,15] (trimmed to 4 bits) which makes it 3.
+MT_WARNING: 030_example3.asm:1919.36-1919.38: Warning: value out of range: 0x13, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x3.
 MT_ERROR: 030_example3.asm:1921.31-1921.33: Error: symbol not defined: `S2'.
 MT_ERROR: 030_example3.asm:1931.32-1931.34: Error: symbol not defined: `S3'.
 MT_ERROR: 030_example3.asm:1933.31-1933.33: Error: symbol not defined: `S3'.
 MT_ERROR: 030_example3.asm:1941.32-1941.34: Error: symbol not defined: `S4'.
-MT_WARNING: 030_example3.asm:1941.36-1941.38: Warning: value out of range: 32, allowed range is [0,15] (trimmed to 4 bits) which makes it 0.
+MT_WARNING: 030_example3.asm:1941.36-1941.38: Warning: value out of range: 0x20, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x0.
 MT_ERROR: 030_example3.asm:1943.31-1943.33: Error: symbol not defined: `S4'.
 MT_ERROR: 030_example3.asm:1953.31-1953.33: Error: symbol not defined: `S5'.
 MT_ERROR: 030_example3.asm:1968.32-1968.34: Error: symbol not defined: `S5'.
-MT_WARNING: 030_example3.asm:1968.36-1968.47: Warning: value out of range: 70, allowed range is [0,15] (trimmed to 4 bits) which makes it 6.
+MT_WARNING: 030_example3.asm:1968.36-1968.47: Warning: value out of range: 0x46, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x6.
 MT_ERROR: 030_example3.asm:1970.32-1970.34: Error: symbol not defined: `S5'.
-MT_WARNING: 030_example3.asm:1970.36-1970.47: Warning: value out of range: 69, allowed range is [0,15] (trimmed to 4 bits) which makes it 5.
+MT_WARNING: 030_example3.asm:1970.36-1970.47: Warning: value out of range: 0x45, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
 MT_ERROR: 030_example3.asm:1972.32-1972.34: Error: symbol not defined: `S5'.
-MT_WARNING: 030_example3.asm:1972.36-1972.47: Warning: value out of range: 63, allowed range is [0,15] (trimmed to 4 bits) which makes it 15.
+MT_WARNING: 030_example3.asm:1972.36-1972.47: Warning: value out of range: 0x3f, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xf.
 MT_ERROR: 030_example3.asm:1974.32-1974.34: Error: symbol not defined: `S5'.
 MT_ERROR: 030_example3.asm:1974.36-1974.47: Error: symbol not defined: `CHARACTER_O'.
 MT_ERROR: 030_example3.asm:1976.32-1976.34: Error: symbol not defined: `S5'.
-MT_WARNING: 030_example3.asm:1976.36-1976.47: Warning: value out of range: 62, allowed range is [0,15] (trimmed to 4 bits) which makes it 14.
+MT_WARNING: 030_example3.asm:1976.36-1976.47: Warning: value out of range: 0x3e, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xe.
 MT_ERROR: 030_example3.asm:1978.32-1978.34: Error: symbol not defined: `S5'.
 MT_ERROR: 030_example3.asm:1978.36-1978.47: Error: symbol not defined: `CHARACTER_L'.
 MT_ERROR: 030_example3.asm:1980.32-1980.34: Error: symbol not defined: `S5'.
-MT_WARNING: 030_example3.asm:1980.36-1980.47: Warning: value out of range: 61, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
+MT_WARNING: 030_example3.asm:1980.36-1980.47: Warning: value out of range: 0x3d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
 MT_ERROR: 030_example3.asm:1982.32-1982.34: Error: symbol not defined: `S5'.
 MT_ERROR: 030_example3.asm:1982.36-1982.47: Error: symbol not defined: `CHARACTER_Z'.
 MT_ERROR: 030_example3.asm:1984.32-1984.34: Error: symbol not defined: `S5'.
-MT_WARNING: 030_example3.asm:1984.36-1984.47: Warning: value out of range: 65, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
+MT_WARNING: 030_example3.asm:1984.36-1984.47: Warning: value out of range: 0x41, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
 MT_ERROR: 030_example3.asm:1992.32-1992.34: Error: symbol not defined: `S5'.
-MT_WARNING: 030_example3.asm:1992.36-1992.47: Warning: value out of range: 73, allowed range is [0,15] (trimmed to 4 bits) which makes it 9.
+MT_WARNING: 030_example3.asm:1992.36-1992.47: Warning: value out of range: 0x49, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x9.
 MT_ERROR: 030_example3.asm:1994.32-1994.34: Error: symbol not defined: `S5'.
-MT_WARNING: 030_example3.asm:1994.36-1994.47: Warning: value out of range: 65, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
+MT_WARNING: 030_example3.asm:1994.36-1994.47: Warning: value out of range: 0x41, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
 MT_ERROR: 030_example3.asm:1996.32-1996.34: Error: symbol not defined: `S5'.
-MT_WARNING: 030_example3.asm:1996.36-1996.47: Warning: value out of range: 63, allowed range is [0,15] (trimmed to 4 bits) which makes it 15.
+MT_WARNING: 030_example3.asm:1996.36-1996.47: Warning: value out of range: 0x3f, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xf.
 MT_ERROR: 030_example3.asm:1998.32-1998.34: Error: symbol not defined: `S5'.
-MT_WARNING: 030_example3.asm:1998.36-1998.47: Warning: value out of range: 75, allowed range is [0,15] (trimmed to 4 bits) which makes it 11.
+MT_WARNING: 030_example3.asm:1998.36-1998.47: Warning: value out of range: 0x4b, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xb.
 MT_ERROR: 030_example3.asm:2000.32-2000.34: Error: symbol not defined: `S5'.
-MT_WARNING: 030_example3.asm:2000.36-2000.47: Warning: value out of range: 72, allowed range is [0,15] (trimmed to 4 bits) which makes it 8.
+MT_WARNING: 030_example3.asm:2000.36-2000.47: Warning: value out of range: 0x48, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x8.
 MT_ERROR: 030_example3.asm:2002.32-2002.34: Error: symbol not defined: `S5'.
-MT_WARNING: 030_example3.asm:2002.36-2002.47: Warning: value out of range: 69, allowed range is [0,15] (trimmed to 4 bits) which makes it 5.
+MT_WARNING: 030_example3.asm:2002.36-2002.47: Warning: value out of range: 0x45, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
 MT_ERROR: 030_example3.asm:2004.32-2004.34: Error: symbol not defined: `S5'.
-MT_WARNING: 030_example3.asm:2004.36-2004.47: Warning: value out of range: 74, allowed range is [0,15] (trimmed to 4 bits) which makes it 10.
+MT_WARNING: 030_example3.asm:2004.36-2004.47: Warning: value out of range: 0x4a, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xa.
 MT_ERROR: 030_example3.asm:2006.32-2006.34: Error: symbol not defined: `S5'.
-MT_WARNING: 030_example3.asm:2006.36-2006.47: Warning: value out of range: 79, allowed range is [0,15] (trimmed to 4 bits) which makes it 15.
+MT_WARNING: 030_example3.asm:2006.36-2006.47: Warning: value out of range: 0x4f, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xf.
 MT_ERROR: 030_example3.asm:2014.32-2014.34: Error: symbol not defined: `S5'.
-MT_WARNING: 030_example3.asm:2014.36-2014.47: Warning: value out of range: 66, allowed range is [0,15] (trimmed to 4 bits) which makes it 2.
+MT_WARNING: 030_example3.asm:2014.36-2014.47: Warning: value out of range: 0x42, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x2.
 MT_ERROR: 030_example3.asm:2016.32-2016.34: Error: symbol not defined: `S5'.
 MT_ERROR: 030_example3.asm:2016.36-2016.47: Error: symbol not defined: `CHARACTER_L'.
 MT_ERROR: 030_example3.asm:2018.32-2018.34: Error: symbol not defined: `S5'.
-MT_WARNING: 030_example3.asm:2018.36-2018.47: Warning: value out of range: 61, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
+MT_WARNING: 030_example3.asm:2018.36-2018.47: Warning: value out of range: 0x3d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
 MT_ERROR: 030_example3.asm:2020.32-2020.34: Error: symbol not defined: `S5'.
-MT_WARNING: 030_example3.asm:2020.36-2020.47: Warning: value out of range: 73, allowed range is [0,15] (trimmed to 4 bits) which makes it 9.
+MT_WARNING: 030_example3.asm:2020.36-2020.47: Warning: value out of range: 0x49, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x9.
 MT_ERROR: 030_example3.asm:2022.32-2022.34: Error: symbol not defined: `S5'.
-MT_WARNING: 030_example3.asm:2022.36-2022.47: Warning: value out of range: 68, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+MT_WARNING: 030_example3.asm:2022.36-2022.47: Warning: value out of range: 0x44, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
 MT_ERROR: 030_example3.asm:2024.32-2024.34: Error: symbol not defined: `S5'.
-MT_WARNING: 030_example3.asm:2024.36-2024.51: Warning: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+MT_WARNING: 030_example3.asm:2024.36-2024.51: Warning: value out of range: 0x14, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
 MT_ERROR: 030_example3.asm:2026.32-2026.34: Error: symbol not defined: `S5'.
-MT_WARNING: 030_example3.asm:2026.36-2026.47: Warning: value out of range: 73, allowed range is [0,15] (trimmed to 4 bits) which makes it 9.
+MT_WARNING: 030_example3.asm:2026.36-2026.47: Warning: value out of range: 0x49, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x9.
 MT_ERROR: 030_example3.asm:2028.32-2028.34: Error: symbol not defined: `S5'.
-MT_WARNING: 030_example3.asm:2028.36-2028.47: Warning: value out of range: 65, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
+MT_WARNING: 030_example3.asm:2028.36-2028.47: Warning: value out of range: 0x41, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
 MT_ERROR: 030_example3.asm:2030.32-2030.34: Error: symbol not defined: `S5'.
-MT_WARNING: 030_example3.asm:2030.36-2030.47: Warning: value out of range: 72, allowed range is [0,15] (trimmed to 4 bits) which makes it 8.
+MT_WARNING: 030_example3.asm:2030.36-2030.47: Warning: value out of range: 0x48, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x8.
 MT_ERROR: 030_example3.asm:2032.32-2032.34: Error: symbol not defined: `S5'.
-MT_WARNING: 030_example3.asm:2032.36-2032.47: Warning: value out of range: 69, allowed range is [0,15] (trimmed to 4 bits) which makes it 5.
+MT_WARNING: 030_example3.asm:2032.36-2032.47: Warning: value out of range: 0x45, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
 MT_ERROR: 030_example3.asm:2034.32-2034.34: Error: symbol not defined: `S5'.
-MT_WARNING: 030_example3.asm:2034.36-2034.47: Warning: value out of range: 61, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
+MT_WARNING: 030_example3.asm:2034.36-2034.47: Warning: value out of range: 0x3d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
 MT_ERROR: 030_example3.asm:2036.32-2036.34: Error: symbol not defined: `S5'.
 MT_ERROR: 030_example3.asm:2036.36-2036.47: Error: symbol not defined: `CHARACTER_L'.
 MT_ERROR: 030_example3.asm:2038.32-2038.34: Error: symbol not defined: `S5'.
-MT_WARNING: 030_example3.asm:2038.36-2038.51: Warning: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+MT_WARNING: 030_example3.asm:2038.36-2038.51: Warning: value out of range: 0x14, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
 MT_ERROR: 030_example3.asm:2040.32-2040.34: Error: symbol not defined: `S5'.
 MT_ERROR: 030_example3.asm:2040.36-2040.47: Error: symbol not defined: `CHARACTER_N'.
 MT_ERROR: 030_example3.asm:2042.32-2042.34: Error: symbol not defined: `S5'.
@@ -645,82 +645,82 @@ MT_ERROR: 030_example3.asm:2044.32-2044.34: Error: symbol not defined: `S5'.
 MT_ERROR: 030_example3.asm:2044.36-2044.54: Error: symbol not defined: `CHARACTER_FULLSTOP'.
 MT_ERROR: 030_example3.asm:2053.32-2053.34: Error: symbol not defined: `S5'.
 MT_ERROR: 030_example3.asm:2055.32-2055.34: Error: symbol not defined: `S5'.
-MT_WARNING: 030_example3.asm:2055.36-2055.47: Warning: value out of range: 61, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
+MT_WARNING: 030_example3.asm:2055.36-2055.47: Warning: value out of range: 0x3d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
 MT_ERROR: 030_example3.asm:2057.32-2057.34: Error: symbol not defined: `S5'.
-MT_WARNING: 030_example3.asm:2057.36-2057.47: Warning: value out of range: 75, allowed range is [0,15] (trimmed to 4 bits) which makes it 11.
+MT_WARNING: 030_example3.asm:2057.36-2057.47: Warning: value out of range: 0x4b, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xb.
 MT_ERROR: 030_example3.asm:2059.32-2059.34: Error: symbol not defined: `S5'.
-MT_WARNING: 030_example3.asm:2059.36-2059.47: Warning: value out of range: 74, allowed range is [0,15] (trimmed to 4 bits) which makes it 10.
+MT_WARNING: 030_example3.asm:2059.36-2059.47: Warning: value out of range: 0x4a, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xa.
 MT_ERROR: 030_example3.asm:2061.32-2061.34: Error: symbol not defined: `S5'.
-MT_WARNING: 030_example3.asm:2061.36-2061.47: Warning: value out of range: 68, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+MT_WARNING: 030_example3.asm:2061.36-2061.47: Warning: value out of range: 0x44, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
 MT_ERROR: 030_example3.asm:2063.32-2063.34: Error: symbol not defined: `S5'.
-MT_WARNING: 030_example3.asm:2063.36-2063.47: Warning: value out of range: 65, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
+MT_WARNING: 030_example3.asm:2063.36-2063.47: Warning: value out of range: 0x41, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
 MT_ERROR: 030_example3.asm:2065.32-2065.34: Error: symbol not defined: `S5'.
 MT_ERROR: 030_example3.asm:2065.36-2065.47: Error: symbol not defined: `CHARACTER_N'.
 MT_ERROR: 030_example3.asm:2067.32-2067.34: Error: symbol not defined: `S5'.
-MT_WARNING: 030_example3.asm:2067.36-2067.47: Warning: value out of range: 74, allowed range is [0,15] (trimmed to 4 bits) which makes it 10.
+MT_WARNING: 030_example3.asm:2067.36-2067.47: Warning: value out of range: 0x4a, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xa.
 MT_ERROR: 030_example3.asm:2069.32-2069.34: Error: symbol not defined: `S5'.
-MT_WARNING: 030_example3.asm:2069.36-2069.47: Warning: value out of range: 69, allowed range is [0,15] (trimmed to 4 bits) which makes it 5.
+MT_WARNING: 030_example3.asm:2069.36-2069.47: Warning: value out of range: 0x45, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
 MT_ERROR: 030_example3.asm:2071.32-2071.34: Error: symbol not defined: `S5'.
-MT_WARNING: 030_example3.asm:2071.36-2071.47: Warning: value out of range: 63, allowed range is [0,15] (trimmed to 4 bits) which makes it 15.
+MT_WARNING: 030_example3.asm:2071.36-2071.47: Warning: value out of range: 0x3f, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xf.
 MT_ERROR: 030_example3.asm:2073.32-2073.34: Error: symbol not defined: `S5'.
-MT_WARNING: 030_example3.asm:2073.36-2073.47: Warning: value out of range: 61, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
+MT_WARNING: 030_example3.asm:2073.36-2073.47: Warning: value out of range: 0x3d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
 MT_ERROR: 030_example3.asm:2075.32-2075.34: Error: symbol not defined: `S5'.
-MT_WARNING: 030_example3.asm:2075.36-2075.47: Warning: value out of range: 74, allowed range is [0,15] (trimmed to 4 bits) which makes it 10.
+MT_WARNING: 030_example3.asm:2075.36-2075.47: Warning: value out of range: 0x4a, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xa.
 MT_ERROR: 030_example3.asm:2077.32-2077.34: Error: symbol not defined: `S5'.
-MT_WARNING: 030_example3.asm:2077.36-2077.47: Warning: value out of range: 69, allowed range is [0,15] (trimmed to 4 bits) which makes it 5.
+MT_WARNING: 030_example3.asm:2077.36-2077.47: Warning: value out of range: 0x45, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
 MT_ERROR: 030_example3.asm:2079.32-2079.34: Error: symbol not defined: `S5'.
 MT_ERROR: 030_example3.asm:2079.36-2079.47: Error: symbol not defined: `CHARACTER_O'.
 MT_ERROR: 030_example3.asm:2081.32-2081.34: Error: symbol not defined: `S5'.
 MT_ERROR: 030_example3.asm:2081.36-2081.47: Error: symbol not defined: `CHARACTER_N'.
 MT_ERROR: 030_example3.asm:2091.32-2091.34: Error: symbol not defined: `S5'.
-MT_WARNING: 030_example3.asm:2091.36-2091.38: Warning: value out of range: 25, allowed range is [0,15] (trimmed to 4 bits) which makes it 9.
+MT_WARNING: 030_example3.asm:2091.36-2091.38: Warning: value out of range: 0x19, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x9.
 MT_ERROR: 030_example3.asm:2093.32-2093.34: Error: symbol not defined: `S5'.
-MT_WARNING: 030_example3.asm:2093.36-2093.47: Warning: value out of range: 70, allowed range is [0,15] (trimmed to 4 bits) which makes it 6.
+MT_WARNING: 030_example3.asm:2093.36-2093.47: Warning: value out of range: 0x46, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x6.
 MT_ERROR: 030_example3.asm:2095.32-2095.34: Error: symbol not defined: `S5'.
-MT_WARNING: 030_example3.asm:2095.36-2095.47: Warning: value out of range: 61, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
+MT_WARNING: 030_example3.asm:2095.36-2095.47: Warning: value out of range: 0x3d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
 MT_ERROR: 030_example3.asm:2097.32-2097.34: Error: symbol not defined: `S5'.
-MT_WARNING: 030_example3.asm:2097.36-2097.47: Warning: value out of range: 73, allowed range is [0,15] (trimmed to 4 bits) which makes it 9.
+MT_WARNING: 030_example3.asm:2097.36-2097.47: Warning: value out of range: 0x49, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x9.
 MT_ERROR: 030_example3.asm:2100.32-2100.34: Error: symbol not defined: `S5'.
-MT_WARNING: 030_example3.asm:2100.36-2100.47: Warning: value out of range: 65, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
+MT_WARNING: 030_example3.asm:2100.36-2100.47: Warning: value out of range: 0x41, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
 MT_ERROR: 030_example3.asm:2102.32-2102.34: Error: symbol not defined: `S5'.
-MT_WARNING: 030_example3.asm:2102.36-2102.47: Warning: value out of range: 64, allowed range is [0,15] (trimmed to 4 bits) which makes it 0.
+MT_WARNING: 030_example3.asm:2102.36-2102.47: Warning: value out of range: 0x40, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x0.
 MT_ERROR: 030_example3.asm:2113.32-2113.34: Error: symbol not defined: `S5'.
-MT_WARNING: 030_example3.asm:2113.36-2113.38: Warning: value out of range: 25, allowed range is [0,15] (trimmed to 4 bits) which makes it 9.
+MT_WARNING: 030_example3.asm:2113.36-2113.38: Warning: value out of range: 0x19, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x9.
 MT_ERROR: 030_example3.asm:2115.32-2115.34: Error: symbol not defined: `S5'.
-MT_WARNING: 030_example3.asm:2115.36-2115.47: Warning: value out of range: 66, allowed range is [0,15] (trimmed to 4 bits) which makes it 2.
+MT_WARNING: 030_example3.asm:2115.36-2115.47: Warning: value out of range: 0x42, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x2.
 MT_ERROR: 030_example3.asm:2117.32-2117.34: Error: symbol not defined: `S5'.
-MT_WARNING: 030_example3.asm:2117.36-2117.47: Warning: value out of range: 61, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
+MT_WARNING: 030_example3.asm:2117.36-2117.47: Warning: value out of range: 0x3d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
 MT_ERROR: 030_example3.asm:2119.32-2119.34: Error: symbol not defined: `S5'.
-MT_WARNING: 030_example3.asm:2119.36-2119.47: Warning: value out of range: 69, allowed range is [0,15] (trimmed to 4 bits) which makes it 5.
+MT_WARNING: 030_example3.asm:2119.36-2119.47: Warning: value out of range: 0x45, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
 MT_ERROR: 030_example3.asm:2121.32-2121.34: Error: symbol not defined: `S5'.
 MT_ERROR: 030_example3.asm:2121.36-2121.47: Error: symbol not defined: `CHARACTER_L'.
 MT_ERROR: 030_example3.asm:2123.32-2123.34: Error: symbol not defined: `S5'.
-MT_WARNING: 030_example3.asm:2123.36-2123.47: Warning: value out of range: 65, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
+MT_WARNING: 030_example3.asm:2123.36-2123.47: Warning: value out of range: 0x41, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
 MT_ERROR: 030_example3.asm:2125.32-2125.34: Error: symbol not defined: `S5'.
-MT_WARNING: 030_example3.asm:2125.36-2125.47: Warning: value out of range: 64, allowed range is [0,15] (trimmed to 4 bits) which makes it 0.
+MT_WARNING: 030_example3.asm:2125.36-2125.47: Warning: value out of range: 0x40, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x0.
 MT_ERROR: 030_example3.asm:2138.33-2138.35: Error: symbol not defined: `S0'.
 MT_ERROR: 030_example3.asm:2140.33-2140.35: Error: symbol not defined: `S0'.
 MT_ERROR: 030_example3.asm:2140.37-2140.58: Error: symbol not defined: `AUTHENTICATION_STATUS'.
 MT_ERROR: 030_example3.asm:2141.35-2141.37: Error: symbol not defined: `S0'.
-MT_WARNING: 030_example3.asm:2141.39-2141.50: Warning: value out of range: 70, allowed range is [0,15] (trimmed to 4 bits) which makes it 6.
+MT_WARNING: 030_example3.asm:2141.39-2141.50: Warning: value out of range: 0x46, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x6.
 MT_ERROR: 030_example3.asm:2144.32-2144.34: Error: symbol not defined: `S0'.
-MT_WARNING: 030_example3.asm:2144.36-2144.47: Warning: value out of range: 66, allowed range is [0,15] (trimmed to 4 bits) which makes it 2.
+MT_WARNING: 030_example3.asm:2144.36-2144.47: Warning: value out of range: 0x42, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x2.
 MT_ERROR: 030_example3.asm:2145.34-2145.36: Error: symbol not defined: `S0'.
 MT_ERROR: 030_example3.asm:2146.32-2146.34: Error: symbol not defined: `S0'.
-MT_WARNING: 030_example3.asm:2146.36-2146.47: Warning: value out of range: 61, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
+MT_WARNING: 030_example3.asm:2146.36-2146.47: Warning: value out of range: 0x3d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
 MT_ERROR: 030_example3.asm:2147.34-2147.36: Error: symbol not defined: `S0'.
 MT_ERROR: 030_example3.asm:2148.32-2148.34: Error: symbol not defined: `S0'.
-MT_WARNING: 030_example3.asm:2148.36-2148.47: Warning: value out of range: 69, allowed range is [0,15] (trimmed to 4 bits) which makes it 5.
+MT_WARNING: 030_example3.asm:2148.36-2148.47: Warning: value out of range: 0x45, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
 MT_ERROR: 030_example3.asm:2149.34-2149.36: Error: symbol not defined: `S0'.
 MT_ERROR: 030_example3.asm:2150.32-2150.34: Error: symbol not defined: `S0'.
 MT_ERROR: 030_example3.asm:2150.36-2150.47: Error: symbol not defined: `CHARACTER_L'.
 MT_ERROR: 030_example3.asm:2151.34-2151.36: Error: symbol not defined: `S0'.
 MT_ERROR: 030_example3.asm:2154.34-2154.36: Error: symbol not defined: `S0'.
 MT_ERROR: 030_example3.asm:2155.32-2155.34: Error: symbol not defined: `S0'.
-MT_WARNING: 030_example3.asm:2155.36-2155.47: Warning: value out of range: 61, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
+MT_WARNING: 030_example3.asm:2155.36-2155.47: Warning: value out of range: 0x3d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
 MT_ERROR: 030_example3.asm:2156.34-2156.36: Error: symbol not defined: `S0'.
 MT_ERROR: 030_example3.asm:2157.32-2157.34: Error: symbol not defined: `S0'.
-MT_WARNING: 030_example3.asm:2157.36-2157.47: Warning: value out of range: 73, allowed range is [0,15] (trimmed to 4 bits) which makes it 9.
+MT_WARNING: 030_example3.asm:2157.36-2157.47: Warning: value out of range: 0x49, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x9.
 MT_ERROR: 030_example3.asm:2158.34-2158.36: Error: symbol not defined: `S0'.
 MT_ERROR: 030_example3.asm:2159.34-2159.36: Error: symbol not defined: `S0'.
 MT_ERROR: 030_example3.asm:2161.33-2161.35: Error: symbol not defined: `S0'.

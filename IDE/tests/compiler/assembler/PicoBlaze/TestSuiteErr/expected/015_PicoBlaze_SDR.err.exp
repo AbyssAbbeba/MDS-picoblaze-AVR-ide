@@ -45,20 +45,20 @@ MT_ERROR: 015_PicoBlaze_SDR.asm:93.31-93.36: Error: symbol not defined: `CHREG'.
 MT_ERROR: 015_PicoBlaze_SDR.asm:93.38-93.43: Error: symbol not defined: `TEMP2'.
 MT_ERROR: 015_PicoBlaze_SDR.asm:96.34-96.43: Error: symbol not defined: `SENDBNUM2'.
 MT_ERROR: 015_PicoBlaze_SDR.asm:130.31-130.36: Error: symbol not defined: `TEMP1'.
-MT_WARNING: 015_PicoBlaze_SDR.asm:130.38-130.41: Warning: value out of range: 250, allowed range is [0,15] (trimmed to 4 bits) which makes it 10.
+MT_WARNING: 015_PicoBlaze_SDR.asm:130.38-130.41: Warning: value out of range: 0xfa, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xa.
 MT_ERROR: 015_PicoBlaze_SDR.asm:131.31-131.36: Error: symbol not defined: `TEMP2'.
-MT_WARNING: 015_PicoBlaze_SDR.asm:131.38-131.41: Warning: value out of range: 249, allowed range is [0,15] (trimmed to 4 bits) which makes it 9.
+MT_WARNING: 015_PicoBlaze_SDR.asm:131.38-131.41: Warning: value out of range: 0xf9, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x9.
 MT_ERROR: 015_PicoBlaze_SDR.asm:132.31-132.36: Error: symbol not defined: `TEMP3'.
-MT_WARNING: 015_PicoBlaze_SDR.asm:132.38-132.41: Warning: value out of range: 200, allowed range is [0,15] (trimmed to 4 bits) which makes it 8.
+MT_WARNING: 015_PicoBlaze_SDR.asm:132.38-132.41: Warning: value out of range: 0xc8, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x8.
 MT_ERROR: 015_PicoBlaze_SDR.asm:133.31-133.36: Error: symbol not defined: `TEMP1'.
 MT_ERROR: 015_PicoBlaze_SDR.asm:135.31-135.36: Error: symbol not defined: `TEMP2'.
 MT_ERROR: 015_PicoBlaze_SDR.asm:137.31-137.36: Error: symbol not defined: `TEMP3'.
 MT_ERROR: 015_PicoBlaze_SDR.asm:141.31-141.36: Error: symbol not defined: `TEMP1'.
-MT_WARNING: 015_PicoBlaze_SDR.asm:141.38-141.41: Warning: value out of range: 250, allowed range is [0,15] (trimmed to 4 bits) which makes it 10.
+MT_WARNING: 015_PicoBlaze_SDR.asm:141.38-141.41: Warning: value out of range: 0xfa, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xa.
 MT_ERROR: 015_PicoBlaze_SDR.asm:142.31-142.36: Error: symbol not defined: `TEMP2'.
-MT_WARNING: 015_PicoBlaze_SDR.asm:142.38-142.41: Warning: value out of range: 249, allowed range is [0,15] (trimmed to 4 bits) which makes it 9.
+MT_WARNING: 015_PicoBlaze_SDR.asm:142.38-142.41: Warning: value out of range: 0xf9, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x9.
 MT_ERROR: 015_PicoBlaze_SDR.asm:143.31-143.36: Error: symbol not defined: `TEMP3'.
-MT_WARNING: 015_PicoBlaze_SDR.asm:143.38-143.40: Warning: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+MT_WARNING: 015_PicoBlaze_SDR.asm:143.38-143.40: Warning: value out of range: 0x14, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
 MT_ERROR: 015_PicoBlaze_SDR.asm:144.31-144.36: Error: symbol not defined: `TEMP1'.
 MT_ERROR: 015_PicoBlaze_SDR.asm:146.31-146.36: Error: symbol not defined: `TEMP2'.
 MT_ERROR: 015_PicoBlaze_SDR.asm:148.31-148.36: Error: symbol not defined: `TEMP3'.

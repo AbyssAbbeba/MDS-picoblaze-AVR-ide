@@ -1,3 +1,0 @@
-000 11501          1         ADD         5, #6/0
-E: division by zero
-001 13506          2         ADDCY       5, #6

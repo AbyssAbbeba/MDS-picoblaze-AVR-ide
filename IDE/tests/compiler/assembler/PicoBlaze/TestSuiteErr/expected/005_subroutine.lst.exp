@@ -32,15 +32,15 @@ E: symbol not defined: `S0'.
                   31     ; rename register s0 as “a_lsb”
   00001           32     NAMEREG         s1, a_msb
 E: symbol not defined: `S1'.
-W: reusing already reserved space in register file memory at address: 1.
+W: reusing already reserved space in register file memory at address: 0x1.
                   33     ; rename register s1 as “a_msb”
   00001           34     NAMEREG         s2, b_lsb
 E: symbol not defined: `S2'.
-W: reusing already reserved space in register file memory at address: 1.
+W: reusing already reserved space in register file memory at address: 0x1.
                   35     ; rename register s2 as “b_lsb”
   00001           36     NAMEREG         s3, b_msb
 E: symbol not defined: `S3'.
-W: reusing already reserved space in register file memory at address: 1.
+W: reusing already reserved space in register file memory at address: 0x1.
                   37     ; rename register s3 as “b_lsb”
 00E 10110         38     ADD             a_lsb, b_lsb
                   39     ; add LSBs, keep result in a_lsb
@@ -95,10 +95,10 @@ E: symbol not defined: `SX'.
 E: symbol already defined: "NEGATE".
   00001           79     NAMEREG         sY, value
 E: symbol not defined: `SY'.
-W: reusing already reserved space in register file memory at address: 1.
+W: reusing already reserved space in register file memory at address: 0x1.
   00001           80     NAMEREG         sX, complement
 E: symbol not defined: `SX'.
-W: reusing already reserved space in register file memory at address: 1.
+W: reusing already reserved space in register file memory at address: 0x1.
                   81     ; Clear ‘complement’ to zero
 019 00100         82     LOAD            complement, 00
                   83     ; subtract value from 0 to create two’s complement
@@ -109,27 +109,27 @@ W: reusing already reserved space in register file memory at address: 1.
                   88     mult_8x8:
   00001           89     NAMEREG         s0, multiplicand
 E: symbol not defined: `S0'.
-W: reusing already reserved space in register file memory at address: 1.
+W: reusing already reserved space in register file memory at address: 0x1.
                   90     ;
                   91     preserved
 E: macro not defined: "PRESERVED".
   00001           92     NAMEREG         s1, multiplier
 E: symbol not defined: `S1'.
-W: reusing already reserved space in register file memory at address: 1.
+W: reusing already reserved space in register file memory at address: 0x1.
                   93     ; preserved
   00001           94     NAMEREG         s2, bit_mask
 E: symbol not defined: `S2'.
-W: reusing already reserved space in register file memory at address: 1.
+W: reusing already reserved space in register file memory at address: 0x1.
                   95     ; modified
   00001           96     NAMEREG         s3, result_msb
 E: symbol not defined: `S3'.
-W: reusing already reserved space in register file memory at address: 1.
+W: reusing already reserved space in register file memory at address: 0x1.
                   97     ;
                   98     ;most-significant byte (MSB) of result,
                   99     ; modified
   00001          100     NAMEREG         s4, result_lsb
 E: symbol not defined: `S4'.
-W: reusing already reserved space in register file memory at address: 1.
+W: reusing already reserved space in register file memory at address: 0x1.
                  101     ; least-significant byte (LSB) of result,
                  102     ; modified
                  103     ;
@@ -211,19 +211,19 @@ E: symbol already defined: "RESULT_LSB".
                  174     div_8by8:
   00001          175     NAMEREG          s0, dividend
 E: symbol not defined: `S0'.
-W: reusing already reserved space in register file memory at address: 1.
+W: reusing already reserved space in register file memory at address: 0x1.
                  176     ; preserved
   00001          177     NAMEREG          s1, divisor
 E: symbol not defined: `S1'.
-W: reusing already reserved space in register file memory at address: 1.
+W: reusing already reserved space in register file memory at address: 0x1.
                  178     ; preserved
   00001          179     NAMEREG          s2, quotient
 E: symbol not defined: `S2'.
-W: reusing already reserved space in register file memory at address: 1.
+W: reusing already reserved space in register file memory at address: 0x1.
                  180     ; preserved
   00001          181     NAMEREG          s3, remainder
 E: symbol not defined: `S3'.
-W: reusing already reserved space in register file memory at address: 1.
+W: reusing already reserved space in register file memory at address: 0x1.
                  182     ; modified
                  183     NAMEREG          s4, bit_mask
 E: symbol already defined: "BIT_MASK".
@@ -233,7 +233,7 @@ E: symbol already defined: "BIT_MASK".
 02A 00100        187     LOAD             remainder, 00
                  188     ; clear remainder
 02B 00100        189     LOAD             bit_mask, 80
-W: value out of range: 80, allowed range is [0,15] (trimmed to 4 bits) which makes it 0.
+W: value out of range: 0x50, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x0.
                  190     ; start with most-significant bit (msb)
                  191     div_loop:
 02C 0C110        192     TEST             dividend, bit_mask
