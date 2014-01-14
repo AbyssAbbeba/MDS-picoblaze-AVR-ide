@@ -61,14 +61,7 @@ void ( PicoBlazeInstructionSet3 :: * const PicoBlazeInstructionSet3::m_opCodeDis
 
 bool PicoBlazeInstructionSet3::isValid() const
 {
-    if ( MCUSim::FAMILY_KCPSM3 == m_config.m_dev )
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    return ( MCUSim::FAMILY_KCPSM3 == m_config.m_dev );
 }
 
 int PicoBlazeInstructionSet3::execInstruction()

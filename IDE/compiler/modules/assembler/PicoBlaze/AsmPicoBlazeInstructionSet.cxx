@@ -109,9 +109,6 @@ inline void AsmPicoBlazeInstructionSet::detAccSymTypes ( const CompilerStatement
 {
     using namespace CompilerStatementTypes;
 
-    acceptableTypes[0] = (int) ( AsmPicoBlazeSymbolTable::STYPE_NUMBER | AsmPicoBlazeSymbolTable::STYPE_EXPRESSION );
-    acceptableTypes[1] = (int) ( AsmPicoBlazeSymbolTable::STYPE_NUMBER | AsmPicoBlazeSymbolTable::STYPE_EXPRESSION );
-
     switch ( (int) stmt->type() )
     {
         case ASMPICOBLAZE_INS_JUMP_AAA:
@@ -154,6 +151,8 @@ inline void AsmPicoBlazeInstructionSet::detAccSymTypes ( const CompilerStatement
         case ASMPICOBLAZE_INS_TESTCY_SX_KK:
         case ASMPICOBLAZE_INS_COMPARECY_SX_KK:
             acceptableTypes[0] |= AsmPicoBlazeSymbolTable::STYPE_REGISTER;
+            acceptableTypes[1] = (int) ( AsmPicoBlazeSymbolTable::STYPE_NUMBER |
+                                        AsmPicoBlazeSymbolTable::STYPE_EXPRESSION );
             break;
 
         case ASMPICOBLAZE_INS_ADD_SX_SY:
@@ -206,6 +205,8 @@ inline void AsmPicoBlazeInstructionSet::detAccSymTypes ( const CompilerStatement
             break;
 
         case ASMPICOBLAZE_INS_OUTPUTK_KK_P:
+            acceptableTypes[0] = (int) ( AsmPicoBlazeSymbolTable::STYPE_NUMBER |
+                                         AsmPicoBlazeSymbolTable::STYPE_EXPRESSION );
             acceptableTypes[1] |= AsmPicoBlazeSymbolTable::STYPE_PORT;
             break;
 

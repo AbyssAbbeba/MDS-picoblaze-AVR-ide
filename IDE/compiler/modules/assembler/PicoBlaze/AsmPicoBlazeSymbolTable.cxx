@@ -660,7 +660,7 @@ unsigned int AsmPicoBlazeSymbolTable::resolveExpr ( const CompilerExpr * expr,
                                                     QObject::tr ( "result is negative number: 0x%1, this will "
                                                                   "represented as %2-bit number in two's complement "
                                                                   "arithmetic which makes it: 0x%3" )
-                                                                . arg ( -resultOrig, 0, 16 )
+                                                                . arg ( resultOrig, 0, 16 )
                                                                 . arg ( bitsMax )
                                                                 . arg ( result, 0, 16 )
                                                                 . toStdString() );
