@@ -1,0 +1,55 @@
+A  . . . . . . . . . . . . . . . . . NUMBER 0x00005 USED     CONSTANT    044_random_test.asm:13.1-13.38
+AB . . . . . . . . . . . . . . . . . EXPR.          USED     CONSTANT    044_random_test.asm:14.1-14.36
+ABCD . . . . . . . . . . . . . . . . EXPR.          USED     CONSTANT    044_random_test.asm:8.1-8.24
+ABCDE  . . . . . . . . . . . . . . . EXPR.          USED     CONSTANT    044_random_test.asm:11.1-11.38
+ABCDEF . . . . . . . . . . . . . . . EXPR.          USED     CONSTANT    044_random_test.asm:10.1-10.31
+AB_CD  . . . . . . . . . . . . . . . EXPR.          USED     CONSTANT    044_random_test.asm:9.1-9.30
+B  . . . . . . . . . . . . . . . . . LABEL  0x00062 NOT USED CONSTANT    044_random_test.asm:87.1-87.3
+EU . . . . . . . . . . . . . . . . . NUMBER 0x00003 USED     CONSTANT    044_random_test.asm:84.1-84.19
+FOR-0  . . . . . . . . . . . . . . . LABEL  0x00016 USED     CONSTANT    044_random_test.asm:54.5-54.15044_random_test.asm:57.1-57.5
+FOR-0-END  . . . . . . . . . . . . . LABEL  0x0001B USED     CONSTANT    044_random_test.asm:54.5-54.15044_random_test.asm:57.1-57.5
+FOR-1  . . . . . . . . . . . . . . . LABEL  0x0002B USED     CONSTANT    044_random_test.asm:54.5-54.15044_random_test.asm:56.5-56.9044_random_test.asm:57.1-57.5
+FOR-1-END  . . . . . . . . . . . . . LABEL  0x00030 USED     CONSTANT    044_random_test.asm:54.5-54.15044_random_test.asm:56.5-56.9044_random_test.asm:57.1-57.5
+I  . . . . . . . . . . . . . . . . . NUMBER 0x00000 USED     REDEFINABLE 044_random_test.asm:59.1-59.18
+IF-0 . . . . . . . . . . . . . . . . LABEL  0x0000A USED     CONSTANT    044_random_test.asm:44.5-44.18044_random_test.asm:57.1-57.5
+IF-0-END . . . . . . . . . . . . . . LABEL  0x00010 USED     CONSTANT    044_random_test.asm:48.5-48.10044_random_test.asm:57.1-57.5
+IF-1 . . . . . . . . . . . . . . . . LABEL  0x0000F USED     CONSTANT    044_random_test.asm:46.5-46.9044_random_test.asm:57.1-57.5
+IF-2 . . . . . . . . . . . . . . . . LABEL  0x0001F USED     CONSTANT    044_random_test.asm:44.5-44.18044_random_test.asm:56.5-56.9044_random_test.asm:57.1-57.5
+IF-2-END . . . . . . . . . . . . . . LABEL  0x00025 USED     CONSTANT    044_random_test.asm:48.5-48.10044_random_test.asm:56.5-56.9044_random_test.asm:57.1-57.5
+IF-3 . . . . . . . . . . . . . . . . LABEL  0x00024 USED     CONSTANT    044_random_test.asm:46.5-46.9044_random_test.asm:56.5-56.9044_random_test.asm:57.1-57.5
+J  . . . . . . . . . . . . . . . . . NUMBER 0x00003 USED     REDEFINABLE 044_random_test.asm:60.1-60.18
+LBL_X  . . . . . . . . . . . . . . . LABEL  0x00060 USED     CONSTANT    044_random_test.asm:79.1-79.7
+LBL_Y  . . . . . . . . . . . . . . . LABEL  0x00061 USED     CONSTANT    044_random_test.asm:80.1-80.7
+MAIN . . . . . . . . . . . . . . . . LABEL  0x0010C USED     CONSTANT    044_random_test.asm:133.1-133.6
+MYLBL  . . . . . . . . . . . . . . . LABEL  0x00110 USED     CONSTANT    044_random_test.asm:137.1-137.7
+O0O  . . . . . . . . . . . . . . . . NUMBER 0x0000A USED     CONSTANT    044_random_test.asm:19.1-19.46
+S0 . . . . . . . . . . . . . . . . . REG.   0x00000 USED     CONSTANT    IMPLICIT
+S1 . . . . . . . . . . . . . . . . . REG.   0x00001 USED     CONSTANT    IMPLICIT
+S2 . . . . . . . . . . . . . . . . . REG.   0x00002 USED     CONSTANT    IMPLICIT
+S3 . . . . . . . . . . . . . . . . . REG.   0x00003 NOT USED CONSTANT    IMPLICIT
+S4 . . . . . . . . . . . . . . . . . REG.   0x00004 NOT USED CONSTANT    IMPLICIT
+S5 . . . . . . . . . . . . . . . . . REG.   0x00005 NOT USED CONSTANT    IMPLICIT
+S6 . . . . . . . . . . . . . . . . . REG.   0x00006 NOT USED CONSTANT    IMPLICIT
+S7 . . . . . . . . . . . . . . . . . REG.   0x00007 NOT USED CONSTANT    IMPLICIT
+S8 . . . . . . . . . . . . . . . . . REG.   0x00008 NOT USED CONSTANT    IMPLICIT
+S9 . . . . . . . . . . . . . . . . . REG.   0x00009 NOT USED CONSTANT    IMPLICIT
+SA . . . . . . . . . . . . . . . . . REG.   0x0000A NOT USED CONSTANT    IMPLICIT
+SB . . . . . . . . . . . . . . . . . REG.   0x0000B NOT USED CONSTANT    IMPLICIT
+SC . . . . . . . . . . . . . . . . . REG.   0x0000C NOT USED CONSTANT    IMPLICIT
+SD . . . . . . . . . . . . . . . . . REG.   0x0000D NOT USED CONSTANT    IMPLICIT
+SE . . . . . . . . . . . . . . . . . REG.   0x0000E NOT USED CONSTANT    IMPLICIT
+SF . . . . . . . . . . . . . . . . . REG.   0x0000F NOT USED CONSTANT    IMPLICIT
+U  . . . . . . . . . . . . . . . . . NUMBER 0x00001 USED     CONSTANT    044_random_test.asm:12.1-12.18
+WHILE-0  . . . . . . . . . . . . . . LABEL  0x00010 USED     CONSTANT    044_random_test.asm:50.5-50.17044_random_test.asm:57.1-57.5
+WHILE-0-END  . . . . . . . . . . . . LABEL  0x00015 USED     CONSTANT    044_random_test.asm:50.5-50.17044_random_test.asm:57.1-57.5
+WHILE-1  . . . . . . . . . . . . . . LABEL  0x00025 USED     CONSTANT    044_random_test.asm:50.5-50.17044_random_test.asm:56.5-56.9044_random_test.asm:57.1-57.5
+WHILE-1-END  . . . . . . . . . . . . LABEL  0x0002A USED     CONSTANT    044_random_test.asm:50.5-50.17044_random_test.asm:56.5-56.9044_random_test.asm:57.1-57.5
+XXX  . . . . . . . . . . . . . . . . EXPR.          USED     CONSTANT    044_random_test.asm:17.1-17.36
+XYZ  . . . . . . . . . . . . . . . . LABEL  0x00001 NOT USED CONSTANT    044_random_test.asm:36.1-36.5
+_S3  . . . . . . . . . . . . . . . . REG.   0x00001 USED     CONSTANT    044_random_test.asm:7.1-7.18
+_X_  . . . . . . . . . . . . . . . . EXPR.          USED     CONSTANT    044_random_test.asm:16.1-16.24
+_Y . . . . . . . . . . . . . . . . . NUMBER 0x00008 USED     CONSTANT    044_random_test.0.inc:5.5-5.20044_random_test.asm:134.9-134.19
+_Y_  . . . . . . . . . . . . . . . . EXPR.          USED     CONSTANT    044_random_test.asm:18.1-18.28
+
+REMOVED SYMBOLS:
+CCCP . . . . . . . . . . . . . . . . NUMBER 0x00006 USED     CONSTANT    044_random_test.asm:83.1-83.28
