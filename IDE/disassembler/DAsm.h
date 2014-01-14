@@ -53,9 +53,9 @@ class DAsm
 
             enum EndOfLine
             {
-                EOF_LF,
-                EOF_CR,
-                EOF_CRLF
+                EOL_LF,
+                EOL_CR,
+                EOL_CRLF
             } m_eol;
 
             ///
