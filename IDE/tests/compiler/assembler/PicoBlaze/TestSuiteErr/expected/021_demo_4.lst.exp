@@ -65,6 +65,7 @@
                   65     GetChar             MACRO
                   66                         UART_new_data_wait              ; Wait for new data
                   67                         INPUT       RX_data, RX_id       ; TX PORT_ID, sending char parameter
+E: symbol not defined: `RX_DATA'.
                   68                         ENDM
                   69     ;==============================================================================;
                   70     ; Send 0D and 0A character pair via UART
@@ -158,76 +159,85 @@
                  158     ;-------------------------------------------------------------------------
                  159     ; Interrupt routine
                  160     INTERRUPT:          SendChar  'I'
+W: value out of range: 0x49, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x9.
                  161 +1                      UART_ready_wait                  ; Expand UART_ready_wait MACRO here
 001 04004        162 +2                      INPUT       Temp1, UART_stat    ; checking UART status
 002 13040        163 +2                      TEST        Temp1, 4            ; test bit 2 (is Tx ready?)
 003 35001        164 +2                      JUMP        Z, ($ - 2)
 004 01490        165 +1                      LOAD        TXdata, char
-W: value out of range: 73, allowed range is [0,15] (trimmed to 4 bits) which makes it 9.
+W: ==> value out of range: 0x49, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x9.
 005 2C401        166 +1                      OUTPUT      TXdata, TX_id       ; TX PORT_ID, sending char parameter
                  167                         SendChar  'N'
+W: value out of range: 0x4e, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xe.
                  168 +1                      UART_ready_wait                  ; Expand UART_ready_wait MACRO here
 006 04004        169 +2                      INPUT       Temp1, UART_stat    ; checking UART status
 007 13040        170 +2                      TEST        Temp1, 4            ; test bit 2 (is Tx ready?)
 008 35006        171 +2                      JUMP        Z, ($ - 2)
 009 014E0        172 +1                      LOAD        TXdata, char
-W: value out of range: 78, allowed range is [0,15] (trimmed to 4 bits) which makes it 14.
+W: ==> value out of range: 0x4e, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xe.
 00A 2C401        173 +1                      OUTPUT      TXdata, TX_id       ; TX PORT_ID, sending char parameter
                  174                         SendChar  'T'
+W: value out of range: 0x54, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
                  175 +1                      UART_ready_wait                  ; Expand UART_ready_wait MACRO here
 00B 04004        176 +2                      INPUT       Temp1, UART_stat    ; checking UART status
 00C 13040        177 +2                      TEST        Temp1, 4            ; test bit 2 (is Tx ready?)
 00D 3500B        178 +2                      JUMP        Z, ($ - 2)
 00E 01440        179 +1                      LOAD        TXdata, char
-W: value out of range: 84, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+W: ==> value out of range: 0x54, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
 00F 2C401        180 +1                      OUTPUT      TXdata, TX_id       ; TX PORT_ID, sending char parameter
                  181                         SendChar  'E'
+W: value out of range: 0x45, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
                  182 +1                      UART_ready_wait                  ; Expand UART_ready_wait MACRO here
 010 04004        183 +2                      INPUT       Temp1, UART_stat    ; checking UART status
 011 13040        184 +2                      TEST        Temp1, 4            ; test bit 2 (is Tx ready?)
 012 35010        185 +2                      JUMP        Z, ($ - 2)
 013 01450        186 +1                      LOAD        TXdata, char
-W: value out of range: 69, allowed range is [0,15] (trimmed to 4 bits) which makes it 5.
+W: ==> value out of range: 0x45, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
 014 2C401        187 +1                      OUTPUT      TXdata, TX_id       ; TX PORT_ID, sending char parameter
                  188                         SendChar  'R'
+W: value out of range: 0x52, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x2.
                  189 +1                      UART_ready_wait                  ; Expand UART_ready_wait MACRO here
 015 04004        190 +2                      INPUT       Temp1, UART_stat    ; checking UART status
 016 13040        191 +2                      TEST        Temp1, 4            ; test bit 2 (is Tx ready?)
 017 35015        192 +2                      JUMP        Z, ($ - 2)
 018 01420        193 +1                      LOAD        TXdata, char
-W: value out of range: 82, allowed range is [0,15] (trimmed to 4 bits) which makes it 2.
+W: ==> value out of range: 0x52, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x2.
 019 2C401        194 +1                      OUTPUT      TXdata, TX_id       ; TX PORT_ID, sending char parameter
                  195                         SendChar  'R'
+W: value out of range: 0x52, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x2.
                  196 +1                      UART_ready_wait                  ; Expand UART_ready_wait MACRO here
 01A 04004        197 +2                      INPUT       Temp1, UART_stat    ; checking UART status
 01B 13040        198 +2                      TEST        Temp1, 4            ; test bit 2 (is Tx ready?)
 01C 3501A        199 +2                      JUMP        Z, ($ - 2)
 01D 01420        200 +1                      LOAD        TXdata, char
-W: value out of range: 82, allowed range is [0,15] (trimmed to 4 bits) which makes it 2.
+W: ==> value out of range: 0x52, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x2.
 01E 2C401        201 +1                      OUTPUT      TXdata, TX_id       ; TX PORT_ID, sending char parameter
                  202                         SendChar  'U'
+W: value out of range: 0x55, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
                  203 +1                      UART_ready_wait                  ; Expand UART_ready_wait MACRO here
 01F 04004        204 +2                      INPUT       Temp1, UART_stat    ; checking UART status
 020 13040        205 +2                      TEST        Temp1, 4            ; test bit 2 (is Tx ready?)
 021 3501F        206 +2                      JUMP        Z, ($ - 2)
 022 01450        207 +1                      LOAD        TXdata, char
-W: value out of range: 85, allowed range is [0,15] (trimmed to 4 bits) which makes it 5.
+W: ==> value out of range: 0x55, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
 023 2C401        208 +1                      OUTPUT      TXdata, TX_id       ; TX PORT_ID, sending char parameter
                  209                         SendChar  'P'
+W: value out of range: 0x50, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x0.
                  210 +1                      UART_ready_wait                  ; Expand UART_ready_wait MACRO here
 024 04004        211 +2                      INPUT       Temp1, UART_stat    ; checking UART status
 025 13040        212 +2                      TEST        Temp1, 4            ; test bit 2 (is Tx ready?)
 026 35024        213 +2                      JUMP        Z, ($ - 2)
 027 01400        214 +1                      LOAD        TXdata, char
-W: value out of range: 80, allowed range is [0,15] (trimmed to 4 bits) which makes it 0.
+W: ==> value out of range: 0x50, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x0.
 028 2C401        215 +1                      OUTPUT      TXdata, TX_id       ; TX PORT_ID, sending char parameter
                  216                         SendChar  'T'
+W: value out of range: 0x54, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
                  217 +1                      UART_ready_wait                  ; Expand UART_ready_wait MACRO here
 029 04004        218 +2                      INPUT       Temp1, UART_stat    ; checking UART status
 02A 13040        219 +2                      TEST        Temp1, 4            ; test bit 2 (is Tx ready?)
 02B 35029        220 +2                      JUMP        Z, ($ - 2)
 02C 01440        221 +1                      LOAD        TXdata, char
-W: value out of range: 84, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+W: ==> value out of range: 0x54, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
 02D 2C401        222 +1                      OUTPUT      TXdata, TX_id       ; TX PORT_ID, sending char parameter
                  223                         SendCRLF
                  224 +1                      SendChar  0x0D          ; CR character
@@ -269,7 +279,7 @@ E: macro not defined: "RETURNI".
 042 13080        259 +2                      TEST        Temp1, 8            ; test bit 2 (is Tx ready?)
 043 35041        260 +2                      JUMP        Z, ($ - 2)
 044 04102        261 +1                      INPUT       RX_data, RX_id       ; TX PORT_ID, sending char parameter
-E: symbol not defined: `RX_DATA'.
+E: ==> symbol not defined: `RX_DATA'.
                  262                         RX_resolve  RX_data           ; Resolve received byte
 045 34041        263                         JUMP        main_loop
                  264

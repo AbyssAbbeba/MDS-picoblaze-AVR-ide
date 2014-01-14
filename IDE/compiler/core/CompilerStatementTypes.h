@@ -844,6 +844,8 @@ namespace CompilerStatementTypes
             C_STMT_CASE,
             C_STMT_DEFAULT,
             C_STMT_SCOPE,
+            C_STMT_INLINE_FUNC,
+            C_STMT_TYPEDEF,
             
         //@}
 

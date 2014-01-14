@@ -334,7 +334,7 @@ E: symbol not defined: `S5'.
 00B 200CF        256                           CALL disp_Frequency                 ;Display 'Frequency Counter V1.00'
 00C 00150        257                           LOAD s5, 21                         ;Line 2 position 1
 E: symbol not defined: `S5'.
-W: value out of range: 21, allowed range is [0,15] (trimmed to 4 bits) which makes it 5.
+W: value out of range: 0x15, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
 00D 2020C        258                           CALL LCD_cursor
 00E 200E2        259                           CALL disp_Counter
                  260                           LOAD s5, 2B                         ;Line 2 position 11
@@ -361,7 +361,7 @@ E: symbol not defined: `S1'.
 E: symbol not defined: `S1'.
 01A 06100        276                           XOR s1, dcm_kick                    ;toggle kick start signal
 E: symbol not defined: `S1'.
-W: value out of range: 80, allowed range is [0,15] (trimmed to 4 bits) which makes it 0.
+W: value out of range: 0x50, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x0.
 01B 18110        277                           SUB s0, 01
 E: symbol not defined: `S0'.
 01C 36019        278                           JUMP NZ, kick_loop
@@ -394,7 +394,7 @@ E: symbol not defined: `S1'.
                  299                           ;
 022 00150        300               warm_start: LOAD s5, 21                         ;Line 2 position 1
 E: symbol not defined: `S5'.
-W: value out of range: 21, allowed range is [0,15] (trimmed to 4 bits) which makes it 5.
+W: value out of range: 0x15, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
 023 2020C        301                           CALL LCD_cursor
 024 09150        302                           INPUT sF, status_port               ;select source based on switches
 E: symbol not defined: `SF'.
@@ -464,7 +464,7 @@ E: symbol not defined: `S5'.
 047 2020C        348                           CALL LCD_cursor
 048 00130        349                           LOAD s6, decimal8                   ;up to 999,999,999 Hz
 E: symbol not defined: `S6'.
-W: value out of range: 19, allowed range is [0,15] (trimmed to 4 bits) which makes it 3.
+W: value out of range: 0x13, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x3.
 049 2004B        350                           CALL disp_digits
 04A 22022        351                           JUMP warm_start
                  352                           ;
@@ -488,7 +488,7 @@ E: symbol not defined: `SF'.
 E: symbol not defined: `FF'.
 04C 00140        369                           LOAD sE, character_space            ;scaling character for MHz, KHz or Hz
 E: symbol not defined: `SE'.
-W: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+W: value out of range: 0x14, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
 04D 0B113        370                           FETCH s5, decimal8                  ;100MHz digit
 E: symbol not defined: `S5'.
 04E 20085        371                           CALL zero_test
@@ -514,7 +514,7 @@ E: symbol not defined: `SE'.
 05B 2205E        384                           JUMP khz_digits
 05C 00140        385                khz_space: LOAD s5, character_space
 E: symbol not defined: `S5'.
-W: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+W: value out of range: 0x14, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
 05D 201CF        386                           CALL LCD_write_data
 05E 0B110        387               khz_digits: FETCH s5, decimal5                  ;100KHz digit
 E: symbol not defined: `S5'.
@@ -545,7 +545,7 @@ E: symbol not defined: `CHARACTER_K'.
 06E 22071        403                           JUMP hz_digits
 06F 00140        404                 hz_space: LOAD s5, character_space
 E: symbol not defined: `S5'.
-W: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+W: value out of range: 0x14, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
 070 201CF        405                           CALL LCD_write_data
 071 0B10D        406                hz_digits: FETCH s5, decimal2                  ;100KHz digit
 E: symbol not defined: `S5'.
@@ -559,11 +559,11 @@ E: symbol not defined: `S5'.
 E: symbol not defined: `S5'.
 078 101E0        413                           ADD s5, character_0                 ;convert number to ASCII
 E: symbol not defined: `S5'.
-W: value out of range: 30, allowed range is [0,15] (trimmed to 4 bits) which makes it 14.
+W: value out of range: 0x1e, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xe.
 079 201CF        414                           CALL LCD_write_data
 07A 00140        415                           LOAD s5, character_space
 E: symbol not defined: `S5'.
-W: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+W: value out of range: 0x14, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
 07B 201CF        416                           CALL LCD_write_data
 07C 00110        417                           LOAD s5, sE
 E: symbol not defined: `S5'.
@@ -571,7 +571,7 @@ E: symbol not defined: `SE'.
 07D 201CF        418                           CALL LCD_write_data
 07E 00140        419                           LOAD s5, character_H
 E: symbol not defined: `S5'.
-W: value out of range: 68, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+W: value out of range: 0x44, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
 07F 201CF        420                           CALL LCD_write_data
 080 00110        421                           LOAD s5, character_z
 E: symbol not defined: `S5'.
@@ -579,7 +579,7 @@ E: symbol not defined: `CHARACTER_Z'.
 081 201CF        422                           CALL LCD_write_data
 082 00140        423                           LOAD s5, character_space            ;ensure end of line is clear
 E: symbol not defined: `S5'.
-W: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+W: value out of range: 0x14, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
 083 201CF        424                           CALL LCD_write_data
 084 25000        425                           RETURN
                  426                           ;
@@ -601,12 +601,12 @@ E: symbol not defined: `FF'.
 08A 3208E        438                           JUMP Z, blank_digit
 08B 101E0        439                           ADD s5, character_0                 ;convert number to ASCII
 E: symbol not defined: `S5'.
-W: value out of range: 30, allowed range is [0,15] (trimmed to 4 bits) which makes it 14.
+W: value out of range: 0x1e, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xe.
 08C 201CF        440                           CALL LCD_write_data
 08D 25000        441                           RETURN
 08E 00140        442              blank_digit: LOAD s5, character_space
 E: symbol not defined: `S5'.
-W: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+W: value out of range: 0x14, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
 08F 201CF        443                           CALL LCD_write_data
 090 25000        444                           RETURN
                  445                           ;
@@ -746,15 +746,15 @@ E: symbol not defined: `SA'.
                  526                           ;
 0BC 00160        527           disp_PicoBlaze: LOAD s5, character_P
 E: symbol not defined: `S5'.
-W: value out of range: 70, allowed range is [0,15] (trimmed to 4 bits) which makes it 6.
+W: value out of range: 0x46, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x6.
 0BD 201CF        528                           CALL LCD_write_data
 0BE 00150        529                           LOAD s5, character_i
 E: symbol not defined: `S5'.
-W: value out of range: 69, allowed range is [0,15] (trimmed to 4 bits) which makes it 5.
+W: value out of range: 0x45, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
 0BF 201CF        530                           CALL LCD_write_data
 0C0 001F0        531                           LOAD s5, character_c
 E: symbol not defined: `S5'.
-W: value out of range: 63, allowed range is [0,15] (trimmed to 4 bits) which makes it 15.
+W: value out of range: 0x3f, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xf.
 0C1 201CF        532                           CALL LCD_write_data
 0C2 00110        533                           LOAD s5, character_o
 E: symbol not defined: `S5'.
@@ -762,7 +762,7 @@ E: symbol not defined: `CHARACTER_O'.
 0C3 201CF        534                           CALL LCD_write_data
 0C4 001E0        535                           LOAD s5, character_B
 E: symbol not defined: `S5'.
-W: value out of range: 62, allowed range is [0,15] (trimmed to 4 bits) which makes it 14.
+W: value out of range: 0x3e, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xe.
 0C5 201CF        536                           CALL LCD_write_data
 0C6 00110        537                           LOAD s5, character_l
 E: symbol not defined: `S5'.
@@ -770,7 +770,7 @@ E: symbol not defined: `CHARACTER_L'.
 0C7 201CF        538                           CALL LCD_write_data
 0C8 001D0        539                           LOAD s5, character_a
 E: symbol not defined: `S5'.
-W: value out of range: 61, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
+W: value out of range: 0x3d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
 0C9 201CF        540                           CALL LCD_write_data
 0CA 00110        541                           LOAD s5, character_z
 E: symbol not defined: `S5'.
@@ -778,7 +778,7 @@ E: symbol not defined: `CHARACTER_Z'.
 0CB 201CF        542                           CALL LCD_write_data
 0CC 00110        543                           LOAD s5, character_e
 E: symbol not defined: `S5'.
-W: value out of range: 65, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
+W: value out of range: 0x41, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
 0CD 201CF        544                           CALL LCD_write_data
 0CE 25000        545                           RETURN
                  546                           ;
@@ -788,27 +788,27 @@ W: value out of range: 65, allowed range is [0,15] (trimmed to 4 bits) which mak
                  550                           ;
 0CF 00120        551           disp_Frequency: LOAD s5, character_F
 E: symbol not defined: `S5'.
-W: value out of range: 66, allowed range is [0,15] (trimmed to 4 bits) which makes it 2.
+W: value out of range: 0x42, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x2.
 0D0 201CF        552                           CALL LCD_write_data
 0D1 00180        553                           LOAD s5, character_r
 E: symbol not defined: `S5'.
-W: value out of range: 72, allowed range is [0,15] (trimmed to 4 bits) which makes it 8.
+W: value out of range: 0x48, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x8.
 0D2 201CF        554                           CALL LCD_write_data
 0D3 00110        555                           LOAD s5, character_e
 E: symbol not defined: `S5'.
-W: value out of range: 65, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
+W: value out of range: 0x41, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
 0D4 201CF        556                           CALL LCD_write_data
 0D5 00170        557                           LOAD s5, character_q
 E: symbol not defined: `S5'.
-W: value out of range: 71, allowed range is [0,15] (trimmed to 4 bits) which makes it 7.
+W: value out of range: 0x47, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x7.
 0D6 201CF        558                           CALL LCD_write_data
 0D7 001B0        559                           LOAD s5, character_u
 E: symbol not defined: `S5'.
-W: value out of range: 75, allowed range is [0,15] (trimmed to 4 bits) which makes it 11.
+W: value out of range: 0x4b, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xb.
 0D8 201CF        560                           CALL LCD_write_data
 0D9 00110        561                           LOAD s5, character_e
 E: symbol not defined: `S5'.
-W: value out of range: 65, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
+W: value out of range: 0x41, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
 0DA 201CF        562                           CALL LCD_write_data
 0DB 00110        563                           LOAD s5, character_n
 E: symbol not defined: `S5'.
@@ -816,11 +816,11 @@ E: symbol not defined: `CHARACTER_N'.
 0DC 201CF        564                           CALL LCD_write_data
 0DD 001F0        565                           LOAD s5, character_c
 E: symbol not defined: `S5'.
-W: value out of range: 63, allowed range is [0,15] (trimmed to 4 bits) which makes it 15.
+W: value out of range: 0x3f, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xf.
 0DE 201CF        566                           CALL LCD_write_data
 0DF 001F0        567                           LOAD s5, character_y
 E: symbol not defined: `S5'.
-W: value out of range: 79, allowed range is [0,15] (trimmed to 4 bits) which makes it 15.
+W: value out of range: 0x4f, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xf.
 0E0 201CF        568                           CALL LCD_write_data
 0E1 25000        569                           RETURN
                  570                           ;
@@ -830,7 +830,7 @@ W: value out of range: 79, allowed range is [0,15] (trimmed to 4 bits) which mak
                  574                           ;
 0E2 001F0        575             disp_Counter: LOAD s5, character_C
 E: symbol not defined: `S5'.
-W: value out of range: 63, allowed range is [0,15] (trimmed to 4 bits) which makes it 15.
+W: value out of range: 0x3f, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xf.
 0E3 201CF        576                           CALL LCD_write_data
 0E4 00110        577                           LOAD s5, character_o
 E: symbol not defined: `S5'.
@@ -838,7 +838,7 @@ E: symbol not defined: `CHARACTER_O'.
 0E5 201CF        578                           CALL LCD_write_data
 0E6 001B0        579                           LOAD s5, character_u
 E: symbol not defined: `S5'.
-W: value out of range: 75, allowed range is [0,15] (trimmed to 4 bits) which makes it 11.
+W: value out of range: 0x4b, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xb.
 0E7 201CF        580                           CALL LCD_write_data
 0E8 00110        581                           LOAD s5, character_n
 E: symbol not defined: `S5'.
@@ -846,15 +846,15 @@ E: symbol not defined: `CHARACTER_N'.
 0E9 201CF        582                           CALL LCD_write_data
 0EA 001A0        583                           LOAD s5, character_t
 E: symbol not defined: `S5'.
-W: value out of range: 74, allowed range is [0,15] (trimmed to 4 bits) which makes it 10.
+W: value out of range: 0x4a, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xa.
 0EB 201CF        584                           CALL LCD_write_data
 0EC 00110        585                           LOAD s5, character_e
 E: symbol not defined: `S5'.
-W: value out of range: 65, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
+W: value out of range: 0x41, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
 0ED 201CF        586                           CALL LCD_write_data
 0EE 00180        587                           LOAD s5, character_r
 E: symbol not defined: `S5'.
-W: value out of range: 72, allowed range is [0,15] (trimmed to 4 bits) which makes it 8.
+W: value out of range: 0x48, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x8.
 0EF 201CF        588                           CALL LCD_write_data
 0F0 25000        589                           RETURN
                  590                           ;
@@ -863,11 +863,11 @@ W: value out of range: 72, allowed range is [0,15] (trimmed to 4 bits) which mak
                  593                           ;
 0F1 001C0        594             disp_version: LOAD s5, character_v
 E: symbol not defined: `S5'.
-W: value out of range: 76, allowed range is [0,15] (trimmed to 4 bits) which makes it 12.
+W: value out of range: 0x4c, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xc.
 0F2 201CF        595                           CALL LCD_write_data
 0F3 001F0        596                           LOAD s5, character_1
 E: symbol not defined: `S5'.
-W: value out of range: 31, allowed range is [0,15] (trimmed to 4 bits) which makes it 15.
+W: value out of range: 0x1f, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xf.
 0F4 201CF        597                           CALL LCD_write_data
 0F5 00110        598                           LOAD s5, character_stop
 E: symbol not defined: `S5'.
@@ -875,11 +875,11 @@ E: symbol not defined: `CHARACTER_STOP'.
 0F6 201CF        599                           CALL LCD_write_data
 0F7 001E0        600                           LOAD s5, character_0
 E: symbol not defined: `S5'.
-W: value out of range: 30, allowed range is [0,15] (trimmed to 4 bits) which makes it 14.
+W: value out of range: 0x1e, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xe.
 0F8 201CF        601                           CALL LCD_write_data
 0F9 001E0        602                           LOAD s5, character_0
 E: symbol not defined: `S5'.
-W: value out of range: 30, allowed range is [0,15] (trimmed to 4 bits) which makes it 14.
+W: value out of range: 0x1e, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xe.
 0FA 201CF        603                           CALL LCD_write_data
 0FB 25000        604                           RETURN
                  605                           ;
@@ -889,22 +889,22 @@ W: value out of range: 30, allowed range is [0,15] (trimmed to 4 bits) which mak
                  609                           ;
 0FC 00190        610           disp_SMA_input: LOAD s5, character_S
 E: symbol not defined: `S5'.
-W: value out of range: 73, allowed range is [0,15] (trimmed to 4 bits) which makes it 9.
+W: value out of range: 0x49, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x9.
 0FD 201CF        611                           CALL LCD_write_data
 0FE 00160        612                           LOAD s5, character_M
 E: symbol not defined: `S5'.
 0FF 201CF        613                           CALL LCD_write_data
 100 001D0        614                           LOAD s5, character_A
 E: symbol not defined: `S5'.
-W: value out of range: 61, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
+W: value out of range: 0x3d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
 101 201CF        615                           CALL LCD_write_data
 102 00140        616                           LOAD s5, character_space
 E: symbol not defined: `S5'.
-W: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+W: value out of range: 0x14, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
 103 201CF        617                           CALL LCD_write_data
 104 00150        618                           LOAD s5, character_i
 E: symbol not defined: `S5'.
-W: value out of range: 69, allowed range is [0,15] (trimmed to 4 bits) which makes it 5.
+W: value out of range: 0x45, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
 105 201CF        619                           CALL LCD_write_data
 106 00110        620                           LOAD s5, character_n
 E: symbol not defined: `S5'.
@@ -912,15 +912,15 @@ E: symbol not defined: `CHARACTER_N'.
 107 201CF        621                           CALL LCD_write_data
 108 00160        622                           LOAD s5, character_p
 E: symbol not defined: `S5'.
-W: value out of range: 70, allowed range is [0,15] (trimmed to 4 bits) which makes it 6.
+W: value out of range: 0x46, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x6.
 109 201CF        623                           CALL LCD_write_data
 10A 001B0        624                           LOAD s5, character_u
 E: symbol not defined: `S5'.
-W: value out of range: 75, allowed range is [0,15] (trimmed to 4 bits) which makes it 11.
+W: value out of range: 0x4b, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xb.
 10B 201CF        625                           CALL LCD_write_data
 10C 001A0        626                           LOAD s5, character_t
 E: symbol not defined: `S5'.
-W: value out of range: 74, allowed range is [0,15] (trimmed to 4 bits) which makes it 10.
+W: value out of range: 0x4a, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xa.
 10D 201CF        627                           CALL LCD_write_data
 10E 00160        628                           LOAD sF, 06
 E: symbol not defined: `SF'.
@@ -933,18 +933,18 @@ E: symbol not defined: `SF'.
                  635                           ;
 110 00130        636       disp_50MHz_Crystal: LOAD s5, character_5
 E: symbol not defined: `S5'.
-W: value out of range: 35, allowed range is [0,15] (trimmed to 4 bits) which makes it 3.
+W: value out of range: 0x23, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x3.
 111 201CF        637                           CALL LCD_write_data
 112 001E0        638                           LOAD s5, character_0
 E: symbol not defined: `S5'.
-W: value out of range: 30, allowed range is [0,15] (trimmed to 4 bits) which makes it 14.
+W: value out of range: 0x1e, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xe.
 113 201CF        639                           CALL LCD_write_data
 114 00160        640                           LOAD s5, character_M
 E: symbol not defined: `S5'.
 115 201CF        641                           CALL LCD_write_data
 116 00140        642                           LOAD s5, character_H
 E: symbol not defined: `S5'.
-W: value out of range: 68, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+W: value out of range: 0x44, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
 117 201CF        643                           CALL LCD_write_data
 118 00110        644                           LOAD s5, character_z
 E: symbol not defined: `S5'.
@@ -952,31 +952,31 @@ E: symbol not defined: `CHARACTER_Z'.
 119 201CF        645                           CALL LCD_write_data
 11A 00140        646                           LOAD s5, character_space
 E: symbol not defined: `S5'.
-W: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+W: value out of range: 0x14, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
 11B 201CF        647                           CALL LCD_write_data
 11C 001F0        648                           LOAD s5, character_C
 E: symbol not defined: `S5'.
-W: value out of range: 63, allowed range is [0,15] (trimmed to 4 bits) which makes it 15.
+W: value out of range: 0x3f, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xf.
 11D 201CF        649                           CALL LCD_write_data
 11E 00180        650                           LOAD s5, character_r
 E: symbol not defined: `S5'.
-W: value out of range: 72, allowed range is [0,15] (trimmed to 4 bits) which makes it 8.
+W: value out of range: 0x48, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x8.
 11F 201CF        651                           CALL LCD_write_data
 120 001F0        652                           LOAD s5, character_y
 E: symbol not defined: `S5'.
-W: value out of range: 79, allowed range is [0,15] (trimmed to 4 bits) which makes it 15.
+W: value out of range: 0x4f, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xf.
 121 201CF        653                           CALL LCD_write_data
 122 00190        654                           LOAD s5, character_s
 E: symbol not defined: `S5'.
-W: value out of range: 73, allowed range is [0,15] (trimmed to 4 bits) which makes it 9.
+W: value out of range: 0x49, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x9.
 123 201CF        655                           CALL LCD_write_data
 124 001A0        656                           LOAD s5, character_t
 E: symbol not defined: `S5'.
-W: value out of range: 74, allowed range is [0,15] (trimmed to 4 bits) which makes it 10.
+W: value out of range: 0x4a, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xa.
 125 201CF        657                           CALL LCD_write_data
 126 001D0        658                           LOAD s5, character_a
 E: symbol not defined: `S5'.
-W: value out of range: 61, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
+W: value out of range: 0x3d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
 127 201CF        659                           CALL LCD_write_data
 128 00110        660                           LOAD s5, character_l
 E: symbol not defined: `S5'.
@@ -993,18 +993,18 @@ E: symbol not defined: `SF'.
                  669                           ;
 12C 00100        670      disp_DCM_Oscillator: LOAD s5, character_D
 E: symbol not defined: `S5'.
-W: value out of range: 64, allowed range is [0,15] (trimmed to 4 bits) which makes it 0.
+W: value out of range: 0x40, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x0.
 12D 201CF        671                           CALL LCD_write_data
 12E 001F0        672                           LOAD s5, character_C
 E: symbol not defined: `S5'.
-W: value out of range: 63, allowed range is [0,15] (trimmed to 4 bits) which makes it 15.
+W: value out of range: 0x3f, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xf.
 12F 201CF        673                           CALL LCD_write_data
 130 00160        674                           LOAD s5, character_M
 E: symbol not defined: `S5'.
 131 201CF        675                           CALL LCD_write_data
 132 00140        676          disp_Oscillator: LOAD s5, character_space
 E: symbol not defined: `S5'.
-W: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+W: value out of range: 0x14, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
 133 201CF        677                           CALL LCD_write_data
 134 00110        678                           LOAD s5, character_O
 E: symbol not defined: `S5'.
@@ -1012,15 +1012,15 @@ E: symbol not defined: `CHARACTER_O'.
 135 201CF        679                           CALL LCD_write_data
 136 00190        680                           LOAD s5, character_s
 E: symbol not defined: `S5'.
-W: value out of range: 73, allowed range is [0,15] (trimmed to 4 bits) which makes it 9.
+W: value out of range: 0x49, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x9.
 137 201CF        681                           CALL LCD_write_data
 138 001F0        682                           LOAD s5, character_c
 E: symbol not defined: `S5'.
-W: value out of range: 63, allowed range is [0,15] (trimmed to 4 bits) which makes it 15.
+W: value out of range: 0x3f, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xf.
 139 201CF        683                           CALL LCD_write_data
 13A 00150        684                           LOAD s5, character_i
 E: symbol not defined: `S5'.
-W: value out of range: 69, allowed range is [0,15] (trimmed to 4 bits) which makes it 5.
+W: value out of range: 0x45, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
 13B 201CF        685                           CALL LCD_write_data
 13C 00110        686                           LOAD s5, character_l
 E: symbol not defined: `S5'.
@@ -1029,11 +1029,11 @@ E: symbol not defined: `CHARACTER_L'.
 13E 201CF        688                           CALL LCD_write_data
 13F 001D0        689                           LOAD s5, character_a
 E: symbol not defined: `S5'.
-W: value out of range: 61, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
+W: value out of range: 0x3d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
 140 201CF        690                           CALL LCD_write_data
 141 001A0        691                           LOAD s5, character_t
 E: symbol not defined: `S5'.
-W: value out of range: 74, allowed range is [0,15] (trimmed to 4 bits) which makes it 10.
+W: value out of range: 0x4a, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xa.
 142 201CF        692                           CALL LCD_write_data
 143 00110        693                           LOAD s5, character_o
 E: symbol not defined: `S5'.
@@ -1041,11 +1041,11 @@ E: symbol not defined: `CHARACTER_O'.
 144 201CF        694                           CALL LCD_write_data
 145 00180        695                           LOAD s5, character_r
 E: symbol not defined: `S5'.
-W: value out of range: 72, allowed range is [0,15] (trimmed to 4 bits) which makes it 8.
+W: value out of range: 0x48, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x8.
 146 201CF        696                           CALL LCD_write_data
 147 00140        697                           LOAD s5, character_space
 E: symbol not defined: `S5'.
-W: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+W: value out of range: 0x14, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
 148 201CF        698                           CALL LCD_write_data
 149 25000        699                           RETURN
                  700                           ;
@@ -1056,11 +1056,11 @@ W: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which mak
                  705                           ;
 14A 00180        706     disp_Ring_Oscillator: LOAD s5, character_R
 E: symbol not defined: `S5'.
-W: value out of range: 72, allowed range is [0,15] (trimmed to 4 bits) which makes it 8.
+W: value out of range: 0x48, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x8.
 14B 201CF        707                           CALL LCD_write_data
 14C 00150        708                           LOAD s5, character_i
 E: symbol not defined: `S5'.
-W: value out of range: 69, allowed range is [0,15] (trimmed to 4 bits) which makes it 5.
+W: value out of range: 0x45, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
 14D 201CF        709                           CALL LCD_write_data
 14E 00110        710                           LOAD s5, character_n
 E: symbol not defined: `S5'.
@@ -1068,7 +1068,7 @@ E: symbol not defined: `CHARACTER_N'.
 14F 201CF        711                           CALL LCD_write_data
 150 00130        712                           LOAD s5, character_g
 E: symbol not defined: `S5'.
-W: value out of range: 67, allowed range is [0,15] (trimmed to 4 bits) which makes it 3.
+W: value out of range: 0x43, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x3.
 151 201CF        713                           CALL LCD_write_data
 152 22132        714                           JUMP disp_Oscillator
                  715                           ;
@@ -1081,7 +1081,7 @@ E: symbol not defined: `SF'.
 154 31000        721                           RETURN Z
 155 00140        722                           LOAD s5, character_space
 E: symbol not defined: `S5'.
-W: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+W: value out of range: 0x14, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
 156 201CF        723                           CALL LCD_write_data
 157 18110        724                           SUB sF, 01
 E: symbol not defined: `SF'.
@@ -1094,11 +1094,11 @@ E: symbol not defined: `S5'.
 15A 2020C        730                           CALL LCD_cursor
 15B 00180        731                           LOAD s5, character_R
 E: symbol not defined: `S5'.
-W: value out of range: 72, allowed range is [0,15] (trimmed to 4 bits) which makes it 8.
+W: value out of range: 0x48, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x8.
 15C 201CF        732                           CALL LCD_write_data
 15D 00150        733                           LOAD s5, character_i
 E: symbol not defined: `S5'.
-W: value out of range: 69, allowed range is [0,15] (trimmed to 4 bits) which makes it 5.
+W: value out of range: 0x45, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
 15E 201CF        734                           CALL LCD_write_data
 15F 00110        735                           LOAD s5, character_n
 E: symbol not defined: `S5'.
@@ -1106,120 +1106,120 @@ E: symbol not defined: `CHARACTER_N'.
 160 201CF        736                           CALL LCD_write_data
 161 00130        737                           LOAD s5, character_g
 E: symbol not defined: `S5'.
-W: value out of range: 67, allowed range is [0,15] (trimmed to 4 bits) which makes it 3.
+W: value out of range: 0x43, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x3.
 162 201CF        738                           CALL LCD_write_data
 163 00140        739                           LOAD s5, character_space
 E: symbol not defined: `S5'.
-W: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+W: value out of range: 0x14, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
 164 201CF        740                           CALL LCD_write_data
 165 00100        741                           LOAD s5, character_D
 E: symbol not defined: `S5'.
-W: value out of range: 64, allowed range is [0,15] (trimmed to 4 bits) which makes it 0.
+W: value out of range: 0x40, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x0.
 166 201CF        742                           CALL LCD_write_data
 167 001F0        743                           LOAD s5, character_C
 E: symbol not defined: `S5'.
-W: value out of range: 63, allowed range is [0,15] (trimmed to 4 bits) which makes it 15.
+W: value out of range: 0x3f, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xf.
 168 201CF        744                           CALL LCD_write_data
 169 00160        745                           LOAD s5, character_M
 E: symbol not defined: `S5'.
 16A 201CF        746                           CALL LCD_write_data
 16B 00140        747                           LOAD s5, character_space
 E: symbol not defined: `S5'.
-W: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+W: value out of range: 0x14, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
 16C 201CF        748                           CALL LCD_write_data
 16D 00130        749                           LOAD s5, character_5
 E: symbol not defined: `S5'.
-W: value out of range: 35, allowed range is [0,15] (trimmed to 4 bits) which makes it 3.
+W: value out of range: 0x23, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x3.
 16E 201CF        750                           CALL LCD_write_data
 16F 001E0        751                           LOAD s5, character_0
 E: symbol not defined: `S5'.
-W: value out of range: 30, allowed range is [0,15] (trimmed to 4 bits) which makes it 14.
+W: value out of range: 0x1e, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xe.
 170 201CF        752                           CALL LCD_write_data
 171 00160        753                           LOAD s5, character_M
 E: symbol not defined: `S5'.
 172 201CF        754                           CALL LCD_write_data
 173 00140        755                           LOAD s5, character_space
 E: symbol not defined: `S5'.
-W: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+W: value out of range: 0x14, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
 174 201CF        756                           CALL LCD_write_data
 175 00190        757                           LOAD s5, character_S
 E: symbol not defined: `S5'.
-W: value out of range: 73, allowed range is [0,15] (trimmed to 4 bits) which makes it 9.
+W: value out of range: 0x49, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x9.
 176 201CF        758                           CALL LCD_write_data
 177 00160        759                           LOAD s5, character_M
 E: symbol not defined: `S5'.
 178 201CF        760                           CALL LCD_write_data
 179 001D0        761                           LOAD s5, character_A
 E: symbol not defined: `S5'.
-W: value out of range: 61, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
+W: value out of range: 0x3d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
 17A 201CF        762                           CALL LCD_write_data
 17B 00140        763                           LOAD s5, 20                         ;Line 2 position 0
 E: symbol not defined: `S5'.
-W: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+W: value out of range: 0x14, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
 17C 2020C        764                           CALL LCD_cursor
 17D 00140        765                           LOAD s5, character_space
 E: symbol not defined: `S5'.
-W: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+W: value out of range: 0x14, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
 17E 201CF        766                           CALL LCD_write_data
 17F 00190        767                           LOAD s5, character_S
 E: symbol not defined: `S5'.
-W: value out of range: 73, allowed range is [0,15] (trimmed to 4 bits) which makes it 9.
+W: value out of range: 0x49, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x9.
 180 201CF        768                           CALL LCD_write_data
 181 001D0        769                           LOAD s5, character_W
 E: symbol not defined: `S5'.
-W: value out of range: 77, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
+W: value out of range: 0x4d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
 182 201CF        770                           CALL LCD_write_data
 183 00110        771                           LOAD s5, character_3
 E: symbol not defined: `S5'.
-W: value out of range: 33, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
+W: value out of range: 0x21, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
 184 201CF        772                           CALL LCD_write_data
 185 00140        773                           LOAD s5, character_space
 E: symbol not defined: `S5'.
-W: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+W: value out of range: 0x14, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
 186 201CF        774                           CALL LCD_write_data
 187 00190        775                           LOAD s5, character_S
 E: symbol not defined: `S5'.
-W: value out of range: 73, allowed range is [0,15] (trimmed to 4 bits) which makes it 9.
+W: value out of range: 0x49, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x9.
 188 201CF        776                           CALL LCD_write_data
 189 001D0        777                           LOAD s5, character_W
 E: symbol not defined: `S5'.
-W: value out of range: 77, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
+W: value out of range: 0x4d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
 18A 201CF        778                           CALL LCD_write_data
 18B 00100        779                           LOAD s5, character_2
 E: symbol not defined: `S5'.
-W: value out of range: 32, allowed range is [0,15] (trimmed to 4 bits) which makes it 0.
+W: value out of range: 0x20, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x0.
 18C 201CF        780                           CALL LCD_write_data
 18D 00140        781                           LOAD s5, character_space
 E: symbol not defined: `S5'.
-W: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+W: value out of range: 0x14, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
 18E 201CF        782                           CALL LCD_write_data
 18F 00190        783                           LOAD s5, character_S
 E: symbol not defined: `S5'.
-W: value out of range: 73, allowed range is [0,15] (trimmed to 4 bits) which makes it 9.
+W: value out of range: 0x49, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x9.
 190 201CF        784                           CALL LCD_write_data
 191 001D0        785                           LOAD s5, character_W
 E: symbol not defined: `S5'.
-W: value out of range: 77, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
+W: value out of range: 0x4d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
 192 201CF        786                           CALL LCD_write_data
 193 001F0        787                           LOAD s5, character_1
 E: symbol not defined: `S5'.
-W: value out of range: 31, allowed range is [0,15] (trimmed to 4 bits) which makes it 15.
+W: value out of range: 0x1f, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xf.
 194 201CF        788                           CALL LCD_write_data
 195 00140        789                           LOAD s5, character_space
 E: symbol not defined: `S5'.
-W: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+W: value out of range: 0x14, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
 196 201CF        790                           CALL LCD_write_data
 197 00190        791                           LOAD s5, character_S
 E: symbol not defined: `S5'.
-W: value out of range: 73, allowed range is [0,15] (trimmed to 4 bits) which makes it 9.
+W: value out of range: 0x49, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x9.
 198 201CF        792                           CALL LCD_write_data
 199 001D0        793                           LOAD s5, character_W
 E: symbol not defined: `S5'.
-W: value out of range: 77, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
+W: value out of range: 0x4d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
 19A 201CF        794                           CALL LCD_write_data
 19B 001E0        795                           LOAD s5, character_0
 E: symbol not defined: `S5'.
-W: value out of range: 30, allowed range is [0,15] (trimmed to 4 bits) which makes it 14.
+W: value out of range: 0x1e, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xe.
 19C 201CF        796                           CALL LCD_write_data
 19D 25000        797                           RETURN
                  798                           ;
@@ -1255,7 +1255,7 @@ E: symbol not defined: `S0'.
                  826                           ;
 1A2 001C0        827               delay_40us: LOAD s1, 28                         ;40 x 1us = 40us
 E: symbol not defined: `S1'.
-W: value out of range: 28, allowed range is [0,15] (trimmed to 4 bits) which makes it 12.
+W: value out of range: 0x1c, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xc.
 1A3 2019E        828                wait_40us: CALL delay_1us
 1A4 18110        829                           SUB s1, 01
 E: symbol not defined: `S1'.
@@ -1269,7 +1269,7 @@ E: symbol not defined: `S1'.
                  837                           ;
 1A7 00130        838                delay_1ms: LOAD s2, 19                         ;25 x 40us = 1ms
 E: symbol not defined: `S2'.
-W: value out of range: 19, allowed range is [0,15] (trimmed to 4 bits) which makes it 3.
+W: value out of range: 0x13, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x3.
 1A8 201A2        839                 wait_1ms: CALL delay_40us
 1A9 18110        840                           SUB s2, 01
 E: symbol not defined: `S2'.
@@ -1296,7 +1296,7 @@ E: symbol not defined: `S3'.
                  859                           ;
 1B1 00100        860                 delay_1s: LOAD s4, 32                         ;50 x 20ms = 1000ms
 E: symbol not defined: `S4'.
-W: value out of range: 32, allowed range is [0,15] (trimmed to 4 bits) which makes it 0.
+W: value out of range: 0x20, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x0.
 1B2 201AC        861                  wait_1s: CALL delay_20ms
 1B3 18110        862                           SUB s4, 01
 E: symbol not defined: `S4'.
@@ -1526,7 +1526,7 @@ E: symbol not defined: `S4'.
 1F7 201AC       1025                LCD_reset: CALL delay_20ms                     ;wait more that 15ms for display to be ready
 1F8 001E0       1026                           LOAD s4, 30
 E: symbol not defined: `S4'.
-W: value out of range: 30, allowed range is [0,15] (trimmed to 4 bits) which makes it 14.
+W: value out of range: 0x1e, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xe.
 1F9 201BC       1027                           CALL LCD_write_inst4                ;send '3'
 1FA 201AC       1028                           CALL delay_20ms                     ;wait >4.1ms
 1FB 201BC       1029                           CALL LCD_write_inst4                ;send '3'
@@ -1535,12 +1535,12 @@ W: value out of range: 30, allowed range is [0,15] (trimmed to 4 bits) which mak
 1FE 201A2       1032                           CALL delay_40us                     ;wait >40us
 1FF 00140       1033                           LOAD s4, 20
 E: symbol not defined: `S4'.
-W: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+W: value out of range: 0x14, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
 200 201BC       1034                           CALL LCD_write_inst4                ;send '2'
 201 201A2       1035                           CALL delay_40us                     ;wait >40us
 202 001C0       1036                           LOAD s5, 28                         ;Function set
 E: symbol not defined: `S5'.
-W: value out of range: 28, allowed range is [0,15] (trimmed to 4 bits) which makes it 12.
+W: value out of range: 0x1c, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xc.
 203 201C0       1037                           CALL LCD_write_inst8
 204 00160       1038                           LOAD s5, 06                         ;Entry mode
 E: symbol not defined: `S5'.
@@ -1582,7 +1582,7 @@ E: identifier cannot start with a digit: `0F'.
 E: unexpected end of line.
 20E 04100       1068                           OR s5, 80
 E: symbol not defined: `S5'.
-W: value out of range: 80, allowed range is [0,15] (trimmed to 4 bits) which makes it 0.
+W: value out of range: 0x50, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x0.
 20F 201C0       1069                           CALL LCD_write_inst8                ;instruction write to set cursor
 210 25000       1070                           RETURN
                 1071                set_line2: AND s5, 0F                          ;make address in range C0 to CF for line 2

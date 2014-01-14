@@ -342,11 +342,11 @@ E: symbol not defined: `S0'.
 01F 32025        244                      JUMP Z, test_LED0_start
 020 18140        245                      SUB s0, 20                          ;Count longer to ensure end stops then reset count if maximum
 E: symbol not defined: `S0'.
-W: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+W: value out of range: 0x14, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
 021 32028        246                      JUMP Z, update_LED0
 022 10140        247                      ADD s0, 20
 E: symbol not defined: `S0'.
-W: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+W: value out of range: 0x14, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
 023 10110        248            inc_LED0: ADD s0, 01                          ;increment counter
 E: symbol not defined: `S0'.
 024 22028        249                      JUMP update_LED0
@@ -554,11 +554,11 @@ E: symbol not defined: `S0'.
 09A 320A0        375                      JUMP Z, test_LED7_start
 09B 18140        376                      SUB s0, 20                          ;Count longer to ensure end stops then reset count if maximum
 E: symbol not defined: `S0'.
-W: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+W: value out of range: 0x14, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
 09C 320A3        377                      JUMP Z, update_LED7
 09D 10140        378                      ADD s0, 20
 E: symbol not defined: `S0'.
-W: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+W: value out of range: 0x14, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
 09E 10110        379            inc_LED7: ADD s0, 01                          ;increment counter
 E: symbol not defined: `S0'.
 09F 220A3        380                      JUMP update_LED7
@@ -619,7 +619,7 @@ E: symbol not defined: `S1'.
 0AF 220AB        426                      JUMP go_up_loop
 0B0 00180        427             go_down: LOAD s1, 40
 E: symbol not defined: `S1'.
-W: value out of range: 40, allowed range is [0,15] (trimmed to 4 bits) which makes it 8.
+W: value out of range: 0x28, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x8.
 0B1 18110        428        go_down_loop: SUB s0, 01
 E: symbol not defined: `S0'.
 0B2 31000        429                      RETURN Z
@@ -688,7 +688,7 @@ E: symbol not defined: `S0'.
                  487                      ; Send a space to the UART
                  488                      ;
 0C4 00140        489          send_space: LOAD UART_data, character_space
-W: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which makes it 4.
+W: value out of range: 0x14, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
 0C5 200BB        490                      CALL send_to_UART
 0C6 25000        491                      RETURN
                  492                      ;
@@ -699,72 +699,72 @@ W: value out of range: 20, allowed range is [0,15] (trimmed to 4 bits) which mak
 0C7 200C1        497        send_welcome: CALL send_CR
 0C8 200C1        498                      CALL send_CR
 0C9 00160        499                      LOAD UART_data, character_P
-W: value out of range: 70, allowed range is [0,15] (trimmed to 4 bits) which makes it 6.
+W: value out of range: 0x46, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x6.
 0CA 200BB        500                      CALL send_to_UART
 0CB 00150        501                      LOAD UART_data, character_i
-W: value out of range: 69, allowed range is [0,15] (trimmed to 4 bits) which makes it 5.
+W: value out of range: 0x45, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
 0CC 200BB        502                      CALL send_to_UART
 0CD 001F0        503                      LOAD UART_data, character_c
-W: value out of range: 63, allowed range is [0,15] (trimmed to 4 bits) which makes it 15.
+W: value out of range: 0x3f, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xf.
 0CE 200BB        504                      CALL send_to_UART
 0CF 00110        505                      LOAD UART_data, character_o
 E: symbol not defined: `CHARACTER_O'.
 0D0 200BB        506                      CALL send_to_UART
 0D1 001E0        507                      LOAD UART_data, character_B
-W: value out of range: 62, allowed range is [0,15] (trimmed to 4 bits) which makes it 14.
+W: value out of range: 0x3e, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xe.
 0D2 200BB        508                      CALL send_to_UART
 0D3 00110        509                      LOAD UART_data, character_l
 E: symbol not defined: `CHARACTER_L'.
 0D4 200BB        510                      CALL send_to_UART
 0D5 001D0        511                      LOAD UART_data, character_a
-W: value out of range: 61, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
+W: value out of range: 0x3d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
 0D6 200BB        512                      CALL send_to_UART
 0D7 00110        513                      LOAD UART_data, character_z
 E: symbol not defined: `CHARACTER_Z'.
 0D8 200BB        514                      CALL send_to_UART
 0D9 00110        515                      LOAD UART_data, character_e
-W: value out of range: 65, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
+W: value out of range: 0x41, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
 0DA 200BB        516                      CALL send_to_UART
 0DB 200C4        517                      CALL send_space
 0DC 001D0        518                      LOAD UART_data, character_A
-W: value out of range: 61, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
+W: value out of range: 0x3d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
 0DD 200BB        519                      CALL send_to_UART
 0DE 001B0        520                      LOAD UART_data, character_u
-W: value out of range: 75, allowed range is [0,15] (trimmed to 4 bits) which makes it 11.
+W: value out of range: 0x4b, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xb.
 0DF 200BB        521                      CALL send_to_UART
 0E0 001A0        522                      LOAD UART_data, character_t
-W: value out of range: 74, allowed range is [0,15] (trimmed to 4 bits) which makes it 10.
+W: value out of range: 0x4a, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xa.
 0E1 200BB        523                      CALL send_to_UART
 0E2 00110        524                      LOAD UART_data, character_o
 E: symbol not defined: `CHARACTER_O'.
 0E3 200BB        525                      CALL send_to_UART
 0E4 200C4        526                      CALL send_space
 0E5 00160        527                      LOAD UART_data, character_P
-W: value out of range: 70, allowed range is [0,15] (trimmed to 4 bits) which makes it 6.
+W: value out of range: 0x46, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x6.
 0E6 200BB        528                      CALL send_to_UART
 0E7 001D0        529                      LOAD UART_data, character_W
-W: value out of range: 77, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
+W: value out of range: 0x4d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
 0E8 200BB        530                      CALL send_to_UART
 0E9 00160        531                      LOAD UART_data, character_M
 0EA 200BB        532                      CALL send_to_UART
 0EB 200C4        533                      CALL send_space
 0EC 001D0        534                      LOAD UART_data, character_A
-W: value out of range: 61, allowed range is [0,15] (trimmed to 4 bits) which makes it 13.
+W: value out of range: 0x3d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
 0ED 200BB        535                      CALL send_to_UART
 0EE 001F0        536                      LOAD UART_data, character_c
-W: value out of range: 63, allowed range is [0,15] (trimmed to 4 bits) which makes it 15.
+W: value out of range: 0x3f, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xf.
 0EF 200BB        537                      CALL send_to_UART
 0F0 001A0        538                      LOAD UART_data, character_t
-W: value out of range: 74, allowed range is [0,15] (trimmed to 4 bits) which makes it 10.
+W: value out of range: 0x4a, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xa.
 0F1 200BB        539                      CALL send_to_UART
 0F2 00150        540                      LOAD UART_data, character_i
-W: value out of range: 69, allowed range is [0,15] (trimmed to 4 bits) which makes it 5.
+W: value out of range: 0x45, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
 0F3 200BB        541                      CALL send_to_UART
 0F4 001C0        542                      LOAD UART_data, character_v
-W: value out of range: 76, allowed range is [0,15] (trimmed to 4 bits) which makes it 12.
+W: value out of range: 0x4c, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xc.
 0F5 200BB        543                      CALL send_to_UART
 0F6 00110        544                      LOAD UART_data, character_e
-W: value out of range: 65, allowed range is [0,15] (trimmed to 4 bits) which makes it 1.
+W: value out of range: 0x41, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
 0F7 200BB        545                      CALL send_to_UART
 0F8 200C1        546                      CALL send_CR
 0F9 200C1        547                      CALL send_CR
