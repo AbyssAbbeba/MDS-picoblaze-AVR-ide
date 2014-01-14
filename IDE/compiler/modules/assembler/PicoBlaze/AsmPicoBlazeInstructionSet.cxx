@@ -109,6 +109,9 @@ inline void AsmPicoBlazeInstructionSet::detAccSymTypes ( const CompilerStatement
 {
     using namespace CompilerStatementTypes;
 
+    acceptableTypes[0] = (int) ( AsmPicoBlazeSymbolTable::STYPE_NUMBER | AsmPicoBlazeSymbolTable::STYPE_EXPRESSION );
+    acceptableTypes[1] = (int) ( AsmPicoBlazeSymbolTable::STYPE_NUMBER | AsmPicoBlazeSymbolTable::STYPE_EXPRESSION );
+
     switch ( (int) stmt->type() )
     {
         case ASMPICOBLAZE_INS_JUMP_AAA:
@@ -150,9 +153,7 @@ inline void AsmPicoBlazeInstructionSet::detAccSymTypes ( const CompilerStatement
         case ASMPICOBLAZE_INS_LD_RET_SX_KK:
         case ASMPICOBLAZE_INS_TESTCY_SX_KK:
         case ASMPICOBLAZE_INS_COMPARECY_SX_KK:
-            acceptableTypes[0] |= AsmPicoBlazeSymbolTable::STYPE_REGISTER;
-            acceptableTypes[1] = (int) ( AsmPicoBlazeSymbolTable::STYPE_NUMBER |
-                                        AsmPicoBlazeSymbolTable::STYPE_EXPRESSION );
+            acceptableTypes[0] = AsmPicoBlazeSymbolTable::STYPE_REGISTER;
             break;
 
         case ASMPICOBLAZE_INS_ADD_SX_SY:
@@ -174,8 +175,8 @@ inline void AsmPicoBlazeInstructionSet::detAccSymTypes ( const CompilerStatement
         case ASMPICOBLAZE_INS_COMPARECY_SX_SY:
         case ASMPICOBLAZE_INS_TESTCY_SX_SY:
         case ASMPICOBLAZE_INS_STAR_SX_SY:
-            acceptableTypes[0] |= AsmPicoBlazeSymbolTable::STYPE_REGISTER;
-            acceptableTypes[1] |= AsmPicoBlazeSymbolTable::STYPE_REGISTER;
+            acceptableTypes[0] = AsmPicoBlazeSymbolTable::STYPE_REGISTER;
+            acceptableTypes[1] = AsmPicoBlazeSymbolTable::STYPE_REGISTER;
             break;
 
         case ASMPICOBLAZE_INS_SR0_SX:
@@ -189,24 +190,22 @@ inline void AsmPicoBlazeInstructionSet::detAccSymTypes ( const CompilerStatement
         case ASMPICOBLAZE_INS_SLX_SX:
         case ASMPICOBLAZE_INS_RL_SX:
         case ASMPICOBLAZE_INS_HWBUILD_SX:
-            acceptableTypes[0] |= AsmPicoBlazeSymbolTable::STYPE_REGISTER;
+            acceptableTypes[0] = AsmPicoBlazeSymbolTable::STYPE_REGISTER;
             break;
 
         case ASMPICOBLAZE_INS_STORE_SX_SS:
         case ASMPICOBLAZE_INS_FETCH_SX_SS:
-            acceptableTypes[0] |= AsmPicoBlazeSymbolTable::STYPE_REGISTER;
+            acceptableTypes[0]  = AsmPicoBlazeSymbolTable::STYPE_REGISTER;
             acceptableTypes[1] |= AsmPicoBlazeSymbolTable::STYPE_DATA;
             break;
 
         case ASMPICOBLAZE_INS_OUTPUT_SX_PP:
         case ASMPICOBLAZE_INS_INPUT_SX_PP:
-            acceptableTypes[0] |= AsmPicoBlazeSymbolTable::STYPE_REGISTER;
+            acceptableTypes[0]  = AsmPicoBlazeSymbolTable::STYPE_REGISTER;
             acceptableTypes[1] |= AsmPicoBlazeSymbolTable::STYPE_PORT;
             break;
 
         case ASMPICOBLAZE_INS_OUTPUTK_KK_P:
-            acceptableTypes[0] = (int) ( AsmPicoBlazeSymbolTable::STYPE_NUMBER |
-                                         AsmPicoBlazeSymbolTable::STYPE_EXPRESSION );
             acceptableTypes[1] |= AsmPicoBlazeSymbolTable::STYPE_PORT;
             break;
 
@@ -371,7 +370,7 @@ void AsmPicoBlazeInstructionSet::encapsulate ( CompilerStatement * stmt,
         if ( 0 == ( acceptableTypes[i] & symbolType ) )
         {
             m_compilerCore->semanticMessage(arg->location(),
-                                            CompilerBase::MT_ERROR,
+                                            CompilerBase::MT_WARNING,
                                             QObject::tr ( "instruction `%1' requires operand #%2 to be of type(s): %3"
                                                           "; while the given operand is of type: %4" )
                                                         . arg ( getInstructionName(stmt).c_str() )
@@ -381,9 +380,10 @@ void AsmPicoBlazeInstructionSet::encapsulate ( CompilerStatement * stmt,
                                                         . toStdString() );
         }
 
-        m_symbolTable->resolveSymbols(arg, codePointer);
         i++;
     }
+
+    m_symbolTable->resolveSymbols(stmt->args(), codePointer);
 }
 
 inline int AsmPicoBlazeInstructionSet::oprIdxShift ( const CompilerStatement * stmt ) const
