@@ -46,9 +46,11 @@
                   46
                   47     scratchpad_transfers:
 00A 2F104         48     STORE           sX, 04
+W: instruction `STORE sX, ss' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `SX'.
                   49     ; Write register sX to RAM location 04
 00B 0B104         50     FETCH           sX, 04
+W: instruction `FETCH sX, ss' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `SX'.
                   51     ; Read RAM location 04 into register sX
                   52             END
