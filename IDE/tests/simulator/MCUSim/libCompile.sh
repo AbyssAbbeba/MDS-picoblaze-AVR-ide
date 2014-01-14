@@ -34,11 +34,12 @@ function runBuild()
         fi
 
         echo -n "Building $i ... "
-        if ! output="$( ${COMPILER_EXEC} --dev="${DEV}"              \
-                                         --arch="${ARCH}"            \
-                                         --plang="${LANG}"           \
-                                         --hex="${1}/${i%%.asm}.hex" \
-                                         --lst="${1}/${i%%.asm}.lst" \
+        if ! output="$( LC_ALL="C" ${COMPILER_EXEC}                     \
+                                         --dev="${DEV}"                 \
+                                         --arch="${ARCH}"               \
+                                         --plang="${LANG}"              \
+                                         --hex="${1}/${i%%.asm}.hex"    \
+                                         --lst="${1}/${i%%.asm}.lst"    \
                                          "${i}" 2>&1 )"
         then
             echo "[ERROR]"
