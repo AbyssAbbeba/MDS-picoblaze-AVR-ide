@@ -61,14 +61,7 @@ void ( PicoBlazeInstructionSet1CPLD :: * const PicoBlazeInstructionSet1CPLD::m_o
 
 bool PicoBlazeInstructionSet1CPLD::isValid() const
 {
-    if ( MCUSim::FAMILY_KCPSM1CPLD == m_config.m_dev )
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    return ( MCUSim::FAMILY_KCPSM1CPLD == m_config.m_dev );
 }
 
 int PicoBlazeInstructionSet1CPLD::execInstruction()
