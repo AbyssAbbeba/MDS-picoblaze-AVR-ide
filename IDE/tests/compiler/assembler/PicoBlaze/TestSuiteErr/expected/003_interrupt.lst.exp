@@ -16,14 +16,20 @@
 008 3C00D         16             CALL      NC,Podprog
                   17
 009 2F101         18             STORE     TESTsymb9,TESTsymb13
+W: instruction `STORE sX, ss' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `TESTSYMB9'.
 E: symbol not defined: `TESTSYMB13'.
 00A 2E1A0         19             STORE     TESTsymb10,@10
+W: instruction `STORE sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+W: instruction `STORE sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `TESTSYMB10'.
 00B 0B101         20             FETCH     TESTsymb11,TESTsymb13
+W: instruction `FETCH sX, ss' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `TESTSYMB11'.
 E: symbol not defined: `TESTSYMB13'.
 00C 0A150         21             FETCH     TESTsymb12,@5
+W: instruction `FETCH sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+W: instruction `FETCH sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `TESTSYMB12'.
                   22
                   23     Podprog:
