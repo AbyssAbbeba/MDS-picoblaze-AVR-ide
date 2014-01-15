@@ -160,8 +160,8 @@ class AsmPicoBlazeSpecialMacros
          * @param[in] location
          * @return
          */
-        inline CompilerStatement * compare_sx_sy ( int sx,
-                                                   int sy,
+        inline CompilerStatement * compare_sx_sy ( const CompilerExpr * sx,
+                                                   const CompilerExpr * sy,
                                                    const CompilerSourceLocation & location ) const;
 
         /**
@@ -171,7 +171,7 @@ class AsmPicoBlazeSpecialMacros
          * @param[in] location
          * @return
          */
-        inline CompilerStatement * compare_sx_kk ( int sx,
+        inline CompilerStatement * compare_sx_kk ( const CompilerExpr * sx,
                                                    int kk,
                                                    const CompilerSourceLocation & location ) const;
 
@@ -182,8 +182,8 @@ class AsmPicoBlazeSpecialMacros
          * @param[in] location
          * @return
          */
-        inline CompilerStatement * test_sx_sy ( int sx,
-                                                int sy,
+        inline CompilerStatement * test_sx_sy ( const CompilerExpr * sx,
+                                                const CompilerExpr * sy,
                                                 const CompilerSourceLocation & location ) const;
 
         /**
@@ -193,7 +193,7 @@ class AsmPicoBlazeSpecialMacros
          * @param[in] location
          * @return
          */
-        inline CompilerStatement * test_sx_kk ( int sx,
+        inline CompilerStatement * test_sx_kk ( const CompilerExpr * sx,
                                                 int kk,
                                                 const CompilerSourceLocation & location ) const;
 
