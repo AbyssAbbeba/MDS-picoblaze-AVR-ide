@@ -124,7 +124,14 @@ inline void AsmPicoBlazeInstructionSet::detAccSymTypes ( const CompilerStatement
         case ASMPICOBLAZE_INS_CALL_NZ_AAA:
         case ASMPICOBLAZE_INS_CALL_C_AAA:
         case ASMPICOBLAZE_INS_CALL_NC_AAA:
-            acceptableTypes[0] |= AsmPicoBlazeSymbolTable::STYPE_LABEL;
+            if ( true == m_opts->m_strict )
+            {
+                acceptableTypes[0] = AsmPicoBlazeSymbolTable::STYPE_LABEL;
+            }
+            else
+            {
+                acceptableTypes[0] |= AsmPicoBlazeSymbolTable::STYPE_LABEL;
+            }
             break;
 
         case ASMPICOBLAZE_INS_RETURN:
@@ -400,9 +407,15 @@ void AsmPicoBlazeInstructionSet::encapsulate ( CompilerStatement * stmt,
     int i = 0;
     for ( CompilerExpr * arg = stmt->args();
           nullptr != arg;
-          arg = arg->next() )
+          arg = arg->next(), i++ )
     {
         int symbolType = (int) m_symbolTable->getType(arg);
+
+        if ( AsmPicoBlazeSymbolTable::STYPE_UNSPECIFIED == symbolType )
+        {
+            continue;
+        }
+
         if ( 0 == ( acceptableTypes[i] & symbolType ) )
         {
             m_compilerCore->semanticMessage(arg->location(),
@@ -415,8 +428,6 @@ void AsmPicoBlazeInstructionSet::encapsulate ( CompilerStatement * stmt,
                                                         . arg ( getSymbolTypes(symbolType).c_str() )
                                                         . toStdString() );
         }
-
-        i++;
     }
 
     m_symbolTable->resolveSymbols(stmt->args(), codePointer);

@@ -68,6 +68,7 @@ AsmPicoBlazeTreeDecoder::AsmPicoBlazeTreeDecoder ( CompilerSemanticInterface    
                                                    m_instructionSet ( instructionSet ),
                                                    m_device         ( device         )
 {
+    m_failjmpAddr = -1;
     m_forceNext = nullptr;
 }
 
@@ -138,6 +139,7 @@ bool AsmPicoBlazeTreeDecoder::phase1 ( CompilerStatement * codeTree,
             case ASMPICOBLAZE_DIR_MESSG:    dir_MESSG    ( node ); break;
             case ASMPICOBLAZE_DIR_DEFINE:   dir_DEFINE   ( node ); break;
             case ASMPICOBLAZE_DIR_WARNING:  dir_WARNING  ( node ); break;
+            case ASMPICOBLAZE_DIR_FAILJMP:  dir_FAILJMP  ( node ); break;
 
             case ASMPICOBLAZE_DIR_EXPAND:   dir_EXPAND   (); break;
             case ASMPICOBLAZE_DIR_NOEXPAND: dir_NOEXPAND (); break;
@@ -574,7 +576,9 @@ inline AsmPicoBlazeTreeDecoder::CourseOfAction
 inline AsmPicoBlazeTreeDecoder::CourseOfAction
        AsmPicoBlazeTreeDecoder::macro ( CompilerStatement * node )
 {
-    if ( -1 != m_opts->m_maxMacroExp && ( 0xffff & node->m_userData ) >= m_opts->m_maxMacroExp )
+    if ( ( -1 != m_opts->m_maxMacroExp )
+             &&
+         ( (int) ( 0xffff & node->m_userData ) >= m_opts->m_maxMacroExp ) )
     {
         m_compilerCore -> semanticMessage ( node->location(),
                                             CompilerBase::MT_ERROR,
@@ -679,8 +683,18 @@ inline AsmPicoBlazeTreeDecoder::CourseOfAction
     {
         m_compilerCore->semanticMessage ( node->location(),
                                           CompilerBase::MT_ERROR,
-                                          QObject::tr ( "directive EXITM' cannot apper outside macro definition")
+                                          QObject::tr ( "directive `EXITM' cannot apper outside macro definition")
                                                       .toStdString(),
+                                          true );
+        return CA_NO_ACTION;
+    }
+    else if ( true == m_specialMacros->isFromSpecMacro(node) )
+    {
+        m_compilerCore->semanticMessage ( node->location(),
+                                          CompilerBase::MT_ERROR,
+                                          QObject::tr ( "directive `EXITM' cannot apper inside special macro (like "
+                                                        "run-time IF/ELSE, etc.), it would break its pairing rules" )
+                                                      . toStdString(),
                                           true );
         return CA_NO_ACTION;
     }
@@ -772,19 +786,20 @@ inline void AsmPicoBlazeTreeDecoder::dir_UNDEFINE ( CompilerStatement * node )
 
 inline void AsmPicoBlazeTreeDecoder::label ( CompilerStatement * node )
 {
-    CompilerExpr e(m_memoryPtr->m_code);
-
     CompilerExpr * label = node->args();
     while ( CompilerValue::TYPE_EXPR == label->lVal().m_type )
     {
         label = label->lVal().m_data.m_expr;
     }
 
-    m_symbolTable -> addSymbol ( label->lVal().m_data.m_symbol,
-                                 &e,
-                                 &( node->location() ),
-                                 AsmPicoBlazeSymbolTable::STYPE_LABEL,
-                                 true );
+    CompilerExpr e(m_memoryPtr->m_code);
+    int value = m_symbolTable -> addSymbol ( label->lVal().m_data.m_symbol,
+                                             &e,
+                                             &( node->location() ),
+                                             AsmPicoBlazeSymbolTable::STYPE_LABEL,
+                                             true );
+
+    m_codeListing->setValue(node->location(), value);
 }
 
 inline void AsmPicoBlazeTreeDecoder::dir_ORG ( CompilerStatement * node )
@@ -801,6 +816,22 @@ inline void AsmPicoBlazeTreeDecoder::dir_SKIP ( CompilerStatement * node )
     m_memoryPtr->m_code += skip;
     node->args()->completeDelete();
     node->m_args = new CompilerExpr(skip);
+}
+
+inline void AsmPicoBlazeTreeDecoder::dir_FAILJMP ( CompilerStatement * node )
+{
+    if ( true == m_opts->m_strict )
+    {
+        if ( AsmPicoBlazeSymbolTable::STYPE_LABEL != m_symbolTable->getType(node->args()) )
+        {
+            m_compilerCore->semanticMessage ( node->location(),
+                                              CompilerBase::MT_WARNING,
+                                              QObject::tr("it safer to jump to a label").toStdString(),
+                                              true );
+        }
+    }
+
+    m_failjmpAddr = m_symbolTable->resolveExpr(node->args(), 12);
 }
 
 inline void AsmPicoBlazeTreeDecoder::dir_LIMIT ( CompilerStatement * node )
@@ -977,7 +1008,7 @@ inline AsmPicoBlazeTreeDecoder::CourseOfAction
             m_compilerCore->semanticMessage ( node->location(),
                                               CompilerBase::MT_ERROR,
                                               QObject::tr("Device not supported: ").toStdString()
-                                              + "\"" + deviceName + "\"" );
+                                              + '"' + deviceName + '"' );
             return CA_RETURN_FALSE;
         }
     }

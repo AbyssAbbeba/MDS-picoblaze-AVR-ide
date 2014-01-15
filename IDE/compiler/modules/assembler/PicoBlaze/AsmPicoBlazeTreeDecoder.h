@@ -264,6 +264,12 @@ class AsmPicoBlazeTreeDecoder
          * @brief
          * @param[in,out] node
          */
+        inline void dir_FAILJMP ( CompilerStatement * node );
+
+        /**
+         * @brief
+         * @param[in,out] node
+         */
         inline void dir_EQU_etc ( CompilerStatement * node );
 
         /**
@@ -365,6 +371,9 @@ class AsmPicoBlazeTreeDecoder
 
         ///
         CompilerStatement * m_forceNext;
+
+        ///
+        int m_failjmpAddr;
 };
 
 #endif // ASMPICOBLAZETREEDECODER_H

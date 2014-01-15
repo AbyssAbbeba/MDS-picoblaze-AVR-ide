@@ -107,6 +107,13 @@ class AsmPicoBlazeSpecialMacros
          */
         CompilerStatement * runTimeCondition ( CompilerStatement * rtIfTree );
 
+        /**
+         * @brief
+         * @param[in] node
+         * @return
+         */
+        bool isFromSpecMacro ( const CompilerStatement * node ) const;
+
     ////    Private Operations    ////
     private:
         /**
@@ -206,6 +213,13 @@ class AsmPicoBlazeSpecialMacros
         inline void checkType ( bool regOrNumber,
                                 AsmPicoBlazeSymbolTable::SymbolType type,
                                 const CompilerSourceLocation & location );
+
+        /**
+         * @brief
+         * @param[in,out] tree
+         * @return
+         */
+        inline CompilerStatement * markAsFromSpecMacro ( CompilerStatement * tree );
 
     ////    Private Attributes    ////
     private:
