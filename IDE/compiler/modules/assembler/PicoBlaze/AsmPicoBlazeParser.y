@@ -249,6 +249,7 @@
 // Expressions
 %type<expr>     expr            number          params          args            args_str
 %type<expr>     id              string          cond            cndval          mark
+%type<expr>     cond0
 // Statements - general
 %type<stmt>     statements      stmt            inst_stmt       dir_stmt        macro_stmt
 %type<stmt>     instruction     directive       macro           label
@@ -741,7 +742,7 @@ dir_elseifnb_a:
 dir_rt_cond:
       rtif_block rtelseif_block
       rtelse_block dir_rtendif      {
-                                        $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_RT_COND );
+                                        $$ = new CompilerStatement ( CompilerSourceLocation(), ASMPICOBLAZE_RT_COND );
                                         $$->createBranch ( $rtif_block -> appendLink($rtelseif_block)
                                                                        -> appendLink($rtelse_block)
                                                                        -> appendLink($dir_rtendif) );
@@ -761,6 +762,10 @@ rtelse_block:
     | dir_rtelse                    { $$ = $dir_rtelse; }
 ;
 cond:
+      cond0                         { $$ = $cond0; }
+    | "(" cond0 ")"                 { $$ = $cond0; }
+;
+cond0:
       cndval "==" cndval            { $$ = new CompilerExpr($1, CompilerExpr::OPER_EQ,   $3, LOC(@$)); }
     | cndval "!=" cndval            { $$ = new CompilerExpr($1, CompilerExpr::OPER_NE,   $3, LOC(@$)); }
     | cndval "<=" cndval            { $$ = new CompilerExpr($1, CompilerExpr::OPER_LE,   $3, LOC(@$)); }
@@ -1678,7 +1683,7 @@ dir_code_a:
                                     }
 ;
 dir_failjmp:
-      D_FAILJMP expr                { $$ = nullptr; /*new CompilerStatement(LOC(@$), ASMPICOBLAZE_DIR_FAILJMP, $expr);*/ }
+      D_FAILJMP expr                { $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_DIR_FAILJMP, $expr); }
     | D_FAILJMP                     {
                                         /* Syntax Error */
                                         $$ = nullptr;

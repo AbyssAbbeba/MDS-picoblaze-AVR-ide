@@ -729,6 +729,7 @@ namespace CompilerStatementTypes
             ASMPICOBLAZE_DIR_DATA,              ///<
             ASMPICOBLAZE_DIR_LIMIT,             ///<
             ASMPICOBLAZE_DIR_DEVICE,            ///<
+            ASMPICOBLAZE_DIR_FAILJMP,           ///<
 
             ASMPICOBLAZE_COND_ASM,              ///<
             ASMPICOBLAZE_DIR_IF,                ///<
@@ -846,6 +847,7 @@ namespace CompilerStatementTypes
             C_STMT_SCOPE,
             C_STMT_INLINE_FUNC,
             C_STMT_TYPEDEF,
+            C_STMT_GOTO,
             
         //@}
 

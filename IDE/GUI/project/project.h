@@ -160,7 +160,7 @@ class Project : public QObject
         
     private:
         ProjectMan *parentManager;
-        int line;
+        std::vector<std::pair<const std::string *, unsigned int>> currLine;
         int prevLine;
         int prevLine2;
         int prevLine3;

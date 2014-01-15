@@ -97,7 +97,7 @@ void XilHDLFile::clearAndLoad ( const std::string & filename )
             int iterLimit = ( hexField.size() - 4 );
             char byteStr[3];
 
-            addr *= ( 16 * ( ( SIZE_16b == m_opCodeSize ) ? 2 : 3 ) );
+            addr *= ( 8 * 16 * ( ( SIZE_16b == m_opCodeSize ) ? 2 : 3 ) );
             byteStr[2] = '\0';
 
             for ( int i = 0; i <= iterLimit; )
@@ -117,7 +117,6 @@ void XilHDLFile::clearAndLoad ( const std::string & filename )
                 for ( int shift = 6; shift >= 0; shift -= 2)
                 {
                     m_memory[addr] = uint16_t( 0x3 & ( byteInt >> shift ) );
-
                     addr += 3;
                     if ( (unsigned int) addr >= m_arrsize )
                     {

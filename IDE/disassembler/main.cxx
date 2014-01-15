@@ -303,15 +303,15 @@ int main ( int argc, char ** argv )
             case 0x102: // --cfg-eof
                 if ( 0 == strcmp(optarg, "lf") )
                 {
-                    config.m_eol = DAsm::Config::EOF_LF;
+                    config.m_eol = DAsm::Config::EOL_LF;
                 }
                 else if ( 0 == strcmp(optarg, "cr") )
                 {
-                    config.m_eol = DAsm::Config::EOF_CR;
+                    config.m_eol = DAsm::Config::EOL_CR;
                 }
                 else if ( 0 == strcmp(optarg, "crlf") )
                 {
-                    config.m_eol = DAsm::Config::EOF_CRLF;
+                    config.m_eol = DAsm::Config::EOL_CRLF;
                 }
                 else
                 {

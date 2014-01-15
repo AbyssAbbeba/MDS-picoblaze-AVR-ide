@@ -574,7 +574,7 @@ inline AsmPicoBlazeTreeDecoder::CourseOfAction
 inline AsmPicoBlazeTreeDecoder::CourseOfAction
        AsmPicoBlazeTreeDecoder::macro ( CompilerStatement * node )
 {
-    if ( -1 != m_opts->m_maxMacroExp && node->m_userData >= m_opts->m_maxMacroExp )
+    if ( -1 != m_opts->m_maxMacroExp && ( 0xffff & node->m_userData ) >= m_opts->m_maxMacroExp )
     {
         m_compilerCore -> semanticMessage ( node->location(),
                                             CompilerBase::MT_ERROR,
