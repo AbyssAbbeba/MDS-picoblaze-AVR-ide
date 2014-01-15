@@ -25,6 +25,7 @@
 
 // Standard header files.
 #include <ostream>
+#include <cstdint>
 
 /**
  * @brief
@@ -248,7 +249,7 @@ class CompilerStatement : public CompilerSerializable
          * @brief
          * @warning This attribute is not a subject for serialization, set to 0 when deserialized.
          */
-        int m_userData;
+        uint32_t m_userData;
 
         /**
          * @brief

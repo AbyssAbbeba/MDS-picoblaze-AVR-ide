@@ -95,7 +95,7 @@ void AsmPicoBlazeSemanticAnalyzer::printCodeTree ( const CompilerStatement * cod
                                             CompilerBase::MT_ERROR,
                                             QObject::tr ( "Unable to open " )
                                                         . toStdString()
-                                                        + "\"" + m_opts->m_codeTree  + "\"" );
+                                                        + '"' + m_opts->m_codeTree  + '"' );
         return;
     }
 
@@ -106,7 +106,7 @@ void AsmPicoBlazeSemanticAnalyzer::printCodeTree ( const CompilerStatement * cod
         m_compilerCore -> semanticMessage ( CompilerSourceLocation(),
                                             CompilerBase::MT_ERROR,
                                             QObject::tr ( "Unable to write to " ).toStdString()
-                                                        + "\"" + m_opts->m_codeTree  + "\"" );
+                                                        + '"' + m_opts->m_codeTree  + '"' );
         return;
     }
 }
@@ -293,6 +293,6 @@ inline void AsmPicoBlazeSemanticAnalyzer::saveHDL ( AsmMachineCodeGen::WordSize 
         m_compilerCore -> semanticMessage ( CompilerSourceLocation(),
                                             CompilerBase::MT_ERROR,
                                             QObject::tr ( "unable to save file " ).toStdString()
-                                                        + "\"" + fileName  + "\"" );
+                                                        + '"' + fileName  + '"' );
     }
 }

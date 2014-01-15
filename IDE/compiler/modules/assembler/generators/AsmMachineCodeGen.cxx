@@ -224,6 +224,6 @@ inline void AsmMachineCodeGen::saveMachineCode ( AsmMachineCodeGen::WordSize wor
         std::cerr << e.toString() << std::endl;
         compilerCore -> semanticMessage ( CompilerSourceLocation(),
                                           CompilerBase::MT_ERROR,
-                                          QObject::tr("unable to save file ").toStdString() + "\"" + fileName  + "\"" );
+                                          QObject::tr("unable to save file ").toStdString() + '"' + fileName  + '"' );
     }
 }

@@ -14,8 +14,9 @@
 // =============================================================================
 
 // PicoBlaze assembler semantic analyzer header files.
-#include "AsmPicoBlazeSpecialMacros.h"
+#include "AsmPicoBlazeCommons.h"
 #include "AsmPicoBlazeCodeListing.h"
+#include "AsmPicoBlazeSpecialMacros.h"
 
 // Common compiler header files.
 #include "CompilerExpr.h"
@@ -69,7 +70,7 @@ CompilerStatement * AsmPicoBlazeSpecialMacros::runTimeWhile ( CompilerStatement 
     result->appendLink(resultEnd);
     rtWhile->m_branch = nullptr;
 
-    return result;
+    return markAsFromSpecMacro(result);
 }
 
 void AsmPicoBlazeSpecialMacros::runTimeForLeave()
@@ -204,7 +205,7 @@ CompilerStatement * AsmPicoBlazeSpecialMacros::runTimeFor ( CompilerStatement * 
     result->appendLink(resultEnd);
     rtFor->m_branch = nullptr;
 
-    return result;
+    return markAsFromSpecMacro(result);
 }
 
 CompilerStatement * AsmPicoBlazeSpecialMacros::runTimeCondition ( CompilerStatement * rtIfTree )
@@ -284,7 +285,7 @@ CompilerStatement * AsmPicoBlazeSpecialMacros::runTimeCondition ( CompilerStatem
     }
 
     rtIfTree->m_branch = nullptr;
-    return result;
+    return markAsFromSpecMacro(result);
 }
 
 CompilerStatement * AsmPicoBlazeSpecialMacros::evaluateCondition ( const CompilerExpr * cnd,
@@ -836,4 +837,22 @@ inline void AsmPicoBlazeSpecialMacros::checkType ( bool regOrNumber,
                                                       + m_symbolTable->symType2Str(type),
                                           true );
     }
+}
+
+bool AsmPicoBlazeSpecialMacros::isFromSpecMacro ( const CompilerStatement * node ) const
+{
+    return (bool) ( AsmPicoBlazeCommons::UD_SPEC_MACRO & node->m_userData );
+}
+
+inline CompilerStatement * AsmPicoBlazeSpecialMacros::markAsFromSpecMacro ( CompilerStatement * tree )
+{
+    for ( CompilerStatement * node = tree;
+          nullptr != node;
+          node = node->next() )
+    {
+        node->m_userData |= AsmPicoBlazeCommons::UD_SPEC_MACRO;
+        markAsFromSpecMacro(node->branch());
+    }
+
+    return tree;
 }
