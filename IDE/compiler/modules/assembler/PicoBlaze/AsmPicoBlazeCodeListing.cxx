@@ -22,7 +22,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <fstream>
-
+#include<iostream>//debug
 // Used for i18n only
 #include <QObject>
 
@@ -558,7 +558,7 @@ void AsmPicoBlazeCodeListing::generatedCode ( CompilerSourceLocation location,
     {
         return;
     }
-
+std::cout<<"AsmPicoBlazeCodeListing::generatedCode("<<code<<")\n";
     m_numberOfMacros++;
 
     location.m_lineStart--;
@@ -578,7 +578,7 @@ void AsmPicoBlazeCodeListing::generatedCode ( CompilerSourceLocation location,
 
         m_listing[index].push_back(LstLine());
         m_codeGenerator.toSourceLine(m_listing[index].back().m_line, node);
-
+std::cout<<"m_listing[index].back() <== '"<<(m_listing[index].back().m_line)<<"'\n";
         lineNumber++;
         node->m_location.m_fileNumber = index;
         node->m_location.m_lineStart = lineNumber;
