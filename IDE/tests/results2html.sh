@@ -199,7 +199,7 @@ errors=$( grep ': [Ee]rror:' BuildLog.log.0 | wc -l )
 if (( 0 == errors )); then
     status="<b style=\"color: green\">OK</b>"
     if (( 0 == warnings )); then
-        status+=" <span style=\"color: green\">(0 warnings)</span>"
+        status+=" <span style=\"color: green\">(no warnings)</span>"
     else
         status+=" <span style=\"color: #DD8800\">(<b>${warnings}</b> warnings)</span>"
     fi
