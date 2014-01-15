@@ -22,7 +22,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <fstream>
-#include<iostream>//debug
+
 // Used for i18n only
 #include <QObject>
 
@@ -446,7 +446,7 @@ void AsmPicoBlazeCodeListing::copyMacroBody ( unsigned int * lastLine,
                                               const CompilerStatement * macro )
 {
     for ( const CompilerStatement * node = macro;
-          node != nullptr;
+          nullptr != node;
           node = node->next() )
     {
         if ( true == node->location().isSet() )
@@ -558,14 +558,14 @@ void AsmPicoBlazeCodeListing::generatedCode ( CompilerSourceLocation location,
     {
         return;
     }
-std::cout<<"AsmPicoBlazeCodeListing::generatedCode("<<code<<")\n";
+
     m_numberOfMacros++;
 
     location.m_lineStart--;
-    m_listing[location.m_fileNumber][location.m_lineStart].m_macro.push_back( m_numberOfFiles + m_numberOfMacros );
+    m_listing[location.m_fileNumber][location.m_lineStart].m_macro.push_back ( m_numberOfFiles + m_numberOfMacros );
     m_listing.resize(m_numberOfFiles + m_numberOfMacros);
 
-    int lineNumber = 0;
+    int lineNumber = 1;
     const unsigned int index = ( m_numberOfFiles + m_numberOfMacros - 1 );
     for ( CompilerStatement * node = code;
           node != nullptr;
@@ -578,11 +578,10 @@ std::cout<<"AsmPicoBlazeCodeListing::generatedCode("<<code<<")\n";
 
         m_listing[index].push_back(LstLine());
         m_codeGenerator.toSourceLine(m_listing[index].back().m_line, node);
-std::cout<<"m_listing[index].back() <== '"<<(m_listing[index].back().m_line)<<"'\n";
-        lineNumber++;
         node->m_location.m_fileNumber = index;
         node->m_location.m_lineStart = lineNumber;
         node->m_location.m_lineEnd   = lineNumber;
+        lineNumber++;
     }
 }
 
