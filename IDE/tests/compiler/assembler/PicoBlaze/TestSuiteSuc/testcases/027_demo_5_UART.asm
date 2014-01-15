@@ -133,7 +133,7 @@ wait_100ms_i:       SUB       Temp1, #1
 RX_resolve          MACRO     uart_byte
 
                     IF  uart_byte == #1
-                        REPT    8
+                            REPT    8
                         RR      LED_reg
                         wait_for_100ms
                         ENDR
@@ -178,7 +178,7 @@ INTERRUPT:          SendChar  'I'
                     SendChar  'P'
                     SendChar  'T'
                     SendCRLF
-                    RETURNI
+                    RETURNI ENABLE
 ; Start of main program
 Start:
                     wait_for_1s             ; wait for initialization of FPGA circuits
