@@ -39,7 +39,8 @@ class TranslatorDlg : public QDialog
         void create();
 
     signals:
-        void output(std::vector<std::string> text);
+        void output(std::vector<std::string> & text);
+        void outputError(const std::vector<std::pair<unsigned int, std::string>> & text);
         
     private:
         Ui_TranslatorDlg ui;

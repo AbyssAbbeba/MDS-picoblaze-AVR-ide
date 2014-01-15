@@ -23,6 +23,7 @@
 
 // Standard headers.
 #include <cstdio>
+#include <cstdint>
 #include <fstream>
 
 AsmPicoBlazeMacros::Macro::Macro()
@@ -120,7 +121,7 @@ void AsmPicoBlazeMacros::define ( CompilerSourceLocation location,
 
 bool AsmPicoBlazeMacros::isFromMacro ( const CompilerStatement * node ) const
 {
-    return ( 0 != node->m_userData );
+    return ( 0 != ( 0xffff & node->m_userData ) );
 }
 
 void AsmPicoBlazeMacros::incrMacroCounter ( CompilerStatement * macro ) const
@@ -134,7 +135,9 @@ void AsmPicoBlazeMacros::incrMacroCounter ( CompilerStatement * macro ) const
           nullptr != node;
           node = node->next() )
     {
-        node->m_userData++;
+        uint16_t macroCounter = ( 0xffff & node->m_userData );
+        macroCounter++;
+        node->m_userData = ( ~0xffff & node->m_userData ) | ( 0xffff & macroCounter );
         incrMacroCounter(node->branch());
     }
 }

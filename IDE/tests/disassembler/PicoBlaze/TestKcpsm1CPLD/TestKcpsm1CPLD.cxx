@@ -32,7 +32,7 @@
 
 // Compiler header files.
 #include "compiler/core/Compiler.h"
-#include "compiler/core/CompilerMsgIntfStdout.h"
+#include "compiler/core/CompilerMsgIntfFile.h"
 
 // Disassembler header files.
 #include "disassembler/PicoBlaze/DAsmPicoBlazeKcpsm1CPLD.h"
@@ -43,7 +43,7 @@ int TestKcpsm1CPLD::init()
 
     m_disassembler = new DAsmPicoBlazeKcpsm1CPLD();
 
-    m_msgInt = new CompilerMsgIntfStdout();
+    m_msgInt = new CompilerMsgIntfFile();
     m_options = new CompilerOptions();
     m_compiler = new Compiler ( m_msgInt,
                                 system_complete( path("..") / ".." / ".." / "compiler" / "include" ).string() );
@@ -161,7 +161,11 @@ void TestKcpsm1CPLD::testFunction()
     m_options->m_hexFile  += "_new";
     m_options->m_lstFile  += "_new";
 
-    if ( false == m_compiler->compile(CompilerBase::LI_ASM, CompilerBase::TA_PICOBLAZE, m_options) )
+    const std::string errFile = ( resultsPath + ".err" );
+    dynamic_cast<CompilerMsgIntfFile*>(m_msgInt)->openFile(errFile);
+    bool result = m_compiler->compile(CompilerBase::LI_ASM, CompilerBase::TA_PICOBLAZE, m_options);
+    dynamic_cast<CompilerMsgIntfFile*>(m_msgInt)->closeFile();
+    if ( false == result )
     {
         CU_FAIL("Recompilation of the disassembled code failed.");
         return;

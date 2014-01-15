@@ -1156,6 +1156,7 @@ void MainForm::toolTranslate()
 {
     TranslatorDlg *dlg = new TranslatorDlg(this);
     connect(dlg, SIGNAL(output(std::vector<std::string>)), this, SLOT(translatorOutput(std::vector<std::string>)));
+    connect(dlg, SIGNAL(output(std::vector<std::pair<unsigned int, std::string>> &)), this, SLOT(translatorOutput(std::vector<std::pair<unsigned int, std::string>> &)));
 }
 
 
@@ -1172,6 +1173,23 @@ void MainForm::translatorOutput(std::vector<std::string> text)
     //QString name = this->projectMan->addUntrackedFile(NULL, "disasm");
     this->wDockManager->addUntrackedCentralWidget("ASM Translator","untracked",qText);
     getWDockManager()->getCentralTextEdit()->reloadHighlighter(PICOBLAZEASM);
+    //getWDockManager()->getCentralWidget()->connectAct();
+}
+
+
+/**
+ * @brief
+ */
+void MainForm::translatorOutput(std::vector<std::pair<unsigned int, std::string>> & text)
+{
+    QStringList qText;
+    for (unsigned int i = 0; i < text.size(); i++)
+    {
+        qText.append(QString::fromStdString(std::get<1>(text.at(i))));
+    }
+    //QString name = this->projectMan->addUntrackedFile(NULL, "disasm");
+    this->wDockManager->addUntrackedCentralWidget("ASM Translator error","untracked",qText);
+    this->getWDockManager()->getCentralTextEdit()->reloadHighlighter(PICOBLAZEASM);
     //getWDockManager()->getCentralWidget()->connectAct();
 }
 

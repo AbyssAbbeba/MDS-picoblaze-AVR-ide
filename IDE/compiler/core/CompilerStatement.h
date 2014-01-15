@@ -252,12 +252,6 @@ class CompilerStatement : public CompilerSerializable
 
         /**
          * @brief
-         * @warning This attribute is not a subject for serialization, set to -1 when deserialized.
-         */
-        int m_serialNumber;
-
-        /**
-         * @brief
          */
         CompilerExpr * m_args;
 
