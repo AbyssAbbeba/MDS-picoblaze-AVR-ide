@@ -64,6 +64,7 @@ void XilHDLFile::clearAndLoad ( const std::string & filename )
             int iterLimit = ( hexField.size() - 4 );
             char byteStr[3];
 
+            addr++;
             addr *= ( 16 * ( ( SIZE_16b == m_opCodeSize ) ? 2 : 3 ) );
             byteStr[2] = '\0';
 
@@ -71,7 +72,7 @@ void XilHDLFile::clearAndLoad ( const std::string & filename )
             {
                 if ( SIZE_18b == m_opCodeSize )
                 {
-                    addr++;
+                    addr--;
                 }
 
                 if ( (unsigned int) addr >= m_arrsize )
@@ -88,7 +89,7 @@ void XilHDLFile::clearAndLoad ( const std::string & filename )
 
                     sscanf(byteStr, "%x", &byteInt);
 
-                    m_memory[addr++] = (uint16_t) byteInt;
+                    m_memory[addr--] = (uint16_t) byteInt;
                 }
             }
         }
@@ -97,6 +98,7 @@ void XilHDLFile::clearAndLoad ( const std::string & filename )
             int iterLimit = ( hexField.size() - 4 );
             char byteStr[3];
 
+            addr++;
             addr *= ( 8 * 16 * ( ( SIZE_16b == m_opCodeSize ) ? 2 : 3 ) );
             byteStr[2] = '\0';
 
@@ -117,7 +119,7 @@ void XilHDLFile::clearAndLoad ( const std::string & filename )
                 for ( int shift = 6; shift >= 0; shift -= 2)
                 {
                     m_memory[addr] = uint16_t( 0x3 & ( byteInt >> shift ) );
-                    addr += 3;
+                    addr -= 3;
                     if ( (unsigned int) addr >= m_arrsize )
                     {
                         break;
@@ -308,6 +310,7 @@ void XilHDLFile::generateDataField ( std::string * dataField,
 {
     dataField->clear();
 
+    addr++;
     if ( SIZE_18b == m_opCodeSize )
     {
         addr *= 3; // 3 == space occupied by one instruction the mem. array.
@@ -327,14 +330,14 @@ void XilHDLFile::generateDataField ( std::string * dataField,
         {
             if ( SIZE_18b == m_opCodeSize )
             {
-                addr++;
+                addr--;
             }
 
             for ( int j = 0; j < 2; j++ )
             {
                 if ( addr < m_arrsize )
                 {
-                    byteInt = m_memory[addr++];
+                    byteInt = m_memory[addr--];
                     if ( -1 == byteInt )
                     {
                         byteInt = 0;
@@ -374,7 +377,7 @@ void XilHDLFile::generateDataField ( std::string * dataField,
                     byteInt = 0;
                 }
 
-                addr += 3;
+                addr -= 3;
 
                 parityBits <<= 2;
                 parityBits |= ( byteInt & 0x3 );

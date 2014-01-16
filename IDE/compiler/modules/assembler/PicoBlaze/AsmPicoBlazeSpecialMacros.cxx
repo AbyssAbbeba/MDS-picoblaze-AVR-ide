@@ -169,7 +169,7 @@ CompilerStatement * AsmPicoBlazeSpecialMacros::runTimeFor ( CompilerStatement * 
     // continue:
     result->appendLink ( label(labelContinue, rtFor->location()) );
     // if ( reg == end ) { jump break }
-    result->appendLink ( compare_sx_kk(args[0]->copyChainLink(), end, rtFor->location()) );
+    result->appendLink ( compare_sx_kk(args[0], end, rtFor->location()) );
     result->appendLink ( jump(labelBreak, rtFor->location(), JC_Z) );
     m_codeListing->generatedCode(rtFor->location(), result);
 

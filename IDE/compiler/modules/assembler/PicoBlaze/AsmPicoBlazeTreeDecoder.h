@@ -95,6 +95,11 @@ class AsmPicoBlazeTreeDecoder
                                   AsmPicoBlazeInstructionSet           * instructionSet,
                                   AsmPicoBlazeSemanticAnalyzer::Device & device );
 
+        /**
+         * @brief
+         */
+        ~AsmPicoBlazeTreeDecoder();
+
     ////    Public Operations    ////
     public:
         /**
@@ -373,7 +378,7 @@ class AsmPicoBlazeTreeDecoder
         CompilerStatement * m_forceNext;
 
         ///
-        int m_failjmpAddr;
+        CompilerStatement * m_failjmp;
 };
 
 #endif // ASMPICOBLAZETREEDECODER_H

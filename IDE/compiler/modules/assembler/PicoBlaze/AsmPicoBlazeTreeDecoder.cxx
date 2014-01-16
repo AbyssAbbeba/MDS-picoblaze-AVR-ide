@@ -68,8 +68,16 @@ AsmPicoBlazeTreeDecoder::AsmPicoBlazeTreeDecoder ( CompilerSemanticInterface    
                                                    m_instructionSet ( instructionSet ),
                                                    m_device         ( device         )
 {
-    m_failjmpAddr = -1;
+    m_failjmp   = nullptr;
     m_forceNext = nullptr;
+}
+
+AsmPicoBlazeTreeDecoder::~AsmPicoBlazeTreeDecoder()
+{
+    if ( nullptr != m_failjmp )
+    {
+        delete m_failjmp;
+    }
 }
 
 bool AsmPicoBlazeTreeDecoder::phase1 ( CompilerStatement * codeTree,
@@ -220,6 +228,45 @@ void AsmPicoBlazeTreeDecoder::phase2 ( CompilerStatement * codeTree )
         // Remove the inspected node.
         node = node->prev();
         delete node->next();
+    }
+
+    if ( nullptr != m_failjmp )
+    {
+        if ( true == m_opts->m_strict )
+        {
+            if ( AsmPicoBlazeSymbolTable::STYPE_LABEL != m_symbolTable->getType(m_failjmp->args()) )
+            {
+                m_compilerCore->semanticMessage ( m_failjmp->location(),
+                                                  CompilerBase::MT_WARNING,
+                                                  QObject::tr("jump address is not specified by a label").toStdString(),
+                                                  true );
+            }
+        }
+
+        int memSize = m_opts->m_processorlimits.m_iCodeMemSize;
+        if ( -1 == memSize )
+        {
+            m_compilerCore->semanticMessage ( m_failjmp->location(),
+                                              CompilerBase::MT_ERROR,
+                                              QObject::tr ( "no user defined limit for the program memory size, fail "
+                                                            "jump cannot be used" ).toStdString() );
+        }
+        else
+        {
+            int opcode = m_instructionSet->resolveOPcode(m_failjmp);
+
+            for ( int addr = 0; addr < memSize; addr++ )
+            {
+                if ( false == m_memoryPtr->isReserved ( AsmPicoBlazeMemoryPtr::MS_CODE, (unsigned int) addr ) )
+                {
+                    m_machineCode->setCode(addr, opcode);
+                    m_dgbFile->setCode(m_failjmp->location(), opcode, addr);
+                }
+            }
+        }
+
+        delete m_failjmp;
+        m_failjmp = nullptr;
     }
 }
 
@@ -820,18 +867,28 @@ inline void AsmPicoBlazeTreeDecoder::dir_SKIP ( CompilerStatement * node )
 
 inline void AsmPicoBlazeTreeDecoder::dir_FAILJMP ( CompilerStatement * node )
 {
-    if ( true == m_opts->m_strict )
+    if ( nullptr != m_failjmp )
     {
-        if ( AsmPicoBlazeSymbolTable::STYPE_LABEL != m_symbolTable->getType(node->args()) )
-        {
-            m_compilerCore->semanticMessage ( node->location(),
-                                              CompilerBase::MT_WARNING,
-                                              QObject::tr("it safer to jump to a label").toStdString(),
-                                              true );
-        }
+        m_compilerCore->semanticMessage ( node->location(),
+                                          CompilerBase::MT_ERROR,
+                                          QObject::tr("only one fail jump may be specified in the code").toStdString(),
+                                          true );
     }
 
-    m_failjmpAddr = m_symbolTable->resolveExpr(node->args(), 12);
+    m_failjmp = node->copyChainLink();
+    m_failjmp->m_type = CompilerStatementTypes::ASMPICOBLAZE_INS_JUMP_AAA;
+
+    AsmPicoBlazeSymbolTable::SymbolType argType = m_symbolTable->getType(node->args());
+
+    if ( ( AsmPicoBlazeSymbolTable::STYPE_LABEL != argType )
+             &&
+         ( AsmPicoBlazeSymbolTable::STYPE_UNSPECIFIED != argType ) )
+    {
+        int targetAddr = m_symbolTable->resolveExpr(node->args());
+
+        node->args()->completeDelete();
+        node->m_args = new CompilerExpr(targetAddr, node->location());
+    }
 }
 
 inline void AsmPicoBlazeTreeDecoder::dir_LIMIT ( CompilerStatement * node )

@@ -386,6 +386,9 @@ if [[ -f "Total-Coverage.html" ]]; then
 else
     echo "            <td><b>--</b></td>" >> index.html
 fi
+if [[ '.' == ${memLeaksTotal:0:1} ]]; then
+    memLeaksTotal="0${memLeaksTotal}"
+fi
 echo "            <td style=\"width: 10%\"><b>${memLeaksTotal} kB</b></td>" >> index.html
 echo "            <td><b>${memErrorsTotal}</b></td>" >> index.html
 echo "            <td><b>${failedTotal}</b></td>" >> index.html
