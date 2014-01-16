@@ -333,11 +333,11 @@ void XilHDLFile::generateDataField ( std::string * dataField,
                 addr--;
             }
 
-            for ( int j = 0; j < 2; j++ )
+            for ( int j = 2; j > 0; j-- )
             {
                 if ( addr < m_arrsize )
                 {
-                    byteInt = m_memory[addr--];
+                    byteInt = m_memory [ addr - j ];
                     if ( -1 == byteInt )
                     {
                         byteInt = 0;
@@ -351,6 +351,8 @@ void XilHDLFile::generateDataField ( std::string * dataField,
                 sprintf(byteHex, "%02X", byteInt);
                 dataField->append(byteHex);
             }
+
+            addr -= 2;
         }
     }
     else
@@ -379,8 +381,8 @@ void XilHDLFile::generateDataField ( std::string * dataField,
 
                 addr -= 3;
 
-                parityBits <<= 2;
-                parityBits |= ( byteInt & 0x3 );
+                parityBits >>= 2;
+                parityBits |= ( byteInt & 0x3 ) << 28;
             }
 
             sprintf(hexString, "%08X", parityBits);
