@@ -105,7 +105,7 @@
                  CONSTANT dayB, 26
                  CONSTANT DMAX, 27                   ;
                  CONSTANT JAN, 28                    ;
-                 CONSTANT FEB, 29                    ;
+                 CONSTANT _FEB, 29                    ;
                  CONSTANT MAR, 2A                    ;
                  CONSTANT APR, 2B                    ;
                  CONSTANT MAY, 2C                    ;
@@ -115,9 +115,9 @@
                  CONSTANT SEP, 30                    ;
                  CONSTANT OCT, 31                    ;
                  CONSTANT NOV, 32                    ;
-                 CONSTANT DEC, 33                    ;
+                 CONSTANT _DEC, 33                    ;
                  CONSTANT JAN2, 34                   ;
-                 CONSTANT FEB2, 35                   ;
+                 CONSTANT _FEB2, 35                   ;
                  CONSTANT MAR2, 36                   ;
                  CONSTANT APR2, 37                   ;
                  CONSTANT MAY2, 38                   ;
@@ -127,7 +127,7 @@
                  CONSTANT SEP2, 3C                   ;
                  CONSTANT OCT2, 3D                   ;
                  CONSTANT NOV2, 3E                   ;
-                 CONSTANT DEC2, 3F                   ;
+                 CONSTANT _DEC2, 3F                   ;
                  ;The main operation of the program uses 1ms delays to set the shift rate
                  ;of the LCD display. A 16-bit value determines how many milliseconds
                  ;there are between shifts
@@ -263,19 +263,19 @@
                  STORE s0, JUL                       ;7
                  STORE s0, AUG                       ;8
                  STORE s0, OCT                       ;10
-                 STORE s0, DEC                       ;12
+                 STORE s0, _DEC                       ;12
                  LOAD s0, 1E
                  STORE s0, APR                       ;4
                  STORE s0, JUN                       ;6
                  STORE s0, SEP                       ;9
                  STORE s0, NOV                       ;11
                  LOAD s0, 1C
-                 STORE s0, FEB                       ;2
+                 STORE s0, _FEB                       ;2
                  LOAD s0, 03
                  STORE s0, JAN2
                  STORE s0, OCT2
                  LOAD s0, 06
-                 STORE s0, FEB2
+                 STORE s0, _FEB2
                  STORE s0, MAR2
                  STORE s0, NOV2
                  LOAD s0, 02
@@ -289,7 +289,7 @@
                  STORE s0, AUG2
                  LOAD s0, 01
                  STORE s0, SEP2
-                 STORE s0, DEC2
+                 STORE s0, _DEC2
                  LOAD sF, 00                         ;
         restart:
                  LOAD s5, 10
@@ -600,13 +600,13 @@
                  ADD s1, s0
                  FETCH s2, (s1)                      ;;28
                  COMPARE s0, 02                      ;;Y
-                 JUMP NZ, NO_FEB
+                 JUMP NZ, NO__FEB
                  FETCH s1, yearB
                  AND s1, 03
-                 JUMP NZ, NO_FEB
+                 JUMP NZ, NO__FEB
                  ADD s2, 01
      NO_RUNNIAN:
-         NO_FEB: STORE s2, DMAX
+         NO__FEB: STORE s2, DMAX
                  FETCH s1, dayB
                  COMPARE s2, s1
                  JUMP NC, UNDER
@@ -644,7 +644,7 @@
      NO_YEAR_UP:
                  LOAD s0, 00
                  STORE s0, DAY_UP
-                 LOAD s0, DEC
+                 LOAD s0, _DEC
                  FETCH s2, monB
                  ADD s0, s2
                  FETCH s1, (s0)                      ;;;K
