@@ -1,0 +1,31 @@
+;
+; simple example code, shifting and inverting
+; wait longer too
+;
+; read in a switch at each loop, if the switch is 1 then invert
+; the register instead of shifting it
+;
+;
+start: LOAD s9, 0xA5 ; 10100101
+drive_wave: OUTPUT s9, 0x02 ; write s9 register to userbit
+LOAD S2, 0x2F ; S2 initial value
+loop2: LOAD S1, 0xFF ; S1 initial value
+loop1: LOAD s0, 0xFF ; S0 initial value
+loop0: SUB s0, 0x01
+JUMP NZ, loop0
+SUB s1, 0x01
+JUMP NZ, loop1
+SUB s2, 0x01
+JUMP NZ, loop2
+; Read the inport to s8
+INPUT s8, 0x01
+; test bit 0, if 1, set carry flag
+TEST s8, 0x01
+; if (s8[0] == 1) invert_wave else shift_wave
+JUMP C, invert_wave
+; shift the wave and drive it
+shift_wave: RL s9 ; shift left register
+JUMP drive_wave
+; invert the wave and drive it
+invert_wave: XOR s9, 0xFF ;toggle register
+JUMP drive_wave 
