@@ -392,6 +392,30 @@ inline bool AsmTranslatorKcpsmMed::processDirectives ( std::vector<std::pair<uns
     {
         lineFields.replaceInst(changeLetterCase("#endif", m_config->m_letterCase[AsmTranslatorConfig::F_DIRECTIVE]));
     }
+    else if ( ".scr" == directive )
+    {
+    }
+    else if ( ".txt" == directive )
+    {
+    }
+    else if ( ".byt" == directive )
+    {
+    }
+    else if ( ".wbe" == directive )
+    {
+    }
+    else if ( ".wle" == directive )
+    {
+    }
+    else if ( ".lbe" == directive )
+    {
+    }
+    else if ( ".lle" == directive )
+    {
+    }
+    else if ( ".buf" == directive )
+    {
+    }
     else if ( ".def" == directive )
     {
         lineFields.replaceInst(changeLetterCase("define", m_config->m_letterCase[AsmTranslatorConfig::F_DIRECTIVE]));
