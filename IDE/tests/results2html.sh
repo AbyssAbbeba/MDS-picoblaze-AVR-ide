@@ -116,7 +116,12 @@ for i in *-Listing.xml; do
 done
 runParallelJobs ${PP} # (${PP} in args. means run in twice as many processes as usual.)
 
-read megaBytesOfGcov _ <<< $( wc -c $(find . -name '*.gcov') | tail -n 1 )
+declare -ra GCOV_FILES=( $(find . -name '*.gcov') )
+if (( 0 == ${#GCOV_FILES[@]} )); then
+    megaBytesOfGcov=0
+else
+    read megaBytesOfGcov _ <<< $( wc -c "${GCOV_FILES[@]}" | tail -n 1 )
+fi
 megaBytesOfGcov=$( bc -q <<< "scale = 2; ${megaBytesOfGcov} / ( 1024 * 1024 )" )
 numberOfGcovFiles=$( find . -name '*.gcov' | wc -l )
 
@@ -178,10 +183,13 @@ echo "        td.filename {" >> index.html
 echo "            text-align: left;" >> index.html
 echo "            padding-left: 5px" >> index.html
 echo "        }" >> index.html
-echo "        td.percentage {" >> index.html
+echo "        td.passed {" >> index.html
 echo "            background-color: #50ff50;" >> index.html
+echo "        }" >> index.html
+echo "        td.percentage {" >> index.html
+echo "            background-color: #ff0000;" >> index.html
 echo "            background-repeat: no-repeat;" >> index.html
-echo "            background-position: right center;" >> index.html
+echo "            background-position: left center;" >> index.html
 echo "        }" >> index.html
 echo "    </style>" >> index.html
 echo "</head>" >> index.html
@@ -351,7 +359,7 @@ for i in *-Results.xml; do
         if (( ! CASES )); then
             echo "            <td><a href=\"${i%%.xml}.html\"> -- </a></td>" >> index.html
         elif (( CASES != SUCCESSFUL_CASES )); then
-            style="background-image:url('bgr.png'); background-size: $(( 100 - SUCCESSFUL_CASES * 100 / CASES ))% 100%;"
+            style="background-image:url('bgg.png'); background-size: $(( SUCCESSFUL_CASES * 100 / CASES ))% 100%;"
             echo -n "            <td class=\"percentage\" style=\"${style}\"> " >> index.html
             failed=$(( CASES - SUCCESSFUL_CASES ))
             if (( 1 == ${failed})); then
@@ -362,7 +370,7 @@ for i in *-Results.xml; do
             echo    "<a href=\"${i%%.xml}.html\">${failedStr} failed </a></td>" >> index.html
             let failedTotal+=${failed}
         else
-            echo "            <td class=\"percentage\"><a href=\"${i%%.xml}.html\"> Passed </a></td>" >> index.html
+            echo "            <td class=\"passed\"><a href=\"${i%%.xml}.html\"> Passed </a></td>" >> index.html
         fi
     else
         echo "            <td style=\"background-color: #555555; color: #FFFFFF\"> CRASHED </td>" >> index.html

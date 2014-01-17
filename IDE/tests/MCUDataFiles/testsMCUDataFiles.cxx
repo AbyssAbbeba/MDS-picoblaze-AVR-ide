@@ -241,8 +241,8 @@ const char * testSuiteID2cstring ( TestSuite::TestSuiteID id )
         case TestSuite::TS_MEM_3:   return "Xilinx MEM (3B)";
         case TestSuite::TS_V_16:    return "Verilog (16b)";
         case TestSuite::TS_V_18:    return "Verilog (18b)";
-        case TestSuite::TS_VHDL_16: return "VHDL (18b)";
-        case TestSuite::TS_VHDL_18: return "VHDL (16b)";
+        case TestSuite::TS_VHDL_16: return "VHDL (16b)";
+        case TestSuite::TS_VHDL_18: return "VHDL (18b)";
         case TestSuite::TS__MAX__:  return "<invalid>";
     }
     return nullptr;
