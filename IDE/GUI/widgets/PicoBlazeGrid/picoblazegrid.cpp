@@ -108,25 +108,25 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
     this->leSP = new QLineEdit(this);
     this->leSP->setMaximumWidth(50);
     this->leSP->setMaximumHeight(17);
-    this->leSP->setFont(QFont("Andale Mono", 9));
+    this->leSP->setFont(QFont("FreeMono", 9));
     this->leSP->setReadOnly(true);
     this->leSP->move(810, 0);
     this->lePC = new QLineEdit(this);
     this->lePC->setMaximumWidth(50);
     this->lePC->setMaximumHeight(17);
-    this->lePC->setFont(QFont("Andale Mono", 9));
+    this->lePC->setFont(QFont("FreeMono", 9));
     this->lePC->setReadOnly(true);
     this->lePC->move(920, 0);
     this->leTime = new QLineEdit(this);
     this->leTime->setMaximumWidth(50);
     this->leTime->setMaximumHeight(17);
-    this->leTime->setFont(QFont("Andale Mono", 9));
+    this->leTime->setFont(QFont("FreeMono", 9));
     this->leTime->setReadOnly(true);
     this->leTime->move(920, 20);
     this->leClock = new QLineEdit(this);
     this->leClock->setMaximumWidth(50);
     this->leClock->setMaximumHeight(17);
-    this->leClock->setFont(QFont("Andale Mono", 9));
+    this->leClock->setFont(QFont("FreeMono", 9));
     this->leClock->setReadOnly(true);
     this->leClock->move(920, 40);
 
@@ -151,8 +151,9 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
     this->btnInte->setMaximumWidth(80);
     this->btnInte->move(880, 100);
 
-    QFont btnFont = this->btnIntr->font();
-    btnFont.setPointSize(9);
+    //QFont btnFont = this->btnIntr->font();
+    //btnFont.setPointSize(9);
+    QFont btnFont = QFont("FreeMono", 9);
     this->btnIntr->setFont(btnFont);
     this->btnPorts->setFont(btnFont);
     this->btnCarry->setFont(btnFont);
