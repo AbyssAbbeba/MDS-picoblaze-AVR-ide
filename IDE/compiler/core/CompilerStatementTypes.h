@@ -829,25 +829,25 @@ namespace CompilerStatementTypes
         ///@name C
         //@{
             C_STMT_EXPR,                        ///<
-            C_STMT_BREAK,
-            C_STMT_CONTINUE,
-            C_STMT_RETURN,
-            C_STMT_VAR,
-            C_STMT_FUNC,
-            C_STMT_IF,
-            C_STMT_CONDITION,
-            C_STMT_ELSE,
-            C_STMT_FOR,
-            C_STMT_WHILE,
-            C_STMT_DO_WHILE,
-            C_STMT_SWITCH,
-            C_STMT_CASE,
-            C_STMT_DEFAULT,
-            C_STMT_SCOPE,
-            C_STMT_INLINE_FUNC,
-            C_STMT_TYPEDEF,
-            C_STMT_GOTO,
-            
+            C_STMT_BREAK,                       ///<
+            C_STMT_CONTINUE,                    ///<
+            C_STMT_RETURN,                      ///<
+            C_STMT_VAR,                         ///<
+            C_STMT_FUNC,                        ///<
+            C_STMT_IF,                          ///<
+            C_STMT_CONDITION,                   ///<
+            C_STMT_ELSE,                        ///<
+            C_STMT_FOR,                         ///<
+            C_STMT_WHILE,                       ///<
+            C_STMT_DO_WHILE,                    ///<
+            C_STMT_SWITCH,                      ///<
+            C_STMT_CASE,                        ///<
+            C_STMT_DEFAULT,                     ///<
+            C_STMT_SCOPE,                       ///<
+            C_STMT_INLINE_FUNC,                 ///<
+            C_STMT_TYPEDEF,                     ///<
+            C_STMT_GOTO,                        ///<
+                                                
         //@}
 
         STATEMENTTYPE__MAX__                    ///<

@@ -4,6 +4,7 @@ device kcpsm3
       LOAD    0x0, #0x0
 FOR_3:
       COMPARE 0x0, #0x2
+      ADD 0x0, #1
       JUMP    Z, FOR_3_END
                                  ; FOR         s0,1
 FOR_4:
