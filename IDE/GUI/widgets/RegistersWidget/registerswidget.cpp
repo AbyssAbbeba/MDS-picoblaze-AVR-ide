@@ -26,7 +26,7 @@ RegistersWidget::RegistersWidget(QWidget *parent, MCUSimControl * controlUnit, M
     this->setColumnWidth(7, 65);
     
     //QFont font = this->font();
-    this->setFont(QFont("FreeMono", 9));
+    this->setFont(QFont("Andale Mono", 9));
     //font.setPointSize(9);
     //this->setFont(font);
 
