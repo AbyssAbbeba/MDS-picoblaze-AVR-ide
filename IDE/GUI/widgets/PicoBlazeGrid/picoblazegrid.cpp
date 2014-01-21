@@ -153,6 +153,7 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
 
     QFont btnFont = this->btnIntr->font();
     btnFont.setPointSize(9);
+    //QFont btnFont = QFont("Andale Mono", 9);
     this->btnIntr->setFont(btnFont);
     this->btnPorts->setFont(btnFont);
     this->btnCarry->setFont(btnFont);
