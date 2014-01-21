@@ -1,4 +1,13 @@
+		device	kcpsm3
 
+<<<<<<< HEAD
+main:	add		S0, #2
+		add		S1, #1
+		store	S0, @S1
+		jump	main
+__
+		end
+=======
 device kcpsm3
       ;   FOR     s0,2
 hoj:      
@@ -25,3 +34,4 @@ FOR_4_END:
      JUMP    FOR_3
        FOR_3_END:
 	JUMP FOR_3
+>>>>>>> d1098d1251fd3cfd5a5f66348a1e05c83d38e462

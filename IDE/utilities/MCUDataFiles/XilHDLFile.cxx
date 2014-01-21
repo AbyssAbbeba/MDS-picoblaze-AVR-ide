@@ -29,8 +29,8 @@ const char * const XilHDLFile::MARK_START      = "{begin template}";
 const char * const XilHDLFile::MARK_INIT_E     = "}";
 const char * const XilHDLFile::MARK_INITP_E    = "}";
 const char * const XilHDLFile::EOL_SEQUENCE    = "\r\n";
-const char * const XilHDLFile::MARK_INIT_S[4]  = { "{INIT_",  "{[8:0]_INIT_",  "{[17:9]_INIT_",  "{[26:18]_INIT_"  };
-const char * const XilHDLFile::MARK_INITP_S[4] = { "{INITP_", "{[8:0]_INITP_", "{[17:9]_INITP_", "{[26:18]_INITP_" };
+const char * const XilHDLFile::MARK_INIT_S[3]  = { "{INIT_",  "{[8:0]_INIT_",  "{[17:9]_INIT_"  };
+const char * const XilHDLFile::MARK_INITP_S[3] = { "{INITP_", "{[8:0]_INITP_", "{[17:9]_INITP_" };
 
 void XilHDLFile::clearAndLoad ( const char * filename )
 {
@@ -239,13 +239,16 @@ void XilHDLFile::save ( const std::string & filename,
 
         unsigned int offset = 0;
         const char * startMark = MARK_INIT_S[0];
-        for ( int i = 1; i < 4; i++ )
+        for ( int i = 1; i < 3; i++ )
         {
             if ( std::string::npos != line.find(startMark) )
             {
                 break;
             }
-            offset += 1024;
+            if ( i > 1 )
+            {
+                offset += 128;
+            }
             startMark = MARK_INIT_S[i];
         }
         substDataMark(line, startMark, MARK_INIT_E, offset, false);
@@ -254,13 +257,16 @@ void XilHDLFile::save ( const std::string & filename,
         {
             offset = 0;
             startMark = MARK_INITP_S[0];
-            for ( int i = 1; i < 4; i++ )
+            for ( int i = 1; i < 3; i++ )
             {
                 if ( std::string::npos != line.find(startMark) )
                 {
                     break;
                 }
-                offset += 1024;
+                if ( i > 1 )
+                {
+                    offset += 128;
+                }
                 startMark = MARK_INITP_S[i];
             }
             substDataMark(line, startMark, MARK_INITP_E, offset, true);
