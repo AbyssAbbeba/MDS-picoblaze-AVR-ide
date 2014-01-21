@@ -32,7 +32,7 @@ add_subdirectory ( include )
 # ------------------------------------------------------------------------------
 
 # List of preprocessor include file search directories.
-include_directories ( "${CMAKE_SOURCE_DIR}/3rdParty"
+include_directories ( ${Boost_INCLUDE_DIRS}
                       "${CMAKE_CURRENT_SOURCE_DIR}/core"
                       "${CMAKE_CURRENT_SOURCE_DIR}/modules"
                       "${CMAKE_CURRENT_SOURCE_DIR}/modules/generators" )
@@ -49,7 +49,7 @@ add_executable ( ${PROJECT_NAME}
                  main.cxx )
 
 # Link a target to given libraries
-target_link_libraries ( ${PROJECT_NAME} boost
+target_link_libraries ( ${PROJECT_NAME} ${Boost_LIBRARIES}
                                         CompilerCore )
 
 # ------------------------------------------------------------------------------

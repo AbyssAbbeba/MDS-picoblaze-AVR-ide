@@ -20,7 +20,7 @@ project ( CompilerCore )
 
 # List of preprocessor include file search directories.
 include_directories ( "${CMAKE_CURRENT_SOURCE_DIR}"
-                      "${CMAKE_SOURCE_DIR}/3rdParty"
+                      ${Boost_INCLUDE_DIRS}
                       "${CMAKE_CURRENT_SOURCE_DIR}/../modules" )
 
 # Specify directories in which the linker will look for libraries.
@@ -60,7 +60,7 @@ add_library ( ${PROJECT_NAME} SHARED
 # Link the target to given libraries.
 target_link_libraries ( ${PROJECT_NAME} ${QT_LIBRARIES}
                                         CompilerModules
-                                        boost
+                                        ${Boost_LIBRARIES}
                                         os )
 
 # ------------------------------------------------------------------------------

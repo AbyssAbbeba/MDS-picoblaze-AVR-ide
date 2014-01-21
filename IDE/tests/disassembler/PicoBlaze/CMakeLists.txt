@@ -39,7 +39,7 @@ add_subdirectory ( TestKcpsm6 )
 # ------------------------------------------------------------------------------
 
 # Add include directories to the build.
-include_directories ( "${CMAKE_SOURCE_DIR}/3rdParty"
+include_directories ( ${Boost_INCLUDE_DIRS}
                       "${CMAKE_SOURCE_DIR}"
                       "${CMAKE_CURRENT_SOURCE_DIR}/../../../utilities/AutoTest/" )
 
@@ -53,7 +53,7 @@ add_executable ( ${PROJECT_NAME}
 
 # Link a target to given libraries
 target_link_libraries ( ${PROJECT_NAME}
-                        boost
+                        ${Boost_LIBRARIES}
                         TDP_TestKcpsm1CPLD
                         TDP_TestKcpsm1
                         TDP_TestKcpsm2

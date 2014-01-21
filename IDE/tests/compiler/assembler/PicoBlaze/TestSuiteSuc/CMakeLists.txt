@@ -26,7 +26,7 @@ set_directory_properties ( PROPERTIES
 # ------------------------------------------------------------------------------
 
 # Add include directories to the build.
-include_directories ( "${CMAKE_SOURCE_DIR}/3rdParty"
+include_directories ( ${Boost_INCLUDE_DIRS}
                       "${CMAKE_SOURCE_DIR}"
                       "${CMAKE_CURRENT_SOURCE_DIR}/../../../../../compiler/"
                       "${CMAKE_CURRENT_SOURCE_DIR}/../../../../../utilities/MCUDataFiles/"
@@ -45,7 +45,7 @@ add_library ( ${PROJECT_NAME} SHARED
 
 # Link a target to given libraries
 target_link_libraries ( ${PROJECT_NAME}
-                        boost
+                        ${Boost_LIBRARIES}
                         CompilerCore
                         MCUDataFiles
                         DbgFile )

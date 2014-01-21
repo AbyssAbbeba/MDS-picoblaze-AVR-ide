@@ -139,6 +139,10 @@ find_package ( Qt4 4.8.1 REQUIRED
                COMPONENTS QtCore QtGui QtXml QtHelp )
 include ( ${QT_USE_FILE} )
 
+# Find Boost include directories and libraries.
+find_package ( Boost 1.55 REQUIRED
+               COMPONENTS regex filesystem system )
+
 # Find Flex (lexer generator) and Bison (parser generator) executables.
 find_package ( FLEX  2.5.35 REQUIRED )
 find_package ( BISON 2.5    REQUIRED )

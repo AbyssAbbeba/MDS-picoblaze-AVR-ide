@@ -27,7 +27,7 @@ add_subdirectory ( PicoBlaze )
 # ------------------------------------------------------------------------------
 
 # List of preprocessor include file search directories.
-include_directories ( "${CMAKE_SOURCE_DIR}/3rdParty"
+include_directories ( ${Boost_INCLUDE_DIRS}
                       "${CMAKE_CURRENT_SOURCE_DIR}/../utilities/MCUDataFiles/"
                       "${CMAKE_CURRENT_SOURCE_DIR}/PicoBlaze/" )
 
@@ -47,7 +47,7 @@ add_library ( ${PROJECT_NAME} SHARED
 
 # Link a target to given libraries
 target_link_libraries ( ${PROJECT_NAME} ${QT_LIBRARIES}
-                                        boost
+                                        ${Boost_LIBRARIES}
                                         DAsmPicoBlaze )
 
 #
