@@ -149,6 +149,8 @@ function main() {
     cd "$(dirname "$(readlink -n -f "${0}")" )"
     echo "Using up to ${CPU_CORES} CPU cores."
 
+#     local -A opts
+
     # Parse CLI options using `getopts' utility.
     while getopts ":hVcltbsmqT:" opt; do
         case $opt in

@@ -23,6 +23,3 @@ add_subdirectory ( CUnit )
 
 # Build hidapi library.
 add_subdirectory ( hidapi )
-
-# Build boost libraries.
-add_subdirectory ( boost )

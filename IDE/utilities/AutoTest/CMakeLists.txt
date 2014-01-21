@@ -19,7 +19,7 @@ project ( AutoTest )
 # ------------------------------------------------------------------------------
 
 # Add include directories to the build.
-include_directories ( "${CMAKE_SOURCE_DIR}/3rdParty"
+include_directories ( ${Boost_INCLUDE_DIRS}
                       "${CMAKE_SOURCE_DIR}" )
 
 # Specify directories in which the linker will look for libraries.
@@ -32,5 +32,5 @@ add_library ( ${PROJECT_NAME} SHARED
 
 # Link a target to given libraries
 target_link_libraries ( ${PROJECT_NAME}
-                        boost
+                        ${Boost_LIBRARIES}
                         CUnit )

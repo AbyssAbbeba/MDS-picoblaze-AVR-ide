@@ -32,7 +32,7 @@ add_subdirectory ( Xilinx )
 # ------------------------------------------------------------------------------
 
 # Add include directories to the build.
-include_directories ( "${CMAKE_SOURCE_DIR}/3rdParty"
+include_directories ( ${Boost_INCLUDE_DIRS}
                       "${CMAKE_SOURCE_DIR}"
                       "${CMAKE_SOURCE_DIR}/compiler/"
                       "${CMAKE_SOURCE_DIR}/utilities/AutoTest/"
@@ -52,7 +52,7 @@ add_executable ( ${PROJECT_NAME}
 
 # Link a target to given libraries
 target_link_libraries ( ${PROJECT_NAME}
-                        boost
+                        ${Boost_LIBRARIES}
                         TAT_TestPicoBlazeXil
                         TAT_TestPicoBlazeMed
                         TAT_TestPicoBlazeOPI
