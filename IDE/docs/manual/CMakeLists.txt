@@ -24,15 +24,15 @@ project ( manual )
 if ( NOT ( PDFLATEX_COMPILER AND LATEX2HTML_CONVERTER AND MAKEINDEX_PROGRAM ) )
     find_program ( PDFLATEX_COMPILER
                    NAMES pdflatex
-                   PATHS /usr/bin )
+                   PATHS $ENV{PATH} )
 
     find_program ( LATEX2HTML_CONVERTER
                    NAMES latex2html
-                   PATHS /usr/bin )
+                   PATHS $ENV{PATH} )
 
     find_program ( MAKEINDEX_PROGRAM
                    NAMES makeindex
-                   PATHS /usr/bin )
+                   PATHS $ENV{PATH} )
 
     if ( PDFLATEX_COMPILER AND LATEX2HTML_CONVERTER AND MAKEINDEX_PROGRAM )
         set ( LATEX_FOUND TRUE CACHE BOOL "" )
@@ -40,7 +40,7 @@ if ( NOT ( PDFLATEX_COMPILER AND LATEX2HTML_CONVERTER AND MAKEINDEX_PROGRAM ) )
         message ( STATUS "Found latex2html: ${LATEX2HTML_CONVERTER}" )
         message ( STATUS "Found makeindex: ${MAKEINDEX_PROGRAM}" )
     else()
-        set ( LATEX_FOUND TRUE CACHE BOOL "" )
+        set ( LATEX_FOUND FALSE CACHE BOOL "" )
         message ( WARNING "Unable to locate some of the required LaTeX tools (pdflatex, latex2html, or makeindex)." )
     endif()
 endif()
@@ -51,18 +51,18 @@ endif()
 if ( NOT ( Q_HELP_GENERATOR AND Q_COLLECTION_GENERATOR ) )
     find_program ( Q_HELP_GENERATOR
                    NAMES qhelpgenerator
-                   PATHS /usr/bin )
+                   PATHS $ENV{PATH} )
 
     find_program ( Q_COLLECTION_GENERATOR
                    NAMES qcollectiongenerator
-                   PATHS /usr/bin )
+                   PATHS $ENV{PATH} )
 
     if ( Q_HELP_GENERATOR AND Q_COLLECTION_GENERATOR )
         set ( Q_HELP_TOOLS_FOUND TRUE CACHE BOOL "" )
         message ( STATUS "Found qhelpgenerator: ${Q_HELP_GENERATOR}" )
         message ( STATUS "Found qcollectiongenerator: ${Q_COLLECTION_GENERATOR}" )
     else()
-        set ( Q_HELP_TOOLS_FOUND TRUE CACHE BOOL "" )
+        set ( Q_HELP_TOOLS_FOUND FALSE CACHE BOOL "" )
         message ( WARNING "Unable to locate some of the required Qt tools (qhelpgenerator or qcollectiongenerator)." )
     endif()
 endif()

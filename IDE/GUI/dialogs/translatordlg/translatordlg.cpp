@@ -15,6 +15,7 @@
 #include <QtGui>
 #include "translatordlg.h"
 #include "../../../utilities/AsmTranslator/AsmTranslator.h"
+#include "../../../utilities/AsmTranslator/AsmTranslatorConfig.h"
 #include <string>
 #include <cstdio>
 #include <fstream>
@@ -31,10 +32,15 @@ TranslatorDlg::TranslatorDlg(QWidget *parent)
 {
     ui.setupUi(this);
     this->show();
+    this->setFixedSize(this->size());
 
     connect(this->ui.btnBox, SIGNAL(accepted()), this, SLOT(create()));
     connect(this->ui.btnBox, SIGNAL(rejected()), this, SLOT(reject()));
     connect(this->ui.btnChange, SIGNAL(clicked()), this, SLOT(setPath()));
+    connect(this->ui.cmbIndent,
+            SIGNAL(currentIndexChanged(const QString &)),
+            this,
+            SLOT(tabsChanged(const QString &)));
 }
 
 
@@ -60,7 +66,16 @@ void TranslatorDlg::create()
 
     std::ifstream input(this->ui.lePath->text().toStdString());
     std::ostringstream outputStream;
-    bool finalResult = translator.translate((AsmTranslator::Variant)(this->ui.cmbType->currentIndex()), outputStream, input);
+    translator.m_config.m_letterCase[0] = (AsmTranslatorConfig::LetterCase) (this->ui.cmbCaseSymbol->currentIndex());
+    translator.m_config.m_letterCase[1] = (AsmTranslatorConfig::LetterCase) (this->ui.cmbCaseDir->currentIndex());
+    translator.m_config.m_letterCase[2] = (AsmTranslatorConfig::LetterCase) (this->ui.cmbCaseInst->currentIndex());
+    translator.m_config.m_eol = (AsmTranslatorConfig::EndOfLine) (this->ui.cmbEOL->currentIndex());
+    translator.m_config.m_indentation = (AsmTranslatorConfig::Indentation) this->ui.cmbIndent->currentIndex();
+    translator.m_config.m_tabSize = this->ui.spinTabs->value();
+    translator.m_config.m_shortInstructions = this->ui.chckShortInst->isChecked();
+    bool finalResult = translator.translate((AsmTranslator::Variant)(this->ui.cmbType->currentIndex()),
+                                            outputStream,
+                                            input);
     
     if ( true == finalResult )
     {
@@ -75,4 +90,19 @@ void TranslatorDlg::create()
     }
     
     accept();
+}
+
+
+void TranslatorDlg::tabsChanged(const QString &text)
+{
+    if (text == "Tabs")
+    {
+        this->ui.spinTabs->setEnabled(true);
+        this->ui.lblTabs->setEnabled(true);
+    }
+    else
+    {
+        this->ui.spinTabs->setEnabled(false);
+        this->ui.lblTabs->setEnabled(false);
+    }
 }

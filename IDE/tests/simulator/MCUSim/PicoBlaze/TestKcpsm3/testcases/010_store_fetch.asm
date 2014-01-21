@@ -8,6 +8,7 @@ add S5, #1
 		jump	hoj
 FOR_3:
       COMPARE 0x0, #0x2
+      ADD 0x0, #1
       JUMP    Z, FOR_3_END
                                  ; FOR         s0,1
 FOR_4:
