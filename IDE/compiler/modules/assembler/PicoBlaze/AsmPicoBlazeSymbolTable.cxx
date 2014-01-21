@@ -104,14 +104,14 @@ int AsmPicoBlazeSymbolTable::addSymbol ( const std::string & name,
             m_compilerCore -> semanticMessage ( CompilerSourceLocation(),
                                                 CompilerBase::MT_ERROR,
                                                 QObject::tr ( "symbol already defined: " ).toStdString()
-                                                            + "\"" + name + "\"" );
+                                                            + '"' + name + '"' );
         }
         else
         {
             m_compilerCore -> semanticMessage ( *location,
                                                 CompilerBase::MT_ERROR,
                                                 QObject::tr ( "symbol already defined: " ).toStdString()
-                                                            + "\"" + name + "\"" );
+                                                            + '"' + name + '"' );
         }
     }
 
@@ -153,23 +153,12 @@ AsmPicoBlazeSymbolTable::SymbolType AsmPicoBlazeSymbolTable::getType ( const Com
     {
         switch ( expr->lVal().m_type )
         {
-            case CompilerValue::TYPE_EMPTY:    return STYPE_UNSPECIFIED;
-            case CompilerValue::TYPE_INT:      return STYPE_NUMBER;
-            case CompilerValue::TYPE_REAL:     return STYPE_NUMBER;
-            case CompilerValue::TYPE_EXPR:     return STYPE_EXPRESSION;
-            case CompilerValue::TYPE_ARRAY:    return STYPE_UNSPECIFIED;
-            case CompilerValue::TYPE_SYMBOL:
-            {
-                SymbolType type = getType(expr->lVal().m_data.m_symbol);
-                if ( STYPE_UNSPECIFIED == type )
-                {
-                    return STYPE_NUMBER;
-                }
-                else
-                {
-                    return type;
-                }
-            }
+            case CompilerValue::TYPE_EMPTY:  return STYPE_UNSPECIFIED;
+            case CompilerValue::TYPE_INT:    return STYPE_NUMBER;
+            case CompilerValue::TYPE_REAL:   return STYPE_NUMBER;
+            case CompilerValue::TYPE_EXPR:   return STYPE_EXPRESSION;
+            case CompilerValue::TYPE_ARRAY:  return STYPE_UNSPECIFIED;
+            case CompilerValue::TYPE_SYMBOL: return getType(expr->lVal().m_data.m_symbol);
         }
     }
 
@@ -737,7 +726,7 @@ void AsmPicoBlazeSymbolTable::output()
         m_compilerCore -> semanticMessage ( CompilerSourceLocation(),
                                             CompilerBase::MT_ERROR,
                                             QObject::tr ( "unable to open: " ).toStdString()
-                                                        + "\"" + m_opts->m_symbolTable  + "\"" );
+                                                        + '"' + m_opts->m_symbolTable  + '"' );
         return;
     }
 
@@ -748,7 +737,7 @@ void AsmPicoBlazeSymbolTable::output()
         m_compilerCore -> semanticMessage ( CompilerSourceLocation(),
                                             CompilerBase::MT_ERROR,
                                             QObject::tr ( "unable to write to: " ).toStdString()
-                                                        + "\"" + m_opts->m_symbolTable  + "\"" );
+                                                        + '"' + m_opts->m_symbolTable  + '"' );
         return;
     }
 }

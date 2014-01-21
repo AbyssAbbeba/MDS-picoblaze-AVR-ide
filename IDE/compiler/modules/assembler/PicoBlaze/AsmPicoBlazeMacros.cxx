@@ -15,6 +15,7 @@
 
 // PicoBlaze assembler semantic analyzer header files.
 #include "AsmPicoBlazeMacros.h"
+#include "AsmPicoBlazeCommons.h"
 #include "AsmPicoBlazeSymbolTable.h"
 #include "AsmPicoBlazeCodeListing.h"
 
@@ -23,6 +24,7 @@
 
 // Standard headers.
 #include <cstdio>
+#include <cstdint>
 #include <fstream>
 
 AsmPicoBlazeMacros::Macro::Macro()
@@ -120,7 +122,7 @@ void AsmPicoBlazeMacros::define ( CompilerSourceLocation location,
 
 bool AsmPicoBlazeMacros::isFromMacro ( const CompilerStatement * node ) const
 {
-    return ( 0 != node->m_userData );
+    return ( 0 != ( AsmPicoBlazeCommons::UD_MACRO_COUNTER & node->m_userData ) );
 }
 
 void AsmPicoBlazeMacros::incrMacroCounter ( CompilerStatement * macro ) const
@@ -134,7 +136,10 @@ void AsmPicoBlazeMacros::incrMacroCounter ( CompilerStatement * macro ) const
           nullptr != node;
           node = node->next() )
     {
-        node->m_userData++;
+        uint16_t macroCounter = ( AsmPicoBlazeCommons::UD_MACRO_COUNTER & node->m_userData );
+        macroCounter++;
+        node->m_userData = ( ~AsmPicoBlazeCommons::UD_MACRO_COUNTER & node->m_userData ) |
+                           (  AsmPicoBlazeCommons::UD_MACRO_COUNTER & macroCounter );
         incrMacroCounter(node->branch());
     }
 }
@@ -158,7 +163,7 @@ CompilerStatement * AsmPicoBlazeMacros::expand ( const CompilerSourceLocation & 
     {
         m_compilerCore -> semanticMessage ( location,
                                             CompilerBase::MT_ERROR,
-                                            QObject::tr("macro not defined: ").toStdString() + "\"" + name + "\"" );
+                                            QObject::tr("macro not defined: ").toStdString() + '"' + name + '"' );
         return new CompilerStatement();
     }
 
@@ -296,7 +301,7 @@ void AsmPicoBlazeMacros::output()
         m_compilerCore -> semanticMessage ( CompilerSourceLocation(),
                                             CompilerBase::MT_ERROR,
                                             QObject::tr ( "Unable to open " ).toStdString()
-                                                        + "\"" + m_opts -> m_macroTable  + "\"" );
+                                                        + '"' + m_opts -> m_macroTable  + '"' );
         return;
     }
 
@@ -307,7 +312,7 @@ void AsmPicoBlazeMacros::output()
         m_compilerCore -> semanticMessage ( CompilerSourceLocation(),
                                             CompilerBase::MT_ERROR,
                                             QObject::tr ( "Unable to write to " ).toStdString()
-                                                        + "\"" + m_opts -> m_macroTable  + "\"" );
+                                                        + '"' + m_opts -> m_macroTable  + '"' );
         return;
     }
 }

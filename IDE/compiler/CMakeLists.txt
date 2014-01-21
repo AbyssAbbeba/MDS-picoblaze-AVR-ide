@@ -38,8 +38,7 @@ include_directories ( ${Boost_INCLUDE_DIRS}
                       "${CMAKE_CURRENT_SOURCE_DIR}/modules/generators" )
 
 # Specify directories in which the linker will look for libraries.
-link_directories ( ${Boost_LIBRARY_DIRS}
-                   "${CMAKE_CURRENT_SOURCE_DIR}/core/"
+link_directories ( "${CMAKE_CURRENT_SOURCE_DIR}/core/"
                    "${CMAKE_CURRENT_SOURCE_DIR}/modules/"
                    "${CMAKE_CURRENT_SOURCE_DIR}/../utilities/os/"
                    "${CMAKE_CURRENT_SOURCE_DIR}/../utilities/DbgFile/"

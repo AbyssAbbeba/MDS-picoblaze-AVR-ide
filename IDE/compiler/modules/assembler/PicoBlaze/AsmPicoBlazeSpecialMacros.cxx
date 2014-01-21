@@ -14,8 +14,9 @@
 // =============================================================================
 
 // PicoBlaze assembler semantic analyzer header files.
-#include "AsmPicoBlazeSpecialMacros.h"
+#include "AsmPicoBlazeCommons.h"
 #include "AsmPicoBlazeCodeListing.h"
+#include "AsmPicoBlazeSpecialMacros.h"
 
 // Common compiler header files.
 #include "CompilerExpr.h"
@@ -69,7 +70,7 @@ CompilerStatement * AsmPicoBlazeSpecialMacros::runTimeWhile ( CompilerStatement 
     result->appendLink(resultEnd);
     rtWhile->m_branch = nullptr;
 
-    return result;
+    return markAsFromSpecMacro(result);
 }
 
 void AsmPicoBlazeSpecialMacros::runTimeForLeave()
@@ -168,7 +169,7 @@ CompilerStatement * AsmPicoBlazeSpecialMacros::runTimeFor ( CompilerStatement * 
     // continue:
     result->appendLink ( label(labelContinue, rtFor->location()) );
     // if ( reg == end ) { jump break }
-    result->appendLink ( compare_sx_kk(reg, end, rtFor->location()) );
+    result->appendLink ( compare_sx_kk(args[0], end, rtFor->location()) );
     result->appendLink ( jump(labelBreak, rtFor->location(), JC_Z) );
     m_codeListing->generatedCode(rtFor->location(), result);
 
@@ -204,7 +205,7 @@ CompilerStatement * AsmPicoBlazeSpecialMacros::runTimeFor ( CompilerStatement * 
     result->appendLink(resultEnd);
     rtFor->m_branch = nullptr;
 
-    return result;
+    return markAsFromSpecMacro(result);
 }
 
 CompilerStatement * AsmPicoBlazeSpecialMacros::runTimeCondition ( CompilerStatement * rtIfTree )
@@ -284,15 +285,16 @@ CompilerStatement * AsmPicoBlazeSpecialMacros::runTimeCondition ( CompilerStatem
     }
 
     rtIfTree->m_branch = nullptr;
-    return result;
+    return markAsFromSpecMacro(result);
 }
 
 CompilerStatement * AsmPicoBlazeSpecialMacros::evaluateCondition ( const CompilerExpr * cnd,
                                                                    const std::string & label,
                                                                    const CompilerSourceLocation & location )
 {
-    struct
+    struct CndVal
     {
+        const CompilerExpr * m_expr;
         AsmPicoBlazeSymbolTable::SymbolType m_type;
         int m_val;
         bool m_reg;
@@ -305,10 +307,12 @@ CompilerStatement * AsmPicoBlazeSpecialMacros::evaluateCondition ( const Compile
     const CompilerExpr * const lVal = cnd->lVal().m_data.m_expr;
     const CompilerExpr * const rVal = cnd->rVal().m_data.m_expr;
 
-    cndVal[0].m_type = m_symbolTable->getType(lVal->lVal().m_data.m_expr);
-    cndVal[1].m_type = m_symbolTable->getType(rVal->lVal().m_data.m_expr);
-    cndVal[0].m_val  = (int) m_symbolTable->resolveExpr(lVal->lVal().m_data.m_expr, 8);
-    cndVal[1].m_val  = (int) m_symbolTable->resolveExpr(rVal->lVal().m_data.m_expr, 8);
+    cndVal[0].m_expr = lVal->lVal().m_data.m_expr;
+    cndVal[1].m_expr = rVal->lVal().m_data.m_expr;
+    cndVal[0].m_type = m_symbolTable->getType(cndVal[0].m_expr);
+    cndVal[1].m_type = m_symbolTable->getType(cndVal[1].m_expr);
+    cndVal[0].m_val  = (int) m_symbolTable->resolveExpr(cndVal[0].m_expr, 8);
+    cndVal[1].m_val  = (int) m_symbolTable->resolveExpr(cndVal[1].m_expr, 8);
 
     if ( CompilerExpr::OPER_HASH == lVal->oper() )
     {
@@ -380,13 +384,13 @@ CompilerStatement * AsmPicoBlazeSpecialMacros::evaluateCondition ( const Compile
                     }
                     else
                     {
-                        result = compare_sx_sy(cndVal[0].m_val, cndVal[1].m_val, location);
+                        result = compare_sx_sy(cndVal[0].m_expr, cndVal[1].m_expr, location);
                     }
                 }
                 else
                 {
                     // <DIRECT> <OPERATOR> <IMMEDIATE>
-                    result = compare_sx_kk(cndVal[0].m_val, cndVal[1].m_val, location);
+                    result = compare_sx_kk(cndVal[0].m_expr, cndVal[1].m_val, location);
                 }
             }
             else
@@ -395,7 +399,7 @@ CompilerStatement * AsmPicoBlazeSpecialMacros::evaluateCondition ( const Compile
                 if ( true == cndVal[1].m_reg )
                 {
                     // <IMMEDIATE> <OPERATOR> <DIRECT>
-                    result = compare_sx_kk(cndVal[1].m_val, cndVal[0].m_val, location);
+                    result = compare_sx_kk(cndVal[1].m_expr, cndVal[0].m_val, location);
                 }
                 else
                 {
@@ -434,15 +438,9 @@ CompilerStatement * AsmPicoBlazeSpecialMacros::evaluateCondition ( const Compile
         case CompilerExpr::OPER_LE:
         {
             // Swap cndVal [0] <--> [1].
-
-            bool auxFlag = cndVal[0].m_reg;
-            int auxVal   = cndVal[0].m_val;
-
-            cndVal[0].m_reg = cndVal[1].m_reg;
-            cndVal[0].m_val = cndVal[1].m_val;
-
-            cndVal[1].m_reg = auxFlag;
-            cndVal[1].m_val = auxVal;
+            CndVal auxCndVal = cndVal[0];
+            cndVal[0] = cndVal[1];
+            cndVal[1] = auxCndVal;
         }
         case CompilerExpr::OPER_GE:
             if ( true == cndVal[0].m_reg )
@@ -469,13 +467,13 @@ CompilerStatement * AsmPicoBlazeSpecialMacros::evaluateCondition ( const Compile
                     }
                     else
                     {
-                        result = compare_sx_sy(cndVal[0].m_val, cndVal[1].m_val, location);
+                        result = compare_sx_sy(cndVal[0].m_expr, cndVal[1].m_expr, location);
                     }
                 }
                 else
                 {
                     // <DIRECT> <OPERATOR> <IMMEDIATE>
-                    result = compare_sx_kk(cndVal[0].m_val, cndVal[1].m_val, location);
+                    result = compare_sx_kk(cndVal[0].m_expr, cndVal[1].m_val, location);
                 }
 
                 result->appendLink(jump(label, location, JC_C));
@@ -486,7 +484,7 @@ CompilerStatement * AsmPicoBlazeSpecialMacros::evaluateCondition ( const Compile
                 if ( true == cndVal[1].m_reg )
                 {
                     // <IMMEDIATE> <OPERATOR> <DIRECT>
-                    result = compare_sx_kk(cndVal[1].m_val, cndVal[0].m_val, location);
+                    result = compare_sx_kk(cndVal[1].m_expr, cndVal[0].m_val, location);
                     result->appendLink ( new CompilerStatement ( location,
                                                                  CompilerStatementTypes::ASMPICOBLAZE_INS_JUMP_Z_AAA,
                                                                  new CompilerExpr ( "$", '+', 2, location ) ) );
@@ -515,15 +513,9 @@ CompilerStatement * AsmPicoBlazeSpecialMacros::evaluateCondition ( const Compile
         case CompilerExpr::OPER_LT:
         {
             // Swap cndVal [0] <--> [1].
-
-            bool auxFlag = cndVal[0].m_reg;
-            int auxVal   = cndVal[0].m_val;
-
-            cndVal[0].m_reg = cndVal[1].m_reg;
-            cndVal[0].m_val = cndVal[1].m_val;
-
-            cndVal[1].m_reg = auxFlag;
-            cndVal[1].m_val = auxVal;
+            CndVal auxCndVal = cndVal[0];
+            cndVal[0] = cndVal[1];
+            cndVal[1] = auxCndVal;
         }
         case CompilerExpr::OPER_GT:
             if ( true == cndVal[0].m_reg )
@@ -554,13 +546,13 @@ CompilerStatement * AsmPicoBlazeSpecialMacros::evaluateCondition ( const Compile
                     }
                     else
                     {
-                        result = compare_sx_sy(cndVal[0].m_val, cndVal[1].m_val, location);
+                        result = compare_sx_sy(cndVal[0].m_expr, cndVal[1].m_expr, location);
                     }
                 }
                 else
                 {
                     // <DIRECT> <OPERATOR> <IMMEDIATE>
-                    result = compare_sx_kk(cndVal[0].m_val, cndVal[1].m_val, location);
+                    result = compare_sx_kk(cndVal[0].m_expr, cndVal[1].m_val, location);
                 }
 
                 result->appendLink ( jump(label, location, JC_C) );
@@ -572,7 +564,7 @@ CompilerStatement * AsmPicoBlazeSpecialMacros::evaluateCondition ( const Compile
                 if ( true == cndVal[1].m_reg )
                 {
                     // <IMMEDIATE> <OPERATOR> <DIRECT>
-                    result = compare_sx_kk(cndVal[1].m_val, cndVal[0].m_val, location);
+                    result = compare_sx_kk(cndVal[1].m_expr, cndVal[0].m_val, location);
                     result->appendLink ( jump(label, location, JC_NC) );
                 }
                 else
@@ -621,13 +613,13 @@ CompilerStatement * AsmPicoBlazeSpecialMacros::evaluateCondition ( const Compile
                     }
                     else
                     {
-                        result = test_sx_sy(cndVal[0].m_val, cndVal[1].m_val, location);
+                        result = test_sx_sy(cndVal[0].m_expr, cndVal[1].m_expr, location);
                     }
                 }
                 else
                 {
                     // <DIRECT> <OPERATOR> <IMMEDIATE>
-                    result = test_sx_kk(cndVal[0].m_val, cndVal[1].m_val, location);
+                    result = test_sx_kk(cndVal[0].m_expr, cndVal[1].m_val, location);
                 }
             }
             else
@@ -636,7 +628,7 @@ CompilerStatement * AsmPicoBlazeSpecialMacros::evaluateCondition ( const Compile
                 if ( true == cndVal[1].m_reg )
                 {
                     // <IMMEDIATE> <OPERATOR> <DIRECT>
-                    result = test_sx_kk(cndVal[1].m_val, cndVal[0].m_val, location);
+                    result = test_sx_kk(cndVal[1].m_expr, cndVal[0].m_val, location);
                 }
                 else
                 {
@@ -715,40 +707,40 @@ CompilerStatement * AsmPicoBlazeSpecialMacros::evaluateCondition ( const Compile
     }
 }
 
-inline CompilerStatement * AsmPicoBlazeSpecialMacros::compare_sx_sy ( int sx,
-                                                                      int sy,
+inline CompilerStatement * AsmPicoBlazeSpecialMacros::compare_sx_sy ( const CompilerExpr * sx,
+                                                                      const CompilerExpr * sy,
                                                                       const CompilerSourceLocation & location ) const
 {
     return new CompilerStatement ( location,
                                    CompilerStatementTypes::ASMPICOBLAZE_INS_COMPARE_SX_SY,
-                                   (new CompilerExpr(sx, location))->appendLink(new CompilerExpr(sy, location)) );
+                                   sx->copyChainLink()->appendLink(sy->copyChainLink()) );
 }
 
-inline CompilerStatement * AsmPicoBlazeSpecialMacros::compare_sx_kk ( int sx,
+inline CompilerStatement * AsmPicoBlazeSpecialMacros::compare_sx_kk ( const CompilerExpr * sx,
                                                                       int kk,
                                                                       const CompilerSourceLocation & location ) const
 {
     return new CompilerStatement ( location,
                                    CompilerStatementTypes::ASMPICOBLAZE_INS_COMPARE_SX_KK,
-                                   (new CompilerExpr(sx, location))->appendLink(new CompilerExpr(kk, location)) );
+                                   sx->copyChainLink()->appendLink(new CompilerExpr(kk, location)) );
 }
 
-inline CompilerStatement * AsmPicoBlazeSpecialMacros::test_sx_sy ( int sx,
-                                                                   int sy,
+inline CompilerStatement * AsmPicoBlazeSpecialMacros::test_sx_sy ( const CompilerExpr * sx,
+                                                                   const CompilerExpr * sy,
                                                                    const CompilerSourceLocation & location ) const
 {
     return new CompilerStatement ( location,
                                    CompilerStatementTypes::ASMPICOBLAZE_INS_TEST_SX_SY,
-                                   (new CompilerExpr(sx, location))->appendLink(new CompilerExpr(sy, location)) );
+                                   sx->copyChainLink()->appendLink(sy->copyChainLink()) );
 }
 
-inline CompilerStatement * AsmPicoBlazeSpecialMacros::test_sx_kk ( int sx,
+inline CompilerStatement * AsmPicoBlazeSpecialMacros::test_sx_kk ( const CompilerExpr * sx,
                                                                    int kk,
                                                                    const CompilerSourceLocation & location ) const
 {
     return new CompilerStatement ( location,
                                    CompilerStatementTypes::ASMPICOBLAZE_INS_TEST_SX_KK,
-                                   (new CompilerExpr(sx, location))->appendLink(new CompilerExpr(kk, location)) );
+                                   sx->copyChainLink()->appendLink(new CompilerExpr(kk, location)) );
 }
 
 inline CompilerStatement * AsmPicoBlazeSpecialMacros::jump ( const std::string & label,
@@ -839,4 +831,22 @@ inline void AsmPicoBlazeSpecialMacros::checkType ( bool regOrNumber,
                                                       + m_symbolTable->symType2Str(type),
                                           true );
     }
+}
+
+bool AsmPicoBlazeSpecialMacros::isFromSpecMacro ( const CompilerStatement * node ) const
+{
+    return (bool) ( AsmPicoBlazeCommons::UD_SPEC_MACRO & node->m_userData );
+}
+
+inline CompilerStatement * AsmPicoBlazeSpecialMacros::markAsFromSpecMacro ( CompilerStatement * tree )
+{
+    for ( CompilerStatement * node = tree;
+          nullptr != node;
+          node = node->next() )
+    {
+        node->m_userData |= AsmPicoBlazeCommons::UD_SPEC_MACRO;
+        markAsFromSpecMacro(node->branch());
+    }
+
+    return tree;
 }

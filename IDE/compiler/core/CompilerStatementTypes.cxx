@@ -659,6 +659,10 @@ std::ostream & operator << ( std::ostream & out,
         case ASMPICOBLAZE_DIR_DATA:             out << "ASMPICOBLAZE_DIR_DATA";             break;
         case ASMPICOBLAZE_DIR_LIMIT:            out << "ASMPICOBLAZE_DIR_LIMIT";            break;
         case ASMPICOBLAZE_DIR_DEVICE:           out << "ASMPICOBLAZE_DIR_DEVICE";           break;
+        case ASMPICOBLAZE_DIR_FAILJMP:          out << "ASMPICOBLAZE_DIR_FAILJMP";          break;
+        case ASMPICOBLAZE_DIR_ORGSPR:           out << "ASMPICOBLAZE_DIR_ORGSPR";           break;
+        case ASMPICOBLAZE_DIR_INITSPR:          out << "ASMPICOBLAZE_DIR_INITSPR";          break;
+        case ASMPICOBLAZE_DIR_MERGESPR:         out << "ASMPICOBLAZE_DIR_MERGESPR";         break;
 
         case ASMPICOBLAZE_COND_ASM:             out << "ASMPICOBLAZE_COND_ASM";             break;
         case ASMPICOBLAZE_DIR_IF:               out << "ASMPICOBLAZE_DIR_IF";               break;

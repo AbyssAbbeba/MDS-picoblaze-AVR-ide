@@ -18,8 +18,8 @@
 
 // Forward declarations.
 class DataFile;
-class CompilerSemanticInterface;
 class CompilerOptions;
+class CompilerSemanticInterface;
 
 // Standard headers.
 #include <string>

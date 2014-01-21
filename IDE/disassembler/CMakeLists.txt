@@ -32,8 +32,7 @@ include_directories ( ${Boost_INCLUDE_DIRS}
                       "${CMAKE_CURRENT_SOURCE_DIR}/PicoBlaze/" )
 
 # Specify directories in which the linker will look for libraries.
-link_directories ( ${Boost_LIBRARY_DIRS}
-                   "${CMAKE_CURRENT_SOURCE_DIR}/../utilities/MCUDataFiles/"
+link_directories ( "${CMAKE_CURRENT_SOURCE_DIR}/../utilities/MCUDataFiles/"
                    "${CMAKE_CURRENT_SOURCE_DIR}/PicoBlaze/" )
 
 #
@@ -68,6 +67,6 @@ target_link_libraries ( disasm MCUDataFiles
 # INSTALLATION OPTIONS
 # ------------------------------------------------------------------------------
 
-install ( TARGETS ${PROJECT_NAME}
-         RUNTIME DESTINATION bin
-         LIBRARY DESTINATION lib )
+install ( TARGETS ${PROJECT_NAME} disasm
+          RUNTIME DESTINATION bin
+          LIBRARY DESTINATION lib )

@@ -25,14 +25,14 @@
 
 // Boost Filesystem library.
 #define BOOST_FILESYSTEM_NO_DEPRECATED
-#include <boost/filesystem.hpp>
+#include "boost/filesystem.hpp"
 
 // Tool for working with Intel® 16 Hex files.
 #include "MCUDataFiles/HexFile.h"
 
 // Compiler header files.
 #include "compiler/core/Compiler.h"
-#include "compiler/core/CompilerMsgIntfStdout.h"
+#include "compiler/core/CompilerMsgIntfFile.h"
 
 // Disassembler header files.
 #include "disassembler/PicoBlaze/DAsmPicoBlazeKcpsm6.h"
@@ -43,7 +43,7 @@ int TestKcpsm6::init()
 
     m_disassembler = new DAsmPicoBlazeKcpsm6();
 
-    m_msgInt = new CompilerMsgIntfStdout();
+    m_msgInt = new CompilerMsgIntfFile();
     m_options = new CompilerOptions();
     m_compiler = new Compiler ( m_msgInt,
                                 system_complete( path("..") / ".." / ".." / "compiler" / "include" ).string() );
@@ -124,7 +124,11 @@ void TestKcpsm6::testFunction()
     m_options->m_hexFile    = resultsPath + ".hex";
     m_options->m_lstFile    = resultsPath + ".lst";
 
-    if ( false == m_compiler->compile(CompilerBase::LI_ASM, CompilerBase::TA_PICOBLAZE, m_options) )
+    const std::string errFile = ( resultsPath + ".err" );
+    dynamic_cast<CompilerMsgIntfFile*>(m_msgInt)->openFile(errFile);
+    bool result = m_compiler->compile(CompilerBase::LI_ASM, CompilerBase::TA_PICOBLAZE, m_options);
+    dynamic_cast<CompilerMsgIntfFile*>(m_msgInt)->closeFile();
+    if ( false == result )
     {
         CU_FAIL("Compilation failed.");
         return;

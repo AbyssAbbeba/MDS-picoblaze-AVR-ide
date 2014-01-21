@@ -31,7 +31,7 @@ include_directories ( ${Boost_INCLUDE_DIRS}
                       "${CMAKE_CURRENT_SOURCE_DIR}/../../../../../compiler" )
 
 # Specify directories in which the linker will look for libraries.
-link_directories ( ${Boost_LIBRARY_DIRS}
+link_directories (
                    "${CMAKE_CURRENT_SOURCE_DIR}/../../../../../compiler/core" )
 
 ## Add a library to the project using the specified source files,

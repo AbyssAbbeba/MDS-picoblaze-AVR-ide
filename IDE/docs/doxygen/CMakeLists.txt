@@ -14,6 +14,9 @@
 # Set project name
 project ( doxygen )
 
+# Set the minimum required version of CMake
+cmake_minimum_required ( VERSION 2.8 FATAL_ERROR )
+
 # ------------------------------------------------------------------------------
 # GENERATE API DOCUMENTATION WITH DOXYGEN
 # ------------------------------------------------------------------------------

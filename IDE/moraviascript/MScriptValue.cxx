@@ -424,7 +424,7 @@ std::ostream & operator << ( std::ostream & out,
                     out << val.m_data.m_string.m_data[i];
                 }
             }
-            out << "\"";
+            out << '"';
             break;
         case MScriptValue::TYPE_BOOL:
             out << std::boolalpha << val.m_data.m_bool << std::noboolalpha;

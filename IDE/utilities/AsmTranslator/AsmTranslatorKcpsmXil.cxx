@@ -21,22 +21,21 @@
 #include <utility>
 #include <iterator>
 
+constexpr boost::regex::flag_type flags = ( boost::regex::extended | boost::regex::icase | boost::regex::optimize );
+const boost::regex AsmTranslatorKcpsmXil::m_reAtMark      = boost::regex ( "^@", flags );
+const boost::regex AsmTranslatorKcpsmXil::m_reComment     = boost::regex ( "^;.*$", flags );
+const boost::regex AsmTranslatorKcpsmXil::m_reWord        = boost::regex ( "[_[:alnum:]]+", flags );
+const boost::regex AsmTranslatorKcpsmXil::m_reWhiteSpace  = boost::regex ( "^[[:space:]]+", flags );
+const boost::regex AsmTranslatorKcpsmXil::m_reAndReturn   = boost::regex ( "^&[[:space:]]*return", flags );
+const boost::regex AsmTranslatorKcpsmXil::m_reInstruction = boost::regex ( "^[_[:alpha:]][_[:alnum:]]+", flags );
+const boost::regex AsmTranslatorKcpsmXil::m_reLabel       = boost::regex ( "^[_[:alnum:]]*[[:space:]]*:", flags );
+const boost::regex AsmTranslatorKcpsmXil::m_reOperandSep  = boost::regex ( "^[[:space:]]*,[[:space:]]*", flags );
+const boost::regex AsmTranslatorKcpsmXil::m_reLdAndRet    = boost::regex ( "load[[:space:]]*&[[:space:]]*return", flags );
+const boost::regex AsmTranslatorKcpsmXil::m_reOperand     = boost::regex ( "^([_[:alnum:]]+)|(\\([[:space:]]*[_[:alnum:]]+[[:space:]]*\\))", flags );
+
 AsmTranslatorKcpsmXil::AsmTranslatorKcpsmXil()
 {
     m_instFlag = false;
-
-    const boost::regex::flag_type flags = ( boost::regex::extended | boost::regex::icase | boost::regex::optimize );
-
-    m_reWhiteSpace  = boost::regex ( "^[[:space:]]+", flags );
-    m_reLabel       = boost::regex ( "^[_[:alnum:]]*[[:space:]]*:", flags );
-    m_reInstruction = boost::regex ( "^[_[:alpha:]][_[:alnum:]]+", flags );
-    m_reWord        = boost::regex ( "[_[:alnum:]]+", flags );
-    m_reOperand     = boost::regex ( "^([_[:alnum:]]+)|(\\([[:space:]]*[_[:alnum:]]+[[:space:]]*\\))", flags );
-    m_reOperandSep  = boost::regex ( "^[[:space:]]*,[[:space:]]*", flags );
-    m_reComment     = boost::regex ( "^;.*$", flags );
-    m_reAtMark      = boost::regex ( "^@", flags );
-    m_reAndReturn   = boost::regex ( "^&[[:space:]]*return", flags );
-    m_reLdAndRet    = boost::regex ( "load[[:space:]]*&[[:space:]]*return", flags );
 
     for ( int i = 0; i < 16; i++ )
     {

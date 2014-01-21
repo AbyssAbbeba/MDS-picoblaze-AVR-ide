@@ -182,12 +182,12 @@ int AutoTest::main ( int argc, char ** argv )
                 CU_pSuite suite = CU_get_registry()->pSuite;
                 for ( int i = 0; nullptr != suite; i++ )
                 {
-                    std::cout << "Suite #" << i << ": \"" << suite->pName << "\"" << std::endl;
+                    std::cout << "Suite #" << i << ": \"" << suite->pName << '"' << std::endl;
 
                     CU_pTest test = suite->pTest;
                     for ( int j = 0; nullptr != test; j++ )
                     {
-                        std::cout << "    Test #" << j << ": \"" << test->pName << "\"" << std::endl;
+                        std::cout << "    Test #" << j << ": \"" << test->pName << '"' << std::endl;
                         test = test->pNext;
                     }
 

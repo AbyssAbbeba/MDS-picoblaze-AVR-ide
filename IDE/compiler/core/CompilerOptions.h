@@ -159,6 +159,9 @@ class CompilerOptions
 
             /// Write output from C preprocessor in this file.
             std::string m_cunit;
+
+            /// Second output (target architecture specific).
+            std::string m_second;
         //@}
 
         /**

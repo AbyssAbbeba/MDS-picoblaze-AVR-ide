@@ -378,6 +378,17 @@ language programming and PicoBlaze architecture.\\\\
 MDS has the most advanced macro assembler on the market. Its suports a lot of various
 types of macros and advanced directives, like for example REPT and WHILE, which can create for and while loops or  macros with unlimited number of
 input parameters.\\
+Then each list element is beeing parsed and splitted into an address reference, a command and an argument list.
+After them all directives are beeing filtered out and all commands and their arguments are beeing checked for validity.\\
+\textbf{Important changes}\\
+You need to tell compiler, that you are using constants by adding \# before second operand.
+
+                \begin{code}[h!]
+                        {\color{highlight_comment}\verb'; Example of instructions operating with constants'}\\
+                        {\color{highlight_instruction}\verb'LOAD'}\verb'    '{\color{highlight_symbol}\verb's0,'}{\color{highlight_bin}\verb'#0b100111'}\verb'       '{\color{highlight_comment}\verb'; compiler now know, that this number is constant'}\\
+                        {\color{highlight_instruction}\verb'LOAD'}\verb'    '{\color{highlight_symbol}\verb's0,'}{\color{highlight_bin}\verb'0b100'}\verb'       '{\color{highlight_comment}\verb'; and this compiler takes as an adrress'}\\
+                        % Caption
+                \end{code}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
  	\section{Statements}

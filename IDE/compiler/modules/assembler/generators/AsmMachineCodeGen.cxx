@@ -19,13 +19,13 @@
 #include <iostream>
 
 // Common compiler header files.
-#include "CompilerSemanticInterface.h"
 #include "CompilerOptions.h"
+#include "CompilerSemanticInterface.h"
 
 // Header files of libMCUDataFiles.
-#include "DataFile.h"
 #include "BinFile.h"
 #include "HexFile.h"
+#include "DataFile.h"
 #include "SrecFile.h"
 
 AsmMachineCodeGen::AsmMachineCodeGen ()
@@ -224,6 +224,6 @@ inline void AsmMachineCodeGen::saveMachineCode ( AsmMachineCodeGen::WordSize wor
         std::cerr << e.toString() << std::endl;
         compilerCore -> semanticMessage ( CompilerSourceLocation(),
                                           CompilerBase::MT_ERROR,
-                                          QObject::tr("unable to save file ").toStdString() + "\"" + fileName  + "\"" );
+                                          QObject::tr("unable to save file ").toStdString() + '"' + fileName  + '"' );
     }
 }

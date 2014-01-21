@@ -25,7 +25,7 @@
 #include <vector>
 
 // Boost regular expressions library.
-#include <boost/regex.hpp>
+#include "boost/regex.hpp"
 
 /**
  * @brief
@@ -96,38 +96,40 @@ class AsmTranslatorKcpsmPBIDE : public AsmTranslatorBase
          */
         inline unsigned int indSz() const;
 
+    ////    Public Attributes    ////
+    public:
+        /// @brief
+        static const boost::regex m_reWhiteSpace;
+
+        /// @brief
+        static const boost::regex m_reLabel;
+
+        /// @brief
+        static const boost::regex m_reInstruction;
+
+        /// @brief
+        static const boost::regex m_reWord;
+
+        /// @brief
+        static const boost::regex m_reOperand;
+
+        /// @brief
+        static const boost::regex m_reOperandSep;
+
+        /// @brief
+        static const boost::regex m_reComment;
+
+        /// @brief
+        static const boost::regex m_reAtMark;
+
+        /// @brief
+        static const boost::regex m_reAndReturn;
+
+        /// @brief
+        static const boost::regex m_reLdAndRet;
+
     ////    Private Attributes    ////
     private:
-        /// @brief
-        boost::regex m_reWhiteSpace;
-
-        /// @brief
-        boost::regex m_reLabel;
-
-        /// @brief
-        boost::regex m_reInstruction;
-
-        /// @brief
-        boost::regex m_reWord;
-
-        /// @brief
-        boost::regex m_reOperand;
-
-        /// @brief
-        boost::regex m_reOperandSep;
-
-        /// @brief
-        boost::regex m_reComment;
-
-        /// @brief
-        boost::regex m_reAtMark;
-
-        /// @brief
-        boost::regex m_reAndReturn;
-
-        /// @brief
-        boost::regex m_reLdAndRet;
-
         /// @brief
         std::set<std::string> m_registers;
 

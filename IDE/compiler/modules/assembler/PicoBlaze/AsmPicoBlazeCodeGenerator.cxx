@@ -371,7 +371,7 @@ void AsmPicoBlazeCodeGenerator::value2str ( std::string & result,
             result += val.m_data.m_symbol;
             break;
         case CompilerValue::TYPE_ARRAY:
-            result += "\"";
+            result += '"';
             for ( int i = 0; i < val.m_data.m_array.m_size; i++ )
             {
                 if ( 0 == isprint(int(val.m_data.m_array.m_data[i])) )
@@ -392,7 +392,7 @@ void AsmPicoBlazeCodeGenerator::value2str ( std::string & result,
                     result += val.m_data.m_array.m_data[i];
                 }
             }
-            result += "\"";
+            result += '"';
             break;
     }
 }

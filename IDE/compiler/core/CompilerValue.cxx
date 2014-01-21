@@ -265,7 +265,7 @@ std::ostream & operator << ( std::ostream & out,
                     out << val.m_data.m_array.m_data[i];
                 }
             }
-            out << "\"";
+            out << '"';
             break;
     }
     return out;
