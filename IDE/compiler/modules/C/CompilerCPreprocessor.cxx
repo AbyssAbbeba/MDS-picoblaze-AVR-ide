@@ -22,6 +22,111 @@
 #include <cstdlib>
 #include <cstring>
 
+#ifndef __linux__
+#include <cassert>
+constexpr size_t MIN_CHUNK = 64;
+int getstr ( char ** lineptr,
+             size_t * n,
+             FILE * stream,
+             char terminator,
+             int offset )
+{
+    int nchars_avail;
+    char * read_pos;
+    int ret;
+
+    if (!lineptr || !n || !stream)
+    {
+        errno = EINVAL;
+        return -1;
+    }
+
+  if (!*lineptr)
+    {
+      *n = MIN_CHUNK;
+      *lineptr = (char*) malloc (*n);
+      if (!*lineptr)
+        {
+          errno = ENOMEM;
+          return -1;
+        }
+    }
+
+  nchars_avail = *n - offset;
+  read_pos = *lineptr + offset;
+
+  for (;;)
+    {
+      int save_errno;
+      register int c = getc (stream);
+
+      save_errno = errno;
+
+      /* We always want at least one char left in the buffer, since we
+         always (unless we get an error while reading the first char)
+         NUL-terminate the line buffer.  */
+
+      assert((*lineptr + *n) == (read_pos + nchars_avail));
+      if (nchars_avail < 2)
+        {
+          if (*n > MIN_CHUNK)
+            *n *= 2;
+          else
+            *n += MIN_CHUNK;
+
+          nchars_avail = *n + *lineptr - read_pos;
+          *lineptr = (char*) realloc (*lineptr, *n);
+          if (!*lineptr)
+            {
+              errno = ENOMEM;
+              return -1;
+            }
+          read_pos = *n - nchars_avail + *lineptr;
+          assert((*lineptr + *n) == (read_pos + nchars_avail));
+        }
+
+      if (ferror (stream))
+        {
+          /* Might like to return partial line, but there is no
+             place for us to store errno.  And we don't want to just
+             lose errno.  */
+          errno = save_errno;
+          return -1;
+        }
+
+      if (c == EOF)
+        {
+          /* Return partial line, if any.  */
+          if (read_pos == *lineptr)
+            return -1;
+          else
+            break;
+        }
+
+      *read_pos++ = c;
+      nchars_avail--;
+
+      if (c == terminator)
+        /* Return the line.  */
+        break;
+    }
+
+  /* Done - NUL terminate and return the number of chars read.  */
+  *read_pos = '\0';
+
+  ret = read_pos - (*lineptr + offset);
+  return ret;
+}
+
+int getline (
+     char **lineptr,
+     size_t *n,
+     FILE *stream )
+{
+  return getstr (lineptr, n, stream, '\n', 0);
+}
+#endif //  __linux__
+
 CompilerCPreprocessor::CompilerCPreprocessor ( CompilerParserInterface * compilerCore,
                                                CompilerOptions * opts )
                                              :
@@ -37,9 +142,9 @@ CompilerCPreprocessor::~CompilerCPreprocessor()
 char * CompilerCPreprocessor::processFiles ( const std::vector<FILE *> & inputFiles )
 {
     // Input buffer for reading the sourceFile.
-    ssize_t lineLen;             // Number of characters loaded in the buffer; including EOLs, without NULL(s).
-    size_t  inBufferSize = 0;    // Overall size of the input buffer.
-    char *  inBuffer     = NULL; // Buffer pointer, used for single line only.
+    ssize_t lineLen;                // Number of characters loaded in the buffer; including EOLs, without NULL(s).
+    size_t  inBufferSize = 0;       // Overall size of the input buffer.
+    char *  inBuffer     = nullptr; // Buffer pointer, used for single line only.
 
     // Output buffer for stroring preprocessor output.
     size_t  outBufferCurP = 0;                             // Current position in the buffer.
@@ -61,7 +166,7 @@ char * CompilerCPreprocessor::processFiles ( const std::vector<FILE *> & inputFi
                 // Error -> terminate preprocessor.
                 free(inBuffer);
                 free(outBuffer);
-                return NULL;
+                return nullptr;
             }
 
             // Safely copy contents of the input buffer to the output buffer.
@@ -89,7 +194,7 @@ char * CompilerCPreprocessor::processFiles ( const std::vector<FILE *> & inputFi
             // Error -> terminate preprocessor.
             free(inBuffer);
             free(outBuffer);
-            return NULL;
+            return nullptr;
         }
     }
 
@@ -100,7 +205,7 @@ char * CompilerCPreprocessor::processFiles ( const std::vector<FILE *> & inputFi
     if ( false == m_opts->m_cunit.empty() )
     {
         FILE * file = fopen(m_opts->m_cunit.c_str(), "w+");
-        if ( NULL != file )
+        if ( nullptr != file )
         {
             fwrite(outBuffer, sizeof(char), outBufferCurP, file);
             if ( 0 != ferror(file) )
