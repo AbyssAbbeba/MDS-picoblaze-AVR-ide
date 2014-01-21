@@ -12,7 +12,7 @@ function build() {
 
     if [[ "$(uname -o)" == "Msys" ]]; then
         # Build on Windows.
-        findQtSDK
+        findQtSDKAndBoost
         generator='MSYS Makefiles'
         color='off'
     else
@@ -43,7 +43,7 @@ function tests() {
     requirePrograms 'xsltproc' 'cmake' 'make'
     if [[ "$(uname -o)" == "Msys" ]]; then
         # Test on Windows.
-        findQtSDK
+        findQtSDKAndBoost
         cov='off'
         val='off'
         color='off'
@@ -87,10 +87,9 @@ function tests() {
     make test_analysis
 }
 
-function findQtSDK() {
-    QT_PATH="$(for i in /c/QtSDK/Desktop/Qt/*/mingw/bin; do echo $i; break; done)"
-
+function findQtSDKAndBoost() {
     echo "Attempting to locate QtSDK ..."
+    QT_PATH="$(for i in /c/QtSDK/Desktop/Qt/*/mingw/bin; do echo $i; break; done)"
     if [[ ! -e "${QT_PATH}" ]]; then
         echo "Warning: QtSDK was not found in expected location (in C:\\), searching the entire filesystem..."
         for base in $(find '/c' -type d -name 'QtSDK'); do
@@ -99,11 +98,21 @@ function findQtSDK() {
         done
         if [[ ! -e "${QT_PATH}" ]]; then
             echo "Error: unable to locate QtSDK."
+            exit 1
         fi
     fi
-
     echo "Qt libraries found in: ${QT_PATH}"
     export PATH="${QT_PATH}:${PATH}"
+
+    if [[ -z "${BOOST_DIR}" ]]; then
+        BOOST="$(for i in "${PROGRAMFILES}"/boost/boost_*; do echo $i; break; done)"
+        if [[ ! -e "${BOOST}" ]]; then
+            echo "Error: unable to locate boost."
+            exit 1
+        else
+            export BOOST_DIR="${BOOST}"
+        fi
+    fi
 }
 
 function clean() {
