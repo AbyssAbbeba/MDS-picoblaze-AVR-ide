@@ -37,6 +37,7 @@ class TranslatorDlg : public QDialog
     private slots:
         void setPath();
         void create();
+        void tabsChanged(const QString &text);
 
     signals:
         void output(std::vector<std::string> & text);

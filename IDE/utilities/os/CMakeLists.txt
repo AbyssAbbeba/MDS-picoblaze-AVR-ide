@@ -18,6 +18,9 @@ project ( os )
 # COMPILATION OPTIONS
 # ------------------------------------------------------------------------------
 
+# Add include directories to the build.
+include_directories ( ${Boost_INCLUDE_DIRS} )
+
 ## Add a library to the project using the specified source files,
  # in this case it will procude dynamic C++ library.
 add_library ( ${PROJECT_NAME} SHARED
