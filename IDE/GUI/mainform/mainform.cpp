@@ -1155,15 +1155,21 @@ void MainForm::disassembleOutput(std::vector<std::string> text)
 void MainForm::toolTranslate()
 {
     TranslatorDlg *dlg = new TranslatorDlg(this);
-    connect(dlg, SIGNAL(output(std::vector<std::string>)), this, SLOT(translatorOutput(std::vector<std::string>)));
-    connect(dlg, SIGNAL(output(std::vector<std::pair<unsigned int, std::string>> &)), this, SLOT(translatorOutput(std::vector<std::pair<unsigned int, std::string>> &)));
+    connect(dlg,
+            SIGNAL(output(std::vector<std::string> &)),
+            this,
+            SLOT(translatorOutput(std::vector<std::string> &)));
+    connect(dlg,
+            SIGNAL(outputError(const std::vector<std::pair<unsigned int, std::string>> &)),
+            this,
+            SLOT(translatorOutput(const std::vector<std::pair<unsigned int, std::string>> &)));
 }
 
 
 /**
  * @brief
  */
-void MainForm::translatorOutput(std::vector<std::string> text)
+void MainForm::translatorOutput(std::vector<std::string> & text)
 {
     QStringList qText;
     for (unsigned int i = 0; i < text.size(); i++)
@@ -1180,7 +1186,7 @@ void MainForm::translatorOutput(std::vector<std::string> text)
 /**
  * @brief
  */
-void MainForm::translatorOutput(std::vector<std::pair<unsigned int, std::string>> & text)
+void MainForm::translatorOutput(const std::vector<std::pair<unsigned int, std::string>> & text)
 {
     QStringList qText;
     for (unsigned int i = 0; i < text.size(); i++)
