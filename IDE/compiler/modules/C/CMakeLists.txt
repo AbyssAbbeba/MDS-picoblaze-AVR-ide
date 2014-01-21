@@ -26,7 +26,8 @@ find_package( Qt4 REQUIRED )
 include ( ${QT_USE_FILE} )
 
 # List of preprocessor include file search directories.
-include_directories ( "${CMAKE_CURRENT_SOURCE_DIR}/../../core/" )
+include_directories ( ${Boost_INCLUDE_DIRS}
+                      "${CMAKE_CURRENT_SOURCE_DIR}/../../core/" )
 
 ## Add a library to the project using the specified source files,
  # in this case it will procude static C++ library.
@@ -36,6 +37,7 @@ add_library ( ${PROJECT_NAME} SHARED
 
 # Link a target to given libraries
 target_link_libraries ( ${PROJECT_NAME} ${QT_LIBRARIES}
+                                        ${Boost_LIBRARIES}
                                         CompilerCLexerParser )
 
 ## Set properties on a target.

@@ -245,7 +245,7 @@ void XilHDLFile::save ( const std::string & filename,
             {
                 break;
             }
-            offset += 1024;
+            offset += 64;
             startMark = MARK_INIT_S[i];
         }
         substDataMark(line, startMark, MARK_INIT_E, offset, false);
@@ -260,7 +260,7 @@ void XilHDLFile::save ( const std::string & filename,
                 {
                     break;
                 }
-                offset += 1024;
+                offset += 64;
                 startMark = MARK_INITP_S[i];
             }
             substDataMark(line, startMark, MARK_INITP_E, offset, true);
