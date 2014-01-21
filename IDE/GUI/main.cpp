@@ -18,8 +18,9 @@
 
 int main(int argc, char *argv[])
 {
+    QApplication::setDesktopSettingsAware(false);
+    QApplication::setStyle("Plastique");
     QApplication app(argc, argv);
-    //QApplication::setStyle(new QGtkStyle);
     qDebug() << QStyleFactory::keys();
     Q_INIT_RESOURCE(icons);
     QDir::setCurrent(QCoreApplication::applicationDirPath());
