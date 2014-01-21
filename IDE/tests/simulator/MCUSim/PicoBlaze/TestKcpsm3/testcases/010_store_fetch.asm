@@ -1,7 +1,11 @@
 
 device kcpsm3
       ;   FOR     s0,2
-      LOAD    0x0, #0x0
+hoj:      
+	  ADD		0x0,#1
+		store	0x0,@5
+add S5, #1
+		jump	hoj
 FOR_3:
       COMPARE 0x0, #0x2
       ADD 0x0, #1
