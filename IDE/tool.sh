@@ -8,21 +8,24 @@ declare -ir PP=$(( CPU_CORES + 1 ))
 function build() {
     local generator
 
-    if [ "$(uname -o)" == "Msys" ]; then
+    if [[ "$(uname -o)" == "Msys" ]]; then
         # Build on Windows.
         QT_PATH="$(for i in /c/QtSDK/Desktop/Qt/*/mingw/bin; do echo $i; break; done)"
         export PATH="${QT_PATH}:${PATH}"
         generator='MSYS Makefiles'
+        color='off'
     else
         # Build on a POSIX system.
         generator='Unix Makefiles'
     fi
 
-    cmake -DCOLOR_GCC=ON                  \
-          -DTEST_COVERAGE=OFF             \
-          -DCMAKE_COLOR_MAKEFILE=ON       \
-          -DCMAKE_BUILD_TYPE=${bt:-Debug} \
-          -G "${generator}"               \
+    cmake -DTEST_COVERAGE=OFF                   \
+          -DTARGET_OS="${os}"                   \
+          -DTARGET_ARCH="${arch}"               \
+          -DCOLOR_GCC=${color:-on}              \
+          -DCMAKE_BUILD_TYPE=${bt:-Debug}       \
+          -DCMAKE_COLOR_MAKEFILE=${color:-on}   \
+          -G "${generator}"                     \
           . || exit 1
 
     if ! make -j${PP} --keep-going; then
@@ -44,12 +47,16 @@ function tests() {
     mkdir tests/results || exit 1
     date +'%s' > "${TIME_FILE}"
 
-    cmake -DCOLOR_GCC=OFF                   \
-          -DCMAKE_BUILD_TYPE=${bt:-Debug}   \
-          -DTEST_COVERAGE=${cov:-ON}        \
-          -DTEST_MEMCHECK=${val:-ON}        \
-          -DCMAKE_COLOR_MAKEFILE=OFF . 2>&1 \
+    cmake -DCOLOR_GCC=${color:-off}             \
+          -DTARGET_OS="${os}"                   \
+          -DTARGET_ARCH="${arch}"               \
+          -DTEST_COVERAGE=${cov:-on}            \
+          -DTEST_MEMCHECK=${val:-on}            \
+          -DCMAKE_BUILD_TYPE=${bt:-Debug}       \
+          -DCMAKE_COLOR_MAKEFILE=${color:-off}  \
+          . 2>&1                                \
         | tee "${BUILD_LOG}"
+
     make -j${PP} --keep-going 2>&1 | tee -a "${BUILD_LOG}"
 
     if [[ -z "${1}" ]]; then
@@ -107,39 +114,40 @@ function unknownOption() {
 }
 
 function printHelp() {
-    printf "This is a tool for doing various things with the code here.\n"
-    printf "Version: %s\n" "$VERSION"
-    printf "\n"
-    printf "Options:\n"
-    printf "    -b     Build.\n"
-    printf "    -t     Build and run all tests.\n"
-    printf "    -T <r> Build and run only the tests matching regular expression <r>.\n"
-    printf "    -c     Clean up the directories by removing all automatically generated files.\n"
-    printf "    -s     Synchronize with the central repository.\n"
-    printf "    -l     Count number of lines source code files.\n"
-    printf "    -q     Print some statistics regarding generated binary files.\n"
-    printf "    -h     Print this message.\n"
-    printf "    -V     Print version of this script.\n"
-    printf "\n"
-    printf "The script might be run with these variables: (value in parentheses is default value)\n"
-    printf "    bt=<b>   Set build type to <b>, options are: 'Debug', 'Release', and 'MinSizeRel' (all: 'Debug').\n"
-    printf "    cov=<on|off>   Configure build for coverage analysis (normal: 'OFF', tests: 'ON').\n"
-    printf "    val=<on|off>   Turn on/off Valgrind:Memcheck during automated test run. (normal: n/a, tests: 'ON').\n"
-    printf "\n"
-    printf "Example:\n"
-    printf "    bt=Release cov=off ./tool.sh -t     # Run tests without coverage and with binaries built for release.\n"
-    printf "    bt=MinSizeRel ./tool.sh -csb        # Clear, synchronize GIT, and build for minimum size binaries.\n"
-    printf "\n"
-    printf "Order of options does not matter because order of operations is fixed (see the script code for details).\n"
-    printf "\n"
+    echo "This is a tool for doing various things with the code here."
+    echo "Version: ${VERSION}"
+    echo ""
+    echo "Options:"
+    echo "    -b     Build."
+    echo "    -t     Build and run all tests."
+    echo "    -T <r> Build and run only the tests matching regular expression <r>."
+    echo "    -c     Clean up the directories by removing all automatically generated files."
+    echo "    -s     Synchronize with the central repository."
+    echo "    -l     Count number of lines source code files."
+    echo "    -q     Print some statistics regarding generated binary files."
+    echo "    -h     Print this message."
+    echo "    -V     Print version of this script."
+    echo ""
+    echo "The script might be run with these variables: (value in parentheses is the default value)"
+    echo "    bt=<b>         Set build type to <b>, options are: 'Debug', 'Release', and 'MinSizeRel' (all: 'Debug')."
+    echo "    cov=<on|off>   Configure build for coverage analysis (normal: 'off', tests: 'on')."
+    echo "    val=<on|off>   Turn on/off Valgrind:Memcheck during automated test run. (normal: n/a, tests: 'on')."
+    echo "    color=<on|off> Turn on/off color output. (normal: 'on', tests: 'off')."
+    echo "    arch=<arch>    Set target architecture to build for (options: 'i386', and 'x86_64'). (all: <native>)."
+    echo "    os=<os>        Set target operating system to build for (options: 'Linux', 'Windows', and 'Darwin'). (all: <native>)."
+    echo ""
+    echo "Example:"
+    echo "    bt=Release cov=off ./tool.sh -t     # Run tests without coverage and with binaries built for release."
+    echo "    bt=MinSizeRel ./tool.sh -csb        # Clear, synchronize GIT, and build for minimum size binaries."
+    echo ""
+    echo "Order of options does not matter because order of operations is fixed (see the script code for details)."
+    echo ""
 }
 
 function main() {
     set +o pipefail
     cd "$(dirname "$(readlink -n -f "${0}")" )"
     echo "Using up to ${CPU_CORES} CPU cores."
-
-    local -A opts
 
     # Parse CLI options using `getopts' utility.
     while getopts ":hVcltbsmqT:" opt; do

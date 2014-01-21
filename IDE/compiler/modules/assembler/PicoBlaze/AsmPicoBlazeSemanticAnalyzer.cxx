@@ -161,6 +161,7 @@ void AsmPicoBlazeSemanticAnalyzer::process ( CompilerStatement * codeTree )
     }
 
     m_treeDecoder->phase2(codeTree);
+    m_treeDecoder->phase3();
 
     m_codeListing->output();
     m_macros->output();

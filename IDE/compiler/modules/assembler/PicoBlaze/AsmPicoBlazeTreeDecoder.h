@@ -58,6 +58,23 @@ class AsmPicoBlazeTreeDecoder
         /**
          * @brief
          */
+        struct SprInit
+        {
+            ///
+            CompilerSourceLocation m_location;
+
+            ///
+            unsigned int m_address;
+
+            ///
+            unsigned char m_octet;
+        };
+
+    ////    Private Datatypes    ////
+    private:
+        /**
+         * @brief
+         */
         enum CourseOfAction
         {
             CA_NO_ACTION,
@@ -116,6 +133,11 @@ class AsmPicoBlazeTreeDecoder
          * @param[in,out] codeTree
          */
         void phase2 ( CompilerStatement * codeTree );
+
+        /**
+         * @brief
+         */
+        void phase3();
 
     ////    Private Operations    ////
     private:
@@ -275,6 +297,24 @@ class AsmPicoBlazeTreeDecoder
          * @brief
          * @param[in,out] node
          */
+        inline void dir_ORGSPR ( CompilerStatement * node );
+
+        /**
+         * @brief
+         * @param[in,out] node
+         */
+        inline void dir_INITSPR ( CompilerStatement * node );
+
+        /**
+         * @brief
+         * @param[in,out] node
+         */
+        inline void dir_MERGESPR ( CompilerStatement * node );
+
+        /**
+         * @brief
+         * @param[in,out] node
+         */
         inline void dir_EQU_etc ( CompilerStatement * node );
 
         /**
@@ -379,6 +419,12 @@ class AsmPicoBlazeTreeDecoder
 
         ///
         CompilerStatement * m_failjmp;
+
+        ///
+        std::vector<SprInit> m_sprInit;
+
+        ///
+        int m_mergeAddr;
 };
 
 #endif // ASMPICOBLAZETREEDECODER_H

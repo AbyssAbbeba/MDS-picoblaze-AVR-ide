@@ -27,13 +27,12 @@ add_subdirectory ( PicoBlaze )
 # ------------------------------------------------------------------------------
 
 # List of preprocessor include file search directories.
-include_directories ( ${Boost_INCLUDE_DIRS}
+include_directories ( "${CMAKE_SOURCE_DIR}/3rdParty"
                       "${CMAKE_CURRENT_SOURCE_DIR}/../utilities/MCUDataFiles/"
                       "${CMAKE_CURRENT_SOURCE_DIR}/PicoBlaze/" )
 
 # Specify directories in which the linker will look for libraries.
-link_directories ( ${Boost_LIBRARY_DIRS}
-                   "${CMAKE_CURRENT_SOURCE_DIR}/../utilities/MCUDataFiles/"
+link_directories ( "${CMAKE_CURRENT_SOURCE_DIR}/../utilities/MCUDataFiles/"
                    "${CMAKE_CURRENT_SOURCE_DIR}/PicoBlaze/" )
 
 #
@@ -48,7 +47,7 @@ add_library ( ${PROJECT_NAME} SHARED
 
 # Link a target to given libraries
 target_link_libraries ( ${PROJECT_NAME} ${QT_LIBRARIES}
-                                        ${Boost_LIBRARIES}
+                                        boost
                                         DAsmPicoBlaze )
 
 #
@@ -68,6 +67,6 @@ target_link_libraries ( disasm MCUDataFiles
 # INSTALLATION OPTIONS
 # ------------------------------------------------------------------------------
 
-install ( TARGETS ${PROJECT_NAME}
-         RUNTIME DESTINATION bin
-         LIBRARY DESTINATION lib )
+install ( TARGETS ${PROJECT_NAME} disasm
+          RUNTIME DESTINATION bin
+          LIBRARY DESTINATION lib )

@@ -41,7 +41,7 @@ add_library ( ${PROJECT_NAME} SHARED
 
 # Link a target to given libraries
 target_link_libraries ( ${PROJECT_NAME}
-                        ${Boost_LIBRARIES}
+                        boost
                         MScript
                         MScriptTestStrategy
                         CUnit )

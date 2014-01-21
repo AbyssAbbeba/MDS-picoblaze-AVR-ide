@@ -69,7 +69,7 @@ int AsmPicoBlazeParser_parse ( yyscan_t yyscanner, CompilerParserInterface * asm
     for ( const auto & srcFile : options->m_sourceFiles )               \
     {                                                                   \
         FILE * file;                                                    \
-        if ( nullptr == ( file = parserIntf->fileOpen ( srcFile ) ) )      \
+        if ( nullptr == ( file = parserIntf->fileOpen ( srcFile ) ) )   \
         {                                                               \
             *errStr = srcFile;                                          \
             return MESC_IO_ERROR;                                       \

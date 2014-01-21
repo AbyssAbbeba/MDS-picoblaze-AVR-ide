@@ -21,24 +21,23 @@
 #include <cstdlib>
 #include <iterator>
 
+constexpr boost::regex::flag_type flags = ( boost::regex::extended | boost::regex::icase | boost::regex::optimize );
+const boost::regex AsmTranslatorKcpsmMed::m_reAtMark      = boost::regex ( "^@", flags );
+const boost::regex AsmTranslatorKcpsmMed::m_reComment     = boost::regex ( "(;)|(//).*$", flags );
+const boost::regex AsmTranslatorKcpsmMed::m_reOperand     = boost::regex ( "^[^,]*[^,[:space:]]", flags );
+const boost::regex AsmTranslatorKcpsmMed::m_reWord        = boost::regex ( "[_[:alnum:]]+", flags );
+const boost::regex AsmTranslatorKcpsmMed::m_reWhiteSpace  = boost::regex ( "^[[:space:]]+", flags );
+const boost::regex AsmTranslatorKcpsmMed::m_reAndReturn   = boost::regex ( "^&[[:space:]]*return", flags );
+const boost::regex AsmTranslatorKcpsmMed::m_reOperandSep  = boost::regex ( "^[[:space:]]*,[[:space:]]*", flags );
+const boost::regex AsmTranslatorKcpsmMed::m_reInstruction = boost::regex ( "^\\.?[_[:alpha:]][_[:alnum:]]*", flags );
+const boost::regex AsmTranslatorKcpsmMed::m_reLdAndRet    = boost::regex ( "load[[:space:]]*&[[:space:]]*return", flags );
+const boost::regex AsmTranslatorKcpsmMed::m_reLabel       = boost::regex ( "^[_[:alpha:]][_[:alnum:]]*[[:space:]]*:", flags );
+const boost::regex AsmTranslatorKcpsmMed::m_reUNumber     = boost::regex ( "(^|[[:space:]])(0[xb])?[_[:xdigit:]]+([[:space:]]|$)", flags );
+const boost::regex AsmTranslatorKcpsmMed::m_reSymDef      = boost::regex ( "^[_[:alpha:]][_[:alnum:]]*[[:space:]]+\\.[_[:alnum:]]*", flags );
+
 AsmTranslatorKcpsmMed::AsmTranslatorKcpsmMed()
 {
     m_instFlag = false;
-
-    const boost::regex::flag_type flags = ( boost::regex::extended | boost::regex::icase | boost::regex::optimize );
-
-    m_reAtMark      = boost::regex ( "^@", flags );
-    m_reComment     = boost::regex ( "(;)|(//).*$", flags );
-    m_reOperand     = boost::regex ( "^[^,]*[^,[:space:]]", flags );
-    m_reWord        = boost::regex ( "[_[:alnum:]]+", flags );
-    m_reWhiteSpace  = boost::regex ( "^[[:space:]]+", flags );
-    m_reAndReturn   = boost::regex ( "^&[[:space:]]*return", flags );
-    m_reOperandSep  = boost::regex ( "^[[:space:]]*,[[:space:]]*", flags );
-    m_reInstruction = boost::regex ( "^\\.?[_[:alpha:]][_[:alnum:]]*", flags );
-    m_reLdAndRet    = boost::regex ( "load[[:space:]]*&[[:space:]]*return", flags );
-    m_reLabel       = boost::regex ( "^[_[:alpha:]][_[:alnum:]]*[[:space:]]*:", flags );
-    m_reUNumber     = boost::regex ( "(^|[[:space:]])(0[xb])?[_[:xdigit:]]+([[:space:]]|$)", flags );
-    m_reSymDef      = boost::regex ( "^[_[:alpha:]][_[:alnum:]]*[[:space:]]+\\.[_[:alnum:]]*", flags );
 
     for ( int i = 0; i < 16; i++ )
     {
@@ -121,7 +120,7 @@ bool AsmTranslatorKcpsmMed::process ( std::vector<std::pair<unsigned int, std::s
     }
 
     //
-    boost::regex * labelRE;
+    const boost::regex * labelRE;
     boost::regex_search(begin, end, match, m_reSymDef);
     if ( true == match[0].matched )
     {
@@ -394,27 +393,85 @@ inline bool AsmTranslatorKcpsmMed::processDirectives ( std::vector<std::pair<uns
     }
     else if ( ".scr" == directive )
     {
+        fixRadix(lineFields, 0);
+        fixRadix(lineFields, 1);
+
+        std::string opr = lineFields.getOperand(0, true);
+        std::string limit = changeLetterCase ( "limit",
+                                               m_config->m_letterCase[AsmTranslatorConfig::F_DIRECTIVE] ) +
+                            changeLetterCase ( ( " d, " + lineFields.getOperand(1, true) ),
+                                               m_config->m_letterCase[AsmTranslatorConfig::F_SYMBOL] );
+
+        if ( 0 == atoi(opr.c_str()) )
+        {
+            lineFields.replaceInstOpr(limit);
+        }
+        else
+        {
+            m_prologue.insert ( m_prologue.begin(), autoIndent(&limit, indSz()) );
+            lineFields.replaceInstOpr ( changeLetterCase ( "mergespr ",
+                                                           m_config->m_letterCase[AsmTranslatorConfig::F_DIRECTIVE] ) +
+                                        changeLetterCase ( opr, m_config->m_letterCase[AsmTranslatorConfig::F_SYMBOL]));
+        }
+
+        lineFields.replaceAll(autoIndent(lineFields.m_line, indSz()));
+        return true;
     }
     else if ( ".txt" == directive )
     {
+        fixRadix(lineFields, 0);
+        lineFields.replaceInst(changeLetterCase("initspr", m_config->m_letterCase[AsmTranslatorConfig::F_DIRECTIVE]));
+        lineFields.replaceOpr ( changeLetterCase ( lineFields.getOperand(0, true) + ", 0",
+                                                   m_config->m_letterCase[AsmTranslatorConfig::F_SYMBOL] ),
+                                0 );
     }
     else if ( ".byt" == directive )
     {
+        fixRadix(lineFields, 0);
+        lineFields.replaceInst(changeLetterCase("initspr", m_config->m_letterCase[AsmTranslatorConfig::F_DIRECTIVE]));
     }
     else if ( ".wbe" == directive )
     {
+        fixRadix(lineFields, 0);
+        std::string opr = lineFields.getOperand(0, true);
+        lineFields.replaceInst(changeLetterCase("initspr", m_config->m_letterCase[AsmTranslatorConfig::F_DIRECTIVE]));
+        lineFields.replaceOpr ( changeLetterCase ( "( (" + opr + ">> 8 ) & 0xff ), ( " + opr + " & 0xff )",
+                                                   m_config->m_letterCase[AsmTranslatorConfig::F_SYMBOL] ),
+                                0 );
     }
     else if ( ".wle" == directive )
     {
+        fixRadix(lineFields, 0);
+        std::string opr = lineFields.getOperand(0, true);
+        lineFields.replaceInst(changeLetterCase("initspr", m_config->m_letterCase[AsmTranslatorConfig::F_DIRECTIVE]));
+        lineFields.replaceOpr ( changeLetterCase ( "( " + opr + " & 0xff ), ( (" + opr + ">> 8 ) & 0xff )",
+                                                   m_config->m_letterCase[AsmTranslatorConfig::F_SYMBOL] ),
+                                0 );
     }
     else if ( ".lbe" == directive )
     {
+        fixRadix(lineFields, 0);
+        std::string opr = lineFields.getOperand(0, true);
+        lineFields.replaceInst(changeLetterCase("initspr", m_config->m_letterCase[AsmTranslatorConfig::F_DIRECTIVE]));
+        lineFields.replaceOpr ( changeLetterCase ( "( (" + opr + ">> 24 ) & 0xff ), ( (" + opr + ">> 16 ) & 0xff ), ( ("
+                                                   + opr + ">> 8 ) & 0xff ), ( " + opr + " & 0xff )",
+                                                   m_config->m_letterCase[AsmTranslatorConfig::F_SYMBOL] ),
+                                0 );
     }
     else if ( ".lle" == directive )
     {
+        fixRadix(lineFields, 0);
+        std::string opr = lineFields.getOperand(0, true);
+        lineFields.replaceInst(changeLetterCase("initspr", m_config->m_letterCase[AsmTranslatorConfig::F_DIRECTIVE]));
+        lineFields.replaceOpr ( changeLetterCase ( "( " + opr + " & 0xff ), ( (" + opr + ">> 8 ) & 0xff ), ( (" + opr
+                                                   + ">> 16 ) & 0xff ), ( (" + opr + ">> 24 ) & 0xff )",
+                                                   m_config->m_letterCase[AsmTranslatorConfig::F_SYMBOL] ),
+                                0 );
     }
     else if ( ".buf" == directive )
     {
+        fixRadix(lineFields, 0);
+        lineFields.replaceInst(changeLetterCase("autospr", m_config->m_letterCase[AsmTranslatorConfig::F_DIRECTIVE]));
     }
     else if ( ".def" == directive )
     {
