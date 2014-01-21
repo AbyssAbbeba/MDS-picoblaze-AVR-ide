@@ -465,20 +465,20 @@ Project::Project(QFile *file, ProjectMan *parent)
             /*connect signals!!!*/
             prjDockWidget->setWidget(prjTreeWidget);
 
-            QTreeWidgetItem *treeProjName = new QTreeWidgetItem(prjTreeWidget);
+            this->treeProjName = new QTreeWidgetItem(prjTreeWidget);
             treeProjName->setText(0, prjName);
             treeProjName->setData(0, Qt::ToolTipRole, prjPath);
 
-            QTreeWidgetItem *treeProjSource = new QTreeWidgetItem(treeProjName);
+            this->treeProjSource = new QTreeWidgetItem(treeProjName);
             treeProjSource->setText(0, "Source");
             
-            QTreeWidgetItem *treeProjInclude = new QTreeWidgetItem(treeProjName);
+            this->treeProjInclude = new QTreeWidgetItem(treeProjName);
             treeProjInclude->setText(0, "Include");
 
-            QTreeWidgetItem *treeProjCompiled = new QTreeWidgetItem(treeProjName);
+            this->treeProjCompiled = new QTreeWidgetItem(treeProjName);
             treeProjCompiled->setText(0, "Compiled");
 
-            QTreeWidgetItem *treeProjOther = new QTreeWidgetItem(treeProjName);
+            this->treeProjOther = new QTreeWidgetItem(treeProjName);
             treeProjOther->setText(0, "Other");
 
 
@@ -562,10 +562,23 @@ Project::Project(ProjectMan *parent)
     prjDockWidget->setWidget(prjTreeWidget);
 
 
-    QTreeWidgetItem *treeProjName = new QTreeWidgetItem(prjTreeWidget);
+    this->treeProjName = new QTreeWidgetItem(prjTreeWidget);
     treeProjName->setText(0, prjName);
     treeProjName->setData(0, Qt::ToolTipRole, prjPath);
     fileCount=0;
+
+    this->treeProjSource = new QTreeWidgetItem(treeProjName);
+    treeProjSource->setText(0, "Source");
+
+    this->treeProjInclude = new QTreeWidgetItem(treeProjName);
+    treeProjInclude->setText(0, "Include");
+
+    this->treeProjCompiled = new QTreeWidgetItem(treeProjName);
+    treeProjCompiled->setText(0, "Compiled");
+
+    this->treeProjOther = new QTreeWidgetItem(treeProjName);
+    treeProjOther->setText(0, "Other");
+    
     connect(prjDockWidget, SIGNAL(visibilityChanged(bool)), this, SLOT(setActive()));
     connect(prjTreeWidget, SIGNAL(itemDoubleClicked (QTreeWidgetItem *,int)), this, SLOT(openUntrackedItem()));
     connect(prjTreeWidget, SIGNAL(requestFileCount()), this, SLOT(emitFileCount()));
@@ -615,21 +628,21 @@ Project::Project(QString name, QString path, QString arch, LangType lang, QFile 
     //prjDockWidget->setMinimumWidth(150);
     prjName=name;
     prjPath=path;
-    QTreeWidgetItem *treeProjName = new QTreeWidgetItem(prjTreeWidget);
+    this->treeProjName = new QTreeWidgetItem(prjTreeWidget);
     treeProjName->setText(0, name);
     treeProjName->setData(0, Qt::ToolTipRole, path);
     fileCount=0;
 
-    QTreeWidgetItem *treeProjSource = new QTreeWidgetItem(treeProjName);
+    this->treeProjSource = new QTreeWidgetItem(treeProjName);
     treeProjName->setText(0, "Source");
 
-    QTreeWidgetItem *treeProjInclude = new QTreeWidgetItem(treeProjName);
+    this->treeProjInclude = new QTreeWidgetItem(treeProjName);
     treeProjName->setText(0, "Include");
 
-    QTreeWidgetItem *treeProjCompiled = new QTreeWidgetItem(treeProjName);
+    this->treeProjCompiled = new QTreeWidgetItem(treeProjName);
     treeProjName->setText(0, "Compiled");
 
-    QTreeWidgetItem *treeProjOther = new QTreeWidgetItem(treeProjName);
+    this->treeProjOther = new QTreeWidgetItem(treeProjName);
     treeProjName->setText(0, "Other");
 
     for (int i = 0; i < 8; i++)
@@ -801,7 +814,28 @@ QString Project::addFile(QString path, QString name)
                 QTextStream xmlStream(file);
                 xmlStream << domDoc.toString();
 
-                QTreeWidgetItem *treeProjFile = new QTreeWidgetItem(prjTreeWidget->topLevelItem(0));
+                QTreeWidgetItem *treeProjFile;
+                int index = name.lastIndexOf(".");
+                if (index > 0)
+                {
+                    QString text(name.right(name.size() - index));
+                    if (text == ".inc")
+                    {
+                        treeProjFile = new QTreeWidgetItem(treeProjInclude);
+                    }
+                    else if (text == ".asm" || text == ".psm")
+                    {
+                        treeProjFile = new QTreeWidgetItem(treeProjSource);
+                    }
+                    else
+                    {
+                        treeProjFile = new QTreeWidgetItem(treeProjOther);
+                    }
+                }
+                else
+                {
+                    treeProjFile = new QTreeWidgetItem(treeProjOther);
+                }
                 treeProjFile->setText(0, name);
                 treeProjFile->setData(0, Qt::ToolTipRole, path);
 
@@ -811,7 +845,29 @@ QString Project::addFile(QString path, QString name)
     }
     else
     {
-        QTreeWidgetItem *treeProjFile = new QTreeWidgetItem(prjTreeWidget->topLevelItem(0));
+
+        QTreeWidgetItem *treeProjFile;
+        int index = name.lastIndexOf(".");
+        if (index > 0)
+        {
+            QString text(name.right(name.size() - index));
+            if (text == ".inc")
+            {
+                treeProjFile = new QTreeWidgetItem(treeProjInclude);
+            }
+            else if (text == ".asm" || text == ".psm")
+            {
+                treeProjFile = new QTreeWidgetItem(treeProjSource);
+            }
+            else
+            {
+                treeProjFile = new QTreeWidgetItem(treeProjOther);
+            }
+        }
+        else
+        {
+            treeProjFile = new QTreeWidgetItem(treeProjOther);
+        }
         if (path == "" || name == "")
         {
             if (name == "disasm")
