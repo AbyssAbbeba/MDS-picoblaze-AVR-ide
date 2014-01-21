@@ -57,10 +57,12 @@ void RegistersWidget::handleEvent(int subsysId, int eventId, int locationOrReaso
         return;
     }
 
-    int idx = locationOrReason - m_startingAddress;
-    if ( (idx < 0) || (idx > m_size) )
+    //int idx = locationOrReason - m_startingAddress;
+    if ( (locationOrReason < 0) || (locationOrReason > m_size) )
     {
-        qDebug("Invalid address, event ignored.");
+        qDebug("RegistersWidget: Invalid address, event ignored.");
+        qDebug() << "RegistersWidget: location" << locationOrReason;
+        qDebug() << "RegistersWidget: start and size "<< m_startingAddress << m_size;
         return;
     }
 
@@ -72,74 +74,74 @@ void RegistersWidget::handleEvent(int subsysId, int eventId, int locationOrReaso
             uint value;
             m_memory->directRead(locationOrReason, value);
             //qDebug() << "RegistersWidget: location" << locationOrReason << idx;
-            if ( 7 < idx )
+            if ( 7 < locationOrReason )
             {
                 if (value > 99)
                 {
-                    this->item(idx-8, 5)->setText(QString::number(value, 10));
+                    this->item(locationOrReason-8, 5)->setText(QString::number(value, 10));
                 }
                 else if (value > 9)
                 {
-                    this->item(idx-8, 5)->setText("0" + QString::number(value, 10));
+                    this->item(locationOrReason-8, 5)->setText("0" + QString::number(value, 10));
                 }
                 else
                 {
-                    this->item(idx-8, 5)->setText("00" + QString::number(value, 10));
+                    this->item(locationOrReason-8, 5)->setText("00" + QString::number(value, 10));
                 }
                 
                 if (value > 15)
                 {
-                    this->item(idx-8, 6)->setText(QString::number(value, 16).toUpper());
+                    this->item(locationOrReason-8, 6)->setText(QString::number(value, 16).toUpper());
                 }
                 else
                 {
-                    this->item(idx-8, 6)->setText("0" + QString::number(value, 16).toUpper());
+                    this->item(locationOrReason-8, 6)->setText("0" + QString::number(value, 16).toUpper());
                 }
                 QString bin = QString::number(value, 2);
                 for (int i = bin.size(); i < 8 ; i++)
                 {
                     bin.prepend("0");
                 }
-                this->item(idx-8, 7)->setText(bin);
+                this->item(locationOrReason-8, 7)->setText(bin);
 
                 
-                this->item(idx-8, 5)->setBackground(Qt::yellow);
-                this->item(idx-8, 6)->setBackground(Qt::yellow);
-                this->item(idx-8, 7)->setBackground(Qt::yellow);
+                this->item(locationOrReason-8, 5)->setBackground(Qt::yellow);
+                this->item(locationOrReason-8, 6)->setBackground(Qt::yellow);
+                this->item(locationOrReason-8, 7)->setBackground(Qt::yellow);
             }
             else
             {
                 if (value > 99)
                 {
-                    this->item(idx, 1)->setText(QString::number(value, 10));
+                    this->item(locationOrReason, 1)->setText(QString::number(value, 10));
                 }
                 else if (value > 9)
                 {
-                    this->item(idx, 1)->setText("0" + QString::number(value, 10));
+                    this->item(locationOrReason, 1)->setText("0" + QString::number(value, 10));
                 }
                 else
                 {
-                    this->item(idx, 1)->setText("00" + QString::number(value, 10));
+                    this->item(locationOrReason, 1)->setText("00" + QString::number(value, 10));
                 }
 
                 if (value > 15)
                 {
-                    this->item(idx, 2)->setText(QString::number(value, 16).toUpper());
+                    this->item(locationOrReason, 2)->setText(QString::number(value, 16).toUpper());
                 }
                 else
                 {
-                    this->item(idx, 2)->setText("0" + QString::number(value, 16).toUpper());
+                    this->item(locationOrReason, 2)->setText("0" + QString::number(value, 16).toUpper());
                 }
                 QString bin = QString::number(value, 2);
                 for (int i = bin.size(); i < 8 ; i++)
                 {
                     bin.prepend("0");
                 }
-                this->item(idx, 3)->setText(bin);
+                this->item(locationOrReason, 3)->setText(bin);
                 
-                this->item(idx, 1)->setBackground(Qt::yellow);
-                this->item(idx, 2)->setBackground(Qt::yellow);
-                this->item(idx, 3)->setBackground(Qt::yellow);
+                this->item(locationOrReason, 1)->setBackground(Qt::yellow);
+                this->item(locationOrReason, 2)->setBackground(Qt::yellow);
+                this->item(locationOrReason, 3)->setBackground(Qt::yellow);
             }
             //qDebug() << "RegistersWidget: event: mem cell changed to" << value;
             this->update = false;

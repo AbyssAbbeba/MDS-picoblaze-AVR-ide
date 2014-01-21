@@ -96,8 +96,8 @@ class MainForm : public QMainWindow
         void startProjectConfig(Project *project);
         void help();
         void disassembleOutput(std::vector<std::string> text);
-        void translatorOutput(std::vector<std::string> text);
-        void translatorOutput(std::vector<std::pair<unsigned int, std::string>> & text);
+        void translatorOutput(std::vector<std::string> & text);
+        void translatorOutput(const std::vector<std::pair<unsigned int, std::string>> & text);
         void unhighlight();
         void projectConfig();
         void interfaceConfig();
