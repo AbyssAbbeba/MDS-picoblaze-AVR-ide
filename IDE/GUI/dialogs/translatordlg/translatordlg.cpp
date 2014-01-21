@@ -32,6 +32,7 @@ TranslatorDlg::TranslatorDlg(QWidget *parent)
 {
     ui.setupUi(this);
     this->show();
+    this->setFixedSize(this->size());
 
     connect(this->ui.btnBox, SIGNAL(accepted()), this, SLOT(create()));
     connect(this->ui.btnBox, SIGNAL(rejected()), this, SLOT(reject()));
