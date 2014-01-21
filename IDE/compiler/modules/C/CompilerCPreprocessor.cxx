@@ -55,7 +55,7 @@ int getstr ( char ** lineptr,
   nchars_avail = *n - offset;
   read_pos = *lineptr + offset;
 
-  for (;;)
+  while ( true )
     {
       int save_errno;
       register int c = getc (stream);
@@ -118,12 +118,11 @@ int getstr ( char ** lineptr,
   return ret;
 }
 
-int getline (
-     char **lineptr,
-     size_t *n,
-     FILE *stream )
+int getline ( char **lineptr,
+              size_t *n,
+              FILE *stream )
 {
-  return getstr (lineptr, n, stream, '\n', 0);
+    return getstr ( lineptr, n, stream, '\n', 0 );
 }
 #endif //  __linux__
 
