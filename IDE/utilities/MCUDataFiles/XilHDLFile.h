@@ -37,7 +37,7 @@ class XilHDLFile : public DataFile
         static const char * const MARK_START;
 
         /// @brief
-        static const char * const MARK_INIT_S[3];
+        static const char * const MARK_INIT_S[4];
 
         /// @brief
         static const char * const MARK_INIT_1_S;
@@ -52,7 +52,7 @@ class XilHDLFile : public DataFile
         static const char * const MARK_INIT_E;
 
         /// @brief
-        static const char * const MARK_INITP_S[3];
+        static const char * const MARK_INITP_S[4];
 
         /// @brief
         static const char * const MARK_INITP_1_S;
