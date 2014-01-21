@@ -81,7 +81,7 @@ namespace CompilerLexerUtils
      */
     inline char * strdup ( const char * s )
     {
-        char * d = malloc ( 1 + strlen ( s ) )
+        char * d = (char*) malloc ( 1 + strlen ( s ) );
         if ( nullptr == d )
         {
             return nullptr;
