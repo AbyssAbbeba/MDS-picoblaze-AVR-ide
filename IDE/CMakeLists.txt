@@ -135,7 +135,7 @@ endif()
 # ----------------------------------------------------------------------------------------------------------------------
 
 # Find Qt4 directories and libraries.
-find_package ( Qt4 4.8.1 REQUIRED
+find_package ( Qt4 4.8.0 REQUIRED
                COMPONENTS QtCore QtGui QtXml QtHelp )
 include ( ${QT_USE_FILE} )
 
