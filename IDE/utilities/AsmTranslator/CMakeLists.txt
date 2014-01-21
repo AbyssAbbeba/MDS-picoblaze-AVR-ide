@@ -23,7 +23,7 @@ project ( AsmTranslator )
 include_directories ( ${Boost_INCLUDE_DIRS} )
 
 # Specify directories in which the linker will look for libraries.
-link_directories ( ${Boost_LIBRARY_DIRS} )
+# link_directories ( )
 
 ## Add a library to the project using the specified source files,
  # in this case it will procude dynamic C++ library.
@@ -36,8 +36,7 @@ add_library ( ${PROJECT_NAME} SHARED
               AsmTranslatorKcpsmPBIDE.cxx )
 
 # Link the target to given libraries.
-target_link_libraries ( ${PROJECT_NAME} ${Boost_LIBRARIES}
-                                        ${QT_LIBRARIES} )
+target_link_libraries ( ${PROJECT_NAME} ${QT_LIBRARIES} ${Boost_LIBRARIES} )
 
 # Main executable.
 add_executable ( AsmTransTool main.cxx )
@@ -47,6 +46,6 @@ target_link_libraries ( AsmTransTool ${PROJECT_NAME} )
 # INSTALLATION OPTIONS
 # ------------------------------------------------------------------------------
 
-install ( TARGETS ${PROJECT_NAME}
+install ( TARGETS ${PROJECT_NAME} AsmTransTool
           RUNTIME DESTINATION bin
           LIBRARY DESTINATION lib )

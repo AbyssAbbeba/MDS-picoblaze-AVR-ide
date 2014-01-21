@@ -119,15 +119,15 @@ class CompilerThread : public QThread,
         /**
          * @brief
          */
-        void run();
+        virtual void run() override;
 
         /**
          * @brief
          * @param[in] text
          * @param[in] type
          */
-        void message ( const std::string & text,
-                       CompilerBase::MessageType type = CompilerBase::MT_GENERAL );
+        virtual void message ( const std::string & text,
+                               CompilerBase::MessageType type = CompilerBase::MT_GENERAL ) override;
 
     ////    Protected Attributes    ////
     protected:

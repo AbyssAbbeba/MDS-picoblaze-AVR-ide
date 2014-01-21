@@ -186,7 +186,7 @@ bool McuSimCfgMgr::startElement ( const QString & namespaceURI,
         }
         else
         {
-            qDebug() << "Unknown architecture: \"" << qName << "\"";
+            qDebug() << "Unknown architecture: \"" << qName << '"';
         }
     }
     else if ( false == m_devices.isEmpty() )

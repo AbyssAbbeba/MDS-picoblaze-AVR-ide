@@ -40,7 +40,6 @@ CompilerStatement::CompilerStatement()
     m_type = CompilerStatementTypes::EMPTY_STATEMENT;
 
     m_userData     =  0;
-    m_serialNumber = -1;
 
     m_prev      = nullptr;
     m_next      = nullptr;
@@ -78,7 +77,6 @@ CompilerStatement::CompilerStatement ( CompilerSourceLocation location,
     m_location = location;
 
     m_userData = 0;
-    m_serialNumber = -1;
 
     m_prev = nullptr;
     m_next = nullptr;
@@ -278,7 +276,6 @@ CompilerStatement * CompilerStatement::copyChainLink() const
     CompilerStatement * result = new CompilerStatement(m_location, m_type, m_args->copyEntireChain());
     result->m_branch = m_branch->copyEntireChain();
     result->m_userData = m_userData;
-    result->m_serialNumber = m_serialNumber;
 
     return result;
 }
@@ -392,8 +389,6 @@ std::ostream & CompilerStatement::print ( std::ostream & out,
         out << node->location();
         out << "} <";
         out << node->m_userData;
-        out << '/';
-        out << node->m_serialNumber;
         out << '>';
 
         if ( nullptr != node->args() )
@@ -462,7 +457,6 @@ void CompilerStatement::serialize ( CompilerSerializer & output ) const
 void CompilerStatement::deserialize ( CompilerSerializer & input )
 {
     m_userData = 0;
-    m_serialNumber = -1;
     m_prev = nullptr;
     m_next = nullptr;
     m_branch = nullptr;

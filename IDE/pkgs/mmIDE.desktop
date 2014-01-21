@@ -1,19 +1,19 @@
 [Desktop Entry]
 Categories=Development;
-Comment=Advanced Development System
-Comment[en_US]=Advanced development environment for small embedded systems.
+Comment=Moravia Micosystems Multitarget Development System
+Comment[en_US]=Moravia Micosystems Multitarget Development System
 Encoding=UTF-8
 Exec=mmIDE
-GenericName=Moravia Micosystems IDE
-GenericName[en_US]=Moravia Micosystems IDE
+GenericName=Multitarget Development System
+GenericName[en_US]=Multitarget Development System
 Icon=mmIDEicon
 MimeType=application/x-mmIDE-project
-Name=mmIDE
-Name[en_US]=mmIDE
+Name=MDS
+Name[en_US]=MDS
 StartupNotify=true
 Terminal=false
 TerminalOptions=
-TryExec=mmIDE
+TryExec=MDS
 Type=Application
 Version=1.0
 X-DCOP-ServiceType=

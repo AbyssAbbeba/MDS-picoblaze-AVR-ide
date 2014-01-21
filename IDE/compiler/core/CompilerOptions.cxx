@@ -17,7 +17,7 @@
 
 // Boost Filesystem library.
 #define BOOST_FILESYSTEM_NO_DEPRECATED
-#include <boost/filesystem.hpp>
+#include "boost/filesystem.hpp"
 
 // OS compatibility.
 #include "../../utilities/os/os.h"
@@ -60,7 +60,8 @@ void CompilerOptions::clearOutputFiles()
         &m_codeTree,    &m_lstFile,     &m_hexFile,
         &m_binFile,     &m_srecFile,    &m_verilogFile,
         &m_vhdlFile,    &m_prcTarget,   &m_memFile,
-        &m_cunit,       nullptr
+        &m_cunit,       &m_second,
+        nullptr
     };
 
     for ( int i = 0; nullptr != files[i]; i++ )
@@ -90,6 +91,7 @@ void CompilerOptions::normalizeFilePaths()
         &m_binFile,     &m_srecFile,    &m_verilogFile,
         &m_vhdlFile,    &m_prcTarget,   &m_verilogTemplate,
         &m_memFile,     &m_hexFile,     &m_cunit,
+        &m_second,
         nullptr
     };
 
@@ -150,25 +152,26 @@ std::ostream & operator << ( std::ostream & out,
     out << "== CompilerOptions ==" << std::endl;
 
     out << "  === File names ==="       << std::endl;
-    out << "    m_symbolTable = \""     << opts.m_symbolTable     << "\"" << std::endl;
-    out << "    m_macroTable = \""      << opts.m_macroTable      << "\"" << std::endl;
-    out << "    m_mdsDebugFile = \""    << opts.m_mdsDebugFile    << "\"" << std::endl;
-    out << "    m_codeTree = \""        << opts.m_codeTree        << "\"" << std::endl;
-    out << "    m_lstFile = \""         << opts.m_lstFile         << "\"" << std::endl;
-    out << "    m_hexFile = \""         << opts.m_hexFile         << "\"" << std::endl;
-    out << "    m_binFile = \""         << opts.m_binFile         << "\"" << std::endl;
-    out << "    m_srecFile = \""        << opts.m_srecFile        << "\"" << std::endl;
-    out << "    m_verilogFile = \""     << opts.m_verilogFile     << "\"" << std::endl;
-    out << "    m_vhdlFile = \""        << opts.m_vhdlFile        << "\"" << std::endl;
-    out << "    m_memFile = \""         << opts.m_memFile         << "\"" << std::endl;
-    out << "    m_verilogTemplate = \"" << opts.m_verilogTemplate << "\"" << std::endl;
-    out << "    m_vhdlTemplate = \""    << opts.m_vhdlTemplate    << "\"" << std::endl;
-    out << "    m_prcTarget = \""       << opts.m_prcTarget       << "\"" << std::endl;
-    out << "    m_cunit = \""           << opts.m_cunit           << "\"" << std::endl;
+    out << "    m_symbolTable = \""     << opts.m_symbolTable     << '"' << std::endl;
+    out << "    m_macroTable = \""      << opts.m_macroTable      << '"' << std::endl;
+    out << "    m_mdsDebugFile = \""    << opts.m_mdsDebugFile    << '"' << std::endl;
+    out << "    m_codeTree = \""        << opts.m_codeTree        << '"' << std::endl;
+    out << "    m_lstFile = \""         << opts.m_lstFile         << '"' << std::endl;
+    out << "    m_hexFile = \""         << opts.m_hexFile         << '"' << std::endl;
+    out << "    m_binFile = \""         << opts.m_binFile         << '"' << std::endl;
+    out << "    m_srecFile = \""        << opts.m_srecFile        << '"' << std::endl;
+    out << "    m_verilogFile = \""     << opts.m_verilogFile     << '"' << std::endl;
+    out << "    m_vhdlFile = \""        << opts.m_vhdlFile        << '"' << std::endl;
+    out << "    m_memFile = \""         << opts.m_memFile         << '"' << std::endl;
+    out << "    m_verilogTemplate = \"" << opts.m_verilogTemplate << '"' << std::endl;
+    out << "    m_vhdlTemplate = \""    << opts.m_vhdlTemplate    << '"' << std::endl;
+    out << "    m_prcTarget = \""       << opts.m_prcTarget       << '"' << std::endl;
+    out << "    m_cunit = \""           << opts.m_cunit           << '"' << std::endl;
+    out << "    m_second = \""          << opts.m_second          << '"' << std::endl;
     out << "    m_sourceFiles:\""       << std::endl;
     for ( const auto & file : opts.m_sourceFiles )
     {
-        out << "      - \"" << file << "\"" << std::endl;
+        out << "      - \"" << file << '"' << std::endl;
     }
 
     out << "  === Other compilation and code generation options ===" << std::endl;
@@ -181,7 +184,7 @@ std::ostream & operator << ( std::ostream & out,
     out << "    m_includePath: " << std::endl;
     for ( const auto & path : opts.m_includePath )
     {
-        out << "      - \"" << path << "\"" << std::endl;
+        out << "      - \"" << path << '"' << std::endl;
     }
 
     out << opts.m_processorlimits;

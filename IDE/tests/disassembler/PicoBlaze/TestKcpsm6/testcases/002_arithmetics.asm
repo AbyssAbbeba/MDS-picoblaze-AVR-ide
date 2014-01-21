@@ -2,14 +2,7 @@
 ; instruction opcodes
 
 
-s1       EQU        04h
-s2       EQU        0x04
-s3       EQU        6
-s4       EQU        7
-
-
-
-START:    
+START:
      ; Arithmetics
         ADD        s1,#01h
         ADD        s1,#5
@@ -23,8 +16,8 @@ START:
         ADD        s1,#5h
         ADD        s1,#101b
         ADD        s1,#00000101b
-        
-        
+
+
         ADDCY      s1,#01h
         ADDCY      s1,#5
         ADDCY      s1,#05h
@@ -38,10 +31,10 @@ START:
         ADDCY      s1,#101b
         ADDCY      s1,#00000101b
 
-    
+
         SUB        s1,#01h
         SUB        s1,#5
-        SUB        s1,#O5
+        SUB        s1,#05
         SUB        s1,#0x05
         SUB        s1,#0b101
         SUB        s1,#0b00000101
@@ -52,10 +45,10 @@ START:
         SUB        s1,#101b
         SUB        s1,#00000101b
 
-       
+
         SUBCY      s1,#01h
         SUBCY      s1,#5
-        SUBCY      s1,#O5
+        SUBCY      s1,#05
         SUBCY      s1,#0x05
         SUBCY      s1,#0b101
         SUBCY      s1,#0b00000101
@@ -65,11 +58,11 @@ START:
         SUBCY      s1,#5h
         SUBCY      s1,#101b
         SUBCY      s1,#00000101b
-        
+
 
         COMPARE    s1,#01h
         COMPARE    s1,#5
-        COMPARE    s1,#O5
+        COMPARE    s1,#05
         COMPARE    s1,#0x05
         COMPARE    s1,#0b101
         COMPARE    s1,#0b00000101
@@ -79,7 +72,7 @@ START:
         COMPARE    s1,#5h
         COMPARE    s1,#101b
         COMPARE    s1,#00000101b
-        
+
         ADD         s2,s2
         ADDCY       s2,s2
         SUB         s2,s2

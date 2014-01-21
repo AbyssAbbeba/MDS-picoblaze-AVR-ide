@@ -159,7 +159,7 @@
 %token D_END            D_REG           D_CODE          D_ENDW          D_WARNING
 %token D_VARIABLE       D_SET           D_DEFINE        D_UNDEFINE      D_ENDR
 %token D_AUTOREG        D_AUTOSPR       D_DATA          D_DEVICE        D_ADDRESS
-%token D_FAILJMP
+%token D_FAILJMP        D_ORGSPR        D_INITSPR       D_MERGESPR
 
 /* Instructions */
 %token I_JUMP           I_CALL          I_RETURN        I_JUMP_Z        I_CALL_Z
@@ -249,6 +249,7 @@
 // Expressions
 %type<expr>     expr            number          params          args            args_str
 %type<expr>     id              string          cond            cndval          mark
+%type<expr>     cond0
 // Statements - general
 %type<stmt>     statements      stmt            inst_stmt       dir_stmt        macro_stmt
 %type<stmt>     instruction     directive       macro           label
@@ -268,7 +269,8 @@
 %type<stmt>     dir_elseifdef_a dir_elseifndf_a dir_elseifb_a   dir_elseifnb_a  dir_rept
 %type<stmt>     dir_endm        dir_macro_d     dir_macro_a     dir_endr        dir_endr_a
 %type<stmt>     dir_db_a        dir_endm_a      dir_expand_a    dir_noexpand_a  dir_autospr_a
-%type<stmt>     dir_data        dir_limit       dir_device      dir_failjmp
+%type<stmt>     dir_data        dir_limit       dir_device      dir_failjmp     dir_orgspr
+%type<stmt>     dir_initspr     dir_mergespr
 // Statements - instructions
 %type<stmt>     inst_jump       inst_call       inst_return     inst_add        inst_addcy
 %type<stmt>     inst_sub        inst_subcy      inst_compare    inst_returni    inst_enable_int
@@ -475,6 +477,8 @@ directive:
     | dir_limit     { $$ = $1; }    | dir_device    { $$ = $1; }
     | dir_rt_cond   { $$ = $1; }    | dir_rtwhile_b { $$ = $1; }
     | dir_rtfor_b   { $$ = $1; }    | dir_failjmp   { $$ = $1; }
+    | dir_orgspr    { $$ = $1; }    | dir_initspr   { $$ = $1; }
+    | dir_mergespr  { $$ = $1; }
 ;
 dir_cond_asm:
       if_block ifelse_block
@@ -741,7 +745,7 @@ dir_elseifnb_a:
 dir_rt_cond:
       rtif_block rtelseif_block
       rtelse_block dir_rtendif      {
-                                        $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_RT_COND );
+                                        $$ = new CompilerStatement ( CompilerSourceLocation(), ASMPICOBLAZE_RT_COND );
                                         $$->createBranch ( $rtif_block -> appendLink($rtelseif_block)
                                                                        -> appendLink($rtelse_block)
                                                                        -> appendLink($dir_rtendif) );
@@ -761,6 +765,10 @@ rtelse_block:
     | dir_rtelse                    { $$ = $dir_rtelse; }
 ;
 cond:
+      cond0                         { $$ = $cond0; }
+    | "(" cond0 ")"                 { $$ = $cond0; }
+;
+cond0:
       cndval "==" cndval            { $$ = new CompilerExpr($1, CompilerExpr::OPER_EQ,   $3, LOC(@$)); }
     | cndval "!=" cndval            { $$ = new CompilerExpr($1, CompilerExpr::OPER_NE,   $3, LOC(@$)); }
     | cndval "<=" cndval            { $$ = new CompilerExpr($1, CompilerExpr::OPER_LE,   $3, LOC(@$)); }
@@ -1538,11 +1546,10 @@ dir_autospr_a:
                                                                      $id->appendLink ( $expr ) );
                                     }
     | id D_AUTOSPR expr             {
-                                        /* Syntax error */
-                                        MISSING_AT_OPERATOR(@D_AUTOSPR, "AUTOSPR");
                                         $$ = new CompilerStatement ( LOC(@$),
                                                                      ASMPICOBLAZE_DIR_AUTOSPR,
-                                                                     $id->appendLink ( $expr ) );
+                                                                     $id -> appendLink ( new CompilerExpr() )
+                                                                         -> appendLink ( $expr ) );
                                     }
     | D_AUTOSPR                     {
                                         /* Syntax error */
@@ -1561,6 +1568,26 @@ dir_autospr_a:
                                         DECL_ID_EXPECTED(@D_AUTOSPR, "AUTOSPR");
                                         MISSING_AT_OPERATOR(@D_AUTOSPR, "D_AUTOSPR");
                                         $expr->completeDelete();
+                                    }
+;
+dir_orgspr:
+      D_ORGSPR expr                 { $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_DIR_ORGSPR, $expr); }
+    | D_ORGSPR                      {
+                                        /* Syntax error */
+                                        $$ = nullptr;
+                                        ARG_REQUIRED_D(@D_ORGSPR, "ORGSPR");
+                                    }
+;
+dir_initspr:
+      D_INITSPR args_str            { $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_DIR_INITSPR, $args_str); }
+    | D_INITSPR                     { /* Syntax error */ $$ = nullptr; ARG_REQUIRED_D(@D_INITSPR, "INITSPR"); }
+;
+dir_mergespr:
+      D_MERGESPR expr               { $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_DIR_MERGESPR, $expr); }
+    | D_MERGESPR                    {
+                                        /* Syntax error */
+                                        $$ = nullptr;
+                                        ARG_REQUIRED_D(@D_MERGESPR, "MERGESPR");
                                     }
 ;
 dir_db:
@@ -1678,7 +1705,7 @@ dir_code_a:
                                     }
 ;
 dir_failjmp:
-      D_FAILJMP expr                { $$ = nullptr; /*new CompilerStatement(LOC(@$), ASMPICOBLAZE_DIR_FAILJMP, $expr);*/ }
+      D_FAILJMP expr                { $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_DIR_FAILJMP, $expr); }
     | D_FAILJMP                     {
                                         /* Syntax Error */
                                         $$ = nullptr;

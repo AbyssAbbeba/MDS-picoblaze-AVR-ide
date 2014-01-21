@@ -4,8 +4,10 @@
 
 DEVICE          kcpsm3
 
-Start:        
-       
+sX              REG             SF
+
+Start:
+
     ; Others
                 CALl      Podprog1
 
@@ -22,9 +24,9 @@ Podprog5:       CALl      Podprog6
                 RETURN
 Podprog6:       CALl      Podprog7
                 RETURN
-Podprog7:       
+Podprog7:
                 RETURN
-                
+
 ADD16:
 
 NAMEREG         s0, a_lsb
@@ -45,7 +47,7 @@ RETURN
 
 
 inc_16:
-                 lo_byte     REG   s8
+                lo_byte     REG   s8
                 hi_byte     REG   s9
         ; increment low byte
         ADD             lo_byte,01

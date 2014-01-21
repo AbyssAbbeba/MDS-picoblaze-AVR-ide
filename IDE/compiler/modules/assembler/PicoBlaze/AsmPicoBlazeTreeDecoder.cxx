@@ -32,8 +32,12 @@
 #include "AsmPicoBlazeSpecialMacros.h"
 #include "AsmPicoBlazeInstructionSet.h"
 
+// Header files of libMCUDataFiles.
+#include "HexFile.h"
+
 // Standard headers.
 #include <vector>
+#include <iostream>
 
 #define HANDLE_ACTION(arg)                  \
     switch ( arg )                          \
@@ -68,7 +72,17 @@ AsmPicoBlazeTreeDecoder::AsmPicoBlazeTreeDecoder ( CompilerSemanticInterface    
                                                    m_instructionSet ( instructionSet ),
                                                    m_device         ( device         )
 {
+    m_mergeAddr = -1;
+    m_failjmp   = nullptr;
     m_forceNext = nullptr;
+}
+
+AsmPicoBlazeTreeDecoder::~AsmPicoBlazeTreeDecoder()
+{
+    if ( nullptr != m_failjmp )
+    {
+        delete m_failjmp;
+    }
 }
 
 bool AsmPicoBlazeTreeDecoder::phase1 ( CompilerStatement * codeTree,
@@ -138,6 +152,10 @@ bool AsmPicoBlazeTreeDecoder::phase1 ( CompilerStatement * codeTree,
             case ASMPICOBLAZE_DIR_MESSG:    dir_MESSG    ( node ); break;
             case ASMPICOBLAZE_DIR_DEFINE:   dir_DEFINE   ( node ); break;
             case ASMPICOBLAZE_DIR_WARNING:  dir_WARNING  ( node ); break;
+            case ASMPICOBLAZE_DIR_FAILJMP:  dir_FAILJMP  ( node ); break;
+            case ASMPICOBLAZE_DIR_ORGSPR:   dir_ORGSPR   ( node ); break;
+            case ASMPICOBLAZE_DIR_INITSPR:  dir_INITSPR  ( node ); break;
+            case ASMPICOBLAZE_DIR_MERGESPR: dir_MERGESPR ( node ); break;
 
             case ASMPICOBLAZE_DIR_EXPAND:   dir_EXPAND   (); break;
             case ASMPICOBLAZE_DIR_NOEXPAND: dir_NOEXPAND (); break;
@@ -218,6 +236,141 @@ void AsmPicoBlazeTreeDecoder::phase2 ( CompilerStatement * codeTree )
         // Remove the inspected node.
         node = node->prev();
         delete node->next();
+    }
+}
+
+void AsmPicoBlazeTreeDecoder::phase3()
+{
+    if ( false == m_sprInit.empty() )
+    {
+        if ( -1 == m_mergeAddr )
+        {
+            if ( true == m_opts->m_second.empty() )
+            {
+                m_compilerCore->semanticMessage ( CompilerSourceLocation(),
+                                                  CompilerBase::MT_WARNING,
+                                                  QObject::tr ( "no target file for SPR initialization specified" )
+                                                              . toStdString() );
+            }
+            else
+            {
+                HexFile hexFile;
+                for ( const auto & i : m_sprInit )
+                {
+                    hexFile.set ( i.m_address, (uint8_t) i.m_octet );
+                }
+
+                try
+                {
+                    hexFile.save(m_opts->m_second, m_opts->m_makeBackupFiles);
+                }
+                catch ( const DataFileException & e )
+                {
+                    std::cerr << e.toString() << std::endl;
+                    m_compilerCore->semanticMessage ( CompilerSourceLocation(),
+                                                      CompilerBase::MT_ERROR,
+                                                      QObject::tr ( "unable to save file `%1'" )
+                                                                  . arg ( m_opts->m_second.c_str() )
+                                                                  . toStdString() );
+                }
+            }
+        }
+        else
+        {
+            int size = -1;
+            for ( const auto & i : m_sprInit )
+            {
+                if ( (int) i.m_address > size )
+                {
+                    size = (int) i.m_address;
+                }
+            }
+
+            size++;
+            size = ( size / 2 ) + ( size % 2 );
+
+            const CompilerSourceLocation * location[size];
+            unsigned int data[size];
+
+            for ( int i = 0; i < size; i++ )
+            {
+                data[i] = 0;
+                location[i] = nullptr;
+            }
+
+            unsigned int shift, addr, mask;
+            for ( const auto & i : m_sprInit )
+            {
+                shift = ( ( i.m_address % 2 ) ? 8 : 0 );
+                addr  = ( i.m_address / 2 );
+                mask  = ( 0xff << shift );
+
+                data[addr] &= ~mask;
+                data[addr] |= ( i.m_octet << shift );
+
+                location[addr] = &( i.m_location );
+            }
+
+            addr = m_mergeAddr;
+            const CompilerSourceLocation * loc;
+            CompilerSourceLocation emptyLocation;
+            for ( int i = 0; i < size; i++, addr++ )
+            {
+                if ( nullptr == location[i] )
+                {
+                    loc = &emptyLocation;
+                }
+                else
+                {
+                    loc = location[i];
+                }
+
+                m_machineCode->setCode(addr, data[i]);
+                m_dgbFile->setCode(*loc, data[i], addr);
+                m_memoryPtr->tryReserve(*loc, AsmPicoBlazeMemoryPtr::MS_CODE, addr);
+            }
+        }
+
+        m_sprInit.clear();
+    }
+
+    if ( nullptr != m_failjmp )
+    {
+        if ( true == m_opts->m_strict )
+        {
+            if ( AsmPicoBlazeSymbolTable::STYPE_LABEL != m_symbolTable->getType(m_failjmp->args()) )
+            {
+                m_compilerCore->semanticMessage ( m_failjmp->location(),
+                                                  CompilerBase::MT_WARNING,
+                                                  QObject::tr("jump address is not specified by a label").toStdString(),
+                                                  true );
+            }
+        }
+
+        int memSize = m_opts->m_processorlimits.m_iCodeMemSize;
+        if ( -1 == memSize )
+        {
+            m_compilerCore->semanticMessage ( m_failjmp->location(),
+                                              CompilerBase::MT_ERROR,
+                                              QObject::tr ( "no user defined limit for the program memory size, fail "
+                                                            "jump cannot be used" ).toStdString() );
+        }
+        else
+        {
+            int opcode = m_instructionSet->resolveOPcode(m_failjmp);
+
+            for ( int addr = 0; addr < memSize; addr++ )
+            {
+                if ( false == m_memoryPtr->isReserved ( AsmPicoBlazeMemoryPtr::MS_CODE, (unsigned int) addr ) )
+                {
+                    m_machineCode->setCode(addr, opcode);
+                    m_dgbFile->setCode(m_failjmp->location(), opcode, addr);
+                }
+            }
+        }
+
+        delete m_failjmp;
+        m_failjmp = nullptr;
     }
 }
 
@@ -320,16 +473,45 @@ inline void AsmPicoBlazeTreeDecoder::dir_AUTOxxx ( CompilerStatement * node )
 
     if ( ASMPICOBLAZE_DIR_AUTOSPR == node->type() )
     {
-        if ( nullptr != node->args()->next() )
+        int size = 1;
+
+        CompilerExpr * arg = node->args()->next();
+        if ( nullptr != arg )
         {
-            m_memoryPtr->m_data = m_symbolTable->resolveExpr(node->args()->next());
+            if ( nullptr != arg->next() )
+            {
+                size = m_symbolTable->resolveExpr(arg->next());
+
+                if (
+                       ( size <= 0 )
+                           ||
+                       (
+                           ( -1 != m_opts->m_processorlimits.m_iDataMemSize )
+                               &&
+                           ( size >= m_opts->m_processorlimits.m_iDataMemSize )
+                       )
+                   )
+                {
+                    m_compilerCore -> semanticMessage ( arg->next()->location(),
+                                                        CompilerBase::MT_ERROR,
+                                                        QObject::tr("invalid size: %1").arg(size).toStdString() );
+                    size = 1;
+                }
+            }
+            else
+            {
+                m_memoryPtr->m_data = m_symbolTable->resolveExpr(arg);
+            }
         }
 
         addr = m_memoryPtr->m_data;
-        m_memoryPtr->m_data++;
+        m_memoryPtr->m_data += size;
         symbolType = AsmPicoBlazeSymbolTable::STYPE_DATA;
 
-        m_memoryPtr -> tryReserve ( node->location(), AsmPicoBlazeMemoryPtr::MS_DATA, addr );
+        for ( int i = 0; i < size; i++ )
+        {
+            m_memoryPtr -> tryReserve ( node->location(), AsmPicoBlazeMemoryPtr::MS_DATA, ( addr + i ) );
+        }
     }
     else
     {
@@ -352,6 +534,74 @@ inline void AsmPicoBlazeTreeDecoder::dir_AUTOxxx ( CompilerStatement * node )
                                  symbolType,
                                  true );
     m_codeListing->setValue(node->location(), addr);
+}
+
+inline void AsmPicoBlazeTreeDecoder::dir_ORGSPR ( CompilerStatement * node )
+{
+    m_memoryPtr->m_data = m_symbolTable->resolveExpr(node->args());
+}
+
+inline void AsmPicoBlazeTreeDecoder::dir_INITSPR ( CompilerStatement * node )
+{
+    std::vector<unsigned char> initData;
+
+    for ( CompilerExpr * arg = node->args();
+          nullptr != arg;
+          arg = arg->next() )
+    {
+        if ( CompilerValue::TYPE_ARRAY == arg->lVal().m_type )
+        {
+            const CompilerValue::Data::CharArray & charArray = arg->lVal().m_data.m_array;
+            for ( int i = 0; i < charArray.m_size; i++ )
+            {
+                initData.push_back ( charArray.m_data[i] );
+            }
+        }
+        else
+        {
+            initData.push_back ( 0xff & m_symbolTable->resolveExpr(arg) );
+        }
+    }
+
+    int size = (int) initData.size();
+    int addr = m_memoryPtr->m_data;
+
+    m_memoryPtr->m_data += size;
+    for ( int i = 0; i < size; i++ )
+    {
+        m_memoryPtr->tryReserve( node->location(), AsmPicoBlazeMemoryPtr::MS_DATA, addr);
+        m_sprInit.push_back ( { node->location(), (unsigned int) addr, initData[i] } );
+        addr++;
+    }
+}
+
+inline void AsmPicoBlazeTreeDecoder::dir_MERGESPR ( CompilerStatement * node )
+{
+    m_mergeAddr = m_symbolTable->resolveExpr(node->args());
+
+    if ( m_mergeAddr <= 0 )
+    {
+        m_compilerCore -> semanticMessage ( node->location(),
+                                            CompilerBase::MT_ERROR,
+                                            QObject::tr ( "cannot merge DATA memory (SPR) with the CODE memory at "
+                                                          "address: " )
+                                                        . arg ( m_mergeAddr )
+                                                        . toStdString() );
+    }
+
+    if (
+           ( -1 != m_opts->m_processorlimits.m_iCodeMemSize )
+               &&
+           ( m_mergeAddr >= m_opts->m_processorlimits.m_iCodeMemSize )
+       )
+    {
+        m_compilerCore -> semanticMessage ( node->location(),
+                                            CompilerBase::MT_ERROR,
+                                            QObject::tr ( "address is crossing CODE memory size boundary: %1" )
+                                                        . arg ( m_mergeAddr )
+                                                        . toStdString() );
+        m_mergeAddr = -1;
+    }
 }
 
 inline void AsmPicoBlazeTreeDecoder::dir_DB ( CompilerStatement * node )
@@ -574,7 +824,9 @@ inline AsmPicoBlazeTreeDecoder::CourseOfAction
 inline AsmPicoBlazeTreeDecoder::CourseOfAction
        AsmPicoBlazeTreeDecoder::macro ( CompilerStatement * node )
 {
-    if ( -1 != m_opts->m_maxMacroExp && node->m_userData >= m_opts->m_maxMacroExp )
+    if ( ( -1 != m_opts->m_maxMacroExp )
+             &&
+         ( (int) ( 0xffff & node->m_userData ) >= m_opts->m_maxMacroExp ) )
     {
         m_compilerCore -> semanticMessage ( node->location(),
                                             CompilerBase::MT_ERROR,
@@ -679,8 +931,18 @@ inline AsmPicoBlazeTreeDecoder::CourseOfAction
     {
         m_compilerCore->semanticMessage ( node->location(),
                                           CompilerBase::MT_ERROR,
-                                          QObject::tr ( "directive EXITM' cannot apper outside macro definition")
+                                          QObject::tr ( "directive `EXITM' cannot apper outside macro definition")
                                                       .toStdString(),
+                                          true );
+        return CA_NO_ACTION;
+    }
+    else if ( true == m_specialMacros->isFromSpecMacro(node) )
+    {
+        m_compilerCore->semanticMessage ( node->location(),
+                                          CompilerBase::MT_ERROR,
+                                          QObject::tr ( "directive `EXITM' cannot apper inside special macro (like "
+                                                        "run-time IF/ELSE, etc.), it would break its pairing rules" )
+                                                      . toStdString(),
                                           true );
         return CA_NO_ACTION;
     }
@@ -772,19 +1034,20 @@ inline void AsmPicoBlazeTreeDecoder::dir_UNDEFINE ( CompilerStatement * node )
 
 inline void AsmPicoBlazeTreeDecoder::label ( CompilerStatement * node )
 {
-    CompilerExpr e(m_memoryPtr->m_code);
-
     CompilerExpr * label = node->args();
     while ( CompilerValue::TYPE_EXPR == label->lVal().m_type )
     {
         label = label->lVal().m_data.m_expr;
     }
 
-    m_symbolTable -> addSymbol ( label->lVal().m_data.m_symbol,
-                                 &e,
-                                 &( node->location() ),
-                                 AsmPicoBlazeSymbolTable::STYPE_LABEL,
-                                 true );
+    CompilerExpr e(m_memoryPtr->m_code);
+    int value = m_symbolTable -> addSymbol ( label->lVal().m_data.m_symbol,
+                                             &e,
+                                             &( node->location() ),
+                                             AsmPicoBlazeSymbolTable::STYPE_LABEL,
+                                             true );
+
+    m_codeListing->setValue(node->location(), value);
 }
 
 inline void AsmPicoBlazeTreeDecoder::dir_ORG ( CompilerStatement * node )
@@ -801,6 +1064,32 @@ inline void AsmPicoBlazeTreeDecoder::dir_SKIP ( CompilerStatement * node )
     m_memoryPtr->m_code += skip;
     node->args()->completeDelete();
     node->m_args = new CompilerExpr(skip);
+}
+
+inline void AsmPicoBlazeTreeDecoder::dir_FAILJMP ( CompilerStatement * node )
+{
+    if ( nullptr != m_failjmp )
+    {
+        m_compilerCore->semanticMessage ( node->location(),
+                                          CompilerBase::MT_ERROR,
+                                          QObject::tr("only one fail jump may be specified in the code").toStdString(),
+                                          true );
+    }
+
+    m_failjmp = node->copyChainLink();
+    m_failjmp->m_type = CompilerStatementTypes::ASMPICOBLAZE_INS_JUMP_AAA;
+
+    AsmPicoBlazeSymbolTable::SymbolType argType = m_symbolTable->getType(node->args());
+
+    if ( ( AsmPicoBlazeSymbolTable::STYPE_LABEL != argType )
+             &&
+         ( AsmPicoBlazeSymbolTable::STYPE_UNSPECIFIED != argType ) )
+    {
+        int targetAddr = m_symbolTable->resolveExpr(node->args());
+
+        node->args()->completeDelete();
+        node->m_args = new CompilerExpr(targetAddr, node->location());
+    }
 }
 
 inline void AsmPicoBlazeTreeDecoder::dir_LIMIT ( CompilerStatement * node )
@@ -977,7 +1266,7 @@ inline AsmPicoBlazeTreeDecoder::CourseOfAction
             m_compilerCore->semanticMessage ( node->location(),
                                               CompilerBase::MT_ERROR,
                                               QObject::tr("Device not supported: ").toStdString()
-                                              + "\"" + deviceName + "\"" );
+                                              + '"' + deviceName + '"' );
             return CA_RETURN_FALSE;
         }
     }

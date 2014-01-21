@@ -23,7 +23,7 @@ include_directories ( ${Boost_INCLUDE_DIRS}
                       "${CMAKE_SOURCE_DIR}" )
 
 # Specify directories in which the linker will look for libraries.
-link_directories ( ${Boost_LIBRARY_DIRS} )
+link_directories ( )
 
 ## Add a library to the project using the specified source files,
  # in this case it will procude dynamic C++ library.

@@ -18,6 +18,7 @@
 #include <ctime>
 #include <cstdio>
 #include <string>
+#include <vector>
 #include <fstream>
 #include <cstring>
 
@@ -47,27 +48,42 @@ void XilHDLFile::clearAndLoad ( const std::string & filename )
 
     clear();
 
+    uint32_t byteInt;
+    int iterLimit;
+    int addr;
     std::string line;
+    std::string hexField;
+    std::vector<uint32_t> ints;
+    char byteStr[5];
+
     while ( false == file.eof() )
     {
+        ints.clear();
         std::getline(file, line);
         if ( true == file.bad() )
         {
             throw DataFileException(DataFileException::EXP_IO_ERROR);
         }
 
-        int addr;
-        std::string hexField;
-
         if ( -1 != ( addr = extractHexField(line, &hexField, "INIT_") ) )
         {
-            int iterLimit = ( hexField.size() - 4 );
-            char byteStr[3];
+            iterLimit = ( hexField.size() - 4 );
 
             addr *= ( 16 * ( ( SIZE_16b == m_opCodeSize ) ? 2 : 3 ) );
-            byteStr[2] = '\0';
+            byteStr[4] = '\0';
 
             for ( int i = 0; i <= iterLimit; )
+            {
+                for ( int j = 0; j < 4; j++ )
+                {
+                    byteStr[j] = hexField [ i++ ];
+                }
+
+                sscanf(byteStr, "%x", &byteInt);
+                ints.push_back(byteInt);
+            }
+
+            for ( int i = ( (int) ints.size() - 1 ); i >= 0; i-- )
             {
                 if ( SIZE_18b == m_opCodeSize )
                 {
@@ -79,46 +95,38 @@ void XilHDLFile::clearAndLoad ( const std::string & filename )
                     throw DataFileException(DataFileException::EXP_MEMORY_OVERFLOW);
                 }
 
-                for ( int j = 0; j < 2; j++ )
-                {
-                    unsigned int byteInt;
-
-                    byteStr[0] = hexField [ i++ ];
-                    byteStr[1] = hexField [ i++ ];
-
-                    sscanf(byteStr, "%x", &byteInt);
-
-                    m_memory[addr++] = (uint16_t) byteInt;
-                }
+                m_memory[addr++] = (uint16_t) ( 0xff & ( ints[i] >> 8 ) );
+                m_memory[addr++] = (uint16_t) ( 0xff & ints[i] );
             }
         }
         else if ( ( SIZE_18b == m_opCodeSize ) && ( -1 != ( addr = extractHexField(line, &hexField, "INITP_") ) ) )
         {
-            int iterLimit = ( hexField.size() - 4 );
-            char byteStr[3];
+            iterLimit = ( hexField.size() - 2 );
 
-            addr *= ( 16 * ( ( SIZE_16b == m_opCodeSize ) ? 2 : 3 ) );
+            addr *= ( 8 * 16 * ( ( SIZE_16b == m_opCodeSize ) ? 2 : 3 ) );
             byteStr[2] = '\0';
 
             for ( int i = 0; i <= iterLimit; )
             {
-                if ( (unsigned int) addr >= m_arrsize )
-                {
-                    throw DataFileException(DataFileException::EXP_MEMORY_OVERFLOW);
-                }
-
-                unsigned int byteInt;
-
                 byteStr[0] = hexField [ i++ ];
                 byteStr[1] = hexField [ i++ ];
 
                 sscanf(byteStr, "%x", &byteInt);
+                ints.push_back(byteInt);
+            }
 
-                for ( int shift = 6; shift >= 0; shift -= 2)
+            for ( int i = ( (int) ints.size() - 1 ); i >= 0; i-- )
+            {
+                for ( int shift = 0; shift < 8; shift += 2 )
                 {
-                    m_memory[addr] = uint16_t( 0x3 & ( byteInt >> shift ) );
+                    if ( (unsigned int) addr >= m_arrsize )
+                    {
+                        throw DataFileException(DataFileException::EXP_MEMORY_OVERFLOW);
+                    }
 
+                    m_memory[addr] = uint16_t( 0x3 & ( ints[i] >> shift ) );
                     addr += 3;
+
                     if ( (unsigned int) addr >= m_arrsize )
                     {
                         break;
@@ -322,10 +330,13 @@ void XilHDLFile::generateDataField ( std::string * dataField,
     if ( false == parity )
     {
         int byteInt;
-        char byteHex[3];
+        uint16_t inst[16];
+        char hexString[9];
 
         for ( int i = 0; i < 16; i++ )
         {
+            inst[i] = 0;
+
             if ( SIZE_18b == m_opCodeSize )
             {
                 addr++;
@@ -346,20 +357,31 @@ void XilHDLFile::generateDataField ( std::string * dataField,
                     byteInt = 0;
                 }
 
-                sprintf(byteHex, "%02X", byteInt);
-                dataField->append(byteHex);
+                inst[i] <<= 8;
+                inst[i] |= byteInt;
             }
+        }
+
+        for ( int i = 15; i > 0; i-- )
+        {
+            uint32_t dword = ( inst[i] << 16 );
+            dword |= inst[--i];
+
+            sprintf(hexString, "%08X", dword );
+            dataField->append(hexString);
         }
     }
     else
     {
         addr *= 8;
 
+        uint32_t parityBits[8];
+        int byteInt;
         char hexString[9];
-        for ( int i = 0; i < ( 128 / 16 ); i++ )
+
+        for ( int i = 0; i < 8; i++ )
         {
-            int byteInt;
-            uint32_t parityBits = 0;
+            parityBits[i] = 0;
             for ( int j = 0; j < 16; j++ )
             {
                 if ( m_arrsize > addr )
@@ -375,13 +397,16 @@ void XilHDLFile::generateDataField ( std::string * dataField,
                     byteInt = 0;
                 }
 
+                parityBits[i] >>= 2;
+                parityBits[i] |= ( byteInt & 0x3 ) << 30;
+
                 addr += 3;
-
-                parityBits <<= 2;
-                parityBits |= ( byteInt & 0x3 );
             }
+        }
 
-            sprintf(hexString, "%08X", parityBits);
+        for ( int i = 7; i >= 0; i-- )
+        {
+            sprintf(hexString, "%08X", parityBits[i] );
             dataField->append(hexString);
         }
     }

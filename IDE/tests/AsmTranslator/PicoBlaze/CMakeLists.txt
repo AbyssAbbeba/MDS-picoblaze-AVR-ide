@@ -40,7 +40,7 @@ include_directories ( ${Boost_INCLUDE_DIRS}
                       "${CMAKE_SOURCE_DIR}/utilities/AsmTranslator/" )
 
 # Specify directories in which the linker will look for libraries.
-link_directories ( ${Boost_LIBRARY_DIRS}
+link_directories (
                    "${CMAKE_SOURCE_DIR}/compiler/core/"
                    "${CMAKE_SOURCE_DIR}/utilities/AutoTest/"
                    "${CMAKE_SOURCE_DIR}/utilities/MCUDataFiles/"

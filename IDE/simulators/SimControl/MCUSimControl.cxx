@@ -44,11 +44,15 @@
 #include <cstring>
 
 #include <QDebug>
+#include <QCoreApplication>
 
 MCUSimControl::MCUSimControl ( const char * deviceName )
                              : m_simulator(nullptr),
                                m_dbgFile(nullptr)
 {
+    m_abort = false;
+    m_running = false;
+
     m_breakPointsEnabled = true;
     changeDevice(deviceName);
 }
@@ -489,7 +493,33 @@ void MCUSimControl::animate()
 
 void MCUSimControl::run()
 {
-    qDebug("MCUSimControl::run is not implemented yet!");
+    if ( nullptr == m_simulator )
+    {
+        return;
+    }
+
+    if ( false == m_running )
+    {
+        m_running = true;
+        while ( true )
+        {
+            if ( true == m_abort )
+            {
+                m_abort = false;
+                m_running = false;
+                return;
+            }
+
+            m_totalMCycles += m_simulator->executeInstruction();
+            dispatchEvents();
+
+            QCoreApplication::instance()->processEvents();
+        }
+    }
+    else
+    {
+        m_abort = true;
+    }
 }
 
 void MCUSimControl::reset()

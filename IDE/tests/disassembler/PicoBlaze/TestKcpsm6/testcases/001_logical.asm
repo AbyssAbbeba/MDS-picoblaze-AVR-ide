@@ -2,13 +2,6 @@
 ; instruction opcodes
 
 
-
-s1       EQU        04h
-s2       EQU        0x04
-s3       EQU        6
-s4       EQU        7
-
-
 Start:
 
 
@@ -25,7 +18,7 @@ Start:
         LOAD      s1,#5h
         LOAD      s1,#101b
         LOAD      s1,#00000101b
-        
+
         AND       s1,#5
         AND       s1,#05
         AND       s1,#0x05
@@ -37,7 +30,7 @@ Start:
         AND       s1,#5h
         AND       s1,#101b
         AND       s1,#00000101b
-        
+
         OR        s1,#5
         OR        s1,#5
         OR        s1,#05
@@ -50,7 +43,7 @@ Start:
         OR        s1,#5h
         OR        s1,#101b
         OR        s1,#00000101b
-        
+
         XOR       s1,#5
         XOR       s1,#5
         XOR       s1,#05
@@ -63,7 +56,7 @@ Start:
         XOR       s1,#5h
         XOR       s1,#101b
         XOR       s1,#00000101b
-        
+
         TEST      s1,#5
         TEST      s1,#5
         TEST      s1,#05

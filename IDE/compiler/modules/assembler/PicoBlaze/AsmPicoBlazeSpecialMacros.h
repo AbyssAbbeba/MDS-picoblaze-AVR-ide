@@ -107,6 +107,13 @@ class AsmPicoBlazeSpecialMacros
          */
         CompilerStatement * runTimeCondition ( CompilerStatement * rtIfTree );
 
+        /**
+         * @brief
+         * @param[in] node
+         * @return
+         */
+        bool isFromSpecMacro ( const CompilerStatement * node ) const;
+
     ////    Private Operations    ////
     private:
         /**
@@ -160,8 +167,8 @@ class AsmPicoBlazeSpecialMacros
          * @param[in] location
          * @return
          */
-        inline CompilerStatement * compare_sx_sy ( int sx,
-                                                   int sy,
+        inline CompilerStatement * compare_sx_sy ( const CompilerExpr * sx,
+                                                   const CompilerExpr * sy,
                                                    const CompilerSourceLocation & location ) const;
 
         /**
@@ -171,7 +178,7 @@ class AsmPicoBlazeSpecialMacros
          * @param[in] location
          * @return
          */
-        inline CompilerStatement * compare_sx_kk ( int sx,
+        inline CompilerStatement * compare_sx_kk ( const CompilerExpr * sx,
                                                    int kk,
                                                    const CompilerSourceLocation & location ) const;
 
@@ -182,8 +189,8 @@ class AsmPicoBlazeSpecialMacros
          * @param[in] location
          * @return
          */
-        inline CompilerStatement * test_sx_sy ( int sx,
-                                                int sy,
+        inline CompilerStatement * test_sx_sy ( const CompilerExpr * sx,
+                                                const CompilerExpr * sy,
                                                 const CompilerSourceLocation & location ) const;
 
         /**
@@ -193,7 +200,7 @@ class AsmPicoBlazeSpecialMacros
          * @param[in] location
          * @return
          */
-        inline CompilerStatement * test_sx_kk ( int sx,
+        inline CompilerStatement * test_sx_kk ( const CompilerExpr * sx,
                                                 int kk,
                                                 const CompilerSourceLocation & location ) const;
 
@@ -206,6 +213,13 @@ class AsmPicoBlazeSpecialMacros
         inline void checkType ( bool regOrNumber,
                                 AsmPicoBlazeSymbolTable::SymbolType type,
                                 const CompilerSourceLocation & location );
+
+        /**
+         * @brief
+         * @param[in,out] tree
+         * @return
+         */
+        inline CompilerStatement * markAsFromSpecMacro ( CompilerStatement * tree );
 
     ////    Private Attributes    ////
     private:

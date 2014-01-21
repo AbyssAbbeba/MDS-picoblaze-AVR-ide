@@ -8,21 +8,25 @@ declare -ir PP=$(( CPU_CORES + 1 ))
 function build() {
     local generator
 
-    if [ "$(uname -o)" == "Msys" ]; then
+    requirePrograms 'cmake' 'make'
+
+    if [[ "$(uname -o)" == "Msys" ]]; then
         # Build on Windows.
-        QT_PATH="$(for i in /c/QtSDK/Desktop/Qt/*/mingw/bin; do echo $i; break; done)"
-        export PATH="${QT_PATH}:${PATH}"
+        findQtSDK
         generator='MSYS Makefiles'
+        color='off'
     else
         # Build on a POSIX system.
         generator='Unix Makefiles'
     fi
 
-    cmake -DCOLOR_GCC=ON                  \
-          -DTEST_COVERAGE=OFF             \
-          -DCMAKE_COLOR_MAKEFILE=ON       \
-          -DCMAKE_BUILD_TYPE=${bt:-Debug} \
-          -G "${generator}"               \
+    cmake -G "${generator}"                     \
+          -DTEST_COVERAGE=OFF                   \
+          -DTARGET_OS="${os}"                   \
+          -DTARGET_ARCH="${arch}"               \
+          -DCOLOR_GCC=${color:-on}              \
+          -DCMAKE_BUILD_TYPE=${bt:-Debug}       \
+          -DCMAKE_COLOR_MAKEFILE=${color:-on}   \
           . || exit 1
 
     if ! make -j${PP} --keep-going; then
@@ -32,10 +36,28 @@ function build() {
 }
 
 function tests() {
-    requirePrograms 'xsltproc' 'valgrind' 'gcov'
-
     local -r BUILD_LOG="tests/results/BuildLog.log"
     local -r TIME_FILE="tests/results/startTime.log"
+    local generator
+
+    requirePrograms 'xsltproc' 'cmake' 'make'
+    if [[ "$(uname -o)" == "Msys" ]]; then
+        # Test on Windows.
+        findQtSDK
+        cov='off'
+        val='off'
+        color='off'
+        generator='MSYS Makefiles'
+    else
+        # Test on a POSIX system.
+        if [[ "${val}" =~ [oO][nN] ]]; then
+            requirePrograms 'valgrind'
+        fi
+        if [[ "${cov}" =~ [oO][nN] ]]; then
+            requirePrograms 'gcov'
+        fi
+        generator='Unix Makefiles'
+    fi
 
     if [[ -e tests/results ]]; then
         rm -rf tests/results || exit 1
@@ -44,12 +66,17 @@ function tests() {
     mkdir tests/results || exit 1
     date +'%s' > "${TIME_FILE}"
 
-    cmake -DCOLOR_GCC=OFF                   \
-          -DCMAKE_BUILD_TYPE=${bt:-Debug}   \
-          -DTEST_COVERAGE=${cov:-ON}        \
-          -DTEST_MEMCHECK=${val:-ON}        \
-          -DCMAKE_COLOR_MAKEFILE=OFF . 2>&1 \
+    cmake -G "${generator}"                     \
+          -DCOLOR_GCC=${color:-off}             \
+          -DTARGET_OS="${os}"                   \
+          -DTARGET_ARCH="${arch}"               \
+          -DTEST_COVERAGE=${cov:-on}            \
+          -DTEST_MEMCHECK=${val:-on}            \
+          -DCMAKE_BUILD_TYPE=${bt:-Debug}       \
+          -DCMAKE_COLOR_MAKEFILE=${color:-off}  \
+          . 2>&1                                \
         | tee "${BUILD_LOG}"
+
     make -j${PP} --keep-going 2>&1 | tee -a "${BUILD_LOG}"
 
     if [[ -z "${1}" ]]; then
@@ -60,7 +87,28 @@ function tests() {
     make test_analysis
 }
 
+function findQtSDK() {
+    QT_PATH="$(for i in /c/QtSDK/Desktop/Qt/*/mingw/bin; do echo $i; break; done)"
+
+    echo "Attempting to locate QtSDK ..."
+    if [[ ! -e "${QT_PATH}" ]]; then
+        echo "Warning: QtSDK was not found in expected location (in C:\\), searching the entire filesystem..."
+        for base in $(find '/c' -type d -name 'QtSDK'); do
+            QT_PATH="$(for i in "${base}"/Desktop/Qt/*/mingw/bin; do echo $i; break; done)"
+            break
+        done
+        if [[ ! -e "${QT_PATH}" ]]; then
+            echo "Error: unable to locate QtSDK."
+        fi
+    fi
+
+    echo "Qt libraries found in: ${QT_PATH}"
+    export PATH="${QT_PATH}:${PATH}"
+}
+
 function clean() {
+    requirePrograms 'cmake' 'make'
+
     cmake .
     make clean
 
@@ -76,6 +124,8 @@ function clean() {
 }
 
 function repoSync() {
+    requirePrograms 'git'
+
     local -r REPO=$( git remote show | head -n 1 )
 
     git commit -a -m "(no comment)"
@@ -107,31 +157,34 @@ function unknownOption() {
 }
 
 function printHelp() {
-    printf "This is a tool for doing various things with the code here.\n"
-    printf "Version: %s\n" "$VERSION"
-    printf "\n"
-    printf "Options:\n"
-    printf "    -b     Build.\n"
-    printf "    -t     Build and run all tests.\n"
-    printf "    -T <r> Build and run only the tests matching regular expression <r>.\n"
-    printf "    -c     Clean up the directories by removing all automatically generated files.\n"
-    printf "    -s     Synchronize with the central repository.\n"
-    printf "    -l     Count number of lines source code files.\n"
-    printf "    -q     Print some statistics regarding generated binary files.\n"
-    printf "    -h     Print this message.\n"
-    printf "    -V     Print version of this script.\n"
-    printf "\n"
-    printf "The script might be run with these variables: (value in parentheses is default value)\n"
-    printf "    bt=<b>   Set build type to <b>, options are: 'Debug', 'Release', and 'MinSizeRel' (all: 'Debug').\n"
-    printf "    cov=<on|off>   Configure build for coverage analysis (normal: 'OFF', tests: 'ON').\n"
-    printf "    val=<on|off>   Turn on/off Valgrind:Memcheck during automated test run. (normal: n/a, tests: 'ON').\n"
-    printf "\n"
-    printf "Example:\n"
-    printf "    bt=Release cov=off ./tool.sh -t     # Run tests without coverage and with binaries built for release.\n"
-    printf "    bt=MinSizeRel ./tool.sh -csb        # Clear, synchronize GIT, and build for minimum size binaries.\n"
-    printf "\n"
-    printf "Order of options does not matter because order of operations is fixed (see the script code for details).\n"
-    printf "\n"
+    echo "This is a tool for doing various things with the code here."
+    echo "Version: ${VERSION}"
+    echo ""
+    echo "Options:"
+    echo "    -b     Build."
+    echo "    -t     Build and run all tests."
+    echo "    -T <r> Build and run only the tests matching regular expression <r>."
+    echo "    -c     Clean up the directories by removing all automatically generated files."
+    echo "    -s     Synchronize with the central repository."
+    echo "    -l     Count number of lines source code files."
+    echo "    -q     Print some statistics regarding generated binary files."
+    echo "    -h     Print this message."
+    echo "    -V     Print version of this script."
+    echo ""
+    echo "The script might be run with these variables: (value in parentheses is the default value)"
+    echo "    bt=<b>         Set build type to <b>, options are: 'Debug', 'Release', and 'MinSizeRel' (all: 'Debug')."
+    echo "    cov=<on|off>   Configure build for coverage analysis (normal: 'off', tests: 'on')."
+    echo "    val=<on|off>   Turn on/off Valgrind:Memcheck during automated test run. (normal: n/a, tests: 'on')."
+    echo "    color=<on|off> Turn on/off color output. (normal: 'on', tests: 'off')."
+    echo "    arch=<arch>    Set target architecture to build for (options: 'x86', and 'x86_64'). (all: <native>)."
+    echo "    os=<os>        Set target operating system to build for (options: 'Linux', 'Windows', and 'Darwin'). (all: <native>)."
+    echo ""
+    echo "Example:"
+    echo "    bt=Release cov=off ./tool.sh -t     # Run tests without coverage and with binaries built for release."
+    echo "    bt=MinSizeRel ./tool.sh -csb        # Clear, synchronize GIT, and build for minimum size binaries."
+    echo ""
+    echo "Order of options does not matter because order of operations is fixed (see the script code for details)."
+    echo ""
 }
 
 function main() {
@@ -139,50 +192,50 @@ function main() {
     cd "$(dirname "$(readlink -n -f "${0}")" )"
     echo "Using up to ${CPU_CORES} CPU cores."
 
-    local -A opts
+    local -a opts
 
     # Parse CLI options using `getopts' utility.
     while getopts ":hVcltbsmqT:" opt; do
         case $opt in
-            b) opts['b']=1;;
-            t) opts['t']=1;;
-            T) opts['T']="${OPTARG}";;
-            c) opts['c']=1;;
-            l) opts['l']=1;;
-            s) opts['s']=1;;
-            q) opts['q']=1;;
+            b) opts[0]=1;;
+            t) opts[1]=1;;
+            T) opts[2]="${OPTARG}";;
+            c) opts[3]=1;;
+            l) opts[4]=1;;
+            s) opts[5]=1;;
+            q) opts[6]=1;;
             h) printHelp; exit;;
             V) printVersion; exit;;
             ?) unknownOption "$(basename "${0}")"; exit 1;;
         esac
     done
 
-    if (( ! ${#opts[@]} )); then
+    if (( 0 == ${#opts[@]} )); then
         printHelp
-        exit
+        exit 1
     fi
 
-    if [[ ! -z "${opts['c']}" ]]; then
+    if [[ ! -z "${opts[3]}" ]]; then
         clean
     fi
 
-    if [[ ! -z "${opts['s']}" ]]; then
+    if [[ ! -z "${opts[5]}" ]]; then
         repoSync
     fi
 
-    if [[ ! -z "${opts['l']}" ]]; then
+    if [[ ! -z "${opts[4]}" ]]; then
         countLines
     fi
 
-    if [[ ! -z "${opts['T']}" ]]; then
-        tests "${opts['T']}"
-    elif [[ ! -z "${opts['t']}" ]]; then
+    if [[ ! -z "${opts[2]}" ]]; then
+        tests "${opts[2]}"
+    elif [[ ! -z "${opts[1]}" ]]; then
         tests
-    elif [[ ! -z "${opts['b']}" ]]; then
+    elif [[ ! -z "${opts[0]}" ]]; then
         build
     fi
 
-    if [[ ! -z "${opts['q']}" ]]; then
+    if [[ ! -z "${opts[6]}" ]]; then
         for i in $(find . -executable); do
             if [[ -f "$i" ]]; then
                 if file "$i" | grep 'ELF' &>/dev/null; then

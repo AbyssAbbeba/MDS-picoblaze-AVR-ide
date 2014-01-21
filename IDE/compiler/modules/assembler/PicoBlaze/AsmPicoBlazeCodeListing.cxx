@@ -173,12 +173,7 @@ void AsmPicoBlazeCodeListing::printCodeListing ( std::ostream & out,
         {
             output.clear();
 
-            if ( -1 != lstLine.m_value )
-            {
-                sprintf ( buffer, "  %05X   ", lstLine.m_value );
-                output += buffer;
-            }
-            else
+            if ( ( -1 != lstLine.m_address ) || ( 0 != lstLine.m_code.size() ) )
             {
                 if ( -1 != lstLine.m_address )
                 {
@@ -187,7 +182,7 @@ void AsmPicoBlazeCodeListing::printCodeListing ( std::ostream & out,
                 }
                 else
                 {
-                    output += "    ";
+                    output += std::string(4, ' ');
                 }
 
                 if ( 0 != lstLine.m_code.size() )
@@ -197,8 +192,17 @@ void AsmPicoBlazeCodeListing::printCodeListing ( std::ostream & out,
                 }
                 else
                 {
-                    output += "      ";
+                    output += std::string(6, ' ');
                 }
+            }
+            else if ( -1 != lstLine.m_value )
+            {
+                sprintf ( buffer, "  %05X   ", lstLine.m_value );
+                output += buffer;
+            }
+            else
+            {
+                output += std::string(10, ' ');
             }
 
             if ( 0 != inclusionLevel )
@@ -207,12 +211,12 @@ void AsmPicoBlazeCodeListing::printCodeListing ( std::ostream & out,
                 output += buffer;
                 if ( inclusionLevel < 10 )
                 {
-                    output += " ";
+                    output += ' ';
                 }
             }
             else
             {
-                output += "    ";
+                output += std::string(4, ' ');
             }
 
             sprintf ( buffer, "%6d ", lineNumber);
@@ -224,12 +228,12 @@ void AsmPicoBlazeCodeListing::printCodeListing ( std::ostream & out,
                 output += buffer;
                 if ( macroLevel < 10 )
                 {
-                    output += " ";
+                    output += ' ';
                 }
             }
             else
             {
-                output += "    ";
+                output += std::string(4, ' ');
             }
 
             output += lstLine.m_line;
@@ -281,7 +285,7 @@ void AsmPicoBlazeCodeListing::printCodeListing ( std::ostream & out,
                             break;
                     }
 
-                    out << msg.m_text << "." << std::endl;;
+                    out << msg.m_text << '.' << std::endl;;
                 }
             }
         }
@@ -323,8 +327,8 @@ void AsmPicoBlazeCodeListing::output()
     {
         m_compilerCore -> semanticMessage ( CompilerSourceLocation(),
                                             CompilerBase::MT_ERROR,
-                                            QObject::tr("unable to open ").toStdString() + "\""
-                                            + m_opts -> m_lstFile  + "\"" );
+                                            QObject::tr("unable to open ").toStdString() + '"'
+                                            + m_opts -> m_lstFile  + '"' );
         return;
     }
 
@@ -334,8 +338,8 @@ void AsmPicoBlazeCodeListing::output()
     {
         m_compilerCore -> semanticMessage ( CompilerSourceLocation(),
                                             CompilerBase::MT_ERROR,
-                                            QObject::tr("unable to write to ").toStdString() + "\""
-                                            + m_opts -> m_lstFile  + "\"" );
+                                            QObject::tr("unable to write to ").toStdString() + '"'
+                                            + m_opts -> m_lstFile  + '"' );
         return;
     }
 }
@@ -446,7 +450,7 @@ void AsmPicoBlazeCodeListing::copyMacroBody ( unsigned int * lastLine,
                                               const CompilerStatement * macro )
 {
     for ( const CompilerStatement * node = macro;
-          node != nullptr;
+          nullptr != node;
           node = node->next() )
     {
         if ( true == node->location().isSet() )
@@ -562,10 +566,10 @@ void AsmPicoBlazeCodeListing::generatedCode ( CompilerSourceLocation location,
     m_numberOfMacros++;
 
     location.m_lineStart--;
-    m_listing[location.m_fileNumber][location.m_lineStart].m_macro.push_back( m_numberOfFiles + m_numberOfMacros );
+    m_listing[location.m_fileNumber][location.m_lineStart].m_macro.push_back ( m_numberOfFiles + m_numberOfMacros );
     m_listing.resize(m_numberOfFiles + m_numberOfMacros);
 
-    int lineNumber = 0;
+    int lineNumber = 1;
     const unsigned int index = ( m_numberOfFiles + m_numberOfMacros - 1 );
     for ( CompilerStatement * node = code;
           node != nullptr;
@@ -578,11 +582,10 @@ void AsmPicoBlazeCodeListing::generatedCode ( CompilerSourceLocation location,
 
         m_listing[index].push_back(LstLine());
         m_codeGenerator.toSourceLine(m_listing[index].back().m_line, node);
-
-        lineNumber++;
         node->m_location.m_fileNumber = index;
         node->m_location.m_lineStart = lineNumber;
         node->m_location.m_lineEnd   = lineNumber;
+        lineNumber++;
     }
 }
 
