@@ -21,7 +21,7 @@
 
 // Boost Filesystem library.
 #define BOOST_FILESYSTEM_NO_DEPRECATED
-#include <boost/filesystem.hpp>
+#include "boost/filesystem.hpp"
 
 // MScript language interpreter header files.
 #include "MScript.h"

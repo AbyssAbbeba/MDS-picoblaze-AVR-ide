@@ -366,6 +366,9 @@ class MCUSimControl : public QThread
 
         /// @brief
         unsigned long long m_totalMCycles;
+
+        bool m_running;
+        bool m_abort;
 };
 
 #endif // MCUSIMCONTROL_H

@@ -19,13 +19,13 @@
 #include <iostream>
 
 // Common compiler header files.
-#include "CompilerSemanticInterface.h"
 #include "CompilerOptions.h"
+#include "CompilerSemanticInterface.h"
 
 // Header files of libMCUDataFiles.
-#include "DataFile.h"
 #include "BinFile.h"
 #include "HexFile.h"
+#include "DataFile.h"
 #include "SrecFile.h"
 
 AsmMachineCodeGen::AsmMachineCodeGen ()

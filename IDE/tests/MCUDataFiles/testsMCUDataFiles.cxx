@@ -35,7 +35,7 @@
 
 // Boost Filesystem library.
 #define BOOST_FILESYSTEM_NO_DEPRECATED
-#include <boost/filesystem.hpp>
+#include "boost/filesystem.hpp"
 
 // Library for automated testing environment using libCUnit.
 #include "AutoTest.h"
@@ -84,13 +84,14 @@ template<class Container>
     void testLoadAndSave ( const std::string & origFile,
                            const std::string & genFile1,
                            const std::string & genFile2,
-                           bool invertable )
+                           bool invertable,
+                           bool compareFiles )
 {
     Container file0;
     Container file1;
     Container file2;
 
-    testLoadAndSave(file0, file1, file2, origFile, genFile1, genFile2, invertable);
+    testLoadAndSave(file0, file1, file2, origFile, genFile1, genFile2, invertable, compareFiles);
 }
 
 void testLoadAndSave ( DataFile & file0,
@@ -99,7 +100,8 @@ void testLoadAndSave ( DataFile & file0,
                        const std::string & origFile,
                        const std::string & genFile1,
                        const std::string & genFile2,
-                       bool invertable )
+                       bool invertable,
+                       bool compareFiles )
 {
     try
     {
@@ -123,7 +125,10 @@ void testLoadAndSave ( DataFile & file0,
         CU_ASSERT_TRUE( file0 == file1 );
     }
     CU_ASSERT_TRUE( file1 == file2 );
-    CU_ASSERT_TRUE( fileCompare(genFile1, genFile2) );
+    if ( true == compareFiles )
+    {
+        CU_ASSERT_TRUE( fileCompare(genFile1, genFile2) );
+    }
 }
 
 void testHex()
@@ -134,7 +139,7 @@ void testHex()
     std::string testcase = system_complete( path("testcases") / "hex" / testName ).string();
     std::string result   = system_complete( path("results") / testName ).string();
 
-    testLoadAndSave<HexFile>( testcase, result + "0", result + "1", true );
+    testLoadAndSave<HexFile>( testcase, result + "0", result + "1", true, true );
 }
 
 void testBin()
@@ -145,7 +150,7 @@ void testBin()
     std::string testcase = system_complete( path("testcases") / "bin" / testName ).string();
     std::string result   = system_complete( path("results") / testName ).string();
 
-    testLoadAndSave<BinFile>( testcase, result + "0", result + "1", false );
+    testLoadAndSave<BinFile>( testcase, result + "0", result + "1", false, true );
 }
 
 void testSrec()
@@ -156,7 +161,7 @@ void testSrec()
     std::string testcase = system_complete( path("testcases") / "srec" / testName ).string();
     std::string result   = system_complete( path("results") / testName ).string();
 
-    testLoadAndSave<SrecFile>( testcase, result + "0", result + "1", true );
+    testLoadAndSave<SrecFile>( testcase, result + "0", result + "1", true, true );
 }
 
 template <int BYTES_PER_RECORD> void testMem()
@@ -173,7 +178,7 @@ template <int BYTES_PER_RECORD> void testMem()
     XilMemFile file1(BYTES_PER_RECORD);
     XilMemFile file2(BYTES_PER_RECORD);
 
-    testLoadAndSave( file0, file1, file2, testcase, result + number + ".0", result + number + ".1", false );
+    testLoadAndSave( file0, file1, file2, testcase, result + number + ".0", result + number + ".1", false, true );
 }
 
 template <XilHDLFile::OPCodeSize OP_CODE_SIZE> void testVerilog()
@@ -191,7 +196,7 @@ template <XilHDLFile::OPCodeSize OP_CODE_SIZE> void testVerilog()
     XilVerilogFile file1(testName, templateFile, OP_CODE_SIZE);
     XilVerilogFile file2(testName, templateFile, OP_CODE_SIZE);
 
-    testLoadAndSave( file0, file1, file2, testcase, result + number + ".0", result + number + ".1", false );
+    testLoadAndSave( file0, file1, file2, testcase, result + number + ".0", result + number + ".1", false, false );
 }
 
 template <XilHDLFile::OPCodeSize OP_CODE_SIZE> void testVHDL()
@@ -209,7 +214,7 @@ template <XilHDLFile::OPCodeSize OP_CODE_SIZE> void testVHDL()
     XilVHDLFile file1(testName, templateFile, OP_CODE_SIZE);
     XilVHDLFile file2(testName, templateFile, OP_CODE_SIZE);
 
-    testLoadAndSave( file0, file1, file2, testcase, result + number + ".0", result + number + ".1", false );
+    testLoadAndSave( file0, file1, file2, testcase, result + number + ".0", result + number + ".1", false, false );
 }
 
 TestSuite::fptr testSuiteID2funcPtr ( TestSuite::TestSuiteID id )

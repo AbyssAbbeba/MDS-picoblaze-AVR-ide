@@ -225,6 +225,9 @@ DIS_INT_INST            "disable"{WS}"interrupt"
 \.?"endr"               { return D_ENDR;       }
 \.?"autoreg"            { return D_AUTOREG;    }
 \.?"autospr"            { return D_AUTOSPR;    }
+\.?"orgspr"             { return D_ORGSPR;     }
+\.?"initspr"            { return D_INITSPR;    }
+\.?"mergespr"           { return D_MERGESPR;   }
 \.?"macro"              { return D_MACRO;      }
 \.?"end"                {
                             // Close the current file

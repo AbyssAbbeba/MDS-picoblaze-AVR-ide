@@ -730,6 +730,9 @@ namespace CompilerStatementTypes
             ASMPICOBLAZE_DIR_LIMIT,             ///<
             ASMPICOBLAZE_DIR_DEVICE,            ///<
             ASMPICOBLAZE_DIR_FAILJMP,           ///<
+            ASMPICOBLAZE_DIR_ORGSPR,            ///<
+            ASMPICOBLAZE_DIR_INITSPR,           ///<
+            ASMPICOBLAZE_DIR_MERGESPR,          ///<
 
             ASMPICOBLAZE_COND_ASM,              ///<
             ASMPICOBLAZE_DIR_IF,                ///<

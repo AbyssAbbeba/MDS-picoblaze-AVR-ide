@@ -32,14 +32,13 @@ add_subdirectory ( include )
 # ------------------------------------------------------------------------------
 
 # List of preprocessor include file search directories.
-include_directories ( ${Boost_INCLUDE_DIRS}
+include_directories ( "${CMAKE_SOURCE_DIR}/3rdParty"
                       "${CMAKE_CURRENT_SOURCE_DIR}/core"
                       "${CMAKE_CURRENT_SOURCE_DIR}/modules"
                       "${CMAKE_CURRENT_SOURCE_DIR}/modules/generators" )
 
 # Specify directories in which the linker will look for libraries.
-link_directories ( ${Boost_LIBRARY_DIRS}
-                   "${CMAKE_CURRENT_SOURCE_DIR}/core/"
+link_directories ( "${CMAKE_CURRENT_SOURCE_DIR}/core/"
                    "${CMAKE_CURRENT_SOURCE_DIR}/modules/"
                    "${CMAKE_CURRENT_SOURCE_DIR}/../utilities/os/"
                    "${CMAKE_CURRENT_SOURCE_DIR}/../utilities/DbgFile/"
@@ -50,7 +49,7 @@ add_executable ( ${PROJECT_NAME}
                  main.cxx )
 
 # Link a target to given libraries
-target_link_libraries ( ${PROJECT_NAME} ${Boost_LIBRARIES}
+target_link_libraries ( ${PROJECT_NAME} boost
                                         CompilerCore )
 
 # ------------------------------------------------------------------------------

@@ -17,7 +17,7 @@
 
 // Boost Filesystem library.
 #define BOOST_FILESYSTEM_NO_DEPRECATED
-#include <boost/filesystem.hpp>
+#include "boost/filesystem.hpp"
 
 // OS compatibility.
 #include "../../utilities/os/os.h"
@@ -60,7 +60,8 @@ void CompilerOptions::clearOutputFiles()
         &m_codeTree,    &m_lstFile,     &m_hexFile,
         &m_binFile,     &m_srecFile,    &m_verilogFile,
         &m_vhdlFile,    &m_prcTarget,   &m_memFile,
-        &m_cunit,       nullptr
+        &m_cunit,       &m_second,
+        nullptr
     };
 
     for ( int i = 0; nullptr != files[i]; i++ )
@@ -90,6 +91,7 @@ void CompilerOptions::normalizeFilePaths()
         &m_binFile,     &m_srecFile,    &m_verilogFile,
         &m_vhdlFile,    &m_prcTarget,   &m_verilogTemplate,
         &m_memFile,     &m_hexFile,     &m_cunit,
+        &m_second,
         nullptr
     };
 
@@ -165,6 +167,7 @@ std::ostream & operator << ( std::ostream & out,
     out << "    m_vhdlTemplate = \""    << opts.m_vhdlTemplate    << '"' << std::endl;
     out << "    m_prcTarget = \""       << opts.m_prcTarget       << '"' << std::endl;
     out << "    m_cunit = \""           << opts.m_cunit           << '"' << std::endl;
+    out << "    m_second = \""          << opts.m_second          << '"' << std::endl;
     out << "    m_sourceFiles:\""       << std::endl;
     for ( const auto & file : opts.m_sourceFiles )
     {

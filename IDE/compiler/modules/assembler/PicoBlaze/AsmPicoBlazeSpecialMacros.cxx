@@ -513,15 +513,9 @@ CompilerStatement * AsmPicoBlazeSpecialMacros::evaluateCondition ( const Compile
         case CompilerExpr::OPER_LT:
         {
             // Swap cndVal [0] <--> [1].
-
-            bool auxFlag = cndVal[0].m_reg;
-            int auxVal   = cndVal[0].m_val;
-
-            cndVal[0].m_reg = cndVal[1].m_reg;
-            cndVal[0].m_val = cndVal[1].m_val;
-
-            cndVal[1].m_reg = auxFlag;
-            cndVal[1].m_val = auxVal;
+            CndVal auxCndVal = cndVal[0];
+            cndVal[0] = cndVal[1];
+            cndVal[1] = auxCndVal;
         }
         case CompilerExpr::OPER_GT:
             if ( true == cndVal[0].m_reg )

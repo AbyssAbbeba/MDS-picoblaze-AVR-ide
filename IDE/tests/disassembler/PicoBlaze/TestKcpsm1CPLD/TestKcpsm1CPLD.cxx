@@ -25,7 +25,7 @@
 
 // Boost Filesystem library.
 #define BOOST_FILESYSTEM_NO_DEPRECATED
-#include <boost/filesystem.hpp>
+#include "boost/filesystem.hpp"
 
 // Tool for working with Intel® 16 Hex files.
 #include "MCUDataFiles/HexFile.h"
