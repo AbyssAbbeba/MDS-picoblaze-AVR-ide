@@ -34,8 +34,7 @@ include_directories ( ${Boost_INCLUDE_DIRS}
                       "${CMAKE_CURRENT_SOURCE_DIR}/../../../../utilities/AutoTest/" )
 
 # Specify directories in which the linker will look for libraries.
-link_directories (
-                   "${CMAKE_CURRENT_SOURCE_DIR}/TestSuiteSuc/"
+link_directories ( "${CMAKE_CURRENT_SOURCE_DIR}/TestSuiteSuc/"
                    "${CMAKE_CURRENT_SOURCE_DIR}/TestSuiteErr/"
                    "${CMAKE_CURRENT_SOURCE_DIR}/../../../../utilities/AutoTest/" )
 

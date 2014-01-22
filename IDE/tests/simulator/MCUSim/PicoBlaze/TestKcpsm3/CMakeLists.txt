@@ -26,7 +26,8 @@ set_directory_properties ( PROPERTIES
 # ------------------------------------------------------------------------------
 
 # Add include directories to the build.
-include_directories ( "${CMAKE_CURRENT_SOURCE_DIR}/../../../../../simulators/MCUSim/PicoBlaze"
+include_directories ( ${Boost_INCLUDE_DIRS}
+                      "${CMAKE_CURRENT_SOURCE_DIR}/../../../../../simulators/MCUSim/PicoBlaze"
                       "${CMAKE_CURRENT_SOURCE_DIR}/../../../../../utilities/MCUDataFiles"
                       "${CMAKE_SOURCE_DIR}"
                       "${CMAKE_CURRENT_SOURCE_DIR}/../.." )

@@ -21,7 +21,7 @@ project ( compiler )
 # Build lexical and syntax analyzers.
 add_subdirectory ( modules )
 
-# Build the compiler collection itself as a library.
+# Build the compiler core as a library.
 add_subdirectory ( core )
 
 # Build additional file of the compiler.
