@@ -3,7 +3,7 @@
 readonly VERSION="0.2"
 declare -ir CPU_CORES=$( which lscpu &> /dev/null && lscpu 2> /dev/null | \
                          gawk 'BEGIN { n = 1 } END { print(n) } /^CPU\(s\)/ { n = $2; exit }' || echo 1 )
-declare -ir PP=$(( CPU_CORES + 1 ))
+declare -ir PP=$(( ( 1 == CPU_CORES ) ? 1 : ( CPU_CORES + 1 ) ))
 
 function build() {
     local generator
@@ -14,7 +14,6 @@ function build() {
         # Build on Windows.
         findQtSDKAndBoost
         generator='MSYS Makefiles'
-        color='off'
     else
         # Build on a POSIX system.
         generator='Unix Makefiles'
@@ -44,10 +43,9 @@ function tests() {
     if [[ "$(uname -o)" == "Msys" ]]; then
         # Test on Windows.
         findQtSDKAndBoost
+        generator='MSYS Makefiles'
         cov='off'
         val='off'
-        color='off'
-        generator='MSYS Makefiles'
     else
         # Test on a POSIX system.
         if [[ "${val}" =~ [oO][nN] ]]; then

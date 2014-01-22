@@ -35,20 +35,20 @@ int getstr ( char ** lineptr,
     char * read_pos;
     int ret;
 
-    if (!lineptr || !n || !stream)
+    if ( nullptr == lineptr || nullptr == n || nullptr == stream )
     {
         errno = EINVAL;
         return -1;
     }
 
-  if (!*lineptr)
+    if ( nullptr == *lineptr )
     {
-      *n = MIN_CHUNK;
-      *lineptr = (char*) malloc (*n);
-      if (!*lineptr)
+        *n = MIN_CHUNK;
+        *lineptr = (char*) malloc (*n);
+        if (!*lineptr)
         {
-          errno = ENOMEM;
-          return -1;
+            errno = ENOMEM;
+            return -1;
         }
     }
 

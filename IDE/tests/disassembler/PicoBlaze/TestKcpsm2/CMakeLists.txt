@@ -32,8 +32,7 @@ include_directories ( ${Boost_INCLUDE_DIRS}
                       "${CMAKE_CURRENT_SOURCE_DIR}/../../../../utilities" )
 
 # Specify directories in which the linker will look for libraries.
-link_directories (
-                   "${CMAKE_CURRENT_SOURCE_DIR}/../../../../../utilities/MCUDataFiles"
+link_directories ( "${CMAKE_CURRENT_SOURCE_DIR}/../../../../../utilities/MCUDataFiles"
                    "${CMAKE_CURRENT_SOURCE_DIR}/../../../../../compiler/core"
                    "${CMAKE_CURRENT_SOURCE_DIR}/../../../../../disassembler" )
 
