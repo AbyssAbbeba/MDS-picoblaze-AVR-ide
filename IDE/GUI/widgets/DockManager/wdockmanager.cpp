@@ -260,7 +260,7 @@ void WDockManager::setCentralPath(QString wPath)
 
 void WDockManager::addUntrackedCentralWidget(QString wName, QString wPath)
 {
-    //qDebug() << "WDockManager: addUntrackedCentralWidget()";
+    qDebug() << "WDockManager: addUntrackedCentralWidget()";
     bool found = false;
     for (int i = 0; i < wTab->count(); i++)
     {
@@ -304,8 +304,12 @@ void WDockManager::addUntrackedCentralWidget(QString wName, QString wPath)
         activeCodeEdit->connectAct();
         connect(newEditor, SIGNAL(changedTabStatus(QString, QString, bool)), this, SLOT(changeTabStatusSlot(QString, QString, bool)));
         connect(activeCodeEdit, SIGNAL(changedTabStatus(QString, QString, bool)), this, SLOT(changeTabStatusSlot(QString, QString, bool)));
+        if (wPath == "untracked")
+        {
+            newEditor->setChanged();
+        }
     }
-    //qDebug() << "WDockManager: return addUntrackedCentralWidget()";
+    qDebug() << "WDockManager: return addUntrackedCentralWidget()";
 }
 
 
