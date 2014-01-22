@@ -339,6 +339,7 @@ void MainForm::createDockWidgets()
     //wDockManager->addDockWidget(wListCode2);
     wDockManager->addDockWidget(wCompileInfo);
     wDockManager->addDockWidget(wSimulationInfo);
+    wDockManager->addDockWidget(wBottomHide);
     //wDockManager->addDockWidget(wBookmarkList);
     //wDockManager->addDockWidget(wBreakpointList);
     //wDockManager->addDockWidget(wAnalysVar);
@@ -350,6 +351,8 @@ void MainForm::createDockWidgets()
     simulationFlowAct->setEnabled(true);
     projectConfigAct->setEnabled(true);
     saveAct->setEnabled(true);
+    saveAsAct->setEnabled(true);
+    saveAllAct->setEnabled(true);
     wDockManager->dockWidgets = true;
     //emit dockWidgetsCreated;
     //qDebug() << "MainForm: return CreateDockWidgets()";
