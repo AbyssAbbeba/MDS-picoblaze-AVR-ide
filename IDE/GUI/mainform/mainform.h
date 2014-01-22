@@ -70,6 +70,7 @@ class MainForm : public QMainWindow
         void compileProject();
         void simulationStep();
         void simulationRunHandle();
+        void simulationAnimateHandle();
         void simulationFlowHandle();
         void simulationReset();
         void toolDisassemble();
@@ -160,6 +161,7 @@ class MainForm : public QMainWindow
         QAction *simulationFlowAct;
         QAction *simulationStepAct;
         QAction *simulationRunAct;
+        QAction *simulationAnimateAct;
         QAction *simulationResetAct;
         QAction *simulationUnhighlightAct;
 
@@ -174,8 +176,13 @@ class MainForm : public QMainWindow
         QAction *helpActionAct;
         QAction *example1Act;
 
-        //simulation status - start/stop
-        bool simulationStatus;      
+        // simulation status - start/stop
+        bool simulationStatus;
+        
+        // sim run status
+        bool simulationRunStatus;
+        // sim animate status
+        bool simulationAnimateStatus;
 };
 
 

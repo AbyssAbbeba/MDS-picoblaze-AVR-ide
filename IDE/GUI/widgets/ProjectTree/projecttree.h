@@ -32,7 +32,7 @@ class ProjectTree: public QTreeWidget
 {
     Q_OBJECT
     public:
-        ProjectTree(QWidget *parent);
+        ProjectTree(QWidget *parent, bool project);
         ~ProjectTree();
         void setMainFileManual(QString name, QString path);
 
