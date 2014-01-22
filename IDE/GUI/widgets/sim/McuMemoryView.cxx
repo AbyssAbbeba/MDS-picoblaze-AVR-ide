@@ -78,7 +78,7 @@ void McuMemoryView::handleEvent(int subsysId, int eventId, int locationOrReason,
         {
 			uint value;
 			m_memory->directRead(locationOrReason, value);
-            qDebug() << "McuMemoryView: event: mem cell changed to" << value;
+            //qDebug() << "McuMemoryView: event: mem cell changed to" << value;
 
  			m_hexEdit->setVal(idx, (char)value);
  			m_hexEdit->setHighlighted(idx, true);
