@@ -461,7 +461,7 @@ Project::Project(QFile *file, ProjectMan *parent)
             prjDockWidget = new QDockWidget(prjName, (QWidget *)(parent->parent()));
             prjDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea);
             prjDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
-            prjTreeWidget = new ProjectTree(prjDockWidget);
+            prjTreeWidget = new ProjectTree(prjDockWidget, true);
             /*connect signals!!!*/
             prjDockWidget->setWidget(prjTreeWidget);
 
@@ -556,7 +556,7 @@ Project::Project(ProjectMan *parent)
     prjDockWidget = new QDockWidget(prjName, (QWidget *)(parent->parent()));
     prjDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea);
     prjDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
-    prjTreeWidget = new ProjectTree(prjDockWidget);
+    prjTreeWidget = new ProjectTree(prjDockWidget, false);
             /*connect signals!!! ...done*/
 
     prjDockWidget->setWidget(prjTreeWidget);
@@ -582,8 +582,8 @@ Project::Project(ProjectMan *parent)
     connect(prjDockWidget, SIGNAL(visibilityChanged(bool)), this, SLOT(setActive()));
     connect(prjTreeWidget, SIGNAL(itemDoubleClicked (QTreeWidgetItem *,int)), this, SLOT(openUntrackedItem()));
     connect(prjTreeWidget, SIGNAL(requestFileCount()), this, SLOT(emitFileCount()));
-    connect(prjTreeWidget, SIGNAL(startProjectCfgDlgCore()), this, SLOT(startCfgDlgCore()));
-    connect(prjTreeWidget, SIGNAL(setMainFile(QString, QString)), this, SLOT(setMainFile(QString, QString)));
+    //connect(prjTreeWidget, SIGNAL(startProjectCfgDlgCore()), this, SLOT(startCfgDlgCore()));
+    //connect(prjTreeWidget, SIGNAL(setMainFile(QString, QString)), this, SLOT(setMainFile(QString, QString)));
     connect(prjTreeWidget, SIGNAL(removeFile(QString, QString)), this, SLOT(removeFile(QString, QString)));
     connect(prjTreeWidget, SIGNAL(addFile(QString, QString)), this, SLOT(addFile(QString, QString)));
     connect(this, SIGNAL(fileCountSignal(int)), prjTreeWidget, SLOT(contextP2(int)));
@@ -621,7 +621,7 @@ Project::Project(QString name, QString path, QString arch, LangType lang, QFile 
     }
     prjDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea);
     prjDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
-    prjTreeWidget = new ProjectTree(prjDockWidget);
+    prjTreeWidget = new ProjectTree(prjDockWidget, true);
             /*connect signals!!!*/
 
     prjDockWidget->setWidget(prjTreeWidget);

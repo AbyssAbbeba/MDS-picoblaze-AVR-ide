@@ -490,34 +490,43 @@ void MainForm::addFile()
  */
 void MainForm::saveFile()
 {
-    //qDebug() << "MainForm: saveFile()";
-    if (wDockManager->getCentralWidget()->isChanged() == true)
+    qDebug() << "MainForm: saveFile()";
+    if (wDockManager->getCentralWidget()->isChanged() == true || wDockManager->getCentralPath() == "untracked")
     {
         QString path;
-        if (wDockManager->getCentralPath() == NULL) {
+        if (wDockManager->getCentralPath() == NULL || wDockManager->getCentralPath() == "untracked")
+        {
             //path = QFileDialog::getSaveFileName(this, tr("Source File");
             path = QFileDialog::getSaveFileName (this, tr("Source File"), QString(), QString(), 0, QFileDialog::DontUseNativeDialog);
-            wDockManager->setCentralPath(path);
-            wDockManager->setCentralName(path.section('/', -1));
+            if (path != NULL)
+            {
+                wDockManager->setCentralPath(path);
+                wDockManager->setCentralName(path.section('/', -1));
+            }
         }
         else
+        {
             path = wDockManager->getCentralPath();
-
-        QFile file(path);
-        if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
-        {
-            error(ERR_OPENFILE);
         }
-        else 
+        
+        if (path != NULL)
         {
-            QTextStream fout(&file);
-            fout << wDockManager->getCentralTextEdit()->toPlainText();
-            file.close();
-            wDockManager->setTabSaved();
-            //qDebug() << "mainform: file saved";
+            QFile file(path);
+            if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+            {
+                error(ERR_OPENFILE);
+            }
+            else
+            {
+                QTextStream fout(&file);
+                fout << wDockManager->getCentralTextEdit()->toPlainText();
+                file.close();
+                wDockManager->setTabSaved();
+                //qDebug() << "mainform: file saved";
+            }
         }
     }
-    //qDebug() << "MainForm: return saveFile()";
+    qDebug() << "MainForm: return saveFile()";
 }
 
 
@@ -529,18 +538,21 @@ void MainForm::saveFileAs()
     //qDebug() << "MainForm: saveFileAs()";
     //QString path = QFileDialog::getSaveFileName(this, tr("Source File");
     QString path = QFileDialog::getSaveFileName(this, tr("Source File"), QString(), QString(), 0, QFileDialog::DontUseNativeDialog);
-    QFile file(path);
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+    if (path != NULL)
     {
-        error(ERR_OPENFILE);
-    }
-    else {
-        QTextStream fout(&file);
-        fout << wDockManager->getCentralTextEdit()->toPlainText();
-        file.close();
-        wDockManager->setCentralPath(path);
-        wDockManager->setCentralName(path.section('/', -1));
-        wDockManager->getCentralWidget()->setSaved();
+        QFile file(path);
+        if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+        {
+            error(ERR_OPENFILE);
+        }
+        else {
+            QTextStream fout(&file);
+            fout << wDockManager->getCentralTextEdit()->toPlainText();
+            file.close();
+            wDockManager->setCentralPath(path);
+            wDockManager->setCentralName(path.section('/', -1));
+            wDockManager->getCentralWidget()->setSaved();
+        }
     }
     //qDebug() << "MainForm: return saveFileAs()";
 }
@@ -1098,6 +1110,9 @@ void MainForm::addUntrackedFile(QString name, QString path)
     if (name != NULL && path != NULL)
     {
         getWDockManager()->addUntrackedCentralWidget(name, path);
+        saveAct->setEnabled(true);
+        saveAsAct->setEnabled(true);
+        saveAllAct->setEnabled(true);
         //getWDockManager()->getCentralWidget()->setChanged();
         //getWDockManager()->getCentralWidget()->connectAct();
     }
