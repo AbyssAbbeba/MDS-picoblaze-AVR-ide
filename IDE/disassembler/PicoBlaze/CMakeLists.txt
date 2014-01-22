@@ -21,16 +21,26 @@ project ( DAsmPicoBlaze )
 # Specify directories in which the linker will look for libraries.
 link_directories ("${CMAKE_CURRENT_SOURCE_DIR}/.." )
 
-## Add switches to compiler command line.
- # -fPIC       : Generate position-independent code (PIC) suitable for use in a shared library
-add_definitions ( -fPIC )
-
 ## Add a library to the project using the specified source files,
- # in this case it will procude static C++ library.
-add_library ( ${PROJECT_NAME} STATIC
+ # in this case it will produce static C++ library.
+add_library ( ${PROJECT_NAME} SHARED
               DAsmPicoBlazeCore.cxx
               DAsmPicoBlazeKcpsm6.cxx
               DAsmPicoBlazeKcpsm3.cxx
               DAsmPicoBlazeKcpsm2.cxx
               DAsmPicoBlazeKcpsm1.cxx
               DAsmPicoBlazeKcpsm1CPLD.cxx )
+
+# Link a target to given libraries
+target_link_libraries ( ${PROJECT_NAME} ${QT_LIBRARIES}
+                                        ${Boost_LIBRARIES}
+                                        disassembler
+                                        MCUDataFiles )
+
+# ------------------------------------------------------------------------------
+# INSTALLATION OPTIONS
+# ------------------------------------------------------------------------------
+
+install ( TARGETS ${PROJECT_NAME}
+          RUNTIME DESTINATION bin
+          LIBRARY DESTINATION lib )

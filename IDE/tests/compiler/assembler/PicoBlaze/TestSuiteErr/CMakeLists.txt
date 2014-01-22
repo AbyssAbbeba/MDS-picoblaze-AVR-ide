@@ -26,15 +26,11 @@ set_directory_properties ( PROPERTIES
 # ------------------------------------------------------------------------------
 
 # Add include directories to the build.
-include_directories ( ${Boost_INCLUDE_DIRS}
-                      "${CMAKE_SOURCE_DIR}"
+include_directories ( "${CMAKE_SOURCE_DIR}"
                       "${CMAKE_CURRENT_SOURCE_DIR}/../../../../../compiler" )
 
-# Specify directories in which the linker will look for libraries.
-link_directories ( "${CMAKE_CURRENT_SOURCE_DIR}/../../../../../compiler/core" )
-
 ## Add a library to the project using the specified source files,
- # in this case it will procude dynamic C++ library.
+ # in this case it will produce dynamic C++ library.
 add_library ( ${PROJECT_NAME} SHARED
               TestSuiteErr.cxx )
 
