@@ -17,7 +17,7 @@
 //#include "../project/project.h"
 //#include "../dialogs/projectcfgdlg_core.h"
 
-ProjectTree::ProjectTree(QWidget *parent)
+ProjectTree::ProjectTree(QWidget *parent, bool project)
     : QTreeWidget(parent)
 {
     //this->parentProject = parentProject;
@@ -26,21 +26,48 @@ ProjectTree::ProjectTree(QWidget *parent)
     mainFilePath = "";
     setHeaderHidden(true);
     projectPopup = new QMenu(this);
-    QAction *projectConfigAct = new QAction("Configuration", projectPopup);
-    QAction *addFileAct = new QAction("Add File", projectPopup);
+    QAction *addFileAct;
+    QAction *newFileAct;
+    QAction *projectConfigAct;
+    if (project == true)
+    {
+        addFileAct = new QAction("New File", projectPopup);
+        newFileAct = new QAction("Add File", projectPopup);
+        projectConfigAct = new QAction("Configuration", projectPopup);
+        projectPopup->addAction(newFileAct);
+        projectPopup->addAction(addFileAct);
+        projectPopup->addAction(projectConfigAct);
+        connect(addFileAct, SIGNAL(triggered()), this, SLOT(addFile()));
+        connect(projectConfigAct, SIGNAL(triggered()), this, SLOT(config()));
+    }
+    else
+    {
+        newFileAct = new QAction("New File", projectPopup);
+        addFileAct = new QAction("Add File", projectPopup);
+        projectPopup->addAction(newFileAct);
+        projectPopup->addAction(addFileAct);
+        connect(addFileAct, SIGNAL(triggered()), this, SLOT(addFile()));
+    }
     //QAction *projectHWCanvasAct = new QAction("Hardware Canvas", projectPopup);
-    projectPopup->addAction(addFileAct);
-    projectPopup->addAction(projectConfigAct);
     //projectPopup->addAction(projectHWCanvasAct);
+    QAction *removeFileAct;
+    QAction *setMainFileAct;
     filePopup = new QMenu(this);
-    QAction *removeFileAct = new QAction("Remove file", filePopup);
-    QAction *setMainFileAct = new QAction("Set as main file", filePopup);
-    filePopup->addAction(removeFileAct);
-    filePopup->addAction(setMainFileAct);
-    connect(setMainFileAct, SIGNAL(triggered()), this, SLOT(setMainFile()));
-    connect(removeFileAct, SIGNAL(triggered()), this, SLOT(removeFile()));
-    connect(addFileAct, SIGNAL(triggered()), this, SLOT(addFile()));
-    connect(projectConfigAct, SIGNAL(triggered()), this, SLOT(config()));
+    if (project == true)
+    {
+        removeFileAct = new QAction("Remove file", filePopup);
+        setMainFileAct = new QAction("Set as main file", filePopup);
+        filePopup->addAction(removeFileAct);
+        filePopup->addAction(setMainFileAct);
+        connect(setMainFileAct, SIGNAL(triggered()), this, SLOT(setMainFile()));
+        connect(removeFileAct, SIGNAL(triggered()), this, SLOT(removeFile()));
+    }
+    else
+    {
+        removeFileAct = new QAction("Remove file", filePopup);
+        filePopup->addAction(removeFileAct);
+        connect(removeFileAct, SIGNAL(triggered()), this, SLOT(removeFile()));
+    }
 }
 
 ProjectTree::~ProjectTree()
