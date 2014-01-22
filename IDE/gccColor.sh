@@ -7,7 +7,7 @@ if [[ ! -t 1 || -z "${TERM}" || "${TERM}" == 'dumb' ]]; then
     exit $?
 fi
 
-exec "${@}" |& gawk '
+exec "${@}"  2>&1 | gawk '
     {
         sub ( /: error: /,   ": \033[41;30merror:\033[m ",   $0 )
         sub ( /: warning: /, ": \033[43;30mwarning:\033[m ", $0 )
