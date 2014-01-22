@@ -11,6 +11,9 @@ done
 
 if [[ "$(uname -o)" == "Msys" ]]; then
     COMPILER_EXEC+=".exe"
+
+    echo "Not supported under WINDOWS!"
+    exit
 fi
 
 if [[ ! -x "${COMPILER_EXEC}" ]]; then
