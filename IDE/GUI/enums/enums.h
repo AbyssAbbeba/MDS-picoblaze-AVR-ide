@@ -18,7 +18,9 @@ typedef enum ErrorCode
     ERR_NO_PROJECT,
     
     ERR_STACK_OVERFLOW,
-    ERR_STACK_UNDERFLOW
+    ERR_STACK_UNDERFLOW,
+    ERR_UNTRACKED_PROJECT,
+    ERR_SIM_NOSTART
 } ErrorCode;
 
 

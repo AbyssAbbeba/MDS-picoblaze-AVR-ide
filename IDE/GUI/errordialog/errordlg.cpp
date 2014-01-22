@@ -54,6 +54,16 @@ void error(int errCode)
             msgBox.setText("Error: Stack underflow, simulation canceled");
             break;
         }
+        case ERR_UNTRACKED_PROJECT:
+        {
+            msgBox.setText("Error: Action not available for untracked project");
+            break;
+        }
+        case ERR_SIM_NOSTART:
+        {
+            msgBox.setText("Error: Simulation could not start");
+            break;
+        }
         default:
         {
             msgBox.setText("Error: Error not specified");

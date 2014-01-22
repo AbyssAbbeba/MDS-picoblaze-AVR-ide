@@ -108,6 +108,7 @@ class Project : public QObject
         void reset();
         void step();
         void run();
+        void animate();
         MCUSimControl* getSimControl();
         void setCompileOpt(QList<bool> opt);
         void setCompileIncPaths(QList<QString> paths);
