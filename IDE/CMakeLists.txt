@@ -142,6 +142,7 @@ include ( ${QT_USE_FILE} )
 # Find Boost include directories and libraries.
 find_package ( Boost 1.55 REQUIRED
                COMPONENTS regex filesystem system )
+include_directories ( ${Boost_INCLUDE_DIRS} )
 
 # Find Flex (lexer generator) and Bison (parser generator) executables.
 find_package ( FLEX  2.5.35 REQUIRED )

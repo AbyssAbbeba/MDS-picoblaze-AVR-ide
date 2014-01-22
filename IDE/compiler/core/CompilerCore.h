@@ -83,12 +83,11 @@ class CompilerCore : public CompilerBase,
          * @param[in] arch
          * @param[in] opts
          * @param[in] genSimData
-         * @return
          */
-        bool compile ( LangId lang,
-                       TargetArch arch,
-                       CompilerOptions * opts,
-                       bool genSimData = false );
+        void setup ( LangId lang,
+                     TargetArch arch,
+                     CompilerOptions * opts,
+                     bool genSimData = false );
 
         /**
          * @brief
@@ -129,22 +128,31 @@ class CompilerCore : public CompilerBase,
          */
         void closeInputFiles();
 
-    ////    Private Operations    ////
-    private:
         /**
          * @brief
-         * @param[in] location
          * @param[in] type
          * @param[in] text
-         * @param[in] forceAsUnique
-         * @param[in] noObserver
          */
-        void coreMessage ( const CompilerSourceLocation & location,
-                           MessageType type,
-                           const std::string & text,
-                           bool forceAsUnique = false,
-                           bool noObserver = false );
+        void coreMessage ( MessageType type,
+                           const std::string & text );
 
+        /**
+         * @brief
+         * @param[in,out] semanticAnalyzer
+         */
+        void setSemanticAnalyzer ( CompilerSemanticAnalyzer * semanticAnalyzer );
+
+        /// @name Part of the interface for semantic analyzer exposed as public interface of the core.
+        //@{
+            /**
+             * @brief
+             * @return
+             */
+            virtual bool successful() const override;
+        //@}
+
+    ////    Private Operations    ////
+    private:
         /// @name Interface for syntax and/or lexical analyzer, and for preprocessor.
         //@{
             /**
@@ -283,12 +291,6 @@ class CompilerCore : public CompilerBase,
 
             /**
              * @brief
-             * @return
-             */
-            virtual bool successful() const override;
-
-            /**
-             * @brief
              * @param[in,out] observer
              * @return
              */
@@ -347,30 +349,23 @@ class CompilerCore : public CompilerBase,
 
         /**
          * @brief
-         */
-        inline void resetCompilerCore();
-
-        /**
-         * @brief
-         * @param[in] lang
-         * @param[in] arch
-         * @return
-         */
-        inline bool checkOptions();
-
-        /**
-         * @brief
          * @return
          */
         inline bool startCompilation();
 
         /**
          * @brief
+         * @param[in] location
          * @param[in] type
          * @param[in] text
+         * @param[in] forceAsUnique
+         * @param[in] noObserver
          */
-        inline void coreMessage ( MessageType type,
-                                  const std::string & text );
+        void coreMessage ( const CompilerSourceLocation & location,
+                           MessageType type,
+                           const std::string & text,
+                           bool forceAsUnique = false,
+                           bool noObserver = false );
 
         /**
          * @brief
@@ -378,6 +373,11 @@ class CompilerCore : public CompilerBase,
          * @return
          */
         inline std::string msgType2str ( MessageType type );
+
+        /**
+         * @brief
+         */
+        inline void resetCompilerCore();
 
     ////    Private Attributes    ////
     private:

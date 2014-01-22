@@ -26,12 +26,8 @@ add_subdirectory ( TestGenericSubsys )
 # ------------------------------------------------------------------------------
 
 # Add include directories to the build.
-include_directories ( ${Boost_INCLUDE_DIRS}
-                      "${CMAKE_SOURCE_DIR}"
+include_directories ( "${CMAKE_SOURCE_DIR}"
                       "${CMAKE_SOURCE_DIR}/utilities/AutoTest/" )
-
-# Specify directories in which the linker will look for libraries.
-link_directories ( "${CMAKE_SOURCE_DIR}/utilities/AutoTest/" )
 
 # Add an executable to the project using the specified source files.
 add_executable ( ${PROJECT_NAME}

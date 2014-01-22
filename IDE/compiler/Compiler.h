@@ -16,7 +16,9 @@
 #ifndef COMPILER_H
 #define COMPILER_H
 
-// Forward declarations.
+// Forward declarations
+class DbgFile;
+class DataFile;
 class CompilerCore;
 class CompilerMsgInterface;
 
@@ -69,6 +71,31 @@ class Compiler
          * @param[in] directory
          */
         void setBaseIncludeDir ( const std::string & directory );
+
+        /**
+         * @brief
+         * @return
+         */
+        DbgFile * getSimDbg();
+
+        /**
+         * @brief
+         * @return
+         */
+        DataFile * getSimData();
+
+    ////    Inline Private Operations    ////
+    private:
+        /**
+         * @brief
+         * @param[in] lang
+         * @param[in] arch
+         * @param[in] opts
+         * @return
+         */
+        inline bool checkOptions ( CompilerBase::LangId lang,
+                                   CompilerBase::TargetArch arch,
+                                   const CompilerOptions * opts );
 
     ////    Private Attributes    ////
     private:

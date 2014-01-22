@@ -30,15 +30,12 @@ add_library ( ${PROJECT_NAME} SHARED
               AsmPic8SemanticAnalyzer.cxx )
 
 # Link a target to given libraries
+target_link_libraries ( AsmPic8LexerParser CompilerCore )
 target_link_libraries ( ${PROJECT_NAME} ${QT_LIBRARIES}
                                         MCUDataFiles
+                                        CompilerCore
                                         AsmPic8LexerParser
                                         CompilerModuleAsmGenerators )
-
-
-## Set properties on a target.
- # Targets can have properties that affect how they are built.
-set_target_properties ( ${PROJECT_NAME} PROPERTIES LINKER_LANGUAGE "CXX" )
 
 # ------------------------------------------------------------------------------
 # INSTALLATION OPTIONS

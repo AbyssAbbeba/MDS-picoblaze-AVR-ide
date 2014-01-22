@@ -27,41 +27,28 @@ add_subdirectory ( PicoBlaze )
 # ------------------------------------------------------------------------------
 
 # List of preprocessor include file search directories.
-include_directories ( ${Boost_INCLUDE_DIRS}
-                      "${CMAKE_CURRENT_SOURCE_DIR}/../utilities/MCUDataFiles/"
+include_directories ( "${CMAKE_CURRENT_SOURCE_DIR}/../utilities/MCUDataFiles/"
                       "${CMAKE_CURRENT_SOURCE_DIR}/PicoBlaze/" )
 
-# Specify directories in which the linker will look for libraries.
-link_directories ( "${CMAKE_CURRENT_SOURCE_DIR}/../utilities/MCUDataFiles/"
-                   "${CMAKE_CURRENT_SOURCE_DIR}/PicoBlaze/" )
-
 #
-## Disassembler as dynamic library.
+## Disassembler base as dynamic library.
 #
 
 ## Add a library to the project using the specified source files,
- # in this case it will procude dynamic C++ library.
+ # in this case it will produce dynamic C++ library.
 add_library ( ${PROJECT_NAME} SHARED
               DAsm.cxx
               DAsmCore.cxx )
 
-# Link a target to given libraries
-target_link_libraries ( ${PROJECT_NAME} ${QT_LIBRARIES}
-                                        ${Boost_LIBRARIES}
-                                        DAsmPicoBlaze )
-
 #
-## Disassembler as executable file.
+## Entire disassembler as executable file.
 #
 
 # Add an executable to the project using the specified source files.
-add_executable ( disasm
-                 main.cxx )
+add_executable ( disasm main.cxx )
 
 # Link a target to given libraries
-target_link_libraries ( disasm MCUDataFiles
-                               ${PROJECT_NAME} )
-
+target_link_libraries ( disasm DAsmPicoBlaze )
 
 # ------------------------------------------------------------------------------
 # INSTALLATION OPTIONS

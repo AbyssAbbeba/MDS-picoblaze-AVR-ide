@@ -341,6 +341,10 @@ inline bool AsmTranslatorKcpsmMed::processDirectives ( std::vector<std::pair<uns
     {
         lineFields.replaceInst ( changeLetterCase ( "equ", m_config->m_letterCase[AsmTranslatorConfig::F_DIRECTIVE] ) );
     }
+    else if ( ( "dsin" == directive ) || ( "dsout" == directive ) )
+    {
+        lineFields.replaceInst(changeLetterCase("port", m_config->m_letterCase[AsmTranslatorConfig::F_DIRECTIVE]));
+    }
     else if ( "namereg" == directive )
     {
         m_registers.insert(lineFields.getOperand(1));

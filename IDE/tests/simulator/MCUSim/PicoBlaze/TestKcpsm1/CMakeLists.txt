@@ -26,27 +26,21 @@ set_directory_properties ( PROPERTIES
 # ------------------------------------------------------------------------------
 
 # Add include directories to the build.
-include_directories ( ${Boost_INCLUDE_DIRS}
-                      "${CMAKE_CURRENT_SOURCE_DIR}/../../../../../simulators/MCUSim/PicoBlaze"
+include_directories ( "${CMAKE_CURRENT_SOURCE_DIR}/../../../../../simulators/MCUSim/PicoBlaze"
                       "${CMAKE_CURRENT_SOURCE_DIR}/../../../../../utilities/MCUDataFiles"
                       "${CMAKE_SOURCE_DIR}"
                       "${CMAKE_CURRENT_SOURCE_DIR}/../.." )
 
-# Specify directories in which the linker will look for libraries.
-link_directories ( "${CMAKE_CURRENT_SOURCE_DIR}/../../../../../simulators/MCUSim/PicoBlaze"
-                   "${CMAKE_CURRENT_SOURCE_DIR}/../../../../../utilities/MCUDataFiles"
-                   "${CMAKE_CURRENT_SOURCE_DIR}/../.." )
-
 ## Add a library to the project using the specified source files,
- # in this case it will procude dynamic C++ library.
+ # in this case it will produce dynamic C++ library.
 add_library ( ${PROJECT_NAME} SHARED
               TestKcpsm1.cxx )
 
 # Link a target to given libraries
-target_link_libraries ( ${PROJECT_NAME}
-                        MCUSimTestScript
-                        PicoBlazeSim
-                        CUnit )
+target_link_libraries ( ${PROJECT_NAME} ${Boost_LIBRARIES}
+                                        MCUSimTestScript
+                                        PicoBlazeSim
+                                        CUnit )
 
 ## Add a target with no output so it will always be built.
  # Compile .asm files for all testcases in the `testcases' directory

@@ -26,10 +26,6 @@ include_directories ( "${CMAKE_CURRENT_SOURCE_DIR}/../generators/"
                       "${CMAKE_CURRENT_SOURCE_DIR}/../../../core/"
                       "${CMAKE_CURRENT_SOURCE_DIR}/../../../../utilities/MCUDataFiles/" )
 
-# Specify directories in which the linker will look for libraries.
-link_directories ( "${CMAKE_CURRENT_SOURCE_DIR}/../generators/"
-                   "${CMAKE_CURRENT_SOURCE_DIR}/../../../../utilities/MCUDataFiles/" )
-
 ## Add a library to the project using the specified source files,
  # in this case it will procude static C++ library.
 add_library ( ${PROJECT_NAME} SHARED
@@ -50,14 +46,12 @@ add_library ( ${PROJECT_NAME} SHARED
               AsmPicoBlazeInstructionSet1CPLD.cxx )
 
 # Link a target to given libraries
+target_link_libraries ( AsmPicoBlazeLexerParser CompilerCore )
 target_link_libraries ( ${PROJECT_NAME} ${QT_LIBRARIES}
                                         MCUDataFiles
+                                        CompilerCore
                                         AsmPicoBlazeLexerParser
                                         CompilerModuleAsmGenerators )
-
-## Set properties on a target.
- # Targets can have properties that affect how they are built.
-set_target_properties ( ${PROJECT_NAME} PROPERTIES LINKER_LANGUAGE "CXX" )
 
 # ------------------------------------------------------------------------------
 # INSTALLATION OPTIONS

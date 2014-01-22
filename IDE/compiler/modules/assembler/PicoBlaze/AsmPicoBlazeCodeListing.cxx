@@ -23,6 +23,9 @@
 #include <cstdlib>
 #include <fstream>
 
+// getline() function.
+#include "../../../../utilities/os/getline.h"
+
 // Used for i18n only
 #include <QObject>
 
