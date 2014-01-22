@@ -209,6 +209,8 @@ void MainForm::createActions()
     simulationFlowAct = new QAction(*icon_simFlow, tr("Start simulation"), this);
     connect(simulationFlowAct, SIGNAL(triggered()), this, SLOT(simulationFlowHandle()));
     simulationStatus = false;
+    simulationRunStatus = false;
+    simulationAnimateStatus = false;
     simulationFlowAct->setDisabled(true);
 
     QPixmap *pm_simRun = new QPixmap(":/resources//icons//simulationRun.png");
@@ -216,6 +218,12 @@ void MainForm::createActions()
     simulationRunAct = new QAction(*icon_simRun, tr("Run"), this);
     connect(simulationRunAct, SIGNAL(triggered()), this, SLOT(simulationRunHandle()));
     simulationRunAct->setDisabled(true);
+
+    QPixmap *pm_simAnimate = new QPixmap(":/resources//icons//simulationAnimate.png");
+    QIcon *icon_simAnimate = new QIcon(*pm_simAnimate);
+    simulationAnimateAct = new QAction(*icon_simAnimate, tr("Animate"), this);
+    connect(simulationAnimateAct, SIGNAL(triggered()), this, SLOT(simulationAnimateHandle()));
+    simulationAnimateAct->setDisabled(true);
 
     QPixmap *pm_simStep = new QPixmap(":/resources//icons//simulationStep.png");
     QIcon *icon_simStep = new QIcon(*pm_simStep);
@@ -291,6 +299,7 @@ void MainForm::createToolbar()
     simulationToolBar->addAction(projectCompileAct);
     simulationToolBar->addAction(simulationFlowAct);
     simulationToolBar->addAction(simulationRunAct);
+    simulationToolBar->addAction(simulationAnimateAct);
     simulationToolBar->addAction(simulationStepAct);
     simulationToolBar->addAction(simulationResetAct);
     simulationToolBar->addAction(simulationUnhighlightAct);
@@ -545,7 +554,8 @@ void MainForm::saveFileAs()
         {
             error(ERR_OPENFILE);
         }
-        else {
+        else
+        {
             QTextStream fout(&file);
             fout << wDockManager->getCentralTextEdit()->toPlainText();
             file.close();
@@ -564,8 +574,8 @@ void MainForm::saveFileAs()
 void MainForm::saveFile(CodeEdit *editor)
 {
     //qDebug() << "MainForm: saveFile()";
-    if (editor->isChanged() == true)
-    {
+    //if (editor->isChanged() == true)
+    //{
         QString path;
         if (editor->getPath() == NULL) {
             //path = QFileDialog::getSaveFileName(this, tr("Source File");
@@ -577,20 +587,23 @@ void MainForm::saveFile(CodeEdit *editor)
         {
             path = editor->getPath();
         }
-        QFile file(path);
-        if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
-        {
-            error(ERR_OPENFILE);
+        if (path != NULL)
+        {    
+            QFile file(path);
+            if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+            {
+                error(ERR_OPENFILE);
+            }
+            else
+            {
+                QTextStream fout(&file);
+                fout << editor->getTextEdit()->toPlainText();
+                file.close();
+                editor->setSaved();
+                //qDebug() << "mainform: editor saved";
+            }
         }
-        else 
-        {
-            QTextStream fout(&file);
-            fout << editor->getTextEdit()->toPlainText();
-            file.close();
-            editor->setSaved();
-            //qDebug() << "mainform: editor saved";
-        }
-    }
+    //}
     //qDebug() << "MainForm: return saveFile()";
 }
 
@@ -605,7 +618,8 @@ void MainForm::saveAll()
     //ulozi vsechny zmenene a nepojmenovane
     for (int i = 0; i < wDockManager->getTabCount(); i++)
     {
-        if (wDockManager->getTabWidget(i)->isChanged() == true)
+        if (wDockManager->getTabWidget(i)->isChanged() == true
+            || wDockManager->getTabWidget(i)->getPath() == "untracked")
         {
             saveFile(wDockManager->getTabWidget(i));
         }
@@ -704,6 +718,11 @@ void MainForm::compileProject()
     if (projectMan->getActive() == NULL)
     {
         error(ERR_NO_PROJECT);
+        return;
+    }
+    if (projectMan->getActive()->prjPath == "untracked" && projectMan->getActive()->prjName == "untracked")
+    {
+        error(ERR_UNTRACKED_PROJECT);
         return;
     }
 
@@ -884,13 +903,69 @@ void MainForm::simulationStep()
 
 
 /**
- * @brief Slot. Run simulation with shown changes.
+ * @brief Slot. Run simulation, does not show changes.
  */
 void MainForm::simulationRunHandle()
 {
     if (true == simulationStatus)
     {
+        if (true == simulationRunStatus)
+        {
+            QPixmap *pm_simRun = new QPixmap("resources//icons//simulationRun.png");
+            QIcon *icon_simRun = new QIcon(*pm_simRun);
+            simulationRunAct->setIcon(*icon_simRun);
+            simulationRunAct->setText(tr("Run"));
+            this->simulationAnimateAct->setEnabled(true);
+            this->simulationStepAct->setEnabled(true);
+            this->simulationResetAct->setEnabled(true);
+            this->simulationRunStatus = false;
+        }
+        else
+        {
+            QPixmap *pm_simRun = new QPixmap("resources//icons//cross.png");
+            QIcon *icon_simRun = new QIcon(*pm_simRun);
+            simulationRunAct->setIcon(*icon_simRun);
+            simulationRunAct->setText(tr("Stop run"));
+            this->simulationAnimateAct->setDisabled(true);
+            this->simulationStepAct->setDisabled(true);
+            this->simulationResetAct->setDisabled(true);
+            this->simulationRunStatus = true;
+        }
         projectMan->getActive()->run();
+    }
+}
+
+
+/**
+ * @brief Slot. Run simulation, does show changes.
+ */
+void MainForm::simulationAnimateHandle()
+{
+    if (true == simulationStatus)
+    {
+        if (true == simulationAnimateStatus)
+        {
+            QPixmap *pm_simAnimate = new QPixmap("resources//icons//simulationAnimate.png");
+            QIcon *icon_simAnimate = new QIcon(*pm_simAnimate);
+            simulationAnimateAct->setIcon(*icon_simAnimate);
+            simulationAnimateAct->setText(tr("Animate"));
+            this->simulationRunAct->setEnabled(true);
+            this->simulationStepAct->setEnabled(true);
+            this->simulationResetAct->setEnabled(true);
+            this->simulationAnimateStatus = false;
+        }
+        else
+        {
+            QPixmap *pm_simAnimate = new QPixmap("resources//icons//cross.png");
+            QIcon *icon_simAnimate = new QIcon(*pm_simAnimate);
+            simulationAnimateAct->setIcon(*icon_simAnimate);
+            simulationAnimateAct->setText(tr("Stop animate"));
+            this->simulationRunAct->setDisabled(true);
+            this->simulationStepAct->setDisabled(true);
+            this->simulationResetAct->setDisabled(true);
+            this->simulationAnimateStatus = true;
+        }
+        projectMan->getActive()->animate();
     }
 }
 
@@ -912,7 +987,7 @@ void MainForm::simulationReset()
  */
 void MainForm::simulationFlowHandle()
 {
-    if (projectMan->getActive() != NULL)
+    if (projectMan->getActive() != NULL && projectMan->getActive()->prjPath != "untracked")
     {
         if (false == simulationStatus)
         {
@@ -925,8 +1000,13 @@ void MainForm::simulationFlowHandle()
                 simulationStatus = true;
                 simulationStepAct->setEnabled(true);
                 simulationRunAct->setEnabled(true);
+                simulationAnimateAct->setEnabled(true);
                 simulationResetAct->setEnabled(true);
                 simulationUnhighlightAct->setEnabled(true);
+            }
+            else
+            {
+                error(ERR_SIM_NOSTART);
             }
         }
         else
@@ -935,12 +1015,22 @@ void MainForm::simulationFlowHandle()
             QIcon *icon_simFlow = new QIcon(*pm_simFlow);
             simulationFlowAct->setIcon(*icon_simFlow);
             simulationFlowAct->setText(tr("Start simulation"));
+            if (true == simulationAnimateStatus)
+            {
+                this->simulationAnimateHandle();
+            }
+            else if (true == simulationRunStatus)
+            {
+                this->simulationRunHandle();
+            }
             simulationStatus = false;
             simulationStepAct->setDisabled(true);
             simulationRunAct->setDisabled(true);
+            simulationAnimateAct->setDisabled(true);
             simulationResetAct->setDisabled(true);
             simulationUnhighlightAct->setDisabled(true);
             projectMan->getActive()->stop();
+            this->unhighlight();
         }
     }
 }
@@ -1113,6 +1203,7 @@ void MainForm::addUntrackedFile(QString name, QString path)
         saveAct->setEnabled(true);
         saveAsAct->setEnabled(true);
         saveAllAct->setEnabled(true);
+        saveProjAct->setEnabled(true);
         //getWDockManager()->getCentralWidget()->setChanged();
         //getWDockManager()->getCentralWidget()->connectAct();
     }

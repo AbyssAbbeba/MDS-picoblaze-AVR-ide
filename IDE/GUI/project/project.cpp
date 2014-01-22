@@ -1247,6 +1247,15 @@ void Project::run()
 
 
 /**
+ * @brief Runs simulation with animate
+ */
+void Project::animate()
+{
+    m_simControlUnit->animate();
+}
+
+
+/**
  * @brief Returns simulation control unit
  * @return Returns simulation control unit
  */
