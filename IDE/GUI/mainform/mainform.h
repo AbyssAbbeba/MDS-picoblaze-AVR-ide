@@ -27,7 +27,7 @@
 #include "../widgets/Tools/Display/displaytool.h"
 #include "../widgets/Tools/Convertor/convertortool.h"
 #include "../project/project.h"
-#include "../../compiler/core/CompilerThread.h"
+#include "../../compiler/CompilerThread.h"
 #include "../../compiler/core/CompilerOptions.h"
 
 

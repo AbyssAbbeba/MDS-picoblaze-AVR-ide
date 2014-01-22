@@ -40,6 +40,9 @@ WDockManager::WDockManager(QWidget *parent, QWidget *centralWidget)
     activeCodeEdit = NULL;
     centralBase = NULL;
     this->dockWidgets = false;
+    wDockBotPrevHeight = 0;
+    changingVisibility = false;
+    visible = false;
     connect(wTab, SIGNAL(tabCloseRequested(int)),this, SLOT(closeTab(int)));
     connect(wTab, SIGNAL(currentChanged(int)), this, SLOT(changeCodeEditor(int)));
     connect(wTab, SIGNAL(tabMoved(int, int)), this, SLOT(moveEditorsSlot(int, int)));
@@ -529,30 +532,36 @@ QDockWidget* WDockManager::getDockWidgetArea(int area)
 
 void WDockManager::hideDockWidgetArea(int area)
 {
-    //qDebug() << "WDockManager: hideDockWidgetArea()";
+    qDebug() << "WDockManager: hideDockWidgetArea()";
     QList<WDock*>::iterator i;
     for (i = openDockWidgets.begin(); i != openDockWidgets.end(); i++)
     {
         if ((*i)->cmpArea(area) == true)
         {
-            (*i)->getQDockWidget()->hide();
+            if (wDockBotPrevHeight < (*i)->getQDockWidget()->height())
+            {
+                wDockBotPrevHeight = (*i)->getQDockWidget()->height();
+            }
+            (*i)->getQDockWidget()->setMaximumHeight(0);
+            (*i)->getQDockWidget()->setMinimumHeight(0);
         }
     }
-    //qDebug() << "WDockManager: return hideDockWidgetArea()";
+    qDebug() << "WDockManager: return hideDockWidgetArea()";
 }
 
 void WDockManager::showDockWidgetArea(int area)
 {
-    //qDebug() << "WDockManager: showDockWidgetArea()";
+    qDebug() << "WDockManager: showDockWidgetArea()";
     QList<WDock*>::iterator i;
     for (i = openDockWidgets.begin(); i != openDockWidgets.end(); i++)
     {
         if ((*i)->cmpArea(area) == true)
         {
-            (*i)->getQDockWidget()->show();
+            (*i)->getQDockWidget()->setMaximumHeight(wDockBotPrevHeight);
+            (*i)->getQDockWidget()->setMinimumHeight(wDockBotPrevHeight);
         }
     }
-    //qDebug() << "WDockManager: return showDockWidgetArea()";
+    qDebug() << "WDockManager: return showDockWidgetArea()";
 }
 
 
@@ -698,6 +707,27 @@ void WDockManager::highlightError(QString filename, int line)
     this->getCentralTextEdit()->selectLine(line);
 }
 
+
+void WDockManager::showBottomArea(bool show)
+{
+    if (changingVisibility == false)
+    {
+        changingVisibility = true;
+        if (false == visible)
+        {
+            qDebug() << "WDockManager: visible";
+            this->showDockWidgetArea(2);
+            visible = true;
+        }
+        else
+        {
+            qDebug() << "WDockManager: invisible";
+            this->hideDockWidgetArea(2);
+            visible = false;
+        }
+    }
+}
+
 /*void WDockManager::dockWidgetsCreated()
 {
     this->dockWidgets = true;
@@ -788,6 +818,21 @@ WDock::WDock(WDockManager *parent, int code, QWidget *parentWindow)
             AnalyserWidget *newDock = new AnalyserWidget(wDockWidget);
             area = 1;
             wDockWidget->setWidget(newDock);
+            break;
+        }
+        case wBottomHide:
+        {
+            wDockWidget = new QDockWidget("Hide", parentWindow);
+            wDockWidget->setAllowedAreas(Qt::BottomDockWidgetArea);
+            parent->addDockW(Qt::BottomDockWidgetArea, wDockWidget);
+            //ShowHideWidget *newDock = new ShowHideWidget(wDockWidget);
+            QWidget *newDock = new QDockWidget(wDockWidget);
+            area = 2;
+            wDockWidget->setWidget(newDock);
+            //QPushButton *pshTitle = new QPushButton("Hide", parentWindow);
+            //wDockWidget->setTitleBarWidget(pshTitle);
+            parent->connect(wDockWidget, SIGNAL(visibilityChanged(bool)), parent, SLOT(showBottomArea(bool)));
+            //parent->connect(pshTitle, SIGNAL(clicked()), parent, SLOT(showBottomArea()));
             break;
         }
     }
