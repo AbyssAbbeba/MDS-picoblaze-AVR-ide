@@ -172,6 +172,12 @@ class Project : public QObject
         QString prevFile2;
         QString prevFile3;
         
+        QTreeWidgetItem *treeProjName;
+        QTreeWidgetItem *treeProjSource;
+        QTreeWidgetItem *treeProjInclude;
+        QTreeWidgetItem *treeProjCompiled;
+        QTreeWidgetItem *treeProjOther;
+        
        
 };
 
