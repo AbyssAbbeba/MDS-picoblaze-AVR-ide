@@ -1095,9 +1095,12 @@ void MainForm::setEditorReadOnly(bool readOnly)
 void MainForm::addUntrackedFile(QString name, QString path)
 {
     qDebug() << "MainForm: addUntrackedFile";
-    getWDockManager()->addUntrackedCentralWidget(name, path);
-    //getWDockManager()->getCentralWidget()->setChanged();
-    //getWDockManager()->getCentralWidget()->connectAct();
+    if (name != NULL && path != NULL)
+    {
+        getWDockManager()->addUntrackedCentralWidget(name, path);
+        //getWDockManager()->getCentralWidget()->setChanged();
+        //getWDockManager()->getCentralWidget()->connectAct();
+    }
     qDebug() << "MainForm: return addUntrackedFile";
 }
 
