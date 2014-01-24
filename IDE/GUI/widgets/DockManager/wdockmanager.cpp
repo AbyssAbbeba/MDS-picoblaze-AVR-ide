@@ -42,7 +42,7 @@ WDockManager::WDockManager(QWidget *parent, QWidget *centralWidget)
     this->dockWidgets = false;
     wDockBotPrevHeight = 0;
     changingVisibility = false;
-    visible = false;
+    visible = true;
     connect(wTab, SIGNAL(tabCloseRequested(int)),this, SLOT(closeTab(int)));
     connect(wTab, SIGNAL(currentChanged(int)), this, SLOT(changeCodeEditor(int)));
     connect(wTab, SIGNAL(tabMoved(int, int)), this, SLOT(moveEditorsSlot(int, int)));
@@ -470,6 +470,10 @@ void WDockManager::addDockWidget(int code)
         //wMainWindow->tabifyDockWidget(getDockWidgetArea(newWDock->getArea()), newWDock->getQDockWidget());
     }
     openDockWidgets.append(newWDock);
+    if (wDockBotPrevHeight < newWDock->getQDockWidget()->height())
+    {
+        wDockBotPrevHeight = newWDock->getQDockWidget()->height();
+    }
     //qDebug() << "WDockManager: return addDockWidget()";
 }
 
@@ -492,6 +496,10 @@ void WDockManager::addSimDockWidgetP2(QString path, MCUSimControl* simControl)
         //wMainWindow->tabifyDockWidget(getDockWidgetArea(newWDock->getArea()), newWDock->getQDockWidget());
     }
     openDockWidgets.append(newWDock);
+    if (wDockBotPrevHeight < newWDock->getQDockWidget()->height())
+    {
+        wDockBotPrevHeight = newWDock->getQDockWidget()->height();
+    }
     //qDebug() << "WDockManager: return addSimDockWidgetP2()";
 }
 
@@ -546,6 +554,7 @@ void WDockManager::hideDockWidgetArea(int area)
             (*i)->getQDockWidget()->setMinimumHeight(0);
         }
     }
+    qDebug() << "WDockManager: wDockBotPrevHeight" << wDockBotPrevHeight;
     qDebug() << "WDockManager: return hideDockWidgetArea()";
 }
 

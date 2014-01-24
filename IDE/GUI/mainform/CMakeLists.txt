@@ -46,7 +46,7 @@ include_directories(
 	"../../simulators/MCUSim/McuSimCfgMgr/"
 	"../../simulators/MCUSim"
 	"../../simulators/SimControl/"
-        "../../utilities/MCUDataFiles/"
+    "../../utilities/MCUDataFiles/"
 	"../../simulators/MCUSim/AVR8/")
 
 # <DEBUG!>
@@ -54,7 +54,7 @@ link_directories(
 	"${CMAKE_CURRENT_BINARY_DIR}/../../simulators/MCUSim/McuSimCfgMgr/"
 	"${CMAKE_CURRENT_BINARY_DIR}/../../simulators/MCUSim"
 	"${CMAKE_CURRENT_BINARY_DIR}/../../simulators/SimControl/"
-        "${CMAKE_CURRENT_BINARY_DIR}/../../utilities/MCUDataFiles/"
+    "${CMAKE_CURRENT_BINARY_DIR}/../../utilities/MCUDataFiles/"
 	"${CMAKE_CURRENT_BINARY_DIR}/../../simulators/MCUSim/AVR8/"
     "${CMAKE_CURRENT_BINARY_DIR}/../../compiler/"
 	"${CMAKE_CURRENT_BINARY_DIR}/../widgets/MovGridLayout/"
