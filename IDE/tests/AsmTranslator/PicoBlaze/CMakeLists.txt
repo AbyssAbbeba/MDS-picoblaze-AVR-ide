@@ -49,7 +49,7 @@ target_link_libraries ( ${PROJECT_NAME}
                         TAT_TestPicoBlazeMed
                         TAT_TestPicoBlazeOPI
                         AsmTranslator
-                        Compiler
+                        compiler
                         MCUDataFiles
                         AutoTest )
 
