@@ -561,7 +561,7 @@ void WDockManager::hideDockWidgetArea(int area)
 
 void WDockManager::showDockWidgetArea(int area)
 {
-    //qDebug() << "WDockManager: showDockWidgetArea()";
+    qDebug() << "WDockManager: showDockWidgetArea()";
     QList<WDock*>::iterator i;
     for (i = openDockWidgets.begin(); i != openDockWidgets.end(); i++)
     {
@@ -571,11 +571,10 @@ void WDockManager::showDockWidgetArea(int area)
             (*i)->getQDockWidget()->setMinimumHeight(wDockBotPrevHeight);
             (*i)->getQDockWidget()->setMaximumHeight(999);
             (*i)->getQDockWidget()->setMinimumHeight(1);
-                qDebug() << "WDockManager: new height:" << (*i)->getQDockWidget()->height();
         }
     }
     //qDebug() << "WDockManager: wDockBotPrevHeight" << wDockBotPrevHeight;
-    //qDebug() << "WDockManager: return showDockWidgetArea()";
+    qDebug() << "WDockManager: return showDockWidgetArea()";
 }
 
 
