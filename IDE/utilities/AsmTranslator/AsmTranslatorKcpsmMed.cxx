@@ -511,7 +511,7 @@ inline bool AsmTranslatorKcpsmMed::processInstructions ( std::vector<std::pair<u
 {
     {
         std::string op0 = lineFields.getOperand(0);
-        if ( ( "equ" == op0 ) || ( "reg" == op0 ) || ( "define" == op0 ) )
+        if ( ( "equ" == op0 ) || ( "reg" == op0 ) || ( "define" == op0 ) || ( "port" == op0 ) )
         {
             return true;
         }
