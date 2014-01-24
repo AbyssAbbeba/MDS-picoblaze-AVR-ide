@@ -479,6 +479,7 @@ void MCUSimControl::stepProgram()
 
     m_totalMCycles += m_simulator->executeInstruction();
     dispatchEvents();
+    emit(updateRequest(0x3));
 }
 
 void MCUSimControl::animateProgram()
@@ -503,7 +504,7 @@ void MCUSimControl::animateProgram()
 
             m_totalMCycles += m_simulator->executeInstruction();
             dispatchEvents();
-            emit(updateRequest(0));
+            emit(updateRequest(0x3));
             QCoreApplication::instance()->processEvents();
         }
     }
