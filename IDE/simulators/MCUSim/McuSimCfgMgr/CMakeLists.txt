@@ -30,12 +30,12 @@ add_library ( ${PROJECT_NAME} SHARED
               McuSimCfgMgr.cxx )
 
 # Link the target to given libraries.
-target_link_libraries ( ${PROJECT_NAME} ${QT_LIBRARIES} )
+target_link_libraries ( ${PROJECT_NAME} ${QT_LIBRARIES} PicoBlazeSim )
 
 # ------------------------------------------------------------------------------
 # INSTALLATION OPTIONS
 # ------------------------------------------------------------------------------
 
 install ( TARGETS ${PROJECT_NAME}
-         RUNTIME DESTINATION bin
-         LIBRARY DESTINATION lib )
+          RUNTIME DESTINATION bin
+          LIBRARY DESTINATION lib )
