@@ -42,7 +42,7 @@
 #include "../TabBar/tabbar.h"
 #include "../AnalyserWidget/analyserwidget.h"
 #include "../Analyser/analys.h"
-#include "../ShowHideWidget/showhidewidget.h"
+//#include "../ShowHideWidget/showhidewidget.h"
 
 class WDock;
 class CodeEdit;
@@ -141,7 +141,7 @@ class WDockManager : public QObject
 
         //wdockwidgets previous height
         int wDockBotPrevHeight;
-        bool changingVisibility;
+        //bool changingVisibility;
         bool visible;
 };
 
