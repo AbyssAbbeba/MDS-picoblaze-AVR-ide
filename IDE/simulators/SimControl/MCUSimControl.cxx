@@ -70,7 +70,7 @@ MCUSimControl::~MCUSimControl()
     }
 }
 
-bool MCUSimControl::start ( const std::string & filename,
+bool MCUSimControl::beginSimulation ( const std::string & filename,
                             CompilerID compilerId,
                             DataFileType dataFileType )
 {
@@ -206,7 +206,7 @@ bool MCUSimControl::start ( const std::string & filename,
 
     // Reset the simulator
     m_simulator->reset(MCUSim::RSTMD_INITIAL_VALUES);
-    reset();
+    resetProgram();
 
     // Start simulator
     switch ( m_architecture )
@@ -234,14 +234,14 @@ bool MCUSimControl::start ( const std::string & filename,
     return true;
 }
 
-bool MCUSimControl::start ( DbgFile * dbgFile,
+bool MCUSimControl::beginSimulation ( DbgFile * dbgFile,
                             DataFile * dataFile )
 {
     m_dbgFile = dbgFile;
 
     // Reset the simulator
     m_simulator->reset(MCUSim::RSTMD_INITIAL_VALUES);
-    reset();
+    resetProgram();
 
     // Start simulator
     switch ( m_architecture )
@@ -269,7 +269,7 @@ bool MCUSimControl::start ( DbgFile * dbgFile,
     return true;
 }
 
-bool MCUSimControl::start ( const std::string & dbgFileName,
+bool MCUSimControl::beginSimulation ( const std::string & dbgFileName,
                             const std::string & dataFileName,
                             MCUSimControl::CompilerID compilerId,
                             MCUSimControl::DataFileType dataFileType )
@@ -395,7 +395,7 @@ bool MCUSimControl::start ( const std::string & dbgFileName,
 
     // Reset the simulator
     m_simulator->reset(MCUSim::RSTMD_INITIAL_VALUES);
-    reset();
+    resetProgram();
 
     // Start simulator
     switch ( m_architecture )
@@ -464,13 +464,13 @@ unsigned long long MCUSimControl::getTotalMCycles() const
     return m_totalMCycles;
 }
 
-void MCUSimControl::stop()
+void MCUSimControl::endSimulation()
 {
     m_abort = true;
     allObservers_setReadOnly(true);
 }
 
-void MCUSimControl::step()
+void MCUSimControl::stepProgram()
 {
     if ( nullptr == m_simulator )
     {
@@ -481,13 +481,7 @@ void MCUSimControl::step()
     dispatchEvents();
 }
 
-void MCUSimControl::stepOver()
-{
-    // TODO
-    qDebug("MCUSimControl::stepOver is not implemented yet!");
-}
-
-void MCUSimControl::animate()
+void MCUSimControl::animateProgram()
 {
     if ( nullptr == m_simulator )
     {
@@ -509,7 +503,7 @@ void MCUSimControl::animate()
 
             m_totalMCycles += m_simulator->executeInstruction();
             dispatchEvents();
-            emit(stepFinished());
+            emit(updateRequest(0));
             QCoreApplication::instance()->processEvents();
         }
     }
@@ -519,12 +513,12 @@ void MCUSimControl::animate()
     }
 }
 
-void MCUSimControl::run()
+void MCUSimControl::runProgram()
 {
     qDebug("MCUSimControl::run is not implemented yet!");
 }
 
-void MCUSimControl::reset()
+void MCUSimControl::resetProgram()
 {
     if ( nullptr == m_simulator )
     {

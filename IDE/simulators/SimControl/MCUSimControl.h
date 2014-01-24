@@ -254,9 +254,9 @@ class MCUSimControl : public QThread
          * @param[in] dataFileType
          * @return
          */
-        bool start ( const std::string & fileName,
-                     CompilerID compilerId,
-                     DataFileType dataFileType = DBGFILEID_HEX );
+        bool beginSimulation ( const std::string & fileName,
+                               CompilerID compilerId,
+                               DataFileType dataFileType = DBGFILEID_HEX );
 
         /**
          * @brief
@@ -265,8 +265,8 @@ class MCUSimControl : public QThread
          * @warning dbgFile and dataFile are automatically deleted by this class when it does no longer need them.
          * @return
          */
-        bool start ( DbgFile * dbgFile,
-                     DataFile * dataFile );
+        bool beginSimulation ( DbgFile * dbgFile,
+                               DataFile * dataFile );
 
         /**
          * @brief
@@ -276,40 +276,35 @@ class MCUSimControl : public QThread
          * @param[in] dataFileType
          * @return
          */
-        bool start ( const std::string & dbgFileName,
-                     const std::string & dataFileName,
-                     CompilerID compilerId,
-                     DataFileType dataFileType = DBGFILEID_HEX );
+        bool beginSimulation ( const std::string & dbgFileName,
+                               const std::string & dataFileName,
+                               CompilerID compilerId,
+                               DataFileType dataFileType = DBGFILEID_HEX );
 
         /**
          * @brief
          */
-        void stop();
+        void endSimulation();
 
         /**
          * @brief
          */
-        void step();
+        void stepProgram();
 
         /**
          * @brief
          */
-        void stepOver();
+        void animateProgram();
 
         /**
          * @brief
          */
-        void animate();
+        void runProgram();
 
         /**
          * @brief
          */
-        void run();
-
-        /**
-         * @brief
-         */
-        void reset();
+        void resetProgram();
 
         /**
          * @brief
@@ -320,7 +315,7 @@ class MCUSimControl : public QThread
 
     ////    Qt Signals    ////
         signals:
-            void stepFinished();
+            void updateRequest(int);
 
     ////    Private Attributes    ////
     private:
