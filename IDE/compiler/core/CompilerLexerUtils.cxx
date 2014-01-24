@@ -164,7 +164,6 @@ int CompilerLexerUtils::convertStrToNumber ( CompilerParserInterface * compiler,
     return int(number);
 }
 
-
 double CompilerLexerUtils::str2float ( CompilerParserInterface * compiler,
                                        const YYLTYPE * location,
                                        const char * str )
