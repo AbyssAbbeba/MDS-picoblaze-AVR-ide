@@ -355,10 +355,8 @@ void MainForm::createDockWidgets()
     saveAllAct->setEnabled(true);
     wDockManager->dockWidgets = true;
     QList<QTabBar*> tabList = this->findChildren<QTabBar*>();
-    for (int i = 0; i < tabList.size(); i++)
-    {
-        qDebug() << "MainForm: found tabbar with count" << tabList.at(i)->count(); 
-    }
+    wDockManager->bottomAreaTabs = tabList.at(1);
+    connect(tabList.at(1), SIGNAL(currentChanged(int)), wDockManager, SLOT(handleShowHideBottom(int)));
     //emit dockWidgetsCreated;
     //qDebug() << "MainForm: return CreateDockWidgets()";
 }

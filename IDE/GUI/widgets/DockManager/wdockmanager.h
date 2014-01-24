@@ -94,7 +94,7 @@ class WDockManager : public QObject
         void setCentralByPath(QString filePath);
         void setEditorsReadOnly(bool readonly);
         bool dockWidgets;
-        QTabBar *bottomTabs;
+        QTabBar *bottomAreaTabs;
         
 
     private slots:
@@ -110,6 +110,7 @@ class WDockManager : public QObject
         void addDockW(Qt::DockWidgetArea area, QDockWidget* dockWidget);
         void unhighlightSimWidget();
         void highlightError(QString filename, int line);
+        void handleShowHideBottom(int index);
         //void hideBottomArea(bool show);
         //void showBottomArea(bool show);
         //void dockWidgetsCreated();
