@@ -254,7 +254,7 @@ class MCUSimControl : public QThread
          * @param[in] dataFileType
          * @return
          */
-        bool beginSimulation ( const std::string & fileName,
+        bool startSimulation ( const std::string & fileName,
                                CompilerID compilerId,
                                DataFileType dataFileType = DBGFILEID_HEX );
 
@@ -265,7 +265,7 @@ class MCUSimControl : public QThread
          * @warning dbgFile and dataFile are automatically deleted by this class when it does no longer need them.
          * @return
          */
-        bool beginSimulation ( DbgFile * dbgFile,
+        bool startSimulation ( DbgFile * dbgFile,
                                DataFile * dataFile );
 
         /**
@@ -276,7 +276,7 @@ class MCUSimControl : public QThread
          * @param[in] dataFileType
          * @return
          */
-        bool beginSimulation ( const std::string & dbgFileName,
+        bool startSimulation ( const std::string & dbgFileName,
                                const std::string & dataFileName,
                                CompilerID compilerId,
                                DataFileType dataFileType = DBGFILEID_HEX );
@@ -284,7 +284,7 @@ class MCUSimControl : public QThread
         /**
          * @brief
          */
-        void endSimulation();
+        void stopSimulation();
 
         /**
          * @brief

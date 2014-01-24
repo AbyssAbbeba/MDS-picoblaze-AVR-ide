@@ -70,7 +70,7 @@ MCUSimControl::~MCUSimControl()
     }
 }
 
-bool MCUSimControl::beginSimulation ( const std::string & filename,
+bool MCUSimControl::startSimulation ( const std::string & filename,
                                       CompilerID compilerId,
                                       DataFileType dataFileType )
 {
@@ -234,7 +234,7 @@ bool MCUSimControl::beginSimulation ( const std::string & filename,
     return true;
 }
 
-bool MCUSimControl::beginSimulation ( DbgFile * dbgFile,
+bool MCUSimControl::startSimulation ( DbgFile * dbgFile,
                                       DataFile * dataFile )
 {
     m_dbgFile = dbgFile;
@@ -269,7 +269,7 @@ bool MCUSimControl::beginSimulation ( DbgFile * dbgFile,
     return true;
 }
 
-bool MCUSimControl::beginSimulation ( const std::string & dbgFileName,
+bool MCUSimControl::startSimulation ( const std::string & dbgFileName,
                                       const std::string & dataFileName,
                                       MCUSimControl::CompilerID compilerId,
                                       MCUSimControl::DataFileType dataFileType )
@@ -464,7 +464,7 @@ unsigned long long MCUSimControl::getTotalMCycles() const
     return m_totalMCycles;
 }
 
-void MCUSimControl::endSimulation()
+void MCUSimControl::stopSimulation()
 {
     m_abort = true;
     allObservers_setReadOnly(true);
