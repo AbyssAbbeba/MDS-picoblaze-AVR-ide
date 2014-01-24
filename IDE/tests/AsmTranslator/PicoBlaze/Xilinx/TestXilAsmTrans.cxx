@@ -31,7 +31,7 @@
 #include "boost/filesystem.hpp"
 
 // Compiler header files.
-#include "core/Compiler.h"
+#include "Compiler.h"
 #include "core/CompilerMsgIntfFile.h"
 
 // AsmTranslator header files.
