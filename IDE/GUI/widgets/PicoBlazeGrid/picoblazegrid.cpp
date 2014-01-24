@@ -166,10 +166,21 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
     connect(this->btnPorts, SIGNAL(clicked()), this, SLOT(switchPorts()));
     connect(this->btnInte, SIGNAL(clicked()), this, SLOT(setIntE()));
     connect(this->btnIntr, SIGNAL(clicked()), this, SLOT(interrupt()));
+    connect(controlUnit, SIGNAL(updateRequest(int)), this, SLOT(handleUpdateRequest(int)));
 
     deviceChanged();
     
     //qDebug() << "PicoBlazeGrid: return PicoBlazeGrid()";
+}
+
+
+void PicoBlazeGrid::handleUpdateRequest(int mask)
+{
+    if (1 & mask)
+    {
+        leTime->setText(QString::number(m_simControlUnit->getTotalMCycles()));
+        this->leTime->setStyleSheet("background-color: yellow");
+    }
 }
 
 
@@ -382,6 +393,7 @@ void PicoBlazeGrid::deviceReset()
         this->lePC->setText("00" + QString::number(value, 16).toUpper() + "h");
     }
     this->leSP->setText("0");
+    this->leTime->setText("0");
     this->unhighlight();
     
     //qDebug() << "PicoBlazeGrid: return deviceReset()";
@@ -405,6 +417,7 @@ void PicoBlazeGrid::unhighlight()
 {
     this->lePC->setStyleSheet("background-color: none");
     this->leSP->setStyleSheet("background-color: none");
+    this->leTime->setStyleSheet("background-color: none");
     this->btnZero->setStyleSheet("color: none");
     this->btnCarry->setStyleSheet("color: none");
     if (m_flags->getInte() == true)

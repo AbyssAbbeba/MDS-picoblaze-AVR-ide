@@ -106,6 +106,7 @@ class PicoBlazeGrid : public QWidget, public MCUSimObserver
         void switchPorts();
         void setIntE();
         void interrupt();
+        void handleUpdateRequest(int mask);
 
     public slots:
         void unhighlight();

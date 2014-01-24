@@ -1086,6 +1086,7 @@ void Project::setupSim()
     McuSimCfgMgr::getInstance()->openConfigFile(":/resources//xml//mcuspecfile.xml");
     //"kcpsm3"
     this->m_simControlUnit = new MCUSimControl(architecture.toUtf8().constData());
+    connect(m_simControlUnit, SIGNAL(updateRequest(int)), this, SLOT(handleUpdateRequest(int)));
     //qDebug() << architecture;
     //qDebug() << "Project: return setupSim()";
 }
@@ -1203,13 +1204,49 @@ void Project::reset()
 }
 
 
+void Project::handleUpdateRequest(int mask)
+{
+    if (2 & mask)
+    {
+        std::string fileName; //= new std::string();
+        m_simControlUnit->getLineNumber(currLine);
+        if (currLine.empty() == true)
+        {
+            return;
+        }
+        this->currFile = QString::fromStdString(*(std::get<0>(this->currLine.at(0))));
+        //qDebug() << "Project: current line number:" << line << "in file" << this->currFile;
+        //qDebug() << "Project: program counter value:" << dynamic_cast<MCUSimCPU*>(m_simControlUnit->getSimSubsys(MCUSimSubsys::ID_CPU))->getProgramCounter();
+        //parentWindow->getWDockManager()->setCentralByName(fileNameQStr);
+        emit highlightLine(this->prevFile3, this->prevLine3, NULL);
+        emit highlightLine(this->prevFile2, this->prevLine2,this-> prevLine2Color);
+        emit highlightLine(this->prevFile, this->prevLine, this->prevLineColor);
+        emit highlightLine(this->currFile, std::get<1>(this->currLine.at(0))-1, this->currLineColor);
+
+        //emit setCentralByName(this->currFile);
+        //emit scrollToLine(this->line);
+        //parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(line, currLineColor, origCurrLineCol);
+        //parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(prevLine, prevLineColor, origPrevLineCol);
+        //parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(prevLine2, prevLine2Color, origPrevLine2Col);
+        //parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(prevLine3, NULL, NULL);
+        this->prevLine3 = this->prevLine2;
+        this->prevLine2 = this->prevLine;
+        this->prevLine = std::get<1>(this->currLine.at(0))-1;
+
+        this->prevFile3 = this->prevFile2;
+        this->prevFile2 = this->prevFile;
+        this->prevFile = this->currFile;
+    }
+}
+
+
 /**
  * @brief Makes step in simulation
  */
 void Project::step()
 {
     m_simControlUnit->stepProgram();
-    std::string fileName; //= new std::string();
+    /*std::string fileName; //= new std::string();
     m_simControlUnit->getLineNumber(currLine);
     if (currLine.empty() == true)
     {
@@ -1236,7 +1273,7 @@ void Project::step()
 
     this->prevFile3 = this->prevFile2;
     this->prevFile2 = this->prevFile;
-    this->prevFile = this->currFile;
+    this->prevFile = this->currFile;*/
     /*origPrevLine3Col = origPrevLine2Col;
     origPrevLine2Col = origPrevLineCol;
     origPrevLineCol = origCurrLineCol;*/

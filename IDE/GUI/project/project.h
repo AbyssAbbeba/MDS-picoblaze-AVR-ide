@@ -146,6 +146,7 @@ class Project : public QObject
         void openUntrackedItem();
         void emitFileCount();
         void startCfgDlgCore();
+        void handleUpdateRequest(int mask);
 
     signals:
         void highlightLine(QString file, int line, QColor *color);
