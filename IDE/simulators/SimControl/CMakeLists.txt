@@ -17,15 +17,6 @@ project ( SimControl )
 # COMPILATION OPTIONS
 # ------------------------------------------------------------------------------
 
-# Specify directories in which the linker will look for libraries.
-link_directories ( "${CMAKE_CURRENT_SOURCE_DIR}/../MCUSim/"
-                   "${CMAKE_CURRENT_SOURCE_DIR}/../MCUSim/AVR8"
-                   "${CMAKE_CURRENT_SOURCE_DIR}/../MCUSim/PIC8"
-                   "${CMAKE_CURRENT_SOURCE_DIR}/../MCUSim/PicoBlaze"
-                   "${CMAKE_CURRENT_SOURCE_DIR}/../MCUSim/McuSimCfgMgr/"
-                   "${CMAKE_CURRENT_SOURCE_DIR}/../../utilities/DbgFile/"
-                   "${CMAKE_CURRENT_SOURCE_DIR}/../../utilities/MCUDataFiles/" )
-
 # Add include directories to the build.
 include_directories ( "${CMAKE_CURRENT_SOURCE_DIR}/../MCUSim/"
                       "${CMAKE_CURRENT_SOURCE_DIR}/../MCUSim/AVR8"
@@ -41,7 +32,7 @@ qt4_wrap_cpp ( QT_MOC_GENERATED_CPP_FILES
                MCUSimControl.h )
 
 ## Add a library to the project using the specified source files,
- # in this case it will procude dynamic C++ library.
+ # in this case it will produce dynamic C++ library.
 add_library ( ${PROJECT_NAME} SHARED
               ${QT_MOC_GENERATED_CPP_FILES}
               SimControl.cxx

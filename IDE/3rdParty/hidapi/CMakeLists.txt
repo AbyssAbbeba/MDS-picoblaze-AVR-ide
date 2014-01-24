@@ -17,8 +17,7 @@ project ( hidapi )
 # ------------------------------------------------------------------------------
 
 # Added for compatibility with Microsoft Windows.
-link_directories ( "${CMAKE_CURRENT_SOURCE_DIR}" )
-include_directories ( "${CMAKE_CURRENT_SOURCE_DIR}" )
+include_directories ( ${CMAKE_CURRENT_SOURCE_DIR} )
 
 if ( CMAKE_HOST_UNIX )
     # GNU/Linux
@@ -35,7 +34,7 @@ elseif ( CMAKE_HOST_APPLE )
 endif()
 
 ## Add a library to the project using the specified source files,
- # in this case it will procude dynamic C++ library.
+ # in this case it will produce dynamic C++ library.
 add_library ( ${PROJECT_NAME} SHARED
               ${SOURCE_FILES} )
 

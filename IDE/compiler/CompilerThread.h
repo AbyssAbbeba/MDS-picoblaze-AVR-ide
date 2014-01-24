@@ -18,14 +18,14 @@
 #define COMPILERTHREAD_H
 
 // Forward declarations
-class CompilerCore;
 class DbgFile;
 class DataFile;
+class Compiler;
 
 // Compiler header files.
-#include "CompilerBase.h"
-#include "CompilerMsgInterface.h"
-#include "CompilerOptions.h"
+#include "core/CompilerBase.h"
+#include "core/CompilerOptions.h"
+#include "core/CompilerMsgInterface.h"
 
 // Standard header files.
 #include <string>
@@ -134,7 +134,7 @@ class CompilerThread : public QThread,
         /**
          * @brief
          */
-        CompilerCore * const m_compilerCore;
+        Compiler * const m_compiler;
 
         /**
          * @brief

@@ -23,10 +23,6 @@ set ( EXECUTABLE "${PROJECT_NAME}"       )
 # List of preprocessor include file search directories.
 include_directories ( "${CMAKE_CURRENT_SOURCE_DIR}/../../utilities/MCUDataFiles/" )
 
-# Specify directories in which the linker will look for libraries.
-link_directories ( "${CMAKE_CURRENT_SOURCE_DIR}"
-                   "${CMAKE_CURRENT_SOURCE_DIR}/../../utilities/MCUDataFiles/" )
-
 # Create Qt user interfaces Wrappers.
 qt4_wrap_ui ( UI_FILES Avr8UsbProgPlugin.ui )
 

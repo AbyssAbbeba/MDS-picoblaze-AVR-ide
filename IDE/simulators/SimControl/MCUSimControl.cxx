@@ -466,6 +466,7 @@ unsigned long long MCUSimControl::getTotalMCycles() const
 
 void MCUSimControl::stop()
 {
+    m_abort = true;
     allObservers_setReadOnly(true);
 }
 
@@ -488,11 +489,6 @@ void MCUSimControl::stepOver()
 
 void MCUSimControl::animate()
 {
-    qDebug("MCUSimControl::animate is not implemented yet!");
-}
-
-void MCUSimControl::run()
-{
     if ( nullptr == m_simulator )
     {
         return;
@@ -500,6 +496,7 @@ void MCUSimControl::run()
 
     if ( false == m_running )
     {
+        m_abort = false;
         m_running = true;
         while ( true )
         {
@@ -512,7 +509,7 @@ void MCUSimControl::run()
 
             m_totalMCycles += m_simulator->executeInstruction();
             dispatchEvents();
-
+            emit(stepFinished());
             QCoreApplication::instance()->processEvents();
         }
     }
@@ -520,6 +517,11 @@ void MCUSimControl::run()
     {
         m_abort = true;
     }
+}
+
+void MCUSimControl::run()
+{
+    qDebug("MCUSimControl::run is not implemented yet!");
 }
 
 void MCUSimControl::reset()

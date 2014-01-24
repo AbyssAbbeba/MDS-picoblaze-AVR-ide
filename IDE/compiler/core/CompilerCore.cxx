@@ -17,7 +17,6 @@
 #include "CompilerCore.h"
 #include "CompilerExpr.h"
 #include "CompilerOptions.h"
-#include "CompilerModules.h"
 #include "CompilerStatement.h"
 #include "CompilerMsgFilter.h"
 #include "CompilerSerializer.h"
@@ -63,73 +62,24 @@ CompilerCore::~CompilerCore()
     }
 }
 
-bool CompilerCore::compile ( LangId lang,
-                             TargetArch arch,
-                             CompilerOptions * opts,
-                             bool genSimData )
+void CompilerCore::setup ( LangId lang,
+                           TargetArch arch,
+                           CompilerOptions * opts,
+                           bool genSimData )
 {
+    resetCompilerCore();
+
     m_lang = lang;
     m_arch = arch;
     m_opts = opts;
+
     m_simulatorData.m_genSimData = genSimData;
+    m_msgInterface->m_messageLimit = opts->m_messageLimit;
 
-    bool result = startCompilation();
-    resetCompilerCore();
-    return result;
-}
+    m_opts->normalizeFilePaths();
+    m_opts->clearOutputFiles();
 
-inline bool CompilerCore::startCompilation()
-{
-    using namespace CompilerModules;
-
-    try
-    {
-        resetCompilerCore();
-
-        if ( false == checkOptions() )
-        {
-            return false;
-        }
-
-        m_opts->normalizeFilePaths();
-        m_opts->clearOutputFiles();
-
-        m_msgInterface->m_messageLimit = m_opts->m_messageLimit;
-        m_basePath = boost::filesystem::path(m_opts->m_sourceFiles[0]).parent_path();
-
-        std::string errStr;
-        ModEmplStatCode statusCode = employModule ( m_lang, m_arch, this, m_semanticAnalyzer, &errStr );
-
-        switch ( statusCode )
-        {
-            case MESC_OK:
-                return m_success;
-            case MESC_IO_ERROR:
-                coreMessage ( MT_ERROR, QObject::tr("unable to open file: ").toStdString() + errStr );
-                return false;
-            case MESC_ARCH_NOT_SUPPORTED:
-                coreMessage ( MT_ERROR,
-                               QObject::tr("architecture not supported for the selected language").toStdString() );
-                return false;
-            case MESC_LANG_NOT_SUPPORTED:
-                coreMessage ( MT_ERROR, QObject::tr("programming language not supported").toStdString() );
-                return false;
-            case MESC_UNKNOWN_ERROR:
-                return false;
-        }
-    }
-    catch ( const boost::system::error_code & e )
-    {
-        coreMessage ( MT_ERROR, QObject::tr("failure: %1").arg(e.message().c_str()).toStdString() );
-        return false;
-    }
-    catch ( const boost::filesystem::filesystem_error & e )
-    {
-        coreMessage ( MT_ERROR, QObject::tr("failure: %1").arg(e.what()).toStdString() );
-        return false;
-    }
-
-    return false;
+    m_basePath = boost::filesystem::path(opts->m_sourceFiles[0]).parent_path();
 }
 
 DbgFile * CompilerCore::getSimDbg()
@@ -140,40 +90,6 @@ DbgFile * CompilerCore::getSimDbg()
 DataFile * CompilerCore::getSimData()
 {
     return m_simulatorData.m_simData;
-}
-
-inline bool CompilerCore::checkOptions()
-{
-    if ( CompilerBase::LI_INVALID == m_lang )
-    {
-        coreMessage ( MT_ERROR, QObject::tr("programming language not specified").toStdString() );
-        return false;
-    }
-
-    if ( CompilerBase::TA_INVALID == m_arch )
-    {
-        coreMessage ( MT_ERROR, QObject::tr("target architecture not specified").toStdString() );
-        return false;
-    }
-
-    if ( true == m_opts->m_sourceFiles.empty() )
-    {
-        coreMessage ( MT_ERROR, QObject::tr("source code file not specified").toStdString() );
-        return false;
-    }
-    else
-    {
-        for ( const auto & file : m_opts->m_sourceFiles )
-        {
-            if ( true == file.empty() )
-            {
-                coreMessage ( MT_ERROR, QObject::tr("empty string used as source code file name").toStdString() );
-                return false;
-            }
-        }
-    }
-
-    return true;
 }
 
 inline std::string CompilerCore::msgType2str ( MessageType type )
@@ -244,8 +160,8 @@ std::string CompilerCore::locationToStr ( const CompilerSourceLocation & locatio
     return result;
 }
 
-inline void CompilerCore::coreMessage ( MessageType type,
-                                        const std::string & text )
+void CompilerCore::coreMessage ( MessageType type,
+                                 const std::string & text )
 {
     m_msgInterface->message(msgType2str(type) + text + ".", type);
 }
@@ -791,4 +707,9 @@ const std::string & CompilerCore::getFileName ( int fileNumber ) const
 CompilerLocationTracker & CompilerCore::locationTrack()
 {
     return m_locationTracker;
+}
+
+void CompilerCore::setSemanticAnalyzer ( CompilerSemanticAnalyzer * semanticAnalyzer )
+{
+    m_semanticAnalyzer = semanticAnalyzer;
 }

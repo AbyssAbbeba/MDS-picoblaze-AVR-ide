@@ -63,6 +63,7 @@ macro ( FLEX_BISON_PAIR LexerTarget ParserTarget libraryTarget )
     ## Make the library position-independent code (PIC) suitable for use in a shared library,
     # and disable compiler warnings for it.
     set_target_properties ( ${libraryTarget} PROPERTIES
+                                             LINKER_LANGUAGE "CXX"
                                              COMPILE_FLAGS "-w -fPIC" )
 
 endmacro()

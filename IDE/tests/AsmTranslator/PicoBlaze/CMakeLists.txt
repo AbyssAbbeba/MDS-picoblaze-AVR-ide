@@ -32,19 +32,11 @@ add_subdirectory ( Xilinx )
 # ------------------------------------------------------------------------------
 
 # Add include directories to the build.
-include_directories ( ${Boost_INCLUDE_DIRS}
-                      "${CMAKE_SOURCE_DIR}"
+include_directories ( "${CMAKE_SOURCE_DIR}"
                       "${CMAKE_SOURCE_DIR}/compiler/"
                       "${CMAKE_SOURCE_DIR}/utilities/AutoTest/"
                       "${CMAKE_SOURCE_DIR}/utilities/MCUDataFiles/"
                       "${CMAKE_SOURCE_DIR}/utilities/AsmTranslator/" )
-
-# Specify directories in which the linker will look for libraries.
-link_directories (
-                   "${CMAKE_SOURCE_DIR}/compiler/core/"
-                   "${CMAKE_SOURCE_DIR}/utilities/AutoTest/"
-                   "${CMAKE_SOURCE_DIR}/utilities/MCUDataFiles/"
-                   "${CMAKE_SOURCE_DIR}/utilities/AsmTranslator/" )
 
 # Add an executable to the project using the specified source files.
 add_executable ( ${PROJECT_NAME}
@@ -57,7 +49,7 @@ target_link_libraries ( ${PROJECT_NAME}
                         TAT_TestPicoBlazeMed
                         TAT_TestPicoBlazeOPI
                         AsmTranslator
-                        CompilerCore
+                        compiler
                         MCUDataFiles
                         AutoTest )
 

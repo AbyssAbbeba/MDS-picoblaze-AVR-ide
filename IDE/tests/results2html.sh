@@ -399,7 +399,11 @@ if [[ '.' == ${memLeaksTotal:0:1} ]]; then
 fi
 echo "            <td style=\"width: 10%\"><b>${memLeaksTotal} kB</b></td>" >> index.html
 echo "            <td><b>${memErrorsTotal}</b></td>" >> index.html
-echo "            <td><b>${failedTotal}</b></td>" >> index.html
+if (( ${failedTotal} )); then
+    echo "            <td><b>${failedTotal} failed</b></td>" >> index.html
+else
+    echo "            <td><b>all passed</b></td>" >> index.html
+fi
 echo "            <td colspan=\"2\" style=\"text-align: left; padding-left: 5px\"><b>Total</b></td>" >> index.html
 echo "        </tr>" >> index.html
 echo "    </table>" >> index.html

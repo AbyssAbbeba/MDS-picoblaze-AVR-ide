@@ -100,17 +100,20 @@ function findQtSDKAndBoost() {
         fi
     fi
     echo "Qt libraries found in: ${QT_PATH}"
-    export PATH="${QT_PATH}:${PATH}"
+    export PATH="${PATH}:${QT_PATH}"
 
+    echo "Attempting to locate boost ..."
     if [[ -z "${BOOST_DIR}" ]]; then
-        BOOST="$(for i in "${PROGRAMFILES}"/boost/boost_*; do echo $i; break; done)"
+        BOOST="$(for i in "$( sed 's/\\/\//g' <<< "${PROGRAMFILES}" )"/boost/boost_*; do echo $i; break; done)"
         if [[ ! -e "${BOOST}" ]]; then
             echo "Error: unable to locate boost."
             exit 1
         else
             export BOOST_DIR="${BOOST}"
+            echo "Boost libraries found in: ${BOOST_DIR}"
         fi
     fi
+    export PATH="${PATH}:${BOOST_DIR}/stage/lib"
 }
 
 function clean() {

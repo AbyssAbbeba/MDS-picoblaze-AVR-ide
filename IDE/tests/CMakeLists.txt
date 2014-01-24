@@ -19,9 +19,8 @@ project ( tests )
 # ------------------------------------------------------------------------------
 
 # List of additional files that will be cleaned as a part of the "make clean" stage.
-FILE ( GLOB resultFiles *-Results.xml *-Listing.xml *-Valgring.txt *.html *.gcov *.log *.gcda *.gcno )
 set_directory_properties ( PROPERTIES
-                           ADDITIONAL_MAKE_CLEAN_FILES "${resultFiles}" )
+                           ADDITIONAL_MAKE_CLEAN_FILES "results" )
 
 ## Add a target with no output so it will always be built.
  # Process test results and generate corresponding HTML files.

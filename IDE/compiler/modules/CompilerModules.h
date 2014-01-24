@@ -16,9 +16,14 @@
 #ifndef COMPILERMODULES_H
 #define COMPILERMODULES_H
 
+// Forward declarations
+class CompilerCore;
+
 // Compiler header files.
 #include "CompilerBase.h"
-#include "CompilerSemanticAnalyzer.h"
+
+// Standard header files.
+#include <string>
 
 /**
  * @brief
@@ -49,14 +54,12 @@ namespace CompilerModules
      * @param[in] lang
      * @param[in] arch
      * @param[in,out] compilerCore
-     * @param[out] semanticAnalyzer
      * @param[out] errStr
      * @return
      */
     ModEmplStatCode employModule ( CompilerBase::LangId lang,
                                    CompilerBase::TargetArch arch,
                                    CompilerCore * compilerCore,
-                                   CompilerSemanticAnalyzer * & semanticAnalyzer,
                                    std::string * errStr );
 };
 

@@ -31,7 +31,7 @@
 #include "MCUDataFiles/HexFile.h"
 
 // Compiler header files.
-#include "compiler/core/Compiler.h"
+#include "compiler/Compiler.h"
 #include "compiler/core/CompilerMsgIntfFile.h"
 
 // Disassembler header files.
