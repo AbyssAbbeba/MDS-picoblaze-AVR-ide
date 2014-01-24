@@ -46,7 +46,7 @@ link_directories(
     "${CMAKE_CURRENT_BINARY_DIR}/../Analyser/"
     "${CMAKE_CURRENT_BINARY_DIR}/../AnalyserWidget/"
     "${CMAKE_CURRENT_BINARY_DIR}/../Editor/"
-    "${CMAKE_CURRENT_BINARY_DIR}/../CompilerInfo/"
+    "${CMAKE_CURRENT_BINARY_DIR}/../CompileInfo/"
 	)
 
 include_directories(
@@ -75,4 +75,4 @@ add_library(${PROJECT_NAME} SHARED
 	${SAMPLE_MOC_SRCS} ${SAMPLE_SRCS})
 
 
-target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} PicoBlazeGrid BreakpointList BookmarkList TabBar Analyser AnalyserWidget Editor CompilerInfo)
+target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} PicoBlazeGrid BreakpointList BookmarkList TabBar Analyser AnalyserWidget Editor CompileInfo)
