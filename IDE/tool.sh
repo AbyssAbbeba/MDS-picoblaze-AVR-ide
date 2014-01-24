@@ -110,10 +110,10 @@ function findQtSDKAndBoost() {
             exit 1
         else
             export BOOST_DIR="${BOOST}"
-            export PATH="${PATH}:${BOOST_DIR}/stage/lib"
             echo "Boost libraries found in: ${BOOST_DIR}"
         fi
     fi
+    export PATH="${PATH}:${BOOST_DIR}/stage/lib"
 }
 
 function clean() {
