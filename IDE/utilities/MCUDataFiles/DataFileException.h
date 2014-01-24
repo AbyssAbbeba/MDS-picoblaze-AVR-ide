@@ -41,7 +41,8 @@ class DataFileException
             EXP_BAD_RECORD_FORMAT, ///<
             EXP_BAD_RECORD_COUNT,  ///<
             EXP_TEMPLATE_ERROR,    ///<
-            EXP_NOT_UNDERSTOOD     ///<
+            EXP_NOT_UNDERSTOOD,    ///<
+            EXP_INTERNAL_ERROR     ///<
         };
 
     ////    Constructors and Destructors    ////
@@ -77,6 +78,7 @@ class DataFileException
                 case EXP_BAD_RECORD_COUNT:  result = "BAD_RECORD_COUNT";   break;
                 case EXP_TEMPLATE_ERROR:    result = "EXP_TEMPLATE_ERROR"; break;
                 case EXP_NOT_UNDERSTOOD:    result = "EXP_NOT_UNDERSTOOD"; break;
+                case EXP_INTERNAL_ERROR:    result = "EXP_INTERNAL_ERROR"; break;
             }
 
             if ( false == m_errorInfo.empty() )
