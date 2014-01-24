@@ -71,8 +71,8 @@ MCUSimControl::~MCUSimControl()
 }
 
 bool MCUSimControl::beginSimulation ( const std::string & filename,
-                            CompilerID compilerId,
-                            DataFileType dataFileType )
+                                      CompilerID compilerId,
+                                      DataFileType dataFileType )
 {
     if ( nullptr != m_dbgFile )
     {
@@ -235,7 +235,7 @@ bool MCUSimControl::beginSimulation ( const std::string & filename,
 }
 
 bool MCUSimControl::beginSimulation ( DbgFile * dbgFile,
-                            DataFile * dataFile )
+                                      DataFile * dataFile )
 {
     m_dbgFile = dbgFile;
 
@@ -270,9 +270,9 @@ bool MCUSimControl::beginSimulation ( DbgFile * dbgFile,
 }
 
 bool MCUSimControl::beginSimulation ( const std::string & dbgFileName,
-                            const std::string & dataFileName,
-                            MCUSimControl::CompilerID compilerId,
-                            MCUSimControl::DataFileType dataFileType )
+                                      const std::string & dataFileName,
+                                      MCUSimControl::CompilerID compilerId,
+                                      MCUSimControl::DataFileType dataFileType )
 {
     if ( nullptr != m_dbgFile )
     {
