@@ -16,9 +16,9 @@
 #include "Compiler.h"
 
 // Compiler header files.
-#include "CompilerCore.h"
-#include "CompilerModules.h"
-#include "CompilerMsgInterface.h"
+#include "core/CompilerCore.h"
+#include "core/CompilerMsgInterface.h"
+#include "modules/CompilerModules.h"
 
 // Boost Filesystem library.
 #define BOOST_FILESYSTEM_NO_DEPRECATED

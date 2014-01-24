@@ -37,7 +37,10 @@ class XilHDLFile : public DataFile
         static const char * const MARK_START;
 
         /// @brief
-        static const char * const MARK_INIT_S[4];
+        static const char * const MARK_INITP_S[3];
+
+        /// @brief
+        static const char * const MARK_INIT_S[6];
 
         /// @brief
         static const char * const MARK_INIT_1_S;
@@ -50,9 +53,6 @@ class XilHDLFile : public DataFile
 
         /// @brief
         static const char * const MARK_INIT_E;
-
-        /// @brief
-        static const char * const MARK_INITP_S[4];
 
         /// @brief
         static const char * const MARK_INITP_1_S;
@@ -78,6 +78,21 @@ class XilHDLFile : public DataFile
         {
             SIZE_16b = 0, ///<
             SIZE_18b      ///<
+        };
+
+    ////    Private Datatypes    ////
+    private:
+        /**
+         * @brief
+         */
+        enum MemoryMode
+        {
+            MODE_WORD = 0, ///<
+            MODE_LSB  = 1, ///<
+            MODE_MSB  = 2, ///<
+            MODE_64b  = 3, ///<
+            MODE_128b = 4, ///<
+            MODE_256b = 5  ///<
         };
 
     ////    Constructors and Destructors    ////
@@ -140,26 +155,15 @@ class XilHDLFile : public DataFile
          * @param[in,out] line
          * @param[in] markStart
          * @param[in] markEnd
-         * @param[in] offset
+         * @param[in] mode
          * @param[in] parity
          * @return
          */
         void substDataMark ( std::string & line,
                              const char * markStart,
                              const char * markEnd,
-                             unsigned int offset = 0,
+                             MemoryMode mode = MODE_WORD,
                              bool parity = false ) const;
-
-        /**
-         * @brief
-         * @param[in,out] dataField
-         * @param[in] addr
-         * @param[in] parity
-         * @return
-         */
-        void generateDataField ( std::string * dataField,
-                                 unsigned int addr,
-                                 bool parity ) const;
 
         /**
          * @brief
@@ -174,6 +178,46 @@ class XilHDLFile : public DataFile
          * @return
          */
         bool checkHex ( const std::string & str ) const;
+
+    ////    Inline Private Operations    ////
+    private:
+        /**
+         * @brief
+         * @param[in,out] dataField
+         * @param[in] addr
+         * @param[in] parity
+         */
+        inline void generateDataFieldWord ( std::string * dataField,
+                                            unsigned int addr,
+                                            bool parity ) const;
+
+        /**
+         * @brief
+         * @param[in,out] dataField
+         * @param[in] addr
+         * @param[in] parity
+         * @param[in] lsb
+         */
+        inline void generateDataFieldByte ( std::string * dataField,
+                                            unsigned int addr,
+                                            bool parity,
+                                            bool lsb ) const;
+
+        /**
+         * @brief
+         * @param[in,out] dataField
+         * @param[in] bit
+         * @param[in] size
+         */
+        inline void generateDataFieldBit ( std::string * dataField,
+                                           unsigned int bit,
+                                           unsigned int size ) const;
+        /**
+         * @brief
+         * @param[in] addr
+         * @return
+         */
+        inline int getByte ( unsigned int addr ) const;
 
     ////    Protected Attributes    ////
     protected:

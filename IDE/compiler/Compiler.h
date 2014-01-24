@@ -23,8 +23,8 @@ class CompilerCore;
 class CompilerMsgInterface;
 
 // Compiler header files.
-#include "CompilerBase.h"
-#include "CompilerOptions.h"
+#include "core/CompilerBase.h"
+#include "core/CompilerOptions.h"
 
 // Standard header files.
 #include <string>
