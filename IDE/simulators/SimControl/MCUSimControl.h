@@ -318,6 +318,10 @@ class MCUSimControl : public QThread
          */
         bool changeDevice ( const char * deviceName );
 
+    ////    Qt Signals    ////
+        signals:
+            void stepFinished();
+
     ////    Private Attributes    ////
     private:
         /**

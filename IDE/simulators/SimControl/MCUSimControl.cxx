@@ -466,6 +466,7 @@ unsigned long long MCUSimControl::getTotalMCycles() const
 
 void MCUSimControl::stop()
 {
+    m_abort = true;
     allObservers_setReadOnly(true);
 }
 
@@ -495,6 +496,7 @@ void MCUSimControl::animate()
 
     if ( false == m_running )
     {
+        m_abort = false;
         m_running = true;
         while ( true )
         {
@@ -507,7 +509,7 @@ void MCUSimControl::animate()
 
             m_totalMCycles += m_simulator->executeInstruction();
             dispatchEvents();
-
+            emit(stepFinished());
             QCoreApplication::instance()->processEvents();
         }
     }
