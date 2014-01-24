@@ -488,11 +488,6 @@ void MCUSimControl::stepOver()
 
 void MCUSimControl::animate()
 {
-    qDebug("MCUSimControl::animate is not implemented yet!");
-}
-
-void MCUSimControl::run()
-{
     if ( nullptr == m_simulator )
     {
         return;
@@ -520,6 +515,11 @@ void MCUSimControl::run()
     {
         m_abort = true;
     }
+}
+
+void MCUSimControl::run()
+{
+    qDebug("MCUSimControl::run is not implemented yet!");
 }
 
 void MCUSimControl::reset()
