@@ -99,4 +99,4 @@ add_library(${PROJECT_NAME} SHARED
 	${SAMPLE_MOC_SRCS} ${SAMPLE_SRCS})
 
 #QtNetwork !!
-target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} ErrorDialog Project ProjectTree Editor ProjectDlg ProjectCfg WDockManager McuSimCfgMgr SimControl AVR8Sim PIC8Sim MCUDataFiles ConvertorTool DisplayTool Compiler HelpWidget DisAsmDlg TranslatorDlg FileConvertDlg CompileInfo InterfaceCfg)
+target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} ErrorDialog Project ProjectTree Editor ProjectDlg ProjectCfg WDockManager McuSimCfgMgr SimControl AVR8Sim PIC8Sim MCUDataFiles ConvertorTool DisplayTool compiler HelpWidget DisAsmDlg TranslatorDlg FileConvertDlg CompileInfo InterfaceCfg)
