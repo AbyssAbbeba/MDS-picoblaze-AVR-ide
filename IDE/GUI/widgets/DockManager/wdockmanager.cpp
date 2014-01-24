@@ -720,6 +720,23 @@ void WDockManager::highlightError(QString filename, int line)
 }
 
 
+void WDockManager::handleShowHideBottom(int index)
+{
+    qDebug() << "WDockManager: bottom changed to" << bottomAreaTabs->tabText(index);
+    if ("Hide" == bottomAreaTabs->tabText(index))
+    {
+        if (true == visible)
+        {
+            hideDockWidgetArea(2);
+            visible = false;
+        }
+    }
+    else if (false == visible)
+    {
+        showDockWidgetArea(2);
+        visible = true;
+    }
+}
 /*void WDockManager::hideBottomArea(bool show)
 {
     qDebug() << "WDockManager: showBottomArea(" << show << ")";
