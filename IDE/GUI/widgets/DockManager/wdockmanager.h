@@ -50,7 +50,6 @@ class BaseEditor;
 class BookmarkList;
 class BreakpointList;
 class WTextEdit;
-class ShowHideWidget;
 
 
 /**
