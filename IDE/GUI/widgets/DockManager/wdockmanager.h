@@ -31,6 +31,7 @@
 //#include <QMainWindow>
 #include <QList>
 #include <QSplitter>
+#include <QTabBar>
 #include "../Editor/codeedit.h"
 #include "../Editor/baseeditor.h"
 #include "../Editor/wtextedit.h"
@@ -93,6 +94,7 @@ class WDockManager : public QObject
         void setCentralByPath(QString filePath);
         void setEditorsReadOnly(bool readonly);
         bool dockWidgets;
+        QTabBar *bottomTabs;
         
 
     private slots:
@@ -108,7 +110,8 @@ class WDockManager : public QObject
         void addDockW(Qt::DockWidgetArea area, QDockWidget* dockWidget);
         void unhighlightSimWidget();
         void highlightError(QString filename, int line);
-        void showBottomArea(bool show);
+        //void hideBottomArea(bool show);
+        //void showBottomArea(bool show);
         //void dockWidgetsCreated();
 
     signals:
@@ -140,7 +143,6 @@ class WDockManager : public QObject
 
         //wdockwidgets previous height
         int wDockBotPrevHeight;
-        //bool changingVisibility;
         bool visible;
 };
 

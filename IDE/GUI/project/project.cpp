@@ -1106,7 +1106,10 @@ bool Project::start()
         //QString hexPath = prjPath.section('/',0, -2) + "/" + mainFileName.section('.',0,-2);
         //qDebug() << "ASM:" << hexPath;
         std::string stdPath = hexPath.toUtf8().constData();
-        if ( false == m_simControlUnit->start(stdPath, m_simControlUnit->COMPILER_NATIVE, m_simControlUnit->DBGFILEID_HEX) )
+        if ( false == m_simControlUnit->startSimulation(stdPath,
+                                                        m_simControlUnit->COMPILER_NATIVE,
+                                                        m_simControlUnit->DBGFILEID_HEX)
+           )
         {
             qDebug() << "Project: return false start()";
             std::vector<std::string> messages = m_simControlUnit->getMessages();
@@ -1126,7 +1129,10 @@ bool Project::start()
         QString hexPath = prjPath.section('/',0, -2) + "/build/" + mainFileName.section('.',0,-2);
         //qDebug() << "C:" << hexPath;
         std::string stdPath = hexPath.toUtf8().constData();
-        if ( false == m_simControlUnit->start(stdPath, m_simControlUnit->COMPILER_GCC, m_simControlUnit->DBGFILEID_HEX) )
+        if ( false == m_simControlUnit->startSimulation(stdPath,
+                                                        m_simControlUnit->COMPILER_GCC,
+                                                        m_simControlUnit->DBGFILEID_HEX)
+           )
         {
             qDebug() << "Project: return false start()";
             return false;
@@ -1175,7 +1181,7 @@ void Project::stop()
         return;
     }
     this->currFile = QString::fromStdString(*(std::get<0>(this->currLine.at(0))));
-    m_simControlUnit->stop();
+    m_simControlUnit->stopSimulation();
     emit highlightLine(this->prevFile, this->prevLine, NULL);
     emit highlightLine(this->prevFile2, this->prevLine2, NULL);
     emit highlightLine(this->prevFile3, this->prevLine3, NULL);
@@ -1193,7 +1199,7 @@ void Project::stop()
  */
 void Project::reset()
 {
-    m_simControlUnit->reset();
+    m_simControlUnit->resetProgram();
 }
 
 
@@ -1202,7 +1208,7 @@ void Project::reset()
  */
 void Project::step()
 {
-    m_simControlUnit->step();
+    m_simControlUnit->stepProgram();
     std::string fileName; //= new std::string();
     m_simControlUnit->getLineNumber(currLine);
     if (currLine.empty() == true)
@@ -1242,7 +1248,7 @@ void Project::step()
  */
 void Project::run()
 {
-    m_simControlUnit->run();
+    m_simControlUnit->runProgram();
 }
 
 
@@ -1251,7 +1257,7 @@ void Project::run()
  */
 void Project::animate()
 {
-    m_simControlUnit->animate();
+    m_simControlUnit->animateProgram();
 }
 
 
