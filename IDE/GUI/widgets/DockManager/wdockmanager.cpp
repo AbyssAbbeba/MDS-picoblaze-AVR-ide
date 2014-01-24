@@ -41,7 +41,7 @@ WDockManager::WDockManager(QWidget *parent, QWidget *centralWidget)
     centralBase = NULL;
     this->dockWidgets = false;
     wDockBotPrevHeight = 0;
-    changingVisibility = false;
+    //changingVisibility = false;
     visible = true;
     connect(wTab, SIGNAL(tabCloseRequested(int)),this, SLOT(closeTab(int)));
     connect(wTab, SIGNAL(currentChanged(int)), this, SLOT(changeCodeEditor(int)));
@@ -540,7 +540,7 @@ QDockWidget* WDockManager::getDockWidgetArea(int area)
 
 void WDockManager::hideDockWidgetArea(int area)
 {
-    qDebug() << "WDockManager: hideDockWidgetArea()";
+    //qDebug() << "WDockManager: hideDockWidgetArea()";
     QList<WDock*>::iterator i;
     for (i = openDockWidgets.begin(); i != openDockWidgets.end(); i++)
     {
@@ -548,19 +548,20 @@ void WDockManager::hideDockWidgetArea(int area)
         {
             if (wDockBotPrevHeight < (*i)->getQDockWidget()->height())
             {
+                qDebug() << "WDockManager: old height:" << wDockBotPrevHeight;
+                qDebug() << "WDockManager: new height:" << (*i)->getQDockWidget()->height();
                 wDockBotPrevHeight = (*i)->getQDockWidget()->height();
             }
             (*i)->getQDockWidget()->setMaximumHeight(0);
             (*i)->getQDockWidget()->setMinimumHeight(0);
         }
     }
-    qDebug() << "WDockManager: wDockBotPrevHeight" << wDockBotPrevHeight;
-    qDebug() << "WDockManager: return hideDockWidgetArea()";
+    //qDebug() << "WDockManager: return hideDockWidgetArea()";
 }
 
 void WDockManager::showDockWidgetArea(int area)
 {
-    qDebug() << "WDockManager: showDockWidgetArea()";
+    //qDebug() << "WDockManager: showDockWidgetArea()";
     QList<WDock*>::iterator i;
     for (i = openDockWidgets.begin(); i != openDockWidgets.end(); i++)
     {
@@ -568,9 +569,13 @@ void WDockManager::showDockWidgetArea(int area)
         {
             (*i)->getQDockWidget()->setMaximumHeight(wDockBotPrevHeight);
             (*i)->getQDockWidget()->setMinimumHeight(wDockBotPrevHeight);
+            (*i)->getQDockWidget()->setMaximumHeight(999);
+            (*i)->getQDockWidget()->setMinimumHeight(1);
+                qDebug() << "WDockManager: new height:" << (*i)->getQDockWidget()->height();
         }
     }
-    qDebug() << "WDockManager: return showDockWidgetArea()";
+    //qDebug() << "WDockManager: wDockBotPrevHeight" << wDockBotPrevHeight;
+    //qDebug() << "WDockManager: return showDockWidgetArea()";
 }
 
 
@@ -719,21 +724,28 @@ void WDockManager::highlightError(QString filename, int line)
 
 void WDockManager::showBottomArea(bool show)
 {
-    if (changingVisibility == false)
+    //qDebug() << "WDockManager: showBottomArea(" << show << ")";
+    if (show == true)
     {
-        changingVisibility = true;
-        if (false == visible)
+        //changingVisibility = true;
+        if (true == visible)
         {
-            qDebug() << "WDockManager: visible";
-            this->showDockWidgetArea(2);
-            visible = true;
-        }
-        else
-        {
-            qDebug() << "WDockManager: invisible";
+            //qDebug() << "WDockManager: hide";
             this->hideDockWidgetArea(2);
             visible = false;
         }
+        //changingVisibility = false;
+    }
+    else if (show == false)
+    {
+        //changingVisibility = true;
+        if (false == visible)
+        {
+            //qDebug() << "WDockManager: show";
+            this->showDockWidgetArea(2);
+            visible = true;
+        }
+        //changingVisibility = false;
     }
 }
 
@@ -835,7 +847,7 @@ WDock::WDock(WDockManager *parent, int code, QWidget *parentWindow)
             wDockWidget->setAllowedAreas(Qt::BottomDockWidgetArea);
             parent->addDockW(Qt::BottomDockWidgetArea, wDockWidget);
             //ShowHideWidget *newDock = new ShowHideWidget(wDockWidget);
-            QWidget *newDock = new QDockWidget(wDockWidget);
+            QWidget *newDock = new QWidget(wDockWidget);
             area = 2;
             wDockWidget->setWidget(newDock);
             //QPushButton *pshTitle = new QPushButton("Hide", parentWindow);
