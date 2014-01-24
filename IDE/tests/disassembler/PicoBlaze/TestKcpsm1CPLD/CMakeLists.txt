@@ -39,6 +39,7 @@ add_library ( ${PROJECT_NAME} SHARED
 target_link_libraries ( ${PROJECT_NAME}
                         ${Boost_LIBRARIES}
                         MCUDataFiles
-                        Compiler
+                        compiler
                         disassembler
+                        DAsmPicoBlaze
                         CUnit )
