@@ -41,7 +41,6 @@ WDockManager::WDockManager(QWidget *parent, QWidget *centralWidget)
     centralBase = NULL;
     this->dockWidgets = false;
     wDockBotPrevHeight = 0;
-    //changingVisibility = false;
     visible = true;
     connect(wTab, SIGNAL(tabCloseRequested(int)),this, SLOT(closeTab(int)));
     connect(wTab, SIGNAL(currentChanged(int)), this, SLOT(changeCodeEditor(int)));
@@ -540,11 +539,11 @@ QDockWidget* WDockManager::getDockWidgetArea(int area)
 
 void WDockManager::hideDockWidgetArea(int area)
 {
-    //qDebug() << "WDockManager: hideDockWidgetArea()";
+    qDebug() << "WDockManager: hideDockWidgetArea()";
     QList<WDock*>::iterator i;
     for (i = openDockWidgets.begin(); i != openDockWidgets.end(); i++)
     {
-        if ((*i)->cmpArea(area) == true)
+        if ((*i)->cmpArea(area) == true && (*i)->cmpCode(wBottomHide) == false)
         {
             if (wDockBotPrevHeight < (*i)->getQDockWidget()->height())
             {
@@ -556,7 +555,7 @@ void WDockManager::hideDockWidgetArea(int area)
             (*i)->getQDockWidget()->setMinimumHeight(0);
         }
     }
-    //qDebug() << "WDockManager: return hideDockWidgetArea()";
+    qDebug() << "WDockManager: return hideDockWidgetArea()";
 }
 
 void WDockManager::showDockWidgetArea(int area)
@@ -565,7 +564,7 @@ void WDockManager::showDockWidgetArea(int area)
     QList<WDock*>::iterator i;
     for (i = openDockWidgets.begin(); i != openDockWidgets.end(); i++)
     {
-        if ((*i)->cmpArea(area) == true)
+        if ((*i)->cmpArea(area) == true && (*i)->cmpCode(wBottomHide) == false)
         {
             (*i)->getQDockWidget()->setMaximumHeight(wDockBotPrevHeight);
             (*i)->getQDockWidget()->setMinimumHeight(wDockBotPrevHeight);
@@ -721,32 +720,60 @@ void WDockManager::highlightError(QString filename, int line)
 }
 
 
-void WDockManager::showBottomArea(bool show)
+/*void WDockManager::hideBottomArea(bool show)
 {
-    //qDebug() << "WDockManager: showBottomArea(" << show << ")";
-    if (show == true)
+    qDebug() << "WDockManager: showBottomArea(" << show << ")";
+    //qDebug() << "WDockManager: sync(" << wDockBotSync << ")";
+    if (true == show && true == visible)
     {
-        //changingVisibility = true;
-        if (true == visible)
-        {
-            //qDebug() << "WDockManager: hide";
-            this->hideDockWidgetArea(2);
-            visible = false;
-        }
-        //changingVisibility = false;
+        //qDebug() << "WDockManager: hide";
+        visible = false;
+        this->hideDockWidgetArea(2);
+        //wDockBotSync = false;
     }
-    else if (show == false)
+    else if (false == show && false == visible)
     {
-        //changingVisibility = true;
-        if (false == visible)
+        qDebug() << "WDockManager: show";
+        if (false == wDockBotSync)
         {
-            //qDebug() << "WDockManager: show";
+        qDebug() << "WDockManager: wDockSync set";
+            wDockBotSync = true;
+        }
+        else
+        {
             this->showDockWidgetArea(2);
             visible = true;
         }
-        //changingVisibility = false;
     }
-}
+}*/
+
+
+/*void WDockManager::showBottomArea(bool show)
+{
+    qDebug() << "WDockManager: showBottomArea(" << show << ")";
+    //qDebug() << "WDockManager: sync(" << wDockBotSync << ")";
+    if (true == show && true == visible)
+    {
+        //qDebug() << "WDockManager: hide";
+        this->hideDockWidgetArea(2);
+        visible = false;
+        wDockBotSync = false;
+    }
+    else if (true == show && false == visible)
+    {
+        qDebug() << "WDockManager: show";
+        if (false == wDockBotSync)
+        {
+        qDebug() << "WDockManager: wDockSync set";
+            wDockBotSync = true;
+        }
+        else
+        {
+            visible = true;
+            this->showDockWidgetArea(2);
+        //}
+    }
+}*/
 
 /*void WDockManager::dockWidgetsCreated()
 {
@@ -796,10 +823,11 @@ WDock::WDock(WDockManager *parent, int code, QWidget *parentWindow)
             //QPlainTextEdit *newWidget = new QPlainTextEdit(wDockWidget);
             CompileInfo *newWidget = new CompileInfo(wDockWidget);
             newWidget->setFont(QFont("Andale Mono", 10));
-            QObject::connect(newWidget, SIGNAL(errorClicked(QString, int)), parent, SLOT(highlightError(QString, int)));
             area = 2;
             newWidget->setReadOnly(true);
             wDockWidget->setWidget(newWidget);
+            //parent->connect(wDockWidget, SIGNAL(visibilityChanged(bool)), parent, SLOT(showBottomArea(bool)));
+            parent->connect(newWidget, SIGNAL(errorClicked(QString, int)), parent, SLOT(highlightError(QString, int)));
 	        break;
         }
         case wSimulationInfo:
@@ -843,15 +871,19 @@ WDock::WDock(WDockManager *parent, int code, QWidget *parentWindow)
         case wBottomHide:
         {
             wDockWidget = new QDockWidget("Hide", parentWindow);
+            wDockWidget->setMaximumHeight(0);
+            wDockWidget->setMinimumHeight(0);
             wDockWidget->setAllowedAreas(Qt::BottomDockWidgetArea);
             parent->addDockW(Qt::BottomDockWidgetArea, wDockWidget);
             //ShowHideWidget *newDock = new ShowHideWidget(wDockWidget);
             QWidget *newDock = new QWidget(wDockWidget);
+            newDock->setMaximumHeight(0);
+            newDock->setMinimumHeight(0);
             area = 2;
             wDockWidget->setWidget(newDock);
             //QPushButton *pshTitle = new QPushButton("Hide", parentWindow);
             //wDockWidget->setTitleBarWidget(pshTitle);
-            parent->connect(wDockWidget, SIGNAL(visibilityChanged(bool)), parent, SLOT(showBottomArea(bool)));
+            //parent->connect(wDockWidget, SIGNAL(visibilityChanged(bool)), parent, SLOT(hideBottomArea(bool)));
             //parent->connect(pshTitle, SIGNAL(clicked()), parent, SLOT(showBottomArea()));
             break;
         }
@@ -880,6 +912,7 @@ WDock::WDock(WDockManager *parent, int code, QWidget *parentWindow, QString path
             wDockWidget->show();
             newWidget->fixHeight();
             //qDebug() << "WSimulationInfo: height fixed";
+            //parent->connect(wDockWidget, SIGNAL(visibilityChanged(bool)), parent, SLOT(showBottomArea(bool)));
             break;
         }
     }
