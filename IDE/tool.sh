@@ -104,7 +104,7 @@ function findQtSDKAndBoost() {
 
     echo "Attempting to locate boost ..."
     if [[ -z "${BOOST_DIR}" ]]; then
-        BOOST="$(for i in "${PROGRAMFILES}"/boost/boost_*; do echo $i; break; done)"
+        BOOST="$(for i in "$( sed 's/\\/\//g' <<< "${PROGRAMFILES}" )"/boost/boost_*; do echo $i; break; done)"
         if [[ ! -e "${BOOST}" ]]; then
             echo "Error: unable to locate boost."
             exit 1
