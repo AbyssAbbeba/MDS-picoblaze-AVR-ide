@@ -24,6 +24,7 @@
 #define wSimulationInfo 1004
 #define wAnalysVar 1005
 #define wAnalysFunc 1006
+#define wBottomHide 1007
 
 
 #include <QDockWidget>
@@ -41,6 +42,8 @@
 #include "../TabBar/tabbar.h"
 #include "../AnalyserWidget/analyserwidget.h"
 #include "../Analyser/analys.h"
+//#include "../ShowHideWidget/showhidewidget.h"
+
 class WDock;
 class CodeEdit;
 class BaseEditor;
@@ -105,6 +108,7 @@ class WDockManager : public QObject
         void addDockW(Qt::DockWidgetArea area, QDockWidget* dockWidget);
         void unhighlightSimWidget();
         void highlightError(QString filename, int line);
+        void showBottomArea(bool show);
         //void dockWidgetsCreated();
 
     signals:
@@ -133,6 +137,11 @@ class WDockManager : public QObject
         //widgets
         BookmarkList *bookmarkList;
         BreakpointList *breakpointList;
+
+        //wdockwidgets previous height
+        int wDockBotPrevHeight;
+        //bool changingVisibility;
+        bool visible;
 };
 
 

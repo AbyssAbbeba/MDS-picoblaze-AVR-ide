@@ -27,9 +27,11 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
     {
         qDebug() << "PARENT CODE EDIT: NULL";
     }*/
-    if (wName == NULL || wPath == NULL)
+    if (wName == NULL || wPath == NULL || wPath == "untracked")
     {
+        //qDebug() << "CodeEdit: untracked";
         textEdit = new WTextEdit(this, PLAIN);
+        this->textEdit->setPlainText(" ");
     }
     else
     {
@@ -89,6 +91,7 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
     //this->installEventFilter(this);
     if (wPath != NULL && wPath != "untracked")
     {
+        //qDebug() << "CodeEdit: Not untracked";
         QFile file(path);
         if (file.open(QIODevice::ReadOnly | QIODevice::Text))
         {

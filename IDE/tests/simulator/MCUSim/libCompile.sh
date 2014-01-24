@@ -2,8 +2,8 @@
 
 declare COMPILER_EXEC="${PWD}"
 while [[ "${COMPILER_EXEC}" != "/" ]]; do
-    if [[ -f "${COMPILER_EXEC}/compiler/compiler" ]]; then
-        COMPILER_EXEC+="/compiler/compiler"
+    if [[ -f "${COMPILER_EXEC}/compiler/mds-compiler" ]]; then
+        COMPILER_EXEC+="/compiler/mds-compiler"
         break
     fi
     COMPILER_EXEC="$(readlink -n -f "${COMPILER_EXEC}/..")"
@@ -11,6 +11,9 @@ done
 
 if [[ "$(uname -o)" == "Msys" ]]; then
     COMPILER_EXEC+=".exe"
+
+    echo "Not supported under WINDOWS!"
+    exit
 fi
 
 if [[ ! -x "${COMPILER_EXEC}" ]]; then

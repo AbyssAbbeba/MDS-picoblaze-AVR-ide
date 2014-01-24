@@ -32,25 +32,31 @@ add_subdirectory ( include )
 # ------------------------------------------------------------------------------
 
 # List of preprocessor include file search directories.
-include_directories ( ${Boost_INCLUDE_DIRS}
-                      "${CMAKE_CURRENT_SOURCE_DIR}/core"
+include_directories ( "${CMAKE_CURRENT_SOURCE_DIR}/core"
                       "${CMAKE_CURRENT_SOURCE_DIR}/modules"
                       "${CMAKE_CURRENT_SOURCE_DIR}/modules/generators" )
 
-# Specify directories in which the linker will look for libraries.
-link_directories ( "${CMAKE_CURRENT_SOURCE_DIR}/core/"
-                   "${CMAKE_CURRENT_SOURCE_DIR}/modules/"
-                   "${CMAKE_CURRENT_SOURCE_DIR}/../utilities/os/"
-                   "${CMAKE_CURRENT_SOURCE_DIR}/../utilities/DbgFile/"
-                   "${CMAKE_CURRENT_SOURCE_DIR}/../utilities/MCUDataFiles/" )
+## Create moc code from a list of files containing Qt class with the Q_OBJECT declaration.
+ # Per-directory preprocessor definitions are also added.
+QT4_WRAP_CPP ( QT_MOC_SRCS
+               CompilerThread.h )
+
+## Add a library to the project using the specified source files,
+ # in this case it will procude dynamic C++ library.
+add_library ( ${PROJECT_NAME} SHARED
+              ${QT_MOC_SRCS}
+              Compiler.cxx
+              CompilerThread.cxx )
+
+# Link a target to given libraries
+target_link_libraries ( ${PROJECT_NAME} CompilerModules )
 
 # Add an executable to the project using the specified source files.
-add_executable ( ${PROJECT_NAME}
+add_executable ( mds-${PROJECT_NAME}
                  main.cxx )
 
 # Link a target to given libraries
-target_link_libraries ( ${PROJECT_NAME} ${Boost_LIBRARIES}
-                                        CompilerCore )
+target_link_libraries ( mds-${PROJECT_NAME} ${PROJECT_NAME} )
 
 # ------------------------------------------------------------------------------
 # INSTALLATION OPTIONS

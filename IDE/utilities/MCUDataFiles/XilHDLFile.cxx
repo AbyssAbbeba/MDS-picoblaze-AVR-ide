@@ -29,8 +29,16 @@ const char * const XilHDLFile::MARK_START      = "{begin template}";
 const char * const XilHDLFile::MARK_INIT_E     = "}";
 const char * const XilHDLFile::MARK_INITP_E    = "}";
 const char * const XilHDLFile::EOL_SEQUENCE    = "\r\n";
-const char * const XilHDLFile::MARK_INIT_S[4]  = { "{INIT_",  "{[8:0]_INIT_",  "{[17:9]_INIT_",  "{[26:18]_INIT_"  };
-const char * const XilHDLFile::MARK_INITP_S[4] = { "{INITP_", "{[8:0]_INITP_", "{[17:9]_INITP_", "{[26:18]_INITP_" };
+const char * const XilHDLFile::MARK_INITP_S[3] = { "{INITP_", "{[8:0]_INITP_", "{[17:9]_INITP_" };
+const char * const XilHDLFile::MARK_INIT_S[6]  =
+{
+    "{INIT_",
+    "{[8:0]_INIT_",
+    "{[17:9]_INIT_",
+    "INIT64_",
+    "INIT128_",
+    "INIT256_"
+};
 
 void XilHDLFile::clearAndLoad ( const char * filename )
 {
@@ -237,33 +245,25 @@ void XilHDLFile::save ( const std::string & filename,
             line.replace(position, strlen(MARK_NAME), m_name);
         }
 
-        unsigned int offset = 0;
-        const char * startMark = MARK_INIT_S[0];
-        for ( int i = 1; i < 4; i++ )
+        for ( int i = 0; i < 6; i++ )
         {
-            if ( std::string::npos != line.find(startMark) )
+            if ( std::string::npos != line.find(MARK_INIT_S[i]) )
             {
+                substDataMark(line, MARK_INIT_S[i], MARK_INIT_E, MemoryMode(i));
                 break;
             }
-            offset += 32;
-            startMark = MARK_INIT_S[i];
         }
-        substDataMark(line, startMark, MARK_INIT_E, offset, false);
 
         if ( SIZE_18b == m_opCodeSize )
         {
-            offset = 0;
-            startMark = MARK_INITP_S[0];
-            for ( int i = 1; i < 4; i++ )
+            for ( int i = 0; i < 3; i++ )
             {
-                if ( std::string::npos != line.find(startMark) )
+                if ( std::string::npos != line.find(MARK_INITP_S[i]) )
                 {
+                    substDataMark(line, MARK_INITP_S[i], MARK_INITP_E, MemoryMode(i), true);
                     break;
                 }
-                offset += 32;
-                startMark = MARK_INITP_S[i];
             }
-            substDataMark(line, startMark, MARK_INITP_E, offset, true);
         }
 
         outFile << line << EOL_SEQUENCE;
@@ -273,7 +273,7 @@ void XilHDLFile::save ( const std::string & filename,
 void XilHDLFile::substDataMark ( std::string & line,
                                  const char * markStart,
                                  const char * markEnd,
-                                 unsigned int offset,
+                                 MemoryMode mode,
                                  bool parity ) const
 {
     size_t markStartPos = line.find(markStart);
@@ -304,112 +304,236 @@ void XilHDLFile::substDataMark ( std::string & line,
 
     unsigned int addr;
     sscanf(addrStr.c_str(), "%x", &addr);
-    addr += offset;
+    addr *= ( SIZE_18b == m_opCodeSize ) ? 3 : 2; // Multiply by # of bytes occupied by one instruction the mem. array.
 
     std::string dataField;
-    generateDataField(&dataField, addr, parity);
+    switch ( mode )
+    {
+        case MODE_WORD:
+            generateDataFieldWord(&dataField, addr, parity);
+            break;
+        case MODE_LSB:
+            generateDataFieldByte(&dataField, addr, parity, true);
+            break;
+        case MODE_MSB:
+            generateDataFieldByte(&dataField, addr, parity, false);
+            break;
+        case MODE_64b:
+            generateDataFieldBit(&dataField, addr, 64);
+            break;
+        case MODE_128b:
+            generateDataFieldBit(&dataField, addr, 128);
+            break;
+        case MODE_256b:
+            generateDataFieldBit(&dataField, addr, 256);
+            break;
+        default:
+            throw DataFileException(DataFileException::EXP_INTERNAL_ERROR, "Invalid Memory Mode");
+    }
     line.replace(markStartPos, addrLen, dataField);
 }
 
-void XilHDLFile::generateDataField ( std::string * dataField,
-                                     unsigned int addr,
-                                     bool parity ) const
+inline void XilHDLFile::generateDataFieldWord ( std::string * dataField,
+                                                unsigned int addr,
+                                                bool parity ) const
 {
-    dataField->clear();
-
-    if ( SIZE_18b == m_opCodeSize )
-    {
-        addr *= 3; // 3 == space occupied by one instruction the mem. array.
-    }
-    else
-    {
-        addr *= 2; // 2 == space occupied by one instruction the mem. array.
-    }
-    addr *= 16; // 16 == instructions per data field.
+    int byteInt;
+    uint32_t data[8];
+    char hexString[9];
 
     if ( false == parity )
     {
-        int byteInt;
-        uint16_t inst[16];
-        char hexString[9];
+        addr *= 16; // 16 == instructions per data field.
 
-        for ( int i = 0; i < 16; i++ )
+        for ( int i = 0; i < 8; i++ )
         {
-            inst[i] = 0;
-
-            if ( SIZE_18b == m_opCodeSize )
-            {
-                addr++;
-            }
+            data[i] = 0;
 
             for ( int j = 0; j < 2; j++ )
             {
-                if ( addr < m_arrsize )
+                if ( SIZE_18b == m_opCodeSize )
                 {
-                    byteInt = m_memory[addr++];
-                    if ( -1 == byteInt )
-                    {
-                        byteInt = 0;
-                    }
-                }
-                else
-                {
-                    byteInt = 0;
+                    addr++;
                 }
 
-                inst[i] <<= 8;
-                inst[i] |= byteInt;
+                for ( int k = 0; k < 2; k++ )
+                {
+                    byteInt = getByte(addr++);
+
+                    data[i] <<= 8;
+                    data[i] |= byteInt;
+                }
+
+                data[i] = ( ( 0xffff & data[i] ) << 16 ) | ( 0xffff & ( data[i] >> 16) );
             }
-        }
-
-        for ( int i = 15; i > 0; i-- )
-        {
-            uint32_t dword = ( inst[i] << 16 );
-            dword |= inst[--i];
-
-            sprintf(hexString, "%08X", dword );
-            dataField->append(hexString);
         }
     }
     else
     {
-        addr *= 8;
-
-        uint32_t parityBits[8];
-        int byteInt;
-        char hexString[9];
+        addr *= 128; // 128 == instructions per data field.
 
         for ( int i = 0; i < 8; i++ )
         {
-            parityBits[i] = 0;
+            data[i] = 0;
+
             for ( int j = 0; j < 16; j++ )
             {
-                if ( m_arrsize > addr )
-                {
-                    byteInt = m_memory[addr];
-                    if ( -1 == byteInt )
-                    {
-                        byteInt = 0;
-                    }
-                }
-                else
-                {
-                    byteInt = 0;
-                }
+                byteInt = getByte(addr);
 
-                parityBits[i] >>= 2;
-                parityBits[i] |= ( byteInt & 0x3 ) << 30;
+                data[i] >>= 2;
+                data[i] |= ( byteInt & 0x3 ) << 30;
 
                 addr += 3;
             }
         }
+    }
 
-        for ( int i = 7; i >= 0; i-- )
+    for ( int i = 7; i >= 0; i-- )
+    {
+        sprintf(hexString, "%08X", data[i] );
+        dataField->append(hexString);
+    }
+}
+
+inline void XilHDLFile::generateDataFieldByte ( std::string * dataField,
+                                                unsigned int addr,
+                                                bool parity,
+                                                bool lsb ) const
+{
+    int byteInt;
+    uint32_t data[8];
+    char hexString[9];
+
+    if ( false == parity )
+    {
+        addr *= 32; // 32 == instructions per data field.
+
+        for ( int i = 0; i < 8; i++ )
         {
-            sprintf(hexString, "%08X", parityBits[i] );
-            dataField->append(hexString);
+            data[i] = 0;
+
+            for ( int j = 0; j < 4; j++ )
+            {
+                if ( true == lsb )
+                {
+                    addr += 2;
+                    byteInt = getByte(addr);
+                }
+                else
+                {
+                    byteInt  = ( ( 0x01 & getByte(addr++) ) << 7 );
+                    byteInt |= ( ( 0xfe & getByte(addr++) ) >> 1 );
+                }
+
+                addr++;
+                data[i] >>= 8;
+                data[i] |= ( byteInt << 24 );
+            }
         }
     }
+    else
+    {
+        addr *= 256; // 256 == instructions per data field.
+
+        for ( int i = 0; i < 8; i++ )
+        {
+            data[i] = 0;
+
+            for ( int j = 0; j < 32; j++ )
+            {
+                data[i] >>= 1;
+                if ( true == lsb )
+                {
+                    addr++;
+                    byteInt = getByte(addr++);
+                    data[i] |= ( byteInt & 1 ) << 31;
+                }
+                else
+                {
+                    byteInt = getByte(addr++);
+                    addr++;
+                    data[i] |= ( ( byteInt >> 1 ) & 1 ) << 31;
+                }
+                addr++;
+            }
+        }
+    }
+
+    for ( int i = 7; i >= 0; i-- )
+    {
+        sprintf(hexString, "%08X", data[i] );
+        dataField->append(hexString);
+    }
+}
+
+inline void XilHDLFile::generateDataFieldBit ( std::string * dataField,
+                                               unsigned int bit,
+                                               unsigned int size ) const
+{
+    int byteInt;
+    unsigned int addr = 0;
+    uint32_t data[8];
+    char hexString[9];
+
+    for ( int i = 0; i < ( (int) size / 32 ); i++ )
+    {
+        data[i] = 0;
+
+        for ( int j = 0; j < 32; j++ )
+        {
+            addr += ( SIZE_18b == m_opCodeSize ) ? 3 : 2;
+
+            if ( bit < 8 )
+            {
+                byteInt = getByte ( addr - 1 );
+            }
+            else if ( bit < 16 )
+            {
+                byteInt = getByte ( addr - 2 );
+            }
+            else if ( bit < 18 )
+            {
+                if ( SIZE_18b == m_opCodeSize )
+                {
+                    byteInt = getByte ( addr - 3 );
+                }
+                else
+                {
+                    byteInt = 0;
+                }
+            }
+            else
+            {
+                byteInt = 0;
+            }
+
+            data[i] >>= 1;
+            data[i] |= ( 1 & ( byteInt >> ( bit % 8 ) ) ) << 31;
+        }
+    }
+
+    for ( int i = ( ( (int) size / 32 ) - 1 ); i >= 0; i-- )
+    {
+        sprintf(hexString, "%08X", data[i] );
+        dataField->append(hexString);
+    }
+}
+
+inline int XilHDLFile::getByte ( unsigned int addr ) const
+{
+    if ( addr < m_arrsize )
+    {
+        int byteInt = m_memory[addr];
+
+        if ( -1 == byteInt )
+        {
+            return 0;
+        }
+
+        return byteInt;
+    }
+
+    return 0;
 }
 
 bool XilHDLFile::checkHex ( const std::string & str ) const

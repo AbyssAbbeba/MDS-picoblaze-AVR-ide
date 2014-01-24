@@ -38,12 +38,8 @@ add_subdirectory ( TestKcpsm6 )
 # ------------------------------------------------------------------------------
 
 # Add include directories to the build.
-include_directories ( ${Boost_INCLUDE_DIRS}
-                      "${CMAKE_SOURCE_DIR}"
+include_directories ( "${CMAKE_SOURCE_DIR}"
                       "${CMAKE_SOURCE_DIR}/utilities/AutoTest/"  )
-
-# Specify directories in which the linker will look for libraries.
-link_directories ( "${CMAKE_SOURCE_DIR}/utilities/AutoTest/"  )
 
 # Add an executable to the project using the specified source files.
 add_executable ( ${PROJECT_NAME}
@@ -51,14 +47,13 @@ add_executable ( ${PROJECT_NAME}
                  PicoBlazeStrategy.cxx )
 
 # Link a target to given libraries
-target_link_libraries ( ${PROJECT_NAME}
-                        ${Boost_LIBRARIES}
-                        TSP_TestKcpsm1CPLD
-                        TSP_TestKcpsm1
-                        TSP_TestKcpsm2
-                        TSP_TestKcpsm3
-                        TSP_TestKcpsm6
-                        AutoTest )
+target_link_libraries ( ${PROJECT_NAME} ${Boost_LIBRARIES}
+                                        TSP_TestKcpsm1CPLD
+                                        TSP_TestKcpsm1
+                                        TSP_TestKcpsm2
+                                        TSP_TestKcpsm3
+                                        TSP_TestKcpsm6
+                                        AutoTest )
 
 # ------------------------------------------------------------------------------
 # TESTS

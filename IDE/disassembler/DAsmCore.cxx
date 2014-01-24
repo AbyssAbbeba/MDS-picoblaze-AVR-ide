@@ -17,8 +17,8 @@
 
 // Standard header files.
 #include <cctype>
-#include <cstring>
 #include <cstdio>
+#include <cstring>
 
 void DAsmCore::indent ( std::string & line,
                         unsigned int column )

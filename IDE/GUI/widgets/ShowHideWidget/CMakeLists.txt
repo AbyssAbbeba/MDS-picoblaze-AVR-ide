@@ -5,7 +5,7 @@
 # ------------------------------------------------------------------------------
 
 # Set project name
-project(StackWidget)
+project(ShowHideWidget)
 
 # Set the minimum required version of CMake
 cmake_minimum_required(VERSION 2.8)
@@ -19,12 +19,12 @@ set(CMAKE_VERBOSE_MAKEFILE OFF)
 # here we define SAMPLE_SRCS variable that contains a list of all .cpp files 
 # note that we don't need \ at the end of line
 SET( SAMPLE_SRCS
-	./stackwidget.cpp
+	./showhidewidget.cpp
 )
   
 # another list, this time it includes all header files that should be treated with moc
 SET( SAMPLE_MOC_HDRS
-	./stackwidget.h
+	./showhidewidget.h
 )
 
 
@@ -40,9 +40,9 @@ find_package(Qt4 REQUIRED)
 #include(${QT_USE_FILE})
 
 # <DEBUG!>
-link_directories(
-    "${CMAKE_CURRENT_BINARY_DIR}/../../../simulators/SimControl/"
-	)
+#link_directories(
+#    "${CMAKE_CURRENT_BINARY_DIR}/../../../simulators/SimControl/"
+#    )
 
 
 #include_directories(
@@ -73,7 +73,7 @@ link_directories(
  # -std=c++0x  : Default template arguments may not be used in function templates without -std=c++0x or -std=gnu++0x.
  # -O2         : Optimization, level 2.
  # -pipe       : Use pipes rather than temporary files for communication between the various stages of compilation.
-add_definitions(-Wall -Wextra -std=c++0x -O2 -pipe)
+add_definitions(-Wall -Wextra -std=c++0x -O2 -pipe -g)
 
 
 # and finally this will run moc:
@@ -85,7 +85,7 @@ add_library(${PROJECT_NAME} SHARED
 	${SAMPLE_MOC_SRCS} ${SAMPLE_SRCS})
 
 
-target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} SimControl ErrorDialog)
+target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES})
 
 
 # ------------------------------------------------------------------------------

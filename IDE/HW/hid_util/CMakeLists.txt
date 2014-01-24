@@ -19,7 +19,6 @@ project ( hid_util )
 # ------------------------------------------------------------------------------
 
 # Added for compatibility with Microsoft Windows OS
-link_directories ( "${CMAKE_CURRENT_SOURCE_DIR}" )
 include_directories ( "${CMAKE_CURRENT_SOURCE_DIR}" )
 
 ## Add switches to compiler command line

@@ -25,7 +25,7 @@ set_directory_properties ( PROPERTIES
                            ADDITIONAL_MAKE_CLEAN_FILES "${PRC_FILES};${LST_FILES}" )
 
 # Locate compiler binary.
-set ( MDS_COMPILER "${CMAKE_CURRENT_SOURCE_DIR}/../../../compiler" )
+set ( MDS_COMPILER "${CMAKE_CURRENT_SOURCE_DIR}/../../../mds-compiler" )
 if ( CMAKE_HOST_WIN32 )
     set ( MDS_COMPILER "${MDS_COMPILER}.exe" )
 endif()

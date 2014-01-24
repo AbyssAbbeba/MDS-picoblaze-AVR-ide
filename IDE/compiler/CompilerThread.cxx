@@ -14,32 +14,32 @@
 // =============================================================================
 
 // Compiler header files
+#include "Compiler.h"
 #include "CompilerThread.h"
-#include "CompilerCore.h"
 
 CompilerThread::CompilerThread ( const std::string & baseIncludeDir )
-                               : m_compilerCore ( new CompilerCore ( this ) )
+                               :
+                                 m_compiler ( new Compiler(this, baseIncludeDir) )
 {
-    m_compilerCore->setBaseIncludeDir(baseIncludeDir);
 }
 
 CompilerThread::~CompilerThread()
 {
     wait();
 
-    delete m_compilerCore;
+    delete m_compiler;
 }
 
 void CompilerThread::run()
 {
-    bool success = m_compilerCore->compile ( m_jobSpec.m_lang,
-                                             m_jobSpec.m_arch,
-                                             m_jobSpec.m_opts,
-                                             m_jobSpec.m_genSimData );
+    bool success = m_compiler->compile ( m_jobSpec.m_lang,
+                                         m_jobSpec.m_arch,
+                                         m_jobSpec.m_opts,
+                                         m_jobSpec.m_genSimData );
 
     if ( true == m_jobSpec.m_genSimData && true == success )
     {
-        emit(simDataGenerated(m_compilerCore->getSimDbg(), m_compilerCore->getSimData()));
+        emit(simDataGenerated(m_compiler->getSimDbg(), m_compiler->getSimData()));
     }
     emit(compilationFinished(success));
 }

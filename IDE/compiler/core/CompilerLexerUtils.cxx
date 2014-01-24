@@ -20,8 +20,9 @@
 
 // Standard header files.
 #include <cctype>
-#include <cstdlib>
 #include <cstdio>
+#include <cstdint>
+#include <cstdlib>
 #include <cstring>
 
 uint32_t CompilerLexerUtils::escapeSequence ( CompilerParserInterface * compiler,
@@ -151,7 +152,7 @@ int CompilerLexerUtils::convertStrToNumber ( CompilerParserInterface * compiler,
     unsigned long number;
     if ( ( strlen(str) > max )
             ||
-         ( ( 0x1ULL << 32 ) <= ( number = strtoul(str, nullptr, base) ) ) )
+         ( ( uint64_t(1) << sizeof(number) ) <= ( number = strtoul(str, nullptr, base) ) ) )
     {
         compiler->lexerMessage ( location,
                                  CompilerBase::MT_ERROR,

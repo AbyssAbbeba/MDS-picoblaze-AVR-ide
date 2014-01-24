@@ -26,24 +26,20 @@ set_directory_properties ( PROPERTIES
 # ------------------------------------------------------------------------------
 
 # Add include directories to the build.
-include_directories ( ${Boost_INCLUDE_DIRS}
-                      "${CMAKE_SOURCE_DIR}"
+include_directories ( "${CMAKE_SOURCE_DIR}"
                       "${CMAKE_CURRENT_SOURCE_DIR}/../../../../"
                       "${CMAKE_CURRENT_SOURCE_DIR}/../../../../utilities" )
 
-# Specify directories in which the linker will look for libraries.
-link_directories ( "${CMAKE_CURRENT_SOURCE_DIR}/../../../../../utilities/MCUDataFiles"
-                   "${CMAKE_CURRENT_SOURCE_DIR}/../../../../../compiler/core"
-                   "${CMAKE_CURRENT_SOURCE_DIR}/../../../../../disassembler" )
-
 ## Add a library to the project using the specified source files,
- # in this case it will procude dynamic C++ library.
+ # in this case it will produce dynamic C++ library.
 add_library ( ${PROJECT_NAME} SHARED
               TestKcpsm6.cxx )
 
 # Link a target to given libraries
 target_link_libraries ( ${PROJECT_NAME}
+                        ${Boost_LIBRARIES}
                         MCUDataFiles
-                        CompilerCore
+                        compiler
                         disassembler
+                        DAsmPicoBlaze
                         CUnit )

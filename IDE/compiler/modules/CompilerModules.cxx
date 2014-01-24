@@ -51,9 +51,11 @@ int AsmPicoBlazeParser_parse ( yyscan_t yyscanner, CompilerParserInterface * asm
 
 // Compiler header files.
 #include "CompilerCore.h"
+#include "CompilerSemanticAnalyzer.h"
 
 // Standard header files.
 #include <cstdio>
+#include <string>
 #include <vector>
 #include <cstdlib>
 
@@ -80,7 +82,6 @@ int AsmPicoBlazeParser_parse ( yyscan_t yyscanner, CompilerParserInterface * asm
 CompilerModules::ModEmplStatCode CompilerModules::employModule ( CompilerBase::LangId lang,
                                                                  CompilerBase::TargetArch arch,
                                                                  CompilerCore * compilerCore,
-                                                                 CompilerSemanticAnalyzer * & semanticAnalyzer,
                                                                  std::string * errStr )
 {
     CompilerOptions * options = compilerCore->getCompilationOptions();
@@ -133,7 +134,7 @@ CompilerModules::ModEmplStatCode CompilerModules::employModule ( CompilerBase::L
                 case CompilerBase::TA_PICOBLAZE:
                 {
                     // Setup compiler's semantic analyzer.
-                    semanticAnalyzer = new CompilerCSemanticAnalyzer ( compilerCore, options );
+                    compilerCore->setSemanticAnalyzer ( new CompilerCSemanticAnalyzer(compilerCore, options) );
 
                     // Attempt to open the source files.
                     OPEN_ALL_SOURCE_FILES();
@@ -191,7 +192,7 @@ CompilerModules::ModEmplStatCode CompilerModules::employModule ( CompilerBase::L
                 case CompilerBase::TA_AVR8:
                 {
                     // Setup compiler's semantic analyzer.
-                    semanticAnalyzer = new AsmAvr8SemanticAnalyzer ( compilerCore, options );
+                    compilerCore->setSemanticAnalyzer ( new AsmAvr8SemanticAnalyzer(compilerCore, options) );
 
                     // Attempt to open the source files.
                     OPEN_ALL_SOURCE_FILES();
@@ -213,7 +214,7 @@ CompilerModules::ModEmplStatCode CompilerModules::employModule ( CompilerBase::L
                 case CompilerBase::TA_PIC8:
                 {
                     // Setup compiler's semantic analyzer.
-                    semanticAnalyzer = new AsmPic8SemanticAnalyzer ( compilerCore, options );
+                    compilerCore->setSemanticAnalyzer ( new AsmPic8SemanticAnalyzer(compilerCore, options) );
 
                     // Attempt to open the source files.
                     OPEN_ALL_SOURCE_FILES();
@@ -235,7 +236,7 @@ CompilerModules::ModEmplStatCode CompilerModules::employModule ( CompilerBase::L
                 case CompilerBase::TA_MCS51:
                 {
                     // Setup compiler's semantic analyzer.
-                    semanticAnalyzer = new AsmMcs51SemanticAnalyzer ( compilerCore, options );
+                    compilerCore->setSemanticAnalyzer ( new AsmMcs51SemanticAnalyzer(compilerCore, options) );
 
                     // Attempt to open the source files.
                     OPEN_ALL_SOURCE_FILES();
@@ -257,7 +258,7 @@ CompilerModules::ModEmplStatCode CompilerModules::employModule ( CompilerBase::L
                 case CompilerBase::TA_PICOBLAZE:
                 {
                     // Setup compiler's semantic analyzer.
-                    semanticAnalyzer = new AsmPicoBlazeSemanticAnalyzer ( compilerCore, options );
+                    compilerCore->setSemanticAnalyzer ( new AsmPicoBlazeSemanticAnalyzer(compilerCore, options) );
 
                     // Attempt to open the source files.
                     OPEN_ALL_SOURCE_FILES();

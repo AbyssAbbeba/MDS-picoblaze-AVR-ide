@@ -21,7 +21,7 @@ project ( McuSimCfgMgr )
 include_directories ( "${CMAKE_CURRENT_SOURCE_DIR}/.." )
 
 ## Add a library to the project using the specified source files,
- # in this case it will procude dynamic C++ library.
+ # in this case it will produce dynamic C++ library.
 add_library ( ${PROJECT_NAME} SHARED
               McuDeviceSpecAVR8.cxx
               McuDeviceSpecPIC8.cxx
@@ -30,12 +30,12 @@ add_library ( ${PROJECT_NAME} SHARED
               McuSimCfgMgr.cxx )
 
 # Link the target to given libraries.
-target_link_libraries ( ${PROJECT_NAME} ${QT_LIBRARIES} )
+target_link_libraries ( ${PROJECT_NAME} ${QT_LIBRARIES} PicoBlazeSim )
 
 # ------------------------------------------------------------------------------
 # INSTALLATION OPTIONS
 # ------------------------------------------------------------------------------
 
 install ( TARGETS ${PROJECT_NAME}
-         RUNTIME DESTINATION bin
-         LIBRARY DESTINATION lib )
+          RUNTIME DESTINATION bin
+          LIBRARY DESTINATION lib )
