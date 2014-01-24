@@ -72,7 +72,7 @@ class HexFile : public DataFile
         virtual void save ( const std::string & filename,
                             bool makeBackup = true ) override;
 
-    ////    Private Operations    ////
+    ////    Inline Private Operations    ////
     private:
         /**
          * @brief Compute I16HEX CRC from the given string
