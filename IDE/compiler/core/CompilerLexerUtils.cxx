@@ -152,7 +152,7 @@ int CompilerLexerUtils::convertStrToNumber ( CompilerParserInterface * compiler,
     unsigned long number;
     if ( ( strlen(str) > max )
             ||
-         ( ( uint64_t(1) << ( 8 * sizeof(number) ) ) <= ( number = strtoul(str, nullptr, base) ) ) )
+         ( (unsigned long) (-1) <= ( number = strtoul(str, nullptr, base) ) ) )
     {
         compiler->lexerMessage ( location,
                                  CompilerBase::MT_ERROR,
