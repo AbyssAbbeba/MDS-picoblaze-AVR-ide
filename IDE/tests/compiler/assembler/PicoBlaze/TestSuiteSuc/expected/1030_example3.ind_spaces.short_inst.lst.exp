@@ -1,0 +1,2635 @@
+                   1     ; KCPSM3 Program - Security control and design authentication.
+                   2     ;
+                   3     ; This program is provided for use with the reference design
+                   4     ; 'low_cost_design_authentication_for_spartan_3e.vhd' implemented on the Spartan-3E Starter
+                   5     ; Kit. The program provides design authentication control over the 'real' application as well
+                   6     ; as providing features to enable evaluation of the design authentication method.
+                   7     device kcpsm1
+                   8     ; Ken Chapman - Xilinx Ltd
+                   9     ;
+                  10     ; Version v1.00 - 1st November 2006
+                  11     ;
+                  12     ; This code communicates with the StrataFLASH memory to implement a design authentication
+                  13     ; algorithm which then enables the main application design in various ways. To facilitate
+                  14     ; evaluation of design authentication this design also interacts with the LCD display
+                  15     ; and PC (via UART based RS232 link) to indicate authentication status and allow control
+                  16     ; over the authentication validity of the design. Therefore this program includes:-
+                  17     ;
+                  18     ; 1) Code required to check authorisation which would be included in a production design.
+                  19     ; 2) Code required to program the authentication value into FLASH memory which would
+                  20     ;    typically only be implemented in a special design used at a secure programming
+                  21     ;    facility as part of the production programming procedure.
+                  22     ; 3) Code to allow you to see what is happening at all stages which is code that should
+                  23     ;    never be included in a real production design as it reveals secrets that should remain
+                  24     ;    hidden in order to make the task of breaking the security as difficult as possible.
+                  25     ;
+                  26     ; IMPORTANT - Feel free to use this code as a reference for your own security scheme but
+                  27     ;             never use this code unmodified.
+                  28     ;
+                  29     ;
+                  30     ;**************************************************************************************
+                  31     ; NOTICE:
+                  32     ;
+                  33     ; Copyright Xilinx, Inc. 2006.   This code may be contain portions patented by other
+                  34     ; third parties.  By providing this core as one possible implementation of a standard,
+                  35     ; Xilinx is making no representation that the provided implementation of this standard
+                  36     ; is free from any claims of infringement by any third party.  Xilinx expressly
+                  37     ; disclaims any warranty with respect to the adequacy of the implementation, including
+                  38     ; but not limited to any warranty or representation that the implementation is free
+                  39     ; from claims of any third party.  Furthermore, Xilinx is providing this core as a
+                  40     ; courtesy to you and suggests that you contact all third parties to obtain the
+                  41     ; necessary rights to use this implementation.
+                  42     ;
+                  43     ;
+                  44     ;**************************************************************************************
+                  45     ; Port definitions
+                  46     ;**************************************************************************************
+                  47     ;
+                  48     ;
+                  49     ; UART ports
+                  50     ;
+                  51     ; Connection to PC to allow display of progress information and to operate simple
+                  52     ; menu of commands.
+                  53     ;
+  00000           54     status_port             EQU     0x00                    ;UART and memory status
+  00001           55     tx_half_full            EQU     0x01                    ;  Transmitter     half full - bit0
+  00002           56     tx_full                 EQU     0x02                    ;    FIFO            tx_full - bit1
+  00004           57     rx_data_present         EQU     0x04                    ;  Receiver     data present - bit2
+  00008           58     rx_half_full            EQU     0x08                    ;    FIFO          half full - bit3
+  00010           59     rx_full                 EQU     0x10                    ;                    rx_full - bit4
+  00020           60     spare1                  EQU     0x20                    ;                  spare '0' - bit5
+  00040           61     spare2                  EQU     0x40                    ;                  spare '0' - bit6
+  00080           62     strataflash_sts         EQU     0x80                    ;  StrataFLASH           STS - bit7
+                  63     ;
+  00001           64     uart_read_port          EQU     0x01                    ;UART Rx data input
+                  65     ;
+  00008           66     uart_write_port         EQU     0x08                    ;UART Tx data output
+                  67     ;
+                  68     ;
+                  69     ; LCD Display
+                  70     ;
+                  71     ;The master enable signal is not used by the LCD display itself
+                  72     ;but is used to prevent any contention with the StrataFLASH memory that
+                  73     ;is connected to the same data pins. In this design the StrataFLASH memory is
+                  74     ;used in 8-bit mode so not contention should exist but this master enable
+                  75     ;facilty is then available for anyone wanting to modify the design for use
+                  76     ;with a 16-bit interface.
+                  77     ;
+  00020           78     lcd_output_port         EQU     0x20                    ;LCD character module output data and control
+  00001           79     lcd_e                   EQU     0x01                    ;   active High Enable        E - bit0
+  00002           80     lcd_rw                  EQU     0x02                    ;   Read=1 Write=0           RW - bit1
+  00004           81     lcd_rs                  EQU     0x04                    ;   Instruction=0 Data=1     RS - bit2
+  00008           82     lcd_drive               EQU     0x08                    ;   Master enable (active High) - bit3
+  00010           83     lcd_db4                 EQU     0x10                    ;   4-bit              Data DB4 - bit4
+  00020           84     lcd_db5                 EQU     0x20                    ;   interface          Data DB5 - bit5
+  00040           85     lcd_db6                 EQU     0x40                    ;                      Data DB6 - bit6
+  00080           86     lcd_db7                 EQU     0x80                    ;                      Data DB7 - bit7
+                  87     ;
+                  88     ;
+  00003           89     lcd_input_port          EQU     0x03                    ;LCD character module input data
+  00001           90     lcd_read_spare0         EQU     0x01                    ;    Spare bits               - bit0
+  00002           91     lcd_read_spare1         EQU     0x02                    ;    are zero                 - bit1
+  00004           92     lcd_read_spare2         EQU     0x04                    ;                             - bit2
+  00008           93     lcd_read_spare3         EQU     0x08                    ;                             - bit3
+  00010           94     lcd_read_db4            EQU     0x10                    ;    4-bit           Data DB4 - bit4
+  00020           95     lcd_read_db5            EQU     0x20                    ;    interface       Data DB5 - bit5
+  00040           96     lcd_read_db6            EQU     0x40                    ;                    Data DB6 - bit6
+  00080           97     lcd_read_db7            EQU     0x80                    ;                    Data DB7 - bit7
+                  98     ;
+                  99     ;
+                 100     ;
+                 101     ; StrataFLASH memory ports
+                 102     ;
+                 103     ; The FLASH memory is used to hold the authentication value as well as provide the
+                 104     ; unique serial number from which the authentication algorithm computes the value.
+                 105     ; In practice, the FLASH will also hold the configuration image for the Spartan device.
+                 106     ;
+                 107     ;
+  00002          108     sf_data_in_port         EQU     0x02                    ;Read data from StrataFLASH device
+                 109     ;
+  00080          110     sf_data_out_port        EQU     0x80                    ;Data to write into StrataFLASH device
+                 111     ;
+  00083          112     sf_addr_hi_port         EQU     0x83                    ;StrataFLASH address[21:16] (6 LSB's)
+  00082          113     sf_addr_mi_port         EQU     0x82                    ;StrataFLASH address[15:8]
+  00081          114     sf_addr_lo_port         EQU     0x81                    ;StrataFLASH address[7:0]
+                 115     ;
+  00040          116     sf_control_port         EQU     0x40                    ;StrataFLASH control
+  00001          117     sf_read                 EQU     0x01                    ;         active High read - bit0
+  00002          118     sf_ce                   EQU     0x02                    ; active Low device enable - bit1
+  00004          119     sf_we                   EQU     0x04                    ;         active Low write - bit2
+                 120     ;
+                 121     ;
+                 122     ; Design Authentication enable/disable signals.
+                 123     ;
+                 124     ; Hardware controls over the 'real' application.
+                 125     ;
+  00010          126     authentication_control_port EQU 0x10                    ;Design disable control port
+  00001          127     security_disable_interrupts EQU 0x01                    ;   active High disable of interrupt generation - bit0
+  00002          128     security_disable_outputs EQU    0x02                    ;            active High disable of output pins - bit1
+                 129     ;
+                 130     ; Pseudo Random number generator
+                 131     ;
+  00004          132     random_value_port       EQU     0x04                    ;read LFSR counter value
+                 133     ;
+                 134     ;
+                 135     ; Link FIFO buffer
+                 136     ;
+                 137     ; Provides a connection to the 'real' application such that 'soft tokens' in the
+                 138     ; form of short messages to be passed to the 'real' application to enable or disable
+                 139     ; it depending on the authentication status.
+                 140     ;
+  00004          141     link_fifo_write_port    EQU     0x04                    ;write data to FIFO
+                 142     ;
+                 143     ;
+                 144     ;**************************************************************************************
+                 145     ; Special Register usage
+                 146     ;**************************************************************************************
+                 147     ;
+  0000F          148     uart_data               REG     sf                      ;used to pass data to and from the UART
+                 149     ;
+                 150     ;
+                 151     ;
+                 152     ;**************************************************************************************
+                 153     ;Scratch Pad Memory Locations
+                 154     ;**************************************************************************************
+                 155     ;
+  00000          156     isr_preserve_s0         EQU     0x00                    ;preserve register contents during Interrupt Service Routine
+                 157     ;
+                 158     ;
+  00010          159     serial_number0          EQU     0x10                    ;64-bit serial number of StrataFlash
+  00011          160     serial_number1          EQU     0x11                    ;LS-Byte first
+  00012          161     serial_number2          EQU     0x12
+  00013          162     serial_number3          EQU     0x13
+  00014          163     serial_number4          EQU     0x14
+  00015          164     serial_number5          EQU     0x15
+  00016          165     serial_number6          EQU     0x16
+  00017          166     serial_number7          EQU     0x17
+                 167     ;
+                 168     ;
+  00018          169     computed_crc0           EQU     0x18                    ;computed 16-bit CRC based on the
+  00019          170     computed_crc1           EQU     0x19                    ;  StrataFlash unique serial number (LS-Byte first)
+                 171     ;
+                 172     ;
+  0001A          173     authentication_crc0     EQU     0x1a                    ;16-bit CRC value read from authentication
+  0001B          174     authentication_crc1     EQU     0x1b                    ;  area of StrataFLASH memory (LS-Byte first)
+                 175     ;
+                 176     ;
+  0001C          177     authentication_status   EQU     0x1c                    ;Status of design authentication
+                 178     ;
+                 179     ;
+                 180     ;**************************************************************************************
+                 181     ;Useful data constants
+                 182     ;**************************************************************************************
+                 183     ;
+                 184     ;
+                 185     ;
+                 186     ;Constant to define a software delay of 1us. This must be adjusted to reflect the
+                 187     ;clock applied to KCPSM3. Every instruction executes in 2 clock cycles making the
+                 188     ;calculation highly predictable. The '6' in the following equation even allows for
+                 189     ;'CALL delay_1us' instruction in the initiating code.
+                 190     ;
+                 191     ; delay_1us_constant =  (clock_rate - 6)/4       Where 'clock_rate' is in MHz
+                 192     ;
+                 193     ;Example: For a 50MHz clock the constant value is (10-6)/4 = 11  (0B Hex).
+                 194     ;For clock rates below 10MHz the value of 1 must be used and the operation will
+                 195     ;become lower than intended.
+                 196     ;
+  0000B          197     delay_1us_constant      EQU     0x0b
+                 198     ;
+                 199     ;
+                 200     ;
+                 201     ;
+                 202     ;ASCII table
+                 203     ;
+  00061          204     character_a             EQU     0x61
+  00062          205     character_b             EQU     0x62
+  00063          206     character_c             EQU     0x63
+  00064          207     character_d             EQU     0x64
+  00065          208     character_e             EQU     0x65
+  00066          209     character_f             EQU     0x66
+  00067          210     character_g             EQU     0x67
+  00068          211     character_h             EQU     0x68
+  00069          212     character_i             EQU     0x69
+  0006A          213     character_j             EQU     0x6a
+  0006B          214     character_k             EQU     0x6b
+  0006C          215     character_l             EQU     0x6c
+  0006D          216     character_m             EQU     0x6d
+  0006E          217     character_n             EQU     0x6e
+  0006F          218     character_o             EQU     0x6f
+  00070          219     character_p             EQU     0x70
+  00071          220     character_q             EQU     0x71
+  00072          221     character_r             EQU     0x72
+  00073          222     character_s             EQU     0x73
+  00074          223     character_t             EQU     0x74
+  00075          224     character_u             EQU     0x75
+  00076          225     character_v             EQU     0x76
+  00077          226     character_w             EQU     0x77
+  00078          227     character_x             EQU     0x78
+  00079          228     character_y             EQU     0x79
+  0007A          229     character_z             EQU     0x7a
+  00041          230     _character_a            EQU     0x41
+  00042          231     _character_b            EQU     0x42
+  00043          232     _character_c            EQU     0x43
+  00044          233     _character_d            EQU     0x44
+  00045          234     _character_e            EQU     0x45
+  00046          235     _character_f            EQU     0x46
+  00047          236     _character_g            EQU     0x47
+  00048          237     _character_h            EQU     0x48
+  00049          238     _character_i            EQU     0x49
+  0004A          239     _character_j            EQU     0x4a
+  0004B          240     _character_k            EQU     0x4b
+  0004C          241     _character_l            EQU     0x4c
+  0004D          242     _character_m            EQU     0x4d
+  0004E          243     _character_n            EQU     0x4e
+  0004F          244     _character_o            EQU     0x4f
+  00050          245     _character_p            EQU     0x50
+  00051          246     _character_q            EQU     0x51
+  00052          247     _character_r            EQU     0x52
+  00053          248     _character_s            EQU     0x53
+  00054          249     _character_t            EQU     0x54
+  00055          250     _character_u            EQU     0x55
+  00056          251     _character_v            EQU     0x56
+  00057          252     _character_w            EQU     0x57
+  00058          253     _character_x            EQU     0x58
+  00059          254     _character_y            EQU     0x59
+  0005A          255     _character_z            EQU     0x5a
+  00030          256     character_0             EQU     0x30
+  00031          257     character_1             EQU     0x31
+  00032          258     character_2             EQU     0x32
+  00033          259     character_3             EQU     0x33
+  00034          260     character_4             EQU     0x34
+  00035          261     character_5             EQU     0x35
+  00036          262     character_6             EQU     0x36
+  00037          263     character_7             EQU     0x37
+  00038          264     character_8             EQU     0x38
+  00039          265     character_9             EQU     0x39
+  0003A          266     character_colon         EQU     0x3a
+  0002E          267     character_fullstop      EQU     0x2e
+  0003B          268     character_semi_colon    EQU     0x3b
+  0002D          269     character_minus         EQU     0x2d
+  0002F          270     character_divide        EQU     0x2f                    ;'/'
+  0002B          271     character_plus          EQU     0x2b
+  0002C          272     character_comma         EQU     0x2c
+  0003C          273     character_less_than     EQU     0x3c
+  0003E          274     character_greater_than  EQU     0x3e
+  0003D          275     character_equals        EQU     0x3d
+  00020          276     character_space         EQU     0x20
+  0000D          277     character_cr            EQU     0x0d                    ;carriage return
+  0003F          278     character_question      EQU     0x3f                    ;'?'
+  00024          279     character_dollar        EQU     0x24
+  00021          280     character_exclaim       EQU     0x21                    ;'!'
+  00008          281     character_bs            EQU     0x08                    ;Back Space command character
+                 282     ;
+                 283     ;
+                 284     ;
+                 285     ;
+                 286     ;
+                 287     ;**************************************************************************************
+                 288     ;Initialise the system
+                 289     ;**************************************************************************************
+                 290     ;
+000 083E1        291     cold_start:             CALL    sf_init                 ;initialise StrataFLASH controls
+001 00000        292                             LD      s0, #0x00               ;Start with application enabled in hardware
+002 0E010        293                             OUT     s0, authentication_control_port
+003 00050        294                             LD      s0, #_character_p       ;start with design enabled by software (see ISR)
+                 295                             ST      s0, authentication_status
+E: instruction not supported on the this device: STORE sX, ss.
+004 0835B        296                             CALL    delay_1s                ;delay to allow system to settle
+W: value out of range: 0x35b, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x5b.
+005 08328        297                             CALL    lcd_reset               ;Initialise the LCD
+W: value out of range: 0x328, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x28.
+                 298     ;
+006 08030        299                             ENA                             ;interrupts to provide software enable to application
+                 300     ;
+                 301     ;**************************************************************************************
+                 302     ; Main program
+                 303     ;**************************************************************************************
+                 304     ;
+                 305     ; The main program follows a logical sequence of events describing the power on and
+                 306     ; authentication process of a design. This process will is either successfully authorises
+                 307     ; the 'real' application to operate or fail to authenticate and disable the 'real'
+                 308     ; application in a similar way to a production design. The only difference that it keeps
+                 309     ; you informed about what it is doing on both the LCD display and PC terminal via the UART.
+                 310     ; A real production design should keep all details hidden.
+                 311     ;
+                 312     ; Following the authentication check and control over the 'real' application a simple menu
+                 313     ; is provided on the PC terminal to allow you to read, write and erase the authentication
+                 314     ; area of the StrataFLASH memory and therefore evaluate the design authentication security
+                 315     ; of this reference design.
+                 316     ;
+                 317     ;
+                 318     ;
+                 319     ; Write welcome message to LCD display
+                 320     ;
+007 00512        321     warm_start:             LD      s5, #0x12               ;Line 1 position 2
+008 0833E        322                             CALL    lcd_cursor
+W: value out of range: 0x33e, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x3e.
+009 08364        323                             CALL    disp_picoblaze          ;Display 'PicoBlaze'
+W: value out of range: 0x364, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x64.
+00A 00525        324                             LD      s5, #0x25               ;Line 2 position 5
+00B 0833E        325                             CALL    lcd_cursor
+W: value out of range: 0x33e, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x3e.
+00C 08377        326                             CALL    disp_security           ;Display 'Security'
+W: value out of range: 0x377, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x77.
+                 327     ;
+                 328     ; Write welcome message to PC via UART
+                 329     ;
+00D 08364        330                             CALL    send_welcome
+W: value out of range: 0x164, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x64.
+                 331     ;
+                 332     ;
+                 333     ; Display 'Copyright Ken Chapman 2006' via the UART.
+                 334     ;
+                 335     ; This message is significant because it demonstrates that the design now has a 'watermark'.
+                 336     ; The ASCII codes for this string are part of the PicoBlaze program stored in a Block
+                 337     ; Memory and therefore are also part of the configuration bit stream. If someone tries to
+                 338     ; change or delete this copyright message the hardware design will detect the change to the
+                 339     ; Block memory contents and also inhibit the design.
+                 340     ;
+00E 083B4        341                             CALL    send_copyright
+W: value out of range: 0x1b4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb4.
+                 342     ;
+                 343     ;
+                 344     ;
+                 345     ; Delay of 10 seconds before performing any security checks.
+                 346     ;
+                 347     ; This allows the design to work for a short time which could be important for
+                 348     ; production testing.
+                 349     ;
+                 350     ; Having a significant time delay (days or weeks) before security checks means that someone
+                 351     ; attempting to clone the product may not be aware that there is any form of design security
+                 352     ; at all until products are in the field are failing. A time delay also impedes the ability to
+                 353     ; attempt to break the security and confirm if an attempt is or is not successful.
+                 354     ;
+00F 0050A        355                             LD      s5, #0x0a               ;delay of 10 seconds.
+010 08360        356                             CALL    delay_ns
+W: value out of range: 0x360, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x60.
+                 357     ;
+                 358     ;
+                 359     ;
+                 360     ; Read serial number of the StrataFLASH memory.
+                 361     ; The whole principle of low cost design security is based on this unique number. Clearly this
+                 362     ; number is not a secret, but what we then go on to do with it should normally be kept secret.
+                 363     ;
+011 083F2        364                             CALL    read_sf_serial_number   ;read serial number from FLASH memory
+012 08365        365                             CALL    send_serial_number      ;send value to UART for display on PC
+013 08370        366                             CALL    disp_serial_number      ;display serial number on LCD display.
+014 08354        367                             CALL    send_cr
+W: value out of range: 0x154, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x54.
+                 368     ;
+                 369     ;
+                 370     ;
+015 0050A        371                             LD      s5, #0x0a               ;delay of 10 seconds to read messages.
+016 08360        372                             CALL    delay_ns
+W: value out of range: 0x360, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x60.
+                 373     ;
+                 374     ;
+                 375     ;
+                 376     ; Compute the 16-bit CRC for the serial number as an authentication value for the design.
+                 377     ; The CRC value is formed in register pair [sE,sD]. To complicate the authentication value
+                 378     ; the initial contents of the registers are seeded with a 'secret' number.
+                 379     ; Hint 1 - The CRC computation could be implemented in hardware where it is less visible.
+                 380     ; Hint 2 - There are more secure algorithms such as SHA-1 which could be used to generate
+                 381     ;          authentication values that are extremely difficult to decode.
+                 382     ;
+                 383     ;
+017 00E15        384                             LD      se, #0x15               ;seed CRC register with an initial value provided by my daughter when asked :-)
+018 00D8E        385                             LD      sd, #0x8e
+019 0837F        386                             CALL    compute_seeded_crc      ;compute CRC for serial number and configuration memory
+                 387     ;
+                 388     ; Store CRC value in scratch pad memory and display computed CRC value on the PC via UART.
+                 389     ;
+                 390                             ST      sd, computed_crc0       ;store CRC value
+E: instruction not supported on the this device: STORE sX, ss.
+                 391                             ST      se, computed_crc1
+E: instruction not supported on the this device: STORE sX, ss.
+01A 08352        392                             CALL    send_computed_crc       ;display computed CRC value on PC via UART
+W: value out of range: 0x252, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x52.
+01B 0C0E0        393                             LD      s0, se
+01C 08340        394                             CALL    send_hex_byte
+W: value out of range: 0x140, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x40.
+01D 0C0D0        395                             LD      s0, sd
+01E 08340        396                             CALL    send_hex_byte
+W: value out of range: 0x140, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x40.
+01F 08354        397                             CALL    send_cr
+W: value out of range: 0x154, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x54.
+                 398     ;
+                 399     ;
+                 400     ;
+                 401     ; Read the authenticated CRC value stored in StrataFLASH memory.
+                 402     ; 16-bit value is hidden in 256 bytes of random numbers to make it more difficult
+                 403     ; for an attacker to identify.
+                 404     ; Read value is stored in scratch pad memory and displayed on the PC via UART.
+                 405     ;
+020 08394        406                             CALL    read_authentication     ;read StrataFLASH memory into [sB,sA]
+                 407                             ST      sa, authentication_crc0 ;store CRC value
+E: instruction not supported on the this device: STORE sX, ss.
+                 408                             ST      sb, authentication_crc1
+E: instruction not supported on the this device: STORE sX, ss.
+021 08348        409                             CALL    send_flash_crc          ;display CRC value from FLASH on PC via UART
+W: value out of range: 0x248, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x48.
+022 0C0B0        410                             LD      s0, sb
+023 08340        411                             CALL    send_hex_byte
+W: value out of range: 0x140, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x40.
+024 0C0A0        412                             LD      s0, sa
+025 08340        413                             CALL    send_hex_byte
+W: value out of range: 0x140, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x40.
+026 08354        414                             CALL    send_cr
+W: value out of range: 0x154, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x54.
+                 415     ;
+                 416     ;
+                 417     ; Compare the computed CRC value with the authentication value stored in StrataFLASH
+                 418     ; and determine if the design is authenticated. Then decide course of action.
+                 419     ;
+027 08339        420                             CALL    lcd_clear               ;clear LCD display
+W: value out of range: 0x339, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x39.
+028 083A9        421                             CALL    disp_authentication     ;prepare LCD display for result of authentication
+W: value out of range: 0x3a9, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xa9.
+029 08332        422                             CALL    send_authentication     ;prepare PC display for result of authentication
+W: value out of range: 0x232, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x32.
+                 423     ;
+                 424                             CMP     sa, sd                  ;Perform comparison of CRC values
+E: instruction not supported on the this device: COMPARE sX, sY.
+02A 09536        425                             JUMP    nz, auth_failure
+                 426                             CMP     sb, se
+E: instruction not supported on the this device: COMPARE sX, sY.
+02B 09536        427                             JUMP    nz, auth_failure
+                 428     ;
+                 429     ;
+                 430     ; Authentication Successful Process
+                 431     ;
+                 432     ; In this mode the design continues to operate and for evaluation
+                 433     ; purposes this design transfers control to the simple menu immediately.
+                 434     ;
+02C 083C8        435     auth_passed:            CALL    disp_passed             ;display successful authentication on LCD display
+W: value out of range: 0x3c8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xc8.
+02D 0839D        436                             CALL    send_passed             ;display successful authentication on PC via UART
+W: value out of range: 0x29d, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x9d.
+02E 0813C        437                             JUMP    menu
+                 438     ;
+                 439     ; Authentication Failure Process
+                 440     ;
+                 441     ; When the authentication fails two hardware based disable methods are demonstrated. Then
+                 442     ; the failed status is remembered for future software token messages to demonstrate software
+                 443     ; based disabling of the 'real' application. Finally the simple menu of options is presented
+                 444     ; to allow evaluation to continue.
+                 445     ;
+                 446     ;
+02F 083D6        447     auth_failure:           CALL    disp_failed             ;display failure to authenticate on LCD display
+W: value out of range: 0x3d6, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd6.
+030 0838F        448                             CALL    send_failed             ;display failure to authenticate on PC via UART
+W: value out of range: 0x28f, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x8f.
+031 08354        449                             CALL    send_cr
+W: value out of range: 0x154, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x54.
+032 08356        450                             CALL    disable_app_hardware    ;sequence hardware disable signals
+033 00046        451                             LD      s0, #_character_f       ;change authentication status to 'F' for failed.
+                 452                             ST      s0, authentication_status ; so that application software disable is demonstrated
+E: instruction not supported on the this device: STORE sX, ss.
+                 453     ;
+                 454     ;
+                 455     ;
+                 456     ; Menu of options for authentication processing
+                 457     ;
+034 083BC        458     menu:                   CALL    send_menu               ;display menu and prompt
+W: value out of range: 0x2bc, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xbc.
+035 0831D        459                             CALL    read_from_uart          ;read character from PC
+W: value out of range: 0x11d, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x1d.
+036 08329        460                             CALL    upper_case              ;convert to upper case
+W: value out of range: 0x129, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x29.
+                 461                             CMP     uart_data, #_character_r
+E: instruction not supported on the this device: COMPARE sX, kk.
+037 09146        462                             JUMP    z, read_command
+                 463                             CMP     uart_data, #_character_e
+E: instruction not supported on the this device: COMPARE sX, kk.
+038 0914B        464                             JUMP    z, erase_command
+                 465                             CMP     uart_data, #_character_a
+E: instruction not supported on the this device: COMPARE sX, kk.
+039 0914F        466                             JUMP    z, authorise_command
+03A 0813C        467                             JUMP    menu                    ;repeat menu for invalid selection
+                 468     ;
+                 469     ;
+                 470     ;
+03B 08354        471     read_command:           CALL    send_cr
+W: value out of range: 0x154, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x54.
+03C 083AE        472                             CALL    send_auth_page
+03D 08354        473                             CALL    send_cr
+W: value out of range: 0x154, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x54.
+03E 08354        474                             CALL    send_cr
+W: value out of range: 0x154, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x54.
+03F 0813C        475                             JUMP    menu
+                 476     ;
+                 477     ;
+                 478     ;
+040 0836F        479     erase_command:          CALL    send_erase_in_progress
+W: value out of range: 0x26f, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x6f.
+041 083DE        480                             CALL    erase_authentication
+042 08389        481                             CALL    send_ok
+W: value out of range: 0x289, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x89.
+043 0813C        482                             JUMP    menu
+                 483     ;
+                 484     ;
+                 485     ;
+044 083AA        486     authorise_command:      CALL    send_writing            ;Send 'Writing Authorisation' message
+W: value out of range: 0x2aa, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xaa.
+045 08354        487                             CALL    send_cr
+W: value out of range: 0x154, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x54.
+                 488                             FT      sd, computed_crc0       ;fetch computed CRC value
+E: instruction not supported on the this device: FETCH sX, ss.
+                 489                             FT      se, computed_crc1
+E: instruction not supported on the this device: FETCH sX, ss.
+046 083BE        490                             CALL    write_authentication    ;write computed CRC to FLASH with random data
+047 08389        491                             CALL    send_ok
+W: value out of range: 0x289, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x89.
+048 0813C        492                             JUMP    menu
+                 493     ;
+                 494     ;
+                 495     ;**************************************************************************************
+                 496     ; Drive failure signals to the application.
+                 497     ;**************************************************************************************
+                 498     ;
+                 499     ; When the design fails to authorise, these controls cause the application to behave in
+                 500     ; a strange way!
+                 501     ;
+                 502     ;
+                 503     ; Disable interrupts to application PicoBlaze to stop PWM generation completely for 5 seconds
+                 504     ;
+049 00001        505     disable_app_hardware:   LD      s0, #security_disable_interrupts
+04A 0E010        506                             OUT     s0, authentication_control_port
+04B 00505        507                             LD      s5, #0x05
+04C 08360        508                             CALL    delay_ns
+W: value out of range: 0x360, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x60.
+                 509     ;
+                 510     ; Enable application for 5 seconds
+                 511     ;
+04D 00000        512                             LD      s0, #0x00
+04E 0E010        513                             OUT     s0, authentication_control_port
+04F 00505        514                             LD      s5, #0x05
+050 08360        515                             CALL    delay_ns
+W: value out of range: 0x360, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x60.
+                 516     ;
+                 517     ; Disable and/or scramble outputs connected to application PicoBlaze for 5 seconds
+                 518     ;
+051 00002        519                             LD      s0, #security_disable_outputs
+052 0E010        520                             OUT     s0, authentication_control_port
+053 00505        521                             LD      s5, #0x05
+054 08360        522                             CALL    delay_ns
+W: value out of range: 0x360, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x60.
+                 523     ;
+                 524     ;
+                 525     ; Enable application in hardware so that software disable function can then be
+                 526     ; demonstrated until the design is reconfigured and authentication test repeated.
+                 527     ;
+055 00000        528                             LD      s0, #0x00
+056 0E010        529                             OUT     s0, authentication_control_port
+057 08080        530                             RET
+                 531     ;
+                 532     ;
+                 533     ;
+                 534     ;**************************************************************************************
+                 535     ; Send the 64-bit serial number stored in scratch pad memory to the UART
+                 536     ;**************************************************************************************
+                 537     ;
+                 538     ; The serial number should previously have been copied into the 8 ascending scratch pad
+                 539     ; memory locations called 'serial_number0' through to 'serial_number7'.
+                 540     ;
+                 541     ; The serial number is displayed MS-Byte first.
+                 542     ;
+                 543     ; Registers used s0,s1,s2,s3
+                 544     ;
+058 083F2        545     send_serial_number:     CALL    send_flash_serial_number ;display text message
+W: value out of range: 0x1f2, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xf2.
+059 00317        546                             LD      s3, #serial_number7     ;pointer to scratch pad memory
+  00067          547     send_sn_loop:           FT      s0, @s3                 ;read serial number byte
+E: instruction not supported on the this device: FETCH sX, sY.
+05A 08340        548                             CALL    send_hex_byte           ;display byte
+W: value out of range: 0x140, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x40.
+05B 08357        549                             CALL    send_space              ;display byte
+W: value out of range: 0x157, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x57.
+                 550                             CMP     s3, #serial_number0     ;check for 8 bytes sent to UART
+E: instruction not supported on the this device: COMPARE sX, kk.
+05C 0916E        551                             JUMP    z, end_send_sn
+05D 06301        552                             SUB     s3, #0x01               ;increment memory pointer
+05E 08167        553                             JUMP    send_sn_loop
+                 554     ;
+05F 08354        555     end_send_sn:            CALL    send_cr
+W: value out of range: 0x154, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x54.
+060 08080        556                             RET
+                 557     ;
+                 558     ;
+                 559     ;
+                 560     ;**************************************************************************************
+                 561     ; Display the 64-bit serial number stored in scratch pad memory on the LCD display
+                 562     ;**************************************************************************************
+                 563     ;
+                 564     ; The serial number should previously have been copied into the 8 ascending scratch pad
+                 565     ; memory locations called 'serial_number0' through to 'serial_number7'.
+                 566     ;
+                 567     ; The serial number is displayed MS-Byte first.
+                 568     ;
+                 569     ; Registers used s0,s1,s2,s3,s4,s5,s6
+                 570     ;
+061 08339        571     disp_serial_number:     CALL    lcd_clear               ;clear LCD display
+W: value out of range: 0x339, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x39.
+062 00510        572                             LD      s5, #0x10               ;Line 1 position 0
+063 0833E        573                             CALL    lcd_cursor
+W: value out of range: 0x33e, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x3e.
+064 08388        574                             CALL    disp_flash_serial_no    ;display text message
+W: value out of range: 0x388, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x88.
+065 00520        575                             LD      s5, #0x20               ;Line 2 position 0
+066 0833E        576                             CALL    lcd_cursor
+W: value out of range: 0x33e, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x3e.
+067 00617        577                             LD      s6, #serial_number7     ;pointer to scratch pad memory
+  00077          578     disp_sn_loop:           FT      s0, @s6                 ;read serial number byte
+E: instruction not supported on the this device: FETCH sX, sY.
+068 0834D        579                             CALL    disp_hex_byte           ;display byte
+W: value out of range: 0x14d, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x4d.
+                 580                             CMP     s6, #serial_number0     ;check for 8 bytes sent to UART
+E: instruction not supported on the this device: COMPARE sX, kk.
+069 0917D        581                             JUMP    z, end_disp_sn
+06A 06601        582                             SUB     s6, #0x01               ;increment memory pointer
+06B 08177        583                             JUMP    disp_sn_loop
+                 584     ;
+06C 08354        585     end_disp_sn:            CALL    send_cr
+W: value out of range: 0x154, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x54.
+06D 08080        586                             RET
+                 587     ;
+                 588     ;
+                 589     ;**************************************************************************************
+                 590     ; Compute a 16-bit CRC value for the StrataFLASH 64-bit serial number.
+                 591     ;**************************************************************************************
+                 592     ;
+                 593     ; This routing performs a 16-bit CRC calculation for the 64-bit unique serial number
+                 594     ; of the StrataFLASH memory which forms the authentication value for the design.
+                 595     ;
+                 596     ; The 16-bit CRC value returned in register pair [sE,sD] will be reflective of the unique
+                 597     ; serial number. This will be used as the authentication value for the design which is
+                 598     ; stored at known locations in the FLASH memory.
+                 599     ;
+                 600     ; A direct copy of the FLASH contents will not authorise a design to operate because the
+                 601     ; authentication value will not match the CRC value generated from the different serial number.
+                 602     ;
+                 603     ; To complicate the CRC value generation the CRC register can be seeded with a value rather
+                 604     ; than starting with a clear register.
+                 605     ;
+                 606     ;
+                 607     ; Registers used s0,s1,s2,s3
+                 608     ;
+06E 00410        609     compute_seeded_crc:     LD      s4, #serial_number0     ;pointer to scratch pad memory holding serial number
+  00080          610     crc_send_loop:          FT      s3, @s4                 ;read serial number byte
+E: instruction not supported on the this device: FETCH sX, sY.
+06F 08386        611                             CALL    compute_crc16           ;compute CRC for value in 's3'
+                 612                             CMP     s4, #serial_number7     ;check for 8 bytes processed
+E: instruction not supported on the this device: COMPARE sX, kk.
+070 08080        613                             RET
+071 04401        614                             ADD     s4, #0x01               ;increment memory pointer
+072 08180        615                             JUMP    crc_send_loop
+                 616     ;
+                 617     ;
+                 618     ;**************************************************************************************
+                 619     ; Compute 16-bit CRC using the polynomial X16 + X15 + X2 + 1.
+                 620     ;**************************************************************************************
+                 621     ;
+                 622     ;
+                 623     ; This routine computes a 16-bit CRC in the register pair [sE,sD] and these
+                 624     ; registers must not be disturbed between calls of this routine.
+                 625     ;
+                 626     ; This routine has been written such that the CRC can be computed one
+                 627     ; byte at a time. The byte to be processed should be provided in register 's3'
+                 628     ; and the contents of this register are preserved.
+                 629     ;
+                 630     ; Before starting a CRC computation either clear or pre-load (seed) the register pair
+                 631     ; [sE,sD] and do not disturb the value of the register pair between calling this routine.
+                 632     ;
+                 633     ; Registers used s0,s1,s3,sD,sE
+                 634     ;    s3 is preserved.
+                 635     ;    sD and sE should not be disturbed between calls if CRC value is required.
+                 636     ;
+                 637     ;
+                 638     ;
+073 00108        639     compute_crc16:          LD      s1, #0x08               ;8-bits to shift
+074 0C0D0        640     crc16_loop:             LD      s0, sd                  ;copy current CRC value
+075 0C033        641                             XOR     s0, s3                  ;Need to know LSB XOR next input bit
+                 642                             TEST    s0, #0x01               ;test result of XOR in LSB
+E: instruction not supported on the this device: TEST sX, kk.
+076 09D8D        643                             JUMP    nc, crc16_shift
+077 03D02        644                             XOR     sd, #0x02               ;compliment bit 1 of CRC
+078 03E40        645                             XOR     se, #0x40               ;compliment bit 14 of CRC
+079 0D00E        646     crc16_shift:            SR0     s0                      ;Carry gets LSB XOR next input bit
+07A 0DE08        647                             SRA     se                      ;shift Carry into MSB to form new CRC value
+07B 0DD08        648                             SRA     sd
+07C 0D30C        649                             RR      s3                      ;shift input value
+07D 06101        650                             SUB     s1, #0x01               ;count bits
+07E 09587        651                             JUMP    nz, crc16_loop          ;next bit
+07F 08080        652                             RET
+                 653     ;
+                 654     ;
+                 655     ;**************************************************************************************
+                 656     ; Read 256 bytes of StrataFLASH memory including the authentication value.
+                 657     ;**************************************************************************************
+                 658     ;
+                 659     ; This routine reads the authentication value from the StrataFLASH memory. In this
+                 660     ; design the authentication value is only 2 bytes which once read will be returned
+                 661     ; in the register pair [sB,sA].
+                 662     ;
+                 663     ; To make the authentication value more difficult to identify, it is hidden in 256 bytes
+                 664     ; of pseudo random values which will also appear different in each FLASH device inspected.
+                 665     ; This routine deliberately reads all 256 bytes that are stored and abstracts the required
+                 666     ; 2 bytes of information from them otherwise it would be easy to observe which addresses
+                 667     ; of the block were being accessed.
+                 668     ;
+                 669     ; Another way that an attacker may deduce which address locations are important would be to
+                 670     ; observe the time between read accesses and note when there is any difference. In this case
+                 671     ; the attacker is attempting to detect when PicoBlaze takes slightly longer to execute the
+                 672     ; instructions which store the important bytes in scratch pad memory. So to avoid this
+                 673     ; detection this routine inserts an additional random delay between reads to mask any code
+                 674     ; execution differences.
+                 675     ;
+                 676     ; The 256 bytes are stored at addresses 060000 to 0600FF hex (the first block above the
+                 677     ; XC3S500E configuration image which occupies 000000 to 04547F hex). The 2 bytes forming the
+                 678     ; actual authentication value are stored as 4-bit nibbles in 4 different locations in this range.
+                 679     ;
+                 680     ;
+                 681     ;                             High Order Nibble           Low Order Nibble
+                 682     ;                               (NNNNxxxx)                  (xxxxNNNN)
+                 683     ;
+                 684     ; LS-Byte in 'sA'              Addr=060010                 Addr=06007F
+                 685     ; MS-Byte in 'sB'              Addr=060025                 Addr=0600FA
+                 686     ;
+                 687     ;
+080 00906        688     read_authentication:    LD      s9, #0x06               ;start address in FLASH
+081 00800        689                             LD      s8, #0x00
+082 00700        690                             LD      s7, #0x00
+083 08301        691     auth_read_loop:         CALL    sf_byte_read            ;read byte from FLASH into s0
+W: value out of range: 0x101, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x1.
+                 692                             CMP     s7, #0x10               ;check for bytes/nibbles that contain real information
+E: instruction not supported on the this device: COMPARE sX, kk.
+084 0959C        693                             JUMP    nz, auth_check2
+085 0CA00        694                             LD      sa, s0                  ;isolate upper order nibble for LS-Byte
+086 01AF0        695                             AND     sa, #0xf0
+  0009C          696     auth_check2:            CMP     s7, #0x25
+E: instruction not supported on the this device: COMPARE sX, kk.
+087 095A0        697                             JUMP    nz, auth_check3
+088 0CB00        698                             LD      sb, s0                  ;isolate upper order nibble for MS-Byte
+089 01BF0        699                             AND     sb, #0xf0
+  000A0          700     auth_check3:            CMP     s7, #0x7f
+E: instruction not supported on the this device: COMPARE sX, kk.
+08A 095A4        701                             JUMP    nz, auth_check4
+08B 0100F        702                             AND     s0, #0x0f               ;isolate lower order nibble for LS-Byte
+08C 0CA02        703                             OR      sa, s0                  ;  and merge with upper order nibble
+  000A4          704     auth_check4:            CMP     s7, #0xfa
+E: instruction not supported on the this device: COMPARE sX, kk.
+08D 095A8        705                             JUMP    nz, next_auth_read
+08E 0100F        706                             AND     s0, #0x0f               ;isolate lower order nibble for MS-Byte
+08F 0CB02        707                             OR      sb, s0                  ;  and merge with upper order nibble
+090 04701        708     next_auth_read:         ADD     s7, #0x01               ;increment address
+091 08080        709                             RET                             ;complete after 256 reads
+092 0A004        710                             IN      s0, random_value_port   ;random delay between reads
+093 06001        711     auth_read_delay:        SUB     s0, #0x01
+094 095AB        712                             JUMP    nz, auth_read_delay
+095 08197        713                             JUMP    auth_read_loop
+                 714     ;
+                 715     ;
+                 716     ;**************************************************************************************
+                 717     ; Read 256 bytes (page) of StrataFLASH memory containing the authentication value.
+                 718     ;**************************************************************************************
+                 719     ;
+                 720     ; This routine reads the StrataFLASH memory and displays the contents on the PC display
+                 721     ; via the UART. The display will be 256 bytes from address range 060000 to 0600FF displayed
+                 722     ; as 16 lines of 16 bytes with each line commencing with the address of the first byte.
+                 723     ;
+096 00906        724     send_auth_page:         LD      s9, #0x06               ;start address in FLASH
+097 00800        725                             LD      s8, #0x00
+098 00700        726                             LD      s7, #0x00
+099 08354        727     auth_line_loop:         CALL    send_cr
+W: value out of range: 0x154, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x54.
+09A 08346        728                             CALL    send_hex_3bytes         ;display address
+W: value out of range: 0x146, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x46.
+09B 08357        729                             CALL    send_space
+W: value out of range: 0x157, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x57.
+09C 08357        730     auth_byte_loop:         CALL    send_space
+W: value out of range: 0x157, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x57.
+09D 08301        731                             CALL    sf_byte_read            ;read byte into s0
+W: value out of range: 0x101, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x1.
+09E 08340        732                             CALL    send_hex_byte           ;display byte
+W: value out of range: 0x140, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x40.
+09F 04701        733                             ADD     s7, #0x01               ;increment FLASH address
+                 734                             TEST    s7, #0x0f               ;test for 16 byte boundary
+E: instruction not supported on the this device: TEST sX, kk.
+0A0 095B4        735                             JUMP    nz, auth_byte_loop
+                 736                             TEST    s7, #0xff               ;test for roll over of 256 bytes
+E: instruction not supported on the this device: TEST sX, kk.
+0A1 095B1        737                             JUMP    nz, auth_line_loop
+0A2 08354        738                             CALL    send_cr
+W: value out of range: 0x154, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x54.
+0A3 08080        739                             RET
+                 740     ;
+                 741     ;
+                 742     ;
+                 743     ;
+                 744     ;**************************************************************************************
+                 745     ; Write 256 bytes of StrataFLASH memory including the authentication value.
+                 746     ;**************************************************************************************
+                 747     ;
+                 748     ; This routine writes the authentication value to the StrataFLASH memory. This routine
+                 749     ; would normally be part of a production programming mechanism and not part of the
+                 750     ; final design which only reads and confirms authentication. This routine does not
+                 751     ; require and special measures to confuse an attacker if it is only used in a secure
+                 752     ; production environment.
+                 753     ;
+                 754     ; The 2 bytes forming the actual authentication value are stored as 4-bit nibbles in
+                 755     ; 4 different locations in the address range 600000 to 6000FF hex (256 bytes) with
+                 756     ; all remaining locations filled with pseudo random values.
+                 757     ;
+                 758     ; The authentication value to be stored in StrataFLASH memory should be provided in
+                 759     ; the register pair [sE,sD] and will be stored in the following locations.
+                 760     ;
+                 761     ;                             High Order Nibble           Low Order Nibble
+                 762     ;                               (NNNNxxxx)                  (xxxxNNNN)
+                 763     ;
+                 764     ; LS-Byte in 'sD'              Addr=060010                 Addr=06007F
+                 765     ; MS-Byte in 'sE'              Addr=060025                 Addr=0600FA
+                 766     ;
+                 767     ;
+0A4 00906        768     write_authentication:   LD      s9, #0x06               ;start address in FLASH
+0A5 00800        769                             LD      s8, #0x00
+0A6 00700        770                             LD      s7, #0x00
+0A7 0A004        771     auth_write_loop:        IN      s0, random_value_port   ;Obtain random value
+                 772                             CMP     s7, #0x10               ;check for bytes/nibbles that need to be real information
+E: instruction not supported on the this device: COMPARE sX, kk.
+0A8 095C8        773                             JUMP    nz, auth_write_check2
+0A9 0C1D0        774                             LD      s1, sd                  ;merge upper order nibble for LS-Byte with random
+0AA 011F0        775                             AND     s1, #0xf0
+0AB 0100F        776                             AND     s0, #0x0f
+0AC 0C012        777                             OR      s0, s1
+  000C8          778     auth_write_check2:      CMP     s7, #0x25
+E: instruction not supported on the this device: COMPARE sX, kk.
+0AD 095CE        779                             JUMP    nz, auth_write_check3
+0AE 0C1E0        780                             LD      s1, se                  ;merge upper order nibble for MS-Byte with random
+0AF 011F0        781                             AND     s1, #0xf0
+0B0 0100F        782                             AND     s0, #0x0f
+0B1 0C012        783                             OR      s0, s1
+  000CE          784     auth_write_check3:      CMP     s7, #0x7f
+E: instruction not supported on the this device: COMPARE sX, kk.
+0B2 095D4        785                             JUMP    nz, auth_write_check4
+0B3 0C1D0        786                             LD      s1, sd                  ;merge lower order nibble for LS-Byte with random
+0B4 0110F        787                             AND     s1, #0x0f
+0B5 010F0        788                             AND     s0, #0xf0
+0B6 0C012        789                             OR      s0, s1
+  000D4          790     auth_write_check4:      CMP     s7, #0xfa
+E: instruction not supported on the this device: COMPARE sX, kk.
+0B7 095DA        791                             JUMP    nz, write_auth
+0B8 0C1E0        792                             LD      s1, se                  ;merge lower order nibble for MS-Byte with random
+0B9 0110F        793                             AND     s1, #0x0f
+0BA 010F0        794                             AND     s0, #0xf0
+0BB 0C012        795                             OR      s0, s1
+0BC 083EC        796     write_auth:             CALL    sf_single_byte_write    ;write byte to FLASH
+0BD 04701        797                             ADD     s7, #0x01               ;increment address
+0BE 08080        798                             RET                             ;complete after 256 writes
+0BF 081C1        799                             JUMP    auth_write_loop
+                 800     ;
+                 801     ;
+                 802     ;**************************************************************************************
+                 803     ; Erase authentication value from StrataFLASH memory.
+                 804     ;**************************************************************************************
+                 805     ;
+                 806     ; Erase block 3 of the StrataFLASH memory which covers the address range 060000 to 07FFFF.
+                 807     ; This erases the area containing the authentication value and random values which helps
+                 808     ; to hide it.
+                 809     ;
+0C0 00906        810     erase_authentication:   LD      s9, #0x06               ;set address to 06xxxx hex which defines block 3 (060000 to 07FFFF)
+0C1 083E4        811                             CALL    sf_erase_block
+0C2 08080        812                             RET
+                 813     ;
+                 814     ;
+                 815     ;**************************************************************************************
+                 816     ; Initialise the StrataFlash Memory control signals.
+                 817     ;**************************************************************************************
+                 818     ;
+                 819     ; SF_read = 0   - Output enable off
+                 820     ; SF_ce = 1     - Deselect StrataFLASH memory
+                 821     ; SF_we = 1     - Write enable off
+                 822     ;
+                 823     ; Register used s0
+                 824     ;
+0C3 00006        825     sf_init:                LD      s0, #0x06
+0C4 0E040        826                             OUT     s0, sf_control_port
+0C5 08080        827                             RET
+                 828     ;
+                 829     ;
+                 830     ;
+                 831     ;**************************************************************************************
+                 832     ; StrataFLASH Block Erase
+                 833     ;**************************************************************************************
+                 834     ;
+                 835     ; This routine will erase one 128k-byte block of the StrataFLASH memory.
+                 836     ; The block to be erased is specified by the contents of register 's9'.
+                 837     ;
+                 838     ; s9=06 erases Block 3 (address range 060000 to 07FFFF)
+                 839     ;
+                 840     ;
+                 841     ; To erase a block the 24-bit address must be set and then the block erase command
+                 842     ; (20 hex) written to the memory followed by the write confirm command (D0 hex).
+                 843     ;
+                 844     ; The act of erasing a block may take up to 1 second to complete. This routine
+                 845     ; waits for the memory to be ready before restoring the normal read array mode and
+                 846     ; returning.
+                 847     ;
+                 848     ; Registers used s0,s1,s7,s8,s9
+                 849     ;
+0C6 00800        850     sf_erase_block:         LD      s8, #0x00               ;define lower address of block = xx0000
+0C7 00700        851                             LD      s7, #0x00
+0C8 00120        852                             LD      s1, #0x20               ;block erase command
+0C9 0830B        853                             CALL    sf_byte_write
+W: value out of range: 0x10b, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb.
+0CA 001D0        854                             LD      s1, #0xd0               ;write confirm command
+0CB 0830B        855                             CALL    sf_byte_write
+W: value out of range: 0x10b, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb.
+0CC 08318        856                             CALL    wait_sf_ready           ;wait for erase to complete
+W: value out of range: 0x118, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x18.
+0CD 08080        857                             RET
+                 858     ;
+                 859     ;
+                 860     ;**************************************************************************************
+                 861     ; Write a single byte to StrataFlash Memory
+                 862     ;**************************************************************************************
+                 863     ;
+                 864     ; To write a single byte to StrataFLASH memory the address must be set and the
+                 865     ; single-word/byte program command (40 hex) sent to the memory. Then the data byte can
+                 866     ; be written to the memory using the same address.
+                 867     ;
+                 868     ; The 24-bit address should be supplied in register set [s9,s8,s7].
+                 869     ; Register s0 should contain the byte data to be written to the memory.
+                 870     ;
+                 871     ; The act of writing the memory array may take up to 175us to complete. This routine
+                 872     ; waits for the memory to be ready before restoring the normal read array mode and
+                 873     ; returning.
+                 874     ;
+                 875     ; Registers used s0,s1,s7,s8,s9   (s7,s8,s9 not changed)
+                 876     ;
+                 877     ; Registers used s0,s1,s7,s8,s9
+                 878     ;
+0CE 00140        879     sf_single_byte_write:   LD      s1, #0x40               ;command for single byte program
+0CF 0830B        880                             CALL    sf_byte_write
+W: value out of range: 0x10b, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb.
+0D0 0C100        881                             LD      s1, s0                  ;write data to be programmed
+0D1 0830B        882                             CALL    sf_byte_write
+W: value out of range: 0x10b, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb.
+0D2 08318        883                             CALL    wait_sf_ready           ;wait for program to complete
+W: value out of range: 0x118, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x18.
+0D3 08080        884                             RET
+                 885     ;
+                 886     ;
+                 887     ;
+                 888     ;**************************************************************************************
+                 889     ; Read the unique 64-bit serial number of the StrataFLASH FLASH memory
+                 890     ;**************************************************************************************
+                 891     ;
+                 892     ; To read the device information the Read device information command (90)
+                 893     ; must be written to the memory. The information is read back from address 000102
+                 894     ; to 000109 (note these are byte access addresses).
+                 895     ;
+                 896     ; The serial number is copied to 8 ascending scratch pad memory locations called
+                 897     ; 'serial_number0' through to 'serial_number7' for future use.
+                 898     ;
+                 899     ; After reading the device information the read array command is written to the
+                 900     ; device to put it back to normal read mode.
+                 901     ;
+                 902     ; Registers used s0,s1,s2,s7,s8,s9
+                 903     ;
+0D4 00900        904     read_sf_serial_number:  LD      s9, #0x00               ;StrataFLASH address to read serial number = 000102
+0D5 00801        905                             LD      s8, #0x01
+0D6 00702        906                             LD      s7, #0x02
+0D7 00210        907                             LD      s2, #serial_number0     ;pointer to scratch pad memory
+0D8 00190        908                             LD      s1, #0x90               ;command to read device information
+0D9 0830B        909                             CALL    sf_byte_write
+W: value out of range: 0x10b, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb.
+0DA 08301        910     read_sn_loop:           CALL    sf_byte_read            ;read serial number value
+W: value out of range: 0x101, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x1.
+                 911                             ST      s0, @s2
+E: instruction not supported on the this device: STORE sX, sY.
+                 912                             CMP     s2, #serial_number7     ;check for 8 bytes copied
+E: instruction not supported on the this device: COMPARE sX, kk.
+0DB 091FF        913                             JUMP    z, end_read_sn
+0DC 04701        914                             ADD     s7, #0x01               ;increment StrataFLASH address
+0DD 04201        915                             ADD     s2, #0x01               ;increment memory pointer
+0DE 081F8        916                             JUMP    read_sn_loop
+                 917     ;
+0DF 08315        918     end_read_sn:            CALL    set_sf_read_array_mode  ;restore normal read array mode
+W: value out of range: 0x115, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x15.
+0E0 08080        919                             RET
+                 920     ;
+                 921     ;
+                 922     ;
+                 923     ;**************************************************************************************
+                 924     ; Read a byte from StrataFlash Memory
+                 925     ;**************************************************************************************
+                 926     ;
+                 927     ; The 24-bit address should be supplied in register set [s9,s8,s7].
+                 928     ; Register s0 will return the byte data retrieved from the memory.
+                 929     ;
+                 930     ; To read a byte, the address needs to be set up on the address lines
+                 931     ; and the controls set as follows
+                 932     ;    SF_read = 1 - disable Spartan data outputs and enable StrataFlash outputs (OE=0)
+                 933     ;      SF_ce = 0 - enable StrataFLASH memory
+                 934     ;      SF_we = 1 - Write enable off
+                 935     ;
+                 936     ; The access time of the memory is 75ns. This is equivalent to 3.75 clock cycles at
+                 937     ; 50MHz. Since each KCPSM3 instruction takes 2 clock cycles to execute, two instructions
+                 938     ; provides adequate delay for the memory to be accessed.
+                 939     ;
+                 940     ; Registers used s0,s1,s7,s8,s9
+                 941     ;
+0E1 0E983        942     sf_byte_read:           OUT     s9, sf_addr_hi_port     ;set 24-bit address
+0E2 0E882        943                             OUT     s8, sf_addr_mi_port
+0E3 0E781        944                             OUT     s7, sf_addr_lo_port
+0E4 00105        945                             LD      s1, #0x05               ;set controls
+0E5 0E140        946                             OUT     s1, sf_control_port
+0E6 00106        947                             LD      s1, #0x06               ;>75ns delay
+0E7 00106        948                             LD      s1, #0x06               ;but do something useful!
+0E8 0A002        949                             IN      s0, sf_data_in_port     ;read data byte
+0E9 0E140        950                             OUT     s1, sf_control_port     ;clear controls
+0EA 08080        951                             RET
+                 952     ;
+                 953     ;
+                 954     ;**************************************************************************************
+                 955     ; Write data or command byte to StrataFlash Memory
+                 956     ;**************************************************************************************
+                 957     ;
+                 958     ; The 24-bit address should be supplied in register set [s9,s8,s7].
+                 959     ; Register s1 should contain the byte to be written to the memory.
+                 960     ;
+                 961     ; To write a byte, the address needs to be set up on the address lines
+                 962     ; and the controls set as follows
+                 963     ;    SF_read = 0 - enable Spartan data outputs and disable StrataFlash outputs (OE=1)
+                 964     ;      SF_ce = 0 - enable StrataFLASH memory
+                 965     ;      SF_we = 0 - Write enable on
+                 966     ;
+                 967     ; The setup time of the memory is 60ns. This is equivalent to 3 clock cycles at
+                 968     ; 50MHz. Since each KCPSM3 instruction takes 2 clock cycles to execute, two instructions
+                 969     ; provides adequate delay for the memory.
+                 970     ;
+                 971     ; Registers used s1,s7,s8,s9
+                 972     ;
+0EB 0E983        973     sf_byte_write:          OUT     s9, sf_addr_hi_port     ;set 24-bit address
+0EC 0E882        974                             OUT     s8, sf_addr_mi_port
+0ED 0E781        975                             OUT     s7, sf_addr_lo_port
+0EE 0E180        976                             OUT     s1, sf_data_out_port    ;set data byte to be written
+0EF 00100        977                             LD      s1, #0x00               ;set controls
+0F0 0E140        978                             OUT     s1, sf_control_port
+0F1 00106        979                             LD      s1, #0x06               ;>60ns delay
+0F2 00106        980                             LD      s1, #0x06               ;but do something useful!
+0F3 0E140        981                             OUT     s1, sf_control_port     ;clear controls
+0F4 08080        982                             RET
+                 983     ;
+                 984     ;
+                 985     ;**************************************************************************************
+                 986     ; Set 'Read Array' mode on StrataFLASH
+                 987     ;**************************************************************************************
+                 988     ;
+                 989     ; The read array mode is the default mode of the memory and allows the contents
+                 990     ; of the memory to be read based on the supplied address.
+                 991     ;
+                 992     ; Read array is the default mode of the device, but it must also be placed back
+                 993     ; into this mode after programming, erasing or reading the status register.
+                 994     ;
+                 995     ; The read array command (FF hex) is written to the Strata flash memory.
+                 996     ;
+                 997     ; Registers used s1,s7,s8,s9
+                 998     ;
+0F5 001FF        999     set_sf_read_array_mode: LD      s1, #0xff               ;command to read array
+0F6 0830B       1000                             CALL    sf_byte_write
+W: value out of range: 0x10b, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb.
+0F7 08080       1001                             RET
+                1002     ;
+                1003     ;
+                1004     ;**************************************************************************************
+                1005     ; Wait for StrataFLASH to be ready
+                1006     ;**************************************************************************************
+                1007     ;
+                1008     ; This routine will typically be used after instigating a program or erase
+                1009     ; command. It continuously reads the StrataFLASH status register and tests the
+                1010     ; information provided by bit7 which indicates if the memory is busy(0) or ready(1).
+                1011     ; The routine waits for the ready condition before sending a read array command
+                1012     ; which puts the memory back to normal read mode.
+                1013     ;
+                1014     ;
+                1015     ; Registers used s0,s1,s7,s8,s9   (s7,s8,s9 not changed)
+                1016     ;
+                1017     ;
+0F8 08301       1018     wait_sf_ready:          CALL    sf_byte_read            ;read status register into s0
+W: value out of range: 0x101, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x1.
+                1019                             TEST    s0, #0x80               ;test ready/busy flag
+E: instruction not supported on the this device: TEST sX, kk.
+0F9 09118       1020                             JUMP    z, wait_sf_ready
+W: value out of range: 0x118, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x18.
+0FA 08315       1021                             CALL    set_sf_read_array_mode  ;restore normal read array mode
+W: value out of range: 0x115, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x15.
+0FB 08080       1022                             RET
+                1023     ;
+                1024     ;
+                1025     ;
+                1026     ;
+                1027     ;**************************************************************************************
+                1028     ; UART communication routines
+                1029     ;**************************************************************************************
+                1030     ;
+                1031     ; Read one character from the UART
+                1032     ;
+                1033     ; Character read will be returned in a register called 'UART_data'.
+                1034     ;
+                1035     ; The routine first tests the receiver FIFO buffer to see if data is present.
+                1036     ; If the FIFO is empty, the routine waits until there is a character to read.
+                1037     ; As this could take any amount of time the wait loop could include a call to a
+                1038     ; subroutine which performs a useful function.
+                1039     ;
+                1040     ;
+                1041     ; Registers used s0 and UART_data
+                1042     ;
+0FC 0A000       1043     read_from_uart:         IN      s0, status_port         ;test Rx_FIFO buffer
+                1044                             TEST    s0, #rx_data_present    ;wait if empty
+E: instruction not supported on the this device: TEST sX, kk.
+0FD 09521       1045                             JUMP    nz, read_character
+W: value out of range: 0x121, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x21.
+0FE 0811D       1046                             JUMP    read_from_uart
+W: value out of range: 0x11d, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x1d.
+0FF 0AF01       1047     read_character:         IN      uart_data, uart_read_port ;read from FIFO
+100 08080       1048                             RET
+                1049     ;
+                1050     ;
+                1051     ;
+                1052     ; Transmit one character to the UART
+                1053     ;
+                1054     ; Character supplied in register called 'UART_data'.
+                1055     ;
+                1056     ; The routine first tests the transmit FIFO buffer to see if it is full.
+                1057     ; If the FIFO is full, then the routine waits until it there is space.
+                1058     ;
+                1059     ; Registers used s0
+                1060     ;
+101 0A000       1061     send_to_uart:           IN      s0, status_port         ;test Tx_FIFO buffer
+                1062                             TEST    s0, #tx_full            ;wait if full
+E: instruction not supported on the this device: TEST sX, kk.
+102 09127       1063                             JUMP    z, uart_write
+W: value out of range: 0x127, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x27.
+103 08123       1064                             JUMP    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+104 0EF08       1065     uart_write:             OUT     uart_data, uart_write_port
+105 08080       1066                             RET
+                1067     ;
+                1068     ;
+                1069     ;
+                1070     ;**************************************************************************************
+                1071     ;Useful ASCII conversion and handling routines
+                1072     ;**************************************************************************************
+                1073     ;
+                1074     ;
+                1075     ;
+                1076     ;Convert character to upper case
+                1077     ;
+                1078     ;The character supplied in register UART_data.
+                1079     ;If the character is in the range 'a' to 'z', it is converted
+                1080     ;to the equivalent upper case character in the range 'A' to 'Z'.
+                1081     ;All other characters remain unchanged.
+                1082     ;
+                1083     ;Registers used s0.
+                1084     ;
+  00129         1085     upper_case:             CMP     uart_data, #0x61        ;eliminate character codes below 'a' (61 hex)
+E: instruction not supported on the this device: COMPARE sX, kk.
+106 08080       1086                             RET
+                1087                             CMP     uart_data, #0x7b        ;eliminate character codes above 'z' (7A hex)
+E: instruction not supported on the this device: COMPARE sX, kk.
+107 08080       1088                             RET
+108 01FDF       1089                             AND     uart_data, #0xdf        ;mask bit5 to convert to upper case
+109 08080       1090                             RET
+                1091     ;
+                1092     ;
+                1093     ;Convert hexadecimal value provided in register s0 into ASCII characters
+                1094     ;
+                1095     ;The value provided must can be any value in the range 00 to FF and will be converted into
+                1096     ;two ASCII characters.
+                1097     ;     The upper nibble will be represented by an ASCII character returned in register s2.
+                1098     ;     The lower nibble will be represented by an ASCII character returned in register s1.
+                1099     ;
+                1100     ;The ASCII representations of '0' to '9' are 30 to 39 hexadecimal which is simply 30 hex
+                1101     ;added to the actual decimal value. The ASCII representations of 'A' to 'F' are 41 to 46
+                1102     ;hexadecimal requiring a further addition of 07 to the 30 already added.
+                1103     ;
+                1104     ;Registers used s0, s1 and s2.
+                1105     ;
+10A 0C100       1106     hex_byte_to_ascii:      LD      s1, s0                  ;remember value supplied
+10B 0D00E       1107                             SR0     s0                      ;isolate upper nibble
+10C 0D00E       1108                             SR0     s0
+10D 0D00E       1109                             SR0     s0
+10E 0D00E       1110                             SR0     s0
+10F 0833B       1111                             CALL    hex_to_ascii            ;convert
+W: value out of range: 0x13b, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x3b.
+110 0C200       1112                             LD      s2, s0                  ;upper nibble value in s2
+111 0C010       1113                             LD      s0, s1                  ;restore complete value
+112 0100F       1114                             AND     s0, #0x0f               ;isolate lower nibble
+113 0833B       1115                             CALL    hex_to_ascii            ;convert
+W: value out of range: 0x13b, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x3b.
+114 0C100       1116                             LD      s1, s0                  ;lower nibble value in s1
+115 08080       1117                             RET
+                1118     ;
+                1119     ;Convert hexadecimal value provided in register s0 into ASCII character
+                1120     ;
+                1121     ;Register used s0
+                1122     ;
+116 0600A       1123     hex_to_ascii:           SUB     s0, #0x0a               ;test if value is in range 0 to 9
+117 0993E       1124                             JUMP    c, number_char
+W: value out of range: 0x13e, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x3e.
+118 04007       1125                             ADD     s0, #0x07               ;ASCII char A to F in range 41 to 46
+119 0403A       1126     number_char:            ADD     s0, #0x3a               ;ASCII char 0 to 9 in range 30 to 40
+11A 08080       1127                             RET
+                1128     ;
+                1129     ;
+                1130     ;Send the two character HEX value of the register contents 's0' to the UART
+                1131     ;
+                1132     ;Registers used s0, s1, s2
+                1133     ;
+11B 0832F       1134     send_hex_byte:          CALL    hex_byte_to_ascii
+W: value out of range: 0x12f, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x2f.
+11C 0CF20       1135                             LD      uart_data, s2
+11D 08323       1136                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+11E 0CF10       1137                             LD      uart_data, s1
+11F 08323       1138                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+120 08080       1139                             RET
+                1140     ;
+                1141     ;
+                1142     ;Send the six character HEX value of the register contents [s9,s8,s7] to the UART
+                1143     ;
+                1144     ;Registers used s0, s1, s2
+                1145     ;
+121 0C090       1146     send_hex_3bytes:        LD      s0, s9
+122 08340       1147                             CALL    send_hex_byte
+W: value out of range: 0x140, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x40.
+123 0C080       1148                             LD      s0, s8
+124 08340       1149                             CALL    send_hex_byte
+W: value out of range: 0x140, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x40.
+125 0C070       1150                             LD      s0, s7
+126 08340       1151                             CALL    send_hex_byte
+W: value out of range: 0x140, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x40.
+127 08080       1152                             RET
+                1153     ;
+                1154     ;
+                1155     ;Display the two character HEX value of the register contents 's0' on the LCD display
+                1156     ;
+                1157     ;Registers used s0,s1,s2,s3,s4,s5
+                1158     ;
+128 0832F       1159     disp_hex_byte:          CALL    hex_byte_to_ascii
+W: value out of range: 0x12f, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x2f.
+129 0C310       1160                             LD      s3, s1                  ;remember least significant digit
+12A 0C520       1161                             LD      s5, s2
+12B 083FE       1162                             CALL    lcd_write_data          ;display most significant digit
+W: value out of range: 0x2fe, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xfe.
+12C 0C530       1163                             LD      s5, s3
+12D 083FE       1164                             CALL    lcd_write_data          ;display least significant digit
+W: value out of range: 0x2fe, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xfe.
+12E 08080       1165                             RET
+                1166     ;
+                1167     ;
+                1168     ;
+                1169     ;**************************************************************************************
+                1170     ; UART Text messages
+                1171     ;**************************************************************************************
+                1172     ;
+                1173     ;
+                1174     ;Send Carriage Return to the UART
+                1175     ;
+12F 00F0D       1176     send_cr:                LD      uart_data, #character_cr
+130 08323       1177                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+131 08080       1178                             RET
+                1179     ;
+                1180     ;Send a space to the UART
+                1181     ;
+132 00F20       1182     send_space:             LD      uart_data, #character_space
+133 08323       1183                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+134 08080       1184                             RET
+                1185     ;
+                1186     ;
+                1187     ;Send an equals sign to the UART with a space each side
+                1188     ;
+135 08357       1189     send_equals:            CALL    send_space
+W: value out of range: 0x157, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x57.
+136 00F3D       1190                             LD      uart_data, #character_equals
+137 08323       1191                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+138 08357       1192                             CALL    send_space
+W: value out of range: 0x157, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x57.
+139 08080       1193                             RET
+                1194     ;
+                1195     ;
+                1196     ;
+                1197     ;Send an minus sign (dash) to the UART with a space each side
+                1198     ;
+13A 08357       1199     send_dash:              CALL    send_space
+W: value out of range: 0x157, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x57.
+13B 00F2D       1200                             LD      uart_data, #character_minus
+13C 08323       1201                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+13D 08357       1202                             CALL    send_space
+W: value out of range: 0x157, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x57.
+13E 08080       1203                             RET
+                1204     ;
+                1205     ;
+                1206     ;Send 'PicoBlaze Low Cost Design Security v1.00' string to the UART
+                1207     ;
+13F 08354       1208     send_welcome:           CALL    send_cr
+W: value out of range: 0x154, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x54.
+140 08354       1209                             CALL    send_cr
+W: value out of range: 0x154, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x54.
+141 00F50       1210                             LD      uart_data, #_character_p
+142 08323       1211                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+143 00F69       1212                             LD      uart_data, #character_i
+144 08323       1213                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+145 00F63       1214                             LD      uart_data, #character_c
+146 08323       1215                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+147 00F6F       1216                             LD      uart_data, #character_o
+148 08323       1217                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+149 00F42       1218                             LD      uart_data, #_character_b
+14A 08323       1219                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+14B 00F6C       1220                             LD      uart_data, #character_l
+14C 08323       1221                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+14D 00F61       1222                             LD      uart_data, #character_a
+14E 08323       1223                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+14F 00F7A       1224                             LD      uart_data, #character_z
+150 08323       1225                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+151 00F65       1226                             LD      uart_data, #character_e
+152 08323       1227                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+153 08357       1228                             CALL    send_space
+W: value out of range: 0x157, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x57.
+154 00F4C       1229                             LD      uart_data, #_character_l
+155 08323       1230                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+156 00F6F       1231                             LD      uart_data, #character_o
+157 08323       1232                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+158 00F77       1233                             LD      uart_data, #character_w
+159 08323       1234                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+15A 08357       1235                             CALL    send_space
+W: value out of range: 0x157, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x57.
+15B 00F43       1236                             LD      uart_data, #_character_c
+15C 08323       1237                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+15D 00F6F       1238                             LD      uart_data, #character_o
+15E 08323       1239                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+15F 00F73       1240                             LD      uart_data, #character_s
+160 08323       1241                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+161 00F74       1242                             LD      uart_data, #character_t
+162 08323       1243                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+163 08357       1244                             CALL    send_space
+W: value out of range: 0x157, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x57.
+164 00F44       1245                             LD      uart_data, #_character_d
+165 08323       1246                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+166 00F65       1247                             LD      uart_data, #character_e
+167 08323       1248                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+168 00F73       1249                             LD      uart_data, #character_s
+169 08323       1250                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+16A 00F69       1251                             LD      uart_data, #character_i
+16B 08323       1252                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+16C 00F67       1253                             LD      uart_data, #character_g
+16D 08323       1254                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+16E 00F6E       1255                             LD      uart_data, #character_n
+16F 08323       1256                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+170 08357       1257                             CALL    send_space
+W: value out of range: 0x157, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x57.
+171 00F53       1258                             LD      uart_data, #_character_s
+172 08323       1259                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+173 00F65       1260                             LD      uart_data, #character_e
+174 08323       1261                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+175 00F63       1262                             LD      uart_data, #character_c
+176 08323       1263                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+177 00F75       1264                             LD      uart_data, #character_u
+178 08323       1265                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+179 00F72       1266                             LD      uart_data, #character_r
+17A 08323       1267                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+17B 00F69       1268                             LD      uart_data, #character_i
+17C 08323       1269                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+17D 00F74       1270                             LD      uart_data, #character_t
+17E 08323       1271                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+17F 00F79       1272                             LD      uart_data, #character_y
+180 08323       1273                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+181 08357       1274                             CALL    send_space
+W: value out of range: 0x157, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x57.
+182 00F76       1275                             LD      uart_data, #character_v
+183 08323       1276                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+184 00F31       1277                             LD      uart_data, #character_1
+185 08323       1278                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+186 00F2E       1279                             LD      uart_data, #character_fullstop
+187 08323       1280                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+188 00F30       1281                             LD      uart_data, #character_0
+189 08323       1282                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+18A 00F30       1283                             LD      uart_data, #character_0
+18B 08323       1284                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+18C 08354       1285                             CALL    send_cr
+W: value out of range: 0x154, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x54.
+18D 08354       1286                             CALL    send_cr
+W: value out of range: 0x154, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x54.
+18E 08080       1287                             RET
+                1288     ;
+                1289     ;
+                1290     ;
+                1291     ;Send 'Copyright Ken Chapman 2006' string to the UART
+                1292     ;
+                1293     ;This message is significant because it demonstrates that the design
+                1294     ;now has a 'watermark'. The ASCII codes for this string will be
+                1295     ;stored in the design configuration bit stream somewhere as well as
+                1296     ;being played out by the UART. If someone tries to change or delete
+                1297     ;this message the contents of the BRAM will change and the hardware
+                1298     ;check of the BRAM contents will fail to match the expected value and
+                1299     ;the design will again be disabled.
+                1300     ;
+18F 00F43       1301     send_copyright:         LD      uart_data, #_character_c
+190 08323       1302                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+191 00F6F       1303                             LD      uart_data, #character_o
+192 08323       1304                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+193 00F70       1305                             LD      uart_data, #character_p
+194 08323       1306                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+195 00F79       1307                             LD      uart_data, #character_y
+196 08323       1308                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+197 00F72       1309                             LD      uart_data, #character_r
+198 08323       1310                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+199 00F69       1311                             LD      uart_data, #character_i
+19A 08323       1312                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+19B 00F67       1313                             LD      uart_data, #character_g
+19C 08323       1314                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+19D 00F68       1315                             LD      uart_data, #character_h
+19E 08323       1316                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+19F 00F74       1317                             LD      uart_data, #character_t
+1A0 08323       1318                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+1A1 08357       1319                             CALL    send_space
+W: value out of range: 0x157, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x57.
+1A2 00F4B       1320                             LD      uart_data, #_character_k
+1A3 08323       1321                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+1A4 00F65       1322                             LD      uart_data, #character_e
+1A5 08323       1323                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+1A6 00F6E       1324                             LD      uart_data, #character_n
+1A7 08323       1325                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+1A8 08357       1326                             CALL    send_space
+W: value out of range: 0x157, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x57.
+1A9 00F43       1327                             LD      uart_data, #_character_c
+1AA 08323       1328                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+1AB 00F68       1329                             LD      uart_data, #character_h
+1AC 08323       1330                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+1AD 00F61       1331                             LD      uart_data, #character_a
+1AE 08323       1332                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+1AF 00F70       1333                             LD      uart_data, #character_p
+1B0 08323       1334                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+1B1 00F6D       1335                             LD      uart_data, #character_m
+1B2 08323       1336                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+1B3 00F61       1337                             LD      uart_data, #character_a
+1B4 08323       1338                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+1B5 00F6E       1339                             LD      uart_data, #character_n
+1B6 08323       1340                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+1B7 08357       1341                             CALL    send_space
+W: value out of range: 0x157, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x57.
+1B8 00F32       1342                             LD      uart_data, #character_2
+1B9 08323       1343                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+1BA 00F30       1344                             LD      uart_data, #character_0
+1BB 08323       1345                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+1BC 08323       1346                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+1BD 00F36       1347                             LD      uart_data, #character_6
+1BE 08323       1348                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+1BF 08354       1349                             CALL    send_cr
+W: value out of range: 0x154, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x54.
+1C0 08354       1350                             CALL    send_cr
+W: value out of range: 0x154, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x54.
+1C1 08080       1351                             RET
+                1352     ;
+                1353     ;
+                1354     ;
+                1355     ;Send 'FLASH ' string to the UART
+                1356     ;
+1C2 00F46       1357     send_flash:             LD      uart_data, #_character_f
+1C3 08323       1358                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+1C4 00F4C       1359                             LD      uart_data, #_character_l
+1C5 08323       1360                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+1C6 00F41       1361                             LD      uart_data, #_character_a
+1C7 08323       1362                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+1C8 00F53       1363                             LD      uart_data, #_character_s
+1C9 08323       1364                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+1CA 00F48       1365                             LD      uart_data, #_character_h
+1CB 08323       1366                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+1CC 08080       1367                             RET
+                1368     ;
+                1369     ;
+                1370     ;
+                1371     ;Send 'FLASH Serial Number = ' string to the UART
+                1372     ;
+1CD 083E7       1373     send_flash_serial_number: CALL  send_flash
+W: value out of range: 0x1e7, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xe7.
+1CE 08357       1374                             CALL    send_space
+W: value out of range: 0x157, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x57.
+1CF 00F53       1375                             LD      uart_data, #_character_s
+1D0 08323       1376                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+1D1 00F65       1377                             LD      uart_data, #character_e
+1D2 08323       1378                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+1D3 00F72       1379                             LD      uart_data, #character_r
+1D4 08323       1380                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+1D5 00F69       1381                             LD      uart_data, #character_i
+1D6 08323       1382                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+1D7 00F61       1383                             LD      uart_data, #character_a
+1D8 08323       1384                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+1D9 00F6C       1385                             LD      uart_data, #character_l
+1DA 08323       1386                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+1DB 08357       1387                             CALL    send_space
+W: value out of range: 0x157, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x57.
+1DC 00F4E       1388                             LD      uart_data, #_character_n
+1DD 08323       1389                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+1DE 00F75       1390                             LD      uart_data, #character_u
+1DF 08323       1391                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+1E0 00F6D       1392                             LD      uart_data, #character_m
+1E1 08323       1393                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+1E2 00F62       1394                             LD      uart_data, #character_b
+1E3 08323       1395                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+1E4 00F65       1396                             LD      uart_data, #character_e
+1E5 08323       1397                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+1E6 00F72       1398                             LD      uart_data, #character_r
+1E7 08323       1399                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+1E8 0835A       1400                             CALL    send_equals
+W: value out of range: 0x15a, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x5a.
+1E9 08080       1401                             RET
+                1402     ;
+                1403     ;
+                1404     ;Send 'Auth' string to the UART
+                1405     ;
+1EA 00F41       1406     send_auth:              LD      uart_data, #_character_a
+1EB 08323       1407                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+1EC 00F75       1408                             LD      uart_data, #character_u
+1ED 08323       1409                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+1EE 00F74       1410                             LD      uart_data, #character_t
+1EF 08323       1411                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+1F0 00F68       1412                             LD      uart_data, #character_h
+1F1 08323       1413                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+1F2 08080       1414                             RET
+                1415     ;
+                1416     ;Send 'Authoris' to the UART
+                1417     ;
+1F3 0830F       1418     send_authoris:          CALL    send_auth
+W: value out of range: 0x20f, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xf.
+1F4 00F6F       1419                             LD      uart_data, #character_o
+1F5 08323       1420                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+1F6 00F72       1421                             LD      uart_data, #character_r
+1F7 08323       1422                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+1F8 00F69       1423                             LD      uart_data, #character_i
+1F9 08323       1424                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+1FA 00F73       1425                             LD      uart_data, #character_s
+1FB 08323       1426                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+1FC 08080       1427                             RET
+                1428     ;
+                1429     ;Send 'Authorisation' to the UART
+                1430     ;
+1FD 08318       1431     send_authorisation:     CALL    send_authoris
+W: value out of range: 0x218, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x18.
+1FE 00F61       1432                             LD      uart_data, #character_a
+1FF 08323       1433                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+200 00F74       1434                             LD      uart_data, #character_t
+201 08323       1435                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+202 00F69       1436                             LD      uart_data, #character_i
+203 08323       1437                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+204 00F6F       1438                             LD      uart_data, #character_o
+205 08323       1439                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+206 00F6E       1440                             LD      uart_data, #character_n
+207 08323       1441                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+208 08080       1442                             RET
+                1443     ;
+                1444     ;Send 'Authorise' to the UART
+                1445     ;
+209 08318       1446     send_authorise:         CALL    send_authoris
+W: value out of range: 0x218, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x18.
+20A 00F65       1447                             LD      uart_data, #character_e
+20B 08323       1448                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+20C 08080       1449                             RET
+                1450     ;
+                1451     ;Send 'Authentication' string to the UART
+                1452     ;
+20D 0830F       1453     send_authentication:    CALL    send_auth
+W: value out of range: 0x20f, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xf.
+20E 00F65       1454                             LD      uart_data, #character_e
+20F 08323       1455                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+210 00F6E       1456                             LD      uart_data, #character_n
+211 08323       1457                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+212 00F74       1458                             LD      uart_data, #character_t
+213 08323       1459                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+214 00F69       1460                             LD      uart_data, #character_i
+215 08323       1461                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+216 00F63       1462                             LD      uart_data, #character_c
+217 08323       1463                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+218 00F61       1464                             LD      uart_data, #character_a
+219 08323       1465                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+21A 00F74       1466                             LD      uart_data, #character_t
+21B 08323       1467                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+21C 00F69       1468                             LD      uart_data, #character_i
+21D 08323       1469                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+21E 00F6F       1470                             LD      uart_data, #character_o
+21F 08323       1471                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+220 00F6E       1472                             LD      uart_data, #character_n
+221 08323       1473                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+222 08080       1474                             RET
+                1475     ;
+                1476     ;
+                1477     ;Send 'FLASH CRC = ' string to the UART
+                1478     ;
+223 083E7       1479     send_flash_crc:         CALL    send_flash
+W: value out of range: 0x1e7, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xe7.
+                1480     ;
+                1481     ;
+                1482     ;Send ' CRC = ' string to the UART
+                1483     ;
+224 08357       1484     send_crc:               CALL    send_space
+W: value out of range: 0x157, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x57.
+225 00F43       1485                             LD      uart_data, #_character_c
+226 08323       1486                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+227 00F52       1487                             LD      uart_data, #_character_r
+228 08323       1488                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+229 00F43       1489                             LD      uart_data, #_character_c
+22A 08323       1490                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+22B 0835A       1491                             CALL    send_equals
+W: value out of range: 0x15a, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x5a.
+22C 08080       1492                             RET
+                1493     ;
+                1494     ;
+                1495     ;
+                1496     ;Send 'Computed CRC = ' string to the UART
+                1497     ;
+22D 00F43       1498     send_computed_crc:      LD      uart_data, #_character_c
+22E 08323       1499                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+22F 00F6F       1500                             LD      uart_data, #character_o
+230 08323       1501                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+231 00F6D       1502                             LD      uart_data, #character_m
+232 08323       1503                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+233 00F70       1504                             LD      uart_data, #character_p
+234 08323       1505                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+235 00F75       1506                             LD      uart_data, #character_u
+236 08323       1507                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+237 00F74       1508                             LD      uart_data, #character_t
+238 08323       1509                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+239 00F65       1510                             LD      uart_data, #character_e
+23A 08323       1511                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+23B 00F64       1512                             LD      uart_data, #character_d
+23C 08323       1513                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+23D 08149       1514                             JUMP    send_crc
+W: value out of range: 0x249, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x49.
+                1515     ;
+                1516     ;
+                1517     ;Send 'Erase ' string to the UART
+                1518     ;
+23E 00F45       1519     send_erase:             LD      uart_data, #_character_e
+23F 08323       1520                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+240 00F72       1521                             LD      uart_data, #character_r
+241 08323       1522                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+242 00F61       1523                             LD      uart_data, #character_a
+243 08323       1524                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+244 00F73       1525                             LD      uart_data, #character_s
+245 08323       1526                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+246 00F65       1527                             LD      uart_data, #character_e
+247 08323       1528                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+248 08357       1529                             CALL    send_space
+W: value out of range: 0x157, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x57.
+249 08080       1530                             RET
+                1531     ;
+                1532     ;
+                1533     ;Send 'Erase Authorisation in progress' string to the UART
+                1534     ;
+24A 08354       1535     send_erase_in_progress: CALL    send_cr
+W: value out of range: 0x154, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x54.
+24B 08363       1536                             CALL    send_erase
+W: value out of range: 0x263, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x63.
+24C 08322       1537                             CALL    send_authorisation
+W: value out of range: 0x222, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x22.
+24D 08357       1538                             CALL    send_space
+W: value out of range: 0x157, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x57.
+24E 00F69       1539                             LD      uart_data, #character_i
+24F 08323       1540                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+250 00F6E       1541                             LD      uart_data, #character_n
+251 08323       1542                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+252 08357       1543                             CALL    send_space
+W: value out of range: 0x157, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x57.
+253 00F50       1544                             LD      uart_data, #_character_p
+254 08323       1545                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+255 00F72       1546                             LD      uart_data, #character_r
+256 08323       1547                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+257 00F6F       1548                             LD      uart_data, #character_o
+258 08323       1549                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+259 00F67       1550                             LD      uart_data, #character_g
+25A 08323       1551                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+25B 00F72       1552                             LD      uart_data, #character_r
+25C 08323       1553                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+25D 00F65       1554                             LD      uart_data, #character_e
+25E 08323       1555                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+25F 00F73       1556                             LD      uart_data, #character_s
+260 08323       1557                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+261 08323       1558                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+262 08354       1559                             CALL    send_cr
+W: value out of range: 0x154, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x54.
+263 08080       1560                             RET
+                1561     ;
+                1562     ;
+                1563     ;Send 'OK' to the UART
+                1564     ;
+264 00F4F       1565     send_ok:                LD      uart_data, #_character_o
+265 08323       1566                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+266 00F4B       1567                             LD      uart_data, #_character_k
+267 08323       1568                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+268 08354       1569                             CALL    send_cr
+W: value out of range: 0x154, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x54.
+269 08080       1570                             RET
+                1571     ;
+                1572     ;
+                1573     ;Send ' FAILED' to the UART
+                1574     ;
+26A 08357       1575     send_failed:            CALL    send_space
+W: value out of range: 0x157, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x57.
+26B 00F46       1576                             LD      uart_data, #_character_f
+26C 08323       1577                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+26D 00F41       1578                             LD      uart_data, #_character_a
+26E 08323       1579                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+26F 00F49       1580                             LD      uart_data, #_character_i
+270 08323       1581                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+271 00F4C       1582                             LD      uart_data, #_character_l
+272 08323       1583                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+273 00F45       1584                             LD      uart_data, #_character_e
+274 08323       1585                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+275 00F44       1586                             LD      uart_data, #_character_d
+276 08323       1587                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+277 08080       1588                             RET
+                1589     ;
+                1590     ;
+                1591     ;Send ' PASSED' to the UART
+                1592     ;
+278 08357       1593     send_passed:            CALL    send_space
+W: value out of range: 0x157, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x57.
+279 00F50       1594                             LD      uart_data, #_character_p
+27A 08323       1595                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+27B 00F41       1596                             LD      uart_data, #_character_a
+27C 08323       1597                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+27D 00F53       1598                             LD      uart_data, #_character_s
+27E 08323       1599                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+27F 08323       1600                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+280 00F45       1601                             LD      uart_data, #_character_e
+281 08323       1602                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+282 00F44       1603                             LD      uart_data, #_character_d
+283 08323       1604                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+284 08080       1605                             RET
+                1606     ;
+                1607     ;
+                1608     ;
+                1609     ;Send 'Writing Authorisation' to the UART
+                1610     ;
+285 08354       1611     send_writing:           CALL    send_cr
+W: value out of range: 0x154, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x54.
+286 00F57       1612                             LD      uart_data, #_character_w
+287 08323       1613                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+288 00F72       1614                             LD      uart_data, #character_r
+289 08323       1615                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+28A 00F69       1616                             LD      uart_data, #character_i
+28B 08323       1617                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+28C 00F74       1618                             LD      uart_data, #character_t
+28D 08323       1619                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+28E 00F69       1620                             LD      uart_data, #character_i
+28F 08323       1621                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+290 00F6E       1622                             LD      uart_data, #character_n
+291 08323       1623                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+292 00F67       1624                             LD      uart_data, #character_g
+293 08323       1625                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+294 08357       1626                             CALL    send_space
+W: value out of range: 0x157, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x57.
+295 08322       1627                             CALL    send_authorisation
+W: value out of range: 0x222, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x22.
+296 08080       1628                             RET
+                1629     ;
+                1630     ;Send simple menu of options to the UART
+                1631     ;
+                1632     ;
+297 08354       1633     send_menu:              CALL    send_cr
+W: value out of range: 0x154, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x54.
+298 08354       1634                             CALL    send_cr
+W: value out of range: 0x154, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x54.
+299 00F4D       1635                             LD      uart_data, #_character_m
+29A 08323       1636                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+29B 00F65       1637                             LD      uart_data, #character_e
+29C 08323       1638                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+29D 00F6E       1639                             LD      uart_data, #character_n
+29E 08323       1640                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+29F 00F75       1641                             LD      uart_data, #character_u
+2A0 08323       1642                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+2A1 08354       1643                             CALL    send_cr
+W: value out of range: 0x154, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x54.
+2A2 08354       1644                             CALL    send_cr
+W: value out of range: 0x154, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x54.
+2A3 00F52       1645                             LD      uart_data, #_character_r
+2A4 08323       1646                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+2A5 0835F       1647                             CALL    send_dash
+W: value out of range: 0x15f, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x5f.
+2A6 00F52       1648                             LD      uart_data, #_character_r
+2A7 08323       1649                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+2A8 00F65       1650                             LD      uart_data, #character_e
+2A9 08323       1651                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+2AA 00F61       1652                             LD      uart_data, #character_a
+2AB 08323       1653                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+2AC 00F64       1654                             LD      uart_data, #character_d
+2AD 08323       1655                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+2AE 08357       1656                             CALL    send_space
+W: value out of range: 0x157, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x57.
+2AF 08322       1657                             CALL    send_authorisation
+W: value out of range: 0x222, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x22.
+2B0 08354       1658                             CALL    send_cr
+W: value out of range: 0x154, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x54.
+2B1 00F45       1659                             LD      uart_data, #_character_e
+2B2 08323       1660                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+2B3 0835F       1661                             CALL    send_dash
+W: value out of range: 0x15f, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x5f.
+2B4 08363       1662                             CALL    send_erase
+W: value out of range: 0x263, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x63.
+2B5 08322       1663                             CALL    send_authorisation
+W: value out of range: 0x222, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x22.
+2B6 08354       1664                             CALL    send_cr
+W: value out of range: 0x154, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x54.
+2B7 00F41       1665                             LD      uart_data, #_character_a
+2B8 08323       1666                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+2B9 0835F       1667                             CALL    send_dash
+W: value out of range: 0x15f, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x5f.
+2BA 0832E       1668                             CALL    send_authorise
+W: value out of range: 0x22e, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x2e.
+2BB 08354       1669                             CALL    send_cr
+W: value out of range: 0x154, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x54.
+2BC 08354       1670                             CALL    send_cr
+W: value out of range: 0x154, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x54.
+2BD 00F3E       1671                             LD      uart_data, #character_greater_than ;prompt for input
+2BE 08323       1672                             CALL    send_to_uart
+W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+2BF 08080       1673                             RET
+                1674     ;
+                1675     ;**************************************************************************************
+                1676     ;LCD Character Module Routines
+                1677     ;**************************************************************************************
+                1678     ;
+                1679     ;LCD module is a 16 character by 2 line display but all displays are very similar
+                1680     ;The 4-wire data interface will be used (DB4 to DB7).
+                1681     ;
+                1682     ;The LCD modules are relatively slow and software delay loops are used to slow down
+                1683     ;KCPSM3 adequately for the LCD to communicate. The delay routines are provided in
+                1684     ;a different section (see above in this case).
+                1685     ;
+                1686     ;
+                1687     ;Pulse LCD enable signal 'E' high for greater than 230ns (1us is used).
+                1688     ;
+                1689     ;Register s4 should define the current state of the LCD output port.
+                1690     ;
+                1691     ;Registers used s0, s4
+                1692     ;
+2C0 03401       1693     lcd_pulse_e:            XOR     s4, #lcd_e              ;E=1
+2C1 0E420       1694                             OUT     s4, lcd_output_port
+2C2 08348       1695                             CALL    delay_1us
+W: value out of range: 0x348, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x48.
+2C3 03401       1696                             XOR     s4, #lcd_e              ;E=0
+2C4 0E420       1697                             OUT     s4, lcd_output_port
+2C5 08080       1698                             RET
+                1699     ;
+                1700     ;Write 4-bit instruction to LCD display.
+                1701     ;
+                1702     ;The 4-bit instruction should be provided in the upper 4-bits of register s4.
+                1703     ;Note that this routine does not release the master enable but as it is only
+                1704     ;used during initialisation and as part of the 8-bit instruction write it
+                1705     ;should be acceptable.
+                1706     ;
+                1707     ;Registers used s4
+                1708     ;
+2C6 014F8       1709     lcd_write_inst4:        AND     s4, #0xf8               ;Enable=1 RS=0 Instruction, RW=0 Write, E=0
+2C7 0E420       1710                             OUT     s4, lcd_output_port     ;set up RS and RW >40ns before enable pulse
+2C8 083E5       1711                             CALL    lcd_pulse_e
+W: value out of range: 0x2e5, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xe5.
+2C9 08080       1712                             RET
+                1713     ;
+                1714     ;
+                1715     ;Write 8-bit instruction to LCD display.
+                1716     ;
+                1717     ;The 8-bit instruction should be provided in register s5.
+                1718     ;Instructions are written using the following sequence
+                1719     ; Upper nibble
+                1720     ; wait >1us
+                1721     ; Lower nibble
+                1722     ; wait >40us
+                1723     ;
+                1724     ;Registers used s0, s1, s4, s5
+                1725     ;
+2CA 0C450       1726     lcd_write_inst8:        LD      s4, s5
+2CB 014F0       1727                             AND     s4, #0xf0               ;Enable=0 RS=0 Instruction, RW=0 Write, E=0
+2CC 02408       1728                             OR      s4, #lcd_drive          ;Enable=1
+2CD 083EB       1729                             CALL    lcd_write_inst4         ;write upper nibble
+W: value out of range: 0x2eb, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xeb.
+2CE 08348       1730                             CALL    delay_1us               ;wait >1us
+W: value out of range: 0x348, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x48.
+2CF 0C450       1731                             LD      s4, s5                  ;select lower nibble with
+2D0 0D407       1732                             SL1     s4                      ;Enable=1
+2D1 0D406       1733                             SL0     s4                      ;RS=0 Instruction
+2D2 0D406       1734                             SL0     s4                      ;RW=0 Write
+2D3 0D406       1735                             SL0     s4                      ;E=0
+2D4 083EB       1736                             CALL    lcd_write_inst4         ;write lower nibble
+W: value out of range: 0x2eb, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xeb.
+2D5 0834C       1737                             CALL    delay_40us              ;wait >40us
+W: value out of range: 0x34c, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x4c.
+2D6 004F0       1738                             LD      s4, #0xf0               ;Enable=0 RS=0 Instruction, RW=0 Write, E=0
+2D7 0E420       1739                             OUT     s4, lcd_output_port     ;Release master enable
+2D8 08080       1740                             RET
+                1741     ;
+                1742     ;
+                1743     ;
+                1744     ;Write 8-bit data to LCD display.
+                1745     ;
+                1746     ;The 8-bit data should be provided in register s5.
+                1747     ;Data bytes are written using the following sequence
+                1748     ; Upper nibble
+                1749     ; wait >1us
+                1750     ; Lower nibble
+                1751     ; wait >40us
+                1752     ;
+                1753     ;Registers used s0, s1, s4, s5
+                1754     ;
+2D9 0C450       1755     lcd_write_data:         LD      s4, s5
+2DA 014F0       1756                             AND     s4, #0xf0               ;Enable=0 RS=0 Instruction, RW=0 Write, E=0
+2DB 0240C       1757                             OR      s4, #0x0c               ;Enable=1 RS=1 Data, RW=0 Write, E=0
+2DC 0E420       1758                             OUT     s4, lcd_output_port     ;set up RS and RW >40ns before enable pulse
+2DD 083E5       1759                             CALL    lcd_pulse_e             ;write upper nibble
+W: value out of range: 0x2e5, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xe5.
+2DE 08348       1760                             CALL    delay_1us               ;wait >1us
+W: value out of range: 0x348, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x48.
+2DF 0C450       1761                             LD      s4, s5                  ;select lower nibble with
+2E0 0D407       1762                             SL1     s4                      ;Enable=1
+2E1 0D407       1763                             SL1     s4                      ;RS=1 Data
+2E2 0D406       1764                             SL0     s4                      ;RW=0 Write
+2E3 0D406       1765                             SL0     s4                      ;E=0
+2E4 0E420       1766                             OUT     s4, lcd_output_port     ;set up RS and RW >40ns before enable pulse
+2E5 083E5       1767                             CALL    lcd_pulse_e             ;write lower nibble
+W: value out of range: 0x2e5, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xe5.
+2E6 0834C       1768                             CALL    delay_40us              ;wait >40us
+W: value out of range: 0x34c, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x4c.
+2E7 004F0       1769                             LD      s4, #0xf0               ;Enable=0 RS=0 Instruction, RW=0 Write, E=0
+2E8 0E420       1770                             OUT     s4, lcd_output_port     ;Release master enable
+2E9 08080       1771                             RET
+                1772     ;
+                1773     ;
+                1774     ;
+                1775     ;
+                1776     ;Read 8-bit data from LCD display.
+                1777     ;
+                1778     ;The 8-bit data will be read from the current LCD memory address
+                1779     ;and will be returned in register s5.
+                1780     ;It is advisable to set the LCD address (cursor position) before
+                1781     ;using the data read for the first time otherwise the display may
+                1782     ;generate invalid data on the first read.
+                1783     ;
+                1784     ;Data bytes are read using the following sequence
+                1785     ; Upper nibble
+                1786     ; wait >1us
+                1787     ; Lower nibble
+                1788     ; wait >40us
+                1789     ;
+                1790     ;Registers used s0, s1, s4, s5
+                1791     ;
+2EA 0040E       1792     lcd_read_data8:         LD      s4, #0x0e               ;Enable=1 RS=1 Data, RW=1 Read, E=0
+2EB 0E420       1793                             OUT     s4, lcd_output_port     ;set up RS and RW >40ns before enable pulse
+2EC 03401       1794                             XOR     s4, #lcd_e              ;E=1
+2ED 0E420       1795                             OUT     s4, lcd_output_port
+2EE 08348       1796                             CALL    delay_1us               ;wait >260ns to access data
+W: value out of range: 0x348, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x48.
+2EF 0A503       1797                             IN      s5, lcd_input_port      ;read upper nibble
+2F0 03401       1798                             XOR     s4, #lcd_e              ;E=0
+2F1 0E420       1799                             OUT     s4, lcd_output_port
+2F2 08348       1800                             CALL    delay_1us               ;wait >1us
+W: value out of range: 0x348, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x48.
+2F3 03401       1801                             XOR     s4, #lcd_e              ;E=1
+2F4 0E420       1802                             OUT     s4, lcd_output_port
+2F5 08348       1803                             CALL    delay_1us               ;wait >260ns to access data
+W: value out of range: 0x348, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x48.
+2F6 0A003       1804                             IN      s0, lcd_input_port      ;read lower nibble
+2F7 03401       1805                             XOR     s4, #lcd_e              ;E=0
+2F8 0E420       1806                             OUT     s4, lcd_output_port
+2F9 015F0       1807                             AND     s5, #0xf0               ;merge upper and lower nibbles
+2FA 0D00E       1808                             SR0     s0
+2FB 0D00E       1809                             SR0     s0
+2FC 0D00E       1810                             SR0     s0
+2FD 0D00E       1811                             SR0     s0
+2FE 0C502       1812                             OR      s5, s0
+2FF 00404       1813                             LD      s4, #0x04               ;Enable=0 RS=1 Data, RW=0 Write, E=0
+300 0E420       1814                             OUT     s4, lcd_output_port     ;Stop reading 5V device and release master enable
+301 0834C       1815                             CALL    delay_40us              ;wait >40us
+W: value out of range: 0x34c, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x4c.
+302 08080       1816                             RET
+                1817     ;
+                1818     ;
+                1819     ;Reset and initialise display to communicate using 4-bit data mode
+                1820     ;Includes routine to clear the display.
+                1821     ;
+                1822     ;Requires the 4-bit instructions 3,3,3,2 to be sent with suitable delays
+                1823     ;following by the 8-bit instructions to set up the display.
+                1824     ;
+                1825     ;  28 = '001' Function set, '0' 4-bit mode, '1' 2-line, '0' 5x7 dot matrix, 'xx'
+                1826     ;  06 = '000001' Entry mode, '1' increment, '0' no display shift
+                1827     ;  0C = '00001' Display control, '1' display on, '0' cursor off, '0' cursor blink off
+                1828     ;  01 = '00000001' Display clear
+                1829     ;
+                1830     ;Registers used s0, s1, s2, s3, s4
+                1831     ;
+303 08356       1832     lcd_reset:              CALL    delay_20ms              ;wait more that 15ms for display to be ready
+W: value out of range: 0x356, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x56.
+304 00430       1833                             LD      s4, #0x30
+305 083EB       1834                             CALL    lcd_write_inst4         ;send '3'
+W: value out of range: 0x2eb, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xeb.
+306 08356       1835                             CALL    delay_20ms              ;wait >4.1ms
+W: value out of range: 0x356, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x56.
+307 083EB       1836                             CALL    lcd_write_inst4         ;send '3'
+W: value out of range: 0x2eb, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xeb.
+308 08351       1837                             CALL    delay_1ms               ;wait >100us
+W: value out of range: 0x351, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x51.
+309 083EB       1838                             CALL    lcd_write_inst4         ;send '3'
+W: value out of range: 0x2eb, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xeb.
+30A 0834C       1839                             CALL    delay_40us              ;wait >40us
+W: value out of range: 0x34c, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x4c.
+30B 00420       1840                             LD      s4, #0x20
+30C 083EB       1841                             CALL    lcd_write_inst4         ;send '2'
+W: value out of range: 0x2eb, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xeb.
+30D 0834C       1842                             CALL    delay_40us              ;wait >40us
+W: value out of range: 0x34c, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x4c.
+30E 00528       1843                             LD      s5, #0x28               ;Function set
+30F 083EF       1844                             CALL    lcd_write_inst8
+W: value out of range: 0x2ef, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xef.
+310 00506       1845                             LD      s5, #0x06               ;Entry mode
+311 083EF       1846                             CALL    lcd_write_inst8
+W: value out of range: 0x2ef, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xef.
+312 0050C       1847                             LD      s5, #0x0c               ;Display control
+313 083EF       1848                             CALL    lcd_write_inst8
+W: value out of range: 0x2ef, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xef.
+314 00501       1849     lcd_clear:              LD      s5, #0x01               ;Display clear
+315 083EF       1850                             CALL    lcd_write_inst8
+W: value out of range: 0x2ef, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xef.
+316 08351       1851                             CALL    delay_1ms               ;wait >1.64ms for display to clear
+W: value out of range: 0x351, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x51.
+317 08351       1852                             CALL    delay_1ms
+W: value out of range: 0x351, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x51.
+318 08080       1853                             RET
+                1854     ;
+                1855     ;Position the cursor ready for characters to be written.
+                1856     ;The display is formed of 2 lines of 16 characters and each
+                1857     ;position has a corresponding address as indicated below.
+                1858     ;
+                1859     ;                   Character position
+                1860     ;           0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15
+                1861     ;
+                1862     ; Line 1 - 80 81 82 83 84 85 86 87 88 89 8A 8B 8C 8D 8E 8F
+                1863     ; Line 2 - C0 C1 C2 C3 C4 C5 C6 C7 C8 C9 CA CB CC CD CE CF
+                1864     ;
+                1865     ;This routine will set the cursor position using the value provided
+                1866     ;in register s5. The upper nibble will define the line and the lower
+                1867     ;nibble the character position on the line.
+                1868     ; Example s5 = 2B will position the cursor on line 2 position 11
+                1869     ;
+                1870     ;Registers used s0, s1, s2, s3, s4
+                1871     ;
+  0033E         1872     lcd_cursor:             TEST    s5, #0x10               ;test for line 1
+E: instruction not supported on the this device: TEST sX, kk.
+319 09144       1873                             JUMP    z, set_line2
+W: value out of range: 0x344, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x44.
+31A 0150F       1874                             AND     s5, #0x0f               ;make address in range 80 to 8F for line 1
+31B 02580       1875                             OR      s5, #0x80
+31C 083EF       1876                             CALL    lcd_write_inst8         ;instruction write to set cursor
+W: value out of range: 0x2ef, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xef.
+31D 08080       1877                             RET
+31E 0150F       1878     set_line2:              AND     s5, #0x0f               ;make address in range C0 to CF for line 2
+31F 025C0       1879                             OR      s5, #0xc0
+320 083EF       1880                             CALL    lcd_write_inst8         ;instruction write to set cursor
+W: value out of range: 0x2ef, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xef.
+321 08080       1881                             RET
+                1882     ;
+                1883     ;**************************************************************************************
+                1884     ;Software delay routines
+                1885     ;**************************************************************************************
+                1886     ;
+                1887     ;
+                1888     ;
+                1889     ;Delay of 1us.
+                1890     ;
+                1891     ;Constant value defines reflects the clock applied to KCPSM3. Every instruction
+                1892     ;executes in 2 clock cycles making the calculation highly predictable. The '6' in
+                1893     ;the following equation even allows for 'CALL delay_1us' instruction in the initiating code.
+                1894     ;
+                1895     ; delay_1us_constant =  (clock_rate - 6)/4       Where 'clock_rate' is in MHz
+                1896     ;
+                1897     ;Registers used s0
+                1898     ;
+322 0000B       1899     delay_1us:              LD      s0, #delay_1us_constant
+323 06001       1900     wait_1us:               SUB     s0, #0x01
+324 09549       1901                             JUMP    nz, wait_1us
+W: value out of range: 0x349, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x49.
+325 08080       1902                             RET
+                1903     ;
+                1904     ;Delay of 40us.
+                1905     ;
+                1906     ;Registers used s0, s1
+                1907     ;
+326 00128       1908     delay_40us:             LD      s1, #0x28               ;40 x 1us = 40us
+327 08348       1909     wait_40us:              CALL    delay_1us
+W: value out of range: 0x348, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x48.
+328 06101       1910                             SUB     s1, #0x01
+329 0954D       1911                             JUMP    nz, wait_40us
+W: value out of range: 0x34d, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x4d.
+32A 08080       1912                             RET
+                1913     ;
+                1914     ;
+                1915     ;Delay of 1ms.
+                1916     ;
+                1917     ;Registers used s0, s1, s2
+                1918     ;
+32B 00219       1919     delay_1ms:              LD      s2, #0x19               ;25 x 40us = 1ms
+32C 0834C       1920     wait_1ms:               CALL    delay_40us
+W: value out of range: 0x34c, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x4c.
+32D 06201       1921                             SUB     s2, #0x01
+32E 09552       1922                             JUMP    nz, wait_1ms
+W: value out of range: 0x352, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x52.
+32F 08080       1923                             RET
+                1924     ;
+                1925     ;Delay of 20ms.
+                1926     ;
+                1927     ;Delay of 20ms used during initialisation.
+                1928     ;
+                1929     ;Registers used s0, s1, s2, s3
+                1930     ;
+330 00314       1931     delay_20ms:             LD      s3, #0x14               ;20 x 1ms = 20ms
+331 08351       1932     wait_20ms:              CALL    delay_1ms
+W: value out of range: 0x351, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x51.
+332 06301       1933                             SUB     s3, #0x01
+333 09557       1934                             JUMP    nz, wait_20ms
+W: value out of range: 0x357, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x57.
+334 08080       1935                             RET
+                1936     ;
+                1937     ;Delay of approximately 1 second.
+                1938     ;
+                1939     ;Registers used s0, s1, s2, s3, s4
+                1940     ;
+335 00432       1941     delay_1s:               LD      s4, #0x32               ;50 x 20ms = 1000ms
+336 08356       1942     wait_1s:                CALL    delay_20ms
+W: value out of range: 0x356, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x56.
+337 06401       1943                             SUB     s4, #0x01
+338 0955C       1944                             JUMP    nz, wait_1s
+W: value out of range: 0x35c, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x5c.
+339 08080       1945                             RET
+                1946     ;
+                1947     ;
+                1948     ;Delay of approximately N seconds where 'N' is provided in register s5.
+                1949     ;
+                1950     ;Registers used s0, s1, s2, s3, s4, s5
+                1951     ;
+33A 0835B       1952     delay_ns:               CALL    delay_1s
+W: value out of range: 0x35b, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x5b.
+33B 06501       1953                             SUB     s5, #0x01
+33C 09560       1954                             JUMP    nz, delay_ns
+W: value out of range: 0x360, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x60.
+33D 08080       1955                             RET
+                1956     ;
+                1957     ;
+                1958     ;
+                1959     ;**************************************************************************************
+                1960     ;LCD text messages
+                1961     ;**************************************************************************************
+                1962     ;
+                1963     ;
+                1964     ;
+                1965     ;Display 'PicoBlaze' on LCD at current cursor position
+                1966     ;
+                1967     ;
+33E 00550       1968     disp_picoblaze:         LD      s5, #_character_p
+33F 083FE       1969                             CALL    lcd_write_data
+W: value out of range: 0x2fe, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xfe.
+340 00569       1970                             LD      s5, #character_i
+341 083FE       1971                             CALL    lcd_write_data
+W: value out of range: 0x2fe, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xfe.
+342 00563       1972                             LD      s5, #character_c
+343 083FE       1973                             CALL    lcd_write_data
+W: value out of range: 0x2fe, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xfe.
+344 0056F       1974                             LD      s5, #character_o
+345 083FE       1975                             CALL    lcd_write_data
+W: value out of range: 0x2fe, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xfe.
+346 00542       1976                             LD      s5, #_character_b
+347 083FE       1977                             CALL    lcd_write_data
+W: value out of range: 0x2fe, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xfe.
+348 0056C       1978                             LD      s5, #character_l
+349 083FE       1979                             CALL    lcd_write_data
+W: value out of range: 0x2fe, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xfe.
+34A 00561       1980                             LD      s5, #character_a
+34B 083FE       1981                             CALL    lcd_write_data
+W: value out of range: 0x2fe, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xfe.
+34C 0057A       1982                             LD      s5, #character_z
+34D 083FE       1983                             CALL    lcd_write_data
+W: value out of range: 0x2fe, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xfe.
+34E 00565       1984                             LD      s5, #character_e
+34F 083FE       1985                             CALL    lcd_write_data
+W: value out of range: 0x2fe, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xfe.
+350 08080       1986                             RET
+                1987     ;
+                1988     ;
+                1989     ;Display 'Security' on LCD at current cursor position
+                1990     ;
+                1991     ;
+351 00553       1992     disp_security:          LD      s5, #_character_s
+352 083FE       1993                             CALL    lcd_write_data
+W: value out of range: 0x2fe, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xfe.
+353 00565       1994                             LD      s5, #character_e
+354 083FE       1995                             CALL    lcd_write_data
+W: value out of range: 0x2fe, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xfe.
+355 00563       1996                             LD      s5, #character_c
+356 083FE       1997                             CALL    lcd_write_data
+W: value out of range: 0x2fe, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xfe.
+357 00575       1998                             LD      s5, #character_u
+358 083FE       1999                             CALL    lcd_write_data
+W: value out of range: 0x2fe, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xfe.
+359 00572       2000                             LD      s5, #character_r
+35A 083FE       2001                             CALL    lcd_write_data
+W: value out of range: 0x2fe, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xfe.
+35B 00569       2002                             LD      s5, #character_i
+35C 083FE       2003                             CALL    lcd_write_data
+W: value out of range: 0x2fe, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xfe.
+35D 00574       2004                             LD      s5, #character_t
+35E 083FE       2005                             CALL    lcd_write_data
+W: value out of range: 0x2fe, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xfe.
+35F 00579       2006                             LD      s5, #character_y
+360 083FE       2007                             CALL    lcd_write_data
+W: value out of range: 0x2fe, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xfe.
+361 08080       2008                             RET
+                2009     ;
+                2010     ;
+                2011     ;Display 'FLASH Serial No.' on LCD at current cursor position
+                2012     ;
+                2013     ;
+362 00546       2014     disp_flash_serial_no:   LD      s5, #_character_f
+363 083FE       2015                             CALL    lcd_write_data
+W: value out of range: 0x2fe, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xfe.
+364 0054C       2016                             LD      s5, #_character_l
+365 083FE       2017                             CALL    lcd_write_data
+W: value out of range: 0x2fe, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xfe.
+366 00541       2018                             LD      s5, #_character_a
+367 083FE       2019                             CALL    lcd_write_data
+W: value out of range: 0x2fe, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xfe.
+368 00553       2020                             LD      s5, #_character_s
+369 083FE       2021                             CALL    lcd_write_data
+W: value out of range: 0x2fe, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xfe.
+36A 00548       2022                             LD      s5, #_character_h
+36B 083FE       2023                             CALL    lcd_write_data
+W: value out of range: 0x2fe, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xfe.
+36C 00520       2024                             LD      s5, #character_space
+36D 083FE       2025                             CALL    lcd_write_data
+W: value out of range: 0x2fe, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xfe.
+36E 00553       2026                             LD      s5, #_character_s
+36F 083FE       2027                             CALL    lcd_write_data
+W: value out of range: 0x2fe, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xfe.
+370 00565       2028                             LD      s5, #character_e
+371 083FE       2029                             CALL    lcd_write_data
+W: value out of range: 0x2fe, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xfe.
+372 00572       2030                             LD      s5, #character_r
+373 083FE       2031                             CALL    lcd_write_data
+W: value out of range: 0x2fe, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xfe.
+374 00569       2032                             LD      s5, #character_i
+375 083FE       2033                             CALL    lcd_write_data
+W: value out of range: 0x2fe, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xfe.
+376 00561       2034                             LD      s5, #character_a
+377 083FE       2035                             CALL    lcd_write_data
+W: value out of range: 0x2fe, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xfe.
+378 0056C       2036                             LD      s5, #character_l
+379 083FE       2037                             CALL    lcd_write_data
+W: value out of range: 0x2fe, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xfe.
+37A 00520       2038                             LD      s5, #character_space
+37B 083FE       2039                             CALL    lcd_write_data
+W: value out of range: 0x2fe, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xfe.
+37C 0054E       2040                             LD      s5, #_character_n
+37D 083FE       2041                             CALL    lcd_write_data
+W: value out of range: 0x2fe, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xfe.
+37E 0056F       2042                             LD      s5, #character_o
+37F 083FE       2043                             CALL    lcd_write_data
+W: value out of range: 0x2fe, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xfe.
+380 0052E       2044                             LD      s5, #character_fullstop
+381 083FE       2045                             CALL    lcd_write_data
+W: value out of range: 0x2fe, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xfe.
+382 08080       2046                             RET
+                2047     ;
+                2048     ;
+                2049     ;
+                2050     ;Display 'Authentication' on top line of the LCD
+                2051     ;
+                2052     ;
+383 00511       2053     disp_authentication:    LD      s5, #0x11               ;Line 1 position 1
+384 0833E       2054                             CALL    lcd_cursor
+W: value out of range: 0x33e, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x3e.
+385 00541       2055                             LD      s5, #_character_a
+386 083FE       2056                             CALL    lcd_write_data
+W: value out of range: 0x2fe, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xfe.
+387 00575       2057                             LD      s5, #character_u
+388 083FE       2058                             CALL    lcd_write_data
+W: value out of range: 0x2fe, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xfe.
+389 00574       2059                             LD      s5, #character_t
+38A 083FE       2060                             CALL    lcd_write_data
+W: value out of range: 0x2fe, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xfe.
+38B 00568       2061                             LD      s5, #character_h
+38C 083FE       2062                             CALL    lcd_write_data
+W: value out of range: 0x2fe, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xfe.
+38D 00565       2063                             LD      s5, #character_e
+38E 083FE       2064                             CALL    lcd_write_data
+W: value out of range: 0x2fe, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xfe.
+38F 0056E       2065                             LD      s5, #character_n
+390 083FE       2066                             CALL    lcd_write_data
+W: value out of range: 0x2fe, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xfe.
+391 00574       2067                             LD      s5, #character_t
+392 083FE       2068                             CALL    lcd_write_data
+W: value out of range: 0x2fe, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xfe.
+393 00569       2069                             LD      s5, #character_i
+394 083FE       2070                             CALL    lcd_write_data
+W: value out of range: 0x2fe, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xfe.
+395 00563       2071                             LD      s5, #character_c
+396 083FE       2072                             CALL    lcd_write_data
+W: value out of range: 0x2fe, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xfe.
+397 00561       2073                             LD      s5, #character_a
+398 083FE       2074                             CALL    lcd_write_data
+W: value out of range: 0x2fe, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xfe.
+399 00574       2075                             LD      s5, #character_t
+39A 083FE       2076                             CALL    lcd_write_data
+W: value out of range: 0x2fe, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xfe.
+39B 00569       2077                             LD      s5, #character_i
+39C 083FE       2078                             CALL    lcd_write_data
+W: value out of range: 0x2fe, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xfe.
+39D 0056F       2079                             LD      s5, #character_o
+39E 083FE       2080                             CALL    lcd_write_data
+W: value out of range: 0x2fe, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xfe.
+39F 0056E       2081                             LD      s5, #character_n
+3A0 083FE       2082                             CALL    lcd_write_data
+W: value out of range: 0x2fe, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xfe.
+3A1 08080       2083                             RET
+                2084     ;
+                2085     ;
+                2086     ;
+                2087     ;
+                2088     ;Display 'Passed' on lower line of the LCD
+                2089     ;
+                2090     ;
+3A2 00525       2091     disp_passed:            LD      s5, #0x25               ;Line 2 position 5
+3A3 0833E       2092                             CALL    lcd_cursor
+W: value out of range: 0x33e, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x3e.
+3A4 00550       2093                             LD      s5, #_character_p
+3A5 083FE       2094                             CALL    lcd_write_data
+W: value out of range: 0x2fe, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xfe.
+3A6 00561       2095                             LD      s5, #character_a
+3A7 083FE       2096                             CALL    lcd_write_data
+W: value out of range: 0x2fe, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xfe.
+3A8 00573       2097                             LD      s5, #character_s
+3A9 083FE       2098                             CALL    lcd_write_data
+W: value out of range: 0x2fe, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xfe.
+3AA 083FE       2099                             CALL    lcd_write_data
+W: value out of range: 0x2fe, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xfe.
+3AB 00565       2100                             LD      s5, #character_e
+3AC 083FE       2101                             CALL    lcd_write_data
+W: value out of range: 0x2fe, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xfe.
+3AD 00564       2102                             LD      s5, #character_d
+3AE 083FE       2103                             CALL    lcd_write_data
+W: value out of range: 0x2fe, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xfe.
+3AF 08080       2104                             RET
+                2105     ;
+                2106     ;
+                2107     ;
+                2108     ;
+                2109     ;
+                2110     ;Display 'Failed' on lower line of the LCD
+                2111     ;
+                2112     ;
+3B0 00525       2113     disp_failed:            LD      s5, #0x25               ;Line 2 position 5
+3B1 0833E       2114                             CALL    lcd_cursor
+W: value out of range: 0x33e, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x3e.
+3B2 00546       2115                             LD      s5, #_character_f
+3B3 083FE       2116                             CALL    lcd_write_data
+W: value out of range: 0x2fe, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xfe.
+3B4 00561       2117                             LD      s5, #character_a
+3B5 083FE       2118                             CALL    lcd_write_data
+W: value out of range: 0x2fe, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xfe.
+3B6 00569       2119                             LD      s5, #character_i
+3B7 083FE       2120                             CALL    lcd_write_data
+W: value out of range: 0x2fe, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xfe.
+3B8 0056C       2121                             LD      s5, #character_l
+3B9 083FE       2122                             CALL    lcd_write_data
+W: value out of range: 0x2fe, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xfe.
+3BA 00565       2123                             LD      s5, #character_e
+3BB 083FE       2124                             CALL    lcd_write_data
+W: value out of range: 0x2fe, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xfe.
+3BC 00564       2125                             LD      s5, #character_d
+3BD 083FE       2126                             CALL    lcd_write_data
+W: value out of range: 0x2fe, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xfe.
+3BE 08080       2127                             RET
+                2128     ;
+                2129     ;
+                2130     ;**************************************************************************************
+                2131     ; Interrupt Service Routine (ISR)
+                2132     ;**************************************************************************************
+                2133     ;
+                2134     ; Interrupts occur when the application processor is requesting a design authorisation
+                2135     ; message. Therefore an interrupt results in a message being sent to the Link FIFO
+                2136     ; depending on the authentication status.
+                2137     ;
+  003E5         2138     isr:                    ST      s0, isr_preserve_s0     ;save register contents
+E: instruction not supported on the this device: STORE sX, ss.
+                2139     ;
+                2140                             FT      s0, authentication_status ;read authentication status
+E: instruction not supported on the this device: FETCH sX, ss.
+                2141                             CMP     s0, #_character_p       ;test for pass 'P' or fail 'F'
+E: instruction not supported on the this device: COMPARE sX, kk.
+3BF 091F2       2142                             JUMP    z, pass_token
+W: value out of range: 0x3f2, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xf2.
+                2143     ;
+3C0 00046       2144                             LD      s0, #_character_f       ;send FAIL to link FIFO
+3C1 0E004       2145                             OUT     s0, link_fifo_write_port
+3C2 00041       2146                             LD      s0, #_character_a
+3C3 0E004       2147                             OUT     s0, link_fifo_write_port
+3C4 00049       2148                             LD      s0, #_character_i
+3C5 0E004       2149                             OUT     s0, link_fifo_write_port
+3C6 0004C       2150                             LD      s0, #_character_l
+3C7 0E004       2151                             OUT     s0, link_fifo_write_port
+3C8 081F8       2152                             JUMP    end_isr
+W: value out of range: 0x3f8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xf8.
+                2153     ;
+3C9 0E004       2154     pass_token:             OUT     s0, link_fifo_write_port ;send PASS to link FIFO
+3CA 00041       2155                             LD      s0, #_character_a
+3CB 0E004       2156                             OUT     s0, link_fifo_write_port
+3CC 00053       2157                             LD      s0, #_character_s
+3CD 0E004       2158                             OUT     s0, link_fifo_write_port
+3CE 0E004       2159                             OUT     s0, link_fifo_write_port
+                2160     ;
+  003F8         2161     end_isr:                FT      s0, isr_preserve_s0     ;restore register contents
+E: instruction not supported on the this device: FETCH sX, ss.
+3CF 080F0       2162                             RETIE
+                2163     ;
+                2164     ;
+                2165     ;**************************************************************************************
+                2166     ; Interrupt Vector
+                2167     ;**************************************************************************************
+                2168     ;
+  003FF         2169                             ORG     0x3ff
+3FF 081E5       2170                             JUMP    isr
+W: value out of range: 0x3e5, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xe5.
+                2171     ;
+                2172     ;
+                2173     ;**************************************************************************************
+                2174     ; End of Program
+                2175     ;**************************************************************************************
+                2176

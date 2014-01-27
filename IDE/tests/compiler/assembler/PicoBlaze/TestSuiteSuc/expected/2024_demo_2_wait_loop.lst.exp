@@ -1,0 +1,54 @@
+                   1     ; MDS PicoBlaze IDE - Demonstration code
+                   2     ; See manual for more info
+                   3
+                   4     ; Simple example of waiting loop
+                   5
+                   6     ; Tell compiler type of procesor (KCPSM2, KCPSM3, KCPSM6 available)
+                   7     device kcpsm2
+                   8
+                   9     ; Press Start simulation and Animate to run the program
+                  10
+  00000           11                         ORG       0x000
+000 34001         12                         JUMP      Start
+                  13     ; Declaration of some registers
+  00000           14     Temp1         REG       s0
+  00001           15     Temp2         REG       s1
+  00002           16     Temp3         REG       s2
+                  17
+                  18     ; Begining of main loop
+001 36004         19     Start:              CALL      wait_1s
+002 3600E         20                         CALL      wait_100ms
+003 34003         21                         JUMP      $                   ; Infinite loop, $ is translated as number of curent line
+                  22                         ;END                           ; End of program
+                  23
+                  24
+                  25     ; Subroutines-----------------------------------------------------------------
+                  26     ; wait_time = (4 + (((2 * Temp1) + 2) * Temp2 + 2) * Temp3) * 2 * clk_period
+                  27     ;   1s @ (10 MHz, Temp1 = 250, Temp2 = 249, Temp3 = 40)
+                  28
+004 000FA         29     wait_1s:            LOAD      Temp1, #250          ; Load Temp1 register
+005 001F9         30                         LOAD      Temp2, #249          ; Load Temp2 register
+006 002C8         31                         LOAD      Temp3, #200          ; Load Temp3 register
+007 0C001         32     wait_1s_i:          SUB       Temp1, #1
+008 35407         33                         JUMP      NZ, wait_1s_i
+009 0C101         34                         SUB       Temp2, #1
+00A 35407         35                         JUMP      NZ, wait_1s_i
+00B 0C201         36                         SUB       Temp3, #1
+00C 35407         37                         JUMP      NZ, wait_1s_i
+00D 24000         38                         RETURN
+                  39     ;-----------------------------------------------------------------------------
+00E 000FA         40     wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
+00F 001F9         41                         LOAD      Temp2, #249          ; Load Temp2 register
+010 00214         42                         LOAD      Temp3, #20           ; Load Temp3 register
+011 0C001         43     wait_100ms_i:       SUB       Temp1, #1
+012 35411         44                         JUMP      NZ, wait_100ms_i
+013 0C101         45                         SUB       Temp2, #1
+014 35411         46                         JUMP      NZ, wait_100ms_i
+015 0C201         47                         SUB       Temp3, #1
+016 35411         48                         JUMP      NZ, wait_100ms_i
+017 24000         49                         RETURN
+                  50     ; <-- Bookmark   (ctrl + shift + M)
+                  51     ; <-- Breakpoint (ctrl + shift + B)
+                  52
+                  53     ; -----------------------------------------
+                  54     ; -----------------------------------------

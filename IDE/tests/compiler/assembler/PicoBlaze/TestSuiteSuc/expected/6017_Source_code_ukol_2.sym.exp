@@ -1,0 +1,43 @@
+ADDR . . . . . . . . . . . . . . . . NUMBER 0x00005 NOT USED CONSTANT    6017_Source_code_ukol_2.asm:18.1-18.33
+BCD_01 . . . . . . . . . . . . . . . NUMBER 0x00004 USED     CONSTANT    6017_Source_code_ukol_2.asm:28.1-28.35
+BCD_23 . . . . . . . . . . . . . . . NUMBER 0x00008 USED     CONSTANT    6017_Source_code_ukol_2.asm:29.1-29.35
+BUTTON . . . . . . . . . . . . . . . NUMBER 0x00040 NOT USED CONSTANT    6017_Source_code_ukol_2.asm:32.1-32.35
+CHREG  . . . . . . . . . . . . . . . NUMBER 0x00003 USED     CONSTANT    6017_Source_code_ukol_2.asm:16.1-16.33
+GETCHAR  . . . . . . . . . . . . . . LABEL  0x0000E USED     CONSTANT    6017_Source_code_ukol_2.asm:78.1-78.9
+LED  . . . . . . . . . . . . . . . . NUMBER 0x00010 USED     CONSTANT    6017_Source_code_ukol_2.asm:30.1-30.35
+MAIN_LOOP  . . . . . . . . . . . . . LABEL  0x00003 USED     CONSTANT    6017_Source_code_ukol_2.asm:51.1-51.11
+RXDAT  . . . . . . . . . . . . . . . NUMBER 0x00004 NOT USED CONSTANT    6017_Source_code_ukol_2.asm:17.1-17.33
+S0 . . . . . . . . . . . . . . . . . REG.   0x00000 USED     CONSTANT    IMPLICIT
+S1 . . . . . . . . . . . . . . . . . REG.   0x00001 USED     CONSTANT    IMPLICIT
+S2 . . . . . . . . . . . . . . . . . REG.   0x00002 USED     CONSTANT    IMPLICIT
+S3 . . . . . . . . . . . . . . . . . REG.   0x00003 USED     CONSTANT    IMPLICIT
+S4 . . . . . . . . . . . . . . . . . REG.   0x00004 USED     CONSTANT    IMPLICIT
+S5 . . . . . . . . . . . . . . . . . REG.   0x00005 USED     CONSTANT    IMPLICIT
+S6 . . . . . . . . . . . . . . . . . REG.   0x00006 NOT USED CONSTANT    IMPLICIT
+S7 . . . . . . . . . . . . . . . . . REG.   0x00007 NOT USED CONSTANT    IMPLICIT
+S8 . . . . . . . . . . . . . . . . . REG.   0x00008 NOT USED CONSTANT    IMPLICIT
+S9 . . . . . . . . . . . . . . . . . REG.   0x00009 NOT USED CONSTANT    IMPLICIT
+SA . . . . . . . . . . . . . . . . . REG.   0x0000A NOT USED CONSTANT    IMPLICIT
+SB . . . . . . . . . . . . . . . . . REG.   0x0000B NOT USED CONSTANT    IMPLICIT
+SC . . . . . . . . . . . . . . . . . REG.   0x0000C NOT USED CONSTANT    IMPLICIT
+SD . . . . . . . . . . . . . . . . . REG.   0x0000D NOT USED CONSTANT    IMPLICIT
+SE . . . . . . . . . . . . . . . . . REG.   0x0000E NOT USED CONSTANT    IMPLICIT
+SENDB1 . . . . . . . . . . . . . . . LABEL  0x0001D USED     CONSTANT    6017_Source_code_ukol_2.asm:100.1-100.8
+SENDB2 . . . . . . . . . . . . . . . LABEL  0x00025 USED     CONSTANT    6017_Source_code_ukol_2.asm:109.1-109.8
+SENDBNUM1  . . . . . . . . . . . . . LABEL  0x0001C USED     CONSTANT    6017_Source_code_ukol_2.asm:99.1-99.11
+SENDBNUM2  . . . . . . . . . . . . . LABEL  0x00024 USED     CONSTANT    6017_Source_code_ukol_2.asm:108.1-108.11
+SENDBYTE . . . . . . . . . . . . . . LABEL  0x00013 NOT USED CONSTANT    6017_Source_code_ukol_2.asm:90.1-90.10
+SENDCHAR . . . . . . . . . . . . . . LABEL  0x00009 USED     CONSTANT    6017_Source_code_ukol_2.asm:68.1-68.10
+SENDCRLF . . . . . . . . . . . . . . LABEL  0x00027 NOT USED CONSTANT    6017_Source_code_ukol_2.asm:117.1-117.10
+SF . . . . . . . . . . . . . . . . . REG.   0x0000F NOT USED CONSTANT    IMPLICIT
+START  . . . . . . . . . . . . . . . LABEL  0x00000 NOT USED CONSTANT    6017_Source_code_ukol_2.asm:42.1-42.7
+SWITCH . . . . . . . . . . . . . . . NUMBER 0x00020 NOT USED CONSTANT    6017_Source_code_ukol_2.asm:31.1-31.35
+TEMP1  . . . . . . . . . . . . . . . NUMBER 0x00000 USED     CONSTANT    6017_Source_code_ukol_2.asm:13.1-13.33
+TEMP2  . . . . . . . . . . . . . . . NUMBER 0x00001 USED     CONSTANT    6017_Source_code_ukol_2.asm:14.1-14.33
+TEMP3  . . . . . . . . . . . . . . . NUMBER 0x00002 USED     CONSTANT    6017_Source_code_ukol_2.asm:15.1-15.33
+UART_DATA  . . . . . . . . . . . . . NUMBER 0x00001 USED     CONSTANT    6017_Source_code_ukol_2.asm:21.1-21.35
+UART_STAT  . . . . . . . . . . . . . NUMBER 0x00002 USED     CONSTANT    6017_Source_code_ukol_2.asm:22.1-22.35
+WAIT_100MS . . . . . . . . . . . . . LABEL  0x00036 NOT USED CONSTANT    6017_Source_code_ukol_2.asm:148.1-148.12
+WAIT_100MS_I . . . . . . . . . . . . LABEL  0x00039 USED     CONSTANT    6017_Source_code_ukol_2.asm:151.1-151.14
+WAIT_1S  . . . . . . . . . . . . . . LABEL  0x0002C USED     CONSTANT    6017_Source_code_ukol_2.asm:137.1-137.9
+WAIT_1S_I  . . . . . . . . . . . . . LABEL  0x0002F USED     CONSTANT    6017_Source_code_ukol_2.asm:140.1-140.11

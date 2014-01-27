@@ -1,0 +1,754 @@
+                   1     ; KCPSM3 Program - Pulse Width Modulation (PWM) Control on the Spartan-3E Starter Kit.
+                   2     ;
+                   3     ; Ken Chapman - Xilinx Ltd
+                   4     ;
+                   5     ; Version v1.00 - 22nd May 2006
+                   6     ;
+                   7     ; Provides control for 12 channels of PWM with a Pulse Repetition Frequency (PRF) of 1KHz
+                   8     ; and an 8-bit duty cycle resolution (256 steps). Control is provided for each channel
+                   9     ; via the UART interface to the PC running HyperTerminal or similar to enter simple text
+                  10     ; commands.
+                  11     ;
+                  12     ;**************************************************************************************
+                  13     ; Port definitions
+                  14     ;**************************************************************************************
+                  15     device kcpsm3
+                  16     ;
+                  17     ;
+  00080           18     led_port                EQU             0x80                    ;8 simple LEDs
+  00001           19     led0                    EQU             0x01                    ;     LED 0 - bit0
+  00002           20     led1                    EQU             0x02                    ;         1 - bit1
+  00004           21     led2                    EQU             0x04                    ;         2 - bit2
+  00008           22     led3                    EQU             0x08                    ;         3 - bit3
+  00010           23     led4                    EQU             0x10                    ;         4 - bit4
+  00020           24     led5                    EQU             0x20                    ;         5 - bit5
+  00040           25     led6                    EQU             0x40                    ;         6 - bit6
+  00080           26     led7                    EQU             0x80                    ;         7 - bit7
+                  27     ;
+                  28     ;
+  00040           29     simple_port             EQU             0x40                    ;4 simple outputs
+  00001           30     simple_io9              EQU             0x01                    ;  Header  IO9  - bit0
+  00002           31     simple_io10             EQU             0x02                    ;          IO10 - bit1
+  00004           32     simple_io11             EQU             0x04                    ;          IO11 - bit2
+  00008           33     simple_io12             EQU             0x08                    ;          IO12 - bit3
+                  34     ;
+                  35     ;
+                  36     ;
+  00000           37     status_port             EQU             0x00                    ;UART status input
+  00001           38     tx_half_full            EQU             0x01                    ;  Transmitter     half full - bit0
+  00002           39     tx_full                 EQU             0x02                    ;    FIFO               full - bit1
+  00004           40     rx_data_present         EQU             0x04                    ;  Receiver     data present - bit2
+  00008           41     rx_half_full            EQU             0x08                    ;    FIFO          half full - bit3
+  00010           42     rx_full                 EQU             0x10                    ;                   full - bit4
+  00020           43     spare1                  EQU             0x20                    ;                  spare '0' - bit5
+  00040           44     spare2                  EQU             0x40                    ;                  spare '0' - bit6
+  00080           45     spare3                  EQU             0x80                    ;                  spare '0' - bit7
+                  46     ;
+  00001           47     uart_read_port          EQU             0x01                    ;UART Rx data input
+                  48     ;
+  00020           49     uart_write_port         EQU             0x20                    ;UART Tx data output
+                  50     ;
+                  51     ;
+                  52     ;
+                  53     ;**************************************************************************************
+                  54     ; Special Register usage
+                  55     ;**************************************************************************************
+                  56     ;
+  0000F           57     uart_data               REG             sf                      ;used to pass data to and from the UART
+                  58     ;
+                  59     ;
+                  60     ;
+                  61     ;**************************************************************************************
+                  62     ;Scratch Pad Memory Locations
+                  63     ;**************************************************************************************
+                  64     ;
+  00000           65     pwm_duty_counter        EQU             0x00                    ;Duty Counter 0 to 255 within 1KHz period (1ms)
+  00001           66     pwm_channel0            EQU             0x01                    ;PWM settings for each channel
+  00002           67     pwm_channel1            EQU             0x02                    ; Channels 0 to 7 = LEDs 0 to 7
+  00003           68     pwm_channel2            EQU             0x03                    ; Channels 8 to 11 = IO9 to IO12
+  00004           69     pwm_channel3            EQU             0x04
+  00005           70     pwm_channel4            EQU             0x05
+  00006           71     pwm_channel5            EQU             0x06
+  00007           72     pwm_channel6            EQU             0x07
+  00008           73     pwm_channel7            EQU             0x08
+  00009           74     pwm_channel8            EQU             0x09
+  0000A           75     pwm_channel9            EQU             0x0a
+  0000B           76     pwm_channel10           EQU             0x0b
+  0000C           77     pwm_channel11           EQU             0x0c
+  0000D           78     isr_preserve_s0         EQU             0x0d                    ;preserve register contents during Interrupt Service Routine
+  0000E           79     isr_preserve_s1         EQU             0x0e
+  0000F           80     isr_preserve_s2         EQU             0x0f
+                  81     ;
+                  82     ;
+                  83     ;
+                  84     ;
+                  85     ;UART character strings will be stored in scratch pad memory ending in carriage return.
+                  86     ;A string can be up to 16 characters with the start location defined by this constant.
+                  87     ;
+  00030           88     string_start            EQU             0x30
+                  89     ;
+                  90     ;
+                  91     ;
+                  92     ;**************************************************************************************
+                  93     ;Useful data constants
+                  94     ;**************************************************************************************
+                  95     ;
+                  96     ;
+                  97     ;
+                  98     ;
+                  99     ;ASCII table
+                 100     ;
+  00061          101     character_a             EQU             0x61
+  00062          102     character_b             EQU             0x62
+  00063          103     character_c             EQU             0x63
+  00064          104     character_d             EQU             0x64
+  00065          105     character_e             EQU             0x65
+  00066          106     character_f             EQU             0x66
+  00067          107     character_g             EQU             0x67
+  00068          108     character_h             EQU             0x68
+  00069          109     character_i             EQU             0x69
+  0006A          110     character_j             EQU             0x6a
+  0006B          111     character_k             EQU             0x6b
+  0006C          112     character_l             EQU             0x6c
+  0006D          113     character_m             EQU             0x6d
+  0006E          114     character_n             EQU             0x6e
+  0006F          115     character_o             EQU             0x6f
+  00070          116     character_p             EQU             0x70
+  00071          117     character_q             EQU             0x71
+  00072          118     character_r             EQU             0x72
+  00073          119     character_s             EQU             0x73
+  00074          120     character_t             EQU             0x74
+  00075          121     character_u             EQU             0x75
+  00076          122     character_v             EQU             0x76
+  00077          123     character_w             EQU             0x77
+  00078          124     character_x             EQU             0x78
+  00079          125     character_y             EQU             0x79
+  0007A          126     character_z             EQU             0x7a
+  00041          127     _character_a            EQU             0x41
+  00042          128     _character_b            EQU             0x42
+  00043          129     _character_c            EQU             0x43
+  00044          130     _character_d            EQU             0x44
+  00045          131     _character_e            EQU             0x45
+  00046          132     _character_f            EQU             0x46
+  00047          133     _character_g            EQU             0x47
+  00048          134     _character_h            EQU             0x48
+  00049          135     _character_i            EQU             0x49
+  0004A          136     _character_j            EQU             0x4a
+  0004B          137     _character_k            EQU             0x4b
+  0004C          138     _character_l            EQU             0x4c
+  0004D          139     _character_m            EQU             0x4d
+  0004E          140     _character_n            EQU             0x4e
+  0004F          141     _character_o            EQU             0x4f
+  00050          142     _character_p            EQU             0x50
+  00051          143     _character_q            EQU             0x51
+  00052          144     _character_r            EQU             0x52
+  00053          145     _character_s            EQU             0x53
+  00054          146     _character_t            EQU             0x54
+  00055          147     _character_u            EQU             0x55
+  00056          148     _character_v            EQU             0x56
+  00057          149     _character_w            EQU             0x57
+  00058          150     _character_x            EQU             0x58
+  00059          151     _character_y            EQU             0x59
+  0005A          152     _character_z            EQU             0x5a
+  00030          153     character_0             EQU             0x30
+  00031          154     character_1             EQU             0x31
+  00032          155     character_2             EQU             0x32
+  00033          156     character_3             EQU             0x33
+  00034          157     character_4             EQU             0x34
+  00035          158     character_5             EQU             0x35
+  00036          159     character_6             EQU             0x36
+  00037          160     character_7             EQU             0x37
+  00038          161     character_8             EQU             0x38
+  00039          162     character_9             EQU             0x39
+  0003A          163     character_colon         EQU             0x3a
+  0002E          164     character_stop          EQU             0x2e
+  0003B          165     character_semi_colon    EQU             0x3b
+  0002D          166     character_minus         EQU             0x2d
+  0002F          167     character_divide        EQU             0x2f                    ;'/'
+  0002B          168     character_plus          EQU             0x2b
+  0002C          169     character_comma         EQU             0x2c
+  0003C          170     character_less_than     EQU             0x3c
+  0003E          171     character_greater_than  EQU             0x3e
+  0003D          172     character_equals        EQU             0x3d
+  00020          173     character_space         EQU             0x20
+  0000D          174     character_cr            EQU             0x0d                    ;carriage return
+  0003F          175     character_question      EQU             0x3f                    ;'?'
+  00024          176     character_dollar        EQU             0x24
+  00021          177     character_exclaim       EQU             0x21                    ;'!'
+  00008          178     character_bs            EQU             0x08                    ;Back Space command character
+                 179     ;
+                 180     ;
+                 181     ;
+                 182     ;
+                 183     ;
+                 184     ;**************************************************************************************
+                 185     ;Initialise the system
+                 186     ;**************************************************************************************
+                 187     ;
+                 188     ; Each PWM channels will be set to a different initial value just for the purposes
+                 189     ; of demonstration. In practice, the initial duty values will depend on the requirements
+                 190     ; of a given system but completely off (zero) is normally the safe option.
+                 191     ;
+                 192     ; Note that it is difficult to distinguish difference between the intensity of LEDs driven
+                 193     ; with duty factors more than 40% (40% = 102/256 or 66Hex). So using relatively small values
+                 194     ; will better demonstrate the PWM control of intensity.
+                 195     ;
+                 196     ; Initial values for LEDs give graduated intensity. Large change required for brighter LEDs.
+                 197     ;
+000 00005        198     cold_start:             LOAD            s0, #0x05               ;5/256 = 2%
+001 2E001        199                             STORE           s0, pwm_channel0
+002 0000D        200                             LOAD            s0, #0x0d               ;13/256 = 5%
+003 2E002        201                             STORE           s0, pwm_channel1
+004 00014        202                             LOAD            s0, #0x14               ;26/256 = 8%
+005 2E003        203                             STORE           s0, pwm_channel2
+006 00026        204                             LOAD            s0, #0x26               ;38/256 = 15%
+007 2E004        205                             STORE           s0, pwm_channel3
+008 00040        206                             LOAD            s0, #0x40               ;64/256 = 25%
+009 2E005        207                             STORE           s0, pwm_channel4
+00A 00058        208                             LOAD            s0, #0x58               ;88/256 = 34%
+00B 2E006        209                             STORE           s0, pwm_channel5
+00C 00080        210                             LOAD            s0, #0x80               ;128/256 = 50%
+00D 2E007        211                             STORE           s0, pwm_channel6
+00E 000FF        212                             LOAD            s0, #0xff               ;255/256 = 99.6% Maximum possible
+00F 2E008        213                             STORE           s0, pwm_channel7
+                 214     ;
+                 215     ; Initial values for simple outputs match documentation example
+                 216     ;
+010 00011        217                             LOAD            s0, #0x11               ;17/256 = 7%
+011 2E009        218                             STORE           s0, pwm_channel8
+012 000BC        219                             LOAD            s0, #0xbc               ;188/256 = 73%
+013 2E00A        220                             STORE           s0, pwm_channel9
+014 000EF        221                             LOAD            s0, #0xef               ;239/256 = 93%
+015 2E00B        222                             STORE           s0, pwm_channel10
+016 00022        223                             LOAD            s0, #0x22               ;34/256 = 13%
+017 2E00C        224                             STORE           s0, pwm_channel11
+                 225     ;
+018 3C001        226                             ENABLE          interrupt               ;interrupts used to drive servo
+                 227     ;
+019 300B9        228                             CALL            send_welcome            ;Write welcome message to UART
+                 229     ;
+                 230     ;
+                 231     ;
+                 232     ;**************************************************************************************
+                 233     ; Main program
+                 234     ;**************************************************************************************
+                 235     ;
+                 236     ; Provides a prompt to which an input with one of the following formats is expected...
+                 237     ;
+                 238     ;     LDn hh
+                 239     ;
+                 240     ;     IOk hh
+                 241     ;     IOkk hh
+                 242     ;
+                 243     ;
+                 244     ;  Where
+                 245     ;     'LD' is a command to set one of the LED channels.
+                 246     ;     'IO' is a command to set one of the simple I/O outputs on J4.
+                 247     ;     'n' is an LED number in the range 0 to 7.
+                 248     ;     'k' or 'kk' is a simple I/O number in the range 9 to 12.
+                 249     ;     'hh' is a 2 digit hex value to specify the PWM duty factor (range 00 to FF).
+                 250     ;
+                 251     ; The input allows a degree of editing to be performed and upper and lower case letters
+                 252     ; to be used.
+                 253     ;
+01A 300E6        254     warm_start:             CALL            send_prompt             ;Prompt 'KCPSM3>'
+01B 30063        255                             CALL            receive_string          ;obtain input string of up to 16 characters
+01C 3008B        256                             CALL            upper_case_string       ;convert string to upper case
+                 257     ;
+01D 00E30        258                             LOAD            se, #string_start       ;sE is memory pointer
+01E 070E0        259                             FETCH           s0, @se                 ;test for carriage return
+01F 1400D        260                             COMPARE         s0, #character_cr
+020 3501A        261                             JUMP            z, warm_start
+021 1404C        262                             COMPARE         s0, #_character_l       ;test for 'L' of 'LD' command
+022 35028        263                             JUMP            z, ld_command
+023 14049        264                             COMPARE         s0, #_character_i       ;test for 'I' of 'IO' command
+024 35042        265                             JUMP            z, io_command
+025 300B0        266     bad_command:            CALL            send_cr                 ;no valid command entered
+026 30107        267                             CALL            send_error
+027 3401A        268                             JUMP            warm_start
+                 269     ;
+                 270     ;Processing potential 'LD' command
+                 271     ;
+028 30054        272     ld_command:             CALL            read_next_char
+029 14044        273                             COMPARE         s0, #_character_d       ;test for 'D' of 'LD' command
+02A 35425        274                             JUMP            nz, bad_command
+02B 30054        275                             CALL            read_next_char          ;test for LED number
+02C 30093        276                             CALL            _1char_to_value
+02D 35825        277                             JUMP            c, bad_command
+02E 14008        278                             COMPARE         s0, #0x08               ;test for number in range 0 to 7
+02F 35C25        279                             JUMP            nc, bad_command
+030 01D00        280                             LOAD            sd, s0                  ;convert number into memory pointer in sD
+031 18D01        281                             ADD             sd, #pwm_channel0
+032 30054        282     read_duty_value:        CALL            read_next_char          ;test for a space
+033 14020        283                             COMPARE         s0, #character_space
+034 35425        284                             JUMP            nz, bad_command
+035 30054        285                             CALL            read_next_char          ;read two character hex value
+036 01300        286                             LOAD            s3, s0
+037 30054        287                             CALL            read_next_char
+038 01200        288                             LOAD            s2, s0
+039 30097        289                             CALL            ascii_byte_to_hex       ;convert to value in s0
+03A 35825        290                             JUMP            c, bad_command
+03B 01C00        291                             LOAD            sc, s0                  ;remember value
+03C 30054        292                             CALL            read_next_char          ;test for carriage return to end command
+03D 1400D        293                             COMPARE         s0, #character_cr
+03E 35425        294                             JUMP            nz, bad_command
+03F 2FCD0        295                             STORE           sc, @sd                 ;store new PWM duty factor for an LED
+040 30111        296                             CALL            send_ok
+041 3401A        297                             JUMP            warm_start
+                 298     ;
+                 299     ;Processing potential 'LD' command
+                 300     ;
+042 30054        301     io_command:             CALL            read_next_char
+043 1404F        302                             COMPARE         s0, #_character_o       ;test for '0' of 'IO' command
+044 35425        303                             JUMP            nz, bad_command
+045 30054        304                             CALL            read_next_char          ;test for IO number
+046 14031        305                             COMPARE         s0, #character_1        ;first number must either be '1' or '9'
+047 3504C        306                             JUMP            z, next_io_number
+048 14039        307                             COMPARE         s0, #character_9
+049 35425        308                             JUMP            nz, bad_command
+04A 00D09        309                             LOAD            sd, #pwm_channel8       ;IO9 is controlled by PWM channel8
+04B 34032        310                             JUMP            read_duty_value
+04C 30054        311     next_io_number:         CALL            read_next_char          ;read next number for IO10 to IO12
+04D 30093        312                             CALL            _1char_to_value
+04E 35825        313                             JUMP            c, bad_command
+04F 14003        314                             COMPARE         s0, #0x03               ;test for number in range 0 to 2
+050 35C25        315                             JUMP            nc, bad_command
+051 01D00        316                             LOAD            sd, s0                  ;convert number into memory pointer in sD
+052 18D0A        317                             ADD             sd, #pwm_channel9
+053 34032        318                             JUMP            read_duty_value
+                 319     ;
+                 320     ;Read next character from scratch pad memory
+                 321     ;
+054 18E01        322     read_next_char:         ADD             se, #0x01
+055 070E0        323                             FETCH           s0, @se                 ;test for space
+056 2A000        324                             RETURN
+                 325     ;
+                 326     ;
+                 327     ;
+                 328     ;**************************************************************************************
+                 329     ; UART communication routines
+                 330     ;**************************************************************************************
+                 331     ;
+                 332     ; Read one character from the UART
+                 333     ;
+                 334     ; Character read will be returned in a register called 'UART_data'.
+                 335     ;
+                 336     ; The routine first tests the receiver FIFO buffer to see if data is present.
+                 337     ; If the FIFO is empty, the routine waits until there is a character to read.
+                 338     ; As this could take any amount of time the wait loop could include a call to a
+                 339     ; subroutine which performs a useful function.
+                 340     ;
+                 341     ;
+                 342     ; Registers used s0 and UART_data
+                 343     ;
+057 04000        344     read_from_uart:         INPUT           s0, status_port         ;test Rx_FIFO buffer
+058 12004        345                             TEST            s0, #rx_data_present    ;wait if empty
+059 3545B        346                             JUMP            nz, read_character
+05A 34057        347                             JUMP            read_from_uart
+05B 04F01        348     read_character:         INPUT           uart_data, uart_read_port ;read from FIFO
+05C 2A000        349                             RETURN
+                 350     ;
+                 351     ;
+                 352     ;
+                 353     ; Transmit one character to the UART
+                 354     ;
+                 355     ; Character supplied in register called 'UART_data'.
+                 356     ;
+                 357     ; The routine first tests the transmit FIFO buffer to see if it is full.
+                 358     ; If the FIFO is full, then the routine waits until it there is space.
+                 359     ;
+                 360     ; Registers used s0
+                 361     ;
+05D 04000        362     send_to_uart:           INPUT           s0, status_port         ;test Tx_FIFO buffer
+05E 12002        363                             TEST            s0, #tx_full            ;wait if full
+05F 35061        364                             JUMP            z, uart_write
+060 3405D        365                             JUMP            send_to_uart
+061 2CF20        366     uart_write:             OUTPUT          uart_data, uart_write_port
+062 2A000        367                             RETURN
+                 368     ;
+                 369     ;
+                 370     ;
+                 371     ;
+                 372     ;Receive ASCII string from UART
+                 373     ;
+                 374     ;An ASCII string will be read from the UART and stored in scratch pad memory
+                 375     ;commencing at the location specified by a constant named 'string_start'.
+                 376     ;The string will have a maximum length of 16 characters including a
+                 377     ;carriage return (0D) denoting the end of the string.
+                 378     ;
+                 379     ;As each character is read, it is echoed to the UART transmitter.
+                 380     ;Some minor editing is supported using backspace (BS=08) which is used
+                 381     ;to adjust what is stored in scratch pad memory and adjust the display
+                 382     ;on the terminal screen using characters sent to the UART transmitter.
+                 383     ;
+                 384     ;A test is made for the receiver FIFO becoming full. A full status is treated as
+                 385     ;a potential error situation and will result in a 'Overflow Error' message being
+                 386     ;transmitted to the UART, the receiver FIFO being purged of all data and an
+                 387     ;empty string being stored (carriage return at first location).
+                 388     ;
+                 389     ;Registers used s0, s1, s2 and 'UART_data'.
+                 390     ;
+063 00130        391     receive_string:         LOAD            s1, #string_start       ;locate start of string
+064 01210        392                             LOAD            s2, s1                  ;compute 16 character address
+065 18210        393                             ADD             s2, #0x10
+066 04000        394     receive_full_test:      INPUT           s0, status_port         ;test Rx_FIFO buffer for full
+067 12010        395                             TEST            s0, #rx_full
+068 3547C        396                             JUMP            nz, read_error
+069 30057        397                             CALL            read_from_uart          ;obtain and echo character
+06A 3005D        398                             CALL            send_to_uart
+06B 2FF10        399                             STORE           uart_data, @s1          ;write to memory
+06C 14F0D        400                             COMPARE         uart_data, #character_cr ;test for end of string
+06D 2B000        401                             RETURN          z
+06E 14F08        402                             COMPARE         uart_data, #character_bs ;test for back space
+06F 35074        403                             JUMP            z, bs_edit
+070 18101        404                             ADD             s1, #0x01               ;increment memory pointer
+071 15120        405                             COMPARE         s1, s2                  ;test for pointer exceeding 16 characters
+072 35466        406                             JUMP            nz, receive_full_test   ;next character
+073 300B6        407                             CALL            send_backspace          ;hold end of string position on terminal display
+074 1C101        408     bs_edit:                SUB             s1, #0x01               ;memory pointer back one
+075 14130        409                             COMPARE         s1, #string_start       ;test for under flow
+076 3587A        410                             JUMP            c, string_start_again
+077 300B3        411                             CALL            send_space              ;clear character at current position
+078 300B6        412                             CALL            send_backspace          ;position cursor
+079 34066        413                             JUMP            receive_full_test       ;next character
+07A 300F3        414     string_start_again:     CALL            send_greater_than       ;restore '>' at prompt
+07B 34063        415                             JUMP            receive_string          ;begin again
+                 416     ;Receiver buffer overflow condition
+07C 300B0        417     read_error:             CALL            send_cr                 ;Transmit error message
+07D 2EF30        418                             STORE           uart_data, string_start ;empty string in memory (start with CR)
+07E 300F6        419                             CALL            send_overflow_error
+07F 300B0        420                             CALL            send_cr
+080 04000        421     clear_uart_rx_loop:     INPUT           s0, status_port         ;test Rx_FIFO buffer for data
+081 12004        422                             TEST            s0, #rx_data_present
+082 2B000        423                             RETURN          z                       ;finish when buffer is empty
+083 04F01        424                             INPUT           uart_data, uart_read_port ;read from FIFO and ignore
+084 34080        425                             JUMP            clear_uart_rx_loop
+                 426     ;
+                 427     ;
+                 428     ;**************************************************************************************
+                 429     ; Useful ASCII conversion and handling routines
+                 430     ;**************************************************************************************
+                 431     ;
+                 432     ;
+                 433     ;
+                 434     ; Convert character to upper case
+                 435     ;
+                 436     ; The character supplied in register s0.
+                 437     ; If the character is in the range 'a' to 'z', it is converted
+                 438     ; to the equivalent upper case character in the range 'A' to 'Z'.
+                 439     ; All other characters remain unchanged.
+                 440     ;
+                 441     ; Registers used s0.
+                 442     ;
+085 14061        443     upper_case:             COMPARE         s0, #0x61               ;eliminate character codes below 'a' (61 hex)
+086 2B800        444                             RETURN          c
+087 1407B        445                             COMPARE         s0, #0x7b               ;eliminate character codes above 'z' (7A hex)
+088 2BC00        446                             RETURN          nc
+089 0A0DF        447                             AND             s0, #0xdf               ;mask bit5 to convert to upper case
+08A 2A000        448                             RETURN
+                 449     ;
+                 450     ;
+                 451     ;
+                 452     ; Convert string held in scratch pad memory to upper case.
+                 453     ;
+                 454     ; Registers used s0, s1
+                 455     ;
+08B 00130        456     upper_case_string:      LOAD            s1, #string_start
+08C 07010        457     ucs_loop:               FETCH           s0, @s1
+08D 1400D        458                             COMPARE         s0, #character_cr
+08E 2B000        459                             RETURN          z
+08F 30085        460                             CALL            upper_case
+090 2F010        461                             STORE           s0, @s1
+091 18101        462                             ADD             s1, #0x01
+092 3408C        463                             JUMP            ucs_loop
+                 464     ;
+                 465     ;
+                 466     ; Convert character '0' to '9' to numerical value in range 0 to 9
+                 467     ;
+                 468     ; The character supplied in register s0. If the character is in the
+                 469     ; range '0' to '9', it is converted to the equivalent decimal value.
+                 470     ; Characters not in the range '0' to '9' are signified by the return
+                 471     ; with the CARRY flag set.
+                 472     ;
+                 473     ; Registers used s0.
+                 474     ;
+093 180C6        475     _1char_to_value:        ADD             s0, #0xc6               ;reject character codes above '9' (39 hex)
+094 2B800        476                             RETURN          c                       ;carry flag is set
+095 1C0F6        477                             SUB             s0, #0xf6               ;reject character codes below '0' (30 hex)
+096 2A000        478                             RETURN                                  ;carry is set if value not in range
+                 479     ;
+                 480     ;
+                 481     ;
+                 482     ; Convert the HEX ASCII characters contained in 's3' and 's2' into
+                 483     ; an equivalent hexadecimal value in register 's0'.
+                 484     ;     The upper nibble is represented by an ASCII character in register s3.
+                 485     ;     The lower nibble is represented by an ASCII character in register s2.
+                 486     ;
+                 487     ; Input characters must be in the range 00 to FF hexadecimal or the CARRY flag
+                 488     ; will be set on return.
+                 489     ;
+                 490     ; Registers used s0, s2 and s3.
+                 491     ;
+097 01030        492     ascii_byte_to_hex:      LOAD            s0, s3                  ;Take upper nibble
+098 300A4        493                             CALL            ascii_to_hex            ;convert to value
+099 2B800        494                             RETURN          c                       ;reject if out of range
+09A 01300        495                             LOAD            s3, s0                  ;remember value
+09B 20306        496                             SL0             s3                      ;multiply value by 16 to put in upper nibble
+09C 20306        497                             SL0             s3
+09D 20306        498                             SL0             s3
+09E 20306        499                             SL0             s3
+09F 01020        500                             LOAD            s0, s2                  ;Take lower nibble
+0A0 300A4        501                             CALL            ascii_to_hex            ;convert to value
+0A1 2B800        502                             RETURN          c                       ;reject if out of range
+0A2 0D030        503                             OR              s0, s3                  ;merge in the upper nibble with CARRY reset
+0A3 2A000        504                             RETURN
+                 505     ;
+                 506     ;
+                 507     ; Routine to convert ASCII data in 's0' to an equivalent HEX value.
+                 508     ;
+                 509     ; If character is not valid for hex, then CARRY is set on return.
+                 510     ;
+                 511     ; Register used s0
+                 512     ;
+0A4 180B9        513     ascii_to_hex:           ADD             s0, #0xb9               ;test for above ASCII code 46 ('F')
+0A5 2B800        514                             RETURN          c
+0A6 1C0E9        515                             SUB             s0, #0xe9               ;normalise 0 to 9 with A-F in 11 to 16 hex
+0A7 2B800        516                             RETURN          c                       ;reject below ASCII code 30 ('0')
+0A8 1C011        517                             SUB             s0, #0x11               ;isolate A-F down to 00 to 05 hex
+0A9 35CAE        518                             JUMP            nc, ascii_letter
+0AA 18007        519                             ADD             s0, #0x07               ;test for above ASCII code 46 ('F')
+0AB 2B800        520                             RETURN          c
+0AC 1C0F6        521                             SUB             s0, #0xf6               ;convert to range 00 to 09
+0AD 2A000        522                             RETURN
+0AE 1800A        523     ascii_letter:           ADD             s0, #0x0a               ;convert to range 0A to 0F
+0AF 2A000        524                             RETURN
+                 525     ;
+                 526     ;
+                 527     ;
+                 528     ;**************************************************************************************
+                 529     ; Text messages
+                 530     ;**************************************************************************************
+                 531     ;
+                 532     ;
+                 533     ; Send Carriage Return to the UART
+                 534     ;
+0B0 00F0D        535     send_cr:                LOAD            uart_data, #character_cr
+0B1 3005D        536                             CALL            send_to_uart
+0B2 2A000        537                             RETURN
+                 538     ;
+                 539     ; Send a space to the UART
+                 540     ;
+0B3 00F20        541     send_space:             LOAD            uart_data, #character_space
+0B4 3005D        542                             CALL            send_to_uart
+0B5 2A000        543                             RETURN
+                 544     ;
+                 545     ;
+                 546     ;
+                 547     ;Send a back space to the UART
+                 548     ;
+0B6 00F08        549     send_backspace:         LOAD            uart_data, #character_bs
+0B7 3005D        550                             CALL            send_to_uart
+0B8 2A000        551                             RETURN
+                 552     ;
+                 553     ;
+                 554     ; Send 'PicoBlaze Servo Control' string to the UART
+                 555     ;
+0B9 300B0        556     send_welcome:           CALL            send_cr
+0BA 300B0        557                             CALL            send_cr
+0BB 00F50        558                             LOAD            uart_data, #_character_p
+0BC 3005D        559                             CALL            send_to_uart
+0BD 00F69        560                             LOAD            uart_data, #character_i
+0BE 3005D        561                             CALL            send_to_uart
+0BF 00F63        562                             LOAD            uart_data, #character_c
+0C0 3005D        563                             CALL            send_to_uart
+0C1 00F6F        564                             LOAD            uart_data, #character_o
+0C2 3005D        565                             CALL            send_to_uart
+0C3 00F42        566                             LOAD            uart_data, #_character_b
+0C4 3005D        567                             CALL            send_to_uart
+0C5 00F6C        568                             LOAD            uart_data, #character_l
+0C6 3005D        569                             CALL            send_to_uart
+0C7 00F61        570                             LOAD            uart_data, #character_a
+0C8 3005D        571                             CALL            send_to_uart
+0C9 00F7A        572                             LOAD            uart_data, #character_z
+0CA 3005D        573                             CALL            send_to_uart
+0CB 00F65        574                             LOAD            uart_data, #character_e
+0CC 3005D        575                             CALL            send_to_uart
+0CD 300B3        576                             CALL            send_space
+0CE 00F50        577                             LOAD            uart_data, #_character_p
+0CF 3005D        578                             CALL            send_to_uart
+0D0 00F57        579                             LOAD            uart_data, #_character_w
+0D1 3005D        580                             CALL            send_to_uart
+0D2 00F4D        581                             LOAD            uart_data, #_character_m
+0D3 3005D        582                             CALL            send_to_uart
+0D4 300B3        583                             CALL            send_space
+0D5 00F43        584                             LOAD            uart_data, #_character_c
+0D6 3005D        585                             CALL            send_to_uart
+0D7 00F6F        586                             LOAD            uart_data, #character_o
+0D8 3005D        587                             CALL            send_to_uart
+0D9 00F6E        588                             LOAD            uart_data, #character_n
+0DA 3005D        589                             CALL            send_to_uart
+0DB 00F74        590                             LOAD            uart_data, #character_t
+0DC 3005D        591                             CALL            send_to_uart
+0DD 00F72        592                             LOAD            uart_data, #character_r
+0DE 3005D        593                             CALL            send_to_uart
+0DF 00F6F        594                             LOAD            uart_data, #character_o
+0E0 3005D        595                             CALL            send_to_uart
+0E1 00F6C        596                             LOAD            uart_data, #character_l
+0E2 3005D        597                             CALL            send_to_uart
+0E3 300B0        598                             CALL            send_cr
+0E4 300B0        599                             CALL            send_cr
+0E5 2A000        600                             RETURN
+                 601     ;
+                 602     ;
+                 603     ;Send 'KCPSM3>' prompt to the UART
+                 604     ;
+0E6 300B0        605     send_prompt:            CALL            send_cr                 ;start new line
+0E7 00F4B        606                             LOAD            uart_data, #_character_k
+0E8 3005D        607                             CALL            send_to_uart
+0E9 00F43        608                             LOAD            uart_data, #_character_c
+0EA 3005D        609                             CALL            send_to_uart
+0EB 00F50        610                             LOAD            uart_data, #_character_p
+0EC 3005D        611                             CALL            send_to_uart
+0ED 00F53        612                             LOAD            uart_data, #_character_s
+0EE 3005D        613                             CALL            send_to_uart
+0EF 00F4D        614                             LOAD            uart_data, #_character_m
+0F0 3005D        615                             CALL            send_to_uart
+0F1 00F33        616                             LOAD            uart_data, #character_3
+0F2 3005D        617                             CALL            send_to_uart
+                 618     ;
+                 619     ;Send '>' character to the UART
+                 620     ;
+0F3 00F3E        621     send_greater_than:      LOAD            uart_data, #character_greater_than
+0F4 3005D        622                             CALL            send_to_uart
+0F5 2A000        623                             RETURN
+                 624     ;
+                 625     ;
+                 626     ;Send 'Overflow Error' to the UART
+                 627     ;
+0F6 00F4F        628     send_overflow_error:    LOAD            uart_data, #_character_o
+0F7 3005D        629                             CALL            send_to_uart
+0F8 00F76        630                             LOAD            uart_data, #character_v
+0F9 3005D        631                             CALL            send_to_uart
+0FA 00F65        632                             LOAD            uart_data, #character_e
+0FB 3005D        633                             CALL            send_to_uart
+0FC 00F72        634                             LOAD            uart_data, #character_r
+0FD 3005D        635                             CALL            send_to_uart
+0FE 00F66        636                             LOAD            uart_data, #character_f
+0FF 3005D        637                             CALL            send_to_uart
+100 00F6C        638                             LOAD            uart_data, #character_l
+101 3005D        639                             CALL            send_to_uart
+102 00F6F        640                             LOAD            uart_data, #character_o
+103 3005D        641                             CALL            send_to_uart
+104 00F77        642                             LOAD            uart_data, #character_w
+105 3005D        643                             CALL            send_to_uart
+106 300B3        644     send_space_error:       CALL            send_space
+                 645     ;
+                 646     ;Send 'Error' to the UART
+                 647     ;
+107 00F45        648     send_error:             LOAD            uart_data, #_character_e
+108 3005D        649                             CALL            send_to_uart
+109 00F72        650                             LOAD            uart_data, #character_r
+10A 3005D        651                             CALL            send_to_uart
+10B 3005D        652                             CALL            send_to_uart
+10C 00F6F        653                             LOAD            uart_data, #character_o
+10D 3005D        654                             CALL            send_to_uart
+10E 00F72        655                             LOAD            uart_data, #character_r
+10F 3005D        656                             CALL            send_to_uart
+110 340B0        657                             JUMP            send_cr
+                 658     ;
+                 659     ;
+                 660     ;Send 'OK' to the UART
+                 661     ;
+111 300B0        662     send_ok:                CALL            send_cr
+112 00F4F        663                             LOAD            uart_data, #_character_o
+113 3005D        664                             CALL            send_to_uart
+114 00F4B        665                             LOAD            uart_data, #_character_k
+115 3005D        666                             CALL            send_to_uart
+116 340B0        667                             JUMP            send_cr
+                 668     ;
+                 669     ;
+                 670     ;**************************************************************************************
+                 671     ; Interrupt Service Routine (ISR)
+                 672     ;**************************************************************************************
+                 673     ;
+                 674     ; Interrupts occur at 3.92us intervals and are used to generate the PWM pulses generated
+                 675     ; at a PRF of 1KHz. The 3.92us interrupt rate corresponds with a resolution of 256 steps
+                 676     ; over the 1ms associated with the 1KHz PRF.
+                 677     ;
+                 678     ; The ISR is self contained and all registers used are preserved. Scratch pad memory
+                 679     ; locations are used to determine the desired duty factor for each of 12 channels.
+                 680     ;
+                 681     ; Note that an interrupt is generated every 196 clock cycles. This means that there is
+                 682     ; only time to execute 98 instructions between each interrupt. This ISR is 48 instructions
+                 683     ; long. A further 3 instructions are also consumed by the interrupt process
+                 684     ; (abandoned instruction, virtual CALL to 3FF and the interrupt vector JUMP) and hence
+                 685     ; PicoBlaze has approximately half of its time available for other tasks in the main program.
+                 686     ;
+                 687     ; Although a loop would normal be employed in software to process each of 12 channels,
+                 688     ; the implementation of a loop would increase the number of instructions which needed to
+                 689     ; be executed to such an extent that this 12 channel implementation would not be possible.
+                 690     ; Consequently the code is written out in a linear fashion which consumes more program
+                 691     ; space but which executes faster.
+                 692     ;
+117 2E00D        693     isr:                    STORE           s0, isr_preserve_s0     ;preserve registers to be used
+118 2E10E        694                             STORE           s1, isr_preserve_s1
+119 2E20F        695                             STORE           s2, isr_preserve_s2
+                 696     ;Determine the number of steps currently through the 1ms PWM cycle
+11A 06100        697                             FETCH           s1, pwm_duty_counter    ;read 8-bit counter of steps
+11B 18101        698                             ADD             s1, #0x01               ;increment counter (will roll over to zero)
+11C 2E100        699                             STORE           s1, pwm_duty_counter    ;update count value in memory for next interrupt.
+                 700     ;Read duty factor for each channel and compare it with the duty counter and set or
+                 701     ;reset a bit in register s2 accordingly.
+11D 0600C        702                             FETCH           s0, pwm_channel11       ;read desired setting of pulse width
+11E 15100        703                             COMPARE         s1, s0                  ;set carry flag if duty factor > duty counter
+11F 20200        704                             SLA             s2                      ;shift carry into register s2
+120 0600B        705                             FETCH           s0, pwm_channel10       ;read desired setting of pulse width
+121 15100        706                             COMPARE         s1, s0                  ;set carry flag if duty factor > duty counter
+122 20200        707                             SLA             s2                      ;shift carry into register s2
+123 0600A        708                             FETCH           s0, pwm_channel9        ;read desired setting of pulse width
+124 15100        709                             COMPARE         s1, s0                  ;set carry flag if duty factor > duty counter
+125 20200        710                             SLA             s2                      ;shift carry into register s2
+126 06009        711                             FETCH           s0, pwm_channel8        ;read desired setting of pulse width
+127 15100        712                             COMPARE         s1, s0                  ;set carry flag if duty factor > duty counter
+128 20200        713                             SLA             s2                      ;shift carry into register s2
+129 2C240        714                             OUTPUT          s2, simple_port         ;drive pins on connector J4
+12A 06008        715                             FETCH           s0, pwm_channel7        ;read desired setting of pulse width
+12B 15100        716                             COMPARE         s1, s0                  ;set carry flag if duty factor > duty counter
+12C 20200        717                             SLA             s2                      ;shift carry into register s2
+12D 06007        718                             FETCH           s0, pwm_channel6        ;read desired setting of pulse width
+12E 15100        719                             COMPARE         s1, s0                  ;set carry flag if duty factor > duty counter
+12F 20200        720                             SLA             s2                      ;shift carry into register s2
+130 06006        721                             FETCH           s0, pwm_channel5        ;read desired setting of pulse width
+131 15100        722                             COMPARE         s1, s0                  ;set carry flag if duty factor > duty counter
+132 20200        723                             SLA             s2                      ;shift carry into register s2
+133 06005        724                             FETCH           s0, pwm_channel4        ;read desired setting of pulse width
+134 15100        725                             COMPARE         s1, s0                  ;set carry flag if duty factor > duty counter
+135 20200        726                             SLA             s2                      ;shift carry into register s2
+136 06004        727                             FETCH           s0, pwm_channel3        ;read desired setting of pulse width
+137 15100        728                             COMPARE         s1, s0                  ;set carry flag if duty factor > duty counter
+138 20200        729                             SLA             s2                      ;shift carry into register s2
+139 06003        730                             FETCH           s0, pwm_channel2        ;read desired setting of pulse width
+13A 15100        731                             COMPARE         s1, s0                  ;set carry flag if duty factor > duty counter
+13B 20200        732                             SLA             s2                      ;shift carry into register s2
+13C 06002        733                             FETCH           s0, pwm_channel1        ;read desired setting of pulse width
+13D 15100        734                             COMPARE         s1, s0                  ;set carry flag if duty factor > duty counter
+13E 20200        735                             SLA             s2                      ;shift carry into register s2
+13F 06001        736                             FETCH           s0, pwm_channel0        ;read desired setting of pulse width
+140 15100        737                             COMPARE         s1, s0                  ;set carry flag if duty factor > duty counter
+141 20200        738                             SLA             s2                      ;shift carry into register s2
+142 2C280        739                             OUTPUT          s2, led_port            ;drive LEDs
+143 0600D        740                             FETCH           s0, isr_preserve_s0     ;restore register values
+144 0610E        741                             FETCH           s1, isr_preserve_s1
+145 0620F        742                             FETCH           s2, isr_preserve_s2
+146 38001        743                             RETURNI         enable
+                 744     ;
+                 745     ;
+                 746     ;**************************************************************************************
+                 747     ; Interrupt Vector
+                 748     ;**************************************************************************************
+                 749     ;
+  003FF          750                             ORG             0x3ff
+3FF 34117        751                             JUMP            isr
+                 752     ;
+                 753     ;
+                 754

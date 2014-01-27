@@ -1,0 +1,32 @@
+INTERRUPT  . . . . . . . . . . . . . LABEL  0x00000 NOT USED CONSTANT    6021_demo_4.asm:156.1-156.11
+LED_ID . . . . . . . . . . . . . . . PORT   0x00008 NOT USED CONSTANT    6021_demo_4.asm:32.9-32.37
+LED_REG  . . . . . . . . . . . . . . REG.   0x00005 NOT USED CONSTANT    6021_demo_4.asm:27.9-27.38
+MAIN_LOOP  . . . . . . . . . . . . . LABEL  0x00041 USED     CONSTANT    6021_demo_4.asm:173.1-173.11
+RXDATA . . . . . . . . . . . . . . . REG.   0x00003 NOT USED CONSTANT    6021_demo_4.asm:25.9-25.33
+RX_DATA  . . . . . . . . . . . . . . NUMBER 0x00004 USED     CONSTANT    6021_demo_4.asm:18.1-18.42
+RX_ID  . . . . . . . . . . . . . . . PORT   0x00002 USED     CONSTANT    6021_demo_4.asm:30.9-30.37
+S0 . . . . . . . . . . . . . . . . . REG.   0x00000 USED     CONSTANT    IMPLICIT
+S1 . . . . . . . . . . . . . . . . . REG.   0x00001 USED     CONSTANT    IMPLICIT
+S2 . . . . . . . . . . . . . . . . . REG.   0x00002 USED     CONSTANT    IMPLICIT
+S3 . . . . . . . . . . . . . . . . . REG.   0x00003 USED     CONSTANT    IMPLICIT
+S4 . . . . . . . . . . . . . . . . . REG.   0x00004 USED     CONSTANT    IMPLICIT
+S5 . . . . . . . . . . . . . . . . . REG.   0x00005 USED     CONSTANT    IMPLICIT
+S6 . . . . . . . . . . . . . . . . . REG.   0x00006 NOT USED CONSTANT    IMPLICIT
+S7 . . . . . . . . . . . . . . . . . REG.   0x00007 NOT USED CONSTANT    IMPLICIT
+S8 . . . . . . . . . . . . . . . . . REG.   0x00008 NOT USED CONSTANT    IMPLICIT
+S9 . . . . . . . . . . . . . . . . . REG.   0x00009 NOT USED CONSTANT    IMPLICIT
+SA . . . . . . . . . . . . . . . . . REG.   0x0000A NOT USED CONSTANT    IMPLICIT
+SB . . . . . . . . . . . . . . . . . REG.   0x0000B NOT USED CONSTANT    IMPLICIT
+SC . . . . . . . . . . . . . . . . . REG.   0x0000C NOT USED CONSTANT    IMPLICIT
+SD . . . . . . . . . . . . . . . . . REG.   0x0000D NOT USED CONSTANT    IMPLICIT
+SE . . . . . . . . . . . . . . . . . REG.   0x0000E NOT USED CONSTANT    IMPLICIT
+SF . . . . . . . . . . . . . . . . . REG.   0x0000F NOT USED CONSTANT    IMPLICIT
+START  . . . . . . . . . . . . . . . LABEL  0x00038 NOT USED CONSTANT    6021_demo_4.asm:168.1-168.7
+TEMP1  . . . . . . . . . . . . . . . REG.   0x00000 USED     CONSTANT    6021_demo_4.asm:21.9-21.33
+TEMP2  . . . . . . . . . . . . . . . REG.   0x00001 USED     CONSTANT    6021_demo_4.asm:22.9-22.33
+TEMP3  . . . . . . . . . . . . . . . REG.   0x00002 USED     CONSTANT    6021_demo_4.asm:23.9-23.33
+TXDATA . . . . . . . . . . . . . . . REG.   0x00004 USED     CONSTANT    6021_demo_4.asm:26.9-26.37
+TX_ID  . . . . . . . . . . . . . . . PORT   0x00001 USED     CONSTANT    6021_demo_4.asm:29.9-29.37
+UART_STAT  . . . . . . . . . . . . . PORT   0x00004 USED     CONSTANT    6021_demo_4.asm:31.9-31.37
+WAIT_1S  . . . . . . . . . . . . . . LABEL  0x00038 NOT USED CONSTANT    6021_demo_4.asm:96.1-96.96021_demo_4.asm:169.21-169.32
+WAIT_1S_I  . . . . . . . . . . . . . LABEL  0x0003B USED     CONSTANT    6021_demo_4.asm:99.1-99.116021_demo_4.asm:169.21-169.32

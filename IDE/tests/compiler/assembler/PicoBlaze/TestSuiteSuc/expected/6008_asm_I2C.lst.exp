@@ -1,0 +1,123 @@
+                   1
+                   2
+                   3     ; -------------------------------------------------------------------------------
+                   4     ; SPI routines
+                   5     ; data to move in s1, s1&s2, s1&s2&s3
+                   6     ; uses s0, sF
+                   7     ; sE: bit in the command reg of the SPI_LE pin
+                   8     ; sD: address of the command register
+                   9     ; sC: address of the SPI control/status register
+                  10     ; -------------------------------------------------------------------------------
+                  11     device kcpsm6
+                  12
+  00001           13     bMOSI           EQU    0b00000001
+  00080           14     bMISO           EQU    0b10000000
+  00002           15     bSCLK           EQU    0b00000010
+                  16
+  00000           17     ESPI24:
+                  18           ; address of the SPI register, contains MOSI, MISO, SCLK signals
+  00000           19     SPI24:
+000 08FD0         20                     IN      sF, @sD                  ; switch on the appropriate CE
+001 07EFF         21                     XOR     sE, #FFh
+002 02FE0         22                     AND     sF, sE
+003 2CFD0         23                     OUT     sF, @sD
+                  24
+004 00010         25                     LOAD    s0, s1
+005 2001C         26                     CALL    SPI8
+006 00020         27                     LOAD    s0, s2
+007 2001C         28                     CALL    SPI8
+008 00030         29                     LOAD    s0, s3
+009 2001C         30                     CALL    SPI8
+                  31
+00A 08FD0         32                     IN      sF, @sD
+00B 07EFF         33                     XOR     sE, #FFh
+00C 04FE0         34                     OR      sF, sE
+00D 2CFD0         35                     OUT     sF, @sD                  ; switch off the CE
+                  36
+00E 25000         37                     RET
+                  38
+  0000F           39     ESPI16:
+                  40           ; address of the SPI register, contains MOSI, MISO, SCLK signals
+  0000F           41     SPI16:
+00F 08FD0         42                     IN      sF, @sD                  ; switch on the appropriate CE
+010 07EFF         43                     XOR     sE, #FFh
+011 02FE0         44                     AND     sF, sE
+012 2CFD0         45                     OUT     sF, @sD
+                  46
+013 00010         47                     LOAD    s0, s1
+014 2001C         48                     CALL    SPI8
+015 00020         49                     LOAD    s0, s2
+016 2001C         50                     CALL    SPI8
+                  51
+017 08FD0         52                     IN      sF, @sD
+018 07EFF         53                     XOR     sE, #FFh
+019 04FE0         54                     OR      sF, sE
+01A 2CFD0         55                     OUT     sF, @sD                  ; switch off the CE
+                  56
+01B 25000         57                     RET
+                  58
+  0001C           59     ESPI8:
+                  60         ; address of the SPI register, contains MOSI, MISO, SCLK signals
+  0001C           61     SPI8:
+01C 08FD0         62                     IN      sF, @sD                  ; switch on the appropriate CE
+01D 07EFF         63                     XOR     sE, #FFh
+01E 02FE0         64                     AND     sF, sE
+01F 2CFD0         65                     OUT     sF, @sD
+                  66
+020 00010         67                     LOAD    s0, s1
+021 2001C         68                     CALL    SPI8
+                  69
+022 08FD0         70                     IN      sF, @sD
+023 07EFF         71                     XOR     sE, #FFh
+024 04FE0         72                     OR      sF, sE
+025 2CFD0         73                     OUT     sF, @sD                  ; switch off the CE
+                  74
+026 25000         75                     RET
+                  76
+                  77     ; -------------------------------------------------------------------------------
+                  78     ; raw SPI routines
+                  79     ; byte to move in s0
+                  80     ; uses sF
+                  81     ; -------------------------------------------------------------------------------
+                  82
+  00027           83     SPI8_:                                          ; shift 8 bits
+027 20028         84                     CALL    SPI4_
+                  85
+  00028           86     SPI4_:                                          ; shift 4 bits
+028 20029         87                     CALL    SPI2_
+                  88
+  00029           89     SPI2_:                                          ; shift 2 bits
+029 2002A         90                     CALL    SPI1_
+                  91
+                  92     ; -------------------------------------------------------------------------------
+                  93     ; send one bit w/clock
+                  94     ; -------------------------------------------------------------------------------
+                  95
+  0002A           96     SPI1_:                                          ; shift 1 bit
+02A 08FC0         97                     IN      sF, @sC
+02B 02FE0         98                     AND     sF, ~ bMOSI             ; clear MOSI bit
+W: instruction `AND sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+R: result is negative number: 0xfffffffffffffffe, this will represented as 4-bit number in two's complement arithmetic which makes it: 0xe.
+                  99
+02C 14006        100                     SL0     s0                      ; check if upper bit set
+02D 04F10        101                     OR      sF, bMOSI               ; set MOSI bit
+W: instruction `OR sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+                 102
+02E 2CFC0        103                     OUT     sF, @sC                  ; update MOSI signal
+02F 04F20        104                     OR      sF, bSCLK               ; set SCLK bit
+W: instruction `OR sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+030 2CFC0        105                     OUT     sF, @sC                  ; update SCLK signal
+031 02FD0        106                     AND     sF, ~ bSCLK             ; clear SCLK bit
+W: instruction `AND sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+R: result is negative number: 0xfffffffffffffffd, this will represented as 4-bit number in two's complement arithmetic which makes it: 0xd.
+032 2CFC0        107                     OUT     sF, @sC                  ; update SCLK bit
+                 108
+033 08FC0        109                     IN      sF, @sC
+034 0CF00        110                     TEST    sF, bMISO               ; test MISO signal
+W: instruction `TEST sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+W: value out of range: 0x80, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x0.
+035 31000        111                     RET     Z
+036 05001        112                     OR      s0, #1                   ; reflect it in s0
+037 25000        113                     RET
+                 114
+                 115     ; -----------SPI Subroutines end-------------------------------------------------

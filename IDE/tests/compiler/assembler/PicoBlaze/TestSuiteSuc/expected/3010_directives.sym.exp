@@ -1,0 +1,19 @@
+B  . . . . . . . . . . . . . . . . . NUMBER 0x00000 USED     REDEFINABLE 3010_directives.asm:5.1-5.18
+S0 . . . . . . . . . . . . . . . . . REG.   0x00000 USED     CONSTANT    IMPLICIT
+S1 . . . . . . . . . . . . . . . . . REG.   0x00001 USED     CONSTANT    IMPLICIT
+S2 . . . . . . . . . . . . . . . . . REG.   0x00002 USED     CONSTANT    IMPLICIT
+S3 . . . . . . . . . . . . . . . . . REG.   0x00003 NOT USED CONSTANT    IMPLICIT
+S4 . . . . . . . . . . . . . . . . . REG.   0x00004 NOT USED CONSTANT    IMPLICIT
+S5 . . . . . . . . . . . . . . . . . REG.   0x00005 NOT USED CONSTANT    IMPLICIT
+S6 . . . . . . . . . . . . . . . . . REG.   0x00006 NOT USED CONSTANT    IMPLICIT
+S7 . . . . . . . . . . . . . . . . . REG.   0x00007 NOT USED CONSTANT    IMPLICIT
+S8 . . . . . . . . . . . . . . . . . REG.   0x00008 NOT USED CONSTANT    IMPLICIT
+S9 . . . . . . . . . . . . . . . . . REG.   0x00009 NOT USED CONSTANT    IMPLICIT
+SA . . . . . . . . . . . . . . . . . REG.   0x0000A NOT USED CONSTANT    IMPLICIT
+SB . . . . . . . . . . . . . . . . . REG.   0x0000B NOT USED CONSTANT    IMPLICIT
+SC . . . . . . . . . . . . . . . . . REG.   0x0000C USED     CONSTANT    IMPLICIT
+SD . . . . . . . . . . . . . . . . . REG.   0x0000D NOT USED CONSTANT    IMPLICIT
+SE . . . . . . . . . . . . . . . . . REG.   0x0000E NOT USED CONSTANT    IMPLICIT
+SF . . . . . . . . . . . . . . . . . REG.   0x0000F NOT USED CONSTANT    IMPLICIT
+SS3  . . . . . . . . . . . . . . . . NUMBER 0x00006 NOT USED CONSTANT    3010_directives.asm:4.1-4.22
+START  . . . . . . . . . . . . . . . LABEL  0x00000 NOT USED CONSTANT    3010_directives.asm:9.1-9.7

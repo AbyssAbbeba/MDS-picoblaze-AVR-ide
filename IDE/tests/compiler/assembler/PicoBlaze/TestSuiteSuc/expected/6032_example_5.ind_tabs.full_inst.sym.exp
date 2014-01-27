@@ -1,0 +1,237 @@
+BCD_DIGIT0 . . . . . . . . . . . . . NUMBER 0x00003 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:99.1-99.22
+BCD_DIGIT1 . . . . . . . . . . . . . NUMBER 0x00004 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:100.1-100.22
+BCD_DIGIT2 . . . . . . . . . . . . . NUMBER 0x00005 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:101.1-101.22
+BCD_DIGIT3 . . . . . . . . . . . . . NUMBER 0x00006 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:102.1-102.22
+BCD_DIGIT4 . . . . . . . . . . . . . NUMBER 0x00007 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:103.1-103.22
+BCD_DIGIT5 . . . . . . . . . . . . . NUMBER 0x00008 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:104.1-104.22
+BCD_DIGIT6 . . . . . . . . . . . . . NUMBER 0x00009 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:105.1-105.22
+BCD_DIGIT7 . . . . . . . . . . . . . NUMBER 0x0000A USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:106.1-106.22
+BCD_DIGIT8 . . . . . . . . . . . . . NUMBER 0x0000B USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:107.1-107.22
+BCD_DIGIT_CONVERT  . . . . . . . . . LABEL  0x000F1 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:924.1-924.19
+BCD_TO_INTEGER . . . . . . . . . . . LABEL  0x000E5 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:912.1-912.16
+BLANK_100M_DIGIT . . . . . . . . . . LABEL  0x000BE USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:848.1-848.18
+BLANK_10M_DIGIT  . . . . . . . . . . LABEL  0x000C4 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:855.1-855.17
+CHARACTER_0  . . . . . . . . . . . . NUMBER 0x00030 NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:419.1-419.23
+CHARACTER_1  . . . . . . . . . . . . NUMBER 0x00031 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:420.1-420.23
+CHARACTER_2  . . . . . . . . . . . . NUMBER 0x00032 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:421.1-421.23
+CHARACTER_3  . . . . . . . . . . . . NUMBER 0x00033 NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:422.1-422.23
+CHARACTER_4  . . . . . . . . . . . . NUMBER 0x00034 NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:423.1-423.23
+CHARACTER_5  . . . . . . . . . . . . NUMBER 0x00035 NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:424.1-424.23
+CHARACTER_6  . . . . . . . . . . . . NUMBER 0x00036 NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:425.1-425.23
+CHARACTER_7  . . . . . . . . . . . . NUMBER 0x00037 NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:426.1-426.23
+CHARACTER_8  . . . . . . . . . . . . NUMBER 0x00038 NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:427.1-427.23
+CHARACTER_9  . . . . . . . . . . . . NUMBER 0x00039 NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:428.1-428.23
+CHARACTER_A  . . . . . . . . . . . . NUMBER 0x00061 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:367.1-367.23
+CHARACTER_B  . . . . . . . . . . . . NUMBER 0x00062 NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:368.1-368.23
+CHARACTER_BS . . . . . . . . . . . . NUMBER 0x00008 NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:444.1-444.24
+CHARACTER_C  . . . . . . . . . . . . NUMBER 0x00063 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:369.1-369.23
+CHARACTER_COLON  . . . . . . . . . . NUMBER 0x0003A NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:429.1-429.27
+CHARACTER_COMMA  . . . . . . . . . . NUMBER 0x0002C NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:435.1-435.27
+CHARACTER_CR . . . . . . . . . . . . NUMBER 0x0000D NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:440.1-440.24
+CHARACTER_D  . . . . . . . . . . . . NUMBER 0x00064 NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:370.1-370.23
+CHARACTER_DIVIDE . . . . . . . . . . NUMBER 0x0002F NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:433.1-433.27
+CHARACTER_DOLLAR . . . . . . . . . . NUMBER 0x00024 NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:442.1-442.27
+CHARACTER_E  . . . . . . . . . . . . NUMBER 0x00065 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:371.1-371.23
+CHARACTER_EQUALS . . . . . . . . . . NUMBER 0x0003D USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:438.1-438.27
+CHARACTER_EXCLAIM  . . . . . . . . . NUMBER 0x00021 NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:443.1-443.28
+CHARACTER_F  . . . . . . . . . . . . NUMBER 0x00066 NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:372.1-372.23
+CHARACTER_G  . . . . . . . . . . . . NUMBER 0x00067 NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:373.1-373.23
+CHARACTER_GREATER_THAN . . . . . . . NUMBER 0x0003E NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:437.1-437.33
+CHARACTER_H  . . . . . . . . . . . . NUMBER 0x00068 NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:374.1-374.23
+CHARACTER_I  . . . . . . . . . . . . NUMBER 0x00069 NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:375.1-375.23
+CHARACTER_J  . . . . . . . . . . . . NUMBER 0x0006A NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:376.1-376.23
+CHARACTER_K  . . . . . . . . . . . . NUMBER 0x0006B NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:377.1-377.23
+CHARACTER_L  . . . . . . . . . . . . NUMBER 0x0006C NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:378.1-378.23
+CHARACTER_LESS_THAN  . . . . . . . . NUMBER 0x0003C NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:436.1-436.30
+CHARACTER_M  . . . . . . . . . . . . NUMBER 0x0006D NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:379.1-379.23
+CHARACTER_MINUS  . . . . . . . . . . NUMBER 0x0002D NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:432.1-432.27
+CHARACTER_N  . . . . . . . . . . . . NUMBER 0x0006E USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:380.1-380.23
+CHARACTER_O  . . . . . . . . . . . . NUMBER 0x0006F USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:381.1-381.23
+CHARACTER_P  . . . . . . . . . . . . NUMBER 0x00070 NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:382.1-382.23
+CHARACTER_PLUS . . . . . . . . . . . NUMBER 0x0002B NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:434.1-434.26
+CHARACTER_Q  . . . . . . . . . . . . NUMBER 0x00071 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:383.1-383.23
+CHARACTER_QUESTION . . . . . . . . . NUMBER 0x0003F NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:441.1-441.29
+CHARACTER_R  . . . . . . . . . . . . NUMBER 0x00072 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:384.1-384.23
+CHARACTER_S  . . . . . . . . . . . . NUMBER 0x00073 NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:385.1-385.23
+CHARACTER_SEMI_COLON . . . . . . . . NUMBER 0x0003B NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:431.1-431.31
+CHARACTER_SPACE  . . . . . . . . . . NUMBER 0x00020 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:439.1-439.27
+CHARACTER_STOP . . . . . . . . . . . NUMBER 0x0002E USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:430.1-430.26
+CHARACTER_T  . . . . . . . . . . . . NUMBER 0x00074 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:386.1-386.23
+CHARACTER_U  . . . . . . . . . . . . NUMBER 0x00075 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:387.1-387.23
+CHARACTER_V  . . . . . . . . . . . . NUMBER 0x00076 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:388.1-388.23
+CHARACTER_W  . . . . . . . . . . . . NUMBER 0x00077 NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:389.1-389.23
+CHARACTER_X  . . . . . . . . . . . . NUMBER 0x00078 NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:390.1-390.23
+CHARACTER_Y  . . . . . . . . . . . . NUMBER 0x00079 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:391.1-391.23
+CHARACTER_Z  . . . . . . . . . . . . NUMBER 0x0007A USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:392.1-392.23
+COLD_START . . . . . . . . . . . . . LABEL  0x00000 NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:454.1-454.12
+COMPUTE_DDS_WORDS  . . . . . . . . . LABEL  0x00084 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:761.1-761.19
+CURSOR_POSITION  . . . . . . . . . . NUMBER 0x00010 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:120.1-120.27
+DDS_CONTROL0 . . . . . . . . . . . . NUMBER 0x0001C USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:140.1-140.24
+DDS_CONTROL0_PORT  . . . . . . . . . NUMBER 0x00002 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:71.1-71.28
+DDS_CONTROL1 . . . . . . . . . . . . NUMBER 0x0001D USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:141.1-141.24
+DDS_CONTROL1_PORT  . . . . . . . . . NUMBER 0x00004 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:72.1-72.28
+DDS_CONTROL2 . . . . . . . . . . . . NUMBER 0x0001E USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:142.1-142.24
+DDS_CONTROL2_PORT  . . . . . . . . . NUMBER 0x00008 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:73.1-73.28
+DDS_CONTROL3 . . . . . . . . . . . . NUMBER 0x0001F USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:143.1-143.24
+DDS_CONTROL3_PORT  . . . . . . . . . NUMBER 0x00010 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:74.1-74.28
+DDS_SCALING  . . . . . . . . . . . . NUMBER 0x00020 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:144.1-144.23
+DDS_SCALING_PORT . . . . . . . . . . NUMBER 0x00020 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:78.1-78.27
+DEC_BORROW . . . . . . . . . . . . . LABEL  0x0005B USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:597.1-597.12
+DEC_DIGIT  . . . . . . . . . . . . . LABEL  0x00055 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:591.1-591.11
+DELAY_1MS  . . . . . . . . . . . . . LABEL  0x001C3 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:1252.1-1252.11
+DELAY_1S . . . . . . . . . . . . . . LABEL  0x001CD USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:1274.1-1274.10
+DELAY_1US  . . . . . . . . . . . . . LABEL  0x001BA USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:1232.1-1232.11
+DELAY_1US_CONSTANT . . . . . . . . . NUMBER 0x0000B USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:361.1-361.29
+DELAY_20MS . . . . . . . . . . . . . LABEL  0x001C8 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:1264.1-1264.12
+DELAY_40US . . . . . . . . . . . . . LABEL  0x001BE USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:1241.1-1241.12
+DISP32_LOOP  . . . . . . . . . . . . LABEL  0x00185 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:1147.1-1147.13
+DISPLAY_3_DIGITS . . . . . . . . . . LABEL  0x000D8 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:879.1-879.18
+DISPLAY_DDS_DATA . . . . . . . . . . LABEL  0x0015D USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:1067.1-1067.18
+DISPLAY_DIGIT  . . . . . . . . . . . LABEL  0x000DF USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:887.1-887.15
+DISPLAY_FREQ . . . . . . . . . . . . LABEL  0x000B4 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:837.1-837.14
+DISPLAY_HEX_32_BIT . . . . . . . . . LABEL  0x00184 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:1146.1-1146.20
+DISPLAY_HEX_BYTE . . . . . . . . . . LABEL  0x0017E USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:1131.1-1131.18
+DISPLAY_SPACE  . . . . . . . . . . . LABEL  0x000E2 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:891.1-891.15
+DISP_1M_DIGIT  . . . . . . . . . . . LABEL  0x000C5 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:857.1-857.15
+DISP_FREQUENCY . . . . . . . . . . . LABEL  0x0018B USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:1162.1-1162.16
+DISP_GENERATOR . . . . . . . . . . . LABEL  0x0019E USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:1184.1-1184.16
+DRIVE_DDS_WORDS  . . . . . . . . . . LABEL  0x000A9 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:810.1-810.17
+EDIT_DIGIT_POINTER . . . . . . . . . NUMBER 0x00011 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:121.1-121.29
+EDIT_DISPLAY . . . . . . . . . . . . LABEL  0x00046 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:570.1-570.14
+EDIT_MODE  . . . . . . . . . . . . . LABEL  0x00045 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:569.1-569.11
+EDIT_POINT_UPDATE  . . . . . . . . . LABEL  0x00042 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:552.1-552.19
+EDIT_WAIT  . . . . . . . . . . . . . LABEL  0x0004A USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:574.1-574.11
+END_EDIT_MODE  . . . . . . . . . . . LABEL  0x0007B USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:636.1-636.15
+FILL_MAX . . . . . . . . . . . . . . LABEL  0x00076 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:630.1-630.10
+FILL_MIN . . . . . . . . . . . . . . LABEL  0x00063 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:606.1-606.10
+FREQUENCY0 . . . . . . . . . . . . . NUMBER 0x0000C USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:112.1-112.22
+FREQUENCY1 . . . . . . . . . . . . . NUMBER 0x0000D USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:113.1-113.22
+FREQUENCY2 . . . . . . . . . . . . . NUMBER 0x0000E USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:114.1-114.22
+FREQUENCY3 . . . . . . . . . . . . . NUMBER 0x0000F USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:115.1-115.22
+HEX_BYTE_TO_ASCII  . . . . . . . . . LABEL  0x0016D USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:1102.1-1102.19
+HEX_TO_ASCII . . . . . . . . . . . . LABEL  0x00179 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:1119.1-1119.14
+INC_CARRY  . . . . . . . . . . . . . LABEL  0x0006E USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:621.1-621.11
+INC_DIGIT  . . . . . . . . . . . . . LABEL  0x00068 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:615.1-615.11
+ISR  . . . . . . . . . . . . . . . . LABEL  0x00238 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:1511.1-1511.5
+ISR_PRESERVE_S0  . . . . . . . . . . NUMBER 0x00001 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:92.1-92.27
+LCD_CLEAR  . . . . . . . . . . . . . LABEL  0x00226 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:1456.1-1456.11
+LCD_CURSOR . . . . . . . . . . . . . LABEL  0x0022B USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:1479.1-1479.12
+LCD_DB4  . . . . . . . . . . . . . . NUMBER 0x00010 NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:53.1-53.20
+LCD_DB5  . . . . . . . . . . . . . . NUMBER 0x00020 NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:54.1-54.20
+LCD_DB6  . . . . . . . . . . . . . . NUMBER 0x00040 NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:55.1-55.20
+LCD_DB7  . . . . . . . . . . . . . . NUMBER 0x00080 NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:56.1-56.20
+LCD_DRIVE  . . . . . . . . . . . . . NUMBER 0x00008 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:52.1-52.21
+LCD_E  . . . . . . . . . . . . . . . NUMBER 0x00001 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:49.1-49.18
+LCD_INPUT_PORT . . . . . . . . . . . NUMBER 0x00001 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:59.1-59.26
+LCD_OUTPUT_PORT  . . . . . . . . . . NUMBER 0x00040 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:48.1-48.27
+LCD_PULSE_E  . . . . . . . . . . . . LABEL  0x001D2 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:1300.1-1300.13
+LCD_READ_DATA8 . . . . . . . . . . . LABEL  0x001FC NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:1399.1-1399.16
+LCD_READ_DB4 . . . . . . . . . . . . NUMBER 0x00010 NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:60.1-60.24
+LCD_READ_DB5 . . . . . . . . . . . . NUMBER 0x00020 NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:61.1-61.24
+LCD_READ_DB6 . . . . . . . . . . . . NUMBER 0x00040 NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:62.1-62.24
+LCD_READ_DB7 . . . . . . . . . . . . NUMBER 0x00080 NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:63.1-63.24
+LCD_RESET  . . . . . . . . . . . . . LABEL  0x00215 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:1439.1-1439.11
+LCD_RS . . . . . . . . . . . . . . . NUMBER 0x00004 NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:51.1-51.19
+LCD_RW . . . . . . . . . . . . . . . NUMBER 0x00002 NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:50.1-50.19
+LCD_SHIFT_LEFT . . . . . . . . . . . LABEL  0x00235 NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:1496.1-1496.16
+LCD_WRITE_DATA . . . . . . . . . . . LABEL  0x001EB USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:1362.1-1362.16
+LCD_WRITE_INST4  . . . . . . . . . . LABEL  0x001D8 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:1316.1-1316.17
+LCD_WRITE_INST8  . . . . . . . . . . LABEL  0x001DC USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:1333.1-1333.17
+LED0 . . . . . . . . . . . . . . . . NUMBER 0x00001 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:26.1-26.17
+LED1 . . . . . . . . . . . . . . . . NUMBER 0x00002 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:27.1-27.17
+LED2 . . . . . . . . . . . . . . . . NUMBER 0x00004 NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:28.1-28.17
+LED3 . . . . . . . . . . . . . . . . NUMBER 0x00008 NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:29.1-29.17
+LED4 . . . . . . . . . . . . . . . . NUMBER 0x00010 NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:30.1-30.17
+LED5 . . . . . . . . . . . . . . . . NUMBER 0x00020 NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:31.1-31.17
+LED6 . . . . . . . . . . . . . . . . NUMBER 0x00040 NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:32.1-32.17
+LED7 . . . . . . . . . . . . . . . . NUMBER 0x00080 NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:33.1-33.17
+LED_PATTERN  . . . . . . . . . . . . NUMBER 0x00002 NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:94.1-94.23
+LED_PORT . . . . . . . . . . . . . . NUMBER 0x00080 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:25.1-25.20
+MOVE_LEFT  . . . . . . . . . . . . . LABEL  0x0002F NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:531.1-531.11
+MOVE_MODE  . . . . . . . . . . . . . LABEL  0x0001F USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:513.1-513.11
+MOVE_RIGHT . . . . . . . . . . . . . LABEL  0x00039 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:542.1-542.12
+MOVE_WAIT  . . . . . . . . . . . . . LABEL  0x00023 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:517.1-517.11
+NEXT_BCD_TO_INT_DIGIT  . . . . . . . LABEL  0x000F0 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:923.1-923.23
+NEXT_DIGIT_VALUE . . . . . . . . . . LABEL  0x00101 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:941.1-941.18
+NORMALISE_LOOP . . . . . . . . . . . LABEL  0x00090 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:773.1-773.16
+NUMBER_CHAR  . . . . . . . . . . . . LABEL  0x0017C USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:1122.1-1122.13
+PRODUCT0 . . . . . . . . . . . . . . NUMBER 0x00012 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:127.1-127.20
+PRODUCT1 . . . . . . . . . . . . . . NUMBER 0x00013 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:128.1-128.20
+PRODUCT2 . . . . . . . . . . . . . . NUMBER 0x00014 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:129.1-129.20
+PRODUCT3 . . . . . . . . . . . . . . NUMBER 0x00015 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:130.1-130.20
+PRODUCT4 . . . . . . . . . . . . . . NUMBER 0x00016 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:131.1-131.20
+PRODUCT5 . . . . . . . . . . . . . . NUMBER 0x00017 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:132.1-132.20
+PRODUCT6 . . . . . . . . . . . . . . NUMBER 0x00018 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:133.1-133.20
+PRODUCT7 . . . . . . . . . . . . . . NUMBER 0x00019 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:134.1-134.20
+PRODUCT8 . . . . . . . . . . . . . . NUMBER 0x0001A USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:135.1-135.20
+PRODUCT9 . . . . . . . . . . . . . . NUMBER 0x0001B USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:136.1-136.20
+PRODUCT_SHIFT  . . . . . . . . . . . LABEL  0x0013C USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:1027.1-1027.15
+ROTARY_EVENT . . . . . . . . . . . . NUMBER 0x00080 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:90.1-90.24
+ROTARY_LEFT  . . . . . . . . . . . . NUMBER 0x00001 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:37.1-37.23
+ROTARY_PORT  . . . . . . . . . . . . NUMBER 0x00000 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:36.1-36.23
+ROTARY_PRESS . . . . . . . . . . . . NUMBER 0x00002 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:38.1-38.24
+ROTARY_STATUS  . . . . . . . . . . . NUMBER 0x00000 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:89.1-89.25
+S0 . . . . . . . . . . . . . . . . . REG.   0x00000 USED     CONSTANT    IMPLICIT
+S1 . . . . . . . . . . . . . . . . . REG.   0x00001 USED     CONSTANT    IMPLICIT
+S2 . . . . . . . . . . . . . . . . . REG.   0x00002 USED     CONSTANT    IMPLICIT
+S3 . . . . . . . . . . . . . . . . . REG.   0x00003 USED     CONSTANT    IMPLICIT
+S4 . . . . . . . . . . . . . . . . . REG.   0x00004 USED     CONSTANT    IMPLICIT
+S5 . . . . . . . . . . . . . . . . . REG.   0x00005 USED     CONSTANT    IMPLICIT
+S6 . . . . . . . . . . . . . . . . . REG.   0x00006 USED     CONSTANT    IMPLICIT
+S7 . . . . . . . . . . . . . . . . . REG.   0x00007 USED     CONSTANT    IMPLICIT
+S8 . . . . . . . . . . . . . . . . . REG.   0x00008 USED     CONSTANT    IMPLICIT
+S9 . . . . . . . . . . . . . . . . . REG.   0x00009 USED     CONSTANT    IMPLICIT
+SA . . . . . . . . . . . . . . . . . REG.   0x0000A USED     CONSTANT    IMPLICIT
+SB . . . . . . . . . . . . . . . . . REG.   0x0000B USED     CONSTANT    IMPLICIT
+SC . . . . . . . . . . . . . . . . . REG.   0x0000C NOT USED CONSTANT    IMPLICIT
+SCALE_CONSTANT0  . . . . . . . . . . NUMBER 0x00062 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:339.1-339.27
+SCALE_CONSTANT1  . . . . . . . . . . NUMBER 0x00084 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:340.1-340.27
+SCALE_CONSTANT2  . . . . . . . . . . NUMBER 0x00011 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:341.1-341.27
+SCALE_CONSTANT3  . . . . . . . . . . NUMBER 0x00077 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:342.1-342.27
+SCALE_CONSTANT4  . . . . . . . . . . NUMBER 0x000CC USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:343.1-343.27
+SCALE_CONSTANT5  . . . . . . . . . . NUMBER 0x000AB USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:344.1-344.27
+SCALE_FREQUENCY  . . . . . . . . . . LABEL  0x00119 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:992.1-992.17
+SCALE_MULT_BIT . . . . . . . . . . . LABEL  0x00125 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:1004.1-1004.16
+SD . . . . . . . . . . . . . . . . . REG.   0x0000D NOT USED CONSTANT    IMPLICIT
+SE . . . . . . . . . . . . . . . . . REG.   0x0000E NOT USED CONSTANT    IMPLICIT
+SET_LINE2  . . . . . . . . . . . . . LABEL  0x00231 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:1485.1-1485.11
+SET_MAX_VALUE  . . . . . . . . . . . LABEL  0x00074 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:628.1-628.15
+SET_MIN_VALUE  . . . . . . . . . . . LABEL  0x00061 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:604.1-604.15
+SF . . . . . . . . . . . . . . . . . REG.   0x0000F NOT USED CONSTANT    IMPLICIT
+SHIFT80_LEFT . . . . . . . . . . . . LABEL  0x000A1 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:791.1-791.14
+SKIP_LEFT  . . . . . . . . . . . . . LABEL  0x00037 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:539.1-539.11
+SKIP_RIGHT . . . . . . . . . . . . . LABEL  0x00041 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:550.1-550.12
+STORE_DDS_WORDS  . . . . . . . . . . LABEL  0x0009A USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:783.1-783.17
+WAIT_1MS . . . . . . . . . . . . . . LABEL  0x001C4 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:1253.1-1253.10
+WAIT_1S  . . . . . . . . . . . . . . LABEL  0x001CE USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:1275.1-1275.9
+WAIT_1US . . . . . . . . . . . . . . LABEL  0x001BB USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:1233.1-1233.10
+WAIT_20MS  . . . . . . . . . . . . . LABEL  0x001C9 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:1265.1-1265.11
+WAIT_40US  . . . . . . . . . . . . . LABEL  0x001BF USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:1242.1-1242.11
+WAIT_SWITCH_RELEASE  . . . . . . . . LABEL  0x0007D USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:644.1-644.21
+_3DIGIT_LOOP . . . . . . . . . . . . LABEL  0x000D9 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:880.1-880.14
+_CHARACTER_A . . . . . . . . . . . . NUMBER 0x00041 NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:393.1-393.24
+_CHARACTER_B . . . . . . . . . . . . NUMBER 0x00042 NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:394.1-394.24
+_CHARACTER_C . . . . . . . . . . . . NUMBER 0x00043 NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:395.1-395.24
+_CHARACTER_D . . . . . . . . . . . . NUMBER 0x00044 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:396.1-396.24
+_CHARACTER_E . . . . . . . . . . . . NUMBER 0x00045 NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:397.1-397.24
+_CHARACTER_F . . . . . . . . . . . . NUMBER 0x00046 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:398.1-398.24
+_CHARACTER_G . . . . . . . . . . . . NUMBER 0x00047 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:399.1-399.24
+_CHARACTER_H . . . . . . . . . . . . NUMBER 0x00048 USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:400.1-400.24
+_CHARACTER_I . . . . . . . . . . . . NUMBER 0x00049 NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:401.1-401.24
+_CHARACTER_J . . . . . . . . . . . . NUMBER 0x0004A NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:402.1-402.24
+_CHARACTER_K . . . . . . . . . . . . NUMBER 0x0004B NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:403.1-403.24
+_CHARACTER_L . . . . . . . . . . . . NUMBER 0x0004C NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:404.1-404.24
+_CHARACTER_M . . . . . . . . . . . . NUMBER 0x0004D USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:405.1-405.24
+_CHARACTER_N . . . . . . . . . . . . NUMBER 0x0004E USED     CONSTANT    6032_example_5.ind_tabs.full_inst.asm:406.1-406.24
+_CHARACTER_O . . . . . . . . . . . . NUMBER 0x0004F NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:407.1-407.24
+_CHARACTER_P . . . . . . . . . . . . NUMBER 0x00050 NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:408.1-408.24
+_CHARACTER_Q . . . . . . . . . . . . NUMBER 0x00051 NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:409.1-409.24
+_CHARACTER_R . . . . . . . . . . . . NUMBER 0x00052 NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:410.1-410.24
+_CHARACTER_S . . . . . . . . . . . . NUMBER 0x00053 NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:411.1-411.24
+_CHARACTER_T . . . . . . . . . . . . NUMBER 0x00054 NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:412.1-412.24
+_CHARACTER_U . . . . . . . . . . . . NUMBER 0x00055 NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:413.1-413.24
+_CHARACTER_V . . . . . . . . . . . . NUMBER 0x00056 NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:414.1-414.24
+_CHARACTER_W . . . . . . . . . . . . NUMBER 0x00057 NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:415.1-415.24
+_CHARACTER_X . . . . . . . . . . . . NUMBER 0x00058 NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:416.1-416.24
+_CHARACTER_Y . . . . . . . . . . . . NUMBER 0x00059 NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:417.1-417.24
+_CHARACTER_Z . . . . . . . . . . . . NUMBER 0x0005A NOT USED CONSTANT    6032_example_5.ind_tabs.full_inst.asm:418.1-418.24

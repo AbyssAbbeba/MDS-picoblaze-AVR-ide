@@ -1,0 +1,116 @@
+                   1     ; Compiler test case for Assembler
+                   2     ; instruction opcodes
+                   3
+                   4     device kcpsm6
+                   5
+                   6
+  00000            7     NAMEREG         s0, ram_data
+  00001            8     NAMEREG         s1, ram_address
+                   9
+  00028           10     CONSTANT        ram_locations, 40               ; there are 64 locations
+  00000           11     CONSTANT        initial_value, 00               ; initialize to zero
+                  12
+                  13
+  00000           14     Start:
+000 00000         15             LOAD            ram_data, initial_value         ; load initial value
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+001 00180         16             LOAD            ram_address, ram_locations
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+W: value out of range: 0x28, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x8.
+                  17             ; fill from top to bottom
+  00002           18     ram_fill:
+002 18110         19             SUB             ram_address, 01
+W: instruction `SUB sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+                  20             ; decrement address
+003 2E010         21             STORE           ram_data, @ram_address
+                  22
+                  23
+                  24
+                  25             ; initialize location
+004 36002         26             JUMP            NZ, ram_fill
+                  27             ; if not address 0, goto
+                  28             ; ram_fill
+                  29
+  00000           30     CONSTANT                switches, 00
+                  31     ; read switch values at port 0
+  00001           32     CONSTANT                LEDs,  01h
+                  33     ; write 7-seg LED at port 1
+                  34     ; Define 7-segment LED pattern {dp,g,f,e,d,c,b,a}
+  000C0           35     CONSTANT                LED_0, C0h
+                  36     ; display '0' on 7-segment display
+  000F9           37     CONSTANT                LED_1, F9h
+                  38     ; display '1' on 7-segment display
+                  39     ;
+  0008E           40     CONSTANT                LED_F, 8Eh
+                  41     ; display 'F' on 7-segment display
+  00000           42     NAMEREG                 s0, switch_value
+W: reusing already reserved space in register file memory at address: 0x0.
+                  43     ; read switches into register s0
+  00001           44     NAMEREG                 s1, LED_output
+W: reusing already reserved space in register file memory at address: 0x1.
+                  45     ; load LED output data in register s1
+                  46     ; Load 7-segment LED patterns into scratchpad RAM
+005 00100         47             LOAD            LED_output, LED_0
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+W: value out of range: 0xc0, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x0.
+                  48             ; grab LED pattern for switches = 0000
+006 2F100         49             STORE           LED_output, 00
+                  50             ; store in RAM[0]
+007 00190         51             LOAD            LED_output, LED_1
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+W: value out of range: 0xf9, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x9.
+                  52             ; grab LED pattern for switches = 0001
+008 2F101         53             STORE           LED_output, 01h
+                  54             ; store in RAM[1]
+                  55             ;
+009 001E0         56             LOAD            LED_output, LED_F
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+W: value out of range: 0x8e, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xe.
+                  57             ; grab LED pattern for switches = 1111
+00A 2F10F         58             STORE           LED_output, 0Fh
+                  59             ; store in RAM[F]
+                  60             ; Read switch values and display value on 7-segment LED
+  0000B           61     loop:
+00B 09000         62             INPUT           switch_value, switches
+                  63             ; read value on switches
+00C 020F0         64             AND             switch_value, 0Fh
+W: instruction `AND sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+                  65             ; mask upper bits to guarantee < 15
+00D 0A100         66             FETCH           LED_output, @switch_value
+                  67             ; look up LED pattern in RAM
+00E 2D101         68             OUTPUT          LED_output, LEDs
+                  69             ; display switch value on 7-segment LED
+00F 2200B         70             JUMP            loop
+                  71
+                  72
+                  73
+                  74
+  0000F           75     NAMEREG         sF, stack_ptr
+                  76     ; reserve register sF for the stack pointer
+                  77     ; Initialize stack pointer to location 32 in the scratchpad RAM
+010 00F00         78             LOAD            sF, 20h
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+W: value out of range: 0x20, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x0.
+  00011           79     my_subroutine:
+                  80             ; preserve register s0
+011 20014         81             CALL            push_s0
+                  82             ; *** remainder of subroutine algorithm ***
+                  83             ; restore register s0
+012 20017         84             CALL            pop_s0
+013 25000         85             RETURN
+                  86
+  00014           87     push_s0:
+014 2E0F0         88             STORE           s0, @stack_ptr
+                  89             ; preserve register s0 onto “stack”
+015 10F10         90             ADD             stack_ptr, 01
+W: instruction `ADD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+                  91             ; increment stack pointer
+016 25000         92             RETURN
+                  93
+  00017           94     pop_s0:
+017 18F10         95             SUB             stack_ptr, 01h
+W: instruction `SUB sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+                  96             ; decrement stack pointer
+018 0A0F0         97             FETCH           s0, @stack_ptr
+                  98             ; restore register s0 from “stack”
+019 25000         99             RETURN

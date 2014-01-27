@@ -1,0 +1,38 @@
+  00000            1             org     0
+                   2     device kcpsm2
+                   3
+                   4
+                   5             ;RT_FOR          S0,10..15
+000 0000A          6             LOAD    0x0, #0xa
+W: instruction `LOAD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+  00001            7     FOR_1:
+                   8             COMPARE 0x0, #0xf
+W: instruction `COMPARE sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+E: instruction not supported on the this device: COMPARE sX, kk.
+001 35006          9             JUMP    Z, FOR_1_END
+002 08701         10                 add              S7,#1
+                  11             ; RT_ENDF
+003 08001         12             ADD     0x0, #0x1
+W: instruction `ADD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+004 34001         13             JUMP    FOR_1
+  00006           14     FOR_1_END:
+                  15
+                  16
+                  17         ;    RT_FOR          S0,10..50,5
+005 0000A         18             LOAD    0x0, #0xa
+W: instruction `LOAD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+  00007           19     FOR_2:
+                  20             COMPARE 0x0, #0x32
+W: instruction `COMPARE sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+E: instruction not supported on the this device: COMPARE sX, kk.
+006 3500C         21     JUMP    Z, FOR_2_END
+007 08801         22                 add              S8,#1
+                  23             ;RT_ENDF
+008 08005         24             ADD     0x0, #0x5
+W: instruction `ADD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+009 34007         25             JUMP    FOR_2
+  0000C           26     FOR_2_END:
+                  27
+00A 3400C         28             jump   $
+                  29
+                  30

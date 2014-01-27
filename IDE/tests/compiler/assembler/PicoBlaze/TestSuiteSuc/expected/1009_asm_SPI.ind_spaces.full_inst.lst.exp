@@ -1,0 +1,288 @@
+                   1     device kcpsm1
+                   2
+  00005            3     BSDA_Z  EQU     5
+  00005            4     BSCL_Z  EQU     5
+  00005            5     BSDA_0  EQU     5
+  00005            6     BSCL_0  EQU     5
+  00005            7     BSDA_IN EQU     5
+                   8     ; ---\              /--------\                                            /--
+                   9     ;     \  SDA       /          \                                          /
+                  10     ;      \----------/ \--------/ \----------------------------------------/
+                  11     ; -------\            /----\                                         /-------
+                  12     ;         \  SCL     /      \                                       /
+                  13     ;          \--------/        \-------------------------------------/
+                  14     ; | Start    |      Data bit     |                             |  Stop     |
+                  15
+000 0EF05         16     init_i2c:               OUTPUT          sf, bsda_z              ; SDA = Z
+001 0EF05         17                             OUTPUT          sf, bscl_z              ; SCL = Z
+002 08103         18                             JUMP            delay
+                  19
+  00003           20     delay:
+                  21     ; -------------------------------------------------------------------------------
+                  22     ; Routine to set up for and read four bytes from I2C device
+                  23     ; -------------------------------------------------------------------------------
+                  24
+  00003           25     readwrite4_i2c:
+003 0839A         26                             CALL            i2c_start               ; Send Start, control byte and ack
+004 0BC00         27                             INPUT           sc, @s0                 ; Load device code for TX
+005 0DC06         28                             SL0             sc                      ; add write flag
+006 08357         29                             CALL            i2c_xmit                ; Send address and ack
+007 0838E         30                             CALL            i2c_sack
+                  31
+008 0BC10         32                             INPUT           sc, @s1                 ; Load data for TX
+009 08357         33                             CALL            i2c_xmit                ; Send data and ack
+00A 0838E         34                             CALL            i2c_sack
+                  35
+00B 08398         36                             CALL            i2c_repstart            ; Send repeated start, control byte and ack
+00C 0BC00         37                             INPUT           sc, @s0                 ; Load device code for TX
+00D 0DC07         38                             SL1             sc                      ; add read flag
+00E 08357         39                             CALL            i2c_xmit                ; Send address and ack
+00F 0838E         40                             CALL            i2c_sack
+                  41
+010 08368         42                             CALL            i2c_recv                ; Read 8 bits of data and send ack
+011 08378         43                             CALL            i2c_mack
+012 0B2C0         44                             INPUT           s2, @sc
+                  45
+013 08368         46                             CALL            i2c_recv                ; Read next 8 bits of data and send ack
+014 08378         47                             CALL            i2c_mack
+015 0B3C0         48                             INPUT           s3, @sc
+                  49
+016 08368         50                             CALL            i2c_recv                ; Read 8 bits of data and send ack
+017 08378         51                             CALL            i2c_mack
+018 0B4C0         52                             INPUT           s4, @sc
+                  53
+019 08368         54                             CALL            i2c_recv                ; Read next 8 bits of data and send ack
+01A 08383         55                             CALL            i2c_mnack
+01B 0B5C0         56                             INPUT           s5, @sc
+                  57
+01C 081A0         58                             JUMP            i2c_stop                ; Send Stop
+                  59
+                  60     ; -------------------------------------------------------------------------------
+                  61     ; Routine to set up for and write two bytes to I2C device
+                  62     ; -------------------------------------------------------------------------------
+  0001D           63     write3_i2c:
+01D 0839A         64                             CALL            i2c_start               ; Send Start, control byte and ack
+01E 0BC00         65                             INPUT           sc, @s0                 ; Load device code for TX
+01F 0DC06         66                             SL0             sc                      ; add write flag
+020 08357         67                             CALL            i2c_xmit                ; Send address and ack
+021 0838E         68                             CALL            i2c_sack
+                  69
+022 0BC10         70                             INPUT           sc, @s1                 ; Load data for TX
+023 08357         71                             CALL            i2c_xmit                ; Send data and ack
+024 0838E         72                             CALL            i2c_sack
+                  73
+025 0BC20         74                             INPUT           sc, @s2                 ; Load data for TX
+026 08357         75                             CALL            i2c_xmit                ; Send data and ack
+027 0838E         76                             CALL            i2c_sack
+                  77
+028 0BC30         78                             INPUT           sc, @s3                 ; Load data for TX
+029 08357         79                             CALL            i2c_xmit                ; Send data and ack
+02A 0838E         80                             CALL            i2c_sack
+                  81
+02B 081A0         82                             JUMP            i2c_stop                ; Send stop
+                  83
+                  84     ; -------------------------------------------------------------------------------
+                  85     ; Routine to set up for and read two bytes from I2C device
+                  86     ; -------------------------------------------------------------------------------
+                  87
+  0002C           88     read2_i2c:
+02C 0839A         89                             CALL            i2c_start               ; Send start, control byte and ack
+02D 0BC00         90                             INPUT           sc, @s0                 ; Load device code for TX
+02E 0DC07         91                             SL1             sc                      ; add read flag
+02F 08357         92                             CALL            i2c_xmit                ; Send address and ack
+030 0838E         93                             CALL            i2c_sack
+                  94
+031 08368         95                             CALL            i2c_recv                ; Read 8 bits of data and send ack
+032 08378         96                             CALL            i2c_mack
+033 0B2C0         97                             INPUT           s2, @sc
+                  98
+034 08368         99                             CALL            i2c_recv                ; Read next 8 bits of data and send ack
+035 08383        100                             CALL            i2c_mnack
+036 0B3C0        101                             INPUT           s3, @sc
+                 102
+037 081A0        103                             JUMP            i2c_stop                ; Send Stop
+                 104
+                 105     ; -------------------------------------------------------------------------------
+                 106     ; Routine to set up for and write two bytes to I2C device
+                 107     ; -------------------------------------------------------------------------------
+  00038          108     write2_i2c:
+038 0839A        109                             CALL            i2c_start               ; Send Start, control byte and ack
+039 0BC00        110                             INPUT           sc, @s0                 ; Load device code for TX
+03A 0DC06        111                             SL0             sc                      ; add write flag
+03B 08357        112                             CALL            i2c_xmit                ; Send address and ack
+03C 0838E        113                             CALL            i2c_sack
+                 114
+03D 0BC10        115                             INPUT           sc, @s1                 ; Load data for TX
+03E 08357        116                             CALL            i2c_xmit                ; Send data and ack
+03F 0838E        117                             CALL            i2c_sack
+                 118
+040 0BC20        119                             INPUT           sc, @s2                 ; Load data for TX
+041 08357        120                             CALL            i2c_xmit                ; Send data and ack
+042 0838E        121                             CALL            i2c_sack
+                 122
+043 081A0        123                             JUMP            i2c_stop                ; Send stop
+                 124
+                 125     ; -------------------------------------------------------------------------------
+                 126     ; Routine to set up for and read one byte of I2C device
+                 127     ; -------------------------------------------------------------------------------
+  00044          128     read1_i2c:
+                 129
+044 0839A        130                             CALL            i2c_start               ; Send start, control byte and ack
+045 0BC00        131                             INPUT           sc, @s0                 ; Load address for TX
+046 0DC07        132                             SL1             sc                      ; add read flag
+047 08357        133                             CALL            i2c_xmit                ; Send address and ack
+048 0838E        134                             CALL            i2c_sack
+                 135
+049 0839A        136                             CALL            i2c_start               ; Send start, control byte and ack
+                 137
+04A 08368        138                             CALL            i2c_recv                ; Read 8 bits of data and send ack
+04B 08383        139                             CALL            i2c_mnack
+04C 0B2C0        140                             INPUT           s2, @sc
+                 141
+04D 081A0        142                             JUMP            i2c_stop                ; Send Stop
+                 143
+                 144     ; -------------------------------------------------------------------------------
+                 145     ; Routine to set up for and write one byte to I2C device
+                 146     ; -------------------------------------------------------------------------------
+  0004E          147     write1_i2c:
+                 148
+04E 0839A        149                             CALL            i2c_start               ; Send Start, control byte and ack
+04F 0BC00        150                             INPUT           sc, @s0                 ; Load device code for TX
+050 0DC06        151                             SL0             sc                      ; add write flag
+051 08357        152                             CALL            i2c_xmit                ; Send address and ack
+052 0838E        153                             CALL            i2c_sack
+                 154
+053 0BC10        155                             INPUT           sc, @s1                 ; Load data for TX
+054 08357        156                             CALL            i2c_xmit                ; Send data and ack
+055 0838E        157                             CALL            i2c_sack
+                 158
+056 081A0        159                             JUMP            i2c_stop                ; Send stop
+                 160
+                 161     ; -------------------------------------------------------------------------------
+                 162     ; Transmit 8 bits of I2C data
+                 163     ; -------------------------------------------------------------------------------
+  00057          164     i2c_xmit:
+057 0AD08        165                             INPUT           sd, 8                   ; Load I2C bit counter
+  00058          166     i2c_tx:
+058 08303        167                             CALL            delay
+059 0DC06        168                             SL0             sc                      ; Move data bit -> carry
+05A 0995E        169                             JUMP            c, i2c_tx1              ; Jump if bit high
+  0005B          170     i2c_tx0:
+05B 0EF05        171                             OUTPUT          sf, bsda_0              ; SDA = 0
+05C 08303        172                             CALL            delay
+05D 08160        173                             JUMP            i2c_tx2                 ; Jump over next instructions
+  0005E          174     i2c_tx1:
+05E 0EF05        175                             OUTPUT          sf, bsda_z              ; SDA = 1 due to pull-up
+05F 08303        176                             CALL            delay
+  00060          177     i2c_tx2:
+                 178
+060 0EF05        179                             OUTPUT          sf, bscl_z              ; SCL = 1 due to pull-up
+061 08303        180                             CALL            delay
+062 08303        181                             CALL            delay
+063 08303        182                             CALL            delay
+064 0EF05        183                             OUTPUT          sf, bscl_0              ; SCL = 0
+                 184
+065 06D01        185                             SUB             sd, #1                  ; Decrement I2C bit counter
+066 09558        186                             JUMP            nz, i2c_tx              ; Loop until 8 bits are sent
+067 08103        187                             JUMP            delay
+                 188
+                 189     ; -------------------------------------------------------------------------------
+                 190     ; Read 8 bits of I2C data
+                 191     ; -------------------------------------------------------------------------------
+  00068          192     i2c_recv:
+068 0AD08        193                             INPUT           sd, 8                   ; Load I2C bit counter
+069 08303        194                             CALL            delay
+06A 0EF05        195                             OUTPUT          sf, bsda_z              ; SDA = 1 due to pull-up
+                 196
+  0006B          197     i2c_rx:
+06B 08303        198                             CALL            delay
+06C 0EF05        199                             OUTPUT          sf, bscl_z              ; SCL = 1 due to pull-up
+06D 08303        200                             CALL            delay
+06E 08303        201                             CALL            delay
+06F 0AF05        202                             INPUT           sf, bsda_in
+070 08303        203                             CALL            delay
+071 0DF0E        204                             SR0             sf                      ; LSBit -> carry bit
+072 0DC00        205                             SLA             sc                      ; Carry shifted into LSBit
+073 0EF05        206                             OUTPUT          sf, bscl_0              ; SCL = 0
+074 08303        207                             CALL            delay
+075 06D01        208                             SUB             sd, #1                  ; Decrement I2C bit counter
+076 0956B        209                             JUMP            nz, i2c_rx              ; Loop until 8 bits are read
+077 08080        210                             RETURN
+                 211
+                 212     ; -------------------------------------------------------------------------------
+                 213     ; Ack by master, keep data 0
+                 214     ; -------------------------------------------------------------------------------
+  00078          215     i2c_mack:
+078 08303        216                             CALL            delay
+079 0EF05        217                             OUTPUT          sf, bsda_0              ; SDA = 0
+07A 08303        218                             CALL            delay
+07B 0EF05        219                             OUTPUT          sf, bscl_z              ; SCL = 1 due to pull-up
+07C 08303        220                             CALL            delay
+07D 08303        221                             CALL            delay
+07E 08303        222                             CALL            delay
+07F 0EF05        223                             OUTPUT          sf, bscl_0              ; SCL = 0
+080 08303        224                             CALL            delay
+081 0EF05        225                             OUTPUT          sf, bsda_0              ; SDA = 0
+082 08080        226                             RETURN
+                 227
+                 228     ; -------------------------------------------------------------------------------
+                 229     ; NAck by master, release data
+                 230     ; -------------------------------------------------------------------------------
+  00083          231     i2c_mnack:
+083 08303        232                             CALL            delay
+084 0EF05        233                             OUTPUT          sf, bsda_z              ; SDA = 1 due to pull-up
+085 08303        234                             CALL            delay
+086 0EF05        235                             OUTPUT          sf, bscl_z              ; SCL = 1 due to pull-up
+087 08303        236                             CALL            delay
+088 08303        237                             CALL            delay
+089 08303        238                             CALL            delay
+08A 0EF05        239                             OUTPUT          sf, bscl_0              ; SCL = 0
+08B 08303        240                             CALL            delay
+08C 0EF05        241                             OUTPUT          sf, bsda_0              ; SDA = 0
+08D 08080        242                             RETURN
+                 243
+                 244     ; -------------------------------------------------------------------------------
+                 245     ; Ack by slave, release data
+                 246     ; -------------------------------------------------------------------------------
+  0008E          247     i2c_sack:
+08E 08303        248                             CALL            delay
+08F 0EF05        249                             OUTPUT          sf, bsda_z              ; SDA = 1 due to pull-up
+090 08303        250                             CALL            delay
+091 0EF05        251                             OUTPUT          sf, bscl_z              ; SCL = 1 due to pull-up
+092 08303        252                             CALL            delay
+093 08303        253                             CALL            delay
+094 08303        254                             CALL            delay
+095 0EF05        255                             OUTPUT          sf, bscl_0              ; SCL = 0
+096 08303        256                             CALL            delay
+097 08080        257                             RETURN
+                 258
+                 259     ; -------------------------------------------------------------------------------
+                 260     ; Set up start condition for I2C
+                 261     ; -------------------------------------------------------------------------------
+                 262
+                 263     ; SCL and SDA set to inputs, signals go high due to pull-up resistors
+                 264
+  00098          265     i2c_repstart:
+098 08303        266                             CALL            delay
+099 0EF05        267                             OUTPUT          sf, bscl_z              ; SCL = Z
+  0009A          268     i2c_start:
+09A 08303        269                             CALL            delay
+09B 0EF05        270                             OUTPUT          sf, bsda_0              ; SDA = 0
+09C 08303        271                             CALL            delay
+09D 0EF05        272                             OUTPUT          sf, bscl_0              ; SCL = 0
+09E 08303        273                             CALL            delay
+09F 08080        274                             RETURN
+                 275
+                 276     ; -------------------------------------------------------------------------------
+                 277     ; Send I2C stop command
+                 278     ; -------------------------------------------------------------------------------
+  000A0          279     i2c_stop:
+0A0 08303        280                             CALL            delay
+0A1 0EF05        281                             OUTPUT          sf, bscl_z              ; SCL = 1 due to pull-up
+0A2 08303        282                             CALL            delay
+0A3 0EF05        283                             OUTPUT          sf, bsda_z              ; SDA = 1 due to pull-up
+0A4 08303        284                             CALL            delay
+0A5 08080        285                             RETURN
+                 286
+                 287     ; -----------I2C Subroutines end-------------------------------------------------
+                 288
