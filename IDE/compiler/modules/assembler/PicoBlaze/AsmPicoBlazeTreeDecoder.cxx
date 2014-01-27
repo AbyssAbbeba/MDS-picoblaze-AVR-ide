@@ -837,7 +837,13 @@ inline AsmPicoBlazeTreeDecoder::CourseOfAction
         return CA_NO_ACTION;
     }
 
-    const std::string nameOfMacro = node->args()->lVal().m_data.m_symbol;
+    CompilerExpr * name = node->args();
+    while ( CompilerValue::TYPE_EXPR == name->lVal().m_type )
+    {
+        name = name->lVal().m_data.m_expr;
+    }
+
+    const std::string nameOfMacro = name->lVal().m_data.m_symbol;
 
     CompilerStatement * macro = m_macros -> expand ( node->location(),
                                                      nameOfMacro,
