@@ -71,14 +71,14 @@ void PortHexEdit::handleEvent(int subsysId, int eventId, int locationOrReason, i
 {
 	if ( this->subsys != subsysId )
     {
-		qDebug("Invalid event received, event ignored.");
+		qDebug("PortHexEdit: Invalid event received, event ignored.");
 		return;
  	}
 
-	int idx = locationOrReason - m_startingAddress;
-	if ( (idx < 0) || (idx > m_size) )
+	//int idx = locationOrReason - m_startingAddress;
+	if ( (locationOrReason < 0) || (locationOrReason > m_size) )
     {
-		qDebug("Invalid address, event ignored.");
+		qDebug("PortHexEdit: Invalid address, event ignored.");
 		return;
 	}
 
@@ -89,8 +89,8 @@ void PortHexEdit::handleEvent(int subsysId, int eventId, int locationOrReason, i
 			uint value = m_plio->getOutputArray()[locationOrReason];
            //qDebug() << "PortHexEdit: event: mem cell changed to" << (unsigned char)value;
 
- 			m_hexEditOut->setVal(idx, (unsigned char)value);
- 			m_hexEditOut->setHighlighted(idx, true);
+ 			m_hexEditOut->setVal(locationOrReason, (unsigned char)value);
+ 			m_hexEditOut->setHighlighted(locationOrReason, true);
 
 			break;
 		}
@@ -99,8 +99,8 @@ void PortHexEdit::handleEvent(int subsysId, int eventId, int locationOrReason, i
             uint value = m_plio->getInputArray()[locationOrReason];
            //qDebug() << "PortHexEdit: event: mem cell changed to" << (unsigned char)value;
 
-            m_hexEditIn->setVal(idx, (unsigned char)value);
-            m_hexEditIn->setHighlighted(idx, true);
+            m_hexEditIn->setVal(locationOrReason, (unsigned char)value);
+            m_hexEditIn->setHighlighted(locationOrReason, true);
 
             break;
         }
