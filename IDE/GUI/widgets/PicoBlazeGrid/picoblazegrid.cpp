@@ -262,7 +262,7 @@ void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason,
                 this->lblWR->setStyleSheet("color: #00ff00");
                 if (this->btnPorts->text() == "Output")
                 {
-                    this->btnPorts->setStyleSheet("color: #FF0600");
+                    this->btnPorts->setStyleSheet("background-color: #FF0600");
                 }
                 break;
             }
