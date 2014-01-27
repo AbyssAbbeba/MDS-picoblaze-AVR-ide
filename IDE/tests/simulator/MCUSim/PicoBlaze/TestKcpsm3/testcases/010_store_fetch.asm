@@ -5,7 +5,6 @@
 main:	add		S0, #2
 		add		S1, #1
 		store	S0, @S1
-		in		s0, @s1
 		out		S0, @S1
 		call	podp
 		jump	main
