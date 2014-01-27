@@ -4,7 +4,7 @@ character_i             EQU             0x49
 character_l             EQU             0x4c
 character_p             EQU             0x50
 character_s             EQU             0x53
-
+device kcpsm2
 ; KCPSM3 Program - LED control with Pulse Width Modulation (PWM).
 ;
 ; Design provided for use with the design 'low_cost_design_authentication_for_spartan_3e.vhd'

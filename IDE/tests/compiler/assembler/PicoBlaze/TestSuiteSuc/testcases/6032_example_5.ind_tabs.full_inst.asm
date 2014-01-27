@@ -6,7 +6,7 @@
 ; performance Direct Digital Synthesis (DDS) circuit implemented in hardware.
 ;
 ; LEDs are connected and used as edit mode indicators.
-;
+device kcpsm6
 ; Substantial comments are included in line with the code below and should be used
 ; in conjunction with the documentation provided with the complete reference design.
 ;

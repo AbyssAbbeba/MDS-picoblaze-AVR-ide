@@ -4,7 +4,7 @@
 ; ------------------------------------------------------
 ; See manual for more info
 ; 
-
+device kcpsm6
 ; Code with syntax errors
         nolist                        ; Disable code listing
 if 0        

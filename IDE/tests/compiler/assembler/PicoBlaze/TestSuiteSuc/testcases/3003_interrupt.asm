@@ -1,5 +1,6 @@
 ; Compiler test case for Assembler
 ; instruction opcodes
+device kcpsm3
 TESTsymb9               AUTOREG
 TESTsymb13              AUTOREG
 TESTsymb10              AUTOREG

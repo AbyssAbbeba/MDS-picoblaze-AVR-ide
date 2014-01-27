@@ -1,5 +1,5 @@
 ; test case for directives
-DEVICE  KCPSM3
+device kcpsm1
 
 
 s10     AUTOSPR

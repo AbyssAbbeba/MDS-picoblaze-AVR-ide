@@ -1,6 +1,6 @@
 ;KCPSM3 Program - Control of LEDs and LCD display using switches, buttons and rotary
 ;controls on the Spartan-3E Starter Kit.
-;
+device kcpsm1
 ;
 ;Ken Chapman - Xilinx Ltd
 ;

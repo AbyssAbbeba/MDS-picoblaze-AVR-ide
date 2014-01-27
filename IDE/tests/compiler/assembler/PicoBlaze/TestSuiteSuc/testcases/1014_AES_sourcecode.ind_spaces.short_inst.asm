@@ -1,6 +1,6 @@
 
 
-device KCPSM3
+device kcpsm1
 
 G               equ     4
 SBOX_ROM               equ     4
