@@ -9,7 +9,7 @@
                    9
                   10
                   11
-                  12     START:
+  00000           12     START:
                   13          ; Arithmetics
 000 11401         14             ADD        s1,#01h
 W: instruction `ADD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
@@ -156,11 +156,9 @@ W: instruction `SUB sX, sY' requires operand #1 to be of type(s): register; whil
 W: instruction `SUB sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 03F 1A410         86             SUBCY       s2,testsymb10
 W: instruction `SUBCY sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-W: instruction `SUBCY sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `TESTSYMB10'.
 040 1C410         87             COMPARE     s2,testsymb11
 W: instruction `COMPARE sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-W: instruction `COMPARE sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `TESTSYMB11'.
                   88
                   89     END

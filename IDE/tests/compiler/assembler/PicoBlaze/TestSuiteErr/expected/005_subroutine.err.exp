@@ -9,13 +9,8 @@ MT_ERROR: 005_subroutine.asm:46.1-46.26: Error: symbol already defined: "A_LSB".
 MT_ERROR: 005_subroutine.asm:48.1-48.26: Error: symbol already defined: "A_MSB".
 MT_ERROR: 005_subroutine.asm:50.1-50.26: Error: symbol already defined: "B_LSB".
 MT_ERROR: 005_subroutine.asm:52.1-52.26: Error: symbol already defined: "B_MSB".
-MT_WARNING: 005_subroutine.asm:64.25-64.32: Warning: instruction `ADD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 MT_WARNING: 005_subroutine.asm:64.33-64.35: Warning: instruction `ADD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-MT_WARNING: 005_subroutine.asm:66.25-66.32: Warning: instruction `ADDCY sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 MT_WARNING: 005_subroutine.asm:66.33-66.35: Warning: instruction `ADDCY sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-MT_WARNING: 005_subroutine.asm:71.25-71.27: Warning: instruction `YOR sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-MT_WARNING: 005_subroutine.asm:71.28-71.30: Warning: instruction `YOR sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-MT_WARNING: 005_subroutine.asm:73.25-73.27: Warning: instruction `ADD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 MT_WARNING: 005_subroutine.asm:73.28-73.30: Warning: instruction `ADD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 MT_ERROR: 005_subroutine.asm:78.1-78.8: Error: symbol already defined: "NEGATE".
 MT_ERROR: 005_subroutine.asm:79.17-79.19: Error: symbol not defined: `SY'.
@@ -54,13 +49,9 @@ MT_ERROR: 005_subroutine.asm:183.1-183.30: Error: symbol already defined: "BIT_M
 MT_WARNING: 005_subroutine.asm:187.29-187.31: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 MT_WARNING: 005_subroutine.asm:189.28-189.30: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 MT_WARNING: 005_subroutine.asm:205.28-205.30: Warning: instruction `ADD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-MT_WARNING: 005_subroutine.asm:216.18-216.20: Warning: instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 MT_WARNING: 005_subroutine.asm:216.22-216.24: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-MT_WARNING: 005_subroutine.asm:217.18-217.20: Warning: instruction `COMPARE sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 MT_WARNING: 005_subroutine.asm:217.22-217.24: Warning: instruction `COMPARE sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-MT_WARNING: 005_subroutine.asm:221.18-221.20: Warning: instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 MT_WARNING: 005_subroutine.asm:221.22-221.24: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-MT_WARNING: 005_subroutine.asm:223.18-223.20: Warning: instruction `TEST sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 MT_WARNING: 005_subroutine.asm:223.22-223.24: Warning: instruction `TEST sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 MT_WARNING: Warning: exact device not specified, using KCPSM6 by default.
 MT_ERROR: 005_subroutine.asm:64.25-64.32: Error: symbol not defined: `LO_BYTE'.
