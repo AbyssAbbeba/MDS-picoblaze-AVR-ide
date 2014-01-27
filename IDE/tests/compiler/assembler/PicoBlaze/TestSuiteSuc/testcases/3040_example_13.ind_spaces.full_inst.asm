@@ -1,4 +1,4 @@
-
+device kcpsm3
 
 led_port                EQU             0x80                    ;8 simple LEDs
 led0                    EQU             0x01                    ;     LED 0 - bit0

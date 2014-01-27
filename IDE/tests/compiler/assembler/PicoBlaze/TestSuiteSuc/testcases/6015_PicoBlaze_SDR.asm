@@ -13,7 +13,7 @@
 ; Martin Madron 30.4.2013
 ;
 ;
-device          KCPSM3
+device kcpsm6
 ; Start
 ;##############################################################################;
 ; Přiřazení jmen registrům

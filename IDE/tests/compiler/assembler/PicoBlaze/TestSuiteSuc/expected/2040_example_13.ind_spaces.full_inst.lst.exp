@@ -1,0 +1,1854 @@
+                   1     device kcpsm2
+                   2
+  00080            3     led_port                EQU             0x80                    ;8 simple LEDs
+  00001            4     led0                    EQU             0x01                    ;     LED 0 - bit0
+  00002            5     led1                    EQU             0x02                    ;         1 - bit1
+  00004            6     led2                    EQU             0x04                    ;         2 - bit2
+  00008            7     led3                    EQU             0x08                    ;         3 - bit3
+  00010            8     led4                    EQU             0x10                    ;         4 - bit4
+  00020            9     led5                    EQU             0x20                    ;         5 - bit5
+  00040           10     led6                    EQU             0x40                    ;         6 - bit6
+  00080           11     led7                    EQU             0x80                    ;         7 - bit7
+                  12     ;
+  00000           13     switch_port             EQU             0x00                    ;Read switches and press buttons
+  00001           14     switch0                 EQU             0x01                    ;  Switches      SW0 - bit0
+  00002           15     switch1                 EQU             0x02                    ;                SW1 - bit1
+  00004           16     switch2                 EQU             0x04                    ;                SW2 - bit2
+  00008           17     switch3                 EQU             0x08                    ;                SW3 - bit3
+  00010           18     btn_east                EQU             0x10                    ;  Buttons      East - bit4
+  00020           19     btn_south               EQU             0x20                    ;              South - bit5
+  00040           20     btn_north               EQU             0x40                    ;              North - bit6
+  00080           21     btn_west                EQU             0x80                    ;               West - bit7
+                  22     ;
+  00001           23     rotary_port             EQU             0x01                    ;Read status of rotary encoder
+  00001           24     rotary_left             EQU             0x01                    ; Direction of last move Left=1 Right=0  - bit0
+  00002           25     rotary_press            EQU             0x02                    ;     Centre press contact (active High) - bit1
+                  26     ;
+                  27     ;LCD interface ports
+                  28     ;
+                  29     ;The master enable signal is not used by the LCD display itself
+                  30     ;but may be required to confirm that LCD communication is active.
+                  31     ;This is required on the Spartan-3E Starter Kit if the StrataFLASH
+                  32     ;is used because it shares the same data pins and conflicts must be avoided.
+                  33     ;
+  00040           34     lcd_output_port         EQU             0x40                    ;LCD character module output data and control
+  00001           35     lcd_e                   EQU             0x01                    ;   active High Enable        E - bit0
+  00002           36     lcd_rw                  EQU             0x02                    ;   Read=1 Write=0           RW - bit1
+  00004           37     lcd_rs                  EQU             0x04                    ;   Instruction=0 Data=1     RS - bit2
+  00008           38     lcd_drive               EQU             0x08                    ;   Master enable (active High) - bit3
+  00010           39     lcd_db4                 EQU             0x10                    ;   4-bit              Data DB4 - bit4
+  00020           40     lcd_db5                 EQU             0x20                    ;   interface          Data DB5 - bit5
+  00040           41     lcd_db6                 EQU             0x40                    ;                      Data DB6 - bit6
+  00080           42     lcd_db7                 EQU             0x80                    ;                      Data DB7 - bit7
+                  43     ;
+  00002           44     lcd_input_port          EQU             0x02                    ;LCD character module input data
+  00001           45     lcd_read_spare0         EQU             0x01                    ;    Spare bits               - bit0
+  00002           46     lcd_read_spare1         EQU             0x02                    ;    are zero                 - bit1
+  00004           47     lcd_read_spare2         EQU             0x04                    ;                             - bit2
+  00008           48     lcd_read_spare3         EQU             0x08                    ;                             - bit3
+  00010           49     lcd_read_db4            EQU             0x10                    ;    4-bit           Data DB4 - bit4
+  00020           50     lcd_read_db5            EQU             0x20                    ;    interface       Data DB5 - bit5
+  00040           51     lcd_read_db6            EQU             0x40                    ;                    Data DB6 - bit6
+  00080           52     lcd_read_db7            EQU             0x80                    ;                    Data DB7 - bit7
+  00080           53     bit7                    EQU             0x80                    ;
+  00040           54     bit6                    EQU             0x40                    ;
+  00020           55     bit5                    EQU             0x20                    ;
+  00010           56     bit4                    EQU             0x10                    ;
+  00008           57     bit3                    EQU             0x08                    ;
+  00004           58     bit2                    EQU             0x04                    ;
+  00002           59     bit1                    EQU             0x02                    ;
+  00001           60     bit0                    EQU             0x01                    ;
+                  61     ;
+                  62     ;**************************************************************************************
+                  63     ;Scratch Pad Memory Locations
+                  64     ;**************************************************************************************
+                  65     ;
+  00000           66     rotary_status           EQU             0x00                    ;Status of rotary encoder
+  00001           67     isr_s0                  EQU             0x01                    ;Preserve s0 contents during ISR
+  00002           68     led_pattern             EQU             0x02                    ;LED pattern used in rotation mode
+                  69     ;
+  00003           70     mode                    EQU             0x03                    ;control mode 00=switch and button FF=rotary
+  00004           71     ms1                     EQU             0x04
+  00005           72     secl                    EQU             0x05
+  00006           73     sech                    EQU             0x06
+  00007           74     minl                    EQU             0x07
+  00008           75     minh                    EQU             0x08
+  00009           76     hourl                   EQU             0x09
+  0000A           77     hourh                   EQU             0x0a
+  0000B           78     week                    EQU             0x0b
+  0000C           79     year1                   EQU             0x0c
+  0000D           80     year2                   EQU             0x0d
+  0000E           81     year3                   EQU             0x0e
+  0000F           82     year4                   EQU             0x0f
+  00010           83     ms2                     EQU             0x10
+  00011           84     ms500                   EQU             0x11
+  00012           85     isr_s1                  EQU             0x12
+  00013           86     ms100                   EQU             0x13
+  00014           87     rota_cnt                EQU             0x14
+  00015           88     isr_s2                  EQU             0x15
+  00016           89     temp                    EQU             0x16
+  00017           90     pressed                 EQU             0x17
+  00018           91     disp_flag               EQU             0x18
+  00019           92     blink_flag              EQU             0x19
+  0001A           93     disp_flag2              EQU             0x1a                    ;;;;;no use
+  0001B           94     monh                    EQU             0x1b
+  0001C           95     monl                    EQU             0x1c
+  0001D           96     dayh                    EQU             0x1d
+  0001E           97     dayl                    EQU             0x1e
+  0001F           98     day_up                  EQU             0x1f
+  00020           99     year100                 EQU             0x20
+  00021          100     hourb                   EQU             0x21
+  00022          101     minb                    EQU             0x22
+  00023          102     secb                    EQU             0x23
+  00024          103     yearb                   EQU             0x24
+  00025          104     monb                    EQU             0x25
+  00026          105     dayb                    EQU             0x26
+  00027          106     dmax                    EQU             0x27                    ;
+  00028          107     jan                     EQU             0x28                    ;
+  00029          108     feb                     EQU             0x29                    ;
+  0002A          109     mar                     EQU             0x2a                    ;
+  0002B          110     apr                     EQU             0x2b                    ;
+  0002C          111     may                     EQU             0x2c                    ;
+  0002D          112     jun                     EQU             0x2d                    ;
+  0002E          113     jul                     EQU             0x2e                    ;
+  0002F          114     aug                     EQU             0x2f                    ;
+  00030          115     sep                     EQU             0x30                    ;
+  00031          116     oct                     EQU             0x31                    ;
+  00032          117     nov                     EQU             0x32                    ;
+  00033          118     dec                     EQU             0x33                    ;
+  00034          119     jan2                    EQU             0x34                    ;
+  00035          120     feb2                    EQU             0x35                    ;
+  00036          121     mar2                    EQU             0x36                    ;
+  00037          122     apr2                    EQU             0x37                    ;
+  00038          123     may2                    EQU             0x38                    ;
+  00039          124     jun2                    EQU             0x39                    ;
+  0003A          125     jul2                    EQU             0x3a                    ;
+  0003B          126     aug2                    EQU             0x3b                    ;
+  0003C          127     sep2                    EQU             0x3c                    ;
+  0003D          128     oct2                    EQU             0x3d                    ;
+  0003E          129     nov2                    EQU             0x3e                    ;
+  0003F          130     dec2                    EQU             0x3f                    ;
+                 131     ;The main operation of the program uses 1ms delays to set the shift rate
+                 132     ;of the LCD display. A 16-bit value determines how many milliseconds
+                 133     ;there are between shifts
+                 134     ;
+                 135     ;Tests indicate that the fastest shift rate that the LCD display supports is
+                 136     ;500ms. Faster than this and the display becomes less clear to read.
+                 137     ;
+  00001          138     shift_delay_msb         EQU             0x01                    ;delay is 500ms (01F4 hex)
+  000F4          139     shift_delay_lsb         EQU             0xf4
+                 140     ;
+                 141     ; delay_1us_constant =  (clock_rate - 6)/4       Where 'clock_rate' is in MHz
+                 142     ;
+                 143     ;Example: For a 50MHz clock the constant value is (10-6)/4 = 11  (0B Hex).
+                 144     ;For clock rates below 10MHz the value of 1 must be used and the operation will
+                 145     ;become lower than intended.
+                 146     ;
+  0000B          147     delay_1us_constant      EQU             0x0b
+                 148     ;ASCII table
+                 149     ;
+  00061          150     character_a             EQU             0x61
+  00062          151     character_b             EQU             0x62
+  00063          152     character_c             EQU             0x63
+  00064          153     character_d             EQU             0x64
+  00065          154     character_e             EQU             0x65
+  00066          155     character_f             EQU             0x66
+  00067          156     character_g             EQU             0x67
+  00068          157     character_h             EQU             0x68
+  00069          158     character_i             EQU             0x69
+  0006A          159     character_j             EQU             0x6a
+  0006B          160     character_k             EQU             0x6b
+  0006C          161     character_l             EQU             0x6c
+  0006D          162     character_m             EQU             0x6d
+  0006E          163     character_n             EQU             0x6e
+  0006F          164     character_o             EQU             0x6f
+  00070          165     character_p             EQU             0x70
+  00071          166     character_q             EQU             0x71
+  00072          167     character_r             EQU             0x72
+  00073          168     character_s             EQU             0x73
+  00074          169     character_t             EQU             0x74
+  00075          170     character_u             EQU             0x75
+  00076          171     character_v             EQU             0x76
+  00077          172     character_w             EQU             0x77
+  00078          173     character_x             EQU             0x78
+  00079          174     character_y             EQU             0x79
+  0007A          175     character_z             EQU             0x7a
+  00041          176     _character_a            EQU             0x41
+  00042          177     _character_b            EQU             0x42
+  00043          178     _character_c            EQU             0x43
+  00044          179     _character_d            EQU             0x44
+  00045          180     _character_e            EQU             0x45
+  00046          181     _character_f            EQU             0x46
+  00047          182     _character_g            EQU             0x47
+  00048          183     _character_h            EQU             0x48
+  00049          184     _character_i            EQU             0x49
+  0004A          185     _character_j            EQU             0x4a
+  0004B          186     _character_k            EQU             0x4b
+  0004C          187     _character_l            EQU             0x4c
+  0004D          188     _character_m            EQU             0x4d
+  0004E          189     _character_n            EQU             0x4e
+  0004F          190     _character_o            EQU             0x4f
+  00050          191     _character_p            EQU             0x50
+  00051          192     _character_q            EQU             0x51
+  00052          193     _character_r            EQU             0x52
+  00053          194     _character_s            EQU             0x53
+  00054          195     _character_t            EQU             0x54
+  00055          196     _character_u            EQU             0x55
+  00056          197     _character_v            EQU             0x56
+  00057          198     _character_w            EQU             0x57
+  00058          199     _character_x            EQU             0x58
+  00059          200     _character_y            EQU             0x59
+  0005A          201     _character_z            EQU             0x5a
+  00030          202     character_0             EQU             0x30
+  00031          203     character_1             EQU             0x31
+  00032          204     character_2             EQU             0x32
+  00033          205     character_3             EQU             0x33
+  00034          206     character_4             EQU             0x34
+  00035          207     character_5             EQU             0x35
+  00036          208     character_6             EQU             0x36
+  00037          209     character_7             EQU             0x37
+  00038          210     character_8             EQU             0x38
+  00039          211     character_9             EQU             0x39
+  0003A          212     character_colon         EQU             0x3a
+  0002E          213     character_stop          EQU             0x2e
+  0003B          214     character_semi_colon    EQU             0x3b
+  0002D          215     character_minus         EQU             0x2d
+  0002F          216     character_divide        EQU             0x2f                    ;'/'
+  0002B          217     character_plus          EQU             0x2b
+  0002C          218     character_comma         EQU             0x2c
+  0003C          219     character_less_than     EQU             0x3c
+  0003E          220     character_greater_than  EQU             0x3e
+  0003D          221     character_equals        EQU             0x3d
+  00020          222     character_space         EQU             0x20
+  0000D          223     character_cr            EQU             0x0d                    ;carriage return
+  0003F          224     character_question      EQU             0x3f                    ;'?'
+  00024          225     character_dollar        EQU             0x24
+  00021          226     character_exclaim       EQU             0x21                    ;'!'
+  00008          227     character_bs            EQU             0x08                    ;Back Space command character
+                 228     ;
+000 362E5        229     reset:                  CALL            lcd_reset
+001 3C001        230                             ENABLE          interrupt
+002 00DFF        231                             LOAD            sd, #0xff
+003 00000        232                             LOAD            s0, #0x00               ;
+                 233                             STORE           s0, hourh
+E: instruction not supported on the this device: STORE sX, ss.
+                 234                             STORE           s0, minl
+E: instruction not supported on the this device: STORE sX, ss.
+                 235                             STORE           s0, minh
+E: instruction not supported on the this device: STORE sX, ss.
+                 236                             STORE           s0, sech
+E: instruction not supported on the this device: STORE sX, ss.
+                 237                             STORE           s0, secl
+E: instruction not supported on the this device: STORE sX, ss.
+                 238                             STORE           s0, year2
+E: instruction not supported on the this device: STORE sX, ss.
+                 239                             STORE           s0, year3
+E: instruction not supported on the this device: STORE sX, ss.
+                 240                             STORE           s0, monh
+E: instruction not supported on the this device: STORE sX, ss.
+                 241                             STORE           s0, minb                ;;;;;;;;;;
+E: instruction not supported on the this device: STORE sX, ss.
+                 242                             STORE           s0, secb                ;;;;;;;;;;
+E: instruction not supported on the this device: STORE sX, ss.
+004 00009        243                             LOAD            s0, #0x09               ;
+                 244                             STORE           s0, hourl
+E: instruction not supported on the this device: STORE sX, ss.
+                 245                             STORE           s0, hourb               ;;;;;;;;;
+E: instruction not supported on the this device: STORE sX, ss.
+005 00002        246                             LOAD            s0, #0x02               ;
+                 247                             STORE           s0, year1
+E: instruction not supported on the this device: STORE sX, ss.
+                 248                             STORE           s0, dayh
+E: instruction not supported on the this device: STORE sX, ss.
+006 00006        249                             LOAD            s0, #0x06               ;
+                 250                             STORE           s0, dayl
+E: instruction not supported on the this device: STORE sX, ss.
+                 251                             STORE           s0, year4
+E: instruction not supported on the this device: STORE sX, ss.
+                 252                             STORE           s0, yearb               ;;;;;;;;;
+E: instruction not supported on the this device: STORE sX, ss.
+007 00005        253                             LOAD            s0, #0x05               ;
+                 254                             STORE           s0, monl
+E: instruction not supported on the this device: STORE sX, ss.
+                 255                             STORE           s0, week
+E: instruction not supported on the this device: STORE sX, ss.
+                 256                             STORE           s0, monb                ;;;;;;;;;
+E: instruction not supported on the this device: STORE sX, ss.
+008 0001A        257                             LOAD            s0, #0x1a
+                 258                             STORE           s0, dayb                ;;;;;;;;;
+E: instruction not supported on the this device: STORE sX, ss.
+009 0001F        259                             LOAD            s0, #0x1f
+                 260                             STORE           s0, jan                 ;1
+E: instruction not supported on the this device: STORE sX, ss.
+                 261                             STORE           s0, mar                 ;3
+E: instruction not supported on the this device: STORE sX, ss.
+                 262                             STORE           s0, may                 ;5
+E: instruction not supported on the this device: STORE sX, ss.
+                 263                             STORE           s0, jul                 ;7
+E: instruction not supported on the this device: STORE sX, ss.
+                 264                             STORE           s0, aug                 ;8
+E: instruction not supported on the this device: STORE sX, ss.
+                 265                             STORE           s0, oct                 ;10
+E: instruction not supported on the this device: STORE sX, ss.
+                 266                             STORE           s0, 0xdec               ;12
+E: instruction not supported on the this device: STORE sX, ss.
+00A 0001E        267                             LOAD            s0, #0x1e
+                 268                             STORE           s0, apr                 ;4
+E: instruction not supported on the this device: STORE sX, ss.
+                 269                             STORE           s0, jun                 ;6
+E: instruction not supported on the this device: STORE sX, ss.
+                 270                             STORE           s0, sep                 ;9
+E: instruction not supported on the this device: STORE sX, ss.
+                 271                             STORE           s0, nov                 ;11
+E: instruction not supported on the this device: STORE sX, ss.
+00B 0001C        272                             LOAD            s0, #0x1c
+                 273                             STORE           s0, 0xfeb               ;2
+E: instruction not supported on the this device: STORE sX, ss.
+00C 00003        274                             LOAD            s0, #0x03
+                 275                             STORE           s0, jan2
+E: instruction not supported on the this device: STORE sX, ss.
+                 276                             STORE           s0, oct2
+E: instruction not supported on the this device: STORE sX, ss.
+00D 00006        277                             LOAD            s0, #0x06
+                 278                             STORE           s0, 0xfeb2
+E: instruction not supported on the this device: STORE sX, ss.
+                 279                             STORE           s0, mar2
+E: instruction not supported on the this device: STORE sX, ss.
+                 280                             STORE           s0, nov2
+E: instruction not supported on the this device: STORE sX, ss.
+00E 00002        281                             LOAD            s0, #0x02
+                 282                             STORE           s0, apr2
+E: instruction not supported on the this device: STORE sX, ss.
+                 283                             STORE           s0, jul2
+E: instruction not supported on the this device: STORE sX, ss.
+00F 00004        284                             LOAD            s0, #0x04
+                 285                             STORE           s0, may2
+E: instruction not supported on the this device: STORE sX, ss.
+010 00000        286                             LOAD            s0, #0x00
+                 287                             STORE           s0, jun2
+E: instruction not supported on the this device: STORE sX, ss.
+011 00005        288                             LOAD            s0, #0x05
+                 289                             STORE           s0, aug2
+E: instruction not supported on the this device: STORE sX, ss.
+012 00001        290                             LOAD            s0, #0x01
+                 291                             STORE           s0, sep2
+E: instruction not supported on the this device: STORE sX, ss.
+                 292                             STORE           s0, 0xdec2
+E: instruction not supported on the this device: STORE sX, ss.
+013 00F00        293                             LOAD            sf, #0x00               ;
+  00041          294     restart:
+014 00510        295                             LOAD            s5, #0x10
+015 36313        296                             CALL            lcd_cursor
+016 361D9        297                             CALL            disp_msg1
+017 00520        298                             LOAD            s5, #0x20
+018 36313        299                             CALL            lcd_cursor
+019 361F4        300                             CALL            disp_msg2
+01A 00335        301                             LOAD            s3, #0x35
+                 302                             STORE           s3, temp
+E: instruction not supported on the this device: STORE sX, ss.
+01B 00300        303     blink10:                LOAD            s3, #0x00
+                 304                             STORE           s3, ms100
+E: instruction not supported on the this device: STORE sX, ss.
+  0004B          305     blink1:                 FETCH           s3, ms100
+E: instruction not supported on the this device: FETCH sX, ss.
+                 306                             COMPARE         s3, #0x05
+E: instruction not supported on the this device: COMPARE sX, kk.
+01C 3584B        307                             JUMP            c, blink1
+01D 0052F        308                             LOAD            s5, #0x2f
+01E 36313        309                             CALL            lcd_cursor
+                 310                             FETCH           s5, temp
+E: instruction not supported on the this device: FETCH sX, ss.
+01F 362D4        311                             CALL            lcd_write_data
+020 00300        312                             LOAD            s3, #0x00
+                 313                             STORE           s3, ms100
+E: instruction not supported on the this device: STORE sX, ss.
+  00054          314     wait1:                  FETCH           s3, ms100
+E: instruction not supported on the this device: FETCH sX, ss.
+                 315                             COMPARE         s3, #0x05
+E: instruction not supported on the this device: COMPARE sX, kk.
+021 35854        316                             JUMP            c, wait1
+022 0052F        317                             LOAD            s5, #0x2f
+023 36313        318                             CALL            lcd_cursor
+024 00520        319                             LOAD            s5, #0x20
+025 362D4        320                             CALL            lcd_write_data
+                 321                             FETCH           s5, temp
+E: instruction not supported on the this device: FETCH sX, ss.
+026 085FF        322                             ADD             s5, #0xff
+                 323                             STORE           s5, temp
+E: instruction not supported on the this device: STORE sX, ss.
+                 324                             COMPARE         s5, #0x2f
+E: instruction not supported on the this device: COMPARE sX, kk.
+027 35449        325                             JUMP            nz, blink10
+028 00510        326     rrestart:               LOAD            s5, #0x10
+029 36313        327                             CALL            lcd_cursor
+02A 36213        328                             CALL            disp_msg3
+02B 00520        329                             LOAD            s5, #0x20
+02C 36313        330                             CALL            lcd_cursor
+02D 3622A        331                             CALL            disp_msg4
+02E 00335        332                             LOAD            s3, #0x35
+                 333                             STORE           s3, temp
+E: instruction not supported on the this device: STORE sX, ss.
+02F 00300        334     blink20:                LOAD            s3, #0x00
+                 335                             STORE           s3, ms100
+E: instruction not supported on the this device: STORE sX, ss.
+  0006A          336     blink2:                 FETCH           s3, ms100
+E: instruction not supported on the this device: FETCH sX, ss.
+                 337                             COMPARE         s3, #0x05
+E: instruction not supported on the this device: COMPARE sX, kk.
+030 3586A        338                             JUMP            c, blink2
+031 0052F        339                             LOAD            s5, #0x2f
+032 36313        340                             CALL            lcd_cursor
+                 341                             FETCH           s5, temp
+E: instruction not supported on the this device: FETCH sX, ss.
+033 362D4        342                             CALL            lcd_write_data
+034 00300        343                             LOAD            s3, #0x00
+                 344                             STORE           s3, ms100
+E: instruction not supported on the this device: STORE sX, ss.
+  00073          345     wait2:                  FETCH           s3, ms100
+E: instruction not supported on the this device: FETCH sX, ss.
+                 346                             COMPARE         s3, #0x05
+E: instruction not supported on the this device: COMPARE sX, kk.
+035 35873        347                             JUMP            c, wait2
+036 0052F        348                             LOAD            s5, #0x2f
+037 36313        349                             CALL            lcd_cursor
+038 00520        350                             LOAD            s5, #0x20
+039 362D4        351                             CALL            lcd_write_data
+                 352                             FETCH           s5, temp
+E: instruction not supported on the this device: FETCH sX, ss.
+03A 085FF        353                             ADD             s5, #0xff
+                 354                             STORE           s5, temp
+E: instruction not supported on the this device: STORE sX, ss.
+                 355                             COMPARE         s5, #0x2f
+E: instruction not supported on the this device: COMPARE sX, kk.
+03B 35468        356                             JUMP            nz, blink20
+03C 00000        357                             LOAD            s0, #0x00
+                 358                             STORE           s0, led_pattern
+E: instruction not supported on the this device: STORE sX, ss.
+                 359                             STORE           s0, mode
+E: instruction not supported on the this device: STORE sX, ss.
+                 360                             STORE           s0, blink_flag
+E: instruction not supported on the this device: STORE sX, ss.
+                 361                             STORE           s0, ms100
+E: instruction not supported on the this device: STORE sX, ss.
+03D 00510        362                             LOAD            s5, #0x10
+03E 36313        363                             CALL            lcd_cursor
+03F 36247        364                             CALL            disp_msg5
+040 00520        365                             LOAD            s5, #0x20
+041 36313        366                             CALL            lcd_cursor
+042 36265        367                             CALL            disp_msg6
+  0008A          368     pause:                  FETCH           s0, ms100
+E: instruction not supported on the this device: FETCH sX, ss.
+                 369                             COMPARE         s0, #0x32
+E: instruction not supported on the this device: COMPARE sX, kk.
+043 3588A        370                             JUMP            c, pause
+044 362F6        371                             CALL            lcd_clear
+045 20000        372                             INPUT           s0, 0x00
+                 373                             STORE           s0, disp_flag2
+E: instruction not supported on the this device: STORE sX, ss.
+                 374                             STORE           s0, ms100
+E: instruction not supported on the this device: STORE sX, ss.
+  00091          375     loop:
+                 376                             FETCH           s0, hourb
+E: instruction not supported on the this device: FETCH sX, ss.
+046 361D2        377                             CALL            b2bcd
+                 378                             STORE           s0, hourl
+E: instruction not supported on the this device: STORE sX, ss.
+                 379                             STORE           s1, hourh
+E: instruction not supported on the this device: STORE sX, ss.
+                 380                             FETCH           s0, minb
+E: instruction not supported on the this device: FETCH sX, ss.
+047 361D2        381                             CALL            b2bcd
+                 382                             STORE           s0, minl
+E: instruction not supported on the this device: STORE sX, ss.
+                 383                             STORE           s1, minh
+E: instruction not supported on the this device: STORE sX, ss.
+                 384                             FETCH           s0, secb
+E: instruction not supported on the this device: FETCH sX, ss.
+048 361D2        385                             CALL            b2bcd
+                 386                             STORE           s0, secl
+E: instruction not supported on the this device: STORE sX, ss.
+                 387                             STORE           s1, sech
+E: instruction not supported on the this device: STORE sX, ss.
+                 388                             FETCH           s0, dayb
+E: instruction not supported on the this device: FETCH sX, ss.
+049 361D2        389                             CALL            b2bcd
+                 390                             STORE           s0, dayl
+E: instruction not supported on the this device: STORE sX, ss.
+                 391                             STORE           s1, dayh
+E: instruction not supported on the this device: STORE sX, ss.
+                 392                             FETCH           s0, monb
+E: instruction not supported on the this device: FETCH sX, ss.
+04A 361D2        393                             CALL            b2bcd
+                 394                             STORE           s0, monl
+E: instruction not supported on the this device: STORE sX, ss.
+                 395                             STORE           s1, monh
+E: instruction not supported on the this device: STORE sX, ss.
+                 396                             FETCH           s0, yearb
+E: instruction not supported on the this device: FETCH sX, ss.
+04B 361D2        397                             CALL            b2bcd
+                 398                             STORE           s0, year4
+E: instruction not supported on the this device: STORE sX, ss.
+                 399                             STORE           s1, year3
+E: instruction not supported on the this device: STORE sX, ss.
+04C 02FFF        400                             AND             sf, #0xff
+04D 35523        401                             JUMP            nz, skip1
+                 402     ;;;DISP HH
+04E 00511        403                             LOAD            s5, #0x11
+04F 36313        404                             CALL            lcd_cursor
+                 405                             FETCH           s3, mode
+E: instruction not supported on the this device: FETCH sX, ss.
+                 406                             COMPARE         s3, #0x01
+E: instruction not supported on the this device: COMPARE sX, kk.
+050 354B3        407                             JUMP            nz, dsp_hh
+                 408                             FETCH           s3, ms500
+E: instruction not supported on the this device: FETCH sX, ss.
+                 409                             TEST            s3, #0x01
+E: instruction not supported on the this device: TEST sX, kk.
+051 354BA        410                             JUMP            nz, space7
+  000B3          411     dsp_hh:                 FETCH           s5, hourh
+E: instruction not supported on the this device: FETCH sX, ss.
+052 08530        412                             ADD             s5, #0x30
+053 362D4        413                             CALL            lcd_write_data
+                 414                             FETCH           s5, hourl
+E: instruction not supported on the this device: FETCH sX, ss.
+054 08530        415                             ADD             s5, #0x30
+055 362D4        416                             CALL            lcd_write_data
+056 340BC        417                             JUMP            mode_2
+057 362A0        418     space7:                 CALL            disp_space
+058 362A0        419                             CALL            disp_space
+  000BC          420     mode_2:
+                 421     ;;;DISP MM
+059 00514        422                             LOAD            s5, #0x14
+05A 36313        423                             CALL            lcd_cursor
+                 424                             FETCH           s3, mode
+E: instruction not supported on the this device: FETCH sX, ss.
+                 425                             COMPARE         s3, #0x02
+E: instruction not supported on the this device: COMPARE sX, kk.
+05B 354C4        426                             JUMP            nz, dsp_mm
+                 427                             FETCH           s3, ms500
+E: instruction not supported on the this device: FETCH sX, ss.
+                 428                             TEST            s3, #0x01
+E: instruction not supported on the this device: TEST sX, kk.
+05C 354CB        429                             JUMP            nz, space6
+  000C4          430     dsp_mm:                 FETCH           s5, minh
+E: instruction not supported on the this device: FETCH sX, ss.
+05D 08530        431                             ADD             s5, #0x30
+05E 362D4        432                             CALL            lcd_write_data
+                 433                             FETCH           s5, minl
+E: instruction not supported on the this device: FETCH sX, ss.
+05F 08530        434                             ADD             s5, #0x30
+060 362D4        435                             CALL            lcd_write_data
+061 340CD        436                             JUMP            mode_3
+062 362A0        437     space6:                 CALL            disp_space
+063 362A0        438                             CALL            disp_space
+  000CD          439     mode_3:
+                 440     ;;;DISP SS
+064 00517        441                             LOAD            s5, #0x17
+065 36313        442                             CALL            lcd_cursor
+                 443                             FETCH           s3, mode
+E: instruction not supported on the this device: FETCH sX, ss.
+                 444                             COMPARE         s3, #0x03
+E: instruction not supported on the this device: COMPARE sX, kk.
+066 354D5        445                             JUMP            nz, dsp_ss
+                 446                             FETCH           s3, ms500
+E: instruction not supported on the this device: FETCH sX, ss.
+                 447                             TEST            s3, #0x01
+E: instruction not supported on the this device: TEST sX, kk.
+067 354DC        448                             JUMP            nz, space5
+  000D5          449     dsp_ss:                 FETCH           s5, sech
+E: instruction not supported on the this device: FETCH sX, ss.
+068 08530        450                             ADD             s5, #0x30
+069 362D4        451                             CALL            lcd_write_data
+                 452                             FETCH           s5, secl
+E: instruction not supported on the this device: FETCH sX, ss.
+06A 08530        453                             ADD             s5, #0x30
+06B 362D4        454                             CALL            lcd_write_data
+06C 340DE        455                             JUMP            mode_4
+06D 362A0        456     space5:                 CALL            disp_space
+06E 362A0        457                             CALL            disp_space
+  000DE          458     mode_4:
+                 459     ;;;DISP week
+06F 0051C        460                             LOAD            s5, #0x1c
+070 36313        461                             CALL            lcd_cursor
+                 462                             FETCH           s3, week
+E: instruction not supported on the this device: FETCH sX, ss.
+                 463                             COMPARE         s3, #0x00
+E: instruction not supported on the this device: COMPARE sX, kk.
+071 354EA        464                             JUMP            nz, mon
+072 00553        465                             LOAD            s5, #_character_s
+073 362D4        466                             CALL            lcd_write_data
+074 00575        467                             LOAD            s5, #character_u
+075 362D4        468                             CALL            lcd_write_data
+076 0056E        469                             LOAD            s5, #character_n
+077 362D4        470                             CALL            lcd_write_data
+078 34123        471                             JUMP            test_bit0
+  000EA          472     mon:                    FETCH           s3, week
+E: instruction not supported on the this device: FETCH sX, ss.
+                 473                             COMPARE         s3, #0x01
+E: instruction not supported on the this device: COMPARE sX, kk.
+079 354F4        474                             JUMP            nz, tue
+07A 0054D        475                             LOAD            s5, #_character_m
+07B 362D4        476                             CALL            lcd_write_data
+07C 0056F        477                             LOAD            s5, #character_o
+07D 362D4        478                             CALL            lcd_write_data
+07E 0056E        479                             LOAD            s5, #character_n
+07F 362D4        480                             CALL            lcd_write_data
+080 34123        481                             JUMP            test_bit0
+  000F4          482     tue:                    FETCH           s3, week
+E: instruction not supported on the this device: FETCH sX, ss.
+                 483                             COMPARE         s3, #0x02
+E: instruction not supported on the this device: COMPARE sX, kk.
+081 354FE        484                             JUMP            nz, wed
+082 00554        485                             LOAD            s5, #_character_t
+083 362D4        486                             CALL            lcd_write_data
+084 00575        487                             LOAD            s5, #character_u
+085 362D4        488                             CALL            lcd_write_data
+086 00565        489                             LOAD            s5, #character_e
+087 362D4        490                             CALL            lcd_write_data
+088 34123        491                             JUMP            test_bit0
+  000FE          492     wed:                    FETCH           s3, week
+E: instruction not supported on the this device: FETCH sX, ss.
+                 493                             COMPARE         s3, #0x03
+E: instruction not supported on the this device: COMPARE sX, kk.
+089 35508        494                             JUMP            nz, thu
+08A 00557        495                             LOAD            s5, #_character_w
+08B 362D4        496                             CALL            lcd_write_data
+08C 00565        497                             LOAD            s5, #character_e
+08D 362D4        498                             CALL            lcd_write_data
+08E 00564        499                             LOAD            s5, #character_d
+08F 362D4        500                             CALL            lcd_write_data
+090 34123        501                             JUMP            test_bit0
+  00108          502     thu:                    FETCH           s3, week
+E: instruction not supported on the this device: FETCH sX, ss.
+                 503                             COMPARE         s3, #0x04
+E: instruction not supported on the this device: COMPARE sX, kk.
+091 35512        504                             JUMP            nz, fri
+092 00554        505                             LOAD            s5, #_character_t
+093 362D4        506                             CALL            lcd_write_data
+094 00568        507                             LOAD            s5, #character_h
+095 362D4        508                             CALL            lcd_write_data
+096 00575        509                             LOAD            s5, #character_u
+097 362D4        510                             CALL            lcd_write_data
+098 34123        511                             JUMP            test_bit0
+  00112          512     fri:                    FETCH           s3, week
+E: instruction not supported on the this device: FETCH sX, ss.
+                 513                             COMPARE         s3, #0x05
+E: instruction not supported on the this device: COMPARE sX, kk.
+099 3551C        514                             JUMP            nz, sat
+09A 00546        515                             LOAD            s5, #_character_f
+09B 362D4        516                             CALL            lcd_write_data
+09C 00572        517                             LOAD            s5, #character_r
+09D 362D4        518                             CALL            lcd_write_data
+09E 00569        519                             LOAD            s5, #character_i
+09F 362D4        520                             CALL            lcd_write_data
+0A0 34123        521                             JUMP            test_bit0
+0A1 00553        522     sat:                    LOAD            s5, #_character_s
+0A2 362D4        523                             CALL            lcd_write_data
+0A3 00561        524                             LOAD            s5, #character_a
+0A4 362D4        525                             CALL            lcd_write_data
+0A5 00574        526                             LOAD            s5, #character_t
+0A6 362D4        527                             CALL            lcd_write_data
+0A7 34123        528                             JUMP            test_bit0
+  00123          529     test_bit0:
+  00123          530     rotary_press1:
+  00123          531     rotary_press2:
+  00123          532     skip1:
+                 533     ;;;DISP month
+0A8 00526        534                             LOAD            s5, #0x26
+0A9 36313        535                             CALL            lcd_cursor
+                 536                             FETCH           s3, mode
+E: instruction not supported on the this device: FETCH sX, ss.
+                 537                             COMPARE         s3, #0x04
+E: instruction not supported on the this device: COMPARE sX, kk.
+0AA 3552B        538                             JUMP            nz, dsp_mon
+                 539                             FETCH           s3, ms500
+E: instruction not supported on the this device: FETCH sX, ss.
+                 540                             TEST            s3, #0x01
+E: instruction not supported on the this device: TEST sX, kk.
+0AB 35532        541                             JUMP            nz, space4
+  0012B          542     dsp_mon:                FETCH           s5, monh
+E: instruction not supported on the this device: FETCH sX, ss.
+0AC 08530        543                             ADD             s5, #0x30
+0AD 362D4        544                             CALL            lcd_write_data
+                 545                             FETCH           s5, monl
+E: instruction not supported on the this device: FETCH sX, ss.
+0AE 08530        546                             ADD             s5, #0x30
+0AF 362D4        547                             CALL            lcd_write_data
+0B0 34134        548                             JUMP            mode_5
+0B1 362A0        549     space4:                 CALL            disp_space
+0B2 362A0        550                             CALL            disp_space
+  00134          551     mode_5:
+                 552     ;;;DISP day
+0B3 00529        553                             LOAD            s5, #0x29
+0B4 36313        554                             CALL            lcd_cursor
+                 555                             FETCH           s3, mode
+E: instruction not supported on the this device: FETCH sX, ss.
+                 556                             COMPARE         s3, #0x05
+E: instruction not supported on the this device: COMPARE sX, kk.
+0B5 3553C        557                             JUMP            nz, dsp_dd
+                 558                             FETCH           s3, ms500
+E: instruction not supported on the this device: FETCH sX, ss.
+                 559                             TEST            s3, #0x01
+E: instruction not supported on the this device: TEST sX, kk.
+0B6 35543        560                             JUMP            nz, space3
+  0013C          561     dsp_dd:                 FETCH           s5, dayh
+E: instruction not supported on the this device: FETCH sX, ss.
+0B7 08530        562                             ADD             s5, #0x30
+0B8 362D4        563                             CALL            lcd_write_data
+                 564                             FETCH           s5, dayl
+E: instruction not supported on the this device: FETCH sX, ss.
+0B9 08530        565                             ADD             s5, #0x30
+0BA 362D4        566                             CALL            lcd_write_data
+0BB 34145        567                             JUMP            mode_6
+0BC 362A0        568     space3:                 CALL            disp_space
+0BD 362A0        569                             CALL            disp_space
+  00145          570     mode_6:
+                 571     ;;;DISP year
+0BE 0052C        572                             LOAD            s5, #0x2c
+0BF 36313        573                             CALL            lcd_cursor
+                 574                             FETCH           s3, mode
+E: instruction not supported on the this device: FETCH sX, ss.
+                 575                             COMPARE         s3, #0x06
+E: instruction not supported on the this device: COMPARE sX, kk.
+0C0 3554D        576                             JUMP            nz, dsp_yy
+                 577                             FETCH           s3, ms500
+E: instruction not supported on the this device: FETCH sX, ss.
+                 578                             TEST            s3, #0x01
+E: instruction not supported on the this device: TEST sX, kk.
+0C1 3555A        579                             JUMP            nz, space2
+  0014D          580     dsp_yy:                 FETCH           s5, year1
+E: instruction not supported on the this device: FETCH sX, ss.
+0C2 08530        581                             ADD             s5, #0x30
+0C3 362D4        582                             CALL            lcd_write_data
+                 583                             FETCH           s5, year2
+E: instruction not supported on the this device: FETCH sX, ss.
+0C4 08530        584                             ADD             s5, #0x30
+0C5 362D4        585                             CALL            lcd_write_data
+                 586                             FETCH           s5, year3
+E: instruction not supported on the this device: FETCH sX, ss.
+0C6 08530        587                             ADD             s5, #0x30
+0C7 362D4        588                             CALL            lcd_write_data
+                 589                             FETCH           s5, year4
+E: instruction not supported on the this device: FETCH sX, ss.
+0C8 08530        590                             ADD             s5, #0x30
+0C9 362D4        591                             CALL            lcd_write_data
+0CA 3415E        592                             JUMP            mode_end
+0CB 362A0        593     space2:                 CALL            disp_space
+0CC 362A0        594                             CALL            disp_space
+0CD 362A0        595                             CALL            disp_space
+0CE 362A0        596                             CALL            disp_space
+  0015E          597     mode_end:
+                 598                             FETCH           s0, monb
+E: instruction not supported on the this device: FETCH sX, ss.
+0CF 00127        599                             LOAD            s1, #dmax
+0D0 18100        600                             ADD             s1, s0
+                 601                             FETCH           s2, @s1                 ;;28
+E: instruction not supported on the this device: FETCH sX, sY.
+                 602                             COMPARE         s0, #0x02               ;;Y
+E: instruction not supported on the this device: COMPARE sX, kk.
+0D1 35568        603                             JUMP            nz, no_feb
+                 604                             FETCH           s1, yearb
+E: instruction not supported on the this device: FETCH sX, ss.
+0D2 02103        605                             AND             s1, #0x03
+0D3 35568        606                             JUMP            nz, no_feb
+0D4 08201        607                             ADD             s2, #0x01
+  00168          608     no_runnian:
+  00168          609     no_feb:                 STORE           s2, dmax
+E: instruction not supported on the this device: STORE sX, ss.
+                 610                             FETCH           s1, dayb
+E: instruction not supported on the this device: FETCH sX, ss.
+                 611                             COMPARE         s2, s1
+E: instruction not supported on the this device: COMPARE sX, sY.
+0D5 35D6D        612                             JUMP            nc, under
+                 613                             STORE           s2, dayb
+E: instruction not supported on the this device: STORE sX, ss.
+  0016D          614     under:
+                 615                             FETCH           s1, day_up
+E: instruction not supported on the this device: FETCH sX, ss.
+0D6 12108        616                             AND             s1, s1
+0D7 35188        617                             JUMP            z, no_day_up
+                 618                             FETCH           s1, dayb
+E: instruction not supported on the this device: FETCH sX, ss.
+0D8 08101        619                             ADD             s1, #0x01
+                 620                             STORE           s1, dayb
+E: instruction not supported on the this device: STORE sX, ss.
+                 621                             FETCH           s2, dmax
+E: instruction not supported on the this device: FETCH sX, ss.
+0D9 08201        622                             ADD             s2, #0x01
+                 623                             COMPARE         s1, s2
+E: instruction not supported on the this device: COMPARE sX, sY.
+0DA 35588        624                             JUMP            nz, no_mon_up
+0DB 00101        625                             LOAD            s1, #0x01
+                 626                             STORE           s1, dayb
+E: instruction not supported on the this device: STORE sX, ss.
+                 627                             FETCH           s1, monb
+E: instruction not supported on the this device: FETCH sX, ss.
+0DC 08101        628                             ADD             s1, #0x01
+                 629                             STORE           s1, monb
+E: instruction not supported on the this device: STORE sX, ss.
+                 630                             COMPARE         s1, #0x0d
+E: instruction not supported on the this device: COMPARE sX, kk.
+0DD 35588        631                             JUMP            nz, no_year_up
+0DE 00101        632                             LOAD            s1, #0x01
+                 633                             STORE           s1, monb
+E: instruction not supported on the this device: STORE sX, ss.
+                 634                             FETCH           s1, yearb
+E: instruction not supported on the this device: FETCH sX, ss.
+0DF 08101        635                             ADD             s1, #0x01
+                 636                             STORE           s1, yearb
+E: instruction not supported on the this device: STORE sX, ss.
+                 637                             COMPARE         s1, #0x64
+E: instruction not supported on the this device: COMPARE sX, kk.
+0E0 35588        638                             JUMP            nz, no_year_up
+0E1 00100        639                             LOAD            s1, #0x00
+                 640                             STORE           s1, yearb
+E: instruction not supported on the this device: STORE sX, ss.
+0E2 34188        641                             JUMP            no_year_up
+  00188          642     no_mon_up:
+  00188          643     no_day_up:
+  00188          644     no_year_up:
+0E3 00000        645                             LOAD            s0, #0x00
+                 646                             STORE           s0, day_up
+E: instruction not supported on the this device: STORE sX, ss.
+0E4 000EC        647                             LOAD            s0, #0xdec
+W: value out of range: 0xdec, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xec.
+                 648                             FETCH           s2, monb
+E: instruction not supported on the this device: FETCH sX, ss.
+0E5 18010        649                             ADD             s0, s2
+                 650                             FETCH           s1, @s0                 ;;;K
+E: instruction not supported on the this device: FETCH sX, sY.
+                 651                             FETCH           s0, yearb
+E: instruction not supported on the this device: FETCH sX, ss.
+0E6 18100        652                             ADD             s1, s0                  ;;;;;;;K+Y
+                 653                             COMPARE         s2, #0x03
+E: instruction not supported on the this device: COMPARE sX, kk.
+0E7 35993        654                             JUMP            c, rn
+0E8 08001        655                             ADD             s0, #0x01               ;;;;100+Y  >2(3..12)
+0E9 08063        656     rn:                     ADD             s0, #0x63               ;;;;;99+Y   1,2
+0EA 2800E        657                             SR0             s0
+0EB 2800E        658                             SR0             s0                      ;;;/4
+0EC 18008        659                             ADD             s0, s1
+0ED 08006        660                             ADD             s0, #0x06
+                 661                             FETCH           s2, dayb
+E: instruction not supported on the this device: FETCH sX, ss.
+0EE 18010        662                             ADD             s0, s2
+0EF 080F9        663     mod7:                   ADD             s0, #0xf9
+0F0 35D9D        664                             JUMP            nc, m7_end
+0F1 3419A        665                             JUMP            mod7
+0F2 08007        666     m7_end:                 ADD             s0, #0x07
+                 667                             STORE           s0, week
+E: instruction not supported on the this device: STORE sX, ss.
+                 668                             FETCH           s0, mode
+E: instruction not supported on the this device: FETCH sX, ss.
+0F3 020FF        669                             AND             s0, #0xff
+0F4 355A9        670                             JUMP            nz, setup
+                 671     ;;;RUN
+0F5 00520        672                             LOAD            s5, #0x20
+0F6 36313        673                             CALL            lcd_cursor
+                 674                             FETCH           s5, disp_flag
+E: instruction not supported on the this device: FETCH sX, ss.
+0F7 362D4        675                             CALL            lcd_write_data
+0F8 362D4        676                             CALL            lcd_write_data
+0F9 362D4        677                             CALL            lcd_write_data
+0FA 341B1        678                             JUMP            modeupdate
+  001A9          679     setup:
+                 680     ;;;SET
+0FB 00520        681                             LOAD            s5, #0x20
+0FC 36313        682                             CALL            lcd_cursor
+0FD 00553        683                             LOAD            s5, #0x53               ;;;;;;;;;;;;;;;;;;;;;;;    S
+0FE 362D4        684                             CALL            lcd_write_data
+0FF 00545        685                             LOAD            s5, #0x45               ;;;;;;;;;;;;;;;;;;;;;;;    E
+100 362D4        686                             CALL            lcd_write_data
+101 00554        687                             LOAD            s5, #0x54               ;;;;;;;;;;;;;;;;;;;;;;;    T
+102 362D4        688                             CALL            lcd_write_data
+  001B1          689     modeupdate:             FETCH           s0, mode
+E: instruction not supported on the this device: FETCH sX, ss.
+                 690                             STORE           s0, blink_flag
+E: instruction not supported on the this device: STORE sX, ss.
+  001B3          691     nochange:
+103 20000        692                             INPUT           s0, 0x00
+                 693                             FETCH           s1, disp_flag2
+E: instruction not supported on the this device: FETCH sX, ss.
+104 16100        694                             XOR             s1, s0
+105 35441        695                             JUMP            nz, restart
+                 696                             STORE           s0, disp_flag2
+E: instruction not supported on the this device: STORE sX, ss.
+                 697                             FETCH           s0, monb
+E: instruction not supported on the this device: FETCH sX, ss.
+                 698                             COMPARE         s0, #0x05
+E: instruction not supported on the this device: COMPARE sX, kk.
+106 355C1        699                             JUMP            nz, chk_sf
+                 700                             FETCH           s0, dayb
+E: instruction not supported on the this device: FETCH sX, ss.
+                 701                             COMPARE         s0, #0x11
+E: instruction not supported on the this device: COMPARE sX, kk.
+107 355C1        702                             JUMP            nz, chk_sf
+                 703                             FETCH           s0, minb
+E: instruction not supported on the this device: FETCH sX, ss.
+                 704                             COMPARE         s0, #0x00
+E: instruction not supported on the this device: COMPARE sX, kk.
+108 351C5        705                             JUMP            z, msg7
+  001C1          706     chk_sf:                 COMPARE         sf, #0xff
+E: instruction not supported on the this device: COMPARE sX, kk.
+109 355CF        707                             JUMP            nz, no_bd
+10A 362E5        708                             CALL            lcd_reset
+10B 341CF        709                             JUMP            no_bd
+10C 00510        710     msg7:                   LOAD            s5, #0x10
+10D 36313        711                             CALL            lcd_cursor
+10E 36282        712                             CALL            disp_msg7               ;
+                 713                             FETCH           s0, ms100
+E: instruction not supported on the this device: FETCH sX, ss.
+                 714                             COMPARE         s0, #0x32
+E: instruction not supported on the this device: COMPARE sX, kk.
+10F 359CD        715                             JUMP            c, wait
+110 00F00        716                             LOAD            sf, #0x00
+111 34041        717                             JUMP            restart
+112 00FFF        718     wait:                   LOAD            sf, #0xff
+113 34091        719                             JUMP            loop
+114 00F00        720     no_bd:                  LOAD            sf, #0x00
+                 721                             STORE           sf, ms100
+E: instruction not supported on the this device: STORE sX, ss.
+115 34091        722                             JUMP            loop
+                 723     ;;;;;;;;;s0---BINARY, s1---BCD_H, s0---BCD_L
+116 00100        724     b2bcd:                  LOAD            s1, #0x00               ;
+117 080F6        725     bcd_lp:                 ADD             s0, #0xf6
+118 35DD7        726                             JUMP            nc, h_end
+119 08101        727                             ADD             s1, #0x01               ;
+11A 341D3        728                             JUMP            bcd_lp
+11B 0800A        729     h_end:                  ADD             s0, #0x0a
+11C 24000        730                             RETURN
+                 731     ;
+                 732     ;     normal_mode: INPUT s0, switch_port               ;Read switches and buttons and directly drive LEDs
+                 733     ;                  OUTPUT s0, LED_port
+                 734     ;                  RETURN
+                 735     ;
+                 736     ;
+                 737     ;
+                 738     ;This procedure will poll the status of the rotary encoder.
+                 739     ;If rotation occurs, then the LED pattern will adjust appropriately.
+                 740     ;
+                 741     ;    rotate_mode: FETCH sA, LED_pattern               ;last known position
+                 742     ;                 FETCH s0, rotary_status             ;check status of rotation
+                 743     ;                 TEST s0, 80                         ;test flag
+                 744     ;                 JUMP Z, update_pattern
+                 745     ;                 AND s0, 7F                          ;clear flag
+                 746     ;                 STORE s0, rotary_status
+                 747     ;                 TEST s0, rotary_left                ;event occurred so update pattern
+                 748     ;                 JUMP Z, move_right
+                 749     ;                 RL sA
+                 750     ;                 JUMP update_pattern
+                 751     ;     move_right: RR sA
+                 752     ; update_pattern: STORE sA, LED_pattern
+                 753     ;                 OUTPUT sA, LED_port                 ;drive LEDs with current pattern
+                 754     ;                 RETURN
+                 755     ;                 ;
+                 756     ;
+                 757     ;
+                 758     ;
+                 759     ;**************************************************************************************
+                 760     ;LCD text messages
+                 761     ;**************************************************************************************
+                 762     ;
+                 763     ;
+                 764     ;Display 'SPARTAN-3E STARTER KIT' on LCD at current cursor position
+                 765     ;
+                 766     ;
+  001D9          767     disp_msg1:
+11D 362A0        768                             CALL            disp_space
+11E 00541        769                             LOAD            s5, #_character_a
+11F 362D4        770                             CALL            lcd_write_data
+120 362A0        771                             CALL            disp_space
+121 00543        772                             LOAD            s5, #_character_c
+122 362D4        773                             CALL            lcd_write_data
+123 0056C        774                             LOAD            s5, #character_l
+124 362D4        775                             CALL            lcd_write_data
+125 0056F        776                             LOAD            s5, #character_o
+126 362D4        777                             CALL            lcd_write_data
+127 00563        778                             LOAD            s5, #character_c
+128 362D4        779                             CALL            lcd_write_data
+129 0056B        780                             LOAD            s5, #character_k
+12A 362D4        781                             CALL            lcd_write_data
+12B 362A0        782                             CALL            disp_space
+12C 00542        783                             LOAD            s5, #_character_b
+12D 362D4        784                             CALL            lcd_write_data
+12E 00561        785                             LOAD            s5, #character_a
+12F 362D4        786                             CALL            lcd_write_data
+130 00573        787                             LOAD            s5, #character_s
+131 362D4        788                             CALL            lcd_write_data
+132 00565        789                             LOAD            s5, #character_e
+133 362D4        790                             CALL            lcd_write_data
+134 00564        791                             LOAD            s5, #character_d
+135 362D4        792                             CALL            lcd_write_data
+136 362A0        793                             CALL            disp_space
+137 24000        794                             RETURN
+                 795     ;
+                 796     ;
+                 797     ;
+138 00553        798     disp_msg2:              LOAD            s5, #_character_s
+139 362D4        799                             CALL            lcd_write_data
+13A 00533        800                             LOAD            s5, #character_3
+13B 362D4        801                             CALL            lcd_write_data
+13C 00545        802                             LOAD            s5, #_character_e
+13D 362D4        803                             CALL            lcd_write_data
+13E 362A0        804                             CALL            disp_space
+13F 00553        805                             LOAD            s5, #_character_s
+140 362D4        806                             CALL            lcd_write_data
+141 00574        807                             LOAD            s5, #character_t
+142 362D4        808                             CALL            lcd_write_data
+143 00561        809                             LOAD            s5, #character_a
+144 362D4        810                             CALL            lcd_write_data
+145 00572        811                             LOAD            s5, #character_r
+146 362D4        812                             CALL            lcd_write_data
+147 00574        813                             LOAD            s5, #character_t
+148 362D4        814                             CALL            lcd_write_data
+149 00565        815                             LOAD            s5, #character_e
+14A 362D4        816                             CALL            lcd_write_data
+14B 00572        817                             LOAD            s5, #character_r
+14C 362D4        818                             CALL            lcd_write_data
+14D 362A0        819                             CALL            disp_space
+14E 0054B        820                             LOAD            s5, #_character_k
+14F 362D4        821                             CALL            lcd_write_data
+150 00569        822                             LOAD            s5, #character_i
+151 362D4        823                             CALL            lcd_write_data
+152 00574        824                             LOAD            s5, #character_t
+153 362D4        825                             CALL            lcd_write_data
+154 00533        826                             LOAD            s5, #character_3
+155 362D4        827                             CALL            lcd_write_data
+156 24000        828                             RETURN
+157 362A0        829     disp_msg3:              CALL            disp_space
+158 362A0        830                             CALL            disp_space
+159 362A0        831                             CALL            disp_space
+15A 362A0        832                             CALL            disp_space
+15B 362A0        833                             CALL            disp_space
+15C 00558        834                             LOAD            s5, #_character_x
+15D 362D4        835                             CALL            lcd_write_data
+15E 00569        836                             LOAD            s5, #character_i
+15F 362D4        837                             CALL            lcd_write_data
+160 0056C        838                             LOAD            s5, #character_l
+161 362D4        839                             CALL            lcd_write_data
+162 00569        840                             LOAD            s5, #character_i
+163 362D4        841                             CALL            lcd_write_data
+164 0056E        842                             LOAD            s5, #character_n
+165 362D4        843                             CALL            lcd_write_data
+166 00578        844                             LOAD            s5, #character_x
+167 362D4        845                             CALL            lcd_write_data
+168 362A0        846                             CALL            disp_space
+169 362A0        847                             CALL            disp_space
+16A 362A0        848                             CALL            disp_space
+16B 362A0        849                             CALL            disp_space
+16C 362A0        850                             CALL            disp_space
+16D 24000        851                             RETURN
+16E 00550        852     disp_msg4:              LOAD            s5, #_character_p
+16F 362D4        853                             CALL            lcd_write_data
+170 00569        854                             LOAD            s5, #character_i
+171 362D4        855                             CALL            lcd_write_data
+172 00563        856                             LOAD            s5, #character_c
+173 362D4        857                             CALL            lcd_write_data
+174 0056F        858                             LOAD            s5, #character_o
+175 362D4        859                             CALL            lcd_write_data
+176 00542        860                             LOAD            s5, #_character_b
+177 362D4        861                             CALL            lcd_write_data
+178 0056C        862                             LOAD            s5, #character_l
+179 362D4        863                             CALL            lcd_write_data
+17A 00561        864                             LOAD            s5, #character_a
+17B 362D4        865                             CALL            lcd_write_data
+17C 0057A        866                             LOAD            s5, #character_z
+17D 362D4        867                             CALL            lcd_write_data
+17E 00565        868                             LOAD            s5, #character_e
+17F 362D4        869                             CALL            lcd_write_data
+180 362A0        870                             CALL            disp_space
+181 00554        871                             LOAD            s5, #_character_t
+182 362D4        872                             CALL            lcd_write_data
+183 00565        873                             LOAD            s5, #character_e
+184 362D4        874                             CALL            lcd_write_data
+185 00573        875                             LOAD            s5, #character_s
+186 362D4        876                             CALL            lcd_write_data
+187 00574        877                             LOAD            s5, #character_t
+188 362D4        878                             CALL            lcd_write_data
+189 362A0        879                             CALL            disp_space
+18A 24000        880                             RETURN
+18B 00550        881     disp_msg5:              LOAD            s5, #_character_p
+18C 362D4        882                             CALL            lcd_write_data
+18D 00572        883                             LOAD            s5, #character_r
+18E 362D4        884                             CALL            lcd_write_data
+18F 00565        885                             LOAD            s5, #character_e
+190 362D4        886                             CALL            lcd_write_data
+191 00573        887                             LOAD            s5, #character_s
+192 362D4        888                             CALL            lcd_write_data
+193 00573        889                             LOAD            s5, #character_s
+194 362D4        890                             CALL            lcd_write_data
+195 362A0        891                             CALL            disp_space
+196 00526        892                             LOAD            s5, #0x26
+197 362D4        893                             CALL            lcd_write_data
+198 362A0        894                             CALL            disp_space
+199 00554        895                             LOAD            s5, #_character_t
+19A 362D4        896                             CALL            lcd_write_data
+19B 00575        897                             LOAD            s5, #character_u
+19C 362D4        898                             CALL            lcd_write_data
+19D 00572        899                             LOAD            s5, #character_r
+19E 362D4        900                             CALL            lcd_write_data
+19F 0056E        901                             LOAD            s5, #character_n
+1A0 362D4        902                             CALL            lcd_write_data
+1A1 362A0        903                             CALL            disp_space
+1A2 00574        904                             LOAD            s5, #character_t
+1A3 362D4        905                             CALL            lcd_write_data
+1A4 00568        906                             LOAD            s5, #character_h
+1A5 362D4        907                             CALL            lcd_write_data
+1A6 00565        908                             LOAD            s5, #character_e
+1A7 362D4        909                             CALL            lcd_write_data
+1A8 24000        910                             RETURN
+1A9 362A0        911     disp_msg6:              CALL            disp_space
+1AA 00545        912                             LOAD            s5, #_character_e
+1AB 362D4        913                             CALL            lcd_write_data
+1AC 0056E        914                             LOAD            s5, #character_n
+1AD 362D4        915                             CALL            lcd_write_data
+1AE 00563        916                             LOAD            s5, #character_c
+1AF 362D4        917                             CALL            lcd_write_data
+1B0 0056F        918                             LOAD            s5, #character_o
+1B1 362D4        919                             CALL            lcd_write_data
+1B2 00564        920                             LOAD            s5, #character_d
+1B3 362D4        921                             CALL            lcd_write_data
+1B4 00565        922                             LOAD            s5, #character_e
+1B5 362D4        923                             CALL            lcd_write_data
+1B6 00572        924                             LOAD            s5, #character_r
+1B7 362D4        925                             CALL            lcd_write_data
+1B8 362A0        926                             CALL            disp_space
+1B9 00574        927                             LOAD            s5, #character_t
+1BA 362D4        928                             CALL            lcd_write_data
+1BB 0056F        929                             LOAD            s5, #character_o
+1BC 362D4        930                             CALL            lcd_write_data
+1BD 362A0        931                             CALL            disp_space
+1BE 00553        932                             LOAD            s5, #_character_s
+1BF 362D4        933                             CALL            lcd_write_data
+1C0 00565        934                             LOAD            s5, #character_e
+1C1 362D4        935                             CALL            lcd_write_data
+1C2 00574        936                             LOAD            s5, #character_t
+1C3 362D4        937                             CALL            lcd_write_data
+1C4 362A0        938                             CALL            disp_space
+1C5 24000        939                             RETURN
+1C6 00548        940     disp_msg7:              LOAD            s5, #_character_h
+1C7 362D4        941                             CALL            lcd_write_data
+1C8 00561        942                             LOAD            s5, #character_a
+1C9 362D4        943                             CALL            lcd_write_data
+1CA 00570        944                             LOAD            s5, #character_p
+1CB 362D4        945                             CALL            lcd_write_data
+1CC 00570        946                             LOAD            s5, #character_p
+1CD 362D4        947                             CALL            lcd_write_data
+1CE 00579        948                             LOAD            s5, #character_y
+1CF 362D4        949                             CALL            lcd_write_data
+1D0 362A0        950                             CALL            disp_space
+1D1 00542        951                             LOAD            s5, #_character_b
+1D2 362D4        952                             CALL            lcd_write_data
+1D3 00569        953                             LOAD            s5, #character_i
+1D4 362D4        954                             CALL            lcd_write_data
+1D5 00572        955                             LOAD            s5, #character_r
+1D6 362D4        956                             CALL            lcd_write_data
+1D7 00574        957                             LOAD            s5, #character_t
+1D8 362D4        958                             CALL            lcd_write_data
+1D9 00568        959                             LOAD            s5, #character_h
+1DA 362D4        960                             CALL            lcd_write_data
+1DB 00564        961                             LOAD            s5, #character_d
+1DC 362D4        962                             CALL            lcd_write_data
+1DD 00561        963                             LOAD            s5, #character_a
+1DE 362D4        964                             CALL            lcd_write_data
+1DF 00579        965                             LOAD            s5, #character_y
+1E0 362D4        966                             CALL            lcd_write_data
+1E1 00521        967                             LOAD            s5, #0x21
+1E2 362D4        968                             CALL            lcd_write_data
+1E3 24000        969                             RETURN
+                 970     ;
+                 971     ;Display a space on LCD at current cursor position
+                 972     ;
+                 973     ;
+1E4 00520        974     disp_space:             LOAD            s5, #character_space
+1E5 362D4        975                             CALL            lcd_write_data
+1E6 24000        976                             RETURN
+                 977     ;
+                 978     ;
+                 979     ;
+                 980     ;
+                 981     ;**************************************************************************************
+                 982     ;Software delay routines
+                 983     ;**************************************************************************************
+                 984     ;
+                 985     ;
+                 986     ;
+                 987     ;Delay of 1us.
+                 988     ;
+                 989     ;Constant value defines reflects the clock applied to KCPSM3. Every instruction
+                 990     ;executes in 2 clock cycles making the calculation highly predictable. The '6' in
+                 991     ;the following equation even allows for 'CALL delay_1us' instruction in the initiating code.
+                 992     ;
+                 993     ; delay_1us_constant =  (clock_rate - 6)/4       Where 'clock_rate' is in MHz
+                 994     ;
+                 995     ;Registers used s0
+                 996     ;
+1E7 0000B        997     delay_1us:              LOAD            s0, #delay_1us_constant
+1E8 0C001        998     wait_1us:               SUB             s0, #0x01
+1E9 356A4        999                             JUMP            nz, wait_1us
+1EA 24000       1000                             RETURN
+                1001     ;
+                1002     ;Delay of 40us.
+                1003     ;
+                1004     ;Registers used s0, s1
+                1005     ;
+1EB 00128       1006     delay_40us:             LOAD            s1, #0x28               ;40 x 1us = 40us
+1EC 362A3       1007     wait_40us:              CALL            delay_1us
+1ED 0C101       1008                             SUB             s1, #0x01
+1EE 356A8       1009                             JUMP            nz, wait_40us
+1EF 24000       1010                             RETURN
+                1011     ;
+                1012     ;
+                1013     ;Delay of 1ms.
+                1014     ;
+                1015     ;Registers used s0, s1, s2
+                1016     ;
+1F0 00219       1017     delay_1ms:              LOAD            s2, #0x19               ;25 x 40us = 1ms
+1F1 362A7       1018     wait_1ms:               CALL            delay_40us
+1F2 0C201       1019                             SUB             s2, #0x01
+1F3 356AD       1020                             JUMP            nz, wait_1ms
+1F4 24000       1021                             RETURN
+                1022     ;
+                1023     ;Delay of 20ms.
+                1024     ;
+                1025     ;Delay of 20ms used during initialisation.
+                1026     ;
+                1027     ;Registers used s0, s1, s2, s3
+                1028     ;
+1F5 00314       1029     delay_20ms:             LOAD            s3, #0x14               ;20 x 1ms = 20ms
+1F6 362AC       1030     wait_20ms:              CALL            delay_1ms
+1F7 0C301       1031                             SUB             s3, #0x01
+1F8 356B2       1032                             JUMP            nz, wait_20ms
+1F9 24000       1033                             RETURN
+                1034     ;
+                1035     ;Delay of approximately 1 second.
+                1036     ;
+                1037     ;Registers used s0, s1, s2, s3, s4
+                1038     ;
+1FA 00432       1039     delay_1s:               LOAD            s4, #0x32               ;50 x 20ms = 1000ms
+1FB 362B1       1040     wait_1s:                CALL            delay_20ms
+1FC 0C401       1041                             SUB             s4, #0x01
+1FD 356B7       1042                             JUMP            nz, wait_1s
+1FE 24000       1043                             RETURN
+                1044     ;
+                1045     ;
+                1046     ;
+                1047     ;**************************************************************************************
+                1048     ;LCD Character Module Routines
+                1049     ;**************************************************************************************
+                1050     ;
+                1051     ;LCD module is a 16 character by 2 line display but all displays are very similar
+                1052     ;The 4-wire data interface will be used (DB4 to DB7).
+                1053     ;
+                1054     ;The LCD modules are relatively slow and software delay loops are used to slow down
+                1055     ;KCPSM3 adequately for the LCD to communicate. The delay routines are provided in
+                1056     ;a different section (see above in this case).
+                1057     ;
+                1058     ;
+                1059     ;Pulse LCD enable signal 'E' high for greater than 230ns (1us is used).
+                1060     ;
+                1061     ;Register s4 should define the current state of the LCD output port.
+                1062     ;
+                1063     ;Registers used s0, s4
+                1064     ;
+1FF 06401       1065     lcd_pulse_e:            XOR             s4, #lcd_e              ;E=1
+200 22440       1066                             OUTPUT          s4, lcd_output_port
+201 362A3       1067                             CALL            delay_1us
+202 06401       1068                             XOR             s4, #lcd_e              ;E=0
+203 22440       1069                             OUTPUT          s4, lcd_output_port
+204 24000       1070                             RETURN
+                1071     ;
+                1072     ;Write 4-bit instruction to LCD display.
+                1073     ;
+                1074     ;The 4-bit instruction should be provided in the upper 4-bits of register s4.
+                1075     ;Note that this routine does not release the master enable but as it is only
+                1076     ;used during initialisation and as part of the 8-bit instruction write it
+                1077     ;should be acceptable.
+                1078     ;
+                1079     ;Registers used s4
+                1080     ;
+205 024F8       1081     lcd_write_inst4:        AND             s4, #0xf8               ;Enable=1 RS=0 Instruction, RW=0 Write, E=0
+206 22440       1082                             OUTPUT          s4, lcd_output_port     ;set up RS and RW >40ns before enable pulse
+207 362BB       1083                             CALL            lcd_pulse_e
+208 24000       1084                             RETURN
+                1085     ;
+                1086     ;
+                1087     ;Write 8-bit instruction to LCD display.
+                1088     ;
+                1089     ;The 8-bit instruction should be provided in register s5.
+                1090     ;Instructions are written using the following sequence
+                1091     ; Upper nibble
+                1092     ; wait >1us
+                1093     ; Lower nibble
+                1094     ; wait >40us
+                1095     ;
+                1096     ;Registers used s0, s1, s4, s5
+                1097     ;
+209 10428       1098     lcd_write_inst8:        LOAD            s4, s5
+20A 024F0       1099                             AND             s4, #0xf0               ;Enable=0 RS=0 Instruction, RW=0 Write, E=0
+20B 04408       1100                             OR              s4, #lcd_drive          ;Enable=1
+20C 362C1       1101                             CALL            lcd_write_inst4         ;write upper nibble
+20D 362A3       1102                             CALL            delay_1us               ;wait >1us
+20E 10428       1103                             LOAD            s4, s5                  ;select lower nibble with
+20F 28407       1104                             SL1             s4                      ;Enable=1
+210 28406       1105                             SL0             s4                      ;RS=0 Instruction
+211 28406       1106                             SL0             s4                      ;RW=0 Write
+212 28406       1107                             SL0             s4                      ;E=0
+213 362C1       1108                             CALL            lcd_write_inst4         ;write lower nibble
+214 362A7       1109                             CALL            delay_40us              ;wait >40us
+215 004F0       1110                             LOAD            s4, #0xf0               ;Enable=0 RS=0 Instruction, RW=0 Write, E=0
+216 22440       1111                             OUTPUT          s4, lcd_output_port     ;Release master enable
+217 24000       1112                             RETURN
+                1113     ;
+                1114     ;
+                1115     ;
+                1116     ;Write 8-bit data to LCD display.
+                1117     ;
+                1118     ;The 8-bit data should be provided in register s5.
+                1119     ;Data bytes are written using the following sequence
+                1120     ; Upper nibble
+                1121     ; wait >1us
+                1122     ; Lower nibble
+                1123     ; wait >40us
+                1124     ;
+                1125     ;Registers used s0, s1, s4, s5
+                1126     ;
+218 10428       1127     lcd_write_data:         LOAD            s4, s5
+219 024F0       1128                             AND             s4, #0xf0               ;Enable=0 RS=0 Instruction, RW=0 Write, E=0
+21A 0440C       1129                             OR              s4, #0x0c               ;Enable=1 RS=1 Data, RW=0 Write, E=0
+21B 22440       1130                             OUTPUT          s4, lcd_output_port     ;set up RS and RW >40ns before enable pulse
+21C 362BB       1131                             CALL            lcd_pulse_e             ;write upper nibble
+21D 362A3       1132                             CALL            delay_1us               ;wait >1us
+21E 10428       1133                             LOAD            s4, s5                  ;select lower nibble with
+21F 28407       1134                             SL1             s4                      ;Enable=1
+220 28407       1135                             SL1             s4                      ;RS=1 Data
+221 28406       1136                             SL0             s4                      ;RW=0 Write
+222 28406       1137                             SL0             s4                      ;E=0
+223 22440       1138                             OUTPUT          s4, lcd_output_port     ;set up RS and RW >40ns before enable pulse
+224 362BB       1139                             CALL            lcd_pulse_e             ;write lower nibble
+225 362A7       1140                             CALL            delay_40us              ;wait >40us
+226 004F0       1141                             LOAD            s4, #0xf0               ;Enable=0 RS=0 Instruction, RW=0 Write, E=0
+227 22440       1142                             OUTPUT          s4, lcd_output_port     ;Release master enable
+228 24000       1143                             RETURN
+                1144     ;
+                1145     ;
+                1146     ;
+                1147     ;
+                1148     ;Read 8-bit data from LCD display.
+                1149     ;
+                1150     ;The 8-bit data will be read from the current LCD memory address
+                1151     ;and will be returned in register s5.
+                1152     ;It is advisable to set the LCD address (cursor position) before
+                1153     ;using the data read for the first time otherwise the display may
+                1154     ;generate invalid data on the first read.
+                1155     ;
+                1156     ;Data bytes are read using the following sequence
+                1157     ; Upper nibble
+                1158     ; wait >1us
+                1159     ; Lower nibble
+                1160     ; wait >40us
+                1161     ;
+                1162     ;Registers used s0, s1, s4, s5
+                1163     ;
+                1164     ;LCD_read_data8: LOAD s4, 0E                         ;Enable=1 RS=1 Data, RW=1 Read, E=0
+                1165     ;                OUTPUT s4, LCD_output_port          ;set up RS and RW >40ns before enable pulse
+                1166     ;                XOR s4, LCD_E                       ;E=1
+                1167     ;                OUTPUT s4, LCD_output_port
+                1168     ;                CALL delay_1us                      ;wait >260ns to access data
+                1169     ;                INPUT s5, LCD_input_port            ;read upper nibble
+                1170     ;                XOR s4, LCD_E                       ;E=0
+                1171     ;                OUTPUT s4, LCD_output_port
+                1172     ;                CALL delay_1us                      ;wait >1us
+                1173     ;                XOR s4, LCD_E                       ;E=1
+                1174     ;                OUTPUT s4, LCD_output_port
+                1175     ;                CALL delay_1us                      ;wait >260ns to access data
+                1176     ;                INPUT s0, LCD_input_port            ;read lower nibble
+                1177     ;                XOR s4, LCD_E                       ;E=0
+                1178     ;                OUTPUT s4, LCD_output_port
+                1179     ;                AND s5, F0                          ;merge upper and lower nibbles
+                1180     ;                SR0 s0
+                1181     ;                SR0 s0
+                1182     ;                SR0 s0
+                1183     ;                SR0 s0
+                1184     ;                OR s5, s0
+                1185     ;                LOAD s4, 04                         ;Enable=0 RS=1 Data, RW=0 Write, E=0
+                1186     ;                OUTPUT s4, LCD_output_port          ;Stop reading 5V device and release master enable
+                1187     ;                CALL delay_40us                     ;wait >40us
+                1188     ;                RETURN
+                1189     ;
+                1190     ;
+                1191     ;Reset and initialise display to communicate using 4-bit data mode
+                1192     ;Includes routine to clear the display.
+                1193     ;
+                1194     ;Requires the 4-bit instructions 3,3,3,2 to be sent with suitable delays
+                1195     ;following by the 8-bit instructions to set up the display.
+                1196     ;
+                1197     ;  28 = '001' Function set, '0' 4-bit mode, '1' 2-line, '0' 5x7 dot matrix, 'xx'
+                1198     ;  06 = '000001' Entry mode, '1' increment, '0' no display shift
+                1199     ;  0C = '00001' Display control, '1' display on, '0' cursor off, '0' cursor blink off
+                1200     ;  01 = '00000001' Display clear
+                1201     ;
+                1202     ;Registers used s0, s1, s2, s3, s4
+                1203     ;
+229 362B1       1204     lcd_reset:              CALL            delay_20ms              ;wait more that 15ms for display to be ready
+22A 00430       1205                             LOAD            s4, #0x30
+22B 362C1       1206                             CALL            lcd_write_inst4         ;send '3'
+22C 362B1       1207                             CALL            delay_20ms              ;wait >4.1ms
+22D 362C1       1208                             CALL            lcd_write_inst4         ;send '3'
+22E 362AC       1209                             CALL            delay_1ms               ;wait >100us
+22F 362C1       1210                             CALL            lcd_write_inst4         ;send '3'
+230 362A7       1211                             CALL            delay_40us              ;wait >40us
+231 00420       1212                             LOAD            s4, #0x20
+232 362C1       1213                             CALL            lcd_write_inst4         ;send '2'
+233 362A7       1214                             CALL            delay_40us              ;wait >40us
+234 00528       1215                             LOAD            s5, #0x28               ;Function set
+235 362C5       1216                             CALL            lcd_write_inst8
+236 00506       1217                             LOAD            s5, #0x06               ;Entry mode
+237 362C5       1218                             CALL            lcd_write_inst8
+238 0050C       1219                             LOAD            s5, #0x0c               ;Display control
+239 362C5       1220                             CALL            lcd_write_inst8
+23A 00501       1221     lcd_clear:              LOAD            s5, #0x01               ;Display clear
+23B 362C5       1222                             CALL            lcd_write_inst8
+23C 362AC       1223                             CALL            delay_1ms               ;wait >1.64ms for display to clear
+23D 362AC       1224                             CALL            delay_1ms
+23E 00513       1225                             LOAD            s5, #0x13
+23F 36313       1226                             CALL            lcd_cursor
+240 0053A       1227                             LOAD            s5, #0x3a               ;;;;;;;;;;;;;;;;;;;;;;;    :
+241 362D4       1228                             CALL            lcd_write_data
+242 00516       1229                             LOAD            s5, #0x16
+243 36313       1230                             CALL            lcd_cursor
+244 0052D       1231                             LOAD            s5, #0x2d               ;;;;;;;;;;;;;;;;;;;;;;     -
+245 362D4       1232                             CALL            lcd_write_data
+246 00520       1233                             LOAD            s5, #0x20
+247 36313       1234                             CALL            lcd_cursor
+248 0052D       1235                             LOAD            s5, #0x2d               ;;;;;;;;;;;;;;;;;;;;;;     -
+249 362D4       1236                             CALL            lcd_write_data
+24A 0052D       1237                             LOAD            s5, #0x2d               ;;;;;;;;;;;;;;;;;;;;;;     -
+24B 362D4       1238                             CALL            lcd_write_data
+24C 0052D       1239                             LOAD            s5, #0x2d               ;;;;;;;;;;;;;;;;;;;;;;     -
+24D 362D4       1240                             CALL            lcd_write_data
+24E 00528       1241                             LOAD            s5, #0x28
+24F 36313       1242                             CALL            lcd_cursor
+250 0052F       1243                             LOAD            s5, #0x2f               ;;;;;;;;;;;;;;;;;;;;;;     /
+251 362D4       1244                             CALL            lcd_write_data
+252 0052B       1245                             LOAD            s5, #0x2b
+253 36313       1246                             CALL            lcd_cursor
+254 0052F       1247                             LOAD            s5, #0x2f               ;;;;;;;;;;;;;;;;;;;;;;     -
+255 362D4       1248                             CALL            lcd_write_data
+256 24000       1249                             RETURN
+                1250     ;
+                1251     ;Position the cursor ready for characters to be written.
+                1252     ;The display is formed of 2 lines of 16 characters and each
+                1253     ;position has a corresponding address as indicated below.
+                1254     ;
+                1255     ;                   Character position
+                1256     ;           0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15
+                1257     ;
+                1258     ; Line 1 - 80 81 82 83 84 85 86 87 88 89 8A 8B 8C 8D 8E 8F
+                1259     ; Line 2 - C0 C1 C2 C3 C4 C5 C6 C7 C8 C9 CA CB CC CD CE CF
+                1260     ;
+                1261     ;This routine will set the cursor position using the value provided
+                1262     ;in register s5. The upper nibble will define the line and the lower
+                1263     ;nibble the character position on the line.
+                1264     ; Example s5 = 2B will position the cursor on line 2 position 11
+                1265     ;
+                1266     ;Registers used s0, s1, s2, s3, s4
+                1267     ;
+  00313         1268     lcd_cursor:             TEST            s5, #0x10               ;test for line 1
+E: instruction not supported on the this device: TEST sX, kk.
+257 35319       1269                             JUMP            z, set_line2
+258 0250F       1270                             AND             s5, #0x0f               ;make address in range 80 to 8F for line 1
+259 04580       1271                             OR              s5, #0x80
+25A 362C5       1272                             CALL            lcd_write_inst8         ;instruction write to set cursor
+25B 24000       1273                             RETURN
+25C 0250F       1274     set_line2:              AND             s5, #0x0f               ;make address in range C0 to CF for line 2
+25D 045C0       1275                             OR              s5, #0xc0
+25E 362C5       1276                             CALL            lcd_write_inst8         ;instruction write to set cursor
+25F 24000       1277                             RETURN
+                1278     ;
+                1279     ;This routine will shift the complete display one position to the left.
+                1280     ;The cursor position and LCD memory contents will not change.
+                1281     ;
+                1282     ;
+                1283     ;Registers used s0, s1, s2, s3, s4, s5
+                1284     ;
+                1285     ;LCD_shift_left: LOAD s5, 18                         ;shift display left
+                1286     ;                CALL LCD_write_inst8
+                1287     ;                RETURN
+                1288     ;
+                1289     ;**************************************************************************************
+                1290     ;Interrupt Service Routine (ISR)
+                1291     ;**************************************************************************************
+  0031D         1292     isr:                    STORE           s0, isr_s0              ;preserve s0
+E: instruction not supported on the this device: STORE sX, ss.
+                1293                             STORE           s1, isr_s1
+E: instruction not supported on the this device: STORE sX, ss.
+                1294                             STORE           s2, isr_s2
+E: instruction not supported on the this device: STORE sX, ss.
+260 20101       1295                             INPUT           s1, rotary_port
+261 00000       1296                             LOAD            s0, #0x00
+                1297                             TEST            s1, #rotary_press
+E: instruction not supported on the this device: TEST sX, kk.
+262 35331       1298                             JUMP            z, no_press
+                1299                             FETCH           s0, pressed
+E: instruction not supported on the this device: FETCH sX, ss.
+                1300                             COMPARE         s0, #0x00
+E: instruction not supported on the this device: COMPARE sX, kk.
+263 35731       1301                             JUMP            nz, no_press
+                1302                             FETCH           s2, led_pattern
+E: instruction not supported on the this device: FETCH sX, ss.
+264 08201       1303                             ADD             s2, #0x01
+                1304                             STORE           s2, led_pattern
+E: instruction not supported on the this device: STORE sX, ss.
+                1305                             FETCH           s2, mode
+E: instruction not supported on the this device: FETCH sX, ss.
+265 08201       1306                             ADD             s2, #0x01
+                1307                             COMPARE         s2, #0x07
+E: instruction not supported on the this device: COMPARE sX, kk.
+266 3572F       1308                             JUMP            nz, mode_save
+267 02200       1309                             AND             s2, #0x00
+  0032F         1310     mode_save:              STORE           s2, mode                ;;;;;0-normal;1-hour;2-min;3-sec;4-day,5-mon,6-year
+E: instruction not supported on the this device: STORE sX, ss.
+268 000FF       1311                             LOAD            s0, #0xff
+  00331         1312     no_press:               STORE           s0, pressed
+E: instruction not supported on the this device: STORE sX, ss.
+                1313                             TEST            s1, #0x40               ;;;rotary INT ?
+E: instruction not supported on the this device: TEST sX, kk.
+269 353B3       1314                             JUMP            z, t2_5m_int            ;;NOT rotary INT,JUMP away
+26A 00040       1315     clr_int2:               LOAD            s0, #0x40               ;;;;;CLR_INT1
+26B 22020       1316                             OUTPUT          s0, 0x20
+                1317                             FETCH           s0, led_pattern
+E: instruction not supported on the this device: FETCH sX, ss.
+                1318                             TEST            s1, #rotary_left
+E: instruction not supported on the this device: TEST sX, kk.
+26C 35374       1319                             JUMP            z, its_right
+26D 080FF       1320                             ADD             s0, #0xff
+                1321                             STORE           s0, led_pattern
+E: instruction not supported on the this device: STORE sX, ss.
+                1322     ;;;turn left,--
+                1323                             FETCH           s0, mode
+E: instruction not supported on the this device: FETCH sX, ss.
+                1324                             COMPARE         s0, #0x00
+E: instruction not supported on the this device: COMPARE sX, kk.
+26E 353B1       1325                             JUMP            z, clr_int1             ;
+                1326                             COMPARE         s0, #0x01
+E: instruction not supported on the this device: COMPARE sX, kk.
+26F 35747       1327                             JUMP            nz, mode2n
+                1328                             FETCH           s1, hourb
+E: instruction not supported on the this device: FETCH sX, ss.
+270 081FF       1329                             ADD             s1, #0xff
+                1330                             COMPARE         s1, #0xff               ;;;24
+E: instruction not supported on the this device: COMPARE sX, kk.
+271 35745       1331                             JUMP            nz, save_hhn
+272 00117       1332                             LOAD            s1, #0x17
+  00345         1333     save_hhn:               STORE           s1, hourb
+E: instruction not supported on the this device: STORE sX, ss.
+273 343EE       1334                             JUMP            real_time_end
+  00347         1335     mode2n:                 COMPARE         s0, #0x02
+E: instruction not supported on the this device: COMPARE sX, kk.
+274 35750       1336                             JUMP            nz, mode3n
+                1337                             FETCH           s1, minb
+E: instruction not supported on the this device: FETCH sX, ss.
+275 081FF       1338                             ADD             s1, #0xff
+                1339                             COMPARE         s1, #0xff               ;;;3C;;60
+E: instruction not supported on the this device: COMPARE sX, kk.
+276 3574E       1340                             JUMP            nz, save_mmn
+277 0013B       1341                             LOAD            s1, #0x3b
+  0034E         1342     save_mmn:               STORE           s1, minb
+E: instruction not supported on the this device: STORE sX, ss.
+278 343EE       1343                             JUMP            real_time_end
+  00350         1344     mode3n:                 COMPARE         s0, #0x03
+E: instruction not supported on the this device: COMPARE sX, kk.
+279 35759       1345                             JUMP            nz, mode4n
+                1346                             FETCH           s1, secb
+E: instruction not supported on the this device: FETCH sX, ss.
+27A 081FF       1347                             ADD             s1, #0xff
+                1348                             COMPARE         s1, #0xff               ;;;60
+E: instruction not supported on the this device: COMPARE sX, kk.
+27B 35757       1349                             JUMP            nz, save_ssn
+27C 0013B       1350                             LOAD            s1, #0x3b
+  00357         1351     save_ssn:               STORE           s1, secb
+E: instruction not supported on the this device: STORE sX, ss.
+27D 343EE       1352                             JUMP            real_time_end
+  00359         1353     mode4n:                 COMPARE         s0, #0x04
+E: instruction not supported on the this device: COMPARE sX, kk.
+27E 35762       1354                             JUMP            nz, mode5n
+                1355                             FETCH           s1, monb
+E: instruction not supported on the this device: FETCH sX, ss.
+27F 081FF       1356                             ADD             s1, #0xff
+                1357                             COMPARE         s1, #0x00               ;;;12
+E: instruction not supported on the this device: COMPARE sX, kk.
+280 35760       1358                             JUMP            nz, save_monn
+281 0010C       1359                             LOAD            s1, #0x0c
+  00360         1360     save_monn:              STORE           s1, monb
+E: instruction not supported on the this device: STORE sX, ss.
+282 343EE       1361                             JUMP            real_time_end
+  00362         1362     mode5n:                 COMPARE         s0, #0x05
+E: instruction not supported on the this device: COMPARE sX, kk.
+283 3576B       1363                             JUMP            nz, mode6n
+                1364                             FETCH           s1, dayb
+E: instruction not supported on the this device: FETCH sX, ss.
+284 081FF       1365                             ADD             s1, #0xff
+                1366                             COMPARE         s1, #0x00               ;;;12
+E: instruction not supported on the this device: COMPARE sX, kk.
+285 35769       1367                             JUMP            nz, save_dayn
+                1368                             FETCH           s1, dmax
+E: instruction not supported on the this device: FETCH sX, ss.
+  00369         1369     save_dayn:              STORE           s1, dayb
+E: instruction not supported on the this device: STORE sX, ss.
+286 343EE       1370                             JUMP            real_time_end
+  0036B         1371     mode6n:                 COMPARE         s0, #0x06
+E: instruction not supported on the this device: COMPARE sX, kk.
+287 35773       1372                             JUMP            nz, mode7n
+                1373                             FETCH           s1, yearb
+E: instruction not supported on the this device: FETCH sX, ss.
+288 081FF       1374                             ADD             s1, #0xff
+                1375                             COMPARE         s1, #0xff               ;;;12
+E: instruction not supported on the this device: COMPARE sX, kk.
+289 35772       1376                             JUMP            nz, save_yearn
+28A 00163       1377                             LOAD            s1, #0x63
+  00372         1378     save_yearn:             STORE           s1, yearb
+E: instruction not supported on the this device: STORE sX, ss.
+  00373         1379     mode7n:
+28B 343EE       1380                             JUMP            real_time_end
+28C 08001       1381     its_right:              ADD             s0, #0x01
+                1382                             STORE           s0, led_pattern
+E: instruction not supported on the this device: STORE sX, ss.
+                1383     ;;;turn right++
+                1384                             FETCH           s0, mode
+E: instruction not supported on the this device: FETCH sX, ss.
+                1385                             COMPARE         s0, #0x00
+E: instruction not supported on the this device: COMPARE sX, kk.
+28D 353B1       1386                             JUMP            z, clr_int1             ;
+                1387                             COMPARE         s0, #0x01
+E: instruction not supported on the this device: COMPARE sX, kk.
+28E 35782       1388                             JUMP            nz, mode2p
+                1389                             FETCH           s1, hourb
+E: instruction not supported on the this device: FETCH sX, ss.
+28F 08101       1390                             ADD             s1, #0x01
+                1391                             COMPARE         s1, #0x18               ;;;24
+E: instruction not supported on the this device: COMPARE sX, kk.
+290 35780       1392                             JUMP            nz, save_hhp
+291 00100       1393                             LOAD            s1, #0x00
+  00380         1394     save_hhp:               STORE           s1, hourb
+E: instruction not supported on the this device: STORE sX, ss.
+292 343EE       1395                             JUMP            real_time_end
+  00382         1396     mode2p:                 COMPARE         s0, #0x02
+E: instruction not supported on the this device: COMPARE sX, kk.
+293 3578B       1397                             JUMP            nz, mode3p
+                1398                             FETCH           s1, minb
+E: instruction not supported on the this device: FETCH sX, ss.
+294 08101       1399                             ADD             s1, #0x01
+                1400                             COMPARE         s1, #0x3c               ;;;3C;;60
+E: instruction not supported on the this device: COMPARE sX, kk.
+295 35789       1401                             JUMP            nz, save_mmp
+296 00100       1402                             LOAD            s1, #0x00
+  00389         1403     save_mmp:               STORE           s1, minb
+E: instruction not supported on the this device: STORE sX, ss.
+297 343EE       1404                             JUMP            real_time_end
+  0038B         1405     mode3p:                 COMPARE         s0, #0x03
+E: instruction not supported on the this device: COMPARE sX, kk.
+298 35794       1406                             JUMP            nz, mode4p
+                1407                             FETCH           s1, secb
+E: instruction not supported on the this device: FETCH sX, ss.
+299 08101       1408                             ADD             s1, #0x01
+                1409                             COMPARE         s1, #0x3c               ;;;60
+E: instruction not supported on the this device: COMPARE sX, kk.
+29A 35792       1410                             JUMP            nz, save_ssp
+29B 00100       1411                             LOAD            s1, #0x00
+  00392         1412     save_ssp:               STORE           s1, secb
+E: instruction not supported on the this device: STORE sX, ss.
+29C 343EE       1413                             JUMP            real_time_end
+  00394         1414     mode4p:                 COMPARE         s0, #0x04
+E: instruction not supported on the this device: COMPARE sX, kk.
+29D 3579D       1415                             JUMP            nz, mode5p
+                1416                             FETCH           s1, monb
+E: instruction not supported on the this device: FETCH sX, ss.
+29E 08101       1417                             ADD             s1, #0x01
+                1418                             COMPARE         s1, #0x0d               ;;;12
+E: instruction not supported on the this device: COMPARE sX, kk.
+29F 3579B       1419                             JUMP            nz, save_monp
+2A0 00101       1420                             LOAD            s1, #0x01
+  0039B         1421     save_monp:              STORE           s1, monb
+E: instruction not supported on the this device: STORE sX, ss.
+2A1 343EE       1422                             JUMP            real_time_end
+  0039D         1423     mode5p:                 COMPARE         s0, #0x05
+E: instruction not supported on the this device: COMPARE sX, kk.
+2A2 357A8       1424                             JUMP            nz, mode6p
+                1425                             FETCH           s1, dayb
+E: instruction not supported on the this device: FETCH sX, ss.
+2A3 08101       1426                             ADD             s1, #0x01
+                1427                             FETCH           s2, dmax
+E: instruction not supported on the this device: FETCH sX, ss.
+2A4 08201       1428                             ADD             s2, #0x01
+                1429                             COMPARE         s1, s2
+E: instruction not supported on the this device: COMPARE sX, sY.
+2A5 357A6       1430                             JUMP            nz, save_dayp
+2A6 00101       1431                             LOAD            s1, #0x01
+  003A6         1432     save_dayp:              STORE           s1, dayb
+E: instruction not supported on the this device: STORE sX, ss.
+2A7 343EE       1433                             JUMP            real_time_end
+  003A8         1434     mode6p:                 COMPARE         s0, #0x06
+E: instruction not supported on the this device: COMPARE sX, kk.
+2A8 357B0       1435                             JUMP            nz, mode7p
+                1436                             FETCH           s1, yearb
+E: instruction not supported on the this device: FETCH sX, ss.
+2A9 08101       1437                             ADD             s1, #0x01
+                1438                             COMPARE         s1, #0x64               ;;;12
+E: instruction not supported on the this device: COMPARE sX, kk.
+2AA 357AF       1439                             JUMP            nz, save_yearp
+2AB 00100       1440                             LOAD            s1, #0x00
+  003AF         1441     save_yearp:             STORE           s1, yearb
+E: instruction not supported on the this device: STORE sX, ss.
+2AC 343EE       1442     mode7p:                 JUMP            real_time_end
+2AD 00040       1443     clr_int1:               LOAD            s0, #0x40               ;;;;;CLR_INT1
+2AE 22020       1444                             OUTPUT          s0, 0x20
+                1445     ;;;TIMER interrupt process;;;;mode:::0-normal;1-hour;2-min;3-sec;4-day,5-mon,6-year
+  003B3         1446     t2_5m_int:              TEST            s1, #0x80
+E: instruction not supported on the this device: TEST sX, kk.
+2AF 353F9       1447                             JUMP            z, end_isr
+2B0 00080       1448                             LOAD            s0, #0x80               ;;;;;;;;;;clr_int2
+2B1 22020       1449                             OUTPUT          s0, 0x20
+                1450                             FETCH           s0, ms1
+E: instruction not supported on the this device: FETCH sX, ss.
+2B2 08001       1451                             ADD             s0, #0x01
+                1452                             STORE           s0, ms1
+E: instruction not supported on the this device: STORE sX, ss.
+                1453                             COMPARE         s0, #0x64
+E: instruction not supported on the this device: COMPARE sX, kk.
+2B3 357EE       1454                             JUMP            nz, real_time_end
+2B4 02000       1455                             AND             s0, #0x00               ;;;;;;;;;;;;;CLR ms1
+                1456                             STORE           s0, ms1
+E: instruction not supported on the this device: STORE sX, ss.
+                1457                             FETCH           s0, led_pattern         ;
+E: instruction not supported on the this device: FETCH sX, ss.
+2B5 08010       1458                             ADD             s0, #0x10
+                1459                             STORE           s0, led_pattern
+E: instruction not supported on the this device: STORE sX, ss.
+                1460                             FETCH           s1, ms500
+E: instruction not supported on the this device: FETCH sX, ss.
+2B6 08101       1461                             ADD             s1, #0x01
+                1462                             STORE           s1, ms500
+E: instruction not supported on the this device: STORE sX, ss.
+                1463                             COMPARE         s1, #0x01               ;
+E: instruction not supported on the this device: COMPARE sX, kk.
+2B7 357C8       1464                             JUMP            nz, cmp_2
+2B8 0002D       1465                             LOAD            s0, #0x2d               ;;;------
+2B9 343CF       1466                             JUMP            cmp_4
+  003C8         1467     cmp_2:                  COMPARE         s1, #0x02               ;
+E: instruction not supported on the this device: COMPARE sX, kk.
+2BA 357CC       1468                             JUMP            nz, cmp_3
+2BB 00060       1469                             LOAD            s0, #0x60               ;;;\\\\\\
+2BC 343CF       1470                             JUMP            cmp_4
+  003CC         1471     cmp_3:                  COMPARE         s1, #0x03               ;
+E: instruction not supported on the this device: COMPARE sX, kk.
+2BD 357CF       1472                             JUMP            nz, cmp_4
+2BE 0007C       1473                             LOAD            s0, #0x7c               ;;;||||
+  003CF         1474     cmp_4:                  STORE           s0, disp_flag
+E: instruction not supported on the this device: STORE sX, ss.
+                1475                             COMPARE         s1, #0x04
+E: instruction not supported on the this device: COMPARE sX, kk.
+2BF 357EE       1476                             JUMP            nz, real_time_end
+2C0 0002F       1477                             LOAD            s0, #0x2f               ;;;////
+                1478     ;;FETCH s0,disp_flag
+                1479     ;;ADD s0,01
+                1480                             STORE           s0, disp_flag
+E: instruction not supported on the this device: STORE sX, ss.
+2C1 02100       1481                             AND             s1, #0x00               ;;;;;;;;;;;;;CLR ms500
+                1482                             STORE           s1, ms500
+E: instruction not supported on the this device: STORE sX, ss.
+                1483                             FETCH           s0, secb                ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;CLOCK PROCESS START
+E: instruction not supported on the this device: FETCH sX, ss.
+2C2 08001       1484                             ADD             s0, #0x01
+                1485                             STORE           s0, secb
+E: instruction not supported on the this device: STORE sX, ss.
+                1486                             COMPARE         s0, #0x3c               ;;;60
+E: instruction not supported on the this device: COMPARE sX, kk.
+2C3 357EE       1487                             JUMP            nz, real_time_end
+2C4 02000       1488                             AND             s0, #0x00
+                1489                             STORE           s0, secb
+E: instruction not supported on the this device: STORE sX, ss.
+                1490                             FETCH           s0, minb
+E: instruction not supported on the this device: FETCH sX, ss.
+2C5 08001       1491                             ADD             s0, #0x01
+                1492                             STORE           s0, minb
+E: instruction not supported on the this device: STORE sX, ss.
+                1493                             COMPARE         s0, #0x3c
+E: instruction not supported on the this device: COMPARE sX, kk.
+2C6 357EE       1494                             JUMP            nz, real_time_end
+2C7 02000       1495                             AND             s0, #0x00
+                1496                             STORE           s0, minb
+E: instruction not supported on the this device: STORE sX, ss.
+                1497     ;;;24 Hours
+                1498                             FETCH           s0, hourb
+E: instruction not supported on the this device: FETCH sX, ss.
+2C8 08001       1499                             ADD             s0, #0x01
+                1500                             STORE           s0, hourb
+E: instruction not supported on the this device: STORE sX, ss.
+                1501                             COMPARE         s0, #0x18
+E: instruction not supported on the this device: COMPARE sX, kk.
+2C9 357EE       1502                             JUMP            nz, real_time_end
+2CA 02000       1503                             AND             s0, #0x00
+                1504                             STORE           s0, hourb
+E: instruction not supported on the this device: STORE sX, ss.
+  003EB         1505     day_p:                  FETCH           s0, day_up
+E: instruction not supported on the this device: FETCH sX, ss.
+2CB 00001       1506                             LOAD            s0, #0x01
+                1507                             STORE           s0, day_up
+E: instruction not supported on the this device: STORE sX, ss.
+  003EE         1508     real_time_end:          FETCH           s0, ms2                 ;;;;;;;;2.5ms counter
+E: instruction not supported on the this device: FETCH sX, ss.
+2CC 08001       1509                             ADD             s0, #0x01
+                1510                             COMPARE         s0, #0x28               ;;;;;;counter to 100ms
+E: instruction not supported on the this device: COMPARE sX, kk.
+2CD 357F6       1511                             JUMP            nz, store_ms2
+                1512                             FETCH           s1, ms100
+E: instruction not supported on the this device: FETCH sX, ss.
+2CE 08101       1513                             ADD             s1, #0x01
+  003F4         1514     sav_ms100:              STORE           s1, ms100
+E: instruction not supported on the this device: STORE sX, ss.
+2CF 00000       1515                             LOAD            s0, #0x00
+  003F6         1516     store_ms2:              STORE           s0, ms2
+E: instruction not supported on the this device: STORE sX, ss.
+                1517                             FETCH           s0, led_pattern
+E: instruction not supported on the this device: FETCH sX, ss.
+2D0 22080       1518                             OUTPUT          s0, led_port
+  003F9         1519     end_isr:                FETCH           s0, isr_s0              ;restore s0
+E: instruction not supported on the this device: FETCH sX, ss.
+                1520                             FETCH           s1, isr_s1              ;restore s1
+E: instruction not supported on the this device: FETCH sX, ss.
+                1521                             FETCH           s2, isr_s2              ;restore s2
+E: instruction not supported on the this device: FETCH sX, ss.
+2D1 2C001       1522                             RETURNI         enable
+                1523     ;**************************************************************************************
+                1524     ;Interrupt Vector
+                1525     ;**************************************************************************************
+                1526     ;
+  003FF         1527                             ORG             0x3ff
+3FF 3431D       1528                             JUMP            isr
+                1529     ;First Screen:
+                1530     ;1234567890123456
+                1531     ; Clock Based
+                1532     ;S3E Starter kit
+                1533     ;Second Screen:
+                1534     ;1234567890123456
+                1535     ;   X Xilinx
+                1536     ;PicoBlaze Test
+                1537     ;Third Screen:
+                1538     ;1234567890123456
+                1539     ; Press & Turn
+                1540     ;Encoder to Adjust
+                1541     ;1234567890123456
+                1542     ;09:00:00    Mon
+                1543     ;<->   05/01/2006
+                1544     ;Based on Ken C's
+                1545     ;S3ESK_STARTUP
+                1546     ;Modified By
+                1547     ; George W.
+                1548     ;Dear Mr. Chapman,
+                1549     ;I have just finished a design with PicoBlaze Based the hardware of S3E Starter kit platform.
+                1550     ;It's amazing that the BicoBlaze works perfect,not bad than any other professional MCU I have ever used.I like it very much.
+                1551     ;I have used up all the programme space that MicroBlaze supports and I had to remove some functions from the designs for the programme space reason
+                1552     ;My question is ,wether can I make the programme counter wider in PicoBlaze to support more programme space.
+                1553     ;Another problem,I cannot update the PROM on the starter kit PCB,I'm not sure whether it is caused by the MCS file I generated or other problem.The screen shot and bitstream are attached.Please help me to have a check. Thank you.
+                1554

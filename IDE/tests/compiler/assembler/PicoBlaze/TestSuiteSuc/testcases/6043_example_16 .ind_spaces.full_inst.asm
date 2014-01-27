@@ -1,5 +1,5 @@
 ; KCPSM3 Program - Program to test line stores using the Spartan-3E Starter Kit.
-;
+device kcpsm6
 ; Ken Chapman - Xilinx Ltd
 ;
 ; Version v1.00 - 26th June 2006

@@ -1,6 +1,6 @@
 ; Compiler test case for Assembler
 ; instruction opcodes
-
+device kcpsm3
 
 
 

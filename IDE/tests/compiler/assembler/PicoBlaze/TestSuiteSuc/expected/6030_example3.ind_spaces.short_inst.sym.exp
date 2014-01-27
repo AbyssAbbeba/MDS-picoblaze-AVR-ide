@@ -1,0 +1,263 @@
+AUTHENTICATION_CONTROL_PORT  . . . . NUMBER 0x00010 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:126.1-126.37
+AUTHENTICATION_CRC0  . . . . . . . . NUMBER 0x0001A USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:173.1-173.37
+AUTHENTICATION_CRC1  . . . . . . . . NUMBER 0x0001B USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:174.1-174.37
+AUTHENTICATION_STATUS  . . . . . . . NUMBER 0x0001C USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:177.1-177.37
+AUTHORISE_COMMAND  . . . . . . . . . LABEL  0x0004F USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:486.1-486.19
+AUTH_BYTE_LOOP . . . . . . . . . . . LABEL  0x000B4 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:730.1-730.16
+AUTH_CHECK2  . . . . . . . . . . . . LABEL  0x0009C USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:696.1-696.13
+AUTH_CHECK3  . . . . . . . . . . . . LABEL  0x000A0 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:700.1-700.13
+AUTH_CHECK4  . . . . . . . . . . . . LABEL  0x000A4 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:704.1-704.13
+AUTH_FAILURE . . . . . . . . . . . . LABEL  0x00036 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:447.1-447.14
+AUTH_LINE_LOOP . . . . . . . . . . . LABEL  0x000B1 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:727.1-727.16
+AUTH_PASSED  . . . . . . . . . . . . LABEL  0x00033 NOT USED CONSTANT    6030_example3.ind_spaces.short_inst.asm:435.1-435.13
+AUTH_READ_DELAY  . . . . . . . . . . LABEL  0x000AB USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:711.1-711.17
+AUTH_READ_LOOP . . . . . . . . . . . LABEL  0x00097 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:691.1-691.16
+AUTH_WRITE_CHECK2  . . . . . . . . . LABEL  0x000C8 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:778.1-778.19
+AUTH_WRITE_CHECK3  . . . . . . . . . LABEL  0x000CE USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:784.1-784.19
+AUTH_WRITE_CHECK4  . . . . . . . . . LABEL  0x000D4 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:790.1-790.19
+AUTH_WRITE_LOOP  . . . . . . . . . . LABEL  0x000C1 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:771.1-771.17
+CHARACTER_0  . . . . . . . . . . . . NUMBER 0x00030 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:256.1-256.37
+CHARACTER_1  . . . . . . . . . . . . NUMBER 0x00031 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:257.1-257.37
+CHARACTER_2  . . . . . . . . . . . . NUMBER 0x00032 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:258.1-258.37
+CHARACTER_3  . . . . . . . . . . . . NUMBER 0x00033 NOT USED CONSTANT    6030_example3.ind_spaces.short_inst.asm:259.1-259.37
+CHARACTER_4  . . . . . . . . . . . . NUMBER 0x00034 NOT USED CONSTANT    6030_example3.ind_spaces.short_inst.asm:260.1-260.37
+CHARACTER_5  . . . . . . . . . . . . NUMBER 0x00035 NOT USED CONSTANT    6030_example3.ind_spaces.short_inst.asm:261.1-261.37
+CHARACTER_6  . . . . . . . . . . . . NUMBER 0x00036 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:262.1-262.37
+CHARACTER_7  . . . . . . . . . . . . NUMBER 0x00037 NOT USED CONSTANT    6030_example3.ind_spaces.short_inst.asm:263.1-263.37
+CHARACTER_8  . . . . . . . . . . . . NUMBER 0x00038 NOT USED CONSTANT    6030_example3.ind_spaces.short_inst.asm:264.1-264.37
+CHARACTER_9  . . . . . . . . . . . . NUMBER 0x00039 NOT USED CONSTANT    6030_example3.ind_spaces.short_inst.asm:265.1-265.37
+CHARACTER_A  . . . . . . . . . . . . NUMBER 0x00061 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:204.1-204.37
+CHARACTER_B  . . . . . . . . . . . . NUMBER 0x00062 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:205.1-205.37
+CHARACTER_BS . . . . . . . . . . . . NUMBER 0x00008 NOT USED CONSTANT    6030_example3.ind_spaces.short_inst.asm:281.1-281.37
+CHARACTER_C  . . . . . . . . . . . . NUMBER 0x00063 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:206.1-206.37
+CHARACTER_COLON  . . . . . . . . . . NUMBER 0x0003A NOT USED CONSTANT    6030_example3.ind_spaces.short_inst.asm:266.1-266.37
+CHARACTER_COMMA  . . . . . . . . . . NUMBER 0x0002C NOT USED CONSTANT    6030_example3.ind_spaces.short_inst.asm:272.1-272.37
+CHARACTER_CR . . . . . . . . . . . . NUMBER 0x0000D USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:277.1-277.37
+CHARACTER_D  . . . . . . . . . . . . NUMBER 0x00064 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:207.1-207.37
+CHARACTER_DIVIDE . . . . . . . . . . NUMBER 0x0002F NOT USED CONSTANT    6030_example3.ind_spaces.short_inst.asm:270.1-270.37
+CHARACTER_DOLLAR . . . . . . . . . . NUMBER 0x00024 NOT USED CONSTANT    6030_example3.ind_spaces.short_inst.asm:279.1-279.37
+CHARACTER_E  . . . . . . . . . . . . NUMBER 0x00065 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:208.1-208.37
+CHARACTER_EQUALS . . . . . . . . . . NUMBER 0x0003D USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:275.1-275.37
+CHARACTER_EXCLAIM  . . . . . . . . . NUMBER 0x00021 NOT USED CONSTANT    6030_example3.ind_spaces.short_inst.asm:280.1-280.37
+CHARACTER_F  . . . . . . . . . . . . NUMBER 0x00066 NOT USED CONSTANT    6030_example3.ind_spaces.short_inst.asm:209.1-209.37
+CHARACTER_FULLSTOP . . . . . . . . . NUMBER 0x0002E USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:267.1-267.37
+CHARACTER_G  . . . . . . . . . . . . NUMBER 0x00067 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:210.1-210.37
+CHARACTER_GREATER_THAN . . . . . . . NUMBER 0x0003E USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:274.1-274.37
+CHARACTER_H  . . . . . . . . . . . . NUMBER 0x00068 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:211.1-211.37
+CHARACTER_I  . . . . . . . . . . . . NUMBER 0x00069 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:212.1-212.37
+CHARACTER_J  . . . . . . . . . . . . NUMBER 0x0006A NOT USED CONSTANT    6030_example3.ind_spaces.short_inst.asm:213.1-213.37
+CHARACTER_K  . . . . . . . . . . . . NUMBER 0x0006B NOT USED CONSTANT    6030_example3.ind_spaces.short_inst.asm:214.1-214.37
+CHARACTER_L  . . . . . . . . . . . . NUMBER 0x0006C USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:215.1-215.37
+CHARACTER_LESS_THAN  . . . . . . . . NUMBER 0x0003C NOT USED CONSTANT    6030_example3.ind_spaces.short_inst.asm:273.1-273.37
+CHARACTER_M  . . . . . . . . . . . . NUMBER 0x0006D USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:216.1-216.37
+CHARACTER_MINUS  . . . . . . . . . . NUMBER 0x0002D USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:269.1-269.37
+CHARACTER_N  . . . . . . . . . . . . NUMBER 0x0006E USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:217.1-217.37
+CHARACTER_O  . . . . . . . . . . . . NUMBER 0x0006F USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:218.1-218.37
+CHARACTER_P  . . . . . . . . . . . . NUMBER 0x00070 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:219.1-219.37
+CHARACTER_PLUS . . . . . . . . . . . NUMBER 0x0002B NOT USED CONSTANT    6030_example3.ind_spaces.short_inst.asm:271.1-271.37
+CHARACTER_Q  . . . . . . . . . . . . NUMBER 0x00071 NOT USED CONSTANT    6030_example3.ind_spaces.short_inst.asm:220.1-220.37
+CHARACTER_QUESTION . . . . . . . . . NUMBER 0x0003F NOT USED CONSTANT    6030_example3.ind_spaces.short_inst.asm:278.1-278.37
+CHARACTER_R  . . . . . . . . . . . . NUMBER 0x00072 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:221.1-221.37
+CHARACTER_S  . . . . . . . . . . . . NUMBER 0x00073 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:222.1-222.37
+CHARACTER_SEMI_COLON . . . . . . . . NUMBER 0x0003B NOT USED CONSTANT    6030_example3.ind_spaces.short_inst.asm:268.1-268.37
+CHARACTER_SPACE  . . . . . . . . . . NUMBER 0x00020 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:276.1-276.37
+CHARACTER_T  . . . . . . . . . . . . NUMBER 0x00074 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:223.1-223.37
+CHARACTER_U  . . . . . . . . . . . . NUMBER 0x00075 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:224.1-224.37
+CHARACTER_V  . . . . . . . . . . . . NUMBER 0x00076 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:225.1-225.37
+CHARACTER_W  . . . . . . . . . . . . NUMBER 0x00077 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:226.1-226.37
+CHARACTER_X  . . . . . . . . . . . . NUMBER 0x00078 NOT USED CONSTANT    6030_example3.ind_spaces.short_inst.asm:227.1-227.37
+CHARACTER_Y  . . . . . . . . . . . . NUMBER 0x00079 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:228.1-228.37
+CHARACTER_Z  . . . . . . . . . . . . NUMBER 0x0007A USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:229.1-229.37
+COLD_START . . . . . . . . . . . . . LABEL  0x00000 NOT USED CONSTANT    6030_example3.ind_spaces.short_inst.asm:291.1-291.12
+COMPUTED_CRC0  . . . . . . . . . . . NUMBER 0x00018 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:169.1-169.37
+COMPUTED_CRC1  . . . . . . . . . . . NUMBER 0x00019 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:170.1-170.37
+COMPUTE_CRC16  . . . . . . . . . . . LABEL  0x00086 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:639.1-639.15
+COMPUTE_SEEDED_CRC . . . . . . . . . LABEL  0x0007F USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:609.1-609.20
+CRC16_LOOP . . . . . . . . . . . . . LABEL  0x00087 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:640.1-640.12
+CRC16_SHIFT  . . . . . . . . . . . . LABEL  0x0008D USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:646.1-646.13
+CRC_SEND_LOOP  . . . . . . . . . . . LABEL  0x00080 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:610.1-610.15
+DELAY_1MS  . . . . . . . . . . . . . LABEL  0x00351 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:1919.1-1919.11
+DELAY_1S . . . . . . . . . . . . . . LABEL  0x0035B USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:1941.1-1941.10
+DELAY_1US  . . . . . . . . . . . . . LABEL  0x00348 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:1899.1-1899.11
+DELAY_1US_CONSTANT . . . . . . . . . NUMBER 0x0000B USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:197.1-197.37
+DELAY_20MS . . . . . . . . . . . . . LABEL  0x00356 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:1931.1-1931.12
+DELAY_40US . . . . . . . . . . . . . LABEL  0x0034C USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:1908.1-1908.12
+DELAY_NS . . . . . . . . . . . . . . LABEL  0x00360 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:1952.1-1952.10
+DISABLE_APP_HARDWARE . . . . . . . . LABEL  0x00056 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:505.1-505.22
+DISP_AUTHENTICATION  . . . . . . . . LABEL  0x003A9 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:2053.1-2053.21
+DISP_FAILED  . . . . . . . . . . . . LABEL  0x003D6 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:2113.1-2113.13
+DISP_FLASH_SERIAL_NO . . . . . . . . LABEL  0x00388 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:2014.1-2014.22
+DISP_HEX_BYTE  . . . . . . . . . . . LABEL  0x0014D USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:1159.1-1159.15
+DISP_PASSED  . . . . . . . . . . . . LABEL  0x003C8 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:2091.1-2091.13
+DISP_PICOBLAZE . . . . . . . . . . . LABEL  0x00364 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:1968.1-1968.16
+DISP_SECURITY  . . . . . . . . . . . LABEL  0x00377 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:1992.1-1992.15
+DISP_SERIAL_NUMBER . . . . . . . . . LABEL  0x00070 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:571.1-571.20
+DISP_SN_LOOP . . . . . . . . . . . . LABEL  0x00077 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:578.1-578.14
+END_DISP_SN  . . . . . . . . . . . . LABEL  0x0007D USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:585.1-585.13
+END_ISR  . . . . . . . . . . . . . . LABEL  0x003F8 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:2161.1-2161.9
+END_READ_SN  . . . . . . . . . . . . LABEL  0x000FF USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:918.1-918.13
+END_SEND_SN  . . . . . . . . . . . . LABEL  0x0006E USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:555.1-555.13
+ERASE_AUTHENTICATION . . . . . . . . LABEL  0x000DE USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:810.1-810.22
+ERASE_COMMAND  . . . . . . . . . . . LABEL  0x0004B USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:479.1-479.15
+HEX_BYTE_TO_ASCII  . . . . . . . . . LABEL  0x0012F USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:1106.1-1106.19
+HEX_TO_ASCII . . . . . . . . . . . . LABEL  0x0013B USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:1123.1-1123.14
+ISR  . . . . . . . . . . . . . . . . LABEL  0x003E5 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:2138.1-2138.5
+ISR_PRESERVE_S0  . . . . . . . . . . NUMBER 0x00000 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:156.1-156.37
+LCD_CLEAR  . . . . . . . . . . . . . LABEL  0x00339 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:1849.1-1849.11
+LCD_CURSOR . . . . . . . . . . . . . LABEL  0x0033E USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:1872.1-1872.12
+LCD_DB4  . . . . . . . . . . . . . . NUMBER 0x00010 NOT USED CONSTANT    6030_example3.ind_spaces.short_inst.asm:83.1-83.37
+LCD_DB5  . . . . . . . . . . . . . . NUMBER 0x00020 NOT USED CONSTANT    6030_example3.ind_spaces.short_inst.asm:84.1-84.37
+LCD_DB6  . . . . . . . . . . . . . . NUMBER 0x00040 NOT USED CONSTANT    6030_example3.ind_spaces.short_inst.asm:85.1-85.37
+LCD_DB7  . . . . . . . . . . . . . . NUMBER 0x00080 NOT USED CONSTANT    6030_example3.ind_spaces.short_inst.asm:86.1-86.37
+LCD_DRIVE  . . . . . . . . . . . . . NUMBER 0x00008 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:82.1-82.37
+LCD_E  . . . . . . . . . . . . . . . NUMBER 0x00001 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:79.1-79.37
+LCD_INPUT_PORT . . . . . . . . . . . NUMBER 0x00003 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:89.1-89.37
+LCD_OUTPUT_PORT  . . . . . . . . . . NUMBER 0x00020 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:78.1-78.37
+LCD_PULSE_E  . . . . . . . . . . . . LABEL  0x002E5 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:1693.1-1693.13
+LCD_READ_DATA8 . . . . . . . . . . . LABEL  0x0030F NOT USED CONSTANT    6030_example3.ind_spaces.short_inst.asm:1792.1-1792.16
+LCD_READ_DB4 . . . . . . . . . . . . NUMBER 0x00010 NOT USED CONSTANT    6030_example3.ind_spaces.short_inst.asm:94.1-94.37
+LCD_READ_DB5 . . . . . . . . . . . . NUMBER 0x00020 NOT USED CONSTANT    6030_example3.ind_spaces.short_inst.asm:95.1-95.37
+LCD_READ_DB6 . . . . . . . . . . . . NUMBER 0x00040 NOT USED CONSTANT    6030_example3.ind_spaces.short_inst.asm:96.1-96.37
+LCD_READ_DB7 . . . . . . . . . . . . NUMBER 0x00080 NOT USED CONSTANT    6030_example3.ind_spaces.short_inst.asm:97.1-97.37
+LCD_READ_SPARE0  . . . . . . . . . . NUMBER 0x00001 NOT USED CONSTANT    6030_example3.ind_spaces.short_inst.asm:90.1-90.37
+LCD_READ_SPARE1  . . . . . . . . . . NUMBER 0x00002 NOT USED CONSTANT    6030_example3.ind_spaces.short_inst.asm:91.1-91.37
+LCD_READ_SPARE2  . . . . . . . . . . NUMBER 0x00004 NOT USED CONSTANT    6030_example3.ind_spaces.short_inst.asm:92.1-92.37
+LCD_READ_SPARE3  . . . . . . . . . . NUMBER 0x00008 NOT USED CONSTANT    6030_example3.ind_spaces.short_inst.asm:93.1-93.37
+LCD_RESET  . . . . . . . . . . . . . LABEL  0x00328 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:1832.1-1832.11
+LCD_RS . . . . . . . . . . . . . . . NUMBER 0x00004 NOT USED CONSTANT    6030_example3.ind_spaces.short_inst.asm:81.1-81.37
+LCD_RW . . . . . . . . . . . . . . . NUMBER 0x00002 NOT USED CONSTANT    6030_example3.ind_spaces.short_inst.asm:80.1-80.37
+LCD_WRITE_DATA . . . . . . . . . . . LABEL  0x002FE USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:1755.1-1755.16
+LCD_WRITE_INST4  . . . . . . . . . . LABEL  0x002EB USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:1709.1-1709.17
+LCD_WRITE_INST8  . . . . . . . . . . LABEL  0x002EF USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:1726.1-1726.17
+LINK_FIFO_WRITE_PORT . . . . . . . . NUMBER 0x00004 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:141.1-141.37
+MENU . . . . . . . . . . . . . . . . LABEL  0x0003C USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:458.1-458.6
+NEXT_AUTH_READ . . . . . . . . . . . LABEL  0x000A8 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:708.1-708.16
+NUMBER_CHAR  . . . . . . . . . . . . LABEL  0x0013E USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:1126.1-1126.13
+PASS_TOKEN . . . . . . . . . . . . . LABEL  0x003F2 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:2154.1-2154.12
+RANDOM_VALUE_PORT  . . . . . . . . . NUMBER 0x00004 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:132.1-132.37
+READ_AUTHENTICATION  . . . . . . . . LABEL  0x00094 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:688.1-688.21
+READ_CHARACTER . . . . . . . . . . . LABEL  0x00121 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:1047.1-1047.16
+READ_COMMAND . . . . . . . . . . . . LABEL  0x00046 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:471.1-471.14
+READ_FROM_UART . . . . . . . . . . . LABEL  0x0011D USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:1043.1-1043.16
+READ_SF_SERIAL_NUMBER  . . . . . . . LABEL  0x000F2 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:904.1-904.23
+READ_SN_LOOP . . . . . . . . . . . . LABEL  0x000F8 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:910.1-910.14
+RX_DATA_PRESENT  . . . . . . . . . . NUMBER 0x00004 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:57.1-57.37
+RX_FULL  . . . . . . . . . . . . . . NUMBER 0x00010 NOT USED CONSTANT    6030_example3.ind_spaces.short_inst.asm:59.1-59.37
+RX_HALF_FULL . . . . . . . . . . . . NUMBER 0x00008 NOT USED CONSTANT    6030_example3.ind_spaces.short_inst.asm:58.1-58.37
+S0 . . . . . . . . . . . . . . . . . REG.   0x00000 USED     CONSTANT    IMPLICIT
+S1 . . . . . . . . . . . . . . . . . REG.   0x00001 USED     CONSTANT    IMPLICIT
+S2 . . . . . . . . . . . . . . . . . REG.   0x00002 USED     CONSTANT    IMPLICIT
+S3 . . . . . . . . . . . . . . . . . REG.   0x00003 USED     CONSTANT    IMPLICIT
+S4 . . . . . . . . . . . . . . . . . REG.   0x00004 USED     CONSTANT    IMPLICIT
+S5 . . . . . . . . . . . . . . . . . REG.   0x00005 USED     CONSTANT    IMPLICIT
+S6 . . . . . . . . . . . . . . . . . REG.   0x00006 USED     CONSTANT    IMPLICIT
+S7 . . . . . . . . . . . . . . . . . REG.   0x00007 USED     CONSTANT    IMPLICIT
+S8 . . . . . . . . . . . . . . . . . REG.   0x00008 USED     CONSTANT    IMPLICIT
+S9 . . . . . . . . . . . . . . . . . REG.   0x00009 USED     CONSTANT    IMPLICIT
+SA . . . . . . . . . . . . . . . . . REG.   0x0000A USED     CONSTANT    IMPLICIT
+SB . . . . . . . . . . . . . . . . . REG.   0x0000B USED     CONSTANT    IMPLICIT
+SC . . . . . . . . . . . . . . . . . REG.   0x0000C NOT USED CONSTANT    IMPLICIT
+SD . . . . . . . . . . . . . . . . . REG.   0x0000D USED     CONSTANT    IMPLICIT
+SE . . . . . . . . . . . . . . . . . REG.   0x0000E USED     CONSTANT    IMPLICIT
+SECURITY_DISABLE_INTERRUPTS  . . . . NUMBER 0x00001 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:127.1-127.37
+SECURITY_DISABLE_OUTPUTS . . . . . . NUMBER 0x00002 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:128.1-128.37
+SEND_AUTH  . . . . . . . . . . . . . LABEL  0x0020F USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:1406.1-1406.11
+SEND_AUTHENTICATION  . . . . . . . . LABEL  0x00232 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:1453.1-1453.21
+SEND_AUTHORIS  . . . . . . . . . . . LABEL  0x00218 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:1418.1-1418.15
+SEND_AUTHORISATION . . . . . . . . . LABEL  0x00222 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:1431.1-1431.20
+SEND_AUTHORISE . . . . . . . . . . . LABEL  0x0022E USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:1446.1-1446.16
+SEND_AUTH_PAGE . . . . . . . . . . . LABEL  0x000AE USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:724.1-724.16
+SEND_COMPUTED_CRC  . . . . . . . . . LABEL  0x00252 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:1498.1-1498.19
+SEND_COPYRIGHT . . . . . . . . . . . LABEL  0x001B4 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:1301.1-1301.16
+SEND_CR  . . . . . . . . . . . . . . LABEL  0x00154 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:1176.1-1176.9
+SEND_CRC . . . . . . . . . . . . . . LABEL  0x00249 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:1484.1-1484.10
+SEND_DASH  . . . . . . . . . . . . . LABEL  0x0015F USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:1199.1-1199.11
+SEND_EQUALS  . . . . . . . . . . . . LABEL  0x0015A USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:1189.1-1189.13
+SEND_ERASE . . . . . . . . . . . . . LABEL  0x00263 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:1519.1-1519.12
+SEND_ERASE_IN_PROGRESS . . . . . . . LABEL  0x0026F USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:1535.1-1535.24
+SEND_FAILED  . . . . . . . . . . . . LABEL  0x0028F USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:1575.1-1575.13
+SEND_FLASH . . . . . . . . . . . . . LABEL  0x001E7 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:1357.1-1357.12
+SEND_FLASH_CRC . . . . . . . . . . . LABEL  0x00248 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:1479.1-1479.16
+SEND_FLASH_SERIAL_NUMBER . . . . . . LABEL  0x001F2 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:1373.1-1373.26
+SEND_HEX_3BYTES  . . . . . . . . . . LABEL  0x00146 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:1146.1-1146.17
+SEND_HEX_BYTE  . . . . . . . . . . . LABEL  0x00140 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:1134.1-1134.15
+SEND_MENU  . . . . . . . . . . . . . LABEL  0x002BC USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:1633.1-1633.11
+SEND_OK  . . . . . . . . . . . . . . LABEL  0x00289 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:1565.1-1565.9
+SEND_PASSED  . . . . . . . . . . . . LABEL  0x0029D USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:1593.1-1593.13
+SEND_SERIAL_NUMBER . . . . . . . . . LABEL  0x00065 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:545.1-545.20
+SEND_SN_LOOP . . . . . . . . . . . . LABEL  0x00067 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:547.1-547.14
+SEND_SPACE . . . . . . . . . . . . . LABEL  0x00157 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:1182.1-1182.12
+SEND_TO_UART . . . . . . . . . . . . LABEL  0x00123 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:1061.1-1061.14
+SEND_WELCOME . . . . . . . . . . . . LABEL  0x00164 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:1208.1-1208.14
+SEND_WRITING . . . . . . . . . . . . LABEL  0x002AA USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:1611.1-1611.14
+SERIAL_NUMBER0 . . . . . . . . . . . NUMBER 0x00010 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:159.1-159.37
+SERIAL_NUMBER1 . . . . . . . . . . . NUMBER 0x00011 NOT USED CONSTANT    6030_example3.ind_spaces.short_inst.asm:160.1-160.37
+SERIAL_NUMBER2 . . . . . . . . . . . NUMBER 0x00012 NOT USED CONSTANT    6030_example3.ind_spaces.short_inst.asm:161.1-161.37
+SERIAL_NUMBER3 . . . . . . . . . . . NUMBER 0x00013 NOT USED CONSTANT    6030_example3.ind_spaces.short_inst.asm:162.1-162.37
+SERIAL_NUMBER4 . . . . . . . . . . . NUMBER 0x00014 NOT USED CONSTANT    6030_example3.ind_spaces.short_inst.asm:163.1-163.37
+SERIAL_NUMBER5 . . . . . . . . . . . NUMBER 0x00015 NOT USED CONSTANT    6030_example3.ind_spaces.short_inst.asm:164.1-164.37
+SERIAL_NUMBER6 . . . . . . . . . . . NUMBER 0x00016 NOT USED CONSTANT    6030_example3.ind_spaces.short_inst.asm:165.1-165.37
+SERIAL_NUMBER7 . . . . . . . . . . . NUMBER 0x00017 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:166.1-166.37
+SET_LINE2  . . . . . . . . . . . . . LABEL  0x00344 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:1878.1-1878.11
+SET_SF_READ_ARRAY_MODE . . . . . . . LABEL  0x00115 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:999.1-999.24
+SF . . . . . . . . . . . . . . . . . REG.   0x0000F USED     CONSTANT    IMPLICIT
+SF_ADDR_HI_PORT  . . . . . . . . . . NUMBER 0x00083 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:112.1-112.37
+SF_ADDR_LO_PORT  . . . . . . . . . . NUMBER 0x00081 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:114.1-114.37
+SF_ADDR_MI_PORT  . . . . . . . . . . NUMBER 0x00082 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:113.1-113.37
+SF_BYTE_READ . . . . . . . . . . . . LABEL  0x00101 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:942.1-942.14
+SF_BYTE_WRITE  . . . . . . . . . . . LABEL  0x0010B USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:973.1-973.15
+SF_CE  . . . . . . . . . . . . . . . NUMBER 0x00002 NOT USED CONSTANT    6030_example3.ind_spaces.short_inst.asm:118.1-118.37
+SF_CONTROL_PORT  . . . . . . . . . . NUMBER 0x00040 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:116.1-116.37
+SF_DATA_IN_PORT  . . . . . . . . . . NUMBER 0x00002 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:108.1-108.37
+SF_DATA_OUT_PORT . . . . . . . . . . NUMBER 0x00080 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:110.1-110.37
+SF_ERASE_BLOCK . . . . . . . . . . . LABEL  0x000E4 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:850.1-850.16
+SF_INIT  . . . . . . . . . . . . . . LABEL  0x000E1 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:825.1-825.9
+SF_READ  . . . . . . . . . . . . . . NUMBER 0x00001 NOT USED CONSTANT    6030_example3.ind_spaces.short_inst.asm:117.1-117.37
+SF_SINGLE_BYTE_WRITE . . . . . . . . LABEL  0x000EC USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:879.1-879.22
+SF_WE  . . . . . . . . . . . . . . . NUMBER 0x00004 NOT USED CONSTANT    6030_example3.ind_spaces.short_inst.asm:119.1-119.37
+SPARE1 . . . . . . . . . . . . . . . NUMBER 0x00020 NOT USED CONSTANT    6030_example3.ind_spaces.short_inst.asm:60.1-60.37
+SPARE2 . . . . . . . . . . . . . . . NUMBER 0x00040 NOT USED CONSTANT    6030_example3.ind_spaces.short_inst.asm:61.1-61.37
+STATUS_PORT  . . . . . . . . . . . . NUMBER 0x00000 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:54.1-54.37
+STRATAFLASH_STS  . . . . . . . . . . NUMBER 0x00080 NOT USED CONSTANT    6030_example3.ind_spaces.short_inst.asm:62.1-62.37
+TX_FULL  . . . . . . . . . . . . . . NUMBER 0x00002 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:56.1-56.37
+TX_HALF_FULL . . . . . . . . . . . . NUMBER 0x00001 NOT USED CONSTANT    6030_example3.ind_spaces.short_inst.asm:55.1-55.37
+UART_DATA  . . . . . . . . . . . . . REG.   0x0000F USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:148.1-148.35
+UART_READ_PORT . . . . . . . . . . . NUMBER 0x00001 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:64.1-64.37
+UART_WRITE . . . . . . . . . . . . . LABEL  0x00127 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:1065.1-1065.12
+UART_WRITE_PORT  . . . . . . . . . . NUMBER 0x00008 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:66.1-66.37
+UPPER_CASE . . . . . . . . . . . . . LABEL  0x00129 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:1085.1-1085.12
+WAIT_1MS . . . . . . . . . . . . . . LABEL  0x00352 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:1920.1-1920.10
+WAIT_1S  . . . . . . . . . . . . . . LABEL  0x0035C USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:1942.1-1942.9
+WAIT_1US . . . . . . . . . . . . . . LABEL  0x00349 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:1900.1-1900.10
+WAIT_20MS  . . . . . . . . . . . . . LABEL  0x00357 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:1932.1-1932.11
+WAIT_40US  . . . . . . . . . . . . . LABEL  0x0034D USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:1909.1-1909.11
+WAIT_SF_READY  . . . . . . . . . . . LABEL  0x00118 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:1018.1-1018.15
+WARM_START . . . . . . . . . . . . . LABEL  0x00008 NOT USED CONSTANT    6030_example3.ind_spaces.short_inst.asm:321.1-321.12
+WRITE_AUTH . . . . . . . . . . . . . LABEL  0x000DA USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:796.1-796.12
+WRITE_AUTHENTICATION . . . . . . . . LABEL  0x000BE USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:768.1-768.22
+_CHARACTER_A . . . . . . . . . . . . NUMBER 0x00041 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:230.1-230.37
+_CHARACTER_B . . . . . . . . . . . . NUMBER 0x00042 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:231.1-231.37
+_CHARACTER_C . . . . . . . . . . . . NUMBER 0x00043 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:232.1-232.37
+_CHARACTER_D . . . . . . . . . . . . NUMBER 0x00044 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:233.1-233.37
+_CHARACTER_E . . . . . . . . . . . . NUMBER 0x00045 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:234.1-234.37
+_CHARACTER_F . . . . . . . . . . . . NUMBER 0x00046 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:235.1-235.37
+_CHARACTER_G . . . . . . . . . . . . NUMBER 0x00047 NOT USED CONSTANT    6030_example3.ind_spaces.short_inst.asm:236.1-236.37
+_CHARACTER_H . . . . . . . . . . . . NUMBER 0x00048 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:237.1-237.37
+_CHARACTER_I . . . . . . . . . . . . NUMBER 0x00049 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:238.1-238.37
+_CHARACTER_J . . . . . . . . . . . . NUMBER 0x0004A NOT USED CONSTANT    6030_example3.ind_spaces.short_inst.asm:239.1-239.37
+_CHARACTER_K . . . . . . . . . . . . NUMBER 0x0004B USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:240.1-240.37
+_CHARACTER_L . . . . . . . . . . . . NUMBER 0x0004C USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:241.1-241.37
+_CHARACTER_M . . . . . . . . . . . . NUMBER 0x0004D USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:242.1-242.37
+_CHARACTER_N . . . . . . . . . . . . NUMBER 0x0004E USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:243.1-243.37
+_CHARACTER_O . . . . . . . . . . . . NUMBER 0x0004F USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:244.1-244.37
+_CHARACTER_P . . . . . . . . . . . . NUMBER 0x00050 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:245.1-245.37
+_CHARACTER_Q . . . . . . . . . . . . NUMBER 0x00051 NOT USED CONSTANT    6030_example3.ind_spaces.short_inst.asm:246.1-246.37
+_CHARACTER_R . . . . . . . . . . . . NUMBER 0x00052 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:247.1-247.37
+_CHARACTER_S . . . . . . . . . . . . NUMBER 0x00053 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:248.1-248.37
+_CHARACTER_T . . . . . . . . . . . . NUMBER 0x00054 NOT USED CONSTANT    6030_example3.ind_spaces.short_inst.asm:249.1-249.37
+_CHARACTER_U . . . . . . . . . . . . NUMBER 0x00055 NOT USED CONSTANT    6030_example3.ind_spaces.short_inst.asm:250.1-250.37
+_CHARACTER_V . . . . . . . . . . . . NUMBER 0x00056 NOT USED CONSTANT    6030_example3.ind_spaces.short_inst.asm:251.1-251.37
+_CHARACTER_W . . . . . . . . . . . . NUMBER 0x00057 USED     CONSTANT    6030_example3.ind_spaces.short_inst.asm:252.1-252.37
+_CHARACTER_X . . . . . . . . . . . . NUMBER 0x00058 NOT USED CONSTANT    6030_example3.ind_spaces.short_inst.asm:253.1-253.37
+_CHARACTER_Y . . . . . . . . . . . . NUMBER 0x00059 NOT USED CONSTANT    6030_example3.ind_spaces.short_inst.asm:254.1-254.37
+_CHARACTER_Z . . . . . . . . . . . . NUMBER 0x0005A NOT USED CONSTANT    6030_example3.ind_spaces.short_inst.asm:255.1-255.37

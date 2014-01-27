@@ -1,0 +1,257 @@
+ASCII_BYTE_TO_HEX  . . . . . . . . . LABEL  0x001FB USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:1261.1-1261.19
+ASCII_LETTER . . . . . . . . . . . . LABEL  0x00212 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:1292.1-1292.14
+ASCII_TO_HEX . . . . . . . . . . . . LABEL  0x00208 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:1282.1-1282.14
+CHARACTER_0  . . . . . . . . . . . . NUMBER 0x00030 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:157.1-157.45
+CHARACTER_1  . . . . . . . . . . . . NUMBER 0x00031 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:158.1-158.45
+CHARACTER_2  . . . . . . . . . . . . NUMBER 0x00032 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:159.1-159.45
+CHARACTER_3  . . . . . . . . . . . . NUMBER 0x00033 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:160.1-160.45
+CHARACTER_4  . . . . . . . . . . . . NUMBER 0x00034 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:161.1-161.45
+CHARACTER_5  . . . . . . . . . . . . NUMBER 0x00035 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:162.1-162.45
+CHARACTER_6  . . . . . . . . . . . . NUMBER 0x00036 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:163.1-163.45
+CHARACTER_7  . . . . . . . . . . . . NUMBER 0x00037 NOT USED CONSTANT    2035_example_8.ind_spaces.full_inst.asm:164.1-164.45
+CHARACTER_8  . . . . . . . . . . . . NUMBER 0x00038 NOT USED CONSTANT    2035_example_8.ind_spaces.full_inst.asm:165.1-165.45
+CHARACTER_9  . . . . . . . . . . . . NUMBER 0x00039 NOT USED CONSTANT    2035_example_8.ind_spaces.full_inst.asm:166.1-166.45
+CHARACTER_A  . . . . . . . . . . . . NUMBER 0x00061 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:105.1-105.45
+CHARACTER_B  . . . . . . . . . . . . NUMBER 0x00062 NOT USED CONSTANT    2035_example_8.ind_spaces.full_inst.asm:106.1-106.45
+CHARACTER_BS . . . . . . . . . . . . NUMBER 0x00008 NOT USED CONSTANT    2035_example_8.ind_spaces.full_inst.asm:185.1-185.45
+CHARACTER_C  . . . . . . . . . . . . NUMBER 0x00063 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:107.1-107.45
+CHARACTER_CLOSE  . . . . . . . . . . NUMBER 0x00029 NOT USED CONSTANT    2035_example_8.ind_spaces.full_inst.asm:176.1-176.45
+CHARACTER_COLON  . . . . . . . . . . NUMBER 0x0003A NOT USED CONSTANT    2035_example_8.ind_spaces.full_inst.asm:167.1-167.45
+CHARACTER_COMMA  . . . . . . . . . . NUMBER 0x0002C NOT USED CONSTANT    2035_example_8.ind_spaces.full_inst.asm:172.1-172.45
+CHARACTER_CR . . . . . . . . . . . . NUMBER 0x0000D USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:180.1-180.45
+CHARACTER_D  . . . . . . . . . . . . NUMBER 0x00064 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:108.1-108.45
+CHARACTER_DIVIDE . . . . . . . . . . NUMBER 0x0002F USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:177.1-177.45
+CHARACTER_DOLLAR . . . . . . . . . . NUMBER 0x00024 NOT USED CONSTANT    2035_example_8.ind_spaces.full_inst.asm:183.1-183.45
+CHARACTER_E  . . . . . . . . . . . . NUMBER 0x00065 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:109.1-109.45
+CHARACTER_EQUALS . . . . . . . . . . NUMBER 0x0003D USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:178.1-178.45
+CHARACTER_EXCLAIM  . . . . . . . . . NUMBER 0x00021 NOT USED CONSTANT    2035_example_8.ind_spaces.full_inst.asm:184.1-184.45
+CHARACTER_F  . . . . . . . . . . . . NUMBER 0x00066 NOT USED CONSTANT    2035_example_8.ind_spaces.full_inst.asm:110.1-110.45
+CHARACTER_FULLSTOP . . . . . . . . . NUMBER 0x0002E USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:168.1-168.45
+CHARACTER_G  . . . . . . . . . . . . NUMBER 0x00067 NOT USED CONSTANT    2035_example_8.ind_spaces.full_inst.asm:111.1-111.45
+CHARACTER_GREATER_THAN . . . . . . . NUMBER 0x0003E USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:174.1-174.45
+CHARACTER_H  . . . . . . . . . . . . NUMBER 0x00068 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:112.1-112.45
+CHARACTER_I  . . . . . . . . . . . . NUMBER 0x00069 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:113.1-113.45
+CHARACTER_J  . . . . . . . . . . . . NUMBER 0x0006A NOT USED CONSTANT    2035_example_8.ind_spaces.full_inst.asm:114.1-114.45
+CHARACTER_K  . . . . . . . . . . . . NUMBER 0x0006B USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:115.1-115.45
+CHARACTER_L  . . . . . . . . . . . . NUMBER 0x0006C USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:116.1-116.45
+CHARACTER_LESS_THAN  . . . . . . . . NUMBER 0x0003C NOT USED CONSTANT    2035_example_8.ind_spaces.full_inst.asm:173.1-173.45
+CHARACTER_LF . . . . . . . . . . . . NUMBER 0x0000A NOT USED CONSTANT    2035_example_8.ind_spaces.full_inst.asm:181.1-181.45
+CHARACTER_M  . . . . . . . . . . . . NUMBER 0x0006D USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:117.1-117.45
+CHARACTER_MINUS  . . . . . . . . . . NUMBER 0x0002D USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:170.1-170.45
+CHARACTER_N  . . . . . . . . . . . . NUMBER 0x0006E USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:118.1-118.45
+CHARACTER_O  . . . . . . . . . . . . NUMBER 0x0006F USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:119.1-119.45
+CHARACTER_OPEN . . . . . . . . . . . NUMBER 0x00028 NOT USED CONSTANT    2035_example_8.ind_spaces.full_inst.asm:175.1-175.45
+CHARACTER_P  . . . . . . . . . . . . NUMBER 0x00070 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:120.1-120.45
+CHARACTER_PLUS . . . . . . . . . . . NUMBER 0x0002B NOT USED CONSTANT    2035_example_8.ind_spaces.full_inst.asm:171.1-171.45
+CHARACTER_Q  . . . . . . . . . . . . NUMBER 0x00071 NOT USED CONSTANT    2035_example_8.ind_spaces.full_inst.asm:121.1-121.45
+CHARACTER_QUESTION . . . . . . . . . NUMBER 0x0003F USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:182.1-182.45
+CHARACTER_R  . . . . . . . . . . . . NUMBER 0x00072 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:122.1-122.45
+CHARACTER_S  . . . . . . . . . . . . NUMBER 0x00073 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:123.1-123.45
+CHARACTER_SEMI_COLON . . . . . . . . NUMBER 0x0003B NOT USED CONSTANT    2035_example_8.ind_spaces.full_inst.asm:169.1-169.45
+CHARACTER_SPACE  . . . . . . . . . . NUMBER 0x00020 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:179.1-179.45
+CHARACTER_T  . . . . . . . . . . . . NUMBER 0x00074 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:124.1-124.45
+CHARACTER_U  . . . . . . . . . . . . NUMBER 0x00075 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:125.1-125.45
+CHARACTER_V  . . . . . . . . . . . . NUMBER 0x00076 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:126.1-126.45
+CHARACTER_W  . . . . . . . . . . . . NUMBER 0x00077 NOT USED CONSTANT    2035_example_8.ind_spaces.full_inst.asm:127.1-127.45
+CHARACTER_X  . . . . . . . . . . . . NUMBER 0x00078 NOT USED CONSTANT    2035_example_8.ind_spaces.full_inst.asm:128.1-128.45
+CHARACTER_XOFF . . . . . . . . . . . NUMBER 0x00013 NOT USED CONSTANT    2035_example_8.ind_spaces.full_inst.asm:187.1-187.45
+CHARACTER_XON  . . . . . . . . . . . NUMBER 0x00011 NOT USED CONSTANT    2035_example_8.ind_spaces.full_inst.asm:186.1-186.45
+CHARACTER_Y  . . . . . . . . . . . . NUMBER 0x00079 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:129.1-129.45
+CHARACTER_Z  . . . . . . . . . . . . NUMBER 0x0007A USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:130.1-130.45
+COLD_START . . . . . . . . . . . . . LABEL  0x00000 NOT USED CONSTANT    2035_example_8.ind_spaces.full_inst.asm:194.1-194.12
+COMMAND_START  . . . . . . . . . . . NUMBER 0x00008 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:81.1-81.45
+COMPUTE_CRC16  . . . . . . . . . . . LABEL  0x0012C USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:717.1-717.15
+COMPUTE_CRC8 . . . . . . . . . . . . LABEL  0x00112 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:665.1-665.14
+CRC16_BIT_LOOP . . . . . . . . . . . LABEL  0x00131 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:722.1-722.16
+CRC16_BYTE_LOOP  . . . . . . . . . . LABEL  0x0012F USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:720.1-720.17
+CRC16_SHIFT  . . . . . . . . . . . . LABEL  0x00137 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:728.1-728.13
+CRC8_FAIL  . . . . . . . . . . . . . LABEL  0x00060 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:362.1-362.11
+CRC8_LOOP  . . . . . . . . . . . . . LABEL  0x0011B USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:674.1-674.11
+CRC8_SHIFT . . . . . . . . . . . . . LABEL  0x00120 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:679.1-679.12
+DECIMAL_TO_ASCII . . . . . . . . . . LABEL  0x001BE NOT USED CONSTANT    2035_example_8.ind_spaces.full_inst.asm:1120.1-1120.18
+DELAY_1MS  . . . . . . . . . . . . . LABEL  0x001A3 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:1035.1-1035.11
+DELAY_1S . . . . . . . . . . . . . . LABEL  0x001AD USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:1055.1-1055.10
+DELAY_1US  . . . . . . . . . . . . . LABEL  0x0019A USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:1015.1-1015.11
+DELAY_1US_CONSTANT . . . . . . . . . NUMBER 0x0000B USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:99.1-99.45
+DELAY_20MS . . . . . . . . . . . . . LABEL  0x001A8 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:1045.1-1045.12
+DELAY_40US . . . . . . . . . . . . . LABEL  0x0019E USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:1024.1-1024.12
+DISPLAY_ROM  . . . . . . . . . . . . LABEL  0x00048 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:338.1-338.13
+DISP_SERIAL_LOOP . . . . . . . . . . LABEL  0x0004F USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:345.1-345.18
+DS2432_MENU  . . . . . . . . . . . . LABEL  0x00020 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:260.1-260.13
+DS2432_PROMPT  . . . . . . . . . . . LABEL  0x00022 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:263.1-263.15
+DS_INIT_REGULAR_MODE . . . . . . . . LABEL  0x00146 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:791.1-791.22
+DS_WIRE  . . . . . . . . . . . . . . NUMBER 0x00001 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:48.1-48.45
+DS_WIRE_INIT . . . . . . . . . . . . LABEL  0x00143 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:759.1-759.14
+DS_WIRE_IN_PORT  . . . . . . . . . . NUMBER 0x00002 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:46.1-46.45
+DS_WIRE_OUT_PORT . . . . . . . . . . NUMBER 0x00008 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:47.1-47.45
+END_SERIAL . . . . . . . . . . . . . LABEL  0x00055 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:351.1-351.12
+END_WRITE_SCRATCHPAD . . . . . . . . LABEL  0x000C2 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:517.1-517.22
+FAMILY_CODE  . . . . . . . . . . . . NUMBER 0x00000 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:69.1-69.45
+HEX_BYTE_TO_ASCII  . . . . . . . . . LABEL  0x001DD USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:1201.1-1201.19
+HEX_TO_ASCII . . . . . . . . . . . . LABEL  0x001E9 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:1218.1-1218.14
+ISR  . . . . . . . . . . . . . . . . LABEL  0x003FE USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:1825.1-1825.5
+MASTER_RESET_REGULAR . . . . . . . . LABEL  0x0000C USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:227.1-227.22
+MENU_PROMPT  . . . . . . . . . . . . LABEL  0x00033 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:292.1-292.13
+NEXT_SLOW_BIT  . . . . . . . . . . . LABEL  0x00167 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:855.1-855.15
+NO_VALID_INPUT . . . . . . . . . . . LABEL  0x00039 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:299.1-299.16
+NUMBER_CHAR  . . . . . . . . . . . . LABEL  0x001EC USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:1221.1-1221.13
+OBTAIN_8BITS . . . . . . . . . . . . LABEL  0x00219 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:1309.1-1309.14
+RBS_LOOP . . . . . . . . . . . . . . LABEL  0x00183 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:934.1-934.10
+RBS_WAIT_4US . . . . . . . . . . . . LABEL  0x0018A USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:979.1-979.14
+RBS_WAIT_68US  . . . . . . . . . . . LABEL  0x00196 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:995.1-995.15
+RBS_WAIT_8US . . . . . . . . . . . . LABEL  0x00190 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:987.1-987.14
+READ_BIT_SLOW  . . . . . . . . . . . LABEL  0x00187 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:974.1-974.15
+READ_BYTE_COMMAND  . . . . . . . . . LABEL  0x000CC USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:553.1-553.19
+READ_BYTE_SLOW . . . . . . . . . . . LABEL  0x00182 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:933.1-933.16
+READ_CHARACTER . . . . . . . . . . . LABEL  0x001B6 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:1082.1-1082.16
+READ_DS_WIRE . . . . . . . . . . . . LABEL  0x0015D USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:832.1-832.14
+READ_FROM_UART . . . . . . . . . . . LABEL  0x001B2 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:1078.1-1078.16
+READ_MEMORY_COMMAND  . . . . . . . . LABEL  0x00066 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:396.1-396.21
+READ_ROM_COMMAND . . . . . . . . . . LABEL  0x0003F USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:329.1-329.18
+READ_ROM_CRC . . . . . . . . . . . . NUMBER 0x00007 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:76.1-76.45
+READ_ROM_LOOP  . . . . . . . . . . . LABEL  0x00042 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:332.1-332.15
+READ_SCRATCHPAD_COMMAND  . . . . . . LABEL  0x000D4 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:580.1-580.25
+READ_UPPER_CASE  . . . . . . . . . . LABEL  0x00214 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:1300.1-1300.17
+RESET_MENU . . . . . . . . . . . . . LABEL  0x00003 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:212.1-212.12
+RESET_PASSED . . . . . . . . . . . . LABEL  0x00011 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:232.1-232.14
+RESET_PROMPT . . . . . . . . . . . . LABEL  0x00005 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:215.1-215.14
+RMC_DATA_LOOP  . . . . . . . . . . . LABEL  0x00075 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:411.1-411.15
+RMC_LINE_LOOP  . . . . . . . . . . . LABEL  0x0006E USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:404.1-404.15
+RM_POLL_240US  . . . . . . . . . . . LABEL  0x00156 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:814.1-814.15
+RM_WAIT_500US  . . . . . . . . . . . LABEL  0x0014A USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:797.1-797.15
+RM_WAIT_60US . . . . . . . . . . . . LABEL  0x00151 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:806.1-806.14
+ROM_MENU . . . . . . . . . . . . . . LABEL  0x00013 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:239.1-239.10
+ROM_PROMPT . . . . . . . . . . . . . LABEL  0x00015 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:242.1-242.12
+RSC_CRC16_FAIL . . . . . . . . . . . LABEL  0x00110 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:640.1-640.16
+RSC_LOOP . . . . . . . . . . . . . . LABEL  0x000EF USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:607.1-607.10
+RX_DATA_PRESENT  . . . . . . . . . . NUMBER 0x00004 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:34.1-34.45
+RX_FULL  . . . . . . . . . . . . . . NUMBER 0x00010 NOT USED CONSTANT    2035_example_8.ind_spaces.full_inst.asm:36.1-36.45
+RX_HALF_FULL . . . . . . . . . . . . NUMBER 0x00008 NOT USED CONSTANT    2035_example_8.ind_spaces.full_inst.asm:35.1-35.45
+S0 . . . . . . . . . . . . . . . . . REG.   0x00000 USED     CONSTANT    IMPLICIT
+S1 . . . . . . . . . . . . . . . . . REG.   0x00001 USED     CONSTANT    IMPLICIT
+S10  . . . . . . . . . . . . . . . . REG.   0x00010 NOT USED CONSTANT    IMPLICIT
+S11  . . . . . . . . . . . . . . . . REG.   0x00011 NOT USED CONSTANT    IMPLICIT
+S12  . . . . . . . . . . . . . . . . REG.   0x00012 NOT USED CONSTANT    IMPLICIT
+S13  . . . . . . . . . . . . . . . . REG.   0x00013 NOT USED CONSTANT    IMPLICIT
+S14  . . . . . . . . . . . . . . . . REG.   0x00014 NOT USED CONSTANT    IMPLICIT
+S15  . . . . . . . . . . . . . . . . REG.   0x00015 NOT USED CONSTANT    IMPLICIT
+S16  . . . . . . . . . . . . . . . . REG.   0x00016 NOT USED CONSTANT    IMPLICIT
+S17  . . . . . . . . . . . . . . . . REG.   0x00017 NOT USED CONSTANT    IMPLICIT
+S18  . . . . . . . . . . . . . . . . REG.   0x00018 NOT USED CONSTANT    IMPLICIT
+S19  . . . . . . . . . . . . . . . . REG.   0x00019 NOT USED CONSTANT    IMPLICIT
+S1A  . . . . . . . . . . . . . . . . REG.   0x0001A NOT USED CONSTANT    IMPLICIT
+S1B  . . . . . . . . . . . . . . . . REG.   0x0001B NOT USED CONSTANT    IMPLICIT
+S1C  . . . . . . . . . . . . . . . . REG.   0x0001C NOT USED CONSTANT    IMPLICIT
+S1D  . . . . . . . . . . . . . . . . REG.   0x0001D NOT USED CONSTANT    IMPLICIT
+S1E  . . . . . . . . . . . . . . . . REG.   0x0001E NOT USED CONSTANT    IMPLICIT
+S1F  . . . . . . . . . . . . . . . . REG.   0x0001F NOT USED CONSTANT    IMPLICIT
+S2 . . . . . . . . . . . . . . . . . REG.   0x00002 USED     CONSTANT    IMPLICIT
+S3 . . . . . . . . . . . . . . . . . REG.   0x00003 USED     CONSTANT    IMPLICIT
+S4 . . . . . . . . . . . . . . . . . REG.   0x00004 USED     CONSTANT    IMPLICIT
+S5 . . . . . . . . . . . . . . . . . REG.   0x00005 USED     CONSTANT    IMPLICIT
+S6 . . . . . . . . . . . . . . . . . REG.   0x00006 USED     CONSTANT    IMPLICIT
+S7 . . . . . . . . . . . . . . . . . REG.   0x00007 USED     CONSTANT    IMPLICIT
+S8 . . . . . . . . . . . . . . . . . REG.   0x00008 USED     CONSTANT    IMPLICIT
+S9 . . . . . . . . . . . . . . . . . REG.   0x00009 USED     CONSTANT    IMPLICIT
+SA . . . . . . . . . . . . . . . . . REG.   0x0000A NOT USED CONSTANT    IMPLICIT
+SB . . . . . . . . . . . . . . . . . REG.   0x0000B NOT USED CONSTANT    IMPLICIT
+SC . . . . . . . . . . . . . . . . . REG.   0x0000C NOT USED CONSTANT    IMPLICIT
+SD . . . . . . . . . . . . . . . . . REG.   0x0000D NOT USED CONSTANT    IMPLICIT
+SE . . . . . . . . . . . . . . . . . REG.   0x0000E USED     CONSTANT    IMPLICIT
+SEND_ADDRESS . . . . . . . . . . . . LABEL  0x00364 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:1734.1-1734.14
+SEND_BYTE  . . . . . . . . . . . . . LABEL  0x0031F USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:1637.1-1637.11
+SEND_CODE  . . . . . . . . . . . . . LABEL  0x00386 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:1780.1-1780.11
+SEND_COMMAND . . . . . . . . . . . . LABEL  0x00356 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:1716.1-1716.14
+SEND_CR  . . . . . . . . . . . . . . LABEL  0x0021F USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:1323.1-1323.9
+SEND_CRC . . . . . . . . . . . . . . LABEL  0x0039C USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:1810.1-1810.10
+SEND_DATA  . . . . . . . . . . . . . LABEL  0x00374 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:1754.1-1754.11
+SEND_DS2432_MENU . . . . . . . . . . LABEL  0x00293 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:1468.1-1468.18
+SEND_EQUALS  . . . . . . . . . . . . LABEL  0x00371 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:1747.1-1747.13
+SEND_ES  . . . . . . . . . . . . . . LABEL  0x0037E USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:1768.1-1768.9
+SEND_FAIL  . . . . . . . . . . . . . LABEL  0x0034D USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:1703.1-1703.11
+SEND_HEX_3BYTES  . . . . . . . . . . LABEL  0x001F4 NOT USED CONSTANT    2035_example_8.ind_spaces.full_inst.asm:1242.1-1242.17
+SEND_HEX_BYTE  . . . . . . . . . . . LABEL  0x001EE USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:1229.1-1229.15
+SEND_HHELP . . . . . . . . . . . . . LABEL  0x002D0 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:1538.1-1538.12
+SEND_MASTER_RESET  . . . . . . . . . LABEL  0x00307 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:1609.1-1609.19
+SEND_MEMORY  . . . . . . . . . . . . LABEL  0x002E5 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:1567.1-1567.13
+SEND_MINUS . . . . . . . . . . . . . LABEL  0x00225 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:1336.1-1336.12
+SEND_OK  . . . . . . . . . . . . . . LABEL  0x002C9 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:1527.1-1527.9
+SEND_PASS  . . . . . . . . . . . . . LABEL  0x00345 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:1691.1-1691.11
+SEND_READ  . . . . . . . . . . . . . LABEL  0x00331 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:1663.1-1663.11
+SEND_RESET_MENU  . . . . . . . . . . LABEL  0x0026F USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:1419.1-1419.17
+SEND_ROM . . . . . . . . . . . . . . LABEL  0x002DE USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:1556.1-1556.10
+SEND_ROM_MENU  . . . . . . . . . . . LABEL  0x00278 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:1436.1-1436.15
+SEND_SCRATCHPAD  . . . . . . . . . . LABEL  0x002F2 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:1584.1-1584.17
+SEND_SERIAL  . . . . . . . . . . . . LABEL  0x0038F USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:1793.1-1793.13
+SEND_SKIP  . . . . . . . . . . . . . LABEL  0x00328 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:1650.1-1650.11
+SEND_SPACE . . . . . . . . . . . . . LABEL  0x00222 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:1329.1-1329.12
+SEND_TO_UART . . . . . . . . . . . . LABEL  0x001B8 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:1096.1-1096.14
+SEND_WELCOME . . . . . . . . . . . . LABEL  0x00228 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:1343.1-1343.14
+SEND_WRITE . . . . . . . . . . . . . LABEL  0x0033A USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:1676.1-1676.12
+SERIAL_NUMBER0 . . . . . . . . . . . NUMBER 0x00001 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:70.1-70.45
+SERIAL_NUMBER1 . . . . . . . . . . . NUMBER 0x00002 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:71.1-71.45
+SERIAL_NUMBER2 . . . . . . . . . . . NUMBER 0x00003 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:72.1-72.45
+SERIAL_NUMBER3 . . . . . . . . . . . NUMBER 0x00004 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:73.1-73.45
+SERIAL_NUMBER4 . . . . . . . . . . . NUMBER 0x00005 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:74.1-74.45
+SERIAL_NUMBER5 . . . . . . . . . . . NUMBER 0x00006 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:75.1-75.45
+SF . . . . . . . . . . . . . . . . . REG.   0x0000F USED     CONSTANT    IMPLICIT
+SKIP_ROM_COMMAND . . . . . . . . . . LABEL  0x00062 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:375.1-375.18
+SPARE1 . . . . . . . . . . . . . . . NUMBER 0x00020 NOT USED CONSTANT    2035_example_8.ind_spaces.full_inst.asm:37.1-37.45
+SPARE2 . . . . . . . . . . . . . . . NUMBER 0x00040 NOT USED CONSTANT    2035_example_8.ind_spaces.full_inst.asm:38.1-38.45
+SPARE3 . . . . . . . . . . . . . . . NUMBER 0x00080 NOT USED CONSTANT    2035_example_8.ind_spaces.full_inst.asm:39.1-39.45
+STATUS_PORT  . . . . . . . . . . . . NUMBER 0x00000 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:31.1-31.45
+TEST_FOR_TEN . . . . . . . . . . . . LABEL  0x001BF USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:1121.1-1121.14
+TX_FULL  . . . . . . . . . . . . . . NUMBER 0x00002 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:33.1-33.45
+TX_HALF_FULL . . . . . . . . . . . . NUMBER 0x00001 NOT USED CONSTANT    2035_example_8.ind_spaces.full_inst.asm:32.1-32.45
+UART_DATA  . . . . . . . . . . . . . REG.   0x0000F USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:57.1-57.43
+UART_READ_PORT . . . . . . . . . . . NUMBER 0x00001 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:41.1-41.45
+UART_WRITE . . . . . . . . . . . . . LABEL  0x001BC USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:1100.1-1100.12
+UART_WRITE_PORT  . . . . . . . . . . NUMBER 0x00004 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:43.1-43.45
+UPPER_CASE . . . . . . . . . . . . . LABEL  0x001C5 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:1139.1-1139.12
+WAIT_1MS . . . . . . . . . . . . . . LABEL  0x001A4 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:1036.1-1036.10
+WAIT_1S  . . . . . . . . . . . . . . LABEL  0x001AE USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:1056.1-1056.9
+WAIT_1US . . . . . . . . . . . . . . LABEL  0x0019B USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:1016.1-1016.10
+WAIT_20MS  . . . . . . . . . . . . . LABEL  0x001A9 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:1046.1-1046.11
+WAIT_40US  . . . . . . . . . . . . . LABEL  0x0019F USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:1025.1-1025.11
+WBS1 . . . . . . . . . . . . . . . . LABEL  0x00166 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:854.1-854.6
+WBS_LOOP . . . . . . . . . . . . . . LABEL  0x00162 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:850.1-850.10
+WELCOME_START  . . . . . . . . . . . LABEL  0x00002 NOT USED CONSTANT    2035_example_8.ind_spaces.full_inst.asm:196.1-196.15
+WHS_WAIT_72US  . . . . . . . . . . . LABEL  0x0017E USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:916.1-916.15
+WHS_WAIT_8US . . . . . . . . . . . . LABEL  0x00178 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:908.1-908.14
+WLS_WAIT_78US  . . . . . . . . . . . LABEL  0x0016D USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:880.1-880.15
+WRITE_BYTE_COMMAND . . . . . . . . . LABEL  0x000C3 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:531.1-531.20
+WRITE_BYTE_SLOW  . . . . . . . . . . LABEL  0x00161 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:849.1-849.17
+WRITE_HIGH_SLOW  . . . . . . . . . . LABEL  0x00175 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:903.1-903.17
+WRITE_LOW_SLOW . . . . . . . . . . . LABEL  0x0016A USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:875.1-875.16
+WRITE_SCRATCHPAD_COMMAND . . . . . . LABEL  0x00081 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:452.1-452.26
+WSC_ADDR_LOOP  . . . . . . . . . . . LABEL  0x00086 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:457.1-457.15
+WSC_CRC16_FAIL . . . . . . . . . . . LABEL  0x000C1 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:516.1-516.16
+WSC_DATA_LOOP  . . . . . . . . . . . LABEL  0x0009A USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:477.1-477.15
+_1CHAR_TO_VALUE  . . . . . . . . . . LABEL  0x001CB USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:1156.1-1156.17
+_2CHAR_TO_VALUE  . . . . . . . . . . LABEL  0x001CF NOT USED CONSTANT    2035_example_8.ind_spaces.full_inst.asm:1172.1-1172.17
+_CHARACTER_A . . . . . . . . . . . . NUMBER 0x00041 NOT USED CONSTANT    2035_example_8.ind_spaces.full_inst.asm:131.1-131.45
+_CHARACTER_B . . . . . . . . . . . . NUMBER 0x00042 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:132.1-132.45
+_CHARACTER_C . . . . . . . . . . . . NUMBER 0x00043 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:133.1-133.45
+_CHARACTER_D . . . . . . . . . . . . NUMBER 0x00044 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:134.1-134.45
+_CHARACTER_E . . . . . . . . . . . . NUMBER 0x00045 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:135.1-135.45
+_CHARACTER_F . . . . . . . . . . . . NUMBER 0x00046 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:136.1-136.45
+_CHARACTER_G . . . . . . . . . . . . NUMBER 0x00047 NOT USED CONSTANT    2035_example_8.ind_spaces.full_inst.asm:137.1-137.45
+_CHARACTER_H . . . . . . . . . . . . NUMBER 0x00048 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:138.1-138.45
+_CHARACTER_I . . . . . . . . . . . . NUMBER 0x00049 NOT USED CONSTANT    2035_example_8.ind_spaces.full_inst.asm:139.1-139.45
+_CHARACTER_J . . . . . . . . . . . . NUMBER 0x0004A NOT USED CONSTANT    2035_example_8.ind_spaces.full_inst.asm:140.1-140.45
+_CHARACTER_K . . . . . . . . . . . . NUMBER 0x0004B USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:141.1-141.45
+_CHARACTER_L . . . . . . . . . . . . NUMBER 0x0004C NOT USED CONSTANT    2035_example_8.ind_spaces.full_inst.asm:142.1-142.45
+_CHARACTER_M . . . . . . . . . . . . NUMBER 0x0004D USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:143.1-143.45
+_CHARACTER_N . . . . . . . . . . . . NUMBER 0x0004E NOT USED CONSTANT    2035_example_8.ind_spaces.full_inst.asm:144.1-144.45
+_CHARACTER_O . . . . . . . . . . . . NUMBER 0x0004F USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:145.1-145.45
+_CHARACTER_P . . . . . . . . . . . . NUMBER 0x00050 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:146.1-146.45
+_CHARACTER_Q . . . . . . . . . . . . NUMBER 0x00051 NOT USED CONSTANT    2035_example_8.ind_spaces.full_inst.asm:147.1-147.45
+_CHARACTER_R . . . . . . . . . . . . NUMBER 0x00052 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:148.1-148.45
+_CHARACTER_S . . . . . . . . . . . . NUMBER 0x00053 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:149.1-149.45
+_CHARACTER_T . . . . . . . . . . . . NUMBER 0x00054 NOT USED CONSTANT    2035_example_8.ind_spaces.full_inst.asm:150.1-150.45
+_CHARACTER_U . . . . . . . . . . . . NUMBER 0x00055 NOT USED CONSTANT    2035_example_8.ind_spaces.full_inst.asm:151.1-151.45
+_CHARACTER_V . . . . . . . . . . . . NUMBER 0x00056 NOT USED CONSTANT    2035_example_8.ind_spaces.full_inst.asm:152.1-152.45
+_CHARACTER_W . . . . . . . . . . . . NUMBER 0x00057 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:153.1-153.45
+_CHARACTER_X . . . . . . . . . . . . NUMBER 0x00058 NOT USED CONSTANT    2035_example_8.ind_spaces.full_inst.asm:154.1-154.45
+_CHARACTER_Y . . . . . . . . . . . . NUMBER 0x00059 NOT USED CONSTANT    2035_example_8.ind_spaces.full_inst.asm:155.1-155.45
+_CHARACTER_Z . . . . . . . . . . . . NUMBER 0x0005A NOT USED CONSTANT    2035_example_8.ind_spaces.full_inst.asm:156.1-156.45

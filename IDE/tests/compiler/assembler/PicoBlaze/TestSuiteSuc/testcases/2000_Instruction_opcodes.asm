@@ -1,6 +1,6 @@
 ; Compiler test case for Assembler
 ; instruction opcodes
-
+device kcpsm2
 
 TESTsymb1    SET        1h
 TESTsymb2    SET        0x11

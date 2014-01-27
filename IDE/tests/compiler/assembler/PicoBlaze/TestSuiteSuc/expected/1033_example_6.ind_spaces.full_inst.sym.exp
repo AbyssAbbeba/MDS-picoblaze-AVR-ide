@@ -1,0 +1,222 @@
+ADC0_LSB . . . . . . . . . . . . . . NUMBER 0x00000 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:101.1-101.45
+ADC0_MSB . . . . . . . . . . . . . . NUMBER 0x00001 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:102.1-102.45
+ADC1_LSB . . . . . . . . . . . . . . NUMBER 0x00002 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:104.1-104.45
+ADC1_MSB . . . . . . . . . . . . . . NUMBER 0x00003 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:105.1-105.45
+ADC_READ . . . . . . . . . . . . . . LABEL  0x00133 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:861.1-861.10
+AD_SIGN  . . . . . . . . . . . . . . LABEL  0x0003B USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:374.1-374.9
+AMP_A_GAIN . . . . . . . . . . . . . NUMBER 0x00004 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:112.1-112.45
+AMP_B_GAIN . . . . . . . . . . . . . NUMBER 0x00005 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:113.1-113.45
+BTN_EAST . . . . . . . . . . . . . . NUMBER 0x00002 NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:54.1-54.45
+BTN_NORTH  . . . . . . . . . . . . . NUMBER 0x00001 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:53.1-53.45
+BTN_SOUTH  . . . . . . . . . . . . . NUMBER 0x00004 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:55.1-55.45
+BTN_WEST . . . . . . . . . . . . . . NUMBER 0x00008 NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:56.1-56.45
+CHARACTER_0  . . . . . . . . . . . . NUMBER 0x00030 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:202.1-202.45
+CHARACTER_1  . . . . . . . . . . . . NUMBER 0x00031 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:203.1-203.45
+CHARACTER_2  . . . . . . . . . . . . NUMBER 0x00032 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:204.1-204.45
+CHARACTER_3  . . . . . . . . . . . . NUMBER 0x00033 NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:205.1-205.45
+CHARACTER_4  . . . . . . . . . . . . NUMBER 0x00034 NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:206.1-206.45
+CHARACTER_5  . . . . . . . . . . . . NUMBER 0x00035 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:207.1-207.45
+CHARACTER_6  . . . . . . . . . . . . NUMBER 0x00036 NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:208.1-208.45
+CHARACTER_7  . . . . . . . . . . . . NUMBER 0x00037 NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:209.1-209.45
+CHARACTER_8  . . . . . . . . . . . . NUMBER 0x00038 NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:210.1-210.45
+CHARACTER_9  . . . . . . . . . . . . NUMBER 0x00039 NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:211.1-211.45
+CHARACTER_A  . . . . . . . . . . . . NUMBER 0x00061 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:150.1-150.45
+CHARACTER_B  . . . . . . . . . . . . NUMBER 0x00062 NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:151.1-151.45
+CHARACTER_BS . . . . . . . . . . . . NUMBER 0x00008 NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:227.1-227.45
+CHARACTER_C  . . . . . . . . . . . . NUMBER 0x00063 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:152.1-152.45
+CHARACTER_COLON  . . . . . . . . . . NUMBER 0x0003A NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:212.1-212.45
+CHARACTER_COMMA  . . . . . . . . . . NUMBER 0x0002C NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:218.1-218.45
+CHARACTER_CR . . . . . . . . . . . . NUMBER 0x0000D NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:223.1-223.45
+CHARACTER_D  . . . . . . . . . . . . NUMBER 0x00064 NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:153.1-153.45
+CHARACTER_DIVIDE . . . . . . . . . . NUMBER 0x0002F USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:216.1-216.45
+CHARACTER_DOLLAR . . . . . . . . . . NUMBER 0x00024 NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:225.1-225.45
+CHARACTER_E  . . . . . . . . . . . . NUMBER 0x00065 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:154.1-154.45
+CHARACTER_EQUALS . . . . . . . . . . NUMBER 0x0003D USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:221.1-221.45
+CHARACTER_EXCLAIM  . . . . . . . . . NUMBER 0x00021 NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:226.1-226.45
+CHARACTER_F  . . . . . . . . . . . . NUMBER 0x00066 NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:155.1-155.45
+CHARACTER_G  . . . . . . . . . . . . NUMBER 0x00067 NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:156.1-156.45
+CHARACTER_GREATER_THAN . . . . . . . NUMBER 0x0003E USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:220.1-220.45
+CHARACTER_H  . . . . . . . . . . . . NUMBER 0x00068 NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:157.1-157.45
+CHARACTER_I  . . . . . . . . . . . . NUMBER 0x00069 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:158.1-158.45
+CHARACTER_J  . . . . . . . . . . . . NUMBER 0x0006A NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:159.1-159.45
+CHARACTER_K  . . . . . . . . . . . . NUMBER 0x0006B NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:160.1-160.45
+CHARACTER_L  . . . . . . . . . . . . NUMBER 0x0006C USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:161.1-161.45
+CHARACTER_LESS_THAN  . . . . . . . . NUMBER 0x0003C USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:219.1-219.45
+CHARACTER_M  . . . . . . . . . . . . NUMBER 0x0006D NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:162.1-162.45
+CHARACTER_MINUS  . . . . . . . . . . NUMBER 0x0002D USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:215.1-215.45
+CHARACTER_N  . . . . . . . . . . . . NUMBER 0x0006E USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:163.1-163.45
+CHARACTER_O  . . . . . . . . . . . . NUMBER 0x0006F USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:164.1-164.45
+CHARACTER_P  . . . . . . . . . . . . NUMBER 0x00070 NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:165.1-165.45
+CHARACTER_PLUS . . . . . . . . . . . NUMBER 0x0002B USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:217.1-217.45
+CHARACTER_Q  . . . . . . . . . . . . NUMBER 0x00071 NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:166.1-166.45
+CHARACTER_QUESTION . . . . . . . . . NUMBER 0x0003F NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:224.1-224.45
+CHARACTER_R  . . . . . . . . . . . . NUMBER 0x00072 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:167.1-167.45
+CHARACTER_S  . . . . . . . . . . . . NUMBER 0x00073 NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:168.1-168.45
+CHARACTER_SEMI_COLON . . . . . . . . NUMBER 0x0003B NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:214.1-214.45
+CHARACTER_SPACE  . . . . . . . . . . NUMBER 0x00020 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:222.1-222.45
+CHARACTER_STOP . . . . . . . . . . . NUMBER 0x0002E USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:213.1-213.45
+CHARACTER_T  . . . . . . . . . . . . NUMBER 0x00074 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:169.1-169.45
+CHARACTER_U  . . . . . . . . . . . . NUMBER 0x00075 NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:170.1-170.45
+CHARACTER_V  . . . . . . . . . . . . NUMBER 0x00076 NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:171.1-171.45
+CHARACTER_W  . . . . . . . . . . . . NUMBER 0x00077 NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:172.1-172.45
+CHARACTER_X  . . . . . . . . . . . . NUMBER 0x00078 NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:173.1-173.45
+CHARACTER_Y  . . . . . . . . . . . . NUMBER 0x00079 NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:174.1-174.45
+CHARACTER_Z  . . . . . . . . . . . . NUMBER 0x0007A USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:175.1-175.45
+COLD_START . . . . . . . . . . . . . LABEL  0x00000 NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:237.1-237.12
+DECIMAL0 . . . . . . . . . . . . . . NUMBER 0x00007 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:119.1-119.45
+DECIMAL1 . . . . . . . . . . . . . . NUMBER 0x00008 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:120.1-120.45
+DECIMAL2 . . . . . . . . . . . . . . NUMBER 0x00009 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:121.1-121.45
+DECIMAL3 . . . . . . . . . . . . . . NUMBER 0x0000A USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:122.1-122.45
+DECIMAL4 . . . . . . . . . . . . . . NUMBER 0x0000B NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:123.1-123.45
+DELAY_1MS  . . . . . . . . . . . . . LABEL  0x001A9 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:1065.1-1065.11
+DELAY_1S . . . . . . . . . . . . . . LABEL  0x001B3 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:1087.1-1087.10
+DELAY_1US  . . . . . . . . . . . . . LABEL  0x001A0 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:1045.1-1045.11
+DELAY_1US_CONSTANT . . . . . . . . . NUMBER 0x0000B USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:144.1-144.45
+DELAY_20MS . . . . . . . . . . . . . LABEL  0x001AE USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:1077.1-1077.12
+DELAY_40US . . . . . . . . . . . . . LABEL  0x001A4 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:1054.1-1054.12
+DISP_AD  . . . . . . . . . . . . . . LABEL  0x0017F USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:962.1-962.9
+DISP_ADC_CONTROL . . . . . . . . . . LABEL  0x00161 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:922.1-922.18
+DISP_HEX_BYTE  . . . . . . . . . . . LABEL  0x00199 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:1020.1-1020.15
+DISP_PICOBLAZE . . . . . . . . . . . LABEL  0x0014E USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:898.1-898.16
+DISP_VA  . . . . . . . . . . . . . . LABEL  0x00178 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:950.1-950.9
+DISP_VINA_VOLTS  . . . . . . . . . . LABEL  0x00072 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:473.1-473.17
+DISP_VOLTS . . . . . . . . . . . . . LABEL  0x00074 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:484.1-484.12
+DIV10_LOOP . . . . . . . . . . . . . LABEL  0x00111 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:706.1-706.12
+DIV10_RESTORE  . . . . . . . . . . . LABEL  0x00116 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:711.1-711.15
+DIV10_SHIFTS . . . . . . . . . . . . LABEL  0x00119 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:714.1-714.14
+DIVIDE_16BIT_BY_10 . . . . . . . . . LABEL  0x0010A USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:699.1-699.20
+GAIN_A7  . . . . . . . . . . . . . . LABEL  0x000D9 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:602.1-602.9
+GAIN_DECREASE  . . . . . . . . . . . LABEL  0x0008D USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:525.1-525.15
+GAIN_INCREASE  . . . . . . . . . . . LABEL  0x00086 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:518.1-518.15
+HEX_BYTE_TO_ASCII  . . . . . . . . . LABEL  0x00188 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:991.1-991.19
+HEX_TO_ASCII . . . . . . . . . . . . LABEL  0x00194 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:1008.1-1008.14
+INTEGER16_TO_BCD . . . . . . . . . . LABEL  0x00102 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:679.1-679.18
+INT_TO_BCD_LOOP  . . . . . . . . . . LABEL  0x00104 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:681.1-681.17
+ISR  . . . . . . . . . . . . . . . . LABEL  0x0021B USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:1313.1-1313.5
+LCD_CLEAR  . . . . . . . . . . . . . LABEL  0x0020C USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:1269.1-1269.11
+LCD_CURSOR . . . . . . . . . . . . . LABEL  0x00211 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:1292.1-1292.12
+LCD_DB4  . . . . . . . . . . . . . . NUMBER 0x00010 NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:74.1-74.45
+LCD_DB5  . . . . . . . . . . . . . . NUMBER 0x00020 NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:75.1-75.45
+LCD_DB6  . . . . . . . . . . . . . . NUMBER 0x00040 NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:76.1-76.45
+LCD_DB7  . . . . . . . . . . . . . . NUMBER 0x00080 NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:77.1-77.45
+LCD_DRIVE  . . . . . . . . . . . . . NUMBER 0x00008 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:73.1-73.45
+LCD_E  . . . . . . . . . . . . . . . NUMBER 0x00001 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:70.1-70.45
+LCD_INPUT_PORT . . . . . . . . . . . NUMBER 0x00002 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:80.1-80.45
+LCD_OUTPUT_PORT  . . . . . . . . . . NUMBER 0x00040 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:69.1-69.45
+LCD_PULSE_E  . . . . . . . . . . . . LABEL  0x001B8 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:1113.1-1113.13
+LCD_READ_DATA8 . . . . . . . . . . . LABEL  0x001E2 NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:1212.1-1212.16
+LCD_READ_DB4 . . . . . . . . . . . . NUMBER 0x00010 NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:85.1-85.45
+LCD_READ_DB5 . . . . . . . . . . . . NUMBER 0x00020 NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:86.1-86.45
+LCD_READ_DB6 . . . . . . . . . . . . NUMBER 0x00040 NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:87.1-87.45
+LCD_READ_DB7 . . . . . . . . . . . . NUMBER 0x00080 NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:88.1-88.45
+LCD_READ_SPARE0  . . . . . . . . . . NUMBER 0x00001 NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:81.1-81.45
+LCD_READ_SPARE1  . . . . . . . . . . NUMBER 0x00002 NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:82.1-82.45
+LCD_READ_SPARE2  . . . . . . . . . . NUMBER 0x00004 NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:83.1-83.45
+LCD_READ_SPARE3  . . . . . . . . . . NUMBER 0x00008 NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:84.1-84.45
+LCD_RESET  . . . . . . . . . . . . . LABEL  0x001FB USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:1252.1-1252.11
+LCD_RS . . . . . . . . . . . . . . . NUMBER 0x00004 NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:72.1-72.45
+LCD_RW . . . . . . . . . . . . . . . NUMBER 0x00002 NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:71.1-71.45
+LCD_WRITE_DATA . . . . . . . . . . . LABEL  0x001D1 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:1175.1-1175.16
+LCD_WRITE_INST4  . . . . . . . . . . LABEL  0x001BE USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:1129.1-1129.17
+LCD_WRITE_INST8  . . . . . . . . . . LABEL  0x001C2 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:1146.1-1146.17
+LED0 . . . . . . . . . . . . . . . . NUMBER 0x00001 NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:42.1-42.45
+LED1 . . . . . . . . . . . . . . . . NUMBER 0x00002 NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:43.1-43.45
+LED2 . . . . . . . . . . . . . . . . NUMBER 0x00004 NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:44.1-44.45
+LED3 . . . . . . . . . . . . . . . . NUMBER 0x00008 NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:45.1-45.45
+LED4 . . . . . . . . . . . . . . . . NUMBER 0x00010 NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:46.1-46.45
+LED5 . . . . . . . . . . . . . . . . NUMBER 0x00020 NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:47.1-47.45
+LED6 . . . . . . . . . . . . . . . . NUMBER 0x00040 NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:48.1-48.45
+LED7 . . . . . . . . . . . . . . . . NUMBER 0x00080 NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:49.1-49.45
+LED_PORT . . . . . . . . . . . . . . NUMBER 0x00080 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:41.1-41.45
+M16S_LOOP  . . . . . . . . . . . . . LABEL  0x000EE USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:641.1-641.11
+M16S_NOADD . . . . . . . . . . . . . LABEL  0x000F5 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:648.1-648.12
+M16S_NOSUB . . . . . . . . . . . . . LABEL  0x00101 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:660.1-660.12
+M16S_POS . . . . . . . . . . . . . . LABEL  0x000EC USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:639.1-639.10
+MULT_16X16S  . . . . . . . . . . . . LABEL  0x000E4 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:631.1-631.13
+MULT_VINA  . . . . . . . . . . . . . LABEL  0x0005A USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:437.1-437.11
+NEG_AD . . . . . . . . . . . . . . . LABEL  0x00036 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:369.1-369.8
+NEW_GAIN_SET . . . . . . . . . . . . LABEL  0x00092 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:530.1-530.14
+NEXT_ADC_BIT . . . . . . . . . . . . LABEL  0x00139 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:867.1-867.14
+NEXT_AMP_SPI_BIT . . . . . . . . . . LABEL  0x00126 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:805.1-805.18
+NUMBER_CHAR  . . . . . . . . . . . . LABEL  0x00197 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:1011.1-1011.13
+S0 . . . . . . . . . . . . . . . . . REG.   0x00000 USED     CONSTANT    IMPLICIT
+S1 . . . . . . . . . . . . . . . . . REG.   0x00001 USED     CONSTANT    IMPLICIT
+S2 . . . . . . . . . . . . . . . . . REG.   0x00002 USED     CONSTANT    IMPLICIT
+S3 . . . . . . . . . . . . . . . . . REG.   0x00003 USED     CONSTANT    IMPLICIT
+S4 . . . . . . . . . . . . . . . . . REG.   0x00004 USED     CONSTANT    IMPLICIT
+S5 . . . . . . . . . . . . . . . . . REG.   0x00005 USED     CONSTANT    IMPLICIT
+S6 . . . . . . . . . . . . . . . . . REG.   0x00006 USED     CONSTANT    IMPLICIT
+S7 . . . . . . . . . . . . . . . . . REG.   0x00007 USED     CONSTANT    IMPLICIT
+S8 . . . . . . . . . . . . . . . . . REG.   0x00008 USED     CONSTANT    IMPLICIT
+S9 . . . . . . . . . . . . . . . . . REG.   0x00009 USED     CONSTANT    IMPLICIT
+SA . . . . . . . . . . . . . . . . . REG.   0x0000A USED     CONSTANT    IMPLICIT
+SAMPLE_COUNT . . . . . . . . . . . . NUMBER 0x00006 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:117.1-117.45
+SB . . . . . . . . . . . . . . . . . REG.   0x0000B NOT USED CONSTANT    IMPLICIT
+SC . . . . . . . . . . . . . . . . . REG.   0x0000C NOT USED CONSTANT    IMPLICIT
+SD . . . . . . . . . . . . . . . . . REG.   0x0000D NOT USED CONSTANT    IMPLICIT
+SE . . . . . . . . . . . . . . . . . REG.   0x0000E USED     CONSTANT    IMPLICIT
+SET_AMP  . . . . . . . . . . . . . . LABEL  0x00122 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:801.1-801.9
+SET_LINE2  . . . . . . . . . . . . . LABEL  0x00217 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:1298.1-1298.11
+SF . . . . . . . . . . . . . . . . . REG.   0x0000F USED     CONSTANT    IMPLICIT
+SPI_ADC_CONV . . . . . . . . . . . . NUMBER 0x00010 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:28.1-28.45
+SPI_AMP_CS . . . . . . . . . . . . . NUMBER 0x00008 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:27.1-27.45
+SPI_AMP_SDI  . . . . . . . . . . . . NUMBER 0x00040 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:38.1-38.45
+SPI_AMP_SHDN . . . . . . . . . . . . NUMBER 0x00040 NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:30.1-30.45
+SPI_CONTROL_PORT . . . . . . . . . . NUMBER 0x00008 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:23.1-23.45
+SPI_DAC_CLR  . . . . . . . . . . . . NUMBER 0x00080 NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:31.1-31.45
+SPI_DAC_CS . . . . . . . . . . . . . NUMBER 0x00020 NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:29.1-29.45
+SPI_INIT . . . . . . . . . . . . . . LABEL  0x0011F USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:770.1-770.10
+SPI_INPUT_PORT . . . . . . . . . . . NUMBER 0x00001 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:36.1-36.45
+SPI_OUTPUT_PORT  . . . . . . . . . . NUMBER 0x00004 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:33.1-33.45
+SPI_ROM_CS . . . . . . . . . . . . . NUMBER 0x00002 NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:25.1-25.45
+SPI_SCK  . . . . . . . . . . . . . . NUMBER 0x00001 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:24.1-24.45
+SPI_SDI  . . . . . . . . . . . . . . NUMBER 0x00080 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:37.1-37.45
+SPI_SDO  . . . . . . . . . . . . . . NUMBER 0x00080 NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:34.1-34.45
+SPI_SPARE_CONTROL  . . . . . . . . . NUMBER 0x00004 NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:26.1-26.45
+SWITCH0  . . . . . . . . . . . . . . NUMBER 0x00010 NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:57.1-57.45
+SWITCH1  . . . . . . . . . . . . . . NUMBER 0x00020 NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:58.1-58.45
+SWITCH2  . . . . . . . . . . . . . . NUMBER 0x00040 NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:59.1-59.45
+SWITCH3  . . . . . . . . . . . . . . NUMBER 0x00080 NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:60.1-60.45
+SWITCH_PORT  . . . . . . . . . . . . NUMBER 0x00000 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:52.1-52.45
+TEST_A2  . . . . . . . . . . . . . . LABEL  0x000AC USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:557.1-557.9
+TEST_A3  . . . . . . . . . . . . . . LABEL  0x000B5 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:566.1-566.9
+TEST_A4  . . . . . . . . . . . . . . LABEL  0x000BE USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:575.1-575.9
+TEST_A5  . . . . . . . . . . . . . . LABEL  0x000C7 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:584.1-584.9
+TEST_A6  . . . . . . . . . . . . . . LABEL  0x000D0 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:593.1-593.9
+TEST_MAX_POS . . . . . . . . . . . . LABEL  0x0006C USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:467.1-467.14
+VREF_LSB . . . . . . . . . . . . . . NUMBER 0x00072 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:130.1-130.45
+VREF_MSB . . . . . . . . . . . . . . NUMBER 0x00006 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:131.1-131.45
+WAIT_1MS . . . . . . . . . . . . . . LABEL  0x001AA USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:1066.1-1066.10
+WAIT_1S  . . . . . . . . . . . . . . LABEL  0x001B4 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:1088.1-1088.9
+WAIT_1US . . . . . . . . . . . . . . LABEL  0x001A1 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:1046.1-1046.10
+WAIT_20MS  . . . . . . . . . . . . . LABEL  0x001AF USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:1078.1-1078.11
+WAIT_40US  . . . . . . . . . . . . . LABEL  0x001A5 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:1055.1-1055.11
+WAIT_INT . . . . . . . . . . . . . . LABEL  0x00016 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:277.1-277.10
+WAIT_NO_PRESS  . . . . . . . . . . . LABEL  0x000DF USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:608.1-608.15
+WARM_START . . . . . . . . . . . . . LABEL  0x00014 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:275.1-275.12
+_CHARACTER_A . . . . . . . . . . . . NUMBER 0x00041 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:176.1-176.45
+_CHARACTER_B . . . . . . . . . . . . NUMBER 0x00042 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:177.1-177.45
+_CHARACTER_C . . . . . . . . . . . . NUMBER 0x00043 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:178.1-178.45
+_CHARACTER_D . . . . . . . . . . . . NUMBER 0x00044 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:179.1-179.45
+_CHARACTER_E . . . . . . . . . . . . NUMBER 0x00045 NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:180.1-180.45
+_CHARACTER_F . . . . . . . . . . . . NUMBER 0x00046 NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:181.1-181.45
+_CHARACTER_G . . . . . . . . . . . . NUMBER 0x00047 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:182.1-182.45
+_CHARACTER_H . . . . . . . . . . . . NUMBER 0x00048 NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:183.1-183.45
+_CHARACTER_I . . . . . . . . . . . . NUMBER 0x00049 NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:184.1-184.45
+_CHARACTER_J . . . . . . . . . . . . NUMBER 0x0004A NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:185.1-185.45
+_CHARACTER_K . . . . . . . . . . . . NUMBER 0x0004B NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:186.1-186.45
+_CHARACTER_L . . . . . . . . . . . . NUMBER 0x0004C NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:187.1-187.45
+_CHARACTER_M . . . . . . . . . . . . NUMBER 0x0004D NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:188.1-188.45
+_CHARACTER_N . . . . . . . . . . . . NUMBER 0x0004E NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:189.1-189.45
+_CHARACTER_O . . . . . . . . . . . . NUMBER 0x0004F NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:190.1-190.45
+_CHARACTER_P . . . . . . . . . . . . NUMBER 0x00050 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:191.1-191.45
+_CHARACTER_Q . . . . . . . . . . . . NUMBER 0x00051 NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:192.1-192.45
+_CHARACTER_R . . . . . . . . . . . . NUMBER 0x00052 NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:193.1-193.45
+_CHARACTER_S . . . . . . . . . . . . NUMBER 0x00053 NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:194.1-194.45
+_CHARACTER_T . . . . . . . . . . . . NUMBER 0x00054 NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:195.1-195.45
+_CHARACTER_U . . . . . . . . . . . . NUMBER 0x00055 NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:196.1-196.45
+_CHARACTER_V . . . . . . . . . . . . NUMBER 0x00056 USED     CONSTANT    1033_example_6.ind_spaces.full_inst.asm:197.1-197.45
+_CHARACTER_W . . . . . . . . . . . . NUMBER 0x00057 NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:198.1-198.45
+_CHARACTER_X . . . . . . . . . . . . NUMBER 0x00058 NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:199.1-199.45
+_CHARACTER_Y . . . . . . . . . . . . NUMBER 0x00059 NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:200.1-200.45
+_CHARACTER_Z . . . . . . . . . . . . NUMBER 0x0005A NOT USED CONSTANT    1033_example_6.ind_spaces.full_inst.asm:201.1-201.45

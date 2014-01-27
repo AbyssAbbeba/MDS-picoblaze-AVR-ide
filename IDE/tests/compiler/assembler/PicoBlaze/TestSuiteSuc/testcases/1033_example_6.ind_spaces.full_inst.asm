@@ -16,7 +16,7 @@
 ;
 ;Connections to the LEDs, switches and press buttons are provided to aid
 ;development and enable further experiments. Otherwise know as having fun!
-;
+device kcpsm1
 ;Port definitions
 ;
 ;

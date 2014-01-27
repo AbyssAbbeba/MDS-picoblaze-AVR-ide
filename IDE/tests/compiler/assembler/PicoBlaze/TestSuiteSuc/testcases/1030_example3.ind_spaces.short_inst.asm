@@ -4,7 +4,7 @@
 ; 'low_cost_design_authentication_for_spartan_3e.vhd' implemented on the Spartan-3E Starter
 ; Kit. The program provides design authentication control over the 'real' application as well
 ; as providing features to enable evaluation of the design authentication method.
-;
+device kcpsm1
 ; Ken Chapman - Xilinx Ltd
 ;
 ; Version v1.00 - 1st November 2006

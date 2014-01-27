@@ -1,0 +1,8 @@
+GETCHAR (  )  . . . . . . . . . . . . . . . . . . . . .   1 × USED 6027_demo_5_UART.asm:66.1-66.26
+RX_RESOLVE ( UART_BYTE )  . . . . . . . . . . . . . . .   1 × USED 6027_demo_5_UART.asm:132.1-132.26
+SENDCHAR ( CHAR ) . . . . . . . . . . . . . . . . . . .  22 × USED 6027_demo_5_UART.asm:57.1-57.26
+SENDCRLF (  ) . . . . . . . . . . . . . . . . . . . . .   2 × USED 6027_demo_5_UART.asm:74.1-74.26
+UART_NEW_DATA_WAIT (  ) . . . . . . . . . . . . . . . .   1 × USED 6027_demo_5_UART.asm:48.1-48.26
+UART_READY_WAIT (  )  . . . . . . . . . . . . . . . . .  22 × USED 6027_demo_5_UART.asm:42.1-42.26
+WAIT_FOR_100MS (  ) . . . . . . . . . . . . . . . . . .   8 × USED 6027_demo_5_UART.asm:112.1-112.26
+WAIT_FOR_1S (  )  . . . . . . . . . . . . . . . . . . .   1 × USED 6027_demo_5_UART.asm:96.1-96.26

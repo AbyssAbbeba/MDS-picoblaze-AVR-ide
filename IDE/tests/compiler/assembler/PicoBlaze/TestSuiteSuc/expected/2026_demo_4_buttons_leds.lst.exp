@@ -1,0 +1,542 @@
+                   1     ; MDS PicoBlaze IDE - Demonstration code
+                   2
+                   3     ; Simple code, for interfacing buttons and LEDs.
+                   4     ; VHDL code is included
+                   5     ; Button 1 pressed = Snake animation
+                   6     ; Button 2 pressed = Blink for ten times
+                   7     device kcpsm2
+                   8     ; Press Start simulation and Animate to run the program
+                   9
+                  10
+                  11
+                  12
+                  13     ; Constant definitions
+                  14     ; --------------------
+                  15     ; PORT IDs definitions
+                  16
+  00001           17     LEDs            PORT            0x01            ; VHDL PORT_IDs
+  00002           18     Btn             PORT            0x02            ;
+                  19     ; Automaticaly assign registers to symbols
+  00000           20     LED_i           AUTOREG                         ; Led working register
+  00001           21     BTN_i           AUTOREG                         ; Buttons working register
+  0000A           22     N               SET             10              ; Number of LED blinks
+                  23
+  00002           24     OFF             AUTOREG                         ; Off register
+  00003           25     ON              AUTOREG                         ; On register
+  00004           26     SNAKE           AUTOREG                         ; Snake register
+                  27     ; Declaration of registers, used in waiting loop
+  00005           28     Temp1           AUTOREG
+  00006           29     Temp2           AUTOREG
+  00007           30     Temp3           AUTOREG
+                  31
+                  32
+                  33     ; Macro table
+                  34     ; --------------------
+                  35     ; Waiting loop macro
+                  36
+                  37     wait_for_100ms      MACRO
+                  38
+                  39                         LOCAL     wait_100ms
+                  40                         LOCAL     wait_100ms_i
+                  41
+                  42     wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
+                  43                         LOAD      Temp2, #249          ; Load Temp2 register
+                  44                         LOAD      Temp3, #20           ; Load Temp3 register
+                  45     wait_100ms_i:       SUB       Temp1, #1
+                  46                         JUMP      NZ, wait_100ms_i
+                  47                         SUB       Temp2, #1
+                  48                         JUMP      NZ, wait_100ms_i
+                  49                         SUB       Temp3, #1
+                  50                         JUMP      NZ, wait_100ms_i
+                  51                         ENDM
+                  52
+                  53     ; Program initialization
+                  54     ; --------------------
+  00000           55             ORG     0h                      ; Define code segment
+000 340D9         56             JUMP    start                   ; Jump to code initialization
+                  57
+                  58
+                  59     ; Subroutines
+                  60     ;-------------------------
+001 22401         61     Snake_i:        OUTPUT          Snake,LEDs        ; Turn LEDs OFF
+                  62                                                       ; REPT directive is very good for repeating blocks of code
+                  63                     REPT            7                 ; Moving right
+                  64                     RR              Snake
+                  65                     ENDR
+002 2840C         66 +1                  RR              Snake
+003 2840C         67 +1                  RR              Snake
+004 2840C         68 +1                  RR              Snake
+005 2840C         69 +1                  RR              Snake
+006 2840C         70 +1                  RR              Snake
+007 2840C         71 +1                  RR              Snake
+008 2840C         72 +1                  RR              Snake
+                  73
+                  74                     REPT            7                 ; Moving left
+                  75                     RL              Snake
+                  76                     ENDR
+009 28402         77 +1                  RL              Snake
+00A 28402         78 +1                  RL              Snake
+00B 28402         79 +1                  RL              Snake
+00C 28402         80 +1                  RL              Snake
+00D 28402         81 +1                  RL              Snake
+00E 28402         82 +1                  RL              Snake
+00F 28402         83 +1                  RL              Snake
+                  84
+                  85     ; Blinks with LEDs for N times.
+                  86     ;--------------------------
+  00010           87     Blink_i:        #WHILE   N
+                  88                     N       SET     N - 1           ; Blinks defined by N
+                  89
+                  90                     OUTPUT          ON,LEDs         ; Turn LEDs ON
+                  91                     wait_for_100ms
+                  92                     OUTPUT          OFF,LEDs        ; Turn LEDs OFF
+                  93                     wait_for_100ms
+                  94
+                  95                     #ENDW
+  00009           96 +1                  N       SET     N - 1           ; Blinks defined by N
+                  97 +1
+010 22301         98 +1                  OUTPUT          ON,LEDs         ; Turn LEDs ON
+                  99 +1                  wait_for_100ms
+                 100 +2                      LOCAL     wait_100ms
+                 101 +2                      LOCAL     wait_100ms_i
+                 102 +2
+011 005FA        103 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
+012 006F9        104 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
+013 00714        105 +2                      LOAD      Temp2, #249          ; Load Temp2 register
+014 0C501        106 +2                      LOAD      Temp3, #20           ; Load Temp3 register
+015 35414        107 +2  wait_100ms_i:       SUB       Temp1, #1
+W: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+016 0C601        108 +2  wait_100ms_i:       SUB       Temp1, #1
+017 35414        109 +2                      JUMP      NZ, wait_100ms_i
+W: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+018 0C701        110 +2                      SUB       Temp2, #1
+019 35414        111 +2                      JUMP      NZ, wait_100ms_i
+W: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+                 112 +2                      SUB       Temp3, #1
+                 113 +2                      JUMP      NZ, wait_100ms_i
+01A 22201        114 +1                  OUTPUT          OFF,LEDs        ; Turn LEDs OFF
+                 115 +1                  wait_for_100ms
+                 116 +2                      LOCAL     wait_100ms
+                 117 +2                      LOCAL     wait_100ms_i
+                 118 +2
+01B 005FA        119 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
+01C 006F9        120 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
+01D 00714        121 +2                      LOAD      Temp2, #249          ; Load Temp2 register
+01E 0C501        122 +2                      LOAD      Temp3, #20           ; Load Temp3 register
+01F 3541E        123 +2  wait_100ms_i:       SUB       Temp1, #1
+W: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+020 0C601        124 +2  wait_100ms_i:       SUB       Temp1, #1
+021 3541E        125 +2                      JUMP      NZ, wait_100ms_i
+W: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+022 0C701        126 +2                      SUB       Temp2, #1
+023 3541E        127 +2                      JUMP      NZ, wait_100ms_i
+W: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+                 128 +2                      SUB       Temp3, #1
+                 129 +2                      JUMP      NZ, wait_100ms_i
+  00008          130 +1                  N       SET     N - 1           ; Blinks defined by N
+                 131 +1
+024 22301        132 +1                  OUTPUT          ON,LEDs         ; Turn LEDs ON
+                 133 +1                  wait_for_100ms
+                 134 +2                      LOCAL     wait_100ms
+                 135 +2                      LOCAL     wait_100ms_i
+                 136 +2
+025 005FA        137 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
+026 006F9        138 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
+027 00714        139 +2                      LOAD      Temp2, #249          ; Load Temp2 register
+028 0C501        140 +2                      LOAD      Temp3, #20           ; Load Temp3 register
+029 35428        141 +2  wait_100ms_i:       SUB       Temp1, #1
+W: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+02A 0C601        142 +2  wait_100ms_i:       SUB       Temp1, #1
+02B 35428        143 +2                      JUMP      NZ, wait_100ms_i
+W: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+02C 0C701        144 +2                      SUB       Temp2, #1
+02D 35428        145 +2                      JUMP      NZ, wait_100ms_i
+W: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+                 146 +2                      SUB       Temp3, #1
+                 147 +2                      JUMP      NZ, wait_100ms_i
+02E 22201        148 +1                  OUTPUT          OFF,LEDs        ; Turn LEDs OFF
+                 149 +1                  wait_for_100ms
+                 150 +2                      LOCAL     wait_100ms
+                 151 +2                      LOCAL     wait_100ms_i
+                 152 +2
+02F 005FA        153 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
+030 006F9        154 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
+031 00714        155 +2                      LOAD      Temp2, #249          ; Load Temp2 register
+032 0C501        156 +2                      LOAD      Temp3, #20           ; Load Temp3 register
+033 35432        157 +2  wait_100ms_i:       SUB       Temp1, #1
+W: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+034 0C601        158 +2  wait_100ms_i:       SUB       Temp1, #1
+035 35432        159 +2                      JUMP      NZ, wait_100ms_i
+W: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+036 0C701        160 +2                      SUB       Temp2, #1
+037 35432        161 +2                      JUMP      NZ, wait_100ms_i
+W: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+                 162 +2                      SUB       Temp3, #1
+                 163 +2                      JUMP      NZ, wait_100ms_i
+  00007          164 +1                  N       SET     N - 1           ; Blinks defined by N
+                 165 +1
+038 22301        166 +1                  OUTPUT          ON,LEDs         ; Turn LEDs ON
+                 167 +1                  wait_for_100ms
+                 168 +2                      LOCAL     wait_100ms
+                 169 +2                      LOCAL     wait_100ms_i
+                 170 +2
+039 005FA        171 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
+03A 006F9        172 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
+03B 00714        173 +2                      LOAD      Temp2, #249          ; Load Temp2 register
+03C 0C501        174 +2                      LOAD      Temp3, #20           ; Load Temp3 register
+03D 3543C        175 +2  wait_100ms_i:       SUB       Temp1, #1
+W: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+03E 0C601        176 +2  wait_100ms_i:       SUB       Temp1, #1
+03F 3543C        177 +2                      JUMP      NZ, wait_100ms_i
+W: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+040 0C701        178 +2                      SUB       Temp2, #1
+041 3543C        179 +2                      JUMP      NZ, wait_100ms_i
+W: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+                 180 +2                      SUB       Temp3, #1
+                 181 +2                      JUMP      NZ, wait_100ms_i
+042 22201        182 +1                  OUTPUT          OFF,LEDs        ; Turn LEDs OFF
+                 183 +1                  wait_for_100ms
+                 184 +2                      LOCAL     wait_100ms
+                 185 +2                      LOCAL     wait_100ms_i
+                 186 +2
+043 005FA        187 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
+044 006F9        188 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
+045 00714        189 +2                      LOAD      Temp2, #249          ; Load Temp2 register
+046 0C501        190 +2                      LOAD      Temp3, #20           ; Load Temp3 register
+047 35446        191 +2  wait_100ms_i:       SUB       Temp1, #1
+W: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+048 0C601        192 +2  wait_100ms_i:       SUB       Temp1, #1
+049 35446        193 +2                      JUMP      NZ, wait_100ms_i
+W: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+04A 0C701        194 +2                      SUB       Temp2, #1
+04B 35446        195 +2                      JUMP      NZ, wait_100ms_i
+W: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+                 196 +2                      SUB       Temp3, #1
+                 197 +2                      JUMP      NZ, wait_100ms_i
+  00006          198 +1                  N       SET     N - 1           ; Blinks defined by N
+                 199 +1
+04C 22301        200 +1                  OUTPUT          ON,LEDs         ; Turn LEDs ON
+                 201 +1                  wait_for_100ms
+                 202 +2                      LOCAL     wait_100ms
+                 203 +2                      LOCAL     wait_100ms_i
+                 204 +2
+04D 005FA        205 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
+04E 006F9        206 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
+04F 00714        207 +2                      LOAD      Temp2, #249          ; Load Temp2 register
+050 0C501        208 +2                      LOAD      Temp3, #20           ; Load Temp3 register
+051 35450        209 +2  wait_100ms_i:       SUB       Temp1, #1
+W: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+052 0C601        210 +2  wait_100ms_i:       SUB       Temp1, #1
+053 35450        211 +2                      JUMP      NZ, wait_100ms_i
+W: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+054 0C701        212 +2                      SUB       Temp2, #1
+055 35450        213 +2                      JUMP      NZ, wait_100ms_i
+W: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+                 214 +2                      SUB       Temp3, #1
+                 215 +2                      JUMP      NZ, wait_100ms_i
+056 22201        216 +1                  OUTPUT          OFF,LEDs        ; Turn LEDs OFF
+                 217 +1                  wait_for_100ms
+                 218 +2                      LOCAL     wait_100ms
+                 219 +2                      LOCAL     wait_100ms_i
+                 220 +2
+057 005FA        221 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
+058 006F9        222 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
+059 00714        223 +2                      LOAD      Temp2, #249          ; Load Temp2 register
+05A 0C501        224 +2                      LOAD      Temp3, #20           ; Load Temp3 register
+05B 3545A        225 +2  wait_100ms_i:       SUB       Temp1, #1
+W: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+05C 0C601        226 +2  wait_100ms_i:       SUB       Temp1, #1
+05D 3545A        227 +2                      JUMP      NZ, wait_100ms_i
+W: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+05E 0C701        228 +2                      SUB       Temp2, #1
+05F 3545A        229 +2                      JUMP      NZ, wait_100ms_i
+W: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+                 230 +2                      SUB       Temp3, #1
+                 231 +2                      JUMP      NZ, wait_100ms_i
+  00005          232 +1                  N       SET     N - 1           ; Blinks defined by N
+                 233 +1
+060 22301        234 +1                  OUTPUT          ON,LEDs         ; Turn LEDs ON
+                 235 +1                  wait_for_100ms
+                 236 +2                      LOCAL     wait_100ms
+                 237 +2                      LOCAL     wait_100ms_i
+                 238 +2
+061 005FA        239 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
+062 006F9        240 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
+063 00714        241 +2                      LOAD      Temp2, #249          ; Load Temp2 register
+064 0C501        242 +2                      LOAD      Temp3, #20           ; Load Temp3 register
+065 35464        243 +2  wait_100ms_i:       SUB       Temp1, #1
+W: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+066 0C601        244 +2  wait_100ms_i:       SUB       Temp1, #1
+067 35464        245 +2                      JUMP      NZ, wait_100ms_i
+W: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+068 0C701        246 +2                      SUB       Temp2, #1
+069 35464        247 +2                      JUMP      NZ, wait_100ms_i
+W: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+                 248 +2                      SUB       Temp3, #1
+                 249 +2                      JUMP      NZ, wait_100ms_i
+06A 22201        250 +1                  OUTPUT          OFF,LEDs        ; Turn LEDs OFF
+                 251 +1                  wait_for_100ms
+                 252 +2                      LOCAL     wait_100ms
+                 253 +2                      LOCAL     wait_100ms_i
+                 254 +2
+06B 005FA        255 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
+06C 006F9        256 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
+06D 00714        257 +2                      LOAD      Temp2, #249          ; Load Temp2 register
+06E 0C501        258 +2                      LOAD      Temp3, #20           ; Load Temp3 register
+06F 3546E        259 +2  wait_100ms_i:       SUB       Temp1, #1
+W: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+070 0C601        260 +2  wait_100ms_i:       SUB       Temp1, #1
+071 3546E        261 +2                      JUMP      NZ, wait_100ms_i
+W: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+072 0C701        262 +2                      SUB       Temp2, #1
+073 3546E        263 +2                      JUMP      NZ, wait_100ms_i
+W: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+                 264 +2                      SUB       Temp3, #1
+                 265 +2                      JUMP      NZ, wait_100ms_i
+  00004          266 +1                  N       SET     N - 1           ; Blinks defined by N
+                 267 +1
+074 22301        268 +1                  OUTPUT          ON,LEDs         ; Turn LEDs ON
+                 269 +1                  wait_for_100ms
+                 270 +2                      LOCAL     wait_100ms
+                 271 +2                      LOCAL     wait_100ms_i
+                 272 +2
+075 005FA        273 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
+076 006F9        274 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
+077 00714        275 +2                      LOAD      Temp2, #249          ; Load Temp2 register
+078 0C501        276 +2                      LOAD      Temp3, #20           ; Load Temp3 register
+079 35478        277 +2  wait_100ms_i:       SUB       Temp1, #1
+W: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+07A 0C601        278 +2  wait_100ms_i:       SUB       Temp1, #1
+07B 35478        279 +2                      JUMP      NZ, wait_100ms_i
+W: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+07C 0C701        280 +2                      SUB       Temp2, #1
+07D 35478        281 +2                      JUMP      NZ, wait_100ms_i
+W: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+                 282 +2                      SUB       Temp3, #1
+                 283 +2                      JUMP      NZ, wait_100ms_i
+07E 22201        284 +1                  OUTPUT          OFF,LEDs        ; Turn LEDs OFF
+                 285 +1                  wait_for_100ms
+                 286 +2                      LOCAL     wait_100ms
+                 287 +2                      LOCAL     wait_100ms_i
+                 288 +2
+07F 005FA        289 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
+080 006F9        290 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
+081 00714        291 +2                      LOAD      Temp2, #249          ; Load Temp2 register
+082 0C501        292 +2                      LOAD      Temp3, #20           ; Load Temp3 register
+083 35482        293 +2  wait_100ms_i:       SUB       Temp1, #1
+W: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+084 0C601        294 +2  wait_100ms_i:       SUB       Temp1, #1
+085 35482        295 +2                      JUMP      NZ, wait_100ms_i
+W: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+086 0C701        296 +2                      SUB       Temp2, #1
+087 35482        297 +2                      JUMP      NZ, wait_100ms_i
+W: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+                 298 +2                      SUB       Temp3, #1
+                 299 +2                      JUMP      NZ, wait_100ms_i
+  00003          300 +1                  N       SET     N - 1           ; Blinks defined by N
+                 301 +1
+088 22301        302 +1                  OUTPUT          ON,LEDs         ; Turn LEDs ON
+                 303 +1                  wait_for_100ms
+                 304 +2                      LOCAL     wait_100ms
+                 305 +2                      LOCAL     wait_100ms_i
+                 306 +2
+089 005FA        307 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
+08A 006F9        308 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
+08B 00714        309 +2                      LOAD      Temp2, #249          ; Load Temp2 register
+08C 0C501        310 +2                      LOAD      Temp3, #20           ; Load Temp3 register
+08D 3548C        311 +2  wait_100ms_i:       SUB       Temp1, #1
+W: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+08E 0C601        312 +2  wait_100ms_i:       SUB       Temp1, #1
+08F 3548C        313 +2                      JUMP      NZ, wait_100ms_i
+W: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+090 0C701        314 +2                      SUB       Temp2, #1
+091 3548C        315 +2                      JUMP      NZ, wait_100ms_i
+W: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+                 316 +2                      SUB       Temp3, #1
+                 317 +2                      JUMP      NZ, wait_100ms_i
+092 22201        318 +1                  OUTPUT          OFF,LEDs        ; Turn LEDs OFF
+                 319 +1                  wait_for_100ms
+                 320 +2                      LOCAL     wait_100ms
+                 321 +2                      LOCAL     wait_100ms_i
+                 322 +2
+093 005FA        323 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
+094 006F9        324 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
+095 00714        325 +2                      LOAD      Temp2, #249          ; Load Temp2 register
+096 0C501        326 +2                      LOAD      Temp3, #20           ; Load Temp3 register
+097 35496        327 +2  wait_100ms_i:       SUB       Temp1, #1
+W: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+098 0C601        328 +2  wait_100ms_i:       SUB       Temp1, #1
+099 35496        329 +2                      JUMP      NZ, wait_100ms_i
+W: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+09A 0C701        330 +2                      SUB       Temp2, #1
+09B 35496        331 +2                      JUMP      NZ, wait_100ms_i
+W: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+                 332 +2                      SUB       Temp3, #1
+                 333 +2                      JUMP      NZ, wait_100ms_i
+  00002          334 +1                  N       SET     N - 1           ; Blinks defined by N
+                 335 +1
+09C 22301        336 +1                  OUTPUT          ON,LEDs         ; Turn LEDs ON
+                 337 +1                  wait_for_100ms
+                 338 +2                      LOCAL     wait_100ms
+                 339 +2                      LOCAL     wait_100ms_i
+                 340 +2
+09D 005FA        341 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
+09E 006F9        342 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
+09F 00714        343 +2                      LOAD      Temp2, #249          ; Load Temp2 register
+0A0 0C501        344 +2                      LOAD      Temp3, #20           ; Load Temp3 register
+0A1 354A0        345 +2  wait_100ms_i:       SUB       Temp1, #1
+W: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+0A2 0C601        346 +2  wait_100ms_i:       SUB       Temp1, #1
+0A3 354A0        347 +2                      JUMP      NZ, wait_100ms_i
+W: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+0A4 0C701        348 +2                      SUB       Temp2, #1
+0A5 354A0        349 +2                      JUMP      NZ, wait_100ms_i
+W: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+                 350 +2                      SUB       Temp3, #1
+                 351 +2                      JUMP      NZ, wait_100ms_i
+0A6 22201        352 +1                  OUTPUT          OFF,LEDs        ; Turn LEDs OFF
+                 353 +1                  wait_for_100ms
+                 354 +2                      LOCAL     wait_100ms
+                 355 +2                      LOCAL     wait_100ms_i
+                 356 +2
+0A7 005FA        357 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
+0A8 006F9        358 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
+0A9 00714        359 +2                      LOAD      Temp2, #249          ; Load Temp2 register
+0AA 0C501        360 +2                      LOAD      Temp3, #20           ; Load Temp3 register
+0AB 354AA        361 +2  wait_100ms_i:       SUB       Temp1, #1
+W: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+0AC 0C601        362 +2  wait_100ms_i:       SUB       Temp1, #1
+0AD 354AA        363 +2                      JUMP      NZ, wait_100ms_i
+W: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+0AE 0C701        364 +2                      SUB       Temp2, #1
+0AF 354AA        365 +2                      JUMP      NZ, wait_100ms_i
+W: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+                 366 +2                      SUB       Temp3, #1
+                 367 +2                      JUMP      NZ, wait_100ms_i
+  00001          368 +1                  N       SET     N - 1           ; Blinks defined by N
+                 369 +1
+0B0 22301        370 +1                  OUTPUT          ON,LEDs         ; Turn LEDs ON
+                 371 +1                  wait_for_100ms
+                 372 +2                      LOCAL     wait_100ms
+                 373 +2                      LOCAL     wait_100ms_i
+                 374 +2
+0B1 005FA        375 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
+0B2 006F9        376 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
+0B3 00714        377 +2                      LOAD      Temp2, #249          ; Load Temp2 register
+0B4 0C501        378 +2                      LOAD      Temp3, #20           ; Load Temp3 register
+0B5 354B4        379 +2  wait_100ms_i:       SUB       Temp1, #1
+W: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+0B6 0C601        380 +2  wait_100ms_i:       SUB       Temp1, #1
+0B7 354B4        381 +2                      JUMP      NZ, wait_100ms_i
+W: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+0B8 0C701        382 +2                      SUB       Temp2, #1
+0B9 354B4        383 +2                      JUMP      NZ, wait_100ms_i
+W: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+                 384 +2                      SUB       Temp3, #1
+                 385 +2                      JUMP      NZ, wait_100ms_i
+0BA 22201        386 +1                  OUTPUT          OFF,LEDs        ; Turn LEDs OFF
+                 387 +1                  wait_for_100ms
+                 388 +2                      LOCAL     wait_100ms
+                 389 +2                      LOCAL     wait_100ms_i
+                 390 +2
+0BB 005FA        391 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
+0BC 006F9        392 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
+0BD 00714        393 +2                      LOAD      Temp2, #249          ; Load Temp2 register
+0BE 0C501        394 +2                      LOAD      Temp3, #20           ; Load Temp3 register
+0BF 354BE        395 +2  wait_100ms_i:       SUB       Temp1, #1
+W: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+0C0 0C601        396 +2  wait_100ms_i:       SUB       Temp1, #1
+0C1 354BE        397 +2                      JUMP      NZ, wait_100ms_i
+W: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+0C2 0C701        398 +2                      SUB       Temp2, #1
+0C3 354BE        399 +2                      JUMP      NZ, wait_100ms_i
+W: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+                 400 +2                      SUB       Temp3, #1
+                 401 +2                      JUMP      NZ, wait_100ms_i
+  00000          402 +1                  N       SET     N - 1           ; Blinks defined by N
+                 403 +1
+0C4 22301        404 +1                  OUTPUT          ON,LEDs         ; Turn LEDs ON
+                 405 +1                  wait_for_100ms
+                 406 +2                      LOCAL     wait_100ms
+                 407 +2                      LOCAL     wait_100ms_i
+                 408 +2
+0C5 005FA        409 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
+0C6 006F9        410 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
+0C7 00714        411 +2                      LOAD      Temp2, #249          ; Load Temp2 register
+0C8 0C501        412 +2                      LOAD      Temp3, #20           ; Load Temp3 register
+0C9 354C8        413 +2  wait_100ms_i:       SUB       Temp1, #1
+W: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+0CA 0C601        414 +2  wait_100ms_i:       SUB       Temp1, #1
+0CB 354C8        415 +2                      JUMP      NZ, wait_100ms_i
+W: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+0CC 0C701        416 +2                      SUB       Temp2, #1
+0CD 354C8        417 +2                      JUMP      NZ, wait_100ms_i
+W: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+                 418 +2                      SUB       Temp3, #1
+                 419 +2                      JUMP      NZ, wait_100ms_i
+0CE 22201        420 +1                  OUTPUT          OFF,LEDs        ; Turn LEDs OFF
+                 421 +1                  wait_for_100ms
+                 422 +2                      LOCAL     wait_100ms
+                 423 +2                      LOCAL     wait_100ms_i
+                 424 +2
+0CF 005FA        425 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
+0D0 006F9        426 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
+0D1 00714        427 +2                      LOAD      Temp2, #249          ; Load Temp2 register
+0D2 0C501        428 +2                      LOAD      Temp3, #20           ; Load Temp3 register
+0D3 354D2        429 +2  wait_100ms_i:       SUB       Temp1, #1
+W: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+0D4 0C601        430 +2  wait_100ms_i:       SUB       Temp1, #1
+0D5 354D2        431 +2                      JUMP      NZ, wait_100ms_i
+W: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+0D6 0C701        432 +2                      SUB       Temp2, #1
+0D7 354D2        433 +2                      JUMP      NZ, wait_100ms_i
+W: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+                 434 +2                      SUB       Temp3, #1
+                 435 +2                      JUMP      NZ, wait_100ms_i
+0D8 24000        436                     RETURN
+                 437
+                 438
+                 439     ; Program start
+                 440     ; --------------------
+  000D9          441     start:
+                 442             wait_for_100ms                  ; FPGA circuits startup time
+                 443 +1                      LOCAL     wait_100ms
+                 444 +1                      LOCAL     wait_100ms_i
+                 445 +1
+0D9 005FA        446 +1  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
+0DA 006F9        447 +1  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
+0DB 00714        448 +1                      LOAD      Temp2, #249          ; Load Temp2 register
+0DC 0C501        449 +1                      LOAD      Temp3, #20           ; Load Temp3 register
+0DD 354DC        450 +1  wait_100ms_i:       SUB       Temp1, #1
+W: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+0DE 0C601        451 +1  wait_100ms_i:       SUB       Temp1, #1
+0DF 354DC        452 +1                      JUMP      NZ, wait_100ms_i
+W: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+0E0 0C701        453 +1                      SUB       Temp2, #1
+0E1 354DC        454 +1                      JUMP      NZ, wait_100ms_i
+W: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+                 455 +1                      SUB       Temp3, #1
+                 456 +1                      JUMP      NZ, wait_100ms_i
+0E2 003FF        457             LOAD    ON,  #0xFF              ; Declare ON, snake and OFF
+0E3 00200        458             LOAD    OFF, #0x00              ;
+0E4 00401        459             LOAD    Snake, #0x01            ;
+0E5 340E6        460             JUMP    main                    ; Execute main program loop
+                 461
+                 462     ; Main loop
+                 463     ; --------------------
+0E6 20102        464     main:   INPUT   BTN_i,Btn               ; Save buttons status
+                 465             TEST    BTN_i,1                 ; Button one pressed
+W: instruction `TEST sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+E: instruction not supported on the this device: TEST sX, sY.
+0E7 35801        466             JUMP    C,Snake_i               ; JUMP to snake subroutine
+                 467             TEST    BTN_i,2                 ; Button two pressed
+W: instruction `TEST sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+E: instruction not supported on the this device: TEST sX, sY.
+0E8 35810        468             JUMP    C,Blink_i               ; JUMP to Blink subroutine
+0E9 340E6        469             JUMP    main
+                 470     ; Program end
+                 471     ; --------------------
+                 472             END
+                 473
+                 474     ; <-- Bookmark   (ctrl + shift + M)
+                 475     ; <-- Breakpoint (ctrl + shift + B)

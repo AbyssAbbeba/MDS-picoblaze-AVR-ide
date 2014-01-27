@@ -6,7 +6,7 @@
 ; as providing features to enable evaluation of the design authentication method.
 ;
 ; Ken Chapman - Xilinx Ltd
-;
+device kcpsm6
 ; Version v1.00 - 1st November 2006
 ;
 ; This code communicates with the StrataFLASH memory to implement a design authentication

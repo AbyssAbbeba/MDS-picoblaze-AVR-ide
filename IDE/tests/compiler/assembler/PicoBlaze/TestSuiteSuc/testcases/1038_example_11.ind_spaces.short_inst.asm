@@ -1,5 +1,5 @@
 ; KCPSM3 Program - Automatic Pulse Width Modulation (PWM) Control on the Spartan-3E Starter Kit.
-;
+device kcpsm1
 ; Ken Chapman - Xilinx Ltd
 ;
 ; Version v1.00 - 24th May 2006

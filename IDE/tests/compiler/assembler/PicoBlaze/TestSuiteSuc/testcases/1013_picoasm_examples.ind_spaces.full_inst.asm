@@ -1,5 +1,5 @@
 ; Compiler test case for Assembler
-
+device kcpsm1
 
 ;=========================================================
 ; routine: mult_soft

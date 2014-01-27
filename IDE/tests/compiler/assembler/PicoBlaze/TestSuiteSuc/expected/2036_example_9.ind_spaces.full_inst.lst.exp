@@ -1,0 +1,2323 @@
+                   1     ; KCPSM3 Program - Implementation of the SHA-1 algorithm for use with the
+                   2     ;                  DS2432 secure memory on the Spartan-3E Starter Kit.
+                   3     ;
+                   4     ; Ken Chapman - Xilinx Ltd
+                   5     ;
+                   6     device kcpsm2
+                   7     ; Version v1.00 - 19th April 2006
+                   8     ;
+                   9     ;
+                  10     ; IMPORTANT - This design builds on the reference design called "PicoBlaze
+                  11     ;             DS2432 communicator". It is highly recommend that you look at that
+                  12     ;             design before proceeding with this one.
+                  13     ;
+                  14     ;
+                  15     ; This program uses a 9600 baud UART connection to allow communication with the
+                  16     ; 1-wire interface of the DS2432 memory device from Dallas Semiconductor.
+                  17     ;
+                  18     ; The program only supports a limited number of the DS2432 commands to focus on
+                  19     ; those aspects which use the SHA-1 algorithm.
+                  20     ;
+                  21     ; Note that the code performing the SHA-1 algorithm interacts with the hardware of
+                  22     ; this complete reference design. The hardware provides a 16 word (32-bit) buffer
+                  23     ; combined used in the initialisation of the algorithm and subsequent computation
+                  24     ; of the Wt words.
+                  25     ;
+                  26     ;
+                  27     ; The DS2432 should be programmed with a 64-bit secret. The following constants
+                  28     ; define the secret which will be used. Obviously this would be be changed in a
+                  29     ; real application and further measures taken to prevent it easily being found.
+                  30     ; The secret is 64-bits formed of 8 bytes. 'secret0' would be stored at address
+                  31     ; 0080 of the DS2432 and 'secret7' at address 0087. The write buffer and load
+                  32     ; first secret commands allow you to set any secret into the DS2432 device but
+                  33     ; this program always uses the secret defined in these constants such that you can
+                  34     ; experiment with secrets which do and do not match.
+                  35     ;
+                  36     ;
+  00001           37     secret0                 EQU             0x01
+  00023           38     secret1                 EQU             0x23
+  00045           39     secret2                 EQU             0x45
+  00067           40     secret3                 EQU             0x67
+  00089           41     secret4                 EQU             0x89
+  000AB           42     secret5                 EQU             0xab
+  000CD           43     secret6                 EQU             0xcd
+  000EF           44     secret7                 EQU             0xef
+                  45     ;
+                  46     ;
+                  47     ; Bytes 4, 5 and 6 of the DS2432 scratch pad memory are used in the SHA-1 algorithm.
+                  48     ; These should be set using the write scratchpad memory command before using the
+                  49     ; read authenticated page command. HOWEVER, it is also important that you also use
+                  50     ; the read scratchpad command BEFORE using the read authenticated page command. This
+                  51     ; is because this program only copies the bytes 4, 5 and 6 during a read such that
+                  52     ; they are can be used by the PicoBlaze SHA-1 algorithm. This limitation is deliberate
+                  53     ; so that you can experiment and prove that the SHA-1 results will not match if
+                  54     ; the same 'challenge' bytes are not used.
+                  55     ;
+                  56     ;
+                  57     ;**************************************************************************************
+                  58     ; Port definitions
+                  59     ;**************************************************************************************
+                  60     ;
+                  61     ;
+  00040           62     status_port             EQU             0x40                    ;UART status input
+  00001           63     tx_half_full            EQU             0x01                    ;  Transmitter     half full - bit0
+  00002           64     tx_full                 EQU             0x02                    ;    FIFO               full - bit1
+  00004           65     rx_data_present         EQU             0x04                    ;  Receiver     data present - bit2
+  00008           66     rx_half_full            EQU             0x08                    ;    FIFO          half full - bit3
+  00010           67     rx_full                 EQU             0x10                    ;                   full - bit4
+  00020           68     spare1                  EQU             0x20                    ;                  spare '0' - bit5
+  00040           69     spare2                  EQU             0x40                    ;                  spare '0' - bit6
+  00080           70     spare3                  EQU             0x80                    ;                  spare '0' - bit7
+                  71     ;
+  00080           72     uart_read_port          EQU             0x80                    ;UART Rx data input
+                  73     ;
+  00004           74     uart_write_port         EQU             0x04                    ;UART Tx data output
+                  75     ;
+                  76     ;
+  000C0           77     ds_wire_in_port         EQU             0xc0                    ;Read signal from DS2432 device
+  00008           78     ds_wire_out_port        EQU             0x08                    ;Drive signal to DS2432 device (open collector)
+  00001           79     ds_wire                 EQU             0x01                    ;       Signal is bit0 in both cases
+                  80     ;
+                  81     ;
+                  82     ;
+                  83     ; The following ports access the 'Wt' word buffer. This buffer holds 16 words
+                  84     ; of 32-bits organised as a 64-byte shift register. Hence each word is stored
+                  85     ; by writing 4 bytes. As each byte is written, all bytes shift along such that
+                  86     ; older Wt values can be read from consistent port addresses.
+                  87     ;
+  00010           88     w_word_write_port       EQU             0x10                    ;Write byte to Wt buffer
+                  89     ;
+  00008           90     wt_minus3_byte0_read_port EQU           0x08                    ;Read of Wt-3
+  00009           91     wt_minus3_byte1_read_port EQU           0x09
+  0000A           92     wt_minus3_byte2_read_port EQU           0x0a
+  0000B           93     wt_minus3_byte3_read_port EQU           0x0b
+                  94     ;
+  0001C           95     wt_minus8_byte0_read_port EQU           0x1c                    ;Read of Wt-8
+  0001D           96     wt_minus8_byte1_read_port EQU           0x1d
+  0001E           97     wt_minus8_byte2_read_port EQU           0x1e
+  0001F           98     wt_minus8_byte3_read_port EQU           0x1f
+                  99     ;
+  00034          100     wt_minus14_byte0_read_port EQU          0x34                    ;Read of Wt-14
+  00035          101     wt_minus14_byte1_read_port EQU          0x35
+  00036          102     wt_minus14_byte2_read_port EQU          0x36
+  00037          103     wt_minus14_byte3_read_port EQU          0x37
+                 104     ;
+  0003C          105     wt_minus16_byte0_read_port EQU          0x3c                    ;Read of Wt-16
+  0003D          106     wt_minus16_byte1_read_port EQU          0x3d
+  0003E          107     wt_minus16_byte2_read_port EQU          0x3e
+  0003F          108     wt_minus16_byte3_read_port EQU          0x3f
+                 109     ;
+                 110     ;
+                 111     ;**************************************************************************************
+                 112     ; Special Register usage
+                 113     ;**************************************************************************************
+                 114     ;
+  0000F          115     uart_data               REG             sf                      ;used to pass data to and from the UART
+                 116     ;
+                 117     ;
+                 118     ;**************************************************************************************
+                 119     ; Scratch Pad Memory Locations
+                 120     ;**************************************************************************************
+                 121     ;
+                 122     ; Scratch pad memory provides 64 bytes in the address range 00 to 3F hex.
+                 123     ;
+                 124     ;
+                 125     ; Locations for device family code, serial number and 8-bit CRC value
+                 126     ;
+  00000          127     family_code             EQU             0x00
+  00001          128     serial_number0          EQU             0x01                    ;48-bit serial number LS-Byte first
+  00002          129     serial_number1          EQU             0x02
+  00003          130     serial_number2          EQU             0x03
+  00004          131     serial_number3          EQU             0x04
+  00005          132     serial_number4          EQU             0x05
+  00006          133     serial_number5          EQU             0x06
+  00007          134     read_rom_crc            EQU             0x07                    ;8-bit CRC
+                 135     ;
+                 136     ;
+                 137     ; Locations for variables used in SHA-1 algorithm.
+                 138     ; Each variable is 32-bits and requires 4 bytes to store.
+                 139     ; '0' indicates the least significant byte and '3' the most significant byte.
+                 140     ;
+                 141     ; Note that the concatenation of 'A', 'B', 'C', 'D' and 'E' will be the 160-bit MAC.
+                 142     ;
+  00008          143     var_a0                  EQU             0x08                    ;Variable 'A'
+  00009          144     var_a1                  EQU             0x09
+  0000A          145     var_a2                  EQU             0x0a
+  0000B          146     var_a3                  EQU             0x0b
+                 147     ;
+  0000C          148     var_b0                  EQU             0x0c                    ;Variable 'B'
+  0000D          149     var_b1                  EQU             0x0d
+  0000E          150     var_b2                  EQU             0x0e
+  0000F          151     var_b3                  EQU             0x0f
+                 152     ;
+  00010          153     var_c0                  EQU             0x10                    ;Variable 'C'
+  00011          154     var_c1                  EQU             0x11
+  00012          155     var_c2                  EQU             0x12
+  00013          156     var_c3                  EQU             0x13
+                 157     ;
+  00014          158     var_d0                  EQU             0x14                    ;Variable 'D'
+  00015          159     var_d1                  EQU             0x15
+  00016          160     var_d2                  EQU             0x16
+  00017          161     var_d3                  EQU             0x17
+                 162     ;
+  00018          163     var_e0                  EQU             0x18                    ;Variable 'E'
+  00019          164     var_e1                  EQU             0x19
+  0001A          165     var_e2                  EQU             0x1a
+  0001B          166     var_e3                  EQU             0x1b
+                 167     ;
+                 168     ;
+                 169     ; Copy of data in the scratchpad memory of the DS2432.
+                 170     ; This is only updated by the read scratchpad memory command.
+                 171     ; '0' indicates the data in the least significant location.
+                 172     ;
+  0001C          173     scratchpad0             EQU             0x1c
+  0001D          174     scratchpad1             EQU             0x1d
+  0001E          175     scratchpad2             EQU             0x1e
+  0001F          176     scratchpad3             EQU             0x1f
+  00020          177     scratchpad4             EQU             0x20
+  00021          178     scratchpad5             EQU             0x21
+  00022          179     scratchpad6             EQU             0x22
+  00023          180     scratchpad7             EQU             0x23
+                 181     ;
+                 182     ;
+                 183     ;
+                 184     ;**************************************************************************************
+                 185     ; Useful data constants
+                 186     ;**************************************************************************************
+                 187     ;
+                 188     ; Constant to define a software delay of 1us. This must be adjusted to reflect the
+                 189     ; clock applied to KCPSM3. Every instruction executes in 2 clock cycles making the
+                 190     ; calculation highly predictable. The '6' in the following equation even allows for
+                 191     ; 'CALL delay_1us' instruction in the initiating code.
+                 192     ;
+                 193     ; delay_1us_constant =  (clock_rate - 6)/4       Where 'clock_rate' is in MHz
+                 194     ;
+                 195     ; Example: For a 50MHz clock the constant value is (10-6)/4 = 11  (0B Hex).
+                 196     ; For clock rates below 10MHz the value of 1 must be used and the operation will
+                 197     ; become lower than intended.
+                 198     ;
+  0000B          199     delay_1us_constant      EQU             0x0b
+                 200     ;
+                 201     ;
+                 202     ;
+                 203     ;ASCII table
+                 204     ;
+  00061          205     character_a             EQU             0x61
+  00062          206     character_b             EQU             0x62
+  00063          207     character_c             EQU             0x63
+  00064          208     character_d             EQU             0x64
+  00065          209     character_e             EQU             0x65
+  00066          210     character_f             EQU             0x66
+  00067          211     character_g             EQU             0x67
+  00068          212     character_h             EQU             0x68
+  00069          213     character_i             EQU             0x69
+  0006A          214     character_j             EQU             0x6a
+  0006B          215     character_k             EQU             0x6b
+  0006C          216     character_l             EQU             0x6c
+  0006D          217     character_m             EQU             0x6d
+  0006E          218     character_n             EQU             0x6e
+  0006F          219     character_o             EQU             0x6f
+  00070          220     character_p             EQU             0x70
+  00071          221     character_q             EQU             0x71
+  00072          222     character_r             EQU             0x72
+  00073          223     character_s             EQU             0x73
+  00074          224     character_t             EQU             0x74
+  00075          225     character_u             EQU             0x75
+  00076          226     character_v             EQU             0x76
+  00077          227     character_w             EQU             0x77
+  00078          228     character_x             EQU             0x78
+  00079          229     character_y             EQU             0x79
+  0007A          230     character_z             EQU             0x7a
+  00041          231     _character_a            EQU             0x41
+  00042          232     _character_b            EQU             0x42
+  00043          233     _character_c            EQU             0x43
+  00044          234     _character_d            EQU             0x44
+  00045          235     _character_e            EQU             0x45
+  00046          236     _character_f            EQU             0x46
+  00047          237     _character_g            EQU             0x47
+  00048          238     _character_h            EQU             0x48
+  00049          239     _character_i            EQU             0x49
+  0004A          240     _character_j            EQU             0x4a
+  0004B          241     _character_k            EQU             0x4b
+  0004C          242     _character_l            EQU             0x4c
+  0004D          243     _character_m            EQU             0x4d
+  0004E          244     _character_n            EQU             0x4e
+  0004F          245     _character_o            EQU             0x4f
+  00050          246     _character_p            EQU             0x50
+  00051          247     _character_q            EQU             0x51
+  00052          248     _character_r            EQU             0x52
+  00053          249     _character_s            EQU             0x53
+  00054          250     _character_t            EQU             0x54
+  00055          251     _character_u            EQU             0x55
+  00056          252     _character_v            EQU             0x56
+  00057          253     _character_w            EQU             0x57
+  00058          254     _character_x            EQU             0x58
+  00059          255     _character_y            EQU             0x59
+  0005A          256     _character_z            EQU             0x5a
+  00030          257     character_0             EQU             0x30
+  00031          258     character_1             EQU             0x31
+  00032          259     character_2             EQU             0x32
+  00033          260     character_3             EQU             0x33
+  00034          261     character_4             EQU             0x34
+  00035          262     character_5             EQU             0x35
+  00036          263     character_6             EQU             0x36
+  00037          264     character_7             EQU             0x37
+  00038          265     character_8             EQU             0x38
+  00039          266     character_9             EQU             0x39
+  0003A          267     character_colon         EQU             0x3a
+  0002E          268     character_fullstop      EQU             0x2e
+  0003B          269     character_semi_colon    EQU             0x3b
+  0002D          270     character_minus         EQU             0x2d
+  0002B          271     character_plus          EQU             0x2b
+  0002C          272     character_comma         EQU             0x2c
+  0003C          273     character_less_than     EQU             0x3c                    ;'<'
+  0003E          274     character_greater_than  EQU             0x3e                    ;'>'
+  00028          275     character_open          EQU             0x28                    ;'('
+  00029          276     character_close         EQU             0x29                    ;')'
+  0002F          277     character_divide        EQU             0x2f                    ;'/'
+  0003D          278     character_equals        EQU             0x3d
+  00020          279     character_space         EQU             0x20
+  0000D          280     character_cr            EQU             0x0d                    ;carriage return
+  0000A          281     character_lf            EQU             0x0a                    ;line feed
+  0003F          282     character_question      EQU             0x3f                    ;'?'
+  00024          283     character_dollar        EQU             0x24
+  00021          284     character_exclaim       EQU             0x21                    ;'!'
+  00008          285     character_bs            EQU             0x08                    ;Back Space command character
+  00011          286     character_xon           EQU             0x11                    ;Flow control ON
+  00013          287     character_xoff          EQU             0x13                    ;Flow control OFF
+                 288     ;
+                 289     ;
+                 290     ;**************************************************************************************
+                 291     ; Initialise the system and welcome message
+                 292     ;**************************************************************************************
+                 293     ;
+000 36230        294     cold_start:             CALL            ds_wire_init            ;Ensure DS_wire is not driven (pulled High)
+001 3629A        295                             CALL            delay_1s                ;Allow everything to settle!
+002 3630A        296     welcome_start:          CALL            send_welcome            ;start up message and version number
+                 297     ;
+                 298     ;
+                 299     ;**************************************************************************************
+                 300     ; Reset Main menu and command selection
+                 301     ;**************************************************************************************
+                 302     ;
+                 303     ; The main program allows you to use four of the DS2432 memory and SHA function
+                 304     ; commands. A simple menu is displayed and you are guided to enter more information
+                 305     ; when required. All the communication and protocol required to get the DS2432 ready
+                 306     ; to receive memory and SHA function commands has been automated although information
+                 307     ; is displayed to indicate the procedures being executed.
+                 308     ;
+                 309     ; Before any memory and function commands are available a master reset and read ROM
+                 310     ; command must be issued.
+                 311     ;
+003 362EC        312     warm_start:             CALL            send_cr
+004 362EC        313                             CALL            send_cr
+005 36233        314                             CALL            ds_init_regular_mode    ;master reset
+006 35803        315                             JUMP            c, warm_start           ;repeat reset if no presence pulse detected
+007 3601D        316                             CALL            read_rom_command        ;read ROM command and display results
+                 317     ;
+                 318     ; After a valid ROM command the DS2432 specific memory commands and SHA-1
+                 319     ; functions become accessible. This program assumes that the ROM command did
+                 320     ; 'Pass' so you will need to check yourself. If this program automatically
+                 321     ; reset the DS2432 and tried again and there was a fault it would just cause
+                 322     ; the display to roll continuously and not be very informative!
+                 323     ;
+                 324     ; Each of the DS2432 commands selected from the menu will require the master reset
+                 325     ; and read ROM command to be repeated before being able to proceed with the next
+                 326     ; memory or SHA-1 function. This is automated by the program.
+                 327     ;
+                 328     ;
+008 36344        329     ds2432_menu:            CALL            send_ds2432_menu        ;Menu and command selection
+009 362EC        330                             CALL            send_cr
+                 331     ;
+00A 362EC        332     ds2432_prompt:          CALL            send_cr                 ;prompt for user input
+00B 362EC        333                             CALL            send_cr
+00C 00F3E        334                             LOAD            uart_data, #character_greater_than ;prompt for input
+00D 362A5        335                             CALL            send_to_uart
+00E 362E1        336                             CALL            read_upper_case
+                 337                             COMPARE         s0, #character_1        ;test for commands and execute as required
+E: instruction not supported on the this device: COMPARE sX, kk.
+00F 35053        338                             JUMP            z, write_scratchpad_command
+                 339                             COMPARE         s0, #character_2
+E: instruction not supported on the this device: COMPARE sX, kk.
+010 35079        340                             JUMP            z, read_scratchpad_command
+                 341                             COMPARE         s0, #character_3
+E: instruction not supported on the this device: COMPARE sX, kk.
+011 35040        342                             JUMP            z, load_first_secret_command
+                 343                             COMPARE         s0, #character_4
+E: instruction not supported on the this device: COMPARE sX, kk.
+012 3509D        344                             JUMP            z, read_auth_page_command
+013 362EC        345                             CALL            send_cr                 ;no valid command input
+014 00F3F        346                             LOAD            uart_data, #character_question ;display ???
+015 362A5        347                             CALL            send_to_uart
+016 362A5        348                             CALL            send_to_uart
+017 362A5        349                             CALL            send_to_uart
+018 3400A        350                             JUMP            ds2432_prompt           ;Try again!
+                 351     ;
+                 352     ;
+                 353     ;
+                 354     ;
+                 355     ;**************************************************************************************
+                 356     ; DS2432 Read ROM Command.
+                 357     ;**************************************************************************************
+                 358     ;
+                 359     ; The read ROM command (33 hex) allows the 8-bit family code, 48-bit unique serial
+                 360     ; number and 8-bit CRC to be read from the DS2432 device.
+                 361     ;
+                 362     ; This routine reads the values and places them in KCPSM3 scratch pad memory
+                 363     ; locations for future reference. These locations should be defined with constants
+                 364     ; as follows and MUST be in consecutive ascending locations.
+                 365     ;
+                 366     ;  family_code
+                 367     ;     Location to store family code which should be 33 hex
+                 368     ;  serial_number0 to serial_number5
+                 369     ;     6 bytes to hold 48-bit serial number (LS-byte first).
+                 370     ;  read_ROM_CRC
+                 371     ;     8-bit CRC value for the above data.
+                 372     ;
+                 373     ;
+                 374     ; The routine also displays the values read and performs a verification of the
+                 375     ; 8-bit CRC displaying a 'Pass' or 'Fail' message as appropriate.
+                 376     ;
+019 00333        377     read_rom_command:       LOAD            s3, #0x33               ;Read ROM Command
+01A 3624E        378                             CALL            write_byte_slow         ;transmit command
+01B 00500        379                             LOAD            s5, #family_code        ;memory pointer
+01C 3626F        380     read_rom_loop:          CALL            read_byte_slow          ;read response into s3
+                 381                             STORE           s3, @s5                 ;store value
+E: instruction not supported on the this device: STORE sX, sY.
+                 382                             COMPARE         s5, #read_rom_crc       ;8-bytes to read
+E: instruction not supported on the this device: COMPARE sX, kk.
+01D 35026        383                             JUMP            z, display_rom
+01E 08501        384                             ADD             s5, #0x01
+01F 34020        385                             JUMP            read_rom_loop
+020 362EC        386     display_rom:            CALL            send_cr
+021 363D6        387                             CALL            send_code               ;'code=' to display family code
+                 388                             FETCH           s0, family_code
+E: instruction not supported on the this device: FETCH sX, ss.
+022 362C2        389                             CALL            send_hex_byte
+023 362EC        390                             CALL            send_cr
+024 363DC        391                             CALL            send_sn                 ;'s/n=' to display family code
+025 00506        392                             LOAD            s5, #serial_number5     ;memory pointer starting MS-byte first
+  0002D          393     disp_serial_loop:       FETCH           s0, @s5
+E: instruction not supported on the this device: FETCH sX, sY.
+026 362C2        394                             CALL            send_hex_byte
+                 395                             COMPARE         s5, #serial_number0
+E: instruction not supported on the this device: COMPARE sX, kk.
+027 35033        396                             JUMP            z, end_serial
+028 0C501        397                             SUB             s5, #0x01
+029 3402D        398                             JUMP            disp_serial_loop
+02A 362EC        399     end_serial:             CALL            send_cr
+02B 363E2        400                             CALL            send_crc                ;'CRC=' to display CRC value
+                 401                             FETCH           s0, read_rom_crc
+E: instruction not supported on the this device: FETCH sX, ss.
+02C 362C2        402                             CALL            send_hex_byte
+02D 362EC        403                             CALL            send_cr
+02E 361F1        404                             CALL            compute_crc8            ;compute CRC value in s0
+                 405                             FETCH           s1, read_rom_crc        ;compare with received value
+E: instruction not supported on the this device: FETCH sX, ss.
+                 406                             COMPARE         s0, s1
+E: instruction not supported on the this device: COMPARE sX, sY.
+02F 3543E        407                             JUMP            nz, crc8_fail
+030 363AD        408                             CALL            send_pass
+031 24000        409                             RETURN
+032 363B4        410     crc8_fail:              CALL            send_fail
+033 24000        411                             RETURN
+                 412     ;
+                 413     ;
+                 414     ;
+                 415     ;**************************************************************************************
+                 416     ; DS2432 Load First Secret Command.
+                 417     ;**************************************************************************************
+                 418     ;
+                 419     ; This command will only be valid if the write scratchpad memory command has previously
+                 420     ; been used to define the new secret to be stored at address 0080.
+                 421     ;
+                 422     ; The Load First Secret Command (5A hex) will only copy the scratchpad contents into                           ;
+                 423     ; the EEPROM array of the DS2432 if the address was correctly specified in the
+                 424     ; write scratchpad command. This routine will assume that the address specified
+                 425     ; was 0080. If everything is OK with the programming of the secret, the DS2432 responds
+                 426     ; with 'AA' hex after the command and this routine will report 'Pass'. You can further
+                 427     ; check using a read scratchpad command and look to see if E/S has changed from '5F'
+                 428     ; to 'DF' which indicates the successful write.
+                 429     ;
+                 430     ; Note that this program defines the secret to be used by the PicoBlaze SHA-1 algorithm
+                 431     ; in the constants 'secret0' through to 'secret7'. Only if you program the DS2432
+                 432     ; with a matching secret will the read authenticated message command result in a
+                 433     ; 'Pass' being reported for the MAC. This Load First Secret Command routine deliberately
+                 434     ; does not update the secret used by the PicoBlaze SHA-1 algorithm so that you can
+                 435     ; prove that only a DS2432 with the matching secret will generate matching MAC
+                 436     ; responses.
+                 437     ;
+                 438     ;
+                 439     ;
+034 0035A        440     load_first_secret_command: LOAD         s3, #0x5a               ;Load First Secret Command
+035 3624E        441                             CALL            write_byte_slow         ;transmit command
+036 00380        442                             LOAD            s3, #0x80               ;TA1 value for secret = 80 hex
+037 3624E        443                             CALL            write_byte_slow
+038 00300        444                             LOAD            s3, #0x00               ;TA2 value for secret = 00 hex
+039 3624E        445                             CALL            write_byte_slow
+03A 0035F        446                             LOAD            s3, #0x5f               ;E/S value before writing = 5F hex
+03B 3624E        447                             CALL            write_byte_slow
+03C 36295        448                             CALL            delay_20ms              ;write takes place in 10ms
+03D 362EC        449                             CALL            send_cr
+03E 36391        450                             CALL            send_secret
+03F 362EF        451                             CALL            send_space
+040 3626F        452                             CALL            read_byte_slow          ;read data into s3
+                 453                             COMPARE         s3, #0xaa               ;test response
+E: instruction not supported on the this device: COMPARE sX, kk.
+041 35051        454                             JUMP            z, secret_pass
+042 363B4        455                             CALL            send_fail
+043 34003        456                             JUMP            warm_start
+044 363AD        457     secret_pass:            CALL            send_pass
+045 34003        458                             JUMP            warm_start
+                 459     ;
+                 460     ;
+                 461     ;**************************************************************************************
+                 462     ; DS2432 Write Scratchpad Memory Command.
+                 463     ;**************************************************************************************
+                 464     ;
+                 465     ; The write scratchpad memory command (0F hex) allows 8-bytes of data to be written
+                 466     ; together with a target address for final storage in the main memory map. The
+                 467     ; DS2432 scratch pad is also used to define a 3 byte 'challenge' used in the
+                 468     ; SHA-1 algorithm.
+                 469     ;
+                 470     ; The DS2432 provides an initial confirmation of the write by returning a 16-bit CRC
+                 471     ; value which KCPSM3 tests. The CRC is computed based on the command, address and
+                 472     ; data transmitted (11 bytes). PicoBlaze also computes the CRC and and tests this
+                 473     ; against the value received from the DS2432.
+                 474     ;
+                 475     ; This routine prompts the user to enter the 16-bit target address is to be loaded
+                 476     ; into the target address registers TA2 and TA1 in the DS2432 device. Note that only
+                 477     ; address values below 0090 hex are valid. If the address is too high, then the
+                 478     ; DS2432 aborts the command and this routine will too.
+                 479     ;
+                 480     ; Also note that the address will be forced internally to the DS2432 to match an
+                 481     ; 8-byte boundary address in which the least significant 3-bits are reset to '000'
+                 482     ; regardless of the address provided. The CRC still reflects the transmitted address.
+                 483     ;
+                 484     ; After providing a valid address, the routine then prompts the user to enter
+                 485     ; 8 bytes of data which are written to the DS2432.
+                 486     ;
+                 487     ;
+                 488     ;
+046 3620B        489     write_scratchpad_command: CALL          clear_crc16             ;prepare CRC registers [sE,sD]
+047 0030F        490                             LOAD            s3, #0x0f               ;write scratchpad memory Command
+048 3624E        491                             CALL            write_byte_slow         ;transmit command
+049 3620E        492                             CALL            compute_crc16           ;compute CRC for value in 's3'
+04A 363BD        493     wsc_addr_loop:          CALL            send_address            ;obtain 16-bit address 0000 to FFFF in [s5,s4]
+04B 362E6        494                             CALL            obtain_8bits
+04C 35857        495                             JUMP            c, wsc_addr_loop        ;bad input address
+04D 10500        496                             LOAD            s5, s0
+04E 362E6        497                             CALL            obtain_8bits
+04F 35857        498                             JUMP            c, wsc_addr_loop        ;bad input address
+050 10400        499                             LOAD            s4, s0
+051 10320        500                             LOAD            s3, s4                  ;transmit target address TA1 (LS-Byte)
+052 3624E        501                             CALL            write_byte_slow
+053 3620E        502                             CALL            compute_crc16           ;compute CRC for value in 's3'
+054 10328        503                             LOAD            s3, s5                  ;transmit target address TA2 (MS-Byte)
+055 3624E        504                             CALL            write_byte_slow
+056 3620E        505                             CALL            compute_crc16           ;compute CRC for value in 's3'
+                 506                             COMPARE         s5, #0x00               ;check address less than 0090 hex
+E: instruction not supported on the this device: COMPARE sX, kk.
+057 35403        507                             JUMP            nz, warm_start          ;DS2432 aborts command and so do we!
+                 508                             COMPARE         s4, #0x90               ;no need to read data bytes.
+E: instruction not supported on the this device: COMPARE sX, kk.
+058 35C03        509                             JUMP            nc, warm_start
+059 00400        510                             LOAD            s4, #0x00               ;initialise byte counter
+05A 363C8        511     wsc_data_loop:          CALL            send_data               ;obtain a byte of data
+05B 10F20        512                             LOAD            uart_data, s4           ;display which byte requested
+05C 08F30        513                             ADD             uart_data, #character_0 ;convert to ASCII
+05D 362A5        514                             CALL            send_to_uart
+05E 363C5        515                             CALL            send_equals
+05F 362E6        516                             CALL            obtain_8bits
+060 35869        517                             JUMP            c, wsc_data_loop        ;bad input data
+061 10300        518                             LOAD            s3, s0                  ;transmit byte
+062 3624E        519                             CALL            write_byte_slow
+063 3620E        520                             CALL            compute_crc16           ;compute CRC for value in 's3'
+064 08401        521                             ADD             s4, #0x01               ;count bytes
+                 522                             COMPARE         s4, #0x08
+E: instruction not supported on the this device: COMPARE sX, kk.
+065 35469        523                             JUMP            nz, wsc_data_loop
+066 362EC        524                             CALL            send_cr
+067 3621C        525                             CALL            read_send_test_crc16    ;read, display and test CRC value
+068 34003        526                             JUMP            warm_start
+                 527     ;
+                 528     ;
+                 529     ;
+                 530     ;**************************************************************************************
+                 531     ; DS2432 Read Scratchpad Memory Command.
+                 532     ;**************************************************************************************
+                 533     ;
+                 534     ; The read scratchpad memory command (AA hex) allows the 8-bytes of data previously
+                 535     ; to be written into the scratchpad memory to be read back for verification together with
+                 536     ; the target address, a transfer status register (E/S) and a 16-bit CRC value.
+                 537     ;
+                 538     ; The 16-bit CRC is formed of the command byte, address TA1 and TA2, E/S byte and 8 data
+                 539     ; bytes as transmitted (12 bytes). These may not be the same as the values provided
+                 540     ; during a previous write to scratchpad memory. PicoBlaze also computes the CRC and
+                 541     ; and tests this against the value received from the DS2432.
+                 542     ;
+                 543     ; The 8 bytes of data are also copied to PicoBlaze memory at locations defined by the
+                 544     ; constants 'scratchpad0' to 'scratchpad7'. Three bytes are used as a 'challenge'
+                 545     ; by the SHA-1 algorithm.
+                 546     ;
+                 547     ;
+                 548     ;
+069 3620B        549     read_scratchpad_command: CALL           clear_crc16             ;prepare CRC registers [sE,sD]
+06A 003AA        550                             LOAD            s3, #0xaa               ;read scratchpad memory Command
+06B 3624E        551                             CALL            write_byte_slow         ;transmit command
+06C 3620E        552                             CALL            compute_crc16           ;compute CRC for value in 's3'
+06D 363BD        553                             CALL            send_address            ;display 'Address='
+06E 3626F        554                             CALL            read_byte_slow          ;read address into [s5,s4]
+06F 3620E        555                             CALL            compute_crc16           ;compute CRC for value in 's3'
+070 10418        556                             LOAD            s4, s3
+071 3626F        557                             CALL            read_byte_slow
+072 3620E        558                             CALL            compute_crc16           ;compute CRC for value in 's3'
+073 10518        559                             LOAD            s5, s3
+074 10028        560                             LOAD            s0, s5                  ;display address
+075 362C2        561                             CALL            send_hex_byte
+076 10020        562                             LOAD            s0, s4
+077 362C2        563                             CALL            send_hex_byte
+078 363CE        564                             CALL            send_es                 ;display 'E/S='
+079 3626F        565                             CALL            read_byte_slow          ;read E/S register
+07A 3620E        566                             CALL            compute_crc16           ;compute CRC for value in 's3'
+07B 10018        567                             LOAD            s0, s3                  ;display value
+07C 362C2        568                             CALL            send_hex_byte
+07D 363C8        569                             CALL            send_data               ;display 'Data='
+07E 363C5        570                             CALL            send_equals
+07F 0041C        571                             LOAD            s4, #scratchpad0        ;pointer to memory and byte counter
+080 362EF        572     rsc_loop:               CALL            send_space
+081 3626F        573                             CALL            read_byte_slow          ;read data byte
+082 3620E        574                             CALL            compute_crc16           ;compute CRC for value in 's3'
+                 575                             STORE           s3, @s4                 ;store value in memory
+E: instruction not supported on the this device: STORE sX, sY.
+083 10018        576                             LOAD            s0, s3                  ;display value
+084 362C2        577                             CALL            send_hex_byte
+                 578                             COMPARE         s4, #scratchpad7        ;count bytes
+E: instruction not supported on the this device: COMPARE sX, kk.
+085 3509A        579                             JUMP            z, end_rsc_data_loop
+086 08401        580                             ADD             s4, #0x01
+087 34090        581                             JUMP            rsc_loop
+088 362EC        582     end_rsc_data_loop:      CALL            send_cr
+089 3621C        583                             CALL            read_send_test_crc16    ;read, display and test CRC value
+08A 34003        584                             JUMP            warm_start
+                 585     ;
+                 586     ;
+                 587     ;
+                 588     ;
+                 589     ;
+                 590     ;**************************************************************************************
+                 591     ; DS2432 Read Authenticated Page Command.
+                 592     ;**************************************************************************************
+                 593     ;
+                 594     ; The read authenticated page command (A5 hex) allows the 8-byte secret to be tested
+                 595     ; without it actually being read (which would obviously give away the secret!).
+                 596     ;
+                 597     ; This routine has been written to work with page 0 but could easily be changed and
+                 598     ; is documented below. During the first part of the command, the 32 bytes
+                 599     ; contained in the page are read back from the DS2432 and these are used in
+                 600     ; the preparation of the table required for the for SHA-1 algorithm. Other values
+                 601     ; stored in the table are the secret, serial number of the DS2432, family code, some
+                 602     ; constants, 4-bits of the page address and a 3 byte 'challenge' currently set into
+                 603     ; the DS2432 scratchpad memory.
+                 604     ;
+                 605     ; NOTE - The read scratchpad command must be executed before this routine in order
+                 606     ; that the 3 byte 'challenge' of scratchpad memory is known to PicoBlaze.
+                 607     ;
+                 608     ; During this command, two 16-bit CRC values are generated which PicoBlaze also
+                 609     ; computes and tests. The first is formed of the command byte, address TA1 and TA2,
+                 610     ; all the bytes of the page read and an 'FF' byte. The second is formed of the 20
+                 611     ; bytes of the 160-but message authentication code (MAC).
+                 612     ;
+                 613     ;
+                 614     ; Preparing the table.
+                 615     ;
+                 616     ; The table is stored in the external 'Wt' buffer and must first be initialised with the
+                 617     ; 16 'M' words (32-bit words each requiring 4 bytes). This is achieved by shifting in
+                 618     ; each word in sequence. Storing each word most significant byte first is a natural
+                 619     ; fit with the reading of the page data from the DS2432 and the way each 'M' word
+                 620     ; is organised. Notice how this causes least significant bytes to be swapped with most
+                 621     ; significant bytes!
+                 622     ;
+                 623     ;          [31:24]      [23:16]      [15:8]       [7:0]
+                 624     ;
+                 625     ;   M0 = [secret0    , secret1    , secret2    , secret3    ]
+                 626     ;   M1 = [page_data0 , page_data1 , page_data2 , page_data3 ]
+                 627     ;   M2 = [page_data4 , page_data5 , page_data6 , page_data7 ]
+                 628     ;   M3 = [page_data8 , page_data9 , page_data10, page_data11]
+                 629     ;   M4 = [page_data12, page_data13, page_data14, page_data15]
+                 630     ;   M5 = [page_data16, page_data17, page_data18, page_data19]
+                 631     ;   M6 = [page_data20, page_data21, page_data22, page_data23]
+                 632     ;   M7 = [page_data24, page_data25, page_data26, page_data27]
+                 633     ;   M8 = [page_data28, page_data29, page_data30, page_data31]
+                 634     ;   M9 = [   FF      ,    FF      ,    FF      ,    FF      ]
+                 635     ;  M10 = [   40      ,    33      , serial_num0, serial_num1]
+                 636     ;  M11 = [serial_num2, serial_num3, serial_num4, serial_num5]
+                 637     ;  M12 = [secret4    , secret5    , secret6    , secret7    ]
+                 638     ;  M13 = [scratchpad4, scratchpad5, scratchpad6,    80      ]
+                 639     ;  M14 = [   00      ,    00      ,    00      ,    00      ]
+                 640     ;  M15 = [   00      ,    00      ,    01      ,    B8      ]
+                 641     ;
+                 642     ; In M10, the '33' is the family code and the '40' is made up of a constant bit
+                 643     ; pattern '0100' and then bits [8:5] of the page address. This gives 4 possible values
+                 644     ; for this byte during a Read Authenticated Page Command, but this routine is currently
+                 645     ; fixed to work with page 0 only.
+                 646     ;        40 - page 0
+                 647     ;        41 - page 1
+                 648     ;        42 - page 2
+                 649     ;        43 - page 3
+                 650     ;
+                 651     ; M13 contains the 3 byte challenge from the scratch pad memory. This assumes that a
+                 652     ; read scratchpad command has previously been used and the bytes held in the DS2432
+                 653     ; scratchpad match those held in the PicoBlaze memory.
+                 654     ;
+                 655     ;
+                 656     ; The 160-bit Message Authentication Code (MAC) is computed from the table using the SHA-1
+                 657     ; algorithm. This algorithm actually results in 5 variables 'A', 'B', 'C', 'D' and 'E'
+                 658     ; which are 32-bit values each formed of 4 bytes. The MAC is the concatenation of
+                 659     ; the variables. To match the same order in which the Read Authenticated Page Command
+                 660     ; sends the MAC, the variables must be read in the order 'E', 'D', 'C', 'B' and 'A' and
+                 661     ; with the least significant byte of each variable first.
+                 662     ;
+                 663     ;
+                 664     ;
+                 665     ;
+                 666     ;
+08B 00001        667     read_auth_page_command: LOAD            s0, #secret0            ;store M0 (secret 0, 1, 2 and 3) in Wt buffer.
+08C 22010        668                             OUTPUT          s0, w_word_write_port
+08D 00023        669                             LOAD            s0, #secret1
+08E 22010        670                             OUTPUT          s0, w_word_write_port
+08F 00045        671                             LOAD            s0, #secret2
+090 22010        672                             OUTPUT          s0, w_word_write_port
+091 00067        673                             LOAD            s0, #secret3
+092 22010        674                             OUTPUT          s0, w_word_write_port
+                 675     ;
+                 676     ;Start of DS2432 command
+                 677     ;
+093 3620B        678                             CALL            clear_crc16             ;prepare CRC registers [sE,sD]
+094 003A5        679                             LOAD            s3, #0xa5               ;read authenticated page command
+095 3624E        680                             CALL            write_byte_slow         ;transmit command
+096 3620E        681                             CALL            compute_crc16           ;compute CRC for value in 's3'
+097 00500        682                             LOAD            s5, #0x00               ;set address for page 0
+098 00400        683                             LOAD            s4, #0x00               ;  [TA2,TA1]=0000 hex
+099 10320        684                             LOAD            s3, s4                  ;transmit TA1
+09A 3624E        685                             CALL            write_byte_slow
+09B 3620E        686                             CALL            compute_crc16           ;compute CRC for value in 's3'
+09C 10328        687                             LOAD            s3, s5                  ;transmit TA2
+09D 3624E        688                             CALL            write_byte_slow
+09E 3620E        689                             CALL            compute_crc16           ;compute CRC for value in 's3'
+                 690     ;
+                 691     ;Read 32-bytes of data associated with page 0
+                 692     ;Store these as M1 through to M8
+                 693     ;
+09F 362EC        694     rapc_line_loop:         CALL            send_cr
+0A0 10028        695                             LOAD            s0, s5                  ;display 16-bit address
+0A1 362C2        696                             CALL            send_hex_byte
+0A2 10020        697                             LOAD            s0, s4
+0A3 362C2        698                             CALL            send_hex_byte
+0A4 362EF        699                             CALL            send_space
+0A5 362EF        700                             CALL            send_space
+0A6 362EF        701     rapc_data_loop:         CALL            send_space
+0A7 3626F        702                             CALL            read_byte_slow          ;read data into s3
+0A8 3620E        703                             CALL            compute_crc16           ;compute CRC for value in 's3'
+0A9 22310        704                             OUTPUT          s3, w_word_write_port   ;store as 'M' word
+0AA 10018        705                             LOAD            s0, s3                  ;display byte
+0AB 362C2        706                             CALL            send_hex_byte
+0AC 08401        707                             ADD             s4, #0x01               ;increment address
+0AD 0A500        708                             ADDCY           s5, #0x00
+                 709                             TEST            s4, #0x07               ;test for 8-byte boundary
+E: instruction not supported on the this device: TEST sX, kk.
+0AE 354B8        710                             JUMP            nz, rapc_data_loop
+                 711                             COMPARE         s4, #0x20               ;test for last address
+E: instruction not supported on the this device: COMPARE sX, kk.
+0AF 354B1        712                             JUMP            nz, rapc_line_loop
+0B0 362EC        713                             CALL            send_cr
+                 714     ;
+                 715     ;Read one byte that should be value FF hex
+                 716     ;
+0B1 3626F        717                             CALL            read_byte_slow          ;read data into s3
+0B2 3620E        718                             CALL            compute_crc16           ;compute CRC for value in 's3'
+0B3 10018        719                             LOAD            s0, s3                  ;display byte
+0B4 362C2        720                             CALL            send_hex_byte
+0B5 362EC        721                             CALL            send_cr
+0B6 3621C        722                             CALL            read_send_test_crc16    ;read, display and test CRC value
+                 723     ;
+                 724     ;Complete table by stroring M9 through to M15
+                 725     ;
+0B7 000FF        726                             LOAD            s0, #0xff               ;W9 = FF FF FF FF
+0B8 00104        727                             LOAD            s1, #0x04
+0B9 22010        728     store_w9:               OUTPUT          s0, w_word_write_port
+0BA 0C101        729                             SUB             s1, #0x01
+0BB 354CD        730                             JUMP            nz, store_w9
+                 731     ;
+0BC 00040        732                             LOAD            s0, #0x40               ;W10 begins with 40 for page 0
+0BD 22010        733                             OUTPUT          s0, w_word_write_port
+                 734     ;
+                 735     ;W10 ends with family code and serial number 0 and 1.
+                 736     ;W11 is formed of serial number 2, 3, 4 and 5.
+                 737     ;All of this information is in PicoBlaze memory having been read by the
+                 738     ;read ROM command.
+                 739     ;
+0BE 00100        740                             LOAD            s1, #family_code        ;pointer to memory
+0BF 00207        741                             LOAD            s2, #0x07               ;7 bytes to read and store
+  000D4          742     next_m10_m11:           FETCH           s0, @s1
+E: instruction not supported on the this device: FETCH sX, sY.
+0C0 22010        743                             OUTPUT          s0, w_word_write_port
+0C1 08101        744                             ADD             s1, #0x01               ;increment pointer
+0C2 0C201        745                             SUB             s2, #0x01
+0C3 354D4        746                             JUMP            nz, next_m10_m11
+                 747     ;
+0C4 00089        748                             LOAD            s0, #secret4            ;store M12 (secret 4, 5, 6 and 7) in Wt buffer
+0C5 22010        749                             OUTPUT          s0, w_word_write_port
+0C6 000AB        750                             LOAD            s0, #secret5
+0C7 22010        751                             OUTPUT          s0, w_word_write_port
+0C8 000CD        752                             LOAD            s0, #secret6
+0C9 22010        753                             OUTPUT          s0, w_word_write_port
+0CA 000EF        754                             LOAD            s0, #secret7
+0CB 22010        755                             OUTPUT          s0, w_word_write_port
+                 756     ;
+                 757                             FETCH           s0, scratchpad4         ;M13 uses scratchpad 4, 5, and 6 and '80' hex
+E: instruction not supported on the this device: FETCH sX, ss.
+0CC 22010        758                             OUTPUT          s0, w_word_write_port
+                 759                             FETCH           s0, scratchpad5
+E: instruction not supported on the this device: FETCH sX, ss.
+0CD 22010        760                             OUTPUT          s0, w_word_write_port
+                 761                             FETCH           s0, scratchpad6
+E: instruction not supported on the this device: FETCH sX, ss.
+0CE 22010        762                             OUTPUT          s0, w_word_write_port
+0CF 00080        763                             LOAD            s0, #0x80
+0D0 22010        764                             OUTPUT          s0, w_word_write_port
+                 765     ;
+0D1 00000        766                             LOAD            s0, #0x00               ;W14 = 00 00 00 00   W15 = 00 00 01 B8
+0D2 00106        767                             LOAD            s1, #0x06
+0D3 22010        768     store_w14_w15:          OUTPUT          s0, w_word_write_port
+0D4 0C101        769                             SUB             s1, #0x01
+0D5 354EB        770                             JUMP            nz, store_w14_w15
+0D6 00001        771                             LOAD            s0, #0x01
+0D7 22010        772                             OUTPUT          s0, w_word_write_port
+0D8 000B8        773                             LOAD            s0, #0xb8
+0D9 22010        774                             OUTPUT          s0, w_word_write_port
+                 775     ;
+                 776     ;Compute the SHA-1 algorithm at the same time that the DS2432 is also computing (2ms).
+                 777     ;
+0DA 36115        778                             CALL            compute_sha1
+                 779     ;
+                 780     ;The 160-bit Message Authentication Code is read from the DS2432 as 20 bytes
+                 781     ;and compared with the concatenation of variables E, D, C, B and A in that order
+                 782     ;with each variable received from the DS2432 least significant byte first.
+                 783     ;Each received byte is also used to form a 16-bit CRC value which is tested to
+                 784     ;reveal any communication errors.
+                 785     ;
+                 786     ;
+0DB 363E7        787                             CALL            send_mac                ;display 'mac='
+0DC 3620B        788                             CALL            clear_crc16             ;prepare CRC registers [sE,sD]
+0DD 00C00        789                             LOAD            sc, #0x00               ;Clear byte match counter
+0DE 00B18        790                             LOAD            sb, #var_e0             ;start match with LS-Byte of variable 'E'
+0DF 00A04        791     mac_match_var:          LOAD            sa, #0x04               ;4 bytes to match in each variable
+  000F8          792     mac_match_byte:         FETCH           s9, @sb                 ;read variable byte from local SHA-1
+E: instruction not supported on the this device: FETCH sX, sY.
+0E0 3626F        793                             CALL            read_byte_slow          ;read DS2432 byte into s3
+0E1 3620E        794                             CALL            compute_crc16           ;compute CRC for value in 's3'
+                 795                             COMPARE         s3, s9                  ;compare MAC values
+E: instruction not supported on the this device: COMPARE sX, sY.
+0E2 354FE        796                             JUMP            nz, display_mac_byte    ;count matching bytes
+0E3 08C01        797                             ADD             sc, #0x01               ;decrement match counter
+0E4 10018        798     display_mac_byte:       LOAD            s0, s3                  ;display byte
+0E5 362C2        799                             CALL            send_hex_byte
+0E6 362EF        800                             CALL            send_space
+0E7 0CA01        801                             SUB             sa, #0x01               ;counts bytes per variable
+0E8 35105        802                             JUMP            z, next_mac_var
+0E9 08B01        803                             ADD             sb, #0x01
+0EA 340F8        804                             JUMP            mac_match_byte
+  00105          805     next_mac_var:           COMPARE         sb, #var_a3             ;test for last byte
+E: instruction not supported on the this device: COMPARE sX, kk.
+0EB 35109        806                             JUMP            z, report_mac
+0EC 0CB07        807                             SUB             sb, #0x07               ;point to next variable
+0ED 340F7        808                             JUMP            mac_match_var
+                 809     ;
+                 810     ;MAC has passed if all 20 bytes matched
+                 811     ;
+0EE 362EC        812     report_mac:             CALL            send_cr
+                 813                             COMPARE         sc, #0x14               ;20 bytes should have matched
+E: instruction not supported on the this device: COMPARE sX, kk.
+0EF 3550E        814                             JUMP            nz, mac_fail
+0F0 363AD        815                             CALL            send_pass
+0F1 3410F        816                             JUMP            read_mac_crc
+0F2 363B4        817     mac_fail:               CALL            send_fail
+                 818     ;
+                 819     ;Next two bytes received are the 16-bit CRC
+                 820     ;Read 16-bit CRC into [s5,s4] and send value to UART
+                 821     ;
+0F3 3621C        822     read_mac_crc:           CALL            read_send_test_crc16    ;read, display and test CRC value
+                 823     ;
+                 824     ;Read one byte that should be value AA hex.
+                 825     ;  Would actually read AA hex continuously until master reset
+                 826     ;
+0F4 3626F        827                             CALL            read_byte_slow          ;read data into s3
+0F5 10018        828                             LOAD            s0, s3                  ;display byte
+0F6 362C2        829                             CALL            send_hex_byte
+0F7 362EC        830                             CALL            send_cr
+                 831     ;
+0F8 34003        832                             JUMP            warm_start
+                 833     ;
+                 834     ;
+                 835     ;**************************************************************************************
+                 836     ; Compute SHA-1 Algorithm.
+                 837     ;**************************************************************************************
+                 838     ;
+                 839     ; Computes the SHA-1 algorithm based on the initial table of values (M0 through to M15)
+                 840     ; which are stored in the external Wt buffer.
+                 841     ;
+                 842     ; The SHA-1 algorithms uses 5 variables called 'A', 'B', 'C', 'D' and 'E'. Each variable
+                 843     ; is 32-bits and stored as 4 bytes in PicoBlaze scratch pad memory. The locations must
+                 844     ; be defined using constants 'var_A0' thought to 'var_E3' in ascending locations.
+                 845     ;
+                 846     ; Constants must also be used to define access to the external Wt buffer.
+                 847     ;
+                 848     ; During this process, register 'sE' is used to count iterations from 0 to 79 (4F hex).
+                 849     ; Other registers are consistently grouped as follows to support 32-bit operations.
+                 850     ;
+                 851     ; Register set [s5,s4,s3,s2] is used as a temporary 32-bit word
+                 852     ; Register set [s9,s8,s7,s6] is used as a temporary 32-bit word
+                 853     ; Register set [sD,sC,sB,sA] is used as a temporary 32-bit word
+                 854     ;
+                 855     ;
+                 856     ; Initialise the 32-bit variables
+                 857     ;
+                 858     ;
+0F9 00001        859     compute_sha1:           LOAD            s0, #0x01               ;A=67452301
+                 860                             STORE           s0, var_a0
+E: instruction not supported on the this device: STORE sX, ss.
+0FA 00023        861                             LOAD            s0, #0x23
+                 862                             STORE           s0, var_a1
+E: instruction not supported on the this device: STORE sX, ss.
+0FB 00045        863                             LOAD            s0, #0x45
+                 864                             STORE           s0, var_a2
+E: instruction not supported on the this device: STORE sX, ss.
+0FC 00067        865                             LOAD            s0, #0x67
+                 866                             STORE           s0, var_a3
+E: instruction not supported on the this device: STORE sX, ss.
+0FD 00089        867                             LOAD            s0, #0x89               ;B=EFCDAB89
+                 868                             STORE           s0, var_b0
+E: instruction not supported on the this device: STORE sX, ss.
+0FE 000AB        869                             LOAD            s0, #0xab
+                 870                             STORE           s0, var_b1
+E: instruction not supported on the this device: STORE sX, ss.
+0FF 000CD        871                             LOAD            s0, #0xcd
+                 872                             STORE           s0, var_b2
+E: instruction not supported on the this device: STORE sX, ss.
+100 000EF        873                             LOAD            s0, #0xef
+                 874                             STORE           s0, var_b3
+E: instruction not supported on the this device: STORE sX, ss.
+101 000FE        875                             LOAD            s0, #0xfe               ;C=98BADCFE
+                 876                             STORE           s0, var_c0
+E: instruction not supported on the this device: STORE sX, ss.
+102 000DC        877                             LOAD            s0, #0xdc
+                 878                             STORE           s0, var_c1
+E: instruction not supported on the this device: STORE sX, ss.
+103 000BA        879                             LOAD            s0, #0xba
+                 880                             STORE           s0, var_c2
+E: instruction not supported on the this device: STORE sX, ss.
+104 00098        881                             LOAD            s0, #0x98
+                 882                             STORE           s0, var_c3
+E: instruction not supported on the this device: STORE sX, ss.
+105 00076        883                             LOAD            s0, #0x76               ;D=10325476
+                 884                             STORE           s0, var_d0
+E: instruction not supported on the this device: STORE sX, ss.
+106 00054        885                             LOAD            s0, #0x54
+                 886                             STORE           s0, var_d1
+E: instruction not supported on the this device: STORE sX, ss.
+107 00032        887                             LOAD            s0, #0x32
+                 888                             STORE           s0, var_d2
+E: instruction not supported on the this device: STORE sX, ss.
+108 00010        889                             LOAD            s0, #0x10
+                 890                             STORE           s0, var_d3
+E: instruction not supported on the this device: STORE sX, ss.
+109 000F0        891                             LOAD            s0, #0xf0               ;E=C3D2E1F0
+                 892                             STORE           s0, var_e0
+E: instruction not supported on the this device: STORE sX, ss.
+10A 000E1        893                             LOAD            s0, #0xe1
+                 894                             STORE           s0, var_e1
+E: instruction not supported on the this device: STORE sX, ss.
+10B 000D2        895                             LOAD            s0, #0xd2
+                 896                             STORE           s0, var_e2
+E: instruction not supported on the this device: STORE sX, ss.
+10C 000C3        897                             LOAD            s0, #0xc3
+                 898                             STORE           s0, var_e3
+E: instruction not supported on the this device: STORE sX, ss.
+                 899     ;
+                 900     ;
+10D 00E00        901                             LOAD            se, #0x00               ;reset iteration counter
+                 902     ;
+                 903     ;
+                 904     ;Compute ft(B,C,D) in register set [s5,s4,s3,s2] and then add constant Kt.
+                 905     ;
+                 906     ;Iterations 0 to 19 - process type 1
+                 907     ;   ft = (B and C) or ((not B) and D)
+                 908     ;  Then the constant Kt=5A827999 will be added
+                 909     ;
+                 910     ;Iterations 20 to 39  and iterations 60 to 79  - process type 2
+                 911     ;   ft = B xor C xor D
+                 912     ;  Then the constant Kt=6ED9EBA1 will be added for iterations 20 to 39
+                 913     ;  Then the constant Kt=CA62C1D6 will be added for iterations 60 to 79
+                 914     ;
+                 915     ;Iterations 40 to 59  - process type 3
+                 916     ;   ft = (B and C) or (B and D) or (C and D)
+                 917     ;  Then the constant Kt=8F1BBCDC will be added
+                 918     ;
+  0013E          919     next_sha1_iteration:    FETCH           s5, var_b3              ;B in [s5,s4,s3,s2]
+E: instruction not supported on the this device: FETCH sX, ss.
+                 920                             FETCH           s4, var_b2
+E: instruction not supported on the this device: FETCH sX, ss.
+                 921                             FETCH           s3, var_b1
+E: instruction not supported on the this device: FETCH sX, ss.
+                 922                             FETCH           s2, var_b0
+E: instruction not supported on the this device: FETCH sX, ss.
+10E 36176        923                             CALL            fetch_c                 ;C in [s9,s8,s7,s6]
+                 924                             FETCH           sd, var_d3              ;D in [sD,sC,sB,sA]
+E: instruction not supported on the this device: FETCH sX, ss.
+                 925                             FETCH           sc, var_d2
+E: instruction not supported on the this device: FETCH sX, ss.
+                 926                             FETCH           sb, var_d1
+E: instruction not supported on the this device: FETCH sX, ss.
+                 927                             FETCH           sa, var_d0
+E: instruction not supported on the this device: FETCH sX, ss.
+                 928     ;
+                 929     ;Determine process type
+                 930     ;
+                 931                             COMPARE         se, #0x14               ;set carry flag for iterations <20
+E: instruction not supported on the this device: COMPARE sX, kk.
+10F 35961        932                             JUMP            c, ft_type1
+                 933                             COMPARE         se, #0x28               ;set carry flag for iterations <40
+E: instruction not supported on the this device: COMPARE sX, kk.
+110 3594D        934                             JUMP            c, ft_type2
+                 935                             COMPARE         se, #0x3c               ;set carry flag for iterations <60
+E: instruction not supported on the this device: COMPARE sX, kk.
+111 3597B        936                             JUMP            c, ft_type3
+                 937     ;
+                 938     ;   ft = B xor C xor D
+                 939     ;
+                 940     ;       B xor C     =        B       xor       C
+                 941     ;   [s5,s4,s3,s2]   =  [s5,s4,s3,s2] xor [s9,s8,s7,s6]
+                 942     ;
+                 943     ;   B xor C xor D   =    (B xor C)   xor       D
+                 944     ;   [s5,s4,s3,s2]   =  [s5,s4,s3,s2] xor [sD,sC,sB,sA]
+                 945     ;
+                 946     ;
+112 16548        947     ft_type2:               XOR             s5, s9                  ;B xor C in [s5,s4,s3,s2]
+113 16440        948                             XOR             s4, s8
+114 16338        949                             XOR             s3, s7
+115 16230        950                             XOR             s2, s6
+116 16568        951                             XOR             s5, sd                  ;(B xor C) xor D in [s5,s4,s3,s2]
+117 16460        952                             XOR             s4, sc
+118 16358        953                             XOR             s3, sb
+119 16250        954                             XOR             s2, sa
+                 955                             COMPARE         se, #0x3c               ;set carry flag for iterations <60
+E: instruction not supported on the this device: COMPARE sX, kk.
+11A 35D5C        956                             JUMP            nc, kt_ca62c1d6
+11B 082A1        957                             ADD             s2, #0xa1               ;add Kt=6ED9EBA1
+11C 0A3EB        958                             ADDCY           s3, #0xeb
+11D 0A4D9        959                             ADDCY           s4, #0xd9
+11E 0A56E        960                             ADDCY           s5, #0x6e
+11F 34194        961                             JUMP            compute_tmp
+120 082D6        962     kt_ca62c1d6:            ADD             s2, #0xd6               ;add Kt=CA62C1D6
+121 0A3C1        963                             ADDCY           s3, #0xc1
+122 0A462        964                             ADDCY           s4, #0x62
+123 0A5CA        965                             ADDCY           s5, #0xca
+124 34194        966                             JUMP            compute_tmp
+                 967     ;
+                 968     ;   ft = (B and C) or ((not B) and D)
+                 969     ;
+                 970     ;       B and C     =        C       and       B
+                 971     ;   [s9,s8,s7,s6]   =  [s9,s8,s7,s6] and [s5,s4,s3,s2]
+                 972     ;
+                 973     ;       not B       =        B       xor   FFFFFFFF
+                 974     ;   [s5,s4,s3,s2]   =  [s5,s4,s3,s2] xor [FF,FF,FF,FF]
+                 975     ;
+                 976     ;   (not B) and D   =    (not B)     and       D
+                 977     ;   [s5,s4,s3,s2]   =  [s5,s4,s3,s2] and [sD,sC,sB,sA]
+                 978     ;
+                 979     ;   ;(B and C) or ((not B) and D)  =  ((not B) and D)  or   (B and C)
+                 980     ;            [s5,s4,s3,s2]         =   [s5,s4,s3,s2]   or  [s9,s8,s7,s6]
+                 981     ;
+125 12928        982     ft_type1:               AND             s9, s5                  ;B and C in [s9,s8,s7,s6]
+126 12820        983                             AND             s8, s4
+127 12718        984                             AND             s7, s3
+128 12610        985                             AND             s6, s2
+129 065FF        986                             XOR             s5, #0xff               ;(not B) in [s5,s4,s3,s2]
+12A 064FF        987                             XOR             s4, #0xff
+12B 063FF        988                             XOR             s3, #0xff
+12C 062FF        989                             XOR             s2, #0xff
+12D 12568        990                             AND             s5, sd                  ;((not B) and D) in [s5,s4,s3,s2]
+12E 12460        991                             AND             s4, sc
+12F 12358        992                             AND             s3, sb
+130 12250        993                             AND             s2, sa
+131 14548        994                             OR              s5, s9                  ;(B and C) or ((not B) and D) in [s5,s4,s3,s2]
+132 14440        995                             OR              s4, s8
+133 14338        996                             OR              s3, s7
+134 14230        997                             OR              s2, s6
+135 08299        998                             ADD             s2, #0x99               ;add Kt=5A827999
+136 0A379        999                             ADDCY           s3, #0x79
+137 0A482       1000                             ADDCY           s4, #0x82
+138 0A55A       1001                             ADDCY           s5, #0x5a
+139 34194       1002                             JUMP            compute_tmp
+                1003     ;
+                1004     ;Routine to fetch variable 'C' into register set [s9,s8,s7,s6]
+                1005     ;
+  00176         1006     fetch_c:                FETCH           s9, var_c3
+E: instruction not supported on the this device: FETCH sX, ss.
+                1007                             FETCH           s8, var_c2
+E: instruction not supported on the this device: FETCH sX, ss.
+                1008                             FETCH           s7, var_c1
+E: instruction not supported on the this device: FETCH sX, ss.
+                1009                             FETCH           s6, var_c0
+E: instruction not supported on the this device: FETCH sX, ss.
+13A 24000       1010                             RETURN
+                1011     ;
+                1012     ;   ft = (B and C) or (B and D) or (C and D)
+                1013     ;
+                1014     ;       B and C     =        C       and       B
+                1015     ;   [s9,s8,s7,s6]   =  [s9,s8,s7,s6] and [s5,s4,s3,s2]
+                1016     ;
+                1017     ;       B and D     =        B       and       D
+                1018     ;   [s5,s4,s3,s2]   =  [s5,s4,s3,s2] and [sD,sC,sB,sA]
+                1019     ;
+                1020     ;  (B and C) or (B and D)   =    (B and D)    or    (B and C)
+                1021     ;      [s5,s4,s3,s2]        =  [s5,s4,s3,s2]  or  [s9,s8,s7,s6]
+                1022     ;
+                1023     ;     read C again into [s9,s8,s7,s6]
+                1024     ;
+                1025     ;       C and D     =        C       and       D
+                1026     ;   [s9,s8,s7,s6]   =  [s9,s8,s7,s6] and [sD,sC,sB,sA]
+                1027     ;
+                1028     ;  ((B and C) or (B and D)) or (C and D)   =    ((B and C) or (B and D)) or   (C and D)
+                1029     ;               [s5,s4,s3,s2]              =           [s5,s4,s3,s2]     or  [s9,s8,s7,s6]
+                1030     ;
+13B 12928       1031     ft_type3:               AND             s9, s5                  ;(B and C) in [s9,s8,s7,s6]
+13C 12820       1032                             AND             s8, s4
+13D 12718       1033                             AND             s7, s3
+13E 12610       1034                             AND             s6, s2
+13F 12568       1035                             AND             s5, sd                  ;(B and D) in [s5,s4,s3,s2]
+140 12460       1036                             AND             s4, sc
+141 12358       1037                             AND             s3, sb
+142 12250       1038                             AND             s2, sa
+143 14548       1039                             OR              s5, s9                  ;(B and C) or (B and D) in [s5,s4,s3,s2]
+144 14440       1040                             OR              s4, s8
+145 14338       1041                             OR              s3, s7
+146 14230       1042                             OR              s2, s6
+147 36176       1043                             CALL            fetch_c                 ;C in [s9,s8,s7,s6]
+148 12968       1044                             AND             s9, sd                  ;(C and D) in [s9,s8,s7,s6]
+149 12860       1045                             AND             s8, sc
+14A 12758       1046                             AND             s7, sb
+14B 12650       1047                             AND             s6, sa
+14C 14548       1048                             OR              s5, s9                  ;(B and C) or (B and D) or (C and D) in [s5,s4,s3,s2]
+14D 14440       1049                             OR              s4, s8
+14E 14338       1050                             OR              s3, s7
+14F 14230       1051                             OR              s2, s6
+150 082DC       1052                             ADD             s2, #0xdc               ;add Kt=8F1BBCDC
+151 0A3BC       1053                             ADDCY           s3, #0xbc
+152 0A41B       1054                             ADDCY           s4, #0x1b
+153 0A58F       1055                             ADDCY           s5, #0x8f
+                1056     ;
+                1057     ;Add variable 'E' to [s5,s4,s3,s2]
+                1058     ;
+  00194         1059     compute_tmp:            FETCH           s0, var_e0
+E: instruction not supported on the this device: FETCH sX, ss.
+154 18200       1060                             ADD             s2, s0
+                1061                             FETCH           s0, var_e1
+E: instruction not supported on the this device: FETCH sX, ss.
+155 1A300       1062                             ADDCY           s3, s0
+                1063                             FETCH           s0, var_e2
+E: instruction not supported on the this device: FETCH sX, ss.
+156 1A400       1064                             ADDCY           s4, s0
+                1065                             FETCH           s0, var_e3
+E: instruction not supported on the this device: FETCH sX, ss.
+157 1A500       1066                             ADDCY           s5, s0
+                1067     ;
+                1068     ;Add variable 'A' rotated left 5 places
+                1069     ;
+                1070                             FETCH           s9, var_a3              ;A in [s9,s8,s7,s6]
+E: instruction not supported on the this device: FETCH sX, ss.
+                1071                             FETCH           s8, var_a2
+E: instruction not supported on the this device: FETCH sX, ss.
+                1072                             FETCH           s7, var_a1
+E: instruction not supported on the this device: FETCH sX, ss.
+                1073                             FETCH           s6, var_a0
+E: instruction not supported on the this device: FETCH sX, ss.
+158 00005       1074                             LOAD            s0, #0x05               ;rotate left 5 places
+159 361E7       1075                             CALL            rotate_word_left_n_places
+15A 18230       1076                             ADD             s2, s6                  ;add to TMP
+15B 1A338       1077                             ADDCY           s3, s7
+15C 1A440       1078                             ADDCY           s4, s8
+15D 1A548       1079                             ADDCY           s5, s9
+                1080     ;
+                1081     ;
+                1082     ;Compute Wt in register set [s9,s8,s7,s6]
+                1083     ;  Value computed is also stored back in the external buffer for
+                1084     ;  use in later iterations as well as being added to TMP.
+                1085     ;
+                1086     ;Iterations 0 to 15
+                1087     ;  Wt = Mt
+                1088     ; This only requires Wt-16 to be read and then shifted back into the buffer again.
+                1089     ;
+                1090     ;Iterations 0 to 15
+                1091     ;  Wt = rotate_left_1_place(Wt-3 xor Wt-8 xor Wt-14 xor Wt-16)
+                1092     ; This requires all data values to be read first. Then XORed and rotated before
+                1093     ; shifting the new Wt word into the buffer.
+                1094     ;
+                1095     ;
+15E 2093F       1096                             INPUT           s9, wt_minus16_byte3_read_port ;Read Wt-16 value
+15F 2083E       1097                             INPUT           s8, wt_minus16_byte2_read_port
+160 2073D       1098                             INPUT           s7, wt_minus16_byte1_read_port
+161 2063C       1099                             INPUT           s6, wt_minus16_byte0_read_port
+                1100                             COMPARE         se, #0x10               ;set carry flag for iterations 0 to 15
+E: instruction not supported on the this device: COMPARE sX, kk.
+162 359C5       1101                             JUMP            c, store_wt
+                1102     ;
+                1103     ;Read other Wt words and perform XOR
+                1104     ;
+163 20037       1105                             INPUT           s0, wt_minus14_byte3_read_port ;XOR with Wt-14 value
+164 16900       1106                             XOR             s9, s0
+165 20036       1107                             INPUT           s0, wt_minus14_byte2_read_port
+166 16800       1108                             XOR             s8, s0
+167 20035       1109                             INPUT           s0, wt_minus14_byte1_read_port
+168 16700       1110                             XOR             s7, s0
+169 20034       1111                             INPUT           s0, wt_minus14_byte0_read_port
+16A 16600       1112                             XOR             s6, s0
+16B 2001F       1113                             INPUT           s0, wt_minus8_byte3_read_port ;XOR with Wt-8 value
+16C 16900       1114                             XOR             s9, s0
+16D 2001E       1115                             INPUT           s0, wt_minus8_byte2_read_port
+16E 16800       1116                             XOR             s8, s0
+16F 2001D       1117                             INPUT           s0, wt_minus8_byte1_read_port
+170 16700       1118                             XOR             s7, s0
+171 2001C       1119                             INPUT           s0, wt_minus8_byte0_read_port
+172 16600       1120                             XOR             s6, s0
+173 2000B       1121                             INPUT           s0, wt_minus3_byte3_read_port ;XOR with Wt-3 value
+174 16900       1122                             XOR             s9, s0
+175 2000A       1123                             INPUT           s0, wt_minus3_byte2_read_port
+176 16800       1124                             XOR             s8, s0
+177 20009       1125                             INPUT           s0, wt_minus3_byte1_read_port
+178 16700       1126                             XOR             s7, s0
+179 20008       1127                             INPUT           s0, wt_minus3_byte0_read_port
+17A 16600       1128                             XOR             s6, s0
+17B 361EB       1129                             CALL            rotate_word_left        ;rotate XORed word left by one place
+                1130     ;
+                1131     ;Store new Wt value in external buffer
+                1132     ;
+17C 22910       1133     store_wt:               OUTPUT          s9, w_word_write_port
+17D 22810       1134                             OUTPUT          s8, w_word_write_port
+17E 22710       1135                             OUTPUT          s7, w_word_write_port
+17F 22610       1136                             OUTPUT          s6, w_word_write_port
+                1137     ;
+                1138     ;Add new computed Wt value to TMP in [s5,s4,s3,s2]
+                1139     ;
+180 18230       1140                             ADD             s2, s6
+181 1A338       1141                             ADDCY           s3, s7
+182 1A440       1142                             ADDCY           s4, s8
+183 1A548       1143                             ADDCY           s5, s9
+                1144     ;
+                1145     ;TMP is now complete in [s5,s4,s3,s2]
+                1146     ;
+                1147     ;
+                1148     ;copy values
+                1149     ;  E <= D
+                1150     ;  D <= C
+                1151     ;  C <= B (this will need to be rotated 30 places afterwards)
+                1152     ;  B <= A
+                1153     ;
+184 00D04       1154                             LOAD            sd, #0x04               ;4 bytes per word to copy
+185 00C1B       1155     copy_var_loop:          LOAD            sc, #var_e3
+186 00B1A       1156                             LOAD            sb, #var_e2
+  001D0         1157     move_var_loop:          FETCH           sa, @sb
+E: instruction not supported on the this device: FETCH sX, sY.
+                1158                             STORE           sa, @sc
+E: instruction not supported on the this device: STORE sX, sY.
+187 0CC01       1159                             SUB             sc, #0x01
+188 0CB01       1160                             SUB             sb, #0x01
+                1161                             COMPARE         sc, #var_a0
+E: instruction not supported on the this device: COMPARE sX, kk.
+189 355D0       1162                             JUMP            nz, move_var_loop
+18A 0CD01       1163                             SUB             sd, #0x01
+18B 355CE       1164                             JUMP            nz, copy_var_loop
+                1165     ;
+                1166     ;rotate 'C' (the previous 'B') left 30 places
+                1167     ;
+18C 36176       1168                             CALL            fetch_c                 ;C in [s9,s8,s7,s6]
+18D 0001E       1169                             LOAD            s0, #0x1e               ;rotate left 30 places
+18E 361E7       1170                             CALL            rotate_word_left_n_places
+                1171                             STORE           s9, var_c3
+E: instruction not supported on the this device: STORE sX, ss.
+                1172                             STORE           s8, var_c2
+E: instruction not supported on the this device: STORE sX, ss.
+                1173                             STORE           s7, var_c1
+E: instruction not supported on the this device: STORE sX, ss.
+                1174                             STORE           s6, var_c0
+E: instruction not supported on the this device: STORE sX, ss.
+                1175     ;
+                1176     ;  A <= TMP
+                1177     ;
+                1178                             STORE           s5, var_a3
+E: instruction not supported on the this device: STORE sX, ss.
+                1179                             STORE           s4, var_a2
+E: instruction not supported on the this device: STORE sX, ss.
+                1180                             STORE           s3, var_a1
+E: instruction not supported on the this device: STORE sX, ss.
+                1181                             STORE           s2, var_a0
+E: instruction not supported on the this device: STORE sX, ss.
+                1182     ;
+                1183     ;count iterations
+                1184     ;
+                1185                             COMPARE         se, #0x4f               ;test for last iteration = 79 decimal (4F hex)
+E: instruction not supported on the this device: COMPARE sX, kk.
+18F 25000       1186                             RETURN          z
+190 08E01       1187                             ADD             se, #0x01
+191 3413E       1188                             JUMP            next_sha1_iteration
+                1189     ;
+                1190     ; Routine to rotate left the contents of Register set [s9,s8,s7,s6]
+                1191     ; by the number of places specified in register 's0'.
+                1192     ;
+192 361EB       1193     rotate_word_left_n_places: CALL         rotate_word_left
+193 0C001       1194                             SUB             s0, #0x01
+194 355E7       1195                             JUMP            nz, rotate_word_left_n_places
+195 24000       1196                             RETURN
+                1197     ;
+                1198     ; Routine to rotate left the contents of Register set [s9,s8,s7,s6]
+                1199     ; by one place.
+                1200     ;
+  001EB         1201     rotate_word_left:       TEST            s9, #0x80               ;test MSB of word
+E: instruction not supported on the this device: TEST sX, kk.
+196 28600       1202                             SLA             s6
+197 28700       1203                             SLA             s7
+198 28800       1204                             SLA             s8
+199 28900       1205                             SLA             s9
+19A 24000       1206                             RETURN
+                1207     ;
+                1208     ;**************************************************************************************
+                1209     ; Compute 8-bit CRC used by DS2432.
+                1210     ;**************************************************************************************
+                1211     ;
+                1212     ; The DS2432 computes an 8-bit CRC using the polynomial X8 + X5 + X4 + 1.
+                1213     ; See the DS2432 data sheet for full details.
+                1214     ;
+                1215     ; Test input value of value 00 00 00 01 B8 1C 02
+                1216     ; should produce CRC=A2.
+                1217     ;
+                1218     ; This routine computes the same CRC based on the values stored in the KCPSM3
+                1219     ; scratch pad memory by the read ROM command. The result is returned in register s0.
+                1220     ;
+                1221     ; Registers used s0,s1,s2,s3,s4,s5,s6,s7,s8,s9
+                1222     ;
+                1223     ;
+                1224     ; Start by loading family code and serial number (56-bits) into register set
+                1225     ; [s9,s8,s7,s6,s5,s4,s3] so that it can be shifted out LSB first.
+                1226     ;
+                1227     ;
+  001F1         1228     compute_crc8:           FETCH           s3, family_code
+E: instruction not supported on the this device: FETCH sX, ss.
+                1229                             FETCH           s4, serial_number0
+E: instruction not supported on the this device: FETCH sX, ss.
+                1230                             FETCH           s5, serial_number1
+E: instruction not supported on the this device: FETCH sX, ss.
+                1231                             FETCH           s6, serial_number2
+E: instruction not supported on the this device: FETCH sX, ss.
+                1232                             FETCH           s7, serial_number3
+E: instruction not supported on the this device: FETCH sX, ss.
+                1233                             FETCH           s8, serial_number4
+E: instruction not supported on the this device: FETCH sX, ss.
+                1234                             FETCH           s9, serial_number5
+E: instruction not supported on the this device: FETCH sX, ss.
+19B 00238       1235                             LOAD            s2, #0x38               ;56 bits to shift (38 hex)
+19C 00000       1236                             LOAD            s0, #0x00               ;clear CRC value
+19D 10100       1237     crc8_loop:              LOAD            s1, s0                  ;copy current CRC value
+19E 16118       1238                             XOR             s1, s3                  ;Need to know LSB XOR next input bit
+                1239                             TEST            s1, #0x01               ;test result of XOR in LSB
+E: instruction not supported on the this device: TEST sX, kk.
+19F 35DFF       1240                             JUMP            nc, crc8_shift
+1A0 06018       1241                             XOR             s0, #0x18               ;compliment bits 3 and 4 of CRC
+1A1 2810E       1242     crc8_shift:             SR0             s1                      ;Carry gets LSB XOR next input bit
+1A2 28008       1243                             SRA             s0                      ;shift Carry into MSB to form new CRC value
+1A3 2890E       1244                             SR0             s9                      ;shift input value
+1A4 28808       1245                             SRA             s8
+1A5 28708       1246                             SRA             s7
+1A6 28608       1247                             SRA             s6
+1A7 28508       1248                             SRA             s5
+1A8 28408       1249                             SRA             s4
+1A9 28308       1250                             SRA             s3
+1AA 0C201       1251                             SUB             s2, #0x01               ;count iterations
+1AB 355FA       1252                             JUMP            nz, crc8_loop
+1AC 24000       1253                             RETURN
+                1254     ;
+                1255     ;
+                1256     ;
+                1257     ;**************************************************************************************
+                1258     ; Clear or Compute 16-bit CRC used by DS2432.
+                1259     ;**************************************************************************************
+                1260     ;
+                1261     ; The DS2432 computes a 16-bit CRC using the polynomial X16 + X15 + X2 + 1.
+                1262     ; See the DS2432 data sheet for full details.
+                1263     ;
+                1264     ; Note that the value formed in the CRC shift register MUST BE INVERTED to give the
+                1265     ; same value as that sent from the DS2432 during scratchpad write, scratchpad read
+                1266     ; and read auth page commands.
+                1267     ;
+                1268     ; The 16-bit CRC is computed using a different number of bytes depending on the
+                1269     ; command. This routine has been written such that the CRC can be computed one
+                1270     ; byte at a time. The byte to be processed should be provided in register 's3'
+                1271     ; and the contents of this register are preserved.
+                1272     ;
+                1273     ; This routine computes the 16-bit CRC in the register pair [sE,sD] and these
+                1274     ; registers must not be disturbed between calls of this routine.
+                1275     ;
+                1276     ; Before starting a CRC computation the 'clear_CRC16' should be used.
+                1277     ;
+                1278     ; Registers used s0,s1,s3,sD,sE
+                1279     ;    s3 is preserved.
+                1280     ;    sD and sE should not be disturbed between calls if CRC value is required.
+                1281     ;
+                1282     ;
+1AD 00E00       1283     clear_crc16:            LOAD            se, #0x00               ;[sE,sD]=0000
+1AE 00D00       1284                             LOAD            sd, #0x00
+1AF 24000       1285                             RETURN
+                1286     ;
+1B0 00108       1287     compute_crc16:          LOAD            s1, #0x08               ;8-bits to shift
+1B1 10068       1288     crc16_loop:             LOAD            s0, sd                  ;copy current CRC value
+1B2 16018       1289                             XOR             s0, s3                  ;Need to know LSB XOR next input bit
+                1290                             TEST            s0, #0x01               ;test result of XOR in LSB
+E: instruction not supported on the this device: TEST sX, kk.
+1B3 35E15       1291                             JUMP            nc, crc16_shift
+1B4 06D02       1292                             XOR             sd, #0x02               ;compliment bit 1 of CRC
+1B5 06E40       1293                             XOR             se, #0x40               ;compliment bit 14 of CRC
+1B6 2800E       1294     crc16_shift:            SR0             s0                      ;Carry gets LSB XOR next input bit
+1B7 28E08       1295                             SRA             se                      ;shift Carry into MSB to form new CRC value
+1B8 28D08       1296                             SRA             sd
+1B9 2830C       1297                             RR              s3                      ;shift input value
+1BA 0C101       1298                             SUB             s1, #0x01               ;count bits
+1BB 3560F       1299                             JUMP            nz, crc16_loop          ;next bit
+1BC 24000       1300                             RETURN
+                1301     ;
+                1302     ;
+                1303     ;**************************************************************************************
+                1304     ; Read 16-bit CRC from DS2432, send value received to UART and test result.
+                1305     ;**************************************************************************************
+                1306     ;
+                1307     ; The computed CRC value for comparison must be in register pair [sE,sD]
+                1308     ;
+1BD 3626F       1309     read_send_test_crc16:   CALL            read_byte_slow          ;read 16-bit CRC into [s5,s4]
+1BE 10418       1310                             LOAD            s4, s3
+1BF 3626F       1311                             CALL            read_byte_slow
+1C0 10518       1312                             LOAD            s5, s3
+1C1 363E2       1313                             CALL            send_crc                ;'crc=' to display CRC value
+1C2 10028       1314                             LOAD            s0, s5
+1C3 362C2       1315                             CALL            send_hex_byte
+1C4 10020       1316                             LOAD            s0, s4
+1C5 362C2       1317                             CALL            send_hex_byte
+1C6 362EC       1318                             CALL            send_cr
+1C7 06DFF       1319                             XOR             sd, #0xff               ;1's complement the computed CRC value
+1C8 06EFF       1320                             XOR             se, #0xff
+                1321                             COMPARE         s4, sd                  ;test received value with computed value
+E: instruction not supported on the this device: COMPARE sX, sY.
+1C9 3562E       1322                             JUMP            nz, crc16_fail
+                1323                             COMPARE         s5, se
+E: instruction not supported on the this device: COMPARE sX, sY.
+1CA 3562E       1324                             JUMP            nz, crc16_fail
+1CB 363AD       1325                             CALL            send_pass               ;display 'Pass' with carriage return
+1CC 24000       1326                             RETURN
+1CD 363B4       1327     crc16_fail:             CALL            send_fail               ;display 'Fail' with carriage return
+1CE 24000       1328                             RETURN
+                1329     ;
+                1330     ;
+                1331     ;**************************************************************************************
+                1332     ; Initialise the DS2432 1-wire interface.
+                1333     ;**************************************************************************************
+                1334     ;
+                1335     ; The 1-wire interface is an open-collector communication scheme employing an external
+                1336     ; pull-up resistor of 680 Ohms.
+                1337     ;
+                1338     ; The hardware section of this translates the one bit signal from PicoBlaze such that
+                1339     ; when this signal is Low the output is driven Low, but when it is High, it turns off
+                1340     ; the output buffer and the signal is pulled High externally.
+                1341     ;
+                1342     ; This initialisation routine simply ensures that the line is High after configuration.
+                1343     ; It is vital that DS_wire is generally in the High state because it is the only way in
+                1344     ; which the DS2432 device derives power to operate.
+                1345     ;
+                1346     ; Registers used s0
+                1347     ;
+1CF 00001       1348     ds_wire_init:           LOAD            s0, #ds_wire
+1D0 22008       1349                             OUTPUT          s0, ds_wire_out_port
+1D1 24000       1350                             RETURN
+                1351     ;
+                1352     ;
+                1353     ;**************************************************************************************
+                1354     ; DS2432 initialisation - Regular Speed.
+                1355     ;**************************************************************************************
+                1356     ;
+                1357     ; The initialisation sequence must be performed before any communication can be
+                1358     ; made with the DS2432 device. This involves the application of an active Low master
+                1359     ; reset pulse.
+                1360     ;
+                1361     ; The regular (slow) speed communication is established by transmitting an active
+                1362     ; Low reset pulse for a duration of at least 480us. This design generates a 500us pulse.
+                1363     ;
+                1364     ; The DS2432 acknowledges the reset and the setting of regular mode by generating an
+                1365     ; active Low 'Rx Presence Pulse'. This presence pulse can start 15 to 60us after the
+                1366     ; reset pulse and will end between 120 and 300us after the reset pulse.
+                1367     ;
+                1368     ; To confirm that regular mode has been set, this routine confirms that the presence pulse
+                1369     ; is active only after 60us have elapsed since the reset pulse. This ensures that the
+                1370     ; faster presence pulse of overdrive mode can not be detected.
+                1371     ;
+                1372     ; The carry flag will be set if no valid presence pulse was received (wire remained High) and
+                1373     ; can be used to indicate an initialisation failure or success.
+                1374     ;
+                1375     ; The routine only completes 300us after the presence pulse to ensure the DS2432 has
+                1376     ; completed the presence pulse and is ready for the first operation.
+                1377     ;
+                1378     ; Registers used s0,s1,s2
+                1379     ;
+1D2 00000       1380     ds_init_regular_mode:   LOAD            s0, #0x00               ;transmit reset pulse
+1D3 22008       1381                             OUTPUT          s0, ds_wire_out_port
+                1382     ;Delay of 500us is equivalent to 12500 instructions at 50MHz.
+                1383     ;This delay loop is formed of 28 instructions requiring 446 repetitions.
+1D4 00201       1384                             LOAD            s2, #0x01               ;[s3,s2]=445 decimal (01BD hex)
+1D5 001BD       1385                             LOAD            s1, #0xbd
+1D6 36287       1386     rm_wait_500us:          CALL            delay_1us               ;25 instructions including CALL
+1D7 0C101       1387                             SUB             s1, #0x01               ;decrement delay counter
+1D8 0E200       1388                             SUBCY           s2, #0x00
+1D9 35E37       1389                             JUMP            nc, rm_wait_500us       ;repeat until -1
+1DA 00001       1390                             LOAD            s0, #0x01               ;end of regular reset pulse
+1DB 22008       1391                             OUTPUT          s0, ds_wire_out_port
+                1392     ;Delay of 60us is equivalent to 1500 instructions at 50MHz.
+                1393     ;This delay and is formed of 27 instructions requiring 56 repetitions.
+1DC 00138       1394                             LOAD            s1, #0x38               ;56 (38 hex)
+1DD 36287       1395     rm_wait_60us:           CALL            delay_1us               ;25 instructions including CALL
+1DE 0C101       1396                             SUB             s1, #0x01               ;decrement delay counter
+1DF 3563E       1397                             JUMP            nz, rm_wait_60us        ;repeat until zero
+                1398     ;The DS_wire is now checked at approximately 1us intervals for the next 240us looking
+                1399     ;to detect an active Low presence pulse. The 240us is equivalent to 6000 instructions
+                1400     ;at 50MHz and this polling loop is formed of 33 instructions requiring 182 repetitions.
+1E0 00201       1401                             LOAD            s2, #0x01               ;set bit which will be reset by a presence pulse
+1E1 001B6       1402                             LOAD            s1, #0xb6               ;182 (B6 hex)
+1E2 36287       1403     rm_poll_240us:          CALL            delay_1us               ;25 instructions including CALL
+1E3 3624A       1404                             CALL            read_ds_wire            ;read wire - 5 instructions including CALL
+1E4 12200       1405                             AND             s2, s0                  ;clear flag if DS_wire was Low
+1E5 0C101       1406                             SUB             s1, #0x01               ;decrement delay counter
+1E6 35643       1407                             JUMP            nz, rm_poll_240us       ;repeat until zero
+                1408                             TEST            s2, #0x01               ;set carry flag if no pulse detected
+E: instruction not supported on the this device: TEST sX, kk.
+1E7 24000       1409                             RETURN
+                1410     ;
+                1411     ;
+                1412     ;**************************************************************************************
+                1413     ; Read the DS_wire
+                1414     ;**************************************************************************************
+                1415     ;
+                1416     ; The DS_wire signal is read and returned in bit0 of register 's0'.
+                1417     ; Additionally the carry flag is set if the signal is High and reset if Low
+                1418     ;
+                1419     ; Registers used s0
+                1420     ;
+1E8 200C0       1421     read_ds_wire:           INPUT           s0, ds_wire_in_port
+1E9 02001       1422                             AND             s0, #ds_wire            ;ensure only bit0 is active
+                1423                             TEST            s0, #ds_wire            ;set carry flag if DS_wire is High
+E: instruction not supported on the this device: TEST sX, kk.
+1EA 24000       1424                             RETURN
+                1425     ;
+                1426     ;
+                1427     ;
+                1428     ;**************************************************************************************
+                1429     ; Write a byte to DS2432 in regular speed mode.
+                1430     ;**************************************************************************************
+                1431     ;
+                1432     ; Bytes are written to the DS2432 with LSB first.
+                1433     ;
+                1434     ; The byte to be written should be provided in register 's3' and this will be preserved.
+                1435     ;
+                1436     ; Registers used s0,s1,s2,s3
+                1437     ;
+1EB 00208       1438     write_byte_slow:        LOAD            s2, #0x08               ;8 bits to transmit
+1EC 2830C       1439     wbs_loop:               RR              s3                      ;test next bit LSB first
+1ED 35A53       1440                             JUMP            c, wbs1                 ;transmit '0' or '1'
+1EE 36257       1441                             CALL            write_low_slow
+1EF 34254       1442                             JUMP            next_slow_bit
+1F0 36262       1443     wbs1:                   CALL            write_high_slow
+1F1 0C201       1444     next_slow_bit:          SUB             s2, #0x01               ;count bits
+1F2 3564F       1445                             JUMP            nz, wbs_loop            ;repeat until 8-bits transmitted
+1F3 24000       1446                             RETURN
+                1447     ;
+                1448     ;
+                1449     ;
+                1450     ;**************************************************************************************
+                1451     ; Write a '0' to DS_wire in regular speed mode.
+                1452     ;**************************************************************************************
+                1453     ;
+                1454     ; To write a '0' to the DS_wire the signal must be Low for 60 to 120us. This design
+                1455     ; generates a 78us active Low pulse.
+                1456     ;
+                1457     ; The DS2432 then requires at least 1us of recovery time for which this routine
+                1458     ; provides a 2us delay such that the entire write Low process (slot time) is 80us.
+                1459     ; A recovery time of 1us was also found to be marginal in practice probably due
+                1460     ; to the rise time of the DS_wire via the external pull up resistor.
+                1461     ;
+                1462     ; Registers used s0,s1
+                1463     ;
+1F4 00000       1464     write_low_slow:         LOAD            s0, #0x00               ;transmit Low pulse
+1F5 22008       1465                             OUTPUT          s0, ds_wire_out_port
+                1466     ;Delay of 78us is equivalent to 1950 instructions at 50MHz.
+                1467     ;This delay loop is formed of 27 instructions requiring 72 repetitions.
+1F6 00148       1468                             LOAD            s1, #0x48               ;72 (48 hex)
+1F7 36287       1469     wls_wait_78us:          CALL            delay_1us               ;25 instructions including CALL
+1F8 0C101       1470                             SUB             s1, #0x01               ;decrement delay counter
+1F9 3565A       1471                             JUMP            nz, wls_wait_78us       ;repeat until zero
+1FA 00001       1472                             LOAD            s0, #0x01               ;end of Low pulse
+1FB 22008       1473                             OUTPUT          s0, ds_wire_out_port
+1FC 36287       1474                             CALL            delay_1us               ;2us recovery time
+1FD 36287       1475                             CALL            delay_1us
+1FE 24000       1476                             RETURN
+                1477     ;
+                1478     ;
+                1479     ;**************************************************************************************
+                1480     ; Write a '1' to DS_wire in regular speed mode.
+                1481     ;**************************************************************************************
+                1482     ;
+                1483     ; To write a '1' to the DS_wire the signal must be Low for 1 to 15us to instigate the
+                1484     ; write of the data. This design generates an 8us active Low pulse for this purpose.
+                1485     ;
+                1486     ; Then the output must be High for 53 to 114us to provide the '1' for the DS2432 to
+                1487     ; read and then provide recovery time. This design implements a 72us delay such that
+                1488     ; the entire write High process (slot time) is 80us
+                1489     ;
+                1490     ; Registers used s0,s1
+                1491     ;
+1FF 00000       1492     write_high_slow:        LOAD            s0, #0x00               ;transmit Low pulse
+200 22008       1493                             OUTPUT          s0, ds_wire_out_port
+                1494     ;Delay of 8us is equivalent to 200 instructions at 50MHz.
+                1495     ;This delay loop is formed of 27 instructions requiring 8 repetitions.
+201 00108       1496                             LOAD            s1, #0x08               ;8 (08 hex)
+202 36287       1497     whs_wait_8us:           CALL            delay_1us               ;25 instructions including CALL
+203 0C101       1498                             SUB             s1, #0x01               ;decrement delay counter
+204 35665       1499                             JUMP            nz, whs_wait_8us        ;repeat until zero
+205 00001       1500                             LOAD            s0, #0x01               ;end of Low pulse
+206 22008       1501                             OUTPUT          s0, ds_wire_out_port
+                1502     ;Delay of 72us is equivalent to 1800 instructions at 50MHz.
+                1503     ;This delay loop is formed of 27 instructions requiring 67 repetitions.
+207 00143       1504                             LOAD            s1, #0x43               ;67 (43 hex)
+208 36287       1505     whs_wait_72us:          CALL            delay_1us               ;25 instructions including CALL
+209 0C101       1506                             SUB             s1, #0x01               ;decrement delay counter
+20A 3566B       1507                             JUMP            nz, whs_wait_72us       ;repeat until zero
+20B 24000       1508                             RETURN
+                1509     ;
+                1510     ;
+                1511     ;
+                1512     ;**************************************************************************************
+                1513     ; Read a byte from DS2432 in regular speed mode.
+                1514     ;**************************************************************************************
+                1515     ;
+                1516     ; Bytes are read from the DS2432 with LSB first.
+                1517     ;
+                1518     ; The byte read will be returned in register 's3'.
+                1519     ;
+                1520     ; Registers used s0,s1,s2,s3
+                1521     ;
+20C 00208       1522     read_byte_slow:         LOAD            s2, #0x08               ;8 bits to receive
+20D 36274       1523     rbs_loop:               CALL            read_bit_slow           ;read next bit LSB first
+20E 0C201       1524                             SUB             s2, #0x01               ;count bits
+20F 35670       1525                             JUMP            nz, rbs_loop            ;repeat until 8-bits received
+210 24000       1526                             RETURN
+                1527     ;
+                1528     ;
+                1529     ;
+                1530     ;
+                1531     ;**************************************************************************************
+                1532     ; Read a data bit sent from the DS2432 in regular speed mode.
+                1533     ;**************************************************************************************
+                1534     ;
+                1535     ; To read a bit, PicoBlaze must initiate the processed with an active Low pulse of
+                1536     ; 1 to 15us. This design generates a 4us active Low pulse for this purpose.
+                1537     ;
+                1538     ; Then DS2432 responds to the Low pulse by diving DS_wire in two different ways
+                1539     ; depending on the logic level it is trying to send back.
+                1540     ;
+                1541     ; For a logic '0' the DS2432 will drive the DS-wire Low for up to 15us after
+                1542     ; the start of the instigating pulse. Therefore PicoBlaze must read the DS-wire
+                1543     ; before this time has elapsed but only after it has itself released the wire.
+                1544     ;
+                1545     ; For a logic '1' the DS2432 will do nothing and hence the DS-wire will be pulled
+                1546     ; High by the external resistor after PicoBlaze has released the wire. PicoBlaze
+                1547     ; will sample the wire and detect the High level.
+                1548     ;
+                1549     ; In this design, PicoBlaze needs to detect the logic state of the wire after
+                1550     ; releasing the wire at 4us. Sampling the wire too quickly would not provide
+                1551     ; adequate time for a High signal to be formed by the pull up resistor. However, it
+                1552     ; must sample the wire before 15us have elapsed and any potential Low is removed.
+                1553     ; This design samples the wire at 12us which is 8us after the initiation pulse ends.
+                1554     ;
+                1555     ; A further delay of 68us is then allowed for the DS2432 to stop transmitting and
+                1556     ; to recover. This also mean that the entire read process (slot time) is 80us.
+                1557     ;
+                1558     ; The received data bit is SHIFTED into the MSB of register 's3'. In this way
+                1559     ; the reception of 8-bits will shift the first bit into the LSB position of 's3'.
+                1560     ;
+                1561     ; Registers used s0,s1,s3
+                1562     ;
+211 00000       1563     read_bit_slow:          LOAD            s0, #0x00               ;transmit Low pulse
+212 22008       1564                             OUTPUT          s0, ds_wire_out_port
+                1565     ;Delay of 4us is equivalent to 100 instructions at 50MHz.
+                1566     ;This delay loop is formed of 27 instructions requiring 4 repetitions.
+213 00104       1567                             LOAD            s1, #0x04               ;4 (04 hex)
+214 36287       1568     rbs_wait_4us:           CALL            delay_1us               ;25 instructions including CALL
+215 0C101       1569                             SUB             s1, #0x01               ;decrement delay counter
+216 35677       1570                             JUMP            nz, rbs_wait_4us        ;repeat until zero
+217 00001       1571                             LOAD            s0, #0x01               ;end of Low pulse
+218 22008       1572                             OUTPUT          s0, ds_wire_out_port
+                1573     ;Delay of 8us is equivalent to 200 instructions at 50MHz.
+                1574     ;This delay loop is formed of 27 instructions requiring 8 repetitions.
+219 00108       1575                             LOAD            s1, #0x08               ;8 (08 hex)
+21A 36287       1576     rbs_wait_8us:           CALL            delay_1us               ;25 instructions including CALL
+21B 0C101       1577                             SUB             s1, #0x01               ;decrement delay counter
+21C 3567D       1578                             JUMP            nz, rbs_wait_8us        ;repeat until zero
+21D 3624A       1579                             CALL            read_ds_wire            ;sample wire (carry = state)
+21E 28308       1580                             SRA             s3                      ;shift received bit into MSB of s3
+                1581     ;Delay of 68us is equivalent to 1700 instructions at 50MHz.
+                1582     ;This delay loop is formed of 27 instructions requiring 63 repetitions.
+21F 0013F       1583                             LOAD            s1, #0x3f               ;63 (3F hex)
+220 36287       1584     rbs_wait_68us:          CALL            delay_1us               ;25 instructions including CALL
+221 0C101       1585                             SUB             s1, #0x01               ;decrement delay counter
+222 35683       1586                             JUMP            nz, rbs_wait_68us       ;repeat until zero
+223 24000       1587                             RETURN
+                1588     ;
+                1589     ;
+                1590     ;**************************************************************************************
+                1591     ; Software delay routines
+                1592     ;**************************************************************************************
+                1593     ;
+                1594     ; Delay of 1us.
+                1595     ;
+                1596     ; Constant value defines reflects the clock applied to KCPSM3. Every instruction
+                1597     ; executes in 2 clock cycles making the calculation highly predictable. The '6' in
+                1598     ; the following equation even allows for 'CALL delay_1us' instruction in the initiating code.
+                1599     ;
+                1600     ; delay_1us_constant =  (clock_rate - 6)/4       Where 'clock_rate' is in MHz
+                1601     ;
+                1602     ; Register used s0
+                1603     ;
+224 0000B       1604     delay_1us:              LOAD            s0, #delay_1us_constant
+225 0C001       1605     wait_1us:               SUB             s0, #0x01
+226 35688       1606                             JUMP            nz, wait_1us
+227 24000       1607                             RETURN
+                1608     ;
+                1609     ; Delay of 40us.
+                1610     ;
+                1611     ; Registers used s0, s1
+                1612     ;
+228 00128       1613     delay_40us:             LOAD            s1, #0x28               ;40 x 1us = 40us
+229 36287       1614     wait_40us:              CALL            delay_1us
+22A 0C101       1615                             SUB             s1, #0x01
+22B 3568C       1616                             JUMP            nz, wait_40us
+22C 24000       1617                             RETURN
+                1618     ;
+                1619     ;
+                1620     ; Delay of 1ms.
+                1621     ;
+                1622     ; Registers used s0, s1, s2
+                1623     ;
+22D 00219       1624     delay_1ms:              LOAD            s2, #0x19               ;25 x 40us = 1ms
+22E 3628B       1625     wait_1ms:               CALL            delay_40us
+22F 0C201       1626                             SUB             s2, #0x01
+230 35691       1627                             JUMP            nz, wait_1ms
+231 24000       1628                             RETURN
+                1629     ;
+                1630     ; Delay of 20ms.
+                1631     ;
+                1632     ; Registers used s0, s1, s2, s3
+                1633     ;
+232 00314       1634     delay_20ms:             LOAD            s3, #0x14               ;20 x 1ms = 20ms
+233 36290       1635     wait_20ms:              CALL            delay_1ms
+234 0C301       1636                             SUB             s3, #0x01
+235 35696       1637                             JUMP            nz, wait_20ms
+236 24000       1638                             RETURN
+                1639     ;
+                1640     ; Delay of approximately 1 second.
+                1641     ;
+                1642     ; Registers used s0, s1, s2, s3, s4
+                1643     ;
+237 00414       1644     delay_1s:               LOAD            s4, #0x14               ;50 x 20ms = 1000ms
+238 36295       1645     wait_1s:                CALL            delay_20ms
+239 0C401       1646                             SUB             s4, #0x01
+23A 3569B       1647                             JUMP            nz, wait_1s
+23B 24000       1648                             RETURN
+                1649     ;
+                1650     ;
+                1651     ;**************************************************************************************
+                1652     ; UART communication routines
+                1653     ;**************************************************************************************
+                1654     ;
+                1655     ; Read one character from the UART
+                1656     ;
+                1657     ; Character read will be returned in a register called 'UART_data'.
+                1658     ;
+                1659     ; The routine first tests the receiver FIFO buffer to see if data is present.
+                1660     ; If the FIFO is empty, the routine waits until there is a character to read.
+                1661     ; As this could take any amount of time the wait loop could include a call to a
+                1662     ; subroutine which performs a useful function.
+                1663     ;
+                1664     ;
+                1665     ; Registers used s0 and UART_data
+                1666     ;
+23C 20040       1667     read_from_uart:         INPUT           s0, status_port         ;test Rx_FIFO buffer
+                1668                             TEST            s0, #rx_data_present    ;wait if empty
+E: instruction not supported on the this device: TEST sX, kk.
+23D 356A3       1669                             JUMP            nz, read_character
+23E 3429F       1670                             JUMP            read_from_uart
+23F 20F80       1671     read_character:         INPUT           uart_data, uart_read_port ;read from FIFO
+240 24000       1672                             RETURN
+                1673     ;
+                1674     ;
+                1675     ;
+                1676     ; Transmit one character to the UART
+                1677     ;
+                1678     ; Character supplied in register called 'UART_data'.
+                1679     ;
+                1680     ; The routine first tests the transmit FIFO buffer to see if it is full.
+                1681     ; If the FIFO is full, then the routine waits until it there is space.
+                1682     ;
+                1683     ; Registers used s0
+                1684     ;
+241 20040       1685     send_to_uart:           INPUT           s0, status_port         ;test Tx_FIFO buffer
+                1686                             TEST            s0, #tx_full            ;wait if full
+E: instruction not supported on the this device: TEST sX, kk.
+242 352A9       1687                             JUMP            z, uart_write
+243 342A5       1688                             JUMP            send_to_uart
+244 22F04       1689     uart_write:             OUTPUT          uart_data, uart_write_port
+245 24000       1690                             RETURN
+                1691     ;
+                1692     ;
+                1693     ;**************************************************************************************
+                1694     ; Useful ASCII conversion and handling routines
+                1695     ;**************************************************************************************
+                1696     ;
+                1697     ;
+                1698     ; Convert character to upper case
+                1699     ;
+                1700     ; The character supplied in register s0.
+                1701     ; If the character is in the range 'a' to 'z', it is converted
+                1702     ; to the equivalent upper case character in the range 'A' to 'Z'.
+                1703     ; All other characters remain unchanged.
+                1704     ;
+                1705     ; Registers used s0.
+                1706     ;
+  002AB         1707     upper_case:             COMPARE         s0, #0x61               ;eliminate character codes below 'a' (61 hex)
+E: instruction not supported on the this device: COMPARE sX, kk.
+246 25800       1708                             RETURN          c
+                1709                             COMPARE         s0, #0x7b               ;eliminate character codes above 'z' (7A hex)
+E: instruction not supported on the this device: COMPARE sX, kk.
+247 25C00       1710                             RETURN          nc
+248 020DF       1711                             AND             s0, #0xdf               ;mask bit5 to convert to upper case
+249 24000       1712                             RETURN
+                1713     ;
+                1714     ;
+                1715     ; Convert hexadecimal value provided in register s0 into ASCII characters
+                1716     ;
+                1717     ; The value provided must can be any value in the range 00 to FF and will be converted into
+                1718     ; two ASCII characters.
+                1719     ;     The upper nibble will be represented by an ASCII character returned in register s2.
+                1720     ;     The lower nibble will be represented by an ASCII character returned in register s1.
+                1721     ;
+                1722     ; The ASCII representations of '0' to '9' are 30 to 39 hexadecimal which is simply 30 hex
+                1723     ; added to the actual decimal value. The ASCII representations of 'A' to 'F' are 41 to 46
+                1724     ; hexadecimal requiring a further addition of 07 to the 30 already added.
+                1725     ;
+                1726     ; Registers used s0, s1 and s2.
+                1727     ;
+24A 10100       1728     hex_byte_to_ascii:      LOAD            s1, s0                  ;remember value supplied
+24B 2800E       1729                             SR0             s0                      ;isolate upper nibble
+24C 2800E       1730                             SR0             s0
+24D 2800E       1731                             SR0             s0
+24E 2800E       1732                             SR0             s0
+24F 362BD       1733                             CALL            hex_to_ascii            ;convert
+250 10200       1734                             LOAD            s2, s0                  ;upper nibble value in s2
+251 10008       1735                             LOAD            s0, s1                  ;restore complete value
+252 0200F       1736                             AND             s0, #0x0f               ;isolate lower nibble
+253 362BD       1737                             CALL            hex_to_ascii            ;convert
+254 10100       1738                             LOAD            s1, s0                  ;lower nibble value in s1
+255 24000       1739                             RETURN
+                1740     ;
+                1741     ; Convert hexadecimal value provided in register s0 into ASCII character
+                1742     ;
+                1743     ;Register used s0
+                1744     ;
+256 0C00A       1745     hex_to_ascii:           SUB             s0, #0x0a               ;test if value is in range 0 to 9
+257 35AC0       1746                             JUMP            c, number_char
+258 08007       1747                             ADD             s0, #0x07               ;ASCII char A to F in range 41 to 46
+259 0803A       1748     number_char:            ADD             s0, #0x3a               ;ASCII char 0 to 9 in range 30 to 40
+25A 24000       1749                             RETURN
+                1750     ;
+                1751     ;
+                1752     ; Send the two character HEX value of the register contents 's0' to the UART
+                1753     ;
+                1754     ; Registers used s0, s1, s2
+                1755     ;
+25B 362B1       1756     send_hex_byte:          CALL            hex_byte_to_ascii
+25C 10F10       1757                             LOAD            uart_data, s2
+25D 362A5       1758                             CALL            send_to_uart
+25E 10F08       1759                             LOAD            uart_data, s1
+25F 362A5       1760                             CALL            send_to_uart
+260 24000       1761                             RETURN
+                1762     ;
+                1763     ;
+                1764     ;
+                1765     ; Convert the HEX ASCII characters contained in 's3' and 's2' into
+                1766     ; an equivalent hexadecimal value in register 's0'.
+                1767     ;     The upper nibble is represented by an ASCII character in register s3.
+                1768     ;     The lower nibble is represented by an ASCII character in register s2.
+                1769     ;
+                1770     ; Input characters must be in the range 00 to FF hexadecimal or the CARRY flag
+                1771     ; will be set on return.
+                1772     ;
+                1773     ; Registers used s0, s2 and s3.
+                1774     ;
+261 10018       1775     ascii_byte_to_hex:      LOAD            s0, s3                  ;Take upper nibble
+262 362D5       1776                             CALL            ascii_to_hex            ;convert to value
+263 25800       1777                             RETURN          c                       ;reject if out of range
+264 10300       1778                             LOAD            s3, s0                  ;remember value
+265 28306       1779                             SL0             s3                      ;multiply value by 16 to put in upper nibble
+266 28306       1780                             SL0             s3
+267 28306       1781                             SL0             s3
+268 28306       1782                             SL0             s3
+269 10010       1783                             LOAD            s0, s2                  ;Take lower nibble
+26A 362D5       1784                             CALL            ascii_to_hex            ;convert to value
+26B 25800       1785                             RETURN          c                       ;reject if out of range
+26C 14018       1786                             OR              s0, s3                  ;merge in the upper nibble with CARRY reset
+26D 24000       1787                             RETURN
+                1788     ;
+                1789     ;
+                1790     ; Routine to convert ASCII data in 's0' to an equivalent HEX value.
+                1791     ;
+                1792     ; If character is not valid for hex, then CARRY is set on return.
+                1793     ;
+                1794     ; Register used s0
+                1795     ;
+26E 080B9       1796     ascii_to_hex:           ADD             s0, #0xb9               ;test for above ASCII code 46 ('F')
+26F 25800       1797                             RETURN          c
+270 0C0E9       1798                             SUB             s0, #0xe9               ;normalise 0 to 9 with A-F in 11 to 16 hex
+271 25800       1799                             RETURN          c                       ;reject below ASCII code 30 ('0')
+272 0C011       1800                             SUB             s0, #0x11               ;isolate A-F down to 00 to 05 hex
+273 35EDF       1801                             JUMP            nc, ascii_letter
+274 08007       1802                             ADD             s0, #0x07               ;test for above ASCII code 46 ('F')
+275 25800       1803                             RETURN          c
+276 0C0F6       1804                             SUB             s0, #0xf6               ;convert to range 00 to 09
+277 24000       1805                             RETURN
+278 0800A       1806     ascii_letter:           ADD             s0, #0x0a               ;convert to range 0A to 0F
+279 24000       1807                             RETURN
+                1808     ;
+                1809     ;
+                1810     ; Read one character from UART and echo.
+                1811     ; Convert to upper case and return.
+                1812     ;
+                1813     ;
+27A 3629F       1814     read_upper_case:        CALL            read_from_uart          ;read command character from UART
+27B 362A5       1815                             CALL            send_to_uart            ;echo character
+27C 10078       1816                             LOAD            s0, uart_data           ;convert to upper case
+27D 362AB       1817                             CALL            upper_case
+27E 24000       1818                             RETURN
+                1819     ;
+                1820     ;
+                1821     ; Read two hex characters from UART and convert to single byte data
+                1822     ;
+27F 362E1       1823     obtain_8bits:           CALL            read_upper_case         ;obtain one byte from UART
+280 10300       1824                             LOAD            s3, s0
+281 362E1       1825                             CALL            read_upper_case
+282 10200       1826                             LOAD            s2, s0
+283 362C8       1827                             CALL            ascii_byte_to_hex
+284 24000       1828                             RETURN
+                1829     ;
+                1830     ;**************************************************************************************
+                1831     ; Text messages
+                1832     ;**************************************************************************************
+                1833     ;
+                1834     ;
+                1835     ; Send Carriage Return to the UART
+                1836     ;
+285 00F0D       1837     send_cr:                LOAD            uart_data, #character_cr
+286 362A5       1838                             CALL            send_to_uart
+287 24000       1839                             RETURN
+                1840     ;
+                1841     ; Send a space to the UART
+                1842     ;
+288 00F20       1843     send_space:             LOAD            uart_data, #character_space
+289 362A5       1844                             CALL            send_to_uart
+28A 24000       1845                             RETURN
+                1846     ;
+                1847     ;
+                1848     ; Send a minus sign to the UART
+                1849     ;
+28B 00F2D       1850     send_minus:             LOAD            uart_data, #character_minus
+28C 362A5       1851                             CALL            send_to_uart
+28D 24000       1852                             RETURN
+                1853     ;
+                1854     ;
+                1855     ; Send the letter 't' to the UART
+                1856     ;
+28E 00F74       1857     send_t:                 LOAD            uart_data, #character_t
+28F 362A5       1858                             CALL            send_to_uart
+290 24000       1859                             RETURN
+                1860     ;
+                1861     ; Send the letter 'e' to the UART
+                1862     ;
+291 00F65       1863     send_e:                 LOAD            uart_data, #character_e
+292 362A5       1864                             CALL            send_to_uart
+293 24000       1865                             RETURN
+                1866     ;
+                1867     ; Send the letter 'a' to the UART
+                1868     ;
+294 00F61       1869     send_a:                 LOAD            uart_data, #character_a
+295 362A5       1870                             CALL            send_to_uart
+296 24000       1871                             RETURN
+                1872     ;
+                1873     ;
+                1874     ; Send the letter 'd' to the UART
+                1875     ;
+297 00F64       1876     send_d:                 LOAD            uart_data, #character_d
+298 362A5       1877                             CALL            send_to_uart
+299 24000       1878                             RETURN
+                1879     ;
+                1880     ;
+                1881     ; Send the letter 'r' to the UART
+                1882     ;
+29A 00F72       1883     send_r:                 LOAD            uart_data, #character_r
+29B 362A5       1884                             CALL            send_to_uart
+29C 24000       1885                             RETURN
+                1886     ;
+                1887     ;
+                1888     ; Send the letter 's' to the UART
+                1889     ;
+29D 00F73       1890     send_s:                 LOAD            uart_data, #character_s
+29E 362A5       1891                             CALL            send_to_uart
+29F 24000       1892                             RETURN
+                1893     ;
+                1894     ;
+                1895     ; Send the letter 'c' to the UART
+                1896     ;
+2A0 00F63       1897     send_c:                 LOAD            uart_data, #character_c
+2A1 362A5       1898                             CALL            send_to_uart
+2A2 24000       1899                             RETURN
+                1900     ;
+                1901     ;
+                1902     ; Send 'PicoBlaze SHA-1 Algorithm v1.00' string to the UART
+                1903     ;
+2A3 362EC       1904     send_welcome:           CALL            send_cr
+2A4 362EC       1905                             CALL            send_cr
+2A5 00F50       1906                             LOAD            uart_data, #_character_p
+2A6 362A5       1907                             CALL            send_to_uart
+2A7 00F69       1908                             LOAD            uart_data, #character_i
+2A8 362A5       1909                             CALL            send_to_uart
+2A9 36307       1910                             CALL            send_c
+2AA 00F6F       1911                             LOAD            uart_data, #character_o
+2AB 362A5       1912                             CALL            send_to_uart
+2AC 00F42       1913                             LOAD            uart_data, #_character_b
+2AD 362A5       1914                             CALL            send_to_uart
+2AE 00F6C       1915                             LOAD            uart_data, #character_l
+2AF 362A5       1916                             CALL            send_to_uart
+2B0 362FB       1917                             CALL            send_a
+2B1 00F7A       1918                             LOAD            uart_data, #character_z
+2B2 362A5       1919                             CALL            send_to_uart
+2B3 362F8       1920                             CALL            send_e
+2B4 362EF       1921                             CALL            send_space
+2B5 00F53       1922                             LOAD            uart_data, #_character_s
+2B6 362A5       1923                             CALL            send_to_uart
+2B7 00F48       1924                             LOAD            uart_data, #_character_h
+2B8 362A5       1925                             CALL            send_to_uart
+2B9 00F41       1926                             LOAD            uart_data, #_character_a
+2BA 362A5       1927                             CALL            send_to_uart
+2BB 362F2       1928                             CALL            send_minus
+2BC 00F31       1929                             LOAD            uart_data, #character_1
+2BD 362A5       1930                             CALL            send_to_uart
+2BE 362EF       1931                             CALL            send_space
+2BF 00F41       1932                             LOAD            uart_data, #_character_a
+2C0 362A5       1933                             CALL            send_to_uart
+2C1 00F6C       1934                             LOAD            uart_data, #character_l
+2C2 362A5       1935                             CALL            send_to_uart
+2C3 00F67       1936                             LOAD            uart_data, #character_g
+2C4 362A5       1937                             CALL            send_to_uart
+2C5 00F6F       1938                             LOAD            uart_data, #character_o
+2C6 362A5       1939                             CALL            send_to_uart
+2C7 36301       1940                             CALL            send_r
+2C8 00F69       1941                             LOAD            uart_data, #character_i
+2C9 362A5       1942                             CALL            send_to_uart
+2CA 362F5       1943                             CALL            send_t
+2CB 00F68       1944                             LOAD            uart_data, #character_h
+2CC 362A5       1945                             CALL            send_to_uart
+2CD 00F6D       1946                             LOAD            uart_data, #character_m
+2CE 362A5       1947                             CALL            send_to_uart
+2CF 362EF       1948                             CALL            send_space
+2D0 00F76       1949                             LOAD            uart_data, #character_v
+2D1 362A5       1950                             CALL            send_to_uart
+2D2 00F31       1951                             LOAD            uart_data, #character_1
+2D3 362A5       1952                             CALL            send_to_uart
+2D4 00F2E       1953                             LOAD            uart_data, #character_fullstop
+2D5 362A5       1954                             CALL            send_to_uart
+2D6 00F30       1955                             LOAD            uart_data, #character_0
+2D7 362A5       1956                             CALL            send_to_uart
+2D8 00F30       1957                             LOAD            uart_data, #character_0
+2D9 362A5       1958                             CALL            send_to_uart
+2DA 362EC       1959                             CALL            send_cr
+2DB 362EC       1960                             CALL            send_cr
+2DC 24000       1961                             RETURN
+                1962     ;
+                1963     ;
+                1964     ;
+                1965     ;
+                1966     ;
+                1967     ;
+                1968     ; Send DS2432 menu to the UART
+                1969     ;
+2DD 362EC       1970     send_ds2432_menu:       CALL            send_cr
+2DE 362EC       1971                             CALL            send_cr
+2DF 00F31       1972                             LOAD            uart_data, #character_1
+2E0 362A5       1973                             CALL            send_to_uart
+2E1 362F2       1974                             CALL            send_minus
+2E2 363A5       1975                             CALL            send_write
+2E3 362EF       1976                             CALL            send_space
+2E4 36384       1977                             CALL            send_scratchpad
+2E5 362EC       1978                             CALL            send_cr
+2E6 00F32       1979                             LOAD            uart_data, #character_2
+2E7 362A5       1980                             CALL            send_to_uart
+2E8 362F2       1981                             CALL            send_minus
+2E9 3639F       1982                             CALL            send_read
+2EA 362EF       1983                             CALL            send_space
+2EB 36384       1984                             CALL            send_scratchpad
+2EC 362EC       1985                             CALL            send_cr
+2ED 00F33       1986                             LOAD            uart_data, #character_3
+2EE 362A5       1987                             CALL            send_to_uart
+2EF 362F2       1988                             CALL            send_minus
+2F0 00F4C       1989                             LOAD            uart_data, #_character_l
+2F1 362A5       1990                             CALL            send_to_uart
+2F2 00F6F       1991                             LOAD            uart_data, #character_o
+2F3 362A5       1992                             CALL            send_to_uart
+2F4 362FB       1993                             CALL            send_a
+2F5 362FE       1994                             CALL            send_d
+2F6 362EF       1995                             CALL            send_space
+2F7 00F66       1996                             LOAD            uart_data, #character_f
+2F8 362A5       1997                             CALL            send_to_uart
+2F9 00F69       1998                             LOAD            uart_data, #character_i
+2FA 362A5       1999                             CALL            send_to_uart
+2FB 36301       2000                             CALL            send_r
+2FC 36304       2001                             CALL            send_s
+2FD 362F5       2002                             CALL            send_t
+2FE 362EF       2003                             CALL            send_space
+2FF 36391       2004                             CALL            send_secret
+300 362EC       2005                             CALL            send_cr
+301 00F34       2006                             LOAD            uart_data, #character_4
+302 362A5       2007                             CALL            send_to_uart
+303 362F2       2008                             CALL            send_minus
+304 3639F       2009                             CALL            send_read
+305 362EF       2010                             CALL            send_space
+306 00F61       2011                             LOAD            uart_data, #character_a
+307 362A5       2012                             CALL            send_to_uart
+308 00F75       2013                             LOAD            uart_data, #character_u
+309 362A5       2014                             CALL            send_to_uart
+30A 362F5       2015                             CALL            send_t
+30B 00F68       2016                             LOAD            uart_data, #character_h
+30C 362A5       2017                             CALL            send_to_uart
+30D 362EF       2018                             CALL            send_space
+30E 00F50       2019                             LOAD            uart_data, #_character_p
+30F 362A5       2020                             CALL            send_to_uart
+310 362FB       2021                             CALL            send_a
+311 00F67       2022                             LOAD            uart_data, #character_g
+312 362A5       2023                             CALL            send_to_uart
+313 362F8       2024                             CALL            send_e
+314 362EC       2025                             CALL            send_cr
+315 24000       2026                             RETURN
+                2027     ;
+                2028     ;
+                2029     ;
+                2030     ; Send carriage return, 'OK' and carriage return to the UART
+                2031     ;
+316 362EC       2032     send_ok:                CALL            send_cr
+317 00F4F       2033                             LOAD            uart_data, #_character_o
+318 362A5       2034                             CALL            send_to_uart
+319 00F4B       2035                             LOAD            uart_data, #_character_k
+31A 362A5       2036                             CALL            send_to_uart
+31B 362EC       2037                             CALL            send_cr
+31C 24000       2038                             RETURN
+                2039     ;
+                2040     ;
+                2041     ; Send 'scratchpad' to the UART
+                2042     ;
+31D 36304       2043     send_scratchpad:        CALL            send_s
+31E 36307       2044                             CALL            send_c
+31F 36301       2045                             CALL            send_r
+320 362FB       2046                             CALL            send_a
+321 362F5       2047                             CALL            send_t
+322 36307       2048                             CALL            send_c
+323 00F68       2049                             LOAD            uart_data, #character_h
+324 362A5       2050                             CALL            send_to_uart
+325 00F70       2051                             LOAD            uart_data, #character_p
+326 362A5       2052                             CALL            send_to_uart
+327 362FB       2053                             CALL            send_a
+328 362FE       2054                             CALL            send_d
+329 24000       2055                             RETURN
+                2056     ;
+                2057     ;
+                2058     ; Send 'secret' to the UART
+                2059     ;
+32A 36304       2060     send_secret:            CALL            send_s
+32B 362F8       2061                             CALL            send_e
+32C 36307       2062                             CALL            send_c
+32D 36301       2063                             CALL            send_r
+32E 362F8       2064                             CALL            send_e
+32F 362F5       2065                             CALL            send_t
+330 24000       2066                             RETURN
+                2067     ;
+                2068     ;
+                2069     ; Send 'Byte' to the UART
+                2070     ;
+331 00F42       2071     send_byte:              LOAD            uart_data, #_character_b
+332 362A5       2072                             CALL            send_to_uart
+333 00F79       2073                             LOAD            uart_data, #character_y
+334 362A5       2074                             CALL            send_to_uart
+335 362F5       2075                             CALL            send_t
+336 362F8       2076                             CALL            send_e
+337 24000       2077                             RETURN
+                2078     ;
+                2079     ;
+                2080     ; Send 'Read' to the UART
+                2081     ;
+338 00F52       2082     send_read:              LOAD            uart_data, #_character_r
+339 362A5       2083                             CALL            send_to_uart
+33A 362F8       2084                             CALL            send_e
+33B 362FB       2085                             CALL            send_a
+33C 362FE       2086                             CALL            send_d
+33D 24000       2087                             RETURN
+                2088     ;
+                2089     ;
+                2090     ; Send 'Write' to the UART
+                2091     ;
+33E 00F57       2092     send_write:             LOAD            uart_data, #_character_w
+33F 362A5       2093                             CALL            send_to_uart
+340 36301       2094                             CALL            send_r
+341 00F69       2095                             LOAD            uart_data, #character_i
+342 362A5       2096                             CALL            send_to_uart
+343 362F5       2097                             CALL            send_t
+344 362F8       2098                             CALL            send_e
+345 24000       2099                             RETURN
+                2100     ;
+                2101     ;
+                2102     ; Send 'Pass' to the UART
+                2103     ;
+346 00F50       2104     send_pass:              LOAD            uart_data, #_character_p
+347 362A5       2105                             CALL            send_to_uart
+348 362FB       2106                             CALL            send_a
+349 36304       2107                             CALL            send_s
+34A 36304       2108                             CALL            send_s
+34B 362EC       2109                             CALL            send_cr
+34C 24000       2110                             RETURN
+                2111     ;
+                2112     ;
+                2113     ; Send 'Fail' to the UART
+                2114     ;
+34D 00F46       2115     send_fail:              LOAD            uart_data, #_character_f
+34E 362A5       2116                             CALL            send_to_uart
+34F 362FB       2117                             CALL            send_a
+350 00F69       2118                             LOAD            uart_data, #character_i
+351 362A5       2119                             CALL            send_to_uart
+352 00F6C       2120                             LOAD            uart_data, #character_l
+353 362A5       2121                             CALL            send_to_uart
+354 362EC       2122                             CALL            send_cr
+355 24000       2123                             RETURN
+                2124     ;
+                2125     ;
+                2126     ; Send 'address=' to the UART
+                2127     ;
+356 362EC       2128     send_address:           CALL            send_cr
+357 362FB       2129                             CALL            send_a
+358 362FE       2130                             CALL            send_d
+359 362FE       2131                             CALL            send_d
+35A 36301       2132                             CALL            send_r
+35B 362F8       2133                             CALL            send_e
+35C 36304       2134                             CALL            send_s
+35D 36304       2135                             CALL            send_s
+35E 00F3D       2136     send_equals:            LOAD            uart_data, #character_equals
+35F 362A5       2137                             CALL            send_to_uart
+360 24000       2138                             RETURN
+                2139     ;
+                2140     ;
+                2141     ; Send 'data' to the UART
+                2142     ;
+361 362EC       2143     send_data:              CALL            send_cr
+362 362FE       2144                             CALL            send_d
+363 362FB       2145                             CALL            send_a
+364 362F5       2146                             CALL            send_t
+365 362FB       2147                             CALL            send_a
+366 24000       2148                             RETURN
+                2149     ;
+                2150     ;
+                2151     ; Send 'E/S=' to the UART
+                2152     ;
+367 362EC       2153     send_es:                CALL            send_cr
+368 00F45       2154                             LOAD            uart_data, #_character_e
+369 362A5       2155                             CALL            send_to_uart
+36A 00F2F       2156                             LOAD            uart_data, #character_divide
+36B 362A5       2157                             CALL            send_to_uart
+36C 00F53       2158                             LOAD            uart_data, #_character_s
+36D 362A5       2159                             CALL            send_to_uart
+36E 343C5       2160                             JUMP            send_equals
+                2161     ;
+                2162     ;
+                2163     ; Send 'code=' to the UART
+                2164     ;
+36F 36307       2165     send_code:              CALL            send_c
+370 00F6F       2166                             LOAD            uart_data, #character_o
+371 362A5       2167                             CALL            send_to_uart
+372 362FE       2168                             CALL            send_d
+373 362F8       2169                             CALL            send_e
+374 343C5       2170                             JUMP            send_equals
+                2171     ;
+                2172     ;
+                2173     ; Send 's/n=' to the UART
+                2174     ;
+375 36304       2175     send_sn:                CALL            send_s
+376 00F2F       2176                             LOAD            uart_data, #character_divide
+377 362A5       2177                             CALL            send_to_uart
+378 00F6E       2178                             LOAD            uart_data, #character_n
+379 362A5       2179                             CALL            send_to_uart
+37A 343C5       2180                             JUMP            send_equals
+                2181     ;
+                2182     ;
+                2183     ; Send 'crc=' to the UART
+                2184     ;
+37B 36307       2185     send_crc:               CALL            send_c
+37C 00F72       2186                             LOAD            uart_data, #character_r
+37D 362A5       2187                             CALL            send_to_uart
+37E 36307       2188                             CALL            send_c
+37F 343C5       2189                             JUMP            send_equals
+                2190     ;
+                2191     ;
+                2192     ;
+                2193     ; Send 'mac=' to the UART
+                2194     ;
+380 00F6D       2195     send_mac:               LOAD            uart_data, #character_m
+381 362A5       2196                             CALL            send_to_uart
+382 362FB       2197                             CALL            send_a
+383 36307       2198                             CALL            send_c
+384 343C5       2199                             JUMP            send_equals
+                2200     ;
+                2201     ;
+                2202     ;**************************************************************************************
+                2203     ; Interrupt Service Routine (ISR)
+                2204     ;**************************************************************************************
+                2205     ;
+                2206     ; Interrupts are not used in this design. This is a place keeper only.
+                2207     ;
+  003FE         2208                             ORG             0x3fe
+3FE 2C001       2209     isr:                    RETURNI         enable
+                2210     ;
+                2211     ;
+                2212     ;**************************************************************************************
+                2213     ; Interrupt Vector
+                2214     ;**************************************************************************************
+                2215     ;
+  003FF         2216                             ORG             0x3ff
+3FF 343FE       2217                             JUMP            isr
+                2218     ;
+                2219     ;
+                2220

@@ -1,5 +1,5 @@
 ;KCPSM3 Program - UART programming of SPI Flash memory on Spartan-3E Starter Kit.
-;
+device kcpsm3
 ;
 ;Ken Chapman - Xilinx Ltd
 ;

@@ -1,0 +1,55 @@
+                   1     ; MDS PicoBlaze IDE - Demonstration code
+                   2
+                   3     ; Macro instructions, conditional compilation, constants and scratch-pad ram handling.
+                   4     ; See manual for more info
+                   5
+                   6     ; Press Start simulation and Animate to run the program
+                   7
+                   8     ; Tell compiler type of procesor (KCPSM2, KCPSM3, KCPSM6 available)
+                   9     device kcpsm1
+                  10
+                  11     ; Program initialization
+                  12     ; --------------------
+  00000           13             ORG     0h                      ; Define code segment
+000 08101         14             JUMP    start                   ; Jump to code initialization
+                  15
+                  16     ; Program start
+                  17     ; --------------------
+  00001           18     start:
+001 0000F         19             LOAD    s0, #00Fh              ; Load content to shifted registers
+002 0011E         20             LOAD    s1, #01Eh              ;
+003 00301         21             LOAD    s3, #01h
+004 08105         22             JUMP    main                    ; Execute main program loop
+                  23
+                  24     ; Main loop
+                  25     ; --------------------
+  00005           26     main:
+                  27
+                  28     ; Shifting to the left
+005 0D30C         29             RR     s3
+006 0D30C         30             RR     s3
+007 0D30C         31             RR     s3
+008 0D30C         32             RR     s3
+009 0D30C         33             RR     s3
+00A 0D30C         34             RR     s3
+00B 0D30C         35             RR     s3
+00C 0D30C         36             RR     s3
+                  37
+                  38             ; Shifting to the left
+00D 0D302         39             RL     s3
+00E 0D302         40             RL     s3
+00F 0D302         41             RL     s3
+010 0D302         42             RL     s3
+011 0D302         43             RL     s3
+012 0D302         44             RL     s3
+013 0D302         45             RL     s3
+014 0D302         46             RL     s3
+015 08105         47             JUMP    main
+                  48
+                  49     ; Program end
+                  50     ; --------------------
+                  51             END
+                  52
+                  53     ; Compiler is case insensitive
+                  54     ; <-- Bookmark   (ctrl + shift + M)
+                  55     ; <-- Breakpoint (ctrl + shift + B)

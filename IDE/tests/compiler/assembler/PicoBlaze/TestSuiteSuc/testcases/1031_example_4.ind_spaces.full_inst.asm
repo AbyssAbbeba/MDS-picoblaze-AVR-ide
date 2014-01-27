@@ -1,7 +1,7 @@
 ;KCPSM3 Program - FC_CTRL
 ;Frequency Generator Control
 ;Calculates and displays results on the 16x2 LCD display.
-;
+device kcpsm1
 ;
 ; Version : 1.12
 ; Date : 28th February 2006

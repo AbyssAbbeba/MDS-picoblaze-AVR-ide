@@ -1,0 +1,6 @@
+GETCHAR (  )  . . . . . . . . . . . . . . . . . . . . .   NOT USED 2022_load.asm:61.1-61.26
+SENDCHAR ( CHAR ) . . . . . . . . . . . . . . . . . . .   NOT USED 2022_load.asm:52.1-52.26
+SENDCRLF (  ) . . . . . . . . . . . . . . . . . . . . .   NOT USED 2022_load.asm:69.1-69.26
+UART_NEW_DATA_WAIT (  ) . . . . . . . . . . . . . . . .   NOT USED 2022_load.asm:43.1-43.26
+UART_READY_WAIT (  )  . . . . . . . . . . . . . . . . .   NOT USED 2022_load.asm:37.1-37.26
+WAIT_FOR_1S (  )  . . . . . . . . . . . . . . . . . . .   NOT USED 2022_load.asm:3584.1-3584.26

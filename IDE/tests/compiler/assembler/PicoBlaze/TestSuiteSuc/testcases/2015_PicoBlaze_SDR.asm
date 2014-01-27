@@ -1,4 +1,4 @@
-
+device kcpsm2
 ;
 ; PicoBlaze kód pro počáteční inicializaci A/D převodníku ADS6445 a zdroje hodin LMK4011
 
@@ -13,7 +13,7 @@
 ; Martin Madron 30.4.2013
 ;
 ;
-device          KCPSM3
+
 ; Start
 ;##############################################################################;
 ; Přiřazení jmen registrům

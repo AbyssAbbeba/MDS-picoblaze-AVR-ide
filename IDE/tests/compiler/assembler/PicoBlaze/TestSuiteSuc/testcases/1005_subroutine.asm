@@ -2,7 +2,7 @@
 ; instruction opcodes
 
 
-DEVICE          kcpsm3
+device kcpsm1
 
 Start:        
        

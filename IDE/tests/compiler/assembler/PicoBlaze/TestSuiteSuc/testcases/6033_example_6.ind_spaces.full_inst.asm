@@ -7,7 +7,7 @@
 ;
 ;This program uses an 8KHz interrupt to generate test waveforms on the
 ;4 analogue outputs provided by the Linear Technology LTC2624 device.
-;
+device kcpsm6
 ;As well as the port connections vital to communication with the UART and the SPI
 ;FLASH memory, there are additional port connections used to disable the other
 ;devices sharing the SPI bus on the Starter Kit board. Although these could have been

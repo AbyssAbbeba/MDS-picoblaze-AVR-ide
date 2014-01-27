@@ -8,7 +8,7 @@
 ;
 ; Ken Chapman
 ; Xilinx Ltd
-;
+device kcpsm2
 ; chapman@xilinx.com
 ;
 ;

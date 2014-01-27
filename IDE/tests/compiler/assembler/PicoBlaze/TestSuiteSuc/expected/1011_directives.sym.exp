@@ -1,0 +1,154 @@
+A  . . . . . . . . . . . . . . . . . NUMBER 0x3FFFB NOT USED CONSTANT    1011_directives.asm:151.1-151.19
+A1 . . . . . . . . . . . . . . . . . NUMBER 0x00244 NOT USED CONSTANT    1011_directives.asm:17.1-17.20
+A10  . . . . . . . . . . . . . . . . NUMBER 0x00011 NOT USED CONSTANT    1011_directives.asm:26.1-26.20
+A11  . . . . . . . . . . . . . . . . NUMBER 0x000AA NOT USED CONSTANT    1011_directives.asm:27.1-27.20
+A12  . . . . . . . . . . . . . . . . NUMBER 0x00004 NOT USED CONSTANT    1011_directives.asm:28.1-28.21
+A2 . . . . . . . . . . . . . . . . . NUMBER 0x3FFFF NOT USED CONSTANT    1011_directives.asm:18.1-18.25
+A3 . . . . . . . . . . . . . . . . . NUMBER 0x00000 NOT USED CONSTANT    1011_directives.asm:19.1-19.18
+A4 . . . . . . . . . . . . . . . . . NUMBER 0x00019 NOT USED CONSTANT    1011_directives.asm:20.1-20.24
+A5 . . . . . . . . . . . . . . . . . NUMBER 0x00001 NOT USED CONSTANT    1011_directives.asm:21.1-21.23
+A6 . . . . . . . . . . . . . . . . . NUMBER 0x00011 NOT USED CONSTANT    1011_directives.asm:22.1-22.27
+A7 . . . . . . . . . . . . . . . . . NUMBER 0x00001 NOT USED CONSTANT    1011_directives.asm:23.1-23.27
+A8 . . . . . . . . . . . . . . . . . NUMBER 0x00003 NOT USED CONSTANT    1011_directives.asm:24.1-24.18
+A9 . . . . . . . . . . . . . . . . . NUMBER 0x00001 NOT USED CONSTANT    1011_directives.asm:25.1-25.19
+ABYSS  . . . . . . . . . . . . . . . NUMBER 0x00008 NOT USED CONSTANT    1011_directives.asm:156.1-156.47
+AHOJ . . . . . . . . . . . . . . . . REG.   0x00001 NOT USED CONSTANT    1011_directives.asm:69.1-69.23
+B  . . . . . . . . . . . . . . . . . NUMBER 0x00005 NOT USED CONSTANT    1011_directives.asm:152.1-152.18
+B1 . . . . . . . . . . . . . . . . . NUMBER 0x00244 NOT USED REDEFINABLE 1011_directives.asm:30.1-30.20
+B10  . . . . . . . . . . . . . . . . NUMBER 0x00011 NOT USED REDEFINABLE 1011_directives.asm:39.1-39.20
+B11  . . . . . . . . . . . . . . . . NUMBER 0x000AA NOT USED REDEFINABLE 1011_directives.asm:40.1-40.20
+B12  . . . . . . . . . . . . . . . . NUMBER 0x00004 NOT USED REDEFINABLE 1011_directives.asm:41.1-41.21
+B2 . . . . . . . . . . . . . . . . . NUMBER 0x3FFFF NOT USED REDEFINABLE 1011_directives.asm:31.1-31.25
+B3 . . . . . . . . . . . . . . . . . NUMBER 0x00000 NOT USED REDEFINABLE 1011_directives.asm:32.1-32.18
+B4 . . . . . . . . . . . . . . . . . NUMBER 0x00019 NOT USED REDEFINABLE 1011_directives.asm:33.1-33.24
+B5 . . . . . . . . . . . . . . . . . NUMBER 0x00001 NOT USED REDEFINABLE 1011_directives.asm:34.1-34.23
+B6 . . . . . . . . . . . . . . . . . NUMBER 0x00011 NOT USED REDEFINABLE 1011_directives.asm:35.1-35.27
+B7 . . . . . . . . . . . . . . . . . NUMBER 0x00001 NOT USED REDEFINABLE 1011_directives.asm:36.1-36.27
+B8 . . . . . . . . . . . . . . . . . NUMBER 0x00003 NOT USED REDEFINABLE 1011_directives.asm:37.1-37.18
+B9 . . . . . . . . . . . . . . . . . NUMBER 0x00001 NOT USED REDEFINABLE 1011_directives.asm:38.1-38.19
+C1 . . . . . . . . . . . . . . . . . NUMBER 0x00222 NOT USED CONSTANT    1011_directives.asm:43.1-43.23
+C10  . . . . . . . . . . . . . . . . NUMBER 0x00001 NOT USED CONSTANT    1011_directives.asm:52.1-52.23
+C11  . . . . . . . . . . . . . . . . NUMBER 0x000FE NOT USED CONSTANT    1011_directives.asm:53.1-53.24
+C12  . . . . . . . . . . . . . . . . NUMBER 0x00003 NOT USED CONSTANT    1011_directives.asm:54.1-54.25
+C2 . . . . . . . . . . . . . . . . . NUMBER 0x0FFFF NOT USED CONSTANT    1011_directives.asm:44.1-44.26
+C3 . . . . . . . . . . . . . . . . . NUMBER 0x0000C NOT USED CONSTANT    1011_directives.asm:45.1-45.22
+C4 . . . . . . . . . . . . . . . . . NUMBER 0x00000 NOT USED CONSTANT    1011_directives.asm:46.1-46.21
+C5 . . . . . . . . . . . . . . . . . NUMBER 0x00000 NOT USED CONSTANT    1011_directives.asm:47.1-47.30
+C6 . . . . . . . . . . . . . . . . . NUMBER 0x00001 NOT USED CONSTANT    1011_directives.asm:48.1-48.25
+C7 . . . . . . . . . . . . . . . . . NUMBER 0x00001 NOT USED CONSTANT    1011_directives.asm:49.1-49.24
+C8 . . . . . . . . . . . . . . . . . NUMBER 0x00015 NOT USED CONSTANT    1011_directives.asm:50.1-50.30
+C9 . . . . . . . . . . . . . . . . . NUMBER 0x0001E NOT USED CONSTANT    1011_directives.asm:51.1-51.27
+D1 . . . . . . . . . . . . . . . . . NUMBER 0x00222 NOT USED REDEFINABLE 1011_directives.asm:56.1-56.23
+D10  . . . . . . . . . . . . . . . . NUMBER 0x00001 NOT USED REDEFINABLE 1011_directives.asm:65.1-65.23
+D11  . . . . . . . . . . . . . . . . NUMBER 0x000FE NOT USED REDEFINABLE 1011_directives.asm:66.1-66.24
+D12  . . . . . . . . . . . . . . . . NUMBER 0x00003 NOT USED REDEFINABLE 1011_directives.asm:67.1-67.25
+D2 . . . . . . . . . . . . . . . . . NUMBER 0x0FFFF NOT USED REDEFINABLE 1011_directives.asm:57.1-57.26
+D3 . . . . . . . . . . . . . . . . . NUMBER 0x0000C NOT USED REDEFINABLE 1011_directives.asm:58.1-58.22
+D4 . . . . . . . . . . . . . . . . . NUMBER 0x00000 NOT USED REDEFINABLE 1011_directives.asm:59.1-59.21
+D5 . . . . . . . . . . . . . . . . . NUMBER 0x00000 NOT USED REDEFINABLE 1011_directives.asm:60.1-60.30
+D6 . . . . . . . . . . . . . . . . . NUMBER 0x00001 NOT USED REDEFINABLE 1011_directives.asm:61.1-61.25
+D7 . . . . . . . . . . . . . . . . . NUMBER 0x00001 NOT USED REDEFINABLE 1011_directives.asm:62.1-62.24
+D8 . . . . . . . . . . . . . . . . . NUMBER 0x00015 NOT USED REDEFINABLE 1011_directives.asm:63.1-63.30
+D9 . . . . . . . . . . . . . . . . . NUMBER 0x0001E NOT USED REDEFINABLE 1011_directives.asm:64.1-64.27
+DOLE . . . . . . . . . . . . . . . . REG.   0x00005 NOT USED CONSTANT    1011_directives.asm:73.1-73.23
+F1 . . . . . . . . . . . . . . . . . REG.   0x00001 NOT USED CONSTANT    1011_directives.asm:83.1-83.18
+F10  . . . . . . . . . . . . . . . . REG.   0x0000A NOT USED CONSTANT    1011_directives.asm:92.1-92.19
+F11  . . . . . . . . . . . . . . . . REG.   0x0000B NOT USED CONSTANT    1011_directives.asm:93.1-93.19
+F12  . . . . . . . . . . . . . . . . REG.   0x0000C NOT USED CONSTANT    1011_directives.asm:94.1-94.19
+F2 . . . . . . . . . . . . . . . . . REG.   0x00002 NOT USED CONSTANT    1011_directives.asm:84.1-84.18
+F3 . . . . . . . . . . . . . . . . . REG.   0x00003 NOT USED CONSTANT    1011_directives.asm:85.1-85.18
+F4 . . . . . . . . . . . . . . . . . REG.   0x00004 NOT USED CONSTANT    1011_directives.asm:86.1-86.18
+F5 . . . . . . . . . . . . . . . . . REG.   0x00005 NOT USED CONSTANT    1011_directives.asm:87.1-87.18
+F6 . . . . . . . . . . . . . . . . . REG.   0x00006 NOT USED CONSTANT    1011_directives.asm:88.1-88.18
+F7 . . . . . . . . . . . . . . . . . REG.   0x00007 NOT USED CONSTANT    1011_directives.asm:89.1-89.18
+F8 . . . . . . . . . . . . . . . . . REG.   0x00008 NOT USED CONSTANT    1011_directives.asm:90.1-90.18
+F9 . . . . . . . . . . . . . . . . . REG.   0x00009 NOT USED CONSTANT    1011_directives.asm:91.1-91.18
+G1 . . . . . . . . . . . . . . . . . DATA   0x00001 NOT USED CONSTANT    1011_directives.asm:96.1-96.19
+G10  . . . . . . . . . . . . . . . . DATA   0x00011 NOT USED CONSTANT    1011_directives.asm:105.1-105.21
+G11  . . . . . . . . . . . . . . . . DATA   0x0000A NOT USED CONSTANT    1011_directives.asm:106.1-106.20
+G12  . . . . . . . . . . . . . . . . DATA   0x00004 NOT USED CONSTANT    1011_directives.asm:107.1-107.22
+G2 . . . . . . . . . . . . . . . . . DATA   0x00002 NOT USED CONSTANT    1011_directives.asm:97.1-97.19
+G3 . . . . . . . . . . . . . . . . . DATA   0x00003 NOT USED CONSTANT    1011_directives.asm:98.1-98.19
+G4 . . . . . . . . . . . . . . . . . DATA   0x00004 NOT USED CONSTANT    1011_directives.asm:99.1-99.19
+G5 . . . . . . . . . . . . . . . . . DATA   0x00005 NOT USED CONSTANT    1011_directives.asm:100.1-100.19
+G6 . . . . . . . . . . . . . . . . . DATA   0x00006 NOT USED CONSTANT    1011_directives.asm:101.1-101.19
+G7 . . . . . . . . . . . . . . . . . DATA   0x00007 NOT USED CONSTANT    1011_directives.asm:102.1-102.19
+G8 . . . . . . . . . . . . . . . . . DATA   0x00008 NOT USED CONSTANT    1011_directives.asm:103.1-103.19
+G9 . . . . . . . . . . . . . . . . . DATA   0x00009 NOT USED CONSTANT    1011_directives.asm:104.1-104.19
+H1 . . . . . . . . . . . . . . . . . LABEL  0x00244 NOT USED CONSTANT    1011_directives.asm:109.1-109.21
+H10  . . . . . . . . . . . . . . . . LABEL  0x00011 NOT USED CONSTANT    1011_directives.asm:118.1-118.21
+H11  . . . . . . . . . . . . . . . . LABEL  0x000AA NOT USED CONSTANT    1011_directives.asm:119.1-119.21
+H12  . . . . . . . . . . . . . . . . LABEL  0x00004 NOT USED CONSTANT    1011_directives.asm:120.1-120.22
+H2 . . . . . . . . . . . . . . . . . LABEL  0x3FFFF NOT USED CONSTANT    1011_directives.asm:110.1-110.26
+H3 . . . . . . . . . . . . . . . . . LABEL  0x00000 NOT USED CONSTANT    1011_directives.asm:111.1-111.19
+H4 . . . . . . . . . . . . . . . . . LABEL  0x00019 NOT USED CONSTANT    1011_directives.asm:112.1-112.25
+H5 . . . . . . . . . . . . . . . . . LABEL  0x00001 NOT USED CONSTANT    1011_directives.asm:113.1-113.24
+H6 . . . . . . . . . . . . . . . . . LABEL  0x00011 NOT USED CONSTANT    1011_directives.asm:114.1-114.28
+H7 . . . . . . . . . . . . . . . . . LABEL  0x00001 NOT USED CONSTANT    1011_directives.asm:115.1-115.28
+H8 . . . . . . . . . . . . . . . . . LABEL  0x00003 NOT USED CONSTANT    1011_directives.asm:116.1-116.19
+H9 . . . . . . . . . . . . . . . . . LABEL  0x00001 NOT USED CONSTANT    1011_directives.asm:117.1-117.20
+HEJ  . . . . . . . . . . . . . . . . REG.   0x0000C NOT USED CONSTANT    1011_directives.asm:80.1-80.23
+HOLA . . . . . . . . . . . . . . . . REG.   0x0000A NOT USED CONSTANT    1011_directives.asm:78.1-78.24
+I1 . . . . . . . . . . . . . . . . . PORT   0x00244 NOT USED CONSTANT    1011_directives.asm:122.1-122.21
+I10  . . . . . . . . . . . . . . . . PORT   0x00011 NOT USED CONSTANT    1011_directives.asm:131.1-131.21
+I11  . . . . . . . . . . . . . . . . PORT   0x000AA NOT USED CONSTANT    1011_directives.asm:132.1-132.21
+I12  . . . . . . . . . . . . . . . . PORT   0x00015 NOT USED CONSTANT    1011_directives.asm:133.1-133.29
+I2 . . . . . . . . . . . . . . . . . PORT   0x3FFFF NOT USED CONSTANT    1011_directives.asm:123.1-123.26
+I3 . . . . . . . . . . . . . . . . . PORT   0x00000 NOT USED CONSTANT    1011_directives.asm:124.1-124.19
+I4 . . . . . . . . . . . . . . . . . PORT   0x00019 NOT USED CONSTANT    1011_directives.asm:125.1-125.25
+I5 . . . . . . . . . . . . . . . . . PORT   0x00001 NOT USED CONSTANT    1011_directives.asm:126.1-126.24
+I6 . . . . . . . . . . . . . . . . . PORT   0x00011 NOT USED CONSTANT    1011_directives.asm:127.1-127.28
+I7 . . . . . . . . . . . . . . . . . PORT   0x00001 NOT USED CONSTANT    1011_directives.asm:128.1-128.28
+I8 . . . . . . . . . . . . . . . . . PORT   0x00003 NOT USED CONSTANT    1011_directives.asm:129.1-129.19
+I9 . . . . . . . . . . . . . . . . . PORT   0x00001 NOT USED CONSTANT    1011_directives.asm:130.1-130.20
+OLA  . . . . . . . . . . . . . . . . REG.   0x0000B NOT USED CONSTANT    1011_directives.asm:79.1-79.23
+S0 . . . . . . . . . . . . . . . . . REG.   0x00000 USED     CONSTANT    IMPLICIT
+S1 . . . . . . . . . . . . . . . . . REG.   0x00001 USED     CONSTANT    IMPLICIT
+S10  . . . . . . . . . . . . . . . . DATA   0x00000 NOT USED CONSTANT    1011_directives.asm:6.1-6.16
+S11  . . . . . . . . . . . . . . . . DATA   0x00001 NOT USED CONSTANT    1011_directives.asm:7.1-7.16
+S12  . . . . . . . . . . . . . . . . DATA   0x00002 NOT USED CONSTANT    1011_directives.asm:8.1-8.16
+S13  . . . . . . . . . . . . . . . . DATA   0x00003 NOT USED CONSTANT    1011_directives.asm:9.1-9.16
+S14  . . . . . . . . . . . . . . . . DATA   0x00004 NOT USED CONSTANT    1011_directives.asm:10.1-10.16
+S15  . . . . . . . . . . . . . . . . DATA   0x00005 NOT USED CONSTANT    1011_directives.asm:11.1-11.16
+S16  . . . . . . . . . . . . . . . . DATA   0x00006 NOT USED CONSTANT    1011_directives.asm:12.1-12.16
+S17  . . . . . . . . . . . . . . . . DATA   0x00007 NOT USED CONSTANT    1011_directives.asm:13.1-13.16
+S18  . . . . . . . . . . . . . . . . DATA   0x00008 NOT USED CONSTANT    1011_directives.asm:14.1-14.16
+S19  . . . . . . . . . . . . . . . . DATA   0x00009 NOT USED CONSTANT    1011_directives.asm:15.1-15.16
+S2 . . . . . . . . . . . . . . . . . REG.   0x00002 USED     CONSTANT    IMPLICIT
+S3 . . . . . . . . . . . . . . . . . REG.   0x00003 NOT USED CONSTANT    IMPLICIT
+S4 . . . . . . . . . . . . . . . . . REG.   0x00004 NOT USED CONSTANT    IMPLICIT
+S5 . . . . . . . . . . . . . . . . . REG.   0x00005 NOT USED CONSTANT    IMPLICIT
+S6 . . . . . . . . . . . . . . . . . REG.   0x00006 NOT USED CONSTANT    IMPLICIT
+S7 . . . . . . . . . . . . . . . . . REG.   0x00007 NOT USED CONSTANT    IMPLICIT
+S8 . . . . . . . . . . . . . . . . . REG.   0x00008 NOT USED CONSTANT    IMPLICIT
+S9 . . . . . . . . . . . . . . . . . REG.   0x00009 NOT USED CONSTANT    IMPLICIT
+SA . . . . . . . . . . . . . . . . . REG.   0x0000A NOT USED CONSTANT    IMPLICIT
+SB . . . . . . . . . . . . . . . . . REG.   0x0000B NOT USED CONSTANT    IMPLICIT
+SC . . . . . . . . . . . . . . . . . REG.   0x0000C NOT USED CONSTANT    IMPLICIT
+SD . . . . . . . . . . . . . . . . . REG.   0x0000D NOT USED CONSTANT    IMPLICIT
+SE . . . . . . . . . . . . . . . . . REG.   0x0000E NOT USED CONSTANT    IMPLICIT
+SECKY  . . . . . . . . . . . . . . . REG.   0x00009 NOT USED CONSTANT    1011_directives.asm:77.1-77.24
+SF . . . . . . . . . . . . . . . . . REG.   0x0000F NOT USED CONSTANT    IMPLICIT
+SS1  . . . . . . . . . . . . . . . . NUMBER 0x00005 NOT USED CONSTANT    1011_directives.asm:136.1-136.19
+SS10 . . . . . . . . . . . . . . . . NUMBER 0x0002B NOT USED CONSTANT    1011_directives.asm:145.1-145.33
+SS11 . . . . . . . . . . . . . . . . NUMBER 0x3FFE7 NOT USED CONSTANT    1011_directives.asm:146.1-146.24
+SS12 . . . . . . . . . . . . . . . . NUMBER 0x00002 NOT USED CONSTANT    1011_directives.asm:147.1-147.26
+SS13 . . . . . . . . . . . . . . . . NUMBER 0x00001 NOT USED CONSTANT    1011_directives.asm:148.1-148.26
+SS14 . . . . . . . . . . . . . . . . NUMBER 0x000F0 NOT USED CONSTANT    1011_directives.asm:149.1-149.28
+SS2  . . . . . . . . . . . . . . . . NUMBER 0x3FFFB NOT USED CONSTANT    1011_directives.asm:137.1-137.19
+SS3  . . . . . . . . . . . . . . . . NUMBER 0x00005 NOT USED CONSTANT    1011_directives.asm:138.1-138.20
+SS4  . . . . . . . . . . . . . . . . NUMBER 0x3FFFB NOT USED CONSTANT    1011_directives.asm:139.1-139.21
+SS5  . . . . . . . . . . . . . . . . NUMBER 0x00000 NOT USED CONSTANT    1011_directives.asm:140.1-140.22
+SS6  . . . . . . . . . . . . . . . . NUMBER 0x3FFEB NOT USED CONSTANT    1011_directives.asm:141.1-141.29
+SS7  . . . . . . . . . . . . . . . . NUMBER 0x3FF00 NOT USED CONSTANT    1011_directives.asm:142.1-142.22
+SS8  . . . . . . . . . . . . . . . . NUMBER 0x00001 NOT USED CONSTANT    1011_directives.asm:143.1-143.56
+SS9  . . . . . . . . . . . . . . . . NUMBER 0x0002F NOT USED CONSTANT    1011_directives.asm:144.1-144.38
+START  . . . . . . . . . . . . . . . LABEL  0x00000 NOT USED CONSTANT    1011_directives.asm:162.1-162.7
+TAM  . . . . . . . . . . . . . . . . REG.   0x00004 NOT USED CONSTANT    1011_directives.asm:72.1-72.22
+TE . . . . . . . . . . . . . . . . . REG.   0x00002 NOT USED CONSTANT    1011_directives.asm:70.1-70.21
+VAS  . . . . . . . . . . . . . . . . REG.   0x00008 NOT USED CONSTANT    1011_directives.asm:76.1-76.22
+VIM  . . . . . . . . . . . . . . . . REG.   0x00007 NOT USED CONSTANT    1011_directives.asm:75.1-75.22
+VY . . . . . . . . . . . . . . . . . REG.   0x00003 NOT USED CONSTANT    1011_directives.asm:71.1-71.21
+XXX  . . . . . . . . . . . . . . . . EXPR.          USED     CONSTANT    1011_directives.asm:154.1-154.44
+YYY  . . . . . . . . . . . . . . . . EXPR.          USED     CONSTANT    1011_directives.asm:155.1-155.32
+ZDRA . . . . . . . . . . . . . . . . REG.   0x00006 NOT USED CONSTANT    1011_directives.asm:74.1-74.23

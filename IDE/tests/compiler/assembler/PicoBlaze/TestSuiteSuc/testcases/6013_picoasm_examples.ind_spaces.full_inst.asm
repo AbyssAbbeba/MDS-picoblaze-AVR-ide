@@ -1,5 +1,5 @@
 ; Compiler test case for Assembler
-
+device kcpsm6
 
 ;=========================================================
 ; routine: mult_soft
@@ -14,7 +14,7 @@
 ;  temp register: i
 ;========================================================
 
-device kcpsm3
+
 
 
 

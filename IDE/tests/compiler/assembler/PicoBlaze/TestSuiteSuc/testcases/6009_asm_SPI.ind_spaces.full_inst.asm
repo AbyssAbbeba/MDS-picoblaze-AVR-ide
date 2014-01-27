@@ -1,4 +1,4 @@
-DEVICE KCPSM3
+device kcpsm6
 
 BSDA_Z  EQU     5
 BSCL_Z  EQU     5

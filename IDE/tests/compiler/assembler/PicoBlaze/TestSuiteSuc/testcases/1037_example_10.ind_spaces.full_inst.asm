@@ -1,5 +1,5 @@
 ;KCPSM3 Program - UART programming of StrataFLASH memory on the Spartan-3E Starter Kit.
-;
+device kcpsm1
 ;Ken Chapman - Xilinx Ltd
 ;
 ;Version v1.00 - 28th March 2006

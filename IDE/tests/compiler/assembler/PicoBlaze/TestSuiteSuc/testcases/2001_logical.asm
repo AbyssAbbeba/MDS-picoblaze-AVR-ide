@@ -1,6 +1,7 @@
 ; Compiler test case for Assembler
 ; instruction opcodes
-
+; instruction opcodes
+device kcpsm2
 
 
 s1       EQU        04h

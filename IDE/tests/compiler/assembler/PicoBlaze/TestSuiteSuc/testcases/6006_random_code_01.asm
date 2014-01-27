@@ -1,7 +1,7 @@
 ; Compiler test case for Assembler
 ; instruction opcodes
 
-
+device kcpsm6
 
 
 Start:        

@@ -3,7 +3,7 @@
 ; Macro instructions, conditional compilation, constants and scratch-pad ram handling.
 ; See manual for more info
 ; Press Start simulation and Animate to run the program
-device          KCPSM3
+device kcpsm2
 ; Constant definitions
 ; --------------------
 counter          SET     00Fh    ; Counter of Px shifts

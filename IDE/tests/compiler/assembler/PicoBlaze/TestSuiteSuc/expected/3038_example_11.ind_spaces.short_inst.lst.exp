@@ -1,0 +1,644 @@
+                   1     ; KCPSM3 Program - Automatic Pulse Width Modulation (PWM) Control on the Spartan-3E Starter Kit.
+                   2     ;
+                   3     ; Ken Chapman - Xilinx Ltd
+                   4     ;
+                   5     ; Version v1.00 - 24th May 2006
+                   6     ;
+                   7     ; Automatically sequences the LEDs on the board using PWM to change intensity.
+                   8     ;
+                   9     ;**************************************************************************************
+                  10     ; Port definitions
+                  11     device kcpsm3
+                  12     ;
+                  13     ;
+  00080           14     led_port                EQU     0x80                    ;8 simple LEDs
+  00001           15     led0                    EQU     0x01                    ;     LED 0 - bit0
+  00002           16     led1                    EQU     0x02                    ;         1 - bit1
+  00004           17     led2                    EQU     0x04                    ;         2 - bit2
+  00008           18     led3                    EQU     0x08                    ;         3 - bit3
+  00010           19     led4                    EQU     0x10                    ;         4 - bit4
+  00020           20     led5                    EQU     0x20                    ;         5 - bit5
+  00040           21     led6                    EQU     0x40                    ;         6 - bit6
+  00080           22     led7                    EQU     0x80                    ;         7 - bit7
+                  23     ;
+                  24     ;
+  00040           25     simple_port             EQU     0x40                    ;4 simple outputs
+  00001           26     simple_io9              EQU     0x01                    ;  Header  IO9  - bit0
+  00002           27     simple_io10             EQU     0x02                    ;          IO10 - bit1
+  00004           28     simple_io11             EQU     0x04                    ;          IO11 - bit2
+  00008           29     simple_io12             EQU     0x08                    ;          IO12 - bit3
+                  30     ;
+                  31     ;
+                  32     ;
+  00000           33     status_port             EQU     0x00                    ;UART status input
+  00001           34     tx_half_full            EQU     0x01                    ;  Transmitter     half full - bit0
+  00002           35     tx_full                 EQU     0x02                    ;    FIFO               full - bit1
+  00004           36     rx_data_present         EQU     0x04                    ;  Receiver     data present - bit2
+  00008           37     rx_half_full            EQU     0x08                    ;    FIFO          half full - bit3
+  00010           38     rx_full                 EQU     0x10                    ;                   full - bit4
+  00020           39     spare1                  EQU     0x20                    ;                  spare '0' - bit5
+  00040           40     spare2                  EQU     0x40                    ;                  spare '0' - bit6
+  00080           41     spare3                  EQU     0x80                    ;                  spare '0' - bit7
+                  42     ;
+  00001           43     uart_read_port          EQU     0x01                    ;UART Rx data input
+                  44     ;
+  00020           45     uart_write_port         EQU     0x20                    ;UART Tx data output
+                  46     ;
+                  47     ;
+                  48     ;
+                  49     ;**************************************************************************************
+                  50     ; Special Register usage
+                  51     ;**************************************************************************************
+                  52     ;
+  0000F           53     uart_data               REG     sf                      ;used to pass data to and from the UART
+                  54     ;
+                  55     ;
+                  56     ;
+                  57     ;**************************************************************************************
+                  58     ;Scratch Pad Memory Locations
+                  59     ;**************************************************************************************
+                  60     ;
+  00000           61     pwm_duty_counter        EQU     0x00                    ;Duty Counter 0 to 255 within 1KHz period (1ms)
+  00001           62     pwm_channel0            EQU     0x01                    ;PWM settings for each channel
+  00002           63     pwm_channel1            EQU     0x02                    ; Channels 0 to 7 = LEDs 0 to 7
+  00003           64     pwm_channel2            EQU     0x03                    ; Channels 8 to 11 = IO9 to IO12
+  00004           65     pwm_channel3            EQU     0x04
+  00005           66     pwm_channel4            EQU     0x05
+  00006           67     pwm_channel5            EQU     0x06
+  00007           68     pwm_channel6            EQU     0x07
+  00008           69     pwm_channel7            EQU     0x08
+  00009           70     pwm_channel8            EQU     0x09
+  0000A           71     pwm_channel9            EQU     0x0a
+  0000B           72     pwm_channel10           EQU     0x0b
+  0000C           73     pwm_channel11           EQU     0x0c
+  0000D           74     isr_preserve_s0         EQU     0x0d                    ;preserve register contents during Interrupt Service Routine
+  0000E           75     isr_preserve_s1         EQU     0x0e
+  0000F           76     isr_preserve_s2         EQU     0x0f
+                  77     ;
+                  78     ;
+  00010           79     led0_sequence           EQU     0x10                    ;LED sequence values
+  00011           80     led1_sequence           EQU     0x11
+  00012           81     led2_sequence           EQU     0x12
+  00013           82     led3_sequence           EQU     0x13
+  00014           83     led4_sequence           EQU     0x14
+  00015           84     led5_sequence           EQU     0x15
+  00016           85     led6_sequence           EQU     0x16
+  00017           86     led7_sequence           EQU     0x17
+                  87     ;
+                  88     ;
+                  89     ;
+                  90     ;**************************************************************************************
+                  91     ;Useful data constants
+                  92     ;**************************************************************************************
+                  93     ;
+                  94     ;
+                  95     ;
+                  96     ;
+                  97     ;ASCII table
+                  98     ;
+  00061           99     character_a             EQU     0x61
+  00062          100     character_b             EQU     0x62
+  00063          101     character_c             EQU     0x63
+  00064          102     character_d             EQU     0x64
+  00065          103     character_e             EQU     0x65
+  00066          104     character_f             EQU     0x66
+  00067          105     character_g             EQU     0x67
+  00068          106     character_h             EQU     0x68
+  00069          107     character_i             EQU     0x69
+  0006A          108     character_j             EQU     0x6a
+  0006B          109     character_k             EQU     0x6b
+  0006C          110     character_l             EQU     0x6c
+  0006D          111     character_m             EQU     0x6d
+  0006E          112     character_n             EQU     0x6e
+  0006F          113     character_o             EQU     0x6f
+  00070          114     character_p             EQU     0x70
+  00071          115     character_q             EQU     0x71
+  00072          116     character_r             EQU     0x72
+  00073          117     character_s             EQU     0x73
+  00074          118     character_t             EQU     0x74
+  00075          119     character_u             EQU     0x75
+  00076          120     character_v             EQU     0x76
+  00077          121     character_w             EQU     0x77
+  00078          122     character_x             EQU     0x78
+  00079          123     character_y             EQU     0x79
+  0007A          124     character_z             EQU     0x7a
+  00041          125     _character_a            EQU     0x41
+  00042          126     _character_b            EQU     0x42
+  00043          127     _character_c            EQU     0x43
+  00044          128     _character_d            EQU     0x44
+  00045          129     _character_e            EQU     0x45
+  00046          130     _character_f            EQU     0x46
+  00047          131     _character_g            EQU     0x47
+  00048          132     _character_h            EQU     0x48
+  00049          133     _character_i            EQU     0x49
+  0004A          134     _character_j            EQU     0x4a
+  0004B          135     _character_k            EQU     0x4b
+  0004C          136     _character_l            EQU     0x4c
+  0004D          137     _character_m            EQU     0x4d
+  0004E          138     _character_n            EQU     0x4e
+  0004F          139     _character_o            EQU     0x4f
+  00050          140     _character_p            EQU     0x50
+  00051          141     _character_q            EQU     0x51
+  00052          142     _character_r            EQU     0x52
+  00053          143     _character_s            EQU     0x53
+  00054          144     _character_t            EQU     0x54
+  00055          145     _character_u            EQU     0x55
+  00056          146     _character_v            EQU     0x56
+  00057          147     _character_w            EQU     0x57
+  00058          148     _character_x            EQU     0x58
+  00059          149     _character_y            EQU     0x59
+  0005A          150     _character_z            EQU     0x5a
+  00030          151     character_0             EQU     0x30
+  00031          152     character_1             EQU     0x31
+  00032          153     character_2             EQU     0x32
+  00033          154     character_3             EQU     0x33
+  00034          155     character_4             EQU     0x34
+  00035          156     character_5             EQU     0x35
+  00036          157     character_6             EQU     0x36
+  00037          158     character_7             EQU     0x37
+  00038          159     character_8             EQU     0x38
+  00039          160     character_9             EQU     0x39
+  0003A          161     character_colon         EQU     0x3a
+  0002E          162     character_stop          EQU     0x2e
+  0003B          163     character_semi_colon    EQU     0x3b
+  0002D          164     character_minus         EQU     0x2d
+  0002F          165     character_divide        EQU     0x2f                    ;'/'
+  0002B          166     character_plus          EQU     0x2b
+  0002C          167     character_comma         EQU     0x2c
+  0003C          168     character_less_than     EQU     0x3c
+  0003E          169     character_greater_than  EQU     0x3e
+  0003D          170     character_equals        EQU     0x3d
+  00020          171     character_space         EQU     0x20
+  0000D          172     character_cr            EQU     0x0d                    ;carriage return
+  0003F          173     character_question      EQU     0x3f                    ;'?'
+  00024          174     character_dollar        EQU     0x24
+  00021          175     character_exclaim       EQU     0x21                    ;'!'
+  00008          176     character_bs            EQU     0x08                    ;Back Space command character
+                 177     ;
+                 178     ;
+                 179     ;
+                 180     ;
+                 181     ;
+                 182     ;**************************************************************************************
+                 183     ;Initialise the system
+                 184     ;**************************************************************************************
+                 185     ;
+                 186     ; All PWM channels initialise to off (zero).
+                 187     ; Simple I/O outputs will remain off at all times.
+                 188     ;
+000 00000        189     cold_start:             LD      s0, #0x00
+001 00101        190                             LD      s1, #pwm_channel0
+002 2F010        191     clear_loop:             ST      s0, @s1
+003 1410C        192                             CMP     s1, #pwm_channel11
+004 35007        193                             JUMP    z, enable_int
+005 18101        194                             ADD     s1, #0x01
+006 34002        195                             JUMP    clear_loop
+                 196     ;
+007 3C001        197     enable_int:             ENA                             ;interrupts used to drive servo
+                 198     ;
+008 300C7        199                             CALL    send_welcome            ;Write welcome message to UART
+009 300FB        200                             CALL    send_ok
+                 201     ;
+                 202     ;
+                 203     ; Initialise LED pattern sequence
+                 204     ;
+00A 00001        205                             LD      s0, #0x01               ;trigger to start wave pattern
+00B 2E010        206                             ST      s0, led0_sequence
+00C 00000        207                             LD      s0, #0x00
+00D 2E011        208                             ST      s0, led1_sequence
+00E 2E012        209                             ST      s0, led2_sequence
+00F 2E013        210                             ST      s0, led3_sequence
+010 2E014        211                             ST      s0, led4_sequence
+011 2E015        212                             ST      s0, led5_sequence
+012 2E016        213                             ST      s0, led6_sequence
+013 2E017        214                             ST      s0, led7_sequence
+                 215     ;
+                 216     ;**************************************************************************************
+                 217     ; Main program
+                 218     ;**************************************************************************************
+                 219     ;
+                 220     ; Provides a pattern of interest on the LEDs :-)
+                 221     ;
+                 222     ; Each LED increases intensity in 8 steps and then decreases intensity in 8 steps until it is off.
+                 223     ; The middle LEDs (LD2 to LD5) each start to turn on when either neighbour is turned half on and increasing
+                 224     ; to provide the effect of a passing a 'wave' of light passing from side to side. The pair of LEDs at each
+                 225     ; (LD0, Ld1 and LD6, LD7) are required to reflect the 'wave' so that the pattern continues.
+                 226     ;
+                 227     ; I'm sure this code cold be written in more elegant way, but I leave that as an exercise to you :-)
+                 228     ;
+014 00203        229     warm_start:             LD      s2, #0x03               ;simple delay loop (time will be increased by ISR processing)
+015 001FF        230     delay_s2_loop:          LD      s1, #0xff
+016 000FF        231     delay_s1_loop:          LD      s0, #0xff
+017 1C001        232     delay_s0_loop:          SUB     s0, #0x01
+018 35C17        233                             JUMP    nc, delay_s0_loop
+019 1C101        234                             SUB     s1, #0x01
+01A 35C16        235                             JUMP    nc, delay_s1_loop
+01B 1C201        236                             SUB     s2, #0x01
+01C 35C15        237                             JUMP    nc, delay_s2_loop
+                 238     ;
+                 239     ;Pattern generation
+                 240     ;
+01D 06010        241                             FT      s0, led0_sequence       ;read sequence for LED0
+01E 14000        242                             CMP     s0, #0x00
+01F 35025        243                             JUMP    z, test_led0_start
+020 1C020        244                             SUB     s0, #0x20               ;Count longer to ensure end stops then reset count if maximum
+021 35028        245                             JUMP    z, update_led0
+022 18020        246                             ADD     s0, #0x20
+023 18001        247     inc_led0:               ADD     s0, #0x01               ;increment counter
+024 34028        248                             JUMP    update_led0
+025 06111        249     test_led0_start:        FT      s1, led1_sequence       ;start LED0 if LED1 = 4
+026 14104        250                             CMP     s1, #0x04
+027 35023        251                             JUMP    z, inc_led0
+028 2E010        252     update_led0:            ST      s0, led0_sequence
+029 300A7        253                             CALL    led_to_duty
+02A 2E101        254                             ST      s1, pwm_channel0
+                 255     ;
+02B 06110        256                             FT      s1, led0_sequence       ; refresh LED1 if LED0 = 11 (0B hex) to reflect wave
+02C 1410B        257                             CMP     s1, #0x0b
+02D 35430        258                             JUMP    nz, normal_led1
+02E 00004        259                             LD      s0, #0x04
+02F 3403E        260                             JUMP    update_led1
+030 06011        261     normal_led1:            FT      s0, led1_sequence       ;read sequence for LED1
+031 14000        262                             CMP     s0, #0x00
+032 35038        263                             JUMP    z, test_led1_start
+033 1C010        264                             SUB     s0, #0x10               ;reset count if maximum
+034 3503E        265                             JUMP    z, update_led1
+035 18010        266                             ADD     s0, #0x10
+036 18001        267     inc_led1:               ADD     s0, #0x01               ;increment counter
+037 3403E        268                             JUMP    update_led1
+038 06110        269     test_led1_start:        FT      s1, led0_sequence       ;start LED1 if LED0 = 11 (0B hex) to reflect wave
+039 1410B        270                             CMP     s1, #0x0b
+03A 35036        271                             JUMP    z, inc_led1
+03B 06112        272                             FT      s1, led2_sequence       ;start LED1 if LED2 = 4
+03C 14104        273                             CMP     s1, #0x04
+03D 35036        274                             JUMP    z, inc_led1
+03E 2E011        275     update_led1:            ST      s0, led1_sequence
+03F 300A7        276                             CALL    led_to_duty
+040 2E102        277                             ST      s1, pwm_channel1
+                 278     ;
+041 06012        279                             FT      s0, led2_sequence       ;read sequence for LED2
+042 14000        280                             CMP     s0, #0x00
+043 35049        281                             JUMP    z, test_led2_start
+044 1C010        282                             SUB     s0, #0x10               ;reset count if maximum
+045 3504F        283                             JUMP    z, update_led2
+046 18010        284                             ADD     s0, #0x10
+047 18001        285     inc_led2:               ADD     s0, #0x01               ;increment counter
+048 3404F        286                             JUMP    update_led2
+049 06111        287     test_led2_start:        FT      s1, led1_sequence       ;start LED2 if LED1 = 4
+04A 14104        288                             CMP     s1, #0x04
+04B 35047        289                             JUMP    z, inc_led2
+04C 06113        290                             FT      s1, led3_sequence       ;start LED2 if LED3 = 4
+04D 14104        291                             CMP     s1, #0x04
+04E 35047        292                             JUMP    z, inc_led2
+04F 2E012        293     update_led2:            ST      s0, led2_sequence
+050 300A7        294                             CALL    led_to_duty
+051 2E103        295                             ST      s1, pwm_channel2
+                 296     ;
+                 297     ;
+052 06013        298                             FT      s0, led3_sequence       ;read sequence for LED3
+053 14000        299                             CMP     s0, #0x00
+054 3505A        300                             JUMP    z, test_led3_start
+055 1C010        301                             SUB     s0, #0x10               ;reset count if maximum
+056 35060        302                             JUMP    z, update_led3
+057 18010        303                             ADD     s0, #0x10
+058 18001        304     inc_led3:               ADD     s0, #0x01               ;increment counter
+059 34060        305                             JUMP    update_led3
+05A 06112        306     test_led3_start:        FT      s1, led2_sequence       ;start LED3 if LED2 = 4
+05B 14104        307                             CMP     s1, #0x04
+05C 35058        308                             JUMP    z, inc_led3
+05D 06114        309                             FT      s1, led4_sequence       ;start LED3 if LED4 = 4
+05E 14104        310                             CMP     s1, #0x04
+05F 35058        311                             JUMP    z, inc_led3
+060 2E013        312     update_led3:            ST      s0, led3_sequence
+061 300A7        313                             CALL    led_to_duty
+062 2E104        314                             ST      s1, pwm_channel3
+                 315     ;
+063 06014        316                             FT      s0, led4_sequence       ;read sequence for LED4
+064 14000        317                             CMP     s0, #0x00
+065 3506B        318                             JUMP    z, test_led4_start
+066 1C010        319                             SUB     s0, #0x10               ;reset count if maximum
+067 35071        320                             JUMP    z, update_led4
+068 18010        321                             ADD     s0, #0x10
+069 18001        322     inc_led4:               ADD     s0, #0x01               ;increment counter
+06A 34071        323                             JUMP    update_led4
+06B 06113        324     test_led4_start:        FT      s1, led3_sequence       ;start LED4 if LED3 = 4
+06C 14104        325                             CMP     s1, #0x04
+06D 35069        326                             JUMP    z, inc_led4
+06E 06115        327                             FT      s1, led5_sequence       ;start LED4 if LED5 = 4
+06F 14104        328                             CMP     s1, #0x04
+070 35069        329                             JUMP    z, inc_led4
+071 2E014        330     update_led4:            ST      s0, led4_sequence
+072 300A7        331                             CALL    led_to_duty
+073 2E105        332                             ST      s1, pwm_channel4
+                 333     ;
+074 06015        334                             FT      s0, led5_sequence       ;read sequence for LED5
+075 14000        335                             CMP     s0, #0x00
+076 3507C        336                             JUMP    z, test_led5_start
+077 1C010        337                             SUB     s0, #0x10               ;reset count if maximum
+078 35082        338                             JUMP    z, update_led5
+079 18010        339                             ADD     s0, #0x10
+07A 18001        340     inc_led5:               ADD     s0, #0x01               ;increment counter
+07B 34082        341                             JUMP    update_led5
+07C 06114        342     test_led5_start:        FT      s1, led4_sequence       ;start LED5 if LED4 = 4
+07D 14104        343                             CMP     s1, #0x04
+07E 3507A        344                             JUMP    z, inc_led5
+07F 06116        345                             FT      s1, led6_sequence       ;start LED5 if LED6 = 4
+080 14104        346                             CMP     s1, #0x04
+081 3507A        347                             JUMP    z, inc_led5
+082 2E015        348     update_led5:            ST      s0, led5_sequence
+083 300A7        349                             CALL    led_to_duty
+084 2E106        350                             ST      s1, pwm_channel5
+                 351     ;
+085 06117        352                             FT      s1, led7_sequence       ; refresh LED6 if LED7 = 11 (0B hex) to reflect wave
+086 1410B        353                             CMP     s1, #0x0b
+087 3548A        354                             JUMP    nz, normal_led6
+088 00004        355                             LD      s0, #0x04
+089 34095        356                             JUMP    update_led6
+08A 06016        357     normal_led6:            FT      s0, led6_sequence       ;read sequence for LED6
+08B 14000        358                             CMP     s0, #0x00
+08C 35092        359                             JUMP    z, test_led6_start
+08D 1C010        360                             SUB     s0, #0x10               ;reset count if maximum
+08E 35095        361                             JUMP    z, update_led6
+08F 18010        362                             ADD     s0, #0x10
+090 18001        363     inc_led6:               ADD     s0, #0x01               ;increment counter
+091 34095        364                             JUMP    update_led6
+092 06115        365     test_led6_start:        FT      s1, led5_sequence       ;start LED6 if LED5 = 4
+093 14104        366                             CMP     s1, #0x04
+094 35090        367                             JUMP    z, inc_led6
+095 2E016        368     update_led6:            ST      s0, led6_sequence
+096 300A7        369                             CALL    led_to_duty
+097 2E107        370                             ST      s1, pwm_channel6
+                 371     ;
+098 06017        372                             FT      s0, led7_sequence       ;read sequence for LED7
+099 14000        373                             CMP     s0, #0x00
+09A 350A0        374                             JUMP    z, test_led7_start
+09B 1C020        375                             SUB     s0, #0x20               ;Count longer to ensure end stops then reset count if maximum
+09C 350A3        376                             JUMP    z, update_led7
+09D 18020        377                             ADD     s0, #0x20
+09E 18001        378     inc_led7:               ADD     s0, #0x01               ;increment counter
+09F 340A3        379                             JUMP    update_led7
+0A0 06116        380     test_led7_start:        FT      s1, led6_sequence       ;start LED7 if LED6 = 4
+0A1 14104        381                             CMP     s1, #0x04
+0A2 3509E        382                             JUMP    z, inc_led7
+0A3 2E017        383     update_led7:            ST      s0, led7_sequence
+0A4 300A7        384                             CALL    led_to_duty
+0A5 2E108        385                             ST      s1, pwm_channel7
+0A6 34014        386                             JUMP    warm_start
+                 387     ;
+                 388     ;
+                 389     ; Convert LED sequence number into PWM intensity figure
+                 390     ;
+                 391     ; LEDs duty cycle values are 0,1,2,4,8,16,32 and 64 because they appear to give what
+                 392     ; appears to be a fairly liner change in intensity and provides a simple way to set
+                 393     ; the duty value.
+                 394     ;
+                 395     ; Provide sequence value in register s0 and intensity will be
+                 396     ; returned in register s1.
+                 397     ;
+                 398     ; s0   s1
+                 399     ; 00   00
+                 400     ; 01   01
+                 401     ; 02   02
+                 402     ; 03   04
+                 403     ; 04   08
+                 404     ; 05   10
+                 405     ; 06   20
+                 406     ; 07   40
+                 407     ; 08   80
+                 408     ; 09   40
+                 409     ; 0A   20
+                 410     ; 0B   10
+                 411     ; 0C   08
+                 412     ; 0D   04
+                 413     ; 0E   02
+                 414     ; 0F   01
+                 415     ; 10   00  and zero for all larger values of s0
+                 416     ;
+0A7 00100        417     led_to_duty:            LD      s1, #0x00
+0A8 14000        418                             CMP     s0, #0x00               ;test for zero
+0A9 2A000        419                             RET
+0AA 00101        420                             LD      s1, #0x01               ;inject '1'
+0AB 1C001        421     go_up_loop:             SUB     s0, #0x01
+0AC 2A000        422                             RET
+0AD 20106        423                             SL0     s1                      ;multiply by 2
+0AE 358B0        424                             JUMP    c, go_down
+0AF 340AB        425                             JUMP    go_up_loop
+0B0 00140        426     go_down:                LD      s1, #0x40
+0B1 1C001        427     go_down_loop:           SUB     s0, #0x01
+0B2 2A000        428                             RET
+0B3 2010E        429                             SR0     s1                      ;divide by 2
+0B4 340B1        430                             JUMP    go_down_loop
+                 431     ;
+                 432     ;**************************************************************************************
+                 433     ; UART communication routines
+                 434     ;**************************************************************************************
+                 435     ;
+                 436     ; Read one character from the UART
+                 437     ;
+                 438     ; Character read will be returned in a register called 'UART_data'.
+                 439     ;
+                 440     ; The routine first tests the receiver FIFO buffer to see if data is present.
+                 441     ; If the FIFO is empty, the routine waits until there is a character to read.
+                 442     ; As this could take any amount of time the wait loop could include a call to a
+                 443     ; subroutine which performs a useful function.
+                 444     ;
+                 445     ;
+                 446     ; Registers used s0 and UART_data
+                 447     ;
+0B5 04000        448     read_from_uart:         IN      s0, status_port         ;test Rx_FIFO buffer
+0B6 12004        449                             TEST    s0, #rx_data_present    ;wait if empty
+0B7 354B9        450                             JUMP    nz, read_character
+0B8 340B5        451                             JUMP    read_from_uart
+0B9 04F01        452     read_character:         IN      uart_data, uart_read_port ;read from FIFO
+0BA 2A000        453                             RET
+                 454     ;
+                 455     ;
+                 456     ;
+                 457     ; Transmit one character to the UART
+                 458     ;
+                 459     ; Character supplied in register called 'UART_data'.
+                 460     ;
+                 461     ; The routine first tests the transmit FIFO buffer to see if it is full.
+                 462     ; If the FIFO is full, then the routine waits until it there is space.
+                 463     ;
+                 464     ; Registers used s0
+                 465     ;
+0BB 04000        466     send_to_uart:           IN      s0, status_port         ;test Tx_FIFO buffer
+0BC 12002        467                             TEST    s0, #tx_full            ;wait if full
+0BD 350BF        468                             JUMP    z, uart_write
+0BE 340BB        469                             JUMP    send_to_uart
+0BF 2CF20        470     uart_write:             OUT     uart_data, uart_write_port
+0C0 2A000        471                             RET
+                 472     ;
+                 473     ;
+                 474     ;
+                 475     ;**************************************************************************************
+                 476     ; Text messages
+                 477     ;**************************************************************************************
+                 478     ;
+                 479     ;
+                 480     ; Send Carriage Return to the UART
+                 481     ;
+0C1 00F0D        482     send_cr:                LD      uart_data, #character_cr
+0C2 300BB        483                             CALL    send_to_uart
+0C3 2A000        484                             RET
+                 485     ;
+                 486     ; Send a space to the UART
+                 487     ;
+0C4 00F20        488     send_space:             LD      uart_data, #character_space
+0C5 300BB        489                             CALL    send_to_uart
+0C6 2A000        490                             RET
+                 491     ;
+                 492     ;
+                 493     ;
+                 494     ; Send 'PicoBlaze Servo Control' string to the UART
+                 495     ;
+0C7 300C1        496     send_welcome:           CALL    send_cr
+0C8 300C1        497                             CALL    send_cr
+0C9 00F50        498                             LD      uart_data, #_character_p
+0CA 300BB        499                             CALL    send_to_uart
+0CB 00F69        500                             LD      uart_data, #character_i
+0CC 300BB        501                             CALL    send_to_uart
+0CD 00F63        502                             LD      uart_data, #character_c
+0CE 300BB        503                             CALL    send_to_uart
+0CF 00F6F        504                             LD      uart_data, #character_o
+0D0 300BB        505                             CALL    send_to_uart
+0D1 00F42        506                             LD      uart_data, #_character_b
+0D2 300BB        507                             CALL    send_to_uart
+0D3 00F6C        508                             LD      uart_data, #character_l
+0D4 300BB        509                             CALL    send_to_uart
+0D5 00F61        510                             LD      uart_data, #character_a
+0D6 300BB        511                             CALL    send_to_uart
+0D7 00F7A        512                             LD      uart_data, #character_z
+0D8 300BB        513                             CALL    send_to_uart
+0D9 00F65        514                             LD      uart_data, #character_e
+0DA 300BB        515                             CALL    send_to_uart
+0DB 300C4        516                             CALL    send_space
+0DC 00F41        517                             LD      uart_data, #_character_a
+0DD 300BB        518                             CALL    send_to_uart
+0DE 00F75        519                             LD      uart_data, #character_u
+0DF 300BB        520                             CALL    send_to_uart
+0E0 00F74        521                             LD      uart_data, #character_t
+0E1 300BB        522                             CALL    send_to_uart
+0E2 00F6F        523                             LD      uart_data, #character_o
+0E3 300BB        524                             CALL    send_to_uart
+0E4 300C4        525                             CALL    send_space
+0E5 00F50        526                             LD      uart_data, #_character_p
+0E6 300BB        527                             CALL    send_to_uart
+0E7 00F57        528                             LD      uart_data, #_character_w
+0E8 300BB        529                             CALL    send_to_uart
+0E9 00F4D        530                             LD      uart_data, #_character_m
+0EA 300BB        531                             CALL    send_to_uart
+0EB 300C4        532                             CALL    send_space
+0EC 00F41        533                             LD      uart_data, #_character_a
+0ED 300BB        534                             CALL    send_to_uart
+0EE 00F63        535                             LD      uart_data, #character_c
+0EF 300BB        536                             CALL    send_to_uart
+0F0 00F74        537                             LD      uart_data, #character_t
+0F1 300BB        538                             CALL    send_to_uart
+0F2 00F69        539                             LD      uart_data, #character_i
+0F3 300BB        540                             CALL    send_to_uart
+0F4 00F76        541                             LD      uart_data, #character_v
+0F5 300BB        542                             CALL    send_to_uart
+0F6 00F65        543                             LD      uart_data, #character_e
+0F7 300BB        544                             CALL    send_to_uart
+0F8 300C1        545                             CALL    send_cr
+0F9 300C1        546                             CALL    send_cr
+0FA 2A000        547                             RET
+                 548     ;
+                 549     ;
+                 550     ;Send 'OK' to the UART
+                 551     ;
+0FB 300C1        552     send_ok:                CALL    send_cr
+0FC 00F4F        553                             LD      uart_data, #_character_o
+0FD 300BB        554                             CALL    send_to_uart
+0FE 00F4B        555                             LD      uart_data, #_character_k
+0FF 300BB        556                             CALL    send_to_uart
+100 340C1        557                             JUMP    send_cr
+                 558     ;
+                 559     ;
+                 560     ;**************************************************************************************
+                 561     ; Interrupt Service Routine (ISR)
+                 562     ;**************************************************************************************
+                 563     ;
+                 564     ; Interrupts occur at 3.92us intervals and are used to generate the PWM pulses generated
+                 565     ; at a PRF of 1KHz. The 3.92us interrupt rate corresponds with a resolution of 256 steps
+                 566     ; over the 1ms associated with the 1KHz PRF.
+                 567     ;
+                 568     ; The ISR is self contained and all registers used are preserved. Scratch pad memory
+                 569     ; locations are used to determine the desired duty factor for each of 12 channels.
+                 570     ;
+                 571     ; Note that an interrupt is generated every 196 clock cycles. This means that there is
+                 572     ; only time to execute 98 instructions between each interrupt. This ISR is 48 instructions
+                 573     ; long. A further 3 instructions are also consumed by the interrupt process
+                 574     ; (abandoned instruction, virtual CALL to 3FF and the interrupt vector JUMP) and hence
+                 575     ; PicoBlaze has approximately half of its time available for other tasks in the main program.
+                 576     ;
+                 577     ; Although a loop would normal be employed in software to process each of 12 channels,
+                 578     ; the implementation of a loop would increase the number of instructions which needed to
+                 579     ; be executed to such an extent that this 12 channel implementation would not be possible.
+                 580     ; Consequently the code is written out in a linear fashion which consumes more program
+                 581     ; space but which executes faster.
+                 582     ;
+101 2E00D        583     isr:                    ST      s0, isr_preserve_s0     ;preserve registers to be used
+102 2E10E        584                             ST      s1, isr_preserve_s1
+103 2E20F        585                             ST      s2, isr_preserve_s2
+                 586     ;Determine the number of steps currently through the 1ms PWM cycle
+104 06100        587                             FT      s1, pwm_duty_counter    ;read 8-bit counter of steps
+105 18101        588                             ADD     s1, #0x01               ;increment counter (will roll over to zero)
+106 2E100        589                             ST      s1, pwm_duty_counter    ;update count value in memory for next interrupt.
+                 590     ;Read duty factor for each channel and compare it with the duty counter and set or
+                 591     ;reset a bit in register s2 accordingly.
+107 0600C        592                             FT      s0, pwm_channel11       ;read desired setting of pulse width
+108 15100        593                             CMP     s1, s0                  ;set carry flag if duty factor > duty counter
+109 20200        594                             SLA     s2                      ;shift carry into register s2
+10A 0600B        595                             FT      s0, pwm_channel10       ;read desired setting of pulse width
+10B 15100        596                             CMP     s1, s0                  ;set carry flag if duty factor > duty counter
+10C 20200        597                             SLA     s2                      ;shift carry into register s2
+10D 0600A        598                             FT      s0, pwm_channel9        ;read desired setting of pulse width
+10E 15100        599                             CMP     s1, s0                  ;set carry flag if duty factor > duty counter
+10F 20200        600                             SLA     s2                      ;shift carry into register s2
+110 06009        601                             FT      s0, pwm_channel8        ;read desired setting of pulse width
+111 15100        602                             CMP     s1, s0                  ;set carry flag if duty factor > duty counter
+112 20200        603                             SLA     s2                      ;shift carry into register s2
+113 2C240        604                             OUT     s2, simple_port         ;drive pins on connector J4
+114 06008        605                             FT      s0, pwm_channel7        ;read desired setting of pulse width
+115 15100        606                             CMP     s1, s0                  ;set carry flag if duty factor > duty counter
+116 20200        607                             SLA     s2                      ;shift carry into register s2
+117 06007        608                             FT      s0, pwm_channel6        ;read desired setting of pulse width
+118 15100        609                             CMP     s1, s0                  ;set carry flag if duty factor > duty counter
+119 20200        610                             SLA     s2                      ;shift carry into register s2
+11A 06006        611                             FT      s0, pwm_channel5        ;read desired setting of pulse width
+11B 15100        612                             CMP     s1, s0                  ;set carry flag if duty factor > duty counter
+11C 20200        613                             SLA     s2                      ;shift carry into register s2
+11D 06005        614                             FT      s0, pwm_channel4        ;read desired setting of pulse width
+11E 15100        615                             CMP     s1, s0                  ;set carry flag if duty factor > duty counter
+11F 20200        616                             SLA     s2                      ;shift carry into register s2
+120 06004        617                             FT      s0, pwm_channel3        ;read desired setting of pulse width
+121 15100        618                             CMP     s1, s0                  ;set carry flag if duty factor > duty counter
+122 20200        619                             SLA     s2                      ;shift carry into register s2
+123 06003        620                             FT      s0, pwm_channel2        ;read desired setting of pulse width
+124 15100        621                             CMP     s1, s0                  ;set carry flag if duty factor > duty counter
+125 20200        622                             SLA     s2                      ;shift carry into register s2
+126 06002        623                             FT      s0, pwm_channel1        ;read desired setting of pulse width
+127 15100        624                             CMP     s1, s0                  ;set carry flag if duty factor > duty counter
+128 20200        625                             SLA     s2                      ;shift carry into register s2
+129 06001        626                             FT      s0, pwm_channel0        ;read desired setting of pulse width
+12A 15100        627                             CMP     s1, s0                  ;set carry flag if duty factor > duty counter
+12B 20200        628                             SLA     s2                      ;shift carry into register s2
+12C 2C280        629                             OUT     s2, led_port            ;drive LEDs
+12D 0600D        630                             FT      s0, isr_preserve_s0     ;restore register values
+12E 0610E        631                             FT      s1, isr_preserve_s1
+12F 0620F        632                             FT      s2, isr_preserve_s2
+130 38001        633                             RETIE
+                 634     ;
+                 635     ;
+                 636     ;**************************************************************************************
+                 637     ; Interrupt Vector
+                 638     ;**************************************************************************************
+                 639     ;
+  003FF          640                             ORG     0x3ff
+3FF 34101        641                             JUMP    isr
+                 642     ;
+                 643     ;
+                 644

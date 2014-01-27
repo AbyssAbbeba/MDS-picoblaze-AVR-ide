@@ -65,9 +65,7 @@ MT_WARNING: 002_arithmetics.asm:84.24-84.26: Warning: instruction `ADDCY sX, sY'
 MT_WARNING: 002_arithmetics.asm:85.21-85.23: Warning: instruction `SUB sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 MT_WARNING: 002_arithmetics.asm:85.24-85.26: Warning: instruction `SUB sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 MT_WARNING: 002_arithmetics.asm:86.21-86.23: Warning: instruction `SUBCY sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-MT_WARNING: 002_arithmetics.asm:86.24-86.34: Warning: instruction `SUBCY sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 MT_WARNING: 002_arithmetics.asm:87.21-87.23: Warning: instruction `COMPARE sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-MT_WARNING: 002_arithmetics.asm:87.24-87.34: Warning: instruction `COMPARE sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 MT_WARNING: Warning: exact device not specified, using KCPSM6 by default.
 MT_ERROR: 002_arithmetics.asm:16.24-16.26: Error: symbol not defined: `O5'.
 MT_ERROR: 002_arithmetics.asm:30.24-30.26: Error: symbol not defined: `O5'.

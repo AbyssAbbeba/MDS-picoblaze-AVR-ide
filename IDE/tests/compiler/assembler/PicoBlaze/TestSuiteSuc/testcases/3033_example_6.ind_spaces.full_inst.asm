@@ -4,7 +4,7 @@
 ;Ken Chapman - Xilinx Ltd
 ;
 ;Version v1.00 - 21th December 2005
-;
+device kcpsm3
 ;This program uses an 8KHz interrupt to generate test waveforms on the
 ;4 analogue outputs provided by the Linear Technology LTC2624 device.
 ;

@@ -3,7 +3,7 @@
 ;
 ; Ken Chapman - Xilinx Ltd
 ;
-
+device kcpsm2
 ; Version v1.00 - 19th April 2006
 ;
 ;

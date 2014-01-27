@@ -4,12 +4,12 @@
                    4
                    5
                    6
-                   7     Start:
+  00000            7     Start:
                    8
                    9         ; Others
 000 20001         10                     CALl      Podprog1
                   11
-                  12     Podprog1:
+  00001           12     Podprog1:
 001 20003         13                     CALl      Podprog2
 002 25000         14                     RETURN
 003 20005         15     Podprog2:       CALl      Podprog3
@@ -22,10 +22,10 @@
 00A 25000         22                     RETURN
 00B 2000D         23     Podprog6:       CALl      Podprog7
 00C 25000         24                     RETURN
-                  25     Podprog7:
+  0000D           25     Podprog7:
 00D 25000         26                     RETURN
                   27
-                  28     ADD16:
+  0000E           28     ADD16:
                   29
   00001           30     NAMEREG         s0, a_lsb
 E: symbol not defined: `S0'.
@@ -49,7 +49,7 @@ W: reusing already reserved space in register file memory at address: 0x1.
 010 25000         42     RETURN
                   43
                   44
-                  45     SUB16:
+  00011           45     SUB16:
                   46     NAMEREG         s0, a_lsb
 E: symbol already defined: "A_LSB".
                   47     ; rename register s0 as “a_lsb”
@@ -70,29 +70,24 @@ E: symbol already defined: "B_MSB".
                   59             ; subtract MSBs, keep result in a_msb
 013 25000         60             RETURN
                   61
-                  62     inc_16:
+  00014           62     inc_16:
                   63             ; increment low byte
 014 10110         64             ADD             lo_byte,01
-W: instruction `ADD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 W: instruction `ADD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `LO_BYTE'.
                   65             ; increment high byte only if CARRY bit set when incrementing low byte
 015 12100         66             ADDCY           hi_byte,00
-W: instruction `ADDCY sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 W: instruction `ADDCY sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `HI_BYTE'.
                   67
                   68
-                  69     Negate:
+  00016           69     Negate:
                   70             ; invert all bits in the register performing a one’s complement
 016 06110         71             XOR             sX,FF
-W: instruction `YOR sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-W: instruction `YOR sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `SX'.
 E: symbol not defined: `FF'.
                   72             ; add one to sX
 017 10110         73             ADD             sX,01
-W: instruction `ADD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 W: instruction `ADD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `SX'.
 018 25000         74             RETURN
@@ -115,7 +110,7 @@ W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; whi
 01B 25000         85     RETURN
                   86
                   87
-                  88     mult_8x8:
+  0001C           88     mult_8x8:
   00001           89     NAMEREG         s0, multiplicand
 E: symbol not defined: `S0'.
 W: reusing already reserved space in register file memory at address: 0x1.
@@ -153,7 +148,7 @@ W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; whi
                  109     ; clear product LSB (not required)
                  110     ;
                  111     ; loop through all bits in multiplier
-                 112     mult_loop:
+  0001F          112     mult_loop:
 01F 0C110        113     TEST            multiplier, bit_mask
                  114     ; check if bit is set
 020 32022        115     JUMP            Z, no_add
@@ -162,7 +157,7 @@ W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; whi
 021 10110        118     ADD             result_msb, multiplicand
                  119     ; addition only occurs in MSB
                  120     ;
-                 121     no_add:
+  00022          121     no_add:
 022 14108        122     SRA             result_msb
                  123     ; shift MSB right, CARRY into bit 7,
                  124     ; lsb into CARRY
@@ -182,7 +177,7 @@ W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; whi
                  138     ; ===================================================
                  139     ; Connects to embedded 18x18 Hardware Multiplier via ports
                  140     ;
-                 141     mult_8x8io:
+  00026          141     mult_8x8io:
                  142     NAMEREG         s0, multiplicand
 E: symbol already defined: "MULTIPLICAND".
                  143     ;
@@ -220,7 +215,7 @@ E: symbol already defined: "RESULT_LSB".
                  171     ; ==================================================
                  172     ; Shift and subtract algorithm
                  173     ;
-                 174     div_8by8:
+  0002A          174     div_8by8:
   00001          175     NAMEREG          s0, dividend
 E: symbol not defined: `S0'.
 W: reusing already reserved space in register file memory at address: 0x1.
@@ -249,7 +244,7 @@ W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; whi
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 W: value out of range: 0x50, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x0.
                  190     ; start with most-significant bit (msb)
-                 191     div_loop:
+  0002C          191     div_loop:
 02C 0C110        192     TEST             dividend, bit_mask
                  193     ; test bit, set CARRY if bit is '1'
 02D 14100        194     SLA              remainder
@@ -266,7 +261,7 @@ W: value out of range: 0x50, allowed range is [0x0,0xf] (trimmed to 4 bits) whic
 032 10110        205     ADD              quotient, 01
 W: instruction `ADD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
                  206     ; add one to quotient
-                 207     no_sub:
+  00033          207     no_sub:
 033 1410E        208     SR0              bit_mask
                  209     ; shift to examine next bit position
 034 3602C        210     JUMP             NZ, div_loop
@@ -274,25 +269,21 @@ W: instruction `ADD sX, sY' requires operand #2 to be of type(s): register; whil
                  212     ;if bit_mask=0, then all bits examined
                  213
                  214
-                 215     set_carry:
+  00035          215     set_carry:
 035 00100        216     LOAD             sX, 00
-W: instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `SX'.
 036 1C110        217     COMPARE          sX, 01
-W: instruction `COMPARE sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 W: instruction `COMPARE sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `SX'.
                  218     ; set CARRY flag and reset ZERO flag
                  219
                  220
 037 00150        221     LOAD             s0, 05
-W: instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `S0'.
                  222     ; s0 = 00000101
 038 0C140        223     TEST             s0, 04
-W: instruction `TEST sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 W: instruction `TEST sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `S0'.
                  224     ; mask = 00000100

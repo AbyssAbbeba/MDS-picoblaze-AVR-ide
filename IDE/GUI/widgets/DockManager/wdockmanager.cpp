@@ -497,7 +497,7 @@ void WDockManager::addSimDockWidgetP2(QString path, MCUSimControl* simControl)
     openDockWidgets.append(newWDock);
     if (wDockBotPrevHeight < newWDock->getQDockWidget()->height())
     {
-        wDockBotPrevHeight = newWDock->getQDockWidget()->height();
+        wDockBotPrevHeight = newWDock->getQDockWidget()->widget()->height();
     }
     //qDebug() << "WDockManager: return addSimDockWidgetP2()";
 }
@@ -553,6 +553,7 @@ void WDockManager::hideDockWidgetArea(int area)
             }
             (*i)->getQDockWidget()->setMaximumHeight(0);
             (*i)->getQDockWidget()->setMinimumHeight(0);
+            //(*i)->getQDockWidget()->resize((*i)->getQDockWidget()->size().width(), 0);
         }
     }
     qDebug() << "WDockManager: return hideDockWidgetArea()";
@@ -566,10 +567,12 @@ void WDockManager::showDockWidgetArea(int area)
     {
         if ((*i)->cmpArea(area) == true)
         {
+            //vybira si automaticky nejmensi
             (*i)->getQDockWidget()->setMaximumHeight(wDockBotPrevHeight);
             (*i)->getQDockWidget()->setMinimumHeight(wDockBotPrevHeight);
             (*i)->getQDockWidget()->setMaximumHeight(999);
             (*i)->getQDockWidget()->setMinimumHeight(1);
+            //(*i)->getQDockWidget()->resize((*i)->getQDockWidget()->size().width(), wDockBotPrevHeight);
         }
     }
     //qDebug() << "WDockManager: wDockBotPrevHeight" << wDockBotPrevHeight;
