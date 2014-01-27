@@ -1,5 +1,5 @@
         org     0
-        device kcpsm3
+device kcpsm2
 
 
         ;RT_FOR          S0,10..15

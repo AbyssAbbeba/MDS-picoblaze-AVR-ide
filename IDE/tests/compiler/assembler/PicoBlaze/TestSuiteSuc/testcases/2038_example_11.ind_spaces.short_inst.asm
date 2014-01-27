@@ -3,7 +3,7 @@
 ; Ken Chapman - Xilinx Ltd
 ;
 ; Version v1.00 - 24th May 2006
-;
+device kcpsm2
 ; Automatically sequences the LEDs on the board using PWM to change intensity.
 ;
 ;**************************************************************************************

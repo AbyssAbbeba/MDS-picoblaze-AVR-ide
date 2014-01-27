@@ -14,7 +14,7 @@
 ;
 ; Press Start simulation and Animate to run the program
 ; 
-        DEVICE          KCPSM3
+device kcpsm2
 ; Asign names to registers
         NAMEREG         s0,temp1              ; temporary data register
         NAMEREG         s1,temp2              ; temporary data register

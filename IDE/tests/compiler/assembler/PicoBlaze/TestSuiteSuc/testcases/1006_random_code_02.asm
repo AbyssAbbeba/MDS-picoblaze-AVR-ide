@@ -2,7 +2,7 @@
 ; instruction opcodes
 
 
-
+device kcpsm1
 
 Start:        
         JUMP        Z, 0x000

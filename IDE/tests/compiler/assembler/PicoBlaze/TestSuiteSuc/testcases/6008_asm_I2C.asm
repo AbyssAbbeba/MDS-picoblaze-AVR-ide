@@ -8,7 +8,7 @@
 ; sD: address of the command register
 ; sC: address of the SPI control/status register
 ; -------------------------------------------------------------------------------
-DEVICE          KCPSM3
+device kcpsm6
 
 bMOSI           EQU    0b00000001
 bMISO           EQU    0b10000000

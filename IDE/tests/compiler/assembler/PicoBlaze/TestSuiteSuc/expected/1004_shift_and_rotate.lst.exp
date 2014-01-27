@@ -1,0 +1,56 @@
+                   1     ; Compiler test case for Assembler
+                   2     ; instruction opcodes
+                   3
+                   4     device kcpsm1
+                   5
+  00001            6     TESTsymb1    SET        1h
+  00011            7     TESTsymb2    SET        0x11
+  00001            8     TESTsymb3    SET        1
+  00003            9     TESTsymb4    SET        3d
+  00004           10     TESTsymb5    EQU        4h
+  00005           11     TESTsymb6    EQU        0x05
+  00006           12     TESTsymb7    EQU        6
+  00007           13     TESTsymb8    EQU        7
+  00008           14     TESTsymb9    REG        8h
+  00009           15     TESTsymb10    REG        9h
+  0000A           16     TESTsymb11    REG        Ah
+  0000B           17     TESTsymb12    REG        Bh
+  0000C           18     TESTsymb13    DATA        Ch
+  00005           19     TESTsymb14    DATA        0x05
+  00002           20     TESTsymb15    DATA        2
+  00003           21     TESTsymb16    DATA        3d
+  00002           22     TESTsymb17    CODE        0h + 2h
+  00002           23     TESTsymb18    CODE        2h
+  00002           24     TESTsymb19    CODE        2h
+  00002           25     TESTsymb20    CODE        2h
+                  26     TESTsymb21    DEFINE        3h
+                  27     TESTsymb22    DEFINE        4h
+                  28     TESTsymb23    DEFINE        5h
+                  29     TESTsymb24    DEFINE        TESTsymb1 + TESTsymb11
+                  30
+                  31
+                  32
+  00000           33     Start:
+                  34
+                  35     ; Shift and rotate
+000 0D90E         36             SR0       TESTsymb10
+001 0D90F         37             SR1       TESTsymb10
+002 0D90A         38             SRX        TESTsymb10
+003 0D908         39             SRA        TESTsymb10
+004 0D90C         40             RR         TESTsymb10
+                  41
+005 0D906         42             SL0       TESTsymb10
+006 0D907         43             SL1       TESTsymb10
+007 0D904         44             SLX       TESTsymb10
+008 0D900         45             SLA       TESTsymb10
+009 0D902         46             RL        TESTsymb10
+                  47
+  0000A           48     scratchpad_transfers:
+                  49     STORE           s0, 04h
+E: instruction not supported on the this device: STORE sX, ss.
+                  50     ; Write register sX to RAM location 04
+                  51     FETCH           s1, 04h
+E: instruction not supported on the this device: FETCH sX, ss.
+                  52     ; Read RAM location 04 into register sX
+                  53             END
+                  54

@@ -16,7 +16,7 @@ character_s		EQU		0x53
 ; This code automatically sequences the LEDs on the board using PWM to change intensity.
 ; It also checks for correct design authentication and will perform a different sequence if
 ; the design is not authorised.
-;
+device kcpsm6
 ;
 ;**************************************************************************************
 ; NOTICE:

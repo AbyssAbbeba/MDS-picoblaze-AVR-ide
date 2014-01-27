@@ -1,5 +1,4 @@
-; test case for directives
-device KCPSM3
+device kcpsm2
 
 
 

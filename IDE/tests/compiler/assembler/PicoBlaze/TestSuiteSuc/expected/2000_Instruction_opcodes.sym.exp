@@ -1,0 +1,58 @@
+PODPROG  . . . . . . . . . . . . . . LABEL  0x0002D USED     CONSTANT    2000_Instruction_opcodes.asm:89.1-89.9
+S0 . . . . . . . . . . . . . . . . . REG.   0x00000 NOT USED CONSTANT    IMPLICIT
+S1 . . . . . . . . . . . . . . . . . REG.   0x00001 NOT USED CONSTANT    IMPLICIT
+S10  . . . . . . . . . . . . . . . . REG.   0x00010 NOT USED CONSTANT    IMPLICIT
+S11  . . . . . . . . . . . . . . . . REG.   0x00011 NOT USED CONSTANT    IMPLICIT
+S12  . . . . . . . . . . . . . . . . REG.   0x00012 NOT USED CONSTANT    IMPLICIT
+S13  . . . . . . . . . . . . . . . . REG.   0x00013 NOT USED CONSTANT    IMPLICIT
+S14  . . . . . . . . . . . . . . . . REG.   0x00014 NOT USED CONSTANT    IMPLICIT
+S15  . . . . . . . . . . . . . . . . REG.   0x00015 NOT USED CONSTANT    IMPLICIT
+S16  . . . . . . . . . . . . . . . . REG.   0x00016 NOT USED CONSTANT    IMPLICIT
+S17  . . . . . . . . . . . . . . . . REG.   0x00017 NOT USED CONSTANT    IMPLICIT
+S18  . . . . . . . . . . . . . . . . REG.   0x00018 NOT USED CONSTANT    IMPLICIT
+S19  . . . . . . . . . . . . . . . . REG.   0x00019 NOT USED CONSTANT    IMPLICIT
+S1A  . . . . . . . . . . . . . . . . REG.   0x0001A NOT USED CONSTANT    IMPLICIT
+S1B  . . . . . . . . . . . . . . . . REG.   0x0001B NOT USED CONSTANT    IMPLICIT
+S1C  . . . . . . . . . . . . . . . . REG.   0x0001C NOT USED CONSTANT    IMPLICIT
+S1D  . . . . . . . . . . . . . . . . REG.   0x0001D NOT USED CONSTANT    IMPLICIT
+S1E  . . . . . . . . . . . . . . . . REG.   0x0001E NOT USED CONSTANT    IMPLICIT
+S1F  . . . . . . . . . . . . . . . . REG.   0x0001F NOT USED CONSTANT    IMPLICIT
+S2 . . . . . . . . . . . . . . . . . REG.   0x00002 NOT USED CONSTANT    IMPLICIT
+S3 . . . . . . . . . . . . . . . . . REG.   0x00003 NOT USED CONSTANT    IMPLICIT
+S4 . . . . . . . . . . . . . . . . . REG.   0x00004 NOT USED CONSTANT    IMPLICIT
+S5 . . . . . . . . . . . . . . . . . REG.   0x00005 NOT USED CONSTANT    IMPLICIT
+S6 . . . . . . . . . . . . . . . . . REG.   0x00006 NOT USED CONSTANT    IMPLICIT
+S7 . . . . . . . . . . . . . . . . . REG.   0x00007 NOT USED CONSTANT    IMPLICIT
+S8 . . . . . . . . . . . . . . . . . REG.   0x00008 NOT USED CONSTANT    IMPLICIT
+S9 . . . . . . . . . . . . . . . . . REG.   0x00009 NOT USED CONSTANT    IMPLICIT
+SA . . . . . . . . . . . . . . . . . REG.   0x0000A NOT USED CONSTANT    IMPLICIT
+SB . . . . . . . . . . . . . . . . . REG.   0x0000B NOT USED CONSTANT    IMPLICIT
+SC . . . . . . . . . . . . . . . . . REG.   0x0000C NOT USED CONSTANT    IMPLICIT
+SD . . . . . . . . . . . . . . . . . REG.   0x0000D NOT USED CONSTANT    IMPLICIT
+SE . . . . . . . . . . . . . . . . . REG.   0x0000E NOT USED CONSTANT    IMPLICIT
+SF . . . . . . . . . . . . . . . . . REG.   0x0000F NOT USED CONSTANT    IMPLICIT
+START  . . . . . . . . . . . . . . . LABEL  0x00002 USED     CONSTANT    2000_Instruction_opcodes.asm:34.1-34.7
+TESTSYMB1  . . . . . . . . . . . . . NUMBER 0x00001 NOT USED REDEFINABLE 2000_Instruction_opcodes.asm:5.1-5.27
+TESTSYMB10 . . . . . . . . . . . . . REG.   0x00009 USED     CONSTANT    2000_Instruction_opcodes.asm:14.1-14.28
+TESTSYMB11 . . . . . . . . . . . . . REG.   0x0000A USED     CONSTANT    2000_Instruction_opcodes.asm:15.1-15.28
+TESTSYMB12 . . . . . . . . . . . . . REG.   0x0000B USED     CONSTANT    2000_Instruction_opcodes.asm:16.1-16.28
+TESTSYMB13 . . . . . . . . . . . . . DATA   0x0000C USED     CONSTANT    2000_Instruction_opcodes.asm:17.1-17.29
+TESTSYMB14 . . . . . . . . . . . . . DATA   0x00005 NOT USED CONSTANT    2000_Instruction_opcodes.asm:18.1-18.31
+TESTSYMB15 . . . . . . . . . . . . . DATA   0x00002 NOT USED CONSTANT    2000_Instruction_opcodes.asm:19.1-19.28
+TESTSYMB16 . . . . . . . . . . . . . DATA   0x00003 NOT USED CONSTANT    2000_Instruction_opcodes.asm:20.1-20.29
+TESTSYMB17 . . . . . . . . . . . . . LABEL  0x00002 NOT USED CONSTANT    2000_Instruction_opcodes.asm:21.1-21.34
+TESTSYMB18 . . . . . . . . . . . . . LABEL  0x00002 NOT USED CONSTANT    2000_Instruction_opcodes.asm:22.1-22.29
+TESTSYMB19 . . . . . . . . . . . . . LABEL  0x00002 NOT USED CONSTANT    2000_Instruction_opcodes.asm:23.1-23.29
+TESTSYMB2  . . . . . . . . . . . . . NUMBER 0x00011 NOT USED REDEFINABLE 2000_Instruction_opcodes.asm:6.1-6.29
+TESTSYMB20 . . . . . . . . . . . . . LABEL  0x00002 NOT USED CONSTANT    2000_Instruction_opcodes.asm:24.1-24.29
+TESTSYMB21 . . . . . . . . . . . . . EXPR.          NOT USED CONSTANT    2000_Instruction_opcodes.asm:25.1-25.31
+TESTSYMB22 . . . . . . . . . . . . . EXPR.          NOT USED CONSTANT    2000_Instruction_opcodes.asm:26.1-26.31
+TESTSYMB23 . . . . . . . . . . . . . EXPR.          NOT USED CONSTANT    2000_Instruction_opcodes.asm:27.1-27.31
+TESTSYMB24 . . . . . . . . . . . . . EXPR.          NOT USED CONSTANT    2000_Instruction_opcodes.asm:28.1-28.51
+TESTSYMB3  . . . . . . . . . . . . . NUMBER 0x00001 NOT USED REDEFINABLE 2000_Instruction_opcodes.asm:7.1-7.26
+TESTSYMB4  . . . . . . . . . . . . . NUMBER 0x00003 NOT USED REDEFINABLE 2000_Instruction_opcodes.asm:8.1-8.27
+TESTSYMB5  . . . . . . . . . . . . . NUMBER 0x00004 NOT USED CONSTANT    2000_Instruction_opcodes.asm:9.1-9.27
+TESTSYMB6  . . . . . . . . . . . . . NUMBER 0x00005 NOT USED CONSTANT    2000_Instruction_opcodes.asm:10.1-10.29
+TESTSYMB7  . . . . . . . . . . . . . NUMBER 0x00006 NOT USED CONSTANT    2000_Instruction_opcodes.asm:11.1-11.26
+TESTSYMB8  . . . . . . . . . . . . . NUMBER 0x00007 NOT USED CONSTANT    2000_Instruction_opcodes.asm:12.1-12.26
+TESTSYMB9  . . . . . . . . . . . . . REG.   0x00008 USED     CONSTANT    2000_Instruction_opcodes.asm:13.1-13.27

@@ -1,0 +1,118 @@
+                   1     ; Compiler test case for Assembler
+                   2     ; instruction opcodes
+                   3     device kcpsm1
+                   4
+                   5     s1       EQU        04h
+E: symbol already defined: "S1".
+                   6     s2       EQU        0x04
+E: symbol already defined: "S2".
+                   7     s3       EQU        6
+E: symbol already defined: "S3".
+                   8     s4       EQU        7
+E: symbol already defined: "S4".
+                   9
+                  10
+                  11
+  00000           12     START:
+                  13          ; Arithmetics
+000 04101         14             ADD        s1,#01h
+001 04105         15             ADD        s1,#5
+002 04105         16             ADD        s1,#05h
+003 04105         17             ADD        s1,#0x05
+004 04105         18             ADD        s1,#0b101
+005 04105         19             ADD        s1,#0b00000101
+006 04105         20             ADD        s1,#5D
+007 04105         21             ADD        s1,#5O
+008 04105         22             ADD        s1,#5Q
+009 04105         23             ADD        s1,#5h
+00A 04105         24             ADD        s1,#101b
+00B 04105         25             ADD        s1,#00000101b
+                  26
+                  27
+00C 05101         28             ADDCY      s1,#01h
+00D 05105         29             ADDCY      s1,#5
+00E 05105         30             ADDCY      s1,#05h
+00F 05105         31             ADDCY      s1,#0x05
+010 05105         32             ADDCY      s1,#0b101
+011 05105         33             ADDCY      s1,#0b00000101
+012 05105         34             ADDCY      s1,#5D
+013 05105         35             ADDCY      s1,#5O
+014 05105         36             ADDCY      s1,#5Q
+015 05105         37             ADDCY      s1,#5h
+016 05105         38             ADDCY      s1,#101b
+017 05105         39             ADDCY      s1,#00000101b
+                  40
+                  41
+018 06101         42             SUB        s1,#01h
+019 06105         43             SUB        s1,#5
+01A 06105         44             SUB        s1,#05h
+01B 06105         45             SUB        s1,#0x05
+01C 06105         46             SUB        s1,#0b101
+01D 06105         47             SUB        s1,#0b00000101
+01E 06105         48             SUB        s1,#5D
+01F 06105         49             SUB        s1,#5O
+020 06105         50             SUB        s1,#5Q
+021 06105         51             SUB        s1,#5h
+022 06105         52             SUB        s1,#101b
+023 06105         53             SUB        s1,#00000101b
+                  54
+                  55
+024 07101         56             SUBCY      s1,#01h
+025 07105         57             SUBCY      s1,#5
+026 07105         58             SUBCY      s1,#05h
+027 07105         59             SUBCY      s1,#0x05
+028 07105         60             SUBCY      s1,#0b101
+029 07105         61             SUBCY      s1,#0b00000101
+02A 07105         62             SUBCY      s1,#5D
+02B 07105         63             SUBCY      s1,#5O
+02C 07105         64             SUBCY      s1,#5Q
+02D 07105         65             SUBCY      s1,#5h
+02E 07105         66             SUBCY      s1,#101b
+02F 07105         67             SUBCY      s1,#00000101b
+                  68
+                  69
+                  70             COMPARE    s1,#01h
+E: instruction not supported on the this device: COMPARE sX, kk.
+                  71             COMPARE    s1,#5
+E: instruction not supported on the this device: COMPARE sX, kk.
+                  72             COMPARE    s1,#05h
+E: instruction not supported on the this device: COMPARE sX, kk.
+                  73             COMPARE    s1,#0x05
+E: instruction not supported on the this device: COMPARE sX, kk.
+                  74             COMPARE    s1,#0b101
+E: instruction not supported on the this device: COMPARE sX, kk.
+                  75             COMPARE    s1,#0b00000101
+E: instruction not supported on the this device: COMPARE sX, kk.
+                  76             COMPARE    s1,#5D
+E: instruction not supported on the this device: COMPARE sX, kk.
+                  77             COMPARE    s1,#5O
+E: instruction not supported on the this device: COMPARE sX, kk.
+                  78             COMPARE    s1,#5Q
+E: instruction not supported on the this device: COMPARE sX, kk.
+                  79             COMPARE    s1,#5h
+E: instruction not supported on the this device: COMPARE sX, kk.
+                  80             COMPARE    s1,#101b
+E: instruction not supported on the this device: COMPARE sX, kk.
+                  81             COMPARE    s1,#00000101b
+E: instruction not supported on the this device: COMPARE sX, kk.
+                  82
+030 0C224         83             ADD         s2,s2
+031 0C225         84             ADDCY       s2,s2
+032 0C226         85             SUB         s2,s2
+033 0C237         86             SUBCY       s2,s3
+                  87             COMPARE     s2,s4
+E: instruction not supported on the this device: COMPARE sX, sY.
+                  88
+                  89     END
+                  90
+                  91
+                  92       ;  JUMP aaa ADD sX,kk LOAD sX,kk SR0 sX
+                  93     ;JUMP Z,aaa ADDCY sX,kk AND sX,kk SR1 sX
+                  94     ;JUMP NZ,aaa SUB sX,kk OR sX,kk SRX sX
+                  95     ;JUMP C,aaa SUBCY sX,kk XOR sX,kk SRA sX
+                  96     ;JUMP NC,aaa COMPARE sX,kk TEST sX,kk RR sX
+                  97     ;CALL aaa ADD sX,sY LOAD sX,sY SL0 sX
+                  98     ;CALL Z,aaa ADDCY sX,sY AND sX,sY SL1 sX
+                  99     ;CALL NZ,aaa SUB sX,sY OR sX,sY SLX sX
+                 100     ;CALL C,aaa SUBCY sX,sY XOR sX,sY SLA sX
+                 101     ;CALL NC,aaa COMPARE sX,sY TEST sX,sY RL sX

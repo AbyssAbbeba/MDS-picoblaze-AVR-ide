@@ -1,0 +1,1196 @@
+                   1     ;KCPSM3 Program - FC_CTRL
+                   2     ;Frequency Generator Control
+                   3     ;Calculates and displays results on the 16x2 LCD display.
+                   4     ;
+                   5     ;
+                   6     ; Version : 1.12
+                   7     ; Date : 28th February 2006
+                   8     device kcpsm3
+                   9     ; Ken Chapman
+                  10     ; Xilinx Ltd
+                  11     ;
+                  12     ; chapman@xilinx.com
+                  13     ;
+                  14     ;
+                  15     ;
+                  16     ;**************************************************************************************
+                  17     ;Port definitions
+                  18     ;**************************************************************************************
+                  19     ;
+  00000           20     a_count0_port           EQU             0x00                    ;32-bit A-counter (LSByte first)
+  00010           21     a_count1_port           EQU             0x10
+  00020           22     a_count2_port           EQU             0x20
+  00030           23     a_count3_port           EQU             0x30
+                  24     ;
+  00040           25     b_count0_port           EQU             0x40                    ;32-bit B-counter (LSByte first)
+  00050           26     b_count1_port           EQU             0x50
+  00060           27     b_count2_port           EQU             0x60
+  00070           28     b_count3_port           EQU             0x70
+                  29     ;
+  00080           30     status_port             EQU             0x80                    ;4 switches and counter status
+  00001           31     switch0                 EQU             0x01                    ;  Switches      SW0 - bit0
+  00002           32     switch1                 EQU             0x02                    ; active High    SW1 - bit1
+  00004           33     switch2                 EQU             0x04                    ;                SW2 - bit2
+  00008           34     switch3                 EQU             0x08                    ;                SW3 - bit3
+  00010           35     ab_switch               EQU             0x10                    ;  0=A-count enabled 1=B-count enabled
+                  36     ;
+                  37     ;
+  00002           38     count_resetport         EQU             0x02                    ;Reset frequency counter controls
+  00001           39     a_count_reset           EQU             0x01                    ;  A-count = bit0
+  00002           40     b_count_reset           EQU             0x02                    ;  B-count = bit1
+                  41     ;
+  00001           42     led_port                EQU             0x01                    ;8 simple LEDs - active high
+                  43     ;
+                  44     ;
+  00008           45     source_control_port     EQU             0x08                    ;Select and control test sources
+  00001           46     source_sel0             EQU             0x01                    ;  00 = SMA clock  01=50MHz
+  00002           47     source_sel1             EQU             0x02                    ;  10 = DCM Osc    11=Ring Osc
+  00040           48     ring_reset              EQU             0x40                    ; active High rest of ring osc - bit6
+  00080           49     dcm_kick                EQU             0x80                    ; DCM kick start signal - bit7
+                  50     ;
+                  51     ;
+                  52     ;LCD interface ports
+                  53     ;
+                  54     ;The master enable signal is not used by the LCD display itself
+                  55     ;but may be required to confirm that LCD communication is active.
+                  56     ;This is required on the Spartan-3E Starter Kit if the StrataFLASH
+                  57     ;is used because it shares the same data pins and conflicts must be avoided.
+                  58     ;
+  00004           59     lcd_output_port         EQU             0x04                    ;LCD character module output data and control
+  00001           60     lcd_e                   EQU             0x01                    ;   active High Enable        E - bit0
+  00002           61     lcd_rw                  EQU             0x02                    ;   Read=1 Write=0           RW - bit1
+  00004           62     lcd_rs                  EQU             0x04                    ;   Instruction=0 Data=1     RS - bit2
+  00008           63     lcd_drive               EQU             0x08                    ;   Master enable (active High) - bit3
+  00010           64     lcd_db4                 EQU             0x10                    ;   4-bit              Data DB4 - bit4
+  00020           65     lcd_db5                 EQU             0x20                    ;   interface          Data DB5 - bit5
+  00040           66     lcd_db6                 EQU             0x40                    ;                      Data DB6 - bit6
+  00080           67     lcd_db7                 EQU             0x80                    ;                      Data DB7 - bit7
+                  68     ;
+                  69     ;
+  00009           70     lcd_input_port          EQU             0x09                    ;LCD character module input data
+  00001           71     lcd_read_spare0         EQU             0x01                    ;    Spare bits               - bit0
+  00002           72     lcd_read_spare1         EQU             0x02                    ;    are zero                 - bit1
+  00004           73     lcd_read_spare2         EQU             0x04                    ;                             - bit2
+  00008           74     lcd_read_spare3         EQU             0x08                    ;                             - bit3
+  00010           75     lcd_read_db4            EQU             0x10                    ;    4-bit           Data DB4 - bit4
+  00020           76     lcd_read_db5            EQU             0x20                    ;    interface       Data DB5 - bit5
+  00040           77     lcd_read_db6            EQU             0x40                    ;                    Data DB6 - bit6
+  00080           78     lcd_read_db7            EQU             0x80                    ;                    Data DB7 - bit7
+                  79     ;
+                  80     ;
+                  81     ;
+                  82     ;Special Register usage
+                  83     ;
+                  84     ;
+                  85     ;
+                  86     ;**************************************************************************************
+                  87     ;Scratch Pad Memory Locations
+                  88     ;**************************************************************************************
+                  89     ;
+                  90     ;
+  00000           91     count0                  EQU             0x00                    ;last 32-bit counter value (LSByte first)
+  00001           92     count1                  EQU             0x01
+  00002           93     count2                  EQU             0x02
+  00003           94     count3                  EQU             0x03
+                  95     ;
+  00004           96     isr_count               EQU             0x04                    ;count number of interrupts for a clean start
+                  97     ;
+  00011           98     decimal0                EQU             0x11                    ;10 digit decimal value up to 4,294,967,295
+  00012           99     decimal1                EQU             0x12
+  00013          100     decimal2                EQU             0x13
+  00014          101     decimal3                EQU             0x14
+  00015          102     decimal4                EQU             0x15
+  00016          103     decimal5                EQU             0x16
+  00017          104     decimal6                EQU             0x17
+  00018          105     decimal7                EQU             0x18
+  00019          106     decimal8                EQU             0x19
+  0001A          107     decimal9                EQU             0x1a
+                 108     ;
+                 109     ;
+                 110     ;
+  00030          111     preserve_s0             EQU             0x30                    ;place to save register contents
+  00031          112     preserve_s1             EQU             0x31
+  00032          113     preserve_s2             EQU             0x32
+  00033          114     preserve_s3             EQU             0x33
+  00034          115     preserve_s4             EQU             0x34
+  00035          116     preserve_s5             EQU             0x35
+  00036          117     preserve_s6             EQU             0x36
+  00037          118     preserve_s7             EQU             0x37
+  00038          119     preserve_s8             EQU             0x38
+  00039          120     preserve_s9             EQU             0x39
+  0003A          121     preserve_sa             EQU             0x3a
+  0003B          122     preserve_sb             EQU             0x3b
+  0003C          123     preserve_sc             EQU             0x3c
+  0003D          124     preserve_sd             EQU             0x3d
+  0003E          125     preserve_se             EQU             0x3e
+  0003F          126     preserve_sf             EQU             0x3f
+                 127     ;
+                 128     ;
+                 129     ;
+                 130     ;**************************************************************************************
+                 131     ;Useful data constants
+                 132     ;**************************************************************************************
+                 133     ;
+                 134     ;
+                 135     ;
+                 136     ;Constant to define a software delay of 1us. This must be adjusted to reflect the
+                 137     ;clock applied to KCPSM3. Every instruction executes in 2 clock cycles making the
+                 138     ;calculation highly predictable. The '6' in the following equation even allows for
+                 139     ;'CALL delay_1us' instruction in the initiating code.
+                 140     ;
+                 141     ; delay_1us_constant =  (clock_rate - 6)/4       Where 'clock_rate' is in MHz
+                 142     ;
+                 143     ;Example: For a 50MHz clock the constant value is (10-6)/4 = 11  (0B Hex).
+                 144     ;For clock rates below 10MHz the value of 1 must be used and the operation will
+                 145     ;become lower than intended.
+                 146     ;
+  0000B          147     delay_1us_constant      EQU             0x0b
+                 148     ;
+                 149     ;
+                 150     ;
+                 151     ;ASCII table
+                 152     ;
+  00061          153     character_a             EQU             0x61
+  00062          154     character_b             EQU             0x62
+  00063          155     character_c             EQU             0x63
+  00064          156     character_d             EQU             0x64
+  00065          157     character_e             EQU             0x65
+  00066          158     character_f             EQU             0x66
+  00067          159     character_g             EQU             0x67
+  00068          160     character_h             EQU             0x68
+  00069          161     character_i             EQU             0x69
+  0006A          162     character_j             EQU             0x6a
+  0006B          163     character_k             EQU             0x6b
+  0006C          164     character_l             EQU             0x6c
+  0006D          165     character_m             EQU             0x6d
+  0006E          166     character_n             EQU             0x6e
+  0006F          167     character_o             EQU             0x6f
+  00070          168     character_p             EQU             0x70
+  00071          169     character_q             EQU             0x71
+  00072          170     character_r             EQU             0x72
+  00073          171     character_s             EQU             0x73
+  00074          172     character_t             EQU             0x74
+  00075          173     character_u             EQU             0x75
+  00076          174     character_v             EQU             0x76
+  00077          175     character_w             EQU             0x77
+  00078          176     character_x             EQU             0x78
+  00079          177     character_y             EQU             0x79
+  0007A          178     character_z             EQU             0x7a
+  00041          179     _character_a            EQU             0x41
+  00042          180     _character_b            EQU             0x42
+  00043          181     _character_c            EQU             0x43
+  00044          182     _character_d            EQU             0x44
+  00045          183     _character_e            EQU             0x45
+  00046          184     _character_f            EQU             0x46
+  00047          185     _character_g            EQU             0x47
+  00048          186     _character_h            EQU             0x48
+  00049          187     _character_i            EQU             0x49
+  0004A          188     _character_j            EQU             0x4a
+  0004B          189     _character_k            EQU             0x4b
+  0004C          190     _character_l            EQU             0x4c
+  0004D          191     _character_m            EQU             0x4d
+  0004E          192     _character_n            EQU             0x4e
+  0004F          193     _character_o            EQU             0x4f
+  00050          194     _character_p            EQU             0x50
+  00051          195     _character_q            EQU             0x51
+  00052          196     _character_r            EQU             0x52
+  00053          197     _character_s            EQU             0x53
+  00054          198     _character_t            EQU             0x54
+  00055          199     _character_u            EQU             0x55
+  00056          200     _character_v            EQU             0x56
+  00057          201     _character_w            EQU             0x57
+  00058          202     _character_x            EQU             0x58
+  00059          203     _character_y            EQU             0x59
+  0005A          204     _character_z            EQU             0x5a
+  00030          205     character_0             EQU             0x30
+  00031          206     character_1             EQU             0x31
+  00032          207     character_2             EQU             0x32
+  00033          208     character_3             EQU             0x33
+  00034          209     character_4             EQU             0x34
+  00035          210     character_5             EQU             0x35
+  00036          211     character_6             EQU             0x36
+  00037          212     character_7             EQU             0x37
+  00038          213     character_8             EQU             0x38
+  00039          214     character_9             EQU             0x39
+  0003A          215     character_colon         EQU             0x3a
+  0002E          216     character_stop          EQU             0x2e
+  0003B          217     character_semi_colon    EQU             0x3b
+  0002D          218     character_minus         EQU             0x2d
+  0002F          219     character_divide        EQU             0x2f                    ;'/'
+  0002B          220     character_plus          EQU             0x2b
+  0002C          221     character_comma         EQU             0x2c
+  0003C          222     character_less_than     EQU             0x3c
+  0003E          223     character_greater_than  EQU             0x3e
+  0003D          224     character_equals        EQU             0x3d
+  00020          225     character_space         EQU             0x20
+  0000D          226     character_cr            EQU             0x0d                    ;carriage return
+  0003F          227     character_question      EQU             0x3f                    ;'?'
+  00024          228     character_dollar        EQU             0x24
+  00021          229     character_exclaim       EQU             0x21                    ;'!'
+  00008          230     character_bs            EQU             0x08                    ;Back Space command character
+                 231     ;
+                 232     ;
+                 233     ;
+                 234     ;
+                 235     ;
+                 236     ;**************************************************************************************
+                 237     ;Initialise the system
+                 238     ;**************************************************************************************
+                 239     ;
+000 301FD        240     cold_start:             CALL            lcd_reset               ;initialise LCD display
+001 00000        241                             LOAD            s0, #0x00               ;Turn off LEDs
+002 2C001        242                             OUTPUT          s0, led_port
+                 243     ;
+                 244     ;
+                 245     ;Write welcome message to LCD display
+                 246     ;
+003 00510        247                             LOAD            s5, #0x10               ;Line 1 position 0
+004 30213        248                             CALL            lcd_cursor
+005 300C0        249                             CALL            disp_picoblaze          ;Display 'PicoBlaze Inside'
+006 301B5        250                             CALL            delay_1s                ;wait 3 seconds
+007 301B5        251                             CALL            delay_1s
+008 301B5        252                             CALL            delay_1s
+009 00510        253                             LOAD            s5, #0x10               ;Line 1 position 0
+00A 30213        254                             CALL            lcd_cursor
+00B 300D3        255                             CALL            disp_frequency          ;Display 'Frequency Counter V1.00'
+00C 00521        256                             LOAD            s5, #0x21               ;Line 2 position 1
+00D 30213        257                             CALL            lcd_cursor
+00E 300E6        258                             CALL            disp_counter
+00F 0052B        259                             LOAD            s5, #0x2b               ;Line 2 position 11
+010 30213        260                             CALL            lcd_cursor
+011 300F5        261                             CALL            disp_version
+012 301B5        262                             CALL            delay_1s                ;wait 5 seconds
+013 301B5        263                             CALL            delay_1s
+014 301B5        264                             CALL            delay_1s
+015 301B5        265                             CALL            delay_1s
+016 301B5        266                             CALL            delay_1s
+017 3020E        267                             CALL            lcd_clear               ;Clear display
+                 268     ;
+                 269     ;Kick start the DCM oscillator.
+                 270     ; Just requires a few cyles of activity
+                 271     ;
+018 000FF        272                             LOAD            s0, #0xff
+019 00100        273                             LOAD            s1, #0x00
+01A 2C108        274     kick_loop:              OUTPUT          s1, source_control_port
+01B 0E180        275                             XOR             s1, #dcm_kick           ;toggle kick start signal
+01C 1C001        276                             SUB             s0, #0x01
+01D 3541A        277                             JUMP            nz, kick_loop
+                 278     ;
+                 279     ;clear all scratch pad memory locations
+                 280     ;
+01E 0013F        281                             LOAD            s1, #0x3f
+01F 00000        282                             LOAD            s0, #0x00
+020 2F010        283     clear_spm:              STORE           s0, @s1
+021 1C101        284                             SUB             s1, #0x01
+022 35C20        285                             JUMP            nc, clear_spm
+                 286     ;
+023 3C001        287                             ENABLE          interrupt
+                 288     ;
+                 289     ;**************************************************************************************
+                 290     ;Main Program
+                 291     ;**************************************************************************************
+                 292     ;
+                 293     ;The task of the main program is just to read the most recent values from
+                 294     ;scratch pad memory and display them as fast as it can.
+                 295     ;
+                 296     ;It also reads the slide switches controls the selection of the source frequency to
+                 297     ;be measured.
+                 298     ;
+024 00521        299     warm_start:             LOAD            s5, #0x21               ;Line 2 position 1
+025 30213        300                             CALL            lcd_cursor
+026 04F80        301                             INPUT           sf, status_port         ;select source based on switches
+027 14F00        302                             COMPARE         sf, #0x00               ;test for no switches active
+028 0AF0F        303                             AND             sf, #0x0f               ;isolate switches
+029 3542C        304                             JUMP            nz, test_sma
+02A 3015D        305                             CALL            disp_menu
+02B 34024        306                             JUMP            warm_start
+02C 14F01        307     test_sma:               COMPARE         sf, #switch0
+02D 35431        308                             JUMP            nz, test_50m
+02E 30100        309                             CALL            disp_sma_input
+02F 00F00        310                             LOAD            sf, #0x00
+030 34041        311                             JUMP            select_source
+031 14F02        312     test_50m:               COMPARE         sf, #switch1
+032 35436        313                             JUMP            nz, test_dcm
+033 30114        314                             CALL            disp_50mhz_crystal
+034 00F01        315                             LOAD            sf, #0x01
+035 34041        316                             JUMP            select_source
+036 14F04        317     test_dcm:               COMPARE         sf, #switch2
+037 3543B        318                             JUMP            nz, test_ring
+038 30130        319                             CALL            disp_dcm_oscillator
+039 00F02        320                             LOAD            sf, #0x02
+03A 34041        321                             JUMP            select_source
+03B 14F08        322     test_ring:              COMPARE         sf, #switch3
+03C 3503F        323                             JUMP            z, ring_select
+03D 3015D        324                             CALL            disp_menu               ;more than one switch is set
+03E 34024        325                             JUMP            warm_start
+03F 3014E        326     ring_select:            CALL            disp_ring_oscillator
+040 00F03        327                             LOAD            sf, #0x03
+041 2CF08        328     select_source:          OUTPUT          sf, source_control_port ;select source control
+                 329     ;
+                 330     ;Read the most recent values from display on LCD.
+                 331     ;
+                 332     ;Interrupts will be disabled during the reading of values to ensure a clean
+                 333     ;value is obtained when reading multi-byte values.
+                 334     ;
+                 335     ;
+                 336     ;Display the count value in the top right of the LCD display
+                 337     ;Up to 999,999,999
+                 338     ;
+042 3C000        339                             DISABLE         interrupt               ;copy cycle count to register set [s5,s4,s3,s2]
+043 06200        340                             FETCH           s2, count0
+044 06301        341                             FETCH           s3, count1
+045 06402        342                             FETCH           s4, count2
+046 06503        343                             FETCH           s5, count3
+047 3C001        344                             ENABLE          interrupt
+048 30094        345                             CALL            integer_to_bcd          ;convert last 32-bit value to BCD digits
+049 00510        346                             LOAD            s5, #0x10               ;Line 1 position 0
+04A 30213        347                             CALL            lcd_cursor
+04B 00619        348                             LOAD            s6, #decimal8           ;up to 999,999,999 Hz
+04C 3004E        349                             CALL            disp_digits
+04D 34024        350                             JUMP            warm_start
+                 351     ;
+                 352     ;
+                 353     ;
+                 354     ;**************************************************************************************
+                 355     ; Display frequency value on LCD display
+                 356     ;**************************************************************************************
+                 357     ;
+                 358     ;
+                 359     ;Display value on the LCD display at current position.
+                 360     ;The values to be displayed must be stored in scratch pad memory
+                 361     ;locations 'decimal0' to 'decimal9' which must be in ascending locations.
+                 362     ;
+                 363     ;The routing performs leading zero suppression and scales to Hz, KHz or MHz ranges.
+                 364     ;
+                 365     ;Registers used s0,s1,s4,s5,sE,sF
+                 366     ;
+04E 00FFF        367     disp_digits:            LOAD            sf, #0xff               ;set blanking flag
+04F 00E20        368                             LOAD            se, #character_space    ;scaling character for MHz, KHz or Hz
+050 06519        369                             FETCH           s5, decimal8            ;100MHz digit
+051 30088        370                             CALL            zero_test
+052 3008C        371                             CALL            disp_digit
+053 06518        372                             FETCH           s5, decimal7            ;10MHz digit
+054 30088        373                             CALL            zero_test
+055 3008C        374                             CALL            disp_digit
+056 06517        375                             FETCH           s5, decimal6            ;1MHz digit
+057 30088        376                             CALL            zero_test
+058 3008C        377                             CALL            disp_digit
+059 14FFF        378                             COMPARE         sf, #0xff               ;check if any MHz were active
+05A 3505F        379                             JUMP            z, khz_space
+05B 0052E        380                             LOAD            s5, #character_stop
+05C 301D3        381                             CALL            lcd_write_data
+05D 00E4D        382                             LOAD            se, #_character_m
+05E 34061        383                             JUMP            khz_digits
+05F 00520        384     khz_space:              LOAD            s5, #character_space
+060 301D3        385                             CALL            lcd_write_data
+061 06516        386     khz_digits:             FETCH           s5, decimal5            ;100KHz digit
+062 30088        387                             CALL            zero_test
+063 3008C        388                             CALL            disp_digit
+064 06515        389                             FETCH           s5, decimal4            ;10KHz digit
+065 30088        390                             CALL            zero_test
+066 3008C        391                             CALL            disp_digit
+067 06514        392                             FETCH           s5, decimal3            ;1KHz digit
+068 30088        393                             CALL            zero_test
+069 3008C        394                             CALL            disp_digit
+06A 14E4D        395                             COMPARE         se, #_character_m       ;check if any MHz were active
+06B 35072        396                             JUMP            z, hz_space
+06C 14FFF        397                             COMPARE         sf, #0xff               ;check if any KHz were active
+06D 35072        398                             JUMP            z, hz_space
+06E 0052E        399                             LOAD            s5, #character_stop
+06F 301D3        400                             CALL            lcd_write_data
+070 00E4B        401                             LOAD            se, #_character_k
+071 34074        402                             JUMP            hz_digits
+072 00520        403     hz_space:               LOAD            s5, #character_space
+073 301D3        404                             CALL            lcd_write_data
+074 06513        405     hz_digits:              FETCH           s5, decimal2            ;100KHz digit
+075 30088        406                             CALL            zero_test
+076 3008C        407                             CALL            disp_digit
+077 06512        408                             FETCH           s5, decimal1            ;10KHz digit
+078 30088        409                             CALL            zero_test
+079 3008C        410                             CALL            disp_digit
+07A 06511        411                             FETCH           s5, decimal0            ;1KHz digit (always displayed)
+07B 18530        412                             ADD             s5, #character_0        ;convert number to ASCII
+07C 301D3        413                             CALL            lcd_write_data
+07D 00520        414                             LOAD            s5, #character_space
+07E 301D3        415                             CALL            lcd_write_data
+07F 015E0        416                             LOAD            s5, se
+080 301D3        417                             CALL            lcd_write_data
+081 00548        418                             LOAD            s5, #_character_h
+082 301D3        419                             CALL            lcd_write_data
+083 0057A        420                             LOAD            s5, #character_z
+084 301D3        421                             CALL            lcd_write_data
+085 00520        422                             LOAD            s5, #character_space    ;ensure end of line is clear
+086 301D3        423                             CALL            lcd_write_data
+087 2A000        424                             RETURN
+                 425     ;
+                 426     ;Check digit for zero. If not zero then clear
+                 427     ;blanking flag (sF=00)
+088 14500        428     zero_test:              COMPARE         s5, #0x00
+089 2B000        429                             RETURN          z
+08A 00F00        430                             LOAD            sf, #0x00
+08B 2A000        431                             RETURN
+                 432     ;
+                 433     ;Display single digit at current position
+                 434     ;or space if blanking (sF=FF) is active
+                 435     ;
+08C 14FFF        436     disp_digit:             COMPARE         sf, #0xff
+08D 35091        437                             JUMP            z, blank_digit
+08E 18530        438                             ADD             s5, #character_0        ;convert number to ASCII
+08F 301D3        439                             CALL            lcd_write_data
+090 2A000        440                             RETURN
+091 00520        441     blank_digit:            LOAD            s5, #character_space
+092 301D3        442                             CALL            lcd_write_data
+093 2A000        443                             RETURN
+                 444     ;
+                 445     ;
+                 446     ;
+                 447     ;**************************************************************************************
+                 448     ; 32-bit integer to BCD conversion
+                 449     ;**************************************************************************************
+                 450     ;
+                 451     ;Convert the 32 bit value in register set [s5,s4,s3,s2]
+                 452     ;into the BCD decimal equivalent located in the scratch pad memory
+                 453     ;locations 'decimal0' to 'decimal9' which must be in ascending locations.
+                 454     ;
+                 455     ;Each digit is formed in turn starting with the least significant.
+                 456     ;
+                 457     ;Registers used s0,s2,s3,s4,s5,s6,s7,s8,s9,sA,sB,sC,sD,sE,sF
+                 458     ;
+094 00E0A        459     integer_to_bcd:         LOAD            se, #0x0a               ;10 digits to be formed from value upto 4294967295
+095 00F11        460                             LOAD            sf, #decimal0           ;pointer for LS-Digit
+096 3009C        461     int_to_bcd_loop:        CALL            divide_32bit_by_10
+097 2F1F0        462                             STORE           s1, @sf                 ;remainder becomes digit value
+098 18F01        463                             ADD             sf, #0x01               ;move to next most significant digit
+099 1CE01        464                             SUB             se, #0x01               ;one less digit to compute
+09A 35496        465                             JUMP            nz, int_to_bcd_loop
+09B 2A000        466                             RETURN
+                 467     ;
+                 468     ;Divide 32-bit binary integer by 10
+                 469     ;
+                 470     ;The value to be divided is held in register set [s5,s4,s3,s2]
+                 471     ;and this is where the result is returned to.
+                 472     ;
+                 473     ;At then end of the integer division the remainder in the range 0 to 9
+                 474     ;will be in register s1.
+                 475     ;
+                 476     ;Registers used s0, s2,s3,s4,s5,s6,s7,s8,s9,sA,sB,sC,sD
+                 477     ;
+09C 01A20        478     divide_32bit_by_10:     LOAD            sa, s2                  ;copy input value to set [sD,sC,sB,sA]
+09D 01B30        479                             LOAD            sb, s3
+09E 01C40        480                             LOAD            sc, s4
+09F 01D50        481                             LOAD            sd, s5
+0A0 00200        482                             LOAD            s2, #0x00               ;clear result
+0A1 00300        483                             LOAD            s3, #0x00
+0A2 00400        484                             LOAD            s4, #0x00
+0A3 00500        485                             LOAD            s5, #0x00
+0A4 009A0        486                             LOAD            s9, #0xa0               ;initialise '10' value into msb's of set [s9,s8,s7,s6]
+0A5 00800        487                             LOAD            s8, #0x00
+0A6 00700        488                             LOAD            s7, #0x00
+0A7 00600        489                             LOAD            s6, #0x00
+0A8 0001D        490                             LOAD            s0, #0x1d               ;29 subtract and shift iterations to be performed
+0A9 1DA60        491     div10_loop:             SUB             sa, s6                  ;perform 32-bit subtract [sD,sC,sB,sA]-[s9,s8,s7,s6]
+0AA 1FB70        492                             SUBCY           sb, s7
+0AB 1FC80        493                             SUBCY           sc, s8
+0AC 1FD90        494                             SUBCY           sd, s9
+0AD 358B0        495                             JUMP            c, div10_restore
+0AE 20207        496                             SL1             s2                      ;shift '1' into result
+0AF 340B5        497                             JUMP            div10_shifts
+0B0 19A60        498     div10_restore:          ADD             sa, s6                  ;perform 32-bit addition [sD,sC,sB,sA]+[s9,s8,s7,s6]
+0B1 1BB70        499                             ADDCY           sb, s7
+0B2 1BC80        500                             ADDCY           sc, s8
+0B3 1BD90        501                             ADDCY           sd, s9
+0B4 20206        502                             SL0             s2                      ;shift '0' into result
+0B5 20300        503     div10_shifts:           SLA             s3                      ;complete 32-bit shift left
+0B6 20400        504                             SLA             s4
+0B7 20500        505                             SLA             s5
+0B8 2090E        506                             SR0             s9                      ;divide '10' value by 2 (shift right 1 place)
+0B9 20808        507                             SRA             s8
+0BA 20708        508                             SRA             s7
+0BB 20608        509                             SRA             s6
+0BC 1C001        510                             SUB             s0, #0x01               ;count iterations
+0BD 354A9        511                             JUMP            nz, div10_loop
+0BE 011A0        512                             LOAD            s1, sa                  ;remainder of division
+0BF 2A000        513                             RETURN
+                 514     ;
+                 515     ;
+                 516     ;
+                 517     ;
+                 518     ;**************************************************************************************
+                 519     ;LCD text messages
+                 520     ;**************************************************************************************
+                 521     ;
+                 522     ;
+                 523     ;Display 'PicoBlaze' on LCD at current cursor position
+                 524     ;
+                 525     ;
+0C0 00550        526     disp_picoblaze:         LOAD            s5, #_character_p
+0C1 301D3        527                             CALL            lcd_write_data
+0C2 00569        528                             LOAD            s5, #character_i
+0C3 301D3        529                             CALL            lcd_write_data
+0C4 00563        530                             LOAD            s5, #character_c
+0C5 301D3        531                             CALL            lcd_write_data
+0C6 0056F        532                             LOAD            s5, #character_o
+0C7 301D3        533                             CALL            lcd_write_data
+0C8 00542        534                             LOAD            s5, #_character_b
+0C9 301D3        535                             CALL            lcd_write_data
+0CA 0056C        536                             LOAD            s5, #character_l
+0CB 301D3        537                             CALL            lcd_write_data
+0CC 00561        538                             LOAD            s5, #character_a
+0CD 301D3        539                             CALL            lcd_write_data
+0CE 0057A        540                             LOAD            s5, #character_z
+0CF 301D3        541                             CALL            lcd_write_data
+0D0 00565        542                             LOAD            s5, #character_e
+0D1 301D3        543                             CALL            lcd_write_data
+0D2 2A000        544                             RETURN
+                 545     ;
+                 546     ;
+                 547     ;Display 'Frequency' on LCD at current cursor position
+                 548     ;
+                 549     ;
+0D3 00546        550     disp_frequency:         LOAD            s5, #_character_f
+0D4 301D3        551                             CALL            lcd_write_data
+0D5 00572        552                             LOAD            s5, #character_r
+0D6 301D3        553                             CALL            lcd_write_data
+0D7 00565        554                             LOAD            s5, #character_e
+0D8 301D3        555                             CALL            lcd_write_data
+0D9 00571        556                             LOAD            s5, #character_q
+0DA 301D3        557                             CALL            lcd_write_data
+0DB 00575        558                             LOAD            s5, #character_u
+0DC 301D3        559                             CALL            lcd_write_data
+0DD 00565        560                             LOAD            s5, #character_e
+0DE 301D3        561                             CALL            lcd_write_data
+0DF 0056E        562                             LOAD            s5, #character_n
+0E0 301D3        563                             CALL            lcd_write_data
+0E1 00563        564                             LOAD            s5, #character_c
+0E2 301D3        565                             CALL            lcd_write_data
+0E3 00579        566                             LOAD            s5, #character_y
+0E4 301D3        567                             CALL            lcd_write_data
+0E5 2A000        568                             RETURN
+                 569     ;
+                 570     ;
+                 571     ;Display 'Counter' on LCD at current cursor position
+                 572     ;
+                 573     ;
+0E6 00543        574     disp_counter:           LOAD            s5, #_character_c
+0E7 301D3        575                             CALL            lcd_write_data
+0E8 0056F        576                             LOAD            s5, #character_o
+0E9 301D3        577                             CALL            lcd_write_data
+0EA 00575        578                             LOAD            s5, #character_u
+0EB 301D3        579                             CALL            lcd_write_data
+0EC 0056E        580                             LOAD            s5, #character_n
+0ED 301D3        581                             CALL            lcd_write_data
+0EE 00574        582                             LOAD            s5, #character_t
+0EF 301D3        583                             CALL            lcd_write_data
+0F0 00565        584                             LOAD            s5, #character_e
+0F1 301D3        585                             CALL            lcd_write_data
+0F2 00572        586                             LOAD            s5, #character_r
+0F3 301D3        587                             CALL            lcd_write_data
+0F4 2A000        588                             RETURN
+                 589     ;
+                 590     ;Display version number on LCD at current cursor position
+                 591     ;
+                 592     ;
+0F5 00576        593     disp_version:           LOAD            s5, #character_v
+0F6 301D3        594                             CALL            lcd_write_data
+0F7 00531        595                             LOAD            s5, #character_1
+0F8 301D3        596                             CALL            lcd_write_data
+0F9 0052E        597                             LOAD            s5, #character_stop
+0FA 301D3        598                             CALL            lcd_write_data
+0FB 00530        599                             LOAD            s5, #character_0
+0FC 301D3        600                             CALL            lcd_write_data
+0FD 00530        601                             LOAD            s5, #character_0
+0FE 301D3        602                             CALL            lcd_write_data
+0FF 2A000        603                             RETURN
+                 604     ;
+                 605     ;
+                 606     ;Display 'SMA input' at current cursor position
+                 607     ;
+                 608     ;
+100 00553        609     disp_sma_input:         LOAD            s5, #_character_s
+101 301D3        610                             CALL            lcd_write_data
+102 0054D        611                             LOAD            s5, #_character_m
+103 301D3        612                             CALL            lcd_write_data
+104 00541        613                             LOAD            s5, #_character_a
+105 301D3        614                             CALL            lcd_write_data
+106 00520        615                             LOAD            s5, #character_space
+107 301D3        616                             CALL            lcd_write_data
+108 00569        617                             LOAD            s5, #character_i
+109 301D3        618                             CALL            lcd_write_data
+10A 0056E        619                             LOAD            s5, #character_n
+10B 301D3        620                             CALL            lcd_write_data
+10C 00570        621                             LOAD            s5, #character_p
+10D 301D3        622                             CALL            lcd_write_data
+10E 00575        623                             LOAD            s5, #character_u
+10F 301D3        624                             CALL            lcd_write_data
+110 00574        625                             LOAD            s5, #character_t
+111 301D3        626                             CALL            lcd_write_data
+112 00F06        627                             LOAD            sf, #0x06
+113 34157        628                             JUMP            disp_spaces
+                 629     ;
+                 630     ;
+                 631     ;
+                 632     ;Display '50MHz Crystal' at current cursor position
+                 633     ;
+                 634     ;
+114 00535        635     disp_50mhz_crystal:     LOAD            s5, #character_5
+115 301D3        636                             CALL            lcd_write_data
+116 00530        637                             LOAD            s5, #character_0
+117 301D3        638                             CALL            lcd_write_data
+118 0054D        639                             LOAD            s5, #_character_m
+119 301D3        640                             CALL            lcd_write_data
+11A 00548        641                             LOAD            s5, #_character_h
+11B 301D3        642                             CALL            lcd_write_data
+11C 0057A        643                             LOAD            s5, #character_z
+11D 301D3        644                             CALL            lcd_write_data
+11E 00520        645                             LOAD            s5, #character_space
+11F 301D3        646                             CALL            lcd_write_data
+120 00543        647                             LOAD            s5, #_character_c
+121 301D3        648                             CALL            lcd_write_data
+122 00572        649                             LOAD            s5, #character_r
+123 301D3        650                             CALL            lcd_write_data
+124 00579        651                             LOAD            s5, #character_y
+125 301D3        652                             CALL            lcd_write_data
+126 00573        653                             LOAD            s5, #character_s
+127 301D3        654                             CALL            lcd_write_data
+128 00574        655                             LOAD            s5, #character_t
+129 301D3        656                             CALL            lcd_write_data
+12A 00561        657                             LOAD            s5, #character_a
+12B 301D3        658                             CALL            lcd_write_data
+12C 0056C        659                             LOAD            s5, #character_l
+12D 301D3        660                             CALL            lcd_write_data
+12E 00F02        661                             LOAD            sf, #0x02
+12F 34157        662                             JUMP            disp_spaces
+                 663     ;
+                 664     ;
+                 665     ;
+                 666     ;Display 'DCM oscillator' at current cursor position
+                 667     ;
+                 668     ;
+130 00544        669     disp_dcm_oscillator:    LOAD            s5, #_character_d
+131 301D3        670                             CALL            lcd_write_data
+132 00543        671                             LOAD            s5, #_character_c
+133 301D3        672                             CALL            lcd_write_data
+134 0054D        673                             LOAD            s5, #_character_m
+135 301D3        674                             CALL            lcd_write_data
+136 00520        675     disp_oscillator:        LOAD            s5, #character_space
+137 301D3        676                             CALL            lcd_write_data
+138 0054F        677                             LOAD            s5, #_character_o
+139 301D3        678                             CALL            lcd_write_data
+13A 00573        679                             LOAD            s5, #character_s
+13B 301D3        680                             CALL            lcd_write_data
+13C 00563        681                             LOAD            s5, #character_c
+13D 301D3        682                             CALL            lcd_write_data
+13E 00569        683                             LOAD            s5, #character_i
+13F 301D3        684                             CALL            lcd_write_data
+140 0056C        685                             LOAD            s5, #character_l
+141 301D3        686                             CALL            lcd_write_data
+142 301D3        687                             CALL            lcd_write_data
+143 00561        688                             LOAD            s5, #character_a
+144 301D3        689                             CALL            lcd_write_data
+145 00574        690                             LOAD            s5, #character_t
+146 301D3        691                             CALL            lcd_write_data
+147 0056F        692                             LOAD            s5, #character_o
+148 301D3        693                             CALL            lcd_write_data
+149 00572        694                             LOAD            s5, #character_r
+14A 301D3        695                             CALL            lcd_write_data
+14B 00520        696                             LOAD            s5, #character_space
+14C 301D3        697                             CALL            lcd_write_data
+14D 2A000        698                             RETURN
+                 699     ;
+                 700     ;
+                 701     ;
+                 702     ;Display 'Ring oscillator' at current cursor position
+                 703     ;
+                 704     ;
+14E 00552        705     disp_ring_oscillator:   LOAD            s5, #_character_r
+14F 301D3        706                             CALL            lcd_write_data
+150 00569        707                             LOAD            s5, #character_i
+151 301D3        708                             CALL            lcd_write_data
+152 0056E        709                             LOAD            s5, #character_n
+153 301D3        710                             CALL            lcd_write_data
+154 00567        711                             LOAD            s5, #character_g
+155 301D3        712                             CALL            lcd_write_data
+156 34136        713                             JUMP            disp_oscillator
+                 714     ;
+                 715     ;
+                 716     ;Display spaces at current cursor position
+                 717     ;Number of spaces to be specified in register sF
+                 718     ;
+157 14F00        719     disp_spaces:            COMPARE         sf, #0x00
+158 2B000        720                             RETURN          z
+159 00520        721                             LOAD            s5, #character_space
+15A 301D3        722                             CALL            lcd_write_data
+15B 1CF01        723                             SUB             sf, #0x01
+15C 34157        724                             JUMP            disp_spaces
+                 725     ;
+                 726     ;Display switch setting menu on entire display.
+                 727     ;
+15D 00510        728     disp_menu:              LOAD            s5, #0x10               ;Line 1 position 0
+15E 30213        729                             CALL            lcd_cursor
+15F 00552        730                             LOAD            s5, #_character_r
+160 301D3        731                             CALL            lcd_write_data
+161 00569        732                             LOAD            s5, #character_i
+162 301D3        733                             CALL            lcd_write_data
+163 0056E        734                             LOAD            s5, #character_n
+164 301D3        735                             CALL            lcd_write_data
+165 00567        736                             LOAD            s5, #character_g
+166 301D3        737                             CALL            lcd_write_data
+167 00520        738                             LOAD            s5, #character_space
+168 301D3        739                             CALL            lcd_write_data
+169 00544        740                             LOAD            s5, #_character_d
+16A 301D3        741                             CALL            lcd_write_data
+16B 00543        742                             LOAD            s5, #_character_c
+16C 301D3        743                             CALL            lcd_write_data
+16D 0054D        744                             LOAD            s5, #_character_m
+16E 301D3        745                             CALL            lcd_write_data
+16F 00520        746                             LOAD            s5, #character_space
+170 301D3        747                             CALL            lcd_write_data
+171 00535        748                             LOAD            s5, #character_5
+172 301D3        749                             CALL            lcd_write_data
+173 00530        750                             LOAD            s5, #character_0
+174 301D3        751                             CALL            lcd_write_data
+175 0054D        752                             LOAD            s5, #_character_m
+176 301D3        753                             CALL            lcd_write_data
+177 00520        754                             LOAD            s5, #character_space
+178 301D3        755                             CALL            lcd_write_data
+179 00553        756                             LOAD            s5, #_character_s
+17A 301D3        757                             CALL            lcd_write_data
+17B 0054D        758                             LOAD            s5, #_character_m
+17C 301D3        759                             CALL            lcd_write_data
+17D 00541        760                             LOAD            s5, #_character_a
+17E 301D3        761                             CALL            lcd_write_data
+17F 00520        762                             LOAD            s5, #0x20               ;Line 2 position 0
+180 30213        763                             CALL            lcd_cursor
+181 00520        764                             LOAD            s5, #character_space
+182 301D3        765                             CALL            lcd_write_data
+183 00553        766                             LOAD            s5, #_character_s
+184 301D3        767                             CALL            lcd_write_data
+185 00557        768                             LOAD            s5, #_character_w
+186 301D3        769                             CALL            lcd_write_data
+187 00533        770                             LOAD            s5, #character_3
+188 301D3        771                             CALL            lcd_write_data
+189 00520        772                             LOAD            s5, #character_space
+18A 301D3        773                             CALL            lcd_write_data
+18B 00553        774                             LOAD            s5, #_character_s
+18C 301D3        775                             CALL            lcd_write_data
+18D 00557        776                             LOAD            s5, #_character_w
+18E 301D3        777                             CALL            lcd_write_data
+18F 00532        778                             LOAD            s5, #character_2
+190 301D3        779                             CALL            lcd_write_data
+191 00520        780                             LOAD            s5, #character_space
+192 301D3        781                             CALL            lcd_write_data
+193 00553        782                             LOAD            s5, #_character_s
+194 301D3        783                             CALL            lcd_write_data
+195 00557        784                             LOAD            s5, #_character_w
+196 301D3        785                             CALL            lcd_write_data
+197 00531        786                             LOAD            s5, #character_1
+198 301D3        787                             CALL            lcd_write_data
+199 00520        788                             LOAD            s5, #character_space
+19A 301D3        789                             CALL            lcd_write_data
+19B 00553        790                             LOAD            s5, #_character_s
+19C 301D3        791                             CALL            lcd_write_data
+19D 00557        792                             LOAD            s5, #_character_w
+19E 301D3        793                             CALL            lcd_write_data
+19F 00530        794                             LOAD            s5, #character_0
+1A0 301D3        795                             CALL            lcd_write_data
+1A1 2A000        796                             RETURN
+                 797     ;
+                 798     ;
+                 799     ;
+                 800     ;
+                 801     ;**************************************************************************************
+                 802     ;Software delay routines
+                 803     ;**************************************************************************************
+                 804     ;
+                 805     ;
+                 806     ;
+                 807     ;Delay of 1us.
+                 808     ;
+                 809     ;Constant value defines reflects the clock applied to KCPSM3. Every instruction
+                 810     ;executes in 2 clock cycles making the calculation highly predictable. The '6' in
+                 811     ;the following equation even allows for 'CALL delay_1us' instruction in the initiating code.
+                 812     ;
+                 813     ; delay_1us_constant =  (clock_rate - 6)/4       Where 'clock_rate' is in MHz
+                 814     ;
+                 815     ;Registers used s0
+                 816     ;
+1A2 0000B        817     delay_1us:              LOAD            s0, #delay_1us_constant
+1A3 1C001        818     wait_1us:               SUB             s0, #0x01
+1A4 355A3        819                             JUMP            nz, wait_1us
+1A5 2A000        820                             RETURN
+                 821     ;
+                 822     ;Delay of 40us.
+                 823     ;
+                 824     ;Registers used s0, s1
+                 825     ;
+1A6 00128        826     delay_40us:             LOAD            s1, #0x28               ;40 x 1us = 40us
+1A7 301A2        827     wait_40us:              CALL            delay_1us
+1A8 1C101        828                             SUB             s1, #0x01
+1A9 355A7        829                             JUMP            nz, wait_40us
+1AA 2A000        830                             RETURN
+                 831     ;
+                 832     ;
+                 833     ;Delay of 1ms.
+                 834     ;
+                 835     ;Registers used s0, s1, s2
+                 836     ;
+1AB 00219        837     delay_1ms:              LOAD            s2, #0x19               ;25 x 40us = 1ms
+1AC 301A6        838     wait_1ms:               CALL            delay_40us
+1AD 1C201        839                             SUB             s2, #0x01
+1AE 355AC        840                             JUMP            nz, wait_1ms
+1AF 2A000        841                             RETURN
+                 842     ;
+                 843     ;Delay of 20ms.
+                 844     ;
+                 845     ;Delay of 20ms used during initialisation.
+                 846     ;
+                 847     ;Registers used s0, s1, s2, s3
+                 848     ;
+1B0 00314        849     delay_20ms:             LOAD            s3, #0x14               ;20 x 1ms = 20ms
+1B1 301AB        850     wait_20ms:              CALL            delay_1ms
+1B2 1C301        851                             SUB             s3, #0x01
+1B3 355B1        852                             JUMP            nz, wait_20ms
+1B4 2A000        853                             RETURN
+                 854     ;
+                 855     ;Delay of approximately 1 second.
+                 856     ;
+                 857     ;Registers used s0, s1, s2, s3, s4
+                 858     ;
+1B5 00432        859     delay_1s:               LOAD            s4, #0x32               ;50 x 20ms = 1000ms
+1B6 301B0        860     wait_1s:                CALL            delay_20ms
+1B7 1C401        861                             SUB             s4, #0x01
+1B8 355B6        862                             JUMP            nz, wait_1s
+1B9 2A000        863                             RETURN
+                 864     ;
+                 865     ;
+                 866     ;
+                 867     ;**************************************************************************************
+                 868     ;LCD Character Module Routines
+                 869     ;**************************************************************************************
+                 870     ;
+                 871     ;LCD module is a 16 character by 2 line display but all displays are very similar
+                 872     ;The 4-wire data interface will be used (DB4 to DB7).
+                 873     ;
+                 874     ;The LCD modules are relatively slow and software delay loops are used to slow down
+                 875     ;KCPSM3 adequately for the LCD to communicate. The delay routines are provided in
+                 876     ;a different section (see above in this case).
+                 877     ;
+                 878     ;
+                 879     ;Pulse LCD enable signal 'E' high for greater than 230ns (1us is used).
+                 880     ;
+                 881     ;Register s4 should define the current state of the LCD output port.
+                 882     ;
+                 883     ;Registers used s0, s4
+                 884     ;
+1BA 0E401        885     lcd_pulse_e:            XOR             s4, #lcd_e              ;E=1
+1BB 2C404        886                             OUTPUT          s4, lcd_output_port
+1BC 301A2        887                             CALL            delay_1us
+1BD 0E401        888                             XOR             s4, #lcd_e              ;E=0
+1BE 2C404        889                             OUTPUT          s4, lcd_output_port
+1BF 2A000        890                             RETURN
+                 891     ;
+                 892     ;Write 4-bit instruction to LCD display.
+                 893     ;
+                 894     ;The 4-bit instruction should be provided in the upper 4-bits of register s4.
+                 895     ;Note that this routine does not release the master enable but as it is only
+                 896     ;used during initialisation and as part of the 8-bit instruction write it
+                 897     ;should be acceptable.
+                 898     ;
+                 899     ;Registers used s4
+                 900     ;
+1C0 0A4F8        901     lcd_write_inst4:        AND             s4, #0xf8               ;Enable=1 RS=0 Instruction, RW=0 Write, E=0
+1C1 2C404        902                             OUTPUT          s4, lcd_output_port     ;set up RS and RW >40ns before enable pulse
+1C2 301BA        903                             CALL            lcd_pulse_e
+1C3 2A000        904                             RETURN
+                 905     ;
+                 906     ;
+                 907     ;Write 8-bit instruction to LCD display.
+                 908     ;
+                 909     ;The 8-bit instruction should be provided in register s5.
+                 910     ;Instructions are written using the following sequence
+                 911     ; Upper nibble
+                 912     ; wait >1us
+                 913     ; Lower nibble
+                 914     ; wait >40us
+                 915     ;
+                 916     ;Registers used s0, s1, s4, s5
+                 917     ;
+1C4 01450        918     lcd_write_inst8:        LOAD            s4, s5
+1C5 0A4F0        919                             AND             s4, #0xf0               ;Enable=0 RS=0 Instruction, RW=0 Write, E=0
+1C6 0C408        920                             OR              s4, #lcd_drive          ;Enable=1
+1C7 301C0        921                             CALL            lcd_write_inst4         ;write upper nibble
+1C8 301A2        922                             CALL            delay_1us               ;wait >1us
+1C9 01450        923                             LOAD            s4, s5                  ;select lower nibble with
+1CA 20407        924                             SL1             s4                      ;Enable=1
+1CB 20406        925                             SL0             s4                      ;RS=0 Instruction
+1CC 20406        926                             SL0             s4                      ;RW=0 Write
+1CD 20406        927                             SL0             s4                      ;E=0
+1CE 301C0        928                             CALL            lcd_write_inst4         ;write lower nibble
+1CF 301A6        929                             CALL            delay_40us              ;wait >40us
+1D0 004F0        930                             LOAD            s4, #0xf0               ;Enable=0 RS=0 Instruction, RW=0 Write, E=0
+1D1 2C404        931                             OUTPUT          s4, lcd_output_port     ;Release master enable
+1D2 2A000        932                             RETURN
+                 933     ;
+                 934     ;
+                 935     ;
+                 936     ;Write 8-bit data to LCD display.
+                 937     ;
+                 938     ;The 8-bit data should be provided in register s5.
+                 939     ;Data bytes are written using the following sequence
+                 940     ; Upper nibble
+                 941     ; wait >1us
+                 942     ; Lower nibble
+                 943     ; wait >40us
+                 944     ;
+                 945     ;Registers used s0, s1, s4, s5
+                 946     ;
+1D3 01450        947     lcd_write_data:         LOAD            s4, s5
+1D4 0A4F0        948                             AND             s4, #0xf0               ;Enable=0 RS=0 Instruction, RW=0 Write, E=0
+1D5 0C40C        949                             OR              s4, #0x0c               ;Enable=1 RS=1 Data, RW=0 Write, E=0
+1D6 2C404        950                             OUTPUT          s4, lcd_output_port     ;set up RS and RW >40ns before enable pulse
+1D7 301BA        951                             CALL            lcd_pulse_e             ;write upper nibble
+1D8 301A2        952                             CALL            delay_1us               ;wait >1us
+1D9 01450        953                             LOAD            s4, s5                  ;select lower nibble with
+1DA 20407        954                             SL1             s4                      ;Enable=1
+1DB 20407        955                             SL1             s4                      ;RS=1 Data
+1DC 20406        956                             SL0             s4                      ;RW=0 Write
+1DD 20406        957                             SL0             s4                      ;E=0
+1DE 2C404        958                             OUTPUT          s4, lcd_output_port     ;set up RS and RW >40ns before enable pulse
+1DF 301BA        959                             CALL            lcd_pulse_e             ;write lower nibble
+1E0 301A6        960                             CALL            delay_40us              ;wait >40us
+1E1 004F0        961                             LOAD            s4, #0xf0               ;Enable=0 RS=0 Instruction, RW=0 Write, E=0
+1E2 2C404        962                             OUTPUT          s4, lcd_output_port     ;Release master enable
+1E3 2A000        963                             RETURN
+                 964     ;
+                 965     ;
+                 966     ;
+                 967     ;
+                 968     ;Read 8-bit data from LCD display.
+                 969     ;
+                 970     ;The 8-bit data will be read from the current LCD memory address
+                 971     ;and will be returned in register s5.
+                 972     ;It is advisable to set the LCD address (cursor position) before
+                 973     ;using the data read for the first time otherwise the display may
+                 974     ;generate invalid data on the first read.
+                 975     ;
+                 976     ;Data bytes are read using the following sequence
+                 977     ; Upper nibble
+                 978     ; wait >1us
+                 979     ; Lower nibble
+                 980     ; wait >40us
+                 981     ;
+                 982     ;Registers used s0, s1, s4, s5
+                 983     ;
+1E4 0040E        984     lcd_read_data8:         LOAD            s4, #0x0e               ;Enable=1 RS=1 Data, RW=1 Read, E=0
+1E5 2C404        985                             OUTPUT          s4, lcd_output_port     ;set up RS and RW >40ns before enable pulse
+1E6 0E401        986                             XOR             s4, #lcd_e              ;E=1
+1E7 2C404        987                             OUTPUT          s4, lcd_output_port
+1E8 301A2        988                             CALL            delay_1us               ;wait >260ns to access data
+1E9 04509        989                             INPUT           s5, lcd_input_port      ;read upper nibble
+1EA 0E401        990                             XOR             s4, #lcd_e              ;E=0
+1EB 2C404        991                             OUTPUT          s4, lcd_output_port
+1EC 301A2        992                             CALL            delay_1us               ;wait >1us
+1ED 0E401        993                             XOR             s4, #lcd_e              ;E=1
+1EE 2C404        994                             OUTPUT          s4, lcd_output_port
+1EF 301A2        995                             CALL            delay_1us               ;wait >260ns to access data
+1F0 04009        996                             INPUT           s0, lcd_input_port      ;read lower nibble
+1F1 0E401        997                             XOR             s4, #lcd_e              ;E=0
+1F2 2C404        998                             OUTPUT          s4, lcd_output_port
+1F3 0A5F0        999                             AND             s5, #0xf0               ;merge upper and lower nibbles
+1F4 2000E       1000                             SR0             s0
+1F5 2000E       1001                             SR0             s0
+1F6 2000E       1002                             SR0             s0
+1F7 2000E       1003                             SR0             s0
+1F8 0D500       1004                             OR              s5, s0
+1F9 00404       1005                             LOAD            s4, #0x04               ;Enable=0 RS=1 Data, RW=0 Write, E=0
+1FA 2C404       1006                             OUTPUT          s4, lcd_output_port     ;Stop reading 5V device and release master enable
+1FB 301A6       1007                             CALL            delay_40us              ;wait >40us
+1FC 2A000       1008                             RETURN
+                1009     ;
+                1010     ;
+                1011     ;Reset and initialise display to communicate using 4-bit data mode
+                1012     ;Includes routine to clear the display.
+                1013     ;
+                1014     ;Requires the 4-bit instructions 3,3,3,2 to be sent with suitable delays
+                1015     ;following by the 8-bit instructions to set up the display.
+                1016     ;
+                1017     ;  28 = '001' Function set, '0' 4-bit mode, '1' 2-line, '0' 5x7 dot matrix, 'xx'
+                1018     ;  06 = '000001' Entry mode, '1' increment, '0' no display shift
+                1019     ;  0C = '00001' Display control, '1' display on, '0' cursor off, '0' cursor blink off
+                1020     ;  01 = '00000001' Display clear
+                1021     ;
+                1022     ;Registers used s0, s1, s2, s3, s4
+                1023     ;
+1FD 301B0       1024     lcd_reset:              CALL            delay_20ms              ;wait more that 15ms for display to be ready
+1FE 00430       1025                             LOAD            s4, #0x30
+1FF 301C0       1026                             CALL            lcd_write_inst4         ;send '3'
+200 301B0       1027                             CALL            delay_20ms              ;wait >4.1ms
+201 301C0       1028                             CALL            lcd_write_inst4         ;send '3'
+202 301AB       1029                             CALL            delay_1ms               ;wait >100us
+203 301C0       1030                             CALL            lcd_write_inst4         ;send '3'
+204 301A6       1031                             CALL            delay_40us              ;wait >40us
+205 00420       1032                             LOAD            s4, #0x20
+206 301C0       1033                             CALL            lcd_write_inst4         ;send '2'
+207 301A6       1034                             CALL            delay_40us              ;wait >40us
+208 00528       1035                             LOAD            s5, #0x28               ;Function set
+209 301C4       1036                             CALL            lcd_write_inst8
+20A 00506       1037                             LOAD            s5, #0x06               ;Entry mode
+20B 301C4       1038                             CALL            lcd_write_inst8
+20C 0050C       1039                             LOAD            s5, #0x0c               ;Display control
+20D 301C4       1040                             CALL            lcd_write_inst8
+20E 00501       1041     lcd_clear:              LOAD            s5, #0x01               ;Display clear
+20F 301C4       1042                             CALL            lcd_write_inst8
+210 301AB       1043                             CALL            delay_1ms               ;wait >1.64ms for display to clear
+211 301AB       1044                             CALL            delay_1ms
+212 2A000       1045                             RETURN
+                1046     ;
+                1047     ;Position the cursor ready for characters to be written.
+                1048     ;The display is formed of 2 lines of 16 characters and each
+                1049     ;position has a corresponding address as indicated below.
+                1050     ;
+                1051     ;                   Character position
+                1052     ;           0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15
+                1053     ;
+                1054     ; Line 1 - 80 81 82 83 84 85 86 87 88 89 8A 8B 8C 8D 8E 8F
+                1055     ; Line 2 - C0 C1 C2 C3 C4 C5 C6 C7 C8 C9 CA CB CC CD CE CF
+                1056     ;
+                1057     ;This routine will set the cursor position using the value provided
+                1058     ;in register s5. The upper nibble will define the line and the lower
+                1059     ;nibble the character position on the line.
+                1060     ; Example s5 = 2B will position the cursor on line 2 position 11
+                1061     ;
+                1062     ;Registers used s0, s1, s2, s3, s4
+                1063     ;
+213 12510       1064     lcd_cursor:             TEST            s5, #0x10               ;test for line 1
+214 35219       1065                             JUMP            z, set_line2
+215 0A50F       1066                             AND             s5, #0x0f               ;make address in range 80 to 8F for line 1
+216 0C580       1067                             OR              s5, #0x80
+217 301C4       1068                             CALL            lcd_write_inst8         ;instruction write to set cursor
+218 2A000       1069                             RETURN
+219 0A50F       1070     set_line2:              AND             s5, #0x0f               ;make address in range C0 to CF for line 2
+21A 0C5C0       1071                             OR              s5, #0xc0
+21B 301C4       1072                             CALL            lcd_write_inst8         ;instruction write to set cursor
+21C 2A000       1073                             RETURN
+                1074     ;
+                1075     ;
+                1076     ;
+                1077     ;**************************************************************************************
+                1078     ;Interrupt Service Routine
+                1079     ;**************************************************************************************
+                1080     ;
+                1081     ;
+                1082     ;Each interrupt means that there is a new count value to be read.
+                1083     ;However the first 4 interrupts are ignored other than to clear the counter to
+                1084     ;ensure that even the first reading is for one complete period.
+                1085     ;
+                1086     ;After reading the active counter, all calculations are performed and values stored
+                1087     ;in scratch pad memory are updated to reflect the new values.
+                1088     ;
+                1089     ;Registers are preserved and restored by the ISR so main program is unaffected.
+                1090     ;
+21D 2E030       1091     isr:                    STORE           s0, preserve_s0         ;preserve registers
+21E 2E131       1092                             STORE           s1, preserve_s1
+21F 2E232       1093                             STORE           s2, preserve_s2
+220 2E333       1094                             STORE           s3, preserve_s3
+221 2E434       1095                             STORE           s4, preserve_s4
+222 2E535       1096                             STORE           s5, preserve_s5
+223 2E636       1097                             STORE           s6, preserve_s6
+224 2E737       1098                             STORE           s7, preserve_s7
+225 2E838       1099                             STORE           s8, preserve_s8
+226 2E939       1100                             STORE           s9, preserve_s9
+227 2EA3A       1101                             STORE           sa, preserve_sa
+228 2EB3B       1102                             STORE           sb, preserve_sb
+229 2EC3C       1103                             STORE           sc, preserve_sc
+22A 2ED3D       1104                             STORE           sd, preserve_sd
+22B 2EE3E       1105                             STORE           se, preserve_se
+22C 2EF3F       1106                             STORE           sf, preserve_sf
+                1107     ;
+                1108     ;Ignore the first 4 interrupts except to clear the counter.
+                1109     ;This will ensure a clean start up after reset.
+                1110     ;
+22D 06004       1111                             FETCH           s0, isr_count           ;test to see if more that 4 interrupts have occurred
+22E 14004       1112                             COMPARE         s0, #0x04
+22F 3523C       1113                             JUMP            z, normal_isr
+230 18001       1114                             ADD             s0, #0x01               ;increment ISR counter until reaching 4
+231 2E004       1115                             STORE           s0, isr_count
+232 04080       1116                             INPUT           s0, status_port         ;Check which counter to clear
+233 12010       1117                             TEST            s0, #ab_switch          ;if bit0 is Low then A is counting
+234 35237       1118                             JUMP            z, clear_b_count
+235 00001       1119     clear_a_count:          LOAD            s0, #a_count_reset      ;clear the active counter
+236 34238       1120                             JUMP            clear_counter
+237 00002       1121     clear_b_count:          LOAD            s0, #b_count_reset      ;clear the active counter
+238 2C002       1122     clear_counter:          OUTPUT          s0, count_resetport     ;reset counter with pulse
+239 00000       1123                             LOAD            s0, #0x00               ;end reset pulse to either counter
+23A 2C002       1124                             OUTPUT          s0, count_resetport
+23B 34256       1125                             JUMP            restore_reg
+                1126     ;
+                1127     ;Normal ISR Routine
+                1128     ;
+                1129     ;
+                1130     ;Read the new counter value and then clear it ready to start again
+                1131     ;
+                1132     ;
+23C 04080       1133     normal_isr:             INPUT           s0, status_port         ;test for active counter
+23D 12010       1134                             TEST            s0, #ab_switch          ;if bit is low then A is counting
+23E 35248       1135                             JUMP            z, capture_b_count
+23F 000F0       1136     capture_a_count:        LOAD            s0, #0xf0               ;set LEDs to indicate active counter
+240 2C001       1137                             OUTPUT          s0, led_port
+241 04C00       1138                             INPUT           sc, a_count0_port       ;read counter A into [sF,sE,SD,sC]
+242 04D10       1139                             INPUT           sd, a_count1_port
+243 04E20       1140                             INPUT           se, a_count2_port
+244 04F30       1141                             INPUT           sf, a_count3_port
+245 00001       1142                             LOAD            s0, #a_count_reset      ;reset counter A
+246 2C002       1143                             OUTPUT          s0, count_resetport
+247 34250       1144                             JUMP            counters_read
+                1145     ;
+248 0000F       1146     capture_b_count:        LOAD            s0, #0x0f               ;set LEDs to indicate active counter
+249 2C001       1147                             OUTPUT          s0, led_port
+24A 04C40       1148                             INPUT           sc, b_count0_port       ;read counter A into [sF,sE,SD,sC]
+24B 04D50       1149                             INPUT           sd, b_count1_port
+24C 04E60       1150                             INPUT           se, b_count2_port
+24D 04F70       1151                             INPUT           sf, b_count3_port
+24E 00002       1152                             LOAD            s0, #b_count_reset      ;reset counter B
+24F 2C002       1153                             OUTPUT          s0, count_resetport
+250 00000       1154     counters_read:          LOAD            s0, #0x00               ;end reset pulse to either counter
+251 2C002       1155                             OUTPUT          s0, count_resetport
+                1156     ;
+252 2EC00       1157                             STORE           sc, count0              ;store new counter value
+253 2ED01       1158                             STORE           sd, count1
+254 2EE02       1159                             STORE           se, count2
+255 2EF03       1160                             STORE           sf, count3
+                1161     ;
+                1162     ;
+                1163     ;
+                1164     ;Restore registers and end ISR
+                1165     ;
+256 06F3F       1166     restore_reg:            FETCH           sf, preserve_sf         ;restore registers
+257 06E3E       1167                             FETCH           se, preserve_se
+258 06D3D       1168                             FETCH           sd, preserve_sd
+259 06C3C       1169                             FETCH           sc, preserve_sc
+25A 06B3B       1170                             FETCH           sb, preserve_sb
+25B 06A3A       1171                             FETCH           sa, preserve_sa
+25C 06939       1172                             FETCH           s9, preserve_s9
+25D 06838       1173                             FETCH           s8, preserve_s8
+25E 06737       1174                             FETCH           s7, preserve_s7
+25F 06636       1175                             FETCH           s6, preserve_s6
+260 06535       1176                             FETCH           s5, preserve_s5
+261 06434       1177                             FETCH           s4, preserve_s4
+262 06333       1178                             FETCH           s3, preserve_s3
+263 06232       1179                             FETCH           s2, preserve_s2
+264 06131       1180                             FETCH           s1, preserve_s1
+265 06030       1181                             FETCH           s0, preserve_s0
+266 38001       1182                             RETURNI         enable
+                1183     ;
+                1184     ;
+                1185     ;Interrupt vector
+                1186     ;
+  003FF         1187                             ORG             0x3ff
+3FF 3421D       1188                             JUMP            isr
+                1189     ;
+                1190     ;
+                1191     ;**************************************************************************************
+                1192     ;End of Program
+                1193     ;**************************************************************************************
+                1194     ;
+                1195     ;
+                1196

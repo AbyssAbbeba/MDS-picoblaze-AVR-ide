@@ -1,7 +1,7 @@
 ; Compiler test case for Assembler
 ; instruction opcodes
 
-DEVICE  KCPSM3
+device kcpsm2
 
 
 NAMEREG         s0, ram_data

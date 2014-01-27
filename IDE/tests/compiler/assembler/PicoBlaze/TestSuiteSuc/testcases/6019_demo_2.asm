@@ -2,7 +2,7 @@
 ; See manual for more info
 
 ; Simple example of waiting loop
-device          KCPSM3
+device kcpsm6
 
 ; Press Start simulation and Animate to run the program
 

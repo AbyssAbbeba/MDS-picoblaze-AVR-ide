@@ -3,7 +3,7 @@
 ;Ken Chapman - Xilinx Ltd
 ;
 ;Version v1.00 - 28th March 2006
-;
+device kcpsm2
 ;This program uses a 115200 baud UART connection with XON/XOFF flow control
 ;to allow a standard MCS file for the configuration of a Spartan-3E device to
 ;be programmed into the Intel StrataFLASH device on the board.

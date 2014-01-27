@@ -1,0 +1,175 @@
+BTN_EAST . . . . . . . . . . . . . . NUMBER 0x00010 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:31.1-31.45
+BTN_NORTH  . . . . . . . . . . . . . NUMBER 0x00040 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:33.1-33.45
+BTN_SOUTH  . . . . . . . . . . . . . NUMBER 0x00020 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:32.1-32.45
+BTN_WEST . . . . . . . . . . . . . . NUMBER 0x00080 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:34.1-34.45
+CHARACTER_0  . . . . . . . . . . . . NUMBER 0x00030 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:176.1-176.45
+CHARACTER_1  . . . . . . . . . . . . NUMBER 0x00031 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:177.1-177.45
+CHARACTER_2  . . . . . . . . . . . . NUMBER 0x00032 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:178.1-178.45
+CHARACTER_3  . . . . . . . . . . . . NUMBER 0x00033 USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:179.1-179.45
+CHARACTER_4  . . . . . . . . . . . . NUMBER 0x00034 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:180.1-180.45
+CHARACTER_5  . . . . . . . . . . . . NUMBER 0x00035 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:181.1-181.45
+CHARACTER_6  . . . . . . . . . . . . NUMBER 0x00036 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:182.1-182.45
+CHARACTER_7  . . . . . . . . . . . . NUMBER 0x00037 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:183.1-183.45
+CHARACTER_8  . . . . . . . . . . . . NUMBER 0x00038 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:184.1-184.45
+CHARACTER_9  . . . . . . . . . . . . NUMBER 0x00039 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:185.1-185.45
+CHARACTER_A  . . . . . . . . . . . . NUMBER 0x00061 USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:124.1-124.45
+CHARACTER_B  . . . . . . . . . . . . NUMBER 0x00062 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:125.1-125.45
+CHARACTER_BS . . . . . . . . . . . . NUMBER 0x00008 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:201.1-201.45
+CHARACTER_C  . . . . . . . . . . . . NUMBER 0x00063 USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:126.1-126.45
+CHARACTER_COLON  . . . . . . . . . . NUMBER 0x0003A NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:186.1-186.45
+CHARACTER_COMMA  . . . . . . . . . . NUMBER 0x0002C NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:192.1-192.45
+CHARACTER_CR . . . . . . . . . . . . NUMBER 0x0000D NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:197.1-197.45
+CHARACTER_D  . . . . . . . . . . . . NUMBER 0x00064 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:127.1-127.45
+CHARACTER_DIVIDE . . . . . . . . . . NUMBER 0x0002F USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:190.1-190.45
+CHARACTER_DOLLAR . . . . . . . . . . NUMBER 0x00024 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:199.1-199.45
+CHARACTER_E  . . . . . . . . . . . . NUMBER 0x00065 USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:128.1-128.45
+CHARACTER_EQUALS . . . . . . . . . . NUMBER 0x0003D NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:195.1-195.45
+CHARACTER_EXCLAIM  . . . . . . . . . NUMBER 0x00021 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:200.1-200.45
+CHARACTER_F  . . . . . . . . . . . . NUMBER 0x00066 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:129.1-129.45
+CHARACTER_G  . . . . . . . . . . . . NUMBER 0x00067 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:130.1-130.45
+CHARACTER_GREATER_THAN . . . . . . . NUMBER 0x0003E NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:194.1-194.45
+CHARACTER_H  . . . . . . . . . . . . NUMBER 0x00068 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:131.1-131.45
+CHARACTER_I  . . . . . . . . . . . . NUMBER 0x00069 USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:132.1-132.45
+CHARACTER_J  . . . . . . . . . . . . NUMBER 0x0006A NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:133.1-133.45
+CHARACTER_K  . . . . . . . . . . . . NUMBER 0x0006B NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:134.1-134.45
+CHARACTER_L  . . . . . . . . . . . . NUMBER 0x0006C USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:135.1-135.45
+CHARACTER_LESS_THAN  . . . . . . . . NUMBER 0x0003C NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:193.1-193.45
+CHARACTER_M  . . . . . . . . . . . . NUMBER 0x0006D USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:136.1-136.45
+CHARACTER_MINUS  . . . . . . . . . . NUMBER 0x0002D USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:189.1-189.45
+CHARACTER_N  . . . . . . . . . . . . NUMBER 0x0006E USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:137.1-137.45
+CHARACTER_O  . . . . . . . . . . . . NUMBER 0x0006F USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:138.1-138.45
+CHARACTER_P  . . . . . . . . . . . . NUMBER 0x00070 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:139.1-139.45
+CHARACTER_PLUS . . . . . . . . . . . NUMBER 0x0002B NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:191.1-191.45
+CHARACTER_Q  . . . . . . . . . . . . NUMBER 0x00071 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:140.1-140.45
+CHARACTER_QUESTION . . . . . . . . . NUMBER 0x0003F NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:198.1-198.45
+CHARACTER_R  . . . . . . . . . . . . NUMBER 0x00072 USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:141.1-141.45
+CHARACTER_S  . . . . . . . . . . . . NUMBER 0x00073 USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:142.1-142.45
+CHARACTER_SEMI_COLON . . . . . . . . NUMBER 0x0003B NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:188.1-188.45
+CHARACTER_SPACE  . . . . . . . . . . NUMBER 0x00020 USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:196.1-196.45
+CHARACTER_STOP . . . . . . . . . . . NUMBER 0x0002E USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:187.1-187.45
+CHARACTER_T  . . . . . . . . . . . . NUMBER 0x00074 USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:143.1-143.45
+CHARACTER_U  . . . . . . . . . . . . NUMBER 0x00075 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:144.1-144.45
+CHARACTER_V  . . . . . . . . . . . . NUMBER 0x00076 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:145.1-145.45
+CHARACTER_W  . . . . . . . . . . . . NUMBER 0x00077 USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:146.1-146.45
+CHARACTER_X  . . . . . . . . . . . . NUMBER 0x00078 USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:147.1-147.45
+CHARACTER_Y  . . . . . . . . . . . . NUMBER 0x00079 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:148.1-148.45
+CHARACTER_Z  . . . . . . . . . . . . NUMBER 0x0007A NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:149.1-149.45
+COLD_START . . . . . . . . . . . . . LABEL  0x00000 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:211.1-211.12
+DELAY_1MS  . . . . . . . . . . . . . LABEL  0x000A4 USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:454.1-454.11
+DELAY_1S . . . . . . . . . . . . . . LABEL  0x000AE NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:476.1-476.10
+DELAY_1US  . . . . . . . . . . . . . LABEL  0x0009B USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:434.1-434.11
+DELAY_1US_CONSTANT . . . . . . . . . NUMBER 0x0000B USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:118.1-118.45
+DELAY_20MS . . . . . . . . . . . . . LABEL  0x000A9 USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:466.1-466.12
+DELAY_40US . . . . . . . . . . . . . LABEL  0x0009F USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:443.1-443.12
+DISP_SPACE . . . . . . . . . . . . . LABEL  0x00098 USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:411.1-411.12
+DISP_SPARTAN . . . . . . . . . . . . LABEL  0x0003A USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:308.1-308.14
+DISP_WWW . . . . . . . . . . . . . . LABEL  0x00065 USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:356.1-356.10
+END_ISR  . . . . . . . . . . . . . . LABEL  0x00120 USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:724.1-724.9
+ISR  . . . . . . . . . . . . . . . . LABEL  0x00119 USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:717.1-717.5
+ISR_PRESERVE_S0  . . . . . . . . . . NUMBER 0x00001 USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:81.1-81.45
+LCD_CLEAR  . . . . . . . . . . . . . LABEL  0x00107 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:658.1-658.11
+LCD_CURSOR . . . . . . . . . . . . . LABEL  0x0010C USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:681.1-681.12
+LCD_DB4  . . . . . . . . . . . . . . NUMBER 0x00010 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:54.1-54.45
+LCD_DB5  . . . . . . . . . . . . . . NUMBER 0x00020 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:55.1-55.45
+LCD_DB6  . . . . . . . . . . . . . . NUMBER 0x00040 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:56.1-56.45
+LCD_DB7  . . . . . . . . . . . . . . NUMBER 0x00080 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:57.1-57.45
+LCD_DELAY_LOOP . . . . . . . . . . . LABEL  0x0000E USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:240.1-240.16
+LCD_DRIVE  . . . . . . . . . . . . . NUMBER 0x00008 USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:53.1-53.45
+LCD_E  . . . . . . . . . . . . . . . NUMBER 0x00001 USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:50.1-50.45
+LCD_INPUT_PORT . . . . . . . . . . . NUMBER 0x00002 USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:60.1-60.45
+LCD_OUTPUT_PORT  . . . . . . . . . . NUMBER 0x00040 USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:49.1-49.45
+LCD_PULSE_E  . . . . . . . . . . . . LABEL  0x000B3 USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:502.1-502.13
+LCD_READ_DATA8 . . . . . . . . . . . LABEL  0x000DD NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:601.1-601.16
+LCD_READ_DB4 . . . . . . . . . . . . NUMBER 0x00010 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:65.1-65.45
+LCD_READ_DB5 . . . . . . . . . . . . NUMBER 0x00020 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:66.1-66.45
+LCD_READ_DB6 . . . . . . . . . . . . NUMBER 0x00040 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:67.1-67.45
+LCD_READ_DB7 . . . . . . . . . . . . NUMBER 0x00080 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:68.1-68.45
+LCD_READ_SPARE0  . . . . . . . . . . NUMBER 0x00001 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:61.1-61.45
+LCD_READ_SPARE1  . . . . . . . . . . NUMBER 0x00002 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:62.1-62.45
+LCD_READ_SPARE2  . . . . . . . . . . NUMBER 0x00004 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:63.1-63.45
+LCD_READ_SPARE3  . . . . . . . . . . NUMBER 0x00008 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:64.1-64.45
+LCD_RESET  . . . . . . . . . . . . . LABEL  0x000F6 USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:641.1-641.11
+LCD_RS . . . . . . . . . . . . . . . NUMBER 0x00004 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:52.1-52.45
+LCD_RW . . . . . . . . . . . . . . . NUMBER 0x00002 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:51.1-51.45
+LCD_SHIFT_DELAY  . . . . . . . . . . LABEL  0x0000C USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:238.1-238.17
+LCD_SHIFT_LEFT . . . . . . . . . . . LABEL  0x00116 USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:698.1-698.16
+LCD_WRITE_DATA . . . . . . . . . . . LABEL  0x000CC USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:564.1-564.16
+LCD_WRITE_INST4  . . . . . . . . . . LABEL  0x000B9 USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:518.1-518.17
+LCD_WRITE_INST8  . . . . . . . . . . LABEL  0x000BD USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:535.1-535.17
+LED0 . . . . . . . . . . . . . . . . NUMBER 0x00001 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:16.1-16.45
+LED1 . . . . . . . . . . . . . . . . NUMBER 0x00002 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:17.1-17.45
+LED2 . . . . . . . . . . . . . . . . NUMBER 0x00004 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:18.1-18.45
+LED3 . . . . . . . . . . . . . . . . NUMBER 0x00008 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:19.1-19.45
+LED4 . . . . . . . . . . . . . . . . NUMBER 0x00010 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:20.1-20.45
+LED5 . . . . . . . . . . . . . . . . NUMBER 0x00020 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:21.1-21.45
+LED6 . . . . . . . . . . . . . . . . NUMBER 0x00040 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:22.1-22.45
+LED7 . . . . . . . . . . . . . . . . NUMBER 0x00080 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:23.1-23.45
+LED_PATTERN  . . . . . . . . . . . . NUMBER 0x00002 USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:83.1-83.45
+LED_PORT . . . . . . . . . . . . . . NUMBER 0x00080 USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:15.1-15.45
+MODE . . . . . . . . . . . . . . . . NUMBER 0x00003 USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:85.1-85.45
+MODE_SWITCH  . . . . . . . . . . . . LABEL  0x0001C USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:255.1-255.13
+MOVE_RIGHT . . . . . . . . . . . . . LABEL  0x00036 USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:292.1-292.12
+NORMAL_MODE  . . . . . . . . . . . . LABEL  0x00029 USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:273.1-273.13
+ROTARY_LEFT  . . . . . . . . . . . . NUMBER 0x00001 USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:38.1-38.45
+ROTARY_PORT  . . . . . . . . . . . . NUMBER 0x00001 USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:37.1-37.45
+ROTARY_PRESS . . . . . . . . . . . . NUMBER 0x00002 USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:39.1-39.45
+ROTARY_STATUS  . . . . . . . . . . . NUMBER 0x00000 USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:80.1-80.45
+ROTATE_MODE  . . . . . . . . . . . . LABEL  0x0002C USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:282.1-282.13
+S0 . . . . . . . . . . . . . . . . . REG.   0x00000 USED     CONSTANT    IMPLICIT
+S1 . . . . . . . . . . . . . . . . . REG.   0x00001 USED     CONSTANT    IMPLICIT
+S2 . . . . . . . . . . . . . . . . . REG.   0x00002 USED     CONSTANT    IMPLICIT
+S3 . . . . . . . . . . . . . . . . . REG.   0x00003 USED     CONSTANT    IMPLICIT
+S4 . . . . . . . . . . . . . . . . . REG.   0x00004 USED     CONSTANT    IMPLICIT
+S5 . . . . . . . . . . . . . . . . . REG.   0x00005 USED     CONSTANT    IMPLICIT
+S6 . . . . . . . . . . . . . . . . . REG.   0x00006 NOT USED CONSTANT    IMPLICIT
+S7 . . . . . . . . . . . . . . . . . REG.   0x00007 NOT USED CONSTANT    IMPLICIT
+S8 . . . . . . . . . . . . . . . . . REG.   0x00008 NOT USED CONSTANT    IMPLICIT
+S9 . . . . . . . . . . . . . . . . . REG.   0x00009 NOT USED CONSTANT    IMPLICIT
+SA . . . . . . . . . . . . . . . . . REG.   0x0000A USED     CONSTANT    IMPLICIT
+SB . . . . . . . . . . . . . . . . . REG.   0x0000B NOT USED CONSTANT    IMPLICIT
+SC . . . . . . . . . . . . . . . . . REG.   0x0000C NOT USED CONSTANT    IMPLICIT
+SD . . . . . . . . . . . . . . . . . REG.   0x0000D USED     CONSTANT    IMPLICIT
+SE . . . . . . . . . . . . . . . . . REG.   0x0000E USED     CONSTANT    IMPLICIT
+SET_LINE2  . . . . . . . . . . . . . LABEL  0x00112 USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:687.1-687.11
+SF . . . . . . . . . . . . . . . . . REG.   0x0000F USED     CONSTANT    IMPLICIT
+SHIFT_DELAY_LSB  . . . . . . . . . . NUMBER 0x000F4 USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:102.1-102.45
+SHIFT_DELAY_MSB  . . . . . . . . . . NUMBER 0x00001 USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:101.1-101.45
+SWITCH0  . . . . . . . . . . . . . . NUMBER 0x00001 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:27.1-27.45
+SWITCH1  . . . . . . . . . . . . . . NUMBER 0x00002 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:28.1-28.45
+SWITCH2  . . . . . . . . . . . . . . NUMBER 0x00004 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:29.1-29.45
+SWITCH3  . . . . . . . . . . . . . . NUMBER 0x00008 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:30.1-30.45
+SWITCH_PORT  . . . . . . . . . . . . NUMBER 0x00000 USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:26.1-26.45
+UPDATE_PATTERN . . . . . . . . . . . LABEL  0x00037 USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:293.1-293.16
+WAIT_1MS . . . . . . . . . . . . . . LABEL  0x000A5 USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:455.1-455.10
+WAIT_1S  . . . . . . . . . . . . . . LABEL  0x000AF USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:477.1-477.9
+WAIT_1US . . . . . . . . . . . . . . LABEL  0x0009C USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:435.1-435.10
+WAIT_20MS  . . . . . . . . . . . . . LABEL  0x000AA USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:467.1-467.11
+WAIT_40US  . . . . . . . . . . . . . LABEL  0x000A0 USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:444.1-444.11
+WAIT_MODE_SWITCH . . . . . . . . . . LABEL  0x0001E USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:257.1-257.18
+WAIT_NO_SHIFT  . . . . . . . . . . . LABEL  0x00025 USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:264.1-264.15
+_CHARACTER_A . . . . . . . . . . . . NUMBER 0x00041 USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:150.1-150.45
+_CHARACTER_B . . . . . . . . . . . . NUMBER 0x00042 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:151.1-151.45
+_CHARACTER_C . . . . . . . . . . . . NUMBER 0x00043 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:152.1-152.45
+_CHARACTER_D . . . . . . . . . . . . NUMBER 0x00044 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:153.1-153.45
+_CHARACTER_E . . . . . . . . . . . . NUMBER 0x00045 USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:154.1-154.45
+_CHARACTER_F . . . . . . . . . . . . NUMBER 0x00046 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:155.1-155.45
+_CHARACTER_G . . . . . . . . . . . . NUMBER 0x00047 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:156.1-156.45
+_CHARACTER_H . . . . . . . . . . . . NUMBER 0x00048 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:157.1-157.45
+_CHARACTER_I . . . . . . . . . . . . NUMBER 0x00049 USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:158.1-158.45
+_CHARACTER_J . . . . . . . . . . . . NUMBER 0x0004A NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:159.1-159.45
+_CHARACTER_K . . . . . . . . . . . . NUMBER 0x0004B USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:160.1-160.45
+_CHARACTER_L . . . . . . . . . . . . NUMBER 0x0004C NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:161.1-161.45
+_CHARACTER_M . . . . . . . . . . . . NUMBER 0x0004D NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:162.1-162.45
+_CHARACTER_N . . . . . . . . . . . . NUMBER 0x0004E USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:163.1-163.45
+_CHARACTER_O . . . . . . . . . . . . NUMBER 0x0004F NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:164.1-164.45
+_CHARACTER_P . . . . . . . . . . . . NUMBER 0x00050 USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:165.1-165.45
+_CHARACTER_Q . . . . . . . . . . . . NUMBER 0x00051 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:166.1-166.45
+_CHARACTER_R . . . . . . . . . . . . NUMBER 0x00052 USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:167.1-167.45
+_CHARACTER_S . . . . . . . . . . . . NUMBER 0x00053 USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:168.1-168.45
+_CHARACTER_T . . . . . . . . . . . . NUMBER 0x00054 USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:169.1-169.45
+_CHARACTER_U . . . . . . . . . . . . NUMBER 0x00055 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:170.1-170.45
+_CHARACTER_V . . . . . . . . . . . . NUMBER 0x00056 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:171.1-171.45
+_CHARACTER_W . . . . . . . . . . . . NUMBER 0x00057 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:172.1-172.45
+_CHARACTER_X . . . . . . . . . . . . NUMBER 0x00058 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:173.1-173.45
+_CHARACTER_Y . . . . . . . . . . . . NUMBER 0x00059 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:174.1-174.45
+_CHARACTER_Z . . . . . . . . . . . . NUMBER 0x0005A NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:175.1-175.45

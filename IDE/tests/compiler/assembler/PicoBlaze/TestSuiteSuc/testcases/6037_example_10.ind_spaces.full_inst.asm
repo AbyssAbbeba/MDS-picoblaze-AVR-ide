@@ -8,7 +8,7 @@
 ;to allow a standard MCS file for the configuration of a Spartan-3E device to
 ;be programmed into the Intel StrataFLASH device on the board.
 ;
-;
+device kcpsm6
 ;
 ;
 ;**************************************************************************************

@@ -6,7 +6,7 @@
 ;
 ; This program uses a 9600 baud UART connection to allow communication with the
 ; 1-wire interface of the DS2432 memory device from Dallas Semiconductor.
-;
+device kcpsm6
 ; The program only supports a limited number of the DS2432 commands but is intended
 ; to guide you through the state machine of the device as well as show how
 ; 1-wire communication is achieved. The DS2432 also uses 8 and 16 bits CRC checks and

@@ -6,10 +6,7 @@
 ; Button 2 pressed = Blink for ten times
 
 ; Press Start simulation and Animate to run the program
-
-
-; Tell compiler type of procesor (KCPSM2, KCPSM3, KCPSM6 available)
-        DEVICE          KCPSM3
+device kcpsm6
 
 ; Constant definitions
 ; --------------------

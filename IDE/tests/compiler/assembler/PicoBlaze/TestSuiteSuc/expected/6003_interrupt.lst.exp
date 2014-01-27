@@ -1,0 +1,50 @@
+                   1     ; Compiler test case for Assembler
+                   2     device kcpsm6
+  00000            3     TESTsymb9               AUTOREG
+  00001            4     TESTsymb13              AUTOREG
+  00002            5     TESTsymb10              AUTOREG
+  00003            6     TESTsymb11              AUTOREG
+  00004            7     TESTsymb12              AUTOREG
+                   8
+  00000            9     Start:
+000 32000         10             JUMP        Z, 0x000
+W: instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: number.
+001 36000         11             JUMP        NZ,0x000
+W: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: number.
+002 3A000         12             JUMP        C, 0x000
+W: instruction `JUMP C, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: number.
+003 3E000         13             JUMP        NC,0x000
+W: instruction `JUMP NC, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: number.
+                  14
+                  15         ; Others
+004 2000D         16             CALl      Podprog
+005 3000D         17             CALL      Z,Podprog
+006 3400D         18             CALL      NZ,Podprog
+007 3800D         19             CALL      C,Podprog
+008 3C00D         20             CALL      NC,Podprog
+                  21
+009 2E010         22             STORE     TESTsymb9,@TESTsymb13
+00A 2E2A0         23             STORE     TESTsymb10,@10
+W: instruction `STORE sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+00B 0A310         24             FETCH     TESTsymb11,@TESTsymb13
+00C 0A450         25             FETCH     TESTsymb12,@5
+W: instruction `FETCH sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+                  26
+  0000D           27     Podprog:
+00D 25000         28             RETURN
+00E 31000         29             RETURN    Z
+00F 35000         30             RETURN    NZ
+010 39000         31             RETURN    C
+011 3D000         32             RETURN    NC
+                  33
+                  34
+                  35       ;  JUMP aaa ADD sX,kk LOAD sX,kk SR0 sX
+                  36     ;JUMP Z,aaa ADDCY sX,kk AND sX,kk SR1 sX
+                  37     ;JUMP NZ,aaa SUB sX,kk OR sX,kk SRX sX
+                  38     ;JUMP C,aaa SUBCY sX,kk XOR sX,kk SRA sX
+                  39     ;JUMP NC,aaa COMPARE sX,kk TEST sX,kk RR sX
+                  40     ;CALL aaa ADD sX,sY LOAD sX,sY SL0 sX
+                  41     ;CALL Z,aaa ADDCY sX,sY AND sX,sY SL1 sX
+                  42     ;CALL NZ,aaa SUB sX,sY OR sX,sY SLX sX
+                  43     ;CALL C,aaa SUBCY sX,sY XOR sX,sY SLA sX
+                  44     ;CALL NC,aaa COMPARE sX,sY TEST sX,sY RL sX
