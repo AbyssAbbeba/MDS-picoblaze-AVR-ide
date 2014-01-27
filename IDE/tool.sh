@@ -86,21 +86,21 @@ function tests() {
 }
 
 function findQtSDKAndBoost() {
-    echo "Attempting to locate QtSDK ..."
-    QT_PATH="$(for i in /c/QtSDK/Desktop/Qt/*/mingw/bin; do echo $i; break; done)"
-    if [[ ! -e "${QT_PATH}" ]]; then
-        echo "Warning: QtSDK was not found in expected location (in C:\\), searching the entire filesystem..."
-        for base in $(find '/c' -type d -name 'QtSDK'); do
-            QT_PATH="$(for i in "${base}"/Desktop/Qt/*/mingw/bin; do echo $i; break; done)"
-            break
-        done
-        if [[ ! -e "${QT_PATH}" ]]; then
-            echo "Error: unable to locate QtSDK."
-            exit 1
-        fi
-    fi
-    echo "Qt libraries found in: ${QT_PATH}"
-    export PATH="${PATH}:${QT_PATH}"
+#     echo "Attempting to locate QtSDK ..."
+#     QT_PATH="$(for i in /c/QtSDK/Desktop/Qt/*/mingw/bin; do echo $i; break; done)"
+#     if [[ ! -e "${QT_PATH}" ]]; then
+#         echo "Warning: QtSDK was not found in expected location (in C:\\), searching the entire filesystem..."
+#         for base in $(find '/c' -type d -name 'QtSDK'); do
+#             QT_PATH="$(for i in "${base}"/Desktop/Qt/*/mingw/bin; do echo $i; break; done)"
+#             break
+#         done
+#         if [[ ! -e "${QT_PATH}" ]]; then
+#             echo "Error: unable to locate QtSDK."
+#             exit 1
+#         fi
+#     fi
+#     echo "Qt libraries found in: ${QT_PATH}"
+#     export PATH="${PATH}:${QT_PATH}"
 
     echo "Attempting to locate boost ..."
     if [[ -z "${BOOST_DIR}" ]]; then
