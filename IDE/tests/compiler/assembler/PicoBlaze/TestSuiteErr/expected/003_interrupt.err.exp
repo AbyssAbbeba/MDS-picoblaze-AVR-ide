@@ -1,8 +1,8 @@
-MT_WARNING: 003_interrupt.asm:18.19-18.28: Warning: instruction `STORE sX, ss' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-MT_WARNING: 003_interrupt.asm:19.19-19.29: Warning: instruction `STORE sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 003_interrupt.asm:6.24-6.29: Warning: instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: number.
+MT_WARNING: 003_interrupt.asm:7.24-7.29: Warning: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: number.
+MT_WARNING: 003_interrupt.asm:8.24-8.29: Warning: instruction `JUMP C, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: number.
+MT_WARNING: 003_interrupt.asm:9.24-9.29: Warning: instruction `JUMP NC, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: number.
 MT_WARNING: 003_interrupt.asm:19.31-19.33: Warning: instruction `STORE sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-MT_WARNING: 003_interrupt.asm:20.19-20.29: Warning: instruction `FETCH sX, ss' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-MT_WARNING: 003_interrupt.asm:21.19-21.29: Warning: instruction `FETCH sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 MT_WARNING: 003_interrupt.asm:21.31-21.32: Warning: instruction `FETCH sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 MT_WARNING: Warning: exact device not specified, using KCPSM6 by default.
 MT_ERROR: 003_interrupt.asm:18.19-18.28: Error: symbol not defined: `TESTSYMB9'.
