@@ -24,6 +24,7 @@
 #include <cstdint>
 #include <cstdlib>
 #include <cstring>
+#include <climits>
 
 uint32_t CompilerLexerUtils::escapeSequence ( CompilerParserInterface * compiler,
                                               const YYLTYPE * location,
@@ -152,7 +153,7 @@ int CompilerLexerUtils::convertStrToNumber ( CompilerParserInterface * compiler,
     unsigned long number;
     if ( ( strlen(str) > max )
             ||
-         ( (unsigned long) (-1) <= ( number = strtoul(str, nullptr, base) ) ) )
+         ( ULONG_MAX == ( number = strtoul(str, nullptr, base) ) ) )
     {
         compiler->lexerMessage ( location,
                                  CompilerBase::MT_ERROR,
