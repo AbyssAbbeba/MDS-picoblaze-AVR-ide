@@ -1,10 +1,15 @@
 		device	kcpsm3
 ;-------------------------
+numero	equ		0b01010101
+;-------------------------
 roll	macro	num
 
+		load s6, #num
 		rept	7
-			num
+			rl  	s6
 		endr
+
+		
 endm
 ;------------------------
 		ena
@@ -21,13 +26,11 @@ main:	add		S0, #2
             LOAD    S6,#6
         ENDIF
 
-        regbank         a
         load            s5,#5h
-        regbank         b
         load            s6,#2h
+		roll			numero
 
-		roll			s6
-
+		COMPARE     s0,#20
 		jump	main
 
 podp:   call	podp2
