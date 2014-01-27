@@ -200,12 +200,14 @@ void PicoBlazeGrid::switchPorts()
     if ( true == this->memPorts->visibleIn )
     {
         this->memPorts->switchPorts();
-        this->btnPorts->setText("Output");
+        this->btnPorts->setText("Input");
+        this->btnPorts->setStyleSheet("color: none");
     }
     else
     {
         this->memPorts->switchPorts();
-        this->btnPorts->setText("Input");
+        this->btnPorts->setText("Output");
+        this->btnPorts->setStyleSheet("color: none");
     }
 }
 
@@ -245,7 +247,7 @@ void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason,
             }
             default:
             {
-                qDebug("Invalid event received, event ignored.");
+                qDebug("PicoBlazeGrid: Invalid event (cpu) received, event ignored.");
                 break;
             }
         }
@@ -258,11 +260,19 @@ void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason,
             case MCUSimPureLogicIO::EVENT_PLIO_WRITE:
             {
                 this->lblWR->setStyleSheet("color: #00ff00");
+                if (this->btnPorts->text() == "Output")
+                {
+                    this->btnPorts->setStyleSheet("color: #FF0600");
+                }
                 break;
             }
             case MCUSimPureLogicIO::EVENT_PLIO_READ:
             {
                 this->lblRD->setStyleSheet("color: #00ff00");
+                if (this->btnPorts->text() == "Input")
+                {
+                    this->btnPorts->setStyleSheet("color: #FF0600");
+                }
                 break;
             }
             case MCUSimPureLogicIO::EVENT_PLIO_WRITE_END:
@@ -277,7 +287,7 @@ void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason,
             }
             default:
             {
-                qDebug("Invalid event received, event ignored.");
+                qDebug("PicoBlazeGrid: Invalid event (plio) received, event ignored.");
                 break;
             }
         }
@@ -339,7 +349,7 @@ void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason,
             }
             default:
             {
-                qDebug("Invalid event received, event ignored.");
+                qDebug("PicoBlazeGrid: Invalid event (stats) received, event ignored.");
                 break;
             }
         }
@@ -355,14 +365,14 @@ void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason,
             }
             default:
             {
-                qDebug("Invalid event received, event ignored.");
+                qDebug("PicoBlazeGrid: Invalid event (stack) received, event ignored.");
                 break;
             }
         }
     }
     else
     {
-        qDebug("Invalid event received, event ignored.");
+        qDebug("PicoBlazeGrid: Invalid event received, event ignored.");
     }
 }
 
@@ -420,6 +430,7 @@ void PicoBlazeGrid::unhighlight()
     this->leTime->setStyleSheet("background-color: none");
     this->btnZero->setStyleSheet("color: none");
     this->btnCarry->setStyleSheet("color: none");
+    this->btnPorts->setStyleSheet("color: none");
     if (m_flags->getInte() == true)
     {
         this->btnInte->setStyleSheet("color: #00ff00");
