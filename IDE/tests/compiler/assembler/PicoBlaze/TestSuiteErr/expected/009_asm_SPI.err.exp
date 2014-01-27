@@ -8,69 +8,8 @@ MT_ERROR: 009_asm_SPI.asm:5.24-5.30: Error: symbol not defined: `_PIGGY'.
 MT_ERROR: 009_asm_SPI.asm:5.33-5.38: Error: symbol not defined: `_I2C2'.
 MT_ERROR: 009_asm_SPI.asm:6.24-6.30: Error: symbol not defined: `_PIGGY'.
 MT_ERROR: 009_asm_SPI.asm:6.33-6.38: Error: symbol not defined: `_I2C3'.
-MT_WARNING: 009_asm_SPI.asm:16.28-16.30: Warning: instruction `OUTPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-MT_WARNING: 009_asm_SPI.asm:17.28-17.30: Warning: instruction `OUTPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-MT_WARNING: 009_asm_SPI.asm:27.26-27.28: Warning: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-MT_WARNING: 009_asm_SPI.asm:28.25-28.27: Warning: instruction `SL0 sX' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-MT_WARNING: 009_asm_SPI.asm:32.26-32.28: Warning: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-MT_WARNING: 009_asm_SPI.asm:37.26-37.28: Warning: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-MT_WARNING: 009_asm_SPI.asm:38.25-38.27: Warning: instruction `SL1 sX' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-MT_WARNING: 009_asm_SPI.asm:44.26-44.28: Warning: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-MT_WARNING: 009_asm_SPI.asm:48.26-48.28: Warning: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-MT_WARNING: 009_asm_SPI.asm:52.26-52.28: Warning: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-MT_WARNING: 009_asm_SPI.asm:56.26-56.28: Warning: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-MT_WARNING: 009_asm_SPI.asm:65.26-65.28: Warning: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-MT_WARNING: 009_asm_SPI.asm:66.25-66.27: Warning: instruction `SL0 sX' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-MT_WARNING: 009_asm_SPI.asm:70.26-70.28: Warning: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-MT_WARNING: 009_asm_SPI.asm:74.26-74.28: Warning: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-MT_WARNING: 009_asm_SPI.asm:78.26-78.28: Warning: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-MT_WARNING: 009_asm_SPI.asm:90.26-90.28: Warning: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-MT_WARNING: 009_asm_SPI.asm:91.25-91.27: Warning: instruction `SL1 sX' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-MT_WARNING: 009_asm_SPI.asm:97.26-97.28: Warning: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-MT_WARNING: 009_asm_SPI.asm:101.26-101.28: Warning: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-MT_WARNING: 009_asm_SPI.asm:110.26-110.28: Warning: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-MT_WARNING: 009_asm_SPI.asm:111.25-111.27: Warning: instruction `SL0 sX' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-MT_WARNING: 009_asm_SPI.asm:115.26-115.28: Warning: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-MT_WARNING: 009_asm_SPI.asm:119.26-119.28: Warning: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-MT_WARNING: 009_asm_SPI.asm:131.26-131.28: Warning: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-MT_WARNING: 009_asm_SPI.asm:132.25-132.27: Warning: instruction `SL1 sX' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-MT_WARNING: 009_asm_SPI.asm:140.26-140.28: Warning: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-MT_WARNING: 009_asm_SPI.asm:150.26-150.28: Warning: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-MT_WARNING: 009_asm_SPI.asm:151.25-151.27: Warning: instruction `SL0 sX' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-MT_WARNING: 009_asm_SPI.asm:155.26-155.28: Warning: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-MT_WARNING: 009_asm_SPI.asm:165.26-165.28: Warning: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-MT_WARNING: 009_asm_SPI.asm:168.25-168.27: Warning: instruction `SL0 sX' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-MT_WARNING: 009_asm_SPI.asm:171.28-171.30: Warning: instruction `OUTPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-MT_WARNING: 009_asm_SPI.asm:175.28-175.30: Warning: instruction `OUTPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-MT_WARNING: 009_asm_SPI.asm:179.28-179.30: Warning: instruction `OUTPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-MT_WARNING: 009_asm_SPI.asm:183.28-183.30: Warning: instruction `OUTPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-MT_WARNING: 009_asm_SPI.asm:185.25-185.27: Warning: instruction `SUB sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 MT_WARNING: 009_asm_SPI.asm:185.29-185.30: Warning: instruction `SUB sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-MT_WARNING: 009_asm_SPI.asm:193.26-193.28: Warning: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-MT_WARNING: 009_asm_SPI.asm:195.28-195.30: Warning: instruction `OUTPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-MT_WARNING: 009_asm_SPI.asm:199.28-199.30: Warning: instruction `OUTPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-MT_WARNING: 009_asm_SPI.asm:202.25-202.27: Warning: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-MT_WARNING: 009_asm_SPI.asm:204.25-204.27: Warning: instruction `SR0 sX' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-MT_WARNING: 009_asm_SPI.asm:205.25-205.27: Warning: instruction `SLA sX' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-MT_WARNING: 009_asm_SPI.asm:206.28-206.30: Warning: instruction `OUTPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-MT_WARNING: 009_asm_SPI.asm:208.25-208.27: Warning: instruction `SUB sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 MT_WARNING: 009_asm_SPI.asm:208.29-208.30: Warning: instruction `SUB sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-MT_WARNING: 009_asm_SPI.asm:217.28-217.30: Warning: instruction `OUTPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-MT_WARNING: 009_asm_SPI.asm:219.28-219.30: Warning: instruction `OUTPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-MT_WARNING: 009_asm_SPI.asm:223.28-223.30: Warning: instruction `OUTPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-MT_WARNING: 009_asm_SPI.asm:225.28-225.30: Warning: instruction `OUTPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-MT_WARNING: 009_asm_SPI.asm:233.28-233.30: Warning: instruction `OUTPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-MT_WARNING: 009_asm_SPI.asm:235.28-235.30: Warning: instruction `OUTPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-MT_WARNING: 009_asm_SPI.asm:239.28-239.30: Warning: instruction `OUTPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-MT_WARNING: 009_asm_SPI.asm:241.28-241.30: Warning: instruction `OUTPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-MT_WARNING: 009_asm_SPI.asm:249.28-249.30: Warning: instruction `OUTPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-MT_WARNING: 009_asm_SPI.asm:251.28-251.30: Warning: instruction `OUTPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-MT_WARNING: 009_asm_SPI.asm:255.28-255.30: Warning: instruction `OUTPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-MT_WARNING: 009_asm_SPI.asm:267.28-267.30: Warning: instruction `OUTPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-MT_WARNING: 009_asm_SPI.asm:270.28-270.30: Warning: instruction `OUTPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-MT_WARNING: 009_asm_SPI.asm:272.28-272.30: Warning: instruction `OUTPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-MT_WARNING: 009_asm_SPI.asm:281.28-281.30: Warning: instruction `OUTPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-MT_WARNING: 009_asm_SPI.asm:283.28-283.30: Warning: instruction `OUTPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 MT_WARNING: Warning: exact device not specified, using KCPSM6 by default.
 MT_ERROR: 009_asm_SPI.asm:16.28-16.30: Error: symbol not defined: `SF'.
 MT_ERROR: 009_asm_SPI.asm:17.28-17.30: Error: symbol not defined: `SF'.
