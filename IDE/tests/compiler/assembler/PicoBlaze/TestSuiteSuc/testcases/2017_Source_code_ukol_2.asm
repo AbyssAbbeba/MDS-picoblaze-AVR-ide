@@ -4,7 +4,7 @@
 ;
 ; Tutorial code for MPLD 2010/11
 ; Michal Kubicek 17.4.2011
-device          KCPSM3
+device kcpsm2
 ;
 ;##############################################################################;
 ; Start of code

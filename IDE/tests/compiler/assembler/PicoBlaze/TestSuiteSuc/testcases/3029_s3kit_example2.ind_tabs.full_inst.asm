@@ -8,7 +8,7 @@ character_s		EQU		0x53
 ; Design provided for use with the design 'low_cost_design_authentication_for_spartan_3e.vhd'
 ; and the Spartan-3E Starter Kit. This design provides the token 'real' application to be
 ; protected by design authentication.
-;
+device kcpsm3
 ; Ken Chapman - Xilinx Ltd
 ;
 ; Version v1.00 - 9th November 2006

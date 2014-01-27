@@ -21,7 +21,7 @@ endif
 ; Here you can see syntax of some important directives
 ; Those directives may significantly improve quality and readability of your code
 
-                DEVICE          KCPSM3
+device kcpsm1
 ; Tell compiler type of procesor (KCPSM2, KCPSM3, KCPSM6 available)
                 INCLUDE      hello.asm        ;  "< file name >"
 ;Compiler basicaly copies content of included file to line, where the directive is used.

@@ -5,7 +5,7 @@
 ;
 ; Version : 1.12
 ; Date : 28th February 2006
-;
+device kcpsm6
 ; Ken Chapman
 ; Xilinx Ltd
 ;

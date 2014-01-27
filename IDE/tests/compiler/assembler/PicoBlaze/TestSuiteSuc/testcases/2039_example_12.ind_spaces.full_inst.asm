@@ -1,7 +1,7 @@
 ; KCPSM3 Program - Pulse Width Modulation (PWM) Control on the Spartan-3E Starter Kit.
 ;
 ; Ken Chapman - Xilinx Ltd
-;
+device kcpsm2
 ; Version v1.00 - 22nd May 2006
 ;
 ; Provides control for 12 channels of PWM with a Pulse Repetition Frequency (PRF) of 1KHz

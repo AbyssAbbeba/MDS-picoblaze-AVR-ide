@@ -5,7 +5,7 @@
 ;
 
 ; Version v1.00 - 19th April 2006
-;
+device kcpsm6
 ;
 ; IMPORTANT - This design builds on the reference design called "PicoBlaze
 ;             DS2432 communicator". It is highly recommend that you look at that

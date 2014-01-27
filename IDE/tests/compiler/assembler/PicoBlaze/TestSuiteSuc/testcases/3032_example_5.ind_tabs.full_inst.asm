@@ -4,7 +4,7 @@
 ; Converts the BCD frequency value into a binary integer and then performs the high
 ; precision calculation necessary to derive the control numbers required by the high
 ; performance Direct Digital Synthesis (DDS) circuit implemented in hardware.
-;
+device kcpsm3
 ; LEDs are connected and used as edit mode indicators.
 ;
 ; Substantial comments are included in line with the code below and should be used

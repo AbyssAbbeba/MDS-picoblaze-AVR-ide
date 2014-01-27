@@ -3,7 +3,7 @@
 ; Ken Chapman - Xilinx Ltd
 ;
 ; Version v1.00 - 5th April 2006
-;
+device kcpsm3
 ; This program uses a 9600 baud UART connection to allow communication with the
 ; 1-wire interface of the DS2432 memory device from Dallas Semiconductor.
 ;

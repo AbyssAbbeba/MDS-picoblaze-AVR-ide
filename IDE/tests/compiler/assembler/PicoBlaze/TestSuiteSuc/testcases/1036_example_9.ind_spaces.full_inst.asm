@@ -1,6 +1,6 @@
 ; KCPSM3 Program - Implementation of the SHA-1 algorithm for use with the
 ;                  DS2432 secure memory on the Spartan-3E Starter Kit.
-;
+device kcpsm1
 ; Ken Chapman - Xilinx Ltd
 ;
 

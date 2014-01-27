@@ -1,4 +1,4 @@
-DEVICE  KCPSM3
+device kcpsm2
 
 
 ss3      EQU     0x06
