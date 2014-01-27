@@ -37,7 +37,7 @@ foreach ( PROCESSOR "kcpsm1" "kcpsm1cpld" "kcpsm2" "kcpsm3" "kcpsm6" )
         add_custom_target ( "${PROJECT_NAME}_prc_file_${PROCESSOR}" ALL
                             WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
                             COMMENT "Building device specification file for ${PROCESSOR}."
-                            DEPENDS compiler
+                            DEPENDS mds-compiler
                             SOURCES "${FILE_BASE}.asm"
                             COMMAND ${MDS_COMPILER} --silent
                                                     --plang=asm
