@@ -1,0 +1,8 @@
+GETCHAR (  )  . . . . . . . . . . . . . . . . . . . . .   1 × USED 3027_demo_5_UART.asm:67.1-67.26
+RX_RESOLVE ( UART_BYTE )  . . . . . . . . . . . . . . .   1 × USED 3027_demo_5_UART.asm:133.1-133.26
+SENDCHAR ( CHAR ) . . . . . . . . . . . . . . . . . . .  22 × USED 3027_demo_5_UART.asm:58.1-58.26
+SENDCRLF (  ) . . . . . . . . . . . . . . . . . . . . .   2 × USED 3027_demo_5_UART.asm:75.1-75.26
+UART_NEW_DATA_WAIT (  ) . . . . . . . . . . . . . . . .   1 × USED 3027_demo_5_UART.asm:49.1-49.26
+UART_READY_WAIT (  )  . . . . . . . . . . . . . . . . .  22 × USED 3027_demo_5_UART.asm:43.1-43.26
+WAIT_FOR_100MS (  ) . . . . . . . . . . . . . . . . . .   8 × USED 3027_demo_5_UART.asm:113.1-113.26
+WAIT_FOR_1S (  )  . . . . . . . . . . . . . . . . . . .   1 × USED 3027_demo_5_UART.asm:97.1-97.26

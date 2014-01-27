@@ -1,0 +1,211 @@
+ABORT_ERASE  . . . . . . . . . . . . LABEL  0x0003F USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:307.1-307.13
+ASCII_BYTE_TO_HEX  . . . . . . . . . LABEL  0x00174 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:1087.1-1087.19
+ASCII_LETTER . . . . . . . . . . . . LABEL  0x0018B USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:1118.1-1118.14
+ASCII_TO_HEX . . . . . . . . . . . . LABEL  0x00181 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:1108.1-1108.14
+BLOCKS_ERASE . . . . . . . . . . . . LABEL  0x0002D USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:288.1-288.14
+BLOCKS_ERASE_LOOP  . . . . . . . . . LABEL  0x00038 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:299.1-299.19
+BLOCK_ERASE_COMMAND  . . . . . . . . LABEL  0x0002C USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:287.1-287.21
+CHARACTER_0  . . . . . . . . . . . . NUMBER 0x00030 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:129.1-129.45
+CHARACTER_1  . . . . . . . . . . . . NUMBER 0x00031 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:130.1-130.45
+CHARACTER_2  . . . . . . . . . . . . NUMBER 0x00032 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:131.1-131.45
+CHARACTER_3  . . . . . . . . . . . . NUMBER 0x00033 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:132.1-132.45
+CHARACTER_4  . . . . . . . . . . . . NUMBER 0x00034 NOT USED CONSTANT    3037_example_10.ind_spaces.full_inst.asm:133.1-133.45
+CHARACTER_5  . . . . . . . . . . . . NUMBER 0x00035 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:134.1-134.45
+CHARACTER_6  . . . . . . . . . . . . NUMBER 0x00036 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:135.1-135.45
+CHARACTER_7  . . . . . . . . . . . . NUMBER 0x00037 NOT USED CONSTANT    3037_example_10.ind_spaces.full_inst.asm:136.1-136.45
+CHARACTER_8  . . . . . . . . . . . . NUMBER 0x00038 NOT USED CONSTANT    3037_example_10.ind_spaces.full_inst.asm:137.1-137.45
+CHARACTER_9  . . . . . . . . . . . . NUMBER 0x00039 NOT USED CONSTANT    3037_example_10.ind_spaces.full_inst.asm:138.1-138.45
+CHARACTER_A  . . . . . . . . . . . . NUMBER 0x00061 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:77.1-77.45
+CHARACTER_B  . . . . . . . . . . . . NUMBER 0x00062 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:78.1-78.45
+CHARACTER_BS . . . . . . . . . . . . NUMBER 0x00008 NOT USED CONSTANT    3037_example_10.ind_spaces.full_inst.asm:157.1-157.45
+CHARACTER_C  . . . . . . . . . . . . NUMBER 0x00063 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:79.1-79.45
+CHARACTER_CLOSE  . . . . . . . . . . NUMBER 0x00029 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:148.1-148.45
+CHARACTER_COLON  . . . . . . . . . . NUMBER 0x0003A USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:139.1-139.45
+CHARACTER_COMMA  . . . . . . . . . . NUMBER 0x0002C NOT USED CONSTANT    3037_example_10.ind_spaces.full_inst.asm:144.1-144.45
+CHARACTER_CR . . . . . . . . . . . . NUMBER 0x0000D USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:152.1-152.45
+CHARACTER_D  . . . . . . . . . . . . NUMBER 0x00064 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:80.1-80.45
+CHARACTER_DIVIDE . . . . . . . . . . NUMBER 0x0002F USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:149.1-149.45
+CHARACTER_DOLLAR . . . . . . . . . . NUMBER 0x00024 NOT USED CONSTANT    3037_example_10.ind_spaces.full_inst.asm:155.1-155.45
+CHARACTER_E  . . . . . . . . . . . . NUMBER 0x00065 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:81.1-81.45
+CHARACTER_EQUALS . . . . . . . . . . NUMBER 0x0003D USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:150.1-150.45
+CHARACTER_EXCLAIM  . . . . . . . . . NUMBER 0x00021 NOT USED CONSTANT    3037_example_10.ind_spaces.full_inst.asm:156.1-156.45
+CHARACTER_F  . . . . . . . . . . . . NUMBER 0x00066 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:82.1-82.45
+CHARACTER_FULLSTOP . . . . . . . . . NUMBER 0x0002E USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:140.1-140.45
+CHARACTER_G  . . . . . . . . . . . . NUMBER 0x00067 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:83.1-83.45
+CHARACTER_GREATER_THAN . . . . . . . NUMBER 0x0003E USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:146.1-146.45
+CHARACTER_H  . . . . . . . . . . . . NUMBER 0x00068 NOT USED CONSTANT    3037_example_10.ind_spaces.full_inst.asm:84.1-84.45
+CHARACTER_I  . . . . . . . . . . . . NUMBER 0x00069 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:85.1-85.45
+CHARACTER_J  . . . . . . . . . . . . NUMBER 0x0006A NOT USED CONSTANT    3037_example_10.ind_spaces.full_inst.asm:86.1-86.45
+CHARACTER_K  . . . . . . . . . . . . NUMBER 0x0006B USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:87.1-87.45
+CHARACTER_L  . . . . . . . . . . . . NUMBER 0x0006C USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:88.1-88.45
+CHARACTER_LESS_THAN  . . . . . . . . NUMBER 0x0003C NOT USED CONSTANT    3037_example_10.ind_spaces.full_inst.asm:145.1-145.45
+CHARACTER_LF . . . . . . . . . . . . NUMBER 0x0000A USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:153.1-153.45
+CHARACTER_M  . . . . . . . . . . . . NUMBER 0x0006D USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:89.1-89.45
+CHARACTER_MINUS  . . . . . . . . . . NUMBER 0x0002D USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:142.1-142.45
+CHARACTER_N  . . . . . . . . . . . . NUMBER 0x0006E USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:90.1-90.45
+CHARACTER_O  . . . . . . . . . . . . NUMBER 0x0006F USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:91.1-91.45
+CHARACTER_OPEN . . . . . . . . . . . NUMBER 0x00028 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:147.1-147.45
+CHARACTER_P  . . . . . . . . . . . . NUMBER 0x00070 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:92.1-92.45
+CHARACTER_PLUS . . . . . . . . . . . NUMBER 0x0002B NOT USED CONSTANT    3037_example_10.ind_spaces.full_inst.asm:143.1-143.45
+CHARACTER_Q  . . . . . . . . . . . . NUMBER 0x00071 NOT USED CONSTANT    3037_example_10.ind_spaces.full_inst.asm:93.1-93.45
+CHARACTER_QUESTION . . . . . . . . . NUMBER 0x0003F USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:154.1-154.45
+CHARACTER_R  . . . . . . . . . . . . NUMBER 0x00072 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:94.1-94.45
+CHARACTER_S  . . . . . . . . . . . . NUMBER 0x00073 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:95.1-95.45
+CHARACTER_SEMI_COLON . . . . . . . . NUMBER 0x0003B NOT USED CONSTANT    3037_example_10.ind_spaces.full_inst.asm:141.1-141.45
+CHARACTER_SPACE  . . . . . . . . . . NUMBER 0x00020 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:151.1-151.45
+CHARACTER_T  . . . . . . . . . . . . NUMBER 0x00074 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:96.1-96.45
+CHARACTER_U  . . . . . . . . . . . . NUMBER 0x00075 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:97.1-97.45
+CHARACTER_V  . . . . . . . . . . . . NUMBER 0x00076 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:98.1-98.45
+CHARACTER_W  . . . . . . . . . . . . NUMBER 0x00077 NOT USED CONSTANT    3037_example_10.ind_spaces.full_inst.asm:99.1-99.45
+CHARACTER_X  . . . . . . . . . . . . NUMBER 0x00078 NOT USED CONSTANT    3037_example_10.ind_spaces.full_inst.asm:100.1-100.45
+CHARACTER_XOFF . . . . . . . . . . . NUMBER 0x00013 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:159.1-159.45
+CHARACTER_XON  . . . . . . . . . . . NUMBER 0x00011 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:158.1-158.45
+CHARACTER_Y  . . . . . . . . . . . . NUMBER 0x00079 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:101.1-101.45
+CHARACTER_Z  . . . . . . . . . . . . NUMBER 0x0007A USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:102.1-102.45
+COLD_START . . . . . . . . . . . . . LABEL  0x00000 NOT USED CONSTANT    3037_example_10.ind_spaces.full_inst.asm:191.1-191.12
+DATA_START . . . . . . . . . . . . . NUMBER 0x0002F USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:184.1-184.45
+DECIMAL_TO_ASCII . . . . . . . . . . LABEL  0x00137 NOT USED CONSTANT    3037_example_10.ind_spaces.full_inst.asm:946.1-946.18
+DELAY_1MS  . . . . . . . . . . . . . LABEL  0x00110 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:830.1-830.11
+DELAY_1S . . . . . . . . . . . . . . LABEL  0x0011A USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:852.1-852.10
+DELAY_1US  . . . . . . . . . . . . . LABEL  0x00107 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:810.1-810.11
+DELAY_1US_CONSTANT . . . . . . . . . NUMBER 0x0000B USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:71.1-71.45
+DELAY_20MS . . . . . . . . . . . . . LABEL  0x00115 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:842.1-842.12
+DELAY_40US . . . . . . . . . . . . . LABEL  0x0010B USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:819.1-819.12
+ERASE_COMMAND  . . . . . . . . . . . LABEL  0x0002A USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:269.1-269.15
+GET_DATA . . . . . . . . . . . . . . LABEL  0x00096 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:518.1-518.10
+HEX_BYTE_TO_ASCII  . . . . . . . . . LABEL  0x00156 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:1027.1-1027.19
+HEX_TO_ASCII . . . . . . . . . . . . LABEL  0x00162 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:1044.1-1044.14
+ISR  . . . . . . . . . . . . . . . . LABEL  0x003F5 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:1596.1-1596.5
+ISR_PRESERVE_S0  . . . . . . . . . . NUMBER 0x00000 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:166.1-166.45
+ISR_SEND_CHARACTER . . . . . . . . . LABEL  0x003FC USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:1603.1-1603.20
+ISR_SEND_XON . . . . . . . . . . . . LABEL  0x003FB USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:1602.1-1602.14
+LINE_START . . . . . . . . . . . . . NUMBER 0x0002B USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:183.1-183.45
+MCS_ADDRESS  . . . . . . . . . . . . LABEL  0x00067 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:425.1-425.13
+NEW_LOW_ADDRESS  . . . . . . . . . . LABEL  0x00072 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:436.1-436.17
+NUMBER_CHAR  . . . . . . . . . . . . LABEL  0x00165 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:1047.1-1047.13
+OBTAIN_8BITS . . . . . . . . . . . . LABEL  0x0018D USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:1124.1-1124.14
+PROGRAM_COMMAND  . . . . . . . . . . LABEL  0x00047 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:338.1-338.17
+PROGRAM_MCS  . . . . . . . . . . . . LABEL  0x0004C USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:356.1-356.13
+PROMPT . . . . . . . . . . . . . . . LABEL  0x00007 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:206.1-206.8
+READ_CHARACTER . . . . . . . . . . . LABEL  0x00124 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:894.1-894.16
+READ_COMMAND . . . . . . . . . . . . LABEL  0x000A3 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:559.1-559.14
+READ_FROM_UART . . . . . . . . . . . LABEL  0x0011F USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:889.1-889.16
+READ_MCS_BYTE  . . . . . . . . . . . LABEL  0x0005B USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:394.1-394.15
+READ_MCS_LINE  . . . . . . . . . . . LABEL  0x00057 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:390.1-390.15
+READ_UPPER_CASE  . . . . . . . . . . LABEL  0x00022 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:235.1-235.17
+READ_XON . . . . . . . . . . . . . . LABEL  0x0012D USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:903.1-903.10
+RX_DATA_PRESENT  . . . . . . . . . . NUMBER 0x00008 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:23.1-23.45
+RX_FULL  . . . . . . . . . . . . . . NUMBER 0x00020 NOT USED CONSTANT    3037_example_10.ind_spaces.full_inst.asm:25.1-25.45
+RX_HALF_FULL . . . . . . . . . . . . NUMBER 0x00010 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:24.1-24.45
+S0 . . . . . . . . . . . . . . . . . REG.   0x00000 USED     CONSTANT    IMPLICIT
+S1 . . . . . . . . . . . . . . . . . REG.   0x00001 USED     CONSTANT    IMPLICIT
+S2 . . . . . . . . . . . . . . . . . REG.   0x00002 USED     CONSTANT    IMPLICIT
+S3 . . . . . . . . . . . . . . . . . REG.   0x00003 USED     CONSTANT    IMPLICIT
+S4 . . . . . . . . . . . . . . . . . REG.   0x00004 USED     CONSTANT    IMPLICIT
+S5 . . . . . . . . . . . . . . . . . REG.   0x00005 USED     CONSTANT    IMPLICIT
+S6 . . . . . . . . . . . . . . . . . REG.   0x00006 USED     CONSTANT    IMPLICIT
+S7 . . . . . . . . . . . . . . . . . REG.   0x00007 USED     CONSTANT    IMPLICIT
+S8 . . . . . . . . . . . . . . . . . REG.   0x00008 USED     CONSTANT    IMPLICIT
+S9 . . . . . . . . . . . . . . . . . REG.   0x00009 USED     CONSTANT    IMPLICIT
+SA . . . . . . . . . . . . . . . . . REG.   0x0000A USED     CONSTANT    IMPLICIT
+SB . . . . . . . . . . . . . . . . . REG.   0x0000B USED     CONSTANT    IMPLICIT
+SC . . . . . . . . . . . . . . . . . REG.   0x0000C USED     CONSTANT    IMPLICIT
+SD . . . . . . . . . . . . . . . . . REG.   0x0000D USED     CONSTANT    IMPLICIT
+SE . . . . . . . . . . . . . . . . . REG.   0x0000E USED     CONSTANT    IMPLICIT
+SEND_ABORT . . . . . . . . . . . . . LABEL  0x002F1 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:1533.1-1533.12
+SEND_ADDRESS . . . . . . . . . . . . LABEL  0x002FE USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:1549.1-1549.14
+SEND_BYTE  . . . . . . . . . . . . . LABEL  0x002CB USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:1487.1-1487.11
+SEND_CONFIRM . . . . . . . . . . . . LABEL  0x002D4 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:1500.1-1500.14
+SEND_COUNTER_TIMER . . . . . . . . . LABEL  0x00100 NOT USED CONSTANT    3037_example_10.ind_spaces.full_inst.asm:787.1-787.20
+SEND_CR  . . . . . . . . . . . . . . LABEL  0x00193 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:1138.1-1138.9
+SEND_DATA  . . . . . . . . . . . . . LABEL  0x0030E USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:1569.1-1569.11
+SEND_EQUALS  . . . . . . . . . . . . LABEL  0x0030B USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:1562.1-1562.13
+SEND_ERASE . . . . . . . . . . . . . LABEL  0x00220 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:1299.1-1299.12
+SEND_ERASE_IN_PROGRESS . . . . . . . LABEL  0x00209 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:1272.1-1272.24
+SEND_HEX_3BYTES  . . . . . . . . . . LABEL  0x0016D USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:1068.1-1068.17
+SEND_HEX_BYTE  . . . . . . . . . . . LABEL  0x00167 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:1055.1-1055.15
+SEND_ID  . . . . . . . . . . . . . . LABEL  0x002C6 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:1478.1-1478.9
+SEND_MCS_FILE  . . . . . . . . . . . LABEL  0x001F7 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:1250.1-1250.15
+SEND_MENU  . . . . . . . . . . . . . LABEL  0x00233 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:1327.1-1327.11
+SEND_OK  . . . . . . . . . . . . . . LABEL  0x0022C USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:1315.1-1315.9
+SEND_SF_BYTE . . . . . . . . . . . . LABEL  0x000B6 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:583.1-583.14
+SEND_SF_LINE . . . . . . . . . . . . LABEL  0x000B2 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:579.1-579.14
+SEND_SF_PAGE . . . . . . . . . . . . LABEL  0x000B1 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:578.1-578.14
+SEND_SPACE . . . . . . . . . . . . . LABEL  0x00196 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:1144.1-1144.12
+SEND_TO_UART . . . . . . . . . . . . LABEL  0x00131 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:922.1-922.14
+SEND_WAITING_MCS_FILE  . . . . . . . LABEL  0x001E2 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:1229.1-1229.23
+SEND_WELCOME . . . . . . . . . . . . LABEL  0x00199 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:1151.1-1151.14
+SET_SF_READ_ARRAY_MODE . . . . . . . LABEL  0x000F4 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:745.1-745.24
+SF . . . . . . . . . . . . . . . . . REG.   0x0000F USED     CONSTANT    IMPLICIT
+SF_ADDR_HI_PORT  . . . . . . . . . . NUMBER 0x00080 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:38.1-38.45
+SF_ADDR_LO_PORT  . . . . . . . . . . NUMBER 0x00020 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:40.1-40.45
+SF_ADDR_MI_PORT  . . . . . . . . . . NUMBER 0x00040 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:39.1-39.45
+SF_BUFFER_WRITE  . . . . . . . . . . LABEL  0x00077 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:481.1-481.17
+SF_BYTE_READ . . . . . . . . . . . . LABEL  0x000E0 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:688.1-688.14
+SF_BYTE_WRITE  . . . . . . . . . . . LABEL  0x000EA USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:719.1-719.15
+SF_CE  . . . . . . . . . . . . . . . NUMBER 0x00002 NOT USED CONSTANT    3037_example_10.ind_spaces.full_inst.asm:44.1-44.45
+SF_CONTROL_PORT  . . . . . . . . . . NUMBER 0x00008 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:42.1-42.45
+SF_DATA_IN_PORT  . . . . . . . . . . NUMBER 0x00002 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:34.1-34.45
+SF_DATA_OUT_PORT . . . . . . . . . . NUMBER 0x00010 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:36.1-36.45
+SF_ERASE_BLOCK . . . . . . . . . . . LABEL  0x00041 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:326.1-326.16
+SF_INFORMATION . . . . . . . . . . . LABEL  0x000C2 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:616.1-616.16
+SF_INIT  . . . . . . . . . . . . . . LABEL  0x00027 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:252.1-252.9
+SF_READ  . . . . . . . . . . . . . . NUMBER 0x00001 NOT USED CONSTANT    3037_example_10.ind_spaces.full_inst.asm:43.1-43.45
+SF_SINGLE_BYTE_WRITE . . . . . . . . LABEL  0x0009D USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:547.1-547.22
+SF_STATUS  . . . . . . . . . . . . . LABEL  0x000D5 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:656.1-656.11
+SF_STS . . . . . . . . . . . . . . . NUMBER 0x00080 NOT USED CONSTANT    3037_example_10.ind_spaces.full_inst.asm:27.1-27.45
+SF_WE  . . . . . . . . . . . . . . . NUMBER 0x00004 NOT USED CONSTANT    3037_example_10.ind_spaces.full_inst.asm:45.1-45.45
+SPARE1 . . . . . . . . . . . . . . . NUMBER 0x00040 NOT USED CONSTANT    3037_example_10.ind_spaces.full_inst.asm:26.1-26.45
+STATUS_PORT  . . . . . . . . . . . . NUMBER 0x00000 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:19.1-19.45
+TEST_FOR_TEN . . . . . . . . . . . . LABEL  0x00138 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:947.1-947.14
+TX_DATA_PRESENT  . . . . . . . . . . NUMBER 0x00001 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:20.1-20.45
+TX_FULL  . . . . . . . . . . . . . . NUMBER 0x00004 NOT USED CONSTANT    3037_example_10.ind_spaces.full_inst.asm:22.1-22.45
+TX_HALF_FULL . . . . . . . . . . . . NUMBER 0x00002 NOT USED CONSTANT    3037_example_10.ind_spaces.full_inst.asm:21.1-21.45
+UART_DATA  . . . . . . . . . . . . . REG.   0x0000F USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:53.1-53.43
+UART_READ_PORT . . . . . . . . . . . NUMBER 0x00001 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:29.1-29.45
+UART_WRITE . . . . . . . . . . . . . LABEL  0x00135 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:926.1-926.12
+UART_WRITE_PORT  . . . . . . . . . . NUMBER 0x00004 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:31.1-31.45
+UPPER_CASE . . . . . . . . . . . . . LABEL  0x0013E USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:965.1-965.12
+WAIT_1MS . . . . . . . . . . . . . . LABEL  0x00111 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:831.1-831.10
+WAIT_1S  . . . . . . . . . . . . . . LABEL  0x0011B USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:853.1-853.9
+WAIT_1US . . . . . . . . . . . . . . LABEL  0x00108 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:811.1-811.10
+WAIT_20MS  . . . . . . . . . . . . . LABEL  0x00116 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:843.1-843.11
+WAIT_40US  . . . . . . . . . . . . . LABEL  0x0010C USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:820.1-820.11
+WAIT_MCS_LINE_START  . . . . . . . . LABEL  0x00058 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:391.1-391.21
+WAIT_RX_CHARACTER  . . . . . . . . . LABEL  0x00120 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:890.1-890.19
+WAIT_SF_LOOP . . . . . . . . . . . . LABEL  0x000F9 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:770.1-770.14
+WAIT_SF_READY  . . . . . . . . . . . LABEL  0x000F7 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:768.1-768.15
+WAIT_XON . . . . . . . . . . . . . . LABEL  0x00129 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:899.1-899.10
+WARM_START . . . . . . . . . . . . . LABEL  0x00005 NOT USED CONSTANT    3037_example_10.ind_spaces.full_inst.asm:203.1-203.12
+WELCOME_START  . . . . . . . . . . . LABEL  0x00003 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:194.1-194.15
+WRITE_BUFFER_LOOP  . . . . . . . . . LABEL  0x00080 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:490.1-490.19
+WRITE_COMMAND  . . . . . . . . . . . LABEL  0x0008C USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:508.1-508.15
+WRITE_SPM_DATA . . . . . . . . . . . LABEL  0x00052 NOT USED CONSTANT    3037_example_10.ind_spaces.full_inst.asm:366.1-366.16
+_1CHAR_TO_VALUE  . . . . . . . . . . LABEL  0x00144 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:982.1-982.17
+_2CHAR_TO_VALUE  . . . . . . . . . . LABEL  0x00148 NOT USED CONSTANT    3037_example_10.ind_spaces.full_inst.asm:998.1-998.17
+_CHARACTER_A . . . . . . . . . . . . NUMBER 0x00041 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:103.1-103.45
+_CHARACTER_B . . . . . . . . . . . . NUMBER 0x00042 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:104.1-104.45
+_CHARACTER_C . . . . . . . . . . . . NUMBER 0x00043 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:105.1-105.45
+_CHARACTER_D . . . . . . . . . . . . NUMBER 0x00044 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:106.1-106.45
+_CHARACTER_E . . . . . . . . . . . . NUMBER 0x00045 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:107.1-107.45
+_CHARACTER_F . . . . . . . . . . . . NUMBER 0x00046 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:108.1-108.45
+_CHARACTER_G . . . . . . . . . . . . NUMBER 0x00047 NOT USED CONSTANT    3037_example_10.ind_spaces.full_inst.asm:109.1-109.45
+_CHARACTER_H . . . . . . . . . . . . NUMBER 0x00048 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:110.1-110.45
+_CHARACTER_I . . . . . . . . . . . . NUMBER 0x00049 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:111.1-111.45
+_CHARACTER_J . . . . . . . . . . . . NUMBER 0x0004A NOT USED CONSTANT    3037_example_10.ind_spaces.full_inst.asm:112.1-112.45
+_CHARACTER_K . . . . . . . . . . . . NUMBER 0x0004B USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:113.1-113.45
+_CHARACTER_L . . . . . . . . . . . . NUMBER 0x0004C USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:114.1-114.45
+_CHARACTER_M . . . . . . . . . . . . NUMBER 0x0004D USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:115.1-115.45
+_CHARACTER_N . . . . . . . . . . . . NUMBER 0x0004E USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:116.1-116.45
+_CHARACTER_O . . . . . . . . . . . . NUMBER 0x0004F USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:117.1-117.45
+_CHARACTER_P . . . . . . . . . . . . NUMBER 0x00050 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:118.1-118.45
+_CHARACTER_Q . . . . . . . . . . . . NUMBER 0x00051 NOT USED CONSTANT    3037_example_10.ind_spaces.full_inst.asm:119.1-119.45
+_CHARACTER_R . . . . . . . . . . . . NUMBER 0x00052 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:120.1-120.45
+_CHARACTER_S . . . . . . . . . . . . NUMBER 0x00053 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:121.1-121.45
+_CHARACTER_T . . . . . . . . . . . . NUMBER 0x00054 NOT USED CONSTANT    3037_example_10.ind_spaces.full_inst.asm:122.1-122.45
+_CHARACTER_U . . . . . . . . . . . . NUMBER 0x00055 NOT USED CONSTANT    3037_example_10.ind_spaces.full_inst.asm:123.1-123.45
+_CHARACTER_V . . . . . . . . . . . . NUMBER 0x00056 NOT USED CONSTANT    3037_example_10.ind_spaces.full_inst.asm:124.1-124.45
+_CHARACTER_W . . . . . . . . . . . . NUMBER 0x00057 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:125.1-125.45
+_CHARACTER_X . . . . . . . . . . . . NUMBER 0x00058 NOT USED CONSTANT    3037_example_10.ind_spaces.full_inst.asm:126.1-126.45
+_CHARACTER_Y . . . . . . . . . . . . NUMBER 0x00059 USED     CONSTANT    3037_example_10.ind_spaces.full_inst.asm:127.1-127.45
+_CHARACTER_Z . . . . . . . . . . . . NUMBER 0x0005A NOT USED CONSTANT    3037_example_10.ind_spaces.full_inst.asm:128.1-128.45

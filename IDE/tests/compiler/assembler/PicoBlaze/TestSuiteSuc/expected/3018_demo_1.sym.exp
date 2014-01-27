@@ -1,0 +1,22 @@
+COUNTER  . . . . . . . . . . . . . . NUMBER 0x0000F NOT USED REDEFINABLE 3018_demo_1.asm:9.1-9.30
+INC_DEC  . . . . . . . . . . . . . . NUMBER 0x00001 NOT USED CONSTANT    3018_demo_1.asm:11.1-11.33
+MAIN . . . . . . . . . . . . . . . . LABEL  0x00004 USED     CONSTANT    3018_demo_1.asm:43.1-43.6
+RAM_POINTER  . . . . . . . . . . . . NUMBER 0x00000 USED     REDEFINABLE 3018_demo_1.asm:12.1-12.29
+S0 . . . . . . . . . . . . . . . . . REG.   0x00000 USED     CONSTANT    IMPLICIT
+S1 . . . . . . . . . . . . . . . . . REG.   0x00001 USED     CONSTANT    IMPLICIT
+S2 . . . . . . . . . . . . . . . . . REG.   0x00002 NOT USED CONSTANT    IMPLICIT
+S3 . . . . . . . . . . . . . . . . . REG.   0x00003 NOT USED CONSTANT    IMPLICIT
+S4 . . . . . . . . . . . . . . . . . REG.   0x00004 NOT USED CONSTANT    IMPLICIT
+S5 . . . . . . . . . . . . . . . . . REG.   0x00005 NOT USED CONSTANT    IMPLICIT
+S6 . . . . . . . . . . . . . . . . . REG.   0x00006 NOT USED CONSTANT    IMPLICIT
+S7 . . . . . . . . . . . . . . . . . REG.   0x00007 NOT USED CONSTANT    IMPLICIT
+S8 . . . . . . . . . . . . . . . . . REG.   0x00008 NOT USED CONSTANT    IMPLICIT
+S9 . . . . . . . . . . . . . . . . . REG.   0x00009 NOT USED CONSTANT    IMPLICIT
+SA . . . . . . . . . . . . . . . . . REG.   0x0000A NOT USED CONSTANT    IMPLICIT
+SB . . . . . . . . . . . . . . . . . REG.   0x0000B NOT USED CONSTANT    IMPLICIT
+SC . . . . . . . . . . . . . . . . . REG.   0x0000C NOT USED CONSTANT    IMPLICIT
+SD . . . . . . . . . . . . . . . . . REG.   0x0000D NOT USED CONSTANT    IMPLICIT
+SE . . . . . . . . . . . . . . . . . REG.   0x0000E NOT USED CONSTANT    IMPLICIT
+SF . . . . . . . . . . . . . . . . . REG.   0x0000F NOT USED CONSTANT    IMPLICIT
+START  . . . . . . . . . . . . . . . LABEL  0x00001 USED     CONSTANT    3018_demo_1.asm:36.1-36.7
+X  . . . . . . . . . . . . . . . . . NUMBER 0x00064 USED     REDEFINABLE 3018_demo_1.asm:10.1-10.29

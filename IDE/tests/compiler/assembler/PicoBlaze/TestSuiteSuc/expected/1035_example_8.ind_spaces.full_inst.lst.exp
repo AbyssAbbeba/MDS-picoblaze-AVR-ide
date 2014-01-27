@@ -1,0 +1,2307 @@
+                   1     ; KCPSM3 Program - Communication with DS2432 secure memory on the Spartan-3E Starter Kit.
+                   2     device kcpsm1
+                   3     ; Ken Chapman - Xilinx Ltd
+                   4     ;
+                   5     ; Version v1.00 - 5th April 2006
+                   6     ;
+                   7     ; This program uses a 9600 baud UART connection to allow communication with the
+                   8     ; 1-wire interface of the DS2432 memory device from Dallas Semiconductor.
+                   9     ;
+                  10     ; The program only supports a limited number of the DS2432 commands but is intended
+                  11     ; to guide you through the state machine of the device as well as show how
+                  12     ; 1-wire communication is achieved. The DS2432 also uses 8 and 16 bits CRC checks and
+                  13     ; this program includes these calculations to validate the communications.
+                  14     ;
+                  15     ; Commands supported include read ROM, write scratchpad memory and read scratchpad
+                  16     ; memory. These allow you to confirm the ability to both read and write data but
+                  17     ; at no time modify the actual EEPROM secure memory or secret.
+                  18     ;
+                  19     ; There are then two manual commands which allow you to write any byte value that
+                  20     ; you enter and to read a byte from the DS2432 device. At this point you are free
+                  21     ; to experiment and this may result in the device contents being altered. You also
+                  22     ; become responsible for tracking the states but remember that a master reset will
+                  23     ; always return you to a known starting point again.
+                  24     ;
+                  25     ;
+                  26     ;**************************************************************************************
+                  27     ; Port definitions
+                  28     ;**************************************************************************************
+                  29     ;
+                  30     ;
+  00000           31     status_port             EQU             0x00                    ;UART status input
+  00001           32     tx_half_full            EQU             0x01                    ;  Transmitter     half full - bit0
+  00002           33     tx_full                 EQU             0x02                    ;    FIFO               full - bit1
+  00004           34     rx_data_present         EQU             0x04                    ;  Receiver     data present - bit2
+  00008           35     rx_half_full            EQU             0x08                    ;    FIFO          half full - bit3
+  00010           36     rx_full                 EQU             0x10                    ;                   full - bit4
+  00020           37     spare1                  EQU             0x20                    ;                  spare '0' - bit5
+  00040           38     spare2                  EQU             0x40                    ;                  spare '0' - bit6
+  00080           39     spare3                  EQU             0x80                    ;                  spare '0' - bit7
+                  40     ;
+  00001           41     uart_read_port          EQU             0x01                    ;UART Rx data input
+                  42     ;
+  00004           43     uart_write_port         EQU             0x04                    ;UART Tx data output
+                  44     ;
+                  45     ;
+  00002           46     ds_wire_in_port         EQU             0x02                    ;Read signal from DS2432 device
+  00008           47     ds_wire_out_port        EQU             0x08                    ;Drive signal to DS2432 device (open collector)
+  00001           48     ds_wire                 EQU             0x01                    ;       Signal is bit0 in both cases
+                  49     ;
+                  50     ;
+                  51     ;
+                  52     ;
+                  53     ;**************************************************************************************
+                  54     ; Special Register usage
+                  55     ;**************************************************************************************
+                  56     ;
+  0000F           57     uart_data               REG             sf                      ;used to pass data to and from the UART
+                  58     ;
+                  59     ;
+                  60     ;**************************************************************************************
+                  61     ; Scratch Pad Memory Locations
+                  62     ;**************************************************************************************
+                  63     ;
+                  64     ; Scratch pad memory provides 64 bytes in the address range 00 to 3F hex.
+                  65     ;
+                  66     ;
+                  67     ; Locations for device family code, serial number and 8-bit CRC value
+                  68     ;
+  00000           69     family_code             EQU             0x00
+  00001           70     serial_number0          EQU             0x01                    ;48-bit serial number LS-Byte first
+  00002           71     serial_number1          EQU             0x02
+  00003           72     serial_number2          EQU             0x03
+  00004           73     serial_number3          EQU             0x04
+  00005           74     serial_number4          EQU             0x05
+  00006           75     serial_number5          EQU             0x06
+  00007           76     read_rom_crc            EQU             0x07                    ;8-bit CRC
+                  77     ;
+                  78     ;
+                  79     ; Locations to store all bytes in a command communication for 16-bit CRC calculation
+                  80     ;
+  00008           81     command_start           EQU             0x08
+                  82     ;
+                  83     ;
+                  84     ;**************************************************************************************
+                  85     ; Useful data constants
+                  86     ;**************************************************************************************
+                  87     ;
+                  88     ; Constant to define a software delay of 1us. This must be adjusted to reflect the
+                  89     ; clock applied to KCPSM3. Every instruction executes in 2 clock cycles making the
+                  90     ; calculation highly predictable. The '6' in the following equation even allows for
+                  91     ; 'CALL delay_1us' instruction in the initiating code.
+                  92     ;
+                  93     ; delay_1us_constant =  (clock_rate - 6)/4       Where 'clock_rate' is in MHz
+                  94     ;
+                  95     ; Example: For a 50MHz clock the constant value is (10-6)/4 = 11  (0B Hex).
+                  96     ; For clock rates below 10MHz the value of 1 must be used and the operation will
+                  97     ; become lower than intended.
+                  98     ;
+  0000B           99     delay_1us_constant      EQU             0x0b
+                 100     ;
+                 101     ;
+                 102     ;
+                 103     ;ASCII table
+                 104     ;
+  00061          105     character_a             EQU             0x61
+  00062          106     character_b             EQU             0x62
+  00063          107     character_c             EQU             0x63
+  00064          108     character_d             EQU             0x64
+  00065          109     character_e             EQU             0x65
+  00066          110     character_f             EQU             0x66
+  00067          111     character_g             EQU             0x67
+  00068          112     character_h             EQU             0x68
+  00069          113     character_i             EQU             0x69
+  0006A          114     character_j             EQU             0x6a
+  0006B          115     character_k             EQU             0x6b
+  0006C          116     character_l             EQU             0x6c
+  0006D          117     character_m             EQU             0x6d
+  0006E          118     character_n             EQU             0x6e
+  0006F          119     character_o             EQU             0x6f
+  00070          120     character_p             EQU             0x70
+  00071          121     character_q             EQU             0x71
+  00072          122     character_r             EQU             0x72
+  00073          123     character_s             EQU             0x73
+  00074          124     character_t             EQU             0x74
+  00075          125     character_u             EQU             0x75
+  00076          126     character_v             EQU             0x76
+  00077          127     character_w             EQU             0x77
+  00078          128     character_x             EQU             0x78
+  00079          129     character_y             EQU             0x79
+  0007A          130     character_z             EQU             0x7a
+  00041          131     _character_a            EQU             0x41
+  00042          132     _character_b            EQU             0x42
+  00043          133     _character_c            EQU             0x43
+  00044          134     _character_d            EQU             0x44
+  00045          135     _character_e            EQU             0x45
+  00046          136     _character_f            EQU             0x46
+  00047          137     _character_g            EQU             0x47
+  00048          138     _character_h            EQU             0x48
+  00049          139     _character_i            EQU             0x49
+  0004A          140     _character_j            EQU             0x4a
+  0004B          141     _character_k            EQU             0x4b
+  0004C          142     _character_l            EQU             0x4c
+  0004D          143     _character_m            EQU             0x4d
+  0004E          144     _character_n            EQU             0x4e
+  0004F          145     _character_o            EQU             0x4f
+  00050          146     _character_p            EQU             0x50
+  00051          147     _character_q            EQU             0x51
+  00052          148     _character_r            EQU             0x52
+  00053          149     _character_s            EQU             0x53
+  00054          150     _character_t            EQU             0x54
+  00055          151     _character_u            EQU             0x55
+  00056          152     _character_v            EQU             0x56
+  00057          153     _character_w            EQU             0x57
+  00058          154     _character_x            EQU             0x58
+  00059          155     _character_y            EQU             0x59
+  0005A          156     _character_z            EQU             0x5a
+  00030          157     character_0             EQU             0x30
+  00031          158     character_1             EQU             0x31
+  00032          159     character_2             EQU             0x32
+  00033          160     character_3             EQU             0x33
+  00034          161     character_4             EQU             0x34
+  00035          162     character_5             EQU             0x35
+  00036          163     character_6             EQU             0x36
+  00037          164     character_7             EQU             0x37
+  00038          165     character_8             EQU             0x38
+  00039          166     character_9             EQU             0x39
+  0003A          167     character_colon         EQU             0x3a
+  0002E          168     character_fullstop      EQU             0x2e
+  0003B          169     character_semi_colon    EQU             0x3b
+  0002D          170     character_minus         EQU             0x2d
+  0002B          171     character_plus          EQU             0x2b
+  0002C          172     character_comma         EQU             0x2c
+  0003C          173     character_less_than     EQU             0x3c                    ;'<'
+  0003E          174     character_greater_than  EQU             0x3e                    ;'>'
+  00028          175     character_open          EQU             0x28                    ;'('
+  00029          176     character_close         EQU             0x29                    ;')'
+  0002F          177     character_divide        EQU             0x2f                    ;'/'
+  0003D          178     character_equals        EQU             0x3d
+  00020          179     character_space         EQU             0x20
+  0000D          180     character_cr            EQU             0x0d                    ;carriage return
+  0000A          181     character_lf            EQU             0x0a                    ;line feed
+  0003F          182     character_question      EQU             0x3f                    ;'?'
+  00024          183     character_dollar        EQU             0x24
+  00021          184     character_exclaim       EQU             0x21                    ;'!'
+  00008          185     character_bs            EQU             0x08                    ;Back Space command character
+  00011          186     character_xon           EQU             0x11                    ;Flow control ON
+  00013          187     character_xoff          EQU             0x13                    ;Flow control OFF
+                 188     ;
+                 189     ;
+                 190     ;**************************************************************************************
+                 191     ; Initialise the system and welcome message
+                 192     ;**************************************************************************************
+                 193     ;
+000 08343        194     cold_start:             CALL            ds_wire_init            ;Ensure DS_wire is not driven (pulled High)
+W: value out of range: 0x143, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x43.
+001 083AD        195                             CALL            delay_1s                ;Allow everything to settle!
+W: value out of range: 0x1ad, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xad.
+002 08328        196     welcome_start:          CALL            send_welcome            ;start up message and version number
+W: value out of range: 0x228, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x28.
+                 197     ;
+                 198     ;
+                 199     ;
+                 200     ; The main program guides the user to follow the command state machine of the
+                 201     ; DS2432 device by only offering those choices that are valid at each stage.
+                 202     ; This program only offers a limited choice and it is left as an exercise to
+                 203     ; the user to modify or expand this choice as required.
+                 204     ;
+                 205     ;**************************************************************************************
+                 206     ; Reset Main menu and command selection
+                 207     ;**************************************************************************************
+                 208     ;
+                 209     ; Initially the only action available is a master reset and test for a presence
+                 210     ; pulse response from the DS2432.
+                 211     ;
+003 0836F        212     reset_menu:             CALL            send_reset_menu         ;Menu and command selection
+W: value out of range: 0x26f, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x6f.
+004 0831F        213                             CALL            send_cr
+W: value out of range: 0x21f, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x1f.
+                 214     ;
+005 08333        215     reset_prompt:           CALL            menu_prompt             ;prompt for user input
+                 216                             COMPARE         s0, #_character_h       ;test for commands and execute as required
+E: instruction not supported on the this device: COMPARE sX, kk.
+006 09103        217                             JUMP            z, reset_menu
+                 218                             COMPARE         s0, #character_1
+E: instruction not supported on the this device: COMPARE sX, kk.
+007 0910C        219                             JUMP            z, master_reset_regular
+008 08339        220                             CALL            no_valid_input
+009 08105        221                             JUMP            reset_prompt            ;Try again!
+                 222     ;
+                 223     ; The master reset should result in a presence pulse.
+                 224     ; This will be reported and control passed to the appropriate
+                 225     ; menu in the sequence.
+                 226     ;
+00A 0831F        227     master_reset_regular:   CALL            send_cr
+W: value out of range: 0x21f, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x1f.
+00B 08346        228                             CALL            ds_init_regular_mode
+W: value out of range: 0x146, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x46.
+00C 09D11        229                             JUMP            nc, reset_passed        ;test for presence pulse
+00D 0834D        230                             CALL            send_fail
+W: value out of range: 0x34d, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x4d.
+00E 08103        231                             JUMP            reset_menu              ;fail stays in reset menu
+00F 08345        232     reset_passed:           CALL            send_pass               ;pass progresses to ROM menu
+W: value out of range: 0x345, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x45.
+010 08113        233                             JUMP            rom_menu
+                 234     ;
+                 235     ; After a valid master reset, the only commands available are the ROM
+                 236     ; commands of which only Read ROM and Skip ROM are currently supported.
+                 237     ; Another master reset can be issued is so desired.
+                 238     ;
+011 08378        239     rom_menu:               CALL            send_rom_menu           ;Menu and command selection
+W: value out of range: 0x278, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x78.
+012 0831F        240                             CALL            send_cr
+W: value out of range: 0x21f, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x1f.
+                 241     ;
+013 08333        242     rom_prompt:             CALL            menu_prompt             ;prompt for user input
+                 243                             COMPARE         s0, #_character_h       ;test for commands and execute as required
+E: instruction not supported on the this device: COMPARE sX, kk.
+014 09113        244                             JUMP            z, rom_menu
+                 245                             COMPARE         s0, #character_1
+E: instruction not supported on the this device: COMPARE sX, kk.
+015 0910C        246                             JUMP            z, master_reset_regular ;repeat reset as before
+                 247                             COMPARE         s0, #character_2
+E: instruction not supported on the this device: COMPARE sX, kk.
+016 0913F        248                             JUMP            z, read_rom_command
+                 249                             COMPARE         s0, #character_3
+E: instruction not supported on the this device: COMPARE sX, kk.
+017 09162        250                             JUMP            z, skip_rom_command
+018 08339        251                             CALL            no_valid_input
+019 08115        252                             JUMP            rom_prompt              ;Try again!
+                 253     ;
+                 254     ;
+                 255     ;
+                 256     ; After a valid ROM command the DS2432 specific memory commands and SHA-1
+                 257     ; functions become accessible. Each of these end with the DS2432 returned
+                 258     ; back to the waiting for ROM command state completing the menu sequence.
+                 259     ;
+01A 08393        260     ds2432_menu:            CALL            send_ds2432_menu        ;Menu and command selection
+W: value out of range: 0x293, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x93.
+01B 0831F        261                             CALL            send_cr
+W: value out of range: 0x21f, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x1f.
+                 262     ;
+01C 08333        263     ds2432_prompt:          CALL            menu_prompt             ;prompt for user input
+                 264                             COMPARE         s0, #_character_h       ;test for commands and execute as required
+E: instruction not supported on the this device: COMPARE sX, kk.
+01D 09120        265                             JUMP            z, ds2432_menu
+                 266                             COMPARE         s0, #character_1
+E: instruction not supported on the this device: COMPARE sX, kk.
+01E 0910C        267                             JUMP            z, master_reset_regular ;repeat reset as before
+                 268                             COMPARE         s0, #character_2
+E: instruction not supported on the this device: COMPARE sX, kk.
+01F 09166        269                             JUMP            z, read_memory_command
+                 270                             COMPARE         s0, #character_3
+E: instruction not supported on the this device: COMPARE sX, kk.
+020 09181        271                             JUMP            z, write_scratchpad_command
+                 272                             COMPARE         s0, #character_4
+E: instruction not supported on the this device: COMPARE sX, kk.
+021 091D4        273                             JUMP            z, read_scratchpad_command
+                 274                             COMPARE         s0, #character_5
+E: instruction not supported on the this device: COMPARE sX, kk.
+022 091C3        275                             JUMP            z, write_byte_command
+                 276                             COMPARE         s0, #character_6
+E: instruction not supported on the this device: COMPARE sX, kk.
+023 091CC        277                             JUMP            z, read_byte_command
+024 08339        278                             CALL            no_valid_input
+025 08122        279                             JUMP            ds2432_prompt           ;Try again!
+                 280     ;
+                 281     ;
+                 282     ;
+                 283     ;
+                 284     ;
+                 285     ;**************************************************************************************
+                 286     ; Prompt and selection tasks used in menus.
+                 287     ;**************************************************************************************
+                 288     ;
+                 289     ; Prompts for input with > character and waits for key stroke which is
+                 290     ; returned in upper case in register s0
+                 291     ;
+026 0831F        292     menu_prompt:            CALL            send_cr
+W: value out of range: 0x21f, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x1f.
+027 0831F        293                             CALL            send_cr
+W: value out of range: 0x21f, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x1f.
+028 00F3E        294                             LOAD            uart_data, #character_greater_than ;prompt for input
+029 083B8        295                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+02A 08314        296                             CALL            read_upper_case
+W: value out of range: 0x214, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x14.
+02B 08080        297                             RETURN
+                 298     ;
+02C 0831F        299     no_valid_input:         CALL            send_cr                 ;no valid command input
+W: value out of range: 0x21f, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x1f.
+02D 00F3F        300                             LOAD            uart_data, #character_question ;display ???
+02E 083B8        301                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+02F 083B8        302                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+030 083B8        303                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+031 08080        304                             RETURN
+                 305     ;
+                 306     ;
+                 307     ;**************************************************************************************
+                 308     ; DS2432 Read ROM Command.
+                 309     ;**************************************************************************************
+                 310     ;
+                 311     ; The read ROM command (33 hex) allows the 8-bit family code, 48-bit unique serial
+                 312     ; number and 8-bit CRC to be read from the DS2432 device.
+                 313     ;
+                 314     ; This routine reads the values and places them in KCPSM3 scratch pad memory
+                 315     ; locations for future reference. These locations should be defined with constants
+                 316     ; as follows and MUST be in consecutive ascending locations.
+                 317     ;
+                 318     ;  family_code
+                 319     ;     Location to store family code which should be 33 hex
+                 320     ;  serial_number0 to serial_number5
+                 321     ;     6 bytes to hold 48-bit serial number (LS-byte first).
+                 322     ;  read_ROM_CRC
+                 323     ;     8-bit CRC value for the above data.
+                 324     ;
+                 325     ;
+                 326     ; The routine also displays the values read and performs a verification of the
+                 327     ; 8-bit CRC displaying a 'pass' or 'fail' message as appropriate.
+                 328     ;
+032 00333        329     read_rom_command:       LOAD            s3, #0x33               ;Read ROM Command
+033 08361        330                             CALL            write_byte_slow         ;transmit command
+W: value out of range: 0x161, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x61.
+034 00500        331                             LOAD            s5, #family_code        ;memory pointer
+035 08382        332     read_rom_loop:          CALL            read_byte_slow          ;read response into s3
+W: value out of range: 0x182, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x82.
+                 333                             STORE           s3, @s5                 ;store value
+E: instruction not supported on the this device: STORE sX, sY.
+                 334                             COMPARE         s5, #read_rom_crc       ;8-bytes to read
+E: instruction not supported on the this device: COMPARE sX, kk.
+036 09148        335                             JUMP            z, display_rom
+037 04501        336                             ADD             s5, #0x01
+038 08142        337                             JUMP            read_rom_loop
+039 0831F        338     display_rom:            CALL            send_cr
+W: value out of range: 0x21f, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x1f.
+03A 08386        339                             CALL            send_code               ;'code=' to display family code
+W: value out of range: 0x386, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x86.
+                 340                             FETCH           s0, family_code
+E: instruction not supported on the this device: FETCH sX, ss.
+03B 083EE        341                             CALL            send_hex_byte
+W: value out of range: 0x1ee, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xee.
+03C 0831F        342                             CALL            send_cr
+W: value out of range: 0x21f, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x1f.
+03D 0838F        343                             CALL            send_serial             ;'serial=' to display family code
+W: value out of range: 0x38f, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x8f.
+03E 00506        344                             LOAD            s5, #serial_number5     ;memory pointer starting MS-byte first
+  0004F          345     disp_serial_loop:       FETCH           s0, @s5
+E: instruction not supported on the this device: FETCH sX, sY.
+03F 083EE        346                             CALL            send_hex_byte
+W: value out of range: 0x1ee, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xee.
+                 347                             COMPARE         s5, #serial_number0
+E: instruction not supported on the this device: COMPARE sX, kk.
+040 09155        348                             JUMP            z, end_serial
+041 06501        349                             SUB             s5, #0x01
+042 0814F        350                             JUMP            disp_serial_loop
+043 0831F        351     end_serial:             CALL            send_cr
+W: value out of range: 0x21f, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x1f.
+044 0839C        352                             CALL            send_crc                ;'CRC=' to display CRC value
+W: value out of range: 0x39c, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x9c.
+                 353                             FETCH           s0, read_rom_crc
+E: instruction not supported on the this device: FETCH sX, ss.
+045 083EE        354                             CALL            send_hex_byte
+W: value out of range: 0x1ee, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xee.
+046 0831F        355                             CALL            send_cr
+W: value out of range: 0x21f, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x1f.
+047 08312        356                             CALL            compute_crc8            ;compute CRC value in s0
+W: value out of range: 0x112, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x12.
+                 357                             FETCH           s1, read_rom_crc        ;compare with received value
+E: instruction not supported on the this device: FETCH sX, ss.
+                 358                             COMPARE         s0, s1
+E: instruction not supported on the this device: COMPARE sX, sY.
+048 09560        359                             JUMP            nz, crc8_fail
+049 08345        360                             CALL            send_pass
+W: value out of range: 0x345, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x45.
+04A 08120        361                             JUMP            ds2432_menu             ;now in memory and SHA-1 functions level
+04B 0834D        362     crc8_fail:              CALL            send_fail
+W: value out of range: 0x34d, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x4d.
+04C 08113        363                             JUMP            rom_menu                ;can not proceed to next level
+                 364     ;
+                 365     ;
+                 366     ;
+                 367     ;**************************************************************************************
+                 368     ; DS2432 Skip ROM Command.
+                 369     ;**************************************************************************************
+                 370     ;
+                 371     ; The skip ROM command (CC hex) is a short cut to the memory commands and SHA-1
+                 372     ; functions which means that the 64 bit ROM contents do not have to be read.
+                 373     ;
+                 374     ;
+04D 003CC        375     skip_rom_command:       LOAD            s3, #0xcc               ;Skip ROM Command
+04E 08361        376                             CALL            write_byte_slow         ;transmit command
+W: value out of range: 0x161, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x61.
+04F 083C9        377                             CALL            send_ok
+W: value out of range: 0x2c9, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xc9.
+050 08120        378                             JUMP            ds2432_menu
+                 379     ;
+                 380     ;
+                 381     ;
+                 382     ;**************************************************************************************
+                 383     ; DS2432 Read Memory Command.
+                 384     ;**************************************************************************************
+                 385     ;
+                 386     ; The read memory command (F0 hex) allows the entire memory contents to be read
+                 387     ; except for the secret. This routine displays the address followed by 8 bytes
+                 388     ; of data on each line until the address 0097 is reached.
+                 389     ;
+                 390     ; The initial 'F0' command must be followed by the 16-bit start address transmitted
+                 391     ; LS-byte first. Then reads must continue until address 0097 has been read for the
+                 392     ; command to complete naturally (otherwise a master reset is required).
+                 393     ;
+                 394     ;
+                 395     ;
+051 003F0        396     read_memory_command:    LOAD            s3, #0xf0               ;read memory Command
+052 08361        397                             CALL            write_byte_slow         ;transmit command
+W: value out of range: 0x161, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x61.
+053 00500        398                             LOAD            s5, #0x00               ;initial address in [s5,s4]=0000
+054 00400        399                             LOAD            s4, #0x00
+055 0C340        400                             LOAD            s3, s4                  ;transmit address
+056 08361        401                             CALL            write_byte_slow
+W: value out of range: 0x161, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x61.
+057 0C350        402                             LOAD            s3, s5
+058 08361        403                             CALL            write_byte_slow
+W: value out of range: 0x161, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x61.
+059 0831F        404     rmc_line_loop:          CALL            send_cr
+W: value out of range: 0x21f, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x1f.
+05A 0C050        405                             LOAD            s0, s5                  ;display 16-bit address
+05B 083EE        406                             CALL            send_hex_byte
+W: value out of range: 0x1ee, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xee.
+05C 0C040        407                             LOAD            s0, s4
+05D 083EE        408                             CALL            send_hex_byte
+W: value out of range: 0x1ee, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xee.
+05E 08322        409                             CALL            send_space
+W: value out of range: 0x222, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x22.
+05F 08322        410                             CALL            send_space
+W: value out of range: 0x222, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x22.
+060 08322        411     rmc_data_loop:          CALL            send_space
+W: value out of range: 0x222, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x22.
+061 08382        412                             CALL            read_byte_slow          ;read data into s3
+W: value out of range: 0x182, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x82.
+062 0C030        413                             LOAD            s0, s3                  ;display byte
+063 083EE        414                             CALL            send_hex_byte
+W: value out of range: 0x1ee, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xee.
+064 04401        415                             ADD             s4, #0x01               ;increment address
+065 05500        416                             ADDCY           s5, #0x00
+                 417                             TEST            s4, #0x07               ;test for 8-byte boundary
+E: instruction not supported on the this device: TEST sX, kk.
+066 09575        418                             JUMP            nz, rmc_data_loop
+                 419                             COMPARE         s4, #0x98               ;test for last address
+E: instruction not supported on the this device: COMPARE sX, kk.
+067 0956E        420                             JUMP            nz, rmc_line_loop
+068 083C9        421                             CALL            send_ok
+W: value out of range: 0x2c9, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xc9.
+069 08103        422                             JUMP            reset_menu              ;needs master reset next
+                 423     ;
+                 424     ;
+                 425     ;**************************************************************************************
+                 426     ; DS2432 Write Scratchpad Memory Command.
+                 427     ;**************************************************************************************
+                 428     ;
+                 429     ; The write scratchpad memory command (0F hex) allows 8-bytes of data to be written
+                 430     ; together with a target address for final storage in the main memory map.
+                 431     ;
+                 432     ; The DS2432 provides an initial confirmation of the write by returning a 16-bit CRC
+                 433     ; value which KCPSM3 tests. The CRC is computed based on the command, address and
+                 434     ; data transmitted (11 bytes). To achieve this, all bytes transmitted to the DS2432
+                 435     ; are recorded in KCPSM3 scratch pad memory in ascending locations starting at
+                 436     ; the location defined by constant 'command_start'.
+                 437     ;
+                 438     ; This routine prompts the user to enter the 16-bit target address is to be loaded
+                 439     ; into the target address registers TA2 and TA1 in the DS2432 device. Note that only
+                 440     ; address values below 0090 hex are valid. If the address is too high, then the
+                 441     ; DS2432 aborts the command and this routine will too.
+                 442     ;
+                 443     ; Also note that the address will be forced internally to the DS2432 to match an
+                 444     ; 8-byte boundary address in which the least significant 3-bits are reset to '000'
+                 445     ; regardless of the address provided. The CRC still reflects the transmitted address.
+                 446     ;
+                 447     ; After providing a valid address, the routine then prompts the user to enter
+                 448     ; 8 bytes of data which are written to the DS2432.
+                 449     ;
+                 450     ;
+                 451     ;
+06A 00E08        452     write_scratchpad_command: LOAD          se, #command_start      ;pointer to memory
+06B 0030F        453                             LOAD            s3, #0x0f               ;write scratchpad memory Command
+                 454                             STORE           s3, @se                 ;record command sequence
+E: instruction not supported on the this device: STORE sX, sY.
+06C 04E01        455                             ADD             se, #0x01               ;increment pointer
+06D 08361        456                             CALL            write_byte_slow         ;transmit command
+W: value out of range: 0x161, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x61.
+06E 08364        457     wsc_addr_loop:          CALL            send_address            ;obtain 16-bit address 0000 to FFFF in [s5,s4]
+W: value out of range: 0x364, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x64.
+06F 08319        458                             CALL            obtain_8bits
+W: value out of range: 0x219, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x19.
+070 09986        459                             JUMP            c, wsc_addr_loop        ;bad input address
+071 0C500        460                             LOAD            s5, s0
+072 08319        461                             CALL            obtain_8bits
+W: value out of range: 0x219, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x19.
+073 09986        462                             JUMP            c, wsc_addr_loop        ;bad input address
+074 0C400        463                             LOAD            s4, s0
+075 0C340        464                             LOAD            s3, s4                  ;transmit target address TA1 (LS-Byte)
+                 465                             STORE           s3, @se                 ;record command sequence
+E: instruction not supported on the this device: STORE sX, sY.
+076 04E01        466                             ADD             se, #0x01               ;increment pointer
+077 08361        467                             CALL            write_byte_slow
+W: value out of range: 0x161, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x61.
+078 0C350        468                             LOAD            s3, s5                  ;transmit target address TA2 (MS-Byte)
+                 469                             STORE           s3, @se                 ;record command sequence
+E: instruction not supported on the this device: STORE sX, sY.
+079 04E01        470                             ADD             se, #0x01               ;increment pointer
+07A 08361        471                             CALL            write_byte_slow
+W: value out of range: 0x161, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x61.
+                 472                             COMPARE         s5, #0x00               ;check address less than 0090 hex
+E: instruction not supported on the this device: COMPARE sX, kk.
+07B 095C2        473                             JUMP            nz, end_write_scratchpad ;DS2432 aborts command and so
+                 474                             COMPARE         s4, #0x90               ;no need to read data bytes.
+E: instruction not supported on the this device: COMPARE sX, kk.
+07C 09DC2        475                             JUMP            nc, end_write_scratchpad
+07D 00400        476                             LOAD            s4, #0x00               ;initialise byte counter
+07E 08374        477     wsc_data_loop:          CALL            send_data               ;obtain a byte of data
+W: value out of range: 0x374, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x74.
+07F 0CF40        478                             LOAD            uart_data, s4           ;display which byte requested
+080 04F30        479                             ADD             uart_data, #character_0 ;convert to ASCII
+081 083B8        480                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+082 08371        481                             CALL            send_equals
+W: value out of range: 0x371, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x71.
+083 08319        482                             CALL            obtain_8bits
+W: value out of range: 0x219, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x19.
+084 0999A        483                             JUMP            c, wsc_data_loop        ;bad input data
+085 0C300        484                             LOAD            s3, s0                  ;transmit byte
+                 485                             STORE           s3, @se                 ;record command sequence
+E: instruction not supported on the this device: STORE sX, sY.
+086 04E01        486                             ADD             se, #0x01               ;increment pointer
+087 08361        487                             CALL            write_byte_slow
+W: value out of range: 0x161, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x61.
+088 04401        488                             ADD             s4, #0x01               ;count bytes
+                 489                             COMPARE         s4, #0x08
+E: instruction not supported on the this device: COMPARE sX, kk.
+089 0959A        490                             JUMP            nz, wsc_data_loop
+08A 08382        491                             CALL            read_byte_slow          ;read back the 16-bit CRC into [s5,s4]
+W: value out of range: 0x182, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x82.
+08B 0C430        492                             LOAD            s4, s3
+08C 08382        493                             CALL            read_byte_slow
+W: value out of range: 0x182, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x82.
+08D 0C530        494                             LOAD            s5, s3
+                 495                             STORE           s4, @se                 ;record command sequence
+E: instruction not supported on the this device: STORE sX, sY.
+08E 04E01        496                             ADD             se, #0x01               ;increment pointer
+                 497                             STORE           s5, @se                 ;record command sequence
+E: instruction not supported on the this device: STORE sX, sY.
+08F 0831F        498                             CALL            send_cr
+W: value out of range: 0x21f, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x1f.
+090 0839C        499                             CALL            send_crc                ;'CRC=' to display CRC value
+W: value out of range: 0x39c, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x9c.
+091 0C050        500                             LOAD            s0, s5
+092 083EE        501                             CALL            send_hex_byte
+W: value out of range: 0x1ee, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xee.
+093 0C040        502                             LOAD            s0, s4
+094 083EE        503                             CALL            send_hex_byte
+W: value out of range: 0x1ee, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xee.
+095 0831F        504                             CALL            send_cr
+W: value out of range: 0x21f, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x1f.
+096 0020B        505                             LOAD            s2, #0x0b               ;11 (0B hex) bytes transmitted in this command
+097 0832C        506                             CALL            compute_crc16           ;compute CRC value in [s1,s0]
+W: value out of range: 0x12c, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x2c.
+                 507                             FETCH           s5, @se                 ;compare with received value
+E: instruction not supported on the this device: FETCH sX, sY.
+098 06E01        508                             SUB             se, #0x01
+                 509                             FETCH           s4, @se                 ;compare with received value
+E: instruction not supported on the this device: FETCH sX, sY.
+                 510                             COMPARE         s5, s1
+E: instruction not supported on the this device: COMPARE sX, sY.
+099 095C1        511                             JUMP            nz, wsc_crc16_fail
+                 512                             COMPARE         s4, s0
+E: instruction not supported on the this device: COMPARE sX, sY.
+09A 095C1        513                             JUMP            nz, wsc_crc16_fail
+09B 08345        514                             CALL            send_pass
+W: value out of range: 0x345, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x45.
+09C 08103        515                             JUMP            reset_menu              ;needs master reset next
+09D 0834D        516     wsc_crc16_fail:         CALL            send_fail
+W: value out of range: 0x34d, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x4d.
+09E 08103        517     end_write_scratchpad:   JUMP            reset_menu              ;needs master reset next
+                 518     ;
+                 519     ;
+                 520     ;
+                 521     ;**************************************************************************************
+                 522     ; Write Byte Command.
+                 523     ;**************************************************************************************
+                 524     ;
+                 525     ; This routine simply allows you to specify any byte and write it to the DS2432 device.
+                 526     ; Apart from checking that the value is in the range 00 to FF hex, there is no checking
+                 527     ; of the meaning of the value to the DS2432 device and all attempts to track the
+                 528     ; state machine will be lost.
+                 529     ;
+                 530     ;
+09F 0831F        531     write_byte_command:     CALL            send_cr
+W: value out of range: 0x21f, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x1f.
+0A0 0831F        532                             CALL            send_byte               ;obtain a byte of data
+W: value out of range: 0x31f, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x1f.
+0A1 08371        533                             CALL            send_equals
+W: value out of range: 0x371, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x71.
+0A2 08319        534                             CALL            obtain_8bits
+W: value out of range: 0x219, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x19.
+0A3 099C3        535                             JUMP            c, write_byte_command   ;bad input data
+0A4 0C300        536                             LOAD            s3, s0                  ;transmit byte
+0A5 08361        537                             CALL            write_byte_slow         ;transmit byte
+W: value out of range: 0x161, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x61.
+0A6 083C9        538                             CALL            send_ok
+W: value out of range: 0x2c9, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xc9.
+0A7 08120        539                             JUMP            ds2432_menu             ;remain in memory and function menu
+                 540     ;
+                 541     ;
+                 542     ;
+                 543     ;**************************************************************************************
+                 544     ; Read Byte Command.
+                 545     ;**************************************************************************************
+                 546     ;
+                 547     ; This routine will attempt to read a single byte from the DS2432 device.
+                 548     ; The results will be displayed on the terminal. There is no checking of the meaning
+                 549     ; of the value received from the DS2432 device and all attempts to track the
+                 550     ; state machine will be lost.
+                 551     ;
+                 552     ;
+0A8 0831F        553     read_byte_command:      CALL            send_cr
+W: value out of range: 0x21f, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x1f.
+0A9 0831F        554                             CALL            send_byte               ;obtain a byte of data
+W: value out of range: 0x31f, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x1f.
+0AA 08371        555                             CALL            send_equals
+W: value out of range: 0x371, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x71.
+0AB 08382        556                             CALL            read_byte_slow          ;receive byte
+W: value out of range: 0x182, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x82.
+0AC 0C030        557                             LOAD            s0, s3                  ;display value
+0AD 083EE        558                             CALL            send_hex_byte
+W: value out of range: 0x1ee, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xee.
+0AE 083C9        559                             CALL            send_ok
+W: value out of range: 0x2c9, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xc9.
+0AF 08120        560                             JUMP            ds2432_menu             ;remain in memory and function menu
+                 561     ;
+                 562     ;
+                 563     ;
+                 564     ;
+                 565     ;**************************************************************************************
+                 566     ; DS2432 Read Scratchpad Memory Command.
+                 567     ;**************************************************************************************
+                 568     ;
+                 569     ; The read scratchpad memory command (AA hex) allows the 8-bytes of data previously
+                 570     ; to be written into the scratchpad memory to be read back for verification together with
+                 571     ; the target address, a transfer status register and a 16-bit CRC value.
+                 572     ;
+                 573     ; The 16-bit CRC is formed of the command byte, address TA1 and TA2, E/S byte and 8 data
+                 574     ; bytes as transmitted (12 bytes). These may not be the same as the values provided
+                 575     ; during a previous write to scratchpad memory. All these bytes are recorded in KCPSM3
+                 576     ; scratch pad memory in ascending locations starting at the location defined by
+                 577     ; constant 'command_start'.
+                 578     ;
+                 579     ;
+0B0 00E08        580     read_scratchpad_command: LOAD           se, #command_start      ;pointer to memory
+0B1 003AA        581                             LOAD            s3, #0xaa               ;read scratchpad memory Command
+                 582                             STORE           s3, @se                 ;record command sequence
+E: instruction not supported on the this device: STORE sX, sY.
+0B2 04E01        583                             ADD             se, #0x01               ;increment pointer
+0B3 08361        584                             CALL            write_byte_slow         ;transmit command
+W: value out of range: 0x161, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x61.
+0B4 08364        585                             CALL            send_address            ;display 'Address='
+W: value out of range: 0x364, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x64.
+0B5 08382        586                             CALL            read_byte_slow          ;read address into [s5,s4]
+W: value out of range: 0x182, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x82.
+0B6 0C430        587                             LOAD            s4, s3
+0B7 08382        588                             CALL            read_byte_slow
+W: value out of range: 0x182, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x82.
+0B8 0C530        589                             LOAD            s5, s3
+                 590                             STORE           s4, @se                 ;record sequence
+E: instruction not supported on the this device: STORE sX, sY.
+0B9 04E01        591                             ADD             se, #0x01               ;increment pointer
+                 592                             STORE           s5, @se                 ;record sequence
+E: instruction not supported on the this device: STORE sX, sY.
+0BA 04E01        593                             ADD             se, #0x01               ;increment pointer
+0BB 0C050        594                             LOAD            s0, s5                  ;display address
+0BC 083EE        595                             CALL            send_hex_byte
+W: value out of range: 0x1ee, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xee.
+0BD 0C040        596                             LOAD            s0, s4
+0BE 083EE        597                             CALL            send_hex_byte
+W: value out of range: 0x1ee, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xee.
+0BF 0837E        598                             CALL            send_es                 ;display 'E/S='
+W: value out of range: 0x37e, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x7e.
+0C0 08382        599                             CALL            read_byte_slow          ;read E/S register
+W: value out of range: 0x182, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x82.
+                 600                             STORE           s3, @se                 ;record sequence
+E: instruction not supported on the this device: STORE sX, sY.
+0C1 04E01        601                             ADD             se, #0x01               ;increment pointer
+0C2 0C030        602                             LOAD            s0, s3                  ;display value
+0C3 083EE        603                             CALL            send_hex_byte
+W: value out of range: 0x1ee, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xee.
+0C4 08374        604                             CALL            send_data               ;display 'Data='
+W: value out of range: 0x374, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x74.
+0C5 08371        605                             CALL            send_equals
+W: value out of range: 0x371, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x71.
+0C6 00408        606                             LOAD            s4, #0x08               ;8 bytes to read
+0C7 08322        607     rsc_loop:               CALL            send_space
+W: value out of range: 0x222, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x22.
+0C8 08382        608                             CALL            read_byte_slow          ;read data byte
+W: value out of range: 0x182, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x82.
+                 609                             STORE           s3, @se                 ;record sequence
+E: instruction not supported on the this device: STORE sX, sY.
+0C9 04E01        610                             ADD             se, #0x01               ;increment pointer
+0CA 0C030        611                             LOAD            s0, s3                  ;display value
+0CB 083EE        612                             CALL            send_hex_byte
+W: value out of range: 0x1ee, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xee.
+0CC 06401        613                             SUB             s4, #0x01               ;count bytes
+0CD 095EF        614                             JUMP            nz, rsc_loop
+0CE 08382        615                             CALL            read_byte_slow          ;read 16-bit CRC into [s5,s4]
+W: value out of range: 0x182, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x82.
+0CF 0C430        616                             LOAD            s4, s3
+0D0 08382        617                             CALL            read_byte_slow
+W: value out of range: 0x182, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x82.
+0D1 0C530        618                             LOAD            s5, s3
+                 619                             STORE           s4, @se                 ;record command sequence
+E: instruction not supported on the this device: STORE sX, sY.
+0D2 04E01        620                             ADD             se, #0x01               ;increment pointer
+                 621                             STORE           s5, @se                 ;record command sequence
+E: instruction not supported on the this device: STORE sX, sY.
+0D3 0831F        622                             CALL            send_cr
+W: value out of range: 0x21f, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x1f.
+0D4 0839C        623                             CALL            send_crc                ;'CRC=' to display CRC value
+W: value out of range: 0x39c, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x9c.
+0D5 0C050        624                             LOAD            s0, s5
+0D6 083EE        625                             CALL            send_hex_byte
+W: value out of range: 0x1ee, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xee.
+0D7 0C040        626                             LOAD            s0, s4
+0D8 083EE        627                             CALL            send_hex_byte
+W: value out of range: 0x1ee, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xee.
+0D9 0831F        628                             CALL            send_cr
+W: value out of range: 0x21f, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x1f.
+0DA 0020C        629                             LOAD            s2, #0x0c               ;12 (0C hex) bytes in this command
+0DB 0832C        630                             CALL            compute_crc16           ;compute CRC value in [s1,s0]
+W: value out of range: 0x12c, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x2c.
+                 631                             FETCH           s5, @se                 ;compare with received value
+E: instruction not supported on the this device: FETCH sX, sY.
+0DC 06E01        632                             SUB             se, #0x01
+                 633                             FETCH           s4, @se                 ;compare with received value
+E: instruction not supported on the this device: FETCH sX, sY.
+                 634                             COMPARE         s5, s1
+E: instruction not supported on the this device: COMPARE sX, sY.
+0DD 09510        635                             JUMP            nz, rsc_crc16_fail
+W: value out of range: 0x110, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x10.
+                 636                             COMPARE         s4, s0
+E: instruction not supported on the this device: COMPARE sX, sY.
+0DE 09510        637                             JUMP            nz, rsc_crc16_fail
+W: value out of range: 0x110, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x10.
+0DF 08345        638                             CALL            send_pass
+W: value out of range: 0x345, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x45.
+0E0 08103        639                             JUMP            reset_menu              ;needs master reset next
+0E1 0834D        640     rsc_crc16_fail:         CALL            send_fail
+W: value out of range: 0x34d, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x4d.
+0E2 08103        641                             JUMP            reset_menu              ;needs master reset next
+                 642     ;
+                 643     ;
+                 644     ;
+                 645     ;**************************************************************************************
+                 646     ; Compute 8-bit CRC used by DS2432.
+                 647     ;**************************************************************************************
+                 648     ;
+                 649     ; The DS2432 computes an 8-bit CRC using the polynomial X8 + X5 + X4 + 1.
+                 650     ; See the DS2432 data sheet for full details.
+                 651     ;
+                 652     ; Test input value of value 00 00 00 01 B8 1C 02
+                 653     ; should produce CRC=A2.
+                 654     ;
+                 655     ; This routine computes the same CRC based on the values stored in the KCPSM3
+                 656     ; scratch pad memory by the read ROM command. The result is returned in register s0.
+                 657     ;
+                 658     ; Registers used s0,s1,s2,s3,s4,s5,s6,s7,s8,s9
+                 659     ;
+                 660     ;
+                 661     ;Start by loading family code and serial number (56-bits) into
+                 662     ;register set [s9,s8,s7,s6,s5,s4,s3] so they can be shifted out
+                 663     ;LSB first.
+                 664     ;
+  00112          665     compute_crc8:           FETCH           s3, family_code
+E: instruction not supported on the this device: FETCH sX, ss.
+                 666                             FETCH           s4, serial_number0
+E: instruction not supported on the this device: FETCH sX, ss.
+                 667                             FETCH           s5, serial_number1
+E: instruction not supported on the this device: FETCH sX, ss.
+                 668                             FETCH           s6, serial_number2
+E: instruction not supported on the this device: FETCH sX, ss.
+                 669                             FETCH           s7, serial_number3
+E: instruction not supported on the this device: FETCH sX, ss.
+                 670                             FETCH           s8, serial_number4
+E: instruction not supported on the this device: FETCH sX, ss.
+                 671                             FETCH           s9, serial_number5
+E: instruction not supported on the this device: FETCH sX, ss.
+0E3 00238        672                             LOAD            s2, #0x38               ;56 bits to shift (38 hex)
+0E4 00000        673                             LOAD            s0, #0x00               ;clear CRC value
+0E5 0C100        674     crc8_loop:              LOAD            s1, s0                  ;copy current CRC value
+0E6 0C133        675                             XOR             s1, s3                  ;Need to know LSB XOR next input bit
+                 676                             TEST            s1, #0x01               ;test result of XOR in LSB
+E: instruction not supported on the this device: TEST sX, kk.
+0E7 09D20        677                             JUMP            nc, crc8_shift
+W: value out of range: 0x120, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x20.
+0E8 03018        678                             XOR             s0, #0x18               ;compliment bits 3 and 4 of CRC
+0E9 0D10E        679     crc8_shift:             SR0             s1                      ;Carry gets LSB XOR next input bit
+0EA 0D008        680                             SRA             s0                      ;shift Carry into MSB to form new CRC value
+0EB 0D90E        681                             SR0             s9                      ;shift input value
+0EC 0D808        682                             SRA             s8
+0ED 0D708        683                             SRA             s7
+0EE 0D608        684                             SRA             s6
+0EF 0D508        685                             SRA             s5
+0F0 0D408        686                             SRA             s4
+0F1 0D308        687                             SRA             s3
+0F2 06201        688                             SUB             s2, #0x01               ;count iterations
+0F3 0951B        689                             JUMP            nz, crc8_loop
+W: value out of range: 0x11b, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x1b.
+0F4 08080        690                             RETURN
+                 691     ;
+                 692     ;
+                 693     ;
+                 694     ;**************************************************************************************
+                 695     ; Compute 16-bit CRC used by DS2432.
+                 696     ;**************************************************************************************
+                 697     ;
+                 698     ; The DS2432 computes a 16-bit CRC using the polynomial X16 + X15 + X2 + 1.
+                 699     ; See the DS2432 data sheet for full details.
+                 700     ;
+                 701     ; Note that the value formed in the CRC shift register is inverted to give the
+                 702     ; same value as that sent from the DS2432 during scratchpad write, scratchpad read
+                 703     ; and read auth page commands.
+                 704     ;
+                 705     ; This routine computes the CRC based on the values stored in the KCPSM3
+                 706     ; scratch pad memory starting at address defined by constant 'command_start'.
+                 707     ; register 's2' must specify how many bytes are to be used in the calculation
+                 708     ; and the CRC is returned in register pair [s1,s0] once it has been inverted.
+                 709     ;
+                 710     ; Registers used s0,s1,s2,s3,s4,s5,s6
+                 711     ;
+                 712     ;
+                 713     ;Start by loading family code and serial number (56-bits) into
+                 714     ;register set [s9,s8,s7,s6,s5,s4,s3] so they can be shifted out
+                 715     ;LSB first.
+                 716     ;
+0F5 00508        717     compute_crc16:          LOAD            s5, #command_start      ;memory pointer
+0F6 00000        718                             LOAD            s0, #0x00               ;clear CRC value
+0F7 00100        719                             LOAD            s1, #0x00
+  0012F          720     crc16_byte_loop:        FETCH           s4, @s5                 ;read input byte
+E: instruction not supported on the this device: FETCH sX, sY.
+0F8 00308        721                             LOAD            s3, #0x08               ;8-bits to shift
+0F9 0C600        722     crc16_bit_loop:         LOAD            s6, s0                  ;copy current CRC value
+0FA 0C643        723                             XOR             s6, s4                  ;Need to know LSB XOR next input bit
+                 724                             TEST            s6, #0x01               ;test result of XOR in LSB
+E: instruction not supported on the this device: TEST sX, kk.
+0FB 09D37        725                             JUMP            nc, crc16_shift
+W: value out of range: 0x137, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x37.
+0FC 03002        726                             XOR             s0, #0x02               ;compliment bit 1 of CRC
+0FD 03140        727                             XOR             s1, #0x40               ;compliment bit 14 of CRC
+0FE 0D60E        728     crc16_shift:            SR0             s6                      ;Carry gets LSB XOR next input bit
+0FF 0D108        729                             SRA             s1                      ;shift Carry into MSB to form new CRC value
+100 0D008        730                             SRA             s0
+101 0D40E        731                             SR0             s4                      ;shift input value
+102 06301        732                             SUB             s3, #0x01               ;count bits
+103 09531        733                             JUMP            nz, crc16_bit_loop      ;next bit
+W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
+104 04501        734                             ADD             s5, #0x01               ;increment memory pointer
+105 06201        735                             SUB             s2, #0x01               ;count bytes
+106 0952F        736                             JUMP            nz, crc16_byte_loop     ;next byte
+W: value out of range: 0x12f, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x2f.
+107 030FF        737                             XOR             s0, #0xff               ;1's complement of CRC value
+108 031FF        738                             XOR             s1, #0xff
+109 08080        739                             RETURN
+                 740     ;
+                 741     ;
+                 742     ;**************************************************************************************
+                 743     ; Initialise the DS2432 1-wire interface.
+                 744     ;**************************************************************************************
+                 745     ;
+                 746     ; The 1-wire interface is an open-collector communication scheme employing an external
+                 747     ; pull-up resistor of 680 Ohms.
+                 748     ;
+                 749     ; The hardware section of this translates the one bit signal from PicoBlaze such that
+                 750     ; when this signal is Low the output is driven Low, but when it is High, it turns off
+                 751     ; the output buffer and the signal is pulled High externally.
+                 752     ;
+                 753     ; This initialisation routine simply ensures that the line is High after configuration.
+                 754     ; It is vital that DS_wire is generally in the High state because it is the only way in
+                 755     ; which the DS2432 device derives power to operate.
+                 756     ;
+                 757     ; Registers used s0
+                 758     ;
+10A 00001        759     ds_wire_init:           LOAD            s0, #ds_wire
+10B 0E008        760                             OUTPUT          s0, ds_wire_out_port
+10C 08080        761                             RETURN
+                 762     ;
+                 763     ;
+                 764     ;**************************************************************************************
+                 765     ; DS2432 initialisation - Regular Speed.
+                 766     ;**************************************************************************************
+                 767     ;
+                 768     ; The initialisation sequence must be performed before any communication can be
+                 769     ; made with the DS2432 device. This involves the application of an active Low master
+                 770     ; reset pulse.
+                 771     ;
+                 772     ; The regular (slow) speed communication is established by transmitting an active
+                 773     ; Low reset pulse for a duration of at least 480us. This design generates a 500us pulse.
+                 774     ;
+                 775     ; The DS2432 acknowledges the reset and the setting of regular mode by generating an
+                 776     ; active Low 'Rx Presence Pulse'. This presence pulse can start 15 to 60us after the
+                 777     ; reset pulse and will end between 120 and 300us after the reset pulse.
+                 778     ;
+                 779     ; To confirm that regular mode has been set, this routine confirms that the presence pulse
+                 780     ; is active only after 60us have elapsed since the reset pulse. This ensures that the
+                 781     ; faster presence pulse of overdrive mode can not be detected.
+                 782     ;
+                 783     ; The carry flag will be set if no valid presence pulse was received (wire remained High) and
+                 784     ; can be used to indicate an initialisation failure or success.
+                 785     ;
+                 786     ; The routine only completes 300us after the presence pulse to ensure the DS2432 has
+                 787     ; completed the presence pulse and is ready for the first operation.
+                 788     ;
+                 789     ; Registers used s0,s1,s2
+                 790     ;
+10D 00000        791     ds_init_regular_mode:   LOAD            s0, #0x00               ;transmit reset pulse
+10E 0E008        792                             OUTPUT          s0, ds_wire_out_port
+                 793     ;Delay of 500us is equivalent to 12500 instructions at 50MHz.
+                 794     ;This delay loop is formed of 28 instructions requiring 446 repetitions.
+10F 00201        795                             LOAD            s2, #0x01               ;[s3,s2]=445 decimal (01BD hex)
+110 001BD        796                             LOAD            s1, #0xbd
+111 0839A        797     rm_wait_500us:          CALL            delay_1us               ;25 instructions including CALL
+W: value out of range: 0x19a, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x9a.
+112 06101        798                             SUB             s1, #0x01               ;decrement delay counter
+113 07200        799                             SUBCY           s2, #0x00
+114 09D4A        800                             JUMP            nc, rm_wait_500us       ;repeat until -1
+W: value out of range: 0x14a, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x4a.
+115 00001        801                             LOAD            s0, #0x01               ;end of regular reset pulse
+116 0E008        802                             OUTPUT          s0, ds_wire_out_port
+                 803     ;Delay of 60us is equivalent to 1500 instructions at 50MHz.
+                 804     ;This delay and is formed of 27 instructions requiring 56 repetitions.
+117 00138        805                             LOAD            s1, #0x38               ;56 (38 hex)
+118 0839A        806     rm_wait_60us:           CALL            delay_1us               ;25 instructions including CALL
+W: value out of range: 0x19a, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x9a.
+119 06101        807                             SUB             s1, #0x01               ;decrement delay counter
+11A 09551        808                             JUMP            nz, rm_wait_60us        ;repeat until zero
+W: value out of range: 0x151, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x51.
+                 809     ;The DS_wire is now checked at approximately 1us intervals for the next 240us looking
+                 810     ;to detect an active Low presence pulse. The 240us is equivalent to 6000 instructions
+                 811     ;at 50MHz and this polling loop is formed of 33 instructions requiring 182 repetitions.
+11B 00201        812                             LOAD            s2, #0x01               ;set bit which will be reset by a presence pulse
+11C 001B6        813                             LOAD            s1, #0xb6               ;182 (B6 hex)
+11D 0839A        814     rm_poll_240us:          CALL            delay_1us               ;25 instructions including CALL
+W: value out of range: 0x19a, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x9a.
+11E 0835D        815                             CALL            read_ds_wire            ;read wire - 5 instructions including CALL
+W: value out of range: 0x15d, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x5d.
+11F 0C201        816                             AND             s2, s0                  ;clear flag if DS_wire was Low
+120 06101        817                             SUB             s1, #0x01               ;decrement delay counter
+121 09556        818                             JUMP            nz, rm_poll_240us       ;repeat until zero
+W: value out of range: 0x156, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x56.
+                 819                             TEST            s2, #0x01               ;set carry flag if no pulse detected
+E: instruction not supported on the this device: TEST sX, kk.
+122 08080        820                             RETURN
+                 821     ;
+                 822     ;
+                 823     ;**************************************************************************************
+                 824     ; Read the DS_wire
+                 825     ;**************************************************************************************
+                 826     ;
+                 827     ; The DS_wire signal is read and returned in bit0 of register 's0'.
+                 828     ; Additionally the carry flag is set if the signal is High and reset if Low
+                 829     ;
+                 830     ; Registers used s0
+                 831     ;
+123 0A002        832     read_ds_wire:           INPUT           s0, ds_wire_in_port
+124 01001        833                             AND             s0, #ds_wire            ;ensure only bit0 is active
+                 834                             TEST            s0, #ds_wire            ;set carry flag if DS_wire is High
+E: instruction not supported on the this device: TEST sX, kk.
+125 08080        835                             RETURN
+                 836     ;
+                 837     ;
+                 838     ;
+                 839     ;**************************************************************************************
+                 840     ; Write a byte to DS2432 in regular speed mode.
+                 841     ;**************************************************************************************
+                 842     ;
+                 843     ; Bytes are written to the DS2432 with LSB first.
+                 844     ;
+                 845     ; The byte to be written should be provided in register 's3' and this will be preserved.
+                 846     ;
+                 847     ; Registers used s0,s1,s2,s3
+                 848     ;
+126 00208        849     write_byte_slow:        LOAD            s2, #0x08               ;8 bits to transmit
+127 0D30C        850     wbs_loop:               RR              s3                      ;test next bit LSB first
+128 09966        851                             JUMP            c, wbs1                 ;transmit '0' or '1'
+W: value out of range: 0x166, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x66.
+129 0836A        852                             CALL            write_low_slow
+W: value out of range: 0x16a, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x6a.
+12A 08167        853                             JUMP            next_slow_bit
+W: value out of range: 0x167, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x67.
+12B 08375        854     wbs1:                   CALL            write_high_slow
+W: value out of range: 0x175, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x75.
+12C 06201        855     next_slow_bit:          SUB             s2, #0x01               ;count bits
+12D 09562        856                             JUMP            nz, wbs_loop            ;repeat until 8-bits transmitted
+W: value out of range: 0x162, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x62.
+12E 08080        857                             RETURN
+                 858     ;
+                 859     ;
+                 860     ;
+                 861     ;**************************************************************************************
+                 862     ; Write a '0' to DS_wire in regular speed mode.
+                 863     ;**************************************************************************************
+                 864     ;
+                 865     ; To write a '0' to the DS_wire the signal must be Low for 60 to 120us. This design
+                 866     ; generates a 78us active Low pulse.
+                 867     ;
+                 868     ; The DS2432 then requires at least 1us of recovery time for which this routine
+                 869     ; provides a 2us delay such that the entire write Low process (slot time) is 80us.
+                 870     ; A recovery time of 1us was also found to be marginal in practice probably due
+                 871     ; to the rise time of the DS_wire via the external pull up resistor.
+                 872     ;
+                 873     ; Registers used s0,s1
+                 874     ;
+12F 00000        875     write_low_slow:         LOAD            s0, #0x00               ;transmit Low pulse
+130 0E008        876                             OUTPUT          s0, ds_wire_out_port
+                 877     ;Delay of 78us is equivalent to 1950 instructions at 50MHz.
+                 878     ;This delay loop is formed of 27 instructions requiring 72 repetitions.
+131 00148        879                             LOAD            s1, #0x48               ;72 (48 hex)
+132 0839A        880     wls_wait_78us:          CALL            delay_1us               ;25 instructions including CALL
+W: value out of range: 0x19a, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x9a.
+133 06101        881                             SUB             s1, #0x01               ;decrement delay counter
+134 0956D        882                             JUMP            nz, wls_wait_78us       ;repeat until zero
+W: value out of range: 0x16d, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x6d.
+135 00001        883                             LOAD            s0, #0x01               ;end of Low pulse
+136 0E008        884                             OUTPUT          s0, ds_wire_out_port
+137 0839A        885                             CALL            delay_1us               ;2us recovery time
+W: value out of range: 0x19a, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x9a.
+138 0839A        886                             CALL            delay_1us
+W: value out of range: 0x19a, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x9a.
+139 08080        887                             RETURN
+                 888     ;
+                 889     ;
+                 890     ;**************************************************************************************
+                 891     ; Write a '1' to DS_wire in regular speed mode.
+                 892     ;**************************************************************************************
+                 893     ;
+                 894     ; To write a '1' to the DS_wire the signal must be Low for 1 to 15us to instigate the
+                 895     ; write of the data. This design generates an 8us active Low pulse for this purpose.
+                 896     ;
+                 897     ; Then the output must be High for 53 to 114us to provide the '1' for the DS2432 to
+                 898     ; read and then provide recovery time. This design implements a 72us delay such that
+                 899     ; the entire write High process (slot time) is 80us
+                 900     ;
+                 901     ; Registers used s0,s1
+                 902     ;
+13A 00000        903     write_high_slow:        LOAD            s0, #0x00               ;transmit Low pulse
+13B 0E008        904                             OUTPUT          s0, ds_wire_out_port
+                 905     ;Delay of 8us is equivalent to 200 instructions at 50MHz.
+                 906     ;This delay loop is formed of 27 instructions requiring 8 repetitions.
+13C 00108        907                             LOAD            s1, #0x08               ;8 (08 hex)
+13D 0839A        908     whs_wait_8us:           CALL            delay_1us               ;25 instructions including CALL
+W: value out of range: 0x19a, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x9a.
+13E 06101        909                             SUB             s1, #0x01               ;decrement delay counter
+13F 09578        910                             JUMP            nz, whs_wait_8us        ;repeat until zero
+W: value out of range: 0x178, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x78.
+140 00001        911                             LOAD            s0, #0x01               ;end of Low pulse
+141 0E008        912                             OUTPUT          s0, ds_wire_out_port
+                 913     ;Delay of 72us is equivalent to 1800 instructions at 50MHz.
+                 914     ;This delay loop is formed of 27 instructions requiring 67 repetitions.
+142 00143        915                             LOAD            s1, #0x43               ;67 (43 hex)
+143 0839A        916     whs_wait_72us:          CALL            delay_1us               ;25 instructions including CALL
+W: value out of range: 0x19a, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x9a.
+144 06101        917                             SUB             s1, #0x01               ;decrement delay counter
+145 0957E        918                             JUMP            nz, whs_wait_72us       ;repeat until zero
+W: value out of range: 0x17e, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x7e.
+146 08080        919                             RETURN
+                 920     ;
+                 921     ;
+                 922     ;
+                 923     ;**************************************************************************************
+                 924     ; Read a byte from DS2432 in regular speed mode.
+                 925     ;**************************************************************************************
+                 926     ;
+                 927     ; Bytes are read from the DS2432 with LSB first.
+                 928     ;
+                 929     ; The byte read will be returned in register 's3'.
+                 930     ;
+                 931     ; Registers used s0,s1,s2,s3
+                 932     ;
+147 00208        933     read_byte_slow:         LOAD            s2, #0x08               ;8 bits to receive
+148 08387        934     rbs_loop:               CALL            read_bit_slow           ;read next bit LSB first
+W: value out of range: 0x187, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x87.
+149 06201        935                             SUB             s2, #0x01               ;count bits
+14A 09583        936                             JUMP            nz, rbs_loop            ;repeat until 8-bits received
+W: value out of range: 0x183, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x83.
+14B 08080        937                             RETURN
+                 938     ;
+                 939     ;
+                 940     ;
+                 941     ;
+                 942     ;**************************************************************************************
+                 943     ; Read a data bit sent from the DS2432 in regular speed mode.
+                 944     ;**************************************************************************************
+                 945     ;
+                 946     ; To read a bit, PicoBlaze must initiate the processed with an active Low pulse of
+                 947     ; 1 to 15us. This design generates a 4us active Low pulse for this purpose.
+                 948     ;
+                 949     ; Then DS2432 responds to the Low pulse by diving DS_wire in two differet ways
+                 950     ; depending on the logic level it is trying to send back.
+                 951     ;
+                 952     ; For a logic '0' the DS2432 will drive the DS-wire Low for up to 15us after
+                 953     ; the start of the instigating pulse. Therefore PicoBlaze must read the DS-wire
+                 954     ; before this time has elapsed but only after it has itself released the wire.
+                 955     ;
+                 956     ; For a logic '1' the DS2432 will do nothing and hence the DS-wire will be pulled
+                 957     ; High by the external resistor after PicoBlaze has released the wire. PicoBlaze
+                 958     ; will sample the wire and detect the High level.
+                 959     ;
+                 960     ; In this design, PicoBlaze needs to detect the logic state of the wire after
+                 961     ; releasing the wire at 4us. Sampling the wire too quickly would not provide
+                 962     ; adequate time for a High signal to be formed by the pull up resistor. However, it
+                 963     ; must sample the wire before 15us have elapsed and any potential Low is removed.
+                 964     ; This design samples the wire at 12us which is 8us after the initiation pulse ends.
+                 965     ;
+                 966     ; A further delay of 68us is then allowed for the DS2432 to stop transmitting and
+                 967     ; to recover. This also mean that the entire read process (slot time) is 80us.
+                 968     ;
+                 969     ; The received data bit is SHIFTED into the MSB of register 's3'. In this way
+                 970     ; the reception of 8-bits will shift the first bit into the LSB position of 's3'.
+                 971     ;
+                 972     ; Registers used s0,s1,s3
+                 973     ;
+14C 00000        974     read_bit_slow:          LOAD            s0, #0x00               ;transmit Low pulse
+14D 0E008        975                             OUTPUT          s0, ds_wire_out_port
+                 976     ;Delay of 4us is equivalent to 100 instructions at 50MHz.
+                 977     ;This delay loop is formed of 27 instructions requiring 4 repetitions.
+14E 00104        978                             LOAD            s1, #0x04               ;4 (04 hex)
+14F 0839A        979     rbs_wait_4us:           CALL            delay_1us               ;25 instructions including CALL
+W: value out of range: 0x19a, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x9a.
+150 06101        980                             SUB             s1, #0x01               ;decrement delay counter
+151 0958A        981                             JUMP            nz, rbs_wait_4us        ;repeat until zero
+W: value out of range: 0x18a, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x8a.
+152 00001        982                             LOAD            s0, #0x01               ;end of Low pulse
+153 0E008        983                             OUTPUT          s0, ds_wire_out_port
+                 984     ;Delay of 8us is equivalent to 200 instructions at 50MHz.
+                 985     ;This delay loop is formed of 27 instructions requiring 8 repetitions.
+154 00108        986                             LOAD            s1, #0x08               ;8 (08 hex)
+155 0839A        987     rbs_wait_8us:           CALL            delay_1us               ;25 instructions including CALL
+W: value out of range: 0x19a, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x9a.
+156 06101        988                             SUB             s1, #0x01               ;decrement delay counter
+157 09590        989                             JUMP            nz, rbs_wait_8us        ;repeat until zero
+W: value out of range: 0x190, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x90.
+158 0835D        990                             CALL            read_ds_wire            ;sample wire (carry = state)
+W: value out of range: 0x15d, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x5d.
+159 0D308        991                             SRA             s3                      ;shift received bit into MSB of s3
+                 992     ;Delay of 68us is equivalent to 1700 instructions at 50MHz.
+                 993     ;This delay loop is formed of 27 instructions requiring 63 repetitions.
+15A 0013F        994                             LOAD            s1, #0x3f               ;63 (3F hex)
+15B 0839A        995     rbs_wait_68us:          CALL            delay_1us               ;25 instructions including CALL
+W: value out of range: 0x19a, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x9a.
+15C 06101        996                             SUB             s1, #0x01               ;decrement delay counter
+15D 09596        997                             JUMP            nz, rbs_wait_68us       ;repeat until zero
+W: value out of range: 0x196, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x96.
+15E 08080        998                             RETURN
+                 999     ;
+                1000     ;
+                1001     ;**************************************************************************************
+                1002     ; Software delay routines
+                1003     ;**************************************************************************************
+                1004     ;
+                1005     ; Delay of 1us.
+                1006     ;
+                1007     ; Constant value defines reflects the clock applied to KCPSM3. Every instruction
+                1008     ; executes in 2 clock cycles making the calculation highly predictable. The '6' in
+                1009     ; the following equation even allows for 'CALL delay_1us' instruction in the initiating code.
+                1010     ;
+                1011     ; delay_1us_constant =  (clock_rate - 6)/4       Where 'clock_rate' is in MHz
+                1012     ;
+                1013     ; Register used s0
+                1014     ;
+15F 0000B       1015     delay_1us:              LOAD            s0, #delay_1us_constant
+160 06001       1016     wait_1us:               SUB             s0, #0x01
+161 0959B       1017                             JUMP            nz, wait_1us
+W: value out of range: 0x19b, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x9b.
+162 08080       1018                             RETURN
+                1019     ;
+                1020     ; Delay of 40us.
+                1021     ;
+                1022     ; Registers used s0, s1
+                1023     ;
+163 00128       1024     delay_40us:             LOAD            s1, #0x28               ;40 x 1us = 40us
+164 0839A       1025     wait_40us:              CALL            delay_1us
+W: value out of range: 0x19a, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x9a.
+165 06101       1026                             SUB             s1, #0x01
+166 0959F       1027                             JUMP            nz, wait_40us
+W: value out of range: 0x19f, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x9f.
+167 08080       1028                             RETURN
+                1029     ;
+                1030     ;
+                1031     ; Delay of 1ms.
+                1032     ;
+                1033     ; Registers used s0, s1, s2
+                1034     ;
+168 00219       1035     delay_1ms:              LOAD            s2, #0x19               ;25 x 40us = 1ms
+169 0839E       1036     wait_1ms:               CALL            delay_40us
+W: value out of range: 0x19e, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x9e.
+16A 06201       1037                             SUB             s2, #0x01
+16B 095A4       1038                             JUMP            nz, wait_1ms
+W: value out of range: 0x1a4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xa4.
+16C 08080       1039                             RETURN
+                1040     ;
+                1041     ; Delay of 20ms.
+                1042     ;
+                1043     ; Registers used s0, s1, s2, s3
+                1044     ;
+16D 00314       1045     delay_20ms:             LOAD            s3, #0x14               ;20 x 1ms = 20ms
+16E 083A3       1046     wait_20ms:              CALL            delay_1ms
+W: value out of range: 0x1a3, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xa3.
+16F 06301       1047                             SUB             s3, #0x01
+170 095A9       1048                             JUMP            nz, wait_20ms
+W: value out of range: 0x1a9, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xa9.
+171 08080       1049                             RETURN
+                1050     ;
+                1051     ; Delay of approximately 1 second.
+                1052     ;
+                1053     ; Registers used s0, s1, s2, s3, s4
+                1054     ;
+172 00414       1055     delay_1s:               LOAD            s4, #0x14               ;50 x 20ms = 1000ms
+173 083A8       1056     wait_1s:                CALL            delay_20ms
+W: value out of range: 0x1a8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xa8.
+174 06401       1057                             SUB             s4, #0x01
+175 095AE       1058                             JUMP            nz, wait_1s
+W: value out of range: 0x1ae, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xae.
+176 08080       1059                             RETURN
+                1060     ;
+                1061     ;
+                1062     ;**************************************************************************************
+                1063     ; UART communication routines
+                1064     ;**************************************************************************************
+                1065     ;
+                1066     ; Read one character from the UART
+                1067     ;
+                1068     ; Character read will be returned in a register called 'UART_data'.
+                1069     ;
+                1070     ; The routine first tests the receiver FIFO buffer to see if data is present.
+                1071     ; If the FIFO is empty, the routine waits until there is a character to read.
+                1072     ; As this could take any amount of time the wait loop could include a call to a
+                1073     ; subroutine which performs a useful function.
+                1074     ;
+                1075     ;
+                1076     ; Registers used s0 and UART_data
+                1077     ;
+177 0A000       1078     read_from_uart:         INPUT           s0, status_port         ;test Rx_FIFO buffer
+                1079                             TEST            s0, #rx_data_present    ;wait if empty
+E: instruction not supported on the this device: TEST sX, kk.
+178 095B6       1080                             JUMP            nz, read_character
+W: value out of range: 0x1b6, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb6.
+179 081B2       1081                             JUMP            read_from_uart
+W: value out of range: 0x1b2, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb2.
+17A 0AF01       1082     read_character:         INPUT           uart_data, uart_read_port ;read from FIFO
+17B 08080       1083                             RETURN
+                1084     ;
+                1085     ;
+                1086     ;
+                1087     ; Transmit one character to the UART
+                1088     ;
+                1089     ; Character supplied in register called 'UART_data'.
+                1090     ;
+                1091     ; The routine first tests the transmit FIFO buffer to see if it is full.
+                1092     ; If the FIFO is full, then the routine waits until it there is space.
+                1093     ;
+                1094     ; Registers used s0
+                1095     ;
+17C 0A000       1096     send_to_uart:           INPUT           s0, status_port         ;test Tx_FIFO buffer
+                1097                             TEST            s0, #tx_full            ;wait if full
+E: instruction not supported on the this device: TEST sX, kk.
+17D 091BC       1098                             JUMP            z, uart_write
+W: value out of range: 0x1bc, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xbc.
+17E 081B8       1099                             JUMP            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+17F 0EF04       1100     uart_write:             OUTPUT          uart_data, uart_write_port
+180 08080       1101                             RETURN
+                1102     ;
+                1103     ;
+                1104     ;**************************************************************************************
+                1105     ; Useful ASCII conversion and handling routines
+                1106     ;**************************************************************************************
+                1107     ;
+                1108     ; Convert value provided in register s0 into ASCII characters
+                1109     ;
+                1110     ; The value provided must in the range 0 to 99 and will be converted into
+                1111     ; two ASCII characters.
+                1112     ;     The number of 'tens' will be represented by an ASCII character returned in register s1.
+                1113     ;     The number of 'units' will be represented by an ASCII character returned in register s0.
+                1114     ;
+                1115     ; The ASCII representations of '0' to '9' are 30 to 39 hexadecimal which is simply 30 hex added to
+                1116     ; the actual decimal value.
+                1117     ;
+                1118     ; Registers used s0 and s1.
+                1119     ;
+181 00130       1120     decimal_to_ascii:       LOAD            s1, #0x30               ;load 'tens' counter with ASCII for '0'
+182 04101       1121     test_for_ten:           ADD             s1, #0x01               ;increment 'tens' value
+183 0600A       1122                             SUB             s0, #0x0a               ;try to subtract 10 from the supplied value
+184 09DBF       1123                             JUMP            nc, test_for_ten        ;repeat if subtraction was possible without underflow.
+W: value out of range: 0x1bf, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xbf.
+185 06101       1124                             SUB             s1, #0x01               ;'tens' value one less ten due to underflow
+186 0403A       1125                             ADD             s0, #0x3a               ;restore units value (the remainder) and convert to ASCII
+187 08080       1126                             RETURN
+                1127     ;
+                1128     ;
+                1129     ;
+                1130     ; Convert character to upper case
+                1131     ;
+                1132     ; The character supplied in register s0.
+                1133     ; If the character is in the range 'a' to 'z', it is converted
+                1134     ; to the equivalent upper case character in the range 'A' to 'Z'.
+                1135     ; All other characters remain unchanged.
+                1136     ;
+                1137     ; Registers used s0.
+                1138     ;
+  001C5         1139     upper_case:             COMPARE         s0, #0x61               ;eliminate character codes below 'a' (61 hex)
+E: instruction not supported on the this device: COMPARE sX, kk.
+188 09880       1140                             RETURN          c
+                1141                             COMPARE         s0, #0x7b               ;eliminate character codes above 'z' (7A hex)
+E: instruction not supported on the this device: COMPARE sX, kk.
+189 09C80       1142                             RETURN          nc
+18A 010DF       1143                             AND             s0, #0xdf               ;mask bit5 to convert to upper case
+18B 08080       1144                             RETURN
+                1145     ;
+                1146     ;
+                1147     ; Convert character '0' to '9' to numerical value in range 0 to 9
+                1148     ;
+                1149     ; The character supplied in register s0. If the character is in the
+                1150     ; range '0' to '9', it is converted to the equivalent decimal value.
+                1151     ; Characters not in the range '0' to '9' are signified by the return
+                1152     ; with the CARRY flag set.
+                1153     ;
+                1154     ; Registers used s0.
+                1155     ;
+18C 040C6       1156     _1char_to_value:        ADD             s0, #0xc6               ;reject character codes above '9' (39 hex)
+18D 09880       1157                             RETURN          c                       ;carry flag is set
+18E 060F6       1158                             SUB             s0, #0xf6               ;reject character codes below '0' (30 hex)
+18F 08080       1159                             RETURN                                  ;carry is set if value not in range
+                1160     ;
+                1161     ;
+                1162     ; Determine the numerical value of a two character decimal string held in
+                1163     ; scratch pad memory such the result is in the range 0 to 99 (00 to 63 hex).
+                1164     ;
+                1165     ; The string must be stored in two consecutive memory locations and the
+                1166     ; location of the first (tens) character supplied in the s1 register.
+                1167     ; The result is provided in register s2. Strings not using characters in the
+                1168     ; range '0' to '9' are signified by the return with the CARRY flag set.
+                1169     ;
+                1170     ; Registers used s0, s1 and s2.
+                1171     ;
+  001CF         1172     _2char_to_value:        FETCH           s0, @s1                 ;read 'tens' character
+E: instruction not supported on the this device: FETCH sX, sY.
+190 083CB       1173                             CALL            _1char_to_value         ;convert to numerical value
+W: value out of range: 0x1cb, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xcb.
+191 09880       1174                             RETURN          c                       ;bad character - CARRY set
+192 0C200       1175                             LOAD            s2, s0
+193 0D206       1176                             SL0             s2                      ;multiply 'tens' value by 10 (0A hex)
+194 0D206       1177                             SL0             s2
+195 0C204       1178                             ADD             s2, s0
+196 0D206       1179                             SL0             s2
+197 04101       1180                             ADD             s1, #0x01               ;read 'units' character
+                1181                             FETCH           s0, @s1
+E: instruction not supported on the this device: FETCH sX, sY.
+198 083CB       1182                             CALL            _1char_to_value         ;convert to numerical value
+W: value out of range: 0x1cb, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xcb.
+199 09880       1183                             RETURN          c                       ;bad character - CARRY set
+19A 0C204       1184                             ADD             s2, s0                  ;add units to result and clear CARRY flag
+19B 08080       1185                             RETURN
+                1186     ;
+                1187     ;
+                1188     ; Convert hexadecimal value provided in register s0 into ASCII characters
+                1189     ;
+                1190     ; The value provided must can be any value in the range 00 to FF and will be converted into
+                1191     ; two ASCII characters.
+                1192     ;     The upper nibble will be represented by an ASCII character returned in register s2.
+                1193     ;     The lower nibble will be represented by an ASCII character returned in register s1.
+                1194     ;
+                1195     ; The ASCII representations of '0' to '9' are 30 to 39 hexadecimal which is simply 30 hex
+                1196     ; added to the actual decimal value. The ASCII representations of 'A' to 'F' are 41 to 46
+                1197     ; hexadecimal requiring a further addition of 07 to the 30 already added.
+                1198     ;
+                1199     ; Registers used s0, s1 and s2.
+                1200     ;
+19C 0C100       1201     hex_byte_to_ascii:      LOAD            s1, s0                  ;remember value supplied
+19D 0D00E       1202                             SR0             s0                      ;isolate upper nibble
+19E 0D00E       1203                             SR0             s0
+19F 0D00E       1204                             SR0             s0
+1A0 0D00E       1205                             SR0             s0
+1A1 083E9       1206                             CALL            hex_to_ascii            ;convert
+W: value out of range: 0x1e9, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xe9.
+1A2 0C200       1207                             LOAD            s2, s0                  ;upper nibble value in s2
+1A3 0C010       1208                             LOAD            s0, s1                  ;restore complete value
+1A4 0100F       1209                             AND             s0, #0x0f               ;isolate lower nibble
+1A5 083E9       1210                             CALL            hex_to_ascii            ;convert
+W: value out of range: 0x1e9, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xe9.
+1A6 0C100       1211                             LOAD            s1, s0                  ;lower nibble value in s1
+1A7 08080       1212                             RETURN
+                1213     ;
+                1214     ; Convert hexadecimal value provided in register s0 into ASCII character
+                1215     ;
+                1216     ;Register used s0
+                1217     ;
+1A8 0600A       1218     hex_to_ascii:           SUB             s0, #0x0a               ;test if value is in range 0 to 9
+1A9 099EC       1219                             JUMP            c, number_char
+W: value out of range: 0x1ec, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xec.
+1AA 04007       1220                             ADD             s0, #0x07               ;ASCII char A to F in range 41 to 46
+1AB 0403A       1221     number_char:            ADD             s0, #0x3a               ;ASCII char 0 to 9 in range 30 to 40
+1AC 08080       1222                             RETURN
+                1223     ;
+                1224     ;
+                1225     ; Send the two character HEX value of the register contents 's0' to the UART
+                1226     ;
+                1227     ; Registers used s0, s1, s2
+                1228     ;
+1AD 083DD       1229     send_hex_byte:          CALL            hex_byte_to_ascii
+W: value out of range: 0x1dd, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xdd.
+1AE 0CF20       1230                             LOAD            uart_data, s2
+1AF 083B8       1231                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+1B0 0CF10       1232                             LOAD            uart_data, s1
+1B1 083B8       1233                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+1B2 08080       1234                             RETURN
+                1235     ;
+                1236     ;
+                1237     ;
+                1238     ; Send the six character HEX value of the register contents [s9,s8,s7] to the UART
+                1239     ;
+                1240     ; Registers used s0, s1, s2
+                1241     ;
+1B3 0C090       1242     send_hex_3bytes:        LOAD            s0, s9
+1B4 083EE       1243                             CALL            send_hex_byte
+W: value out of range: 0x1ee, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xee.
+1B5 0C080       1244                             LOAD            s0, s8
+1B6 083EE       1245                             CALL            send_hex_byte
+W: value out of range: 0x1ee, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xee.
+1B7 0C070       1246                             LOAD            s0, s7
+1B8 083EE       1247                             CALL            send_hex_byte
+W: value out of range: 0x1ee, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xee.
+1B9 08080       1248                             RETURN
+                1249     ;
+                1250     ;
+                1251     ; Convert the HEX ASCII characters contained in 's3' and 's2' into
+                1252     ; an equivalent hexadecimal value in register 's0'.
+                1253     ;     The upper nibble is represented by an ASCII character in register s3.
+                1254     ;     The lower nibble is represented by an ASCII character in register s2.
+                1255     ;
+                1256     ; Input characters must be in the range 00 to FF hexadecimal or the CARRY flag
+                1257     ; will be set on return.
+                1258     ;
+                1259     ; Registers used s0, s2 and s3.
+                1260     ;
+1BA 0C030       1261     ascii_byte_to_hex:      LOAD            s0, s3                  ;Take upper nibble
+1BB 08308       1262                             CALL            ascii_to_hex            ;convert to value
+W: value out of range: 0x208, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x8.
+1BC 09880       1263                             RETURN          c                       ;reject if out of range
+1BD 0C300       1264                             LOAD            s3, s0                  ;remember value
+1BE 0D306       1265                             SL0             s3                      ;multiply value by 16 to put in upper nibble
+1BF 0D306       1266                             SL0             s3
+1C0 0D306       1267                             SL0             s3
+1C1 0D306       1268                             SL0             s3
+1C2 0C020       1269                             LOAD            s0, s2                  ;Take lower nibble
+1C3 08308       1270                             CALL            ascii_to_hex            ;convert to value
+W: value out of range: 0x208, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x8.
+1C4 09880       1271                             RETURN          c                       ;reject if out of range
+1C5 0C032       1272                             OR              s0, s3                  ;merge in the upper nibble with CARRY reset
+1C6 08080       1273                             RETURN
+                1274     ;
+                1275     ;
+                1276     ; Routine to convert ASCII data in 's0' to an equivalent HEX value.
+                1277     ;
+                1278     ; If character is not valid for hex, then CARRY is set on return.
+                1279     ;
+                1280     ; Register used s0
+                1281     ;
+1C7 040B9       1282     ascii_to_hex:           ADD             s0, #0xb9               ;test for above ASCII code 46 ('F')
+1C8 09880       1283                             RETURN          c
+1C9 060E9       1284                             SUB             s0, #0xe9               ;normalise 0 to 9 with A-F in 11 to 16 hex
+1CA 09880       1285                             RETURN          c                       ;reject below ASCII code 30 ('0')
+1CB 06011       1286                             SUB             s0, #0x11               ;isolate A-F down to 00 to 05 hex
+1CC 09D12       1287                             JUMP            nc, ascii_letter
+W: value out of range: 0x212, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x12.
+1CD 04007       1288                             ADD             s0, #0x07               ;test for above ASCII code 46 ('F')
+1CE 09880       1289                             RETURN          c
+1CF 060F6       1290                             SUB             s0, #0xf6               ;convert to range 00 to 09
+1D0 08080       1291                             RETURN
+1D1 0400A       1292     ascii_letter:           ADD             s0, #0x0a               ;convert to range 0A to 0F
+1D2 08080       1293                             RETURN
+                1294     ;
+                1295     ;
+                1296     ; Read one character from UART and echo.
+                1297     ; Convert to upper case and return.
+                1298     ;
+                1299     ;
+1D3 083B2       1300     read_upper_case:        CALL            read_from_uart          ;read command character from UART
+W: value out of range: 0x1b2, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb2.
+1D4 083B8       1301                             CALL            send_to_uart            ;echo character
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+1D5 0C0F0       1302                             LOAD            s0, uart_data           ;convert to upper case
+1D6 083C5       1303                             CALL            upper_case
+W: value out of range: 0x1c5, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xc5.
+1D7 08080       1304                             RETURN
+                1305     ;
+                1306     ;
+                1307     ; Read two hex characters from UART and convert to single byte data
+                1308     ;
+1D8 08314       1309     obtain_8bits:           CALL            read_upper_case         ;obtain one byte from UART
+W: value out of range: 0x214, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x14.
+1D9 0C300       1310                             LOAD            s3, s0
+1DA 08314       1311                             CALL            read_upper_case
+W: value out of range: 0x214, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x14.
+1DB 0C200       1312                             LOAD            s2, s0
+1DC 083FB       1313                             CALL            ascii_byte_to_hex
+W: value out of range: 0x1fb, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xfb.
+1DD 08080       1314                             RETURN
+                1315     ;
+                1316     ;**************************************************************************************
+                1317     ; Text messages
+                1318     ;**************************************************************************************
+                1319     ;
+                1320     ;
+                1321     ; Send Carriage Return to the UART
+                1322     ;
+1DE 00F0D       1323     send_cr:                LOAD            uart_data, #character_cr
+1DF 083B8       1324                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+1E0 08080       1325                             RETURN
+                1326     ;
+                1327     ; Send a space to the UART
+                1328     ;
+1E1 00F20       1329     send_space:             LOAD            uart_data, #character_space
+1E2 083B8       1330                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+1E3 08080       1331                             RETURN
+                1332     ;
+                1333     ;
+                1334     ; Send a minus sign to the UART
+                1335     ;
+1E4 00F2D       1336     send_minus:             LOAD            uart_data, #character_minus
+1E5 083B8       1337                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+1E6 08080       1338                             RETURN
+                1339     ;
+                1340     ;
+                1341     ; Send 'PicoBlaze DS2432 Communicator v1.00' string to the UART
+                1342     ;
+1E7 0831F       1343     send_welcome:           CALL            send_cr
+W: value out of range: 0x21f, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x1f.
+1E8 0831F       1344                             CALL            send_cr
+W: value out of range: 0x21f, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x1f.
+1E9 00F50       1345                             LOAD            uart_data, #_character_p
+1EA 083B8       1346                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+1EB 00F69       1347                             LOAD            uart_data, #character_i
+1EC 083B8       1348                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+1ED 00F63       1349                             LOAD            uart_data, #character_c
+1EE 083B8       1350                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+1EF 00F6F       1351                             LOAD            uart_data, #character_o
+1F0 083B8       1352                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+1F1 00F42       1353                             LOAD            uart_data, #_character_b
+1F2 083B8       1354                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+1F3 00F6C       1355                             LOAD            uart_data, #character_l
+1F4 083B8       1356                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+1F5 00F61       1357                             LOAD            uart_data, #character_a
+1F6 083B8       1358                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+1F7 00F7A       1359                             LOAD            uart_data, #character_z
+1F8 083B8       1360                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+1F9 00F65       1361                             LOAD            uart_data, #character_e
+1FA 083B8       1362                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+1FB 08322       1363                             CALL            send_space
+W: value out of range: 0x222, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x22.
+1FC 00F44       1364                             LOAD            uart_data, #_character_d
+1FD 083B8       1365                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+1FE 00F53       1366                             LOAD            uart_data, #_character_s
+1FF 083B8       1367                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+200 00F32       1368                             LOAD            uart_data, #character_2
+201 083B8       1369                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+202 00F34       1370                             LOAD            uart_data, #character_4
+203 083B8       1371                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+204 00F33       1372                             LOAD            uart_data, #character_3
+205 083B8       1373                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+206 00F32       1374                             LOAD            uart_data, #character_2
+207 083B8       1375                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+208 08322       1376                             CALL            send_space
+W: value out of range: 0x222, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x22.
+209 00F43       1377                             LOAD            uart_data, #_character_c
+20A 083B8       1378                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+20B 00F6F       1379                             LOAD            uart_data, #character_o
+20C 083B8       1380                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+20D 00F6D       1381                             LOAD            uart_data, #character_m
+20E 083B8       1382                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+20F 083B8       1383                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+210 00F75       1384                             LOAD            uart_data, #character_u
+211 083B8       1385                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+212 00F6E       1386                             LOAD            uart_data, #character_n
+213 083B8       1387                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+214 00F69       1388                             LOAD            uart_data, #character_i
+215 083B8       1389                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+216 00F63       1390                             LOAD            uart_data, #character_c
+217 083B8       1391                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+218 00F61       1392                             LOAD            uart_data, #character_a
+219 083B8       1393                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+21A 00F74       1394                             LOAD            uart_data, #character_t
+21B 083B8       1395                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+21C 00F6F       1396                             LOAD            uart_data, #character_o
+21D 083B8       1397                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+21E 00F72       1398                             LOAD            uart_data, #character_r
+21F 083B8       1399                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+220 08322       1400                             CALL            send_space
+W: value out of range: 0x222, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x22.
+221 00F76       1401                             LOAD            uart_data, #character_v
+222 083B8       1402                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+223 00F31       1403                             LOAD            uart_data, #character_1
+224 083B8       1404                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+225 00F2E       1405                             LOAD            uart_data, #character_fullstop
+226 083B8       1406                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+227 00F30       1407                             LOAD            uart_data, #character_0
+228 083B8       1408                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+229 00F30       1409                             LOAD            uart_data, #character_0
+22A 083B8       1410                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+22B 0831F       1411                             CALL            send_cr
+W: value out of range: 0x21f, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x1f.
+22C 0831F       1412                             CALL            send_cr
+W: value out of range: 0x21f, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x1f.
+22D 08080       1413                             RETURN
+                1414     ;
+                1415     ;
+                1416     ;
+                1417     ; Send reset menu to the UART
+                1418     ;
+22E 0831F       1419     send_reset_menu:        CALL            send_cr
+W: value out of range: 0x21f, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x1f.
+22F 0831F       1420                             CALL            send_cr
+W: value out of range: 0x21f, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x1f.
+230 083D0       1421                             CALL            send_hhelp
+W: value out of range: 0x2d0, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd0.
+231 00F31       1422                             LOAD            uart_data, #character_1
+232 083B8       1423                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+233 08325       1424                             CALL            send_minus
+W: value out of range: 0x225, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x25.
+234 08307       1425                             CALL            send_master_reset
+W: value out of range: 0x307, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x7.
+235 0831F       1426                             CALL            send_cr
+W: value out of range: 0x21f, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x1f.
+236 08080       1427                             RETURN
+                1428     ;
+                1429     ;
+                1430     ;
+                1431     ;
+                1432     ;
+                1433     ;
+                1434     ; Send ROM menu to the UART
+                1435     ;
+237 0831F       1436     send_rom_menu:          CALL            send_cr
+W: value out of range: 0x21f, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x1f.
+238 0831F       1437                             CALL            send_cr
+W: value out of range: 0x21f, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x1f.
+239 083D0       1438                             CALL            send_hhelp
+W: value out of range: 0x2d0, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd0.
+23A 00F31       1439                             LOAD            uart_data, #character_1
+23B 083B8       1440                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+23C 08325       1441                             CALL            send_minus
+W: value out of range: 0x225, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x25.
+23D 08307       1442                             CALL            send_master_reset
+W: value out of range: 0x307, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x7.
+23E 0831F       1443                             CALL            send_cr
+W: value out of range: 0x21f, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x1f.
+23F 00F32       1444                             LOAD            uart_data, #character_2
+240 083B8       1445                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+241 08325       1446                             CALL            send_minus
+W: value out of range: 0x225, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x25.
+242 08331       1447                             CALL            send_read
+W: value out of range: 0x331, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
+243 08322       1448                             CALL            send_space
+W: value out of range: 0x222, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x22.
+244 083DE       1449                             CALL            send_rom
+W: value out of range: 0x2de, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xde.
+245 08322       1450                             CALL            send_space
+W: value out of range: 0x222, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x22.
+246 08356       1451                             CALL            send_command
+W: value out of range: 0x356, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x56.
+247 0831F       1452                             CALL            send_cr
+W: value out of range: 0x21f, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x1f.
+248 00F33       1453                             LOAD            uart_data, #character_3
+249 083B8       1454                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+24A 08325       1455                             CALL            send_minus
+W: value out of range: 0x225, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x25.
+24B 08328       1456                             CALL            send_skip
+W: value out of range: 0x328, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x28.
+24C 08322       1457                             CALL            send_space
+W: value out of range: 0x222, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x22.
+24D 083DE       1458                             CALL            send_rom
+W: value out of range: 0x2de, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xde.
+24E 08322       1459                             CALL            send_space
+W: value out of range: 0x222, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x22.
+24F 08356       1460                             CALL            send_command
+W: value out of range: 0x356, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x56.
+250 0831F       1461                             CALL            send_cr
+W: value out of range: 0x21f, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x1f.
+251 08080       1462                             RETURN
+                1463     ;
+                1464     ;
+                1465     ;
+                1466     ; Send DS2432 menu to the UART
+                1467     ;
+252 0831F       1468     send_ds2432_menu:       CALL            send_cr
+W: value out of range: 0x21f, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x1f.
+253 0831F       1469                             CALL            send_cr
+W: value out of range: 0x21f, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x1f.
+254 083D0       1470                             CALL            send_hhelp
+W: value out of range: 0x2d0, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd0.
+255 00F31       1471                             LOAD            uart_data, #character_1
+256 083B8       1472                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+257 08325       1473                             CALL            send_minus
+W: value out of range: 0x225, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x25.
+258 08307       1474                             CALL            send_master_reset
+W: value out of range: 0x307, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x7.
+259 0831F       1475                             CALL            send_cr
+W: value out of range: 0x21f, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x1f.
+25A 00F32       1476                             LOAD            uart_data, #character_2
+25B 083B8       1477                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+25C 08325       1478                             CALL            send_minus
+W: value out of range: 0x225, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x25.
+25D 08331       1479                             CALL            send_read
+W: value out of range: 0x331, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
+25E 08322       1480                             CALL            send_space
+W: value out of range: 0x222, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x22.
+25F 083E5       1481                             CALL            send_memory
+W: value out of range: 0x2e5, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xe5.
+260 08322       1482                             CALL            send_space
+W: value out of range: 0x222, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x22.
+261 08356       1483                             CALL            send_command
+W: value out of range: 0x356, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x56.
+262 0831F       1484                             CALL            send_cr
+W: value out of range: 0x21f, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x1f.
+263 00F33       1485                             LOAD            uart_data, #character_3
+264 083B8       1486                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+265 08325       1487                             CALL            send_minus
+W: value out of range: 0x225, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x25.
+266 0833A       1488                             CALL            send_write
+W: value out of range: 0x33a, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x3a.
+267 08322       1489                             CALL            send_space
+W: value out of range: 0x222, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x22.
+268 083F2       1490                             CALL            send_scratchpad
+W: value out of range: 0x2f2, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xf2.
+269 08322       1491                             CALL            send_space
+W: value out of range: 0x222, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x22.
+26A 083E5       1492                             CALL            send_memory
+W: value out of range: 0x2e5, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xe5.
+26B 08322       1493                             CALL            send_space
+W: value out of range: 0x222, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x22.
+26C 08356       1494                             CALL            send_command
+W: value out of range: 0x356, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x56.
+26D 0831F       1495                             CALL            send_cr
+W: value out of range: 0x21f, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x1f.
+26E 00F34       1496                             LOAD            uart_data, #character_4
+26F 083B8       1497                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+270 08325       1498                             CALL            send_minus
+W: value out of range: 0x225, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x25.
+271 08331       1499                             CALL            send_read
+W: value out of range: 0x331, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
+272 08322       1500                             CALL            send_space
+W: value out of range: 0x222, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x22.
+273 083F2       1501                             CALL            send_scratchpad
+W: value out of range: 0x2f2, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xf2.
+274 08322       1502                             CALL            send_space
+W: value out of range: 0x222, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x22.
+275 083E5       1503                             CALL            send_memory
+W: value out of range: 0x2e5, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xe5.
+276 08322       1504                             CALL            send_space
+W: value out of range: 0x222, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x22.
+277 08356       1505                             CALL            send_command
+W: value out of range: 0x356, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x56.
+278 0831F       1506                             CALL            send_cr
+W: value out of range: 0x21f, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x1f.
+279 00F35       1507                             LOAD            uart_data, #character_5
+27A 083B8       1508                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+27B 08325       1509                             CALL            send_minus
+W: value out of range: 0x225, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x25.
+27C 0833A       1510                             CALL            send_write
+W: value out of range: 0x33a, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x3a.
+27D 08322       1511                             CALL            send_space
+W: value out of range: 0x222, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x22.
+27E 0831F       1512                             CALL            send_byte
+W: value out of range: 0x31f, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x1f.
+27F 0831F       1513                             CALL            send_cr
+W: value out of range: 0x21f, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x1f.
+280 00F36       1514                             LOAD            uart_data, #character_6
+281 083B8       1515                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+282 08325       1516                             CALL            send_minus
+W: value out of range: 0x225, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x25.
+283 08331       1517                             CALL            send_read
+W: value out of range: 0x331, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
+284 08322       1518                             CALL            send_space
+W: value out of range: 0x222, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x22.
+285 0831F       1519                             CALL            send_byte
+W: value out of range: 0x31f, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x1f.
+286 0831F       1520                             CALL            send_cr
+W: value out of range: 0x21f, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x1f.
+287 08080       1521                             RETURN
+                1522     ;
+                1523     ;
+                1524     ;
+                1525     ; Send carriage return, 'OK' and carriage return to the UART
+                1526     ;
+288 0831F       1527     send_ok:                CALL            send_cr
+W: value out of range: 0x21f, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x1f.
+289 00F4F       1528                             LOAD            uart_data, #_character_o
+28A 083B8       1529                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+28B 00F4B       1530                             LOAD            uart_data, #_character_k
+28C 083B8       1531                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+28D 0831F       1532                             CALL            send_cr
+W: value out of range: 0x21f, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x1f.
+28E 08080       1533                             RETURN
+                1534     ;
+                1535     ;
+                1536     ; Send 'H-Help'menu to the UART
+                1537     ;
+28F 0831F       1538     send_hhelp:             CALL            send_cr
+W: value out of range: 0x21f, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x1f.
+290 00F48       1539                             LOAD            uart_data, #_character_h
+291 083B8       1540                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+292 08325       1541                             CALL            send_minus
+W: value out of range: 0x225, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x25.
+293 00F48       1542                             LOAD            uart_data, #_character_h
+294 083B8       1543                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+295 00F65       1544                             LOAD            uart_data, #character_e
+296 083B8       1545                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+297 00F6C       1546                             LOAD            uart_data, #character_l
+298 083B8       1547                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+299 00F70       1548                             LOAD            uart_data, #character_p
+29A 083B8       1549                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+29B 0831F       1550                             CALL            send_cr
+W: value out of range: 0x21f, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x1f.
+29C 08080       1551                             RETURN
+                1552     ;
+                1553     ;
+                1554     ; Send 'ROM' to the UART
+                1555     ;
+29D 00F52       1556     send_rom:               LOAD            uart_data, #_character_r
+29E 083B8       1557                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+29F 00F4F       1558                             LOAD            uart_data, #_character_o
+2A0 083B8       1559                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+2A1 00F4D       1560                             LOAD            uart_data, #_character_m
+2A2 083B8       1561                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+2A3 08080       1562                             RETURN
+                1563     ;
+                1564     ;
+                1565     ; Send 'Memory' to the UART
+                1566     ;
+2A4 00F4D       1567     send_memory:            LOAD            uart_data, #_character_m
+2A5 083B8       1568                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+2A6 00F65       1569                             LOAD            uart_data, #character_e
+2A7 083B8       1570                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+2A8 00F6D       1571                             LOAD            uart_data, #character_m
+2A9 083B8       1572                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+2AA 00F6F       1573                             LOAD            uart_data, #character_o
+2AB 083B8       1574                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+2AC 00F72       1575                             LOAD            uart_data, #character_r
+2AD 083B8       1576                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+2AE 00F79       1577                             LOAD            uart_data, #character_y
+2AF 083B8       1578                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+2B0 08080       1579                             RETURN
+                1580     ;
+                1581     ;
+                1582     ; Send 'Scratchpad' to the UART
+                1583     ;
+2B1 00F53       1584     send_scratchpad:        LOAD            uart_data, #_character_s
+2B2 083B8       1585                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+2B3 00F63       1586                             LOAD            uart_data, #character_c
+2B4 083B8       1587                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+2B5 00F72       1588                             LOAD            uart_data, #character_r
+2B6 083B8       1589                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+2B7 00F61       1590                             LOAD            uart_data, #character_a
+2B8 083B8       1591                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+2B9 00F74       1592                             LOAD            uart_data, #character_t
+2BA 083B8       1593                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+2BB 00F63       1594                             LOAD            uart_data, #character_c
+2BC 083B8       1595                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+2BD 00F68       1596                             LOAD            uart_data, #character_h
+2BE 083B8       1597                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+2BF 00F70       1598                             LOAD            uart_data, #character_p
+2C0 083B8       1599                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+2C1 00F61       1600                             LOAD            uart_data, #character_a
+2C2 083B8       1601                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+2C3 00F64       1602                             LOAD            uart_data, #character_d
+2C4 083B8       1603                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+2C5 08080       1604                             RETURN
+                1605     ;
+                1606     ;
+                1607     ; Send 'Master Reset' to the UART
+                1608     ;
+2C6 00F4D       1609     send_master_reset:      LOAD            uart_data, #_character_m
+2C7 083B8       1610                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+2C8 00F61       1611                             LOAD            uart_data, #character_a
+2C9 083B8       1612                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+2CA 00F73       1613                             LOAD            uart_data, #character_s
+2CB 083B8       1614                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+2CC 00F74       1615                             LOAD            uart_data, #character_t
+2CD 083B8       1616                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+2CE 00F65       1617                             LOAD            uart_data, #character_e
+2CF 083B8       1618                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+2D0 00F72       1619                             LOAD            uart_data, #character_r
+2D1 083B8       1620                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+2D2 08322       1621                             CALL            send_space
+W: value out of range: 0x222, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x22.
+2D3 00F52       1622                             LOAD            uart_data, #_character_r
+2D4 083B8       1623                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+2D5 00F65       1624                             LOAD            uart_data, #character_e
+2D6 083B8       1625                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+2D7 00F73       1626                             LOAD            uart_data, #character_s
+2D8 083B8       1627                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+2D9 00F65       1628                             LOAD            uart_data, #character_e
+2DA 083B8       1629                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+2DB 00F74       1630                             LOAD            uart_data, #character_t
+2DC 083B8       1631                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+2DD 08080       1632                             RETURN
+                1633     ;
+                1634     ;
+                1635     ; Send 'Byte' to the UART
+                1636     ;
+2DE 00F42       1637     send_byte:              LOAD            uart_data, #_character_b
+2DF 083B8       1638                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+2E0 00F79       1639                             LOAD            uart_data, #character_y
+2E1 083B8       1640                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+2E2 00F74       1641                             LOAD            uart_data, #character_t
+2E3 083B8       1642                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+2E4 00F65       1643                             LOAD            uart_data, #character_e
+2E5 083B8       1644                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+2E6 08080       1645                             RETURN
+                1646     ;
+                1647     ;
+                1648     ; Send 'Skip' to the UART
+                1649     ;
+2E7 00F53       1650     send_skip:              LOAD            uart_data, #_character_s
+2E8 083B8       1651                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+2E9 00F6B       1652                             LOAD            uart_data, #character_k
+2EA 083B8       1653                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+2EB 00F69       1654                             LOAD            uart_data, #character_i
+2EC 083B8       1655                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+2ED 00F70       1656                             LOAD            uart_data, #character_p
+2EE 083B8       1657                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+2EF 08080       1658                             RETURN
+                1659     ;
+                1660     ;
+                1661     ; Send 'Read' to the UART
+                1662     ;
+2F0 00F52       1663     send_read:              LOAD            uart_data, #_character_r
+2F1 083B8       1664                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+2F2 00F65       1665                             LOAD            uart_data, #character_e
+2F3 083B8       1666                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+2F4 00F61       1667                             LOAD            uart_data, #character_a
+2F5 083B8       1668                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+2F6 00F64       1669                             LOAD            uart_data, #character_d
+2F7 083B8       1670                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+2F8 08080       1671                             RETURN
+                1672     ;
+                1673     ;
+                1674     ; Send 'Write' to the UART
+                1675     ;
+2F9 00F57       1676     send_write:             LOAD            uart_data, #_character_w
+2FA 083B8       1677                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+2FB 00F72       1678                             LOAD            uart_data, #character_r
+2FC 083B8       1679                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+2FD 00F69       1680                             LOAD            uart_data, #character_i
+2FE 083B8       1681                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+2FF 00F74       1682                             LOAD            uart_data, #character_t
+300 083B8       1683                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+301 00F65       1684                             LOAD            uart_data, #character_e
+302 083B8       1685                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+303 08080       1686                             RETURN
+                1687     ;
+                1688     ;
+                1689     ; Send 'Pass' to the UART
+                1690     ;
+304 00F50       1691     send_pass:              LOAD            uart_data, #_character_p
+305 083B8       1692                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+306 00F61       1693                             LOAD            uart_data, #character_a
+307 083B8       1694                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+308 00F73       1695                             LOAD            uart_data, #character_s
+309 083B8       1696                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+30A 083B8       1697                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+30B 08080       1698                             RETURN
+                1699     ;
+                1700     ;
+                1701     ; Send 'Fail' to the UART
+                1702     ;
+30C 00F46       1703     send_fail:              LOAD            uart_data, #_character_f
+30D 083B8       1704                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+30E 00F61       1705                             LOAD            uart_data, #character_a
+30F 083B8       1706                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+310 00F69       1707                             LOAD            uart_data, #character_i
+311 083B8       1708                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+312 00F6C       1709                             LOAD            uart_data, #character_l
+313 083B8       1710                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+314 08080       1711                             RETURN
+                1712     ;
+                1713     ;
+                1714     ; Send 'Command' to the UART
+                1715     ;
+315 00F43       1716     send_command:           LOAD            uart_data, #_character_c
+316 083B8       1717                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+317 00F6F       1718                             LOAD            uart_data, #character_o
+318 083B8       1719                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+319 00F6D       1720                             LOAD            uart_data, #character_m
+31A 083B8       1721                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+31B 083B8       1722                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+31C 00F61       1723                             LOAD            uart_data, #character_a
+31D 083B8       1724                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+31E 00F6E       1725                             LOAD            uart_data, #character_n
+31F 083B8       1726                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+320 00F64       1727                             LOAD            uart_data, #character_d
+321 083B8       1728                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+322 08080       1729                             RETURN
+                1730     ;
+                1731     ;
+                1732     ; Send 'address=' to the UART
+                1733     ;
+323 0831F       1734     send_address:           CALL            send_cr
+W: value out of range: 0x21f, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x1f.
+324 00F61       1735                             LOAD            uart_data, #character_a
+325 083B8       1736                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+326 00F64       1737                             LOAD            uart_data, #character_d
+327 083B8       1738                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+328 083B8       1739                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+329 00F72       1740                             LOAD            uart_data, #character_r
+32A 083B8       1741                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+32B 00F65       1742                             LOAD            uart_data, #character_e
+32C 083B8       1743                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+32D 00F73       1744                             LOAD            uart_data, #character_s
+32E 083B8       1745                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+32F 083B8       1746                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+330 00F3D       1747     send_equals:            LOAD            uart_data, #character_equals
+331 083B8       1748                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+332 08080       1749                             RETURN
+                1750     ;
+                1751     ;
+                1752     ; Send 'data' to the UART
+                1753     ;
+333 0831F       1754     send_data:              CALL            send_cr
+W: value out of range: 0x21f, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x1f.
+334 00F64       1755                             LOAD            uart_data, #character_d
+335 083B8       1756                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+336 00F61       1757                             LOAD            uart_data, #character_a
+337 083B8       1758                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+338 00F74       1759                             LOAD            uart_data, #character_t
+339 083B8       1760                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+33A 00F61       1761                             LOAD            uart_data, #character_a
+33B 083B8       1762                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+33C 08080       1763                             RETURN
+                1764     ;
+                1765     ;
+                1766     ; Send 'E/S=' to the UART
+                1767     ;
+33D 0831F       1768     send_es:                CALL            send_cr
+W: value out of range: 0x21f, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x1f.
+33E 00F45       1769                             LOAD            uart_data, #_character_e
+33F 083B8       1770                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+340 00F2F       1771                             LOAD            uart_data, #character_divide
+341 083B8       1772                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+342 00F53       1773                             LOAD            uart_data, #_character_s
+343 083B8       1774                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+344 08171       1775                             JUMP            send_equals
+W: value out of range: 0x371, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x71.
+                1776     ;
+                1777     ;
+                1778     ; Send 'code=' to the UART
+                1779     ;
+345 00F63       1780     send_code:              LOAD            uart_data, #character_c
+346 083B8       1781                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+347 00F6F       1782                             LOAD            uart_data, #character_o
+348 083B8       1783                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+349 00F64       1784                             LOAD            uart_data, #character_d
+34A 083B8       1785                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+34B 00F65       1786                             LOAD            uart_data, #character_e
+34C 083B8       1787                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+34D 08171       1788                             JUMP            send_equals
+W: value out of range: 0x371, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x71.
+                1789     ;
+                1790     ;
+                1791     ; Send 'serial=' to the UART
+                1792     ;
+34E 00F73       1793     send_serial:            LOAD            uart_data, #character_s
+34F 083B8       1794                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+350 00F65       1795                             LOAD            uart_data, #character_e
+351 083B8       1796                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+352 00F72       1797                             LOAD            uart_data, #character_r
+353 083B8       1798                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+354 00F69       1799                             LOAD            uart_data, #character_i
+355 083B8       1800                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+356 00F61       1801                             LOAD            uart_data, #character_a
+357 083B8       1802                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+358 00F6C       1803                             LOAD            uart_data, #character_l
+359 083B8       1804                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+35A 08171       1805                             JUMP            send_equals
+W: value out of range: 0x371, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x71.
+                1806     ;
+                1807     ;
+                1808     ; Send 'CRC=' to the UART
+                1809     ;
+35B 00F43       1810     send_crc:               LOAD            uart_data, #_character_c
+35C 083B8       1811                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+35D 00F52       1812                             LOAD            uart_data, #_character_r
+35E 083B8       1813                             CALL            send_to_uart
+W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
+35F 00F43       1814                             LOAD            uart_data, #_character_c
+360 08171       1815                             JUMP            send_equals
+W: value out of range: 0x371, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x71.
+                1816     ;
+                1817     ;
+                1818     ;**************************************************************************************
+                1819     ; Interrupt Service Routine (ISR)
+                1820     ;**************************************************************************************
+                1821     ;
+                1822     ; Interrupts are not used in this design. This is a place keeper only.
+                1823     ;
+  003FE         1824                             ORG             0x3fe
+3FE 080F0       1825     isr:                    RETURNI         enable
+                1826     ;
+                1827     ;
+                1828     ;**************************************************************************************
+                1829     ; Interrupt Vector
+                1830     ;**************************************************************************************
+                1831     ;
+  003FF         1832                             ORG             0x3ff
+3FF 081FE       1833                             JUMP            isr
+W: value out of range: 0x3fe, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xfe.
+                1834     ;
+                1835     ;
+                1836

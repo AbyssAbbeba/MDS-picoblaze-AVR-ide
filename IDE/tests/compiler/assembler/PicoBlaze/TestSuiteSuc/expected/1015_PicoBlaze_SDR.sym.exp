@@ -1,0 +1,44 @@
+CHREG  . . . . . . . . . . . . . . . NUMBER 0x00004 USED     CONSTANT    1015_PicoBlaze_SDR.asm:33.1-33.42
+GETCHAR  . . . . . . . . . . . . . . LABEL  0x0000D USED     CONSTANT    1015_PicoBlaze_SDR.asm:75.1-75.9
+MAIN_LOOP  . . . . . . . . . . . . . LABEL  0x00002 USED     CONSTANT    1015_PicoBlaze_SDR.asm:48.1-48.11
+READ_DATA  . . . . . . . . . . . . . NUMBER 0x0000C NOT USED CONSTANT    1015_PicoBlaze_SDR.asm:31.2-31.24
+RXDATA . . . . . . . . . . . . . . . REG.   0x00003 NOT USED CONSTANT    1015_PicoBlaze_SDR.asm:23.2-23.20
+S0 . . . . . . . . . . . . . . . . . REG.   0x00000 USED     CONSTANT    IMPLICIT
+S1 . . . . . . . . . . . . . . . . . REG.   0x00001 USED     CONSTANT    IMPLICIT
+S2 . . . . . . . . . . . . . . . . . REG.   0x00002 USED     CONSTANT    IMPLICIT
+S3 . . . . . . . . . . . . . . . . . REG.   0x00003 USED     CONSTANT    IMPLICIT
+S4 . . . . . . . . . . . . . . . . . REG.   0x00004 USED     CONSTANT    IMPLICIT
+S5 . . . . . . . . . . . . . . . . . REG.   0x00005 NOT USED CONSTANT    IMPLICIT
+S6 . . . . . . . . . . . . . . . . . REG.   0x00006 NOT USED CONSTANT    IMPLICIT
+S7 . . . . . . . . . . . . . . . . . REG.   0x00007 NOT USED CONSTANT    IMPLICIT
+S8 . . . . . . . . . . . . . . . . . REG.   0x00008 NOT USED CONSTANT    IMPLICIT
+S9 . . . . . . . . . . . . . . . . . REG.   0x00009 NOT USED CONSTANT    IMPLICIT
+SA . . . . . . . . . . . . . . . . . REG.   0x0000A NOT USED CONSTANT    IMPLICIT
+SB . . . . . . . . . . . . . . . . . REG.   0x0000B NOT USED CONSTANT    IMPLICIT
+SC . . . . . . . . . . . . . . . . . REG.   0x0000C NOT USED CONSTANT    IMPLICIT
+SD . . . . . . . . . . . . . . . . . REG.   0x0000D NOT USED CONSTANT    IMPLICIT
+SE . . . . . . . . . . . . . . . . . REG.   0x0000E NOT USED CONSTANT    IMPLICIT
+SENDB1 . . . . . . . . . . . . . . . LABEL  0x0001C USED     CONSTANT    1015_PicoBlaze_SDR.asm:97.1-97.8
+SENDB2 . . . . . . . . . . . . . . . LABEL  0x00024 USED     CONSTANT    1015_PicoBlaze_SDR.asm:106.1-106.8
+SENDBNUM1  . . . . . . . . . . . . . LABEL  0x0001B USED     CONSTANT    1015_PicoBlaze_SDR.asm:96.1-96.11
+SENDBNUM2  . . . . . . . . . . . . . LABEL  0x00023 USED     CONSTANT    1015_PicoBlaze_SDR.asm:105.1-105.11
+SENDBYTE . . . . . . . . . . . . . . LABEL  0x00012 NOT USED CONSTANT    1015_PicoBlaze_SDR.asm:87.1-87.10
+SENDCHAR . . . . . . . . . . . . . . LABEL  0x00008 USED     CONSTANT    1015_PicoBlaze_SDR.asm:65.1-65.10
+SENDCRLF . . . . . . . . . . . . . . LABEL  0x00026 NOT USED CONSTANT    1015_PicoBlaze_SDR.asm:114.1-114.10
+SF . . . . . . . . . . . . . . . . . REG.   0x0000F NOT USED CONSTANT    IMPLICIT
+START  . . . . . . . . . . . . . . . LABEL  0x00001 USED     CONSTANT    1015_PicoBlaze_SDR.asm:44.1-44.7
+SWITCH . . . . . . . . . . . . . . . NUMBER 0x00004 USED     CONSTANT    1015_PicoBlaze_SDR.asm:34.1-34.43
+TEMP1  . . . . . . . . . . . . . . . REG.   0x00000 USED     CONSTANT    1015_PicoBlaze_SDR.asm:20.2-20.19
+TEMP2  . . . . . . . . . . . . . . . REG.   0x00001 USED     CONSTANT    1015_PicoBlaze_SDR.asm:21.2-21.19
+TEMP3  . . . . . . . . . . . . . . . REG.   0x00002 USED     CONSTANT    1015_PicoBlaze_SDR.asm:22.2-22.19
+TXDATA . . . . . . . . . . . . . . . REG.   0x00004 NOT USED CONSTANT    1015_PicoBlaze_SDR.asm:24.2-24.20
+TX_DATA_01 . . . . . . . . . . . . . NUMBER 0x00001 NOT USED CONSTANT    1015_PicoBlaze_SDR.asm:27.2-27.25
+TX_DATA_02 . . . . . . . . . . . . . NUMBER 0x00002 NOT USED CONSTANT    1015_PicoBlaze_SDR.asm:28.2-28.25
+TX_DATA_03 . . . . . . . . . . . . . NUMBER 0x00004 NOT USED CONSTANT    1015_PicoBlaze_SDR.asm:29.2-29.25
+TX_DATA_04 . . . . . . . . . . . . . NUMBER 0x00008 NOT USED CONSTANT    1015_PicoBlaze_SDR.asm:30.2-30.25
+UART_DATA  . . . . . . . . . . . . . NUMBER 0x00004 USED     CONSTANT    1015_PicoBlaze_SDR.asm:36.1-36.46
+UART_STAT  . . . . . . . . . . . . . NUMBER 0x00004 USED     CONSTANT    1015_PicoBlaze_SDR.asm:35.1-35.46
+WAIT_100MS . . . . . . . . . . . . . LABEL  0x00035 NOT USED CONSTANT    1015_PicoBlaze_SDR.asm:147.1-147.12
+WAIT_100MS_I . . . . . . . . . . . . LABEL  0x00038 USED     CONSTANT    1015_PicoBlaze_SDR.asm:150.1-150.14
+WAIT_1S  . . . . . . . . . . . . . . LABEL  0x0002B USED     CONSTANT    1015_PicoBlaze_SDR.asm:136.1-136.9
+WAIT_1S_I  . . . . . . . . . . . . . LABEL  0x0002E USED     CONSTANT    1015_PicoBlaze_SDR.asm:139.1-139.11

@@ -1,0 +1,211 @@
+                   1     ; test case for directives
+                   2     device KCPSM3
+                   3
+                   4
+                   5
+  00000            6     s10     AUTOSPR
+  00001            7     s11     AUTOSPR
+  00002            8     s12     AUTOSPR
+  00003            9     s13     AUTOSPR
+  00004           10     s14     AUTOSPR
+  00005           11     s15     AUTOSPR
+  00006           12     s16     AUTOSPR
+  00007           13     s17     AUTOSPR
+  00008           14     s18     AUTOSPR
+  00009           15     s19     AUTOSPR
+                  16
+  00244           17     a1      EQU     580
+  3FFFF           18     a2      EQU     0xFFFFFF
+W: value out of range: 0xffffff, allowed range is [0x0,0x3ffff] (trimmed to 18 bits) which makes it 0x3ffff.
+  00000           19     a3      EQU     0
+  00019           20     a4      EQU     0b11001
+  00001           21     a5      EQU     0b0001
+  00011           22     a6      EQU     0b00010001
+  00001           23     a7      EQU     0b00000001
+  00003           24     a8      EQU     3
+  00001           25     a9      EQU     1h
+  00011           26     a10     EQU     11h
+  000AA           27     a11     EQU     AAh
+  00004           28     a12     EQU     0x04
+                  29
+  00244           30     b1      SET     580
+  3FFFF           31     b2      SET     0xFFFFFF
+W: value out of range: 0xffffff, allowed range is [0x0,0x3ffff] (trimmed to 18 bits) which makes it 0x3ffff.
+  00000           32     b3      SET     0
+  00019           33     b4      SET     0b11001
+  00001           34     b5      SET     0b0001
+  00011           35     b6      SET     0b00010001
+  00001           36     b7      SET     0b00000001
+  00003           37     b8      SET     3
+  00001           38     b9      SET     1h
+  00011           39     b10     SET     11h
+  000AA           40     b11     SET     AAh
+  00004           41     b12     SET     0x04
+                  42
+  00222           43     CONSTANT        c1,546
+  0FFFF           44     CONSTANT        c2,0xffff
+  0000C           45     CONSTANT        c3,12
+  00000           46     CONSTANT        c4,0
+  00000           47     CONSTANT        c5,0b00000000
+  00001           48     CONSTANT        c6,0b001
+  00001           49     CONSTANT        c7,0b01
+  00015           50     CONSTANT        c8,0b00010101
+  0001E           51     CONSTANT        c9,0b11110
+  00001           52     CONSTANT        c10,1h
+  000FE           53     CONSTANT        c11,FEh
+  00003           54     CONSTANT        c12,0x03
+                  55
+  00222           56     VARIABLE        d1,546
+  0FFFF           57     VARIABLE        d2,0xffff
+  0000C           58     VARIABLE        d3,12
+  00000           59     VARIABLE        d4,0
+  00000           60     VARIABLE        d5,0b00000000
+  00001           61     VARIABLE        d6,0b001
+  00001           62     VARIABLE        d7,0b01
+  00015           63     VARIABLE        d8,0b00010101
+  0001E           64     VARIABLE        d9,0b11110
+  00001           65     VARIABLE        d10,1h
+  000FE           66     VARIABLE        d11,FEh
+  00003           67     VARIABLE        d12,0x03
+                  68
+  00001           69     NAMEREG         1,AHOJ
+  00002           70     NAMEREG         2,TE
+  00003           71     NAMEREG         3,VY
+  00004           72     NAMEREG         4,TAM
+  00005           73     NAMEREG         5,DOLE
+  00006           74     NAMEREG         6,ZDRA
+  00007           75     NAMEREG         7,VIM
+  00008           76     NAMEREG         8,VAS
+  00009           77     NAMEREG         9,SECKY
+  0000A           78     NAMEREG         10,HOLA
+  0000B           79     NAMEREG         11,OLA
+  0000C           80     NAMEREG         12,HEJ
+                  81
+                  82
+  00001           83     f1      REG     1
+W: reusing already reserved space in register file memory at address: 0x1.
+  00002           84     f2      REG     2
+W: reusing already reserved space in register file memory at address: 0x2.
+  00003           85     f3      REG     3
+W: reusing already reserved space in register file memory at address: 0x3.
+  00004           86     f4      REG     4
+W: reusing already reserved space in register file memory at address: 0x4.
+  00005           87     f5      REG     5
+W: reusing already reserved space in register file memory at address: 0x5.
+  00006           88     f6      REG     6
+W: reusing already reserved space in register file memory at address: 0x6.
+  00007           89     f7      REG     7
+W: reusing already reserved space in register file memory at address: 0x7.
+  00008           90     f8      REG     8
+W: reusing already reserved space in register file memory at address: 0x8.
+  00009           91     f9      REG     9
+W: reusing already reserved space in register file memory at address: 0x9.
+  0000A           92     f10     REG     10
+W: reusing already reserved space in register file memory at address: 0xa.
+  0000B           93     f11     REG     11
+W: reusing already reserved space in register file memory at address: 0xb.
+  0000C           94     f12     REG     12
+W: reusing already reserved space in register file memory at address: 0xc.
+                  95
+  00001           96     g1      DATA     1
+W: reusing already reserved space in scratch pad memory at address: 0x1.
+  00002           97     g2      DATA     2
+W: reusing already reserved space in scratch pad memory at address: 0x2.
+  00003           98     g3      DATA     3
+W: reusing already reserved space in scratch pad memory at address: 0x3.
+  00004           99     g4      DATA     4
+W: reusing already reserved space in scratch pad memory at address: 0x4.
+  00005          100     g5      DATA     5
+W: reusing already reserved space in scratch pad memory at address: 0x5.
+  00006          101     g6      DATA     6
+W: reusing already reserved space in scratch pad memory at address: 0x6.
+  00007          102     g7      DATA     7
+W: reusing already reserved space in scratch pad memory at address: 0x7.
+  00008          103     g8      DATA     8
+W: reusing already reserved space in scratch pad memory at address: 0x8.
+  00009          104     g9      DATA     9
+W: reusing already reserved space in scratch pad memory at address: 0x9.
+  00011          105     g10     DATA     11h
+  0000A          106     g11     DATA     Ah
+  00004          107     g12     DATA     0x04
+W: reusing already reserved space in scratch pad memory at address: 0x4.
+                 108
+  00244          109     h1      CODE     580
+  3FFFF          110     h2      CODE     0xFFFFFF
+W: value out of range: 0xffffff, allowed range is [0x0,0x3ffff] (trimmed to 18 bits) which makes it 0x3ffff.
+  00000          111     h3      CODE     0
+  00019          112     h4      CODE     0b11001
+  00001          113     h5      CODE     0b0001
+  00011          114     h6      CODE     0b00010001
+  00001          115     h7      CODE     0b00000001
+  00003          116     h8      CODE     3
+  00001          117     h9      CODE     1h
+  00011          118     h10     CODE     11h
+  000AA          119     h11     CODE     AAh
+  00004          120     h12     CODE     0x04
+                 121
+  00244          122     i1      PORT     580
+  3FFFF          123     i2      PORT     0xFFFFFF
+W: value out of range: 0xffffff, allowed range is [0x0,0x3ffff] (trimmed to 18 bits) which makes it 0x3ffff.
+  00000          124     i3      PORT     0
+  00019          125     i4      PORT     0b11001
+  00001          126     i5      PORT     0b0001
+  00011          127     i6      PORT     0b00010001
+  00001          128     i7      PORT     0b00000001
+  00003          129     i8      PORT     3
+  00001          130     i9      PORT     1h
+  00011          131     i10     PORT     11h
+  000AA          132     i11     PORT     AAh
+  00015          133     i12     PORT     0x04 | 0x11
+                 134
+                 135     ; expresions test
+  00005          136     ss1     EQU     +5
+  3FFFB          137     ss2     EQU     -5
+R: result is negative number: 0xfffffffffffffffb, this will represented as 18-bit number in two's complement arithmetic which makes it: 0x3fffb.
+  00005          138     ss3     EQU     +5h
+  3FFFB          139     ss4     EQU     -0x5
+R: result is negative number: 0xfffffffffffffffb, this will represented as 18-bit number in two's complement arithmetic which makes it: 0x3fffb.
+  00000          140     ss5     EQU     -5++5
+  3FFEB          141     ss6     EQU     +5+-5++45-66
+R: result is negative number: 0xffffffffffffffeb, this will represented as 18-bit number in two's complement arithmetic which makes it: 0x3ffeb.
+  3FF00          142     ss7     EQU     ~0xFF
+R: result is negative number: 0xffffffffffffff00, this will represented as 18-bit number in two's complement arithmetic which makes it: 0x3ff00.
+  00001          143     ss8     EQU     (0xFF & 0x00) & 0x0F * 5 / 5 % 2 | 0x01
+  0002F          144     ss9     EQU     (12 * 3) + (112 / 10)
+  0002B          145     ss10    EQU     (25 + 36) - (18)
+  3FFE7          146     ss11    EQU     -5 * +5
+R: result is negative number: 0xffffffffffffffe7, this will represented as 18-bit number in two's complement arithmetic which makes it: 0x3ffe7.
+  00002          147     ss12    EQU     0x01 << 1
+  00001          148     ss13    EQU     0x02 >> 1
+  000F0          149     ss14    EQU     0xff ^ 0x0f
+                 150
+  3FFFB          151     a       equ     -5
+R: result is negative number: 0xfffffffffffffffb, this will represented as 18-bit number in two's complement arithmetic which makes it: 0x3fffb.
+  00005          152     B       EQU     5
+                 153
+                 154     XXX     define          1 * {0} + {1}/{2}+5
+                 155     YYY     define          1 + {0}
+  00008          156     Abyss   EQU             XXX(1,1,YYY(0x01)) + 2
+                 157
+                 158     limit   d,10
+                 159     limit   r,10
+                 160     limit   c,10
+                 161
+  00000          162     Start:
+                 163             SKIP    6
+006 01120        164             LOAD    s1,s2
+007 01120        165             LOAD    s1,s2
+008 01120        166             LOAD    s1,s2
+009 01120        167             LOAD    s1,s2
+                 168
+00A 04001        169             INPUT   s0,0x01
+                 170
+                 171
+                 172
+                 173
+                 174
+                 175
+                 176
+                 177             END
+                 178
+                 179

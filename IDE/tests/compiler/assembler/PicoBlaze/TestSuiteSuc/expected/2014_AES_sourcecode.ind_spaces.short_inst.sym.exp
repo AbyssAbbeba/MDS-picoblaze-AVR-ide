@@ -1,0 +1,76 @@
+B128 . . . . . . . . . . . . . . . . NUMBER 0x00004 USED     CONSTANT    2014_AES_sourcecode.ind_spaces.short_inst.asm:11.1-11.29
+ENCRYPT  . . . . . . . . . . . . . . LABEL  0x00000 NOT USED CONSTANT    2014_AES_sourcecode.ind_spaces.short_inst.asm:19.1-19.9
+G  . . . . . . . . . . . . . . . . . NUMBER 0x00004 USED     CONSTANT    2014_AES_sourcecode.ind_spaces.short_inst.asm:5.1-5.26
+GETNEXT  . . . . . . . . . . . . . . LABEL  0x00029 USED     CONSTANT    2014_AES_sourcecode.ind_spaces.short_inst.asm:81.1-81.9
+GMUL . . . . . . . . . . . . . . . . LABEL  0x00087 USED     CONSTANT    2014_AES_sourcecode.ind_spaces.short_inst.asm:210.1-210.6
+GMUL1  . . . . . . . . . . . . . . . LABEL  0x00088 USED     CONSTANT    2014_AES_sourcecode.ind_spaces.short_inst.asm:212.1-212.7
+GMUL2  . . . . . . . . . . . . . . . LABEL  0x0008C USED     CONSTANT    2014_AES_sourcecode.ind_spaces.short_inst.asm:218.1-218.7
+GMUL3  . . . . . . . . . . . . . . . LABEL  0x0008D USED     CONSTANT    2014_AES_sourcecode.ind_spaces.short_inst.asm:219.1-219.7
+INKEY  . . . . . . . . . . . . . . . NUMBER 0x00004 USED     CONSTANT    2014_AES_sourcecode.ind_spaces.short_inst.asm:10.1-10.30
+INKEYTOKEY . . . . . . . . . . . . . LABEL  0x0001D USED     CONSTANT    2014_AES_sourcecode.ind_spaces.short_inst.asm:63.1-63.12
+INTOSTATE  . . . . . . . . . . . . . NUMBER 0x00004 USED     CONSTANT    2014_AES_sourcecode.ind_spaces.short_inst.asm:13.1-13.34
+KEY  . . . . . . . . . . . . . . . . NUMBER 0x00004 USED     CONSTANT    2014_AES_sourcecode.ind_spaces.short_inst.asm:9.1-9.28
+KEY96  . . . . . . . . . . . . . . . LABEL  0x0004B USED     CONSTANT    2014_AES_sourcecode.ind_spaces.short_inst.asm:126.1-126.7
+MCF1 . . . . . . . . . . . . . . . . LABEL  0x000DA USED     CONSTANT    2014_AES_sourcecode.ind_spaces.short_inst.asm:313.1-313.6
+MCF2 . . . . . . . . . . . . . . . . LABEL  0x000E0 USED     CONSTANT    2014_AES_sourcecode.ind_spaces.short_inst.asm:320.1-320.6
+MCF3 . . . . . . . . . . . . . . . . LABEL  0x000E7 USED     CONSTANT    2014_AES_sourcecode.ind_spaces.short_inst.asm:328.1-328.6
+MCF4 . . . . . . . . . . . . . . . . LABEL  0x000ED USED     CONSTANT    2014_AES_sourcecode.ind_spaces.short_inst.asm:335.1-335.6
+MIXCOLUMN  . . . . . . . . . . . . . LABEL  0x000CF USED     CONSTANT    2014_AES_sourcecode.ind_spaces.short_inst.asm:300.1-300.11
+MIXCOLUMNS . . . . . . . . . . . . . LABEL  0x000AA USED     CONSTANT    2014_AES_sourcecode.ind_spaces.short_inst.asm:256.1-256.12
+MULINVERSE . . . . . . . . . . . . . LABEL  0x0007C USED     CONSTANT    2014_AES_sourcecode.ind_spaces.short_inst.asm:197.1-197.12
+MULINVERSE1  . . . . . . . . . . . . LABEL  0x0007F USED     CONSTANT    2014_AES_sourcecode.ind_spaces.short_inst.asm:201.1-201.13
+NEXTROUNDKEY . . . . . . . . . . . . LABEL  0x00030 USED     CONSTANT    2014_AES_sourcecode.ind_spaces.short_inst.asm:89.1-89.14
+NOWRAP . . . . . . . . . . . . . . . LABEL  0x00040 USED     CONSTANT    2014_AES_sourcecode.ind_spaces.short_inst.asm:110.1-110.8
+PKEY . . . . . . . . . . . . . . . . NUMBER 0x00005 USED     CONSTANT    2014_AES_sourcecode.ind_spaces.short_inst.asm:46.1-46.18
+PSTATE . . . . . . . . . . . . . . . NUMBER 0x00004 USED     CONSTANT    2014_AES_sourcecode.ind_spaces.short_inst.asm:47.1-47.18
+PUTNEXT  . . . . . . . . . . . . . . LABEL  0x0001F USED     CONSTANT    2014_AES_sourcecode.ind_spaces.short_inst.asm:68.1-68.9
+RESULT . . . . . . . . . . . . . . . NUMBER 0x00004 USED     CONSTANT    2014_AES_sourcecode.ind_spaces.short_inst.asm:8.1-8.31
+ROUND  . . . . . . . . . . . . . . . LABEL  0x00005 USED     CONSTANT    2014_AES_sourcecode.ind_spaces.short_inst.asm:26.1-26.7
+S0 . . . . . . . . . . . . . . . . . REG.   0x00000 USED     CONSTANT    IMPLICIT
+S1 . . . . . . . . . . . . . . . . . REG.   0x00001 NOT USED CONSTANT    IMPLICIT
+S10  . . . . . . . . . . . . . . . . REG.   0x00010 NOT USED CONSTANT    IMPLICIT
+S11  . . . . . . . . . . . . . . . . REG.   0x00011 NOT USED CONSTANT    IMPLICIT
+S12  . . . . . . . . . . . . . . . . REG.   0x00012 NOT USED CONSTANT    IMPLICIT
+S13  . . . . . . . . . . . . . . . . REG.   0x00013 NOT USED CONSTANT    IMPLICIT
+S14  . . . . . . . . . . . . . . . . REG.   0x00014 NOT USED CONSTANT    IMPLICIT
+S15  . . . . . . . . . . . . . . . . REG.   0x00015 NOT USED CONSTANT    IMPLICIT
+S16  . . . . . . . . . . . . . . . . REG.   0x00016 NOT USED CONSTANT    IMPLICIT
+S17  . . . . . . . . . . . . . . . . REG.   0x00017 NOT USED CONSTANT    IMPLICIT
+S18  . . . . . . . . . . . . . . . . REG.   0x00018 NOT USED CONSTANT    IMPLICIT
+S19  . . . . . . . . . . . . . . . . REG.   0x00019 NOT USED CONSTANT    IMPLICIT
+S1A  . . . . . . . . . . . . . . . . REG.   0x0001A NOT USED CONSTANT    IMPLICIT
+S1B  . . . . . . . . . . . . . . . . REG.   0x0001B NOT USED CONSTANT    IMPLICIT
+S1C  . . . . . . . . . . . . . . . . REG.   0x0001C NOT USED CONSTANT    IMPLICIT
+S1D  . . . . . . . . . . . . . . . . REG.   0x0001D NOT USED CONSTANT    IMPLICIT
+S1E  . . . . . . . . . . . . . . . . REG.   0x0001E NOT USED CONSTANT    IMPLICIT
+S1F  . . . . . . . . . . . . . . . . REG.   0x0001F NOT USED CONSTANT    IMPLICIT
+S2 . . . . . . . . . . . . . . . . . REG.   0x00002 NOT USED CONSTANT    IMPLICIT
+S3 . . . . . . . . . . . . . . . . . REG.   0x00003 USED     CONSTANT    IMPLICIT
+S4 . . . . . . . . . . . . . . . . . REG.   0x00004 USED     CONSTANT    IMPLICIT
+S5 . . . . . . . . . . . . . . . . . REG.   0x00005 USED     CONSTANT    IMPLICIT
+S6 . . . . . . . . . . . . . . . . . REG.   0x00006 USED     CONSTANT    IMPLICIT
+S7 . . . . . . . . . . . . . . . . . REG.   0x00007 USED     CONSTANT    IMPLICIT
+S8 . . . . . . . . . . . . . . . . . REG.   0x00008 USED     CONSTANT    IMPLICIT
+S9 . . . . . . . . . . . . . . . . . REG.   0x00009 USED     CONSTANT    IMPLICIT
+SA . . . . . . . . . . . . . . . . . REG.   0x0000A USED     CONSTANT    IMPLICIT
+SB . . . . . . . . . . . . . . . . . REG.   0x0000B USED     CONSTANT    IMPLICIT
+SBOX . . . . . . . . . . . . . . . . LABEL  0x0006F USED     CONSTANT    2014_AES_sourcecode.ind_spaces.short_inst.asm:175.1-175.6
+SBOXAFFINE . . . . . . . . . . . . . LABEL  0x00073 NOT USED CONSTANT    2014_AES_sourcecode.ind_spaces.short_inst.asm:183.1-183.12
+SBOX_ROM . . . . . . . . . . . . . . NUMBER 0x00004 USED     CONSTANT    2014_AES_sourcecode.ind_spaces.short_inst.asm:6.1-6.33
+SBOX_SOFT  . . . . . . . . . . . . . LABEL  0x00072 NOT USED CONSTANT    2014_AES_sourcecode.ind_spaces.short_inst.asm:181.1-181.11
+SC . . . . . . . . . . . . . . . . . REG.   0x0000C USED     CONSTANT    IMPLICIT
+SD . . . . . . . . . . . . . . . . . REG.   0x0000D USED     CONSTANT    IMPLICIT
+SE . . . . . . . . . . . . . . . . . REG.   0x0000E USED     CONSTANT    IMPLICIT
+SF . . . . . . . . . . . . . . . . . REG.   0x0000F USED     CONSTANT    IMPLICIT
+SHIFTROWS  . . . . . . . . . . . . . LABEL  0x00091 USED     CONSTANT    2014_AES_sourcecode.ind_spaces.short_inst.asm:225.1-225.11
+STATE  . . . . . . . . . . . . . . . NUMBER 0x00004 USED     CONSTANT    2014_AES_sourcecode.ind_spaces.short_inst.asm:7.1-7.30
+STATETOOUT . . . . . . . . . . . . . LABEL  0x00026 USED     CONSTANT    2014_AES_sourcecode.ind_spaces.short_inst.asm:76.1-76.12
+SUB128 . . . . . . . . . . . . . . . LABEL  0x00068 USED     CONSTANT    2014_AES_sourcecode.ind_spaces.short_inst.asm:166.1-166.8
+SUBBYTES . . . . . . . . . . . . . . LABEL  0x00066 USED     CONSTANT    2014_AES_sourcecode.ind_spaces.short_inst.asm:162.1-162.10
+SUBWORD  . . . . . . . . . . . . . . LABEL  0x0005E NOT USED CONSTANT    2014_AES_sourcecode.ind_spaces.short_inst.asm:151.1-151.9
+SUBWORD1 . . . . . . . . . . . . . . LABEL  0x0005F USED     CONSTANT    2014_AES_sourcecode.ind_spaces.short_inst.asm:153.1-153.10
+TOSCRATCH128 . . . . . . . . . . . . LABEL  0x0001F USED     CONSTANT    2014_AES_sourcecode.ind_spaces.short_inst.asm:67.1-67.14
+X  . . . . . . . . . . . . . . . . . NUMBER 0x00004 USED     CONSTANT    2014_AES_sourcecode.ind_spaces.short_inst.asm:14.1-14.34
+XOR128 . . . . . . . . . . . . . . . LABEL  0x00012 NOT USED CONSTANT    2014_AES_sourcecode.ind_spaces.short_inst.asm:49.1-49.8
+XORNEXT  . . . . . . . . . . . . . . LABEL  0x00013 USED     CONSTANT    2014_AES_sourcecode.ind_spaces.short_inst.asm:50.1-50.9
+XORROUNDKEY  . . . . . . . . . . . . NUMBER 0x00004 USED     CONSTANT    2014_AES_sourcecode.ind_spaces.short_inst.asm:12.1-12.36

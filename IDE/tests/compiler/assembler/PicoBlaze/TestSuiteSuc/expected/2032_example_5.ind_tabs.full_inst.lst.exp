@@ -1,0 +1,1667 @@
+                   1     ; KCPSM3 Program - Control and calculation for Frequency Generator design using the
+                   2     ;                 Spartan-3E Starter Kit.
+                   3     ; Interfaces with the rotary encoder and LCD display to enable a frequency to be set.
+                   4     ; Converts the BCD frequency value into a binary integer and then performs the high
+                   5     ; precision calculation necessary to derive the control numbers required by the high
+                   6     ; performance Direct Digital Synthesis (DDS) circuit implemented in hardware.
+                   7     ;
+                   8     ; LEDs are connected and used as edit mode indicators.
+                   9     device kcpsm2
+                  10     ; Substantial comments are included in line with the code below and should be used
+                  11     ; in conjunction with the documentation provided with the complete reference design.
+                  12     ;
+                  13     ;
+                  14     ;
+                  15     ; Ken Chapman - Xilinx Ltd
+                  16     ;
+                  17     ; Version v1.00 - 13th July 2006
+                  18     ;
+                  19     ;**************************************************************************************
+                  20     ;Port definitions
+                  21     ;**************************************************************************************
+                  22     ;
+                  23     ;
+                  24     ;
+  00080           25     led_port		EQU		0x80			;8 simple LEDs
+  00001           26     led0			EQU		0x01			;     LED 0 - bit0
+  00002           27     led1			EQU		0x02			;         1 - bit1
+  00004           28     led2			EQU		0x04			;         2 - bit2
+  00008           29     led3			EQU		0x08			;         3 - bit3
+  00010           30     led4			EQU		0x10			;         4 - bit4
+  00020           31     led5			EQU		0x20			;         5 - bit5
+  00040           32     led6			EQU		0x40			;         6 - bit6
+  00080           33     led7			EQU		0x80			;         7 - bit7
+                  34     ;
+                  35     ;
+  00000           36     rotary_port		EQU		0x00			;Read status of rotary encoder
+  00001           37     rotary_left		EQU		0x01			; Direction of last move Left=1 Right=0  - bit0
+  00002           38     rotary_press		EQU		0x02			;     Centre press contact (active High) - bit1
+                  39     ;
+                  40     ;
+                  41     ;LCD interface ports
+                  42     ;
+                  43     ;The master enable signal is not used by the LCD display itself
+                  44     ;but may be required to confirm that LCD communication is active.
+                  45     ;This is required on the Spartan-3E Starter Kit if the StrataFLASH
+                  46     ;is used because it shares the same data pins and conflicts must be avoided.
+                  47     ;
+  00040           48     lcd_output_port		EQU		0x40			;LCD character module output data and control
+  00001           49     lcd_e			EQU		0x01			;   active High Enable        E - bit0
+  00002           50     lcd_rw			EQU		0x02			;   Read=1 Write=0           RW - bit1
+  00004           51     lcd_rs			EQU		0x04			;   Instruction=0 Data=1     RS - bit2
+  00008           52     lcd_drive		EQU		0x08			;   Master enable (active High) - bit3
+  00010           53     lcd_db4			EQU		0x10			;   4-bit              Data DB4 - bit4
+  00020           54     lcd_db5			EQU		0x20			;   interface          Data DB5 - bit5
+  00040           55     lcd_db6			EQU		0x40			;                      Data DB6 - bit6
+  00080           56     lcd_db7			EQU		0x80			;                      Data DB7 - bit7
+                  57     ;
+                  58     ;
+  00001           59     lcd_input_port		EQU		0x01			;LCD character module input data
+  00010           60     lcd_read_db4		EQU		0x10			;    4-bit           Data DB4 - bit4
+  00020           61     lcd_read_db5		EQU		0x20			;    interface       Data DB5 - bit5
+  00040           62     lcd_read_db6		EQU		0x40			;                    Data DB6 - bit6
+  00080           63     lcd_read_db7		EQU		0x80			;                    Data DB7 - bit7
+                  64     ;
+                  65     ;
+                  66     ;
+                  67     ;DDS control ports
+                  68     ;
+                  69     ;DDS control word is 32-bits
+                  70     ;
+  00002           71     dds_control0_port	EQU		0x02			; dds_control_word(7:0)
+  00004           72     dds_control1_port	EQU		0x04			; dds_control_word(15:8)
+  00008           73     dds_control2_port	EQU		0x08			; dds_control_word(23:16)
+  00010           74     dds_control3_port	EQU		0x10			; dds_control_word(31:24)
+                  75     ;
+                  76     ;Frequency scaling control word is 5-bits
+                  77     ;
+  00020           78     dds_scaling_port	EQU		0x20			; dds_scaling_word(4:0)
+                  79     ;
+                  80     ;
+                  81     ;**************************************************************************************
+                  82     ;Special Register usage
+                  83     ;**************************************************************************************
+                  84     ;
+                  85     ;**************************************************************************************
+                  86     ;Scratch Pad Memory Locations
+                  87     ;**************************************************************************************
+                  88     ;
+  00000           89     rotary_status		EQU		0x00			;Status of rotary encoder
+  00080           90     rotary_event		EQU		0x80			;  flag set by interrupt in 'rotary_status' - bit7
+                  91     ;
+  00001           92     isr_preserve_s0		EQU		0x01			;Preserve s0 contents during ISR
+                  93     ;
+  00002           94     led_pattern		EQU		0x02			;LED pattern used in rotation mode
+                  95     ;
+                  96     ;
+                  97     ;BCD digits representing selected and displayed frequency
+                  98     ;
+  00003           99     bcd_digit0		EQU		0x03			; value           1
+  00004          100     bcd_digit1		EQU		0x04			;                10
+  00005          101     bcd_digit2		EQU		0x05			;               100
+  00006          102     bcd_digit3		EQU		0x06			;             1,000
+  00007          103     bcd_digit4		EQU		0x07			;            10,000
+  00008          104     bcd_digit5		EQU		0x08			;           100,000
+  00009          105     bcd_digit6		EQU		0x09			;         1,000,000
+  0000A          106     bcd_digit7		EQU		0x0a			;        10,000,000
+  0000B          107     bcd_digit8		EQU		0x0b			;       100,000,000
+                 108     ;
+                 109     ;
+                 110     ;Binary integer representation of BCD value
+                 111     ;
+  0000C          112     frequency0		EQU		0x0c			;LS byte
+  0000D          113     frequency1		EQU		0x0d
+  0000E          114     frequency2		EQU		0x0e
+  0000F          115     frequency3		EQU		0x0f			;MS byte
+                 116     ;
+                 117     ;
+                 118     ;Control of frequency selection values
+                 119     ;
+  00010          120     cursor_position		EQU		0x10			; Pointer to edit position on LCD
+  00011          121     edit_digit_pointer	EQU		0x11			; BCD digit to be changed
+                 122     ;
+                 123     ;
+                 124     ;
+                 125     ;80-bit product resulting from 32-bit frequency x 48-bit scaling constant
+                 126     ;
+  00012          127     product0		EQU		0x12			;LS byte
+  00013          128     product1		EQU		0x13
+  00014          129     product2		EQU		0x14
+  00015          130     product3		EQU		0x15
+  00016          131     product4		EQU		0x16
+  00017          132     product5		EQU		0x17
+  00018          133     product6		EQU		0x18
+  00019          134     product7		EQU		0x19
+  0001A          135     product8		EQU		0x1a
+  0001B          136     product9		EQU		0x1b			;MS byte
+                 137     ;
+                 138     ;Local copies of the DDS control word and DDS scaling word
+                 139     ;
+  0001C          140     dds_control0		EQU		0x1c			; dds_control_word(7:0)
+  0001D          141     dds_control1		EQU		0x1d			; dds_control_word(15:8)
+  0001E          142     dds_control2		EQU		0x1e			; dds_control_word(23:16)
+  0001F          143     dds_control3		EQU		0x1f			; dds_control_word(31:24)
+  00020          144     dds_scaling		EQU		0x20			; dds_scaling_word(4:0)
+                 145     ;
+                 146     ;**************************************************************************************
+                 147     ; Useful data constants
+                 148     ;**************************************************************************************
+                 149     ;
+                 150     ; To convert the frequency into a DDS control value a high precision scaling
+                 151     ; factor is used. This is a 48-bit number which converts the frequency presented
+                 152     ; as an 32-bit integer into the 32-bit value required by the phase accumulator
+                 153     ; to synthesize the desired frequency. The scaling factor is derived using the
+                 154     ; following method. First I will consider the scaling factor which results in the
+                 155     ; desired frequency being generated directly at the output of the phase accumulator
+                 156     ; which is suitable for low frequencies in which a few ns of jitter is acceptable.
+                 157     ;
+                 158     ; 'Fpa' is frequency generated by the MSB of the phase accumulator.
+                 159     ; 'p' is number of phase accumulator which in this case is 32 bits.
+                 160     ; 'clk' is the input clock frequency to the phase accumulator which is 200MHz.
+                 161     ; 'N' is the DDS control word value which is also 'p' bits (32 in this case).
+                 162     ;
+                 163     ; Frequency at MSB of phase accumulator is then
+                 164     ;
+                 165     ;       Fpa = clk x N / (2^p)
+                 166     ;
+                 167     ; Note that the maximum value allowed for 'N' is (2^p)/2 which results in Fpa=clk/2.
+                 168     ;  for 'N' greater than that value 'Fpa' would decrease in frequency (aliasing).
+                 169     ;
+                 170     ;
+                 171     ; By simple reorganisation of the equation we can compute 'N'
+                 172     ;
+                 173     ;       N = Fpa x (2^p) / clk
+                 174     ;
+                 175     ;
+                 176     ; Now it is easier to approach the next step using specific example.
+                 177     ;
+                 178     ; So for a frequency of Fpa = 1MHz then
+                 179     ;       N = 1MHz x (2^32)/200MHz = 21474836.48
+                 180     ;
+                 181     ; We must use the nearest 32-bit integer value 21474836 and this in turn
+                 182     ; is best viewed as the 32-bit hexadecimal value 0147AE14.
+                 183     ;
+                 184     ; In this case the value we have to work with is a 32-bit integer frequency
+                 185     ; value of 1 million which is 000F4240.
+                 186     ;
+                 187     ; So now we need to translate the value 000F4240 into 0147AE14. This is
+                 188     ; where a 48-bit scaling value is used together with a full precision multiplier
+                 189     ; as this ensures adequate accuracy of the final frequency.
+                 190     ;
+                 191     ;        32-bit frequency value                  ffffffff
+                 192     ;        48-bit scaling value              x ssssssssssss
+                 193     ;                                    --------------------
+                 194     ;        80-bit product              nnnnnnnnnnnnnnnnnnnn
+                 195     ;
+                 196     ; The art is to organise the scaling factor into the range where the most is made of
+                 197     ; the 48-bit resolution available but which will result in the correct 32-bit output.
+                 198     ; The way this is achieved is the select an appropriate 32-bits from the available 80-bit
+                 199     ; product for use as 'N' and truncate 'y' least significant bits.
+                 200     ;
+                 201     ; From this we can deduce that for a target frequency 'Ft' at the input then the
+                 202     ; scaling value 'S' is given by
+                 203     ;
+                 204     ;    S = N x (2^y) / Ft    with the condition that S < 2^48 but as large as possible
+                 205     ;
+                 206     ; For best accuracy we calculate 'S' using the full precision value of 'N' divided
+                 207     ; by Ft and then multiply continuously by 2 until we reach the biggest value less
+                 208     ; that 2^48. The number of multiplications by 2 indicating the value of 'y'.
+                 209     ;
+                 210     ; In this case we find that 'y' is 43.....
+                 211     ;       S = 21474836.48 x (2^43) / 1000000 = 21.47483648 x (2^43)
+                 212     ;                                          = 188894659314785.80854784
+                 213     ;
+                 214     ;  ...round to nearest integer and convert to hexadecimal S = ABCC77118462
+                 215     ;
+                 216     ; N will be taken from the 80 bit product by removing the 43 LSBs and the 5 MSBs
+                 217     ; to leave the 32 active bits required. This is best achieved by shifting left
+                 218     ; by 5 places (multiply by 2^5=32) and keeping the upper 32-bits.
+                 219     ;
+                 220     ;
+                 221     ; Sanity check....
+                 222     ;   Note that most calculators do not support >64 bit values to you will either
+                 223     ;   need to decompose your calculation and perform some of it manually or trust
+                 224     ;   the PicoBlaze implementation :-)
+                 225     ;
+                 226     ;     Ft = 1MHz =                         000F4240
+                 227     ;             S =                  x  ABCC77118462
+                 228     ;                             --------------------
+                 229     ;                             000A3D70A3D70A405C80
+                 230     ;
+                 231     ;     shift left 5 places                     x 20
+                 232     ;                             --------------------
+                 233     ;                             0147AE147AE1480B9000
+                 234     ;
+                 235     ; As expected, the most significant 32-bit (4 bytes) are 0147AE14 hex which is
+                 236     ; the DDS control word for 1MHz calculated previously.
+                 237     ;
+                 238     ; ***
+                 239     ;
+                 240     ; Now I will consider how this needs to be modified for the circuit presented
+                 241     ; which has a second DCM connected to the output of the phase accumulator to
+                 242     ; multiply the synthesized frequency and reduce cycle to cycle jitter at
+                 243     ; the same time. There is then a clock divider circuit connected to the output
+                 244     ; of the DCM which allows lower frequencies to be formed a different way (more of
+                 245     ; that later). As a minimum that divider circuit will divide by 2 which ensures that
+                 246     ; a square wave is presented to the clocked put pin. So in this circuit the fundamental
+                 247     ; multiplication factor is 8 formed by a 16 times multiplication by the DCM (256/16) and
+                 248     ; then a divide by 2.
+                 249     ;
+                 250     ; The overall multiplication factor of this sebsequent circuit means that for final
+                 251     ; output from the DCM to be the desired frequency, the output from the phase accumulator
+                 252     ; needs to be the same number of times smaller. This is not a bad thing because the
+                 253     ; percentage jitter of waveforms produced by the phase accumulator is better for lower
+                 254     ; frequencies made from more clock cycles.
+                 255     ;
+                 256     ; So we modify the basic equation to
+                 257     ;
+                 258     ;    Fout = Frequency at output of DCM
+                 259     ;       M = Multiplying factor of DCM
+                 260     ;
+                 261     ;    Fout = M x Fpa = M x clk x N / (2^p)
+                 262     ;
+                 263     ;
+                 264     ; By simple reorganisation of the equation we can compute 'N'
+                 265     ;
+                 266     ;       N = Fout x (2^p) / (clk x M)
+                 267     ;
+                 268     ;
+                 269     ; In this design M=8, p=32, clk=200MHz
+                 270     ;
+                 271     ; So now consider generating a nominal maximum frequency of 100MHz which will require
+                 272     ; the frequency synthesized by the phase accumulator to be 12.5MHz.
+                 273     ;
+                 274     ;       N = 100MHz x (2^32) / (200MHz x 8) = 268435456 = 10000000 Hex
+                 275     ;
+                 276     ; This all seems like a very convenient number but it simply reflects that 12.5MHz
+                 277     ; is a perfect division of the 200MHz clock and that that output from the phase
+                 278     ; accumulator will be formed perfectly of 16 of the 200MHz clock periods every time
+                 279     ; (8 Low and 8 High) with no additional jitter.
+                 280     ;
+                 281     ; So now we work out the scaling factor with the same rules as used previously that
+                 282     ; the scaling factor should be as large as possible within the 48-bits allocated.
+                 283     ;
+                 284     ;    S = N x (2^y) / Ft    with the condition that S < 2^48 but as large as possible
+                 285     ;
+                 286     ; In this case Ft = 100MHz = 055FE100 and the biggest value for S is found when using
+                 287     ; y=46
+                 288     ;
+                 289     ;    S = 268435456 x (2^46) / 100000000 = 2.68435456 x (2^46)
+                 290     ;                                       = 188894659314785.80854784
+                 291     ;
+                 292     ;      round to 188894659314786  = ABCC77118462
+                 293     ;
+                 294     ; Actually this is the exact same scaling constant as previously because the
+                 295     ; frequency to be synthesized by the phase accumulator is 8 times smaller but the
+                 296     ; value of 'S' is deliberate scaled to be as large as possible. In fact, 'S' in this
+                 297     ; case has been scaled up by a factor of 8 to arrive at the same value. So after
+                 298     ; using the scaling constant to form the 80 bit product, this time we will remove
+                 299     ; the 46 LSBs and the 2 MSBs to leave the 32 active bits required. This is best
+                 300     ; achieved by shifting left by 2 places (multiply by 2^2=4) and keeping the upper
+                 301     ; 32-bits (last time we multiplied by 32 which was 8 times more).
+                 302     ;
+                 303     ;
+                 304     ; Sanity check....
+                 305     ;
+                 306     ;     Ft = 100MHz =                         055FE100
+                 307     ;               S =                  x  ABCC77118462
+                 308     ;                               --------------------
+                 309     ;                               04000000000001242200
+                 310     ;
+                 311     ;       shift left 5 places                     x 20
+                 312     ;                               --------------------
+                 313     ;                               1000000000001C908800
+                 314     ;
+                 315     ; As expected, the most significant 32-bit (4 bytes) are 10000000 hex which is
+                 316     ; the DDS control word for 12.5MHz at the phase accumulator output calculated
+                 317     ; previously.
+                 318     ;
+                 319     ;
+                 320     ; ********
+                 321     ;
+                 322     ;
+                 323     ; 48-bit Scaling factor constant to generate the phase accumulator control word
+                 324     ; from the integer frequency value.
+                 325     ;
+                 326     ;   S = AB CC 77 11 84 62
+                 327     ;
+                 328     ; Notes
+                 329     ;
+                 330     ; The 80-bit product must be shifted left 5 times and then most significant 32-bits
+                 331     ; used to provide DDS control word if the frequency required is to be synthesized
+                 332     ; directly at the output of the phase accumulator.
+                 333     ;
+                 334     ; The 80-bit product must be shifted left 2 times and then most significant 32-bits
+                 335     ; used to provide DDS control word if the frequency required is to be synthesized
+                 336     ; by the phase accumulator followed by a multiplying DCM and divider with overall
+                 337     ; frequency gain of 8 times.
+                 338     ;
+  00062          339     scale_constant0		EQU		0x62			;LS byte
+  00084          340     scale_constant1		EQU		0x84
+  00011          341     scale_constant2		EQU		0x11
+  00077          342     scale_constant3		EQU		0x77
+  000CC          343     scale_constant4		EQU		0xcc
+  000AB          344     scale_constant5		EQU		0xab			;MS byte
+                 345     ;
+                 346     ;
+                 347     ;
+                 348     ; ************************
+                 349     ;
+                 350     ;Constant to define a software delay of 1us. This must be adjusted to reflect the
+                 351     ;clock applied to KCPSM3. Every instruction executes in 2 clock cycles making the
+                 352     ;calculation highly predictable. The '6' in the following equation even allows for
+                 353     ;'CALL delay_1us' instruction in the initiating code.
+                 354     ;
+                 355     ; delay_1us_constant =  (clock_rate - 6)/4       Where 'clock_rate' is in MHz
+                 356     ;
+                 357     ;Example: For a 50MHz clock the constant value is (10-6)/4 = 11  (0B Hex).
+                 358     ;For clock rates below 10MHz the value of 1 must be used and the operation will
+                 359     ;become lower than intended.
+                 360     ;
+  0000B          361     delay_1us_constant	EQU		0x0b
+                 362     ;
+                 363     ;
+                 364     ;
+                 365     ;ASCII table
+                 366     ;
+  00061          367     character_a		EQU		0x61
+  00062          368     character_b		EQU		0x62
+  00063          369     character_c		EQU		0x63
+  00064          370     character_d		EQU		0x64
+  00065          371     character_e		EQU		0x65
+  00066          372     character_f		EQU		0x66
+  00067          373     character_g		EQU		0x67
+  00068          374     character_h		EQU		0x68
+  00069          375     character_i		EQU		0x69
+  0006A          376     character_j		EQU		0x6a
+  0006B          377     character_k		EQU		0x6b
+  0006C          378     character_l		EQU		0x6c
+  0006D          379     character_m		EQU		0x6d
+  0006E          380     character_n		EQU		0x6e
+  0006F          381     character_o		EQU		0x6f
+  00070          382     character_p		EQU		0x70
+  00071          383     character_q		EQU		0x71
+  00072          384     character_r		EQU		0x72
+  00073          385     character_s		EQU		0x73
+  00074          386     character_t		EQU		0x74
+  00075          387     character_u		EQU		0x75
+  00076          388     character_v		EQU		0x76
+  00077          389     character_w		EQU		0x77
+  00078          390     character_x		EQU		0x78
+  00079          391     character_y		EQU		0x79
+  0007A          392     character_z		EQU		0x7a
+  00041          393     _character_a		EQU		0x41
+  00042          394     _character_b		EQU		0x42
+  00043          395     _character_c		EQU		0x43
+  00044          396     _character_d		EQU		0x44
+  00045          397     _character_e		EQU		0x45
+  00046          398     _character_f		EQU		0x46
+  00047          399     _character_g		EQU		0x47
+  00048          400     _character_h		EQU		0x48
+  00049          401     _character_i		EQU		0x49
+  0004A          402     _character_j		EQU		0x4a
+  0004B          403     _character_k		EQU		0x4b
+  0004C          404     _character_l		EQU		0x4c
+  0004D          405     _character_m		EQU		0x4d
+  0004E          406     _character_n		EQU		0x4e
+  0004F          407     _character_o		EQU		0x4f
+  00050          408     _character_p		EQU		0x50
+  00051          409     _character_q		EQU		0x51
+  00052          410     _character_r		EQU		0x52
+  00053          411     _character_s		EQU		0x53
+  00054          412     _character_t		EQU		0x54
+  00055          413     _character_u		EQU		0x55
+  00056          414     _character_v		EQU		0x56
+  00057          415     _character_w		EQU		0x57
+  00058          416     _character_x		EQU		0x58
+  00059          417     _character_y		EQU		0x59
+  0005A          418     _character_z		EQU		0x5a
+  00030          419     character_0		EQU		0x30
+  00031          420     character_1		EQU		0x31
+  00032          421     character_2		EQU		0x32
+  00033          422     character_3		EQU		0x33
+  00034          423     character_4		EQU		0x34
+  00035          424     character_5		EQU		0x35
+  00036          425     character_6		EQU		0x36
+  00037          426     character_7		EQU		0x37
+  00038          427     character_8		EQU		0x38
+  00039          428     character_9		EQU		0x39
+  0003A          429     character_colon		EQU		0x3a
+  0002E          430     character_stop		EQU		0x2e
+  0003B          431     character_semi_colon	EQU		0x3b
+  0002D          432     character_minus		EQU		0x2d
+  0002F          433     character_divide	EQU		0x2f			;'/'
+  0002B          434     character_plus		EQU		0x2b
+  0002C          435     character_comma		EQU		0x2c
+  0003C          436     character_less_than	EQU		0x3c
+  0003E          437     character_greater_than	EQU		0x3e
+  0003D          438     character_equals	EQU		0x3d
+  00020          439     character_space		EQU		0x20
+  0000D          440     character_cr		EQU		0x0d			;carriage return
+  0003F          441     character_question	EQU		0x3f			;'?'
+  00024          442     character_dollar	EQU		0x24
+  00021          443     character_exclaim	EQU		0x21			;'!'
+  00008          444     character_bs		EQU		0x08			;Back Space command character
+                 445     ;
+                 446     ;
+                 447     ;
+                 448     ;
+                 449     ;
+                 450     ;**************************************************************************************
+                 451     ;Initialise the system
+                 452     ;**************************************************************************************
+                 453     ;
+000 36215        454     cold_start:		CALL		lcd_reset		;initialise LCD display
+                 455     ;
+                 456     ;Write 'Frequency Generator' to LCD display and display for 4 seconds
+                 457     ;
+001 00510        458     			LOAD		s5, #0x10		;Line 1 position 0
+002 3622B        459     			CALL		lcd_cursor
+003 3618B        460     			CALL		disp_frequency
+004 00522        461     			LOAD		s5, #0x22		;Line 2 position 2
+005 3622B        462     			CALL		lcd_cursor
+006 3619E        463     			CALL		disp_generator
+007 361CD        464     			CALL		delay_1s		;wait 4 seconds
+008 361CD        465     			CALL		delay_1s
+009 361CD        466     			CALL		delay_1s
+00A 361CD        467     			CALL		delay_1s
+00B 36226        468     			CALL		lcd_clear		;clear screen
+                 469     ;
+                 470     ;
+                 471     ;Initial frequency of 100MHz
+                 472     ;
+00C 00000        473     			LOAD		s0, #0x00
+00D 00101        474     			LOAD		s1, #0x01
+                 475     			STORE		s0, bcd_digit0
+E: instruction not supported on the this device: STORE sX, ss.
+                 476     			STORE		s0, bcd_digit1
+E: instruction not supported on the this device: STORE sX, ss.
+                 477     			STORE		s0, bcd_digit2
+E: instruction not supported on the this device: STORE sX, ss.
+                 478     			STORE		s0, bcd_digit3
+E: instruction not supported on the this device: STORE sX, ss.
+                 479     			STORE		s0, bcd_digit4
+E: instruction not supported on the this device: STORE sX, ss.
+                 480     			STORE		s0, bcd_digit5
+E: instruction not supported on the this device: STORE sX, ss.
+                 481     			STORE		s0, bcd_digit6
+E: instruction not supported on the this device: STORE sX, ss.
+                 482     			STORE		s0, bcd_digit7
+E: instruction not supported on the this device: STORE sX, ss.
+                 483     			STORE		s1, bcd_digit8
+E: instruction not supported on the this device: STORE sX, ss.
+                 484     ;
+00E 00004        485     			LOAD		s0, #0x04		;Start position for editing frequency is 1MHz digit
+                 486     			STORE		s0, cursor_position
+E: instruction not supported on the this device: STORE sX, ss.
+00F 00009        487     			LOAD		s0, #bcd_digit6
+                 488     			STORE		s0, edit_digit_pointer
+E: instruction not supported on the this device: STORE sX, ss.
+                 489     ;
+                 490     ;
+010 3C001        491     			ENABLE		interrupt		;interrupts are used to detect rotary controller
+011 361C3        492     			CALL		delay_1ms
+012 00000        493     			LOAD		s0, #0x00		;clear the status of any spurious rotary events
+                 494     			STORE		s0, rotary_status	;   as a result of system turning on.
+E: instruction not supported on the this device: STORE sX, ss.
+                 495     ;
+                 496     ;**************************************************************************************
+                 497     ; Main program
+                 498     ;**************************************************************************************
+                 499     ;
+                 500     ; The main program is centred on the task of editing the frequency. It waits until the
+                 501     ; rotary control is used and then makes the appropriate changes. If the actual digit
+                 502     ; digit value is changed then the calculation to drive the DDS is performed each time.
+                 503     ;
+                 504     ; The start state is that of allowing the edit cursor position to be moved. Rotary
+                 505     ; inputs are detected by the interrupt service routine and set a flag bit which the
+                 506     ; main program then uses to adjust the cursor position and pointer to the corresponding
+                 507     ; BCD digit in memory.
+                 508     ;
+                 509     ; A press of the rotary control is detected by polling and used to change to the digit
+                 510     ; editing mode.
+                 511     ;
+                 512     ;
+013 36084        513     move_mode:		CALL		compute_dds_words	;compute DDS control values
+014 360B4        514     			CALL		display_freq		;refresh display with cursor position shown
+015 00001        515     			LOAD		s0, #led0		;indicate move mode on LEDs
+016 22080        516     			OUTPUT		s0, led_port
+017 20000        517     move_wait:		INPUT		s0, rotary_port		;read rotary encoder
+                 518     			TEST		s0, #rotary_press	;test for press of button which changes mode
+E: instruction not supported on the this device: TEST sX, kk.
+018 35445        519     			JUMP		nz, edit_mode
+                 520     			FETCH		s0, rotary_status	;check for any rotation of rotary control
+E: instruction not supported on the this device: FETCH sX, ss.
+                 521     			TEST		s0, #rotary_event
+E: instruction not supported on the this device: TEST sX, kk.
+019 35023        522     			JUMP		z, move_wait
+                 523     ;
+01A 0207F        524     			AND		s0, #0x7f		;clear flag now that action it is being processed
+                 525     			STORE		s0, rotary_status
+E: instruction not supported on the this device: STORE sX, ss.
+                 526     			FETCH		sa, cursor_position	;read current position
+E: instruction not supported on the this device: FETCH sX, ss.
+                 527     			FETCH		sb, edit_digit_pointer
+E: instruction not supported on the this device: FETCH sX, ss.
+                 528     			TEST		s0, #rotary_left	;determine direction to move cursor
+E: instruction not supported on the this device: TEST sX, kk.
+01B 35039        529     			JUMP		z, move_right
+                 530     ;
+  0002F          531     move_left:		COMPARE		sb, #bcd_digit8		;can not move left of 100MHz digit
+E: instruction not supported on the this device: COMPARE sX, kk.
+01C 3501F        532     			JUMP		z, move_mode
+01D 08B01        533     			ADD		sb, #0x01		;move to next higher BCD digit
+01E 0CA01        534     			SUB		sa, #0x01		;move cursor to match digit to be edited
+                 535     			COMPARE		sa, #0x09		;must skip over space separator
+E: instruction not supported on the this device: COMPARE sX, kk.
+01F 35037        536     			JUMP		z, skip_left
+                 537     			COMPARE		sa, #0x05		;must skip over decimal point
+E: instruction not supported on the this device: COMPARE sX, kk.
+020 35442        538     			JUMP		nz, edit_point_update
+021 0CA01        539     skip_left:		SUB		sa, #0x01		;move cursor further left
+022 34042        540     			JUMP		edit_point_update
+                 541     ;
+  00039          542     move_right:		COMPARE		sb, #bcd_digit0		;can not move right of 1Hz digit
+E: instruction not supported on the this device: COMPARE sX, kk.
+023 3501F        543     			JUMP		z, move_mode
+024 0CB01        544     			SUB		sb, #0x01		;move to next lower BCD digit
+025 08A01        545     			ADD		sa, #0x01		;move cursor to match digit to be edited
+                 546     			COMPARE		sa, #0x09		;must skip over space separator
+E: instruction not supported on the this device: COMPARE sX, kk.
+026 35041        547     			JUMP		z, skip_right
+                 548     			COMPARE		sa, #0x05		;must skip over decimal point
+E: instruction not supported on the this device: COMPARE sX, kk.
+027 35442        549     			JUMP		nz, edit_point_update
+028 08A01        550     skip_right:		ADD		sa, #0x01		;move cursor further right
+                 551     ;
+  00042          552     edit_point_update:	STORE		sa, cursor_position	;update edit value in memory
+E: instruction not supported on the this device: STORE sX, ss.
+                 553     			STORE		sb, edit_digit_pointer
+E: instruction not supported on the this device: STORE sX, ss.
+029 3401F        554     			JUMP		move_mode
+                 555     ;
+                 556     ;
+                 557     ; The edit mode is reached by pressing the rotary control. Since this is a simple switch
+                 558     ; a software de-bounce delay is used to wait for the knob to be released fully before
+                 559     ; entering the digit editing mode fully.
+                 560     ;
+                 561     ; In this mode rotations of the detected by the interrupt service routine are used to
+                 562     ; increment or decrement the digit value at the cursor position with carry/borrow to
+                 563     ; the left.
+                 564     ;
+                 565     ; A new press of the rotary control is detected by polling and used to change back to the
+                 566     ; cursor moving mode.
+                 567     ;
+                 568     ;
+02A 3607D        569     edit_mode:		CALL		wait_switch_release	;wait for switch press to end
+02B 36084        570     edit_display:		CALL		compute_dds_words	;compute DDS control values
+02C 360B4        571     			CALL		display_freq		;refresh display with new values
+02D 00002        572     			LOAD		s0, #led1		;indicate edit mode on LEDs
+02E 22080        573     			OUTPUT		s0, led_port
+02F 20000        574     edit_wait:		INPUT		s0, rotary_port		;read rotary encoder
+                 575     			TEST		s0, #rotary_press	;test for press of button which changes mode
+E: instruction not supported on the this device: TEST sX, kk.
+030 3547B        576     			JUMP		nz, end_edit_mode
+                 577     			FETCH		s0, rotary_status	;check for any rotation of rotary control
+E: instruction not supported on the this device: FETCH sX, ss.
+                 578     			TEST		s0, #rotary_event
+E: instruction not supported on the this device: TEST sX, kk.
+031 3504A        579     			JUMP		z, edit_wait
+                 580     ;
+032 0207F        581     			AND		s0, #0x7f		;clear flag now that action it is being processed
+                 582     			STORE		s0, rotary_status
+E: instruction not supported on the this device: STORE sX, ss.
+                 583     			FETCH		sb, edit_digit_pointer	;read pointer to BCD digit for initial change
+E: instruction not supported on the this device: FETCH sX, ss.
+                 584     			TEST		s0, #rotary_left	;determine direction to increment or decrement
+E: instruction not supported on the this device: TEST sX, kk.
+033 35068        585     			JUMP		z, inc_digit
+                 586     ;
+                 587     ; Decrement the value starting at the current position and borrowing from the left.
+                 588     ; However the value needs to bottom out at all 0's from the editing position.
+                 589     ;
+                 590     ;
+  00055          591     dec_digit:		FETCH		sa, @sb			;read digit value at pointer position
+E: instruction not supported on the this device: FETCH sX, sY.
+034 0CA01        592     			SUB		sa, #0x01		;decrement digit
+                 593     			COMPARE		sa, #0xff		;test for borrow from next digit
+E: instruction not supported on the this device: COMPARE sX, kk.
+035 3505B        594     			JUMP		z, dec_borrow
+                 595     			STORE		sa, @sb			;store decremented digit value
+E: instruction not supported on the this device: STORE sX, sY.
+036 34046        596     			JUMP		edit_display		;decrement task complete
+037 00A09        597     dec_borrow:		LOAD		sa, #0x09		;current digit rolls over to nine
+                 598     			STORE		sa, @sb			;store '9' digit value
+E: instruction not supported on the this device: STORE sX, sY.
+                 599     			COMPARE		sb, #bcd_digit8		;check if working on 100MHz digit
+E: instruction not supported on the this device: COMPARE sX, kk.
+038 35061        600     			JUMP		z, set_min_value
+039 08B01        601     			ADD		sb, #0x01		;increment pointer to next most significant digit
+03A 34055        602     			JUMP		dec_digit		;decrement next digit up.
+                 603     ;
+  00061          604     set_min_value:		FETCH		sb, edit_digit_pointer	;Must fill digits from insert to MS-Digit with 000...
+E: instruction not supported on the this device: FETCH sX, ss.
+03B 00A00        605     			LOAD		sa, #0x00
+  00063          606     fill_min:		STORE		sa, @sb
+E: instruction not supported on the this device: STORE sX, sY.
+                 607     			COMPARE		sb, #bcd_digit8		;check if filled to 100MHz digit
+E: instruction not supported on the this device: COMPARE sX, kk.
+03C 35046        608     			JUMP		z, edit_display
+03D 08B01        609     			ADD		sb, #0x01		;fill next higher digit
+03E 34063        610     			JUMP		fill_min
+                 611     ;
+                 612     ; Increment the value starting at the current position and carrying to the left.
+                 613     ; However the value needs to saturate to all 9's from the editing position.
+                 614     ;
+  00068          615     inc_digit:		FETCH		sa, @sb			;read digit value at pointer position
+E: instruction not supported on the this device: FETCH sX, sY.
+03F 08A01        616     			ADD		sa, #0x01		;increment digit
+                 617     			COMPARE		sa, #0x0a		;test for carry to next digit
+E: instruction not supported on the this device: COMPARE sX, kk.
+040 3506E        618     			JUMP		z, inc_carry
+                 619     			STORE		sa, @sb			;store incremented digit value
+E: instruction not supported on the this device: STORE sX, sY.
+041 34046        620     			JUMP		edit_display		;increment task complete
+042 00A00        621     inc_carry:		LOAD		sa, #0x00		;current digit rolls over to zero
+                 622     			STORE		sa, @sb			;store zero digit value
+E: instruction not supported on the this device: STORE sX, sY.
+                 623     			COMPARE		sb, #bcd_digit8		;check if working on 100MHz digit
+E: instruction not supported on the this device: COMPARE sX, kk.
+043 35074        624     			JUMP		z, set_max_value
+044 08B01        625     			ADD		sb, #0x01		;increment pointer to next most significant digit
+045 34068        626     			JUMP		inc_digit		;increment next digit up.
+                 627     ;
+  00074          628     set_max_value:		FETCH		sb, edit_digit_pointer	;Must fill digits from insert to MS-Digit with 999...
+E: instruction not supported on the this device: FETCH sX, ss.
+046 00A09        629     			LOAD		sa, #0x09
+  00076          630     fill_max:		STORE		sa, @sb
+E: instruction not supported on the this device: STORE sX, sY.
+                 631     			COMPARE		sb, #bcd_digit8		;check if filled to 100MHz digit
+E: instruction not supported on the this device: COMPARE sX, kk.
+047 35046        632     			JUMP		z, edit_display
+048 08B01        633     			ADD		sb, #0x01		;fill next higher digit
+049 34076        634     			JUMP		fill_max
+                 635     ;
+04A 3607D        636     end_edit_mode:		CALL		wait_switch_release	;wait for end of switch press
+04B 3401F        637     			JUMP		move_mode		;then go to move cursor mode
+                 638     ;
+                 639     ;
+                 640     ; Routine to poll the press switch with de-bounce delay and wait for it to be
+                 641     ; released. Any rotation inputs detected by the interrupt
+                 642     ; service routine are cleared before returning.
+                 643     ;
+04C 361C8        644     wait_switch_release:	CALL		delay_20ms		;delay to aid switch de-bounce
+04D 20000        645     			INPUT		s0, rotary_port		;read rotary encoder
+                 646     			TEST		s0, #rotary_press	;test if button is still being pressed
+E: instruction not supported on the this device: TEST sX, kk.
+04E 3547D        647     			JUMP		nz, wait_switch_release
+04F 00000        648     			LOAD		s0, #0x00		;clear flag indicating any rotary events
+                 649     			STORE		s0, rotary_status
+E: instruction not supported on the this device: STORE sX, ss.
+050 24000        650     			RETURN
+                 651     ;
+                 652     ;**************************************************************************************
+                 653     ; Compute DDS control words from currently display frequency value
+                 654     ;**************************************************************************************
+                 655     ;
+                 656     ; This routine reads the current BCD value and converts it into a 32-bit binary
+                 657     ; integer. It then multiplies it by a 48-bit scaling factor (see notes in the
+                 658     ; constants section above) to form a full precision 80-bit product.
+                 659     ;
+                 660     ; From this product the 32-bit DDS control word must be extracted. For frequencies of
+                 661     ; 50MHz or above the DDS control word is formed by shifting the product left by 2 places
+                 662     ; (multiply by 4) and then keeping only the most significant 32-bits (4 bytes).
+                 663     ;
+                 664     ; Also for frequencies of 50MHz and above, there is no additional division performed
+                 665     ; after the DCM which multiplies frequency and reduces the jitter. Therefore the DDS_scaling
+                 666     ; word will be set to zero and the output of the DCM will divide by 2.
+                 667     ;
+                 668     ;   Freq     DDS control word    DDS Scaling      Synthesized Frequency
+                 669     ;                                                  of Phase Accumulator
+                 670     ;
+                 671     ;  50MHz      08000000              00                   6.25MHz
+                 672     ; 100MHz      10000000              00                  12.50MHz
+                 673     ;
+                 674     ; You will notice that for frequencies of 50MHz and above, the upper byte of the
+                 675     ; DDS control word is 08 hex or greater. In other words, bit3 and/or bit4 of that byte
+                 676     ; are High (bits 27 and/or 28 of the full 32-bit word). This is the indication that
+                 677     ; the control words are complete.
+                 678     ;
+                 679     ; For frequencies below 50MHz an additional process is required. The reason for this
+                 680     ; becomes clear if we think about the lowest frequency of 1Hz. In that case the 80-bit
+                 681     ; product is the same as the 48-bit scaling constant 00000000ABCC77118462. Once this
+                 682     ; has been multiplied by 4 (shifted left 2 places) it becomes 00000002AF31DC461188 and the
+                 683     ; most significant 32-bits are only 00000002 hex. If we put this back into the basic
+                 684     ; equations for the phase accumulator we find that the output frequency of the phase
+                 685     ; accumulator would be
+                 686     ;
+                 687     ;    Fout = M x clk x N / (2^p)
+                 688     ;
+                 689     ;         = 8 x 200MHz x 2 / (2^32) = 0.745 Hz
+                 690     ;
+                 691     ; There are two important observations we can make. Firstly we have lost accuracy because
+                 692     ; the resolution of the DDS control word has become too granular at low amplitudes.
+                 693     ; Secondly this would never even work because the frequency synthesized by the phase
+                 694     ; accumulator would be 0.745/8 = 0.0931 Hz which is seriously slow and a way below the
+                 695     ; frequency at which the DCM can even work.
+                 696     ;
+                 697     ; The solution to both of these issues is to ensure that the DDS control word is always
+                 698     ; formed to be in the range that would result in an output of 50MHz or above. In other
+                 699     ; words to keep the phase accumulator output in the range 6.25MHz to 12.5MHz such that
+                 700     ; the DCM is able to work and only has to deal with one octave of input variation. This
+                 701     ; can be achieved by shifting the 80-bit product left more times until bits 27 and 28
+                 702     ; of the most significant 32-bits are not zero.
+                 703     ;
+                 704     ; For each shift left the synthesized frequency is being doubled and therefore the final
+                 705     ; output from the DCM must be divided by a further factor of 2. This is achieved using
+                 706     ; a multiplexer which is guided to select the appropriate output from a simple binary
+                 707     ; counter.
+                 708     ;
+                 709     ; Returning to the example of 1Hz, the 80-bit product will be shifted left by the default
+                 710     ; 2 places (multiplied by 4), but will then need to be shifted left by a further 26 places
+                 711     ; which is like multiplying by 67108864 (04000000 hex).
+                 712     ;
+                 713     ;                            00000000ABCC77118462
+                 714     ;                          x                    4
+                 715     ;                            --------------------
+                 716     ;                            00000002AF31DC461188
+                 717     ;
+                 718     ;
+                 719     ;                          x             04000000
+                 720     ;                            --------------------
+                 721     ;                            0ABCC771184620000000
+                 722     ;
+                 723     ; So now the DDS control word is 0ABCC771 (180143985 decimal)and the frequency synthesized
+                 724     ; by the phase accumulator will be....
+                 725     ;
+                 726     ;   Fpa = clk x N / (2^p) = 200MHz x 180143985 / (2^32) = 8388608Hz
+                 727     ;
+                 728     ; The DCM will multiply this by a factor of 16 to give 134217728Hz and this will then
+                 729     ; be divided by the counter of which the 26th bit selected (26 decimal = 1A hex).
+                 730     ;
+                 731     ;   Fout = Fpa x 16 / (2^(D+1)) =  8388608Hz x 16 / (2^(26+1)) = 0.99999999947 Hz
+                 732     ;
+                 733     ;     'D' is the DDS Scaling factor
+                 734     ;         Note that bit0 of a counter is a clock division by 2 and hence the 'D+1'
+                 735     ;
+                 736     ; Clearly this implementation style has provided much greater accuracy and enables
+                 737     ; the DCM to work for all desired frequencies.
+                 738     ;
+                 739     ;
+                 740     ;   Freq     DDS control word    DDS Scaling      Synthesized Frequency
+                 741     ;                                                  of Phase Accumulator
+                 742     ;
+                 743     ; 100 MHz      10000000              00                  12.50MHz
+                 744     ;  50 MHz      08000000              00                   6.25MHz
+                 745     ;  25 MHz      08000000              01                   6.25MHz
+                 746     ;  12.5 MHz    08000000              02                   6.25MHz
+                 747     ;
+                 748     ;    1Hz       0ABCC771              1A                   8.388608 MHz
+                 749     ;
+                 750     ;
+                 751     ;
+                 752     ; In order to ensure the DCM is always provided with a frequency in an acceptable
+                 753     ; range, the value of absolute zero is never implemented and instead just a very low
+                 754     ; frequency is produced.
+                 755     ;   6.25MHz x 16 / (2^31+1) = 0.0233 Hz
+                 756     ;       which is 1 cycle every 43 seconds and that is pretty slow  :-)
+                 757     ;
+                 758     ;
+                 759     ;
+                 760     ;
+051 360E5        761     compute_dds_words:	CALL		bcd_to_integer		;convert BCD display value to 32-bit value
+052 36119        762     			CALL		scale_frequency		;80-bit product of 32-bit frequency x 48-bit scaling value
+                 763     			FETCH		sa, product9		;read the upper part of the 80-bit product into [sA,s9,s8,s7,s6,s5,s4]
+E: instruction not supported on the this device: FETCH sX, ss.
+                 764     			FETCH		s9, product8		; The least significant 24-bits of the 80-bit product will never
+E: instruction not supported on the this device: FETCH sX, ss.
+                 765     			FETCH		s8, product7		; be used for frequencies above 1Hz.
+E: instruction not supported on the this device: FETCH sX, ss.
+                 766     			FETCH		s7, product6		;The final 32-bit DDS control word will be formed in
+E: instruction not supported on the this device: FETCH sX, ss.
+                 767     			FETCH		s6, product5		; [sA,s9,s8,s7]
+E: instruction not supported on the this device: FETCH sX, ss.
+                 768     			FETCH		s5, product4
+E: instruction not supported on the this device: FETCH sX, ss.
+                 769     			FETCH		s4, product3
+E: instruction not supported on the this device: FETCH sX, ss.
+053 360A1        770     			CALL		shift80_left		;multiply DDS control word by 4 to achieve default value
+054 360A1        771     			CALL		shift80_left
+055 00B00        772     			LOAD		sb, #0x00		;default scaling factor is 2 (select counter bit0)
+  00090          773     normalise_loop:		TEST		sa, #0x18		;Test bits 27 and 28 of 32-bit DDS control word
+E: instruction not supported on the this device: TEST sX, kk.
+056 3549A        774     			JUMP		nz, store_dds_words	;DDS control word is normalised to above 50MHz output
+057 360A1        775     			CALL		shift80_left		;multiply DDS control word by 2
+058 08B01        776     			ADD		sb, #0x01		;Divide final value by 2 to compensate
+                 777     			COMPARE		sb, #0x1f		;Test for maximum division factor
+E: instruction not supported on the this device: COMPARE sX, kk.
+059 35490        778     			JUMP		nz, normalise_loop
+05A 00A08        779     			LOAD		sa, #0x08		;Set for minimum frequency
+05B 00900        780     			LOAD		s9, #0x00		; with phase accumulator set to generate 6.25MHz
+05C 00800        781     			LOAD		s8, #0x00
+05D 00700        782     			LOAD		s7, #0x00
+  0009A          783     store_dds_words:	STORE		s7, dds_control0	;store local copy of control word
+E: instruction not supported on the this device: STORE sX, ss.
+                 784     			STORE		s8, dds_control1	;store local copy of control word
+E: instruction not supported on the this device: STORE sX, ss.
+                 785     			STORE		s9, dds_control2	;store local copy of control word
+E: instruction not supported on the this device: STORE sX, ss.
+                 786     			STORE		sa, dds_control3	;store local copy of control word
+E: instruction not supported on the this device: STORE sX, ss.
+                 787     			STORE		sb, dds_scaling
+E: instruction not supported on the this device: STORE sX, ss.
+05E 360A9        788     			CALL		drive_dds_words		;output control words to DDS circuit
+05F 24000        789     			RETURN
+                 790     ;
+060 28406        791     shift80_left:		SL0		s4			;shift (most of the) 80-bit value in
+061 28500        792     			SLA		s5			;  [sA,s9,s8,s7,s6,s5,s4] left 1 place
+062 28600        793     			SLA		s6
+063 28700        794     			SLA		s7
+064 28800        795     			SLA		s8
+065 28900        796     			SLA		s9
+066 28A00        797     			SLA		sa
+067 24000        798     			RETURN
+                 799     ;
+                 800     ;**************************************************************************************
+                 801     ; Set DDS control words
+                 802     ;**************************************************************************************
+                 803     ;
+                 804     ; Because multiple ports are used, the idea is to update all of them in
+                 805     ; rapid succession to avoid too much disturbance in the frequency synthesis.
+                 806     ;
+                 807     ; dds_control_word should be supplied in register set [sA,s9,s8,s7]
+                 808     ; dds_scaling_word should be supplied in register s6.
+                 809     ;
+  000A9          810     drive_dds_words:	FETCH		s7, dds_control0
+E: instruction not supported on the this device: FETCH sX, ss.
+                 811     			FETCH		s8, dds_control1
+E: instruction not supported on the this device: FETCH sX, ss.
+                 812     			FETCH		s9, dds_control2
+E: instruction not supported on the this device: FETCH sX, ss.
+                 813     			FETCH		sa, dds_control3
+E: instruction not supported on the this device: FETCH sX, ss.
+                 814     			FETCH		s6, dds_scaling
+E: instruction not supported on the this device: FETCH sX, ss.
+068 22702        815     			OUTPUT		s7, dds_control0_port
+069 22804        816     			OUTPUT		s8, dds_control1_port
+06A 22908        817     			OUTPUT		s9, dds_control2_port
+06B 22A10        818     			OUTPUT		sa, dds_control3_port
+06C 22620        819     			OUTPUT		s6, dds_scaling_port
+06D 24000        820     			RETURN
+                 821     ;
+                 822     ;
+                 823     ;**************************************************************************************
+                 824     ; Display frequency on top line of the LCD and DDS data on the lower line
+                 825     ;**************************************************************************************
+                 826     ;
+                 827     ; The BCD value should be stored in scratch pad memory in 9 ascending locations
+                 828     ; called BCD_digit0 to BCD_digit8.
+                 829     ;
+                 830     ; The value is displayed in the format      xxx.xxx xxxMHz
+                 831     ;
+                 832     ; However, the most significant 2 digits will be blanked if zero.
+                 833     ;
+                 834     ; registers used s0,s1,s2,s3,s4,s5,s6,s7
+                 835     ;
+                 836     ;
+06E 3615D        837     display_freq:		CALL		display_dds_data	;display DDS information on lower line
+06F 00512        838     			LOAD		s5, #0x12		;Line 1 position 2
+070 3622B        839     			CALL		lcd_cursor
+                 840     			FETCH		s5, bcd_digit8		;read 100MHz digit
+E: instruction not supported on the this device: FETCH sX, ss.
+                 841     			COMPARE		s5, #0x00		;test for blanking
+E: instruction not supported on the this device: COMPARE sX, kk.
+071 350BE        842     			JUMP		z, blank_100m_digit
+072 360DF        843     			CALL		display_digit		;display non zero digit
+                 844     			FETCH		s5, bcd_digit7		;read 10MHz digit and display
+E: instruction not supported on the this device: FETCH sX, ss.
+073 360DF        845     			CALL		display_digit
+074 340C5        846     			JUMP		disp_1m_digit
+                 847     ;
+075 360E2        848     blank_100m_digit:	CALL		display_space		;blank 100MHz digit
+                 849     			FETCH		s5, bcd_digit7		;read 10MHz digit
+E: instruction not supported on the this device: FETCH sX, ss.
+                 850     			COMPARE		s5, #0x00		;test for blanking
+E: instruction not supported on the this device: COMPARE sX, kk.
+076 350C4        851     			JUMP		z, blank_10m_digit
+077 360DF        852     			CALL		display_digit		;display non zero digit
+078 340C5        853     			JUMP		disp_1m_digit
+                 854     ;
+079 360E2        855     blank_10m_digit:	CALL		display_space		;blank 10MHz digit
+                 856     ;
+  000C5          857     disp_1m_digit:		FETCH		s5, bcd_digit6		;read 1MHz digit and display
+E: instruction not supported on the this device: FETCH sX, ss.
+07A 360DF        858     			CALL		display_digit
+07B 0052E        859     			LOAD		s5, #character_stop	;display decimal point
+07C 361EB        860     			CALL		lcd_write_data
+                 861     ;
+07D 00208        862     			LOAD		s2, #bcd_digit5		;set pointer to 100KHz digit
+07E 360D8        863     			CALL		display_3_digits
+07F 360E2        864     			CALL		display_space
+080 00205        865     			LOAD		s2, #bcd_digit2		;set pointer to 100Hz digit
+081 360D8        866     			CALL		display_3_digits
+082 0054D        867     			LOAD		s5, #_character_m	;display 'MHz'
+083 361EB        868     			CALL		lcd_write_data
+084 00548        869     			LOAD		s5, #_character_h
+085 361EB        870     			CALL		lcd_write_data
+086 0057A        871     			LOAD		s5, #character_z
+087 361EB        872     			CALL		lcd_write_data
+                 873     ;
+                 874     			FETCH		s5, cursor_position	;reposition edit cursor on display
+E: instruction not supported on the this device: FETCH sX, ss.
+088 08510        875     			ADD		s5, #0x10		;on line 1
+089 3622B        876     			CALL		lcd_cursor
+08A 24000        877     			RETURN
+                 878     ;
+08B 00303        879     display_3_digits:	LOAD		s3, #0x03		;3 digits to display
+  000D9          880     _3digit_loop:		FETCH		s5, @s2
+E: instruction not supported on the this device: FETCH sX, sY.
+08C 360DF        881     			CALL		display_digit
+08D 0C201        882     			SUB		s2, #0x01		;decrement digit pointer
+08E 0C301        883     			SUB		s3, #0x01		;count digits displayed
+08F 354D9        884     			JUMP		nz, _3digit_loop
+090 24000        885     			RETURN
+                 886     ;
+091 08530        887     display_digit:		ADD		s5, #0x30		;convert BCD to ASCII character
+092 361EB        888     			CALL		lcd_write_data
+093 24000        889     			RETURN
+                 890     ;
+094 00520        891     display_space:		LOAD		s5, #character_space
+095 361EB        892     			CALL		lcd_write_data
+096 24000        893     			RETURN
+                 894     ;
+                 895     ;
+                 896     ;**************************************************************************************
+                 897     ; Convert 9 digit BCD frequency into 32-bit binary integer
+                 898     ;**************************************************************************************
+                 899     ;
+                 900     ;Both values are stored in scratch pad memory
+                 901     ;    BCD values in ascending locations BCD_digit0 to BCD_digit8
+                 902     ;    Binary frequency in ascending locations frequency0 to frequency3
+                 903     ;
+                 904     ;Each digit is read in turn and its value is determined by repeated
+                 905     ;decrement until reaching zero. Each decrement causes a value to be added
+                 906     ;to the memory locations forming the frequency value as binary integer.
+                 907     ;The process requires approximately 1600 instructions to convert the highest
+                 908     ;value 999,999,999 which is approximately 64us at 50MHz clock rate.
+                 909     ;
+                 910     ;Registers used s0,s1,s2,s3,s4,s5,s6,s7,s8,s9,sA,sB
+                 911     ;
+097 00209        912     bcd_to_integer:		LOAD		s2, #0x09		;9 digits to convert
+098 00000        913     			LOAD		s0, #0x00		;clear frequency value ready to accumulate result
+                 914     			STORE		s0, frequency0
+E: instruction not supported on the this device: STORE sX, ss.
+                 915     			STORE		s0, frequency1
+E: instruction not supported on the this device: STORE sX, ss.
+                 916     			STORE		s0, frequency2
+E: instruction not supported on the this device: STORE sX, ss.
+                 917     			STORE		s0, frequency3
+E: instruction not supported on the this device: STORE sX, ss.
+099 00B00        918     			LOAD		sb, #0x00		;initialise BCD digit weighting [sB,sA,s9,s8] to 1
+09A 00A00        919     			LOAD		sa, #0x00
+09B 00900        920     			LOAD		s9, #0x00
+09C 00801        921     			LOAD		s8, #0x01
+09D 00303        922     			LOAD		s3, #bcd_digit0		;locate LS-digit
+  000F0          923     next_bcd_to_int_digit:	FETCH		s1, @s3
+E: instruction not supported on the this device: FETCH sX, sY.
+  000F1          924     bcd_digit_convert:	COMPARE		s1, #0x00		;test for zero
+E: instruction not supported on the this device: COMPARE sX, kk.
+09E 35101        925     			JUMP		z, next_digit_value
+                 926     			FETCH		s0, frequency0		;add 32-bit digit weighting to memory value
+E: instruction not supported on the this device: FETCH sX, ss.
+09F 18040        927     			ADD		s0, s8
+                 928     			STORE		s0, frequency0
+E: instruction not supported on the this device: STORE sX, ss.
+                 929     			FETCH		s0, frequency1
+E: instruction not supported on the this device: FETCH sX, ss.
+0A0 1A048        930     			ADDCY		s0, s9
+                 931     			STORE		s0, frequency1
+E: instruction not supported on the this device: STORE sX, ss.
+                 932     			FETCH		s0, frequency2
+E: instruction not supported on the this device: FETCH sX, ss.
+0A1 1A050        933     			ADDCY		s0, sa
+                 934     			STORE		s0, frequency2
+E: instruction not supported on the this device: STORE sX, ss.
+                 935     			FETCH		s0, frequency3
+E: instruction not supported on the this device: FETCH sX, ss.
+0A2 1A058        936     			ADDCY		s0, sb
+                 937     			STORE		s0, frequency3
+E: instruction not supported on the this device: STORE sX, ss.
+0A3 0C101        938     			SUB		s1, #0x01		;decrement digit value
+0A4 340F1        939     			JUMP		bcd_digit_convert
+                 940     ;Increase weighting by 10x
+0A5 10758        941     next_digit_value:	LOAD		s7, sb			;copy existing weighting
+0A6 10650        942     			LOAD		s6, sa
+0A7 10548        943     			LOAD		s5, s9
+0A8 10440        944     			LOAD		s4, s8
+0A9 28806        945     			SL0		s8			;multiply weight by 4x (shift left 2 places)
+0AA 28900        946     			SLA		s9
+0AB 28A00        947     			SLA		sa
+0AC 28B00        948     			SLA		sb
+0AD 28806        949     			SL0		s8
+0AE 28900        950     			SLA		s9
+0AF 28A00        951     			SLA		sa
+0B0 28B00        952     			SLA		sb
+0B1 18820        953     			ADD		s8, s4			;add previous weight to form 5x multiplication
+0B2 1A928        954     			ADDCY		s9, s5
+0B3 1AA30        955     			ADDCY		sa, s6
+0B4 1AB38        956     			ADDCY		sb, s7
+0B5 28806        957     			SL0		s8			;multiply weight by 2x (shift left 1 places)
+0B6 28900        958     			SLA		s9
+0B7 28A00        959     			SLA		sa
+0B8 28B00        960     			SLA		sb			;weight value is now 10x previous value
+0B9 08301        961     			ADD		s3, #0x01		;move to next digit for conversion
+0BA 0C201        962     			SUB		s2, #0x01
+0BB 354F0        963     			JUMP		nz, next_bcd_to_int_digit
+0BC 24000        964     			RETURN
+                 965     ;
+                 966     ;
+                 967     ;**************************************************************************************
+                 968     ; 32-bit x 48-bit multiply to scale the integer frequency
+                 969     ;**************************************************************************************
+                 970     ;
+                 971     ;Multiply the 32-bit frequency binary integer by the 48-bit scaling factor
+                 972     ;to form a full precision 80-bit product.
+                 973     ;
+                 974     ;The frequency binary integer is stored in scratch pad memory using ascending
+                 975     ;locations frequency0 to frequency3
+                 976     ;
+                 977     ;The product will be stored in scratch pad memory using ascending
+                 978     ;locations product0 to product9
+                 979     ;
+                 980     ;The scaling factor is provided directly as constants
+                 981     ; scale_constant0 to scale_constant5
+                 982     ;
+                 983     ;The multiplication is performed as a 32-bit 'shift and add' process in which the
+                 984     ;integer frequency is examined LSB first using a register set [sB,sA,s9,s8] and
+                 985     ;a scaling accumulator is formed directly in the 'product' memory locations.
+                 986     ;
+                 987     ;The process requires up to 1772 instructions which is 3544 clock cycle or
+                 988     ;approximately 71us at 50MHz clock rate.
+                 989     ;
+                 990     ;Registers used s0,s1,s8,s9,sA,sB (s1,s8,s9,sA,sB clear on return)
+                 991     ;
+0BD 00000        992     scale_frequency:	LOAD		s0, #0x00		;clear accumulator section of 'product'
+                 993     			STORE		s0, product9
+E: instruction not supported on the this device: STORE sX, ss.
+                 994     			STORE		s0, product8
+E: instruction not supported on the this device: STORE sX, ss.
+                 995     			STORE		s0, product7
+E: instruction not supported on the this device: STORE sX, ss.
+                 996     			STORE		s0, product6
+E: instruction not supported on the this device: STORE sX, ss.
+                 997     			STORE		s0, product5
+E: instruction not supported on the this device: STORE sX, ss.
+                 998     			STORE		s0, product4
+E: instruction not supported on the this device: STORE sX, ss.
+                 999     			FETCH		sb, frequency3		;read frequency integer value
+E: instruction not supported on the this device: FETCH sX, ss.
+                1000     			FETCH		sa, frequency2
+E: instruction not supported on the this device: FETCH sX, ss.
+                1001     			FETCH		s9, frequency1
+E: instruction not supported on the this device: FETCH sX, ss.
+                1002     			FETCH		s8, frequency0
+E: instruction not supported on the this device: FETCH sX, ss.
+0BE 00120       1003     			LOAD		s1, #0x20		;32-bit multiply
+0BF 28B0E       1004     scale_mult_bit:		SR0		sb			;shift right frequency integer
+0C0 28A08       1005     			SRA		sa
+0C1 28908       1006     			SRA		s9
+0C2 28808       1007     			SRA		s8
+0C3 35D3C       1008     			JUMP		nc, product_shift	;no add if bit is zero (note carry is zero)
+                1009     			FETCH		s0, product4		;addition of scaling factor to most significant bits of product
+E: instruction not supported on the this device: FETCH sX, ss.
+0C4 08062       1010     			ADD		s0, #scale_constant0
+                1011     			STORE		s0, product4
+E: instruction not supported on the this device: STORE sX, ss.
+                1012     			FETCH		s0, product5
+E: instruction not supported on the this device: FETCH sX, ss.
+0C5 0A084       1013     			ADDCY		s0, #scale_constant1
+                1014     			STORE		s0, product5
+E: instruction not supported on the this device: STORE sX, ss.
+                1015     			FETCH		s0, product6
+E: instruction not supported on the this device: FETCH sX, ss.
+0C6 0A011       1016     			ADDCY		s0, #scale_constant2
+                1017     			STORE		s0, product6
+E: instruction not supported on the this device: STORE sX, ss.
+                1018     			FETCH		s0, product7
+E: instruction not supported on the this device: FETCH sX, ss.
+0C7 0A077       1019     			ADDCY		s0, #scale_constant3
+                1020     			STORE		s0, product7
+E: instruction not supported on the this device: STORE sX, ss.
+                1021     			FETCH		s0, product8
+E: instruction not supported on the this device: FETCH sX, ss.
+0C8 0A0CC       1022     			ADDCY		s0, #scale_constant4
+                1023     			STORE		s0, product8
+E: instruction not supported on the this device: STORE sX, ss.
+                1024     			FETCH		s0, product9
+E: instruction not supported on the this device: FETCH sX, ss.
+0C9 0A0AB       1025     			ADDCY		s0, #scale_constant5
+                1026     			STORE		s0, product9		;carry holds any overflow of addition
+E: instruction not supported on the this device: STORE sX, ss.
+  0013C         1027     product_shift:		FETCH		s0, product9		;Divide product by 2 (shift right by 1)
+E: instruction not supported on the this device: FETCH sX, ss.
+0CA 28008       1028     			SRA		s0			;overflow of addition included in shift
+                1029     			STORE		s0, product9
+E: instruction not supported on the this device: STORE sX, ss.
+                1030     			FETCH		s0, product8
+E: instruction not supported on the this device: FETCH sX, ss.
+0CB 28008       1031     			SRA		s0
+                1032     			STORE		s0, product8
+E: instruction not supported on the this device: STORE sX, ss.
+                1033     			FETCH		s0, product7
+E: instruction not supported on the this device: FETCH sX, ss.
+0CC 28008       1034     			SRA		s0
+                1035     			STORE		s0, product7
+E: instruction not supported on the this device: STORE sX, ss.
+                1036     			FETCH		s0, product6
+E: instruction not supported on the this device: FETCH sX, ss.
+0CD 28008       1037     			SRA		s0
+                1038     			STORE		s0, product6
+E: instruction not supported on the this device: STORE sX, ss.
+                1039     			FETCH		s0, product5
+E: instruction not supported on the this device: FETCH sX, ss.
+0CE 28008       1040     			SRA		s0
+                1041     			STORE		s0, product5
+E: instruction not supported on the this device: STORE sX, ss.
+                1042     			FETCH		s0, product4
+E: instruction not supported on the this device: FETCH sX, ss.
+0CF 28008       1043     			SRA		s0
+                1044     			STORE		s0, product4
+E: instruction not supported on the this device: STORE sX, ss.
+                1045     			FETCH		s0, product3
+E: instruction not supported on the this device: FETCH sX, ss.
+0D0 28008       1046     			SRA		s0
+                1047     			STORE		s0, product3
+E: instruction not supported on the this device: STORE sX, ss.
+                1048     			FETCH		s0, product2
+E: instruction not supported on the this device: FETCH sX, ss.
+0D1 28008       1049     			SRA		s0
+                1050     			STORE		s0, product2
+E: instruction not supported on the this device: STORE sX, ss.
+                1051     			FETCH		s0, product1
+E: instruction not supported on the this device: FETCH sX, ss.
+0D2 28008       1052     			SRA		s0
+                1053     			STORE		s0, product1
+E: instruction not supported on the this device: STORE sX, ss.
+                1054     			FETCH		s0, product0
+E: instruction not supported on the this device: FETCH sX, ss.
+0D3 28008       1055     			SRA		s0
+                1056     			STORE		s0, product0
+E: instruction not supported on the this device: STORE sX, ss.
+0D4 0C101       1057     			SUB		s1, #0x01		;move to next bit
+0D5 35525       1058     			JUMP		nz, scale_mult_bit
+0D6 24000       1059     			RETURN
+                1060     ;
+                1061     ;**************************************************************************************
+                1062     ; Display DDS control information on the lower line of the LCD display.
+                1063     ;**************************************************************************************
+                1064     ;
+                1065     ;Display the 32-bit DDS control word and 8-bit DDS scaling word.
+                1066     ;
+0D7 00520       1067     display_dds_data:	LOAD		s5, #0x20		;Line 2 position 0
+0D8 3622B       1068     			CALL		lcd_cursor
+0D9 0054E       1069     			LOAD		s5, #_character_n
+0DA 361EB       1070     			CALL		lcd_write_data
+0DB 0053D       1071     			LOAD		s5, #character_equals
+0DC 361EB       1072     			CALL		lcd_write_data
+0DD 0071F       1073     			LOAD		s7, #dds_control3	;pointer to most significant byte in memory
+0DE 36184       1074     			CALL		display_hex_32_bit
+0DF 360E2       1075     			CALL		display_space
+0E0 00544       1076     			LOAD		s5, #_character_d
+0E1 361EB       1077     			CALL		lcd_write_data
+0E2 0053D       1078     			LOAD		s5, #character_equals
+0E3 361EB       1079     			CALL		lcd_write_data
+                1080     			FETCH		s0, dds_scaling
+E: instruction not supported on the this device: FETCH sX, ss.
+0E4 3617E       1081     			CALL		display_hex_byte
+0E5 24000       1082     			RETURN
+                1083     ;
+                1084     ;**************************************************************************************
+                1085     ; Routines to display hexadecimal values on LCD display
+                1086     ;**************************************************************************************
+                1087     ;
+                1088     ;
+                1089     ; Convert hexadecimal value provided in register s0 into ASCII characters
+                1090     ;
+                1091     ; The value provided must can be any value in the range 00 to FF and will be converted into
+                1092     ; two ASCII characters.
+                1093     ;     The upper nibble will be represented by an ASCII character returned in register s3.
+                1094     ;     The lower nibble will be represented by an ASCII character returned in register s2.
+                1095     ;
+                1096     ; The ASCII representations of '0' to '9' are 30 to 39 hexadecimal which is simply 30 hex
+                1097     ; added to the actual decimal value. The ASCII representations of 'A' to 'F' are 41 to 46
+                1098     ; hexadecimal requiring a further addition of 07 to the 30 already added.
+                1099     ;
+                1100     ; Registers used s0, s2 and s3.
+                1101     ;
+0E6 10200       1102     hex_byte_to_ascii:	LOAD		s2, s0			;remember value supplied
+0E7 2800E       1103     			SR0		s0			;isolate upper nibble
+0E8 2800E       1104     			SR0		s0
+0E9 2800E       1105     			SR0		s0
+0EA 2800E       1106     			SR0		s0
+0EB 36179       1107     			CALL		hex_to_ascii		;convert
+0EC 10300       1108     			LOAD		s3, s0			;upper nibble value in s3
+0ED 10010       1109     			LOAD		s0, s2			;restore complete value
+0EE 0200F       1110     			AND		s0, #0x0f		;isolate lower nibble
+0EF 36179       1111     			CALL		hex_to_ascii		;convert
+0F0 10200       1112     			LOAD		s2, s0			;lower nibble value in s2
+0F1 24000       1113     			RETURN
+                1114     ;
+                1115     ; Convert hexadecimal value provided in register s0 into ASCII character
+                1116     ;
+                1117     ;Register used s0
+                1118     ;
+0F2 0C00A       1119     hex_to_ascii:		SUB		s0, #0x0a		;test if value is in range 0 to 9
+0F3 3597C       1120     			JUMP		c, number_char
+0F4 08007       1121     			ADD		s0, #0x07		;ASCII char A to F in range 41 to 46
+0F5 0803A       1122     number_char:		ADD		s0, #0x3a		;ASCII char 0 to 9 in range 30 to 40
+0F6 24000       1123     			RETURN
+                1124     ;
+                1125     ;
+                1126     ; Display the two character HEX value of the register contents 's0' on the LCD
+                1127     ; at the current cursor position.
+                1128     ;
+                1129     ; Registers used s0, s1, s2, s3, s4, s5
+                1130     ;
+0F7 3616D       1131     display_hex_byte:	CALL		hex_byte_to_ascii
+0F8 10518       1132     			LOAD		s5, s3
+0F9 361EB       1133     			CALL		lcd_write_data
+0FA 10510       1134     			LOAD		s5, s2
+0FB 361EB       1135     			CALL		lcd_write_data
+0FC 24000       1136     			RETURN
+                1137     ;
+                1138     ;
+                1139     ;
+                1140     ; Display the 32-bit value stored in 4 ascending memory locations as an 8 character
+                1141     ; HEX value at the current cursor position. Register s7 must contain the memory
+                1142     ; location of the most significant byte (which is also the highest address).
+                1143     ;
+                1144     ; Registers used s0, s1, s2, s3, s4, s5, s6, s7
+                1145     ;
+0FD 00604       1146     display_hex_32_bit:	LOAD		s6, #0x04		;4 bytes to display
+  00185         1147     disp32_loop:		FETCH		s0, @s7			;read byte
+E: instruction not supported on the this device: FETCH sX, sY.
+0FE 3617E       1148     			CALL		display_hex_byte	;display byte
+0FF 0C701       1149     			SUB		s7, #0x01		;decrement pointer
+100 0C601       1150     			SUB		s6, #0x01		;count bytes displayed
+101 25000       1151     			RETURN		z
+102 34185       1152     			JUMP		disp32_loop
+                1153     ;
+                1154     ;
+                1155     ;**************************************************************************************
+                1156     ;LCD text messages
+                1157     ;**************************************************************************************
+                1158     ;
+                1159     ;
+                1160     ;Display 'Frequency' on LCD at current cursor position
+                1161     ;
+103 00546       1162     disp_frequency:		LOAD		s5, #_character_f
+104 361EB       1163     			CALL		lcd_write_data
+105 00572       1164     			LOAD		s5, #character_r
+106 361EB       1165     			CALL		lcd_write_data
+107 00565       1166     			LOAD		s5, #character_e
+108 361EB       1167     			CALL		lcd_write_data
+109 00571       1168     			LOAD		s5, #character_q
+10A 361EB       1169     			CALL		lcd_write_data
+10B 00575       1170     			LOAD		s5, #character_u
+10C 361EB       1171     			CALL		lcd_write_data
+10D 00565       1172     			LOAD		s5, #character_e
+10E 361EB       1173     			CALL		lcd_write_data
+10F 0056E       1174     			LOAD		s5, #character_n
+110 361EB       1175     			CALL		lcd_write_data
+111 00563       1176     			LOAD		s5, #character_c
+112 361EB       1177     			CALL		lcd_write_data
+113 00579       1178     			LOAD		s5, #character_y
+114 361EB       1179     			CALL		lcd_write_data
+115 24000       1180     			RETURN
+                1181     ;
+                1182     ;Display 'Generator' on LCD at current cursor position
+                1183     ;
+116 00547       1184     disp_generator:		LOAD		s5, #_character_g
+117 361EB       1185     			CALL		lcd_write_data
+118 00565       1186     			LOAD		s5, #character_e
+119 361EB       1187     			CALL		lcd_write_data
+11A 0056E       1188     			LOAD		s5, #character_n
+11B 361EB       1189     			CALL		lcd_write_data
+11C 00565       1190     			LOAD		s5, #character_e
+11D 361EB       1191     			CALL		lcd_write_data
+11E 00572       1192     			LOAD		s5, #character_r
+11F 361EB       1193     			CALL		lcd_write_data
+120 00561       1194     			LOAD		s5, #character_a
+121 361EB       1195     			CALL		lcd_write_data
+122 00574       1196     			LOAD		s5, #character_t
+123 361EB       1197     			CALL		lcd_write_data
+124 0056F       1198     			LOAD		s5, #character_o
+125 361EB       1199     			CALL		lcd_write_data
+126 00572       1200     			LOAD		s5, #character_r
+127 361EB       1201     			CALL		lcd_write_data
+128 360E2       1202     			CALL		display_space
+129 00576       1203     			LOAD		s5, #character_v
+12A 361EB       1204     			CALL		lcd_write_data
+12B 00531       1205     			LOAD		s5, #character_1
+12C 361EB       1206     			CALL		lcd_write_data
+12D 0052E       1207     			LOAD		s5, #character_stop
+12E 361EB       1208     			CALL		lcd_write_data
+12F 00532       1209     			LOAD		s5, #character_2
+130 361EB       1210     			CALL		lcd_write_data
+131 24000       1211     			RETURN
+                1212     ;
+                1213     ;
+                1214     ;
+                1215     ;
+                1216     ;**************************************************************************************
+                1217     ;Software delay routines
+                1218     ;**************************************************************************************
+                1219     ;
+                1220     ;
+                1221     ;
+                1222     ;Delay of 1us.
+                1223     ;
+                1224     ;Constant value defines reflects the clock applied to KCPSM3. Every instruction
+                1225     ;executes in 2 clock cycles making the calculation highly predictable. The '6' in
+                1226     ;the following equation even allows for 'CALL delay_1us' instruction in the initiating code.
+                1227     ;
+                1228     ; delay_1us_constant =  (clock_rate - 6)/4       Where 'clock_rate' is in MHz
+                1229     ;
+                1230     ;Registers used s0
+                1231     ;
+132 0000B       1232     delay_1us:		LOAD		s0, #delay_1us_constant
+133 0C001       1233     wait_1us:		SUB		s0, #0x01
+134 355BB       1234     			JUMP		nz, wait_1us
+135 24000       1235     			RETURN
+                1236     ;
+                1237     ;Delay of 40us.
+                1238     ;
+                1239     ;Registers used s0, s1
+                1240     ;
+136 00128       1241     delay_40us:		LOAD		s1, #0x28		;40 x 1us = 40us
+137 361BA       1242     wait_40us:		CALL		delay_1us
+138 0C101       1243     			SUB		s1, #0x01
+139 355BF       1244     			JUMP		nz, wait_40us
+13A 24000       1245     			RETURN
+                1246     ;
+                1247     ;
+                1248     ;Delay of 1ms.
+                1249     ;
+                1250     ;Registers used s0, s1, s2
+                1251     ;
+13B 00219       1252     delay_1ms:		LOAD		s2, #0x19		;25 x 40us = 1ms
+13C 361BE       1253     wait_1ms:		CALL		delay_40us
+13D 0C201       1254     			SUB		s2, #0x01
+13E 355C4       1255     			JUMP		nz, wait_1ms
+13F 24000       1256     			RETURN
+                1257     ;
+                1258     ;Delay of 20ms.
+                1259     ;
+                1260     ;Delay of 20ms used during initialisation.
+                1261     ;
+                1262     ;Registers used s0, s1, s2, s3
+                1263     ;
+140 00314       1264     delay_20ms:		LOAD		s3, #0x14		;20 x 1ms = 20ms
+141 361C3       1265     wait_20ms:		CALL		delay_1ms
+142 0C301       1266     			SUB		s3, #0x01
+143 355C9       1267     			JUMP		nz, wait_20ms
+144 24000       1268     			RETURN
+                1269     ;
+                1270     ;Delay of approximately 1 second.
+                1271     ;
+                1272     ;Registers used s0, s1, s2, s3, s4
+                1273     ;
+145 00432       1274     delay_1s:		LOAD		s4, #0x32		;50 x 20ms = 1000ms
+146 361C8       1275     wait_1s:		CALL		delay_20ms
+147 0C401       1276     			SUB		s4, #0x01
+148 355CE       1277     			JUMP		nz, wait_1s
+149 24000       1278     			RETURN
+                1279     ;
+                1280     ;
+                1281     ;
+                1282     ;**************************************************************************************
+                1283     ;LCD Character Module Routines
+                1284     ;**************************************************************************************
+                1285     ;
+                1286     ;LCD module is a 16 character by 2 line display but all displays are very similar
+                1287     ;The 4-wire data interface will be used (DB4 to DB7).
+                1288     ;
+                1289     ;The LCD modules are relatively slow and software delay loops are used to slow down
+                1290     ;KCPSM3 adequately for the LCD to communicate. The delay routines are provided in
+                1291     ;a different section (see above in this case).
+                1292     ;
+                1293     ;
+                1294     ;Pulse LCD enable signal 'E' high for greater than 230ns (1us is used).
+                1295     ;
+                1296     ;Register s4 should define the current state of the LCD output port.
+                1297     ;
+                1298     ;Registers used s0, s4
+                1299     ;
+14A 06401       1300     lcd_pulse_e:		XOR		s4, #lcd_e		;E=1
+14B 22440       1301     			OUTPUT		s4, lcd_output_port
+14C 361BA       1302     			CALL		delay_1us
+14D 06401       1303     			XOR		s4, #lcd_e		;E=0
+14E 22440       1304     			OUTPUT		s4, lcd_output_port
+14F 24000       1305     			RETURN
+                1306     ;
+                1307     ;Write 4-bit instruction to LCD display.
+                1308     ;
+                1309     ;The 4-bit instruction should be provided in the upper 4-bits of register s4.
+                1310     ;Note that this routine does not release the master enable but as it is only
+                1311     ;used during initialisation and as part of the 8-bit instruction write it
+                1312     ;should be acceptable.
+                1313     ;
+                1314     ;Registers used s4
+                1315     ;
+150 024F8       1316     lcd_write_inst4:	AND		s4, #0xf8		;Enable=1 RS=0 Instruction, RW=0 Write, E=0
+151 22440       1317     			OUTPUT		s4, lcd_output_port	;set up RS and RW >40ns before enable pulse
+152 361D2       1318     			CALL		lcd_pulse_e
+153 24000       1319     			RETURN
+                1320     ;
+                1321     ;
+                1322     ;Write 8-bit instruction to LCD display.
+                1323     ;
+                1324     ;The 8-bit instruction should be provided in register s5.
+                1325     ;Instructions are written using the following sequence
+                1326     ; Upper nibble
+                1327     ; wait >1us
+                1328     ; Lower nibble
+                1329     ; wait >40us
+                1330     ;
+                1331     ;Registers used s0, s1, s4, s5
+                1332     ;
+154 10428       1333     lcd_write_inst8:	LOAD		s4, s5
+155 024F0       1334     			AND		s4, #0xf0		;Enable=0 RS=0 Instruction, RW=0 Write, E=0
+156 04408       1335     			OR		s4, #lcd_drive		;Enable=1
+157 361D8       1336     			CALL		lcd_write_inst4		;write upper nibble
+158 361BA       1337     			CALL		delay_1us		;wait >1us
+159 10428       1338     			LOAD		s4, s5			;select lower nibble with
+15A 28407       1339     			SL1		s4			;Enable=1
+15B 28406       1340     			SL0		s4			;RS=0 Instruction
+15C 28406       1341     			SL0		s4			;RW=0 Write
+15D 28406       1342     			SL0		s4			;E=0
+15E 361D8       1343     			CALL		lcd_write_inst4		;write lower nibble
+15F 361BE       1344     			CALL		delay_40us		;wait >40us
+160 004F0       1345     			LOAD		s4, #0xf0		;Enable=0 RS=0 Instruction, RW=0 Write, E=0
+161 22440       1346     			OUTPUT		s4, lcd_output_port	;Release master enable
+162 24000       1347     			RETURN
+                1348     ;
+                1349     ;
+                1350     ;
+                1351     ;Write 8-bit data to LCD display.
+                1352     ;
+                1353     ;The 8-bit data should be provided in register s5.
+                1354     ;Data bytes are written using the following sequence
+                1355     ; Upper nibble
+                1356     ; wait >1us
+                1357     ; Lower nibble
+                1358     ; wait >40us
+                1359     ;
+                1360     ;Registers used s0, s1, s4, s5
+                1361     ;
+163 10428       1362     lcd_write_data:		LOAD		s4, s5
+164 024F0       1363     			AND		s4, #0xf0		;Enable=0 RS=0 Instruction, RW=0 Write, E=0
+165 0440C       1364     			OR		s4, #0x0c		;Enable=1 RS=1 Data, RW=0 Write, E=0
+166 22440       1365     			OUTPUT		s4, lcd_output_port	;set up RS and RW >40ns before enable pulse
+167 361D2       1366     			CALL		lcd_pulse_e		;write upper nibble
+168 361BA       1367     			CALL		delay_1us		;wait >1us
+169 10428       1368     			LOAD		s4, s5			;select lower nibble with
+16A 28407       1369     			SL1		s4			;Enable=1
+16B 28407       1370     			SL1		s4			;RS=1 Data
+16C 28406       1371     			SL0		s4			;RW=0 Write
+16D 28406       1372     			SL0		s4			;E=0
+16E 22440       1373     			OUTPUT		s4, lcd_output_port	;set up RS and RW >40ns before enable pulse
+16F 361D2       1374     			CALL		lcd_pulse_e		;write lower nibble
+170 361BE       1375     			CALL		delay_40us		;wait >40us
+171 004F0       1376     			LOAD		s4, #0xf0		;Enable=0 RS=0 Instruction, RW=0 Write, E=0
+172 22440       1377     			OUTPUT		s4, lcd_output_port	;Release master enable
+173 24000       1378     			RETURN
+                1379     ;
+                1380     ;
+                1381     ;
+                1382     ;
+                1383     ;Read 8-bit data from LCD display.
+                1384     ;
+                1385     ;The 8-bit data will be read from the current LCD memory address
+                1386     ;and will be returned in register s5.
+                1387     ;It is advisable to set the LCD address (cursor position) before
+                1388     ;using the data read for the first time otherwise the display may
+                1389     ;generate invalid data on the first read.
+                1390     ;
+                1391     ;Data bytes are read using the following sequence
+                1392     ; Upper nibble
+                1393     ; wait >1us
+                1394     ; Lower nibble
+                1395     ; wait >40us
+                1396     ;
+                1397     ;Registers used s0, s1, s4, s5
+                1398     ;
+174 0040E       1399     lcd_read_data8:		LOAD		s4, #0x0e		;Enable=1 RS=1 Data, RW=1 Read, E=0
+175 22440       1400     			OUTPUT		s4, lcd_output_port	;set up RS and RW >40ns before enable pulse
+176 06401       1401     			XOR		s4, #lcd_e		;E=1
+177 22440       1402     			OUTPUT		s4, lcd_output_port
+178 361BA       1403     			CALL		delay_1us		;wait >260ns to access data
+179 20501       1404     			INPUT		s5, lcd_input_port	;read upper nibble
+17A 06401       1405     			XOR		s4, #lcd_e		;E=0
+17B 22440       1406     			OUTPUT		s4, lcd_output_port
+17C 361BA       1407     			CALL		delay_1us		;wait >1us
+17D 06401       1408     			XOR		s4, #lcd_e		;E=1
+17E 22440       1409     			OUTPUT		s4, lcd_output_port
+17F 361BA       1410     			CALL		delay_1us		;wait >260ns to access data
+180 20001       1411     			INPUT		s0, lcd_input_port	;read lower nibble
+181 06401       1412     			XOR		s4, #lcd_e		;E=0
+182 22440       1413     			OUTPUT		s4, lcd_output_port
+183 025F0       1414     			AND		s5, #0xf0		;merge upper and lower nibbles
+184 2800E       1415     			SR0		s0
+185 2800E       1416     			SR0		s0
+186 2800E       1417     			SR0		s0
+187 2800E       1418     			SR0		s0
+188 14500       1419     			OR		s5, s0
+189 00404       1420     			LOAD		s4, #0x04		;Enable=0 RS=1 Data, RW=0 Write, E=0
+18A 22440       1421     			OUTPUT		s4, lcd_output_port	;Stop reading 5V device and release master enable
+18B 361BE       1422     			CALL		delay_40us		;wait >40us
+18C 24000       1423     			RETURN
+                1424     ;
+                1425     ;
+                1426     ;Reset and initialise display to communicate using 4-bit data mode
+                1427     ;Includes routine to clear the display.
+                1428     ;
+                1429     ;Requires the 4-bit instructions 3,3,3,2 to be sent with suitable delays
+                1430     ;following by the 8-bit instructions to set up the display.
+                1431     ;
+                1432     ;  28 = '001' Function set, '0' 4-bit mode, '1' 2-line, '0' 5x7 dot matrix, 'xx'
+                1433     ;  06 = '000001' Entry mode, '1' increment, '0' no display shift
+                1434     ;  0E = '00001' Display control, '1' display on, '1' cursor off, '0' cursor blink off
+                1435     ;  01 = '00000001' Display clear
+                1436     ;
+                1437     ;Registers used s0, s1, s2, s3, s4
+                1438     ;
+18D 361C8       1439     lcd_reset:		CALL		delay_20ms		;wait more that 15ms for display to be ready
+18E 00430       1440     			LOAD		s4, #0x30
+18F 361D8       1441     			CALL		lcd_write_inst4		;send '3'
+190 361C8       1442     			CALL		delay_20ms		;wait >4.1ms
+191 361D8       1443     			CALL		lcd_write_inst4		;send '3'
+192 361C3       1444     			CALL		delay_1ms		;wait >100us
+193 361D8       1445     			CALL		lcd_write_inst4		;send '3'
+194 361BE       1446     			CALL		delay_40us		;wait >40us
+195 00420       1447     			LOAD		s4, #0x20
+196 361D8       1448     			CALL		lcd_write_inst4		;send '2'
+197 361BE       1449     			CALL		delay_40us		;wait >40us
+198 00528       1450     			LOAD		s5, #0x28		;Function set
+199 361DC       1451     			CALL		lcd_write_inst8
+19A 00506       1452     			LOAD		s5, #0x06		;Entry mode
+19B 361DC       1453     			CALL		lcd_write_inst8
+19C 0050E       1454     			LOAD		s5, #0x0e		;Display control
+19D 361DC       1455     			CALL		lcd_write_inst8
+19E 00501       1456     lcd_clear:		LOAD		s5, #0x01		;Display clear
+19F 361DC       1457     			CALL		lcd_write_inst8
+1A0 361C3       1458     			CALL		delay_1ms		;wait >1.64ms for display to clear
+1A1 361C3       1459     			CALL		delay_1ms
+1A2 24000       1460     			RETURN
+                1461     ;
+                1462     ;Position the cursor ready for characters to be written.
+                1463     ;The display is formed of 2 lines of 16 characters and each
+                1464     ;position has a corresponding address as indicated below.
+                1465     ;
+                1466     ;                   Character position
+                1467     ;           0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15
+                1468     ;
+                1469     ; Line 1 - 80 81 82 83 84 85 86 87 88 89 8A 8B 8C 8D 8E 8F
+                1470     ; Line 2 - C0 C1 C2 C3 C4 C5 C6 C7 C8 C9 CA CB CC CD CE CF
+                1471     ;
+                1472     ;This routine will set the cursor position using the value provided
+                1473     ;in register s5. The upper nibble will define the line and the lower
+                1474     ;nibble the character position on the line.
+                1475     ; Example s5 = 2B will position the cursor on line 2 position 11
+                1476     ;
+                1477     ;Registers used s0, s1, s2, s3, s4
+                1478     ;
+  0022B         1479     lcd_cursor:		TEST		s5, #0x10		;test for line 1
+E: instruction not supported on the this device: TEST sX, kk.
+1A3 35231       1480     			JUMP		z, set_line2
+1A4 0250F       1481     			AND		s5, #0x0f		;make address in range 80 to 8F for line 1
+1A5 04580       1482     			OR		s5, #0x80
+1A6 361DC       1483     			CALL		lcd_write_inst8		;instruction write to set cursor
+1A7 24000       1484     			RETURN
+1A8 0250F       1485     set_line2:		AND		s5, #0x0f		;make address in range C0 to CF for line 2
+1A9 045C0       1486     			OR		s5, #0xc0
+1AA 361DC       1487     			CALL		lcd_write_inst8		;instruction write to set cursor
+1AB 24000       1488     			RETURN
+                1489     ;
+                1490     ;This routine will shift the complete display one position to the left.
+                1491     ;The cursor position and LCD memory contents will not change.
+                1492     ;
+                1493     ;
+                1494     ;Registers used s0, s1, s2, s3, s4, s5
+                1495     ;
+1AC 00518       1496     lcd_shift_left:		LOAD		s5, #0x18		;shift display left
+1AD 361DC       1497     			CALL		lcd_write_inst8
+1AE 24000       1498     			RETURN
+                1499     ;
+                1500     ;**************************************************************************************
+                1501     ;Interrupt Service Routine (ISR)
+                1502     ;**************************************************************************************
+                1503     ;
+                1504     ;Interrupts occur when the rotary control has been moved.
+                1505     ;
+                1506     ;The ISR captures the state of the direction which it writes to scratch pad memory (SPM).
+                1507     ;The most significant bit is also set at this location to provide a 'flag' to the
+                1508     ;main body of the program.
+                1509     ;
+                1510     ;
+  00238         1511     isr:			STORE		s0, isr_preserve_s0	;preserve s0
+E: instruction not supported on the this device: STORE sX, ss.
+1AF 20000       1512     			INPUT		s0, rotary_port		;read rotary encoder
+1B0 04080       1513     			OR		s0, #rotary_event	;set flag
+                1514     			STORE		s0, rotary_status	;put result in SCM
+E: instruction not supported on the this device: STORE sX, ss.
+                1515     			FETCH		s0, isr_preserve_s0	;restore s0
+E: instruction not supported on the this device: FETCH sX, ss.
+1B1 2C001       1516     			RETURNI		enable
+                1517     ;
+                1518     ;
+                1519     ;**************************************************************************************
+                1520     ;Interrupt Vector
+                1521     ;**************************************************************************************
+                1522     ;
+  003FF         1523     			ORG		0x3ff
+3FF 34238       1524     			JUMP		isr
+                1525     ;
+                1526     ;
+                1527

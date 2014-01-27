@@ -1,0 +1,91 @@
+                   1     ; Compiler test case for Assembler
+                   2     ; instruction opcodes
+                   3
+                   4     device kcpsm3
+                   5
+                   6     s1       EQU        04h
+E: symbol already defined: "S1".
+                   7     s2       EQU        0x04
+E: symbol already defined: "S2".
+                   8     s3       EQU        6
+E: symbol already defined: "S3".
+                   9     s4       EQU        7
+E: symbol already defined: "S4".
+                  10
+                  11
+  00000           12     Start:
+                  13
+                  14
+                  15     ; Logical
+000 00101         16             LOAD      s1,#01h
+001 00105         17             LOAD      s1,#5
+002 00105         18             LOAD      s1,#05
+003 00105         19             LOAD      s1,#0x05
+004 00105         20             LOAD      s1,#0b101
+005 00105         21             LOAD      s1,#0b00000101
+006 00105         22             LOAD      s1,#5D
+007 00105         23             LOAD      s1,#5O
+008 00105         24             LOAD      s1,#5Q
+009 00105         25             LOAD      s1,#5h
+00A 00105         26             LOAD      s1,#101b
+00B 00105         27             LOAD      s1,#00000101b
+                  28
+00C 0A105         29             AND       s1,#5
+00D 0A105         30             AND       s1,#05
+00E 0A105         31             AND       s1,#0x05
+00F 0A105         32             AND       s1,#0b101
+010 0A105         33             AND       s1,#0b00000101
+011 0A105         34             AND       s1,#5D
+012 0A105         35             AND       s1,#5O
+013 0A105         36             AND       s1,#5Q
+014 0A105         37             AND       s1,#5h
+015 0A105         38             AND       s1,#101b
+016 0A105         39             AND       s1,#00000101b
+                  40
+017 0C105         41             OR        s1,#5
+018 0C105         42             OR        s1,#5
+019 0C105         43             OR        s1,#05
+01A 0C105         44             OR        s1,#0x05
+01B 0C105         45             OR        s1,#0b101
+01C 0C105         46             OR        s1,#0b00000101
+01D 0C105         47             OR        s1,#5D
+01E 0C105         48             OR        s1,#5O
+01F 0C105         49             OR        s1,#5Q
+020 0C105         50             OR        s1,#5h
+021 0C105         51             OR        s1,#101b
+022 0C105         52             OR        s1,#00000101b
+                  53
+023 0E105         54             XOR       s1,#5
+024 0E105         55             XOR       s1,#5
+025 0E105         56             XOR       s1,#05
+026 0E105         57             XOR       s1,#0x05
+027 0E105         58             XOR       s1,#0b101
+028 0E105         59             XOR       s1,#0b00000101
+029 0E105         60             XOR       s1,#5D
+02A 0E105         61             XOR       s1,#5O
+02B 0E105         62             XOR       s1,#5Q
+02C 0E105         63             XOR       s1,#5h
+02D 0E105         64             XOR       s1,#101b
+02E 0E105         65             XOR       s1,#00000101b
+                  66
+02F 12105         67             TEST      s1,#5
+030 12105         68             TEST      s1,#5
+031 12105         69             TEST      s1,#05
+032 12105         70             TEST      s1,#0x05
+033 12105         71             TEST      s1,#0b101
+034 12105         72             TEST      s1,#0b00000101
+035 12105         73             TEST      s1,#5D
+036 12105         74             TEST      s1,#5O
+037 12105         75             TEST      s1,#5Q
+038 12105         76             TEST      s1,#5h
+039 12105         77             TEST      s1,#101b
+03A 12105         78             TEST      s1,#00000101b
+                  79
+03B 01120         80             LOAD      s1,s2
+03C 0B120         81             AND       s1,s2
+03D 0D120         82             OR        s1,s2
+03E 0F120         83             XOR       s1,s2
+03F 13120         84             TEST      s1,s2
+                  85
+                  86     END
+                  87

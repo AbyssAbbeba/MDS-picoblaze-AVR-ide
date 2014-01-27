@@ -1,0 +1,94 @@
+BTN_EAST . . . . . . . . . . . . . . NUMBER 0x00002 NOT USED CONSTANT    6034_example_7.ind_spaces.short_inst.asm:54.1-54.37
+BTN_NORTH  . . . . . . . . . . . . . NUMBER 0x00001 NOT USED CONSTANT    6034_example_7.ind_spaces.short_inst.asm:53.1-53.37
+BTN_SOUTH  . . . . . . . . . . . . . NUMBER 0x00004 NOT USED CONSTANT    6034_example_7.ind_spaces.short_inst.asm:55.1-55.37
+BTN_WEST . . . . . . . . . . . . . . NUMBER 0x00008 NOT USED CONSTANT    6034_example_7.ind_spaces.short_inst.asm:56.1-56.37
+CALC_NEXT_SINE . . . . . . . . . . . LABEL  0x0005E USED     CONSTANT    6034_example_7.ind_spaces.short_inst.asm:314.1-314.16
+CHAN_A_LSB . . . . . . . . . . . . . NUMBER 0x00000 USED     CONSTANT    6034_example_7.ind_spaces.short_inst.asm:94.1-94.37
+CHAN_A_MSB . . . . . . . . . . . . . NUMBER 0x00001 USED     CONSTANT    6034_example_7.ind_spaces.short_inst.asm:95.1-95.37
+CHAN_B_LSB . . . . . . . . . . . . . NUMBER 0x00002 USED     CONSTANT    6034_example_7.ind_spaces.short_inst.asm:97.1-97.37
+CHAN_B_MSB . . . . . . . . . . . . . NUMBER 0x00003 USED     CONSTANT    6034_example_7.ind_spaces.short_inst.asm:98.1-98.37
+CHAN_C_LSB . . . . . . . . . . . . . NUMBER 0x00004 USED     CONSTANT    6034_example_7.ind_spaces.short_inst.asm:100.1-100.37
+CHAN_C_MSB . . . . . . . . . . . . . NUMBER 0x00005 USED     CONSTANT    6034_example_7.ind_spaces.short_inst.asm:101.1-101.37
+CHAN_D_LSB . . . . . . . . . . . . . NUMBER 0x00006 USED     CONSTANT    6034_example_7.ind_spaces.short_inst.asm:103.1-103.37
+CHAN_D_MSB . . . . . . . . . . . . . NUMBER 0x00007 USED     CONSTANT    6034_example_7.ind_spaces.short_inst.asm:104.1-104.37
+COLD_START . . . . . . . . . . . . . LABEL  0x00000 NOT USED CONSTANT    6034_example_7.ind_spaces.short_inst.asm:134.1-134.12
+DAC_RESET  . . . . . . . . . . . . . LABEL  0x000A2 USED     CONSTANT    6034_example_7.ind_spaces.short_inst.asm:532.1-532.11
+DELAY_1MS  . . . . . . . . . . . . . LABEL  0x000B1 USED     CONSTANT    6034_example_7.ind_spaces.short_inst.asm:576.1-576.11
+DELAY_1S . . . . . . . . . . . . . . LABEL  0x000BB USED     CONSTANT    6034_example_7.ind_spaces.short_inst.asm:598.1-598.10
+DELAY_1US  . . . . . . . . . . . . . LABEL  0x000A8 USED     CONSTANT    6034_example_7.ind_spaces.short_inst.asm:556.1-556.11
+DELAY_1US_CONSTANT . . . . . . . . . NUMBER 0x0000B USED     CONSTANT    6034_example_7.ind_spaces.short_inst.asm:82.1-82.37
+DELAY_20MS . . . . . . . . . . . . . LABEL  0x000B6 USED     CONSTANT    6034_example_7.ind_spaces.short_inst.asm:588.1-588.12
+DELAY_40US . . . . . . . . . . . . . LABEL  0x000AC USED     CONSTANT    6034_example_7.ind_spaces.short_inst.asm:565.1-565.12
+INIT_SINE_WAVE . . . . . . . . . . . LABEL  0x00052 USED     CONSTANT    6034_example_7.ind_spaces.short_inst.asm:291.1-291.16
+ISR  . . . . . . . . . . . . . . . . LABEL  0x000C0 USED     CONSTANT    6034_example_7.ind_spaces.short_inst.asm:627.1-627.5
+LED0 . . . . . . . . . . . . . . . . NUMBER 0x00001 NOT USED CONSTANT    6034_example_7.ind_spaces.short_inst.asm:42.1-42.37
+LED1 . . . . . . . . . . . . . . . . NUMBER 0x00002 NOT USED CONSTANT    6034_example_7.ind_spaces.short_inst.asm:43.1-43.37
+LED2 . . . . . . . . . . . . . . . . NUMBER 0x00004 NOT USED CONSTANT    6034_example_7.ind_spaces.short_inst.asm:44.1-44.37
+LED3 . . . . . . . . . . . . . . . . NUMBER 0x00008 NOT USED CONSTANT    6034_example_7.ind_spaces.short_inst.asm:45.1-45.37
+LED4 . . . . . . . . . . . . . . . . NUMBER 0x00010 NOT USED CONSTANT    6034_example_7.ind_spaces.short_inst.asm:46.1-46.37
+LED5 . . . . . . . . . . . . . . . . NUMBER 0x00020 NOT USED CONSTANT    6034_example_7.ind_spaces.short_inst.asm:47.1-47.37
+LED6 . . . . . . . . . . . . . . . . NUMBER 0x00040 NOT USED CONSTANT    6034_example_7.ind_spaces.short_inst.asm:48.1-48.37
+LED7 . . . . . . . . . . . . . . . . NUMBER 0x00080 NOT USED CONSTANT    6034_example_7.ind_spaces.short_inst.asm:49.1-49.37
+LED_PORT . . . . . . . . . . . . . . NUMBER 0x00080 USED     CONSTANT    6034_example_7.ind_spaces.short_inst.asm:41.1-41.37
+MULT_LOOP  . . . . . . . . . . . . . LABEL  0x00067 USED     CONSTANT    6034_example_7.ind_spaces.short_inst.asm:332.1-332.11
+NEXT_SPI_DAC_BIT . . . . . . . . . . LABEL  0x0007B USED     CONSTANT    6034_example_7.ind_spaces.short_inst.asm:438.1-438.18
+NO_MULT_ADD  . . . . . . . . . . . . LABEL  0x0006E USED     CONSTANT    6034_example_7.ind_spaces.short_inst.asm:339.1-339.13
+S0 . . . . . . . . . . . . . . . . . REG.   0x00000 USED     CONSTANT    IMPLICIT
+S1 . . . . . . . . . . . . . . . . . REG.   0x00001 USED     CONSTANT    IMPLICIT
+S2 . . . . . . . . . . . . . . . . . REG.   0x00002 USED     CONSTANT    IMPLICIT
+S3 . . . . . . . . . . . . . . . . . REG.   0x00003 USED     CONSTANT    IMPLICIT
+S4 . . . . . . . . . . . . . . . . . REG.   0x00004 USED     CONSTANT    IMPLICIT
+S5 . . . . . . . . . . . . . . . . . REG.   0x00005 NOT USED CONSTANT    IMPLICIT
+S6 . . . . . . . . . . . . . . . . . REG.   0x00006 USED     CONSTANT    IMPLICIT
+S7 . . . . . . . . . . . . . . . . . REG.   0x00007 USED     CONSTANT    IMPLICIT
+S8 . . . . . . . . . . . . . . . . . REG.   0x00008 USED     CONSTANT    IMPLICIT
+S9 . . . . . . . . . . . . . . . . . REG.   0x00009 USED     CONSTANT    IMPLICIT
+SA . . . . . . . . . . . . . . . . . REG.   0x0000A USED     CONSTANT    IMPLICIT
+SAMPLE_COUNT_LSB . . . . . . . . . . NUMBER 0x00020 USED     CONSTANT    6034_example_7.ind_spaces.short_inst.asm:128.1-128.37
+SAMPLE_COUNT_MSB . . . . . . . . . . NUMBER 0x00021 USED     CONSTANT    6034_example_7.ind_spaces.short_inst.asm:129.1-129.37
+SB . . . . . . . . . . . . . . . . . REG.   0x0000B USED     CONSTANT    IMPLICIT
+SC . . . . . . . . . . . . . . . . . REG.   0x0000C USED     CONSTANT    IMPLICIT
+SD . . . . . . . . . . . . . . . . . REG.   0x0000D USED     CONSTANT    IMPLICIT
+SE . . . . . . . . . . . . . . . . . REG.   0x0000E USED     CONSTANT    IMPLICIT
+SET_DAC  . . . . . . . . . . . . . . LABEL  0x00086 USED     CONSTANT    6034_example_7.ind_spaces.short_inst.asm:501.1-501.9
+SF . . . . . . . . . . . . . . . . . REG.   0x0000F USED     CONSTANT    IMPLICIT
+SINE_K_LSB . . . . . . . . . . . . . NUMBER 0x00014 USED     CONSTANT    6034_example_7.ind_spaces.short_inst.asm:122.1-122.37
+SINE_K_MSB . . . . . . . . . . . . . NUMBER 0x00015 USED     CONSTANT    6034_example_7.ind_spaces.short_inst.asm:123.1-123.37
+SINE_Y1_LSB  . . . . . . . . . . . . NUMBER 0x00012 USED     CONSTANT    6034_example_7.ind_spaces.short_inst.asm:120.1-120.37
+SINE_Y1_MSB  . . . . . . . . . . . . NUMBER 0x00013 USED     CONSTANT    6034_example_7.ind_spaces.short_inst.asm:121.1-121.37
+SINE_Y_LSB . . . . . . . . . . . . . NUMBER 0x00010 USED     CONSTANT    6034_example_7.ind_spaces.short_inst.asm:118.1-118.37
+SINE_Y_MSB . . . . . . . . . . . . . NUMBER 0x00011 USED     CONSTANT    6034_example_7.ind_spaces.short_inst.asm:119.1-119.37
+SLOPE_DOWN . . . . . . . . . . . . . LABEL  0x0002A USED     CONSTANT    6034_example_7.ind_spaces.short_inst.asm:215.1-215.12
+SPI_ADC_CONV . . . . . . . . . . . . NUMBER 0x00010 NOT USED CONSTANT    6034_example_7.ind_spaces.short_inst.asm:28.1-28.37
+SPI_AMP_CS . . . . . . . . . . . . . NUMBER 0x00008 NOT USED CONSTANT    6034_example_7.ind_spaces.short_inst.asm:27.1-27.37
+SPI_AMP_SDI  . . . . . . . . . . . . NUMBER 0x00040 NOT USED CONSTANT    6034_example_7.ind_spaces.short_inst.asm:38.1-38.37
+SPI_AMP_SHDN . . . . . . . . . . . . NUMBER 0x00040 NOT USED CONSTANT    6034_example_7.ind_spaces.short_inst.asm:30.1-30.37
+SPI_CONTROL_PORT . . . . . . . . . . NUMBER 0x00008 USED     CONSTANT    6034_example_7.ind_spaces.short_inst.asm:23.1-23.37
+SPI_DAC_CLR  . . . . . . . . . . . . NUMBER 0x00080 USED     CONSTANT    6034_example_7.ind_spaces.short_inst.asm:31.1-31.37
+SPI_DAC_CS . . . . . . . . . . . . . NUMBER 0x00020 USED     CONSTANT    6034_example_7.ind_spaces.short_inst.asm:29.1-29.37
+SPI_DAC_TX_RX  . . . . . . . . . . . LABEL  0x0007A USED     CONSTANT    6034_example_7.ind_spaces.short_inst.asm:437.1-437.15
+SPI_INIT . . . . . . . . . . . . . . LABEL  0x00077 USED     CONSTANT    6034_example_7.ind_spaces.short_inst.asm:403.1-403.10
+SPI_INPUT_PORT . . . . . . . . . . . NUMBER 0x00001 USED     CONSTANT    6034_example_7.ind_spaces.short_inst.asm:36.1-36.37
+SPI_OUTPUT_PORT  . . . . . . . . . . NUMBER 0x00004 USED     CONSTANT    6034_example_7.ind_spaces.short_inst.asm:33.1-33.37
+SPI_ROM_CS . . . . . . . . . . . . . NUMBER 0x00002 NOT USED CONSTANT    6034_example_7.ind_spaces.short_inst.asm:25.1-25.37
+SPI_SCK  . . . . . . . . . . . . . . NUMBER 0x00001 USED     CONSTANT    6034_example_7.ind_spaces.short_inst.asm:24.1-24.37
+SPI_SDI  . . . . . . . . . . . . . . NUMBER 0x00080 USED     CONSTANT    6034_example_7.ind_spaces.short_inst.asm:37.1-37.37
+SPI_SDO  . . . . . . . . . . . . . . NUMBER 0x00080 NOT USED CONSTANT    6034_example_7.ind_spaces.short_inst.asm:34.1-34.37
+SPI_SPARE_CONTROL  . . . . . . . . . NUMBER 0x00004 NOT USED CONSTANT    6034_example_7.ind_spaces.short_inst.asm:26.1-26.37
+SQUARE_COUNT . . . . . . . . . . . . NUMBER 0x00009 USED     CONSTANT    6034_example_7.ind_spaces.short_inst.asm:113.1-113.37
+SQUARE_HIGH  . . . . . . . . . . . . LABEL  0x0003A USED     CONSTANT    6034_example_7.ind_spaces.short_inst.asm:247.1-247.13
+STORE_CHANNEL_B  . . . . . . . . . . LABEL  0x00032 USED     CONSTANT    6034_example_7.ind_spaces.short_inst.asm:223.1-223.17
+STORE_CHANNEL_C  . . . . . . . . . . LABEL  0x0003C USED     CONSTANT    6034_example_7.ind_spaces.short_inst.asm:249.1-249.17
+SWITCH0  . . . . . . . . . . . . . . NUMBER 0x00010 NOT USED CONSTANT    6034_example_7.ind_spaces.short_inst.asm:57.1-57.37
+SWITCH1  . . . . . . . . . . . . . . NUMBER 0x00020 NOT USED CONSTANT    6034_example_7.ind_spaces.short_inst.asm:58.1-58.37
+SWITCH2  . . . . . . . . . . . . . . NUMBER 0x00040 NOT USED CONSTANT    6034_example_7.ind_spaces.short_inst.asm:59.1-59.37
+SWITCH3  . . . . . . . . . . . . . . NUMBER 0x00080 NOT USED CONSTANT    6034_example_7.ind_spaces.short_inst.asm:60.1-60.37
+SWITCH_PORT  . . . . . . . . . . . . NUMBER 0x00000 NOT USED CONSTANT    6034_example_7.ind_spaces.short_inst.asm:52.1-52.37
+TRIANGLE_UP_DOWN . . . . . . . . . . NUMBER 0x00008 USED     CONSTANT    6034_example_7.ind_spaces.short_inst.asm:109.1-109.37
+WAIT_1MS . . . . . . . . . . . . . . LABEL  0x000B2 USED     CONSTANT    6034_example_7.ind_spaces.short_inst.asm:577.1-577.10
+WAIT_1S  . . . . . . . . . . . . . . LABEL  0x000BC USED     CONSTANT    6034_example_7.ind_spaces.short_inst.asm:599.1-599.9
+WAIT_1US . . . . . . . . . . . . . . LABEL  0x000A9 USED     CONSTANT    6034_example_7.ind_spaces.short_inst.asm:557.1-557.10
+WAIT_20MS  . . . . . . . . . . . . . LABEL  0x000B7 USED     CONSTANT    6034_example_7.ind_spaces.short_inst.asm:589.1-589.11
+WAIT_40US  . . . . . . . . . . . . . LABEL  0x000AD USED     CONSTANT    6034_example_7.ind_spaces.short_inst.asm:566.1-566.11
+WAIT_INT . . . . . . . . . . . . . . LABEL  0x00010 USED     CONSTANT    6034_example_7.ind_spaces.short_inst.asm:160.1-160.10
+WARM_START . . . . . . . . . . . . . LABEL  0x0000F USED     CONSTANT    6034_example_7.ind_spaces.short_inst.asm:159.1-159.12
