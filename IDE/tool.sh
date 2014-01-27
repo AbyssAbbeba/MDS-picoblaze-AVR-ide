@@ -145,7 +145,7 @@ function repoSync() {
 
 function requirePrograms() {
     for program in "${@}"; do
-        if ! which xsltproc &> /dev/null; then
+        if ! which "${program}" &> /dev/null; then
             echo "${program} is missing, please install ${program} and run again." > /dev/stderr
             exit 1
         fi
