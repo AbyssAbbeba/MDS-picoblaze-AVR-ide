@@ -131,14 +131,14 @@ void StackWidget::handleEvent(int subsysId, int eventId, int locationOrReason, i
     qDebug() << "StackWidget: handleEvent()";
     if ( subsysId != this->subsys )
     {
-        qDebug("Invalid event received, event ignored.");
+        qDebug("StackWidget: Invalid event received, event ignored.");
         return;
     }
 
-    int idx = locationOrReason - m_startingAddress;
-    if ( (idx < 0) || (idx > m_size) )
+    //int idx = locationOrReason - m_startingAddress;
+    if ( (locationOrReason < 0) || (locationOrReason > m_size) )
     {
-        qDebug("Invalid address, event ignored.");
+        qDebug("StackWidget: Invalid address, event ignored.");
         return;
     }
 
@@ -146,7 +146,7 @@ void StackWidget::handleEvent(int subsysId, int eventId, int locationOrReason, i
     {
         case MCUSimMemory::EVENT_MEM_INF_WR_VAL_WRITTEN:
         {
-            qDebug() << "StackWidget: event: mem cell" << locationOrReason << "changed to" << detail;
+            //qDebug() << "StackWidget: event: mem cell" << locationOrReason << "changed to" << detail;
             QString number = QString::number(detail, 16);
             QString text = "0x";
             for (int i = number.length(); i < this->width; i++)
@@ -161,7 +161,7 @@ void StackWidget::handleEvent(int subsysId, int eventId, int locationOrReason, i
         }
         case PicoBlazeStack::EVENT_STACK_SP_CHANGED:
         {
-            qDebug() << "StackWidget: sp changed:" << locationOrReason;
+            //qDebug() << "StackWidget: sp changed:" << locationOrReason;
             //this->lwStack->item(sp)->setIcon(NULL);
             //this->lwStack->item(locationOrReason)->setIcon(iconSP);
             if (locationOrReason != 0)
