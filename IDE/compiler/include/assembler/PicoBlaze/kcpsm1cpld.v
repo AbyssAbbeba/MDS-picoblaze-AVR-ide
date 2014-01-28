@@ -186,14 +186,7 @@ init_3C = "{INIT_3C}"
 init_3D = "{INIT_3D}"
 init_3E = "{INIT_3E}"
 init_3F = "{INIT_3F}"
-initp_00 = "{INITP_00}"
-initp_01 = "{INITP_01}"
-initp_02 = "{INITP_02}"
-initp_03 = "{INITP_03}"
-initp_04 = "{INITP_04}"
-initp_05 = "{INITP_05}"
-initp_06 = "{INITP_06}"
-initp_07 = "{INITP_07}" */;
+ */;
 
 // synthesis translate_off
 // Attributes for Simulation
@@ -261,14 +254,6 @@ defparam ram_1024_x_18.INIT_3C = 256'h{INIT_3C};
 defparam ram_1024_x_18.INIT_3D = 256'h{INIT_3D};
 defparam ram_1024_x_18.INIT_3E = 256'h{INIT_3E};
 defparam ram_1024_x_18.INIT_3F = 256'h{INIT_3F};
-defparam ram_1024_x_18.INITP_00 = 256'h{INITP_00};
-defparam ram_1024_x_18.INITP_01 = 256'h{INITP_01};
-defparam ram_1024_x_18.INITP_02 = 256'h{INITP_02};
-defparam ram_1024_x_18.INITP_03 = 256'h{INITP_03};
-defparam ram_1024_x_18.INITP_04 = 256'h{INITP_04};
-defparam ram_1024_x_18.INITP_05 = 256'h{INITP_05};
-defparam ram_1024_x_18.INITP_06 = 256'h{INITP_06};
-defparam ram_1024_x_18.INITP_07 = 256'h{INITP_07};
 
 // synthesis translate_on
 // Attributes for XST (Synplicity attributes are in-line)
@@ -336,14 +321,6 @@ defparam ram_1024_x_18.INITP_07 = 256'h{INITP_07};
 // synthesis attribute INIT_3D of ram_1024_x_18 is "{INIT_3D}"
 // synthesis attribute INIT_3E of ram_1024_x_18 is "{INIT_3E}"
 // synthesis attribute INIT_3F of ram_1024_x_18 is "{INIT_3F}"
-// synthesis attribute INITP_00 of ram_1024_x_18 is "{INITP_00}"
-// synthesis attribute INITP_01 of ram_1024_x_18 is "{INITP_01}"
-// synthesis attribute INITP_02 of ram_1024_x_18 is "{INITP_02}"
-// synthesis attribute INITP_03 of ram_1024_x_18 is "{INITP_03}"
-// synthesis attribute INITP_04 of ram_1024_x_18 is "{INITP_04}"
-// synthesis attribute INITP_05 of ram_1024_x_18 is "{INITP_05}"
-// synthesis attribute INITP_06 of ram_1024_x_18 is "{INITP_06}"
-// synthesis attribute INITP_07 of ram_1024_x_18 is "{INITP_07}"
 
 endmodule
 
