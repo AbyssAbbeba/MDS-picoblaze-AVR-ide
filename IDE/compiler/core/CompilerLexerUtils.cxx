@@ -19,6 +19,7 @@
 #include "CompilerBase.h"
 
 // Standard header files.
+#include <cmath>
 #include <cctype>
 #include <cstdio>
 #include <cstdint>
