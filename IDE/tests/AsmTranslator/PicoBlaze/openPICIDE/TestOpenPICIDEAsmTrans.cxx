@@ -23,9 +23,6 @@
 #include <iostream>
 #include <algorithm>
 
-// MCUDataFiles
-#include "XilVHDLFile.h"
-
 // Boost Filesystem library.
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include "boost/filesystem.hpp"
@@ -36,6 +33,47 @@
 
 // AsmTranslator header files.
 #include "AsmTranslator.h"
+
+bool TestOpenPICIDEAsmTrans::fileCompare ( const std::string & fileName1,
+                                           const std::string & fileName2 )
+{
+    std::ifstream file1(fileName1, std::ios_base::binary);
+    std::ifstream file2(fileName2, std::ios_base::binary);
+
+    if ( false == file1.is_open() || false == file2.is_open() )
+    {
+        return false;
+    }
+
+    std::string line;
+    while ( false == file1.eof() && false == file2.eof() )
+    {
+        if ( true == file1.bad() || true == file2.bad() )
+        {
+            return false;
+        }
+
+        line = file1.get();
+        if ( std::string::npos == line.find("INIT") )
+        {
+            continue;
+        }
+
+        if ( file1.get() != file2.get() )
+        {
+            return false;
+        }
+    }
+
+    if ( true != file1.eof() || true != file2.eof() )
+    {
+        return false;
+    }
+    else
+    {
+        return true;
+    }
+}
 
 int TestOpenPICIDEAsmTrans::init()
 {
@@ -131,7 +169,6 @@ void TestOpenPICIDEAsmTrans::test ( const std::string & suffix )
 {
     using namespace boost::filesystem;
 
-    XilHDLFile::OPCodeSize opCodeSize;
     const std::string testName = CU_get_current_test()->pName;
 
     create_directory ( path("openPICIDE") / "results" );
@@ -172,23 +209,18 @@ void TestOpenPICIDEAsmTrans::test ( const std::string & suffix )
     {
         case '0':
             m_options->m_device = "kcpsm1cpld";
-            opCodeSize = XilHDLFile::SIZE_16b;
             break;
         case '1':
             m_options->m_device = "kcpsm1";
-            opCodeSize = XilHDLFile::SIZE_16b;
             break;
         case '2':
             m_options->m_device = "kcpsm2";
-            opCodeSize = XilHDLFile::SIZE_18b;
             break;
         case '3':
             m_options->m_device = "kcpsm3";
-            opCodeSize = XilHDLFile::SIZE_18b;
             break;
         case '6':
             m_options->m_device = "kcpsm6";
-            opCodeSize = XilHDLFile::SIZE_18b;
             break;
         default:
             CU_FAIL("Environment setup error: unknown device.");
@@ -208,15 +240,8 @@ void TestOpenPICIDEAsmTrans::test ( const std::string & suffix )
 
     std::string expectedCommonPath = system_complete( path("openPICIDE") / "expected" / testName ).string();
 
-    try
+    if ( false == fileCompare ( ( expectedCommonPath + ".vhd.exp" ), m_options->m_vhdlFile ) )
     {
-        XilVHDLFile expectedVHDL ( (expectedCommonPath + ".vhd.exp"), "", "", opCodeSize );
-        XilVHDLFile actualVHDL   ( m_options->m_vhdlFile,   "", "", opCodeSize );
-        CU_ASSERT ( expectedVHDL == actualVHDL );
-    }
-    catch ( const DataFileException & e )
-    {
-        std::cerr << std::endl << e.toString() << std::endl;
-        CU_FAIL("An instance of DataFileException thrown!");
+        CU_FAIL("VHDL output differs from the expected one.");
     }
 }

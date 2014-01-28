@@ -67,6 +67,15 @@ namespace TestOpenPICIDEAsmTrans
          */
         void test ( const std::string & suffix );
 
+        /**
+         * @brief
+         * @param[in] fileName1
+         * @param[in] fileName2
+         * @return
+         */
+        bool fileCompare ( const std::string & fileName1,
+                           const std::string & fileName2 );
+
     ////    Attributes    ////
         /**
          * @brief
