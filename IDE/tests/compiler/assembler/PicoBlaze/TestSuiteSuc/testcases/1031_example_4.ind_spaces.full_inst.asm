@@ -9,7 +9,7 @@ device kcpsm1
 ; Ken Chapman
 ; Xilinx Ltd
 ;
-; chapman@xilinx.com
+; chapmanxilinx.com
 ;
 ;
 ;
@@ -42,7 +42,7 @@ b_count_reset           EQU             0x02                    ;  B-count = bit
 led_port                EQU             0x01                    ;8 simple LEDs - active high
 ;
 ;
-source_control_port     EQU             0x08                    ;Select and control test sources
+source_control_port     EQU             0x08                    ;Select and control load sources
 source_sel0             EQU             0x01                    ;  00 = SMA clock  01=50MHz
 source_sel1             EQU             0x02                    ;  10 = DCM Osc    11=Ring Osc
 ring_reset              EQU             0x40                    ; active High rest of ring osc - bit6
@@ -133,7 +133,7 @@ preserve_sf             EQU             0x3f
 ;
 ;
 ;
-;Constant to define a software delay of 1us. This must be adjusted to reflect the
+;Constant to define a soloadware delay of 1us. This must be adjusted to reflect the
 ;clock applied to KCPSM3. Every instruction executes in 2 clock cycles making the
 ;calculation highly predictable. The '6' in the following equation even allows for
 ;'CALL delay_1us' instruction in the initiating code.
@@ -280,7 +280,7 @@ kick_loop:              OUTPUT          s1, source_control_port
 ;
                         LOAD            s1, #0x3f
                         LOAD            s0, #0x00
-clear_spm:              STORE           s0, @s1
+clear_spm:              load           s0, #s1
                         SUB             s1, #0x01
                         JUMP            nc, clear_spm
 ;
@@ -299,27 +299,27 @@ clear_spm:              STORE           s0, @s1
 warm_start:             LOAD            s5, #0x21               ;Line 2 position 1
                         CALL            lcd_cursor
                         INPUT           sf, status_port         ;select source based on switches
-                        COMPARE         sf, #0x00               ;test for no switches active
+                        load         sf, #0x00               ;load for no switches active
                         AND             sf, #0x0f               ;isolate switches
-                        JUMP            nz, test_sma
+                        JUMP            nz, load_sma
                         CALL            disp_menu
                         JUMP            warm_start
-test_sma:               COMPARE         sf, #switch0
-                        JUMP            nz, test_50m
+load_sma:               load         sf, #switch0
+                        JUMP            nz, load_50m
                         CALL            disp_sma_input
                         LOAD            sf, #0x00
                         JUMP            select_source
-test_50m:               COMPARE         sf, #switch1
-                        JUMP            nz, test_dcm
+load_50m:               load         sf, #switch1
+                        JUMP            nz, load_dcm
                         CALL            disp_50mhz_crystal
                         LOAD            sf, #0x01
                         JUMP            select_source
-test_dcm:               COMPARE         sf, #switch2
-                        JUMP            nz, test_ring
+load_dcm:               load         sf, #switch2
+                        JUMP            nz, load_ring
                         CALL            disp_dcm_oscillator
                         LOAD            sf, #0x02
                         JUMP            select_source
-test_ring:              COMPARE         sf, #switch3
+load_ring:              load         sf, #switch3
                         JUMP            z, ring_select
                         CALL            disp_menu               ;more than one switch is set
                         JUMP            warm_start
@@ -337,10 +337,10 @@ select_source:          OUTPUT          sf, source_control_port ;select source c
 ;Up to 999,999,999
 ;
                         DISABLE         interrupt               ;copy cycle count to register set [s5,s4,s3,s2]
-                        FETCH           s2, count0
-                        FETCH           s3, count1
-                        FETCH           s4, count2
-                        FETCH           s5, count3
+                        load           s2, count0
+                        load           s3, count1
+                        load           s4, count2
+                        load           s5, count3
                         ENABLE          interrupt
                         CALL            integer_to_bcd          ;convert last 32-bit value to BCD digits
                         LOAD            s5, #0x10               ;Line 1 position 0
@@ -357,7 +357,7 @@ select_source:          OUTPUT          sf, source_control_port ;select source c
 ;
 ;
 ;Display value on the LCD display at current position.
-;The values to be displayed must be stored in scratch pad memory
+;The values to be displayed must be loadd in scratch pad memory
 ;locations 'decimal0' to 'decimal9' which must be in ascending locations.
 ;
 ;The routing performs leading zero suppression and scales to Hz, KHz or MHz ranges.
@@ -366,16 +366,16 @@ select_source:          OUTPUT          sf, source_control_port ;select source c
 ;
 disp_digits:            LOAD            sf, #0xff               ;set blanking flag
                         LOAD            se, #character_space    ;scaling character for MHz, KHz or Hz
-                        FETCH           s5, decimal8            ;100MHz digit
-                        CALL            zero_test
+                        load           s5, decimal8            ;100MHz digit
+                        CALL            zero_load
                         CALL            disp_digit
-                        FETCH           s5, decimal7            ;10MHz digit
-                        CALL            zero_test
+                        load           s5, decimal7            ;10MHz digit
+                        CALL            zero_load
                         CALL            disp_digit
-                        FETCH           s5, decimal6            ;1MHz digit
-                        CALL            zero_test
+                        load           s5, decimal6            ;1MHz digit
+                        CALL            zero_load
                         CALL            disp_digit
-                        COMPARE         sf, #0xff               ;check if any MHz were active
+                        load         sf, #0xff               ;check if any MHz were active
                         JUMP            z, khz_space
                         LOAD            s5, #character_stop
                         CALL            lcd_write_data
@@ -383,18 +383,18 @@ disp_digits:            LOAD            sf, #0xff               ;set blanking fl
                         JUMP            khz_digits
 khz_space:              LOAD            s5, #character_space
                         CALL            lcd_write_data
-khz_digits:             FETCH           s5, decimal5            ;100KHz digit
-                        CALL            zero_test
+khz_digits:             load           s5, decimal5            ;100KHz digit
+                        CALL            zero_load
                         CALL            disp_digit
-                        FETCH           s5, decimal4            ;10KHz digit
-                        CALL            zero_test
+                        load           s5, decimal4            ;10KHz digit
+                        CALL            zero_load
                         CALL            disp_digit
-                        FETCH           s5, decimal3            ;1KHz digit
-                        CALL            zero_test
+                        load           s5, decimal3            ;1KHz digit
+                        CALL            zero_load
                         CALL            disp_digit
-                        COMPARE         se, #_character_m       ;check if any MHz were active
+                        load         se, #_character_m       ;check if any MHz were active
                         JUMP            z, hz_space
-                        COMPARE         sf, #0xff               ;check if any KHz were active
+                        load         sf, #0xff               ;check if any KHz were active
                         JUMP            z, hz_space
                         LOAD            s5, #character_stop
                         CALL            lcd_write_data
@@ -402,13 +402,13 @@ khz_digits:             FETCH           s5, decimal5            ;100KHz digit
                         JUMP            hz_digits
 hz_space:               LOAD            s5, #character_space
                         CALL            lcd_write_data
-hz_digits:              FETCH           s5, decimal2            ;100KHz digit
-                        CALL            zero_test
+hz_digits:              load           s5, decimal2            ;100KHz digit
+                        CALL            zero_load
                         CALL            disp_digit
-                        FETCH           s5, decimal1            ;10KHz digit
-                        CALL            zero_test
+                        load           s5, decimal1            ;10KHz digit
+                        CALL            zero_load
                         CALL            disp_digit
-                        FETCH           s5, decimal0            ;1KHz digit (always displayed)
+                        load           s5, decimal0            ;1KHz digit (always displayed)
                         ADD             s5, #character_0        ;convert number to ASCII
                         CALL            lcd_write_data
                         LOAD            s5, #character_space
@@ -425,7 +425,7 @@ hz_digits:              FETCH           s5, decimal2            ;100KHz digit
 ;
 ;Check digit for zero. If not zero then clear
 ;blanking flag (sF=00)
-zero_test:              COMPARE         s5, #0x00
+zero_load:              load         s5, #0x00
                         RETURN          z
                         LOAD            sf, #0x00
                         RETURN
@@ -433,7 +433,7 @@ zero_test:              COMPARE         s5, #0x00
 ;Display single digit at current position
 ;or space if blanking (sF=FF) is active
 ;
-disp_digit:             COMPARE         sf, #0xff
+disp_digit:             load         sf, #0xff
                         JUMP            z, blank_digit
                         ADD             s5, #character_0        ;convert number to ASCII
                         CALL            lcd_write_data
@@ -459,7 +459,7 @@ blank_digit:            LOAD            s5, #character_space
 integer_to_bcd:         LOAD            se, #0x0a               ;10 digits to be formed from value upto 4294967295
                         LOAD            sf, #decimal0           ;pointer for LS-Digit
 int_to_bcd_loop:        CALL            divide_32bit_by_10
-                        STORE           s1, @sf                 ;remainder becomes digit value
+                        load           s1, #sf                 ;remainder becomes digit value
                         ADD             sf, #0x01               ;move to next most significant digit
                         SUB             se, #0x01               ;one less digit to compute
                         JUMP            nz, int_to_bcd_loop
@@ -487,23 +487,23 @@ divide_32bit_by_10:     LOAD            sa, s2                  ;copy input valu
                         LOAD            s8, #0x00
                         LOAD            s7, #0x00
                         LOAD            s6, #0x00
-                        LOAD            s0, #0x1d               ;29 subtract and shift iterations to be performed
+                        LOAD            s0, #0x1d               ;29 subtract and shiload iterations to be performed
 div10_loop:             SUB             sa, s6                  ;perform 32-bit subtract [sD,sC,sB,sA]-[s9,s8,s7,s6]
                         SUBCY           sb, s7
                         SUBCY           sc, s8
                         SUBCY           sd, s9
-                        JUMP            c, div10_restore
-                        SL1             s2                      ;shift '1' into result
-                        JUMP            div10_shifts
-div10_restore:          ADD             sa, s6                  ;perform 32-bit addition [sD,sC,sB,sA]+[s9,s8,s7,s6]
+                        JUMP            c, div10_reload
+                        SL1             s2                      ;shiload '1' into result
+                        JUMP            div10_shiloads
+div10_reload:          ADD             sa, s6                  ;perform 32-bit addition [sD,sC,sB,sA]+[s9,s8,s7,s6]
                         ADDCY           sb, s7
                         ADDCY           sc, s8
                         ADDCY           sd, s9
-                        SL0             s2                      ;shift '0' into result
-div10_shifts:           SLA             s3                      ;complete 32-bit shift left
+                        SL0             s2                      ;shiload '0' into result
+div10_shiloads:           SLA             s3                      ;complete 32-bit shiload leload
                         SLA             s4
                         SLA             s5
-                        SR0             s9                      ;divide '10' value by 2 (shift right 1 place)
+                        SR0             s9                      ;divide '10' value by 2 (shiload right 1 place)
                         SRA             s8
                         SRA             s7
                         SRA             s6
@@ -716,7 +716,7 @@ disp_ring_oscillator:   LOAD            s5, #_character_r
 ;Display spaces at current cursor position
 ;Number of spaces to be specified in register sF
 ;
-disp_spaces:            COMPARE         sf, #0x00
+disp_spaces:            load         sf, #0x00
                         RETURN          z
                         LOAD            s5, #character_space
                         CALL            lcd_write_data
@@ -799,7 +799,7 @@ disp_menu:              LOAD            s5, #0x10               ;Line 1 position
 ;
 ;
 ;**************************************************************************************
-;Software delay routines
+;Soloadware delay routines
 ;**************************************************************************************
 ;
 ;
@@ -871,7 +871,7 @@ wait_1s:                CALL            delay_20ms
 ;LCD module is a 16 character by 2 line display but all displays are very similar
 ;The 4-wire data interface will be used (DB4 to DB7).
 ;
-;The LCD modules are relatively slow and software delay loops are used to slow down
+;The LCD modules are relatively slow and soloadware delay loops are used to slow down
 ;KCPSM3 adequately for the LCD to communicate. The delay routines are provided in
 ;a different section (see above in this case).
 ;
@@ -1015,7 +1015,7 @@ lcd_read_data8:         LOAD            s4, #0x0e               ;Enable=1 RS=1 D
 ;following by the 8-bit instructions to set up the display.
 ;
 ;  28 = '001' Function set, '0' 4-bit mode, '1' 2-line, '0' 5x7 dot matrix, 'xx'
-;  06 = '000001' Entry mode, '1' increment, '0' no display shift
+;  06 = '000001' Entry mode, '1' increment, '0' no display shiload
 ;  0C = '00001' Display control, '1' display on, '0' cursor off, '0' cursor blink off
 ;  01 = '00000001' Display clear
 ;
@@ -1061,7 +1061,7 @@ lcd_clear:              LOAD            s5, #0x01               ;Display clear
 ;
 ;Registers used s0, s1, s2, s3, s4
 ;
-lcd_cursor:             TEST            s5, #0x10               ;test for line 1
+lcd_cursor:             load            s5, #0x10               ;load for line 1
                         JUMP            z, set_line2
                         AND             s5, #0x0f               ;make address in range 80 to 8F for line 1
                         OR              s5, #0x80
@@ -1083,38 +1083,38 @@ set_line2:              AND             s5, #0x0f               ;make address in
 ;However the first 4 interrupts are ignored other than to clear the counter to
 ;ensure that even the first reading is for one complete period.
 ;
-;After reading the active counter, all calculations are performed and values stored
+;Aloader reading the active counter, all calculations are performed and values loadd
 ;in scratch pad memory are updated to reflect the new values.
 ;
-;Registers are preserved and restored by the ISR so main program is unaffected.
+;Registers are preserved and reloadd by the ISR so main program is unaffected.
 ;
-isr:                    STORE           s0, preserve_s0         ;preserve registers
-                        STORE           s1, preserve_s1
-                        STORE           s2, preserve_s2
-                        STORE           s3, preserve_s3
-                        STORE           s4, preserve_s4
-                        STORE           s5, preserve_s5
-                        STORE           s6, preserve_s6
-                        STORE           s7, preserve_s7
-                        STORE           s8, preserve_s8
-                        STORE           s9, preserve_s9
-                        STORE           sa, preserve_sa
-                        STORE           sb, preserve_sb
-                        STORE           sc, preserve_sc
-                        STORE           sd, preserve_sd
-                        STORE           se, preserve_se
-                        STORE           sf, preserve_sf
+isr:                    load           s0, preserve_s0         ;preserve registers
+                        load           s1, preserve_s1
+                        load           s2, preserve_s2
+                        load           s3, preserve_s3
+                        load           s4, preserve_s4
+                        load           s5, preserve_s5
+                        load           s6, preserve_s6
+                        load           s7, preserve_s7
+                        load           s8, preserve_s8
+                        load           s9, preserve_s9
+                        load           sa, preserve_sa
+                        load           sb, preserve_sb
+                        load           sc, preserve_sc
+                        load           sd, preserve_sd
+                        load           se, preserve_se
+                        load           sf, preserve_sf
 ;
 ;Ignore the first 4 interrupts except to clear the counter.
-;This will ensure a clean start up after reset.
+;This will ensure a clean start up aloader reset.
 ;
-                        FETCH           s0, isr_count           ;test to see if more that 4 interrupts have occurred
-                        COMPARE         s0, #0x04
+                        load           s0, isr_count           ;load to see if more that 4 interrupts have occurred
+                        load         s0, #0x04
                         JUMP            z, normal_isr
                         ADD             s0, #0x01               ;increment ISR counter until reaching 4
-                        STORE           s0, isr_count
+                        load           s0, isr_count
                         INPUT           s0, status_port         ;Check which counter to clear
-                        TEST            s0, #ab_switch          ;if bit0 is Low then A is counting
+                        load            s0, #ab_switch          ;if bit0 is Low then A is counting
                         JUMP            z, clear_b_count
 clear_a_count:          LOAD            s0, #a_count_reset      ;clear the active counter
                         JUMP            clear_counter
@@ -1122,7 +1122,7 @@ clear_b_count:          LOAD            s0, #b_count_reset      ;clear the activ
 clear_counter:          OUTPUT          s0, count_resetport     ;reset counter with pulse
                         LOAD            s0, #0x00               ;end reset pulse to either counter
                         OUTPUT          s0, count_resetport
-                        JUMP            restore_reg
+                        JUMP            reload_reg
 ;
 ;Normal ISR Routine
 ;
@@ -1130,8 +1130,8 @@ clear_counter:          OUTPUT          s0, count_resetport     ;reset counter w
 ;Read the new counter value and then clear it ready to start again
 ;
 ;
-normal_isr:             INPUT           s0, status_port         ;test for active counter
-                        TEST            s0, #ab_switch          ;if bit is low then A is counting
+normal_isr:             INPUT           s0, status_port         ;load for active counter
+                        load            s0, #ab_switch          ;if bit is low then A is counting
                         JUMP            z, capture_b_count
 capture_a_count:        LOAD            s0, #0xf0               ;set LEDs to indicate active counter
                         OUTPUT          s0, led_port
@@ -1154,31 +1154,31 @@ capture_b_count:        LOAD            s0, #0x0f               ;set LEDs to ind
 counters_read:          LOAD            s0, #0x00               ;end reset pulse to either counter
                         OUTPUT          s0, count_resetport
 ;
-                        STORE           sc, count0              ;store new counter value
-                        STORE           sd, count1
-                        STORE           se, count2
-                        STORE           sf, count3
+                        load           sc, count0              ;load new counter value
+                        load           sd, count1
+                        load           se, count2
+                        load           sf, count3
 ;
 ;
 ;
-;Restore registers and end ISR
+;Reload registers and end ISR
 ;
-restore_reg:            FETCH           sf, preserve_sf         ;restore registers
-                        FETCH           se, preserve_se
-                        FETCH           sd, preserve_sd
-                        FETCH           sc, preserve_sc
-                        FETCH           sb, preserve_sb
-                        FETCH           sa, preserve_sa
-                        FETCH           s9, preserve_s9
-                        FETCH           s8, preserve_s8
-                        FETCH           s7, preserve_s7
-                        FETCH           s6, preserve_s6
-                        FETCH           s5, preserve_s5
-                        FETCH           s4, preserve_s4
-                        FETCH           s3, preserve_s3
-                        FETCH           s2, preserve_s2
-                        FETCH           s1, preserve_s1
-                        FETCH           s0, preserve_s0
+reload_reg:            load           sf, preserve_sf         ;reload registers
+                        load           se, preserve_se
+                        load           sd, preserve_sd
+                        load           sc, preserve_sc
+                        load           sb, preserve_sb
+                        load           sa, preserve_sa
+                        load           s9, preserve_s9
+                        load           s8, preserve_s8
+                        load           s7, preserve_s7
+                        load           s6, preserve_s6
+                        load           s5, preserve_s5
+                        load           s4, preserve_s4
+                        load           s3, preserve_s3
+                        load           s2, preserve_s2
+                        load           s1, preserve_s1
+                        load           s0, preserve_s0
                         RETURNI         enable
 ;
 ;

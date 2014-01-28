@@ -1,31 +1,31 @@
-; Compiler test case for Assembler
+; Compiler load case for Assembler
 ; instruction opcodes
 device kcpsm2
 
-TESTsymb1    SET        1h
-TESTsymb2    SET        0x11
-TESTsymb3    SET        1
-TESTsymb4    SET        3d
-TESTsymb5    EQU        4h
-TESTsymb6    EQU        0x05
-TESTsymb7    EQU        6
-TESTsymb8    EQU        7
-TESTsymb9    REG        8h
-TESTsymb10    REG        9h
-TESTsymb11    REG        Ah
-TESTsymb12    REG        Bh
-TESTsymb13    DATA        Ch
-TESTsymb14    DATA        0x05
-TESTsymb15    DATA        2
-TESTsymb16    DATA        3d
-TESTsymb17    CODE        0h + 2h
-TESTsymb18    CODE        2h
-TESTsymb19    CODE        2h
-TESTsymb20    CODE        2h
-TESTsymb21    DEFINE        3h
-TESTsymb22    DEFINE        4h
-TESTsymb23    DEFINE        5h
-TESTsymb24    DEFINE        TESTsymb1 + TESTsymb11
+loadsymb1    SET        1h
+loadsymb2    SET        0x11
+loadsymb3    SET        1
+loadsymb4    SET        3d
+loadsymb5    EQU        4h
+loadsymb6    EQU        0x05
+loadsymb7    EQU        6
+loadsymb8    EQU        7
+loadsymb9    REG        8h
+loadsymb10    REG        9h
+loadsymb11    REG        Ah
+loadsymb12    REG        Bh
+loadsymb13    DATA        Ch
+loadsymb14    DATA        0x05
+loadsymb15    DATA        2
+loadsymb16    DATA        3d
+loadsymb17    CODE        0h + 2h
+loadsymb18    CODE        2h
+loadsymb19    CODE        2h
+loadsymb20    CODE        2h
+loadsymb21    DEFINE        3h
+loadsymb22    DEFINE        4h
+loadsymb23    DEFINE        5h
+loadsymb24    DEFINE        loadsymb1 + loadsymb11
 
 
           ORG        0x000
@@ -38,42 +38,42 @@ Start:
         JUMP        NC,0x000
     
      ; Arithmetics
-        ADD         testsymb9,#12
-        ADDCY       testsymb9,#20
-        SUB         testsymb9,#ffh
-        SUBCY       testsymb9,#0xff
-        COMPARE     testsymb9,#0
+        ADD         loadsymb9,#12
+        ADDCY       loadsymb9,#20
+        SUB         loadsymb9,#ffh
+        SUBCY       loadsymb9,#0xff
+        load     loadsymb9,#0
 
-        ADD         testsymb9,testsymb9
-        ADDCY       testsymb9,testsymb9
-        SUB         testsymb9,testsymb9
-        SUBCY       testsymb9,testsymb10
-        COMPARE     testsymb9,testsymb11
+        ADD         loadsymb9,loadsymb9
+        ADDCY       loadsymb9,loadsymb9
+        SUB         loadsymb9,loadsymb9
+        SUBCY       loadsymb9,loadsymb10
+        load     loadsymb9,loadsymb11
 
 ; Logical
-        LOAD      testsymb9,#01h
-        AND       testsymb9,#0
-        OR        testsymb9,#1
-        XOR       testsymb9,#2
-        TEST      testsymb9,#3
+        LOAD      loadsymb9,#01h
+        AND       loadsymb9,#0
+        OR        loadsymb9,#1
+        XOR       loadsymb9,#2
+        load      loadsymb9,#3
 
-        LOAD      testsymb9,testsymb9
-        AND       testsymb9,testsymb9
-        OR        testsymb9,testsymb9
-        XOR       testsymb9,testsymb9
-        TEST      testsymb9,testsymb9
+        LOAD      loadsymb9,loadsymb9
+        AND       loadsymb9,loadsymb9
+        OR        loadsymb9,loadsymb9
+        XOR       loadsymb9,loadsymb9
+        load      loadsymb9,loadsymb9
 ; Shift and rotate
-        SR0       TESTsymb10
-        SR1       TESTsymb10
-        SRX        TESTsymb10
-        SRA        TESTsymb10
-        RR         TESTsymb10
+        SR0       loadsymb10
+        SR1       loadsymb10
+        SRX        loadsymb10
+        SRA        loadsymb10
+        RR         loadsymb10
 
-        SL0       TESTsymb10
-        SL1       TESTsymb10
-        SLX       TESTsymb10
-        SLA       TESTsymb10
-        RL        TESTsymb10
+        SL0       loadsymb10
+        SL1       loadsymb10
+        SLX       loadsymb10
+        SLA       loadsymb10
+        RL        loadsymb10
     ; Others
         CALl      Podprog
         CALL      Z,Podprog
@@ -81,10 +81,10 @@ Start:
         CALL      C,Podprog
         CALL      NC,Podprog
 
-        STORE     TESTsymb9,TESTsymb13
-        STORE     TESTsymb10,@10
-        FETCH     TESTsymb11,TESTsymb13
-        FETCH     TESTsymb12,@5
+        load     loadsymb9,loadsymb13
+        load     loadsymb10,10
+        load     loadsymb11,loadsymb13
+        load     loadsymb12,5
 
 Podprog:
         RETURN
@@ -98,9 +98,9 @@ Podprog:
 ;JUMP Z,aaa ADDCY sX,kk AND sX,kk SR1 sX
 ;JUMP NZ,aaa SUB sX,kk OR sX,kk SRX sX
 ;JUMP C,aaa SUBCY sX,kk XOR sX,kk SRA sX
-;JUMP NC,aaa COMPARE sX,kk TEST sX,kk RR sX
+;JUMP NC,aaa load sX,kk load sX,kk RR sX
 ;CALL aaa ADD sX,sY LOAD sX,sY SL0 sX
 ;CALL Z,aaa ADDCY sX,sY AND sX,sY SL1 sX
 ;CALL NZ,aaa SUB sX,sY OR sX,sY SLX sX
 ;CALL C,aaa SUBCY sX,sY XOR sX,sY SLA sX
-;CALL NC,aaa COMPARE sX,sY TEST sX,sY RL sX
+;CALL NC,aaa load sX,sY load sX,sY RL sX

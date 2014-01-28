@@ -14,8 +14,11 @@ SC . . . . . . . . . . . . . . . . . REG.   0x0000C NOT USED CONSTANT    IMPLICI
 SD . . . . . . . . . . . . . . . . . REG.   0x0000D NOT USED CONSTANT    IMPLICIT
 SE . . . . . . . . . . . . . . . . . REG.   0x0000E NOT USED CONSTANT    IMPLICIT
 SF . . . . . . . . . . . . . . . . . REG.   0x0000F NOT USED CONSTANT    IMPLICIT
-START  . . . . . . . . . . . . . . . LABEL  0x00001 USED     CONSTANT    1019_demo_2.asm:12.1-12.7
-WAIT_100MS . . . . . . . . . . . . . LABEL  0x0000E USED     CONSTANT    1019_demo_2.asm:33.1-33.12
-WAIT_100MS_I . . . . . . . . . . . . LABEL  0x00011 USED     CONSTANT    1019_demo_2.asm:36.1-36.14
-WAIT_1S  . . . . . . . . . . . . . . LABEL  0x00004 USED     CONSTANT    1019_demo_2.asm:22.1-22.9
-WAIT_1S_I  . . . . . . . . . . . . . LABEL  0x00007 USED     CONSTANT    1019_demo_2.asm:25.1-25.11
+START  . . . . . . . . . . . . . . . LABEL  0x00001 USED     CONSTANT    1019_demo_2.asm:16.1-16.7
+TEMP1  . . . . . . . . . . . . . . . REG.   0x00000 USED     CONSTANT    1019_demo_2.asm:7.1-7.16
+TEMP2  . . . . . . . . . . . . . . . REG.   0x00001 USED     CONSTANT    1019_demo_2.asm:8.1-8.16
+TEMP3  . . . . . . . . . . . . . . . REG.   0x00002 USED     CONSTANT    1019_demo_2.asm:9.1-9.16
+WAIT_100MS . . . . . . . . . . . . . LABEL  0x0000E USED     CONSTANT    1019_demo_2.asm:37.1-37.12
+WAIT_100MS_I . . . . . . . . . . . . LABEL  0x00011 USED     CONSTANT    1019_demo_2.asm:40.1-40.14
+WAIT_1S  . . . . . . . . . . . . . . LABEL  0x00004 USED     CONSTANT    1019_demo_2.asm:26.1-26.9
+WAIT_1S_I  . . . . . . . . . . . . . LABEL  0x00007 USED     CONSTANT    1019_demo_2.asm:29.1-29.11

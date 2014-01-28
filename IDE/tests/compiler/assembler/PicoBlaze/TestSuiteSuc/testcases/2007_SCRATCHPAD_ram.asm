@@ -1,4 +1,4 @@
-; Compiler test case for Assembler
+; Compiler load case for Assembler
 ; instruction opcodes
 
 device kcpsm2
@@ -18,7 +18,7 @@ Start:
 ram_fill:
         SUB             ram_address, 01
         ; decrement address
-        STORE           ram_data, @ram_address
+        load           ram_data, #ram_address
         
         
         
@@ -46,24 +46,24 @@ NAMEREG                 s1, LED_output
 ; Load 7-segment LED patterns into scratchpad RAM
         LOAD            LED_output, LED_0
         ; grab LED pattern for switches = 0000
-        STORE           LED_output, 00
-        ; store in RAM[0]
+        load           LED_output, 00
+        ; load in RAM[0]
         LOAD            LED_output, LED_1
         ; grab LED pattern for switches = 0001
-        STORE           LED_output, 01h
-        ; store in RAM[1]
+        load           LED_output, 01h
+        ; load in RAM[1]
         ;
         LOAD            LED_output, LED_F
         ; grab LED pattern for switches = 1111
-        STORE           LED_output, 0Fh
-        ; store in RAM[F]
+        load           LED_output, 0Fh
+        ; load in RAM[F]
         ; Read switch values and display value on 7-segment LED
 loop:
         INPUT           switch_value, switches
         ; read value on switches
         AND             switch_value, 0Fh
         ; mask upper bits to guarantee < 15
-        FETCH           LED_output, @switch_value
+        load           LED_output, #switch_value
         ; look up LED pattern in RAM
         OUTPUT          LED_output, LEDs
         ; display switch value on 7-segment LED
@@ -80,12 +80,12 @@ my_subroutine:
         ; preserve register s0
         CALL            push_s0
         ; *** remainder of subroutine algorithm ***
-        ; restore register s0
+        ; reload register s0
         CALL            pop_s0
         RETURN
         
 push_s0:
-        STORE           s0, @stack_ptr
+        load           s0, #stack_ptr
         ; preserve register s0 onto “stack”
         ADD             stack_ptr, 01
         ; increment stack pointer
@@ -94,6 +94,6 @@ push_s0:
 pop_s0:
         SUB             stack_ptr, 01h
         ; decrement stack pointer
-        FETCH           s0, @stack_ptr
-        ; restore register s0 from “stack”
+        load           s0, #stack_ptr
+        ; reload register s0 from “stack”
         RETURN

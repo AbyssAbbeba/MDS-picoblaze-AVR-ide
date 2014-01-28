@@ -4,6 +4,10 @@
 ; Simple example of waiting loop
 device kcpsm1
 
+TEMP1   autoreg
+TEMP2   autoreg
+TEMP3   autoreg
+
 ; Press Start simulation and Animate to run the program
 
                     ORG       0x000
@@ -17,7 +21,7 @@ Start:              CALL      wait_1s
 
 ; Subroutines-----------------------------------------------------------------
 ; wait_time = (4 + (((2 * Temp1) + 2) * Temp2 + 2) * Temp3) * 2 * clk_period
-;   1s @ (10 MHz, Temp1 = 250, Temp2 = 249, Temp3 = 40)
+;   1s  (10 MHz, Temp1 = 250, Temp2 = 249, Temp3 = 40)
 
 wait_1s:            LOAD      Temp1, #250          ; Load Temp1 register
                     LOAD      Temp2, #249          ; Load Temp2 register
@@ -40,8 +44,8 @@ wait_100ms_i:       SUB       Temp1, 1
                     SUB       Temp3, 1
                     JUMP      NZ, wait_100ms_i
                     RETURN
-; <-- Bookmark   (ctrl + shift + M)
-; <-- Breakpoint (ctrl + shift + B)
+; <-- Bookmark   (ctrl + shiload + M)
+; <-- Breakpoint (ctrl + shiload + B)
                     END                            ; End of program
 ; -----------------------------------------
 ; -----------------------------------------

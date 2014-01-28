@@ -24,36 +24,36 @@ delay:
 
 readwrite4_i2c:
                         CALL            i2c_start               ; Send Start, control byte and ack
-                        INPUT           sc, @s0                 ; Load device code for TX
+                        INPUT           sc, #s0                 ; Load device code for TX
                         SL0             sc                      ; add write flag
                         CALL            i2c_xmit                ; Send address and ack
                         CALL            i2c_sack
 
-                        INPUT           sc, @s1                 ; Load data for TX
+                        INPUT           sc, #s1                 ; Load data for TX
                         CALL            i2c_xmit                ; Send data and ack
                         CALL            i2c_sack
 
                         CALL            i2c_repstart            ; Send repeated start, control byte and ack
-                        INPUT           sc, @s0                 ; Load device code for TX
+                        INPUT           sc, #s0                 ; Load device code for TX
                         SL1             sc                      ; add read flag
                         CALL            i2c_xmit                ; Send address and ack
                         CALL            i2c_sack
 
                         CALL            i2c_recv                ; Read 8 bits of data and send ack
                         CALL            i2c_mack
-                        INPUT           s2, @sc
+                        INPUT           s2, #sc
 
                         CALL            i2c_recv                ; Read next 8 bits of data and send ack
                         CALL            i2c_mack
-                        INPUT           s3, @sc
+                        INPUT           s3, #sc
 
                         CALL            i2c_recv                ; Read 8 bits of data and send ack
                         CALL            i2c_mack
-                        INPUT           s4, @sc
+                        INPUT           s4, #sc
 
                         CALL            i2c_recv                ; Read next 8 bits of data and send ack
                         CALL            i2c_mnack
-                        INPUT           s5, @sc
+                        INPUT           s5, #sc
 
                         JUMP            i2c_stop                ; Send Stop
 
@@ -62,20 +62,20 @@ readwrite4_i2c:
 ; -------------------------------------------------------------------------------
 write3_i2c:
                         CALL            i2c_start               ; Send Start, control byte and ack
-                        INPUT           sc, @s0                 ; Load device code for TX
+                        INPUT           sc, #s0                 ; Load device code for TX
                         SL0             sc                      ; add write flag
                         CALL            i2c_xmit                ; Send address and ack
                         CALL            i2c_sack
 
-                        INPUT           sc, @s1                 ; Load data for TX
+                        INPUT           sc, #s1                 ; Load data for TX
                         CALL            i2c_xmit                ; Send data and ack
                         CALL            i2c_sack
 
-                        INPUT           sc, @s2                 ; Load data for TX
+                        INPUT           sc, #s2                 ; Load data for TX
                         CALL            i2c_xmit                ; Send data and ack
                         CALL            i2c_sack
 
-                        INPUT           sc, @s3                 ; Load data for TX
+                        INPUT           sc, #s3                 ; Load data for TX
                         CALL            i2c_xmit                ; Send data and ack
                         CALL            i2c_sack
 
@@ -87,18 +87,18 @@ write3_i2c:
 
 read2_i2c:
                         CALL            i2c_start               ; Send start, control byte and ack
-                        INPUT           sc, @s0                 ; Load device code for TX
+                        INPUT           sc, #s0                 ; Load device code for TX
                         SL1             sc                      ; add read flag
                         CALL            i2c_xmit                ; Send address and ack
                         CALL            i2c_sack
 
                         CALL            i2c_recv                ; Read 8 bits of data and send ack
                         CALL            i2c_mack
-                        INPUT           s2, @sc
+                        INPUT           s2, #sc
 
                         CALL            i2c_recv                ; Read next 8 bits of data and send ack
                         CALL            i2c_mnack
-                        INPUT           s3, @sc
+                        INPUT           s3, #sc
 
                         JUMP            i2c_stop                ; Send Stop
 
@@ -107,16 +107,16 @@ read2_i2c:
 ; -------------------------------------------------------------------------------
 write2_i2c:
                         CALL            i2c_start               ; Send Start, control byte and ack
-                        INPUT           sc, @s0                 ; Load device code for TX
+                        INPUT           sc, #s0                 ; Load device code for TX
                         SL0             sc                      ; add write flag
                         CALL            i2c_xmit                ; Send address and ack
                         CALL            i2c_sack
 
-                        INPUT           sc, @s1                 ; Load data for TX
+                        INPUT           sc, #s1                 ; Load data for TX
                         CALL            i2c_xmit                ; Send data and ack
                         CALL            i2c_sack
 
-                        INPUT           sc, @s2                 ; Load data for TX
+                        INPUT           sc, #s2                 ; Load data for TX
                         CALL            i2c_xmit                ; Send data and ack
                         CALL            i2c_sack
 
@@ -128,7 +128,7 @@ write2_i2c:
 read1_i2c:
 
                         CALL            i2c_start               ; Send start, control byte and ack
-                        INPUT           sc, @s0                 ; Load address for TX
+                        INPUT           sc, #s0                 ; Load address for TX
                         SL1             sc                      ; add read flag
                         CALL            i2c_xmit                ; Send address and ack
                         CALL            i2c_sack
@@ -137,7 +137,7 @@ read1_i2c:
 
                         CALL            i2c_recv                ; Read 8 bits of data and send ack
                         CALL            i2c_mnack
-                        INPUT           s2, @sc
+                        INPUT           s2, #sc
 
                         JUMP            i2c_stop                ; Send Stop
 
@@ -147,12 +147,12 @@ read1_i2c:
 write1_i2c:
 
                         CALL            i2c_start               ; Send Start, control byte and ack
-                        INPUT           sc, @s0                 ; Load device code for TX
+                        INPUT           sc, #s0                 ; Load device code for TX
                         SL0             sc                      ; add write flag
                         CALL            i2c_xmit                ; Send address and ack
                         CALL            i2c_sack
 
-                        INPUT           sc, @s1                 ; Load data for TX
+                        INPUT           sc, #s1                 ; Load data for TX
                         CALL            i2c_xmit                ; Send data and ack
                         CALL            i2c_sack
 

@@ -94,9 +94,9 @@ start:
 ; Main loop
 ; --------------------
 main:   INPUT   BTN_i,Btn               ; Save buttons status
-        TEST    BTN_i,1                 ; Button one pressed
+        load    BTN_i,1                 ; Button one pressed
         JUMP    C,Snake_i               ; JUMP to snake subroutine
-        TEST    BTN_i,2                 ; Button two pressed
+        load    BTN_i,2                 ; Button two pressed
         JUMP    C,Blink_i               ; JUMP to Blink subroutine
         JUMP    main
 ; Program end

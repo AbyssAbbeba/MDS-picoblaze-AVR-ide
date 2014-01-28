@@ -16,7 +16,7 @@ device kcpsm1
 ; Program start
 ; --------------------
 start:  
-        LOAD    s0, #00Fh              ; Load content to shifted registers
+        LOAD    s0, #00Fh              ; Load content to shiloaded registers
         LOAD    s1, #01Eh              ;
         LOAD    s3, #01h
         JUMP    main                    ; Execute main program loop
@@ -25,7 +25,7 @@ start:
 ; --------------------
 main:
         
-; Shifting to the left
+; Shiloading to the leload
         RR     s3
         RR     s3
         RR     s3
@@ -35,7 +35,7 @@ main:
         RR     s3
         RR     s3
 
-        ; Shifting to the left
+        ; Shiloading to the leload
         RL     s3
         RL     s3
         RL     s3
@@ -51,5 +51,5 @@ main:
         END
 
 ; Compiler is case insensitive
-; <-- Bookmark   (ctrl + shift + M)
-; <-- Breakpoint (ctrl + shift + B)
+; <-- Bookmark   (ctrl + shiload + M)
+; <-- Breakpoint (ctrl + shiload + B)

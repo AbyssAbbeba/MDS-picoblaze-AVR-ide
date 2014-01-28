@@ -1,9 +1,9 @@
 :WAIT_FOR_1S.WAIT_1S.1 . . . . . . . LABEL  0x00039 NOT USED CONSTANT    LOCAL
 :WAIT_FOR_1S.WAIT_1S_I.1 . . . . . . LABEL  0x0003C USED     CONSTANT    LOCAL
-INTERRUPT  . . . . . . . . . . . . . LABEL  0x00001 USED     CONSTANT    1027_demo_5_UART.asm:171.1-171.11
+INTERRUPT  . . . . . . . . . . . . . LABEL  0x00001 USED     CONSTANT    1027_demo_5_UART.asm:148.1-148.11
 LED_ID . . . . . . . . . . . . . . . PORT   0x00008 NOT USED CONSTANT    1027_demo_5_UART.asm:34.9-34.37
 LED_REG  . . . . . . . . . . . . . . REG.   0x00005 NOT USED CONSTANT    1027_demo_5_UART.asm:28.9-28.30
-MAIN_LOOP  . . . . . . . . . . . . . LABEL  0x00043 USED     CONSTANT    1027_demo_5_UART.asm:188.1-188.11
+MAIN_LOOP  . . . . . . . . . . . . . LABEL  0x00043 USED     CONSTANT    1027_demo_5_UART.asm:165.1-165.11
 RX_DATA  . . . . . . . . . . . . . . REG.   0x00003 USED     CONSTANT    1027_demo_5_UART.asm:26.9-26.38
 RX_ID  . . . . . . . . . . . . . . . PORT   0x00002 USED     CONSTANT    1027_demo_5_UART.asm:32.9-32.37
 S0 . . . . . . . . . . . . . . . . . REG.   0x00000 USED     CONSTANT    IMPLICIT
@@ -22,7 +22,7 @@ SC . . . . . . . . . . . . . . . . . REG.   0x0000C NOT USED CONSTANT    IMPLICI
 SD . . . . . . . . . . . . . . . . . REG.   0x0000D NOT USED CONSTANT    IMPLICIT
 SE . . . . . . . . . . . . . . . . . REG.   0x0000E NOT USED CONSTANT    IMPLICIT
 SF . . . . . . . . . . . . . . . . . REG.   0x0000F NOT USED CONSTANT    IMPLICIT
-START  . . . . . . . . . . . . . . . LABEL  0x00039 USED     CONSTANT    1027_demo_5_UART.asm:183.1-183.7
+START  . . . . . . . . . . . . . . . LABEL  0x00039 USED     CONSTANT    1027_demo_5_UART.asm:160.1-160.7
 TEMP1  . . . . . . . . . . . . . . . REG.   0x00000 USED     CONSTANT    1027_demo_5_UART.asm:22.9-22.33
 TEMP2  . . . . . . . . . . . . . . . REG.   0x00001 USED     CONSTANT    1027_demo_5_UART.asm:23.9-23.33
 TEMP3  . . . . . . . . . . . . . . . REG.   0x00002 USED     CONSTANT    1027_demo_5_UART.asm:24.9-24.33

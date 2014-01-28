@@ -6,33 +6,31 @@
 000 0000A          6             LOAD    0x0, #0xa
 W: instruction `LOAD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
   00001            7     FOR_1:
-                   8             COMPARE 0x0, #0xf
-W: instruction `COMPARE sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-E: instruction not supported on the this device: COMPARE sX, kk.
-001 09106          9             JUMP    Z, FOR_1_END
-002 04701         10                 add              S7,#1
+001 0000F          8             load 0x0, #0xf
+W: instruction `LOAD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+002 09106          9             JUMP    Z, FOR_1_END
+003 04701         10                 add              S7,#1
                   11             ; RT_ENDF
-003 04001         12             ADD     0x0, #0x1
+004 04001         12             ADD     0x0, #0x1
 W: instruction `ADD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-004 08101         13             JUMP    FOR_1
+005 08101         13             JUMP    FOR_1
   00006           14     FOR_1_END:
                   15
                   16
                   17         ;    RT_FOR          S0,10..50,5
-005 0000A         18             LOAD    0x0, #0xa
+006 0000A         18             LOAD    0x0, #0xa
 W: instruction `LOAD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
   00007           19     FOR_2:
-                  20             COMPARE 0x0, #0x32
-W: instruction `COMPARE sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-E: instruction not supported on the this device: COMPARE sX, kk.
-006 0910C         21     JUMP    Z, FOR_2_END
-007 04801         22                 add              S8,#1
+007 00032         20             load 0x0, #0x32
+W: instruction `LOAD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+008 0910C         21     JUMP    Z, FOR_2_END
+009 04801         22                 add              S8,#1
                   23             ;RT_ENDF
-008 04005         24             ADD     0x0, #0x5
+00A 04005         24             ADD     0x0, #0x5
 W: instruction `ADD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-009 08107         25             JUMP    FOR_2
+00B 08107         25             JUMP    FOR_2
   0000C           26     FOR_2_END:
                   27
-00A 0810C         28             jump   $
+00C 0810C         28             jump   $
                   29
                   30

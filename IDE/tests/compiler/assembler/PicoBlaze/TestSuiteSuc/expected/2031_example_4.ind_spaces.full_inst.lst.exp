@@ -9,7 +9,7 @@
                    9     ; Ken Chapman
                   10     ; Xilinx Ltd
                   11     device kcpsm2
-                  12     ; chapman@xilinx.com
+                  12     ; chapman#xilinx.com
                   13     ;
                   14     ;
                   15     ;
@@ -42,7 +42,7 @@
   00001           42     led_port                EQU             0x01                    ;8 simple LEDs - active high
                   43     ;
                   44     ;
-  00008           45     source_control_port     EQU             0x08                    ;Select and control test sources
+  00008           45     source_control_port     EQU             0x08                    ;Select and control load sources
   00001           46     source_sel0             EQU             0x01                    ;  00 = SMA clock  01=50MHz
   00002           47     source_sel1             EQU             0x02                    ;  10 = DCM Osc    11=Ring Osc
   00040           48     ring_reset              EQU             0x40                    ; active High rest of ring osc - bit6
@@ -280,12 +280,12 @@
                  280     ;
 01E 0013F        281                             LOAD            s1, #0x3f
 01F 00000        282                             LOAD            s0, #0x00
-  00020          283     clear_spm:              STORE           s0, @s1
-E: instruction not supported on the this device: STORE sX, sY.
-020 0C101        284                             SUB             s1, #0x01
-021 35C20        285                             JUMP            nc, clear_spm
+020 00001        283     clear_spm:              load           s0, #s1
+W: instruction `LOAD sX, kk' requires operand #2 to be of type(s): number, or expression; while the given operand is of type: register.
+021 0C101        284                             SUB             s1, #0x01
+022 35C20        285                             JUMP            nc, clear_spm
                  286     ;
-022 3C001        287                             ENABLE          interrupt
+023 3C001        287                             ENABLE          interrupt
                  288     ;
                  289     ;**************************************************************************************
                  290     ;Main Program
@@ -297,41 +297,36 @@ E: instruction not supported on the this device: STORE sX, sY.
                  296     ;It also reads the slide switches controls the selection of the source frequency to
                  297     ;be measured.
                  298     ;
-023 00521        299     warm_start:             LOAD            s5, #0x21               ;Line 2 position 1
-024 36213        300                             CALL            lcd_cursor
-025 20F80        301                             INPUT           sf, status_port         ;select source based on switches
-                 302                             COMPARE         sf, #0x00               ;test for no switches active
-E: instruction not supported on the this device: COMPARE sX, kk.
-026 02F0F        303                             AND             sf, #0x0f               ;isolate switches
-027 3542C        304                             JUMP            nz, test_sma
-028 3615D        305                             CALL            disp_menu
-029 34024        306                             JUMP            warm_start
-  0002C          307     test_sma:               COMPARE         sf, #switch0
-E: instruction not supported on the this device: COMPARE sX, kk.
-02A 35431        308                             JUMP            nz, test_50m
-02B 36100        309                             CALL            disp_sma_input
-02C 00F00        310                             LOAD            sf, #0x00
-02D 34041        311                             JUMP            select_source
-  00031          312     test_50m:               COMPARE         sf, #switch1
-E: instruction not supported on the this device: COMPARE sX, kk.
-02E 35436        313                             JUMP            nz, test_dcm
-02F 36114        314                             CALL            disp_50mhz_crystal
-030 00F01        315                             LOAD            sf, #0x01
-031 34041        316                             JUMP            select_source
-  00036          317     test_dcm:               COMPARE         sf, #switch2
-E: instruction not supported on the this device: COMPARE sX, kk.
-032 3543B        318                             JUMP            nz, test_ring
-033 36130        319                             CALL            disp_dcm_oscillator
-034 00F02        320                             LOAD            sf, #0x02
-035 34041        321                             JUMP            select_source
-  0003B          322     test_ring:              COMPARE         sf, #switch3
-E: instruction not supported on the this device: COMPARE sX, kk.
-036 3503F        323                             JUMP            z, ring_select
-037 3615D        324                             CALL            disp_menu               ;more than one switch is set
-038 34024        325                             JUMP            warm_start
-039 3614E        326     ring_select:            CALL            disp_ring_oscillator
-03A 00F03        327                             LOAD            sf, #0x03
-03B 22F08        328     select_source:          OUTPUT          sf, source_control_port ;select source control
+024 00521        299     warm_start:             LOAD            s5, #0x21               ;Line 2 position 1
+025 36213        300                             CALL            lcd_cursor
+026 20F80        301                             INPUT           sf, status_port         ;select source based on switches
+027 00F00        302                             load         sf, #0x00               ;load for no switches active
+028 02F0F        303                             AND             sf, #0x0f               ;isolate switches
+029 3542C        304                             JUMP            nz, load_sma
+02A 3615D        305                             CALL            disp_menu
+02B 34024        306                             JUMP            warm_start
+02C 00F01        307     load_sma:               load         sf, #switch0
+02D 35431        308                             JUMP            nz, load_50m
+02E 36100        309                             CALL            disp_sma_input
+02F 00F00        310                             LOAD            sf, #0x00
+030 34041        311                             JUMP            select_source
+031 00F02        312     load_50m:               load         sf, #switch1
+032 35436        313                             JUMP            nz, load_dcm
+033 36114        314                             CALL            disp_50mhz_crystal
+034 00F01        315                             LOAD            sf, #0x01
+035 34041        316                             JUMP            select_source
+036 00F04        317     load_dcm:               load         sf, #switch2
+037 3543B        318                             JUMP            nz, load_ring
+038 36130        319                             CALL            disp_dcm_oscillator
+039 00F02        320                             LOAD            sf, #0x02
+03A 34041        321                             JUMP            select_source
+03B 00F08        322     load_ring:              load         sf, #switch3
+03C 3503F        323                             JUMP            z, ring_select
+03D 3615D        324                             CALL            disp_menu               ;more than one switch is set
+03E 34024        325                             JUMP            warm_start
+03F 3614E        326     ring_select:            CALL            disp_ring_oscillator
+040 00F03        327                             LOAD            sf, #0x03
+041 22F08        328     select_source:          OUTPUT          sf, source_control_port ;select source control
                  329     ;
                  330     ;Read the most recent values from display on LCD.
                  331     ;
@@ -342,22 +337,22 @@ E: instruction not supported on the this device: COMPARE sX, kk.
                  336     ;Display the count value in the top right of the LCD display
                  337     ;Up to 999,999,999
                  338     ;
-03C 3C000        339                             DISABLE         interrupt               ;copy cycle count to register set [s5,s4,s3,s2]
-                 340                             FETCH           s2, count0
-E: instruction not supported on the this device: FETCH sX, ss.
-                 341                             FETCH           s3, count1
-E: instruction not supported on the this device: FETCH sX, ss.
-                 342                             FETCH           s4, count2
-E: instruction not supported on the this device: FETCH sX, ss.
-                 343                             FETCH           s5, count3
-E: instruction not supported on the this device: FETCH sX, ss.
-03D 3C001        344                             ENABLE          interrupt
-03E 36094        345                             CALL            integer_to_bcd          ;convert last 32-bit value to BCD digits
-03F 00510        346                             LOAD            s5, #0x10               ;Line 1 position 0
-040 36213        347                             CALL            lcd_cursor
-041 00619        348                             LOAD            s6, #decimal8           ;up to 999,999,999 Hz
-042 3604E        349                             CALL            disp_digits
-043 34024        350                             JUMP            warm_start
+042 3C000        339                             DISABLE         interrupt               ;copy cycle count to register set [s5,s4,s3,s2]
+043 10200        340                             load           s2, count0
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+044 10308        341                             load           s3, count1
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+045 10410        342                             load           s4, count2
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+046 10518        343                             load           s5, count3
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+047 3C001        344                             ENABLE          interrupt
+048 36094        345                             CALL            integer_to_bcd          ;convert last 32-bit value to BCD digits
+049 00510        346                             LOAD            s5, #0x10               ;Line 1 position 0
+04A 36213        347                             CALL            lcd_cursor
+04B 00619        348                             LOAD            s6, #decimal8           ;up to 999,999,999 Hz
+04C 3604E        349                             CALL            disp_digits
+04D 34024        350                             JUMP            warm_start
                  351     ;
                  352     ;
                  353     ;
@@ -367,104 +362,99 @@ E: instruction not supported on the this device: FETCH sX, ss.
                  357     ;
                  358     ;
                  359     ;Display value on the LCD display at current position.
-                 360     ;The values to be displayed must be stored in scratch pad memory
+                 360     ;The values to be displayed must be loadd in scratch pad memory
                  361     ;locations 'decimal0' to 'decimal9' which must be in ascending locations.
                  362     ;
                  363     ;The routing performs leading zero suppression and scales to Hz, KHz or MHz ranges.
                  364     ;
                  365     ;Registers used s0,s1,s4,s5,sE,sF
                  366     ;
-044 00FFF        367     disp_digits:            LOAD            sf, #0xff               ;set blanking flag
-045 00E20        368                             LOAD            se, #character_space    ;scaling character for MHz, KHz or Hz
-                 369                             FETCH           s5, decimal8            ;100MHz digit
-E: instruction not supported on the this device: FETCH sX, ss.
-046 36088        370                             CALL            zero_test
-047 3608C        371                             CALL            disp_digit
-                 372                             FETCH           s5, decimal7            ;10MHz digit
-E: instruction not supported on the this device: FETCH sX, ss.
-048 36088        373                             CALL            zero_test
-049 3608C        374                             CALL            disp_digit
-                 375                             FETCH           s5, decimal6            ;1MHz digit
-E: instruction not supported on the this device: FETCH sX, ss.
-04A 36088        376                             CALL            zero_test
-04B 3608C        377                             CALL            disp_digit
-                 378                             COMPARE         sf, #0xff               ;check if any MHz were active
-E: instruction not supported on the this device: COMPARE sX, kk.
-04C 3505F        379                             JUMP            z, khz_space
-04D 0052E        380                             LOAD            s5, #character_stop
-04E 361D3        381                             CALL            lcd_write_data
-04F 00E4D        382                             LOAD            se, #_character_m
-050 34061        383                             JUMP            khz_digits
-051 00520        384     khz_space:              LOAD            s5, #character_space
-052 361D3        385                             CALL            lcd_write_data
-  00061          386     khz_digits:             FETCH           s5, decimal5            ;100KHz digit
-E: instruction not supported on the this device: FETCH sX, ss.
-053 36088        387                             CALL            zero_test
-054 3608C        388                             CALL            disp_digit
-                 389                             FETCH           s5, decimal4            ;10KHz digit
-E: instruction not supported on the this device: FETCH sX, ss.
-055 36088        390                             CALL            zero_test
-056 3608C        391                             CALL            disp_digit
-                 392                             FETCH           s5, decimal3            ;1KHz digit
-E: instruction not supported on the this device: FETCH sX, ss.
-057 36088        393                             CALL            zero_test
-058 3608C        394                             CALL            disp_digit
-                 395                             COMPARE         se, #_character_m       ;check if any MHz were active
-E: instruction not supported on the this device: COMPARE sX, kk.
-059 35072        396                             JUMP            z, hz_space
-                 397                             COMPARE         sf, #0xff               ;check if any KHz were active
-E: instruction not supported on the this device: COMPARE sX, kk.
-05A 35072        398                             JUMP            z, hz_space
-05B 0052E        399                             LOAD            s5, #character_stop
-05C 361D3        400                             CALL            lcd_write_data
-05D 00E4B        401                             LOAD            se, #_character_k
-05E 34074        402                             JUMP            hz_digits
-05F 00520        403     hz_space:               LOAD            s5, #character_space
-060 361D3        404                             CALL            lcd_write_data
-  00074          405     hz_digits:              FETCH           s5, decimal2            ;100KHz digit
-E: instruction not supported on the this device: FETCH sX, ss.
-061 36088        406                             CALL            zero_test
-062 3608C        407                             CALL            disp_digit
-                 408                             FETCH           s5, decimal1            ;10KHz digit
-E: instruction not supported on the this device: FETCH sX, ss.
-063 36088        409                             CALL            zero_test
-064 3608C        410                             CALL            disp_digit
-                 411                             FETCH           s5, decimal0            ;1KHz digit (always displayed)
-E: instruction not supported on the this device: FETCH sX, ss.
-065 08530        412                             ADD             s5, #character_0        ;convert number to ASCII
-066 361D3        413                             CALL            lcd_write_data
-067 00520        414                             LOAD            s5, #character_space
-068 361D3        415                             CALL            lcd_write_data
-069 10570        416                             LOAD            s5, se
-06A 361D3        417                             CALL            lcd_write_data
-06B 00548        418                             LOAD            s5, #_character_h
-06C 361D3        419                             CALL            lcd_write_data
-06D 0057A        420                             LOAD            s5, #character_z
-06E 361D3        421                             CALL            lcd_write_data
-06F 00520        422                             LOAD            s5, #character_space    ;ensure end of line is clear
-070 361D3        423                             CALL            lcd_write_data
-071 24000        424                             RETURN
+04E 00FFF        367     disp_digits:            LOAD            sf, #0xff               ;set blanking flag
+04F 00E20        368                             LOAD            se, #character_space    ;scaling character for MHz, KHz or Hz
+050 105C8        369                             load           s5, decimal8            ;100MHz digit
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+051 36088        370                             CALL            zero_load
+052 3608C        371                             CALL            disp_digit
+053 105C0        372                             load           s5, decimal7            ;10MHz digit
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+054 36088        373                             CALL            zero_load
+055 3608C        374                             CALL            disp_digit
+056 105B8        375                             load           s5, decimal6            ;1MHz digit
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+057 36088        376                             CALL            zero_load
+058 3608C        377                             CALL            disp_digit
+059 00FFF        378                             load         sf, #0xff               ;check if any MHz were active
+05A 3505F        379                             JUMP            z, khz_space
+05B 0052E        380                             LOAD            s5, #character_stop
+05C 361D3        381                             CALL            lcd_write_data
+05D 00E4D        382                             LOAD            se, #_character_m
+05E 34061        383                             JUMP            khz_digits
+05F 00520        384     khz_space:              LOAD            s5, #character_space
+060 361D3        385                             CALL            lcd_write_data
+061 105B0        386     khz_digits:             load           s5, decimal5            ;100KHz digit
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+062 36088        387                             CALL            zero_load
+063 3608C        388                             CALL            disp_digit
+064 105A8        389                             load           s5, decimal4            ;10KHz digit
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+065 36088        390                             CALL            zero_load
+066 3608C        391                             CALL            disp_digit
+067 105A0        392                             load           s5, decimal3            ;1KHz digit
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+068 36088        393                             CALL            zero_load
+069 3608C        394                             CALL            disp_digit
+06A 00E4D        395                             load         se, #_character_m       ;check if any MHz were active
+06B 35072        396                             JUMP            z, hz_space
+06C 00FFF        397                             load         sf, #0xff               ;check if any KHz were active
+06D 35072        398                             JUMP            z, hz_space
+06E 0052E        399                             LOAD            s5, #character_stop
+06F 361D3        400                             CALL            lcd_write_data
+070 00E4B        401                             LOAD            se, #_character_k
+071 34074        402                             JUMP            hz_digits
+072 00520        403     hz_space:               LOAD            s5, #character_space
+073 361D3        404                             CALL            lcd_write_data
+074 10598        405     hz_digits:              load           s5, decimal2            ;100KHz digit
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+075 36088        406                             CALL            zero_load
+076 3608C        407                             CALL            disp_digit
+077 10590        408                             load           s5, decimal1            ;10KHz digit
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+078 36088        409                             CALL            zero_load
+079 3608C        410                             CALL            disp_digit
+07A 10588        411                             load           s5, decimal0            ;1KHz digit (always displayed)
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+07B 08530        412                             ADD             s5, #character_0        ;convert number to ASCII
+07C 361D3        413                             CALL            lcd_write_data
+07D 00520        414                             LOAD            s5, #character_space
+07E 361D3        415                             CALL            lcd_write_data
+07F 10570        416                             LOAD            s5, se
+080 361D3        417                             CALL            lcd_write_data
+081 00548        418                             LOAD            s5, #_character_h
+082 361D3        419                             CALL            lcd_write_data
+083 0057A        420                             LOAD            s5, #character_z
+084 361D3        421                             CALL            lcd_write_data
+085 00520        422                             LOAD            s5, #character_space    ;ensure end of line is clear
+086 361D3        423                             CALL            lcd_write_data
+087 24000        424                             RETURN
                  425     ;
                  426     ;Check digit for zero. If not zero then clear
                  427     ;blanking flag (sF=00)
-  00088          428     zero_test:              COMPARE         s5, #0x00
-E: instruction not supported on the this device: COMPARE sX, kk.
-072 25000        429                             RETURN          z
-073 00F00        430                             LOAD            sf, #0x00
-074 24000        431                             RETURN
+088 00500        428     zero_load:              load         s5, #0x00
+089 25000        429                             RETURN          z
+08A 00F00        430                             LOAD            sf, #0x00
+08B 24000        431                             RETURN
                  432     ;
                  433     ;Display single digit at current position
                  434     ;or space if blanking (sF=FF) is active
                  435     ;
-  0008C          436     disp_digit:             COMPARE         sf, #0xff
-E: instruction not supported on the this device: COMPARE sX, kk.
-075 35091        437                             JUMP            z, blank_digit
-076 08530        438                             ADD             s5, #character_0        ;convert number to ASCII
-077 361D3        439                             CALL            lcd_write_data
-078 24000        440                             RETURN
-079 00520        441     blank_digit:            LOAD            s5, #character_space
-07A 361D3        442                             CALL            lcd_write_data
-07B 24000        443                             RETURN
+08C 00FFF        436     disp_digit:             load         sf, #0xff
+08D 35091        437                             JUMP            z, blank_digit
+08E 08530        438                             ADD             s5, #character_0        ;convert number to ASCII
+08F 361D3        439                             CALL            lcd_write_data
+090 24000        440                             RETURN
+091 00520        441     blank_digit:            LOAD            s5, #character_space
+092 361D3        442                             CALL            lcd_write_data
+093 24000        443                             RETURN
                  444     ;
                  445     ;
                  446     ;
@@ -480,15 +470,15 @@ E: instruction not supported on the this device: COMPARE sX, kk.
                  456     ;
                  457     ;Registers used s0,s2,s3,s4,s5,s6,s7,s8,s9,sA,sB,sC,sD,sE,sF
                  458     ;
-07C 00E0A        459     integer_to_bcd:         LOAD            se, #0x0a               ;10 digits to be formed from value upto 4294967295
-07D 00F11        460                             LOAD            sf, #decimal0           ;pointer for LS-Digit
-07E 3609C        461     int_to_bcd_loop:        CALL            divide_32bit_by_10
-                 462                             STORE           s1, @sf                 ;remainder becomes digit value
-E: instruction not supported on the this device: STORE sX, sY.
-07F 08F01        463                             ADD             sf, #0x01               ;move to next most significant digit
-080 0CE01        464                             SUB             se, #0x01               ;one less digit to compute
-081 35496        465                             JUMP            nz, int_to_bcd_loop
-082 24000        466                             RETURN
+094 00E0A        459     integer_to_bcd:         LOAD            se, #0x0a               ;10 digits to be formed from value upto 4294967295
+095 00F11        460                             LOAD            sf, #decimal0           ;pointer for LS-Digit
+096 3609C        461     int_to_bcd_loop:        CALL            divide_32bit_by_10
+097 0010F        462                             load           s1, #sf                 ;remainder becomes digit value
+W: instruction `LOAD sX, kk' requires operand #2 to be of type(s): number, or expression; while the given operand is of type: register.
+098 08F01        463                             ADD             sf, #0x01               ;move to next most significant digit
+099 0CE01        464                             SUB             se, #0x01               ;one less digit to compute
+09A 35496        465                             JUMP            nz, int_to_bcd_loop
+09B 24000        466                             RETURN
                  467     ;
                  468     ;Divide 32-bit binary integer by 10
                  469     ;
@@ -500,42 +490,42 @@ E: instruction not supported on the this device: STORE sX, sY.
                  475     ;
                  476     ;Registers used s0, s2,s3,s4,s5,s6,s7,s8,s9,sA,sB,sC,sD
                  477     ;
-083 10A10        478     divide_32bit_by_10:     LOAD            sa, s2                  ;copy input value to set [sD,sC,sB,sA]
-084 10B18        479                             LOAD            sb, s3
-085 10C20        480                             LOAD            sc, s4
-086 10D28        481                             LOAD            sd, s5
-087 00200        482                             LOAD            s2, #0x00               ;clear result
-088 00300        483                             LOAD            s3, #0x00
-089 00400        484                             LOAD            s4, #0x00
-08A 00500        485                             LOAD            s5, #0x00
-08B 009A0        486                             LOAD            s9, #0xa0               ;initialise '10' value into msb's of set [s9,s8,s7,s6]
-08C 00800        487                             LOAD            s8, #0x00
-08D 00700        488                             LOAD            s7, #0x00
-08E 00600        489                             LOAD            s6, #0x00
-08F 0001D        490                             LOAD            s0, #0x1d               ;29 subtract and shift iterations to be performed
-090 1CA30        491     div10_loop:             SUB             sa, s6                  ;perform 32-bit subtract [sD,sC,sB,sA]-[s9,s8,s7,s6]
-091 1EB38        492                             SUBCY           sb, s7
-092 1EC40        493                             SUBCY           sc, s8
-093 1ED48        494                             SUBCY           sd, s9
-094 358B0        495                             JUMP            c, div10_restore
-095 28207        496                             SL1             s2                      ;shift '1' into result
-096 340B5        497                             JUMP            div10_shifts
-097 18A30        498     div10_restore:          ADD             sa, s6                  ;perform 32-bit addition [sD,sC,sB,sA]+[s9,s8,s7,s6]
-098 1AB38        499                             ADDCY           sb, s7
-099 1AC40        500                             ADDCY           sc, s8
-09A 1AD48        501                             ADDCY           sd, s9
-09B 28206        502                             SL0             s2                      ;shift '0' into result
-09C 28300        503     div10_shifts:           SLA             s3                      ;complete 32-bit shift left
-09D 28400        504                             SLA             s4
-09E 28500        505                             SLA             s5
-09F 2890E        506                             SR0             s9                      ;divide '10' value by 2 (shift right 1 place)
-0A0 28808        507                             SRA             s8
-0A1 28708        508                             SRA             s7
-0A2 28608        509                             SRA             s6
-0A3 0C001        510                             SUB             s0, #0x01               ;count iterations
-0A4 354A9        511                             JUMP            nz, div10_loop
-0A5 10150        512                             LOAD            s1, sa                  ;remainder of division
-0A6 24000        513                             RETURN
+09C 10A10        478     divide_32bit_by_10:     LOAD            sa, s2                  ;copy input value to set [sD,sC,sB,sA]
+09D 10B18        479                             LOAD            sb, s3
+09E 10C20        480                             LOAD            sc, s4
+09F 10D28        481                             LOAD            sd, s5
+0A0 00200        482                             LOAD            s2, #0x00               ;clear result
+0A1 00300        483                             LOAD            s3, #0x00
+0A2 00400        484                             LOAD            s4, #0x00
+0A3 00500        485                             LOAD            s5, #0x00
+0A4 009A0        486                             LOAD            s9, #0xa0               ;initialise '10' value into msb's of set [s9,s8,s7,s6]
+0A5 00800        487                             LOAD            s8, #0x00
+0A6 00700        488                             LOAD            s7, #0x00
+0A7 00600        489                             LOAD            s6, #0x00
+0A8 0001D        490                             LOAD            s0, #0x1d               ;29 subtract and shift iterations to be performed
+0A9 1CA30        491     div10_loop:             SUB             sa, s6                  ;perform 32-bit subtract [sD,sC,sB,sA]-[s9,s8,s7,s6]
+0AA 1EB38        492                             SUBCY           sb, s7
+0AB 1EC40        493                             SUBCY           sc, s8
+0AC 1ED48        494                             SUBCY           sd, s9
+0AD 358B0        495                             JUMP            c, div10_reload
+0AE 28207        496                             SL1             s2                      ;shift '1' into result
+0AF 340B5        497                             JUMP            div10_shifts
+0B0 18A30        498     div10_reload:          ADD             sa, s6                  ;perform 32-bit addition [sD,sC,sB,sA]+[s9,s8,s7,s6]
+0B1 1AB38        499                             ADDCY           sb, s7
+0B2 1AC40        500                             ADDCY           sc, s8
+0B3 1AD48        501                             ADDCY           sd, s9
+0B4 28206        502                             SL0             s2                      ;shift '0' into result
+0B5 28300        503     div10_shifts:           SLA             s3                      ;complete 32-bit shift left
+0B6 28400        504                             SLA             s4
+0B7 28500        505                             SLA             s5
+0B8 2890E        506                             SR0             s9                      ;divide '10' value by 2 (shift right 1 place)
+0B9 28808        507                             SRA             s8
+0BA 28708        508                             SRA             s7
+0BB 28608        509                             SRA             s6
+0BC 0C001        510                             SUB             s0, #0x01               ;count iterations
+0BD 354A9        511                             JUMP            nz, div10_loop
+0BE 10150        512                             LOAD            s1, sa                  ;remainder of division
+0BF 24000        513                             RETURN
                  514     ;
                  515     ;
                  516     ;
@@ -548,278 +538,277 @@ E: instruction not supported on the this device: STORE sX, sY.
                  523     ;Display 'PicoBlaze' on LCD at current cursor position
                  524     ;
                  525     ;
-0A7 00550        526     disp_picoblaze:         LOAD            s5, #_character_p
-0A8 361D3        527                             CALL            lcd_write_data
-0A9 00569        528                             LOAD            s5, #character_i
-0AA 361D3        529                             CALL            lcd_write_data
-0AB 00563        530                             LOAD            s5, #character_c
-0AC 361D3        531                             CALL            lcd_write_data
-0AD 0056F        532                             LOAD            s5, #character_o
-0AE 361D3        533                             CALL            lcd_write_data
-0AF 00542        534                             LOAD            s5, #_character_b
-0B0 361D3        535                             CALL            lcd_write_data
-0B1 0056C        536                             LOAD            s5, #character_l
-0B2 361D3        537                             CALL            lcd_write_data
-0B3 00561        538                             LOAD            s5, #character_a
-0B4 361D3        539                             CALL            lcd_write_data
-0B5 0057A        540                             LOAD            s5, #character_z
-0B6 361D3        541                             CALL            lcd_write_data
-0B7 00565        542                             LOAD            s5, #character_e
-0B8 361D3        543                             CALL            lcd_write_data
-0B9 24000        544                             RETURN
+0C0 00550        526     disp_picoblaze:         LOAD            s5, #_character_p
+0C1 361D3        527                             CALL            lcd_write_data
+0C2 00569        528                             LOAD            s5, #character_i
+0C3 361D3        529                             CALL            lcd_write_data
+0C4 00563        530                             LOAD            s5, #character_c
+0C5 361D3        531                             CALL            lcd_write_data
+0C6 0056F        532                             LOAD            s5, #character_o
+0C7 361D3        533                             CALL            lcd_write_data
+0C8 00542        534                             LOAD            s5, #_character_b
+0C9 361D3        535                             CALL            lcd_write_data
+0CA 0056C        536                             LOAD            s5, #character_l
+0CB 361D3        537                             CALL            lcd_write_data
+0CC 00561        538                             LOAD            s5, #character_a
+0CD 361D3        539                             CALL            lcd_write_data
+0CE 0057A        540                             LOAD            s5, #character_z
+0CF 361D3        541                             CALL            lcd_write_data
+0D0 00565        542                             LOAD            s5, #character_e
+0D1 361D3        543                             CALL            lcd_write_data
+0D2 24000        544                             RETURN
                  545     ;
                  546     ;
                  547     ;Display 'Frequency' on LCD at current cursor position
                  548     ;
                  549     ;
-0BA 00546        550     disp_frequency:         LOAD            s5, #_character_f
-0BB 361D3        551                             CALL            lcd_write_data
-0BC 00572        552                             LOAD            s5, #character_r
-0BD 361D3        553                             CALL            lcd_write_data
-0BE 00565        554                             LOAD            s5, #character_e
-0BF 361D3        555                             CALL            lcd_write_data
-0C0 00571        556                             LOAD            s5, #character_q
-0C1 361D3        557                             CALL            lcd_write_data
-0C2 00575        558                             LOAD            s5, #character_u
-0C3 361D3        559                             CALL            lcd_write_data
-0C4 00565        560                             LOAD            s5, #character_e
-0C5 361D3        561                             CALL            lcd_write_data
-0C6 0056E        562                             LOAD            s5, #character_n
-0C7 361D3        563                             CALL            lcd_write_data
-0C8 00563        564                             LOAD            s5, #character_c
-0C9 361D3        565                             CALL            lcd_write_data
-0CA 00579        566                             LOAD            s5, #character_y
-0CB 361D3        567                             CALL            lcd_write_data
-0CC 24000        568                             RETURN
+0D3 00546        550     disp_frequency:         LOAD            s5, #_character_f
+0D4 361D3        551                             CALL            lcd_write_data
+0D5 00572        552                             LOAD            s5, #character_r
+0D6 361D3        553                             CALL            lcd_write_data
+0D7 00565        554                             LOAD            s5, #character_e
+0D8 361D3        555                             CALL            lcd_write_data
+0D9 00571        556                             LOAD            s5, #character_q
+0DA 361D3        557                             CALL            lcd_write_data
+0DB 00575        558                             LOAD            s5, #character_u
+0DC 361D3        559                             CALL            lcd_write_data
+0DD 00565        560                             LOAD            s5, #character_e
+0DE 361D3        561                             CALL            lcd_write_data
+0DF 0056E        562                             LOAD            s5, #character_n
+0E0 361D3        563                             CALL            lcd_write_data
+0E1 00563        564                             LOAD            s5, #character_c
+0E2 361D3        565                             CALL            lcd_write_data
+0E3 00579        566                             LOAD            s5, #character_y
+0E4 361D3        567                             CALL            lcd_write_data
+0E5 24000        568                             RETURN
                  569     ;
                  570     ;
                  571     ;Display 'Counter' on LCD at current cursor position
                  572     ;
                  573     ;
-0CD 00543        574     disp_counter:           LOAD            s5, #_character_c
-0CE 361D3        575                             CALL            lcd_write_data
-0CF 0056F        576                             LOAD            s5, #character_o
-0D0 361D3        577                             CALL            lcd_write_data
-0D1 00575        578                             LOAD            s5, #character_u
-0D2 361D3        579                             CALL            lcd_write_data
-0D3 0056E        580                             LOAD            s5, #character_n
-0D4 361D3        581                             CALL            lcd_write_data
-0D5 00574        582                             LOAD            s5, #character_t
-0D6 361D3        583                             CALL            lcd_write_data
-0D7 00565        584                             LOAD            s5, #character_e
-0D8 361D3        585                             CALL            lcd_write_data
-0D9 00572        586                             LOAD            s5, #character_r
-0DA 361D3        587                             CALL            lcd_write_data
-0DB 24000        588                             RETURN
+0E6 00543        574     disp_counter:           LOAD            s5, #_character_c
+0E7 361D3        575                             CALL            lcd_write_data
+0E8 0056F        576                             LOAD            s5, #character_o
+0E9 361D3        577                             CALL            lcd_write_data
+0EA 00575        578                             LOAD            s5, #character_u
+0EB 361D3        579                             CALL            lcd_write_data
+0EC 0056E        580                             LOAD            s5, #character_n
+0ED 361D3        581                             CALL            lcd_write_data
+0EE 00574        582                             LOAD            s5, #character_t
+0EF 361D3        583                             CALL            lcd_write_data
+0F0 00565        584                             LOAD            s5, #character_e
+0F1 361D3        585                             CALL            lcd_write_data
+0F2 00572        586                             LOAD            s5, #character_r
+0F3 361D3        587                             CALL            lcd_write_data
+0F4 24000        588                             RETURN
                  589     ;
                  590     ;Display version number on LCD at current cursor position
                  591     ;
                  592     ;
-0DC 00576        593     disp_version:           LOAD            s5, #character_v
-0DD 361D3        594                             CALL            lcd_write_data
-0DE 00531        595                             LOAD            s5, #character_1
-0DF 361D3        596                             CALL            lcd_write_data
-0E0 0052E        597                             LOAD            s5, #character_stop
-0E1 361D3        598                             CALL            lcd_write_data
-0E2 00530        599                             LOAD            s5, #character_0
-0E3 361D3        600                             CALL            lcd_write_data
-0E4 00530        601                             LOAD            s5, #character_0
-0E5 361D3        602                             CALL            lcd_write_data
-0E6 24000        603                             RETURN
+0F5 00576        593     disp_version:           LOAD            s5, #character_v
+0F6 361D3        594                             CALL            lcd_write_data
+0F7 00531        595                             LOAD            s5, #character_1
+0F8 361D3        596                             CALL            lcd_write_data
+0F9 0052E        597                             LOAD            s5, #character_stop
+0FA 361D3        598                             CALL            lcd_write_data
+0FB 00530        599                             LOAD            s5, #character_0
+0FC 361D3        600                             CALL            lcd_write_data
+0FD 00530        601                             LOAD            s5, #character_0
+0FE 361D3        602                             CALL            lcd_write_data
+0FF 24000        603                             RETURN
                  604     ;
                  605     ;
                  606     ;Display 'SMA input' at current cursor position
                  607     ;
                  608     ;
-0E7 00553        609     disp_sma_input:         LOAD            s5, #_character_s
-0E8 361D3        610                             CALL            lcd_write_data
-0E9 0054D        611                             LOAD            s5, #_character_m
-0EA 361D3        612                             CALL            lcd_write_data
-0EB 00541        613                             LOAD            s5, #_character_a
-0EC 361D3        614                             CALL            lcd_write_data
-0ED 00520        615                             LOAD            s5, #character_space
-0EE 361D3        616                             CALL            lcd_write_data
-0EF 00569        617                             LOAD            s5, #character_i
-0F0 361D3        618                             CALL            lcd_write_data
-0F1 0056E        619                             LOAD            s5, #character_n
-0F2 361D3        620                             CALL            lcd_write_data
-0F3 00570        621                             LOAD            s5, #character_p
-0F4 361D3        622                             CALL            lcd_write_data
-0F5 00575        623                             LOAD            s5, #character_u
-0F6 361D3        624                             CALL            lcd_write_data
-0F7 00574        625                             LOAD            s5, #character_t
-0F8 361D3        626                             CALL            lcd_write_data
-0F9 00F06        627                             LOAD            sf, #0x06
-0FA 34157        628                             JUMP            disp_spaces
+100 00553        609     disp_sma_input:         LOAD            s5, #_character_s
+101 361D3        610                             CALL            lcd_write_data
+102 0054D        611                             LOAD            s5, #_character_m
+103 361D3        612                             CALL            lcd_write_data
+104 00541        613                             LOAD            s5, #_character_a
+105 361D3        614                             CALL            lcd_write_data
+106 00520        615                             LOAD            s5, #character_space
+107 361D3        616                             CALL            lcd_write_data
+108 00569        617                             LOAD            s5, #character_i
+109 361D3        618                             CALL            lcd_write_data
+10A 0056E        619                             LOAD            s5, #character_n
+10B 361D3        620                             CALL            lcd_write_data
+10C 00570        621                             LOAD            s5, #character_p
+10D 361D3        622                             CALL            lcd_write_data
+10E 00575        623                             LOAD            s5, #character_u
+10F 361D3        624                             CALL            lcd_write_data
+110 00574        625                             LOAD            s5, #character_t
+111 361D3        626                             CALL            lcd_write_data
+112 00F06        627                             LOAD            sf, #0x06
+113 34157        628                             JUMP            disp_spaces
                  629     ;
                  630     ;
                  631     ;
                  632     ;Display '50MHz Crystal' at current cursor position
                  633     ;
                  634     ;
-0FB 00535        635     disp_50mhz_crystal:     LOAD            s5, #character_5
-0FC 361D3        636                             CALL            lcd_write_data
-0FD 00530        637                             LOAD            s5, #character_0
-0FE 361D3        638                             CALL            lcd_write_data
-0FF 0054D        639                             LOAD            s5, #_character_m
-100 361D3        640                             CALL            lcd_write_data
-101 00548        641                             LOAD            s5, #_character_h
-102 361D3        642                             CALL            lcd_write_data
-103 0057A        643                             LOAD            s5, #character_z
-104 361D3        644                             CALL            lcd_write_data
-105 00520        645                             LOAD            s5, #character_space
-106 361D3        646                             CALL            lcd_write_data
-107 00543        647                             LOAD            s5, #_character_c
-108 361D3        648                             CALL            lcd_write_data
-109 00572        649                             LOAD            s5, #character_r
-10A 361D3        650                             CALL            lcd_write_data
-10B 00579        651                             LOAD            s5, #character_y
-10C 361D3        652                             CALL            lcd_write_data
-10D 00573        653                             LOAD            s5, #character_s
-10E 361D3        654                             CALL            lcd_write_data
-10F 00574        655                             LOAD            s5, #character_t
-110 361D3        656                             CALL            lcd_write_data
-111 00561        657                             LOAD            s5, #character_a
-112 361D3        658                             CALL            lcd_write_data
-113 0056C        659                             LOAD            s5, #character_l
-114 361D3        660                             CALL            lcd_write_data
-115 00F02        661                             LOAD            sf, #0x02
-116 34157        662                             JUMP            disp_spaces
+114 00535        635     disp_50mhz_crystal:     LOAD            s5, #character_5
+115 361D3        636                             CALL            lcd_write_data
+116 00530        637                             LOAD            s5, #character_0
+117 361D3        638                             CALL            lcd_write_data
+118 0054D        639                             LOAD            s5, #_character_m
+119 361D3        640                             CALL            lcd_write_data
+11A 00548        641                             LOAD            s5, #_character_h
+11B 361D3        642                             CALL            lcd_write_data
+11C 0057A        643                             LOAD            s5, #character_z
+11D 361D3        644                             CALL            lcd_write_data
+11E 00520        645                             LOAD            s5, #character_space
+11F 361D3        646                             CALL            lcd_write_data
+120 00543        647                             LOAD            s5, #_character_c
+121 361D3        648                             CALL            lcd_write_data
+122 00572        649                             LOAD            s5, #character_r
+123 361D3        650                             CALL            lcd_write_data
+124 00579        651                             LOAD            s5, #character_y
+125 361D3        652                             CALL            lcd_write_data
+126 00573        653                             LOAD            s5, #character_s
+127 361D3        654                             CALL            lcd_write_data
+128 00574        655                             LOAD            s5, #character_t
+129 361D3        656                             CALL            lcd_write_data
+12A 00561        657                             LOAD            s5, #character_a
+12B 361D3        658                             CALL            lcd_write_data
+12C 0056C        659                             LOAD            s5, #character_l
+12D 361D3        660                             CALL            lcd_write_data
+12E 00F02        661                             LOAD            sf, #0x02
+12F 34157        662                             JUMP            disp_spaces
                  663     ;
                  664     ;
                  665     ;
                  666     ;Display 'DCM oscillator' at current cursor position
                  667     ;
                  668     ;
-117 00544        669     disp_dcm_oscillator:    LOAD            s5, #_character_d
-118 361D3        670                             CALL            lcd_write_data
-119 00543        671                             LOAD            s5, #_character_c
-11A 361D3        672                             CALL            lcd_write_data
-11B 0054D        673                             LOAD            s5, #_character_m
-11C 361D3        674                             CALL            lcd_write_data
-11D 00520        675     disp_oscillator:        LOAD            s5, #character_space
-11E 361D3        676                             CALL            lcd_write_data
-11F 0054F        677                             LOAD            s5, #_character_o
-120 361D3        678                             CALL            lcd_write_data
-121 00573        679                             LOAD            s5, #character_s
-122 361D3        680                             CALL            lcd_write_data
-123 00563        681                             LOAD            s5, #character_c
-124 361D3        682                             CALL            lcd_write_data
-125 00569        683                             LOAD            s5, #character_i
-126 361D3        684                             CALL            lcd_write_data
-127 0056C        685                             LOAD            s5, #character_l
-128 361D3        686                             CALL            lcd_write_data
-129 361D3        687                             CALL            lcd_write_data
-12A 00561        688                             LOAD            s5, #character_a
-12B 361D3        689                             CALL            lcd_write_data
-12C 00574        690                             LOAD            s5, #character_t
-12D 361D3        691                             CALL            lcd_write_data
-12E 0056F        692                             LOAD            s5, #character_o
-12F 361D3        693                             CALL            lcd_write_data
-130 00572        694                             LOAD            s5, #character_r
-131 361D3        695                             CALL            lcd_write_data
-132 00520        696                             LOAD            s5, #character_space
-133 361D3        697                             CALL            lcd_write_data
-134 24000        698                             RETURN
+130 00544        669     disp_dcm_oscillator:    LOAD            s5, #_character_d
+131 361D3        670                             CALL            lcd_write_data
+132 00543        671                             LOAD            s5, #_character_c
+133 361D3        672                             CALL            lcd_write_data
+134 0054D        673                             LOAD            s5, #_character_m
+135 361D3        674                             CALL            lcd_write_data
+136 00520        675     disp_oscillator:        LOAD            s5, #character_space
+137 361D3        676                             CALL            lcd_write_data
+138 0054F        677                             LOAD            s5, #_character_o
+139 361D3        678                             CALL            lcd_write_data
+13A 00573        679                             LOAD            s5, #character_s
+13B 361D3        680                             CALL            lcd_write_data
+13C 00563        681                             LOAD            s5, #character_c
+13D 361D3        682                             CALL            lcd_write_data
+13E 00569        683                             LOAD            s5, #character_i
+13F 361D3        684                             CALL            lcd_write_data
+140 0056C        685                             LOAD            s5, #character_l
+141 361D3        686                             CALL            lcd_write_data
+142 361D3        687                             CALL            lcd_write_data
+143 00561        688                             LOAD            s5, #character_a
+144 361D3        689                             CALL            lcd_write_data
+145 00574        690                             LOAD            s5, #character_t
+146 361D3        691                             CALL            lcd_write_data
+147 0056F        692                             LOAD            s5, #character_o
+148 361D3        693                             CALL            lcd_write_data
+149 00572        694                             LOAD            s5, #character_r
+14A 361D3        695                             CALL            lcd_write_data
+14B 00520        696                             LOAD            s5, #character_space
+14C 361D3        697                             CALL            lcd_write_data
+14D 24000        698                             RETURN
                  699     ;
                  700     ;
                  701     ;
                  702     ;Display 'Ring oscillator' at current cursor position
                  703     ;
                  704     ;
-135 00552        705     disp_ring_oscillator:   LOAD            s5, #_character_r
-136 361D3        706                             CALL            lcd_write_data
-137 00569        707                             LOAD            s5, #character_i
-138 361D3        708                             CALL            lcd_write_data
-139 0056E        709                             LOAD            s5, #character_n
-13A 361D3        710                             CALL            lcd_write_data
-13B 00567        711                             LOAD            s5, #character_g
-13C 361D3        712                             CALL            lcd_write_data
-13D 34136        713                             JUMP            disp_oscillator
+14E 00552        705     disp_ring_oscillator:   LOAD            s5, #_character_r
+14F 361D3        706                             CALL            lcd_write_data
+150 00569        707                             LOAD            s5, #character_i
+151 361D3        708                             CALL            lcd_write_data
+152 0056E        709                             LOAD            s5, #character_n
+153 361D3        710                             CALL            lcd_write_data
+154 00567        711                             LOAD            s5, #character_g
+155 361D3        712                             CALL            lcd_write_data
+156 34136        713                             JUMP            disp_oscillator
                  714     ;
                  715     ;
                  716     ;Display spaces at current cursor position
                  717     ;Number of spaces to be specified in register sF
                  718     ;
-  00157          719     disp_spaces:            COMPARE         sf, #0x00
-E: instruction not supported on the this device: COMPARE sX, kk.
-13E 25000        720                             RETURN          z
-13F 00520        721                             LOAD            s5, #character_space
-140 361D3        722                             CALL            lcd_write_data
-141 0CF01        723                             SUB             sf, #0x01
-142 34157        724                             JUMP            disp_spaces
+157 00F00        719     disp_spaces:            load         sf, #0x00
+158 25000        720                             RETURN          z
+159 00520        721                             LOAD            s5, #character_space
+15A 361D3        722                             CALL            lcd_write_data
+15B 0CF01        723                             SUB             sf, #0x01
+15C 34157        724                             JUMP            disp_spaces
                  725     ;
                  726     ;Display switch setting menu on entire display.
                  727     ;
-143 00510        728     disp_menu:              LOAD            s5, #0x10               ;Line 1 position 0
-144 36213        729                             CALL            lcd_cursor
-145 00552        730                             LOAD            s5, #_character_r
-146 361D3        731                             CALL            lcd_write_data
-147 00569        732                             LOAD            s5, #character_i
-148 361D3        733                             CALL            lcd_write_data
-149 0056E        734                             LOAD            s5, #character_n
-14A 361D3        735                             CALL            lcd_write_data
-14B 00567        736                             LOAD            s5, #character_g
-14C 361D3        737                             CALL            lcd_write_data
-14D 00520        738                             LOAD            s5, #character_space
-14E 361D3        739                             CALL            lcd_write_data
-14F 00544        740                             LOAD            s5, #_character_d
-150 361D3        741                             CALL            lcd_write_data
-151 00543        742                             LOAD            s5, #_character_c
-152 361D3        743                             CALL            lcd_write_data
-153 0054D        744                             LOAD            s5, #_character_m
-154 361D3        745                             CALL            lcd_write_data
-155 00520        746                             LOAD            s5, #character_space
-156 361D3        747                             CALL            lcd_write_data
-157 00535        748                             LOAD            s5, #character_5
-158 361D3        749                             CALL            lcd_write_data
-159 00530        750                             LOAD            s5, #character_0
-15A 361D3        751                             CALL            lcd_write_data
-15B 0054D        752                             LOAD            s5, #_character_m
-15C 361D3        753                             CALL            lcd_write_data
-15D 00520        754                             LOAD            s5, #character_space
-15E 361D3        755                             CALL            lcd_write_data
-15F 00553        756                             LOAD            s5, #_character_s
-160 361D3        757                             CALL            lcd_write_data
-161 0054D        758                             LOAD            s5, #_character_m
-162 361D3        759                             CALL            lcd_write_data
-163 00541        760                             LOAD            s5, #_character_a
-164 361D3        761                             CALL            lcd_write_data
-165 00520        762                             LOAD            s5, #0x20               ;Line 2 position 0
-166 36213        763                             CALL            lcd_cursor
-167 00520        764                             LOAD            s5, #character_space
-168 361D3        765                             CALL            lcd_write_data
-169 00553        766                             LOAD            s5, #_character_s
-16A 361D3        767                             CALL            lcd_write_data
-16B 00557        768                             LOAD            s5, #_character_w
-16C 361D3        769                             CALL            lcd_write_data
-16D 00533        770                             LOAD            s5, #character_3
-16E 361D3        771                             CALL            lcd_write_data
-16F 00520        772                             LOAD            s5, #character_space
-170 361D3        773                             CALL            lcd_write_data
-171 00553        774                             LOAD            s5, #_character_s
-172 361D3        775                             CALL            lcd_write_data
-173 00557        776                             LOAD            s5, #_character_w
-174 361D3        777                             CALL            lcd_write_data
-175 00532        778                             LOAD            s5, #character_2
-176 361D3        779                             CALL            lcd_write_data
-177 00520        780                             LOAD            s5, #character_space
-178 361D3        781                             CALL            lcd_write_data
-179 00553        782                             LOAD            s5, #_character_s
-17A 361D3        783                             CALL            lcd_write_data
-17B 00557        784                             LOAD            s5, #_character_w
-17C 361D3        785                             CALL            lcd_write_data
-17D 00531        786                             LOAD            s5, #character_1
-17E 361D3        787                             CALL            lcd_write_data
-17F 00520        788                             LOAD            s5, #character_space
-180 361D3        789                             CALL            lcd_write_data
-181 00553        790                             LOAD            s5, #_character_s
-182 361D3        791                             CALL            lcd_write_data
-183 00557        792                             LOAD            s5, #_character_w
-184 361D3        793                             CALL            lcd_write_data
-185 00530        794                             LOAD            s5, #character_0
-186 361D3        795                             CALL            lcd_write_data
-187 24000        796                             RETURN
+15D 00510        728     disp_menu:              LOAD            s5, #0x10               ;Line 1 position 0
+15E 36213        729                             CALL            lcd_cursor
+15F 00552        730                             LOAD            s5, #_character_r
+160 361D3        731                             CALL            lcd_write_data
+161 00569        732                             LOAD            s5, #character_i
+162 361D3        733                             CALL            lcd_write_data
+163 0056E        734                             LOAD            s5, #character_n
+164 361D3        735                             CALL            lcd_write_data
+165 00567        736                             LOAD            s5, #character_g
+166 361D3        737                             CALL            lcd_write_data
+167 00520        738                             LOAD            s5, #character_space
+168 361D3        739                             CALL            lcd_write_data
+169 00544        740                             LOAD            s5, #_character_d
+16A 361D3        741                             CALL            lcd_write_data
+16B 00543        742                             LOAD            s5, #_character_c
+16C 361D3        743                             CALL            lcd_write_data
+16D 0054D        744                             LOAD            s5, #_character_m
+16E 361D3        745                             CALL            lcd_write_data
+16F 00520        746                             LOAD            s5, #character_space
+170 361D3        747                             CALL            lcd_write_data
+171 00535        748                             LOAD            s5, #character_5
+172 361D3        749                             CALL            lcd_write_data
+173 00530        750                             LOAD            s5, #character_0
+174 361D3        751                             CALL            lcd_write_data
+175 0054D        752                             LOAD            s5, #_character_m
+176 361D3        753                             CALL            lcd_write_data
+177 00520        754                             LOAD            s5, #character_space
+178 361D3        755                             CALL            lcd_write_data
+179 00553        756                             LOAD            s5, #_character_s
+17A 361D3        757                             CALL            lcd_write_data
+17B 0054D        758                             LOAD            s5, #_character_m
+17C 361D3        759                             CALL            lcd_write_data
+17D 00541        760                             LOAD            s5, #_character_a
+17E 361D3        761                             CALL            lcd_write_data
+17F 00520        762                             LOAD            s5, #0x20               ;Line 2 position 0
+180 36213        763                             CALL            lcd_cursor
+181 00520        764                             LOAD            s5, #character_space
+182 361D3        765                             CALL            lcd_write_data
+183 00553        766                             LOAD            s5, #_character_s
+184 361D3        767                             CALL            lcd_write_data
+185 00557        768                             LOAD            s5, #_character_w
+186 361D3        769                             CALL            lcd_write_data
+187 00533        770                             LOAD            s5, #character_3
+188 361D3        771                             CALL            lcd_write_data
+189 00520        772                             LOAD            s5, #character_space
+18A 361D3        773                             CALL            lcd_write_data
+18B 00553        774                             LOAD            s5, #_character_s
+18C 361D3        775                             CALL            lcd_write_data
+18D 00557        776                             LOAD            s5, #_character_w
+18E 361D3        777                             CALL            lcd_write_data
+18F 00532        778                             LOAD            s5, #character_2
+190 361D3        779                             CALL            lcd_write_data
+191 00520        780                             LOAD            s5, #character_space
+192 361D3        781                             CALL            lcd_write_data
+193 00553        782                             LOAD            s5, #_character_s
+194 361D3        783                             CALL            lcd_write_data
+195 00557        784                             LOAD            s5, #_character_w
+196 361D3        785                             CALL            lcd_write_data
+197 00531        786                             LOAD            s5, #character_1
+198 361D3        787                             CALL            lcd_write_data
+199 00520        788                             LOAD            s5, #character_space
+19A 361D3        789                             CALL            lcd_write_data
+19B 00553        790                             LOAD            s5, #_character_s
+19C 361D3        791                             CALL            lcd_write_data
+19D 00557        792                             LOAD            s5, #_character_w
+19E 361D3        793                             CALL            lcd_write_data
+19F 00530        794                             LOAD            s5, #character_0
+1A0 361D3        795                             CALL            lcd_write_data
+1A1 24000        796                             RETURN
                  797     ;
                  798     ;
                  799     ;
@@ -840,31 +829,31 @@ E: instruction not supported on the this device: COMPARE sX, kk.
                  814     ;
                  815     ;Registers used s0
                  816     ;
-188 0000B        817     delay_1us:              LOAD            s0, #delay_1us_constant
-189 0C001        818     wait_1us:               SUB             s0, #0x01
-18A 355A3        819                             JUMP            nz, wait_1us
-18B 24000        820                             RETURN
+1A2 0000B        817     delay_1us:              LOAD            s0, #delay_1us_constant
+1A3 0C001        818     wait_1us:               SUB             s0, #0x01
+1A4 355A3        819                             JUMP            nz, wait_1us
+1A5 24000        820                             RETURN
                  821     ;
                  822     ;Delay of 40us.
                  823     ;
                  824     ;Registers used s0, s1
                  825     ;
-18C 00128        826     delay_40us:             LOAD            s1, #0x28               ;40 x 1us = 40us
-18D 361A2        827     wait_40us:              CALL            delay_1us
-18E 0C101        828                             SUB             s1, #0x01
-18F 355A7        829                             JUMP            nz, wait_40us
-190 24000        830                             RETURN
+1A6 00128        826     delay_40us:             LOAD            s1, #0x28               ;40 x 1us = 40us
+1A7 361A2        827     wait_40us:              CALL            delay_1us
+1A8 0C101        828                             SUB             s1, #0x01
+1A9 355A7        829                             JUMP            nz, wait_40us
+1AA 24000        830                             RETURN
                  831     ;
                  832     ;
                  833     ;Delay of 1ms.
                  834     ;
                  835     ;Registers used s0, s1, s2
                  836     ;
-191 00219        837     delay_1ms:              LOAD            s2, #0x19               ;25 x 40us = 1ms
-192 361A6        838     wait_1ms:               CALL            delay_40us
-193 0C201        839                             SUB             s2, #0x01
-194 355AC        840                             JUMP            nz, wait_1ms
-195 24000        841                             RETURN
+1AB 00219        837     delay_1ms:              LOAD            s2, #0x19               ;25 x 40us = 1ms
+1AC 361A6        838     wait_1ms:               CALL            delay_40us
+1AD 0C201        839                             SUB             s2, #0x01
+1AE 355AC        840                             JUMP            nz, wait_1ms
+1AF 24000        841                             RETURN
                  842     ;
                  843     ;Delay of 20ms.
                  844     ;
@@ -872,21 +861,21 @@ E: instruction not supported on the this device: COMPARE sX, kk.
                  846     ;
                  847     ;Registers used s0, s1, s2, s3
                  848     ;
-196 00314        849     delay_20ms:             LOAD            s3, #0x14               ;20 x 1ms = 20ms
-197 361AB        850     wait_20ms:              CALL            delay_1ms
-198 0C301        851                             SUB             s3, #0x01
-199 355B1        852                             JUMP            nz, wait_20ms
-19A 24000        853                             RETURN
+1B0 00314        849     delay_20ms:             LOAD            s3, #0x14               ;20 x 1ms = 20ms
+1B1 361AB        850     wait_20ms:              CALL            delay_1ms
+1B2 0C301        851                             SUB             s3, #0x01
+1B3 355B1        852                             JUMP            nz, wait_20ms
+1B4 24000        853                             RETURN
                  854     ;
                  855     ;Delay of approximately 1 second.
                  856     ;
                  857     ;Registers used s0, s1, s2, s3, s4
                  858     ;
-19B 00432        859     delay_1s:               LOAD            s4, #0x32               ;50 x 20ms = 1000ms
-19C 361B0        860     wait_1s:                CALL            delay_20ms
-19D 0C401        861                             SUB             s4, #0x01
-19E 355B6        862                             JUMP            nz, wait_1s
-19F 24000        863                             RETURN
+1B5 00432        859     delay_1s:               LOAD            s4, #0x32               ;50 x 20ms = 1000ms
+1B6 361B0        860     wait_1s:                CALL            delay_20ms
+1B7 0C401        861                             SUB             s4, #0x01
+1B8 355B6        862                             JUMP            nz, wait_1s
+1B9 24000        863                             RETURN
                  864     ;
                  865     ;
                  866     ;
@@ -908,12 +897,12 @@ E: instruction not supported on the this device: COMPARE sX, kk.
                  882     ;
                  883     ;Registers used s0, s4
                  884     ;
-1A0 06401        885     lcd_pulse_e:            XOR             s4, #lcd_e              ;E=1
-1A1 22404        886                             OUTPUT          s4, lcd_output_port
-1A2 361A2        887                             CALL            delay_1us
-1A3 06401        888                             XOR             s4, #lcd_e              ;E=0
-1A4 22404        889                             OUTPUT          s4, lcd_output_port
-1A5 24000        890                             RETURN
+1BA 06401        885     lcd_pulse_e:            XOR             s4, #lcd_e              ;E=1
+1BB 22404        886                             OUTPUT          s4, lcd_output_port
+1BC 361A2        887                             CALL            delay_1us
+1BD 06401        888                             XOR             s4, #lcd_e              ;E=0
+1BE 22404        889                             OUTPUT          s4, lcd_output_port
+1BF 24000        890                             RETURN
                  891     ;
                  892     ;Write 4-bit instruction to LCD display.
                  893     ;
@@ -924,10 +913,10 @@ E: instruction not supported on the this device: COMPARE sX, kk.
                  898     ;
                  899     ;Registers used s4
                  900     ;
-1A6 024F8        901     lcd_write_inst4:        AND             s4, #0xf8               ;Enable=1 RS=0 Instruction, RW=0 Write, E=0
-1A7 22404        902                             OUTPUT          s4, lcd_output_port     ;set up RS and RW >40ns before enable pulse
-1A8 361BA        903                             CALL            lcd_pulse_e
-1A9 24000        904                             RETURN
+1C0 024F8        901     lcd_write_inst4:        AND             s4, #0xf8               ;Enable=1 RS=0 Instruction, RW=0 Write, E=0
+1C1 22404        902                             OUTPUT          s4, lcd_output_port     ;set up RS and RW >40ns before enable pulse
+1C2 361BA        903                             CALL            lcd_pulse_e
+1C3 24000        904                             RETURN
                  905     ;
                  906     ;
                  907     ;Write 8-bit instruction to LCD display.
@@ -941,21 +930,21 @@ E: instruction not supported on the this device: COMPARE sX, kk.
                  915     ;
                  916     ;Registers used s0, s1, s4, s5
                  917     ;
-1AA 10428        918     lcd_write_inst8:        LOAD            s4, s5
-1AB 024F0        919                             AND             s4, #0xf0               ;Enable=0 RS=0 Instruction, RW=0 Write, E=0
-1AC 04408        920                             OR              s4, #lcd_drive          ;Enable=1
-1AD 361C0        921                             CALL            lcd_write_inst4         ;write upper nibble
-1AE 361A2        922                             CALL            delay_1us               ;wait >1us
-1AF 10428        923                             LOAD            s4, s5                  ;select lower nibble with
-1B0 28407        924                             SL1             s4                      ;Enable=1
-1B1 28406        925                             SL0             s4                      ;RS=0 Instruction
-1B2 28406        926                             SL0             s4                      ;RW=0 Write
-1B3 28406        927                             SL0             s4                      ;E=0
-1B4 361C0        928                             CALL            lcd_write_inst4         ;write lower nibble
-1B5 361A6        929                             CALL            delay_40us              ;wait >40us
-1B6 004F0        930                             LOAD            s4, #0xf0               ;Enable=0 RS=0 Instruction, RW=0 Write, E=0
-1B7 22404        931                             OUTPUT          s4, lcd_output_port     ;Release master enable
-1B8 24000        932                             RETURN
+1C4 10428        918     lcd_write_inst8:        LOAD            s4, s5
+1C5 024F0        919                             AND             s4, #0xf0               ;Enable=0 RS=0 Instruction, RW=0 Write, E=0
+1C6 04408        920                             OR              s4, #lcd_drive          ;Enable=1
+1C7 361C0        921                             CALL            lcd_write_inst4         ;write upper nibble
+1C8 361A2        922                             CALL            delay_1us               ;wait >1us
+1C9 10428        923                             LOAD            s4, s5                  ;select lower nibble with
+1CA 28407        924                             SL1             s4                      ;Enable=1
+1CB 28406        925                             SL0             s4                      ;RS=0 Instruction
+1CC 28406        926                             SL0             s4                      ;RW=0 Write
+1CD 28406        927                             SL0             s4                      ;E=0
+1CE 361C0        928                             CALL            lcd_write_inst4         ;write lower nibble
+1CF 361A6        929                             CALL            delay_40us              ;wait >40us
+1D0 004F0        930                             LOAD            s4, #0xf0               ;Enable=0 RS=0 Instruction, RW=0 Write, E=0
+1D1 22404        931                             OUTPUT          s4, lcd_output_port     ;Release master enable
+1D2 24000        932                             RETURN
                  933     ;
                  934     ;
                  935     ;
@@ -970,23 +959,23 @@ E: instruction not supported on the this device: COMPARE sX, kk.
                  944     ;
                  945     ;Registers used s0, s1, s4, s5
                  946     ;
-1B9 10428        947     lcd_write_data:         LOAD            s4, s5
-1BA 024F0        948                             AND             s4, #0xf0               ;Enable=0 RS=0 Instruction, RW=0 Write, E=0
-1BB 0440C        949                             OR              s4, #0x0c               ;Enable=1 RS=1 Data, RW=0 Write, E=0
-1BC 22404        950                             OUTPUT          s4, lcd_output_port     ;set up RS and RW >40ns before enable pulse
-1BD 361BA        951                             CALL            lcd_pulse_e             ;write upper nibble
-1BE 361A2        952                             CALL            delay_1us               ;wait >1us
-1BF 10428        953                             LOAD            s4, s5                  ;select lower nibble with
-1C0 28407        954                             SL1             s4                      ;Enable=1
-1C1 28407        955                             SL1             s4                      ;RS=1 Data
-1C2 28406        956                             SL0             s4                      ;RW=0 Write
-1C3 28406        957                             SL0             s4                      ;E=0
-1C4 22404        958                             OUTPUT          s4, lcd_output_port     ;set up RS and RW >40ns before enable pulse
-1C5 361BA        959                             CALL            lcd_pulse_e             ;write lower nibble
-1C6 361A6        960                             CALL            delay_40us              ;wait >40us
-1C7 004F0        961                             LOAD            s4, #0xf0               ;Enable=0 RS=0 Instruction, RW=0 Write, E=0
-1C8 22404        962                             OUTPUT          s4, lcd_output_port     ;Release master enable
-1C9 24000        963                             RETURN
+1D3 10428        947     lcd_write_data:         LOAD            s4, s5
+1D4 024F0        948                             AND             s4, #0xf0               ;Enable=0 RS=0 Instruction, RW=0 Write, E=0
+1D5 0440C        949                             OR              s4, #0x0c               ;Enable=1 RS=1 Data, RW=0 Write, E=0
+1D6 22404        950                             OUTPUT          s4, lcd_output_port     ;set up RS and RW >40ns before enable pulse
+1D7 361BA        951                             CALL            lcd_pulse_e             ;write upper nibble
+1D8 361A2        952                             CALL            delay_1us               ;wait >1us
+1D9 10428        953                             LOAD            s4, s5                  ;select lower nibble with
+1DA 28407        954                             SL1             s4                      ;Enable=1
+1DB 28407        955                             SL1             s4                      ;RS=1 Data
+1DC 28406        956                             SL0             s4                      ;RW=0 Write
+1DD 28406        957                             SL0             s4                      ;E=0
+1DE 22404        958                             OUTPUT          s4, lcd_output_port     ;set up RS and RW >40ns before enable pulse
+1DF 361BA        959                             CALL            lcd_pulse_e             ;write lower nibble
+1E0 361A6        960                             CALL            delay_40us              ;wait >40us
+1E1 004F0        961                             LOAD            s4, #0xf0               ;Enable=0 RS=0 Instruction, RW=0 Write, E=0
+1E2 22404        962                             OUTPUT          s4, lcd_output_port     ;Release master enable
+1E3 24000        963                             RETURN
                  964     ;
                  965     ;
                  966     ;
@@ -1007,31 +996,31 @@ E: instruction not supported on the this device: COMPARE sX, kk.
                  981     ;
                  982     ;Registers used s0, s1, s4, s5
                  983     ;
-1CA 0040E        984     lcd_read_data8:         LOAD            s4, #0x0e               ;Enable=1 RS=1 Data, RW=1 Read, E=0
-1CB 22404        985                             OUTPUT          s4, lcd_output_port     ;set up RS and RW >40ns before enable pulse
-1CC 06401        986                             XOR             s4, #lcd_e              ;E=1
-1CD 22404        987                             OUTPUT          s4, lcd_output_port
-1CE 361A2        988                             CALL            delay_1us               ;wait >260ns to access data
-1CF 20509        989                             INPUT           s5, lcd_input_port      ;read upper nibble
-1D0 06401        990                             XOR             s4, #lcd_e              ;E=0
-1D1 22404        991                             OUTPUT          s4, lcd_output_port
-1D2 361A2        992                             CALL            delay_1us               ;wait >1us
-1D3 06401        993                             XOR             s4, #lcd_e              ;E=1
-1D4 22404        994                             OUTPUT          s4, lcd_output_port
-1D5 361A2        995                             CALL            delay_1us               ;wait >260ns to access data
-1D6 20009        996                             INPUT           s0, lcd_input_port      ;read lower nibble
-1D7 06401        997                             XOR             s4, #lcd_e              ;E=0
-1D8 22404        998                             OUTPUT          s4, lcd_output_port
-1D9 025F0        999                             AND             s5, #0xf0               ;merge upper and lower nibbles
-1DA 2800E       1000                             SR0             s0
-1DB 2800E       1001                             SR0             s0
-1DC 2800E       1002                             SR0             s0
-1DD 2800E       1003                             SR0             s0
-1DE 14500       1004                             OR              s5, s0
-1DF 00404       1005                             LOAD            s4, #0x04               ;Enable=0 RS=1 Data, RW=0 Write, E=0
-1E0 22404       1006                             OUTPUT          s4, lcd_output_port     ;Stop reading 5V device and release master enable
-1E1 361A6       1007                             CALL            delay_40us              ;wait >40us
-1E2 24000       1008                             RETURN
+1E4 0040E        984     lcd_read_data8:         LOAD            s4, #0x0e               ;Enable=1 RS=1 Data, RW=1 Read, E=0
+1E5 22404        985                             OUTPUT          s4, lcd_output_port     ;set up RS and RW >40ns before enable pulse
+1E6 06401        986                             XOR             s4, #lcd_e              ;E=1
+1E7 22404        987                             OUTPUT          s4, lcd_output_port
+1E8 361A2        988                             CALL            delay_1us               ;wait >260ns to access data
+1E9 20509        989                             INPUT           s5, lcd_input_port      ;read upper nibble
+1EA 06401        990                             XOR             s4, #lcd_e              ;E=0
+1EB 22404        991                             OUTPUT          s4, lcd_output_port
+1EC 361A2        992                             CALL            delay_1us               ;wait >1us
+1ED 06401        993                             XOR             s4, #lcd_e              ;E=1
+1EE 22404        994                             OUTPUT          s4, lcd_output_port
+1EF 361A2        995                             CALL            delay_1us               ;wait >260ns to access data
+1F0 20009        996                             INPUT           s0, lcd_input_port      ;read lower nibble
+1F1 06401        997                             XOR             s4, #lcd_e              ;E=0
+1F2 22404        998                             OUTPUT          s4, lcd_output_port
+1F3 025F0        999                             AND             s5, #0xf0               ;merge upper and lower nibbles
+1F4 2800E       1000                             SR0             s0
+1F5 2800E       1001                             SR0             s0
+1F6 2800E       1002                             SR0             s0
+1F7 2800E       1003                             SR0             s0
+1F8 14500       1004                             OR              s5, s0
+1F9 00404       1005                             LOAD            s4, #0x04               ;Enable=0 RS=1 Data, RW=0 Write, E=0
+1FA 22404       1006                             OUTPUT          s4, lcd_output_port     ;Stop reading 5V device and release master enable
+1FB 361A6       1007                             CALL            delay_40us              ;wait >40us
+1FC 24000       1008                             RETURN
                 1009     ;
                 1010     ;
                 1011     ;Reset and initialise display to communicate using 4-bit data mode
@@ -1047,28 +1036,28 @@ E: instruction not supported on the this device: COMPARE sX, kk.
                 1021     ;
                 1022     ;Registers used s0, s1, s2, s3, s4
                 1023     ;
-1E3 361B0       1024     lcd_reset:              CALL            delay_20ms              ;wait more that 15ms for display to be ready
-1E4 00430       1025                             LOAD            s4, #0x30
-1E5 361C0       1026                             CALL            lcd_write_inst4         ;send '3'
-1E6 361B0       1027                             CALL            delay_20ms              ;wait >4.1ms
-1E7 361C0       1028                             CALL            lcd_write_inst4         ;send '3'
-1E8 361AB       1029                             CALL            delay_1ms               ;wait >100us
-1E9 361C0       1030                             CALL            lcd_write_inst4         ;send '3'
-1EA 361A6       1031                             CALL            delay_40us              ;wait >40us
-1EB 00420       1032                             LOAD            s4, #0x20
-1EC 361C0       1033                             CALL            lcd_write_inst4         ;send '2'
-1ED 361A6       1034                             CALL            delay_40us              ;wait >40us
-1EE 00528       1035                             LOAD            s5, #0x28               ;Function set
-1EF 361C4       1036                             CALL            lcd_write_inst8
-1F0 00506       1037                             LOAD            s5, #0x06               ;Entry mode
-1F1 361C4       1038                             CALL            lcd_write_inst8
-1F2 0050C       1039                             LOAD            s5, #0x0c               ;Display control
-1F3 361C4       1040                             CALL            lcd_write_inst8
-1F4 00501       1041     lcd_clear:              LOAD            s5, #0x01               ;Display clear
-1F5 361C4       1042                             CALL            lcd_write_inst8
-1F6 361AB       1043                             CALL            delay_1ms               ;wait >1.64ms for display to clear
-1F7 361AB       1044                             CALL            delay_1ms
-1F8 24000       1045                             RETURN
+1FD 361B0       1024     lcd_reset:              CALL            delay_20ms              ;wait more that 15ms for display to be ready
+1FE 00430       1025                             LOAD            s4, #0x30
+1FF 361C0       1026                             CALL            lcd_write_inst4         ;send '3'
+200 361B0       1027                             CALL            delay_20ms              ;wait >4.1ms
+201 361C0       1028                             CALL            lcd_write_inst4         ;send '3'
+202 361AB       1029                             CALL            delay_1ms               ;wait >100us
+203 361C0       1030                             CALL            lcd_write_inst4         ;send '3'
+204 361A6       1031                             CALL            delay_40us              ;wait >40us
+205 00420       1032                             LOAD            s4, #0x20
+206 361C0       1033                             CALL            lcd_write_inst4         ;send '2'
+207 361A6       1034                             CALL            delay_40us              ;wait >40us
+208 00528       1035                             LOAD            s5, #0x28               ;Function set
+209 361C4       1036                             CALL            lcd_write_inst8
+20A 00506       1037                             LOAD            s5, #0x06               ;Entry mode
+20B 361C4       1038                             CALL            lcd_write_inst8
+20C 0050C       1039                             LOAD            s5, #0x0c               ;Display control
+20D 361C4       1040                             CALL            lcd_write_inst8
+20E 00501       1041     lcd_clear:              LOAD            s5, #0x01               ;Display clear
+20F 361C4       1042                             CALL            lcd_write_inst8
+210 361AB       1043                             CALL            delay_1ms               ;wait >1.64ms for display to clear
+211 361AB       1044                             CALL            delay_1ms
+212 24000       1045                             RETURN
                 1046     ;
                 1047     ;Position the cursor ready for characters to be written.
                 1048     ;The display is formed of 2 lines of 16 characters and each
@@ -1087,17 +1076,16 @@ E: instruction not supported on the this device: COMPARE sX, kk.
                 1061     ;
                 1062     ;Registers used s0, s1, s2, s3, s4
                 1063     ;
-  00213         1064     lcd_cursor:             TEST            s5, #0x10               ;test for line 1
-E: instruction not supported on the this device: TEST sX, kk.
-1F9 35219       1065                             JUMP            z, set_line2
-1FA 0250F       1066                             AND             s5, #0x0f               ;make address in range 80 to 8F for line 1
-1FB 04580       1067                             OR              s5, #0x80
-1FC 361C4       1068                             CALL            lcd_write_inst8         ;instruction write to set cursor
-1FD 24000       1069                             RETURN
-1FE 0250F       1070     set_line2:              AND             s5, #0x0f               ;make address in range C0 to CF for line 2
-1FF 045C0       1071                             OR              s5, #0xc0
-200 361C4       1072                             CALL            lcd_write_inst8         ;instruction write to set cursor
-201 24000       1073                             RETURN
+213 00510       1064     lcd_cursor:             load            s5, #0x10               ;load for line 1
+214 35219       1065                             JUMP            z, set_line2
+215 0250F       1066                             AND             s5, #0x0f               ;make address in range 80 to 8F for line 1
+216 04580       1067                             OR              s5, #0x80
+217 361C4       1068                             CALL            lcd_write_inst8         ;instruction write to set cursor
+218 24000       1069                             RETURN
+219 0250F       1070     set_line2:              AND             s5, #0x0f               ;make address in range C0 to CF for line 2
+21A 045C0       1071                             OR              s5, #0xc0
+21B 361C4       1072                             CALL            lcd_write_inst8         ;instruction write to set cursor
+21C 24000       1073                             RETURN
                 1074     ;
                 1075     ;
                 1076     ;
@@ -1110,66 +1098,80 @@ E: instruction not supported on the this device: TEST sX, kk.
                 1083     ;However the first 4 interrupts are ignored other than to clear the counter to
                 1084     ;ensure that even the first reading is for one complete period.
                 1085     ;
-                1086     ;After reading the active counter, all calculations are performed and values stored
+                1086     ;After reading the active counter, all calculations are performed and values loadd
                 1087     ;in scratch pad memory are updated to reflect the new values.
                 1088     ;
-                1089     ;Registers are preserved and restored by the ISR so main program is unaffected.
+                1089     ;Registers are preserved and reloadd by the ISR so main program is unaffected.
                 1090     ;
-  0021D         1091     isr:                    STORE           s0, preserve_s0         ;preserve registers
-E: instruction not supported on the this device: STORE sX, ss.
-                1092                             STORE           s1, preserve_s1
-E: instruction not supported on the this device: STORE sX, ss.
-                1093                             STORE           s2, preserve_s2
-E: instruction not supported on the this device: STORE sX, ss.
-                1094                             STORE           s3, preserve_s3
-E: instruction not supported on the this device: STORE sX, ss.
-                1095                             STORE           s4, preserve_s4
-E: instruction not supported on the this device: STORE sX, ss.
-                1096                             STORE           s5, preserve_s5
-E: instruction not supported on the this device: STORE sX, ss.
-                1097                             STORE           s6, preserve_s6
-E: instruction not supported on the this device: STORE sX, ss.
-                1098                             STORE           s7, preserve_s7
-E: instruction not supported on the this device: STORE sX, ss.
-                1099                             STORE           s8, preserve_s8
-E: instruction not supported on the this device: STORE sX, ss.
-                1100                             STORE           s9, preserve_s9
-E: instruction not supported on the this device: STORE sX, ss.
-                1101                             STORE           sa, preserve_sa
-E: instruction not supported on the this device: STORE sX, ss.
-                1102                             STORE           sb, preserve_sb
-E: instruction not supported on the this device: STORE sX, ss.
-                1103                             STORE           sc, preserve_sc
-E: instruction not supported on the this device: STORE sX, ss.
-                1104                             STORE           sd, preserve_sd
-E: instruction not supported on the this device: STORE sX, ss.
-                1105                             STORE           se, preserve_se
-E: instruction not supported on the this device: STORE sX, ss.
-                1106                             STORE           sf, preserve_sf
-E: instruction not supported on the this device: STORE sX, ss.
+21D 10080       1091     isr:                    load           s0, preserve_s0         ;preserve registers
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+W: value out of range: 0x30, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0x10.
+21E 10188       1092                             load           s1, preserve_s1
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+W: value out of range: 0x31, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0x11.
+21F 10290       1093                             load           s2, preserve_s2
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+W: value out of range: 0x32, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0x12.
+220 10398       1094                             load           s3, preserve_s3
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+W: value out of range: 0x33, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0x13.
+221 104A0       1095                             load           s4, preserve_s4
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+W: value out of range: 0x34, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0x14.
+222 105A8       1096                             load           s5, preserve_s5
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+W: value out of range: 0x35, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0x15.
+223 106B0       1097                             load           s6, preserve_s6
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+W: value out of range: 0x36, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0x16.
+224 107B8       1098                             load           s7, preserve_s7
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+W: value out of range: 0x37, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0x17.
+225 108C0       1099                             load           s8, preserve_s8
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+W: value out of range: 0x38, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0x18.
+226 109C8       1100                             load           s9, preserve_s9
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+W: value out of range: 0x39, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0x19.
+227 10AD0       1101                             load           sa, preserve_sa
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+W: value out of range: 0x3a, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0x1a.
+228 10BD8       1102                             load           sb, preserve_sb
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+W: value out of range: 0x3b, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0x1b.
+229 10CE0       1103                             load           sc, preserve_sc
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+W: value out of range: 0x3c, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0x1c.
+22A 10DE8       1104                             load           sd, preserve_sd
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+W: value out of range: 0x3d, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0x1d.
+22B 10EF0       1105                             load           se, preserve_se
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+W: value out of range: 0x3e, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0x1e.
+22C 10FF8       1106                             load           sf, preserve_sf
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+W: value out of range: 0x3f, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0x1f.
                 1107     ;
                 1108     ;Ignore the first 4 interrupts except to clear the counter.
                 1109     ;This will ensure a clean start up after reset.
                 1110     ;
-                1111                             FETCH           s0, isr_count           ;test to see if more that 4 interrupts have occurred
-E: instruction not supported on the this device: FETCH sX, ss.
-                1112                             COMPARE         s0, #0x04
-E: instruction not supported on the this device: COMPARE sX, kk.
-202 3523C       1113                             JUMP            z, normal_isr
-203 08001       1114                             ADD             s0, #0x01               ;increment ISR counter until reaching 4
-                1115                             STORE           s0, isr_count
-E: instruction not supported on the this device: STORE sX, ss.
-204 20080       1116                             INPUT           s0, status_port         ;Check which counter to clear
-                1117                             TEST            s0, #ab_switch          ;if bit0 is Low then A is counting
-E: instruction not supported on the this device: TEST sX, kk.
-205 35237       1118                             JUMP            z, clear_b_count
-206 00001       1119     clear_a_count:          LOAD            s0, #a_count_reset      ;clear the active counter
-207 34238       1120                             JUMP            clear_counter
-208 00002       1121     clear_b_count:          LOAD            s0, #b_count_reset      ;clear the active counter
-209 22002       1122     clear_counter:          OUTPUT          s0, count_resetport     ;reset counter with pulse
-20A 00000       1123                             LOAD            s0, #0x00               ;end reset pulse to either counter
-20B 22002       1124                             OUTPUT          s0, count_resetport
-20C 34256       1125                             JUMP            restore_reg
+22D 10020       1111                             load           s0, isr_count           ;load to see if more that 4 interrupts have occurred
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+22E 00004       1112                             load         s0, #0x04
+22F 3523C       1113                             JUMP            z, normal_isr
+230 08001       1114                             ADD             s0, #0x01               ;increment ISR counter until reaching 4
+231 10020       1115                             load           s0, isr_count
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+232 20080       1116                             INPUT           s0, status_port         ;Check which counter to clear
+233 00010       1117                             load            s0, #ab_switch          ;if bit0 is Low then A is counting
+234 35237       1118                             JUMP            z, clear_b_count
+235 00001       1119     clear_a_count:          LOAD            s0, #a_count_reset      ;clear the active counter
+236 34238       1120                             JUMP            clear_counter
+237 00002       1121     clear_b_count:          LOAD            s0, #b_count_reset      ;clear the active counter
+238 22002       1122     clear_counter:          OUTPUT          s0, count_resetport     ;reset counter with pulse
+239 00000       1123                             LOAD            s0, #0x00               ;end reset pulse to either counter
+23A 22002       1124                             OUTPUT          s0, count_resetport
+23B 34256       1125                             JUMP            reload_reg
                 1126     ;
                 1127     ;Normal ISR Routine
                 1128     ;
@@ -1177,77 +1179,91 @@ E: instruction not supported on the this device: TEST sX, kk.
                 1130     ;Read the new counter value and then clear it ready to start again
                 1131     ;
                 1132     ;
-20D 20080       1133     normal_isr:             INPUT           s0, status_port         ;test for active counter
-                1134                             TEST            s0, #ab_switch          ;if bit is low then A is counting
-E: instruction not supported on the this device: TEST sX, kk.
-20E 35248       1135                             JUMP            z, capture_b_count
-20F 000F0       1136     capture_a_count:        LOAD            s0, #0xf0               ;set LEDs to indicate active counter
-210 22001       1137                             OUTPUT          s0, led_port
-211 20C00       1138                             INPUT           sc, a_count0_port       ;read counter A into [sF,sE,SD,sC]
-212 20D10       1139                             INPUT           sd, a_count1_port
-213 20E20       1140                             INPUT           se, a_count2_port
-214 20F30       1141                             INPUT           sf, a_count3_port
-215 00001       1142                             LOAD            s0, #a_count_reset      ;reset counter A
-216 22002       1143                             OUTPUT          s0, count_resetport
-217 34250       1144                             JUMP            counters_read
+23C 20080       1133     normal_isr:             INPUT           s0, status_port         ;load for active counter
+23D 00010       1134                             load            s0, #ab_switch          ;if bit is low then A is counting
+23E 35248       1135                             JUMP            z, capture_b_count
+23F 000F0       1136     capture_a_count:        LOAD            s0, #0xf0               ;set LEDs to indicate active counter
+240 22001       1137                             OUTPUT          s0, led_port
+241 20C00       1138                             INPUT           sc, a_count0_port       ;read counter A into [sF,sE,SD,sC]
+242 20D10       1139                             INPUT           sd, a_count1_port
+243 20E20       1140                             INPUT           se, a_count2_port
+244 20F30       1141                             INPUT           sf, a_count3_port
+245 00001       1142                             LOAD            s0, #a_count_reset      ;reset counter A
+246 22002       1143                             OUTPUT          s0, count_resetport
+247 34250       1144                             JUMP            counters_read
                 1145     ;
-218 0000F       1146     capture_b_count:        LOAD            s0, #0x0f               ;set LEDs to indicate active counter
-219 22001       1147                             OUTPUT          s0, led_port
-21A 20C40       1148                             INPUT           sc, b_count0_port       ;read counter A into [sF,sE,SD,sC]
-21B 20D50       1149                             INPUT           sd, b_count1_port
-21C 20E60       1150                             INPUT           se, b_count2_port
-21D 20F70       1151                             INPUT           sf, b_count3_port
-21E 00002       1152                             LOAD            s0, #b_count_reset      ;reset counter B
-21F 22002       1153                             OUTPUT          s0, count_resetport
-220 00000       1154     counters_read:          LOAD            s0, #0x00               ;end reset pulse to either counter
-221 22002       1155                             OUTPUT          s0, count_resetport
+248 0000F       1146     capture_b_count:        LOAD            s0, #0x0f               ;set LEDs to indicate active counter
+249 22001       1147                             OUTPUT          s0, led_port
+24A 20C40       1148                             INPUT           sc, b_count0_port       ;read counter A into [sF,sE,SD,sC]
+24B 20D50       1149                             INPUT           sd, b_count1_port
+24C 20E60       1150                             INPUT           se, b_count2_port
+24D 20F70       1151                             INPUT           sf, b_count3_port
+24E 00002       1152                             LOAD            s0, #b_count_reset      ;reset counter B
+24F 22002       1153                             OUTPUT          s0, count_resetport
+250 00000       1154     counters_read:          LOAD            s0, #0x00               ;end reset pulse to either counter
+251 22002       1155                             OUTPUT          s0, count_resetport
                 1156     ;
-                1157                             STORE           sc, count0              ;store new counter value
-E: instruction not supported on the this device: STORE sX, ss.
-                1158                             STORE           sd, count1
-E: instruction not supported on the this device: STORE sX, ss.
-                1159                             STORE           se, count2
-E: instruction not supported on the this device: STORE sX, ss.
-                1160                             STORE           sf, count3
-E: instruction not supported on the this device: STORE sX, ss.
+252 10C00       1157                             load           sc, count0              ;load new counter value
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+253 10D08       1158                             load           sd, count1
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+254 10E10       1159                             load           se, count2
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+255 10F18       1160                             load           sf, count3
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
                 1161     ;
                 1162     ;
                 1163     ;
-                1164     ;Restore registers and end ISR
+                1164     ;Reload registers and end ISR
                 1165     ;
-  00256         1166     restore_reg:            FETCH           sf, preserve_sf         ;restore registers
+  00256         1166     reload_reg:            FETCH           sf, preserve_sf         ;reload registers
 E: instruction not supported on the this device: FETCH sX, ss.
-                1167                             FETCH           se, preserve_se
-E: instruction not supported on the this device: FETCH sX, ss.
-                1168                             FETCH           sd, preserve_sd
-E: instruction not supported on the this device: FETCH sX, ss.
-                1169                             FETCH           sc, preserve_sc
-E: instruction not supported on the this device: FETCH sX, ss.
-                1170                             FETCH           sb, preserve_sb
-E: instruction not supported on the this device: FETCH sX, ss.
-                1171                             FETCH           sa, preserve_sa
-E: instruction not supported on the this device: FETCH sX, ss.
-                1172                             FETCH           s9, preserve_s9
-E: instruction not supported on the this device: FETCH sX, ss.
-                1173                             FETCH           s8, preserve_s8
-E: instruction not supported on the this device: FETCH sX, ss.
-                1174                             FETCH           s7, preserve_s7
-E: instruction not supported on the this device: FETCH sX, ss.
-                1175                             FETCH           s6, preserve_s6
-E: instruction not supported on the this device: FETCH sX, ss.
-                1176                             FETCH           s5, preserve_s5
-E: instruction not supported on the this device: FETCH sX, ss.
-                1177                             FETCH           s4, preserve_s4
-E: instruction not supported on the this device: FETCH sX, ss.
-                1178                             FETCH           s3, preserve_s3
-E: instruction not supported on the this device: FETCH sX, ss.
-                1179                             FETCH           s2, preserve_s2
-E: instruction not supported on the this device: FETCH sX, ss.
-                1180                             FETCH           s1, preserve_s1
-E: instruction not supported on the this device: FETCH sX, ss.
-                1181                             FETCH           s0, preserve_s0
-E: instruction not supported on the this device: FETCH sX, ss.
-222 2C001       1182                             RETURNI         enable
+256 10EF0       1167                             load           se, preserve_se
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+W: value out of range: 0x3e, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0x1e.
+257 10DE8       1168                             load           sd, preserve_sd
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+W: value out of range: 0x3d, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0x1d.
+258 10CE0       1169                             load           sc, preserve_sc
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+W: value out of range: 0x3c, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0x1c.
+259 10BD8       1170                             load           sb, preserve_sb
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+W: value out of range: 0x3b, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0x1b.
+25A 10AD0       1171                             load           sa, preserve_sa
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+W: value out of range: 0x3a, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0x1a.
+25B 109C8       1172                             load           s9, preserve_s9
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+W: value out of range: 0x39, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0x19.
+25C 108C0       1173                             load           s8, preserve_s8
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+W: value out of range: 0x38, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0x18.
+25D 107B8       1174                             load           s7, preserve_s7
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+W: value out of range: 0x37, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0x17.
+25E 106B0       1175                             load           s6, preserve_s6
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+W: value out of range: 0x36, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0x16.
+25F 105A8       1176                             load           s5, preserve_s5
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+W: value out of range: 0x35, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0x15.
+260 104A0       1177                             load           s4, preserve_s4
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+W: value out of range: 0x34, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0x14.
+261 10398       1178                             load           s3, preserve_s3
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+W: value out of range: 0x33, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0x13.
+262 10290       1179                             load           s2, preserve_s2
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+W: value out of range: 0x32, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0x12.
+263 10188       1180                             load           s1, preserve_s1
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+W: value out of range: 0x31, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0x11.
+264 10080       1181                             load           s0, preserve_s0
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+W: value out of range: 0x30, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0x10.
+265 2C001       1182                             RETURNI         enable
                 1183     ;
                 1184     ;
                 1185     ;Interrupt vector

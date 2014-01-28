@@ -5,7 +5,7 @@
                    5     ;
                    6     ;Version v1.00 - 24th November 2005
                    7     ;
-                   8     ;This program uses an 8KHz interrupt to generate test waveforms on the
+                   8     ;This program uses an 8KHz interrupt to generate load waveforms on the
                    9     ;4 analogue outputs provided by the Linear Technology LTC2624 device.
                   10     ;
                   11     ;As well as the port connections vital to communication with the UART and the SPI
@@ -68,7 +68,7 @@
                   68     ;Useful data constants
                   69     ;
                   70     ;
-                  71     ;Constant to define a software delay of 1us. This must be adjusted to reflect the
+                  71     ;Constant to define a soloadware delay of 1us. This must be adjusted to reflect the
                   72     ;clock applied to KCPSM3. Every instruction executes in 2 clock cycles making the
                   73     ;calculation highly predictable. The '6' in the following equation even allows for
                   74     ;'CALL delay_1us' instruction in the initiating code.
@@ -159,16 +159,15 @@ E: instruction not supported on the this device: STORE sX, ss.
                  150     ;
                  151     ;The program is interrupt driven to maintain an 8KHz sample rate. The main body
                  152     ;of the program waits for an interrupt to occur. The interrupt updates all four
-                 153     ;analogue outputs with values stored in scratch pad memory. This takes approximately
+                 153     ;analogue outputs with values loadd in scratch pad memory. This takes approximately
                  154     ;58us of the 125us available between interrupts. The main program then prepares
                  155     ;new values for the analogue outputs (in less than 67us) before waiting for the
                  156     ;next interrupt.
                  157     ;
                  158     ;
 006 00FFF        159     warm_start:             LD      sf, #0xff               ;flag set and wait for interrupt to be serviced
-  00010          160     wait_int:               CMP     sf, #0xff
-E: instruction not supported on the this device: COMPARE sX, kk.
-007 09110        161                             JUMP    z, wait_int             ;interrupt clears the flag
+007 00FFF        160     wait_int:               load     sf, #0xff
+008 09110        161                             JUMP    z, wait_int             ;interrupt clears the flag
                  162     ;
                  163     ;
                  164     ;Channel A is a square wave of 2KHz.
@@ -178,24 +177,24 @@ E: instruction not supported on the this device: COMPARE sX, kk.
                  168     ;
                  169     ;Following the interrupt service routine (ISR), the register set [s9,s8,s7,s6]
                  170     ;will contain the command which was last sent for the setting of channel C. The
-                 171     ;12-bit sample value is extracted from this word and stored in the location for
+                 171     ;12-bit sample value is extracted from this word and loadd in the location for
                  172     ;channel A. This should mean that channel A is one sample behind channel C. In this
                  173     ;version that does not mean a lag of 90 degrees because each output is updated
                  174     ;sequentially and that takes approximatly 14.5us per channel.
                  175     ;
                  176     ;This will also demonstrate that the reference voltage on channels A and B is 3.3v
-                 177     ;compared with 2.5v on channels C and D. So whilst the square wave on channel C is
+                 177     ;loadd with 2.5v on channels C and D. So whilst the square wave on channel C is
                  178     ;set for 0.50v to 2.00v, it should be 0.66v to 2.64v on channel A.
                  179     ;
-008 0D70E        180                             SR0     s7                      ; shift 12-bit value right 4 places
-009 0D608        181                             SRA     s6
-00A 0D70E        182                             SR0     s7
-00B 0D608        183                             SRA     s6
-00C 0D70E        184                             SR0     s7
-00D 0D608        185                             SRA     s6
-00E 0D70E        186                             SR0     s7
-00F 0D608        187                             SRA     s6
-                 188                             ST      s7, chan_a_msb          ;store value for D/A output
+009 0D70E        180                             SR0     s7                      ; shiload 12-bit value right 4 places
+00A 0D608        181                             SRA     s6
+00B 0D70E        182                             SR0     s7
+00C 0D608        183                             SRA     s6
+00D 0D70E        184                             SR0     s7
+00E 0D608        185                             SRA     s6
+00F 0D70E        186                             SR0     s7
+010 0D608        187                             SRA     s6
+                 188                             ST      s7, chan_a_msb          ;load value for D/A output
 E: instruction not supported on the this device: STORE sX, ss.
                  189                             ST      s6, chan_a_lsb
 E: instruction not supported on the this device: STORE sX, ss.
@@ -210,39 +209,34 @@ E: instruction not supported on the this device: STORE sX, ss.
                  198     ;decrease by 204 each sample so that over the first 20 samples it rises from
                  199     ;0 to 4080 and then over the next 20 samples it reduces back to zero.
                  200     ;
-                 201                             FT      s0, chan_b_lsb          ;load current value into [s1,s0]
-E: instruction not supported on the this device: FETCH sX, ss.
-                 202                             FT      s1, chan_b_msb
-E: instruction not supported on the this device: FETCH sX, ss.
-                 203                             FT      s2, triangle_up_down    ;read current slope direction
-E: instruction not supported on the this device: FETCH sX, ss.
-                 204                             CMP     s2, #0x00               ;determine current direction
-E: instruction not supported on the this device: COMPARE sX, kk.
-010 0952A        205                             JUMP    nz, slope_down
-011 040CC        206                             ADD     s0, #0xcc               ;add 204 (00CC hex) to current value
-012 05100        207                             ADDCY   s1, #0x00
-                 208                             CMP     s1, #0x0f               ;test for peak value of 4080 (0FF0 hex)
-E: instruction not supported on the this device: COMPARE sX, kk.
-013 09532        209                             JUMP    nz, store_channel_b
-                 210                             CMP     s0, #0xf0
-E: instruction not supported on the this device: COMPARE sX, kk.
-014 09532        211                             JUMP    nz, store_channel_b
-015 00201        212                             LD      s2, #0x01               ;change to slope down next time
+011 0C020        201                             load      s0, chan_b_lsb          ;load current value into [s1,s0]
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+012 0C130        202                             load      s1, chan_b_msb
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+013 0C280        203                             load      s2, triangle_up_down    ;read current slope direction
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+014 00200        204                             load     s2, #0x00               ;determine current direction
+015 0952A        205                             JUMP    nz, slope_down
+016 040CC        206                             ADD     s0, #0xcc               ;add 204 (00CC hex) to current value
+017 05100        207                             ADDCY   s1, #0x00
+018 0010F        208                             load     s1, #0x0f               ;load for peak value of 4080 (0FF0 hex)
+019 09532        209                             JUMP    nz, load_channel_b
+01A 000F0        210                             load     s0, #0xf0
+01B 09532        211                             JUMP    nz, load_channel_b
+01C 00201        212                             LD      s2, #0x01               ;change to slope down next time
                  213                             ST      s2, triangle_up_down
 E: instruction not supported on the this device: STORE sX, ss.
-016 08132        214                             JUMP    store_channel_b
-017 060CC        215     slope_down:             SUB     s0, #0xcc               ;subtract 204 (00CC hex) from current value
-018 07100        216                             SUBCY   s1, #0x00
-                 217                             CMP     s1, #0x00               ;test for zero (0000 hex)
-E: instruction not supported on the this device: COMPARE sX, kk.
-019 09532        218                             JUMP    nz, store_channel_b
-                 219                             CMP     s0, #0x00
-E: instruction not supported on the this device: COMPARE sX, kk.
-01A 09532        220                             JUMP    nz, store_channel_b
-01B 00200        221                             LD      s2, #0x00               ;change to slope up next time
+01D 08132        214                             JUMP    load_channel_b
+01E 060CC        215     slope_down:             SUB     s0, #0xcc               ;subtract 204 (00CC hex) from current value
+01F 07100        216                             SUBCY   s1, #0x00
+020 00100        217                             load     s1, #0x00               ;load for zero (0000 hex)
+021 09532        218                             JUMP    nz, load_channel_b
+022 00000        219                             load     s0, #0x00
+023 09532        220                             JUMP    nz, load_channel_b
+024 00200        221                             LD      s2, #0x00               ;change to slope up next time
                  222                             ST      s2, triangle_up_down
 E: instruction not supported on the this device: STORE sX, ss.
-  00032          223     store_channel_b:        ST      s0, chan_b_lsb          ;store value for D/A output
+  00032          223     load_channel_b:        ST      s0, chan_b_lsb          ;load value for D/A output
 E: instruction not supported on the this device: STORE sX, ss.
                  224                             ST      s1, chan_b_msb
 E: instruction not supported on the this device: STORE sX, ss.
@@ -262,22 +256,21 @@ E: instruction not supported on the this device: STORE sX, ss.
                  238     ;   The 12-bit value is therefore 4096 x 2.0 / 2.5 = 3277 (CCD hex)
                  239     ;
                  240     ;
-                 241                             FT      s2, square_count        ;read sample counter
-E: instruction not supported on the this device: FETCH sX, ss.
-                 242                             TEST    s2, #0x02               ;bit 1 has correct frequency
-E: instruction not supported on the this device: TEST sX, kk.
-01C 0953A        243                             JUMP    nz, square_high
-01D 00103        244                             LD      s1, #0x03               ;Set low level
-01E 00033        245                             LD      s0, #0x33
-01F 0813C        246                             JUMP    store_channel_c
-020 0010C        247     square_high:            LD      s1, #0x0c               ;Set high level
-021 000CD        248                             LD      s0, #0xcd
-  0003C          249     store_channel_c:        ST      s0, chan_c_lsb          ;store value for D/A output
+025 0C290        241                             load      s2, square_count        ;read sample counter
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+026 00202        242                             load    s2, #0x02               ;bit 1 has correct frequency
+027 0953A        243                             JUMP    nz, square_high
+028 00103        244                             LD      s1, #0x03               ;Set low level
+029 00033        245                             LD      s0, #0x33
+02A 0813C        246                             JUMP    load_channel_c
+02B 0010C        247     square_high:            LD      s1, #0x0c               ;Set high level
+02C 000CD        248                             LD      s0, #0xcd
+  0003C          249     load_channel_c:        ST      s0, chan_c_lsb          ;load value for D/A output
 E: instruction not supported on the this device: STORE sX, ss.
                  250                             ST      s1, chan_c_msb
 E: instruction not supported on the this device: STORE sX, ss.
-022 04201        251                             ADD     s2, #0x01               ;increment sampel count
-                 252                             ST      s2, square_count        ;store new sample count
+02D 04201        251                             ADD     s2, #0x01               ;increment sampel count
+                 252                             ST      s2, square_count        ;load new sample count
 E: instruction not supported on the this device: STORE sX, ss.
                  253     ;
                  254     ;Sine wave for channel D
@@ -285,15 +278,15 @@ E: instruction not supported on the this device: STORE sX, ss.
                  256     ;A synthesis algorithm is used to generate a stable 770Hz sine wave
                  257     ;which is one of the 8 tines used in DTMF telephone dialing.
                  258     ;
-023 0835E        259                             CALL    calc_next_sine
-024 0D90E        260                             SR0     s9                      ;reduce value to 12-bits
-025 0D808        261                             SRA     s8
-026 0D90E        262                             SR0     s9
-027 0D808        263                             SRA     s8
-028 0D90E        264                             SR0     s9
-029 0D808        265                             SRA     s8
-02A 04908        266                             ADD     s9, #0x08               ;Scale signed number to mid-rail of unsigned output
-                 267                             ST      s9, chan_d_msb          ;store value for D/A output
+02E 0835E        259                             CALL    calc_next_sine
+02F 0D90E        260                             SR0     s9                      ;reduce value to 12-bits
+030 0D808        261                             SRA     s8
+031 0D90E        262                             SR0     s9
+032 0D808        263                             SRA     s8
+033 0D90E        264                             SR0     s9
+034 0D808        265                             SRA     s8
+035 04908        266                             ADD     s9, #0x08               ;Scale signed number to mid-rail of unsigned output
+                 267                             ST      s9, chan_d_msb          ;load value for D/A output
 E: instruction not supported on the this device: STORE sX, ss.
                  268                             ST      s8, chan_d_lsb
 E: instruction not supported on the this device: STORE sX, ss.
@@ -302,19 +295,21 @@ E: instruction not supported on the this device: STORE sX, ss.
                  271     ;Drive LEDs with simple binary count of the samples to indicate
                  272     ;that the design is active.
                  273     ;
-                 274                             FT      s0, sample_count_lsb    ;read sample counter
-E: instruction not supported on the this device: FETCH sX, ss.
-                 275                             FT      s1, sample_count_msb
-E: instruction not supported on the this device: FETCH sX, ss.
-02B 04001        276                             ADD     s0, #0x01               ;increment counter
-02C 05100        277                             ADDCY   s1, #0x00
-                 278                             ST      s0, sample_count_lsb    ;store new value
+036 0C000        274                             load      s0, sample_count_lsb    ;read sample counter
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+W: value out of range: 0x20, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x0.
+037 0C110        275                             load      s1, sample_count_msb
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+W: value out of range: 0x21, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
+038 04001        276                             ADD     s0, #0x01               ;increment counter
+039 05100        277                             ADDCY   s1, #0x00
+                 278                             ST      s0, sample_count_lsb    ;load new value
 E: instruction not supported on the this device: STORE sX, ss.
                  279                             ST      s1, sample_count_msb
 E: instruction not supported on the this device: STORE sX, ss.
-02D 0E180        280                             OUT     s1, led_port            ;upper bits are 31.25Hz and lower
+03A 0E180        280                             OUT     s1, led_port            ;upper bits are 31.25Hz and lower
                  281     ;
-02E 0810F        282                             JUMP    warm_start              ;wait for next interrupt
+03B 0810F        282                             JUMP    warm_start              ;wait for next interrupt
                  283     ;
                  284     ;**************************************************************************************
                  285     ;Sine wave synthesis algorithm
@@ -323,24 +318,24 @@ E: instruction not supported on the this device: STORE sX, ss.
                  288     ;This example is set to generate 770Hz at a sample rate of 8KHz. 770Hz is one of
                  289     ;the eight DTMF frequences. Please see design documentation for more details.
                  290     ;
-02F 00024        291     init_sine_wave:         LD      s0, #0x24               ;initial value 9216 (2400 hex)
+03C 00024        291     init_sine_wave:         LD      s0, #0x24               ;initial value 9216 (2400 hex)
                  292                             ST      s0, sine_y_msb
 E: instruction not supported on the this device: STORE sX, ss.
-030 00000        293                             LD      s0, #0x00
+03D 00000        293                             LD      s0, #0x00
                  294                             ST      s0, sine_y_lsb
 E: instruction not supported on the this device: STORE sX, ss.
-031 00000        295                             LD      s0, #0x00               ;initial delayed value 0 (0000 hex)
+03E 00000        295                             LD      s0, #0x00               ;initial delayed value 0 (0000 hex)
                  296                             ST      s0, sine_y1_msb
 E: instruction not supported on the this device: STORE sX, ss.
                  297                             ST      s0, sine_y1_lsb
 E: instruction not supported on the this device: STORE sX, ss.
-032 000D2        298                             LD      s0, #0xd2               ;Coefficient for 770Hz is UFIX_16_15 value 53913/32768 = 1.64529
+03F 000D2        298                             LD      s0, #0xd2               ;Coefficient for 770Hz is UFIX_16_15 value 53913/32768 = 1.64529
                  299                             ST      s0, sine_k_msb
 E: instruction not supported on the this device: STORE sX, ss.
-033 00099        300                             LD      s0, #0x99
+040 00099        300                             LD      s0, #0x99
                  301                             ST      s0, sine_k_lsb
 E: instruction not supported on the this device: STORE sX, ss.
-034 08080        302                             RET
+041 08080        302                             RET
                  303     ;
                  304     ;
                  305     ;Calculate a new output sample for a single tone.
@@ -352,44 +347,50 @@ E: instruction not supported on the this device: STORE sX, ss.
                  311     ;
                  312     ;Obtain current values from wscratch pad memory
                  313     ;
-  0005E          314     calc_next_sine:         FT      sf, sine_y_msb          ;[sF,sE] is Y
-E: instruction not supported on the this device: FETCH sX, ss.
-                 315                             FT      se, sine_y_lsb
-E: instruction not supported on the this device: FETCH sX, ss.
-                 316                             FT      sd, sine_y1_msb         ;[sD,sC] is Y1
-E: instruction not supported on the this device: FETCH sX, ss.
-                 317                             FT      sc, sine_y1_lsb
-E: instruction not supported on the this device: FETCH sX, ss.
-                 318                             FT      sb, sine_k_msb          ;[sB,sA] is K
-E: instruction not supported on the this device: FETCH sX, ss.
-                 319                             FT      sa, sine_k_lsb
-E: instruction not supported on the this device: FETCH sX, ss.
+042 0CF10        314     calc_next_sine:         load      sf, sine_y_msb          ;[sF,sE] is Y
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+W: value out of range: 0x11, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
+043 0CE00        315                             load      se, sine_y_lsb
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+W: value out of range: 0x10, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x0.
+044 0CD30        316                             load      sd, sine_y1_msb         ;[sD,sC] is Y1
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+W: value out of range: 0x13, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x3.
+045 0CC20        317                             load      sc, sine_y1_lsb
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+W: value out of range: 0x12, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x2.
+046 0CB50        318                             load      sb, sine_k_msb          ;[sB,sA] is K
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+W: value out of range: 0x15, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
+047 0CA40        319                             load      sa, sine_k_lsb
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+W: value out of range: 0x14, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
                  320     ;
                  321     ;16-bit signed by 16-bit unsigned multiplication. [s9,s8]=[sB,sA]x[sF,sE]
                  322     ;
                  323     ;The unsigned number is of format UFIX_16_15 resulting
                  324     ;in a FIX_32_15 product. Since only the integer part of the
                  325     ;product is to be retained as a 16-bit value, their is no
-                 326     ;shift of the result on the last cycle of the multiplication.
+                 326     ;shiload of the result on the last cycle of the multiplication.
                  327     ;Execution requires a maximum of 145 instructions.
                  328     ;
-035 00900        329                             LD      s9, #0x00               ;clear temporary result registers [s9,s8]
-036 00800        330                             LD      s8, #0x00
-037 00010        331                             LD      s0, #0x10               ;16 bit multiply
-038 0D90A        332     mult_loop:              SRX     s9                      ;signed divide result by 2
-039 0D808        333                             SRA     s8
-03A 0DB0E        334                             SR0     sb                      ;shift coefficient
-03B 0DA08        335                             SRA     sa
-03C 09D6E        336                             JUMP    nc, no_mult_add         ;test for active bit
-03D 0C8E4        337                             ADD     s8, se                  ;16-bit signed addition
-03E 0C9F5        338                             ADDCY   s9, sf
-03F 06001        339     no_mult_add:            SUB     s0, #0x01               ;test for 16 cycles
-040 09567        340                             JUMP    nz, mult_loop
+048 00900        329                             LD      s9, #0x00               ;clear temporary result registers [s9,s8]
+049 00800        330                             LD      s8, #0x00
+04A 00010        331                             LD      s0, #0x10               ;16 bit multiply
+04B 0D90A        332     mult_loop:              SRX     s9                      ;signed divide result by 2
+04C 0D808        333                             SRA     s8
+04D 0DB0E        334                             SR0     sb                      ;shiload coefficient
+04E 0DA08        335                             SRA     sa
+04F 09D6E        336                             JUMP    nc, no_mult_add         ;load for active bit
+050 0C8E4        337                             ADD     s8, se                  ;16-bit signed addition
+051 0C9F5        338                             ADDCY   s9, sf
+052 06001        339     no_mult_add:            SUB     s0, #0x01               ;load for 16 cycles
+053 09567        340                             JUMP    nz, mult_loop
                  341     ;
                  342     ;Subtract of delayed sample
                  343     ;
-041 0C8C6        344                             SUB     s8, sc                  ;16-bit signed subtract
-042 0C9D7        345                             SUBCY   s9, sd
+054 0C8C6        344                             SUB     s8, sc                  ;16-bit signed subtract
+055 0C9D7        345                             SUBCY   s9, sd
                  346     ;
                  347     ;Update scratch pad memory with new sample values
                  348     ;
@@ -401,7 +402,7 @@ E: instruction not supported on the this device: STORE sX, ss.
 E: instruction not supported on the this device: STORE sX, ss.
                  352                             ST      s8, sine_y_lsb
 E: instruction not supported on the this device: STORE sX, ss.
-043 08080        353                             RET
+056 08080        353                             RET
                  354     ;
                  355     ;
                  356     ;**************************************************************************************
@@ -451,9 +452,9 @@ E: instruction not supported on the this device: STORE sX, ss.
                  400     ;   SPI_amp_shdn = 0      Amplifier active and available
                  401     ;   SPI_dac_clr  = 1      D/A clear off
                  402     ;
-044 000AE        403     spi_init:               LD      s0, #0xae               ;normally AE
-045 0E008        404                             OUT     s0, spi_control_port
-046 08080        405                             RET
+057 000AE        403     spi_init:               LD      s0, #0xae               ;normally AE
+058 0E008        404                             OUT     s0, spi_control_port
+059 08080        405                             RET
                  406     ;
                  407     ;
                  408     ;
@@ -461,7 +462,7 @@ E: instruction not supported on the this device: STORE sX, ss.
                  410     ;
                  411     ;The data supplied in register 's2' is transmitted to the SPI bus and
                  412     ;at the same time the received byte is used to replace the value in 's2'.
-                 413     ;The SCK clock is generated by software and results in a communication rate of
+                 413     ;The SCK clock is generated by soloadware and results in a communication rate of
                  414     ;2.5Mbit/s with a 50MHz clock.
                  415     ;
                  416     ;Note that you must have previously selected the required device on the bus
@@ -485,19 +486,18 @@ E: instruction not supported on the this device: STORE sX, ss.
                  434     ;   the received bit needs maximum time to settle. Therefore this routine
                  435     ;   schedules the read as late as it can.
                  436     ;
-047 00108        437     spi_dac_tx_rx:          LD      s1, #0x08               ;8-bits to transmit and receive
-048 0E204        438     next_spi_dac_bit:       OUT     s2, spi_output_port     ;output data bit ready to be used on rising edge
-049 03001        439                             XOR     s0, #spi_sck            ;clock High (bit0)
-04A 0E008        440                             OUT     s0, spi_control_port    ;drive clock High
-04B 03001        441                             XOR     s0, #spi_sck            ;prepare clock Low (bit0)
-04C 0A301        442                             IN      s3, spi_input_port      ;read input bit
-                 443                             TEST    s3, #spi_sdi            ;detect state of received bit
-E: instruction not supported on the this device: TEST sX, kk.
-04D 0D200        444                             SLA     s2                      ;shift new data into result and move to next transmit bit
-04E 0E008        445                             OUT     s0, spi_control_port    ;drive clock Low
-04F 06101        446                             SUB     s1, #0x01               ;count bits
-050 0957B        447                             JUMP    nz, next_spi_dac_bit    ;repeat until finished
-051 08080        448                             RET
+05A 00108        437     spi_dac_tx_rx:          LD      s1, #0x08               ;8-bits to transmit and receive
+05B 0E204        438     next_spi_dac_bit:       OUT     s2, spi_output_port     ;output data bit ready to be used on rising edge
+05C 03001        439                             XOR     s0, #spi_sck            ;clock High (bit0)
+05D 0E008        440                             OUT     s0, spi_control_port    ;drive clock High
+05E 03001        441                             XOR     s0, #spi_sck            ;prepare clock Low (bit0)
+05F 0A301        442                             IN      s3, spi_input_port      ;read input bit
+060 00380        443                             load    s3, #spi_sdi            ;detect state of received bit
+061 0D200        444                             SLA     s2                      ;shiload new data into result and move to next transmit bit
+062 0E008        445                             OUT     s0, spi_control_port    ;drive clock Low
+063 06101        446                             SUB     s1, #0x01               ;count bits
+064 0957B        447                             JUMP    nz, next_spi_dac_bit    ;repeat until finished
+065 08080        448                             RET
                  449     ;
                  450     ;
                  451     ;
@@ -536,8 +536,8 @@ E: instruction not supported on the this device: TEST sX, kk.
                  484     ;voltages due to different reference voltages for each pair of channels.
                  485     ;
                  486     ;SPI communication with the DAC only requires a 24-bit word to be transmitted.
-                 487     ;However, the device internally contains a 32-bit shift register. When writing
-                 488     ;a command word, the previous contents are shifted out and can be observed by
+                 487     ;However, the device internally contains a 32-bit shiload register. When writing
+                 488     ;a command word, the previous contents are shiloaded out and can be observed by
                  489     ;the master (Spartan-3E in this case). If you do not use a 32-bit format, then
                  490     ;the read back is confusing. Hence this routine uses a 32-bit format by transmitting
                  491     ;a dummy byte first.
@@ -550,47 +550,47 @@ E: instruction not supported on the this device: TEST sX, kk.
                  498     ;At the end of this communication, the register set [s9,s8,s7,s6] will contain the
                  499     ;data received back from the D/A converter which should be the previous command.
                  500     ;
-052 08377        501     set_dac:                CALL    spi_init                ;ensure known state of bus and s0 register
-053 03020        502                             XOR     s0, #spi_dac_cs         ;select low on D/A converter
-054 0E008        503                             OUT     s0, spi_control_port
-055 00200        504                             LD      s2, #0x00               ;Write dummy byte to DAC
-056 0837A        505                             CALL    spi_dac_tx_rx
-057 0C920        506                             LD      s9, s2                  ;capture response
-058 0C2C0        507                             LD      s2, sc                  ;Select channel for update
-059 0120F        508                             AND     s2, #0x0f               ;isolate channel bits to be certain of correct command
-05A 02230        509                             OR      s2, #0x30               ;Use immediate Write and Update command is "0011"
-05B 0837A        510                             CALL    spi_dac_tx_rx
-05C 0C820        511                             LD      s8, s2                  ;capture response
-05D 0DA06        512                             SL0     sa                      ;data shift bits into correct position
-05E 0DB00        513                             SLA     sb                      ;with 4 dummy bits ('0') in the least significant bits.
-05F 0DA06        514                             SL0     sa
-060 0DB00        515                             SLA     sb
-061 0DA06        516                             SL0     sa
-062 0DB00        517                             SLA     sb
-063 0DA06        518                             SL0     sa
-064 0DB00        519                             SLA     sb
-065 0C2B0        520                             LD      s2, sb                  ;Write 12 bit value followed by 4 dummy bits
-066 0837A        521                             CALL    spi_dac_tx_rx
-067 0C720        522                             LD      s7, s2                  ;capture response
-068 0C2A0        523                             LD      s2, sa
-069 0837A        524                             CALL    spi_dac_tx_rx
-06A 0C620        525                             LD      s6, s2                  ;capture response
-06B 03020        526                             XOR     s0, #spi_dac_cs         ;deselect the D/A converter to execute
-06C 0E008        527                             OUT     s0, spi_control_port
-06D 08080        528                             RET
+066 08377        501     set_dac:                CALL    spi_init                ;ensure known state of bus and s0 register
+067 03020        502                             XOR     s0, #spi_dac_cs         ;select low on D/A converter
+068 0E008        503                             OUT     s0, spi_control_port
+069 00200        504                             LD      s2, #0x00               ;Write dummy byte to DAC
+06A 0837A        505                             CALL    spi_dac_tx_rx
+06B 0C920        506                             LD      s9, s2                  ;capture response
+06C 0C2C0        507                             LD      s2, sc                  ;Select channel for update
+06D 0120F        508                             AND     s2, #0x0f               ;isolate channel bits to be certain of correct command
+06E 02230        509                             OR      s2, #0x30               ;Use immediate Write and Update command is "0011"
+06F 0837A        510                             CALL    spi_dac_tx_rx
+070 0C820        511                             LD      s8, s2                  ;capture response
+071 0DA06        512                             SL0     sa                      ;data shiload bits into correct position
+072 0DB00        513                             SLA     sb                      ;with 4 dummy bits ('0') in the least significant bits.
+073 0DA06        514                             SL0     sa
+074 0DB00        515                             SLA     sb
+075 0DA06        516                             SL0     sa
+076 0DB00        517                             SLA     sb
+077 0DA06        518                             SL0     sa
+078 0DB00        519                             SLA     sb
+079 0C2B0        520                             LD      s2, sb                  ;Write 12 bit value followed by 4 dummy bits
+07A 0837A        521                             CALL    spi_dac_tx_rx
+07B 0C720        522                             LD      s7, s2                  ;capture response
+07C 0C2A0        523                             LD      s2, sa
+07D 0837A        524                             CALL    spi_dac_tx_rx
+07E 0C620        525                             LD      s6, s2                  ;capture response
+07F 03020        526                             XOR     s0, #spi_dac_cs         ;deselect the D/A converter to execute
+080 0E008        527                             OUT     s0, spi_control_port
+081 08080        528                             RET
                  529     ;
                  530     ;Perform a hard reset of the D/A converter
                  531     ;
-06E 08377        532     dac_reset:              CALL    spi_init                ;ensure known state of bus and s0 register
-06F 03080        533                             XOR     s0, #spi_dac_clr        ;pulse the clear signal.
-070 0E008        534                             OUT     s0, spi_control_port
-071 03080        535                             XOR     s0, #spi_dac_clr
-072 0E008        536                             OUT     s0, spi_control_port
-073 08080        537                             RET
+082 08377        532     dac_reset:              CALL    spi_init                ;ensure known state of bus and s0 register
+083 03080        533                             XOR     s0, #spi_dac_clr        ;pulse the clear signal.
+084 0E008        534                             OUT     s0, spi_control_port
+085 03080        535                             XOR     s0, #spi_dac_clr
+086 0E008        536                             OUT     s0, spi_control_port
+087 08080        537                             RET
                  538     ;
                  539     ;
                  540     ;**************************************************************************************
-                 541     ;Software delay routines
+                 541     ;Soloadware delay routines
                  542     ;**************************************************************************************
                  543     ;
                  544     ;
@@ -605,31 +605,31 @@ E: instruction not supported on the this device: TEST sX, kk.
                  553     ;
                  554     ;Registers used s0
                  555     ;
-074 0000B        556     delay_1us:              LD      s0, #delay_1us_constant
-075 06001        557     wait_1us:               SUB     s0, #0x01
-076 095A9        558                             JUMP    nz, wait_1us
-077 08080        559                             RET
+088 0000B        556     delay_1us:              LD      s0, #delay_1us_constant
+089 06001        557     wait_1us:               SUB     s0, #0x01
+08A 095A9        558                             JUMP    nz, wait_1us
+08B 08080        559                             RET
                  560     ;
                  561     ;Delay of 40us.
                  562     ;
                  563     ;Registers used s0, s1
                  564     ;
-078 00128        565     delay_40us:             LD      s1, #0x28               ;40 x 1us = 40us
-079 083A8        566     wait_40us:              CALL    delay_1us
-07A 06101        567                             SUB     s1, #0x01
-07B 095AD        568                             JUMP    nz, wait_40us
-07C 08080        569                             RET
+08C 00128        565     delay_40us:             LD      s1, #0x28               ;40 x 1us = 40us
+08D 083A8        566     wait_40us:              CALL    delay_1us
+08E 06101        567                             SUB     s1, #0x01
+08F 095AD        568                             JUMP    nz, wait_40us
+090 08080        569                             RET
                  570     ;
                  571     ;
                  572     ;Delay of 1ms.
                  573     ;
                  574     ;Registers used s0, s1, s2
                  575     ;
-07D 00219        576     delay_1ms:              LD      s2, #0x19               ;25 x 40us = 1ms
-07E 083AC        577     wait_1ms:               CALL    delay_40us
-07F 06201        578                             SUB     s2, #0x01
-080 095B2        579                             JUMP    nz, wait_1ms
-081 08080        580                             RET
+091 00219        576     delay_1ms:              LD      s2, #0x19               ;25 x 40us = 1ms
+092 083AC        577     wait_1ms:               CALL    delay_40us
+093 06201        578                             SUB     s2, #0x01
+094 095B2        579                             JUMP    nz, wait_1ms
+095 08080        580                             RET
                  581     ;
                  582     ;Delay of 20ms.
                  583     ;
@@ -637,21 +637,21 @@ E: instruction not supported on the this device: TEST sX, kk.
                  585     ;
                  586     ;Registers used s0, s1, s2, s3
                  587     ;
-082 00314        588     delay_20ms:             LD      s3, #0x14               ;20 x 1ms = 20ms
-083 083B1        589     wait_20ms:              CALL    delay_1ms
-084 06301        590                             SUB     s3, #0x01
-085 095B7        591                             JUMP    nz, wait_20ms
-086 08080        592                             RET
+096 00314        588     delay_20ms:             LD      s3, #0x14               ;20 x 1ms = 20ms
+097 083B1        589     wait_20ms:              CALL    delay_1ms
+098 06301        590                             SUB     s3, #0x01
+099 095B7        591                             JUMP    nz, wait_20ms
+09A 08080        592                             RET
                  593     ;
                  594     ;Delay of approximately 1 second.
                  595     ;
                  596     ;Registers used s0, s1, s2, s3, s4
                  597     ;
-087 00414        598     delay_1s:               LD      s4, #0x14               ;50 x 20ms = 1000ms
-088 083B6        599     wait_1s:                CALL    delay_20ms
-089 06401        600                             SUB     s4, #0x01
-08A 095BC        601                             JUMP    nz, wait_1s
-08B 08080        602                             RET
+09B 00414        598     delay_1s:               LD      s4, #0x14               ;50 x 20ms = 1000ms
+09C 083B6        599     wait_1s:                CALL    delay_20ms
+09D 06401        600                             SUB     s4, #0x01
+09E 095BC        601                             JUMP    nz, wait_1s
+09F 08080        602                             RET
                  603     ;
                  604     ;
                  605     ;
@@ -662,11 +662,11 @@ E: instruction not supported on the this device: TEST sX, kk.
                  610     ;Interrupts occur at a rate of 8KHz.
                  611     ;
                  612     ;Each interrupt is the fundamental timing trigger used to set the sample rate and
-                 613     ;it is therefore use to set the D/A outputs by copying the values stored in
+                 613     ;it is therefore use to set the D/A outputs by copying the values loadd in
                  614     ;scratch pad memory and outputting them to the D/A converter using the SPI bus.
                  615     ;
                  616     ;Because the SPI communication is in itself a predictable process, the sample rate
-                 617     ;is preserved without sample jitter. All variable activities are left to the main
+                 617     ;is preserved without sample jitter. All variable activities are leload to the main
                  618     ;program.
                  619     ;
                  620     ;Each time PicoBlaze transmits a 32-bit command word to the D/A converter, the
@@ -676,42 +676,42 @@ E: instruction not supported on the this device: TEST sX, kk.
                  624     ;
                  625     ;Set channel A
                  626     ;
-08C 00C00        627     isr:                    LD      sc, #0x00               ;channel A
-                 628                             FT      sb, chan_a_msb          ;12-bit value
-E: instruction not supported on the this device: FETCH sX, ss.
-                 629                             FT      sa, chan_a_lsb
-E: instruction not supported on the this device: FETCH sX, ss.
-08D 08386        630                             CALL    set_dac
+0A0 00C00        627     isr:                    LD      sc, #0x00               ;channel A
+0A1 0CB10        628                             load      sb, chan_a_msb          ;12-bit value
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+0A2 0CA00        629                             load      sa, chan_a_lsb
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+0A3 08386        630                             CALL    set_dac
                  631     ;
                  632     ;Set channel B
                  633     ;
-08E 00C01        634                             LD      sc, #0x01               ;channel B
-                 635                             FT      sb, chan_b_msb          ;12-bit value
-E: instruction not supported on the this device: FETCH sX, ss.
-                 636                             FT      sa, chan_b_lsb
-E: instruction not supported on the this device: FETCH sX, ss.
-08F 08386        637                             CALL    set_dac
+0A4 00C01        634                             LD      sc, #0x01               ;channel B
+0A5 0CB30        635                             load      sb, chan_b_msb          ;12-bit value
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+0A6 0CA20        636                             load      sa, chan_b_lsb
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+0A7 08386        637                             CALL    set_dac
                  638     ;
                  639     ;Set channel C
                  640     ;
-090 00C02        641                             LD      sc, #0x02               ;channel C
-                 642                             FT      sb, chan_c_msb          ;12-bit value
-E: instruction not supported on the this device: FETCH sX, ss.
-                 643                             FT      sa, chan_c_lsb
-E: instruction not supported on the this device: FETCH sX, ss.
-091 08386        644                             CALL    set_dac
+0A8 00C02        641                             LD      sc, #0x02               ;channel C
+0A9 0CB50        642                             load      sb, chan_c_msb          ;12-bit value
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+0AA 0CA40        643                             load      sa, chan_c_lsb
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+0AB 08386        644                             CALL    set_dac
                  645     ;
                  646     ;Set channel A
                  647     ;
-092 00C03        648                             LD      sc, #0x03               ;channel D
-                 649                             FT      sb, chan_d_msb          ;12-bit value
-E: instruction not supported on the this device: FETCH sX, ss.
-                 650                             FT      sa, chan_d_lsb
-E: instruction not supported on the this device: FETCH sX, ss.
-093 08386        651                             CALL    set_dac
+0AC 00C03        648                             LD      sc, #0x03               ;channel D
+0AD 0CB70        649                             load      sb, chan_d_msb          ;12-bit value
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+0AE 0CA60        650                             load      sa, chan_d_lsb
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+0AF 08386        651                             CALL    set_dac
                  652     ;
-094 00F00        653                             LD      sf, #0x00               ;clear flag
-095 080F0        654                             RETIE
+0B0 00F00        653                             LD      sf, #0x00               ;clear flag
+0B1 080F0        654                             RETIE
                  655     ;
                  656     ;
                  657     ;**************************************************************************************

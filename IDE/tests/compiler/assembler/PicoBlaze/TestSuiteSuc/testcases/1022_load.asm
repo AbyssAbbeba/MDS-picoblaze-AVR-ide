@@ -36,13 +36,13 @@ device kcpsm1
 ; UART status checking MACRO (IF TX can be done)
 UART_ready_wait     MACRO
                     INPUT       Temp1, UART_stat    ; checking UART status
-                    TEST        Temp1, 4            ; test bit 2 (is Tx ready?)
+                    load        Temp1, 4            ; load bit 2 (is Tx ready?)
                     JUMP        Z, ($ - 2)
                     ENDM
 ; UART status checking MACRO (NEW RX data?)
 UART_new_data_wait  MACRO
                     INPUT       Temp1, UART_stat    ; checking UART status
-                    TEST        Temp1, 8            ; test bit 2 (is Tx ready?)
+                    load        Temp1, 8            ; load bit 2 (is Tx ready?)
                     JUMP        Z, ($ - 2)
                     ENDM                    
 ;==============================================================================;
@@ -84,7 +84,7 @@ SendCRLF            MACRO
 ;  100.00 MHz               20.00 ns
 ;
 ; wait_time = (4 + (((2 * Temp1) + 2) * Temp2 + 2) * Temp3) * 2 * clk_period
-;   1s @ (10 MHz, Temp1 = 250, Temp2 = 249, Temp3 = 40)
+;   1s  (10 MHz, Temp1 = 250, Temp2 = 249, Temp3 = 40)
 ;
 ; Waiting loops
 ;==============================================================================;

@@ -1,11 +1,11 @@
-                   1     ; Compiler test case for Assembler
+                   1     ; Compiler load case for Assembler
                    2     ; instruction opcodes
                    3     device kcpsm1
-  00000            4     TESTsymb9               AUTOREG
-  00001            5     TESTsymb13              AUTOREG
-  00002            6     TESTsymb10              AUTOREG
-  00003            7     TESTsymb11              AUTOREG
-  00004            8     TESTsymb12              AUTOREG
+  00000            4     loadsymb9               AUTOREG
+  00001            5     loadsymb13              AUTOREG
+  00002            6     loadsymb10              AUTOREG
+  00003            7     loadsymb11              AUTOREG
+  00004            8     loadsymb12              AUTOREG
                    9
   00000           10     Start:
 000 09100         11             JUMP        Z, 0x000
@@ -18,38 +18,28 @@ W: instruction `JUMP C, aaa' requires operand #2 to be of type(s): label; while 
 W: instruction `JUMP NC, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: number.
                   15
                   16         ; Others
-004 0830D         17             CALl      Podprog
-005 0930D         18             CALL      Z,Podprog
-006 0970D         19             CALL      NZ,Podprog
-007 09B0D         20             CALL      C,Podprog
-008 09F0D         21             CALL      NC,Podprog
+004 08309         17             CALl      Podprog
+005 09309         18             CALL      Z,Podprog
+006 09709         19             CALL      NZ,Podprog
+007 09B09         20             CALL      C,Podprog
+008 09F09         21             CALL      NC,Podprog
                   22
-                  23             STORE     TESTsymb9,@TESTsymb13
-E: instruction not supported on the this device: STORE sX, sY.
-                  24             STORE     TESTsymb10,@10
-W: instruction `STORE sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-E: instruction not supported on the this device: STORE sX, sY.
-                  25             FETCH     TESTsymb11,@TESTsymb13
-E: instruction not supported on the this device: FETCH sX, sY.
-                  26             FETCH     TESTsymb12,@5
-W: instruction `FETCH sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-E: instruction not supported on the this device: FETCH sX, sY.
-                  27
-  0000D           28     Podprog:
-009 08080         29             RETURN
-00A 09080         30             RETURN    Z
-00B 09480         31             RETURN    NZ
-00C 09880         32             RETURN    C
-00D 09C80         33             RETURN    NC
-                  34
-                  35
-                  36       ;  JUMP aaa ADD sX,kk LOAD sX,kk SR0 sX
-                  37     ;JUMP Z,aaa ADDCY sX,kk AND sX,kk SR1 sX
-                  38     ;JUMP NZ,aaa SUB sX,kk OR sX,kk SRX sX
-                  39     ;JUMP C,aaa SUBCY sX,kk XOR sX,kk SRA sX
-                  40     ;JUMP NC,aaa COMPARE sX,kk TEST sX,kk RR sX
-                  41     ;CALL aaa ADD sX,sY LOAD sX,sY SL0 sX
-                  42     ;CALL Z,aaa ADDCY sX,sY AND sX,sY SL1 sX
-                  43     ;CALL NZ,aaa SUB sX,sY OR sX,sY SLX sX
-                  44     ;CALL C,aaa SUBCY sX,sY XOR sX,sY SLA sX
-                  45     ;CALL NC,aaa COMPARE sX,sY TEST sX,sY RL sX
+                  23
+  00009           24     Podprog:
+009 08080         25             RETURN
+00A 09080         26             RETURN    Z
+00B 09480         27             RETURN    NZ
+00C 09880         28             RETURN    C
+00D 09C80         29             RETURN    NC
+                  30
+                  31
+                  32       ;  JUMP aaa ADD sX,kk LOAD sX,kk SR0 sX
+                  33     ;JUMP Z,aaa ADDCY sX,kk AND sX,kk SR1 sX
+                  34     ;JUMP NZ,aaa SUB sX,kk OR sX,kk SRX sX
+                  35     ;JUMP C,aaa SUBCY sX,kk XOR sX,kk SRA sX
+                  36     ;JUMP NC,aaa load sX,kk load sX,kk RR sX
+                  37     ;CALL aaa ADD sX,sY LOAD sX,sY SL0 sX
+                  38     ;CALL Z,aaa ADDCY sX,sY AND sX,sY SL1 sX
+                  39     ;CALL NZ,aaa SUB sX,sY OR sX,sY SLX sX
+                  40     ;CALL C,aaa SUBCY sX,sY XOR sX,sY SLA sX
+                  41     ;CALL NC,aaa load sX,sY load sX,sY RL sX

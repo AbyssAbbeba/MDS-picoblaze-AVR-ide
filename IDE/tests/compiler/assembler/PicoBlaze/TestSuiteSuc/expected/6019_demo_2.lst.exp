@@ -4,62 +4,53 @@
                    4     ; Simple example of waiting loop
                    5     device kcpsm6
                    6
-                   7     ; Press Start simulation and Animate to run the program
-                   8
-  00000            9                         ORG       0x000
-000 22001         10                         JUMP      Start
-                  11     ; Begining of main loop
-001 20004         12     Start:              CALL      wait_1s
-002 2000E         13                         CALL      wait_100ms
-003 22003         14                         JUMP      $                   ; Infinite loop, $ is translated as number of curent line
-                  15
-                  16
-                  17
-                  18     ; Subroutines-----------------------------------------------------------------
-                  19     ; wait_time = (4 + (((2 * Temp1) + 2) * Temp2 + 2) * Temp3) * 2 * clk_period
-                  20     ;   1s @ (10 MHz, Temp1 = 250, Temp2 = 249, Temp3 = 40)
-                  21
-004 011FA         22     wait_1s:            LOAD      Temp1, #250          ; Load Temp1 register
-E: symbol not defined: `TEMP1'.
-005 011F9         23                         LOAD      Temp2, #249          ; Load Temp2 register
-E: symbol not defined: `TEMP2'.
-006 011C8         24                         LOAD      Temp3, #200          ; Load Temp3 register
-E: symbol not defined: `TEMP3'.
-007 18110         25     wait_1s_i:          SUB       Temp1, 1
+  00000            7     temp1   autoreg
+  00001            8     temp2   autoreg
+  00002            9     temp3   autoreg
+                  10     ; Press Start simulation and Animate to run the program
+                  11
+  00000           12                         ORG       0x000
+000 22001         13                         JUMP      Start
+                  14     ; Begining of main loop
+001 20004         15     Start:              CALL      wait_1s
+002 2000E         16                         CALL      wait_100ms
+003 22003         17                         JUMP      $                   ; Infinite loop, $ is translated as number of curent line
+                  18
+                  19
+                  20
+                  21     ; Subroutines-----------------------------------------------------------------
+                  22     ; wait_time = (4 + (((2 * Temp1) + 2) * Temp2 + 2) * Temp3) * 2 * clk_period
+                  23     ;   1s @ (10 MHz, Temp1 = 250, Temp2 = 249, Temp3 = 40)
+                  24
+004 010FA         25     wait_1s:            LOAD      Temp1, #250          ; Load Temp1 register
+005 011F9         26                         LOAD      Temp2, #249          ; Load Temp2 register
+006 012C8         27                         LOAD      Temp3, #200          ; Load Temp3 register
+007 18010         28     wait_1s_i:          SUB       Temp1, 1
 W: instruction `SUB sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-E: symbol not defined: `TEMP1'.
-008 36007         26                         JUMP      NZ, wait_1s_i
-009 18110         27                         SUB       Temp2, 1
+008 36007         29                         JUMP      NZ, wait_1s_i
+009 18110         30                         SUB       Temp2, 1
 W: instruction `SUB sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-E: symbol not defined: `TEMP2'.
-00A 36007         28                         JUMP      NZ, wait_1s_i
-00B 18110         29                         SUB       Temp3, 1
+00A 36007         31                         JUMP      NZ, wait_1s_i
+00B 18210         32                         SUB       Temp3, 1
 W: instruction `SUB sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-E: symbol not defined: `TEMP3'.
-00C 36007         30                         JUMP      NZ, wait_1s_i
-00D 25000         31                         RETURN
-                  32     ;-----------------------------------------------------------------------------
-00E 011FA         33     wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
-E: symbol not defined: `TEMP1'.
-00F 011F9         34                         LOAD      Temp2, #249          ; Load Temp2 register
-E: symbol not defined: `TEMP2'.
-010 01114         35                         LOAD      Temp3, #20           ; Load Temp3 register
-E: symbol not defined: `TEMP3'.
-011 18110         36     wait_100ms_i:       SUB       Temp1, 1
+00C 36007         33                         JUMP      NZ, wait_1s_i
+00D 25000         34                         RETURN
+                  35     ;-----------------------------------------------------------------------------
+00E 010FA         36     wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
+00F 011F9         37                         LOAD      Temp2, #249          ; Load Temp2 register
+010 01214         38                         LOAD      Temp3, #20           ; Load Temp3 register
+011 18010         39     wait_100ms_i:       SUB       Temp1, 1
 W: instruction `SUB sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-E: symbol not defined: `TEMP1'.
-012 36011         37                         JUMP      NZ, wait_100ms_i
-013 18110         38                         SUB       Temp2, 1
+012 36011         40                         JUMP      NZ, wait_100ms_i
+013 18110         41                         SUB       Temp2, 1
 W: instruction `SUB sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-E: symbol not defined: `TEMP2'.
-014 36011         39                         JUMP      NZ, wait_100ms_i
-015 18110         40                         SUB       Temp3, 1
+014 36011         42                         JUMP      NZ, wait_100ms_i
+015 18210         43                         SUB       Temp3, 1
 W: instruction `SUB sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-E: symbol not defined: `TEMP3'.
-016 36011         41                         JUMP      NZ, wait_100ms_i
-017 25000         42                         RETURN
-                  43     ; <-- Bookmark   (ctrl + shift + M)
-                  44     ; <-- Breakpoint (ctrl + shift + B)
-                  45                         END                            ; End of program
-                  46     ; -----------------------------------------
-                  47     ; -----------------------------------------
+016 36011         44                         JUMP      NZ, wait_100ms_i
+017 25000         45                         RETURN
+                  46     ; <-- Bookmark   (ctrl + shift + M)
+                  47     ; <-- Breakpoint (ctrl + shift + B)
+                  48                         END                            ; End of program
+                  49     ; -----------------------------------------
+                  50     ; -----------------------------------------

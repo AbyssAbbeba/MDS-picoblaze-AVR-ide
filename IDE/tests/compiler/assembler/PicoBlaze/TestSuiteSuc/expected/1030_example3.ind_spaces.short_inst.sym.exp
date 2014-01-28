@@ -74,7 +74,7 @@ COMPUTED_CRC1  . . . . . . . . . . . NUMBER 0x00019 USED     CONSTANT    1030_ex
 COMPUTE_CRC16  . . . . . . . . . . . LABEL  0x00086 USED     CONSTANT    1030_example3.ind_spaces.short_inst.asm:639.1-639.15
 COMPUTE_SEEDED_CRC . . . . . . . . . LABEL  0x0007F USED     CONSTANT    1030_example3.ind_spaces.short_inst.asm:609.1-609.20
 CRC16_LOOP . . . . . . . . . . . . . LABEL  0x00087 USED     CONSTANT    1030_example3.ind_spaces.short_inst.asm:640.1-640.12
-CRC16_SHIFT  . . . . . . . . . . . . LABEL  0x0008D USED     CONSTANT    1030_example3.ind_spaces.short_inst.asm:646.1-646.13
+CRC16_SHILOAD  . . . . . . . . . . . LABEL  0x0008D USED     CONSTANT    1030_example3.ind_spaces.short_inst.asm:646.1-646.15
 CRC_SEND_LOOP  . . . . . . . . . . . LABEL  0x00080 USED     CONSTANT    1030_example3.ind_spaces.short_inst.asm:610.1-610.15
 DELAY_1MS  . . . . . . . . . . . . . LABEL  0x00351 USED     CONSTANT    1030_example3.ind_spaces.short_inst.asm:1919.1-1919.11
 DELAY_1S . . . . . . . . . . . . . . LABEL  0x0035B USED     CONSTANT    1030_example3.ind_spaces.short_inst.asm:1941.1-1941.10

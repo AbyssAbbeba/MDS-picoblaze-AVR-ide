@@ -42,13 +42,13 @@ device kcpsm2
 ; UART status checking MACRO (IF TX can be done)
 UART_ready_wait     MACRO
                     INPUT       Temp1, UART_stat    ; checking UART status
-                    TEST        Temp1, 4            ; test bit 2 (is Tx ready?)
+                    load        Temp1, 4            ; load bit 2 (is Tx ready?)
                     JUMP        Z, ($ - 2)
                     ENDM
 ; UART status checking MACRO (NEW RX data?)
 UART_new_data_wait  MACRO
                     INPUT       Temp1, UART_stat    ; checking UART status
-                    TEST        Temp1, 8            ; test bit 2 (is Tx ready?)
+                    load        Temp1, 8            ; load bit 2 (is Tx ready?)
                     JUMP        Z, ($ - 2)
                     ENDM                    
 ;==============================================================================;
@@ -90,7 +90,7 @@ SendCRLF            MACRO
 ;  100.00 MHz               20.00 ns
 ;
 ; wait_time = (4 + (((2 * Temp1) + 2) * Temp2 + 2) * Temp3) * 2 * clk_period
-;   1s @ (10 MHz, Temp1 = 250, Temp2 = 249, Temp3 = 40)
+;   1s # (10 MHz, Temp1 = 250, Temp2 = 249, Temp3 = 40)
 ;
 ; Waiting loops
 ;==============================================================================;
@@ -130,30 +130,8 @@ wait_100ms_i:       SUB       Temp1, #1
 ;  [1] Rotate leds 8x
 ;  [2] Send "Hello world" via UART
 ;-------------------------------------------------------------------------------------
-RX_resolve          MACRO     uart_byte
 
-                    IF  uart_byte == #1
-                            REPT    8
-                        RR      LED_reg
-                        wait_for_100ms
-                        ENDR
-                            EXITM
 
-                    ELSEIF      uart_byte == #2
-                        SendChar  'I'
-                        SendChar  'N'
-                        SendChar  'T'
-                        SendChar  'E'
-                        SendChar  'R'
-                        SendChar  'R'
-                        SendChar  'U'
-                        SendChar  'P'
-                        SendChar  'T'
-                        SendCRLF
-                            EXITM
-                    ENDIF
-
-                    ENDM
 
 ;=======================================================================
 ; END OF MACRO DEFINITIONS ;;
@@ -186,7 +164,6 @@ Start:
 ; ---------------------------------------- Main loop
 
 main_loop:          GetChar                       ; Receive via UART, get status of switches for example
-                    RX_resolve  RX_data           ; Resolve received byte
                     JUMP        main_loop
 
 

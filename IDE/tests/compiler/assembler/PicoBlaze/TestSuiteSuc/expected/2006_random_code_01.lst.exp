@@ -1,4 +1,4 @@
-                   1     ; Compiler test case for Assembler
+                   1     ; Compiler load case for Assembler
                    2     ; instruction opcodes
                    3
                    4     device kcpsm2
@@ -34,9 +34,9 @@ W: instruction `JUMP NC, aaa' requires operand #2 to be of type(s): label; while
                   30     ;JUMP Z,aaa ADDCY sX,kk AND sX,kk SR1 sX
                   31     ;JUMP NZ,aaa SUB sX,kk OR sX,kk SRX sX
                   32     ;JUMP C,aaa SUBCY sX,kk XOR sX,kk SRA sX
-                  33     ;JUMP NC,aaa COMPARE sX,kk TEST sX,kk RR sX
+                  33     ;JUMP NC,aaa load sX,kk load sX,kk RR sX
                   34     ;CALL aaa ADD sX,sY LOAD sX,sY SL0 sX
                   35     ;CALL Z,aaa ADDCY sX,sY AND sX,sY SL1 sX
                   36     ;CALL NZ,aaa SUB sX,sY OR sX,sY SLX sX
                   37     ;CALL C,aaa SUBCY sX,sY XOR sX,sY SLA sX
-                  38     ;CALL NC,aaa COMPARE sX,sY TEST sX,sY RL sX
+                  38     ;CALL NC,aaa load sX,sY load sX,sY RL sX

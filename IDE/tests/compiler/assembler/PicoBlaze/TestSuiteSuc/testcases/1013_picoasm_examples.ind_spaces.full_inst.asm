@@ -1,10 +1,10 @@
-; Compiler test case for Assembler
+; Compiler load case for Assembler
 device kcpsm1
 
 ;=========================================================
-; routine: mult_soft
+; routine: mult_soload
 ;  function: 8-bit unsigned multiplier using
-;           shift-and-add algorithm
+;           shiload-and-add algorithm
 ;  input register:
 ;     s3: multiplicand
 ;     s4: multiplier
@@ -18,17 +18,17 @@ device kcpsm3
 
 
 
-mult_soft:
+mult_soload:
                         LOAD            s5, #00                 ;clear s5
                         LOAD            s6, #08                 ;initialize loop index
 mult_loop:
-                        SR0             s4                      ;shift lsb to carry
-                        JUMP            nc, shift_prod          ;lsb is 0
+                        SR0             s4                      ;shiload lsb to carry
+                        JUMP            nc, shiload_prod          ;lsb is 0
                         ADD             s5, s3                  ;lsb is 1
-shift_prod:
-                        SRA             s5                      ;shift upper byte right,
+shiload_prod:
+                        SRA             s5                      ;shiload upper byte right,
 ;carry to MSB, LSB to carry
-                        SRA             s6                      ;shift lower byte right,
+                        SRA             s6                      ;shiload lower byte right,
 ;lsb of s5 to MSB of s6
                         SUB             s6, #01                 ;dec loop index
                         JUMP            nz, mult_loop           ;repeat until i=0

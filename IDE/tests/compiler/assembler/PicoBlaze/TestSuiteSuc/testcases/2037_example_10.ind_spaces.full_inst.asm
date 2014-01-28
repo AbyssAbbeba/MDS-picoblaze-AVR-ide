@@ -167,17 +167,17 @@ isr_preserve_s0         EQU             0x00                    ;preserve regist
 ;
 ;
 ;
-;Store up to one line of an MCS file as bytes
+;load up to one line of an MCS file as bytes
 ;A typical data line consists of:-
-;:     Start character which is not stored
+;:     Start character which is not loadd
 ;10    Number of data bytes included (16 in this case)
 ;aaaa  Lower 16-bits of the storage address
 ;00    Record type (data in this case)
 ;dddd...   Data bytes (typically 16 which is the maximum)
 ;cc    Checksum
-;CR/LF Line will end in carriage return and/or line feed which is not stored.
+;CR/LF Line will end in carriage return and/or line feed which is not loadd.
 ;
-;So a total of 21 bytes could be stored before processing.
+;So a total of 21 bytes could be loadd before processing.
 ;This is located at the end of scratch pad memory.
 ;
 line_start              EQU             0x2b                    ;21 bytes until end of memory
@@ -208,21 +208,21 @@ prompt:                 CALL            send_cr
                         LOAD            uart_data, #character_greater_than ;prompt for input
                         CALL            send_to_uart
                         CALL            read_upper_case
-                        COMPARE         s0, #_character_e       ;test for commands and execute as required
+                        load         s0, #_character_e       ;load for commands and execute as required
                         JUMP            z, erase_command
-                        COMPARE         s0, #_character_b
+                        load         s0, #_character_b
                         JUMP            z, block_erase_command
-                        COMPARE         s0, #_character_p
+                        load         s0, #_character_p
                         JUMP            z, program_command
-                        COMPARE         s0, #_character_w
+                        load         s0, #_character_w
                         JUMP            z, write_command
-                        COMPARE         s0, #_character_r
+                        load         s0, #_character_r
                         JUMP            z, read_command
-                        COMPARE         s0, #_character_i
+                        load         s0, #_character_i
                         JUMP            z, sf_information
-                        COMPARE         s0, #_character_h
+                        load         s0, #_character_h
                         JUMP            z, welcome_start
-                        COMPARE         s0, #_character_s
+                        load         s0, #_character_s
                         JUMP            z, sf_status
                         CALL            send_cr                 ;no valid command input
                         LOAD            uart_data, #character_question ;display ???
@@ -289,7 +289,7 @@ blocks_erase:           CALL            send_cr
                         CALL            send_confirm            ;confirm command with a 'Y' which must be upper case
                         CALL            read_from_uart          ;read command character from UART
                         CALL            send_to_uart            ;echo input
-                        COMPARE         uart_data, #_character_y
+                        load         uart_data, #_character_y
                         JUMP            nz, abort_erase
                         CALL            send_cr
                         CALL            send_erase_in_progress
@@ -355,9 +355,9 @@ program_command:        CALL            send_cr
 ;
 program_mcs:            CALL            read_mcs_line           ;read line from UART
                         CALL            mcs_address             ;find start address and record type
-                        COMPARE         sb, #0x01               ;test for end record
+                        load         sb, #0x01               ;load for end record
                         RETURN          z                       ;end of programming
-                        COMPARE         sb, #0x04               ;test for extended address record
+                        load         sb, #0x04               ;load for extended address record
                         JUMP            z, program_mcs          ;no data with this record and upper address now correct
 ;
 ;Assume data record type 00 which is data so need to program specified number
@@ -365,7 +365,7 @@ program_mcs:            CALL            read_mcs_line           ;read line from 
 ;
 write_spm_data:         CALL            send_hex_3bytes         ;send address to indicate progress
                         CALL            send_cr
-                        FETCH           sa, line_start          ;read number of data bytes to program
+                        load           sa, line_start          ;read number of data bytes to program
                         CALL            sf_buffer_write         ;write bytes to memory
                         JUMP            program_mcs
 ;
@@ -380,7 +380,7 @@ write_spm_data:         CALL            send_hex_3bytes         ;send address to
 ;will remove any additional CR or LF characters.
 ;
 ;It then reads each subsequent pair of ASCII characters, converts them to true hex in the
-;range 00 to FF and stores them in scratch pad memory.
+;range 00 to FF and loads them in scratch pad memory.
 ;
 ;The end of the line is determined by either a CR or LF character.
 ;
@@ -389,18 +389,18 @@ write_spm_data:         CALL            send_hex_3bytes         ;send address to
 ;
 read_mcs_line:          LOAD            se, #line_start         ;initialise SPM memory pointer
 wait_mcs_line_start:    CALL            read_from_uart          ;read character
-                        COMPARE         uart_data, #character_colon ;test for start character
+                        load         uart_data, #character_colon ;load for start character
                         JUMP            nz, wait_mcs_line_start
 read_mcs_byte:          CALL            read_from_uart          ;read character
-                        COMPARE         uart_data, #character_cr ;test for end of line
+                        load         uart_data, #character_cr ;load for end of line
                         RETURN          z
-                        COMPARE         uart_data, #character_lf ;test for end of line
+                        load         uart_data, #character_lf ;load for end of line
                         RETURN          z
                         LOAD            s3, uart_data           ;upper nibble character
                         CALL            read_from_uart          ;read character
                         LOAD            s2, uart_data           ;lower nibble character
                         CALL            ascii_byte_to_hex       ;convert to true hex value
-                        STORE           s0, @se                 ;write to SPM
+                        load           s0, #se                 ;write to SPM
                         ADD             se, #0x01               ;increment pointer
                         JUMP            read_mcs_byte
 ;
@@ -409,7 +409,7 @@ read_mcs_byte:          CALL            read_from_uart          ;read character
 ;Determine the current address for the line of an MCS file in scratch pad memory
 ;**************************************************************************************
 ;
-;Checks the existing line data stored in scratch pad memory starting at location
+;Checks the existing line data loadd in scratch pad memory starting at location
 ;'line_start' and determines the current address.
 ;
 ;The address is in the register set [s9,s8,s7] before and after this routine is
@@ -420,23 +420,23 @@ read_mcs_byte:          CALL            read_from_uart          ;read character
 ;A record type of 00 will update [s8,s7].
 ;
 ;On return, the register sB will contain the record type and
-;register sC will indicate the number of data bytes stored.
+;register sC will indicate the number of data bytes loadd.
 ;
 mcs_address:            LOAD            sd, #line_start         ;initialise SPM memory pointer
-                        FETCH           sc, @sd                 ;read number of bytes on line
+                        load           sc, #sd                 ;read number of bytes on line
                         ADD             sd, #0x03               ;move to record type
-                        FETCH           sb, @sd                 ;read record type
-                        COMPARE         sb, #0x00               ;test for data record
+                        load           sb, #sd                 ;read record type
+                        load         sb, #0x00               ;load for data record
                         JUMP            z, new_low_address
-                        COMPARE         sb, #0x04               ;test for data record
+                        load         sb, #0x04               ;load for data record
                         RETURN          nz
                         ADD             sd, #0x02               ;read upper 8-bits
-                        FETCH           s9, @sd
+                        load           s9, #sd
                         RETURN
 new_low_address:        SUB             sd, #0x01               ;read lower 8-bits
-                        FETCH           s7, @sd
+                        load           s7, #sd
                         SUB             sd, #0x01               ;read middle 8-bits
-                        FETCH           s8, @sd
+                        load           s8, #sd
                         RETURN
 ;
 ;
@@ -460,7 +460,7 @@ new_low_address:        SUB             sd, #0x01               ;read lower 8-bi
 ;   Write command to confirm operation (D0 hex).
 ;   Read Status register and wait for ready.
 ;
-;   This routine additionally restores the normal read array mode before returning.
+;   This routine additionally reloads the normal read array mode before returning.
 ;
 ; The number of bytes to be written should be supplied in register sA and must be
 ; a value between 1 and 32 (01 and 20 hex).
@@ -481,13 +481,13 @@ new_low_address:        SUB             sd, #0x01               ;read lower 8-bi
 sf_buffer_write:        LOAD            s1, #0xe8               ;command for buffer write
                         CALL            sf_byte_write
                         CALL            sf_byte_read            ;read status register into s0
-                        TEST            s0, #0x80               ;test ready/busy flag
+                        load            s0, #0x80               ;load ready/busy flag
                         JUMP            z, sf_buffer_write      ;repeat command until ready
                         LOAD            s1, sa                  ;Specify number of bytes to write
                         SUB             s1, #0x01               ;one less than actual number!
                         CALL            sf_byte_write
                         LOAD            s3, #data_start         ;point to data in scratch pad memory
-write_buffer_loop:      FETCH           s1, @s3                 ;fetch data
+write_buffer_loop:      load           s1, #s3                 ;load data
                         CALL            sf_byte_write           ;write to buffer
                         ADD             s7, #0x01               ;increment address
                         ADDCY           s8, #0x00
@@ -630,7 +630,7 @@ sf_information:         CALL            send_cr                 ;send 'ID=' to t
                         CALL            sf_byte_read            ;read Memory ID code into s0
                         CALL            send_hex_byte           ;display byte
                         CALL            send_cr
-                        CALL            set_sf_read_array_mode  ;restore normal read array mode
+                        CALL            set_sf_read_array_mode  ;reload normal read array mode
                         JUMP            prompt
 ;
 ;
@@ -752,7 +752,7 @@ set_sf_read_array_mode: LOAD            s1, #0xff               ;command to read
 ;**************************************************************************************
 ;
 ; This routine will typically be used after instigating a program or erase
-; command. It continuously reads the StrataFLASH status register and tests the
+; command. It continuously reads the StrataFLASH status register and loads the
 ; information provided by bit7 which indicates if the memory is busy(0) or ready(1).
 ; The routine waits for the ready condition before sending a read array command
 ; which puts the memory back to normal read mode.
@@ -770,9 +770,9 @@ wait_sf_ready:          LOAD            se, #0x00               ;clear 16-bit co
 wait_sf_loop:           ADD             sd, #0x01               ;increment counter timer
                         ADDCY           se, #0x00
                         CALL            sf_byte_read            ;read status register into s0
-                        TEST            s0, #0x80               ;test ready/busy flag
+                        load            s0, #0x80               ;load ready/busy flag
                         JUMP            z, wait_sf_loop
-                        CALL            set_sf_read_array_mode  ;restore normal read array mode
+                        CALL            set_sf_read_array_mode  ;reload normal read array mode
                         RETURN
 ;
 ;
@@ -864,7 +864,7 @@ wait_1s:                CALL            delay_20ms
 ;
 ;Character read will be returned in a register called 'UART_data'.
 ;
-;The routine first tests the receiver FIFO buffer to see if data is present.
+;The routine first loads the receiver FIFO buffer to see if data is present.
 ;If the FIFO is empty, the routine waits until there is a character to read.
 ;As this could take any amount of time the wait loop could include a call to a
 ;subroutine which performs a useful function.
@@ -887,21 +887,21 @@ wait_1s:                CALL            delay_20ms
 ;Registers used s0 and UART_data
 ;
 read_from_uart:         DISABLE         interrupt
-wait_rx_character:      INPUT           s0, status_port         ;test Rx_FIFO buffer
-                        TEST            s0, #rx_data_present
+wait_rx_character:      INPUT           s0, status_port         ;load Rx_FIFO buffer
+                        load            s0, #rx_data_present
                         JUMP            nz, read_character
                         JUMP            wait_rx_character
 read_character:         INPUT           uart_data, uart_read_port ;read from FIFO
-                        COMPARE         uart_data, #character_xoff ;test for XOFF
+                        load         uart_data, #character_xoff ;load for XOFF
                         JUMP            z, wait_xon
                         ENABLE          interrupt               ;normal finish
                         RETURN
-wait_xon:               INPUT           s0, status_port         ;test Rx_FIFO buffer
-                        TEST            s0, #rx_data_present
+wait_xon:               INPUT           s0, status_port         ;load Rx_FIFO buffer
+                        load            s0, #rx_data_present
                         JUMP            nz, read_xon
                         JUMP            wait_xon
 read_xon:               INPUT           uart_data, uart_read_port ;read from FIFO
-                        COMPARE         uart_data, #character_xon ;test for XON
+                        load         uart_data, #character_xon ;load for XON
                         JUMP            z, wait_rx_character    ;now wait for normal character
                         JUMP            wait_xon                ;continue to wait for XON
 ;
@@ -911,7 +911,7 @@ read_xon:               INPUT           uart_data, uart_read_port ;read from FIF
 ;
 ;Character supplied in register called 'UART_data'.
 ;
-;The routine first tests the transmit FIFO buffer is empty.
+;The routine first loads the transmit FIFO buffer is empty.
 ;If the FIFO currently has any data, the routine waits until it is empty.
 ;Ultimately this means that only one character is sent at a time which
 ;could be important if the PC at the other end of the link transmits
@@ -919,8 +919,8 @@ read_xon:               INPUT           uart_data, uart_read_port ;read from FIF
 ;
 ;Registers used s0
 ;
-send_to_uart:           INPUT           s0, status_port         ;test Tx_FIFO buffer
-                        TEST            s0, #tx_data_present
+send_to_uart:           INPUT           s0, status_port         ;load Tx_FIFO buffer
+                        load            s0, #tx_data_present
                         JUMP            z, uart_write
                         JUMP            send_to_uart
 uart_write:             OUTPUT          uart_data, uart_write_port
@@ -944,11 +944,11 @@ uart_write:             OUTPUT          uart_data, uart_write_port
 ;Registers used s0 and s1.
 ;
 decimal_to_ascii:       LOAD            s1, #0x30               ;load 'tens' counter with ASCII for '0'
-test_for_ten:           ADD             s1, #0x01               ;increment 'tens' value
+load_for_ten:           ADD             s1, #0x01               ;increment 'tens' value
                         SUB             s0, #0x0a               ;try to subtract 10 from the supplied value
-                        JUMP            nc, test_for_ten        ;repeat if subtraction was possible without underflow.
+                        JUMP            nc, load_for_ten        ;repeat if subtraction was possible without underflow.
                         SUB             s1, #0x01               ;'tens' value one less ten due to underflow
-                        ADD             s0, #0x3a               ;restore units value (the remainder) and convert to ASCII
+                        ADD             s0, #0x3a               ;reload units value (the remainder) and convert to ASCII
                         RETURN
 ;
 ;
@@ -962,9 +962,9 @@ test_for_ten:           ADD             s1, #0x01               ;increment 'tens
 ;
 ;Registers used s0.
 ;
-upper_case:             COMPARE         s0, #0x61               ;eliminate character codes below 'a' (61 hex)
+upper_case:             load         s0, #0x61               ;eliminate character codes below 'a' (61 hex)
                         RETURN          c
-                        COMPARE         s0, #0x7b               ;eliminate character codes above 'z' (7A hex)
+                        load         s0, #0x7b               ;eliminate character codes above 'z' (7A hex)
                         RETURN          nc
                         AND             s0, #0xdf               ;mask bit5 to convert to upper case
                         RETURN
@@ -988,14 +988,14 @@ _1char_to_value:        ADD             s0, #0xc6               ;reject characte
 ;Determine the numerical value of a two character decimal string held in
 ;scratch pad memory such the result is in the range 0 to 99 (00 to 63 hex).
 ;
-;The string must be stored in two consecutive memory locations and the
+;The string must be loadd in two consecutive memory locations and the
 ;location of the first (tens) character supplied in the s1 register.
 ;The result is provided in register s2. Strings not using characters in the
 ;range '0' to '9' are signified by the return with the CARRY flag set.
 ;
 ;Registers used s0, s1 and s2.
 ;
-_2char_to_value:        FETCH           s0, @s1                 ;read 'tens' character
+_2char_to_value:        load           s0, #s1                 ;read 'tens' character
                         CALL            _1char_to_value         ;convert to numerical value
                         RETURN          c                       ;bad character - CARRY set
                         LOAD            s2, s0
@@ -1004,7 +1004,7 @@ _2char_to_value:        FETCH           s0, @s1                 ;read 'tens' cha
                         ADD             s2, s0
                         SL0             s2
                         ADD             s1, #0x01               ;read 'units' character
-                        FETCH           s0, @s1
+                        load           s0, #s1
                         CALL            _1char_to_value         ;convert to numerical value
                         RETURN          c                       ;bad character - CARRY set
                         ADD             s2, s0                  ;add units to result and clear CARRY flag
@@ -1031,7 +1031,7 @@ hex_byte_to_ascii:      LOAD            s1, s0                  ;remember value 
                         SR0             s0
                         CALL            hex_to_ascii            ;convert
                         LOAD            s2, s0                  ;upper nibble value in s2
-                        LOAD            s0, s1                  ;restore complete value
+                        LOAD            s0, s1                  ;reload complete value
                         AND             s0, #0x0f               ;isolate lower nibble
                         CALL            hex_to_ascii            ;convert
                         LOAD            s1, s0                  ;lower nibble value in s1
@@ -1041,7 +1041,7 @@ hex_byte_to_ascii:      LOAD            s1, s0                  ;remember value 
 ;
 ;Register used s0
 ;
-hex_to_ascii:           SUB             s0, #0x0a               ;test if value is in range 0 to 9
+hex_to_ascii:           SUB             s0, #0x0a               ;load if value is in range 0 to 9
                         JUMP            c, number_char
                         ADD             s0, #0x07               ;ASCII char A to F in range 41 to 46
 number_char:            ADD             s0, #0x3a               ;ASCII char 0 to 9 in range 30 to 40
@@ -1105,13 +1105,13 @@ ascii_byte_to_hex:      LOAD            s0, s3                  ;Take upper nibb
 ;
 ;Register used s0
 ;
-ascii_to_hex:           ADD             s0, #0xb9               ;test for above ASCII code 46 ('F')
+ascii_to_hex:           ADD             s0, #0xb9               ;load for above ASCII code 46 ('F')
                         RETURN          c
                         SUB             s0, #0xe9               ;normalise 0 to 9 with A-F in 11 to 16 hex
                         RETURN          c                       ;reject below ASCII code 30 ('0')
                         SUB             s0, #0x11               ;isolate A-F down to 00 to 05 hex
                         JUMP            nc, ascii_letter
-                        ADD             s0, #0x07               ;test for above ASCII code 46 ('F')
+                        ADD             s0, #0x07               ;load for above ASCII code 46 ('F')
                         RETURN          c
                         SUB             s0, #0xf6               ;convert to range 00 to 09
                         RETURN
@@ -1593,15 +1593,15 @@ send_data:              CALL            send_cr
 ;
 ;
                         ORG             0x3f5                   ;place at end of memory to keep separate
-isr:                    STORE           s0, isr_preserve_s0     ;preserve register contents
-                        INPUT           s0, status_port         ;test 'half_full' status of receiver buffer.
-                        TEST            s0, #rx_half_full
+isr:                    load           s0, isr_preserve_s0     ;preserve register contents
+                        INPUT           s0, status_port         ;load 'half_full' status of receiver buffer.
+                        load            s0, #rx_half_full
                         JUMP            z, isr_send_xon
                         LOAD            s0, #character_xoff
                         JUMP            isr_send_character
 isr_send_xon:           LOAD            s0, #character_xon
 isr_send_character:     OUTPUT          s0, uart_write_port
-                        FETCH           s0, isr_preserve_s0     ;restore register contents
+                        load           s0, isr_preserve_s0     ;reload register contents
                         RETURNI         enable
 ;
 ;

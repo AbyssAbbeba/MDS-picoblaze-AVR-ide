@@ -91,8 +91,8 @@ LCD_READ_SPARE3  . . . . . . . . . . NUMBER 0x00008 NOT USED CONSTANT    1042_ex
 LCD_RESET  . . . . . . . . . . . . . LABEL  0x000F6 USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:641.1-641.11
 LCD_RS . . . . . . . . . . . . . . . NUMBER 0x00004 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:52.1-52.45
 LCD_RW . . . . . . . . . . . . . . . NUMBER 0x00002 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:51.1-51.45
-LCD_SHIFT_DELAY  . . . . . . . . . . LABEL  0x0000C USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:238.1-238.17
-LCD_SHIFT_LEFT . . . . . . . . . . . LABEL  0x00116 USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:698.1-698.16
+LCD_SHILOAD_DELAY  . . . . . . . . . LABEL  0x0000C USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:238.1-238.19
+LCD_SHILOAD_LELOAD . . . . . . . . . LABEL  0x00116 USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:698.1-698.20
 LCD_WRITE_DATA . . . . . . . . . . . LABEL  0x000CC USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:564.1-564.16
 LCD_WRITE_INST4  . . . . . . . . . . LABEL  0x000B9 USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:518.1-518.17
 LCD_WRITE_INST8  . . . . . . . . . . LABEL  0x000BD USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:535.1-535.17
@@ -110,7 +110,7 @@ MODE . . . . . . . . . . . . . . . . NUMBER 0x00003 USED     CONSTANT    1042_ex
 MODE_SWITCH  . . . . . . . . . . . . LABEL  0x0001C USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:255.1-255.13
 MOVE_RIGHT . . . . . . . . . . . . . LABEL  0x00036 USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:292.1-292.12
 NORMAL_MODE  . . . . . . . . . . . . LABEL  0x00029 USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:273.1-273.13
-ROTARY_LEFT  . . . . . . . . . . . . NUMBER 0x00001 USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:38.1-38.45
+ROTARY_LELOAD  . . . . . . . . . . . NUMBER 0x00001 USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:38.1-38.47
 ROTARY_PORT  . . . . . . . . . . . . NUMBER 0x00001 USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:37.1-37.45
 ROTARY_PRESS . . . . . . . . . . . . NUMBER 0x00002 USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:39.1-39.45
 ROTARY_STATUS  . . . . . . . . . . . NUMBER 0x00000 USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:80.1-80.45
@@ -132,8 +132,8 @@ SD . . . . . . . . . . . . . . . . . REG.   0x0000D USED     CONSTANT    IMPLICI
 SE . . . . . . . . . . . . . . . . . REG.   0x0000E USED     CONSTANT    IMPLICIT
 SET_LINE2  . . . . . . . . . . . . . LABEL  0x00112 USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:687.1-687.11
 SF . . . . . . . . . . . . . . . . . REG.   0x0000F USED     CONSTANT    IMPLICIT
-SHIFT_DELAY_LSB  . . . . . . . . . . NUMBER 0x000F4 USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:102.1-102.45
-SHIFT_DELAY_MSB  . . . . . . . . . . NUMBER 0x00001 USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:101.1-101.45
+SHILOAD_DELAY_LSB  . . . . . . . . . NUMBER 0x000F4 USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:102.1-102.47
+SHILOAD_DELAY_MSB  . . . . . . . . . NUMBER 0x00001 USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:101.1-101.47
 SWITCH0  . . . . . . . . . . . . . . NUMBER 0x00001 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:27.1-27.45
 SWITCH1  . . . . . . . . . . . . . . NUMBER 0x00002 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:28.1-28.45
 SWITCH2  . . . . . . . . . . . . . . NUMBER 0x00004 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:29.1-29.45
@@ -146,7 +146,7 @@ WAIT_1US . . . . . . . . . . . . . . LABEL  0x0009C USED     CONSTANT    1042_ex
 WAIT_20MS  . . . . . . . . . . . . . LABEL  0x000AA USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:467.1-467.11
 WAIT_40US  . . . . . . . . . . . . . LABEL  0x000A0 USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:444.1-444.11
 WAIT_MODE_SWITCH . . . . . . . . . . LABEL  0x0001E USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:257.1-257.18
-WAIT_NO_SHIFT  . . . . . . . . . . . LABEL  0x00025 USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:264.1-264.15
+WAIT_NO_SHILOAD  . . . . . . . . . . LABEL  0x00025 USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:264.1-264.17
 _CHARACTER_A . . . . . . . . . . . . NUMBER 0x00041 USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:150.1-150.45
 _CHARACTER_B . . . . . . . . . . . . NUMBER 0x00042 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:151.1-151.45
 _CHARACTER_C . . . . . . . . . . . . NUMBER 0x00043 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:152.1-152.45

@@ -1,6 +1,6 @@
-ALL_LED_FADE . . . . . . . . . . . . LABEL  0x000E4 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:469.1-469.14
-ALL_LED_FADE_LOOP  . . . . . . . . . LABEL  0x000E5 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:470.1-470.19
-AUTHENTICATION_CHECK . . . . . . . . LABEL  0x000B6 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:408.1-408.22
+ALL_LED_FADE . . . . . . . . . . . . LABEL  0x000C9 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:459.1-459.14
+ALL_LED_FADE_LOOP  . . . . . . . . . LABEL  0x000CA USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:460.1-460.19
+AUTHENTICATION_CHECK . . . . . . . . LABEL  0x0009B USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:398.1-398.22
 CHARACTER_A  . . . . . . . . . . . . NUMBER 0x00041 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:1.1-1.23
 CHARACTER_F  . . . . . . . . . . . . NUMBER 0x00046 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:2.1-2.23
 CHARACTER_I  . . . . . . . . . . . . NUMBER 0x00049 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:3.1-3.23
@@ -9,28 +9,28 @@ CHARACTER_P  . . . . . . . . . . . . NUMBER 0x00050 USED     CONSTANT    1029_s3
 CHARACTER_S  . . . . . . . . . . . . NUMBER 0x00053 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:6.1-6.23
 CLEAR_LOOP . . . . . . . . . . . . . LABEL  0x00002 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:130.1-130.12
 COLD_START . . . . . . . . . . . . . LABEL  0x00000 NOT USED CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:128.1-128.12
-DECAY_LEDS . . . . . . . . . . . . . LABEL  0x000EA USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:475.1-475.12
-DELAY_S0_LOOP  . . . . . . . . . . . LABEL  0x00018 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:184.1-184.15
-DELAY_S1_LOOP  . . . . . . . . . . . LABEL  0x00017 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:183.1-183.15
-DELAY_S2_LOOP  . . . . . . . . . . . LABEL  0x00016 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:182.1-182.15
-ENABLE_INT . . . . . . . . . . . . . LABEL  0x00007 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:136.1-136.12
-FAILED_LED_SEQUENCE  . . . . . . . . LABEL  0x000E2 NOT USED CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:467.1-467.21
-FAIL_CONFIRM . . . . . . . . . . . . LABEL  0x000CB USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:436.1-436.14
-GO_DOWN  . . . . . . . . . . . . . . LABEL  0x000B1 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:378.1-378.9
-GO_DOWN_LOOP . . . . . . . . . . . . LABEL  0x000B2 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:379.1-379.14
-GO_UP_LOOP . . . . . . . . . . . . . LABEL  0x000AC USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:373.1-373.12
-INC_LED0 . . . . . . . . . . . . . . LABEL  0x00024 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:199.1-199.10
-INC_LED1 . . . . . . . . . . . . . . LABEL  0x00037 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:219.1-219.10
-INC_LED2 . . . . . . . . . . . . . . LABEL  0x00048 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:237.1-237.10
-INC_LED3 . . . . . . . . . . . . . . LABEL  0x00059 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:256.1-256.10
-INC_LED4 . . . . . . . . . . . . . . LABEL  0x0006A USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:274.1-274.10
-INC_LED5 . . . . . . . . . . . . . . LABEL  0x0007B USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:292.1-292.10
-INC_LED6 . . . . . . . . . . . . . . LABEL  0x00091 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:315.1-315.10
-INC_LED7 . . . . . . . . . . . . . . LABEL  0x0009F USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:330.1-330.10
-ISR  . . . . . . . . . . . . . . . . LABEL  0x000FE USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:531.1-531.5
-ISR_PRESERVE_S0  . . . . . . . . . . NUMBER 0x0000D USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:95.1-95.27
-ISR_PRESERVE_S1  . . . . . . . . . . NUMBER 0x0000E USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:96.1-96.27
-ISR_PRESERVE_S2  . . . . . . . . . . NUMBER 0x0000F USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:97.1-97.27
+DECAY_LEDS . . . . . . . . . . . . . LABEL  0x000CE USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:465.1-465.12
+DELAY_S0_LOOP  . . . . . . . . . . . LABEL  0x0000D USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:174.1-174.15
+DELAY_S1_LOOP  . . . . . . . . . . . LABEL  0x0000C USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:173.1-173.15
+DELAY_S2_LOOP  . . . . . . . . . . . LABEL  0x0000B USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:172.1-172.15
+ENABLE_INT . . . . . . . . . . . . . LABEL  0x00006 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:136.1-136.12
+FAILED_LED_SEQUENCE  . . . . . . . . LABEL  0x000C7 NOT USED CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:457.1-457.21
+FAIL_CONFIRM . . . . . . . . . . . . LABEL  0x000B0 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:426.1-426.14
+GO_DOWN  . . . . . . . . . . . . . . LABEL  0x00096 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:368.1-368.9
+GO_DOWN_LOOP . . . . . . . . . . . . LABEL  0x00097 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:369.1-369.14
+GO_UP_LOOP . . . . . . . . . . . . . LABEL  0x00091 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:363.1-363.12
+INC_LED0 . . . . . . . . . . . . . . LABEL  0x00019 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:189.1-189.10
+INC_LED1 . . . . . . . . . . . . . . LABEL  0x0002A USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:209.1-209.10
+INC_LED2 . . . . . . . . . . . . . . LABEL  0x00039 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:227.1-227.10
+INC_LED3 . . . . . . . . . . . . . . LABEL  0x00048 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:246.1-246.10
+INC_LED4 . . . . . . . . . . . . . . LABEL  0x00057 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:264.1-264.10
+INC_LED5 . . . . . . . . . . . . . . LABEL  0x00066 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:282.1-282.10
+INC_LED6 . . . . . . . . . . . . . . LABEL  0x0007A USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:305.1-305.10
+INC_LED7 . . . . . . . . . . . . . . LABEL  0x00086 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:320.1-320.10
+ISR  . . . . . . . . . . . . . . . . LABEL  0x000E2 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:521.1-521.5
+ISR_PRESERVE_S0  . . . . . . . . . . NUMBER 0x0000D NOT USED CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:95.1-95.27
+ISR_PRESERVE_S1  . . . . . . . . . . NUMBER 0x0000E NOT USED CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:96.1-96.27
+ISR_PRESERVE_S2  . . . . . . . . . . NUMBER 0x0000F NOT USED CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:97.1-97.27
 LED0 . . . . . . . . . . . . . . . . NUMBER 0x00001 NOT USED CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:43.1-43.17
 LED0_SEQUENCE  . . . . . . . . . . . NUMBER 0x00010 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:100.1-100.25
 LED1 . . . . . . . . . . . . . . . . NUMBER 0x00002 NOT USED CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:44.1-44.17
@@ -49,7 +49,7 @@ LED7 . . . . . . . . . . . . . . . . NUMBER 0x00080 NOT USED CONSTANT    1029_s3
 LED7_SEQUENCE  . . . . . . . . . . . NUMBER 0x00017 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:107.1-107.25
 LED_PORT . . . . . . . . . . . . . . NUMBER 0x00080 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:42.1-42.20
 LED_READ_PORT  . . . . . . . . . . . NUMBER 0x00000 NOT USED CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:52.1-52.25
-LED_TO_DUTY  . . . . . . . . . . . . LABEL  0x000A8 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:369.1-369.13
+LED_TO_DUTY  . . . . . . . . . . . . LABEL  0x0008D USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:359.1-359.13
 LINK_FIFO_CONTROL_PORT . . . . . . . NUMBER 0x00020 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:63.1-63.33
 LINK_FIFO_DATA_PRESENT . . . . . . . NUMBER 0x00001 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:67.1-67.33
 LINK_FIFO_FULL . . . . . . . . . . . NUMBER 0x00004 NOT USED CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:69.1-69.26
@@ -57,9 +57,17 @@ LINK_FIFO_HALF_FULL  . . . . . . . . NUMBER 0x00002 NOT USED CONSTANT    1029_s3
 LINK_FIFO_READ_PORT  . . . . . . . . NUMBER 0x00002 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:71.1-71.30
 LINK_FIFO_RESET  . . . . . . . . . . NUMBER 0x00001 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:64.1-64.27
 LINK_FIFO_STATUS_PORT  . . . . . . . NUMBER 0x00001 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:66.1-66.32
-NORMAL_LED1  . . . . . . . . . . . . LABEL  0x00031 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:213.1-213.13
-NORMAL_LED6  . . . . . . . . . . . . LABEL  0x0008B USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:309.1-309.13
-NORMAL_LED_SEQUENCE  . . . . . . . . LABEL  0x00015 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:181.1-181.21
+LOAD_LED0_START  . . . . . . . . . . LABEL  0x0001B USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:191.1-191.17
+LOAD_LED1_START  . . . . . . . . . . LABEL  0x0002C USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:211.1-211.17
+LOAD_LED2_START  . . . . . . . . . . LABEL  0x0003B USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:229.1-229.17
+LOAD_LED3_START  . . . . . . . . . . LABEL  0x0004A USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:248.1-248.17
+LOAD_LED4_START  . . . . . . . . . . LABEL  0x00059 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:266.1-266.17
+LOAD_LED5_START  . . . . . . . . . . LABEL  0x00068 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:284.1-284.17
+LOAD_LED6_START  . . . . . . . . . . LABEL  0x0007C USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:307.1-307.17
+LOAD_LED7_START  . . . . . . . . . . LABEL  0x00088 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:322.1-322.17
+NORMAL_LED1  . . . . . . . . . . . . LABEL  0x00024 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:203.1-203.13
+NORMAL_LED6  . . . . . . . . . . . . LABEL  0x00074 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:299.1-299.13
+NORMAL_LED_SEQUENCE  . . . . . . . . LABEL  0x0000A USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:171.1-171.21
 PWM_CHANNEL0 . . . . . . . . . . . . NUMBER 0x00001 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:87.1-87.24
 PWM_CHANNEL1 . . . . . . . . . . . . NUMBER 0x00002 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:88.1-88.24
 PWM_CHANNEL2 . . . . . . . . . . . . NUMBER 0x00003 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:89.1-89.24
@@ -69,8 +77,8 @@ PWM_CHANNEL5 . . . . . . . . . . . . NUMBER 0x00006 USED     CONSTANT    1029_s3
 PWM_CHANNEL6 . . . . . . . . . . . . NUMBER 0x00007 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:93.1-93.24
 PWM_CHANNEL7 . . . . . . . . . . . . NUMBER 0x00008 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:94.1-94.24
 PWM_DUTY_COUNTER . . . . . . . . . . NUMBER 0x00000 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:86.1-86.27
-READ_LINK_FIFO . . . . . . . . . . . LABEL  0x000F9 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:501.1-501.16
-REQUEST_DELAY  . . . . . . . . . . . LABEL  0x000CC USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:437.1-437.15
+READ_LINK_FIFO . . . . . . . . . . . LABEL  0x000DD USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:491.1-491.16
+REQUEST_DELAY  . . . . . . . . . . . LABEL  0x000B1 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:427.1-427.15
 S0 . . . . . . . . . . . . . . . . . REG.   0x00000 USED     CONSTANT    IMPLICIT
 S1 . . . . . . . . . . . . . . . . . REG.   0x00001 USED     CONSTANT    IMPLICIT
 S2 . . . . . . . . . . . . . . . . . REG.   0x00002 USED     CONSTANT    IMPLICIT
@@ -89,24 +97,16 @@ SE . . . . . . . . . . . . . . . . . REG.   0x0000E NOT USED CONSTANT    IMPLICI
 SECURITY_INTERRUPT . . . . . . . . . NUMBER 0x00001 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:56.1-56.29
 SECURITY_REQUEST_PORT  . . . . . . . NUMBER 0x00040 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:55.1-55.32
 SF . . . . . . . . . . . . . . . . . REG.   0x0000F USED     CONSTANT    IMPLICIT
-STOP_COMPLETELY  . . . . . . . . . . LABEL  0x000F8 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:490.1-490.17
-TEST_LED0_START  . . . . . . . . . . LABEL  0x00026 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:201.1-201.17
-TEST_LED1_START  . . . . . . . . . . LABEL  0x00039 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:221.1-221.17
-TEST_LED2_START  . . . . . . . . . . LABEL  0x0004A USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:239.1-239.17
-TEST_LED3_START  . . . . . . . . . . LABEL  0x0005B USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:258.1-258.17
-TEST_LED4_START  . . . . . . . . . . LABEL  0x0006C USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:276.1-276.17
-TEST_LED5_START  . . . . . . . . . . LABEL  0x0007D USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:294.1-294.17
-TEST_LED6_START  . . . . . . . . . . LABEL  0x00093 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:317.1-317.17
-TEST_LED7_START  . . . . . . . . . . LABEL  0x000A1 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:332.1-332.17
-UPDATE_LED0  . . . . . . . . . . . . LABEL  0x00029 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:204.1-204.13
-UPDATE_LED1  . . . . . . . . . . . . LABEL  0x0003F USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:227.1-227.13
-UPDATE_LED2  . . . . . . . . . . . . LABEL  0x00050 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:245.1-245.13
-UPDATE_LED3  . . . . . . . . . . . . LABEL  0x00061 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:264.1-264.13
-UPDATE_LED4  . . . . . . . . . . . . LABEL  0x00072 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:282.1-282.13
-UPDATE_LED5  . . . . . . . . . . . . LABEL  0x00083 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:300.1-300.13
-UPDATE_LED6  . . . . . . . . . . . . LABEL  0x00096 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:320.1-320.13
-UPDATE_LED7  . . . . . . . . . . . . LABEL  0x000A4 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:335.1-335.13
-WAIT_S1  . . . . . . . . . . . . . . LABEL  0x000EB USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:476.1-476.9
-WAIT_S2  . . . . . . . . . . . . . . LABEL  0x000EC USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:477.1-477.9
-WAIT_S3  . . . . . . . . . . . . . . LABEL  0x000ED USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:478.1-478.9
-WARM_START . . . . . . . . . . . . . LABEL  0x00013 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:178.1-178.12
+STOP_COMPLETELY  . . . . . . . . . . LABEL  0x000DC USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:480.1-480.17
+UPDATE_LED0  . . . . . . . . . . . . LABEL  0x0001E USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:194.1-194.13
+UPDATE_LED1  . . . . . . . . . . . . LABEL  0x00032 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:217.1-217.13
+UPDATE_LED2  . . . . . . . . . . . . LABEL  0x00041 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:235.1-235.13
+UPDATE_LED3  . . . . . . . . . . . . LABEL  0x00050 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:254.1-254.13
+UPDATE_LED4  . . . . . . . . . . . . LABEL  0x0005F USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:272.1-272.13
+UPDATE_LED5  . . . . . . . . . . . . LABEL  0x0006E USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:290.1-290.13
+UPDATE_LED6  . . . . . . . . . . . . LABEL  0x0007F USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:310.1-310.13
+UPDATE_LED7  . . . . . . . . . . . . LABEL  0x0008B USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:325.1-325.13
+WAIT_S1  . . . . . . . . . . . . . . LABEL  0x000CF USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:466.1-466.9
+WAIT_S2  . . . . . . . . . . . . . . LABEL  0x000D0 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:467.1-467.9
+WAIT_S3  . . . . . . . . . . . . . . LABEL  0x000D1 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:468.1-468.9
+WARM_START . . . . . . . . . . . . . LABEL  0x00008 USED     CONSTANT    1029_s3kit_example2.ind_tabs.full_inst.asm:168.1-168.12

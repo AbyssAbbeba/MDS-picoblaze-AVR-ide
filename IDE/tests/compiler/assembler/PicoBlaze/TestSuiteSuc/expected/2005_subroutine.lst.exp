@@ -1,4 +1,4 @@
-                   1     ; Compiler test case for Assembler
+                   1     ; Compiler load case for Assembler
                    2     ; instruction opcodes
                    3
                    4
@@ -109,28 +109,27 @@ W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; whi
                   97     ;
                   98     ; loop through all bits in multiplier
   0001C           99     mult_loop:
-                 100     TEST            multiplier, bit_mask
-E: instruction not supported on the this device: TEST sX, sY.
+01C 10110        100     load            multiplier, bit_mask
                  101     ; check if bit is set
-01C 3501F        102     JUMP            Z, no_add
+01D 3501F        102     JUMP            Z, no_add
                  103     ; if bit is not set, skip addition
                  104     ;
-01D 18300        105     ADD             result_msb, multiplicand
+01E 18300        105     ADD             result_msb, multiplicand
                  106     ; addition only occurs in MSB
                  107     ;
   0001F          108     no_add:
-01E 28308        109     SRA             result_msb
+01F 28308        109     SRA             result_msb
                  110     ; shift MSB right, CARRY into bit 7,
                  111     ; lsb into CARRY
-01F 28408        112     SRA             result_lsb
+020 28408        112     SRA             result_lsb
                  113     ; shift LSB right,
                  114     ; lsb from result_msb into bit 7
                  115     ;
-020 28206        116     SL0             bit_mask
+021 28206        116     SL0             bit_mask
                  117     ; shift bit_mask left to examine
                  118     ; next bit in multiplier
                  119     ;
-021 3541C        120     JUMP            NZ, mult_loop
+022 3541C        120     JUMP            NZ, mult_loop
                  121     ; if all bit examined, then bit_mask = 0,
                  122
                  123
@@ -150,12 +149,12 @@ E: instruction not supported on the this device: TEST sX, sY.
                  137     ;Output multiplicand and multiplier to FPGA registers connected to the
                  138     ;inputs of
                  139     ; the embedded multiplier.
-022 22000        140     OUTPUT           multiplicand, multiplier_lsb
-023 22101        141     OUTPUT           multiplier, multiplier_msb
+023 22000        140     OUTPUT           multiplicand, multiplier_lsb
+024 22101        141     OUTPUT           multiplier, multiplier_msb
                  142     ;
                  143     ; Input the resulting product from the embedded multiplier.
-024 20400        144     INPUT            result_lsb, multiplier_lsb
-025 20301        145     INPUT            result_msb, multiplier_msb
+025 20400        144     INPUT            result_lsb, multiplier_lsb
+026 20301        145     INPUT            result_msb, multiplier_msb
                  146
                  147
                  148     ; Divide Routine (8-bit / 8-bit = 8-bit result, remainder)
@@ -176,59 +175,55 @@ W: reusing already reserved space in register file memory at address: 0x2.
 W: reusing already reserved space in register file memory at address: 0x3.
                  160     ; modified
                  161
-                 162     ; used to test bits in dividend,
+                 162     ; used to load bits in dividend,
                  163     ; one-hot encoded, modified
                  164     ;
-026 10300        165     LOAD             remainder, 00
+027 10300        165     LOAD             remainder, 00
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
                  166     ; clear remainder
-027 10280        167     LOAD             bit_mask, 80
+028 10280        167     LOAD             bit_mask, 80
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 W: value out of range: 0x50, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0x10.
                  168     ; start with most-significant bit (msb)
   00029          169     div_loop:
-                 170     TEST             dividend, bit_mask
-E: instruction not supported on the this device: TEST sX, sY.
-                 171     ; test bit, set CARRY if bit is '1'
-028 28300        172     SLA              remainder
+029 10010        170     load             dividend, bit_mask
+                 171     ; load bit, set CARRY if bit is '1'
+02A 28300        172     SLA              remainder
                  173     ; shift CARRY into lsb of remainder
-029 28206        174     SL0              quotient
+02B 28206        174     SL0              quotient
                  175     ; shift quotient left (multiply by 2)
                  176     ;
-                 177     COMPARE          remainder, divisor
-E: instruction not supported on the this device: COMPARE sX, sY.
+02C 10308        177     load          remainder, divisor
                  178     ; is remainder > divisor?
-02A 35830        179     JUMP             C, no_sub
+02D 35830        179     JUMP             C, no_sub
                  180     ; if divisor is greater, continue to next bit
-02B 1C308        181     SUB              remainder, divisor
+02E 1C308        181     SUB              remainder, divisor
                  182     ; if remainder > divisor, then subtract
-02C 18208        183     ADD              quotient, 01
+02F 18208        183     ADD              quotient, 01
 W: instruction `ADD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
                  184     ; add one to quotient
   00030          185     no_sub:
-02D 2820E        186     SR0              bit_mask
+030 2820E        186     SR0              bit_mask
                  187     ; shift to examine next bit position
-02E 35429        188     JUMP             NZ, div_loop
+031 35429        188     JUMP             NZ, div_loop
                  189     ;
                  190     ;if bit_mask=0, then all bits examined
                  191
                  192
   00032          193     set_carry:
-02F 10400        194     LOAD             sX, 00
+032 10400        194     LOAD             sX, 00
 W: instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-                 195     COMPARE          sX, 01
-W: instruction `COMPARE sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-W: instruction `COMPARE sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-E: instruction not supported on the this device: COMPARE sX, sY.
+033 10408        195     load          sX, 01
+W: instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
                  196     ; set CARRY flag and reset ZERO flag
                  197
                  198
-030 10028        199     LOAD             s0, 05
+034 10028        199     LOAD             s0, 05
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
                  200     ; s0 = 00000101
-                 201     TEST             s0, 04
-W: instruction `TEST sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-E: instruction not supported on the this device: TEST sX, sY.
+035 10020        201     load             s0, 04
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
                  202     ; mask = 00000100
                  203     ; CARRY = 1, ZERO = 0

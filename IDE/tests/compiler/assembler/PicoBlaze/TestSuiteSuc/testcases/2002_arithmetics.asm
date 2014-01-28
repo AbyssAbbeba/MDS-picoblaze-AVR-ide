@@ -1,4 +1,4 @@
-; Compiler test case for Assembler
+; Compiler load case for Assembler
 ; instruction opcodes
 
 device kcpsm2
@@ -67,24 +67,24 @@ START:
         SUBCY      s1,#00000101b
         
 
-        COMPARE    s1,#01h
-        COMPARE    s1,#5
-        COMPARE    s1,#05h
-        COMPARE    s1,#0x05
-        COMPARE    s1,#0b101
-        COMPARE    s1,#0b00000101
-        COMPARE    s1,#5D
-        COMPARE    s1,#5O
-        COMPARE    s1,#5Q
-        COMPARE    s1,#5h
-        COMPARE    s1,#101b
-        COMPARE    s1,#00000101b
+        load    s1,#01h
+        load    s1,#5
+        load    s1,#05h
+        load    s1,#0x05
+        load    s1,#0b101
+        load    s1,#0b00000101
+        load    s1,#5D
+        load    s1,#5O
+        load    s1,#5Q
+        load    s1,#5h
+        load    s1,#101b
+        load    s1,#00000101b
         
         ADD         s2,s2
         ADDCY       s2,s2
         SUB         s2,s2
         SUBCY       s2,s3
-        COMPARE     s2,s4
+        load     s2,s4
 
 END
 
@@ -93,9 +93,9 @@ END
 ;JUMP Z,aaa ADDCY sX,kk AND sX,kk SR1 sX
 ;JUMP NZ,aaa SUB sX,kk OR sX,kk SRX sX
 ;JUMP C,aaa SUBCY sX,kk XOR sX,kk SRA sX
-;JUMP NC,aaa COMPARE sX,kk TEST sX,kk RR sX
+;JUMP NC,aaa load sX,kk load sX,kk RR sX
 ;CALL aaa ADD sX,sY LOAD sX,sY SL0 sX
 ;CALL Z,aaa ADDCY sX,sY AND sX,sY SL1 sX
 ;CALL NZ,aaa SUB sX,sY OR sX,sY SLX sX
 ;CALL C,aaa SUBCY sX,sY XOR sX,sY SLA sX
-;CALL NC,aaa COMPARE sX,sY TEST sX,sY RL sX
+;CALL NC,aaa load sX,sY load sX,sY RL sX

@@ -1,104 +1,69 @@
-                   1     ; Compiler test case for Assembler
+                   1     ; Compiler load case for Assembler
                    2     ; instruction opcodes
                    3     device kcpsm1
                    4
                    5
-                   6     s1       EQU        04h
-E: symbol already defined: "S1".
-                   7     s2       EQU        0x04
-E: symbol already defined: "S2".
-                   8     s3       EQU        6
-E: symbol already defined: "S3".
-                   9     s4       EQU        7
-E: symbol already defined: "S4".
-                  10
-                  11
-  00000           12     Start:
-                  13
-                  14
-                  15     ; Logical
-000 00101         16             LOAD      s1,#01h
-001 00105         17             LOAD      s1,#5
-002 00105         18             LOAD      s1,#05
-003 00105         19             LOAD      s1,#0x05
-004 00105         20             LOAD      s1,#0b101
-005 00105         21             LOAD      s1,#0b00000101
-006 00105         22             LOAD      s1,#5D
-007 00105         23             LOAD      s1,#5O
-008 00105         24             LOAD      s1,#5Q
-009 00105         25             LOAD      s1,#5h
-00A 00105         26             LOAD      s1,#101b
-00B 00105         27             LOAD      s1,#00000101b
-                  28
-00C 01105         29             AND       s1,#5
-00D 01105         30             AND       s1,#05
-00E 01105         31             AND       s1,#0x05
-00F 01105         32             AND       s1,#0b101
-010 01105         33             AND       s1,#0b00000101
-011 01105         34             AND       s1,#5D
-012 01105         35             AND       s1,#5O
-013 01105         36             AND       s1,#5Q
-014 01105         37             AND       s1,#5h
-015 01105         38             AND       s1,#101b
-016 01105         39             AND       s1,#00000101b
-                  40
-017 02105         41             OR        s1,#5
-018 02105         42             OR        s1,#5
-019 02105         43             OR        s1,#05
-01A 02105         44             OR        s1,#0x05
-01B 02105         45             OR        s1,#0b101
-01C 02105         46             OR        s1,#0b00000101
-01D 02105         47             OR        s1,#5D
-01E 02105         48             OR        s1,#5O
-01F 02105         49             OR        s1,#5Q
-020 02105         50             OR        s1,#5h
-021 02105         51             OR        s1,#101b
-022 02105         52             OR        s1,#00000101b
-                  53
-023 03105         54             XOR       s1,#5
-024 03105         55             XOR       s1,#5
-025 03105         56             XOR       s1,#05
-026 03105         57             XOR       s1,#0x05
-027 03105         58             XOR       s1,#0b101
-028 03105         59             XOR       s1,#0b00000101
-029 03105         60             XOR       s1,#5D
-02A 03105         61             XOR       s1,#5O
-02B 03105         62             XOR       s1,#5Q
-02C 03105         63             XOR       s1,#5h
-02D 03105         64             XOR       s1,#101b
-02E 03105         65             XOR       s1,#00000101b
-                  66
-                  67             TEST      s1,#5
-E: instruction not supported on the this device: TEST sX, kk.
-                  68             TEST      s1,#5
-E: instruction not supported on the this device: TEST sX, kk.
-                  69             TEST      s1,#05
-E: instruction not supported on the this device: TEST sX, kk.
-                  70             TEST      s1,#0x05
-E: instruction not supported on the this device: TEST sX, kk.
-                  71             TEST      s1,#0b101
-E: instruction not supported on the this device: TEST sX, kk.
-                  72             TEST      s1,#0b00000101
-E: instruction not supported on the this device: TEST sX, kk.
-                  73             TEST      s1,#5D
-E: instruction not supported on the this device: TEST sX, kk.
-                  74             TEST      s1,#5O
-E: instruction not supported on the this device: TEST sX, kk.
-                  75             TEST      s1,#5Q
-E: instruction not supported on the this device: TEST sX, kk.
-                  76             TEST      s1,#5h
-E: instruction not supported on the this device: TEST sX, kk.
-                  77             TEST      s1,#101b
-E: instruction not supported on the this device: TEST sX, kk.
-                  78             TEST      s1,#00000101b
-E: instruction not supported on the this device: TEST sX, kk.
-                  79
-02F 0C120         80             LOAD      s1,s2
-030 0C121         81             AND       s1,s2
-031 0C122         82             OR        s1,s2
-032 0C123         83             XOR       s1,s2
-                  84             TEST      s1,s2
-E: instruction not supported on the this device: TEST sX, sY.
-                  85
-                  86     END
-                  87
+                   6
+  00000            7     Start:
+                   8
+                   9
+                  10     ; Logical
+000 00101         11             LOAD      s1,#01h
+001 00105         12             LOAD      s1,#5
+002 00105         13             LOAD      s1,#05
+003 00105         14             LOAD      s1,#0x05
+004 00105         15             LOAD      s1,#0b101
+005 00105         16             LOAD      s1,#0b00000101
+006 00105         17             LOAD      s1,#5D
+007 00105         18             LOAD      s1,#5O
+008 00105         19             LOAD      s1,#5Q
+009 00105         20             LOAD      s1,#5h
+00A 00105         21             LOAD      s1,#101b
+00B 00105         22             LOAD      s1,#00000101b
+                  23
+00C 01105         24             AND       s1,#5
+00D 01105         25             AND       s1,#05
+00E 01105         26             AND       s1,#0x05
+00F 01105         27             AND       s1,#0b101
+010 01105         28             AND       s1,#0b00000101
+011 01105         29             AND       s1,#5D
+012 01105         30             AND       s1,#5O
+013 01105         31             AND       s1,#5Q
+014 01105         32             AND       s1,#5h
+015 01105         33             AND       s1,#101b
+016 01105         34             AND       s1,#00000101b
+                  35
+017 02105         36             OR        s1,#5
+018 02105         37             OR        s1,#5
+019 02105         38             OR        s1,#05
+01A 02105         39             OR        s1,#0x05
+01B 02105         40             OR        s1,#0b101
+01C 02105         41             OR        s1,#0b00000101
+01D 02105         42             OR        s1,#5D
+01E 02105         43             OR        s1,#5O
+01F 02105         44             OR        s1,#5Q
+020 02105         45             OR        s1,#5h
+021 02105         46             OR        s1,#101b
+022 02105         47             OR        s1,#00000101b
+                  48
+023 03105         49             XOR       s1,#5
+024 03105         50             XOR       s1,#5
+025 03105         51             XOR       s1,#05
+026 03105         52             XOR       s1,#0x05
+027 03105         53             XOR       s1,#0b101
+028 03105         54             XOR       s1,#0b00000101
+029 03105         55             XOR       s1,#5D
+02A 03105         56             XOR       s1,#5O
+02B 03105         57             XOR       s1,#5Q
+02C 03105         58             XOR       s1,#5h
+02D 03105         59             XOR       s1,#101b
+02E 03105         60             XOR       s1,#00000101b
+                  61
+                  62
+02F 0C120         63             LOAD      s1,s2
+030 0C121         64             AND       s1,s2
+031 0C122         65             OR        s1,s2
+032 0C123         66             XOR       s1,s2
+                  67
+                  68     END
+                  69

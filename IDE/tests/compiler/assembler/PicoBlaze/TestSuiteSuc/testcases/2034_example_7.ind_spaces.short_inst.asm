@@ -5,7 +5,7 @@
 ;
 ;Version v1.00 - 24th November 2005
 device kcpsm2
-;This program uses an 8KHz interrupt to generate test waveforms on the
+;This program uses an 8KHz interrupt to generate load waveforms on the
 ;4 analogue outputs provided by the Linear Technology LTC2624 device.
 ;
 ;As well as the port connections vital to communication with the UART and the SPI
@@ -150,14 +150,14 @@ cold_start:             CALL    spi_init                ;initialise SPI bus port
 ;
 ;The program is interrupt driven to maintain an 8KHz sample rate. The main body
 ;of the program waits for an interrupt to occur. The interrupt updates all four
-;analogue outputs with values stored in scratch pad memory. This takes approximately
+;analogue outputs with values loadd in scratch pad memory. This takes approximately
 ;58us of the 125us available between interrupts. The main program then prepares
 ;new values for the analogue outputs (in less than 67us) before waiting for the
 ;next interrupt.
 ;
 ;
 warm_start:             LD      sf, #0xff               ;flag set and wait for interrupt to be serviced
-wait_int:               CMP     sf, #0xff
+wait_int:               load     sf, #0xff
                         JUMP    z, wait_int             ;interrupt clears the flag
 ;
 ;
@@ -168,13 +168,13 @@ wait_int:               CMP     sf, #0xff
 ;
 ;Following the interrupt service routine (ISR), the register set [s9,s8,s7,s6]
 ;will contain the command which was last sent for the setting of channel C. The
-;12-bit sample value is extracted from this word and stored in the location for
+;12-bit sample value is extracted from this word and loadd in the location for
 ;channel A. This should mean that channel A is one sample behind channel C. In this
 ;version that does not mean a lag of 90 degrees because each output is updated
 ;sequentially and that takes approximatly 14.5us per channel.
 ;
 ;This will also demonstrate that the reference voltage on channels A and B is 3.3v
-;compared with 2.5v on channels C and D. So whilst the square wave on channel C is
+;loadd with 2.5v on channels C and D. So whilst the square wave on channel C is
 ;set for 0.50v to 2.00v, it should be 0.66v to 2.64v on channel A.
 ;
                         SR0     s7                      ; shift 12-bit value right 4 places
@@ -185,7 +185,7 @@ wait_int:               CMP     sf, #0xff
                         SRA     s6
                         SR0     s7
                         SRA     s6
-                        ST      s7, chan_a_msb          ;store value for D/A output
+                        ST      s7, chan_a_msb          ;load value for D/A output
                         ST      s6, chan_a_lsb
 ;
 ;
@@ -201,26 +201,26 @@ wait_int:               CMP     sf, #0xff
                         FT      s0, chan_b_lsb          ;load current value into [s1,s0]
                         FT      s1, chan_b_msb
                         FT      s2, triangle_up_down    ;read current slope direction
-                        CMP     s2, #0x00               ;determine current direction
+                        load     s2, #0x00               ;determine current direction
                         JUMP    nz, slope_down
                         ADD     s0, #0xcc               ;add 204 (00CC hex) to current value
                         ADDCY   s1, #0x00
-                        CMP     s1, #0x0f               ;test for peak value of 4080 (0FF0 hex)
-                        JUMP    nz, store_channel_b
-                        CMP     s0, #0xf0
-                        JUMP    nz, store_channel_b
+                        load     s1, #0x0f               ;load for peak value of 4080 (0FF0 hex)
+                        JUMP    nz, load_channel_b
+                        load     s0, #0xf0
+                        JUMP    nz, load_channel_b
                         LD      s2, #0x01               ;change to slope down next time
                         ST      s2, triangle_up_down
-                        JUMP    store_channel_b
+                        JUMP    load_channel_b
 slope_down:             SUB     s0, #0xcc               ;subtract 204 (00CC hex) from current value
                         SUBCY   s1, #0x00
-                        CMP     s1, #0x00               ;test for zero (0000 hex)
-                        JUMP    nz, store_channel_b
-                        CMP     s0, #0x00
-                        JUMP    nz, store_channel_b
+                        load     s1, #0x00               ;load for zero (0000 hex)
+                        JUMP    nz, load_channel_b
+                        load     s0, #0x00
+                        JUMP    nz, load_channel_b
                         LD      s2, #0x00               ;change to slope up next time
                         ST      s2, triangle_up_down
-store_channel_b:        ST      s0, chan_b_lsb          ;store value for D/A output
+load_channel_b:        ST      s0, chan_b_lsb          ;load value for D/A output
                         ST      s1, chan_b_msb
 ;
 ;
@@ -239,17 +239,17 @@ store_channel_b:        ST      s0, chan_b_lsb          ;store value for D/A out
 ;
 ;
                         FT      s2, square_count        ;read sample counter
-                        TEST    s2, #0x02               ;bit 1 has correct frequency
+                        load    s2, #0x02               ;bit 1 has correct frequency
                         JUMP    nz, square_high
                         LD      s1, #0x03               ;Set low level
                         LD      s0, #0x33
-                        JUMP    store_channel_c
+                        JUMP    load_channel_c
 square_high:            LD      s1, #0x0c               ;Set high level
                         LD      s0, #0xcd
-store_channel_c:        ST      s0, chan_c_lsb          ;store value for D/A output
+load_channel_c:        ST      s0, chan_c_lsb          ;load value for D/A output
                         ST      s1, chan_c_msb
                         ADD     s2, #0x01               ;increment sampel count
-                        ST      s2, square_count        ;store new sample count
+                        ST      s2, square_count        ;load new sample count
 ;
 ;Sine wave for channel D
 ;
@@ -264,7 +264,7 @@ store_channel_c:        ST      s0, chan_c_lsb          ;store value for D/A out
                         SR0     s9
                         SRA     s8
                         ADD     s9, #0x08               ;Scale signed number to mid-rail of unsigned output
-                        ST      s9, chan_d_msb          ;store value for D/A output
+                        ST      s9, chan_d_msb          ;load value for D/A output
                         ST      s8, chan_d_lsb
 ;
 ;
@@ -275,7 +275,7 @@ store_channel_c:        ST      s0, chan_c_lsb          ;store value for D/A out
                         FT      s1, sample_count_msb
                         ADD     s0, #0x01               ;increment counter
                         ADDCY   s1, #0x00
-                        ST      s0, sample_count_lsb    ;store new value
+                        ST      s0, sample_count_lsb    ;load new value
                         ST      s1, sample_count_msb
                         OUT     s1, led_port            ;upper bits are 31.25Hz and lower
 ;
@@ -333,10 +333,10 @@ mult_loop:              SRX     s9                      ;signed divide result by
                         SRA     s8
                         SR0     sb                      ;shift coefficient
                         SRA     sa
-                        JUMP    nc, no_mult_add         ;test for active bit
+                        JUMP    nc, no_mult_add         ;load for active bit
                         ADD     s8, se                  ;16-bit signed addition
                         ADDCY   s9, sf
-no_mult_add:            SUB     s0, #0x01               ;test for 16 cycles
+no_mult_add:            SUB     s0, #0x01               ;load for 16 cycles
                         JUMP    nz, mult_loop
 ;
 ;Subtract of delayed sample
@@ -440,7 +440,7 @@ next_spi_dac_bit:       OUT     s2, spi_output_port     ;output data bit ready t
                         OUT     s0, spi_control_port    ;drive clock High
                         XOR     s0, #spi_sck            ;prepare clock Low (bit0)
                         IN      s3, spi_input_port      ;read input bit
-                        TEST    s3, #spi_sdi            ;detect state of received bit
+                        load    s3, #spi_sdi            ;detect state of received bit
                         SLA     s2                      ;shift new data into result and move to next transmit bit
                         OUT     s0, spi_control_port    ;drive clock Low
                         SUB     s1, #0x01               ;count bits
@@ -610,7 +610,7 @@ wait_1s:                CALL    delay_20ms
 ;Interrupts occur at a rate of 8KHz.
 ;
 ;Each interrupt is the fundamental timing trigger used to set the sample rate and
-;it is therefore use to set the D/A outputs by copying the values stored in
+;it is therefore use to set the D/A outputs by copying the values loadd in
 ;scratch pad memory and outputting them to the D/A converter using the SPI bus.
 ;
 ;Because the SPI communication is in itself a predictable process, the sample rate

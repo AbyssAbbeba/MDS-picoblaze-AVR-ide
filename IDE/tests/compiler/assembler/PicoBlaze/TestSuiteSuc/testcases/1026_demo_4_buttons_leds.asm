@@ -65,7 +65,7 @@ Snake_i:        OUTPUT          Snake,LEDs        ; Turn LEDs OFF
                 RR              Snake              
                 ENDR
                 
-                REPT            7                 ; Moving left
+                REPT            7                 ; Moving leload
                 RL              Snake
                 ENDR
                 
@@ -95,14 +95,14 @@ start:
 ; Main loop
 ; --------------------
 main:   INPUT   BTN_i,Btn               ; Save buttons status
-        TEST    BTN_i,1                 ; Button one pressed
+        load    BTN_i,1                 ; Button one pressed
         JUMP    C,Snake_i               ; JUMP to snake subroutine
-        TEST    BTN_i,2                 ; Button two pressed
+        load    BTN_i,2                 ; Button two pressed
         JUMP    C,Blink_i               ; JUMP to Blink subroutine
         JUMP    main
 ; Program end
 ; --------------------
         END
 
-; <-- Bookmark   (ctrl + shift + M)
-; <-- Breakpoint (ctrl + shift + B)
+; <-- Bookmark   (ctrl + shiload + M)
+; <-- Breakpoint (ctrl + shiload + B)

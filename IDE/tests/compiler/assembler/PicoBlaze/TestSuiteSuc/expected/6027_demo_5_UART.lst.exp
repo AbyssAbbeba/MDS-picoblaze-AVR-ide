@@ -136,8 +136,7 @@
                  136                             RR      LED_reg
                  137                             wait_for_100ms
                  138                             ENDR
-                 139                                 EXITM
-E: directive `EXITM' cannot apper inside special macro (like run-time IF/ELSE, etc.), it would break its pairing rules.
+                 139
                  140
                  141                         ELSEIF      uart_byte == #2
                  142                             SendChar  'I'
@@ -150,8 +149,7 @@ E: directive `EXITM' cannot apper inside special macro (like run-time IF/ELSE, e
                  149                             SendChar  'P'
                  150                             SendChar  'T'
                  151                             SendCRLF
-                 152                                 EXITM
-E: directive `EXITM' cannot apper inside special macro (like run-time IF/ELSE, etc.), it would break its pairing rules.
+                 152
                  153                         ENDIF
                  154
                  155                         ENDM
@@ -528,8 +526,7 @@ W: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while
 W: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
                  409 +3                      SUB       Temp3, #1
                  410 +3                      JUMP      NZ, wait_100ms_i
-                 411 +1                              EXITM
-E: ==> directive `EXITM' cannot apper inside special macro (like run-time IF/ELSE, etc.), it would break its pairing rules.
+                 411 +1
                  412 +1
                  413 +1                      ELSEIF      uart_byte == #2
 W: ==> instruction `COMPARE sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
@@ -699,8 +696,7 @@ W: ==> instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; wh
 0D1 004A0        494 +3                      LOAD        TXdata, char
 W: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
 0D2 2D401        495 +3                      OUTPUT      TXdata, TX_id       ; TX PORT_ID, sending char parameter
-                 496 +1                              EXITM
-E: ==> directive `EXITM' cannot apper inside special macro (like run-time IF/ELSE, etc.), it would break its pairing rules.
+                 496 +1
                  497 +1                      ENDIF
   000D3          498 +2  IF-0-END:
   000D3          499 +2  IF-1:

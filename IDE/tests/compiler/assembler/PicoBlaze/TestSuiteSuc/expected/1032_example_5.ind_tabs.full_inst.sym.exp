@@ -133,7 +133,7 @@ LCD_READ_DB7 . . . . . . . . . . . . NUMBER 0x00080 NOT USED CONSTANT    1032_ex
 LCD_RESET  . . . . . . . . . . . . . LABEL  0x00215 USED     CONSTANT    1032_example_5.ind_tabs.full_inst.asm:1439.1-1439.11
 LCD_RS . . . . . . . . . . . . . . . NUMBER 0x00004 NOT USED CONSTANT    1032_example_5.ind_tabs.full_inst.asm:51.1-51.19
 LCD_RW . . . . . . . . . . . . . . . NUMBER 0x00002 NOT USED CONSTANT    1032_example_5.ind_tabs.full_inst.asm:50.1-50.19
-LCD_SHIFT_LEFT . . . . . . . . . . . LABEL  0x00235 NOT USED CONSTANT    1032_example_5.ind_tabs.full_inst.asm:1496.1-1496.16
+LCD_SHILOAD_LELOAD . . . . . . . . . LABEL  0x00235 NOT USED CONSTANT    1032_example_5.ind_tabs.full_inst.asm:1496.1-1496.20
 LCD_WRITE_DATA . . . . . . . . . . . LABEL  0x001EB USED     CONSTANT    1032_example_5.ind_tabs.full_inst.asm:1362.1-1362.16
 LCD_WRITE_INST4  . . . . . . . . . . LABEL  0x001D8 USED     CONSTANT    1032_example_5.ind_tabs.full_inst.asm:1316.1-1316.17
 LCD_WRITE_INST8  . . . . . . . . . . LABEL  0x001DC USED     CONSTANT    1032_example_5.ind_tabs.full_inst.asm:1333.1-1333.17
@@ -147,7 +147,8 @@ LED6 . . . . . . . . . . . . . . . . NUMBER 0x00040 NOT USED CONSTANT    1032_ex
 LED7 . . . . . . . . . . . . . . . . NUMBER 0x00080 NOT USED CONSTANT    1032_example_5.ind_tabs.full_inst.asm:33.1-33.17
 LED_PATTERN  . . . . . . . . . . . . NUMBER 0x00002 NOT USED CONSTANT    1032_example_5.ind_tabs.full_inst.asm:94.1-94.23
 LED_PORT . . . . . . . . . . . . . . NUMBER 0x00080 USED     CONSTANT    1032_example_5.ind_tabs.full_inst.asm:25.1-25.20
-MOVE_LEFT  . . . . . . . . . . . . . LABEL  0x0002F NOT USED CONSTANT    1032_example_5.ind_tabs.full_inst.asm:531.1-531.11
+LOAD_DDS_WORDS . . . . . . . . . . . LABEL  0x0009A USED     CONSTANT    1032_example_5.ind_tabs.full_inst.asm:783.1-783.16
+MOVE_LELOAD  . . . . . . . . . . . . LABEL  0x0002F NOT USED CONSTANT    1032_example_5.ind_tabs.full_inst.asm:531.1-531.13
 MOVE_MODE  . . . . . . . . . . . . . LABEL  0x0001F USED     CONSTANT    1032_example_5.ind_tabs.full_inst.asm:513.1-513.11
 MOVE_RIGHT . . . . . . . . . . . . . LABEL  0x00039 USED     CONSTANT    1032_example_5.ind_tabs.full_inst.asm:542.1-542.12
 MOVE_WAIT  . . . . . . . . . . . . . LABEL  0x00023 USED     CONSTANT    1032_example_5.ind_tabs.full_inst.asm:517.1-517.11
@@ -165,9 +166,9 @@ PRODUCT6 . . . . . . . . . . . . . . NUMBER 0x00018 USED     CONSTANT    1032_ex
 PRODUCT7 . . . . . . . . . . . . . . NUMBER 0x00019 USED     CONSTANT    1032_example_5.ind_tabs.full_inst.asm:134.1-134.20
 PRODUCT8 . . . . . . . . . . . . . . NUMBER 0x0001A USED     CONSTANT    1032_example_5.ind_tabs.full_inst.asm:135.1-135.20
 PRODUCT9 . . . . . . . . . . . . . . NUMBER 0x0001B USED     CONSTANT    1032_example_5.ind_tabs.full_inst.asm:136.1-136.20
-PRODUCT_SHIFT  . . . . . . . . . . . LABEL  0x0013C USED     CONSTANT    1032_example_5.ind_tabs.full_inst.asm:1027.1-1027.15
+PRODUCT_SHILOAD  . . . . . . . . . . LABEL  0x0013C USED     CONSTANT    1032_example_5.ind_tabs.full_inst.asm:1027.1-1027.17
 ROTARY_EVENT . . . . . . . . . . . . NUMBER 0x00080 USED     CONSTANT    1032_example_5.ind_tabs.full_inst.asm:90.1-90.24
-ROTARY_LEFT  . . . . . . . . . . . . NUMBER 0x00001 USED     CONSTANT    1032_example_5.ind_tabs.full_inst.asm:37.1-37.23
+ROTARY_LELOAD  . . . . . . . . . . . NUMBER 0x00001 USED     CONSTANT    1032_example_5.ind_tabs.full_inst.asm:37.1-37.25
 ROTARY_PORT  . . . . . . . . . . . . NUMBER 0x00000 USED     CONSTANT    1032_example_5.ind_tabs.full_inst.asm:36.1-36.23
 ROTARY_PRESS . . . . . . . . . . . . NUMBER 0x00002 USED     CONSTANT    1032_example_5.ind_tabs.full_inst.asm:38.1-38.24
 ROTARY_STATUS  . . . . . . . . . . . NUMBER 0x00000 USED     CONSTANT    1032_example_5.ind_tabs.full_inst.asm:89.1-89.25
@@ -198,10 +199,9 @@ SET_LINE2  . . . . . . . . . . . . . LABEL  0x00231 USED     CONSTANT    1032_ex
 SET_MAX_VALUE  . . . . . . . . . . . LABEL  0x00074 USED     CONSTANT    1032_example_5.ind_tabs.full_inst.asm:628.1-628.15
 SET_MIN_VALUE  . . . . . . . . . . . LABEL  0x00061 USED     CONSTANT    1032_example_5.ind_tabs.full_inst.asm:604.1-604.15
 SF . . . . . . . . . . . . . . . . . REG.   0x0000F NOT USED CONSTANT    IMPLICIT
-SHIFT80_LEFT . . . . . . . . . . . . LABEL  0x000A1 USED     CONSTANT    1032_example_5.ind_tabs.full_inst.asm:791.1-791.14
-SKIP_LEFT  . . . . . . . . . . . . . LABEL  0x00037 USED     CONSTANT    1032_example_5.ind_tabs.full_inst.asm:539.1-539.11
+SHILOAD80_LELOAD . . . . . . . . . . LABEL  0x000A1 USED     CONSTANT    1032_example_5.ind_tabs.full_inst.asm:791.1-791.18
+SKIP_LELOAD  . . . . . . . . . . . . LABEL  0x00037 USED     CONSTANT    1032_example_5.ind_tabs.full_inst.asm:539.1-539.13
 SKIP_RIGHT . . . . . . . . . . . . . LABEL  0x00041 USED     CONSTANT    1032_example_5.ind_tabs.full_inst.asm:550.1-550.12
-STORE_DDS_WORDS  . . . . . . . . . . LABEL  0x0009A USED     CONSTANT    1032_example_5.ind_tabs.full_inst.asm:783.1-783.17
 WAIT_1MS . . . . . . . . . . . . . . LABEL  0x001C4 USED     CONSTANT    1032_example_5.ind_tabs.full_inst.asm:1253.1-1253.10
 WAIT_1S  . . . . . . . . . . . . . . LABEL  0x001CE USED     CONSTANT    1032_example_5.ind_tabs.full_inst.asm:1275.1-1275.9
 WAIT_1US . . . . . . . . . . . . . . LABEL  0x001BB USED     CONSTANT    1032_example_5.ind_tabs.full_inst.asm:1233.1-1233.10

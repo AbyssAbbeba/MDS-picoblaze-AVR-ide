@@ -30,6 +30,8 @@ LED5 . . . . . . . . . . . . . . . . NUMBER 0x00020 NOT USED CONSTANT    2034_ex
 LED6 . . . . . . . . . . . . . . . . NUMBER 0x00040 NOT USED CONSTANT    2034_example_7.ind_spaces.short_inst.asm:48.1-48.37
 LED7 . . . . . . . . . . . . . . . . NUMBER 0x00080 NOT USED CONSTANT    2034_example_7.ind_spaces.short_inst.asm:49.1-49.37
 LED_PORT . . . . . . . . . . . . . . NUMBER 0x00080 USED     CONSTANT    2034_example_7.ind_spaces.short_inst.asm:41.1-41.37
+LOAD_CHANNEL_B . . . . . . . . . . . LABEL  0x00032 USED     CONSTANT    2034_example_7.ind_spaces.short_inst.asm:223.1-223.16
+LOAD_CHANNEL_C . . . . . . . . . . . LABEL  0x0003C USED     CONSTANT    2034_example_7.ind_spaces.short_inst.asm:249.1-249.16
 MULT_LOOP  . . . . . . . . . . . . . LABEL  0x00067 USED     CONSTANT    2034_example_7.ind_spaces.short_inst.asm:332.1-332.11
 NEXT_SPI_DAC_BIT . . . . . . . . . . LABEL  0x0007B USED     CONSTANT    2034_example_7.ind_spaces.short_inst.asm:438.1-438.18
 NO_MULT_ADD  . . . . . . . . . . . . LABEL  0x0006E USED     CONSTANT    2034_example_7.ind_spaces.short_inst.asm:339.1-339.13
@@ -93,8 +95,6 @@ SPI_SDO  . . . . . . . . . . . . . . NUMBER 0x00080 NOT USED CONSTANT    2034_ex
 SPI_SPARE_CONTROL  . . . . . . . . . NUMBER 0x00004 NOT USED CONSTANT    2034_example_7.ind_spaces.short_inst.asm:26.1-26.37
 SQUARE_COUNT . . . . . . . . . . . . NUMBER 0x00009 USED     CONSTANT    2034_example_7.ind_spaces.short_inst.asm:113.1-113.37
 SQUARE_HIGH  . . . . . . . . . . . . LABEL  0x0003A USED     CONSTANT    2034_example_7.ind_spaces.short_inst.asm:247.1-247.13
-STORE_CHANNEL_B  . . . . . . . . . . LABEL  0x00032 USED     CONSTANT    2034_example_7.ind_spaces.short_inst.asm:223.1-223.17
-STORE_CHANNEL_C  . . . . . . . . . . LABEL  0x0003C USED     CONSTANT    2034_example_7.ind_spaces.short_inst.asm:249.1-249.17
 SWITCH0  . . . . . . . . . . . . . . NUMBER 0x00010 NOT USED CONSTANT    2034_example_7.ind_spaces.short_inst.asm:57.1-57.37
 SWITCH1  . . . . . . . . . . . . . . NUMBER 0x00020 NOT USED CONSTANT    2034_example_7.ind_spaces.short_inst.asm:58.1-58.37
 SWITCH2  . . . . . . . . . . . . . . NUMBER 0x00040 NOT USED CONSTANT    2034_example_7.ind_spaces.short_inst.asm:59.1-59.37

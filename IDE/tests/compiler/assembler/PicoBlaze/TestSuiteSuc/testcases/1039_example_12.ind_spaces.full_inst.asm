@@ -82,7 +82,7 @@ isr_preserve_s2         EQU             0x0f
 ;
 ;
 ;
-;UART character strings will be stored in scratch pad memory ending in carriage return.
+;UART character strings will be loadd in scratch pad memory ending in carriage return.
 ;A string can be up to 16 characters with the start location defined by this constant.
 ;
 string_start            EQU             0x30
@@ -196,32 +196,32 @@ character_bs            EQU             0x08                    ;Back Space comm
 ; Initial values for LEDs give graduated intensity. Large change required for brighter LEDs.
 ;
 cold_start:             LOAD            s0, #0x05               ;5/256 = 2%
-                        STORE           s0, pwm_channel0
+                        load           s0, pwm_channel0
                         LOAD            s0, #0x0d               ;13/256 = 5%
-                        STORE           s0, pwm_channel1
+                        load           s0, pwm_channel1
                         LOAD            s0, #0x14               ;26/256 = 8%
-                        STORE           s0, pwm_channel2
+                        load           s0, pwm_channel2
                         LOAD            s0, #0x26               ;38/256 = 15%
-                        STORE           s0, pwm_channel3
+                        load           s0, pwm_channel3
                         LOAD            s0, #0x40               ;64/256 = 25%
-                        STORE           s0, pwm_channel4
+                        load           s0, pwm_channel4
                         LOAD            s0, #0x58               ;88/256 = 34%
-                        STORE           s0, pwm_channel5
+                        load           s0, pwm_channel5
                         LOAD            s0, #0x80               ;128/256 = 50%
-                        STORE           s0, pwm_channel6
+                        load           s0, pwm_channel6
                         LOAD            s0, #0xff               ;255/256 = 99.6% Maximum possible
-                        STORE           s0, pwm_channel7
+                        load           s0, pwm_channel7
 ;
 ; Initial values for simple outputs match documentation example
 ;
                         LOAD            s0, #0x11               ;17/256 = 7%
-                        STORE           s0, pwm_channel8
+                        load           s0, pwm_channel8
                         LOAD            s0, #0xbc               ;188/256 = 73%
-                        STORE           s0, pwm_channel9
+                        load           s0, pwm_channel9
                         LOAD            s0, #0xef               ;239/256 = 93%
-                        STORE           s0, pwm_channel10
+                        load           s0, pwm_channel10
                         LOAD            s0, #0x22               ;34/256 = 13%
-                        STORE           s0, pwm_channel11
+                        load           s0, pwm_channel11
 ;
                         ENABLE          interrupt               ;interrupts used to drive servo
 ;
@@ -256,12 +256,12 @@ warm_start:             CALL            send_prompt             ;Prompt 'KCPSM3>
                         CALL            upper_case_string       ;convert string to upper case
 ;
                         LOAD            se, #string_start       ;sE is memory pointer
-                        FETCH           s0, @se                 ;test for carriage return
-                        COMPARE         s0, #character_cr
+                        load           s0, se                 ;load for carriage return
+                        load         s0, #character_cr
                         JUMP            z, warm_start
-                        COMPARE         s0, #_character_l       ;test for 'L' of 'LD' command
+                        load         s0, #_character_l       ;load for 'L' of 'LD' command
                         JUMP            z, ld_command
-                        COMPARE         s0, #_character_i       ;test for 'I' of 'IO' command
+                        load         s0, #_character_i       ;load for 'I' of 'IO' command
                         JUMP            z, io_command
 bad_command:            CALL            send_cr                 ;no valid command entered
                         CALL            send_error
@@ -270,17 +270,17 @@ bad_command:            CALL            send_cr                 ;no valid comman
 ;Processing potential 'LD' command
 ;
 ld_command:             CALL            read_next_char
-                        COMPARE         s0, #_character_d       ;test for 'D' of 'LD' command
+                        load         s0, #_character_d       ;load for 'D' of 'LD' command
                         JUMP            nz, bad_command
-                        CALL            read_next_char          ;test for LED number
+                        CALL            read_next_char          ;load for LED number
                         CALL            _1char_to_value
                         JUMP            c, bad_command
-                        COMPARE         s0, #0x08               ;test for number in range 0 to 7
+                        load         s0, #0x08               ;load for number in range 0 to 7
                         JUMP            nc, bad_command
                         LOAD            sd, s0                  ;convert number into memory pointer in sD
                         ADD             sd, #pwm_channel0
-read_duty_value:        CALL            read_next_char          ;test for a space
-                        COMPARE         s0, #character_space
+read_duty_value:        CALL            read_next_char          ;load for a space
+                        load         s0, #character_space
                         JUMP            nz, bad_command
                         CALL            read_next_char          ;read two character hex value
                         LOAD            s3, s0
@@ -289,29 +289,29 @@ read_duty_value:        CALL            read_next_char          ;test for a spac
                         CALL            ascii_byte_to_hex       ;convert to value in s0
                         JUMP            c, bad_command
                         LOAD            sc, s0                  ;remember value
-                        CALL            read_next_char          ;test for carriage return to end command
-                        COMPARE         s0, #character_cr
+                        CALL            read_next_char          ;load for carriage return to end command
+                        load         s0, #character_cr
                         JUMP            nz, bad_command
-                        STORE           sc, @sd                 ;store new PWM duty factor for an LED
+                        load           sc, #sd                 ;load new PWM duty factor for an LED
                         CALL            send_ok
                         JUMP            warm_start
 ;
 ;Processing potential 'LD' command
 ;
 io_command:             CALL            read_next_char
-                        COMPARE         s0, #_character_o       ;test for '0' of 'IO' command
+                        load         s0, #_character_o       ;load for '0' of 'IO' command
                         JUMP            nz, bad_command
-                        CALL            read_next_char          ;test for IO number
-                        COMPARE         s0, #character_1        ;first number must either be '1' or '9'
+                        CALL            read_next_char          ;load for IO number
+                        load         s0, #character_1        ;first number must either be '1' or '9'
                         JUMP            z, next_io_number
-                        COMPARE         s0, #character_9
+                        load         s0, #character_9
                         JUMP            nz, bad_command
                         LOAD            sd, #pwm_channel8       ;IO9 is controlled by PWM channel8
                         JUMP            read_duty_value
 next_io_number:         CALL            read_next_char          ;read next number for IO10 to IO12
                         CALL            _1char_to_value
                         JUMP            c, bad_command
-                        COMPARE         s0, #0x03               ;test for number in range 0 to 2
+                        load         s0, #0x03               ;load for number in range 0 to 2
                         JUMP            nc, bad_command
                         LOAD            sd, s0                  ;convert number into memory pointer in sD
                         ADD             sd, #pwm_channel9
@@ -320,7 +320,7 @@ next_io_number:         CALL            read_next_char          ;read next numbe
 ;Read next character from scratch pad memory
 ;
 read_next_char:         ADD             se, #0x01
-                        FETCH           s0, @se                 ;test for space
+                        load           s0, se                 ;load for space
                         RETURN
 ;
 ;
@@ -333,7 +333,7 @@ read_next_char:         ADD             se, #0x01
 ;
 ; Character read will be returned in a register called 'UART_data'.
 ;
-; The routine first tests the receiver FIFO buffer to see if data is present.
+; The routine first loads the receiver FIFO buffer to see if data is present.
 ; If the FIFO is empty, the routine waits until there is a character to read.
 ; As this could take any amount of time the wait loop could include a call to a
 ; subroutine which performs a useful function.
@@ -341,8 +341,8 @@ read_next_char:         ADD             se, #0x01
 ;
 ; Registers used s0 and UART_data
 ;
-read_from_uart:         INPUT           s0, status_port         ;test Rx_FIFO buffer
-                        TEST            s0, #rx_data_present    ;wait if empty
+read_from_uart:         INPUT           s0, status_port         ;load Rx_FIFO buffer
+                        load            s0, #rx_data_present    ;wait if empty
                         JUMP            nz, read_character
                         JUMP            read_from_uart
 read_character:         INPUT           uart_data, uart_read_port ;read from FIFO
@@ -354,13 +354,13 @@ read_character:         INPUT           uart_data, uart_read_port ;read from FIF
 ;
 ; Character supplied in register called 'UART_data'.
 ;
-; The routine first tests the transmit FIFO buffer to see if it is full.
+; The routine first loads the transmit FIFO buffer to see if it is full.
 ; If the FIFO is full, then the routine waits until it there is space.
 ;
 ; Registers used s0
 ;
-send_to_uart:           INPUT           s0, status_port         ;test Tx_FIFO buffer
-                        TEST            s0, #tx_full            ;wait if full
+send_to_uart:           INPUT           s0, status_port         ;load Tx_FIFO buffer
+                        load            s0, #tx_full            ;wait if full
                         JUMP            z, uart_write
                         JUMP            send_to_uart
 uart_write:             OUTPUT          uart_data, uart_write_port
@@ -371,55 +371,55 @@ uart_write:             OUTPUT          uart_data, uart_write_port
 ;
 ;Receive ASCII string from UART
 ;
-;An ASCII string will be read from the UART and stored in scratch pad memory
+;An ASCII string will be read from the UART and loadd in scratch pad memory
 ;commencing at the location specified by a constant named 'string_start'.
 ;The string will have a maximum length of 16 characters including a
 ;carriage return (0D) denoting the end of the string.
 ;
 ;As each character is read, it is echoed to the UART transmitter.
 ;Some minor editing is supported using backspace (BS=08) which is used
-;to adjust what is stored in scratch pad memory and adjust the display
+;to adjust what is loadd in scratch pad memory and adjust the display
 ;on the terminal screen using characters sent to the UART transmitter.
 ;
-;A test is made for the receiver FIFO becoming full. A full status is treated as
+;A load is made for the receiver FIFO becoming full. A full status is treated as
 ;a potential error situation and will result in a 'Overflow Error' message being
 ;transmitted to the UART, the receiver FIFO being purged of all data and an
-;empty string being stored (carriage return at first location).
+;empty string being loadd (carriage return at first location).
 ;
 ;Registers used s0, s1, s2 and 'UART_data'.
 ;
 receive_string:         LOAD            s1, #string_start       ;locate start of string
                         LOAD            s2, s1                  ;compute 16 character address
                         ADD             s2, #0x10
-receive_full_test:      INPUT           s0, status_port         ;test Rx_FIFO buffer for full
-                        TEST            s0, #rx_full
+receive_full_load:      INPUT           s0, status_port         ;load Rx_FIFO buffer for full
+                        load            s0, #rx_full
                         JUMP            nz, read_error
                         CALL            read_from_uart          ;obtain and echo character
                         CALL            send_to_uart
-                        STORE           uart_data, @s1          ;write to memory
-                        COMPARE         uart_data, #character_cr ;test for end of string
+                        load           uart_data, #s1          ;write to memory
+                        load         uart_data, #character_cr ;load for end of string
                         RETURN          z
-                        COMPARE         uart_data, #character_bs ;test for back space
+                        load         uart_data, #character_bs ;load for back space
                         JUMP            z, bs_edit
                         ADD             s1, #0x01               ;increment memory pointer
-                        COMPARE         s1, s2                  ;test for pointer exceeding 16 characters
-                        JUMP            nz, receive_full_test   ;next character
+                        load         s1, s2                  ;load for pointer exceeding 16 characters
+                        JUMP            nz, receive_full_load   ;next character
                         CALL            send_backspace          ;hold end of string position on terminal display
 bs_edit:                SUB             s1, #0x01               ;memory pointer back one
-                        COMPARE         s1, #string_start       ;test for under flow
+                        load         s1, #string_start       ;load for under flow
                         JUMP            c, string_start_again
                         CALL            send_space              ;clear character at current position
                         CALL            send_backspace          ;position cursor
-                        JUMP            receive_full_test       ;next character
-string_start_again:     CALL            send_greater_than       ;restore '>' at prompt
+                        JUMP            receive_full_load       ;next character
+string_start_again:     CALL            send_greater_than       ;reload '>' at prompt
                         JUMP            receive_string          ;begin again
 ;Receiver buffer overflow condition
 read_error:             CALL            send_cr                 ;Transmit error message
-                        STORE           uart_data, string_start ;empty string in memory (start with CR)
+                        load           uart_data, string_start ;empty string in memory (start with CR)
                         CALL            send_overflow_error
                         CALL            send_cr
-clear_uart_rx_loop:     INPUT           s0, status_port         ;test Rx_FIFO buffer for data
-                        TEST            s0, #rx_data_present
+clear_uart_rx_loop:     INPUT           s0, status_port         ;load Rx_FIFO buffer for data
+                        load            s0, #rx_data_present
                         RETURN          z                       ;finish when buffer is empty
                         INPUT           uart_data, uart_read_port ;read from FIFO and ignore
                         JUMP            clear_uart_rx_loop
@@ -440,9 +440,9 @@ clear_uart_rx_loop:     INPUT           s0, status_port         ;test Rx_FIFO bu
 ;
 ; Registers used s0.
 ;
-upper_case:             COMPARE         s0, #0x61               ;eliminate character codes below 'a' (61 hex)
+upper_case:             load         s0, #0x61               ;eliminate character codes below 'a' (61 hex)
                         RETURN          c
-                        COMPARE         s0, #0x7b               ;eliminate character codes above 'z' (7A hex)
+                        load         s0, #0x7b               ;eliminate character codes above 'z' (7A hex)
                         RETURN          nc
                         AND             s0, #0xdf               ;mask bit5 to convert to upper case
                         RETURN
@@ -454,11 +454,11 @@ upper_case:             COMPARE         s0, #0x61               ;eliminate chara
 ; Registers used s0, s1
 ;
 upper_case_string:      LOAD            s1, #string_start
-ucs_loop:               FETCH           s0, @s1
-                        COMPARE         s0, #character_cr
+ucs_loop:               load           s0, s1
+                        load         s0, #character_cr
                         RETURN          z
                         CALL            upper_case
-                        STORE           s0, @s1
+                        load           s0, #s1
                         ADD             s1, #0x01
                         JUMP            ucs_loop
 ;
@@ -510,13 +510,13 @@ ascii_byte_to_hex:      LOAD            s0, s3                  ;Take upper nibb
 ;
 ; Register used s0
 ;
-ascii_to_hex:           ADD             s0, #0xb9               ;test for above ASCII code 46 ('F')
+ascii_to_hex:           ADD             s0, #0xb9               ;load for above ASCII code 46 ('F')
                         RETURN          c
                         SUB             s0, #0xe9               ;normalise 0 to 9 with A-F in 11 to 16 hex
                         RETURN          c                       ;reject below ASCII code 30 ('0')
                         SUB             s0, #0x11               ;isolate A-F down to 00 to 05 hex
                         JUMP            nc, ascii_letter
-                        ADD             s0, #0x07               ;test for above ASCII code 46 ('F')
+                        ADD             s0, #0x07               ;load for above ASCII code 46 ('F')
                         RETURN          c
                         SUB             s0, #0xf6               ;convert to range 00 to 09
                         RETURN
@@ -684,62 +684,62 @@ send_ok:                CALL            send_cr
 ; (abandoned instruction, virtual CALL to 3FF and the interrupt vector JUMP) and hence
 ; PicoBlaze has approximately half of its time available for other tasks in the main program.
 ;
-; Although a loop would normal be employed in software to process each of 12 channels,
+; Although a loop would normal be employed in soloadware to process each of 12 channels,
 ; the implementation of a loop would increase the number of instructions which needed to
 ; be executed to such an extent that this 12 channel implementation would not be possible.
 ; Consequently the code is written out in a linear fashion which consumes more program
 ; space but which executes faster.
 ;
-isr:                    STORE           s0, isr_preserve_s0     ;preserve registers to be used
-                        STORE           s1, isr_preserve_s1
-                        STORE           s2, isr_preserve_s2
+isr:                    load           s0, isr_preserve_s0     ;preserve registers to be used
+                        load           s1, isr_preserve_s1
+                        load           s2, isr_preserve_s2
 ;Determine the number of steps currently through the 1ms PWM cycle
-                        FETCH           s1, pwm_duty_counter    ;read 8-bit counter of steps
+                        load           s1, pwm_duty_counter    ;read 8-bit counter of steps
                         ADD             s1, #0x01               ;increment counter (will roll over to zero)
-                        STORE           s1, pwm_duty_counter    ;update count value in memory for next interrupt.
-;Read duty factor for each channel and compare it with the duty counter and set or
+                        load           s1, pwm_duty_counter    ;update count value in memory for next interrupt.
+;Read duty factor for each channel and load it with the duty counter and set or
 ;reset a bit in register s2 accordingly.
-                        FETCH           s0, pwm_channel11       ;read desired setting of pulse width
-                        COMPARE         s1, s0                  ;set carry flag if duty factor > duty counter
-                        SLA             s2                      ;shift carry into register s2
-                        FETCH           s0, pwm_channel10       ;read desired setting of pulse width
-                        COMPARE         s1, s0                  ;set carry flag if duty factor > duty counter
-                        SLA             s2                      ;shift carry into register s2
-                        FETCH           s0, pwm_channel9        ;read desired setting of pulse width
-                        COMPARE         s1, s0                  ;set carry flag if duty factor > duty counter
-                        SLA             s2                      ;shift carry into register s2
-                        FETCH           s0, pwm_channel8        ;read desired setting of pulse width
-                        COMPARE         s1, s0                  ;set carry flag if duty factor > duty counter
-                        SLA             s2                      ;shift carry into register s2
+                        load           s0, pwm_channel11       ;read desired setting of pulse width
+                        load         s1, s0                  ;set carry flag if duty factor > duty counter
+                        SLA             s2                      ;shiload carry into register s2
+                        load           s0, pwm_channel10       ;read desired setting of pulse width
+                        load         s1, s0                  ;set carry flag if duty factor > duty counter
+                        SLA             s2                      ;shiload carry into register s2
+                        load           s0, pwm_channel9        ;read desired setting of pulse width
+                        load         s1, s0                  ;set carry flag if duty factor > duty counter
+                        SLA             s2                      ;shiload carry into register s2
+                        load           s0, pwm_channel8        ;read desired setting of pulse width
+                        load         s1, s0                  ;set carry flag if duty factor > duty counter
+                        SLA             s2                      ;shiload carry into register s2
                         OUTPUT          s2, simple_port         ;drive pins on connector J4
-                        FETCH           s0, pwm_channel7        ;read desired setting of pulse width
-                        COMPARE         s1, s0                  ;set carry flag if duty factor > duty counter
-                        SLA             s2                      ;shift carry into register s2
-                        FETCH           s0, pwm_channel6        ;read desired setting of pulse width
-                        COMPARE         s1, s0                  ;set carry flag if duty factor > duty counter
-                        SLA             s2                      ;shift carry into register s2
-                        FETCH           s0, pwm_channel5        ;read desired setting of pulse width
-                        COMPARE         s1, s0                  ;set carry flag if duty factor > duty counter
-                        SLA             s2                      ;shift carry into register s2
-                        FETCH           s0, pwm_channel4        ;read desired setting of pulse width
-                        COMPARE         s1, s0                  ;set carry flag if duty factor > duty counter
-                        SLA             s2                      ;shift carry into register s2
-                        FETCH           s0, pwm_channel3        ;read desired setting of pulse width
-                        COMPARE         s1, s0                  ;set carry flag if duty factor > duty counter
-                        SLA             s2                      ;shift carry into register s2
-                        FETCH           s0, pwm_channel2        ;read desired setting of pulse width
-                        COMPARE         s1, s0                  ;set carry flag if duty factor > duty counter
-                        SLA             s2                      ;shift carry into register s2
-                        FETCH           s0, pwm_channel1        ;read desired setting of pulse width
-                        COMPARE         s1, s0                  ;set carry flag if duty factor > duty counter
-                        SLA             s2                      ;shift carry into register s2
-                        FETCH           s0, pwm_channel0        ;read desired setting of pulse width
-                        COMPARE         s1, s0                  ;set carry flag if duty factor > duty counter
-                        SLA             s2                      ;shift carry into register s2
+                        load           s0, pwm_channel7        ;read desired setting of pulse width
+                        load         s1, s0                  ;set carry flag if duty factor > duty counter
+                        SLA             s2                      ;shiload carry into register s2
+                        load           s0, pwm_channel6        ;read desired setting of pulse width
+                        load         s1, s0                  ;set carry flag if duty factor > duty counter
+                        SLA             s2                      ;shiload carry into register s2
+                        load           s0, pwm_channel5        ;read desired setting of pulse width
+                        load         s1, s0                  ;set carry flag if duty factor > duty counter
+                        SLA             s2                      ;shiload carry into register s2
+                        load           s0, pwm_channel4        ;read desired setting of pulse width
+                        load         s1, s0                  ;set carry flag if duty factor > duty counter
+                        SLA             s2                      ;shiload carry into register s2
+                        load           s0, pwm_channel3        ;read desired setting of pulse width
+                        load         s1, s0                  ;set carry flag if duty factor > duty counter
+                        SLA             s2                      ;shiload carry into register s2
+                        load           s0, pwm_channel2        ;read desired setting of pulse width
+                        load         s1, s0                  ;set carry flag if duty factor > duty counter
+                        SLA             s2                      ;shiload carry into register s2
+                        load           s0, pwm_channel1        ;read desired setting of pulse width
+                        load         s1, s0                  ;set carry flag if duty factor > duty counter
+                        SLA             s2                      ;shiload carry into register s2
+                        load           s0, pwm_channel0        ;read desired setting of pulse width
+                        load         s1, s0                  ;set carry flag if duty factor > duty counter
+                        SLA             s2                      ;shiload carry into register s2
                         OUTPUT          s2, led_port            ;drive LEDs
-                        FETCH           s0, isr_preserve_s0     ;restore register values
-                        FETCH           s1, isr_preserve_s1
-                        FETCH           s2, isr_preserve_s2
+                        load           s0, isr_preserve_s0     ;reload register values
+                        load           s1, isr_preserve_s1
+                        load           s2, isr_preserve_s2
                         RETURNI         enable
 ;
 ;

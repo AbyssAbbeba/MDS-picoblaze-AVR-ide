@@ -137,7 +137,7 @@ RX_resolve          MACRO     uart_byte
                         RR      LED_reg
                         wait_for_100ms
                         ENDR
-                            EXITM
+                            
 
                     ELSEIF      uart_byte == #2
                         SendChar  'I'
@@ -150,7 +150,7 @@ RX_resolve          MACRO     uart_byte
                         SendChar  'P'
                         SendChar  'T'
                         SendCRLF
-                            EXITM
+                          
                     ENDIF
 
                     ENDM
