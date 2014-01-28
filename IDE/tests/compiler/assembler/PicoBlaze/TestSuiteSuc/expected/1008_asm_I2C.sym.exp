@@ -1,4 +1,4 @@
-BMISO  . . . . . . . . . . . . . . . NUMBER 0x00080 USED     CONSTANT    1008_asm_I2C.asm:14.1-14.34
+BMISO  . . . . . . . . . . . . . . . NUMBER 0x00080 NOT USED CONSTANT    1008_asm_I2C.asm:14.1-14.34
 BMOSI  . . . . . . . . . . . . . . . NUMBER 0x00001 USED     CONSTANT    1008_asm_I2C.asm:13.1-13.34
 BSCLK  . . . . . . . . . . . . . . . NUMBER 0x00002 USED     CONSTANT    1008_asm_I2C.asm:15.1-15.34
 ESPI16 . . . . . . . . . . . . . . . LABEL  0x0000F NOT USED CONSTANT    1008_asm_I2C.asm:39.1-39.8

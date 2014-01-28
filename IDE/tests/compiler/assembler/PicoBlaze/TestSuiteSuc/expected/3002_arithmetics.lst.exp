@@ -2,104 +2,95 @@
                    2     ; instruction opcodes
                    3     device kcpsm3
                    4
-                   5     s1       EQU        04h
-E: symbol already defined: "S1".
-                   6     s2       EQU        0x04
-E: symbol already defined: "S2".
-                   7     s3       EQU        6
-E: symbol already defined: "S3".
-                   8     s4       EQU        7
-E: symbol already defined: "S4".
-                   9
-                  10
-                  11
-  00000           12     START:
-                  13          ; Arithmetics
-000 18101         14             ADD        s1,#01h
-001 18105         15             ADD        s1,#5
-002 18105         16             ADD        s1,#05h
-003 18105         17             ADD        s1,#0x05
-004 18105         18             ADD        s1,#0b101
-005 18105         19             ADD        s1,#0b00000101
-006 18105         20             ADD        s1,#5D
-007 18105         21             ADD        s1,#5O
-008 18105         22             ADD        s1,#5Q
-009 18105         23             ADD        s1,#5h
-00A 18105         24             ADD        s1,#101b
-00B 18105         25             ADD        s1,#00000101b
-                  26
-                  27
-00C 1A101         28             ADDCY      s1,#01h
-00D 1A105         29             ADDCY      s1,#5
-00E 1A105         30             ADDCY      s1,#05h
-00F 1A105         31             ADDCY      s1,#0x05
-010 1A105         32             ADDCY      s1,#0b101
-011 1A105         33             ADDCY      s1,#0b00000101
-012 1A105         34             ADDCY      s1,#5D
-013 1A105         35             ADDCY      s1,#5O
-014 1A105         36             ADDCY      s1,#5Q
-015 1A105         37             ADDCY      s1,#5h
-016 1A105         38             ADDCY      s1,#101b
-017 1A105         39             ADDCY      s1,#00000101b
-                  40
-                  41
-018 1C101         42             SUB        s1,#01h
-019 1C105         43             SUB        s1,#5
-01A 1C105         44             SUB        s1,#05h
-01B 1C105         45             SUB        s1,#0x05
-01C 1C105         46             SUB        s1,#0b101
-01D 1C105         47             SUB        s1,#0b00000101
-01E 1C105         48             SUB        s1,#5D
-01F 1C105         49             SUB        s1,#5O
-020 1C105         50             SUB        s1,#5Q
-021 1C105         51             SUB        s1,#5h
-022 1C105         52             SUB        s1,#101b
-023 1C105         53             SUB        s1,#00000101b
-                  54
-                  55
-024 1E101         56             SUBCY      s1,#01h
-025 1E105         57             SUBCY      s1,#5
-026 1E105         58             SUBCY      s1,#05h
-027 1E105         59             SUBCY      s1,#0x05
-028 1E105         60             SUBCY      s1,#0b101
-029 1E105         61             SUBCY      s1,#0b00000101
-02A 1E105         62             SUBCY      s1,#5D
-02B 1E105         63             SUBCY      s1,#5O
-02C 1E105         64             SUBCY      s1,#5Q
-02D 1E105         65             SUBCY      s1,#5h
-02E 1E105         66             SUBCY      s1,#101b
-02F 1E105         67             SUBCY      s1,#00000101b
-                  68
-                  69
-030 14101         70             COMPARE    s1,#01h
-031 14105         71             COMPARE    s1,#5
-032 14105         72             COMPARE    s1,#05h
-033 14105         73             COMPARE    s1,#0x05
-034 14105         74             COMPARE    s1,#0b101
-035 14105         75             COMPARE    s1,#0b00000101
-036 14105         76             COMPARE    s1,#5D
-037 14105         77             COMPARE    s1,#5O
-038 14105         78             COMPARE    s1,#5Q
-039 14105         79             COMPARE    s1,#5h
-03A 14105         80             COMPARE    s1,#101b
-03B 14105         81             COMPARE    s1,#00000101b
-                  82
-03C 19220         83             ADD         s2,s2
-03D 1B220         84             ADDCY       s2,s2
-03E 1D220         85             SUB         s2,s2
-03F 1F230         86             SUBCY       s2,s3
-040 15240         87             COMPARE     s2,s4
-                  88
-                  89     END
-                  90
-                  91
-                  92       ;  JUMP aaa ADD sX,kk LOAD sX,kk SR0 sX
-                  93     ;JUMP Z,aaa ADDCY sX,kk AND sX,kk SR1 sX
-                  94     ;JUMP NZ,aaa SUB sX,kk OR sX,kk SRX sX
-                  95     ;JUMP C,aaa SUBCY sX,kk XOR sX,kk SRA sX
-                  96     ;JUMP NC,aaa COMPARE sX,kk TEST sX,kk RR sX
-                  97     ;CALL aaa ADD sX,sY LOAD sX,sY SL0 sX
-                  98     ;CALL Z,aaa ADDCY sX,sY AND sX,sY SL1 sX
-                  99     ;CALL NZ,aaa SUB sX,sY OR sX,sY SLX sX
-                 100     ;CALL C,aaa SUBCY sX,sY XOR sX,sY SLA sX
-                 101     ;CALL NC,aaa COMPARE sX,sY TEST sX,sY RL sX
+                   5
+                   6
+  00000            7     START:
+                   8          ; Arithmetics
+000 18101          9             ADD        s1,#01h
+001 18105         10             ADD        s1,#5
+002 18105         11             ADD        s1,#05h
+003 18105         12             ADD        s1,#0x05
+004 18105         13             ADD        s1,#0b101
+005 18105         14             ADD        s1,#0b00000101
+006 18105         15             ADD        s1,#5D
+007 18105         16             ADD        s1,#5O
+008 18105         17             ADD        s1,#5Q
+009 18105         18             ADD        s1,#5h
+00A 18105         19             ADD        s1,#101b
+00B 18105         20             ADD        s1,#00000101b
+                  21
+                  22
+00C 1A101         23             ADDCY      s1,#01h
+00D 1A105         24             ADDCY      s1,#5
+00E 1A105         25             ADDCY      s1,#05h
+00F 1A105         26             ADDCY      s1,#0x05
+010 1A105         27             ADDCY      s1,#0b101
+011 1A105         28             ADDCY      s1,#0b00000101
+012 1A105         29             ADDCY      s1,#5D
+013 1A105         30             ADDCY      s1,#5O
+014 1A105         31             ADDCY      s1,#5Q
+015 1A105         32             ADDCY      s1,#5h
+016 1A105         33             ADDCY      s1,#101b
+017 1A105         34             ADDCY      s1,#00000101b
+                  35
+                  36
+018 1C101         37             SUB        s1,#01h
+019 1C105         38             SUB        s1,#5
+01A 1C105         39             SUB        s1,#05h
+01B 1C105         40             SUB        s1,#0x05
+01C 1C105         41             SUB        s1,#0b101
+01D 1C105         42             SUB        s1,#0b00000101
+01E 1C105         43             SUB        s1,#5D
+01F 1C105         44             SUB        s1,#5O
+020 1C105         45             SUB        s1,#5Q
+021 1C105         46             SUB        s1,#5h
+022 1C105         47             SUB        s1,#101b
+023 1C105         48             SUB        s1,#00000101b
+                  49
+                  50
+024 1E101         51             SUBCY      s1,#01h
+025 1E105         52             SUBCY      s1,#5
+026 1E105         53             SUBCY      s1,#05h
+027 1E105         54             SUBCY      s1,#0x05
+028 1E105         55             SUBCY      s1,#0b101
+029 1E105         56             SUBCY      s1,#0b00000101
+02A 1E105         57             SUBCY      s1,#5D
+02B 1E105         58             SUBCY      s1,#5O
+02C 1E105         59             SUBCY      s1,#5Q
+02D 1E105         60             SUBCY      s1,#5h
+02E 1E105         61             SUBCY      s1,#101b
+02F 1E105         62             SUBCY      s1,#00000101b
+                  63
+                  64
+030 14101         65             COMPARE    s1,#01h
+031 14105         66             COMPARE    s1,#5
+032 14105         67             COMPARE    s1,#05h
+033 14105         68             COMPARE    s1,#0x05
+034 14105         69             COMPARE    s1,#0b101
+035 14105         70             COMPARE    s1,#0b00000101
+036 14105         71             COMPARE    s1,#5D
+037 14105         72             COMPARE    s1,#5O
+038 14105         73             COMPARE    s1,#5Q
+039 14105         74             COMPARE    s1,#5h
+03A 14105         75             COMPARE    s1,#101b
+03B 14105         76             COMPARE    s1,#00000101b
+                  77
+03C 19220         78             ADD         s2,s2
+03D 1B220         79             ADDCY       s2,s2
+03E 1D220         80             SUB         s2,s2
+03F 1F230         81             SUBCY       s2,s3
+040 15240         82             COMPARE     s2,s4
+                  83
+                  84     END
+                  85
+                  86
+                  87       ;  JUMP aaa ADD sX,kk LOAD sX,kk SR0 sX
+                  88     ;JUMP Z,aaa ADDCY sX,kk AND sX,kk SR1 sX
+                  89     ;JUMP NZ,aaa SUB sX,kk OR sX,kk SRX sX
+                  90     ;JUMP C,aaa SUBCY sX,kk XOR sX,kk SRA sX
+                  91     ;JUMP NC,aaa COMPARE sX,kk TEST sX,kk RR sX
+                  92     ;CALL aaa ADD sX,sY LOAD sX,sY SL0 sX
+                  93     ;CALL Z,aaa ADDCY sX,sY AND sX,sY SL1 sX
+                  94     ;CALL NZ,aaa SUB sX,sY OR sX,sY SLX sX
+                  95     ;CALL C,aaa SUBCY sX,sY XOR sX,sY SLA sX
+                  96     ;CALL NC,aaa COMPARE sX,sY TEST sX,sY RL sX

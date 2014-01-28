@@ -106,7 +106,7 @@ DISP_SMA_INPUT . . . . . . . . . . . LABEL  0x00100 USED     CONSTANT    2031_ex
 DISP_SPACES  . . . . . . . . . . . . LABEL  0x00157 USED     CONSTANT    2031_example_4.ind_spaces.full_inst.asm:719.1-719.13
 DISP_VERSION . . . . . . . . . . . . LABEL  0x000F5 USED     CONSTANT    2031_example_4.ind_spaces.full_inst.asm:593.1-593.14
 DIV10_LOOP . . . . . . . . . . . . . LABEL  0x000A9 USED     CONSTANT    2031_example_4.ind_spaces.full_inst.asm:491.1-491.12
-DIV10_RESTORE  . . . . . . . . . . . LABEL  0x000B0 USED     CONSTANT    2031_example_4.ind_spaces.full_inst.asm:498.1-498.15
+DIV10_RELOAD . . . . . . . . . . . . LABEL  0x000B0 USED     CONSTANT    2031_example_4.ind_spaces.full_inst.asm:498.1-498.14
 DIV10_SHIFTS . . . . . . . . . . . . LABEL  0x000B5 USED     CONSTANT    2031_example_4.ind_spaces.full_inst.asm:503.1-503.14
 DIVIDE_32BIT_BY_10 . . . . . . . . . LABEL  0x0009C USED     CONSTANT    2031_example_4.ind_spaces.full_inst.asm:478.1-478.20
 HZ_DIGITS  . . . . . . . . . . . . . LABEL  0x00074 USED     CONSTANT    2031_example_4.ind_spaces.full_inst.asm:405.1-405.11
@@ -145,6 +145,10 @@ LCD_WRITE_DATA . . . . . . . . . . . LABEL  0x001D3 USED     CONSTANT    2031_ex
 LCD_WRITE_INST4  . . . . . . . . . . LABEL  0x001C0 USED     CONSTANT    2031_example_4.ind_spaces.full_inst.asm:901.1-901.17
 LCD_WRITE_INST8  . . . . . . . . . . LABEL  0x001C4 USED     CONSTANT    2031_example_4.ind_spaces.full_inst.asm:918.1-918.17
 LED_PORT . . . . . . . . . . . . . . NUMBER 0x00001 USED     CONSTANT    2031_example_4.ind_spaces.full_inst.asm:42.1-42.45
+LOAD_50M . . . . . . . . . . . . . . LABEL  0x00031 USED     CONSTANT    2031_example_4.ind_spaces.full_inst.asm:312.1-312.10
+LOAD_DCM . . . . . . . . . . . . . . LABEL  0x00036 USED     CONSTANT    2031_example_4.ind_spaces.full_inst.asm:317.1-317.10
+LOAD_RING  . . . . . . . . . . . . . LABEL  0x0003B USED     CONSTANT    2031_example_4.ind_spaces.full_inst.asm:322.1-322.11
+LOAD_SMA . . . . . . . . . . . . . . LABEL  0x0002C USED     CONSTANT    2031_example_4.ind_spaces.full_inst.asm:307.1-307.10
 NORMAL_ISR . . . . . . . . . . . . . LABEL  0x0023C USED     CONSTANT    2031_example_4.ind_spaces.full_inst.asm:1133.1-1133.12
 PRESERVE_S0  . . . . . . . . . . . . NUMBER 0x00030 USED     CONSTANT    2031_example_4.ind_spaces.full_inst.asm:111.1-111.45
 PRESERVE_S1  . . . . . . . . . . . . NUMBER 0x00031 USED     CONSTANT    2031_example_4.ind_spaces.full_inst.asm:112.1-112.45
@@ -162,7 +166,7 @@ PRESERVE_SC  . . . . . . . . . . . . NUMBER 0x0003C USED     CONSTANT    2031_ex
 PRESERVE_SD  . . . . . . . . . . . . NUMBER 0x0003D USED     CONSTANT    2031_example_4.ind_spaces.full_inst.asm:124.1-124.45
 PRESERVE_SE  . . . . . . . . . . . . NUMBER 0x0003E USED     CONSTANT    2031_example_4.ind_spaces.full_inst.asm:125.1-125.45
 PRESERVE_SF  . . . . . . . . . . . . NUMBER 0x0003F USED     CONSTANT    2031_example_4.ind_spaces.full_inst.asm:126.1-126.45
-RESTORE_REG  . . . . . . . . . . . . LABEL  0x00256 USED     CONSTANT    2031_example_4.ind_spaces.full_inst.asm:1166.1-1166.13
+RELOAD_REG . . . . . . . . . . . . . LABEL  0x00256 USED     CONSTANT    2031_example_4.ind_spaces.full_inst.asm:1166.1-1166.12
 RING_RESET . . . . . . . . . . . . . NUMBER 0x00040 NOT USED CONSTANT    2031_example_4.ind_spaces.full_inst.asm:48.1-48.45
 RING_SELECT  . . . . . . . . . . . . LABEL  0x0003F USED     CONSTANT    2031_example_4.ind_spaces.full_inst.asm:326.1-326.13
 S0 . . . . . . . . . . . . . . . . . REG.   0x00000 USED     CONSTANT    IMPLICIT
@@ -207,17 +211,13 @@ SWITCH0  . . . . . . . . . . . . . . NUMBER 0x00001 USED     CONSTANT    2031_ex
 SWITCH1  . . . . . . . . . . . . . . NUMBER 0x00002 USED     CONSTANT    2031_example_4.ind_spaces.full_inst.asm:32.1-32.45
 SWITCH2  . . . . . . . . . . . . . . NUMBER 0x00004 USED     CONSTANT    2031_example_4.ind_spaces.full_inst.asm:33.1-33.45
 SWITCH3  . . . . . . . . . . . . . . NUMBER 0x00008 USED     CONSTANT    2031_example_4.ind_spaces.full_inst.asm:34.1-34.45
-TEST_50M . . . . . . . . . . . . . . LABEL  0x00031 USED     CONSTANT    2031_example_4.ind_spaces.full_inst.asm:312.1-312.10
-TEST_DCM . . . . . . . . . . . . . . LABEL  0x00036 USED     CONSTANT    2031_example_4.ind_spaces.full_inst.asm:317.1-317.10
-TEST_RING  . . . . . . . . . . . . . LABEL  0x0003B USED     CONSTANT    2031_example_4.ind_spaces.full_inst.asm:322.1-322.11
-TEST_SMA . . . . . . . . . . . . . . LABEL  0x0002C USED     CONSTANT    2031_example_4.ind_spaces.full_inst.asm:307.1-307.10
 WAIT_1MS . . . . . . . . . . . . . . LABEL  0x001AC USED     CONSTANT    2031_example_4.ind_spaces.full_inst.asm:838.1-838.10
 WAIT_1S  . . . . . . . . . . . . . . LABEL  0x001B6 USED     CONSTANT    2031_example_4.ind_spaces.full_inst.asm:860.1-860.9
 WAIT_1US . . . . . . . . . . . . . . LABEL  0x001A3 USED     CONSTANT    2031_example_4.ind_spaces.full_inst.asm:818.1-818.10
 WAIT_20MS  . . . . . . . . . . . . . LABEL  0x001B1 USED     CONSTANT    2031_example_4.ind_spaces.full_inst.asm:850.1-850.11
 WAIT_40US  . . . . . . . . . . . . . LABEL  0x001A7 USED     CONSTANT    2031_example_4.ind_spaces.full_inst.asm:827.1-827.11
 WARM_START . . . . . . . . . . . . . LABEL  0x00024 USED     CONSTANT    2031_example_4.ind_spaces.full_inst.asm:299.1-299.12
-ZERO_TEST  . . . . . . . . . . . . . LABEL  0x00088 USED     CONSTANT    2031_example_4.ind_spaces.full_inst.asm:428.1-428.11
+ZERO_LOAD  . . . . . . . . . . . . . LABEL  0x00088 USED     CONSTANT    2031_example_4.ind_spaces.full_inst.asm:428.1-428.11
 _CHARACTER_A . . . . . . . . . . . . NUMBER 0x00041 USED     CONSTANT    2031_example_4.ind_spaces.full_inst.asm:179.1-179.45
 _CHARACTER_B . . . . . . . . . . . . NUMBER 0x00042 USED     CONSTANT    2031_example_4.ind_spaces.full_inst.asm:180.1-180.45
 _CHARACTER_C . . . . . . . . . . . . NUMBER 0x00043 USED     CONSTANT    2031_example_4.ind_spaces.full_inst.asm:181.1-181.45

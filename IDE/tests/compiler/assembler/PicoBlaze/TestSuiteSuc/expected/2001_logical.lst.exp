@@ -1,4 +1,4 @@
-                   1     ; Compiler test case for Assembler
+                   1     ; Compiler load case for Assembler
                    2     ; instruction opcodes
                    3     ; instruction opcodes
                    4     device kcpsm2
@@ -69,37 +69,24 @@ E: symbol already defined: "S4".
 02D 06105         65             XOR       s1,#101b
 02E 06105         66             XOR       s1,#00000101b
                   67
-                  68             TEST      s1,#5
-E: instruction not supported on the this device: TEST sX, kk.
-                  69             TEST      s1,#5
-E: instruction not supported on the this device: TEST sX, kk.
-                  70             TEST      s1,#05
-E: instruction not supported on the this device: TEST sX, kk.
-                  71             TEST      s1,#0x05
-E: instruction not supported on the this device: TEST sX, kk.
-                  72             TEST      s1,#0b101
-E: instruction not supported on the this device: TEST sX, kk.
-                  73             TEST      s1,#0b00000101
-E: instruction not supported on the this device: TEST sX, kk.
-                  74             TEST      s1,#5D
-E: instruction not supported on the this device: TEST sX, kk.
-                  75             TEST      s1,#5O
-E: instruction not supported on the this device: TEST sX, kk.
-                  76             TEST      s1,#5Q
-E: instruction not supported on the this device: TEST sX, kk.
-                  77             TEST      s1,#5h
-E: instruction not supported on the this device: TEST sX, kk.
-                  78             TEST      s1,#101b
-E: instruction not supported on the this device: TEST sX, kk.
-                  79             TEST      s1,#00000101b
-E: instruction not supported on the this device: TEST sX, kk.
+02F 00105         68             load      s1,#5
+030 00105         69             load      s1,#5
+031 00105         70             load      s1,#05
+032 00105         71             load      s1,#0x05
+033 00105         72             load      s1,#0b101
+034 00105         73             load      s1,#0b00000101
+035 00105         74             load      s1,#5D
+036 00105         75             load      s1,#5O
+037 00105         76             load      s1,#5Q
+038 00105         77             load      s1,#5h
+039 00105         78             load      s1,#101b
+03A 00105         79             load      s1,#00000101b
                   80
-02F 10110         81             LOAD      s1,s2
-030 12110         82             AND       s1,s2
-031 14110         83             OR        s1,s2
-032 16110         84             XOR       s1,s2
-                  85             TEST      s1,s2
-E: instruction not supported on the this device: TEST sX, sY.
+03B 10110         81             LOAD      s1,s2
+03C 12110         82             AND       s1,s2
+03D 14110         83             OR        s1,s2
+03E 16110         84             XOR       s1,s2
+03F 10110         85             load      s1,s2
                   86
                   87     END
                   88

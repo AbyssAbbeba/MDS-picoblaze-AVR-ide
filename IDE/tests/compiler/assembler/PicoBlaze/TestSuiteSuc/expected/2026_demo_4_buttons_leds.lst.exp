@@ -525,15 +525,13 @@ W: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while
                  462     ; Main loop
                  463     ; --------------------
 0E6 20102        464     main:   INPUT   BTN_i,Btn               ; Save buttons status
-                 465             TEST    BTN_i,1                 ; Button one pressed
-W: instruction `TEST sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-E: instruction not supported on the this device: TEST sX, sY.
-0E7 35801        466             JUMP    C,Snake_i               ; JUMP to snake subroutine
-                 467             TEST    BTN_i,2                 ; Button two pressed
-W: instruction `TEST sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-E: instruction not supported on the this device: TEST sX, sY.
-0E8 35810        468             JUMP    C,Blink_i               ; JUMP to Blink subroutine
-0E9 340E6        469             JUMP    main
+0E7 10108        465             load    BTN_i,1                 ; Button one pressed
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+0E8 35801        466             JUMP    C,Snake_i               ; JUMP to snake subroutine
+0E9 10110        467             load    BTN_i,2                 ; Button two pressed
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+0EA 35810        468             JUMP    C,Blink_i               ; JUMP to Blink subroutine
+0EB 340E6        469             JUMP    main
                  470     ; Program end
                  471     ; --------------------
                  472             END

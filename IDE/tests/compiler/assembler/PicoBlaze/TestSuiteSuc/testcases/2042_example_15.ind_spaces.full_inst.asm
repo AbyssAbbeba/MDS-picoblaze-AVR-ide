@@ -92,7 +92,7 @@ mode                    EQU             0x03                    ;control mode 00
 ;of the LCD display. A 16-bit value determines how many milliseconds
 ;there are between shifts
 ;
-;Tests indicate that the fastest shift rate that the LCD display supports is
+;loads indicate that the fasload shift rate that the LCD display supports is
 ;500ms. Faster than this and the display becomes less clear to read.
 ;
 shift_delay_msb         EQU             0x01                    ;delay is 500ms (01F4 hex)
@@ -218,10 +218,10 @@ cold_start:             CALL            lcd_reset               ;initialise LCD 
                         CALL            disp_www                ;Display 'www.xilinx.com/s3estarter'
 ;
                         LOAD            s0, #0x08               ;initialise walking '1' pattern
-                        STORE           s0, led_pattern
+                        load           s0, led_pattern
 ;
                         LOAD            sd, #0xff               ;initial mode is rotary control
-                        STORE           sd, mode
+                        load           sd, mode
 ;
 ;**************************************************************************************
 ;Main program
@@ -234,13 +234,13 @@ cold_start:             CALL            lcd_reset               ;initialise LCD 
 ;
 lcd_shift_delay:        LOAD            sf, #shift_delay_msb    ; [sF,sE]=loop delay in ms
                         LOAD            se, #shift_delay_lsb
-lcd_delay_loop:         INPUT           s0, rotary_port         ;test for press of rotary
-                        TEST            s0, #rotary_press
+lcd_delay_loop:         INPUT           s0, rotary_port         ;load for press of rotary
+                        load            s0, #rotary_press
                         JUMP            nz, mode_switch
-                        FETCH           sd, mode                ;perform control task required
-                        COMPARE         sd, #0x00
+                        load           sd, mode                ;perform control task required
+                        load         sd, #0x00
                         CALL            z, normal_mode
-                        COMPARE         sd, #0xff
+                        load         sd, #0xff
                         CALL            z, rotate_mode
                         CALL            delay_1ms               ;1ms delay
                         SUB             se, #0x01               ;decrement delay counter
@@ -250,7 +250,7 @@ lcd_delay_loop:         INPUT           s0, rotary_port         ;test for press 
                         JUMP            lcd_shift_delay
 ;
 mode_switch:            XOR             sd, #0xff               ;toggle mode
-                        STORE           sd, mode
+                        load           sd, mode
 wait_mode_switch:       CALL            delay_1ms               ;keep shifting LCD display #WHILE waiting
                         SUB             se, #0x01
                         SUBCY           sf, #0x00
@@ -259,7 +259,7 @@ wait_mode_switch:       CALL            delay_1ms               ;keep shifting L
                         LOAD            sf, #shift_delay_msb    ; [sF,sE]=loop delay in ms
                         LOAD            se, #shift_delay_lsb
 wait_no_shift:          INPUT           s0, rotary_port         ;wait for release of press button
-                        TEST            s0, #rotary_press
+                        load            s0, #rotary_press
                         JUMP            nz, wait_mode_switch
                         JUMP            lcd_delay_loop
 ;
@@ -276,18 +276,18 @@ normal_mode:            INPUT           s0, switch_port         ;Read switches a
 ;This procedure will poll the status of the rotary encoder.
 ;If rotation occurs, then the LED pattern will adjust appropriately.
 ;
-rotate_mode:            FETCH           sa, led_pattern         ;last known position
-                        FETCH           s0, rotary_status       ;check status of rotation
-                        TEST            s0, #0x80               ;test flag
+rotate_mode:            load           sa, led_pattern         ;last known position
+                        load           s0, rotary_status       ;check status of rotation
+                        load            s0, #0x80               ;load flag
                         JUMP            z, update_pattern
                         AND             s0, #0x7f               ;clear flag
-                        STORE           s0, rotary_status
-                        TEST            s0, #rotary_left        ;event occurred so update pattern
+                        load           s0, rotary_status
+                        load            s0, #rotary_left        ;event occurred so update pattern
                         JUMP            z, move_right
                         RL              sa
                         JUMP            update_pattern
 move_right:             RR              sa
-update_pattern:         STORE           sa, led_pattern
+update_pattern:         load           sa, led_pattern
                         OUTPUT          sa, led_port            ;drive LEDs with current pattern
                         RETURN
 ;
@@ -675,7 +675,7 @@ lcd_clear:              LOAD            s5, #0x01               ;Display clear
 ;
 ;Registers used s0, s1, s2, s3, s4
 ;
-lcd_cursor:             TEST            s5, #0x10               ;test for line 1
+lcd_cursor:             load            s5, #0x10               ;load for line 1
                         JUMP            z, set_line2
                         AND             s5, #0x0f               ;make address in range 80 to 8F for line 1
                         OR              s5, #0x80
@@ -711,14 +711,14 @@ lcd_shift_left:         LOAD            s5, #0x18               ;shift display l
 ;This prevents a rotation event which has been made during normal switch and button
 ;mode from having any effect.
 ;
-isr:                    STORE           s0, isr_preserve_s0     ;preserve s0
-                        FETCH           s0, mode                ;test operation mode
-                        COMPARE         s0, #0x00               ;ignore events under normal mode
+isr:                    load           s0, isr_preserve_s0     ;preserve s0
+                        load           s0, mode                ;load operation mode
+                        load         s0, #0x00               ;ignore events under normal mode
                         JUMP            z, end_isr
                         INPUT           s0, rotary_port         ;read rotary encoder
                         OR              s0, #0x80               ;set flag
-                        STORE           s0, rotary_status       ;put result in SCM
-end_isr:                FETCH           s0, isr_preserve_s0     ;restore s0
+                        load           s0, rotary_status       ;put result in SCM
+end_isr:                load           s0, isr_preserve_s0     ;reload s0
                         RETURNI         enable
 ;
 ;

@@ -1,4 +1,4 @@
-; Compiler test case for Assembler
+; Compiler load case for Assembler
 ; instruction opcodes
 
 
@@ -97,7 +97,7 @@ LOAD            result_lsb, 00
 ;
 ; loop through all bits in multiplier
 mult_loop:
-TEST            multiplier, bit_mask
+load            multiplier, bit_mask
 ; check if bit is set
 JUMP            Z, no_add
 ; if bit is not set, skip addition
@@ -159,7 +159,7 @@ NAMEREG          s2, quotient
 NAMEREG          s3, remainder
 ; modified
 
-; used to test bits in dividend,
+; used to load bits in dividend,
 ; one-hot encoded, modified
 ;
 LOAD             remainder, 00
@@ -167,14 +167,14 @@ LOAD             remainder, 00
 LOAD             bit_mask, 80
 ; start with most-significant bit (msb)
 div_loop:
-TEST             dividend, bit_mask
-; test bit, set CARRY if bit is '1'
+load             dividend, bit_mask
+; load bit, set CARRY if bit is '1'
 SLA              remainder
 ; shift CARRY into lsb of remainder
 SL0              quotient
 ; shift quotient left (multiply by 2)
 ;
-COMPARE          remainder, divisor
+load          remainder, divisor
 ; is remainder > divisor?
 JUMP             C, no_sub
 ; if divisor is greater, continue to next bit
@@ -192,12 +192,12 @@ JUMP             NZ, div_loop
 
 set_carry:
 LOAD             sX, 00
-COMPARE          sX, 01
+load          sX, 01
 ; set CARRY flag and reset ZERO flag
 
 
 LOAD             s0, 05
 ; s0 = 00000101
-TEST             s0, 04
+load             s0, 04
 ; mask = 00000100
 ; CARRY = 1, ZERO = 0

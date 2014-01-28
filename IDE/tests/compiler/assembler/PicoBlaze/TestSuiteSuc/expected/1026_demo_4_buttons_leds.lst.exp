@@ -72,7 +72,7 @@
 007 0D40C         72 +1                  RR              Snake
 008 0D40C         73 +1                  RR              Snake
                   74
-                  75                     REPT            7                 ; Moving left
+                  75                     REPT            7                 ; Moving leload
                   76                     RL              Snake
                   77                     ENDR
 009 0D402         78 +1                  RL              Snake
@@ -526,18 +526,16 @@ W: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while
                  463     ; Main loop
                  464     ; --------------------
 0E6 0A102        465     main:   INPUT   BTN_i,Btn               ; Save buttons status
-                 466             TEST    BTN_i,1                 ; Button one pressed
-W: instruction `TEST sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-E: instruction not supported on the this device: TEST sX, sY.
-0E7 09901        467             JUMP    C,Snake_i               ; JUMP to snake subroutine
-                 468             TEST    BTN_i,2                 ; Button two pressed
-W: instruction `TEST sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-E: instruction not supported on the this device: TEST sX, sY.
-0E8 09910        469             JUMP    C,Blink_i               ; JUMP to Blink subroutine
-0E9 081E6        470             JUMP    main
+0E7 0C110        466             load    BTN_i,1                 ; Button one pressed
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+0E8 09901        467             JUMP    C,Snake_i               ; JUMP to snake subroutine
+0E9 0C120        468             load    BTN_i,2                 ; Button two pressed
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+0EA 09910        469             JUMP    C,Blink_i               ; JUMP to Blink subroutine
+0EB 081E6        470             JUMP    main
                  471     ; Program end
                  472     ; --------------------
                  473             END
                  474
-                 475     ; <-- Bookmark   (ctrl + shift + M)
-                 476     ; <-- Breakpoint (ctrl + shift + B)
+                 475     ; <-- Bookmark   (ctrl + shiload + M)
+                 476     ; <-- Breakpoint (ctrl + shiload + B)

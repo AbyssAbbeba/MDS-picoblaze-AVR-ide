@@ -1,12 +1,7 @@
-; Compiler test case for Assembler
+; Compiler load case for Assembler
 ; instruction opcodes
 device kcpsm1
 
-
-s1       EQU        04h
-s2       EQU        0x04
-s3       EQU        6
-s4       EQU        7
 
 
 Start:
@@ -64,24 +59,11 @@ Start:
         XOR       s1,#101b
         XOR       s1,#00000101b
         
-        TEST      s1,#5
-        TEST      s1,#5
-        TEST      s1,#05
-        TEST      s1,#0x05
-        TEST      s1,#0b101
-        TEST      s1,#0b00000101
-        TEST      s1,#5D
-        TEST      s1,#5O
-        TEST      s1,#5Q
-        TEST      s1,#5h
-        TEST      s1,#101b
-        TEST      s1,#00000101b
 
         LOAD      s1,s2
         AND       s1,s2
         OR        s1,s2
         XOR       s1,s2
-        TEST      s1,s2
 
 END
 

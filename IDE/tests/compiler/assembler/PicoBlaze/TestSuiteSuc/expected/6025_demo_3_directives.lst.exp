@@ -1,0 +1,98 @@
+                   1     ; MDS PicoBlaze IDE - Demonstration code
+                   2
+                   3     ; Example of sytax errors and list of most used directives
+                   4     ; ------------------------------------------------------
+                   5     ; See manual for more info
+                   6     ;
+                   7     device kcpsm6
+                   8
+                   9             END
+                  10     ; Code with syntax errors
+                  11             nolist                        ; Disable code listing
+                  12     #if 0
+                  13             LOAD       A, #55d, B         ; too many operands
+                  14             ADD        0FFh,, 04x4h       ; invalid operands
+                  15             ORG        (4 *** 5)          ; invalid expression
+                  16     label?: SR0        B                  ; invalid label
+                  17     #endif
+                  18             list    ; Enable code listing
+                  19
+                  20     ; <-- Bookmark   (ctrl + shift + M)
+                  21     ; <-- Breakpoint (ctrl + shift + B)
+                  22
+                  23     ; Here you can see syntax of some important directives
+                  24     ; Those directives may significantly improve quality and readability of your code
+                  25
+                  26                     DEVICE          KCPSM3
+                  27     ; Tell compiler type of procesor (KCPSM2, KCPSM3, KCPSM6 available)
+                  28                     INCLUDE      hello.asm        ;  "< file name >"
+                  29     ;Compiler basicaly copies content of included file to line, where the directive is used.
+                  30     ;Include files can include other files.
+                  31     <symbol>        EQU     <expresion>
+                  32     ;The directive EQU stands for "equals". It allows you to give a numerical value to a symbol.
+                  33     ;This symbol cannot be redefined.
+                  34     CONSTANT        <symbol>, <expresion>
+                  35     ;The directive CONSTANT allows you to give a numerical value to a symbol. It is same like EQU,
+                  36     ;but with diferent syntax. Cannot be redefined.
+                  37      <symbol>       SET     <expresion>
+                  38     ; Directive SET is quite similar to EQU, but symbols defined with the SET(and Variable)
+                  39     ; directive can be redefined with another value in your source code, but those defined with EQU cannot.
+                  40     VARIABLE        <symbol>,<expresion>
+                  41     ; Directive VARIABLE is similar to SET, but with diferent syntax. Symbols defined with
+                  42     ; VARIABLE can be redefined with another value in your source code, but those defined with EQU cannot.
+                  43     <symbol>        REG     <expresion>
+                  44     ; Symbols defined with the REG directive are by compiler considered as work registers.
+                  45     NAMEREG         <symbol>,<expresion>
+                  46     ; Directive NAMEREG is similar to REG, but with diferent syntax.
+                  47     ; Symbols defined with NAMEREG can be redefined with another value in your source code.
+                  48     <symbol>        DATA    <expresion>
+                  49     ; Symbols defined with the DATA directive are by compiler considered as data memory.
+                  50     ; It must be used only with instructions FETCH and STORE.
+                  51     <symbol>        CODE    <expresion>
+                  52     ; Symbols defined with the CODE directive are by compiler considered as program memory.
+                  53     <symbol>        PORT    <expresion>
+                  54     ; Symbol defined with this directive is considered to be PORT_ID identificator.
+                  55     <symbol>        AUTOREG [AT E]  ; Optional attribute can define counter starting adress
+                  56     ; This directive saves time. You can use it, when you dont care which work register will be used.
+                  57     ; It will automatically assign a register at adress 0x00, which is incremented with every other
+                  58     ; AUTOREG directive. Optionaly, you can change starting address counter by adding a
+                  59     ; parameter after AUTOREG directive. You can check assigned registers in codelisting (file .lst)
+                  60     ; and symbol table (file .sym).
+                  61     <symbol>        AUTOSPR [AT E]  ; Optional attribute can define counter starting adress
+                  62
+                  63     <symbol>        DEFINE  <expresion>
+                  64     ; You can define expresion using previously defined symbols.
+                  65     ; Value of this expresion is calculated every time the symbol is used.
+                  66
+                  67         ORG         <expresion>
+                  68     ADDRESS         <expresion>
+                  69     ; When the ORG or ADDRESS statement is encountered, the assembler calculates the value of the
+                  70     ; expression and changes the address counter. The MDS assembler maintains a location counter for each
+                  71     ; segment. The location counter contains the offset of the instruction or data being assembled and is
+                  72     ; incremented after each line by the number of bytes of data or code in that line.
+                  73
+                  74     REPT <expresion> ; expresion determines number of repetion
+                  75     <repeated code>
+                  76     ENDR ; end of repetion
+                  77
+                  78     ; Directive REPT is able to repeatedly execute a block of code.
+                  79
+                  80     #WHILE <expresion>
+                  81     <repeated code>
+                  82     #ENDW ; end of #WHILE
+                  83     ; The #WHILE construct consists of a block of code and an expresion.
+                  84     ; Following code is executed until expresion equals to zero.
+                  85
+                  86     SKIP <expresion> ; expresion determines number of skipped lines of code
+                  87
+                  88     MACRO     [<parameter1>] [,<parameter2>..]
+                  89     <macro source code>
+                  90     ENDM    ; end of macro declaration
+                  91     ; Macro with mandatory parameters
+                  92
+                  93
+                  94
+                  95
+                  96
+                  97
+                  98

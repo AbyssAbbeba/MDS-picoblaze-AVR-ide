@@ -132,7 +132,7 @@ dec2                    EQU             0x3f                    ;
 ;of the LCD display. A 16-bit value determines how many milliseconds
 ;there are between shifts
 ;
-;Tests indicate that the fastest shift rate that the LCD display supports is
+;loads indicate that the fasload shift rate that the LCD display supports is
 ;500ms. Faster than this and the display becomes less clear to read.
 ;
 shift_delay_msb         EQU             0x01                    ;delay is 500ms (01F4 hex)
@@ -230,66 +230,66 @@ reset:                  CALL            lcd_reset
                         ENABLE          interrupt
                         LOAD            sd, #0xff
                         LOAD            s0, #0x00               ;
-                        STORE           s0, hourh
-                        STORE           s0, minl
-                        STORE           s0, minh
-                        STORE           s0, sech
-                        STORE           s0, secl
-                        STORE           s0, year2
-                        STORE           s0, year3
-                        STORE           s0, monh
-                        STORE           s0, minb                ;;;;;;;;;;
-                        STORE           s0, secb                ;;;;;;;;;;
+                        load           s0, hourh
+                        load           s0, minl
+                        load           s0, minh
+                        load           s0, sech
+                        load           s0, secl
+                        load           s0, year2
+                        load           s0, year3
+                        load           s0, monh
+                        load           s0, minb                ;;;;;;;;;;
+                        load           s0, secb                ;;;;;;;;;;
                         LOAD            s0, #0x09               ;
-                        STORE           s0, hourl
-                        STORE           s0, hourb               ;;;;;;;;;
+                        load           s0, hourl
+                        load           s0, hourb               ;;;;;;;;;
                         LOAD            s0, #0x02               ;
-                        STORE           s0, year1
-                        STORE           s0, dayh
+                        load           s0, year1
+                        load           s0, dayh
                         LOAD            s0, #0x06               ;
-                        STORE           s0, dayl
-                        STORE           s0, year4
-                        STORE           s0, yearb               ;;;;;;;;;
+                        load           s0, dayl
+                        load           s0, year4
+                        load           s0, yearb               ;;;;;;;;;
                         LOAD            s0, #0x05               ;
-                        STORE           s0, monl
-                        STORE           s0, week
-                        STORE           s0, monb                ;;;;;;;;;
+                        load           s0, monl
+                        load           s0, week
+                        load           s0, monb                ;;;;;;;;;
                         LOAD            s0, #0x1a
-                        STORE           s0, dayb                ;;;;;;;;;
+                        load           s0, dayb                ;;;;;;;;;
                         LOAD            s0, #0x1f
-                        STORE           s0, jan                 ;1
-                        STORE           s0, mar                 ;3
-                        STORE           s0, may                 ;5
-                        STORE           s0, jul                 ;7
-                        STORE           s0, aug                 ;8
-                        STORE           s0, oct                 ;10
-                        STORE           s0, 0xdec               ;12
+                        load           s0, jan                 ;1
+                        load           s0, mar                 ;3
+                        load           s0, may                 ;5
+                        load           s0, jul                 ;7
+                        load           s0, aug                 ;8
+                        load           s0, oct                 ;10
+                        load           s0, 0xdec               ;12
                         LOAD            s0, #0x1e
-                        STORE           s0, apr                 ;4
-                        STORE           s0, jun                 ;6
-                        STORE           s0, sep                 ;9
-                        STORE           s0, nov                 ;11
+                        load           s0, apr                 ;4
+                        load           s0, jun                 ;6
+                        load           s0, sep                 ;9
+                        load           s0, nov                 ;11
                         LOAD            s0, #0x1c
-                        STORE           s0, 0xfeb               ;2
+                        load           s0, 0xfeb               ;2
                         LOAD            s0, #0x03
-                        STORE           s0, jan2
-                        STORE           s0, oct2
+                        load           s0, jan2
+                        load           s0, oct2
                         LOAD            s0, #0x06
-                        STORE           s0, 0xfeb2
-                        STORE           s0, mar2
-                        STORE           s0, nov2
+                        load           s0, 0xfeb2
+                        load           s0, mar2
+                        load           s0, nov2
                         LOAD            s0, #0x02
-                        STORE           s0, apr2
-                        STORE           s0, jul2
+                        load           s0, apr2
+                        load           s0, jul2
                         LOAD            s0, #0x04
-                        STORE           s0, may2
+                        load           s0, may2
                         LOAD            s0, #0x00
-                        STORE           s0, jun2
+                        load           s0, jun2
                         LOAD            s0, #0x05
-                        STORE           s0, aug2
+                        load           s0, aug2
                         LOAD            s0, #0x01
-                        STORE           s0, sep2
-                        STORE           s0, 0xdec2
+                        load           s0, sep2
+                        load           s0, 0xdec2
                         LOAD            sf, #0x00               ;
 restart:
                         LOAD            s5, #0x10
@@ -299,29 +299,29 @@ restart:
                         CALL            lcd_cursor
                         CALL            disp_msg2
                         LOAD            s3, #0x35
-                        STORE           s3, temp
+                        load           s3, temp
 blink10:                LOAD            s3, #0x00
-                        STORE           s3, ms100
-blink1:                 FETCH           s3, ms100
-                        COMPARE         s3, #0x05
+                        load           s3, ms100
+blink1:                 load           s3, ms100
+                        load         s3, #0x05
                         JUMP            c, blink1
                         LOAD            s5, #0x2f
                         CALL            lcd_cursor
-                        FETCH           s5, temp
+                        load           s5, temp
                         CALL            lcd_write_data
                         LOAD            s3, #0x00
-                        STORE           s3, ms100
-wait1:                  FETCH           s3, ms100
-                        COMPARE         s3, #0x05
+                        load           s3, ms100
+wait1:                  load           s3, ms100
+                        load         s3, #0x05
                         JUMP            c, wait1
                         LOAD            s5, #0x2f
                         CALL            lcd_cursor
                         LOAD            s5, #0x20
                         CALL            lcd_write_data
-                        FETCH           s5, temp
+                        load           s5, temp
                         ADD             s5, #0xff
-                        STORE           s5, temp
-                        COMPARE         s5, #0x2f
+                        load           s5, temp
+                        load         s5, #0x2f
                         JUMP            nz, blink10
 rrestart:               LOAD            s5, #0x10
                         CALL            lcd_cursor
@@ -330,88 +330,88 @@ rrestart:               LOAD            s5, #0x10
                         CALL            lcd_cursor
                         CALL            disp_msg4
                         LOAD            s3, #0x35
-                        STORE           s3, temp
+                        load           s3, temp
 blink20:                LOAD            s3, #0x00
-                        STORE           s3, ms100
-blink2:                 FETCH           s3, ms100
-                        COMPARE         s3, #0x05
+                        load           s3, ms100
+blink2:                 load           s3, ms100
+                        load         s3, #0x05
                         JUMP            c, blink2
                         LOAD            s5, #0x2f
                         CALL            lcd_cursor
-                        FETCH           s5, temp
+                        load           s5, temp
                         CALL            lcd_write_data
                         LOAD            s3, #0x00
-                        STORE           s3, ms100
-wait2:                  FETCH           s3, ms100
-                        COMPARE         s3, #0x05
+                        load           s3, ms100
+wait2:                  load           s3, ms100
+                        load         s3, #0x05
                         JUMP            c, wait2
                         LOAD            s5, #0x2f
                         CALL            lcd_cursor
                         LOAD            s5, #0x20
                         CALL            lcd_write_data
-                        FETCH           s5, temp
+                        load           s5, temp
                         ADD             s5, #0xff
-                        STORE           s5, temp
-                        COMPARE         s5, #0x2f
+                        load           s5, temp
+                        load         s5, #0x2f
                         JUMP            nz, blink20
                         LOAD            s0, #0x00
-                        STORE           s0, led_pattern
-                        STORE           s0, mode
-                        STORE           s0, blink_flag
-                        STORE           s0, ms100
+                        load           s0, led_pattern
+                        load           s0, mode
+                        load           s0, blink_flag
+                        load           s0, ms100
                         LOAD            s5, #0x10
                         CALL            lcd_cursor
                         CALL            disp_msg5
                         LOAD            s5, #0x20
                         CALL            lcd_cursor
                         CALL            disp_msg6
-pause:                  FETCH           s0, ms100
-                        COMPARE         s0, #0x32
+pause:                  load           s0, ms100
+                        load         s0, #0x32
                         JUMP            c, pause
                         CALL            lcd_clear
                         INPUT           s0, 0x00
-                        STORE           s0, disp_flag2
-                        STORE           s0, ms100
+                        load           s0, disp_flag2
+                        load           s0, ms100
 loop:
-                        FETCH           s0, hourb
+                        load           s0, hourb
                         CALL            b2bcd
-                        STORE           s0, hourl
-                        STORE           s1, hourh
-                        FETCH           s0, minb
+                        load           s0, hourl
+                        load           s1, hourh
+                        load           s0, minb
                         CALL            b2bcd
-                        STORE           s0, minl
-                        STORE           s1, minh
-                        FETCH           s0, secb
+                        load           s0, minl
+                        load           s1, minh
+                        load           s0, secb
                         CALL            b2bcd
-                        STORE           s0, secl
-                        STORE           s1, sech
-                        FETCH           s0, dayb
+                        load           s0, secl
+                        load           s1, sech
+                        load           s0, dayb
                         CALL            b2bcd
-                        STORE           s0, dayl
-                        STORE           s1, dayh
-                        FETCH           s0, monb
+                        load           s0, dayl
+                        load           s1, dayh
+                        load           s0, monb
                         CALL            b2bcd
-                        STORE           s0, monl
-                        STORE           s1, monh
-                        FETCH           s0, yearb
+                        load           s0, monl
+                        load           s1, monh
+                        load           s0, yearb
                         CALL            b2bcd
-                        STORE           s0, year4
-                        STORE           s1, year3
+                        load           s0, year4
+                        load           s1, year3
                         AND             sf, #0xff
                         JUMP            nz, skip1
 ;;;DISP HH
                         LOAD            s5, #0x11
                         CALL            lcd_cursor
-                        FETCH           s3, mode
-                        COMPARE         s3, #0x01
+                        load           s3, mode
+                        load         s3, #0x01
                         JUMP            nz, dsp_hh
-                        FETCH           s3, ms500
-                        TEST            s3, #0x01
+                        load           s3, ms500
+                        load            s3, #0x01
                         JUMP            nz, space7
-dsp_hh:                 FETCH           s5, hourh
+dsp_hh:                 load           s5, hourh
                         ADD             s5, #0x30
                         CALL            lcd_write_data
-                        FETCH           s5, hourl
+                        load           s5, hourl
                         ADD             s5, #0x30
                         CALL            lcd_write_data
                         JUMP            mode_2
@@ -421,16 +421,16 @@ mode_2:
 ;;;DISP MM
                         LOAD            s5, #0x14
                         CALL            lcd_cursor
-                        FETCH           s3, mode
-                        COMPARE         s3, #0x02
+                        load           s3, mode
+                        load         s3, #0x02
                         JUMP            nz, dsp_mm
-                        FETCH           s3, ms500
-                        TEST            s3, #0x01
+                        load           s3, ms500
+                        load            s3, #0x01
                         JUMP            nz, space6
-dsp_mm:                 FETCH           s5, minh
+dsp_mm:                 load           s5, minh
                         ADD             s5, #0x30
                         CALL            lcd_write_data
-                        FETCH           s5, minl
+                        load           s5, minl
                         ADD             s5, #0x30
                         CALL            lcd_write_data
                         JUMP            mode_3
@@ -440,16 +440,16 @@ mode_3:
 ;;;DISP SS
                         LOAD            s5, #0x17
                         CALL            lcd_cursor
-                        FETCH           s3, mode
-                        COMPARE         s3, #0x03
+                        load           s3, mode
+                        load         s3, #0x03
                         JUMP            nz, dsp_ss
-                        FETCH           s3, ms500
-                        TEST            s3, #0x01
+                        load           s3, ms500
+                        load            s3, #0x01
                         JUMP            nz, space5
-dsp_ss:                 FETCH           s5, sech
+dsp_ss:                 load           s5, sech
                         ADD             s5, #0x30
                         CALL            lcd_write_data
-                        FETCH           s5, secl
+                        load           s5, secl
                         ADD             s5, #0x30
                         CALL            lcd_write_data
                         JUMP            mode_4
@@ -459,8 +459,8 @@ mode_4:
 ;;;DISP week
                         LOAD            s5, #0x1c
                         CALL            lcd_cursor
-                        FETCH           s3, week
-                        COMPARE         s3, #0x00
+                        load           s3, week
+                        load         s3, #0x00
                         JUMP            nz, mon
                         LOAD            s5, #_character_s
                         CALL            lcd_write_data
@@ -468,9 +468,9 @@ mode_4:
                         CALL            lcd_write_data
                         LOAD            s5, #character_n
                         CALL            lcd_write_data
-                        JUMP            test_bit0
-mon:                    FETCH           s3, week
-                        COMPARE         s3, #0x01
+                        JUMP            load_bit0
+mon:                    load           s3, week
+                        load         s3, #0x01
                         JUMP            nz, tue
                         LOAD            s5, #_character_m
                         CALL            lcd_write_data
@@ -478,9 +478,9 @@ mon:                    FETCH           s3, week
                         CALL            lcd_write_data
                         LOAD            s5, #character_n
                         CALL            lcd_write_data
-                        JUMP            test_bit0
-tue:                    FETCH           s3, week
-                        COMPARE         s3, #0x02
+                        JUMP            load_bit0
+tue:                    load           s3, week
+                        load         s3, #0x02
                         JUMP            nz, wed
                         LOAD            s5, #_character_t
                         CALL            lcd_write_data
@@ -488,9 +488,9 @@ tue:                    FETCH           s3, week
                         CALL            lcd_write_data
                         LOAD            s5, #character_e
                         CALL            lcd_write_data
-                        JUMP            test_bit0
-wed:                    FETCH           s3, week
-                        COMPARE         s3, #0x03
+                        JUMP            load_bit0
+wed:                    load           s3, week
+                        load         s3, #0x03
                         JUMP            nz, thu
                         LOAD            s5, #_character_w
                         CALL            lcd_write_data
@@ -498,9 +498,9 @@ wed:                    FETCH           s3, week
                         CALL            lcd_write_data
                         LOAD            s5, #character_d
                         CALL            lcd_write_data
-                        JUMP            test_bit0
-thu:                    FETCH           s3, week
-                        COMPARE         s3, #0x04
+                        JUMP            load_bit0
+thu:                    load           s3, week
+                        load         s3, #0x04
                         JUMP            nz, fri
                         LOAD            s5, #_character_t
                         CALL            lcd_write_data
@@ -508,9 +508,9 @@ thu:                    FETCH           s3, week
                         CALL            lcd_write_data
                         LOAD            s5, #character_u
                         CALL            lcd_write_data
-                        JUMP            test_bit0
-fri:                    FETCH           s3, week
-                        COMPARE         s3, #0x05
+                        JUMP            load_bit0
+fri:                    load           s3, week
+                        load         s3, #0x05
                         JUMP            nz, sat
                         LOAD            s5, #_character_f
                         CALL            lcd_write_data
@@ -518,31 +518,31 @@ fri:                    FETCH           s3, week
                         CALL            lcd_write_data
                         LOAD            s5, #character_i
                         CALL            lcd_write_data
-                        JUMP            test_bit0
+                        JUMP            load_bit0
 sat:                    LOAD            s5, #_character_s
                         CALL            lcd_write_data
                         LOAD            s5, #character_a
                         CALL            lcd_write_data
                         LOAD            s5, #character_t
                         CALL            lcd_write_data
-                        JUMP            test_bit0
-test_bit0:
+                        JUMP            load_bit0
+load_bit0:
 rotary_press1:
 rotary_press2:
 skip1:
 ;;;DISP month
                         LOAD            s5, #0x26
                         CALL            lcd_cursor
-                        FETCH           s3, mode
-                        COMPARE         s3, #0x04
+                        load           s3, mode
+                        load         s3, #0x04
                         JUMP            nz, dsp_mon
-                        FETCH           s3, ms500
-                        TEST            s3, #0x01
+                        load           s3, ms500
+                        load            s3, #0x01
                         JUMP            nz, space4
-dsp_mon:                FETCH           s5, monh
+dsp_mon:                load           s5, monh
                         ADD             s5, #0x30
                         CALL            lcd_write_data
-                        FETCH           s5, monl
+                        load           s5, monl
                         ADD             s5, #0x30
                         CALL            lcd_write_data
                         JUMP            mode_5
@@ -552,16 +552,16 @@ mode_5:
 ;;;DISP day
                         LOAD            s5, #0x29
                         CALL            lcd_cursor
-                        FETCH           s3, mode
-                        COMPARE         s3, #0x05
+                        load           s3, mode
+                        load         s3, #0x05
                         JUMP            nz, dsp_dd
-                        FETCH           s3, ms500
-                        TEST            s3, #0x01
+                        load           s3, ms500
+                        load            s3, #0x01
                         JUMP            nz, space3
-dsp_dd:                 FETCH           s5, dayh
+dsp_dd:                 load           s5, dayh
                         ADD             s5, #0x30
                         CALL            lcd_write_data
-                        FETCH           s5, dayl
+                        load           s5, dayl
                         ADD             s5, #0x30
                         CALL            lcd_write_data
                         JUMP            mode_6
@@ -571,22 +571,22 @@ mode_6:
 ;;;DISP year
                         LOAD            s5, #0x2c
                         CALL            lcd_cursor
-                        FETCH           s3, mode
-                        COMPARE         s3, #0x06
+                        load           s3, mode
+                        load         s3, #0x06
                         JUMP            nz, dsp_yy
-                        FETCH           s3, ms500
-                        TEST            s3, #0x01
+                        load           s3, ms500
+                        load            s3, #0x01
                         JUMP            nz, space2
-dsp_yy:                 FETCH           s5, year1
+dsp_yy:                 load           s5, year1
                         ADD             s5, #0x30
                         CALL            lcd_write_data
-                        FETCH           s5, year2
+                        load           s5, year2
                         ADD             s5, #0x30
                         CALL            lcd_write_data
-                        FETCH           s5, year3
+                        load           s5, year3
                         ADD             s5, #0x30
                         CALL            lcd_write_data
-                        FETCH           s5, year4
+                        load           s5, year4
                         ADD             s5, #0x30
                         CALL            lcd_write_data
                         JUMP            mode_end
@@ -595,62 +595,62 @@ space2:                 CALL            disp_space
                         CALL            disp_space
                         CALL            disp_space
 mode_end:
-                        FETCH           s0, monb
+                        load           s0, monb
                         LOAD            s1, #dmax
                         ADD             s1, s0
-                        FETCH           s2, @s1                 ;;28
-                        COMPARE         s0, #0x02               ;;Y
+                        load           s2, #s1                 ;;28
+                        load         s0, #0x02               ;;Y
                         JUMP            nz, no_feb
-                        FETCH           s1, yearb
+                        load           s1, yearb
                         AND             s1, #0x03
                         JUMP            nz, no_feb
                         ADD             s2, #0x01
 no_runnian:
-no_feb:                 STORE           s2, dmax
-                        FETCH           s1, dayb
-                        COMPARE         s2, s1
+no_feb:                 load           s2, dmax
+                        load           s1, dayb
+                        load         s2, s1
                         JUMP            nc, under
-                        STORE           s2, dayb
+                        load           s2, dayb
 under:
-                        FETCH           s1, day_up
+                        load           s1, day_up
                         AND             s1, s1
                         JUMP            z, no_day_up
-                        FETCH           s1, dayb
+                        load           s1, dayb
                         ADD             s1, #0x01
-                        STORE           s1, dayb
-                        FETCH           s2, dmax
+                        load           s1, dayb
+                        load           s2, dmax
                         ADD             s2, #0x01
-                        COMPARE         s1, s2
+                        load         s1, s2
                         JUMP            nz, no_mon_up
                         LOAD            s1, #0x01
-                        STORE           s1, dayb
-                        FETCH           s1, monb
+                        load           s1, dayb
+                        load           s1, monb
                         ADD             s1, #0x01
-                        STORE           s1, monb
-                        COMPARE         s1, #0x0d
+                        load           s1, monb
+                        load         s1, #0x0d
                         JUMP            nz, no_year_up
                         LOAD            s1, #0x01
-                        STORE           s1, monb
-                        FETCH           s1, yearb
+                        load           s1, monb
+                        load           s1, yearb
                         ADD             s1, #0x01
-                        STORE           s1, yearb
-                        COMPARE         s1, #0x64
+                        load           s1, yearb
+                        load         s1, #0x64
                         JUMP            nz, no_year_up
                         LOAD            s1, #0x00
-                        STORE           s1, yearb
+                        load           s1, yearb
                         JUMP            no_year_up
 no_mon_up:
 no_day_up:
 no_year_up:
                         LOAD            s0, #0x00
-                        STORE           s0, day_up
+                        load           s0, day_up
                         LOAD            s0, #0xdec
-                        FETCH           s2, monb
+                        load           s2, monb
                         ADD             s0, s2
-                        FETCH           s1, @s0                 ;;;K
-                        FETCH           s0, yearb
+                        load           s1, #s0                 ;;;K
+                        load           s0, yearb
                         ADD             s1, s0                  ;;;;;;;K+Y
-                        COMPARE         s2, #0x03
+                        load         s2, #0x03
                         JUMP            c, rn
                         ADD             s0, #0x01               ;;;;100+Y  >2(3..12)
 rn:                     ADD             s0, #0x63               ;;;;;99+Y   1,2
@@ -658,20 +658,20 @@ rn:                     ADD             s0, #0x63               ;;;;;99+Y   1,2
                         SR0             s0                      ;;;/4
                         ADD             s0, s1
                         ADD             s0, #0x06
-                        FETCH           s2, dayb
+                        load           s2, dayb
                         ADD             s0, s2
 mod7:                   ADD             s0, #0xf9
                         JUMP            nc, m7_end
                         JUMP            mod7
 m7_end:                 ADD             s0, #0x07
-                        STORE           s0, week
-                        FETCH           s0, mode
+                        load           s0, week
+                        load           s0, mode
                         AND             s0, #0xff
                         JUMP            nz, setup
 ;;;RUN
                         LOAD            s5, #0x20
                         CALL            lcd_cursor
-                        FETCH           s5, disp_flag
+                        load           s5, disp_flag
                         CALL            lcd_write_data
                         CALL            lcd_write_data
                         CALL            lcd_write_data
@@ -686,39 +686,39 @@ setup:
                         CALL            lcd_write_data
                         LOAD            s5, #0x54               ;;;;;;;;;;;;;;;;;;;;;;;    T
                         CALL            lcd_write_data
-modeupdate:             FETCH           s0, mode
-                        STORE           s0, blink_flag
+modeupdate:             load           s0, mode
+                        load           s0, blink_flag
 nochange:
                         INPUT           s0, 0x00
-                        FETCH           s1, disp_flag2
+                        load           s1, disp_flag2
                         XOR             s1, s0
                         JUMP            nz, restart
-                        STORE           s0, disp_flag2
-                        FETCH           s0, monb
-                        COMPARE         s0, #0x05
+                        load           s0, disp_flag2
+                        load           s0, monb
+                        load         s0, #0x05
                         JUMP            nz, chk_sf
-                        FETCH           s0, dayb
-                        COMPARE         s0, #0x11
+                        load           s0, dayb
+                        load         s0, #0x11
                         JUMP            nz, chk_sf
-                        FETCH           s0, minb
-                        COMPARE         s0, #0x00
+                        load           s0, minb
+                        load         s0, #0x00
                         JUMP            z, msg7
-chk_sf:                 COMPARE         sf, #0xff
+chk_sf:                 load         sf, #0xff
                         JUMP            nz, no_bd
                         CALL            lcd_reset
                         JUMP            no_bd
 msg7:                   LOAD            s5, #0x10
                         CALL            lcd_cursor
                         CALL            disp_msg7               ;
-                        FETCH           s0, ms100
-                        COMPARE         s0, #0x32
+                        load           s0, ms100
+                        load         s0, #0x32
                         JUMP            c, wait
                         LOAD            sf, #0x00
                         JUMP            restart
 wait:                   LOAD            sf, #0xff
                         JUMP            loop
 no_bd:                  LOAD            sf, #0x00
-                        STORE           sf, ms100
+                        load           sf, ms100
                         JUMP            loop
 ;;;;;;;;;s0---BINARY, s1---BCD_H, s0---BCD_L
 b2bcd:                  LOAD            s1, #0x00               ;
@@ -738,18 +738,18 @@ h_end:                  ADD             s0, #0x0a
 ;This procedure will poll the status of the rotary encoder.
 ;If rotation occurs, then the LED pattern will adjust appropriately.
 ;
-;    rotate_mode: FETCH sA, LED_pattern               ;last known position
-;                 FETCH s0, rotary_status             ;check status of rotation
-;                 TEST s0, 80                         ;test flag
+;    rotate_mode: load sA, LED_pattern               ;last known position
+;                 load s0, rotary_status             ;check status of rotation
+;                 load s0, 80                         ;load flag
 ;                 JUMP Z, update_pattern
 ;                 AND s0, 7F                          ;clear flag
-;                 STORE s0, rotary_status
-;                 TEST s0, rotary_left                ;event occurred so update pattern
+;                 load s0, rotary_status
+;                 load s0, rotary_left                ;event occurred so update pattern
 ;                 JUMP Z, move_right
 ;                 RL sA
 ;                 JUMP update_pattern
 ;     move_right: RR sA
-; update_pattern: STORE sA, LED_pattern
+; update_pattern: load sA, LED_pattern
 ;                 OUTPUT sA, LED_port                 ;drive LEDs with current pattern
 ;                 RETURN
 ;                 ;
@@ -1265,7 +1265,7 @@ lcd_clear:              LOAD            s5, #0x01               ;Display clear
 ;
 ;Registers used s0, s1, s2, s3, s4
 ;
-lcd_cursor:             TEST            s5, #0x10               ;test for line 1
+lcd_cursor:             load            s5, #0x10               ;load for line 1
                         JUMP            z, set_line2
                         AND             s5, #0x0f               ;make address in range 80 to 8F for line 1
                         OR              s5, #0x80
@@ -1289,236 +1289,236 @@ set_line2:              AND             s5, #0x0f               ;make address in
 ;**************************************************************************************
 ;Interrupt Service Routine (ISR)
 ;**************************************************************************************
-isr:                    STORE           s0, isr_s0              ;preserve s0
-                        STORE           s1, isr_s1
-                        STORE           s2, isr_s2
+isr:                    load           s0, isr_s0              ;preserve s0
+                        load           s1, isr_s1
+                        load           s2, isr_s2
                         INPUT           s1, rotary_port
                         LOAD            s0, #0x00
-                        TEST            s1, #rotary_press
+                        load            s1, #rotary_press
                         JUMP            z, no_press
-                        FETCH           s0, pressed
-                        COMPARE         s0, #0x00
+                        load           s0, pressed
+                        load         s0, #0x00
                         JUMP            nz, no_press
-                        FETCH           s2, led_pattern
+                        load           s2, led_pattern
                         ADD             s2, #0x01
-                        STORE           s2, led_pattern
-                        FETCH           s2, mode
+                        load           s2, led_pattern
+                        load           s2, mode
                         ADD             s2, #0x01
-                        COMPARE         s2, #0x07
+                        load         s2, #0x07
                         JUMP            nz, mode_save
                         AND             s2, #0x00
-mode_save:              STORE           s2, mode                ;;;;;0-normal;1-hour;2-min;3-sec;4-day,5-mon,6-year
+mode_save:              load           s2, mode                ;;;;;0-normal;1-hour;2-min;3-sec;4-day,5-mon,6-year
                         LOAD            s0, #0xff
-no_press:               STORE           s0, pressed
-                        TEST            s1, #0x40               ;;;rotary INT ?
+no_press:               load           s0, pressed
+                        load            s1, #0x40               ;;;rotary INT ?
                         JUMP            z, t2_5m_int            ;;NOT rotary INT,JUMP away
 clr_int2:               LOAD            s0, #0x40               ;;;;;CLR_INT1
                         OUTPUT          s0, 0x20
-                        FETCH           s0, led_pattern
-                        TEST            s1, #rotary_left
+                        load           s0, led_pattern
+                        load            s1, #rotary_left
                         JUMP            z, its_right
                         ADD             s0, #0xff
-                        STORE           s0, led_pattern
+                        load           s0, led_pattern
 ;;;turn left,--
-                        FETCH           s0, mode
-                        COMPARE         s0, #0x00
+                        load           s0, mode
+                        load         s0, #0x00
                         JUMP            z, clr_int1             ;
-                        COMPARE         s0, #0x01
+                        load         s0, #0x01
                         JUMP            nz, mode2n
-                        FETCH           s1, hourb
+                        load           s1, hourb
                         ADD             s1, #0xff
-                        COMPARE         s1, #0xff               ;;;24
+                        load         s1, #0xff               ;;;24
                         JUMP            nz, save_hhn
                         LOAD            s1, #0x17
-save_hhn:               STORE           s1, hourb
+save_hhn:               load           s1, hourb
                         JUMP            real_time_end
-mode2n:                 COMPARE         s0, #0x02
+mode2n:                 load         s0, #0x02
                         JUMP            nz, mode3n
-                        FETCH           s1, minb
+                        load           s1, minb
                         ADD             s1, #0xff
-                        COMPARE         s1, #0xff               ;;;3C;;60
+                        load         s1, #0xff               ;;;3C;;60
                         JUMP            nz, save_mmn
                         LOAD            s1, #0x3b
-save_mmn:               STORE           s1, minb
+save_mmn:               load           s1, minb
                         JUMP            real_time_end
-mode3n:                 COMPARE         s0, #0x03
+mode3n:                 load         s0, #0x03
                         JUMP            nz, mode4n
-                        FETCH           s1, secb
+                        load           s1, secb
                         ADD             s1, #0xff
-                        COMPARE         s1, #0xff               ;;;60
+                        load         s1, #0xff               ;;;60
                         JUMP            nz, save_ssn
                         LOAD            s1, #0x3b
-save_ssn:               STORE           s1, secb
+save_ssn:               load           s1, secb
                         JUMP            real_time_end
-mode4n:                 COMPARE         s0, #0x04
+mode4n:                 load         s0, #0x04
                         JUMP            nz, mode5n
-                        FETCH           s1, monb
+                        load           s1, monb
                         ADD             s1, #0xff
-                        COMPARE         s1, #0x00               ;;;12
+                        load         s1, #0x00               ;;;12
                         JUMP            nz, save_monn
                         LOAD            s1, #0x0c
-save_monn:              STORE           s1, monb
+save_monn:              load           s1, monb
                         JUMP            real_time_end
-mode5n:                 COMPARE         s0, #0x05
+mode5n:                 load         s0, #0x05
                         JUMP            nz, mode6n
-                        FETCH           s1, dayb
+                        load           s1, dayb
                         ADD             s1, #0xff
-                        COMPARE         s1, #0x00               ;;;12
+                        load         s1, #0x00               ;;;12
                         JUMP            nz, save_dayn
-                        FETCH           s1, dmax
-save_dayn:              STORE           s1, dayb
+                        load           s1, dmax
+save_dayn:              load           s1, dayb
                         JUMP            real_time_end
-mode6n:                 COMPARE         s0, #0x06
+mode6n:                 load         s0, #0x06
                         JUMP            nz, mode7n
-                        FETCH           s1, yearb
+                        load           s1, yearb
                         ADD             s1, #0xff
-                        COMPARE         s1, #0xff               ;;;12
+                        load         s1, #0xff               ;;;12
                         JUMP            nz, save_yearn
                         LOAD            s1, #0x63
-save_yearn:             STORE           s1, yearb
+save_yearn:             load           s1, yearb
 mode7n:
                         JUMP            real_time_end
 its_right:              ADD             s0, #0x01
-                        STORE           s0, led_pattern
+                        load           s0, led_pattern
 ;;;turn right++
-                        FETCH           s0, mode
-                        COMPARE         s0, #0x00
+                        load           s0, mode
+                        load         s0, #0x00
                         JUMP            z, clr_int1             ;
-                        COMPARE         s0, #0x01
+                        load         s0, #0x01
                         JUMP            nz, mode2p
-                        FETCH           s1, hourb
+                        load           s1, hourb
                         ADD             s1, #0x01
-                        COMPARE         s1, #0x18               ;;;24
+                        load         s1, #0x18               ;;;24
                         JUMP            nz, save_hhp
                         LOAD            s1, #0x00
-save_hhp:               STORE           s1, hourb
+save_hhp:               load           s1, hourb
                         JUMP            real_time_end
-mode2p:                 COMPARE         s0, #0x02
+mode2p:                 load         s0, #0x02
                         JUMP            nz, mode3p
-                        FETCH           s1, minb
+                        load           s1, minb
                         ADD             s1, #0x01
-                        COMPARE         s1, #0x3c               ;;;3C;;60
+                        load         s1, #0x3c               ;;;3C;;60
                         JUMP            nz, save_mmp
                         LOAD            s1, #0x00
-save_mmp:               STORE           s1, minb
+save_mmp:               load           s1, minb
                         JUMP            real_time_end
-mode3p:                 COMPARE         s0, #0x03
+mode3p:                 load         s0, #0x03
                         JUMP            nz, mode4p
-                        FETCH           s1, secb
+                        load           s1, secb
                         ADD             s1, #0x01
-                        COMPARE         s1, #0x3c               ;;;60
+                        load         s1, #0x3c               ;;;60
                         JUMP            nz, save_ssp
                         LOAD            s1, #0x00
-save_ssp:               STORE           s1, secb
+save_ssp:               load           s1, secb
                         JUMP            real_time_end
-mode4p:                 COMPARE         s0, #0x04
+mode4p:                 load         s0, #0x04
                         JUMP            nz, mode5p
-                        FETCH           s1, monb
+                        load           s1, monb
                         ADD             s1, #0x01
-                        COMPARE         s1, #0x0d               ;;;12
+                        load         s1, #0x0d               ;;;12
                         JUMP            nz, save_monp
                         LOAD            s1, #0x01
-save_monp:              STORE           s1, monb
+save_monp:              load           s1, monb
                         JUMP            real_time_end
-mode5p:                 COMPARE         s0, #0x05
+mode5p:                 load         s0, #0x05
                         JUMP            nz, mode6p
-                        FETCH           s1, dayb
+                        load           s1, dayb
                         ADD             s1, #0x01
-                        FETCH           s2, dmax
+                        load           s2, dmax
                         ADD             s2, #0x01
-                        COMPARE         s1, s2
+                        load         s1, s2
                         JUMP            nz, save_dayp
                         LOAD            s1, #0x01
-save_dayp:              STORE           s1, dayb
+save_dayp:              load           s1, dayb
                         JUMP            real_time_end
-mode6p:                 COMPARE         s0, #0x06
+mode6p:                 load         s0, #0x06
                         JUMP            nz, mode7p
-                        FETCH           s1, yearb
+                        load           s1, yearb
                         ADD             s1, #0x01
-                        COMPARE         s1, #0x64               ;;;12
+                        load         s1, #0x64               ;;;12
                         JUMP            nz, save_yearp
                         LOAD            s1, #0x00
-save_yearp:             STORE           s1, yearb
+save_yearp:             load           s1, yearb
 mode7p:                 JUMP            real_time_end
 clr_int1:               LOAD            s0, #0x40               ;;;;;CLR_INT1
                         OUTPUT          s0, 0x20
 ;;;TIMER interrupt process;;;;mode:::0-normal;1-hour;2-min;3-sec;4-day,5-mon,6-year
-t2_5m_int:              TEST            s1, #0x80
+t2_5m_int:              load            s1, #0x80
                         JUMP            z, end_isr
                         LOAD            s0, #0x80               ;;;;;;;;;;clr_int2
                         OUTPUT          s0, 0x20
-                        FETCH           s0, ms1
+                        load           s0, ms1
                         ADD             s0, #0x01
-                        STORE           s0, ms1
-                        COMPARE         s0, #0x64
+                        load           s0, ms1
+                        load         s0, #0x64
                         JUMP            nz, real_time_end
                         AND             s0, #0x00               ;;;;;;;;;;;;;CLR ms1
-                        STORE           s0, ms1
-                        FETCH           s0, led_pattern         ;
+                        load           s0, ms1
+                        load           s0, led_pattern         ;
                         ADD             s0, #0x10
-                        STORE           s0, led_pattern
-                        FETCH           s1, ms500
+                        load           s0, led_pattern
+                        load           s1, ms500
                         ADD             s1, #0x01
-                        STORE           s1, ms500
-                        COMPARE         s1, #0x01               ;
-                        JUMP            nz, cmp_2
+                        load           s1, ms500
+                        load         s1, #0x01               ;
+                        JUMP            nz, load_2
                         LOAD            s0, #0x2d               ;;;------
-                        JUMP            cmp_4
-cmp_2:                  COMPARE         s1, #0x02               ;
-                        JUMP            nz, cmp_3
+                        JUMP            load_4
+load_2:                  load         s1, #0x02               ;
+                        JUMP            nz, load_3
                         LOAD            s0, #0x60               ;;;\\\\\\
-                        JUMP            cmp_4
-cmp_3:                  COMPARE         s1, #0x03               ;
-                        JUMP            nz, cmp_4
+                        JUMP            load_4
+load_3:                  load         s1, #0x03               ;
+                        JUMP            nz, load_4
                         LOAD            s0, #0x7c               ;;;||||
-cmp_4:                  STORE           s0, disp_flag
-                        COMPARE         s1, #0x04
+load_4:                  load           s0, disp_flag
+                        load         s1, #0x04
                         JUMP            nz, real_time_end
                         LOAD            s0, #0x2f               ;;;////
-;;FETCH s0,disp_flag
+;;load s0,disp_flag
 ;;ADD s0,01
-                        STORE           s0, disp_flag
+                        load           s0, disp_flag
                         AND             s1, #0x00               ;;;;;;;;;;;;;CLR ms500
-                        STORE           s1, ms500
-                        FETCH           s0, secb                ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;CLOCK PROCESS START
+                        load           s1, ms500
+                        load           s0, secb                ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;CLOCK PROCESS START
                         ADD             s0, #0x01
-                        STORE           s0, secb
-                        COMPARE         s0, #0x3c               ;;;60
+                        load           s0, secb
+                        load         s0, #0x3c               ;;;60
                         JUMP            nz, real_time_end
                         AND             s0, #0x00
-                        STORE           s0, secb
-                        FETCH           s0, minb
+                        load           s0, secb
+                        load           s0, minb
                         ADD             s0, #0x01
-                        STORE           s0, minb
-                        COMPARE         s0, #0x3c
+                        load           s0, minb
+                        load         s0, #0x3c
                         JUMP            nz, real_time_end
                         AND             s0, #0x00
-                        STORE           s0, minb
+                        load           s0, minb
 ;;;24 Hours
-                        FETCH           s0, hourb
+                        load           s0, hourb
                         ADD             s0, #0x01
-                        STORE           s0, hourb
-                        COMPARE         s0, #0x18
+                        load           s0, hourb
+                        load         s0, #0x18
                         JUMP            nz, real_time_end
                         AND             s0, #0x00
-                        STORE           s0, hourb
-day_p:                  FETCH           s0, day_up
+                        load           s0, hourb
+day_p:                  load           s0, day_up
                         LOAD            s0, #0x01
-                        STORE           s0, day_up
-real_time_end:          FETCH           s0, ms2                 ;;;;;;;;2.5ms counter
+                        load           s0, day_up
+real_time_end:          load           s0, ms2                 ;;;;;;;;2.5ms counter
                         ADD             s0, #0x01
-                        COMPARE         s0, #0x28               ;;;;;;counter to 100ms
-                        JUMP            nz, store_ms2
-                        FETCH           s1, ms100
+                        load         s0, #0x28               ;;;;;;counter to 100ms
+                        JUMP            nz, load_ms2
+                        load           s1, ms100
                         ADD             s1, #0x01
-sav_ms100:              STORE           s1, ms100
+sav_ms100:              load           s1, ms100
                         LOAD            s0, #0x00
-store_ms2:              STORE           s0, ms2
-                        FETCH           s0, led_pattern
+load_ms2:              load           s0, ms2
+                        load           s0, led_pattern
                         OUTPUT          s0, led_port
-end_isr:                FETCH           s0, isr_s0              ;restore s0
-                        FETCH           s1, isr_s1              ;restore s1
-                        FETCH           s2, isr_s2              ;restore s2
+end_isr:                load           s0, isr_s0              ;reload s0
+                        load           s1, isr_s1              ;reload s1
+                        load           s2, isr_s2              ;reload s2
                         RETURNI         enable
 ;**************************************************************************************
 ;Interrupt Vector
@@ -1533,7 +1533,7 @@ end_isr:                FETCH           s0, isr_s0              ;restore s0
 ;Second Screen:
 ;1234567890123456
 ;   X Xilinx
-;PicoBlaze Test
+;PicoBlaze load
 ;Third Screen:
 ;1234567890123456
 ; Press & Turn

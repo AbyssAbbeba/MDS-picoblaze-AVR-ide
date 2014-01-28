@@ -91,7 +91,7 @@ READ_DUTY_VALUE  . . . . . . . . . . LABEL  0x00032 USED     CONSTANT    1039_ex
 READ_ERROR . . . . . . . . . . . . . LABEL  0x0007C USED     CONSTANT    1039_example_12.ind_spaces.full_inst.asm:417.1-417.12
 READ_FROM_UART . . . . . . . . . . . LABEL  0x00057 USED     CONSTANT    1039_example_12.ind_spaces.full_inst.asm:344.1-344.16
 READ_NEXT_CHAR . . . . . . . . . . . LABEL  0x00054 USED     CONSTANT    1039_example_12.ind_spaces.full_inst.asm:322.1-322.16
-RECEIVE_FULL_TEST  . . . . . . . . . LABEL  0x00066 USED     CONSTANT    1039_example_12.ind_spaces.full_inst.asm:394.1-394.19
+RECEIVE_FULL_LOAD  . . . . . . . . . LABEL  0x00066 USED     CONSTANT    1039_example_12.ind_spaces.full_inst.asm:394.1-394.19
 RECEIVE_STRING . . . . . . . . . . . LABEL  0x00063 USED     CONSTANT    1039_example_12.ind_spaces.full_inst.asm:391.1-391.16
 RX_DATA_PRESENT  . . . . . . . . . . NUMBER 0x00004 USED     CONSTANT    1039_example_12.ind_spaces.full_inst.asm:40.1-40.45
 RX_FULL  . . . . . . . . . . . . . . NUMBER 0x00010 USED     CONSTANT    1039_example_12.ind_spaces.full_inst.asm:42.1-42.45

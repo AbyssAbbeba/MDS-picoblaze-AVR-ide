@@ -24,7 +24,7 @@
                   24
                   25     ; Subroutines-----------------------------------------------------------------
                   26     ; wait_time = (4 + (((2 * Temp1) + 2) * Temp2 + 2) * Temp3) * 2 * clk_period
-                  27     ;   1s @ (10 MHz, Temp1 = 250, Temp2 = 249, Temp3 = 40)
+                  27     ;   1s  (10 MHz, Temp1 = 250, Temp2 = 249, Temp3 = 40)
                   28
 004 000FA         29     wait_1s:            LOAD      Temp1, #250          ; Load Temp1 register
 005 001F9         30                         LOAD      Temp2, #249          ; Load Temp2 register
@@ -47,8 +47,8 @@
 015 06201         47                         SUB       Temp3, #1
 016 09511         48                         JUMP      NZ, wait_100ms_i
 017 08080         49                         RETURN
-                  50     ; <-- Bookmark   (ctrl + shift + M)
-                  51     ; <-- Breakpoint (ctrl + shift + B)
+                  50     ; <-- Bookmark   (ctrl + shiload + M)
+                  51     ; <-- Breakpoint (ctrl + shiload + B)
                   52
                   53     ; -----------------------------------------
                   54     ; -----------------------------------------

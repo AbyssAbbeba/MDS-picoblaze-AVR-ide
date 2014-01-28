@@ -128,562 +128,425 @@
                  128     ;
 000 00000        129     cold_start:             LOAD            s0, #0x00
 001 00101        130                             LOAD            s1, #pwm_channel0
-  00002          131     clear_loop:             STORE           s0, @s1
-E: instruction not supported on the this device: STORE sX, sY.
-                 132                             COMPARE         s1, #pwm_channel7
-E: instruction not supported on the this device: COMPARE sX, kk.
-002 09107        133                             JUMP            z, enable_int
-003 04101        134                             ADD             s1, #0x01
-004 08102        135                             JUMP            clear_loop
+  00002          131     clear_loop:
+002 00108        132                             load         s1, #pwm_channel7
+003 09106        133                             JUMP            z, enable_int
+004 04101        134                             ADD             s1, #0x01
+005 08102        135                             JUMP            clear_loop
                  136     ;
-005 08030        137     enable_int:             ENABLE          interrupt               ;interrupts used to set PWM frequency
+006 08030        137     enable_int:             ENABLE          interrupt               ;interrupts used to set PWM frequency
                  138     ;
                  139     ;
                  140     ; Initialise LED pattern sequence
                  141     ;
-006 00001        142                             LOAD            s0, #0x01               ;trigger to start wave pattern
-                 143                             STORE           s0, led0_sequence
-E: instruction not supported on the this device: STORE sX, ss.
-007 00000        144                             LOAD            s0, #0x00
-                 145                             STORE           s0, led1_sequence
-E: instruction not supported on the this device: STORE sX, ss.
-                 146                             STORE           s0, led2_sequence
-E: instruction not supported on the this device: STORE sX, ss.
-                 147                             STORE           s0, led3_sequence
-E: instruction not supported on the this device: STORE sX, ss.
-                 148                             STORE           s0, led4_sequence
-E: instruction not supported on the this device: STORE sX, ss.
-                 149                             STORE           s0, led5_sequence
-E: instruction not supported on the this device: STORE sX, ss.
-                 150                             STORE           s0, led6_sequence
-E: instruction not supported on the this device: STORE sX, ss.
-                 151                             STORE           s0, led7_sequence
-E: instruction not supported on the this device: STORE sX, ss.
+007 00001        142                             LOAD            s0, #0x01               ;trigger to start wave pattern
+                 143
+008 00000        144                             LOAD            s0, #0x00
+                 145
+                 146     ;
+                 147     ;
+                 148     ; Reset authentication check counter
+                 149     ;
+009 00F00        150                             LOAD            sf, #0x00
+                 151     ;
                  152     ;
-                 153     ;
-                 154     ; Reset authentication check counter
-                 155     ;
-008 00F00        156                             LOAD            sf, #0x00
-                 157     ;
+                 153     ;**************************************************************************************
+                 154     ; Main program
+                 155     ;**************************************************************************************
+                 156     ;
+                 157     ; Provides a pattern of interest on the LEDs :-)
                  158     ;
-                 159     ;**************************************************************************************
-                 160     ; Main program
-                 161     ;**************************************************************************************
-                 162     ;
-                 163     ; Provides a pattern of interest on the LEDs :-)
-                 164     ;
-                 165     ; Each LED increases intensity in 8 steps and then decreases intensity in 8 steps until it is off.
-                 166     ; The middle LEDs (LD2 to LD5) each start to turn on when either neighbour is turned half on and increasing
-                 167     ; to provide the effect of a passing a 'wave' of light passing from side to side. The pair of LEDs at each
-                 168     ; (LD0, Ld1 and LD6, LD7) are required to reflect the 'wave' so that the pattern continues.
-                 169     ;
-                 170     ; I'm sure this code cold be written in more elegant way, but I leave that as an exercise to you :-)
+                 159     ; Each LED increases intensity in 8 steps and then decreases intensity in 8 steps until it is off.
+                 160     ; The middle LEDs (LD2 to LD5) each start to turn on when either neighbour is turned half on and increasing
+                 161     ; to provide the effect of a passing a 'wave' of light passing from side to side. The pair of LEDs at each
+                 162     ; (LD0, Ld1 and LD6, LD7) are required to reflect the 'wave' so that the pattern continues.
+                 163     ;
+                 164     ; I'm sure this code cold be written in more elegant way, but I leave that as an exercise to you :-)
+                 165     ;
+                 166     ;
+                 167     ; Using a simple soloadware counter (implemented by register sF) the design occasionally requests an
+                 168     ; authorisation message from the authentication processor. If it receives a PASS message it continues
+                 169     ; normally but if it receives a FAIL message the LED pattern is changed.
+                 170     ;
                  171     ;
                  172     ;
-                 173     ; Using a simple software counter (implemented by register sF) the design occasionally requests an
-                 174     ; authorisation message from the authentication processor. If it receives a PASS message it continues
-                 175     ; normally but if it receives a FAIL message the LED pattern is changed.
-                 176     ;
-                 177     ;
-                 178     ;
-009 04F01        179     warm_start:             ADD             sf, #0x01               ;authentication check timer
-00A 099B6        180                             JUMP            c, authentication_check ;Check made approximately every 8 seconds.
-                 181     ;
-00B 00203        182     normal_led_sequence:    LOAD            s2, #0x03               ;simple delay loop (delay will be increased by ISR processing)
-00C 001FF        183     delay_s2_loop:          LOAD            s1, #0xff
-00D 000FF        184     delay_s1_loop:          LOAD            s0, #0xff
-00E 06001        185     delay_s0_loop:          SUB             s0, #0x01
-00F 09D18        186                             JUMP            nc, delay_s0_loop
-010 06101        187                             SUB             s1, #0x01
-011 09D17        188                             JUMP            nc, delay_s1_loop
-012 06201        189                             SUB             s2, #0x01
-013 09D16        190                             JUMP            nc, delay_s2_loop
-                 191     ;
-                 192     ;Pattern generation
-                 193     ;
-                 194                             FETCH           s0, led0_sequence       ;read sequence for LED0
-E: instruction not supported on the this device: FETCH sX, ss.
-                 195                             COMPARE         s0, #0x00
-E: instruction not supported on the this device: COMPARE sX, kk.
-014 09126        196                             JUMP            z, test_led0_start
-015 06020        197                             SUB             s0, #0x20               ;Count longer to ensure end stops then reset count if maximum
-016 09129        198                             JUMP            z, update_led0
-017 04020        199                             ADD             s0, #0x20
-018 04001        200     inc_led0:               ADD             s0, #0x01               ;increment counter
-019 08129        201                             JUMP            update_led0
-  00026          202     test_led0_start:        FETCH           s1, led1_sequence       ;start LED0 if LED1 = 4
-E: instruction not supported on the this device: FETCH sX, ss.
-                 203                             COMPARE         s1, #0x04
-E: instruction not supported on the this device: COMPARE sX, kk.
-01A 09124        204                             JUMP            z, inc_led0
-  00029          205     update_led0:            STORE           s0, led0_sequence
-E: instruction not supported on the this device: STORE sX, ss.
-01B 083A8        206                             CALL            led_to_duty
-                 207                             STORE           s1, pwm_channel0
-E: instruction not supported on the this device: STORE sX, ss.
-                 208     ;
-                 209                             FETCH           s1, led0_sequence       ; refresh LED1 if LED0 = 11 (0B hex) to reflect wave
-E: instruction not supported on the this device: FETCH sX, ss.
-                 210                             COMPARE         s1, #0x0b
-E: instruction not supported on the this device: COMPARE sX, kk.
-01C 09531        211                             JUMP            nz, normal_led1
-01D 00004        212                             LOAD            s0, #0x04
-01E 0813F        213                             JUMP            update_led1
-  00031          214     normal_led1:            FETCH           s0, led1_sequence       ;read sequence for LED1
-E: instruction not supported on the this device: FETCH sX, ss.
-                 215                             COMPARE         s0, #0x00
-E: instruction not supported on the this device: COMPARE sX, kk.
-01F 09139        216                             JUMP            z, test_led1_start
-020 06010        217                             SUB             s0, #0x10               ;reset count if maximum
-021 0913F        218                             JUMP            z, update_led1
-022 04010        219                             ADD             s0, #0x10
-023 04001        220     inc_led1:               ADD             s0, #0x01               ;increment counter
-024 0813F        221                             JUMP            update_led1
-  00039          222     test_led1_start:        FETCH           s1, led0_sequence       ;start LED1 if LED0 = 11 (0B hex) to reflect wave
-E: instruction not supported on the this device: FETCH sX, ss.
-                 223                             COMPARE         s1, #0x0b
-E: instruction not supported on the this device: COMPARE sX, kk.
-025 09137        224                             JUMP            z, inc_led1
-                 225                             FETCH           s1, led2_sequence       ;start LED1 if LED2 = 4
-E: instruction not supported on the this device: FETCH sX, ss.
-                 226                             COMPARE         s1, #0x04
-E: instruction not supported on the this device: COMPARE sX, kk.
-026 09137        227                             JUMP            z, inc_led1
-  0003F          228     update_led1:            STORE           s0, led1_sequence
-E: instruction not supported on the this device: STORE sX, ss.
-027 083A8        229                             CALL            led_to_duty
-                 230                             STORE           s1, pwm_channel1
-E: instruction not supported on the this device: STORE sX, ss.
-                 231     ;
-                 232                             FETCH           s0, led2_sequence       ;read sequence for LED2
-E: instruction not supported on the this device: FETCH sX, ss.
-                 233                             COMPARE         s0, #0x00
-E: instruction not supported on the this device: COMPARE sX, kk.
-028 0914A        234                             JUMP            z, test_led2_start
-029 06010        235                             SUB             s0, #0x10               ;reset count if maximum
-02A 09150        236                             JUMP            z, update_led2
-02B 04010        237                             ADD             s0, #0x10
-02C 04001        238     inc_led2:               ADD             s0, #0x01               ;increment counter
-02D 08150        239                             JUMP            update_led2
-  0004A          240     test_led2_start:        FETCH           s1, led1_sequence       ;start LED2 if LED1 = 4
-E: instruction not supported on the this device: FETCH sX, ss.
-                 241                             COMPARE         s1, #0x04
-E: instruction not supported on the this device: COMPARE sX, kk.
-02E 09148        242                             JUMP            z, inc_led2
-                 243                             FETCH           s1, led3_sequence       ;start LED2 if LED3 = 4
-E: instruction not supported on the this device: FETCH sX, ss.
-                 244                             COMPARE         s1, #0x04
-E: instruction not supported on the this device: COMPARE sX, kk.
-02F 09148        245                             JUMP            z, inc_led2
-  00050          246     update_led2:            STORE           s0, led2_sequence
-E: instruction not supported on the this device: STORE sX, ss.
-030 083A8        247                             CALL            led_to_duty
-                 248                             STORE           s1, pwm_channel2
-E: instruction not supported on the this device: STORE sX, ss.
-                 249     ;
-                 250     ;
-                 251                             FETCH           s0, led3_sequence       ;read sequence for LED3
-E: instruction not supported on the this device: FETCH sX, ss.
-                 252                             COMPARE         s0, #0x00
-E: instruction not supported on the this device: COMPARE sX, kk.
-031 0915B        253                             JUMP            z, test_led3_start
-032 06010        254                             SUB             s0, #0x10               ;reset count if maximum
-033 09161        255                             JUMP            z, update_led3
-034 04010        256                             ADD             s0, #0x10
-035 04001        257     inc_led3:               ADD             s0, #0x01               ;increment counter
-036 08161        258                             JUMP            update_led3
-  0005B          259     test_led3_start:        FETCH           s1, led2_sequence       ;start LED3 if LED2 = 4
-E: instruction not supported on the this device: FETCH sX, ss.
-                 260                             COMPARE         s1, #0x04
-E: instruction not supported on the this device: COMPARE sX, kk.
-037 09159        261                             JUMP            z, inc_led3
-                 262                             FETCH           s1, led4_sequence       ;start LED3 if LED4 = 4
-E: instruction not supported on the this device: FETCH sX, ss.
-                 263                             COMPARE         s1, #0x04
-E: instruction not supported on the this device: COMPARE sX, kk.
-038 09159        264                             JUMP            z, inc_led3
-  00061          265     update_led3:            STORE           s0, led3_sequence
-E: instruction not supported on the this device: STORE sX, ss.
-039 083A8        266                             CALL            led_to_duty
-                 267                             STORE           s1, pwm_channel3
-E: instruction not supported on the this device: STORE sX, ss.
-                 268     ;
-                 269                             FETCH           s0, led4_sequence       ;read sequence for LED4
-E: instruction not supported on the this device: FETCH sX, ss.
-                 270                             COMPARE         s0, #0x00
-E: instruction not supported on the this device: COMPARE sX, kk.
-03A 0916C        271                             JUMP            z, test_led4_start
-03B 06010        272                             SUB             s0, #0x10               ;reset count if maximum
-03C 09172        273                             JUMP            z, update_led4
-03D 04010        274                             ADD             s0, #0x10
-03E 04001        275     inc_led4:               ADD             s0, #0x01               ;increment counter
-03F 08172        276                             JUMP            update_led4
-  0006C          277     test_led4_start:        FETCH           s1, led3_sequence       ;start LED4 if LED3 = 4
-E: instruction not supported on the this device: FETCH sX, ss.
-                 278                             COMPARE         s1, #0x04
-E: instruction not supported on the this device: COMPARE sX, kk.
-040 0916A        279                             JUMP            z, inc_led4
-                 280                             FETCH           s1, led5_sequence       ;start LED4 if LED5 = 4
-E: instruction not supported on the this device: FETCH sX, ss.
-                 281                             COMPARE         s1, #0x04
-E: instruction not supported on the this device: COMPARE sX, kk.
-041 0916A        282                             JUMP            z, inc_led4
-  00072          283     update_led4:            STORE           s0, led4_sequence
-E: instruction not supported on the this device: STORE sX, ss.
-042 083A8        284                             CALL            led_to_duty
-                 285                             STORE           s1, pwm_channel4
-E: instruction not supported on the this device: STORE sX, ss.
-                 286     ;
-                 287                             FETCH           s0, led5_sequence       ;read sequence for LED5
-E: instruction not supported on the this device: FETCH sX, ss.
-                 288                             COMPARE         s0, #0x00
-E: instruction not supported on the this device: COMPARE sX, kk.
-043 0917D        289                             JUMP            z, test_led5_start
-044 06010        290                             SUB             s0, #0x10               ;reset count if maximum
-045 09183        291                             JUMP            z, update_led5
-046 04010        292                             ADD             s0, #0x10
-047 04001        293     inc_led5:               ADD             s0, #0x01               ;increment counter
-048 08183        294                             JUMP            update_led5
-  0007D          295     test_led5_start:        FETCH           s1, led4_sequence       ;start LED5 if LED4 = 4
-E: instruction not supported on the this device: FETCH sX, ss.
-                 296                             COMPARE         s1, #0x04
-E: instruction not supported on the this device: COMPARE sX, kk.
-049 0917B        297                             JUMP            z, inc_led5
-                 298                             FETCH           s1, led6_sequence       ;start LED5 if LED6 = 4
-E: instruction not supported on the this device: FETCH sX, ss.
-                 299                             COMPARE         s1, #0x04
-E: instruction not supported on the this device: COMPARE sX, kk.
-04A 0917B        300                             JUMP            z, inc_led5
-  00083          301     update_led5:            STORE           s0, led5_sequence
-E: instruction not supported on the this device: STORE sX, ss.
-04B 083A8        302                             CALL            led_to_duty
-                 303                             STORE           s1, pwm_channel5
-E: instruction not supported on the this device: STORE sX, ss.
-                 304     ;
-                 305                             FETCH           s1, led7_sequence       ; refresh LED6 if LED7 = 11 (0B hex) to reflect wave
-E: instruction not supported on the this device: FETCH sX, ss.
-                 306                             COMPARE         s1, #0x0b
-E: instruction not supported on the this device: COMPARE sX, kk.
-04C 0958B        307                             JUMP            nz, normal_led6
-04D 00004        308                             LOAD            s0, #0x04
-04E 08196        309                             JUMP            update_led6
-  0008B          310     normal_led6:            FETCH           s0, led6_sequence       ;read sequence for LED6
-E: instruction not supported on the this device: FETCH sX, ss.
-                 311                             COMPARE         s0, #0x00
-E: instruction not supported on the this device: COMPARE sX, kk.
-04F 09193        312                             JUMP            z, test_led6_start
-050 06010        313                             SUB             s0, #0x10               ;reset count if maximum
-051 09196        314                             JUMP            z, update_led6
-052 04010        315                             ADD             s0, #0x10
-053 04001        316     inc_led6:               ADD             s0, #0x01               ;increment counter
-054 08196        317                             JUMP            update_led6
-  00093          318     test_led6_start:        FETCH           s1, led5_sequence       ;start LED6 if LED5 = 4
-E: instruction not supported on the this device: FETCH sX, ss.
-                 319                             COMPARE         s1, #0x04
-E: instruction not supported on the this device: COMPARE sX, kk.
-055 09191        320                             JUMP            z, inc_led6
-  00096          321     update_led6:            STORE           s0, led6_sequence
-E: instruction not supported on the this device: STORE sX, ss.
-056 083A8        322                             CALL            led_to_duty
-                 323                             STORE           s1, pwm_channel6
-E: instruction not supported on the this device: STORE sX, ss.
-                 324     ;
-                 325                             FETCH           s0, led7_sequence       ;read sequence for LED7
-E: instruction not supported on the this device: FETCH sX, ss.
-                 326                             COMPARE         s0, #0x00
-E: instruction not supported on the this device: COMPARE sX, kk.
-057 091A1        327                             JUMP            z, test_led7_start
-058 06020        328                             SUB             s0, #0x20               ;Count longer to ensure end stops then reset count if maximum
-059 091A4        329                             JUMP            z, update_led7
-05A 04020        330                             ADD             s0, #0x20
-05B 04001        331     inc_led7:               ADD             s0, #0x01               ;increment counter
-05C 081A4        332                             JUMP            update_led7
-  000A1          333     test_led7_start:        FETCH           s1, led6_sequence       ;start LED7 if LED6 = 4
-E: instruction not supported on the this device: FETCH sX, ss.
-                 334                             COMPARE         s1, #0x04
-E: instruction not supported on the this device: COMPARE sX, kk.
-05D 0919F        335                             JUMP            z, inc_led7
-  000A4          336     update_led7:            STORE           s0, led7_sequence
-E: instruction not supported on the this device: STORE sX, ss.
-05E 083A8        337                             CALL            led_to_duty
-                 338                             STORE           s1, pwm_channel7
-E: instruction not supported on the this device: STORE sX, ss.
-05F 08113        339                             JUMP            warm_start
-                 340     ;
-                 341     ;
-                 342     ; Convert LED sequence number into PWM intensity figure
-                 343     ;
-                 344     ; LEDs duty cycle values are 0,1,2,4,8,16,32 and 64 because they appear to give what
-                 345     ; appears to be a fairly liner change in intensity and provides a simple way to set
-                 346     ; the duty value.
-                 347     ;
-                 348     ; Provide sequence value in register s0 and intensity will be
-                 349     ; returned in register s1.
-                 350     ;
-                 351     ; s0   s1
-                 352     ; 00   00
-                 353     ; 01   01
-                 354     ; 02   02
-                 355     ; 03   04
-                 356     ; 04   08
-                 357     ; 05   10
-                 358     ; 06   20
-                 359     ; 07   40
-                 360     ; 08   80
-                 361     ; 09   40
-                 362     ; 0A   20
-                 363     ; 0B   10
-                 364     ; 0C   08
-                 365     ; 0D   04
-                 366     ; 0E   02
-                 367     ; 0F   01
-                 368     ; 10   00  and zero for all larger values of s0
+00A 04F01        173     warm_start:             ADD             sf, #0x01               ;authentication check timer
+00B 0998D        174                             JUMP            c, authentication_check ;Check made approximately every 8 seconds.
+                 175     ;
+00C 00203        176     normal_led_sequence:    LOAD            s2, #0x03               ;simple delay loop (delay will be increased by ISR processing)
+00D 001FF        177     delay_s2_loop:          LOAD            s1, #0xff
+00E 000FF        178     delay_s1_loop:          LOAD            s0, #0xff
+00F 06001        179     delay_s0_loop:          SUB             s0, #0x01
+010 09D0F        180                             JUMP            nc, delay_s0_loop
+011 06101        181                             SUB             s1, #0x01
+012 09D0E        182                             JUMP            nc, delay_s1_loop
+013 06201        183                             SUB             s2, #0x01
+014 09D0D        184                             JUMP            nc, delay_s2_loop
+                 185     ;
+                 186     ;Pattern generation
+                 187     ;
+                 188
+015 00000        189                             load         s0, #0x00
+016 0911C        190                             JUMP            z, load_led0_start
+017 06020        191                             SUB             s0, #0x20               ;Count longer to ensure end stops then reset count if maximum
+018 0911F        192                             JUMP            z, update_led0
+019 04020        193                             ADD             s0, #0x20
+01A 04001        194     inc_led0:               ADD             s0, #0x01               ;increment counter
+01B 0811F        195                             JUMP            update_led0
+01C 0C110        196     load_led0_start:        load           s1, led1_sequence       ;start LED0 if LED1 = 4
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+W: value out of range: 0x11, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
+01D 00104        197                             load         s1, #0x04
+01E 0911A        198                             JUMP            z, inc_led0
+  0001F          199     update_led0:
+01F 0837F        200                             CALL            led_to_duty
+                 201
+                 202     ;
+020 0C100        203                             load           s1, led0_sequence       ; refresh LED1 if LED0 = 11 (0B hex) to reflect wave
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+W: value out of range: 0x10, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x0.
+021 0010B        204                             load         s1, #0x0b
+022 09525        205                             JUMP            nz, normal_led1
+023 00004        206                             LOAD            s0, #0x04
+024 08133        207                             JUMP            update_led1
+025 0C010        208     normal_led1:            load           s0, led1_sequence       ;read sequence for LED1
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+W: value out of range: 0x11, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
+026 00000        209                             load         s0, #0x00
+027 0912D        210                             JUMP            z, load_led1_start
+028 06010        211                             SUB             s0, #0x10               ;reset count if maximum
+029 09133        212                             JUMP            z, update_led1
+02A 04010        213                             ADD             s0, #0x10
+02B 04001        214     inc_led1:               ADD             s0, #0x01               ;increment counter
+02C 08133        215                             JUMP            update_led1
+02D 0C100        216     load_led1_start:        load           s1, led0_sequence       ;start LED1 if LED0 = 11 (0B hex) to reflect wave
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+W: value out of range: 0x10, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x0.
+02E 0010B        217                             load         s1, #0x0b
+02F 0912B        218                             JUMP            z, inc_led1
+030 0C120        219                             load           s1, led2_sequence       ;start LED1 if LED2 = 4
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+W: value out of range: 0x12, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x2.
+031 00104        220                             load         s1, #0x04
+032 0912B        221                             JUMP            z, inc_led1
+  00033          222     update_led1:
+033 0837F        223                             CALL            led_to_duty
+                 224
+                 225     ;
+                 226
+034 00000        227                             load         s0, #0x00
+035 0913B        228                             JUMP            z, load_led2_start
+036 06010        229                             SUB             s0, #0x10               ;reset count if maximum
+037 09141        230                             JUMP            z, update_led2
+038 04010        231                             ADD             s0, #0x10
+039 04001        232     inc_led2:               ADD             s0, #0x01               ;increment counter
+03A 08141        233                             JUMP            update_led2
+03B 0C110        234     load_led2_start:        load           s1, led1_sequence       ;start LED2 if LED1 = 4
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+W: value out of range: 0x11, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
+03C 00104        235                             load         s1, #0x04
+03D 09139        236                             JUMP            z, inc_led2
+03E 0C130        237                             load           s1, led3_sequence       ;start LED2 if LED3 = 4
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+W: value out of range: 0x13, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x3.
+03F 00104        238                             load         s1, #0x04
+040 09139        239                             JUMP            z, inc_led2
+  00041          240     update_led2:
+041 0837F        241                             CALL            led_to_duty
+                 242
+                 243     ;
+                 244     ;
+                 245
+042 00000        246                             load         s0, #0x00
+043 09149        247                             JUMP            z, load_led3_start
+044 06010        248                             SUB             s0, #0x10               ;reset count if maximum
+045 0914D        249                             JUMP            z, update_led3
+046 04010        250                             ADD             s0, #0x10
+047 04001        251     inc_led3:               ADD             s0, #0x01               ;increment counter
+048 0814D        252                             JUMP            update_led3
+  00049          253     load_led3_start:
+049 00104        254                             load         s1, #0x04
+04A 09147        255                             JUMP            z, inc_led3
+                 256
+04B 00104        257                             load         s1, #0x04
+04C 09147        258                             JUMP            z, inc_led3
+  0004D          259     update_led3:
+04D 0837F        260                             CALL            led_to_duty
+                 261
+                 262     ;
+04E 00000        263     load         s0, #0x00
+04F 09155        264                             JUMP            z, load_led4_start
+050 06010        265                             SUB             s0, #0x10               ;reset count if maximum
+051 09159        266                             JUMP            z, update_led4
+052 04010        267                             ADD             s0, #0x10
+053 04001        268     inc_led4:               ADD             s0, #0x01               ;increment counter
+054 08159        269                             JUMP            update_led4
+055 00104        270     load_led4_start: load         s1, #0x04
+056 09153        271                             JUMP            z, inc_led4
+057 00104        272     load         s1, #0x04
+058 09153        273                             JUMP            z, inc_led4
+059 0837F        274     update_led4:CALL            led_to_duty
+                 275
+05A 00000        276     load         s0, #0x00
+05B 09161        277                             JUMP            z, load_led5_start
+05C 06010        278                             SUB             s0, #0x10               ;reset count if maximum
+05D 09165        279                             JUMP            z, update_led5
+05E 04010        280                             ADD             s0, #0x10
+05F 04001        281     inc_led5:               ADD             s0, #0x01               ;increment counter
+060 08165        282                             JUMP            update_led5
+061 00104        283     load_led5_start:load         s1, #0x04
+062 0915F        284                             JUMP            z, inc_led5
+063 00104        285     load         s1, #0x04
+064 0915F        286                             JUMP            z, inc_led5
+065 0837F        287     update_led5:CALL            led_to_duty
+                 288
+066 0010B        289     load         s1, #0x0b
+067 0956A        290                             JUMP            nz, normal_led6
+068 00004        291                             LOAD            s0, #0x04
+069 08173        292                             JUMP            update_led6
+06A 00000        293     normal_led6:load         s0, #0x00
+06B 09171        294                             JUMP            z, load_led6_start
+06C 06010        295                             SUB             s0, #0x10               ;reset count if maximum
+06D 09173        296                             JUMP            z, update_led6
+06E 04010        297                             ADD             s0, #0x10
+06F 04001        298     inc_led6:               ADD             s0, #0x01               ;increment counter
+070 08173        299                             JUMP            update_led6
+071 00104        300     load_led6_start:load         s1, #0x04
+072 0916F        301                             JUMP            z, inc_led6
+073 0837F        302     update_led6: CALL            led_to_duty
+                 303
+074 00000        304      load         s0, #0x00
+075 0917B        305                             JUMP            z, load_led7_start
+076 06020        306                             SUB             s0, #0x20               ;Count longer to ensure end stops then reset count if maximum
+077 0917D        307                             JUMP            z, update_led7
+078 04020        308                             ADD             s0, #0x20
+079 04001        309     inc_led7:               ADD             s0, #0x01               ;increment counter
+07A 0817D        310                             JUMP            update_led7
+07B 00104        311     load_led7_start:load         s1, #0x04
+07C 09179        312                             JUMP            z, inc_led7
+07D 0837F        313     update_led7: CALL            led_to_duty
+07E 0810A        314      JUMP            warm_start
+                 315     ;
+                 316     ;
+                 317     ; Convert LED sequence number into PWM intensity figure
+                 318     ;
+                 319     ; LEDs duty cycle values are 0,1,2,4,8,16,32 and 64 because they appear to give what
+                 320     ; appears to be a fairly liner change in intensity and provides a simple way to set
+                 321     ; the duty value.
+                 322     ;
+                 323     ; Provide sequence value in register s0 and intensity will be
+                 324     ; returned in register s1.
+                 325     ;
+                 326     ; s0   s1
+                 327     ; 00   00
+                 328     ; 01   01
+                 329     ; 02   02
+                 330     ; 03   04
+                 331     ; 04   08
+                 332     ; 05   10
+                 333     ; 06   20
+                 334     ; 07   40
+                 335     ; 08   80
+                 336     ; 09   40
+                 337     ; 0A   20
+                 338     ; 0B   10
+                 339     ; 0C   08
+                 340     ; 0D   04
+                 341     ; 0E   02
+                 342     ; 0F   01
+                 343     ; 10   00  and zero for all larger values of s0
+                 344     ;
+07F 00100        345     led_to_duty:            LOAD            s1, #0x00
+080 00000        346                             load         s0, #0x00               ;load for zero
+081 09080        347                             RETURN          z
+082 00101        348                             LOAD            s1, #0x01               ;inject '1'
+083 06001        349     go_up_loop:             SUB             s0, #0x01
+084 09080        350                             RETURN          z
+085 0D106        351                             SL0             s1                      ;multiply by 2
+086 09988        352                             JUMP            c, go_down
+087 08183        353                             JUMP            go_up_loop
+088 00140        354     go_down:                LOAD            s1, #0x40
+089 06001        355     go_down_loop:           SUB             s0, #0x01
+08A 09080        356                             RETURN          z
+08B 0D10E        357                             SR0             s1                      ;divide by 2
+08C 08189        358                             JUMP            go_down_loop
+                 359     ;
+                 360     ;
+                 361     ;
+                 362     ;**************************************************************************************
+                 363     ; Authentication Check and fail procedure
+                 364     ;**************************************************************************************
+                 365     ;
+                 366     ; The authentication check is performed by issuing and interrupt to the authentication
+                 367     ; processor and then observing the simple text string that it returns via the link FIFO
+                 368     ; buffer.
                  369     ;
-060 00100        370     led_to_duty:            LOAD            s1, #0x00
-                 371                             COMPARE         s0, #0x00               ;test for zero
-E: instruction not supported on the this device: COMPARE sX, kk.
-061 09080        372                             RETURN          z
-062 00101        373                             LOAD            s1, #0x01               ;inject '1'
-063 06001        374     go_up_loop:             SUB             s0, #0x01
-064 09080        375                             RETURN          z
-065 0D106        376                             SL0             s1                      ;multiply by 2
-066 099B1        377                             JUMP            c, go_down
-067 081AC        378                             JUMP            go_up_loop
-068 00140        379     go_down:                LOAD            s1, #0x40
-069 06001        380     go_down_loop:           SUB             s0, #0x01
-06A 09080        381                             RETURN          z
-06B 0D10E        382                             SR0             s1                      ;divide by 2
-06C 081B2        383                             JUMP            go_down_loop
-                 384     ;
-                 385     ;
-                 386     ;
-                 387     ;**************************************************************************************
-                 388     ; Authentication Check and fail procedure
-                 389     ;**************************************************************************************
-                 390     ;
-                 391     ; The authentication check is performed by issuing and interrupt to the authentication
-                 392     ; processor and then observing the simple text string that it returns via the link FIFO
-                 393     ; buffer.
-                 394     ;
-                 395     ; PASS - Design is authorised to work.
-                 396     ; FAIL - Design is not authorised and should stop working normally.
-                 397     ;
-                 398     ;
-                 399     ;ASCII character values that are used in messages
-                 400     ;
-                 401     ; >>>>> (line moved to the beginning) <<<<<
-                 402     ; >>>>> (line moved to the beginning) <<<<<
-                 403     ; >>>>> (line moved to the beginning) <<<<<
-                 404     ; >>>>> (line moved to the beginning) <<<<<
-                 405     ; >>>>> (line moved to the beginning) <<<<<
-                 406     ; >>>>> (line moved to the beginning) <<<<<
+                 370     ; PASS - Design is authorised to work.
+                 371     ; FAIL - Design is not authorised and should stop working normally.
+                 372     ;
+                 373     ;
+                 374     ;ASCII character values that are used in messages
+                 375     ;
+                 376     ; >>>>> (line moved to the beginning) <<<<<
+                 377     ; >>>>> (line moved to the beginning) <<<<<
+                 378     ; >>>>> (line moved to the beginning) <<<<<
+                 379     ; >>>>> (line moved to the beginning) <<<<<
+                 380     ; >>>>> (line moved to the beginning) <<<<<
+                 381     ; >>>>> (line moved to the beginning) <<<<<
+                 382     ;
+                 383     ;
+08D 00001        384     authentication_check:   LOAD            s0, #link_fifo_reset    ;clear link FIFO to ensure no unexpected characters
+08E 0E020        385                             OUTPUT          s0, link_fifo_control_port
+08F 00000        386                             LOAD            s0, #0x00
+090 0E020        387                             OUTPUT          s0, link_fifo_control_port
+                 388     ;
+091 00001        389                             LOAD            s0, #security_interrupt ;generate interrupt to authentication processor
+092 0E040        390                             OUTPUT          s0, security_request_port
+093 00000        391                             LOAD            s0, #0x00
+094 0E040        392                             OUTPUT          s0, security_request_port
+                 393     ;
+095 083CF        394                             CALL            read_link_fifo          ;read each character and load
+096 00050        395                             load         s0, #character_p
+097 095A2        396                             JUMP            nz, fail_confirm
+098 083CF        397                             CALL            read_link_fifo
+099 00041        398                             load         s0, #character_a
+09A 095A2        399                             JUMP            nz, fail_confirm
+09B 083CF        400                             CALL            read_link_fifo
+09C 00053        401                             load         s0, #character_s
+09D 095A2        402                             JUMP            nz, fail_confirm
+09E 083CF        403                             CALL            read_link_fifo
+09F 00053        404                             load         s0, #character_s
+0A0 095A2        405                             JUMP            nz, fail_confirm
+0A1 0810C        406                             JUMP            normal_led_sequence     ;Continue normal operation for PASS message
                  407     ;
                  408     ;
-06D 00001        409     authentication_check:   LOAD            s0, #link_fifo_reset    ;clear link FIFO to ensure no unexpected characters
-06E 0E020        410                             OUTPUT          s0, link_fifo_control_port
-06F 00000        411                             LOAD            s0, #0x00
-070 0E020        412                             OUTPUT          s0, link_fifo_control_port
-                 413     ;
-071 00001        414                             LOAD            s0, #security_interrupt ;generate interrupt to authentication processor
-072 0E040        415                             OUTPUT          s0, security_request_port
-073 00000        416                             LOAD            s0, #0x00
-074 0E040        417                             OUTPUT          s0, security_request_port
-                 418     ;
-075 083F9        419                             CALL            read_link_fifo          ;read each character and compare
-                 420                             COMPARE         s0, #character_p
-E: instruction not supported on the this device: COMPARE sX, kk.
-076 095CB        421                             JUMP            nz, fail_confirm
-077 083F9        422                             CALL            read_link_fifo
-                 423                             COMPARE         s0, #character_a
-E: instruction not supported on the this device: COMPARE sX, kk.
-078 095CB        424                             JUMP            nz, fail_confirm
-079 083F9        425                             CALL            read_link_fifo
-                 426                             COMPARE         s0, #character_s
-E: instruction not supported on the this device: COMPARE sX, kk.
-07A 095CB        427                             JUMP            nz, fail_confirm
-07B 083F9        428                             CALL            read_link_fifo
-                 429                             COMPARE         s0, #character_s
-E: instruction not supported on the this device: COMPARE sX, kk.
-07C 095CB        430                             JUMP            nz, fail_confirm
-07D 08115        431                             JUMP            normal_led_sequence     ;Continue normal operation for PASS message
-                 432     ;
-                 433     ;
-                 434     ; To confirm that the authentication is really a FAIL message
-                 435     ; another request is made to the authentication processor and tested.
-                 436     ;
-07E 000FF        437     fail_confirm:           LOAD            s0, #0xff               ;short delay to ensure authentication processor is ready
-07F 06001        438     request_delay:          SUB             s0, #0x01               ;   to respond to new interrupt request
-080 095CC        439                             JUMP            nz, request_delay
-                 440     ;
-081 00001        441                             LOAD            s0, #link_fifo_reset    ;clear link FIFO to ensure no unexpected characters
-082 0E020        442                             OUTPUT          s0, link_fifo_control_port
-083 00000        443                             LOAD            s0, #0x00
-084 0E020        444                             OUTPUT          s0, link_fifo_control_port
-                 445     ;
-085 00001        446                             LOAD            s0, #security_interrupt ;generate interrupt to authentication processor
-086 0E040        447                             OUTPUT          s0, security_request_port
-087 00000        448                             LOAD            s0, #0x00
-088 0E040        449                             OUTPUT          s0, security_request_port
-                 450     ;
-089 083F9        451                             CALL            read_link_fifo          ;read each character and compare
-                 452                             COMPARE         s0, #character_f
-E: instruction not supported on the this device: COMPARE sX, kk.
-08A 09515        453                             JUMP            nz, normal_led_sequence
-08B 083F9        454                             CALL            read_link_fifo
-                 455                             COMPARE         s0, #character_a
-E: instruction not supported on the this device: COMPARE sX, kk.
-08C 09515        456                             JUMP            nz, normal_led_sequence
-08D 083F9        457                             CALL            read_link_fifo
-                 458                             COMPARE         s0, #character_i
-E: instruction not supported on the this device: COMPARE sX, kk.
-08E 09515        459                             JUMP            nz, normal_led_sequence
-08F 083F9        460                             CALL            read_link_fifo
-                 461                             COMPARE         s0, #character_l
-E: instruction not supported on the this device: COMPARE sX, kk.
-090 09515        462                             JUMP            nz, normal_led_sequence
-                 463     ;
+                 409     ; To confirm that the authentication is really a FAIL message
+                 410     ; another request is made to the authentication processor and loaded.
+                 411     ;
+0A2 000FF        412     fail_confirm:           LOAD            s0, #0xff               ;short delay to ensure authentication processor is ready
+0A3 06001        413     request_delay:          SUB             s0, #0x01               ;   to respond to new interrupt request
+0A4 095A3        414                             JUMP            nz, request_delay
+                 415     ;
+0A5 00001        416                             LOAD            s0, #link_fifo_reset    ;clear link FIFO to ensure no unexpected characters
+0A6 0E020        417                             OUTPUT          s0, link_fifo_control_port
+0A7 00000        418                             LOAD            s0, #0x00
+0A8 0E020        419                             OUTPUT          s0, link_fifo_control_port
+                 420     ;
+0A9 00001        421                             LOAD            s0, #security_interrupt ;generate interrupt to authentication processor
+0AA 0E040        422                             OUTPUT          s0, security_request_port
+0AB 00000        423                             LOAD            s0, #0x00
+0AC 0E040        424                             OUTPUT          s0, security_request_port
+                 425     ;
+0AD 083CF        426                             CALL            read_link_fifo          ;read each character and load
+0AE 00046        427                             load         s0, #character_f
+0AF 0950C        428                             JUMP            nz, normal_led_sequence
+0B0 083CF        429                             CALL            read_link_fifo
+0B1 00041        430                             load         s0, #character_a
+0B2 0950C        431                             JUMP            nz, normal_led_sequence
+0B3 083CF        432                             CALL            read_link_fifo
+0B4 00049        433                             load         s0, #character_i
+0B5 0950C        434                             JUMP            nz, normal_led_sequence
+0B6 083CF        435                             CALL            read_link_fifo
+0B7 0004C        436                             load         s0, #character_l
+0B8 0950C        437                             JUMP            nz, normal_led_sequence
+                 438     ;
+                 439     ;
+                 440     ; When the design fails to authenticate the LEDs will appear to
+                 441     ; turn on and then slowly fade to off using PWM.
+                 442     ;
+0B9 000FF        443     failed_led_sequence:    LOAD            s0, #0xff               ;maximum intensity on all LEDs
+0BA 00400        444                             LOAD            s4, #0x00               ;reset fade rate control
+0BB 00101        445     all_led_fade:           LOAD            s1, #pwm_channel0
+0BC 00108        446     all_led_fade_loop: load         s1, #pwm_channel7
+0BD 091C0        447                             JUMP            z, decay_leds
+0BE 04101        448                             ADD             s1, #0x01
+0BF 081BC        449                             JUMP            all_led_fade_loop
+0C0 0C140        450     decay_leds:             LOAD            s1, s4                  ;soloadware delay starts quickly and slows down because LEDs are non-linear.
+0C1 00218        451     wait_s1:                LOAD            s2, #0x18
+0C2 003FF        452     wait_s2:                LOAD            s3, #0xff
+0C3 06301        453     wait_s3:                SUB             s3, #0x01
+0C4 095C3        454                             JUMP            nz, wait_s3
+0C5 06201        455                             SUB             s2, #0x01
+0C6 095C2        456                             JUMP            nz, wait_s2
+0C7 06101        457                             SUB             s1, #0x01
+0C8 095C1        458                             JUMP            nz, wait_s1
+0C9 00000        459                             load         s0, #0x00               ;load for fully off
+0CA 091CE        460                             JUMP            z, stop_completely
+0CB 06001        461                             SUB             s0, #0x01               ;fade LEDs
+0CC 04401        462                             ADD             s4, #0x01               ;slow fade rate as intensity decreases
+0CD 081BB        463                             JUMP            all_led_fade
                  464     ;
-                 465     ; When the design fails to authenticate the LEDs will appear to
-                 466     ; turn on and then slowly fade to off using PWM.
-                 467     ;
-091 000FF        468     failed_led_sequence:    LOAD            s0, #0xff               ;maximum intensity on all LEDs
-092 00400        469                             LOAD            s4, #0x00               ;reset fade rate control
-093 00101        470     all_led_fade:           LOAD            s1, #pwm_channel0
-  000E5          471     all_led_fade_loop:      STORE           s0, @s1
-E: instruction not supported on the this device: STORE sX, sY.
-                 472                             COMPARE         s1, #pwm_channel7
-E: instruction not supported on the this device: COMPARE sX, kk.
-094 091EA        473                             JUMP            z, decay_leds
-095 04101        474                             ADD             s1, #0x01
-096 081E5        475                             JUMP            all_led_fade_loop
-097 0C140        476     decay_leds:             LOAD            s1, s4                  ;software delay starts quickly and slows down because LEDs are non-linear.
-098 00218        477     wait_s1:                LOAD            s2, #0x18
-099 003FF        478     wait_s2:                LOAD            s3, #0xff
-09A 06301        479     wait_s3:                SUB             s3, #0x01
-09B 095ED        480                             JUMP            nz, wait_s3
-09C 06201        481                             SUB             s2, #0x01
-09D 095EC        482                             JUMP            nz, wait_s2
-09E 06101        483                             SUB             s1, #0x01
-09F 095EB        484                             JUMP            nz, wait_s1
-                 485                             COMPARE         s0, #0x00               ;test for fully off
-E: instruction not supported on the this device: COMPARE sX, kk.
-0A0 091F8        486                             JUMP            z, stop_completely
-0A1 06001        487                             SUB             s0, #0x01               ;fade LEDs
-0A2 04401        488                             ADD             s4, #0x01               ;slow fade rate as intensity decreases
-0A3 081E4        489                             JUMP            all_led_fade
+0CE 081CE        465     stop_completely:        JUMP            stop_completely
+                 466     ;
+                 467     ;**************************************************************************************
+                 468     ; Read Byte from Link FIFO
+                 469     ;**************************************************************************************
+                 470     ;
+                 471     ; The routine first loads the FIFO buffer to see if data is present.
+                 472     ; If the FIFO is empty, the routine waits until there is a character to read.
+                 473     ; the read value is returned in register s0.
+                 474     ;
+                 475     ;
+0CF 0A001        476     read_link_fifo:         INPUT           s0, link_fifo_status_port ;load FIFO buffer
+0D0 00001        477                             load            s0, #link_fifo_data_present ;wait if empty
+0D1 091CF        478                             JUMP            z, read_link_fifo
+0D2 0A002        479                             INPUT           s0, link_fifo_read_port ;read data from FIFO
+0D3 08080        480                             RETURN
+                 481     ;
+                 482     ;
+                 483     ;**************************************************************************************
+                 484     ; Interrupt Service Routine (ISR)
+                 485     ;**************************************************************************************
+                 486     ;
+                 487     ; Interrupts occur at 3.92us intervals and are used to generate the PWM pulses generated
+                 488     ; at a PRF of 1KHz. The 3.92us interrupt rate corresponds with a resolution of 256 steps
+                 489     ; over the 1ms associated with the 1KHz PRF.
                  490     ;
-0A4 081F8        491     stop_completely:        JUMP            stop_completely
-                 492     ;
-                 493     ;**************************************************************************************
-                 494     ; Read Byte from Link FIFO
-                 495     ;**************************************************************************************
-                 496     ;
-                 497     ; The routine first tests the FIFO buffer to see if data is present.
-                 498     ; If the FIFO is empty, the routine waits until there is a character to read.
-                 499     ; the read value is returned in register s0.
-                 500     ;
-                 501     ;
-0A5 0A001        502     read_link_fifo:         INPUT           s0, link_fifo_status_port ;test FIFO buffer
-                 503                             TEST            s0, #link_fifo_data_present ;wait if empty
-E: instruction not supported on the this device: TEST sX, kk.
-0A6 091F9        504                             JUMP            z, read_link_fifo
-0A7 0A002        505                             INPUT           s0, link_fifo_read_port ;read data from FIFO
-0A8 08080        506                             RETURN
-                 507     ;
-                 508     ;
-                 509     ;**************************************************************************************
-                 510     ; Interrupt Service Routine (ISR)
-                 511     ;**************************************************************************************
-                 512     ;
-                 513     ; Interrupts occur at 3.92us intervals and are used to generate the PWM pulses generated
-                 514     ; at a PRF of 1KHz. The 3.92us interrupt rate corresponds with a resolution of 256 steps
-                 515     ; over the 1ms associated with the 1KHz PRF.
-                 516     ;
-                 517     ; The ISR is self contained and all registers used are preserved. Scratch pad memory
-                 518     ; locations are used to determine the desired duty factor for each of 8 channels.
-                 519     ;
-                 520     ; Note that an interrupt is generated every 196 clock cycles. This means that there is
-                 521     ; only time to execute 98 instructions between each interrupt. This ISR is 35 instructions
-                 522     ; long. A further 3 instructions are also consumed by the interrupt process
-                 523     ; (abandoned instruction, virtual CALL to 3FF and the interrupt vector JUMP) and hence
-                 524     ; PicoBlaze has approximately 63% of its time available for other tasks in the main program.
-                 525     ;
-                 526     ; Although a loop would normal be employed in software to process each of 8 channels,
-                 527     ; the implementation of a loop would increase the number of instructions which needed to
-                 528     ; be executed significantly reduce the time available for the main program to operate.
-                 529     ; Consequently the code is written out in a linear fashion which consumes more program
-                 530     ; space but which executes faster.
-                 531     ;
-  000FE          532     isr:                    STORE           s0, isr_preserve_s0     ;preserve registers to be used
-E: instruction not supported on the this device: STORE sX, ss.
-                 533                             STORE           s1, isr_preserve_s1
-E: instruction not supported on the this device: STORE sX, ss.
-                 534                             STORE           s2, isr_preserve_s2
-E: instruction not supported on the this device: STORE sX, ss.
-                 535     ;Determine the number of steps currently through the 1ms PWM cycle
-                 536                             FETCH           s1, pwm_duty_counter    ;read 8-bit counter of steps
-E: instruction not supported on the this device: FETCH sX, ss.
-0A9 04101        537                             ADD             s1, #0x01               ;increment counter (will roll over to zero)
-                 538                             STORE           s1, pwm_duty_counter    ;update count value in memory for next interrupt.
-E: instruction not supported on the this device: STORE sX, ss.
-                 539     ;Read duty factor for each channel and compare it with the duty counter and set or
-                 540     ;reset a bit in register s2 accordingly.
-                 541                             FETCH           s0, pwm_channel7        ;read desired setting of pulse width
-E: instruction not supported on the this device: FETCH sX, ss.
-                 542                             COMPARE         s1, s0                  ;set carry flag if duty factor > duty counter
-E: instruction not supported on the this device: COMPARE sX, sY.
-0AA 0D200        543                             SLA             s2                      ;shift carry into register s2
-                 544                             FETCH           s0, pwm_channel6        ;read desired setting of pulse width
-E: instruction not supported on the this device: FETCH sX, ss.
-                 545                             COMPARE         s1, s0                  ;set carry flag if duty factor > duty counter
-E: instruction not supported on the this device: COMPARE sX, sY.
-0AB 0D200        546                             SLA             s2                      ;shift carry into register s2
-                 547                             FETCH           s0, pwm_channel5        ;read desired setting of pulse width
-E: instruction not supported on the this device: FETCH sX, ss.
-                 548                             COMPARE         s1, s0                  ;set carry flag if duty factor > duty counter
-E: instruction not supported on the this device: COMPARE sX, sY.
-0AC 0D200        549                             SLA             s2                      ;shift carry into register s2
-                 550                             FETCH           s0, pwm_channel4        ;read desired setting of pulse width
-E: instruction not supported on the this device: FETCH sX, ss.
-                 551                             COMPARE         s1, s0                  ;set carry flag if duty factor > duty counter
-E: instruction not supported on the this device: COMPARE sX, sY.
-0AD 0D200        552                             SLA             s2                      ;shift carry into register s2
-                 553                             FETCH           s0, pwm_channel3        ;read desired setting of pulse width
-E: instruction not supported on the this device: FETCH sX, ss.
-                 554                             COMPARE         s1, s0                  ;set carry flag if duty factor > duty counter
-E: instruction not supported on the this device: COMPARE sX, sY.
-0AE 0D200        555                             SLA             s2                      ;shift carry into register s2
-                 556                             FETCH           s0, pwm_channel2        ;read desired setting of pulse width
-E: instruction not supported on the this device: FETCH sX, ss.
-                 557                             COMPARE         s1, s0                  ;set carry flag if duty factor > duty counter
-E: instruction not supported on the this device: COMPARE sX, sY.
-0AF 0D200        558                             SLA             s2                      ;shift carry into register s2
-                 559                             FETCH           s0, pwm_channel1        ;read desired setting of pulse width
-E: instruction not supported on the this device: FETCH sX, ss.
-                 560                             COMPARE         s1, s0                  ;set carry flag if duty factor > duty counter
-E: instruction not supported on the this device: COMPARE sX, sY.
-0B0 0D200        561                             SLA             s2                      ;shift carry into register s2
-                 562                             FETCH           s0, pwm_channel0        ;read desired setting of pulse width
-E: instruction not supported on the this device: FETCH sX, ss.
-                 563                             COMPARE         s1, s0                  ;set carry flag if duty factor > duty counter
-E: instruction not supported on the this device: COMPARE sX, sY.
-0B1 0D200        564                             SLA             s2                      ;shift carry into register s2
-0B2 0E280        565                             OUTPUT          s2, led_port            ;drive LEDs
-                 566                             FETCH           s0, isr_preserve_s0     ;restore register values
-E: instruction not supported on the this device: FETCH sX, ss.
-                 567                             FETCH           s1, isr_preserve_s1
-E: instruction not supported on the this device: FETCH sX, ss.
-                 568                             FETCH           s2, isr_preserve_s2
-E: instruction not supported on the this device: FETCH sX, ss.
-0B3 080F0        569                             RETURNI         enable
-                 570     ;
-                 571     ;
-                 572     ;**************************************************************************************
-                 573     ; Interrupt Vector
-                 574     ;**************************************************************************************
-                 575     ;
-  003FF          576                             ORG             0x3ff
-3FF 081FE        577                             JUMP            isr
-                 578     ;
-                 579     ;
-                 580
+                 491     ; The ISR is self contained and all registers used are preserved. Scratch pad memory
+                 492     ; locations are used to determine the desired duty factor for each of 8 channels.
+                 493     ;
+                 494     ; Note that an interrupt is generated every 196 clock cycles. This means that there is
+                 495     ; only time to execute 98 instructions between each interrupt. This ISR is 35 instructions
+                 496     ; long. A further 3 instructions are also consumed by the interrupt process
+                 497     ; (abandoned instruction, virtual CALL to 3FF and the interrupt vector JUMP) and hence
+                 498     ; PicoBlaze has approximately 63% of its time available for other tasks in the main program.
+                 499     ;
+                 500     ; Although a loop would normal be employed in soloadware to process each of 8 channels,
+                 501     ; the implementation of a loop would increase the number of instructions which needed to
+                 502     ; be executed significantly reduce the time available for the main program to operate.
+                 503     ; Consequently the code is written out in a linear fashion which consumes more program
+                 504     ; space but which executes faster.
+                 505     ;
+  000D4          506     isr:
+0D4 04101        507      ADD             s1, #0x01               ;increment counter (will roll over to zero)
+                 508
+                 509     ;reset a bit in register s2 accordingly.
+0D5 0C100        510         load         s1, s0                  ;set carry flag if duty factor > duty counter
+0D6 0D200        511                             SLA             s2                      ;shiload carry into register s2
+0D7 0C100        512       load         s1, s0                  ;set carry flag if duty factor > duty counter
+0D8 0D200        513                             SLA             s2                      ;shiload carry into register s2
+0D9 0C100        514       load         s1, s0                  ;set carry flag if duty factor > duty counter
+0DA 0D200        515                             SLA             s2                      ;shiload carry into register s2
+0DB 0C100        516       load         s1, s0                  ;set carry flag if duty factor > duty counter
+0DC 0D200        517                             SLA             s2                      ;shiload carry into register s2
+0DD 0C100        518       load         s1, s0                  ;set carry flag if duty factor > duty counter
+0DE 0D200        519                             SLA             s2                      ;shiload carry into register s2
+0DF 0C100        520       load         s1, s0                  ;set carry flag if duty factor > duty counter
+0E0 0D200        521                             SLA             s2                      ;shiload carry into register s2
+0E1 0C100        522      load         s1, s0                  ;set carry flag if duty factor > duty counter
+0E2 0D200        523                             SLA             s2                      ;shiload carry into register s2
+0E3 0C100        524       load         s1, s0                  ;set carry flag if duty factor > duty counter
+0E4 0D200        525                             SLA             s2                      ;shiload carry into register s2
+0E5 0E280        526                             OUTPUT          s2, led_port            ;drive LEDs
+0E6 080F0        527       RETURNI         enable
+                 528     ;
+                 529     ;
+                 530     ;**************************************************************************************
+                 531     ; Interrupt Vector
+                 532     ;**************************************************************************************
+                 533     ;
+  003FF          534                             ORG             0x3ff
+3FF 081D4        535                             JUMP            isr
+                 536     ;
+                 537     ;
+                 538

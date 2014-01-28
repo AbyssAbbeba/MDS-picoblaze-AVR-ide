@@ -92,7 +92,7 @@
                   92     ;of the LCD display. A 16-bit value determines how many milliseconds
                   93     ;there are between shifts
                   94     ;
-                  95     ;Tests indicate that the fastest shift rate that the LCD display supports is
+                  95     ;loads indicate that the fasload shift rate that the LCD display supports is
                   96     ;500ms. Faster than this and the display becomes less clear to read.
                   97     ;
   00001           98     shift_delay_msb         EQU             0x01                    ;delay is 500ms (01F4 hex)
@@ -218,12 +218,12 @@
 007 36065        218                             CALL            disp_www                ;Display 'www.xilinx.com/s3estarter'
                  219     ;
 008 00008        220                             LOAD            s0, #0x08               ;initialise walking '1' pattern
-                 221                             STORE           s0, led_pattern
-E: instruction not supported on the this device: STORE sX, ss.
+009 10010        221                             load           s0, led_pattern
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
                  222     ;
-009 00DFF        223                             LOAD            sd, #0xff               ;initial mode is rotary control
-                 224                             STORE           sd, mode
-E: instruction not supported on the this device: STORE sX, ss.
+00A 00DFF        223                             LOAD            sd, #0xff               ;initial mode is rotary control
+00B 10D18        224                             load           sd, mode
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
                  225     ;
                  226     ;**************************************************************************************
                  227     ;Main program
@@ -234,76 +234,70 @@ E: instruction not supported on the this device: STORE sX, ss.
                  232     ;encoder to determine which mode of LED control should be active.
                  233     ;
                  234     ;
-00A 00F01        235     lcd_shift_delay:        LOAD            sf, #shift_delay_msb    ; [sF,sE]=loop delay in ms
-00B 00EF4        236                             LOAD            se, #shift_delay_lsb
-00C 20001        237     lcd_delay_loop:         INPUT           s0, rotary_port         ;test for press of rotary
-                 238                             TEST            s0, #rotary_press
-E: instruction not supported on the this device: TEST sX, kk.
-00D 3541C        239                             JUMP            nz, mode_switch
-                 240                             FETCH           sd, mode                ;perform control task required
-E: instruction not supported on the this device: FETCH sX, ss.
-                 241                             COMPARE         sd, #0x00
-E: instruction not supported on the this device: COMPARE sX, kk.
-00E 37029        242                             CALL            z, normal_mode
-                 243                             COMPARE         sd, #0xff
-E: instruction not supported on the this device: COMPARE sX, kk.
-00F 3702C        244                             CALL            z, rotate_mode
-010 360A4        245                             CALL            delay_1ms               ;1ms delay
-011 0CE01        246                             SUB             se, #0x01               ;decrement delay counter
-012 0EF00        247                             SUBCY           sf, #0x00
-013 35C0E        248                             JUMP            nc, lcd_delay_loop
-014 36116        249                             CALL            lcd_shift_left          ;shift LCD display
-015 3400C        250                             JUMP            lcd_shift_delay
+00C 00F01        235     lcd_shift_delay:        LOAD            sf, #shift_delay_msb    ; [sF,sE]=loop delay in ms
+00D 00EF4        236                             LOAD            se, #shift_delay_lsb
+00E 20001        237     lcd_delay_loop:         INPUT           s0, rotary_port         ;load for press of rotary
+00F 00002        238                             load            s0, #rotary_press
+010 3541C        239                             JUMP            nz, mode_switch
+011 10D18        240                             load           sd, mode                ;perform control task required
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+012 00D00        241                             load         sd, #0x00
+013 37029        242                             CALL            z, normal_mode
+014 00DFF        243                             load         sd, #0xff
+015 3702C        244                             CALL            z, rotate_mode
+016 360A4        245                             CALL            delay_1ms               ;1ms delay
+017 0CE01        246                             SUB             se, #0x01               ;decrement delay counter
+018 0EF00        247                             SUBCY           sf, #0x00
+019 35C0E        248                             JUMP            nc, lcd_delay_loop
+01A 36116        249                             CALL            lcd_shift_left          ;shift LCD display
+01B 3400C        250                             JUMP            lcd_shift_delay
                  251     ;
-016 06DFF        252     mode_switch:            XOR             sd, #0xff               ;toggle mode
-                 253                             STORE           sd, mode
-E: instruction not supported on the this device: STORE sX, ss.
-017 360A4        254     wait_mode_switch:       CALL            delay_1ms               ;keep shifting LCD display #WHILE waiting
-018 0CE01        255                             SUB             se, #0x01
-019 0EF00        256                             SUBCY           sf, #0x00
-01A 35C25        257                             JUMP            nc, wait_no_shift
-01B 36116        258                             CALL            lcd_shift_left          ;shift LCD display
-01C 00F01        259                             LOAD            sf, #shift_delay_msb    ; [sF,sE]=loop delay in ms
-01D 00EF4        260                             LOAD            se, #shift_delay_lsb
-01E 20001        261     wait_no_shift:          INPUT           s0, rotary_port         ;wait for release of press button
-                 262                             TEST            s0, #rotary_press
-E: instruction not supported on the this device: TEST sX, kk.
-01F 3541E        263                             JUMP            nz, wait_mode_switch
-020 3400E        264                             JUMP            lcd_delay_loop
+01C 06DFF        252     mode_switch:            XOR             sd, #0xff               ;toggle mode
+01D 10D18        253                             load           sd, mode
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+01E 360A4        254     wait_mode_switch:       CALL            delay_1ms               ;keep shifting LCD display #WHILE waiting
+01F 0CE01        255                             SUB             se, #0x01
+020 0EF00        256                             SUBCY           sf, #0x00
+021 35C25        257                             JUMP            nc, wait_no_shift
+022 36116        258                             CALL            lcd_shift_left          ;shift LCD display
+023 00F01        259                             LOAD            sf, #shift_delay_msb    ; [sF,sE]=loop delay in ms
+024 00EF4        260                             LOAD            se, #shift_delay_lsb
+025 20001        261     wait_no_shift:          INPUT           s0, rotary_port         ;wait for release of press button
+026 00002        262                             load            s0, #rotary_press
+027 3541E        263                             JUMP            nz, wait_mode_switch
+028 3400E        264                             JUMP            lcd_delay_loop
                  265     ;
                  266     ;This procedure will copy the condition of the slide switches and press
                  267     ;buttons to the LEDs.
                  268     ;
                  269     ;
-021 20000        270     normal_mode:            INPUT           s0, switch_port         ;Read switches and buttons and directly drive LEDs
-022 22080        271                             OUTPUT          s0, led_port
-023 24000        272                             RETURN
+029 20000        270     normal_mode:            INPUT           s0, switch_port         ;Read switches and buttons and directly drive LEDs
+02A 22080        271                             OUTPUT          s0, led_port
+02B 24000        272                             RETURN
                  273     ;
                  274     ;
                  275     ;
                  276     ;This procedure will poll the status of the rotary encoder.
                  277     ;If rotation occurs, then the LED pattern will adjust appropriately.
                  278     ;
-  0002C          279     rotate_mode:            FETCH           sa, led_pattern         ;last known position
-E: instruction not supported on the this device: FETCH sX, ss.
-                 280                             FETCH           s0, rotary_status       ;check status of rotation
-E: instruction not supported on the this device: FETCH sX, ss.
-                 281                             TEST            s0, #0x80               ;test flag
-E: instruction not supported on the this device: TEST sX, kk.
-024 35037        282                             JUMP            z, update_pattern
-025 0207F        283                             AND             s0, #0x7f               ;clear flag
-                 284                             STORE           s0, rotary_status
-E: instruction not supported on the this device: STORE sX, ss.
-                 285                             TEST            s0, #rotary_left        ;event occurred so update pattern
-E: instruction not supported on the this device: TEST sX, kk.
-026 35036        286                             JUMP            z, move_right
-027 28A02        287                             RL              sa
-028 34037        288                             JUMP            update_pattern
-029 28A0C        289     move_right:             RR              sa
-  00037          290     update_pattern:         STORE           sa, led_pattern
-E: instruction not supported on the this device: STORE sX, ss.
-02A 22A80        291                             OUTPUT          sa, led_port            ;drive LEDs with current pattern
-02B 24000        292                             RETURN
+02C 10A10        279     rotate_mode:            load           sa, led_pattern         ;last known position
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+02D 10000        280                             load           s0, rotary_status       ;check status of rotation
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+02E 00080        281                             load            s0, #0x80               ;load flag
+02F 35037        282                             JUMP            z, update_pattern
+030 0207F        283                             AND             s0, #0x7f               ;clear flag
+031 10000        284                             load           s0, rotary_status
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+032 00001        285                             load            s0, #rotary_left        ;event occurred so update pattern
+033 35036        286                             JUMP            z, move_right
+034 28A02        287                             RL              sa
+035 34037        288                             JUMP            update_pattern
+036 28A0C        289     move_right:             RR              sa
+037 10A10        290     update_pattern:         load           sa, led_pattern
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+038 22A80        291                             OUTPUT          sa, led_port            ;drive LEDs with current pattern
+039 24000        292                             RETURN
                  293     ;
                  294     ;
                  295     ;
@@ -316,112 +310,112 @@ E: instruction not supported on the this device: STORE sX, ss.
                  302     ;Display 'SPARTAN-3E STARTER KIT' on LCD at current cursor position
                  303     ;
                  304     ;
-02C 00553        305     disp_spartan:           LOAD            s5, #_character_s
-02D 360CC        306                             CALL            lcd_write_data
-02E 00550        307                             LOAD            s5, #_character_p
-02F 360CC        308                             CALL            lcd_write_data
-030 00541        309                             LOAD            s5, #_character_a
-031 360CC        310                             CALL            lcd_write_data
-032 00552        311                             LOAD            s5, #_character_r
-033 360CC        312                             CALL            lcd_write_data
-034 00554        313                             LOAD            s5, #_character_t
-035 360CC        314                             CALL            lcd_write_data
-036 00541        315                             LOAD            s5, #_character_a
-037 360CC        316                             CALL            lcd_write_data
-038 0054E        317                             LOAD            s5, #_character_n
-039 360CC        318                             CALL            lcd_write_data
-03A 0052D        319                             LOAD            s5, #character_minus
-03B 360CC        320                             CALL            lcd_write_data
-03C 00533        321                             LOAD            s5, #character_3
-03D 360CC        322                             CALL            lcd_write_data
-03E 00545        323                             LOAD            s5, #_character_e
-03F 360CC        324                             CALL            lcd_write_data
-040 36098        325                             CALL            disp_space
-041 00553        326                             LOAD            s5, #_character_s
-042 360CC        327                             CALL            lcd_write_data
-043 00554        328                             LOAD            s5, #_character_t
-044 360CC        329                             CALL            lcd_write_data
-045 00541        330                             LOAD            s5, #_character_a
-046 360CC        331                             CALL            lcd_write_data
-047 00552        332                             LOAD            s5, #_character_r
-048 360CC        333                             CALL            lcd_write_data
-049 00554        334                             LOAD            s5, #_character_t
-04A 360CC        335                             CALL            lcd_write_data
-04B 00545        336                             LOAD            s5, #_character_e
-04C 360CC        337                             CALL            lcd_write_data
-04D 00552        338                             LOAD            s5, #_character_r
-04E 360CC        339                             CALL            lcd_write_data
-04F 36098        340                             CALL            disp_space
-050 0054B        341                             LOAD            s5, #_character_k
-051 360CC        342                             CALL            lcd_write_data
-052 00549        343                             LOAD            s5, #_character_i
-053 360CC        344                             CALL            lcd_write_data
-054 00554        345                             LOAD            s5, #_character_t
-055 360CC        346                             CALL            lcd_write_data
-056 24000        347                             RETURN
+03A 00553        305     disp_spartan:           LOAD            s5, #_character_s
+03B 360CC        306                             CALL            lcd_write_data
+03C 00550        307                             LOAD            s5, #_character_p
+03D 360CC        308                             CALL            lcd_write_data
+03E 00541        309                             LOAD            s5, #_character_a
+03F 360CC        310                             CALL            lcd_write_data
+040 00552        311                             LOAD            s5, #_character_r
+041 360CC        312                             CALL            lcd_write_data
+042 00554        313                             LOAD            s5, #_character_t
+043 360CC        314                             CALL            lcd_write_data
+044 00541        315                             LOAD            s5, #_character_a
+045 360CC        316                             CALL            lcd_write_data
+046 0054E        317                             LOAD            s5, #_character_n
+047 360CC        318                             CALL            lcd_write_data
+048 0052D        319                             LOAD            s5, #character_minus
+049 360CC        320                             CALL            lcd_write_data
+04A 00533        321                             LOAD            s5, #character_3
+04B 360CC        322                             CALL            lcd_write_data
+04C 00545        323                             LOAD            s5, #_character_e
+04D 360CC        324                             CALL            lcd_write_data
+04E 36098        325                             CALL            disp_space
+04F 00553        326                             LOAD            s5, #_character_s
+050 360CC        327                             CALL            lcd_write_data
+051 00554        328                             LOAD            s5, #_character_t
+052 360CC        329                             CALL            lcd_write_data
+053 00541        330                             LOAD            s5, #_character_a
+054 360CC        331                             CALL            lcd_write_data
+055 00552        332                             LOAD            s5, #_character_r
+056 360CC        333                             CALL            lcd_write_data
+057 00554        334                             LOAD            s5, #_character_t
+058 360CC        335                             CALL            lcd_write_data
+059 00545        336                             LOAD            s5, #_character_e
+05A 360CC        337                             CALL            lcd_write_data
+05B 00552        338                             LOAD            s5, #_character_r
+05C 360CC        339                             CALL            lcd_write_data
+05D 36098        340                             CALL            disp_space
+05E 0054B        341                             LOAD            s5, #_character_k
+05F 360CC        342                             CALL            lcd_write_data
+060 00549        343                             LOAD            s5, #_character_i
+061 360CC        344                             CALL            lcd_write_data
+062 00554        345                             LOAD            s5, #_character_t
+063 360CC        346                             CALL            lcd_write_data
+064 24000        347                             RETURN
                  348     ;
                  349     ;
                  350     ;Display 'www.xilinx.com/s3estarter' on LCD at current cursor position
                  351     ;
                  352     ;
-057 00577        353     disp_www:               LOAD            s5, #character_w
-058 360CC        354                             CALL            lcd_write_data
-059 00577        355                             LOAD            s5, #character_w
-05A 360CC        356                             CALL            lcd_write_data
-05B 00577        357                             LOAD            s5, #character_w
-05C 360CC        358                             CALL            lcd_write_data
-05D 0052E        359                             LOAD            s5, #character_stop
-05E 360CC        360                             CALL            lcd_write_data
-05F 00578        361                             LOAD            s5, #character_x
-060 360CC        362                             CALL            lcd_write_data
-061 00569        363                             LOAD            s5, #character_i
-062 360CC        364                             CALL            lcd_write_data
-063 0056C        365                             LOAD            s5, #character_l
-064 360CC        366                             CALL            lcd_write_data
-065 00569        367                             LOAD            s5, #character_i
-066 360CC        368                             CALL            lcd_write_data
-067 0056E        369                             LOAD            s5, #character_n
-068 360CC        370                             CALL            lcd_write_data
-069 00578        371                             LOAD            s5, #character_x
-06A 360CC        372                             CALL            lcd_write_data
-06B 0052E        373                             LOAD            s5, #character_stop
-06C 360CC        374                             CALL            lcd_write_data
-06D 00563        375                             LOAD            s5, #character_c
-06E 360CC        376                             CALL            lcd_write_data
-06F 0056F        377                             LOAD            s5, #character_o
-070 360CC        378                             CALL            lcd_write_data
-071 0056D        379                             LOAD            s5, #character_m
-072 360CC        380                             CALL            lcd_write_data
-073 0052F        381                             LOAD            s5, #character_divide
-074 360CC        382                             CALL            lcd_write_data
-075 00573        383                             LOAD            s5, #character_s
-076 360CC        384                             CALL            lcd_write_data
-077 00533        385                             LOAD            s5, #character_3
-078 360CC        386                             CALL            lcd_write_data
-079 00565        387                             LOAD            s5, #character_e
-07A 360CC        388                             CALL            lcd_write_data
-07B 00573        389                             LOAD            s5, #character_s
-07C 360CC        390                             CALL            lcd_write_data
-07D 00574        391                             LOAD            s5, #character_t
-07E 360CC        392                             CALL            lcd_write_data
-07F 00561        393                             LOAD            s5, #character_a
-080 360CC        394                             CALL            lcd_write_data
-081 00572        395                             LOAD            s5, #character_r
-082 360CC        396                             CALL            lcd_write_data
-083 00574        397                             LOAD            s5, #character_t
-084 360CC        398                             CALL            lcd_write_data
-085 00565        399                             LOAD            s5, #character_e
-086 360CC        400                             CALL            lcd_write_data
-087 00572        401                             LOAD            s5, #character_r
-088 360CC        402                             CALL            lcd_write_data
-089 24000        403                             RETURN
+065 00577        353     disp_www:               LOAD            s5, #character_w
+066 360CC        354                             CALL            lcd_write_data
+067 00577        355                             LOAD            s5, #character_w
+068 360CC        356                             CALL            lcd_write_data
+069 00577        357                             LOAD            s5, #character_w
+06A 360CC        358                             CALL            lcd_write_data
+06B 0052E        359                             LOAD            s5, #character_stop
+06C 360CC        360                             CALL            lcd_write_data
+06D 00578        361                             LOAD            s5, #character_x
+06E 360CC        362                             CALL            lcd_write_data
+06F 00569        363                             LOAD            s5, #character_i
+070 360CC        364                             CALL            lcd_write_data
+071 0056C        365                             LOAD            s5, #character_l
+072 360CC        366                             CALL            lcd_write_data
+073 00569        367                             LOAD            s5, #character_i
+074 360CC        368                             CALL            lcd_write_data
+075 0056E        369                             LOAD            s5, #character_n
+076 360CC        370                             CALL            lcd_write_data
+077 00578        371                             LOAD            s5, #character_x
+078 360CC        372                             CALL            lcd_write_data
+079 0052E        373                             LOAD            s5, #character_stop
+07A 360CC        374                             CALL            lcd_write_data
+07B 00563        375                             LOAD            s5, #character_c
+07C 360CC        376                             CALL            lcd_write_data
+07D 0056F        377                             LOAD            s5, #character_o
+07E 360CC        378                             CALL            lcd_write_data
+07F 0056D        379                             LOAD            s5, #character_m
+080 360CC        380                             CALL            lcd_write_data
+081 0052F        381                             LOAD            s5, #character_divide
+082 360CC        382                             CALL            lcd_write_data
+083 00573        383                             LOAD            s5, #character_s
+084 360CC        384                             CALL            lcd_write_data
+085 00533        385                             LOAD            s5, #character_3
+086 360CC        386                             CALL            lcd_write_data
+087 00565        387                             LOAD            s5, #character_e
+088 360CC        388                             CALL            lcd_write_data
+089 00573        389                             LOAD            s5, #character_s
+08A 360CC        390                             CALL            lcd_write_data
+08B 00574        391                             LOAD            s5, #character_t
+08C 360CC        392                             CALL            lcd_write_data
+08D 00561        393                             LOAD            s5, #character_a
+08E 360CC        394                             CALL            lcd_write_data
+08F 00572        395                             LOAD            s5, #character_r
+090 360CC        396                             CALL            lcd_write_data
+091 00574        397                             LOAD            s5, #character_t
+092 360CC        398                             CALL            lcd_write_data
+093 00565        399                             LOAD            s5, #character_e
+094 360CC        400                             CALL            lcd_write_data
+095 00572        401                             LOAD            s5, #character_r
+096 360CC        402                             CALL            lcd_write_data
+097 24000        403                             RETURN
                  404     ;
                  405     ;Display a space on LCD at current cursor position
                  406     ;
                  407     ;
-08A 00520        408     disp_space:             LOAD            s5, #character_space
-08B 360CC        409                             CALL            lcd_write_data
-08C 24000        410                             RETURN
+098 00520        408     disp_space:             LOAD            s5, #character_space
+099 360CC        409                             CALL            lcd_write_data
+09A 24000        410                             RETURN
                  411     ;
                  412     ;
                  413     ;
@@ -442,31 +436,31 @@ E: instruction not supported on the this device: STORE sX, ss.
                  428     ;
                  429     ;Registers used s0
                  430     ;
-08D 0000B        431     delay_1us:              LOAD            s0, #delay_1us_constant
-08E 0C001        432     wait_1us:               SUB             s0, #0x01
-08F 3549C        433                             JUMP            nz, wait_1us
-090 24000        434                             RETURN
+09B 0000B        431     delay_1us:              LOAD            s0, #delay_1us_constant
+09C 0C001        432     wait_1us:               SUB             s0, #0x01
+09D 3549C        433                             JUMP            nz, wait_1us
+09E 24000        434                             RETURN
                  435     ;
                  436     ;Delay of 40us.
                  437     ;
                  438     ;Registers used s0, s1
                  439     ;
-091 00128        440     delay_40us:             LOAD            s1, #0x28               ;40 x 1us = 40us
-092 3609B        441     wait_40us:              CALL            delay_1us
-093 0C101        442                             SUB             s1, #0x01
-094 354A0        443                             JUMP            nz, wait_40us
-095 24000        444                             RETURN
+09F 00128        440     delay_40us:             LOAD            s1, #0x28               ;40 x 1us = 40us
+0A0 3609B        441     wait_40us:              CALL            delay_1us
+0A1 0C101        442                             SUB             s1, #0x01
+0A2 354A0        443                             JUMP            nz, wait_40us
+0A3 24000        444                             RETURN
                  445     ;
                  446     ;
                  447     ;Delay of 1ms.
                  448     ;
                  449     ;Registers used s0, s1, s2
                  450     ;
-096 00219        451     delay_1ms:              LOAD            s2, #0x19               ;25 x 40us = 1ms
-097 3609F        452     wait_1ms:               CALL            delay_40us
-098 0C201        453                             SUB             s2, #0x01
-099 354A5        454                             JUMP            nz, wait_1ms
-09A 24000        455                             RETURN
+0A4 00219        451     delay_1ms:              LOAD            s2, #0x19               ;25 x 40us = 1ms
+0A5 3609F        452     wait_1ms:               CALL            delay_40us
+0A6 0C201        453                             SUB             s2, #0x01
+0A7 354A5        454                             JUMP            nz, wait_1ms
+0A8 24000        455                             RETURN
                  456     ;
                  457     ;Delay of 20ms.
                  458     ;
@@ -474,21 +468,21 @@ E: instruction not supported on the this device: STORE sX, ss.
                  460     ;
                  461     ;Registers used s0, s1, s2, s3
                  462     ;
-09B 00314        463     delay_20ms:             LOAD            s3, #0x14               ;20 x 1ms = 20ms
-09C 360A4        464     wait_20ms:              CALL            delay_1ms
-09D 0C301        465                             SUB             s3, #0x01
-09E 354AA        466                             JUMP            nz, wait_20ms
-09F 24000        467                             RETURN
+0A9 00314        463     delay_20ms:             LOAD            s3, #0x14               ;20 x 1ms = 20ms
+0AA 360A4        464     wait_20ms:              CALL            delay_1ms
+0AB 0C301        465                             SUB             s3, #0x01
+0AC 354AA        466                             JUMP            nz, wait_20ms
+0AD 24000        467                             RETURN
                  468     ;
                  469     ;Delay of approximately 1 second.
                  470     ;
                  471     ;Registers used s0, s1, s2, s3, s4
                  472     ;
-0A0 00432        473     delay_1s:               LOAD            s4, #0x32               ;50 x 20ms = 1000ms
-0A1 360A9        474     wait_1s:                CALL            delay_20ms
-0A2 0C401        475                             SUB             s4, #0x01
-0A3 354AF        476                             JUMP            nz, wait_1s
-0A4 24000        477                             RETURN
+0AE 00432        473     delay_1s:               LOAD            s4, #0x32               ;50 x 20ms = 1000ms
+0AF 360A9        474     wait_1s:                CALL            delay_20ms
+0B0 0C401        475                             SUB             s4, #0x01
+0B1 354AF        476                             JUMP            nz, wait_1s
+0B2 24000        477                             RETURN
                  478     ;
                  479     ;
                  480     ;
@@ -510,12 +504,12 @@ E: instruction not supported on the this device: STORE sX, ss.
                  496     ;
                  497     ;Registers used s0, s4
                  498     ;
-0A5 06401        499     lcd_pulse_e:            XOR             s4, #lcd_e              ;E=1
-0A6 22440        500                             OUTPUT          s4, lcd_output_port
-0A7 3609B        501                             CALL            delay_1us
-0A8 06401        502                             XOR             s4, #lcd_e              ;E=0
-0A9 22440        503                             OUTPUT          s4, lcd_output_port
-0AA 24000        504                             RETURN
+0B3 06401        499     lcd_pulse_e:            XOR             s4, #lcd_e              ;E=1
+0B4 22440        500                             OUTPUT          s4, lcd_output_port
+0B5 3609B        501                             CALL            delay_1us
+0B6 06401        502                             XOR             s4, #lcd_e              ;E=0
+0B7 22440        503                             OUTPUT          s4, lcd_output_port
+0B8 24000        504                             RETURN
                  505     ;
                  506     ;Write 4-bit instruction to LCD display.
                  507     ;
@@ -526,10 +520,10 @@ E: instruction not supported on the this device: STORE sX, ss.
                  512     ;
                  513     ;Registers used s4
                  514     ;
-0AB 024F8        515     lcd_write_inst4:        AND             s4, #0xf8               ;Enable=1 RS=0 Instruction, RW=0 Write, E=0
-0AC 22440        516                             OUTPUT          s4, lcd_output_port     ;set up RS and RW >40ns before enable pulse
-0AD 360B3        517                             CALL            lcd_pulse_e
-0AE 24000        518                             RETURN
+0B9 024F8        515     lcd_write_inst4:        AND             s4, #0xf8               ;Enable=1 RS=0 Instruction, RW=0 Write, E=0
+0BA 22440        516                             OUTPUT          s4, lcd_output_port     ;set up RS and RW >40ns before enable pulse
+0BB 360B3        517                             CALL            lcd_pulse_e
+0BC 24000        518                             RETURN
                  519     ;
                  520     ;
                  521     ;Write 8-bit instruction to LCD display.
@@ -543,21 +537,21 @@ E: instruction not supported on the this device: STORE sX, ss.
                  529     ;
                  530     ;Registers used s0, s1, s4, s5
                  531     ;
-0AF 10428        532     lcd_write_inst8:        LOAD            s4, s5
-0B0 024F0        533                             AND             s4, #0xf0               ;Enable=0 RS=0 Instruction, RW=0 Write, E=0
-0B1 04408        534                             OR              s4, #lcd_drive          ;Enable=1
-0B2 360B9        535                             CALL            lcd_write_inst4         ;write upper nibble
-0B3 3609B        536                             CALL            delay_1us               ;wait >1us
-0B4 10428        537                             LOAD            s4, s5                  ;select lower nibble with
-0B5 28407        538                             SL1             s4                      ;Enable=1
-0B6 28406        539                             SL0             s4                      ;RS=0 Instruction
-0B7 28406        540                             SL0             s4                      ;RW=0 Write
-0B8 28406        541                             SL0             s4                      ;E=0
-0B9 360B9        542                             CALL            lcd_write_inst4         ;write lower nibble
-0BA 3609F        543                             CALL            delay_40us              ;wait >40us
-0BB 004F0        544                             LOAD            s4, #0xf0               ;Enable=0 RS=0 Instruction, RW=0 Write, E=0
-0BC 22440        545                             OUTPUT          s4, lcd_output_port     ;Release master enable
-0BD 24000        546                             RETURN
+0BD 10428        532     lcd_write_inst8:        LOAD            s4, s5
+0BE 024F0        533                             AND             s4, #0xf0               ;Enable=0 RS=0 Instruction, RW=0 Write, E=0
+0BF 04408        534                             OR              s4, #lcd_drive          ;Enable=1
+0C0 360B9        535                             CALL            lcd_write_inst4         ;write upper nibble
+0C1 3609B        536                             CALL            delay_1us               ;wait >1us
+0C2 10428        537                             LOAD            s4, s5                  ;select lower nibble with
+0C3 28407        538                             SL1             s4                      ;Enable=1
+0C4 28406        539                             SL0             s4                      ;RS=0 Instruction
+0C5 28406        540                             SL0             s4                      ;RW=0 Write
+0C6 28406        541                             SL0             s4                      ;E=0
+0C7 360B9        542                             CALL            lcd_write_inst4         ;write lower nibble
+0C8 3609F        543                             CALL            delay_40us              ;wait >40us
+0C9 004F0        544                             LOAD            s4, #0xf0               ;Enable=0 RS=0 Instruction, RW=0 Write, E=0
+0CA 22440        545                             OUTPUT          s4, lcd_output_port     ;Release master enable
+0CB 24000        546                             RETURN
                  547     ;
                  548     ;
                  549     ;
@@ -572,23 +566,23 @@ E: instruction not supported on the this device: STORE sX, ss.
                  558     ;
                  559     ;Registers used s0, s1, s4, s5
                  560     ;
-0BE 10428        561     lcd_write_data:         LOAD            s4, s5
-0BF 024F0        562                             AND             s4, #0xf0               ;Enable=0 RS=0 Instruction, RW=0 Write, E=0
-0C0 0440C        563                             OR              s4, #0x0c               ;Enable=1 RS=1 Data, RW=0 Write, E=0
-0C1 22440        564                             OUTPUT          s4, lcd_output_port     ;set up RS and RW >40ns before enable pulse
-0C2 360B3        565                             CALL            lcd_pulse_e             ;write upper nibble
-0C3 3609B        566                             CALL            delay_1us               ;wait >1us
-0C4 10428        567                             LOAD            s4, s5                  ;select lower nibble with
-0C5 28407        568                             SL1             s4                      ;Enable=1
-0C6 28407        569                             SL1             s4                      ;RS=1 Data
-0C7 28406        570                             SL0             s4                      ;RW=0 Write
-0C8 28406        571                             SL0             s4                      ;E=0
-0C9 22440        572                             OUTPUT          s4, lcd_output_port     ;set up RS and RW >40ns before enable pulse
-0CA 360B3        573                             CALL            lcd_pulse_e             ;write lower nibble
-0CB 3609F        574                             CALL            delay_40us              ;wait >40us
-0CC 004F0        575                             LOAD            s4, #0xf0               ;Enable=0 RS=0 Instruction, RW=0 Write, E=0
-0CD 22440        576                             OUTPUT          s4, lcd_output_port     ;Release master enable
-0CE 24000        577                             RETURN
+0CC 10428        561     lcd_write_data:         LOAD            s4, s5
+0CD 024F0        562                             AND             s4, #0xf0               ;Enable=0 RS=0 Instruction, RW=0 Write, E=0
+0CE 0440C        563                             OR              s4, #0x0c               ;Enable=1 RS=1 Data, RW=0 Write, E=0
+0CF 22440        564                             OUTPUT          s4, lcd_output_port     ;set up RS and RW >40ns before enable pulse
+0D0 360B3        565                             CALL            lcd_pulse_e             ;write upper nibble
+0D1 3609B        566                             CALL            delay_1us               ;wait >1us
+0D2 10428        567                             LOAD            s4, s5                  ;select lower nibble with
+0D3 28407        568                             SL1             s4                      ;Enable=1
+0D4 28407        569                             SL1             s4                      ;RS=1 Data
+0D5 28406        570                             SL0             s4                      ;RW=0 Write
+0D6 28406        571                             SL0             s4                      ;E=0
+0D7 22440        572                             OUTPUT          s4, lcd_output_port     ;set up RS and RW >40ns before enable pulse
+0D8 360B3        573                             CALL            lcd_pulse_e             ;write lower nibble
+0D9 3609F        574                             CALL            delay_40us              ;wait >40us
+0DA 004F0        575                             LOAD            s4, #0xf0               ;Enable=0 RS=0 Instruction, RW=0 Write, E=0
+0DB 22440        576                             OUTPUT          s4, lcd_output_port     ;Release master enable
+0DC 24000        577                             RETURN
                  578     ;
                  579     ;
                  580     ;
@@ -609,31 +603,31 @@ E: instruction not supported on the this device: STORE sX, ss.
                  595     ;
                  596     ;Registers used s0, s1, s4, s5
                  597     ;
-0CF 0040E        598     lcd_read_data8:         LOAD            s4, #0x0e               ;Enable=1 RS=1 Data, RW=1 Read, E=0
-0D0 22440        599                             OUTPUT          s4, lcd_output_port     ;set up RS and RW >40ns before enable pulse
-0D1 06401        600                             XOR             s4, #lcd_e              ;E=1
-0D2 22440        601                             OUTPUT          s4, lcd_output_port
-0D3 3609B        602                             CALL            delay_1us               ;wait >260ns to access data
-0D4 20502        603                             INPUT           s5, lcd_input_port      ;read upper nibble
-0D5 06401        604                             XOR             s4, #lcd_e              ;E=0
-0D6 22440        605                             OUTPUT          s4, lcd_output_port
-0D7 3609B        606                             CALL            delay_1us               ;wait >1us
-0D8 06401        607                             XOR             s4, #lcd_e              ;E=1
-0D9 22440        608                             OUTPUT          s4, lcd_output_port
-0DA 3609B        609                             CALL            delay_1us               ;wait >260ns to access data
-0DB 20002        610                             INPUT           s0, lcd_input_port      ;read lower nibble
-0DC 06401        611                             XOR             s4, #lcd_e              ;E=0
-0DD 22440        612                             OUTPUT          s4, lcd_output_port
-0DE 025F0        613                             AND             s5, #0xf0               ;merge upper and lower nibbles
-0DF 2800E        614                             SR0             s0
-0E0 2800E        615                             SR0             s0
-0E1 2800E        616                             SR0             s0
-0E2 2800E        617                             SR0             s0
-0E3 14500        618                             OR              s5, s0
-0E4 00404        619                             LOAD            s4, #0x04               ;Enable=0 RS=1 Data, RW=0 Write, E=0
-0E5 22440        620                             OUTPUT          s4, lcd_output_port     ;Stop reading 5V device and release master enable
-0E6 3609F        621                             CALL            delay_40us              ;wait >40us
-0E7 24000        622                             RETURN
+0DD 0040E        598     lcd_read_data8:         LOAD            s4, #0x0e               ;Enable=1 RS=1 Data, RW=1 Read, E=0
+0DE 22440        599                             OUTPUT          s4, lcd_output_port     ;set up RS and RW >40ns before enable pulse
+0DF 06401        600                             XOR             s4, #lcd_e              ;E=1
+0E0 22440        601                             OUTPUT          s4, lcd_output_port
+0E1 3609B        602                             CALL            delay_1us               ;wait >260ns to access data
+0E2 20502        603                             INPUT           s5, lcd_input_port      ;read upper nibble
+0E3 06401        604                             XOR             s4, #lcd_e              ;E=0
+0E4 22440        605                             OUTPUT          s4, lcd_output_port
+0E5 3609B        606                             CALL            delay_1us               ;wait >1us
+0E6 06401        607                             XOR             s4, #lcd_e              ;E=1
+0E7 22440        608                             OUTPUT          s4, lcd_output_port
+0E8 3609B        609                             CALL            delay_1us               ;wait >260ns to access data
+0E9 20002        610                             INPUT           s0, lcd_input_port      ;read lower nibble
+0EA 06401        611                             XOR             s4, #lcd_e              ;E=0
+0EB 22440        612                             OUTPUT          s4, lcd_output_port
+0EC 025F0        613                             AND             s5, #0xf0               ;merge upper and lower nibbles
+0ED 2800E        614                             SR0             s0
+0EE 2800E        615                             SR0             s0
+0EF 2800E        616                             SR0             s0
+0F0 2800E        617                             SR0             s0
+0F1 14500        618                             OR              s5, s0
+0F2 00404        619                             LOAD            s4, #0x04               ;Enable=0 RS=1 Data, RW=0 Write, E=0
+0F3 22440        620                             OUTPUT          s4, lcd_output_port     ;Stop reading 5V device and release master enable
+0F4 3609F        621                             CALL            delay_40us              ;wait >40us
+0F5 24000        622                             RETURN
                  623     ;
                  624     ;
                  625     ;Reset and initialise display to communicate using 4-bit data mode
@@ -649,28 +643,28 @@ E: instruction not supported on the this device: STORE sX, ss.
                  635     ;
                  636     ;Registers used s0, s1, s2, s3, s4
                  637     ;
-0E8 360A9        638     lcd_reset:              CALL            delay_20ms              ;wait more that 15ms for display to be ready
-0E9 00430        639                             LOAD            s4, #0x30
-0EA 360B9        640                             CALL            lcd_write_inst4         ;send '3'
-0EB 360A9        641                             CALL            delay_20ms              ;wait >4.1ms
-0EC 360B9        642                             CALL            lcd_write_inst4         ;send '3'
-0ED 360A4        643                             CALL            delay_1ms               ;wait >100us
-0EE 360B9        644                             CALL            lcd_write_inst4         ;send '3'
-0EF 3609F        645                             CALL            delay_40us              ;wait >40us
-0F0 00420        646                             LOAD            s4, #0x20
-0F1 360B9        647                             CALL            lcd_write_inst4         ;send '2'
-0F2 3609F        648                             CALL            delay_40us              ;wait >40us
-0F3 00528        649                             LOAD            s5, #0x28               ;Function set
-0F4 360BD        650                             CALL            lcd_write_inst8
-0F5 00506        651                             LOAD            s5, #0x06               ;Entry mode
-0F6 360BD        652                             CALL            lcd_write_inst8
-0F7 0050C        653                             LOAD            s5, #0x0c               ;Display control
-0F8 360BD        654                             CALL            lcd_write_inst8
-0F9 00501        655     lcd_clear:              LOAD            s5, #0x01               ;Display clear
-0FA 360BD        656                             CALL            lcd_write_inst8
-0FB 360A4        657                             CALL            delay_1ms               ;wait >1.64ms for display to clear
-0FC 360A4        658                             CALL            delay_1ms
-0FD 24000        659                             RETURN
+0F6 360A9        638     lcd_reset:              CALL            delay_20ms              ;wait more that 15ms for display to be ready
+0F7 00430        639                             LOAD            s4, #0x30
+0F8 360B9        640                             CALL            lcd_write_inst4         ;send '3'
+0F9 360A9        641                             CALL            delay_20ms              ;wait >4.1ms
+0FA 360B9        642                             CALL            lcd_write_inst4         ;send '3'
+0FB 360A4        643                             CALL            delay_1ms               ;wait >100us
+0FC 360B9        644                             CALL            lcd_write_inst4         ;send '3'
+0FD 3609F        645                             CALL            delay_40us              ;wait >40us
+0FE 00420        646                             LOAD            s4, #0x20
+0FF 360B9        647                             CALL            lcd_write_inst4         ;send '2'
+100 3609F        648                             CALL            delay_40us              ;wait >40us
+101 00528        649                             LOAD            s5, #0x28               ;Function set
+102 360BD        650                             CALL            lcd_write_inst8
+103 00506        651                             LOAD            s5, #0x06               ;Entry mode
+104 360BD        652                             CALL            lcd_write_inst8
+105 0050C        653                             LOAD            s5, #0x0c               ;Display control
+106 360BD        654                             CALL            lcd_write_inst8
+107 00501        655     lcd_clear:              LOAD            s5, #0x01               ;Display clear
+108 360BD        656                             CALL            lcd_write_inst8
+109 360A4        657                             CALL            delay_1ms               ;wait >1.64ms for display to clear
+10A 360A4        658                             CALL            delay_1ms
+10B 24000        659                             RETURN
                  660     ;
                  661     ;Position the cursor ready for characters to be written.
                  662     ;The display is formed of 2 lines of 16 characters and each
@@ -689,17 +683,16 @@ E: instruction not supported on the this device: STORE sX, ss.
                  675     ;
                  676     ;Registers used s0, s1, s2, s3, s4
                  677     ;
-  0010C          678     lcd_cursor:             TEST            s5, #0x10               ;test for line 1
-E: instruction not supported on the this device: TEST sX, kk.
-0FE 35112        679                             JUMP            z, set_line2
-0FF 0250F        680                             AND             s5, #0x0f               ;make address in range 80 to 8F for line 1
-100 04580        681                             OR              s5, #0x80
-101 360BD        682                             CALL            lcd_write_inst8         ;instruction write to set cursor
-102 24000        683                             RETURN
-103 0250F        684     set_line2:              AND             s5, #0x0f               ;make address in range C0 to CF for line 2
-104 045C0        685                             OR              s5, #0xc0
-105 360BD        686                             CALL            lcd_write_inst8         ;instruction write to set cursor
-106 24000        687                             RETURN
+10C 00510        678     lcd_cursor:             load            s5, #0x10               ;load for line 1
+10D 35112        679                             JUMP            z, set_line2
+10E 0250F        680                             AND             s5, #0x0f               ;make address in range 80 to 8F for line 1
+10F 04580        681                             OR              s5, #0x80
+110 360BD        682                             CALL            lcd_write_inst8         ;instruction write to set cursor
+111 24000        683                             RETURN
+112 0250F        684     set_line2:              AND             s5, #0x0f               ;make address in range C0 to CF for line 2
+113 045C0        685                             OR              s5, #0xc0
+114 360BD        686                             CALL            lcd_write_inst8         ;instruction write to set cursor
+115 24000        687                             RETURN
                  688     ;
                  689     ;This routine will shift the complete display one position to the left.
                  690     ;The cursor position and LCD memory contents will not change.
@@ -707,9 +700,9 @@ E: instruction not supported on the this device: TEST sX, kk.
                  692     ;
                  693     ;Registers used s0, s1, s2, s3, s4, s5
                  694     ;
-107 00518        695     lcd_shift_left:         LOAD            s5, #0x18               ;shift display left
-108 360BD        696                             CALL            lcd_write_inst8
-109 24000        697                             RETURN
+116 00518        695     lcd_shift_left:         LOAD            s5, #0x18               ;shift display left
+117 360BD        696                             CALL            lcd_write_inst8
+118 24000        697                             RETURN
                  698     ;
                  699     ;**************************************************************************************
                  700     ;Interrupt Service Routine (ISR)
@@ -726,20 +719,19 @@ E: instruction not supported on the this device: TEST sX, kk.
                  711     ;This prevents a rotation event which has been made during normal switch and button
                  712     ;mode from having any effect.
                  713     ;
-  00119          714     isr:                    STORE           s0, isr_preserve_s0     ;preserve s0
-E: instruction not supported on the this device: STORE sX, ss.
-                 715                             FETCH           s0, mode                ;test operation mode
-E: instruction not supported on the this device: FETCH sX, ss.
-                 716                             COMPARE         s0, #0x00               ;ignore events under normal mode
-E: instruction not supported on the this device: COMPARE sX, kk.
-10A 35120        717                             JUMP            z, end_isr
-10B 20001        718                             INPUT           s0, rotary_port         ;read rotary encoder
-10C 04080        719                             OR              s0, #0x80               ;set flag
-                 720                             STORE           s0, rotary_status       ;put result in SCM
-E: instruction not supported on the this device: STORE sX, ss.
-  00120          721     end_isr:                FETCH           s0, isr_preserve_s0     ;restore s0
-E: instruction not supported on the this device: FETCH sX, ss.
-10D 2C001        722                             RETURNI         enable
+119 10008        714     isr:                    load           s0, isr_preserve_s0     ;preserve s0
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+11A 10018        715                             load           s0, mode                ;load operation mode
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+11B 00000        716                             load         s0, #0x00               ;ignore events under normal mode
+11C 35120        717                             JUMP            z, end_isr
+11D 20001        718                             INPUT           s0, rotary_port         ;read rotary encoder
+11E 04080        719                             OR              s0, #0x80               ;set flag
+11F 10000        720                             load           s0, rotary_status       ;put result in SCM
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+120 10008        721     end_isr:                load           s0, isr_preserve_s0     ;reload s0
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+121 2C001        722                             RETURNI         enable
                  723     ;
                  724     ;
                  725     ;**************************************************************************************

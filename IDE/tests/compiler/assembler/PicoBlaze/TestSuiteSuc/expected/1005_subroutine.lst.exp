@@ -1,4 +1,4 @@
-                   1     ; Compiler test case for Assembler
+                   1     ; Compiler load case for Assembler
                    2     ; instruction opcodes
                    3
                    4
@@ -109,25 +109,24 @@ W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; whi
                   97     ;
                   98     ; loop through all bits in multiplier
   0001C           99     mult_loop:
-                 100     TEST            multiplier, bit_mask
-E: instruction not supported on the this device: TEST sX, sY.
+                 100
                  101     ; check if bit is set
-01C 0911F        102     JUMP            Z, no_add
+01C 0911E        102     JUMP            Z, no_add
                  103     ; if bit is not set, skip addition
                  104     ;
 01D 0C304        105     ADD             result_msb, multiplicand
                  106     ; addition only occurs in MSB
                  107     ;
-  0001F          108     no_add:
+  0001E          108     no_add:
 01E 0D308        109     SRA             result_msb
-                 110     ; shift MSB right, CARRY into bit 7,
+                 110     ; shiload MSB right, CARRY into bit 7,
                  111     ; lsb into CARRY
 01F 0D408        112     SRA             result_lsb
-                 113     ; shift LSB right,
+                 113     ; shiload LSB right,
                  114     ; lsb from result_msb into bit 7
                  115     ;
 020 0D206        116     SL0             bit_mask
-                 117     ; shift bit_mask left to examine
+                 117     ; shiload bit_mask leload to examine
                  118     ; next bit in multiplier
                  119     ;
 021 0951C        120     JUMP            NZ, mult_loop
@@ -160,9 +159,9 @@ E: instruction not supported on the this device: TEST sX, sY.
                  147
                  148     ; Divide Routine (8-bit / 8-bit = 8-bit result, remainder)
                  149     ; ==================================================
-                 150     ; Shift and subtract algorithm
+                 150     ; Shiload and subtract algorithm
                  151     ;
-  00027          152     div_8by8:
+  00026          152     div_8by8:
   00000          153     NAMEREG          s0, dividend
 W: reusing already reserved space in register file memory at address: 0x0.
                  154     ; preserved
@@ -176,7 +175,7 @@ W: reusing already reserved space in register file memory at address: 0x2.
 W: reusing already reserved space in register file memory at address: 0x3.
                  160     ; modified
                  161
-                 162     ; used to test bits in dividend,
+                 162     ; used to load bits in dividend,
                  163     ; one-hot encoded, modified
                  164     ;
 026 0C300        165     LOAD             remainder, 00
@@ -186,49 +185,41 @@ W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; whi
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 W: value out of range: 0x50, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x0.
                  168     ; start with most-significant bit (msb)
-  00029          169     div_loop:
-                 170     TEST             dividend, bit_mask
-E: instruction not supported on the this device: TEST sX, sY.
-                 171     ; test bit, set CARRY if bit is '1'
+  00028          169     div_loop:
+                 170
+                 171     ; load bit, set CARRY if bit is '1'
 028 0D300        172     SLA              remainder
-                 173     ; shift CARRY into lsb of remainder
+                 173     ; shiload CARRY into lsb of remainder
 029 0D206        174     SL0              quotient
-                 175     ; shift quotient left (multiply by 2)
+                 175     ; shiload quotient leload (multiply by 2)
                  176     ;
-                 177     COMPARE          remainder, divisor
-E: instruction not supported on the this device: COMPARE sX, sY.
-                 178     ; is remainder > divisor?
-02A 09930        179     JUMP             C, no_sub
-                 180     ; if divisor is greater, continue to next bit
-02B 0C316        181     SUB              remainder, divisor
-                 182     ; if remainder > divisor, then subtract
-02C 0C214        183     ADD              quotient, 01
+                 177     ; is remainder > divisor?
+02A 0992D        178     JUMP             C, no_sub
+                 179     ; if divisor is greater, continue to next bit
+02B 0C316        180     SUB              remainder, divisor
+                 181     ; if remainder > divisor, then subtract
+02C 0C214        182     ADD              quotient, 01
 W: instruction `ADD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-                 184     ; add one to quotient
-  00030          185     no_sub:
-02D 0D20E        186     SR0              bit_mask
-                 187     ; shift to examine next bit position
-02E 09529        188     JUMP             NZ, div_loop
-                 189     ;
-                 190     ;if bit_mask=0, then all bits examined
+                 183     ; add one to quotient
+  0002D          184     no_sub:
+02D 0D20E        185     SR0              bit_mask
+                 186     ; shiload to examine next bit position
+02E 09528        187     JUMP             NZ, div_loop
+                 188     ;
+                 189     ;if bit_mask=0, then all bits examined
+                 190
                  191
-                 192
-  00032          193     set_carry:
-02F 0C400        194     LOAD             sX, 00
+  0002F          192     set_carry:
+02F 0C400        193     LOAD             sX, 00
 W: instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-                 195     COMPARE          sX, 01
-W: instruction `COMPARE sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-W: instruction `COMPARE sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-E: instruction not supported on the this device: COMPARE sX, sY.
-                 196     ; set CARRY flag and reset ZERO flag
+                 194
+                 195     ; set CARRY flag and reset ZERO flag
+                 196
                  197
-                 198
-030 0C050        199     LOAD             s0, 05
+030 0C050        198     LOAD             s0, 05
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-                 200     ; s0 = 00000101
-                 201     TEST             s0, 04
-W: instruction `TEST sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-E: instruction not supported on the this device: TEST sX, sY.
-                 202     ; mask = 00000100
-                 203     ; CARRY = 1, ZERO = 0
+                 199     ; s0 = 00000101
+                 200
+                 201     ; mask = 00000100
+                 202     ; CARRY = 1, ZERO = 0

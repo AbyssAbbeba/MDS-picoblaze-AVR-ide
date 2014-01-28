@@ -167,7 +167,7 @@ W: value out of range: 0xffffff, allowed range is [0x0,0x3ffff] (trimmed to 18 b
   000AA          131     i11     PORT     AAh
   00015          132     i12     PORT     0x04 | 0x11
                  133
-                 134     ; expresions test
+                 134     ; expresions load
   00005          135     ss1     EQU     +5
   3FFFB          136     ss2     EQU     -5
 R: result is negative number: 0xfffffffffffffffb, this will represented as 18-bit number in two's complement arithmetic which makes it: 0x3fffb.

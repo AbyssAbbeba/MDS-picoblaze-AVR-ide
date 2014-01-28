@@ -472,26 +472,26 @@ cold_start:		CALL		lcd_reset		;initialise LCD display
 ;
 			LOAD		s0, #0x00
 			LOAD		s1, #0x01
-			STORE		s0, bcd_digit0
-			STORE		s0, bcd_digit1
-			STORE		s0, bcd_digit2
-			STORE		s0, bcd_digit3
-			STORE		s0, bcd_digit4
-			STORE		s0, bcd_digit5
-			STORE		s0, bcd_digit6
-			STORE		s0, bcd_digit7
-			STORE		s1, bcd_digit8
+			load		s0, bcd_digit0
+			load		s0, bcd_digit1
+			load		s0, bcd_digit2
+			load		s0, bcd_digit3
+			load		s0, bcd_digit4
+			load		s0, bcd_digit5
+			load		s0, bcd_digit6
+			load		s0, bcd_digit7
+			load		s1, bcd_digit8
 ;
 			LOAD		s0, #0x04		;Start position for editing frequency is 1MHz digit
-			STORE		s0, cursor_position
+			load		s0, cursor_position
 			LOAD		s0, #bcd_digit6
-			STORE		s0, edit_digit_pointer
+			load		s0, edit_digit_pointer
 ;
 ;
 			ENABLE		interrupt		;interrupts are used to detect rotary controller
 			CALL		delay_1ms
 			LOAD		s0, #0x00		;clear the status of any spurious rotary events
-			STORE		s0, rotary_status	;   as a result of system turning on.
+			load		s0, rotary_status	;   as a result of system turning on.
 ;
 ;**************************************************************************************
 ; Main program
@@ -515,42 +515,42 @@ move_mode:		CALL		compute_dds_words	;compute DDS control values
 			LOAD		s0, #led0		;indicate move mode on LEDs
 			OUTPUT		s0, led_port
 move_wait:		INPUT		s0, rotary_port		;read rotary encoder
-			TEST		s0, #rotary_press	;test for press of button which changes mode
+			load		s0, #rotary_press	;load for press of button which changes mode
 			JUMP		nz, edit_mode
-			FETCH		s0, rotary_status	;check for any rotation of rotary control
-			TEST		s0, #rotary_event
+			load		s0, rotary_status	;check for any rotation of rotary control
+			load		s0, #rotary_event
 			JUMP		z, move_wait
 ;
 			AND		s0, #0x7f		;clear flag now that action it is being processed
-			STORE		s0, rotary_status
-			FETCH		sa, cursor_position	;read current position
-			FETCH		sb, edit_digit_pointer
-			TEST		s0, #rotary_left	;determine direction to move cursor
+			load		s0, rotary_status
+			load		sa, cursor_position	;read current position
+			load		sb, edit_digit_pointer
+			load		s0, #rotary_left	;determine direction to move cursor
 			JUMP		z, move_right
 ;
-move_left:		COMPARE		sb, #bcd_digit8		;can not move left of 100MHz digit
+move_left:		load		sb, #bcd_digit8		;can not move left of 100MHz digit
 			JUMP		z, move_mode
 			ADD		sb, #0x01		;move to next higher BCD digit
 			SUB		sa, #0x01		;move cursor to match digit to be edited
-			COMPARE		sa, #0x09		;must skip over space separator
+			load		sa, #0x09		;must skip over space separator
 			JUMP		z, skip_left
-			COMPARE		sa, #0x05		;must skip over decimal point
+			load		sa, #0x05		;must skip over decimal point
 			JUMP		nz, edit_point_update
 skip_left:		SUB		sa, #0x01		;move cursor further left
 			JUMP		edit_point_update
 ;
-move_right:		COMPARE		sb, #bcd_digit0		;can not move right of 1Hz digit
+move_right:		load		sb, #bcd_digit0		;can not move right of 1Hz digit
 			JUMP		z, move_mode
 			SUB		sb, #0x01		;move to next lower BCD digit
 			ADD		sa, #0x01		;move cursor to match digit to be edited
-			COMPARE		sa, #0x09		;must skip over space separator
+			load		sa, #0x09		;must skip over space separator
 			JUMP		z, skip_right
-			COMPARE		sa, #0x05		;must skip over decimal point
+			load		sa, #0x05		;must skip over decimal point
 			JUMP		nz, edit_point_update
 skip_right:		ADD		sa, #0x01		;move cursor further right
 ;
-edit_point_update:	STORE		sa, cursor_position	;update edit value in memory
-			STORE		sb, edit_digit_pointer
+edit_point_update:	load		sa, cursor_position	;update edit value in memory
+			load		sb, edit_digit_pointer
 			JUMP		move_mode
 ;
 ;
@@ -572,39 +572,39 @@ edit_display:		CALL		compute_dds_words	;compute DDS control values
 			LOAD		s0, #led1		;indicate edit mode on LEDs
 			OUTPUT		s0, led_port
 edit_wait:		INPUT		s0, rotary_port		;read rotary encoder
-			TEST		s0, #rotary_press	;test for press of button which changes mode
+			load		s0, #rotary_press	;load for press of button which changes mode
 			JUMP		nz, end_edit_mode
-			FETCH		s0, rotary_status	;check for any rotation of rotary control
-			TEST		s0, #rotary_event
+			load		s0, rotary_status	;check for any rotation of rotary control
+			load		s0, #rotary_event
 			JUMP		z, edit_wait
 ;
 			AND		s0, #0x7f		;clear flag now that action it is being processed
-			STORE		s0, rotary_status
-			FETCH		sb, edit_digit_pointer	;read pointer to BCD digit for initial change
-			TEST		s0, #rotary_left	;determine direction to increment or decrement
+			load		s0, rotary_status
+			load		sb, edit_digit_pointer	;read pointer to BCD digit for initial change
+			load		s0, #rotary_left	;determine direction to increment or decrement
 			JUMP		z, inc_digit
 ;
 ; Decrement the value starting at the current position and borrowing from the left.
 ; However the value needs to bottom out at all 0's from the editing position.
 ;
 ;
-dec_digit:		FETCH		sa, @sb			;read digit value at pointer position
+dec_digit:		load		sa, #sb			;read digit value at pointer position
 			SUB		sa, #0x01		;decrement digit
-			COMPARE		sa, #0xff		;test for borrow from next digit
+			load		sa, #0xff		;load for borrow from next digit
 			JUMP		z, dec_borrow
-			STORE		sa, @sb			;store decremented digit value
+			load		sa, #sb			;load decremented digit value
 			JUMP		edit_display		;decrement task complete
 dec_borrow:		LOAD		sa, #0x09		;current digit rolls over to nine
-			STORE		sa, @sb			;store '9' digit value
-			COMPARE		sb, #bcd_digit8		;check if working on 100MHz digit
+			load		sa, #sb			;load '9' digit value
+			load		sb, #bcd_digit8		;check if working on 100MHz digit
 			JUMP		z, set_min_value
 			ADD		sb, #0x01		;increment pointer to next most significant digit
 			JUMP		dec_digit		;decrement next digit up.
 ;
-set_min_value:		FETCH		sb, edit_digit_pointer	;Must fill digits from insert to MS-Digit with 000...
+set_min_value:		load		sb, edit_digit_pointer	;Must fill digits from insert to MS-Digit with 000...
 			LOAD		sa, #0x00
-fill_min:		STORE		sa, @sb
-			COMPARE		sb, #bcd_digit8		;check if filled to 100MHz digit
+fill_min:		load		sa, #sb
+			load		sb, #bcd_digit8		;check if filled to 100MHz digit
 			JUMP		z, edit_display
 			ADD		sb, #0x01		;fill next higher digit
 			JUMP		fill_min
@@ -612,23 +612,23 @@ fill_min:		STORE		sa, @sb
 ; Increment the value starting at the current position and carrying to the left.
 ; However the value needs to saturate to all 9's from the editing position.
 ;
-inc_digit:		FETCH		sa, @sb			;read digit value at pointer position
+inc_digit:		load		sa, #sb			;read digit value at pointer position
 			ADD		sa, #0x01		;increment digit
-			COMPARE		sa, #0x0a		;test for carry to next digit
+			load		sa, #0x0a		;load for carry to next digit
 			JUMP		z, inc_carry
-			STORE		sa, @sb			;store incremented digit value
+			load		sa, #sb			;load incremented digit value
 			JUMP		edit_display		;increment task complete
 inc_carry:		LOAD		sa, #0x00		;current digit rolls over to zero
-			STORE		sa, @sb			;store zero digit value
-			COMPARE		sb, #bcd_digit8		;check if working on 100MHz digit
+			load		sa, #sb			;load zero digit value
+			load		sb, #bcd_digit8		;check if working on 100MHz digit
 			JUMP		z, set_max_value
 			ADD		sb, #0x01		;increment pointer to next most significant digit
 			JUMP		inc_digit		;increment next digit up.
 ;
-set_max_value:		FETCH		sb, edit_digit_pointer	;Must fill digits from insert to MS-Digit with 999...
+set_max_value:		load		sb, edit_digit_pointer	;Must fill digits from insert to MS-Digit with 999...
 			LOAD		sa, #0x09
-fill_max:		STORE		sa, @sb
-			COMPARE		sb, #bcd_digit8		;check if filled to 100MHz digit
+fill_max:		load		sa, #sb
+			load		sb, #bcd_digit8		;check if filled to 100MHz digit
 			JUMP		z, edit_display
 			ADD		sb, #0x01		;fill next higher digit
 			JUMP		fill_max
@@ -643,10 +643,10 @@ end_edit_mode:		CALL		wait_switch_release	;wait for end of switch press
 ;
 wait_switch_release:	CALL		delay_20ms		;delay to aid switch de-bounce
 			INPUT		s0, rotary_port		;read rotary encoder
-			TEST		s0, #rotary_press	;test if button is still being pressed
+			load		s0, #rotary_press	;load if button is still being pressed
 			JUMP		nz, wait_switch_release
 			LOAD		s0, #0x00		;clear flag indicating any rotary events
-			STORE		s0, rotary_status
+			load		s0, rotary_status
 			RETURN
 ;
 ;**************************************************************************************
@@ -760,31 +760,31 @@ wait_switch_release:	CALL		delay_20ms		;delay to aid switch de-bounce
 ;
 compute_dds_words:	CALL		bcd_to_integer		;convert BCD display value to 32-bit value
 			CALL		scale_frequency		;80-bit product of 32-bit frequency x 48-bit scaling value
-			FETCH		sa, product9		;read the upper part of the 80-bit product into [sA,s9,s8,s7,s6,s5,s4]
-			FETCH		s9, product8		; The least significant 24-bits of the 80-bit product will never
-			FETCH		s8, product7		; be used for frequencies above 1Hz.
-			FETCH		s7, product6		;The final 32-bit DDS control word will be formed in
-			FETCH		s6, product5		; [sA,s9,s8,s7]
-			FETCH		s5, product4
-			FETCH		s4, product3
+			load		sa, product9		;read the upper part of the 80-bit product into [sA,s9,s8,s7,s6,s5,s4]
+			load		s9, product8		; The least significant 24-bits of the 80-bit product will never
+			load		s8, product7		; be used for frequencies above 1Hz.
+			load		s7, product6		;The final 32-bit DDS control word will be formed in
+			load		s6, product5		; [sA,s9,s8,s7]
+			load		s5, product4
+			load		s4, product3
 			CALL		shift80_left		;multiply DDS control word by 4 to achieve default value
 			CALL		shift80_left
 			LOAD		sb, #0x00		;default scaling factor is 2 (select counter bit0)
-normalise_loop:		TEST		sa, #0x18		;Test bits 27 and 28 of 32-bit DDS control word
-			JUMP		nz, store_dds_words	;DDS control word is normalised to above 50MHz output
+normalise_loop:		load		sa, #0x18		;load bits 27 and 28 of 32-bit DDS control word
+			JUMP		nz, load_dds_words	;DDS control word is normalised to above 50MHz output
 			CALL		shift80_left		;multiply DDS control word by 2
 			ADD		sb, #0x01		;Divide final value by 2 to compensate
-			COMPARE		sb, #0x1f		;Test for maximum division factor
+			load		sb, #0x1f		;load for maximum division factor
 			JUMP		nz, normalise_loop
 			LOAD		sa, #0x08		;Set for minimum frequency
 			LOAD		s9, #0x00		; with phase accumulator set to generate 6.25MHz
 			LOAD		s8, #0x00
 			LOAD		s7, #0x00
-store_dds_words:	STORE		s7, dds_control0	;store local copy of control word
-			STORE		s8, dds_control1	;store local copy of control word
-			STORE		s9, dds_control2	;store local copy of control word
-			STORE		sa, dds_control3	;store local copy of control word
-			STORE		sb, dds_scaling
+load_dds_words:	load		s7, dds_control0	;load local copy of control word
+			load		s8, dds_control1	;load local copy of control word
+			load		s9, dds_control2	;load local copy of control word
+			load		sa, dds_control3	;load local copy of control word
+			load		sb, dds_scaling
 			CALL		drive_dds_words		;output control words to DDS circuit
 			RETURN
 ;
@@ -807,11 +807,11 @@ shift80_left:		SL0		s4			;shift (most of the) 80-bit value in
 ; dds_control_word should be supplied in register set [sA,s9,s8,s7]
 ; dds_scaling_word should be supplied in register s6.
 ;
-drive_dds_words:	FETCH		s7, dds_control0
-			FETCH		s8, dds_control1
-			FETCH		s9, dds_control2
-			FETCH		sa, dds_control3
-			FETCH		s6, dds_scaling
+drive_dds_words:	load		s7, dds_control0
+			load		s8, dds_control1
+			load		s9, dds_control2
+			load		sa, dds_control3
+			load		s6, dds_scaling
 			OUTPUT		s7, dds_control0_port
 			OUTPUT		s8, dds_control1_port
 			OUTPUT		s9, dds_control2_port
@@ -824,7 +824,7 @@ drive_dds_words:	FETCH		s7, dds_control0
 ; Display frequency on top line of the LCD and DDS data on the lower line
 ;**************************************************************************************
 ;
-; The BCD value should be stored in scratch pad memory in 9 ascending locations
+; The BCD value should be loadd in scratch pad memory in 9 ascending locations
 ; called BCD_digit0 to BCD_digit8.
 ;
 ; The value is displayed in the format      xxx.xxx xxxMHz
@@ -837,24 +837,24 @@ drive_dds_words:	FETCH		s7, dds_control0
 display_freq:		CALL		display_dds_data	;display DDS information on lower line
 			LOAD		s5, #0x12		;Line 1 position 2
 			CALL		lcd_cursor
-			FETCH		s5, bcd_digit8		;read 100MHz digit
-			COMPARE		s5, #0x00		;test for blanking
+			load		s5, bcd_digit8		;read 100MHz digit
+			load		s5, #0x00		;load for blanking
 			JUMP		z, blank_100m_digit
 			CALL		display_digit		;display non zero digit
-			FETCH		s5, bcd_digit7		;read 10MHz digit and display
+			load		s5, bcd_digit7		;read 10MHz digit and display
 			CALL		display_digit
 			JUMP		disp_1m_digit
 ;
 blank_100m_digit:	CALL		display_space		;blank 100MHz digit
-			FETCH		s5, bcd_digit7		;read 10MHz digit
-			COMPARE		s5, #0x00		;test for blanking
+			load		s5, bcd_digit7		;read 10MHz digit
+			load		s5, #0x00		;load for blanking
 			JUMP		z, blank_10m_digit
 			CALL		display_digit		;display non zero digit
 			JUMP		disp_1m_digit
 ;
 blank_10m_digit:	CALL		display_space		;blank 10MHz digit
 ;
-disp_1m_digit:		FETCH		s5, bcd_digit6		;read 1MHz digit and display
+disp_1m_digit:		load		s5, bcd_digit6		;read 1MHz digit and display
 			CALL		display_digit
 			LOAD		s5, #character_stop	;display decimal point
 			CALL		lcd_write_data
@@ -871,13 +871,13 @@ disp_1m_digit:		FETCH		s5, bcd_digit6		;read 1MHz digit and display
 			LOAD		s5, #character_z
 			CALL		lcd_write_data
 ;
-			FETCH		s5, cursor_position	;reposition edit cursor on display
+			load		s5, cursor_position	;reposition edit cursor on display
 			ADD		s5, #0x10		;on line 1
 			CALL		lcd_cursor
 			RETURN
 ;
 display_3_digits:	LOAD		s3, #0x03		;3 digits to display
-_3digit_loop:		FETCH		s5, @s2
+_3digit_loop:		load		s5, #s2
 			CALL		display_digit
 			SUB		s2, #0x01		;decrement digit pointer
 			SUB		s3, #0x01		;count digits displayed
@@ -897,7 +897,7 @@ display_space:		LOAD		s5, #character_space
 ; Convert 9 digit BCD frequency into 32-bit binary integer
 ;**************************************************************************************
 ;
-;Both values are stored in scratch pad memory
+;Both values are loadd in scratch pad memory
 ;    BCD values in ascending locations BCD_digit0 to BCD_digit8
 ;    Binary frequency in ascending locations frequency0 to frequency3
 ;
@@ -911,30 +911,30 @@ display_space:		LOAD		s5, #character_space
 ;
 bcd_to_integer:		LOAD		s2, #0x09		;9 digits to convert
 			LOAD		s0, #0x00		;clear frequency value ready to accumulate result
-			STORE		s0, frequency0
-			STORE		s0, frequency1
-			STORE		s0, frequency2
-			STORE		s0, frequency3
+			load		s0, frequency0
+			load		s0, frequency1
+			load		s0, frequency2
+			load		s0, frequency3
 			LOAD		sb, #0x00		;initialise BCD digit weighting [sB,sA,s9,s8] to 1
 			LOAD		sa, #0x00
 			LOAD		s9, #0x00
 			LOAD		s8, #0x01
 			LOAD		s3, #bcd_digit0		;locate LS-digit
-next_bcd_to_int_digit:	FETCH		s1, @s3
-bcd_digit_convert:	COMPARE		s1, #0x00		;test for zero
+next_bcd_to_int_digit:	load		s1, #s3
+bcd_digit_convert:	load		s1, #0x00		;load for zero
 			JUMP		z, next_digit_value
-			FETCH		s0, frequency0		;add 32-bit digit weighting to memory value
+			load		s0, frequency0		;add 32-bit digit weighting to memory value
 			ADD		s0, s8
-			STORE		s0, frequency0
-			FETCH		s0, frequency1
+			load		s0, frequency0
+			load		s0, frequency1
 			ADDCY		s0, s9
-			STORE		s0, frequency1
-			FETCH		s0, frequency2
+			load		s0, frequency1
+			load		s0, frequency2
 			ADDCY		s0, sa
-			STORE		s0, frequency2
-			FETCH		s0, frequency3
+			load		s0, frequency2
+			load		s0, frequency3
 			ADDCY		s0, sb
-			STORE		s0, frequency3
+			load		s0, frequency3
 			SUB		s1, #0x01		;decrement digit value
 			JUMP		bcd_digit_convert
 ;Increase weighting by 10x
@@ -971,10 +971,10 @@ next_digit_value:	LOAD		s7, sb			;copy existing weighting
 ;Multiply the 32-bit frequency binary integer by the 48-bit scaling factor
 ;to form a full precision 80-bit product.
 ;
-;The frequency binary integer is stored in scratch pad memory using ascending
+;The frequency binary integer is loadd in scratch pad memory using ascending
 ;locations frequency0 to frequency3
 ;
-;The product will be stored in scratch pad memory using ascending
+;The product will be loadd in scratch pad memory using ascending
 ;locations product0 to product9
 ;
 ;The scaling factor is provided directly as constants
@@ -990,70 +990,70 @@ next_digit_value:	LOAD		s7, sb			;copy existing weighting
 ;Registers used s0,s1,s8,s9,sA,sB (s1,s8,s9,sA,sB clear on return)
 ;
 scale_frequency:	LOAD		s0, #0x00		;clear accumulator section of 'product'
-			STORE		s0, product9
-			STORE		s0, product8
-			STORE		s0, product7
-			STORE		s0, product6
-			STORE		s0, product5
-			STORE		s0, product4
-			FETCH		sb, frequency3		;read frequency integer value
-			FETCH		sa, frequency2
-			FETCH		s9, frequency1
-			FETCH		s8, frequency0
+			load		s0, product9
+			load		s0, product8
+			load		s0, product7
+			load		s0, product6
+			load		s0, product5
+			load		s0, product4
+			load		sb, frequency3		;read frequency integer value
+			load		sa, frequency2
+			load		s9, frequency1
+			load		s8, frequency0
 			LOAD		s1, #0x20		;32-bit multiply
 scale_mult_bit:		SR0		sb			;shift right frequency integer
 			SRA		sa
 			SRA		s9
 			SRA		s8
 			JUMP		nc, product_shift	;no add if bit is zero (note carry is zero)
-			FETCH		s0, product4		;addition of scaling factor to most significant bits of product
+			load		s0, product4		;addition of scaling factor to most significant bits of product
 			ADD		s0, #scale_constant0
-			STORE		s0, product4
-			FETCH		s0, product5
+			load		s0, product4
+			load		s0, product5
 			ADDCY		s0, #scale_constant1
-			STORE		s0, product5
-			FETCH		s0, product6
+			load		s0, product5
+			load		s0, product6
 			ADDCY		s0, #scale_constant2
-			STORE		s0, product6
-			FETCH		s0, product7
+			load		s0, product6
+			load		s0, product7
 			ADDCY		s0, #scale_constant3
-			STORE		s0, product7
-			FETCH		s0, product8
+			load		s0, product7
+			load		s0, product8
 			ADDCY		s0, #scale_constant4
-			STORE		s0, product8
-			FETCH		s0, product9
+			load		s0, product8
+			load		s0, product9
 			ADDCY		s0, #scale_constant5
-			STORE		s0, product9		;carry holds any overflow of addition
-product_shift:		FETCH		s0, product9		;Divide product by 2 (shift right by 1)
+			load		s0, product9		;carry holds any overflow of addition
+product_shift:		load		s0, product9		;Divide product by 2 (shift right by 1)
 			SRA		s0			;overflow of addition included in shift
-			STORE		s0, product9
-			FETCH		s0, product8
+			load		s0, product9
+			load		s0, product8
 			SRA		s0
-			STORE		s0, product8
-			FETCH		s0, product7
+			load		s0, product8
+			load		s0, product7
 			SRA		s0
-			STORE		s0, product7
-			FETCH		s0, product6
+			load		s0, product7
+			load		s0, product6
 			SRA		s0
-			STORE		s0, product6
-			FETCH		s0, product5
+			load		s0, product6
+			load		s0, product5
 			SRA		s0
-			STORE		s0, product5
-			FETCH		s0, product4
+			load		s0, product5
+			load		s0, product4
 			SRA		s0
-			STORE		s0, product4
-			FETCH		s0, product3
+			load		s0, product4
+			load		s0, product3
 			SRA		s0
-			STORE		s0, product3
-			FETCH		s0, product2
+			load		s0, product3
+			load		s0, product2
 			SRA		s0
-			STORE		s0, product2
-			FETCH		s0, product1
+			load		s0, product2
+			load		s0, product1
 			SRA		s0
-			STORE		s0, product1
-			FETCH		s0, product0
+			load		s0, product1
+			load		s0, product0
 			SRA		s0
-			STORE		s0, product0
+			load		s0, product0
 			SUB		s1, #0x01		;move to next bit
 			JUMP		nz, scale_mult_bit
 			RETURN
@@ -1077,7 +1077,7 @@ display_dds_data:	LOAD		s5, #0x20		;Line 2 position 0
 			CALL		lcd_write_data
 			LOAD		s5, #character_equals
 			CALL		lcd_write_data
-			FETCH		s0, dds_scaling
+			load		s0, dds_scaling
 			CALL		display_hex_byte
 			RETURN
 ;
@@ -1106,7 +1106,7 @@ hex_byte_to_ascii:	LOAD		s2, s0			;remember value supplied
 			SR0		s0
 			CALL		hex_to_ascii		;convert
 			LOAD		s3, s0			;upper nibble value in s3
-			LOAD		s0, s2			;restore complete value
+			LOAD		s0, s2			;reload complete value
 			AND		s0, #0x0f		;isolate lower nibble
 			CALL		hex_to_ascii		;convert
 			LOAD		s2, s0			;lower nibble value in s2
@@ -1116,7 +1116,7 @@ hex_byte_to_ascii:	LOAD		s2, s0			;remember value supplied
 ;
 ;Register used s0
 ;
-hex_to_ascii:		SUB		s0, #0x0a		;test if value is in range 0 to 9
+hex_to_ascii:		SUB		s0, #0x0a		;load if value is in range 0 to 9
 			JUMP		c, number_char
 			ADD		s0, #0x07		;ASCII char A to F in range 41 to 46
 number_char:		ADD		s0, #0x3a		;ASCII char 0 to 9 in range 30 to 40
@@ -1137,14 +1137,14 @@ display_hex_byte:	CALL		hex_byte_to_ascii
 ;
 ;
 ;
-; Display the 32-bit value stored in 4 ascending memory locations as an 8 character
+; Display the 32-bit value loadd in 4 ascending memory locations as an 8 character
 ; HEX value at the current cursor position. Register s7 must contain the memory
 ; location of the most significant byte (which is also the highest address).
 ;
 ; Registers used s0, s1, s2, s3, s4, s5, s6, s7
 ;
 display_hex_32_bit:	LOAD		s6, #0x04		;4 bytes to display
-disp32_loop:		FETCH		s0, @s7			;read byte
+disp32_loop:		load		s0, #s7			;read byte
 			CALL		display_hex_byte	;display byte
 			SUB		s7, #0x01		;decrement pointer
 			SUB		s6, #0x01		;count bytes displayed
@@ -1476,7 +1476,7 @@ lcd_clear:		LOAD		s5, #0x01		;Display clear
 ;
 ;Registers used s0, s1, s2, s3, s4
 ;
-lcd_cursor:		TEST		s5, #0x10		;test for line 1
+lcd_cursor:		load		s5, #0x10		;load for line 1
 			JUMP		z, set_line2
 			AND		s5, #0x0f		;make address in range 80 to 8F for line 1
 			OR		s5, #0x80
@@ -1508,11 +1508,11 @@ lcd_shift_left:		LOAD		s5, #0x18		;shift display left
 ;main body of the program.
 ;
 ;
-isr:			STORE		s0, isr_preserve_s0	;preserve s0
+isr:			load		s0, isr_preserve_s0	;preserve s0
 			INPUT		s0, rotary_port		;read rotary encoder
 			OR		s0, #rotary_event	;set flag
-			STORE		s0, rotary_status	;put result in SCM
-			FETCH		s0, isr_preserve_s0	;restore s0
+			load		s0, rotary_status	;put result in SCM
+			load		s0, isr_preserve_s0	;reload s0
 			RETURNI		enable
 ;
 ;

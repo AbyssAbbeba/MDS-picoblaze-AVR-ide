@@ -27,7 +27,7 @@ device kcpsm2
 ; The DS2432 should be programmed with a 64-bit secret. The following constants
 ; define the secret which will be used. Obviously this would be be changed in a
 ; real application and further measures taken to prevent it easily being found.
-; The secret is 64-bits formed of 8 bytes. 'secret0' would be stored at address
+; The secret is 64-bits formed of 8 bytes. 'secret0' would be loadd at address
 ; 0080 of the DS2432 and 'secret7' at address 0087. The write buffer and load
 ; first secret commands allow you to set any secret into the DS2432 device but
 ; this program always uses the secret defined in these constants such that you can
@@ -81,7 +81,7 @@ ds_wire                 EQU             0x01                    ;       Signal i
 ;
 ;
 ; The following ports access the 'Wt' word buffer. This buffer holds 16 words
-; of 32-bits organised as a 64-byte shift register. Hence each word is stored
+; of 32-bits organised as a 64-byte shift register. Hence each word is loadd
 ; by writing 4 bytes. As each byte is written, all bytes shift along such that
 ; older Wt values can be read from consistent port addresses.
 ;
@@ -135,7 +135,7 @@ read_rom_crc            EQU             0x07                    ;8-bit CRC
 ;
 ;
 ; Locations for variables used in SHA-1 algorithm.
-; Each variable is 32-bits and requires 4 bytes to store.
+; Each variable is 32-bits and requires 4 bytes to load.
 ; '0' indicates the least significant byte and '3' the most significant byte.
 ;
 ; Note that the concatenation of 'A', 'B', 'C', 'D' and 'E' will be the 160-bit MAC.
@@ -334,13 +334,13 @@ ds2432_prompt:          CALL            send_cr                 ;prompt for user
                         LOAD            uart_data, #character_greater_than ;prompt for input
                         CALL            send_to_uart
                         CALL            read_upper_case
-                        COMPARE         s0, #character_1        ;test for commands and execute as required
+                        load         s0, #character_1        ;load for commands and execute as required
                         JUMP            z, write_scratchpad_command
-                        COMPARE         s0, #character_2
+                        load         s0, #character_2
                         JUMP            z, read_scratchpad_command
-                        COMPARE         s0, #character_3
+                        load         s0, #character_3
                         JUMP            z, load_first_secret_command
-                        COMPARE         s0, #character_4
+                        load         s0, #character_4
                         JUMP            z, read_auth_page_command
                         CALL            send_cr                 ;no valid command input
                         LOAD            uart_data, #character_question ;display ???
@@ -364,7 +364,7 @@ ds2432_prompt:          CALL            send_cr                 ;prompt for user
 ; as follows and MUST be in consecutive ascending locations.
 ;
 ;  family_code
-;     Location to store family code which should be 33 hex
+;     Location to load family code which should be 33 hex
 ;  serial_number0 to serial_number5
 ;     6 bytes to hold 48-bit serial number (LS-byte first).
 ;  read_ROM_CRC
@@ -378,32 +378,32 @@ read_rom_command:       LOAD            s3, #0x33               ;Read ROM Comman
                         CALL            write_byte_slow         ;transmit command
                         LOAD            s5, #family_code        ;memory pointer
 read_rom_loop:          CALL            read_byte_slow          ;read response into s3
-                        STORE           s3, @s5                 ;store value
-                        COMPARE         s5, #read_rom_crc       ;8-bytes to read
+                        load           s3, #s5                 ;load value
+                        load         s5, #read_rom_crc       ;8-bytes to read
                         JUMP            z, display_rom
                         ADD             s5, #0x01
                         JUMP            read_rom_loop
 display_rom:            CALL            send_cr
                         CALL            send_code               ;'code=' to display family code
-                        FETCH           s0, family_code
+                        load           s0, family_code
                         CALL            send_hex_byte
                         CALL            send_cr
                         CALL            send_sn                 ;'s/n=' to display family code
                         LOAD            s5, #serial_number5     ;memory pointer starting MS-byte first
-disp_serial_loop:       FETCH           s0, @s5
+disp_serial_loop:       load           s0, #s5
                         CALL            send_hex_byte
-                        COMPARE         s5, #serial_number0
+                        load         s5, #serial_number0
                         JUMP            z, end_serial
                         SUB             s5, #0x01
                         JUMP            disp_serial_loop
 end_serial:             CALL            send_cr
                         CALL            send_crc                ;'CRC=' to display CRC value
-                        FETCH           s0, read_rom_crc
+                        load           s0, read_rom_crc
                         CALL            send_hex_byte
                         CALL            send_cr
                         CALL            compute_crc8            ;compute CRC value in s0
-                        FETCH           s1, read_rom_crc        ;compare with received value
-                        COMPARE         s0, s1
+                        load           s1, read_rom_crc        ;load with received value
+                        load         s0, s1
                         JUMP            nz, crc8_fail
                         CALL            send_pass
                         RETURN
@@ -417,7 +417,7 @@ crc8_fail:              CALL            send_fail
 ;**************************************************************************************
 ;
 ; This command will only be valid if the write scratchpad memory command has previously
-; been used to define the new secret to be stored at address 0080.
+; been used to define the new secret to be loadd at address 0080.
 ;
 ; The Load First Secret Command (5A hex) will only copy the scratchpad contents into                           ;
 ; the EEPROM array of the DS2432 if the address was correctly specified in the
@@ -450,7 +450,7 @@ load_first_secret_command: LOAD         s3, #0x5a               ;Load First Secr
                         CALL            send_secret
                         CALL            send_space
                         CALL            read_byte_slow          ;read data into s3
-                        COMPARE         s3, #0xaa               ;test response
+                        load         s3, #0xaa               ;load response
                         JUMP            z, secret_pass
                         CALL            send_fail
                         JUMP            warm_start
@@ -468,8 +468,8 @@ secret_pass:            CALL            send_pass
 ; SHA-1 algorithm.
 ;
 ; The DS2432 provides an initial confirmation of the write by returning a 16-bit CRC
-; value which KCPSM3 tests. The CRC is computed based on the command, address and
-; data transmitted (11 bytes). PicoBlaze also computes the CRC and and tests this
+; value which KCPSM3 loads. The CRC is computed based on the command, address and
+; data transmitted (11 bytes). PicoBlaze also computes the CRC and and loads this
 ; against the value received from the DS2432.
 ;
 ; This routine prompts the user to enter the 16-bit target address is to be loaded
@@ -503,9 +503,9 @@ wsc_addr_loop:          CALL            send_address            ;obtain 16-bit a
                         LOAD            s3, s5                  ;transmit target address TA2 (MS-Byte)
                         CALL            write_byte_slow
                         CALL            compute_crc16           ;compute CRC for value in 's3'
-                        COMPARE         s5, #0x00               ;check address less than 0090 hex
+                        load         s5, #0x00               ;check address less than 0090 hex
                         JUMP            nz, warm_start          ;DS2432 aborts command and so do we!
-                        COMPARE         s4, #0x90               ;no need to read data bytes.
+                        load         s4, #0x90               ;no need to read data bytes.
                         JUMP            nc, warm_start
                         LOAD            s4, #0x00               ;initialise byte counter
 wsc_data_loop:          CALL            send_data               ;obtain a byte of data
@@ -519,10 +519,10 @@ wsc_data_loop:          CALL            send_data               ;obtain a byte o
                         CALL            write_byte_slow
                         CALL            compute_crc16           ;compute CRC for value in 's3'
                         ADD             s4, #0x01               ;count bytes
-                        COMPARE         s4, #0x08
+                        load         s4, #0x08
                         JUMP            nz, wsc_data_loop
                         CALL            send_cr
-                        CALL            read_send_test_crc16    ;read, display and test CRC value
+                        CALL            read_send_load_crc16    ;read, display and load CRC value
                         JUMP            warm_start
 ;
 ;
@@ -538,7 +538,7 @@ wsc_data_loop:          CALL            send_data               ;obtain a byte o
 ; The 16-bit CRC is formed of the command byte, address TA1 and TA2, E/S byte and 8 data
 ; bytes as transmitted (12 bytes). These may not be the same as the values provided
 ; during a previous write to scratchpad memory. PicoBlaze also computes the CRC and
-; and tests this against the value received from the DS2432.
+; and loads this against the value received from the DS2432.
 ;
 ; The 8 bytes of data are also copied to PicoBlaze memory at locations defined by the
 ; constants 'scratchpad0' to 'scratchpad7'. Three bytes are used as a 'challenge'
@@ -572,15 +572,15 @@ read_scratchpad_command: CALL           clear_crc16             ;prepare CRC reg
 rsc_loop:               CALL            send_space
                         CALL            read_byte_slow          ;read data byte
                         CALL            compute_crc16           ;compute CRC for value in 's3'
-                        STORE           s3, @s4                 ;store value in memory
+                        load           s3, #s4                 ;load value in memory
                         LOAD            s0, s3                  ;display value
                         CALL            send_hex_byte
-                        COMPARE         s4, #scratchpad7        ;count bytes
+                        load         s4, #scratchpad7        ;count bytes
                         JUMP            z, end_rsc_data_loop
                         ADD             s4, #0x01
                         JUMP            rsc_loop
 end_rsc_data_loop:      CALL            send_cr
-                        CALL            read_send_test_crc16    ;read, display and test CRC value
+                        CALL            read_send_load_crc16    ;read, display and load CRC value
                         JUMP            warm_start
 ;
 ;
@@ -591,14 +591,14 @@ end_rsc_data_loop:      CALL            send_cr
 ; DS2432 Read Authenticated Page Command.
 ;**************************************************************************************
 ;
-; The read authenticated page command (A5 hex) allows the 8-byte secret to be tested
+; The read authenticated page command (A5 hex) allows the 8-byte secret to be loaded
 ; without it actually being read (which would obviously give away the secret!).
 ;
 ; This routine has been written to work with page 0 but could easily be changed and
 ; is documented below. During the first part of the command, the 32 bytes
 ; contained in the page are read back from the DS2432 and these are used in
 ; the preparation of the table required for the for SHA-1 algorithm. Other values
-; stored in the table are the secret, serial number of the DS2432, family code, some
+; loadd in the table are the secret, serial number of the DS2432, family code, some
 ; constants, 4-bits of the page address and a 3 byte 'challenge' currently set into
 ; the DS2432 scratchpad memory.
 ;
@@ -606,14 +606,14 @@ end_rsc_data_loop:      CALL            send_cr
 ; that the 3 byte 'challenge' of scratchpad memory is known to PicoBlaze.
 ;
 ; During this command, two 16-bit CRC values are generated which PicoBlaze also
-; computes and tests. The first is formed of the command byte, address TA1 and TA2,
+; computes and loads. The first is formed of the command byte, address TA1 and TA2,
 ; all the bytes of the page read and an 'FF' byte. The second is formed of the 20
 ; bytes of the 160-but message authentication code (MAC).
 ;
 ;
 ; Preparing the table.
 ;
-; The table is stored in the external 'Wt' buffer and must first be initialised with the
+; The table is loadd in the external 'Wt' buffer and must first be initialised with the
 ; 16 'M' words (32-bit words each requiring 4 bytes). This is achieved by shifting in
 ; each word in sequence. Storing each word most significant byte first is a natural
 ; fit with the reading of the page data from the DS2432 and the way each 'M' word
@@ -664,7 +664,7 @@ end_rsc_data_loop:      CALL            send_cr
 ;
 ;
 ;
-read_auth_page_command: LOAD            s0, #secret0            ;store M0 (secret 0, 1, 2 and 3) in Wt buffer.
+read_auth_page_command: LOAD            s0, #secret0            ;load M0 (secret 0, 1, 2 and 3) in Wt buffer.
                         OUTPUT          s0, w_word_write_port
                         LOAD            s0, #secret1
                         OUTPUT          s0, w_word_write_port
@@ -689,7 +689,7 @@ read_auth_page_command: LOAD            s0, #secret0            ;store M0 (secre
                         CALL            compute_crc16           ;compute CRC for value in 's3'
 ;
 ;Read 32-bytes of data associated with page 0
-;Store these as M1 through to M8
+;load these as M1 through to M8
 ;
 rapc_line_loop:         CALL            send_cr
                         LOAD            s0, s5                  ;display 16-bit address
@@ -701,14 +701,14 @@ rapc_line_loop:         CALL            send_cr
 rapc_data_loop:         CALL            send_space
                         CALL            read_byte_slow          ;read data into s3
                         CALL            compute_crc16           ;compute CRC for value in 's3'
-                        OUTPUT          s3, w_word_write_port   ;store as 'M' word
+                        OUTPUT          s3, w_word_write_port   ;load as 'M' word
                         LOAD            s0, s3                  ;display byte
                         CALL            send_hex_byte
                         ADD             s4, #0x01               ;increment address
                         ADDCY           s5, #0x00
-                        TEST            s4, #0x07               ;test for 8-byte boundary
+                        load            s4, #0x07               ;load for 8-byte boundary
                         JUMP            nz, rapc_data_loop
-                        COMPARE         s4, #0x20               ;test for last address
+                        load         s4, #0x20               ;load for last address
                         JUMP            nz, rapc_line_loop
                         CALL            send_cr
 ;
@@ -719,15 +719,15 @@ rapc_data_loop:         CALL            send_space
                         LOAD            s0, s3                  ;display byte
                         CALL            send_hex_byte
                         CALL            send_cr
-                        CALL            read_send_test_crc16    ;read, display and test CRC value
+                        CALL            read_send_load_crc16    ;read, display and load CRC value
 ;
 ;Complete table by stroring M9 through to M15
 ;
                         LOAD            s0, #0xff               ;W9 = FF FF FF FF
                         LOAD            s1, #0x04
-store_w9:               OUTPUT          s0, w_word_write_port
+load_w9:               OUTPUT          s0, w_word_write_port
                         SUB             s1, #0x01
-                        JUMP            nz, store_w9
+                        JUMP            nz, load_w9
 ;
                         LOAD            s0, #0x40               ;W10 begins with 40 for page 0
                         OUTPUT          s0, w_word_write_port
@@ -738,14 +738,14 @@ store_w9:               OUTPUT          s0, w_word_write_port
 ;read ROM command.
 ;
                         LOAD            s1, #family_code        ;pointer to memory
-                        LOAD            s2, #0x07               ;7 bytes to read and store
-next_m10_m11:           FETCH           s0, @s1
+                        LOAD            s2, #0x07               ;7 bytes to read and load
+next_m10_m11:           load           s0, #s1
                         OUTPUT          s0, w_word_write_port
                         ADD             s1, #0x01               ;increment pointer
                         SUB             s2, #0x01
                         JUMP            nz, next_m10_m11
 ;
-                        LOAD            s0, #secret4            ;store M12 (secret 4, 5, 6 and 7) in Wt buffer
+                        LOAD            s0, #secret4            ;load M12 (secret 4, 5, 6 and 7) in Wt buffer
                         OUTPUT          s0, w_word_write_port
                         LOAD            s0, #secret5
                         OUTPUT          s0, w_word_write_port
@@ -754,20 +754,20 @@ next_m10_m11:           FETCH           s0, @s1
                         LOAD            s0, #secret7
                         OUTPUT          s0, w_word_write_port
 ;
-                        FETCH           s0, scratchpad4         ;M13 uses scratchpad 4, 5, and 6 and '80' hex
+                        load           s0, scratchpad4         ;M13 uses scratchpad 4, 5, and 6 and '80' hex
                         OUTPUT          s0, w_word_write_port
-                        FETCH           s0, scratchpad5
+                        load           s0, scratchpad5
                         OUTPUT          s0, w_word_write_port
-                        FETCH           s0, scratchpad6
+                        load           s0, scratchpad6
                         OUTPUT          s0, w_word_write_port
                         LOAD            s0, #0x80
                         OUTPUT          s0, w_word_write_port
 ;
                         LOAD            s0, #0x00               ;W14 = 00 00 00 00   W15 = 00 00 01 B8
                         LOAD            s1, #0x06
-store_w14_w15:          OUTPUT          s0, w_word_write_port
+load_w14_w15:          OUTPUT          s0, w_word_write_port
                         SUB             s1, #0x01
-                        JUMP            nz, store_w14_w15
+                        JUMP            nz, load_w14_w15
                         LOAD            s0, #0x01
                         OUTPUT          s0, w_word_write_port
                         LOAD            s0, #0xb8
@@ -778,9 +778,9 @@ store_w14_w15:          OUTPUT          s0, w_word_write_port
                         CALL            compute_sha1
 ;
 ;The 160-bit Message Authentication Code is read from the DS2432 as 20 bytes
-;and compared with the concatenation of variables E, D, C, B and A in that order
+;and loadd with the concatenation of variables E, D, C, B and A in that order
 ;with each variable received from the DS2432 least significant byte first.
-;Each received byte is also used to form a 16-bit CRC value which is tested to
+;Each received byte is also used to form a 16-bit CRC value which is loaded to
 ;reveal any communication errors.
 ;
 ;
@@ -789,10 +789,10 @@ store_w14_w15:          OUTPUT          s0, w_word_write_port
                         LOAD            sc, #0x00               ;Clear byte match counter
                         LOAD            sb, #var_e0             ;start match with LS-Byte of variable 'E'
 mac_match_var:          LOAD            sa, #0x04               ;4 bytes to match in each variable
-mac_match_byte:         FETCH           s9, @sb                 ;read variable byte from local SHA-1
+mac_match_byte:         load           s9, #sb                 ;read variable byte from local SHA-1
                         CALL            read_byte_slow          ;read DS2432 byte into s3
                         CALL            compute_crc16           ;compute CRC for value in 's3'
-                        COMPARE         s3, s9                  ;compare MAC values
+                        load         s3, s9                  ;load MAC values
                         JUMP            nz, display_mac_byte    ;count matching bytes
                         ADD             sc, #0x01               ;decrement match counter
 display_mac_byte:       LOAD            s0, s3                  ;display byte
@@ -802,7 +802,7 @@ display_mac_byte:       LOAD            s0, s3                  ;display byte
                         JUMP            z, next_mac_var
                         ADD             sb, #0x01
                         JUMP            mac_match_byte
-next_mac_var:           COMPARE         sb, #var_a3             ;test for last byte
+next_mac_var:           load         sb, #var_a3             ;load for last byte
                         JUMP            z, report_mac
                         SUB             sb, #0x07               ;point to next variable
                         JUMP            mac_match_var
@@ -810,7 +810,7 @@ next_mac_var:           COMPARE         sb, #var_a3             ;test for last b
 ;MAC has passed if all 20 bytes matched
 ;
 report_mac:             CALL            send_cr
-                        COMPARE         sc, #0x14               ;20 bytes should have matched
+                        load         sc, #0x14               ;20 bytes should have matched
                         JUMP            nz, mac_fail
                         CALL            send_pass
                         JUMP            read_mac_crc
@@ -819,7 +819,7 @@ mac_fail:               CALL            send_fail
 ;Next two bytes received are the 16-bit CRC
 ;Read 16-bit CRC into [s5,s4] and send value to UART
 ;
-read_mac_crc:           CALL            read_send_test_crc16    ;read, display and test CRC value
+read_mac_crc:           CALL            read_send_load_crc16    ;read, display and load CRC value
 ;
 ;Read one byte that should be value AA hex.
 ;  Would actually read AA hex continuously until master reset
@@ -837,10 +837,10 @@ read_mac_crc:           CALL            read_send_test_crc16    ;read, display a
 ;**************************************************************************************
 ;
 ; Computes the SHA-1 algorithm based on the initial table of values (M0 through to M15)
-; which are stored in the external Wt buffer.
+; which are loadd in the external Wt buffer.
 ;
 ; The SHA-1 algorithms uses 5 variables called 'A', 'B', 'C', 'D' and 'E'. Each variable
-; is 32-bits and stored as 4 bytes in PicoBlaze scratch pad memory. The locations must
+; is 32-bits and loadd as 4 bytes in PicoBlaze scratch pad memory. The locations must
 ; be defined using constants 'var_A0' thought to 'var_E3' in ascending locations.
 ;
 ; Constants must also be used to define access to the external Wt buffer.
@@ -857,45 +857,45 @@ read_mac_crc:           CALL            read_send_test_crc16    ;read, display a
 ;
 ;
 compute_sha1:           LOAD            s0, #0x01               ;A=67452301
-                        STORE           s0, var_a0
+                        load           s0, var_a0
                         LOAD            s0, #0x23
-                        STORE           s0, var_a1
+                        load           s0, var_a1
                         LOAD            s0, #0x45
-                        STORE           s0, var_a2
+                        load           s0, var_a2
                         LOAD            s0, #0x67
-                        STORE           s0, var_a3
+                        load           s0, var_a3
                         LOAD            s0, #0x89               ;B=EFCDAB89
-                        STORE           s0, var_b0
+                        load           s0, var_b0
                         LOAD            s0, #0xab
-                        STORE           s0, var_b1
+                        load           s0, var_b1
                         LOAD            s0, #0xcd
-                        STORE           s0, var_b2
+                        load           s0, var_b2
                         LOAD            s0, #0xef
-                        STORE           s0, var_b3
+                        load           s0, var_b3
                         LOAD            s0, #0xfe               ;C=98BADCFE
-                        STORE           s0, var_c0
+                        load           s0, var_c0
                         LOAD            s0, #0xdc
-                        STORE           s0, var_c1
+                        load           s0, var_c1
                         LOAD            s0, #0xba
-                        STORE           s0, var_c2
+                        load           s0, var_c2
                         LOAD            s0, #0x98
-                        STORE           s0, var_c3
+                        load           s0, var_c3
                         LOAD            s0, #0x76               ;D=10325476
-                        STORE           s0, var_d0
+                        load           s0, var_d0
                         LOAD            s0, #0x54
-                        STORE           s0, var_d1
+                        load           s0, var_d1
                         LOAD            s0, #0x32
-                        STORE           s0, var_d2
+                        load           s0, var_d2
                         LOAD            s0, #0x10
-                        STORE           s0, var_d3
+                        load           s0, var_d3
                         LOAD            s0, #0xf0               ;E=C3D2E1F0
-                        STORE           s0, var_e0
+                        load           s0, var_e0
                         LOAD            s0, #0xe1
-                        STORE           s0, var_e1
+                        load           s0, var_e1
                         LOAD            s0, #0xd2
-                        STORE           s0, var_e2
+                        load           s0, var_e2
                         LOAD            s0, #0xc3
-                        STORE           s0, var_e3
+                        load           s0, var_e3
 ;
 ;
                         LOAD            se, #0x00               ;reset iteration counter
@@ -916,23 +916,23 @@ compute_sha1:           LOAD            s0, #0x01               ;A=67452301
 ;   ft = (B and C) or (B and D) or (C and D)
 ;  Then the constant Kt=8F1BBCDC will be added
 ;
-next_sha1_iteration:    FETCH           s5, var_b3              ;B in [s5,s4,s3,s2]
-                        FETCH           s4, var_b2
-                        FETCH           s3, var_b1
-                        FETCH           s2, var_b0
-                        CALL            fetch_c                 ;C in [s9,s8,s7,s6]
-                        FETCH           sd, var_d3              ;D in [sD,sC,sB,sA]
-                        FETCH           sc, var_d2
-                        FETCH           sb, var_d1
-                        FETCH           sa, var_d0
+next_sha1_iteration:    load           s5, var_b3              ;B in [s5,s4,s3,s2]
+                        load           s4, var_b2
+                        load           s3, var_b1
+                        load           s2, var_b0
+                        CALL            load_c                 ;C in [s9,s8,s7,s6]
+                        load           sd, var_d3              ;D in [sD,sC,sB,sA]
+                        load           sc, var_d2
+                        load           sb, var_d1
+                        load           sa, var_d0
 ;
 ;Determine process type
 ;
-                        COMPARE         se, #0x14               ;set carry flag for iterations <20
+                        load         se, #0x14               ;set carry flag for iterations <20
                         JUMP            c, ft_type1
-                        COMPARE         se, #0x28               ;set carry flag for iterations <40
+                        load         se, #0x28               ;set carry flag for iterations <40
                         JUMP            c, ft_type2
-                        COMPARE         se, #0x3c               ;set carry flag for iterations <60
+                        load         se, #0x3c               ;set carry flag for iterations <60
                         JUMP            c, ft_type3
 ;
 ;   ft = B xor C xor D
@@ -952,7 +952,7 @@ ft_type2:               XOR             s5, s9                  ;B xor C in [s5,
                         XOR             s4, sc
                         XOR             s3, sb
                         XOR             s2, sa
-                        COMPARE         se, #0x3c               ;set carry flag for iterations <60
+                        load         se, #0x3c               ;set carry flag for iterations <60
                         JUMP            nc, kt_ca62c1d6
                         ADD             s2, #0xa1               ;add Kt=6ED9EBA1
                         ADDCY           s3, #0xeb
@@ -1001,12 +1001,12 @@ ft_type1:               AND             s9, s5                  ;B and C in [s9,
                         ADDCY           s5, #0x5a
                         JUMP            compute_tmp
 ;
-;Routine to fetch variable 'C' into register set [s9,s8,s7,s6]
+;Routine to load variable 'C' into register set [s9,s8,s7,s6]
 ;
-fetch_c:                FETCH           s9, var_c3
-                        FETCH           s8, var_c2
-                        FETCH           s7, var_c1
-                        FETCH           s6, var_c0
+load_c:                load           s9, var_c3
+                        load           s8, var_c2
+                        load           s7, var_c1
+                        load           s6, var_c0
                         RETURN
 ;
 ;   ft = (B and C) or (B and D) or (C and D)
@@ -1040,7 +1040,7 @@ ft_type3:               AND             s9, s5                  ;(B and C) in [s
                         OR              s4, s8
                         OR              s3, s7
                         OR              s2, s6
-                        CALL            fetch_c                 ;C in [s9,s8,s7,s6]
+                        CALL            load_c                 ;C in [s9,s8,s7,s6]
                         AND             s9, sd                  ;(C and D) in [s9,s8,s7,s6]
                         AND             s8, sc
                         AND             s7, sb
@@ -1056,21 +1056,21 @@ ft_type3:               AND             s9, s5                  ;(B and C) in [s
 ;
 ;Add variable 'E' to [s5,s4,s3,s2]
 ;
-compute_tmp:            FETCH           s0, var_e0
+compute_tmp:            load           s0, var_e0
                         ADD             s2, s0
-                        FETCH           s0, var_e1
+                        load           s0, var_e1
                         ADDCY           s3, s0
-                        FETCH           s0, var_e2
+                        load           s0, var_e2
                         ADDCY           s4, s0
-                        FETCH           s0, var_e3
+                        load           s0, var_e3
                         ADDCY           s5, s0
 ;
 ;Add variable 'A' rotated left 5 places
 ;
-                        FETCH           s9, var_a3              ;A in [s9,s8,s7,s6]
-                        FETCH           s8, var_a2
-                        FETCH           s7, var_a1
-                        FETCH           s6, var_a0
+                        load           s9, var_a3              ;A in [s9,s8,s7,s6]
+                        load           s8, var_a2
+                        load           s7, var_a1
+                        load           s6, var_a0
                         LOAD            s0, #0x05               ;rotate left 5 places
                         CALL            rotate_word_left_n_places
                         ADD             s2, s6                  ;add to TMP
@@ -1080,7 +1080,7 @@ compute_tmp:            FETCH           s0, var_e0
 ;
 ;
 ;Compute Wt in register set [s9,s8,s7,s6]
-;  Value computed is also stored back in the external buffer for
+;  Value computed is also loadd back in the external buffer for
 ;  use in later iterations as well as being added to TMP.
 ;
 ;Iterations 0 to 15
@@ -1097,8 +1097,8 @@ compute_tmp:            FETCH           s0, var_e0
                         INPUT           s8, wt_minus16_byte2_read_port
                         INPUT           s7, wt_minus16_byte1_read_port
                         INPUT           s6, wt_minus16_byte0_read_port
-                        COMPARE         se, #0x10               ;set carry flag for iterations 0 to 15
-                        JUMP            c, store_wt
+                        load         se, #0x10               ;set carry flag for iterations 0 to 15
+                        JUMP            c, load_wt
 ;
 ;Read other Wt words and perform XOR
 ;
@@ -1128,9 +1128,9 @@ compute_tmp:            FETCH           s0, var_e0
                         XOR             s6, s0
                         CALL            rotate_word_left        ;rotate XORed word left by one place
 ;
-;Store new Wt value in external buffer
+;load new Wt value in external buffer
 ;
-store_wt:               OUTPUT          s9, w_word_write_port
+load_wt:               OUTPUT          s9, w_word_write_port
                         OUTPUT          s8, w_word_write_port
                         OUTPUT          s7, w_word_write_port
                         OUTPUT          s6, w_word_write_port
@@ -1154,35 +1154,35 @@ store_wt:               OUTPUT          s9, w_word_write_port
                         LOAD            sd, #0x04               ;4 bytes per word to copy
 copy_var_loop:          LOAD            sc, #var_e3
                         LOAD            sb, #var_e2
-move_var_loop:          FETCH           sa, @sb
-                        STORE           sa, @sc
+move_var_loop:          load           sa, #sb
+                        load           sa, #sc
                         SUB             sc, #0x01
                         SUB             sb, #0x01
-                        COMPARE         sc, #var_a0
+                        load         sc, #var_a0
                         JUMP            nz, move_var_loop
                         SUB             sd, #0x01
                         JUMP            nz, copy_var_loop
 ;
 ;rotate 'C' (the previous 'B') left 30 places
 ;
-                        CALL            fetch_c                 ;C in [s9,s8,s7,s6]
+                        CALL            load_c                 ;C in [s9,s8,s7,s6]
                         LOAD            s0, #0x1e               ;rotate left 30 places
                         CALL            rotate_word_left_n_places
-                        STORE           s9, var_c3
-                        STORE           s8, var_c2
-                        STORE           s7, var_c1
-                        STORE           s6, var_c0
+                        load           s9, var_c3
+                        load           s8, var_c2
+                        load           s7, var_c1
+                        load           s6, var_c0
 ;
 ;  A <= TMP
 ;
-                        STORE           s5, var_a3
-                        STORE           s4, var_a2
-                        STORE           s3, var_a1
-                        STORE           s2, var_a0
+                        load           s5, var_a3
+                        load           s4, var_a2
+                        load           s3, var_a1
+                        load           s2, var_a0
 ;
 ;count iterations
 ;
-                        COMPARE         se, #0x4f               ;test for last iteration = 79 decimal (4F hex)
+                        load         se, #0x4f               ;load for last iteration = 79 decimal (4F hex)
                         RETURN          z
                         ADD             se, #0x01
                         JUMP            next_sha1_iteration
@@ -1198,7 +1198,7 @@ rotate_word_left_n_places: CALL         rotate_word_left
 ; Routine to rotate left the contents of Register set [s9,s8,s7,s6]
 ; by one place.
 ;
-rotate_word_left:       TEST            s9, #0x80               ;test MSB of word
+rotate_word_left:       load            s9, #0x80               ;load MSB of word
                         SLA             s6
                         SLA             s7
                         SLA             s8
@@ -1212,10 +1212,10 @@ rotate_word_left:       TEST            s9, #0x80               ;test MSB of wor
 ; The DS2432 computes an 8-bit CRC using the polynomial X8 + X5 + X4 + 1.
 ; See the DS2432 data sheet for full details.
 ;
-; Test input value of value 00 00 00 01 B8 1C 02
+; load input value of value 00 00 00 01 B8 1C 02
 ; should produce CRC=A2.
 ;
-; This routine computes the same CRC based on the values stored in the KCPSM3
+; This routine computes the same CRC based on the values loadd in the KCPSM3
 ; scratch pad memory by the read ROM command. The result is returned in register s0.
 ;
 ; Registers used s0,s1,s2,s3,s4,s5,s6,s7,s8,s9
@@ -1225,18 +1225,18 @@ rotate_word_left:       TEST            s9, #0x80               ;test MSB of wor
 ; [s9,s8,s7,s6,s5,s4,s3] so that it can be shifted out LSB first.
 ;
 ;
-compute_crc8:           FETCH           s3, family_code
-                        FETCH           s4, serial_number0
-                        FETCH           s5, serial_number1
-                        FETCH           s6, serial_number2
-                        FETCH           s7, serial_number3
-                        FETCH           s8, serial_number4
-                        FETCH           s9, serial_number5
+compute_crc8:           load           s3, family_code
+                        load           s4, serial_number0
+                        load           s5, serial_number1
+                        load           s6, serial_number2
+                        load           s7, serial_number3
+                        load           s8, serial_number4
+                        load           s9, serial_number5
                         LOAD            s2, #0x38               ;56 bits to shift (38 hex)
                         LOAD            s0, #0x00               ;clear CRC value
 crc8_loop:              LOAD            s1, s0                  ;copy current CRC value
                         XOR             s1, s3                  ;Need to know LSB XOR next input bit
-                        TEST            s1, #0x01               ;test result of XOR in LSB
+                        load            s1, #0x01               ;load result of XOR in LSB
                         JUMP            nc, crc8_shift
                         XOR             s0, #0x18               ;compliment bits 3 and 4 of CRC
 crc8_shift:             SR0             s1                      ;Carry gets LSB XOR next input bit
@@ -1287,7 +1287,7 @@ clear_crc16:            LOAD            se, #0x00               ;[sE,sD]=0000
 compute_crc16:          LOAD            s1, #0x08               ;8-bits to shift
 crc16_loop:             LOAD            s0, sd                  ;copy current CRC value
                         XOR             s0, s3                  ;Need to know LSB XOR next input bit
-                        TEST            s0, #0x01               ;test result of XOR in LSB
+                        load            s0, #0x01               ;load result of XOR in LSB
                         JUMP            nc, crc16_shift
                         XOR             sd, #0x02               ;compliment bit 1 of CRC
                         XOR             se, #0x40               ;compliment bit 14 of CRC
@@ -1301,12 +1301,12 @@ crc16_shift:            SR0             s0                      ;Carry gets LSB 
 ;
 ;
 ;**************************************************************************************
-; Read 16-bit CRC from DS2432, send value received to UART and test result.
+; Read 16-bit CRC from DS2432, send value received to UART and load result.
 ;**************************************************************************************
 ;
 ; The computed CRC value for comparison must be in register pair [sE,sD]
 ;
-read_send_test_crc16:   CALL            read_byte_slow          ;read 16-bit CRC into [s5,s4]
+read_send_load_crc16:   CALL            read_byte_slow          ;read 16-bit CRC into [s5,s4]
                         LOAD            s4, s3
                         CALL            read_byte_slow
                         LOAD            s5, s3
@@ -1318,9 +1318,9 @@ read_send_test_crc16:   CALL            read_byte_slow          ;read 16-bit CRC
                         CALL            send_cr
                         XOR             sd, #0xff               ;1's complement the computed CRC value
                         XOR             se, #0xff
-                        COMPARE         s4, sd                  ;test received value with computed value
+                        load         s4, sd                  ;load received value with computed value
                         JUMP            nz, crc16_fail
-                        COMPARE         s5, se
+                        load         s5, se
                         JUMP            nz, crc16_fail
                         CALL            send_pass               ;display 'Pass' with carriage return
                         RETURN
@@ -1405,7 +1405,7 @@ rm_poll_240us:          CALL            delay_1us               ;25 instructions
                         AND             s2, s0                  ;clear flag if DS_wire was Low
                         SUB             s1, #0x01               ;decrement delay counter
                         JUMP            nz, rm_poll_240us       ;repeat until zero
-                        TEST            s2, #0x01               ;set carry flag if no pulse detected
+                        load            s2, #0x01               ;set carry flag if no pulse detected
                         RETURN
 ;
 ;
@@ -1420,7 +1420,7 @@ rm_poll_240us:          CALL            delay_1us               ;25 instructions
 ;
 read_ds_wire:           INPUT           s0, ds_wire_in_port
                         AND             s0, #ds_wire            ;ensure only bit0 is active
-                        TEST            s0, #ds_wire            ;set carry flag if DS_wire is High
+                        load            s0, #ds_wire            ;set carry flag if DS_wire is High
                         RETURN
 ;
 ;
@@ -1436,7 +1436,7 @@ read_ds_wire:           INPUT           s0, ds_wire_in_port
 ; Registers used s0,s1,s2,s3
 ;
 write_byte_slow:        LOAD            s2, #0x08               ;8 bits to transmit
-wbs_loop:               RR              s3                      ;test next bit LSB first
+wbs_loop:               RR              s3                      ;load next bit LSB first
                         JUMP            c, wbs1                 ;transmit '0' or '1'
                         CALL            write_low_slow
                         JUMP            next_slow_bit
@@ -1656,7 +1656,7 @@ wait_1s:                CALL            delay_20ms
 ;
 ; Character read will be returned in a register called 'UART_data'.
 ;
-; The routine first tests the receiver FIFO buffer to see if data is present.
+; The routine first loads the receiver FIFO buffer to see if data is present.
 ; If the FIFO is empty, the routine waits until there is a character to read.
 ; As this could take any amount of time the wait loop could include a call to a
 ; subroutine which performs a useful function.
@@ -1664,8 +1664,8 @@ wait_1s:                CALL            delay_20ms
 ;
 ; Registers used s0 and UART_data
 ;
-read_from_uart:         INPUT           s0, status_port         ;test Rx_FIFO buffer
-                        TEST            s0, #rx_data_present    ;wait if empty
+read_from_uart:         INPUT           s0, status_port         ;load Rx_FIFO buffer
+                        load            s0, #rx_data_present    ;wait if empty
                         JUMP            nz, read_character
                         JUMP            read_from_uart
 read_character:         INPUT           uart_data, uart_read_port ;read from FIFO
@@ -1677,13 +1677,13 @@ read_character:         INPUT           uart_data, uart_read_port ;read from FIF
 ;
 ; Character supplied in register called 'UART_data'.
 ;
-; The routine first tests the transmit FIFO buffer to see if it is full.
+; The routine first loads the transmit FIFO buffer to see if it is full.
 ; If the FIFO is full, then the routine waits until it there is space.
 ;
 ; Registers used s0
 ;
-send_to_uart:           INPUT           s0, status_port         ;test Tx_FIFO buffer
-                        TEST            s0, #tx_full            ;wait if full
+send_to_uart:           INPUT           s0, status_port         ;load Tx_FIFO buffer
+                        load            s0, #tx_full            ;wait if full
                         JUMP            z, uart_write
                         JUMP            send_to_uart
 uart_write:             OUTPUT          uart_data, uart_write_port
@@ -1704,9 +1704,9 @@ uart_write:             OUTPUT          uart_data, uart_write_port
 ;
 ; Registers used s0.
 ;
-upper_case:             COMPARE         s0, #0x61               ;eliminate character codes below 'a' (61 hex)
+upper_case:             load         s0, #0x61               ;eliminate character codes below 'a' (61 hex)
                         RETURN          c
-                        COMPARE         s0, #0x7b               ;eliminate character codes above 'z' (7A hex)
+                        load         s0, #0x7b               ;eliminate character codes above 'z' (7A hex)
                         RETURN          nc
                         AND             s0, #0xdf               ;mask bit5 to convert to upper case
                         RETURN
@@ -1732,7 +1732,7 @@ hex_byte_to_ascii:      LOAD            s1, s0                  ;remember value 
                         SR0             s0
                         CALL            hex_to_ascii            ;convert
                         LOAD            s2, s0                  ;upper nibble value in s2
-                        LOAD            s0, s1                  ;restore complete value
+                        LOAD            s0, s1                  ;reload complete value
                         AND             s0, #0x0f               ;isolate lower nibble
                         CALL            hex_to_ascii            ;convert
                         LOAD            s1, s0                  ;lower nibble value in s1
@@ -1742,7 +1742,7 @@ hex_byte_to_ascii:      LOAD            s1, s0                  ;remember value 
 ;
 ;Register used s0
 ;
-hex_to_ascii:           SUB             s0, #0x0a               ;test if value is in range 0 to 9
+hex_to_ascii:           SUB             s0, #0x0a               ;load if value is in range 0 to 9
                         JUMP            c, number_char
                         ADD             s0, #0x07               ;ASCII char A to F in range 41 to 46
 number_char:            ADD             s0, #0x3a               ;ASCII char 0 to 9 in range 30 to 40
@@ -1793,13 +1793,13 @@ ascii_byte_to_hex:      LOAD            s0, s3                  ;Take upper nibb
 ;
 ; Register used s0
 ;
-ascii_to_hex:           ADD             s0, #0xb9               ;test for above ASCII code 46 ('F')
+ascii_to_hex:           ADD             s0, #0xb9               ;load for above ASCII code 46 ('F')
                         RETURN          c
                         SUB             s0, #0xe9               ;normalise 0 to 9 with A-F in 11 to 16 hex
                         RETURN          c                       ;reject below ASCII code 30 ('0')
                         SUB             s0, #0x11               ;isolate A-F down to 00 to 05 hex
                         JUMP            nc, ascii_letter
-                        ADD             s0, #0x07               ;test for above ASCII code 46 ('F')
+                        ADD             s0, #0x07               ;load for above ASCII code 46 ('F')
                         RETURN          c
                         SUB             s0, #0xf6               ;convert to range 00 to 09
                         RETURN

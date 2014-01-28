@@ -35,7 +35,7 @@ btn_west                EQU             0x80                    ;               
 ;
 ;
 rotary_port             EQU             0x01                    ;Read status of rotary encoder
-rotary_left             EQU             0x01                    ; Direction of last move Left=1 Right=0  - bit0
+rotary_leload             EQU             0x01                    ; Direction of last move Leload=1 Right=0  - bit0
 rotary_press            EQU             0x02                    ;     Centre press contact (active High) - bit1
 ;
 ;
@@ -91,20 +91,20 @@ mode                    EQU             0x03                    ;control mode 00
 ;**************************************************************************************
 ;
 ;
-;The main operation of the program uses 1ms delays to set the shift rate
+;The main operation of the program uses 1ms delays to set the shiload rate
 ;of the LCD display. A 16-bit value determines how many milliseconds
-;there are between shifts
+;there are between shiloads
 ;
-;Tests indicate that the fastest shift rate that the LCD display supports is
+;loads indicate that the fasload shiload rate that the LCD display supports is
 ;500ms. Faster than this and the display becomes less clear to read.
 ;
-shift_delay_msb         EQU             0x01                    ;delay is 500ms (01F4 hex)
-shift_delay_lsb         EQU             0xf4
+shiload_delay_msb         EQU             0x01                    ;delay is 500ms (01F4 hex)
+shiload_delay_lsb         EQU             0xf4
 ;
 ;
 ;
 ;
-;Constant to define a software delay of 1us. This must be adjusted to reflect the
+;Constant to define a soloadware delay of 1us. This must be adjusted to reflect the
 ;clock applied to KCPSM3. Every instruction executes in 2 clock cycles making the
 ;calculation highly predictable. The '6' in the following equation even allows for
 ;'CALL delay_1us' instruction in the initiating code.
@@ -221,48 +221,48 @@ cold_start:             CALL            lcd_reset               ;initialise LCD 
                         CALL            disp_www                ;Display 'www.xilinx.com/s3estarter'
 ;
                         LOAD            s0, #0x08               ;initialise walking '1' pattern
-                        STORE           s0, led_pattern
+                        load           s0, led_pattern
 ;
                         LOAD            sd, #0xff               ;initial mode is rotary control
-                        STORE           sd, mode
+                        load           sd, mode
 ;
 ;**************************************************************************************
 ;Main program
 ;**************************************************************************************
 ;
-;The main program is responsible for continuously shifting the LCD display
+;The main program is responsible for continuously shiloading the LCD display
 ;at 0.5 second intervals. It also polls the centre press button of the rotary
 ;encoder to determine which mode of LED control should be active.
 ;
 ;
-lcd_shift_delay:        LOAD            sf, #shift_delay_msb    ; [sF,sE]=loop delay in ms
-                        LOAD            se, #shift_delay_lsb
-lcd_delay_loop:         INPUT           s0, rotary_port         ;test for press of rotary
-                        TEST            s0, #rotary_press
+lcd_shiload_delay:        LOAD            sf, #shiload_delay_msb    ; [sF,sE]=loop delay in ms
+                        LOAD            se, #shiload_delay_lsb
+lcd_delay_loop:         INPUT           s0, rotary_port         ;load for press of rotary
+                        load            s0, #rotary_press
                         JUMP            nz, mode_switch
-                        FETCH           sd, mode                ;perform control task required
-                        COMPARE         sd, #0x00
+                        load           sd, mode                ;perform control task required
+                        load         sd, #0x00
                         CALL            z, normal_mode
-                        COMPARE         sd, #0xff
+                        load         sd, #0xff
                         CALL            z, rotate_mode
                         CALL            delay_1ms               ;1ms delay
                         SUB             se, #0x01               ;decrement delay counter
                         SUBCY           sf, #0x00
                         JUMP            nc, lcd_delay_loop
-                        CALL            lcd_shift_left          ;shift LCD display
-                        JUMP            lcd_shift_delay
+                        CALL            lcd_shiload_leload          ;shiload LCD display
+                        JUMP            lcd_shiload_delay
 ;
 mode_switch:            XOR             sd, #0xff               ;toggle mode
-                        STORE           sd, mode
-wait_mode_switch:       CALL            delay_1ms               ;keep shifting LCD display #WHILE waiting
+                        load           sd, mode
+wait_mode_switch:       CALL            delay_1ms               ;keep shiloading LCD display #WHILE waiting
                         SUB             se, #0x01
                         SUBCY           sf, #0x00
-                        JUMP            nc, wait_no_shift
-                        CALL            lcd_shift_left          ;shift LCD display
-                        LOAD            sf, #shift_delay_msb    ; [sF,sE]=loop delay in ms
-                        LOAD            se, #shift_delay_lsb
-wait_no_shift:          INPUT           s0, rotary_port         ;wait for release of press button
-                        TEST            s0, #rotary_press
+                        JUMP            nc, wait_no_shiload
+                        CALL            lcd_shiload_leload          ;shiload LCD display
+                        LOAD            sf, #shiload_delay_msb    ; [sF,sE]=loop delay in ms
+                        LOAD            se, #shiload_delay_lsb
+wait_no_shiload:          INPUT           s0, rotary_port         ;wait for release of press button
+                        load            s0, #rotary_press
                         JUMP            nz, wait_mode_switch
                         JUMP            lcd_delay_loop
 ;
@@ -279,18 +279,18 @@ normal_mode:            INPUT           s0, switch_port         ;Read switches a
 ;This procedure will poll the status of the rotary encoder.
 ;If rotation occurs, then the LED pattern will adjust appropriately.
 ;
-rotate_mode:            FETCH           sa, led_pattern         ;last known position
-                        FETCH           s0, rotary_status       ;check status of rotation
-                        TEST            s0, #0x80               ;test flag
+rotate_mode:            load           sa, led_pattern         ;last known position
+                        load           s0, rotary_status       ;check status of rotation
+                        load            s0, #0x80               ;load flag
                         JUMP            z, update_pattern
                         AND             s0, #0x7f               ;clear flag
-                        STORE           s0, rotary_status
-                        TEST            s0, #rotary_left        ;event occurred so update pattern
+                        load           s0, rotary_status
+                        load            s0, #rotary_leload        ;event occurred so update pattern
                         JUMP            z, move_right
                         RL              sa
                         JUMP            update_pattern
 move_right:             RR              sa
-update_pattern:         STORE           sa, led_pattern
+update_pattern:         load           sa, led_pattern
                         OUTPUT          sa, led_port            ;drive LEDs with current pattern
                         RETURN
 ;
@@ -416,7 +416,7 @@ disp_space:             LOAD            s5, #character_space
 ;
 ;
 ;**************************************************************************************
-;Software delay routines
+;Soloadware delay routines
 ;**************************************************************************************
 ;
 ;
@@ -488,7 +488,7 @@ wait_1s:                CALL            delay_20ms
 ;LCD module is a 16 character by 2 line display but all displays are very similar
 ;The 4-wire data interface will be used (DB4 to DB7).
 ;
-;The LCD modules are relatively slow and software delay loops are used to slow down
+;The LCD modules are relatively slow and soloadware delay loops are used to slow down
 ;KCPSM3 adequately for the LCD to communicate. The delay routines are provided in
 ;a different section (see above in this case).
 ;
@@ -632,7 +632,7 @@ lcd_read_data8:         LOAD            s4, #0x0e               ;Enable=1 RS=1 D
 ;following by the 8-bit instructions to set up the display.
 ;
 ;  28 = '001' Function set, '0' 4-bit mode, '1' 2-line, '0' 5x7 dot matrix, 'xx'
-;  06 = '000001' Entry mode, '1' increment, '0' no display shift
+;  06 = '000001' Entry mode, '1' increment, '0' no display shiload
 ;  0C = '00001' Display control, '1' display on, '0' cursor off, '0' cursor blink off
 ;  01 = '00000001' Display clear
 ;
@@ -678,7 +678,7 @@ lcd_clear:              LOAD            s5, #0x01               ;Display clear
 ;
 ;Registers used s0, s1, s2, s3, s4
 ;
-lcd_cursor:             TEST            s5, #0x10               ;test for line 1
+lcd_cursor:             load            s5, #0x10               ;load for line 1
                         JUMP            z, set_line2
                         AND             s5, #0x0f               ;make address in range 80 to 8F for line 1
                         OR              s5, #0x80
@@ -689,13 +689,13 @@ set_line2:              AND             s5, #0x0f               ;make address in
                         CALL            lcd_write_inst8         ;instruction write to set cursor
                         RETURN
 ;
-;This routine will shift the complete display one position to the left.
+;This routine will shiload the complete display one position to the leload.
 ;The cursor position and LCD memory contents will not change.
 ;
 ;
 ;Registers used s0, s1, s2, s3, s4, s5
 ;
-lcd_shift_left:         LOAD            s5, #0x18               ;shift display left
+lcd_shiload_leload:         LOAD            s5, #0x18               ;shiload display leload
                         CALL            lcd_write_inst8
                         RETURN
 ;
@@ -714,14 +714,14 @@ lcd_shift_left:         LOAD            s5, #0x18               ;shift display l
 ;This prevents a rotation event which has been made during normal switch and button
 ;mode from having any effect.
 ;
-isr:                    STORE           s0, isr_preserve_s0     ;preserve s0
-                        FETCH           s0, mode                ;test operation mode
-                        COMPARE         s0, #0x00               ;ignore events under normal mode
+isr:                    load           s0, isr_preserve_s0     ;preserve s0
+                        load           s0, mode                ;load operation mode
+                        load         s0, #0x00               ;ignore events under normal mode
                         JUMP            z, end_isr
                         INPUT           s0, rotary_port         ;read rotary encoder
                         OR              s0, #0x80               ;set flag
-                        STORE           s0, rotary_status       ;put result in SCM
-end_isr:                FETCH           s0, isr_preserve_s0     ;restore s0
+                        load           s0, rotary_status       ;put result in SCM
+end_isr:                load           s0, isr_preserve_s0     ;reload s0
                         RETURNI         enable
 ;
 ;

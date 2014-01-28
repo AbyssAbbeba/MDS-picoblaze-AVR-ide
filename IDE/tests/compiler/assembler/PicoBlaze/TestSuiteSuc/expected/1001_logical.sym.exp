@@ -14,4 +14,4 @@ SC . . . . . . . . . . . . . . . . . REG.   0x0000C NOT USED CONSTANT    IMPLICI
 SD . . . . . . . . . . . . . . . . . REG.   0x0000D NOT USED CONSTANT    IMPLICIT
 SE . . . . . . . . . . . . . . . . . REG.   0x0000E NOT USED CONSTANT    IMPLICIT
 SF . . . . . . . . . . . . . . . . . REG.   0x0000F NOT USED CONSTANT    IMPLICIT
-START  . . . . . . . . . . . . . . . LABEL  0x00000 NOT USED CONSTANT    1001_logical.asm:12.1-12.7
+START  . . . . . . . . . . . . . . . LABEL  0x00000 NOT USED CONSTANT    1001_logical.asm:7.1-7.7

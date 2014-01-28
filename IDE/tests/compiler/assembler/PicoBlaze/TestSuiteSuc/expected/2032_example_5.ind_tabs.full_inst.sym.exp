@@ -147,6 +147,7 @@ LED6 . . . . . . . . . . . . . . . . NUMBER 0x00040 NOT USED CONSTANT    2032_ex
 LED7 . . . . . . . . . . . . . . . . NUMBER 0x00080 NOT USED CONSTANT    2032_example_5.ind_tabs.full_inst.asm:33.1-33.17
 LED_PATTERN  . . . . . . . . . . . . NUMBER 0x00002 NOT USED CONSTANT    2032_example_5.ind_tabs.full_inst.asm:94.1-94.23
 LED_PORT . . . . . . . . . . . . . . NUMBER 0x00080 USED     CONSTANT    2032_example_5.ind_tabs.full_inst.asm:25.1-25.20
+LOAD_DDS_WORDS . . . . . . . . . . . LABEL  0x0009A USED     CONSTANT    2032_example_5.ind_tabs.full_inst.asm:783.1-783.16
 MOVE_LEFT  . . . . . . . . . . . . . LABEL  0x0002F NOT USED CONSTANT    2032_example_5.ind_tabs.full_inst.asm:531.1-531.11
 MOVE_MODE  . . . . . . . . . . . . . LABEL  0x0001F USED     CONSTANT    2032_example_5.ind_tabs.full_inst.asm:513.1-513.11
 MOVE_RIGHT . . . . . . . . . . . . . LABEL  0x00039 USED     CONSTANT    2032_example_5.ind_tabs.full_inst.asm:542.1-542.12
@@ -217,7 +218,6 @@ SF . . . . . . . . . . . . . . . . . REG.   0x0000F NOT USED CONSTANT    IMPLICI
 SHIFT80_LEFT . . . . . . . . . . . . LABEL  0x000A1 USED     CONSTANT    2032_example_5.ind_tabs.full_inst.asm:791.1-791.14
 SKIP_LEFT  . . . . . . . . . . . . . LABEL  0x00037 USED     CONSTANT    2032_example_5.ind_tabs.full_inst.asm:539.1-539.11
 SKIP_RIGHT . . . . . . . . . . . . . LABEL  0x00041 USED     CONSTANT    2032_example_5.ind_tabs.full_inst.asm:550.1-550.12
-STORE_DDS_WORDS  . . . . . . . . . . LABEL  0x0009A USED     CONSTANT    2032_example_5.ind_tabs.full_inst.asm:783.1-783.17
 WAIT_1MS . . . . . . . . . . . . . . LABEL  0x001C4 USED     CONSTANT    2032_example_5.ind_tabs.full_inst.asm:1253.1-1253.10
 WAIT_1S  . . . . . . . . . . . . . . LABEL  0x001CE USED     CONSTANT    2032_example_5.ind_tabs.full_inst.asm:1275.1-1275.9
 WAIT_1US . . . . . . . . . . . . . . LABEL  0x001BB USED     CONSTANT    2032_example_5.ind_tabs.full_inst.asm:1233.1-1233.10

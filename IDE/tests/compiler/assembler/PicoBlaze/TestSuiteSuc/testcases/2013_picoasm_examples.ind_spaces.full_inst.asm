@@ -1,4 +1,4 @@
-; Compiler test case for Assembler
+; Compiler load case for Assembler
 device kcpsm2
 
 ;=========================================================

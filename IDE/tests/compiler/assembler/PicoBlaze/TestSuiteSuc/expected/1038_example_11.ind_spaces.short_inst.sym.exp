@@ -89,6 +89,14 @@ LED7 . . . . . . . . . . . . . . . . NUMBER 0x00080 NOT USED CONSTANT    1038_ex
 LED7_SEQUENCE  . . . . . . . . . . . NUMBER 0x00017 USED     CONSTANT    1038_example_11.ind_spaces.short_inst.asm:87.1-87.37
 LED_PORT . . . . . . . . . . . . . . NUMBER 0x00080 USED     CONSTANT    1038_example_11.ind_spaces.short_inst.asm:15.1-15.37
 LED_TO_DUTY  . . . . . . . . . . . . LABEL  0x000A7 USED     CONSTANT    1038_example_11.ind_spaces.short_inst.asm:418.1-418.13
+LOAD_LED0_START  . . . . . . . . . . LABEL  0x00025 USED     CONSTANT    1038_example_11.ind_spaces.short_inst.asm:250.1-250.17
+LOAD_LED1_START  . . . . . . . . . . LABEL  0x00038 USED     CONSTANT    1038_example_11.ind_spaces.short_inst.asm:270.1-270.17
+LOAD_LED2_START  . . . . . . . . . . LABEL  0x00049 USED     CONSTANT    1038_example_11.ind_spaces.short_inst.asm:288.1-288.17
+LOAD_LED3_START  . . . . . . . . . . LABEL  0x0005A USED     CONSTANT    1038_example_11.ind_spaces.short_inst.asm:307.1-307.17
+LOAD_LED4_START  . . . . . . . . . . LABEL  0x0006B USED     CONSTANT    1038_example_11.ind_spaces.short_inst.asm:325.1-325.17
+LOAD_LED5_START  . . . . . . . . . . LABEL  0x0007C USED     CONSTANT    1038_example_11.ind_spaces.short_inst.asm:343.1-343.17
+LOAD_LED6_START  . . . . . . . . . . LABEL  0x00092 USED     CONSTANT    1038_example_11.ind_spaces.short_inst.asm:366.1-366.17
+LOAD_LED7_START  . . . . . . . . . . LABEL  0x000A0 USED     CONSTANT    1038_example_11.ind_spaces.short_inst.asm:381.1-381.17
 NORMAL_LED1  . . . . . . . . . . . . LABEL  0x00030 USED     CONSTANT    1038_example_11.ind_spaces.short_inst.asm:262.1-262.13
 NORMAL_LED6  . . . . . . . . . . . . LABEL  0x0008A USED     CONSTANT    1038_example_11.ind_spaces.short_inst.asm:358.1-358.13
 PWM_CHANNEL0 . . . . . . . . . . . . NUMBER 0x00001 USED     CONSTANT    1038_example_11.ind_spaces.short_inst.asm:63.1-63.37
@@ -139,14 +147,6 @@ SPARE1 . . . . . . . . . . . . . . . NUMBER 0x00020 NOT USED CONSTANT    1038_ex
 SPARE2 . . . . . . . . . . . . . . . NUMBER 0x00040 NOT USED CONSTANT    1038_example_11.ind_spaces.short_inst.asm:41.1-41.37
 SPARE3 . . . . . . . . . . . . . . . NUMBER 0x00080 NOT USED CONSTANT    1038_example_11.ind_spaces.short_inst.asm:42.1-42.37
 STATUS_PORT  . . . . . . . . . . . . NUMBER 0x00000 USED     CONSTANT    1038_example_11.ind_spaces.short_inst.asm:34.1-34.37
-TEST_LED0_START  . . . . . . . . . . LABEL  0x00025 USED     CONSTANT    1038_example_11.ind_spaces.short_inst.asm:250.1-250.17
-TEST_LED1_START  . . . . . . . . . . LABEL  0x00038 USED     CONSTANT    1038_example_11.ind_spaces.short_inst.asm:270.1-270.17
-TEST_LED2_START  . . . . . . . . . . LABEL  0x00049 USED     CONSTANT    1038_example_11.ind_spaces.short_inst.asm:288.1-288.17
-TEST_LED3_START  . . . . . . . . . . LABEL  0x0005A USED     CONSTANT    1038_example_11.ind_spaces.short_inst.asm:307.1-307.17
-TEST_LED4_START  . . . . . . . . . . LABEL  0x0006B USED     CONSTANT    1038_example_11.ind_spaces.short_inst.asm:325.1-325.17
-TEST_LED5_START  . . . . . . . . . . LABEL  0x0007C USED     CONSTANT    1038_example_11.ind_spaces.short_inst.asm:343.1-343.17
-TEST_LED6_START  . . . . . . . . . . LABEL  0x00092 USED     CONSTANT    1038_example_11.ind_spaces.short_inst.asm:366.1-366.17
-TEST_LED7_START  . . . . . . . . . . LABEL  0x000A0 USED     CONSTANT    1038_example_11.ind_spaces.short_inst.asm:381.1-381.17
 TX_FULL  . . . . . . . . . . . . . . NUMBER 0x00002 USED     CONSTANT    1038_example_11.ind_spaces.short_inst.asm:36.1-36.37
 TX_HALF_FULL . . . . . . . . . . . . NUMBER 0x00001 NOT USED CONSTANT    1038_example_11.ind_spaces.short_inst.asm:35.1-35.37
 UART_DATA  . . . . . . . . . . . . . REG.   0x0000F USED     CONSTANT    1038_example_11.ind_spaces.short_inst.asm:54.1-54.35
