@@ -18,6 +18,9 @@ project ( testsMCUSimPicoBlaze )
 # BUILD COMPONENTS IN THE SUBDIRECTORIES
 # ------------------------------------------------------------------------------
 
+# Test strategy for PicoBlaze simulator.
+add_subdirectory ( PicoBlazeStrategy )
+
 # Test suite: KCPSM1CPLD.
 add_subdirectory ( TestKcpsm1CPLD )
 
@@ -43,8 +46,7 @@ include_directories ( "${CMAKE_SOURCE_DIR}"
 
 # Add an executable to the project using the specified source files.
 add_executable ( ${PROJECT_NAME}
-                 main.cxx
-                 PicoBlazeStrategy.cxx )
+                 main.cxx )
 
 # Link a target to given libraries
 target_link_libraries ( ${PROJECT_NAME} ${Boost_LIBRARIES}

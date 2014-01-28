@@ -25,7 +25,7 @@
 
 // MCUSim test script interpreter.
 #include "MCUSimTestScript.h"
-#include "../PicoBlazeStrategy.h"
+#include "PicoBlazeStrategy.h"
 
 // Boost Filesystem library.
 #define BOOST_FILESYSTEM_NO_DEPRECATED

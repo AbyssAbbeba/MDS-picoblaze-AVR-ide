@@ -16,7 +16,7 @@
 #ifndef PICOBLAZESTRATEGY_H
 #define PICOBLAZESTRATEGY_H
 
-#include "../MCUSimTestScriptStrategy.h"
+#include "../../MCUSimTestScriptStrategy.h"
 
 /**
  * @brief
