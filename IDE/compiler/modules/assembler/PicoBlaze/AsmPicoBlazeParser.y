@@ -61,9 +61,10 @@
 %code requires
 {
     #include "CompilerParserInterface.h"
+
     #ifndef YY_TYPEDEF_YY_SCANNER_T
-            #define YY_TYPEDEF_YY_SCANNER_T
-            typedef void* yyscan_t;
+    #define YY_TYPEDEF_YY_SCANNER_T
+        typedef void* yyscan_t;
     #endif // YY_TYPEDEF_YY_SCANNER_T
 }
 

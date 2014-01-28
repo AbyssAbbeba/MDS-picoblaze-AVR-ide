@@ -37,8 +37,8 @@ add_library ( ${PROJECT_NAME} SHARED
               TestSuiteSuc.cxx )
 
 # Link a target to given libraries
-target_link_libraries ( ${PROJECT_NAME}
-                        ${Boost_LIBRARIES}
-                        compiler
-                        MCUDataFiles
-                        DbgFile )
+target_link_libraries ( ${PROJECT_NAME} ${Boost_LIBRARIES}
+                                        compiler
+                                        CUnit
+                                        MCUDataFiles
+                                        DbgFile )

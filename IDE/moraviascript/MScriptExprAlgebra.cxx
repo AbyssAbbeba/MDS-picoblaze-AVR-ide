@@ -194,7 +194,7 @@ void MScriptExprAlgebra::unaryOperation ( MScriptValue & result,
             result.m_data.m_bool = false;
             if ( MScriptValue::TYPE_FLOAT == input.m_type )
             {
-                result.m_data.m_bool = isnan(input.m_data.m_float);
+                result.m_data.m_bool = std::isnan(input.m_data.m_float);
             }
             break;
         case MScriptExpr::OPER_IS_INFINITY:
@@ -202,7 +202,7 @@ void MScriptExprAlgebra::unaryOperation ( MScriptValue & result,
             result.m_data.m_bool = false;
             if ( MScriptValue::TYPE_FLOAT == input.m_type )
             {
-                result.m_data.m_bool = isinf(input.m_data.m_float);
+                result.m_data.m_bool = std::isinf(input.m_data.m_float);
             }
             break;
         case MScriptExpr::OPER_IS_POSITIVE:
@@ -2123,13 +2123,13 @@ inline void MScriptExprAlgebra::checkComplex ( const MScriptSrcLocation & locati
 inline void MScriptExprAlgebra::checkFloat ( const MScriptSrcLocation & location,
                                              double value )
 {
-    if ( true == isnan(value) )
+    if ( true == std::isnan(value) )
     {
         m_interpret->interpreterMessage ( location,
                                           MScriptBase::MT_ERROR,
                                           QObject::tr ( "result is not a number" ) . toStdString() );
     }
-    else if ( true == ::isinf(value) )
+    else if ( true == std::isinf(value) )
     {
         m_interpret->interpreterMessage ( location,
                                           MScriptBase::MT_WARNING,

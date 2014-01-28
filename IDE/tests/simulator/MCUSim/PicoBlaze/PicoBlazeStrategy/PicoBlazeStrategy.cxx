@@ -15,9 +15,9 @@
 
 #include "PicoBlazeStrategy.h"
 
-#include "../../../../simulators/MCUSim/MCUSim.h"
-#include "../../../../simulators/MCUSim/PicoBlaze/PicoBlazeStatusFlagsBase.h"
-#include "../../../../simulators/MCUSim/PicoBlaze/PicoBlazeInterruptController.h"
+#include "../../../../../simulators/MCUSim/MCUSim.h"
+#include "../../../../../simulators/MCUSim/PicoBlaze/PicoBlazeStatusFlagsBase.h"
+#include "../../../../../simulators/MCUSim/PicoBlaze/PicoBlazeInterruptController.h"
 
 bool PicoBlazeStrategy::processLine ( std::vector<std::string> * tokens,
                                       bool /*useAsmFile*/,
